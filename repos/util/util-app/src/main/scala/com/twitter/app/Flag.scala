@@ -209,8 +209,7 @@ object Flaggable {
 
     def parse(in: String): Map[K, V] = {
       val tuples =
-        in
-          .split(',')
+        in.split(',')
           .foldLeft(Seq.empty[String]) {
             case (acc, s) if !s.contains('=') =>
               // In order to support comma-separated values, we concatenate

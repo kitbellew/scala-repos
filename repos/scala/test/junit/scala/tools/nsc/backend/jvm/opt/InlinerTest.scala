@@ -914,8 +914,8 @@ class InlinerTest extends ClearAfterClass {
 
     val List(c, t, u) = compile(
       code,
-      allowMessage =
-        _.msg contains "i()I is annotated @inline but cannot be inlined")
+      allowMessage = _
+        .msg contains "i()I is annotated @inline but cannot be inlined")
     val m1 = getSingleMethod(c, "m1")
     assertInvoke(m1, "T", "a")
     assertInvoke(m1, "T", "b")

@@ -332,8 +332,8 @@ private[pickling] class IrScalaSymbols[
         .paramss
         .map(
           _.map(x =>
-            fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol))
-          .map(_.asInstanceOf[u.Type]))
+              fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol))
+            .map(_.asInstanceOf[u.Type]))
     }
 
     override def isMarkedTransient: Boolean = {

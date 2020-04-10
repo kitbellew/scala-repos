@@ -114,8 +114,7 @@ class VectorSerializer
       (
         {
           case JArray(s) =>
-            s
-              .map {
+            s.map {
                 case JDouble(x) =>
                   x
                 case _ =>

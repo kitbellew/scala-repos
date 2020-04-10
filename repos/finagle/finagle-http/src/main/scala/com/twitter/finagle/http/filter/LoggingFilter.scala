@@ -50,8 +50,7 @@ object LogFormatter {
           case '"' =>
             builder.append("\\\"")
           case _ =>
-            c
-              .toString()
+            c.toString()
               .getBytes("UTF-8")
               .foreach { byte =>
                 builder.append("\\x")

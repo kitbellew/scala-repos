@@ -226,8 +226,7 @@ class GaussianMixture private (
         val tuples =
           Seq.tabulate(k)(i => (sums.means(i), sums.sigmas(i), sums.weights(i)))
         val (ws, gs) =
-          sc
-            .parallelize(tuples, numPartitions)
+          sc.parallelize(tuples, numPartitions)
             .map {
               case (mean, sigma, weight) =>
                 updateWeightsAndGaussians(mean, sigma, weight, sumWeights)

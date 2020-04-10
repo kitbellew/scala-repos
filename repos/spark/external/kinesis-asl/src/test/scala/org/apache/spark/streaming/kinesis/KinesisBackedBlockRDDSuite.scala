@@ -292,9 +292,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
         .takeRight(numPartitionsInKinesis)
         .forall {
           _.ranges
-          .forall {
-            _.streamName == testUtils.streamName
-          }
+            .forall {
+              _.streamName == testUtils.streamName
+            }
         },
       "Incorrect configuration of RDD, expected ranges not set: "
     )
@@ -304,9 +304,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
         .dropRight(numPartitionsInKinesis)
         .forall {
           _.ranges
-          .forall {
-            _.streamName != testUtils.streamName
-          }
+            .forall {
+              _.streamName != testUtils.streamName
+            }
         },
       "Incorrect configuration of RDD, unexpected ranges set"
     )

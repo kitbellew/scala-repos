@@ -597,8 +597,7 @@ object JsonAST {
           case JObject(fs) if (fs find p).isDefined =>
             return fs find p
           case JObject(fs) =>
-            fs
-              .flatMap {
+            fs.flatMap {
                 case JField(n, v) =>
                   find(v)
               }
@@ -627,8 +626,7 @@ object JsonAST {
           case _ if p(json) =>
             Some(json)
           case JObject(fs) =>
-            fs
-              .flatMap {
+            fs.flatMap {
                 case JField(n, v) =>
                   find(v)
               }
@@ -1250,8 +1248,7 @@ object JsonDSL extends JsonDSL
 trait JsonDSL extends Implicits {
   implicit def seq2jvalue[A <% JValue](s: Traversable[A]) =
     JArray(
-      s
-        .toList
+      s.toList
         .map { a =>
           val v: JValue = a;
           v
@@ -1259,8 +1256,7 @@ trait JsonDSL extends Implicits {
 
   implicit def map2jvalue[A <% JValue](m: Map[String, A]) =
     JObject(
-      m
-        .toList
+      m.toList
         .map {
           case (k, v) =>
             JField(k, v)

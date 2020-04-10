@@ -68,16 +68,14 @@ object BundleBuilder {
             .toList
             .flatMap {
               case e: Elem => {
-                e
-                  .attribute("name")
+                e.attribute("name")
                   .toList
                   .map(attr =>
                     EntryInfo(
                       attr.text,
                       e.attribute("lang").map(_.text),
                       e.attribute("country").map(_.text),
-                      e
-                        .attribute("default")
+                      e.attribute("default")
                         .map(_.text)
                         .flatMap(Helpers.asBoolean) getOrElse false
                     ) -> (e.child: NodeSeq))

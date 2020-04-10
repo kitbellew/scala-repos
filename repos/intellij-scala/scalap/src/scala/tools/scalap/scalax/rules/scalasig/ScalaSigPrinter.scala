@@ -328,8 +328,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   }
 
   def getPrinterByConstructor(c: ClassSymbol): String = {
-    c
-      .children
+    c.children
       .find {
         case m: MethodSymbol if m.name == CONSTRUCTOR_NAME =>
           true

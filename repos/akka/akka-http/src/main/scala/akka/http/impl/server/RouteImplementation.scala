@@ -102,8 +102,7 @@ private[http] object RouteImplementation
           extractRequestContext.flatMap { ctx ⇒
             extractions
               .map { e ⇒
-                e
-                  .directive
+                e.directive
                   .flatMap(addExtraction(e.asInstanceOf[RequestVal[Any]], _))
               }
               .reduce(_ & _)
@@ -262,8 +261,7 @@ private[http] object RouteImplementation
       case o: OpaqueRoute ⇒
         (
             ctx ⇒
-              o
-                .handle(new RequestContextImpl(ctx))
+              o.handle(new RequestContextImpl(ctx))
                 .asInstanceOf[RouteResultImpl]
                 .underlying)
       case p: Product ⇒

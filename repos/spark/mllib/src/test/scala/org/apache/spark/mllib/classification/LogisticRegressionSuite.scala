@@ -272,8 +272,7 @@ class LogisticRegressionSuite
     val testRDD = sc.parallelize(testData, 2)
     testRDD.cache()
     val lr = new LogisticRegressionWithSGD().setIntercept(true)
-    lr
-      .optimizer
+    lr.optimizer
       .setStepSize(10.0)
       .setRegParam(0.0)
       .setNumIterations(20)

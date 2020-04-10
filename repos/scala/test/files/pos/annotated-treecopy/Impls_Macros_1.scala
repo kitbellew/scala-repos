@@ -48,8 +48,7 @@ object Macros {
           .reify(
             new (T => U) with TypedFunction {
               override def toString =
-                c
-                  .Expr[String](
+                c.Expr[String](
                     q"""${tp + " => " + ttag.tpe + " { " + b1
                       .toString + " } "}""")
                   .splice // DEBUG

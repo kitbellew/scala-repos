@@ -53,8 +53,7 @@ class DBSpec extends Specification with Mockito {
 
       DB.buildLoanWrapper(true) {
         DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
-        DB
-          .currentConnection
+        DB.currentConnection
           .map { c =>
             DB.exec(c, "stuff") { dummy =>
             }
@@ -76,8 +75,7 @@ class DBSpec extends Specification with Mockito {
       tryo(
         lw.apply {
           DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
-          DB
-            .currentConnection
+          DB.currentConnection
             .map { c =>
               DB.exec(c, "stuff") { dummy =>
               }

@@ -853,8 +853,7 @@ trait Namers extends MethodSynthesis {
 
       if (mods.isCase) {
         val m = ensureCompanionObject(tree, caseModuleDef)
-        m
-          .moduleClass
+        m.moduleClass
           .updateAttachment(new ClassForCaseCompanionAttachment(tree))
       }
       val hasDefault = impl.body exists treeInfo.isConstructorWithDefault

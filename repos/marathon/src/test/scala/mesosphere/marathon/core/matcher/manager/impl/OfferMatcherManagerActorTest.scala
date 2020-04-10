@@ -56,8 +56,7 @@ class OfferMatcherManagerActorTest
     val f = new Fixture
     val appId = PathId("/some/app")
     val manager = f.offerMatcherManager
-    1
-      .to(num)
+    1.to(num)
       .flatMap(_ => Seq(f.matcher(), f.matcher(Some(appId))))
       .map { matcher =>
         manager ? OfferMatcherManagerDelegate.AddOrUpdateMatcher(matcher)

@@ -394,8 +394,7 @@ object SPARK_9757 extends QueryTest {
         val df = hiveContext
           .range(10)
           .select(('id + 0.1) cast DecimalType(10, 3) as 'dec)
-        df
-          .write
+        df.write
           .option("path", dir.getCanonicalPath)
           .mode("overwrite")
           .saveAsTable("t")
@@ -409,8 +408,7 @@ object SPARK_9757 extends QueryTest {
             callUDF(
               "struct",
               ('id + 0.2) cast DecimalType(10, 3)) as 'dec_struct)
-        df
-          .write
+        df.write
           .option("path", dir.getCanonicalPath)
           .mode("overwrite")
           .saveAsTable("t")

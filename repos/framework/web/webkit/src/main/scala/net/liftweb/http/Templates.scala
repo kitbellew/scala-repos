@@ -131,8 +131,7 @@ object Templates {
           df(n.next)
       }
 
-    in
-      .flatMap {
+    in.flatMap {
         case e: Elem if e.label == "html" =>
           df(e.attributes)
         case _ =>
@@ -142,19 +141,15 @@ object Templates {
         Helpers.findId(in, md.value.text)
       }
       .headOption orElse
-      in
-        .flatMap {
+      in.flatMap {
           case e: Elem if e.label == "html" =>
-            e
-              .child
+            e.child
               .flatMap {
                 case e: Elem if e.label == "body" => {
-                  e
-                    .attribute("data-lift-content-id")
+                  e.attribute("data-lift-content-id")
                     .headOption
                     .map(_.text) orElse
-                    e
-                      .attribute("class")
+                    e.attribute("class")
                       .flatMap { ns =>
                         {
                           val clz = ns.text.charSplit(' ')

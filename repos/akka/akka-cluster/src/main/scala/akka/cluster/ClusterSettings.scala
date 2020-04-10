@@ -112,8 +112,7 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   } requiring (_ > 0, "min-nr-of-members must be > 0")
   val MinNrOfMembersOfRole: Map[String, Int] = {
     import scala.collection.JavaConverters._
-    cc
-      .getConfig("role")
+    cc.getConfig("role")
       .root
       .asScala
       .collect {

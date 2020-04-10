@@ -102,8 +102,7 @@ object GeneratedCodeTest {
               dIdxFieldsName sameElements List("f1", "f2"))
 
             def optionsOfColumn(c: slick.lifted.Rep[_]) =
-              c
-                .toNode
+              c.toNode
                 .asInstanceOf[Select]
                 .field
                 .asInstanceOf[slick.ast.FieldSymbol]

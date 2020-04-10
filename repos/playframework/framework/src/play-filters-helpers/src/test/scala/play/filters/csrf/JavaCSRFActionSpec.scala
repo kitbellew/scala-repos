@@ -109,8 +109,7 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
       import play.api.Play.current
       val returned =
         await(
-          ws
-            .url("http://localhost:" + testServerPort)
+          ws.url("http://localhost:" + testServerPort)
             .withSession(TokenName -> token)
             .get()).body
       crypto.compareSignedTokens(token, returned) must beTrue

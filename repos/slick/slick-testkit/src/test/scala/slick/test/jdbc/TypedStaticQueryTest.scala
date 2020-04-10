@@ -35,8 +35,7 @@ class TypedStaticQueryTest {
         tsql"select 1, '2', 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23"
 
       Await.result(
-        dc
-          .db
+        dc.db
           .run(
             DBIO.seq(
               s1.map { list1 =>
@@ -103,8 +102,7 @@ class TypedStaticQueryTest {
       val s4 = tsql"select CITY from SUPPLIERS"
 
       Await.result(
-        dc
-          .db
+        dc.db
           .run(
             DBIO.seq(
               s1.map { o1 =>
@@ -171,8 +169,7 @@ class TypedStaticQueryTest {
       val s4 = supplierForIdAndName(49, "Superior Coffee")
 
       Await.result(
-        dc
-          .db
+        dc.db
           .run(
             DBIO.seq(
               s1.map { o1 =>
@@ -212,8 +209,7 @@ class TypedStaticQueryTest {
       val s2 = tsql"select SUP_ID, SUP_NAME from SUPPLIERS where SUP_ID = 103"
 
       Await.result(
-        dc
-          .db
+        dc.db
           .run(
             DBIO
               .seq(

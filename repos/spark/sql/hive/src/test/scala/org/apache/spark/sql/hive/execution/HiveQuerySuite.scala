@@ -1319,8 +1319,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     val testVal = "test.val.0"
     val nonexistentKey = "nonexistent"
     def collectResults(df: DataFrame): Set[Any] =
-      df
-        .collect()
+      df.collect()
         .map {
           case Row(key: String, value: String) =>
             key -> value

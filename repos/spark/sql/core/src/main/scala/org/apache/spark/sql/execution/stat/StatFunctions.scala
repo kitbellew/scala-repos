@@ -449,8 +449,7 @@ private[sql] object StatFunctions extends Logging {
               s"for columns with dataType ${data.get.dataType} not supported.")
       }
     val columns = cols.map(n => Column(Cast(Column(n).expr, DoubleType)))
-    df
-      .select(columns: _*)
+    df.select(columns: _*)
       .queryExecution
       .toRdd
       .aggregate(new CovarianceCounter)(

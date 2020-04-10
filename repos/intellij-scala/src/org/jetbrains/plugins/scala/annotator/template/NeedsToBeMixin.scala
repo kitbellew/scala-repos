@@ -82,8 +82,7 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
                         case td: ScTypeDefinition =>
                           td.nameId
                         case t: ScNewTemplateDefinition =>
-                          t
-                            .extendsBlock
+                          t.extendsBlock
                             .templateParents
                             .flatMap(_.typeElements.headOption)
                             .orNull

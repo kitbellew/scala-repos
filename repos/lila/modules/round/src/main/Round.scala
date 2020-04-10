@@ -299,8 +299,7 @@ private[round] final class Round(
     } recover errorHandler("handleGame")
 
   private def publish[A](op: Fu[Events]): Funit =
-    op
-      .addEffect { events =>
+    op.addEffect { events =>
         if (events.nonEmpty)
           socketHub ! Tell(gameId, EventList(events))
         if (events exists {

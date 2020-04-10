@@ -5,8 +5,7 @@ object Macros {
 
   object Impls {
     def foo[T: c.WeakTypeTag](c: Context)(s: c.Expr[T]) =
-      c
-        .universe
+      c.universe
         .reify {
           Array(s.splice)
         }

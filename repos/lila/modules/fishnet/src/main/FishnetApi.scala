@@ -54,8 +54,7 @@ final class FishnetApi(
         case Skill.All =>
           acquireMove(client) orElse acquireAnalysis(client)
       }
-    )
-      .chronometer
+    ).chronometer
       .mon(_.fishnet.acquire time client.skill.key)
       .logIfSlow(100, logger)(_ => s"acquire ${client.skill}")
       .result
@@ -121,8 +120,7 @@ final class FishnetApi(
         case Some(work) =>
           monitor.notAcquired(work, client)
       }
-    }
-      .chronometer
+    }.chronometer
       .mon(_.fishnet.move.post)
       .logIfSlow(100, logger)(_ => "post move")
       .result
@@ -154,8 +152,7 @@ final class FishnetApi(
           monitor.notAcquired(work, client)
           fuccess(none)
       }
-    }
-      .chronometer
+    }.chronometer
       .mon(_.fishnet.analysis.post)
       .logIfSlow(200, logger) { res =>
         s"post analysis for ${res.??(_.id)}"

@@ -400,8 +400,7 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
 
     checkDataset(
-      ds
-        .groupByKey(_._1)
+      ds.groupByKey(_._1)
         .agg(sum("_2").as[Long], sum($"_2" + 1).as[Long], count("*")),
       ("a", 30L, 32L, 2L),
       ("b", 3L, 5L, 2L),
@@ -412,8 +411,7 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
 
     checkDataset(
-      ds
-        .groupByKey(_._1)
+      ds.groupByKey(_._1)
         .agg(
           sum("_2").as[Long],
           sum($"_2" + 1).as[Long],

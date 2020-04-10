@@ -180,8 +180,7 @@ object OneStageResource {
           case ID =>
             td.taskId
           case INCREASING_RUNTIME =>
-            td
-              .taskMetrics
+            td.taskMetrics
               .map {
                 _.executorRunTime
               }

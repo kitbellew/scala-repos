@@ -357,8 +357,7 @@ class CircuitBreaker(
         val p = Promise[T]()
 
         implicit val ec = sameThreadExecutionContext
-        p
-          .future
+        p.future
           .onComplete {
             case s: Success[_] ⇒
               callSucceeds()

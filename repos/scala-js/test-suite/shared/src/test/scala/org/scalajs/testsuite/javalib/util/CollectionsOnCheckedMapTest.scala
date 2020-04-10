@@ -32,8 +32,7 @@ trait CollectionsOnCheckedMapTest extends CollectionsOnMapsTest {
       def empty[K, V](implicit
           kct: ClassTag[K],
           vct: ClassTag[V]): ju.Map[K, V] = {
-        ju
-          .Collections
+        ju.Collections
           .checkedMap(
             originalFactory.empty[K, V],
             kct.runtimeClass.asInstanceOf[Class[K]],
@@ -85,8 +84,7 @@ trait CollectionsOnCheckedSortedMapTest extends CollectionsOnSortedMapsTest {
       def empty[K, V](implicit
           kct: ClassTag[K],
           vct: ClassTag[V]): ju.SortedMap[K, V] = {
-        ju
-          .Collections
+        ju.Collections
           .checkedSortedMap(
             originalFactory.empty[K, V],
             kct.runtimeClass.asInstanceOf[Class[K]],

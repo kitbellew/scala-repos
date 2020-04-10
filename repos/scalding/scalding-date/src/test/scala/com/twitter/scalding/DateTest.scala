@@ -234,8 +234,7 @@ class DateTest extends WordSpec {
       def eachIsDisjoint(d: DateRange, dur: Duration) {
         val dl = d.each(dur)
         assert(
-          dl
-            .zip(dl.tail)
+          dl.zip(dl.tail)
             .forall {
               case (da, db) =>
                 da.isBefore(db.start) && db
@@ -402,8 +401,7 @@ class DateTest extends WordSpec {
     }
     def bruteForce(pattern: String, dr: DateRange, dur: Duration)(implicit
         tz: java.util.TimeZone) = {
-      dr
-        .each(dur)
+      dr.each(dur)
         .map { (dr: DateRange) =>
           String.format(pattern, dr.start.toCalendar(tz))
         }

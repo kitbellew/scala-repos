@@ -139,8 +139,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
 
     // Non-serializable closure in an earlier stage
     val thrown1 = intercept[SparkException] {
-      sc
-        .parallelize(1 to 10, 2)
+      sc.parallelize(1 to 10, 2)
         .map(x => (x, a))
         .partitionBy(new HashPartitioner(3))
         .count()
@@ -171,8 +170,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
     // If a task leaks memory but fails due to some other cause, then make sure that the original
     // cause is preserved
     val thrownDueToTaskFailure = intercept[SparkException] {
-      sc
-        .parallelize(Seq(0))
+      sc.parallelize(Seq(0))
         .mapPartitions { iter =>
           TaskContext.get().taskMemoryManager().allocatePage(128, null)
           throw new Exception("intentional task failure")
@@ -185,8 +183,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
 
     // If the task succeeded but memory was leaked, then the task should fail due to that leak
     val thrownDueToMemoryLeak = intercept[SparkException] {
-      sc
-        .parallelize(Seq(0))
+      sc.parallelize(Seq(0))
         .mapPartitions { iter =>
           TaskContext.get().taskMemoryManager().allocatePage(128, null)
           iter
@@ -234,8 +231,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
     "failure cause stacktrace is sent back to driver if exception is not serializable") {
     sc = new SparkContext("local", "test")
     val thrown = intercept[SparkException] {
-      sc
-        .makeRDD(1 to 3)
+      sc.makeRDD(1 to 3)
         .foreach { _ =>
           throw new NonSerializableUserException
         }
@@ -250,8 +246,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
     "failure cause stacktrace is sent back to driver if exception is not deserializable") {
     sc = new SparkContext("local", "test")
     val thrown = intercept[SparkException] {
-      sc
-        .makeRDD(1 to 3)
+      sc.makeRDD(1 to 3)
         .foreach { _ =>
           throw new NonDeserializableUserException
         }

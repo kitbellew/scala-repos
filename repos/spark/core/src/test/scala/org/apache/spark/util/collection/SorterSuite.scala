@@ -149,8 +149,7 @@ class SorterSuite extends SparkFunSuite with Logging {
           kvTupleArray,
           new Comparator[AnyRef] {
             override def compare(x: AnyRef, y: AnyRef): Int =
-              x
-                .asInstanceOf[(JFloat, _)]
+              x.asInstanceOf[(JFloat, _)]
                 ._1
                 .compareTo(y.asInstanceOf[(JFloat, _)]._1)
           })

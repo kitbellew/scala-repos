@@ -264,8 +264,7 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
             .database
             .createTable(
               t.tableName,
-              t
-                .create_*
+              t.create_*
                 .map { fs =>
                   new HeapBackend.Column(fs, typeInfoFor(fs.tpe))
                 }

@@ -64,8 +64,7 @@ object RDDRelation {
       .foreach(println)
 
     // Queries can also be written using a LINQ-like Scala DSL.
-    df
-      .where($"key" === 1)
+    df.where($"key" === 1)
       .orderBy($"value".asc)
       .select($"key")
       .collect()

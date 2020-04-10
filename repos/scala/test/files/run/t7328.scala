@@ -15,8 +15,7 @@ object Test extends App {
   println(
     im.reflectField(foo).get
   ) // incorrectly gives java.lang.Integer(3) not Foo(3)
-  im
-    .reflectField(foo)
+  im.reflectField(foo)
     .set(
       Foo(5)
     ) // java.lang.IllegalArgumentException: Can not set int field Bar.foo to Foo

@@ -411,15 +411,13 @@ private[sbt] object PluginsDebug {
     And(plugins map (p => Exclude(p)) toList)
 
   private[this] def excludes(bs: Seq[Basic]): Set[AutoPlugin] =
-    bs
-      .collect {
+    bs.collect {
         case Exclude(b) =>
           b
       }
       .toSet
   private[this] def plugins(bs: Seq[Basic]): Set[AutoPlugin] =
-    bs
-      .collect {
+    bs.collect {
         case n: AutoPlugin =>
           n
       }

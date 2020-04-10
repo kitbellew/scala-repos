@@ -352,8 +352,7 @@ class LiftServlet extends Loggable {
         } else {
           val cmd =
             if (isComet)
-              js
-                .JE
+              js.JE
                 .JsRaw(
                   LiftRules
                     .noCometSessionCmd
@@ -463,8 +462,7 @@ class LiftServlet extends Loggable {
         try {
           S.init(Box !! r2, s2) {
             dispatchStatefulRequest(
-              S
-                .request
+              S.request
                 .openOrThrowException(
                   "I'm pretty sure this is a full box here"),
               liftSession,

@@ -55,8 +55,7 @@ class BucketedReadSuite
 
   test("read bucketed data") {
     withTable("bucketed_table") {
-      df
-        .write
+      df.write
         .format("parquet")
         .partitionBy("i")
         .bucketBy(8, "j", "k")
@@ -144,8 +143,7 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      df
-        .write
+      df.write
         .format("json")
         .partitionBy("i")
         .bucketBy(numBuckets, "j")
@@ -181,8 +179,7 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      df
-        .write
+      df.write
         .format("json")
         .bucketBy(numBuckets, "j")
         .saveAsTable("bucketed_table")
@@ -230,8 +227,7 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      df
-        .write
+      df.write
         .format("json")
         .partitionBy("i")
         .bucketBy(numBuckets, "j")

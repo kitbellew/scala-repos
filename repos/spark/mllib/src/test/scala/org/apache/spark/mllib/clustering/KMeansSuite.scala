@@ -375,8 +375,7 @@ object KMeansSuite extends SparkFunSuite {
 
   def checkEqual(a: KMeansModel, b: KMeansModel): Unit = {
     assert(a.k === b.k)
-    a
-      .clusterCenters
+    a.clusterCenters
       .zip(b.clusterCenters)
       .foreach {
         case (ca: SparseVector, cb: SparseVector) =>

@@ -674,8 +674,7 @@ trait ScFunction
         ._1
         .fastPhysicalSignatureGet(s) match {
         case Some(x) =>
-          x
-            .supers
+          x.supers
             .map {
               _.info
             }
@@ -699,14 +698,12 @@ trait ScFunction
           ._1
       signs.fastPhysicalSignatureGet(s) match {
         case Some(x) if x.info.namedElement == this =>
-          x
-            .supers
+          x.supers
             .map {
               _.info
             }
         case Some(x) =>
-          x
-            .supers
+          x.supers
             .filter {
               _.info.namedElement != this
             }
@@ -716,14 +713,12 @@ trait ScFunction
         case None =>
           signs.get(s) match {
             case Some(x) if x.info.namedElement == this =>
-              x
-                .supers
+              x.supers
                 .map {
                   _.info
                 }
             case Some(x) =>
-              x
-                .supers
+              x.supers
                 .filter {
                   _.info.namedElement != this
                 }
@@ -741,8 +736,7 @@ trait ScFunction
         ._1
         .fastPhysicalSignatureGet(s) match {
         case Some(x) =>
-          x
-            .supers
+          x.supers
             .map {
               _.info
             }

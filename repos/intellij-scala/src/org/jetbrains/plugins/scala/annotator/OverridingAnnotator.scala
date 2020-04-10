@@ -111,8 +111,7 @@ trait OverridingAnnotator {
       v: ScValue,
       holder: AnnotationHolder,
       isInSources: Boolean) {
-    v
-      .declaredElements
+    v.declaredElements
       .foreach(td => {
         val valsSignaturesWithSelfType: Seq[Signature] = ScalaPsiUtil
           .superValsSignatures(td, withSelfType = true)
@@ -134,8 +133,7 @@ trait OverridingAnnotator {
       v: ScVariable,
       holder: AnnotationHolder,
       isInSources: Boolean) {
-    v
-      .declaredElements
+    v.declaredElements
       .foreach(td => {
         val valsSignaturesWithSelfType: Seq[Signature] = ScalaPsiUtil
           .superValsSignatures(td, withSelfType = true)

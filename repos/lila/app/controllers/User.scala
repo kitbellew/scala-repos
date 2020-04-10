@@ -122,8 +122,7 @@ object User extends LilaController {
                   case (filterName, pag) =>
                     html.user.games(u, pag, filterName)
                 }
-            }
-              .map {
+            }.map {
                 status(_)
               }
               .mon(_.http.response.user.show.website),

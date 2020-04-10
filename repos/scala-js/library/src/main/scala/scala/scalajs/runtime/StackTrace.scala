@@ -41,8 +41,7 @@ object StackTrace {
        * important so that Node.js will show stack traces if the exception
        * is never caught and reaches the global event queue.
        */
-      js
-        .constructorOf[js.Error]
+      js.constructorOf[js.Error]
         .captureStackTrace(throwable.asInstanceOf[js.Any])
       captureState(throwable, throwable)
     }
@@ -600,8 +599,7 @@ object StackTrace {
         fileName: String,
         lineNumber: Int,
         columnNumber: js.UndefOr[Int] = js.undefined): JSStackTraceElem = {
-      js
-        .Dynamic
+      js.Dynamic
         .literal(
           declaringClass = declaringClass,
           methodName = methodName,

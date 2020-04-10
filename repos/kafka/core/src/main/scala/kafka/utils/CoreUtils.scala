@@ -277,8 +277,7 @@ object CoreUtils extends Logging {
 
   //JSON strings need to be escaped based on ECMA-404 standard http://json.org
   def JSONEscapeString(s: String): String = {
-    s
-      .map {
+    s.map {
         case '"' =>
           "\\\""
         case '\\' =>
@@ -320,8 +319,7 @@ object CoreUtils extends Logging {
     * Returns a list of duplicated items
     */
   def duplicates[T](s: Traversable[T]): Iterable[T] = {
-    s
-      .groupBy(identity)
+    s.groupBy(identity)
       .map {
         case (k, l) =>
           (k, l.size)

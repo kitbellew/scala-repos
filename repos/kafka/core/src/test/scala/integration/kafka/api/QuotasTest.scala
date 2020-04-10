@@ -274,8 +274,7 @@ class QuotasTest extends KafkaServerTestHarness {
     for (i <- 0 to count) {
       val payload = i.toString.getBytes
       numBytesProduced += payload.length
-      p
-        .send(
+      p.send(
           new ProducerRecord[Array[Byte], Array[Byte]](
             topic1,
             null,

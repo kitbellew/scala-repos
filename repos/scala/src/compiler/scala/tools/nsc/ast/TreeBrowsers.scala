@@ -620,8 +620,7 @@ abstract class TreeBrowsers {
           Document.group(toDocument(t))
         case _ =>
           Document.group(
-            ts
-              .tail
+            ts.tail
               .foldLeft(toDocument(ts.head) :: ", ")((d: Document, t2: Type) =>
                 toDocument(t2) :: ", " :/: d))
       }

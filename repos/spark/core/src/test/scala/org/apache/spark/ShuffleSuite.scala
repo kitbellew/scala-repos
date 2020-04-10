@@ -346,8 +346,7 @@ abstract class ShuffleSuite
 
     val metrics =
       ShuffleSuite.runAndReturnMetrics(sc) {
-        sc
-          .parallelize(1 to numRecords, 4)
+        sc.parallelize(1 to numRecords, 4)
           .map(key => (key, 1))
           .groupByKey()
           .collect()
@@ -365,8 +364,7 @@ abstract class ShuffleSuite
 
     val metrics =
       ShuffleSuite.runAndReturnMetrics(sc) {
-        sc
-          .parallelize(1 to numRecords, 4)
+        sc.parallelize(1 to numRecords, 4)
           .flatMap(key => Array.fill(100)((key, 1)))
           .countByKey()
       }

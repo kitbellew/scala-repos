@@ -170,8 +170,7 @@ package scala.collection.mutable {
           until: Option[K]) =>
         val setView = set.rangeImpl(from, until)
         setView ++= ks
-        ks
-          .toSet
+        ks.toSet
           .forall { k =>
             set.contains(k) && setView.contains(k) == in(k, from, until)
           }
@@ -201,8 +200,7 @@ package scala.collection.mutable {
           until: Option[K]) =>
         val setView = set.rangeImpl(from, until)
         setView --= ks
-        ks
-          .toSet
+        ks.toSet
           .forall { k =>
             !set.contains(k) && !setView.contains(k)
           }

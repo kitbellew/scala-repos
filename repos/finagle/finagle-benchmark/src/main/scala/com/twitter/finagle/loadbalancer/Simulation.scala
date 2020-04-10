@@ -127,13 +127,11 @@ private[finagle] class LatencyFactory(sr: StatsReceiver) {
         val load = new AtomicInteger(0)
         val maxload = new AtomicInteger(0)
         val gauges = Seq(
-          sr
-            .scope("load")
+          sr.scope("load")
             .addGauge("" + name) {
               load.get()
             },
-          sr
-            .scope("maxload")
+          sr.scope("maxload")
             .addGauge("" + name) {
               maxload.get()
             })

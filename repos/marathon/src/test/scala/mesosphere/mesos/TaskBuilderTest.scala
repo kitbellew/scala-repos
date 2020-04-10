@@ -837,8 +837,7 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       .asScala
       .find(r => r.getName == Resource.PORTS)
       .map(r =>
-        r
-          .getRanges
+        r.getRanges
           .getRangeList
           .asScala
           .flatMap(range => range.getBegin to range.getEnd))
@@ -893,8 +892,7 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       .asScala
       .find(r => r.getName == Resource.PORTS)
       .map(r =>
-        r
-          .getRanges
+        r.getRanges
           .getRangeList
           .asScala
           .flatMap(range => range.getBegin to range.getEnd))

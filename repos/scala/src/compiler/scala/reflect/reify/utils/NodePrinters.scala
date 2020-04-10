@@ -75,8 +75,8 @@ trait NodePrinters {
         .length > 0 && reification(0).trim.startsWith("Expr[")
       var rtree = reification dropWhile (
         !_.trim
-        .startsWith(
-          s"val ${nme.UNIVERSE_SHORT}: U = ${nme.MIRROR_UNTYPED}.universe;")
+          .startsWith(
+            s"val ${nme.UNIVERSE_SHORT}: U = ${nme.MIRROR_UNTYPED}.universe;")
       )
       rtree = rtree drop 2
       rtree = rtree takeWhile (_ != "    }")

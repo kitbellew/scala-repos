@@ -1158,10 +1158,10 @@ trait StringLibSpecs[M[+_]]
         .sorted(o)
         .map(
           _._2
-          .map {
-            case SString(s) =>
-              s
-          })
+            .map {
+              case SString(s) =>
+                s
+            })
 
     def mktree(f: Op2, path: String, sep: String) =
       Join(

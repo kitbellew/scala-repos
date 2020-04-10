@@ -31,13 +31,13 @@ object MForeignKey {
   def getCrossReference(parentTable: MQName, foreignTable: MQName) =
     createAction(
       _.metaData
-      .getCrossReference(
-        parentTable.catalog_?,
-        parentTable.schema_?,
-        parentTable.name,
-        foreignTable.catalog_?,
-        foreignTable.schema_?,
-        foreignTable.name))
+        .getCrossReference(
+          parentTable.catalog_?,
+          parentTable.schema_?,
+          parentTable.name,
+          foreignTable.catalog_?,
+          foreignTable.schema_?,
+          foreignTable.name))
 
   private[this] def createAction(f: JdbcBackend#Session => ResultSet) =
     ResultSetAction[MForeignKey](f) { r =>

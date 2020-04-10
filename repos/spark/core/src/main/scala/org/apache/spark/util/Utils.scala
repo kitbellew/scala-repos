@@ -688,8 +688,7 @@ private[spark] object Utils extends Logging {
         in.close()
       }
     } else {
-      fs
-        .listStatus(path)
+      fs.listStatus(path)
         .foreach { fileStatus =>
           fetchHcfsFile(
             fileStatus.getPath(),
@@ -874,8 +873,7 @@ private[spark] object Utils extends Logging {
 
         for (ni <- reOrderedNetworkIFs) {
           val addresses =
-            ni
-              .getInetAddresses
+            ni.getInetAddresses
               .asScala
               .filterNot(addr =>
                 addr.isLinkLocalAddress || addr.isLoopbackAddress)

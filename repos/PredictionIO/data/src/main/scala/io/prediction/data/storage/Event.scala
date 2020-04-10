@@ -141,8 +141,7 @@ object EventValidation {
         s"'pio_' is a reserved name prefix."
     )
     require(
-      e
-        .targetEntityType
+      e.targetEntityType
         .map { t =>
           (!isReservedPrefix(t) || isBuiltinEntityTypes(t))
         }
@@ -171,8 +170,7 @@ object EventValidation {
     * @param e Event to be validated
     */
   def validateProperties(e: Event): Unit = {
-    e
-      .properties
+    e.properties
       .keySet
       .foreach { k =>
         require(

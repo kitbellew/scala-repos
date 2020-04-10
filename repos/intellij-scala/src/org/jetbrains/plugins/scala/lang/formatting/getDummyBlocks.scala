@@ -609,27 +609,27 @@ object getDummyBlocks {
       .subBlocksContext
       .foreach(
         _.additionalNodes
-        .foreach { additionalNode =>
-          val indent = ScalaIndentProcessor
-            .getChildIndent(block, additionalNode)
-          val (childAlignment, childWrap) =
-            (
-              block.getCustomAlignment(additionalNode).orNull,
-              arrangeSuggestedWrapForChild(
+          .foreach { additionalNode =>
+            val indent = ScalaIndentProcessor
+              .getChildIndent(block, additionalNode)
+            val (childAlignment, childWrap) =
+              (
+                block.getCustomAlignment(additionalNode).orNull,
+                arrangeSuggestedWrapForChild(
+                  block,
+                  additionalNode,
+                  settings,
+                  block.suggestedWrap))
+            subBlocks.add(
+              new ScalaBlock(
                 block,
                 additionalNode,
-                settings,
-                block.suggestedWrap))
-          subBlocks.add(
-            new ScalaBlock(
-              block,
-              additionalNode,
-              block.getChildBlockLastNode(additionalNode),
-              childAlignment,
-              indent,
-              childWrap,
-              block.getSettings))
-        })
+                block.getChildBlockLastNode(additionalNode),
+                childAlignment,
+                indent,
+                childWrap,
+                block.getSettings))
+          })
 
     subBlocks
   }

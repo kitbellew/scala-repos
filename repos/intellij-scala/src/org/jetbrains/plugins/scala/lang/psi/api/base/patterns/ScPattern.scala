@@ -598,8 +598,7 @@ object ScPattern {
     val cp =
       new CompletionProcessor(StdKinds.methodRef, place, forName = Some(name))
     cp.processType(tp, place)
-    cp
-      .candidatesS
+    cp.candidatesS
       .flatMap {
         case ScalaResolveResult(fun: ScFunction, subst)
             if fun.parameters.isEmpty && fun.name == name =>

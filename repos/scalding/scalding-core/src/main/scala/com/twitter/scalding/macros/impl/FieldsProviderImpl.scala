@@ -145,8 +145,7 @@ object FieldsProviderImpl {
     case class OptionBuilder(of: FieldBuilder) extends FieldBuilder {
       // Options just use Object as the type, due to the way cascading works on number types
       def columnTypes =
-        of
-          .columnTypes
+        of.columnTypes
           .map(_ => q"""_root_.scala.Predef.classOf[_root_.java.lang.Object]""")
       def names = of.names
     }

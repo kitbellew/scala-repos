@@ -319,14 +319,14 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             .columns
             .foreach {
               _.options
-              .foreach {
-                case RelationalProfile.ColumnOption.Length(length, varying) =>
-                  length < 256
-                case SqlProfile.ColumnOption.SqlType(DBTypePattern()) =>
-                case SqlProfile.ColumnOption.SqlType(dbType) =>
-                  assert(false, "invalid DBType: " + dbType)
-                case _ =>
-              }
+                .foreach {
+                  case RelationalProfile.ColumnOption.Length(length, varying) =>
+                    length < 256
+                  case SqlProfile.ColumnOption.SqlType(DBTypePattern()) =>
+                  case SqlProfile.ColumnOption.SqlType(dbType) =>
+                    assert(false, "invalid DBType: " + dbType)
+                  case _ =>
+                }
             }
         }
         _ = {
@@ -404,14 +404,14 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             .columns
             .foreach {
               _.options
-              .foreach {
-                case RelationalProfile.ColumnOption.Length(length, varying) =>
-                  length < 256
-                case SqlProfile.ColumnOption.SqlType(DBTypePattern()) =>
-                case SqlProfile.ColumnOption.SqlType(dbType) =>
-                  assert(false, "invalid DBType: " + dbType)
-                case _ =>
-              }
+                .foreach {
+                  case RelationalProfile.ColumnOption.Length(length, varying) =>
+                    length < 256
+                  case SqlProfile.ColumnOption.SqlType(DBTypePattern()) =>
+                  case SqlProfile.ColumnOption.SqlType(dbType) =>
+                    assert(false, "invalid DBType: " + dbType)
+                  case _ =>
+                }
             }
         }
         _ = {

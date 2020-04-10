@@ -63,8 +63,7 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
       // Mark any skipped stages as such
       graphs.foreach { g =>
         val stageId =
-          g
-            .rootCluster
+          g.rootCluster
             .id
             .replaceAll(RDDOperationGraph.STAGE_CLUSTER_PREFIX, "")
             .toInt

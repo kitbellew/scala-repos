@@ -250,8 +250,7 @@ object arityize {
   private def shouldExpand(c: Context)(
       td: c.mirror.universe.Modifiers): Boolean = {
     import c.mirror.universe._
-    td
-      .annotations
+    td.annotations
       .exists {
         case q"new arityize.replicate" =>
           true
@@ -263,8 +262,7 @@ object arityize {
   private def shouldRepeat(c: Context)(
       td: c.mirror.universe.Modifiers): Boolean = {
     import c.mirror.universe._
-    td
-      .annotations
+    td.annotations
       .exists {
         case q"new arityize.repeat" =>
           true
@@ -276,8 +274,7 @@ object arityize {
   private def shouldRelativize(c: Context)(
       td: c.mirror.universe.Modifiers): Option[String] = {
     import c.mirror.universe._
-    td
-      .annotations
+    td.annotations
       .collectFirst {
         case q"new arityize.relative($q)" =>
           q.toString
@@ -287,8 +284,7 @@ object arityize {
   private def extractOrder(c: Context): Int = {
     import c.mirror.universe._
     val order =
-      c
-        .macroApplication
+      c.macroApplication
         .collect {
           case Literal(x) if x.value.isInstanceOf[Int] =>
             x.value.toString.toInt

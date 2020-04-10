@@ -200,8 +200,7 @@ trait FileDeclarationsHolder
             clazz match {
               case td: ScTypeDefinition if !isScalaPredefinedClass =>
                 var newState = state
-                td
-                  .getType(TypingContext.empty)
+                td.getType(TypingContext.empty)
                   .foreach {
                     case tp: ScType =>
                       newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)

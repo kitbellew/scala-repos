@@ -12,8 +12,7 @@ private final class GooglePush(
   def apply(userId: String)(data: => PushApi.Data): Funit =
     getDevice(userId) flatMap {
       _ ?? { device =>
-        WS
-          .url(url)
+        WS.url(url)
           .withHeaders(
             "Authorization" -> s"key=$key",
             "Accept" -> "application/json",

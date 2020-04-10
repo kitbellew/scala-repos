@@ -66,8 +66,7 @@ object LookupElementManager {
                   case cl: PsiClass =>
                     Some(cl)
                   case tp: TypingContextOwner =>
-                    tp
-                      .getType(TypingContext.empty)
+                    tp.getType(TypingContext.empty)
                       .map(ScType.extractClass(_))
                       .getOrElse(None)
                   case _ =>

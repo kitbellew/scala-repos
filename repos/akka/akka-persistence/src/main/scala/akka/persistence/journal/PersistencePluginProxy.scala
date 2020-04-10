@@ -221,8 +221,7 @@ final class PersistencePluginProxy(config: Config)
           persistentActor ! WriteMessagesFailed(timeoutException)
           messages.foreach {
             case a: AtomicWrite ⇒
-              a
-                .payload
+              a.payload
                 .foreach { p ⇒
                   persistentActor ! WriteMessageFailure(
                     p,

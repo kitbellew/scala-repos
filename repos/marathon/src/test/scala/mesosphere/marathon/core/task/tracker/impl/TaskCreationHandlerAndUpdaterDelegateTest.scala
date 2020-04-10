@@ -28,8 +28,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val create = f.delegate.created(task)
 
     Then("an update operation is requested")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor.ForwardTaskOp(
           f.timeoutFromNow,
@@ -51,8 +50,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val create = f.delegate.created(task)
 
     Then("an update operation is requested")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor.ForwardTaskOp(
           f.timeoutFromNow,
@@ -78,8 +76,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val terminated = f.delegate.terminated(task.taskId)
 
     Then("an expunge operation is requested")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor.ForwardTaskOp(
           f.timeoutFromNow,
@@ -101,8 +98,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val terminated = f.delegate.terminated(task.taskId)
 
     Then("an expunge operation is requested")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor.ForwardTaskOp(
           f.timeoutFromNow,
@@ -134,8 +130,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val statusUpdate = f.delegate.statusUpdate(appId, update)
 
     Then("an update operation is requested")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor.ForwardTaskOp(
           f.timeoutFromNow,
@@ -162,8 +157,7 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val statusUpdate = f.delegate.statusUpdate(appId, update)
 
     Then("an update operation is requested")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor.ForwardTaskOp(
           f.timeoutFromNow,

@@ -124,14 +124,12 @@ class LoggingStatement(st: Statement) extends Statement {
   def getConnection: Connection = st.getConnection
   def getMaxFieldSize: Int = st.getMaxFieldSize
   def closeOnCompletion(): Unit =
-    st
-      .asInstanceOf[{
+    st.asInstanceOf[{
         def closeOnCompletion(): Unit
       }]
       .closeOnCompletion()
   def isCloseOnCompletion(): Boolean =
-    st
-      .asInstanceOf[{
+    st.asInstanceOf[{
         def isCloseOnCompletion(): Boolean
       }]
       .isCloseOnCompletion()

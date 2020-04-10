@@ -461,8 +461,7 @@ class MetastoreDataSourcesSuite
           checkAnswer(sql("SELECT * FROM savedJsonTable"), df)
 
           // When the save mode is Ignore, we will do nothing when the table already exists.
-          df
-            .select("b")
+          df.select("b")
             .write
             .mode(SaveMode.Ignore)
             .saveAsTable("savedJsonTable")
@@ -484,8 +483,7 @@ class MetastoreDataSourcesSuite
         // Create an external table by specifying the path.
         withSQLConf(
           SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
-          df
-            .write
+          df.write
             .format("org.apache.spark.sql.json")
             .mode(SaveMode.Append)
             .option("path", tempPath.toString)
@@ -512,8 +510,7 @@ class MetastoreDataSourcesSuite
 
         withSQLConf(
           SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
-          df
-            .write
+          df.write
             .format("json")
             .mode(SaveMode.Append)
             .option("path", tempPath.toString)
@@ -610,8 +607,7 @@ class MetastoreDataSourcesSuite
 
         assert(df.schema === expectedSchema)
 
-        df
-          .write
+        df.write
           .format("parquet")
           .mode(SaveMode.Overwrite)
           .saveAsTable("arrayInParquet")
@@ -627,8 +623,7 @@ class MetastoreDataSourcesSuite
 
         assert(df.schema === expectedSchema)
 
-        df
-          .write
+        df.write
           .format("parquet")
           .mode(SaveMode.Append)
           .insertInto("arrayInParquet")
@@ -671,8 +666,7 @@ class MetastoreDataSourcesSuite
 
         assert(df.schema === expectedSchema)
 
-        df
-          .write
+        df.write
           .format("parquet")
           .mode(SaveMode.Overwrite)
           .saveAsTable("mapInParquet")
@@ -688,8 +682,7 @@ class MetastoreDataSourcesSuite
 
         assert(df.schema === expectedSchema)
 
-        df
-          .write
+        df.write
           .format("parquet")
           .mode(SaveMode.Append)
           .insertInto("mapInParquet")
@@ -829,8 +822,7 @@ class MetastoreDataSourcesSuite
     val tableName = s"bucketingInfo_${System.currentTimeMillis()}"
 
     withTable(tableName) {
-      df
-        .write
+      df.write
         .format("parquet")
         .bucketBy(8, "d", "b")
         .sortBy("c")

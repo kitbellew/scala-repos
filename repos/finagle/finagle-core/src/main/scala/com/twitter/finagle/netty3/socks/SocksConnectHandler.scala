@@ -229,8 +229,7 @@ class SocksConnectHandler(
 
         // proxy cancellation
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
-        de
-          .getFuture
+        de.getFuture
           .addListener(
             new ChannelFutureListener {
               def operationComplete(f: ChannelFuture) {

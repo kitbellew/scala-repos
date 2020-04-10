@@ -48,9 +48,9 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
       .getCountersForJob(jobID)
       .flatMap {
         _.get(group.getString + "/" + name.getString)
-        .map {
-          _.get
-        }
+          .map {
+            _.get
+          }
       }
 
   private def toStream[T](

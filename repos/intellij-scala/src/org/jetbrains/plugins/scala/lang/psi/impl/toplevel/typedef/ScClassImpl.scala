@@ -304,8 +304,7 @@ class ScClassImpl private (
             "(implicit "
           else
             "("
-        c
-          .parameters
+        c.parameters
           .map { p =>
             val paramType =
               p.typeElement match {
@@ -331,8 +330,7 @@ class ScClassImpl private (
       .getOrElse("")
     val typeParametersText = typeParametersClause
       .map(tp => {
-        tp
-          .typeParameters
+        tp.typeParameters
           .map(tp => {
             val baseText = tp.typeParameterText
             if (tp.isContravariant) {

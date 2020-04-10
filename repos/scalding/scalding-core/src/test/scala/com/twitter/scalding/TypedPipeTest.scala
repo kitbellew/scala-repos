@@ -820,13 +820,12 @@ class TypedJoinWCTest extends WordSpec with Matchers {
       val in0 = List((0, "you all everybody"), (1, "a b c d"), (2, "a b c"))
       val in1 = List((0, "you"), (1, "a b c d"), (2, "a a b b c c"))
       def count(in: List[(Int, String)]): Map[String, Int] = {
-        in
-          .flatMap {
+        in.flatMap {
             _._2
-            .split("\\s+")
-            .map {
-              _.toLowerCase
-            }
+              .split("\\s+")
+              .map {
+                _.toLowerCase
+              }
           }
           .groupBy {
             identity
@@ -1057,14 +1056,12 @@ class TypedHeadTest extends WordSpec with Matchers {
 class TypedSortWithTakeJob(args: Args) extends Job(args) {
   val in = TypedPipe.from(TypedText.tsv[(Int, Int)]("input"))
 
-  in
-    .group
+  in.group
     .sortedReverseTake(5)
     .flattenValues
     .write(TypedText.tsv[(Int, Int)]("output"))
 
-  in
-    .group
+  in.group
     .sorted
     .reverse
     .bufferedTake(5)
@@ -1091,9 +1088,10 @@ class TypedSortWithTakeTest extends WordSpec with Matchers {
             .groupBy(_._1)
             .mapValues(
               _.map {
-                case (k, v) =>
-                  v
-              }.toSet) shouldBe correct
+                  case (k, v) =>
+                    v
+                }
+                .toSet) shouldBe correct
         }
       }
       .sink[(Int, Int)](TypedText.tsv[(Int, Int)]("output2")) { outBuf =>
@@ -1105,9 +1103,10 @@ class TypedSortWithTakeTest extends WordSpec with Matchers {
             .groupBy(_._1)
             .mapValues(
               _.map {
-                case (k, v) =>
-                  v
-              }.toSet) shouldBe correct
+                  case (k, v) =>
+                    v
+                }
+                .toSet) shouldBe correct
         }
       }
       .run
@@ -1315,8 +1314,7 @@ class TypedMultiJoinJobTest extends WordSpec with Matchers {
       .typedSink(TypedText.tsv[(Int, Int, Int, Int)]("output")) { outBuf =>
         "correctly do a multi-join" in {
           def groupMax(it: Seq[(Int, Int)]): Map[Int, Int] =
-            it
-              .groupBy(_._1)
+            it.groupBy(_._1)
               .mapValues { kvs =>
                 val (k, v) = kvs.maxBy(_._2)
                 v
@@ -1405,8 +1403,7 @@ class TypedMultiSelfJoinJobTest extends WordSpec with Matchers {
         "correctly do a multi-self-join" in {
           def group(it: Seq[(Int, Int)])(
               red: (Int, Int) => Int): Map[Int, Int] =
-            it
-              .groupBy(_._1)
+            it.groupBy(_._1)
               .mapValues { kvs =>
                 kvs.map(_._2).reduce(red)
               }
@@ -1477,8 +1474,7 @@ class TypedMapGroupTest extends WordSpec with Matchers {
       .typedSink(TypedText.tsv[(Int, Int)]("output")) { outBuf =>
         "correctly do a mapGroup" in {
           def mapGroup(it: Seq[(Int, Int)]): Map[Int, Int] =
-            it
-              .groupBy(_._1)
+            it.groupBy(_._1)
               .mapValues { kvs =>
                 kvs
                   .map {
@@ -1562,8 +1558,7 @@ class TypedSelfLeftCrossTest extends WordSpec with Matchers {
 class JoinMapGroupJob(args: Args) extends Job(args) {
   def r1 = TypedPipe.from(Seq((1, 10)))
   def r2 = TypedPipe.from(Seq((1, 1), (2, 2), (3, 3)))
-  r1
-    .groupBy(_._1)
+  r1.groupBy(_._1)
     .join(r2.groupBy(_._1))
     .mapGroup {
       case (a, b) =>

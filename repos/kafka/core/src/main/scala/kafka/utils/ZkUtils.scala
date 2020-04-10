@@ -227,8 +227,7 @@ class ZkUtils(
         Json.parseFull(leaderAndIsr) match {
           case Some(m) =>
             Some(
-              m
-                .asInstanceOf[Map[String, Any]]
+              m.asInstanceOf[Map[String, Any]]
                 .get("leader")
                 .get
                 .asInstanceOf[Int])
@@ -256,8 +255,7 @@ class ZkUtils(
               "No epoch, leaderAndISR data for partition [%s,%d] is invalid"
                 .format(topic, partition))
           case Some(m) =>
-            m
-              .asInstanceOf[Map[String, Any]]
+            m.asInstanceOf[Map[String, Any]]
               .get("leader_epoch")
               .get
               .asInstanceOf[Int]
@@ -287,8 +285,7 @@ class ZkUtils(
       case Some(leaderAndIsr) =>
         Json.parseFull(leaderAndIsr) match {
           case Some(m) =>
-            m
-              .asInstanceOf[Map[String, Any]]
+            m.asInstanceOf[Map[String, Any]]
               .get("isr")
               .get
               .asInstanceOf[Seq[Int]]

@@ -353,8 +353,7 @@ private[hive] trait HiveInspectors {
       case li: StandardConstantListObjectInspector =>
         // take the value from the list inspector object, rather than the input data
         val values =
-          li
-            .getWritableConstantValue
+          li.getWritableConstantValue
             .asScala
             .map(unwrap(_, li.getListElementObjectInspector))
             .toArray
@@ -730,8 +729,7 @@ private[hive] trait HiveInspectors {
       case x: ListObjectInspector =>
         val list = new java.util.ArrayList[Object]
         val tpe = dataType.asInstanceOf[ArrayType].elementType
-        a
-          .asInstanceOf[ArrayData]
+        a.asInstanceOf[ArrayData]
           .foreach(
             tpe,
             (_, e) => {
@@ -918,8 +916,7 @@ private[hive] trait HiveInspectors {
     inspector match {
       case s: StructObjectInspector =>
         StructType(
-          s
-            .getAllStructFieldRefs
+          s.getAllStructFieldRefs
             .asScala
             .map(f =>
               types.StructField(

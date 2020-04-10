@@ -328,8 +328,7 @@ private trait CofreeTraverse[F[_]]
 
   override def traverse1Impl[G[_], A, B](fa: Cofree[F, A])(f: A => G[B])(
       implicit G: Apply[G]): G[Cofree[F, B]] =
-    G
-      .applyApplicative
+    G.applyApplicative
       .traverse(fa.tail)(a => -\/(traverse1(a)(f)))
       .fold(
         ftl => G.apply2(f(fa.head), ftl)(Cofree(_, _)),

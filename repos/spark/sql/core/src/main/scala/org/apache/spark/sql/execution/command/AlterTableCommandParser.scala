@@ -439,9 +439,9 @@ object AlterTableCommandParser {
         val fFormat = fileFormat
           .map {
             _.children
-            .map { n =>
-              cleanAndUnquoteString(n.text)
-            }
+              .map { n =>
+                cleanAndUnquoteString(n.text)
+              }
           }
           .getOrElse(Seq())
         val gFormat = genericFormat.map { f =>

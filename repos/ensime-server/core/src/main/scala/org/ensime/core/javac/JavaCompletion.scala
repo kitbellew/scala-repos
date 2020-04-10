@@ -203,8 +203,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       (
         Option(info.getElements.getPackageElement(pkg)) map {
           p: PackageElement =>
-            p
-              .getEnclosedElements()
+            p.getEnclosedElements()
               .flatMap { e =>
                 filterElement(info, e, prefix, caseSense, true, false)
               }
@@ -351,8 +350,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       s,
       CompletionSignature(
         List(
-          e
-            .getParameters()
+          e.getParameters()
             .map { p =>
               (p.getSimpleName.toString, p.asType.toString)
             }

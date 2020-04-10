@@ -350,8 +350,7 @@ abstract class RemoteNodeDeathWatchSpec
         enterBarrier("watch-established-5")
         enterBarrier("stopped-5")
 
-        p1
-          .receiveN(2, 5 seconds)
+        p1.receiveN(2, 5 seconds)
           .collect {
             case WrappedTerminated(t) ⇒
               t.actor

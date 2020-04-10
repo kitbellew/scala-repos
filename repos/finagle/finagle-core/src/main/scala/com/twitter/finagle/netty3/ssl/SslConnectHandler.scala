@@ -104,8 +104,7 @@ class SslConnectHandler(
 
         // proxy cancellation
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
-        de
-          .getFuture
+        de.getFuture
           .addListener(
             new ChannelFutureListener {
               override def operationComplete(f: ChannelFuture): Unit =

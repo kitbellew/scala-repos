@@ -178,9 +178,9 @@ class ConcurrentMemory(implicit
       .getCountersForJob(jobID)
       .flatMap {
         _.get(group.getString + "/" + name.getString)
-        .map {
-          _.get
-        }
+          .map {
+            _.get
+          }
       }
 
   /**

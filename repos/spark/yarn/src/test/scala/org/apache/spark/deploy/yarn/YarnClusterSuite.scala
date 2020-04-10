@@ -330,8 +330,7 @@ private object YarnClasspathTest extends Logging {
     readResource(args(0))
     val sc = new SparkContext(new SparkConf())
     try {
-      sc
-        .parallelize(Seq(1))
+      sc.parallelize(Seq(1))
         .foreach { x =>
           readResource(args(1))
         }
@@ -366,8 +365,7 @@ private object YarnLauncherTestApp {
     // Do not stop the application; the test will stop it using the launcher lib. Just run a task
     // that will prevent the process from exiting.
     val sc = new SparkContext(new SparkConf())
-    sc
-      .parallelize(Seq(1))
+    sc.parallelize(Seq(1))
       .foreach { i =>
         this.synchronized {
           wait()

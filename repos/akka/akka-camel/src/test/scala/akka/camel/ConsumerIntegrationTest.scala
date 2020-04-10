@@ -143,8 +143,7 @@ class ConsumerIntegrationTest
         new ErrorThrowingConsumer("direct:error-handler-test") {
           override def onRouteDefinition =
             (rd: RouteDefinition) ⇒ {
-              rd
-                .onException(classOf[TestException])
+              rd.onException(classOf[TestException])
                 .handled(true)
                 .transform(Builder.exceptionMessage)
                 .end
@@ -269,8 +268,7 @@ class ErrorRespondingConsumer(override val endpointUri: String)
   override def onRouteDefinition =
     (rd: RouteDefinition) ⇒ {
       // Catch TestException and handle it by returning a modified version of the in message
-      rd
-        .onException(classOf[TestException])
+      rd.onException(classOf[TestException])
         .handled(true)
         .transform(Builder.body.append(" has an error"))
         .end

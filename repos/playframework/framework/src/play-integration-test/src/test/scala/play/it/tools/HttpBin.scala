@@ -61,8 +61,7 @@ object HttpBinApplication {
                       k -> JsString(v.mkString)
                   },
                 "file" -> JsString(
-                  m
-                    .mdf
+                  m.mdf
                     .file("upload")
                     .map(v => FileUtils.readFileToString(v.ref.file))
                     .getOrElse(""))

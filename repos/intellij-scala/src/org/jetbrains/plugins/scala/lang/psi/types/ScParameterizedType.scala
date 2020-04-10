@@ -125,8 +125,7 @@ class ScParameterizedType private (
     this match {
       case ScParameterizedType(ScDesignatorType(ta: ScTypeAlias), args) =>
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-          ta
-            .typeParameters
+          ta.typeParameters
             .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
           args)
         Some(
@@ -139,8 +138,7 @@ class ScParameterizedType private (
         val ta: ScTypeAlias = p.actualElement.asInstanceOf[ScTypeAlias]
         val subst: ScSubstitutor = p.actualSubst
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-          ta
-            .typeParameters
+          ta.typeParameters
             .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
           args)
         val s = subst.followed(genericSubst)
@@ -248,8 +246,7 @@ class ScParameterizedType private (
         val des =
           ScType.extractDesignated(designator, withoutAliases = false) match {
             case Some((n: ScTypeParametersOwner, _)) =>
-              n
-                .typeParameters
+              n.typeParameters
                 .map {
                   case tp if tp.isContravariant =>
                     -1
@@ -514,8 +511,7 @@ case class ScTypeParameterType(
       },
       ptp match {
         case tp: ScTypeParam =>
-          tp
-            .typeParameters
+          tp.typeParameters
             .toList
             .map {
               new ScTypeParameterType(_, s)

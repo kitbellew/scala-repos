@@ -100,8 +100,7 @@ object MetricsFormat {
     new Reads[Seq[T]] {
       override def reads(js: JsValue): JsResult[Seq[T]] = {
         JsSuccess(
-          js
-            .as[JsObject]
+          js.as[JsObject]
             .fields
             .map {
               case (name, value) =>

@@ -46,8 +46,7 @@ object Sxr {
       val outputDir = out.getParentFile / (out.getName + ".sxr")
       val f =
         FileFunction.cached(cache / "sxr", FilesInfo.hash) { in =>
-          s
-            .log
+          s.log
             .info(
               "Generating sxr output in " + outputDir.getAbsolutePath + "...")
           IO.delete(out)

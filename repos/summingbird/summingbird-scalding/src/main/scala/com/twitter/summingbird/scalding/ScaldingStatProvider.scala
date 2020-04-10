@@ -26,8 +26,7 @@ private[summingbird] object ScaldingStatProvider extends PlatformStatProvider {
       jobID: JobId): Option[FlowProcess[_]] =
     ScalaTry[FlowProcess[_]] {
       ScaldingRuntimeStats.getFlowProcessForUniqueId(UniqueID(jobID.get))
-    }
-      .recoverWith {
+    }.recoverWith {
         case NonFatal(e) =>
           logger.debug(
             s"Unable to get Scalding FlowProcess for jobID $jobID, error $e")

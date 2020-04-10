@@ -33,8 +33,7 @@ class MetricValuesSpec
           .sample
           .metrics
           .flatMap(latest ⇒
-            n
-              .metrics
+            n.metrics
               .collect {
                 case streaming if latest sameAs streaming ⇒
                   streaming :+ latest

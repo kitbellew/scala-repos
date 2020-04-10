@@ -342,8 +342,7 @@ object LogSource {
       def genString(a: ActorRef) = a.path.toString
       override def genString(a: ActorRef, system: ActorSystem) =
         try {
-          a
-            .path
+          a.path
             .toStringWithAddress(
               system
                 .asInstanceOf[ExtendedActorSystem]
@@ -1454,8 +1453,7 @@ trait LoggingAdapter {
     while (p < arg.length) {
       val index = rest.indexOf("{}")
       if (index == -1) {
-        sb
-          .append(rest)
+        sb.append(rest)
           .append(" WARNING arguments left: ")
           .append(arg.length - p)
         rest = ""

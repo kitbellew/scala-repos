@@ -140,8 +140,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, Map("a" -> "b"))).toDF("a", "map")
 
     checkAnswer(
-      df
-        .select(explode('map).as("key1" :: "value1" :: Nil))
+      df.select(explode('map).as("key1" :: "value1" :: Nil))
         .select("key1", "value1"),
       Row("a", "b"))
   }
@@ -445,20 +444,17 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
       df.collect().toSeq.filter(r => r.getInt(0) == 3 || r.getInt(0) == 1))
     checkAnswer(
       df.filter($"b".isin("y", "x")),
-      df
-        .collect()
+      df.collect()
         .toSeq
         .filter(r => r.getString(1) == "y" || r.getString(1) == "x"))
     checkAnswer(
       df.filter($"b".isin("z", "x")),
-      df
-        .collect()
+      df.collect()
         .toSeq
         .filter(r => r.getString(1) == "z" || r.getString(1) == "x"))
     checkAnswer(
       df.filter($"b".isin("z", "y")),
-      df
-        .collect()
+      df.collect()
         .toSeq
         .filter(r => r.getString(1) == "z" || r.getString(1) == "y"))
 

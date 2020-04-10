@@ -59,7 +59,7 @@ final class Env(
           .one[BSONDocument]
           .map {
             _.flatMap(_.getAs[BSONNumberLike]("version"))
-            .fold(Net.AssetVersion)(_.toInt max Net.AssetVersion)
+              .fold(Net.AssetVersion)(_.toInt max Net.AssetVersion)
           },
         timeToLive = 30.seconds,
         default = Net.AssetVersion,

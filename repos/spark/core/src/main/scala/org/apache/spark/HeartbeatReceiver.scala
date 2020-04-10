@@ -81,8 +81,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     .conf
     .getTimeAsMs("spark.storage.blockManagerSlaveTimeoutMs", "120s")
   private val executorTimeoutMs =
-    sc
-      .conf
+    sc.conf
       .getTimeAsSeconds("spark.network.timeout", s"${slaveTimeoutMs}ms") * 1000
 
   // "spark.network.timeoutInterval" uses "seconds", while
@@ -91,8 +90,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     .conf
     .getTimeAsMs("spark.storage.blockManagerTimeoutIntervalMs", "60s")
   private val checkTimeoutIntervalMs =
-    sc
-      .conf
+    sc.conf
       .getTimeAsSeconds(
         "spark.network.timeoutInterval",
         s"${timeoutIntervalMs}ms") * 1000

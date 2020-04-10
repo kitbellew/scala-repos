@@ -377,8 +377,7 @@ class CheckpointSuite
     val result = parCollection.collect()
     if (reliableCheckpoint) {
       assert(
-        sc
-          .checkpointFile[Int](parCollection.getCheckpointFile.get)
+        sc.checkpointFile[Int](parCollection.getCheckpointFile.get)
           .collect() === result)
     }
     assert(parCollection.dependencies != Nil)
@@ -399,8 +398,7 @@ class CheckpointSuite
     val result = blockRDD.collect()
     if (reliableCheckpoint) {
       assert(
-        sc
-          .checkpointFile[String](blockRDD.getCheckpointFile.get)
+        sc.checkpointFile[String](blockRDD.getCheckpointFile.get)
           .collect() === result)
     }
     assert(blockRDD.dependencies != Nil)

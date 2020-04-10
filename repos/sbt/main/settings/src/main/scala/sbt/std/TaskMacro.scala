@@ -139,16 +139,14 @@ object TaskMacro {
   def taskAssignPositionT[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[Task[T]]): c.Expr[Setting[Task[T]]] =
     itaskAssignPosition(c)(
-      c
-        .universe
+      c.universe
         .reify {
           Def.valueStrict(app.splice)
         })
   def taskAssignPositionPure[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[T]): c.Expr[Setting[Task[T]]] =
     taskAssignPositionT(c)(
-      c
-        .universe
+      c.universe
         .reify {
           TaskExtra.constant(app.splice)
         })
@@ -188,8 +186,7 @@ object TaskMacro {
   def settingAssignPure[T: c.WeakTypeTag](c: Context)(
       app: c.Expr[T]): c.Expr[Setting[T]] =
     settingAssignPosition(c)(
-      c
-        .universe
+      c.universe
         .reify {
           Def.valueStrict(app.splice)
         })
@@ -380,8 +377,7 @@ object TaskMacro {
         iParserMacro(c)(et) { pt =>
           iTaskMacro(c)(pt)
         }
-      c
-        .universe
+      c.universe
         .reify {
           InputTask.make(pt.splice)
         }

@@ -2031,8 +2031,7 @@ trait Trees extends api.Trees {
             if (from.isEmpty)
               tree
             else if (tree.symbol == from.head)
-              to
-                .head
+              to.head
                 .shallowDuplicate // TODO: does it ever make sense *not* to perform a shallowDuplicate on `to.head`?
             else
               subst(from.tail, to.tail)

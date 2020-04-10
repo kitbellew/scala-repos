@@ -54,8 +54,7 @@ object ReflectionUtils {
         case cl: java.net.URLClassLoader =>
           (cl.getURLs mkString ",")
         case cl if cl != null && isAbstractFileClassLoader(cl.getClass) =>
-          cl
-            .asInstanceOf[{
+          cl.asInstanceOf[{
               val root: scala.reflect.io.AbstractFile
             }]
             .root

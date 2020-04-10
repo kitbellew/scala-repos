@@ -5,8 +5,7 @@ object Macros {
 
   object Impls {
     def foo[T](c: Context)(s: c.Expr[T]) =
-      c
-        .universe
+      c.universe
         .reify {
           List[T](s.splice)
         }

@@ -59,8 +59,7 @@ private[video] final class Youtube(
 
   private def fetch: Fu[List[Entry]] =
     api.video.allIds flatMap { ids =>
-      WS
-        .url(url)
+      WS.url(url)
         .withQueryString(
           "id" -> scala.util.Random.shuffle(ids).take(max).mkString(","),
           "part" -> "id,statistics,snippet,contentDetails",

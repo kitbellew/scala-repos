@@ -77,10 +77,10 @@ object PovToEntry {
               movetimes = movetimes,
               advices = an.?? {
                 _.advices
-                .map { a =>
-                  a.info.ply -> a
-                }
-                .toMap
+                  .map { a =>
+                    a.info.ply -> a
+                  }
+                  .toMap
               }
             )
         }

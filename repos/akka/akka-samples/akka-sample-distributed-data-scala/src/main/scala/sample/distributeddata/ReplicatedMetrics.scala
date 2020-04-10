@@ -114,8 +114,7 @@ class ReplicatedMetrics(
 
     case c @ Changed(UsedHeapKey) ⇒
       val usedHeapPercent = UsedHeap(
-        c
-          .get(UsedHeapKey)
+        c.get(UsedHeapKey)
           .entries
           .collect {
             case (key, value) if maxHeap.contains(key) ⇒

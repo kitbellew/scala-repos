@@ -48,8 +48,7 @@ object Search extends LilaController {
                   import org.joda.time.format.DateTimeFormat
                   val date =
                     (DateTimeFormat forPattern "yyyy-MM-dd") print DateTime.now
-                  Ok
-                    .chunked(Env.api.pgnDump exportGamesFromIds ids)
+                  Ok.chunked(Env.api.pgnDump exportGamesFromIds ids)
                     .withHeaders(
                       CONTENT_TYPE -> ContentTypes.TEXT,
                       CONTENT_DISPOSITION -> (

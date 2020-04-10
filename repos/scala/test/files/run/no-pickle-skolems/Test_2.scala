@@ -13,8 +13,7 @@ object Test {
     var buf: List[Symbol] = Nil
     var seen: Set[Symbol] = Set()
     def id(s: Symbol): Int =
-      s
-        .asInstanceOf[{
+      s.asInstanceOf[{
           def id: Int
         }]
         .id

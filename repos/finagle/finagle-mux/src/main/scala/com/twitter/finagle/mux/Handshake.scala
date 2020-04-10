@@ -264,8 +264,8 @@ private class DeferredTransport(
 
   def write(msg: Message): Future[Unit] = gate().flatMap(_.write(msg))
 
-  private[this] val read0: Transport[Message, Message] => Future[Message] =
-    _.read()
+  private[this] val read0: Transport[Message, Message] => Future[Message] = _
+    .read()
   def read(): Future[Message] = gate().flatMap(read0)
 
   def status: Status =

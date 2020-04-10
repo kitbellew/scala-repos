@@ -91,12 +91,12 @@ private[streaming] class MapWithStateDStreamImpl[
   def stateSnapshots(): DStream[(KeyType, StateType)] = {
     internalStream.flatMap {
       _.stateMap
-      .getAll()
-      .map {
-        case (k, s, _) =>
-          (k, s)
-      }
-      .toTraversable
+        .getAll()
+        .map {
+          case (k, s, _) =>
+            (k, s)
+        }
+        .toTraversable
     }
   }
 

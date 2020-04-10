@@ -53,8 +53,7 @@ trait FlatMapOperation[-T, +U] extends Serializable with Closeable {
       def apply(t: T) =
         self(t).flatMap { tr =>
           val next: Seq[Future[TraversableOnce[V]]] =
-            tr
-              .map {
+            tr.map {
                 fmo.apply(_)
               }
               .toIndexedSeq
@@ -145,8 +144,7 @@ object FlatMapOperation {
       lazy val fm = fmSupplier
       lazy val store = storeSupplier.serviceStore()
       override def apply(t: T) =
-        fm
-          .apply(t)
+        fm.apply(t)
           .flatMap { trav: TraversableOnce[(K, V)] =>
             val resultList = trav.toSeq // Can't go through this twice
             val keySet: Set[K] =

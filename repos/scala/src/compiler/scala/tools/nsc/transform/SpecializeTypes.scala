@@ -776,8 +776,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         typeEnv(sym) = fullEnv ++ typeEnv(sym) // append the full environment
         sym modifyInfo (
           _.substThis(clazz, sClass)
-          .instantiateTypeParams(oldClassTParams, newClassTParams map (_.tpe))
-        )
+            .instantiateTypeParams(oldClassTParams, newClassTParams map (_.tpe))
+          )
         // we remove any default parameters. At this point, they have been all
         // resolved by the type checker. Later on, erasure re-typechecks everything and
         // chokes if it finds default parameters for specialized members, even though

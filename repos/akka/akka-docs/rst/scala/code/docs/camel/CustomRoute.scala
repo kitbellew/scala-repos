@@ -55,8 +55,7 @@ object CustomRoute {
       }
       override def onRouteDefinition =
         (rd) =>
-          rd
-            .onException(classOf[Exception])
+          rd.onException(classOf[Exception])
             .handled(true)
             .transform(Builder.exceptionMessage)
             .end

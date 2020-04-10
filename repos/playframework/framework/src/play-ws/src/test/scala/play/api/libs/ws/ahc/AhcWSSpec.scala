@@ -314,14 +314,12 @@ object AhcWSSpec extends PlaySpecification with Mockito {
     }
 
     "not support negative timeout" in new WithApplication {
-      WS
-        .url("http://playframework.com/")
+      WS.url("http://playframework.com/")
         .withRequestTimeout(-1.millis) should throwAn[IllegalArgumentException]
     }
 
     "not support a timeout greater than Int.MaxValue" in new WithApplication {
-      WS
-        .url("http://playframework.com/")
+      WS.url("http://playframework.com/")
         .withRequestTimeout((Int.MaxValue.toLong + 1).millis) should throwAn[
         IllegalArgumentException]
     }

@@ -187,8 +187,7 @@ trait Nondeterminism[F[_]] extends Monad[F] {
   def gather[A](fs: Seq[F[A]]): F[List[A]] =
     map(
       gatherUnordered(
-        fs
-          .zipWithIndex
+        fs.zipWithIndex
           .map {
             case (f, i) =>
               strengthR(f, i)
@@ -197,8 +196,7 @@ trait Nondeterminism[F[_]] extends Monad[F] {
   def gather1[A](fs: NonEmptyList[F[A]]): F[NonEmptyList[A]] =
     map(
       gatherUnordered1(
-        fs
-          .zipWithIndex
+        fs.zipWithIndex
           .map {
             case (f, i) =>
               strengthR(f, i)

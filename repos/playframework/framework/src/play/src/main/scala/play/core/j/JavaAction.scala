@@ -67,8 +67,7 @@ class JavaActionAnnotations(
           a.value.map(c => (a, c)).toSeq
         case a
             if a.annotationType.isAnnotationPresent(classOf[play.mvc.With]) =>
-          a
-            .annotationType
+          a.annotationType
             .getAnnotation(classOf[play.mvc.With])
             .value
             .map(c => (a, c))

@@ -1207,8 +1207,7 @@ trait CustomExecutionContext extends TestBase {
             x + 1
           }
           val f = Promise.successful(10).future
-          f
-            .map(addOne)
+          f.map(addOne)
             .filter { x =>
               assertEC()
               x == 11

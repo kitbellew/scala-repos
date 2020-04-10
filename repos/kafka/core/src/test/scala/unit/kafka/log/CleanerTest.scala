@@ -185,8 +185,7 @@ class CleanerTest extends JUnitSuite {
     log
       .logSegments
       .flatMap(s =>
-        s
-          .log
+        s.log
           .filter(!_.message.isNull)
           .filter(_.message.hasKey)
           .map(m => TestUtils.readString(m.message.key).toInt))

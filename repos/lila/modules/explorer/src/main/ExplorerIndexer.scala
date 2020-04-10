@@ -69,8 +69,7 @@ private final class ExplorerIndexer(
         Enumeratee.grouped(Iteratee takeUpTo batchSize) |>>>
         Iteratee.foldM[Seq[GamePGN], Long](nowMillis) {
           case (millis, pairs) =>
-            WS
-              .url(massImportEndPointUrl)
+            WS.url(massImportEndPointUrl)
               .put(pairs.map(_._2) mkString separator)
               .flatMap {
                 case res if res.status == 200 =>

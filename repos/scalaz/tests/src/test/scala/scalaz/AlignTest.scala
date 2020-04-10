@@ -47,8 +47,7 @@ object AlignTest extends SpecLite {
     val xys = F.merge(xs, ys)
     xys.size must_=== (xs.size max ys.size)
     xys must_=== (
-      xs
-        .zipAll(ys, 0, 0)
+      xs.zipAll(ys, 0, 0)
         .map {
           case (x, y) =>
             x + y

@@ -87,8 +87,7 @@ final class JsonView {
         "dimension" -> p.question.dimension.key,
         "metric" -> p.question.metric.key,
         "filters" -> JsObject(
-          p
-            .question
+          p.question
             .filters
             .map {
               case Filter(dimension, selected) =>

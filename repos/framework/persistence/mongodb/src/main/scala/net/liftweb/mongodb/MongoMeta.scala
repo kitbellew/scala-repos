@@ -193,8 +193,7 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
    */
   def update(qry: DBObject, newobj: DBObject, db: DB, opts: UpdateOption*) {
     val dboOpts = opts.toList
-    db
-      .getCollection(collectionName)
+    db.getCollection(collectionName)
       .update(
         qry,
         newobj,

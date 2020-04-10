@@ -42,8 +42,7 @@ object QueryableMacros {
                 List(projection.tree)))
             .asInstanceOf[Tree])
       ))
-    c
-      .universe
+    c.universe
       .reify {
         Queryable.factory[S](foo.splice)
       }

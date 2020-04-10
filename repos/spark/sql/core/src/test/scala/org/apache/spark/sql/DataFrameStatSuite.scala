@@ -125,8 +125,7 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
     val results = df.stat.cov("singles", "doubles")
     assert(math.abs(results - 55.0 / 3) < 1e-12)
     intercept[IllegalArgumentException] {
-      df
-        .stat
+      df.stat
         .cov("singles", "letters") // doesn't accept non-numerical dataTypes
     }
     val decimalData = Seq
@@ -298,8 +297,7 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
     assert(sketch4.confidence() === 0.99 +- 5e-3)
 
     intercept[IllegalArgumentException] {
-      df
-        .select('id cast DoubleType as 'id)
+      df.select('id cast DoubleType as 'id)
         .stat
         .countMinSketch('id, depth = 10, width = 20, seed = 42)
     }

@@ -245,8 +245,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
         while (iterator.hasNext) {
           val tp = iterator.next()
           def checkObject(o: ScObject) {
-            o
-              .members
+            o.members
               .foreach {
                 case function: ScFunction =>
                   val lookup =
@@ -261,8 +260,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   lookup.addLookupStrings(o.name + "." + function.name)
                   applyVariant(lookup)
                 case v: ScValue =>
-                  v
-                    .declaredElements
+                  v.declaredElements
                     .foreach(td => {
                       val lookup =
                         LookupElementManager
@@ -277,8 +275,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       applyVariant(lookup)
                     })
                 case v: ScVariable =>
-                  v
-                    .declaredElements
+                  v.declaredElements
                     .foreach(td => {
                       val lookup =
                         LookupElementManager
@@ -353,8 +350,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
               case Some(p: PsiClass)
                   if ResolveUtils
                     .isAccessible(p, place, forCompletion = true) =>
-                p
-                  .getAllMethods
+                p.getAllMethods
                   .foreach(method => {
                     if (method.hasModifierProperty("static") && ResolveUtils
                           .isAccessible(method, place, forCompletion = true)) {
@@ -371,8 +367,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       applyVariant(lookup)
                     }
                   })
-                p
-                  .getFields
+                p.getFields
                   .foreach(field => {
                     if (field.hasModifierProperty("static") && ResolveUtils
                           .isAccessible(field, place, forCompletion = true)) {

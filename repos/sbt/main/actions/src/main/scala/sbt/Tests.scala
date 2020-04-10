@@ -316,10 +316,10 @@ object Tests {
             val grouped = merged.groupBy(_._1)
             grouped.mapValues(
               _.map(_._2)
-              .foldLeft(SuiteResult.Empty) {
-                case (resultSum, result) =>
-                  resultSum + result
-              })
+                .foldLeft(SuiteResult.Empty) {
+                  case (resultSum, result) =>
+                    resultSum + result
+                })
         })
   }
 

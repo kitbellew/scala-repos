@@ -183,8 +183,7 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
       "Map[" +:
         Cord.mkCord(
           ", ",
-          m
-            .toSeq
+          m.toSeq
             .view
             .map {
               case (k, v) =>

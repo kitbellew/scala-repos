@@ -212,8 +212,7 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
             enableTupling = true)
         result = reference.doResolve(reference, assignProcessor)
         result.map(r =>
-          r
-            .asInstanceOf[ScalaResolveResult]
+          r.asInstanceOf[ScalaResolveResult]
             .copy(isAssignment = true): ResolveResult)
       } else {
         result

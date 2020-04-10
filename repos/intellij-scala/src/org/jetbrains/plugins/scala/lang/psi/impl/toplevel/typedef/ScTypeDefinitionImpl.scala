@@ -580,8 +580,7 @@ abstract class ScTypeDefinitionImpl protected (
         val res: ArrayBuffer[PsiClass] = new ArrayBuffer[PsiClass]()
         val innerClasses = ownInnerClasses
         res ++= innerClasses
-        o
-          .members
+        o.members
           .foreach {
             case o: ScObject =>
               o.fakeCompanionClass match {

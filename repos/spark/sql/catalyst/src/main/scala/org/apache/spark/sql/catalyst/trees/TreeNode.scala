@@ -231,8 +231,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
                 null
             }
           case m: Map[_, _] =>
-            m
-              .mapValues {
+            m.mapValues {
                 case arg: TreeNode[_] if containsChild(arg) =>
                   val newChild = remainingNewChildren.remove(0)
                   val oldChild = remainingOldChildren.remove(0)
@@ -356,8 +355,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
               Some(arg)
             }
           case m: Map[_, _] =>
-            m
-              .mapValues {
+            m.mapValues {
                 case arg: TreeNode[_] if containsChild(arg) =>
                   val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
                   if (!(newChild fastEquals arg)) {

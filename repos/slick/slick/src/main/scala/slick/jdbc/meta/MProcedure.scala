@@ -17,10 +17,10 @@ object MProcedure {
   def getProcedures(namePattern: MQName) =
     ResultSetAction[MProcedure](
       _.metaData
-      .getProcedures(
-        namePattern.catalog_?,
-        namePattern.schema_?,
-        namePattern.name)) { r =>
+        .getProcedures(
+          namePattern.catalog_?,
+          namePattern.schema_?,
+          namePattern.name)) { r =>
       MProcedure(
         MQName.from(r),
         r.skip.skip.skip.<<,

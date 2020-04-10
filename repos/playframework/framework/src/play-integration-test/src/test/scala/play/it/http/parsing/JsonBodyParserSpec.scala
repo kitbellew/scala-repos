@@ -119,9 +119,9 @@ object JsonBodyParserSpec extends PlaySpecification {
         .json
         .validate {
           _.validate[Foo]
-          .asEither
-          .left
-          .map(e => BadRequest(JsError.toFlatJson(e)))
+            .asEither
+            .left
+            .map(e => BadRequest(JsError.toFlatJson(e)))
         }
       parse(
         """{"a":1,"b":"bar"}""",

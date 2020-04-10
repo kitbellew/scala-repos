@@ -34,8 +34,7 @@ class ActivityTest extends FunSuite {
     val (a, w) = Activity[Int]()
 
     val ref = new AtomicReference[Activity.State[Int]]
-    a
-      .handle {
+    a.handle {
         case E(x) =>
           x
       }

@@ -80,8 +80,7 @@ class KafkaStreamSuite
       .map(_._2)
       .countByValue()
       .foreachRDD { r =>
-        r
-          .collect()
+        r.collect()
           .foreach { kv =>
             result.synchronized {
               val count = result.getOrElseUpdate(kv._1, 0) + kv._2

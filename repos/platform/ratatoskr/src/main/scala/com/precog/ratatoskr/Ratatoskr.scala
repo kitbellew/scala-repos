@@ -405,8 +405,7 @@ object KafkaTools extends Command {
               msg.data.map(_.value \ "timeStamp") ++ msg
                 .data
                 .map(_.value \ "timestamp")
-            )
-              .flatMap {
+            ).flatMap {
                 case JString(date) =>
                   // Dirty hack for trying variations of ISO8601 in use by customers
                   List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
@@ -515,8 +514,7 @@ object KafkaTools extends Command {
             case (state, file) =>
               val ms = new FileMessageSet(file, false)
 
-              ms
-                .iterator
+              ms.iterator
                 .grouped(1000)
                 .flatMap {
                   _.toSeq.par.map(parseEventMessage)

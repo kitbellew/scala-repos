@@ -27,8 +27,7 @@ object Sample {
     (ti: BuildLoader.TransformInfo) =>
       ti.base.name match {
         case s if s.startsWith("akka-sample") =>
-          ti
-            .unit
+          ti.unit
             .copy(loadedDefinitions = ti
               .unit
               .definitions

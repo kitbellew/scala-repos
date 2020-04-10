@@ -44,13 +44,14 @@ case class Project(projectList: Seq[NamedExpression], child: LogicalPlan)
   override lazy val resolved: Boolean = {
     val hasSpecialExpressions = projectList.exists(
       _.collect {
-        case agg: AggregateExpression =>
-          agg
-        case generator: Generator =>
-          generator
-        case window: WindowExpression =>
-          window
-      }.nonEmpty)
+          case agg: AggregateExpression =>
+            agg
+          case generator: Generator =>
+            generator
+          case window: WindowExpression =>
+            window
+        }
+        .nonEmpty)
 
     !expressions
       .exists(!_.resolved) && childrenResolved && !hasSpecialExpressions
@@ -486,9 +487,10 @@ case class Aggregate(
   override lazy val resolved: Boolean = {
     val hasWindowExpressions = aggregateExpressions.exists(
       _.collect {
-        case window: WindowExpression =>
-          window
-      }.nonEmpty)
+          case window: WindowExpression =>
+            window
+        }
+        .nonEmpty)
 
     !expressions
       .exists(!_.resolved) && childrenResolved && !hasWindowExpressions

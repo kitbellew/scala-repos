@@ -115,8 +115,7 @@ class DataFrameReaderWriterSuite
 
     LastOptions.parameters = null
 
-    df
-      .write
+    df.write
       .format("org.apache.spark.sql.streaming.test")
       .option("opt1", "1")
       .options(Map("opt2" -> "2"))
@@ -138,8 +137,7 @@ class DataFrameReaderWriterSuite
     df.write.format("org.apache.spark.sql.streaming.test").startStream().stop()
     assert(LastOptions.partitionColumns == Nil)
 
-    df
-      .write
+    df.write
       .format("org.apache.spark.sql.streaming.test")
       .partitionBy("a")
       .startStream()
@@ -147,8 +145,7 @@ class DataFrameReaderWriterSuite
     assert(LastOptions.partitionColumns == Seq("a"))
 
     withSQLConf("spark.sql.caseSensitive" -> "false") {
-      df
-        .write
+      df.write
         .format("org.apache.spark.sql.streaming.test")
         .partitionBy("A")
         .startStream()
@@ -157,8 +154,7 @@ class DataFrameReaderWriterSuite
     }
 
     intercept[AnalysisException] {
-      df
-        .write
+      df.write
         .format("org.apache.spark.sql.streaming.test")
         .partitionBy("b")
         .startStream()
@@ -176,8 +172,7 @@ class DataFrameReaderWriterSuite
 
     LastOptions.parameters = null
 
-    df
-      .write
+    df.write
       .format("org.apache.spark.sql.streaming.test")
       .startStream("/test")
       .stop()
@@ -199,8 +194,7 @@ class DataFrameReaderWriterSuite
     assert(LastOptions.parameters("doubleOpt") == "6.7")
 
     LastOptions.parameters = null
-    df
-      .write
+    df.write
       .format("org.apache.spark.sql.streaming.test")
       .option("intOpt", 56)
       .option("boolOpt", false)

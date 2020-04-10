@@ -113,8 +113,7 @@ object HMapTests extends Properties("HMap") {
         }
       }
     val collected =
-      hm
-        .collect(partial)
+      hm.collect(partial)
         .map {
           case Value(v) =>
             v
@@ -141,8 +140,7 @@ object HMapTests extends Properties("HMap") {
         }
       }
     val collected =
-      hm
-        .collectValues(partial)
+      hm.collectValues(partial)
         .map {
           case Value(v) =>
             v

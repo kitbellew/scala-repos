@@ -54,8 +54,7 @@ class CoGroupBuilder(groupFields: Fields, joinMode: JoinMode)
         pipe :: coGroups.map {
           _._2
         }
-      )
-        .map {
+      ).map {
           RichPipe.assignName(_)
         }
         .toArray
@@ -64,8 +63,7 @@ class CoGroupBuilder(groupFields: Fields, joinMode: JoinMode)
         joinMode :: coGroups.map {
           _._3
         }
-      )
-        .map {
+      ).map {
           _.booleanValue
         }
         .toArray

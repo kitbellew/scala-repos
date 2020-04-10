@@ -395,8 +395,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     *         (whichever is larger)
     */
   def executorMemory(sc: SparkContext): Int = {
-    sc
-      .conf
+    sc.conf
       .getInt(
         "spark.mesos.executor.memoryOverhead",
         math
@@ -417,8 +416,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
 
   protected def getRejectOfferDurationForUnmetConstraints(
       sc: SparkContext): Long = {
-    sc
-      .conf
+    sc.conf
       .getTimeAsSeconds(
         "spark.mesos.rejectOfferDurationForUnmetConstraints",
         "120s")

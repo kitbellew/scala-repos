@@ -798,8 +798,7 @@ private[http] object HttpHeaderParser {
               hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
                 case -1 ⇒
                   if (sb != null)
-                    sb
-                      .append(c)
+                    sb.append(c)
                       .append(byteChar(input, ix + 1))
                       .append(byteChar(input, ix + 2))
                   else
@@ -816,8 +815,7 @@ private[http] object HttpHeaderParser {
               hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
                 case -1 ⇒
                   if (sb != null)
-                    sb
-                      .append(c)
+                    sb.append(c)
                       .append(byteChar(input, ix + 1))
                       .append(byteChar(input, ix + 2))
                       .append(byteChar(input, ix + 3))

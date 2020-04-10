@@ -80,8 +80,7 @@ trait NIHDBIngestSupport
         val enum = zippedData.entries
         def next() = enum.nextElement()
         def hasNext = enum.hasMoreElements()
-      }
-        .map { zipEntry =>
+      }.map { zipEntry =>
           new InputStreamReader(zippedData.getInputStream(zipEntry))
         }
         .flatMap { reader =>

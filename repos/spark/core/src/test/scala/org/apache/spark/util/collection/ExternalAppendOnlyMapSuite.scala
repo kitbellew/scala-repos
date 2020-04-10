@@ -486,8 +486,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     AccumulatorSuite
       .verifyPeakExecutionMemorySet(sc, "external map without spilling") {
         assertNotSpilled(sc, "verify peak memory") {
-          sc
-            .parallelize(1 to spillThreshold / 2, 2)
+          sc.parallelize(1 to spillThreshold / 2, 2)
             .map { i =>
               (i, i)
             }
@@ -499,8 +498,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     AccumulatorSuite
       .verifyPeakExecutionMemorySet(sc, "external map with spilling") {
         assertSpilled(sc, "verify peak memory") {
-          sc
-            .parallelize(1 to spillThreshold * 3, 2)
+          sc.parallelize(1 to spillThreshold * 3, 2)
             .map { i =>
               (i, i)
             }

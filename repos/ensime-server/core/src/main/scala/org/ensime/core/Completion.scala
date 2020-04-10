@@ -500,8 +500,7 @@ object CompletionUtil {
     askRes
       .map {
         case s: SymbolSearchResults =>
-          s
-            .syms
+          s.syms
             .map { s =>
               CompletionInfo(
                 s.localName,

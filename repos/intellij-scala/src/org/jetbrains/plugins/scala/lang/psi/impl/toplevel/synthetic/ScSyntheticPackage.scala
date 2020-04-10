@@ -187,8 +187,7 @@ object ScSyntheticPackage {
             Array(
               pkgs.flatMap(p =>
                 if (p.fqn.length == fqn.length)
-                  p
-                    .typeDefs
+                  p.typeDefs
                     .flatMap {
                       case td @ (c: ScTypeDefinition)
                           if c.fakeCompanionModule.isDefined =>
@@ -226,8 +225,7 @@ object ScSyntheticPackage {
                 else
                   ""
               if (tail.length == 0) {
-                p
-                  .packagings
+                p.packagings
                   .foreach { pack =>
                     {
                       val own = pack.ownNamePart
@@ -239,8 +237,7 @@ object ScSyntheticPackage {
                           own)
                     }
                   }
-                p
-                  .typeDefs
+                p.typeDefs
                   .foreach {
                     case o: ScObject
                         if o.isPackageObject && o.getName != "`package`" =>

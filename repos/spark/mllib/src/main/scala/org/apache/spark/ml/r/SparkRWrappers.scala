@@ -94,8 +94,7 @@ private[r] object SparkRWrappers {
             .toArray ++ coefficientStandardErrorsR ++
             tValuesR ++ pValuesR
         } else {
-          m
-            .coefficients
+          m.coefficients
             .toArray ++ coefficientStandardErrorsR ++ tValuesR ++ pValuesR
         }
       }

@@ -159,8 +159,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test("partitioner aware union") {
     def makeRDDWithPartitioner(seq: Seq[Int]): RDD[Int] = {
-      sc
-        .makeRDD(seq, 1)
+      sc.makeRDD(seq, 1)
         .map(x => (x, null))
         .partitionBy(new HashPartitioner(2))
         .mapPartitions(_.map(_._1), true)

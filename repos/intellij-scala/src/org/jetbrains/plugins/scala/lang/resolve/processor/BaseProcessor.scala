@@ -330,8 +330,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           visitedTypeParameter = visitedTypeParameter)
       case j: JavaArrayType =>
         processType(
-          j
-            .getParameterizedType(place.getProject, place.getResolveScope)
+          j.getParameterizedType(place.getProject, place.getResolveScope)
             .getOrElse(return true),
           place,
           state,

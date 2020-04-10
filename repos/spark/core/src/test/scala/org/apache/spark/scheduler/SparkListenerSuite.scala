@@ -486,13 +486,11 @@ class SparkListenerSuite
         classOf[ListenerThatAcceptsSparkConf].getName + "," +
           classOf[BasicJobCounter].getName)
     sc = new SparkContext(conf)
-    sc
-      .listenerBus
+    sc.listenerBus
       .listeners
       .asScala
       .count(_.isInstanceOf[BasicJobCounter]) should be(1)
-    sc
-      .listenerBus
+    sc.listenerBus
       .listeners
       .asScala
       .count(_.isInstanceOf[ListenerThatAcceptsSparkConf]) should be(1)

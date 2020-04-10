@@ -244,7 +244,7 @@ class WeightedPageRank(args: Args) extends Job(args) {
     // random probability + next probability
     (randomPagerank ++ pagerankNextScaled).groupBy('src_id) {
       _.sum[Double]('mass_input) // keep the input pagerank
-      .sum[Double]('mass_n) // take the sum
+        .sum[Double]('mass_n) // take the sum
     }
   }
 }

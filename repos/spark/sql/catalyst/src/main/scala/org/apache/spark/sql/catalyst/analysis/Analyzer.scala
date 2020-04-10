@@ -268,10 +268,11 @@ class Analyzer(
     private def hasGroupingId(expr: Seq[Expression]): Boolean = {
       expr.exists(
         _.collectFirst {
-          case u: UnresolvedAttribute
-              if resolver(u.name, VirtualColumn.groupingIdName) =>
-            u
-        }.isDefined)
+            case u: UnresolvedAttribute
+                if resolver(u.name, VirtualColumn.groupingIdName) =>
+              u
+          }
+          .isDefined)
     }
 
     def apply(plan: LogicalPlan): LogicalPlan =
@@ -676,8 +677,7 @@ class Analyzer(
         case o: ObjectOperator
             if containsUnresolvedDeserializer(o.deserializers.map(_._1)) =>
           val deserializerToAttributes =
-            o
-              .deserializers
+            o.deserializers
               .map {
                 case (deserializer, attributes) =>
                   new TreeNodeRef(deserializer) -> attributes
@@ -772,9 +772,10 @@ class Analyzer(
     def containsStar(exprs: Seq[Expression]): Boolean =
       exprs.exists(
         _.collect {
-          case _: Star =>
-            true
-        }.nonEmpty)
+            case _: Star =>
+              true
+          }
+          .nonEmpty)
   }
 
   private def resolveExpression(
@@ -1011,9 +1012,10 @@ class Analyzer(
       // Find the first Aggregate Expression that is not Windowed.
       exprs.exists(
         _.collectFirst {
-          case ae: AggregateExpression if !windowedAggExprs.contains(ae) =>
-            ae
-        }.isDefined)
+            case ae: AggregateExpression if !windowedAggExprs.contains(ae) =>
+              ae
+          }
+          .isDefined)
     }
   }
 
@@ -1344,48 +1346,49 @@ class Analyzer(
       val newExpressionsWithWindowFunctions = expressionsWithWindowFunctions
         .map {
           _.transform {
-            // Extracts children expressions of a WindowFunction (input parameters of
-            // a WindowFunction).
-            case wf: WindowFunction =>
-              val newChildren = wf.children.map(extractExpr)
-              wf.withNewChildren(newChildren)
+              // Extracts children expressions of a WindowFunction (input parameters of
+              // a WindowFunction).
+              case wf: WindowFunction =>
+                val newChildren = wf.children.map(extractExpr)
+                wf.withNewChildren(newChildren)
 
-            // Extracts expressions from the partition spec and order spec.
-            case wsc @ WindowSpecDefinition(partitionSpec, orderSpec, _) =>
-              val newPartitionSpec = partitionSpec.map(extractExpr)
-              val newOrderSpec = orderSpec.map { so =>
-                val newChild = extractExpr(so.child)
-                so.copy(child = newChild)
-              }
-              wsc.copy(
-                partitionSpec = newPartitionSpec,
-                orderSpec = newOrderSpec)
+              // Extracts expressions from the partition spec and order spec.
+              case wsc @ WindowSpecDefinition(partitionSpec, orderSpec, _) =>
+                val newPartitionSpec = partitionSpec.map(extractExpr)
+                val newOrderSpec = orderSpec.map { so =>
+                  val newChild = extractExpr(so.child)
+                  so.copy(child = newChild)
+                }
+                wsc.copy(
+                  partitionSpec = newPartitionSpec,
+                  orderSpec = newOrderSpec)
 
-            // Extract Windowed AggregateExpression
-            case we @ WindowExpression(
-                  AggregateExpression(function, mode, isDistinct),
-                  spec: WindowSpecDefinition) =>
-              val newChildren = function.children.map(extractExpr)
-              val newFunction = function
-                .withNewChildren(newChildren)
-                .asInstanceOf[AggregateFunction]
-              val newAgg = AggregateExpression(newFunction, mode, isDistinct)
-              seenWindowAggregates += newAgg
-              WindowExpression(newAgg, spec)
+              // Extract Windowed AggregateExpression
+              case we @ WindowExpression(
+                    AggregateExpression(function, mode, isDistinct),
+                    spec: WindowSpecDefinition) =>
+                val newChildren = function.children.map(extractExpr)
+                val newFunction = function
+                  .withNewChildren(newChildren)
+                  .asInstanceOf[AggregateFunction]
+                val newAgg = AggregateExpression(newFunction, mode, isDistinct)
+                seenWindowAggregates += newAgg
+                WindowExpression(newAgg, spec)
 
-            // Extracts AggregateExpression. For example, for SUM(x) - Sum(y) OVER (...),
-            // we need to extract SUM(x).
-            case agg: AggregateExpression
-                if !seenWindowAggregates.contains(agg) =>
-              val withName = Alias(agg, s"_w${extractedExprBuffer.length}")()
-              extractedExprBuffer += withName
-              withName.toAttribute
+              // Extracts AggregateExpression. For example, for SUM(x) - Sum(y) OVER (...),
+              // we need to extract SUM(x).
+              case agg: AggregateExpression
+                  if !seenWindowAggregates.contains(agg) =>
+                val withName = Alias(agg, s"_w${extractedExprBuffer.length}")()
+                extractedExprBuffer += withName
+                withName.toAttribute
 
-            // Extracts other attributes
-            case attr: Attribute =>
-              extractExpr(attr)
+              // Extracts other attributes
+              case attr: Attribute =>
+                extractExpr(attr)
 
-          }.asInstanceOf[NamedExpression]
+            }
+            .asInstanceOf[NamedExpression]
         }
 
       (
@@ -1415,18 +1418,19 @@ class Analyzer(
           // We need to use transformDown because we want to trigger
           // "case alias @ Alias(window: WindowExpression, _)" first.
           _.transformDown {
-            case alias @ Alias(window: WindowExpression, _) =>
-              // If a WindowExpression has an assigned alias, just use it.
-              extractedWindowExprBuffer += alias
-              alias.toAttribute
-            case window: WindowExpression =>
-              // If there is no alias assigned to the WindowExpressions. We create an
-              // internal column.
-              val withName =
-                Alias(window, s"_we${extractedWindowExprBuffer.length}")()
-              extractedWindowExprBuffer += withName
-              withName.toAttribute
-          }.asInstanceOf[NamedExpression]
+              case alias @ Alias(window: WindowExpression, _) =>
+                // If a WindowExpression has an assigned alias, just use it.
+                extractedWindowExprBuffer += alias
+                alias.toAttribute
+              case window: WindowExpression =>
+                // If there is no alias assigned to the WindowExpressions. We create an
+                // internal column.
+                val withName =
+                  Alias(window, s"_we${extractedWindowExprBuffer.length}")()
+                extractedWindowExprBuffer += withName
+                withName.toAttribute
+            }
+            .asInstanceOf[NamedExpression]
         }
 
       // Second, we group extractedWindowExprBuffer based on their Partition and Order Specs.
@@ -1573,8 +1577,7 @@ class Analyzer(
               .expressions
               .exists(!_.deterministic) =>
           val nondeterministicExprs =
-            p
-              .expressions
+            p.expressions
               .filterNot(_.deterministic)
               .flatMap { expr =>
                 val leafNondeterministic = expr.collect {

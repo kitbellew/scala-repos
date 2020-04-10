@@ -429,8 +429,7 @@ class CachedTableSuite
     */
   private def verifyNumExchanges(df: DataFrame, expected: Int): Unit = {
     assert(
-      df
-        .queryExecution
+      df.queryExecution
         .executedPlan
         .collect {
           case e: ShuffleExchange =>

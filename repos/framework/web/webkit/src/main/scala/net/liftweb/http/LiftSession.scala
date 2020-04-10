@@ -131,8 +131,7 @@ object LiftSession {
               {
                 cp.getParameterTypes.length == 2 &&
                 cp.getParameterTypes().apply(0).isAssignableFrom(clz) &&
-                cp
-                  .getParameterTypes()
+                cp.getParameterTypes()
                   .apply(1)
                   .isAssignableFrom(classOf[LiftSession])
               }
@@ -1561,11 +1560,10 @@ class LiftSession(
     try {
       LiftSession.constructFrom(
         this,
-        S
-          .location
+        S.location
           .flatMap(
             _.currentValue
-            .map(v => ParamPair(v, v.asInstanceOf[Object].getClass))),
+              .map(v => ParamPair(v, v.asInstanceOf[Object].getClass))),
         c)
 
     } catch {
@@ -1658,8 +1656,7 @@ class LiftSession(
     */
   def findAndProcessTemplate(name: List[String]): Box[Elem] = {
     def findElem(in: NodeSeq): Box[Elem] =
-      in
-        .toList
+      in.toList
         .flatMap {
           case e: Elem =>
             Some(e)
@@ -1830,8 +1827,7 @@ class LiftSession(
     new S.ProxyFuncHolder(f) {
       override def apply(in: List[String]): Any =
         requestVarFunc(() =>
-          S
-            .CurrentLocation
+          S.CurrentLocation
             .doWith(curLoc) {
               snippetMap.doWith(snippetMap.is ++ currentMap) {
                 super.apply(in)
@@ -1840,8 +1836,7 @@ class LiftSession(
 
       override def apply(in: FileParamHolder): Any =
         requestVarFunc(() =>
-          S
-            .CurrentLocation
+          S.CurrentLocation
             .doWith(curLoc) {
               snippetMap.doWith(snippetMap.is ++ currentMap) {
                 super.apply(in)
@@ -3113,8 +3108,7 @@ class LiftSession(
           in.msg
         }
           </b> <br/>{
-          in
-            .exception
+          in.exception
             .map(e =>
               <pre>
           {
@@ -3149,8 +3143,7 @@ class LiftSession(
           case Nil =>
             s
           case xs =>
-            xs
-              .map {
+            xs.map {
                 case (id, replacement) =>
                   (("#" + id) #> replacement)
               }

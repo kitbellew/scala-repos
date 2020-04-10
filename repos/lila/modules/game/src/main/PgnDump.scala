@@ -60,8 +60,7 @@ final class PgnDump(
   private def rating(p: Player) = p.rating.fold("?")(_.toString)
 
   private def player(p: Player, u: Option[LightUser]) =
-    p
-      .aiLevel
+    p.aiLevel
       .fold(u.fold(p.name | lila.user.User.anonymous)(_.name))(
         "lichess AI level " + _)
 

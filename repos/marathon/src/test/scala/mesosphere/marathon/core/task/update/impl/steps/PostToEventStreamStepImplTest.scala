@@ -29,8 +29,7 @@ class PostToEventStreamStepImplTest
     When("we receive a running status update")
     val status = runningTaskStatus
     val (logs, events) = f.captureLogAndEvents {
-      f
-        .step
+      f.step
         .processUpdate(
           timestamp = updateTimestamp,
           task = existingTask,
@@ -70,8 +69,7 @@ class PostToEventStreamStepImplTest
     When("we receive a running update")
     val status = runningTaskStatus
     val (logs, events) = f.captureLogAndEvents {
-      f
-        .step
+      f.step
         .processUpdate(
           timestamp = updateTimestamp,
           task = existingTask,
@@ -110,8 +108,7 @@ class PostToEventStreamStepImplTest
     When("we receive a terminal status update")
     val status = runningTaskStatus.toBuilder.setState(terminalTaskState).build()
     val (logs, events) = f.captureLogAndEvents {
-      f
-        .step
+      f.step
         .processUpdate(
           timestamp = updateTimestamp,
           task = existingTask,

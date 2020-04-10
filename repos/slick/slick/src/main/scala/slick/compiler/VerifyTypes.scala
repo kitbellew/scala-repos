@@ -48,8 +48,7 @@ class VerifyTypes(after: Option[Phase] = None) extends Phase {
           errors += RefId(n1)
         }
       }
-      n1
-        .children
+      n1.children
         .zip(n2.children)
         .force
         .foreach {

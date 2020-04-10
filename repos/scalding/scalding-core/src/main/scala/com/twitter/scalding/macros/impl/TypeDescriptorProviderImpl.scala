@@ -54,8 +54,7 @@ object TypeDescriptorProviderImpl {
     import c.universe._
 
     def flattenOnce(t: Type): List[Type] =
-      t
-        .declarations
+      t.declarations
         .collect {
           case m: MethodSymbol if m.isCaseAccessor =>
             m

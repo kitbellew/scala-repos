@@ -95,8 +95,7 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
       def code = {
         val args = columns
           .map(c =>
-            c
-              .default
+            c.default
               .map(v => s"${c.name}: ${c.exposedType} = $v")
               .getOrElse(s"${c.name}: ${c.exposedType}"))
           .mkString(", ")

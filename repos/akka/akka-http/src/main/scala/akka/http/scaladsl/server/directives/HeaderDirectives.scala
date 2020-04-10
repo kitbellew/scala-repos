@@ -114,11 +114,11 @@ trait HeaderDirectives {
     val lowerCaseName = headerName.toLowerCase
     extract(
       _.request
-      .headers
-      .collectFirst {
-        case HttpHeader(`lowerCaseName`, value) ⇒
-          value
-      })
+        .headers
+        .collectFirst {
+          case HttpHeader(`lowerCaseName`, value) ⇒
+            value
+        })
   }
 
   /**

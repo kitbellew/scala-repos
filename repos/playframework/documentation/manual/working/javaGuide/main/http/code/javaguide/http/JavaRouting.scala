@@ -70,8 +70,7 @@ object JavaRouting extends Specification {
           call(
             new MockJavaAction {
               override def invocation =
-                F
-                  .Promise
+                F.Promise
                   .pure(
                     new javaguide.http.routing.controllers.Application()
                       .index())

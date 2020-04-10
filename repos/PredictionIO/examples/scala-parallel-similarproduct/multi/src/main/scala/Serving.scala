@@ -27,8 +27,7 @@ class Serving extends LServing[Query, PredictedResult] {
           .zipWithIndex
           .map {
             case (pr, i) =>
-              pr
-                .itemScores
+              pr.itemScores
                 .map { is =>
                   // standardize score (z-score)
                   // if standard deviation is 0 (when all items have the same score,

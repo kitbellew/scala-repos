@@ -53,8 +53,7 @@ class RetryBudgetTest extends FunSuite with Matchers {
         // use a decent sized number so we see less effects from fractions
         val nReqs = 10000
         var retried = 0
-        0
-          .until(nReqs)
+        0.until(nReqs)
           .foreach { i =>
             withClue(s"request $i:") {
               rb.deposit()
@@ -131,8 +130,7 @@ class RetryBudgetTest extends FunSuite with Matchers {
     assert(!rb.tryWithdraw())
 
     val nReqs = 10000
-    0
-      .until(nReqs)
+    0.until(nReqs)
       .foreach { _ =>
         rb.deposit()
       }

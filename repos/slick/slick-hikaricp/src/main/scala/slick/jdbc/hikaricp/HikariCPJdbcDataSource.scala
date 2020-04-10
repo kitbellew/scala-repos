@@ -60,8 +60,7 @@ object HikariCPJdbcDataSource extends JdbcDataSourceFactory {
 
     // Equivalent of ConnectionPreparer
     hconf.setReadOnly(c.getBooleanOr("readOnly", false))
-    c
-      .getStringOpt("isolation")
+    c.getStringOpt("isolation")
       .map("TRANSACTION_" + _)
       .foreach(hconf.setTransactionIsolation)
     hconf.setCatalog(c.getStringOr("catalog", null))

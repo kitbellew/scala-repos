@@ -46,8 +46,7 @@ object WorksheetViewerInfo {
     val factory = EditorFactory.getInstance()
 
     while (i.hasNext) {
-      i
-        .next()
+      i.next()
         .foreach {
           case e: EditorImpl =>
             if (!e.isDisposed)

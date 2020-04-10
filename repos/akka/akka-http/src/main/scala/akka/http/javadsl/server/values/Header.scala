@@ -43,10 +43,10 @@ object Headers {
       lowercaseName: String): Directive1[Optional[model.HttpHeader]] =
     extract(
       _.request
-      .headers
-      .collectFirst {
-        case h @ model.HttpHeader(`lowercaseName`, _) ⇒
-          h
-      }
-      .asJava)
+        .headers
+        .collectFirst {
+          case h @ model.HttpHeader(`lowercaseName`, _) ⇒
+            h
+        }
+        .asJava)
 }

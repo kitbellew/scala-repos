@@ -163,13 +163,11 @@ object RunWorkflow extends Logging {
           "--verbosity",
           ca.common.verbosity.toString
         ) ++
-        ca
-          .common
+        ca.common
           .engineFactory
           .map(x => Seq("--engine-factory", x))
           .getOrElse(Seq()) ++
-        ca
-          .common
+        ca.common
           .engineParamsKey
           .map(x => Seq("--engine-params-key", x))
           .getOrElse(Seq()) ++
@@ -210,14 +208,12 @@ object RunWorkflow extends Logging {
             Seq()
           }
         ) ++
-        ca
-          .common
+        ca.common
           .evaluation
           .map(x => Seq("--evaluation-class", x))
           .getOrElse(Seq()) ++
         // If engineParamsGenerator is specified, it overrides the evaluation.
-        ca
-          .common
+        ca.common
           .engineParamsGenerator
           .orElse(ca.common.evaluation)
           .map(x => Seq("--engine-params-generator-class", x))
@@ -249,13 +245,11 @@ object RunWorkflow extends Logging {
       ca.common.variantJson.toURI.toString,
       "--verbosity",
       ca.common.verbosity.toString) ++
-      ca
-        .common
+      ca.common
         .engineFactory
         .map(x => Seq("--engine-factory", x))
         .getOrElse(Seq()) ++
-      ca
-        .common
+      ca.common
         .engineParamsKey
         .map(x => Seq("--engine-params-key", x))
         .getOrElse(Seq()) ++
@@ -290,14 +284,12 @@ object RunWorkflow extends Logging {
           Seq()
         }
       ) ++
-      ca
-        .common
+      ca.common
         .evaluation
         .map(x => Seq("--evaluation-class", x))
         .getOrElse(Seq()) ++
       // If engineParamsGenerator is specified, it overrides the evaluation.
-      ca
-        .common
+      ca.common
         .engineParamsGenerator
         .orElse(ca.common.evaluation)
         .map(x => Seq("--engine-params-generator-class", x))

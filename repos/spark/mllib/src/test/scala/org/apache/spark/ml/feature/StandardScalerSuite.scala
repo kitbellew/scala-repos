@@ -64,8 +64,7 @@ class StandardScalerSuite
   }
 
   def assertResult(df: DataFrame): Unit = {
-    df
-      .select("standardized_features", "expected")
+    df.select("standardized_features", "expected")
       .collect()
       .foreach {
         case Row(vector1: Vector, vector2: Vector) =>

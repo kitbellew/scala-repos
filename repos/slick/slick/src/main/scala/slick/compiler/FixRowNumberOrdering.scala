@@ -20,8 +20,7 @@ class FixRowNumberOrdering extends Phase {
       case (r @ RowNumber(_), Some(c)) if !c.orderBy.isEmpty =>
         RowNumber(c.orderBy) :@ r.nodeType
       case (c: Comprehension, _) =>
-        c
-          .mapScopedChildren {
+        c.mapScopedChildren {
             case (Some(gen), ch) =>
               fix(ch, None)
             case (None, ch) =>

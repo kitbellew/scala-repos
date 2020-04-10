@@ -20,8 +20,7 @@ object SizeHint {
   // Return a sparsity assuming all the diagonal is present, but nothing else
   def asDiagonal(h: SizeHint): SizeHint = {
     def make(r: BigInt, c: BigInt) = {
-      h
-        .total
+      h.total
         .map { tot =>
           val maxElements = (r min c)
           val sparsity = 1.0 / maxElements.doubleValue

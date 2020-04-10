@@ -171,8 +171,7 @@ trait SliceTransforms[M[+_]]
                     .values
                     .foreach {
                       case col: BoolColumn => {
-                        cf
-                          .util
+                        cf.util
                           .isSatisfied(col)
                           .foreach { c =>
                             definedAt.or(c.definedAt(0, s.size))
@@ -394,8 +393,7 @@ trait SliceTransforms[M[+_]]
                   val comparable = comparable0
                     .map(_._2)
                     .flatMap { col =>
-                      Eq
-                        .partialRight(value)(col)
+                      Eq.partialRight(value)(col)
                         .map(_.asInstanceOf[BoolColumn])
                     }
                   val other = other0
@@ -567,8 +565,7 @@ trait SliceTransforms[M[+_]]
                         val result = emptyObjects ++ nonemptyObjects
 
                         result lazyMapValues { col =>
-                          cf
-                            .util
+                          cf.util
                             .filter(0, sl.size max sr.size, nonemptyBits)(col)
                             .get
                         }
@@ -662,8 +659,7 @@ trait SliceTransforms[M[+_]]
                           val result = emptyArrays ++ nonemptyArrays
 
                           result lazyMapValues { col =>
-                            cf
-                              .util
+                            cf.util
                               .filter(0, sl.size max sr.size, nonemptyBits)(col)
                               .get
                           }

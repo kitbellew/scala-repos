@@ -157,8 +157,7 @@ private[spark] class CoarseMesosSchedulerBackend(
       sc.sparkUser,
       sc.appName,
       sc.conf,
-      sc
-        .conf
+      sc.conf
         .getOption("spark.mesos.driver.webui.url")
         .orElse(sc.ui.map(_.appUIAddress))
     )
@@ -206,8 +205,7 @@ private[spark] class CoarseMesosSchedulerBackend(
         .setValue(extraJavaOpts)
         .build())
 
-    sc
-      .executorEnvs
+    sc.executorEnvs
       .foreach {
         case (key, value) =>
           environment.addVariables(
@@ -444,8 +442,7 @@ private[spark] class CoarseMesosSchedulerBackend(
             .addAllResources(cpuResourcesToUse.asJava)
             .addAllResources(memResourcesToUse.asJava)
 
-          sc
-            .conf
+          sc.conf
             .getOption("spark.mesos.executor.docker.image")
             .foreach { image =>
               MesosSchedulerBackendUtil.setupContainerBuilderDockerInfo(
@@ -481,8 +478,7 @@ private[spark] class CoarseMesosSchedulerBackend(
   }
 
   private def executorCores(offerCPUs: Int): Int = {
-    sc
-      .conf
+    sc.conf
       .getInt(
         "spark.executor.cores",
         math.min(offerCPUs, maxCores - totalCoresAcquired))
@@ -522,8 +518,7 @@ private[spark] class CoarseMesosSchedulerBackend(
           .registerDriverWithShuffleService(
             slave.hostname,
             externalShufflePort,
-            sc
-              .conf
+            sc.conf
               .getTimeAsMs(
                 "spark.storage.blockManagerSlaveTimeoutMs",
                 s"${sc.conf.getTimeAsMs("spark.network.timeout", "120s")}ms"),

@@ -53,8 +53,7 @@ class AnnotatorBasedErrorInspection extends LocalInspectionTool {
             .headOption
             .map {
               case vr: HighlightVisitorImpl =>
-                vr
-                  .clone()
+                vr.clone()
                   .analyze(
                     file,
                     true,

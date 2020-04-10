@@ -254,8 +254,7 @@ trait Interface extends ast.TreeDSL {
           case i @ Ident(_) =>
             from contains i.symbol
           case tt: TypeTree =>
-            tt
-              .tpe
+            tt.tpe
               .exists {
                 case SingleType(_, sym) =>
                   (from contains sym) && {

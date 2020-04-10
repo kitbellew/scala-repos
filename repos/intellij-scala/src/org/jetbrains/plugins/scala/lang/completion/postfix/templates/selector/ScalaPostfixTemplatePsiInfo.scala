@@ -32,8 +32,7 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
               "true"
             case id: ScReferenceExpression
                 if id.getNode.getChildren(null).length == 1 &&
-                  id
-                    .getNode
+                  id.getNode
                     .getChildren(null)
                     .apply(0)
                     .getElementType == ScalaTokenTypes.tIDENTIFIER =>

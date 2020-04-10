@@ -80,8 +80,7 @@ object VectorClock extends VectorClockSerialization {
   // Computes the maximal merge of two clocks
   implicit object semigroup extends Semigroup[VectorClock] {
     def append(c1: VectorClock, c2: => VectorClock) = {
-      c2
-        .map
+      c2.map
         .foldLeft(c1) {
           case (acc, (producerId, sequenceId)) =>
             acc.update(producerId, sequenceId)

@@ -174,8 +174,7 @@ class DistributedProfile(val profiles: RelationalProfile*)
               case t: TableNode =>
                 (
                   Set(
-                    t
-                      .profileTable
+                    t.profileTable
                       .asInstanceOf[RelationalProfile#Table[_]]
                       .tableProvider),
                   Set.empty)

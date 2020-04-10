@@ -392,8 +392,7 @@ trait JoinAlgorithms {
       * each task create a seed, a restart will change the computation,
       * and this could result in subtle bugs.
       */
-    p
-      .using(new Random(Seed) with Stateful)
+    p.using(new Random(Seed) with Stateful)
       .flatMap(() -> f) { (rand: Random, _: Unit) =>
         val rfs = getReplicationFields(rand, replication, otherReplication)
         if (swap)

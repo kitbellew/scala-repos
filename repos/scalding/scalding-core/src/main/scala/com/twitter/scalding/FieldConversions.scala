@@ -62,14 +62,12 @@ trait LowPriorityFieldConversions {
   implicit def productToFields(f: Product) = {
     val fields =
       new Fields(
-        f
-          .productIterator
+        f.productIterator
           .map {
             anyToFieldArg
           }
           .toSeq: _*)
-    f
-      .productIterator
+    f.productIterator
       .foreach {
         _ match {
           case field: Field[_] =>
@@ -96,8 +94,7 @@ trait FieldConversions extends LowPriorityFieldConversions {
   }
 
   def hasInts(f: Fields): Boolean =
-    f
-      .iterator
+    f.iterator
       .asScala
       .exists {
         _.isInstanceOf[java.lang.Integer]
@@ -232,8 +229,7 @@ trait FieldConversions extends LowPriorityFieldConversions {
     new Fields(f.toSeq: _*)
   implicit def intFields[T <: TraversableOnce[Int]](f: T) = {
     new Fields(
-      f
-        .toSeq
+      f.toSeq
         .map {
           new java.lang.Integer(_)
         }: _*)

@@ -67,8 +67,7 @@ class Hotspot extends Jvm {
 
   private[this] def counters(pat: String) = {
     val cs = jvm.getInternalCounters(pat).asScala
-    cs
-      .map { c =>
+    cs.map { c =>
         c.getName() -> c
       }
       .toMap

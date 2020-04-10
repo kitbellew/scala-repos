@@ -25,8 +25,7 @@ object DocGen {
 
   private def cleanSite(dir: File, git: GitRunner, s: TaskStreams): Unit = {
     val toClean =
-      IO
-        .listFiles(dir)
+      IO.listFiles(dir)
         .filterNot(_.getName == ".git")
         .map(_.getAbsolutePath)
         .toList

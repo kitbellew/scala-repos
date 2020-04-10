@@ -60,8 +60,7 @@ object PresentationUtil {
             ScType.create(tp, DecompilerUtil.obtainProject),
             substitutor)
         case tp: ScTypeParamClause =>
-          tp
-            .typeParameters
+          tp.typeParameters
             .map(t => presentationString(t, substitutor))
             .mkString("[", ", ", "]")
         case param: ScTypeParam =>

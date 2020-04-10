@@ -12,10 +12,10 @@ object MSuperTable {
   def getSuperTables(tablePattern: MQName) =
     ResultSetAction[MSuperTable](
       _.metaData
-      .getSuperTables(
-        tablePattern.catalog_?,
-        tablePattern.schema_?,
-        tablePattern.name)) { r =>
+        .getSuperTables(
+          tablePattern.catalog_?,
+          tablePattern.schema_?,
+          tablePattern.name)) { r =>
       MSuperTable(MQName.from(r), r.<<)
     }
 }

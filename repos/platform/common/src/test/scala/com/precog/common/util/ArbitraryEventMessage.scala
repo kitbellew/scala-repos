@@ -161,7 +161,7 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
           resize(10, alphaStr))
           .map(
             _.filter(_.length > 1)
-            .flatMap(child => buildChildPaths(child :: parent, depth - 1)))
+              .flatMap(child => buildChildPaths(child :: parent, depth - 1)))
           .sample
           .get
     }

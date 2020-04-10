@@ -269,8 +269,7 @@ object ScFunctionWrapper {
                   val classes = new ArrayBuffer[String]()
                   tp.upperBound.map(subst.subst) match {
                     case Success(tp: ScCompoundType, _) =>
-                      tp
-                        .components
+                      tp.components
                         .foreach {
                           case tp: ScType =>
                             ScType.extractClass(
@@ -438,8 +437,7 @@ object ScFunctionWrapper {
       case (Some(clazz), function: ScFunction) =>
         clazz match {
           case td: ScTypeDefinition =>
-            td
-              .signaturesByName(function.name)
+            td.signaturesByName(function.name)
               .find(_.method == function) match {
               case Some(sign) =>
                 sign.substitutor

@@ -166,8 +166,7 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   private def atomicWriteBuilder(a: AtomicWrite) = {
     val builder = mf.AtomicWrite.newBuilder
-    a
-      .payload
+    a.payload
       .foreach { p ⇒
         builder.addPayload(persistentMessageBuilder(p))
       }

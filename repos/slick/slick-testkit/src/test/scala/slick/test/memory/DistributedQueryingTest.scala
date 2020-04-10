@@ -77,8 +77,7 @@ class DistributedQueryingTest {
               DBIO.seq(
                 ts.result.map(d => assertEquals(tData.toSet, d.toSet)),
                 us.result.map(d => assertEquals(uData.toSet, d.toSet)),
-                ts
-                  .flatMap(t => us.map(u => (t, u)))
+                ts.flatMap(t => us.map(u => (t, u)))
                   .result
                   .map(d =>
                     assertEquals(

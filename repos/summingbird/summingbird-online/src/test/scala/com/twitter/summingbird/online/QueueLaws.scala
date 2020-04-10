@@ -126,8 +126,7 @@ object QueueLaws extends Properties("Queue") {
     (q.trimTo(0).toList == items) && {
       val q2 = Queue[Int]()
       q2.putAll(items)
-      q2
-        .foldLeft(List[Int]()) { (l, it) =>
+      q2.foldLeft(List[Int]()) { (l, it) =>
           it :: l
         }
         .reverse == items

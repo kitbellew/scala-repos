@@ -117,8 +117,7 @@ class FlattenProjections extends Phase {
               flatten(n, s :: path)
           }
         case p: ProductNode =>
-          p
-            .children
+          p.children
             .zipWithIndex
             .foreach {
               case (n, i) =>

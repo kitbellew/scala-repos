@@ -28,8 +28,7 @@ class IndyLambdaTest extends ClearAfterClass {
       val method =
         compileMethods(compiler)(s"""def f = $code """).find(_.name == "f").get
       val x = method.instructions.iterator.asScala.toList
-      x
-        .flatMap {
+      x.flatMap {
           case insn: InvokeDynamicInsnNode =>
             insn
               .bsmArgs

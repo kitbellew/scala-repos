@@ -290,8 +290,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                 (
                   completeSlices
                     .flatMap(_.columns) ++ prefixes.flatMap(_.columns)
-                )
-                  .groupBy(_._1)
+                ).groupBy(_._1)
                   .map {
                     case (ref, columns) => {
                       val cp: Pair[ColumnRef, Column] =
@@ -318,10 +317,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
             .sequence
             .map(
               _.toStream
-              .collect({
-                case Some(cs) =>
-                  cs
-              }))
+                .collect({
+                  case Some(cs) =>
+                    cs
+                }))
 
           successorStatesM map { successorStates =>
             Some((emission, successorStates ++ suffixes))

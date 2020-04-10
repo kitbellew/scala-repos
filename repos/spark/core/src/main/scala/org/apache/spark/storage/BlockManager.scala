@@ -909,8 +909,7 @@ private[spark] class BlockManager(
           reportBlockStatus(blockId, putBlockInfo, putBlockStatus)
         }
         Option(TaskContext.get()).foreach { c =>
-          c
-            .taskMetrics()
+          c.taskMetrics()
             .incUpdatedBlockStatuses(Seq((blockId, putBlockStatus)))
         }
       }
@@ -1053,8 +1052,7 @@ private[spark] class BlockManager(
           reportBlockStatus(blockId, putBlockInfo, putBlockStatus)
         }
         Option(TaskContext.get()).foreach { c =>
-          c
-            .taskMetrics()
+          c.taskMetrics()
             .incUpdatedBlockStatuses(Seq((blockId, putBlockStatus)))
         }
         logDebug(

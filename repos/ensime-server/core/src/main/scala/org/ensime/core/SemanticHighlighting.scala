@@ -65,7 +65,7 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
                 .ownerChain
                 .exists(
                   _.annotations
-                  .exists(_.atp.toString().endsWith("deprecating")))) {
+                    .exists(_.atp.toString().endsWith("deprecating")))) {
             add(DeprecatedSymbol)
           }
 

@@ -164,8 +164,7 @@ class InputOutputMetricsSuite
 
   test("input metrics for new Hadoop API with coalesce") {
     val bytesRead = runAndReturnBytesRead {
-      sc
-        .newAPIHadoopFile(
+      sc.newAPIHadoopFile(
           tmpFilePath,
           classOf[NewTextInputFormat],
           classOf[LongWritable],
@@ -173,8 +172,7 @@ class InputOutputMetricsSuite
         .count()
     }
     val bytesRead2 = runAndReturnBytesRead {
-      sc
-        .newAPIHadoopFile(
+      sc.newAPIHadoopFile(
           tmpFilePath,
           classOf[NewTextInputFormat],
           classOf[LongWritable],
@@ -203,8 +201,7 @@ class InputOutputMetricsSuite
 
   test("input metrics on records read - more stages") {
     val records = runAndReturnRecordsRead {
-      sc
-        .textFile(tmpFilePath, 4)
+      sc.textFile(tmpFilePath, 4)
         .map(key => (key.length, 1))
         .reduceByKey(_ + _)
         .count()
@@ -214,8 +211,7 @@ class InputOutputMetricsSuite
 
   test("input metrics on records - New Hadoop API") {
     val records = runAndReturnRecordsRead {
-      sc
-        .newAPIHadoopFile(
+      sc.newAPIHadoopFile(
           tmpFilePath,
           classOf[NewTextInputFormat],
           classOf[LongWritable],
@@ -263,8 +259,7 @@ class InputOutputMetricsSuite
 
     val tmpFile = new File(tmpDir, getClass.getSimpleName)
 
-    sc
-      .textFile(tmpFilePath, 4)
+    sc.textFile(tmpFilePath, 4)
       .map(key => (key, 1))
       .reduceByKey(_ + _)
       .saveAsTextFile("file://" + tmpFile.getAbsolutePath)
@@ -373,8 +368,7 @@ class InputOutputMetricsSuite
       val filePath = "file://" + file.getAbsolutePath
 
       val records = runAndReturnRecordsWritten {
-        sc
-          .parallelize(1 to numRecords)
+        sc.parallelize(1 to numRecords)
           .map(key => (key.toString, key.toString))
           .saveAsNewAPIHadoopFile[NewTextOutputFormat[String, String]](filePath)
       }
@@ -422,8 +416,7 @@ class InputOutputMetricsSuite
 
   test("input metrics with old CombineFileInputFormat") {
     val bytesRead = runAndReturnBytesRead {
-      sc
-        .hadoopFile(
+      sc.hadoopFile(
           tmpFilePath,
           classOf[OldCombineTextInputFormat],
           classOf[LongWritable],
@@ -436,8 +429,7 @@ class InputOutputMetricsSuite
 
   test("input metrics with new CombineFileInputFormat") {
     val bytesRead = runAndReturnBytesRead {
-      sc
-        .newAPIHadoopFile(
+      sc.newAPIHadoopFile(
           tmpFilePath,
           classOf[NewCombineTextInputFormat],
           classOf[LongWritable],

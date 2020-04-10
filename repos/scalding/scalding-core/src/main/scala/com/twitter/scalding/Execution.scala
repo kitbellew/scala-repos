@@ -287,8 +287,7 @@ object Execution {
     */
   implicit def semigroup[T: Semigroup]: Semigroup[Execution[T]] =
     Semigroup.from[Execution[T]] { (a, b) =>
-      a
-        .zip(b)
+      a.zip(b)
         .map {
           case (ta, tb) =>
             Semigroup.plus(ta, tb)
@@ -303,8 +302,7 @@ object Execution {
     */
   implicit def monoid[T: Monoid]: Monoid[Execution[T]] =
     Monoid.from(Execution.from(Monoid.zero[T])) { (a, b) =>
-      a
-        .zip(b)
+      a.zip(b)
         .map {
           case (ta, tb) =>
             Monoid.plus(ta, tb)
@@ -592,8 +590,7 @@ object Execution {
     */
   def failFastSequence[T](t: Iterable[Future[T]])(implicit
       cec: ConcurrentExecutionContext): Future[List[T]] = {
-    t
-      .foldLeft(Future.successful(Nil: List[T])) { (f, i) =>
+    t.foldLeft(Future.successful(Nil: List[T])) { (f, i) =>
         failFastZip(f, i).map {
           case (tail, h) =>
             h :: tail
@@ -1053,8 +1050,7 @@ object Execution {
       ax: Execution[A],
       bx: Execution[B],
       cx: Execution[C]): Execution[(A, B, C)] =
-    ax
-      .zip(bx)
+    ax.zip(bx)
       .zip(cx)
       .map {
         case ((a, b), c) =>
@@ -1069,8 +1065,7 @@ object Execution {
       bx: Execution[B],
       cx: Execution[C],
       dx: Execution[D]): Execution[(A, B, C, D)] =
-    ax
-      .zip(bx)
+    ax.zip(bx)
       .zip(cx)
       .zip(dx)
       .map {
@@ -1087,8 +1082,7 @@ object Execution {
       cx: Execution[C],
       dx: Execution[D],
       ex: Execution[E]): Execution[(A, B, C, D, E)] =
-    ax
-      .zip(bx)
+    ax.zip(bx)
       .zip(cx)
       .zip(dx)
       .zip(ex)
@@ -1117,8 +1111,7 @@ object Execution {
         case h :: tail =>
           go(
             tail,
-            h
-              .zip(acc)
+            h.zip(acc)
               .map {
                 case (y, ys) =>
                   y :: ys

@@ -1392,8 +1392,7 @@ object FingerTree extends FingerTreeInstances {
 
   def rotL[V, A](m: FingerTree[V, Node[V, A]], sf: Finger[V, A])(implicit
       ms: Reducer[A, V]): FingerTree[V, A] =
-    m
-      .viewl
+    m.viewl
       .fold(
         sf.toTree,
         (a, mm) =>
@@ -1401,8 +1400,7 @@ object FingerTree extends FingerTreeInstances {
 
   def rotR[V, A](pr: Finger[V, A], m: FingerTree[V, Node[V, A]])(implicit
       ms: Reducer[A, V]): FingerTree[V, A] =
-    m
-      .viewr
+    m.viewr
       .fold(
         pr.toTree,
         (mm, a) => deep(mappendVal(pr.measure, m), pr, mm, a.toDigit))

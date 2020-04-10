@@ -49,8 +49,7 @@ private[tournament] case class WaitingUsers(
       date = newDate,
       clock = clock,
       hash = hash.filterKeys(us.contains) ++
-        us
-          .filterNot(hash.contains)
+        us.filterNot(hash.contains)
           .map {
             _ -> newDate
           })

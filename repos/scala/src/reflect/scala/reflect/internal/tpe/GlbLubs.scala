@@ -453,8 +453,7 @@ private[internal] trait GlbLubs {
             val syms = narrowts map (t =>
               // SI-7602 With erroneous code, we could end up with overloaded symbols after filtering
               //         so `suchThat` unsuitable.
-              t
-                .nonPrivateMember(proto.name)
+              t.nonPrivateMember(proto.name)
                 .filter(sym =>
                   sym.tpe matches prototp.substThis(lubThisType.typeSymbol, t)))
 

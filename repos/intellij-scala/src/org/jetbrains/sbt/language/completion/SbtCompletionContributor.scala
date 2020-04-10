@@ -217,8 +217,7 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
             ScalaPsiUtil
               .getCompanionModule(clazz) foreach collectAndApplyVariants
           case Some(p: PsiClass) if isAccessible(p) =>
-            p
-              .getFields
+            p.getFields
               .foreach(field => {
                 if (field
                       .hasModifierProperty("static") && isAccessible(field)) {

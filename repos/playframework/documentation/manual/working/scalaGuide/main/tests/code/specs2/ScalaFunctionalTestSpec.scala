@@ -140,8 +140,7 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
 
       // await is from play.api.test.FutureAwaits
       val response = await(
-        WS
-          .url(testPaymentGatewayURL)
+        WS.url(testPaymentGatewayURL)
           .withQueryString("callbackURL" -> callbackURL)
           .get())
 

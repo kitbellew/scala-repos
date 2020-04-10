@@ -27,8 +27,7 @@ object MarkdownParser {
       case Nil =>
         in
       case xs =>
-        xs
-          .collect {
+        xs.collect {
             case e: Elem =>
               e
           }

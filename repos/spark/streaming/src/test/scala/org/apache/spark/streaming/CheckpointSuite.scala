@@ -292,8 +292,7 @@ class CheckpointSuite
         val updateFunc = (values: Seq[Int], state: Option[Int]) => {
           Some(values.sum + state.getOrElse(0))
         }
-        st
-          .map(x => (x, 1))
+        st.map(x => (x, 1))
           .updateStateByKey(updateFunc)
           .checkpoint(stateStreamCheckpointInterval)
           .map(t => (t._1, t._2))
@@ -535,8 +534,7 @@ class CheckpointSuite
         .map(x => Seq(("a", 4)))
     val operation =
       (st: DStream[String]) => {
-        st
-          .map(x => (x, 1))
+        st.map(x => (x, 1))
           .reduceByKeyAndWindow(_ + _, _ - _, batchDuration * w, batchDuration)
           .checkpoint(batchDuration * 2)
       }
@@ -675,8 +673,7 @@ class CheckpointSuite
         val updateFunc = (values: Seq[Int], state: Option[Int]) => {
           Some((values.sum + state.getOrElse(0)))
         }
-        st
-          .map(x => (x, 1))
+        st.map(x => (x, 1))
           .updateStateByKey(updateFunc)
           .checkpoint(batchDuration * 2)
           .map(t => (t._1, t._2))

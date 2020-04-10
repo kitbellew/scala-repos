@@ -141,8 +141,7 @@ private case class Feature(
     findIn: PartialFunction[PsiElement, PsiElement]) {
 
   def process(e: PsiElement, holder: ProblemsHolder) {
-    e
-      .module
+    e.module
       .foreach { module =>
         if (!isEnabled(module.scalaCompilerSettings)) {
           findIn

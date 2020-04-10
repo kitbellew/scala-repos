@@ -158,8 +158,7 @@ class BucketedWriteSuite
   test("write bucketed data") {
     for (source <- Seq("parquet", "json", "orc")) {
       withTable("bucketed_table") {
-        df
-          .write
+        df.write
           .format(source)
           .partitionBy("i")
           .bucketBy(8, "j", "k")
@@ -175,8 +174,7 @@ class BucketedWriteSuite
   test("write bucketed data with sortBy") {
     for (source <- Seq("parquet", "json", "orc")) {
       withTable("bucketed_table") {
-        df
-          .write
+        df.write
           .format(source)
           .partitionBy("i")
           .bucketBy(8, "j")
@@ -198,8 +196,7 @@ class BucketedWriteSuite
   test(
     "write bucketed data with the overlapping bucketBy and partitionBy columns") {
     intercept[AnalysisException](
-      df
-        .write
+      df.write
         .partitionBy("i", "j")
         .bucketBy(8, "j", "k")
         .sortBy("k")
@@ -215,8 +212,7 @@ class BucketedWriteSuite
   test("write bucketed data without partitionBy") {
     for (source <- Seq("parquet", "json", "orc")) {
       withTable("bucketed_table") {
-        df
-          .write
+        df.write
           .format(source)
           .bucketBy(8, "i", "j")
           .saveAsTable("bucketed_table")
@@ -229,8 +225,7 @@ class BucketedWriteSuite
   test("write bucketed data without partitionBy with sortBy") {
     for (source <- Seq("parquet", "json", "orc")) {
       withTable("bucketed_table") {
-        df
-          .write
+        df.write
           .format(source)
           .bucketBy(8, "i", "j")
           .sortBy("k")
@@ -246,8 +241,7 @@ class BucketedWriteSuite
     withSQLConf(SQLConf.BUCKETING_ENABLED.key -> "false") {
       for (source <- Seq("parquet", "json", "orc")) {
         withTable("bucketed_table") {
-          df
-            .write
+          df.write
             .format(source)
             .partitionBy("i")
             .bucketBy(8, "j", "k")

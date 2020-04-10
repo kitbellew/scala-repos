@@ -150,8 +150,7 @@ class PsiClassWrapper(
   def getInnerClasses: Array[PsiClass] = {
     definition match {
       case o: ScObject =>
-        o
-          .members
+        o.members
           .flatMap {
             case o: ScObject =>
               o.fakeCompanionClass match {

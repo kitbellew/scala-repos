@@ -15,8 +15,7 @@ class ParameterlessMemberOverridenAsEmptyParenInspection
 
   def actionFor(holder: ProblemsHolder) = {
     case f: ScFunction if f.isEmptyParen =>
-      f
-        .superMethods
+      f.superMethods
         .headOption match { // f.superMethod returns None for some reason
         case Some(method: ScFunction)
             if !method.isInCompiledFile && method.isParameterless =>

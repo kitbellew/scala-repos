@@ -392,8 +392,7 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
       .map { f =>
         val shouldReplace = cols
           .exists(colName => columnEquals(colName, f.name))
-        if (f
-              .dataType
+        if (f.dataType
               .isInstanceOf[
                 NumericType] && targetColumnType == DoubleType && shouldReplace) {
           replaceCol(f, replacementMap)

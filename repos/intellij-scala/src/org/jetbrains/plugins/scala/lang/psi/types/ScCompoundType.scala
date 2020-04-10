@@ -230,8 +230,7 @@ case class ScCompoundType(
               (
                 new Signature(
                   s.name,
-                  s
-                    .substitutedTypes
+                  s.substitutedTypes
                     .map(
                       _.map(f =>
                         () =>

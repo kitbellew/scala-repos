@@ -60,8 +60,7 @@ class CountVectorizerSuite
     val cv = new CountVectorizerModel(Array("a", "b", "c", "d"))
       .setInputCol("words")
       .setOutputCol("features")
-    cv
-      .transform(df)
+    cv.transform(df)
       .select("features", "expected")
       .collect()
       .foreach {
@@ -91,8 +90,7 @@ class CountVectorizerSuite
       .fit(df)
     assert(cv.vocabulary === Array("a", "b", "c", "d", "e"))
 
-    cv
-      .transform(df)
+    cv.transform(df)
       .select("features", "expected")
       .collect()
       .foreach {
@@ -185,8 +183,7 @@ class CountVectorizerSuite
       .setInputCol("words")
       .setOutputCol("features")
       .setMinTF(3)
-    cv
-      .transform(df)
+    cv.transform(df)
       .select("features", "expected")
       .collect()
       .foreach {
@@ -214,8 +211,7 @@ class CountVectorizerSuite
       .setInputCol("words")
       .setOutputCol("features")
       .setMinTF(0.3)
-    cv
-      .transform(df)
+    cv.transform(df)
       .select("features", "expected")
       .collect()
       .foreach {
@@ -241,8 +237,7 @@ class CountVectorizerSuite
       .setInputCol("words")
       .setOutputCol("features")
       .setBinary(true)
-    cv
-      .transform(df)
+    cv.transform(df)
       .select("features", "expected")
       .collect()
       .foreach {

@@ -61,8 +61,7 @@ class ScNewTemplateDefinitionImpl private (
     val earlyHolders: Seq[ScDeclaredElementsHolder] =
       extendsBlock.earlyDefinitions match {
         case Some(e: ScEarlyDefinitions) =>
-          e
-            .members
+          e.members
             .flatMap {
               case holder: ScDeclaredElementsHolder =>
                 Seq(holder)

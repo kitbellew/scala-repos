@@ -175,8 +175,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
       q1 = ts.sortBy(_.a).map(_.a).take(1)
       result <-
         db.run(
-          q1
-            .result
+          q1.result
             .head
             .zipWith(q1.result.head)({
               case (a, b) =>
@@ -202,8 +201,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
       q1 = ts.sortBy(_.a).map(_.a).take(1)
       result <-
         db.run(
-          q1
-            .result
+          q1.result
             .headOption
             .collect {
               case Some(a) =>
@@ -213,8 +211,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
       _ =
         result shouldFail { _ =>
           val future = db.run(
-            q1
-              .result
+            q1.result
               .headOption
               .collect {
                 case None =>

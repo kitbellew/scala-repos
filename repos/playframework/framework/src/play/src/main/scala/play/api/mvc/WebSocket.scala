@@ -267,25 +267,25 @@ object WebSocket {
       f.andThen(
         _.map(
           _.right
-          .map {
-            case (iteratee, enumerator) =>
-              // Play 2.4 and earlier only closed the WebSocket if the enumerator specifically fed EOF. So, you could
-              // return an empty enumerator, and it would never close the socket. Converting an empty enumerator to a
-              // publisher however will close the socket, so, we need to ensure the enumerator only completes if EOF
-              // is sent.
-              val enumeratorCompletion = Promise[Enumerator[A]]()
-              val nonCompletingEnumerator = onEOF(
-                enumerator,
-                () => {
-                  enumeratorCompletion.success(Enumerator.empty)
-                }) >>> Enumerator.flatten(enumeratorCompletion.future)
-              val publisher = Streams
-                .enumeratorToPublisher(nonCompletingEnumerator)
-              val (subscriber, _) = Streams.iterateeToSubscriber(iteratee)
-              Flow.fromSinkAndSource(
-                Sink.fromSubscriber(subscriber),
-                Source.fromPublisher(publisher))
-          })))
+            .map {
+              case (iteratee, enumerator) =>
+                // Play 2.4 and earlier only closed the WebSocket if the enumerator specifically fed EOF. So, you could
+                // return an empty enumerator, and it would never close the socket. Converting an empty enumerator to a
+                // publisher however will close the socket, so, we need to ensure the enumerator only completes if EOF
+                // is sent.
+                val enumeratorCompletion = Promise[Enumerator[A]]()
+                val nonCompletingEnumerator = onEOF(
+                  enumerator,
+                  () => {
+                    enumeratorCompletion.success(Enumerator.empty)
+                  }) >>> Enumerator.flatten(enumeratorCompletion.future)
+                val publisher = Streams
+                  .enumeratorToPublisher(nonCompletingEnumerator)
+                val (subscriber, _) = Streams.iterateeToSubscriber(iteratee)
+                Flow.fromSinkAndSource(
+                  Sink.fromSubscriber(subscriber),
+                  Source.fromPublisher(publisher))
+            })))
   }
 
   /**
@@ -376,9 +376,9 @@ object WebSocket {
       f.andThen(
         _.map(
           _.right
-          .map { props =>
-            ActorFlow.actorRef(props)
-          })))
+            .map { props =>
+              ActorFlow.actorRef(props)
+            })))
   }
 
   /**

@@ -23,8 +23,7 @@ object SwaggerCommandSupport {
 
   private[this] def createParameterList[T <: Command](obj: T)(implicit
       mf: Manifest[T]): List[Parameter] = {
-    mf
-      .erasure
+    mf.erasure
       .getMethods()
       .foldLeft(List.empty[Parameter]) { (lst, fld) =>
         if (fld.getReturnType().isAssignableFrom(classOf[Field[_]]) && fld

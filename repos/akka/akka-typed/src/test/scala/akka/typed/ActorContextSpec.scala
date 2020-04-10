@@ -266,8 +266,7 @@ class ActorContextSpec
         if (!inert)
           s
         else
-          s
-            .keep {
+          s.keep {
               case (subj, child) ⇒
                 child ! BecomeInert(self)
             }
@@ -328,8 +327,7 @@ class ActorContextSpec
               occurrences = 1)
             subj ! Throw(ex)
             (subj, log)
-          }
-            .expectFailureKeep(500.millis) {
+          }.expectFailureKeep(500.millis) {
               case (f, (subj, _)) ⇒
                 f.cause should ===(ex)
                 f.child should ===(subj)

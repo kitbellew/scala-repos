@@ -83,8 +83,7 @@ trait DefNode extends Node {
           (o, ch)
       }
     val mapped = all.map(f.tupled)
-    if (ch
-          .zip(mapped)
+    if (ch.zip(mapped)
           .force
           .exists {
             case (n1, n2) =>

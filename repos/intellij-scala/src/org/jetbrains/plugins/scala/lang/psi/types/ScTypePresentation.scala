@@ -90,8 +90,7 @@ trait ScTypePresentation {
 
   def canonicalText(t: ScType) = {
     def removeKeywords(s: String): String = {
-      s
-        .split('.')
+      s.split('.')
         .map(s =>
           if (ScalaNamesUtil.isKeyword(s))
             "`" + s + "`"
@@ -143,8 +142,7 @@ trait ScTypePresentation {
         sep: String,
         end: String,
         checkWildcard: Boolean = false): String = {
-      ts
-        .map(
+      ts.map(
           innerTypeText(_, needDotType = true, checkWildcard = checkWildcard))
         .mkString(start, sep, end)
     }
@@ -218,8 +216,7 @@ trait ScTypePresentation {
       def isInnerStaticJavaClassForParent(clazz: PsiClass): Boolean = {
         clazz.getLanguage != ScalaFileType.SCALA_LANGUAGE &&
         e.isInstanceOf[PsiModifierListOwner] &&
-        e
-          .asInstanceOf[PsiModifierListOwner]
+        e.asInstanceOf[PsiModifierListOwner]
           .getModifierList
           .hasModifierProperty("static")
       }
@@ -283,9 +280,9 @@ trait ScTypePresentation {
             .clauses
             .map(
               _.parameters
-              .map(param =>
-                ScalaDocumentationProvider.parseParameter(param, typeText0))
-              .mkString("(", ", ", ")"))
+                .map(param =>
+                  ScalaDocumentationProvider.parseParameter(param, typeText0))
+                .mkString("(", ", ", ")"))
             .mkString("")
           val retType =
             if (!compType.equiv(rt))
@@ -333,8 +330,7 @@ trait ScTypePresentation {
           val ta = ScTypeAlias.getCompoundCopy(sign, sign.ta)
           val paramsText =
             if (ta.typeParameters.length > 0)
-              ta
-                .typeParameters
+              ta.typeParameters
                 .map(typeParamText(_, ScSubstitutor.empty))
                 .mkString("[", ", ", "]")
             else

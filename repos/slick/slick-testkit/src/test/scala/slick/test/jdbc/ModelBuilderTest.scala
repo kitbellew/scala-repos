@@ -26,8 +26,7 @@ class ModelBuilderTest(val tdb: JdbcTestDB) extends DBTest {
         tdb.profile.createModel(ignoreInvalidDefaults = false).asTry
     val mt = Await.result(db.run(a.withPinnedSession), Duration.Inf)
     assertTrue(
-      mt
-        .asInstanceOf[Failure[_]]
+      mt.asInstanceOf[Failure[_]]
         .exception
         .asInstanceOf[SlickException]
         .getMessage

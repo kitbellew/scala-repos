@@ -315,8 +315,7 @@ class DistributedDataDocSpec extends AkkaSpec(DistributedDataDocSpec.config) {
     val m2 = m1.decrement("a", 2)
     val m3 = m2.increment("b", 1)
     println(m3.get("a")) // 5
-    m3
-      .entries
+    m3.entries
       .foreach {
         case (key, value) =>
           println(s"$key -> $value")

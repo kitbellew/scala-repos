@@ -154,8 +154,7 @@ class ByteCodeRepository[BT <: BTypes](
         case Left(e) =>
           Left(FieldNotFound(name, descriptor, classInternalName, Some(e)))
         case Right(c) =>
-          c
-            .fields
+          c.fields
             .asScala
             .find(f => f.name == name && f.desc == descriptor) match {
             case Some(f) =>
@@ -195,8 +194,7 @@ class ByteCodeRepository[BT <: BTypes](
         case Left(e) =>
           Left(List(e))
         case Right(c) =>
-          c
-            .methods
+          c.methods
             .asScala
             .find(m => m.name == name && m.desc == descriptor) match {
             case Some(m) =>

@@ -58,13 +58,11 @@ class JdbcMetaTest extends AsyncTest[JdbcTestDB] {
           .getTables(None, None, None, None)
           .flatMap { ts =>
             DBIO.sequence(
-              ts
-                .filter(t => Set("users", "orders") contains t.name.name)
+              ts.filter(t => Set("users", "orders") contains t.name.name)
                 .map {
                   t =>
                     DBIO.seq(
-                      t
-                        .getColumns
+                      t.getColumns
                         .flatMap { cs =>
                           val as = cs.map(_.getColumnPrivileges)
                           DBIO.sequence(as)

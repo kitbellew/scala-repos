@@ -187,8 +187,7 @@ object ScalaPsiUtil {
       s: ScAnnotationsHolder,
       noResolve: Boolean = false): Boolean = {
     if (noResolve) {
-      s
-        .annotations
+      s.annotations
         .exists {
           case annot =>
             Set(
@@ -209,8 +208,7 @@ object ScalaPsiUtil {
       s: ScAnnotationsHolder,
       noResolve: Boolean = false): Boolean = {
     if (noResolve) {
-      s
-        .annotations
+      s.annotations
         .exists {
           case annot =>
             Set(
@@ -421,8 +419,7 @@ object ScalaPsiUtil {
       case cl: ScTrait =>
         ScParameterizedType(
           ScType.designator(cl),
-          cl
-            .typeParameters
+          cl.typeParameters
             .map(tp =>
               new ScUndefinedType(
                 new ScTypeParameterType(tp, ScSubstitutor.empty),
@@ -481,14 +478,15 @@ object ScalaPsiUtil {
           case _ if !noImplicitsForArgs =>
             Seq.empty
           case m: MethodResolveProcessor =>
-            m
-              .argumentClauses
+            m.argumentClauses
               .flatMap(
                 _.map(
                   _.getTypeAfterImplicitConversion(
-                    checkImplicits = false,
-                    isShape = m.isShapeResolve,
-                    None)._1.getOrAny))
+                      checkImplicits = false,
+                      isShape = m.isShapeResolve,
+                      None)
+                    ._1
+                    .getOrAny))
           case _ =>
             Seq.empty
         }
@@ -992,8 +990,7 @@ object ScalaPsiUtil {
       def collectSupers(clazz: PsiClass, subst: ScSubstitutor) {
         clazz match {
           case td: ScTemplateDefinition =>
-            td
-              .superTypes
+            td.superTypes
               .foreach { tp =>
                 collectParts(subst.subst(tp))
               }
@@ -1040,18 +1037,15 @@ object ScalaPsiUtil {
           collectParts(projected)
           proj.actualElement match {
             case v: ScBindingPattern =>
-              v
-                .getType(TypingContext.empty)
+              v.getType(TypingContext.empty)
                 .map(proj.actualSubst.subst)
                 .foreach(collectParts)
             case v: ScFieldId =>
-              v
-                .getType(TypingContext.empty)
+              v.getType(TypingContext.empty)
                 .map(proj.actualSubst.subst)
                 .foreach(collectParts)
             case v: ScParameter =>
-              v
-                .getType(TypingContext.empty)
+              v.getType(TypingContext.empty)
                 .map(proj.actualSubst.subst)
                 .foreach(collectParts)
             case _ =>
@@ -1132,11 +1126,9 @@ object ScalaPsiUtil {
           case p: ScProjectionType
               if p.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
             collectObjects(
-              p
-                .actualSubst
+              p.actualSubst
                 .subst(
-                  p
-                    .actualElement
+                  p.actualElement
                     .asInstanceOf[ScTypeAliasDefinition]
                     .aliasedType
                     .getOrAny))
@@ -1144,16 +1136,14 @@ object ScalaPsiUtil {
                 ScDesignatorType(ta: ScTypeAliasDefinition),
                 args) =>
             val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-              ta
-                .typeParameters
+              ta.typeParameters
                 .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
               args)
             collectObjects(genericSubst.subst(ta.aliasedType.getOrAny))
           case ScParameterizedType(p: ScProjectionType, args)
               if p.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
             val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-              p
-                .actualElement
+              p.actualElement
                 .asInstanceOf[ScTypeAliasDefinition]
                 .typeParameters
                 .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
@@ -1161,8 +1151,7 @@ object ScalaPsiUtil {
             val s = p.actualSubst.followed(genericSubst)
             collectObjects(
               s.subst(
-                p
-                  .actualElement
+                p.actualElement
                   .asInstanceOf[ScTypeAliasDefinition]
                   .aliasedType
                   .getOrAny))
@@ -1641,8 +1630,7 @@ object ScalaPsiUtil {
       case Some(x) if !withSelfType || x.info == element =>
         x.supers
       case Some(x) =>
-        x
-          .supers
+        x.supers
           .filter {
             _.info != element
           } :+ x
@@ -1765,8 +1753,7 @@ object ScalaPsiUtil {
       (
         clazz match {
           case c: ScObject =>
-            c
-              .allSynthetics
+            c.allSynthetics
               .filter(s => s.name == "unapply" || s.name == "unapplySeq")
               .map(new PhysicalSignature(_, ScSubstitutor.empty))
           case _ =>
@@ -2407,8 +2394,7 @@ object ScalaPsiUtil {
       return true
     }
 
-    e
-      .parentsInFile
+    e.parentsInFile
       .takeWhile(!_.isScope)
       .findByType(classOf[ScPatternDefinition])
       .isDefined
@@ -2978,8 +2964,7 @@ object ScalaPsiUtil {
             }
 
             val abst: Array[PsiMethod] =
-              cl
-                .getMethods
+              cl.getMethods
                 .filter {
                   case method if method.hasAbstractModifier =>
                     true

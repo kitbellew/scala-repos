@@ -204,8 +204,7 @@ class MockHttpServletRequest(
     if (q != null && q.length > 0) {
       val newParams = ListBuffer[(String, String)]()
 
-      q
-        .split('&')
+      q.split('&')
         .foreach { pair =>
           pair.split('=') match {
             case Array(key, value) => {

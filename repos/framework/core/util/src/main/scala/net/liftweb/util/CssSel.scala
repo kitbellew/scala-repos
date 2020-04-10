@@ -141,8 +141,7 @@ private class SelectorMap(binds: List[CssBind])
     val selThis: Box[CssBind] =
       binds
         .flatMap { b =>
-          b
-            .css
+          b.css
             .openOrThrowException(
               "Guarded with test before calling this method")
             .subNodes match {
@@ -248,8 +247,7 @@ private class SelectorMap(binds: List[CssBind])
         .map(b =>
           (
             b,
-            b
-              .css
+            b.css
               .openOrThrowException(
                 "Guarded with test before calling this method")
               .subNodes

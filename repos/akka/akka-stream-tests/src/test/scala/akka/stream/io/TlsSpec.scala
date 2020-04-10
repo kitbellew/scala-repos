@@ -459,8 +459,7 @@ class TlsSpec
       val (server, serverErr) = Tcp()
         .bind("localhost", 0)
         .map(c ⇒ {
-          c
-            .flow
+          c.flow
             .joinMat(
               serverTls(IgnoreBoth).reversed.joinMat(simple)(Keep.right))(
               Keep.right)

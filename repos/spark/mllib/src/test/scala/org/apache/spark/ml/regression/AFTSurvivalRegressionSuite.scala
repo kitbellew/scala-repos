@@ -156,8 +156,7 @@ class AFTSurvivalRegressionSuite
       (weibull.nextValue(), exponential.nextValue())
     }
 
-    y
-      .zip(x)
+    y.zip(x)
       .map { p =>
         AFTPoint(Vectors.dense(p._2), p._1._1, censor(p._1._1, p._1._2))
       }

@@ -548,15 +548,13 @@ case class ScTypePolymorphicType(
               tp.name,
               tp.typeParams /* todo: ? */,
               () =>
-                tp
-                  .lowerType()
+                tp.lowerType()
                   .recursiveVarianceUpdateModifiable(
                     newData,
                     update,
                     -variance),
               () =>
-                tp
-                  .upperType()
+                tp.upperType()
                   .recursiveVarianceUpdateModifiable(newData, update, variance),
               tp.ptp
             )
@@ -606,8 +604,7 @@ case class ScTypePolymorphicType(
                       tuple._2.name,
                       tuple._2.ptp match {
                         case p: ScTypeParam =>
-                          p
-                            .typeParameters
+                          p.typeParameters
                             .toList
                             .map {
                               new ScTypeParameterType(_, ScSubstitutor.empty)

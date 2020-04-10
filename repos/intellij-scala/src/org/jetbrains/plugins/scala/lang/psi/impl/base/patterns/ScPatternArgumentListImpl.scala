@@ -30,8 +30,7 @@ class ScPatternArgumentListImpl(node: ASTNode)
         _.isInstanceOf[ScBlockExpr]
       }
       .flatMap { s =>
-        s
-          .getChildren
+        s.getChildren
           .filter(_.isInstanceOf[ScPattern])
           .map {
             _.asInstanceOf[ScPattern]

@@ -15,8 +15,7 @@ import org.scalacheck._
 
 case class TestStore[K, +V](m: Map[K, Option[V]]) extends ReadableStore[K, V] {
   override def get(k: K) =
-    m
-      .get(k)
+    m.get(k)
       .map {
         Future.value(_)
       }

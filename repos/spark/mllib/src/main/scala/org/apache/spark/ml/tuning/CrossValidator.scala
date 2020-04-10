@@ -450,8 +450,7 @@ object CrossValidatorModel extends MLReadable[CrossValidatorModel] {
       val avgMetrics =
         (metadata.metadata \ "avgMetrics").extract[Seq[Double]].toArray
       val cv = new CrossValidatorModel(metadata.uid, bestModel, avgMetrics)
-      cv
-        .set(cv.estimator, estimator)
+      cv.set(cv.estimator, estimator)
         .set(cv.evaluator, evaluator)
         .set(cv.estimatorParamMaps, estimatorParamMaps)
         .set(cv.numFolds, numFolds)

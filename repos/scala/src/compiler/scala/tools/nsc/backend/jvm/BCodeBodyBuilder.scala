@@ -1795,8 +1795,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
       val ScalaSerializable =
         classBTypeFromSymbol(definitions.SerializableClass).toASMType
-      bc
-        .jmethod
+      bc.jmethod
         .visitInvokeDynamicInsn(
           samName,
           invokedType,

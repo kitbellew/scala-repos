@@ -84,9 +84,10 @@ object Step {
           "dests",
           dests.map {
             _.map {
-              case (orig, dests) =>
-                s"${orig.piotr}${dests.map(_.piotr).mkString}"
-            }.mkString(" ")
+                case (orig, dests) =>
+                  s"${orig.piotr}${dests.map(_.piotr).mkString}"
+              }
+              .mkString(" ")
           }) _ compose
         add(
           "drops",

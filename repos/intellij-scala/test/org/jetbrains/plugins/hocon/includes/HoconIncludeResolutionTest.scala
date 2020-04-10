@@ -43,8 +43,7 @@ trait HoconIncludeResolutionTest {
       .foreach {
         case it: HIncludeTarget =>
           val prevComments =
-            it
-              .parent
+            it.parent
               .map(
                 _.parent.map(_.nonWhitespaceChildren).getOrElse(Iterator.empty))
               .getOrElse(Iterator.empty)

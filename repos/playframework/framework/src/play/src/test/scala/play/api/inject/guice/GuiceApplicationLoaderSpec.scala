@@ -63,8 +63,7 @@ class GuiceApplicationLoaderSpec extends Specification {
     val f = fakeContext
     val c = f.initialConfiguration
     val newModules: Seq[String] =
-      c
-        .getStringSeq("play.modules.enabled")
+      c.getStringSeq("play.modules.enabled")
         .fold(Seq.empty[String]) { oldModules =>
           oldModules :+ module.getName
         }

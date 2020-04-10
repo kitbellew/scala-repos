@@ -548,8 +548,7 @@ class ExecutionTest extends WordSpec with Matchers {
       }
 
       val executions =
-        0
-          .to(10)
+        0.to(10)
           .map { i =>
             Execution
               .from[Int](i)

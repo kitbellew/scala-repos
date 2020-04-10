@@ -564,8 +564,7 @@ object ZipperTest extends SpecLite {
   "findNext should not blow the stack" ! forAll(minSizeIntZipper(10 * 1000)) {
     z =>
       var limit = 10 * 1000
-      z
-        .start
+      z.start
         .findNext { x =>
           limit -= 1;
           limit > 0
@@ -576,8 +575,7 @@ object ZipperTest extends SpecLite {
   "findPrevious should not blow the stack" ! forAll(
     minSizeIntZipper(10 * 1000)) { z =>
     var limit = 10 * 1000
-    z
-      .end
+    z.end
       .findPrevious { x =>
         limit -= 1;
         limit > 0
@@ -624,8 +622,7 @@ object ZipperTest extends SpecLite {
   "positions should return a zippers with all possible positions of a zipper" ! forAll {
     z: Zipper[Int] =>
       val indeces =
-        z
-          .positions
+        z.positions
           .map {
             _.index
           }
@@ -633,8 +630,7 @@ object ZipperTest extends SpecLite {
       indeces.min must_=== (0)
       indeces.max must_=== (z.length - 1)
       indeces.sorted must_=== (indeces)
-      z
-        .positions
+      z.positions
         .map {
           _.toStream
         }

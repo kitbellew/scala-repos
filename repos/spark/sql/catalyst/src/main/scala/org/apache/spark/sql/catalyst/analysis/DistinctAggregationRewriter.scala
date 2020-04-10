@@ -152,10 +152,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
         If(EqualTo(gid, id), e, nullify(e))
       def patchAggregateFunctionChildren(af: AggregateFunction)(
           attrs: Expression => Expression): AggregateFunction = {
-        af
-          .withNewChildren(
-            af
-              .children
+        af.withNewChildren(
+            af.children
               .map {
                 case afc =>
                   attrs(afc)
@@ -287,8 +285,7 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
       val patchedAggExpressions = a
         .aggregateExpressions
         .map { e =>
-          e
-            .transformDown {
+          e.transformDown {
               case e: Expression =>
                 // The same GROUP BY clauses can have different forms (different names for instance) in
                 // the groupBy and aggregate expressions of an aggregate. This makes a map lookup

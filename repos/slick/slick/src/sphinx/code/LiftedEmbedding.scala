@@ -220,8 +220,7 @@ object LiftedEmbedding extends App {
           criteriaRoast.map(
             coffee.name === _
           ) // not a condition as `criteriaRoast` evaluates to `None`
-        )
-          .collect({
+        ).collect({
             case Some(criteria) =>
               criteria
           })

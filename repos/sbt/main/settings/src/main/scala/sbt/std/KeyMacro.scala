@@ -9,8 +9,7 @@ private[sbt] object KeyMacro {
   def settingKeyImpl[T: c.WeakTypeTag](c: Context)(
       description: c.Expr[String]): c.Expr[SettingKey[T]] =
     keyImpl[T, SettingKey[T]](c) { (name, mf) =>
-      c
-        .universe
+      c.universe
         .reify {
           SettingKey[T](name.splice, description.splice)(mf.splice)
         }
@@ -18,8 +17,7 @@ private[sbt] object KeyMacro {
   def taskKeyImpl[T: c.WeakTypeTag](c: Context)(
       description: c.Expr[String]): c.Expr[TaskKey[T]] =
     keyImpl[T, TaskKey[T]](c) { (name, mf) =>
-      c
-        .universe
+      c.universe
         .reify {
           TaskKey[T](name.splice, description.splice)(mf.splice)
         }
@@ -27,8 +25,7 @@ private[sbt] object KeyMacro {
   def inputKeyImpl[T: c.WeakTypeTag](c: Context)(
       description: c.Expr[String]): c.Expr[InputKey[T]] =
     keyImpl[T, InputKey[T]](c) { (name, mf) =>
-      c
-        .universe
+      c.universe
         .reify {
           InputKey[T](name.splice, description.splice)(mf.splice)
         }
@@ -51,8 +48,7 @@ private[sbt] object KeyMacro {
     import c.universe.{Apply => ApplyTree, _}
     val methodName = c.macroApplication.symbol.name
     def processName(n: Name): String =
-      n
-        .decoded
+      n.decoded
         .trim // trim is not strictly correct, but macros don't expose the API necessary
     def enclosingVal(trees: List[c.Tree]): String = {
       trees match {
@@ -72,8 +68,7 @@ private[sbt] object KeyMacro {
     enclosingVal(enclosingTrees(c).toList)
   }
   def enclosingTrees(c: Context): Seq[c.Tree] =
-    c
-      .asInstanceOf[reflect.macros.runtime.Context]
+    c.asInstanceOf[reflect.macros.runtime.Context]
       .callsiteTyper
       .context
       .enclosingContextChain

@@ -119,8 +119,7 @@ object Extraction {
         case x if (x.getClass.isArray) =>
           JArray(x.asInstanceOf[Array[_]].toList map decompose)
         case x: Option[_] =>
-          x
-            .flatMap[JValue] { y =>
+          x.flatMap[JValue] { y =>
               Some(decompose(y))
             }
             .getOrElse(JNothing)
@@ -339,8 +338,7 @@ object Extraction {
                     .map(_._1)
                     .toSet
                 val jsonFields =
-                  o
-                    .obj
+                  o.obj
                     .map { f =>
                       val JField(n, v) =
                         (serializer.deserializer orElse Map(f -> f))(f)
@@ -362,17 +360,17 @@ object Extraction {
                             .parameterizedType
                             .map(
                               _.getActualTypeArguments
-                              .map(_.asInstanceOf[Class[_]])
-                              .toList
-                              .zipWithIndex
-                              .map {
-                                case (t, idx) =>
-                                  if (t == classOf[java.lang.Object])
-                                    ScalaSigReader
-                                      .readField(name, a.getClass, idx)
-                                  else
-                                    t
-                              })
+                                .map(_.asInstanceOf[Class[_]])
+                                .toList
+                                .zipWithIndex
+                                .map {
+                                  case (t, idx) =>
+                                    if (t == classOf[java.lang.Object])
+                                      ScalaSigReader
+                                        .readField(name, a.getClass, idx)
+                                    else
+                                      t
+                                })
                           val value = extract0(
                             v,
                             typeInfo.clazz,
@@ -533,8 +531,7 @@ object Extraction {
     def mkTypedArray(c: Class[_])(a: Array[_]) = {
       import java.lang.reflect.Array.{newInstance => newArray}
 
-      a
-        .foldLeft((newArray(c.getComponentType, a.length), 0)) { (tuple, e) =>
+      a.foldLeft((newArray(c.getComponentType, a.length), 0)) { (tuple, e) =>
           {
             java.lang.reflect.Array.set(tuple._1, tuple._2, e);
             (tuple._1, tuple._2 + 1)

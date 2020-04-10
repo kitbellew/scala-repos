@@ -142,8 +142,7 @@ object RoutesFileParser {
       g =>
         (
           g._1,
-          g
-            ._2
+          g._2
             .groupBy(route =>
               route.call.parameters.map(p => p.length).getOrElse(0)))
     }

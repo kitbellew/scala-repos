@@ -234,8 +234,7 @@ private[streaming] class DirectKafkaInputDStream[
       batchForTime.clear()
       generatedRDDs.foreach { kv =>
         val a =
-          kv
-            ._2
+          kv._2
             .asInstanceOf[KafkaRDD[K, V, U, T, R]]
             .offsetRanges
             .map(_.toTuple)

@@ -127,8 +127,7 @@ sealed trait SValue {
           if (m.isEmpty)
             List((JPath(), CEmptyObject))
           else {
-            m
-              .toSeq
+            m.toSeq
               .flatMap {
                 case (name, value) =>
                   value.structure map {
@@ -142,8 +141,7 @@ sealed trait SValue {
           if (a.isEmpty)
             List((JPath(), CEmptyArray))
           else {
-            a
-              .zipWithIndex
+            a.zipWithIndex
               .flatMap {
                 case (value, index) =>
                   value.structure map {

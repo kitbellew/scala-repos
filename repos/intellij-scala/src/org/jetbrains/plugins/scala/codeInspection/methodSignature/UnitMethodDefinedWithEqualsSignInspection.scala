@@ -18,8 +18,7 @@ class UnitMethodDefinedWithEqualsSignInspection
     case f: ScFunctionDefinition
         if !f.hasExplicitType && f.hasUnitResultType && !f
           .isSecondaryConstructor =>
-      f
-        .assignment
+      f.assignment
         .foreach { assignment =>
           holder.registerProblem(
             assignment,

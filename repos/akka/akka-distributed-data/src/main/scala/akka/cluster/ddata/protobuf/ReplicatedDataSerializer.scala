@@ -320,8 +320,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   def flagFromProto(flag: rd.Flag): Flag = Flag(flag.getEnabled)
 
   def lwwRegisterToProto(lwwRegister: LWWRegister[_]): rd.LWWRegister =
-    rd
-      .LWWRegister
+    rd.LWWRegister
       .newBuilder()
       .setTimestamp(lwwRegister.timestamp)
       .setNode(uniqueAddressToProto(lwwRegister.node))
@@ -349,8 +348,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       .foreach {
         case (address, value) ⇒
           b.addEntries(
-            rd
-              .GCounter
+            rd.GCounter
               .Entry
               .newBuilder()
               .setNode(uniqueAddressToProto(address))
@@ -374,8 +372,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   }
 
   def pncounterToProto(pncounter: PNCounter): rd.PNCounter =
-    rd
-      .PNCounter
+    rd.PNCounter
       .newBuilder()
       .setIncrements(gcounterToProto(pncounter.increments))
       .setDecrements(gcounterToProto(pncounter.decrements))
@@ -397,8 +394,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       .foreach {
         case (node, value) ⇒
           b.addEntries(
-            rd
-              .VersionVector
+            rd.VersionVector
               .Entry
               .newBuilder()
               .setNode(uniqueAddressToProto(node))
@@ -441,8 +437,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       .foreach {
         case (key, value) ⇒
           b.addEntries(
-            rd
-              .ORMap
+            rd.ORMap
               .Entry
               .newBuilder()
               .setKey(key)
@@ -481,8 +476,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       .foreach {
         case (key, value) ⇒
           b.addEntries(
-            rd
-              .LWWMap
+            rd.LWWMap
               .Entry
               .newBuilder()
               .setKey(key)
@@ -523,8 +517,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       .foreach {
         case (key, value: PNCounter) ⇒
           b.addEntries(
-            rd
-              .PNCounterMap
+            rd.PNCounterMap
               .Entry
               .newBuilder()
               .setKey(key)
@@ -565,8 +558,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       .foreach {
         case (key, value) ⇒
           b.addEntries(
-            rd
-              .ORMultiMap
+            rd.ORMultiMap
               .Entry
               .newBuilder()
               .setKey(key)

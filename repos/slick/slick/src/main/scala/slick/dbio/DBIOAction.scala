@@ -219,8 +219,7 @@ object DBIOAction {
     implicit val ec = DBIO.sameThreadExecutionContext
     def sequenceGroupAsM(g: Vector[DBIOAction[R, NoStream, E]])
         : DBIOAction[M[R], NoStream, E] = {
-      if (g
-            .head
+      if (g.head
             .isInstanceOf[
               SynchronousDatabaseAction[
                 _,
@@ -245,8 +244,7 @@ object DBIOAction {
     def sequenceGroupAsSeq(g: Vector[DBIOAction[R, NoStream, E]])
         : DBIOAction[Seq[R], NoStream, E] = {
       if (g.length == 1) {
-        if (g
-              .head
+        if (g.head
               .isInstanceOf[
                 SynchronousDatabaseAction[
                   _,
@@ -259,8 +257,7 @@ object DBIOAction {
             BasicBackend,
             E] {
             def run(context: BasicBackend#Context) =
-              g
-                .head
+              g.head
                 .asInstanceOf[SynchronousDatabaseAction[
                   R,
                   NoStream,
@@ -272,8 +269,7 @@ object DBIOAction {
         } else
           g.head.map(_ :: Nil)
       } else {
-        if (g
-              .head
+        if (g.head
               .isInstanceOf[
                 SynchronousDatabaseAction[
                   _,
@@ -344,8 +340,8 @@ object DBIOAction {
         def run(context: BasicBackend#Context) = {
           g.foreach(
             _.asInstanceOf[
-              SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]]
-            .run(context))
+                SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]]
+              .run(context))
         }
         override def nonFusedEquivalentAction =
           AndThenAction[Unit, NoStream, E](g)
@@ -634,8 +630,7 @@ trait SynchronousDatabaseAction[
       case a: SynchronousDatabaseAction.FusedAndThenAction[_, _, _, _] =>
         new SynchronousDatabaseAction.FusedAndThenAction[R2, S2, B, E with E2](
           self.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]] +:
-            a
-              .as
+            a.as
               .asInstanceOf[IndexedSeq[
                 SynchronousDatabaseAction[Any, S2, B, E with E2]]])
       case a: SynchronousDatabaseAction[_, _, _, _] =>
@@ -687,8 +682,7 @@ trait SynchronousDatabaseAction[
                   catch ignoreFollowOnError
                   throw ex
               }
-            a
-              .asInstanceOf[SynchronousDatabaseAction[Any, S, B, E2]]
+            a.asInstanceOf[SynchronousDatabaseAction[Any, S, B, E2]]
               .run(context)
             res
           }
@@ -783,8 +777,7 @@ object SynchronousDatabaseAction {
             E with E2](
             as.asInstanceOf[IndexedSeq[
               SynchronousDatabaseAction[Any, S2, B, E with E2]]] ++
-              a
-                .as
+              a.as
                 .asInstanceOf[IndexedSeq[
                   SynchronousDatabaseAction[Any, S2, B, E with E2]]])
         case a: SynchronousDatabaseAction[_, _, _, _] =>
@@ -817,8 +810,7 @@ object SynchronousDatabaseAction {
                 SynchronousDatabaseAction[Any, NoStream, BasicBackend, Effect]]
               .run(context)
             val a2 = f(b)
-            a2
-              .asInstanceOf[SynchronousDatabaseAction[R, S, BasicBackend, E]]
+            a2.asInstanceOf[SynchronousDatabaseAction[R, S, BasicBackend, E]]
               .run(context)
           }
           override def nonFusedEquivalentAction = a
@@ -841,8 +833,7 @@ object SynchronousDatabaseAction {
                 case NonFatal(ex) =>
                   try {
                     val a2 = f(Some(ex))
-                    a2
-                      .asInstanceOf[SynchronousDatabaseAction[
+                    a2.asInstanceOf[SynchronousDatabaseAction[
                         Any,
                         NoStream,
                         BasicBackend,
@@ -855,8 +846,7 @@ object SynchronousDatabaseAction {
                   throw ex
               }
             val a2 = f(None)
-            a2
-              .asInstanceOf[
+            a2.asInstanceOf[
                 SynchronousDatabaseAction[Any, NoStream, BasicBackend, Effect]]
               .run(context)
             res

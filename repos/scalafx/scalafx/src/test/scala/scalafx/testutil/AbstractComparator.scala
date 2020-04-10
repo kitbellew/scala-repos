@@ -198,8 +198,7 @@ private[testutil] trait AbstractComparator extends Assertions {
         case (1, true) =>
           classParameterToString(m.getParameterTypes.last, true)
         case (_, true) =>
-          m
-            .getParameterTypes
+          m.getParameterTypes
             .init
             .map(classParameterToString(_))
             .mkString("", ", ", ", ") +

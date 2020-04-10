@@ -108,8 +108,7 @@ object WebSocketClient {
       .handler(
         new ChannelInitializer[SocketChannel] {
           def initChannel(ch: SocketChannel) = {
-            ch
-              .pipeline()
+            ch.pipeline()
               .addLast(new HttpClientCodec, new HttpObjectAggregator(8192))
           }
         })

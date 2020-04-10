@@ -172,13 +172,11 @@ object BigDecimalRootRefinement {
       poly(new BigDecimal(x, MathContext.UNLIMITED)).bigDecimal.round(mc)
 
     def floor(x: Rational): JBigDecimal =
-      x
-        .toBigDecimal(new MathContext(mc.getPrecision, RoundingMode.CEILING))
+      x.toBigDecimal(new MathContext(mc.getPrecision, RoundingMode.CEILING))
         .bigDecimal
 
     def ceil(x: Rational): JBigDecimal =
-      x
-        .toBigDecimal(new MathContext(mc.getPrecision, RoundingMode.FLOOR))
+      x.toBigDecimal(new MathContext(mc.getPrecision, RoundingMode.FLOOR))
         .bigDecimal
 
     def floor(x: JBigDecimal): JBigDecimal =

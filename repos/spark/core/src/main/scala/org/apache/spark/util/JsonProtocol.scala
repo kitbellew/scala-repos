@@ -380,8 +380,7 @@ private[spark] object JsonProtocol {
           JString(v)
         case (v, UpdatedBlockStatusesAccumulatorParam) =>
           JArray(
-            v
-              .asInstanceOf[Seq[(BlockId, BlockStatus)]]
+            v.asInstanceOf[Seq[(BlockId, BlockStatus)]]
               .toList
               .map {
                 case (id, status) =>

@@ -320,11 +320,11 @@ class RewriteJoins extends Phase {
           illegalDefs
             .flatMap(
               _._2
-              .collect {
-                case p @ FwdPath(s :: _) if s == ok =>
-                  p
-              }
-              .toSeq)
+                .collect {
+                  case p @ FwdPath(s :: _) if s == ok =>
+                    p
+                }
+                .toSeq)
             .toSet
         val existingOkDefs =
           legalDefs
@@ -521,8 +521,7 @@ class RewriteJoins extends Phase {
         def isAliasing(s: ConstArray[(TermSymbol, Node)]) =
           s.forall {
             case (_, n) =>
-              n
-                .collect(
+              n.collect(
                   {
                     case Path(_) =>
                       true
@@ -608,8 +607,7 @@ class RewriteJoins extends Phase {
     }
 
   def hasRefTo(n: Node, s: Set[TermSymbol]): Boolean =
-    n
-      .findNode {
+    n.findNode {
         case Ref(s2) if s contains s2 =>
           true
         case _ =>

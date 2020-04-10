@@ -60,8 +60,7 @@ case class OffsetFetchResponse(
       t1 => { // topic -> Map[TopicAndPartition, OffsetMetadataAndError]
         writeShortString(buffer, t1._1) // topic
         buffer.putInt(t1._2.size) // number of partitions for this topic
-        t1
-          ._2
+        t1._2
           .foreach(t2 => { // TopicAndPartition -> OffsetMetadataAndError
             buffer.putInt(t2._1.partition)
             buffer.putLong(t2._2.offset)

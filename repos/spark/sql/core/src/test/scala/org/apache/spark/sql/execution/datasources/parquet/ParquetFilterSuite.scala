@@ -503,13 +503,11 @@ class ParquetFilterSuite
 
         // The fields "a" and "c" only exist in one Parquet file.
         assert(
-          df
-            .schema("a")
+          df.schema("a")
             .metadata
             .getBoolean(StructType.metadataKeyForOptionalField))
         assert(
-          df
-            .schema("c")
+          df.schema("c")
             .metadata
             .getBoolean(StructType.metadataKeyForOptionalField))
 

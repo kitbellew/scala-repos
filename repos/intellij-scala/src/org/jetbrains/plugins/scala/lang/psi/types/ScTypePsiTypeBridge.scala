@@ -283,8 +283,7 @@ trait ScTypePsiTypeBridge {
         }
       case p: PsiIntersectionType =>
         ScCompoundType(
-          p
-            .getConjuncts
+          p.getConjuncts
             .map(
               create(
                 _,

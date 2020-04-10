@@ -224,8 +224,7 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
           .filter(t ⇒
             t.getThreadName.startsWith("OutputStreamSourceSpec") &&
               t.getLockName != null &&
-              t
-                .getLockName
+              t.getLockName
                 .startsWith(
                   "java.util.concurrent.locks.AbstractQueuedSynchronizer"))
 

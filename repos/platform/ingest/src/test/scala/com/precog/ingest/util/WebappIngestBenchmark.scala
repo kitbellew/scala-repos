@@ -139,8 +139,7 @@ abstract class IngestProducer(args: Array[String])
             new Instant(),
             StreamRef.Append)
 
-          0
-            .until(messages)
+          0.until(messages)
             .foreach { i =>
               if (i % 10 == 0 && verbose)
                 println("Sending to [%s]: %d".format(path, i))

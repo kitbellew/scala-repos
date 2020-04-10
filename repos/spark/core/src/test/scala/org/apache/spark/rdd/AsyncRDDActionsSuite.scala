@@ -69,8 +69,7 @@ class AsyncRDDActionsSuite
     zeroPartRdd.foreachAsync(i => Unit).get()
 
     val accum = sc.accumulator(0)
-    sc
-      .parallelize(1 to 1000, 3)
+    sc.parallelize(1 to 1000, 3)
       .foreachAsync { i =>
         accum += 1
       }
@@ -82,8 +81,7 @@ class AsyncRDDActionsSuite
     zeroPartRdd.foreachPartitionAsync(iter => Unit).get()
 
     val accum = sc.accumulator(0)
-    sc
-      .parallelize(1 to 1000, 9)
+    sc.parallelize(1 to 1000, 9)
       .foreachPartitionAsync { iter =>
         accum += 1
       }

@@ -790,8 +790,7 @@ trait Iteratee[E, +A] {
 
     def recoveringIteratee(it: Iteratee[E, A]): Iteratee[E, B] = {
       val futureRecoveringIteratee: Future[Iteratee[E, B]] =
-        it
-          .pureFlatFold[E, B] {
+        it.pureFlatFold[E, B] {
             case Step.Cont(k) =>
               Cont { input: Input[E] =>
                 val orig: Iteratee[E, A] = k(input)

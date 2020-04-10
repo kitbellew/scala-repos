@@ -9,8 +9,7 @@ object Test {
     self: C =>
     class Namer1(val x: X) {
       val m: Sym = null
-      x
-        .cu
+      x.cu
         .obj
         . /* line: 15 */ foo(
           m

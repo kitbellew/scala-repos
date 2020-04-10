@@ -15,8 +15,7 @@ package client {
     def this(ws: WSClient) = this(ws, "https://api.github.com")
 
     def repositories(): Future[Seq[String]] = {
-      ws
-        .url(baseUrl + "/repositories")
+      ws.url(baseUrl + "/repositories")
         .get()
         .map { response =>
           (response.json \\ "full_name").map(_.as[String])

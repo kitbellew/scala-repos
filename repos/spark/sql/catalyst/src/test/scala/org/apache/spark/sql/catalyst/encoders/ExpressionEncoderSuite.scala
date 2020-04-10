@@ -357,8 +357,7 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
         val types =
           convertedBack match {
             case c: Product =>
-              c
-                .productIterator
+              c.productIterator
                 .filter(_ != null)
                 .map(_.getClass.getName)
                 .mkString(",")

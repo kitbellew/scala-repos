@@ -301,8 +301,8 @@ class GroupManager @Singleton @Inject() (
           .app(app.id)
           .map(
             _.portNumbers
-            .filter(p =>
-              portRange.contains(p) && !app.servicePorts.contains(p)))
+              .filter(p =>
+                portRange.contains(p) && !app.servicePorts.contains(p)))
           .getOrElse(Nil): _*)
 
       def nextFreeAppPort: Int =

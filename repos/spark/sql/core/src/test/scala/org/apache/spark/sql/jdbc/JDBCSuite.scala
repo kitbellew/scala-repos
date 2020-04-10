@@ -684,8 +684,7 @@ class JDBCSuite
       .read
       .jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
     assert(
-      df
-        .schema
+      df.schema
         .filter(_.dataType != org.apache.spark.sql.types.StringType)
         .isEmpty)
     val rows = df.collect()
@@ -889,8 +888,7 @@ class JDBCSuite
         assert(!List("testPass", "testUser").exists(r.toString.contains))
       }
     // test the JdbcRelation toString output
-    df
-      .queryExecution
+    df.queryExecution
       .analyzed
       .collect {
         case r: LogicalRelation =>

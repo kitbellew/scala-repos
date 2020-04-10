@@ -60,8 +60,8 @@ object Encoder {
   private[coding] def isCompressible(msg: HttpMessage): Boolean =
     msg.entity.contentType.mediaType.isCompressible
 
-  private[coding] val isContentEncodingHeader: HttpHeader ⇒ Boolean =
-    _.isInstanceOf[`Content-Encoding`]
+  private[coding] val isContentEncodingHeader: HttpHeader ⇒ Boolean = _
+    .isInstanceOf[`Content-Encoding`]
 }
 
 /** A stateful object representing ongoing compression. */

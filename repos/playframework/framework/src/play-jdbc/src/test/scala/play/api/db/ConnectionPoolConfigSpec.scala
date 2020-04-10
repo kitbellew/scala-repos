@@ -15,8 +15,7 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
         "db.other.driver" -> "org.h2.Driver",
         "db.other.url" -> "jdbc:h2:mem:other")) {
       val db = app.injector.instanceOf[DBApi]
-      db
-        .database("default")
+      db.database("default")
         .withConnection { c =>
           c.getClass.getName must contain("hikari")
         }
@@ -29,8 +28,7 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
         "db.other.driver" -> "org.h2.Driver",
         "db.other.url" -> "jdbc:h2:mem:other")) {
       val db = app.injector.instanceOf[DBApi]
-      db
-        .database("default")
+      db.database("default")
         .withConnection { c =>
           c.getClass.getName must contain("hikari")
         }
@@ -43,8 +41,7 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
         "db.other.driver" -> "org.h2.Driver",
         "db.other.url" -> "jdbc:h2:mem:other")) {
       val db = app.injector.instanceOf[DBApi]
-      db
-        .database("default")
+      db.database("default")
         .withConnection { c =>
           c.getClass.getName must contain("bonecp")
         }
@@ -75,8 +72,7 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
         "db.other.driver" -> "org.h2.Driver",
         "db.other.url" -> "jdbc:h2:mem:other"))) {
       val db = app.injector.instanceOf[DBApi]
-      db
-        .database("default")
+      db.database("default")
         .withConnection { c =>
           c.getClass.getName must contain("bonecp")
         }

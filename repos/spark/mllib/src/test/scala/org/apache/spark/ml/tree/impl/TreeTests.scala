@@ -132,8 +132,7 @@ private[ml] object TreeTests extends SparkFunSuite {
     */
   def checkEqual(a: TreeEnsembleModel, b: TreeEnsembleModel): Unit = {
     try {
-      a
-        .trees
+      a.trees
         .zip(b.trees)
         .foreach {
           case (treeA, treeB) =>

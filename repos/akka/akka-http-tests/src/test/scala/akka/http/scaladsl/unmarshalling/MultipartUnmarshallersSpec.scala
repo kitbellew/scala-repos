@@ -541,13 +541,12 @@ class MultipartUnmarshallersSpec
       parts: Multipart.BodyPart.Strict*): Matcher[Future[T]] =
     equal(parts).matcher[Seq[Multipart.BodyPart.Strict]] compose { x ⇒
       Await.result(
-        x
-          .fast
+        x.fast
           .flatMap {
             _.parts
-            .mapAsync(Int.MaxValue)(_ toStrict 1.second)
-            .grouped(100)
-            .runWith(Sink.head)
+              .mapAsync(Int.MaxValue)(_ toStrict 1.second)
+              .grouped(100)
+              .runWith(Sink.head)
           }
           .fast
           .recover {

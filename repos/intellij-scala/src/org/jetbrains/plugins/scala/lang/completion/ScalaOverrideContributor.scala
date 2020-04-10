@@ -260,8 +260,7 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
         val lookupItem = LookupElementBuilder
           .create(mm.getElement, name(mm, td))
           .withIcon(
-            mm
-              .getPsiElement
+            mm.getPsiElement
               .getIcon(ICON_FLAG_VISIBILITY | ICON_FLAG_READ_STATUS))
           .withInsertHandler(insertionHandler(mm))
 

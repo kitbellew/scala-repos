@@ -438,8 +438,7 @@ object WorksheetEditorPrinter {
         case group =>
           new CaretAdapter {
             override def caretPositionChanged(e: CaretEvent) {
-              if (!e
-                    .getEditor
+              if (!e.getEditor
                     .asInstanceOf[EditorImpl]
                     .getContentComponent
                     .hasFocus)
@@ -459,8 +458,7 @@ object WorksheetEditorPrinter {
           }
       } getOrElse new CaretAdapter {
         override def caretPositionChanged(e: CaretEvent) {
-          if (!e
-                .getEditor
+          if (!e.getEditor
                 .asInstanceOf[EditorImpl]
                 .getContentComponent
                 .hasFocus)

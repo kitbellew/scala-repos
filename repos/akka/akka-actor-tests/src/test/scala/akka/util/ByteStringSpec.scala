@@ -450,8 +450,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
             a.asByteBuffers.size > 0
         }
         check { (a: ByteString) ⇒
-          a
-            .asByteBuffers
+          a.asByteBuffers
             .foldLeft(ByteString.empty) { (bs, bb) ⇒
               bs ++ ByteString(bb)
             } == a
@@ -461,8 +460,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         }
         check { (a: ByteString) ⇒
           import scala.collection.JavaConverters.iterableAsScalaIterableConverter;
-          a
-            .asByteBuffers
+          a.asByteBuffers
             .zip(a.getByteBuffers().asScala)
             .forall(x ⇒ x._1 == x._2)
         }

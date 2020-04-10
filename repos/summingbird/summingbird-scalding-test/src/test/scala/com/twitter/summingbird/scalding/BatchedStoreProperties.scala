@@ -286,8 +286,7 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
 
           mergeResult match {
             case Left(l) => {
-              l
-                .mkString
+              l.mkString
                 .contains("readTimespan is not convering at least one batch")
                 .label("fail with right reason")
             }

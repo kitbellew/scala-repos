@@ -282,14 +282,16 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     */
   def unsafePerformRetryAccumulating(
       delays: Seq[Duration],
-      p: (Throwable => Boolean) = _.isInstanceOf[Exception])
-      : Task[(A, List[Throwable])] = unsafeRetryInternal(delays, p, true)
+      p: (Throwable => Boolean) = _
+        .isInstanceOf[Exception]): Task[(A, List[Throwable])] =
+    unsafeRetryInternal(delays, p, true)
 
   @deprecated("use unsafePerformRetryAccumulating", "7.2")
   def retryAccumulating(
       delays: Seq[Duration],
-      p: (Throwable => Boolean) = _.isInstanceOf[Exception])
-      : Task[(A, List[Throwable])] = unsafePerformRetryAccumulating(delays, p)
+      p: (Throwable => Boolean) = _
+        .isInstanceOf[Exception]): Task[(A, List[Throwable])] =
+    unsafePerformRetryAccumulating(delays, p)
 
   /**
     * Retries this task if it fails, once for each element in `delays`,

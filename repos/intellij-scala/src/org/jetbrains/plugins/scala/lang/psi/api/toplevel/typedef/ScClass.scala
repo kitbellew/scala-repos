@@ -147,8 +147,7 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
                 .parameterList
                 .clauses
                 .map(c =>
-                  c
-                    .parameters
+                  c.parameters
                     .map(p =>
                       p.name + " : " +
                         p.typeElement.fold("Any")(_.getText) +

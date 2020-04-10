@@ -59,8 +59,7 @@ object Validation {
     Json.obj(
       "message" -> "Object is not valid",
       "details" -> {
-        f
-          .violations
+        f.violations
           .flatMap(allRuleViolationsWithFullDescription(_))
           .groupBy(_.description)
           .map {
@@ -96,8 +95,7 @@ object Validation {
       case r: RuleViolation =>
         Set(
           parentDesc.map { p =>
-            r
-              .description
+            r.description
               .map {
                 // Error is on object level, having a parent description. Omit 'value', prepend '/' as root.
                 case "value" =>
@@ -110,8 +108,7 @@ object Validation {
               } getOrElse r.withDescription("/" + p)
           } getOrElse {
             r.withDescription(
-              r
-                .description
+              r.description
                 .map {
                   // Error is on object level, having no parent description, being a root error.
                   case "value" =>
@@ -122,8 +119,7 @@ object Validation {
                 } getOrElse "/")
           })
       case g: GroupViolation =>
-        g
-          .children
+        g.children
           .flatMap { c =>
             val dot =
               g.value match {

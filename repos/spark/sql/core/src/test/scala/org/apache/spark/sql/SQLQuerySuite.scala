@@ -267,8 +267,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     val df = sql(sqlText)
     // First, check if we have GeneratedAggregate.
     val hasGeneratedAgg =
-      df
-        .queryExecution
+      df.queryExecution
         .sparkPlan
         .collect {
           case _: aggregate.TungstenAggregate =>
@@ -1609,8 +1608,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       sql("select interval")
     }
     assert(
-      e1
-        .message
+      e1.message
         .contains(
           "at least one time unit should be given for interval literal"))
     // Currently we don't yet support nanosecond

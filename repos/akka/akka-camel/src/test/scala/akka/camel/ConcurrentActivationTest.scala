@@ -213,8 +213,7 @@ class EchoConsumer(endpoint: String) extends Actor with Consumer {
     */
   override def onRouteDefinition =
     (rd: RouteDefinition) ⇒
-      rd
-        .onException(classOf[Exception])
+      rd.onException(classOf[Exception])
         .handled(true)
         .transform(Builder.exceptionMessage)
         .end

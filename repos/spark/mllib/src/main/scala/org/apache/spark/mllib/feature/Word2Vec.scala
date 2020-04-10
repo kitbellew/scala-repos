@@ -700,8 +700,7 @@ object Word2VecModel extends Loader[Word2VecModel] {
           case (w, v) =>
             Data(w, v)
         }
-      sc
-        .parallelize(dataArray.toSeq, nPartitions)
+      sc.parallelize(dataArray.toSeq, nPartitions)
         .toDF()
         .write
         .parquet(Loader.dataPath(path))

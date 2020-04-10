@@ -270,8 +270,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     def a3 =
       for {
         _ <-
-          q2
-            .result
+          q2.result
             .named("More elaborate query")
             .map(_.toSet)
             .map { r2 =>
@@ -281,8 +280,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
                 ("Colombian_Decaf", "Acme, Inc."))
             }
         _ <-
-          q3
-            .result
+          q3.result
             .named("Lifting scalar values")
             .map(_.toSet)
             .map { r3 =>
@@ -414,8 +412,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
               ("Espresso", 150, 0),
               ("French_Roast_Decaf", 49, 0))
           },
-        q7
-          .result
+        q7.result
           .named("Union")
           .map(_.toSet)
           .map { r7 =>
@@ -468,8 +465,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
               ("Espresso", 150, 2),
               ("French_Roast_Decaf", 49, 2))
           },
-        q8
-          .result
+        q8.result
           .named("Outer join")
           .map(_.toSet)
           .map { r8 =>

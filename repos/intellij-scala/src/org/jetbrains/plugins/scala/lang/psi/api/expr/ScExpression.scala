@@ -367,8 +367,7 @@ trait ScExpression
                   case p: ScPrefixExpr =>
                     p.operand match {
                       case l: ScLiteral =>
-                        l
-                          .getNode
+                        l.getNode
                           .getFirstChildNode
                           .getElementType == ScalaTokenTypes.tINTEGER &&
                           Set("+", "-").contains(p.operation.getText)
@@ -594,8 +593,7 @@ trait ScExpression
           .map {
             case (u, index) =>
               val tpe =
-                u
-                  .getNonValueType(TypingContext.empty, ignoreBaseType)
+                u.getNonValueType(TypingContext.empty, ignoreBaseType)
                   .getOrAny
                   .inferValueType
                   .unpackedType

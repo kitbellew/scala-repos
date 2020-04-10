@@ -6,12 +6,10 @@ object Test extends App {
   def test[T: ClassTag: TypeTag](x: T) = {
     println(s"========${classTag[T].runtimeClass}========")
     println(
-      cm
-        .reflect(x)
+      cm.reflect(x)
         .reflectMethod(typeOf[T].member(TermName("getClass")).asMethod)())
     println(
-      cm
-        .reflect(x)
+      cm.reflect(x)
         .reflectMethod(typeOf[T].member(TermName("toString")).asMethod)())
   }
 

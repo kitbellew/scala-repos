@@ -88,16 +88,14 @@ class ScalaLanguageConsole(project: Project, title: String)
       .getChildren
       .foreach {
         case v: ScValue =>
-          v
-            .declaredElements
+          v.declaredElements
             .foreach(td =>
               addValue(
                 td.name,
                 td.nameId.getTextRange,
                 replaceWithPlaceholder = true))
         case v: ScVariable =>
-          v
-            .declaredElements
+          v.declaredElements
             .foreach(td =>
               addValue(
                 td.name,

@@ -124,8 +124,7 @@ private[akka] class DistributedPubSubMessageSerializer(
   private def addressToProto(address: Address): dm.Address.Builder =
     address match {
       case Address(protocol, system, Some(host), Some(port)) ⇒
-        dm
-          .Address
+        dm.Address
           .newBuilder()
           .setSystem(system)
           .setHostname(host)
@@ -149,8 +148,7 @@ private[akka] class DistributedPubSubMessageSerializer(
         .versions
         .map {
           case (a, v) ⇒
-            dm
-              .Status
+            dm.Status
               .Version
               .newBuilder()
               .setAddress(addressToProto(a))
@@ -178,8 +176,7 @@ private[akka] class DistributedPubSubMessageSerializer(
         .buckets
         .map { b ⇒
           val entries =
-            b
-              .content
+            b.content
               .map {
                 case (key, value) ⇒
                   val b = dm
@@ -196,8 +193,7 @@ private[akka] class DistributedPubSubMessageSerializer(
               .toVector
               .asJava
 
-          dm
-            .Delta
+          dm.Delta
             .Bucket
             .newBuilder()
             .setOwner(addressToProto(b.owner))
@@ -221,8 +217,7 @@ private[akka] class DistributedPubSubMessageSerializer(
         .toVector
         .map { b ⇒
           val content: TreeMap[String, ValueHolder] =
-            b
-              .getContentList
+            b.getContentList
               .asScala
               .map { entry ⇒
                 entry.getKey -> ValueHolder(
@@ -240,8 +235,7 @@ private[akka] class DistributedPubSubMessageSerializer(
   }
 
   private def sendToProto(send: Send): dm.Send = {
-    dm
-      .Send
+    dm.Send
       .newBuilder()
       .setPath(send.path)
       .setLocalAffinity(send.localAffinity)
@@ -256,8 +250,7 @@ private[akka] class DistributedPubSubMessageSerializer(
     Send(send.getPath, payloadFromProto(send.getPayload), send.getLocalAffinity)
 
   private def sendToAllToProto(sendToAll: SendToAll): dm.SendToAll = {
-    dm
-      .SendToAll
+    dm.SendToAll
       .newBuilder()
       .setPath(sendToAll.path)
       .setAllButSelf(sendToAll.allButSelf)
@@ -275,8 +268,7 @@ private[akka] class DistributedPubSubMessageSerializer(
       sendToAll.getAllButSelf)
 
   private def publishToProto(publish: Publish): dm.Publish = {
-    dm
-      .Publish
+    dm.Publish
       .newBuilder()
       .setTopic(publish.topic)
       .setPayload(payloadToProto(publish.msg))

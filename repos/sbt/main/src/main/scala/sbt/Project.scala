@@ -757,11 +757,11 @@ object Project extends ProjectExtra {
         .get(c)
         .map(
           _.settings
-          .flatMap(s =>
-            if (s.isDerived)
-              s.dependencies
-            else
-              Nil))
+            .flatMap(s =>
+              if (s.isDerived)
+                s.dependencies
+              else
+                Nil))
         .toList
         .flatten
 

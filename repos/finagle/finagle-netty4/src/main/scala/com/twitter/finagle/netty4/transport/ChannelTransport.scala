@@ -131,8 +131,7 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
 
   override def toString = s"Transport<channel=$ch, onClose=$closed>"
 
-  ch
-    .pipeline()
+  ch.pipeline()
     .addLast(
       "finagleChannelTransport",
       new SimpleChannelInboundHandler[Out]() {

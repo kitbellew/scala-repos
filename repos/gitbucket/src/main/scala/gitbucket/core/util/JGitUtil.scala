@@ -841,8 +841,7 @@ object JGitUtil {
               )
             }
             .map { e =>
-              e
-                .getValue
+              e.getValue
                 .getName
                 .substring(org.eclipse.jgit.lib.Constants.R_HEADS.length)
             }
@@ -872,8 +871,7 @@ object JGitUtil {
               )
             }
             .map { e =>
-              e
-                .getValue
+              e.getValue
                 .getName
                 .substring(org.eclipse.jgit.lib.Constants.R_TAGS.length)
             }

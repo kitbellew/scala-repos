@@ -177,13 +177,14 @@ class MergeToComprehensions extends Phase {
               val targets = leakedPaths.map(_.foldLeft(b2)(_ select _))
               targets.indexWhere(
                 _.findNode {
-                  case _: QueryParameter =>
-                    true
-                  case n: LiteralNode =>
-                    n.volatileHint
-                  case _ =>
-                    false
-                }.isDefined) >= 0
+                    case _: QueryParameter =>
+                      true
+                    case n: LiteralNode =>
+                      n.volatileHint
+                    case _ =>
+                      false
+                  }
+                  .isDefined) >= 0
             })
             if (isParam) {
               logger.debug(
@@ -406,8 +407,7 @@ class MergeToComprehensions extends Phase {
             c.select match {
               // Ensure that the select clause is non-empty
               case Pure(StructNode(ConstArray.empty), _) =>
-                c
-                  .copy(select = Pure(
+                c.copy(select = Pure(
                     StructNode(ConstArray((new AnonSymbol, LiteralNode(1))))))
                   .infer()
               case _ =>

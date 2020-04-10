@@ -863,8 +863,7 @@ private trait Tuple5Cozip[A1, A2, A3, A4] extends Cozip[(A1, A2, A3, A4, ?)] {
 private trait Tuple6Cozip[A1, A2, A3, A4, A5]
     extends Cozip[(A1, A2, A3, A4, A5, ?)] {
   override def cozip[A, B](x: (A1, A2, A3, A4, A5, A \/ B)) =
-    x
-      ._6
+    x._6
       .bimap(
         (x._1, x._2, x._3, x._4, x._5, _),
         (x._1, x._2, x._3, x._4, x._5, _))
@@ -872,8 +871,7 @@ private trait Tuple6Cozip[A1, A2, A3, A4, A5]
 private trait Tuple7Cozip[A1, A2, A3, A4, A5, A6]
     extends Cozip[(A1, A2, A3, A4, A5, A6, ?)] {
   override def cozip[A, B](x: (A1, A2, A3, A4, A5, A6, A \/ B)) =
-    x
-      ._7
+    x._7
       .bimap(
         (x._1, x._2, x._3, x._4, x._5, x._6, _),
         (x._1, x._2, x._3, x._4, x._5, x._6, _))
@@ -881,8 +879,7 @@ private trait Tuple7Cozip[A1, A2, A3, A4, A5, A6]
 private trait Tuple8Cozip[A1, A2, A3, A4, A5, A6, A7]
     extends Cozip[(A1, A2, A3, A4, A5, A6, A7, ?)] {
   override def cozip[A, B](x: (A1, A2, A3, A4, A5, A6, A7, A \/ B)) =
-    x
-      ._8
+    x._8
       .bimap(
         (x._1, x._2, x._3, x._4, x._5, x._6, x._7, _),
         (x._1, x._2, x._3, x._4, x._5, x._6, x._7, _))

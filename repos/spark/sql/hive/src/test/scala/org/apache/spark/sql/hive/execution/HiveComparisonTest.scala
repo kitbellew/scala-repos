@@ -575,8 +575,7 @@ abstract class HiveComparisonTest
                       .zip(executions)
                       .flatMap {
                         case (q, e) =>
-                          e
-                            .sparkPlan
+                          e.sparkPlan
                             .collect {
                               case i: InsertIntoHiveTable
                                   if tablesRead contains i.table.tableName =>

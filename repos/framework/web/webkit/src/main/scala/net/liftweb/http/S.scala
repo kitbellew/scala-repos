@@ -675,8 +675,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def highLevelSessionDispatchList: List[DispatchHolder] =
     session map (
       _.highLevelSessionDispatcher
-      .toList
-      .map(t => DispatchHolder(t._1, t._2))) openOr Nil
+        .toList
+        .map(t => DispatchHolder(t._1, t._2))) openOr Nil
 
   /**
     * Adds a dispatch function for the current session, as opposed to a global
@@ -974,12 +974,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
     if (cometVersions.nonEmpty) {
       List(
-        js
-          .JE
+        js.JE
           .Call(
             "lift.registerComets",
-            js
-              .JE
+            js.JE
               .JsObj(
                 cometVersions
                   .toList
@@ -3372,8 +3370,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def idMessages(
       f: => List[(NodeSeq, Box[String])]): List[(String, List[NodeSeq])] = {
     val res = new HashMap[String, List[NodeSeq]]
-    f
-      .filter(_._2.isEmpty == false)
+    f.filter(_._2.isEmpty == false)
       .foreach(
         _ match {
           case (node, id) =>

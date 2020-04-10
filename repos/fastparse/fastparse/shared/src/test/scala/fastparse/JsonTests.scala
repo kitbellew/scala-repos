@@ -4,14 +4,15 @@ import all._
 import utest._
 
 /**
- * A complete, self-contained JSON parser that parses the JSON
- * but does not build an AST. Demonstrates the use of `~/` cuts
- * to provide excellent error-reporting almost for free
- */
-object JsonTests extends TestSuite{
+  * A complete, self-contained JSON parser that parses the JSON
+  * but does not build an AST. Demonstrates the use of `~/` cuts
+  * to provide excellent error-reporting almost for free
+  */
+object JsonTests extends TestSuite {
+
   /**
-   * A very small, very simple JSON AST
-   */
+    * A very small, very simple JSON AST
+    */
   object Js {
     sealed trait Val extends Any {
       def value: Any
@@ -23,18 +24,18 @@ object JsonTests extends TestSuite{
     case class Obj(value: (java.lang.String, Val)*) extends AnyVal with Val
     case class Arr(value: Val*) extends AnyVal with Val
     case class Num(value: Double) extends AnyVal with Val
-    case object False extends Val{
+    case object False extends Val {
       def value = false
     }
-    case object True extends Val{
+    case object True extends Val {
       def value = true
     }
-    case object Null extends Val{
+    case object Null extends Val {
       def value = null
     }
   }
 
-  case class NamedFunction[T, V](f: T => V, name: String) extends (T => V){
+  case class NamedFunction[T, V](f: T => V, name: String) extends (T => V) {
     def apply(t: T) = f(t)
     override def toString() = name
 
@@ -44,48 +45,47 @@ object JsonTests extends TestSuite{
   val Digits = NamedFunction('0' to '9' contains (_: Char), "Digits")
   val StringChars = NamedFunction(!"\"\\".contains(_: Char), "StringChars")
 
-  val space         = P( CharsWhile(Whitespace).? )
-  val digits        = P( CharsWhile(Digits))
-  val exponent      = P( CharIn("eE") ~ CharIn("+-").? ~ digits )
-  val fractional    = P( "." ~ digits )
-  val integral      = P( "0" | CharIn('1' to '9') ~ digits.? )
+  val space = P(CharsWhile(Whitespace).?)
+  val digits = P(CharsWhile(Digits))
+  val exponent = P(CharIn("eE") ~ CharIn("+-").? ~ digits)
+  val fractional = P("." ~ digits)
+  val integral = P("0" | CharIn('1' to '9') ~ digits.?)
 
-  val number = P( CharIn("+-").? ~ integral ~ fractional.? ~ exponent.? ).!.map(
-    x => Js.Num(x.toDouble)
-  )
+  val number = P(CharIn("+-").? ~ integral ~ fractional.? ~ exponent.?)
+    .!
+    .map(x => Js.Num(x.toDouble))
 
-  val `null`        = P( "null" ).map(_ => Js.Null)
-  val `false`       = P( "false" ).map(_ => Js.False)
-  val `true`        = P( "true" ).map(_ => Js.True)
+  val `null` = P("null").map(_ => Js.Null)
+  val `false` = P("false").map(_ => Js.False)
+  val `true` = P("true").map(_ => Js.True)
 
-  val hexDigit      = P( CharIn('0'to'9', 'a'to'f', 'A'to'F') )
-  val unicodeEscape = P( "u" ~ hexDigit ~ hexDigit ~ hexDigit ~ hexDigit )
-  val escape        = P( "\\" ~ (CharIn("\"/\\bfnrt") | unicodeEscape) )
+  val hexDigit = P(CharIn('0' to '9', 'a' to 'f', 'A' to 'F'))
+  val unicodeEscape = P("u" ~ hexDigit ~ hexDigit ~ hexDigit ~ hexDigit)
+  val escape = P("\\" ~ (CharIn("\"/\\bfnrt") | unicodeEscape))
 
-  val strChars = P( CharsWhile(StringChars) )
-  val string =
-    P( space ~ "\"" ~/ (strChars | escape).rep.! ~ "\"").map(Js.Str)
+  val strChars = P(CharsWhile(StringChars))
+  val string = P(space ~ "\"" ~/ (strChars | escape).rep.! ~ "\"").map(Js.Str)
 
-  val array =
-    P( "[" ~/ jsonExpr.rep(sep=",".~/) ~ space ~ "]").map(Js.Arr(_:_*))
+  val array = P("[" ~/ jsonExpr.rep(sep = ",".~/) ~ space ~ "]")
+    .map(Js.Arr(_: _*))
 
-  val pair = P( string.map(_.value) ~/ ":" ~/ jsonExpr )
+  val pair = P(string.map(_.value) ~/ ":" ~/ jsonExpr)
 
-  val obj =
-    P( "{" ~/ pair.rep(sep=",".~/) ~ space ~ "}").map(Js.Obj(_:_*))
+  val obj = P("{" ~/ pair.rep(sep = ",".~/) ~ space ~ "}").map(Js.Obj(_: _*))
 
   val jsonExpr: P[Js.Val] = P(
-    space ~ (obj | array | string | `true` | `false` | `null` | number) ~ space
-  )
+    space ~ (obj | array | string | `true` | `false` | `null` | number) ~ space)
 
-  val tests = TestSuite{
+  val tests = TestSuite {
     'pass {
-      def test(p: P[_], s: String) = p.parse(s) match{
-        case Parsed.Success(v, i) =>
-          val expectedIndex = s.length
-          assert(i == expectedIndex)
-        case f: Parsed.Failure => throw new Exception(f.extra.traced.fullStack.mkString("\n"))
-      }
+      def test(p: P[_], s: String) =
+        p.parse(s) match {
+          case Parsed.Success(v, i) =>
+            val expectedIndex = s.length
+            assert(i == expectedIndex)
+          case f: Parsed.Failure =>
+            throw new Exception(f.extra.traced.fullStack.mkString("\n"))
+        }
 
       'parts {
         * - test(number, "12031.33123E-2")
@@ -94,12 +94,14 @@ object JsonTests extends TestSuite{
         * - test(obj, """{"omg": "123", "wtf": 456, "bbq": "789"}""")
       }
       'jsonExpr - {
-        val Parsed.Success(value, _) = jsonExpr.parse(
-          """{"omg": "123", "wtf": 12.4123}"""
-        )
-        assert(value == Js.Obj("omg" -> Js.Str("123"), "wtf" -> Js.Num(12.4123)))
+        val Parsed.Success(value, _) = jsonExpr
+          .parse("""{"omg": "123", "wtf": 12.4123}""")
+        assert(
+          value == Js.Obj("omg" -> Js.Str("123"), "wtf" -> Js.Num(12.4123)))
       }
-      'bigJsonExpr - test(jsonExpr, """
+      'bigJsonExpr - test(
+        jsonExpr,
+        """
             {
                 "firstName": "John",
                 "lastName": "Smith",
@@ -121,12 +123,14 @@ object JsonTests extends TestSuite{
                     }
                 ]
             }
-      """)
+      """
+      )
     }
-    'fail{
+    'fail {
       def check(s: String, expectedError: String) = {
-        jsonExpr.parse(s) match{
-          case s: Parsed.Success[_] => throw new Exception("Parsing should have failed:")
+        jsonExpr.parse(s) match {
+          case s: Parsed.Success[_] =>
+            throw new Exception("Parsing should have failed:")
           case f: Parsed.Failure =>
             val error = f.extra.traced.trace
             val expected = expectedError.trim

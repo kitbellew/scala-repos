@@ -58,8 +58,7 @@ class WholeTextFileRecordReaderSuite
 
     // Set the block size of local file system to test whether files are split right or not.
     sc.hadoopConfiguration.setLong("fs.local.block.size", 32)
-    sc
-      .hadoopConfiguration
+    sc.hadoopConfiguration
       .set(
         "io.compression.codecs",
         "org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec")

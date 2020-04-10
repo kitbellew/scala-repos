@@ -247,8 +247,7 @@ object ScalaApplicationConfigurationProducer {
               case o: ScObject =>
                 for {
                   wrapper <-
-                    f
-                      .getFunctionWrappers(isStatic = true, isInterface = false)
+                    f.getFunctionWrappers(isStatic = true, isInterface = false)
                       .headOption
                   if PsiMethodUtil.isMainMethod(wrapper)
                 } yield wrapper

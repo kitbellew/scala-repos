@@ -656,8 +656,7 @@ trait ColumnarTableModule[M[+_]]
                 groupKeyProjections.map(_._1))
             }
         }
-      )
-        .sequence
+      ).sequence
         .flatMap { sourceKeys =>
           val fullSchema = sourceKeys.flatMap(_.keySchema).distinct
 

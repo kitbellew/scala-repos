@@ -102,8 +102,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
               .functions
               .flatMap {
                 case f: ScFunction =>
-                  f
-                    .parameters
+                  f.parameters
                     .headOption
                     .flatMap(_.getType(TypingContext.empty).toOption)
                     .flatMap(tp => isProperTpt(tp)) match {
@@ -183,8 +182,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                             }
                           }
                           def clauseText(p: ScParameterClause): String = {
-                            p
-                              .parameters
+                            p.parameters
                               .map(paramText)
                               .mkString(
                                 "(" + (

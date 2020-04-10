@@ -57,8 +57,7 @@ package object client {
     new (Future ~> Response) {
       def apply[A](fa: Future[A]): Response[A] =
         EitherT.eitherT(
-          fa
-            .map(\/.right)
+          fa.map(\/.right)
             .recoverWith {
               case ClientException(msg) =>
                 M.point(\/.left[String, A](msg))

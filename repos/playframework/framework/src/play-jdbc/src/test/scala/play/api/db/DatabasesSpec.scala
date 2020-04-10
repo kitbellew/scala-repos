@@ -84,11 +84,9 @@ object DatabasesSpec extends Specification {
       val c2 = db.getConnection
 
       try {
-        c1
-          .createStatement
+        c1.createStatement
           .execute("create table test (id bigint not null, name varchar(255))")
-        c1
-          .createStatement
+        c1.createStatement
           .execute("insert into test (id, name) values (1, 'alice')")
         val results = c2.createStatement.executeQuery("select * from test")
         results.next must beTrue
@@ -103,11 +101,9 @@ object DatabasesSpec extends Specification {
       val db = Databases.inMemory(name = "test-withConnection")
 
       db.withConnection { c =>
-        c
-          .createStatement
+        c.createStatement
           .execute("create table test (id bigint not null, name varchar(255))")
-        c
-          .createStatement
+        c.createStatement
           .execute("insert into test (id, name) values (1, 'alice')")
         val results = c.createStatement.executeQuery("select * from test")
         results.next must beTrue
@@ -119,11 +115,9 @@ object DatabasesSpec extends Specification {
       val db = Databases.inMemory(name = "test-withTransaction")
 
       db.withTransaction { c =>
-        c
-          .createStatement
+        c.createStatement
           .execute("create table test (id bigint not null, name varchar(255))")
-        c
-          .createStatement
+        c.createStatement
           .execute("insert into test (id, name) values (1, 'alice')")
       }
 
@@ -134,8 +128,7 @@ object DatabasesSpec extends Specification {
       }
 
       db.withTransaction { c =>
-        c
-          .createStatement
+        c.createStatement
           .execute("insert into test (id, name) values (2, 'bob')")
         throw new RuntimeException("boom")
         success

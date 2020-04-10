@@ -209,15 +209,13 @@ class ScalaFindUsagesHandler(
                 if (!super.processElementUsages(fun, processor, options))
                   return false
               case v: ScValue =>
-                v
-                  .declaredElements
+                v.declaredElements
                   .foreach { d =>
                     if (!super.processElementUsages(d, processor, options))
                       return false
                   }
               case v: ScVariable =>
-                v
-                  .declaredElements
+                v.declaredElements
                   .foreach { d =>
                     if (!super.processElementUsages(d, processor, options))
                       return false

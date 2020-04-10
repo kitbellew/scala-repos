@@ -195,7 +195,7 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
               .values
               .forall(
                 _.values
-                .forall(_.featureSubset.get.size === numFeaturesPerNode)),
+                  .forall(_.featureSubset.get.size === numFeaturesPerNode)),
             failString)
         }
       }

@@ -18,8 +18,7 @@ class JavaMutatorMethodOverridenAsParameterlessInspection
 
   def actionFor(holder: ProblemsHolder) = {
     case f: ScFunction if f.isParameterless =>
-      f
-        .superMethods
+      f.superMethods
         .headOption match { // f.superMethod returns None for some reason
         case Some(_: ScalaPsiElement) => // do nothing
         case Some(method) if method.isMutator =>

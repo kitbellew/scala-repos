@@ -59,8 +59,7 @@ trait ScopeAnnotator {
     }
     element match {
       case f: ScForStatement =>
-        f
-          .enumerators
+        f.enumerators
           .foreach {
             case enumerator =>
               val elements = new ArrayBuffer[PsiElement]()
@@ -100,24 +99,24 @@ trait ScopeAnnotator {
           .children
           .foreach {
             _.depthFirst(!_.isScope)
-            .foreach {
-              case e: ScObject =>
-                objects ::= e
-              case e: ScFunction =>
-                if (e.typeParameters.isEmpty)
+              .foreach {
+                case e: ScObject =>
+                  objects ::= e
+                case e: ScFunction =>
+                  if (e.typeParameters.isEmpty)
+                    terms ::= e
+                case e: ScTypedDefinition =>
                   terms ::= e
-              case e: ScTypedDefinition =>
-                terms ::= e
-              case e: ScTypeAlias =>
-                types ::= e
-              case e: ScTypeParam =>
-                types ::= e
-              case e: ScClass if e.isCase =>
-                caseClasses ::= e
-              case e: ScTypeDefinition =>
-                types ::= e
-              case _ =>
-            }
+                case e: ScTypeAlias =>
+                  types ::= e
+                case e: ScTypeParam =>
+                  types ::= e
+                case e: ScClass if e.isCase =>
+                  caseClasses ::= e
+                case e: ScTypeDefinition =>
+                  types ::= e
+                case _ =>
+              }
           }
     }
 
@@ -142,8 +141,7 @@ trait ScopeAnnotator {
     if (f.parameters.isEmpty)
       ""
     else
-      f
-        .paramClauses
+      f.paramClauses
         .clauses
         .map(clause => format(clause.parameters, clause.paramTypes))
         .mkString

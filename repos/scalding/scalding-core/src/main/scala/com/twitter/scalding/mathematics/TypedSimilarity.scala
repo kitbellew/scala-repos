@@ -90,8 +90,7 @@ object GraphOperations extends Serializable {
       val norm = scala
         .math
         .sqrt(
-          it
-            .iterator
+          it.iterator
             .map { a =>
               val x = a.data.weight
               x * x
@@ -162,8 +161,7 @@ object TypedSimilarity extends Serializable {
      */
     // First compute (i,j) => E_{ki} E_{kj}
     maybeWithReducers(
-      g
-        .join(g)
+      g.join(g)
         .values
         .flatMap {
           case ((node1, deg1), (node2, deg2)) =>
@@ -227,8 +225,7 @@ object TypedSimilarity extends Serializable {
         .values
         .group,
       smallG.reducers
-    )
-      .forceToReducers
+    ).forceToReducers
       .sum
       .map {
         case ((node1, node2), sim) =>
@@ -280,8 +277,7 @@ object TypedSimilarity extends Serializable {
         .values
         .group,
       smallG.reducers
-    )
-      .forceToReducers
+    ).forceToReducers
       .sum
       .map {
         case ((node1, node2), sim) =>
@@ -314,8 +310,7 @@ class ExactInCosine[N](reducers: Int = -1)(implicit
     TypedSimilarity
       .exactSetSimilarity(groupedOnSrc, smallpred, bigpred)
       .flatMap { e =>
-        e
-          .data
+        e.data
           .cosine
           .map { c =>
             e.mapData { s =>

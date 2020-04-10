@@ -89,8 +89,7 @@ object DateProperties extends Properties("Date Properties") {
 
   property("each output is contained") = forAll { (dr: DateRange) =>
     val r = divDur(dr.end - dr.start, 10)
-    dr
-      .each(r)
+    dr.each(r)
       .forall {
         dr.contains(_)
       }
@@ -154,16 +153,15 @@ object DateProperties extends Properties("Date Properties") {
     ).r
 
   def matches(l: List[String], arg: String): Int =
-    l
-      .map {
+    l.map {
         toRegex _
       }
       .map {
         _.findFirstMatchIn(arg)
-        .map { _ =>
-          1
-        }
-        .getOrElse(0)
+          .map { _ =>
+            1
+          }
+          .getOrElse(0)
       }
       .sum
 
@@ -174,8 +172,7 @@ object DateProperties extends Properties("Date Properties") {
     (dr: DateRange) =>
       val globbed = glob.globify(dr)
       // Brute force
-      dr
-        .each(Hours(1))
+      dr.each(Hours(1))
         .map {
           _.start.format(pattern)(DateOps.UTC)
         }

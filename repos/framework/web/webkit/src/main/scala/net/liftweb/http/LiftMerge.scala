@@ -115,8 +115,7 @@ private[http] trait LiftMerge {
       xhtml
         .find {
           case e: Elem if e.label == "html" =>
-            e
-              .child
+            e.child
               .find {
                 case e: Elem if e.label == "head" =>
                   true
@@ -124,8 +123,7 @@ private[http] trait LiftMerge {
                   false
               }
               .isDefined &&
-              e
-                .child
+              e.child
                 .find {
                   case e: Elem if e.label == "body" =>
                     true
@@ -333,8 +331,7 @@ private[http] trait LiftMerge {
                     S.session.map(_.uniqueId) openOr "xx"
                   )
                 ) ::
-                  S
-                    .requestCometVersions
+                  S.requestCometVersions
                     .is
                     .toList
                     .map {

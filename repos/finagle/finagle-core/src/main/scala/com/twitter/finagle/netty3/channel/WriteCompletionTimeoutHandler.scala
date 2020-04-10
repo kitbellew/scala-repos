@@ -26,8 +26,7 @@ private[finagle] class WriteCompletionTimeoutHandler(
             else
               null))
       }
-    e
-      .getFuture
+    e.getFuture
       .addListener(
         new ChannelFutureListener {
           override def operationComplete(f: ChannelFuture): Unit =

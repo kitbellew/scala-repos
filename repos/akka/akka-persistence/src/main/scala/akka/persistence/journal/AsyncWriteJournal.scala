@@ -123,8 +123,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
               case a: AtomicWrite ⇒
                 resultsIter.next() match {
                   case Success(_) ⇒
-                    a
-                      .payload
+                    a.payload
                       .foreach { p ⇒
                         resequencer ! Desequenced(
                           WriteMessageSuccess(p, actorInstanceId),
@@ -134,8 +133,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
                         n += 1
                       }
                   case Failure(e) ⇒
-                    a
-                      .payload
+                    a.payload
                       .foreach { p ⇒
                         resequencer ! Desequenced(
                           WriteMessageRejected(p, e, actorInstanceId),
@@ -164,8 +162,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
             var n = cctr + 1
             messages.foreach {
               case a: AtomicWrite ⇒
-                a
-                  .payload
+                a.payload
                   .foreach { p ⇒
                     resequencer ! Desequenced(
                       WriteMessageFailure(p, e, actorInstanceId),

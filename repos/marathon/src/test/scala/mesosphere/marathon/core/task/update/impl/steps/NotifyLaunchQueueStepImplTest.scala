@@ -36,8 +36,7 @@ class NotifyLaunchQueueStepImplTest
       .successful(None)
 
     When("calling processUpdate")
-    f
-      .step
+    f.step
       .processUpdate(
         updateTimestamp,
         task = MarathonTestHelper.mininimalTask(appId),

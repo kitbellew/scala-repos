@@ -98,8 +98,7 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
       Map()
     else
       Map(
-        s
-          .split("""\s*,\s*""")
+        s.split("""\s*,\s*""")
           .map(_.trim)
           .map { it: String =>
             val parts = it.split("""\s*:\s*""")

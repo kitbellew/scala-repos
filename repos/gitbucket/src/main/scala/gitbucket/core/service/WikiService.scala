@@ -210,8 +210,7 @@ trait WikiService {
             }
             val revertInfo =
               (
-                p
-                  .getFiles
+                p.getFiles
                   .asScala
                   .map { fh =>
                     fh.getChangeType match {

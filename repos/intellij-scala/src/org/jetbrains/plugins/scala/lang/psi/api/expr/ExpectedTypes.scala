@@ -150,8 +150,7 @@ private[expr] object ExpectedTypes {
         case tb: ScTryBlock =>
           tb.lastExpr match {
             case Some(e) if e == expr =>
-              tb
-                .getContext
+              tb.getContext
                 .asInstanceOf[ScTryStmt]
                 .expectedTypesEx(fromUnderscore = true)
             case _ =>
@@ -188,22 +187,19 @@ private[expr] object ExpectedTypes {
             case m: ScMatchStmt =>
               m.expectedTypesEx(fromUnderscore = true)
             case b: ScBlockExpr if b.isInCatchBlock =>
-              b
-                .getContext
+              b.getContext
                 .getContext
                 .asInstanceOf[ScTryStmt]
                 .expectedTypesEx(fromUnderscore = true)
             case b: ScBlockExpr if b.isAnonymousFunction =>
-              b
-                .expectedTypesEx(fromUnderscore = true)
+              b.expectedTypesEx(fromUnderscore = true)
                 .flatMap(tp => fromFunction(tp))
             case _ =>
               Array.empty
           }
         //see SLS[6.23]
         case f: ScFunctionExpr =>
-          f
-            .expectedTypesEx(fromUnderscore = true)
+          f.expectedTypesEx(fromUnderscore = true)
             .flatMap(tp => fromFunction(tp))
         case t: ScTypedStmt if t.getLastChild.isInstanceOf[ScSequenceArg] =>
           t.expectedTypesEx(fromUnderscore = true)
@@ -533,12 +529,10 @@ private[expr] object ExpectedTypes {
               case s: ScSelfInvocation =>
                 val j = s.arguments.indexOf(args)
                 if (!withResolvedFunction)
-                  s
-                    .shapeMultiType(j)
+                  s.shapeMultiType(j)
                     .foreach(processArgsExpected(res, expr, i, _, exprs))
                 else
-                  s
-                    .multiType(j)
+                  s.multiType(j)
                     .foreach(processArgsExpected(res, expr, i, _, exprs))
               case _ =>
             }

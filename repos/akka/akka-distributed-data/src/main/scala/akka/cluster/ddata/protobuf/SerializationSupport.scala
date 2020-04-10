@@ -97,8 +97,7 @@ trait SerializationSupport {
 
   def uniqueAddressToProto(
       uniqueAddress: UniqueAddress): dm.UniqueAddress.Builder =
-    dm
-      .UniqueAddress
+    dm.UniqueAddress
       .newBuilder()
       .setAddress(addressToProto(uniqueAddress.address))
       .setUid(uniqueAddress.uid)

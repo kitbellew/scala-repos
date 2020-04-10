@@ -225,8 +225,7 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
     val fields = (queryString - "openid.mode" + (
       "openid.mode" -> Seq("check_authentication")
     ))
-    ws
-      .url(server.url)
+    ws.url(server.url)
       .post(fields)
       .map(response => {
         if (response.status == 200 && response.body.contains("is_valid:true")) {
@@ -344,8 +343,7 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
     */
   def discoverServer(openID: String): Future[OpenIDServer] = {
     val discoveryUrl = normalizeIdentifier(openID)
-    ws
-      .url(discoveryUrl)
+    ws.url(discoveryUrl)
       .get()
       .map(response => {
         val maybeOpenIdServer = new XrdsResolver()

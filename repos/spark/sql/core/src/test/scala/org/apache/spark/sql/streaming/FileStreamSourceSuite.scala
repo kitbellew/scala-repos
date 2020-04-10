@@ -105,8 +105,7 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
       } else {
         reader.stream()
       }
-    df
-      .queryExecution
+    df.queryExecution
       .analyzed
       .collect {
         case StreamingRelation(s: FileStreamSource, _) =>

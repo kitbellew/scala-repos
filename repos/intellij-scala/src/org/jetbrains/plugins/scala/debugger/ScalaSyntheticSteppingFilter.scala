@@ -71,8 +71,7 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
   }
 
   private def hasLocalFun(name: String, td: PsiElement): Boolean = {
-    td
-      .depthFirst(elem =>
+    td.depthFirst(elem =>
         elem == td || !ScalaEvaluatorBuilderUtil.isGenerateClass(elem))
       .exists {
         case fun: ScFunction if fun.isLocal =>

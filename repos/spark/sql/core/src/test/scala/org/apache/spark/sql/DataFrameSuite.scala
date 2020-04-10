@@ -171,8 +171,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val df = Seq(Tuple1("a b c"), Tuple1("d e")).toDF("words")
 
     checkAnswer(
-      df
-        .explode("words", "word") { word: String =>
+      df.explode("words", "word") { word: String =>
           word.split(" ").toSeq
         }
         .select('word),
@@ -199,8 +198,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     "SPARK-8930: explode should fail with a meaningful message if it takes a star") {
     val df = Seq(("1", "1,2"), ("2", "4"), ("3", "7,8,9")).toDF("prefix", "csv")
     val e = intercept[AnalysisException] {
-      df
-        .explode($"*") {
+      df.explode($"*") {
           case Row(prefix: String, csv: String) =>
             csv.split(",").map(v => Tuple1(prefix + ":" + v)).toSeq
         }
@@ -208,13 +206,11 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
         .assertAnalyzed()
     }
     assert(
-      e
-        .getMessage
+      e.getMessage
         .contains(
           "Cannot explode *, explode can only be applied on a specific column."))
 
-    df
-      .explode('prefix, 'csv) {
+    df.explode('prefix, 'csv) {
         case Row(prefix: String, csv: String) =>
           csv.split(",").map(v => Tuple1(prefix + ":" + v)).toSeq
       }
@@ -989,8 +985,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       val insertion = Seq(Tuple1(2)).toDF("col")
 
       // pass case: parquet table (HadoopFsRelation)
-      df
-        .write
+      df.write
         .mode(SaveMode.Overwrite)
         .parquet(tempParquetFile.getCanonicalPath)
       val pdf = sqlContext.read.parquet(tempParquetFile.getCanonicalPath)
@@ -1009,8 +1004,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
         insertion.write.insertInto("rdd_base")
       }
       assert(
-        e1
-          .getMessage
+        e1.getMessage
           .contains("Inserting into an RDD-based table is not allowed."))
 
       // error case: insert into a logical plan that is not a LeafNode
@@ -1020,8 +1014,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
         insertion.write.insertInto("indirect_ds")
       }
       assert(
-        e2
-          .getMessage
+        e2.getMessage
           .contains("Inserting into an RDD-based table is not allowed."))
 
       // error case: insert into an OneRowRelation
@@ -1032,8 +1025,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
         insertion.write.insertInto("one_row")
       }
       assert(
-        e3
-          .getMessage
+        e3.getMessage
           .contains("Inserting into an RDD-based table is not allowed."))
     }
   }
@@ -1093,8 +1085,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-10093: Avoid transformations on executors") {
     val df = Seq((1, 1)).toDF("a", "b")
-    df
-      .where($"a" === 1)
+    df.where($"a" === 1)
       .select($"a", $"b", struct($"b"))
       .orderBy("a")
       .select(struct($"b"))
@@ -1144,8 +1135,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
         sqlContext.sparkContext.makeRDD((1 to 10).map(i => s"""{"id": $i}""")))
 
     val df = input.select($"id", rand(0).as('r))
-    df
-      .as("a")
+    df.as("a")
       .join(df.filter($"r" < 0.5).as("b"), $"a.id" === $"b.id")
       .collect()
       .foreach { row =>
@@ -1171,8 +1161,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     // When generating expected results at here, we need to follow the implementation of
     // Rand expression.
     def expected(df: DataFrame): Seq[Row] = {
-      df
-        .rdd
+      df.rdd
         .collectPartitions()
         .zipWithIndex
         .flatMap {
@@ -1208,8 +1197,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val df = (1 to 10).map(Tuple1.apply).toDF("i").as("src")
     assert(df.select($"src.i".cast(StringType)).columns.head === "i")
     assert(
-      df
-        .select($"src.i".cast(StringType).cast(IntegerType))
+      df.select($"src.i".cast(StringType).cast(IntegerType))
         .columns
         .head === "i")
   }
@@ -1233,8 +1221,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     */
   private def verifyNonExchangingAgg(df: DataFrame) = {
     var atFirstAgg: Boolean = false
-    df
-      .queryExecution
+    df.queryExecution
       .executedPlan
       .foreach {
         case agg: TungstenAggregate => {
@@ -1253,8 +1240,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     */
   private def verifyExchangingAgg(df: DataFrame) = {
     var atFirstAgg: Boolean = false
-    df
-      .queryExecution
+    df.queryExecution
       .executedPlan
       .foreach {
         case agg: TungstenAggregate => {

@@ -105,8 +105,7 @@ private[python] class WritableToJavaConverter(
         aw.get().map(convertWritable(_))
       case mw: MapWritable =>
         val map = new java.util.HashMap[Any, Any]()
-        mw
-          .asScala
+        mw.asScala
           .foreach {
             case (k, v) =>
               map.put(convertWritable(k), convertWritable(v))

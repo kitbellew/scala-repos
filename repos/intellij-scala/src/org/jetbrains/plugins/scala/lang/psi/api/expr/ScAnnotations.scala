@@ -49,8 +49,7 @@ trait ScAnnotations extends ScalaPsiElement with PsiReferenceList {
             ref.bind() match {
               case Some(r: ScalaResolveResult)
                   if r.getActualElement.isInstanceOf[PsiClass] &&
-                    r
-                      .getActualElement
+                    r.getActualElement
                       .asInstanceOf[PsiClass]
                       .qualifiedName == "scala.throws" =>
                 constr.args match {

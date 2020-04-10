@@ -508,8 +508,7 @@ trait RepositoryService {
         case None =>
           Repositories filter (_.isPrivate === false.bind)
       }
-    )
-      .filter { t =>
+    ).filter { t =>
         repositoryUserName.map { userName =>
           t.userName === userName.bind
         } getOrElse LiteralColumn(true)

@@ -14,8 +14,7 @@ object Macros {
     def test[T: c.TypeTag] =
       reify(
         println(
-          c
-            .Expr[String](
+          c.Expr[String](
               Literal(Constant(c.reifyRuntimeClass(c.typeOf[T]).toString)))
             .splice)).tree
     def tests =

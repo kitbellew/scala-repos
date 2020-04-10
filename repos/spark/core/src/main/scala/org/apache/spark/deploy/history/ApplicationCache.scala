@@ -737,8 +737,7 @@ private[history] object ApplicationCacheCheckFilterRelay extends Logging {
     holder.setInitParameter(APP_ID, appId)
     attemptId.foreach(id => holder.setInitParameter(ATTEMPT_ID, id))
     require(ui.getHandlers != null, "null handlers")
-    ui
-      .getHandlers
+    ui.getHandlers
       .foreach { handler =>
         handler.addFilter(holder, "/*", enumDispatcher)
       }

@@ -1219,8 +1219,7 @@ abstract class GenJSCode
                   s.isMethod &&
                   s.tpe.params.size == sym.tpe.params.size + 1 &&
                   s.tpe.params.head.tpe =:= sym.owner.toTypeConstructor &&
-                  s
-                    .tpe
+                  s.tpe
                     .params
                     .tail
                     .zip(sym.tpe.params)

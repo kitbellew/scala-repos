@@ -60,8 +60,7 @@ object Game extends LilaController {
                 import org.joda.time.format.DateTimeFormat
                 val date =
                   (DateTimeFormat forPattern "yyyy-MM-dd") print new DateTime
-                Ok
-                  .chunked(Env.api.pgnDump exportUserGames userId)
+                Ok.chunked(Env.api.pgnDump exportUserGames userId)
                   .withHeaders(
                     CONTENT_TYPE -> ContentTypes.TEXT,
                     CONTENT_DISPOSITION -> (

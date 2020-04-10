@@ -460,8 +460,7 @@ case class Product[R, C, C2, V](
           val ord: Ordering[C] = right.rowOrd
           right.toTypedPipe.groupBy(x => x._1)(ord)
         }
-      )
-        .mapValues {
+      ).mapValues {
           _._3
         }
         .sum(localRing)
@@ -746,8 +745,7 @@ case class HadamardProduct[R, C, V](
               case (r, c, v) =>
                 (r, c, (v, false))
             }
-      )
-        .groupBy(x => (x._1, x._2))
+      ).groupBy(x => (x._1, x._2))
         .mapValues {
           _._3
         }

@@ -147,8 +147,7 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
   /** Assign new TypeSymbols to a subtree that needs to be copied into multiple places. */
   def assignFreshSymbols(n: Node): Node = {
     val typeSyms =
-      n
-        .collect {
+      n.collect {
           case n: TypeGenerator =>
             n.identity
         }
@@ -172,8 +171,7 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
         }
       ).mapChildren(replaceTS)
     //repl.foreach { case (ts1, ts2) => global.get(ts1).foreach(t => global += ts2 -> replaceTS(t)) }
-    n
-      .replace(
+    n.replace(
         {
           case n: TableNode =>
             n.copy(identity = repl(n.identity)

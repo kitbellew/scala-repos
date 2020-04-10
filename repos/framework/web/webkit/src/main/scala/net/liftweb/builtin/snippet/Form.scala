@@ -66,8 +66,7 @@ object Form extends DispatchSnippet {
             new UnprefixedAttribute(
               "action",
               S.uri,
-              e
-                .attributes
+              e.attributes
                 .filter {
                   case up: UnprefixedAttribute =>
                     up.key != "method" && up.key != "action"

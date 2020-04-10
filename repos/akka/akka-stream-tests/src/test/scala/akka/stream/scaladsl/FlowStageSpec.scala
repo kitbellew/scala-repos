@@ -286,8 +286,7 @@ class FlowStageSpec
           })
         .runWith(TestSink.probe[Int])
       EventFilter[IllegalArgumentException]("two not allowed") intercept {
-        p2
-          .request(100)
+        p2.request(100)
           .expectNext(1)
           .expectNext(1)
           .expectError()
@@ -323,8 +322,7 @@ class FlowStageSpec
         . // it's undefined if element 1 got through before the error or not
         runWith(TestSink.probe[Int])
       EventFilter[IllegalArgumentException]("two not allowed") intercept {
-        p2
-          .request(100)
+        p2.request(100)
           .expectNext(100)
           .expectNext(101)
           .expectComplete()

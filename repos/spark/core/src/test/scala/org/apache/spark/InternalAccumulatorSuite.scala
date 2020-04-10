@@ -267,8 +267,7 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       }
       .groupBy(identity)
     val sid =
-      x
-        .dependencies
+      x.dependencies
         .head
         .asInstanceOf[ShuffleDependency[_, _, _]]
         .shuffleHandle
@@ -338,8 +337,7 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       override def cleaner: Option[ContextCleaner] = Some(myCleaner)
     }
     assert(Accumulators.originals.isEmpty)
-    sc
-      .parallelize(1 to 100)
+    sc.parallelize(1 to 100)
       .map { i =>
         (i, i)
       }

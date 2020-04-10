@@ -155,8 +155,7 @@ object TaskTest extends SpecLite {
       Thread.sleep(10);
       throw FailWhale;
       42
-    }
-      .handle {
+    }.handle {
         case FailWhale =>
           84
       }
@@ -169,8 +168,7 @@ object TaskTest extends SpecLite {
       Thread.sleep(10);
       throw FailWhale;
       42
-    }
-      .handle {
+    }.handle {
         case SadTrombone =>
           84
       }
@@ -183,8 +181,7 @@ object TaskTest extends SpecLite {
       Thread.sleep(10);
       throw FailWhale;
       42
-    }
-      .handle {
+    }.handle {
         case FailWhale =>
           throw SadTrombone
       }
@@ -198,8 +195,7 @@ object TaskTest extends SpecLite {
         Thread.sleep(10);
         throw FailWhale;
         42
-      }
-        .handleWith {
+      }.handleWith {
           case FailWhale =>
             Task.delay(84)
         }
@@ -212,8 +208,7 @@ object TaskTest extends SpecLite {
       Thread.sleep(10);
       throw FailWhale;
       42
-    }
-      .handleWith {
+    }.handleWith {
         case SadTrombone =>
           Task.delay(84)
       }
@@ -226,8 +221,7 @@ object TaskTest extends SpecLite {
       Thread.sleep(10);
       throw FailWhale;
       42
-    }
-      .handleWith {
+    }.handleWith {
         case FailWhale =>
           Task.delay(throw SadTrombone)
       }
@@ -239,8 +233,7 @@ object TaskTest extends SpecLite {
     Task {
       Thread.sleep(10);
       42
-    }
-      .onFinish { _ =>
+    }.onFinish { _ =>
         throw SadTrombone;
         Task.now(())
       }

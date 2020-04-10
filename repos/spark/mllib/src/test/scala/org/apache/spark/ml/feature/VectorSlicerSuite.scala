@@ -103,8 +103,7 @@ class VectorSlicerSuite
       .setOutputCol("result")
 
     def validateResults(df: DataFrame): Unit = {
-      df
-        .select("result", "expected")
+      df.select("result", "expected")
         .collect()
         .foreach {
           case Row(vec1: Vector, vec2: Vector) =>

@@ -81,8 +81,7 @@ class ZKStore(
       .getOrElse(
         throw new StoreCommandFailedException(
           s"Can not store entity $entity, since there is no version!"))
-    zk
-      .node
+    zk.node
       .setData(zk.data.toProto(compressionConf).toByteArray, version)
       .asScala
       .map { data =>

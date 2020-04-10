@@ -297,8 +297,7 @@ object State {
         s.copy(exitHooks = Set.empty)
       }
       def locked[T](file: File)(t: => T): T =
-        s
-          .configuration
+        s.configuration
           .provider
           .scalaProvider
           .launcher

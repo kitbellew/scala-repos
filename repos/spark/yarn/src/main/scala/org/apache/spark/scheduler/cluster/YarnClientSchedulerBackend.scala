@@ -48,8 +48,7 @@ private[spark] class YarnClientSchedulerBackend(
     val driverHost = conf.get("spark.driver.host")
     val driverPort = conf.get("spark.driver.port")
     val hostport = driverHost + ":" + driverPort
-    sc
-      .ui
+    sc.ui
       .foreach { ui =>
         conf.set("spark.driver.appUIAddress", ui.appUIAddress)
       }
@@ -115,8 +114,7 @@ private[spark] class YarnClientSchedulerBackend(
     // The app name is a special case because "spark.app.name" is required of all applications.
     // As a result, the corresponding "SPARK_YARN_APP_NAME" is already handled preemptively in
     // SparkSubmitArguments if "spark.app.name" is not explicitly set by the user. (SPARK-5222)
-    sc
-      .getConf
+    sc.getConf
       .getOption("spark.app.name")
       .foreach(v => extraArgs += ("--name", v))
     extraArgs

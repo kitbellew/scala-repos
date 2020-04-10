@@ -56,14 +56,11 @@ class ALSModel(
     sc.parallelize(Seq(rank)).saveAsObjectFile(s"/tmp/${id}/rank")
     userFeatures.saveAsObjectFile(s"/tmp/${id}/userFeatures")
     productFeatures.saveAsObjectFile(s"/tmp/${id}/productFeatures")
-    sc
-      .parallelize(Seq(userStringIntMap))
+    sc.parallelize(Seq(userStringIntMap))
       .saveAsObjectFile(s"/tmp/${id}/userStringIntMap")
-    sc
-      .parallelize(Seq(itemStringIntMap))
+    sc.parallelize(Seq(itemStringIntMap))
       .saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
-    sc
-      .parallelize(Seq(categoryItemsMap))
+    sc.parallelize(Seq(categoryItemsMap))
       .saveAsObjectFile(s"/tmp/${id}/categoryItemsMap")
     true
   }

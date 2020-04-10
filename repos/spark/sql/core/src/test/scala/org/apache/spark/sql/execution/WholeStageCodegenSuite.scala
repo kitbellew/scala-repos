@@ -41,8 +41,7 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
       plan
         .find(p =>
           p.isInstanceOf[WholeStageCodegen] &&
-            p
-              .asInstanceOf[WholeStageCodegen]
+            p.asInstanceOf[WholeStageCodegen]
               .child
               .isInstanceOf[TungstenAggregate])
         .isDefined)
@@ -56,8 +55,7 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
       plan
         .find(p =>
           p.isInstanceOf[WholeStageCodegen] &&
-            p
-              .asInstanceOf[WholeStageCodegen]
+            p.asInstanceOf[WholeStageCodegen]
               .child
               .isInstanceOf[TungstenAggregate])
         .isDefined)
@@ -74,13 +72,11 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
       .range(10)
       .join(broadcast(smallDF), col("k") === col("id"))
     assert(
-      df
-        .queryExecution
+      df.queryExecution
         .executedPlan
         .find(p =>
           p.isInstanceOf[WholeStageCodegen] &&
-            p
-              .asInstanceOf[WholeStageCodegen]
+            p.asInstanceOf[WholeStageCodegen]
               .child
               .isInstanceOf[BroadcastHashJoin])
         .isDefined)

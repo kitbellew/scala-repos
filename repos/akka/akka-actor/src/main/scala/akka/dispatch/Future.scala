@@ -192,8 +192,7 @@ object Futures {
       in: JIterable[Future[A]],
       executor: ExecutionContext): Future[JIterable[A]] = {
     implicit val d = executor
-    in
-      .asScala
+    in.asScala
       .foldLeft(Future(new JLinkedList[A]())) { (fr, fa) ⇒
         for (r ← fr;
              a ← fa)
@@ -214,8 +213,7 @@ object Futures {
       fn: JFunc[A, Future[B]],
       executor: ExecutionContext): Future[JIterable[B]] = {
     implicit val d = executor
-    in
-      .asScala
+    in.asScala
       .foldLeft(Future(new JLinkedList[B]())) { (fr, a) ⇒
         val fb = fn(a)
         for (r ← fr;

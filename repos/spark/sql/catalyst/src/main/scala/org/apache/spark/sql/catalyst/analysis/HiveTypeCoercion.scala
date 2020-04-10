@@ -266,8 +266,7 @@ object HiveTypeCoercion {
 
         case s: Union
             if s.childrenResolved &&
-              s
-                .children
+              s.children
                 .forall(_.output.length == s.children.head.output.length) && !s
               .resolved =>
           val newChildren: Seq[LogicalPlan] = buildNewChildrenWithWiderTypes(

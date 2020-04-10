@@ -71,8 +71,7 @@ final class ESClientHttp(endpoint: String, val index: Index, writeable: Boolean)
     HTTP(url, data, _ => ())
 
   private def monitor[A](op: String)(f: Fu[A]) =
-    f
-      .mon(_.search.client(op))
+    f.mon(_.search.client(op))
       .addEffects(
         _ => lila.mon.search.failure(op)(),
         _ => lila.mon.search.success(op)())

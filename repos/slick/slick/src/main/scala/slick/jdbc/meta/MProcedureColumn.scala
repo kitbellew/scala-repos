@@ -31,11 +31,11 @@ object MProcedureColumn {
       columnNamePattern: String = "%") =
     ResultSetAction[MProcedureColumn](
       _.metaData
-      .getProcedureColumns(
-        procedurePattern.catalog_?,
-        procedurePattern.schema_?,
-        procedurePattern.name,
-        columnNamePattern)) { r =>
+        .getProcedureColumns(
+          procedurePattern.catalog_?,
+          procedurePattern.schema_?,
+          procedurePattern.name,
+          columnNamePattern)) { r =>
       MProcedureColumn(
         MQName.from(r),
         r.<<,

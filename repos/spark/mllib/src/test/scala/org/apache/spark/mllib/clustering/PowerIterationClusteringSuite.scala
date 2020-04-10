@@ -178,8 +178,7 @@ class PowerIterationClusteringSuite
       Array(1.0 / 2.0, 0.0, 1.0 / 2.0, 0.0))
     // scalastyle:on
     val w = normalize(sc.parallelize(similarities, 2))
-    w
-      .edges
+    w.edges
       .collect()
       .foreach {
         case Edge(i, j, x) =>

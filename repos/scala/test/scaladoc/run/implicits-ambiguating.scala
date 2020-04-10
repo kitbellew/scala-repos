@@ -18,10 +18,10 @@ object Test extends ScaladocModelTest {
         .byConversion
         .map(
           _.source
-          .implicitsShadowing
-          .get(mbr)
-          .map(_.isAmbiguous)
-          .getOrElse(false))
+            .implicitsShadowing
+            .get(mbr)
+            .map(_.isAmbiguous)
+            .getOrElse(false))
         .getOrElse(false)
 
     // SEE THE test/resources/implicits-chaining-res.scala FOR THE EXPLANATION OF WHAT'S CHECKED HERE:

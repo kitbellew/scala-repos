@@ -167,8 +167,7 @@ trait MemoryQueryingProfile extends BasicProfile {
       if (n.children.isEmpty)
         None
       else
-        n
-          .children
+        n.children
           .iterator
           .foldLeft(null: Option[(TermSymbol, Vector[List[TermSymbol]])]) {
             case (None, _) =>

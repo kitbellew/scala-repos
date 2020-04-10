@@ -85,8 +85,7 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
             .map(_.bucketColumnNames)
             .getOrElse(Nil)
             .map(
-              l
-                .resolveQuoted(_, files.sqlContext.conf.resolver)
+              l.resolveQuoted(_, files.sqlContext.conf.resolver)
                 .getOrElse(sys.error(""))))
 
         // Partition keys are not available in the statistics of the files.
@@ -130,8 +129,7 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
               logInfo(s"Planning with ${bucketing.numBuckets} buckets")
               val bucketed = selectedPartitions
                 .flatMap { p =>
-                  p
-                    .files
+                  p.files
                     .map(f =>
                       PartitionedFile(
                         p.values,

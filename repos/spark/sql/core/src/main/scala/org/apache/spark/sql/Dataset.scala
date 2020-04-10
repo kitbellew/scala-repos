@@ -2522,8 +2522,7 @@ class Dataset[T] private[sql] (
   private def withCallback[U](name: String, df: DataFrame)(
       action: DataFrame => U) = {
     try {
-      df
-        .queryExecution
+      df.queryExecution
         .executedPlan
         .foreach { plan =>
           plan.resetMetrics()
@@ -2543,8 +2542,7 @@ class Dataset[T] private[sql] (
   private def withTypedCallback[A, B](name: String, ds: Dataset[A])(
       action: Dataset[A] => B) = {
     try {
-      ds
-        .queryExecution
+      ds.queryExecution
         .executedPlan
         .foreach { plan =>
           plan.resetMetrics()

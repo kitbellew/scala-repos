@@ -128,8 +128,7 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
         .nodes
         .forall { n =>
           val (_, inError) =
-            n
-              .members
+            n.members
               .foldLeft((false, false)) {
                 case ((seenMergeProducer, inError), producer) =>
                   producer match {
@@ -242,8 +241,7 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
           val success =
             n match {
               case n: SourceNode[_] =>
-                n
-                  .members
+                n.members
                   .forall { p =>
                     !p.isInstanceOf[FlatMappedProducer[_, _, _]]
                   }

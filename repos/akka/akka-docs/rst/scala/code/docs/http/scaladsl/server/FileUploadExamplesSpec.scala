@@ -37,16 +37,14 @@ class FileUploadExamplesSpec extends RoutingSpec {
                   // stream into a file as the chunks of it arrives and return a future
                   // file to where it got stored
                   val file = File.createTempFile("upload", "tmp")
-                  b
-                    .entity
+                  b.entity
                     .dataBytes
                     .runWith(FileIO.toFile(file))
                     .map(_ => (b.name -> file))
 
                 case b: BodyPart =>
                   // collect form field values
-                  b
-                    .toStrict(2.seconds)
+                  b.toStrict(2.seconds)
                     .map(strict => (b.name -> strict.entity.data.utf8String))
 
               }
@@ -86,8 +84,7 @@ class FileUploadExamplesSpec extends RoutingSpec {
             .parts
             .mapAsync(1) {
               case b: BodyPart if b.filename.exists(_.endsWith(".csv")) =>
-                b
-                  .entity
+                b.entity
                   .dataBytes
                   .via(splitLines)
                   .map(_.utf8String.split(",").toVector)

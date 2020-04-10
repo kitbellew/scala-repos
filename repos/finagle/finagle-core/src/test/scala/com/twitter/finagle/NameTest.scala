@@ -13,8 +13,7 @@ class NameTest extends FunSuite {
     val n = Name.fromGroup(g)
 
     var addr: Addr = Addr.Pending
-    n
-      .addr
+    n.addr
       .changes
       .register(
         Witness({

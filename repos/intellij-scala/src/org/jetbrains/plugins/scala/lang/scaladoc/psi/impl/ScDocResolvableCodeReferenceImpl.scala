@@ -43,8 +43,7 @@ class ScDocResolvableCodeReferenceImpl(node: ASTNode)
 
   override def multiResolve(incomplete: Boolean): Array[ResolveResult] = {
     val s = super.multiResolve(incomplete)
-    s
-      .zipWithIndex
+    s.zipWithIndex
       .collect {
         case (ScalaResolveResult(cstr: ScPrimaryConstructor, _), ind)
             if cstr.containingClass != null =>
@@ -82,8 +81,7 @@ class ScDocResolvableCodeReferenceImpl(node: ASTNode)
           defaultPackage
             .processDeclarations(processor, ResolveState.initial(), null, ref)
         case Some(q: ScDocResolvableCodeReference) =>
-          q
-            .multiResolve(true)
+          q.multiResolve(true)
             .foreach(processQualifierResolveResult(_, processor, ref))
         case _ =>
       }

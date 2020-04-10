@@ -1255,8 +1255,7 @@ class ExportsTest {
   @Test
   def auto_exports_for_Scala_js_defined_JS_objects_extending_a_trait(): Unit = {
     val accessor =
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .org
         .scalajs
@@ -1273,8 +1272,7 @@ class ExportsTest {
   @Test
   def auto_exports_for_Scala_js_defined_JS_objects_extending_a_class(): Unit = {
     val accessor =
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .org
         .scalajs
@@ -1292,8 +1290,7 @@ class ExportsTest {
   def auto_exports_for_objects_extending_a_trait_with_ignoreInvalidDescendants()
       : Unit = {
     val accessor =
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .org
         .scalajs
@@ -1311,8 +1308,7 @@ class ExportsTest {
   def auto_exports_for_objects_extending_a_class_with_ignoreInvalidDescendants()
       : Unit = {
     val accessor =
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .org
         .scalajs
@@ -1330,8 +1326,7 @@ class ExportsTest {
   def auto_exports_for_Scala_js_defined_JS_objects_extending_a_class_with_ignoreInvalidDescendants()
       : Unit = {
     val accessor =
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .org
         .scalajs
@@ -1411,8 +1406,7 @@ class ExportsTest {
   @Test
   def auto_exports_for_Scala_js_defined_JS_classes_extending_a_trait(): Unit = {
     val ctor =
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .org
         .scalajs
@@ -1431,8 +1425,7 @@ class ExportsTest {
   @Test
   def auto_exports_for_Scala_js_defined_JS_classes_extending_a_class(): Unit = {
     val ctor =
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .org
         .scalajs
@@ -1452,8 +1445,7 @@ class ExportsTest {
   def auto_exports_for_classes_extending_a_trait_with_ignoreInvalidDescendants()
       : Unit = {
     val ctor =
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .org
         .scalajs
@@ -1476,8 +1468,7 @@ class ExportsTest {
   def auto_exports_for_classes_extending_a_class_with_ignoreInvalidDescendants()
       : Unit = {
     val ctor =
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .org
         .scalajs
@@ -1500,8 +1491,7 @@ class ExportsTest {
   def auto_exports_for_Scala_js_defined_JS_classes_extending_a_class_with_ignoreInvalidDescendants()
       : Unit = {
     val ctor =
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .org
         .scalajs

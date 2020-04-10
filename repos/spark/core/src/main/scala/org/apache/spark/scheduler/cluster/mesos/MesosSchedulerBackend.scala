@@ -85,8 +85,7 @@ private[spark] class MesosSchedulerBackend(
       sc.sparkUser,
       sc.appName,
       sc.conf,
-      sc
-        .conf
+      sc.conf
         .getOption("spark.mesos.driver.webui.url")
         .orElse(sc.ui.map(_.appUIAddress)))
     startScheduler(driver)
@@ -112,8 +111,7 @@ private[spark] class MesosSchedulerBackend(
           "Executor Spark home `spark.mesos.executor.home` is not set!")
       }
     val environment = Environment.newBuilder()
-    sc
-      .conf
+    sc.conf
       .getOption("spark.executor.extraClassPath")
       .foreach { cp =>
         environment.addVariables(
@@ -144,8 +142,7 @@ private[spark] class MesosSchedulerBackend(
         .setName("SPARK_EXECUTOR_OPTS")
         .setValue(extraJavaOpts)
         .build())
-    sc
-      .executorEnvs
+    sc.executorEnvs
       .foreach {
         case (key, value) =>
           environment.addVariables(
@@ -194,8 +191,7 @@ private[spark] class MesosSchedulerBackend(
       .setCommand(command)
       .setData(ByteString.copyFrom(createExecArg()))
 
-    sc
-      .conf
+    sc.conf
       .getOption("spark.mesos.executor.docker.image")
       .foreach { image =>
         MesosSchedulerBackendUtil.setupContainerBuilderDockerInfo(

@@ -167,8 +167,7 @@ class TypedSimilarityTest extends WordSpec with Matchers {
         .source(TypedTsv[(Int, Int)]("ingraph"), edges)
         .sink[(Int, Int, Double)](TypedTsv[(Int, Int, Double)]("out")) { ob =>
           val result =
-            ob
-              .map {
+            ob.map {
                 case (n1, n2, d) =>
                   ((n1 -> n2) -> d)
               }
@@ -184,8 +183,7 @@ class TypedSimilarityTest extends WordSpec with Matchers {
         .source(TypedTsv[(Int, Int, Double)]("ingraph"), weightedEdges)
         .sink[(Int, Int, Double)](TypedTsv[(Int, Int, Double)]("out")) { ob =>
           val result =
-            ob
-              .map {
+            ob.map {
                 case (n1, n2, d) =>
                   ((n1 -> n2) -> d)
               }

@@ -90,8 +90,7 @@ object AddSettings {
       f: AddSettings => Option[AddSettings]): Option[AddSettings] =
     a match {
       case s: Sequence =>
-        s
-          .sequence
+        s.sequence
           .flatMap { b =>
             tx(b)(f)
           } match {

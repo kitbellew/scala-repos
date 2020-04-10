@@ -65,8 +65,9 @@ object PairingRepo {
       .collect[List]()
       .map {
         _.flatMap { doc =>
-          ~doc.getAs[List[String]]("u").filter(userId !=)
-        }.toSet
+            ~doc.getAs[List[String]]("u").filter(userId !=)
+          }
+          .toSet
       }
 
   def recentIdsByTourAndUserId(
@@ -110,14 +111,14 @@ object PairingRepo {
           GroupField("u")("nb" -> SumValue(1))))
       .map {
         _.documents
-        .flatMap { doc =>
-          doc.getAs[String]("_id") flatMap { uid =>
-            doc.getAs[Int]("nb") map {
-              uid -> _
+          .flatMap { doc =>
+            doc.getAs[String]("_id") flatMap { uid =>
+              doc.getAs[Int]("nb") map {
+                uid -> _
+              }
             }
           }
-        }
-        .toMap
+          .toMap
       }
   }
 
@@ -195,9 +196,9 @@ object PairingRepo {
       )
       .map(
         _.documents
-        .headOption
-        .flatMap(_.getAs[Set[String]]("ids"))
-        .getOrElse(Set.empty[String]))
+          .headOption
+          .flatMap(_.getAs[Set[String]]("ids"))
+          .getOrElse(Set.empty[String]))
 
   def playingGameIds(tourId: String): Fu[List[String]] =
     coll
@@ -206,7 +207,7 @@ object PairingRepo {
         List(Group(BSONBoolean(true))("ids" -> Push("_id"))))
       .map(
         _.documents
-        .headOption
-        .flatMap(_.getAs[List[String]]("ids"))
-        .getOrElse(List.empty[String]))
+          .headOption
+          .flatMap(_.getAs[List[String]]("ids"))
+          .getOrElse(List.empty[String]))
 }

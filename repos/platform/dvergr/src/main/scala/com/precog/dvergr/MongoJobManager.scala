@@ -220,10 +220,11 @@ final class MongoJobManager(
       distinct("channel").from(settings.messages).where("jobId" === jobId)
     } map (
       _.collect {
-        case JString(channel) =>
-          channel
-      }.toList
-    )
+          case JString(channel) =>
+            channel
+        }
+        .toList
+      )
   }
 
   def addMessage(

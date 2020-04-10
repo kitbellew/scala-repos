@@ -120,8 +120,7 @@ class RegexTokenizerSuite
 object RegexTokenizerSuite extends SparkFunSuite {
 
   def testRegexTokenizer(t: RegexTokenizer, dataset: DataFrame): Unit = {
-    t
-      .transform(dataset)
+    t.transform(dataset)
       .select("tokens", "wantedTokens")
       .collect()
       .foreach {

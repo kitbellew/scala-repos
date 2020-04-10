@@ -72,8 +72,7 @@ private[persistence] trait LeveldbStore
           messages.map {
             a ⇒
               Try {
-                a
-                  .payload
+                a.payload
                   .foreach {
                     p ⇒
                       val (p2, tags) =

@@ -902,8 +902,7 @@ object TypeDefinitionMembers {
     def syntheticMethods: Seq[(Signature, SignatureNodes.Node)] = {
       clazz match {
         case td: ScTemplateDefinition =>
-          td
-            .syntheticMethodsNoOverride
+          td.syntheticMethodsNoOverride
             .map(fun => {
               val f = new PhysicalSignature(fun, ScSubstitutor.empty)
               (f, new SignatureNodes.Node(f, ScSubstitutor.empty))
@@ -1135,8 +1134,7 @@ object TypeDefinitionMembers {
                 } else {
                   if (n.supers.nonEmpty &&
                       !processor.execute(
-                        n
-                          .supers
+                        n.supers
                           .apply(0)
                           .info
                           .asInstanceOf[Signature]

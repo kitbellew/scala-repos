@@ -30,8 +30,7 @@ object Test extends App {
 
     for (t <- ts;
          m = t.module) {}
-    ts
-      .map(t => t.module)
+    ts.map(t => t.module)
       .foreach { _ =>
         ()
       }

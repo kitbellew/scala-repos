@@ -813,17 +813,16 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
       .toList
       .flatMap(
         _.kids
-        .toList
-        .flatMap(m =>
-          m
-            .loc
-            .buildItem(
-              if (m == this)
-                populate
-              else
-                Nil,
-              m == actual,
-              m == pathAt)))
+          .toList
+          .flatMap(m =>
+            m.loc
+              .buildItem(
+                if (m == this)
+                  populate
+                else
+                  Nil,
+                m == actual,
+                m == pathAt)))
 
     _parent.toList.flatMap(p => p.buildUpperLines(p, actual, kids))
   }

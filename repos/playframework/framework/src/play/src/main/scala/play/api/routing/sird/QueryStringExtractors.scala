@@ -38,18 +38,18 @@ object QueryStringParameterExtractor {
     Option(query)
       .map(
         _.split("&")
-        .toSeq
-        .map { keyValue =>
-          keyValue.split("=", 2) match {
-            case Array(key, value) =>
-              key -> value
-            case Array(key) =>
-              key -> ""
+          .toSeq
+          .map { keyValue =>
+            keyValue.split("=", 2) match {
+              case Array(key, value) =>
+                key -> value
+              case Array(key) =>
+                key -> ""
+            }
           }
-        }
-        .groupBy(_._1)
-        .mapValues(_.map(_._2))
-        .toMap)
+          .groupBy(_._1)
+          .mapValues(_.map(_._2))
+          .toMap)
       .getOrElse(Map.empty)
   }
 

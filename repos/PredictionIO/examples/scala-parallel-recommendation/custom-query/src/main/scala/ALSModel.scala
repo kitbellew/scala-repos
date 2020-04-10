@@ -24,8 +24,7 @@ class ALSModel(
       sc: SparkContext): Boolean = {
 
     productFeatures.saveAsObjectFile(s"/tmp/${id}/productFeatures")
-    sc
-      .parallelize(Seq(itemStringIntMap))
+    sc.parallelize(Seq(itemStringIntMap))
       .saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
     // HOWTO: save items too as part of algo model
     sc.parallelize(Seq(items)).saveAsObjectFile(s"/tmp/${id}/items")

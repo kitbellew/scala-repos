@@ -46,8 +46,7 @@ object RuntimeReducerEstimator {
 
   def getReduceTimes(history: Seq[FlowStepHistory]): Seq[Seq[Double]] =
     history.map { h =>
-      h
-        .tasks
+      h.tasks
         .filter { t =>
           t.taskType == "REDUCE" && t.status == "SUCCEEDED" && t.finishTime > t
             .startTime

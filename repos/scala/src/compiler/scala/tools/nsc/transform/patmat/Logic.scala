@@ -499,8 +499,7 @@ trait Logic extends Debugging {
         }
 
         // all symbols in a domain are mutually exclusive
-        v
-          .groupedDomains
+        v.groupedDomains
           .foreach { syms =>
             if (syms.size > 1)
               addAxiom(AtMostOne(syms.toList))

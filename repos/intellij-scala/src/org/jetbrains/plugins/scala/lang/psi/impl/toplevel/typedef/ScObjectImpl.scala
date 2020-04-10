@@ -201,8 +201,7 @@ class ScObjectImpl protected (
         ScalaPsiUtil.getCompanionModule(this) match {
           case Some(c: ScClass) if c.isCase =>
             val res = new ArrayBuffer[PsiMethod]
-            c
-              .getSyntheticMethodsText
+            c.getSyntheticMethodsText
               .foreach(s => {
                 try {
                   val method = ScalaPsiElementFactory

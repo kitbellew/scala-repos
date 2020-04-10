@@ -56,8 +56,7 @@ class SQLExecutionSuite extends SparkFunSuite {
       (1 to 100)
         .par
         .foreach { _ =>
-          sc
-            .parallelize(1 to 5)
+          sc.parallelize(1 to 5)
             .map { i =>
               (i, i)
             }
@@ -87,8 +86,7 @@ class SQLExecutionSuite extends SparkFunSuite {
       new Thread {
         override def run(): Unit = {
           try {
-            sc
-              .parallelize(1 to 100)
+            sc.parallelize(1 to 100)
               .map { i =>
                 (i, i)
               }

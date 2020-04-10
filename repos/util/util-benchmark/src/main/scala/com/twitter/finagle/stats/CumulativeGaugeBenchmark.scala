@@ -24,8 +24,7 @@ class CumulativeGaugeBenchmark extends StdBenchAnnotations {
   def setup(): Unit = {
     getStatsRecv = new CumulativeStatsRecv()
     gauges = new mutable.ArrayBuffer[Gauge](10000)
-    0
-      .until(num)
+    0.until(num)
       .foreach { _ =>
         gauges += getStatsRecv.addGauge("get_gauge")(1f)
       }

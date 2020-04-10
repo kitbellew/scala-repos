@@ -126,8 +126,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     "map" in {
       assert(
         Await.result(
-          s
-            .map {
+          s.map {
               _ * 2
             }
             .toSeq) == Seq(2, 4))
@@ -135,8 +134,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
     "mapFuture" in {
       val f =
-        s
-          .mapFuture {
+        s.mapFuture {
             Future.value(_)
           }
           .flatMap {

@@ -160,8 +160,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       val xmlString = "<foo></foo>"
       val response =
         //#content-type
-        ws
-          .url(url)
+        ws.url(url)
           .withHeaders("Content-Type" -> "application/xml")
           .post(xmlString)
       //#content-type
@@ -388,8 +387,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           Action.async {
 
             // Make the request
-            ws
-              .url(url)
+            ws.url(url)
               .withMethod("GET")
               .stream()
               .map {
@@ -425,8 +423,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         await(
           downloadFile(FakeRequest()).flatMap(
             _.body
-            .dataStream
-            .runFold(0L)((t, b) => t + b.length))) must_== 10000L
+              .dataStream
+              .runFold(0L)((t, b) => t + b.length))) must_== 10000L
         file.delete()
       }
 
@@ -507,8 +505,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       //#async-result
       def wsAction =
         Action.async {
-          ws
-            .url(url)
+          ws.url(url)
             .get()
             .map { response =>
               Ok(response.body)
@@ -616,8 +613,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
     "use logging" in withSimpleServer { ws =>
       // #curl-logger-filter
-      ws
-        .url(s"http://localhost:$testServerPort")
+      ws.url(s"http://localhost:$testServerPort")
         .withRequestFilter(AhcCurlRequestLogger())
         .put(Map("key" -> Seq("value")))
       // #curl-logger-filter

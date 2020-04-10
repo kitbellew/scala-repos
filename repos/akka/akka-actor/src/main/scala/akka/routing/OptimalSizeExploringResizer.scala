@@ -290,7 +290,7 @@ case class DefaultOptimalSizeExploringResizer(
             .underutilizationStreak
             .fold(false)(
               _.start
-              .isBefore(now.minus(downsizeAfterUnderutilizedFor.asJava)))) {
+                .isBefore(now.minus(downsizeAfterUnderutilizedFor.asJava)))) {
         val downsizeTo =
           (record.underutilizationStreak.get.highestUtilization * downsizeRatio)
             .toInt

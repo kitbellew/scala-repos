@@ -231,10 +231,10 @@ class VersionLog(
         }
       } flatMap {
         _.isEmpty
-        .whenM(
-          IO.throwIO(
-            new IllegalStateException(
-              "Attempt to set head to nonexistent version %s" format newHead)))
+          .whenM(
+            IO.throwIO(
+              new IllegalStateException(
+                "Attempt to set head to nonexistent version %s" format newHead)))
       }
     } map { _ =>
       PrecogUnit

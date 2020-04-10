@@ -201,8 +201,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                       import scala.collection.mutable.{HashMap => MHashMap}
                       val renamedMap =
                         new MHashMap[String, (String, PsiNamedElement)]
-                      el
-                        .isRenamed
+                      el.isRenamed
                         .foreach(name =>
                           renamedMap += ((clazz.name, (name, clazz))))
                       val isExcluded: Boolean = ApplicationManager

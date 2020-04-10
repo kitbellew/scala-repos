@@ -178,8 +178,7 @@ object SessionSettings {
       case (s, (hi, lo)) =>
         s ++ (hi to lo)
     }
-    in
-      .zipWithIndex
+    in.zipWithIndex
       .flatMap {
         case (t, index) =>
           if (asSet(index + 1))

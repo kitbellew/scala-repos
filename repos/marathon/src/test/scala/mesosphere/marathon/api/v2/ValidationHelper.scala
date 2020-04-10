@@ -13,8 +13,7 @@ object ValidationHelper {
   def getAllRuleConstrains(r: Result): Set[ViolationMessageAndPath] = {
     r match {
       case f: Failure =>
-        f
-          .violations
+        f.violations
           .flatMap(Validation.allRuleViolationsWithFullDescription(_))
           .map(r => ViolationMessageAndPath(r.constraint, r.description))
       case _ =>

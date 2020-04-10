@@ -708,13 +708,11 @@ object MethodResolveProcessor {
                 .nonEmpty && t.typeParameters.length == typeArgElements
                 .length) {
             ScalaPsiUtil.genericCallSubstitutor(
-              t
-                .typeParameters
+              t.typeParameters
                 .map(p => (p.name, ScalaPsiUtil.getPsiElementId(p))),
               typeArgElements)
           } else {
-            t
-              .typeParameters
+            t.typeParameters
               .foldLeft(ScSubstitutor.empty) {
                 (subst: ScSubstitutor, tp: ScTypeParam) =>
                   subst.bindT(
@@ -729,13 +727,11 @@ object MethodResolveProcessor {
                 .nonEmpty && p.getTypeParameters.length == typeArgElements
                 .length) {
             ScalaPsiUtil.genericCallSubstitutor(
-              p
-                .getTypeParameters
+              p.getTypeParameters
                 .map(p => (p.name, ScalaPsiUtil.getPsiElementId(p))),
               typeArgElements)
           } else {
-            p
-              .getTypeParameters
+            p.getTypeParameters
               .foldLeft(ScSubstitutor.empty) {
                 (subst: ScSubstitutor, tp: PsiTypeParameter) =>
                   subst.bindT(

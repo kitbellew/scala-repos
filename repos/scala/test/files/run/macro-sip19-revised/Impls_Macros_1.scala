@@ -17,8 +17,7 @@ object Macros {
     val line = fun.pos.line
     val charOffset = fun.pos.point
     def literal[T](x: T) = c.Expr[T](Literal(Constant(x)))
-    c
-      .universe
+    c.universe
       .reify {
         SourceLocation1(
           outer.splice,

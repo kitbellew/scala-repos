@@ -22,8 +22,7 @@ object BeanConfigurator extends Logging {
         .iterator
         .map(pd => (pd.getName, pd))
         .toMap
-    p
-      .propertyNames()
+    p.propertyNames()
       .asScala
       .foreach { key =>
         val name = key.toString

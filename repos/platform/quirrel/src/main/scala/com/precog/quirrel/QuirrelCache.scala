@@ -102,16 +102,14 @@ trait QuirrelCache extends AST {
         while (!matched && j < rules.length) {
           rules(j) match {
             case Ignore(re) =>
-              re
-                .findPrefixOf(input.substring(i))
+              re.findPrefixOf(input.substring(i))
                 .foreach { m =>
                   output.append(m)
                   matched = true
                   i += m.length
                 }
             case Keep(tpe, re) =>
-              re
-                .findPrefixOf(input.substring(i))
+              re.findPrefixOf(input.substring(i))
                 .foreach { m =>
                   val name = nextName(tpe)
                   bindings.append(Binding(tpe, name, m, i))

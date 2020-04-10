@@ -191,8 +191,7 @@ trait TypeHints {
         .map(th =>
           (
             th.hintFor(clazz),
-            th
-              .classFor(th.hintFor(clazz))
+            th.classFor(th.hintFor(clazz))
               .getOrElse(
                 sys.error("hintFor/classFor not invertible for " + th))))
         .sortWith((x, y) => (delta(x._2, clazz) - delta(y._2, clazz)) < 0)

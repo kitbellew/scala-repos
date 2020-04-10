@@ -273,8 +273,7 @@ object OpenIDSpec extends Specification with Mockito {
       .xml
       .XML
       .loadString(readFixture("discovery/xrds/simple-op.xml"))
-    ws
-      .response
+    ws.response
       .body returns "is_valid:true\n" // http://openid.net/specs/openid-authentication-2_0.html#kvform
     ws
   }

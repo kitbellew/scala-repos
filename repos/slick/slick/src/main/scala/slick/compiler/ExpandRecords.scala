@@ -11,9 +11,10 @@ class ExpandRecords extends Phase {
   def apply(state: CompilerState) =
     state.map(
       _.replace({
-        case n: PathElement =>
-          expandPath(n)
-      }).infer())
+          case n: PathElement =>
+            expandPath(n)
+        })
+        .infer())
 
   def expandPath(n: Node): Node =
     n.nodeType.structural match {
@@ -25,8 +26,7 @@ class ExpandRecords extends Phase {
           })
       case p: ProductType =>
         ProductNode(
-          p
-            .elements
+          p.elements
             .zipWithIndex
             .map {
               case (t, i) =>

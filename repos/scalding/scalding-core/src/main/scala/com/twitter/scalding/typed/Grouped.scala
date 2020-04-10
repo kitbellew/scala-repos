@@ -656,17 +656,17 @@ case class ValueSortedReduce[K, V1, V2](
       // If its an ordered serialization we need to unbox
       // the value before handing it to the users operation
       _.every(
-        new cascading.pipe.Every(
-          _,
-          Grouped.valueField,
-          new TypedBufferOp[K, V1, V2](
-            Grouped.keyConverter(keyOrdering),
-            Grouped.valueConverter(optVOrdering),
-            reduceFn,
-            Grouped.valueField),
-          Fields.REPLACE))
-      .reducers(reducers.getOrElse(-1))
-      .setDescriptions(descriptions)
+          new cascading.pipe.Every(
+            _,
+            Grouped.valueField,
+            new TypedBufferOp[K, V1, V2](
+              Grouped.keyConverter(keyOrdering),
+              Grouped.valueConverter(optVOrdering),
+              reduceFn,
+              Grouped.valueField),
+            Fields.REPLACE))
+        .reducers(reducers.getOrElse(-1))
+        .setDescriptions(descriptions)
     }
   }
 }
@@ -709,17 +709,17 @@ case class IteratorMappedReduce[K, V1, V2](
 
   override lazy val toTypedPipe = groupOp {
     _.every(
-      new cascading.pipe.Every(
-        _,
-        Grouped.valueField,
-        new TypedBufferOp(
-          Grouped.keyConverter(keyOrdering),
-          TupleConverter.singleConverter[V1],
-          reduceFn,
-          Grouped.valueField),
-        Fields.REPLACE))
-    .reducers(reducers.getOrElse(-1))
-    .setDescriptions(descriptions)
+        new cascading.pipe.Every(
+          _,
+          Grouped.valueField,
+          new TypedBufferOp(
+            Grouped.keyConverter(keyOrdering),
+            TupleConverter.singleConverter[V1],
+            reduceFn,
+            Grouped.valueField),
+          Fields.REPLACE))
+      .reducers(reducers.getOrElse(-1))
+      .setDescriptions(descriptions)
   }
 
   override def joinFunction = {

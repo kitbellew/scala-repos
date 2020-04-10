@@ -52,8 +52,7 @@ object BlobMetadata {
   implicit val mimeTypeExtractor: Extractor[MimeType] =
     new Extractor[MimeType] {
       def validated(jv: JValue) =
-        jv
-          .validated[String]
+        jv.validated[String]
           .flatMap { ms =>
             MimeTypes
               .parseMimeTypes(ms)

@@ -186,8 +186,7 @@ object Enumeratee {
 
     def getInside[T](it: Iteratee[E, T]): Future[
       (Option[Either[(String, Input[E]), (T, Input[E])]], Iteratee[E, T])] = {
-      it
-        .pureFold {
+      it.pureFold {
           case Step.Done(a, e) =>
             Some(Right((a, e)))
           case Step.Cont(k) =>
@@ -622,8 +621,7 @@ object Enumeratee {
 
             case Input.EOF =>
               Iteratee.flatten(
-                f
-                  .run
+                f.run
                   .map[Iteratee[From, Iteratee[To, A]]]((c: To) =>
                     Done(k(Input.El(c)), Input.EOF))(dec))
 
@@ -1007,8 +1005,7 @@ object Enumeratee {
           input match {
             case in @ (Input.El(_) | Input.Empty) =>
               val next: Future[Iteratee[E, Iteratee[E, A]]] =
-                it
-                  .pureFlatFold[E, Iteratee[E, A]] {
+                it.pureFlatFold[E, Iteratee[E, A]] {
                     case Step.Cont(k) =>
                       val n = k(in)
                       n.pureFlatFold[E, Iteratee[E, A]] {

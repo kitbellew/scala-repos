@@ -267,8 +267,7 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
       options = extraOptions.toMap,
       partitionColumns = normalizedParCols.getOrElse(Nil))
 
-    df
-      .sqlContext
+    df.sqlContext
       .sessionState
       .continuousQueryManager
       .startQuery(
@@ -311,8 +310,7 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
       }
       .getOrElse(df.logicalPlan)
 
-    df
-      .sqlContext
+    df.sqlContext
       .executePlan(
         InsertIntoTable(
           UnresolvedRelation(tableIdent),

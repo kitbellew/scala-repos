@@ -78,8 +78,7 @@ class PartitioningSuite
     partitioners.map {
       case (numPartitions, partitioner) =>
         val rangeBounds = partitioner.invokePrivate(decoratedRangeBounds())
-        1
-          .to(1000)
+        1.to(1000)
           .map { element =>
             {
               val partition = partitioner.getPartition(element)

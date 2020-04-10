@@ -216,8 +216,7 @@ abstract class GuiceBuilder[Self] protected (
           case p: PlayException =>
             throw p
           case _ => {
-            e
-              .getErrorMessages
+            e.getErrorMessages
               .asScala
               .foreach(
                 _.getCause match {

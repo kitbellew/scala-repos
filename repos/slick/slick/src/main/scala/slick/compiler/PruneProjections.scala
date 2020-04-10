@@ -12,15 +12,13 @@ class PruneProjections extends Phase {
     state.map { n =>
       ClientSideOp.mapServerSide(n, true) { n =>
         val referenced =
-          n
-            .collect[(TypeSymbol, TermSymbol)] {
+          n.collect[(TypeSymbol, TermSymbol)] {
               case Select(_ :@ NominalType(s, _), f) =>
                 (s, f)
             }
             .toSet
         val allTSyms =
-          n
-            .collect[TypeSymbol] {
+          n.collect[TypeSymbol] {
               case p: Pure =>
                 p.identity
             }
@@ -29,8 +27,7 @@ class PruneProjections extends Phase {
         logger.debug(
           s"Unreferenced: ${unrefTSyms.mkString(", ")}; Field refs: ${referenced
             .mkString(", ")}")
-        n
-          .replaceInvalidate {
+        n.replaceInvalidate {
             case Pure(s @ StructNode(ch), pts) if !unrefTSyms.contains(pts) =>
               val ch2 = ch.filter(d => referenced.contains((pts, d._1)))
               if (ch2.length == ch.length)

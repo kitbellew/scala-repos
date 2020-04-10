@@ -351,8 +351,7 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       }
 
       "with query string" in withServer { ws =>
-        ws
-          .url("/")
+        ws.url("/")
           .withQueryString("lorem" -> "ipsum")
           .sign(calc) aka "signed request" must not(throwA[Exception])
       }

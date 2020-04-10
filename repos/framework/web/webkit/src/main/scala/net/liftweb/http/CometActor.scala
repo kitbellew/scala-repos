@@ -1524,12 +1524,10 @@ private[http] class XmlOrJsCmd(
       notices)
 
   val xml = _xml.flatMap(content =>
-    S
-      .session
+    S.session
       .map(s => s.processSurroundAndInclude("JS SetHTML id: " + id, content)))
   val fixedXhtml = _fixedXhtml.flatMap(content =>
-    S
-      .session
+    S.session
       .map(s => s.processSurroundAndInclude("JS SetHTML id: " + id, content)))
 
   /**

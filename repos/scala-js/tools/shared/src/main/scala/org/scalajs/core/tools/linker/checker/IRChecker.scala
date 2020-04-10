@@ -677,14 +677,14 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
             } else {
               maybeClass.right foreach {
                 _.lookupField(item)
-                .fold[Unit] {
-                  reportError(s"Class $cls does not have a field $item")
-                } { fieldDef =>
-                  if (fieldDef.tpe != tree.tpe)
-                    reportError(
-                      s"Select $cls.$item of type " +
-                        s"${fieldDef.tpe} typed as ${tree.tpe}")
-                }
+                  .fold[Unit] {
+                    reportError(s"Class $cls does not have a field $item")
+                  } { fieldDef =>
+                    if (fieldDef.tpe != tree.tpe)
+                      reportError(
+                        s"Select $cls.$item of type " +
+                          s"${fieldDef.tpe} typed as ${tree.tpe}")
+                  }
               }
             }
           case NullType | NothingType =>

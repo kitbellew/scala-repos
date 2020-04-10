@@ -135,8 +135,7 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
       Set.empty
     else {
       val chres =
-        n1
-          .children
+        n1.children
           .iterator
           .zip(n2.children.iterator)
           .map {

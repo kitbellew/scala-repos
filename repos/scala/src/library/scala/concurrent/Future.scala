@@ -705,8 +705,7 @@ object Future {
   def sequence[A, M[X] <: TraversableOnce[X]](in: M[Future[A]])(implicit
       cbf: CanBuildFrom[M[Future[A]], A, M[A]],
       executor: ExecutionContext): Future[M[A]] = {
-    in
-      .foldLeft(successful(cbf(in))) { (fr, fa) =>
+    in.foldLeft(successful(cbf(in))) { (fr, fa) =>
         for (r <- fr;
              a <- fa)
           yield (r += a)
@@ -787,8 +786,7 @@ object Future {
       if (!i.hasNext)
         successful[Option[T]](None)
       else {
-        i
-          .next()
+        i.next()
           .transformWith {
             case Success(r) if p(r) =>
               successful(Some(r))
@@ -829,8 +827,7 @@ object Future {
     if (!i.hasNext)
       successful(prevValue)
     else
-      i
-        .next()
+      i.next()
         .flatMap { value =>
           foldNext(i, op(prevValue, value), op)
         }
@@ -929,8 +926,7 @@ object Future {
       fn: A => Future[B])(implicit
       cbf: CanBuildFrom[M[A], B, M[B]],
       executor: ExecutionContext): Future[M[B]] =
-    in
-      .foldLeft(successful(cbf(in))) { (fr, a) =>
+    in.foldLeft(successful(cbf(in))) { (fr, a) =>
         val fb = fn(a)
         for (r <- fr;
              b <- fb)

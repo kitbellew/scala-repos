@@ -58,8 +58,7 @@ private[summingbird] object StormStatProvider extends PlatformStatProvider {
       name: Name): Option[StormCounterIncrementor] =
     Option(metricsForJob.get(jobID)).map { m =>
       StormCounterIncrementor(
-        m
-          .asScala
+        m.asScala
           .getOrElse(
             group.getString + "/" + name.getString,
             sys.error(

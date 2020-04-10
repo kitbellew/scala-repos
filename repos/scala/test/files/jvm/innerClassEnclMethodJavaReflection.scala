@@ -38,8 +38,7 @@ object Test extends App {
 
     def flatten(f: AbstractFile, s: String): Iterator[(AbstractFile, String)] =
       if (f.isClassContainer)
-        f
-          .iterator
+        f.iterator
           .map(ch =>
             (
               ch,

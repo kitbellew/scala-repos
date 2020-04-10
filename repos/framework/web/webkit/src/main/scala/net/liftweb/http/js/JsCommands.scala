@@ -170,8 +170,7 @@ trait JsObj extends JsExp {
     // replaced props
     val rp = props.map {
       case (key, exp) =>
-        ep
-          .find {
+        ep.find {
             case (k, e) =>
               k == key
           }
@@ -237,12 +236,10 @@ trait JsExp extends HtmlFixer with ToJsCmd {
   def appendToParent(parentName: String): JsCmd = {
     val ran = "v" + Helpers.nextFuncName
     JsCmds.JsCrVar(ran, this) &
-      JE
-        .JsRaw(
+      JE.JsRaw(
           "if (" + ran + ".parentNode) " + ran + " = " + ran + ".cloneNode(true)")
         .cmd &
-      JE
-        .JsRaw(
+      JE.JsRaw(
           "if (" + ran + ".nodeType) {" + parentName + ".appendChild(" + ran + ");} else {" +
             parentName + ".appendChild(document.createTextNode(" + ran + "));}")
         .cmd
@@ -747,8 +744,7 @@ trait HtmlFixer {
     val w = new java.io.StringWriter
 
     val xhtml =
-      S
-        .session
+      S.session
         .map { session =>
           session.normalizeHtmlAndAppendEventHandlers(
             session.processSurroundAndInclude(s"JS SetHTML id: $uid", content))
@@ -782,8 +778,7 @@ trait HtmlFixer {
     def unapply(in: NodeSeq): Option[Elem] =
       in match {
         case e: Elem => {
-          e
-            .attribute("type")
+          e.attribute("type")
             .map(_.text)
             .filter(_ == "text/javascript")
             .flatMap { a =>

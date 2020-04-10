@@ -75,7 +75,7 @@ object Parameters {
         .parameterSeq
         .map(
           _.map(e ⇒ new SimpleEntry(e._1, e._2): JMap.Entry[String, String])
-          .asJavaCollection))
+            .asJavaCollection))
 
   /** Unmarshals the `name` field using the provided `convert` function. */
   def fromString[T](

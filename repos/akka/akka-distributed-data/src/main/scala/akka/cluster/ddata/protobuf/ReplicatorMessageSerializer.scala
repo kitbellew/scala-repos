@@ -299,8 +299,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
       .foreach {
         case (key, digest) ⇒
           b.addEntries(
-            dm
-              .Status
+            dm.Status
               .Entry
               .newBuilder()
               .setKey(key)
@@ -328,8 +327,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
       .foreach {
         case (key, data) ⇒
           b.addEntries(
-            dm
-              .Gossip
+            dm.Gossip
               .Entry
               .newBuilder()
               .setKey(key)
@@ -457,8 +455,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def subscribeToProto(subscribe: Subscribe[_]): dm.Subscribe =
-    dm
-      .Subscribe
+    dm.Subscribe
       .newBuilder()
       .setKey(otherMessageToProto(subscribe.key))
       .setRef(Serialization.serializedActorPath(subscribe.subscriber))
@@ -471,8 +468,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def unsubscribeToProto(unsubscribe: Unsubscribe[_]): dm.Unsubscribe =
-    dm
-      .Unsubscribe
+    dm.Unsubscribe
       .newBuilder()
       .setKey(otherMessageToProto(unsubscribe.key))
       .setRef(Serialization.serializedActorPath(unsubscribe.subscriber))
@@ -485,8 +481,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def changedToProto(changed: Changed[_]): dm.Changed =
-    dm
-      .Changed
+    dm.Changed
       .newBuilder()
       .setKey(otherMessageToProto(changed.key))
       .setData(otherMessageToProto(changed.dataValue))
@@ -565,8 +560,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def writeToProto(write: Write): dm.Write =
-    dm
-      .Write
+    dm.Write
       .newBuilder()
       .setKey(write.key)
       .setEnvelope(dataEnvelopeToProto(write.envelope))

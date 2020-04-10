@@ -22,12 +22,10 @@ object Macros {
           Select(Ident(c.mirror.staticModule("Macros")), TermName("foo")))
       else
         c.Expr[Unit](Literal(Constant(())))
-    c
-      .universe
+    c.universe
       .reify {
         println(
-          c
-            .Expr[String](
+          c.Expr[String](
               Literal(Constant(normalizePaths(c.enclosingMacros.toString))))
             .splice)
         next.splice

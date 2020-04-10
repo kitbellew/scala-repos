@@ -278,8 +278,7 @@ class CrossValidatorSuite
       .addGrid(lr.regParam, Array(0.1, 0.2))
       .build()
     val cv = new CrossValidatorModel("cvUid", lrModel, Array(0.3, 0.6))
-    cv
-      .set(cv.estimator, lr)
+    cv.set(cv.estimator, lr)
       .set(cv.evaluator, evaluator)
       .set(cv.numFolds, 20)
       .set(cv.estimatorParamMaps, paramMaps)

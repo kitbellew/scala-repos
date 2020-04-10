@@ -1297,8 +1297,7 @@ trait AbstractScreen extends Factory with Loggable {
   protected def grabParams(
       in: Seq[FilterOrValidate[_]]): List[SHtml.ElemAttr] = {
     val sl = in.toList
-    in
-      .collect {
+    in.collect {
         case FormFieldId(id) =>
           ("id" -> id): SHtml.ElemAttr
       }

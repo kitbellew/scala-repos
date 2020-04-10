@@ -37,8 +37,7 @@ class MapReduceJob {
     else
       mappers(input) += m // : Unit
 
-    m
-      .tags
+    m.tags
       .foreach { tag =>
       }
   }

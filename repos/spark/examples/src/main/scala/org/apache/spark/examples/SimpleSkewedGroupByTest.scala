@@ -58,8 +58,7 @@ object SimpleSkewedGroupByTest {
     val sc = new SparkContext(sparkConf)
 
     val pairs1 =
-      sc
-        .parallelize(0 until numMappers, numMappers)
+      sc.parallelize(0 until numMappers, numMappers)
         .flatMap { p =>
           val ranGen = new Random
           var result = new Array[(Int, Array[Byte])](numKVPairs)

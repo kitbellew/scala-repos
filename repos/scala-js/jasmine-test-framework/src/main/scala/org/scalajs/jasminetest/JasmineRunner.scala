@@ -76,13 +76,11 @@ object JasmineRunner {
       .getPrototypeOf((new Throwable).asInstanceOf[js.Object])
       .asInstanceOf[js.Object]
 
-    js
-      .Object
+    js.Object
       .defineProperty(
         ThrowablePrototype,
         "stack",
-        js
-          .Dynamic
+        js.Dynamic
           .literal(
             configurable = false,
             enumerable = false,

@@ -27,8 +27,7 @@ object BaseTypes {
     t match {
       case ScDesignatorType(td: ScTemplateDefinition) =>
         reduce(
-          td
-            .superTypes
+          td.superTypes
             .flatMap(tp =>
               if (!notAll)
                 BaseTypes
@@ -37,8 +36,7 @@ object BaseTypes {
                 Seq(tp)))
       case ScDesignatorType(c: PsiClass) =>
         reduce(
-          c
-            .getSuperTypes
+          c.getSuperTypes
             .flatMap { p =>
               if (!notAll)
                 BaseTypes.get(
@@ -81,8 +79,7 @@ object BaseTypes {
         if (visitedAliases.contains(ta))
           return Seq.empty
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-          ta
-            .typeParameters
+          ta.typeParameters
             .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
           args)
         BaseTypes.get(
@@ -94,8 +91,7 @@ object BaseTypes {
         if (visitedAliases.contains(ta))
           return Seq.empty
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-          ta
-            .typeParameters
+          ta.typeParameters
             .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
           args)
         val s = p.actualSubst.followed(genericSubst)
@@ -106,8 +102,7 @@ object BaseTypes {
         ScType.extractClass(p.designator) match {
           case Some(td: ScTypeDefinition) =>
             reduce(
-              td
-                .superTypes
+              td.superTypes
                 .flatMap { tp =>
                   if (!notAll)
                     BaseTypes.get(
@@ -153,8 +148,7 @@ object BaseTypes {
         elem match {
           case td: ScTypeDefinition =>
             reduce(
-              td
-                .superTypes
+              td.superTypes
                 .flatMap { tp =>
                   if (!notAll)
                     BaseTypes
@@ -165,8 +159,7 @@ object BaseTypes {
                 })
           case c: PsiClass =>
             reduce(
-              c
-                .getSuperTypes
+              c.getSuperTypes
                 .flatMap { st =>
                   {
                     val proj = c.getProject

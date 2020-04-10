@@ -232,8 +232,7 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                         if (index != 0)
                           Seq.empty
                         else
-                          c
-                            .getParameterList
+                          c.getParameterList
                             .getParameters
                             .toSeq
                             .map {

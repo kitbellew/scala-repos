@@ -26,17 +26,17 @@ object CORSFilterSpec extends CORSCommonSpec {
       block: => T): T = {
     running(
       _.configure(conf)
-      .overrides(
-        bind[Router].to(
-          Router.from {
-            case p"/error" =>
-              Action { req =>
-                throw sys.error("error")
-              }
-            case _ =>
-              Action(Results.Ok)
-          }),
-        bind[HttpFilters].to[Filters]))(_ => block)
+        .overrides(
+          bind[Router].to(
+            Router.from {
+              case p"/error" =>
+                Action { req =>
+                  throw sys.error("error")
+                }
+              case _ =>
+                Action(Results.Ok)
+            }),
+          bind[HttpFilters].to[Filters]))(_ => block)
   }
 
   "The CORSFilter" should {
@@ -75,17 +75,17 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
       conf: Map[String, _ <: Any] = Map())(block: Application => T): T = {
     running(
       _.configure(conf)
-      .overrides(
-        bind[Router].to(
-          Router.from {
-            case p"/error" =>
-              Action { req =>
-                throw sys.error("error")
-              }
-            case _ =>
-              CSRFCheck(Action(Results.Ok))
-          }),
-        bind[HttpFilters].to(filters)))(block)
+        .overrides(
+          bind[Router].to(
+            Router.from {
+              case p"/error" =>
+                Action { req =>
+                  throw sys.error("error")
+                }
+              case _ =>
+                CSRFCheck(Action(Results.Ok))
+            }),
+          bind[HttpFilters].to(filters)))(block)
   }
 
   def withApplication[T](conf: Map[String, _] = Map.empty)(block: => T) =
@@ -143,18 +143,18 @@ object CORSActionBuilderSpec extends CORSCommonSpec {
       conf: Map[String, _ <: Any] = Map.empty)(block: => T): T = {
     running(
       _.configure(conf)
-      .routes {
-        case (_, "/error") =>
-          CORSActionBuilder(
-            Configuration.reference ++ Configuration.from(conf),
-            configPath = configPath) { req =>
-            throw sys.error("error")
-          }
-        case _ =>
-          CORSActionBuilder(
-            Configuration.reference ++ Configuration.from(conf),
-            configPath = configPath)(Results.Ok)
-      })(_ => block)
+        .routes {
+          case (_, "/error") =>
+            CORSActionBuilder(
+              Configuration.reference ++ Configuration.from(conf),
+              configPath = configPath) { req =>
+              throw sys.error("error")
+            }
+          case _ =>
+            CORSActionBuilder(
+              Configuration.reference ++ Configuration.from(conf),
+              configPath = configPath)(Results.Ok)
+        })(_ => block)
   }
 
   "The CORSActionBuilder with" should {

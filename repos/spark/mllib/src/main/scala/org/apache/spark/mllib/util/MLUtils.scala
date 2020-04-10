@@ -264,8 +264,7 @@ object MLUtils {
   @Since("1.0.0")
   @deprecated("Should use MLUtils.loadLabeledPoints instead.", "1.0.1")
   def loadLabeledData(sc: SparkContext, dir: String): RDD[LabeledPoint] = {
-    sc
-      .textFile(dir)
+    sc.textFile(dir)
       .map { line =>
         val parts = line.split(',')
         val label = parts(0).toDouble

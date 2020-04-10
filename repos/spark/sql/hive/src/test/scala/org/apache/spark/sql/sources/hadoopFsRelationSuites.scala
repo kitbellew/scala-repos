@@ -173,8 +173,7 @@ abstract class HadoopFsRelationTest
           .orderBy("index")
           .coalesce(1)
 
-        df
-          .write
+        df.write
           .mode("overwrite")
           .format(dataSourceName)
           .option("dataSchema", df.schema.json)
@@ -681,8 +680,7 @@ abstract class HadoopFsRelationTest
     "SPARK-7616: adjust column name order accordingly when saving partitioned table") {
     val df = (1 to 3).map(i => (i, s"val_$i", i * 2)).toDF("a", "b", "c")
 
-    df
-      .write
+    df.write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
       .partitionBy("c", "a")
@@ -730,8 +728,7 @@ abstract class HadoopFsRelationTest
     try {
       val df = sqlContext.range(1, 10).toDF("i")
       withTempPath { dir =>
-        df
-          .write
+        df.write
           .mode("append")
           .format(dataSourceName)
           .save(dir.getCanonicalPath)
@@ -746,8 +743,7 @@ abstract class HadoopFsRelationTest
         // Because there data already exists,
         // this append should succeed because we will use the output committer associated
         // with file format and AlwaysFailOutputCommitter will not be used.
-        df
-          .write
+        df.write
           .mode("append")
           .format(dataSourceName)
           .save(dir.getCanonicalPath)
@@ -761,8 +757,7 @@ abstract class HadoopFsRelationTest
 
         // This will fail because AlwaysFailOutputCommitter is used when we do append.
         intercept[Exception] {
-          df
-            .write
+          df.write
             .mode("overwrite")
             .format(dataSourceName)
             .save(dir.getCanonicalPath)
@@ -781,8 +776,7 @@ abstract class HadoopFsRelationTest
         // this append will fail because AlwaysFailOutputCommitter is used when we do append
         // and there is no existing data.
         intercept[Exception] {
-          df
-            .write
+          df.write
             .mode("append")
             .format(dataSourceName)
             .save(dir.getCanonicalPath)
@@ -806,16 +800,14 @@ abstract class HadoopFsRelationTest
     ).toDF("a", "b", "c", "d", "e")
     withTempDir { file =>
       intercept[AnalysisException] {
-        df
-          .write
+        df.write
           .format(dataSourceName)
           .partitionBy("c", "d", "e")
           .save(file.getCanonicalPath)
       }
     }
     intercept[AnalysisException] {
-      df
-        .write
+      df.write
         .format(dataSourceName)
         .partitionBy("c", "d", "e")
         .saveAsTable("t")

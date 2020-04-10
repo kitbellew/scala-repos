@@ -111,13 +111,11 @@ object Bounds {
         }
       getNamedElement match {
         case t: ScTemplateDefinition =>
-          t
-            .superTypes
+          t.superTypes
             .map(tp => new Options(subst.subst(tp)))
             .filter(!_.isEmpty)
         case p: PsiClass =>
-          p
-            .getSupers
+          p.getSupers
             .toSeq
             .map(cl => new Options(ScType.designator(cl)))
             .filter(!_.isEmpty)

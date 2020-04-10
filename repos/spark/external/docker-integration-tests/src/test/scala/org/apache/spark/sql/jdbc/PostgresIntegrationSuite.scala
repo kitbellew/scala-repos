@@ -121,10 +121,8 @@ class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
         .dataType ==
         ArrayType(DecimalType(2, 2), true))
     // Test write null values.
-    df
-      .select(
-        df
-          .queryExecution
+    df.select(
+        df.queryExecution
           .analyzed
           .output
           .map { a =>

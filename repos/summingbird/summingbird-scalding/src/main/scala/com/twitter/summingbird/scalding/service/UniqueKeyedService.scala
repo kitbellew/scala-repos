@@ -52,8 +52,7 @@ trait UniqueKeyedService[K, V] extends SimpleService[K, V] {
         .getOrElse(grouped)
 
     withReducers(
-      in
-        .map {
+      in.map {
           case (t, (k, w)) =>
             (k, (t, w))
         }

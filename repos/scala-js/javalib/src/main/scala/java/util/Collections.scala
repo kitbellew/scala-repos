@@ -1033,8 +1033,7 @@ object Collections {
     }
 
     override def putAll(m: Map[_ <: K, _ <: V]): Unit = {
-      m
-        .entrySet()
+      m.entrySet()
         .foreach(entry => checkKeyAndValue(entry.getKey, entry.getValue))
       super.putAll(m)
     }

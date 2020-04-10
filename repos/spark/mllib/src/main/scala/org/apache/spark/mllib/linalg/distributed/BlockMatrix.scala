@@ -564,8 +564,7 @@ class BlockMatrix @Since("1.3.0") (
           case (pId, (a, b)) =>
             a.flatMap {
               case (leftRowIndex, leftColIndex, leftBlock) =>
-                b
-                  .filter(_._1 == leftColIndex)
+                b.filter(_._1 == leftColIndex)
                   .map {
                     case (rightRowIndex, rightColIndex, rightBlock) =>
                       val C =

@@ -741,8 +741,7 @@ object PlayDocsValidation {
       line.foreach { l =>
         log.error(l)
         log.error(
-          l
-            .take(colNo - 1)
+          l.take(colNo - 1)
             .map {
               case '\t' =>
                 '\t';

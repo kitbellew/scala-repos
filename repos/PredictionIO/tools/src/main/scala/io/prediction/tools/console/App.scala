@@ -37,8 +37,7 @@ object App extends Logging {
       error(s"App ${ca.app.name} already exists. Aborting.")
       1
     } getOrElse {
-      ca
-        .app
+      ca.app
         .id
         .map { id =>
           apps.get(id) map { app =>

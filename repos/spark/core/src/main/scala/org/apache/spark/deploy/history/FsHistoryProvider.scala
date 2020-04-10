@@ -275,11 +275,9 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
                   .getBoolean("spark.history.ui.acls.enable", false)
                 ui.getSecurityManager.setAcls(uiAclsEnabled)
                 // make sure to set admin acls before view acls so they are properly picked up
-                ui
-                  .getSecurityManager
+                ui.getSecurityManager
                   .setAdminAcls(appListener.adminAcls.getOrElse(""))
-                ui
-                  .getSecurityManager
+                ui.getSecurityManager
                   .setViewAcls(
                     attempt.sparkUser,
                     appListener.viewAcls.getOrElse(""))

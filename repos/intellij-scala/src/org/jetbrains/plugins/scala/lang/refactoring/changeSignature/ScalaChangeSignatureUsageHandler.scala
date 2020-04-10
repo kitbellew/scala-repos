@@ -81,8 +81,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     val member =
       ScalaPsiUtil.nameContext(usage.namedElement) match {
         case cl: ScClass =>
-          cl
-            .constructor
+          cl.constructor
             .getOrElse(
               return
             )
@@ -665,8 +664,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
     change match {
       case sc: ScalaChangeInfo =>
-        sc
-          .newParams
+        sc.newParams
           .map(cl => cl.map(paramText).mkString("(", ", ", ")"))
           .mkString
       case _ =>

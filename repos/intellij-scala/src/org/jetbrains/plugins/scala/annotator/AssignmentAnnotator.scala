@@ -82,8 +82,7 @@ trait AssignmentAnnotator {
                   return
                 assignment.resolveAssignment match {
                   case Some(ra) =>
-                    ra
-                      .problems
+                    ra.problems
                       .foreach {
                         case TypeMismatch(expression, expectedType) =>
                           if (expression != null)

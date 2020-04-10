@@ -126,9 +126,9 @@ trait SdkDescriptorCompanion {
 
     val reflectRequired = binaryComponents.exists {
       _.version
-      .exists {
-        _.toLanguageLevel.exists(_ >= Scala_2_10)
-      }
+        .exists {
+          _.toLanguageLevel.exists(_ >= Scala_2_10)
+        }
     }
 
     val requiredBinaryArtifacts = Set(

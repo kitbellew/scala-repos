@@ -424,8 +424,7 @@ object BindingValidators {
   class ValidatableSeq[T <: Seq[_]](b: FieldDescriptor[T]) {
     def notEmpty: FieldDescriptor[T] = notEmpty()
     def notEmpty(messageFormat: String = b.requiredError): FieldDescriptor[T] =
-      b
-        .required
+      b.required
         .validateWith(BindingValidators.nonEmptyCollection(messageFormat))
   }
 

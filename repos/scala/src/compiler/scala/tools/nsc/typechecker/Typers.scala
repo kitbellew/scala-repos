@@ -2333,8 +2333,7 @@ trait Typers
         for (ann <- clazz.getAnnotation(DeprecatedAttr)) {
           val m = companionSymbolOf(clazz, context)
           if (m != NoSymbol)
-            m
-              .moduleClass
+            m.moduleClass
               .addAnnotation(AnnotationInfo(ann.atp, ann.args, List()))
         }
       }
@@ -6847,8 +6846,8 @@ trait Typers
             // tests whether the lit belongs to the expandee of an open macro
             openMacros exists (
               _.macroApplication
-              .attachments
-              .get[MacroExpansionAttachment] match {
+                .attachments
+                .get[MacroExpansionAttachment] match {
                 case Some(MacroExpansionAttachment(_, t: Tree)) =>
                   t exists (_ == lit)
                 case _ =>

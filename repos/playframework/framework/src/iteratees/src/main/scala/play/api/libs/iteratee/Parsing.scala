@@ -115,8 +115,7 @@ object Parsing {
                       .foldLeft(Future.successful(Array[Byte]() -> Cont(k))) {
                         (p, m) =>
                           p.flatMap(i =>
-                            i
-                              ._2
+                            i._2
                               .fold1(
                                 (a, e) =>
                                   Future.successful(

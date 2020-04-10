@@ -228,8 +228,7 @@ sealed trait OptionLiftLowPriority {
       case r: Rep.TypedRep[_] /* An Option column */ =>
         Rep
           .columnPlaceholder[Any](
-            r
-              .tpe
+            r.tpe
               .asInstanceOf[OptionType]
               .elementType
               .asInstanceOf[TypedType[Any]])

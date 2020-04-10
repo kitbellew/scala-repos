@@ -237,8 +237,7 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](implicit
         tdb.profile.queryCompiler.phases.takeWhile(_.name != "codeGen"))
     val cs = qc.run(q.toNode)
     val found =
-      cs
-        .tree
+      cs.tree
         .collect {
           case c: Comprehension =>
             c
@@ -496,8 +495,7 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
       catch {
         case ex: AssertionError =>
           ex.setStackTrace(
-            ex
-              .getStackTrace
+            ex.getStackTrace
               .iterator
               .filterNot(_.getClassName.startsWith(cln))
               .toArray)
@@ -541,8 +539,7 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
       catch {
         case ex: AssertionError =>
           ex.setStackTrace(
-            ex
-              .getStackTrace
+            ex.getStackTrace
               .iterator
               .filterNot(_.getClassName.startsWith(cln))
               .toArray)

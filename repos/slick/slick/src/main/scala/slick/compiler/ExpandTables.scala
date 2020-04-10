@@ -24,8 +24,7 @@ class ExpandTables extends Phase {
       tpe match {
         case p: ProductType =>
           ProductNode(
-            p
-              .elements
+            p.elements
               .zipWithIndex
               .map {
                 case (t, i) =>
@@ -96,8 +95,7 @@ class ExpandTables extends Phase {
               case r: Ref =>
                 r.untyped
               case d: Distinct =>
-                if (d
-                      .nodeType
+                if (d.nodeType
                       .existsType {
                         case NominalType(_: TableIdentitySymbol, _) =>
                           true;

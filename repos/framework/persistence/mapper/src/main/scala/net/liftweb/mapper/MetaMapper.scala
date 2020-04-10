@@ -383,28 +383,24 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
           val lst: Set[FT] = Set(
             filter(
               ret.map(v =>
-                v
-                  .getSingleton
+                v.getSingleton
                   .getActualField(v, j.field)
                   .get
                   .asInstanceOf[FT])): _*)
 
-          j
-            .field
+          j.field
             .dbKeyToTable
             .asInstanceOf[MetaMapper[A]]
             .findAll(
               ByList(
-                j
-                  .field
+                j.field
                   .dbKeyToTable
                   .primaryKeyField
                   .asInstanceOf[MappedField[FT, A]],
                 lst.toList))
             .asInstanceOf[List[MT]]
         } else {
-          j
-            .field
+          j.field
             .dbKeyToTable
             .asInstanceOf[MetaMapper[A]]
             .findAll(
@@ -479,8 +475,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   }
 
   private def distinct(in: Seq[QueryParam[A]]): String =
-    in
-      .find {
+    in.find {
         case Distinct() =>
           true
         case _ =>
@@ -653,8 +648,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
               "(" + in
               .innerMeta
               .addEndStuffs(
-                in
-                  .innerMeta
+                in.innerMeta
                   .addFields(
                     "SELECT " +
                       in.distinct +
@@ -1599,8 +1593,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
           mf.setName_!(v.getName)
           tArray += FieldHolder(mf.name, v, mf)
           for (colName <-
-                 mf
-                   .dbColumnNames(v.getName)
+                 mf.dbColumnNames(v.getName)
                    .map(MapperRules.quoteColumnName.vend)
                    .map(_.toLowerCase)) {
             mappedColumnInfo += colName -> mf
@@ -2229,8 +2222,7 @@ object NotIn {
       def notIn: Boolean = true
 
       val queryParams: List[QueryParam[InnerMapper]] =
-        qp
-          .map { v =>
+        qp.map { v =>
             val r: QueryParam[InnerMapper] = v;
             r
           }
@@ -2255,8 +2247,7 @@ object NotIn {
       def notIn: Boolean = true
 
       val queryParams: List[QueryParam[InnerMapper]] = {
-        qp
-          .map { v =>
+        qp.map { v =>
             val r: QueryParam[InnerMapper] = v;
             r
           }
@@ -2283,8 +2274,7 @@ object In {
       def notIn: Boolean = false
 
       val queryParams: List[QueryParam[InnerMapper]] =
-        qp
-          .map { v =>
+        qp.map { v =>
             val r: QueryParam[InnerMapper] = v;
             r
           }
@@ -2309,8 +2299,7 @@ object In {
       def notIn: Boolean = false
 
       val queryParams: List[QueryParam[InnerMapper]] = {
-        qp
-          .map { v =>
+        qp.map { v =>
             val r: QueryParam[InnerMapper] = v;
             r
           }

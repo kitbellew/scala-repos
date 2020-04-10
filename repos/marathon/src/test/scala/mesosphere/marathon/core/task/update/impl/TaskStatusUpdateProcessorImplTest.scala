@@ -172,8 +172,7 @@ class TaskStatusUpdateProcessorImplTest
     Given("a known task")
     import scala.concurrent.ExecutionContext.Implicits.global
     f.taskTracker.task(taskId) returns Future.successful(Some(taskState))
-    f
-      .taskUpdater
+    f.taskUpdater
       .statusUpdate(appId, status)
       .asInstanceOf[Future[Unit]] returns Future.successful(())
     f.appRepository.app(appId, version) returns Future.successful(Some(app))

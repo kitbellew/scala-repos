@@ -226,8 +226,7 @@ trait JSEncoding extends SubComponent {
   }
 
   def encodeClassFullName(sym: Symbol): String = {
-    ir
-      .Definitions
+    ir.Definitions
       .encodeClassName(
         sym.fullName + (
           if (needsModuleClassSuffix(sym))

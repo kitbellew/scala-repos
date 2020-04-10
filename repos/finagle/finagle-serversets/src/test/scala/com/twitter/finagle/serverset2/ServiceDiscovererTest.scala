@@ -394,8 +394,7 @@ class ServiceDiscovererTest
 
       val stabilizedHealth =
         new AtomicReference[ClientHealth](ClientHealth.Healthy)
-      sd
-        .health
+      sd.health
         .changes
         .register(
           Witness {
@@ -438,8 +437,7 @@ class ServiceDiscovererTest
         DefaultTimer.twitter)
 
     val health = new AtomicReference[ClientHealth](ClientHealth.Healthy)
-    sd
-      .rawHealth
+    sd.rawHealth
       .changes
       .register(
         Witness {

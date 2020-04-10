@@ -195,8 +195,7 @@ class ScPackagingImpl private (
       findPackageObject(place.getResolveScope) match {
         case Some(po) =>
           var newState = state
-          po
-            .getType(TypingContext.empty)
+          po.getType(TypingContext.empty)
             .foreach {
               case tp: ScType =>
                 newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)

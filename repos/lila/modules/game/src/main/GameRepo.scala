@@ -403,13 +403,13 @@ object GameRepo {
       )
       .map(
         _.documents
-        .flatMap { obj =>
-          obj.getAs[String]("_id") flatMap { id =>
-            obj.getAs[Int]("gs") map {
-              id -> _
+          .flatMap { obj =>
+            obj.getAs[String]("_id") flatMap { id =>
+              obj.getAs[Int]("gs") map {
+                id -> _
+              }
             }
-          }
-        })
+          })
   }
 
   def random: Fu[Option[Game]] =
@@ -505,11 +505,11 @@ object GameRepo {
       )
       .map(
         _.documents
-        .flatMap { obj =>
-          obj.getAs[Int]("nb") map { nb =>
-            UidNb(~obj.getAs[String]("_id"), nb)
-          }
-        })
+          .flatMap { obj =>
+            obj.getAs[Int]("nb") map { nb =>
+              UidNb(~obj.getAs[String]("_id"), nb)
+            }
+          })
   }
 
   private def extractPgnMoves(doc: BSONDocument) =

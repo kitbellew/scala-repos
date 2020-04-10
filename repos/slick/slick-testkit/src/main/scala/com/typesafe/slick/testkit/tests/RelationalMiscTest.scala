@@ -136,8 +136,7 @@ class RelationalMiscTest extends AsyncTest[RelationalTestDB] {
           (t1.a, Case.If(t1.a < 3) Then 1)
         }
       _ <-
-        q2
-          .to[Set]
+        q2.to[Set]
           .result
           .map(_ shouldBe Set((1, Some(1)), (2, Some(1)), (3, None), (4, None)))
 

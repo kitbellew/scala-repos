@@ -49,8 +49,7 @@ private[round] final class History(
   def addEvents(xs: List[Event]): VersionedEvents = {
     waitForLoadedEvents
     val vevs =
-      xs
-        .foldLeft(List.empty[VersionedEvent] -> getVersion) {
+      xs.foldLeft(List.empty[VersionedEvent] -> getVersion) {
           case ((vevs, v), e) =>
             (VersionedEvent(e, v + 1) :: vevs, v + 1)
         }

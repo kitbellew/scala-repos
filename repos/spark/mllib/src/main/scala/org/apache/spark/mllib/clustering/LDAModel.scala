@@ -675,8 +675,7 @@ class DistributedLDAModel private[clustering] (
         Iterator(queues)
       }
       .reduce { (q1, q2) =>
-        q1
-          .zip(q2)
+        q1.zip(q2)
           .foreach {
             case (a, b) =>
               a ++= b
@@ -719,8 +718,7 @@ class DistributedLDAModel private[clustering] (
           Iterator(queues)
         }
         .treeReduce { (q1, q2) =>
-          q1
-            .zip(q2)
+          q1.zip(q2)
             .foreach {
               case (a, b) =>
                 a ++= b
@@ -995,8 +993,7 @@ object DistributedLDAModel extends Loader[DistributedLDAModel] {
 
       val newPath =
         new Path(Loader.dataPath(path), "globalTopicTotals").toUri.toString
-      sc
-        .parallelize(Seq(Data(Vectors.fromBreeze(globalTopicTotals))))
+      sc.parallelize(Seq(Data(Vectors.fromBreeze(globalTopicTotals))))
         .toDF()
         .write
         .parquet(newPath)

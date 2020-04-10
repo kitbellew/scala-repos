@@ -5,8 +5,7 @@ object Macros {
 
   object Impls {
     def foo(c: Context) =
-      c
-        .universe
+      c.universe
         .reify {
           {
             c.universe.reify(c.universe.reify("hello world"))

@@ -508,9 +508,10 @@ object CollapseProject extends Rule[LogicalPlan] {
         // deterministic.
         val hasNondeterministic = projectList1.exists(
           _.collect {
-            case a: Attribute if aliasMap.contains(a) =>
-              aliasMap(a).child
-          }.exists(!_.deterministic))
+              case a: Attribute if aliasMap.contains(a) =>
+                aliasMap(a).child
+            }
+            .exists(!_.deterministic))
 
         if (hasNondeterministic) {
           p
@@ -550,9 +551,10 @@ object CollapseProject extends Rule[LogicalPlan] {
         // deterministic.
         val hasNondeterministic = projectList1.exists(
           _.collect {
-            case a: Attribute if aliasMap.contains(a) =>
-              aliasMap(a).child
-          }.exists(!_.deterministic))
+              case a: Attribute if aliasMap.contains(a) =>
+                aliasMap(a).child
+            }
+            .exists(!_.deterministic))
 
         if (hasNondeterministic) {
           p
@@ -1106,9 +1108,10 @@ object PushPredicateThroughProject
 
         val (deterministic, nondeterministic) = andConditions.partition(
           _.collect {
-            case a: Attribute if aliasMap.contains(a) =>
-              aliasMap(a)
-          }.forall(_.deterministic))
+              case a: Attribute if aliasMap.contains(a) =>
+                aliasMap(a)
+            }
+            .forall(_.deterministic))
 
         // If there is no nondeterministic conditions, push down the whole condition.
         if (nondeterministic.isEmpty) {

@@ -88,8 +88,7 @@ object Xml {
           case g: Group =>
             g.nodes.toList.flatMap(x => x :: descendant(x))
           case _ =>
-            n
-              .child
+            n.child
               .toList
               .flatMap { x =>
                 x :: descendant(x)

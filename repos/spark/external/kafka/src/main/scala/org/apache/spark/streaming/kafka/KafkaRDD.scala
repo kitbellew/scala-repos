@@ -182,8 +182,7 @@ private[kafka] class KafkaRDD[K: ClassTag, V: ClassTag, U <: Decoder[
     // to minimize number of kafka metadata requests
     private def connectLeader: SimpleConsumer = {
       if (context.attemptNumber > 0) {
-        kc
-          .connectLeader(part.topic, part.partition)
+        kc.connectLeader(part.topic, part.partition)
           .fold(
             errs =>
               throw new SparkException(

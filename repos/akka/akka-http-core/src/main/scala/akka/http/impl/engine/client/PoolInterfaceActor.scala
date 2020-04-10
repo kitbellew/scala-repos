@@ -152,8 +152,7 @@ private class PoolInterfaceActor(
       if (totalDemand == 0) {
         // if we can't dispatch right now we buffer and dispatch when demand from the pool arrives
         if (inputBuffer.isFull) {
-          x
-            .responsePromise
+          x.responsePromise
             .failure(
               new BufferOverflowException(
                 s"Exceeded configured max-open-requests value of [${inputBuffer.capacity}]"))

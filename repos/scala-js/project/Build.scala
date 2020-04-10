@@ -634,8 +634,7 @@ object Build extends sbt.Build {
         runner.run(streams.value.log, scalaJSConsole.value)
       }
     }
-  )
-    .withScalaJSCompiler
+  ).withScalaJSCompiler
     .dependsOn(javalibEx, testSuite % "test->test", irProjectJS)
 
   lazy val jsEnvs: Project = Project(
@@ -1310,8 +1309,7 @@ object Build extends sbt.Build {
         }
       }
     )
-  )
-    .withScalaJSCompiler
+  ).withScalaJSCompiler
     .dependsOn(library, jUnitRuntime, jasmineTestFramework % "test")
 
   lazy val testSuiteJVM: Project = Project(

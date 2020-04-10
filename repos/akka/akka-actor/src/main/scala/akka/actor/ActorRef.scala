@@ -622,8 +622,7 @@ private[akka] class EmptyLocalActorRef(
     msg match {
       case w: Watch ⇒
         if (w.watchee == this && w.watcher != this)
-          w
-            .watcher
+          w.watcher
             .sendSystemMessage(
               DeathWatchNotification(
                 w.watchee,
@@ -703,8 +702,7 @@ private[akka] class DeadLetterActorRef(
     msg match {
       case w: Watch ⇒
         if (w.watchee != this && w.watcher != this)
-          w
-            .watcher
+          w.watcher
             .sendSystemMessage(
               DeathWatchNotification(
                 w.watchee,

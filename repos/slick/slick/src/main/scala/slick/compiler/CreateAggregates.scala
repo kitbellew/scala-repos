@@ -148,8 +148,7 @@ class CreateAggregates extends Phase {
       outer: TermSymbol): (Node, Map[TermSymbol, Aggregate]) =
     n match {
       case a @ Aggregate(s1, f1, sel1) =>
-        if (a
-              .findNode {
+        if (a.findNode {
                 case n: PathElement =>
                   n.sym == outer
                 case _ =>

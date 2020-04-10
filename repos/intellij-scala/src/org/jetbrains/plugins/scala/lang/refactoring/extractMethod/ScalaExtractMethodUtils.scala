@@ -284,8 +284,7 @@ object ScalaExtractMethodUtils {
     newVisitor.visitElement(method)
     for ((named, newName) <- bindTo) {
       val id = named.asInstanceOf[ScNamedElement].nameId
-      id
-        .getParent
+      id.getParent
         .getNode
         .replaceChild(
           id.getNode,

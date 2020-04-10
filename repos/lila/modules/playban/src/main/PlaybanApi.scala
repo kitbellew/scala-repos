@@ -87,12 +87,13 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
       .collect[List]()
       .map {
         _.flatMap { obj =>
-          obj.getAs[String]("_id") flatMap { id =>
-            obj.getAs[BSONArray]("b") map {
-              id -> _.stream.size
+            obj.getAs[String]("_id") flatMap { id =>
+              obj.getAs[BSONArray]("b") map {
+                id -> _.stream.size
+              }
             }
           }
-        }.toMap
+          .toMap
       }
 
   private def save(outcome: Outcome): String => Funit =

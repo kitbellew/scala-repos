@@ -168,8 +168,7 @@ class FilterPushdownSuite extends PlanTest {
     val y = testRelation1.subquery('y)
 
     val originalQuery = {
-      x
-        .join(y)
+      x.join(y)
         .where(
           ("x.a".attr === 1 && "y.d".attr === "x.b".attr) ||
             ("x.a".attr === 1 && "y.d".attr === "x.c".attr))
@@ -260,8 +259,7 @@ class FilterPushdownSuite extends PlanTest {
     val y = testRelation.subquery('y)
 
     val originalQuery = {
-      x
-        .join(y, LeftOuter, Some("x.b".attr === 1))
+      x.join(y, LeftOuter, Some("x.b".attr === 1))
         .where("x.b".attr === 2 && "y.b".attr === 2)
     }
 
@@ -281,16 +279,14 @@ class FilterPushdownSuite extends PlanTest {
     val y = testRelation.subquery('y)
 
     val originalQuery = {
-      x
-        .join(y, RightOuter, Some("y.b".attr === 1))
+      x.join(y, RightOuter, Some("y.b".attr === 1))
         .where("x.b".attr === 2 && "y.b".attr === 2)
     }
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val right = testRelation.where('b === 2).subquery('d)
     val correctAnswer =
-      x
-        .join(right, RightOuter, Some("d.b".attr === 1))
+      x.join(right, RightOuter, Some("d.b".attr === 1))
         .where("x.b".attr === 2)
         .analyze
 
@@ -302,8 +298,7 @@ class FilterPushdownSuite extends PlanTest {
     val y = testRelation.subquery('y)
 
     val originalQuery = {
-      x
-        .join(y, LeftOuter, Some("y.b".attr === 1))
+      x.join(y, LeftOuter, Some("y.b".attr === 1))
         .where("x.b".attr === 2 && "y.b".attr === 2)
     }
 
@@ -321,16 +316,14 @@ class FilterPushdownSuite extends PlanTest {
     val y = testRelation.subquery('y)
 
     val originalQuery = {
-      x
-        .join(y, RightOuter, Some("y.b".attr === 1))
+      x.join(y, RightOuter, Some("y.b".attr === 1))
         .where("x.b".attr === 2 && "y.b".attr === 2)
     }
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val right = testRelation.where('b === 2).subquery('r)
     val correctAnswer =
-      x
-        .join(right, RightOuter, Some("r.b".attr === 1))
+      x.join(right, RightOuter, Some("r.b".attr === 1))
         .where("x.b".attr === 2)
         .analyze
 
@@ -342,8 +335,7 @@ class FilterPushdownSuite extends PlanTest {
     val y = testRelation.subquery('y)
 
     val originalQuery = {
-      x
-        .join(y, LeftOuter, Some("y.b".attr === 1))
+      x.join(y, LeftOuter, Some("y.b".attr === 1))
         .where(
           "x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
     }
@@ -365,8 +357,7 @@ class FilterPushdownSuite extends PlanTest {
     val y = testRelation.subquery('y)
 
     val originalQuery = {
-      x
-        .join(y, RightOuter, Some("y.b".attr === 1))
+      x.join(y, RightOuter, Some("y.b".attr === 1))
         .where(
           "x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
     }
@@ -388,8 +379,7 @@ class FilterPushdownSuite extends PlanTest {
     val y = testRelation.subquery('y)
 
     val originalQuery = {
-      x
-        .join(y, LeftOuter, Some("y.b".attr === 1 && "x.a".attr === 3))
+      x.join(y, LeftOuter, Some("y.b".attr === 1 && "x.a".attr === 3))
         .where(
           "x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
     }
@@ -411,8 +401,7 @@ class FilterPushdownSuite extends PlanTest {
     val y = testRelation.subquery('y)
 
     val originalQuery = {
-      x
-        .join(y, RightOuter, Some("y.b".attr === 1 && "x.a".attr === 3))
+      x.join(y, RightOuter, Some("y.b".attr === 1 && "x.a".attr === 3))
         .where(
           "x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
     }
@@ -448,8 +437,7 @@ class FilterPushdownSuite extends PlanTest {
     val y = testRelation.subquery('y)
 
     val originalQuery = {
-      x
-        .join(y)
+      x.join(y)
         .where(
           ("x.b".attr === "y.b".attr) && ("x.a".attr === 1) && (
             "y.a".attr === 1
@@ -488,8 +476,7 @@ class FilterPushdownSuite extends PlanTest {
     val z = testRelation.subquery('z)
 
     val originalQuery = {
-      z
-        .join(x.join(y))
+      z.join(x.join(y))
         .where(
           ("x.b".attr === "y.b".attr) && ("x.a".attr === 1) &&
             ("z.a".attr >= 3) && ("z.a".attr === "x.b".attr))

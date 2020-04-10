@@ -466,8 +466,7 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
         delegate.outgoingConnectionHttps(
           to.host,
           to.port,
-          to
-            .effectiveConnectionContext(defaultClientHttpsContext)
+          to.effectiveConnectionContext(defaultClientHttpsContext)
             .asInstanceOf[HttpsConnectionContext]
             .asScala,
           localAddress.asScala,

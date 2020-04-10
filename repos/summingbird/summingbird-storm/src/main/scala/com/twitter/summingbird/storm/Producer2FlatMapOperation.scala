@@ -47,8 +47,7 @@ object Producer2FlatMapOperation {
             case OptionMappedProducer(_, op) =>
               acc.andThen(
                 FlatMapOperation[Any, Any](
-                  op
-                    .andThen(_.iterator)
+                  op.andThen(_.iterator)
                     .asInstanceOf[Any => TraversableOnce[Any]]))
             case FlatMappedProducer(_, op) =>
               acc.andThen(

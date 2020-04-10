@@ -331,8 +331,7 @@ class ScImplicitlyConvertible(
         case cl: ScTrait =>
           ScParameterizedType(
             ScType.designator(cl),
-            cl
-              .typeParameters
+            cl.typeParameters
               .map(tp =>
                 new ScUndefinedType(
                   new ScTypeParameterType(tp, ScSubstitutor.empty),
@@ -436,8 +435,7 @@ class ScImplicitlyConvertible(
                   var hasRecursiveTypeParameters = false
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
-                      f
-                        .typeParameters
+                      f.typeParameters
                         .find(tp =>
                           (tp.name, ScalaPsiUtil.getPsiElementId(tp)) == (
                             tpt.name, tpt.getId
@@ -485,8 +483,7 @@ class ScImplicitlyConvertible(
                       new ScSubstitutor(() => {
                         val level = place.scalaLanguageLevelOrDefault
                         if (level >= Scala_2_10) {
-                          f
-                            .paramClauses
+                          f.paramClauses
                             .clauses
                             .headOption
                             .map(_.parameters)
@@ -511,8 +508,7 @@ class ScImplicitlyConvertible(
                       val implicitClauseParameters =
                         f.paramClauses.clauses.last.parameters
                       var res = false
-                      f
-                        .returnType
+                      f.returnType
                         .foreach(
                           _.recursiveUpdate {
                             case rtTp if res =>
@@ -633,8 +629,7 @@ class ScImplicitlyConvertible(
         case cl: ScTrait =>
           ScParameterizedType(
             ScType.designator(funClass),
-            cl
-              .typeParameters
+            cl.typeParameters
               .map(tp =>
                 new ScUndefinedType(
                   new ScTypeParameterType(tp, ScSubstitutor.empty))))
@@ -710,8 +705,7 @@ class ScImplicitlyConvertible(
                     if (
                       d.isInstanceOf[ScValue] || d.isInstanceOf[ScVariable]
                     ) &&
-                      d
-                        .asInstanceOf[ScModifierListOwner]
+                      d.asInstanceOf[ScModifierListOwner]
                         .hasModifierProperty("implicit") =>
                   if (!ResolveUtils
                         .isAccessible(d.asInstanceOf[ScMember], getPlace))

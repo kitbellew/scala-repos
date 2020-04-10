@@ -34,8 +34,7 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
   def isStable = true
 
   private def typeArr2paramArr(a: Array[ScType]): Array[Parameter] =
-    a
-      .toSeq
+    a.toSeq
       .mapWithIndex {
         case (tpe, index) =>
           new Parameter("", None, tpe, false, false, false, index)

@@ -132,8 +132,7 @@ trait BaseBlockStoreTestModule[M[+_]]
               val size = s.size
               val columns = colSelection
                 .map { reqCols =>
-                  s
-                    .columns
+                  s.columns
                     .filter {
                       case (ref @ ColumnRef(jpath, ctype), _) =>
                         jpath.nodes.head == CPathField("key") || reqCols

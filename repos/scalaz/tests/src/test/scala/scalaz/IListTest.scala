@@ -43,8 +43,7 @@ object IListTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: IList[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a
-        .intersperse(b)
+      a.intersperse(b)
         .zipWithIndex
         .filter(p => isEven(p._2))
         .map(_._1) must_=== (a)
@@ -226,8 +225,7 @@ object IListTest extends SpecLite {
   }
 
   "groupBy1" ! forAll { (ns: IList[Int], f: Int => Int) =>
-    ns
-      .groupBy1(f)
+    ns.groupBy1(f)
       .map(oa => (oa.head :: oa.tail).toList.reverse)
       .toList
       .toMap must_=== ns.toList.groupBy(f)

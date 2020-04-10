@@ -62,8 +62,7 @@ trait ApplicationAnnotator {
                       genCall.typeArgs.getOrElse(genCall),
                       "Unspecified type parameters: " + as.mkString(", "))
                 }
-                r
-                  .problems
+                r.problems
                   .foreach {
                     case MissedTypeParameter(_) =>
                     // handled in bulk above
@@ -100,8 +99,7 @@ trait ApplicationAnnotator {
                   addCreateFromUsagesQuickFixes(reference, holder)
                 }
 
-                r
-                  .problems
+                r.problems
                   .foreach {
                     case DoesNotTakeParameters() =>
                       holder.createErrorAnnotation(
@@ -190,8 +188,7 @@ trait ApplicationAnnotator {
                         "Not applicable to " + signatureOf(f))
                   }
               case _ =>
-                r
-                  .problems
+                r.problems
                   .foreach {
                     case MissedParametersClause(clause)
                         if !reference

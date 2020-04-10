@@ -145,12 +145,10 @@ trait EvaluatorTestSupport[M[+_]]
 
                     val src =
                       if (target startsWith prefix)
-                        io
-                          .Source
+                        io.Source
                           .fromFile(new File(target.substring(prefix.length)))
                       else
-                        io
-                          .Source
+                        io.Source
                           .fromInputStream(getClass.getResourceAsStream(target))
 
                     val parsed: Stream[JValue] =

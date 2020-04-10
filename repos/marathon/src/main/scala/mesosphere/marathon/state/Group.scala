@@ -204,8 +204,7 @@ case class Group(
 
   def appsWithNoDependencies: Set[AppDefinition] = {
     val g = dependencyGraph
-    g
-      .vertexSet
+    g.vertexSet
       .filter { v =>
         g.outDegreeOf(v) == 0
       }

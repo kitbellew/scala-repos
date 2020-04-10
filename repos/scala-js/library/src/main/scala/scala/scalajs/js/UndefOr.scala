@@ -236,8 +236,7 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     if (isEmpty)
       undefined
     else
-      pf
-        .applyOrElse(this.forceGet, (_: A) => undefined)
+      pf.applyOrElse(this.forceGet, (_: A) => undefined)
         .asInstanceOf[UndefOr[B]]
 
   /** Returns this $option if it is nonempty,

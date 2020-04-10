@@ -2,8 +2,7 @@ import scala.reflect.macros.blackbox.Context
 
 object Macros {
   def impl(c: Context) = {
-    c
-      .universe
+    c.universe
       .reify {
         implicitly[SourceLocation]
       }

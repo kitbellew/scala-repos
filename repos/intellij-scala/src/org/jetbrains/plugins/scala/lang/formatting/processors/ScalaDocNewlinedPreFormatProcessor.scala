@@ -42,8 +42,7 @@ class ScalaDocNewlinedPreFormatProcessor
     val scalaSettings = CodeStyleSettingsManager
       .getSettings(s.getProject)
       .getCustomSettings(classOf[ScalaCodeStyleSettings])
-    s
-      .getChildren
+    s.getChildren
       .foreach {
         fixNewlines(_, scalaSettings)
       }

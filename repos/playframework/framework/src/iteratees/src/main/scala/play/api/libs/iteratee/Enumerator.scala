@@ -416,8 +416,7 @@ object Enumerator {
         }
         val r1 = e1 |>>| itE1
         val r2 = e2 |>>| itE2
-        r1
-          .flatMap(_ => r2)
+        r1.flatMap(_ => r2)
           .onComplete {
             case Success(_) =>
               redeemResultIfNotYet(iter.single())

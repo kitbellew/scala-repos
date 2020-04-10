@@ -72,8 +72,7 @@ object ContravariantCoyonedaTest extends SpecLite {
 
   "Schwartzian-transformed sort equals normal sort" ! forAll {
     (xs: List[Int], o: CtCoOrder[Int]) =>
-      xs
-        .map(o.schwartzianPre)
+      xs.map(o.schwartzianPre)
         .sorted(o.schwartzianOrder.toScalaOrdering)
         .map(o.schwartzianPost) must_=== xs.sorted(o.run.toScalaOrdering)
   }

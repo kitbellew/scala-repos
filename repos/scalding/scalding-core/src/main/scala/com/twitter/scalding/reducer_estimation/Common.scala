@@ -46,8 +46,7 @@ object Common {
     */
   def size(f: Hfs, conf: JobConf): Long = {
     val fs = f.getPath.getFileSystem(conf)
-    fs
-      .globStatus(f.getPath)
+    fs.globStatus(f.getPath)
       .map { s =>
         fs.getContentSummary(s.getPath).getLength
       }

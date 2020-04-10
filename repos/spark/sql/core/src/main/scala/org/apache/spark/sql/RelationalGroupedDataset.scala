@@ -327,8 +327,7 @@ class RelationalGroupedDataset protected[sql] (
       .getConf(SQLConf.DATAFRAME_PIVOT_MAX_VALUES)
     // Get the distinct values of the column and sort them so its consistent
     val values =
-      df
-        .select(pivotColumn)
+      df.select(pivotColumn)
         .distinct()
         .sort(
           pivotColumn

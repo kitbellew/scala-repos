@@ -565,8 +565,7 @@ private[deploy] class Master(
               // We just notify the worker to kill the driver here. The final bookkeeping occurs
               // on the return path when the worker submits a state change back to the master
               // to notify it that the driver was successfully killed.
-              d
-                .worker
+              d.worker
                 .foreach { w =>
                   w.endpoint.send(KillDriver(driverId))
                 }

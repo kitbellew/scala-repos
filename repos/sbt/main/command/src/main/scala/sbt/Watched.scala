@@ -34,8 +34,8 @@ trait Watched {
 }
 
 object Watched {
-  val defaultWatchingMessage: WatchState => String =
-    _.count + ". Waiting for source changes... (press enter to interrupt)"
+  val defaultWatchingMessage: WatchState => String = _
+    .count + ". Waiting for source changes... (press enter to interrupt)"
   val defaultTriggeredMessage: WatchState => String = const("")
   val clearWhenTriggered: WatchState => String = const(clearScreen)
   def clearScreen: String = "\033[2J\033[0;0H"

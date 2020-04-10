@@ -933,16 +933,14 @@ abstract class StressSpec
 
     val sb = new StringBuilder
 
-    sb
-      .append("Operating system: ")
+    sb.append("Operating system: ")
       .append(os.getName)
       .append(", ")
       .append(os.getArch)
       .append(", ")
       .append(os.getVersion)
     sb.append("\n")
-    sb
-      .append("JVM: ")
+    sb.append("JVM: ")
       .append(runtime.getVmName)
       .append(" ")
       .append(runtime.getVmVendor)
@@ -953,15 +951,13 @@ abstract class StressSpec
     sb.append("\n")
     sb.append("Load average: ").append(os.getSystemLoadAverage)
     sb.append("\n")
-    sb
-      .append("Thread count: ")
+    sb.append("Thread count: ")
       .append(threads.getThreadCount)
       .append(" (")
       .append(threads.getPeakThreadCount)
       .append(")")
     sb.append("\n")
-    sb
-      .append("Heap: ")
+    sb.append("Heap: ")
       .append((heap.getUsed.toDouble / 1024 / 1024).form)
       .append(" (")
       .append((heap.getInit.toDouble / 1024 / 1024).form)

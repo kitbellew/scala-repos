@@ -796,8 +796,7 @@ private[ann] class DataStacker(stackSize: Int, inputSize: Int, outputSize: Int)
         }
       } else {
         data.mapPartitions { it =>
-          it
-            .grouped(stackSize)
+          it.grouped(stackSize)
             .map { seq =>
               val size = seq.size
               val bigVector =

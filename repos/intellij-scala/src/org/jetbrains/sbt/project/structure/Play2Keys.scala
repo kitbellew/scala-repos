@@ -41,12 +41,12 @@ object Play2Keys {
 
       if (children.forall(
             _.child
-            .forall {
-              case _: Text =>
-                true;
-              case _ =>
-                false
-            })) {
+              .forall {
+                case _: Text =>
+                  true;
+                case _ =>
+                  false
+              })) {
         Some(
           new StringXmlKey(
             keyName,
@@ -55,9 +55,9 @@ object Play2Keys {
               .toMap))
       } else if (children.forall(
                    _.child
-                   .forall(node =>
-                     node.label == ENTRY_SEQ_NAME || node
-                       .isInstanceOf[Text]))) {
+                     .forall(node =>
+                       node.label == ENTRY_SEQ_NAME || node
+                         .isInstanceOf[Text]))) {
         val values =
           children
             .flatMap {

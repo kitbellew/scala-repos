@@ -842,8 +842,7 @@ trait Crudify {
       def error(field: BaseField): NodeSeq = {
         field.uniqueFieldId match {
           case fid @ Full(id) =>
-            S
-              .getNotices
+            S.getNotices
               .filter(_._3 == fid)
               .flatMap(err =>
                 List(

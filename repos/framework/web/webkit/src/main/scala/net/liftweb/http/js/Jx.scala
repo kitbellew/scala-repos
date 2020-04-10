@@ -42,8 +42,7 @@ trait JxBase {
   def addAttrs(varName: String, attrs: List[MetaData]): JsCmd =
     attrs
       .map { m =>
-        m
-          .value
+        m.value
           .map {
             case exp: JsExp =>
               JsRaw(varName + "." + m.key + " = " + exp.toJsCmd).cmd

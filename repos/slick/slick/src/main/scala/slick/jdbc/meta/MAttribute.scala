@@ -29,11 +29,11 @@ object MAttribute {
   def getAttributes(typePattern: MQName, attributeNamePattern: String = "%") =
     ResultSetAction[MAttribute](
       _.metaData
-      .getAttributes(
-        typePattern.catalog_?,
-        typePattern.schema_?,
-        typePattern.name,
-        attributeNamePattern)) { r =>
+        .getAttributes(
+          typePattern.catalog_?,
+          typePattern.schema_?,
+          typePattern.name,
+          attributeNamePattern)) { r =>
       MAttribute(
         MQName.from(r),
         r.<<,

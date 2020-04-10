@@ -674,8 +674,7 @@ trait ProtoUser {
 
   def logUserIn(who: TheUserType, postLogin: () => Nothing): Nothing = {
     if (destroySessionOnLogin) {
-      S
-        .session
+      S.session
         .openOrThrowException("we have a session here")
         .destroySessionAndContinueInNewSession(() => {
           logUserIn(who)
@@ -989,8 +988,7 @@ trait ProtoUser {
 
   def login = {
     if (S.post_?) {
-      S
-        .param("username")
+      S.param("username")
         .flatMap(username => findUserByUserName(username)) match {
         case Full(user)
             if user.validated_? &&

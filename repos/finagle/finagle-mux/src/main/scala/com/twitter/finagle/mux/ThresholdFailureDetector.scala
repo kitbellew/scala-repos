@@ -104,8 +104,7 @@ private class ThresholdFailureDetector(
 
     p.within(busyTimeout).onFailure(onBusyTimeout)
 
-    p
-      .within(closeTimeout)
+    p.within(closeTimeout)
       .transform {
         case Return(_) =>
           val rtt = nanoTime() - timestampNs

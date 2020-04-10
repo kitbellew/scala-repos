@@ -128,8 +128,7 @@ object Analytics extends Logging {
 
         if (!outFname.isEmpty) {
           logWarning("Saving pageranks of pages to " + outFname)
-          pr
-            .map {
+          pr.map {
               case (id, r) =>
                 id + "\t" + r
             }

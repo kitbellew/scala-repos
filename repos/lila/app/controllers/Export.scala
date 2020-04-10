@@ -55,8 +55,7 @@ object Export extends LilaController {
     Open { implicit ctx =>
       OnlyHumans {
         OptionResult(GameRepo game id) { game =>
-          Ok
-            .chunked(Enumerator.outputStream(env.pdfExport(game.id)))
+          Ok.chunked(Enumerator.outputStream(env.pdfExport(game.id)))
             .withHeaders(
               CONTENT_TYPE -> "application/pdf",
               CACHE_CONTROL -> "max-age=7200")
@@ -68,8 +67,7 @@ object Export extends LilaController {
     Open { implicit ctx =>
       OnlyHumansAndFacebook {
         OptionResult(GameRepo game id) { game =>
-          Ok
-            .chunked(Enumerator.outputStream(env.pngExport(game)))
+          Ok.chunked(Enumerator.outputStream(env.pngExport(game)))
             .withHeaders(
               CONTENT_TYPE -> "image/png",
               CACHE_CONTROL -> "max-age=7200")
@@ -81,8 +79,7 @@ object Export extends LilaController {
     Open { implicit ctx =>
       OnlyHumansAndFacebook {
         OptionResult(Env.puzzle.api.puzzle find id) { puzzle =>
-          Ok
-            .chunked(Enumerator.outputStream(Env.puzzle.pngExport(puzzle)))
+          Ok.chunked(Enumerator.outputStream(Env.puzzle.pngExport(puzzle)))
             .withHeaders(
               CONTENT_TYPE -> "image/png",
               CACHE_CONTROL -> "max-age=7200")

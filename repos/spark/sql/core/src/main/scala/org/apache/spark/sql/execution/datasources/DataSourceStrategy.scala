@@ -249,8 +249,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                     }
 
                   val bucketedDataMap = bucketed.mapValues { bucketFiles =>
-                    t
-                      .fileFormat
+                    t.fileFormat
                       .buildInternalScan(
                         t.sqlContext,
                         t.dataSchema,
@@ -285,8 +284,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
               projects,
               filters,
               (a, f) =>
-                t
-                  .fileFormat
+                t.fileFormat
                   .buildInternalScan(
                     t.sqlContext,
                     t.dataSchema,

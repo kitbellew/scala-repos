@@ -42,15 +42,15 @@ class HTTPRequestServlet(
     ) // do this to make sure we capture the JSESSIONID cookie
     (Box !! req.getCookies).map(
       _.toList
-      .map(c =>
-        HTTPCookie(
-          c.getName,
-          Box !! (c.getValue),
-          Box !! (c.getDomain),
-          Box !! (c.getPath),
-          Box !! (c.getMaxAge),
-          Box !! (c.getVersion),
-          Box !! (c.getSecure)))) openOr Nil
+        .map(c =>
+          HTTPCookie(
+            c.getName,
+            Box !! (c.getValue),
+            Box !! (c.getDomain),
+            Box !! (c.getPath),
+            Box !! (c.getMaxAge),
+            Box !! (c.getVersion),
+            Box !! (c.getSecure)))) openOr Nil
   }
 
   lazy val authType: Box[String] = Box !! req.getAuthType

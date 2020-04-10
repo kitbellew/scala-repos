@@ -182,8 +182,7 @@ class PolynomialCheck
     forAll { (rs1: List[Rational], rs2: List[Rational], r: Rational) =>
       def xyz(rs: List[Rational]): Polynomial[Rational] =
         Polynomial(
-          rs
-            .take(4)
+          rs.take(4)
             .zipWithIndex
             .map {
               case (c, e) =>

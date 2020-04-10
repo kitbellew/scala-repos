@@ -96,8 +96,7 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
         .modules
         .flatMap {
           case (name, m) =>
-            m
-              .targetDirs
+            m.targetDirs
               .flatMap {
                 case d if !d.exists() =>
                   Nil

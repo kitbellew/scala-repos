@@ -54,30 +54,25 @@ class InterpretedOrdering(ordering: Seq[SortOrder])
             case dt: AtomicType if order.direction == Ascending =>
               dt.ordering.asInstanceOf[Ordering[Any]].compare(left, right)
             case dt: AtomicType if order.direction == Descending =>
-              dt
-                .ordering
+              dt.ordering
                 .asInstanceOf[Ordering[Any]]
                 .reverse
                 .compare(left, right)
             case a: ArrayType if order.direction == Ascending =>
-              a
-                .interpretedOrdering
+              a.interpretedOrdering
                 .asInstanceOf[Ordering[Any]]
                 .compare(left, right)
             case a: ArrayType if order.direction == Descending =>
-              a
-                .interpretedOrdering
+              a.interpretedOrdering
                 .asInstanceOf[Ordering[Any]]
                 .reverse
                 .compare(left, right)
             case s: StructType if order.direction == Ascending =>
-              s
-                .interpretedOrdering
+              s.interpretedOrdering
                 .asInstanceOf[Ordering[Any]]
                 .compare(left, right)
             case s: StructType if order.direction == Descending =>
-              s
-                .interpretedOrdering
+              s.interpretedOrdering
                 .asInstanceOf[Ordering[Any]]
                 .reverse
                 .compare(left, right)

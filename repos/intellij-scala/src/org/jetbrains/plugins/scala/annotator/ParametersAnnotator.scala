@@ -21,8 +21,7 @@ trait ParametersAnnotator {
       parameters
         .clauses
         .foreach { cl =>
-          cl
-            .parameters
+          cl.parameters
             .dropRight(1)
             .foreach {
               case p if p.isRepeatedParameter =>

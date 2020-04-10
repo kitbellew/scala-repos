@@ -354,8 +354,7 @@ private[stream] object Fusing {
             log(
               s"dissolving graph module ${m.toString.replace("\n", "\n" + "  " * indent)}")
           val attributes = inheritedAttributes and m.attributes
-          gm
-            .matValIDs
+          gm.matValIDs
             .flatMap(sub ⇒
               descend(sub, attributes, struct, localGroup, indent + 1))(
               collection.breakOut)
@@ -493,8 +492,7 @@ private[stream] object Fusing {
                 m.downstreams.toSet
             }
           val down =
-            m
-              .subModules
+            m.subModules
               .foldLeft(oldDownstreams)((set, m) ⇒ set -- m.downstreams)
           down.foreach {
             case (start, end) ⇒

@@ -711,8 +711,7 @@ object TestHelpers {
     }
 
     Map(
-      in
-        .entrySet
+      in.entrySet
         .iterator
         .toList
         .filter(e => (e ne null) && (e.getKey != null))

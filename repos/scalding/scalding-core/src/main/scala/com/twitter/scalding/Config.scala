@@ -622,8 +622,7 @@ object Config {
         .setListSpillThreshold(100 * 1000)
         .setMapSpillThreshold(100 * 1000)
         .setMapSideAggregationThreshold(100 * 1000) ++ fromHadoop(conf)
-    )
-      .setSerialization(Right(classOf[serialization.KryoHadoop]))
+    ).setSerialization(Right(classOf[serialization.KryoHadoop]))
       .setScaldingVersion
   /*
    * This can help with versioning Class files into configurations if they are

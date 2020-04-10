@@ -32,8 +32,7 @@ private[serverset2] object HealthStabilizer {
 
     Var.async[ClientHealth](ClientHealth.Healthy) { u =>
       val stateChanges =
-        va
-          .changes
+        va.changes
           .dedup
           .select(probationEpoch.event)
           .foldLeft[Status](Unknown) {

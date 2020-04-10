@@ -126,8 +126,7 @@ package object templates {
       .map { params =>
         val ps = params.map { p =>
           val paramName: String = paramNameOnQueryString(p.name)
-          p
-            .fixed
+          p.fixed
             .map { v =>
               """Param[""" + p
                 .typeName + """]("""" + paramName + """", Right(""" + v + """))"""

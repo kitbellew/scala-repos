@@ -507,8 +507,7 @@ class TaskMetricsSuite extends SparkFunSuite {
     acc1 += 1
     acc2 += 2
     val newUpdates =
-      tm
-        .accumulatorUpdates()
+      tm.accumulatorUpdates()
         .map { a =>
           (a.id, a)
         }

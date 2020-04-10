@@ -833,8 +833,7 @@ private[hive] class HiveClientImpl(
     new HivePartition(
       ht,
       p.spec.asJava,
-      p
-        .storage
+      p.storage
         .locationUri
         .map { l =>
           new Path(l)

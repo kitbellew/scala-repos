@@ -88,8 +88,7 @@ class ReflectionTupleConverter[T](fields: Fields)(implicit m: Manifest[T])
   validate
 
   def getSetters =
-    m
-      .runtimeClass
+    m.runtimeClass
       .getDeclaredMethods
       .filter {
         _.getName.startsWith("set")
@@ -132,8 +131,7 @@ class OrderedConstructorConverter[T](fields: Fields)(implicit mf: Manifest[T])
   // Keep this as a method, so we can validate by calling, but don't serialize it, and keep it lazy
   // below
   def getConstructor =
-    mf
-      .runtimeClass
+    mf.runtimeClass
       .getConstructors
       .filter {
         _.getParameterTypes.size == fields.size

@@ -93,8 +93,7 @@ object SummingbirdRuntimeStats {
         prov <- provRef.get
         incr <- prov.counterIncrementor(jobID, group, name)
       } yield incr
-    )
-      .toList
+    ).toList
       .headOption
       .getOrElse(
         sys.error(

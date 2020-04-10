@@ -218,8 +218,7 @@ class VecCheck extends Specification with ScalaCheck {
       forAll { (v: Vec[Double]) =>
         val res = v.fillNA(_ => 5.0)
         val exp = Vec(
-          v
-            .contents
+          v.contents
             .map(x =>
               if (x.isNaN)
                 5.0

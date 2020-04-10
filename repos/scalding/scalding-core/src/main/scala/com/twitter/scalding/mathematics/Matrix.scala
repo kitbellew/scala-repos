@@ -221,8 +221,7 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(implicit
       .groupBy(t => (t._1, t._2))
       .mapValueStream(s =>
         Iterator(
-          s
-            .map {
+          s.map {
               case (_, _, c, v) =>
                 (c, v)
             }
@@ -447,12 +446,12 @@ class Matrix[RowT, ColT, ValT](
       filterOutZeros(valSym, mon) {
         pipe.groupBy(colSym) {
           _.reduce(valSym) { (x: Tuple1[ValT], y: Tuple1[ValT]) =>
-            Tuple1(fn(x._1, y._1))
-          }
-          // Matrices are generally huge and cascading has problems with diverse key spaces and
-          // mapside operations
-          // TODO continually evaluate if this is needed to avoid OOM
-          .reducers(MatrixProduct.numOfReducers(sizeHint)).forceToReducers
+              Tuple1(fn(x._1, y._1))
+            }
+            // Matrices are generally huge and cascading has problems with diverse key spaces and
+            // mapside operations
+            // TODO continually evaluate if this is needed to avoid OOM
+            .reducers(MatrixProduct.numOfReducers(sizeHint)).forceToReducers
         }
       }
     val newHint = sizeHint.setRows(1L)

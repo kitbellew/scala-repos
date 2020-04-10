@@ -526,8 +526,7 @@ class IRs[U <: Universe with Singleton](val uni: U) {
 
   private val f3 =
     (c: C) =>
-      c
-        .tpe
+      c.tpe
         .baseClasses
         .map(superSym => c.tpe.baseType(superSym))
         .map(tp => ClassIR(tp, null, fields(tp)))

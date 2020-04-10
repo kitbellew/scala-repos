@@ -197,8 +197,7 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
 
   override def getLatest(): Option[(Long, T)] = {
     val batchIds =
-      fc
-        .util()
+      fc.util()
         .listStatus(metadataPath, batchFilesFilter)
         .map(_.getPath.getName.toLong)
         .sorted

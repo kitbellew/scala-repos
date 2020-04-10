@@ -458,8 +458,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
           case o: ScObject =>
             None
           case p: ScParameter if p.isStable =>
-            p
-              .getRealParameterType(TypingContext.empty)
+            p.getRealParameterType(TypingContext.empty)
               .toOption
               .map(proj.actualSubst.subst)
           case t: ScTypedDefinition if t.isStable =>
@@ -533,13 +532,11 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
       case proj @ ScProjectionType(p, elem, _) =>
         proj.actualElement match {
           case t: ScTypeAliasDefinition if t.typeParameters.isEmpty =>
-            t
-              .aliasedType(TypingContext.empty)
+            t.aliasedType(TypingContext.empty)
               .flatMap(t =>
                 expandAliases(proj.actualSubst.subst(t), visited + tp))
           case t: ScTypeAliasDeclaration if t.typeParameters.isEmpty =>
-            t
-              .upperBound
+            t.upperBound
               .flatMap(upper =>
                 expandAliases(proj.actualSubst.subst(upper), visited + tp))
           case _ =>

@@ -115,8 +115,8 @@ object UserRepo {
       docs
         .sortBy {
           _.getAs[BSONDocument](F.count)
-          .flatMap(_.getAs[BSONNumberLike]("game"))
-          .??(_.toInt)
+            .flatMap(_.getAs[BSONNumberLike]("game"))
+            .??(_.toInt)
         }
         .map(_.getAs[String]("_id"))
         .flatten match {
@@ -145,12 +145,10 @@ object UserRepo {
               }
             }
             .addEffect { v =>
-              $update.unchecked(
-                $select(u1),
-                $incBson(F.colorIt -> v.fold(1, -1)))
-              $update.unchecked(
-                $select(u2),
-                $incBson(F.colorIt -> v.fold(-1, 1)))
+              $update
+                .unchecked($select(u1), $incBson(F.colorIt -> v.fold(1, -1)))
+              $update
+                .unchecked($select(u2), $incBson(F.colorIt -> v.fold(-1, 1)))
             }
       }
 
@@ -297,11 +295,11 @@ object UserRepo {
     checkPassword(Json.obj(F.email -> email), password)
 
   private def checkPassword(select: JsObject, password: String): Fu[Boolean] =
-    $projection.one(
-      select,
-      Seq("password", "salt", "enabled", "sha512", "email")) { obj =>
-      (AuthData.reader reads obj).asOpt
-    } map {
+    $projection
+      .one(select, Seq("password", "salt", "enabled", "sha512", "email")) {
+        obj =>
+          (AuthData.reader reads obj).asOpt
+      } map {
       _ ?? (data => data.enabled && data.compare(password))
     }
 
@@ -407,7 +405,7 @@ object UserRepo {
       .one[BSONDocument]
       .map {
         _.flatMap(_.getAs[BSONDocument](F.perfs))
-        .flatMap(_.getAs[Perf](perfType.key))
+          .flatMap(_.getAs[Perf](perfType.key))
       }
 
   def setSeenAt(id: ID) {

@@ -225,8 +225,7 @@ class FileSourceStrategySuite
   /** Returns a set with all the filters present in the physical plan. */
   def getPhysicalFilters(df: DataFrame): ExpressionSet = {
     ExpressionSet(
-      df
-        .queryExecution
+      df.queryExecution
         .executedPlan
         .collect {
           case execution.Filter(f, _) =>

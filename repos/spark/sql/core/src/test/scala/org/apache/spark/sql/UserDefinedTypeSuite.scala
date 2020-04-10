@@ -148,14 +148,12 @@ class UserDefinedTypeSuite
     val df = Seq((1, new MyDenseVector(Array(0.1, 1.0)))).toDF("int", "vec")
     df.collect()(0).getAs[MyDenseVector](1)
     df.take(1)(0).getAs[MyDenseVector](1)
-    df
-      .limit(1)
+    df.limit(1)
       .groupBy('int)
       .agg(first('vec))
       .collect()(0)
       .getAs[MyDenseVector](0)
-    df
-      .orderBy('int)
+    df.orderBy('int)
       .limit(1)
       .groupBy('int)
       .agg(first('vec))

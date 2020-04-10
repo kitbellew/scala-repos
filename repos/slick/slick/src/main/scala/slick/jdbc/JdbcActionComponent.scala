@@ -342,8 +342,7 @@ trait JdbcActionComponent extends SqlActionComponent {
               protected[this] def createInvoker(sql: Iterable[String]) =
                 createQueryInvoker(rsm, param, sql.head)
               protected[this] def createBuilder =
-                ct
-                  .cons
+                ct.cons
                   .createBuilder(ct.elementType.classTag)
                   .asInstanceOf[Builder[Any, R]]
               def statements = List(sql)

@@ -38,8 +38,7 @@ final class EmailConfirmMailGun(
     tokener make user flatMap { token =>
       lila.mon.email.confirmation()
       val url = s"$baseUrl/signup/confirm/$token"
-      WS
-        .url(s"$apiUrl/messages")
+      WS.url(s"$apiUrl/messages")
         .withAuth("api", apiKey, WSAuthScheme.BASIC)
         .post(
           Map(

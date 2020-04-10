@@ -525,8 +525,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             if (c != clazz)
               Seq.empty
             else {
-              c
-                .secondaryConstructors
+              c.secondaryConstructors
                 .filter(f =>
                   !PsiTreeUtil.isContextAncestor(f, s, true) &&
                     f.getTextRange.getStartOffset < s

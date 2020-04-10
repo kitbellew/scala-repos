@@ -45,12 +45,10 @@ class TaskContextSuite
     sc = new SparkContext("local", "test", conf)
     val rdd = sc.makeRDD(1 to 1)
     val result =
-      sc
-        .runJob(
+      sc.runJob(
           rdd,
           (tc: TaskContext, it: Iterator[Int]) => {
-            tc
-              .getMetricsSources("jvm")
+            tc.getMetricsSources("jvm")
               .count {
                 case source: JvmSource =>
                   true
@@ -208,8 +206,7 @@ class TaskContextSuite
         internal = false,
         countFailedValues = false)
     // Fail first 3 attempts of every task. This means each task should be run 4 times.
-    sc
-      .parallelize(1 to 10, 10)
+    sc.parallelize(1 to 10, 10)
       .map { i =>
         acc1 += 1
         acc2 += 1

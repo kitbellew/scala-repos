@@ -75,8 +75,7 @@ trait DAG extends Instructions {
             Either[BucketSpec, DepGraph]]])
           : Trampoline[Either[StackError, DepGraph]] = {
         Free.suspend(
-          M
-            .sequence(
+          M.sequence(
               f(roots).right map { roots2 =>
                 loop(loc, roots2, splits, stream.tail)
               })
@@ -345,8 +344,7 @@ trait DAG extends Instructions {
                 (Left(UnmatchedMerge), Nil)
             }
 
-          M
-            .sequence(
+          M.sequence(
               eitherRoots.right map { roots2 =>
                 loop(loc, roots2, splits2, stream.tail)
               })
@@ -559,8 +557,7 @@ trait DAG extends Instructions {
     if (stream.isEmpty) {
       Left(EmptyStream)
     } else {
-      M
-        .sequence(
+      M.sequence(
           findFirstRoot(None, stream).right map {
             case (root, tail) =>
               loop(root.loc, Right(root) :: Nil, Nil, tail)

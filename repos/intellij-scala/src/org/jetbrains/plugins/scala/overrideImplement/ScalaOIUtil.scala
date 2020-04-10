@@ -208,8 +208,7 @@ object ScalaOIUtil {
           }
         )
       case x: ScTemplateDefinition =>
-        x
-          .superTypes
+        x.superTypes
           .map(t => ScType.extractClass(t))
           .find {
             case Some(c) =>

@@ -261,8 +261,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             .toSeq
             .sortBy { v =>
               scope(gen) = v
-              by
-                .toSeq
+              by.toSeq
                 .map {
                   case (b, _) =>
                     run(b)
@@ -406,8 +405,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             where.nodeType match {
               case ProductType(elTypes) =>
                 val p = whereV.asInstanceOf[ProductValue]
-                0
-                  .until(elTypes.length)
+                0.until(elTypes.length)
                   .iterator
                   .map { i =>
                     if (elTypes(i).isInstanceOf[OptionType]) {
@@ -798,14 +796,12 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           null
       case StructType(el) =>
         new StructValue(
-          el
-            .toSeq
+          el.toSeq
             .map {
               case (_, tpe) =>
                 createNullRow(tpe)
             },
-          el
-            .toSeq
+          el.toSeq
             .zipWithIndex
             .map {
               case ((sym, _), idx) =>

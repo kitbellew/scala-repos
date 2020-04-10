@@ -1740,8 +1740,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
           val compRem = qr.rem.shiftLeftOneBit().compareTo(powerOfTen)
           // To add two rounded bits at end of mantissa
           exponent -= 2
-          qr
-            .quot
+          qr.quot
             .shiftLeft(2)
             .add(BigInteger.valueOf((compRem * (compRem + 3)) / 2 + 1))
         }

@@ -244,8 +244,7 @@ class AppInfoBaseDataTest
 
     When("Getting AppInfos with last task failures")
     val appInfo =
-      f
-        .baseData
+      f.baseData
         .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure))
         .futureValue
 
@@ -270,8 +269,7 @@ class AppInfoBaseDataTest
 
     When("Getting AppInfos with last task failures")
     val appInfo =
-      f
-        .baseData
+      f.baseData
         .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure))
         .futureValue
 
@@ -371,8 +369,7 @@ class AppInfoBaseDataTest
 
     When("Getting AppInfos with last task failures and deployments")
     val appInfo =
-      f
-        .baseData
+      f.baseData
         .appInfoFuture(
           app,
           Set(AppInfo.Embed.LastTaskFailure, AppInfo.Embed.Deployments))

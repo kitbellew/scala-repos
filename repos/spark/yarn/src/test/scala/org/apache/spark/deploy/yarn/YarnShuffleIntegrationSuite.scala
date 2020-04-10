@@ -97,8 +97,7 @@ private object YarnExternalShuffleDriver extends Logging with Matchers {
     val execStateCopy = new File(registeredExecFile.getAbsolutePath + "_dup")
     try {
       val data =
-        sc
-          .parallelize(0 until 100, 10)
+        sc.parallelize(0 until 100, 10)
           .map { x =>
             (x % 10) -> x
           }

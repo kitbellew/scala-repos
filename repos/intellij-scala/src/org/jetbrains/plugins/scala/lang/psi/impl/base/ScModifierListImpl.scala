@@ -271,8 +271,7 @@ class ScModifierListImpl private (
       case null =>
         PsiAnnotation.EMPTY_ARRAY
       case x =>
-        x
-          .getPsi
+        x.getPsi
           .asInstanceOf[ScAnnotations]
           .getAnnotations
           .map(_.asInstanceOf[PsiAnnotation])

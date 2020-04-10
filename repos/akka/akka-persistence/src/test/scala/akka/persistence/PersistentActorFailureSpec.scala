@@ -59,8 +59,7 @@ object PersistentActorFailureSpec {
     def isWrong(messages: immutable.Seq[AtomicWrite]): Boolean =
       messages.exists {
         case a: AtomicWrite ⇒
-          a
-            .payload
+          a.payload
             .exists {
               case PersistentRepr(Evt(s: String), _) ⇒
                 s.contains("wrong")
@@ -73,8 +72,7 @@ object PersistentActorFailureSpec {
         messages: immutable.Seq[AtomicWrite]): immutable.Seq[Try[Unit]] =
       messages.collect {
         case a: AtomicWrite ⇒
-          a
-            .payload
+          a.payload
             .collectFirst {
               case PersistentRepr(Evt(s: String), _: Long)
                   if s.contains("not serializable") ⇒

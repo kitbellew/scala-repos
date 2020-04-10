@@ -88,8 +88,7 @@ object ActionBasedSQLInterpolation {
                 case resultMeta =>
                   Vector.tabulate(resultMeta.getColumnCount) { i =>
                     val modelBuilder =
-                      dc
-                        .profile
+                      dc.profile
                         .createModelBuilder(Nil, true)(
                           scala.concurrent.ExecutionContext.global)
                     modelBuilder.jdbcTypeToScala(

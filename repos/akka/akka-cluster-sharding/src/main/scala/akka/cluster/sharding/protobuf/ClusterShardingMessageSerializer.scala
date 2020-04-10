@@ -340,8 +340,7 @@ private[akka] class ClusterShardingMessageSerializer(
   }
 
   private def actorRefMessageToProto(ref: ActorRef): sm.ActorRefMessage =
-    sm
-      .ActorRefMessage
+    sm.ActorRefMessage
       .newBuilder()
       .setRef(Serialization.serializedActorPath(ref))
       .build()
@@ -357,8 +356,7 @@ private[akka] class ClusterShardingMessageSerializer(
 
   private def shardHomeAllocatedToProto(
       evt: ShardHomeAllocated): sm.ShardHomeAllocated =
-    sm
-      .ShardHomeAllocated
+    sm.ShardHomeAllocated
       .newBuilder()
       .setShard(evt.shard)
       .setRegion(Serialization.serializedActorPath(evt.region))
@@ -371,8 +369,7 @@ private[akka] class ClusterShardingMessageSerializer(
   }
 
   private def shardHomeToProto(m: ShardHome): sm.ShardHome =
-    sm
-      .ShardHome
+    sm.ShardHome
       .newBuilder()
       .setShard(m.shard)
       .setRegion(Serialization.serializedActorPath(m.ref))
@@ -405,8 +402,7 @@ private[akka] class ClusterShardingMessageSerializer(
     EntityStopped(sm.EntityStopped.parseFrom(bytes).getEntityId)
 
   private def shardStatsToProto(evt: ShardStats): sm.ShardStats =
-    sm
-      .ShardStats
+    sm.ShardStats
       .newBuilder()
       .setShard(evt.shardId)
       .setEntityCount(evt.entityCount)

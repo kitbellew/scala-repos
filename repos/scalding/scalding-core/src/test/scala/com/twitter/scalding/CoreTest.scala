@@ -297,8 +297,7 @@ class MRMJob(args: Args) extends Job(args) {
         xy
       }
   // XOR reduction (insane, I guess:
-  in
-    .groupBy('x) {
+  in.groupBy('x) {
       _.reduce('y) { (left: Int, right: Int) =>
         left ^ right
       }
@@ -366,8 +365,7 @@ class JoinJob(args: Args) extends Job(args) {
       .mapTo((0, 1) -> ('k2, 'v2)) { v: (String, Int) =>
         v
       }
-  p1
-    .joinWithSmaller('k1 -> 'k2, p2)
+  p1.joinWithSmaller('k1 -> 'k2, p2)
     .project('k1, 'v1, 'v2)
     .write(Tsv(args("output")))
 }
@@ -469,8 +467,7 @@ class TinyJoinJob(args: Args) extends Job(args) {
       .mapTo((0, 1) -> ('k2, 'v2)) { v: (String, Int) =>
         v
       }
-  p1
-    .joinWithTiny('k1 -> 'k2, p2)
+  p1.joinWithTiny('k1 -> 'k2, p2)
     .project('k1, 'v1, 'v2)
     .write(Tsv(args("output")))
 }
@@ -606,8 +603,7 @@ class LeftJoinJob(args: Args) extends Job(args) {
     Tsv(args("input2")).mapTo((0, 1) -> ('k2, 'v2)) { v: (String, Int) =>
       v
     }
-  p1
-    .leftJoinWithSmaller('k1 -> 'k2, p2)
+  p1.leftJoinWithSmaller('k1 -> 'k2, p2)
     .project('k1, 'v1, 'v2)
     // Null sent to TSV will not be read in properly
     .map('v2 -> 'v2) { v: AnyRef =>
@@ -664,8 +660,7 @@ class LeftJoinWithLargerJob(args: Args) extends Job(args) {
       v
     }
   // Note i am specifying the joiner explicitly since this did not work properly before (leftJoinWithLarger always worked)
-  p1
-    .joinWithLarger('k1 -> 'k2, p2, new cascading.pipe.joiner.LeftJoin)
+  p1.joinWithLarger('k1 -> 'k2, p2, new cascading.pipe.joiner.LeftJoin)
     .project('k1, 'v1, 'v2)
     // Null sent to TSV will not be read in properly
     .map('v2 -> 'v2) { v: AnyRef =>
@@ -819,8 +814,8 @@ class SizeAveStdJob(args: Args) extends Job(args) {
     }
     .groupBy('x) {
       _.sizeAveStdev('y -> ('size, 'yave, 'ystdev))
-      //Make sure this doesn't ruin the calculation
-      .sizeAveStdev('y -> ('size2, 'yave2, 'ystdev2)).average('y)
+        //Make sure this doesn't ruin the calculation
+        .sizeAveStdev('y -> ('size2, 'yave2, 'ystdev2)).average('y)
     }
     .project('x, 'size, 'yave, 'ystdev, 'y)
     .write(Tsv(args("output")))
@@ -1226,8 +1221,7 @@ class GroupAllCrossJob(args: Args) extends Job(args) {
       .mapTo(0 -> 'z) { (z: Int) =>
         z
       }
-  p2
-    .crossWithTiny(p1)
+  p2.crossWithTiny(p1)
     .map('x -> 'x) { l: List[Int] =>
       l.size
     }
@@ -1346,9 +1340,9 @@ class ScanJob(args: Args) extends Job(args) {
   Tsv("in", ('x, 'y, 'z))
     .groupBy('x) {
       _.sortBy('y)
-      .scanLeft('y -> 'ys)(0) { (oldV: Int, newV: Int) =>
-        oldV + newV
-      }
+        .scanLeft('y -> 'ys)(0) { (oldV: Int, newV: Int) =>
+          oldV + newV
+        }
     }
     .project('x, 'ys, 'z)
     .map('z -> 'z) { z: Int =>

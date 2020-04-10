@@ -58,8 +58,7 @@ object CharEncoding {
           {
             case (string, remaining) =>
               val newIt = Iteratee.flatten(
-                it
-                  .feed(Input.El(string))
+                it.feed(Input.El(string))
                   .flatMap(_.feed(in))(defaultExecutionContext))
               Done(newIt)
           }

@@ -177,12 +177,12 @@ object DesktopIngestShardServer
 
     this.run(config) map {
       _.onSuccess {
-        case (runningState, stoppable) =>
-          guiNotifier.foreach(_("Precog startup complete"))
-      }
-      .map { _ =>
-        PrecogUnit
-      }
+          case (runningState, stoppable) =>
+            guiNotifier.foreach(_("Precog startup complete"))
+        }
+        .map { _ =>
+          PrecogUnit
+        }
     }
   }
 

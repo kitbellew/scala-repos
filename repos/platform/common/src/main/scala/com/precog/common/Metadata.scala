@@ -146,8 +146,7 @@ object Metadata {
         }
 
       def combineMetadata(m1: Metadata, m2: Metadata) =
-        m1
-          .merge(m2)
+        m1.merge(m2)
           .getOrElse(
             sys.error("Invalid attempt to combine incompatible metadata"))
     }

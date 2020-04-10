@@ -639,9 +639,11 @@ trait LinearRegressionLibModule[M[+_]]
 
             val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
               _.map {
-                case (table, jtype) =>
-                  tableReducer(table, jtype)
-              }.toStream.sequence map (_.toSeq)
+                  case (table, jtype) =>
+                    tableReducer(table, jtype)
+                }
+                .toStream
+                .sequence map (_.toSeq)
             }
 
             val objectTables: M[Seq[Table]] = reducedTables map {

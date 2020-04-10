@@ -67,8 +67,7 @@ object EvaluatePython {
     df.withNewExecutionId {
       val iter =
         new SerDeUtil.AutoBatchedPickler(
-          df
-            .queryExecution
+          df.queryExecution
             .executedPlan
             .executeTake(n)
             .iterator
@@ -191,8 +190,7 @@ object EvaluatePython {
 
       case (c: java.util.List[_], ArrayType(elementType, _)) =>
         new GenericArrayData(
-          c
-            .asScala
+          c.asScala
             .map { e =>
               fromJava(e, elementType)
             }

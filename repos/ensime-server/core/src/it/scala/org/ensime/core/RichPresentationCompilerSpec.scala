@@ -868,8 +868,7 @@ object ReallyRichPresentationCompilerFixture
     var offset = 0
     var points = Queue.empty[(Int, String)]
     val re = """@([a-z0-9\.]*)@"""
-    re
-      .r
+    re.r
       .findAllMatchIn(contents)
       .foreach { m =>
         points :+= ((m.start - offset, m.group(1)))

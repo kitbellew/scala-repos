@@ -226,8 +226,7 @@ object Source {
       scaladsl
         .Source
         .unfoldAsync(s)((s: S) ⇒
-          f
-            .apply(s)
+          f.apply(s)
             .toScala
             .map(_.asScala.map(_.toScala))(
               akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))

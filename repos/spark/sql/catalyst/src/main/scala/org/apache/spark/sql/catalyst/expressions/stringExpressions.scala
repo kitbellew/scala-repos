@@ -540,8 +540,7 @@ case class StringLocate(substr: Expression, str: Expression, start: Expression)
         if (l == null) {
           null
         } else {
-          l
-            .asInstanceOf[UTF8String]
+          l.asInstanceOf[UTF8String]
             .indexOf(r.asInstanceOf[UTF8String], s.asInstanceOf[Int]) + 1
         }
       }

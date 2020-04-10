@@ -807,8 +807,7 @@ object SimpleApplicationTest {
     for (config <- configs) {
       val masterValue = conf.get(config)
       val executorValues =
-        sc
-          .makeRDD(1 to 100, 10)
+        sc.makeRDD(1 to 100, 10)
           .map(x => SparkEnv.get.conf.get(config))
           .collect()
           .distinct

@@ -127,8 +127,7 @@ class ScalaLookupItem(
       element match {
         case t: ScFun =>
           if (t.typeParameters.nonEmpty)
-            t
-              .typeParameters
+            t.typeParameters
               .map(param => presentationString(param, substitutor))
               .mkString("[", ", ", "]")
           else
@@ -141,8 +140,7 @@ class ScalaLookupItem(
               ""
           }
         case p: PsiTypeParameterListOwner if p.getTypeParameters.nonEmpty =>
-          p
-            .getTypeParameters
+          p.getTypeParameters
             .map(ptp => presentationString(ptp))
             .mkString("[", ", ", "]")
         case p: PsiPackage =>
@@ -190,7 +188,7 @@ class ScalaLookupItem(
             .paramClauses
             .map(
               _.map(presentationString(_, substitutor))
-              .mkString("(", ", ", ")"))
+                .mkString("(", ", ", ")"))
             .mkString
         presentation.setTailText(tailText + paramClausesText)
       case bind: ScBindingPattern =>

@@ -134,8 +134,7 @@ final case class UncachedFile private[scalding] (source: Either[String, URI]) {
       ) // uri.toString because hadoop 0.20.2 doesn't take a URI
 
     def makeQualified(p: Path, conf: Configuration): URI =
-      p
-        .makeQualified(p.getFileSystem(conf))
+      p.makeQualified(p.getFileSystem(conf))
         .toUri // make sure we have fully-qualified URI
 
     val sourceUri =

@@ -164,8 +164,7 @@ class DirectKafkaStreamSuite
       "auto.offset.reset" -> "largest")
     val kc = new KafkaCluster(kafkaParams)
     def getLatestOffset(): Long = {
-      kc
-        .getLatestLeaderOffsets(Set(topicPartition))
+      kc.getLatestLeaderOffsets(Set(topicPartition))
         .right
         .get(topicPartition)
         .offset
@@ -221,8 +220,7 @@ class DirectKafkaStreamSuite
       "auto.offset.reset" -> "largest")
     val kc = new KafkaCluster(kafkaParams)
     def getLatestOffset(): Long = {
-      kc
-        .getLatestLeaderOffsets(Set(topicPartition))
+      kc.getLatestLeaderOffsets(Set(topicPartition))
         .right
         .get(topicPartition)
         .offset

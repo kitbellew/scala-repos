@@ -1080,8 +1080,7 @@ private[akka] class ActorSystemImpl(
               "ActorSystem already terminated.")
           case some if ref.compareAndSet(some, p) ⇒
             some.completeWith(
-              p
-                .future
+              p.future
                 .andThen {
                   case _ ⇒
                     r.run()

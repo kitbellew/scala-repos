@@ -31,8 +31,7 @@ object IntentionUtil {
         ) && !hasLineBreaks(elem)
       }
 
-      it
-        .takeWhile { a =>
+      it.takeWhile { a =>
           acceptableElem(a)
         }
         .filter(a => a.isInstanceOf[PsiComment])

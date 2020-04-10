@@ -46,16 +46,18 @@ private final class Cleaner(
       .collect[List](100)
       .flatMap {
         _.filter { ana =>
-          ana.acquiredAt.??(_ isBefore durationAgo(analysisTimeout(ana.nbPly)))
-        }
-        .map { ana =>
-          repo.updateOrGiveUpAnalysis(ana.timeout) >>- {
-            clientTimeout(ana)
-            logger.warn(s"Timeout analysis ${ana.game.id}")
+            ana
+              .acquiredAt
+              .??(_ isBefore durationAgo(analysisTimeout(ana.nbPly)))
           }
-        }
-        .sequenceFu
-        .void
+          .map { ana =>
+            repo.updateOrGiveUpAnalysis(ana.timeout) >>- {
+              clientTimeout(ana)
+              logger.warn(s"Timeout analysis ${ana.game.id}")
+            }
+          }
+          .sequenceFu
+          .void
       } andThenAnyway scheduleAnalysis
 
   private def clientTimeout(work: Work) =

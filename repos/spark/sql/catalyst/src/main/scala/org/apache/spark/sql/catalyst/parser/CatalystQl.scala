@@ -380,15 +380,15 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             // Collect all window specifications defined in the WINDOW clause.
             val windowDefinitions = windowClause.map(
               _.children
-              .collect {
-                case Token(
-                      "TOK_WINDOWDEF",
-                      Token(windowName, Nil) :: Token(
-                        "TOK_WINDOWSPEC",
-                        spec) :: Nil) =>
-                  windowName -> nodesToWindowSpecification(spec)
-              }
-              .toMap)
+                .collect {
+                  case Token(
+                        "TOK_WINDOWDEF",
+                        Token(windowName, Nil) :: Token(
+                          "TOK_WINDOWSPEC",
+                          spec) :: Nil) =>
+                    windowName -> nodesToWindowSpecification(spec)
+                }
+                .toMap)
             // Handle cases like
             // window w1 as (partition by p_mfgr order by p_name
             //               range between 2 preceding and 2 following),
@@ -615,16 +615,16 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         val partitionKeys = partitionClause
           .map(
             _.children
-            .map {
-              // Parse partitions. We also make keys case insensitive.
-              case Token(
-                    "TOK_PARTVAL",
-                    Token(key, Nil) :: Token(value, Nil) :: Nil) =>
-                cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
-              case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
-                cleanIdentifier(key.toLowerCase) -> None
-            }
-            .toMap)
+              .map {
+                // Parse partitions. We also make keys case insensitive.
+                case Token(
+                      "TOK_PARTVAL",
+                      Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+                  cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
+                case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
+                  cleanIdentifier(key.toLowerCase) -> None
+              }
+              .toMap)
           .getOrElse(Map.empty)
 
         InsertIntoTable(
@@ -647,16 +647,16 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         val partitionKeys = partitionClause
           .map(
             _.children
-            .map {
-              // Parse partitions. We also make keys case insensitive.
-              case Token(
-                    "TOK_PARTVAL",
-                    Token(key, Nil) :: Token(value, Nil) :: Nil) =>
-                cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
-              case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
-                cleanIdentifier(key.toLowerCase) -> None
-            }
-            .toMap)
+              .map {
+                // Parse partitions. We also make keys case insensitive.
+                case Token(
+                      "TOK_PARTVAL",
+                      Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+                  cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
+                case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
+                  cleanIdentifier(key.toLowerCase) -> None
+              }
+              .toMap)
           .getOrElse(Map.empty)
 
         InsertIntoTable(

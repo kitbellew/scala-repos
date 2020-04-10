@@ -1258,8 +1258,7 @@ class TypedPipeInst[T] private[scalding] (
               checkMode(m)
               new Iterable[T] {
                 def iterator =
-                  m
-                    .openForRead(conf, tap)
+                  m.openForRead(conf, tap)
                     .asScala
                     .map(tup => conv(tup.selectEntry(fields)))
               }

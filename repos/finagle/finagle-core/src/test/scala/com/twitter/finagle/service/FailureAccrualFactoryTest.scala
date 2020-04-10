@@ -810,8 +810,7 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
 
     // replaced
     Await.ready(
-      s
-        .make(
+      s.make(
           ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
         .toService(10))
     assert(

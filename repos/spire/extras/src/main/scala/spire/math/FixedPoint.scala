@@ -383,8 +383,7 @@ trait FixedPointInstances {
       def fromRational(n: Rational): FixedPoint = FixedPoint(n)
       def fromAlgebraic(n: Algebraic): FixedPoint =
         FixedPoint(
-          n
-            .toRational
+          n.toRational
             .getOrElse(Rational(n.toBigDecimal(MathContext.DECIMAL64))))
       def fromReal(n: Real): FixedPoint = FixedPoint(n.toRational)
 

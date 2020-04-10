@@ -73,8 +73,7 @@ class RetriesTest extends FunSuite {
     Time.withCurrentTimeFrozen { tc =>
       // each request will use up 1 retry from the budget due to the
       // caps maxRetriesPerReq limits
-      1
-        .to(minBudget)
+      1.to(minBudget)
         .foreach { i =>
           val f = intercept[Failure] {
             Await.result(svc(requeableEx), 5.seconds)
@@ -119,8 +118,7 @@ class RetriesTest extends FunSuite {
     Time.withCurrentTimeFrozen { tc =>
       // each request will use up 1 retry from the budget due to the
       // caps maxRetriesPerReq limits
-      1
-        .to(minBudget)
+      1.to(minBudget)
         .foreach { i =>
           val f = intercept[Failure] {
             Await.result(svc(requeableEx), 5.seconds)
@@ -266,8 +264,7 @@ class RetriesTest extends FunSuite {
 
     val numReqs = 100
     Time.withCurrentTimeFrozen { _ =>
-      0
-        .until(numReqs)
+      0.until(numReqs)
         .foreach { _ =>
           intercept[MyRetryEx] {
             Await.result(svc(new MyRetryEx()), 5.seconds)
@@ -297,8 +294,7 @@ class RetriesTest extends FunSuite {
     val retries = 4
     val numReqs = 100
     Time.withCurrentTimeFrozen { _ =>
-      0
-        .until(numReqs)
+      0.until(numReqs)
         .foreach { i =>
           intercept[MyRetryEx] {
             Await.result(svc(new MyRetryEx()), 5.seconds)

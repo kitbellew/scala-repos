@@ -452,9 +452,9 @@ trait BodyParsers {
     def json(maxLength: Int): BodyParser[JsValue] =
       when(
         _.contentType
-        .exists(m =>
-          m.equalsIgnoreCase("text/json") || m
-            .equalsIgnoreCase("application/json")),
+          .exists(m =>
+            m.equalsIgnoreCase("text/json") || m
+              .equalsIgnoreCase("application/json")),
         tolerantJson(maxLength),
         createBadResult(
           "Expecting text/json or application/json body",
@@ -589,14 +589,14 @@ trait BodyParsers {
     def xml(maxLength: Int): BodyParser[NodeSeq] =
       when(
         _.contentType
-        .exists { t =>
-          val tl = t.toLowerCase(Locale.ENGLISH)
-          tl.startsWith("text/xml") || tl
-            .startsWith("application/xml") || ApplicationXmlMatcher
-            .pattern
-            .matcher(tl)
-            .matches()
-        },
+          .exists { t =>
+            val tl = t.toLowerCase(Locale.ENGLISH)
+            tl.startsWith("text/xml") || tl
+              .startsWith("application/xml") || ApplicationXmlMatcher
+              .pattern
+              .matcher(tl)
+              .matches()
+          },
         tolerantXml(maxLength),
         createBadResult("Expecting xml body", UNSUPPORTED_MEDIA_TYPE)
       )
@@ -664,7 +664,7 @@ trait BodyParsers {
     def urlFormEncoded(maxLength: Int): BodyParser[Map[String, Seq[String]]] =
       when(
         _.contentType
-        .exists(_.equalsIgnoreCase("application/x-www-form-urlencoded")),
+          .exists(_.equalsIgnoreCase("application/x-www-form-urlencoded")),
         tolerantFormUrlEncoded(maxLength),
         createBadResult(
           "Expecting application/x-www-form-urlencoded body",

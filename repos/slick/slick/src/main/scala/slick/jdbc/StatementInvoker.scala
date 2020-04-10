@@ -53,8 +53,7 @@ abstract class StatementInvoker[+R] extends Invoker[R] {
             val meta = rs.getMetaData
             Vector(
               1.to(meta.getColumnCount).map(_.toString),
-              1
-                .to(meta.getColumnCount)
+              1.to(meta.getColumnCount)
                 .map(idx => meta.getColumnLabel(idx))
                 .to[ArrayBuffer])
           } else

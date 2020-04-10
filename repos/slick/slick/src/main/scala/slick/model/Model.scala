@@ -106,8 +106,7 @@ case class Model(tables: Seq[Table], options: Set[ModelOption[_]] = Set()) {
         assert(
           tablesByName.isDefinedAt(pk.table),
           msg("table " + pk.table, "primary key " + pk))
-        pk
-          .columns
+        pk.columns
           .foreach { column =>
             assert(
               table.columns.contains(column),
@@ -133,8 +132,7 @@ case class Model(tables: Seq[Table], options: Set[ModelOption[_]] = Set()) {
         assert(
           table == fkTable,
           "Referencing table $fkTable does not match table $table the foreign key $fk is contained in.")
-        fk
-          .referencedColumns
+        fk.referencedColumns
           .foreach { pkColumn =>
             assert(
               pkTable.columns.contains(pkColumn),
@@ -142,8 +140,7 @@ case class Model(tables: Seq[Table], options: Set[ModelOption[_]] = Set()) {
                 "column " + pkColumn + " of table " + pkTable,
                 "foreign key " + fk))
           }
-        fk
-          .referencingColumns
+        fk.referencingColumns
           .foreach { fkColumn =>
             assert(
               fkTable.columns.contains(fkColumn),

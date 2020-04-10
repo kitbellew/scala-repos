@@ -474,16 +474,16 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       E: Enum[A]): Arbitrary[Diev[A]] =
     Functor[Arbitrary].map(A)(
       _.grouped(2)
-      .foldLeft(Diev.empty[A]) { (working, possiblePair) =>
-        possiblePair match {
-          case first :: second :: Nil =>
-            working + ((first, second))
-          case value :: Nil =>
-            working
-          case _ =>
-            sys.error("Unexpected amount of items in paired list.")
-        }
-      })
+        .foldLeft(Diev.empty[A]) { (working, possiblePair) =>
+          possiblePair match {
+            case first :: second :: Nil =>
+              working + ((first, second))
+            case value :: Nil =>
+              working
+            case _ =>
+              sys.error("Unexpected amount of items in paired list.")
+          }
+        })
 
   implicit def iterateeInputArbitrary[A: Arbitrary]
       : Arbitrary[scalaz.iteratee.Input[A]] = {

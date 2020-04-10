@@ -320,8 +320,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       ("b", 2)).toDF("key", "value")
     val window = Window.orderBy()
     checkAnswer(
-      df
-        .groupBy($"key")
+      df.groupBy($"key")
         .agg(sum($"value"), sum(sum($"value")).over(window) - sum($"value")),
       Seq(Row("a", 6, 9), Row("b", 9, 6)))
   }

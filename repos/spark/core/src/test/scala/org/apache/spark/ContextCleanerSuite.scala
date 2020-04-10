@@ -320,8 +320,7 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc
-        .env
+      sc.env
         .blockManager
         .master
         .getMatchingBlockIds(
@@ -370,8 +369,7 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc
-        .env
+      sc.env
         .blockManager
         .master
         .getMatchingBlockIds(
@@ -461,8 +459,7 @@ class SortShuffleContextCleanerSuite
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc
-        .env
+      sc.env
         .blockManager
         .master
         .getMatchingBlockIds(

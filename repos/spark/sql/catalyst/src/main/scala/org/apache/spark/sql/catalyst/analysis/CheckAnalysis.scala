@@ -142,8 +142,7 @@ trait CheckAnalysis {
             def checkValidJoinConditionExprs(expr: Expression): Unit =
               expr match {
                 case p: Predicate =>
-                  p
-                    .asInstanceOf[Expression]
+                  p.asInstanceOf[Expression]
                     .children
                     .foreach(checkValidJoinConditionExprs)
                 case e if e.dataType.isInstanceOf[BinaryType] =>
@@ -237,8 +236,7 @@ trait CheckAnalysis {
                 .children
                 .exists(_.output.length != s.children.head.output.length) =>
             val firstError =
-              s
-                .children
+              s.children
                 .find(_.output.length != s.children.head.output.length)
                 .get
             failAnalysis(s"""

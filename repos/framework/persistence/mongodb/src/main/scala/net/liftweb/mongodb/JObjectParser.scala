@@ -73,8 +73,7 @@ object JObjectParser extends SimpleInjector {
         JArray(x.toList.map(x => serialize(x, formats)))
       case x: BasicDBObject =>
         JObject(
-          x
-            .keySet
+          x.keySet
             .toList
             .map { f =>
               JField(f.toString, serialize(x.get(f.toString), formats))

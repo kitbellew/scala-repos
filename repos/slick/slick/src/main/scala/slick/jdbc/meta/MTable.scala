@@ -37,11 +37,11 @@ object MTable {
       types: Option[Seq[String]]) =
     ResultSetAction[MTable](
       _.metaData
-      .getTables(
-        cat.orNull,
-        schemaPattern.orNull,
-        namePattern.orNull,
-        types.map(_.toArray).orNull)) { r =>
+        .getTables(
+          cat.orNull,
+          schemaPattern.orNull,
+          namePattern.orNull,
+          types.map(_.toArray).orNull)) { r =>
       if (r.numColumns > 5)
         MTable(MQName.from(r), r.<<, r.<<, MQName.optionalFrom(r), r.<<, r.<<)
       else

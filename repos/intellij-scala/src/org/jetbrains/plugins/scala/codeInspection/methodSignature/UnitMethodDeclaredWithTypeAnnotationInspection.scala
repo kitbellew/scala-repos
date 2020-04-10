@@ -15,8 +15,7 @@ class UnitMethodDeclaredWithTypeAnnotationInspection
 
   def actionFor(holder: ProblemsHolder) = {
     case f: ScFunctionDeclaration if f.hasUnitResultType =>
-      f
-        .returnTypeElement
+      f.returnTypeElement
         .foreach { e =>
           holder.registerProblem(e, getDisplayName, new RemoveTypeAnnotation(f))
         }

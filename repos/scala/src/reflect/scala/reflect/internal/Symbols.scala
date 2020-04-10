@@ -2205,8 +2205,7 @@ trait Symbols extends api.Symbols {
             oldsymbuf += sym
             newsymbuf += (
               if (sym.isClass)
-                tp
-                  .typeSymbol
+                tp.typeSymbol
                   .newAbstractType(sym.name.toTypeName, sym.pos)
                   .setInfo(sym.existentialBound)
               else

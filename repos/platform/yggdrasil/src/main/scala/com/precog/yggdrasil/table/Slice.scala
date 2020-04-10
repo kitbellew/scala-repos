@@ -2041,8 +2041,7 @@ object Slice {
       into: Map[ColumnRef, ArrayColumn[_]],
       sliceIndex: Int,
       sliceSize: Int): Map[ColumnRef, ArrayColumn[_]] = {
-    rv
-      .flattenWithPath
+    rv.flattenWithPath
       .foldLeft(into) {
         case (acc, (cpath, CUndefined)) =>
           acc
@@ -2238,8 +2237,7 @@ object Slice {
       sliceSize: Int,
       remapPath: Option[JPath => CPath] = None)
       : Map[ColumnRef, ArrayColumn[_]] = {
-    jv
-      .flattenWithPath
+    jv.flattenWithPath
       .foldLeft(into) {
         case (acc, (jpath, JUndefined)) =>
           acc

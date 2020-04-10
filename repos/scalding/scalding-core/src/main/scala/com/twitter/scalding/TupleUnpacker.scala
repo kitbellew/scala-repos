@@ -50,8 +50,7 @@ object ReflectionUtils {
     * order they were declared.
     */
   def fieldsOf[T](c: Class[T]): List[String] =
-    c
-      .getDeclaredFields
+    c.getDeclaredFields
       .map { f =>
         f.getName
       }
@@ -111,8 +110,7 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
   // make these defs instead of vals
   // TODO: filter by isAccessible, which somehow seems to fail
   def methodMap =
-    m
-      .runtimeClass
+    m.runtimeClass
       .getDeclaredMethods
       // Keep only methods with 0 parameter types
       .filter { m =>
@@ -127,8 +125,7 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
 
   // TODO: filter by isAccessible, which somehow seems to fail
   def fieldMap =
-    m
-      .runtimeClass
+    m.runtimeClass
       .getDeclaredFields
       .groupBy {
         _.getName

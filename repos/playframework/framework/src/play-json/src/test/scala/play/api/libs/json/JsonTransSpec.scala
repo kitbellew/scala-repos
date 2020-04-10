@@ -38,13 +38,11 @@ object JsonTransSpec extends Specification {
     }
 
     "copy input JSON and update a branch (merge the updated branch with input JSON)" in {
-      js
-        .transform(
+      js.transform(
           (__ \ 'field3)
             .json
             .update(
-              __
-                .read[JsObject]
+              __.read[JsObject]
                 .map { o =>
                   o ++ Json.obj("field33" -> false)
                 }))
@@ -63,8 +61,7 @@ object JsonTransSpec extends Specification {
     }
 
     "pick a branch and update its content" in {
-      js
-        .transform(
+      js.transform(
           (__ \ 'field3)
             .json
             .pickBranch(
@@ -97,8 +94,7 @@ object JsonTransSpec extends Specification {
     }
 
     "create a new path by copying a branch" in {
-      js
-        .transform((__ \ 'field5).json.copyFrom((__ \ 'field3).json.pick))
+      js.transform((__ \ 'field5).json.copyFrom((__ \ 'field3).json.pick))
         .get must beEqualTo(
         Json.obj("field5" -> Json.obj("field31" -> "beta", "field32" -> 345)))
     }
@@ -116,14 +112,12 @@ object JsonTransSpec extends Specification {
     }
 
     "pick a single branch and prune a sub-branch" in {
-      js
-        .transform((__ \ 'field3).json.pickBranch((__ \ 'field32).json.prune))
+      js.transform((__ \ 'field3).json.pickBranch((__ \ 'field32).json.prune))
         .get must beEqualTo(Json.obj("field3" -> Json.obj("field31" -> "beta")))
     }
 
     "copy the full json and update a 2nd-level path and then prune a subbranch" in {
-      js
-        .validate(
+      js.validate(
           (__ \ 'field3 \ 'field32)
             .json
             .update(
@@ -155,8 +149,7 @@ object JsonTransSpec extends Specification {
 
     "report the correct path in the JsError" in {
       "when the field to modify doesn't exist" in {
-        js
-          .transform((__ \ 'field42).json.update(__.read[JsString]))
+        js.transform((__ \ 'field42).json.update(__.read[JsString]))
           .asEither
           .left
           .get
@@ -167,8 +160,7 @@ object JsonTransSpec extends Specification {
       }
 
       "when the reader is the wrong type" in {
-        js
-          .transform((__ \ 'field2).json.update(__.read[JsString]))
+        js.transform((__ \ 'field2).json.update(__.read[JsString]))
           .asEither
           .left
           .get

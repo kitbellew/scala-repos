@@ -189,8 +189,7 @@ case class ScExistentialType(
         val subst =
           new ScSubstitutor(
             Map(
-              a
-                .tpt
+              a.tpt
                 .args
                 .zip(args)
                 .map {
@@ -287,11 +286,9 @@ case class ScExistentialType(
           comps.foreach(checkRecursive(_, newSet))
           signatureMap.foreach {
             case (s, rt) =>
-              s
-                .substitutedTypes
+              s.substitutedTypes
                 .foreach(_.foreach(f => checkRecursive(f(), newSet)))
-              s
-                .typeParams
+              s.typeParams
                 .foreach {
                   case tParam: TypeParameter =>
                     tParam.update {
@@ -304,11 +301,11 @@ case class ScExistentialType(
           }
           typeMap.foreach(
             _._2
-            .updateTypes {
-              case tp: ScType =>
-                checkRecursive(tp, newSet);
-                tp
-            })
+              .updateTypes {
+                case tp: ScType =>
+                  checkRecursive(tp, newSet);
+                  tp
+              })
         case ScDesignatorType(elem) =>
           elem match {
             case ta: ScTypeAlias if ta.isExistentialTypeAlias =>
@@ -334,8 +331,7 @@ case class ScExistentialType(
           checkRecursive(ex.quantified, newSet)
           if (ex eq this)
             newSet = rejected ++ ex.wildcards.map(_.name)
-          ex
-            .wildcards
+          ex.wildcards
             .foreach(ex => {
               checkRecursive(ex.lowerBound, newSet)
               checkRecursive(ex.upperBound, newSet)

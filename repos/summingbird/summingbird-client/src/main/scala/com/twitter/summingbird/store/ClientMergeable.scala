@@ -100,8 +100,7 @@ class ClientMergeable[K, V: Semigroup](
      * it is probably not worth it.
      */
     val batchForKey: Map[K1, V] =
-      ks
-        .groupBy {
+      ks.groupBy {
           case ((k, batchId), v) =>
             k
         }
@@ -135,8 +134,7 @@ class ClientMergeable[K, V: Semigroup](
       ks: Map[K1, V]): Map[K1, FOpt[V]] = {
     // Here we assume each K appears only once, because the previous call ensures it
     val result =
-      ks
-        .groupBy {
+      ks.groupBy {
           case ((_, batchId), _) =>
             batchId
         }
@@ -172,8 +170,7 @@ class ClientMergeable[K, V: Semigroup](
         }
         .toMap
     // Since the type is a subclass, we need to jump through this hoop:
-    ks
-      .iterator
+    ks.iterator
       .map {
         case (k1, _) =>
           (k1, result(k1))

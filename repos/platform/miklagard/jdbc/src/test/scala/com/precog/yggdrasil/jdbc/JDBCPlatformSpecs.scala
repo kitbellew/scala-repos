@@ -153,8 +153,7 @@ object JDBCPlatformSpecEngine extends Logging {
               case Success(data) =>
                 val rows: Seq[Seq[(String, (String, String))]] = data.map {
                   jv =>
-                    jv
-                      .flattenWithPath
+                    jv.flattenWithPath
                       .map {
                         case (p, v) =>
                           (

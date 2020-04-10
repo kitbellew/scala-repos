@@ -175,8 +175,7 @@ object AnnotatorHighlighter {
                   simpleAnnotate(
                     ScalaBundle.message("scala.mutable.collection"),
                     DefaultHighlighter.MUTABLE_COLLECTION)
-                } else if (a
-                             .canonicalText
+                } else if (a.canonicalText
                              .startsWith(SCALA_COLLECTION_IMMUTABLE_BASE)) {
                   simpleAnnotate(
                     ScalaBundle.message("scala.immutable.collection"),

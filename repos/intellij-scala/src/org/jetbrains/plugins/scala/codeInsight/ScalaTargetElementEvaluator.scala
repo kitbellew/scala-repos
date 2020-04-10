@@ -161,8 +161,7 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
               case obj: ScObject =>
                 obj.fakeCompanionClassOrCompanionClass match {
                   case cl: ScClass if cl.isCase =>
-                    cl
-                      .parameters
+                    cl.parameters
                       .filter(_.name == p.name)
                       .foreach(allRenames.put(_, newName))
                   case _ =>

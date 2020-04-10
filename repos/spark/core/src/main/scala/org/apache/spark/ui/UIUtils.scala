@@ -592,8 +592,7 @@ private[spark] object UIUtils extends Logging {
           RDDOperationGraph.makeDotFile(g)
         }</div>
               {
-          g
-            .incomingEdges
+          g.incomingEdges
             .map { e =>
               <div class="incoming-edge">{
                 e.fromId
@@ -603,8 +602,7 @@ private[spark] object UIUtils extends Logging {
             }
         }
               {
-          g
-            .outgoingEdges
+          g.outgoingEdges
             .map { e =>
               <div class="outgoing-edge">{
                 e.fromId
@@ -614,8 +612,7 @@ private[spark] object UIUtils extends Logging {
             }
         }
               {
-          g
-            .rootCluster
+          g.rootCluster
             .getCachedNodes
             .map { n =>
               <div class="cached-rdd">{

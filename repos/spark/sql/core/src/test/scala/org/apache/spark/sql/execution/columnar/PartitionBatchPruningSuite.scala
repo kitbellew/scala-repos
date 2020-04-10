@@ -171,8 +171,7 @@ class PartitionBatchPruningSuite
       }
 
       val (readPartitions, readBatches) =
-        df
-          .queryExecution
+        df.queryExecution
           .sparkPlan
           .collect {
             case in: InMemoryColumnarTableScan =>

@@ -134,8 +134,7 @@ class TFinagleBinaryProtocolTest
     val limit = 18
 
     val buffer = ByteBuffer.allocate(len)
-    0
-      .until(len)
+    0.until(len)
       .foreach { i =>
         buffer.put(i.toByte)
       }
@@ -154,8 +153,7 @@ class TFinagleBinaryProtocolTest
     val len = 24
 
     val buffer = ByteBuffer.allocate(len)
-    0
-      .until(len)
+    0.until(len)
       .foreach { i =>
         buffer.put(i.toByte)
       }

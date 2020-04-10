@@ -436,8 +436,7 @@ class ScalaFunctionParameterInfoHandler
                     CodeInsightBundle.message("parameter.info.no.parameters"))
                 else {
                   buffer.append(
-                    p
-                      .getParameters
+                    p.getParameters
                       .map((param: PsiParameter) => {
                         val buffer: StringBuilder = new StringBuilder("")
                         val list = param.getModifierList

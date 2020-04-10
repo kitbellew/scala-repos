@@ -257,8 +257,7 @@ private[netty] class NettyRpcEnv(
     try {
       if (remoteAddr == address) {
         val p = Promise[Any]()
-        p
-          .future
+        p.future
           .onComplete {
             case Success(response) =>
               onSuccess(response)

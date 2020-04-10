@@ -496,9 +496,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
             .filter(isPublic)
             .filter {
               !_.getName
-              .contains(
-                "$"
-              ) // excludes inner classes for now - let's deal with it later
+                .contains(
+                  "$"
+                ) // excludes inner classes for now - let's deal with it later
             }
             .filter { n =>
               val name = n.toString
@@ -508,9 +508,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
             }
             .filter {
               !_.getName
-              .contains(
-                "RemoteViewsService"
-              ) // excludes RemoteViewsService, because it is packaged weird place "android.view"
+                .contains(
+                  "RemoteViewsService"
+                ) // excludes RemoteViewsService, because it is packaged weird place "android.view"
             }
             .filter(sourceExists)
             .map(toAndroidClass)

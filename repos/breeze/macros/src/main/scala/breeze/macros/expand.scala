@@ -233,8 +233,7 @@ object expand {
     import c.mirror.universe._
 
     val mods =
-      td
-        .mods
+      td.mods
         .annotations
         .collect {
           case tree @ q"new expand.args(...$args)" =>
@@ -304,8 +303,7 @@ object expand {
   private def shouldExpand(c: Context)(
       td: c.mirror.universe.TypeDef): Boolean = {
     import c.mirror.universe._
-    td
-      .mods
+    td.mods
       .annotations
       .exists {
         case q"new expand.args(...$args)" =>
@@ -318,8 +316,7 @@ object expand {
   private def shouldExpandVarg(c: Context)(
       td: c.mirror.universe.ValDef): Boolean = {
     import c.mirror.universe._
-    td
-      .mods
+    td.mods
       .annotations
       .exists {
         case x @ q"new expand.sequence[..$targs](...$args)" =>

@@ -33,8 +33,7 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
   property("groupedSum on a single key is <= 1 size") = forAll {
     (key0: Int, in: List[Long]) =>
       groupedSum(
-        in
-          .iterator
+        in.iterator
           .map { v =>
             (key0, v)
           }).size <= 1

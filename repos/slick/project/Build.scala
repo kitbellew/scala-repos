@@ -399,8 +399,7 @@ object SlickBuild extends Build {
       Seq(
         libraryDependencies <+= scalaVersion(
           "org.scala-lang" % "scala-compiler" % _ % "provided")))
-  )
-    .configs(DocTest)
+  ).configs(DocTest)
     .settings(inConfig(DocTest)(Defaults.testSettings): _*)
     .settings(
       unmanagedSourceDirectories in DocTest += (baseDirectory in slickProject)

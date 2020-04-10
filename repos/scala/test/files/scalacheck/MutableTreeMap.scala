@@ -408,8 +408,7 @@ package scala.collection.mutable {
           until: Option[K]) =>
         val mapView = map.rangeImpl(from, until)
         mapView --= ks
-        ks
-          .toSet
+        ks.toSet
           .forall { k =>
             map.get(k) == None && mapView.get(k) == None
           }

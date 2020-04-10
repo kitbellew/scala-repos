@@ -86,8 +86,7 @@ object XmlApiSpec extends Specification {
     def reduceOp(operation: (Int, Int) => Int)(r: Req): Box[Elem] =
       tryo {
         (
-          r
-            .param("args")
+          r.param("args")
             .map { args =>
               <result>{
                 args.split(",").map(_.toInt).reduceLeft(operation)

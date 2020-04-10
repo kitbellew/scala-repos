@@ -135,8 +135,7 @@ class WorksheetInProcessRunnerFactory {
             try {
               val cl = Class.forName(className, true, classLoader)
 
-              cl
-                .getDeclaredMethods
+              cl.getDeclaredMethods
                 .find {
                   case m =>
                     m.getName == "main"

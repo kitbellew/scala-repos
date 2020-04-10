@@ -193,9 +193,9 @@ class DAGSchedulerSuite
         blockIds
           .map {
             _.asRDDId
-            .map(id => (id.rddId -> id.splitIndex))
-            .flatMap(key => cacheLocations.get(key))
-            .getOrElse(Seq())
+              .map(id => (id.rddId -> id.splitIndex))
+              .flatMap(key => cacheLocations.get(key))
+              .getOrElse(Seq())
           }
           .toIndexedSeq
       }
@@ -1883,8 +1883,7 @@ class DAGSchedulerSuite
         })
 
     // Run this on executors
-    sc
-      .parallelize(1 to 10, 2)
+    sc.parallelize(1 to 10, 2)
       .foreach { item =>
         acc.add(1)
       }
@@ -2068,8 +2067,7 @@ class DAGSchedulerSuite
 
   test("Spark exceptions should include call site in stack trace") {
     val e = intercept[SparkException] {
-      sc
-        .parallelize(1 to 10, 2)
+      sc.parallelize(1 to 10, 2)
         .map { _ =>
           throw new RuntimeException("uh-oh!")
         }

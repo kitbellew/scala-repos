@@ -25,8 +25,7 @@ object ValuePipe extends java.io.Serializable {
 
   def fold[T, U, V](l: ValuePipe[T], r: ValuePipe[U])(
       f: (T, U) => V): ValuePipe[V] =
-    l
-      .leftCross(r)
+    l.leftCross(r)
       .collect {
         case (t, Some(u)) =>
           f(t, u)

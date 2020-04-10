@@ -114,8 +114,7 @@ object JavaToScala {
             i.isOnDemand)
         case i: PsiImportList =>
           ImportStatementList(
-            i
-              .getAllImportStatements
+            i.getAllImportStatements
               .map(convertPsiToIntermdeiate(_, externalProperties)))
         case a: PsiAssignmentExpression =>
           BinaryExpressionConstruction(
@@ -125,14 +124,12 @@ object JavaToScala {
           )
         case e: PsiExpressionListStatement =>
           ExpressionListStatement(
-            e
-              .getExpressionList
+            e.getExpressionList
               .getExpressions
               .map(convertPsiToIntermdeiate(_, externalProperties)))
         case d: PsiDeclarationStatement =>
           ExpressionListStatement(
-            d
-              .getDeclaredElements
+            d.getDeclaredElements
               .map(convertPsiToIntermdeiate(_, externalProperties)))
         case b: PsiBlockStatement =>
           convertPsiToIntermdeiate(b.getCodeBlock, externalProperties)
@@ -144,14 +141,12 @@ object JavaToScala {
           SynchronizedStatement(lock, body)
         case b: PsiCodeBlock =>
           BlockConstruction(
-            b
-              .getStatements
+            b.getStatements
               .map(convertPsiToIntermdeiate(_, externalProperties)))
         case t: PsiTypeParameter =>
           TypeParameterConstruction(
             t.getName,
-            t
-              .getExtendsList
+            t.getExtendsList
               .getReferenceElements
               .map(convertPsiToIntermdeiate(_, externalProperties)))
         case i: PsiIfStatement =>
@@ -336,8 +331,7 @@ object JavaToScala {
             convertPsiToIntermdeiate(a.getIndexExpression, externalProperties))
         case a: PsiArrayInitializerExpression =>
           ArrayInitializer(
-            a
-              .getInitializers
+            a.getInitializers
               .map(convertPsiToIntermdeiate(_, externalProperties)))
         case c: PsiClassObjectAccessExpression =>
           ClassObjectAccess(
@@ -421,8 +415,7 @@ object JavaToScala {
               .map(convertPsiToIntermdeiate(_, externalProperties)))
         case e: PsiExpressionList =>
           ExpressionList(
-            e
-              .getExpressions
+            e.getExpressions
               .map(convertPsiToIntermdeiate(_, externalProperties)))
         case l: PsiLocalVariable =>
           val parent = PsiTreeUtil.getParentOfType(
@@ -455,8 +448,7 @@ object JavaToScala {
             initalizer)
         case p: PsiParameterList =>
           ParameterListConstruction(
-            p
-              .getParameters
+            p.getParameters
               .map(convertPsiToIntermdeiate(_, externalProperties)))
         case m: PsiMethod =>
           def body: Option[IntermediateNode] = {
@@ -484,8 +476,7 @@ object JavaToScala {
           if (m.isConstructor) {
             ConstructorSimply(
               handleModifierList(m),
-              m
-                .getTypeParameters
+              m.getTypeParameters
                 .map(convertPsiToIntermdeiate(_, externalProperties)),
               convertPsiToIntermdeiate(m.getParameterList, externalProperties),
               body
@@ -494,8 +485,7 @@ object JavaToScala {
             MethodConstruction(
               handleModifierList(m),
               m.getName,
-              m
-                .getTypeParameters
+              m.getTypeParameters
                 .map(convertPsiToIntermdeiate(_, externalProperties)),
               convertPsiToIntermdeiate(m.getParameterList, externalProperties),
               body,
@@ -515,8 +505,7 @@ object JavaToScala {
           ParenthesizedExpression(expr)
         case v: PsiArrayInitializerMemberValue =>
           ArrayInitializer(
-            v
-              .getInitializers
+            v.getInitializers
               .map(convertPsiToIntermdeiate(_, externalProperties))
               .toSeq)
         case annot: PsiAnnotation =>
@@ -598,16 +587,14 @@ object JavaToScala {
           if (n.getArrayInitializer != null) {
             NewExpression(
               mtype,
-              n
-                .getArrayInitializer
+              n.getArrayInitializer
                 .getInitializers
                 .map(convertPsiToIntermdeiate(_, externalProperties)),
               withArrayInitalizer = true)
           } else if (n.getArrayDimensions.nonEmpty) {
             NewExpression(
               mtype,
-              n
-                .getArrayDimensions
+              n.getArrayDimensions
                 .map(convertPsiToIntermdeiate(_, externalProperties)),
               withArrayInitalizer = false)
           } else {
@@ -657,8 +644,7 @@ object JavaToScala {
                 convertPsiToIntermdeiate(cb.getParameter, externalProperties),
                 convertPsiToIntermdeiate(cb.getCatchBlock, externalProperties)))
           val finallys = Option(t.getFinallyBlock).map((f: PsiCodeBlock) =>
-            f
-              .getStatements
+            f.getStatements
               .map(convertPsiToIntermdeiate(_, externalProperties))
               .toSeq)
           TryCatchStatement(
@@ -688,8 +674,7 @@ object JavaToScala {
             tokenValue)
         case r: PsiReferenceParameterList =>
           TypeParameters(
-            r
-              .getTypeParameterElements
+            r.getTypeParameterElements
               .map(convertPsiToIntermdeiate(_, externalProperties)))
         case b: PsiBreakStatement =>
           if (b.getLabelIdentifier != null)

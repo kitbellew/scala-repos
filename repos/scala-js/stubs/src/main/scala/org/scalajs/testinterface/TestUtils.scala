@@ -21,8 +21,7 @@ object TestUtils {
   def newInstance_impl(
       c: Context)(name: c.Expr[String], loader: c.Expr[ClassLoader])(
       args: c.Expr[Seq[AnyRef]]): c.Expr[AnyRef] =
-    c
-      .universe
+    c.universe
       .reify {
 
         val clazz = loader.splice.loadClass(name.splice)
@@ -43,8 +42,7 @@ object TestUtils {
   def loadModule_impl(c: Context)(
       name: c.Expr[String],
       loader: c.Expr[ClassLoader]): c.Expr[AnyRef] =
-    c
-      .universe
+    c.universe
       .reify {
         val clazz = loader.splice.loadClass(name.splice + "$")
         clazz.getField("MODULE$").get(null)

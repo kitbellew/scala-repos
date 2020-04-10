@@ -881,22 +881,19 @@ class ScalaAnnotator
       refElement match {
         case e: ScReferenceExpression
             if e.getParent.isInstanceOf[ScPrefixExpr] &&
-              e
-                .getParent
+              e.getParent
                 .asInstanceOf[ScPrefixExpr]
                 .operation == e => //todo: this is hide !(Not Boolean)
         case e: ScReferenceExpression
             if e.getParent.isInstanceOf[ScInfixExpr] &&
-              e
-                .getParent
+              e.getParent
                 .asInstanceOf[ScInfixExpr]
                 .operation == e => //todo: this is hide A op B
         case e: ScReferenceExpression =>
           processError(countError = false, fixes = getFix)
         case e: ScStableCodeReferenceElement
             if e.getParent.isInstanceOf[ScInfixPattern] &&
-              e
-                .getParent
+              e.getParent
                 .asInstanceOf[ScInfixPattern]
                 .reference == e => //todo: this is hide A op B in patterns
         case _ =>
@@ -1530,8 +1527,7 @@ class ScalaAnnotator
       annotation: String): Boolean =
     teOption match {
       case Some(te) =>
-        te
-          .breadthFirst
+        te.breadthFirst
           .exists {
             case annot: ScAnnotationExpr =>
               annot.constr.reference match {

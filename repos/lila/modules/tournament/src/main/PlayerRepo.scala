@@ -155,22 +155,22 @@ object PlayerRepo {
       Match(selectTour(tourId)),
       List(Sort(Descending("m")), Group(BSONNull)("uids" -> Push("uid")))) map {
       _.documents
-      .headOption
-      .fold(Map.empty: Ranking) {
-        _ get "uids" match {
-          case Some(BSONArray(uids)) =>
-            // mutable optimized implementation
-            val b = Map.newBuilder[String, Int]
-            var r = 0
-            for (u <- uids) {
-              b += (u.get.asInstanceOf[BSONString].value -> r)
-              r = r + 1
-            }
-            b.result
-          case _ =>
-            Map.empty
+        .headOption
+        .fold(Map.empty: Ranking) {
+          _ get "uids" match {
+            case Some(BSONArray(uids)) =>
+              // mutable optimized implementation
+              val b = Map.newBuilder[String, Int]
+              var r = 0
+              for (u <- uids) {
+                b += (u.get.asInstanceOf[BSONString].value -> r)
+                r = r + 1
+              }
+              b.result
+            case _ =>
+              Map.empty
+          }
         }
-      }
     }
 
   def byTourAndUserIds(

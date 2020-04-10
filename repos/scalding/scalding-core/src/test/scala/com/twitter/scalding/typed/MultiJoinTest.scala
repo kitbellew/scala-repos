@@ -23,8 +23,7 @@ import com.twitter.scalding.typed.FlattenGroup._
 class MultiJoinTest extends WordSpec {
 
   def addKeys[V](t: Seq[V]): Seq[(Int, V)] =
-    t
-      .iterator
+    t.iterator
       .zipWithIndex
       .map {
         case (v, k) =>

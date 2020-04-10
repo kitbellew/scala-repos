@@ -636,8 +636,7 @@ object InferUtil {
                             !tp.typeParams.exists(_.name == "_"))
                           ScParameterizedType(
                             _addLower,
-                            tp
-                              .typeParams
+                            tp.typeParams
                               .map(ScTypeParameterType.toTypeParameterType))
                         else
                           _addLower
@@ -660,8 +659,7 @@ object InferUtil {
                             !tp.typeParams.exists(_.name == "_"))
                           ScParameterizedType(
                             _addUpper,
-                            tp
-                              .typeParams
+                            tp.typeParams
                               .map(ScTypeParameterType.toTypeParameterType))
                         else
                           _addUpper

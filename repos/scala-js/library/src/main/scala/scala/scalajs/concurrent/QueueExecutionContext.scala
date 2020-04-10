@@ -19,8 +19,7 @@ object QueueExecutionContext {
   private final class TimeoutsExecutionContext
       extends ExecutionContextExecutor {
     def execute(runnable: Runnable): Unit = {
-      js
-        .Dynamic
+      js.Dynamic
         .global
         .setTimeout(
           { () =>

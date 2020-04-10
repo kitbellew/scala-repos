@@ -88,8 +88,7 @@ private[spark] object ReliableRDDCheckpointData extends Logging {
 
   /** Return the path of the directory to which this RDD's checkpoint data is written. */
   def checkpointPath(sc: SparkContext, rddId: Int): Option[Path] = {
-    sc
-      .checkpointDir
+    sc.checkpointDir
       .map { dir =>
         new Path(dir, s"rdd-$rddId")
       }

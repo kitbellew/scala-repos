@@ -370,8 +370,7 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     if (l.isInstanceOf[ScMethodCall])
       None
     else
-      l
-        .asOptionOf[ScReferenceElement]
+      l.asOptionOf[ScReferenceElement]
         .flatMap(_.resolve().toOption)
         .map(contextOf)
         .flatMap(_.asOptionOf[PsiAnnotationOwner with PsiElement])

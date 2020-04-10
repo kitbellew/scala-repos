@@ -40,8 +40,7 @@ private[http4] object ReaderUtils {
       r: Reader,
       // TODO Find a better number for bufSize, e.g. 32KiB - Buf overhead
       bufSize: Int = Int.MaxValue): Future[Unit] = {
-    r
-      .read(bufSize)
+    r.read(bufSize)
       .flatMap {
         case None =>
           trans.write(NettyHttp.LastHttpContent.EMPTY_LAST_CONTENT)

@@ -155,8 +155,7 @@ object SparkBuild extends PomBuild {
               "Note: We ignore environment variables, when use of profile is detected in " +
                 "conjunction with environment variable.")
           // scalastyle:on println
-          v
-            .split("(\\s+|,)")
+          v.split("(\\s+|,)")
             .filterNot(_.isEmpty)
             .map(_.trim.replaceAll("-P", ""))
             .toSeq
@@ -173,8 +172,7 @@ object SparkBuild extends PomBuild {
 
   Properties.envOrNone("SBT_MAVEN_PROPERTIES") match {
     case Some(v) =>
-      v
-        .split("(\\s+|,)")
+      v.split("(\\s+|,)")
         .filterNot(_.isEmpty)
         .map(_.split("="))
         .foreach(x => System.setProperty(x(0), x(1)))

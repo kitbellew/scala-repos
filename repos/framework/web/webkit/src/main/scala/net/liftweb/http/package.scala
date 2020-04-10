@@ -43,8 +43,7 @@ package object http {
 
         val concreteResolvable: ResolvableType = resolvable
 
-        S
-          .session
+        S.session
           .map { session =>
             // Capture context now.
             val deferredRender = session

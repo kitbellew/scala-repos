@@ -211,8 +211,7 @@ object JsonValidSpec extends Specification {
         val fmt = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
         JsString(fmt format c.getTime)
       }
-      js
-        .validate[java.util.Date](Reads.IsoDateReads)
+      js.validate[java.util.Date](Reads.IsoDateReads)
         .aka("formatted date") must beEqualTo(JsSuccess(c.getTime))
     }
 

@@ -110,8 +110,7 @@ class TestService[K, V](
       service + "/stream/" + b.toString)
 
   def toBuffer[T](it: Iterable[T])(implicit ts: TupleSetter[T]): Buffer[Tuple] =
-    it
-      .map {
+    it.map {
         ts(_)
       }
       .toBuffer

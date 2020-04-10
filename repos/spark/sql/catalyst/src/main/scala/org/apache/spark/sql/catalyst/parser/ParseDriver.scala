@@ -193,8 +193,7 @@ private[parser] case class ParseError(
     re: RecognitionException,
     tokenNames: Array[String]) {
   def buildMessage(s: StringBuilder = new StringBuilder): StringBuilder = {
-    s
-      .append(br.getErrorHeader(re))
+    s.append(br.getErrorHeader(re))
       .append(" ")
       .append(br.getErrorMessage(re, tokenNames))
   }

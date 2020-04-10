@@ -84,8 +84,7 @@ class ScalaTestLocationProvider extends SMTestLocator {
               .orElse(classes.headOption)
             methodOwner match {
               case Some(td: ScTypeDefinition) =>
-                td
-                  .signaturesByName(methodName)
+                td.signaturesByName(methodName)
                   .foreach {
                     case signature: PhysicalSignature =>
                       res.add(

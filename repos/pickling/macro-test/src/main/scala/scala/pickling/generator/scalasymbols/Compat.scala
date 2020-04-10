@@ -15,8 +15,7 @@ trait SymbolTestMacros extends Macro {
     val cls = symbols.newClass(tpe)
     cls.primaryConstructor match {
       case Some(x) =>
-        x
-          .parameterTypes[c.universe.type](c.universe)
+        x.parameterTypes[c.universe.type](c.universe)
           .toList
           .flatMap(_.map(_.key))
       case None =>

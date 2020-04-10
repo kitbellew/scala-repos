@@ -27,13 +27,13 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
         _ <- ts += (1, Array[Byte](1, 2, 3))
         _ <- ts += (2, Array[Byte](4, 5))
         r1 <-
-          ts
-            .result
+          ts.result
             .map(
               _.map {
-                case (id, data) =>
-                  (id, data.mkString)
-              }.toSet)
+                  case (id, data) =>
+                    (id, data.mkString)
+                }
+                .toSet)
         _ = r1 shouldBe Set((1, "123"), (2, "45"))
       } yield ()
     if (implicitly[ColumnType[Array[Byte]]].hasLiteralForm) {
@@ -62,13 +62,13 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       ts += (1, Some(Array[Byte](6, 7))),
       ifCap(rcap.setByteArrayNull)(ts += (2, None)),
       ifNotCap(rcap.setByteArrayNull)(ts.map(_.id) += 2),
-      ts
-        .result
+      ts.result
         .map(
           _.map {
-            case (id, data) =>
-              (id, data.map(_.mkString).getOrElse(""))
-          }.toSet)
+              case (id, data) =>
+                (id, data.map(_.mkString).getOrElse(""))
+            }
+            .toSet)
         .map(_ shouldBe Set((1, "67"), (2, "")))
     )
   }
@@ -136,8 +136,7 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       seq(
         ts.schema.create,
         ts.map(_.b) ++= Seq(Serialized(List(1, 2, 3)), Serialized(List(4, 5))),
-        ts
-          .to[Set]
+        ts.to[Set]
           .result
           .map(
             _ shouldBe Set(
@@ -158,21 +157,18 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       t1.schema.create,
       t1 += (1, v),
       t1.map(_.data).result.head.map(_ shouldBe v),
-      t1
-        .filter(_.data === v)
+      t1.filter(_.data === v)
         .map(_.id)
         .result
         .headOption
         .map(_ shouldBe Some(1)),
       t1.filter(_.data =!= v).map(_.id).result.headOption.map(_ shouldBe None),
-      t1
-        .filter(_.data === v.bind)
+      t1.filter(_.data === v.bind)
         .map(_.id)
         .result
         .headOption
         .map(_ shouldBe Some(1)),
-      t1
-        .filter(_.data =!= v.bind)
+      t1.filter(_.data =!= v.bind)
         .map(_.id)
         .result
         .headOption

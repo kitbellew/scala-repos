@@ -118,8 +118,7 @@ object Concurrent {
 
       val ready = interested.map {
         case (it, p) =>
-          it
-            .fold {
+          it.fold {
               case Step.Done(a, e) =>
                 Future.successful(Left(Done(a, e)))
               case Step.Cont(k) => {
@@ -469,8 +468,7 @@ object Concurrent {
           new CheckDone[E, E] {
             def continue[A](cont: K[E, A]) = moreInput(cont)
           } &> it
-        )
-          .unflatten
+        ).unflatten
           .onComplete {
             case Success(it) =>
               state.single() = DoneIt(it.it)
@@ -755,8 +753,7 @@ object Concurrent {
           .map {
             case (t, index) =>
               val p = t._2
-              t
-                ._1
+              t._1
                 .fold {
                   case Step.Done(a, e) =>
                     p.success(Done(a, e))

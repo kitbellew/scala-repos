@@ -55,26 +55,22 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
       makeConstraint("rack", Operator.GROUP_BY, ""),
       makeConstraint("color", Operator.GROUP_BY, "")))
     val tasks =
-      0
-        .to(9)
+      0.to(9)
         .map(num =>
           makeSampleTask(
             s"$num",
             Map("rack" -> "rack-1", "color" -> "blue"))) ++
-        10
-          .to(19)
+        10.to(19)
           .map(num =>
             makeSampleTask(
               s"$num",
               Map("rack" -> "rack-1", "color" -> "green"))) ++
-        20
-          .to(29)
+        20.to(29)
           .map(num =>
             makeSampleTask(
               s"$num",
               Map("rack" -> "rack-2", "color" -> "blue"))) ++
-        30
-          .to(39)
+        30.to(39)
           .map(num =>
             makeSampleTask(
               s"$num",

@@ -275,8 +275,7 @@ private[scalding] object InternalService {
             case (t, (k, u)) =>
               (k, (t, Right(u)))
           }
-      )
-        .group
+      ).group
         .withReducers(
           reducers.getOrElse(-1)
         ) // jank, but scalding needs a way to maybe set reducers

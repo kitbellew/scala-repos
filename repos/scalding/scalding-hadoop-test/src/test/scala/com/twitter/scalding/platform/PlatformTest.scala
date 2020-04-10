@@ -190,8 +190,7 @@ class TypedPipeJoinWithDescriptionJob(args: Args) extends Job(args) {
   val y = TypedPipe.from[(Int, String)](List((1, "first")))
   val z = TypedPipe.from[(Int, Boolean)](List((2, true))).group
 
-  x
-    .hashJoin(
+  x.hashJoin(
       y
     ) // this triggers an implicit that somehow pushes the line number to the next one
     .withDescription("hashJoin")
@@ -210,8 +209,7 @@ class TypedPipeHashJoinWithForceToDiskJob(args: Args) extends Job(args) {
   //trivial transform and forceToDisk on the rhs
   val yMap = y.map(p => (p._1, p._2.toUpperCase)).forceToDisk
 
-  x
-    .hashJoin(yMap)
+  x.hashJoin(yMap)
     .withDescription("hashJoin")
     .write(TypedTsv[(Int, (Int, String))]("output"))
 }
@@ -228,8 +226,7 @@ class TypedPipeHashJoinWithForceToDiskFilterJob(args: Args) extends Job(args) {
     .forceToDisk
     .filter(p => p._1 == 1)
 
-  x
-    .hashJoin(yFilter)
+  x.hashJoin(yFilter)
     .withDescription("hashJoin")
     .write(TypedTsv[(Int, (Int, String))]("output"))
 }
@@ -247,8 +244,7 @@ class TypedPipeHashJoinWithForceToDiskWithComplete(args: Args)
     .forceToDisk
     .onComplete(() => println("step complete"))
 
-  x
-    .hashJoin(yComplete)
+  x.hashJoin(yComplete)
     .withDescription("hashJoin")
     .write(TypedTsv[(Int, (Int, String))]("output"))
 }
@@ -264,8 +260,7 @@ class TypedPipeHashJoinWithForceToDiskMapJob(args: Args) extends Job(args) {
     .forceToDisk
     .map(p => (p._1, p._2.toLowerCase))
 
-  x
-    .hashJoin(yMap)
+  x.hashJoin(yMap)
     .withDescription("hashJoin")
     .write(TypedTsv[(Int, (Int, String))]("output"))
 }
@@ -282,8 +277,7 @@ class TypedPipeHashJoinWithForceToDiskMapWithAutoForceJob(args: Args)
     .forceToDisk
     .map(p => (p._1, p._2.toLowerCase))
 
-  x
-    .hashJoin(yMap)
+  x.hashJoin(yMap)
     .withDescription("hashJoin")
     .write(TypedTsv[(Int, (Int, String))]("output"))
 }
@@ -300,8 +294,7 @@ class TypedPipeHashJoinWithGroupByJob(args: Args) extends Job(args) {
     }
   val yTypedPipe = TypedPipe.from[(String, Int)](yGroup, Fields.ALL)
 
-  x
-    .hashJoin(yTypedPipe)
+  x.hashJoin(yTypedPipe)
     .withDescription("hashJoin")
     .write(TypedTsv[(String, (Int, Int))]("output"))
 }
@@ -334,8 +327,7 @@ class TypedPipeHashJoinWithCoGroupJob(args: Args) extends Job(args) {
     case (a, b, c) =>
       (a, (b, c))
   }
-  x
-    .hashJoin(coGroupTuplePipe)
+  x.hashJoin(coGroupTuplePipe)
     .withDescription("hashJoin")
     .write(TypedTsv[(Int, (Int, (Int, Int)))]("output"))
 }
@@ -352,8 +344,7 @@ class TypedPipeHashJoinWithEveryJob(args: Args) extends Job(args) {
     }
 
   val yTypedPipe = TypedPipe.from[(Int, Int)](y, Fields.ALL)
-  x
-    .hashJoin(yTypedPipe)
+  x.hashJoin(yTypedPipe)
     .withDescription("hashJoin")
     .write(TypedTsv[(Int, (String, Int))]("output"))
 }
@@ -560,8 +551,9 @@ class PlatformTest
         }
         .sink(typedRealOutput) {
           _.map { f: Float =>
-            (f * 10).toInt
-          }.toList shouldBe (
+              (f * 10).toInt
+            }
+            .toList shouldBe (
             outputData
               .map { f: Float =>
                 (f * 10).toInt

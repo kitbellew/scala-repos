@@ -165,8 +165,7 @@ object Settings {
             ps2
         }
       }
-    ps
-      .settings
+    ps.settings
       .getOrElse {
         sys.error(
           "missing settings in %s:\n  %s" format (

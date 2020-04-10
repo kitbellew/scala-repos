@@ -614,8 +614,7 @@ private[hive] class HiveMetastoreCatalog(
           .map { p =>
             val location = p.getLocation
             val values = InternalRow.fromSeq(
-              p
-                .getValues
+              p.getValues
                 .asScala
                 .zip(partitionColumnDataTypes)
                 .map {
@@ -1149,8 +1148,7 @@ private[hive] case class MetastoreRelation(
           case (k, v) =>
             serdeParameters.put(k, v)
         }
-      p
-        .storage
+      p.storage
         .serdeProperties
         .foreach {
           case (k, v) =>

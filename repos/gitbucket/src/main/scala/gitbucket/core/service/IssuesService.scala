@@ -265,8 +265,7 @@ trait IssuesService {
               issue,
               issues
                 .flatMap { t =>
-                  t
-                    ._3
+                  t._3
                     .map(
                       Label(
                         issue.userName,

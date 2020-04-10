@@ -39,8 +39,7 @@ mailbox {
   mailbox-type = "akka.dispatch.SingleConsumerOnlyUnboundedMailbox"
   mailbox-capacity = 1000000
 }
-""")
-    .withFallback(ConfigFactory.load())
+""").withFallback(ConfigFactory.load())
   implicit val sys = ActorSystem("ANQ", config)
   val ref = sys.actorOf(
     Props(

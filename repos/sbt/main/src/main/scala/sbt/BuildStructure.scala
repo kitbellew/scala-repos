@@ -370,8 +370,7 @@ object BuildStreams {
       Nil
   }
   def showAMap(a: AttributeMap): String =
-    a
-      .entries
+    a.entries
       .toSeq
       .sortBy(_.key.label)
       .map {

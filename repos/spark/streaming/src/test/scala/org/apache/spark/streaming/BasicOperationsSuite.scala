@@ -303,8 +303,7 @@ class BasicOperationsSuite extends TestSuiteBase {
     // transform over 3 DStreams by doing union of the 3 RDDs
     val operation =
       (s: DStream[Int]) => {
-        s
-          .context
+        s.context
           .transform(
             Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
             (rdds: Seq[RDD[_]], time: Time) =>
@@ -325,8 +324,7 @@ class BasicOperationsSuite extends TestSuiteBase {
     // transform over 3 DStreams by doing union of the 3 RDDs
     val operation =
       (s: DStream[Int]) => {
-        s
-          .context
+        s.context
           .transform(
             Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
             (rdds: Seq[RDD[_]], time: Time) =>
@@ -355,8 +353,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq()
     )
     val operation = (s1: DStream[String], s2: DStream[String]) => {
-      s1
-        .map(x => (x, 1))
+      s1.map(x => (x, 1))
         .cogroup(s2.map(x => (x, "x")))
         .mapValues(x => (x._1.toSeq, x._2.toSeq))
     }
@@ -477,8 +474,7 @@ class BasicOperationsSuite extends TestSuiteBase {
         val updateFunc = (values: Seq[Int], state: Option[Int]) => {
           Some(values.sum + state.getOrElse(0))
         }
-        s
-          .map(x => (x, 1))
+        s.map(x => (x, 1))
           .updateStateByKey[Int](
             updateFunc,
             new HashPartitioner(numInputPartitions),
@@ -518,8 +514,7 @@ class BasicOperationsSuite extends TestSuiteBase {
           (iterator: Iterator[(String, Seq[Int], Option[Int])]) => {
             iterator.flatMap(t => updateFunc(t._2, t._3).map(s => (t._1, s)))
           }
-        s
-          .map(x => (x, 1))
+        s.map(x => (x, 1))
           .updateStateByKey[Int](
             newUpdateFunc,
             new HashPartitioner(numInputPartitions),
@@ -570,8 +565,7 @@ class BasicOperationsSuite extends TestSuiteBase {
               Option(stateObj)
           }
         }
-        s
-          .map(x => (x, 1))
+        s.map(x => (x, 1))
           .updateStateByKey[StateObject](updateFunc)
           .mapValues(_.counter)
       }
@@ -615,8 +609,7 @@ class BasicOperationsSuite extends TestSuiteBase {
   test("rdd cleanup - map and window") {
     val rememberDuration = Seconds(3)
     def operation(s: DStream[Int]): DStream[(Int, Int)] = {
-      s
-        .map(x => (x % 10, 1))
+      s.map(x => (x % 10, 1))
         .window(Seconds(2), Seconds(1))
         .window(Seconds(4), Seconds(2))
     }

@@ -51,8 +51,7 @@ private[master] class ZooKeeperPersistenceEngine(
   }
 
   override def read[T: ClassTag](prefix: String): Seq[T] = {
-    zk
-      .getChildren
+    zk.getChildren
       .forPath(WORKING_DIR)
       .asScala
       .filter(_.startsWith(prefix))

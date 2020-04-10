@@ -34,8 +34,7 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
           false,
           { n =>
             val refTSyms =
-              n
-                .collect[TypeSymbol] {
+              n.collect[TypeSymbol] {
                   case Select(_ :@ NominalType(s, _), _) =>
                     s
                   case Union(_, _ :@ CollectionType(_, NominalType(s, _)), _) =>
@@ -55,15 +54,13 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                 }
                 .toSet
             val allTSyms =
-              n
-                .collect[TypeSymbol] {
+              n.collect[TypeSymbol] {
                   case p: Pure =>
                     p.identity
                 }
                 .toSet
             val unrefTSyms = allTSyms -- refTSyms
-            n
-              .replaceInvalidate {
+            n.replaceInvalidate {
                 case Pure(StructNode(ConstArray.empty), pts) =>
                   // Always convert an empty StructNode because there is nothing to reference
                   (Pure(ProductNode(ConstArray.empty), pts), pts)
@@ -77,8 +74,7 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                       ProductNode(
                         ConstArray
                           .from(
-                            ch
-                              .map {
+                            ch.map {
                                 case (s, n) =>
                                   (requiredSyms.getOrElse(s, Int.MaxValue), n)
                               }
@@ -90,8 +86,7 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                   val sel = StructNode(
                     ConstArray
                       .from(
-                        ch
-                          .map {
+                        ch.map {
                             case (s, n) =>
                               (requiredSyms.getOrElse(s, Int.MaxValue), (s, n))
                           }

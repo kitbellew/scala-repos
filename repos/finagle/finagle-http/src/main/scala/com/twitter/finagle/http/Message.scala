@@ -110,9 +110,9 @@ abstract class Message extends HttpMessageProxy {
     accept
       .map {
         _.split(";", 2)
-        .headOption
-        .map(_.trim.toLowerCase) // media types are case-insensitive
-        .filter(_.nonEmpty) // skip blanks
+          .headOption
+          .map(_.trim.toLowerCase) // media types are case-insensitive
+          .filter(_.nonEmpty) // skip blanks
       }
       .flatten
 

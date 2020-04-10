@@ -294,8 +294,7 @@ abstract class ContainerVar[T](dflt: => T)(implicit
   override protected def testWasSet(name: String, bn: String): Boolean = {
     S.session.flatMap(s => localGet(s, name)).isDefined ||
     (
-      S
-        .session
+      S.session
         .flatMap(s =>
           localGet(s, bn) match {
             case Full(b: Boolean) =>

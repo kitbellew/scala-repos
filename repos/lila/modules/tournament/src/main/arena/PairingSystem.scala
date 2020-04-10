@@ -46,8 +46,7 @@ object PairingSystem extends AbstractPairingSystem {
           }
           .sequenceFu
     } yield pairings
-  }
-    .chronometer
+  }.chronometer
     .logIfSlow(500, pairingLogger) { pairings =>
       s"createPairings ${url(tour.id)} ${pairings.size} pairings"
     }
@@ -87,8 +86,7 @@ object PairingSystem extends AbstractPairingSystem {
               Nil
           }
       }
-  }
-    .chronometer
+  }.chronometer
     .logIfSlow(200, pairingLogger) { preps =>
       s"makePreps ${url(data.tour.id)} ${users.size} users, ${preps.size} preps"
     }

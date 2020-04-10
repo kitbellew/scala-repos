@@ -96,8 +96,7 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
           tm.partitionsMetadata.find(_.partitionId == partition)
         }
         .foreach { pm: PartitionMetadata =>
-          pm
-            .leader
+          pm.leader
             .foreach { leader =>
               return Right((leader.host, leader.port))
             }
@@ -114,13 +113,11 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       val leaderMap =
         tms
           .flatMap { tm: TopicMetadata =>
-            tm
-              .partitionsMetadata
+            tm.partitionsMetadata
               .flatMap { pm: PartitionMetadata =>
                 val tp = TopicAndPartition(tm.topic, pm.partitionId)
                 if (topicAndPartitions(tp)) {
-                  pm
-                    .leader
+                  pm.leader
                     .map { l =>
                       tp -> (l.host -> l.port)
                     }
@@ -149,8 +146,7 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       .right
       .map { r =>
         r.flatMap { tm: TopicMetadata =>
-          tm
-            .partitionsMetadata
+          tm.partitionsMetadata
             .map { pm: PartitionMetadata =>
               TopicAndPartition(tm.topic, pm.partitionId)
             }
@@ -213,8 +209,7 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
   }
 
   private def flip[K, V](m: Map[K, V]): Map[V, Seq[K]] =
-    m
-      .groupBy(_._2)
+    m.groupBy(_._2)
       .map { kv =>
         kv._1 -> kv._2.keys.toSeq
       }

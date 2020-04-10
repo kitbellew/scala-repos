@@ -265,8 +265,7 @@ trait Picklers {
       pkl[Symbol] ~ pkl[SourceFile] ~ pkl[Symbol] ~ pkl[List[(
           Symbol,
           SourceFile)]]
-    )
-      .wrapped {
+    ).wrapped {
         case sym ~ source ~ site ~ fragments =>
           new AskDocCommentItem(sym, source, site, fragments, new Response)
       } { item =>

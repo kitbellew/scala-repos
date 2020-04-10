@@ -62,8 +62,7 @@ class ErrorFormatter(
     if (showExpected)
       formatExpected(sb, error)
     if (showPosition)
-      sb
-        .append(" (line ")
+      sb.append(" (line ")
         .append(position.line)
         .append(", column ")
         .append(position.column)
@@ -93,13 +92,11 @@ class ErrorFormatter(
     if (ix < input.length) {
       val chars = mismatchLength(error)
       if (chars == 1)
-        sb
-          .append("Invalid input '")
+        sb.append("Invalid input '")
           .append(CharUtils.escape(input charAt ix))
           .append(''')
       else
-        sb
-          .append("Invalid input \"")
+        sb.append("Invalid input \"")
           .append(CharUtils.escape(input.sliceString(ix, ix + chars)))
           .append('"')
     } else

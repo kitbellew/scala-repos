@@ -73,21 +73,21 @@ class AttributeGroup private (
     */
   val attributes: Option[Array[Attribute]] = attrs.map(
     _.view
-    .zipWithIndex
-    .map {
-      case (attr, i) =>
-        attr.withIndex(i)
-    }
-    .toArray)
+      .zipWithIndex
+      .map {
+        case (attr, i) =>
+          attr.withIndex(i)
+      }
+      .toArray)
 
   private lazy val nameToIndex: Map[String, Int] = {
     attributes
       .map(
         _.view
-        .flatMap { attr =>
-          attr.name.map(_ -> attr.index.get)
-        }
-        .toMap)
+          .flatMap { attr =>
+            attr.name.map(_ -> attr.index.get)
+          }
+          .toMap)
       .getOrElse(Map.empty)
   }
 

@@ -34,8 +34,7 @@ trait MultiMapHeadView[A, B] extends Map[A, B] {
     multiMap
       .flatMap {
         case (k, v) =>
-          v
-            .headOption
+          v.headOption
             .map { _v =>
               (k, _v)
             }

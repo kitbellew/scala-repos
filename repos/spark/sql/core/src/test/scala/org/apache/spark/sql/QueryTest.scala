@@ -361,8 +361,7 @@ object QueryTest {
     */
   def checkAnswer(df: DataFrame, expectedAnswer: Seq[Row]): Option[String] = {
     val isSorted =
-      df
-        .logicalPlan
+      df.logicalPlan
         .collect {
           case s: logical.Sort =>
             s

@@ -345,8 +345,7 @@ trait ResolvableStableCodeReferenceElement
           case _ =>
         }
       case Some(q: ScDocResolvableCodeReference) =>
-        q
-          .multiResolve(incomplete = true)
+        q.multiResolve(incomplete = true)
           .foreach(processQualifierResolveResult(_, processor, ref))
       case Some(q: ScStableCodeReferenceElement) =>
         q.bind() match {

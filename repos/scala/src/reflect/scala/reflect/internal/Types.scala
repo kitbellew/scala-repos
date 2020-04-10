@@ -2560,8 +2560,7 @@ trait Types
         //      other type, which has to be related to this type for that to make sense).
         //
         def seenFromOwnerInstantiated(tp: Type): Type =
-          tp
-            .asSeenFrom(pre, sym.owner)
+          tp.asSeenFrom(pre, sym.owner)
             .instantiateTypeParams(formals, argsOrDummies)
 
         tp match {
@@ -5389,9 +5388,9 @@ trait Types
       targs: List[Type]): List[TypeBounds] =
     mapList(tparams)(
       _.info
-      .asSeenFrom(pre, owner)
-      .instantiateTypeParams(tparams, targs)
-      .bounds)
+        .asSeenFrom(pre, owner)
+        .instantiateTypeParams(tparams, targs)
+        .bounds)
 
   def elimAnonymousClass(t: Type) =
     t match {

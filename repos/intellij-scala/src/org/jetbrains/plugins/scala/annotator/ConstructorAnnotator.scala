@@ -46,8 +46,7 @@ trait ConstructorAnnotator {
             argsElement,
             "Unspecified value parameters: " + missed.mkString(", "))
 
-        r
-          .problems
+        r.problems
           .foreach {
             case ExcessArgument(argument) =>
               holder.createErrorAnnotation(

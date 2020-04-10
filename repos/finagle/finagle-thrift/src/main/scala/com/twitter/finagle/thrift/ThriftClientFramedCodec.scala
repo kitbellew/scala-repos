@@ -103,8 +103,7 @@ private[thrift] class ThriftClientChannelBufferEncoder
           ChannelBuffers.wrappedBuffer(request.message))
         if (request.oneway) {
           // oneway RPCs are satisfied when the write is complete.
-          e
-            .getFuture
+          e.getFuture
             .addListener(
               new ChannelFutureListener {
                 override def operationComplete(f: ChannelFuture): Unit =

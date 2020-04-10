@@ -337,8 +337,7 @@ object MessageSerializerRemotingSpec {
       case p @ PersistentRepr(MyPayload(data), _) ⇒
         p.sender ! s"p${data}"
       case a: AtomicWrite ⇒
-        a
-          .payload
+        a.payload
           .foreach {
             case p @ PersistentRepr(MyPayload(data), _) ⇒
               p.sender ! s"p${data}"

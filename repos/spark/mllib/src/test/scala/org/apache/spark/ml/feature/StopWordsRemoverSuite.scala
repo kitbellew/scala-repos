@@ -24,8 +24,7 @@ import org.apache.spark.sql.{DataFrame, Row}
 
 object StopWordsRemoverSuite extends SparkFunSuite {
   def testStopWordsRemover(t: StopWordsRemover, dataset: DataFrame): Unit = {
-    t
-      .transform(dataset)
+    t.transform(dataset)
       .select("filtered", "expected")
       .collect()
       .foreach {

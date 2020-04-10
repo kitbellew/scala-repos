@@ -116,8 +116,7 @@ class StreamingContextSuite
     val cp = new Checkpoint(ssc1, Time(1000))
     assert(
       Utils.timeStringAsSeconds(
-        cp
-          .sparkConfPairs
+        cp.sparkConfPairs
           .toMap
           .getOrElse("spark.dummyTimeConfig", "-1")) === 10)
     ssc1.stop()
@@ -886,8 +885,7 @@ class StreamingContextSuite
     }
     // StreamingContext.validate changes the message, so use "contains" here
     assert(
-      e
-        .getCause
+      e.getCause
         .getMessage
         .contains(
           "queueStream doesn't support checkpointing. " +

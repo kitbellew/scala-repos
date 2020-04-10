@@ -5,8 +5,7 @@ object Test extends App {
   val tb = cm.mkToolBox()
   val t = {
     var x = "ab".toList;
-    u
-      .reify {
+    u.reify {
         x = x.reverse;
         x
       }

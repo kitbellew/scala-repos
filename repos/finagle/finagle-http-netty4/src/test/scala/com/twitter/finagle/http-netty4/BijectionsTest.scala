@@ -197,8 +197,7 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
         assert(
           out.protocolVersion == Bijections.finagle.versionToNetty(in.version))
         assert(out.content.toString(UTF_8) == body)
-        in
-          .headerMap
+        in.headerMap
           .foreach {
             case (k, v) =>
               assert(
@@ -220,8 +219,7 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
         assert(out.method == Bijections.finagle.methodToNetty(in.method))
         assert(out.uri == in.getUri)
         assert(out.content.toString(UTF_8) == body)
-        in
-          .headerMap
+        in.headerMap
           .foreach {
             case (k, v) =>
               assert(

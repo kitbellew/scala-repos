@@ -100,8 +100,7 @@ trait Mailer extends SimpleInjector {
 
   implicit def addressToAddress(in: AddressType): Address = {
     val ret = new InternetAddress(in.address)
-    in
-      .name
+    in.name
       .foreach { n =>
         ret.setPersonal(n)
       }
@@ -360,8 +359,7 @@ trait Mailer extends SimpleInjector {
       case n: Node =>
         n
       case ns =>
-        ns
-          .toList
+        ns.toList
           .collect {
             case e: Elem =>
               e

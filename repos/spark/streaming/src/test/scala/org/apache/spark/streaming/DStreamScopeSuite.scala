@@ -170,8 +170,9 @@ class DStreamScopeSuite
     val inputStream = new DummyInputDStream(ssc)
     val transformedStream = inputStream.transform {
       _.map {
-        _ -> 1
-      }.reduceByKey(_ + _)
+          _ -> 1
+        }
+        .reduceByKey(_ + _)
     }
     transformedStream.initialize(Time(0))
 

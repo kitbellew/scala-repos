@@ -228,16 +228,16 @@ trait AssignClusterModule[M[+_]]
                           )
                           .map {
                             _.featureValues
-                            .toArray
-                            .sortBy {
-                              case (path, _) =>
-                                path
-                            }
-                            .map {
-                              case (_, col) =>
-                                col
-                            }
-                            .toArray
+                              .toArray
+                              .sortBy {
+                                case (path, _) =>
+                                  path
+                              }
+                              .map {
+                                case (_, col) =>
+                                  col
+                              }
+                              .toArray
                           }
 
                       val centerPaths: Array[CPath] = model

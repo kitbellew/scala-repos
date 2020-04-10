@@ -132,21 +132,21 @@ class LookupJoinedTest extends WordSpec with Matchers {
         .groupBy(_._2)
         .mapValues {
           _.toList
-          .sorted
-          .scanLeft(None: Option[(T, K, W)]) { (old, newer) =>
-            old
-              .map {
-                case (_, _, w) =>
-                  (newer._1, newer._2, Semigroup.plus(w, newer._3))
-              }
-              .orElse(Some(newer))
-          }
-          .filter {
-            _.isDefined
-          }
-          .map {
-            _.get
-          }
+            .sorted
+            .scanLeft(None: Option[(T, K, W)]) { (old, newer) =>
+              old
+                .map {
+                  case (_, _, w) =>
+                    (newer._1, newer._2, Semigroup.plus(w, newer._3))
+                }
+                .orElse(Some(newer))
+            }
+            .filter {
+              _.isDefined
+            }
+            .map {
+              _.get
+            }
         }
         .toMap // Force the map
 

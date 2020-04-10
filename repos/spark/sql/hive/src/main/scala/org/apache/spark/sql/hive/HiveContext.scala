@@ -422,8 +422,7 @@ class HiveContext private[hive] (
           val fileStatus = fs.getFileStatus(path)
           val size =
             if (fileStatus.isDirectory) {
-              fs
-                .listStatus(path)
+              fs.listStatus(path)
                 .map { status =>
                   if (!status.getPath().getName().startsWith(stagingDir)) {
                     calculateTableSize(fs, status.getPath)
@@ -554,8 +553,7 @@ class HiveContext private[hive] (
       ConfVars.SPARK_JOB_MONITOR_TIMEOUT -> TimeUnit.SECONDS,
       ConfVars.SPARK_RPC_CLIENT_CONNECT_TIMEOUT -> TimeUnit.MILLISECONDS,
       ConfVars.SPARK_RPC_CLIENT_HANDSHAKE_TIMEOUT -> TimeUnit.MILLISECONDS
-    )
-      .map {
+    ).map {
         case (confVar, unit) =>
           confVar.varname -> hiveconf.getTimeVar(confVar, unit).toString
       }

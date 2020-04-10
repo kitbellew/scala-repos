@@ -233,8 +233,7 @@ class Word2VecModel private[ml] (
     val sc = SparkContext.getOrCreate()
     val sqlContext = SQLContext.getOrCreate(sc)
     import sqlContext.implicits._
-    sc
-      .parallelize(wordVectors.findSynonyms(word, num))
+    sc.parallelize(wordVectors.findSynonyms(word, num))
       .toDF("word", "similarity")
   }
 

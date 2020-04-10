@@ -982,8 +982,7 @@ abstract class UnCurry
       val theTyper = typer.atOwner(dd, currentClass)
       val flatparams = flatdd.symbol.paramss.head
       val isRepeated = enteringUncurry(
-        dd
-          .symbol
+        dd.symbol
           .info
           .paramss
           .flatten

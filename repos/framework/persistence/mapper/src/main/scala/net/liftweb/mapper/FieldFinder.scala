@@ -56,8 +56,7 @@ class FieldFinder[T: ClassTag](
           // get the names of fields that represent the type we want
 
           val fields = Map(
-            c
-              .getDeclaredFields
+            c.getDeclaredFields
               .filter { f =>
                 val ret = typeFilter(f.getType)
                 logger.trace(

@@ -90,8 +90,7 @@ class NGramSuite
 object NGramSuite extends SparkFunSuite {
 
   def testNGram(t: NGram, dataset: DataFrame): Unit = {
-    t
-      .transform(dataset)
+    t.transform(dataset)
       .select("nGrams", "wantedNGrams")
       .collect()
       .foreach {

@@ -89,8 +89,7 @@ object RichPipe extends java.io.Serializable {
   }
 
   def setPipeDescriptions(p: Pipe, descriptions: Seq[String]): Pipe = {
-    p
-      .getStepConfigDef()
+    p.getStepConfigDef()
       .setProperty(
         Config.PipeDescriptions,
         encodePipeDescriptions(getPipeDescriptions(p) ++ descriptions))
@@ -294,8 +293,7 @@ class RichPipe(val pipe: Pipe)
   def groupAll(gs: GroupBuilder => GroupBuilder) =
     map(() -> '__groupAll__) { (u: Unit) =>
       1
-    }
-      .groupBy('__groupAll__) {
+    }.groupBy('__groupAll__) {
         gs(_).reducers(1)
       }
       .discard('__groupAll__)

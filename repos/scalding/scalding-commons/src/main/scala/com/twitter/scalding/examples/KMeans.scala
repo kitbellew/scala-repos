@@ -10,8 +10,7 @@ object KMeans {
     */
   private def distance(v1: Vector[Double], v2: Vector[Double]): Double =
     math.sqrt(
-      v1
-        .iterator
+      v1.iterator
         .zip(v2.iterator)
         .map {
           case (l, r) =>
@@ -21,8 +20,7 @@ object KMeans {
 
   // Just normal vector addition
   private def add(v1: Vector[Double], v2: Vector[Double]): Vector[Double] =
-    v1
-      .zip(v2)
+    v1.zip(v2)
       .map {
         case (l, r) =>
           l + r

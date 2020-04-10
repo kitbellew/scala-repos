@@ -305,8 +305,7 @@ class TestActorRefSpec
 
     "set receiveTimeout to None" in {
       val a = TestActorRef[WorkerActor]
-      a
-        .underlyingActor
+      a.underlyingActor
         .context
         .receiveTimeout should be theSameInstanceAs Duration.Undefined
     }

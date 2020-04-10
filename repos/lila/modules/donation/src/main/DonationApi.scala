@@ -30,10 +30,10 @@ final class DonationApi(
         List(Group(BSONNull)("net" -> SumField("net"))))
       .map {
         ~_.documents
-        .headOption
-        .flatMap {
-          _.getAs[Int]("net")
-        }
+          .headOption
+          .flatMap {
+            _.getAs[Int]("net")
+          }
       }
 
   private val decentAmount = BSONDocument(
@@ -56,9 +56,9 @@ final class DonationApi(
           Limit(nb)))
       .map {
         _.documents
-        .flatMap {
-          _.getAs[String]("_id")
-        }
+          .flatMap {
+            _.getAs[String]("_id")
+          }
       }
 
   def isDonor(userId: String) =

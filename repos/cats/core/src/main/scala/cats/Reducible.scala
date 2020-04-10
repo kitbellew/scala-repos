@@ -177,8 +177,7 @@ abstract class NonEmptyReducible[F[_], G[_]](implicit G: Foldable[G])
       g: (A, Eval[B]) => Eval[B]): Eval[B] =
     Always(split(fa)).flatMap {
       case (a, ga) =>
-        G
-          .reduceRightToOption(ga)(f)(g)
+        G.reduceRightToOption(ga)(f)(g)
           .flatMap {
             case Some(b) =>
               g(a, Now(b))

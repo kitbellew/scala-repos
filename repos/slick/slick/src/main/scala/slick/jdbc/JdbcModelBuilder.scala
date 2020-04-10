@@ -45,24 +45,22 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
 
   /** Read the foreign key metadata for a table grouped by name and in key sequence order */
   def readForeignKeys(t: MTable): DBIO[Seq[Seq[MForeignKey]]] =
-    t
-      .getImportedKeys
+    t.getImportedKeys
       .map(
         // remove foreign keys pointing to tables which were not included
         _.filter(fk => tableNamersByQName.isDefinedAt(fk.pkTable))
-        .groupBy(fk => (fk.pkTable, fk.fkName, fk.pkName, fk.fkTable))
-        .toSeq
-        .sortBy {
-          case (key, _) =>
-            (key._1.name, key._2, key._3, key._4.name)
-        }
-        .map(_._2.sortBy(_.keySeq)) // respect order
+          .groupBy(fk => (fk.pkTable, fk.fkName, fk.pkName, fk.fkTable))
+          .toSeq
+          .sortBy {
+            case (key, _) =>
+              (key._1.name, key._2, key._3, key._4.name)
+          }
+          .map(_._2.sortBy(_.keySeq)) // respect order
       )
 
   /** Read the index metadata grouped by name and in ordinal position order */
   def readIndices(t: MTable): DBIO[Seq[Seq[MIndexInfo]]] =
-    t
-      .getIndexInfo()
+    t.getIndexInfo()
       .asTry
       .map {
         case Success(iis) =>

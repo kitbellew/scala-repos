@@ -134,8 +134,7 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
               def allowCompletion =
                 ((memberCompletions.size == 1)
                   || CompletionResult.camelMatch(r.name)(
-                    r
-                      .name
+                    r.name
                       .newName(
                         StringOps.longestCommonPrefix(memberCompletions))))
               if (memberCompletions.isEmpty)

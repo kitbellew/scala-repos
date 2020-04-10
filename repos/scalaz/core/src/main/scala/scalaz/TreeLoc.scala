@@ -411,8 +411,7 @@ sealed abstract class TreeLocInstances {
           f: (A, => B) => B) =
         ParentsT.foldMapRight1Opt(fa.parents)(z)(f) match {
           case Some(p) =>
-            fa
-              .tree
+            fa.tree
               .foldRight(
                 ForestT.foldRight(fa.lefts, ForestT.foldRight(fa.rights, p)(f))(
                   f))(f)

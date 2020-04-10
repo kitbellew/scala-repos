@@ -131,8 +131,7 @@ class HadoopRDD[K, V](
       minPartitions: Int) = {
     this(
       sc,
-      sc
-        .broadcast(new SerializableConfiguration(conf))
+      sc.broadcast(new SerializableConfiguration(conf))
         .asInstanceOf[Broadcast[SerializableConfiguration]],
       initLocalJobConfFuncOpt = None,
       inputFormatClass,

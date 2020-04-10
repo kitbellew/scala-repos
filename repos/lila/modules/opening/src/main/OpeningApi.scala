@@ -89,9 +89,9 @@ private[opening] final class OpeningApi(
           List(Limit(max), playedIdsGroup))
         .map(
           _.documents
-          .headOption
-          .flatMap(_.getAs[BSONArray]("ids"))
-          .getOrElse(BSONArray()))
+            .headOption
+            .flatMap(_.getAs[BSONArray]("ids"))
+            .getOrElse(BSONArray()))
     }
   }
 

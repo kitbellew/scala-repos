@@ -28,8 +28,7 @@ object Auth extends LilaController {
 
   private def authenticateUser(u: UserModel)(implicit ctx: Context) = {
     implicit val req = ctx.req
-    u
-      .ipBan
+    u.ipBan
       .fold(
         Env.security.firewall.blockIp(req.remoteAddress) inject BadRequest(
           "blocked by firewall"),

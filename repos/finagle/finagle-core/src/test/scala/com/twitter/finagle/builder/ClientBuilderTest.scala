@@ -37,8 +37,7 @@ class ClientBuilderTest
 
     val m = new MockChannel
     when(
-      m
-        .codec
+      m.codec
         .prepareConnFactory(
           any[ServiceFactory[String, String]],
           any[Stack.Params])).thenReturn(preparedFactory)

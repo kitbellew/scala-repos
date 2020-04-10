@@ -281,8 +281,7 @@ class ScalaControlFlowBuilder(
       // for breaks
       //addPendingEdge(ws, myHead)
       ws.condition.foreach(_.accept(this))
-      ws
-        .body
+      ws.body
         .foreach { b =>
           b.accept(this)
         }

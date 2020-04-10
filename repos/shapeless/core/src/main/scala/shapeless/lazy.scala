@@ -686,8 +686,7 @@ object LazyMacros {
 
     if (root)
       // Sometimes corrupted, and slows things too
-      lm
-        .c
+      lm.c
         .universe
         .asInstanceOf[scala.tools.nsc.Global]
         .analyzer

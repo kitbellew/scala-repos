@@ -43,8 +43,7 @@ object StreamTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: Stream[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a
-        .intersperse(b)
+      a.intersperse(b)
         .zipWithIndex
         .filter(p => isEven(p._2))
         .map(_._1) must_=== (a)

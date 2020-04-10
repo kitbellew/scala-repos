@@ -80,8 +80,7 @@ object ReachingDefintionsCollector {
     def checkResolve(ref: PsiElement) =
       ref match {
         case r: ScReferenceElement =>
-          r
-            .multiResolve(false)
+          r.multiResolve(false)
             .map(_.getElement)
             .exists(PsiEquivalenceUtil.areElementsEquivalent(_, element))
         case _ =>

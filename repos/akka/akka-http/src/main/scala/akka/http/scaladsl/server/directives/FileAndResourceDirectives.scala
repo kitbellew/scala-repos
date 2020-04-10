@@ -437,8 +437,7 @@ object DirectoryListing {
           maxNameLength(directoryFilesAndNames) + 1,
           maxNameLength(fileFilesAndNames))
         val sb = new java.lang.StringBuilder
-        sb
-          .append(html(0))
+        sb.append(html(0))
           .append(path)
           .append(html(1))
           .append(path)
@@ -453,8 +452,7 @@ object DirectoryListing {
         def lastModified(file: File) =
           DateTime(file.lastModified).toIsoLikeDateTimeString
         def start(name: String) =
-          sb
-            .append("<a href=\"")
+          sb.append("<a href=\"")
             .append(path + name)
             .append("\">")
             .append(name)
@@ -472,8 +470,7 @@ object DirectoryListing {
             .util
             .humanReadableByteCount(file.length, si = true)
           start(name).append("        ").append(lastModified(file))
-          sb
-            .append("                ".substring(size.length))
+          sb.append("                ".substring(size.length))
             .append(size)
             .append('\n')
         }
@@ -485,8 +482,7 @@ object DirectoryListing {
           sb.append("(no files)\n")
         sb.append(html(3))
         if (renderVanityFooter)
-          sb
-            .append(html(4))
+          sb.append(html(4))
             .append(DateTime.now.toIsoLikeDateTimeString)
             .append(html(5))
         sb.append(html(6)).toString

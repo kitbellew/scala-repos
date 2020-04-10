@@ -117,8 +117,7 @@ class TraceInitializationTest extends FunSuite {
         .hostConnectionLimit(1)
         .build()
       try {
-        0
-          .until(2)
+        0.until(2)
           .foreach { _ =>
             Await.result(client(req))
           }

@@ -50,10 +50,10 @@ object DisjunctionTest extends SpecLite {
         1
     }) must_=== -\/(Bar)
     \/.right[Foo, Int](1)
-    .recover({
-      case Bar =>
-        4
-    }) must_=== \/-(1)
+      .recover({
+        case Bar =>
+          4
+      }) must_=== \/-(1)
   }
 
   "recoverWith" in {

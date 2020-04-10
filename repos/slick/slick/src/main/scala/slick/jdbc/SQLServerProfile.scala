@@ -119,7 +119,7 @@ trait SQLServerProfile extends JdbcProfile {
             .rawDefault
             .map(
               _.stripPrefix("(") // jtds
-              .stripPrefix("(").stripSuffix(")").stripSuffix(")"))
+                .stripPrefix("(").stripSuffix(")").stripSuffix(")"))
         override def default =
           rawDefault
             .map((_, tpe))
@@ -395,17 +395,17 @@ class ProtectGroupBy extends Phase {
               .children
               .forall(
                 _.findNode {
-                  case Ref(s) if s == b2s =>
-                    true
-                  case _ =>
-                    false
-                }.isDefined)
+                    case Ref(s) if s == b2s =>
+                      true
+                    case _ =>
+                      false
+                  }
+                  .isDefined)
             logger.debug("All columns reference the source: " + refsOK)
             if (refsOK)
               n
             else
-              n
-                .copy(from = g1.copy(from = Subquery(f1, Subquery.Default)))
+              n.copy(from = g1.copy(from = Subquery(f1, Subquery.Default)))
                 .infer()
 
         },

@@ -673,8 +673,7 @@ class ALSSuite
     }
     assert(model.rank === model2.rank)
     def getFactors(df: DataFrame): Set[(Int, Array[Float])] = {
-      df
-        .select("id", "features")
+      df.select("id", "features")
         .collect()
         .map {
           case r =>

@@ -36,8 +36,7 @@ class OAuthSpec extends PlaySpecification {
 
     "sign a get request with query parameters" in {
       val (request, body, hostUrl) = receiveRequest { implicit app => hostUrl =>
-        WS
-          .url(hostUrl + "/foo")
+        WS.url(hostUrl + "/foo")
           .withQueryString("param" -> "paramValue")
           .sign(oauthCalculator)
           .get()
@@ -48,8 +47,7 @@ class OAuthSpec extends PlaySpecification {
 
     "sign a post request with a body" in {
       val (request, body, hostUrl) = receiveRequest { implicit app => hostUrl =>
-        WS
-          .url(hostUrl + "/foo")
+        WS.url(hostUrl + "/foo")
           .sign(oauthCalculator)
           .post(Map("param" -> Seq("paramValue")))
       }

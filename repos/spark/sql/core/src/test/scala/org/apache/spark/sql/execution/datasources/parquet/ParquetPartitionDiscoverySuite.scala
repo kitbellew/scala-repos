@@ -754,8 +754,7 @@ class ParquetPartitionDiscoverySuite
       .createDataFrame(sparkContext.parallelize(row :: Nil), schema)
 
     withTempPath { dir =>
-      df
-        .write
+      df.write
         .format("parquet")
         .partitionBy(partitionColumns.map(_.name): _*)
         .save(dir.toString)
@@ -768,8 +767,7 @@ class ParquetPartitionDiscoverySuite
     withTempPath { dir =>
       val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
 
-      df
-        .write
+      df.write
         .format("parquet")
         .partitionBy("b", "c", "d")
         .save(dir.getCanonicalPath)
@@ -790,8 +788,7 @@ class ParquetPartitionDiscoverySuite
       val tablePath = new File(dir, "key=value")
       val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
 
-      df
-        .write
+      df.write
         .format("parquet")
         .partitionBy("b", "c", "d")
         .save(tablePath.getCanonicalPath)
@@ -811,8 +808,7 @@ class ParquetPartitionDiscoverySuite
 
       val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
 
-      df
-        .write
+      df.write
         .format("parquet")
         .partitionBy("b", "c", "d")
         .save(tablePath.getCanonicalPath)
@@ -832,8 +828,7 @@ class ParquetPartitionDiscoverySuite
       val tablePath = new File(dir, "table")
       val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
 
-      df
-        .write
+      df.write
         .format("parquet")
         .partitionBy("b", "c", "d")
         .save(tablePath.getCanonicalPath)
@@ -868,8 +863,7 @@ class ParquetPartitionDiscoverySuite
           val tablePath = new File(dir, "table")
           val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
 
-          df
-            .write
+          df.write
             .format("parquet")
             .partitionBy("b", "c", "d")
             .save(tablePath.getCanonicalPath)

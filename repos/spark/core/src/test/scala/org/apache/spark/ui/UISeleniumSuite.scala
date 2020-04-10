@@ -172,8 +172,7 @@ class UISeleniumSuite
     withSpark(newSparkContext()) { sc =>
       // Regression test for SPARK-3021
       intercept[SparkException] {
-        sc
-          .parallelize(1 to 10)
+        sc.parallelize(1 to 10)
           .map { x =>
             throw new Exception()
           }
@@ -193,8 +192,7 @@ class UISeleniumSuite
       class NotSerializable
       val unserializableObject = new NotSerializable
       intercept[SparkException] {
-        sc
-          .parallelize(1 to 10)
+        sc.parallelize(1 to 10)
           .map { x =>
             unserializableObject
           }
@@ -216,8 +214,7 @@ class UISeleniumSuite
   test("spark.ui.killEnabled should properly control kill button display") {
     def hasKillLink: Boolean = find(className("kill-link")).isDefined
     def runSlowJob(sc: SparkContext) {
-      sc
-        .parallelize(1 to 10)
+      sc.parallelize(1 to 10)
         .map { x =>
           Thread.sleep(10000);
           x
@@ -538,8 +535,7 @@ class UISeleniumSuite
     }
 
     withSpark(newSparkContext(killEnabled = true)) { sc =>
-      sc
-        .parallelize(1 to 10)
+      sc.parallelize(1 to 10)
         .map { x =>
           Thread.sleep(10000);
           x
@@ -548,8 +544,7 @@ class UISeleniumSuite
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         val url =
           new URL(
-            sc
-              .ui
+            sc.ui
               .get
               .appUIAddress
               .stripSuffix("/") + "/stages/stage/kill/?id=0&terminate=true")
@@ -577,8 +572,7 @@ class UISeleniumSuite
         // NOTE: if we reverse the order, things don't really behave nicely
         // we lose the stage for a job we keep, and then the job doesn't know
         // about its last stage
-        sc
-          .parallelize(idx to (idx + 3))
+        sc.parallelize(idx to (idx + 3))
           .map(identity)
           .groupBy(identity)
           .map(identity)

@@ -260,13 +260,11 @@ case class TungstenAggregate(
     val updateExpr = aggregateExpressions.flatMap { e =>
       e.mode match {
         case Partial | Complete =>
-          e
-            .aggregateFunction
+          e.aggregateFunction
             .asInstanceOf[DeclarativeAggregate]
             .updateExpressions
         case PartialMerge | Final =>
-          e
-            .aggregateFunction
+          e.aggregateFunction
             .asInstanceOf[DeclarativeAggregate]
             .mergeExpressions
       }
@@ -573,13 +571,11 @@ case class TungstenAggregate(
     val updateExpr = aggregateExpressions.flatMap { e =>
       e.mode match {
         case Partial | Complete =>
-          e
-            .aggregateFunction
+          e.aggregateFunction
             .asInstanceOf[DeclarativeAggregate]
             .updateExpressions
         case PartialMerge | Final =>
-          e
-            .aggregateFunction
+          e.aggregateFunction
             .asInstanceOf[DeclarativeAggregate]
             .mergeExpressions
       }

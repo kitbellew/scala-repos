@@ -109,11 +109,9 @@ object SourceCodeGenerator {
         "new " + dc.profileName
     try {
       val m = Await.result(
-        dc
-          .db
+        dc.db
           .run(
-            dc
-              .profile
+            dc.profile
               .createModel(None, ignoreInvalidDefaults)(ExecutionContext.global)
               .withPinnedSession),
         Duration.Inf)

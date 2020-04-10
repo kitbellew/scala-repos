@@ -78,8 +78,7 @@ trait Filter extends EssentialFilter {
           bodyAccumulator
             .future
             .map { it =>
-              it
-                .mapFuture { simpleResult =>
+              it.mapFuture { simpleResult =>
                   // When the iteratee is done, we can redeem the promised result that was returned to the filter
                   promisedResult.success(simpleResult)
                   result

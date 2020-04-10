@@ -102,8 +102,7 @@ private[sql] object FrequentItems extends Logging {
         .toArray
 
     val freqItems =
-      df
-        .select(cols.map(Column(_)): _*)
+      df.select(cols.map(Column(_)): _*)
         .rdd
         .aggregate(countMaps)(
           seqOp = (counts, row) => {

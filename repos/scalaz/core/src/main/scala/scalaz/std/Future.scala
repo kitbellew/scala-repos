@@ -83,8 +83,7 @@ private class FutureInstance(implicit ec: ExecutionContext)
     }
 
   def attempt[A](f: Future[A]): Future[Throwable \/ A] =
-    f
-      .map(\/.right)
+    f.map(\/.right)
       .recover {
         case e =>
           -\/(e)

@@ -148,8 +148,7 @@ object ResolveUtils {
   def methodType(m: PsiMethod, s: ScSubstitutor, scope: GlobalSearchScope) =
     ScFunctionType(
       s.subst(ScType.create(m.getReturnType, m.getProject, scope)),
-      m
-        .getParameterList
+      m.getParameterList
         .getParameters
         .map({ p =>
           val pt = p.getType
@@ -182,8 +181,7 @@ object ResolveUtils {
         case f: FakePsiMethod =>
           f.params.toSeq
         case _ =>
-          m
-            .getParameterList
+          m.getParameterList
             .getParameters
             .map { param =>
               val scType = s.subst(param.exactParamType())
@@ -428,8 +426,7 @@ object ResolveUtils {
                         place,
                         false) || (
                       td.isInstanceOf[ScObject] &&
-                        td
-                          .asInstanceOf[ScObject]
+                        td.asInstanceOf[ScObject]
                           .isPackageObject && processPackage(td.qualifiedName)
                     )
                   case pack: PsiPackage =>
@@ -904,8 +901,7 @@ object ResolveUtils {
               //process subpackages
               pack match {
                 case s: ScPackageImpl =>
-                  s
-                    .pack
+                  s.pack
                     .processDeclarations(processor, state, lastParent, place)
                 case _ =>
                   pack.processDeclarations(processor, state, lastParent, place)

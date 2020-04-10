@@ -45,8 +45,7 @@ object CategoricalNaiveBayes {
             (c: (Long, Array[Map[String, Long]]), features: Array[String]) => {
               (
                 c._1 + 1L,
-                c
-                  ._2
+                c._2
                   .zip(features)
                   .map {
                     case (m, feature) =>

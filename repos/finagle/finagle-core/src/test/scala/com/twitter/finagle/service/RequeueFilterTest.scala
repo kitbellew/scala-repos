@@ -139,8 +139,7 @@ class RequeueFilterTest extends FunSuite {
 
       var expectedDelay = minDelay
 
-      1
-        .to(scheduleLength)
+      1.to(scheduleLength)
         .foreach { attempt =>
           assert(!response.isDefined)
 

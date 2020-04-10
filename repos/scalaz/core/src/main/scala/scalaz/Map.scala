@@ -989,8 +989,7 @@ sealed abstract class MapInstances0 {
           case (Tip(), b) =>
             b.map(That(_))
           case (a, b) =>
-            a
-              .map(This(_): A \&/ B)
+            a.map(This(_): A \&/ B)
               .unionWith(b.map(That(_): A \&/ B)) {
                 case (This(aa), That(bb)) =>
                   Both(aa, bb)
@@ -1007,8 +1006,7 @@ sealed abstract class MapInstances0 {
         case (Tip(), b) =>
           b.map(bb => f(That(bb)))
         case (a, b) =>
-          a
-            .map(This(_): A \&/ B)
+          a.map(This(_): A \&/ B)
             .unionWith(b.map(That(_): A \&/ B)) {
               case (This(aa), That(bb)) =>
                 Both(aa, bb)

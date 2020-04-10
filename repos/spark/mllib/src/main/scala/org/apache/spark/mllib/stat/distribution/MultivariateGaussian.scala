@@ -144,8 +144,7 @@ class MultivariateGaussian @Since("1.3.0") (
       // by inverting the square root of all non-zero values
       val pinvS = diag(
         new DBV(
-          d
-            .map(v =>
+          d.map(v =>
               if (v > tol)
                 math.sqrt(1.0 / v)
               else

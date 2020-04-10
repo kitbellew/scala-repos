@@ -106,8 +106,7 @@ class TaskOpProcessorImplTest
     verify(f.taskRepository).store(task)
 
     And("the taskTracker gets the update")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor
           .TaskUpdated(taskState, TaskTrackerActor.Ack(testActor, ())))
@@ -134,8 +133,7 @@ class TaskOpProcessorImplTest
       new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
       result = Try(
-        f
-          .processor
+        f.processor
           .process(
             TaskOpProcessor.Operation(
               deadline,
@@ -160,8 +158,7 @@ class TaskOpProcessorImplTest
     result should be(Success(()))
 
     And("the taskTracker gets the update")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor
           .TaskUpdated(taskState, TaskTrackerActor.Ack(testActor, ())))
@@ -188,8 +185,7 @@ class TaskOpProcessorImplTest
       new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
       result = Try(
-        f
-          .processor
+        f.processor
           .process(
             TaskOpProcessor.Operation(
               deadline,
@@ -215,8 +211,7 @@ class TaskOpProcessorImplTest
 
     And(
       "the taskTracker gets a task removed and the ack contains the original failure")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor.TaskRemoved(
           taskState.taskId,
@@ -244,8 +239,7 @@ class TaskOpProcessorImplTest
       new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
       result = Try(
-        f
-          .processor
+        f.processor
           .process(
             TaskOpProcessor.Operation(
               deadline,
@@ -301,8 +295,7 @@ class TaskOpProcessorImplTest
     verify(f.taskRepository).expunge(taskId)
 
     And("the taskTracker gets the update")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor
           .TaskRemoved(Task.Id(taskId), TaskTrackerActor.Ack(testActor, ())))
@@ -343,8 +336,7 @@ class TaskOpProcessorImplTest
     verify(f.taskRepository).task(taskId.idString)
 
     And("the taskTracker gets the update")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor
           .TaskRemoved(taskId, TaskTrackerActor.Ack(testActor, ())))
@@ -389,8 +381,7 @@ class TaskOpProcessorImplTest
 
     And(
       "the taskTracker gets the update and the ack contains the expunge failure")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor.TaskUpdated(
           taskState,
@@ -468,8 +459,7 @@ class TaskOpProcessorImplTest
     verify(f.taskRepository).store(marathonTask)
 
     And("the taskTracker gets the update")
-    f
-      .taskTrackerProbe
+    f.taskTrackerProbe
       .expectMsg(
         TaskTrackerActor
           .TaskUpdated(unlaunched, TaskTrackerActor.Ack(testActor, ())))

@@ -38,8 +38,7 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
         c.maxAge map (cookie.setMaxAge(_))
         c.version map (cookie.setVersion(_))
         c.secure_? map (cookie.setSecure(_))
-        c
-          .httpOnly
+        c.httpOnly
           .foreach { bv =>
             import scala.language.reflectiveCalls
 

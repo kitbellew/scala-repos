@@ -442,8 +442,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
 
       val mergeMaps = (m1: JHashMap[K, V], m2: JHashMap[K, V]) =>
         {
-          m2
-            .asScala
+          m2.asScala
             .foreach { pair =>
               val old = m1.get(pair._1)
               m1.put(

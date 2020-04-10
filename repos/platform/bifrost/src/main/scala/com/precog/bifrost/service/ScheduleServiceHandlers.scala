@@ -124,8 +124,7 @@ class AddScheduledQueryServiceHandler(
                 sreq <-
                   EitherT {
                     contentFuture map { jv =>
-                      jv
-                        .validated[AddScheduledQueryRequest]
+                      jv.validated[AddScheduledQueryRequest]
                         .disjunction leftMap { err =>
                         badRequest(
                           "Request body %s is not a valid scheduling query request: %s"

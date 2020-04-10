@@ -734,8 +734,7 @@ object ScalaDocumentationProvider {
             .constructor
             .args
             .foreach(a =>
-              a
-                .exprs
+              a.exprs
                 .headOption
                 .map {
                   case exprHead =>

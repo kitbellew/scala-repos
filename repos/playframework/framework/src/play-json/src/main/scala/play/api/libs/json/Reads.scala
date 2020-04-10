@@ -213,8 +213,7 @@ trait LowPriorityDefaultReads {
                   (JsPath(idx)) ++ p -> valerr
               }
 
-            ts
-              .iterator
+            ts.iterator
               .zipWithIndex
               .foldLeft(Right(Vector.empty): Either[Errors, Vector[A]]) {
                 case (acc, (elt, idx)) =>
@@ -1226,8 +1225,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
                   (JsPath \ key) ++ p -> valerr
               }
 
-            m
-              .foldLeft(Right(Map.empty): Either[Errors, Map[String, V]]) {
+            m.foldLeft(Right(Map.empty): Either[Errors, Map[String, V]]) {
                 case (acc, (key, value)) =>
                   (acc, fromJson[V](value)(fmtv)) match {
                     case (Right(vs), JsSuccess(v, _)) =>

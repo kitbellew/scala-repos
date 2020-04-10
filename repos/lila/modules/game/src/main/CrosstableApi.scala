@@ -101,12 +101,13 @@ final class CrosstableApi(coll: Coll) {
               .collect[List](maxGames)
               .map {
                 _.flatMap { doc =>
-                  doc
-                    .getAs[String](Game.BSONFields.id)
-                    .map { id =>
-                      Result(id, doc.getAs[String](Game.BSONFields.winnerId))
-                    }
-                }.reverse
+                    doc
+                      .getAs[String](Game.BSONFields.id)
+                      .map { id =>
+                        Result(id, doc.getAs[String](Game.BSONFields.winnerId))
+                      }
+                  }
+                  .reverse
               }
           nbGames <- gameColl.count(selector.some)
           ctDraft =
@@ -123,14 +124,14 @@ final class CrosstableApi(coll: Coll) {
                 List(GroupField(Game.BSONFields.winnerId)("nb" -> SumValue(1))))
               .map(
                 _.documents
-                .foldLeft(ctDraft) {
-                  case (ct, obj) =>
-                    obj
-                      .getAs[Int]("nb")
-                      .fold(ct) { nb =>
-                        ct.addWins(obj.getAs[String]("_id"), nb)
-                      }
-                })
+                  .foldLeft(ctDraft) {
+                    case (ct, obj) =>
+                      obj
+                        .getAs[Int]("nb")
+                        .fold(ct) { nb =>
+                          ct.addWins(obj.getAs[String]("_id"), nb)
+                        }
+                  })
 
           _ <- coll insert crosstable
         } yield crosstable.some

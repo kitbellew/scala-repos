@@ -538,8 +538,7 @@ trait TransformSpec[M[+_]]
           case _ =>
             sys.error("expected JArray")
         }
-      )
-        .map { k =>
+      ).map { k =>
           {
             JObject(
               List(JField("value", k), JField("key", JArray(List(JNum(0))))))

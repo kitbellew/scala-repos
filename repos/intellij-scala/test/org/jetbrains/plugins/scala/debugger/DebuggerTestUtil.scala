@@ -67,8 +67,7 @@ object DebuggerTestUtil {
   def discoverJre(paths: Seq[String], versionMajor: String): Option[String] = {
     import java.io._
     def isJDK(f: File) =
-      f
-        .listFiles()
+      f.listFiles()
         .exists { b =>
           b.getName == "bin" && b
             .listFiles()
@@ -84,10 +83,11 @@ object DebuggerTestUtil {
         .filter(_.exists())
         .flatMap(
           _.listFiles()
-          .sortBy(_.getName)
-          .reverse
-          .find(f => f.getName.contains(suffix) && isJDK(new File(f, postfix)))
-          .map(new File(_, s"$postfix/jre").getAbsolutePath))
+            .sortBy(_.getName)
+            .reverse
+            .find(f =>
+              f.getName.contains(suffix) && isJDK(new File(f, postfix)))
+            .map(new File(_, s"$postfix/jre").getAbsolutePath))
     }
     def currentJava() = {
       sys.props.get("java.version") match {

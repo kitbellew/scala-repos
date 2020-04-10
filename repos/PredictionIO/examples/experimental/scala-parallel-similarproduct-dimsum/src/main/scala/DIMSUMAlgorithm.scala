@@ -37,8 +37,7 @@ class DIMSUMModel(
       sc: SparkContext): Boolean = {
 
     similarities.saveAsObjectFile(s"/tmp/${id}/similarities")
-    sc
-      .parallelize(Seq(itemStringIntMap))
+    sc.parallelize(Seq(itemStringIntMap))
       .saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
     sc.parallelize(Seq(items)).saveAsObjectFile(s"/tmp/${id}/items")
     true

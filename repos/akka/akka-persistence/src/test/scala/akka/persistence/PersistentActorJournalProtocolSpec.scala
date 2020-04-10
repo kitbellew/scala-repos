@@ -122,8 +122,7 @@ class PersistentActorJournalProtocolSpec
     withClue(s"$w: ") {
       w.persistentActor should ===(subject)
       w.messages.size should ===(msgs.size)
-      w
-        .messages
+      w.messages
         .zip(msgs)
         .foreach {
           case (AtomicWrite(writes), msg) ⇒
@@ -143,13 +142,11 @@ class PersistentActorJournalProtocolSpec
 
   def confirm(w: WriteMessages): Unit = {
     journal.send(w.persistentActor, WriteMessagesSuccessful)
-    w
-      .messages
+    w.messages
       .foreach {
         case AtomicWrite(msgs) ⇒
           msgs.foreach(msg ⇒
-            w
-              .persistentActor
+            w.persistentActor
               .tell(WriteMessageSuccess(msg, w.actorInstanceId), msg.sender))
         case NonPersistentRepr(msg, sender) ⇒
           w.persistentActor.tell(msg, sender)

@@ -218,8 +218,7 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       ts += oData,
       ts.result.head.map(_ shouldBe oData),
       ts.map(_.m2).result.head.map(_ shouldBe oData),
-      ts
-        .map(_.m3)
+      ts.map(_.m3)
         .result
         .head
         .map(
@@ -417,8 +416,7 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       as += Pair(1, "a"),
       as += Pair(2, "c"),
       as += Pair(3, "b"),
-      q2
-        .result
+      q2.result
         .map(
           _ shouldBe Vector(Pair(3, Pair(42, "bb")), Pair(2, Pair(42, "cc"))))
     )
@@ -450,8 +448,7 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
           )
           if !b
         } yield id :: b :: (s ++ s) :: HNil
-      )
-        .sortBy(h => h(2))
+      ).sortBy(h => h(2))
         .map {
           case id :: b :: ss :: HNil =>
             id :: ss :: (42 :: HNil) :: HNil
@@ -478,20 +475,17 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       bs += (1 :: true :: "a" :: HNil),
       bs += (2 :: false :: "c" :: HNil),
       bs.map(_.mapped) += Data(3, false, "b"),
-      q1
-        .result
+      q1.result
         .map(
           _ shouldBe Vector(
             3 :: "bb" :: (42 :: HNil) :: HNil,
             2 :: "cc" :: (42 :: HNil) :: HNil)),
-      q2
-        .result
+      q2.result
         .map(
           _ shouldBe Vector(
             3 :: "bb" :: (42 :: HNil) :: HNil,
             2 :: "cc" :: (42 :: HNil) :: HNil)),
-      bs
-        .map(_.mapped)
+      bs.map(_.mapped)
         .result
         .map(
           _.toSet shouldBe Set(
@@ -530,8 +524,7 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       _ = ares shouldBe "Foo"
       _ <- as.update("Foo")
       _ <-
-        as
-          .map(a => a :: a :: HNil)
+        as.map(a => a :: a :: HNil)
           .result
           .head
           .map(_ shouldBe "Foo" :: "Foo" :: HNil)
@@ -571,12 +564,10 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       ts ++= Seq(new Data(1, 2), new Data(3, 4), new Data(5, 6)),
       ts.filter(_.a === 1).update(Data(7, 8)),
       ts.filter(_.a === 3).map(identity).update(Data(9, 10)),
-      ts
-        .to[Set]
+      ts.to[Set]
         .result
         .map(_ shouldBe Set(Data(7, 8), Data(9, 10), Data(5, 6))),
-      ts
-        .map(_.auto)
+      ts.map(_.auto)
         .to[Set]
         .result
         .map(_ shouldBe Set(Data(7, 8), Data(9, 10), Data(5, 6)))

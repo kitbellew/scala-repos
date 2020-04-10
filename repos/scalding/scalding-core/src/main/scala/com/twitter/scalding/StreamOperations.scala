@@ -67,8 +67,7 @@ trait StreamOperations[+Self <: StreamOperations[Self]]
   def dropWhile[T](f: Fields)(fn: (T) => Boolean)(implicit
       conv: TupleConverter[T]): Self = {
     mapStream[TupleEntry, CTuple](f -> Fields.ARGS) { s =>
-      s
-        .dropWhile(te => fn(conv(te)))
+      s.dropWhile(te => fn(conv(te)))
         .map {
           _.getTuple
         }
@@ -100,8 +99,7 @@ trait StreamOperations[+Self <: StreamOperations[Self]]
   def takeWhile[T](f: Fields)(fn: (T) => Boolean)(implicit
       conv: TupleConverter[T]): Self = {
     mapStream[TupleEntry, CTuple](f -> Fields.ARGS) { s =>
-      s
-        .takeWhile(te => fn(conv(te)))
+      s.takeWhile(te => fn(conv(te)))
         .map {
           _.getTuple
         }

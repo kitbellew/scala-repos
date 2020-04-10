@@ -57,8 +57,7 @@ object ComparingUnrelatedTypesInspection {
       case Byte | Char | Short | Int | Long | Float | Double =>
         true
       case ScDesignatorType(c: ScClass) =>
-        c
-          .supers
+        c.supers
           .headOption
           .map(_.qualifiedName)
           .contains("scala.math.ScalaNumber")

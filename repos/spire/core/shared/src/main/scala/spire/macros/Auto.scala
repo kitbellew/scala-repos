@@ -129,8 +129,7 @@ abstract class AutoAlgebra extends AutoOps {
   def compare: c.Expr[Int]
 
   def Semiring[A: c.WeakTypeTag](): c.Expr[Semiring[A]] = {
-    c
-      .universe
+    c.universe
       .reify {
         new Semiring[A] {
           def plus(x: A, y: A): A = ops.plus[A].splice
@@ -140,8 +139,7 @@ abstract class AutoAlgebra extends AutoOps {
   }
 
   def Rig[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A]): c.Expr[Rig[A]] = {
-    c
-      .universe
+    c.universe
       .reify {
         new Rig[A] {
           def zero: A = z.splice
@@ -153,8 +151,7 @@ abstract class AutoAlgebra extends AutoOps {
   }
 
   def Rng[A: c.WeakTypeTag](z: c.Expr[A]): c.Expr[Rng[A]] = {
-    c
-      .universe
+    c.universe
       .reify {
         new Rng[A] {
           def zero: A = z.splice
@@ -167,8 +164,7 @@ abstract class AutoAlgebra extends AutoOps {
   }
 
   def Ring[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A]): c.Expr[Ring[A]] = {
-    c
-      .universe
+    c.universe
       .reify {
         new Ring[A] {
           def zero: A = z.splice
@@ -183,8 +179,7 @@ abstract class AutoAlgebra extends AutoOps {
 
   def EuclideanRing[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A])(
       ev: c.Expr[Eq[A]]): c.Expr[EuclideanRing[A]] = {
-    c
-      .universe
+    c.universe
       .reify {
         new EuclideanRing[A] {
           def zero: A = z.splice
@@ -202,8 +197,7 @@ abstract class AutoAlgebra extends AutoOps {
 
   def Field[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A])(
       ev: c.Expr[Eq[A]]): c.Expr[Field[A]] = {
-    c
-      .universe
+    c.universe
       .reify {
         new Field[A] {
           def zero: A = z.splice
@@ -221,8 +215,7 @@ abstract class AutoAlgebra extends AutoOps {
   }
 
   def Eq[A: c.WeakTypeTag](): c.Expr[Eq[A]] = {
-    c
-      .universe
+    c.universe
       .reify {
         new Eq[A] {
           def eqv(x: A, y: A): Boolean = ops.equals.splice
@@ -231,8 +224,7 @@ abstract class AutoAlgebra extends AutoOps {
   }
 
   def Order[A: c.WeakTypeTag](): c.Expr[Order[A]] = {
-    c
-      .universe
+    c.universe
       .reify {
         new Order[A] {
           override def eqv(x: A, y: A): Boolean = ops.equals.splice
@@ -324,8 +316,7 @@ object ScalaAutoMacros {
   def collectionSemigroupImpl[A: c.WeakTypeTag](
       c: Context): c.Expr[Semigroup[A]] = {
     val ops = ScalaAlgebra[c.type](c)
-    c
-      .universe
+    c.universe
       .reify {
         new Semigroup[A] {
           def op(x: A, y: A): A = ops.plusplus[A].splice
@@ -336,8 +327,7 @@ object ScalaAutoMacros {
   def collectionMonoidImpl[A: c.WeakTypeTag](c: Context)(
       z: c.Expr[A]): c.Expr[Monoid[A]] = {
     val ops = ScalaAlgebra[c.type](c)
-    c
-      .universe
+    c.universe
       .reify {
         new Monoid[A] {
           def id: A = z.splice
@@ -382,8 +372,7 @@ object JavaAutoMacros {
     val ops = JavaAlgebra[c.type](c)
     val addx = ops.binop[Unit]("addAll", "z", "x")
     val addy = ops.binop[Unit]("addAll", "z", "y")
-    c
-      .universe
+    c.universe
       .reify {
         new Monoid[A] {
           def id: A = empty.splice

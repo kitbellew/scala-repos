@@ -39,8 +39,7 @@ class KeyValidationTest extends FunSuite {
         new BasicKeyValidation(Seq(bad))
       }
       assert(
-        x
-          .getMessage
+        x.getMessage
           .contains("key cannot have whitespace or control characters"))
     }
   }

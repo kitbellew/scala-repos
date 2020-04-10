@@ -59,8 +59,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
           } yield (p.id, c.id, c.name, p.title)
       ).sortBy(_._1)
       _ <-
-        q2
-          .map(p => (p._1, p._2))
+        q2.map(p => (p._1, p._2))
           .result
           .map(_ shouldBe List((2, 1), (3, 2), (4, 3), (5, 2)))
       q3 = posts.flatMap(_.withCategory)
@@ -435,8 +434,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       as ++= Seq(1, 2, 3),
       bs ++= Seq(1, 2, 4, 5),
       cs ++= Seq(1, 2, 4, 6),
-      q1
-        .result
+      q1.result
         .named("q1")
         .map(_.toSet shouldBe Set((1, Some(1)), (2, Some(2)), (3, None))),
       q2.result.named("q2").map(_.toSet shouldBe Set((1, 1), (2, 2))),

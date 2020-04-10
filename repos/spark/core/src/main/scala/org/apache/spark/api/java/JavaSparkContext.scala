@@ -559,8 +559,7 @@ class JavaSparkContext(val sc: SparkContext)
     * to using the `add` method. Only the master can access the accumulator's `value`.
     */
   def intAccumulator(initialValue: Int): Accumulator[java.lang.Integer] =
-    sc
-      .accumulator(initialValue)(IntAccumulatorParam)
+    sc.accumulator(initialValue)(IntAccumulatorParam)
       .asInstanceOf[Accumulator[java.lang.Integer]]
 
   /**
@@ -572,8 +571,7 @@ class JavaSparkContext(val sc: SparkContext)
   def intAccumulator(
       initialValue: Int,
       name: String): Accumulator[java.lang.Integer] =
-    sc
-      .accumulator(initialValue, name)(IntAccumulatorParam)
+    sc.accumulator(initialValue, name)(IntAccumulatorParam)
       .asInstanceOf[Accumulator[java.lang.Integer]]
 
   /**
@@ -581,8 +579,7 @@ class JavaSparkContext(val sc: SparkContext)
     * to using the `add` method. Only the master can access the accumulator's `value`.
     */
   def doubleAccumulator(initialValue: Double): Accumulator[java.lang.Double] =
-    sc
-      .accumulator(initialValue)(DoubleAccumulatorParam)
+    sc.accumulator(initialValue)(DoubleAccumulatorParam)
       .asInstanceOf[Accumulator[java.lang.Double]]
 
   /**
@@ -594,8 +591,7 @@ class JavaSparkContext(val sc: SparkContext)
   def doubleAccumulator(
       initialValue: Double,
       name: String): Accumulator[java.lang.Double] =
-    sc
-      .accumulator(initialValue, name)(DoubleAccumulatorParam)
+    sc.accumulator(initialValue, name)(DoubleAccumulatorParam)
       .asInstanceOf[Accumulator[java.lang.Double]]
 
   /**
@@ -841,8 +837,7 @@ class JavaSparkContext(val sc: SparkContext)
     * Note that this does not necessarily mean the caching or computation was successful.
     */
   def getPersistentRDDs: JMap[java.lang.Integer, JavaRDD[_]] = {
-    sc
-      .getPersistentRDDs
+    sc.getPersistentRDDs
       .mapValues(s => JavaRDD.fromRDD(s))
       .asJava
       .asInstanceOf[JMap[java.lang.Integer, JavaRDD[_]]]

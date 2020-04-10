@@ -55,8 +55,7 @@ object JsError {
     toJson(errors, false)
   //def toJsonErrorsOnly: JsValue = original // TODO
   def toFlatForm(e: JsError): Seq[(String, Seq[ValidationError])] =
-    e
-      .errors
+    e.errors
       .map {
         case (path, seq) =>
           path.toJsonString -> seq

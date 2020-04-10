@@ -220,8 +220,7 @@ class ZipperTests {
     val z2 = dept.toZipper
 
     val z3 =
-      z2
-        .down
+      z2.down
         .put("King Agamemnon")
         .right
         .put(8000)

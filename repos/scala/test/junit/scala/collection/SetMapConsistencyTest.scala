@@ -634,8 +634,7 @@ class SetMapConsistencyTest {
           lm(k) = i
       }
     assert {
-      lm
-        .map {
+      lm.map {
           case (k, v) =>
             -k * k -> v.toString
         }

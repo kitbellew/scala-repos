@@ -133,8 +133,7 @@ object Connection extends App {
           coffees ++= Seq(
             ("Cold_Drip", new SerialBlob(Array[Byte](101))),
             ("Dutch_Coffee", new SerialBlob(Array[Byte](49))))
-        )
-          .flatMap { _ =>
+        ).flatMap { _ =>
             DBIO.failed(new Exception("Roll it back"))
           }
           .transactionally

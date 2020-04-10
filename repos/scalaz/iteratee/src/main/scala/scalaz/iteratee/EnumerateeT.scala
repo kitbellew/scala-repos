@@ -134,8 +134,7 @@ trait EnumerateeTFunctions {
             k: StepEl,
             i: Long): (Input[E] => IterateeT[E, F, StepT[(E, Long), F, A]]) = {
           (in: Input[E]) =>
-            in
-              .map(e => (e, i))
+            in.map(e => (e, i))
               .fold(
                 el = e => k(elInput(e)) >>== doneOr(loop(i + 1)),
                 empty = cont(step(k, i)),

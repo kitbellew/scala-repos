@@ -479,8 +479,7 @@ private[niflheim] class NIHDBActor private (
         val EventId(p, s) = EventId.fromLong(i);
         (p -> s)
       }
-    )
-      .groupBy(_._1)
+    ).groupBy(_._1)
       .map {
         case (p, ids) =>
           (p -> ids.map(_._2).max)

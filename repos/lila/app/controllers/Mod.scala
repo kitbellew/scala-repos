@@ -152,8 +152,7 @@ object Mod extends LilaController {
         import play.api.Play.current
         val email = "lichess.contact@gmail.com"
         val url = s"http://check.getipintel.net/check.php?ip=$ip&contact=$email"
-        WS
-          .url(url)
+        WS.url(url)
           .get()
           .map(_.body)
           .mon(_.security.proxy.request.time)

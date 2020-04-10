@@ -45,8 +45,7 @@ private[cross] object MacroUtils {
   }
 
   def enclosingTrees(c: Context): Seq[c.Tree] =
-    c
-      .asInstanceOf[reflect.macros.runtime.Context]
+    c.asInstanceOf[reflect.macros.runtime.Context]
       .callsiteTyper
       .context
       .enclosingContextChain

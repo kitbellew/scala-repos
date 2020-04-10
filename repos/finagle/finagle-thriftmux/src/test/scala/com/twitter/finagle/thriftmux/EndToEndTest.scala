@@ -288,8 +288,7 @@ class EndToEndTest
         (clientWhich, clientIface, clientClosable) <- clients(pf, port)
       } withClue(
         s"Server ($serverWhich), Client ($clientWhich) client with protocolFactory $pf") {
-        1
-          .to(5)
+        1.to(5)
           .foreach { _ =>
             assert(Await.result(clientIface.query("ok")) == "okok")
           }

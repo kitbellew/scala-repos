@@ -1792,8 +1792,7 @@ trait SHtml extends Loggable {
     val fgSnap = S._formGroup.get
 
     (in: NodeSeq) =>
-      S
-        ._formGroup
+      S._formGroup
         .doWith(fgSnap) {
           var radioName: Box[String] = Empty
           var checkBoxName: Box[String] = Empty

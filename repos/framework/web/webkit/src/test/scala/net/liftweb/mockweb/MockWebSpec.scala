@@ -158,8 +158,7 @@ object MockWebSpec extends Specification {
         .doWith(mockLiftRules) {
           useLiftRules.doWith(true) {
             testS("http://foo.com/test/stateless") {
-              S
-                .request
+              S.request
                 .foreach(_.path.partPath must_== List("stateless", "works"))
             }
           }
@@ -173,8 +172,7 @@ object MockWebSpec extends Specification {
         .doWith(mockLiftRules) {
           useLiftRules.doWith(true) {
             testS("http://foo.com/test/stateful") {
-              S
-                .request
+              S.request
                 .foreach(_.path.partPath must_== List("stateful", "works"))
             }
           }

@@ -233,8 +233,7 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
         .orderBy("index")
         .coalesce(1)
 
-      df
-        .write
+      df.write
         .mode("overwrite")
         .format(dataSourceName)
         .option("dataSchema", df.schema.json)

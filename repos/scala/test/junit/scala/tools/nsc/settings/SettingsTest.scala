@@ -148,8 +148,7 @@ class SettingsTest {
       val r = s.lint.contains(v)
       assertSame(
         r,
-        s
-          .lint
+        s.lint
           .value
           .contains(
             (s.LintWarnings withName v).asInstanceOf[s.lint.domain.Value]))

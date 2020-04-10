@@ -23,8 +23,7 @@ final class MediaTypeNegotiator(requestHeaders: Seq[HttpHeader]) {
         Accept(mediaRanges) ← requestHeaders
         range ← mediaRanges
       } yield range
-    )
-      .sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
+    ).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
         case x if x.isWildcard ⇒
           2f // most general, needs to come last
         case MediaRange.One(_, qv) ⇒
@@ -69,8 +68,7 @@ final class CharsetNegotiator(requestHeaders: Seq[HttpHeader]) {
         `Accept-Charset`(charsetRanges) ← requestHeaders
         range ← charsetRanges
       } yield range
-    )
-      .sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
+    ).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
         case _: HttpCharsetRange.`*` ⇒
           1f // most general, needs to come last
         case x ⇒
@@ -204,8 +202,7 @@ final class EncodingNegotiator(requestHeaders: Seq[HttpHeader]) {
         `Accept-Encoding`(encodingRanges) ← requestHeaders
         range ← encodingRanges
       } yield range
-    )
-      .sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
+    ).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
         case _: HttpEncodingRange.`*` ⇒
           1f // most general, needs to come last
         case x ⇒
@@ -278,8 +275,7 @@ final class LanguageNegotiator(requestHeaders: Seq[HttpHeader]) {
         `Accept-Language`(languageRanges) ← requestHeaders
         range ← languageRanges
       } yield range
-    )
-      .sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
+    ).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
         case _: LanguageRange.`*` ⇒
           1f // most general, needs to come last
         case x ⇒

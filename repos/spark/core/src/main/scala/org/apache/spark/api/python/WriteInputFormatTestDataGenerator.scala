@@ -156,22 +156,19 @@ object WriteInputFormatTestDataGenerator {
       (2, "bb"),
       (1, "aa"))
     sc.parallelize(intKeys).saveAsSequenceFile(intPath)
-    sc
-      .parallelize(
+    sc.parallelize(
         intKeys.map {
           case (k, v) =>
             (k.toDouble, v)
         })
       .saveAsSequenceFile(doublePath)
-    sc
-      .parallelize(
+    sc.parallelize(
         intKeys.map {
           case (k, v) =>
             (k.toString, v)
         })
       .saveAsSequenceFile(textPath)
-    sc
-      .parallelize(
+    sc.parallelize(
         intKeys.map {
           case (k, v) =>
             (k, v.getBytes(StandardCharsets.UTF_8))
@@ -185,8 +182,7 @@ object WriteInputFormatTestDataGenerator {
       (2, false),
       (1, false))
     sc.parallelize(bools).saveAsSequenceFile(boolPath)
-    sc
-      .parallelize(intKeys)
+    sc.parallelize(intKeys)
       .map {
         case (k, v) =>
           (new IntWritable(k), NullWritable.get())
@@ -198,8 +194,7 @@ object WriteInputFormatTestDataGenerator {
       (1, Array()),
       (2, Array(3.0, 4.0, 5.0)),
       (3, Array(4.0, 5.0, 6.0)))
-    sc
-      .parallelize(data, numSlices = 2)
+    sc.parallelize(data, numSlices = 2)
       .map {
         case (k, v) =>
           val va = new DoubleArrayWritable
@@ -217,8 +212,7 @@ object WriteInputFormatTestDataGenerator {
       (3, Map(2.0 -> "dd")),
       (2, Map(1.0 -> "aa")),
       (1, Map(3.0 -> "bb")))
-    sc
-      .parallelize(mapData, numSlices = 2)
+    sc.parallelize(mapData, numSlices = 2)
       .map {
         case (i, m) =>
           val mw = new MapWritable()

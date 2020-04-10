@@ -270,8 +270,7 @@ private[sql] object SQLTestUtils {
       // This function is copied from Catalyst's QueryTest
       val converted: Seq[Row] = answer.map { s =>
         Row.fromSeq(
-          s
-            .toSeq
+          s.toSeq
             .map {
               case d: java.math.BigDecimal =>
                 BigDecimal(d)

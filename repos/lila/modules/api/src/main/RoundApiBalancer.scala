@@ -53,8 +53,7 @@ private[api] final class RoundApiBalancer(
                     api.player(pov, apiVersion)(ctx) addFailureEffect { e =>
                       logger.error(pov.toString, e)
                     }
-                  }
-                    .chronometer
+                  }.chronometer
                     .logIfSlow(500, logger) { _ =>
                       s"inner player $pov"
                     }
@@ -92,8 +91,7 @@ private[api] final class RoundApiBalancer(
       JsObject] addFailureEffect { e =>
       logger.error(pov.toString, e)
     }
-  }
-    .chronometer
+  }.chronometer
     .mon(_.round.api.player)
     .logIfSlow(500, logger) { _ =>
       s"outer player $pov"

@@ -39,8 +39,7 @@ class ImplicitAnalyzer(val global: RichPresentationCompiler) {
                   treeP.startOrCursor,
                   treeP.endOrCursor,
                   SymbolInfo(t.fun.symbol),
-                  t
-                    .args
+                  t.args
                     .map { a =>
                       SymbolInfo(a.symbol)
                     },

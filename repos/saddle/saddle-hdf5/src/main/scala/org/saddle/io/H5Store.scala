@@ -136,8 +136,7 @@ object H5Store {
       colInclusive: Boolean): Frame[RX, CX, T] =
     withMonitor {
       val fr = readPandasFrame[RX, CX, T](path, group)
-      fr
-        .colSliceBy(colFrom, colTo, colInclusive)
+      fr.colSliceBy(colFrom, colTo, colInclusive)
         .rowSliceBy(rowFrom, rowTo, rowInclusive)
     }
 
@@ -218,8 +217,7 @@ object H5Store {
       colInclusive: Boolean): Frame[RX, CX, T] =
     withMonitor {
       val fr = readPandasFrame[RX, CX, T](fileid, group)
-      fr
-        .colSliceBy(colFrom, colTo, colInclusive)
+      fr.colSliceBy(colFrom, colTo, colInclusive)
         .rowSliceBy(rowFrom, rowTo, rowInclusive)
     }
 

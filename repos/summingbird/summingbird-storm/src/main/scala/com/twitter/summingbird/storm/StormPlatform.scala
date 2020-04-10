@@ -255,8 +255,7 @@ abstract class Storm(
             case OptionMappedProducer(_, op) =>
               spout.flatMap {
                 case (time, t) =>
-                  op
-                    .apply(t)
+                  op.apply(t)
                     .map { x =>
                       (time, x)
                     }

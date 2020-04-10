@@ -105,8 +105,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
         (1, "Peter", "HR"),
         (2, "Amy", "IT"),
         (3, "Steve", "IT")),
-      q
-        .result
+      q.result
         .map(r => r.toSet shouldBe Set((1, "Peter", "HR"), (2, "Amy", "IT")))
     ) andFinally managers.schema.drop
   }
@@ -140,11 +139,9 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       coffees ++= Seq((10L, 1L), (20L, 2L), (30L, 3L)),
       teas ++= Seq((100L, 1L), (200L, 2L), (300L, 3L)),
       q1.result.map(r => r.toSet shouldBe Set((10L, 1L), (20L, 2L), (30L, 3L))),
-      q2
-        .result
+      q2.result
         .map(r => r.toSet shouldBe Set((100L, 1L), (200L, 2L), (300L, 3L))),
-      q3
-        .result
+      q3.result
         .map(r =>
           r.toSet shouldBe Set(
             (10L, 1L),
