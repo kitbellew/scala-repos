@@ -433,8 +433,8 @@ class TaskOpProcessorImplTest
     lazy val config = MarathonTestHelper.defaultConfig()
     lazy val taskTrackerProbe = TestProbe()
     lazy val taskRepository = mock[TaskRepository]
-    lazy val statusUpdateResolver = mock[
-      TaskOpProcessorImpl.StatusUpdateActionResolver]
+    lazy val statusUpdateResolver =
+      mock[TaskOpProcessorImpl.StatusUpdateActionResolver]
     lazy val processor = new TaskOpProcessorImpl(
       taskTrackerProbe.ref,
       taskRepository,

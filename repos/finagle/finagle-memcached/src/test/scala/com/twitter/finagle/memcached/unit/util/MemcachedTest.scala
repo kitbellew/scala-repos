@@ -40,8 +40,8 @@ class MemcachedTest
 
     val params = client.params
 
-    val FailureAccrualFactory.Param.Configured(policy) = params[
-      FailureAccrualFactory.Param]
+    val FailureAccrualFactory.Param.Configured(policy) =
+      params[FailureAccrualFactory.Param]
     assert(policy() == failureAccrualPolicy)
     assert(
       markDeadFor.take(10).force.toSeq === (0 until 10 map { _ => 1.second }))

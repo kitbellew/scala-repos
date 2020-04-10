@@ -750,9 +750,10 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     Flow[(HttpRequest, T)].mapAsyncUnordered(parallelism) {
       case (request, userContext) ⇒
         val (effectiveRequest, gatewayFuture) = f(request)
-        val result = Promise[
-          (Try[HttpResponse], T)
-        ]() // TODO: simplify to `transformWith` when on Scala 2.12
+        val result =
+          Promise[
+            (Try[HttpResponse], T)
+          ]() // TODO: simplify to `transformWith` when on Scala 2.12
         gatewayFuture.flatMap(_(effectiveRequest))(fm.executionContext)
           .onComplete(responseTry ⇒ result.success(responseTry -> userContext))(
             fm.executionContext)

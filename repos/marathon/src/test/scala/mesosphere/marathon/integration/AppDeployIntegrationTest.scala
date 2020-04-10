@@ -172,11 +172,9 @@ class AppDeployIntegrationTest
       instances = 1,
       withHealth = false)
 
-    var appCount =
-      (
-        marathon.metrics()
-          .entityJson \ "gauges" \ "service.mesosphere.marathon.app.count" \ "value"
-      ).as[Int]
+    var appCount = (marathon.metrics()
+      .entityJson \ "gauges" \ "service.mesosphere.marathon.app.count" \ "value")
+      .as[Int]
     appCount should be(0)
 
     When("The app is deployed")
@@ -184,11 +182,9 @@ class AppDeployIntegrationTest
 
     Then("The app count metric should increase")
     result.code should be(201) // Created
-    appCount =
-      (
-        marathon.metrics()
-          .entityJson \ "gauges" \ "service.mesosphere.marathon.app.count" \ "value"
-      ).as[Int]
+    appCount = (marathon.metrics()
+      .entityJson \ "gauges" \ "service.mesosphere.marathon.app.count" \ "value")
+      .as[Int]
     appCount should be(1)
   }
 

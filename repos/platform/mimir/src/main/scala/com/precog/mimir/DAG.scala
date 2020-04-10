@@ -55,8 +55,8 @@ trait DAG extends Instructions {
 
     val adjustMemotable = mutable.Map[(Int, DepGraph), DepGraph]()
     implicit val M: Traverse[({ type λ[α] = Either[StackError, α] })#λ]
-      with Monad[({ type λ[α] = Either[StackError, α] })#λ] = eitherMonad[
-      StackError]
+      with Monad[({ type λ[α] = Either[StackError, α] })#λ] =
+      eitherMonad[StackError]
 
     def loop(
         loc: Line,

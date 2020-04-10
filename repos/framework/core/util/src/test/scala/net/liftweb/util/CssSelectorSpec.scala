@@ -455,10 +455,9 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "Select a node and transform stuff deeply nested 2" in {
-      val ret =
-        ("#foo ^^" #> "hello" &
-          "span [id]" #> "bar")(
-          <div><div><span id="foo2"/><span id="foo3"/><span dog="woof" id="foo"/></div></div>)
+      val ret = ("#foo ^^" #> "hello" &
+        "span [id]" #> "bar")(
+        <div><div><span id="foo2"/><span id="foo3"/><span dog="woof" id="foo"/></div></div>)
 
       ret(0).asInstanceOf[Elem].label must_== "span"
       ret.length must_== 1
@@ -788,11 +787,10 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "merge classes" in {
-      val answer =
-        (
-          "cute=moose" replaceWith <input class="a" name="goof" value="8" id="88"/>
-        ).apply(
-          <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
+      val answer = (
+        "cute=moose" replaceWith <input class="a" name="goof" value="8" id="88"/>
+      ).apply(
+        <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(
         <input class="a b" cute="moose" name="goof" value="8" id="88"/>)
@@ -837,20 +835,18 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "set href" in {
-      val answer =
-        ("#moose [href]" #> "Hi" &
-          ClearClearable).apply(
-          <ul><a id="moose" href="meow">first</a><li class="clearable">second</li><li class="clearable">Third</li></ul>)
+      val answer = ("#moose [href]" #> "Hi" &
+        ClearClearable).apply(
+        <ul><a id="moose" href="meow">first</a><li class="clearable">second</li><li class="clearable">Third</li></ul>)
 
       (answer \ "a" \ "@href").text must_== "Hi"
       (answer \ "li").length must_== 0
     }
 
     "set href and subnodes" in {
-      val answer =
-        ("#moose [href]" #> "Hi" &
-          ClearClearable).apply(
-          <ul><a id="moose" href="meow">first<li class="clearable">second</li><li class="clearable">Third</li></a></ul>)
+      val answer = ("#moose [href]" #> "Hi" &
+        ClearClearable).apply(
+        <ul><a id="moose" href="meow">first<li class="clearable">second</li><li class="clearable">Third</li></a></ul>)
 
       (answer \ "a" \ "@href").text must_== "Hi"
       (answer \\ "li").length must_== 0
@@ -910,20 +906,18 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "set href" in {
-      val answer =
-        (("#moose [href]" replaceWith "Hi") &
-          ClearClearable).apply(
-          <ul><a id="moose" href="meow">first</a><li class="clearable">second</li><li class="clearable">Third</li></ul>)
+      val answer = (("#moose [href]" replaceWith "Hi") &
+        ClearClearable).apply(
+        <ul><a id="moose" href="meow">first</a><li class="clearable">second</li><li class="clearable">Third</li></ul>)
 
       (answer \ "a" \ "@href").text must_== "Hi"
       (answer \ "li").length must_== 0
     }
 
     "set href and subnodes" in {
-      val answer =
-        (("#moose [href]" replaceWith "Hi") &
-          ClearClearable).apply(
-          <ul><a id="moose" href="meow">first<li class="clearable">second</li><li class="clearable">Third</li></a></ul>)
+      val answer = (("#moose [href]" replaceWith "Hi") &
+        ClearClearable).apply(
+        <ul><a id="moose" href="meow">first<li class="clearable">second</li><li class="clearable">Third</li></a></ul>)
 
       (answer \ "a" \ "@href").text must_== "Hi"
       (answer \\ "li").length must_== 0

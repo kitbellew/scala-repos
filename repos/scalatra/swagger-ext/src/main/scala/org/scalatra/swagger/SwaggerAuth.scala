@@ -110,10 +110,9 @@ object SwaggerAuthSerializers {
               val protocols = dontAddOnEmpty("protocols", obj.protocols) _
               val authorizations =
                 dontAddOnEmpty("authorizations", obj.authorizations) _
-              val r =
-                (
-                  consumes andThen produces andThen authorizations andThen protocols
-                )(json)
+              val r = (
+                consumes andThen produces andThen authorizations andThen protocols
+              )(json)
               r merge writeDataType(obj.responseClass)
             case obj: AuthOperation[_] => JNothing
           }))

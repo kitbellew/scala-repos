@@ -879,10 +879,8 @@ trait SliceTransforms[M[+_]]
     def apply[A](init: A, f: (A, Slice) => M[(A, Slice)]): SliceTransform1[A] =
       SliceTransform1M(init, f)
 
-    private[table] val Identity
-        : SliceTransform1S[Unit] = SliceTransform1S[Unit](
-      (),
-      { (u, s) => (u, s) })
+    private[table] val Identity: SliceTransform1S[Unit] =
+      SliceTransform1S[Unit]((), { (u, s) => (u, s) })
 
     private[table] def mapS[A](st: SliceTransform1S[A])(
         f: Slice => Slice): SliceTransform1S[A] =

@@ -1030,8 +1030,8 @@ class SparkILoop(
             case x                   => x
           }
       }
-      lazy val tagOfSparkIMain = tagOfStaticClass[
-        org.apache.spark.repl.SparkIMain]
+      lazy val tagOfSparkIMain =
+        tagOfStaticClass[org.apache.spark.repl.SparkIMain]
       // Bind intp somewhere out of the regular namespace where
       // we can get at it in generated code.
       addThunk(intp.quietBind(NamedParam[SparkIMain]("$intp", intp)(

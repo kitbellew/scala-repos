@@ -126,15 +126,13 @@ class TheMacros(val c: whitebox.Context) {
     val q"${tpeString: String}" = tpeSelector
     val dummyNme = c.freshName
 
-    val tpe =
-      (for {
-        parsed <- Try(c.parse(s"{ type $dummyNme = " + tpeString + " }"))
-          .toOption
-        checked = c.typecheck(parsed, silent = true) if checked.nonEmpty
-      } yield {
-        val q"{ type $dummyNme = $tpt }" = checked
-        tpt.tpe
-      }).getOrElse(c.abort(c.enclosingPosition, s"Malformed type $tpeString"))
+    val tpe = (for {
+      parsed <- Try(c.parse(s"{ type $dummyNme = " + tpeString + " }")).toOption
+      checked = c.typecheck(parsed, silent = true) if checked.nonEmpty
+    } yield {
+      val q"{ type $dummyNme = $tpt }" = checked
+      tpt.tpe
+    }).getOrElse(c.abort(c.enclosingPosition, s"Malformed type $tpeString"))
 
     // Bail for primitives because the resulting trees with type set to Unit
     // will crash the compiler

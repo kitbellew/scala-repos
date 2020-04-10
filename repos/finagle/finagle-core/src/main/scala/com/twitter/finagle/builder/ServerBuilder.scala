@@ -261,8 +261,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
           // in StackServer#newStack. Then we can thread through "closes"
           // via ClientConnection.
           val Timer(timer) = params[Timer]
-          val ExpiringService.Param(idleTime, lifeTime) = params[
-            ExpiringService.Param]
+          val ExpiringService.Param(idleTime, lifeTime) =
+            params[ExpiringService.Param]
           val Stats(sr) = params[Stats]
           val idle = if (idleTime.isFinite) Some(idleTime) else None
           val life = if (lifeTime.isFinite) Some(lifeTime) else None

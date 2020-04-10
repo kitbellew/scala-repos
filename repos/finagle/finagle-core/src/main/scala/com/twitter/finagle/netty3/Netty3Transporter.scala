@@ -145,20 +145,20 @@ object Netty3Transporter {
     // transport and transporter params
     val ChannelFactory(cf) = params[ChannelFactory]
     val TransportFactory(newTransport) = params[TransportFactory]
-    val Transporter.ConnectTimeout(connectTimeout) = params[
-      Transporter.ConnectTimeout]
-    val LatencyCompensation.Compensation(compensation) = params[
-      LatencyCompensation.Compensation]
+    val Transporter.ConnectTimeout(connectTimeout) =
+      params[Transporter.ConnectTimeout]
+    val LatencyCompensation.Compensation(compensation) =
+      params[LatencyCompensation.Compensation]
     val Transporter.TLSHostname(tlsHostname) = params[Transporter.TLSHostname]
-    val Transporter.HttpProxy(httpProxy, httpProxyCredentials) = params[
-      Transporter.HttpProxy]
-    val Transporter.SocksProxy(socksProxy, socksCredentials) = params[
-      Transporter.SocksProxy]
-    val Transport.BufferSizes(sendBufSize, recvBufSize) = params[
-      Transport.BufferSizes]
+    val Transporter.HttpProxy(httpProxy, httpProxyCredentials) =
+      params[Transporter.HttpProxy]
+    val Transporter.SocksProxy(socksProxy, socksCredentials) =
+      params[Transporter.SocksProxy]
+    val Transport.BufferSizes(sendBufSize, recvBufSize) =
+      params[Transport.BufferSizes]
     val Transport.TLSClientEngine(tls) = params[Transport.TLSClientEngine]
-    val Transport.Liveness(readerTimeout, writerTimeout, keepAlive) = params[
-      Transport.Liveness]
+    val Transport.Liveness(readerTimeout, writerTimeout, keepAlive) =
+      params[Transport.Liveness]
     val snooper = params[Transport.Verbose] match {
       case Transport.Verbose(true) => Some(
           ChannelSnooper(label)(logger.log(Level.INFO, _, _)))

@@ -784,16 +784,15 @@ class ReplicaManager(
       metadataCache: MetadataCache) {
     replicaStateChangeLock synchronized {
       if (updateMetadataRequest.controllerEpoch < controllerEpoch) {
-        val stateControllerEpochErrorMessage =
-          (
-            "Broker %d received update metadata request with correlation id %d from an " +
-              "old controller %d with epoch %d. Latest known controller epoch is %d"
-          ).format(
-            localBrokerId,
-            correlationId,
-            updateMetadataRequest.controllerId,
-            updateMetadataRequest.controllerEpoch,
-            controllerEpoch)
+        val stateControllerEpochErrorMessage = (
+          "Broker %d received update metadata request with correlation id %d from an " +
+            "old controller %d with epoch %d. Latest known controller epoch is %d"
+        ).format(
+          localBrokerId,
+          correlationId,
+          updateMetadataRequest.controllerId,
+          updateMetadataRequest.controllerEpoch,
+          controllerEpoch)
         stateChangeLogger.warn(stateControllerEpochErrorMessage)
         throw new ControllerMovedException(stateControllerEpochErrorMessage)
       } else {

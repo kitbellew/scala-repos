@@ -90,9 +90,8 @@ class ScalaArrangementParseInfo {
     val entry: ScalaArrangementEntry = methodToEntry(method)
     val result: ScalaArrangementDependency = new ScalaArrangementDependency(
       entry)
-    var toProcess: List[(ScFunction, ScalaArrangementDependency)] = List[(
-        ScFunction,
-        ScalaArrangementDependency)]()
+    var toProcess: List[(ScFunction, ScalaArrangementDependency)] =
+      List[(ScFunction, ScalaArrangementDependency)]()
     toProcess = (method, result) :: toProcess
     var usedMethods = HashSet[ScFunction]()
     while (toProcess.nonEmpty) {

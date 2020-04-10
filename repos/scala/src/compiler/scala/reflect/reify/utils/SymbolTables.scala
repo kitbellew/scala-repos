@@ -12,9 +12,8 @@ trait SymbolTables {
   class SymbolTable private[SymbolTable] (
       private[SymbolTable] val symtab: immutable.ListMap[Symbol, Tree] =
         immutable.ListMap[Symbol, Tree](),
-      private[SymbolTable] val aliases: List[(Symbol, TermName)] = List[(
-          Symbol,
-          TermName)](),
+      private[SymbolTable] val aliases: List[(Symbol, TermName)] =
+        List[(Symbol, TermName)](),
       private[SymbolTable] val original: Option[List[Tree]] = None) {
 
     def syms: List[Symbol] = symtab.keys.toList

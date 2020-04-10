@@ -189,8 +189,8 @@ object union {
         def apply(l: CNil) = Map.empty
       }
 
-    implicit val cnilToMapAnyNothing
-        : Aux[CNil, Any, Nothing] = cnilToMap[Any, Nothing]
+    implicit val cnilToMapAnyNothing: Aux[CNil, Any, Nothing] =
+      cnilToMap[Any, Nothing]
 
     implicit def csingleToMap[K, V](implicit
         wk: Witness.Aux[K]): Aux[FieldType[K, V] :+: CNil, K, V] =

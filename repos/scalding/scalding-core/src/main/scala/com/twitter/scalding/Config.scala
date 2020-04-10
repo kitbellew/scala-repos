@@ -587,12 +587,12 @@ object Config {
     Injection.connect[T, Externalizer[T], Array[Byte], Base64String, String]
 
   @transient
-  private[scalding] lazy val flowStepListenerSerializer = buildInj[
-    (Mode, Config) => FlowStepListener]
+  private[scalding] lazy val flowStepListenerSerializer =
+    buildInj[(Mode, Config) => FlowStepListener]
   @transient
-  private[scalding] lazy val flowListenerSerializer = buildInj[
-    (Mode, Config) => FlowListener]
+  private[scalding] lazy val flowListenerSerializer =
+    buildInj[(Mode, Config) => FlowListener]
   @transient
-  private[scalding] lazy val flowStepStrategiesSerializer = buildInj[
-    (Mode, Config) => FlowStepStrategy[JobConf]]
+  private[scalding] lazy val flowStepStrategiesSerializer =
+    buildInj[(Mode, Config) => FlowStepStrategy[JobConf]]
 }

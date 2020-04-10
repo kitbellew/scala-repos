@@ -504,11 +504,9 @@ object JsonValidSpec extends Specification {
     "manage nullable/option" in {
       case class User(name: String, email: String, phone: Option[String])
 
-      implicit val UserReads =
-        ((__ \ 'name).read[String] and
-          (__ \ 'coords \ 'email).read(Reads.email) and
-          (__ \ 'coords \ 'phone).readNullable(Reads.minLength[String](8)))(
-          User)
+      implicit val UserReads = ((__ \ 'name).read[String] and
+        (__ \ 'coords \ 'email).read(Reads.email) and
+        (__ \ 'coords \ 'phone).readNullable(Reads.minLength[String](8)))(User)
 
       Json.obj(
         "name" -> "john",

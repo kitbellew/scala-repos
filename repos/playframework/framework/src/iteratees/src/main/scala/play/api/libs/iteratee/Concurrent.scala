@@ -488,8 +488,8 @@ object Concurrent {
       import scala.concurrent.stm.Ref
 
       def apply[A](it: Iteratee[E, A]): Future[Iteratee[E, A]] = {
-        val promise: scala.concurrent.Promise[Iteratee[E, A]] = Promise[
-          Iteratee[E, A]]()
+        val promise: scala.concurrent.Promise[Iteratee[E, A]] =
+          Promise[Iteratee[E, A]]()
         val iteratee: Ref[Future[Option[Input[E] => Iteratee[E, A]]]] = Ref(
           it.pureFold {
             case Step.Cont(k) => Some(k);

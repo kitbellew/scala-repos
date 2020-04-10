@@ -84,28 +84,24 @@ class AnnotationTests {
   @Test
   def simpleAnnotations {
     {
-      val first: Some[First] :: None.type :: None.type :: HNil = Annotations[
-        First,
-        CC].apply()
+      val first: Some[First] :: None.type :: None.type :: HNil =
+        Annotations[First, CC].apply()
       assert(first == Some(First()) :: None :: None :: HNil)
 
-      val second: None.type :: None.type :: Some[Second] :: HNil = Annotations[
-        Second,
-        CC].apply()
+      val second: None.type :: None.type :: Some[Second] :: HNil =
+        Annotations[Second, CC].apply()
       assert(second == None :: None :: Some(Second(2, "b")) :: HNil)
 
-      val unused: None.type :: None.type :: None.type :: HNil = Annotations[
-        Unused,
-        CC].apply()
+      val unused: None.type :: None.type :: None.type :: HNil =
+        Annotations[Unused, CC].apply()
       assert(unused == None :: None :: None :: HNil)
 
       val firstSum: Some[First] :: None.type :: HNil = Annotations[First, Base]
         .apply()
       assert(firstSum == Some(First()) :: None :: HNil)
 
-      val secondSum
-          : None.type :: Some[Second] :: HNil = Annotations[Second, Base]
-        .apply()
+      val secondSum: None.type :: Some[Second] :: HNil =
+        Annotations[Second, Base].apply()
       assert(secondSum == None :: Some(Second(3, "e")) :: HNil)
     }
 

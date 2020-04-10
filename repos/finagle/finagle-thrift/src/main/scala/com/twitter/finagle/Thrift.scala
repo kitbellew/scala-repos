@@ -170,8 +170,8 @@ object Thrift
     protected type Out = Array[Byte]
 
     val param.Framed(framed) = params[param.Framed]
-    protected val param.ProtocolFactory(protocolFactory) = params[
-      param.ProtocolFactory]
+    protected val param.ProtocolFactory(protocolFactory) =
+      params[param.ProtocolFactory]
     override protected lazy val Stats(stats) = params[Stats]
 
     protected def newTransporter(): Transporter[In, Out] = {
@@ -322,8 +322,8 @@ object Thrift
     protected type Out = Array[Byte]
 
     val param.Framed(framed) = params[param.Framed]
-    protected val param.ProtocolFactory(protocolFactory) = params[
-      param.ProtocolFactory]
+    protected val param.ProtocolFactory(protocolFactory) =
+      params[param.ProtocolFactory]
 
     protected def newListener(): Listener[In, Out] = {
       val pipeline =

@@ -26,9 +26,10 @@ object InfixType {
       star: Boolean,
       isPattern: Boolean): Boolean = {
     var infixTypeMarker = builder.mark
-    var markerList = List[
-      PsiBuilder.Marker
-    ]() //This list consist of markers for right-associated op
+    var markerList =
+      List[
+        PsiBuilder.Marker
+      ]() //This list consist of markers for right-associated op
     var count = 0
     markerList = infixTypeMarker :: markerList
     builder.getTokenType match {

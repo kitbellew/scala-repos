@@ -66,8 +66,8 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
 
   // PRIVATE DATA
 
-  private var queues = Map[CallingThreadMailbox, Set[
-    WeakReference[MessageQueue]]]()
+  private var queues =
+    Map[CallingThreadMailbox, Set[WeakReference[MessageQueue]]]()
   private var lastGC = 0L
 
   // we have to forget about long-gone threads sometime

@@ -349,12 +349,12 @@ class FlowSpec
         .fromIterator[Fruit](apples).groupBy(2, _ ⇒ true)
       val f4: Source[(immutable.Seq[Fruit], Source[Fruit, _]), _] = Source
         .fromIterator[Fruit](apples).prefixAndTail(1)
-      val d1: SubFlow[Fruit, _, Flow[String, Fruit, NotUsed]#Repr, _] = Flow[
-        String].map(_ ⇒ new Apple).splitWhen(_ ⇒ true)
-      val d2: SubFlow[Fruit, _, Flow[String, Fruit, NotUsed]#Repr, _] = Flow[
-        String].map(_ ⇒ new Apple).groupBy(2, _ ⇒ true)
-      val d3: Flow[String, (immutable.Seq[Apple], Source[Fruit, _]), _] = Flow[
-        String].map(_ ⇒ new Apple).prefixAndTail(1)
+      val d1: SubFlow[Fruit, _, Flow[String, Fruit, NotUsed]#Repr, _] =
+        Flow[String].map(_ ⇒ new Apple).splitWhen(_ ⇒ true)
+      val d2: SubFlow[Fruit, _, Flow[String, Fruit, NotUsed]#Repr, _] =
+        Flow[String].map(_ ⇒ new Apple).groupBy(2, _ ⇒ true)
+      val d3: Flow[String, (immutable.Seq[Apple], Source[Fruit, _]), _] =
+        Flow[String].map(_ ⇒ new Apple).prefixAndTail(1)
     }
 
     "be possible to convert to a processor, and should be able to take a Processor" in {

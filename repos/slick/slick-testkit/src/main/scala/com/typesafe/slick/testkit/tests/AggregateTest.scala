@@ -85,10 +85,9 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
               (3, 2, Some(6), Some(10)))
         }
       }.flatMap { _ =>
-        val q3 =
-          (for { (x, q) <- ts.map(t => (t.a + 10, t.b)).groupBy(_._1) } yield (
-            x,
-            q.map(_._2).sum)).sortBy(_._1)
+        val q3 = (for {
+          (x, q) <- ts.map(t => (t.a + 10, t.b)).groupBy(_._1)
+        } yield (x, q.map(_._2).sum)).sortBy(_._1)
         db.run(mark("q3", q3.result)).map { r3t: Seq[(Int, Option[Int])] =>
           r3t shouldBe Vector((11, Some(6)), (12, Some(8)), (13, Some(10)))
         }

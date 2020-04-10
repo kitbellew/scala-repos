@@ -69,8 +69,8 @@ private[netty4] abstract class AbstractNetty4ClientChannelInitializer[In, Out](
     extends ChannelInitializer[SocketChannel] {
   import Netty4ClientChannelInitializer._
   private[this] val Timer(timer) = params[Timer]
-  private[this] val Transport.Liveness(readTimeout, writeTimeout, _) = params[
-    Transport.Liveness]
+  private[this] val Transport.Liveness(readTimeout, writeTimeout, _) =
+    params[Transport.Liveness]
 
   def initChannel(ch: SocketChannel): Unit = {
     val pipe = ch.pipeline

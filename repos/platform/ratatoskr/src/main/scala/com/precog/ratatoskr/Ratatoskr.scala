@@ -340,30 +340,29 @@ object KafkaTools extends Command {
          Some(ExactTime(msg.timestamp.getMillis, state.index))
        } else {
          // see if we can deduce from the data (assuming Nathan's twitter feed or SE postings)
-         val timestamps =
-           (msg.data.map(_.value \ "timeStamp") ++ msg.data
-             .map(_.value \ "timestamp")).flatMap {
-             case JString(date) =>
-               // Dirty hack for trying variations of ISO8601 in use by customers
-               List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
-                 .flatMap { date => List(date, date + ".000Z") }
-             case _ => None
-           }.flatMap { date =>
-             try {
-               val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
-               if (ts.getMillis > lastTimestamp.time) {
-                 //println("Assigning new timestamp: " + ts)
-                 Some(ts)
-               } else {
-                 //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
-                 None
-               }
-             } catch {
-               case t =>
-                 //println("Error on datetime parse: " + t)
-                 None
+         val timestamps = (msg.data.map(_.value \ "timeStamp") ++ msg.data
+           .map(_.value \ "timestamp")).flatMap {
+           case JString(date) =>
+             // Dirty hack for trying variations of ISO8601 in use by customers
+             List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
+               .flatMap { date => List(date, date + ".000Z") }
+           case _ => None
+         }.flatMap { date =>
+           try {
+             val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
+             if (ts.getMillis > lastTimestamp.time) {
+               //println("Assigning new timestamp: " + ts)
+               Some(ts)
+             } else {
+               //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
+               None
              }
+           } catch {
+             case t =>
+               //println("Error on datetime parse: " + t)
+               None
            }
+         }
 
          //println("Deducing timestamp from " + timestamps)
 

@@ -106,9 +106,8 @@ private[http] object WebSocket {
     }
 
     /* Collects user-level API messages from MessageDataParts */
-    val collectMessage
-        : Flow[MessageDataPart, Message, NotUsed] = Flow[MessageDataPart]
-      .prefixAndTail(1).mapConcat {
+    val collectMessage: Flow[MessageDataPart, Message, NotUsed] =
+      Flow[MessageDataPart].prefixAndTail(1).mapConcat {
         // happens if we get a MessageEnd first which creates a new substream but which is then
         // filtered out by collect in `prepareMessages` below
         case (Nil, _) ⇒ Nil

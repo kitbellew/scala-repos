@@ -416,8 +416,8 @@ class TupleTests {
 
     implicitly[Unifier.Aux[(Int, String, Int, Int), YYYY]]
 
-    val uapap = implicitly[
-      Unifier.Aux[(Apple, Pear, Apple, Pear), (PWS, PWS, PWS, PWS)]]
+    val uapap =
+      implicitly[Unifier.Aux[(Apple, Pear, Apple, Pear), (PWS, PWS, PWS, PWS)]]
     val unified1 = uapap(apap)
     typed[FFFF](unified1)
     val unified2 = apap.unify

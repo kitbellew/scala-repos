@@ -36,9 +36,10 @@ class ConcurrentActivationTest
         // A ConsumerBroadcast creates 'number' amount of ConsumerRegistrars, which will register 'number' amount of endpoints,
         // in total number*number endpoints, activating and deactivating every endpoint.
         // a promise to the list of registrars, which have a list of actorRefs each. A tuple of a list of activated refs and a list of deactivated refs
-        val promiseRegistrarLists = Promise[(
-            Future[List[List[ActorRef]]],
-            Future[List[List[ActorRef]]])]()
+        val promiseRegistrarLists =
+          Promise[(
+              Future[List[List[ActorRef]]],
+              Future[List[List[ActorRef]]])]()
         // future to all the futures of activation and deactivation
         val futureRegistrarLists = promiseRegistrarLists.future
 

@@ -31,8 +31,8 @@ class LatencyCompensationTest
       def make(
           prms: Stack.Params,
           next: Stack[ServiceFactory[String, String]]) = {
-        val LatencyCompensation.Compensation(compensation) = prms[
-          LatencyCompensation.Compensation]
+        val LatencyCompensation.Compensation(compensation) =
+          prms[LatencyCompensation.Compensation]
         assert(expected == compensation)
 
         Stack.Leaf(

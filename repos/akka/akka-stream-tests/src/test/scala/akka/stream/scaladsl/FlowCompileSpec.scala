@@ -92,8 +92,8 @@ class FlowCompileSpec extends AkkaSpec {
 
   "FlowOps" should {
     "be extensible" in {
-      val f: FlowOps[Int, NotUsed] { type Closed = Sink[Int, NotUsed] } = Flow[
-        Int]
+      val f: FlowOps[Int, NotUsed] { type Closed = Sink[Int, NotUsed] } =
+        Flow[Int]
       val fm = f.map(identity)
       val f2: FlowOps[Int, NotUsed] = fm
       val s: Sink[Int, NotUsed] = fm.to(Sink.ignore)

@@ -136,9 +136,8 @@ class ClosureCleanerSuite2
   private val _isClosure = PrivateMethod[Boolean]('isClosure)
   private val _getInnerClosureClasses = PrivateMethod[List[Class[_]]](
     'getInnerClosureClasses)
-  private val _getOuterClassesAndObjects = PrivateMethod[(
-      List[Class[_]],
-      List[AnyRef])]('getOuterClassesAndObjects)
+  private val _getOuterClassesAndObjects =
+    PrivateMethod[(List[Class[_]], List[AnyRef])]('getOuterClassesAndObjects)
 
   private def isClosure(obj: AnyRef): Boolean = {
     ClosureCleaner invokePrivate _isClosure(obj)

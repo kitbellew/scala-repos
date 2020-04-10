@@ -70,7 +70,7 @@ object UserQuery {
     }
 
     val schema = "query" :: "prefix" :: "sortOn" :: "sortOrder" :: HNil
-    implicit val (queryDecomposer, queryExtractor) = isoSerialization[
-      UserQuery](schema)
+    implicit val (queryDecomposer, queryExtractor) =
+      isoSerialization[UserQuery](schema)
   }
 }

@@ -307,17 +307,17 @@ class ClientSuite
 
   object Fixtures {
 
-    val knownDefYarnAppCP
-        : Seq[String] = getFieldValue[Array[String], Seq[String]](
-      classOf[YarnConfiguration],
-      "DEFAULT_YARN_APPLICATION_CLASSPATH",
-      Seq[String]())(a => a.toSeq)
+    val knownDefYarnAppCP: Seq[String] =
+      getFieldValue[Array[String], Seq[String]](
+        classOf[YarnConfiguration],
+        "DEFAULT_YARN_APPLICATION_CLASSPATH",
+        Seq[String]())(a => a.toSeq)
 
-    val knownDefMRAppCP
-        : Seq[String] = getFieldValue2[String, Array[String], Seq[String]](
-      classOf[MRJobConfig],
-      "DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH",
-      Seq[String]())(a => a.split(","))(a => a.toSeq)
+    val knownDefMRAppCP: Seq[String] =
+      getFieldValue2[String, Array[String], Seq[String]](
+        classOf[MRJobConfig],
+        "DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH",
+        Seq[String]())(a => a.split(","))(a => a.toSeq)
 
     val knownYARNAppCP = Some(Seq("/known/yarn/path"))
 

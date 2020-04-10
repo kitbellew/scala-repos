@@ -28,9 +28,9 @@ object UpgradeStrategy {
       strategy.maximumOverCapacity is between(0.0, 1.0)
   }
 
-  lazy val validForResidentTasks
-      : Validator[UpgradeStrategy] = validator[UpgradeStrategy] { strategy =>
-    strategy.minimumHealthCapacity should be <= 0.5
-    strategy.maximumOverCapacity should be == 0.0
-  }
+  lazy val validForResidentTasks: Validator[UpgradeStrategy] =
+    validator[UpgradeStrategy] { strategy =>
+      strategy.minimumHealthCapacity should be <= 0.5
+      strategy.maximumOverCapacity should be == 0.0
+    }
 }

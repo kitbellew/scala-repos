@@ -146,9 +146,8 @@ trait AbstractScreen extends Factory with Loggable {
     private val _currentValue: NonCleanAnyVar[ValueType] = vendAVar[ValueType](
       setFilter.foldLeft(default)((nv, f) => f(nv)))
 
-    private val _otherValue
-        : NonCleanAnyVar[OtherValueType] = vendAVar[OtherValueType](
-      otherValueDefault)
+    private val _otherValue: NonCleanAnyVar[OtherValueType] =
+      vendAVar[OtherValueType](otherValueDefault)
 
     /**
       * Is this field on the confirm screen

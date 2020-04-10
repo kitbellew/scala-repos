@@ -37,8 +37,8 @@ object hist extends UFunc {
   implicit def defaultHistBins[T, @expand.args(Int, Double, Float, Long) S](
       implicit iter: CanTraverseValues[T, S]): Impl2[T, Int, Histogram[S]] =
     new Impl2[T, Int, Histogram[S]] {
-      private val innerImpl = implicitly[
-        Impl3[T, Int, (Double, Double), Histogram[S]]]
+      private val innerImpl =
+        implicitly[Impl3[T, Int, (Double, Double), Histogram[S]]]
       def apply(v: T, bins: Int) = {
         val minima = min(v).toDouble
         val maxima = max(v).toDouble
@@ -103,8 +103,8 @@ object hist extends UFunc {
       iter: CanZipAndTraverseValues[T, U, S, S],
       iter2: CanTraverseValues[T, S]): Impl3[T, Int, U, Histogram[S]] =
     new Impl3[T, Int, U, Histogram[S]] {
-      private val innerImpl = implicitly[
-        Impl4[T, Int, (Double, Double), U, Histogram[S]]]
+      private val innerImpl =
+        implicitly[Impl4[T, Int, (Double, Double), U, Histogram[S]]]
       def apply(v: T, bins: Int, weights: U) = {
         val minima = min(v).toDouble
         val maxima = max(v).toDouble

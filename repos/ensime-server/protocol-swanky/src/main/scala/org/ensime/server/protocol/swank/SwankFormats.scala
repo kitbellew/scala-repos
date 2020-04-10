@@ -220,8 +220,9 @@ object SwankProtocolResponse {
     "output"))
   implicit val AnalyzerReadyHint = TypeHint[AnalyzerReadyEvent.type](SexpSymbol(
     ":compiler-ready"))
-  implicit val FullTypeCheckCompleteHint = TypeHint[
-    FullTypeCheckCompleteEvent.type](SexpSymbol(":full-typecheck-finished"))
+  implicit val FullTypeCheckCompleteHint =
+    TypeHint[FullTypeCheckCompleteEvent.type](SexpSymbol(
+      ":full-typecheck-finished"))
   implicit val IndexerReadyHint = TypeHint[IndexerReadyEvent.type](SexpSymbol(
     ":indexer-ready"))
   implicit val CompilerRestartedHint = TypeHint[CompilerRestartedEvent.type](
@@ -281,8 +282,8 @@ object SwankProtocolResponse {
   implicit val OffsetSourcePositionFormat = SexpFormat[OffsetSourcePosition]
   implicit val LineSourcePositionFormat = SexpFormat[LineSourcePosition]
   implicit val ConnectionInfoFormat = SexpFormat[ConnectionInfo]
-  implicit val SendBackgroundMessageEventFormat = SexpFormat[
-    SendBackgroundMessageEvent]
+  implicit val SendBackgroundMessageEventFormat =
+    SexpFormat[SendBackgroundMessageEvent]
   implicit val BreakpointFormat = SexpFormat[Breakpoint]
   implicit val BreakpointListFormat = SexpFormat[BreakpointList]
   implicit val FileRangeFormat = SexpFormat[FileRange]
@@ -720,8 +721,9 @@ object SwankProtocolRequest {
     "swank:doc-uri-for-symbol"))
   implicit val CompletionsReqHint = TypeHint[CompletionsReq](SexpSymbol(
     "swank:completions"))
-  implicit val PackageMemberCompletionReqHint = TypeHint[
-    PackageMemberCompletionReq](SexpSymbol("swank:package-member-completion"))
+  implicit val PackageMemberCompletionReqHint =
+    TypeHint[PackageMemberCompletionReq](SexpSymbol(
+      "swank:package-member-completion"))
   implicit val UsesOfSymbolAtPointReqHint = TypeHint[UsesOfSymbolAtPointReq](
     SexpSymbol("swank:uses-of-symbol-at-point"))
   implicit val TypeByNameReqHint = TypeHint[TypeByNameReq](SexpSymbol(
@@ -768,10 +770,12 @@ object SwankProtocolRequest {
     "swank:debug-set-break"))
   implicit val DebugClearBreakReqHint = TypeHint[DebugClearBreakReq](SexpSymbol(
     "swank:debug-clear-break"))
-  implicit val DebugClearAllBreaksReqHint = TypeHint[
-    DebugClearAllBreaksReq.type](SexpSymbol("swank:debug-clear-all-breaks"))
-  implicit val DebugListBreakpointsReqHint = TypeHint[
-    DebugListBreakpointsReq.type](SexpSymbol("swank:debug-list-breakpoints"))
+  implicit val DebugClearAllBreaksReqHint =
+    TypeHint[DebugClearAllBreaksReq.type](SexpSymbol(
+      "swank:debug-clear-all-breaks"))
+  implicit val DebugListBreakpointsReqHint =
+    TypeHint[DebugListBreakpointsReq.type](SexpSymbol(
+      "swank:debug-list-breakpoints"))
   implicit val DebugRunReqHint = TypeHint[DebugRunReq.type](SexpSymbol(
     "swank:debug-run"))
   implicit val DebugContinueReqHint = TypeHint[DebugContinueReq](SexpSymbol(

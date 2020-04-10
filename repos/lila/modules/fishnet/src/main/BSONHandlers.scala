@@ -18,8 +18,8 @@ private object BSONHandlers {
   implicit val ClientUserIdBSONHandler = stringAnyValHandler[Client.UserId](
     _.value,
     Client.UserId.apply)
-  implicit val ClientIpAddressBSONHandler = stringAnyValHandler[
-    Client.IpAddress](_.value, Client.IpAddress.apply)
+  implicit val ClientIpAddressBSONHandler =
+    stringAnyValHandler[Client.IpAddress](_.value, Client.IpAddress.apply)
 
   implicit val ClientSkillBSONHandler =
     new BSONHandler[BSONString, Client.Skill] {

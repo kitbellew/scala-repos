@@ -460,11 +460,11 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
         val currentLeaderAndIsr = currentLeaderIsrAndEpoch.leaderAndIsr
         val controllerEpoch = currentLeaderIsrAndEpoch.controllerEpoch
         if (controllerEpoch > controller.epoch) {
-          val failMsg =
-            ("aborted leader election for partition [%s,%d] since the LeaderAndIsr path was " +
+          val failMsg = (
+            "aborted leader election for partition [%s,%d] since the LeaderAndIsr path was " +
               "already written by another controller. This probably means that the current controller %d went through " +
-              "a soft failure and another controller was elected with epoch %d.")
-              .format(topic, partition, controllerId, controllerEpoch)
+              "a soft failure and another controller was elected with epoch %d."
+          ).format(topic, partition, controllerId, controllerEpoch)
           stateChangeLogger.error(
             "Controller %d epoch %d "
               .format(controllerId, controller.epoch) + failMsg)

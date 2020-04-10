@@ -306,8 +306,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Holds user functions that are executed before sending the response to client. The functions'
     * result will be ignored.
     */
-  val beforeSend = RulesSeq[
-    (BasicResponse, HTTPResponse, List[(String, String)], Box[Req]) => Any]
+  val beforeSend =
+    RulesSeq[
+      (BasicResponse, HTTPResponse, List[(String, String)], Box[Req]) => Any]
 
   private[this] lazy val defaultSecurityRules = SecurityRules()
 
@@ -505,8 +506,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Holds user functions that are executed after the response is sent to client. The functions' result
     * will be ignored.
     */
-  val afterSend = RulesSeq[
-    (BasicResponse, HTTPResponse, List[(String, String)], Box[Req]) => Any]
+  val afterSend =
+    RulesSeq[
+      (BasicResponse, HTTPResponse, List[(String, String)], Box[Req]) => Any]
 
   /**
     * Calculate the Comet Server (by default, the server that

@@ -126,132 +126,142 @@ class Zk2Resolver(
     value
   }
 
-  private[this] val serverSetOf = Memoize[(ServiceDiscoverer, String), Var[
-    Activity.State[Seq[(Entry, Double)]]]] {
-    case (discoverer, path) => discoverer(path).run
-  }
+  private[this] val serverSetOf =
+    Memoize[(ServiceDiscoverer, String), Var[Activity.State[Seq[(
+        Entry,
+        Double)]]]] { case (discoverer, path) => discoverer(path).run }
 
-  private[this] val addrOf_ = Memoize[
-    (ServiceDiscoverer, String, Option[String]),
-    Var[Addr]] {
-    case (discoverer, path, endpointOption) =>
-      val scoped = {
-        val sr = path.split("/").filter(_.nonEmpty)
-          .foldLeft(discoverer.statsReceiver) { case (sr, ns) => sr.scope(ns) }
-        sr.scope(s"endpoint=${endpointOption.getOrElse("default")}")
-      }
+  private[this] val addrOf_ =
+    Memoize[(ServiceDiscoverer, String, Option[String]), Var[Addr]] {
+      case (discoverer, path, endpointOption) =>
+        val scoped = {
+          val sr = path.split("/").filter(_.nonEmpty)
+            .foldLeft(discoverer.statsReceiver) {
+              case (sr, ns) => sr.scope(ns)
+            }
+          sr.scope(s"endpoint=${endpointOption.getOrElse("default")}")
+        }
 
-      @volatile
-      var nlimbo = 0
-      @volatile
-      var size = 0
+        @volatile
+        var nlimbo = 0
+        @volatile
+        var size = 0
 
-      // The lifetimes of these gauges need to be managed if we
-      // ever de-memoize addrOf.
-      scoped.provideGauge("limbo") { nlimbo }
-      scoped.provideGauge("size") { size }
+        // The lifetimes of these gauges need to be managed if we
+        // ever de-memoize addrOf.
+        scoped.provideGauge("limbo") { nlimbo }
+        scoped.provideGauge("size") { size }
 
-      // First, convert the Op-based serverset address to a
-      // Var[Addr], filtering out only the endpoints we are
-      // interested in.
-      val va: Var[Addr] = serverSetOf((discoverer, path)).flatMap {
-        case Activity.Pending     => Var.value(Addr.Pending)
-        case Activity.Failed(exc) => Var.value(Addr.Failed(exc))
-        case Activity.Ok(eps) =>
-          val endpoint = endpointOption.getOrElse(null)
-          val subseq = eps collect {
-            case (
-                  Endpoint(names, host, port, shard, Endpoint.Status.Alive, _),
-                  weight) if names.contains(endpoint) && host != null =>
-              val metadata = ZkMetadata.toAddrMetadata(ZkMetadata(Some(shard)))
-              (host, port, metadata + (WeightedAddress.weightKey -> weight))
-          }
-
-          if (chatty()) {
-            eprintf("Received new serverset vector: %s\n", subseq mkString ",")
-          }
-
-          if (subseq.isEmpty) Var.value(Addr.Neg)
-          else inetResolver.bindHostPortsToAddr(subseq)
-      }
-
-      // The stabilizer ensures that we qualify changes by putting
-      // removes in a limbo state for at least one removalEpoch, and emitting
-      // at most one update per batchEpoch.
-      val stabilized = Stabilizer(va, removalEpoch, batchEpoch)
-
-      // Finally we output `State`s, which are always nonpending
-      // address coupled with statistics from the stabilization
-      // process.
-      val states = stabilized.changes.joinLast(va.changes) collect {
-        case (stable, unstable) if stable != Addr.Pending =>
-          val nstable = sizeOf(stable)
-          val nunstable = sizeOf(unstable)
-          State(stable, nstable - nunstable, nstable)
-      }
-
-      val stabilizedVa = Var.async(Addr.Pending: Addr) { u =>
-        nsets.incrementAndGet()
-
-        // Previous value of `u`, used to smooth out state changes in which the
-        // stable Addr doesn't vary.
-        var lastu: Addr = Addr.Pending
-
-        val reg = (discoverer.health.changes joinLast states).register(Witness {
-          tuple =>
-            val (clientHealth, state) = tuple
+        // First, convert the Op-based serverset address to a
+        // Var[Addr], filtering out only the endpoints we are
+        // interested in.
+        val va: Var[Addr] = serverSetOf((discoverer, path)).flatMap {
+          case Activity.Pending     => Var.value(Addr.Pending)
+          case Activity.Failed(exc) => Var.value(Addr.Failed(exc))
+          case Activity.Ok(eps) =>
+            val endpoint = endpointOption.getOrElse(null)
+            val subseq = eps collect {
+              case (
+                    Endpoint(
+                      names,
+                      host,
+                      port,
+                      shard,
+                      Endpoint.Status.Alive,
+                      _),
+                    weight) if names.contains(endpoint) && host != null =>
+                val metadata = ZkMetadata
+                  .toAddrMetadata(ZkMetadata(Some(shard)))
+                (host, port, metadata + (WeightedAddress.weightKey -> weight))
+            }
 
             if (chatty()) {
               eprintf(
-                "New state for %s!%s: %s\n",
-                path,
-                endpointOption getOrElse "default",
-                state)
+                "Received new serverset vector: %s\n",
+                subseq mkString ",")
             }
 
-            synchronized {
-              val State(addr, _nlimbo, _size) = state
-              nlimbo = _nlimbo
-              size = _size
-
-              val newAddr =
-                if (clientHealth == ClientHealth.Unhealthy) {
-                  logger.info(
-                    "ZkResolver reports unhealthy. resolution moving to Addr.Pending")
-                  Addr.Pending
-                } else addr
-
-              if (lastu != newAddr) {
-                lastu = newAddr
-                u() = newAddr
-              }
-            }
-        })
-
-        Closable.make { deadline =>
-          reg.close(deadline) ensure { nsets.decrementAndGet() }
+            if (subseq.isEmpty) Var.value(Addr.Neg)
+            else inetResolver.bindHostPortsToAddr(subseq)
         }
-      }
 
-      // Kick off resolution eagerly. This isn't needed to comply to
-      // the resolver interface, but users of ServerSetv1 have come
-      // to rely on this behavior in order to ensure that their
-      // clients are ready to serve traffic.
-      //
-      // This should be removed once we have a better mechanism for
-      // dealing with client readiness.
-      //
-      // In order to prevent this from holding on to a discarded
-      // serverset resolution in perpetuity, we close the observation
-      // after 5 minutes.
-      val c = stabilizedVa.changes respond { _ =>
-        /*ignore*/
-        ()
-      }
-      Future.sleep(5.minutes) before { c.close() }
+        // The stabilizer ensures that we qualify changes by putting
+        // removes in a limbo state for at least one removalEpoch, and emitting
+        // at most one update per batchEpoch.
+        val stabilized = Stabilizer(va, removalEpoch, batchEpoch)
 
-      stabilizedVa
-  }
+        // Finally we output `State`s, which are always nonpending
+        // address coupled with statistics from the stabilization
+        // process.
+        val states = stabilized.changes.joinLast(va.changes) collect {
+          case (stable, unstable) if stable != Addr.Pending =>
+            val nstable = sizeOf(stable)
+            val nunstable = sizeOf(unstable)
+            State(stable, nstable - nunstable, nstable)
+        }
+
+        val stabilizedVa = Var.async(Addr.Pending: Addr) { u =>
+          nsets.incrementAndGet()
+
+          // Previous value of `u`, used to smooth out state changes in which the
+          // stable Addr doesn't vary.
+          var lastu: Addr = Addr.Pending
+
+          val reg = (discoverer.health.changes joinLast states)
+            .register(Witness { tuple =>
+              val (clientHealth, state) = tuple
+
+              if (chatty()) {
+                eprintf(
+                  "New state for %s!%s: %s\n",
+                  path,
+                  endpointOption getOrElse "default",
+                  state)
+              }
+
+              synchronized {
+                val State(addr, _nlimbo, _size) = state
+                nlimbo = _nlimbo
+                size = _size
+
+                val newAddr =
+                  if (clientHealth == ClientHealth.Unhealthy) {
+                    logger.info(
+                      "ZkResolver reports unhealthy. resolution moving to Addr.Pending")
+                    Addr.Pending
+                  } else addr
+
+                if (lastu != newAddr) {
+                  lastu = newAddr
+                  u() = newAddr
+                }
+              }
+            })
+
+          Closable.make { deadline =>
+            reg.close(deadline) ensure { nsets.decrementAndGet() }
+          }
+        }
+
+        // Kick off resolution eagerly. This isn't needed to comply to
+        // the resolver interface, but users of ServerSetv1 have come
+        // to rely on this behavior in order to ensure that their
+        // clients are ready to serve traffic.
+        //
+        // This should be removed once we have a better mechanism for
+        // dealing with client readiness.
+        //
+        // In order to prevent this from holding on to a discarded
+        // serverset resolution in perpetuity, we close the observation
+        // after 5 minutes.
+        val c = stabilizedVa.changes respond { _ =>
+          /*ignore*/
+          ()
+        }
+        Future.sleep(5.minutes) before { c.close() }
+
+        stabilizedVa
+    }
 
   /**
     * Construct a Var[Addr] from the components of a ServerSet path.

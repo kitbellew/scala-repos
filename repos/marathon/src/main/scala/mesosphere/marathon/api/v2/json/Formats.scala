@@ -71,24 +71,24 @@ trait Formats
     )
   }
 
-  implicit lazy val networkInfoProtocolWrites = Writes[
-    mesos.NetworkInfo.Protocol] { protocol => JsString(protocol.name) }
+  implicit lazy val networkInfoProtocolWrites =
+    Writes[mesos.NetworkInfo.Protocol] { protocol => JsString(protocol.name) }
 
   private[this] val allowedProtocolString = mesos.NetworkInfo.Protocol.values()
     .toSeq.map(_.getDescriptorForType.getName).mkString(", ")
 
-  implicit lazy val networkInfoProtocolReads = Reads[
-    mesos.NetworkInfo.Protocol] { json =>
-    json.validate[String].flatMap { protocolString: String =>
-      Option(mesos.NetworkInfo.Protocol.valueOf(protocolString)) match {
-        case Some(protocol) => JsSuccess(protocol)
-        case None =>
-          JsError(
-            s"'$protocolString' is not a valid protocol. Allowed values: $allowedProtocolString")
-      }
+  implicit lazy val networkInfoProtocolReads =
+    Reads[mesos.NetworkInfo.Protocol] { json =>
+      json.validate[String].flatMap { protocolString: String =>
+        Option(mesos.NetworkInfo.Protocol.valueOf(protocolString)) match {
+          case Some(protocol) => JsSuccess(protocol)
+          case None =>
+            JsError(
+              s"'$protocolString' is not a valid protocol. Allowed values: $allowedProtocolString")
+        }
 
+      }
     }
-  }
 
   implicit lazy val ipAddressFormat: Format[mesos.NetworkInfo.IPAddress] = {
     def toIpAddress(
