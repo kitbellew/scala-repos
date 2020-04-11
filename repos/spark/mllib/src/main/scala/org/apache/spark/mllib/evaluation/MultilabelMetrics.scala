@@ -101,8 +101,8 @@ class MultilabelMetrics @Since("1.2.0") (
   @Since("1.2.0")
   lazy val f1Measure: Double = predictionAndLabels.map {
     case (predictions, labels) =>
-      2.0 * predictions.intersect(labels).length / (predictions.length + labels
-        .length)
+      2.0 * predictions.intersect(labels).length /
+        (predictions.length + labels.length)
   }.sum / numDocs
 
   private lazy val tpPerClass = predictionAndLabels.flatMap {
@@ -185,8 +185,8 @@ class MultilabelMetrics @Since("1.2.0") (
     * (equals to micro-averaged document-based f1-measure)
     */
   @Since("1.2.0")
-  lazy val microF1Measure: Double =
-    2.0 * sumTp / (2 * sumTp + sumFnClass + sumFpClass)
+  lazy val microF1Measure: Double = 2.0 * sumTp /
+    (2 * sumTp + sumFnClass + sumFpClass)
 
   /**
     * Returns the sequence of labels in ascending order

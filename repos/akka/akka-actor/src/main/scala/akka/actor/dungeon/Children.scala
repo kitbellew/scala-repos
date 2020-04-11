@@ -213,9 +213,8 @@ private[akka] trait Children {
       reason: ChildrenContainer.SuspendReason): Boolean = {
     childrenRefs match {
       case c: ChildrenContainer.TerminatingChildrenContainer ⇒
-        swapChildrenRefs(
-          c,
-          c.copy(reason = reason)) || setChildrenTerminationReason(reason)
+        swapChildrenRefs(c, c.copy(reason = reason)) ||
+          setChildrenTerminationReason(reason)
       case _ ⇒ false
     }
   }
@@ -325,23 +324,24 @@ private[akka] trait Children {
       name: String,
       async: Boolean,
       systemService: Boolean): ActorRef = {
-    if (cell.system.settings.SerializeAllCreators && !systemService && props
-          .deploy.scope != LocalScope) try {
+    if (cell.system.settings.SerializeAllCreators && !systemService &&
+        props.deploy.scope != LocalScope) try {
       val ser = SerializationExtension(cell.system)
-      props.args forall (arg ⇒
-        arg == null ||
-          arg.isInstanceOf[NoSerializationVerificationNeeded] || {
-          val o = arg.asInstanceOf[AnyRef]
-          val serializer = ser.findSerializerFor(o)
-          val bytes = serializer.toBinary(o)
-          serializer match {
-            case ser2: SerializerWithStringManifest ⇒
-              val manifest = ser2.manifest(o)
-              ser.deserialize(bytes, serializer.identifier, manifest)
-                .get != null
-            case _ ⇒ ser.deserialize(bytes, arg.getClass).get != null
-          }
-        })
+      props.args forall
+        (arg ⇒
+          arg == null ||
+            arg.isInstanceOf[NoSerializationVerificationNeeded] || {
+              val o = arg.asInstanceOf[AnyRef]
+              val serializer = ser.findSerializerFor(o)
+              val bytes = serializer.toBinary(o)
+              serializer match {
+                case ser2: SerializerWithStringManifest ⇒
+                  val manifest = ser2.manifest(o)
+                  ser.deserialize(bytes, serializer.identifier, manifest).get !=
+                    null
+                case _ ⇒ ser.deserialize(bytes, arg.getClass).get != null
+              }
+            })
     } catch {
       case NonFatal(e) ⇒
         throw new IllegalArgumentException(

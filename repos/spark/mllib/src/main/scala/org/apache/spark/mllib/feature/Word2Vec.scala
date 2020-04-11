@@ -322,7 +322,8 @@ class Word2Vec extends Serializable with Logging {
       throw new RuntimeException(
         "Please increase minCount or decrease vectorSize in Word2Vec" +
           " to avoid an OOM. You are highly recommended to make your vocabSize*vectorSize, " +
-          "which is " + vocabSize + "*" + vectorSize + " for now, less than `Int.MaxValue`.")
+          "which is " + vocabSize + "*" + vectorSize +
+          " for now, less than `Int.MaxValue`.")
     }
 
     val syn0Global = Array.fill[Float](vocabSize * vectorSize)(
@@ -348,9 +349,10 @@ class Word2Vec extends Serializable with Logging {
                   lwc = wordCount
                   // TODO: discount by iteration?
                   alpha =
-                    learningRate * (1 - numPartitions * wordCount.toDouble / (
-                      trainWordsCount + 1
-                    ))
+                    learningRate *
+                      (1 -
+                        numPartitions * wordCount.toDouble /
+                        (trainWordsCount + 1))
                   if (alpha < learningRate * 0.0001)
                     alpha = learningRate * 0.0001
                   logInfo("wordCount = " + wordCount + ", alpha = " + alpha)

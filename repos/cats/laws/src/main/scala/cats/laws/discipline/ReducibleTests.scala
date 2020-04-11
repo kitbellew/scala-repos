@@ -15,10 +15,10 @@ trait ReducibleTests[F[_]] extends FoldableTests[F] {
     new DefaultRuleSet(
       name = "reducible",
       parent = Some(foldable[A, B]),
-      "reduceLeftTo consistent with reduceMap" -> forAll(
-        laws.reduceLeftToConsistentWithReduceMap[A, B] _),
-      "reduceRightTo consistent with reduceMap" -> forAll(
-        laws.reduceRightToConsistentWithReduceMap[A, B] _))
+      "reduceLeftTo consistent with reduceMap" ->
+        forAll(laws.reduceLeftToConsistentWithReduceMap[A, B] _),
+      "reduceRightTo consistent with reduceMap" ->
+        forAll(laws.reduceRightToConsistentWithReduceMap[A, B] _))
 }
 
 object ReducibleTests {

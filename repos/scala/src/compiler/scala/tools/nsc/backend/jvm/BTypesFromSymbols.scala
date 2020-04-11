@@ -163,8 +163,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       case _ =>
         reporter.error(
           pos,
-          "Unable to convert static argument of ApplyDynamic into a classfile constant: " + t);
-        null
+          "Unable to convert static argument of ApplyDynamic into a classfile constant: " +
+            t); null
     }
 
   def staticHandleFromSymbol(sym: Symbol): asm.Handle = {
@@ -292,13 +292,13 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       // parents of a java annotations. undo this for the backend (where we need classfile-level information).
       if (classSym.hasJavaAnnotationFlag)
         parents.filterNot(c =>
-          c.typeSymbol == ClassfileAnnotationClass || c
-            .typeSymbol == AnnotationClass)
+          c.typeSymbol == ClassfileAnnotationClass ||
+            c.typeSymbol == AnnotationClass)
       else parents
     }
 
-    val allParents = classParents ++ classSym.annotations
-      .flatMap(newParentForAnnotation)
+    val allParents = classParents ++
+      classSym.annotations.flatMap(newParentForAnnotation)
 
     // We keep the superClass when computing minimizeParents to eliminate more interfaces.
     // Example: T can be eliminated from D
@@ -331,9 +331,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           if sym.isClass && !considerAsTopLevelImplementationArtifact(sym) =>
         sym
       case sym
-          if sym.isModule && !considerAsTopLevelImplementationArtifact(
-            sym
-          ) => // impl classes get the lateMODULE flag in mixin
+          if sym.isModule &&
+            !considerAsTopLevelImplementationArtifact(
+              sym
+            ) => // impl classes get the lateMODULE flag in mixin
         val r = exitingPickler(sym.moduleClass)
         assert(r != NoSymbol, sym.fullLocationString)
         r
@@ -409,9 +410,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       else if (classSym.isInterface) superClassSym == ObjectClass
       else
         // A ClassBType for a primitive class (scala.Boolean et al) is only created when compiling these classes.
-        (
-          (superClassSym != NoSymbol) && !superClassSym.isInterface
-        ) || (isCompilingPrimitive && primitiveTypeToBType.contains(classSym)),
+        ((superClassSym != NoSymbol) && !superClassSym.isInterface) ||
+        (isCompilingPrimitive && primitiveTypeToBType.contains(classSym)),
       s"Bad superClass for $classSym: $superClassSym"
     )
     val superClass =
@@ -492,8 +492,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           // in the companion that were originally nested in the value class, and we add them as nested
           // in the value class.
           val valueClassCompanionMembers = {
-            if (linkedClass != NoSymbol && exitingPickler(
-                  classSym.isDerivedValueClass)) {
+            if (linkedClass != NoSymbol &&
+                exitingPickler(classSym.isDerivedValueClass)) {
               val moduleMemberClasses = exitingPhase(
                 currentRun.lambdaliftPhase)(memberClassesForInnerClassTable(
                 linkedClass))
@@ -579,10 +579,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         // in the source code.
 
         // (2) Java compatibility. See the big comment in BTypes that summarizes the InnerClass spec.
-        if ((innerClassSym.isJavaDefined && innerClassSym.rawowner
-              .isModuleClass) || // (1)
-            (!isAnonymousOrLocalClass(innerClassSym) && isTopLevelModuleClass(
-              innerClassSym.rawowner))) { // (2)
+        if ((innerClassSym.isJavaDefined &&
+            innerClassSym.rawowner.isModuleClass) || // (1)
+            (!isAnonymousOrLocalClass(innerClassSym) &&
+            isTopLevelModuleClass(innerClassSym.rawowner))) { // (2)
           // phase travel for linkedCoC - does not always work in late phases
           exitingPickler(innerClassSym.rawowner.linkedClassOfClass) match {
             case NoSymbol =>
@@ -603,8 +603,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         // phase travel necessary: after flatten, the name includes the name of outer classes.
         // if some outer name contains $anon, a non-anon class is considered anon.
         if (exitingPickler(
-              innerClassSym.isAnonymousClass || innerClassSym
-                .isAnonymousFunction)) None
+              innerClassSym.isAnonymousClass ||
+                innerClassSym.isAnonymousFunction)) None
         else
           Some(
             innerClassSym.rawname + innerClassSym.moduleSuffix
@@ -673,13 +673,14 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       internalName, {
         val c = ClassBType(internalName)
         // class info consistent with BCodeHelpers.genMirrorClass
-        val nested = exitingPickler(memberClassesForInnerClassTable(
-          moduleClassSym)) map classBTypeFromSymbol
+        val nested =
+          exitingPickler(memberClassesForInnerClassTable(moduleClassSym)) map
+            classBTypeFromSymbol
         c.info = Right(ClassInfo(
           superClass = Some(ObjectRef),
           interfaces = Nil,
-          flags = asm.Opcodes.ACC_SUPER | asm.Opcodes.ACC_PUBLIC | asm.Opcodes
-            .ACC_FINAL,
+          flags = asm.Opcodes.ACC_SUPER | asm.Opcodes.ACC_PUBLIC |
+            asm.Opcodes.ACC_FINAL,
           nestedClasses = nested,
           nestedInfo = None,
           inlineInfo = EmptyInlineInfo.copy(isEffectivelyFinal = true)
@@ -726,8 +727,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
      * (2) isStaticModuleClass is a source-level property. See comment on isOriginallyStaticOwner.
      */
     exitingPickler { // (1)
-      sym.isModuleClass &&
-      isOriginallyStaticOwner(sym.originalOwner) // (2)
+      sym.isModuleClass && isOriginallyStaticOwner(sym.originalOwner) // (2)
     }
   }
 
@@ -760,8 +760,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     // new instances via outerClassInstance.new InnerModuleClass$().
     // TODO: do this early, mark the symbol private.
     val privateFlag =
-      sym.isPrivate || (sym.isPrimaryConstructor && isTopLevelModuleClass(
-        sym.owner))
+      sym.isPrivate ||
+        (sym.isPrimaryConstructor && isTopLevelModuleClass(sym.owner))
 
     // Symbols marked in source as `final` have the FINAL flag. (In the past, the flag was also
     // added to modules and module classes, not anymore since 296b706).
@@ -789,12 +789,11 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     // avoid breaking proxy software which depends on subclassing, we do not
     // emit ACC_FINAL.
 
-    val finalFlag = ((((sym.rawflags & symtab.Flags
-      .FINAL) != 0) || isTopLevelModuleClass(sym))
-      && !sym.enclClass.isTrait
-      && !sym.isClassConstructor
-      && !sym.isMutable // lazy vals and vars both
-    )
+    val finalFlag =
+      ((((sym.rawflags & symtab.Flags.FINAL) != 0) ||
+        isTopLevelModuleClass(sym)) && !sym.enclClass.isTrait &&
+        !sym.isClassConstructor && !sym.isMutable // lazy vals and vars both
+      )
 
     // Primitives are "abstract final" to prohibit instantiation
     // without having to provide any implementations, but that is an
@@ -803,9 +802,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     import asm.Opcodes._
     GenBCode.mkFlags(
       if (privateFlag) ACC_PRIVATE else ACC_PUBLIC,
-      if ((sym.isDeferred && !sym
-            .hasFlag(symtab.Flags.JAVA_DEFAULTMETHOD)) || sym.hasAbstractFlag)
-        ACC_ABSTRACT
+      if ((sym.isDeferred && !sym.hasFlag(symtab.Flags.JAVA_DEFAULTMETHOD)) ||
+          sym.hasAbstractFlag) ACC_ABSTRACT
       else 0,
       if (sym.isTraitOrInterface) ACC_INTERFACE else 0,
       if (finalFlag && !sym.hasAbstractFlag) ACC_FINAL else 0,

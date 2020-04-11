@@ -38,8 +38,8 @@ class DistributedData(system: ExtendedActorSystem) extends Extension {
     * replicas.
     */
   def isTerminated: Boolean =
-    Cluster(system).isTerminated || !settings.role
-      .forall(Cluster(system).selfRoles.contains)
+    Cluster(system).isTerminated ||
+      !settings.role.forall(Cluster(system).selfRoles.contains)
 
   /**
     * `ActorRef` of the [[Replicator]] .

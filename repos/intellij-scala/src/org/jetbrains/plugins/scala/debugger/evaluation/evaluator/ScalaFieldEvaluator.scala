@@ -101,8 +101,8 @@ case class ScalaFieldEvaluator(
         refType.getValue(field)
       case objRef: ObjectReference =>
         val refType: ReferenceType = objRef.referenceType
-        if (!(refType.isInstanceOf[ClassType] || refType
-              .isInstanceOf[ArrayType])) {
+        if (!(refType.isInstanceOf[ClassType] ||
+              refType.isInstanceOf[ArrayType])) {
           throw EvaluationException(DebuggerBundle.message(
             "evaluation.error.class.or.array.expected",
             fieldName))

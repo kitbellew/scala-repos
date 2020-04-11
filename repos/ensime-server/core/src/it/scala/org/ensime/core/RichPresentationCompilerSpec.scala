@@ -24,27 +24,28 @@ class RichPresentationCompilerThatNeedsJavaLibsSpec
 
   val original = EnsimeConfigFixture.SimpleTestProject
 
-  "RichPresentationCompiler" should "locate source position of Java classes in import statements" in {
-    withPresCompiler { (config, cc) =>
-      import ReallyRichPresentationCompilerFixture._
+  "RichPresentationCompiler" should
+    "locate source position of Java classes in import statements" in {
+      withPresCompiler { (config, cc) =>
+        import ReallyRichPresentationCompilerFixture._
 
-      cc.search.refreshResolver()
-      Await.result(cc.search.refresh(), Duration.Inf)
+        cc.search.refreshResolver()
+        Await.result(cc.search.refresh(), Duration.Inf)
 
-      runForPositionInCompiledSource(
-        config,
-        cc,
-        "package com.example",
-        "import java.io.File@0@") { (p, label, cc) =>
-        val sym = cc.askSymbolInfoAt(p).get
-        inside(sym.declPos) {
-          case Some(LineSourcePosition(f, i)) =>
-            f.parts should contain("File.java")
-            i should be > 0
+        runForPositionInCompiledSource(
+          config,
+          cc,
+          "package com.example",
+          "import java.io.File@0@") { (p, label, cc) =>
+          val sym = cc.askSymbolInfoAt(p).get
+          inside(sym.declPos) {
+            case Some(LineSourcePosition(f, i)) =>
+              f.parts should contain("File.java")
+              i should be > 0
+          }
         }
       }
     }
-  }
 }
 
 class RichPresentationCompilerSpec
@@ -55,65 +56,67 @@ class RichPresentationCompilerSpec
 
   val original = EnsimeConfigFixture.EmptyTestProject
 
-  "RichPresentationCompiler" should "round-trip between typeFullName and askTypeInfoByName" in {
-    withPresCompiler { (config, cc) =>
-      val file = srcFile(
-        config,
-        "abc.scala",
-        contents(
-          "package com.example",
-          "object /*1*/A { ",
-          "   val /*1.1*/x: Int = 1",
-          "   class  /*1.2*/X {} ",
-          "   object /*1.3*/X {} ",
-          "}",
-          "class  /*2*/A { ",
-          "   class  /*2.1*/X {} ",
-          "   object /*2.2*/X {} ",
-          "}"
+  "RichPresentationCompiler" should
+    "round-trip between typeFullName and askTypeInfoByName" in {
+      withPresCompiler { (config, cc) =>
+        val file = srcFile(
+          config,
+          "abc.scala",
+          contents(
+            "package com.example",
+            "object /*1*/A { ",
+            "   val /*1.1*/x: Int = 1",
+            "   class  /*1.2*/X {} ",
+            "   object /*1.3*/X {} ",
+            "}",
+            "class  /*2*/A { ",
+            "   class  /*2.1*/X {} ",
+            "   object /*2.2*/X {} ",
+            "}"
+          )
         )
-      )
-      cc.askReloadFile(file)
-      cc.askLoadedTyped(file)
+        cc.askReloadFile(file)
+        cc.askLoadedTyped(file)
 
-      def roundtrip(label: String, expectedFullName: String) = {
-        val comment = "/*" + label + "*/"
-        val index = file.content.mkString.indexOf(comment)
-        val tpe = cc
-          .askTypeInfoAt(new OffsetPosition(file, index + comment.length)).get
-        val fullName = tpe.fullName
-        fullName should ===(expectedFullName)
+        def roundtrip(label: String, expectedFullName: String) = {
+          val comment = "/*" + label + "*/"
+          val index = file.content.mkString.indexOf(comment)
+          val tpe = cc
+            .askTypeInfoAt(new OffsetPosition(file, index + comment.length)).get
+          val fullName = tpe.fullName
+          fullName should ===(expectedFullName)
 
-        val tpe2 = cc.askTypeInfoByName(fullName).get
-        tpe2.fullName should ===(expectedFullName)
+          val tpe2 = cc.askTypeInfoByName(fullName).get
+          tpe2.fullName should ===(expectedFullName)
+        }
+
+        roundtrip("1", "com.example.A$")
+        roundtrip("1.1", "scala.Int")
+        roundtrip("1.2", "com.example.A$$X")
+        roundtrip("1.3", "com.example.A$$X$")
+        roundtrip("2", "com.example.A")
+        roundtrip("2.1", "com.example.A$X")
+        roundtrip("2.2", "com.example.A$X$")
       }
-
-      roundtrip("1", "com.example.A$")
-      roundtrip("1.1", "scala.Int")
-      roundtrip("1.2", "com.example.A$$X")
-      roundtrip("1.3", "com.example.A$$X$")
-      roundtrip("2", "com.example.A")
-      roundtrip("2.1", "com.example.A$X")
-      roundtrip("2.2", "com.example.A$X$")
     }
-  }
 
-  it should "get symbol info with cursor immediately after and before symbol" in {
-    withPresCompiler { (config, cc) =>
-      import ReallyRichPresentationCompilerFixture._
-      runForPositionInCompiledSource(
-        config,
-        cc,
-        "package com.example",
-        "object @0@Bla@1@ { def !(x:Int) = x }",
-        "object Abc { def main { Bla @2@!@3@ 0 } }") { (p, label, cc) =>
-        val sym = cc.askSymbolInfoAt(p).get
-        inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) => i should be > 0
+  it should
+    "get symbol info with cursor immediately after and before symbol" in {
+      withPresCompiler { (config, cc) =>
+        import ReallyRichPresentationCompilerFixture._
+        runForPositionInCompiledSource(
+          config,
+          cc,
+          "package com.example",
+          "object @0@Bla@1@ { def !(x:Int) = x }",
+          "object Abc { def main { Bla @2@!@3@ 0 } }") { (p, label, cc) =>
+          val sym = cc.askSymbolInfoAt(p).get
+          inside(sym.declPos) {
+            case Some(OffsetSourcePosition(f, i)) => i should be > 0
+          }
         }
       }
     }
-  }
 
   it should "find source declaration of standard operator" in {
     withPresCompiler { (config, cc) =>
@@ -156,56 +159,58 @@ class RichPresentationCompilerSpec
     }
   }
 
-  it should "jump to case class definition when symbol under cursor is name of case class field" in {
-    withPresCompiler { (config, cc) =>
-      import ReallyRichPresentationCompilerFixture._
-      runForPositionInCompiledSource(
-        config,
-        cc,
-        "package com.example",
-        "case class Foo(bar: String, baz: Int)",
-        "object Bla {",
-        "  val foo = Foo(",
-        "    b@@ar = \"Bar\",",
-        "    baz = 123",
-        "  )",
-        "}"
-      ) { (p, label, cc) =>
-        val sym = cc.askSymbolInfoAt(p).get
-        sym.name shouldBe "apply"
-        sym.localName shouldBe "apply"
-        inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) => i should be > 0
+  it should
+    "jump to case class definition when symbol under cursor is name of case class field" in {
+      withPresCompiler { (config, cc) =>
+        import ReallyRichPresentationCompilerFixture._
+        runForPositionInCompiledSource(
+          config,
+          cc,
+          "package com.example",
+          "case class Foo(bar: String, baz: Int)",
+          "object Bla {",
+          "  val foo = Foo(",
+          "    b@@ar = \"Bar\",",
+          "    baz = 123",
+          "  )",
+          "}"
+        ) { (p, label, cc) =>
+          val sym = cc.askSymbolInfoAt(p).get
+          sym.name shouldBe "apply"
+          sym.localName shouldBe "apply"
+          inside(sym.declPos) {
+            case Some(OffsetSourcePosition(f, i)) => i should be > 0
+          }
         }
       }
     }
-  }
 
-  it should "jump to case class definition when symbol under cursor is name of case class field in copy method" in {
-    withPresCompiler { (config, cc) =>
-      import ReallyRichPresentationCompilerFixture._
-      runForPositionInCompiledSource(
-        config,
-        cc,
-        "package com.example",
-        "case class Foo(bar: String, baz: Int)",
-        "object Bla {",
-        "  val foo = Foo(",
-        "    bar = \"Bar\",",
-        "    baz = 123",
-        "  )",
-        " val fooUpd = foo.copy(b@@ar = foo.bar.reverse)",
-        "}"
-      ) { (p, label, cc) =>
-        val sym = cc.askSymbolInfoAt(p).get
-        sym.name shouldBe "copy"
-        sym.localName shouldBe "copy"
-        inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) => i should be > 0
+  it should
+    "jump to case class definition when symbol under cursor is name of case class field in copy method" in {
+      withPresCompiler { (config, cc) =>
+        import ReallyRichPresentationCompilerFixture._
+        runForPositionInCompiledSource(
+          config,
+          cc,
+          "package com.example",
+          "case class Foo(bar: String, baz: Int)",
+          "object Bla {",
+          "  val foo = Foo(",
+          "    bar = \"Bar\",",
+          "    baz = 123",
+          "  )",
+          " val fooUpd = foo.copy(b@@ar = foo.bar.reverse)",
+          "}"
+        ) { (p, label, cc) =>
+          val sym = cc.askSymbolInfoAt(p).get
+          sym.name shouldBe "copy"
+          sym.localName shouldBe "copy"
+          inside(sym.declPos) {
+            case Some(OffsetSourcePosition(f, i)) => i should be > 0
+          }
         }
       }
     }
-  }
 
   it should "not fail when completion is requested outside document" in {
     withPresCompiler { (config, cc) =>
@@ -423,28 +428,30 @@ class RichPresentationCompilerSpec
       DeclaredAs.Class)
   }
 
-  it should "get completions on member with no prefix" in withPosInCompiledSource(
-    "package com.example",
-    "object A { def aMethod(a: Int) = a }",
-    "object B { val x = A.@@ ") { (p, cc) =>
-    val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
-  }
+  it should "get completions on member with no prefix" in
+    withPosInCompiledSource(
+      "package com.example",
+      "object A { def aMethod(a: Int) = a }",
+      "object B { val x = A.@@ ") { (p, cc) =>
+      val result = cc.completionsAt(p, 10, caseSens = false)
+      forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
+    }
 
-  it should "not try to complete the declaration containing point" in withPosInCompiledSource(
-    "package com.example",
-    "object Ab@@c {}") { (p, cc) =>
-    val result = cc.completionsAt(p, 10, caseSens = false)
-    forAll(result.completions) { _.name should not be "Abc" }
-  }
+  it should "not try to complete the declaration containing point" in
+    withPosInCompiledSource("package com.example", "object Ab@@c {}") {
+      (p, cc) =>
+        val result = cc.completionsAt(p, 10, caseSens = false)
+        forAll(result.completions) { _.name should not be "Abc" }
+    }
 
-  it should "get completions on a member with a prefix" in withPosInCompiledSource(
-    "package com.example",
-    "object A { def aMethod(a: Int) = a }",
-    "object B { val x = A.aMeth@@ }") { (p, cc) =>
-    val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
-  }
+  it should "get completions on a member with a prefix" in
+    withPosInCompiledSource(
+      "package com.example",
+      "object A { def aMethod(a: Int) = a }",
+      "object B { val x = A.aMeth@@ }") { (p, cc) =>
+      val result = cc.completionsAt(p, 10, caseSens = false)
+      forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
+    }
 
   it should "get completions on an object name" in withPosInCompiledSource(
     "package com.example",
@@ -462,41 +469,42 @@ class RichPresentationCompilerSpec
     forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
   }
 
-  it should "get members for infix method call without prefix" in withPosInCompiledSource(
-    "package com.example",
-    "object Abc { def aMethod(a: Int) = a }",
-    "object B { val x = Abc @@ }") { (p, cc) =>
-    val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
-  }
+  it should "get members for infix method call without prefix" in
+    withPosInCompiledSource(
+      "package com.example",
+      "object Abc { def aMethod(a: Int) = a }",
+      "object B { val x = Abc @@ }") { (p, cc) =>
+      val result = cc.completionsAt(p, 10, caseSens = false)
+      forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
+    }
 
-  it should "complete multi-character infix operator" in withPosInCompiledSource(
-    "package com.example",
-    "object B { val l = Nil; val ll = l +@@ }") { (p, cc) =>
-    val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "++" }
-  }
+  it should "complete multi-character infix operator" in
+    withPosInCompiledSource(
+      "package com.example",
+      "object B { val l = Nil; val ll = l +@@ }") { (p, cc) =>
+      val result = cc.completionsAt(p, 10, caseSens = false)
+      forAtLeast(1, result.completions) { _.name shouldBe "++" }
+    }
 
-  it should "complete top level import" in withPosInCompiledSource(
-    "package com.example",
-    "import ja@@") { (p, cc) =>
-    val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "java" }
-  }
+  it should "complete top level import" in
+    withPosInCompiledSource("package com.example", "import ja@@") { (p, cc) =>
+      val result = cc.completionsAt(p, 10, caseSens = false)
+      forAtLeast(1, result.completions) { _.name shouldBe "java" }
+    }
 
-  it should "complete sub-import" in withPosInCompiledSource(
-    "package com.example",
-    "import java.ut@@") { (p, cc) =>
-    val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "util" }
-  }
+  it should "complete sub-import" in
+    withPosInCompiledSource("package com.example", "import java.ut@@") {
+      (p, cc) =>
+        val result = cc.completionsAt(p, 10, caseSens = false)
+        forAtLeast(1, result.completions) { _.name shouldBe "util" }
+    }
 
-  it should "complete multi-import" in withPosInCompiledSource(
-    "package com.example",
-    "import java.util.{ V@@ }") { (p, cc) =>
-    val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "Vector" }
-  }
+  it should "complete multi-import" in
+    withPosInCompiledSource("package com.example", "import java.util.{ V@@ }") {
+      (p, cc) =>
+        val result = cc.completionsAt(p, 10, caseSens = false)
+        forAtLeast(1, result.completions) { _.name shouldBe "Vector" }
+    }
 
   it should "complete new construction" in withPosInCompiledSource(
     "package com.example",
@@ -525,63 +533,67 @@ class RichPresentationCompilerSpec
     forAtLeast(1, result.completions) { _.name shouldBe "&" }
   }
 
-  it should "complete interpolated variables in strings" in withPosInCompiledSource(
-    "package com.example",
-    "object Abc { def aMethod(a: Int) = a }",
-    s"""object B { val x = s"hello there, $${Abc.aMe@@}"}""") { (p, cc) =>
-    val result = cc.completionsAt(p, 10, caseSens = false)
-    forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
-  }
-
-  it should "not attempt to complete symbols in strings" in withPosInCompiledSource(
-    "package com.example",
-    "object Abc { def aMethod(a: Int) = a }",
-    "object B { val x = \"hello there Ab@@\"}") { (p, cc) =>
-    val result = cc.completionsAt(p, 10, caseSens = false)
-    result.completions shouldBe empty
-  }
-
-  it should "show all type arguments in the inspector" in withPosInCompiledSource(
-    "package com.example",
-    "class A { ",
-    "def banana(p: List[String]): List[String] = p",
-    "def pineapple: List[String] = List(\"spiky\")",
-    "}",
-    "object Main { def main { val my@@A = new A() }}"
-  ) { (p, cc) =>
-    val info = cc.askInspectTypeAt(p).get
-    val sup = info.supers.find(sup => sup.tpe.name == "A").get;
-    {
-      val mem = sup.tpe.members.find(_.name == "banana").get
-        .asInstanceOf[NamedTypeMemberInfo]
-      val tpe = mem.tpe.asInstanceOf[ArrowTypeInfo]
-
-      tpe.resultType.name shouldBe "List"
-      tpe.resultType.args.head.name shouldBe "String"
-      val (paramName, paramTpe) = tpe.paramSections.head.params.head
-      paramName shouldBe "p"
-      paramTpe.name shouldBe "List"
-      paramTpe.args.head.name shouldBe "String"
+  it should "complete interpolated variables in strings" in
+    withPosInCompiledSource(
+      "package com.example",
+      "object Abc { def aMethod(a: Int) = a }",
+      s"""object B { val x = s"hello there, $${Abc.aMe@@}"}""") { (p, cc) =>
+      val result = cc.completionsAt(p, 10, caseSens = false)
+      forAtLeast(1, result.completions) { _.name shouldBe "aMethod" }
     }
-    {
-      val mem = sup.tpe.members.find(_.name == "pineapple").get
-        .asInstanceOf[NamedTypeMemberInfo]
-      val tpe = mem.tpe.asInstanceOf[BasicTypeInfo]
-      tpe.name shouldBe "List"
-      tpe.args.head.name shouldBe "String"
-    }
-  }
 
-  it should "show classes without visible members in the inspector" in withPosInCompiledSource(
-    "package com.example",
-    "trait bidon { }",
-    "case class pi@@po extends bidon { }") { (p, cc) =>
-    val info = cc.askInspectTypeAt(p)
-    val supers = info.map(_.supers).getOrElse(List())
-    val supersNames = supers.map(_.tpe.name).toList
-    supersNames.toSet should ===(
-      Set("pipo", "bidon", "Object", "Product", "Serializable", "Any"))
-  }
+  it should "not attempt to complete symbols in strings" in
+    withPosInCompiledSource(
+      "package com.example",
+      "object Abc { def aMethod(a: Int) = a }",
+      "object B { val x = \"hello there Ab@@\"}") { (p, cc) =>
+      val result = cc.completionsAt(p, 10, caseSens = false)
+      result.completions shouldBe empty
+    }
+
+  it should "show all type arguments in the inspector" in
+    withPosInCompiledSource(
+      "package com.example",
+      "class A { ",
+      "def banana(p: List[String]): List[String] = p",
+      "def pineapple: List[String] = List(\"spiky\")",
+      "}",
+      "object Main { def main { val my@@A = new A() }}"
+    ) { (p, cc) =>
+      val info = cc.askInspectTypeAt(p).get
+      val sup = info.supers.find(sup => sup.tpe.name == "A").get;
+      {
+        val mem = sup.tpe.members.find(_.name == "banana").get
+          .asInstanceOf[NamedTypeMemberInfo]
+        val tpe = mem.tpe.asInstanceOf[ArrowTypeInfo]
+
+        tpe.resultType.name shouldBe "List"
+        tpe.resultType.args.head.name shouldBe "String"
+        val (paramName, paramTpe) = tpe.paramSections.head.params.head
+        paramName shouldBe "p"
+        paramTpe.name shouldBe "List"
+        paramTpe.args.head.name shouldBe "String"
+      }
+      {
+        val mem = sup.tpe.members.find(_.name == "pineapple").get
+          .asInstanceOf[NamedTypeMemberInfo]
+        val tpe = mem.tpe.asInstanceOf[BasicTypeInfo]
+        tpe.name shouldBe "List"
+        tpe.args.head.name shouldBe "String"
+      }
+    }
+
+  it should "show classes without visible members in the inspector" in
+    withPosInCompiledSource(
+      "package com.example",
+      "trait bidon { }",
+      "case class pi@@po extends bidon { }") { (p, cc) =>
+      val info = cc.askInspectTypeAt(p)
+      val supers = info.map(_.supers).getOrElse(List())
+      val supersNames = supers.map(_.tpe.name).toList
+      supersNames.toSet should
+        ===(Set("pipo", "bidon", "Object", "Product", "Serializable", "Any"))
+    }
 
   it should "get type info for imports" in withPresCompiler { (config, cc) =>
     val expected = Map(

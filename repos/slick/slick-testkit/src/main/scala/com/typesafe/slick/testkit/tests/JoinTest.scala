@@ -25,11 +25,9 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
 
     for {
       _ <- (categories.schema ++ posts.schema).create
-      _ <- categories ++= Seq(
-        (1, "Scala"),
-        (2, "ScalaQuery"),
-        (3, "Windows"),
-        (4, "Software"))
+      _ <-
+        categories ++=
+          Seq((1, "Scala"), (2, "ScalaQuery"), (3, "Windows"), (4, "Software"))
       _ <- posts.map(p => (p.title, p.category)) ++= Seq(
         ("Test Post", -1),
         ("Formal Language Processing in Scala, Part 5", 1),
@@ -87,8 +85,9 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       r1t: Set[(String, Option[String])] = r1
       _ = r1 shouldBe Set(("a", Some("a")), ("b", Some("b")), ("c", None))
       // Nested left outer, lift primitive value
-      q2 = ((xs.map(_.b) joinLeft ys.map(_.b) on (_ === _)) joinLeft ys
-          .map(_.b) on (_._1 === _)).to[Set]
+      q2 =
+        ((xs.map(_.b) joinLeft ys.map(_.b) on (_ === _)) joinLeft ys.map(_.b) on
+          (_._1 === _)).to[Set]
       r2 <- mark("q2", q2.result)
       r2t: Set[((String, Option[String]), Option[String])] = r2
       _ = r2 shouldBe Set(
@@ -147,8 +146,9 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       _ = r6 shouldBe Set((Some("a"), "a"), (Some("b"), "b"), (None, "c"))
       // Nested right outer, lift primitive value
       // (left-associative; not symmetrical to the nested left outer case)
-      q7 = ((ys.map(_.b) joinRight xs.map(_.b) on (_ === _)) joinRight xs
-          .map(_.b) on (_._2 === _)).to[Set]
+      q7 =
+        ((ys.map(_.b) joinRight xs.map(_.b) on (_ === _)) joinRight
+          xs.map(_.b) on (_._2 === _)).to[Set]
       r7 <- mark("q7", q7.result)
       rt: Set[(Option[(Option[String], String)], String)] = r7
       _ = r7 shouldBe Set(
@@ -183,8 +183,9 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         (None, 5))
       // Nested right outer, lift non-primitive value
       // (left-associative; not symmetrical to the nested left outer case)
-      q10 = ((ys joinRight xs on (_.b === _.b)) joinRight xs on (_._1
-          .map(_.b) === _.b)).to[Set]
+      q10 =
+        ((ys joinRight xs on (_.b === _.b)) joinRight xs on
+          (_._1.map(_.b) === _.b)).to[Set]
       r10 <- mark("q10", q10.result)
       r10t: Set[
         (Option[(Option[(Int, String)], (Int, String))], (Int, String))] = r10

@@ -30,8 +30,7 @@ object ScalingProposition {
     val rest = notSentencedAndRunningMap -- killToMeetConstraints.map(_.taskId)
 
     val ordered =
-      sentencedAndRunningMap.values.toSeq ++
-        killToMeetConstraints.toSeq ++
+      sentencedAndRunningMap.values.toSeq ++ killToMeetConstraints.toSeq ++
         rest.values.toSeq.sortBy(
           _.launched.flatMap(_.status.startedAt).getOrElse(Timestamp.zero))
           .reverse

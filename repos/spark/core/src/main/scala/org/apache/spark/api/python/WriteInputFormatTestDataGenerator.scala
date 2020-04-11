@@ -91,8 +91,8 @@ private[python] class DoubleArrayToWritableConverter
   override def convert(obj: Any): DoubleArrayWritable =
     obj match {
       case arr
-          if arr.getClass.isArray && arr.getClass.getComponentType == classOf[
-            Double] =>
+          if arr.getClass.isArray &&
+            arr.getClass.getComponentType == classOf[Double] =>
         val daw = new DoubleArrayWritable
         daw.set(arr.asInstanceOf[Array[Double]].map(new DoubleWritable(_)))
         daw

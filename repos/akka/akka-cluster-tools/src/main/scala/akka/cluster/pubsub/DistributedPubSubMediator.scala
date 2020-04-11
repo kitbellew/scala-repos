@@ -55,8 +55,8 @@ object DistributedPubSubSettings {
           throw new IllegalArgumentException(
             s"Unknown 'routing-logic': [$other]")
       },
-      gossipInterval =
-        config.getDuration("gossip-interval", MILLISECONDS).millis,
+      gossipInterval = config.getDuration("gossip-interval", MILLISECONDS)
+        .millis,
       removedTimeToLive = config
         .getDuration("removed-time-to-live", MILLISECONDS).millis,
       maxDeltaElements = config.getInt("max-delta-elements"))
@@ -678,9 +678,10 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
           if (nodes(b.owner)) {
             val myBucket = registry(b.owner)
             if (b.version > myBucket.version) {
-              registry += (b.owner -> myBucket.copy(
-                version = b.version,
-                content = myBucket.content ++ b.content))
+              registry +=
+                (b.owner -> myBucket.copy(
+                  version = b.version,
+                  content = myBucket.content ++ b.content))
             }
           }
         }
@@ -731,9 +732,9 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def publish(path: String, msg: Any, allButSelf: Boolean = false): Unit = {
     for {
       (address, bucket) ← registry
-      if !(
-        allButSelf && address == selfAddress
-      ) // if we should skip sender() node and current address == self address => skip
+      if !(allButSelf &&
+        address ==
+        selfAddress) // if we should skip sender() node and current address == self address => skip
       valueHolder ← bucket.content.get(path)
       ref ← valueHolder.ref
     } ref forward msg
@@ -760,9 +761,10 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def put(key: String, valueOption: Option[ActorRef]): Unit = {
     val bucket = registry(selfAddress)
     val v = nextVersion()
-    registry += (selfAddress -> bucket.copy(
-      version = v,
-      content = bucket.content + (key -> ValueHolder(v, valueOption))))
+    registry +=
+      (selfAddress -> bucket.copy(
+        version = v,
+        content = bucket.content + (key -> ValueHolder(v, valueOption))))
   }
 
   def getCurrentTopics(): Set[String] = {
@@ -790,8 +792,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def collectDelta(
       otherVersions: Map[Address, Long]): immutable.Iterable[Bucket] = {
     // missing entries are represented by version 0
-    val filledOtherVersions = myVersions
-      .map { case (k, _) ⇒ k -> 0L } ++ otherVersions
+    val filledOtherVersions =
+      myVersions.map { case (k, _) ⇒ k -> 0L } ++ otherVersions
     var count = 0
     filledOtherVersions.collect {
       case (owner, v)
@@ -824,8 +826,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     selectRandomNode((nodes - selfAddress).toVector) foreach gossipTo
 
   def gossipTo(address: Address): Unit = {
-    context.actorSelection(self.path.toStringWithAddress(address)) ! Status(
-      versions = myVersions)
+    context.actorSelection(self.path.toStringWithAddress(address)) !
+      Status(versions = myVersions)
   }
 
   def selectRandomNode(
@@ -841,8 +843,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
               if (bucket.version - version > removedTimeToLiveMillis) ⇒ key
         }
         if (oldRemoved.nonEmpty)
-          registry += owner -> bucket
-            .copy(content = bucket.content -- oldRemoved)
+          registry += owner ->
+            bucket.copy(content = bucket.content -- oldRemoved)
     }
   }
 
@@ -879,8 +881,8 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
     * mediator.
     */
   def isTerminated: Boolean =
-    Cluster(system).isTerminated || !settings.role
-      .forall(Cluster(system).selfRoles.contains)
+    Cluster(system).isTerminated ||
+      !settings.role.forall(Cluster(system).selfRoles.contains)
 
   /**
     * The [[DistributedPubSubMediator]]

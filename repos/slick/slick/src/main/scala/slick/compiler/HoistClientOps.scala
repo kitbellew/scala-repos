@@ -20,8 +20,8 @@ class HoistClientOps extends Phase {
           // Extract client-side operations into ResultSetMapping
           val hoisted = defs2.map { case (ts, n) => (ts, n, unwrap(n, true)) }
           logger.debug(
-            "Hoisting operations from defs: " + hoisted.iterator
-              .filter(t => t._2 ne t._3._1).map(_._1).mkString(", "))
+            "Hoisting operations from defs: " + hoisted.iterator.filter(t =>
+              t._2 ne t._3._1).map(_._1).mkString(", "))
           val newDefsM = hoisted.iterator.map {
             case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
           }.toMap
@@ -83,9 +83,9 @@ class HoistClientOps extends Phase {
                   case (ts, n) => (ts, n, unwrap(n, false))
                 }
                 logger.debug(
-                  "Hoisting operations from defs in left side of Join: " + hoisted
-                    .iterator.filter(t => t._2 ne t._3._1).map(_._1)
-                    .mkString(", "))
+                  "Hoisting operations from defs in left side of Join: " +
+                    hoisted.iterator.filter(t => t._2 ne t._3._1).map(_._1)
+                      .mkString(", "))
                 val newDefsM = hoisted.iterator.map {
                   case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
                 }.toMap
@@ -107,9 +107,9 @@ class HoistClientOps extends Phase {
                   case (ts, n) => (ts, n, unwrap(n, false))
                 }
                 logger.debug(
-                  "Hoisting operations from defs in right side of Join: " + hoisted
-                    .iterator.filter(t => t._2 ne t._3._1).map(_._1)
-                    .mkString(", "))
+                  "Hoisting operations from defs in right side of Join: " +
+                    hoisted.iterator.filter(t => t._2 ne t._3._1).map(_._1)
+                      .mkString(", "))
                 val newDefsM = hoisted.iterator.map {
                   case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
                 }.toMap
@@ -135,9 +135,8 @@ class HoistClientOps extends Phase {
                     val (wrap, f2) = rrepl(f)
                     wrap(Select(Ref(s), f2))
                   case Ref(s)
-                      if (s == sl1 && (bl2 ne bl)) || (
-                        s == sr1 && (br2 ne br)
-                      ) => Ref(s)
+                      if (s == sl1 && (bl2 ne bl)) ||
+                        (s == sr1 && (br2 ne br)) => Ref(s)
                 }
               )
               val sel2 = sel1.replace {

@@ -57,9 +57,8 @@ class DockerAppIntegrationTest
       result.code should be(201) //Created
       extractDeploymentIds(result) should have size 1
       waitForEvent("deployment_success")
-      check.pingSince(5.seconds) should be(
-        true
-      ) //make sure, the app has really started
+      check.pingSince(5.seconds) should
+        be(true) //make sure, the app has really started
     }
   }
 }

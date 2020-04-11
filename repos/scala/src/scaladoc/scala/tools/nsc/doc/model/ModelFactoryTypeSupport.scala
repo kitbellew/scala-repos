@@ -73,9 +73,10 @@ trait ModelFactoryTypeSupport {
               // (3) if we don't generate the doc template, we should at least indicate the correct prefix in the tooltip
               val bSym = normalizeTemplate(aSym)
               val owner =
-                if ((preSym != NoSymbol) && /* it needs a prefix */
-                    (preSym != bSym
-                      .owner) && /* prefix is different from owner */
+                if ((preSym != NoSymbol) &&
+                    /* it needs a prefix */
+                    (preSym != bSym.owner) &&
+                    /* prefix is different from owner */
                     (aSym == bSym))
                   /* normalization doesn't play tricks on us */
                   preSym
@@ -110,15 +111,14 @@ trait ModelFactoryTypeSupport {
               // but we won't show the prefix if our symbol is among them, only if *it's not* -- that's equal to showing
               // the prefix only for ambiguous references, not for overloaded ones.
               def needsPrefix: Boolean = {
-                if ((owner != bSym.owner || preSym.isRefinementClass) && (
-                      normalizeTemplate(owner) != inTpl.sym
-                    )) return true
+                if ((owner != bSym.owner || preSym.isRefinementClass) &&
+                    (normalizeTemplate(owner) != inTpl.sym)) return true
                 // don't get tricked into prefixing method type params and existentials:
                 // I tried several tricks BUT adding the method for which I'm creating the type => that simply won't scale,
                 // as ValueParams are independent of their parent member, and I really don't want to add this information to
                 // all terms, as we're already over the allowed memory footprint
-                if (aSym.isTypeParameterOrSkolem || aSym
-                      .isExistentiallyBound /* existential or existential skolem */ )
+                if (aSym.isTypeParameterOrSkolem ||
+                    aSym.isExistentiallyBound /* existential or existential skolem */ )
                   return false
 
                 for (tpl <- inTpl.sym.ownerChain) {
@@ -141,9 +141,8 @@ trait ModelFactoryTypeSupport {
               }
 
               val prefix =
-                if (!settings.docNoPrefixes && needsPrefix && (
-                      bSym != AnyRefClass /* which we normalize */
-                    )) {
+                if (!settings.docNoPrefixes && needsPrefix &&
+                    (bSym != AnyRefClass /* which we normalize */ )) {
                   if (!owner.isRefinementClass) {
                     val qName = makeQualifiedName(owner, Some(inTpl.sym))
                     if (qName != "") qName + "." else ""
@@ -171,11 +170,11 @@ trait ModelFactoryTypeSupport {
             /* Refined types */
             case RefinedType(parents, defs) =>
               val ignoreParents = Set[Symbol](AnyClass, ObjectClass)
-              val filtParents =
-                parents filterNot (x => ignoreParents(x.typeSymbol)) match {
-                  case Nil => parents
-                  case ps  => ps
-                }
+              val filtParents = parents filterNot
+                (x => ignoreParents(x.typeSymbol)) match {
+                case Nil => parents
+                case ps  => ps
+              }
               appendTypes0(filtParents, " with ")
               // XXX Still todo: properly printing refinements.
               // Since I didn't know how to go about displaying a multi-line type, I went with
@@ -185,10 +184,9 @@ trait ModelFactoryTypeSupport {
                 case Nil      => ()
                 case x :: Nil => nameBuffer append (" { " + x.defString + " }")
                 case xs =>
-                  nameBuffer append (
-                    " { ... /* %d definitions in type refinement */ }" format xs
-                      .size
-                  )
+                  nameBuffer append
+                    (" { ... /* %d definitions in type refinement */ }" format
+                      xs.size)
               }
             /* Eval-by-name types */
             case NullaryMethodType(result) =>
@@ -202,8 +200,8 @@ trait ModelFactoryTypeSupport {
                 if (tps.isEmpty) ""
                 else
                   tps.map { tparam =>
-                    tparam.varianceString + tparam.name + typeParamsToString(
-                      tparam.typeParams)
+                    tparam.varianceString + tparam.name +
+                      typeParamsToString(tparam.typeParams)
                   }.mkString("[", ", ", "]")
               nameBuffer append typeParamsToString(tparams)
               appendType0(result)

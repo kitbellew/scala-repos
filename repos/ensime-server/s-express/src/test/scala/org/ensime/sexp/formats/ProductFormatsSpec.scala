@@ -70,8 +70,8 @@ class ProductFormatsSpec
     // but tolerate missing entries
     SexpData(
       SexpSymbol(":thing") -> SexpString("wibble"),
-      SexpSymbol(":thong") -> SexpNumber(13)).convertTo[Wibble] should ===(
-      wobble)
+      SexpSymbol(":thong") -> SexpNumber(13)).convertTo[Wibble] should
+      ===(wobble)
   }
 
   val bar = (13, "bar")
@@ -104,13 +104,14 @@ class CustomisedProductFormatsSpec
   case class Foo(AThingyMaBob: Int, HTML: String)
   case class Bar(num: Int, str: Option[String])
 
-  "ProductFormats with overloaded toWireName" should "support custom field names" in {
-    assertFormat(
-      Foo(13, "foo"),
-      SexpData(
-        SexpSymbol(":a-thingy-ma-bob") -> SexpNumber(13),
-        SexpSymbol(":h-t-m-l") -> SexpString("foo")))
-  }
+  "ProductFormats with overloaded toWireName" should
+    "support custom field names" in {
+      assertFormat(
+        Foo(13, "foo"),
+        SexpData(
+          SexpSymbol(":a-thingy-ma-bob") -> SexpNumber(13),
+          SexpSymbol(":h-t-m-l") -> SexpString("foo")))
+    }
 
   "ProductFormats" should "not skip writing out nil values by default" in {
     val wobble = Bar(13, None)
@@ -121,8 +122,9 @@ class CustomisedProductFormatsSpec
         SexpSymbol(":str") -> SexpNil))
   }
 
-  "ProductFormats with overloaded skipNilValues" should "support writing out only non-nil values" in new SkippingEnabled {
-    val wobble = Bar(13, None)
-    assertFormat(wobble, SexpData(SexpSymbol(":num") -> SexpNumber(13)))
-  }
+  "ProductFormats with overloaded skipNilValues" should
+    "support writing out only non-nil values" in new SkippingEnabled {
+      val wobble = Bar(13, None)
+      assertFormat(wobble, SexpData(SexpSymbol(":num") -> SexpNumber(13)))
+    }
 }

@@ -34,18 +34,16 @@ class SecurityDirectivesSpec extends RoutingSpec {
   "basic authentication" should {
     "reject requests without Authorization header with an AuthenticationFailedRejection" in {
       Get() ~> { dontBasicAuth { echoComplete } } ~> check {
-        rejection shouldEqual AuthenticationFailedRejection(
-          CredentialsMissing,
-          challenge)
+        rejection shouldEqual
+          AuthenticationFailedRejection(CredentialsMissing, challenge)
       }
     }
     "reject unauthenticated requests with Authorization header with an AuthenticationFailedRejection" in {
       Get() ~> Authorization(BasicHttpCredentials("Bob", "")) ~> {
         dontBasicAuth { echoComplete }
       } ~> check {
-        rejection shouldEqual AuthenticationFailedRejection(
-          CredentialsRejected,
-          challenge)
+        rejection shouldEqual
+          AuthenticationFailedRejection(CredentialsRejected, challenge)
       }
     }
     "reject requests with an OAuth2 Bearer Token Authorization header with 401" in {
@@ -54,8 +52,8 @@ class SecurityDirectivesSpec extends RoutingSpec {
       } ~> check {
         status shouldEqual StatusCodes.Unauthorized
         responseAs[String] shouldEqual "The supplied authentication is invalid"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
+        header[`WWW-Authenticate`] shouldEqual
+          Some(`WWW-Authenticate`(challenge))
       }
     }
     "reject requests with illegal Authorization header with 401" in {
@@ -63,9 +61,10 @@ class SecurityDirectivesSpec extends RoutingSpec {
         dontBasicAuth { echoComplete }
       } ~> check {
         status shouldEqual StatusCodes.Unauthorized
-        responseAs[String] shouldEqual "The resource requires authentication, which was not supplied with the request"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
+        responseAs[String] shouldEqual
+          "The resource requires authentication, which was not supplied with the request"
+        header[`WWW-Authenticate`] shouldEqual
+          Some(`WWW-Authenticate`(challenge))
       }
     }
     "extract the object representing the user identity created by successful authentication" in {
@@ -90,18 +89,16 @@ class SecurityDirectivesSpec extends RoutingSpec {
   "bearer token authentication" should {
     "reject requests without Authorization header with an AuthenticationFailedRejection" in {
       Get() ~> { dontOAuth2Auth { echoComplete } } ~> check {
-        rejection shouldEqual AuthenticationFailedRejection(
-          CredentialsMissing,
-          challenge)
+        rejection shouldEqual
+          AuthenticationFailedRejection(CredentialsMissing, challenge)
       }
     }
     "reject unauthenticated requests with Authorization header with an AuthenticationFailedRejection" in {
       Get() ~> Authorization(OAuth2BearerToken("myToken")) ~> {
         dontOAuth2Auth { echoComplete }
       } ~> check {
-        rejection shouldEqual AuthenticationFailedRejection(
-          CredentialsRejected,
-          challenge)
+        rejection shouldEqual
+          AuthenticationFailedRejection(CredentialsRejected, challenge)
       }
     }
     "reject requests with a Basic Authorization header with 401" in {
@@ -110,8 +107,8 @@ class SecurityDirectivesSpec extends RoutingSpec {
       } ~> check {
         status shouldEqual StatusCodes.Unauthorized
         responseAs[String] shouldEqual "The supplied authentication is invalid"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
+        header[`WWW-Authenticate`] shouldEqual
+          Some(`WWW-Authenticate`(challenge))
       }
     }
     "reject requests with illegal Authorization header with 401" in {
@@ -119,9 +116,10 @@ class SecurityDirectivesSpec extends RoutingSpec {
         dontOAuth2Auth { echoComplete }
       } ~> check {
         status shouldEqual StatusCodes.Unauthorized
-        responseAs[String] shouldEqual "The resource requires authentication, which was not supplied with the request"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
+        responseAs[String] shouldEqual
+          "The resource requires authentication, which was not supplied with the request"
+        header[`WWW-Authenticate`] shouldEqual
+          Some(`WWW-Authenticate`(challenge))
       }
     }
     "extract the object representing the user identity created by successful authentication" in {

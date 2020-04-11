@@ -77,16 +77,12 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
           name.toList.zipWithIndex.forall {
             case (c, i) =>
               c == '_' ||
-                correspondingIndexInCamelCase(
-                  name,
-                  i) == 0 && correspondingCharInCamelCase(name, i) == c
-                  .toUpper ||
-                !previousCharacterIsUnderscore(
-                  name,
-                  i) && correspondingCharInCamelCase(name, i) == c ||
-                previousCharacterIsUnderscore(
-                  name,
-                  i) && correspondingCharInCamelCase(name, i) == c.toUpper
+                correspondingIndexInCamelCase(name, i) ==
+                0 && correspondingCharInCamelCase(name, i) == c.toUpper ||
+                !previousCharacterIsUnderscore(name, i) &&
+                correspondingCharInCamelCase(name, i) == c ||
+                previousCharacterIsUnderscore(name, i) &&
+                correspondingCharInCamelCase(name, i) == c.toUpper
           }
       })
       (doesntContainUnderscores && isCamelCased)
@@ -101,8 +97,8 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
     "camelCase a name with the first letter being lower cased" in {
       forAll(underscoredStrings) { (name: String) =>
         camelify(name).isEmpty && camelifyMethod(name).isEmpty ||
-        camelifyMethod(name).toList.head.isLower && camelify(
-          name) == camelifyMethod(name).capitalize
+        camelifyMethod(name).toList.head.isLower &&
+        camelify(name) == camelifyMethod(name).capitalize
       }
     }
   }
@@ -125,13 +121,12 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
         Map("hello" -> "bonjour", "world" -> "monde")) must_== "bonjour monde"
     }
     "not replace the group if it starts with %" in {
-      processString(
-        "<%=%hello%>",
-        Map("hello" -> "bonjour")) must_== "<%=%hello%>"
+      processString("<%=%hello%>", Map("hello" -> "bonjour")) must_==
+        "<%=%hello%>"
     }
     "throw an exception if no correspondance is found" in {
-      processString("<%=hello%>", Map("hallo" -> "bonjour")) must throwA[
-        Exception]
+      processString("<%=hello%>", Map("hallo" -> "bonjour")) must
+        throwA[Exception]
     }
   }
 

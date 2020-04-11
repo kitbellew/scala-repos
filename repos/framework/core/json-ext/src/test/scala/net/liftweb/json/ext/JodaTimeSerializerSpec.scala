@@ -31,8 +31,8 @@ import json.Serialization.{read, write => swrite}
 object JodaTimeSerializerSpec extends Specification {
   "JodaTimeSerializer Specification".title
 
-  implicit val formats = Serialization
-    .formats(NoTypeHints) ++ JodaTimeSerializers.all
+  implicit val formats = Serialization.formats(NoTypeHints) ++
+    JodaTimeSerializers.all
 
   "Serialize joda time types" in {
     val x = JodaTypes(
@@ -59,7 +59,8 @@ object JodaTimeSerializerSpec extends Specification {
       new DateTime(2011, 1, 16, 10, 32, 0, 0, DateTimeZone.UTC),
       new DateMidnight(2011, 1, 16, DateTimeZone.UTC))
     val ser = swrite(x)
-    ser mustEqual """{"dt":"2011-01-16 10:32:00Z","dm":"2011-01-16 00:00:00Z"}"""
+    ser mustEqual
+      """{"dt":"2011-01-16 10:32:00Z","dm":"2011-01-16 00:00:00Z"}"""
   }
 
   "null is serialized as JSON null" in {

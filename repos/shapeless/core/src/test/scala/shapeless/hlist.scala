@@ -3592,12 +3592,16 @@ class HListTests {
     // when there are not enough items to fill the last partition, a pad can be supplied.
     assertEquals(
       (0, 1) :: (2, 3) :: (4, 'a') :: HNil,
-      range(0, 5) group (2, 2, 'a' :: HNil))
+      range(0, 5) group (
+        2, 2, 'a' :: HNil
+      ))
 
     // but only as many pad elements are used as necessary to fill the final partition.
     assertEquals(
       (0, 1) :: (2, 3) :: (4, 'a') :: HNil,
-      range(0, 5) group (2, 2, 'a' :: 'b' :: 'c' :: HNil))
+      range(0, 5) group (
+        2, 2, 'a' :: 'b' :: 'c' :: HNil
+      ))
 
   }
 

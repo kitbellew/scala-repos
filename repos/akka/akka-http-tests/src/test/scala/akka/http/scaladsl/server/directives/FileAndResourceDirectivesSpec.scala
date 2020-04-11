@@ -69,12 +69,12 @@ class FileAndResourceDirectivesSpec
       val file = File.createTempFile("akkaHttpTest", null)
       try {
         writeAllText("ABCDEFGHIJKLMNOPQRSTUVWXYZ", file)
-        Get() ~> addHeader(Range(ByteRange(0, 10))) ~> getFromFile(
-          file) ~> check {
-          status shouldEqual StatusCodes.PartialContent
-          headers should contain(`Content-Range`(ContentRange(0, 10, 26)))
-          responseAs[String] shouldEqual "ABCDEFGHIJK"
-        }
+        Get() ~> addHeader(Range(ByteRange(0, 10))) ~> getFromFile(file) ~>
+          check {
+            status shouldEqual StatusCodes.PartialContent
+            headers should contain(`Content-Range`(ContentRange(0, 10, 26)))
+            responseAs[String] shouldEqual "ABCDEFGHIJK"
+          }
       } finally file.delete
     }
 
@@ -83,21 +83,17 @@ class FileAndResourceDirectivesSpec
       try {
         writeAllText("ABCDEFGHIJKLMNOPQRSTUVWXYZ", file)
         val rangeHeader = Range(ByteRange(1, 10), ByteRange.suffix(10))
-        Get() ~> addHeader(rangeHeader) ~> getFromFile(
-          file,
-          ContentTypes.`text/plain(UTF-8)`) ~> check {
-          status shouldEqual StatusCodes.PartialContent
-          header[`Content-Range`] shouldEqual None
-          mediaType.withParams(Map.empty) shouldEqual `multipart/byteranges`
+        Get() ~> addHeader(rangeHeader) ~>
+          getFromFile(file, ContentTypes.`text/plain(UTF-8)`) ~> check {
+            status shouldEqual StatusCodes.PartialContent
+            header[`Content-Range`] shouldEqual None
+            mediaType.withParams(Map.empty) shouldEqual `multipart/byteranges`
 
-          val parts = responseAs[Multipart.ByteRanges].toStrict(1.second)
-            .awaitResult(3.seconds).strictParts
-          parts
-            .map(
-              _.entity.data.utf8String) should contain theSameElementsAs List(
-            "BCDEFGHIJK",
-            "QRSTUVWXYZ")
-        }
+            val parts = responseAs[Multipart.ByteRanges].toStrict(1.second)
+              .awaitResult(3.seconds).strictParts
+            parts.map(_.entity.data.utf8String) should contain theSameElementsAs
+              List("BCDEFGHIJK", "QRSTUVWXYZ")
+          }
       } finally file.delete
     }
 
@@ -117,8 +113,8 @@ class FileAndResourceDirectivesSpec
         writeAllText("123", file)
         Get() ~> getFromFile(file) ~> check {
           mediaType shouldEqual `image/svg+xml`
-          header[`Content-Encoding`] shouldEqual Some(
-            `Content-Encoding`(HttpEncodings.gzip))
+          header[`Content-Encoding`] shouldEqual
+            Some(`Content-Encoding`(HttpEncodings.gzip))
           responseAs[String] shouldEqual "123"
         }
       } finally file.delete
@@ -130,8 +126,8 @@ class FileAndResourceDirectivesSpec
         writeAllText("456", file)
         Get() ~> getFromFile(file) ~> check {
           mediaType shouldEqual `application/javascript`
-          header[`Content-Encoding`] shouldEqual Some(
-            `Content-Encoding`(HttpEncodings.gzip))
+          header[`Content-Encoding`] shouldEqual
+            Some(`Content-Encoding`(HttpEncodings.gzip))
           responseAs[String] shouldEqual "456"
         }
       } finally file.delete
@@ -232,12 +228,12 @@ class FileAndResourceDirectivesSpec
       Get("subDirectory/empty.pdf") ~> getFromResourceDirectory("") ~> verify
     }
     "return the resource content from an archive" in {
-      Get("Config.class") ~> getFromResourceDirectory(
-        "com/typesafe/config") ~> check {
-        mediaType shouldEqual `application/octet-stream`
-        responseEntity.toStrict(1.second).awaitResult(1.second).data
-          .asByteBuffer.getInt shouldEqual 0xCAFEBABE
-      }
+      Get("Config.class") ~> getFromResourceDirectory("com/typesafe/config") ~>
+        check {
+          mediaType shouldEqual `application/octet-stream`
+          responseEntity.toStrict(1.second).awaitResult(1.second).data
+            .asByteBuffer.getInt shouldEqual 0xCAFEBABE
+        }
     }
     "reject requests to directory resources" in {
       Get() ~> getFromResourceDirectory("subDirectory") ~> check {
@@ -321,11 +317,11 @@ class FileAndResourceDirectivesSpec
       }
     }
     "properly render the union of several directories" in {
-      Get() ~> listDirectoryContents(
-        base + "/someDir",
-        base + "/subDirectory") ~> check {
-        eraseDateTime(responseAs[String]) shouldEqual prep {
-          """<html>
+      Get() ~>
+        listDirectoryContents(base + "/someDir", base + "/subDirectory") ~>
+        check {
+          eraseDateTime(responseAs[String]) shouldEqual prep {
+            """<html>
             |<head><title>Index of /</title></head>
             |<body>
             |<h1>Index of /</h1>
@@ -341,15 +337,15 @@ class FileAndResourceDirectivesSpec
             |</body>
             |</html>
             |"""
+          }
         }
-      }
     }
     "properly render an empty sub directory with vanity footer" in {
       val settings = 0 // shadow implicit
-      Get("/emptySub/") ~> listDirectoryContents(
-        base + "/subDirectory") ~> check {
-        eraseDateTime(responseAs[String]) shouldEqual prep {
-          """<html>
+      Get("/emptySub/") ~> listDirectoryContents(base + "/subDirectory") ~>
+        check {
+          eraseDateTime(responseAs[String]) shouldEqual prep {
+            """<html>
             |<head><title>Index of /emptySub/</title></head>
             |<body>
             |<h1>Index of /emptySub/</h1>
@@ -364,8 +360,8 @@ class FileAndResourceDirectivesSpec
             |</body>
             |</html>
             |"""
+          }
         }
-      }
     }
     "properly render an empty top-level directory" in {
       Get() ~> listDirectoryContents(base + "/subDirectory/emptySub") ~> check {
@@ -386,10 +382,10 @@ class FileAndResourceDirectivesSpec
       }
     }
     "properly render a simple directory with a path prefix" in {
-      Get("/files/") ~> pathPrefix("files")(listDirectoryContents(
-        base + "/someDir")) ~> check {
-        eraseDateTime(responseAs[String]) shouldEqual prep {
-          """<html>
+      Get("/files/") ~>
+        pathPrefix("files")(listDirectoryContents(base + "/someDir")) ~> check {
+          eraseDateTime(responseAs[String]) shouldEqual prep {
+            """<html>
             |<head><title>Index of /files/</title></head>
             |<body>
             |<h1>Index of /files/</h1>
@@ -403,14 +399,14 @@ class FileAndResourceDirectivesSpec
             |</body>
             |</html>
             |"""
+          }
         }
-      }
     }
     "properly render a sub directory with a path prefix" in {
-      Get("/files/sub/") ~> pathPrefix("files")(listDirectoryContents(
-        base + "/someDir")) ~> check {
-        eraseDateTime(responseAs[String]) shouldEqual prep {
-          """<html>
+      Get("/files/sub/") ~>
+        pathPrefix("files")(listDirectoryContents(base + "/someDir")) ~> check {
+          eraseDateTime(responseAs[String]) shouldEqual prep {
+            """<html>
             |<head><title>Index of /files/sub/</title></head>
             |<body>
             |<h1>Index of /files/sub/</h1>
@@ -423,8 +419,8 @@ class FileAndResourceDirectivesSpec
             |</body>
             |</html>
             |"""
+          }
         }
-      }
     }
     "properly render an empty top-level directory with a path prefix" in {
       Get("/files/") ~> pathPrefix("files")(listDirectoryContents(

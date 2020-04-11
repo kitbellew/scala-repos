@@ -83,8 +83,8 @@ object RunConfig {
         } else {
           fromCommandLine(
             args,
-            config *> "The baseline file must be regular and readable."
-              .failureNel)
+            config *>
+              "The baseline file must be regular and readable.".failureNel)
         }
 
       case "--output" :: file :: args =>
@@ -94,8 +94,8 @@ object RunConfig {
         } else {
           fromCommandLine(
             args,
-            config *> "The output file must be regular and writable."
-              .failureNel)
+            config *>
+              "The output file must be regular and writable.".failureNel)
         }
 
       case "--json" :: args =>
@@ -110,8 +110,8 @@ object RunConfig {
       case "--dry-runs" :: _ :: args =>
         fromCommandLine(
           args,
-          config *> "The argument to --runs must be a positive integer"
-            .failureNel)
+          config *>
+            "The argument to --runs must be a positive integer".failureNel)
 
       case "--runs" :: PositiveInt(runs) :: args =>
         fromCommandLine(args, config map (_.copy(runs = runs.toInt)))
@@ -119,8 +119,8 @@ object RunConfig {
       case "--runs" :: _ :: args =>
         fromCommandLine(
           args,
-          config *> "The argument to --runs must be a positive integer"
-            .failureNel)
+          config *>
+            "The argument to --runs must be a positive integer".failureNel)
 
       case "--outliers" :: OutlierPercentage(outliers) :: args =>
         fromCommandLine(args, config map (_.copy(outliers = outliers)))
@@ -128,8 +128,9 @@ object RunConfig {
       case "--outliers" :: _ :: args =>
         fromCommandLine(
           args,
-          config *> "The argument to --outliers must be a real number in [0, 0.5)"
-            .failureNel)
+          config *>
+            "The argument to --outliers must be a real number in [0, 0.5)"
+              .failureNel)
 
       case "--root-dir" :: rootDir :: args =>
         fromCommandLine(
@@ -149,8 +150,9 @@ object RunConfig {
       case "--timeout" :: _ :: args =>
         fromCommandLine(
           args,
-          config *> "The argument to --timeout must be a non-negative number"
-            .failureNel)
+          config *>
+            "The argument to --timeout must be a non-negative number"
+              .failureNel)
 
       case test :: args => fromCommandLine(
           args,

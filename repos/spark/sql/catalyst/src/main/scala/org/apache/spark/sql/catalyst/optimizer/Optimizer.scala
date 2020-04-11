@@ -64,8 +64,7 @@ abstract class Optimizer extends RuleExecutor[LogicalPlan] {
       //   extra operators between two adjacent Union operators.
       // - Call CombineUnions again in Batch("Operator Optimizations"),
       //   since the other rules might make two separate Unions operators adjacent.
-      Batch("Union", Once, CombineUnions) ::
-      Batch(
+      Batch("Union", Once, CombineUnions) :: Batch(
         "Replace Operators",
         FixedPoint(100),
         ReplaceIntersectWithSemiJoin,
@@ -105,8 +104,7 @@ abstract class Optimizer extends RuleExecutor[LogicalPlan] {
         SimplifyCasts,
         SimplifyCaseConversionExpressions,
         EliminateSerialization
-      ) ::
-      Batch("Decimal Optimizations", FixedPoint(100), DecimalAggregates) ::
+      ) :: Batch("Decimal Optimizations", FixedPoint(100), DecimalAggregates) ::
       Batch("LocalRelation", FixedPoint(100), ConvertToLocalRelation) ::
       Batch("Subquery", Once, OptimizeSubqueries) :: Nil
   }
@@ -210,8 +208,8 @@ object LimitPushDown extends Rule[LogicalPlan] {
           case LeftOuter  => join.copy(left = maybePushLimit(exp, left))
           case FullOuter => (left.maxRows, right.maxRows) match {
               case (None, None) =>
-                if (left.statistics.sizeInBytes >= right.statistics
-                      .sizeInBytes) {
+                if (left.statistics.sizeInBytes >=
+                      right.statistics.sizeInBytes) {
                   join.copy(left = maybePushLimit(exp, left))
                 } else { join.copy(right = maybePushLimit(exp, right)) }
               case (Some(_), Some(_)) => join
@@ -339,8 +337,8 @@ object ColumnPruning extends Rule[LogicalPlan] {
   private def sameOutput(
       output1: Seq[Attribute],
       output2: Seq[Attribute]): Boolean =
-    output1.size == output2.size &&
-      output1.zip(output2).forall(pair => pair._1.semanticEquals(pair._2))
+    output1.size == output2.size && output1.zip(output2)
+      .forall(pair => pair._1.semanticEquals(pair._2))
 
   def apply(plan: LogicalPlan): LogicalPlan =
     plan transform {
@@ -667,16 +665,16 @@ object InferFiltersFromConstraints
         // Only consider constraints that can be pushed down completely to either the left or the
         // right child
         val constraints = join.constraints.filter { c =>
-          c.references.subsetOf(left.outputSet) || c.references
-            .subsetOf(right.outputSet)
+          c.references.subsetOf(left.outputSet) ||
+          c.references.subsetOf(right.outputSet)
         }
         // Remove those constraints that are already enforced by either the left or the right child
-        val additionalConstraints =
-          constraints -- (left.constraints ++ right.constraints)
+        val additionalConstraints = constraints --
+          (left.constraints ++ right.constraints)
         val newConditionOpt = conditionOpt match {
           case Some(condition) =>
-            val newFilters =
-              additionalConstraints -- splitConjunctivePredicates(condition)
+            val newFilters = additionalConstraints --
+              splitConjunctivePredicates(condition)
             if (newFilters.nonEmpty)
               Option(And(newFilters.reduce(And), condition))
             else None
@@ -1040,8 +1038,8 @@ object PushPredicateThroughAggregate
         val (pushDown, stayUp) = splitConjunctivePredicates(condition)
           .partition { cond =>
             val replaced = replaceAlias(cond, aliasMap)
-            replaced.references.subsetOf(aggregate.child.outputSet) && replaced
-              .deterministic
+            replaced.references.subsetOf(aggregate.child.outputSet) &&
+            replaced.deterministic
           }
 
         if (pushDown.nonEmpty) {

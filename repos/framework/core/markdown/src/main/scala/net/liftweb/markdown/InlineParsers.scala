@@ -100,8 +100,8 @@ trait InlineParsers extends BaseParsers {
           val c = s.charAt(i)
 
           val xmlEscape = escapeFastForXml(c)
-          if (markdownEscapes && c == '\\' && i + 1 < end && escapableMarkdownChars(
-                s.charAt(i + 1)) != null) {
+          if (markdownEscapes && c == '\\' && i + 1 < end &&
+              escapableMarkdownChars(s.charAt(i + 1)) != null) {
             result.append(s.subSequence(start, i).toString)
             result.append(escapableMarkdownChars(s.charAt(i + 1)))
             i += 2
@@ -222,9 +222,10 @@ trait InlineParsers extends BaseParsers {
   def fullLink(ctx: InlineContext): Parser[String] =
     if (ctx.tags.contains("a")) { failure("Cannot nest a link in a link.") }
     else {
-      '[' ~> linkInline(ctx.addTag("a")) ~ ("](" ~ ows) ~ url ~ ows ~ title <~ (
-        ows ~ ')'
-      ) ^^ { case txt ~ _ ~ u ~ _ ~ ttl => deco.decorateLink(txt, u, ttl) }
+      '[' ~> linkInline(ctx.addTag("a")) ~ ("](" ~ ows) ~ url ~ ows ~ title <~
+        (ows ~ ')') ^^ {
+          case txt ~ _ ~ u ~ _ ~ ttl => deco.decorateLink(txt, u, ttl)
+        }
     }
 
   /** A markdown link which references an url by id.
@@ -243,9 +244,8 @@ trait InlineParsers extends BaseParsers {
       ctx: InlineContext): Parser[
     String
   ] = //( (not(']') ~> oneInline(ctx.addTag("a")))* ) ^^ {_.mkString}
-    ((markdownText(specialLinkInlineChars, true) | elementParsers(ctx) | (
-      (not(']') ~> aChar)
-    )) *) ^^ { _.mkString }
+    ((markdownText(specialLinkInlineChars, true) | elementParsers(ctx) |
+      ((not(']') ~> aChar))) *) ^^ { _.mkString }
 
   /** We parse everything as a link/img url until we hit whitespace or a closing brace.
     */
@@ -256,8 +256,9 @@ trait InlineParsers extends BaseParsers {
     * ends or not.
     */
   val title: Parser[Option[String]] = opt(
-    '"' ~> ((markdownText(Set('"'), true) ~ opt(
-      not('"' ~ ows ~ ')') ~> aChar)) *) <~ '"') ^^ {
+    '"' ~>
+      ((markdownText(Set('"'), true) ~ opt(not('"' ~ ows ~ ')') ~> aChar)) *) <~
+      '"') ^^ {
     case None => None
     case Some(chunks) => {
       val result = new StringBuilder()
@@ -319,8 +320,8 @@ trait InlineParsers extends BaseParsers {
   /** Parses inline in a span element like bold or emphasis or link up until the given end marker
     */
   def spanInline(end: Parser[Any], ctx: InlineContext): Parser[String] =
-    (markdownText(specialInlineChars, true) | elementParsers(ctx) | (not(
-      end) ~> aChar)) ^^ { _.mkString }
+    (markdownText(specialInlineChars, true) | elementParsers(ctx) |
+      (not(end) ~> aChar)) ^^ { _.mkString }
 
   /** Parses a span element like __foo__ or *bar*
     */

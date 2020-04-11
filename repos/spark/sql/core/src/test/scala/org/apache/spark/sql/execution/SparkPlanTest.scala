@@ -247,8 +247,8 @@ object SparkPlanTest {
     val resolvedPlan = sqlContext.sessionState.prepareForExecution
       .execute(outputPlan transform {
         case plan: SparkPlan =>
-          val inputMap =
-            plan.children.flatMap(_.output).map(a => (a.name, a)).toMap
+          val inputMap = plan.children.flatMap(_.output).map(a => (a.name, a))
+            .toMap
           plan transformExpressions {
             case UnresolvedAttribute(Seq(u)) => inputMap.getOrElse(
                 u,

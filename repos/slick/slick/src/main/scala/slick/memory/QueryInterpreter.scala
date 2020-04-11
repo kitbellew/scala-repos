@@ -247,8 +247,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             else res
           case _ =>
             val res = run(c.elseClause)
-            if (opt && !c.elseClause.nodeType.asInstanceOf[ScalaType[_]]
-                  .nullable) Option(res)
+            if (opt &&
+                !c.elseClause.nodeType.asInstanceOf[ScalaType[_]].nullable)
+              Option(res)
             else res
         }
       case QueryParameter(extractor, _, _) => extractor(params)
@@ -264,11 +265,11 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         val condV = run(cond)
         if ((condV.asInstanceOf[AnyRef] eq null) || condV == None) {
           val defaultV = run(default)
-          if (n.nodeType.isInstanceOf[OptionType] && !default.nodeType
-                .isInstanceOf[OptionType]) Some(defaultV)
+          if (n.nodeType.isInstanceOf[OptionType] &&
+              !default.nodeType.isInstanceOf[OptionType]) Some(defaultV)
           else defaultV
-        } else if (n.nodeType.isInstanceOf[OptionType] && !cond.nodeType
-                     .isInstanceOf[OptionType]) Some(condV)
+        } else if (n.nodeType.isInstanceOf[OptionType] &&
+                   !cond.nodeType.isInstanceOf[OptionType]) Some(condV)
         else condV
       case Library.In(what, where) =>
         val whatV = run(what)

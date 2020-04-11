@@ -103,12 +103,8 @@ private[akka] abstract class AbstractEventsByPersistenceIdPublisher(
       currSeqNo,
       toSequenceNr,
       limit)
-    journal ! ReplayMessages(
-      currSeqNo,
-      toSequenceNr,
-      limit,
-      persistenceId,
-      self)
+    journal !
+      ReplayMessages(currSeqNo, toSequenceNr, limit, persistenceId, self)
     context.become(replaying(limit))
   }
 
@@ -217,9 +213,9 @@ private[akka] class CurrentEventsByPersistenceIdPublisher(
   override def receiveRecoverySuccess(highestSeqNr: Long): Unit = {
     deliverBuf()
     if (highestSeqNr < toSequenceNr) toSeqNr = highestSeqNr
-    if (buf.isEmpty && (
-          currSeqNo > toSequenceNr || currSeqNo == fromSequenceNr
-        )) onCompleteThenStop()
+    if (buf.isEmpty &&
+        (currSeqNo > toSequenceNr || currSeqNo == fromSequenceNr))
+      onCompleteThenStop()
     else self ! Continue // more to fetch
     context.become(idle)
   }

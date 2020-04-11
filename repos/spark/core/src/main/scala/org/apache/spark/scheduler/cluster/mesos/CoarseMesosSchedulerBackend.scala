@@ -200,12 +200,9 @@ private[spark] class CoarseMesosSchedulerBackend(
       val runScript = new File(executorSparkHome, "./bin/spark-class").getPath
       command.setValue(
         "%s \"%s\" org.apache.spark.executor.CoarseGrainedExecutorBackend"
-          .format(prefixEnv, runScript) +
-          s" --driver-url $driverURL" +
-          s" --executor-id $taskId" +
-          s" --hostname ${offer.getHostname}" +
-          s" --cores $numCores" +
-          s" --app-id $appId")
+          .format(prefixEnv, runScript) + s" --driver-url $driverURL" +
+          s" --executor-id $taskId" + s" --hostname ${offer.getHostname}" +
+          s" --cores $numCores" + s" --app-id $appId")
     } else {
       // Grab everything to the first '.'. We'll use that and '*' to
       // glob the directory "correctly".
@@ -213,10 +210,8 @@ private[spark] class CoarseMesosSchedulerBackend(
       command.setValue(
         s"cd $basename*; $prefixEnv " +
           "./bin/spark-class org.apache.spark.executor.CoarseGrainedExecutorBackend" +
-          s" --driver-url $driverURL" +
-          s" --executor-id $taskId" +
-          s" --hostname ${offer.getHostname}" +
-          s" --cores $numCores" +
+          s" --driver-url $driverURL" + s" --executor-id $taskId" +
+          s" --hostname ${offer.getHostname}" + s" --cores $numCores" +
           s" --app-id $appId")
       command.addUris(CommandInfo.URI.newBuilder().setValue(uri.get))
     }
@@ -294,8 +289,8 @@ private[spark] class CoarseMesosSchedulerBackend(
         .setRefuseSeconds(rejectOfferDurationForUnmetConstraints).build()
 
       logDebug(
-        s"Declining offer: $id with attributes: $offerAttributes mem: $mem cpu: $cpus"
-          + s" for $rejectOfferDurationForUnmetConstraints seconds")
+        s"Declining offer: $id with attributes: $offerAttributes mem: $mem cpu: $cpus" +
+          s" for $rejectOfferDurationForUnmetConstraints seconds")
 
       d.declineOffer(offer.getId, filters)
     }
@@ -430,11 +425,8 @@ private[spark] class CoarseMesosSchedulerBackend(
     val cpus = executorCores(offerCPUs)
     val mem = executorMemory(sc)
 
-    cpus > 0 &&
-    cpus <= offerCPUs &&
-    cpus + totalCoresAcquired <= maxCores &&
-    mem <= offerMem &&
-    numExecutors() < executorLimit &&
+    cpus > 0 && cpus <= offerCPUs && cpus + totalCoresAcquired <= maxCores &&
+    mem <= offerMem && numExecutors() < executorLimit &&
     slaves.get(slaveId).map(_.taskFailures).getOrElse(0) < MAX_SLAVE_FAILURES
   }
 
@@ -458,8 +450,7 @@ private[spark] class CoarseMesosSchedulerBackend(
       // shuffle services. This allows the shuffle services to clean up state associated with
       // this application when the driver exits. There is currently not a great way to detect
       // this through Mesos, since the shuffle services are set up independently.
-      if (state.equals(TaskState.RUNNING) &&
-          shuffleServiceEnabled &&
+      if (state.equals(TaskState.RUNNING) && shuffleServiceEnabled &&
           !slave.shuffleRegistered) {
         assume(
           mesosExternalShuffleClient.isDefined,
@@ -539,9 +530,9 @@ private[spark] class CoarseMesosSchedulerBackend(
 
     if (numExecutors() > 0) {
       logWarning(
-        s"Timed out waiting for ${numExecutors()} remaining executors "
-          + s"to terminate within $shutdownTimeoutMS ms. This may leave temporary files "
-          + "on the mesos nodes.")
+        s"Timed out waiting for ${numExecutors()} remaining executors " +
+          s"to terminate within $shutdownTimeoutMS ms. This may leave temporary files " +
+          "on the mesos nodes.")
     }
 
     // Close the mesos external shuffle client if used

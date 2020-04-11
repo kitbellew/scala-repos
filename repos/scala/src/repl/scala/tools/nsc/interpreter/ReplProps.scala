@@ -55,10 +55,8 @@ class ReplProps {
   }
 
   // Handy system prop for shell prompt, or else pick it up from compiler.properties
-  val promptString =
-    Prop[String]("scala.repl.prompt").option getOrElse (if (info)
-                                                          "%nscala %#s> "
-                                                        else shellPromptString)
+  val promptString = Prop[String]("scala.repl.prompt").option getOrElse
+    (if (info) "%nscala %#s> " else shellPromptString)
   val promptText = enversion(promptString)
   val prompt = encolor(promptText)
 

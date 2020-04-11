@@ -153,10 +153,8 @@ class ScalaLanguageCodeStyleSettingsProvider
         "METHOD_PARAMETERS_RPAREN_ON_NEXT_LINE")
 
       //if statement
-      buffer ++= Seq(
-        "IF_BRACE_FORCE",
-        "ELSE_ON_NEW_LINE",
-        "SPECIAL_ELSE_IF_TREATMENT")
+      buffer ++=
+        Seq("IF_BRACE_FORCE", "ELSE_ON_NEW_LINE", "SPECIAL_ELSE_IF_TREATMENT")
 
       //brace forces
       buffer ++= Seq(
@@ -409,85 +407,35 @@ class ScalaLanguageCodeStyleSettingsProvider
   override def getIndentOptionsEditor = new SmartIndentOptionsEditor
 
   private val GENERAL_CODE_SAMPLE =
-    "class A {\n" +
-      "  def foo(): Int = 1\n" +
-      "}"
+    "class A {\n" + "  def foo(): Int = 1\n" + "}"
 
   private val WRAPPING_AND_BRACES_SAMPLE =
-    "class A {\n" +
-      "  def foo {\n" +
+    "class A {\n" + "  def foo {\n" +
       "    val infixExpr = 1 + 2 + (3 + 4) + 5 + 6 +\n" +
       "      7 + 8 + 9 + 10 + 11 + 12 + 13 + (14 +\n" +
-      "      15) + 16 + 17 * 18 + 19 + 20\n" +
-      "  }\n" +
-      "\n" +
+      "      15) + 16 + 17 * 18 + 19 + 20\n" + "  }\n" + "\n" +
       "  class Foo {\n" +
-      "    def foo(x: Int = 0, y: Int = 1, z: Int = 2) = new Foo\n" +
-      "  }\n" +
-      "  \n" +
-      "  val goo = new Foo\n" +
-      "\n" +
+      "    def foo(x: Int = 0, y: Int = 1, z: Int = 2) = new Foo\n" + "  }\n" +
+      "  \n" + "  val goo = new Foo\n" + "\n" +
       "  goo.foo().foo(1, 2).foo(z = 1, y = 2).foo().foo(1, 2, 3).foo()\n" +
-      "  \n" +
-      "  def m(x: Int, y: Int, z: Int)(u: Int, f: Int, l: Int) {\n" +
-      "    val zz = if (true) 1 else 3\n" +
-      "    val uz = if (true)\n" +
-      "               1\n" +
-      "              else {\n" +
-      "              }\n" +
-      "    if (true) {\n" +
-      "      false\n" +
-      "    } else if (false) {\n" +
-      "    } else true\n" +
-      "    for (i <- 1 to 5) yield i + 1\n" +
-      "    Some(3) match {\n" +
-      "      case Some(a) if a != 2 => a\n" +
-      "      case Some(1) |\n" +
-      "         Some(2) => \n" +
-      "        \n" +
-      "      case _ =>\n" +
-      "    }\n" +
-      "    try a + 2\n" +
-      "    catch {\n" +
-      "      case e => (i: Int) => i + 1\n" +
-      "    } finally \n" +
-      "      doNothing\n" +
-      "    while (true) \n" +
-      "      true = false\n" +
-      "  }\n" +
-      "}"
+      "  \n" + "  def m(x: Int, y: Int, z: Int)(u: Int, f: Int, l: Int) {\n" +
+      "    val zz = if (true) 1 else 3\n" + "    val uz = if (true)\n" +
+      "               1\n" + "              else {\n" + "              }\n" +
+      "    if (true) {\n" + "      false\n" + "    } else if (false) {\n" +
+      "    } else true\n" + "    for (i <- 1 to 5) yield i + 1\n" +
+      "    Some(3) match {\n" + "      case Some(a) if a != 2 => a\n" +
+      "      case Some(1) |\n" + "         Some(2) => \n" + "        \n" +
+      "      case _ =>\n" + "    }\n" + "    try a + 2\n" + "    catch {\n" +
+      "      case e => (i: Int) => i + 1\n" + "    } finally \n" +
+      "      doNothing\n" + "    while (true) \n" + "      true = false\n" +
+      "  }\n" + "}"
 
   private val BLANK_LINES_CODE_SAMPLE =
-    "//code\npackage A\n" +
-      "\n" +
-      "\n" +
-      "import a.b\n" +
-      "\n" +
-      "import b.c\n" +
-      "import c.d\n" +
-      "\n" +
-      "\n" +
-      "class A {\n" +
-      "  def foo = 1\n" +
-      "  def goo = 2\n" +
-      "  type S = String\n" +
-      "  val a = 1\n" +
-      "  \n" +
-      "  val b = 2\n" +
-      "  val c = 2\n" +
-      "}\n" +
-      "\n" +
-      "trait B {\n" +
-      "  \n" +
-      "  def foo\n" +
-      "  def goo\n" +
-      "  def too = {\n" +
-      "    \n" +
-      "    \n" +
-      "    val x = 2\n" +
-      "    new J {\n" +
-      "      def goo = 1\n" +
-      "    }\n" +
-      "  }\n" +
-      "}"
+    "//code\npackage A\n" + "\n" + "\n" + "import a.b\n" + "\n" +
+      "import b.c\n" + "import c.d\n" + "\n" + "\n" + "class A {\n" +
+      "  def foo = 1\n" + "  def goo = 2\n" + "  type S = String\n" +
+      "  val a = 1\n" + "  \n" + "  val b = 2\n" + "  val c = 2\n" + "}\n" +
+      "\n" + "trait B {\n" + "  \n" + "  def foo\n" + "  def goo\n" +
+      "  def too = {\n" + "    \n" + "    \n" + "    val x = 2\n" +
+      "    new J {\n" + "      def goo = 1\n" + "    }\n" + "  }\n" + "}"
 }

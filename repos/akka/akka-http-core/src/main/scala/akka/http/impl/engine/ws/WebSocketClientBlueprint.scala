@@ -50,8 +50,7 @@ object WebSocketClientBlueprint {
       settings: ClientConnectionSettings,
       log: LoggingAdapter): Http.WebSocketClientLayer =
     (simpleTls.atopMat(handshake(request, settings, log))(Keep.right) atop
-      WebSocket.framing atop
-      WebSocket.stack(
+      WebSocket.framing atop WebSocket.stack(
         serverSide = false,
         maskingRandomFactory = settings.websocketRandomFactory,
         log = log)).reversed

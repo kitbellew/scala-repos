@@ -170,9 +170,8 @@ abstract class ParallelIterableCheck[T](collName: String)
       val results = for ((pred, ind) <- findPredicates.zipWithIndex) yield {
         val ft = t.find(pred)
         val fcoll = coll.find(pred)
-        ("op index: " + ind) |: (
-          (ft == None && fcoll == None) || (ft != None && fcoll != None)
-        )
+        ("op index: " + ind) |:
+          ((ft == None && fcoll == None) || (ft != None && fcoll != None))
       }
       results.reduceLeft(_ && _)
   }
@@ -410,8 +409,8 @@ abstract class ParallelIterableCheck[T](collName: String)
         ("adding " |: areEqual(tr, cr)) &&
         (for ((trav, ind) <- (addAllTraversables).zipWithIndex) yield {
           val tadded = t ++ trav
-          val cadded = coll ++ collection.parallel.mutable
-            .ParArray(trav.toSeq: _*)
+          val cadded = coll ++
+            collection.parallel.mutable.ParArray(trav.toSeq: _*)
           if (!areEqual(tadded, cadded)) {
             println("----------------------")
             println("from: " + t)

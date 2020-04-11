@@ -174,8 +174,8 @@ private[csv] object CSVTypeCast {
       nullable: Boolean = true,
       nullValue: String = ""): Any = {
 
-    if (datum == nullValue && nullable && (!castType
-          .isInstanceOf[StringType])) { null }
+    if (datum == nullValue && nullable &&
+        (!castType.isInstanceOf[StringType])) { null }
     else {
       castType match {
         case _: ByteType    => datum.toByte

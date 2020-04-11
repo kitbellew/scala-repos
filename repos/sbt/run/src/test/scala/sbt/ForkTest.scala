@@ -27,12 +27,9 @@ object ForkTest extends Properties("Fork") {
 
   lazy val requiredEntries =
     IO.classLocationFile[scala.Option[_]] ::
-      IO.classLocationFile[sbt.exit.type] ::
-      Nil
+      IO.classLocationFile[sbt.exit.type] :: Nil
   lazy val mainAndArgs =
-    "sbt.exit" ::
-      "0" ::
-      Nil
+    "sbt.exit" :: "0" :: Nil
 
   property("Arbitrary length classpath successfully passed.") = forAllNoShrink(
     genOptionName,
@@ -41,8 +38,8 @@ object ForkTest extends Properties("Fork") {
       TestLogger { log =>
         val withScala = requiredEntries ::: relCP.map(rel => new File(dir, rel))
         val absClasspath = trimClasspath(Path.makeString(withScala))
-        val args = optionName.map(_ :: absClasspath :: Nil).toList
-          .flatten ++ mainAndArgs
+        val args = optionName.map(_ :: absClasspath :: Nil).toList.flatten ++
+          mainAndArgs
         val config = ForkOptions(outputStrategy = Some(LoggedOutput(log)))
         val exitCode =
           try Fork.java(config, args)

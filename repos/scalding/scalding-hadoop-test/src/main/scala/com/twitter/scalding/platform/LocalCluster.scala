@@ -119,8 +119,8 @@ class LocalCluster(mutex: Boolean = true) {
     mrJobConf.set("mapreduce.user.classpath.first", "true")
 
     LOG.debug(
-      "Creating directory to store jars on classpath: " + LocalCluster
-        .HADOOP_CLASSPATH_DIR)
+      "Creating directory to store jars on classpath: " +
+        LocalCluster.HADOOP_CLASSPATH_DIR)
     fileSystem.mkdirs(LocalCluster.HADOOP_CLASSPATH_DIR)
 
     // merge in input configuration

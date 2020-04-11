@@ -72,12 +72,12 @@ trait DenseMatrixMultiplyStuff
 
       // if we have a weird stride...
       val a: DenseMatrix[Double] =
-        if (_a.majorStride < math
-              .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
+        if (_a.majorStride <
+              math.max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
         else _a
       val b: DenseMatrix[Double] =
-        if (_b.majorStride < math
-              .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
+        if (_b.majorStride <
+              math.max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
         else _b
 
       blas.dgemm(
@@ -283,8 +283,8 @@ trait DenseMatrixMultiplyStuff
           if (queryInfo.`val` != 0)
             math.max(
               1,
-              math.min(A.rows, A.cols) + math
-                .max(math.min(A.rows, A.cols), nrhs))
+              math.min(A.rows, A.cols) +
+                math.max(math.min(A.rows, A.cols), nrhs))
           else math.max(queryWork(0).toInt, 1)
         }
         new Array[Double](lwork)
@@ -321,8 +321,8 @@ trait DenseMatrixMultiplyStuff
     override def apply(
         a: DenseMatrix[Double],
         b: DenseVector[Double]): DenseVector[Double] = {
-      val rv: DenseMatrix[Double] =
-        a \ new DenseMatrix[Double](b.size, 1, b.data, b.offset, b.stride, true)
+      val rv: DenseMatrix[Double] = a \
+        new DenseMatrix[Double](b.size, 1, b.data, b.offset, b.stride, true)
       new DenseVector[Double](rv.data)
     }
   }
@@ -354,12 +354,12 @@ trait DenseMatrixFloatMultiplyStuff
 
       // if we have a weird stride...
       val a: DenseMatrix[Float] =
-        if (_a.majorStride < math
-              .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
+        if (_a.majorStride <
+              math.max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
         else _a
       val b: DenseMatrix[Float] =
-        if (_b.majorStride < math
-              .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
+        if (_b.majorStride <
+              math.max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
         else _b
 
       blas.sgemm(
@@ -561,8 +561,8 @@ trait DenseMatrixFloatMultiplyStuff
           if (queryInfo.`val` != 0)
             math.max(
               1,
-              math.min(A.rows, A.cols) + math
-                .max(math.min(A.rows, A.cols), nrhs))
+              math.min(A.rows, A.cols) +
+                math.max(math.min(A.rows, A.cols), nrhs))
           else math.max(queryWork(0).toInt, 1)
         }
         new Array[Float](lwork)
@@ -600,8 +600,8 @@ trait DenseMatrixFloatMultiplyStuff
     override def apply(
         a: DenseMatrix[Float],
         b: DenseVector[Float]): DenseVector[Float] = {
-      val rv: DenseMatrix[Float] =
-        a \ new DenseMatrix[Float](b.size, 1, b.data, b.offset, b.stride, true)
+      val rv: DenseMatrix[Float] = a \
+        new DenseMatrix[Float](b.size, 1, b.data, b.offset, b.stride, true)
       new DenseVector[Float](rv.data)
     }
   }
@@ -657,8 +657,8 @@ trait DenseMatrixOps {
           a := ac
           // gives a roughly 5-10x speedup
           // if a and b are both nicely and identically shaped, add them as though they were vectors
-        } else if (a.isTranspose == b.isTranspose && a.isContiguous && b
-                     .isContiguous) {
+        } else if (a.isTranspose == b.isTranspose && a.isContiguous &&
+                   b.isContiguous) {
           vecOp(
             new DenseVector(a.data, a.offset, 1, a.size),
             new DenseVector(b.data, b.offset, 1, b.size))
@@ -1219,10 +1219,9 @@ trait LowPriorityDenseMatrix extends LowPriorityDenseMatrix1 {
       require(a.rows == b.rows, "Matrixs must have same number of rows")
       require(a.cols == b.cols, "Matrixs must have same number of columns")
 
-      if (a.data.length - a.offset == a.rows * a.cols
-          && b.data.length - b.offset == a.rows * a.cols
-          && a.majorStride == b.majorStride
-          && a.isTranspose == b.isTranspose) {
+      if (a.data.length - a.offset == a.rows * a.cols &&
+          b.data.length - b.offset == a.rows * a.cols &&
+          a.majorStride == b.majorStride && a.isTranspose == b.isTranspose) {
 
         System.arraycopy(b.data, b.offset, a.data, a.offset, a.size)
 

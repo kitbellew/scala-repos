@@ -42,78 +42,72 @@ object Docs {
   lazy val settings = Seq(
     apiDocsInclude := false,
     apiDocsIncludeManaged := false,
-    apiDocsScalaSources <<= (thisProjectRef, buildStructure) flatMap allSources(
-      Compile,
-      ".scala"),
+    apiDocsScalaSources <<= (thisProjectRef, buildStructure) flatMap
+      allSources(Compile, ".scala"),
     apiDocsClasspath <<= (thisProjectRef, buildStructure) flatMap allClasspaths,
-    apiDocsJavaSources <<= (thisProjectRef, buildStructure) flatMap allSources(
-      Compile,
-      ".java"),
+    apiDocsJavaSources <<= (thisProjectRef, buildStructure) flatMap
+      allSources(Compile, ".java"),
     apiDocsUseCache := true,
     apiDocs <<= apiDocsTask,
     ivyConfigurations += Webjars,
     extractWebjars <<= extractWebjarContents,
-    allConfs in Global <<= (
-      thisProjectRef,
-      buildStructure) flatMap allConfsTask,
-    mappings in (Compile, packageBin) <++= (
-      baseDirectory,
-      apiDocs,
-      extractWebjars,
-      version,
-      allConfs) map { (base, apiBase, webjars, playVersion, confs) =>
-      // Include documentation and API docs in main binary JAR
-      val docBase = base / "../../../documentation"
-      val raw = (docBase \ "manual" ** "*") +++ (docBase \ "style" ** "*")
-      val filtered = raw.filter(_.getName != ".DS_Store")
-      val docMappings = filtered.get pair rebase(docBase, "play/docs/content/")
+    allConfs in Global <<= (thisProjectRef, buildStructure) flatMap
+      allConfsTask,
+    mappings in (Compile, packageBin) <++=
+      (baseDirectory, apiDocs, extractWebjars, version, allConfs) map {
+        (base, apiBase, webjars, playVersion, confs) =>
+          // Include documentation and API docs in main binary JAR
+          val docBase = base / "../../../documentation"
+          val raw = (docBase \ "manual" ** "*") +++ (docBase \ "style" ** "*")
+          val filtered = raw.filter(_.getName != ".DS_Store")
+          val docMappings = filtered.get pair
+            rebase(docBase, "play/docs/content/")
 
-      val apiDocMappings =
-        (apiBase ** "*").get pair rebase(apiBase, "play/docs/content/api")
+          val apiDocMappings = (apiBase ** "*").get pair
+            rebase(apiBase, "play/docs/content/api")
 
-      // The play version is added so that resource paths are versioned
-      val webjarMappings = webjars.*** pair rebase(
-        webjars,
-        "play/docs/content/webjars/" + playVersion)
+          // The play version is added so that resource paths are versioned
+          val webjarMappings = webjars.*** pair
+            rebase(webjars, "play/docs/content/webjars/" + playVersion)
 
-      // Gather all the conf files into the project
-      val referenceConfMappings = confs.map {
-        case (projectName, conf) =>
-          conf -> s"play/docs/content/confs/$projectName/${conf.getName}"
+          // Gather all the conf files into the project
+          val referenceConfMappings = confs.map {
+            case (projectName, conf) =>
+              conf -> s"play/docs/content/confs/$projectName/${conf.getName}"
+          }
+
+          docMappings ++ apiDocMappings ++ webjarMappings ++
+            referenceConfMappings
       }
-
-      docMappings ++ apiDocMappings ++ webjarMappings ++ referenceConfMappings
-    }
   )
 
   def playdocSettings: Seq[Setting[_]] =
-    Playdoc.projectSettings ++
-      Seq(
-        ivyConfigurations += Webjars,
-        extractWebjars <<= extractWebjarContents,
-        libraryDependencies ++= Dependencies.playdocWebjarDependencies,
-        mappings in playdocPackage := {
-          val base = (baseDirectory in ThisBuild).value
-          val docBase = base.getParentFile / "documentation"
-          val raw = (docBase / "manual").*** +++ (docBase / "style").***
-          val filtered = raw.filter(_.getName != ".DS_Store")
-          val docMappings = filtered.get pair relativeTo(docBase)
+    Playdoc.projectSettings ++ Seq(
+      ivyConfigurations += Webjars,
+      extractWebjars <<= extractWebjarContents,
+      libraryDependencies ++= Dependencies.playdocWebjarDependencies,
+      mappings in playdocPackage := {
+        val base = (baseDirectory in ThisBuild).value
+        val docBase = base.getParentFile / "documentation"
+        val raw = (docBase / "manual").*** +++ (docBase / "style").***
+        val filtered = raw.filter(_.getName != ".DS_Store")
+        val docMappings = filtered.get pair relativeTo(docBase)
 
-          // The play version is added so that resource paths are versioned
-          val webjars = extractWebjars.value
-          val playVersion = version.value
-          val webjarMappings =
-            webjars.*** pair rebase(webjars, "webjars/" + playVersion)
+        // The play version is added so that resource paths are versioned
+        val webjars = extractWebjars.value
+        val playVersion = version.value
+        val webjarMappings = webjars.*** pair
+          rebase(webjars, "webjars/" + playVersion)
 
-          // Gather all the conf files into the project
-          val referenceConfs = allConfs.value.map {
-            case (projectName, conf) =>
-              conf -> s"confs/$projectName/${conf.getName}"
-          }
-
-          docMappings ++ webjarMappings ++ referenceConfs
+        // Gather all the conf files into the project
+        val referenceConfs = allConfs.value.map {
+          case (projectName, conf) =>
+            conf -> s"confs/$projectName/${conf.getName}"
         }
-      )
+
+        docMappings ++ webjarMappings ++ referenceConfs
+      }
+    )
 
   def apiDocsTask =
     Def.task {
@@ -146,7 +140,8 @@ object Docs {
           "-sourcepath",
           (baseDirectory in ThisBuild).value.getAbsolutePath,
           "-doc-source-url",
-          "https://github.com/playframework/playframework/tree/" + sourceTree + "/framework€{FILE_PATH}.scala",
+          "https://github.com/playframework/playframework/tree/" + sourceTree +
+            "/framework€{FILE_PATH}.scala",
           "-doc-external-doc",
           externalDocsScalacOption
         )
@@ -213,8 +208,8 @@ object Docs {
         .map(_.map { resources =>
           (for {
             conf <- resources.filter(resource =>
-              resource.name == "reference.conf" || resource.name
-                .endsWith(".xml"))
+              resource.name == "reference.conf" ||
+                resource.name.endsWith(".xml"))
             id <- projectId.toSeq
           } yield id -> conf).distinct
         })

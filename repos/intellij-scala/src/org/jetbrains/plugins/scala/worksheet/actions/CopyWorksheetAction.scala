@@ -47,17 +47,16 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
   private def createMerged(editor: Editor, viewer: Editor): String = {
     val result = new StringBuilder
     val fullShift = StringUtil.repeat(" ", CopyWorksheetAction.COPY_BORDER)
-    val lineSeparator =
-      Option(System.getProperty("line.separator")) getOrElse "\n"
+    val lineSeparator = Option(System.getProperty("line.separator")) getOrElse
+      "\n"
 
     val leftDocument = editor.getDocument
     val rightDocument = viewer.getDocument
 
     def append2Result(textLeft: String, textRight: String, sym: String) {
-      result append (if (textLeft.length < CopyWorksheetAction.COPY_BORDER)
-                       textLeft
-                     else
-                       textLeft.substring(0, CopyWorksheetAction.COPY_BORDER))
+      result append
+        (if (textLeft.length < CopyWorksheetAction.COPY_BORDER) textLeft
+         else textLeft.substring(0, CopyWorksheetAction.COPY_BORDER))
       for (_ <- 1 to (CopyWorksheetAction.COPY_BORDER - textLeft.length))
         result append sym
       result append "//"
@@ -99,8 +98,8 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
             val leftStart = {
               var j = lastEnd
 
-              while (getFromLeft(j).trim.length == 0 && j < leftDocument
-                       .getLineCount) j += 1
+              while (getFromLeft(j).trim.length == 0 &&
+                     j < leftDocument.getLineCount) j += 1
               if (j == leftDocument.getLineCount) return result.toString()
               else j
             }

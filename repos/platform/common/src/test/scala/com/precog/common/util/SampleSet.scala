@@ -378,8 +378,8 @@ case class DistributedSampleSet[T](
     private val recordedSamples: Vector[T] = Vector())
     extends SampleSet[T] {
   self =>
-  def queriableSamples =
-    (recordedSamples.size >= queriableSampleSize).option(recordedSamples)
+  def queriableSamples = (recordedSamples.size >= queriableSampleSize)
+    .option(recordedSamples)
 
   import AdSamples._
   def next = {

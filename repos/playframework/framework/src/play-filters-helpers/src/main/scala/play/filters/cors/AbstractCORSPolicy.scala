@@ -138,8 +138,8 @@ private[cors] trait AbstractCORSPolicy {
        * with as values the header field names given in the list of exposed headers.
        */
       if (corsConfig.exposedHeaders.nonEmpty) {
-        headerBuilder += HeaderNames.ACCESS_CONTROL_EXPOSE_HEADERS -> corsConfig
-          .exposedHeaders.mkString(",")
+        headerBuilder += HeaderNames.ACCESS_CONTROL_EXPOSE_HEADERS ->
+          corsConfig.exposedHeaders.mkString(",")
       }
 
       import play.api.libs.iteratee.Execution.Implicits.trampoline
@@ -239,10 +239,10 @@ private[cors] trait AbstractCORSPolicy {
                  * with the value of the Origin header as value, and add a single
                  * Access-Control-Allow-Credentials header with the case-sensitive string "true" as value.
                  */
-                headerBuilder += HeaderNames
-                  .ACCESS_CONTROL_ALLOW_CREDENTIALS -> "true"
-                headerBuilder += HeaderNames
-                  .ACCESS_CONTROL_ALLOW_ORIGIN -> origin
+                headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS ->
+                  "true"
+                headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN ->
+                  origin
 
                 /* http://www.w3.org/TR/cors/#resource-implementation
                  * § 6.4
@@ -259,11 +259,11 @@ private[cors] trait AbstractCORSPolicy {
                  * with either the value of the Origin header or the string "*" as value.
                  */
                 if (corsConfig.anyOriginAllowed) {
-                  headerBuilder += HeaderNames
-                    .ACCESS_CONTROL_ALLOW_ORIGIN -> "*"
+                  headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN ->
+                    "*"
                 } else {
-                  headerBuilder += HeaderNames
-                    .ACCESS_CONTROL_ALLOW_ORIGIN -> origin
+                  headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN ->
+                    origin
                   /* http://www.w3.org/TR/cors/#resource-implementation
                    * § 6.4
                    */
@@ -277,9 +277,8 @@ private[cors] trait AbstractCORSPolicy {
                * of seconds the user agent is allowed to cache the result of the request.
                */
               if (corsConfig.preflightMaxAge.toSeconds > 0) {
-                headerBuilder += HeaderNames
-                  .ACCESS_CONTROL_MAX_AGE -> corsConfig.preflightMaxAge
-                  .toSeconds.toString
+                headerBuilder += HeaderNames.ACCESS_CONTROL_MAX_AGE ->
+                  corsConfig.preflightMaxAge.toSeconds.toString
               }
 
               /* http://www.w3.org/TR/cors/#resource-preflight-requests
@@ -291,8 +290,8 @@ private[cors] trait AbstractCORSPolicy {
                * Note: Since the list of methods can be unbounded, simply returning the method
                * indicated by Access-Control-Request-Method (if supported) can be enough.
                */
-              headerBuilder += HeaderNames
-                .ACCESS_CONTROL_ALLOW_METHODS -> accessControlRequestMethod
+              headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_METHODS ->
+                accessControlRequestMethod
 
               /* http://www.w3.org/TR/cors/#resource-preflight-requests
                * § 6.2.9
@@ -307,9 +306,8 @@ private[cors] trait AbstractCORSPolicy {
                * headers from Access-Control-Allow-Headers can be enough.
                */
               if (!accessControlRequestHeaders.isEmpty) {
-                headerBuilder += HeaderNames
-                  .ACCESS_CONTROL_ALLOW_HEADERS -> accessControlRequestHeaders
-                  .mkString(",")
+                headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_HEADERS ->
+                  accessControlRequestHeaders.mkString(",")
               }
 
               Future.successful {
@@ -343,10 +341,9 @@ private[cors] trait AbstractCORSPolicy {
   private def isSameOrigin(origin: String, request: RequestHeader): Boolean = {
     val hostUri = new URI(origin.toLowerCase(Locale.ENGLISH))
     val originUri = new URI(
-      (if (request.secure) "https://" else "http://") + request.host
-        .toLowerCase(Locale.ENGLISH))
-    (hostUri.getScheme, hostUri.getHost, hostUri.getPort) == (
-      originUri.getScheme, originUri.getHost, originUri.getPort
-    )
+      (if (request.secure) "https://" else "http://") +
+        request.host.toLowerCase(Locale.ENGLISH))
+    (hostUri.getScheme, hostUri.getHost, hostUri.getPort) ==
+      (originUri.getScheme, originUri.getHost, originUri.getPort)
   }
 }

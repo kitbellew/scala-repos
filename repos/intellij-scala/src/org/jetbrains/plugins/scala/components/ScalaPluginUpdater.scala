@@ -54,7 +54,8 @@ object ScalaPluginUpdater {
     CASSIOPEIA_OLD -> Map(
       Release -> "DUMMY",
       EAP -> "http://www.jetbrains.com/idea/plugins/scala-eap-cassiopeia.xml",
-      Nightly -> "http://www.jetbrains.com/idea/plugins/scala-nightly-cassiopeia.xml"
+      Nightly ->
+        "http://www.jetbrains.com/idea/plugins/scala-nightly-cassiopeia.xml"
     ),
     FOURTEEN_ONE_OLD -> Map(
       Release -> "DUMMY",
@@ -242,8 +243,9 @@ object ScalaPluginUpdater {
     def isBetaOrEAPPlatform = infoImpl.isEAP || infoImpl.isBetaOrRC
     val notification = getPlatformUpdateResult match {
       case Some(result)
-          if isUpToDatePlatform(result) && !isBetaOrEAPPlatform && appSettings
-            .ASK_PLATFORM_UPDATE => // platform is up to date - suggest eap
+          if isUpToDatePlatform(result) && !isBetaOrEAPPlatform &&
+            appSettings
+              .ASK_PLATFORM_UPDATE => // platform is up to date - suggest eap
         val message =
           s"Your IDEA is outdated to use with $branch branch.<br/>Would you like to switch IDEA channel to EAP?" +
             s"""<p/><a href="Yes">Yes</a>\n""" +
@@ -282,8 +284,9 @@ object ScalaPluginUpdater {
     val lastUpdateTime = PropertiesComponent.getInstance().getOrInitLong(key, 0)
     EditorFactory.getInstance().getEventMulticaster
       .removeDocumentListener(updateListener)
-    if (lastUpdateTime == 0L || System
-          .currentTimeMillis() - lastUpdateTime > TimeUnit.DAYS.toMillis(1)) {
+    if (lastUpdateTime == 0L ||
+        System.currentTimeMillis() -
+          lastUpdateTime > TimeUnit.DAYS.toMillis(1)) {
       ApplicationManager.getApplication.executeOnPooledThread(new Runnable {
         override def run() = {
           val buildNumber = ApplicationInfo.getInstance().getBuild.asString()
@@ -363,9 +366,9 @@ object ScalaPluginUpdater {
     val infoImpl = ApplicationInfo.getInstance()
       .asInstanceOf[ApplicationInfoImpl]
     val applicationSettings = ScalaApplicationSettings.getInstance()
-    if ((infoImpl.isEAP || infoImpl.isBetaOrRC)
-        && applicationSettings.ASK_USE_LATEST_PLUGIN_BUILDS
-        && ScalaPluginUpdater.pluginIsRelease) {
+    if ((infoImpl.isEAP || infoImpl.isBetaOrRC) &&
+        applicationSettings.ASK_USE_LATEST_PLUGIN_BUILDS &&
+        ScalaPluginUpdater.pluginIsRelease) {
       val message = "Please select Scala plugin update channel:" +
         s"""<p/><a href="EAP">EAP</a>\n""" +
         s"""<p/><a href="Release">Release</a>"""

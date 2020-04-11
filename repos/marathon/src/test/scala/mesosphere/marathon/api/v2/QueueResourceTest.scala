@@ -45,9 +45,8 @@ class QueueResourceTest
     (jsonApp1 \ "app").as[AppDefinition] should be(app)
     (jsonApp1 \ "count").as[Int] should be(23)
     (jsonApp1 \ "delay" \ "overdue").as[Boolean] should be(false)
-    (jsonApp1 \ "delay" \ "timeLeftSeconds").as[Int] should be(
-      100
-    ) //the deadline holds the current time...
+    (jsonApp1 \ "delay" \ "timeLeftSeconds").as[Int] should
+      be(100) //the deadline holds the current time...
   }
 
   test("the generated info from the queue contains 0 if there is no delay") {

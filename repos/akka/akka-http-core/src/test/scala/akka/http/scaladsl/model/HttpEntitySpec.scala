@@ -40,35 +40,20 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
     "support dataBytes" - {
       "Strict" in { Strict(tpe, abc) must collectBytesTo(abc) }
       "Default" in {
-        Default(tpe, 11, source(abc, de, fgh, ijk)) must collectBytesTo(
-          abc,
-          de,
-          fgh,
-          ijk)
+        Default(tpe, 11, source(abc, de, fgh, ijk)) must
+          collectBytesTo(abc, de, fgh, ijk)
       }
       "CloseDelimited" in {
-        CloseDelimited(tpe, source(abc, de, fgh, ijk)) must collectBytesTo(
-          abc,
-          de,
-          fgh,
-          ijk)
+        CloseDelimited(tpe, source(abc, de, fgh, ijk)) must
+          collectBytesTo(abc, de, fgh, ijk)
       }
       "Chunked w/o LastChunk" in {
-        Chunked(
-          tpe,
-          source(Chunk(abc), Chunk(fgh), Chunk(ijk))) must collectBytesTo(
-          abc,
-          fgh,
-          ijk)
+        Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk))) must
+          collectBytesTo(abc, fgh, ijk)
       }
       "Chunked with LastChunk" in {
-        Chunked(
-          tpe,
-          source(
-            Chunk(abc),
-            Chunk(fgh),
-            Chunk(ijk),
-            LastChunk)) must collectBytesTo(abc, fgh, ijk)
+        Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk)) must
+          collectBytesTo(abc, fgh, ijk)
       }
     }
     "support contentLength" - {
@@ -117,8 +102,8 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
     }
     "support transformDataBytes" - {
       "Strict" in {
-        Strict(tpe, abc) must transformTo(
-          Strict(tpe, doubleChars("abc") ++ trailer))
+        Strict(tpe, abc) must
+          transformTo(Strict(tpe, doubleChars("abc") ++ trailer))
       }
       "Default" in {
         Default(tpe, 11, source(abc, de, fgh, ijk)) must

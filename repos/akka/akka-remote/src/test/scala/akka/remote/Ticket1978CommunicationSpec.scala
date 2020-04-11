@@ -91,12 +91,14 @@ object Configuration {
 
       val engine = NettySSLSupport.initializeClientSSL(settings, NoLogging)
         .getEngine
-      val gotAllSupported = enabled.toSet diff engine.getSupportedCipherSuites
-        .toSet
+      val gotAllSupported = enabled.toSet diff
+        engine.getSupportedCipherSuites.toSet
       val gotAllEnabled = enabled.toSet diff engine.getEnabledCipherSuites.toSet
-      gotAllSupported.isEmpty || (throw new IllegalArgumentException(
+      gotAllSupported.isEmpty ||
+      (throw new IllegalArgumentException(
         "Cipher Suite not supported: " + gotAllSupported))
-      gotAllEnabled.isEmpty || (throw new IllegalArgumentException(
+      gotAllEnabled.isEmpty ||
+      (throw new IllegalArgumentException(
         "Cipher Suite not enabled: " + gotAllEnabled))
       engine.getSupportedProtocols.contains(settings.SSLProtocol.get) ||
       (throw new IllegalArgumentException(
@@ -215,9 +217,8 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
 
       "support tell" in within(timeout.duration) {
         val here = {
-          system
-            .actorSelection(otherAddress.toString + "/user/echo") ! Identify(
-            None)
+          system.actorSelection(otherAddress.toString + "/user/echo") !
+            Identify(None)
           expectMsgType[ActorIdentity].ref.get
         }
 
@@ -230,17 +231,16 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
       "support ask" in within(timeout.duration) {
         import system.dispatcher
         val here = {
-          system
-            .actorSelection(otherAddress.toString + "/user/echo") ! Identify(
-            None)
+          system.actorSelection(otherAddress.toString + "/user/echo") !
+            Identify(None)
           expectMsgType[ActorIdentity].ref.get
         }
 
         val f =
           for (i ← 1 to 1000)
             yield here ? (("ping", i)) mapTo classTag[((String, Int), ActorRef)]
-        Await.result(Future.sequence(f), remaining).map(_._1._1)
-          .toSet should ===(Set("pong"))
+        Await.result(Future.sequence(f), remaining).map(_._1._1).toSet should
+          ===(Set("pong"))
       }
 
     } else {

@@ -82,8 +82,8 @@ trait RackAwareTest {
           val rack = brokerRackMapping.getOrElse(
             brokerId,
             sys.error(s"No mapping found for $brokerId in `brokerRackMapping`"))
-          partitionRackMap(partitionId) = rack :: partitionRackMap
-            .getOrElse(partitionId, List())
+          partitionRackMap(partitionId) = rack ::
+            partitionRackMap.getOrElse(partitionId, List())
         }
     }
     ReplicaDistributions(partitionRackMap, leaderCount, partitionCount)

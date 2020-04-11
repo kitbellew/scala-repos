@@ -67,9 +67,7 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
 
   test("3VL Not") {
     val notTrueTable =
-      (true, false) ::
-        (false, true) ::
-        (null, null) :: Nil
+      (true, false) :: (false, true) :: (null, null) :: Nil
     notTrueTable.foreach {
       case (v, answer) =>
         checkEvaluation(Not(Literal.create(v, BooleanType)), answer)
@@ -89,43 +87,25 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
   booleanLogicTest(
     "AND",
     And,
-    (true, true, true) ::
-      (true, false, false) ::
-      (true, null, null) ::
-      (false, true, false) ::
-      (false, false, false) ::
-      (false, null, false) ::
-      (null, true, null) ::
-      (null, false, false) ::
-      (null, null, null) :: Nil
+    (true, true, true) :: (true, false, false) :: (true, null, null) ::
+      (false, true, false) :: (false, false, false) :: (false, null, false) ::
+      (null, true, null) :: (null, false, false) :: (null, null, null) :: Nil
   )
 
   booleanLogicTest(
     "OR",
     Or,
-    (true, true, true) ::
-      (true, false, true) ::
-      (true, null, true) ::
-      (false, true, true) ::
-      (false, false, false) ::
-      (false, null, null) ::
-      (null, true, true) ::
-      (null, false, null) ::
-      (null, null, null) :: Nil
+    (true, true, true) :: (true, false, true) :: (true, null, true) ::
+      (false, true, true) :: (false, false, false) :: (false, null, null) ::
+      (null, true, true) :: (null, false, null) :: (null, null, null) :: Nil
   )
 
   booleanLogicTest(
     "=",
     EqualTo,
-    (true, true, true) ::
-      (true, false, false) ::
-      (true, null, null) ::
-      (false, true, false) ::
-      (false, false, true) ::
-      (false, null, null) ::
-      (null, true, null) ::
-      (null, false, null) ::
-      (null, null, null) :: Nil
+    (true, true, true) :: (true, false, false) :: (true, null, null) ::
+      (false, true, false) :: (false, false, true) :: (false, null, null) ::
+      (null, true, null) :: (null, false, null) :: (null, null, null) :: Nil
   )
 
   test("IN") {

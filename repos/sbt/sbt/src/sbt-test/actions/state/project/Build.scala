@@ -18,14 +18,14 @@ object MyBuild extends Build {
 
   def updateDemoInit = state map { s => (s get sample getOrElse 9) + 1 }
 
-  lazy val root = Project("root", file(".")) settings (
-    updateDemo <<= updateDemoInit updateState demoState,
-    check <<= checkInit,
-    inMemorySetting,
-    persistedSetting,
-    inMemoryCheck,
-    persistedCheck
-  )
+  lazy val root = Project("root", file(".")) settings
+    (
+      updateDemo <<= updateDemoInit updateState demoState,
+      check <<= checkInit,
+      inMemorySetting,
+      persistedSetting,
+      inMemoryCheck,
+      persistedCheck)
   def demoState(s: State, i: Int): State = s put (sample, i + 1)
 
   def checkInit: Initialize[InputTask[Unit]] =
@@ -53,11 +53,11 @@ object MyBuild extends Build {
     } storeAs (persisted)
 
   def inMemoryCheck =
-    checkKeep <<= inputCheck((ctx, s) =>
-      Space ~> str(getFromContext(keep, ctx, s)))
+    checkKeep <<=
+      inputCheck((ctx, s) => Space ~> str(getFromContext(keep, ctx, s)))
   def persistedCheck =
-    checkPersisted <<= inputCheck((ctx, s) =>
-      Space ~> str(loadFromContext(persisted, ctx, s)))
+    checkPersisted <<=
+      inputCheck((ctx, s) => Space ~> str(loadFromContext(persisted, ctx, s)))
 
   def inputCheck[T](
       f: (ScopedKey[_], State) => Parser[T]): Initialize[InputTask[Unit]] =

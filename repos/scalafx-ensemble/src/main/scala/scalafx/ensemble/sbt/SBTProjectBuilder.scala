@@ -86,8 +86,8 @@ object SBTProjectBuilder {
       "build.sbt",
       filters = List(
         "@name@" -> projectName,
-        "@mainClass@" -> (sampleInfo.packageName + "." + sampleInfo
-          .classSimpleName)))
+        "@mainClass@" ->
+          (sampleInfo.packageName + "." + sampleInfo.classSimpleName)))
     copyText(projectDir, "project/build.properties")
     copyText(projectDir, "project/plugins.sbt")
     copyText(projectDir, "README.md")
@@ -119,7 +119,8 @@ object SBTProjectBuilder {
     } catch {
       case t: Throwable =>
         throw new IOException(
-          "Error while creating SBT project. Failed to copy text file: " + fileName,
+          "Error while creating SBT project. Failed to copy text file: " +
+            fileName,
           t)
     }
   }
@@ -135,7 +136,8 @@ object SBTProjectBuilder {
     } catch {
       case t: Throwable =>
         throw new IOException(
-          "Error while creating SBT project. Failed to copy resource: " + fileName,
+          "Error while creating SBT project. Failed to copy resource: " +
+            fileName,
           t)
     }
   }

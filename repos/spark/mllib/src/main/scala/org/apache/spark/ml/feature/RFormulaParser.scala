@@ -160,8 +160,9 @@ private[ml] object RFormulaParser extends RegexParsers {
     columnRef | dot,
     ":")
 
-  private val term: Parser[Term] = intercept |
-    interaction ^^ { case terms => ColumnInteraction(terms) } | dot | columnRef
+  private val term: Parser[Term] = intercept | interaction ^^ {
+    case terms => ColumnInteraction(terms)
+  } | dot | columnRef
 
   private val terms: Parser[List[Term]] =
     (term ~ rep("+" ~ term | "-" ~ term)) ^^ {
@@ -171,8 +172,9 @@ private[ml] object RFormulaParser extends RegexParsers {
         }
     }
 
-  private val formula: Parser[ParsedRFormula] =
-    (columnRef ~ "~" ~ terms) ^^ { case r ~ "~" ~ t => ParsedRFormula(r, t) }
+  private val formula: Parser[ParsedRFormula] = (columnRef ~ "~" ~ terms) ^^ {
+    case r ~ "~" ~ t => ParsedRFormula(r, t)
+  }
 
   def parse(value: String): ParsedRFormula =
     parseAll(formula, value) match {

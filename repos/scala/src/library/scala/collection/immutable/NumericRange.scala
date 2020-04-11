@@ -85,8 +85,9 @@ abstract class NumericRange[T](
   // Tests whether a number is within the endpoints, without testing
   // whether it is a member of the sequence (i.e. when step > 1.)
   private def isWithinBoundaries(elem: T) =
-    !isEmpty && ((step > zero && start <= elem && elem <= last) ||
-      (step < zero && last <= elem && elem <= start))
+    !isEmpty &&
+      ((step > zero && start <= elem && elem <= last) ||
+        (step < zero && last <= elem && elem <= start))
   // Methods like apply throw exceptions on invalid n, but methods like take/drop
   // are forgiving: therefore the checks are with the methods.
   private def locationAfterN(n: Int): T = start + (step * fromInt(n))
@@ -215,13 +216,13 @@ abstract class NumericRange[T](
         val two = num fromInt 2
         val nre = num fromInt numRangeElements
         if (a > 1e38 || b > 1e38)
-          nre * (
-            (head / two) + (last / two)
-          ) // Compute in parts to avoid Infinity if possible
+          nre *
+            ((head / two) +
+              (last / two)) // Compute in parts to avoid Infinity if possible
         else
-          (nre / two) * (
-            head + last
-          ) // Don't need to worry about infinity; this will be more accurate and avoid underflow
+          (nre / two) *
+            (head +
+              last) // Don't need to worry about infinity; this will be more accurate and avoid underflow
       } else if ((num eq scala.math.Numeric.BigIntIsIntegral) ||
                  (num eq scala.math.Numeric.BigDecimalIsFractional)) {
         // No overflow, so we can use arithmetic series formula directly
@@ -251,11 +252,11 @@ abstract class NumericRange[T](
   override def equals(other: Any) =
     other match {
       case x: NumericRange[_] =>
-        (x canEqual this) && (length == x.length) && (
-          (length == 0) || // all empty sequences are equal
-            (start == x.start && last == x
-              .last) // same length and same endpoints implies equality
-        )
+        (x canEqual this) && (length == x.length) &&
+          ((length == 0) || // all empty sequences are equal
+            (start == x.start &&
+              last == x.last) // same length and same endpoints implies equality
+          )
       case _ => super.equals(other)
     }
 

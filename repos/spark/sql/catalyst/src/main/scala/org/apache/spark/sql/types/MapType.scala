@@ -50,11 +50,9 @@ case class MapType(
     DataType.buildFormattedString(valueType, s"$prefix    |", builder)
   }
 
-  override private[sql] def jsonValue: JValue =
-    ("type" -> typeName) ~
-      ("keyType" -> keyType.jsonValue) ~
-      ("valueType" -> valueType.jsonValue) ~
-      ("valueContainsNull" -> valueContainsNull)
+  override private[sql] def jsonValue: JValue = ("type" -> typeName) ~
+    ("keyType" -> keyType.jsonValue) ~ ("valueType" -> valueType.jsonValue) ~
+    ("valueContainsNull" -> valueContainsNull)
 
   /**
     * The default size of a value of the MapType is

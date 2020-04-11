@@ -42,47 +42,45 @@ class ExecutionDirectivesSpec extends RoutingSpec {
         get { handleExceptions(handler) { throw MyException } }
       }
     }
-    "not interfere with alternative routes" in EventFilter[MyException.type](
-      occurrences = 1).intercept {
-      Get("/abc") ~>
-        get {
+    "not interfere with alternative routes" in
+      EventFilter[MyException.type](occurrences = 1).intercept {
+        Get("/abc") ~> get {
           handleExceptions(handler)(reject) ~ { ctx ⇒ throw MyException }
         } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual "There was an internal server error."
+          status shouldEqual StatusCodes.InternalServerError
+          responseAs[String] shouldEqual "There was an internal server error."
+        }
       }
-    }
-    "not handle other exceptions" in EventFilter[RuntimeException](
-      occurrences = 1,
-      message = "buh").intercept {
-      Get("/abc") ~>
-        get {
-          handleExceptions(handler) { throw new RuntimeException("buh") }
-        } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual "There was an internal server error."
-      }
-    }
-    "always fall back to a default content type" in EventFilter[
-      RuntimeException](occurrences = 2, message = "buh2").intercept {
-      Get("/abc") ~> Accept(MediaTypes.`application/json`) ~>
-        get {
-          handleExceptions(handler) { throw new RuntimeException("buh2") }
-        } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual "There was an internal server error."
-      }
+    "not handle other exceptions" in
+      EventFilter[RuntimeException](occurrences = 1, message = "buh")
+        .intercept {
+          Get("/abc") ~> get {
+            handleExceptions(handler) { throw new RuntimeException("buh") }
+          } ~> check {
+            status shouldEqual StatusCodes.InternalServerError
+            responseAs[String] shouldEqual "There was an internal server error."
+          }
+        }
+    "always fall back to a default content type" in
+      EventFilter[RuntimeException](occurrences = 2, message = "buh2")
+        .intercept {
+          Get("/abc") ~> Accept(MediaTypes.`application/json`) ~> get {
+            handleExceptions(handler) { throw new RuntimeException("buh2") }
+          } ~> check {
+            status shouldEqual StatusCodes.InternalServerError
+            responseAs[String] shouldEqual "There was an internal server error."
+          }
 
-      Get("/abc") ~> Accept(
-        MediaTypes.`text/xml`,
-        MediaRanges.`*/*`.withQValue(0f)) ~>
-        get {
-          handleExceptions(handler) { throw new RuntimeException("buh2") }
-        } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual "There was an internal server error."
-      }
-    }
+          Get("/abc") ~>
+            Accept(MediaTypes.`text/xml`, MediaRanges.`*/*`.withQValue(0f)) ~>
+            get {
+              handleExceptions(handler) { throw new RuntimeException("buh2") }
+            } ~> check {
+              status shouldEqual StatusCodes.InternalServerError
+              responseAs[String] shouldEqual
+                "There was an internal server error."
+            }
+        }
   }
 
   def exceptionShouldBeHandled(route: Route) =

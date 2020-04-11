@@ -138,8 +138,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               case col: DateColumn =>
                 var zmax: DateTime = {
                   val init = new DateTime(0)
-                  val min =
-                    -292275054 - 1970 //the smallest Int value jodatime accepts
+                  val min = -292275054 -
+                    1970 //the smallest Int value jodatime accepts
 
                   init.plus(Period.years(min))
                 }
@@ -187,8 +187,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               case col: DateColumn =>
                 var zmax: DateTime = {
                   val init = new DateTime(0)
-                  val max =
-                    292278993 - 1970 //the largest Int value jodatime accepts
+                  val max = 292278993 -
+                    1970 //the largest Int value jodatime accepts
 
                   init.plus(Period.years(max))
                 }
@@ -436,9 +436,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         res map { case (sum, count) => sum / count }
 
       def extract(res: Result): Table =
-        perform(res) map {
-          case v => Table.constDecimal(Set(v))
-        } getOrElse Table.empty
+        perform(res) map { case v => Table.constDecimal(Set(v)) } getOrElse
+          Table.empty
 
       def extractValue(res: Result) = perform(res) map { CNum(_) }
     }
@@ -631,8 +630,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
       def extract(res: Result): Table =
-        perform(res) map { v => Table.constDecimal(Set(v)) } getOrElse Table
-          .empty
+        perform(res) map { v => Table.constDecimal(Set(v)) } getOrElse
+          Table.empty
 
       def extractValue(res: Result) = perform(res) map { CNum(_) }
     }
@@ -658,8 +657,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
       def extract(res: Result): Table =
-        perform(res) map { v => Table.constDecimal(Set(v)) } getOrElse Table
-          .empty
+        perform(res) map { v => Table.constDecimal(Set(v)) } getOrElse
+          Table.empty
 
       // todo using toDouble is BAD
       def extractValue(res: Result) = perform(res) map { CNum(_) }

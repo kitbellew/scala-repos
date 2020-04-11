@@ -262,24 +262,25 @@ class CachedSpec extends PlaySpecification {
       defaultCache.get[Int]("unit") must beNone
     }
 
-    "get items from the cache without giving the type" in new WithApplication() {
-      val defaultCache = app.injector.instanceOf[CacheApi]
-      defaultCache.set("foo", "bar")
-      defaultCache.get("foo") must beSome("bar")
-      defaultCache.get[Any]("foo") must beSome("bar")
+    "get items from the cache without giving the type" in
+      new WithApplication() {
+        val defaultCache = app.injector.instanceOf[CacheApi]
+        defaultCache.set("foo", "bar")
+        defaultCache.get("foo") must beSome("bar")
+        defaultCache.get[Any]("foo") must beSome("bar")
 
-      defaultCache.set("baz", false)
-      defaultCache.get("baz") must beSome(false)
-      defaultCache.get[Any]("baz") must beSome(false)
+        defaultCache.set("baz", false)
+        defaultCache.get("baz") must beSome(false)
+        defaultCache.get[Any]("baz") must beSome(false)
 
-      defaultCache.set("int", 31)
-      defaultCache.get("int") must beSome(31)
-      defaultCache.get[Any]("int") must beSome(31)
+        defaultCache.set("int", 31)
+        defaultCache.get("int") must beSome(31)
+        defaultCache.get[Any]("int") must beSome(31)
 
-      defaultCache.set("unit", ())
-      defaultCache.get("unit") must beSome(())
-      defaultCache.get[Any]("unit") must beSome(())
-    }
+        defaultCache.set("unit", ())
+        defaultCache.get("unit") must beSome(())
+        defaultCache.get[Any]("unit") must beSome(())
+      }
   }
 
   "EhCacheModule" should {

@@ -34,23 +34,24 @@ class QueueSinkSpec extends AkkaSpec {
       }
     }
 
-    "allow to have only one future waiting for result in each point of time" in assertAllStagesStopped {
-      val probe = TestPublisher.manualProbe[Int]()
-      val queue = Source.fromPublisher(probe).runWith(Sink.queue())
-      val sub = probe.expectSubscription()
-      val future = queue.pull()
-      val future2 = queue.pull()
-      an[IllegalStateException] shouldBe thrownBy {
-        Await.result(future2, 300.millis)
+    "allow to have only one future waiting for result in each point of time" in
+      assertAllStagesStopped {
+        val probe = TestPublisher.manualProbe[Int]()
+        val queue = Source.fromPublisher(probe).runWith(Sink.queue())
+        val sub = probe.expectSubscription()
+        val future = queue.pull()
+        val future2 = queue.pull()
+        an[IllegalStateException] shouldBe thrownBy {
+          Await.result(future2, 300.millis)
+        }
+
+        sub.sendNext(1)
+        future.pipeTo(testActor)
+        expectMsg(Some(1))
+
+        sub.sendComplete()
+        queue.pull()
       }
-
-      sub.sendNext(1)
-      future.pipeTo(testActor)
-      expectMsg(Some(1))
-
-      sub.sendComplete()
-      queue.pull()
-    }
 
     "wait for next element from upstream" in assertAllStagesStopped {
       val probe = TestPublisher.manualProbe[Int]()
@@ -84,9 +85,8 @@ class QueueSinkSpec extends AkkaSpec {
       val sub = probe.expectSubscription()
       sub.sendError(ex)
 
-      the[Exception] thrownBy {
-        Await.result(queue.pull(), 300.millis)
-      } should be(ex)
+      the[Exception] thrownBy { Await.result(queue.pull(), 300.millis) } should
+        be(ex)
     }
 
     "timeout future when stream cannot provide data" in assertAllStagesStopped {
@@ -120,23 +120,24 @@ class QueueSinkSpec extends AkkaSpec {
       }
     }
 
-    "keep on sending even after the buffer has been full" in assertAllStagesStopped {
-      val bufferSize = 16
-      val streamElementCount = bufferSize + 4
-      val sink = Sink.queue[Int]()
-        .withAttributes(inputBuffer(bufferSize, bufferSize))
-      val (probe, queue) = Source(1 to streamElementCount).alsoToMat(
-        Flow[Int].take(bufferSize).watchTermination()(Keep.right)
-          .to(Sink.ignore))(Keep.right).toMat(sink)(Keep.both).run()
-      probe.futureValue should ===(akka.Done)
-      for (i ← 1 to streamElementCount) {
+    "keep on sending even after the buffer has been full" in
+      assertAllStagesStopped {
+        val bufferSize = 16
+        val streamElementCount = bufferSize + 4
+        val sink = Sink.queue[Int]()
+          .withAttributes(inputBuffer(bufferSize, bufferSize))
+        val (probe, queue) = Source(1 to streamElementCount).alsoToMat(
+          Flow[Int].take(bufferSize).watchTermination()(Keep.right)
+            .to(Sink.ignore))(Keep.right).toMat(sink)(Keep.both).run()
+        probe.futureValue should ===(akka.Done)
+        for (i ← 1 to streamElementCount) {
+          queue.pull() pipeTo testActor
+          expectMsg(Some(i))
+        }
         queue.pull() pipeTo testActor
-        expectMsg(Some(i))
-      }
-      queue.pull() pipeTo testActor
-      expectMsg(None)
+        expectMsg(None)
 
-    }
+      }
 
     "work with one element buffer" in assertAllStagesStopped {
       val sink = Sink.queue[Int]().withAttributes(inputBuffer(1, 1))

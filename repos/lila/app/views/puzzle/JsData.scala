@@ -50,8 +50,9 @@ object JsData extends lila.Steroids {
       ),
       "pref" -> Json.obj("coords" -> ctx.pref.coords),
       "chessground" -> Json.obj(
-        "highlight" -> Json
-          .obj("lastMove" -> ctx.pref.highlight, "check" -> ctx.pref.highlight),
+        "highlight" -> Json.obj(
+          "lastMove" -> ctx.pref.highlight,
+          "check" -> ctx.pref.highlight),
         "movable" -> Json.obj("showDests" -> ctx.pref.destination),
         "draggable" -> Json.obj("showGhost" -> ctx.pref.highlight),
         "premovable" -> Json.obj("showDests" -> ctx.pref.destination)

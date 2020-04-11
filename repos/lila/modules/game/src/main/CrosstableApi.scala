@@ -51,9 +51,8 @@ final class CrosstableApi(coll: Coll) {
             })
           )) ++ BSONDocument(
           "$push" -> BSONDocument(
-            Crosstable.BSONFields.results -> BSONDocument(
-              "$each" -> List(bsonResult),
-              "$slice" -> -maxGames)))
+            Crosstable.BSONFields.results ->
+              BSONDocument("$each" -> List(bsonResult), "$slice" -> -maxGames)))
         coll.update(select(u1, u2), bson).void
       case _ => funit
     }
@@ -68,8 +67,8 @@ final class CrosstableApi(coll: Coll) {
 
         val selector = BSONDocument(
           Game.BSONFields.playerUids -> BSONDocument("$all" -> List(u1, u2)),
-          Game.BSONFields.status -> BSONDocument(
-            "$gte" -> chess.Status.Mate.id))
+          Game.BSONFields.status ->
+            BSONDocument("$gte" -> chess.Status.Mate.id))
 
         import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework.{
           Match,

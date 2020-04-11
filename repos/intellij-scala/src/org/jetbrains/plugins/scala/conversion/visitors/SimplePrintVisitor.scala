@@ -411,8 +411,8 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
         ", ",
         "(",
         ")",
-        arrayDimension != null && arrayDimension.nonEmpty && !arrayDimension
-          .head.isInstanceOf[ExpressionList])
+        arrayDimension != null && arrayDimension.nonEmpty &&
+          !arrayDimension.head.isInstanceOf[ExpressionList])
     }
   }
 
@@ -560,12 +560,10 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
     val sortModifiers = modifiers.collect {
       case m: Modifier
           if !modifiersConstruction.accessModifiers.contains(m.modificator) => m
-    } ++
-      modifiers.collect {
-        case m: Modifier
-            if modifiersConstruction.accessModifiers.contains(m.modificator) =>
-          m
-      }
+    } ++ modifiers.collect {
+      case m: Modifier
+          if modifiersConstruction.accessModifiers.contains(m.modificator) => m
+    }
 
     for (m <- sortModifiers) {
       if (!modifiersConstruction.withoutList.contains(

@@ -102,8 +102,8 @@ abstract class SessionVar[T](dflt: => T)
       case Full(s)
           if !magicSessionVar_? && !s.stateful_? && !settingDefault_? =>
         throw new StateInStatelessException(
-          "setting a SessionVar in a " +
-            "stateless session: " + getClass.getName)
+          "setting a SessionVar in a " + "stateless session: " +
+            getClass.getName)
 
       case Full(s) => s.set(name, value)
       case _ =>
@@ -114,7 +114,8 @@ abstract class SessionVar[T](dflt: => T)
 
         if (showWarningWhenAccessedOutOfSessionScope_?)
           logger.warn(
-            "Setting a SessionVar " + name + " to " + value + " outside session scope"
+            "Setting a SessionVar " + name + " to " + value +
+              " outside session scope"
           ) // added warning per issue 188
     }
 
@@ -154,8 +155,8 @@ abstract class SessionVar[T](dflt: => T)
   }
 
   override protected def testWasSet(name: String, bn: String): Boolean = {
-    S.session.flatMap(_.get(name)).isDefined || (S.session
-      .flatMap(_.get(bn)) openOr false)
+    S.session.flatMap(_.get(name)).isDefined ||
+    (S.session.flatMap(_.get(bn)) openOr false)
   }
 
   protected override def registerCleanupFunc(in: LiftSession => Unit): Unit =
@@ -239,8 +240,8 @@ abstract class ContainerVar[T](dflt: => T)(implicit
       case Full(s)
           if !s.allowContainerState_? && !s.stateful_? && !settingDefault_? =>
         throw new StateInStatelessException(
-          "setting a SessionVar in a " +
-            "stateless session: " + getClass.getName)
+          "setting a SessionVar in a " + "stateless session: " +
+            getClass.getName)
 
       case Full(session) => {
         localSet(session, name, containerSerializer.serialize(value))
@@ -249,7 +250,8 @@ abstract class ContainerVar[T](dflt: => T)(implicit
       case _ =>
         if (showWarningWhenAccessedOutOfSessionScope_?)
           logger.warn(
-            "Setting a ContainerVar " + name + " to " + value + " outside session scope"
+            "Setting a ContainerVar " + name + " to " + value +
+              " outside session scope"
           ) // added warning per issue 188
     }
 
@@ -467,8 +469,8 @@ abstract class RequestVar[T](dflt: => T)
   // no sync necessary for RequestVars... always on the same thread
 
   override protected def testWasSet(name: String, bn: String): Boolean = {
-    RequestVarHandler.get(name).isDefined || (RequestVarHandler
-      .get(bn) openOr false)
+    RequestVarHandler.get(name).isDefined ||
+    (RequestVarHandler.get(bn) openOr false)
   }
 
   /**
@@ -525,9 +527,8 @@ abstract class TransientRequestVar[T](dflt: => T)
   }
 
   protected override def testWasSet(name: String, bn: String): Boolean = {
-    TransientRequestVarHandler.get(name).isDefined || (
-      TransientRequestVarHandler.get(bn) openOr false
-    )
+    TransientRequestVarHandler.get(name).isDefined ||
+    (TransientRequestVarHandler.get(bn) openOr false)
   }
 
   /**

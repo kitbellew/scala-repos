@@ -28,9 +28,8 @@ class RecipeParseLines extends RecipeSpec {
         allowTruncation = true)).map(_.utf8String)
       //#parse-lines
 
-      Await
-        .result(linesStream.limit(10).runWith(Sink.seq), 3.seconds) should be(
-        List("Hello World\r!", "Hello Akka!", "Hello Streams!", ""))
+      Await.result(linesStream.limit(10).runWith(Sink.seq), 3.seconds) should
+        be(List("Hello World\r!", "Hello Akka!", "Hello Streams!", ""))
     }
 
   }

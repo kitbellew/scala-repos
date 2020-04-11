@@ -236,9 +236,8 @@ final class JSONIngestProcessing(
                   sys.error(
                     "Do something useful with %s" format storeFailure.message),
                 _ => {
-                  val errors = parsed.errors
-                    .map(pe => (pe.line, pe.msg)) ++ overLarge
-                    .map(i => (i, overLargeMsg))
+                  val errors = parsed.errors.map(pe => (pe.line, pe.msg)) ++
+                    overLarge.map(i => (i, overLargeMsg))
                   continue(state.update(updatedParser, ingestSize, errors))
                 }
               )
@@ -261,8 +260,8 @@ final class JSONIngestProcessing(
                 _.fold(
                   storeFailure =>
                     sys.error(
-                      "Do something useful with %s" format storeFailure
-                        .message),
+                      "Do something useful with %s" format
+                        storeFailure.message),
                   _ => continue(state.update(updatedParser, ingestSize, Nil)))
               }
             } else {

@@ -68,8 +68,8 @@ class ScalaMoveClassesOrPackagesHandler
         scalaElements.foreach(ScalaMoveUtil.saveMoveDestination(_, dir))
       case _ =>
     }
-    elements.length == scalaElements.length && super
-      .canMove(elements, targetContainer)
+    elements.length == scalaElements.length &&
+    super.canMove(elements, targetContainer)
   }
 
   protected override def doMoveWithMoveClassesDialog(

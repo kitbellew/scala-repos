@@ -313,8 +313,8 @@ trait ScTypePsiTypeBridge {
         valType.parameters.head
           .getRealParameterType(TypingContext.empty) match {
           case Success(tp, _)
-              if !(noPrimitives && ScalaEvaluatorBuilderUtil
-                .isPrimitiveScType(tp)) =>
+              if !(noPrimitives &&
+                ScalaEvaluatorBuilderUtil.isPrimitiveScType(tp)) =>
             toPsi(tp, project, scope, noPrimitives, skolemToWildcard)
           case _ => createType(valType)
         }

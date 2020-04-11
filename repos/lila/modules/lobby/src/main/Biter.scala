@@ -53,9 +53,8 @@ private[lobby] object Biter {
       color: Color): Fu[chess.Color] =
     color match {
       case Color.Random =>
-        UserRepo
-          .firstGetsWhite(creatorUser.map(_.id), joinerUser.map(_.id)) map chess
-          .Color.apply
+        UserRepo.firstGetsWhite(creatorUser.map(_.id), joinerUser.map(_.id)) map
+          chess.Color.apply
       case Color.White => fuccess(chess.White)
       case Color.Black => fuccess(chess.Black)
     }
@@ -95,20 +94,19 @@ private[lobby] object Biter {
   def canJoin(hook: Hook, user: Option[LobbyUser]): Boolean =
     hook.realMode.casual.fold(
       user.isDefined || hook.allowAnon,
-      user ?? { _.lame == hook.lame }) &&
-      !(hook.userId ?? (user ?? (_.blocking)).contains) &&
-      !((user map (_.id)) ?? (hook.user ?? (_.blocking)).contains) &&
-      hook.realRatingRange.fold(true) { range =>
+      user ?? { _.lame == hook.lame }) && !(hook.userId ??
+      (user ?? (_.blocking)).contains) && !((user map (_.id)) ??
+      (hook.user ?? (_.blocking)).contains) && hook.realRatingRange.fold(true) {
+      range =>
         user ?? { u =>
           (hook.perfType map (_.key) flatMap u.ratingMap.get) ?? range.contains
         }
-      }
+    }
 
   def canJoin(seek: Seek, user: LobbyUser): Boolean =
     (seek.realMode.casual || user.lame == seek.user.lame) &&
-      !(user.blocking contains seek.user.id) &&
-      !(seek.user.blocking contains user.id) &&
-      seek.realRatingRange.fold(true) { range =>
+      !(user.blocking contains seek.user.id) && !(seek.user.blocking contains
+        user.id) && seek.realRatingRange.fold(true) { range =>
         (seek.perfType map (_.key) flatMap user.ratingMap.get) ?? range.contains
       }
 }

@@ -77,16 +77,17 @@ object Enumeratee2TTest extends SpecLite {
 
     val consumer = consume[(Int, Int), Id, List]
     val producer = enum1 cross enum2
-    (consumer &= producer).run must_=== (List(
-      (1, 2),
-      (1, 3),
-      (1, 4),
-      (3, 2),
-      (3, 3),
-      (3, 4),
-      (5, 2),
-      (5, 3),
-      (5, 4)))
+    (consumer &= producer).run must_===
+      (List(
+        (1, 2),
+        (1, 3),
+        (1, 4),
+        (3, 2),
+        (3, 3),
+        (3, 4),
+        (5, 2),
+        (5, 3),
+        (5, 4)))
   }
 
   "join the first element with all of the second iteratee's elements, which compare equal" in {

@@ -62,9 +62,9 @@ object VFSPathUtils extends Logging {
   def escapePath(path: Path, toEscape: Set[String]) =
     Path(path.elements.map {
       case needsEscape
-          if toEscape.contains(needsEscape) || needsEscape
-            .endsWith(escapeSuffix) => needsEscape + escapeSuffix
-      case fine                     => fine
+          if toEscape.contains(needsEscape) ||
+            needsEscape.endsWith(escapeSuffix) => needsEscape + escapeSuffix
+      case fine                                => fine
     }.toList)
 
   def unescapePath(path: Path) =

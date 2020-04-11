@@ -96,8 +96,8 @@ private[ml] trait TreeEnsembleModel {
     val header = toString + "\n"
     header + trees.zip(treeWeights).zipWithIndex.map {
       case ((tree, weight), treeIndex) =>
-        s"  Tree $treeIndex (weight $weight):\n" + tree.rootNode
-          .subtreeToString(4)
+        s"  Tree $treeIndex (weight $weight):\n" +
+          tree.rootNode.subtreeToString(4)
     }.fold("")(_ + _)
   }
 

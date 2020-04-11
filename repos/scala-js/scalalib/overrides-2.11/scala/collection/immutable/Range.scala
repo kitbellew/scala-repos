@@ -70,9 +70,9 @@ class Range(val start: Int, val end: Int, val step: Int)
   // should not trigger an exception. So the calculation is delayed,
   // which means it will not fail fast for those cases where failing was
   // correct.
-  override final val isEmpty = ((start > end && step > 0)
-    || (start < end && step < 0)
-    || (start == end && !isInclusive))
+  override final val isEmpty =
+    ((start > end && step > 0) || (start < end && step < 0) ||
+      (start == end && !isInclusive))
   @deprecated("This method will be made private, use `length` instead.", "2.11")
   final val numRangeElements: Int = {
     if (step == 0) throw new IllegalArgumentException("step cannot be 0.")
@@ -356,9 +356,11 @@ class Range(val start: Int, val end: Int, val step: Int)
           else // this is non-empty...
             x.nonEmpty && start == x.start && { // ...so other must contain something and have same start
               val l0 = last
-              (l0 == x.last && ( // And same end
-                start == l0 || step == x
-                  .step // And either the same step, or not take any steps
+              (l0 == x.last &&
+              ( // And same end
+                start == l0 ||
+                step ==
+                  x.step // And either the same step, or not take any steps
               ))
             }
         }
@@ -371,9 +373,8 @@ class Range(val start: Int, val end: Int, val step: Int)
 
   override def toString() = {
     val endStr =
-      if (numRangeElements > Range.MAX_PRINT || (
-            !isEmpty && numRangeElements < 0
-          )) ", ... )"
+      if (numRangeElements > Range.MAX_PRINT ||
+          (!isEmpty && numRangeElements < 0)) ", ... )"
       else ")"
     take(Range.MAX_PRINT).mkString("Range(", ", ", endStr)
   }
@@ -498,8 +499,8 @@ object Range {
       BigDecimal(toBD(start), toBD(end), toBD(step)) mapRange (_.doubleValue)
 
     def inclusive(start: Double, end: Double, step: Double) =
-      BigDecimal.inclusive(toBD(start), toBD(end), toBD(step)) mapRange (_
-        .doubleValue)
+      BigDecimal.inclusive(toBD(start), toBD(end), toBD(step)) mapRange
+        (_.doubleValue)
   }
 
   // As there is no appealing default step size for not-really-integral ranges,

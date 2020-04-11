@@ -181,8 +181,9 @@ class DispatchersSpec
     }
 
     "include system name and dispatcher id in thread names for thread-pool-executor" in {
-      system.actorOf(Props[ThreadNameEcho].withDispatcher(
-        "myapp.thread-pool-dispatcher")) ! "what's the name?"
+      system.actorOf(
+        Props[ThreadNameEcho].withDispatcher("myapp.thread-pool-dispatcher")) !
+        "what's the name?"
       val Expected =
         "(DispatchersSpec-myapp.thread-pool-dispatcher-[1-9][0-9]*)".r
       expectMsgPF() { case Expected(x) ⇒ }
@@ -196,16 +197,18 @@ class DispatchersSpec
     }
 
     "include system name and dispatcher id in thread names for pinned dispatcher" in {
-      system.actorOf(Props[ThreadNameEcho].withDispatcher(
-        "myapp.my-pinned-dispatcher")) ! "what's the name?"
+      system.actorOf(
+        Props[ThreadNameEcho].withDispatcher("myapp.my-pinned-dispatcher")) !
+        "what's the name?"
       val Expected = "(DispatchersSpec-myapp.my-pinned-dispatcher-[1-9][0-9]*)"
         .r
       expectMsgPF() { case Expected(x) ⇒ }
     }
 
     "include system name and dispatcher id in thread names for balancing dispatcher" in {
-      system.actorOf(Props[ThreadNameEcho].withDispatcher(
-        "myapp.balancing-dispatcher")) ! "what's the name?"
+      system.actorOf(
+        Props[ThreadNameEcho].withDispatcher("myapp.balancing-dispatcher")) !
+        "what's the name?"
       val Expected = "(DispatchersSpec-myapp.balancing-dispatcher-[1-9][0-9]*)"
         .r
       expectMsgPF() { case Expected(x) ⇒ }
@@ -236,9 +239,8 @@ class DispatchersSpec
 
     "use balancing-pool router with special routees mailbox of deployment config" in {
       system
-        .actorOf(
-          FromConfig.props(Props[ThreadNameEcho]),
-          name = "balanced") ! "what's the name?"
+        .actorOf(FromConfig.props(Props[ThreadNameEcho]), name = "balanced") !
+        "what's the name?"
       val Expected = """(DispatchersSpec-BalancingPool-/balanced-[1-9][0-9]*)"""
         .r
       expectMsgPF() { case Expected(x) ⇒ }

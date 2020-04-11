@@ -273,10 +273,10 @@ class SizedTests {
   val m2sExist: M2[String, _] = new M2[String, Unit] {}
   val m2dExist: M2[Double, _] = new M2[Double, Unit] {}
 
-  val m2eim2esm2eim2eem2ed =
-    m2iExist :: m2sExist :: m2iExist :: m2iExist :: m2dExist :: HNil
-  val m2eim2esm2eim2eem2edList =
-    m2iExist :: m2sExist :: m2iExist :: m2iExist :: m2dExist :: Nil
+  val m2eim2esm2eim2eem2ed = m2iExist :: m2sExist :: m2iExist :: m2iExist ::
+    m2dExist :: HNil
+  val m2eim2esm2eim2eem2edList = m2iExist :: m2sExist :: m2iExist :: m2iExist ::
+    m2dExist :: Nil
   val m2eim2esm2eim2eem2edSized = Sized[List](
     m2iExist,
     m2sExist,

@@ -53,8 +53,8 @@ object KeyIndex {
           proj: Option[ResolvedReference],
           conf: Option[String],
           task: Option[AttributeKey[_]]) = concat(_.keys(proj, conf, task))
-      def concat[T](f: KeyIndex => Set[T]): Set[T] =
-        (Set.empty[T] /: indices)((s, k) => s ++ f(k))
+      def concat[T](f: KeyIndex => Set[T]): Set[T] = (Set.empty[T] /: indices)(
+        (s, k) => s ++ f(k))
     }
   private[sbt] def getOr[A, B](m: Map[A, B], key: A, or: B): B =
     m.getOrElse(key, or)

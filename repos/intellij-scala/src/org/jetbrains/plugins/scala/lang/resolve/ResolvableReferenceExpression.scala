@@ -90,8 +90,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
   def isAssignmentOperator = {
     val context = getContext
     (context.isInstanceOf[ScInfixExpr] || context.isInstanceOf[ScMethodCall]) &&
-    refName.endsWith("=") &&
-    !(refName.startsWith("=") || Seq("!=", "<=", ">=")
+    refName.endsWith("=") && !(refName.startsWith("=") || Seq("!=", "<=", ">=")
       .contains(refName) || refName.exists(_.isLetterOrDigit))
   }
 
@@ -241,8 +240,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             }
           case ScalaResolveResult(named, subst)
               if call.applyOrUpdateElement.exists(_.isDynamic) &&
-                call.applyOrUpdateElement.get
-                  .name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
+                call.applyOrUpdateElement.get.name ==
+                ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
             //add synthetic parameter
             if (!processor.isInstanceOf[CompletionProcessor]) {
               val state: ResolveState = ResolveState.initial()
@@ -322,8 +321,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
         secondaryConstructors: (ScClass) => Seq[ScFunction]) {
       ScType.extractClassType(tp) match {
         case Some((clazz, subst))
-            if !clazz.isInstanceOf[ScTemplateDefinition] && clazz
-              .isAnnotationType =>
+            if !clazz.isInstanceOf[ScTemplateDefinition] &&
+              clazz.isAnnotationType =>
           if (!baseProcessor.isInstanceOf[CompletionProcessor]) {
             for (method <- clazz.getMethods) {
               method match {
@@ -529,9 +528,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     val nonValueType = e.getNonValueType(TypingContext.empty)
     nonValueType match {
       case Success(ScTypePolymorphicType(internal, tp), _)
-          if tp.nonEmpty &&
-            !internal.isInstanceOf[ScMethodType] && !internal
-            .isInstanceOf[ScUndefinedType] /* optimization */ =>
+          if tp.nonEmpty && !internal.isInstanceOf[ScMethodType] &&
+            !internal.isInstanceOf[ScUndefinedType] /* optimization */ =>
         processType(internal, reference, e, processor)
         if (processor.candidates.nonEmpty) return processor
       case _ =>
@@ -579,8 +577,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       case _                                 =>
     }
 
-    if (candidates.isEmpty || (!shape && candidates
-          .forall(!_.isApplicable())) ||
+    if (candidates.isEmpty ||
+        (!shape && candidates.forall(!_.isApplicable())) ||
         (processor.isInstanceOf[CompletionProcessor] &&
         processor.asInstanceOf[CompletionProcessor].collectImplicits)) {
       processor match {

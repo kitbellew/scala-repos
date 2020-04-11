@@ -48,8 +48,8 @@ package object rearranger {
   val scalaGroupingRules = immutable.HashMap(
     SCALA_GETTERS_AND_SETTERS.getId -> SCALA_GETTERS_AND_SETTERS,
     JAVA_GETTERS_AND_SETTERS.getId -> JAVA_GETTERS_AND_SETTERS,
-    SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS
-      .getId -> SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS
+    SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS.getId ->
+      SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS
   )
 
   //access modifiers
@@ -141,8 +141,8 @@ package object rearranger {
   val scalaAccessModifiersValues = scalaAccessModifiersByName.toSet
     .map((x: tokensType) => x._2)
 
-  val scalaModifiers = scalaAccessModifiersValues ++ scalaOtherModifiersByName
-    .toSet.map((x: tokensType) => x._2)
+  val scalaModifiers = scalaAccessModifiersValues ++
+    scalaOtherModifiersByName.toSet.map((x: tokensType) => x._2)
 
   private type tokensType = (String, ArrangementSettingsToken)
 
@@ -150,22 +150,20 @@ package object rearranger {
     StdArrangementTokens.Order.BY_NAME,
     StdArrangementTokens.Order.KEEP)
 
-  val commonModifiers =
-    scalaAccessModifiersValues + FINAL //TODO: determine if final is common
+  val commonModifiers = scalaAccessModifiersValues +
+    FINAL //TODO: determine if final is common
 
-  val scalaModifiersByName =
-    scalaAccessModifiersByName ++ scalaOtherModifiersByName
+  val scalaModifiersByName = scalaAccessModifiersByName ++
+    scalaOtherModifiersByName
 
-  val scalaTokensById =
-    scalaAccessModifiersById ++ scalaOtherModifiersById ++ scalaTypesById
+  val scalaTokensById = scalaAccessModifiersById ++ scalaOtherModifiersById ++
+    scalaTypesById
 
   val tokensForType = immutable.HashMap(
     TYPE -> (commonModifiers + OVERRIDE),
-    FUNCTION -> (commonModifiers +
-      OVERRIDE + IMPLICIT),
+    FUNCTION -> (commonModifiers + OVERRIDE + IMPLICIT),
     CLASS -> (commonModifiers + ABSTRACT + SEALED),
-    TRAIT -> (commonModifiers +
-      ABSTRACT + SEALED),
+    TRAIT -> (commonModifiers + ABSTRACT + SEALED),
     VAL -> (commonModifiers + OVERRIDE + LAZY + ABSTRACT),
     VAR -> (commonModifiers + OVERRIDE),
     MACRO -> (commonModifiers + OVERRIDE),

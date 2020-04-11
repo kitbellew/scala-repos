@@ -89,12 +89,9 @@ class SbtRunner(
       )
 
       val processCommandsRaw =
-        path(vmExecutable) +:
-          "-Djline.terminal=jline.UnsupportedTerminal" +:
-          "-Dsbt.log.noformat=true" +:
-          "-Dfile.encoding=UTF-8" +:
-          (vmOptions ++ SbtOpts.loadFrom(directory)) :+
-          "-jar" :+
+        path(vmExecutable) +: "-Djline.terminal=jline.UnsupportedTerminal" +:
+          "-Dsbt.log.noformat=true" +: "-Dfile.encoding=UTF-8" +:
+          (vmOptions ++ SbtOpts.loadFrom(directory)) :+ "-jar" :+
           path(SbtLauncher)
       val processCommands = processCommandsRaw.filterNot(_.isEmpty)
 

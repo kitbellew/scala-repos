@@ -167,8 +167,8 @@ object Netty3Transporter {
     val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
 
     val opts = new mutable.HashMap[String, Object]()
-    opts += "connectTimeoutMillis" -> ((connectTimeout + compensation)
-      .inMilliseconds: java.lang.Long)
+    opts += "connectTimeoutMillis" ->
+      ((connectTimeout + compensation).inMilliseconds: java.lang.Long)
     opts += "tcpNoDelay" -> (noDelay: java.lang.Boolean)
     opts += "reuseAddress" -> (reuseAddr: java.lang.Boolean)
     for (v <- keepAlive) opts += "keepAlive" -> (v: java.lang.Boolean)
@@ -288,8 +288,8 @@ private[netty3] object FireChannelClosedLater extends ChannelFutureListener {
 case class Netty3Transporter[In, Out](
     name: String,
     pipelineFactory: ChannelPipelineFactory,
-    newChannel: ChannelPipeline => Channel =
-      Netty3Transporter.channelFactory.newChannel,
+    newChannel: ChannelPipeline => Channel = Netty3Transporter.channelFactory
+      .newChannel,
     newTransport: Channel => Transport[In, Out] = (ch: Channel) =>
       Transport.cast[In, Out](new ChannelTransport[Any, Any](ch)),
     tlsConfig: Option[Netty3TransporterTLSConfig] = None,

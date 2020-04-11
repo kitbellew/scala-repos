@@ -69,12 +69,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
     if (checkHeader) {
       if (withHeader) {
         assert(
-          df.schema.fieldNames === Array(
-            "year",
-            "make",
-            "model",
-            "comment",
-            "blank"))
+          df.schema.fieldNames ===
+            Array("year", "make", "model", "comment", "blank"))
       } else {
         assert(df.schema.fieldNames === Array("C0", "C1", "C2", "C3", "C4"))
       }
@@ -260,12 +256,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
       checkHeader = false,
       checkValues = false)
     assert(
-      cars.schema.fieldNames === Array(
-        "yearMade",
-        "makeName",
-        "modelName",
-        "comments",
-        "blank"))
+      cars.schema.fieldNames ===
+        Array("yearMade", "makeName", "modelName", "comments", "blank"))
   }
 
   test("save csv") {

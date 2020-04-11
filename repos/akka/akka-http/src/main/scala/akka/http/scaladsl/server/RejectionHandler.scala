@@ -236,7 +236,8 @@ object RejectionHandler {
       val supported = rejections.map(_.supported.value).mkString(" or ")
       complete((
         BadRequest,
-        "The request's Content-Encoding is not supported. Expected:\n" + supported))
+        "The request's Content-Encoding is not supported. Expected:\n" +
+          supported))
     }.handle {
       case ExpectedWebSocketRequestRejection ⇒
         complete((BadRequest, "Expected WebSocket Upgrade request"))
@@ -263,8 +264,8 @@ object RejectionHandler {
       rejections: immutable.Seq[Rejection]): immutable.Seq[Rejection] = {
     val (transformations, rest) = rejections
       .partition(_.isInstanceOf[TransformationRejection])
-    (rest.distinct /: transformations
-      .asInstanceOf[Seq[TransformationRejection]]) {
+    (rest.distinct /:
+      transformations.asInstanceOf[Seq[TransformationRejection]]) {
       case (remaining, transformation) ⇒ transformation.transform(remaining)
     }
   }

@@ -47,9 +47,8 @@ class InlineParsersTest
   }
 
   def runExceptionParsingTests(p: Parser[String], l: List[String]) {
-    for (s <- l) evaluating {
-      apply(p, s)
-    } should produce[IllegalArgumentException]
+    for (s <- l)
+      evaluating { apply(p, s) } should produce[IllegalArgumentException]
   }
 
   val italicTests: List[(String, String)] = List(
@@ -182,9 +181,9 @@ class InlineParsersTest
     (" lorem ipsum", " lorem ipsum"),
     (" lorem \n ipsum ", " lorem \n ipsum "))
 
-  val allInlineTests = italicTests ++ boldTests ++ entityTest ++
-    codeTests ++ linkTests ++ fastLinkTests ++ imageTests ++ brTests ++
-    xmlStartTagTests ++ xmlEndTagTests ++ xmlInlineTests ++ dummyTests
+  val allInlineTests = italicTests ++ boldTests ++ entityTest ++ codeTests ++
+    linkTests ++ fastLinkTests ++ imageTests ++ brTests ++ xmlStartTagTests ++
+    xmlEndTagTests ++ xmlInlineTests ++ dummyTests
 
   it should "create italic text" in {
     runSucceedingParsingTests(
@@ -194,8 +193,8 @@ class InlineParsersTest
 
   it should "create bold text" in {
     runSucceedingParsingTests(
-      strongAsterisk(new InlineContext()) | strongUnderscore(
-        new InlineContext()),
+      strongAsterisk(new InlineContext()) |
+        strongUnderscore(new InlineContext()),
       boldTests)
   }
 
@@ -210,8 +209,8 @@ class InlineParsersTest
   it should "create fast links" in {
     runSucceedingParsingTests(fastLink(new InlineContext()), fastLinkTests)
     val p = fastLink(new InlineContext())
-    evaluating(apply(p, "<this is not a fast link<span>")) should produce[
-      IllegalArgumentException]
+    evaluating(apply(p, "<this is not a fast link<span>")) should
+      produce[IllegalArgumentException]
 
   }
 
@@ -261,46 +260,46 @@ class InlineParsersTest
 
   it should "resolve reference links" in {
     val p = inline(map)
-    apply(p, "[text][id]") should equal(
-      """<a href="http://www.example.com" title="Title">text</a>""")
-    apply(p, "[text] [id]") should equal(
-      """<a href="http://www.example.com" title="Title">text</a>""")
-    apply(p, "[id][]") should equal(
-      """<a href="http://www.example.com" title="Title">id</a>""")
-    apply(p, "[id] []") should equal(
-      """<a href="http://www.example.com" title="Title">id</a>""")
-    apply(p, "[id]") should equal(
-      """<a href="http://www.example.com" title="Title">id</a>""")
-    apply(p, "[Id]") should equal(
-      """<a href="http://www.example.com" title="Title">Id</a>""")
+    apply(p, "[text][id]") should
+      equal("""<a href="http://www.example.com" title="Title">text</a>""")
+    apply(p, "[text] [id]") should
+      equal("""<a href="http://www.example.com" title="Title">text</a>""")
+    apply(p, "[id][]") should
+      equal("""<a href="http://www.example.com" title="Title">id</a>""")
+    apply(p, "[id] []") should
+      equal("""<a href="http://www.example.com" title="Title">id</a>""")
+    apply(p, "[id]") should
+      equal("""<a href="http://www.example.com" title="Title">id</a>""")
+    apply(p, "[Id]") should
+      equal("""<a href="http://www.example.com" title="Title">Id</a>""")
 
-    apply(p, "[id] [Id 2]") should equal(
-      """<a href="http://other.example.com" title="Title 2">id</a>""")
-    apply(p, "[id 3]") should equal(
-      """<a href="http://none.example.com">id 3</a>""")
-    apply(p, "[foo \"bar\"][id 3]") should equal(
-      """<a href="http://none.example.com">foo &quot;bar&quot;</a>""")
+    apply(p, "[id] [Id 2]") should
+      equal("""<a href="http://other.example.com" title="Title 2">id</a>""")
+    apply(p, "[id 3]") should
+      equal("""<a href="http://none.example.com">id 3</a>""")
+    apply(p, "[foo \"bar\"][id 3]") should
+      equal("""<a href="http://none.example.com">foo &quot;bar&quot;</a>""")
   }
 
   it should "resolve reference images" in {
     val p = inline(map)
-    apply(p, "![text][id]") should equal(
-      """<img src="http://www.example.com" alt="text" title="Title" />""")
-    apply(p, "![text] [id]") should equal(
-      """<img src="http://www.example.com" alt="text" title="Title" />""")
-    apply(p, "![id][]") should equal(
-      """<img src="http://www.example.com" alt="id" title="Title" />""")
-    apply(p, "![id] []") should equal(
-      """<img src="http://www.example.com" alt="id" title="Title" />""")
-    apply(p, "![id]") should equal(
-      """<img src="http://www.example.com" alt="id" title="Title" />""")
-    apply(p, "![Id]") should equal(
-      """<img src="http://www.example.com" alt="Id" title="Title" />""")
+    apply(p, "![text][id]") should
+      equal("""<img src="http://www.example.com" alt="text" title="Title" />""")
+    apply(p, "![text] [id]") should
+      equal("""<img src="http://www.example.com" alt="text" title="Title" />""")
+    apply(p, "![id][]") should
+      equal("""<img src="http://www.example.com" alt="id" title="Title" />""")
+    apply(p, "![id] []") should
+      equal("""<img src="http://www.example.com" alt="id" title="Title" />""")
+    apply(p, "![id]") should
+      equal("""<img src="http://www.example.com" alt="id" title="Title" />""")
+    apply(p, "![Id]") should
+      equal("""<img src="http://www.example.com" alt="Id" title="Title" />""")
 
     apply(p, "![id] [Id 2]") should equal(
       """<img src="http://other.example.com" alt="id" title="Title 2" />""")
-    apply(p, "![id 3]") should equal(
-      """<img src="http://none.example.com" alt="id 3" />""")
+    apply(p, "![id 3]") should
+      equal("""<img src="http://none.example.com" alt="id 3" />""")
     apply(p, "![foo \"bar\"][id 3]") should equal(
       """<img src="http://none.example.com" alt="foo &quot;bar&quot;" />""")
   }

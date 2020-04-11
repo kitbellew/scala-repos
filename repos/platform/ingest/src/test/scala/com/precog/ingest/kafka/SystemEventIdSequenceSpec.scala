@@ -65,8 +65,8 @@ class SystemEventIdSequenceSpec extends Specification {
           Error.invalid("bad relay").fail[EventRelayState]
       }
 
-      SystemEventIdSequence("test", coordination) must throwAn[
-        UnableToRetrieveRelayAgentState]
+      SystemEventIdSequence("test", coordination) must
+        throwAn[UnableToRetrieveRelayAgentState]
     }
 
     "persist and restore state correctly" in todo

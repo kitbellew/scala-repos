@@ -106,8 +106,7 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       val input = if (inputRow == EmptyRow) "" else s", input: $inputRow"
       fail(
         s"Incorrect evaluation (codegen off): $expression, " +
-          s"actual: $actual, " +
-          s"expected: $expected$input")
+          s"actual: $actual, " + s"expected: $expected$input")
     }
   }
 

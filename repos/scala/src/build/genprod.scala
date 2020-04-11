@@ -52,8 +52,8 @@ object genprod extends App {
     def contravariantSpecs = ""
     def contraCoArgs =
       typeArgsString(
-        (targs map (contravariantSpecs + "-" + _)) ::: List(
-          covariantSpecs + "+R"))
+        (targs map (contravariantSpecs + "-" + _)) :::
+          List(covariantSpecs + "+R"))
     def constructorArgs = (targs).map(_.toLowerCase) mkString ", "
     def fields = (mdefs, targs).zipped.map(_ + ": " + _) mkString ", "
     def funArgs = (vdefs, targs).zipped.map(_ + ": " + _) mkString ", "
@@ -138,7 +138,8 @@ object FunctionOne extends Function(1) {
  *    }
  *    assert(succ(0) == anonfun1(0))
  * """
-    ) + """
+    ) +
+      """
  *
  *  Note that the difference between `Function1` and [[scala.PartialFunction]]
  *  is that the latter can specify inputs which it will not handle."""
@@ -233,11 +234,10 @@ class Function(val i: Int) extends Group("Function") with Arity {
   }
 
   // (x1: T1) => ((x2: T2, x3: T3, x4: T4, x5: T5, x6: T6, x7: T7) => self.apply(x1,x2,x3,x4,x5,x6,x7)).curried
-  def longCurry =
-    ((xdefs, targs).zipped.map(_ + ": " + _) drop 1).mkString(
-      "(x1: T1) => ((",
-      ", ",
-      ") => self.apply%s).curried".format(commaXs))
+  def longCurry = ((xdefs, targs).zipped.map(_ + ": " + _) drop 1).mkString(
+    "(x1: T1) => ((",
+    ", ",
+    ") => self.apply%s).curried".format(commaXs))
 
   // f(x1,x2,x3,x4,x5,x6)  == (f.curried)(x1)(x2)(x3)(x4)(x5)(x6)
   def curryComment = {
@@ -257,8 +257,9 @@ class Function(val i: Int) extends Group("Function") with Arity {
 """.format(i, i, commaXs, i, commaXs, commaXs)
     def body = "case Tuple%d%s => apply%s".format(i, commaXs, commaXs)
 
-    comment + "\n  @annotation.unspecialized def tupled: Tuple%d%s => R = {\n    %s\n  }"
-      .format(i, invariantArgs, body)
+    comment +
+      "\n  @annotation.unspecialized def tupled: Tuple%d%s => R = {\n    %s\n  }"
+        .format(i, invariantArgs, body)
   }
 
   def curryMethod = {
@@ -319,9 +320,10 @@ class Tuple(val i: Int) extends Group("Tuple") with Arity {
         .format(className, constructorArgs)
 
   private def params =
-    (1 to i map (x =>
-      " *  @param  _%d   Element %d of this Tuple%d"
-        .format(x, x, i))) mkString "\n"
+    (1 to i map
+      (x =>
+        " *  @param  _%d   Element %d of this Tuple%d"
+          .format(x, x, i))) mkString "\n"
 
   // prettifies it a little if it's overlong
   def mkToString() = {

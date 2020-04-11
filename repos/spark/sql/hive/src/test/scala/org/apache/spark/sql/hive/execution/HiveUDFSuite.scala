@@ -191,7 +191,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       sql("SELECT testUDFToListString(s) FROM inputTable")
     }
     assert(
-      errMsg.getMessage contains "List type in java is unsupported because " +
+      errMsg.getMessage contains
+        "List type in java is unsupported because " +
         "JVM type erasure makes spark fail to catch a component type in List<>;")
 
     sql("DROP TEMPORARY FUNCTION IF EXISTS testUDFToListString")
@@ -209,7 +210,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       sql("SELECT testUDFToListInt(s) FROM inputTable")
     }
     assert(
-      errMsg.getMessage contains "List type in java is unsupported because " +
+      errMsg.getMessage contains
+        "List type in java is unsupported because " +
         "JVM type erasure makes spark fail to catch a component type in List<>;")
 
     sql("DROP TEMPORARY FUNCTION IF EXISTS testUDFToListInt")
@@ -228,7 +230,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       sql("SELECT testUDFToStringIntMap(s) FROM inputTable")
     }
     assert(
-      errMsg.getMessage contains "Map type in java is unsupported because " +
+      errMsg.getMessage contains
+        "Map type in java is unsupported because " +
         "JVM type erasure makes spark fail to catch key and value types in Map<>;")
 
     sql("DROP TEMPORARY FUNCTION IF EXISTS testUDFToStringIntMap")
@@ -247,7 +250,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       sql("SELECT testUDFToIntIntMap(s) FROM inputTable")
     }
     assert(
-      errMsg.getMessage contains "Map type in java is unsupported because " +
+      errMsg.getMessage contains
+        "Map type in java is unsupported because " +
         "JVM type erasure makes spark fail to catch key and value types in Map<>;")
 
     sql("DROP TEMPORARY FUNCTION IF EXISTS testUDFToIntIntMap")
@@ -256,8 +260,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
   test("UDFListListInt") {
     val testData = hiveContext.sparkContext.parallelize(
-      ListListIntCaseClass(Nil) ::
-        ListListIntCaseClass(Seq((1, 2, 3))) ::
+      ListListIntCaseClass(Nil) :: ListListIntCaseClass(Seq((1, 2, 3))) ::
         ListListIntCaseClass(Seq((4, 5, 6), (7, 8, 9))) :: Nil).toDF()
     testData.registerTempTable("listListIntTable")
 
@@ -310,10 +313,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
   test("UDFTwoListList") {
     val testData = hiveContext.sparkContext.parallelize(
-      ListListIntCaseClass(Nil) ::
-        ListListIntCaseClass(Seq((1, 2, 3))) ::
-        ListListIntCaseClass(Seq((4, 5, 6), (7, 8, 9))) ::
-        Nil).toDF()
+      ListListIntCaseClass(Nil) :: ListListIntCaseClass(Seq((1, 2, 3))) ::
+        ListListIntCaseClass(Seq((4, 5, 6), (7, 8, 9))) :: Nil).toDF()
     testData.registerTempTable("TwoListTable")
 
     sql(
@@ -477,8 +478,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
     // Non-External parquet pointing to /tmp/...
 
     sql(
-      "CREATE TABLE parquet_tmp(c1 int, c2 int) " +
-        " STORED AS parquet " +
+      "CREATE TABLE parquet_tmp(c1 int, c2 int) " + " STORED AS parquet " +
         " AS SELECT 1, 2")
 
     val answer4 = sql("SELECT input_file_name() as file FROM parquet_tmp")

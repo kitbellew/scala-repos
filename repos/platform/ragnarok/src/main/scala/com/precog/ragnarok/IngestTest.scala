@@ -48,7 +48,8 @@ object IngestTest {
       if (!dir.exists()) { dir.mkdirs() }
       else if (!dir.list().isEmpty) {
         sys.error(
-          "Cannot run ingest performance tests on non-empty directory '%s'." format dir)
+          "Cannot run ingest performance tests on non-empty directory '%s'." format
+            dir)
       }
     }
   }
@@ -95,8 +96,10 @@ object IngestTest {
             (stats, _) =>
               config.ingest.foldLeft(stats) {
                 case (stats, (path, file)) =>
-                  stats + (path -> (stats.getOrElse(path, None) |+| Some(
-                    timeIngest(path, file))))
+                  stats +
+                    (path ->
+                      (stats.getOrElse(path, None) |+|
+                        Some(timeIngest(path, file))))
               }
           }
         }

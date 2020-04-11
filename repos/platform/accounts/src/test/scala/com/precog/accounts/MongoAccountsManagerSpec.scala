@@ -153,25 +153,26 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
       }
     }
 
-    "not update an Account password with a previously used reset token" in new AccountManager {
-      val newPassword = "bluemeanies"
-      val newPassword2 = "notreally"
+    "not update an Account password with a previously used reset token" in
+      new AccountManager {
+        val newPassword = "bluemeanies"
+        val newPassword2 = "notreally"
 
-      (for {
-        tokenId <- accountManager.generateResetToken(account)
-        _ <-
-          accountManager
-            .resetAccountPassword(account.accountId, tokenId, newPassword)
-        _ <-
-          accountManager
-            .resetAccountPassword(account.accountId, tokenId, newPassword2)
-        // We should still be able to authenticate with the *first* changed password
-        authResult <- accountManager.authAccount(account.email, newPassword)
-      } yield authResult).copoint must beLike[Validation[String, Account]] {
-        case Success(authenticated) =>
-          authenticated.accountId must_== account.accountId
+        (for {
+          tokenId <- accountManager.generateResetToken(account)
+          _ <-
+            accountManager
+              .resetAccountPassword(account.accountId, tokenId, newPassword)
+          _ <-
+            accountManager
+              .resetAccountPassword(account.accountId, tokenId, newPassword2)
+          // We should still be able to authenticate with the *first* changed password
+          authResult <- accountManager.authAccount(account.email, newPassword)
+        } yield authResult).copoint must beLike[Validation[String, Account]] {
+          case Success(authenticated) =>
+            authenticated.accountId must_== account.accountId
+        }
       }
-    }
 
   }
 

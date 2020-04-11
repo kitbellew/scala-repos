@@ -169,8 +169,7 @@ class PreferredReplicaLeaderElectionCommand(
         else {
           error(
             "Skipping preferred replica leader election for partition [%s,%d] "
-              .format(topic, partition) +
-              "since it doesn't exist")
+              .format(topic, partition) + "since it doesn't exist")
           false
         }
       case None =>

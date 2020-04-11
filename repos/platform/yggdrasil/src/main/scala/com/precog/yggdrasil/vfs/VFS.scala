@@ -160,9 +160,9 @@ trait VFSModule[M[+_], Block] extends Logging {
       import FileContent._
       // Map to the type we'll use for conversion and the type we report to the user
       // FIXME: We're dealing with MimeType in too many places here
-      val acceptableMimeTypes = ((Seq(ApplicationJson, XJsonStream, TextCSV)
-        .map { mt => mt -> (mt, mt) }) ++
-        Seq(
+      val acceptableMimeTypes =
+        ((Seq(ApplicationJson, XJsonStream, TextCSV)
+          .map { mt => mt -> (mt, mt) }) ++ Seq(
           AnyMimeType -> (XJsonStream, XJsonStream),
           OctetStream -> (XJsonStream, OctetStream))).toMap
       for {

@@ -68,8 +68,8 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
     catch {
       case e: Exception =>
         throw new RuntimeException(
-          "Unable to load template for " + templateManager
-            .internalTemplateToSubject(templateName),
+          "Unable to load template for " +
+            templateManager.internalTemplateToSubject(templateName),
           e)
     }
 

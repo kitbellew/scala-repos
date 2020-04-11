@@ -364,8 +364,8 @@ trait JdbcBackend extends RelationalBackend {
             val rsType = resultSetType.withDefault(defaultType).intValue
             val rsConc = resultSetConcurrency.withDefault(defaultConcurrency)
               .intValue
-            if (rsType == ResultSet.TYPE_FORWARD_ONLY && rsConc == ResultSet
-                  .CONCUR_READ_ONLY) conn.prepareStatement(sql)
+            if (rsType == ResultSet.TYPE_FORWARD_ONLY &&
+                rsConc == ResultSet.CONCUR_READ_ONLY) conn.prepareStatement(sql)
             else conn.prepareStatement(sql, rsType, rsConc)
           case h =>
             conn.prepareStatement(
@@ -384,8 +384,8 @@ trait JdbcBackend extends RelationalBackend {
         : PreparedStatement = {
       if (JdbcBackend.statementLogger.isDebugEnabled)
         JdbcBackend.logStatement(
-          "Preparing insert statement (returning: " + columnNames
-            .mkString(",") + ")",
+          "Preparing insert statement (returning: " +
+            columnNames.mkString(",") + ")",
           sql)
       val s = loggingPreparedStatement(
         decorateStatement(conn.prepareStatement(sql, columnNames)))
@@ -398,8 +398,8 @@ trait JdbcBackend extends RelationalBackend {
         columnIndexes: Array[Int]): PreparedStatement = {
       if (JdbcBackend.statementLogger.isDebugEnabled)
         JdbcBackend.logStatement(
-          "Preparing insert statement (returning indexes: " + columnIndexes
-            .mkString(",") + ")",
+          "Preparing insert statement (returning indexes: " +
+            columnIndexes.mkString(",") + ")",
           sql)
       val s = loggingPreparedStatement(
         decorateStatement(conn.prepareStatement(sql, columnIndexes)))
@@ -510,14 +510,15 @@ trait JdbcBackend extends RelationalBackend {
       }
 
     protected def loggingStatement(st: Statement): Statement =
-      if (JdbcBackend.statementLogger.isDebugEnabled || JdbcBackend
-            .benchmarkLogger.isDebugEnabled) new LoggingStatement(st)
+      if (JdbcBackend.statementLogger.isDebugEnabled ||
+          JdbcBackend.benchmarkLogger.isDebugEnabled) new LoggingStatement(st)
       else st
 
     protected def loggingPreparedStatement(
         st: PreparedStatement): PreparedStatement =
-      if (JdbcBackend.statementLogger.isDebugEnabled || JdbcBackend
-            .benchmarkLogger.isDebugEnabled) new LoggingPreparedStatement(st)
+      if (JdbcBackend.statementLogger.isDebugEnabled ||
+          JdbcBackend.benchmarkLogger.isDebugEnabled)
+        new LoggingPreparedStatement(st)
       else st
 
     /** Start a `transactionally` block */
@@ -584,8 +585,8 @@ trait JdbcBackend extends RelationalBackend {
 
     def pushStatementParameters(p: JdbcBackend.StatementParameters): Unit = {
       val p2 =
-        if ((p.rsType eq null) || (p.rsConcurrency eq null) || (p
-              .rsHoldability eq null) || (p.statementInit eq null)) {
+        if ((p.rsType eq null) || (p.rsConcurrency eq null) ||
+            (p.rsHoldability eq null) || (p.statementInit eq null)) {
           val curr =
             if (statementParameters eq null)
               JdbcBackend.defaultStatementParameters
@@ -602,8 +603,8 @@ trait JdbcBackend extends RelationalBackend {
             p.fetchSize
           )
         } else p
-      statementParameters =
-        p2 :: (if (statementParameters eq null) Nil else statementParameters)
+      statementParameters = p2 ::
+        (if (statementParameters eq null) Nil else statementParameters)
     }
 
     def popStatementParameters: Unit = {

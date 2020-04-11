@@ -21,17 +21,17 @@ private[blog] final class Notifier(
             containing = post.id) foreach {
             case true => funit
             case false =>
-              UserRepo recentlySeenNotKidIds DateTime.now
-                .minusWeeks(2) foreach { userIds =>
-                (ThreadRepo reallyDeleteByCreatorId lichessUserId) >> {
-                  val thread = makeThread(post)
-                  val futures = userIds.toStream map { userId =>
-                    messageApi.lichessThread(thread.copy(to = userId))
+              UserRepo recentlySeenNotKidIds
+                DateTime.now.minusWeeks(2) foreach { userIds =>
+                  (ThreadRepo reallyDeleteByCreatorId lichessUserId) >> {
+                    val thread = makeThread(post)
+                    val futures = userIds.toStream map { userId =>
+                      messageApi.lichessThread(thread.copy(to = userId))
+                    }
+                    lila.common.Future.lazyFold(futures)(())((_, _) => ()) >>-
+                      lastPostCache.clear
                   }
-                  lila.common.Future
-                    .lazyFold(futures)(())((_, _) => ()) >>- lastPostCache.clear
                 }
-              }
           }
         }
       }

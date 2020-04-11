@@ -40,8 +40,9 @@ private[sird] object QueryStringParameterMacros {
           case paramEquals(param) => param
           case _ => c.abort(
               c.enclosingPosition.withPoint(startOfString),
-              "Invalid start of string for query string extractor '" + parts
-                .head + "', extractor string must have format " + name + "\"param=$extracted\""
+              "Invalid start of string for query string extractor '" +
+                parts.head + "', extractor string must have format " + name +
+                "\"param=$extracted\""
             )
         }
 
@@ -54,7 +55,8 @@ private[sird] object QueryStringParameterMacros {
         if (parts.length > 2) {
           c.abort(
             c.enclosingPosition,
-            "Query string extractor can only extract one parameter, extract multiple parameters using the & extractor, eg: " + name + "\"param1=$param1\" & " + name + "\"param2=$param2\""
+            "Query string extractor can only extract one parameter, extract multiple parameters using the & extractor, eg: " +
+              name + "\"param1=$param1\" & " + name + "\"param2=$param2\""
           )
         }
 

@@ -104,8 +104,8 @@ private[spark] class Client(
       }
     }
   }
-  private val fireAndForget = isClusterMode && !sparkConf
-    .get(WAIT_FOR_APP_COMPLETION)
+  private val fireAndForget = isClusterMode &&
+    !sparkConf.get(WAIT_FOR_APP_COMPLETION)
 
   private var appId: ApplicationId = null
 
@@ -685,8 +685,8 @@ private[spark] class Client(
     // those will fail with an access control issue. So create new tokens with the logged in
     // user as renewer.
     val creds = new Credentials()
-    val nns = YarnSparkHadoopUtil.get
-      .getNameNodesToAccess(sparkConf) + stagingDirPath
+    val nns = YarnSparkHadoopUtil.get.getNameNodesToAccess(sparkConf) +
+      stagingDirPath
     YarnSparkHadoopUtil.get.obtainTokensForNamenodes(
       nns,
       hadoopConf,
@@ -920,8 +920,9 @@ private[spark] class Client(
     }
 
     // For log4j configuration to reference
-    javaOpts += ("-Dspark.yarn.app.container.log.dir=" + ApplicationConstants
-      .LOG_DIR_EXPANSION_VAR)
+    javaOpts +=
+      ("-Dspark.yarn.app.container.log.dir=" +
+        ApplicationConstants.LOG_DIR_EXPANSION_VAR)
     YarnCommandBuilderUtils.addPermGenSizeOpt(javaOpts)
 
     val userClass =
@@ -956,28 +957,26 @@ private[spark] class Client(
     val amArgs =
       Seq(amClass) ++ userClass ++ userJar ++ primaryPyFile ++ primaryRFile ++
         userArgs ++ Seq(
-        "--executor-memory",
-        args.executorMemory.toString + "m",
-        "--executor-cores",
-        args.executorCores.toString,
-        "--properties-file",
-        buildPath(
-          YarnSparkHadoopUtil.expandEnvironment(Environment.PWD),
-          LOCALIZED_CONF_DIR,
-          SPARK_CONF_FILE)
-      )
+          "--executor-memory",
+          args.executorMemory.toString + "m",
+          "--executor-cores",
+          args.executorCores.toString,
+          "--properties-file",
+          buildPath(
+            YarnSparkHadoopUtil.expandEnvironment(Environment.PWD),
+            LOCALIZED_CONF_DIR,
+            SPARK_CONF_FILE)
+        )
 
     // Command for the ApplicationMaster
     val commands = prefixEnv ++ Seq(
-      YarnSparkHadoopUtil
-        .expandEnvironment(Environment.JAVA_HOME) + "/bin/java",
-      "-server") ++
-      javaOpts ++ amArgs ++
-      Seq(
-        "1>",
-        ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout",
-        "2>",
-        ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr")
+      YarnSparkHadoopUtil.expandEnvironment(Environment.JAVA_HOME) +
+        "/bin/java",
+      "-server") ++ javaOpts ++ amArgs ++ Seq(
+      "1>",
+      ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout",
+      "2>",
+      ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr")
 
     // TODO: it would be nicer to just make sure there are no null commands here
     val printableCommands = commands.map(s => if (s == null) "null" else s)
@@ -1008,8 +1007,8 @@ private[spark] class Client(
   }
 
   def setupCredentials(): Unit = {
-    loginFromKeytab = args.principal != null || sparkConf
-      .contains(PRINCIPAL.key)
+    loginFromKeytab = args.principal != null ||
+      sparkConf.contains(PRINCIPAL.key)
     if (loginFromKeytab) {
       principal = Option(args.principal).orElse(sparkConf.get(PRINCIPAL)).get
       keytab = Option(args.keytab).orElse(sparkConf.get(KEYTAB)).orNull
@@ -1140,8 +1139,8 @@ private[spark] class Client(
       val state = report.getYarnApplicationState
       logInfo(s"Application report for $appId (state: $state)")
       logInfo(formatReportDetails(report))
-      if (state == YarnApplicationState.FAILED || state == YarnApplicationState
-            .KILLED) {
+      if (state == YarnApplicationState.FAILED ||
+          state == YarnApplicationState.KILLED) {
         throw new SparkException(
           s"Application $appId finished with status: $state")
       }
@@ -1250,8 +1249,8 @@ object Client extends Logging {
   private[yarn] def populateHadoopClasspath(
       conf: Configuration,
       env: HashMap[String, String]): Unit = {
-    val classPathElementsToAdd =
-      getYarnAppClasspath(conf) ++ getMRAppClasspath(conf)
+    val classPathElementsToAdd = getYarnAppClasspath(conf) ++
+      getMRAppClasspath(conf)
     for (c <- classPathElementsToAdd.flatten) {
       YarnSparkHadoopUtil
         .addPathToEnvironment(env, Environment.CLASSPATH.name, c.trim)
@@ -1337,9 +1336,8 @@ object Client extends Logging {
 
     if (isAM) {
       addClasspathEntry(
-        YarnSparkHadoopUtil.expandEnvironment(Environment.PWD) + Path
-          .SEPARATOR +
-          LOCALIZED_CONF_DIR,
+        YarnSparkHadoopUtil.expandEnvironment(Environment.PWD) +
+          Path.SEPARATOR + LOCALIZED_CONF_DIR,
         env)
     }
 
@@ -1481,8 +1479,8 @@ object Client extends Logging {
   private def compareFs(srcFs: FileSystem, destFs: FileSystem): Boolean = {
     val srcUri = srcFs.getUri()
     val dstUri = destFs.getUri()
-    if (srcUri.getScheme() == null || srcUri.getScheme() != dstUri
-          .getScheme()) { return false }
+    if (srcUri.getScheme() == null ||
+        srcUri.getScheme() != dstUri.getScheme()) { return false }
 
     var srcHost = srcUri.getHost()
     var dstHost = dstUri.getHost()

@@ -117,8 +117,8 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
     val files = Map(
       "text" -> new File(
         "core/src/test/resources/org/scalatra/servlet/lorem_ipsum.txt"),
-      "binary" -> new File(
-        "core/src/test/resources/org/scalatra/servlet/smiley.png")
+      "binary" ->
+        new File("core/src/test/resources/org/scalatra/servlet/smiley.png")
     )
 
     val headers = Map(
@@ -157,16 +157,12 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
 
   "POST with multipart/form-data" should {
     "route correctly to action" in {
-      postExample {
-        (status must_== 200) and
-          (body must_== "post(/upload)")
-      }
+      postExample { (status must_== 200) and (body must_== "post(/upload)") }
     }
 
     "make multipart form params available through params" in {
       postExample {
-        (header("param1") must_== "one") and
-          (header("param2") must_== "two")
+        (header("param1") must_== "one") and (header("param2") must_== "two")
       }
     }
 
@@ -188,12 +184,12 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
       postExample {
         (header("File-text-Name") must_== "lorem_ipsum.txt") and
           (header("File-text-Size") must_== "651") and
-          (header(
-            "File-text-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0") and
+          (header("File-text-SHA") must_==
+            "b3572a890c5005aed6409cf81d13fd19f6d004f0") and
           (header("File-binary-Name") must_== "smiley.png") and
           (header("File-binary-Size") must_== "3432") and
-          (header(
-            "File-binary-SHA") must_== "0e777b71581c631d056ee810b4550c5dcd9eb856")
+          (header("File-binary-SHA") must_==
+            "0e777b71581c631d056ee810b4550c5dcd9eb856")
       }
     }
 
@@ -201,12 +197,12 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
       postMultiExample {
         (header("File-files[]0-Name") must_== "lorem_ipsum.txt") and
           (header("File-files[]0-Size") must_== "651") and
-          (header(
-            "File-files[]0-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0") and
+          (header("File-files[]0-SHA") must_==
+            "b3572a890c5005aed6409cf81d13fd19f6d004f0") and
           (header("File-files[]1-Name") must_== "smiley.png") and
           (header("File-files[]1-Size") must_== "3432") and
-          (header(
-            "File-files[]1-SHA") must_== "0e777b71581c631d056ee810b4550c5dcd9eb856")
+          (header("File-files[]1-SHA") must_==
+            "0e777b71581c631d056ee810b4550c5dcd9eb856")
       }
     }
 
@@ -227,15 +223,14 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
       postPass {
         (header("File-text-Name") must_== "lorem_ipsum.txt") and
           (header("File-text-Size") must_== "651") and
-          (header(
-            "File-text-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0")
+          (header("File-text-SHA") must_==
+            "b3572a890c5005aed6409cf81d13fd19f6d004f0")
       }
     }
 
     "keep params on pass" in {
       postPass {
-        (header("param1") must_== "one") and
-          (header("param2") must_== "two")
+        (header("param1") must_== "one") and (header("param2") must_== "two")
       }
     }
 
@@ -244,9 +239,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
       val reqBody =
         ("--{boundary}\r\n" +
           "Content-Disposition: form-data; name=\"utf8-string\"\r\n" +
-          "Content-Type: text/plain\r\n" +
-          "\r\n" +
-          "föo\r\n" +
+          "Content-Type: text/plain\r\n" + "\r\n" + "föo\r\n" +
           "--{boundary}--\r\n").replace("{boundary}", boundary)
           .getBytes("UTF-8")
 
@@ -259,10 +252,9 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
       val reqBody =
         ("--XyXyXy\r\n" +
           "Content-Disposition: form-data; name=\"latin1-string\"\r\n" +
-          "Content-Type: text/plain; charset=ISO-8859-1\r\n" +
-          "\r\n" +
-          "äöööölfldflfldfdföödfödfödfåååååå\r\n" +
-          "--XyXyXy--").getBytes("ISO-8859-1")
+          "Content-Type: text/plain; charset=ISO-8859-1\r\n" + "\r\n" +
+          "äöööölfldflfldfdföödfödfödfåååååå\r\n" + "--XyXyXy--")
+          .getBytes("ISO-8859-1")
 
       post("/params", headers = multipartHeaders, body = reqBody) {
         header("latin1-string") must_== "äöööölfldflfldfdföödfödfödfåååååå"
@@ -278,8 +270,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
         Map(
           "file" -> new File(
             "core/src/test/resources/org/scalatra/servlet/smiley.png"))) {
-        (status mustEqual 413) and
-          (body mustEqual "too much!")
+        (status mustEqual 413) and (body mustEqual "too much!")
       }
     }
 
@@ -298,8 +289,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
   "regular POST" should {
     "not be affected by FileUploadSupport handling" in {
       post("/regular", Map("param1" -> "one", "param2" -> "two")) {
-        (header("param1") must_== "one") and
-          (header("param2") must_== "two")
+        (header("param1") must_== "one") and (header("param2") must_== "two")
       }
     }
   }

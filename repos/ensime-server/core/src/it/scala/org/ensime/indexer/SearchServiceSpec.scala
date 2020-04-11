@@ -51,8 +51,8 @@ class SearchServiceSpec
   it should "remove classfiles that have been deleted" in {
     withSearchService { (config, service) =>
       implicit val s = service
-      val classfile = config.subprojects.head.targetDirs
-        .head / "org/example/Foo.class"
+      val classfile = config.subprojects.head.targetDirs.head /
+        "org/example/Foo.class"
 
       classfile shouldBe 'exists
 
@@ -142,16 +142,17 @@ class SearchServiceSpec
   it should "not prioritise noisy inner classes" in withSearchService {
     implicit service =>
       val hits = service.searchClasses("Baz", 10).map(_.fqn)
-      hits should contain theSameElementsAs (
-        Seq(
-          "org.example2.Baz",
-          "org.example2.Baz$Wibble$baz",
-          "org.example2.Baz$Wibble$baz$",
-          "org.example2.Baz$Wibble$",
-          "org.example2.Baz$",
-          "org.example2.Baz$Wibble"
+      hits should contain theSameElementsAs
+        (
+          Seq(
+            "org.example2.Baz",
+            "org.example2.Baz$Wibble$baz",
+            "org.example2.Baz$Wibble$baz$",
+            "org.example2.Baz$Wibble$",
+            "org.example2.Baz$",
+            "org.example2.Baz$Wibble"
+          )
         )
-      )
       hits.head shouldBe "org.example2.Baz"
   }
 
@@ -159,7 +160,8 @@ class SearchServiceSpec
     implicit service =>
       service
         .findUnique(
-          "org.scalatest.fixture.ConfigMapFixture$FixtureParam") shouldBe defined
+          "org.scalatest.fixture.ConfigMapFixture$FixtureParam") shouldBe
+        defined
   }
 }
 
@@ -185,8 +187,8 @@ trait SearchServiceTestUtils {
   }
 
   def searchesClasses(expect: String, queries: String*)(implicit
-      service: SearchService) =
-    (expect :: queries.toList).foreach(searchClasses(expect, _))
+      service: SearchService) = (expect :: queries.toList)
+    .foreach(searchClasses(expect, _))
 
   def searchClassesAndMethods(expect: String, query: String)(implicit
       service: SearchService) = {
@@ -214,7 +216,7 @@ trait SearchServiceTestUtils {
     queries.toList.foreach(searchExpectEmpty)
 
   def searchesClassesAndMethods(expect: String, queries: String*)(implicit
-      service: SearchService) =
-    (expect :: queries.toList).foreach(searchClassesAndMethods(expect, _))
+      service: SearchService) = (expect :: queries.toList)
+    .foreach(searchClassesAndMethods(expect, _))
 
 }

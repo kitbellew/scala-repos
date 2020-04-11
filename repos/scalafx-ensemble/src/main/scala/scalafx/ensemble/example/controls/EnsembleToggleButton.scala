@@ -44,8 +44,8 @@ class EnsembleToggleButton extends EnsembleExample {
   // Radio Button Toggle Group
   val tog = new ToggleGroup {
     selectedToggle.onChange((_, oldValue, newValue) => {
-      toggleLabel.text = "You selected : " + newValue.asInstanceOf[JfxToggleBtn]
-        .getText
+      toggleLabel.text = "You selected : " +
+        newValue.asInstanceOf[JfxToggleBtn].getText
     })
   }
 

@@ -37,13 +37,44 @@ abstract class MembershipChangeListenerUpSpec
 
   "A set of connected cluster systems" must {
 
-    "(when two nodes) after cluster convergence updates the membership table then all MembershipChangeListeners should be triggered" taggedAs LongRunningTest in {
+    "(when two nodes) after cluster convergence updates the membership table then all MembershipChangeListeners should be triggered" taggedAs
+      LongRunningTest in {
 
-      awaitClusterUp(first)
+        awaitClusterUp(first)
 
-      runOn(first, second) {
+        runOn(first, second) {
+          val latch = TestLatch()
+          val expectedAddresses = Set(first, second) map address
+          cluster.subscribe(
+            system.actorOf(
+              Props(new Actor {
+                var members = Set.empty[Member]
+                def receive = {
+                  case state: CurrentClusterState ⇒ members = state.members
+                  case MemberUp(m) ⇒
+                    members = members - m + m
+                    if (members.map(_.address) == expectedAddresses)
+                      latch.countDown()
+                  case _ ⇒ // ignore
+                }
+              }).withDeploy(Deploy.local)),
+            classOf[MemberEvent]
+          )
+          enterBarrier("listener-1-registered")
+          cluster.join(first)
+          latch.await
+        }
+
+        runOn(third) { enterBarrier("listener-1-registered") }
+
+        enterBarrier("after-1")
+      }
+
+    "(when three nodes) after cluster convergence updates the membership table then all MembershipChangeListeners should be triggered" taggedAs
+      LongRunningTest in {
+
         val latch = TestLatch()
-        val expectedAddresses = Set(first, second) map address
+        val expectedAddresses = Set(first, second, third) map address
         cluster.subscribe(
           system.actorOf(
             Props(new Actor {
@@ -59,42 +90,13 @@ abstract class MembershipChangeListenerUpSpec
             }).withDeploy(Deploy.local)),
           classOf[MemberEvent]
         )
-        enterBarrier("listener-1-registered")
-        cluster.join(first)
+        enterBarrier("listener-2-registered")
+
+        runOn(third) { cluster.join(first) }
+
         latch.await
+
+        enterBarrier("after-2")
       }
-
-      runOn(third) { enterBarrier("listener-1-registered") }
-
-      enterBarrier("after-1")
-    }
-
-    "(when three nodes) after cluster convergence updates the membership table then all MembershipChangeListeners should be triggered" taggedAs LongRunningTest in {
-
-      val latch = TestLatch()
-      val expectedAddresses = Set(first, second, third) map address
-      cluster.subscribe(
-        system.actorOf(
-          Props(new Actor {
-            var members = Set.empty[Member]
-            def receive = {
-              case state: CurrentClusterState ⇒ members = state.members
-              case MemberUp(m) ⇒
-                members = members - m + m
-                if (members.map(_.address) == expectedAddresses)
-                  latch.countDown()
-              case _ ⇒ // ignore
-            }
-          }).withDeploy(Deploy.local)),
-        classOf[MemberEvent]
-      )
-      enterBarrier("listener-2-registered")
-
-      runOn(third) { cluster.join(first) }
-
-      latch.await
-
-      enterBarrier("after-2")
-    }
   }
 }

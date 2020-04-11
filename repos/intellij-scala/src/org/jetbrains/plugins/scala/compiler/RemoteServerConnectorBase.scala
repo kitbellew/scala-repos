@@ -43,9 +43,8 @@ abstract class RemoteServerConnectorBase(
   private val sbtData = SbtData.from(
     new URLClassLoader(
       Array(new URL(
-        "jar:file:" + (if (libCanonicalPath startsWith "/") ""
-                       else
-                         "/") + libCanonicalPath + "/jps/sbt-interface.jar!/")),
+        "jar:file:" + (if (libCanonicalPath startsWith "/") "" else "/") +
+          libCanonicalPath + "/jps/sbt-interface.jar!/")),
       getClass.getClassLoader),
     new File(libRoot, "jps"),
     System.getProperty("java.class.version")
@@ -68,14 +67,14 @@ abstract class RemoteServerConnectorBase(
   protected val runnersJar =
     new File(libCanonicalPath, "scala-plugin-runners.jar")
 
-  val additionalCp =
-    compilerClasspath :+ runnersJar :+ compilerSettingsJar :+ outputDir
+  val additionalCp = compilerClasspath :+ runnersJar :+ compilerSettingsJar :+
+    outputDir
 
   protected def worksheetArgs: Array[String] = Array()
 
   protected def classpath: String = {
-    val classesRoots = assemblyClasspath().toSeq map (f =>
-      new File(f.getCanonicalPath stripSuffix "!" stripSuffix "!/"))
+    val classesRoots = assemblyClasspath().toSeq map
+      (f => new File(f.getCanonicalPath stripSuffix "!" stripSuffix "!/"))
     (classesRoots ++ additionalCp).mkString("\n")
   }
 

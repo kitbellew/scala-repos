@@ -5,7 +5,8 @@ object Test extends App {
     val isSameClosureClass = gFunc.getClass == f.getClass
     val isSame = gFunc eq f
     println(
-      "Is same closure class: " + isSameClosureClass + " is same closure: " + isSame)
+      "Is same closure class: " + isSameClosureClass + " is same closure: " +
+        isSame)
   }
 
   test(f())

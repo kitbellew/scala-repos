@@ -69,9 +69,8 @@ private[challenge] final class Joiner(onStart: String => Unit) {
                 )
             }
           }.start
-          (GameRepo insertDenormalized game) >>- onStart(game.id) inject Pov(
-            game,
-            !c.finalColor).some
+          (GameRepo insertDenormalized game) >>- onStart(game.id) inject
+            Pov(game, !c.finalColor).some
         }
     }
 }

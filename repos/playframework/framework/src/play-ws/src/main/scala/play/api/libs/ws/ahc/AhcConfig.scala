@@ -169,8 +169,8 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
       modify: DefaultAsyncHttpClientConfig.Builder => DefaultAsyncHttpClientConfig.Builder)
       : AhcConfigBuilder = {
     new AhcConfigBuilder(ahcConfig) {
-      override val addCustomSettings = modify compose AhcConfigBuilder.this
-        .addCustomSettings
+      override val addCustomSettings = modify compose
+        AhcConfigBuilder.this.addCustomSettings
       override val builder = AhcConfigBuilder.this.builder
     }
   }

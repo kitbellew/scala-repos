@@ -89,57 +89,56 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
           result: CompletionResultSet) {
         val dummyPosition = positionFromParameters(parameters)
 
-        val (position, inString, inInterpolatedString) =
-          dummyPosition.getNode.getElementType match {
-            case ScalaTokenTypes.tIDENTIFIER | ScalaDocTokenType
-                  .DOC_TAG_VALUE_TOKEN                                       => (dummyPosition, false, false)
-            case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
-              //it's ok to use parameters here as we want just to calculate offset
-              val offsetInString = parameters.getOffset - parameters.getPosition
-                .getTextRange.getStartOffset + 1
-              val interpolated = ScalaPsiElementFactory
-                .createExpressionFromText(
-                  "s" + dummyPosition.getText,
-                  dummyPosition.getContext)
-              (interpolated.findElementAt(offsetInString), true, false)
-            case ScalaTokenTypes.tINTERPOLATED_STRING | ScalaTokenTypes
-                  .tINTERPOLATED_MULTILINE_STRING =>
-              val position = dummyPosition.getContext
-              if (!position.isInstanceOf[ScInterpolated]) return
-              if (!parameters.getPosition.getParent
-                    .isInstanceOf[ScInterpolated]) return
+        val (position, inString, inInterpolatedString) = dummyPosition.getNode
+          .getElementType match {
+          case ScalaTokenTypes.tIDENTIFIER | ScalaDocTokenType
+                .DOC_TAG_VALUE_TOKEN                                       => (dummyPosition, false, false)
+          case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
+            //it's ok to use parameters here as we want just to calculate offset
+            val offsetInString = parameters.getOffset -
+              parameters.getPosition.getTextRange.getStartOffset + 1
+            val interpolated = ScalaPsiElementFactory.createExpressionFromText(
+              "s" + dummyPosition.getText,
+              dummyPosition.getContext)
+            (interpolated.findElementAt(offsetInString), true, false)
+          case ScalaTokenTypes.tINTERPOLATED_STRING | ScalaTokenTypes
+                .tINTERPOLATED_MULTILINE_STRING =>
+            val position = dummyPosition.getContext
+            if (!position.isInstanceOf[ScInterpolated]) return
+            if (!parameters.getPosition.getParent.isInstanceOf[ScInterpolated])
+              return
 
-              val interpolated = position.asInstanceOf[ScInterpolated]
-              val dummyInterpolated = parameters.getPosition.getParent
-                .asInstanceOf[ScInterpolated]
+            val interpolated = position.asInstanceOf[ScInterpolated]
+            val dummyInterpolated = parameters.getPosition.getParent
+              .asInstanceOf[ScInterpolated]
 
-              //we use here file copy as we want to work with offsets.
-              val offset = parameters.getOffset
-              val dummyInjections = dummyInterpolated.getInjections
-              val index = dummyInjections.lastIndexWhere { expr =>
-                expr.getTextRange.getEndOffset <= offset
-              }
+            //we use here file copy as we want to work with offsets.
+            val offset = parameters.getOffset
+            val dummyInjections = dummyInterpolated.getInjections
+            val index = dummyInjections.lastIndexWhere { expr =>
+              expr.getTextRange.getEndOffset <= offset
+            }
 
-              //it's ok to use parameters here as we want just to calculate offset
-              val offsetInString = offset - dummyInterpolated.getTextRange
-                .getStartOffset
-              val res = ScalaBasicCompletionContributor
-                .getStartEndPointForInterpolatedString(
-                  interpolated,
-                  index,
-                  offsetInString)
-              if (res.isEmpty) return
-              val (exprStartInString, endPoint) = res.get
-              val stringText = interpolated.getText
-              val newInterpolated = ScalaPsiElementFactory
-                .createExpressionFromText(
-                  stringText.substring(0, exprStartInString) + "{" +
-                    stringText.substring(exprStartInString, endPoint) + "}" +
-                    stringText.substring(endPoint),
-                  position.getContext)
-              (newInterpolated.findElementAt(offsetInString + 1), false, true)
-            case _ => return
-          }
+            //it's ok to use parameters here as we want just to calculate offset
+            val offsetInString = offset -
+              dummyInterpolated.getTextRange.getStartOffset
+            val res = ScalaBasicCompletionContributor
+              .getStartEndPointForInterpolatedString(
+                interpolated,
+                index,
+                offsetInString)
+            if (res.isEmpty) return
+            val (exprStartInString, endPoint) = res.get
+            val stringText = interpolated.getText
+            val newInterpolated = ScalaPsiElementFactory
+              .createExpressionFromText(
+                stringText.substring(0, exprStartInString) + "{" +
+                  stringText.substring(exprStartInString, endPoint) + "}" +
+                  stringText.substring(endPoint),
+                position.getContext)
+            (newInterpolated.findElementAt(offsetInString + 1), false, true)
+          case _ => return
+        }
         result.restartCompletionWhenNothingMatches()
 
         val (expectedTypesAfterNew, isAfterNew) = ScalaAfterNewCompletionUtil
@@ -151,12 +150,13 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
           parameters,
           result.getPrefixMatcher)
         val insertedElement: PsiElement = position
-        if (!inString && !inInterpolatedString && !ScalaPsiUtil
-              .fileContext(insertedElement).isInstanceOf[ScalaFile]) return
+        if (!inString && !inInterpolatedString &&
+            !ScalaPsiUtil.fileContext(insertedElement).isInstanceOf[ScalaFile])
+          return
         val lookingForAnnotations: Boolean =
           Option(
-            insertedElement.getContainingFile findElementAt (insertedElement
-              .getTextOffset - 1)) exists {
+            insertedElement.getContainingFile findElementAt
+              (insertedElement.getTextOffset - 1)) exists {
             _.getNode.getElementType == ScalaTokenTypes.tAT
           }
 
@@ -193,9 +193,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                           }
                         })
 
-                      if (!isExcluded && !classNameCompletion && (
-                            !lookingForAnnotations || clazz.isAnnotationType
-                          )) {
+                      if (!isExcluded && !classNameCompletion &&
+                          (!lookingForAnnotations || clazz.isAnnotationType)) {
                         if (isAfterNew) {
                           val lookupElement = getLookupElementFromClass(
                             expectedTypesAfterNew,
@@ -206,10 +205,11 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                       }
                     case _ if lookingForAnnotations =>
                     case f: FakePsiMethod
-                        if f.name.endsWith("_=") && parameters
-                          .getInvocationCount < 2 => //don't show _= methods for vars in basic completion
-                    case fun: ScFun               => addElement(el)
-                    case param: ScClassParameter  => addElement(el)
+                        if f.name.endsWith("_=") &&
+                          parameters.getInvocationCount <
+                          2                      => //don't show _= methods for vars in basic completion
+                    case fun: ScFun              => addElement(el)
+                    case param: ScClassParameter => addElement(el)
                     case param: ScParameter if !el.isNamedParameter =>
                       el.isLocalVariable = true
                       addElement(el)
@@ -234,7 +234,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                         case _ => addElement(el)
                       }
                     case memb: PsiMember =>
-                      if (parameters.getInvocationCount > 1 || ResolveUtils
+                      if (parameters.getInvocationCount > 1 ||
+                          ResolveUtils
                             .isAccessible(memb, position, forCompletion = true))
                         addElement(el)
                     case _ => addElement(el)
@@ -299,13 +300,13 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                   applyVariant(variant)
                 }
             }
-            if (!elementAdded && !classNameCompletion && ScalaCompletionUtil
-                  .shouldRunClassNameCompletion(
-                    positionFromParameters(parameters),
-                    parameters,
-                    result.getPrefixMatcher,
-                    checkInvocationCount = false,
-                    lookingForAnnotations = lookingForAnnotations)) {
+            if (!elementAdded && !classNameCompletion &&
+                ScalaCompletionUtil.shouldRunClassNameCompletion(
+                  positionFromParameters(parameters),
+                  parameters,
+                  result.getPrefixMatcher,
+                  checkInvocationCount = false,
+                  lookingForAnnotations = lookingForAnnotations)) {
               ScalaClassNameCompletionContributor
                 .completeClassName(dummyPosition, parameters, context, result)
             }
@@ -359,8 +360,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
             }
           case _ =>
         }
-        if (position.getNode.getElementType == ScalaDocTokenType
-              .DOC_TAG_VALUE_TOKEN) result.stopHere()
+        if (position.getNode.getElementType ==
+              ScalaDocTokenType.DOC_TAG_VALUE_TOKEN) result.stopHere()
       }
     }
   )
@@ -452,8 +453,8 @@ object ScalaBasicCompletionContributor {
       val expr = injections(index)
       if (expr.isInstanceOf[ScBlock]) return None
       val stringText = interpolated.getText
-      val pointPosition = expr.getTextRange.getEndOffset - interpolated
-        .getTextRange.getStartOffset
+      val pointPosition = expr.getTextRange.getEndOffset -
+        interpolated.getTextRange.getStartOffset
       if (stringText.charAt(pointPosition) == '.') {
         val restString = stringText.substring(pointPosition + 1)
         val lexer = new ScalaLexer()
@@ -462,8 +463,8 @@ object ScalaBasicCompletionContributor {
         if (lexer.getTokenType == ScalaTokenTypes.tIDENTIFIER) {
           val endPoint = lexer.getTokenEnd + pointPosition + 1
           if (endPoint >= offsetInString) {
-            val exprStartInString = expr.getTextRange
-              .getStartOffset - interpolated.getTextRange.getStartOffset
+            val exprStartInString = expr.getTextRange.getStartOffset -
+              interpolated.getTextRange.getStartOffset
             Some(exprStartInString, endPoint)
           } else None
         } else None

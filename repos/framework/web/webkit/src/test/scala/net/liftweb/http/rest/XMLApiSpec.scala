@@ -113,17 +113,17 @@ object XmlApiSpec extends Specification {
      */
 
     "Convert booleans to LiftResponses" in {
-      produce("true") must matchXmlResponse(
-        <api success="true"><xml:group/></api>)
-      produce("false") must matchXmlResponse(
-        <api success="false"><xml:group/></api>)
+      produce("true") must
+        matchXmlResponse(<api success="true"><xml:group/></api>)
+      produce("false") must
+        matchXmlResponse(<api success="false"><xml:group/></api>)
     }
 
     "Convert Boxed booleans to LiftResponses" in {
-      produce("42") must matchXmlResponse(
-        <api success="true"><xml:group/></api>)
-      produce("1") must matchXmlResponse(
-        <api success="false"><xml:group/></api>)
+      produce("42") must
+        matchXmlResponse(<api success="true"><xml:group/></api>)
+      produce("1") must
+        matchXmlResponse(<api success="false"><xml:group/></api>)
 
       val failure = produce("invalidInt")
 
@@ -142,14 +142,14 @@ object XmlApiSpec extends Specification {
     }
 
     "Convert various XML types to a response" in {
-      produce(0f) must matchXmlResponse(
-        <api success="true"><float>zero</float></api>)
-      produce(-1f) must matchXmlResponse(
-        <api success="true"><float>negative</float></api>)
-      produce(1f) must matchXmlResponse(
-        <api success="true"><float>positive</float></api>)
-      produce(42f) must matchXmlResponse(
-        <api success="true"><float>perfect</float></api>)
+      produce(0f) must
+        matchXmlResponse(<api success="true"><float>zero</float></api>)
+      produce(-1f) must
+        matchXmlResponse(<api success="true"><float>negative</float></api>)
+      produce(1f) must
+        matchXmlResponse(<api success="true"><float>positive</float></api>)
+      produce(42f) must
+        matchXmlResponse(<api success="true"><float>perfect</float></api>)
     }
   }
 }

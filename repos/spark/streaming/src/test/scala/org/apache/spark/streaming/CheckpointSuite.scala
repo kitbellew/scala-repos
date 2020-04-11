@@ -312,8 +312,8 @@ class CheckpointSuite
     stateStream = ssc.graph.getOutputStreams().head.dependencies.head
       .dependencies.head
     logInfo(
-      "Restored data of state stream = \n[" + stateStream.generatedRDDs
-        .mkString("\n") + "]")
+      "Restored data of state stream = \n[" +
+        stateStream.generatedRDDs.mkString("\n") + "]")
     assert(
       !stateStream.generatedRDDs.isEmpty,
       "No restored RDDs in state stream after recovery from first failure")
@@ -341,8 +341,8 @@ class CheckpointSuite
     stateStream = ssc.graph.getOutputStreams().head.dependencies.head
       .dependencies.head
     logInfo(
-      "Restored data of state stream = \n[" + stateStream.generatedRDDs
-        .mkString("\n") + "]")
+      "Restored data of state stream = \n[" +
+        stateStream.generatedRDDs.mkString("\n") + "]")
     assert(
       !stateStream.generatedRDDs.isEmpty,
       "No restored RDDs in state stream after recovery from second failure")
@@ -482,9 +482,8 @@ class CheckpointSuite
     val n = 10
     val w = 4
     val input = (1 to n).map(_ => Seq("a")).toSeq
-    val output =
-      Seq(Seq(("a", 1)), Seq(("a", 2)), Seq(("a", 3))) ++ (1 to (n - w + 1))
-        .map(x => Seq(("a", 4)))
+    val output = Seq(Seq(("a", 1)), Seq(("a", 2)), Seq(("a", 3))) ++
+      (1 to (n - w + 1)).map(x => Seq(("a", 4)))
     val operation = (st: DStream[String]) => {
       st.map(x => (x, 1))
         .reduceByKeyAndWindow(_ + _, _ - _, batchDuration * w, batchDuration)
@@ -649,8 +648,8 @@ class CheckpointSuite
 
     eventually(timeout(10.seconds)) {
       assert(
-        RateTestReceiver.getActive().get
-          .getDefaultBlockGeneratorRateLimit() === 200)
+        RateTestReceiver.getActive().get.getDefaultBlockGeneratorRateLimit() ===
+          200)
     }
     ssc.stop()
   }
@@ -739,8 +738,8 @@ class CheckpointSuite
         eventually(eventuallyTimeout) {
           // Wait until all files have been recorded and all batches have started
           assert(
-            recordedFiles(ssc) === Seq(1, 2, 3) && batchCounter
-              .getNumStartedBatches === 3)
+            recordedFiles(ssc) === Seq(1, 2, 3) &&
+              batchCounter.getNumStartedBatches === 3)
         }
         clock.advance(batchDuration.milliseconds)
         // Wait for a checkpoint to be written
@@ -801,13 +800,13 @@ class CheckpointSuite
           clock.advance(batchDuration.milliseconds)
           eventually(eventuallyTimeout) {
             assert(
-              batchCounter
-                .getNumCompletedBatches === index + numBatchesAfterRestart + 1)
+              batchCounter.getNumCompletedBatches ===
+                index + numBatchesAfterRestart + 1)
           }
         }
         logInfo(
-          "Output after restart = " + outputStream.output.asScala
-            .mkString("[", ", ", "]"))
+          "Output after restart = " +
+            outputStream.output.asScala.mkString("[", ", ", "]"))
         assert(outputStream.output.size > 0, "No files processed after restart")
         ssc.stop()
 
@@ -977,8 +976,8 @@ class CheckpointSuite
         val stateRDDs = findAllMarkedRDDs(rdd)
         rdd.count()
         // Check the two state RDDs are both checkpointed
-        rddsCheckpointed = stateRDDs.size == 2 && stateRDDs
-          .forall(_.isCheckpointed)
+        rddsCheckpointed = stateRDDs.size == 2 &&
+          stateRDDs.forall(_.isCheckpointed)
       }
     ssc.start()
     batchCounter.waitUntilBatchesCompleted(1, 10000)

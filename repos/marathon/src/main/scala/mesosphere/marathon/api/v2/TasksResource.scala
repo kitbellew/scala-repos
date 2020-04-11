@@ -85,8 +85,8 @@ class TasksResource @Inject() (
       val enrichedTasks: IterableView[EnrichedTask, Iterable[_]] = for {
         (appId, task) <- tasks
         app <- appIdsToApps(appId) if isAuthorized(ViewApp, app)
-        if statusSet.isEmpty || task.mesosStatus
-          .exists(s => statusSet(s.getState))
+        if statusSet.isEmpty ||
+          task.mesosStatus.exists(s => statusSet(s.getState))
       } yield {
         EnrichedTask(
           appId,
@@ -143,8 +143,8 @@ class TasksResource @Inject() (
           case (appId, tasks) => taskKiller.kill(appId, _ => tasks)
         })).flatten
         ok(jsonObjString(
-          "tasks" -> killed
-            .map(task => EnrichedTask(task.taskId.appId, task, Seq.empty))))
+          "tasks" -> killed.map(task =>
+            EnrichedTask(task.taskId.appId, task, Seq.empty))))
       }
 
       val tasksByAppId = tasksToAppId.flatMap {

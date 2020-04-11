@@ -39,8 +39,7 @@ class ALSModel(
   lazy val itemIntStringMap = itemStringIntMap.inverse
 
   override def toString = {
-    s" rank: ${rank}" +
-      s" userFeatures: [${userFeatures.size}]" +
+    s" rank: ${rank}" + s" userFeatures: [${userFeatures.size}]" +
       s"(${userFeatures.take(2).toList}...)" +
       s" productFeatures: [${productFeatures.size}]" +
       s"(${productFeatures.take(2).toList}...)" +
@@ -94,13 +93,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
         if (uindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent user ID ${r.user}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent user ID ${r.user}" +
+              " to Int index.")
 
         if (iindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent item ID ${r.item}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent item ID ${r.item}" +
+              " to Int index.")
 
         ((uindex, iindex), (r.rating, r.t)) // MODIFIED
       }.filter {
@@ -224,8 +223,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     // combine query's blackList,seenItems and unavailableItems
     // into final blackList.
     // convert seen Items list from String ID to interger Index
-    val finalBlackList: Set[Int] = (blackList ++ seenItems ++
-      unavailableItems).map(x => model.itemStringIntMap.get(x)).flatten
+    val finalBlackList: Set[Int] = (blackList ++ seenItems ++ unavailableItems)
+      .map(x => model.itemStringIntMap.get(x)).flatten
 
     val userFeature = model.userStringIntMap.get(query.user).map { userIndex =>
       userFeatures.get(userIndex)
@@ -241,13 +240,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
           .par // convert to parallel collection
           .filter {
             case (i, (item, feature)) =>
-              feature.isDefined &&
-                isCandidateItem(
-                  i = i,
-                  item = item,
-                  categories = query.categories,
-                  whiteList = whiteList,
-                  blackList = finalBlackList)
+              feature.isDefined && isCandidateItem(
+                i = i,
+                item = item,
+                categories = query.categories,
+                whiteList = whiteList,
+                blackList = finalBlackList)
           }.map {
             case (i, (item, feature)) =>
               // NOTE: feature must be defined, so can call .get
@@ -342,13 +340,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         productFeatures.par // convert to parallel collection
           .filter {
             case (i, (item, feature)) =>
-              feature.isDefined &&
-                isCandidateItem(
-                  i = i,
-                  item = item,
-                  categories = query.categories,
-                  whiteList = whiteList,
-                  blackList = blackList)
+              feature.isDefined && isCandidateItem(
+                i = i,
+                item = item,
+                categories = query.categories,
+                whiteList = whiteList,
+                blackList = blackList)
           }.map {
             case (i, (item, feature)) =>
               val s = recentFeatures.map { rf =>
@@ -419,8 +416,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       whiteList: Option[Set[Int]],
       blackList: Set[Int]): Boolean = {
     // can add other custom filtering here
-    whiteList.map(_.contains(i)).getOrElse(true) &&
-    !blackList.contains(i) &&
+    whiteList.map(_.contains(i)).getOrElse(true) && !blackList.contains(i) &&
     // filter categories
     categories.map { cat =>
       item.categories.map { itemCat =>

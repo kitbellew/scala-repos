@@ -146,10 +146,10 @@ object Numeric {
     def div(x: Float, y: Float): Float = x / y
   }
   trait FloatAsIfIntegral extends FloatIsConflicted with Integral[Float] {
-    def quot(x: Float, y: Float): Float =
-      (BigDecimal(x) quot BigDecimal(y)).floatValue
-    def rem(x: Float, y: Float): Float =
-      (BigDecimal(x) remainder BigDecimal(y)).floatValue
+    def quot(x: Float, y: Float): Float = (BigDecimal(x) quot BigDecimal(y))
+      .floatValue
+    def rem(x: Float, y: Float): Float = (BigDecimal(x) remainder BigDecimal(y))
+      .floatValue
   }
   implicit object FloatIsFractional
       extends FloatIsFractional
@@ -175,8 +175,8 @@ object Numeric {
     def div(x: Double, y: Double): Double = x / y
   }
   trait DoubleAsIfIntegral extends DoubleIsConflicted with Integral[Double] {
-    def quot(x: Double, y: Double): Double =
-      (BigDecimal(x) quot BigDecimal(y)).doubleValue
+    def quot(x: Double, y: Double): Double = (BigDecimal(x) quot BigDecimal(y))
+      .doubleValue
     def rem(x: Double, y: Double): Double =
       (BigDecimal(x) remainder BigDecimal(y)).doubleValue
   }

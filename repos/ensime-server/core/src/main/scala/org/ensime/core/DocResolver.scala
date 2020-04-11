@@ -92,8 +92,8 @@ class DocResolver(
       s"$prefix/$jarName/$path$anchor"
     } else {
       val scalaSig = maybeReplaceWithUsecase(jar, sig.scala)
-      val anchor = scalaSig.fqn.mkString +
-        scalaSig.member.map("@" + _).getOrElse("")
+      val anchor = scalaSig.fqn.mkString + scalaSig.member.map("@" + _)
+        .getOrElse("")
       s"$prefix/$jarName/index.html#$anchor"
     }
   }

@@ -98,8 +98,8 @@ object PlayReload {
                     parsed = Some((
                       parsed._1.get._1,
                       parsed._1.get._2,
-                      parsed._1.get._3 + " [" + key.trim + ": " + message
-                        .trim + "]")) -> None
+                      parsed._1.get._3 + " [" + key.trim + ": " + message.trim +
+                        "]")) -> None
                   }
                 case JavacErrorPosition(pos) =>
                   parsed = parsed._1 -> Some(pos.size)

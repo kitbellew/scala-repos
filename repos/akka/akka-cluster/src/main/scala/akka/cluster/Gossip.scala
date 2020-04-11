@@ -77,18 +77,18 @@ private[cluster] final case class Gossip(
         s"Live members must have status [${Removed}], " +
           s"got [${members.filter(_.status == Removed)}]")
 
-    val inReachabilityButNotMember = overview.reachability
-      .allObservers diff members.map(_.uniqueAddress)
+    val inReachabilityButNotMember = overview.reachability.allObservers diff
+      members.map(_.uniqueAddress)
     if (inReachabilityButNotMember.nonEmpty)
       throw new IllegalArgumentException(
-        "Nodes not part of cluster in reachability table, got [%s]"
-          format inReachabilityButNotMember.mkString(", "))
+        "Nodes not part of cluster in reachability table, got [%s]" format
+          inReachabilityButNotMember.mkString(", "))
 
     val seenButNotMember = overview.seen diff members.map(_.uniqueAddress)
     if (seenButNotMember.nonEmpty)
       throw new IllegalArgumentException(
-        "Nodes not part of cluster have marked the Gossip as seen, got [%s]"
-          format seenButNotMember.mkString(", "))
+        "Nodes not part of cluster have marked the Gossip as seen, got [%s]" format
+          seenButNotMember.mkString(", "))
   }
 
   @transient
@@ -137,8 +137,8 @@ private[cluster] final case class Gossip(
     * Merges the seen table of two Gossip instances.
     */
   def mergeSeen(that: Gossip): Gossip =
-    this copy (overview =
-      overview copy (seen = overview.seen union that.overview.seen))
+    this copy
+      (overview = overview copy (seen = overview.seen union that.overview.seen))
 
   /**
     * Merges two Gossip instances including membership tables, and the VectorClock histories.
@@ -149,8 +149,8 @@ private[cluster] final case class Gossip(
     val mergedVClock = this.version merge that.version
 
     // 2. merge members by selecting the single Member with highest MemberStatus out of the Member groups
-    val mergedMembers = Gossip.emptyMembers union Member
-      .pickHighestPriority(this.members, that.members)
+    val mergedMembers = Gossip.emptyMembers union
+      Member.pickHighestPriority(this.members, that.members)
 
     // 3. merge reachability table by picking records with highest version
     val mergedReachability = this.overview.reachability
@@ -212,8 +212,8 @@ private[cluster] final case class Gossip(
       if (overview.reachability.isAllReachable) mbrs
       else
         mbrs.filter(m ⇒
-          overview.reachability.isReachable(m.uniqueAddress) || m
-            .uniqueAddress == selfUniqueAddress)
+          overview.reachability.isReachable(m.uniqueAddress) ||
+            m.uniqueAddress == selfUniqueAddress)
     if (reachableMembers.isEmpty) None
     else
       reachableMembers.find(m ⇒ Gossip.leaderMemberStatus(m.status))

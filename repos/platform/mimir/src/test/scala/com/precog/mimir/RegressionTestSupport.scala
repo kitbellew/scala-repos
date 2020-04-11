@@ -52,9 +52,8 @@ trait RegressionTestSupport[M[+_]] {
       mod: Int = 1): Seq[JValue] =
     samples.zipWithIndex map {
       case ((xs, y), idx) =>
-        val cvalues = xs
-          .map { x => CDouble(x).asInstanceOf[CValue] } :+ CDouble(y.toDouble)
-          .asInstanceOf[CValue]
+        val cvalues = xs.map { x => CDouble(x).asInstanceOf[CValue] } :+
+          CDouble(y.toDouble).asInstanceOf[CValue]
         val withCPath = {
           if (idx % mod == 0) cpaths zip cvalues.toSeq
           else if (idx % mod == 1) cpaths.tail zip cvalues.tail.toSeq

@@ -48,8 +48,8 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
     node match {
       case CPathIndex(i) if !indexableArrays.isEmpty =>
         Some(
-          (indexableArrays mapValues (_.select(i))) ++ forwardIndex
-            .getOrElse(node, Map.empty))
+          (indexableArrays mapValues (_.select(i))) ++
+            forwardIndex.getOrElse(node, Map.empty))
       case _ => forwardIndex get node
     }
 
@@ -216,17 +216,15 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
         case CEmptyObject =>
           new EmptyObjectColumn {
             def isDefinedAt(row: Int) =
-              derefBy.isDefinedAt(row) &&
-                derefColumns(derefBy(row))
-                  .exists(_.get(resultRef).exists(_.isDefinedAt(row)))
+              derefBy.isDefinedAt(row) && derefColumns(derefBy(row))
+                .exists(_.get(resultRef).exists(_.isDefinedAt(row)))
           }
 
         case CEmptyArray =>
           new EmptyArrayColumn {
             def isDefinedAt(row: Int) =
-              derefBy.isDefinedAt(row) &&
-                derefColumns(derefBy(row))
-                  .exists(_.get(resultRef).exists(_.isDefinedAt(row)))
+              derefBy.isDefinedAt(row) && derefColumns(derefBy(row))
+                .exists(_.get(resultRef).exists(_.isDefinedAt(row)))
           }
 
         case CNull =>

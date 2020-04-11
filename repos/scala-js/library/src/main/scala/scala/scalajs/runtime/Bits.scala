@@ -20,8 +20,8 @@ object Bits {
   private[this] val _areTypedArraysSupported = {
     // Here we use `assumingES6` to dce the 4 subsequent tests
     assumingES6 || js.DynamicImplicits.truthValue(
-      global.ArrayBuffer && global.Int32Array &&
-        global.Float32Array && global.Float64Array)
+      global.ArrayBuffer && global.Int32Array && global.Float32Array &&
+        global.Float64Array)
   }
 
   @inline

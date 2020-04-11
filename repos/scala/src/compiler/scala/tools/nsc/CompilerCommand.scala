@@ -28,7 +28,8 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
   def cmdDesc = "compiler"
 
   private def explainAdvanced =
-    "\n" + """
+    "\n" +
+      """
     |-- Notes on option parsing --
     |Boolean settings are always false unless set.
     |Where multiple values are accepted, they should be comma-separated.
@@ -107,8 +108,8 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
     else if (Yhelp) yusageMsg
     else if (showPlugins) global.pluginDescriptions
     else if (showPhases)
-      global.phaseDescriptions + (if (debug) "\n" + global.phaseFlagDescriptions
-                                  else "")
+      global.phaseDescriptions +
+        (if (debug) "\n" + global.phaseFlagDescriptions else "")
     else if (genPhaseGraph.isSetByUser) {
       val components =
         global.phaseNames // global.phaseDescriptors // one initializes

@@ -50,10 +50,8 @@ object GenerateTupleW {
 
     val source =
       "package scalaz\npackage syntax\npackage std\n\nimport collection.immutable.IndexedSeq\n\n" +
-        tuples.map(_._1).mkString("\n") +
-        "\n\ntrait ToTupleOps {\n" +
-        tuples.map("  " + _._2).mkString("\n") +
-        "}"
+        tuples.map(_._1).mkString("\n") + "\n\ntrait ToTupleOps {\n" +
+        tuples.map("  " + _._2).mkString("\n") + "}"
     writeFileScalazPackage("TupleOps.scala", source)
   }
 

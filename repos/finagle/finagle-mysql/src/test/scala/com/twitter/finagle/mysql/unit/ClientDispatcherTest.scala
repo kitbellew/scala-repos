@@ -125,9 +125,9 @@ class ClientDispatcherTest extends FunSuite {
   def toPacket(f: Field): Packet = {
     def strLen(s: String) = Buffer.sizeOfLen(s.length) + s.length
 
-    val sizeOfField = (strLen(f.catalog) + strLen(f.db)
-      + strLen(f.table) + strLen(f.origTable)
-      + strLen(f.name) + strLen(f.origName) + 12)
+    val sizeOfField =
+      (strLen(f.catalog) + strLen(f.db) + strLen(f.table) +
+        strLen(f.origTable) + strLen(f.name) + strLen(f.origName) + 12)
 
     val fieldData = new Array[Byte](sizeOfField)
     val bw = BufferWriter(fieldData)

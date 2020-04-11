@@ -84,15 +84,13 @@ object Pattern {
     val (jsPattern, flags1) = {
       if ((flags & LITERAL) != 0) { (quote(regex), flags) }
       else {
-        trySplitHack(regex, flags) orElse
-          tryFlagHack(regex, flags) getOrElse
+        trySplitHack(regex, flags) orElse tryFlagHack(regex, flags) getOrElse
           (regex, flags)
       }
     }
 
     val jsFlags = {
-      "g" +
-        (if ((flags1 & CASE_INSENSITIVE) != 0) "i" else "") +
+      "g" + (if ((flags1 & CASE_INSENSITIVE) != 0) "i" else "") +
         (if ((flags1 & MULTILINE) != 0) "m" else "")
     }
 
@@ -111,11 +109,12 @@ object Pattern {
     var i = 0
     while (i < s.length) {
       val c = s.charAt(i)
-      result += ((c: @switch) match {
-        case '\\' | '.' | '(' | ')' | '[' | ']' | '{' | '}' | '|' | '?' | '*' |
-            '+' | '^' | '$' => "\\" + c
-        case _              => c
-      })
+      result +=
+        ((c: @switch) match {
+          case '\\' | '.' | '(' | ')' | '[' | ']' | '{' | '}' | '|' | '?' |
+              '*' | '+' | '^' | '$' => "\\" + c
+          case _                    => c
+        })
       i += 1
     }
     result

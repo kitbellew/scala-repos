@@ -74,8 +74,8 @@ object ScalaRenameUtil {
           .getParentOfType(ref, classOf[ScImportStmt]) != null
         if (isInImport && ref.resolve() == null) {
           val multiResolve = ref.multiResolve(false)
-          if (multiResolve.length > 1 && multiResolve
-                .forall(_.getElement.isInstanceOf[ScTypeDefinition])) {
+          if (multiResolve.length > 1 && multiResolve.forall(
+                _.getElement.isInstanceOf[ScTypeDefinition])) {
             new PsiReference {
               def getVariants: Array[AnyRef] = ref.getVariants
 
@@ -207,7 +207,7 @@ object ScalaRenameUtil {
     val newElemRange = Option(ScalaRenameUtil.findSubstituteElement(element))
       .map(_.getTextRange)
     newElemRange.exists(nr =>
-      nr.getStartOffset == range.getStartOffset && nr.getEndOffset == range
-        .getEndOffset)
+      nr.getStartOffset == range.getStartOffset &&
+        nr.getEndOffset == range.getEndOffset)
   }
 }

@@ -60,8 +60,9 @@ private[sql] object JDBCRelation {
     if (numPartitions == 1) return Array[Partition](JDBCPartition(null, 0))
     // Overflow and silliness can happen if you subtract then divide.
     // Here we get a little roundoff, but that's (hopefully) OK.
-    val stride: Long = (partitioning.upperBound / numPartitions
-      - partitioning.lowerBound / numPartitions)
+    val stride: Long =
+      (partitioning.upperBound / numPartitions -
+        partitioning.lowerBound / numPartitions)
     var i: Int = 0
     var currentValue: Long = partitioning.lowerBound
     var ans = new ArrayBuffer[Partition]()

@@ -83,9 +83,11 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
   def getLowerTypeElement: Option[ScTypeElement] = {
     if (lowerElement != null) {
       val lowerTypeElement = lowerElement.get
-      if (lowerTypeElement != null && (lowerTypeElement.isEmpty || (
-            lowerTypeElement.get.getContext eq getPsi
-          ))) { return lowerTypeElement }
+      if (lowerTypeElement != null &&
+          (lowerTypeElement.isEmpty ||
+          (lowerTypeElement.get.getContext eq getPsi))) {
+        return lowerTypeElement
+      }
     }
     val res: Option[ScTypeElement] =
       if (getLowerText != "")
@@ -100,9 +102,11 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
   def getUpperTypeElement: Option[ScTypeElement] = {
     if (upperElement != null) {
       val upperTypeElement = upperElement.get
-      if (upperTypeElement != null && (upperTypeElement.isEmpty || (
-            upperTypeElement.get.getContext eq getPsi
-          ))) { return upperTypeElement }
+      if (upperTypeElement != null &&
+          (upperTypeElement.isEmpty ||
+          (upperTypeElement.get.getContext eq getPsi))) {
+        return upperTypeElement
+      }
     }
     val res: Option[ScTypeElement] =
       if (getUpperText != "")
@@ -123,8 +127,9 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
   def getViewTypeElement: Seq[ScTypeElement] = {
     if (viewElement != null) {
       val viewTypeElements = viewElement.get
-      if (viewTypeElements != null && viewTypeElements
-            .forall(_.getContext.eq(getPsi))) return viewTypeElements
+      if (viewTypeElements != null &&
+          viewTypeElements.forall(_.getContext.eq(getPsi)))
+        return viewTypeElements
     }
     val res: Seq[ScTypeElement] = getViewText
       .map(ScalaPsiElementFactory.createTypeElementFromText(_, getPsi, null))
@@ -135,8 +140,9 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
   def getContextBoundTypeElement: Seq[ScTypeElement] = {
     if (contextBoundElement != null) {
       val contextTypeElements = contextBoundElement.get
-      if (contextTypeElements != null && contextTypeElements
-            .forall(_.getContext.eq(getPsi))) return contextTypeElements
+      if (contextTypeElements != null &&
+          contextTypeElements.forall(_.getContext.eq(getPsi)))
+        return contextTypeElements
     }
     val res: Seq[ScTypeElement] = getContextBoundText
       .map(ScalaPsiElementFactory.createTypeElementFromText(_, getPsi, null))

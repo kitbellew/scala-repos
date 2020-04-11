@@ -72,8 +72,8 @@ object UpdateOffsetsInZK {
         case Some(b) => b
         case None =>
           throw new KafkaException(
-            "Broker " + brokerHostingPartition + " is unavailable. Cannot issue " +
-              "getOffsetsBefore request")
+            "Broker " + brokerHostingPartition +
+              " is unavailable. Cannot issue " + "getOffsetsBefore request")
       }
 
       zkUtils.getBrokerInfo(broker) match {
@@ -108,8 +108,8 @@ object UpdateOffsetsInZK {
 
   private def usage() = {
     println(
-      "USAGE: " + UpdateOffsetsInZK.getClass
-        .getName + " [earliest | latest] consumer.properties topic")
+      "USAGE: " + UpdateOffsetsInZK.getClass.getName +
+        " [earliest | latest] consumer.properties topic")
     System.exit(1)
   }
 }

@@ -48,8 +48,8 @@ object FormatSpec extends Specification {
     "12.23 must not be a valid bigDecimal(10,1) : Too many decimals" in {
       Form("value" -> bigDecimal(10, 1)).bind(Map("value" -> "10.23")).fold(
         formWithErrors => {
-          formWithErrors.errors.head.message must equalTo(
-            "error.real.precision")
+          formWithErrors.errors.head.message must
+            equalTo("error.real.precision")
         },
         { number => "The mapping should fail." must equalTo("Error") })
     }
@@ -57,8 +57,8 @@ object FormatSpec extends Specification {
     "12111.23 must not be a valid bigDecimal(5,2) : Too many digits" in {
       Form("value" -> bigDecimal(5, 2)).bind(Map("value" -> "12111.23")).fold(
         formWithErrors => {
-          formWithErrors.errors.head.message must equalTo(
-            "error.real.precision")
+          formWithErrors.errors.head.message must
+            equalTo("error.real.precision")
         },
         { number => "The mapping should fail." must equalTo("Error") })
     }

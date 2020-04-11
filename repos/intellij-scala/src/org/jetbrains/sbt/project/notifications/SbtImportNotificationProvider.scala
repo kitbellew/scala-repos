@@ -47,9 +47,8 @@ abstract class SbtImportNotificationProvider(
   override def createNotificationPanel(
       file: VirtualFile,
       fileEditor: FileEditor): EditorNotificationPanel =
-    if (!isIgnored(file) && isSbtFile(file) && shouldShowPanel(
-          file,
-          fileEditor)) createPanel(file)
+    if (!isIgnored(file) && isSbtFile(file) &&
+        shouldShowPanel(file, fileEditor)) createPanel(file)
     else null
 
   protected def refreshProject(): Unit = {
@@ -112,8 +111,8 @@ abstract class SbtImportNotificationProvider(
   }
 
   protected def getExternalProject(filePath: String): Option[String] =
-    (!project.isDisposed && Sbt
-      .isProjectDefinitionFile(project, filePath.toFile))
+    (!project.isDisposed &&
+      Sbt.isProjectDefinitionFile(project, filePath.toFile))
       .option(project.getBasePath)
 
   protected def getProjectSettings(

@@ -81,9 +81,9 @@ trait HTTPProvider {
     */
   protected def bootLift(loader: Box[String]): Unit = {
     try {
-      val b: Bootable = loader.map(b =>
-        Class.forName(b).newInstance
-          .asInstanceOf[Bootable]) openOr DefaultBootstrap
+      val b: Bootable = loader
+        .map(b => Class.forName(b).newInstance.asInstanceOf[Bootable]) openOr
+        DefaultBootstrap
       preBoot
       b.boot
     } catch {
@@ -137,15 +137,14 @@ trait HTTPProvider {
     } catch {
       case _: Exception =>
         logger.error(
-          "LiftWeb core resource bundle for locale " + Locale
-            .getDefault() + ", was not found ! ")
+          "LiftWeb core resource bundle for locale " + Locale.getDefault() +
+            ", was not found ! ")
     } finally { LiftRules.bootFinished() }
   }
 
-  private def liftHandled(in: String): Boolean =
-    (in.indexOf(".") == -1) || in.endsWith(".html") || in.endsWith(".xhtml") ||
-      in.endsWith(".htm") ||
-      in.endsWith(".xml") || in.endsWith(".liftjs") || in.endsWith(".liftcss")
+  private def liftHandled(in: String): Boolean = (in.indexOf(".") == -1) ||
+    in.endsWith(".html") || in.endsWith(".xhtml") || in.endsWith(".htm") ||
+    in.endsWith(".xml") || in.endsWith(".liftjs") || in.endsWith(".liftcss")
 
   /**
     * Tests if a request should be handled by Lift or passed to the container to be executed by other potential filters or servlets.
@@ -158,8 +157,7 @@ trait HTTPProvider {
           (session.path.wholePath.takeRight(1) match {
             case Nil     => true
             case x :: xs => liftHandled(x)
-          }) ||
-          context.resource(session.uri) == null
+          }) || context.resource(session.uri) == null
     }
   }
 }

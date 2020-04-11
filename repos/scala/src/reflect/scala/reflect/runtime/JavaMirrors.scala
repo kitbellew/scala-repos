@@ -221,8 +221,8 @@ private[scala] trait JavaMirrors
           case ConstantArg(value) => LiteralAnnotArg(Constant(value))
           case (clazz @ ArrayClass(), value: Array[_]) =>
             ArrayAnnotArg(
-              value map (x =>
-                apply(ScalaRunTime.arrayElementClass(clazz) -> x)))
+              value map
+                (x => apply(ScalaRunTime.arrayElementClass(clazz) -> x)))
           case (AnnotationClass(), value: jAnnotation) => NestedAnnotArg(
               JavaAnnotationProxy(value))
           case _ => UnmappableAnnotArg
@@ -242,9 +242,11 @@ private[scala] trait JavaMirrors
 
       // todo. find out the exact order of assocs as they are written in the class file
       // currently I'm simply sorting the methods to guarantee stability of the output
-      override lazy val assocs: List[(Name, ClassfileAnnotArg)] = (jann
-        .annotationType.getDeclaredMethods.sortBy(_.getName).toList map (m =>
-        TermName(m.getName) -> toAnnotArg(m.getReturnType -> m.invoke(jann))))
+      override lazy val assocs: List[(Name, ClassfileAnnotArg)] =
+        (jann.annotationType.getDeclaredMethods.sortBy(_.getName).toList map
+          (m =>
+            TermName(m.getName) ->
+              toAnnotArg(m.getReturnType -> m.invoke(jann))))
     }
 
     def reflect[T: ClassTag](obj: T): InstanceMirror =
@@ -277,8 +279,8 @@ private[scala] trait JavaMirrors
       }
     }
     private def checkMemberOf(sym: Symbol, owner: ClassSymbol) {
-      if (sym.owner == AnyClass || sym.owner == AnyRefClass || sym
-            .owner == ObjectClass) {
+      if (sym.owner == AnyClass || sym.owner == AnyRefClass ||
+          sym.owner == ObjectClass) {
         // do nothing
       } else if (sym.owner == AnyValClass) {
         if (!owner.isPrimitiveValueClass && !owner.isDerivedValueClass)
@@ -384,8 +386,9 @@ private[scala] trait JavaMirrors
     private def isGetClass(meth: MethodSymbol) =
       (meth.name string_== "getClass") && meth.paramss.flatten.isEmpty
     private def isStringConcat(meth: MethodSymbol) =
-      meth == String_+ || (meth.owner.isPrimitiveValueClass && meth
-        .returnType =:= StringClass.toType)
+      meth == String_+ ||
+        (meth.owner.isPrimitiveValueClass &&
+          meth.returnType =:= StringClass.toType)
     lazy val bytecodelessMethodOwners = Set[Symbol](
       AnyClass,
       AnyValClass,
@@ -399,12 +402,12 @@ private[scala] trait JavaMirrors
       Object_hashCode,
       Object_toString,
       Object_notify,
-      Object_notifyAll) ++ ObjectClass.info.member(nme.wait_).asTerm
-      .alternatives.map(_.asMethod)
+      Object_notifyAll) ++ ObjectClass.info.member(nme.wait_)
+      .asTerm.alternatives.map(_.asMethod)
     private def isBytecodelessMethod(meth: MethodSymbol): Boolean = {
-      if (isGetClass(meth) || isStringConcat(meth) || meth.owner
-            .isPrimitiveValueClass || meth == runDefinitions
-            .Predef_classOf || meth.isMacro) return true
+      if (isGetClass(meth) || isStringConcat(meth) ||
+          meth.owner.isPrimitiveValueClass ||
+          meth == runDefinitions.Predef_classOf || meth.isMacro) return true
       bytecodelessMethodOwners(meth.owner) && !bytecodefulObjectMethods(meth)
     }
 
@@ -660,8 +663,8 @@ private[scala] trait JavaMirrors
         // todo. this doesn't account for multiple vararg parameter lists
         // however those aren't supported by the mirror API: https://issues.scala-lang.org/browse/SI-6182
         // hence I leave this code as is, to be fixed when the corresponding bug is fixed
-        val varargMatch =
-          args.length >= params.length - 1 && isVarArgsList(params)
+        val varargMatch = args.length >= params.length - 1 &&
+          isVarArgsList(params)
         if (!perfectMatch && !varargMatch) {
           val n_arguments =
             if (isVarArgsList(params)) s"${params.length - 1} or more"
@@ -831,8 +834,8 @@ private[scala] trait JavaMirrors
         tryJavaClass(name) flatMap { annotClass =>
           val anns = jclazz.getAnnotations
           val result = anns find (_.annotationType == annotClass)
-          if (result.isEmpty && (anns exists (_.annotationType
-                .getName == name)))
+          if (result.isEmpty &&
+              (anns exists (_.annotationType.getName == name)))
             throw new ClassNotFoundException(
               sm"""Mirror classloader mismatch: $jclazz (loaded by ${ReflectionUtils
                 .show(jclazz.getClassLoader)})
@@ -906,8 +909,9 @@ private[scala] trait JavaMirrors
         with FlagAgnosticCompleter {
       override def load(sym: Symbol) = complete(sym)
       override def complete(sym: Symbol) = {
-        sym setInfo TypeBounds
-          .upper(glb(jtvar.getBounds.toList map typeToScala map objToAny))
+        sym setInfo
+          TypeBounds
+            .upper(glb(jtvar.getBounds.toList map typeToScala map objToAny))
         markAllCompleted(sym)
       }
     }
@@ -976,15 +980,15 @@ private[scala] trait JavaMirrors
       /** used to avoid cycles while initializing classes */
       private var parentsLevel = 0
       private var pendingLoadActions: List[() => Unit] = Nil
-      private val relatedSymbols =
-        clazz +: (if (module != NoSymbol) List(module, module.moduleClass)
-                  else Nil)
+      private val relatedSymbols = clazz +:
+        (if (module != NoSymbol) List(module, module.moduleClass) else Nil)
 
       override def load(sym: Symbol): Unit = {
         debugInfo("completing from Java " + sym + "/" + clazz.fullName) //debug
         assert(
-          sym == clazz || (module != NoSymbol && (sym == module || sym == module
-            .moduleClass)),
+          sym == clazz ||
+            (module != NoSymbol &&
+              (sym == module || sym == module.moduleClass)),
           sym)
 
         assignAssociatedFile(clazz, module, jclazz)
@@ -1019,19 +1023,17 @@ private[scala] trait JavaMirrors
               if (isAnnotation)
                 AnnotationClass.tpe :: ClassfileAnnotationClass.tpe :: ifaces
               else if (jclazz.isInterface)
-                ObjectTpe :: ifaces // interfaces have Object as superclass in the classfile (see jvm spec), but getGenericSuperclass seems to return null
+                ObjectTpe ::
+                  ifaces // interfaces have Object as superclass in the classfile (see jvm spec), but getGenericSuperclass seems to return null
               else
                 (if (jsuperclazz == null) AnyTpe
                  else typeToScala(jsuperclazz)) :: ifaces
             } finally { parentsLevel -= 1 }
-          clazz setInfo GenPolyType(
-            tparams,
-            new ClassInfoType(parents, newScope, clazz))
+          clazz setInfo
+            GenPolyType(tparams, new ClassInfoType(parents, newScope, clazz))
           if (module != NoSymbol) {
-            module.moduleClass setInfo new ClassInfoType(
-              List(),
-              newScope,
-              module.moduleClass)
+            module.moduleClass setInfo
+              new ClassInfoType(List(), newScope, module.moduleClass)
           }
 
           def enter(sym: Symbol, mods: JavaAccFlags) =
@@ -1048,12 +1050,12 @@ private[scala] trait JavaMirrors
           }
 
           pendingLoadActions ::= { () =>
-            jclazz.getDeclaredFields foreach (f =>
-              enter(jfieldAsScala(f), f.javaFlags))
-            jclazz.getDeclaredMethods foreach (m =>
-              enter(jmethodAsScala(m), m.javaFlags))
-            jclazz.getConstructors foreach (c =>
-              enter(jconstrAsScala(c), c.javaFlags))
+            jclazz.getDeclaredFields foreach
+              (f => enter(jfieldAsScala(f), f.javaFlags))
+            jclazz.getDeclaredMethods foreach
+              (m => enter(jmethodAsScala(m), m.javaFlags))
+            jclazz.getConstructors foreach
+              (c => enter(jconstrAsScala(c), c.javaFlags))
             enterEmptyCtorIfNecessary()
           }
 
@@ -1156,9 +1158,9 @@ private[scala] trait JavaMirrors
       */
     private def lookup(clazz: Symbol, jname: String): Symbol = {
       def approximateMatch(sym: Symbol, jstr: String): Boolean =
-        ((sym.name string_== jstr)
-          || sym.isPrivate && (nme
-            .expandedName(sym.name.toTermName, sym.owner) string_== jstr))
+        ((sym.name string_== jstr) ||
+          sym.isPrivate &&
+          (nme.expandedName(sym.name.toTermName, sym.owner) string_== jstr))
 
       clazz.info.decl(newTermName(jname)) orElse {
         (clazz.info.decls.iterator filter (approximateMatch(_, jname)))
@@ -1182,9 +1184,8 @@ private[scala] trait JavaMirrors
       val jOwner = jmeth.getDeclaringClass
       val preOwner = classToScala(jOwner)
       val owner = followStatic(preOwner, jmeth.javaFlags)
-      (lookup(owner, jmeth.getName) suchThat (erasesTo(
-        _,
-        jmeth)) orElse jmethodAsScala(jmeth)).asMethod
+      (lookup(owner, jmeth.getName) suchThat (erasesTo(_, jmeth)) orElse
+        jmethodAsScala(jmeth)).asMethod
     }
 
     /**
@@ -1199,9 +1200,8 @@ private[scala] trait JavaMirrors
       val owner = followStatic(
         classToScala(jconstr.getDeclaringClass),
         jconstr.javaFlags)
-      (lookup(owner, jconstr.getName) suchThat (erasesTo(
-        _,
-        jconstr)) orElse jconstrAsScala(jconstr)).asMethod
+      (lookup(owner, jconstr.getName) suchThat (erasesTo(_, jconstr)) orElse
+        jconstrAsScala(jconstr)).asMethod
     }
 
     /**
@@ -1521,8 +1521,8 @@ private[scala] trait JavaMirrors
         else if (clazz.owner.isClass) {
           val childOfClass = !clazz.owner.isModuleClass
           val childOfTopLevel = clazz.owner.isTopLevel
-          val childOfTopLevelObject = clazz.owner
-            .isModuleClass && childOfTopLevel
+          val childOfTopLevelObject = clazz.owner.isModuleClass &&
+            childOfTopLevel
 
           // suggested in https://issues.scala-lang.org/browse/SI-4023?focusedCommentId=54759#comment-54759
           var ownerClazz = classToJava(clazz.owner.asClass)
@@ -1599,8 +1599,8 @@ private[scala] trait JavaMirrors
     def constructorToJava(constr: MethodSymbol): jConstructor[_] =
       constructorCache.toJava(constr) {
         val jclazz = classToJava(constr.owner.asClass)
-        val paramClasses = transformedType(constr)
-          .paramTypes map typeToJavaClass
+        val paramClasses = transformedType(constr).paramTypes map
+          typeToJavaClass
         val effectiveParamClasses =
           if (!constr.owner.owner.isStaticOwner)
             jclazz.getEnclosingClass +: paramClasses
@@ -1660,8 +1660,8 @@ private[scala] trait JavaMirrors
         return mirror.makeScalaPackage(
           if (owner.isRootSymbol) name.toString
           else owner.fullName + "." + name)
-      if (name == tpnme.AnyRef && owner.owner.isRoot && owner.name == tpnme
-            .scala_)
+      if (name == tpnme.AnyRef && owner.owner.isRoot &&
+          owner.name == tpnme.scala_)
         // when we synthesize the scala.AnyRef symbol, we need to add it to the scope of the scala package
         // the problem is that adding to the scope implies doing something like `owner.info.decls enter anyRef`
         // which entails running a completer for the scala package
@@ -1672,8 +1672,8 @@ private[scala] trait JavaMirrors
         return definitions.AnyRefClass
     }
     info(
-      "*** missing: " + name + "/" + name.isTermName + "/" + owner + "/" + owner
-        .hasPackageFlag + "/" + owner.info.decls.getClass)
+      "*** missing: " + name + "/" + name.isTermName + "/" + owner + "/" +
+        owner.hasPackageFlag + "/" + owner.info.decls.getClass)
     super.missingHook(owner, name)
   }
 }

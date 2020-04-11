@@ -134,11 +134,8 @@ case class StructType(fields: Array[StructField])
     */
   def add(name: String, dataType: DataType): StructType = {
     StructType(
-      fields :+ new StructField(
-        name,
-        dataType,
-        nullable = true,
-        Metadata.empty))
+      fields :+
+        new StructField(name, dataType, nullable = true, Metadata.empty))
   }
 
   /**
@@ -279,8 +276,7 @@ case class StructType(fields: Array[StructField])
   }
 
   override private[sql] def jsonValue =
-    ("type" -> typeName) ~
-      ("fields" -> map(_.jsonValue))
+    ("type" -> typeName) ~ ("fields" -> map(_.jsonValue))
 
   override def apply(fieldIndex: Int): StructField = fields(fieldIndex)
 
@@ -447,9 +443,8 @@ object StructType extends AbstractDataType {
             DecimalType.Fixed(rightPrecision, rightScale)) =>
         if ((leftPrecision == rightPrecision) && (leftScale == rightScale)) {
           DecimalType(leftPrecision, leftScale)
-        } else if ((leftPrecision != rightPrecision) && (
-                     leftScale != rightScale
-                   )) {
+        } else if ((leftPrecision != rightPrecision) &&
+                   (leftScale != rightScale)) {
           throw new SparkException(
             "Failed to merge decimal types with incompatible " +
               s"precision $leftPrecision and $rightPrecision & scale $leftScale and $rightScale")

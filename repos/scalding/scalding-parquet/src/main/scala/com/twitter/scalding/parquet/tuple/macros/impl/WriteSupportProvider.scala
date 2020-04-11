@@ -75,8 +75,8 @@ object WriteSupportProvider {
                         }
                      """)
         case tpe
-            if tpe.erasure =:= typeOf[List[Any]] || tpe.erasure =:= typeOf[Set[
-              _]] =>
+            if tpe.erasure =:= typeOf[List[Any]] ||
+              tpe.erasure =:= typeOf[Set[_]] =>
           val innerType = tpe.asInstanceOf[TypeRefApi].args.head
           val newGroupName = createGroupName()
           val (_, subTree) = matchField(0, innerType, q"element", newGroupName)

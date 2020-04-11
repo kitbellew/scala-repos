@@ -150,9 +150,8 @@ class H5StoreSpec extends Specification {
       H5Store.readSeries[Double, Double](fid, "s5") must_== s5
 
       // try slicing
-      H5Store
-        .readSeriesSlice[DateTime, Double](fid, "s1", d2, d3, true) must_== s1
-        .sliceBy(d2, d3)
+      H5Store.readSeriesSlice[DateTime, Double](fid, "s1", d2, d3, true) must_==
+        s1.sliceBy(d2, d3)
 
       H5Store.closeFile(fid)
 
@@ -385,18 +384,18 @@ class H5StoreSpec extends Specification {
     hdfTest("H5Store exceptions are handled properly") {
       val tmp = tmpFilePath(".h5")
 
-      H5Store.readSeries[DateTime, Double](tmp, "s1") must throwAn[
-        H5Store.H5StoreException]
-      H5Store.readFrame[DateTime, Int, Double](tmp, "f1") must throwAn[
-        H5Store.H5StoreException]
+      H5Store.readSeries[DateTime, Double](tmp, "s1") must
+        throwAn[H5Store.H5StoreException]
+      H5Store.readFrame[DateTime, Int, Double](tmp, "f1") must
+        throwAn[H5Store.H5StoreException]
 
       // try reading wrong data type
       val s1 = Series(vec.rand(3), Index(d1, d2, d3))
       H5Store.writeSeries(tmp, "s1", s1)
-      H5Store.readSeries[Int, Double](tmp, "s1") must throwAn[
-        H5Store.H5StoreException]
-      H5Store.readSeries[DateTime, Int](tmp, "s1") must throwAn[
-        H5Store.H5StoreException]
+      H5Store.readSeries[Int, Double](tmp, "s1") must
+        throwAn[H5Store.H5StoreException]
+      H5Store.readSeries[DateTime, Int](tmp, "s1") must
+        throwAn[H5Store.H5StoreException]
 
       Files.deleteIfExists(Paths.get(tmp))
     }
@@ -435,8 +434,8 @@ class H5StoreSpec extends Specification {
             .readFrame[DateTime, Int, Double](
               tmp,
               "f%s".format(100 + i)) must_== df2
-          H5Store
-            .readFrame[DateTime, Int, Double](tmp, "f%s".format(i)) must_== df1
+          H5Store.readFrame[DateTime, Int, Double](tmp, "f%s".format(i)) must_==
+            df1
         }
       }
 
@@ -449,9 +448,8 @@ class H5StoreSpec extends Specification {
           if (i % 2 == 0) H5Store.writeFrame(tmp, "f%s".format(100 + i), df1)
           else
             H5Store
-              .readFrame[DateTime, Int, Double](
-                tmp,
-                "f%s".format(i)) must_== df1
+              .readFrame[DateTime, Int, Double](tmp, "f%s".format(i)) must_==
+              df1
         }
       }
 

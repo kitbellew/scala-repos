@@ -27,7 +27,8 @@ object ProjectionActorSpec extends Specification {
     "correctly insert a batch of records" in todo
     "not attempt to insert into a closed projection" in todo
     "not return a reference to a closed projection" in todo
-    "not allow the reference count to be incremented once a stop has been requested" in todo
+    "not allow the reference count to be incremented once a stop has been requested" in
+      todo
     "have configurable stop rescheduling" in todo
   }
 }

@@ -90,8 +90,8 @@ abstract class PositionManagerTestBase extends ScalaDebuggerTestCase {
     var offset = cleanedText.indexOf(offsetMarker)
     while (offset >= 0) {
       offsets += offset
-      cleanedText = cleanedText.substring(0, offset) + cleanedText
-        .substring(offset + offsetMarker.length)
+      cleanedText = cleanedText.substring(0, offset) +
+        cleanedText.substring(offset + offsetMarker.length)
       offset = cleanedText.indexOf(offsetMarker)
     }
 

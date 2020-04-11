@@ -35,28 +35,23 @@ final class BoostingApi(
   def determineBoosting(
       record: BoostingRecord,
       winner: User,
-      loser: User): Funit =
-    (record.games >= nbGamesToMark) ?? {
-      {
-        (record.games >= (winner.count.rated * ratioGamesToMark)) ?? modApi
-          .autoBooster(winner.id, loser.id)
-      } >> {
-        (record.games >= (loser.count.rated * ratioGamesToMark)) ?? modApi
-          .autoBooster(loser.id, winner.id)
-      }
+      loser: User): Funit = (record.games >= nbGamesToMark) ?? {
+    {
+      (record.games >= (winner.count.rated * ratioGamesToMark)) ??
+        modApi.autoBooster(winner.id, loser.id)
+    } >> {
+      (record.games >= (loser.count.rated * ratioGamesToMark)) ??
+        modApi.autoBooster(loser.id, winner.id)
     }
+  }
 
   def boostingId(winner: User, loser: User): String = winner.id + "/" + loser.id
 
   def check(game: Game, whiteUser: User, blackUser: User): Funit = {
-    if (game.rated
-        && game.accountable
-        && game.playedTurns <= 10
-        && !game.isTournament
-        && game.winnerColor.isDefined
-        && variants.contains(game.variant)
-        && !game.isCorrespondence
-        && game.clock.fold(false) { _.limitInMinutes >= 1 }) {
+    if (game.rated && game.accountable && game.playedTurns <= 10 &&
+        !game.isTournament && game.winnerColor.isDefined &&
+        variants.contains(game.variant) && !game.isCorrespondence &&
+        game.clock.fold(false) { _.limitInMinutes >= 1 }) {
       game.winnerColor match {
         case Some(a) => {
           val result: GameResult = a match {
@@ -69,10 +64,8 @@ final class BoostingApi(
           getBoostingRecord(id).flatMap {
             case Some(record) =>
               val newRecord = BoostingRecord(_id = id, games = record.games + 1)
-              createBoostRecord(newRecord) >> determineBoosting(
-                newRecord,
-                result.winner,
-                result.loser)
+              createBoostRecord(newRecord) >>
+                determineBoosting(newRecord, result.winner, result.loser)
             case none => createBoostRecord(BoostingRecord(_id = id, games = 1))
           }
         }

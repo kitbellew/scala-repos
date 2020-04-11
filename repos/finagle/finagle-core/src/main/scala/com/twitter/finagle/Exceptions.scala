@@ -459,7 +459,8 @@ class ServiceTimeoutException(override protected val timeout: Duration)
     with ServiceException
     with TimeoutException {
   override protected def explanation =
-    "creating a service/connection or reserving a service/connection from the service/connection pool " + serviceName
+    "creating a service/connection or reserving a service/connection from the service/connection pool " +
+      serviceName
 }
 
 /**

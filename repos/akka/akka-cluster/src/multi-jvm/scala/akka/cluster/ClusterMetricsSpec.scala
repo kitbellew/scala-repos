@@ -41,27 +41,28 @@ abstract class ClusterMetricsSpec
 
   "Cluster metrics" must {
     "periodically collect metrics on each node, publish ClusterMetricsChanged to the event stream, " +
-      "and gossip metrics around the node ring" taggedAs LongRunningTest in within(
-      60 seconds) {
-      awaitClusterUp(roles: _*)
-      enterBarrier("cluster-started")
-      awaitAssert(
-        clusterView.members.count(_.status == MemberStatus.Up) should ===(
-          roles.size))
-      awaitAssert(clusterView.clusterMetrics.size should ===(roles.size))
-      val collector = MetricsCollector(cluster.system, cluster.settings)
-      collector.sample.metrics.size should be > (3)
-      enterBarrier("after")
-    }
-    "reflect the correct number of node metrics in cluster view" taggedAs LongRunningTest in within(
-      30 seconds) {
-      runOn(second) { cluster.leave(first) }
-      enterBarrier("first-left")
-      runOn(second, third, fourth, fifth) {
-        markNodeAsUnavailable(first)
-        awaitAssert(clusterView.clusterMetrics.size should ===(roles.size - 1))
+      "and gossip metrics around the node ring" taggedAs LongRunningTest in
+      within(60 seconds) {
+        awaitClusterUp(roles: _*)
+        enterBarrier("cluster-started")
+        awaitAssert(
+          clusterView.members.count(_.status == MemberStatus.Up) should
+            ===(roles.size))
+        awaitAssert(clusterView.clusterMetrics.size should ===(roles.size))
+        val collector = MetricsCollector(cluster.system, cluster.settings)
+        collector.sample.metrics.size should be > (3)
+        enterBarrier("after")
       }
-      enterBarrier("finished")
-    }
+    "reflect the correct number of node metrics in cluster view" taggedAs
+      LongRunningTest in within(30 seconds) {
+        runOn(second) { cluster.leave(first) }
+        enterBarrier("first-left")
+        runOn(second, third, fourth, fifth) {
+          markNodeAsUnavailable(first)
+          awaitAssert(
+            clusterView.clusterMetrics.size should ===(roles.size - 1))
+        }
+        enterBarrier("finished")
+      }
   }
 }

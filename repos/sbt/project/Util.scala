@@ -11,10 +11,12 @@ object Util {
   def noPublishSettings: Seq[Setting[_]] = Seq(publish := {})
 
   def crossBuild: Seq[Setting[_]] =
-    Seq(crossPaths := (scalaBinaryVersion.value match {
-      case "2.11" => true
-      case _      => false
-    }))
+    Seq(
+      crossPaths :=
+        (scalaBinaryVersion.value match {
+          case "2.11" => true
+          case _      => false
+        }))
 
   lazy val javaOnlySettings = Seq[Setting[_]](
     /*crossPaths := false, */ compileOrder := CompileOrder.JavaThenScala,
@@ -70,8 +72,8 @@ object Util {
     IO.createDirectory(out)
     val args = "xsbti.api" :: out.getAbsolutePath :: defs.map(_.getAbsolutePath)
       .toList
-    val mainClass =
-      main getOrElse "No main class defined for datatype generator"
+    val mainClass = main getOrElse
+      "No main class defined for datatype generator"
     toError(run.run(mainClass, cp.files, args, s.log))
     (out ** "*.java").get
   }
@@ -90,8 +92,8 @@ object Util {
     val timestamp = formatter.format(new Date)
     val content = versionLine(version) + "\ntimestamp=" + timestamp
     val f = dir / "xsbt.version.properties"
-    if (!f.exists || f.lastModified < lastCompilationTime(
-          analysis) || !containsVersion(f, version)) {
+    if (!f.exists || f.lastModified < lastCompilationTime(analysis) ||
+        !containsVersion(f, version)) {
       s.log.info("Writing version information to " + f + " :\n" + content)
       IO.write(f, content)
     }
@@ -133,9 +135,8 @@ object Util {
     node \ "artifactId" exists { n => excludePomArtifact(n.text) }
 
   def excludePomArtifact(artifactId: String) =
-    (artifactId == "compiler-interface") || (
-      artifactId startsWith "precompiled"
-    )
+    (artifactId == "compiler-interface") ||
+      (artifactId startsWith "precompiled")
 
   val testExclusive = tags in test += ((ExclusiveTest, 1))
 
@@ -166,9 +167,8 @@ object %s {
   def keywordsSettings: Seq[Setting[_]] =
     inConfig(Compile)(Seq(
       scalaKeywords := getScalaKeywords,
-      generateKeywords <<= (
-        sourceManaged,
-        scalaKeywords) map writeScalaKeywords,
+      generateKeywords <<= (sourceManaged, scalaKeywords) map
+        writeScalaKeywords,
       sourceGenerators <+= generateKeywords map (x => Seq(x))
     ))
 }
@@ -193,10 +193,8 @@ object Licensed {
       unmanagedResources in Compile <++= (notice, extractLicenses) map {
         _ +: _
       },
-      extractLicenses <<= (
-        baseDirectory in ThisBuild,
-        notice,
-        streams) map extractLicenses0
+      extractLicenses <<= (baseDirectory in ThisBuild, notice, streams) map
+        extractLicenses0
     )
   def extractLicenses0(base: File, note: File, s: TaskStreams): Seq[File] =
     if (!note.exists) Nil

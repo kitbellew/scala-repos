@@ -42,11 +42,12 @@ final class Scheduler(
         val tagged = "(%s) %s".format(nextString(3), name)
         doDebug ! logger.info(tagged)
         val start = nowMillis
-        op effectFold (
-          e => logger.error("(%s) %s".format(tagged, e.getMessage), e),
-          _ =>
-            doDebug ! logger.info(tagged + " - %d ms".format(nowMillis - start))
-        )
+        op effectFold
+          (
+            e => logger.error("(%s) %s".format(tagged, e.getMessage), e),
+            _ =>
+              doDebug !
+                logger.info(tagged + " - %d ms".format(nowMillis - start)))
       }
     }
   }

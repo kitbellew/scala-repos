@@ -41,10 +41,11 @@ sealed class InstructionImpl(
   }
 
   protected def getPresentation =
-    "element: " + (element match {
-      case Some(x) => x
-      case z       => z
-    })
+    "element: " +
+      (element match {
+        case Some(x) => x
+        case z       => z
+      })
 }
 
 case class DefinitionInstruction(

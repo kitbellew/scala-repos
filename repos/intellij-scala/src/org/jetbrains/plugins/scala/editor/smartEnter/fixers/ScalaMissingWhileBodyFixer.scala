@@ -27,9 +27,8 @@ class ScalaMissingWhileBodyFixer extends ScalaFixer {
     whileStatement.body match {
       case Some(_: ScBlockExpr) => NoOperation
       case Some(_)
-          if startLine(doc, body) == startLine(
-            doc,
-            whileStatement) && whileStatement.condition.isDefined => NoOperation
+          if startLine(doc, body) == startLine(doc, whileStatement) &&
+            whileStatement.condition.isDefined => NoOperation
       case _ =>
         whileStatement.getRightParenthesis map {
           case rParenth =>

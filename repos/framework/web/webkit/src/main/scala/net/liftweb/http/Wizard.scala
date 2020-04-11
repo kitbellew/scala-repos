@@ -214,16 +214,12 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     val (nextButton, finishButton) =
       if (!theScreen.isLastScreen)
         (
-          Full(
-            theScreen.nextButton %
-              ("onclick" -> submitOrAjax(nextId))),
+          Full(theScreen.nextButton % ("onclick" -> submitOrAjax(nextId))),
           Empty)
       else
         (
           Empty,
-          Full(
-            theScreen.finishButton %
-              ("onclick" -> submitOrAjax(nextId))))
+          Full(theScreen.finishButton % ("onclick" -> submitOrAjax(nextId))))
 
     val prevButton: Box[Elem] =
       if (OnFirstScreen) Empty
@@ -257,27 +253,28 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
       Full(Text(screenCount.toString)), //screenCount: Box[NodeSeq],
       wizardTop, // wizardTop: Box[Elem],
       theScreen.screenTop, //screenTop: Box[Elem],
-      extraFields :::
-        theScreen.screenFields.flatMap(f =>
-          if (f.show_?)
-            List(ScreenFieldInfo(f, f.displayHtml, f.helpAsHtml, f.toForm))
-          else Nil), //fields: List[ScreenFieldInfo],
+      extraFields ::: theScreen.screenFields.flatMap(f =>
+        if (f.show_?)
+          List(ScreenFieldInfo(f, f.displayHtml, f.helpAsHtml, f.toForm))
+        else Nil), //fields: List[ScreenFieldInfo],
       prevButton, // prev: Box[Elem],
       Full(cancelButton), // cancel: Box[Elem],
       nextButton, // next: Box[Elem],
       finishButton, //finish: Box[Elem],
       theScreen.screenBottom, // screenBottom: Box[Elem],
       wizardBottom, //wizardBottom: Box[Elem],
-      nextId -> (() => {
-        this.nextScreen()
-        // if (currentScreen.isEmpty) S.seeOther(Referer.is)
-      }), // nextId: (String, () => Unit),
-      Full(prevId -> (() => {
-        this.prevScreen
-      })), // prevId: Box[(String, () => Unit)],
-      cancelId -> (() => {
-        WizardRules.deregisterWizardSession(CurrentSession.is); redirectBack()
-      }), //cancelId: (String, () => Unit),
+      nextId ->
+        (() => {
+          this.nextScreen()
+          // if (currentScreen.isEmpty) S.seeOther(Referer.is)
+        }), // nextId: (String, () => Unit),
+      Full(
+        prevId -> (() => { this.prevScreen })
+      ), // prevId: Box[(String, () => Unit)],
+      cancelId ->
+        (() => {
+          WizardRules.deregisterWizardSession(CurrentSession.is); redirectBack()
+        }), //cancelId: (String, () => Unit),
       theScreen,
       ajaxForms_?
     )
@@ -591,8 +588,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     }
 
     override protected def testWasSet(name: String, bn: String): Boolean = {
-      WizardVarHandler.get(name).isDefined || (WizardVarHandler
-        .get(bn) openOr false)
+      WizardVarHandler.get(name).isDefined ||
+      (WizardVarHandler.get(bn) openOr false)
     }
 
     /**

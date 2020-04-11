@@ -35,9 +35,8 @@ case class ScalaTool(
     val variables = Map(
       ("@@" -> "@"), // for backwards compatibility
       ("@class@" -> mainClass),
-      ("@properties@" -> (properties map {
-        case (k, v) => s"""-D$k="$v""""
-      } mkString " ")),
+      ("@properties@" ->
+        (properties map { case (k, v) => s"""-D$k="$v"""" } mkString " ")),
       ("@javaflags@" -> javaOpts),
       ("@toolflags@" -> toolFlags),
       ("@classpath@" -> platformClasspath)

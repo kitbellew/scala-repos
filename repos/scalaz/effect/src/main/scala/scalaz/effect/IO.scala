@@ -93,11 +93,12 @@ sealed abstract class IO[A] {
 
   /**Like "finally", but only performs the final action if there was an exception. */
   def onException[B](action: IO[B]): IO[A] =
-    this except (e =>
-      for {
-        _ <- action
-        a <- (throw e): IO[A]
-      } yield a)
+    this except
+      (e =>
+        for {
+          _ <- action
+          a <- (throw e): IO[A]
+        } yield a)
 
   /**
     * Applies the "during" action, calling "after" regardless of whether there was an exception.

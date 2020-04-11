@@ -192,8 +192,8 @@ class Partition(
       leaderEpoch = partitionStateInfo.leaderEpoch
       zkVersion = partitionStateInfo.zkVersion
       val isNewLeader =
-        if (leaderReplicaIdOpt.isDefined && leaderReplicaIdOpt
-              .get == localBrokerId) { false }
+        if (leaderReplicaIdOpt.isDefined &&
+            leaderReplicaIdOpt.get == localBrokerId) { false }
         else {
           leaderReplicaIdOpt = Some(localBrokerId)
           true
@@ -237,8 +237,8 @@ class Partition(
       leaderEpoch = partitionStateInfo.leaderEpoch
       zkVersion = partitionStateInfo.zkVersion
 
-      if (leaderReplicaIdOpt.isDefined && leaderReplicaIdOpt
-            .get == newLeaderBrokerId) { false }
+      if (leaderReplicaIdOpt.isDefined &&
+          leaderReplicaIdOpt.get == newLeaderBrokerId) { false }
       else {
         leaderReplicaIdOpt = Some(newLeaderBrokerId)
         true
@@ -371,8 +371,8 @@ class Partition(
     val newHighWatermark = allLogEndOffsets
       .min(new LogOffsetMetadata.OffsetOrdering)
     val oldHighWatermark = leaderReplica.highWatermark
-    if (oldHighWatermark.messageOffset < newHighWatermark
-          .messageOffset || oldHighWatermark.onOlderSegment(newHighWatermark)) {
+    if (oldHighWatermark.messageOffset < newHighWatermark.messageOffset ||
+        oldHighWatermark.onOlderSegment(newHighWatermark)) {
       leaderReplica.highWatermark = newHighWatermark
       debug(
         "High watermark for partition [%s,%d] updated to %s"

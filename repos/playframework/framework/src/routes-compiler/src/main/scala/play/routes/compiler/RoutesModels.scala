@@ -60,8 +60,9 @@ case class HandlerCall(
     extends Positional {
   val dynamic = if (instantiate) "@" else ""
   override def toString =
-    dynamic + packageName + "." + controller + dynamic + "." + method + parameters
-      .map { params => "(" + params.mkString(", ") + ")" }.getOrElse("")
+    dynamic + packageName + "." + controller + dynamic + "." + method +
+      parameters.map { params => "(" + params.mkString(", ") + ")" }
+        .getOrElse("")
 }
 
 /**
@@ -79,8 +80,8 @@ case class Parameter(
     default: Option[String])
     extends Positional {
   override def toString =
-    name + ":" + typeName + fixed.map(" = " + _).getOrElse("") + default
-      .map(" ?= " + _).getOrElse("")
+    name + ":" + typeName + fixed.map(" = " + _).getOrElse("") +
+      default.map(" ?= " + _).getOrElse("")
 }
 
 /**
@@ -104,7 +105,8 @@ case class DynamicPart(name: String, constraint: String, encode: Boolean)
     extends PathPart
     with Positional {
   override def toString =
-    """DynamicPart("""" + name + "\", \"\"\"" + constraint + "\"\"\"," + encode + ")" //"
+    """DynamicPart("""" + name + "\", \"\"\"" + constraint + "\"\"\"," +
+      encode + ")" //"
 }
 
 /**

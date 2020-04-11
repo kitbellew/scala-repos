@@ -44,8 +44,8 @@ class StatusTest
     forAll(status2) {
       case (left, right) =>
         val s = Status.worst(left, right)
-        Ordering[Status].equiv(left, right) || s == Ordering[Status]
-          .max(left, right)
+        Ordering[Status].equiv(left, right) ||
+        s == Ordering[Status].max(left, right)
     }
   }
 
@@ -54,8 +54,8 @@ class StatusTest
     forAll(status2) {
       case (left, right) =>
         val s = Status.best(left, right)
-        Ordering[Status].equiv(left, right) || s == Ordering[Status]
-          .min(left, right)
+        Ordering[Status].equiv(left, right) ||
+        s == Ordering[Status].min(left, right)
     }
   }
 

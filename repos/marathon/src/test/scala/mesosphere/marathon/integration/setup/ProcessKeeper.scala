@@ -48,9 +48,9 @@ object ProcessKeeper {
   }
 
   def startZooKeeper(port: Int, workDir: String, wipeWorkDir: Boolean = true) {
-    val args =
-      "-Dzookeeper.jmx.log4j.disable=true" :: "org.apache.zookeeper.server.ZooKeeperServerMain" :: port
-        .toString :: workDir :: Nil
+    val args = "-Dzookeeper.jmx.log4j.disable=true" ::
+      "org.apache.zookeeper.server.ZooKeeperServerMain" :: port.toString ::
+      workDir :: Nil
     val workDirFile = new File(workDir)
     if (wipeWorkDir) {
       FileUtils.deleteDirectory(workDirFile)
@@ -181,11 +181,10 @@ object ProcessKeeper {
     val classPath = sys.props.getOrElse("java.class.path", "target/classes")
     val memSettings = s"-Xmx${heapInMegs}m"
     // Omit the classpath in order to avoid cluttering the tests output
-    log.info(
-      s"Start java process $name with command: ${(javaExecutable :: memSettings :: arguments)
-        .mkString(" ")}")
-    val command: List[String] =
-      javaExecutable :: memSettings :: "-classpath" :: classPath :: arguments
+    log.info(s"Start java process $name with command: ${(javaExecutable ::
+      memSettings :: arguments).mkString(" ")}")
+    val command: List[String] = javaExecutable :: memSettings :: "-classpath" ::
+      classPath :: arguments
     val builder = Process(command, cwd, env.toList: _*)
     val process = startProcess(name, builder, upWhen)
     log.info(s"Java process $name up and running!")

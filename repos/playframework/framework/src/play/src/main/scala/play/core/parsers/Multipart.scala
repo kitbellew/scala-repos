@@ -179,8 +179,8 @@ object Multipart {
       val KeyValue = """^([a-zA-Z_0-9]+)="?(.*?)"?$""".r
 
       for {
-        values <-
-          headers.get("content-disposition").map(split(_).map(_.trim).map {
+        values <- headers.get("content-disposition")
+          .map(split(_).map(_.trim).map {
             // unescape escaped quotes
             case KeyValue(key, v) =>
               (key.trim, v.trim.replaceAll("""\\"""", "\""))
@@ -201,8 +201,8 @@ object Multipart {
       val KeyValue = """^([a-zA-Z_0-9]+)="(.*)"$""".r
 
       for {
-        values <-
-          headers.get("content-disposition").map(_.split(";").map(_.trim).map {
+        values <- headers.get("content-disposition")
+          .map(_.split(";").map(_.trim).map {
             case KeyValue(key, v) => (key.trim, v.trim)
             case key              => (key.trim, "")
           }.toMap)
@@ -439,8 +439,8 @@ object Multipart {
       try {
         val currentPartEnd = boyerMoore.nextIndex(input, partStart)
         val needleEnd = currentPartEnd + needle.length
-        val newMemoryBufferSize =
-          memoryBufferSize + (currentPartEnd - partStart)
+        val newMemoryBufferSize = memoryBufferSize +
+          (currentPartEnd - partStart)
         if (newMemoryBufferSize > maxMemoryBufferSize) {
           bufferExceeded("Memory buffer full on part " + partName)
         } else if (crlf(input, needleEnd)) {
@@ -456,8 +456,8 @@ object Multipart {
         } else { fail("Unexpected boundary") }
       } catch {
         case NotEnoughDataException =>
-          if (memoryBufferSize + (input.length - partStart - needle
-                .length) > maxMemoryBufferSize) {
+          if (memoryBufferSize + (input.length - partStart - needle.length) >
+                maxMemoryBufferSize) {
             bufferExceeded("Memory buffer full on part " + partName)
           }
           continue(input, partStart)(
@@ -535,8 +535,8 @@ object Multipart {
 
     @tailrec
     def boundary(input: ByteString, offset: Int, ix: Int = 2): Boolean =
-      (ix == needle.length) || (byteAt(input, offset + ix - 2) == needle(
-        ix)) && boundary(input, offset, ix + 1)
+      (ix == needle.length) || (byteAt(input, offset + ix - 2) == needle(ix)) &&
+        boundary(input, offset, ix + 1)
 
     def crlf(input: ByteString, offset: Int): Boolean =
       byteChar(input, offset) == '\r' && byteChar(input, offset + 1) == '\n'

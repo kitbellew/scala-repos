@@ -344,9 +344,8 @@ trait JdbcActionComponent extends SqlActionComponent {
       val sql = tree.findNode(_.isInstanceOf[CompiledStatement]).get
         .asInstanceOf[CompiledStatement].extra.asInstanceOf[SQLBuilder.Result]
         .sql
-      val (rsm @ ResultSetMapping(_, _, CompiledMapping(_, elemType))) :@ (
-        ct: CollectionType
-      ) = tree
+      val (rsm @ ResultSetMapping(_, _, CompiledMapping(_, elemType))) :@
+        (ct: CollectionType) = tree
       new MutatingResultAction[T](rsm, elemType, ct, sql, param, sendEndMarker)
     }
   }
@@ -460,8 +459,8 @@ trait JdbcActionComponent extends SqlActionComponent {
       mux: (U, QR) => RU): ReturningInsertActionComposer[U, RU] =
     new ReturningInsertActionComposerImpl[U, QR, RU](compiled, keys, mux)
 
-  protected lazy val useServerSideUpsert =
-    capabilities contains JdbcCapabilities.insertOrUpdate
+  protected lazy val useServerSideUpsert = capabilities contains
+    JdbcCapabilities.insertOrUpdate
   protected lazy val useTransactionForUpsert = !useServerSideUpsert
   protected lazy val useServerSideUpsertReturning = useServerSideUpsert
   protected lazy val useTransactionForUpsertReturning =
@@ -698,9 +697,9 @@ trait JdbcActionComponent extends SqlActionComponent {
           Vector(a.sql)) {
       def run(ctx: Backend#Context, sql: Vector[String]) = {
         val sql1 = sql.head
-        if (!useBatchUpdates(ctx.session) || (values
-              .isInstanceOf[IndexedSeq[_]] && values.asInstanceOf[IndexedSeq[_]]
-              .length < 2))
+        if (!useBatchUpdates(ctx.session) ||
+            (values.isInstanceOf[IndexedSeq[_]] &&
+            values.asInstanceOf[IndexedSeq[_]].length < 2))
           retMany(
             values,
             values.map { v =>

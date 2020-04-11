@@ -87,16 +87,15 @@ private[sql] class CacheManager extends Logging {
         logWarning("Asked to cache already cached data.")
       } else {
         val sqlContext = query.sqlContext
-        cachedData +=
-          CachedData(
-            planToCache,
-            InMemoryRelation(
-              sqlContext.conf.useCompression,
-              sqlContext.conf.columnBatchSize,
-              storageLevel,
-              sqlContext.executePlan(planToCache).executedPlan,
-              tableName)
-          )
+        cachedData += CachedData(
+          planToCache,
+          InMemoryRelation(
+            sqlContext.conf.useCompression,
+            sqlContext.conf.columnBatchSize,
+            storageLevel,
+            sqlContext.executePlan(planToCache).executedPlan,
+            tableName)
+        )
       }
     }
 

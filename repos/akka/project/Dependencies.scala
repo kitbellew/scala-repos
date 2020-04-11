@@ -24,17 +24,17 @@ object Dependencies {
       .getOrElse("0.7"),
     scalaCheckVersion := sys.props.get("akka.build.scalaCheckVersion")
       .getOrElse("1.11.6"),
-    scalaTestVersion := (if (scalaVersion.value == "2.12.0-M2") "2.2.5-M2"
-                         else if (scalaVersion.value == "2.12.0-M3") "2.2.5-M3"
-                         else "2.2.4")
+    scalaTestVersion :=
+      (if (scalaVersion.value == "2.12.0-M2") "2.2.5-M2"
+       else if (scalaVersion.value == "2.12.0-M3") "2.2.5-M3"
+       else "2.2.4")
   )
 
   object Compile {
     // Compile
 
-    val camelCore = "org.apache.camel" % "camel-core" % "2.13.4" exclude (
-      "org.slf4j", "slf4j-api"
-    ) // ApacheV2
+    val camelCore = "org.apache.camel" % "camel-core" % "2.13.4" exclude
+      ("org.slf4j", "slf4j-api") // ApacheV2
 
     // when updating config version, update links ActorSystem ScalaDoc to link to the updated version
     val config = "com.typesafe" % "config" % "1.3.0" // ApacheV2
@@ -43,8 +43,8 @@ object Dependencies {
       "org.scala-stm" %% "scala-stm" % scalaStmVersion.value
     } // Modified BSD (Scala)
 
-    val scalaXml =
-      "org.scala-lang.modules" %% "scala-xml" % "1.0.5" // Scala License
+    val scalaXml = "org.scala-lang.modules" %% "scala-xml" %
+      "1.0.5" // Scala License
     val scalaReflect = ScalaVersionDependentModuleID
       .versioned("org.scala-lang" % "scala-reflect" % _) // Scala License
 
@@ -52,37 +52,36 @@ object Dependencies {
 
     // mirrored in OSGi sample
     val uncommonsMath =
-      "org.uncommons.maths" % "uncommons-maths" % "1.2.2a" exclude (
-        "jfree", "jcommon"
-      ) exclude ("jfree", "jfreechart") // ApacheV2
+      "org.uncommons.maths" % "uncommons-maths" % "1.2.2a" exclude
+        ("jfree", "jcommon") exclude ("jfree", "jfreechart") // ApacheV2
     val osgiCore = "org.osgi" % "org.osgi.core" % "4.3.1" // ApacheV2
-    val osgiCompendium =
-      "org.osgi" % "org.osgi.compendium" % "4.3.1" // ApacheV2
+    val osgiCompendium = "org.osgi" % "org.osgi.compendium" %
+      "4.3.1" // ApacheV2
 
     // TODO remove with metrics from akka-cluster
     val sigar = "org.fusesource" % "sigar" % "1.6.4" // ApacheV2
 
     // reactive streams
-    val reactiveStreams =
-      "org.reactivestreams" % "reactive-streams" % "1.0.0" // CC0
+    val reactiveStreams = "org.reactivestreams" % "reactive-streams" %
+      "1.0.0" // CC0
 
     // ssl-config
-    val sslConfigAkka =
-      "com.typesafe" %% "ssl-config-akka" % "0.1.3" // ApacheV2
+    val sslConfigAkka = "com.typesafe" %% "ssl-config-akka" %
+      "0.1.3" // ApacheV2
 
     // For akka-http spray-json support
     val sprayJson = "io.spray" %% "spray-json" % "1.3.2" // ApacheV2
 
     // For akka-http-jackson support
-    val jackson =
-      "com.fasterxml.jackson.core" % "jackson-databind" % "2.7.2" // ApacheV2
+    val jackson = "com.fasterxml.jackson.core" % "jackson-databind" %
+      "2.7.2" // ApacheV2
 
     // For akka-http-testkit-java
     val junit = "junit" % "junit" % junitVersion // Common Public License 1.0
 
     // For Java 8 Conversions
-    val java8Compat =
-      "org.scala-lang.modules" %% "scala-java8-compat" % "0.7.0" // Scala License
+    val java8Compat = "org.scala-lang.modules" %% "scala-java8-compat" %
+      "0.7.0" // Scala License
 
     object Docs {
       val sprayJson = "io.spray" %% "spray-json" % "1.3.2" % "test"
@@ -90,15 +89,15 @@ object Dependencies {
     }
 
     object Test {
-      val commonsMath =
-        "org.apache.commons" % "commons-math" % "2.2" % "test" // ApacheV2
+      val commonsMath = "org.apache.commons" % "commons-math" % "2.2" %
+        "test" // ApacheV2
       val commonsIo = "commons-io" % "commons-io" % "2.4" % "test" // ApacheV2
-      val commonsCodec =
-        "commons-codec" % "commons-codec" % "1.10" % "test" // ApacheV2
-      val junit =
-        "junit" % "junit" % junitVersion % "test" // Common Public License 1.0
-      val logback =
-        "ch.qos.logback" % "logback-classic" % "1.1.3" % "test" // EPL 1.0 / LGPL 2.1
+      val commonsCodec = "commons-codec" % "commons-codec" % "1.10" %
+        "test" // ApacheV2
+      val junit = "junit" % "junit" % junitVersion %
+        "test" // Common Public License 1.0
+      val logback = "ch.qos.logback" % "logback-classic" % "1.1.3" %
+        "test" // EPL 1.0 / LGPL 2.1
       val mockito = "org.mockito" % "mockito-all" % "1.10.19" % "test" // MIT
       // changing the scalatest dependency must be reflected in akka-docs/rst/dev/multi-jvm-testing.rst
       val scalatest = Def.setting {
@@ -107,47 +106,47 @@ object Dependencies {
       val scalacheck = Def.setting {
         "org.scalacheck" %% "scalacheck" % scalaCheckVersion.value % "test"
       } // New BSD
-      val pojosr =
-        "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % "test" // ApacheV2
-      val tinybundles =
-        "org.ops4j.pax.tinybundles" % "tinybundles" % "1.0.0" % "test" // ApacheV2
+      val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" %
+        "0.2.1" % "test" // ApacheV2
+      val tinybundles = "org.ops4j.pax.tinybundles" % "tinybundles" % "1.0.0" %
+        "test" // ApacheV2
       val log4j = "log4j" % "log4j" % "1.2.14" % "test" // ApacheV2
-      val junitIntf =
-        "com.novocode" % "junit-interface" % "0.11" % "test" // MIT
+      val junitIntf = "com.novocode" % "junit-interface" % "0.11" %
+        "test" // MIT
       val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.4" % "test"
 
       // metrics, measurements, perf testing
-      val metrics =
-        "com.codahale.metrics" % "metrics-core" % "3.0.2" % "test" // ApacheV2
-      val metricsJvm =
-        "com.codahale.metrics" % "metrics-jvm" % "3.0.2" % "test" // ApacheV2
-      val latencyUtils =
-        "org.latencyutils" % "LatencyUtils" % "1.0.3" % "test" // Free BSD
-      val hdrHistogram =
-        "org.hdrhistogram" % "HdrHistogram" % "1.1.4" % "test" // CC0
+      val metrics = "com.codahale.metrics" % "metrics-core" % "3.0.2" %
+        "test" // ApacheV2
+      val metricsJvm = "com.codahale.metrics" % "metrics-jvm" % "3.0.2" %
+        "test" // ApacheV2
+      val latencyUtils = "org.latencyutils" % "LatencyUtils" % "1.0.3" %
+        "test" // Free BSD
+      val hdrHistogram = "org.hdrhistogram" % "HdrHistogram" % "1.1.4" %
+        "test" // CC0
       val metricsAll = Seq(metrics, metricsJvm, latencyUtils, hdrHistogram)
 
       // sigar logging
       val slf4jJul = "org.slf4j" % "jul-to-slf4j" % "1.7.16" % "test" // MIT
-      val slf4jLog4j =
-        "org.slf4j" % "log4j-over-slf4j" % "1.7.16" % "test" // MIT
+      val slf4jLog4j = "org.slf4j" % "log4j-over-slf4j" % "1.7.16" %
+        "test" // MIT
 
       lazy val sprayJson = Compile.sprayJson % "test"
 
       // reactive streams tck
-      val reactiveStreamsTck =
-        "org.reactivestreams" % "reactive-streams-tck" % "1.0.0" % "test" // CC0
+      val reactiveStreamsTck = "org.reactivestreams" % "reactive-streams-tck" %
+        "1.0.0" % "test" // CC0
     }
 
     object Provided {
       // TODO remove from "test" config
-      val sigarLoader =
-        "io.kamon" % "sigar-loader" % "1.6.6-rev002" % "optional;provided;test" // ApacheV2
+      val sigarLoader = "io.kamon" % "sigar-loader" % "1.6.6-rev002" %
+        "optional;provided;test" // ApacheV2
 
-      val levelDB =
-        "org.iq80.leveldb" % "leveldb" % "0.7" % "optional;provided" // ApacheV2
-      val levelDBNative =
-        "org.fusesource.leveldbjni" % "leveldbjni-all" % "1.8" % "optional;provided" // New BSD
+      val levelDB = "org.iq80.leveldb" % "leveldb" % "0.7" %
+        "optional;provided" // ApacheV2
+      val levelDBNative = "org.fusesource.leveldbjni" % "leveldbjni-all" %
+        "1.8" % "optional;provided" // New BSD
     }
 
   }
@@ -206,8 +205,8 @@ object Dependencies {
     Test.commonsCodec,
     Test.scalaXml)
 
-  val persistenceQuery =
-    l ++= Seq(Test.scalatest.value, Test.junit, Test.commonsIo)
+  val persistenceQuery = l ++=
+    Seq(Test.scalatest.value, Test.junit, Test.commonsIo)
 
   val persistenceTck = l ++= Seq(
     Test.scalatest.value.copy(configurations = Some("compile")),
@@ -263,8 +262,8 @@ object Dependencies {
     DependencyHelpers
       .versionDependentDeps(Dependencies.Compile.scalaReflect % "provided"),
     addCompilerPlugin(
-      "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion
-        .fullMapped(nominalScalaVersion))
+      "org.scalamacros" % "paradise" % "2.1.0" cross
+        CrossVersion.fullMapped(nominalScalaVersion))
   )
 
   lazy val httpTestkit = l ++= Seq(
@@ -274,8 +273,8 @@ object Dependencies {
     Test.scalatest.value.copy(configurations = Some("provided; test")))
 
   // TODO collapse those
-  lazy val httpTests =
-    l ++= Seq(Test.junit, Test.scalatest.value, Test.junitIntf)
+  lazy val httpTests = l ++=
+    Seq(Test.junit, Test.scalatest.value, Test.junitIntf)
   lazy val httpTestsJava8 = l ++= Seq(Test.junit, Test.junitIntf)
 
   lazy val httpXml = versionDependentDeps(scalaXml)
@@ -290,14 +289,11 @@ object Dependencies {
     Test.junitIntf,
     Test.scalatest.value)
 
-  lazy val streamTestkit =
-    l ++= Seq(Test.scalatest.value, Test.scalacheck.value, Test.junit)
+  lazy val streamTestkit = l ++=
+    Seq(Test.scalatest.value, Test.scalacheck.value, Test.junit)
 
-  lazy val streamTests = l ++= Seq(
-    Test.scalatest.value,
-    Test.scalacheck.value,
-    Test.junit,
-    Test.commonsIo)
+  lazy val streamTests = l ++=
+    Seq(Test.scalatest.value, Test.scalacheck.value, Test.junit, Test.commonsIo)
 
   lazy val streamTestsTck = l ++= Seq(
     Test.scalatest.value,
@@ -330,8 +326,8 @@ object DependencyHelpers {
     */
   def versionDependentDeps(
       modules: ScalaVersionDependentModuleID*): Def.Setting[Seq[ModuleID]] =
-    libraryDependencies <++= scalaVersion(version =>
-      modules.flatMap(m => m.modules(version)))
+    libraryDependencies <++=
+      scalaVersion(version => modules.flatMap(m => m.modules(version)))
 
   val ScalaVersion = """\d\.\d+\.\d+(?:-(?:M|RC)\d+)?""".r
   val nominalScalaVersion: String => String = {

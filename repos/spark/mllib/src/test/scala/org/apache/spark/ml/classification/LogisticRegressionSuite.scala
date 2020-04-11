@@ -293,23 +293,23 @@ class LogisticRegressionSuite
     val summarizer1 = (new MultiClassSummarizer).add(label = 0.0, weight = 0.2)
       .add(3.0, 0.8).add(4.0, 3.2).add(3.0, 1.3).add(6.0, 3.1)
     assert(
-      Vectors.dense(summarizer1.histogram) ~==
-        Vectors.dense(Array(0.2, 0, 0, 2.1, 3.2, 0, 3.1)) absTol 1e-10)
+      Vectors.dense(summarizer1.histogram) ~== Vectors.dense(Array(
+        0.2, 0, 0, 2.1, 3.2, 0, 3.1)) absTol 1e-10)
     assert(summarizer1.countInvalid === 0)
     assert(summarizer1.numClasses === 7)
 
     val summarizer2 = (new MultiClassSummarizer).add(1.0, 1.1).add(5.0, 2.3)
       .add(3.0).add(0.0).add(4.0).add(1.0).add(2, 0.0)
     assert(
-      Vectors.dense(summarizer2.histogram) ~==
-        Vectors.dense(Array[Double](1.0, 2.1, 0.0, 1, 1, 2.3)) absTol 1e-10)
+      Vectors.dense(summarizer2.histogram) ~== Vectors.dense(Array[Double](
+        1.0, 2.1, 0.0, 1, 1, 2.3)) absTol 1e-10)
     assert(summarizer2.countInvalid === 0)
     assert(summarizer2.numClasses === 6)
 
     val summarizer = summarizer1.merge(summarizer2)
     assert(
-      Vectors.dense(summarizer.histogram) ~==
-        Vectors.dense(Array(1.2, 2.1, 0.0, 3.1, 4.2, 2.3, 3.1)) absTol 1e-10)
+      Vectors.dense(summarizer.histogram) ~== Vectors.dense(Array(
+        1.2, 2.1, 0.0, 3.1, 4.2, 2.3, 3.1)) absTol 1e-10)
     assert(summarizer.countInvalid === 0)
     assert(summarizer.numClasses === 7)
   }
@@ -843,14 +843,14 @@ class LogisticRegressionSuite
     assert(summary.roc.collect() === sameSummary.roc.collect())
     assert(summary.pr.collect === sameSummary.pr.collect())
     assert(
-      summary.fMeasureByThreshold.collect() === sameSummary.fMeasureByThreshold
-        .collect())
+      summary.fMeasureByThreshold.collect() ===
+        sameSummary.fMeasureByThreshold.collect())
     assert(
-      summary.recallByThreshold.collect() === sameSummary.recallByThreshold
-        .collect())
+      summary.recallByThreshold.collect() ===
+        sameSummary.recallByThreshold.collect())
     assert(
-      summary.precisionByThreshold.collect() === sameSummary
-        .precisionByThreshold.collect())
+      summary.precisionByThreshold.collect() ===
+        sameSummary.precisionByThreshold.collect())
   }
 
   test("statistics on training data") {

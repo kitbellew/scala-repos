@@ -317,9 +317,9 @@ private[history] class ApplicationCache(
           // guava's cache logs via java.util log, so is of limited use. Hence: our own message
           logInfo(s"Failed to load application attempt $appId/$attemptId")
           throw new NoSuchElementException(
-            s"no application with application Id '$appId'" +
-              attemptId.map { id => s" attemptId '$id'" }
-                .getOrElse(" and no attempt Id"))
+            s"no application with application Id '$appId'" + attemptId.map {
+              id => s" attemptId '$id'"
+            }.getOrElse(" and no attempt Id"))
       }
     }
   }
@@ -360,8 +360,7 @@ private[history] class ApplicationCache(
     */
   override def toString: String = {
     val sb = new StringBuilder(
-      s"ApplicationCache(" +
-        s" retainedApplications= $retainedApplications)")
+      s"ApplicationCache(" + s" retainedApplications= $retainedApplications)")
     sb.append(s"; time= ${clock.getTimeMillis()}")
     sb.append(s"; entry count= ${appCache.size()}\n")
     sb.append("----\n")
@@ -439,9 +438,8 @@ private[history] class CacheMetrics(prefix: String) extends Source {
   )
 
   /** all metrics, including timers */
-  private val allMetrics = counters ++ Seq(
-    ("load.timer", loadTimer),
-    ("update.probe.timer", updateProbeTimer))
+  private val allMetrics = counters ++
+    Seq(("load.timer", loadTimer), ("update.probe.timer", updateProbeTimer))
 
   /**
     * Name of metric source
@@ -576,8 +574,8 @@ private[history] class ApplicationCacheCheckFilter()
 
     // if the request is for an attempt, check to see if it is in need of delete/refresh
     // and have the cache update the UI if so
-    if (operation == "HEAD" || operation == "GET"
-        && checkForUpdates(requestURI, appId, attemptId)) {
+    if (operation == "HEAD" ||
+        operation == "GET" && checkForUpdates(requestURI, appId, attemptId)) {
       // send a redirect back to the same location. This will be routed
       // to the *new* UI
       logInfo(s"Application Attempt $appId/$attemptId updated; refreshing")

@@ -38,21 +38,13 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
       { case Identifier(str) if regex.unapplySeq(str).isDefined => str })
 
   protected lazy val primitiveType: Parser[DataType] =
-    "(?i)string".r ^^^ StringType |
-      "(?i)float".r ^^^ FloatType |
-      "(?i)(?:int|integer)".r ^^^ IntegerType |
-      "(?i)tinyint".r ^^^ ByteType |
-      "(?i)smallint".r ^^^ ShortType |
-      "(?i)double".r ^^^ DoubleType |
-      "(?i)(?:bigint|long)".r ^^^ LongType |
-      "(?i)binary".r ^^^ BinaryType |
-      "(?i)boolean".r ^^^ BooleanType |
-      fixedDecimalType |
-      "(?i)decimal".r ^^^ DecimalType.USER_DEFAULT |
-      "(?i)date".r ^^^ DateType |
-      "(?i)timestamp".r ^^^ TimestampType |
-      varchar |
-      char
+    "(?i)string".r ^^^ StringType | "(?i)float".r ^^^ FloatType |
+      "(?i)(?:int|integer)".r ^^^ IntegerType | "(?i)tinyint".r ^^^ ByteType |
+      "(?i)smallint".r ^^^ ShortType | "(?i)double".r ^^^ DoubleType |
+      "(?i)(?:bigint|long)".r ^^^ LongType | "(?i)binary".r ^^^ BinaryType |
+      "(?i)boolean".r ^^^ BooleanType | fixedDecimalType |
+      "(?i)decimal".r ^^^ DecimalType.USER_DEFAULT | "(?i)date".r ^^^ DateType |
+      "(?i)timestamp".r ^^^ TimestampType | varchar | char
 
   protected lazy val fixedDecimalType: Parser[DataType] =
     ("(?i)decimal".r ~> "(" ~> numericLit) ~ ("," ~> numericLit <~ ")") ^^ {
@@ -81,14 +73,10 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
   protected lazy val structType: Parser[DataType] =
     ("(?i)struct".r ~> "<" ~> repsep(structField, ",") <~ ">" ^^ {
       case fields => new StructType(fields.toArray)
-    }) |
-      ("(?i)struct".r ~ "<>" ^^^ StructType(Nil))
+    }) | ("(?i)struct".r ~ "<>" ^^^ StructType(Nil))
 
   protected lazy val dataType: Parser[DataType] =
-    arrayType |
-      mapType |
-      structType |
-      primitiveType
+    arrayType | mapType | structType | primitiveType
 
   def toDataType(dataTypeString: String): DataType =
     synchronized {

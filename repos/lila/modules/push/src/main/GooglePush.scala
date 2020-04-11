@@ -18,8 +18,8 @@ private final class GooglePush(
           "Content-type" -> "application/json").post(Json.obj(
           "to" -> device.deviceId,
           "priority" -> "normal",
-          "notification" -> Json
-            .obj("title" -> data.title, "body" -> data.body),
+          "notification" ->
+            Json.obj("title" -> data.title, "body" -> data.body),
           "data" -> data.payload)).flatMap {
           case res if res.status == 200 => funit
           case res =>

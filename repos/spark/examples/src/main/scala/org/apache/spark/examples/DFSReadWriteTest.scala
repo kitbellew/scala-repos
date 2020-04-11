@@ -49,12 +49,10 @@ object DFSReadWriteTest {
   }
 
   private def printUsage(): Unit = {
-    val usage: String = "DFS Read-Write Test\n" +
-      "\n" +
-      "Usage: localFile dfsDir\n" +
-      "\n" +
-      "localFile - (string) local file to use in test\n" +
-      "dfsDir - (string) DFS directory for read/write tests\n"
+    val usage: String =
+      "DFS Read-Write Test\n" + "\n" + "Usage: localFile dfsDir\n" + "\n" +
+        "localFile - (string) local file to use in test\n" +
+        "dfsDir - (string) DFS directory for read/write tests\n"
 
     println(usage)
   }

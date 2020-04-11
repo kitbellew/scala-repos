@@ -29,8 +29,8 @@ class ScalaCurrentPackageMacro extends Macro {
   override def getName: String = MacroUtil.scalaIdPrefix + "currentPackage"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
-      .message("macro.current.package")
+    MacroUtil.scalaPresentablePrefix +
+      CodeInsightBundle.message("macro.current.package")
 
   override def isAcceptableInContext(context: TemplateContextType): Boolean =
     context.isInstanceOf[ScalaCodeContextType]

@@ -40,10 +40,9 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
 
     (for {
       _ <- (managers.schema ++ employees.schema).create
-      _ <- managers ++= Seq(
-        (1, "Peter", "HR"),
-        (2, "Amy", "IT"),
-        (3, "Steve", "IT"))
+      _ <-
+        managers ++=
+          Seq((1, "Peter", "HR"), (2, "Amy", "IT"), (3, "Steve", "IT"))
       _ <- employees ++= Seq(
         (4, "Jennifer", 1),
         (5, "Tom", 1),
@@ -64,15 +63,8 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       _ <- mark("q4b", q4b.result).map(r => r.toSet shouldBe Set(1, 2, 3))
       _ <- mark("q4c", q4c.result).map(r => r.toSet shouldBe Set(1, 2, 3))
       _ <- mark("q5", q5.result).map(r =>
-        r.toSet shouldBe Set(
-          (7, 7),
-          (6, 6),
-          (2, 0),
-          (4, 4),
-          (3, 0),
-          (8, 8),
-          (5, 5),
-          (1, 0)))
+        r.toSet shouldBe
+          Set((7, 7), (6, 6), (2, 0), (4, 4), (3, 0), (8, 8), (5, 5), (1, 0)))
     } yield ()) andFinally (managers.schema ++ employees.schema).drop
   }
 
@@ -82,10 +74,8 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
 
     seq(
       managers.schema.create,
-      managers ++= Seq(
-        (1, "Peter", "HR"),
-        (2, "Amy", "IT"),
-        (3, "Steve", "IT")),
+      managers ++=
+        Seq((1, "Peter", "HR"), (2, "Amy", "IT"), (3, "Steve", "IT")),
       q.result
         .map(r => r.toSet shouldBe Set((1, "Peter", "HR"), (2, "Amy", "IT")))
     ) andFinally managers.schema.drop

@@ -110,8 +110,8 @@ private[akka] object GraphInterpreter {
       val outs: Array[Outlet[_]],
       val outOwners: Array[Int]) {
     require(
-      ins.length == inOwners.length && inOwners.length == outs.length && outs
-        .length == outOwners.length)
+      ins.length == inOwners.length && inOwners.length == outs.length &&
+        outs.length == outOwners.length)
 
     def connectionCount: Int = ins.length
 
@@ -213,9 +213,8 @@ private[akka] object GraphInterpreter {
         case (stage, attr) ⇒
           s"${stage.module}    [${attr.attributeList.mkString(", ")}]"
       }
-      "GraphAssembly\n  " +
-        stageList.mkString("[ ", "\n    ", "\n  ]") + "\n  " +
-        ins.mkString("[", ",", "]") + "\n  " +
+      "GraphAssembly\n  " + stageList.mkString("[ ", "\n    ", "\n  ]") +
+        "\n  " + ins.mkString("[", ",", "]") + "\n  " +
         inOwners.mkString("[", ",", "]") + "\n  " +
         outs.mkString("[", ",", "]") + "\n  " +
         outOwners.mkString("[", ",", "]")
@@ -689,8 +688,9 @@ private[stream] final class GraphInterpreter(
   private def dequeue(): Int = {
     val idx = queueHead & mask
     if (fuzzingMode) {
-      val swapWith = (ThreadLocalRandom.current
-        .nextInt(queueTail - queueHead) + queueHead) & mask
+      val swapWith =
+        (ThreadLocalRandom.current.nextInt(queueTail - queueHead) + queueHead) &
+          mask
       val ev = eventQueue(swapWith)
       eventQueue(swapWith) = eventQueue(idx)
       eventQueue(idx) = ev

@@ -204,33 +204,33 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
     }
 
     "resolve serializer by direct interface" in {
-      ser.serializerFor(classOf[SimpleMessage]).getClass should ===(
-        classOf[TestSerializer])
+      ser.serializerFor(classOf[SimpleMessage]).getClass should
+        ===(classOf[TestSerializer])
     }
 
     "resolve serializer by interface implemented by super class" in {
-      ser.serializerFor(classOf[ExtendedSimpleMessage]).getClass should ===(
-        classOf[TestSerializer])
+      ser.serializerFor(classOf[ExtendedSimpleMessage]).getClass should
+        ===(classOf[TestSerializer])
     }
 
     "resolve serializer by indirect interface" in {
-      ser.serializerFor(classOf[AnotherMessage]).getClass should ===(
-        classOf[TestSerializer])
+      ser.serializerFor(classOf[AnotherMessage]).getClass should
+        ===(classOf[TestSerializer])
     }
 
     "resolve serializer by indirect interface implemented by super class" in {
-      ser.serializerFor(classOf[ExtendedAnotherMessage]).getClass should ===(
-        classOf[TestSerializer])
+      ser.serializerFor(classOf[ExtendedAnotherMessage]).getClass should
+        ===(classOf[TestSerializer])
     }
 
     "resolve serializer for message with binding" in {
-      ser.serializerFor(classOf[PlainMessage]).getClass should ===(
-        classOf[TestSerializer])
+      ser.serializerFor(classOf[PlainMessage]).getClass should
+        ===(classOf[TestSerializer])
     }
 
     "resolve serializer for message extending class with with binding" in {
-      ser.serializerFor(classOf[ExtendedPlainMessage]).getClass should ===(
-        classOf[TestSerializer])
+      ser.serializerFor(classOf[ExtendedPlainMessage]).getClass should
+        ===(classOf[TestSerializer])
     }
 
     "give warning for message with several bindings" in {
@@ -238,8 +238,8 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
         .warning(
           start = "Multiple serializers found",
           occurrences = 1) intercept {
-        ser.serializerFor(classOf[Both]).getClass should (be(
-          classOf[TestSerializer]) or be(classOf[JavaSerializer]))
+        ser.serializerFor(classOf[Both]).getClass should
+          (be(classOf[TestSerializer]) or be(classOf[JavaSerializer]))
       }
     }
 
@@ -250,8 +250,8 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
         .warning(
           start = "Multiple serializers found",
           occurrences = 1) intercept {
-        ser.serializerFor(classOf[C]).getClass should (be(
-          classOf[TestSerializer]) or be(classOf[JavaSerializer]))
+        ser.serializerFor(classOf[C]).getClass should
+          (be(classOf[TestSerializer]) or be(classOf[JavaSerializer]))
       }
     }
 
@@ -269,16 +269,16 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
 
     "use ByteArraySerializer for byte arrays" in {
       val byteSerializer = ser.serializerFor(classOf[Array[Byte]])
-      byteSerializer.getClass should be theSameInstanceAs classOf[
-        ByteArraySerializer]
+      byteSerializer.getClass should be theSameInstanceAs
+        classOf[ByteArraySerializer]
 
       for (a ← Seq("foo".getBytes("UTF-8"), null: Array[Byte], Array[Byte]()))
-        byteSerializer
-          .fromBinary(byteSerializer.toBinary(a)) should be theSameInstanceAs a
+        byteSerializer.fromBinary(byteSerializer.toBinary(a)) should
+          be theSameInstanceAs a
 
       intercept[IllegalArgumentException] { byteSerializer.toBinary("pigdog") }
-        .getMessage should ===(
-        "ByteArraySerializer only serializes byte arrays, not [pigdog]")
+        .getMessage should
+        ===("ByteArraySerializer only serializes byte arrays, not [pigdog]")
     }
   }
 }
@@ -356,8 +356,8 @@ class SerializationCompatibilitySpec
 
   "Cross-version serialization compatibility" must {
     def verify(obj: SystemMessage, asExpected: String): Unit =
-      String.valueOf(ser.serialize(obj).map(encodeHex).get) should ===(
-        asExpected)
+      String.valueOf(ser.serialize(obj).map(encodeHex).get) should
+        ===(asExpected)
 
     "be preserved for the Create SystemMessage" in {
       // Using null as the cause to avoid a large serialized message and JDK differences

@@ -85,7 +85,8 @@ trait Inbox {
       else {
         if (!printedWarning) {
           log.warning(
-            "dropping message: either your program is buggy or you might want to increase akka.actor.dsl.inbox-size, current value is " + size)
+            "dropping message: either your program is buggy or you might want to increase akka.actor.dsl.inbox-size, current value is " +
+              size)
           printedWarning = true
         }
       }
@@ -126,8 +127,8 @@ trait Inbox {
           val overdue = clientsByTimeout.iterator.takeWhile(pred)
           while (overdue.hasNext) {
             val toKick = overdue.next()
-            toKick.client ! Status
-              .Failure(new TimeoutException("deadline passed"))
+            toKick.client !
+              Status.Failure(new TimeoutException("deadline passed"))
           }
           clients = clients.filterNot(pred)
           clientsByTimeout = clientsByTimeout.from(Get(now))

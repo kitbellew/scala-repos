@@ -188,14 +188,11 @@ object Types {
         case (UndefType, ClassType(cls))   => isSubclass(BoxedUnitClass, cls)
         case (BooleanType, ClassType(cls)) => isSubclass(BoxedBooleanClass, cls)
         case (IntType, ClassType(cls)) =>
-          isSubclass(BoxedIntegerClass, cls) ||
-            cls == BoxedByteClass ||
-            cls == BoxedShortClass ||
-            cls == BoxedDoubleClass
+          isSubclass(BoxedIntegerClass, cls) || cls == BoxedByteClass ||
+            cls == BoxedShortClass || cls == BoxedDoubleClass
         case (LongType, ClassType(cls)) => isSubclass(BoxedLongClass, cls)
         case (FloatType, ClassType(cls)) =>
-          isSubclass(BoxedFloatClass, cls) ||
-            cls == BoxedDoubleClass
+          isSubclass(BoxedFloatClass, cls) || cls == BoxedDoubleClass
         case (DoubleType, ClassType(cls)) => isSubclass(BoxedDoubleClass, cls)
         case (StringType, ClassType(cls)) => isSubclass(StringClass, cls)
 

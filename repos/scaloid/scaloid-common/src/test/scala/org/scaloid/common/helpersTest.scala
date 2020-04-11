@@ -93,8 +93,8 @@ class helpersTest extends JUnitSuite with ShouldMatchers {
   def testSharedPreference(): Unit = {
     PreferenceHelpers.defaultSharedPreferences.edit.putString("foo", "bar")
       .commit
-    PreferenceHelpers.defaultSharedPreferences
-      .getString("foo", "") shouldBe "bar"
+    PreferenceHelpers.defaultSharedPreferences.getString("foo", "") shouldBe
+      "bar"
   }
 
   @Test

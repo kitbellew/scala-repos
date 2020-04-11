@@ -219,7 +219,8 @@ class ScalaFileImpl(
   def isWorksheetFile: Boolean = {
     val vFile = getVirtualFile
 
-    vFile != null && (vFile.getExtension == ScalaFileType.WORKSHEET_EXTENSION ||
+    vFile != null &&
+    (vFile.getExtension == ScalaFileType.WORKSHEET_EXTENSION ||
     ScratchFileService.getInstance().getRootType(vFile)
       .isInstanceOf[ScratchRootType] &&
     ScalaProjectSettings.getInstance(getProject).isTreatScratchFilesAsWorksheet)
@@ -268,8 +269,8 @@ class ScalaFileImpl(
         if (vector.nonEmpty) {
           val packagingsText = {
             val path = {
-              val splits = ScalaFileImpl.toVector(base) :: ScalaFileImpl
-                .splitsIn(ScalaFileImpl.pathIn(this))
+              val splits = ScalaFileImpl.toVector(base) ::
+                ScalaFileImpl.splitsIn(ScalaFileImpl.pathIn(this))
               splits.foldLeft(List(vector))(ScalaFileImpl.splitAt)
             }
             path.map(_.mkString("package ", ".", "")).mkString("", "\n", "\n\n")
@@ -416,8 +417,8 @@ class ScalaFileImpl(
   }
 
   def isScalaPredefinedClassInner =
-    typeDefinitions.length == 1 &&
-      Set("scala", "scala.Predef").contains(typeDefinitions.head.qualifiedName)
+    typeDefinitions.length == 1 && Set("scala", "scala.Predef")
+      .contains(typeDefinitions.head.qualifiedName)
 
   override def findReferenceAt(offset: Int): PsiReference =
     super.findReferenceAt(offset)
@@ -533,8 +534,8 @@ object ScalaFileImpl {
         if (file == null) return false
         val index = ProjectRootManager.getInstance(place.getProject)
           .getFileIndex
-        !(index.isInSourceContent(file) || index
-          .isInLibraryClasses(file) || index.isInLibrarySource(file))
+        !(index.isInSourceContent(file) || index.isInLibraryClasses(file) ||
+          index.isInLibrarySource(file))
       case _ => false
     }
   }

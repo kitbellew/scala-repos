@@ -303,8 +303,8 @@ class ActorPublisherSpec
       s.expectSubscription()
       val s2 = TestSubscriber.manualProbe[String]()
       ActorPublisher[String](ref).subscribe(s2)
-      s2.expectSubscriptionAndError().getClass should be(
-        classOf[IllegalStateException])
+      s2.expectSubscriptionAndError().getClass should
+        be(classOf[IllegalStateException])
     }
 
     "signal onCompete when actor is stopped" in {

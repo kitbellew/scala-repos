@@ -94,9 +94,7 @@ class EdgeCaseRequestTest extends KafkaServerTestHarness {
       clientId: String = "",
       correlationId: Int = -1): Array[Byte] = {
     val size = {
-      2 /* apiKey */ +
-        2 /* version id */ +
-        4 /* correlation id */ +
+      2 /* apiKey */ + 2 /* version id */ + 4 /* correlation id */ +
         Type.NULLABLE_STRING.sizeOf(clientId) /* client id */
     }
 
@@ -190,8 +188,7 @@ class EdgeCaseRequestTest extends KafkaServerTestHarness {
     val serializedBytes = {
       // Only send apiKey and apiVersion
       val buffer = ByteBuffer.allocate(
-        2 /* apiKey */ +
-          2 /* apiVersion */
+        2 /* apiKey */ + 2 /* apiVersion */
       )
       buffer.putShort(ApiKeys.PRODUCE.id)
       buffer.putShort(1)

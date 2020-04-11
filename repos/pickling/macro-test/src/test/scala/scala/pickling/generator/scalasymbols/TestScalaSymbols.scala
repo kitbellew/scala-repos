@@ -55,9 +55,8 @@ class TestScalaSymbols extends FunSuite {
 
   test("fieldTypesWithTypeArgs") {
     assert(
-      Compat.varTypes[ParentTag.Foo[String, Int]].toSet == Set(
-        "scala.Tuple2[java.lang.String,scala.Int]",
-        "scala.Int"))
+      Compat.varTypes[ParentTag.Foo[String, Int]].toSet ==
+        Set("scala.Tuple2[java.lang.String,scala.Int]", "scala.Int"))
     assert(
       Compat.varTypes[ParentTag.Baz[String]].toSet == Set(
         "scala.Tuple2[java.lang.String,scala.Float]",

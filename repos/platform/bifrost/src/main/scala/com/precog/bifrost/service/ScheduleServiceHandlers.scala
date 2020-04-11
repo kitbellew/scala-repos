@@ -85,8 +85,8 @@ object AddScheduledQueryRequest {
   implicit val iso = Iso
     .hlist(AddScheduledQueryRequest.apply _, AddScheduledQueryRequest.unapply _)
 
-  val schemaV1 =
-    "schedule" :: "owners" :: "context" :: "source" :: "sink" :: "timeout" :: HNil
+  val schemaV1 = "schedule" :: "owners" :: "context" :: "source" :: "sink" ::
+    "timeout" :: HNil
 
   implicit val decomposer: Decomposer[AddScheduledQueryRequest] = decomposerV(
     schemaV1,
@@ -182,8 +182,8 @@ class AddScheduledQueryServiceHandler(
 
         responseVF.fold(a => a, a => a)
       } getOrElse {
-        Promise successful badRequest(
-          "Missing body for scheduled query submission")
+        Promise successful
+          badRequest("Missing body for scheduled query submission")
       }
     })
 
@@ -249,9 +249,8 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
 
           val body: JValue = JObject(
             "task" -> task.serialize,
-            "nextRun" -> (nextTime.map(_.serialize) getOrElse {
-              JString("never")
-            }),
+            "nextRun" ->
+              (nextTime.map(_.serialize) getOrElse { JString("never") }),
             "history" -> reports.toList.serialize)
 
           ok(Some(body))

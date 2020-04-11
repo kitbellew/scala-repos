@@ -238,9 +238,8 @@ object ConsumerGroupCommand {
         case Some(brokerId) => getZkConsumer(brokerId).map { consumer =>
             val topicAndPartition = new TopicAndPartition(topic, partition)
             val request = OffsetRequest(Map(
-              topicAndPartition -> PartitionOffsetRequestInfo(
-                OffsetRequest.LatestTime,
-                1)))
+              topicAndPartition ->
+                PartitionOffsetRequestInfo(OffsetRequest.LatestTime, 1)))
             val logEndOffset = consumer.getOffsetsBefore(request)
               .partitionErrorAndOffsets(topicAndPartition).offsets.head
             consumer.close()
@@ -502,13 +501,16 @@ object ConsumerGroupCommand {
     val DescribeDoc =
       "Describe consumer group and list offset lag related to given group."
     val nl = System.getProperty("line.separator")
-    val DeleteDoc = "Pass in groups to delete topic partition offsets and ownership information " +
-      "over the entire consumer group. For instance --group g1 --group g2" + nl +
-      "Pass in groups with a single topic to just delete the given topic's partition offsets and ownership " +
-      "information for the given consumer groups. For instance --group g1 --group g2 --topic t1" + nl +
-      "Pass in just a topic to delete the given topic's partition offsets and ownership information " +
-      "for every consumer group. For instance --topic t1" + nl +
-      "WARNING: Group deletion only works for old ZK-based consumer groups, and one has to use it carefully to only delete groups that are not active."
+    val DeleteDoc =
+      "Pass in groups to delete topic partition offsets and ownership information " +
+        "over the entire consumer group. For instance --group g1 --group g2" +
+        nl +
+        "Pass in groups with a single topic to just delete the given topic's partition offsets and ownership " +
+        "information for the given consumer groups. For instance --group g1 --group g2 --topic t1" +
+        nl +
+        "Pass in just a topic to delete the given topic's partition offsets and ownership information " +
+        "for every consumer group. For instance --topic t1" + nl +
+        "WARNING: Group deletion only works for old ZK-based consumer groups, and one has to use it carefully to only delete groups that are not active."
     val NewConsumerDoc = "Use new consumer."
     val CommandConfigDoc =
       "Property file containing configs to be passed to Admin Client and Consumer."
@@ -566,8 +568,8 @@ object ConsumerGroupCommand {
 
       if (options.has(describeOpt))
         CommandLineUtils.checkRequiredArgs(parser, options, groupOpt)
-      if (options.has(deleteOpt) && !options.has(groupOpt) && !options
-            .has(topicOpt))
+      if (options.has(deleteOpt) && !options.has(groupOpt) &&
+          !options.has(topicOpt))
         CommandLineUtils.printUsageAndDie(
           parser,
           "Option %s either takes %s, %s, or both"

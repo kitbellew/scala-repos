@@ -53,12 +53,11 @@ class IDFSuite extends SparkFunSuite with MLlibTestSparkContext {
           Vectors.dense(1.0 * expected(1), 2.0 * expected(3)) absTol 1e-12)
       val tfidf1 = tfidf(1).asInstanceOf[DenseVector]
       assert(
-        Vectors.dense(tfidf1.values) ~==
-          Vectors.dense(
-            0.0,
-            1.0 * expected(1),
-            2.0 * expected(2),
-            3.0 * expected(3)) absTol 1e-12)
+        Vectors.dense(tfidf1.values) ~== Vectors.dense(
+          0.0,
+          1.0 * expected(1),
+          2.0 * expected(2),
+          3.0 * expected(3)) absTol 1e-12)
       val tfidf2 = tfidf(2).asInstanceOf[SparseVector]
       assert(tfidf2.indices === Array(1))
       assert(tfidf2.values(0) ~== (1.0 * expected(1)) absTol 1e-12)
@@ -96,12 +95,11 @@ class IDFSuite extends SparkFunSuite with MLlibTestSparkContext {
           Vectors.dense(1.0 * expected(1), 2.0 * expected(3)) absTol 1e-12)
       val tfidf1 = tfidf(1).asInstanceOf[DenseVector]
       assert(
-        Vectors.dense(tfidf1.values) ~==
-          Vectors.dense(
-            0.0,
-            1.0 * expected(1),
-            2.0 * expected(2),
-            3.0 * expected(3)) absTol 1e-12)
+        Vectors.dense(tfidf1.values) ~== Vectors.dense(
+          0.0,
+          1.0 * expected(1),
+          2.0 * expected(2),
+          3.0 * expected(3)) absTol 1e-12)
       val tfidf2 = tfidf(2).asInstanceOf[SparseVector]
       assert(tfidf2.indices === Array(1))
       assert(tfidf2.values(0) ~== (1.0 * expected(1)) absTol 1e-12)

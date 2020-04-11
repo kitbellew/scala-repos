@@ -86,8 +86,8 @@ class ScalaPatternParameterInfoHandler
       context: ParameterInfoContext): Array[Object] = null
 
   def updateUI(p: Any, context: ParameterInfoUIContext): Unit = {
-    if (context == null || context.getParameterOwner == null || !context
-          .getParameterOwner.isValid) return
+    if (context == null || context.getParameterOwner == null ||
+        !context.getParameterOwner.isValid) return
     context.getParameterOwner match {
       case args: ScPatternArgumentList =>
         val color: Color = context.getDefaultParameterColor
@@ -126,11 +126,11 @@ class ScalaPatternParameterInfoHandler
                   case (param, o) =>
                     val buffer: StringBuilder = new StringBuilder("")
                     buffer.append(ScType.presentableText(param))
-                    val isSeq = methodName == "unapplySeq" && (ScType
-                      .extractClass(param) match {
-                      case Some(clazz) => clazz.qualifiedName == "scala.Seq"
-                      case _           => false
-                    })
+                    val isSeq = methodName == "unapplySeq" &&
+                      (ScType.extractClass(param) match {
+                        case Some(clazz) => clazz.qualifiedName == "scala.Seq"
+                        case _           => false
+                      })
                     if (isSeq) {
                       buffer.delete(0, buffer.indexOf("[") + 1)
                       buffer.deleteCharAt(buffer.length - 1)

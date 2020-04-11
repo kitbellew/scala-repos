@@ -110,16 +110,14 @@ private[hive] object IsolatedClientLoader extends Logging {
       version: HiveVersion,
       hadoopVersion: String,
       ivyPath: Option[String]): Seq[URL] = {
-    val hiveArtifacts = version.extraDeps ++
-      Seq(
-        "hive-metastore",
-        "hive-exec",
-        "hive-common",
-        "hive-serde",
-        "hive-cli").map(a => s"org.apache.hive:$a:${version.fullVersion}") ++
-      Seq(
-        "com.google.guava:guava:14.0.1",
-        s"org.apache.hadoop:hadoop-client:$hadoopVersion")
+    val hiveArtifacts = version.extraDeps ++ Seq(
+      "hive-metastore",
+      "hive-exec",
+      "hive-common",
+      "hive-serde",
+      "hive-cli").map(a => s"org.apache.hive:$a:${version.fullVersion}") ++ Seq(
+      "com.google.guava:guava:14.0.1",
+      s"org.apache.hadoop:hadoop-client:$hadoopVersion")
 
     val classpath = quietly {
       SparkSubmitUtils.resolveMavenCoordinates(
@@ -173,8 +171,8 @@ private[hive] class IsolatedClientLoader(
     val sharesHadoopClasses: Boolean = true,
     val rootClassLoader: ClassLoader = ClassLoader.getSystemClassLoader
       .getParent.getParent,
-    val baseClassLoader: ClassLoader =
-      Thread.currentThread().getContextClassLoader,
+    val baseClassLoader: ClassLoader = Thread.currentThread()
+      .getContextClassLoader,
     val sharedPrefixes: Seq[String] = Seq.empty,
     val barrierPrefixes: Seq[String] = Seq.empty)
     extends Logging {
@@ -189,17 +187,14 @@ private[hive] class IsolatedClientLoader(
 
   protected def isSharedClass(name: String): Boolean = {
     val isHadoopClass =
-      name.startsWith("org.apache.hadoop.") && !name
-        .startsWith("org.apache.hadoop.hive.")
+      name.startsWith("org.apache.hadoop.") &&
+        !name.startsWith("org.apache.hadoop.hive.")
 
-    name.contains("slf4j") ||
-    name.contains("log4j") ||
+    name.contains("slf4j") || name.contains("log4j") ||
     name.startsWith("org.apache.spark.") ||
-    (sharesHadoopClasses && isHadoopClass) ||
-    name.startsWith("scala.") ||
+    (sharesHadoopClasses && isHadoopClass) || name.startsWith("scala.") ||
     (name.startsWith("com.google") && !name.startsWith("com.google.cloud")) ||
-    name.startsWith("java.lang.") ||
-    name.startsWith("java.net") ||
+    name.startsWith("java.lang.") || name.startsWith("java.net") ||
     sharedPrefixes.exists(name.startsWith)
   }
 

@@ -816,8 +816,8 @@ class ParquetPartitionDiscoverySuite
       // We have two paths to list files, one at driver side, another one that we use
       // a Spark job. We need to test both ways.
       withSQLConf(
-        SQLConf.PARALLEL_PARTITION_DISCOVERY_THRESHOLD.key -> threshold
-          .toString) {
+        SQLConf.PARALLEL_PARTITION_DISCOVERY_THRESHOLD.key ->
+          threshold.toString) {
         withTempPath { dir =>
           val tablePath = new File(dir, "table")
           val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
@@ -878,10 +878,9 @@ class ParquetPartitionDiscoverySuite
         (
           new Path("file:/tmp/foo/a=1"),
           PartitionValues(Seq("a"), Seq(Literal(1))))
-      )).trim ===
-        makeExpectedMessage(
-          Seq("a"),
-          Seq("file:/tmp/foo/a=1/_temporary", "file:/tmp/foo/a=1")))
+      )).trim === makeExpectedMessage(
+        Seq("a"),
+        Seq("file:/tmp/foo/a=1/_temporary", "file:/tmp/foo/a=1")))
 
     assert(
       listConflictingPartitionColumns(Seq(
@@ -891,10 +890,9 @@ class ParquetPartitionDiscoverySuite
         (
           new Path("file:/tmp/foo/a=1/b=foo"),
           PartitionValues(Seq("a", "b"), Seq(Literal(1), Literal("foo"))))
-      )).trim ===
-        makeExpectedMessage(
-          Seq("a", "a, b"),
-          Seq("file:/tmp/foo/a=1", "file:/tmp/foo/a=1/b=foo")))
+      )).trim === makeExpectedMessage(
+        Seq("a", "a, b"),
+        Seq("file:/tmp/foo/a=1", "file:/tmp/foo/a=1/b=foo")))
   }
 
   test("Parallel partition discovery") {

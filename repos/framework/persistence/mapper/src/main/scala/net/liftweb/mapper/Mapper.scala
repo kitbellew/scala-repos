@@ -61,9 +61,8 @@ trait Mapper[A <: Mapper[A]]
   }
 
   def connectionIdentifier(id: ConnectionIdentifier): A = {
-    if (id != getSingleton
-          .dbDefaultConnectionIdentifier || dbConnectionIdentifier.isDefined)
-      dbConnectionIdentifier = Full(id)
+    if (id != getSingleton.dbDefaultConnectionIdentifier ||
+        dbConnectionIdentifier.isDefined) dbConnectionIdentifier = Full(id)
     thisToMappee(this)
   }
 
@@ -221,10 +220,10 @@ trait Mapper[A <: Mapper[A]]
     * @return the form
     */
   def toForm(button: Box[String], f: A => Any): NodeSeq =
-    getSingleton.toForm(this) ++
-      S.fmapFunc((ignore: List[String]) => f(this)) { (name: String) =>
+    getSingleton.toForm(this) ++ S.fmapFunc((ignore: List[String]) => f(this)) {
+      (name: String) =>
         (<input type='hidden' name={name} value="n/a" />)
-      } ++
+    } ++
       (button.map(b =>
         getSingleton.formatFormElement(
           <xml:group>&nbsp;</xml:group>,

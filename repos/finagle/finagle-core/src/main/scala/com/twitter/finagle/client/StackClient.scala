@@ -367,8 +367,7 @@ object StackClient {
     * The default params used for client stacks.
     */
   val defaultParams: Stack.Params =
-    Stack.Params.empty +
-      Stats(ClientStatsReceiver) +
+    Stack.Params.empty + Stats(ClientStatsReceiver) +
       LoadBalancerFactory.HostStats(LoadedHostStatsReceiver)
 }
 
@@ -552,10 +551,8 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
     }
 
     val clientStack = stack ++ (endpointer +: nilStack)
-    val clientParams = params +
-      Label(clientLabel) +
-      Stats(stats.scope(clientLabel)) +
-      BindingFactory.Dest(dest)
+    val clientParams = params + Label(clientLabel) +
+      Stats(stats.scope(clientLabel)) + BindingFactory.Dest(dest)
 
     clientStack.make(clientParams)
   }

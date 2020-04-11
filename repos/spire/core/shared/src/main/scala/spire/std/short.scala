@@ -83,12 +83,12 @@ class ShortIsBitString extends BitString[Short] with Serializable {
   def numberOfTrailingZeros(n: Short): Int =
     if (n == 0) 16 else Integer.numberOfTrailingZeros(n & 0xffff)
 
-  def leftShift(n: Short, i: Int): Short =
-    (((n & 0xffff) << (i & 15)) & 0xffff).toShort
+  def leftShift(n: Short, i: Int): Short = (((n & 0xffff) << (i & 15)) & 0xffff)
+    .toShort
   def rightShift(n: Short, i: Int): Short =
     (((n & 0xffff) >>> (i & 15)) & 0xffff).toShort
-  def signedRightShift(n: Short, i: Int): Short =
-    ((n >> (i & 15)) & 0xffff).toShort
+  def signedRightShift(n: Short, i: Int): Short = ((n >> (i & 15)) & 0xffff)
+    .toShort
   def rotateLeft(n: Short, i: Int): Short = {
     val j = i & 15
     ((((n & 0xffff) << j) | ((n & 0xffff) >>> (16 - j))) & 0xffff).toShort

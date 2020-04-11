@@ -27,12 +27,11 @@ import org.apache.spark.sql.catalyst.rules._
 class OuterJoinEliminationSuite extends PlanTest {
   object Optimize extends RuleExecutor[LogicalPlan] {
     val batches =
-      Batch("Subqueries", Once, EliminateSubqueryAliases) ::
-        Batch(
-          "Outer Join Elimination",
-          Once,
-          OuterJoinElimination,
-          PushPredicateThroughJoin) :: Nil
+      Batch("Subqueries", Once, EliminateSubqueryAliases) :: Batch(
+        "Outer Join Elimination",
+        Once,
+        OuterJoinElimination,
+        PushPredicateThroughJoin) :: Nil
   }
 
   val testRelation = LocalRelation('a.int, 'b.int, 'c.int)

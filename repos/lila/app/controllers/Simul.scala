@@ -40,9 +40,7 @@ object Simul extends LilaController {
     Open { implicit ctx =>
       env.repo find id flatMap {
         _.fold(simulNotFound.fuccess) { sim =>
-          env.version(sim.id) zip
-            env.jsonView(sim) zip
-            chatOf(sim) map {
+          env.version(sim.id) zip env.jsonView(sim) zip chatOf(sim) map {
             case ((version, data), chat) =>
               html.simul.show(sim, version, data, chat)
           }

@@ -19,8 +19,8 @@ object Test extends DirectTest {
   """
   def compileMacros() = {
     val classpath =
-      List(sys.props("partest.lib"), sys.props("partest.reflect")) mkString sys
-        .props("path.separator")
+      List(sys.props("partest.lib"), sys.props("partest.reflect")) mkString
+        sys.props("path.separator")
     compileString(newCompiler(
       "-language:experimental.macros",
       "-cp",
@@ -35,8 +35,8 @@ object Test extends DirectTest {
     }
   """
   def compileTest() = {
-    val classpath = List(sys.props("partest.lib"), testOutput.path) mkString sys
-      .props("path.separator")
+    val classpath = List(sys.props("partest.lib"), testOutput.path) mkString
+      sys.props("path.separator")
     compileString(newCompiler("-cp", classpath, "-d", testOutput.path))(test_2)
   }
 

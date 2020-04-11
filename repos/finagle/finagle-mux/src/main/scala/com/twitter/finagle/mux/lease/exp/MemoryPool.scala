@@ -82,5 +82,6 @@ private[lease] class JvmInfo(
   }
 
   override def toString(): String =
-    "JvmInfo(committed" + committed() + ", generation=" + generation() + ", used=" + used() + ", remaining=" + remaining() + ")"
+    "JvmInfo(committed" + committed() + ", generation=" + generation() +
+      ", used=" + used() + ", remaining=" + remaining() + ")"
 }

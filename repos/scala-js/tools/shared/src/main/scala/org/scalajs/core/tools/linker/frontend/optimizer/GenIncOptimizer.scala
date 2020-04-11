@@ -59,11 +59,10 @@ abstract class GenIncOptimizer private[optimizer] (
     callMethods(LongImpl.RuntimeLongClass, LongImpl.AllIntrinsicMethods) ++
       optional(callMethods(
         LongImpl.RuntimeLongClass,
-        LongImpl.OptionalIntrinsicMethods)) ++
-      callMethods(
+        LongImpl.OptionalIntrinsicMethods)) ++ callMethods(
         Definitions.BoxedIntegerClass,
         Seq("compareTo__jl_Byte__I", "compareTo__jl_Short__I")) ++ // #2184
-      instantiateClass("jl_NullPointerException", "init___")
+        instantiateClass("jl_NullPointerException", "init___")
   }
 
   private[optimizer] val CollOps: AbsCollOps
@@ -159,8 +158,7 @@ abstract class GenIncOptimizer private[optimizer] (
       // Update the list of ancestors for all linked classes
       getInterface(linkedClass.encodedName).ancestors = linkedClass.ancestors
 
-      if (linkedClass.hasInstances &&
-          linkedClass.kind != ClassKind.RawJSType &&
+      if (linkedClass.hasInstances && linkedClass.kind != ClassKind.RawJSType &&
           linkedClass.kind != ClassKind.Interface &&
           linkedClass.kind != ClassKind.JSClass) {
         CollOps.put(neededClasses, linkedClass.encodedName, linkedClass)
@@ -469,8 +467,8 @@ abstract class GenIncOptimizer private[optimizer] (
       interfaces = newInterfaces
 
       val methodAttributeChanges =
-        (parentMethodAttributeChanges -- methods.keys ++
-          addedMethods ++ changedMethods ++ deletedMethods)
+        (parentMethodAttributeChanges -- methods.keys ++ addedMethods ++
+          changedMethods ++ deletedMethods)
 
       // Tag callers with dynamic calls
       val wasInstantiated = isInstantiated
@@ -864,8 +862,7 @@ abstract class GenIncOptimizer private[optimizer] (
         val methodDef = linkedMethod.tree
 
         val changed = {
-          originalDef == null ||
-          (methodDef.hash zip originalDef.hash).forall {
+          originalDef == null || (methodDef.hash zip originalDef.hash).forall {
             case (h1, h2) => !Hashers.hashesEqual(h1, h2, considerPositions)
           }
         }

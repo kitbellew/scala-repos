@@ -95,11 +95,9 @@ trait PatternTypers {
       def resultType = (fun.tpe memberType member).finalResultType
       def isEmptyType = resultOfMatchingMethod(resultType, nme.isEmpty)()
       def isOkay =
-        (resultType.isErroneous
-          || (resultType <:< BooleanTpe)
-          || (isEmptyType <:< BooleanTpe)
-          || member.isMacro
-          || member
+        (resultType.isErroneous || (resultType <:< BooleanTpe) ||
+          (isEmptyType <:< BooleanTpe) || member.isMacro ||
+          member
             .isOverloaded // the whole overloading situation is over the rails
         )
 
@@ -137,9 +135,8 @@ trait PatternTypers {
       val FixedAndRepeatedTypes(fixed, elem) = formals
       val front = (args, fixed).zipped map typedArgWithFormal
       def rest =
-        context withinStarPatterns (
-          args drop front.length map (typedArgWithFormal(_, elem))
-        )
+        context withinStarPatterns
+          (args drop front.length map (typedArgWithFormal(_, elem)))
 
       elem match {
         case NoType => front
@@ -148,8 +145,8 @@ trait PatternTypers {
     }
 
     private def boundedArrayType(bound: Type): Type = {
-      val tparam =
-        context.owner freshExistential "" setInfo (TypeBounds upper bound)
+      val tparam = context.owner freshExistential "" setInfo
+        (TypeBounds upper bound)
       newExistentialType(tparam :: Nil, arrayType(tparam.tpe_*))
     }
 
@@ -201,9 +198,8 @@ trait PatternTypers {
       // !!! FIXME - skipping this when variance.isInvariant allows unsoundness, see SI-5189
       // Test case which presently requires the exclusion is run/gadts.scala.
       def eligible(tparam: Symbol) =
-        (tparam.isTypeParameterOrSkolem
-          && tparam.owner.isTerm
-          && (settings.strictInference || !variance.isInvariant))
+        (tparam.isTypeParameterOrSkolem && tparam.owner.isTerm &&
+          (settings.strictInference || !variance.isInvariant))
 
       def skolems =
         try skolemBuffer.toList
@@ -261,13 +257,12 @@ trait PatternTypers {
         ptIn: Type): Tree = {
       // TODO SI-7886 / SI-5900 This is well intentioned but doesn't quite hit the nail on the head.
       //      For now, I've put it completely behind -Xstrict-inference.
-      val untrustworthyPt = settings.strictInference && (ptIn =:= AnyTpe
-        || ptIn =:= NothingTpe
-        || ptIn.typeSymbol != caseClass)
+      val untrustworthyPt = settings.strictInference &&
+        (ptIn =:= AnyTpe || ptIn =:= NothingTpe || ptIn.typeSymbol != caseClass)
       val variantToSkolem = new VariantToSkolemMap
       val caseClassType = tree.tpe.prefix memberType caseClass
-      val caseConstructorType = caseClassType memberType caseClass
-        .primaryConstructor
+      val caseConstructorType = caseClassType memberType
+        caseClass.primaryConstructor
       val tree1 = TypeTree(caseConstructorType) setOriginal tree
       val pt = if (untrustworthyPt) caseClassType else ptIn
 
@@ -348,18 +343,18 @@ trait PatternTypers {
         val pattp = newTyper(unapplyContext).infer
           .inferTypedPattern(tree, unappFormal, pt, canRemedy)
         // turn any unresolved type variables in freevars into existential skolems
-        val skolems =
-          freeVars map (fv => unapplyContext.owner.newExistentialSkolem(fv, fv))
+        val skolems = freeVars map
+          (fv => unapplyContext.owner.newExistentialSkolem(fv, fv))
         pattp.substSym(freeVars, skolems)
       }
 
-      val unapplyArg = (context.owner
-        .newValue(nme.SELECTOR_DUMMY, fun.pos, Flags.SYNTHETIC) setInfo (
-        if (isApplicableSafe(Nil, unapplyType, pt :: Nil, WildcardType)) pt
-        else freshUnapplyArgType()
-      ))
-      val unapplyArgTree =
-        Ident(unapplyArg) updateAttachment SubpatternsAttachment(args)
+      val unapplyArg =
+        (context.owner
+          .newValue(nme.SELECTOR_DUMMY, fun.pos, Flags.SYNTHETIC) setInfo
+          (if (isApplicableSafe(Nil, unapplyType, pt :: Nil, WildcardType)) pt
+           else freshUnapplyArgType()))
+      val unapplyArgTree = Ident(unapplyArg) updateAttachment
+        SubpatternsAttachment(args)
 
       // clearing the type is necessary so that ref will be stabilized; see bug 881
       val fun1 = typedPos(fun.pos)(
@@ -368,8 +363,8 @@ trait PatternTypers {
       def makeTypedUnapply() = {
         // the union of the expected type and the inferred type of the argument to unapply
         val glbType = glb(ensureFullyDefined(pt) :: unapplyArg.tpe_* :: Nil)
-        val wrapInTypeTest =
-          canRemedy && !(fun1.symbol.owner isNonBottomSubClass ClassTagClass)
+        val wrapInTypeTest = canRemedy &&
+          !(fun1.symbol.owner isNonBottomSubClass ClassTagClass)
         val formals = patmat
           .alignPatterns(context.asInstanceOf[analyzer.Context], fun1, args)
           .unexpandedFormals

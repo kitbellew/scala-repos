@@ -46,10 +46,10 @@ class FileUploadExample
       case Some(file) => Ok(
           file.get(),
           Map(
-            "Content-Type" -> (file.contentType
-              .getOrElse("application/octet-stream")),
-            "Content-Disposition" -> ("attachment; filename=\"" + file
-              .name + "\""))
+            "Content-Type" ->
+              (file.contentType.getOrElse("application/octet-stream")),
+            "Content-Disposition" ->
+              ("attachment; filename=\"" + file.name + "\""))
         )
 
       case None => BadRequest(displayPage(<p>

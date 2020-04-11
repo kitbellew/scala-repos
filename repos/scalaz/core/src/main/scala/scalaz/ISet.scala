@@ -197,11 +197,8 @@ sealed abstract class ISet[A] {
         case (Bin(x, l, r), Tip()) => join(x, l.filterGt(blo), r.filterLt(bhi))
         case (t, Bin(x, l, r)) =>
           val bmi = some(x)
-          hedgeDiff(blo, bmi, t.trim(blo, bmi), l) merge hedgeDiff(
-            bmi,
-            bhi,
-            t.trim(bmi, bhi),
-            r)
+          hedgeDiff(blo, bmi, t.trim(blo, bmi), l) merge
+            hedgeDiff(bmi, bhi, t.trim(bmi, bhi), r)
       }
 
     (this, other) match {

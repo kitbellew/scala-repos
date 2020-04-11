@@ -67,8 +67,8 @@ class ReceptionistSpec extends TypedSpec {
       ctx.run(Find(ServiceKeyA)(q.ref))
       q.receiveMsg() should be(Listing(ServiceKeyA, Set(a1.ref, a2.ref)))
       ctx.run(Find(ServiceKeyB)(q.ref))
-      q.receiveMsg() should be(
-        Listing(ServiceKeyB, Set.empty[ActorRef[ServiceB]]))
+      q.receiveMsg() should
+        be(Listing(ServiceKeyB, Set.empty[ActorRef[ServiceB]]))
       assertEmpty(a1, a2, r, q)
     }
 
@@ -89,8 +89,8 @@ class ReceptionistSpec extends TypedSpec {
       val c = Inbox.sync[Any]("c")
       ctx.run(Register(ServiceKeyA, c.ref)(r.ref))
       ctx.run(Register(ServiceKeyB, c.ref)(r.ref))
-      ctx.getAllEffects() should be(
-        Seq(Effect.Watched(c.ref), Effect.Watched(c.ref)))
+      ctx.getAllEffects() should
+        be(Seq(Effect.Watched(c.ref), Effect.Watched(c.ref)))
       r.receiveMsg() should be(Registered(ServiceKeyA, c.ref))
       r.receiveMsg() should be(Registered(ServiceKeyB, c.ref))
 

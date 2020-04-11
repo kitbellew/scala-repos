@@ -160,8 +160,7 @@ object BuiltinCommands {
       early,
       initialize,
       act
-    ) ++
-      compatCommands
+    ) ++ compatCommands
   def DefaultBootCommands: Seq[String] =
     LoadProject :: (IfLast + " " + Shell) :: Nil
 
@@ -194,8 +193,8 @@ object BuiltinCommands {
       val version = e.getOpt(Keys.version) match {
         case None => ""; case Some(v) => " " + v
       }
-      val current = "The current project is " + Reference
-        .display(e.currentRef) + version + "\n"
+      val current = "The current project is " +
+        Reference.display(e.currentRef) + version + "\n"
       val sc = aboutScala(s, e)
       val built =
         if (sc.isEmpty) ""
@@ -205,8 +204,8 @@ object BuiltinCommands {
 
   def aboutPlugins(e: Extracted): String = {
     def list(b: BuildUnit) =
-      b.plugins.detected.autoPlugins.map(_.value.label) ++ b.plugins.detected
-        .plugins.names
+      b.plugins.detected.autoPlugins.map(_.value.label) ++
+        b.plugins.detected.plugins.names
     val allPluginNames = e.structure.units.values.flatMap(u => list(u.unit))
       .toSeq.distinct
     if (allPluginNames.isEmpty) ""
@@ -219,8 +218,8 @@ object BuiltinCommands {
       .flatMap(_ => quiet(e.runTask(Keys.scalaInstance, s)._2))
     (scalaVersion, scalaHome, instance) match {
       case (sv, Some(home), Some(si)) =>
-        "local Scala version " + selectScalaVersion(sv, si) + " at " + home
-          .getAbsolutePath
+        "local Scala version " + selectScalaVersion(sv, si) + " at " +
+          home.getAbsolutePath
       case (_, Some(home), None) =>
         "a local Scala build at " + home.getAbsolutePath
       case (sv, None, Some(si))   => "Scala " + selectScalaVersion(sv, si)
@@ -285,8 +284,8 @@ object BuiltinCommands {
       keepKeys: AttributeKey[_] => Boolean): Parser[String] =
     singleArgument(allTaskAndSettingKeys(s).filter(keepKeys).map(_.label).toSet)
   def verbosityParser: Parser[Int] =
-    success(1) | ((Space ~ "-") ~> ('v'.id.+.map(_.size + 1) |
-      ("V" ^^^ Int.MaxValue)))
+    success(1) |
+      ((Space ~ "-") ~> ('v'.id.+.map(_.size + 1) | ("V" ^^^ Int.MaxValue)))
   def taskDetail(keys: Seq[AttributeKey[_]]): Seq[(String, String)] =
     sortByLabel(withDescription(keys)) flatMap taskStrings
 
@@ -313,8 +312,8 @@ object BuiltinCommands {
   def isTask(mf: Manifest[_])(implicit
       taskMF: Manifest[Task[_]],
       inputMF: Manifest[InputTask[_]]): Boolean =
-    mf.runtimeClass == taskMF.runtimeClass || mf.runtimeClass == inputMF
-      .runtimeClass
+    mf.runtimeClass == taskMF.runtimeClass ||
+      mf.runtimeClass == inputMF.runtimeClass
   def topNRanked(n: Int) =
     (keys: Seq[AttributeKey[_]]) => sortByRank(keys).take(n)
   def highPass(rankCutoff: Int) =
@@ -474,8 +473,8 @@ object BuiltinCommands {
   private[sbt] def exportParser0(s: State): Parser[() => State] = {
     val extracted = Project extract s
     import extracted.{showKey, structure}
-    val keysParser = token(flag("--last" <~ Space)) ~ Act
-      .aggregatedKeyParser(extracted)
+    val keysParser = token(flag("--last" <~ Space)) ~
+      Act.aggregatedKeyParser(extracted)
     val show = Aggregation.ShowConfig(
       settingValues = true,
       taskValues = false,
@@ -503,8 +502,8 @@ object BuiltinCommands {
   def lastGrepParser(s: State) =
     Act.requireSession(
       s,
-      (token(Space) ~> token(NotSpace, "<pattern>")) ~ aggregatedKeyValueParser(
-        s))
+      (token(Space) ~> token(NotSpace, "<pattern>")) ~
+        aggregatedKeyValueParser(s))
   def last =
     Command(LastCommand, lastBrief, lastDetailed)(aggregatedKeyValueParser) {
       case (s, Some(sks)) => lastImpl(s, sks, None)
@@ -620,10 +619,10 @@ object BuiltinCommands {
   }
 
   def projectsParser(s: State): Parser[List[URI] => List[URI]] = {
-    val addBase =
-      token(Space ~> "add") ~> token(Space ~> basicUri, "<build URI>").+
-    val removeBase = token(Space ~> "remove") ~> token(
-      Space ~> Uri(Project.extraBuilds(s).toSet)).+
+    val addBase = token(Space ~> "add") ~>
+      token(Space ~> basicUri, "<build URI>").+
+    val removeBase = token(Space ~> "remove") ~>
+      token(Space ~> Uri(Project.extraBuilds(s).toSet)).+
     addBase.map(toAdd => (xs: List[URI]) => (toAdd.toList ::: xs).distinct) |
       removeBase
         .map(toRemove => (xs: List[URI]) => xs.filterNot(toRemove.toSet))
@@ -640,9 +639,10 @@ object BuiltinCommands {
 
   @tailrec
   private[this] def doLoadFailed(s: State, loadArg: String): State = {
-    val result = (SimpleReader.readLine(
-      "Project loading failed: (r)etry, (q)uit, (l)ast, or (i)gnore? ") getOrElse Quit)
-      .toLowerCase(Locale.ENGLISH)
+    val result =
+      (SimpleReader.readLine(
+        "Project loading failed: (r)etry, (q)uit, (l)ast, or (i)gnore? ") getOrElse
+        Quit).toLowerCase(Locale.ENGLISH)
     def matches(s: String) = !result.isEmpty && (s startsWith result)
 
     if (result.isEmpty || matches("retry"))
@@ -651,9 +651,9 @@ object BuiltinCommands {
     else if (matches("ignore")) {
       val hadPrevious = Project.isProjectLoaded(s)
       s.log.warn(
-        "Ignoring load failure: " + (if (hadPrevious)
-                                       "using previously loaded project."
-                                     else "no project loaded."))
+        "Ignoring load failure: " +
+          (if (hadPrevious) "using previously loaded project."
+           else "no project loaded."))
       s
     } else if (matches("last"))
       LastCommand :: loadProjectCommand(LoadFailed, loadArg) :: s
@@ -664,12 +664,9 @@ object BuiltinCommands {
   }
 
   def loadProjectCommands(arg: String) =
-    StashOnFailure ::
-      (OnFailure + " " + loadProjectCommand(LoadFailed, arg)) ::
-      loadProjectCommand(LoadProjectImpl, arg) ::
-      PopOnFailure ::
-      State.FailureWall ::
-      Nil
+    StashOnFailure :: (OnFailure + " " + loadProjectCommand(LoadFailed, arg)) ::
+      loadProjectCommand(LoadProjectImpl, arg) :: PopOnFailure ::
+      State.FailureWall :: Nil
   def loadProject =
     Command(LoadProject, LoadProjectBrief, LoadProjectDetailed)(
       loadProjectParser) { (s, arg) => loadProjectCommands(arg) ::: s }

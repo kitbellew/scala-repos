@@ -20,11 +20,11 @@ class EndpointRegistrySpec extends AkkaSpec {
 
       reg.writableEndpointWithPolicyFor(address1) should ===(None)
 
-      reg.registerWritableEndpoint(address1, None, None, actorA) should ===(
-        actorA)
+      reg.registerWritableEndpoint(address1, None, None, actorA) should
+        ===(actorA)
 
-      reg.writableEndpointWithPolicyFor(address1) should ===(
-        Some(Pass(actorA, None, None)))
+      reg.writableEndpointWithPolicyFor(address1) should
+        ===(Some(Pass(actorA, None, None)))
       reg.readOnlyEndpointFor(address1) should ===(None)
       reg.isWritable(actorA) should ===(true)
       reg.isReadOnly(actorA) should ===(false)
@@ -51,12 +51,12 @@ class EndpointRegistrySpec extends AkkaSpec {
       reg.writableEndpointWithPolicyFor(address1) should ===(None)
 
       reg.registerReadOnlyEndpoint(address1, actorA, 1) should ===(actorA)
-      reg.registerWritableEndpoint(address1, None, None, actorB) should ===(
-        actorB)
+      reg.registerWritableEndpoint(address1, None, None, actorB) should
+        ===(actorB)
 
       reg.readOnlyEndpointFor(address1) should ===(Some((actorA, 1)))
-      reg.writableEndpointWithPolicyFor(address1) should ===(
-        Some(Pass(actorB, None, None)))
+      reg.writableEndpointWithPolicyFor(address1) should
+        ===(Some(Pass(actorB, None, None)))
 
       reg.isWritable(actorA) should ===(false)
       reg.isWritable(actorB) should ===(true)
@@ -73,8 +73,8 @@ class EndpointRegistrySpec extends AkkaSpec {
       reg.registerWritableEndpoint(address1, None, None, actorA)
       val deadline = Deadline.now
       reg.markAsFailed(actorA, deadline)
-      reg.writableEndpointWithPolicyFor(address1) should ===(
-        Some(Gated(deadline)))
+      reg.writableEndpointWithPolicyFor(address1) should
+        ===(Some(Gated(deadline)))
       reg.isReadOnly(actorA) should ===(false)
       reg.isWritable(actorA) should ===(false)
     }
@@ -99,10 +99,10 @@ class EndpointRegistrySpec extends AkkaSpec {
       reg.unregisterEndpoint(actorA)
       reg.unregisterEndpoint(actorB)
 
-      reg.writableEndpointWithPolicyFor(address1) should ===(
-        Some(Gated(deadline)))
-      reg.writableEndpointWithPolicyFor(address2) should ===(
-        Some(Quarantined(42, deadline)))
+      reg.writableEndpointWithPolicyFor(address1) should
+        ===(Some(Gated(deadline)))
+      reg.writableEndpointWithPolicyFor(address2) should
+        ===(Some(Quarantined(42, deadline)))
 
     }
 
@@ -117,8 +117,8 @@ class EndpointRegistrySpec extends AkkaSpec {
       reg.prune()
 
       reg.writableEndpointWithPolicyFor(address1) should ===(None)
-      reg.writableEndpointWithPolicyFor(address2) should ===(
-        Some(Gated(farInTheFuture)))
+      reg.writableEndpointWithPolicyFor(address2) should
+        ===(Some(Gated(farInTheFuture)))
     }
 
     "be able to register Quarantined policy for an address" in {
@@ -129,8 +129,8 @@ class EndpointRegistrySpec extends AkkaSpec {
       reg.markAsQuarantined(address1, 42, deadline)
       reg.isQuarantined(address1, 42) should ===(true)
       reg.isQuarantined(address1, 33) should ===(false)
-      reg.writableEndpointWithPolicyFor(address1) should ===(
-        Some(Quarantined(42, deadline)))
+      reg.writableEndpointWithPolicyFor(address1) should
+        ===(Some(Quarantined(42, deadline)))
     }
 
   }

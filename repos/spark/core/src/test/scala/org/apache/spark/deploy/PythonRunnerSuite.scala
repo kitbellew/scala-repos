@@ -69,8 +69,7 @@ class PythonRunnerSuite extends SparkFunSuite {
       assert(
         PythonRunner.formatPaths(
           "lovely.py,C:\\free.py,file:/d:/fry.py",
-          testWindows = true) ===
-          Array("lovely.py", "C:/free.py", "d:/fry.py"))
+          testWindows = true) === Array("lovely.py", "C:/free.py", "d:/fry.py"))
     }
     intercept[IllegalArgumentException] {
       PythonRunner.formatPaths("one:two,three")

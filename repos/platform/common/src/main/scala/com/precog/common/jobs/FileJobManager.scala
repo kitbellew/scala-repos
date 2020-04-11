@@ -172,8 +172,9 @@ class FileJobManager[M[+_]] private[FileJobManager] (
           val prior: List[Message] = messages.get(channel).getOrElse(Nil)
           val message = Message(jobId, prior.size, channel, value)
 
-          cache += (jobId -> js
-            .copy(messages = (messages + (channel -> (message :: prior)))))
+          cache +=
+            (jobId ->
+              js.copy(messages = (messages + (channel -> (message :: prior)))))
           message
 
         case None =>
@@ -189,8 +190,8 @@ class FileJobManager[M[+_]] private[FileJobManager] (
     M.point {
       val posts = cache.get(jobId).flatMap(_.messages.get(channel))
         .getOrElse(Nil)
-      since map { mId => posts.takeWhile(_.id != mId).reverse } getOrElse posts
-        .reverse
+      since map { mId => posts.takeWhile(_.id != mId).reverse } getOrElse
+        posts.reverse
     }
 
   def updateStatus(
@@ -202,8 +203,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       extra: Option[JValue]): M[Either[String, Status]] = {
 
     val jval = JObject(
-      JField("message", JString(msg)) ::
-        JField("progress", JNum(progress)) ::
+      JField("message", JString(msg)) :: JField("progress", JNum(progress)) ::
         JField("unit", JString(unit)) ::
         (extra map (JField("info", _) :: Nil) getOrElse Nil))
 

@@ -19,12 +19,11 @@ object BuildSettings {
 object MyBuild extends Build {
   import BuildSettings._
 
-  lazy val root: Project =
-    Project(
-      "root",
-      file("."),
-      settings = buildSettings ++ Seq(
-        run <<= run in Compile in core)) aggregate (macros, core)
+  lazy val root: Project = Project(
+    "root",
+    file("."),
+    settings = buildSettings ++ Seq(run <<= run in Compile in core)) aggregate
+    (macros, core)
 
   lazy val macros: Project = Project(
     "macros",
@@ -32,11 +31,10 @@ object MyBuild extends Build {
     settings = buildSettings ++ Seq(
       libraryDependencies <+= (scalaVersion)(
         "org.scala-lang" % "scala-reflect" % _),
-      libraryDependencies ++= (
-        if (scalaVersion.value.startsWith("2.10"))
-          List("org.scalamacros" %% "quasiquotes" % paradiseVersion)
-        else Nil
-      )
+      libraryDependencies ++=
+        (if (scalaVersion.value.startsWith("2.10"))
+           List("org.scalamacros" %% "quasiquotes" % paradiseVersion)
+         else Nil)
     )
   )
 

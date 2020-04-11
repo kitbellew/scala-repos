@@ -128,16 +128,14 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
       // leftJoin with another VertexRDD
       assert(
         verts.leftJoin(evens) { (id, a, bOpt) => a - bOpt.getOrElse(0) }
-          .collect().toSet ===
-          (0 to n by 2).map(x => (x.toLong, 0)).toSet ++ (1 to n by 2)
-            .map(x => (x.toLong, x)).toSet)
+          .collect().toSet === (0 to n by 2).map(x => (x.toLong, 0)).toSet ++
+          (1 to n by 2).map(x => (x.toLong, x)).toSet)
       // leftJoin with an RDD
       val evensRDD = evens.map(identity)
       assert(
         verts.leftJoin(evensRDD) { (id, a, bOpt) => a - bOpt.getOrElse(0) }
-          .collect().toSet ===
-          (0 to n by 2).map(x => (x.toLong, 0)).toSet ++ (1 to n by 2)
-            .map(x => (x.toLong, x)).toSet)
+          .collect().toSet === (0 to n by 2).map(x => (x.toLong, 0)).toSet ++
+          (1 to n by 2).map(x => (x.toLong, x)).toSet)
     }
   }
 
@@ -152,9 +150,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
         old - newOpt.getOrElse(0)
       }
       assert(
-        vertexC.filter(v => v._2 != 0).map(_._1).collect().toSet == (
-          1 to 99 by 2
-        ).toSet)
+        vertexC.filter(v => v._2 != 0).map(_._1).collect().toSet ==
+          (1 to 99 by 2).toSet)
     }
   }
 
@@ -169,9 +166,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
           (0 to n by 2).map(x => (x.toLong, 0)).toSet)
       // innerJoin with an RDD
       val evensRDD = evens.map(identity)
-      assert(
-        verts.innerJoin(evensRDD) { (id, a, b) => a - b }.collect().toSet ===
-          (0 to n by 2).map(x => (x.toLong, 0)).toSet)
+      assert(verts.innerJoin(evensRDD) { (id, a, b) => a - b }
+        .collect().toSet === (0 to n by 2).map(x => (x.toLong, 0)).toSet)
     }
   }
 
@@ -186,9 +182,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
         old - newVal
       }
       assert(
-        vertexC.filter(v => v._2 == 0).map(_._1).collect().toSet == (
-          0 to 98 by 2
-        ).toSet)
+        vertexC.filter(v => v._2 == 0).map(_._1).collect().toSet ==
+          (0 to 98 by 2).toSet)
     }
   }
 

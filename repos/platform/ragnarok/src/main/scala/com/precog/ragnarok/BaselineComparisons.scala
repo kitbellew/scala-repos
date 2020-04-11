@@ -81,9 +81,8 @@ trait BaselineComparisons {
       results match {
         case Tree.Node((RunQuery(query), stats), _) =>
           Tree.leaf(
-            RunQuery(query) -> PerfDelta(
-              baseline get ((path, Some(query))),
-              stats))
+            RunQuery(query) ->
+              PerfDelta(baseline get ((path, Some(query))), stats))
 
         case Tree.Node((Group(name), stats), kids) =>
           val newPath = path :+ name
@@ -169,8 +168,8 @@ trait BaselineComparisons {
       test match {
         case Tree.Node((RunQuery(query), Some(stats)), _) =>
           JObject(
-            JField("path", JArray(path)) ::
-              JField("query", JString(query)) :: statsJson(stats)) :: Nil
+            JField("path", JArray(path)) :: JField("query", JString(query)) ::
+              statsJson(stats)) :: Nil
 
         case Tree.Node((Group(name), Some(stats)), kids) =>
           val newPath = path :+ JString(name)

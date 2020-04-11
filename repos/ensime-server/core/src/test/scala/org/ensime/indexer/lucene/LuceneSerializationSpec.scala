@@ -24,9 +24,10 @@ class LuceneSerializationSpec extends EnsimeSpec {
       SimpleThing(doc.get("ID"), doc.get("b"))
   }
 
-  "Lucene Entity Serialisation" should "serialise and deserialise a simple type" in {
-    val t = SimpleThing("hello", "world")
-    thereAndBackAgain(t)
-  }
+  "Lucene Entity Serialisation" should
+    "serialise and deserialise a simple type" in {
+      val t = SimpleThing("hello", "world")
+      thereAndBackAgain(t)
+    }
 
 }

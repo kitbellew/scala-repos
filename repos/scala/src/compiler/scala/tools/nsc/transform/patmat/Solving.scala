@@ -75,8 +75,8 @@ trait Solving extends Logic {
         "Solvable\nLiterals:\n" +
           (for {
             (lit, sym) <- symbolMapping.symForVar.toSeq.sortBy(_._1)
-          } yield { s"$lit -> $sym" }).mkString("\n") + "Cnf:\n" + cnfString(
-          cnf)
+          } yield { s"$lit -> $sym" }).mkString("\n") + "Cnf:\n" +
+          cnfString(cnf)
       }
     }
 

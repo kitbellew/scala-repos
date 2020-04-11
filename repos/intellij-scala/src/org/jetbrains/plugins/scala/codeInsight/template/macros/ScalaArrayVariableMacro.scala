@@ -19,8 +19,8 @@ class ScalaArrayVariableMacro extends ScalaVariableOfTypeMacro {
   override def getName = MacroUtil.scalaIdPrefix + "arrayVariable"
 
   override def getPresentableName =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
-      .message("macro.array.variable")
+    MacroUtil.scalaPresentablePrefix +
+      CodeInsightBundle.message("macro.array.variable")
 
   override def addLookupItems(
       exprs: Array[String],

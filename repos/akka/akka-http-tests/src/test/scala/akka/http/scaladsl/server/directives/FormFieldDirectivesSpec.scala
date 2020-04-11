@@ -77,8 +77,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
               s"type ${ct.mediaType} length ${data.length} filename ${name.get}")
         }
       } ~> check {
-        responseAs[
-          String] shouldEqual "type text/xml length 13 filename age.xml"
+        responseAs[String] shouldEqual
+          "type text/xml length 13 filename age.xml"
       }
     }
     "reject the request with a MissingFormFieldRejection if a required form field is missing" in {
@@ -90,12 +90,14 @@ class FormFieldDirectivesSpec extends RoutingSpec {
     }
     "properly extract the value if only a urlencoded deserializer is available for a multipart field that comes without a" +
       "Content-Type (or text/plain)" in {
-      Post("/", multipartForm) ~> {
-        formFields('firstName, "age", 'sex.?, "VIPBoolean" ? false) {
-          (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
+        Post("/", multipartForm) ~> {
+          formFields('firstName, "age", 'sex.?, "VIPBoolean" ? false) {
+            (firstName, age, sex, vip) ⇒ complete(firstName + age + sex + vip)
+          }
+        } ~> check {
+          responseAs[String] shouldEqual "Mike<int>42</int>Nonetrue"
         }
-      } ~> check { responseAs[String] shouldEqual "Mike<int>42</int>Nonetrue" }
-    }
+      }
     "work even if only a FromStringUnmarshaller is available for a multipart field with custom Content-Type" in {
       Post("/", multipartFormWithTextHtml) ~> {
         formFields(('firstName, "age", 'super ? false)) {
@@ -159,9 +161,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
         FormData(
           "age" -> "42",
           "hobby" -> "cooking",
-          "hobby" -> "reading")) ~> {
-        formField('hobby.*) { echoComplete }
-      } ~> check { responseAs[String] === "List(cooking, reading)" }
+          "hobby" -> "reading")) ~> { formField('hobby.*) { echoComplete } } ~>
+        check { responseAs[String] === "List(cooking, reading)" }
     }
     "extract as Iterable[Int]" in {
       Post("/", FormData("age" -> "42", "number" -> "3", "number" -> "5")) ~> {
@@ -182,8 +183,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
         FormData("age" -> "42", "numberA" -> "3", "numberB" -> "5")) ~> {
         formFieldMap { echoComplete }
       } ~> check {
-        responseAs[
-          String] shouldEqual "Map(age -> 42, numberA -> 3, numberB -> 5)"
+        responseAs[String] shouldEqual
+          "Map(age -> 42, numberA -> 3, numberB -> 5)"
       }
     }
   }
@@ -193,8 +194,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
       Post("/", FormData("age" -> "42", "number" -> "3", "number" -> "5")) ~> {
         formFieldSeq { echoComplete }
       } ~> check {
-        responseAs[
-          String] shouldEqual "Vector((age,42), (number,3), (number,5))"
+        responseAs[String] shouldEqual
+          "Vector((age,42), (number,3), (number,5))"
       }
     }
     "produce empty Seq when FormData is empty" in {
@@ -209,8 +210,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
       Post("/", FormData("age" -> "42", "number" -> "3", "number" -> "5")) ~> {
         formFieldMultiMap { echoComplete }
       } ~> check {
-        responseAs[
-          String] shouldEqual "Map(age -> List(42), number -> List(5, 3))"
+        responseAs[String] shouldEqual
+          "Map(age -> List(42), number -> List(5, 3))"
       }
     }
   }

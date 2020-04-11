@@ -129,9 +129,8 @@ class ArgumentCaptureTest
 
     val captured = capturingAll(verify(theMockSubject, times(2)).method4 _)
     assert(
-      captured == Seq(
-        ("foo", "bar", "baz", "spam"),
-        ("north", "east", "south", "west")))
+      captured ==
+        Seq(("foo", "bar", "baz", "spam"), ("north", "east", "south", "west")))
   }
 
   test("captureAll should handle 5-ary functions") {

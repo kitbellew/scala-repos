@@ -247,8 +247,8 @@ object PersistentActorSpec {
 
         1 to 3 foreach { i ⇒
           persistAsync(Evt(s"$data-${incCounter()}")) { evt ⇒
-            sender() ! ("a" + evt.data.toString
-              .drop(1)) // c-1 => a-1, as in "ack"
+            sender() !
+              ("a" + evt.data.toString.drop(1)) // c-1 => a-1, as in "ack"
           }
         }
     }
@@ -940,17 +940,19 @@ abstract class PersistentActorSpec(config: Config)
       expectMsg("a-e1-1") // persist, must be before next command
 
       var expectInAnyOrder1 = Set("b", "a-ea2-2")
-      expectInAnyOrder1 -= expectMsgAnyOf(
-        expectInAnyOrder1.toList: _*
-      ) // ea2 is persistAsync, b (command) can processed before it
+      expectInAnyOrder1 -=
+        expectMsgAnyOf(
+          expectInAnyOrder1.toList: _*
+        ) // ea2 is persistAsync, b (command) can processed before it
       expectMsgAnyOf(expectInAnyOrder1.toList: _*)
 
       expectMsg("b-e1-3") // persist, must be before next command
 
       var expectInAnyOrder2 = Set("c", "b-ea2-4")
-      expectInAnyOrder2 -= expectMsgAnyOf(
-        expectInAnyOrder2.toList: _*
-      ) // ea2 is persistAsync, b (command) can processed before it
+      expectInAnyOrder2 -=
+        expectMsgAnyOf(
+          expectInAnyOrder2.toList: _*
+        ) // ea2 is persistAsync, b (command) can processed before it
       expectMsgAnyOf(expectInAnyOrder2.toList: _*)
 
       expectMsg("c-e1-5")
@@ -1124,10 +1126,10 @@ abstract class PersistentActorSpec(config: Config)
       val msgs = receiveN(10).map(_.toString)
       val as = msgs.filter(_ startsWith "a")
       val bs = msgs.filter(_ startsWith "b")
-      as should equal(
-        List("a", "a-outer-1", "a-outer-2", "a-inner-1", "a-inner-2"))
-      bs should equal(
-        List("b", "b-outer-1", "b-outer-2", "b-inner-1", "b-inner-2"))
+      as should
+        equal(List("a", "a-outer-1", "a-outer-2", "a-inner-1", "a-inner-2"))
+      bs should
+        equal(List("b", "b-outer-1", "b-outer-2", "b-inner-1", "b-inner-2"))
     }
     "allow deeply nested persist calls" in {
       val nestedPersists = 6
@@ -1160,9 +1162,8 @@ abstract class PersistentActorSpec(config: Config)
       persistentActor ! "b"
       persistentActor ! "c"
       val expectedReplies = 2 + (nestedPersistAsyncs * 2)
-      receiveN(expectedReplies).map(_.toString) should beIndependentlyOrdered(
-        "b-",
-        "c-")
+      receiveN(expectedReplies).map(_.toString) should
+        beIndependentlyOrdered("b-", "c-")
     }
     "allow mixed nesting of persistAsync in persist calls" in {
       val persistentActor = system

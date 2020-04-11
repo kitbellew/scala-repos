@@ -81,14 +81,13 @@ object SecurityHelpersSpec extends Specification {
       hash256("hello") must_!= hash256("hell0")
     }
     "provide a hex encoded SHA hash function" in {
-      hexDigest(
-        "hello".getBytes) must_== "aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d"
+      hexDigest("hello".getBytes) must_==
+        "aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d"
       hexDigest("hello".getBytes) must_!= hexDigest("hell0".getBytes)
     }
     "provide a hex encoded SHA-256 hash function" in {
-      hexDigest256(
-        "hello"
-          .getBytes) must_== "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+      hexDigest256("hello".getBytes) must_==
+        "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
       hexDigest256("hello".getBytes) must_!= hexDigest256("hell0".getBytes)
     }
   }

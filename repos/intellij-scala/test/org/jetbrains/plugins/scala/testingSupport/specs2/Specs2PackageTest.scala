@@ -82,26 +82,22 @@ abstract class Specs2PackageTest extends Specs2TestCase {
           "[root]",
           "Test1",
           "One should",
-          "run") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test1",
-            "Two should",
-            "run") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test2",
-            "One should",
-            "run") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test2",
-            "Two should",
-            "run") &&
-          checkResultTreeDoesNotHaveNodes(root, "Three should")
+          "run") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test1",
+          "Two should",
+          "run") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test2",
+          "One should",
+          "run") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test2",
+          "Two should",
+          "run") && checkResultTreeDoesNotHaveNodes(root, "Three should")
     )
   }
 
@@ -116,31 +112,27 @@ abstract class Specs2PackageTest extends Specs2TestCase {
           "[root]",
           "Test1",
           "One should",
-          "run") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test1",
-            "Two should",
-            "run") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test2",
-            "One should",
-            "run") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test2",
-            "Two should",
-            "run") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test2",
-            "Three should",
-            "run")
+          "run") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test1",
+          "Two should",
+          "run") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test2",
+          "One should",
+          "run") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test2",
+          "Two should",
+          "run") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test2",
+          "Three should",
+          "run")
     )
   }
 }

@@ -52,14 +52,13 @@ object ServerResultUtilsSpec extends Specification with IterateeSpecification {
       }
     }
     "clear flash when received" in {
-      flashCookieResult(
-        Some("PLAY_FLASH" -> "\"a=b\"; Path=/"),
-        Ok) must beSome { cookies: Seq[Cookie] =>
-        cookies.length must_== 1
-        val cookie = cookies(0)
-        cookie.name must_== "PLAY_FLASH"
-        cookie.value must_== ""
-      }
+      flashCookieResult(Some("PLAY_FLASH" -> "\"a=b\"; Path=/"), Ok) must
+        beSome { cookies: Seq[Cookie] =>
+          cookies.length must_== 1
+          val cookie = cookies(0)
+          cookie.name must_== "PLAY_FLASH"
+          cookie.value must_== ""
+        }
     }
     "leave other cookies untouched when clearing" in {
       flashCookieResult(

@@ -118,11 +118,14 @@ object RValue {
 
               case CPathIndex(_) :: _ =>
                 sys.error(
-                  "Objects are not indexed: attempted to insert " + value + " at " + rootPath + " on " + rootTarget)
+                  "Objects are not indexed: attempted to insert " + value +
+                    " at " + rootPath + " on " + rootTarget)
               case _ =>
                 sys.error(
-                  "RValue insert would overwrite existing data: " + target + " cannot be rewritten to " + value + " at " + path +
-                    " in unsafeInsert of " + rootValue + " at " + rootPath + " in " + rootTarget)
+                  "RValue insert would overwrite existing data: " + target +
+                    " cannot be rewritten to " + value + " at " + path +
+                    " in unsafeInsert of " + rootValue + " at " + rootPath +
+                    " in " + rootTarget)
             }
 
           case arr @ RArray(elements) => path.nodes match {
@@ -130,11 +133,14 @@ object RValue {
                   arrayInsert(elements, index, CPath(nodes), value))
               case CPathField(_) :: _ =>
                 sys.error(
-                  "Arrays have no fields: attempted to insert " + value + " at " + rootPath + " on " + rootTarget)
+                  "Arrays have no fields: attempted to insert " + value +
+                    " at " + rootPath + " on " + rootTarget)
               case _ =>
                 sys.error(
-                  "RValue insert would overwrite existing data: " + target + " cannot be rewritten to " + value + " at " + path +
-                    " in unsafeInsert of " + rootValue + " at " + rootPath + " in " + rootTarget)
+                  "RValue insert would overwrite existing data: " + target +
+                    " cannot be rewritten to " + value + " at " + path +
+                    " in unsafeInsert of " + rootValue + " at " + rootPath +
+                    " in " + rootTarget)
             }
 
           case CNull | CUndefined => path.nodes match {
@@ -147,8 +153,10 @@ object RValue {
 
           case x =>
             sys.error(
-              "RValue insert would overwrite existing data: " + x + " cannot be updated to " + value + " at " + path +
-                " in unsafeInsert of " + rootValue + " at " + rootPath + " in " + rootTarget)
+              "RValue insert would overwrite existing data: " + x +
+                " cannot be updated to " + value + " at " + path +
+                " in unsafeInsert of " + rootValue + " at " + rootPath +
+                " in " + rootTarget)
         }
       }
     }
@@ -523,10 +531,9 @@ case class CArrayType[@spec(Boolean, Long, Double) A](elemType: CValueType[A])
 
   def apply(value: Array[A]) = CArray(value, this)
 
-  def order(as: Array[A], bs: Array[A]) =
-    (as zip bs) map { case (a, b) => elemType.order(a, b) } find (
-      _ != EQ
-    ) getOrElse Ordering.fromInt(as.size - bs.size)
+  def order(as: Array[A], bs: Array[A]) = (as zip bs) map {
+    case (a, b) => elemType.order(a, b)
+  } find (_ != EQ) getOrElse Ordering.fromInt(as.size - bs.size)
 
   def jValueFor(as: Array[A]) =
     sys.error("HOMOGENEOUS ARRAY ESCAPING! ALERT! ALERT!")

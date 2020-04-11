@@ -80,8 +80,8 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
             previousTestObject = null
             try ch.run(testObject)
             finally {
-              val skipCleanup = idx == last || (testObject.reuseInstance && (ch
-                .cl eq is(idx + 1)._1._1.cl))
+              val skipCleanup = idx == last ||
+                (testObject.reuseInstance && (ch.cl eq is(idx + 1)._1._1.cl))
               if (skipCleanup) {
                 if (idx == last) testObject.closeKeepAlive()
                 else previousTestObject = testObject
@@ -446,8 +446,8 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
     def shouldBeA[T](implicit ct: ClassTag[T]): Unit = {
       if (!ct.runtimeClass.isInstance(v))
         fixStack(Assert.fail(
-          "Expected value of type " + ct.runtimeClass.getName + ", got " + v
-            .getClass.getName))
+          "Expected value of type " + ct.runtimeClass.getName + ", got " +
+            v.getClass.getName))
     }
   }
 

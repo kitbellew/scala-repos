@@ -307,8 +307,8 @@ class IntroduceExplicitParameterIntention
       editor: Editor): Option[ScExpression] = {
     var element: PsiElement = _element
     if (!element.getParent.isInstanceOf[ScUnderscoreSection]) {
-      if (element.getTextRange.getStartOffset == editor.getCaretModel
-            .getOffset) {
+      if (element.getTextRange.getStartOffset ==
+            editor.getCaretModel.getOffset) {
         val offset = element.getTextRange.getStartOffset - 1
         if (offset < 0) return None
         element = element.getContainingFile.findElementAt(offset)
@@ -323,8 +323,8 @@ class IntroduceExplicitParameterIntention
             val offset = editor.getCaretModel.getOffset
             for (u <- underscores) {
               val range: TextRange = u.getTextRange
-              if (range.getStartOffset <= offset && offset <= range
-                    .getEndOffset) return Some(expression)
+              if (range.getStartOffset <= offset &&
+                  offset <= range.getEndOffset) return Some(expression)
             }
             return None
           }

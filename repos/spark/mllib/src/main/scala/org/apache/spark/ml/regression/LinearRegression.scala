@@ -180,12 +180,11 @@ class LinearRegression @Since("1.3.0") (
     val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))
 
     if (($(solver) == "auto" && $(elasticNetParam) == 0.0 &&
-        numFeatures <= WeightedLeastSquares.MAX_NUM_FEATURES) || $(
-          solver) == "normal") {
+        numFeatures <= WeightedLeastSquares.MAX_NUM_FEATURES) ||
+        $(solver) == "normal") {
       require(
         $(elasticNetParam) == 0.0,
-        "Only L2 regularization can be used when normal " +
-          "solver is used.'")
+        "Only L2 regularization can be used when normal " + "solver is used.'")
       // For low dimensional data, WeightedLeastSquares is more efficiently since the
       // training algorithm only requires one pass through the data. (SPARK-10668)
       val instances: RDD[Instance] = dataset
@@ -491,8 +490,8 @@ class LinearRegressionModel private[ml] (
       : (LinearRegressionModel, String) = {
     $(predictionCol) match {
       case "" =>
-        val predictionColName = "prediction_" + java.util.UUID.randomUUID
-          .toString()
+        val predictionColName = "prediction_" +
+          java.util.UUID.randomUUID.toString()
         (
           copy(ParamMap.empty).setPredictionCol(predictionColName),
           predictionColName)
@@ -919,15 +918,15 @@ private class LeastSquaresAggregator(
 
         if (weight == 0.0) return this
 
-        val diff =
-          dot(features, effectiveCoefficientsVector) - label / labelStd + offset
+        val diff = dot(features, effectiveCoefficientsVector) -
+          label / labelStd + offset
 
         if (diff != 0) {
           val localGradientSumArray = gradientSumArray
           features.foreachActive { (index, value) =>
             if (featuresStd(index) != 0.0 && value != 0.0) {
-              localGradientSumArray(
-                index) += weight * diff * value / featuresStd(index)
+              localGradientSumArray(index) +=
+                weight * diff * value / featuresStd(index)
             }
           }
           lossSum += weight * diff * diff / 2.0

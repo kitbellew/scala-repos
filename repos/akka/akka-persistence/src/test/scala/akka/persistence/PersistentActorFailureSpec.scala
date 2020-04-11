@@ -189,9 +189,8 @@ class PersistentActorFailureSpec
       expectMsg(List("corrupt-1", "corrupt-2"))
 
       // recover by creating another with same name
-      system.actorOf(Props(classOf[Supervisor], testActor)) ! Props(
-        classOf[Behavior1PersistentActor],
-        name)
+      system.actorOf(Props(classOf[Supervisor], testActor)) !
+        Props(classOf[Behavior1PersistentActor], name)
       val ref = expectMsgType[ActorRef]
       watch(ref)
       expectTerminated(ref)
@@ -215,9 +214,8 @@ class PersistentActorFailureSpec
       expectTerminated(ref)
     }
     "call onPersistFailure and stop when persist fails" in {
-      system.actorOf(Props(classOf[Supervisor], testActor)) ! Props(
-        classOf[Behavior1PersistentActor],
-        name)
+      system.actorOf(Props(classOf[Supervisor], testActor)) !
+        Props(classOf[Behavior1PersistentActor], name)
       val persistentActor = expectMsgType[ActorRef]
       watch(persistentActor)
       persistentActor ! Cmd("wrong")
@@ -225,9 +223,8 @@ class PersistentActorFailureSpec
       expectTerminated(persistentActor)
     }
     "call onPersistFailure and stop if persistAsync fails" in {
-      system.actorOf(Props(classOf[Supervisor], testActor)) ! Props(
-        classOf[AsyncPersistPersistentActor],
-        name)
+      system.actorOf(Props(classOf[Supervisor], testActor)) !
+        Props(classOf[AsyncPersistPersistentActor], name)
       val persistentActor = expectMsgType[ActorRef]
       persistentActor ! Cmd("a")
       watch(persistentActor)
@@ -239,9 +236,8 @@ class PersistentActorFailureSpec
       expectTerminated(persistentActor)
     }
     "call onPersistRejected and continue if persist rejected" in {
-      system.actorOf(Props(classOf[Supervisor], testActor)) ! Props(
-        classOf[Behavior1PersistentActor],
-        name)
+      system.actorOf(Props(classOf[Supervisor], testActor)) !
+        Props(classOf[Behavior1PersistentActor], name)
       val persistentActor = expectMsgType[ActorRef]
       persistentActor ! Cmd("not serializable")
       expectMsg("Rejected: not serializable-1")
@@ -255,18 +251,16 @@ class PersistentActorFailureSpec
       prepareFailingRecovery()
 
       // recover by creating another with same name
-      system.actorOf(Props(classOf[Supervisor], testActor)) ! Props(
-        classOf[FailingRecovery],
-        name)
+      system.actorOf(Props(classOf[Supervisor], testActor)) !
+        Props(classOf[FailingRecovery], name)
       val ref = expectMsgType[ActorRef]
       watch(ref)
       expectTerminated(ref)
     }
 
     "support resume when persist followed by exception" in {
-      system.actorOf(Props(classOf[ResumingSupervisor], testActor)) ! Props(
-        classOf[ThrowingActor1],
-        name)
+      system.actorOf(Props(classOf[ResumingSupervisor], testActor)) !
+        Props(classOf[ThrowingActor1], name)
       val persistentActor = expectMsgType[ActorRef]
       persistentActor ! Cmd("a")
       persistentActor ! Cmd("err")
@@ -278,9 +272,8 @@ class PersistentActorFailureSpec
     }
 
     "support restart when persist followed by exception" in {
-      system.actorOf(Props(classOf[Supervisor], testActor)) ! Props(
-        classOf[ThrowingActor1],
-        name)
+      system.actorOf(Props(classOf[Supervisor], testActor)) !
+        Props(classOf[ThrowingActor1], name)
       val persistentActor = expectMsgType[ActorRef]
       persistentActor ! Cmd("a")
       persistentActor ! Cmd("err")
@@ -292,9 +285,8 @@ class PersistentActorFailureSpec
     }
 
     "support resume when persist handler throws exception" in {
-      system.actorOf(Props(classOf[ResumingSupervisor], testActor)) ! Props(
-        classOf[ThrowingActor2],
-        name)
+      system.actorOf(Props(classOf[ResumingSupervisor], testActor)) !
+        Props(classOf[ThrowingActor2], name)
       val persistentActor = expectMsgType[ActorRef]
       persistentActor ! Cmd("a")
       persistentActor ! Cmd("b")
@@ -307,9 +299,8 @@ class PersistentActorFailureSpec
     }
 
     "support restart when persist handler throws exception" in {
-      system.actorOf(Props(classOf[Supervisor], testActor)) ! Props(
-        classOf[ThrowingActor2],
-        name)
+      system.actorOf(Props(classOf[Supervisor], testActor)) !
+        Props(classOf[ThrowingActor2], name)
       val persistentActor = expectMsgType[ActorRef]
       persistentActor ! Cmd("a")
       persistentActor ! Cmd("b")

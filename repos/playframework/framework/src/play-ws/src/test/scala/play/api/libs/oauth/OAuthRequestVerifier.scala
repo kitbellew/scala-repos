@@ -72,14 +72,16 @@ object OAuthRequestVerifier {
         oauthTimestamp must beSome.like {
           case timestamp =>
             // Verify no more than 100 seconds in the past
-            timestamp.toLong must beGreaterThan(
-              System.currentTimeMillis() / 1000 - 100)
+            timestamp.toLong must
+              beGreaterThan(System.currentTimeMillis() / 1000 - 100)
         }
 
         // Verify the signature
         val collectedParams = oauthParams
-          .filterNot(_._1 == "oauth_signature") ++ request.queryString.toSeq
-          .flatMap { case (key, values) => values.map(value => key -> value) }
+          .filterNot(_._1 == "oauth_signature") ++
+          request.queryString.toSeq.flatMap {
+            case (key, values) => values.map(value => key -> value)
+          }
         // If the body is form URL encoded, must include body parameters
         val collectedParamsWithBody = request.contentType match {
           case Some(formUrlEncoded)

@@ -95,10 +95,11 @@ trait VariColumnTabulator extends Tabulator {
       val (_, columnWidths, sss) = (possibles find (_._1 == minrows)).get
 
       // format to column width
-      sss map (ss =>
-        ss.zipWithIndex map {
-          case (s, i) => s"%-${columnWidths(i)}s" format s
-        })
+      sss map
+        (ss =>
+          ss.zipWithIndex map {
+            case (s, i) => s"%-${columnWidths(i)}s" format s
+          })
     }
   }
 }

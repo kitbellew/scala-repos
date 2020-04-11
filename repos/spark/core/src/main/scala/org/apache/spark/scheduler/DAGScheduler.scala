@@ -1002,14 +1002,14 @@ private[spark] class DAGScheduler(
     val jobId = activeJobForStage(stage)
     if (jobId.isDefined) {
       logDebug("submitStage(" + stage + ")")
-      if (!waitingStages(stage) && !runningStages(stage) && !failedStages(
-            stage)) {
+      if (!waitingStages(stage) && !runningStages(stage) &&
+          !failedStages(stage)) {
         val missing = getMissingParentStages(stage).sortBy(_.id)
         logDebug("missing: " + missing)
         if (missing.isEmpty) {
           logInfo(
-            "Submitting " + stage + " (" + stage
-              .rdd + "), which has no missing parents")
+            "Submitting " + stage + " (" + stage.rdd +
+              "), which has no missing parents")
           submitMissingTasks(stage, jobId.get)
         } else {
           for (parent <- missing) { submitStage(parent) }
@@ -1031,8 +1031,8 @@ private[spark] class DAGScheduler(
     // Create internal accumulators if the stage has no accumulators initialized.
     // Reset internal accumulators only if this stage is not partially submitted
     // Otherwise, we may override existing accumulator values from some tasks
-    if (stage.internalAccumulators.isEmpty || stage
-          .numPartitions == partitionsToCompute.size) {
+    if (stage.internalAccumulators.isEmpty ||
+        stage.numPartitions == partitionsToCompute.size) {
       stage.resetInternalAccumulators()
     }
 
@@ -1166,8 +1166,8 @@ private[spark] class DAGScheduler(
 
     if (tasks.size > 0) {
       logInfo(
-        "Submitting " + tasks
-          .size + " missing tasks from " + stage + " (" + stage.rdd + ")")
+        "Submitting " + tasks.size + " missing tasks from " + stage + " (" +
+          stage.rdd + ")")
       stage.pendingPartitions ++= tasks.map(_.partitionId)
       logDebug("New pending partitions: " + stage.pendingPartitions)
       taskScheduler.submitTasks(new TaskSet(
@@ -1226,8 +1226,8 @@ private[spark] class DAGScheduler(
         // To avoid UI cruft, ignore cases where value wasn't updated
         if (acc.name.isDefined && partialValue != acc.zero) {
           stage.latestInfo.accumulables(id) = acc.toInfo(None, Some(acc.value))
-          event.taskInfo.accumulables += acc
-            .toInfo(Some(partialValue), Some(acc.value))
+          event.taskInfo.accumulables +=
+            acc.toInfo(Some(partialValue), Some(acc.value))
         }
       }
     } catch {
@@ -1322,7 +1322,8 @@ private[spark] class DAGScheduler(
                 }
               case None =>
                 logInfo(
-                  "Ignoring result from " + rt + " because its job has finished")
+                  "Ignoring result from " + rt +
+                    " because its job has finished")
             }
 
           case smt: ShuffleMapTask =>
@@ -1331,14 +1332,14 @@ private[spark] class DAGScheduler(
             val status = event.result.asInstanceOf[MapStatus]
             val execId = status.location.executorId
             logDebug("ShuffleMapTask finished on " + execId)
-            if (failedEpoch.contains(execId) && smt.epoch <= failedEpoch(
-                  execId)) {
+            if (failedEpoch.contains(execId) &&
+                smt.epoch <= failedEpoch(execId)) {
               logInfo(
                 s"Ignoring possibly bogus $smt completion from executor $execId")
             } else { shuffleStage.addOutputLoc(smt.partitionId, status) }
 
-            if (runningStages.contains(shuffleStage) && shuffleStage
-                  .pendingPartitions.isEmpty) {
+            if (runningStages.contains(shuffleStage) &&
+                shuffleStage.pendingPartitions.isEmpty) {
               markStageAsFinished(shuffleStage)
               logInfo("looking for newly runnable stages")
               logInfo("running: " + runningStages)
@@ -1508,8 +1509,8 @@ private[spark] class DAGScheduler(
       }
     } else {
       logDebug(
-        "Additional executor lost message for " + execId +
-          "(epoch " + currentEpoch + ")")
+        "Additional executor lost message for " + execId + "(epoch " +
+          currentEpoch + ")")
     }
     submitWaitingStages()
   }
@@ -1600,7 +1601,8 @@ private[spark] class DAGScheduler(
     }
     if (dependentJobs.isEmpty) {
       logInfo(
-        "Ignoring failure of " + failedStage + " because all jobs depending on it are done")
+        "Ignoring failure of " + failedStage +
+          " because all jobs depending on it are done")
     }
   }
 

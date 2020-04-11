@@ -274,7 +274,8 @@ object Dispatchers {
               case r: Right[Exception, MessageDispatcherConfigurator] => r.b
               case l: Left[Exception, MessageDispatcherConfigurator] =>
                 throw new IllegalArgumentException(
-                  "Cannot instantiate MessageDispatcherConfigurator type [%s], make sure it has a default no-args constructor" format fqn,
+                  "Cannot instantiate MessageDispatcherConfigurator type [%s], make sure it has a default no-args constructor" format
+                    fqn,
                   l.a)
             }
           case l: Left[Exception, _] =>

@@ -32,8 +32,7 @@ class EnumSerializer[E <: Enumeration: ClassTag](enum: E)
         case JInt(value) if (value <= enum.maxId) => enum(value.toInt)
         case value =>
           throw new MappingException(
-            "Can't convert " +
-              value + " to " + EnumerationClass)
+            "Can't convert " + value + " to " + EnumerationClass)
       }
   }
 
@@ -55,8 +54,7 @@ class EnumNameSerializer[E <: Enumeration: ClassTag](enum: E)
           enum.withName(value)
         case value =>
           throw new MappingException(
-            "Can't convert " +
-              value + " to " + EnumerationClass)
+            "Can't convert " + value + " to " + EnumerationClass)
       }
   }
 

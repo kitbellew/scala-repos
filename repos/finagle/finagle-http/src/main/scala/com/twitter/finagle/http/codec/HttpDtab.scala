@@ -64,8 +64,7 @@ object HttpDtab {
     }
 
   private def validHeaderPair(aKey: String, bKey: String): Boolean =
-    aKey.length == bKey.length &&
-      aKey(aKey.length - 1) == 'a' &&
+    aKey.length == bKey.length && aKey(aKey.length - 1) == 'a' &&
       bKey(bKey.length - 1) == 'b' &&
       aKey.substring(0, aKey.length - 1) == bKey.substring(0, bKey.length - 1)
 

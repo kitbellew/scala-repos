@@ -47,8 +47,8 @@ class ForwardToLeaderIntegrationTest
         .count(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER) == 1)
     assert(
       result.originalResponse.headers
-        .find(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER).get.value
-        == s"http://localhost:${ports.head}")
+        .find(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER).get.value ==
+        s"http://localhost:${ports.head}")
   }
 
   test("forwarding ping") {
@@ -67,15 +67,15 @@ class ForwardToLeaderIntegrationTest
         .count(_.name == JavaUrlConnectionRequestForwarder.HEADER_VIA) == 1)
     assert(
       result.originalResponse.headers
-        .find(_.name == JavaUrlConnectionRequestForwarder.HEADER_VIA).get.value
-        == s"1.1 localhost:${ports(1)}")
+        .find(_.name == JavaUrlConnectionRequestForwarder.HEADER_VIA).get
+        .value == s"1.1 localhost:${ports(1)}")
     assert(
       result.originalResponse.headers
         .count(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER) == 1)
     assert(
       result.originalResponse.headers
-        .find(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER).get.value
-        == s"http://localhost:${ports.head}")
+        .find(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER).get.value ==
+        s"http://localhost:${ports.head}")
   }
 
   test("direct HTTPS ping") {

@@ -122,8 +122,8 @@ object PathId {
 
   private val validPathChars = new Validator[PathId] {
     override def apply(pathId: PathId): Result = {
-      validate(pathId.path)(validator = pathId.path.each should matchRegexFully(
-        ID_PATH_SEGMENT_PATTERN.pattern))
+      validate(pathId.path)(validator = pathId.path.each should
+        matchRegexFully(ID_PATH_SEGMENT_PATTERN.pattern))
     }
   }
 

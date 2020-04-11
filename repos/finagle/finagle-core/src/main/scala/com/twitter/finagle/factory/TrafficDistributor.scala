@@ -177,8 +177,8 @@ private[finagle] class TrafficDistributor[Req, Rep](
                 // weight class is removed.
                 val closeGate = new Promise[Unit]
                 val endpoint = new ServiceFactoryProxy(newEndpoint(addr)) {
-                  override def close(when: Time) =
-                    (closeGate or outerClose).before { super.close(when) }
+                  override def close(when: Time) = (closeGate or outerClose)
+                    .before { super.close(when) }
                 }
                 cache
                   .updated(addr, WeightedFactory(endpoint, closeGate, weight))

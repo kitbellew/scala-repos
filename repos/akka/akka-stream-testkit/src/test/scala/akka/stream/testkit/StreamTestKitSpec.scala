@@ -17,8 +17,8 @@ class StreamTestKitSpec extends AkkaSpec {
 
   "A TestSink Probe" must {
     "#toStrict" in {
-      Source(1 to 4).runWith(TestSink.probe).toStrict(300.millis) should ===(
-        List(1, 2, 3, 4))
+      Source(1 to 4).runWith(TestSink.probe).toStrict(300.millis) should
+        ===(List(1, 2, 3, 4))
     }
 
     "#toStrict with failing source" in {
@@ -97,13 +97,13 @@ class StreamTestKitSpec extends AkkaSpec {
     }
 
     "#expectNextN given a number of elements" in {
-      Source(1 to 4).runWith(TestSink.probe).request(4)
-        .expectNextN(4) should ===(List(1, 2, 3, 4))
+      Source(1 to 4).runWith(TestSink.probe).request(4).expectNextN(4) should
+        ===(List(1, 2, 3, 4))
     }
 
     "#expectNextN given specific elements" in {
-      Source(1 to 4).runWith(TestSink.probe).request(4)
-        .expectNextN(4) should ===(List(1, 2, 3, 4))
+      Source(1 to 4).runWith(TestSink.probe).request(4).expectNextN(4) should
+        ===(List(1, 2, 3, 4))
     }
   }
 }

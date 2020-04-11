@@ -94,7 +94,8 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         }
 
         val functions: List[Option[JType => JType]] =
-          jtypes.distinct map (_ map { Schema.replaceLeaf })
+          jtypes.distinct map
+            (_ map { Schema.replaceLeaf })
 
         coalesce(functions map { SingleSummary -> _ })
       }
@@ -138,17 +139,18 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         }
 
         // one JType-with-numeric-leaves per schema
-        val jtypes: M[Seq[JType]] =
-          jtypes0 map (_ collect { case opt if opt.isDefined => opt.get })
+        val jtypes: M[Seq[JType]] = jtypes0 map
+          (_ collect { case opt if opt.isDefined => opt.get })
 
         val specs: M[Seq[TransSpec1]] = jtypes map {
           _ map { trans.Typed(TransSpec1.Id, _) }
         }
 
         // one table per schema
-        val tables: M[Seq[Table]] = specs map (_ map { spec =>
-          table.transform(spec).compact(TransSpec1.Id, AllDefined)
-        })
+        val tables: M[Seq[Table]] = specs map
+          (_ map { spec =>
+            table.transform(spec).compact(TransSpec1.Id, AllDefined)
+          })
 
         val tablesWithType: M[Seq[(Table, JType)]] = for {
           tbls <- tables
@@ -173,8 +175,8 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         val spec = OuterObjectConcat(Leaf(SourceLeft), Leaf(SourceRight))
 
         val res = objectTables map {
-          _.reduceOption { (tl, tr) => tl.cross(tr)(spec) } getOrElse Table
-            .empty
+          _.reduceOption { (tl, tr) => tl.cross(tr)(spec) } getOrElse
+            Table.empty
         }
 
         res map { _.transform(buildConstantWrapSpec(TransSpec1.Id)) }

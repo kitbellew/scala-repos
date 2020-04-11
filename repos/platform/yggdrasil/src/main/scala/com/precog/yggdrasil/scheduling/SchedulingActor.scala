@@ -228,7 +228,8 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
           failure =>
             M point {
               logger.error(
-                "An error was encountered processing a scheduled query execution: " + failure)
+                "An error was encountered processing a scheduled query execution: " +
+                  failure)
               ourself ! TaskComplete(
                 task.id,
                 clock.now(),

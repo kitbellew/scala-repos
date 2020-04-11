@@ -34,21 +34,19 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
     val defaultWeight = NameTree.Weighted.defaultWeight
 
     assert(
-      NameTreeParsers.parseNameTree("! | ~ | $") == NameTree
-        .Alt(NameTree.Fail, NameTree.Neg, NameTree.Empty))
+      NameTreeParsers.parseNameTree("! | ~ | $") ==
+        NameTree.Alt(NameTree.Fail, NameTree.Neg, NameTree.Empty))
     assert(
-      NameTreeParsers.parseNameTree("/foo/bar") == NameTree
-        .Leaf(Path.Utf8("foo", "bar")))
+      NameTreeParsers.parseNameTree("/foo/bar") ==
+        NameTree.Leaf(Path.Utf8("foo", "bar")))
     assert(
-      NameTreeParsers.parseNameTree("  /foo & /bar  ") ==
-        NameTree.Union(
-          NameTree.Weighted(defaultWeight, NameTree.Leaf(Path.Utf8("foo"))),
-          NameTree.Weighted(defaultWeight, NameTree.Leaf(Path.Utf8("bar")))))
+      NameTreeParsers.parseNameTree("  /foo & /bar  ") == NameTree.Union(
+        NameTree.Weighted(defaultWeight, NameTree.Leaf(Path.Utf8("foo"))),
+        NameTree.Weighted(defaultWeight, NameTree.Leaf(Path.Utf8("bar")))))
     assert(
-      NameTreeParsers.parseNameTree("  /foo | /bar  ") ==
-        NameTree.Alt(
-          NameTree.Leaf(Path.Utf8("foo")),
-          NameTree.Leaf(Path.Utf8("bar"))))
+      NameTreeParsers.parseNameTree("  /foo | /bar  ") == NameTree.Alt(
+        NameTree.Leaf(Path.Utf8("foo")),
+        NameTree.Leaf(Path.Utf8("bar"))))
     assert(
       NameTreeParsers.parseNameTree("/foo & /bar | /bar & /baz") ==
         NameTree.Alt(
@@ -61,16 +59,15 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
         ))
 
     assert(
-      NameTreeParsers
-        .parseNameTree("1 * /foo & 2 * /bar | .5 * /bar & .5 * /baz") ==
-        NameTree.Alt(
-          NameTree.Union(
-            NameTree.Weighted(1d, NameTree.Leaf(Path.Utf8("foo"))),
-            NameTree.Weighted(2d, NameTree.Leaf(Path.Utf8("bar")))),
-          NameTree.Union(
-            NameTree.Weighted(0.5d, NameTree.Leaf(Path.Utf8("bar"))),
-            NameTree.Weighted(0.5d, NameTree.Leaf(Path.Utf8("baz"))))
-        ))
+      NameTreeParsers.parseNameTree(
+        "1 * /foo & 2 * /bar | .5 * /bar & .5 * /baz") == NameTree.Alt(
+        NameTree.Union(
+          NameTree.Weighted(1d, NameTree.Leaf(Path.Utf8("foo"))),
+          NameTree.Weighted(2d, NameTree.Leaf(Path.Utf8("bar")))),
+        NameTree.Union(
+          NameTree.Weighted(0.5d, NameTree.Leaf(Path.Utf8("bar"))),
+          NameTree.Weighted(0.5d, NameTree.Leaf(Path.Utf8("baz"))))
+      ))
 
     intercept[IllegalArgumentException] { NameTreeParsers.parseNameTree("") }
     intercept[IllegalArgumentException] { NameTreeParsers.parseNameTree("#") }
@@ -89,9 +86,8 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
     assert(
       NameTreeParsers.parseDentry("/=>!") == Dentry(Path.empty, NameTree.Fail))
     assert(
-      NameTreeParsers.parseDentry("/ => !") == Dentry(
-        Path.empty,
-        NameTree.Fail))
+      NameTreeParsers.parseDentry("/ => !") ==
+        Dentry(Path.empty, NameTree.Fail))
 
     intercept[IllegalArgumentException] { NameTreeParsers.parseDentry("/&!") }
   }
@@ -99,15 +95,14 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
   test("parseDtab") {
     assert(NameTreeParsers.parseDtab("") == Dtab.empty)
     assert(
-      NameTreeParsers.parseDtab("  /=>!  ") == Dtab(
-        IndexedSeq(Dentry(Path.empty, NameTree.Fail))))
+      NameTreeParsers.parseDtab("  /=>!  ") ==
+        Dtab(IndexedSeq(Dentry(Path.empty, NameTree.Fail))))
     assert(
-      NameTreeParsers.parseDtab("/=>!;") == Dtab(
-        IndexedSeq(Dentry(Path.empty, NameTree.Fail))))
+      NameTreeParsers.parseDtab("/=>!;") ==
+        Dtab(IndexedSeq(Dentry(Path.empty, NameTree.Fail))))
     assert(
-      NameTreeParsers.parseDtab("/=>!;/foo=>/bar") ==
-        Dtab(IndexedSeq(
-          Dentry(Path.empty, NameTree.Fail),
-          Dentry(Path.Utf8("foo"), NameTree.Leaf(Path.Utf8("bar"))))))
+      NameTreeParsers.parseDtab("/=>!;/foo=>/bar") == Dtab(IndexedSeq(
+        Dentry(Path.empty, NameTree.Fail),
+        Dentry(Path.Utf8("foo"), NameTree.Leaf(Path.Utf8("bar"))))))
   }
 }

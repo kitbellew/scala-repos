@@ -196,11 +196,11 @@ class IMain(
     catch { case _: FatalError => NoSymbol }
 
   def getClassIfDefined(path: String) =
-    (noFatal(runtimeMirror staticClass path)
-      orElse noFatal(rootMirror staticClass path))
+    (noFatal(runtimeMirror staticClass path) orElse
+      noFatal(rootMirror staticClass path))
   def getModuleIfDefined(path: String) =
-    (noFatal(runtimeMirror staticModule path)
-      orElse noFatal(rootMirror staticModule path))
+    (noFatal(runtimeMirror staticModule path) orElse
+      noFatal(rootMirror staticModule path))
 
   implicit class ReplTypeOps(tp: Type) {
     def andAlso(fn: Type => Type): Type = if (tp eq NoType) tp else fn(tp)
@@ -444,18 +444,18 @@ class IMain(
     // enough to just redefine them together but that may not always
     // be what people want so I'm waiting until I can do it better.
     exitingTyper {
-      req.defines filterNot (s =>
-        req.defines contains s.companionSymbol) foreach { newSym =>
-        val oldSym = replScope lookup newSym.name.companionName
-        if (Seq(oldSym, newSym).permutations exists {
-              case Seq(s1, s2) => s1.isClass && s2.isModule
-            }) {
-          replwarn(
-            s"warning: previously defined $oldSym is not a companion to $newSym.")
-          replwarn(
-            "Companions must be defined together; you may wish to use :paste mode for this.")
+      req.defines filterNot
+        (s => req.defines contains s.companionSymbol) foreach { newSym =>
+          val oldSym = replScope lookup newSym.name.companionName
+          if (Seq(oldSym, newSym).permutations exists {
+                case Seq(s1, s2) => s1.isClass && s2.isModule
+              }) {
+            replwarn(
+              s"warning: previously defined $oldSym is not a companion to $newSym.")
+            replwarn(
+              "Companions must be defined together; you may wish to use :paste mode for this.")
+          }
         }
-      }
     }
     exitingTyper {
       req.imports foreach (sym => updateReplScope(sym, isDefined = false))
@@ -518,16 +518,19 @@ class IMain(
       case parse.Error(_)       => return Left(IR.Error)
       case parse.Success(trees) => trees
     }
-    repltrace(trees map (t => {
-      // [Eugene to Paul] previously it just said `t map ...`
-      // because there was an implicit conversion from Tree to a list of Trees
-      // however Martin and I have removed the conversion
-      // (it was conflicting with the new reflection API),
-      // so I had to rewrite this a bit
-      val subs = t collect { case sub => sub }
-      subs map (t0 =>
-        "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
-    }) mkString "\n")
+    repltrace(
+      trees map
+        (t => {
+          // [Eugene to Paul] previously it just said `t map ...`
+          // because there was an implicit conversion from Tree to a list of Trees
+          // however Martin and I have removed the conversion
+          // (it was conflicting with the new reflection API),
+          // so I had to rewrite this a bit
+          val subs = t collect { case sub => sub }
+          subs map
+            (t0 =>
+              "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
+        }) mkString "\n")
     // If the last tree is a bare expression, pinpoint where it begins using the
     // AST node position and snap the line off there.  Rewrite the code embodied
     // by the last tree as a ValDef instead, so we can access the value.
@@ -896,14 +899,14 @@ class IMain(
           case ((pos, msg)) :: rest =>
             val filtered = rest filter {
               case (pos0, msg0) =>
-                (msg != msg0) || (pos.lineContent.trim != pos0.lineContent
-                  .trim) || {
-                  // same messages and same line content after whitespace removal
-                  // but we want to let through multiple warnings on the same line
-                  // from the same run.  The untrimmed line will be the same since
-                  // there's no whitespace indenting blowing it.
-                  (pos.lineContent == pos0.lineContent)
-                }
+                (msg != msg0) ||
+                  (pos.lineContent.trim != pos0.lineContent.trim) || {
+                    // same messages and same line content after whitespace removal
+                    // but we want to let through multiple warnings on the same line
+                    // from the same run.  The untrimmed line will be the same since
+                    // there's no whitespace indenting blowing it.
+                    (pos.lineContent == pos0.lineContent)
+                  }
             }
             ((pos, msg)) :: loop(filtered)
         }
@@ -916,8 +919,8 @@ class IMain(
         case Array(method) => method
         case xs =>
           sys.error(
-            "Internal error: eval object " + evalClass + ", " + xs
-              .mkString("\n", "\n", ""))
+            "Internal error: eval object " + evalClass + ", " +
+              xs.mkString("\n", "\n", ""))
       }
     private def compileAndSaveRun(label: String, code: String) = {
       showCodeIfDebugging(code)
@@ -936,8 +939,8 @@ class IMain(
     def defines = defHandlers flatMap (_.definedSymbols)
     def imports = importedSymbols
     def value =
-      Some(handlers.last) filter (h => h.definesValue) map (h =>
-        definedSymbols(h.definesTerm.get)) getOrElse NoSymbol
+      Some(handlers.last) filter (h => h.definesValue) map
+        (h => definedSymbols(h.definesTerm.get)) getOrElse NoSymbol
     val lineRep = new ReadEvalPrint()
 
     private var _originalLine: String = null
@@ -945,8 +948,8 @@ class IMain(
     def originalLine = if (_originalLine == null) line else _originalLine
 
     /** handlers for each tree in this request */
-    val handlers: List[MemberHandler] =
-      trees map (memberHandlers chooseHandler _)
+    val handlers: List[MemberHandler] = trees map
+      (memberHandlers chooseHandler _)
     val definesClass = handlers.exists {
       case _: ClassHandler => true
       case _               => false
@@ -1167,7 +1170,9 @@ class IMain(
   @throws[ScriptException]
   def compile(script: String): CompiledScript =
     eval(
-      "new javax.script.CompiledScript { def eval(context: javax.script.ScriptContext): Object = { " + script + " }.asInstanceOf[Object]; def getEngine: javax.script.ScriptEngine = engine }")
+      "new javax.script.CompiledScript { def eval(context: javax.script.ScriptContext): Object = { " +
+        script +
+        " }.asInstanceOf[Object]; def getEngine: javax.script.ScriptEngine = engine }")
       .asInstanceOf[CompiledScript]
 
   @throws[ScriptException]
@@ -1191,12 +1196,13 @@ class IMain(
   def mostRecentVar: String =
     if (mostRecentlyHandledTree.isEmpty) ""
     else
-      "" + (mostRecentlyHandledTree.get match {
-        case x: ValOrDefDef         => x.name
-        case Assign(Ident(name), _) => name
-        case ModuleDef(_, name, _)  => name
-        case _                      => naming.mostRecentVar
-      })
+      "" +
+        (mostRecentlyHandledTree.get match {
+          case x: ValOrDefDef         => x.name
+          case Assign(Ident(name), _) => name
+          case ModuleDef(_, name, _)  => name
+          case _                      => naming.mostRecentVar
+        })
 
   private var mostRecentWarnings: List[(global.Position, String)] = Nil
   def lastWarnings = mostRecentWarnings
@@ -1266,9 +1272,8 @@ class IMain(
       val staticSym = tpe.typeSymbol
       val runtimeSym = getClassIfDefined(clazz.getName)
 
-      if ((runtimeSym != NoSymbol) && (runtimeSym != staticSym) && (
-            runtimeSym isSubClass staticSym
-          )) runtimeSym.info
+      if ((runtimeSym != NoSymbol) && (runtimeSym != staticSym) &&
+          (runtimeSym isSubClass staticSym)) runtimeSym.info
       else NoType
     }
   }
@@ -1321,8 +1326,8 @@ class IMain(
   def definedTerms = onlyTerms(allDefinedNames) filterNot isInternalTermName
   def definedTypes = onlyTypes(allDefinedNames)
   def definedSymbolList =
-    prevRequestList flatMap (_.defines) filterNot (s =>
-      isInternalTermName(s.name))
+    prevRequestList flatMap (_.defines) filterNot
+      (s => isInternalTermName(s.name))
 
   // Terms with user-given names (i.e. not res0 and not synthetic)
   def namedDefinedTerms =
@@ -1468,8 +1473,9 @@ object IMain {
     def maxStringLength: Int
     def isTruncating: Boolean
     def truncate(str: String): String = {
-      if (isTruncating && (maxStringLength != 0 && str
-            .length > maxStringLength)) (str take maxStringLength - 3) + "..."
+      if (isTruncating &&
+          (maxStringLength != 0 && str.length > maxStringLength))
+        (str take maxStringLength - 3) + "..."
       else str
     }
   }

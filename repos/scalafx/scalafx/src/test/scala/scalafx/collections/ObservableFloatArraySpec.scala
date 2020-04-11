@@ -270,13 +270,15 @@ class ObservableFloatArraySpec
   it should "return an empty observable array from companion's empty()" in {
     testEmpty(ObservableFloatArray.empty())
   }
-  it should "not allow a negative dimension array from companion's ofDim(size)" in {
-    testNegativeArraySizeExceptionThrown(new ObservableFloatArray(-1))
-  }
-  it should "return a dimension array of zeroed elements from companion's ofDim(size)" in {
-    testNonEmpty(ObservableFloatArray.ofDim(1), new Array(1))
-    testNonEmpty(ObservableFloatArray.ofDim(10), new Array(10))
-  }
+  it should
+    "not allow a negative dimension array from companion's ofDim(size)" in {
+      testNegativeArraySizeExceptionThrown(new ObservableFloatArray(-1))
+    }
+  it should
+    "return a dimension array of zeroed elements from companion's ofDim(size)" in {
+      testNonEmpty(ObservableFloatArray.ofDim(1), new Array(1))
+      testNonEmpty(ObservableFloatArray.ofDim(10), new Array(10))
+    }
   it should "return valid array from companion's apply(values*)" in {
     testEmpty(ObservableFloatArray())
     testNonEmpty(ObservableFloatArray(1.0f), Array(1.0f))
@@ -306,24 +308,26 @@ class ObservableFloatArraySpec
     testNonEmpty(fillArray(1), Array(1.0f))
     testNonEmpty(fillArray(5), Array(1.0f, 2.0f, 3.0f, 4.0f, 5.0f))
   }
-  it should "return valid initialized array from companion's tabulate(n)(f)" in {
-    def tabulateArray(n: Int): ObservableFloatArray = {
-      val oa = ObservableFloatArray.tabulate(n)(_ + 1.0f)
-      testOutOfBoundsExceptionThrown(oa(-1))
-      testOutOfBoundsExceptionThrown(oa(n))
-      oa
+  it should
+    "return valid initialized array from companion's tabulate(n)(f)" in {
+      def tabulateArray(n: Int): ObservableFloatArray = {
+        val oa = ObservableFloatArray.tabulate(n)(_ + 1.0f)
+        testOutOfBoundsExceptionThrown(oa(-1))
+        testOutOfBoundsExceptionThrown(oa(n))
+        oa
+      }
+      testEmpty(tabulateArray(-1))
+      testEmpty(tabulateArray(0))
+      testNonEmpty(tabulateArray(1), Array(1.0f))
+      testNonEmpty(tabulateArray(5), Array(1.0f, 2.0f, 3.0f, 4.0f, 5.0f))
     }
-    testEmpty(tabulateArray(-1))
-    testEmpty(tabulateArray(0))
-    testNonEmpty(tabulateArray(1), Array(1.0f))
-    testNonEmpty(tabulateArray(5), Array(1.0f, 2.0f, 3.0f, 4.0f, 5.0f))
-  }
-  it should "return valid initialized array from companion's iterate(start, length)(f)" in {
-    testEmpty(ObservableFloatArray.iterate(0.0f, -1)(_ + 1.0f))
-    testEmpty(ObservableFloatArray.iterate(0.0f, 0)(_ + 1.0f))
-    testNonEmpty(ObservableFloatArray.iterate(0.0f, 1)(_ + 1.0f), Array(0.0f))
-    testNonEmpty(
-      ObservableFloatArray.iterate(0.0f, 5)(_ + 1.0f),
-      Array(0.0f, 1.0f, 2.0f, 3.0f, 4.0f))
-  }
+  it should
+    "return valid initialized array from companion's iterate(start, length)(f)" in {
+      testEmpty(ObservableFloatArray.iterate(0.0f, -1)(_ + 1.0f))
+      testEmpty(ObservableFloatArray.iterate(0.0f, 0)(_ + 1.0f))
+      testNonEmpty(ObservableFloatArray.iterate(0.0f, 1)(_ + 1.0f), Array(0.0f))
+      testNonEmpty(
+        ObservableFloatArray.iterate(0.0f, 5)(_ + 1.0f),
+        Array(0.0f, 1.0f, 2.0f, 3.0f, 4.0f))
+    }
 }

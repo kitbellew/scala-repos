@@ -54,12 +54,12 @@ private[v1] object AllJobsResource {
       ui: SparkUI): Seq[(JobExecutionStatus, Seq[JobUIData])] = {
     val statusToJobs = ui.jobProgressListener.synchronized {
       Seq(
-        JobExecutionStatus.RUNNING -> ui.jobProgressListener.activeJobs.values
-          .toSeq,
-        JobExecutionStatus.SUCCEEDED -> ui.jobProgressListener.completedJobs
-          .toSeq,
-        JobExecutionStatus.FAILED -> ui.jobProgressListener.failedJobs.reverse
-          .toSeq
+        JobExecutionStatus.RUNNING ->
+          ui.jobProgressListener.activeJobs.values.toSeq,
+        JobExecutionStatus.SUCCEEDED ->
+          ui.jobProgressListener.completedJobs.toSeq,
+        JobExecutionStatus.FAILED ->
+          ui.jobProgressListener.failedJobs.reverse.toSeq
       )
     }
     statusToJobs

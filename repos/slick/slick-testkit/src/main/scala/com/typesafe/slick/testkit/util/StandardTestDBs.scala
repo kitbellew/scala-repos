@@ -57,8 +57,8 @@ object StandardTestDBs {
 
   lazy val HsqldbDisk = new HsqlDB("hsqldbdisk") {
     val dbName = "hsqldb-" + confName
-    val url = "jdbc:hsqldb:file:" + TestkitConfig
-      .testDBPath + "/" + dbName + ";user=SA;password=;shutdown=true;hsqldb.applog=0"
+    val url = "jdbc:hsqldb:file:" + TestkitConfig.testDBPath + "/" + dbName +
+      ";user=SA;password=;shutdown=true;hsqldb.applog=0"
     override def cleanUpBefore() = TestDB.deleteDBFiles(dbName)
     // Recreating the DB is faster than dropping everything individually
     override def dropUserArtifacts(implicit
@@ -99,11 +99,11 @@ object StandardTestDBs {
 
   lazy val DerbyDisk = new DerbyDB("derbydisk") {
     val dbName = "derby-" + confName
-    val url = "jdbc:derby:" + TestkitConfig
-      .testDBPath + "/" + dbName + ";create=true"
+    val url = "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName +
+      ";create=true"
     override def cleanUpBefore() = {
-      val dropUrl = "jdbc:derby:" + TestkitConfig
-        .testDBPath + "/" + dbName + ";shutdown=true"
+      val dropUrl = "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName +
+        ";shutdown=true"
       try {
         await(
           profile.backend.Database.forURL(dropUrl, driver = jdbcDriver)
@@ -255,8 +255,8 @@ object StandardTestDBs {
 
     override def canGetLocalTables = false
     override def capabilities =
-      super.capabilities - TestDB.capabilities.jdbcMetaGetIndexInfo - TestDB
-        .capabilities.transactionIsolation
+      super.capabilities - TestDB.capabilities.jdbcMetaGetIndexInfo -
+        TestDB.capabilities.transactionIsolation
 
     /* Only drop and recreate the user. This is much faster than dropping
      * the tablespace. */
@@ -275,8 +275,8 @@ abstract class H2TestDB(confName: String, keepAlive: Boolean)
   val profile: Profile = H2Profile
   val jdbcDriver = "org.h2.Driver"
   override def capabilities =
-    super.capabilities - TestDB.capabilities.jdbcMetaGetFunctions - TestDB
-      .capabilities.jdbcMetaGetClientInfoProperties
+    super.capabilities - TestDB.capabilities.jdbcMetaGetFunctions -
+      TestDB.capabilities.jdbcMetaGetClientInfoProperties
   override def createDB(): profile.Backend#Database =
     database.forURL(url, driver = jdbcDriver, keepAliveConnection = keepAlive)
 }
@@ -295,12 +295,14 @@ class SQLiteTestDB(dburl: String, confName: String)
       for {
         tables <- localTables
         sequences <- localSequences
-        _ <- DBIO.seq(
-          (tables.map(t =>
-            sqlu"""drop table if exists #${profile.quoteIdentifier(t)}""") ++
-            sequences.map(t =>
-              sqlu"""drop sequence if exists #${profile
-                .quoteIdentifier(t)}""")): _*)
+        _ <-
+          DBIO
+            .seq(
+              (tables.map(t =>
+                sqlu"""drop table if exists #${profile
+                  .quoteIdentifier(t)}""") ++ sequences.map(t =>
+                sqlu"""drop sequence if exists #${profile
+                  .quoteIdentifier(t)}""")): _*)
       } yield ()
     }
 }
@@ -345,7 +347,8 @@ abstract class DerbyDB(confName: String) extends InternalJdbcTestDB(confName) {
     } catch {
       case e: Exception =>
         println(
-          "[Caught Exception while dropping user artifacts in Derby: " + e + "]")
+          "[Caught Exception while dropping user artifacts in Derby: " + e +
+            "]")
         session.close()
         cleanUpBefore()
     }

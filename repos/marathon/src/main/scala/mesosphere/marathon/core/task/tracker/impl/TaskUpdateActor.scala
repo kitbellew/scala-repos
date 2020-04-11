@@ -87,8 +87,8 @@ private[impl] class TaskUpdateActor(
 
     // Answer all outstanding requests.
     operationsByTaskId.values.iterator.flatten.map(_.sender) foreach { sender =>
-      sender ! Status
-        .Failure(new IllegalStateException("TaskUpdateActor stopped"))
+      sender !
+        Status.Failure(new IllegalStateException("TaskUpdateActor stopped"))
     }
 
     metrics.numberOfActiveOps.setValue(0)
@@ -120,8 +120,8 @@ private[impl] class TaskUpdateActor(
         if (log.isDebugEnabled) {
           val queuedCount = metrics.numberOfQueuedOps.getValue
           log.debug(
-            s"Finished processing ${op.action} for app [${op.appId}] and ${op.taskId} "
-              + s"$activeCount active, $queuedCount queued.");
+            s"Finished processing ${op.action} for app [${op.appId}] and ${op.taskId} " +
+              s"$activeCount active, $queuedCount queued.");
         }
 
         processNextOpIfExists(op.taskId)
@@ -136,8 +136,8 @@ private[impl] class TaskUpdateActor(
       val queuedCount = metrics.numberOfQueuedOps.decrement()
       val activeCount = metrics.numberOfActiveOps.increment()
       log.debug(
-        s"Start processing ${op.action} for app [${op.appId}] and ${op.taskId}. "
-          + s"$activeCount active, $queuedCount queued.")
+        s"Start processing ${op.action} for app [${op.appId}] and ${op.taskId}. " +
+          s"$activeCount active, $queuedCount queued.")
 
       import context.dispatcher
       val future = {

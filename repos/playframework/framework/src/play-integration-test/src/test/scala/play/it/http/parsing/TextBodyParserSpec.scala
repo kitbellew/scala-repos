@@ -30,14 +30,12 @@ object TextBodyParserSpec extends PlaySpecification {
     }
 
     "honour the declared charset" in new WithApplication() {
-      parse("bär", Some("text/plain; charset=utf-8"), "utf-8") must beRight(
-        "bär")
-      parse("bär", Some("text/plain; charset=utf-16"), "utf-16") must beRight(
-        "bär")
-      parse(
-        "bär",
-        Some("text/plain; charset=iso-8859-1"),
-        "iso-8859-1") must beRight("bär")
+      parse("bär", Some("text/plain; charset=utf-8"), "utf-8") must
+        beRight("bär")
+      parse("bär", Some("text/plain; charset=utf-16"), "utf-16") must
+        beRight("bär")
+      parse("bär", Some("text/plain; charset=iso-8859-1"), "iso-8859-1") must
+        beRight("bär")
     }
 
     "default to iso-8859-1 encoding" in new WithApplication() {
@@ -46,11 +44,8 @@ object TextBodyParserSpec extends PlaySpecification {
     }
 
     "accept text/plain content type" in new WithApplication() {
-      parse(
-        "bar",
-        Some("text/plain"),
-        "utf-8",
-        BodyParsers.parse.text) must beRight("bar")
+      parse("bar", Some("text/plain"), "utf-8", BodyParsers.parse.text) must
+        beRight("bar")
     }
 
     "reject non text/plain content types" in new WithApplication() {

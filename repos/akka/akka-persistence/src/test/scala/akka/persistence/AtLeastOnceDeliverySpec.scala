@@ -73,13 +73,15 @@ object AtLeastOnceDeliverySpec {
       evt match {
         case AcceptedReq(payload, destination) if actorSelectionDelivery ⇒
           log.debug(
-            s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " + recoveryRunning)
+            s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " +
+              recoveryRunning)
           deliver(context.actorSelection(destination))(deliveryId ⇒
             Action(deliveryId, payload))
 
         case AcceptedReq(payload, destination) ⇒
           log.debug(
-            s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " + recoveryRunning)
+            s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " +
+              recoveryRunning)
           deliver(destination)(deliveryId ⇒ Action(deliveryId, payload))
 
         case ReqDone(id) ⇒
@@ -197,72 +199,69 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
 
   "AtLeastOnceDelivery" must {
     List(true, false).foreach { deliverUsingActorSelection ⇒
-      s"deliver messages in order when nothing is lost (using actorSelection: $deliverUsingActorSelection)" taggedAs (
-        TimingTest
-      ) in {
-        val probe = TestProbe()
-        val probeA = TestProbe()
-        val destinations = Map(
-          "A" -> system.actorOf(destinationProps(probeA.ref)).path)
-        val snd = system.actorOf(
-          senderProps(
-            probe.ref,
-            name,
-            1000.millis,
-            5,
-            1000,
-            destinations,
-            async = false),
-          name)
-        snd.tell(Req("a"), probe.ref)
-        probe.expectMsg(ReqAck)
-        probeA.expectMsg(Action(1, "a"))
-        probeA.expectNoMsg(1.second)
-      }
+      s"deliver messages in order when nothing is lost (using actorSelection: $deliverUsingActorSelection)" taggedAs
+        (TimingTest) in {
+          val probe = TestProbe()
+          val probeA = TestProbe()
+          val destinations = Map(
+            "A" -> system.actorOf(destinationProps(probeA.ref)).path)
+          val snd = system.actorOf(
+            senderProps(
+              probe.ref,
+              name,
+              1000.millis,
+              5,
+              1000,
+              destinations,
+              async = false),
+            name)
+          snd.tell(Req("a"), probe.ref)
+          probe.expectMsg(ReqAck)
+          probeA.expectMsg(Action(1, "a"))
+          probeA.expectNoMsg(1.second)
+        }
 
-      s"re-deliver lost messages (using actorSelection: $deliverUsingActorSelection)" taggedAs (
-        TimingTest
-      ) in {
-        val probe = TestProbe()
-        val probeA = TestProbe()
-        val dst = system.actorOf(destinationProps(probeA.ref))
-        val destinations = Map(
-          "A" -> system.actorOf(unreliableProps(3, dst)).path)
-        val snd = system.actorOf(
-          senderProps(
-            probe.ref,
-            name,
-            1000.millis,
-            5,
-            1000,
-            destinations,
-            async = false,
-            actorSelectionDelivery = deliverUsingActorSelection),
-          name)
-        snd.tell(Req("a-1"), probe.ref)
-        probe.expectMsg(ReqAck)
-        probeA.expectMsg(Action(1, "a-1"))
+      s"re-deliver lost messages (using actorSelection: $deliverUsingActorSelection)" taggedAs
+        (TimingTest) in {
+          val probe = TestProbe()
+          val probeA = TestProbe()
+          val dst = system.actorOf(destinationProps(probeA.ref))
+          val destinations = Map(
+            "A" -> system.actorOf(unreliableProps(3, dst)).path)
+          val snd = system.actorOf(
+            senderProps(
+              probe.ref,
+              name,
+              1000.millis,
+              5,
+              1000,
+              destinations,
+              async = false,
+              actorSelectionDelivery = deliverUsingActorSelection),
+            name)
+          snd.tell(Req("a-1"), probe.ref)
+          probe.expectMsg(ReqAck)
+          probeA.expectMsg(Action(1, "a-1"))
 
-        snd.tell(Req("a-2"), probe.ref)
-        probe.expectMsg(ReqAck)
-        probeA.expectMsg(Action(2, "a-2"))
+          snd.tell(Req("a-2"), probe.ref)
+          probe.expectMsg(ReqAck)
+          probeA.expectMsg(Action(2, "a-2"))
 
-        snd.tell(Req("a-3"), probe.ref)
-        snd.tell(Req("a-4"), probe.ref)
-        probe.expectMsg(ReqAck)
-        probe.expectMsg(ReqAck)
-        // a-3 was lost
-        probeA.expectMsg(Action(4, "a-4"))
-        // and then re-delivered
-        probeA.expectMsg(Action(3, "a-3"))
-        probeA.expectNoMsg(1.second)
-      }
+          snd.tell(Req("a-3"), probe.ref)
+          snd.tell(Req("a-4"), probe.ref)
+          probe.expectMsg(ReqAck)
+          probe.expectMsg(ReqAck)
+          // a-3 was lost
+          probeA.expectMsg(Action(4, "a-4"))
+          // and then re-delivered
+          probeA.expectMsg(Action(3, "a-3"))
+          probeA.expectNoMsg(1.second)
+        }
     }
 
     "not allow using actorSelection with wildcards" in {
-      system
-        .actorOf(
-          Props(classOf[DeliverToStarSelection], name)) ! "anything, really."
+      system.actorOf(Props(classOf[DeliverToStarSelection], name)) !
+        "anything, really."
       expectMsgType[Failure[_]].toString should include("not supported")
     }
 
@@ -310,55 +309,54 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       probeA.expectNoMsg(1.second)
     }
 
-    "re-send replayed deliveries with an 'initially in-order' strategy, before delivering fresh messages" taggedAs (
-      TimingTest
-    ) in {
-      val probe = TestProbe()
-      val probeA = TestProbe()
-      val dst = system.actorOf(destinationProps(probeA.ref))
-      val destinations = Map(
-        "A" -> system.actorOf(unreliableProps(2, dst)).path)
-      val snd = system.actorOf(
-        senderProps(
-          probe.ref,
-          name,
-          1000.millis,
-          5,
-          1000,
-          destinations,
-          async = false),
-        name)
-      snd.tell(Req("a-1"), probe.ref)
-      probe.expectMsg(ReqAck)
-      probeA.expectMsg(Action(1, "a-1"))
+    "re-send replayed deliveries with an 'initially in-order' strategy, before delivering fresh messages" taggedAs
+      (TimingTest) in {
+        val probe = TestProbe()
+        val probeA = TestProbe()
+        val dst = system.actorOf(destinationProps(probeA.ref))
+        val destinations = Map(
+          "A" -> system.actorOf(unreliableProps(2, dst)).path)
+        val snd = system.actorOf(
+          senderProps(
+            probe.ref,
+            name,
+            1000.millis,
+            5,
+            1000,
+            destinations,
+            async = false),
+          name)
+        snd.tell(Req("a-1"), probe.ref)
+        probe.expectMsg(ReqAck)
+        probeA.expectMsg(Action(1, "a-1"))
 
-      snd.tell(Req("a-2"), probe.ref)
-      probe.expectMsg(ReqAck)
-      // a-2 was lost
+        snd.tell(Req("a-2"), probe.ref)
+        probe.expectMsg(ReqAck)
+        // a-2 was lost
 
-      snd.tell(Req("a-3"), probe.ref)
-      probe.expectMsg(ReqAck)
-      probeA.expectMsg(Action(3, "a-3"))
+        snd.tell(Req("a-3"), probe.ref)
+        probe.expectMsg(ReqAck)
+        probeA.expectMsg(Action(3, "a-3"))
 
-      snd.tell(Req("a-4"), probe.ref)
-      probe.expectMsg(ReqAck)
-      // a-4 was lost
+        snd.tell(Req("a-4"), probe.ref)
+        probe.expectMsg(ReqAck)
+        // a-4 was lost
 
-      // trigger restart
-      snd.tell(Boom, probe.ref)
-      snd.tell(Req("a-5"), probe.ref)
-      probe.expectMsg(ReqAck)
+        // trigger restart
+        snd.tell(Boom, probe.ref)
+        snd.tell(Req("a-5"), probe.ref)
+        probe.expectMsg(ReqAck)
 
-      // and then re-delivered
-      probeA.expectMsg(Action(2, "a-2")) // re-delivered
-      // a-4 was re-delivered but lost
-      probeA.expectMsgAllOf(
-        Action(5, "a-5"), // re-delivered
-        Action(4, "a-4")
-      ) // re-delivered, 3rd time
+        // and then re-delivered
+        probeA.expectMsg(Action(2, "a-2")) // re-delivered
+        // a-4 was re-delivered but lost
+        probeA.expectMsgAllOf(
+          Action(5, "a-5"), // re-delivered
+          Action(4, "a-4")
+        ) // re-delivered, 3rd time
 
-      probeA.expectNoMsg(1.second)
-    }
+        probeA.expectNoMsg(1.second)
+      }
 
     "restore state from snapshot" taggedAs (TimingTest) in {
       val probe = TestProbe()
@@ -432,10 +430,10 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       val unconfirmed = probe.receiveWhile(5.seconds) {
         case UnconfirmedWarning(unconfirmed) ⇒ unconfirmed
       }.flatten
-      unconfirmed.map(_.destination).toSet should ===(
-        Set(probeA.ref.path, probeB.ref.path))
-      unconfirmed.map(_.message).toSet should be(
-        Set(Action(1, "a-1"), Action(2, "b-1"), Action(3, "b-2")))
+      unconfirmed.map(_.destination).toSet should
+        ===(Set(probeA.ref.path, probeB.ref.path))
+      unconfirmed.map(_.message).toSet should
+        be(Set(Action(1, "a-1"), Action(2, "b-1"), Action(3, "b-2")))
       system.stop(snd)
     }
 
@@ -475,43 +473,42 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
         .toSet should ===((1 to N).map(n ⇒ "c-" + n).toSet)
     }
 
-    "limit the number of messages redelivered at once" taggedAs (
-      TimingTest
-    ) in {
-      val probe = TestProbe()
-      val probeA = TestProbe()
-      val dst = system.actorOf(destinationProps(probeA.ref))
-      val destinations = Map(
-        "A" -> system.actorOf(unreliableProps(2, dst)).path)
+    "limit the number of messages redelivered at once" taggedAs
+      (TimingTest) in {
+        val probe = TestProbe()
+        val probeA = TestProbe()
+        val dst = system.actorOf(destinationProps(probeA.ref))
+        val destinations = Map(
+          "A" -> system.actorOf(unreliableProps(2, dst)).path)
 
-      val snd = system.actorOf(
-        senderProps(
-          probe.ref,
-          name,
-          1000.millis,
-          5,
-          2,
-          destinations,
-          async = true),
-        name)
+        val snd = system.actorOf(
+          senderProps(
+            probe.ref,
+            name,
+            1000.millis,
+            5,
+            2,
+            destinations,
+            async = true),
+          name)
 
-      val N = 10
-      for (n ← 1 to N) { snd.tell(Req("a-" + n), probe.ref) }
+        val N = 10
+        for (n ← 1 to N) { snd.tell(Req("a-" + n), probe.ref) }
 
-      // initially all odd messages should go through
-      for (n ← 1 to N if n % 2 == 1) probeA.expectMsg(Action(n, s"a-$n"))
-      probeA.expectNoMsg(100.millis)
-
-      // at each redelivery round, 2 (even) messages are sent, the first goes through
-      // without throttling, at each round half of the messages would go through
-      var toDeliver = (1 to N).filter(_ % 2 == 0).map(_.toLong).toSet
-      for (n ← 1 to N if n % 2 == 0) {
-        toDeliver -= probeA.expectMsgType[Action].id
+        // initially all odd messages should go through
+        for (n ← 1 to N if n % 2 == 1) probeA.expectMsg(Action(n, s"a-$n"))
         probeA.expectNoMsg(100.millis)
-      }
 
-      toDeliver should ===(Set.empty[Long])
-    }
+        // at each redelivery round, 2 (even) messages are sent, the first goes through
+        // without throttling, at each round half of the messages would go through
+        var toDeliver = (1 to N).filter(_ % 2 == 0).map(_.toLong).toSet
+        for (n ← 1 to N if n % 2 == 0) {
+          toDeliver -= probeA.expectMsgType[Action].id
+          probeA.expectNoMsg(100.millis)
+        }
+
+        toDeliver should ===(Set.empty[Long])
+      }
   }
 }
 

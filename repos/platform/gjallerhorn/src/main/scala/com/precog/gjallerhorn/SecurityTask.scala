@@ -32,8 +32,8 @@ class SecurityTask(settings: Settings)
     "create derivative apikeys" in {
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
 
-      val req = (security / "").addQueryParameter("apiKey", apiKey) << (
-        """
+      val req = (security / "").addQueryParameter("apiKey", apiKey) <<
+        ("""
 {"name":"MH Test Write",
  "description":"Foo",
  "grants":[
@@ -43,8 +43,7 @@ class SecurityTask(settings: Settings)
     {"accessType":"write",
      "path":"%sfoo/",
      "ownerAccountIds":["%s"]}]}]}
-""" format (rootPath, accountId)
-      )
+""" format (rootPath, accountId))
 
       val result = Http(req OK as.String)
       val json = JParser.parseFromString(result()).valueOr(throw _)
@@ -149,11 +148,11 @@ class SecurityTask(settings: Settings)
       val g = createGrant(apiKey1, ("read", p, accountId1 :: Nil) :: Nil).jvalue
       val grantId = (g \ "grantId").deserialize[String]
 
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must not(
-        contain(g))
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        not(contain(g))
       addToGrant(apiKey2, apiKey1, grantId).complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(
-        g)
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        contain(g)
     }
 
     "remove a grant from an api key" in {
@@ -164,14 +163,14 @@ class SecurityTask(settings: Settings)
       val g = createGrant(apiKey1, ("read", p, accountId1 :: Nil) :: Nil).jvalue
       val grantId = (g \ "grantId").deserialize[String]
 
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must not(
-        contain(g))
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        not(contain(g))
       addToGrant(apiKey2, apiKey1, grantId).complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(
-        g)
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        contain(g)
       removeGrant(apiKey2, apiKey1, grantId).complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must not(
-        contain(g))
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        not(contain(g))
     }
 
     "describe a grant" in {

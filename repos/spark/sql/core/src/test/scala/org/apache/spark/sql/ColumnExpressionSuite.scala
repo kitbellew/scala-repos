@@ -31,9 +31,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
   private lazy val booleanData = {
     sqlContext.createDataFrame(
       sparkContext.parallelize(
-        Row(false, false) ::
-          Row(false, true) ::
-          Row(true, false) ::
+        Row(false, false) :: Row(false, true) :: Row(true, false) ::
           Row(true, true) :: Nil),
       StructType(
         Seq(StructField("a", BooleanType), StructField("b", BooleanType)))
@@ -90,8 +88,8 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     val origCol = $"a".as("b", metadata.build())
     val newCol = origCol.as("c")
     assert(
-      newCol.expr.asInstanceOf[NamedExpression].metadata
-        .getString("key") === "value")
+      newCol.expr.asInstanceOf[NamedExpression].metadata.getString("key") ===
+        "value")
   }
 
   test("single explode") {
@@ -104,14 +102,11 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       df.select($"a", explode('intList)),
-      Row(1, 1) ::
-        Row(1, 2) ::
-        Row(1, 3) :: Nil)
+      Row(1, 1) :: Row(1, 2) :: Row(1, 3) :: Nil)
 
     checkAnswer(
       df.select($"*", explode('intList)),
-      Row(1, Seq(1, 2, 3), 1) ::
-        Row(1, Seq(1, 2, 3), 2) ::
+      Row(1, Seq(1, 2, 3), 1) :: Row(1, Seq(1, 2, 3), 2) ::
         Row(1, Seq(1, 2, 3), 3) :: Nil)
   }
 
@@ -256,24 +251,20 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
   test("isNaN") {
     val testData = sqlContext.createDataFrame(
       sparkContext.parallelize(
-        Row(Double.NaN, Float.NaN) ::
-          Row(math.log(-1), math.log(-3).toFloat) ::
-          Row(null, null) ::
-          Row(Double.MaxValue, Float.MinValue) :: Nil),
+        Row(Double.NaN, Float.NaN) :: Row(math.log(-1), math.log(-3).toFloat) ::
+          Row(null, null) :: Row(Double.MaxValue, Float.MinValue) :: Nil),
       StructType(Seq(StructField("a", DoubleType), StructField("b", FloatType)))
     )
 
     checkAnswer(
       testData.select($"a".isNaN, $"b".isNaN),
-      Row(true, true) :: Row(true, true) :: Row(false, false) :: Row(
-        false,
-        false) :: Nil)
+      Row(true, true) :: Row(true, true) :: Row(false, false) ::
+        Row(false, false) :: Nil)
 
     checkAnswer(
       testData.select(isnan($"a"), isnan($"b")),
-      Row(true, true) :: Row(true, true) :: Row(false, false) :: Row(
-        false,
-        false) :: Nil)
+      Row(true, true) :: Row(true, true) :: Row(false, false) ::
+        Row(false, false) :: Nil)
 
     checkAnswer(sql("select isnan(15), isnan('invalid')"), Row(false, false))
   }
@@ -336,10 +327,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
   test("=!=") {
     val nullData = sqlContext.createDataFrame(
       sparkContext.parallelize(
-        Row(1, 1) ::
-          Row(1, 2) ::
-          Row(1, null) ::
-          Row(null, null) :: Nil),
+        Row(1, 1) :: Row(1, 2) :: Row(1, null) :: Row(null, null) :: Nil),
       StructType(
         Seq(StructField("a", IntegerType), StructField("b", IntegerType)))
     )
@@ -355,10 +343,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
       Row(1, 1) :: Row(null, null) :: Nil)
 
     val nullData2 = sqlContext.createDataFrame(
-      sparkContext.parallelize(
-        Row("abc") ::
-          Row(null) ::
-          Row("xyz") :: Nil),
+      sparkContext.parallelize(Row("abc") :: Row(null) :: Row("xyz") :: Nil),
       StructType(Seq(StructField("a", StringType, true))))
 
     checkAnswer(nullData2.filter($"a" <=> null), Row(null) :: Nil)
@@ -407,11 +392,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
 
   test("between") {
     val testData = sparkContext.parallelize(
-      (0, 1, 2) ::
-        (1, 2, 3) ::
-        (2, 1, 0) ::
-        (2, 2, 4) ::
-        (3, 1, 6) ::
+      (0, 1, 2) :: (1, 2, 3) :: (2, 1, 0) :: (2, 2, 4) :: (3, 1, 6) ::
         (3, 2, 0) :: Nil).toDF("a", "b", "c")
     val expectAnswer = testData.collect().toSeq
       .filter(r => r.getInt(0) >= r.getInt(1) && r.getInt(0) <= r.getInt(2))

@@ -50,9 +50,8 @@ object UnitTests extends TestSuite {
           "a < b <= c > d >= e == f != g in h not in i")
       }
       'chained {
-        'attributes - expr(
-          Attribute(Attribute('a, 'b, Load), 'c, Load),
-          "a.b.c")
+        'attributes -
+          expr(Attribute(Attribute('a, 'b, Load), 'c, Load), "a.b.c")
         'function_call - expr(
           Call(
             Call(
@@ -81,9 +80,8 @@ object UnitTests extends TestSuite {
           "[1, 2, 'a']",
           "[1,2, 'a']")
         'list0 - expr(List(Seq(Num(1.0)), Load), "[1]", "[   1]")
-        'tuple - expr(
-          Tuple(Seq(Num(1.0), Num(2.0), Str("a")), Load),
-          "(1, 2, 'a')")
+        'tuple -
+          expr(Tuple(Seq(Num(1.0), Num(2.0), Str("a")), Load), "(1, 2, 'a')")
         'set - expr(Set(Seq(Num(1.0), Num(2.0), Str("a"))), "{1, 2, 'a'}")
         'set0 - expr(Set(Seq(Num(1.0))), "{1}")
         'dict - expr(

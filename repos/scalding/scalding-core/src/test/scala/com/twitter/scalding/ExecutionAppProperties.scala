@@ -26,17 +26,17 @@ object ExecutionAppProperties extends Properties("ExecutionApp Properties") {
       resultingHadoop: HadoopArgs,
       resultingNonHadoop: NonHadoopArgs): Unit = {
     val errorMsg = "Input Args: " + inputArgs.map("\"" + _ + "\"")
-      .mkString(",") + "\n" +
-      "Hadoop Args: " + resultingHadoop.toArray.mkString(",") + "\n" +
-      "Non-Hadoop Args: " + resultingNonHadoop.toArray.mkString(",") + "\n"
+      .mkString(",") + "\n" + "Hadoop Args: " +
+      resultingHadoop.toArray.mkString(",") + "\n" + "Non-Hadoop Args: " +
+      resultingNonHadoop.toArray.mkString(",") + "\n"
     sys.error(errorMsg)
   }
 
   property("Non-hadoop random args will all end up in the right bucket") =
     forAll { (args: Array[String]) =>
       val (hadoopArgs, nonHadoop) = ExecutionApp.extractUserHadoopArgs(args)
-      val res = hadoopArgs.toArray.isEmpty && nonHadoop.toArray
-        .sameElements(args)
+      val res = hadoopArgs.toArray.isEmpty &&
+        nonHadoop.toArray.sameElements(args)
       if (!res) debugPrint(args, hadoopArgs, nonHadoop)
       res
     }

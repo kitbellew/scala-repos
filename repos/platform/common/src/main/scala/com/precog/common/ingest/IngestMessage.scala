@@ -64,8 +64,8 @@ sealed trait EventMessage {
 }
 
 object EventMessage {
-  type EventMessageExtraction =
-    (APIKey, Path, Authorities => EventMessage) \/ EventMessage
+  type EventMessageExtraction = (APIKey, Path, Authorities => EventMessage) \/
+    EventMessage
 
   // an instant that's close enough to the start of timestamping for our purposes
   val defaultTimestamp = new Instant(1362465101979L)
@@ -152,9 +152,8 @@ object IngestMessage {
     .hlist(IngestMessage.apply _, IngestMessage.unapply _)
 
   val schemaV1 =
-    "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: (
-      "streamRef" ||| StreamRef.Append.asInstanceOf[StreamRef]
-    ) :: HNil
+    "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" ::
+      ("streamRef" ||| StreamRef.Append.asInstanceOf[StreamRef]) :: HNil
   implicit def seqExtractor[A: Extractor]: Extractor[Seq[A]] =
     implicitly[Extractor[List[A]]].map(_.toSeq)
 
@@ -173,42 +172,42 @@ object IngestMessage {
       override def validated(
           obj: JValue): Validation[Error, EventMessageExtraction] =
         obj.validated[Ingest]("event").flatMap { ingest =>
-          (obj.validated[Int]("producerId") |@|
-            obj.validated[Int]("eventId")) { (producerId, sequenceId) =>
-            val eventRecords = ingest.data map { jv =>
-              IngestRecord(EventId(producerId, sequenceId), jv)
-            }
-            ingest.writeAs map { authorities =>
-              assert(ingest.data.size == 1)
-              \/.right(IngestMessage(
-                ingest.apiKey,
-                ingest.path,
-                authorities,
-                eventRecords,
-                ingest.jobId,
-                defaultTimestamp,
-                StreamRef.Append))
-            } getOrElse {
-              \/.left((
-                ingest.apiKey,
-                ingest.path,
-                (authorities: Authorities) =>
-                  IngestMessage(
-                    ingest.apiKey,
-                    ingest.path,
-                    authorities,
-                    eventRecords,
-                    ingest.jobId,
-                    defaultTimestamp,
-                    StreamRef.Append)))
-            }
+          (obj.validated[Int]("producerId") |@| obj.validated[Int]("eventId")) {
+            (producerId, sequenceId) =>
+              val eventRecords = ingest.data map { jv =>
+                IngestRecord(EventId(producerId, sequenceId), jv)
+              }
+              ingest.writeAs map { authorities =>
+                assert(ingest.data.size == 1)
+                \/.right(IngestMessage(
+                  ingest.apiKey,
+                  ingest.path,
+                  authorities,
+                  eventRecords,
+                  ingest.jobId,
+                  defaultTimestamp,
+                  StreamRef.Append))
+              } getOrElse {
+                \/.left((
+                  ingest.apiKey,
+                  ingest.path,
+                  (authorities: Authorities) =>
+                    IngestMessage(
+                      ingest.apiKey,
+                      ingest.path,
+                      authorities,
+                      eventRecords,
+                      ingest.jobId,
+                      defaultTimestamp,
+                      StreamRef.Append)))
+              }
           }
         }
     }
 
   implicit val Decomposer: Decomposer[IngestMessage] = decomposerV1
-  implicit val Extractor: Extractor[EventMessageExtraction] =
-    extractorV1 <+> extractorV0
+  implicit val Extractor: Extractor[EventMessageExtraction] = extractorV1 <+>
+    extractorV0
 }
 
 case class ArchiveMessage(
@@ -229,8 +228,8 @@ object ArchiveMessage {
   implicit val archiveMessageIso = Iso
     .hlist(ArchiveMessage.apply _, ArchiveMessage.unapply _)
 
-  val schemaV1 =
-    "apiKey" :: "path" :: "jobId" :: "eventId" :: "timestamp" :: HNil
+  val schemaV1 = "apiKey" :: "path" :: "jobId" :: "eventId" :: "timestamp" ::
+    HNil
 
   val decomposerV1: Decomposer[ArchiveMessage] = decomposerV[ArchiveMessage](
     schemaV1,
@@ -240,8 +239,7 @@ object ArchiveMessage {
     Some("1.0".v))
   val extractorV0: Extractor[ArchiveMessage] = new Extractor[ArchiveMessage] {
     override def validated(obj: JValue): Validation[Error, ArchiveMessage] = {
-      (obj.validated[Int]("producerId") |@|
-        obj.validated[Int]("deletionId") |@|
+      (obj.validated[Int]("producerId") |@| obj.validated[Int]("deletionId") |@|
         obj.validated[Archive]("deletion")) {
         (producerId, sequenceId, archive) =>
           ArchiveMessage(
@@ -255,8 +253,8 @@ object ArchiveMessage {
   }
 
   implicit val Decomposer: Decomposer[ArchiveMessage] = decomposerV1
-  implicit val Extractor: Extractor[ArchiveMessage] =
-    extractorV1 <+> extractorV0
+  implicit val Extractor: Extractor[ArchiveMessage] = extractorV1 <+>
+    extractorV0
 }
 
 case class StoreFileMessage(
@@ -279,8 +277,8 @@ object StoreFileMessage {
   implicit val storeFileMessageIso = Iso
     .hlist(StoreFileMessage.apply _, StoreFileMessage.unapply _)
 
-  val schemaV1 =
-    "apiKey" :: "path" :: "writeAs" :: "jobId" :: "eventId" :: "content" :: "timestamp" :: "streamRef" :: HNil
+  val schemaV1 = "apiKey" :: "path" :: "writeAs" :: "jobId" :: "eventId" ::
+    "content" :: "timestamp" :: "streamRef" :: HNil
 
   implicit val Decomposer: Decomposer[StoreFileMessage] =
     decomposerV[StoreFileMessage](schemaV1, Some("1.0".v))

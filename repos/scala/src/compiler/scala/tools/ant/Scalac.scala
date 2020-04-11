@@ -386,50 +386,50 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
   /** Set the `explaintypes` info attribute.
     *  @param input One of the flags `yes/no` or `on/off`. */
   def setExplaintypes(input: String) {
-    explaintypes = Flag toBoolean input orElse buildError(
-      "Unknown explaintypes flag '" + input + "'")
+    explaintypes = Flag toBoolean input orElse
+      buildError("Unknown explaintypes flag '" + input + "'")
   }
 
   /** Set the `deprecation` info attribute.
     *  @param input One of the flags `yes/no` or `on/off`. */
   def setDeprecation(input: String) {
-    deprecation = Flag toBoolean input orElse buildError(
-      "Unknown deprecation flag '" + input + "'")
+    deprecation = Flag toBoolean input orElse
+      buildError("Unknown deprecation flag '" + input + "'")
   }
 
   /** Set the `nobootcp` info attribute.
     *  @param input One of the flags `yes/no` or `on/off`. */
   def setNobootcp(input: String) {
-    nobootcp = Flag toBoolean input orElse buildError(
-      "Unknown nobootcp flag '" + input + "'")
+    nobootcp = Flag toBoolean input orElse
+      buildError("Unknown nobootcp flag '" + input + "'")
   }
 
   /** Set the `nowarn` info attribute.
     *  @param input One of the flags `yes/no` or `on/off`. */
   def setNowarn(input: String) {
-    nowarn = Flag toBoolean input orElse buildError(
-      "Unknown nowarn flag '" + input + "'")
+    nowarn = Flag toBoolean input orElse
+      buildError("Unknown nowarn flag '" + input + "'")
   }
 
   /** Set the `optimise` info attribute.
     *  @param input One of the flags `yes/no` or `on/off`. */
   def setOptimise(input: String) {
-    optimise = Flag toBoolean input orElse buildError(
-      "Unknown optimisation flag '" + input + "'")
+    optimise = Flag toBoolean input orElse
+      buildError("Unknown optimisation flag '" + input + "'")
   }
 
   /** Set the `unchecked` info attribute.
     *  @param input One of the flags `yes/no` or `on/off`. */
   def setUnchecked(input: String) {
-    unchecked = Flag toBoolean input orElse buildError(
-      "Unknown unchecked flag '" + input + "'")
+    unchecked = Flag toBoolean input orElse
+      buildError("Unknown unchecked flag '" + input + "'")
   }
 
   /** Set the `usejavacp` info attribute.
     *  @param input One of the flags `yes/no` or `on/off`. */
   def setUsejavacp(input: String) {
-    usejavacp = Flag toBoolean input orElse buildError(
-      "Unknown usejavacp flag '" + input + "'")
+    usejavacp = Flag toBoolean input orElse
+      buildError("Unknown usejavacp flag '" + input + "'")
   }
 
   /** Sets the `failonerror` attribute. Used by [[http://ant.apache.org Ant]].
@@ -725,7 +725,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
           if (ex.getMessage == null) "no error message provided"
           else ex.getMessage
         buildError(
-          "Compile failed because of an internal compiler error (" + msg + "); see the error output for details.")
+          "Compile failed because of an internal compiler error (" + msg +
+            "); see the error output for details.")
     }
 
     reporter.printSummary()

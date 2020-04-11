@@ -279,22 +279,24 @@ class IntegerPropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty() should be(true)
   }
 
-  it should "support bindable infix greater than or equal to with a property" in {
-    booleanProperty <== integerProperty >= integerProperty2
-    integerProperty() = 18349
-    integerProperty2() = 4985
-    booleanProperty() should be(true)
-    integerProperty2() = 234564
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix greater than or equal to with a property" in {
+      booleanProperty <== integerProperty >= integerProperty2
+      integerProperty() = 18349
+      integerProperty2() = 4985
+      booleanProperty() should be(true)
+      integerProperty2() = 234564
+      booleanProperty() should be(false)
+    }
 
-  it should "support bindable infix greater than or equal to with a constant" in {
-    booleanProperty <== integerProperty >= 18349
-    integerProperty() = 4985
-    booleanProperty() should be(false)
-    integerProperty() = 234564
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix greater than or equal to with a constant" in {
+      booleanProperty <== integerProperty >= 18349
+      integerProperty() = 4985
+      booleanProperty() should be(false)
+      integerProperty() = 234564
+      booleanProperty() should be(true)
+    }
 
   it should "support invalidate/change triggers on binding expressions" in {
     var invalidateCount = 0

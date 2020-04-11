@@ -120,8 +120,8 @@ class ConditionalExpressionSuite
     assert(CaseWhen(Seq((c2, c4_notNull)), c6).nullable === true)
 
     assert(
-      CaseWhen(Seq((c2, c4_notNull), (c3, c5_notNull)), c6_notNull)
-        .nullable === false)
+      CaseWhen(Seq((c2, c4_notNull), (c3, c5_notNull)), c6_notNull).nullable ===
+        false)
     assert(
       CaseWhen(Seq((c2, c4), (c3, c5_notNull)), c6_notNull).nullable === true)
     assert(

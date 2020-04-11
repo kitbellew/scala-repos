@@ -197,9 +197,8 @@ class SparkListenerSuite
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
     listener.stageInfos.size should be { 1 }
     val stageInfo2 = listener.stageInfos.keys.find(_.stageId == 1).get
-    stageInfo2.rddInfos.size should be {
-      3
-    } // ParallelCollectionRDD, FilteredRDD, MappedRDD
+    stageInfo2.rddInfos.size should
+      be { 3 } // ParallelCollectionRDD, FilteredRDD, MappedRDD
     stageInfo2.rddInfos.forall(_.numPartitions == 4) should be { true }
     stageInfo2.rddInfos.exists(_.name == "Deux") should be { true }
     listener.stageInfos.clear()
@@ -368,8 +367,8 @@ class SparkListenerSuite
     finishTime = System.currentTimeMillis + WAIT_TIMEOUT_MILLIS
     listener.synchronized {
       var remainingWait = finishTime - System.currentTimeMillis
-      while (listener.endedTasks.size < listener.startedTasks
-               .size && remainingWait > 0) {
+      while (listener.endedTasks.size < listener.startedTasks.size &&
+             remainingWait > 0) {
         listener.wait(finishTime - System.currentTimeMillis)
         remainingWait = finishTime - System.currentTimeMillis
       }

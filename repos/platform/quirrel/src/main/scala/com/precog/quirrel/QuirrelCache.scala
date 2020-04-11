@@ -153,17 +153,15 @@ trait QuirrelCache extends AST {
             else if (s.startsWith("false")) ("b", 5)
             else {
               sys.error(
-                "error recovering boolean literal from %s (%s at %s)" format (
-                  s, original, i
-                ))
+                "error recovering boolean literal from %s (%s at %s)" format
+                  (s, original, i))
             }
           case _: NumLit =>
             parser.numLiteralRegex.findPrefixOf(s).map(x => ("n", x.length))
               .getOrElse {
                 sys.error(
-                  "error recovering number literal from %s (%s at %s)" format (
-                    s, original, i
-                  ))
+                  "error recovering number literal from %s (%s at %s)" format
+                    (s, original, i))
               }
           case _: StrLit =>
             parser.pathLiteralRegex.findPrefixOf(s).map(x => ("p", x.length))
@@ -175,9 +173,8 @@ trait QuirrelCache extends AST {
                   }
               }.getOrElse {
                 sys.error(
-                  "error recovering string literal from %s (%s at %s)" format (
-                    s, original, i
-                  ))
+                  "error recovering string literal from %s (%s at %s)" format
+                    (s, original, i))
               }
         }
       }

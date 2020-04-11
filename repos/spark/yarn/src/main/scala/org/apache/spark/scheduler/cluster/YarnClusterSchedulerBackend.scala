@@ -44,8 +44,8 @@ private[spark] class YarnClusterSchedulerBackend(
       val yarnConf = new YarnConfiguration(sc.hadoopConfiguration)
       val containerId = YarnSparkHadoopUtil.get.getContainerId
 
-      val httpAddress = System.getenv(Environment.NM_HOST.name()) +
-        ":" + System.getenv(Environment.NM_HTTP_PORT.name())
+      val httpAddress = System.getenv(Environment.NM_HOST.name()) + ":" +
+        System.getenv(Environment.NM_HTTP_PORT.name())
       // lookup appropriate http scheme for container log urls
       val yarnHttpPolicy = yarnConf.get(
         YarnConfiguration.YARN_HTTP_POLICY_KEY,

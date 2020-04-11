@@ -170,8 +170,7 @@ class AttributeGroup private (
   override def equals(other: Any): Boolean = {
     other match {
       case o: AttributeGroup =>
-        (name == o.name) &&
-          (numAttributes == o.numAttributes) &&
+        (name == o.name) && (numAttributes == o.numAttributes) &&
           (attributes.map(_.toSeq) == o.attributes.map(_.toSeq))
       case _ => false
     }

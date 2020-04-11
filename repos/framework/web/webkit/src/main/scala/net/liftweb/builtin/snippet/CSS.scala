@@ -42,21 +42,11 @@ object CSS extends DispatchSnippet {
     */
   def blueprint: NodeSeq = {
     <xml:group>
-      <link rel="stylesheet" href={
-      "/" + LiftRules.resourceServerPath +
-        "/blueprint/screen.css"
-    } type="text/css"
+      <link rel="stylesheet" href={"/" + LiftRules.resourceServerPath + "/blueprint/screen.css"} type="text/css"
         media="screen, projection"/>
-      <link rel="stylesheet" href={
-      "/" + LiftRules.resourceServerPath +
-        "/blueprint/print.css"
-    } type="text/css" media="print"/>
-    </xml:group> ++
-      Unparsed(
-        """
-  <!--[if IE]><link rel="stylesheet" href=""" + '"' + S.contextPath + """/""" +
-          LiftRules.resourceServerPath +
-          """/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+      <link rel="stylesheet" href={"/" + LiftRules.resourceServerPath + "/blueprint/print.css"} type="text/css" media="print"/>
+    </xml:group> ++ Unparsed("""
+  <!--[if IE]><link rel="stylesheet" href=""" + '"' + S.contextPath + """/""" + LiftRules.resourceServerPath + """/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
     """)
   }
 
@@ -72,10 +62,7 @@ object CSS extends DispatchSnippet {
     * (screen media)
     */
   def fancyType: NodeSeq = {
-    <link rel="stylesheet" href={
-      "/" + LiftRules.resourceServerPath +
-        "/blueprint/plugins/fancy-type/screen.css"
-    }
+    <link rel="stylesheet" href={"/" + LiftRules.resourceServerPath + "/blueprint/plugins/fancy-type/screen.css"}
       type="text/css" media="screen, projection"/>
   }
 }

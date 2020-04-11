@@ -146,12 +146,12 @@ object CofreeTest extends SpecLite {
     val a = 1
     val b = Applicative[CofreeZip[IList, ?]].point(a)
     val size = 10
-    Foldable[Cofree[IList, ?]].toStream(Tag.unwrap(b))
-      .take(size) must_=== Stream.fill(size)(a)
+    Foldable[Cofree[IList, ?]].toStream(Tag.unwrap(b)).take(size) must_===
+      Stream.fill(size)(a)
   }
 
-  "Applicative[λ[α => CofreeZip[LazyOption, α]]] is Applicative[λ[α => Stream[α] @@ Zip]]" ! forAll {
-    (a: OneAndStream[Int], b: OneAndStream[Int]) =>
+  "Applicative[λ[α => CofreeZip[LazyOption, α]]] is Applicative[λ[α => Stream[α] @@ Zip]]" !
+    forAll { (a: OneAndStream[Int], b: OneAndStream[Int]) =>
       import syntax.foldable._
       val f = (_: Int) + (_: Int)
       val h #:: t = Tag.unwrap(
@@ -163,7 +163,7 @@ object CofreeTest extends SpecLite {
       val bb = Tags.Zip(oneAndStreamCofreeLazyOptionIso.to(b))
       val y = Applicative[λ[α => CofreeZip[LazyOption, α]]].apply2(aa, bb)(f)
       OneAnd(h, t) must_=== oneAndStreamCofreeLazyOptionIso.from(Tag.unwrap(y))
-  }
+    }
 
   "no stack overflow unfoldC, mapBranching" in {
     import syntax.foldable._

@@ -60,8 +60,8 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
       .toSeq
     // This includes executors that are either still running or have exited cleanly
     val executors = allExecutors.filter { exec =>
-      !ExecutorState.isFinished(exec.state) || exec.state == ExecutorState
-        .EXITED
+      !ExecutorState.isFinished(exec.state) ||
+      exec.state == ExecutorState.EXITED
     }
     val removedExecutors = allExecutors.diff(executors)
     val executorsTable = UIUtils
@@ -102,8 +102,7 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
           {executorsTable}
           {
       if (removedExecutors.nonEmpty) {
-        <h4> Removed Executors </h4> ++
-          removedExecutorsTable
+        <h4> Removed Executors </h4> ++ removedExecutorsTable
       }
     }
         </div>

@@ -292,13 +292,12 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
   private def sameOutput(
       output1: Seq[Attribute],
       output2: Seq[Attribute]): Boolean =
-    output1.size == output2.size &&
-      output1.zip(output2).forall(pair => pair._1.semanticEquals(pair._2))
+    output1.size == output2.size && output1.zip(output2)
+      .forall(pair => pair._1.semanticEquals(pair._2))
 
   private def isGroupingSet(a: Aggregate, e: Expand, p: Project): Boolean = {
     assert(a.child == e && e.child == p)
-    a.groupingExpressions.forall(_.isInstanceOf[Attribute]) &&
-    sameOutput(
+    a.groupingExpressions.forall(_.isInstanceOf[Attribute]) && sameOutput(
       e.output,
       p.child.output ++ a.groupingExpressions.map(_.asInstanceOf[Attribute]))
   }
@@ -339,8 +338,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       }
     }
     val groupingSetSQL = "GROUPING SETS(" +
-      groupingSet.map(e => s"(${e.map(_.sql).mkString(", ")})")
-        .mkString(", ") + ")"
+      groupingSet.map(e => s"(${e.map(_.sql).mkString(", ")})").mkString(", ") +
+      ")"
 
     val aggExprs = agg.aggregateExpressions.map {
       case aggExpr =>

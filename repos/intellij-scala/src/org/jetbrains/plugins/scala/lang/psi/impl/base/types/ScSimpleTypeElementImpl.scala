@@ -463,8 +463,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   to: ScTypeParametersOwner,
                   subst: ScSubstitutor))
               if constrRef && to.isInstanceOf[PsiNamedElement] &&
-                (to.typeParameters.isEmpty || getContext
-                  .isInstanceOf[ScParameterizedTypeElement]) =>
+                (to.typeParameters.isEmpty ||
+                  getContext.isInstanceOf[ScParameterizedTypeElement]) =>
             val (tp, ss) = getContext match {
               case p: ScParameterizedTypeElement
                   if !to.isInstanceOf[ScTypeAliasDeclaration] =>
@@ -485,8 +485,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   to: PsiTypeParameterListOwner,
                   subst: ScSubstitutor))
               if constrRef && to.isInstanceOf[PsiNamedElement] &&
-                (to.getTypeParameters.isEmpty || getContext
-                  .isInstanceOf[ScParameterizedTypeElement]) =>
+                (to.getTypeParameters.isEmpty ||
+                  getContext.isInstanceOf[ScParameterizedTypeElement]) =>
             val (result, ss) = getContext match {
               case p: ScParameterizedTypeElement
                   if !to.isInstanceOf[ScTypeAliasDeclaration] =>
@@ -567,11 +567,10 @@ object ScSimpleTypeElementImpl {
                                                  if to
                                                    .isInstanceOf[
                                                      PsiNamedElement] &&
-                                                   (
-                                                     to.typeParameters
-                                                       .isEmpty || ref.getContext
-                                                       .isInstanceOf[ScParameterizedTypeElement]
-                                                   ) => Some(r)
+                                                   (to.typeParameters.isEmpty ||
+                                                     ref.getContext
+                                                       .isInstanceOf[ScParameterizedTypeElement]) =>
+                                               Some(r)
                                              case Array(
                                                    r @ ScalaResolveResult(
                                                      to: PsiTypeParameterListOwner,
@@ -579,12 +578,12 @@ object ScSimpleTypeElementImpl {
                                                  if to
                                                    .isInstanceOf[
                                                      PsiNamedElement] &&
-                                                   (
-                                                     to.getTypeParameters
-                                                       .isEmpty || ref.getContext
-                                                       .isInstanceOf[ScParameterizedTypeElement]
-                                                   ) => Some(r)
-                                             case _  => ref.bind()
+                                                   (to.getTypeParameters
+                                                     .isEmpty ||
+                                                     ref.getContext
+                                                       .isInstanceOf[ScParameterizedTypeElement]) =>
+                                               Some(r)
+                                             case _ => ref.bind()
                                            }
                                          } else ref.bind()
                                        } else {

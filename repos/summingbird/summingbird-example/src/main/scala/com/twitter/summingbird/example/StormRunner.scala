@@ -120,8 +120,8 @@ object StormRunner {
       // No Ackers
       override def transformConfig(
           config: Map[String, AnyRef]): Map[String, AnyRef] = {
-        config ++ List(
-          (BTConfig.TOPOLOGY_ACKER_EXECUTORS -> (new java.lang.Integer(0))))
+        config ++ List((BTConfig.TOPOLOGY_ACKER_EXECUTORS ->
+          (new java.lang.Integer(0))))
       }
 
       override def getNamedOptions: Map[String, Options] =

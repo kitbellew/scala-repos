@@ -32,8 +32,8 @@ object XmlBugs extends Specification {
   "HarryH's XML with attributes parses correctly" in {
     val json = toJson(
       <tips><group type="Nearby"><tip><id>10</id></tip></group></tips>)
-    compactRender(
-      json) mustEqual """{"tips":{"group":{"type":"Nearby","tip":{"id":"10"}}}}"""
+    compactRender(json) mustEqual
+      """{"tips":{"group":{"type":"Nearby","tip":{"id":"10"}}}}"""
   }
 
   "Jono's XML with attributes parses correctly" in {
@@ -47,14 +47,10 @@ object XmlBugs extends Specification {
     val expected2 =
       """{"self":"http://localhost:8080/word/example","term":"example","available":"true"}"""
 
-    (toJson(example1) diff parse(expected1)) mustEqual Diff(
-      JNothing,
-      JNothing,
-      JNothing)
-    (toJson(example2) diff parse(expected2)) mustEqual Diff(
-      JNothing,
-      JNothing,
-      JNothing)
+    (toJson(example1) diff parse(expected1)) mustEqual
+      Diff(JNothing, JNothing, JNothing)
+    (toJson(example2) diff parse(expected2)) mustEqual
+      Diff(JNothing, JNothing, JNothing)
   }
 
   "Nodes with attributes converted to correct JSON" in {

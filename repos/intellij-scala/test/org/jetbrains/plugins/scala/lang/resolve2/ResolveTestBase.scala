@@ -175,8 +175,8 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
           target.asInstanceOf[ScTypeDefinition].qualifiedName)
       }
 
-      if (options.contains(File) || options.contains(Offset) || options
-            .contains(Line)) {
+      if (options.contains(File) || options.contains(Offset) ||
+          options.contains(Line)) {
         val actual = target.getContainingFile.getVirtualFile
           .getNameWithoutExtension
         val expected =
@@ -206,8 +206,8 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
       if (options.contains(Type)) {
         val expectedClass = Class.forName(options(Type))
         val targetClass = target.getClass
-        val text = Type + " - expected: " + expectedClass
-          .getSimpleName + ", actual: " + targetClass.getSimpleName
+        val text = Type + " - expected: " + expectedClass.getSimpleName +
+          ", actual: " + targetClass.getSimpleName
         Assert.assertTrue(
           message(text),
           expectedClass.isAssignableFrom(targetClass))

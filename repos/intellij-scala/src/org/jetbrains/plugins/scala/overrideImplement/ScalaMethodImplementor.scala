@@ -43,8 +43,8 @@ class ScalaMethodImplementor extends MethodImplementor {
         case mm: ScMethodMember if mm.getElement == method => mm
       }
     } yield {
-      val specifyType =
-        ScalaApplicationSettings.getInstance().SPECIFY_RETURN_TYPE_EXPLICITLY
+      val specifyType = ScalaApplicationSettings.getInstance()
+        .SPECIFY_RETURN_TYPE_EXPLICITLY
       val body = ScalaGenerationInfo
         .defaultValue(member.scType, inClass.getContainingFile)
       val prototype = ScalaPsiElementFactory.createOverrideImplementMethod(

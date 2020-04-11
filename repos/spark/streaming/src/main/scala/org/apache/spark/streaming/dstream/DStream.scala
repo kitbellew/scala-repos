@@ -192,21 +192,22 @@ abstract class DStream[T: ClassTag](
   private[streaming] def initialize(time: Time) {
     if (zeroTime != null && zeroTime != time) {
       throw new SparkException(
-        s"ZeroTime is already initialized to $zeroTime"
-          + s", cannot initialize it again to $time")
+        s"ZeroTime is already initialized to $zeroTime" +
+          s", cannot initialize it again to $time")
     }
     zeroTime = time
 
     // Set the checkpoint interval to be slideDuration or 10 seconds, which ever is larger
     if (mustCheckpoint && checkpointDuration == null) {
-      checkpointDuration = slideDuration * math
-        .ceil(Seconds(10) / slideDuration).toInt
+      checkpointDuration = slideDuration *
+        math.ceil(Seconds(10) / slideDuration).toInt
       logInfo(s"Checkpoint interval automatically set to $checkpointDuration")
     }
 
     // Set the minimum value of the rememberDuration if not already set
     var minRememberDuration = slideDuration
-    if (checkpointDuration != null && minRememberDuration <= checkpointDuration) {
+    if (checkpointDuration != null &&
+        minRememberDuration <= checkpointDuration) {
       // times 2 just to be sure that the latest checkpoint is not forgotten (#paranoia)
       minRememberDuration = checkpointDuration * 2
     }
@@ -243,8 +244,8 @@ abstract class DStream[T: ClassTag](
     )
 
     require(
-      checkpointDuration == null || context.sparkContext.checkpointDir
-        .isDefined,
+      checkpointDuration == null ||
+        context.sparkContext.checkpointDir.isDefined,
       "The checkpoint directory has not been set. Please set it by StreamingContext.checkpoint()."
     )
 
@@ -256,8 +257,8 @@ abstract class DStream[T: ClassTag](
     )
 
     require(
-      checkpointDuration == null || checkpointDuration
-        .isMultipleOf(slideDuration),
+      checkpointDuration == null ||
+        checkpointDuration.isMultipleOf(slideDuration),
       s"The checkpoint interval for ${this.getClass.getSimpleName} has been set to " +
         s" $checkpointDuration which not a multiple of its slide time ($slideDuration). " +
         s"Please set it to a multiple of $slideDuration."
@@ -304,9 +305,8 @@ abstract class DStream[T: ClassTag](
   }
 
   private[streaming] def remember(duration: Duration) {
-    if (duration != null && (
-          rememberDuration == null || duration > rememberDuration
-        )) {
+    if (duration != null &&
+        (rememberDuration == null || duration > rememberDuration)) {
       rememberDuration = duration
       logInfo(
         s"Duration for remembering RDDs set to $rememberDuration for $this")
@@ -318,8 +318,8 @@ abstract class DStream[T: ClassTag](
   private[streaming] def isTimeValid(time: Time): Boolean = {
     if (!isInitialized) {
       throw new SparkException(this + " has not been initialized")
-    } else if (time <= zeroTime || !(time - zeroTime)
-                 .isMultipleOf(slideDuration)) {
+    } else if (time <= zeroTime ||
+               !(time - zeroTime).isMultipleOf(slideDuration)) {
       logInfo(
         s"Time $time is invalid as zeroTime is $zeroTime" +
           s" , slideDuration is $slideDuration and difference is ${time - zeroTime}")
@@ -1016,9 +1016,8 @@ object DStream {
       // If the class is a spark example class or a streaming test class then it is considered
       // as a streaming application class and don't exclude. Otherwise, exclude any
       // non-Spark and non-Scala class, as the rest would streaming application classes.
-      (
-        isSparkClass || isScalaClass
-      ) && !isSparkExampleClass && !isSparkStreamingTestClass
+      (isSparkClass || isScalaClass) && !isSparkExampleClass &&
+      !isSparkStreamingTestClass
     }
     org.apache.spark.util.Utils.getCallSite(streamingExclustionFunction)
   }

@@ -51,8 +51,9 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     // this part is interesting to unpicklers
     def hasSetter = setter.isDefined
     def isErasedParam =
-      isParam && accessor
-        .isEmpty // TODO: this should somehow communicate with the constructors phase!
+      isParam &&
+        accessor
+          .isEmpty // TODO: this should somehow communicate with the constructors phase!
     def isNonParam = !isParam
   }
 
@@ -107,8 +108,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
         tpe.declarations.flatMap {
           case sym: MethodSymbol if sym.name.toString.startsWith("set") =>
             val shortName = sym.name.toString.substring(3)
-            if (candidates.find(_ == shortName).nonEmpty && shortName
-                  .length > 0) {
+            if (candidates.find(_ == shortName).nonEmpty &&
+                shortName.length > 0) {
               val rawSymTpe = sym.typeSignatureIn(rawTpeOfOwner) match {
                 case MethodType(List(param), _) => param.typeSignature
                 case _ =>
@@ -174,8 +175,7 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       else None
 
     val canCallCtor =
-      primaryCtor != NoSymbol &&
-        primaryCtorParamsOpt.nonEmpty &&
+      primaryCtor != NoSymbol && primaryCtorParamsOpt.nonEmpty &&
         (
           primaryCtorParamsOpt.get
             .forall {
@@ -193,8 +193,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
                       val isVal = sym.asTerm.isVal
                       val getterExists = sym.asTerm.getter != NoSymbol
                       // println(s"$isVal (public: ${sym.asTerm.isPublic}, isParamAcc: ${sym.asTerm.isParamAccessor}), $getterExists (${sym.asTerm.getter}, public: ${sym.asTerm.getter.isPublic})")
-                      (isVal && sym.asTerm.isPublic) || (getterExists && sym
-                        .asTerm.getter.isPublic)
+                      (isVal && sym.asTerm.isPublic) ||
+                      (getterExists && sym.asTerm.getter.isPublic)
                   }
                 } else false
 
@@ -388,8 +388,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       mkFieldIR(sym, Some(sym), paramAccessors.find(_.name == sym.name)))
     val varGetters = otherAccessors.collect {
       case meth
-          if meth.isGetter && meth.accessed != NoSymbol && meth.accessed.asTerm
-            .isVar => meth
+          if meth.isGetter && meth.accessed != NoSymbol &&
+            meth.accessed.asTerm.isVar => meth
     }
     val varFields = varGetters.map(sym => mkFieldIR(sym, None, Some(sym)))
 

@@ -36,19 +36,18 @@ class FilterPushdownSuite extends PlanTest {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
     val batches =
-      Batch("Subqueries", Once, EliminateSubqueryAliases) ::
-        Batch(
-          "Filter Pushdown",
-          Once,
-          SamplePushDown,
-          CombineFilters,
-          PushPredicateThroughProject,
-          BooleanSimplification,
-          PushPredicateThroughJoin,
-          PushPredicateThroughGenerate,
-          PushPredicateThroughAggregate,
-          CollapseProject
-        ) :: Nil
+      Batch("Subqueries", Once, EliminateSubqueryAliases) :: Batch(
+        "Filter Pushdown",
+        Once,
+        SamplePushDown,
+        CombineFilters,
+        PushPredicateThroughProject,
+        BooleanSimplification,
+        PushPredicateThroughJoin,
+        PushPredicateThroughGenerate,
+        PushPredicateThroughAggregate,
+        CollapseProject
+      ) :: Nil
   }
 
   val testRelation = LocalRelation('a.int, 'b.int, 'c.int)

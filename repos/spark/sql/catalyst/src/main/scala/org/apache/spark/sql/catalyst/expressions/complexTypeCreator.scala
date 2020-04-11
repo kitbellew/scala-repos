@@ -53,18 +53,17 @@ case class CreateArray(children: Seq[Expression]) extends Expression {
     s"""
       final boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${children.size}];
-    """ +
-      children.zipWithIndex.map {
-        case (e, i) =>
-          val eval = e.gen(ctx)
-          eval.code + s"""
+    """ + children.zipWithIndex.map {
+      case (e, i) =>
+        val eval = e.gen(ctx)
+        eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
             $values[$i] = ${eval.value};
           }
          """
-      }.mkString("\n") +
+    }.mkString("\n") +
       s"final ArrayData ${ev.value} = new $arrayClass($values);"
   }
 
@@ -106,18 +105,17 @@ case class CreateStruct(children: Seq[Expression]) extends Expression {
     s"""
       boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${children.size}];
-    """ +
-      children.zipWithIndex.map {
-        case (e, i) =>
-          val eval = e.gen(ctx)
-          eval.code + s"""
+    """ + children.zipWithIndex.map {
+      case (e, i) =>
+        val eval = e.gen(ctx)
+        eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
             $values[$i] = ${eval.value};
           }
          """
-      }.mkString("\n") +
+    }.mkString("\n") +
       s"final InternalRow ${ev.value} = new $rowClass($values);"
   }
 
@@ -186,18 +184,17 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
     s"""
       boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${valExprs.size}];
-    """ +
-      valExprs.zipWithIndex.map {
-        case (e, i) =>
-          val eval = e.gen(ctx)
-          eval.code + s"""
+    """ + valExprs.zipWithIndex.map {
+      case (e, i) =>
+        val eval = e.gen(ctx)
+        eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
             $values[$i] = ${eval.value};
           }
          """
-      }.mkString("\n") +
+    }.mkString("\n") +
       s"final InternalRow ${ev.value} = new $rowClass($values);"
   }
 

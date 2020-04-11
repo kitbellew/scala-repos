@@ -45,8 +45,8 @@ private[parser] trait CommonRules {
 
   def `quoted-string`: Rule1[String] =
     rule {
-      DQUOTE ~ clearSB() ~ zeroOrMore(
-        qdtext ~ appendSB() | `quoted-pair`) ~ push(sb.toString) ~ DQUOTE ~ OWS
+      DQUOTE ~ clearSB() ~ zeroOrMore(qdtext ~ appendSB() | `quoted-pair`) ~
+        push(sb.toString) ~ DQUOTE ~ OWS
     }
 
   def qdtext = rule { `qdtext-base` | `obs-text` }
@@ -59,15 +59,16 @@ private[parser] trait CommonRules {
   // builds a string via the StringBuilding StringBuilder
   def comment: Rule0 =
     rule {
-      ws('(') ~ clearSB() ~ zeroOrMore(
-        ctext | `quoted-cpair` | `nested-comment`) ~ ws(')')
+      ws('(') ~ clearSB() ~
+        zeroOrMore(ctext | `quoted-cpair` | `nested-comment`) ~ ws(')')
     }
 
   def `nested-comment` = {
     var saved: String = null
     rule {
-      &('(') ~ run(saved = sb.toString) ~ (comment ~ prependSB(
-        saved + " (") ~ appendSB(')') | setSB(saved) ~ test(false))
+      &('(') ~ run(saved = sb.toString) ~
+        (comment ~ prependSB(saved + " (") ~ appendSB(')') |
+          setSB(saved) ~ test(false))
     }
   }
 
@@ -87,18 +88,17 @@ private[parser] trait CommonRules {
 
   def `IMF-fixdate` =
     rule { // mixture of the spec-ed `IMF-fixdate` and `rfc850-date`
-      (`day-name-l` | `day-name`) ~ ", " ~ (
-        date1 | date2
-      ) ~ ' ' ~ `time-of-day` ~ ' ' ~ ("GMT" | "UTC") ~> {
-        (wkday, day, month, year, hour, min, sec) ⇒
-          createDateTime(year, month, day, hour, min, sec, wkday)
-      }
+      (`day-name-l` | `day-name`) ~ ", " ~ (date1 | date2) ~ ' ' ~
+        `time-of-day` ~ ' ' ~ ("GMT" | "UTC") ~> {
+          (wkday, day, month, year, hour, min, sec) ⇒
+            createDateTime(year, month, day, hour, min, sec, wkday)
+        }
     }
 
   def `day-name` =
     rule(
-      "Sun" ~ push(0) | "Mon" ~ push(1) | "Tue" ~ push(2) | "Wed" ~ push(
-        3) | "Thu" ~ push(4) | "Fri" ~ push(5) | "Sat" ~ push(6))
+      "Sun" ~ push(0) | "Mon" ~ push(1) | "Tue" ~ push(2) | "Wed" ~ push(3) |
+        "Thu" ~ push(4) | "Fri" ~ push(5) | "Sat" ~ push(6))
 
   def date1 = rule { day ~ `date-sep` ~ month ~ `date-sep` ~ year }
 
@@ -106,10 +106,10 @@ private[parser] trait CommonRules {
 
   def month =
     rule(
-      "Jan" ~ push(1) | "Feb" ~ push(2) | "Mar" ~ push(3) | "Apr" ~ push(
-        4) | "May" ~ push(5) | "Jun" ~ push(6) | "Jul" ~ push(7) |
-        "Aug" ~ push(8) | "Sep" ~ push(9) | "Oct" ~ push(10) | "Nov" ~ push(
-        11) | "Dec" ~ push(12))
+      "Jan" ~ push(1) | "Feb" ~ push(2) | "Mar" ~ push(3) | "Apr" ~ push(4) |
+        "May" ~ push(5) | "Jun" ~ push(6) | "Jul" ~ push(7) | "Aug" ~ push(8) |
+        "Sep" ~ push(9) | "Oct" ~ push(10) | "Nov" ~ push(11) |
+        "Dec" ~ push(12))
 
   def year = rule { digit4 }
 
@@ -125,15 +125,15 @@ private[parser] trait CommonRules {
   // per #17714, parse two digit year to https://tools.ietf.org/html/rfc6265#section-5.1.1
   def date2 =
     rule {
-      day ~ '-' ~ month ~ '-' ~ digit2 ~> (y ⇒
-        if (y <= 69) y + 2000 else y + 1900)
+      day ~ '-' ~ month ~ '-' ~ digit2 ~>
+        (y ⇒ if (y <= 69) y + 2000 else y + 1900)
     }
 
   def `day-name-l` =
     rule(
-      "Sunday" ~ push(0) | "Monday" ~ push(1) | "Tuesday" ~ push(
-        2) | "Wednesday" ~ push(3) | "Thursday" ~ push(4) |
-        "Friday" ~ push(5) | "Saturday" ~ push(6))
+      "Sunday" ~ push(0) | "Monday" ~ push(1) | "Tuesday" ~ push(2) |
+        "Wednesday" ~ push(3) | "Thursday" ~ push(4) | "Friday" ~ push(5) |
+        "Saturday" ~ push(6))
 
   def `asctime-date` =
     rule {
@@ -157,9 +157,8 @@ private[parser] trait CommonRules {
   def qvalue =
     rule { // a bit more lenient than the spec
       capture(
-        '0' ~ optional('.' ~ zeroOrMore(DIGIT))
-          | '.' ~ oneOrMore(DIGIT)
-          | '1' ~ optional('.' ~ zeroOrMore('0'))) ~> (_.toFloat) ~ OWS
+        '0' ~ optional('.' ~ zeroOrMore(DIGIT)) | '.' ~ oneOrMore(DIGIT) |
+          '1' ~ optional('.' ~ zeroOrMore('0'))) ~> (_.toFloat) ~ OWS
     }
 
   // ******************************************************************************************
@@ -214,9 +213,9 @@ private[parser] trait CommonRules {
 
   def `challenge-or-credentials`: Rule2[String, Seq[(String, String)]] =
     rule {
-      `auth-scheme` ~ (oneOrMore(`auth-param` ~> (_ -> _)).separatedBy(listSep)
-        | `token68` ~> (x ⇒ ("" -> x) :: Nil)
-        | push(Nil))
+      `auth-scheme` ~
+        (oneOrMore(`auth-param` ~> (_ -> _)).separatedBy(listSep) |
+          `token68` ~> (x ⇒ ("" -> x) :: Nil) | push(Nil))
     }
 
   // ******************************************************************************************
@@ -231,8 +230,8 @@ private[parser] trait CommonRules {
 
   def `entity-tag` =
     rule {
-      ("W/" ~ push(true) | push(false)) ~ `opaque-tag` ~> ((weak, tag) ⇒
-        EntityTag(tag, weak))
+      ("W/" ~ push(true) | push(false)) ~ `opaque-tag` ~>
+        ((weak, tag) ⇒ EntityTag(tag, weak))
     }
 
   def `opaque-tag` =
@@ -259,8 +258,8 @@ private[parser] trait CommonRules {
 
   def `generic-credentials` =
     rule {
-      `challenge-or-credentials` ~> ((scheme, params) ⇒
-        GenericHttpCredentials(scheme, params.toMap))
+      `challenge-or-credentials` ~>
+        ((scheme, params) ⇒ GenericHttpCredentials(scheme, params.toMap))
     }
 
   /**
@@ -271,8 +270,8 @@ private[parser] trait CommonRules {
     rule {
       (`cookie-pair` ~ &(`cookie-separator`) ~> (Some(_: HttpCookiePair))) |
         // fallback that parses and discards everything until the next semicolon
-        (zeroOrMore(!`cookie-separator` ~ ANY) ~ &(`cookie-separator`) ~ push(
-          None))
+        (zeroOrMore(!`cookie-separator` ~ ANY) ~ &(`cookie-separator`) ~
+          push(None))
     }
 
   def `cookie-pair`: Rule1[HttpCookiePair] =
@@ -289,8 +288,8 @@ private[parser] trait CommonRules {
   // ******************************************************************************************
   def `cookie-value-rfc-6265` =
     rule {
-      ('"' ~ capture(zeroOrMore(`cookie-octet-rfc-6265`)) ~ '"' | capture(
-        zeroOrMore(`cookie-octet-rfc-6265`))) ~ OWS
+      ('"' ~ capture(zeroOrMore(`cookie-octet-rfc-6265`)) ~ '"' |
+        capture(zeroOrMore(`cookie-octet-rfc-6265`))) ~ OWS
     }
 
   def `cookie-value-raw` =
@@ -298,7 +297,8 @@ private[parser] trait CommonRules {
 
   def `cookie-av` =
     rule {
-      `expires-av` | `max-age-av` | `domain-av` | `path-av` | `secure-av` | `httponly-av` | `extension-av`
+      `expires-av` | `max-age-av` | `domain-av` | `path-av` | `secure-av` |
+        `httponly-av` | `extension-av`
     }
 
   def `expires-av` =
@@ -358,14 +358,10 @@ private[parser] trait CommonRules {
   // http://www.rfc-editor.org/errata_search.php?rfc=6265
   def `extension-av` =
     rule {
-      !(ignoreCase("expires=")
-        | ignoreCase("max-age=")
-        | ignoreCase("domain=")
-        | ignoreCase("path=")
-        | ignoreCase("secure")
-        | ignoreCase("httponly")) ~
-        capture(zeroOrMore(`av-octet`)) ~ OWS ~> { (c: HttpCookie, s: String) ⇒
-        c.copy(extension = Some(s))
+      !(ignoreCase("expires=") | ignoreCase("max-age=") |
+        ignoreCase("domain=") | ignoreCase("path=") | ignoreCase("secure") |
+        ignoreCase("httponly")) ~ capture(zeroOrMore(`av-octet`)) ~ OWS ~> {
+        (c: HttpCookie, s: String) ⇒ c.copy(extension = Some(s))
       }
     }
 
@@ -379,8 +375,8 @@ private[parser] trait CommonRules {
 
   def `origin-list` =
     rule {
-      oneOrMore(capture(oneOrMore(VCHAR)) ~> (HttpOrigin(_)))
-        .separatedBy(SP) ~ OWS // offload to URL parser
+      oneOrMore(capture(oneOrMore(VCHAR)) ~> (HttpOrigin(_))).separatedBy(SP) ~
+        OWS // offload to URL parser
     }
 
   // ******************************************************************************************
@@ -394,21 +390,23 @@ private[parser] trait CommonRules {
 
   def `byte-range-resp` =
     rule {
-      `byte-range` ~ ws('/') ~ (`complete-length` ~> (Some(_)) | ws('*') ~ push(
-        None)) ~> (ContentRange(_, _, _))
+      `byte-range` ~ ws('/') ~
+        (`complete-length` ~> (Some(_)) | ws('*') ~ push(None)) ~>
+        (ContentRange(_, _, _))
     }
 
   def `byte-range-set` =
     rule {
-      zeroOrMore(ws(',')) ~ oneOrMore(
-        `byte-range-spec` | `suffix-byte-range-spec`).separatedBy(listSep)
+      zeroOrMore(ws(',')) ~
+        oneOrMore(`byte-range-spec` | `suffix-byte-range-spec`)
+          .separatedBy(listSep)
     }
 
   def `byte-range-spec` =
     rule {
-      `first-byte-pos` ~ ws('-') ~ (`last-byte-pos` ~> (
-        ByteRange(_: Long, _)
-      ) | run(ByteRange.fromOffset(_)))
+      `first-byte-pos` ~ ws('-') ~
+        (`last-byte-pos` ~> (ByteRange(_: Long, _)) |
+          run(ByteRange.fromOffset(_)))
     }
 
   def `byte-ranges-specifier` =
@@ -454,9 +452,9 @@ private[parser] trait CommonRules {
 
   def `product-or-comment` =
     rule(
-      product ~ comment ~> (ProductVersion(_, _, sb.toString))
-        | product ~> (ProductVersion(_, _))
-        | comment ~ push(ProductVersion("", "", sb.toString)))
+      product ~ comment ~> (ProductVersion(_, _, sb.toString)) |
+        product ~> (ProductVersion(_, _)) |
+        comment ~ push(ProductVersion("", "", sb.toString)))
 
   def products =
     rule { `product-or-comment` ~ zeroOrMore(`product-or-comment`) ~> (_ +: _) }
@@ -467,17 +465,16 @@ private[parser] trait CommonRules {
 
   def `transfer-coding` =
     rule(
-      ignoreCase("chunked") ~ OWS ~ push(TransferEncodings.chunked)
-        | ignoreCase("gzip") ~ OWS ~ push(TransferEncodings.gzip)
-        | ignoreCase("deflate") ~ OWS ~ push(TransferEncodings.deflate)
-        | ignoreCase("compress") ~ OWS ~ push(TransferEncodings.compress)
-        | `transfer-extension`)
+      ignoreCase("chunked") ~ OWS ~ push(TransferEncodings.chunked) |
+        ignoreCase("gzip") ~ OWS ~ push(TransferEncodings.gzip) |
+        ignoreCase("deflate") ~ OWS ~ push(TransferEncodings.deflate) |
+        ignoreCase("compress") ~ OWS ~ push(TransferEncodings.compress) |
+        `transfer-extension`)
 
   def `transfer-extension` =
     rule {
-      token ~ zeroOrMore(ws(';') ~ `transfer-parameter`) ~> (_.toMap) ~> (
-        TransferEncodings.Extension(_, _)
-      )
+      token ~ zeroOrMore(ws(';') ~ `transfer-parameter`) ~> (_.toMap) ~>
+        (TransferEncodings.Extension(_, _))
     }
 
   def `transfer-parameter` = rule { token ~ ws('=') ~ word ~> (_ -> _) }
@@ -499,8 +496,8 @@ private[parser] trait CommonRules {
   def digit4 =
     rule {
       DIGIT ~ DIGIT ~ DIGIT ~ DIGIT ~ push(
-        digitInt(charAt(-4)) * 1000 + digitInt(charAt(-3)) * 100 + digitInt(
-          charAt(-2)) * 10 + digitInt(lastChar))
+        digitInt(charAt(-4)) * 1000 + digitInt(charAt(-3)) * 100 +
+          digitInt(charAt(-2)) * 10 + digitInt(lastChar))
     }
 
   def ws(c: Char) = rule { c ~ OWS }
@@ -509,15 +506,15 @@ private[parser] trait CommonRules {
   // parses a potentially long series of digits and extracts its Long value capping at Int.MaxValue in case of overflows
   def longNumberCappedAtIntMaxValue =
     rule {
-      capture((1 to 11).times(DIGIT)) ~> (s ⇒
-        math.min(s.toLong, Int.MaxValue)) ~ zeroOrMore(DIGIT) ~ OWS
+      capture((1 to 11).times(DIGIT)) ~>
+        (s ⇒ math.min(s.toLong, Int.MaxValue)) ~ zeroOrMore(DIGIT) ~ OWS
     }
 
   // parses a potentially long series of digits and extracts its Long value capping at 999,999,999,999,999,999 in case of overflows
   def longNumberCapped =
     rule(
-      (capture((1 to 18).times(DIGIT)) ~ !DIGIT ~> (_.toLong)
-        | oneOrMore(DIGIT) ~ push(999999999999999999L)) ~ OWS)
+      (capture((1 to 18).times(DIGIT)) ~ !DIGIT ~> (_.toLong) |
+        oneOrMore(DIGIT) ~ push(999999999999999999L)) ~ OWS)
 
   private def digitInt(c: Char): Int = c - '0'
 

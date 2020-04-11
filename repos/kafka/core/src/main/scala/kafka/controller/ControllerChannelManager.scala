@@ -477,8 +477,9 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
           partitionStateInfos.foreach {
             case (topicPartition, state) =>
               val typeOfRequest =
-                if (broker == state.leaderIsrAndControllerEpoch.leaderAndIsr
-                      .leader) "become-leader"
+                if (broker ==
+                      state.leaderIsrAndControllerEpoch.leaderAndIsr.leader)
+                  "become-leader"
                 else "become-follower"
               stateChangeLogger.trace(
                 ("Controller %d epoch %d sending %s LeaderAndIsr request %s to broker %d " +
@@ -554,10 +555,10 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
           }
 
           val version =
-            if (controller.config
-                  .interBrokerProtocolVersion >= KAFKA_0_10_0_IV0) 2: Short
-            else if (controller.config
-                       .interBrokerProtocolVersion >= KAFKA_0_9_0) 1: Short
+            if (controller.config.interBrokerProtocolVersion >=
+                  KAFKA_0_10_0_IV0) 2: Short
+            else if (controller.config.interBrokerProtocolVersion >=
+                       KAFKA_0_9_0) 1: Short
             else 0: Short
 
           val updateMetadataRequest =

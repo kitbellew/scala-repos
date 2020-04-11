@@ -102,31 +102,31 @@ class NewRemoteActorSpec
       enterBarrier("done")
     }
 
-    "be able to shutdown system when using remote deployed actor" in within(
-      20 seconds) {
-      runOn(master) {
-        val actor = system.actorOf(Props[SomeActor], "service-hello3")
-        actor.isInstanceOf[RemoteActorRef] should ===(true)
-        actor.path.address should ===(node(slave).address)
-        // This watch is in race with the shutdown of the watched system. This race should remain, as the test should
-        // handle both cases:
-        //  - remote system receives watch, replies with DeathWatchNotification
-        //  - remote system never gets watch, but DeathWatch heartbeats time out, and AddressTerminated is generated
-        //    (this needs some time to happen)
-        watch(actor)
+    "be able to shutdown system when using remote deployed actor" in
+      within(20 seconds) {
+        runOn(master) {
+          val actor = system.actorOf(Props[SomeActor], "service-hello3")
+          actor.isInstanceOf[RemoteActorRef] should ===(true)
+          actor.path.address should ===(node(slave).address)
+          // This watch is in race with the shutdown of the watched system. This race should remain, as the test should
+          // handle both cases:
+          //  - remote system receives watch, replies with DeathWatchNotification
+          //  - remote system never gets watch, but DeathWatch heartbeats time out, and AddressTerminated is generated
+          //    (this needs some time to happen)
+          watch(actor)
 
-        enterBarrier("deployed")
+          enterBarrier("deployed")
 
-        // master system is supposed to be shutdown after slave
-        // this should be triggered by slave system.terminate
-        expectMsgPF() { case Terminated(`actor`) ⇒ true }
+          // master system is supposed to be shutdown after slave
+          // this should be triggered by slave system.terminate
+          expectMsgPF() { case Terminated(`actor`) ⇒ true }
+        }
+
+        runOn(slave) { enterBarrier("deployed") }
+
+        // Important that this is the last test.
+        // It should not be any barriers here.
+        // verifySystemShutdown = true will ensure that system.terminate is successful
       }
-
-      runOn(slave) { enterBarrier("deployed") }
-
-      // Important that this is the last test.
-      // It should not be any barriers here.
-      // verifySystemShutdown = true will ensure that system.terminate is successful
-    }
   }
 }

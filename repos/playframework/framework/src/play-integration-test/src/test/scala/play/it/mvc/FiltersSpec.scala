@@ -137,140 +137,139 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
   "filters" should {
     "handle errors" in {
 
-      "ErrorHandlingFilter has no effect on a GET that returns a 200 OK" in withServer()(
-        ErrorHandlingFilter) { ws =>
-        val response = Await.result(ws.url("/ok").get(), Duration.Inf)
-        response.status must_== 200
-        response.body must_== expectedOkText
-      }
+      "ErrorHandlingFilter has no effect on a GET that returns a 200 OK" in
+        withServer()(ErrorHandlingFilter) { ws =>
+          val response = Await.result(ws.url("/ok").get(), Duration.Inf)
+          response.status must_== 200
+          response.body must_== expectedOkText
+        }
 
-      "ErrorHandlingFilter has no effect on a POST that returns a 200 OK" in withServer()(
-        ErrorHandlingFilter) { ws =>
-        val response = Await
-          .result(ws.url("/ok").post(expectedOkText), Duration.Inf)
-        response.status must_== 200
-        response.body must_== expectedOkText
-      }
+      "ErrorHandlingFilter has no effect on a POST that returns a 200 OK" in
+        withServer()(ErrorHandlingFilter) { ws =>
+          val response = Await
+            .result(ws.url("/ok").post(expectedOkText), Duration.Inf)
+          response.status must_== 200
+          response.body must_== expectedOkText
+        }
 
-      "ErrorHandlingFilter recovers from a GET that throws a synchronous exception" in withServer()(
-        ErrorHandlingFilter) { ws =>
-        val response = Await.result(ws.url("/error").get(), Duration.Inf)
-        response.status must_== 500
-        response.body must_== expectedErrorText
-      }
+      "ErrorHandlingFilter recovers from a GET that throws a synchronous exception" in
+        withServer()(ErrorHandlingFilter) { ws =>
+          val response = Await.result(ws.url("/error").get(), Duration.Inf)
+          response.status must_== 500
+          response.body must_== expectedErrorText
+        }
 
-      "ErrorHandlingFilter recovers from a GET that throws an asynchronous exception" in withServer()(
-        ErrorHandlingFilter) { ws =>
-        val response = Await.result(ws.url("/error-async").get(), Duration.Inf)
-        response.status must_== 500
-        response.body must_== expectedErrorText
-      }
+      "ErrorHandlingFilter recovers from a GET that throws an asynchronous exception" in
+        withServer()(ErrorHandlingFilter) { ws =>
+          val response = Await
+            .result(ws.url("/error-async").get(), Duration.Inf)
+          response.status must_== 500
+          response.body must_== expectedErrorText
+        }
 
-      "ErrorHandlingFilter recovers from a POST that throws a synchronous exception" in withServer()(
-        ErrorHandlingFilter) { ws =>
-        val response = Await
-          .result(ws.url("/error").post(expectedOkText), Duration.Inf)
-        response.status must_== 500
-        response.body must_== expectedOkText
-      }
+      "ErrorHandlingFilter recovers from a POST that throws a synchronous exception" in
+        withServer()(ErrorHandlingFilter) { ws =>
+          val response = Await
+            .result(ws.url("/error").post(expectedOkText), Duration.Inf)
+          response.status must_== 500
+          response.body must_== expectedOkText
+        }
 
-      "ErrorHandlingFilter recovers from a POST that throws an asynchronous exception" in withServer()(
-        ErrorHandlingFilter) { ws =>
-        val response = Await
-          .result(ws.url("/error-async").post(expectedOkText), Duration.Inf)
-        response.status must_== 500
-        response.body must_== expectedOkText
-      }
+      "ErrorHandlingFilter recovers from a POST that throws an asynchronous exception" in
+        withServer()(ErrorHandlingFilter) { ws =>
+          val response = Await
+            .result(ws.url("/error-async").post(expectedOkText), Duration.Inf)
+          response.status must_== 500
+          response.body must_== expectedOkText
+        }
     }
 
     "handle errors in Java" in {
-      "ErrorHandlingFilter has no effect on a GET that returns a 200 OK" in withServer()(
-        JavaErrorHandlingFilter) { ws =>
-        val response = Await.result(ws.url("/ok").get(), Duration.Inf)
-        response.status must_== 200
-        response.body must_== expectedOkText
-      }
+      "ErrorHandlingFilter has no effect on a GET that returns a 200 OK" in
+        withServer()(JavaErrorHandlingFilter) { ws =>
+          val response = Await.result(ws.url("/ok").get(), Duration.Inf)
+          response.status must_== 200
+          response.body must_== expectedOkText
+        }
 
-      "ErrorHandlingFilter has no effect on a POST that returns a 200 OK" in withServer()(
-        JavaErrorHandlingFilter) { ws =>
+      "ErrorHandlingFilter has no effect on a POST that returns a 200 OK" in
+        withServer()(JavaErrorHandlingFilter) { ws =>
+          val response = Await
+            .result(ws.url("/ok").post(expectedOkText), Duration.Inf)
+          response.status must_== 200
+          response.body must_== expectedOkText
+        }
+
+      "ErrorHandlingFilter recovers from a GET that throws a synchronous exception" in
+        withServer()(JavaErrorHandlingFilter) { ws =>
+          val response = Await.result(ws.url("/error").get(), Duration.Inf)
+          response.status must_== 500
+          response.body must_== expectedErrorText
+        }
+
+      "ErrorHandlingFilter recovers from a GET that throws an asynchronous exception" in
+        withServer()(JavaErrorHandlingFilter) { ws =>
+          val response = Await
+            .result(ws.url("/error-async").get(), Duration.Inf)
+          response.status must_== 500
+          response.body must_== expectedErrorText
+        }
+
+      "ErrorHandlingFilter recovers from a POST that throws a synchronous exception" in
+        withServer()(JavaErrorHandlingFilter) { ws =>
+          val response = Await
+            .result(ws.url("/error").post(expectedOkText), Duration.Inf)
+          response.status must_== 500
+          response.body must_== expectedOkText
+        }
+
+      "ErrorHandlingFilter recovers from a POST that throws an asynchronous exception" in
+        withServer()(JavaErrorHandlingFilter) { ws =>
+          val response = Await
+            .result(ws.url("/error-async").post(expectedOkText), Duration.Inf)
+          response.status must_== 500
+          response.body must_== expectedOkText
+        }
+    }
+
+    "Filters are not applied when the request is outside the application.context" in
+      withServer(Map("play.http.context" -> "/foo"))(
+        ErrorHandlingFilter,
+        ThrowExceptionFilter) { ws =>
         val response = Await
           .result(ws.url("/ok").post(expectedOkText), Duration.Inf)
         response.status must_== 200
         response.body must_== expectedOkText
       }
 
-      "ErrorHandlingFilter recovers from a GET that throws a synchronous exception" in withServer()(
-        JavaErrorHandlingFilter) { ws =>
-        val response = Await.result(ws.url("/error").get(), Duration.Inf)
-        response.status must_== 500
-        response.body must_== expectedErrorText
-      }
-
-      "ErrorHandlingFilter recovers from a GET that throws an asynchronous exception" in withServer()(
-        JavaErrorHandlingFilter) { ws =>
-        val response = Await.result(ws.url("/error-async").get(), Duration.Inf)
-        response.status must_== 500
-        response.body must_== expectedErrorText
-      }
-
-      "ErrorHandlingFilter recovers from a POST that throws a synchronous exception" in withServer()(
-        JavaErrorHandlingFilter) { ws =>
+    "Filters are applied on the root of the application context" in
+      withServer(Map("play.http.context" -> "/foo"))(SkipNextFilter) { ws =>
         val response = Await
-          .result(ws.url("/error").post(expectedOkText), Duration.Inf)
-        response.status must_== 500
-        response.body must_== expectedOkText
+          .result(ws.url("/foo").post(expectedOkText), Duration.Inf)
+        response.status must_== 200
+        response.body must_== SkipNextFilter.expectedText
       }
 
-      "ErrorHandlingFilter recovers from a POST that throws an asynchronous exception" in withServer()(
-        JavaErrorHandlingFilter) { ws =>
-        val response = Await
-          .result(ws.url("/error-async").post(expectedOkText), Duration.Inf)
-        response.status must_== 500
-        response.body must_== expectedOkText
+    "Filters work even if one of them does not call next" in
+      withServer()(ErrorHandlingFilter, SkipNextFilter) { ws =>
+        val response = Await.result(ws.url("/ok").get(), Duration.Inf)
+        response.status must_== 200
+        response.body must_== SkipNextFilter.expectedText
       }
-    }
 
-    "Filters are not applied when the request is outside the application.context" in withServer(
-      Map("play.http.context" -> "/foo"))(
-      ErrorHandlingFilter,
-      ThrowExceptionFilter) { ws =>
-      val response = Await
-        .result(ws.url("/ok").post(expectedOkText), Duration.Inf)
-      response.status must_== 200
-      response.body must_== expectedOkText
-    }
+    "ErrorHandlingFilter can recover from an exception throw by another filter in the filter chain, even if that Filter does not call next" in
+      withServer()(ErrorHandlingFilter, SkipNextWithErrorFilter) { ws =>
+        val response = Await.result(ws.url("/ok").get(), Duration.Inf)
+        response.status must_== 500
+        response.body must_== SkipNextWithErrorFilter.expectedText
+      }
 
-    "Filters are applied on the root of the application context" in withServer(
-      Map("play.http.context" -> "/foo"))(SkipNextFilter) { ws =>
-      val response = Await
-        .result(ws.url("/foo").post(expectedOkText), Duration.Inf)
-      response.status must_== 200
-      response.body must_== SkipNextFilter.expectedText
-    }
-
-    "Filters work even if one of them does not call next" in withServer()(
-      ErrorHandlingFilter,
-      SkipNextFilter) { ws =>
-      val response = Await.result(ws.url("/ok").get(), Duration.Inf)
-      response.status must_== 200
-      response.body must_== SkipNextFilter.expectedText
-    }
-
-    "ErrorHandlingFilter can recover from an exception throw by another filter in the filter chain, even if that Filter does not call next" in withServer()(
-      ErrorHandlingFilter,
-      SkipNextWithErrorFilter) { ws =>
-      val response = Await.result(ws.url("/ok").get(), Duration.Inf)
-      response.status must_== 500
-      response.body must_== SkipNextWithErrorFilter.expectedText
-    }
-
-    "ErrorHandlingFilter can recover from an exception throw by another filter in the filter chain when that filter calls next and asynchronously throws an exception" in withServer()(
-      ErrorHandlingFilter,
-      ThrowExceptionFilter) { ws =>
-      val response = Await.result(ws.url("/ok").get(), Duration.Inf)
-      response.status must_== 500
-      response.body must_== ThrowExceptionFilter.expectedText
-    }
+    "ErrorHandlingFilter can recover from an exception throw by another filter in the filter chain when that filter calls next and asynchronously throws an exception" in
+      withServer()(ErrorHandlingFilter, ThrowExceptionFilter) { ws =>
+        val response = Await.result(ws.url("/ok").get(), Duration.Inf)
+        response.status must_== 500
+        response.body must_== ThrowExceptionFilter.expectedText
+      }
 
     val filterAddedHeaderKey = "CUSTOM_HEADER"
     val filterAddedHeaderVal = "custom header val"
@@ -282,9 +281,8 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
         }
       def addCustomHeader(originalHeaders: Headers): Headers = {
         FakeHeaders(
-          originalHeaders.headers :+ (
-            filterAddedHeaderKey -> filterAddedHeaderVal
-          ))
+          originalHeaders.headers :+
+            (filterAddedHeaderKey -> filterAddedHeaderVal))
       }
     }
 
@@ -301,13 +299,14 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
         Future.successful(Results.InternalServerError)
     }
 
-    "requests not matching a route should receive a RequestHeader modified by upstream filters" in withServer(
-      errorHandler = Some(CustomErrorHandler))(CustomHeaderFilter) { ws =>
-      val response = Await
-        .result(ws.url("/not-a-real-route").get(), Duration.Inf)
-      response.status must_== 404
-      response.body must_== filterAddedHeaderVal
-    }
+    "requests not matching a route should receive a RequestHeader modified by upstream filters" in
+      withServer(errorHandler = Some(CustomErrorHandler))(CustomHeaderFilter) {
+        ws =>
+          val response = Await
+            .result(ws.url("/not-a-real-route").get(), Duration.Inf)
+          response.status must_== 404
+          response.body must_== filterAddedHeaderVal
+      }
   }
 
   object ErrorHandlingFilter extends EssentialFilter {

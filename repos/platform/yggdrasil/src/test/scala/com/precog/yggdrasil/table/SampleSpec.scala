@@ -46,23 +46,22 @@ trait SampleSpec[M[+_]]
   val simpleData2: Stream[JValue] = Stream.tabulate(100) { i =>
     JObject(
       JField("id", if (i % 2 == 0) JString(i.toString) else JNum(i)) ::
-        JField("value", if (i % 2 == 0) JBool(true) else JNum(i)) ::
-        Nil)
+        JField("value", if (i % 2 == 0) JBool(true) else JNum(i)) :: Nil)
   }
 
   def testSample = {
     val data = SampleData(simpleData)
     val table = fromSample(data)
-    table.sample(15, Seq(TransSpec1.Id, TransSpec1.Id)).copoint
-      .toList must beLike {
-      case s1 :: s2 :: Nil =>
-        val result1 = toJson(s1).copoint
-        val result2 = toJson(s2).copoint
-        result1 must have size (15)
-        result2 must have size (15)
-        simpleData must containAllOf(result1)
-        simpleData must containAllOf(result2)
-    }
+    table.sample(15, Seq(TransSpec1.Id, TransSpec1.Id)).copoint.toList must
+      beLike {
+        case s1 :: s2 :: Nil =>
+          val result1 = toJson(s1).copoint
+          val result2 = toJson(s2).copoint
+          result1 must have size (15)
+          result2 must have size (15)
+          simpleData must containAllOf(result1)
+          simpleData must containAllOf(result2)
+      }
   }
 
   def testSampleEmpty = {
@@ -96,12 +95,12 @@ trait SampleSpec[M[+_]]
 
   def testLargeSampleSize = {
     val data = SampleData(simpleData)
-    fromSample(data).sample(1000, Seq(TransSpec1.Id)).copoint
-      .toList must beLike {
-      case s :: Nil =>
-        val result = toJson(s).copoint
-        result must have size (100)
-    }
+    fromSample(data).sample(1000, Seq(TransSpec1.Id)).copoint.toList must
+      beLike {
+        case s :: Nil =>
+          val result = toJson(s).copoint
+          result must have size (100)
+      }
   }
 
   def test0SampleSize = {

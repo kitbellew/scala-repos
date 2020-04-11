@@ -38,8 +38,10 @@ object NumberConverter {
       // Two's complement => x = uval - 2*MAX - 2
       // => uval = x + 2*MAX + 2
       // Now, use the fact: (a+b)/c = a/c + b/c + (a%c+b%c)/c
-      x / m + 2 * (Long.MaxValue / m) + 2 / m + (x % m + 2 * (Long
-        .MaxValue % m) + 2 % m) / m
+      x / m +
+        2 *
+        (Long.MaxValue / m) + 2 / m +
+        (x % m + 2 * (Long.MaxValue % m) + 2 % m) / m
     }
   }
 
@@ -122,9 +124,9 @@ object NumberConverter {
     * NB: This logic is borrowed from org.apache.hadoop.hive.ql.ud.UDFConv
     */
   def convert(n: Array[Byte], fromBase: Int, toBase: Int): UTF8String = {
-    if (fromBase < Character.MIN_RADIX || fromBase > Character.MAX_RADIX
-        || Math.abs(toBase) < Character.MIN_RADIX
-        || Math.abs(toBase) > Character.MAX_RADIX) { return null }
+    if (fromBase < Character.MIN_RADIX || fromBase > Character.MAX_RADIX ||
+        Math.abs(toBase) < Character.MIN_RADIX ||
+        Math.abs(toBase) > Character.MAX_RADIX) { return null }
 
     if (n.length == 0) { return null }
 

@@ -116,8 +116,8 @@ final class CategoricalSplit private[ml] (
   override def equals(o: Any): Boolean = {
     o match {
       case other: CategoricalSplit =>
-        featureIndex == other.featureIndex &&
-          isLeft == other.isLeft && categories == other.categories
+        featureIndex == other.featureIndex && isLeft == other.isLeft &&
+          categories == other.categories
       case _ => false
     }
   }

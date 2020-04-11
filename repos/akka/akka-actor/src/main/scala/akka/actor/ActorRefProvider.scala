@@ -876,8 +876,8 @@ private[akka] class LocalActorRefProvider private[akka] (
 
       case router ⇒
         val lookup = if (lookupDeploy) deployer.lookup(path) else None
-        val r = router :: deploy.map(_.routerConfig).toList ::: lookup
-          .map(_.routerConfig).toList reduce ((a, b) ⇒ b withFallback a)
+        val r = router :: deploy.map(_.routerConfig).toList ::: lookup.map(
+          _.routerConfig).toList reduce ((a, b) ⇒ b withFallback a)
         val p = props.withRouter(r)
 
         if (!system.dispatchers.hasDispatcher(p.dispatcher))

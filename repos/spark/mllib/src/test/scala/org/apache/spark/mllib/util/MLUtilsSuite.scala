@@ -120,14 +120,14 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(points.length === 3)
       assert(points(0).label === 1.0)
       assert(
-        points(0).features === Vectors
-          .sparse(6, Seq((0, 1.0), (2, 2.0), (4, 3.0))))
+        points(0).features ===
+          Vectors.sparse(6, Seq((0, 1.0), (2, 2.0), (4, 3.0))))
       assert(points(1).label == 0.0)
       assert(points(1).features == Vectors.sparse(6, Seq()))
       assert(points(2).label === 0.0)
       assert(
-        points(2).features === Vectors
-          .sparse(6, Seq((1, 4.0), (3, 5.0), (5, 6.0))))
+        points(2).features ===
+          Vectors.sparse(6, Seq((1, 4.0), (3, 5.0), (5, 6.0))))
     }
 
     val multiclassPoints = loadLibSVMFile(sc, path).collect()
@@ -280,7 +280,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     assert(log1pExp(-13.8) ~== math.log1p(math.exp(-13.8)) absTol 1e-10)
     assert(
-      log1pExp(-238423789.865) ~== math
-        .log1p(math.exp(-238423789.865)) absTol 1e-10)
+      log1pExp(-238423789.865) ~== math.log1p(math.exp(-238423789.865)) absTol
+        1e-10)
   }
 }

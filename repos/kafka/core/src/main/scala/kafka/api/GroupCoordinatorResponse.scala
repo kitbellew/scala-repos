@@ -46,10 +46,12 @@ case class GroupCoordinatorResponse(
     extends RequestOrResponse() {
 
   def sizeInBytes =
-    4 + /* correlationId */
-    2 + /* error code */
-    coordinatorOpt.orElse(GroupCoordinatorResponse.NoBrokerEndpointOpt).get
-      .sizeInBytes
+    4 +
+      /* correlationId */
+      2 +
+      /* error code */
+      coordinatorOpt.orElse(GroupCoordinatorResponse.NoBrokerEndpointOpt).get
+        .sizeInBytes
 
   def writeTo(buffer: ByteBuffer) {
     buffer.putInt(correlationId)

@@ -110,8 +110,7 @@ case class SortPrefix(child: SortOrder) extends UnaryExpression {
       case _ => (0L, "0L")
     }
 
-    childCode.code +
-      s"""
+    childCode.code + s"""
       |long ${ev.value} = ${nullValue}L;
       |boolean ${ev.isNull} = false;
       |if (!${childCode.isNull}) {

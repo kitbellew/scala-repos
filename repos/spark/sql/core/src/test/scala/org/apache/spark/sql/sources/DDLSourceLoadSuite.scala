@@ -37,9 +37,8 @@ class DDLSourceLoadSuite extends DataSourceTest with SharedSQLContext {
 
   test("specify full classname with duplicate formats") {
     caseInsensitiveContext.read
-      .format("org.apache.spark.sql.sources.FakeSourceOne").load()
-      .schema == StructType(
-      Seq(StructField("stringType", StringType, nullable = false)))
+      .format("org.apache.spark.sql.sources.FakeSourceOne").load().schema ==
+      StructType(Seq(StructField("stringType", StringType, nullable = false)))
   }
 
   test("should fail to load ORC without HiveContext") {

@@ -49,13 +49,9 @@ case class ControlledShutdownResponse(
     extends RequestOrResponse() {
   def sizeInBytes(): Int = {
     var size =
-      4 /* correlation id */ +
-        2 /* error code */ +
-        4 /* number of responses */
+      4 /* correlation id */ + 2 /* error code */ + 4 /* number of responses */
     for (topicAndPartition <- partitionsRemaining) {
-      size +=
-        2 + topicAndPartition.topic.length /* topic */ +
-          4 /* partition */
+      size += 2 + topicAndPartition.topic.length /* topic */ + 4 /* partition */
     }
     size
   }

@@ -93,8 +93,8 @@ trait PhaseAssembly {
      * names are sorted alphabetical at each level, into the compiler phase list
      */
     def compilerPhaseList(): List[SubComponent] =
-      nodes.values.toList filter (_.level > 0) sortBy (x =>
-        (x.level, x.phasename)) flatMap (_.phaseobj) flatten
+      nodes.values.toList filter (_.level > 0) sortBy
+        (x => (x.level, x.phasename)) flatMap (_.phaseobj) flatten
 
     /* Test if there are cycles in the graph, assign levels to the nodes
      * and collapse hard links into nodes
@@ -165,8 +165,8 @@ trait PhaseAssembly {
             for (edge <- promote) {
               rerun = true
               informProgress(
-                "promote the dependency of " + edge.frm.phasename +
-                  ": " + edge.to.phasename + " => " + hl.frm.phasename)
+                "promote the dependency of " + edge.frm.phasename + ": " +
+                  edge.to.phasename + " => " + hl.frm.phasename)
               edge.to = hl.frm
               hl.frm.before += edge
             }
@@ -182,8 +182,8 @@ trait PhaseAssembly {
       */
     def removeDanglingNodes() {
       for (node <- nodes.values filter (_.phaseobj.isEmpty)) {
-        val msg = "dropping dependency on node with no phase object: " + node
-          .phasename
+        val msg = "dropping dependency on node with no phase object: " +
+          node.phasename
         informProgress(msg)
         nodes -= node.phasename
 
@@ -251,8 +251,8 @@ trait PhaseAssembly {
               graph.softConnectNodes(fromnode, tonode)
             } else {
               globalError(
-                "[phase assembly, after dependency on terminal phase not allowed: " + fromnode
-                  .phasename + " => " + phsname + "]")
+                "[phase assembly, after dependency on terminal phase not allowed: " +
+                  fromnode.phasename + " => " + phsname + "]")
             }
           }
           for (phsname <- phs.runsBefore) {
@@ -261,8 +261,8 @@ trait PhaseAssembly {
               graph.softConnectNodes(tonode, fromnode)
             } else {
               globalError(
-                "[phase assembly, before dependency on parser phase not allowed: " + phsname + " => " + fromnode
-                  .phasename + "]")
+                "[phase assembly, before dependency on parser phase not allowed: " +
+                  phsname + " => " + fromnode.phasename + "]")
             }
           }
         case Some(phsname) =>
@@ -271,8 +271,8 @@ trait PhaseAssembly {
             graph.hardConnectNodes(fromnode, tonode)
           } else {
             globalError(
-              "[phase assembly, right after dependency on terminal phase not allowed: " + fromnode
-                .phasename + " => " + phsname + "]")
+              "[phase assembly, right after dependency on terminal phase not allowed: " +
+                fromnode.phasename + " => " + phsname + "]")
           }
       }
     }
@@ -290,26 +290,25 @@ trait PhaseAssembly {
     sbuf.append("digraph G {\n")
     for (edge <- graph.edges) {
       sbuf.append(
-        "\"" + edge.frm.allPhaseNames + "(" + edge.frm
-          .level + ")" + "\"->\"" + edge.to.allPhaseNames + "(" + edge.to
-          .level + ")" + "\"")
+        "\"" + edge.frm.allPhaseNames + "(" + edge.frm.level + ")" + "\"->\"" +
+          edge.to.allPhaseNames + "(" + edge.to.level + ")" + "\"")
       if (!edge.frm.phaseobj.get.head.internal) extnodes += edge.frm
-      edge.frm.phaseobj foreach (phobjs =>
-        if (phobjs.tail.nonEmpty) fatnodes += edge.frm)
-      edge.to.phaseobj foreach (phobjs =>
-        if (phobjs.tail.nonEmpty) fatnodes += edge.to)
+      edge.frm.phaseobj foreach
+        (phobjs => if (phobjs.tail.nonEmpty) fatnodes += edge.frm)
+      edge.to.phaseobj foreach
+        (phobjs => if (phobjs.tail.nonEmpty) fatnodes += edge.to)
       val color = if (edge.hard) "#0000ff" else "#000000"
       sbuf.append(s""" [color="$color"]\n""")
     }
     for (node <- extnodes) {
       sbuf.append(
-        "\"" + node.allPhaseNames + "(" + node
-          .level + ")" + "\" [color=\"#00ff00\"]\n")
+        "\"" + node.allPhaseNames + "(" + node.level + ")" +
+          "\" [color=\"#00ff00\"]\n")
     }
     for (node <- fatnodes) {
       sbuf.append(
-        "\"" + node.allPhaseNames + "(" + node
-          .level + ")" + "\" [color=\"#0000ff\"]\n")
+        "\"" + node.allPhaseNames + "(" + node.level + ")" +
+          "\" [color=\"#0000ff\"]\n")
     }
     sbuf.append("}\n")
     import reflect.io._

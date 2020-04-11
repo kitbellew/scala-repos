@@ -74,46 +74,46 @@ class ClientServerSpec
       sub.cancel()
     }
 
-    "report failure if bind fails" in EventFilter[BindException](occurrences =
-      2).intercept {
-      val (_, hostname, port) = TestUtils.temporaryServerHostnameAndPort()
-      val binding = Http().bind(hostname, port)
-      val probe1 = TestSubscriber.manualProbe[Http.IncomingConnection]()
-      // Bind succeeded, we have a local address
-      val b1 = Await
-        .result(binding.to(Sink.fromSubscriber(probe1)).run(), 3.seconds)
-      probe1.expectSubscription()
-
-      val probe2 = TestSubscriber.manualProbe[Http.IncomingConnection]()
-      an[BindFailedException] shouldBe thrownBy {
-        Await.result(binding.to(Sink.fromSubscriber(probe2)).run(), 3.seconds)
-      }
-      probe2.expectSubscriptionAndError()
-
-      val probe3 = TestSubscriber.manualProbe[Http.IncomingConnection]()
-      an[BindFailedException] shouldBe thrownBy {
-        Await.result(binding.to(Sink.fromSubscriber(probe3)).run(), 3.seconds)
-      }
-      probe3.expectSubscriptionAndError()
-
-      // Now unbind the first
-      Await.result(b1.unbind(), 1.second)
-      probe1.expectComplete()
-
-      if (!akka.util.Helpers.isWindows) {
-        val probe4 = TestSubscriber.manualProbe[Http.IncomingConnection]()
+    "report failure if bind fails" in
+      EventFilter[BindException](occurrences = 2).intercept {
+        val (_, hostname, port) = TestUtils.temporaryServerHostnameAndPort()
+        val binding = Http().bind(hostname, port)
+        val probe1 = TestSubscriber.manualProbe[Http.IncomingConnection]()
         // Bind succeeded, we have a local address
-        val b2 = Await
-          .result(binding.to(Sink.fromSubscriber(probe4)).run(), 3.seconds)
-        probe4.expectSubscription()
+        val b1 = Await
+          .result(binding.to(Sink.fromSubscriber(probe1)).run(), 3.seconds)
+        probe1.expectSubscription()
 
-        // clean up
-        Await.result(b2.unbind(), 1.second)
+        val probe2 = TestSubscriber.manualProbe[Http.IncomingConnection]()
+        an[BindFailedException] shouldBe thrownBy {
+          Await.result(binding.to(Sink.fromSubscriber(probe2)).run(), 3.seconds)
+        }
+        probe2.expectSubscriptionAndError()
+
+        val probe3 = TestSubscriber.manualProbe[Http.IncomingConnection]()
+        an[BindFailedException] shouldBe thrownBy {
+          Await.result(binding.to(Sink.fromSubscriber(probe3)).run(), 3.seconds)
+        }
+        probe3.expectSubscriptionAndError()
+
+        // Now unbind the first
+        Await.result(b1.unbind(), 1.second)
+        probe1.expectComplete()
+
+        if (!akka.util.Helpers.isWindows) {
+          val probe4 = TestSubscriber.manualProbe[Http.IncomingConnection]()
+          // Bind succeeded, we have a local address
+          val b2 = Await
+            .result(binding.to(Sink.fromSubscriber(probe4)).run(), 3.seconds)
+          probe4.expectSubscription()
+
+          // clean up
+          Await.result(b2.unbind(), 1.second)
+        }
       }
-    }
 
-    "properly terminate client when server is not running" in Utils
-      .assertAllStagesStopped {
+    "properly terminate client when server is not running" in
+      Utils.assertAllStagesStopped {
         for (i ← 1 to 10) withClue(s"iterator $i: ") {
           Source.single(HttpRequest(
             HttpMethods.POST,
@@ -121,9 +121,10 @@ class ClientServerSpec
             List.empty,
             HttpEntity(
               MediaTypes.`text/plain`.withCharset(HttpCharsets.`UTF-8`),
-              "buh"))).via(
-            Http(actorSystem).outgoingConnection("localhost", 7777)).runWith(
-            Sink.head).failed.futureValue shouldBe a[StreamTcpException]
+              "buh")))
+            .via(Http(actorSystem).outgoingConnection("localhost", 7777))
+            .runWith(Sink.head).failed.futureValue shouldBe
+            a[StreamTcpException]
         }
       }
 
@@ -176,7 +177,8 @@ class ClientServerSpec
 
       val fastTime = Await.result(receivedFast.future, 2.second)
       val diff = fastTime - slowTime
-      diff should be > 1000000000L // the diff must be at least the time to complete the first request and to close the first connection
+      diff should
+        be > 1000000000L // the diff must be at least the time to complete the first request and to close the first connection
 
       Await.result(b1.unbind(), 1.second)
     }
@@ -233,8 +235,8 @@ class ClientServerSpec
               Await.result(clientsResponseFuture, 2.second)
             }
 
-            (System.nanoTime() - serverReceivedRequestAtNanos)
-              .millis should be >= serverTimeout
+            (System.nanoTime() - serverReceivedRequestAtNanos).millis should
+              be >= serverTimeout
           } finally Await.result(b1.unbind(), 1.second)
         }
       }
@@ -380,8 +382,8 @@ class ClientServerSpec
             val (_, responseFuture) = Http(system2)
               .outgoingConnection(hostname, port)
               .runWith(Source.single(HttpRequest()), Sink.head)(materializer2)
-            try Await.result(responseFuture, 5.second).status should ===(
-              StatusCodes.InternalServerError)
+            try Await.result(responseFuture, 5.second).status should
+              ===(StatusCodes.InternalServerError)
             catch {
               case _: StreamTcpException ⇒
               // Also fine, depends on the race between abort and 500, caused by materialization panic which
@@ -406,8 +408,8 @@ class ClientServerSpec
             val (_, responseFuture) = Http(system2)
               .outgoingConnection(hostname, port)
               .runWith(Source.single(HttpRequest()), Sink.head)(materializer2)
-            try Await.result(responseFuture, 5.seconds).status should ===(
-              StatusCodes.InternalServerError)
+            try Await.result(responseFuture, 5.seconds).status should
+              ===(StatusCodes.InternalServerError)
             catch {
               case _: StreamTcpException ⇒
               // Also fine, depends on the race between abort and 500, caused by materialization panic which
@@ -418,8 +420,8 @@ class ClientServerSpec
       }(materializer2)
     }
 
-    "properly complete a simple request/response cycle" in Utils
-      .assertAllStagesStopped {
+    "properly complete a simple request/response cycle" in
+      Utils.assertAllStagesStopped {
         new TestSetup {
           val (clientOut, clientIn) = openNewClientConnection()
           val (serverIn, serverOut) = acceptConnection()
@@ -430,8 +432,8 @@ class ClientServerSpec
 
           val serverInSub = serverIn.expectSubscription()
           serverInSub.request(1)
-          serverIn.expectNext().uri shouldEqual Uri(
-            s"http://$hostname:$port/abc")
+          serverIn.expectNext().uri shouldEqual
+            Uri(s"http://$hostname:$port/abc")
 
           val serverOutSub = serverOut.expectSubscription()
           serverOutSub.expectRequest()
@@ -451,8 +453,8 @@ class ClientServerSpec
         }
       }
 
-    "properly complete a chunked request/response cycle" in Utils
-      .assertAllStagesStopped {
+    "properly complete a chunked request/response cycle" in
+      Utils.assertAllStagesStopped {
         new TestSetup {
           val (clientOut, clientIn) = openNewClientConnection()
           val (serverIn, serverOut) = acceptConnection()
@@ -515,8 +517,8 @@ class ClientServerSpec
         }
       }
 
-    "be able to deal with eager closing of the request stream on the client side" in Utils
-      .assertAllStagesStopped {
+    "be able to deal with eager closing of the request stream on the client side" in
+      Utils.assertAllStagesStopped {
         new TestSetup {
           val (clientOut, clientIn) = openNewClientConnection()
           val (serverIn, serverOut) = acceptConnection()
@@ -528,8 +530,8 @@ class ClientServerSpec
 
           val serverInSub = serverIn.expectSubscription()
           serverInSub.request(1)
-          serverIn.expectNext().uri shouldEqual Uri(
-            s"http://$hostname:$port/abc")
+          serverIn.expectNext().uri shouldEqual
+            Uri(s"http://$hostname:$port/abc")
 
           val serverOutSub = serverOut.expectSubscription()
           serverOutSub.expectRequest()

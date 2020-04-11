@@ -1104,9 +1104,8 @@ private[stream] final class Delay[T](
         out,
         new OutHandler {
           override def onPull(): Unit = {
-            if (!isTimerActive(timerName) && !buffer
-                  .isEmpty && nextElementWaitTime() < 0)
-              push(out, buffer.dequeue()._2)
+            if (!isTimerActive(timerName) && !buffer.isEmpty &&
+                nextElementWaitTime() < 0) push(out, buffer.dequeue()._2)
 
             if (!willStop && !hasBeenPulled(in)) pull(in)
             completeIfReady()

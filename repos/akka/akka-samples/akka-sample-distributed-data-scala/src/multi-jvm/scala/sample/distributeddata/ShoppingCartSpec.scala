@@ -61,10 +61,10 @@ class ShoppingCartSpec
 
     "handle updates directly after start" in within(15.seconds) {
       runOn(node2) {
-        shoppingCart ! ShoppingCart
-          .AddItem(LineItem("1", "Apples", quantity = 2))
-        shoppingCart ! ShoppingCart
-          .AddItem(LineItem("2", "Oranges", quantity = 3))
+        shoppingCart !
+          ShoppingCart.AddItem(LineItem("1", "Apples", quantity = 2))
+        shoppingCart !
+          ShoppingCart.AddItem(LineItem("2", "Oranges", quantity = 3))
       }
       enterBarrier("updates-done")
 
@@ -81,13 +81,13 @@ class ShoppingCartSpec
 
     "handle updates from different nodes" in within(5.seconds) {
       runOn(node2) {
-        shoppingCart ! ShoppingCart
-          .AddItem(LineItem("1", "Apples", quantity = 5))
+        shoppingCart !
+          ShoppingCart.AddItem(LineItem("1", "Apples", quantity = 5))
         shoppingCart ! ShoppingCart.RemoveItem("2")
       }
       runOn(node3) {
-        shoppingCart ! ShoppingCart
-          .AddItem(LineItem("3", "Bananas", quantity = 4))
+        shoppingCart !
+          ShoppingCart.AddItem(LineItem("3", "Bananas", quantity = 4))
       }
       enterBarrier("updates-done")
 

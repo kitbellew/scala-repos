@@ -73,11 +73,9 @@ akka {
   }
 
   "receive Terminated when watched node is unknown host" in {
-    val path = RootActorPath(Address(
-      "akka.tcp",
-      system.name,
-      "unknownhost",
-      2552)) / "user" / "subject"
+    val path =
+      RootActorPath(Address("akka.tcp", system.name, "unknownhost", 2552)) /
+        "user" / "subject"
     system.actorOf(
       Props(new Actor {
         context.watch(context.actorFor(path))
@@ -89,11 +87,9 @@ akka {
   }
 
   "receive ActorIdentity(None) when identified node is unknown host" in {
-    val path = RootActorPath(Address(
-      "akka.tcp",
-      system.name,
-      "unknownhost2",
-      2552)) / "user" / "subject"
+    val path =
+      RootActorPath(Address("akka.tcp", system.name, "unknownhost2", 2552)) /
+        "user" / "subject"
     system.actorSelection(path) ! Identify(path)
     expectMsg(60.seconds, ActorIdentity(path, None))
   }

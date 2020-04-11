@@ -72,71 +72,76 @@ class ActorRefSourceSpec extends AkkaSpec {
       expectTerminated(ref)
     }
 
-    "not fail when 0 buffer space and demand is signalled" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val ref = Source.actorRef(0, OverflowStrategy.dropHead)
-        .to(Sink.fromSubscriber(s)).run()
-      watch(ref)
-      val sub = s.expectSubscription
-      sub.request(100)
-      sub.cancel()
-      expectTerminated(ref)
-    }
+    "not fail when 0 buffer space and demand is signalled" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val ref = Source.actorRef(0, OverflowStrategy.dropHead)
+          .to(Sink.fromSubscriber(s)).run()
+        watch(ref)
+        val sub = s.expectSubscription
+        sub.request(100)
+        sub.cancel()
+        expectTerminated(ref)
+      }
 
-    "complete the stream immediatly when receiving PoisonPill" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val ref = Source.actorRef(10, OverflowStrategy.fail)
-        .to(Sink.fromSubscriber(s)).run()
-      val sub = s.expectSubscription
-      ref ! PoisonPill
-      s.expectComplete()
-    }
+    "complete the stream immediatly when receiving PoisonPill" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val ref = Source.actorRef(10, OverflowStrategy.fail)
+          .to(Sink.fromSubscriber(s)).run()
+        val sub = s.expectSubscription
+        ref ! PoisonPill
+        s.expectComplete()
+      }
 
-    "signal buffered elements and complete the stream after receiving Status.Success" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val ref = Source.actorRef(3, OverflowStrategy.fail)
-        .to(Sink.fromSubscriber(s)).run()
-      val sub = s.expectSubscription
-      ref ! 1
-      ref ! 2
-      ref ! 3
-      ref ! Status.Success("ok")
-      sub.request(10)
-      s.expectNext(1, 2, 3)
-      s.expectComplete()
-    }
+    "signal buffered elements and complete the stream after receiving Status.Success" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val ref = Source.actorRef(3, OverflowStrategy.fail)
+          .to(Sink.fromSubscriber(s)).run()
+        val sub = s.expectSubscription
+        ref ! 1
+        ref ! 2
+        ref ! 3
+        ref ! Status.Success("ok")
+        sub.request(10)
+        s.expectNext(1, 2, 3)
+        s.expectComplete()
+      }
 
-    "not buffer elements after receiving Status.Success" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val ref = Source.actorRef(3, OverflowStrategy.dropBuffer)
-        .to(Sink.fromSubscriber(s)).run()
-      val sub = s.expectSubscription
-      ref ! 1
-      ref ! 2
-      ref ! 3
-      ref ! Status.Success("ok")
-      ref ! 100
-      ref ! 100
-      ref ! 100
-      sub.request(10)
-      s.expectNext(1, 2, 3)
-      s.expectComplete()
-    }
+    "not buffer elements after receiving Status.Success" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val ref = Source.actorRef(3, OverflowStrategy.dropBuffer)
+          .to(Sink.fromSubscriber(s)).run()
+        val sub = s.expectSubscription
+        ref ! 1
+        ref ! 2
+        ref ! 3
+        ref ! Status.Success("ok")
+        ref ! 100
+        ref ! 100
+        ref ! 100
+        sub.request(10)
+        s.expectNext(1, 2, 3)
+        s.expectComplete()
+      }
 
-    "after receiving Status.Success, allow for earlier completion with PoisonPill" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val ref = Source.actorRef(3, OverflowStrategy.dropBuffer)
-        .to(Sink.fromSubscriber(s)).run()
-      val sub = s.expectSubscription
-      ref ! 1
-      ref ! 2
-      ref ! 3
-      ref ! Status.Success("ok")
-      sub.request(2) // not all elements drained yet
-      s.expectNext(1, 2)
-      ref ! PoisonPill
-      s.expectComplete() // element `3` not signaled
-    }
+    "after receiving Status.Success, allow for earlier completion with PoisonPill" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val ref = Source.actorRef(3, OverflowStrategy.dropBuffer)
+          .to(Sink.fromSubscriber(s)).run()
+        val sub = s.expectSubscription
+        ref ! 1
+        ref ! 2
+        ref ! 3
+        ref ! Status.Success("ok")
+        sub.request(2) // not all elements drained yet
+        s.expectNext(1, 2)
+        ref ! PoisonPill
+        s.expectComplete() // element `3` not signaled
+      }
 
     "fail the stream when receiving Status.Failure" in assertAllStagesStopped {
       val s = TestSubscriber.manualProbe[Int]()

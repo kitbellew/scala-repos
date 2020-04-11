@@ -147,12 +147,13 @@ object ScalaAfterNewCompletionUtil {
         case _                                           =>
       }
       var tailText: String = ""
-      val itemText: String = psiClass.name + (tp match {
-        case ScParameterizedType(_, tps) =>
-          tps.map(tp => ScType.presentableText(subst.subst(tp)))
-            .mkString("[", ", ", "]")
-        case _ => ""
-      })
+      val itemText: String = psiClass.name +
+        (tp match {
+          case ScParameterizedType(_, tps) =>
+            tps.map(tp => ScType.presentableText(subst.subst(tp)))
+              .mkString("[", ", ", "]")
+          case _ => ""
+        })
       psiClass match {
         case clazz: PsiClass =>
           if (psiClass.isInterface || psiClass.isInstanceOf[ScTrait] ||
@@ -196,10 +197,9 @@ object ScalaAfterNewCompletionUtil {
         }
       }
     lookupElement.isRenamed = isRenamed
-    if (ApplicationManager.getApplication.isUnitTestMode || psiClass
-          .isInterface ||
-        psiClass.isInstanceOf[ScTrait] || psiClass
-          .hasModifierPropertyScala("abstract"))
+    if (ApplicationManager.getApplication.isUnitTestMode ||
+        psiClass.isInterface || psiClass.isInstanceOf[ScTrait] ||
+        psiClass.hasModifierPropertyScala("abstract"))
       lookupElement.setAutoCompletionPolicy(
         if (ApplicationManager.getApplication.isUnitTestMode)
           AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE
@@ -238,8 +238,8 @@ object ScalaAfterNewCompletionUtil {
           case _                                           =>
         }
         //todo: filter inner classes smarter (how? don't forget deep inner classes)
-        if (clazz.containingClass != null && (!clazz.containingClass
-              .isInstanceOf[ScObject] ||
+        if (clazz.containingClass != null &&
+            (!clazz.containingClass.isInstanceOf[ScObject] ||
             clazz.hasModifierPropertyScala("static"))) return null
         if (!ResolveUtils.isAccessible(clazz, place, forCompletion = true))
           return null

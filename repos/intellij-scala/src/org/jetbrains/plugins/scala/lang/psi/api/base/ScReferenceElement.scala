@@ -63,8 +63,8 @@ trait ScReferenceElement
   }
 
   private def patternNeedBackticks(name: String) =
-    name != "" && name.charAt(0).isLower && getParent
-      .isInstanceOf[ScStableReferenceElementPattern]
+    name != "" && name.charAt(0).isLower &&
+      getParent.isInstanceOf[ScStableReferenceElementPattern]
 
   def getElement = this
 
@@ -90,8 +90,8 @@ trait ScReferenceElement
   def isSoft: Boolean = false
 
   def handleElementRename(newElementName: String): PsiElement = {
-    val needBackticks = patternNeedBackticks(newElementName) || ScalaNamesUtil
-      .isKeyword(newElementName)
+    val needBackticks = patternNeedBackticks(newElementName) ||
+      ScalaNamesUtil.isKeyword(newElementName)
     val newName =
       if (needBackticks) "`" + newElementName + "`" else newElementName
     if (!ScalaNamesUtil.isIdentifier(newName)) return this
@@ -159,8 +159,8 @@ trait ScReferenceElement
               }
             }
 
-            if (!break && td.isInstanceOf[ScClass] && td.asInstanceOf[ScClass]
-                  .isCase && method.isSynthetic) {
+            if (!break && td.isInstanceOf[ScClass] &&
+                td.asInstanceOf[ScClass].isCase && method.isSynthetic) {
               ScalaPsiUtil.getCompanionModule(td) match {
                 case Some(typeDef) => return isReferenceTo(typeDef)
                 case _             =>

@@ -200,10 +200,9 @@ trait SValueInstances {
 
       private val arrayOrder = (o1: Vector[SValue]) =>
         (o2: Vector[SValue]) => {
-          (o1.length ?|? o2.length) |+|
-            (o1 zip o2).foldLeft[Ordering](EQ) {
-              case (ord, (v1, v2)) => ord |+| (v1 ?|? v2)
-            }
+          (o1.length ?|? o2.length) |+| (o1 zip o2).foldLeft[Ordering](EQ) {
+            case (ord, (v1, v2)) => ord |+| (v1 ?|? v2)
+          }
         }
 
       private val stringOrder = (Order[String].order _).curried
@@ -233,10 +232,9 @@ trait SValueInstances {
 
       private val arrayEqual = (o1: Vector[SValue]) =>
         (o2: Vector[SValue]) =>
-          (o1.length == o2.length) &&
-            (o1 zip o2).foldLeft(true) {
-              case (eql, (v1, v2)) => eql && v1 === v2
-            }
+          (o1.length == o2.length) && (o1 zip o2).foldLeft(true) {
+            case (eql, (v1, v2)) => eql && v1 === v2
+          }
 
       private val stringEqual = (Equal[String].equal _).curried
       private val boolEqual = (Equal[Boolean].equal _).curried

@@ -261,17 +261,18 @@ class ScalaChangeSignatureDialog(
       (name, idx) <- namesWithIndices
       (name2, idx2) <- namesWithIndices if name == name2 && idx < idx2
     } {
-      problems += ScalaBundle
-        .message("change.signature.parameters.same.name.{0}", name)
+      problems +=
+        ScalaBundle.message("change.signature.parameters.same.name.{0}", name)
     }
     paramItems.foreach(_.updateType(problems))
 
     paramItems.foreach {
       case item
-          if item.parameter.isRepeatedParameter && !splittedItems
-            .flatMap(_.lastOption).contains(item) =>
-        problems += ScalaBundle
-          .message("change.signature.vararg.should.be.last.in.clause")
+          if item.parameter.isRepeatedParameter &&
+            !splittedItems.flatMap(_.lastOption).contains(item) =>
+        problems +=
+          ScalaBundle
+            .message("change.signature.vararg.should.be.last.in.clause")
       case _ =>
     }
 
@@ -282,8 +283,8 @@ class ScalaChangeSignatureDialog(
     if (!getTableComponent.isEditing) {
       for {
         item <- parameterItems
-        if item.parameter.oldIndex < 0 && StringUtil
-          .isEmpty(item.defaultValueCodeFragment.getText)
+        if item.parameter.oldIndex < 0 &&
+          StringUtil.isEmpty(item.defaultValueCodeFragment.getText)
       } {
         val stuff =
           if (isAddDefaultArgs) "Default arguments" else "Method calls"

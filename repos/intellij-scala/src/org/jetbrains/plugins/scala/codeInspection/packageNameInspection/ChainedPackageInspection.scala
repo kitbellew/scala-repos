@@ -28,9 +28,9 @@ class ChainedPackageInspection extends LocalInspectionTool {
             .getBasePackages.asScala
 
           basePackages.find(basePackage =>
-            firstPackaging.getPackageName != basePackage
-              && firstPackaging.getPackageName.startsWith(basePackage))
-            .flatMap { basePackage =>
+            firstPackaging.getPackageName != basePackage &&
+              firstPackaging.getPackageName.startsWith(basePackage)).flatMap {
+            basePackage =>
               firstPackaging.reference.map(_.getTextRange).map { range =>
                 manager.createProblemDescriptor(
                   file,
@@ -41,7 +41,7 @@ class ChainedPackageInspection extends LocalInspectionTool {
                   new UseChainedPackageQuickFix(scalaFile, basePackage)
                 )
               }
-            }
+          }
         }
       }
 

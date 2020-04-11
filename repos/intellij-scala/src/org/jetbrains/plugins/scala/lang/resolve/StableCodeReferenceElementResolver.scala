@@ -29,11 +29,11 @@ class StableCodeReferenceElementResolver(
       if (ref.isConstructorReference && !noConstructorResolve) {
         val constr = ref.getConstructor.get
         val typeArgs = constr.typeArgList.map(_.typeArgs).getOrElse(Seq())
-        val effectiveArgs =
-          constr.arguments.toList.map(_.exprs.map(new Expression(_))) match {
-            case List() => List(List())
-            case x      => x
-          }
+        val effectiveArgs = constr.arguments.toList
+          .map(_.exprs.map(new Expression(_))) match {
+          case List() => List(List())
+          case x      => x
+        }
         new ConstructorResolveProcessor(
           ref,
           ref.refName,

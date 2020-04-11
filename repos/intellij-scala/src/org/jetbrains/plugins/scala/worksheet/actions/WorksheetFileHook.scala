@@ -59,8 +59,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
             .getSelectedTextEditor
           if (editor == null) return
 
-          val file = PsiDocumentManager.getInstance(project) getPsiFile editor
-            .getDocument
+          val file = PsiDocumentManager.getInstance(project) getPsiFile
+            editor.getDocument
           if (file == null) return
 
           val vFile = file.getVirtualFile
@@ -177,9 +177,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
       WorksheetFileHook.this.initTopComponent(file, run = true)
       loadEvaluationResult(source, file)
 
-      WorksheetAutoRunner.getInstance(source.getProject) addListener doc(
-        source,
-        file)
+      WorksheetAutoRunner.getInstance(source.getProject) addListener
+        doc(source, file)
     }
 
     private def loadEvaluationResult(
@@ -188,8 +187,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
       source getSelectedEditor file match {
         case txt: TextEditor => txt.getEditor match {
             case ext: EditorEx =>
-              PsiDocumentManager getInstance project getPsiFile ext
-                .getDocument match {
+              PsiDocumentManager getInstance project getPsiFile
+                ext.getDocument match {
                 case scalaFile: ScalaFile =>
                   WorksheetEditorPrinter
                     .loadWorksheetEvaluation(scalaFile) foreach {

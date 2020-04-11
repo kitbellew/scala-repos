@@ -58,8 +58,8 @@ class QueryPartitionSuite
       // test for the exist path
       checkAnswer(
         sql("select key,value from table_with_partition"),
-        testData.toDF.collect ++ testData.toDF.collect
-          ++ testData.toDF.collect ++ testData.toDF.collect)
+        testData.toDF.collect ++ testData.toDF.collect ++
+          testData.toDF.collect ++ testData.toDF.collect)
 
       // delete the path of one partition
       tmpDir.listFiles.find { f =>

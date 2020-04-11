@@ -71,8 +71,8 @@ object Test extends App {
       def removeDuplicates[A](xs: List[A]): List[A] =
         if (xs.isEmpty) xs
         else
-          xs.head :: removeDuplicates(
-            for (x <- xs.tail if x != xs.head) yield x)
+          xs.head ::
+            removeDuplicates(for (x <- xs.tail if x != xs.head) yield x)
     }
 
     // import all members of object 'persons' in the current scope

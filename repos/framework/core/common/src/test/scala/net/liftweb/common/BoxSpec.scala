@@ -120,10 +120,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       Full(1) filter { _ == 0 } must beEmpty
     }
     "define a 'filterMsg' method, returning a Failure if the filter predicate is not satisfied" in {
-      Full(1).filterMsg("not equal to 0")(_ == 0) must_== Failure(
-        "not equal to 0",
-        Empty,
-        Empty)
+      Full(1).filterMsg("not equal to 0")(_ == 0) must_==
+        Failure("not equal to 0", Empty, Empty)
     }
     "define a 'foreach' method using its value (to display it for instance)" in {
       var total = 0
@@ -134,9 +132,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       Full(1) map { _.toString } must_== Full("1")
     }
     "define a 'flatMap' method transforming its value in another Box. If the value is transformed in a Full can, the total result is a Full can" in {
-      Full(1) flatMap { x: Int =>
-        if (x > 0) Full("full") else Empty
-      } must_== Full("full")
+      Full(1) flatMap { x: Int => if (x > 0) Full("full") else Empty } must_==
+        Full("full")
     }
     "define a 'flatMap' method transforming its value in another Box. If the value is transformed in an Empty can, the total result is an Empty can" in {
       Full(0) flatMap { x: Int =>
@@ -256,10 +253,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       empty filter { _ > 0 } must beEmpty
     }
     "define a 'filterMsg' method, returning a Failure" in {
-      Empty.filterMsg("not equal to 0")(_ == 0) must_== Failure(
-        "not equal to 0",
-        Empty,
-        Empty)
+      Empty.filterMsg("not equal to 0")(_ == 0) must_==
+        Failure("not equal to 0", Empty, Empty)
     }
     "define a 'foreach' doing nothing" in {
       var total = 0
@@ -304,8 +299,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       Failure(
         "error",
         Full(new Exception("broken")),
-        Full(Failure("nested cause", Empty, Empty))).chain must_== Full(
-        Failure("nested cause", Empty, Empty))
+        Full(Failure("nested cause", Empty, Empty))).chain must_==
+        Full(Failure("nested cause", Empty, Empty))
     }
     "be converted to a ParamFailure" in {
       Failure("hi mom") ~> 404 must_== ParamFailure("hi mom", Empty, Empty, 404)
@@ -314,25 +309,19 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
 
   "A Failure is an Empty Box which" should {
     "return itself if mapped or flatmapped" in {
-      Failure("error", Empty, Empty) map { _.toString } must_== Failure(
-        "error",
-        Empty,
-        Empty)
+      Failure("error", Empty, Empty) map { _.toString } must_==
+        Failure("error", Empty, Empty)
       Failure("error", Empty, Empty) flatMap { x: String =>
         Full(x.toString)
       } must_== Failure("error", Empty, Empty)
     }
     "return a itself when asked for its status with the operator ?~" in {
-      Failure("error", Empty, Empty) ?~ "nothing" must_== Failure(
-        "error",
-        Empty,
-        Empty)
+      Failure("error", Empty, Empty) ?~ "nothing" must_==
+        Failure("error", Empty, Empty)
     }
     "create a new failure with a chained message if asked for its status with the operator ?~!" in {
-      Failure("error", Empty, Empty) ?~! "error2" must_== Failure(
-        "error2",
-        Empty,
-        Full(Failure("error", Empty, Empty)))
+      Failure("error", Empty, Empty) ?~! "error2" must_==
+        Failure("error2", Empty, Full(Failure("error", Empty, Empty)))
     }
     "return false for exist method" in {
       Failure("error", Empty, Empty) exists { _ => true } must beFalse
@@ -344,12 +333,11 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
 
   "A ParamFailure is a failure which" should {
     "appear in the chain when ~> is invoked on it" in {
-      Failure("Apple") ~> 404 ~> "apple" must_==
-        ParamFailure(
-          "Apple",
-          Empty,
-          Full(ParamFailure("Apple", Empty, Empty, 404)),
-          "apple")
+      Failure("Apple") ~> 404 ~> "apple" must_== ParamFailure(
+        "Apple",
+        Empty,
+        Full(ParamFailure("Apple", Empty, Empty, 404)),
+        "apple")
     }
   }
 

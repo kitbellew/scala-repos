@@ -69,9 +69,8 @@ object CodeGenTools {
       extraArgs: String = ""): Global = {
     def showError(s: String) = throw new Exception(s)
     val settings = new Settings(showError)
-    val args = (CommandLineParser tokenize defaultArgs) ++ (
-      CommandLineParser tokenize extraArgs
-    )
+    val args = (CommandLineParser tokenize defaultArgs) ++
+      (CommandLineParser tokenize extraArgs)
     val (_, nonSettingsArgs) = settings
       .processArguments(args, processAll = true)
     if (nonSettingsArgs.nonEmpty)
@@ -321,8 +320,8 @@ object CodeGenTools {
       handlerIndex: Int): Unit = {
     val insVec = instructions.toVector
     assertTrue(
-      h.start == insVec(startIndex) && h.end == insVec(endIndex) && h
-        .handler == insVec(handlerIndex))
+      h.start == insVec(startIndex) && h.end == insVec(endIndex) &&
+        h.handler == insVec(handlerIndex))
   }
 
   import scala.language.implicitConversions

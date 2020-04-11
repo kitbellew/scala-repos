@@ -53,8 +53,8 @@ object GuiceApplicationLoader {
   def defaultOverrides(
       context: ApplicationLoader.Context): Seq[GuiceableModule] = {
     Seq(
-      bind[OptionalSourceMapper] to new OptionalSourceMapper(
-        context.sourceMapper),
+      bind[OptionalSourceMapper] to
+        new OptionalSourceMapper(context.sourceMapper),
       bind[WebCommands] to context.webCommands)
   }
 }

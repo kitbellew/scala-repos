@@ -32,9 +32,11 @@ case class Analysis(
 
   def summary: List[(Color, List[(Nag, Int)])] =
     Color.all map { color =>
-      color -> (Nag.badOnes map { nag =>
-        nag -> (advices count { adv => adv.color == color && adv.nag == nag })
-      })
+      color ->
+        (Nag.badOnes map { nag =>
+          nag ->
+            (advices count { adv => adv.color == color && adv.nag == nag })
+        })
     }
 
   def valid = infos.nonEmpty
@@ -55,8 +57,8 @@ object Analysis {
       val raw = r str "data"
       Analysis(
         id = r str "_id",
-        infos = Info
-          .decodeList(raw, startPly) err s"Invalid analysis data $raw",
+        infos = Info.decodeList(raw, startPly) err
+          s"Invalid analysis data $raw",
         startPly = startPly,
         uid = r strO "uid",
         by = r strO "by",

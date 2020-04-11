@@ -77,10 +77,8 @@ trait AskTypeCompletionAt extends AskCommand {
   private[tests] def askTypeCompletionAt(pos: Position)(implicit
       reporter: Reporter): Response[List[Member]] = {
     reporter.println(
-      "\naskTypeCompletion at " + pos.source.file.name + (
-        (
-          pos.line,
-          pos.column)))
+      "\naskTypeCompletion at " + pos.source.file.name +
+        ((pos.line, pos.column)))
 
     ask { compiler.askTypeCompletion(pos, _) }
   }
@@ -93,10 +91,8 @@ trait AskScopeCompletionAt extends AskCommand {
   private[tests] def askScopeCompletionAt(pos: Position)(implicit
       reporter: Reporter): Response[List[Member]] = {
     reporter.println(
-      "\naskScopeCompletion at " + pos.source.file.name + (
-        (
-          pos.line,
-          pos.column)))
+      "\naskScopeCompletion at " + pos.source.file.name +
+        ((pos.line, pos.column)))
 
     ask { compiler.askScopeCompletion(pos, _) }
   }

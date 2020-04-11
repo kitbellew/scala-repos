@@ -36,17 +36,14 @@ class CSCMatrixTest extends FunSuite with Checkers {
     val bd = DenseMatrix((7.0, -2.0, 8.0), (-3.0, -3.0, 1.0), (12.0, 0.0, 5.0))
     val c = DenseVector(6.0, 2.0, 3.0)
     assert(
-      (a * b: CSCMatrix[Double]) === CSCMatrix(
-        (37.0, -8.0, 25.0),
-        (85.0, -23.0, 67.0)))
+      (a * b: CSCMatrix[Double]) ===
+        CSCMatrix((37.0, -8.0, 25.0), (85.0, -23.0, 67.0)))
     assert(
-      (a * bd: DenseMatrix[Double]) === DenseMatrix(
-        (37.0, -8.0, 25.0),
-        (85.0, -23.0, 67.0)))
+      (a * bd: DenseMatrix[Double]) ===
+        DenseMatrix((37.0, -8.0, 25.0), (85.0, -23.0, 67.0)))
     assert(
-      (ad * b: DenseMatrix[Double]) === DenseMatrix(
-        (37.0, -8.0, 25.0),
-        (85.0, -23.0, 67.0)))
+      (ad * b: DenseMatrix[Double]) ===
+        DenseMatrix((37.0, -8.0, 25.0), (85.0, -23.0, 67.0)))
     assert(a * c === DenseVector(19.0, 52.0))
     assert(b * c === DenseVector(62.0, -21.0, 87.0))
 
@@ -110,20 +107,14 @@ class CSCMatrixTest extends FunSuite with Checkers {
         (Complex(0, 74), Complex(0, -16), Complex(0, 50)),
         (Complex(0, 170), Complex(0, -46), Complex(0, 134))))
     assert(
-      b * c === DenseVector(
-        Complex(62, 62),
-        Complex(-21, -21),
-        Complex(87, 87)))
+      b * c ===
+        DenseVector(Complex(62, 62), Complex(-21, -21), Complex(87, 87)))
     assert(
-      b * cs === DenseVector(
-        Complex(62, 62),
-        Complex(-21, -21),
-        Complex(87, 87)))
+      b * cs ===
+        DenseVector(Complex(62, 62), Complex(-21, -21), Complex(87, 87)))
     assert(
-      b.t * c === DenseVector(
-        Complex(72, -72),
-        Complex(-18, 18),
-        Complex(65, -65)))
+      b.t * c ===
+        DenseVector(Complex(72, -72), Complex(-18, 18), Complex(65, -65)))
   }
 
   test("Transpose") {
@@ -474,8 +465,8 @@ class CSCMatrixTest extends FunSuite with Checkers {
   }
 
   test("CSCMatrix Solve") {
-    val r2: DenseVector[Double] =
-      CSCMatrix((1.0, 3.0, 4.0), (2.0, 0.0, 6.0)) \ DenseVector(1.0, 3.0)
+    val r2: DenseVector[Double] = CSCMatrix((1.0, 3.0, 4.0), (2.0, 0.0, 6.0)) \
+      DenseVector(1.0, 3.0)
     import breeze.numerics.inf
     assert(
       norm(

@@ -52,8 +52,8 @@ class WebSocketBoilerplateSpec extends EnsimeSpec with SharedTestKitFixture {
   val foo = Foo("hello")
   val bar = Bar(13L)
 
-  it should "produce a marshalled Flow that accepts valid messages" in withTestKit {
-    tk =>
+  it should "produce a marshalled Flow that accepts valid messages" in
+    withTestKit { tk =>
       import tk.system
       import tk.system.dispatcher
       implicit val mat = ActorMaterializer()
@@ -73,10 +73,10 @@ class WebSocketBoilerplateSpec extends EnsimeSpec with SharedTestKitFixture {
       Source.single(input).via(endpoints).runWith(Sink.head).pipeTo(client.ref)
 
       client.expectMsg(TextMessage(bar.toJson.prettyPrint))
-  }
+    }
 
-  it should "produce a marshalled Flow that errors on bad message" in withTestKit {
-    tk =>
+  it should "produce a marshalled Flow that errors on bad message" in
+    withTestKit { tk =>
       import tk.system
       import tk.system.dispatcher
       implicit val mat = ActorMaterializer()
@@ -93,10 +93,10 @@ class WebSocketBoilerplateSpec extends EnsimeSpec with SharedTestKitFixture {
       Source.single(input).via(endpoints).runWith(Sink.head).pipeTo(client.ref)
 
       client.expectMsgPF() { case Status.Failure(_) => }
-  }
+    }
 
-  it should "produce a marshalled Flow that errors on bad inbound JSON" in withTestKit {
-    tk =>
+  it should "produce a marshalled Flow that errors on bad inbound JSON" in
+    withTestKit { tk =>
       import tk.system
       import tk.system.dispatcher
       implicit val mat = ActorMaterializer()
@@ -112,6 +112,6 @@ class WebSocketBoilerplateSpec extends EnsimeSpec with SharedTestKitFixture {
       client.expectMsgPF() {
         case Status.Failure(e: DeserializationException) =>
       }
-  }
+    }
 
 }

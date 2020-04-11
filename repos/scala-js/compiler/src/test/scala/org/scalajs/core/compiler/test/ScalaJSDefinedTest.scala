@@ -22,8 +22,7 @@ class ScalaJSDefinedTest extends DirectTest with TestHelpers {
       s"""
       @ScalaJSDefined
       $obj A
-      """ hasErrors
-        s"""
+      """ hasErrors s"""
         |newSource1.scala:6: error: @ScalaJSDefined is only allowed on classes extending js.Any
         |      $obj A
         |       ${" " * obj.length}^

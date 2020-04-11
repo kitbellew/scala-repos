@@ -55,9 +55,9 @@ class PregelSuite extends SparkFunSuite with LocalSparkContext {
           if (et.dstAttr != et.srcAttr) Iterator((et.dstId, et.srcAttr))
           else Iterator.empty,
         (a: Int, b: Int) => math.max(a, b))
-      assert(
-        result.vertices.collect.toSet ===
-          chain.vertices.mapValues { (vid, attr) => attr + 1 }.collect.toSet)
+      assert(result.vertices.collect.toSet === chain.vertices.mapValues {
+        (vid, attr) => attr + 1
+      }.collect.toSet)
     }
   }
 }

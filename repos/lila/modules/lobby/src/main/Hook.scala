@@ -35,9 +35,9 @@ case class Hook(
 
   def compatibleWith(h: Hook) =
     compatibilityProperties == h.compatibilityProperties &&
-      (realColor compatibleWith h.realColor) &&
-      (memberOnly || h.memberOnly).fold(isAuth && h.isAuth, true) &&
-      ratingRangeCompatibleWith(h) && h.ratingRangeCompatibleWith(this)
+      (realColor compatibleWith h.realColor) && (memberOnly || h.memberOnly)
+        .fold(isAuth && h.isAuth, true) && ratingRangeCompatibleWith(h) &&
+      h.ratingRangeCompatibleWith(this)
 
   private def ratingRangeCompatibleWith(h: Hook) =
     realRatingRange.fold(true) { range => h.rating ?? range.contains }
@@ -45,8 +45,8 @@ case class Hook(
   private def compatibilityProperties =
     (variant, clock.limit, clock.increment, mode)
 
-  lazy val realRatingRange: Option[RatingRange] =
-    RatingRange noneIfDefault ratingRange
+  lazy val realRatingRange: Option[RatingRange] = RatingRange noneIfDefault
+    ratingRange
 
   def userId = user map (_.id)
   def isAuth = user.nonEmpty

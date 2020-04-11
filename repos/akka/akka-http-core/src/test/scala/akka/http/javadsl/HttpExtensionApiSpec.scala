@@ -520,8 +520,8 @@ class HttpExtensionApiSpec
           .both[CompletionStage[WebSocketUpgradeResponse], CompletionStage[
             Message]]).run(materializer)
 
-      waitFor(pair.first).response.status() should be(
-        StatusCodes.SWITCHING_PROTOCOLS)
+      waitFor(pair.first).response.status() should
+        be(StatusCodes.SWITCHING_PROTOCOLS)
       waitFor(pair.second).asTextMessage.getStrictText should be("hello")
       binding.unbind()
     }
@@ -542,8 +542,8 @@ class HttpExtensionApiSpec
           .both[CompletionStage[WebSocketUpgradeResponse], CompletionStage[
             Message]]).run(materializer)
 
-      waitFor(pair.first).response.status() should be(
-        StatusCodes.SWITCHING_PROTOCOLS)
+      waitFor(pair.first).response.status() should
+        be(StatusCodes.SWITCHING_PROTOCOLS)
       waitFor(pair.second).asTextMessage.getStrictText should be("hello")
       binding.unbind()
     }

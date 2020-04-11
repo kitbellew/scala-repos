@@ -146,9 +146,9 @@ private[http] class HttpRequestParser(
           headers: List[HttpHeader] = headers) = {
         val allHeaders0 =
           if (rawRequestUriHeader)
-            `Raw-Request-URI`(new String(
-              uriBytes,
-              HttpCharsets.`US-ASCII`.nioCharset)) :: headers
+            `Raw-Request-URI`(
+              new String(uriBytes, HttpCharsets.`US-ASCII`.nioCharset)) ::
+              headers
           else headers
 
         val allHeaders =

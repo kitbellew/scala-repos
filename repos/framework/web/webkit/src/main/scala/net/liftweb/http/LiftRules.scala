@@ -436,8 +436,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       val (which, invalid) = session.cometForHost(req.hostAndPath)
 
       // get the maximum requests given the browser type
-      val max = maxConcurrentRequests
-        .vend(req) - 2 // this request and any open comet requests
+      val max = maxConcurrentRequests.vend(req) -
+        2 // this request and any open comet requests
 
       // dump the oldest requests
       which.drop(max).foreach { case (actor, req) => actor ! BreakOut() }
@@ -528,9 +528,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       x match {
         case r if r.isIPad || r.isIPhone => 1
         case r
-            if r.isFirefox35_+ || r.isIE8 || r.isIE9 || r.isChrome3_+ || r
-              .isOpera9 || r.isSafari3_+ => 4
-        case _                           => 2
+            if r.isFirefox35_+ || r.isIE8 || r.isIE9 || r.isChrome3_+ ||
+              r.isOpera9 || r.isSafari3_+ => 4
+        case _                            => 2
       }) {}
 
   /**
@@ -540,8 +540,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   @volatile
   var determineContentType: PartialFunction[(Box[Req], Box[String]), String] = {
     case (_, Full(accept))
-        if this.useXhtmlMimeType && accept.toLowerCase
-          .contains("application/xhtml+xml") =>
+        if this.useXhtmlMimeType &&
+          accept.toLowerCase.contains("application/xhtml+xml") =>
       "application/xhtml+xml; charset=utf-8"
     case _ => "text/html; charset=utf-8"
   }
@@ -789,21 +789,18 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         LiftRules.jsArtifacts.setHtml(LiftRules.noticesContainerId, xml) &
           noticesFadeOut(NoticeType.Notice) &
           noticesFadeOut(NoticeType.Warning) &
-          noticesFadeOut(NoticeType.Error) &
-          groupEffects(NoticeType.Notice) &
-          groupEffects(NoticeType.Warning) &
-          groupEffects(NoticeType.Error)
+          noticesFadeOut(NoticeType.Error) & groupEffects(NoticeType.Notice) &
+          groupEffects(NoticeType.Warning) & groupEffects(NoticeType.Error)
     }
 
     // We need to determine the full set of IDs that need messages rendered.
-    val idSet = (S.idMessages((S.errors)) ++
-      S.idMessages((S.warnings)) ++
-      S.idMessages((S.notices))).map(_._1).distinct
+    val idSet =
+      (S.idMessages((S.errors)) ++ S.idMessages((S.warnings)) ++
+        S.idMessages((S.notices))).map(_._1).distinct
 
     // Merge each Id's messages and effects into the JsCmd chain
     idSet.foldLeft(groupMessages) { (chain, id) =>
-      chain &
-        LiftRules.jsArtifacts.setHtml(id, Msg.renderIdMsgs(id)) &
+      chain & LiftRules.jsArtifacts.setHtml(id, Msg.renderIdMsgs(id)) &
         idEffects(id)
     }
   }
@@ -977,9 +974,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   @volatile
   var calcIEMode: () => Boolean = () =>
-    (for (r <- S.request)
-      yield r.isIE6 || r.isIE7 ||
-        r.isIE8) openOr true
+    (for (r <- S.request) yield r.isIE6 || r.isIE7 || r.isIE8) openOr true
 
   /**
     * The JavaScript to execute to log a message on the client side when
@@ -1087,8 +1082,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
           val decodedMetaData = pairsToMetaData(
             encodedArguments.flatMap(_.roboSplit("[;&]")))
 
-          if (decodedMetaData.get("parallel").headOption == Some(
-                Text("true"))) {
+          if (decodedMetaData.get("parallel").headOption ==
+                Some(Text("true"))) {
             DataAttributeProcessorAnswerFuture(LAFuture(() =>
               new Elem(
                 "lift",
@@ -1353,8 +1348,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       case null => dispatch.toList
       case _ => SessionMaster.getSession(req, Empty) match {
           case Full(s) => S.initIfUninitted(s) {
-              S.highLevelSessionDispatchList.map(_.dispatch) :::
-                dispatch.toList
+              S.highLevelSessionDispatchList.map(_.dispatch) ::: dispatch.toList
             }
           case _ => dispatch.toList
         }
@@ -1898,8 +1892,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   val supplementalHeaders: FactoryMaker[List[(String, String)]] =
     new FactoryMaker(() => {
-      ("X-Lift-Version", liftVersion) ::
-        lockedSecurityRules.headers
+      ("X-Lift-Version", liftVersion) :: lockedSecurityRules.headers
     }) {}
 
   /**

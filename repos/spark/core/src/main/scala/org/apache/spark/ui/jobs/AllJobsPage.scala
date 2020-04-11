@@ -67,8 +67,8 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
 
   private def makeJobEvent(jobUIDatas: Seq[JobUIData]): Seq[String] = {
     jobUIDatas.filter { jobUIData =>
-      jobUIData.status != JobExecutionStatus.UNKNOWN && jobUIData.submissionTime
-        .isDefined
+      jobUIData.status != JobExecutionStatus.UNKNOWN &&
+      jobUIData.submissionTime.isDefined
     }.map { jobUIData =>
       val jobId = jobUIData.jobId
       val status = jobUIData.status
@@ -183,21 +183,19 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
       <a data-toggle="tooltip" title={ToolTips.JOB_TIMELINE} data-placement="right">
         Event Timeline
       </a>
-    </span> ++
-      <div id="application-timeline" class="collapsed">
+    </span> ++ <div id="application-timeline" class="collapsed">
       <div class="control-panel">
         <div id="application-timeline-zoom-lock">
           <input type="checkbox"></input>
           <span>Enable zooming</span>
         </div>
       </div>
-    </div> ++
-      <script type="text/javascript">
+    </div> ++ <script type="text/javascript">
       {
-        Unparsed(
-          s"drawApplicationTimeline(${groupJsonArrayAsStr}," +
-            s"${eventArrayAsStr}, ${startTime});")
-      }
+      Unparsed(
+        s"drawApplicationTimeline(${groupJsonArrayAsStr}," +
+          s"${eventArrayAsStr}, ${startTime});")
+    }
     </script>
   }
 
@@ -356,8 +354,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
       if (shouldShowCompletedJobs) {
         content ++= <h4 id="completed">Completed Jobs ({
           completedJobNumStr
-        })</h4> ++
-          completedJobsTable
+        })</h4> ++ completedJobsTable
       }
       if (shouldShowFailedJobs) {
         content ++= <h4 id ="failed">Failed Jobs ({failedJobs.size})</h4> ++

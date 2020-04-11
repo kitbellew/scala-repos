@@ -104,8 +104,8 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
                     }
 
                     val target = path.path.replaceAll("/$", ".json")
-                    val src = io.Source fromInputStream getClass
-                      .getResourceAsStream(target)
+                    val src = io.Source fromInputStream
+                      getClass.getResourceAsStream(target)
                     val parsed = src.getLines map JParser.parse toStream
 
                     currentIndex += parsed.length
@@ -113,16 +113,16 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
                     parsed zip (Stream from index) map {
                       case (value, id) =>
                         JObject(
-                          JField("key", JArray(JNum(id) :: Nil)) :: JField(
-                            "value",
-                            value) :: Nil)
+                          JField("key", JArray(JNum(id) :: Nil)) ::
+                            JField("value", value) :: Nil)
                     }
                   }
                 }
 
               case x =>
                 failure(ResourceError.corrupt(
-                  "Attempted to load JSON as a table from something that wasn't a string: " + x))
+                  "Attempted to load JSON as a table from something that wasn't a string: " +
+                    x))
             }
 
           parsedV.map(_.flatten).disjunction.map(fromJson(_))

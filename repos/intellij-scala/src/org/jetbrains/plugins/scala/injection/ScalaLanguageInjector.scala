@@ -56,18 +56,14 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     val literals = literalsOf(host)
     if (literals.isEmpty) return
 
-    if (injectUsingIntention(
-          registrar,
-          host,
-          literals) || injectInInterpolation(registrar, host, literals)) return
+    if (injectUsingIntention(registrar, host, literals) ||
+        injectInInterpolation(registrar, host, literals)) return
 
     if (ScalaProjectSettings.getInstance(host.getProject)
           .isDisableLangInjection) return
 
-    injectUsingAnnotation(registrar, host, literals) || injectUsingPatterns(
-      registrar,
-      host,
-      literals)
+    injectUsingAnnotation(registrar, host, literals) ||
+    injectUsingPatterns(registrar, host, literals)
   }
 
   private def literalsOf(host: PsiElement): Seq[ScLiteral] = {
@@ -120,14 +116,15 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
     val annotation = annotationOwner flatMap {
       _.getAnnotations find {
-        _.getQualifiedName == myInjectionConfiguration.getAdvancedConfiguration
-          .getLanguageAnnotationClass
+        _.getQualifiedName ==
+          myInjectionConfiguration.getAdvancedConfiguration
+            .getLanguageAnnotationClass
       }
     }
 
     val languageId = annotation flatMap (readAttribute(_, "value"))
-    val language =
-      languageId flatMap (it => InjectedLanguage.findLanguageById(it).toOption)
+    val language = languageId flatMap
+      (it => InjectedLanguage.findLanguageById(it).toOption)
 
     language foreach { it =>
       registrar startInjecting it
@@ -179,8 +176,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
         val injection = injections.next()
 
         if (injection acceptsPsiElement host) {
-          val language = InjectedLanguage findLanguageById injection
-            .getInjectedLanguageId
+          val language = InjectedLanguage findLanguageById
+            injection.getInjectedLanguageId
           if (language != null) {
             val injectedLanguage = InjectedLanguage.create(
               injection.getInjectedLanguageId,
@@ -215,10 +212,14 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
           registry getLanguageFor (host, element.getContainingFile)) flatMap {
           injectedLanguage =>
             ScalaLanguageInjector withInjectionSupport { support =>
-              ScalaLanguageInjector performSimpleInjection (
-                literals, injectedLanguage, new BaseInjection(support.getId),
-                host, registrar, support
-              )
+              ScalaLanguageInjector performSimpleInjection
+                (
+                  literals,
+                  injectedLanguage,
+                  new BaseInjection(support.getId),
+                  host,
+                  registrar,
+                  support)
               true
             }
         } getOrElse false
@@ -267,9 +268,9 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
           literals filter {
             case interpolated: ScInterpolatedStringLiteral
-                if interpolated.reference exists (mapping containsKey _
-                  .getText) => true
-            case _          => false
+                if interpolated.reference exists
+                  (mapping containsKey _.getText) => true
+            case _                                => false
           } foreach {
             case literal: ScInterpolatedStringLiteral =>
               val languageId = mapping get literal.reference.get.getText
@@ -278,10 +279,12 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
                 Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]
 
               if (injectedLanguage != null) {
-                ScalaLanguageInjector handleInjectionImpl (
-                  literal, injectedLanguage, new BaseInjection(
-                    support.getId), list
-                )
+                ScalaLanguageInjector handleInjectionImpl
+                  (
+                    literal,
+                    injectedLanguage,
+                    new BaseInjection(support.getId),
+                    list)
                 allInjections put (injectedLanguage, list)
               }
           }
@@ -393,9 +396,8 @@ object ScalaLanguageInjector {
       count += lineLength + 1
     }
     if (rangesCollected.isEmpty)
-      rangesCollected += new TextRange(
-        range.getStartOffset,
-        range.getStartOffset)
+      rangesCollected +=
+        new TextRange(range.getStartOffset, range.getStartOffset)
 
     rangesCollected
   }
@@ -419,8 +421,8 @@ object ScalaLanguageInjector {
   }
 
   def withInjectionSupport[T](action: LanguageInjectionSupport => T) =
-    Extensions getExtensions LanguageInjectionSupport.EP_NAME find (_
-      .getId == "scala") map action
+    Extensions getExtensions LanguageInjectionSupport.EP_NAME find
+      (_.getId == "scala") map action
 
   def performSimpleInjection(
       literals: scala.Seq[ScLiteral],
@@ -432,8 +434,9 @@ object ScalaLanguageInjector {
     val list = new util.ArrayList[
       Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]
 
-    literals foreach (ScalaLanguageInjector
-      .handleInjectionImpl(_, injectedLanguage, injection, list))
+    literals foreach
+      (ScalaLanguageInjector
+        .handleInjectionImpl(_, injectedLanguage, injection, list))
 
     InjectorUtils.registerInjection(
       injectedLanguage.getLanguage,

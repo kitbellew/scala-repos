@@ -274,8 +274,8 @@ object ConsoleProducer {
     val compressionCodecOptionValue = options.valueOf(compressionCodecOpt)
     val compressionCodec =
       if (options.has(compressionCodecOpt))
-        if (compressionCodecOptionValue == null || compressionCodecOptionValue
-              .isEmpty) DefaultCompressionCodec.name
+        if (compressionCodecOptionValue == null ||
+            compressionCodecOptionValue.isEmpty) DefaultCompressionCodec.name
         else compressionCodecOptionValue
       else NoCompressionCodec.name
     val batchSize = options.valueOf(batchSizeOpt)

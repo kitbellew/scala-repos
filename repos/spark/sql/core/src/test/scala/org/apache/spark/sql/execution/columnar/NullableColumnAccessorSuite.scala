@@ -93,8 +93,8 @@ class NullableColumnAccessorSuite extends SparkFunSuite {
         assert(accessor.hasNext)
         accessor.extractTo(row, 0)
         assert(
-          converter(row.get(0, columnType.dataType))
-            === converter(randomRow.get(0, columnType.dataType)))
+          converter(row.get(0, columnType.dataType)) ===
+            converter(randomRow.get(0, columnType.dataType)))
 
         assert(accessor.hasNext)
         accessor.extractTo(row, 0)

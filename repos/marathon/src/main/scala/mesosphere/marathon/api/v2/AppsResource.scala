@@ -111,13 +111,13 @@ class AppsResource @Inject() (
       @Context
       req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
-      val resolvedEmbed = InfoEmbedResolver
-        .resolveApp(embed.asScala.toSet) ++ Set(
-        // deprecated. For compatibility.
-        AppInfo.Embed.Counts,
-        AppInfo.Embed.Tasks,
-        AppInfo.Embed.LastTaskFailure,
-        AppInfo.Embed.Deployments)
+      val resolvedEmbed = InfoEmbedResolver.resolveApp(embed.asScala.toSet) ++
+        Set(
+          // deprecated. For compatibility.
+          AppInfo.Embed.Counts,
+          AppInfo.Embed.Tasks,
+          AppInfo.Embed.LastTaskFailure,
+          AppInfo.Embed.Deployments)
 
       def transitiveApps(groupId: PathId): Response = {
         result(groupManager.group(groupId)) match {

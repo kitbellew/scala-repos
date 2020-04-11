@@ -112,8 +112,8 @@ final class JUnitExecuteTest(
           for (method <- jUnitMetadata.afterMethod)
             classMetadata.invoke(testClassInstance, method.name)
 
-          if (testAnnotation.timeout != 0 && testAnnotation
-                .timeout <= timeInSeconds) {
+          if (testAnnotation.timeout != 0 &&
+              testAnnotation.timeout <= timeInSeconds) {
             richLogger.warn(
               "Timeout: took " + timeInSeconds + " sec, expected " +
                 (testAnnotation.timeout.toDouble / 1000) + " sec")
@@ -224,8 +224,8 @@ final class JUnitExecuteTest(
       ex: Throwable,
       timeInSeconds: Double): Unit = {
     val msg = {
-      "failed: org.junit." + c("AssumptionViolatedException", ERRMSG) +
-        ": " + ex.getMessage + ", took " + timeInSeconds + " sec"
+      "failed: org.junit." + c("AssumptionViolatedException", ERRMSG) + ": " +
+        ex.getMessage + ", took " + timeInSeconds + " sec"
     }
     logFormattedWarn("Test assumption in test ", methodName, msg)
   }

@@ -19,8 +19,8 @@ class LoggingFilter @Inject() (implicit val mat: Materializer) extends Filter {
     val startTime = System.currentTimeMillis
 
     nextFilter(requestHeader).map { result =>
-      val action = requestHeader.tags(Tags.RouteController) +
-        "." + requestHeader.tags(Tags.RouteActionMethod)
+      val action = requestHeader.tags(Tags.RouteController) + "." +
+        requestHeader.tags(Tags.RouteActionMethod)
       val endTime = System.currentTimeMillis
       val requestTime = endTime - startTime
 

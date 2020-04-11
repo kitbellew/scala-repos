@@ -210,8 +210,8 @@ object Variable {
           val orderedCategories = categories.toList
 
           { s =>
-            orderedCategories map (cat =>
-              if (cat == s) Ring[F].one else Ring[F].zero)
+            orderedCategories map
+              (cat => if (cat == s) Ring[F].one else Ring[F].zero)
           }
         }
       }

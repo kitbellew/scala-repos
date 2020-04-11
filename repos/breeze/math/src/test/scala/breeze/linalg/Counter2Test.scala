@@ -81,39 +81,33 @@ class Counter2Test extends FunSuite with Checkers {
 
   test("Subtraction") {
     assert(
-      Counter2(("a", "a", 1), ("b", "b", 2)) - Counter2(
-        ("a", "a", 3)) === Counter2(("a", "a", -2), ("b", "b", 2)))
+      Counter2(("a", "a", 1), ("b", "b", 2)) - Counter2(("a", "a", 3)) ===
+        Counter2(("a", "a", -2), ("b", "b", 2)))
     assert(
-      Counter2(("a", "a", 3)) - Counter2(
-        ("a", "a", 1),
-        ("b", "b", 2)) === Counter2(("a", "a", 2), ("b", "b", -2)))
+      Counter2(("a", "a", 3)) - Counter2(("a", "a", 1), ("b", "b", 2)) ===
+        Counter2(("a", "a", 2), ("b", "b", -2)))
   }
 
   test("Multiplication") {
     assert(
-      Counter2(("a", "a", 1), ("b", "b", 2)) :* Counter2(
-        ("a", "a", 3)) === Counter2(("a", "a", 3)))
+      Counter2(("a", "a", 1), ("b", "b", 2)) :* Counter2(("a", "a", 3)) ===
+        Counter2(("a", "a", 3)))
     assert(
-      Counter2(("a", "a", 3)) :* Counter2(
-        ("a", "a", 1),
-        ("b", "b", 2)) === Counter2(("a", "a", 3)))
+      Counter2(("a", "a", 3)) :* Counter2(("a", "a", 1), ("b", "b", 2)) ===
+        Counter2(("a", "a", 3)))
   }
 
   test("Shaped Multiplication: C2/C2") {
     assert(
-      Counter2((0, 'a', 1), (1, 'a', 2), (1, 'b', 3)) * Counter2(
-        ('a', 0, 1),
-        ('b', 0, 2)) ===
-        Counter2((0, 0, 1), (1, 0, 8)))
+      Counter2((0, 'a', 1), (1, 'a', 2), (1, 'b', 3)) *
+        Counter2(('a', 0, 1), ('b', 0, 2)) === Counter2((0, 0, 1), (1, 0, 8)))
 
   }
 
   test("Shaped Multiplication: C2/C1") {
     assert(
-      Counter2((0, 'a', 1), (1, 'a', 2), (1, 'b', 3)) * Counter(
-        ('a', 1),
-        ('b', 2)) ===
-        Counter((0, 1), (1, 8)))
+      Counter2((0, 'a', 1), (1, 'a', 2), (1, 'b', 3)) *
+        Counter(('a', 1), ('b', 2)) === Counter((0, 1), (1, 8)))
   }
 
   test("Shaped Transpose Multiplication C2/C2") {
@@ -144,22 +138,20 @@ class Counter2Test extends FunSuite with Checkers {
       normalize(
         Counter2((1, 'a, 1.0), (1, 'b, 3.0), (2, 'a, 2.0), (2, 'b, 4.0)),
         Axis._0,
-        1) ===
-        Counter2(
-          (1, 'a, 1.0 / 3.0),
-          (1, 'b, 3.0 / 7.0),
-          (2, 'a, 2.0 / 3.0),
-          (2, 'b, 4.0 / 7.0)))
+        1) === Counter2(
+        (1, 'a, 1.0 / 3.0),
+        (1, 'b, 3.0 / 7.0),
+        (2, 'a, 2.0 / 3.0),
+        (2, 'b, 4.0 / 7.0)))
     assert(
       normalize(
         Counter2((1, 'a, 1.0), (1, 'b, 3.0), (2, 'a, 2.0), (2, 'b, 4.0)),
         Axis._1,
-        1) ===
-        Counter2(
-          (1, 'a, 1.0 / 4.0),
-          (1, 'b, 3.0 / 4.0),
-          (2, 'a, 2.0 / 6.0),
-          (2, 'b, 4.0 / 6.0)))
+        1) === Counter2(
+        (1, 'a, 1.0 / 4.0),
+        (1, 'b, 3.0 / 4.0),
+        (2, 'a, 2.0 / 6.0),
+        (2, 'b, 4.0 / 6.0)))
   }
 
   test("ufuncs") { breeze.numerics.exp(Counter2((1, 2, 3.0))) }

@@ -36,8 +36,7 @@ class MarshallingDirectivesExamplesSpec extends RoutingSpec {
       "/",
       HttpEntity(
         `application/json`,
-        """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~>
-      route ~> check {
+        """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~> route ~> check {
       responseAs[String] shouldEqual "Person: Jane - favorite number: 42"
     }
   }
@@ -58,8 +57,7 @@ class MarshallingDirectivesExamplesSpec extends RoutingSpec {
       "/",
       HttpEntity(
         `application/json`,
-        """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~>
-      route ~> check {
+        """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~> route ~> check {
       responseAs[String] shouldEqual """Person: "Jane" - favorite number: 42"""
     }
   }
@@ -107,8 +105,7 @@ class MarshallingDirectivesExamplesSpec extends RoutingSpec {
       "/",
       HttpEntity(
         `application/json`,
-        """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~>
-      route ~> check {
+        """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~> route ~> check {
       mediaType shouldEqual `application/json`
       responseAs[String] should include(""""name": "Jane"""")
       responseAs[String] should include(""""favoriteNumber": 42""")

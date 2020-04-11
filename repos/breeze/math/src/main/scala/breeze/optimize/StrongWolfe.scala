@@ -107,8 +107,8 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
         val c = phi(t)
         //logger.debug("ZOOM:\n c: " + c + " \n l: " + low + " \nr: " + hi)
         logger.info(
-          "Line search t: " + t + " fval: " + c.fval +
-            " rhs: " + (fval + c1 * c.t * dd) + " cdd: " + c.dd)
+          "Line search t: " + t + " fval: " + c.fval + " rhs: " +
+            (fval + c1 * c.t * dd) + " cdd: " + c.dd)
 
         ///////////////
         /// Update left or right bracket, or both
@@ -146,16 +146,16 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
 
       // If phi has a bounded domain, inf or nan usually indicates we took
       // too large a step.
-      if (java.lang.Double.isInfinite(c.fval) || java.lang.Double
-            .isNaN(c.fval)) {
+      if (java.lang.Double.isInfinite(c.fval) ||
+          java.lang.Double.isNaN(c.fval)) {
         t /= 2.0
         logger.error(
-          "Encountered bad values in function evaluation. Decreasing step size to " + t)
+          "Encountered bad values in function evaluation. Decreasing step size to " +
+            t)
       } else {
 
         // Zoom if "sufficient decrease" condition is not satisfied
-        if ((c.fval > fval + c1 * t * dd) ||
-            (c.fval >= low.fval && i > 0)) {
+        if ((c.fval > fval + c1 * t * dd) || (c.fval >= low.fval && i > 0)) {
           logger
             .debug("Line search t: " + t + " fval: " + c.fval + " cdd: " + c.dd)
           return zoom(low, c)
@@ -170,15 +170,16 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
         // over to the next one.
         if (c.dd >= 0) {
           logger.debug(
-            "Line search t: " + t + " fval: " + c.fval +
-              " rhs: " + (fval + c1 * t * dd) + " cdd: " + c.dd)
+            "Line search t: " + t + " fval: " + c.fval + " rhs: " +
+              (fval + c1 * t * dd) + " cdd: " + c.dd)
           return zoom(c, low)
         }
 
         low = c
         t *= 1.5
         logger.debug(
-          "Sufficent Decrease condition but not curvature condition satisfied. Increased t to: " + t)
+          "Sufficent Decrease condition but not curvature condition satisfied. Increased t to: " +
+            t)
       }
     }
 

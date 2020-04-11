@@ -72,15 +72,15 @@ case class DataSource(
   /** A map to maintain backward compatibility in case we move data sources around. */
   private val backwardCompatibilityMap = Map(
     "org.apache.spark.sql.jdbc" -> classOf[jdbc.DefaultSource].getCanonicalName,
-    "org.apache.spark.sql.jdbc.DefaultSource" -> classOf[jdbc.DefaultSource]
-      .getCanonicalName,
+    "org.apache.spark.sql.jdbc.DefaultSource" ->
+      classOf[jdbc.DefaultSource].getCanonicalName,
     "org.apache.spark.sql.json" -> classOf[json.DefaultSource].getCanonicalName,
-    "org.apache.spark.sql.json.DefaultSource" -> classOf[json.DefaultSource]
-      .getCanonicalName,
-    "org.apache.spark.sql.parquet" -> classOf[parquet.DefaultSource]
-      .getCanonicalName,
-    "org.apache.spark.sql.parquet.DefaultSource" -> classOf[
-      parquet.DefaultSource].getCanonicalName,
+    "org.apache.spark.sql.json.DefaultSource" ->
+      classOf[json.DefaultSource].getCanonicalName,
+    "org.apache.spark.sql.parquet" ->
+      classOf[parquet.DefaultSource].getCanonicalName,
+    "org.apache.spark.sql.parquet.DefaultSource" ->
+      classOf[parquet.DefaultSource].getCanonicalName,
     "com.databricks.spark.csv" -> classOf[csv.DefaultSource].getCanonicalName
   )
 
@@ -106,7 +106,8 @@ case class DataSource(
                 "The ORC data source must be used with Hive support enabled.",
                 error)
             } else {
-              if (provider == "avro" || provider == "com.databricks.spark.avro") {
+              if (provider == "avro" ||
+                  provider == "com.databricks.spark.avro") {
                 throw new ClassNotFoundException(
                   s"Failed to find data source: $provider. Please use Spark package " +
                     "http://spark-packages.org/package/databricks/spark-avro",

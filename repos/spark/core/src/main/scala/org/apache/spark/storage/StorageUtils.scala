@@ -282,8 +282,8 @@ private[spark] object StorageUtils extends Logging {
       status.rddBlocksById(rddId).foreach {
         case (bid, _) =>
           val location = status.blockManagerId.hostPort
-          blockLocations
-            .getOrElseUpdate(bid, mutable.ListBuffer.empty) += location
+          blockLocations.getOrElseUpdate(bid, mutable.ListBuffer.empty) +=
+            location
       }
     }
     blockLocations

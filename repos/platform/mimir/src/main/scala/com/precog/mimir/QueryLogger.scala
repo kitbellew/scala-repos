@@ -116,8 +116,7 @@ trait JobQueryLogger[M[+_], P] extends QueryLogger[M, P] {
     JObject(
       JField("message", JString(msg)) ::
         JField("timestamp", clock.now().serialize) ::
-        JField("position", decomposer.decompose(pos)) ::
-        Nil)
+        JField("position", decomposer.decompose(pos)) :: Nil)
   }
 
   private def send(channel: String, pos: P, msg: String): M[Unit] =

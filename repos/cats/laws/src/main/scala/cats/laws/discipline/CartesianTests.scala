@@ -47,10 +47,9 @@ object CartesianTests {
             implicit EqFABC: Eq[F[(A, B, C)]]) =
           F.imap(fs._1) { case (a, (b, c)) => (a, b, c) } {
             case (a, b, c) => (a, (b, c))
-          } ?==
-            F.imap(fs._2) { case ((a, b), c) => (a, b, c) } {
-              case (a, b, c) => ((a, b), c)
-            }
+          } ?== F.imap(fs._2) { case ((a, b), c) => (a, b, c) } {
+            case (a, b, c) => ((a, b), c)
+          }
 
         def leftIdentity[A](fs: (F[(Unit, A)], F[A]))(implicit
             EqFA: Eq[F[A]]): Prop =

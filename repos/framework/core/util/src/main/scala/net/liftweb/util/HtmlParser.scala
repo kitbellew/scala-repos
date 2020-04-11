@@ -139,14 +139,12 @@ trait Html5Writer {
                 sb.append(';')
               }
               case _ =>
-                if (c >= ' ' &&
-                    c != '\u0085' &&
+                if (c >= ' ' && c != '\u0085' &&
                     !(c >= '\u007f' && c <= '\u0095')) sb.append(c)
             }
           } else {
-            if (c >= ' ' &&
-                c != '\u0085' &&
-                !(c >= '\u007f' && c <= '\u0095')) sb.append(c)
+            if (c >= ' ' && c != '\u0085' && !(c >= '\u007f' && c <= '\u0095'))
+              sb.append(c)
           }
       }
 
@@ -226,8 +224,7 @@ trait Html5Writer {
         for (c <- g.nodes) write(c, writer, stripComment, convertAmp)
 
       case e: Elem
-          if (null eq e.prefix) &&
-            Html5Constants.nonReplaceable_?(e.label) => {
+          if (null eq e.prefix) && Html5Constants.nonReplaceable_?(e.label) => {
         writer.append('<')
         writer.append(e.label)
         writeAttributes(e.attributes, writer)
@@ -259,8 +256,7 @@ trait Html5Writer {
       }
 
       case e: Elem
-          if (null eq e.prefix) &&
-            Html5Constants.voidTag_?(e.label) => {
+          if (null eq e.prefix) && Html5Constants.voidTag_?(e.label) => {
         writer.append('<')
         writer.append(e.label)
         writeAttributes(e.attributes, writer)
@@ -330,8 +326,7 @@ object Html5Constants {
     * Is the tag a non-replaceable tag?
     */
   def nonReplaceable_?(t: String): Boolean =
-    (t equalsIgnoreCase "script") ||
-      (t equalsIgnoreCase "style")
+    (t equalsIgnoreCase "script") || (t equalsIgnoreCase "style")
 }
 
 /**
@@ -396,8 +391,7 @@ trait Html5Parser {
     def checkHead(n: Node): Boolean =
       n match {
         case e: Elem => {
-          e.label == "head" && e.prefix == null &&
-          e.attributes == Null &&
+          e.label == "head" && e.prefix == null && e.attributes == Null &&
           e.child.length == 0
         }
         case _ => false
@@ -406,10 +400,8 @@ trait Html5Parser {
     def checkBody(n: Node): Boolean =
       n match {
         case e: Elem => {
-          e.label == "body" && e.prefix == null &&
-          e.attributes == Null &&
-          e.child.length >= 1 &&
-          e.child(0).isInstanceOf[Elem]
+          e.label == "body" && e.prefix == null && e.attributes == Null &&
+          e.child.length >= 1 && e.child(0).isInstanceOf[Elem]
         }
         case _ => false
       }
@@ -417,10 +409,8 @@ trait Html5Parser {
     def unapply(n: Node): Option[Elem] =
       n match {
         case e: Elem => {
-          if (e.label == "html" && e.prefix == null &&
-              e.attributes == Null &&
-              e.child.length == 2 &&
-              checkHead(e.child(0)) &&
+          if (e.label == "html" && e.prefix == null && e.attributes == Null &&
+              e.child.length == 2 && checkHead(e.child(0)) &&
               checkBody(e.child(1))) {
             Some(e.child(1).asInstanceOf[Elem].child(0).asInstanceOf[Elem])
           } else { None }

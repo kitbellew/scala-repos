@@ -267,15 +267,8 @@ class MacroUnitTests extends WordSpec with Matchers with MockitoSugar {
       val byte = converter.getConverter(7).asPrimitiveConverter()
       byte.addInt(1)
       converter.end()
-      converter.currentValue shouldEqual SampleClassE(
-        0,
-        1L,
-        2,
-        d = true,
-        3f,
-        4d,
-        "foo",
-        1)
+      converter.currentValue shouldEqual
+        SampleClassE(0, 1L, 2, d = true, 3f, 4d, "foo", 1)
     }
 
     "Generate converters for case class with nested class" in {
@@ -294,9 +287,8 @@ class MacroUnitTests extends WordSpec with Matchers with MockitoSugar {
       val bString = converter.getConverter(1).asPrimitiveConverter()
       bString.addBinary(Binary.fromString("toto"))
       converter.end()
-      converter.currentValue shouldEqual SampleClassB(
-        SampleClassA(2, "foo"),
-        "toto")
+      converter.currentValue shouldEqual
+        SampleClassB(SampleClassA(2, "foo"), "toto")
     }
 
     "Generate converters for case class with optional nested class" in {
@@ -323,10 +315,8 @@ class MacroUnitTests extends WordSpec with Matchers with MockitoSugar {
       val c = converter.getConverter(2).asPrimitiveConverter()
       c.addDouble(4d)
       converter.end()
-      converter.currentValue shouldEqual SampleClassF(
-        0,
-        Some(SampleClassB(SampleClassA(2, "foo"), "b1")),
-        4d)
+      converter.currentValue shouldEqual
+        SampleClassF(0, Some(SampleClassB(SampleClassA(2, "foo"), "b1")), 4d)
     }
 
     "Generate converters for case class with list fields" in {
@@ -351,9 +341,8 @@ class MacroUnitTests extends WordSpec with Matchers with MockitoSugar {
       b.end()
       converter.end()
 
-      converter.currentValue shouldEqual SampleClassH(
-        0,
-        List(SampleClassA(2, "foo")))
+      converter.currentValue shouldEqual
+        SampleClassH(0, List(SampleClassA(2, "foo")))
     }
 
     "Generate converters for case class with map fields" in {
@@ -612,9 +601,8 @@ class MacroUnitTests extends WordSpec with Matchers with MockitoSugar {
       val k = SampleClassK(
         "foo",
         Map(
-          SampleClassA(2, "foo") -> SampleClassB(
-            SampleClassA(2, "foo"),
-            "bar")))
+          SampleClassA(2, "foo") ->
+            SampleClassB(SampleClassA(2, "foo"), "bar")))
       val schema2 = MessageTypeParser
         .parseMessageType(Macros.caseClassParquetSchema[SampleClassK])
       val rc2 = new StringBuilderRecordConsumer

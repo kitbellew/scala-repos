@@ -334,15 +334,15 @@ class TypedActorSpec
       mustStop(t)
     }
 
-    "be able to call multiple Future-returning methods non-blockingly" in within(
-      timeout.duration) {
-      val t = newFooBar
-      val futures = for (i ← 1 to 20) yield (i, t.futurePigdog(20 millis, i))
-      for ((i, f) ← futures) {
-        Await.result(f, remaining) should ===("Pigdog" + i)
+    "be able to call multiple Future-returning methods non-blockingly" in
+      within(timeout.duration) {
+        val t = newFooBar
+        val futures = for (i ← 1 to 20) yield (i, t.futurePigdog(20 millis, i))
+        for ((i, f) ← futures) {
+          Await.result(f, remaining) should ===("Pigdog" + i)
+        }
+        mustStop(t)
       }
-      mustStop(t)
-    }
 
     "be able to call methods returning Java Options" taggedAs TimingTest in {
       val t = newFooBar(1 second)
@@ -421,8 +421,8 @@ class TypedActorSpec
         mustStop(t)
 
         val ta: F = TypedActor(system).typedActorOf(TypedProps[FI]())
-        intercept[IllegalStateException] { ta.f(true) }.getMessage should ===(
-          "expected")
+        intercept[IllegalStateException] { ta.f(true) }.getMessage should
+          ===("expected")
         ta.f(false) should ===(1)
 
         mustStop(ta)
@@ -436,16 +436,16 @@ class TypedActorSpec
       mustStop(t)
     }
 
-    "be able to support implementation only typed actors" in within(
-      timeout.duration) {
-      val t: Foo = TypedActor(system).typedActorOf(TypedProps[Bar]())
-      val f = t.futurePigdog(200 millis)
-      val f2 = t.futurePigdog(Duration.Zero)
-      f2.isCompleted should ===(false)
-      f.isCompleted should ===(false)
-      Await.result(f, remaining) should ===(Await.result(f2, remaining))
-      mustStop(t)
-    }
+    "be able to support implementation only typed actors" in
+      within(timeout.duration) {
+        val t: Foo = TypedActor(system).typedActorOf(TypedProps[Bar]())
+        val f = t.futurePigdog(200 millis)
+        val f2 = t.futurePigdog(Duration.Zero)
+        f2.isCompleted should ===(false)
+        f.isCompleted should ===(false)
+        Await.result(f, remaining) should ===(Await.result(f2, remaining))
+        mustStop(t)
+      }
 
     "be able to support implementation only typed actors with complex interfaces" in {
       val t: Stackable1 with Stackable2 = TypedActor(system)

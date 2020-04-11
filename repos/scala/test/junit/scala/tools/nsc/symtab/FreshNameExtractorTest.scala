@@ -17,15 +17,14 @@ class FreshNameExtractorTest {
   val prefixes = List("foo$", "x$", "bar", "bippy$baz$")
 
   @Test
-  def extractionPreservesPrefix =
-    ("" :: prefixes).foreach { creatorPrefix =>
-      prefixes.foreach { newPrefix =>
-        val Creator = new FreshNameCreator(creatorPrefix)
-        val Extractor = new FreshNameExtractor(creatorPrefix)
-        val Extractor(extractedPrefix) = TermName(Creator.newName(newPrefix))
-        assertEquals(newPrefix, extractedPrefix)
-      }
+  def extractionPreservesPrefix = ("" :: prefixes).foreach { creatorPrefix =>
+    prefixes.foreach { newPrefix =>
+      val Creator = new FreshNameCreator(creatorPrefix)
+      val Extractor = new FreshNameExtractor(creatorPrefix)
+      val Extractor(extractedPrefix) = TermName(Creator.newName(newPrefix))
+      assertEquals(newPrefix, extractedPrefix)
     }
+  }
 
   @Test
   def extractionFailsOnCreatorPrefixMismatch = {

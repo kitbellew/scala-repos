@@ -24,8 +24,8 @@ class ScalaPropertiesReferenceProvider extends PsiReferenceProvider {
       context: ProcessingContext): Array[PsiReference] = {
     object PossibleKey {
       def unapply(lit: ScLiteral): Option[String] = {
-        if (!lit.isString || lit.isMultiLineString || lit
-              .isInstanceOf[ScInterpolatedStringLiteral]) return None
+        if (!lit.isString || lit.isMultiLineString ||
+            lit.isInstanceOf[ScInterpolatedStringLiteral]) return None
 
         lit.getValue match {
           case str: String if !str.contains(" ") => Some(str)

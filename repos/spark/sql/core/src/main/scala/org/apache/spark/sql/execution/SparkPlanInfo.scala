@@ -43,8 +43,8 @@ class SparkPlanInfo(
   override def equals(other: Any): Boolean =
     other match {
       case o: SparkPlanInfo =>
-        nodeName == o.nodeName && simpleString == o
-          .simpleString && children == o.children
+        nodeName == o.nodeName && simpleString == o.simpleString &&
+          children == o.children
       case _ => false
     }
 }

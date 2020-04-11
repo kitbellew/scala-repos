@@ -42,8 +42,8 @@ object APIKeyManager {
   def newAPIKey(): String = newUUID().toUpperCase
 
   // 384 bit grant ID
-  def newGrantId(): String =
-    (newUUID() + newUUID() + newUUID()).toLowerCase.replace("-", "")
+  def newGrantId(): String = (newUUID() + newUUID() + newUUID()).toLowerCase
+    .replace("-", "")
 }
 
 trait APIKeyManager[M[+_]] extends Logging {

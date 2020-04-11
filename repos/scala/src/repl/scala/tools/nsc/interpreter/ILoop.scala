@@ -297,8 +297,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
     handlers.filterNot(_.importedSymbols.isEmpty).zipWithIndex foreach {
       case (handler, idx) =>
-        val (types, terms) =
-          handler.importedSymbols partition (_.name.isTypeName)
+        val (types, terms) = handler.importedSymbols partition
+          (_.name.isTypeName)
         val imps = handler.implicitSymbols
         val found = tokens filter (handler importsSymbolNamed _)
         val typeMsg = if (types.isEmpty) "" else types.size + " types"
@@ -306,9 +306,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         val implicitMsg = if (imps.isEmpty) "" else imps.size + " are implicit"
         val foundMsg =
           if (found.isEmpty) "" else found.mkString(" // imports: ", ", ", "")
-        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot (
-          _ == ""
-        ) mkString ("(", ", ", ")")
+        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot
+          (_ == "") mkString ("(", ", ", ")")
 
         intp.reporter.printMessage("%2d) %-30s %s%s".format(
           idx + 1,
@@ -550,8 +549,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       }
       if (intp.namedDefinedTerms.nonEmpty)
         echo(
-          "Forgetting all expression results and named terms: " + intp
-            .namedDefinedTerms.mkString(", "))
+          "Forgetting all expression results and named terms: " +
+            intp.namedDefinedTerms.mkString(", "))
       if (intp.definedTypes.nonEmpty)
         echo("Forgetting defined types: " + intp.definedTypes.mkString(", "))
       if (destructive) createInterpreter() else reset()
@@ -575,9 +574,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   def editCommand(what: String, editor: Option[String]): Result = {
     def diagnose(code: String) = {
       echo("The edited code is incomplete!\n")
-      val errless = intp compileSources new BatchSourceFile(
-        "<pastie>",
-        s"object pastel {\n$code\n}")
+      val errless = intp compileSources
+        new BatchSourceFile("<pastie>", s"object pastel {\n$code\n}")
       if (errless) echo("The compiler reports no errors.")
     }
 
@@ -856,10 +854,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         val delimiter = eof orElse replProps.pasteDelimiter.option
         val input =
           readWhile(s => delimiter.isEmpty || delimiter.get != s) mkString "\n"
-        val text = (margin filter (_.nonEmpty) map {
-          case "-" => input.lines map (_.trim) mkString "\n"
-          case m   => input stripMargin m.head // ignore excess chars in "<<||"
-        } getOrElse input).trim
+        val text =
+          (margin filter (_.nonEmpty) map {
+            case "-" => input.lines map (_.trim) mkString "\n"
+            case m   => input stripMargin m.head // ignore excess chars in "<<||"
+          } getOrElse input).trim
         if (text.isEmpty) echo("\n// Nothing pasted, nothing gained.\n")
         else echo("\n// Exiting paste mode, now interpreting.\n")
         text
@@ -870,9 +869,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       if (res == IR.Incomplete) {
         echo("The pasted code is incomplete!\n")
         // Remembrance of Things Pasted in an object
-        val errless = intp compileSources new BatchSourceFile(
-          "<pastie>",
-          s"object pastel {\n$code\n}")
+        val errless = intp compileSources
+          new BatchSourceFile("<pastie>", s"object pastel {\n$code\n}")
         if (errless)
           echo("...but compilation found no error? Good luck with that.")
       }
@@ -993,11 +991,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
       def internalClass(kind: String) =
         s"scala.tools.nsc.interpreter.$kind.InteractiveReader"
-      val readerClasses = sys.props.get("scala.repl.reader").toStream ++ Stream(
-        internalClass("jline"),
-        internalClass("jline_embedded"))
-      val readers =
-        readerClasses map (cls => Try { mkReader(instantiater(cls)) })
+      val readerClasses = sys.props.get("scala.repl.reader").toStream ++
+        Stream(internalClass("jline"), internalClass("jline_embedded"))
+      val readers = readerClasses map
+        (cls => Try { mkReader(instantiater(cls)) })
 
       val reader = (readers collect {
         case Success(reader) => reader
@@ -1006,8 +1003,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       if (settings.debug) {
         val readerDiags = (readerClasses, readers).zipped map {
           case (cls, Failure(e)) =>
-            s"  - $cls --> \n\t" + scala.tools.nsc.util
-              .stackTraceString(e) + "\n"
+            s"  - $cls --> \n\t" + scala.tools.nsc.util.stackTraceString(e) +
+              "\n"
           case (cls, Success(_)) => s"  - $cls OK"
         }
         Console.println(
@@ -1023,9 +1020,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     intp
       .quietBind(NamedParam[IMain]("$intp", intp)(tagOfIMain, classTag[IMain]))
     // Auto-run code via some setting.
-    (replProps.replAutorunCode.option
-      flatMap (f => io.File(f).safeSlurp())
-      foreach (intp quietRun _))
+    (replProps.replAutorunCode.option flatMap
+      (f => io.File(f).safeSlurp()) foreach (intp quietRun _))
     // classloader and power mode setup
     intp.setContextClassLoader()
     if (isReplPower) {

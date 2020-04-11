@@ -13,9 +13,8 @@ trait C {
 }
 class ABC extends A with B with C {
   private def reflected =
-    (Thread.currentThread.getStackTrace
-      takeWhile (_.getMethodName != "main")
-      exists (_.toString contains "sun.reflect."))
+    (Thread.currentThread.getStackTrace takeWhile
+      (_.getMethodName != "main") exists (_.toString contains "sun.reflect."))
   lazy val y: PQ = new PQ(reflected)
 }
 

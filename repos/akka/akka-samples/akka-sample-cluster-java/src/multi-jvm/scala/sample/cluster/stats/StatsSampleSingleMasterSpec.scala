@@ -105,8 +105,8 @@ abstract class StatsSampleSingleMasterSpec
 
       Cluster(system) join firstAddress
 
-      receiveN(3).collect { case MemberUp(m) => m.address }.toSet should be(
-        Set(firstAddress, secondAddress, thirdAddress))
+      receiveN(3).collect { case MemberUp(m) => m.address }.toSet should
+        be(Set(firstAddress, secondAddress, thirdAddress))
 
       Cluster(system).unsubscribe(testActor)
 
@@ -134,8 +134,8 @@ abstract class StatsSampleSingleMasterSpec
       // service and worker nodes might not be up yet
       awaitAssert {
         proxy ! new StatsJob("this is the text that will be analyzed")
-        expectMsgType[StatsResult](1.second).getMeanWordLength should be(
-          3.875 +- 0.001)
+        expectMsgType[StatsResult](1.second).getMeanWordLength should
+          be(3.875 +- 0.001)
       }
 
       testConductor.enter("done")

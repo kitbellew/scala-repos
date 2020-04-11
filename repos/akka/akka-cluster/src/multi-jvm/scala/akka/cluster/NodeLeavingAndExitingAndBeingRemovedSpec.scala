@@ -37,37 +37,37 @@ abstract class NodeLeavingAndExitingAndBeingRemovedSpec
 
   "A node that is LEAVING a non-singleton cluster" must {
 
-    "eventually set to REMOVED and removed from membership ring and seen table" taggedAs LongRunningTest in {
+    "eventually set to REMOVED and removed from membership ring and seen table" taggedAs
+      LongRunningTest in {
 
-      awaitClusterUp(first, second, third)
+        awaitClusterUp(first, second, third)
 
-      within(30.seconds) {
-        runOn(first) { cluster.leave(second) }
-        enterBarrier("second-left")
+        within(30.seconds) {
+          runOn(first) { cluster.leave(second) }
+          enterBarrier("second-left")
 
-        runOn(first, third) {
-          enterBarrier("second-shutdown")
-          markNodeAsUnavailable(second)
-          // verify that the 'second' node is no longer part of the 'members'/'unreachable' set
-          awaitAssert {
-            clusterView.members.map(_.address) should not contain (address(
-              second))
+          runOn(first, third) {
+            enterBarrier("second-shutdown")
+            markNodeAsUnavailable(second)
+            // verify that the 'second' node is no longer part of the 'members'/'unreachable' set
+            awaitAssert {
+              clusterView.members.map(_.address) should not contain
+                (address(second))
+            }
+            awaitAssert {
+              clusterView.unreachableMembers.map(_.address) should not contain
+                (address(second))
+            }
           }
-          awaitAssert {
-            clusterView.unreachableMembers.map(_.address) should not contain (
-              address(second)
-            )
+
+          runOn(second) {
+            // verify that the second node is shut down
+            awaitCond(cluster.isTerminated)
+            enterBarrier("second-shutdown")
           }
         }
 
-        runOn(second) {
-          // verify that the second node is shut down
-          awaitCond(cluster.isTerminated)
-          enterBarrier("second-shutdown")
-        }
+        enterBarrier("finished")
       }
-
-      enterBarrier("finished")
-    }
   }
 }

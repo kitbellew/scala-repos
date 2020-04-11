@@ -84,8 +84,8 @@ trait Picklers {
 
   lazy val noPosition = singletonPickler(NoPosition)
 
-  implicit lazy val position: Pickler[Position] =
-    transparentPosition | rangePosition | offsetPosition | noPosition
+  implicit lazy val position: Pickler[Position] = transparentPosition |
+    rangePosition | offsetPosition | noPosition
 
   implicit lazy val namePickler: Pickler[Name] = pkl[String].wrapped[Name] {
     str =>
@@ -172,9 +172,8 @@ trait Picklers {
     } { item => item.sym ~ item.source }.asClass(classOf[AskLinkPosItem])
 
   implicit def askDocCommentItem: CondPickler[AskDocCommentItem] =
-    (pkl[Symbol] ~ pkl[SourceFile] ~ pkl[Symbol] ~ pkl[List[(
-        Symbol,
-        SourceFile)]]).wrapped {
+    (pkl[Symbol] ~ pkl[SourceFile] ~ pkl[Symbol] ~
+      pkl[List[(Symbol, SourceFile)]]).wrapped {
       case sym ~ source ~ site ~ fragments =>
         new AskDocCommentItem(sym, source, site, fragments, new Response)
     } { item => item.sym ~ item.source ~ item.site ~ item.fragments }
@@ -196,6 +195,8 @@ trait Picklers {
       .asClass(classOf[EmptyAction])
 
   implicit def action: Pickler[() => Unit] =
-    reloadItem | askTypeAtItem | askTypeItem | askTypeCompletionItem | askScopeCompletionItem |
-      askToDoFirstItem | askLinkPosItem | askDocCommentItem | askLoadedTypedItem | askParsedEnteredItem | emptyAction
+    reloadItem | askTypeAtItem | askTypeItem | askTypeCompletionItem |
+      askScopeCompletionItem | askToDoFirstItem | askLinkPosItem |
+      askDocCommentItem | askLoadedTypedItem | askParsedEnteredItem |
+      emptyAction
 }

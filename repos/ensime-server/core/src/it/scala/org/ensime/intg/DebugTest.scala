@@ -308,7 +308,9 @@ class DebugTest
                           head,
                           "java.lang.Object",
                           "Instance of Integer")
-                        if head == "head" | head == "scala$collection$immutable$$colon$colon$$hd" =>
+                        if head == "head" |
+                          head ==
+                          "scala$collection$immutable$$colon$colon$$hd" =>
                   }
               }
 

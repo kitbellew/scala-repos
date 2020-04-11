@@ -57,10 +57,9 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
     val mulLo = mul.toInt & ((1 << 24) - 1)
 
     val loProd = oldSeedLo.toDouble * mulLo.toDouble + 0xB
-    val hiProd = oldSeedLo.toDouble * mulHi.toDouble + oldSeedHi
-      .toDouble * mulLo.toDouble
-    val newSeedHi =
-      (_24msbOf(loProd) + _24lsbOf(hiProd)) & ((1 << 24) - 1)
+    val hiProd = oldSeedLo.toDouble * mulHi.toDouble +
+      oldSeedHi.toDouble * mulLo.toDouble
+    val newSeedHi = (_24msbOf(loProd) + _24lsbOf(hiProd)) & ((1 << 24) - 1)
     val newSeedLo = _24lsbOf(loProd)
 
     seedHi = newSeedHi

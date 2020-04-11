@@ -223,12 +223,12 @@ object ActorSystem {
       config.getMillisDuration("akka.logger-startup-timeout"))
     final val LogConfigOnStart: Boolean = config
       .getBoolean("akka.log-config-on-start")
-    final val LogDeadLetters: Int =
-      config.getString("akka.log-dead-letters").toLowerCase(Locale.ROOT) match {
-        case "off" | "false" ⇒ 0
-        case "on" | "true" ⇒ Int.MaxValue
-        case _ ⇒ config.getInt("akka.log-dead-letters")
-      }
+    final val LogDeadLetters: Int = config.getString("akka.log-dead-letters")
+      .toLowerCase(Locale.ROOT) match {
+      case "off" | "false" ⇒ 0
+      case "on" | "true" ⇒ Int.MaxValue
+      case _ ⇒ config.getInt("akka.log-dead-letters")
+    }
     final val LogDeadLettersDuringShutdown: Boolean = config
       .getBoolean("akka.log-dead-letters-during-shutdown")
 
@@ -261,7 +261,9 @@ object ActorSystem {
 
     if (ConfigVersion != Version)
       throw new akka.ConfigurationException(
-        "Akka JAR version [" + Version + "] does not match the provided config version [" + ConfigVersion + "]")
+        "Akka JAR version [" + Version +
+          "] does not match the provided config version [" + ConfigVersion +
+          "]")
 
     /**
       * Returns the String representation of the Config that this Settings is backed by
@@ -288,8 +290,7 @@ object ActorSystem {
       }
 
     Option(Thread.currentThread.getContextClassLoader) orElse
-      (Reflect.getCallerClass map findCaller) getOrElse
-      getClass.getClassLoader
+      (Reflect.getCallerClass map findCaller) getOrElse getClass.getClassLoader
   }
 }
 
@@ -831,8 +832,8 @@ private[akka] class ActorSystemImpl(
       immutable.Seq(
         classOf[Config] -> settings.config,
         classOf[LoggingAdapter] -> log,
-        classOf[ThreadFactory] -> threadFactory
-          .withName(threadFactory.name + "-scheduler"))
+        classOf[ThreadFactory] ->
+          threadFactory.withName(threadFactory.name + "-scheduler"))
     ).get
   //#create-scheduler
 
@@ -877,7 +878,8 @@ private[akka] class ActorSystemImpl(
               ext.createExtension(this) match { // Create and initialize the extension
                 case null ⇒
                   throw new IllegalStateException(
-                    "Extension instance created as 'null' for extension [" + ext + "]")
+                    "Extension instance created as 'null' for extension [" +
+                      ext + "]")
                 case instance ⇒
                   extensions
                     .replace(
@@ -958,25 +960,27 @@ private[akka] class ActorSystemImpl(
             (cell match {
               case real: ActorCell ⇒ " status=" + real.mailbox.currentStatus
               case _ ⇒ ""
+            }) + " " +
+            (cell.childrenRefs match {
+              case ChildrenContainer
+                    .TerminatingChildrenContainer(_, toDie, reason) ⇒
+                "Terminating(" + reason + ")" +
+                  (toDie.toSeq.sorted mkString
+                    (
+                      "\n" + indent + "   |    toDie: ",
+                      "\n" + indent + "   |           ",
+                      ""))
+              case x @ (ChildrenContainer.TerminatedChildrenContainer |
+                  ChildrenContainer.EmptyChildrenContainer) ⇒ x.toString
+              case n: ChildrenContainer.NormalChildrenContainer ⇒
+                n.c.size + " children"
+              case x ⇒ Logging.simpleName(x)
             }) +
-            " " + (cell.childrenRefs match {
-            case ChildrenContainer
-                  .TerminatingChildrenContainer(_, toDie, reason) ⇒
-              "Terminating(" + reason + ")" +
-                (toDie.toSeq.sorted mkString (
-                  "\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""
-                ))
-            case x @ (ChildrenContainer.TerminatedChildrenContainer |
-                ChildrenContainer.EmptyChildrenContainer) ⇒ x.toString
-            case n: ChildrenContainer.NormalChildrenContainer ⇒
-              n.c.size + " children"
-            case x ⇒ Logging.simpleName(x)
-          }) +
             (if (cell.childrenRefs.children.isEmpty) "" else "\n") +
             ({
               val children = cell.childrenRefs.children.toSeq.sorted
-              val bulk =
-                children.dropRight(1) map (printNode(_, indent + "   |"))
+              val bulk = children.dropRight(1) map
+                (printNode(_, indent + "   |"))
               bulk ++ (children.lastOption map (printNode(_, indent + "    ")))
             } mkString ("\n"))
         case _ ⇒ indent + node.path.name + " " + Logging.simpleName(node)

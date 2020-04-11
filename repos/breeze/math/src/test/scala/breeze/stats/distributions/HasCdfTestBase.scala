@@ -39,8 +39,8 @@ trait HasCdfTestBase extends FunSuite with Checkers {
         else (samples(1), samples(0))
       }
 
-      val inRange =
-        samples.count(x => x >= low && x <= high) / (samples.length * 1.0)
+      val inRange = samples.count(x => x >= low && x <= high) /
+        (samples.length * 1.0)
       val prob = distr.probability(low, high)
       if (prob >= 0 && math.abs(inRange - prob) <= 2e-2) { true }
       else {

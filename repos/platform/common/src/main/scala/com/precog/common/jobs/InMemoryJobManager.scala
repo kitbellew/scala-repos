@@ -109,8 +109,7 @@ trait BaseInMemoryJobManager[M[+_]]
       extra: Option[JValue]): M[Either[String, Status]] = {
 
     val jval = JObject(
-      JField("message", JString(msg)) ::
-        JField("progress", JNum(progress)) ::
+      JField("message", JString(msg)) :: JField("progress", JNum(progress)) ::
         JField("unit", JString(unit)) ::
         (extra map (JField("info", _) :: Nil) getOrElse Nil))
 
@@ -164,8 +163,8 @@ trait BaseInMemoryJobManager[M[+_]]
       since: Option[MessageId]): M[Seq[Message]] = {
     M.point {
       val posts = jobs(jobId).channels.getOrElse(channel, Nil)
-      since map { mId => posts.takeWhile(_.id != mId).reverse } getOrElse posts
-        .reverse
+      since map { mId => posts.takeWhile(_.id != mId).reverse } getOrElse
+        posts.reverse
     }
   }
 

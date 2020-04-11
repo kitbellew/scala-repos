@@ -126,9 +126,8 @@ object Definitions {
     "scala_Long" -> "J",
     "scala_Float" -> "F",
     "scala_Double" -> "D"
-  ) ++ (for (index <- 2 to 22)
-    yield s"scala_Tuple$index" -> ("T" + index)) ++ (for (index <- 0 to 22)
-    yield s"scala_Function$index" -> ("F" + index))
+  ) ++ (for (index <- 2 to 22) yield s"scala_Tuple$index" -> ("T" + index)) ++
+    (for (index <- 0 to 22) yield s"scala_Function$index" -> ("F" + index))
 
   private val decompressedClasses: Map[String, String] =
     compressedClasses map { case (a, b) => (b, a) }

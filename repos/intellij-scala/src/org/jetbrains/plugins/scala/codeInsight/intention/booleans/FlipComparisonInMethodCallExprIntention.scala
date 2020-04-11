@@ -42,8 +42,9 @@ class FlipComparisonInMethodCallExprIntention
     val oper = methodCallExpr.getInvokedExpr.asInstanceOf[ScReferenceExpression]
       .nameId.getText
 
-    if (oper != "equals" && oper != "==" && oper != "!=" && oper != "eq" && oper != "ne" &&
-        oper != ">" && oper != "<" && oper != ">=" && oper != "<=") return false
+    if (oper != "equals" && oper != "==" && oper != "!=" && oper != "eq" &&
+        oper != "ne" && oper != ">" && oper != "<" && oper != ">=" &&
+        oper != "<=") return false
 
     val range: TextRange = methodCallExpr.getInvokedExpr
       .asInstanceOf[ScReferenceExpression].nameId.getTextRange
@@ -70,8 +71,9 @@ class FlipComparisonInMethodCallExprIntention
     if (methodCallExpr == null || !methodCallExpr.isValid) return
 
     val start = methodCallExpr.getTextRange.getStartOffset
-    val diff = editor.getCaretModel.getOffset - methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression].nameId.getTextRange.getStartOffset
+    val diff = editor.getCaretModel.getOffset -
+      methodCallExpr.getInvokedExpr.asInstanceOf[ScReferenceExpression].nameId
+        .getTextRange.getStartOffset
     val expr = new StringBuilder
     val qualBuilder = new StringBuilder
     val argsBuilder = new StringBuilder
@@ -118,8 +120,8 @@ class FlipComparisonInMethodCallExprIntention
       .replaceExpression(newQualExpr, removeParenthesis = true)
 
     val size = newMethodCallExpr.asInstanceOf[ScMethodCall].getInvokedExpr
-      .asInstanceOf[ScReferenceExpression].nameId.getTextRange
-      .getStartOffset - newMethodCallExpr.getTextRange.getStartOffset
+      .asInstanceOf[ScReferenceExpression].nameId.getTextRange.getStartOffset -
+      newMethodCallExpr.getTextRange.getStartOffset
 
     inWriteAction {
       methodCallExpr

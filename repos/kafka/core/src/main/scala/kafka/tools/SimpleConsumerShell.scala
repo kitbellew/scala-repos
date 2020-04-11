@@ -140,9 +140,8 @@ object SimpleConsumerShell extends Logging {
       maxWaitMs).topicsMetadata
     if (topicsMetadata.size != 1 || !topicsMetadata(0).topic.equals(topic)) {
       System.err.println(
-        (
-          "Error: no valid topic metadata for topic: %s, " + "what we get from server is only: %s"
-        ).format(topic, topicsMetadata))
+        ("Error: no valid topic metadata for topic: %s, " +
+          "what we get from server is only: %s").format(topic, topicsMetadata))
       System.exit(1)
     }
 
@@ -201,8 +200,8 @@ object SimpleConsumerShell extends Logging {
       } catch {
         case t: Throwable =>
           System.err.println(
-            "Error in getting earliest or latest offset due to: " + Utils
-              .stackTrace(t))
+            "Error in getting earliest or latest offset due to: " +
+              Utils.stackTrace(t))
           System.exit(1)
       } finally { if (simpleConsumer != null) simpleConsumer.close() }
     }
@@ -248,8 +247,8 @@ object SimpleConsumerShell extends Logging {
                 return
               }
               debug(
-                "multi fetched " + messageSet
-                  .sizeInBytes + " bytes from offset " + offset)
+                "multi fetched " + messageSet.sizeInBytes +
+                  " bytes from offset " + offset)
               for (messageAndOffset <- messageSet
                    if numMessagesConsumed < maxMessages) {
                 try {

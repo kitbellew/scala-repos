@@ -27,9 +27,8 @@ object ScalaRunTime {
     x != null && isArrayClass(x.getClass, atLevel)
 
   private def isArrayClass(clazz: jClass[_], atLevel: Int): Boolean =
-    clazz.isArray && (atLevel == 1 || isArrayClass(
-      clazz.getComponentType,
-      atLevel - 1))
+    clazz.isArray &&
+      (atLevel == 1 || isArrayClass(clazz.getComponentType, atLevel - 1))
 
   def isValueClass(clazz: jClass[_]) = clazz.isPrimitive()
 
@@ -314,8 +313,8 @@ object ScalaRunTime {
         // collections which may have useful toString methods - ticket #3710
         // or c) print AbstractFiles which are somehow also Iterable[AbstractFile]s.
         case x: Traversable[_] =>
-          !x.hasDefiniteSize || !isScalaClass(x) || isScalaCompilerClass(
-            x) || isXmlNode(x.getClass) || isXmlMetaData(x.getClass)
+          !x.hasDefiniteSize || !isScalaClass(x) || isScalaCompilerClass(x) ||
+            isXmlNode(x.getClass) || isXmlMetaData(x.getClass)
         // Otherwise, nothing could possibly go wrong
         case _ => false
       }
@@ -330,13 +329,11 @@ object ScalaRunTime {
     // Special casing Unit arrays, the value class which uses a reference array type.
     def arrayToString(x: AnyRef) = {
       if (x.getClass.getComponentType == classOf[BoxedUnit])
-        0 until (
-          array_length(x) min maxElements
-        ) map (_ => "()") mkString ("Array(", ", ", ")")
+        0 until (array_length(x) min maxElements) map (_ => "()") mkString
+          ("Array(", ", ", ")")
       else
-        WrappedArray make x take maxElements map inner mkString (
-          "Array(", ", ", ")"
-        )
+        WrappedArray make x take maxElements map inner mkString
+          ("Array(", ", ", ")")
     }
 
     // The recursively applied attempt to prettify Array printing.
@@ -352,17 +349,14 @@ object ScalaRunTime {
         case x if useOwnToString(x)  => x.toString
         case x: AnyRef if isArray(x) => arrayToString(x)
         case x: scala.collection.Map[_, _] =>
-          x.iterator take maxElements map mapInner mkString (
-            x.stringPrefix + "(", ", ", ")"
-          )
+          x.iterator take maxElements map mapInner mkString
+            (x.stringPrefix + "(", ", ", ")")
         case x: GenIterable[_] =>
-          x.iterator take maxElements map inner mkString (
-            x.stringPrefix + "(", ", ", ")"
-          )
+          x.iterator take maxElements map inner mkString
+            (x.stringPrefix + "(", ", ", ")")
         case x: Traversable[_] =>
-          x take maxElements map inner mkString (
-            x.stringPrefix + "(", ", ", ")"
-          )
+          x take maxElements map inner mkString
+            (x.stringPrefix + "(", ", ", ")")
         case x: Product1[_] if isTuple(x) =>
           "(" + inner(x._1) + ",)" // that special trailing comma
         case x: Product if isTuple(x) =>

@@ -280,8 +280,8 @@ object TaskBuilder {
 
   val maxEnvironmentVarLength = 512
   val labelEnvironmentKeyPrefix = "MARATHON_APP_LABEL_"
-  val maxVariableLength = maxEnvironmentVarLength - labelEnvironmentKeyPrefix
-    .length
+  val maxVariableLength = maxEnvironmentVarLength -
+    labelEnvironmentKeyPrefix.length
 
   def commandInfo(
       app: AppDefinition,
@@ -293,10 +293,9 @@ object TaskBuilder {
       for (pms <- app.portMappings) yield pms.map(_.containerPort)
     val declaredPorts = containerPorts.getOrElse(app.portNumbers)
     val envMap: Map[String, String] =
-      taskContextEnv(app, taskId) ++
-        addPrefix(
-          envPrefix,
-          portsEnv(declaredPorts, ports) ++ host.map("HOST" -> _).toMap) ++
+      taskContextEnv(app, taskId) ++ addPrefix(
+        envPrefix,
+        portsEnv(declaredPorts, ports) ++ host.map("HOST" -> _).toMap) ++
         app.env
 
     val builder = CommandInfo.newBuilder().setEnvironment(environment(envMap))
@@ -380,13 +379,13 @@ object TaskBuilder {
         "MESOS_TASK_ID" -> taskId.map(_.idString),
         "MARATHON_APP_ID" -> Some(app.id.toString),
         "MARATHON_APP_VERSION" -> Some(app.version.toString),
-        "MARATHON_APP_DOCKER_IMAGE" -> app.container
-          .flatMap(_.docker.map(_.image)),
+        "MARATHON_APP_DOCKER_IMAGE" ->
+          app.container.flatMap(_.docker.map(_.image)),
         "MARATHON_APP_RESOURCE_CPUS" -> Some(app.cpus.toString),
         "MARATHON_APP_RESOURCE_MEM" -> Some(app.mem.toString),
         "MARATHON_APP_RESOURCE_DISK" -> Some(app.disk.toString)
-      ).collect { case (key, Some(value)) => key -> value }
-        .toMap ++ labelsToEnvVars(app.labels)
+      ).collect { case (key, Some(value)) => key -> value }.toMap ++
+        labelsToEnvVars(app.labels)
     }
   }
 
@@ -396,8 +395,8 @@ object TaskBuilder {
 
     val validLabels = labels.collect {
       case (key, value)
-          if key.length < maxVariableLength
-            && value.length < maxEnvironmentVarLength => escape(key) -> value
+          if key.length < maxVariableLength &&
+            value.length < maxEnvironmentVarLength => escape(key) -> value
     }
 
     val names = Map("MARATHON_APP_LABELS" -> validLabels.keys.mkString(" "))

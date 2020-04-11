@@ -13,9 +13,8 @@ object AlignTest extends SpecLite {
     val max = xs.size max ys.size
     val min = xs.size min ys.size
     xys.length must_=== (max)
-    xys.takeWhile { case (x, y) => x.isDefined && y.isDefined }.size must_=== (
-      min
-    )
+    xys.takeWhile { case (x, y) => x.isDefined && y.isDefined }.size must_===
+      (min)
     val dropped: List[(Option[Int], Option[Int])] = xys.dropWhile {
       case (x, y) => x.isDefined && y.isDefined
     }
@@ -49,14 +48,16 @@ object AlignTest extends SpecLite {
     val xys = F.alignThis(xs, ys)
     xys.size must_=== (xs.size max ys.size)
     xys.dropWhile(_.isEmpty).size must_=== ((xs.size - ys.size) max 0)
-    xys.dropWhile(_.isEmpty) foreach (_ mustMatch { case Some(_) => true })
+    xys.dropWhile(_.isEmpty) foreach
+      (_ mustMatch { case Some(_) => true })
   }
 
   "alignThat" ! forAll { (xs: List[Int], ys: List[Int]) =>
     val xys = F.alignThat(xs, ys)
     xys.size must_=== (xs.size max ys.size)
     xys.dropWhile(_.isEmpty).size must_=== ((ys.size - xs.size) max 0)
-    xys.dropWhile(_.isEmpty) foreach (_ mustMatch { case Some(_) => true })
+    xys.dropWhile(_.isEmpty) foreach
+      (_ mustMatch { case Some(_) => true })
   }
 
   "alignBoth" ! forAll { (xs: List[Int], ys: List[Int]) =>

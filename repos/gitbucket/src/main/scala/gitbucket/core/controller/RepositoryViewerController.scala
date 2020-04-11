@@ -165,8 +165,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
               branchName,
               repository,
               logs.splitWith { (commit1, commit2) =>
-                view.helpers.date(commit1.commitTime) == view.helpers
-                  .date(commit2.commitTime)
+                view.helpers.date(commit1.commitTime) ==
+                  view.helpers.date(commit2.commitTime)
               },
               page,
               hasNext,
@@ -372,18 +372,21 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         val last = git.log.add(git.getRepository.resolve(id)).addPath(path)
           .setMaxCount(1).call.iterator.next.name
         Map(
-          "root" -> s"${context.baseUrl}/${repository.owner}/${repository.name}",
+          "root" ->
+            s"${context.baseUrl}/${repository.owner}/${repository.name}",
           "id" -> id,
           "path" -> path,
           "last" -> last,
           "blame" -> JGitUtil.getBlame(git, id, path).map { blame =>
             Map(
               "id" -> blame.id,
-              "author" -> view.helpers
-                .user(blame.authorName, blame.authorEmailAddress).toString,
-              "avatar" -> view.helpers
-                .avatarLink(blame.authorName, 32, blame.authorEmailAddress)
-                .toString,
+              "author" ->
+                view.helpers.user(blame.authorName, blame.authorEmailAddress)
+                  .toString,
+              "avatar" ->
+                view.helpers
+                  .avatarLink(blame.authorName, 32, blame.authorEmailAddress)
+                  .toString,
               "authed" -> helper.html.datetimeago(blame.authorTime).toString,
               "prev" -> blame.prev,
               "prevPath" -> blame.prevPath,
@@ -776,8 +779,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                     if (path == ".") Nil else path.split("/").toList
                   // process README.md or README.markdown
                   val readme = files.find { file =>
-                    !file.isDirectory && readmeFiles
-                      .contains(file.name.toLowerCase)
+                    !file.isDirectory &&
+                    readmeFiles.contains(file.name.toLowerCase)
                   }.map { file =>
                     val path = (file.name :: parentPath.reverse).reverse
                     path -> StringUtil.convertFromByteArray(
@@ -977,10 +980,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
   private def isEditable(owner: String, repository: String, author: String)(
       implicit context: Context): Boolean =
-    hasWritePermission(
-      owner,
-      repository,
-      context.loginAccount) || author == context.loginAccount.get.userName
+    hasWritePermission(owner, repository, context.loginAccount) ||
+      author == context.loginAccount.get.userName
 
   override protected def renderUncaughtException(e: Throwable)(implicit
       request: HttpServletRequest,

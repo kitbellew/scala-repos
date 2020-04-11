@@ -63,8 +63,7 @@ class ScalaTestGenerator extends TestGenerator {
     val file = NewScalaTypeDefinitionAction.createFromTemplate(
       d.getTargetDirectory,
       d.getClassName,
-      d.getClassName +
-        SCALA_EXTENSIOIN,
+      d.getClassName + SCALA_EXTENSIOIN,
       d.getSelectedTestFrameworkDescriptor match {
         case f: AbstractTestFramework if f.generateObjectTests => "Scala Object"
         case _                                                 => "Scala Class"
@@ -490,14 +489,14 @@ object ScalaTestGenerator {
       if (methods.nonEmpty)
         testNames.map(testName => doubleIndent + testName + " $" + testName)
           .fold(
-            "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
-            _ + "\n" + _)
+            "\n" + normalIndentString + "Methods of " + className +
+              " should pass tests:")(_ + "\n" + _)
       else ""
     val closingBrace = templateBody.getLastChild
     templateBody.addBefore(
       ScalaPsiElementFactory.createMethodFromText(
-        "def is = s2\"\"\"" + checkMethodsString +
-          "\n" + normalIndentString + "\"\"\"",
+        "def is = s2\"\"\"" + checkMethodsString + "\n" + normalIndentString +
+          "\"\"\"",
         psiManager),
       closingBrace)
     testNames.map(testName =>
@@ -528,20 +527,21 @@ object ScalaTestGenerator {
         val checkMethodsString =
           if (methods.nonEmpty)
             testNames.map(doubleIndent + "+ " + _).fold(
-              "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
-              _ + "\n" + _)
+              "\n" + normalIndentString + "Methods of " + className +
+                " should pass tests:")(_ + "\n" + _)
           else ""
         templateBody.addBefore(
           ScalaPsiElementFactory.createMethodFromText(
-            "def is = s2\"\"\"" + checkMethodsString +
-              "\n" + doubleIndent + "\"\"\"",
+            "def is = s2\"\"\"" + checkMethodsString + "\n" + doubleIndent +
+              "\"\"\"",
             psiManager),
           closingBrace)
         if (methods.nonEmpty) {
           templateBody.addBefore(
             ScalaPsiElementFactory.createExpressionFromText(
-              testNames.map("eg := ok //" + _).fold(
-                "\"" + className + "\" - new group {")(_ + "\n" + _) + "\n}",
+              testNames.map("eg := ok //" + _)
+                .fold("\"" + className + "\" - new group {")(_ + "\n" + _) +
+                "\n}",
               psiManager),
             closingBrace
           )
@@ -580,9 +580,8 @@ object ScalaTestGenerator {
     if (methods.nonEmpty) {
       templateBody.addBefore(
         ScalaPsiElementFactory.createElement(
-          methods.map(
-            normalIndentString + "\"" +
-              _.getMember.getName + "\" - {}\n")
+          methods
+            .map(normalIndentString + "\"" + _.getMember.getName + "\" - {}\n")
             .fold("val methodsTests = TestSuite{")(_ + "\n" + _) + "}",
           psiManager,
           Def.parse(_)),

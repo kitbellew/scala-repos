@@ -100,9 +100,8 @@ class OfferMatcherManagerModuleTest
     val matchedTasks: MatchedTaskOps = Await
       .result(matchedTasksFuture, 3.seconds)
     assert(
-      matchedTasks.launchedTaskInfos.toSet == Set(
-        makeOneCPUTask("task1_1"),
-        makeOneCPUTask("task2_1")))
+      matchedTasks.launchedTaskInfos.toSet ==
+        Set(makeOneCPUTask("task1_1"), makeOneCPUTask("task2_1")))
   }
 
   for (launchTokens <- Seq(0, 1, 5)) {

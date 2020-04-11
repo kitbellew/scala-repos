@@ -106,9 +106,10 @@ class HiveExplainSuite
       """.stripMargin).collect().map(_.mkString).mkString
 
       val shouldContain =
-        "== Parsed Logical Plan ==" :: "== Analyzed Logical Plan ==" :: "Subquery" ::
-          "== Optimized Logical Plan ==" :: "== Physical Plan ==" ::
-          "CreateTableAsSelect" :: "InsertIntoHiveTable" :: "jt" :: Nil
+        "== Parsed Logical Plan ==" :: "== Analyzed Logical Plan ==" ::
+          "Subquery" :: "== Optimized Logical Plan ==" ::
+          "== Physical Plan ==" :: "CreateTableAsSelect" ::
+          "InsertIntoHiveTable" :: "jt" :: Nil
       for (key <- shouldContain) {
         assert(outputs.contains(key), s"$key doesn't exist in result")
       }

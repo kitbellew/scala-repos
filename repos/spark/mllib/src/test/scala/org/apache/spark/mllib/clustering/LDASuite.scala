@@ -481,8 +481,8 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
      */
 
     assert(
-      ldaModel.docConcentration ~== Vectors
-        .dense(0.42582646, 0.43511073) absTol 0.05)
+      ldaModel.docConcentration ~== Vectors.dense(0.42582646, 0.43511073) absTol
+        0.05)
   }
 
   test("model save/load") {
@@ -529,15 +529,15 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(
         distributedModel.iterationTimes === sameDistributedModel.iterationTimes)
       assert(
-        distributedModel.docConcentration === sameDistributedModel
-          .docConcentration)
+        distributedModel.docConcentration ===
+          sameDistributedModel.docConcentration)
       assert(
-        distributedModel.topicConcentration === sameDistributedModel
-          .topicConcentration)
+        distributedModel.topicConcentration ===
+          sameDistributedModel.topicConcentration)
       assert(distributedModel.gammaShape === sameDistributedModel.gammaShape)
       assert(
-        distributedModel.globalTopicTotals === sameDistributedModel
-          .globalTopicTotals)
+        distributedModel.globalTopicTotals ===
+          sameDistributedModel.globalTopicTotals)
 
       val graph = distributedModel.graph
       val sameGraph = sameDistributedModel.graph

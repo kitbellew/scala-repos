@@ -28,8 +28,8 @@ object PovToEntry {
       provisional: Boolean): Fu[Either[Game, Entry]] =
     enrich(game, userId, provisional) map
       (_ flatMap convert toRight game) addFailureEffect { e =>
-      println(s"http://l.org/${game.id}")
-    }
+        println(s"http://l.org/${game.id}")
+      }
 
   private def removeWrongAnalysis(game: Game): Boolean = {
     if (game.metadata.analysed && !game.analysable) {
@@ -48,27 +48,27 @@ object PovToEntry {
     else
       lila.game.Pov.ofUserId(game, userId) ?? { pov =>
         lila.game.GameRepo.initialFen(game) zip
-          (game.metadata.analysed ?? lila.analyse.AnalysisRepo
-            .byId(game.id)) map {
-          case (fen, an) =>
-            for {
-              boards <- chess.Replay.boards(
-                moveStrs = game.pgnMoves,
+          (game.metadata.analysed ??
+            lila.analyse.AnalysisRepo.byId(game.id)) map {
+            case (fen, an) =>
+              for {
+                boards <- chess.Replay.boards(
+                  moveStrs = game.pgnMoves,
+                  initialFen = fen,
+                  variant = game.variant).toOption.flatMap(_.toNel)
+                movetimes <- game.moveTimes(pov.color).toNel
+              } yield RichPov(
+                pov = pov,
+                provisional = provisional,
                 initialFen = fen,
-                variant = game.variant).toOption.flatMap(_.toNel)
-              movetimes <- game.moveTimes(pov.color).toNel
-            } yield RichPov(
-              pov = pov,
-              provisional = provisional,
-              initialFen = fen,
-              analysis = an,
-              division = chess.Divider(boards.list),
-              moveAccuracy = an.map { Accuracy.diffsList(pov, _) },
-              boards = boards,
-              movetimes = movetimes,
-              advices = an.?? { _.advices.map { a => a.info.ply -> a }.toMap }
-            )
-        }
+                analysis = an,
+                division = chess.Divider(boards.list),
+                moveAccuracy = an.map { Accuracy.diffsList(pov, _) },
+                boards = boards,
+                movetimes = movetimes,
+                advices = an.?? { _.advices.map { a => a.info.ply -> a }.toMap }
+              )
+          }
       }
 
   private def pgnMoveToRole(pgn: String): Role =

@@ -141,17 +141,15 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
       M: Monad[M]): M[Validation[String, Account]] = {
     findAccountByEmail(email) map {
       case Some(account)
-          if account.passwordHash == saltAndHashSHA1(
-            password,
-            account.passwordSalt) ||
-            account.passwordHash == saltAndHashSHA256(
-              password,
-              account.passwordSalt) ||
-            account.passwordHash == saltAndHashLegacy(
-              password,
-              account.passwordSalt) => Success(account)
-      case Some(account)            => Failure("password mismatch")
-      case None                     => Failure("account not found")
+          if account.passwordHash ==
+            saltAndHashSHA1(password, account.passwordSalt) ||
+            account.passwordHash ==
+            saltAndHashSHA256(password, account.passwordSalt) ||
+            account.passwordHash ==
+            saltAndHashLegacy(password, account.passwordSalt) =>
+        Success(account)
+      case Some(account) => Failure("password mismatch")
+      case None          => Failure("account not found")
     }
   }
 

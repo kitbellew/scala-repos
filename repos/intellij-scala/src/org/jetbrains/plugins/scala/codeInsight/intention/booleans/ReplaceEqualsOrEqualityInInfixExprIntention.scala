@@ -64,8 +64,7 @@ class ReplaceEqualsOrEqualityInInfixExprIntention
       .createExpressionFromText(expr.toString(), element.getManager)
 
     val size = newInfixExpr.asInstanceOf[ScInfixExpr].operation.nameId
-      .getTextRange.getStartOffset -
-      newInfixExpr.getTextRange.getStartOffset
+      .getTextRange.getStartOffset - newInfixExpr.getTextRange.getStartOffset
 
     inWriteAction {
       infixExpr.replace(newInfixExpr)

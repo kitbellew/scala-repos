@@ -7,13 +7,12 @@ object PartestUtil {
       globalBase: File,
       testBase: File) {
     private val testCaseDir = new SimpleFileFilter(f =>
-      f.isDirectory && f.listFiles.nonEmpty && !(f.getParentFile / (f
-        .name + ".res")).exists)
-    private val testCaseFilter =
-      GlobFilter("*.scala") | GlobFilter("*.java") | GlobFilter(
-        "*.res") || testCaseDir
-    private def testCaseFinder =
-      (testBase / srcPath).*(AllPassFilter).*(testCaseFilter)
+      f.isDirectory && f.listFiles.nonEmpty && !(f.getParentFile /
+        (f.name + ".res")).exists)
+    private val testCaseFilter = GlobFilter("*.scala") | GlobFilter("*.java") |
+      GlobFilter("*.res") || testCaseDir
+    private def testCaseFinder = (testBase / srcPath).*(AllPassFilter)
+      .*(testCaseFilter)
     private val basePaths = allTestCases
       .map(_._2.split('/').take(3).mkString("/") + "/").distinct
 
@@ -24,23 +23,20 @@ object PartestUtil {
     def parentChain(f: File): Iterator[File] =
       if (f == null || !f.exists) Iterator()
       else
-        Iterator(f) ++ (if (f.getParentFile == null) Nil
-                        else parentChain(f.getParentFile))
+        Iterator(f) ++
+          (if (f.getParentFile == null) Nil else parentChain(f.getParentFile))
     def isParentOf(parent: File, f2: File, maxDepth: Int) =
       parentChain(f2).take(maxDepth).exists(p1 => equiv(p1, parent))
     def isTestCase(f: File) = {
       val grandParent =
         if (f != null && f.getParentFile != null) f.getParentFile.getParentFile
         else null
-      grandParent != null && equiv(
-        grandParent,
-        testBase / srcPath) && testCaseFilter.accept(f)
+      grandParent != null && equiv(grandParent, testBase / srcPath) &&
+      testCaseFilter.accept(f)
     }
     def mayContainTestCase(f: File) = {
-      isParentOf(testBase / srcPath, f, 2) || isParentOf(
-        f,
-        testBase / srcPath,
-        Int.MaxValue)
+      isParentOf(testBase / srcPath, f, 2) ||
+      isParentOf(f, testBase / srcPath, Int.MaxValue)
     }
   }
 
@@ -129,14 +125,15 @@ object PartestUtil {
       token(grepOption <~ Space) ~> token(globOrPattern, tokenCompletion)
     }
 
-    val SrcPath = ((token(srcPathOption) <~ Space) ~ token(
-      StringBasic.examples(Set("files", "pending", "scaladoc")))) map {
-      case opt ~ path =>
-        srcPath = path
-        opt + " " + path
-    }
-    val P = oneOf(
-      knownUnaryOptions.map(x => token(x))) | SrcPath | TestPathParser | Grep
+    val SrcPath =
+      ((token(srcPathOption) <~ Space) ~
+        token(StringBasic.examples(Set("files", "pending", "scaladoc")))) map {
+        case opt ~ path =>
+          srcPath = path
+          opt + " " + path
+      }
+    val P = oneOf(knownUnaryOptions.map(x => token(x))) | SrcPath |
+      TestPathParser | Grep
     (Space ~> repsep(P, oneOrMore(Space))).map(_.mkString(" ")).?
       .map(_.getOrElse("")) <~ OptSpace
   }

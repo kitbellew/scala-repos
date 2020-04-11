@@ -9,8 +9,6 @@ object Analyser {
     Dictionary.en.map { word => if (word endsWith "s") word else word + "s?" }
 
   private val bigRegex = {
-    """(?i)\b""" +
-      wordsRegexes.mkString("(", "|", ")") +
-      """\b"""
+    """(?i)\b""" + wordsRegexes.mkString("(", "|", ")") + """\b"""
   }.r
 }

@@ -102,10 +102,8 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
     def receive = {
       case in: String ⇒
         val out = in.toUpperCase
-        mediator ! Send(
-          path = "/user/destination",
-          msg = out,
-          localAffinity = true)
+        mediator !
+          Send(path = "/user/destination", msg = out, localAffinity = true)
     }
   }
   //#sender
@@ -370,10 +368,8 @@ class DistributedPubSubMediatorSpec
       enterBarrier("11-registered")
 
       runOn(third) {
-        chatUser("u5") ! TalkToOthers(
-          "/user/u11",
-          "hi"
-        ) // sendToAll to all other nodes
+        chatUser("u5") !
+          TalkToOthers("/user/u11", "hi") // sendToAll to all other nodes
       }
 
       runOn(first, second) {
@@ -440,12 +436,12 @@ class DistributedPubSubMediatorSpec
         mediator ! Status(versions = Map.empty)
         val deltaBuckets = expectMsgType[Delta].buckets
         deltaBuckets.size should ===(3)
-        deltaBuckets.find(_.owner == firstAddress).get.content.size should ===(
-          10)
-        deltaBuckets.find(_.owner == secondAddress).get.content.size should ===(
-          9)
-        deltaBuckets.find(_.owner == thirdAddress).get.content.size should ===(
-          2)
+        deltaBuckets.find(_.owner == firstAddress).get.content.size should
+          ===(10)
+        deltaBuckets.find(_.owner == secondAddress).get.content.size should
+          ===(9)
+        deltaBuckets.find(_.owner == thirdAddress).get.content.size should
+          ===(2)
       }
       enterBarrier("verified-initial-delta")
 
@@ -458,17 +454,17 @@ class DistributedPubSubMediatorSpec
         val deltaBuckets1 = expectMsgType[Delta].buckets
         deltaBuckets1.map(_.content.size).sum should ===(500)
 
-        mediator ! Status(versions = deltaBuckets1.map(b ⇒ b.owner -> b.version)
-          .toMap)
+        mediator !
+          Status(versions = deltaBuckets1.map(b ⇒ b.owner -> b.version).toMap)
         val deltaBuckets2 = expectMsgType[Delta].buckets
         deltaBuckets1.map(_.content.size).sum should ===(500)
 
-        mediator ! Status(versions = deltaBuckets2.map(b ⇒ b.owner -> b.version)
-          .toMap)
+        mediator !
+          Status(versions = deltaBuckets2.map(b ⇒ b.owner -> b.version).toMap)
         val deltaBuckets3 = expectMsgType[Delta].buckets
 
-        deltaBuckets3.map(_.content.size).sum should ===(
-          10 + 9 + 2 + many - 500 - 500)
+        deltaBuckets3.map(_.content.size).sum should
+          ===(10 + 9 + 2 + many - 500 - 500)
       }
 
       enterBarrier("verified-delta-with-many")
@@ -533,8 +529,8 @@ class DistributedPubSubMediatorSpec
         mediator ! GetTopics
         expectMsgPF() {
           case CurrentTopics(topics)
-              if topics.contains("topic_a1")
-                && topics.contains("topic_a2") ⇒ true
+              if topics.contains("topic_a1") && topics.contains("topic_a2") ⇒
+            true
         }
       }
 

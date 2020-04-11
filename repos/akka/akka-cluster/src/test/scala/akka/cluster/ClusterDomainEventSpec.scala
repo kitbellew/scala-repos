@@ -79,11 +79,11 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
       val (g1, _) = converge(Gossip(members = SortedSet(aUp)))
       val (g2, s2) = converge(Gossip(members = SortedSet(aUp, bUp, eJoining)))
 
-      diffMemberEvents(g1, g2) should ===(
-        Seq(MemberUp(bUp), MemberJoined(eJoining)))
+      diffMemberEvents(g1, g2) should
+        ===(Seq(MemberUp(bUp), MemberJoined(eJoining)))
       diffUnreachable(g1, g2, selfDummyAddress) should ===(Seq.empty)
-      diffSeen(g1, g2, selfDummyAddress) should ===(
-        Seq(SeenChanged(convergence = true, seenBy = s2.map(_.address))))
+      diffSeen(g1, g2, selfDummyAddress) should
+        ===(Seq(SeenChanged(convergence = true, seenBy = s2.map(_.address))))
     }
 
     "be produced for changed status of members" in {
@@ -91,11 +91,11 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
       val (g2, s2) = converge(
         Gossip(members = SortedSet(aUp, bUp, cLeaving, eJoining)))
 
-      diffMemberEvents(g1, g2) should ===(
-        Seq(MemberUp(aUp), MemberLeft(cLeaving), MemberJoined(eJoining)))
+      diffMemberEvents(g1, g2) should
+        ===(Seq(MemberUp(aUp), MemberLeft(cLeaving), MemberJoined(eJoining)))
       diffUnreachable(g1, g2, selfDummyAddress) should ===(Seq.empty)
-      diffSeen(g1, g2, selfDummyAddress) should ===(
-        Seq(SeenChanged(convergence = true, seenBy = s2.map(_.address))))
+      diffSeen(g1, g2, selfDummyAddress) should
+        ===(Seq(SeenChanged(convergence = true, seenBy = s2.map(_.address))))
     }
 
     "be produced for members in unreachable" in {
@@ -111,8 +111,8 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
         members = SortedSet(aUp, cUp, bDown, eDown),
         overview = GossipOverview(reachability = reachability2))
 
-      diffUnreachable(g1, g2, selfDummyAddress) should ===(
-        Seq(UnreachableMember(bDown)))
+      diffUnreachable(g1, g2, selfDummyAddress) should
+        ===(Seq(UnreachableMember(bDown)))
       // never include self member in unreachable
       diffUnreachable(g1, g2, bDown.uniqueAddress) should ===(Seq())
       diffSeen(g1, g2, selfDummyAddress) should ===(Seq.empty)
@@ -134,12 +134,12 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
         members = SortedSet(aUp, cUp, bUp, eUp),
         overview = GossipOverview(reachability = reachability2))
 
-      diffUnreachable(g1, g2, selfDummyAddress) should ===(
-        Seq(UnreachableMember(cUp)))
+      diffUnreachable(g1, g2, selfDummyAddress) should
+        ===(Seq(UnreachableMember(cUp)))
       // never include self member in unreachable
       diffUnreachable(g1, g2, cUp.uniqueAddress) should ===(Seq())
-      diffReachable(g1, g2, selfDummyAddress) should ===(
-        Seq(ReachableMember(bUp)))
+      diffReachable(g1, g2, selfDummyAddress) should
+        ===(Seq(ReachableMember(bUp)))
       // never include self member in reachable
       diffReachable(g1, g2, bUp.uniqueAddress) should ===(Seq())
     }
@@ -150,8 +150,8 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
 
       diffMemberEvents(g1, g2) should ===(Seq(MemberRemoved(dRemoved, Exiting)))
       diffUnreachable(g1, g2, selfDummyAddress) should ===(Seq.empty)
-      diffSeen(g1, g2, selfDummyAddress) should ===(
-        Seq(SeenChanged(convergence = true, seenBy = s2.map(_.address))))
+      diffSeen(g1, g2, selfDummyAddress) should
+        ===(Seq(SeenChanged(convergence = true, seenBy = s2.map(_.address))))
     }
 
     "be produced for convergence changes" in {
@@ -179,10 +179,10 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
 
       diffMemberEvents(g1, g2) should ===(Seq(MemberRemoved(aRemoved, Up)))
       diffUnreachable(g1, g2, selfDummyAddress) should ===(Seq.empty)
-      diffSeen(g1, g2, selfDummyAddress) should ===(
-        Seq(SeenChanged(convergence = true, seenBy = s2.map(_.address))))
-      diffLeader(g1, g2, selfDummyAddress) should ===(
-        Seq(LeaderChanged(Some(bUp.address))))
+      diffSeen(g1, g2, selfDummyAddress) should
+        ===(Seq(SeenChanged(convergence = true, seenBy = s2.map(_.address))))
+      diffLeader(g1, g2, selfDummyAddress) should
+        ===(Seq(LeaderChanged(Some(bUp.address))))
     }
 
     "be produced for role leader changes" in {

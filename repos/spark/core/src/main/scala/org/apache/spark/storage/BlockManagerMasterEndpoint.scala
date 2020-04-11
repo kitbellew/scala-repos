@@ -315,8 +315,8 @@ private[spark] class BlockManagerMasterEndpoint(
         case Some(oldId) =>
           // A block manager of the same executor already exists, so remove it (assumed dead)
           logError(
-            "Got two different block manager registrations on same executor - "
-              + s" will replace old one $oldId with new one $id")
+            "Got two different block manager registrations on same executor - " +
+              s" will replace old one $oldId with new one $id")
           removeExecutor(id.executorId)
         case None =>
       }

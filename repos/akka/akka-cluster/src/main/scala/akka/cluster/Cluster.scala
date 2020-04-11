@@ -260,8 +260,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       s"subscribe to `akka.cluster.ClusterEvent.ClusterDomainEvent` or subclasses, was [${to
         .map(_.getName).mkString(", ")}]"
     )
-    clusterCore ! InternalClusterAction
-      .Subscribe(subscriber, initialStateMode, to.toSet)
+    clusterCore !
+      InternalClusterAction.Subscribe(subscriber, initialStateMode, to.toSet)
   }
 
   /**
@@ -313,8 +313,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     * cluster or to join the same cluster again.
     */
   def joinSeedNodes(seedNodes: immutable.Seq[Address]): Unit =
-    clusterCore ! InternalClusterAction
-      .JoinSeedNodes(seedNodes.toVector.map(fillLocal))
+    clusterCore !
+      InternalClusterAction.JoinSeedNodes(seedNodes.toVector.map(fillLocal))
 
   /**
     * Java API
@@ -393,8 +393,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   def registerOnMemberRemoved(callback: Runnable): Unit = {
     if (_isTerminated.get()) callback.run()
     else
-      clusterDaemons ! InternalClusterAction
-        .AddOnMemberRemovedListener(callback)
+      clusterDaemons !
+        InternalClusterAction.AddOnMemberRemovedListener(callback)
   }
 
   /**

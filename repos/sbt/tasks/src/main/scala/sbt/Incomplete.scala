@@ -24,7 +24,8 @@ final case class Incomplete(
     extends Exception(message.orNull, directCause.orNull)
     with sbt.internal.util.UnprintableException {
   override def toString =
-    "Incomplete(node=" + node + ", tpe=" + tpe + ", msg=" + message + ", causes=" + causes + ", directCause=" + directCause + ")"
+    "Incomplete(node=" + node + ", tpe=" + tpe + ", msg=" + message +
+      ", causes=" + causes + ", directCause=" + directCause + ")"
 }
 
 object Incomplete extends Enumeration {

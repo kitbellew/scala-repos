@@ -28,8 +28,8 @@ class AppliedTypeLambdaCanBeSimplifiedTest
     val defaultProfile = ScalaCompilerConfiguration.instanceIn(getProject)
       .defaultProfile
     val newSettings = defaultProfile.getSettings
-    newSettings
-      .plugins :+= "kind-projector" //only some of the tests require kind-projector
+    newSettings.plugins :+=
+      "kind-projector" //only some of the tests require kind-projector
     defaultProfile.setSettings(newSettings)
   }
 

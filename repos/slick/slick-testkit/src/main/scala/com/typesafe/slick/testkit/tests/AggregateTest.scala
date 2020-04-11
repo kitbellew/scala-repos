@@ -24,8 +24,7 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
         q1(i).map(_.b).avg)
     val q2_0 = q2(0)
     val q2_1 = q2(1)
-    ts.schema.create >>
-      (ts ++= Seq((1, Some(1)), (1, Some(3)), (1, None))) >>
+    ts.schema.create >> (ts ++= Seq((1, Some(1)), (1, Some(3)), (1, None))) >>
       q2_0.result.map(_ shouldBe (0, 0, 0, None, None, None)) >>
       q2_1.result.map(_ shouldBe (3, 3, 2, Some(3), Some(4), Some(2)))
   }
@@ -161,11 +160,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           .map(_._2.max)
         db.run(for {
           _ <- mark("q8a", q8a.result).map(
-            _.toSet shouldBe Set(
-              Some("1test"),
-              Some("2test"),
-              Some("3test"),
-              Some("4test")))
+            _.toSet shouldBe
+              Set(Some("1test"), Some("2test"), Some("3test"), Some("4test")))
           _ <- mark("q8d", q8d.result).map(_ shouldBe Seq(Some("test")))
           _ <- mark("q8", q8.result).map(_ shouldBe Seq(Some("test")))
           _ <- mark("q8b", q8b.result).map(_ shouldBe Seq(("x", Some("x"))))
@@ -392,8 +388,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
     val q1a = as.map(_.a).distinct
     val q1b = as.distinct.map(_.a)
     val q2 = as.distinct.map(a => (a.a, 5))
-    val q3a = as.distinct.map(_.id).filter(_ === 1) unionAll as.distinct
-      .map(_.id).filter(_ === 2)
+    val q3a = as.distinct.map(_.id).filter(_ === 1) unionAll
+      as.distinct.map(_.id).filter(_ === 2)
     val q4 = as.map(a => (a.a, a.b)).distinct.map(_._1)
     val q5a = as.groupBy(_.a).map(_._2.map(_.id).min.get)
     val q5b = as.distinct.map(_.id)
@@ -431,8 +427,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       mark("q5b", q5b.result)
         .map(_.sortBy(identity) should (r => r == Seq(1, 3) || r == Seq(2, 3))),
       mark("q5c", q5c.result).map(
-        _.sortBy(identity) should (r =>
-          r == Seq((1, "a"), (3, "c")) || r == Seq((2, "a"), (3, "c")))),
+        _.sortBy(identity) should
+          (r => r == Seq((1, "a"), (3, "c")) || r == Seq((2, "a"), (3, "c")))),
       mark("q6", q6.result).map(_ shouldBe 2)
     )
   }

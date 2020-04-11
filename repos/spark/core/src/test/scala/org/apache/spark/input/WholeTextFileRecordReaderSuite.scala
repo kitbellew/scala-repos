@@ -167,7 +167,8 @@ object WholeTextFileRecordReaderSuite {
 
   private val files = fileLengths.zip(fileNames).map {
     case (upperBound, filename) =>
-      filename -> Stream.continually(testWords.toList.toStream).flatten
-        .take(upperBound).toArray
+      filename ->
+        Stream.continually(testWords.toList.toStream).flatten.take(upperBound)
+          .toArray
   }.toMap
 }

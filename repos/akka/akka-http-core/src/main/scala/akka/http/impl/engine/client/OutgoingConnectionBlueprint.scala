@@ -224,9 +224,8 @@ private[http] object OutgoingConnectionBlueprint {
                   headers,
                   entityCreator,
                   closeRequested) ⇒
-              val entity =
-                createEntity(entityCreator) withSizeLimit parserSettings
-                  .maxContentLength
+              val entity = createEntity(entityCreator) withSizeLimit
+                parserSettings.maxContentLength
               push(out, HttpResponse(statusCode, headers, entity, protocol))
               if (closeRequested) completeStage()
 

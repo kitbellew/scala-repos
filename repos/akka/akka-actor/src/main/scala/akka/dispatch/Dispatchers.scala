@@ -242,8 +242,8 @@ private[akka] object BalancingDispatcherConfigurator {
   private val defaultRequirement = ConfigFactory.parseString(
     "mailbox-requirement = akka.dispatch.MultipleConsumerSemantics")
   def amendConfig(config: Config): Config =
-    if (config.getString("mailbox-requirement") != Mailboxes
-          .NoMailboxRequirement) config
+    if (config.getString("mailbox-requirement") !=
+          Mailboxes.NoMailboxRequirement) config
     else defaultRequirement.withFallback(config)
 }
 

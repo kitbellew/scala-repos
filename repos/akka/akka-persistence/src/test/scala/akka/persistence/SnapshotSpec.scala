@@ -249,8 +249,8 @@ class SnapshotSpec
         recovery,
         testActor))
 
-      expectMsgPF(hint =
-        "" + SnapshotOffer(SnapshotMetadata(`persistenceId`, 2, 0), null)) {
+      expectMsgPF(hint = "" +
+        SnapshotOffer(SnapshotMetadata(`persistenceId`, 2, 0), null)) {
         case SnapshotOffer(
               md @ SnapshotMetadata(`persistenceId`, 2, _),
               state) ⇒

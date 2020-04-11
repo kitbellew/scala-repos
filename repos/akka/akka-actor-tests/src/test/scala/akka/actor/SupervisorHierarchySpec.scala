@@ -242,9 +242,8 @@ object SupervisorHierarchySpec {
     }
     override val supervisorStrategy = OneForOneStrategy()(unwrap andThen {
       case (_: Failure, _) if pongsToGo > 0 ⇒
-        log :+= Event(
-          "pongOfDeath resuming " + sender(),
-          identityHashCode(this))
+        log :+=
+          Event("pongOfDeath resuming " + sender(), identityHashCode(this))
         Resume
       case (f: Failure, orig) ⇒
         if (f.depth > 0) {
@@ -273,9 +272,8 @@ object SupervisorHierarchySpec {
     override def postRestart(cause: Throwable) {
       val state = stateCache.get(self.path)
       log = state.log
-      log :+= Event(
-        "restarted " + suspendCount + " " + cause,
-        identityHashCode(this))
+      log :+=
+        Event("restarted " + suspendCount + " " + cause, identityHashCode(this))
       state.kids foreach {
         case (childPath, kidSize) ⇒
           val name = childPath.name
@@ -289,8 +287,8 @@ object SupervisorHierarchySpec {
       }
       if (context.children.size != state.kids.size) {
         abort(
-          "invariant violated: " + state.kids.size + " != " + context.children
-            .size)
+          "invariant violated: " + state.kids.size + " != " +
+            context.children.size)
       }
       cause match {
         case f: Failure if f.failPost > 0 ⇒ { f.failPost -= 1; throw f }
@@ -303,9 +301,8 @@ object SupervisorHierarchySpec {
 
     override def postStop {
       if (failed || suspended) {
-        listener ! ErrorLog(
-          "not resumed (" + failed + ", " + suspended + ")",
-          log)
+        listener !
+          ErrorLog("not resumed (" + failed + ", " + suspended + ")", log)
         val state = stateCache.get(self)
         if (state ne null) stateCache.put(self.path, state.copy(log = log))
       } else { stateCache.put(self.path, HierarchyState(log, Map(), null)) }
@@ -324,8 +321,8 @@ object SupervisorHierarchySpec {
       } else if (!Thread.currentThread.getName
                    .startsWith("SupervisorHierarchySpec-hierarchy")) {
         abort(
-          "running on wrong thread " + Thread
-            .currentThread + " dispatcher=" + context.props.dispatcher + "=>" +
+          "running on wrong thread " + Thread.currentThread + " dispatcher=" +
+            context.props.dispatcher + "=>" +
             context.asInstanceOf[ActorCell].dispatcher.id)
         false
       } else true
@@ -614,8 +611,8 @@ object SupervisorHierarchySpec {
       case Event(StateTimeout, todo) ⇒
         log.info("dumping state due to StateTimeout")
         log.info(
-          "children: " + children.size + " pinged: " + pingChildren
-            .size + " idle: " + idleChildren.size + " work: " + todo)
+          "children: " + children.size + " pinged: " + pingChildren.size +
+            " idle: " + idleChildren.size + " work: " + todo)
         pingChildren foreach println
         println(system.asInstanceOf[ActorSystemImpl].printTree)
         pingChildren foreach getErrorsUp
@@ -745,9 +742,8 @@ object SupervisorHierarchySpec {
           l.underlying.actor match {
             case h: Hierarchy ⇒ errors :+= target -> ErrorLog("forced", h.log)
             case _ ⇒
-              errors :+= target -> ErrorLog(
-                "fetched",
-                stateCache.get(target.path).log)
+              errors :+=
+                target -> ErrorLog("fetched", stateCache.get(target.path).log)
           }
           if (depth > 0) {
             l.underlying.children foreach (getErrors(_, depth - 1))
@@ -761,9 +757,8 @@ object SupervisorHierarchySpec {
           l.underlying.actor match {
             case h: Hierarchy ⇒ errors :+= target -> ErrorLog("forced", h.log)
             case _ ⇒
-              errors :+= target -> ErrorLog(
-                "fetched",
-                stateCache.get(target.path).log)
+              errors :+=
+                target -> ErrorLog("fetched", stateCache.get(target.path).log)
           }
           if (target != hierarchy) getErrorsUp(l.getParent)
       }
@@ -799,8 +794,8 @@ object SupervisorHierarchySpec {
         }
       case Event(StateTimeout, _) ⇒
         println(
-          "pingChildren:\n" + pingChildren.view.map(_.path.toString).toSeq
-            .sorted.mkString("\n"))
+          "pingChildren:\n" + pingChildren.view.map(_.path.toString)
+            .toSeq.sorted.mkString("\n"))
         ignoreNotResumedLogs = false
         // make sure that we get the logs of the remaining pingChildren
         pingChildren.foreach(getErrorsUp)

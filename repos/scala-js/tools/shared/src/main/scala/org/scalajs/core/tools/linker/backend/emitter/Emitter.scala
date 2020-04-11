@@ -200,8 +200,8 @@ final class Emitter private (
         linkedClass)))
     }
 
-    if (linkedClass.hasInstances && kind.isClass && linkedClass
-          .hasRuntimeTypeInfo)
+    if (linkedClass.hasInstances && kind.isClass &&
+        linkedClass.hasRuntimeTypeInfo)
       addTree(classTreeCache.setTypeData.getOrElseUpdate(
         classEmitter.genSetTypeData(linkedClass)))
 

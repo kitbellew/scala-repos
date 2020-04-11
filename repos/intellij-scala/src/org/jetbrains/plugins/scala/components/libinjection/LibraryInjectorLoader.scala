@@ -218,8 +218,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
     def verifyDescriptor(
         descriptor: PluginDescriptor): Option[PluginDescriptor] = {
-      if (descriptor.since > descriptor.until || descriptor.since == descriptor
-            .until) {
+      if (descriptor.since > descriptor.until ||
+          descriptor.since == descriptor.until) {
         LOG.warn(s"Plugin descriptor since >= until in $descriptor")
         None
       } else if (descriptor.injectors.isEmpty) {
@@ -298,8 +298,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
   private def isJarCacheUpToDate(manifest: JarManifest): Boolean = {
     val jarFile = new File(manifest.jarPath)
-    jarFile.exists() &&
-    jarFile.isFile &&
+    jarFile.exists() && jarFile.isFile &&
     (jarFile.lastModified() == manifest.modTimeStamp) &&
     getLibraryCacheDir(jarFile).list().nonEmpty
   }
@@ -517,8 +516,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     val scalaSDK = project.modulesWithScala.head.scalaSdk.get
     val model = ModuleManager.getInstance(project).getModifiableModel
     val module = model.newModule(
-      ScalaUtil.createTmpDir("injectorModule", "").getAbsolutePath +
-        "/" + INJECTOR_MODULE_NAME,
+      ScalaUtil.createTmpDir("injectorModule", "").getAbsolutePath + "/" +
+        INJECTOR_MODULE_NAME,
       JavaModuleType.getModuleType.getId)
     model.commit()
     module.configureScalaCompilerSettingsFrom("Default", Seq())

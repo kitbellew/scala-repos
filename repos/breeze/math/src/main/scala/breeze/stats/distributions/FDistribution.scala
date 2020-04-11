@@ -35,10 +35,8 @@ class FDistribution(
   protected final val inner = new ApacheFDistribution(
     numeratorDegreesOfFreedom,
     denominatorDegreesOfFreedom)
-  def mode =
-    ((numeratorDegreesOfFreedom - 2) / numeratorDegreesOfFreedom) * (
-      denominatorDegreesOfFreedom / (denominatorDegreesOfFreedom + 2)
-    )
+  def mode = ((numeratorDegreesOfFreedom - 2) / numeratorDegreesOfFreedom) *
+    (denominatorDegreesOfFreedom / (denominatorDegreesOfFreedom + 2))
 }
 
 object FDistribution

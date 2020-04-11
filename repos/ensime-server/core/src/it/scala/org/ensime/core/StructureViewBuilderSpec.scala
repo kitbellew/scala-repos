@@ -56,11 +56,8 @@ class StructureViewBuilderSpec
           """
       )
 
-      structure shouldBe List(
-        "(class)Test",
-        "(def)Test.fun",
-        "(object)Test",
-        "(def)Test.apply")
+      structure shouldBe
+        List("(class)Test", "(def)Test.fun", "(object)Test", "(def)Test.apply")
     }
   }
 

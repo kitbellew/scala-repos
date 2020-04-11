@@ -89,8 +89,8 @@ class FinagleStatsTest extends FunSuite with MockitoSugar {
   test("system should show symmetric stats on client and server") {
     def equalsGauge(name: String) =
       assert(
-        Stats.getCounter("server/" + name)() == Stats
-          .getCounter("client/" + name)())
+        Stats.getCounter("server/" + name)() ==
+          Stats.getCounter("client/" + name)())
 
     equalsGauge("requests")
     equalsGauge("connects")

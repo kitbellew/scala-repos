@@ -102,10 +102,8 @@ private[fpm] class FPTree[T] extends Serializable {
     summaries.iterator.flatMap {
       case (item, summary) =>
         if (validateSuffix(item) && summary.count >= minCount) {
-          Iterator.single((item :: Nil, summary.count)) ++
-            project(item).extract(minCount).map {
-              case (t, c) => (item :: t, c)
-            }
+          Iterator.single((item :: Nil, summary.count)) ++ project(item)
+            .extract(minCount).map { case (t, c) => (item :: t, c) }
         } else { Iterator.empty }
     }
   }

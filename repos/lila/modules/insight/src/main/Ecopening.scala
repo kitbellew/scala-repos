@@ -37,15 +37,16 @@ object Ecopening {
   def makeFamilies(ops: Iterable[Ecopening]): Map[FamilyName, Family] =
     ops.foldLeft(Map.empty[FamilyName, Family]) {
       case (fams, op) =>
-        fams + (op.family -> fams.get(op.family)
-          .fold(Family(op.family, List(op.eco))) { existing =>
-            existing.copy(ecos = op.eco :: existing.ecos)
-          })
+        fams +
+          (op.family -> fams.get(op.family)
+            .fold(Family(op.family, List(op.eco))) { existing =>
+              existing.copy(ecos = op.eco :: existing.ecos)
+            })
     }
 
   def fromGame(game: lila.game.Game): Option[Ecopening] =
-    if (game.playable || game.turns < 4 || game.fromPosition || game.variant
-          .exotic) none
+    if (game.playable || game.turns < 4 || game.fromPosition ||
+        game.variant.exotic) none
     else
       chess.Replay.boards(
         moveStrs = game.pgnMoves take EcopeningDB.MAX_MOVES,

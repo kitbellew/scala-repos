@@ -48,16 +48,16 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
     }).build()
 
     // #scalafunctionaltest-respondtoroute
-    "respond to the index Action" in new WithApplication(
-      applicationWithRouter) {
-      // ###replace: val Some(result) = route(app, FakeRequest(GET, "/Bob"))
-      val Some(result) = route(app, FakeRequest(GET_REQUEST, "/Bob"))
+    "respond to the index Action" in
+      new WithApplication(applicationWithRouter) {
+        // ###replace: val Some(result) = route(app, FakeRequest(GET, "/Bob"))
+        val Some(result) = route(app, FakeRequest(GET_REQUEST, "/Bob"))
 
-      status(result) must equalTo(OK)
-      contentType(result) must beSome("text/html")
-      charset(result) must beSome("utf-8")
-      contentAsString(result) must contain("Hello Bob")
-    }
+        status(result) must equalTo(OK)
+        contentType(result) must beSome("text/html")
+        charset(result) must beSome("utf-8")
+        contentAsString(result) must contain("Hello Bob")
+      }
     // #scalafunctionaltest-respondtoroute
 
     // #scalafunctionaltest-testview
@@ -123,19 +123,18 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
     val myPublicAddress = s"localhost:$testPort"
     val testPaymentGatewayURL = s"http://$myPublicAddress"
     // #scalafunctionaltest-testpaymentgateway
-    "test server logic" in new WithServer(
-      app = applicationWithBrowser,
-      port = testPort) {
-      // The test payment gateway requires a callback to this server before it returns a result...
-      val callbackURL = s"http://$myPublicAddress/callback"
+    "test server logic" in
+      new WithServer(app = applicationWithBrowser, port = testPort) {
+        // The test payment gateway requires a callback to this server before it returns a result...
+        val callbackURL = s"http://$myPublicAddress/callback"
 
-      // await is from play.api.test.FutureAwaits
-      val response = await(
-        WS.url(testPaymentGatewayURL)
-          .withQueryString("callbackURL" -> callbackURL).get())
+        // await is from play.api.test.FutureAwaits
+        val response = await(
+          WS.url(testPaymentGatewayURL)
+            .withQueryString("callbackURL" -> callbackURL).get())
 
-      response.status must equalTo(OK)
-    }
+        response.status must equalTo(OK)
+      }
     // #scalafunctionaltest-testpaymentgateway
 
     // #scalafunctionaltest-testws

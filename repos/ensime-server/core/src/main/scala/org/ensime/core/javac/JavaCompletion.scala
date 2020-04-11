@@ -69,8 +69,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     val candidates: List[CompletionInfo] =
       (if (ImportSubtypeRegexp.findFirstMatchIn(preceding).isDefined) {
          // Erase the trailing partial subtype (it breaks type resolution).
-         val patched = s.substring(0, indexAfterTarget) + " " + s
-           .substring(indexAfterTarget + defaultPrefix.length + 1);
+         val patched = s.substring(0, indexAfterTarget) + " " +
+           s.substring(indexAfterTarget + defaultPrefix.length + 1);
          (pathToPoint(
            SourceFileInfo(info.file, Some(patched), None),
            indexAfterTarget - 1) map {
@@ -89,8 +89,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
        } else if (isMemberAccess) {
          // TODO how to avoid allocating a new string? buffer of immutable string slices?
          // Erase the trailing partial member (it breaks type resolution).
-         val patched = s.substring(0, indexAfterTarget) + ".wait()" + s
-           .substring(indexAfterTarget + defaultPrefix.length + 1);
+         val patched = s.substring(0, indexAfterTarget) + ".wait()" +
+           s.substring(indexAfterTarget + defaultPrefix.length + 1);
          (pathToPoint(
            SourceFileInfo(info.file, Some(patched), None),
            indexAfterTarget + 1) flatMap {
@@ -134,8 +134,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       defaultPrefix,
       candidates.sortWith({ (c1, c2) =>
         c1.relevance > c2.relevance ||
-        (c1.relevance == c2.relevance &&
-        c1.name.length < c2.name.length)
+        (c1.relevance == c2.relevance && c1.name.length < c2.name.length)
       }).take(maxResults))
   }
 
@@ -191,11 +190,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     val relevance =
       if (s.startsWith(prefix)) baseRelevance + 50 else baseRelevance
 
-    if (matchesPrefix(
-          s,
-          prefix,
-          matchEntire = false,
-          caseSens = caseSense) && !s.contains("$")) {
+    if (matchesPrefix(s, prefix, matchEntire = false, caseSens = caseSense) &&
+        !s.contains("$")) {
       e match {
         case e: ExecutableElement if !typesOnly =>
           List(methodInfo(e, relevance + 5))

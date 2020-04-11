@@ -49,9 +49,8 @@ class HeaderMapTest extends FunSuite {
     request.headers.add("Cookie", "2")
 
     assert(
-      request.headerMap.iterator.toList.sorted == ("Cookie", "1") :: (
-        "Cookie",
-        "2") :: Nil)
+      request.headerMap.iterator.toList.sorted == ("Cookie", "1") ::
+        ("Cookie", "2") :: Nil)
   }
 
   test("keys") {

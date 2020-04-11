@@ -49,8 +49,8 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
       case _                                => this
     }
 
-  def recoverWith[AA >: A, BB >: B](
-      pf: PartialFunction[A, AA Xor BB]): AA Xor BB =
+  def recoverWith[AA >: A, BB >: B](pf: PartialFunction[A, AA Xor BB]): AA Xor
+    BB =
     this match {
       case Xor.Left(a) if pf.isDefinedAt(a) => pf(a)
       case _                                => this
@@ -76,8 +76,8 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
   def toValidated: Validated[A, B] =
     fold(Validated.Invalid.apply, Validated.Valid.apply)
 
-  def withValidated[AA, BB](
-      f: Validated[A, B] => Validated[AA, BB]): AA Xor BB = f(toValidated).toXor
+  def withValidated[AA, BB](f: Validated[A, B] => Validated[AA, BB]): AA Xor
+    BB = f(toValidated).toXor
 
   def to[F[_], BB >: B](implicit
       monoidKF: MonoidK[F],
@@ -141,9 +141,9 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
 
   def merge[AA >: A](implicit ev: B <:< AA): AA = fold(identity, ev.apply)
 
-  final def combine[AA >: A, BB >: B](that: AA Xor BB)(implicit
-      AA: Semigroup[AA],
-      BB: Semigroup[BB]): AA Xor BB =
+  final def combine[AA >: A, BB >: B](
+      that: AA Xor BB)(implicit AA: Semigroup[AA], BB: Semigroup[BB]): AA Xor
+    BB =
     this match {
       case Xor.Left(a1) => that match {
           case Xor.Left(a2)  => Xor.Left(AA.combine(a1, a2))
@@ -232,8 +232,8 @@ private[data] sealed abstract class XorInstances extends XorInstances1 {
       def raiseError[B](e: A): Xor[A, B] = Xor.left(e)
       override def map[B, C](fa: A Xor B)(f: B => C): A Xor C = fa.map(f)
       override def attempt[B](fab: A Xor B): A Xor (A Xor B) = Xor.right(fab)
-      override def recover[B](fab: A Xor B)(
-          pf: PartialFunction[A, B]): A Xor B = fab recover pf
+      override def recover[B](fab: A Xor B)(pf: PartialFunction[A, B]): A Xor
+        B = fab recover pf
       override def recoverWith[B](fab: A Xor B)(
           pf: PartialFunction[A, A Xor B]): A Xor B = fab recoverWith pf
     }

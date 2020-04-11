@@ -127,16 +127,16 @@ class FixedBufferSpec extends AkkaSpec {
 
     "produce FixedSizeBuffers when capacity < max-fixed-buffer-size" in {
       Buffer(1000, default) shouldBe a[FixedSizeBuffer.ModuloFixedSizeBuffer[_]]
-      Buffer(1024, default) shouldBe a[
-        FixedSizeBuffer.PowerOfTwoFixedSizeBuffer[_]]
+      Buffer(1024, default) shouldBe
+        a[FixedSizeBuffer.PowerOfTwoFixedSizeBuffer[_]]
     }
 
     "produce FixedSizeBuffers when max-fixed-buffer-size < BoundedBufferSize" in {
       val settings = default.withMaxFixedBufferSize(9)
       Buffer(5, default) shouldBe a[FixedSizeBuffer.ModuloFixedSizeBuffer[_]]
       Buffer(10, default) shouldBe a[FixedSizeBuffer.ModuloFixedSizeBuffer[_]]
-      Buffer(16, default) shouldBe a[
-        FixedSizeBuffer.PowerOfTwoFixedSizeBuffer[_]]
+      Buffer(16, default) shouldBe
+        a[FixedSizeBuffer.PowerOfTwoFixedSizeBuffer[_]]
     }
 
   }

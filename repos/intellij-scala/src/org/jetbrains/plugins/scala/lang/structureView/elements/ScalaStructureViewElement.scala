@@ -33,8 +33,8 @@ abstract class ScalaStructureViewElement(
       if (PsiTreeUtil.getParentOfType(myElement, classOf[ScValue]) != null) {
         val v = PsiTreeUtil.getParentOfType(myElement, classOf[ScValue])
         if (myElement.textMatches(v.declaredElements.apply(0))) v else myElement
-      } else if (PsiTreeUtil
-                   .getParentOfType(myElement, classOf[ScVariable]) != null) {
+      } else if (PsiTreeUtil.getParentOfType(myElement, classOf[ScVariable]) !=
+                   null) {
         val v = PsiTreeUtil.getParentOfType(myElement, classOf[ScVariable])
         if (myElement.textMatches(v.declaredElements.apply(0))) v else myElement
       } else { myElement }

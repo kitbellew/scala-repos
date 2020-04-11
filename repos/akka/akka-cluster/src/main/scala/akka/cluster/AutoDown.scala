@@ -119,8 +119,9 @@ private[cluster] abstract class AutoDownBase(
   }
 
   def unreachableMember(m: Member): Unit =
-    if (!skipMemberStatus(m.status) && !scheduledUnreachable
-          .contains(m.uniqueAddress)) scheduleUnreachable(m.uniqueAddress)
+    if (!skipMemberStatus(m.status) &&
+        !scheduledUnreachable.contains(m.uniqueAddress))
+      scheduleUnreachable(m.uniqueAddress)
 
   def scheduleUnreachable(node: UniqueAddress): Unit = {
     if (autoDownUnreachableAfter == Duration.Zero) { downOrAddPending(node) }

@@ -78,9 +78,8 @@ abstract class MultiNodeConfig {
   }
 
   def deployOn(role: RoleName, deployment: String): Unit =
-    _deployments += role -> (
-      (_deployments get role getOrElse Vector()) :+ deployment
-    )
+    _deployments += role ->
+      ((_deployments get role getOrElse Vector()) :+ deployment)
 
   def deployOnAll(deployment: String): Unit = _allDeploy :+= deployment
 
@@ -107,9 +106,9 @@ abstract class MultiNodeConfig {
         """)
       else ConfigFactory.empty
 
-    val configs = (_nodeConf get myself).toList ::: _commonConf
-      .toList ::: transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec
-      .baseConfig :: Nil
+    val configs = (_nodeConf get myself).toList ::: _commonConf.toList :::
+      transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec.baseConfig ::
+      Nil
     configs reduceLeft (_ withFallback _)
   }
 
@@ -245,8 +244,8 @@ object MultiNodeSpec {
   }
 
   private def getCallerName(clazz: Class[_]): String = {
-    val s = Thread.currentThread.getStackTrace map (_
-      .getClassName) drop 1 dropWhile (_ matches ".*MultiNodeSpec.?$")
+    val s = Thread.currentThread.getStackTrace map (_.getClassName) drop
+      1 dropWhile (_ matches ".*MultiNodeSpec.?$")
     val reduced = s.lastIndexWhere(_ == clazz.getName) match {
       case -1 ⇒ s
       case z ⇒ s drop (z + 1)
@@ -448,8 +447,8 @@ abstract class MultiNodeSpec(
                     // might happen if all test cases are ignored (excluded) and
                     // controller node is finished/exited before r.addr is run
                     // on the other nodes
-                    val unresolved = "akka://unresolved-replacement-" + r.role
-                      .name
+                    val unresolved = "akka://unresolved-replacement-" +
+                      r.role.name
                     log.warning(unresolved + " due to: " + e.getMessage)
                     unresolved
                 }

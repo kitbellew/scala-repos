@@ -54,8 +54,8 @@ class PersistentVolumeMatcherTest
     matchOpt should not be empty
     matchOpt.get.task.taskId shouldEqual tasks.head.taskId
     matchOpt.get.persistentVolumeResources should have size 1
-    matchOpt.get.persistentVolumeResources.head shouldEqual offer
-      .getResources(0)
+    matchOpt.get.persistentVolumeResources.head shouldEqual
+      offer.getResources(0)
   }
 
   test(
@@ -95,8 +95,8 @@ class PersistentVolumeMatcherTest
     matchOpt should not be empty
     matchOpt.get.task.taskId shouldEqual tasks.head.taskId
     matchOpt.get.persistentVolumeResources should have size 1
-    matchOpt.get.persistentVolumeResources.head shouldEqual offer
-      .getResources(1)
+    matchOpt.get.persistentVolumeResources.head shouldEqual
+      offer.getResources(1)
   }
 
   test("Unwanted available volumes result in NO match") {

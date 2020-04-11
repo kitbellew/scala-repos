@@ -203,10 +203,8 @@ class RewriteJoins extends Phase {
           case (p, (pOnBGen, _)) => (p, (pOnBGen, new AnonSymbol))
         }
         logger.debug("New references for predicate: " + newDefs.mkString(", "))
-        val allRefs = foundRefs
-          .collect { case (p, (_, Some(s))) => (p, s) } ++ newDefs.map {
-          case (p, (_, s))                  => (p, s)
-        }
+        val allRefs = foundRefs.collect { case (p, (_, Some(s))) => (p, s) } ++
+          newDefs.map { case (p, (_, s))                         => (p, s) }
         logger.debug(
           "All reference mappings for predicate: " + allRefs.mkString(", "))
         val (sel, tss) =
@@ -223,13 +221,13 @@ class RewriteJoins extends Phase {
         val pred = pred1.replace {
           case p: Select =>
             allRefs.get(p).map(s =>
-              Select(Ref(fs) :@ b.nodeType.asCollectionType.elementType, s) :@ p
-                .nodeType).getOrElse(p)
+              Select(Ref(fs) :@ b.nodeType.asCollectionType.elementType, s) :@
+                p.nodeType).getOrElse(p)
         }
         val res = Filter(fs, Bind(b.generator, from1, sel), pred).infer()
         logger.debug(
-          "Hoisted Filter out of Bind (invalidated: " + tss
-            .mkString(", ") + ") in:",
+          "Hoisted Filter out of Bind (invalidated: " + tss.mkString(", ") +
+            ") in:",
           res)
         (res, tss)
       case _ => (b, Set.empty)
@@ -259,8 +257,8 @@ class RewriteJoins extends Phase {
       if (illegalDefs.isEmpty) (sn, Map.empty)
       else {
         logger.debug(
-          "Pulling refs to [" + illegal
-            .mkString(", ") + "] with OK base " + ok + " out of:",
+          "Pulling refs to [" + illegal.mkString(", ") + "] with OK base " +
+            ok + " out of:",
           sn)
         val requiredOkPaths = illegalDefs.flatMap(_._2.collect {
           case p @ FwdPath(s :: _) if s == ok => p
@@ -326,8 +324,9 @@ class RewriteJoins extends Phase {
       logger.debug(
         "Eliminated illegal refs [" + illegal.mkString(", ") + "] in:",
         j2)
-      val m = l1m.map { case (p, n) => (ElementSymbol(1) :: p, n) } ++
-        r1m.map { case (p, n)       => (ElementSymbol(2) :: p, n) }
+      val m = l1m.map { case (p, n) => (ElementSymbol(1) :: p, n) } ++ r1m.map {
+        case (p, n)                 => (ElementSymbol(2) :: p, n)
+      }
       val m2 = m.mapValues(_.replace(
         {
           case Ref(s) :@ tpe if s == j.leftGen =>
@@ -363,8 +362,8 @@ class RewriteJoins extends Phase {
             JoinType.Inner,
             on1) =>
         logger.debug(
-          "Trying to rearrange join conditions (alsoPull: " + alsoPull
-            .mkString(", ") + ") in:",
+          "Trying to rearrange join conditions (alsoPull: " +
+            alsoPull.mkString(", ") + ") in:",
           j)
         val pull = alsoPull + s1
         val j2b = rearrangeJoinConditions(j2a, pull)
@@ -417,8 +416,8 @@ class RewriteJoins extends Phase {
         def isAliasing(s: ConstArray[(TermSymbol, Node)]) =
           s.forall {
             case (_, n) =>
-              n.collect({ case Path(_) => true }, stopOnMatch = true)
-                .length <= 1
+              n.collect({ case Path(_) => true }, stopOnMatch = true).length <=
+                1
           }
         val a1 = isAliasing(p1)
         if (a1 || isAliasing(p2)) {

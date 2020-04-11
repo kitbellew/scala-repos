@@ -58,8 +58,8 @@ class ReplTest extends WordSpec {
         // actually running a new flow to check the contents (just check that
         // it's a TypedPipe from a MemorySink or SequenceFile)
         assert(
-          s.toString.contains("IterablePipe") || s.toString
-            .contains("TypedPipeFactory"))
+          s.toString.contains("IterablePipe") ||
+            s.toString.contains("TypedPipeFactory"))
 
         val pipeName = mode match {
           case m: HadoopMode => m.jobConf.get("hadoop.tmp.dir")
@@ -168,8 +168,8 @@ class ReplTest extends WordSpec {
       }
       "tuple" in {
         assert(
-          hello.map(l => (l, l.length)).toList === helloRef
-            .map(l => (l, l.length)))
+          hello.map(l => (l, l.length)).toList ===
+            helloRef.map(l => (l, l.length)))
       }
     }
   }

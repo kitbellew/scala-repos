@@ -17,14 +17,12 @@ class JsonSupportTest extends json.JsonSupportTestBase {
         "callback")
       get("/json") {
         import org.json4s.JsonDSL._
-        ("k1" -> "v1") ~
-          ("k2" -> "v2")
+        ("k1" -> "v1") ~ ("k2" -> "v2")
       }
 
       get("/jsonp") {
         import org.json4s.JsonDSL._
-        ("k1" -> "v1") ~
-          ("k2" -> "v2")
+        ("k1" -> "v1") ~ ("k2" -> "v2")
       }
 
     },
@@ -37,8 +35,7 @@ class JsonSupportTestServlet extends ScalatraServlet with NativeJsonSupport {
 
   get("/json") {
     import org.json4s.JsonDSL._
-    ("k1" -> "v1") ~
-      ("k2" -> "v2")
+    ("k1" -> "v1") ~ ("k2" -> "v2")
   }
 
   get("/json-in-action-result") {
@@ -69,8 +66,7 @@ class JsonPTestServlet extends ScalatraServlet with NativeJsonSupport {
 
   get("/jsonp") {
     import org.json4s.JsonDSL._
-    ("k1" -> "v1") ~
-      ("k2" -> "v2")
+    ("k1" -> "v1") ~ ("k2" -> "v2")
   }
 }
 

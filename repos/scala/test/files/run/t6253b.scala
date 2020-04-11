@@ -54,7 +54,8 @@ object Test extends App {
       val u = a intersect b
       require(
         hashCount == hashCount0,
-        s"key.hashCode should not be called, but has been called ${hashCount - hashCount0} times. Key type $keyType.")
+        s"key.hashCode should not be called, but has been called ${hashCount -
+          hashCount0} times. Key type $keyType.")
       require(
         u == (a intersect scala.collection.mutable.HashSet(b.toSeq: _*)),
         s"Operation must still work for other sets!")

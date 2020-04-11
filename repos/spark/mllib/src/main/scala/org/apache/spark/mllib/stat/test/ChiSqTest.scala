@@ -108,15 +108,15 @@ private[stat] object ChiSqTest extends Logging {
             if (i % 1000 == 0) {
               if (distinctLabels.size > maxCategories) {
                 throw new SparkException(
-                  s"Chi-square test expect factors (categorical values) but "
-                    + s"found more than $maxCategories distinct label values.")
+                  s"Chi-square test expect factors (categorical values) but " +
+                    s"found more than $maxCategories distinct label values.")
               }
               allDistinctFeatures.foreach {
                 case (col, distinctFeatures) =>
                   if (distinctFeatures.size > maxCategories) {
                     throw new SparkException(
-                      s"Chi-square test expect factors (categorical values) but "
-                        + s"found more than $maxCategories distinct values in column $col.")
+                      s"Chi-square test expect factors (categorical values) but " +
+                        s"found more than $maxCategories distinct values in column $col.")
                   }
               }
             }
@@ -176,8 +176,8 @@ private[stat] object ChiSqTest extends Logging {
     val size = observed.size
     if (size > 1000) {
       logWarning(
-        "Chi-squared approximation may not be accurate due to low expected frequencies "
-          + s" as a result of a large number of categories: $size.")
+        "Chi-squared approximation may not be accurate due to low expected frequencies " +
+          s" as a result of a large number of categories: $size.")
     }
     val obsArr = observed.toArray
     val expArr =
@@ -203,8 +203,8 @@ private[stat] object ChiSqTest extends Logging {
         if (exp == 0.0) {
           if (obs == 0.0) {
             throw new IllegalArgumentException(
-              "Chi-squared statistic undefined for input vectors due"
-                + " to 0.0 values in both observed and expected.")
+              "Chi-squared statistic undefined for input vectors due" +
+                " to 0.0 values in both observed and expected.")
           } else {
             return new ChiSqTestResult(
               0.0,
@@ -266,15 +266,15 @@ private[stat] object ChiSqTest extends Logging {
       val colSum = colSums(col)
       if (colSum == 0.0) {
         throw new IllegalArgumentException(
-          "Chi-squared statistic undefined for input matrix due to"
-            + s"0 sum in column [$col].")
+          "Chi-squared statistic undefined for input matrix due to" +
+            s"0 sum in column [$col].")
       }
       val row = j % numRows
       val rowSum = rowSums(row)
       if (rowSum == 0.0) {
         throw new IllegalArgumentException(
-          "Chi-squared statistic undefined for input matrix due to"
-            + s"0 sum in row [$row].")
+          "Chi-squared statistic undefined for input matrix due to" +
+            s"0 sum in row [$row].")
       }
       val expected = colSum * rowSum / total
       statistic += method.chiSqFunc(colMajorArr(j), expected)

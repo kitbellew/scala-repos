@@ -361,8 +361,8 @@ class VectorIndexerModel private[ml] (
           val tmpv = sv.copy
           var catFeatureIdx = 0 // index into sortedCatFeatureIndices
           var k = 0 // index into non-zero elements of sparse vector
-          while (catFeatureIdx < sortedCatFeatureIndices.length && k < tmpv
-                   .indices.length) {
+          while (catFeatureIdx < sortedCatFeatureIndices.length &&
+                 k < tmpv.indices.length) {
             val featureIndex = sortedCatFeatureIndices(catFeatureIdx)
             if (featureIndex < tmpv.indices(k)) { catFeatureIdx += 1 }
             else if (featureIndex > tmpv.indices(k)) { k += 1 }

@@ -308,8 +308,8 @@ object CrossValidator extends MLReadable[CrossValidator] {
       val estimator = DefaultParamsReader
         .loadParamsInstance[Estimator[M]](estimatorPath, sc)
 
-      val uidToParams = Map(evaluator.uid -> evaluator) ++ CrossValidatorReader
-        .getUidMap(estimator)
+      val uidToParams = Map(evaluator.uid -> evaluator) ++
+        CrossValidatorReader.getUidMap(estimator)
 
       val numFolds = (metadata.params \ "numFolds").extract[Int]
       val estimatorParamMaps: Array[ParamMap] =

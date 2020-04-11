@@ -32,8 +32,8 @@ trait ScaladocAnalyzer extends Analyzer {
     override protected def macroImplementationNotFoundMessage(
         name: Name): String =
       (
-        super.macroImplementationNotFoundMessage(name)
-          + "\nWhen generating scaladocs for multiple projects at once, consider using -Ymacro-no-expand to disable macro expansions altogether."
+        super.macroImplementationNotFoundMessage(name) +
+          "\nWhen generating scaladocs for multiple projects at once, consider using -Ymacro-no-expand to disable macro expansions altogether."
       )
 
     override def typedDocDef(docDef: DocDef, mode: Mode, pt: Type): Tree = {
@@ -56,9 +56,8 @@ trait ScaladocAnalyzer extends Analyzer {
             if (sym.name != useCaseSym.name)
               reporter.warning(
                 useCase.pos,
-                "@usecase " + useCaseSym.name
-                  .decode + " does not match commented symbol: " + sym.name
-                  .decode)
+                "@usecase " + useCaseSym.name.decode +
+                  " does not match commented symbol: " + sym.name.decode)
           }
         }
       }
@@ -107,12 +106,12 @@ trait ScaladocAnalyzer extends Analyzer {
       useCase.aliases = context.scope.toList
       namer.enterSyms(trees)
       typedStats(trees, NoSymbol)
-      useCase.defined =
-        context.scope.toList filterNot (useCase.aliases contains _)
+      useCase.defined = context.scope.toList filterNot
+        (useCase.aliases contains _)
 
       if (settings.debug)
-        useCase.defined foreach (sym =>
-          println("defined use cases: %s:%s".format(sym, sym.tpe)))
+        useCase.defined foreach
+          (sym => println("defined use cases: %s:%s".format(sym, sym.tpe)))
 
       useCase.defined
     }
@@ -207,9 +206,9 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
       // tags that make a local double-star comment look unclean, as though it were API
       def unclean(comment: Comment): Boolean = {
         import comment._
-        authors.nonEmpty || result.nonEmpty || throws.nonEmpty || valueParams
-          .nonEmpty ||
-        typeParams.nonEmpty || version.nonEmpty || since.nonEmpty
+        authors.nonEmpty || result.nonEmpty || throws.nonEmpty ||
+        valueParams.nonEmpty || typeParams.nonEmpty || version.nonEmpty ||
+        since.nonEmpty
       }
       def isDirty = unclean(unmooredParser parseComment doc)
       if ((doc ne null) && (settings.warnDocDetached || isDirty))
@@ -251,9 +250,8 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
           docBuffer = null
           inDocComment = false
         }
-      super.skipComment() && ((docBuffer eq null) || foundStarComment(
-        offset,
-        charOffset - 2))
+      super.skipComment() &&
+      ((docBuffer eq null) || foundStarComment(offset, charOffset - 2))
     }
   }
   class ScaladocUnitParser(unit: CompilationUnit, patches: List[BracePatch])

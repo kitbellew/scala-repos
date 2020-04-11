@@ -163,11 +163,11 @@ object ConfigCommand {
     val addConfig = parser.accepts(
       "add-config",
       "Key Value pairs configs to add 'k1=v1,k2=v2'. The following is a list of valid configurations: " +
-        "For entity_type '" + ConfigType.Topic + "': " + nl + LogConfig
-        .configNames.map("\t" + _).mkString(nl) + nl +
-        "For entity_type '" + ConfigType
-        .Client + "': " + nl + "\t" + ClientConfigOverride.ProducerOverride
-        + nl + "\t" + ClientConfigOverride.ConsumerOverride
+        "For entity_type '" + ConfigType.Topic + "': " + nl +
+        LogConfig.configNames.map("\t" + _).mkString(nl) + nl +
+        "For entity_type '" + ConfigType.Client + "': " + nl + "\t" +
+        ClientConfigOverride.ProducerOverride + nl + "\t" +
+        ClientConfigOverride.ConsumerOverride
     ).withRequiredArg.ofType(classOf[String]).withValuesSeparatedBy(',')
     val deleteConfig = parser
       .accepts("delete-config", "config keys to remove 'k1,k2'").withRequiredArg
@@ -214,8 +214,8 @@ object ConfigCommand {
             "At least one of --add-config or --delete-config must be specified with --alter")
       }
       val entityTypeVal = options.valueOf(entityType)
-      if (!entityTypeVal.equals(ConfigType.Topic) && !entityTypeVal
-            .equals(ConfigType.Client)) {
+      if (!entityTypeVal.equals(ConfigType.Topic) &&
+          !entityTypeVal.equals(ConfigType.Client)) {
         throw new IllegalArgumentException(
           "--entity-type must be '%s' or '%s'".format(
             ConfigType.Topic,

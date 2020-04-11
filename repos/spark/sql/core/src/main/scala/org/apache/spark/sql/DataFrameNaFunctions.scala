@@ -162,8 +162,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
     val projections = df.schema.fields.map { f =>
       // Only fill if the column is part of the cols list.
-      if (f.dataType.isInstanceOf[NumericType] && cols
-            .exists(col => columnEquals(f.name, col))) {
+      if (f.dataType.isInstanceOf[NumericType] &&
+          cols.exists(col => columnEquals(f.name, col))) {
         fillCol[Double](f, value)
       } else { df.col(f.name) }
     }
@@ -189,8 +189,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
     val projections = df.schema.fields.map { f =>
       // Only fill if the column is part of the cols list.
-      if (f.dataType.isInstanceOf[StringType] && cols
-            .exists(col => columnEquals(f.name, col))) {
+      if (f.dataType.isInstanceOf[StringType] &&
+          cols.exists(col => columnEquals(f.name, col))) {
         fillCol[String](f, value)
       } else { df.col(f.name) }
     }
@@ -362,9 +362,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
     val projections = df.schema.fields.map { f =>
       val shouldReplace = cols.exists(colName => columnEquals(colName, f.name))
-      if (f.dataType
-            .isInstanceOf[
-              NumericType] && targetColumnType == DoubleType && shouldReplace) {
+      if (f.dataType.isInstanceOf[NumericType] &&
+          targetColumnType == DoubleType && shouldReplace) {
         replaceCol(f, replacementMap)
       } else if (f.dataType == targetColumnType && shouldReplace) {
         replaceCol(f, replacementMap)

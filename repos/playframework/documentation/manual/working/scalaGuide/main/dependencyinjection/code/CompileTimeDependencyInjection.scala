@@ -21,8 +21,8 @@ object CompileTimeDependencyInjection extends Specification {
       val context = ApplicationLoader.createContext(
         environment,
         Map(
-          "play.application.loader" -> classOf[basic.MyApplicationLoader]
-            .getName))
+          "play.application.loader" ->
+            classOf[basic.MyApplicationLoader].getName))
       val application = ApplicationLoader(context).load(context)
       application must beAnInstanceOf[Application]
       application.routes.documentation must beEmpty
@@ -37,8 +37,8 @@ object CompileTimeDependencyInjection extends Specification {
       val context = ApplicationLoader.createContext(environment)
       val components = new routers.MyComponents(context)
       components.application must beAnInstanceOf[Application]
-      components.router must beAnInstanceOf[
-        scalaguide.dependencyinjection.Routes]
+      components.router must
+        beAnInstanceOf[scalaguide.dependencyinjection.Routes]
     }
   }
 

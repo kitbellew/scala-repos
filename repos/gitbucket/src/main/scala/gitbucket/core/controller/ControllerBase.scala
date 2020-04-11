@@ -143,12 +143,12 @@ abstract class ControllerBase
           org.scalatra.Unauthorized(redirect("/signin"))
         } else {
           org.scalatra.Unauthorized(redirect(
-            "/signin?redirect=" + StringUtil
-              .urlEncode(defining(request.getQueryString) { queryString =>
-                request.getRequestURI
-                  .substring(request.getContextPath.length) + (
-                  if (queryString != null) "?" + queryString else ""
-                )
+            "/signin?redirect=" +
+              StringUtil.urlEncode(defining(request.getQueryString) {
+                queryString =>
+                  request.getRequestURI
+                    .substring(request.getContextPath.length) +
+                    (if (queryString != null) "?" + queryString else "")
               })))
         }
       }
@@ -245,8 +245,9 @@ trait AccountManagementControllerBase extends ControllerBase {
       }
     } else {
       fileId.map { fileId =>
-        val filename = "avatar." + FileUtil
-          .getExtension(session.getAndRemove(Keys.Session.Upload(fileId)).get)
+        val filename = "avatar." +
+          FileUtil
+            .getExtension(session.getAndRemove(Keys.Session.Upload(fileId)).get)
         FileUtils.moveFile(
           new java.io.File(getTemporaryDir(session.getId), fileId),
           new java.io.File(getUserUploadDir(userName), filename))

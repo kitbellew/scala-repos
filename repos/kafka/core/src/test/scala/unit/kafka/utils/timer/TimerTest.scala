@@ -100,25 +100,24 @@ class TimerTest {
     val tasks = new ArrayBuffer[TestTask]()
     val ids = new ArrayBuffer[Int]()
 
-    val latches =
-      (0 until 5).map { i =>
-        val latch = new CountDownLatch(1)
-        tasks += new TestTask(startTime + i, i, latch, output)
-        ids += i
-        latch
-      } ++ (10 until 100).map { i =>
-        val latch = new CountDownLatch(2)
-        tasks += new TestTask(startTime + i, i, latch, output)
-        tasks += new TestTask(startTime + i, i, latch, output)
-        ids += i
-        ids += i
-        latch
-      } ++ (100 until 500).map { i =>
-        val latch = new CountDownLatch(1)
-        tasks += new TestTask(startTime + i, i, latch, output)
-        ids += i
-        latch
-      }
+    val latches = (0 until 5).map { i =>
+      val latch = new CountDownLatch(1)
+      tasks += new TestTask(startTime + i, i, latch, output)
+      ids += i
+      latch
+    } ++ (10 until 100).map { i =>
+      val latch = new CountDownLatch(2)
+      tasks += new TestTask(startTime + i, i, latch, output)
+      tasks += new TestTask(startTime + i, i, latch, output)
+      ids += i
+      ids += i
+      latch
+    } ++ (100 until 500).map { i =>
+      val latch = new CountDownLatch(1)
+      tasks += new TestTask(startTime + i, i, latch, output)
+      ids += i
+      latch
+    }
 
     // randomly submit requests
     Random.shuffle(tasks.toSeq).foreach { task => timer.add(task) }

@@ -12,8 +12,8 @@ object Test extends StoreReporterDirectTest {
   """
   def compileLibrary() = {
     val classpath =
-      List(sys.props("partest.lib"), sys.props("partest.reflect")) mkString sys
-        .props("path.separator")
+      List(sys.props("partest.lib"), sys.props("partest.reflect")) mkString
+        sys.props("path.separator")
     compileString(newCompiler("-cp", classpath, "-d", testOutput.path))(library)
   }
 
@@ -30,8 +30,8 @@ object Test extends StoreReporterDirectTest {
     }
   """
   def compileApp() = {
-    val classpath = List(sys.props("partest.lib"), testOutput.path) mkString sys
-      .props("path.separator")
+    val classpath = List(sys.props("partest.lib"), testOutput.path) mkString
+      sys.props("path.separator")
     compileString(newCompiler("-cp", classpath, "-d", testOutput.path))(app)
   }
 

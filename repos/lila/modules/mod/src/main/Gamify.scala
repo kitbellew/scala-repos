@@ -34,24 +34,22 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
   private def buildHistoryAfter(
       afterYear: Int,
       afterMonth: Int,
-      until: DateTime): Funit =
-    (afterYear to until.getYear).flatMap { year =>
-      ((year == afterYear).fold(afterMonth + 1, 1) to
-        (year == until.getYear).fold(until.getMonthOfYear, 12)).map { month =>
-        mixedLeaderboard(
-          after = new DateTime(year, month, 1, 0, 0).pp("compute mod history"),
-          before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some).map {
-          _.headOption.map { champ =>
-            HistoryMonth(HistoryMonth.makeId(year, month), year, month, champ)
-          }
+      until: DateTime): Funit = (afterYear to until.getYear).flatMap { year =>
+    ((year == afterYear).fold(afterMonth + 1, 1) to (year == until.getYear)
+      .fold(until.getMonthOfYear, 12)).map { month =>
+      mixedLeaderboard(
+        after = new DateTime(year, month, 1, 0, 0).pp("compute mod history"),
+        before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some).map {
+        _.headOption.map { champ =>
+          HistoryMonth(HistoryMonth.makeId(year, month), year, month, champ)
         }
-      }.toList
-    }.toList.sequenceFu.map(_.flatten).flatMap {
-      _.map { month =>
-        historyColl
-          .update(BSONDocument("_id" -> month._id), month, upsert = true)
-      }.sequenceFu
-    }.void
+      }
+    }.toList
+  }.toList.sequenceFu.map(_.flatten).flatMap {
+    _.map { month =>
+      historyColl.update(BSONDocument("_id" -> month._id), month, upsert = true)
+    }.sequenceFu
+  }.void
 
   def leaderboards = leaderboardsCache(true)
 
@@ -59,8 +57,8 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
     f = mixedLeaderboard(DateTime.now minusDays 1, none) zip
       mixedLeaderboard(DateTime.now minusWeeks 1, none) zip
       mixedLeaderboard(DateTime.now minusMonths 1, none) map {
-      case ((daily, weekly), monthly) => Leaderboards(daily, weekly, monthly)
-    },
+        case ((daily, weekly), monthly) => Leaderboards(daily, weekly, monthly)
+      },
     timeToLive = 10 seconds
   )
 

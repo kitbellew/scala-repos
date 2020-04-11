@@ -67,12 +67,12 @@ class appTest extends JUnitSuite with ShouldMatchers {
 
     val pressedDrawable = shadowDrawable
       .getDrawableForState(Array(android.R.attr.state_pressed))
-    pressedDrawable shouldBe activity.getResources
-      .getDrawable(android.R.drawable.btn_star_big_on)
+    pressedDrawable shouldBe
+      activity.getResources.getDrawable(android.R.drawable.btn_star_big_on)
 
     val normalDrawable = shadowDrawable.getDrawableForState(Array.empty)
-    normalDrawable shouldBe activity.getResources
-      .getDrawable(android.R.drawable.btn_star_big_off)
+    normalDrawable shouldBe
+      activity.getResources.getDrawable(android.R.drawable.btn_star_big_off)
   }
 
   @Test

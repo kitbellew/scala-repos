@@ -15,8 +15,8 @@ class ScalaQualifiedClassNameMacro extends Macro {
   override def getName: String = MacroUtil.scalaIdPrefix + "qualifiedClassName"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
-      .message("macro.qualified.class.name")
+    MacroUtil.scalaPresentablePrefix +
+      CodeInsightBundle.message("macro.qualified.class.name")
 
   override def getDefaultValue = "a"
 

@@ -160,8 +160,8 @@ abstract class ClusterShardingGetStateSpec
           val regions = probe.expectMsgType[ShardRegion.CurrentRegions].regions
           regions.size === 2
           regions.foreach { region ⇒
-            val path =
-              RootActorPath(region) / "system" / "sharding" / shardTypeName
+            val path = RootActorPath(region) / "system" / "sharding" /
+              shardTypeName
 
             system.actorSelection(path)
               .tell(ShardRegion.GetShardRegionState, probe.ref)

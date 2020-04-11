@@ -45,8 +45,8 @@ class RepositoryServiceSpec
           repositoryName = "repo2",
           userName = "tester"))
       assert(
-        service.getProtectedBranchInfo("tester", "repo2", "branch") == orgPbi
-          .copy(owner = "tester", repository = "repo2"))
+        service.getProtectedBranchInfo("tester", "repo2", "branch") ==
+          orgPbi.copy(owner = "tester", repository = "repo2"))
     }
   }
 }

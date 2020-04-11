@@ -168,9 +168,8 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
         }
         // If database name is specified, there are 3 tokens, otherwise 2.
         val (funcName, alias) = funcNameArgs match {
-          case Token(dbName, Nil) :: Token(fname, Nil) :: Token(
-                aname,
-                Nil) :: Nil =>
+          case Token(dbName, Nil) :: Token(fname, Nil) :: Token(aname, Nil) ::
+              Nil =>
             (
               unquoteString(dbName) + "." + unquoteString(fname),
               unquoteString(aname))
@@ -302,9 +301,8 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
                   datasources.DescribeCommand(
                     tableIdent,
                     isExtended = extended.isDefined)
-                case Token(dbName, Nil) :: Token(tableName, Nil) :: Token(
-                      colName,
-                      Nil) :: Nil =>
+                case Token(dbName, Nil) :: Token(tableName, Nil) ::
+                    Token(colName, Nil) :: Nil =>
                   // It is describing a column with the format like "describe db.table column".
                   nodeToDescribeFallback(node)
                 case tableName :: Nil =>

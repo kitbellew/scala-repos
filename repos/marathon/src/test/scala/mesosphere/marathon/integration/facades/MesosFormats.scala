@@ -35,21 +35,17 @@ object MesosFormats {
     Writes[ITResources](resources => Json.toJson(resources.resources)))
 
   implicit lazy val ITAgentFormat: Format[ITAgent] =
-    ((__ \ "id").format[String] ~
-      (__ \ "resources").formatNullable[ITResources]
-        .withDefault(ITResources.empty) ~
-      (__ \ "used_resources").formatNullable[ITResources]
-        .withDefault(ITResources.empty) ~
+    ((__ \ "id").format[String] ~ (__ \ "resources").formatNullable[ITResources]
+      .withDefault(ITResources.empty) ~ (__ \ "used_resources")
+      .formatNullable[ITResources].withDefault(ITResources.empty) ~
       (__ \ "offered_resources").formatNullable[ITResources]
-        .withDefault(ITResources.empty) ~
-      (__ \ "reserved_resources").formatNullable[Map[String, ITResources]]
-        .withDefault(Map.empty) ~
+        .withDefault(ITResources.empty) ~ (__ \ "reserved_resources")
+        .formatNullable[Map[String, ITResources]].withDefault(Map.empty) ~
       (__ \ "unreserved_resources").formatNullable[ITResources]
         .withDefault(ITResources.empty))(ITAgent.apply, unlift(ITAgent.unapply))
 
   implicit lazy val ITStatusFormat: Format[ITMesosState] =
-    ((__ \ "version").format[String] ~
-      (__ \ "git_tag").format[String] ~
+    ((__ \ "version").format[String] ~ (__ \ "git_tag").format[String] ~
       (__ \ "slaves").format[Iterable[ITAgent]])(
       ITMesosState.apply,
       unlift(ITMesosState.unapply))

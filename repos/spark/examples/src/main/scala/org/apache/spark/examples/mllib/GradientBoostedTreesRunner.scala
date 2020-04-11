@@ -60,7 +60,8 @@ object GradientBoostedTreesRunner {
         .text(s"max depth of the tree, default: ${defaultParams.maxDepth}")
         .action((x, c) => c.copy(maxDepth = x))
       opt[Int]("numIterations").text(
-        s"number of iterations of boosting," + s" default: ${defaultParams.numIterations}")
+        s"number of iterations of boosting," +
+          s" default: ${defaultParams.numIterations}")
         .action((x, c) => c.copy(numIterations = x))
       opt[Double]("fracTest").text(
         s"fraction of data to hold out for testing.  If given option testInput, " +

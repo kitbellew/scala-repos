@@ -54,8 +54,8 @@ trait XLightWebHttpClientModule[M[+_]] extends HttpClientModule[M] {
           url0.getPath + path)
       }
 
-    private def buildRequest(
-        request: Request[String]): HttpClientError \/ IHttpRequest = {
+    private def buildRequest(request: Request[String]): HttpClientError \/
+      IHttpRequest = {
       buildUrl(request.path) map { url =>
         val req = request.method match {
           case HttpMethod.GET => new GetRequest(url.toString)

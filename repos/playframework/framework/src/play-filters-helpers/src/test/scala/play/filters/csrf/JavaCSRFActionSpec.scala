@@ -95,17 +95,17 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
         }
       }
     }
-    "allow accessing the token from the http context" in withServer(
-      Seq("play.http.filters" -> "play.filters.csrf.CsrfFilters")) {
-      case _ => javaAction[MyAction]("getToken", myAction.getToken())
-    } {
-      lazy val token = crypto.generateSignedToken
-      import play.api.Play.current
-      val returned = await(
-        ws.url("http://localhost:" + testServerPort)
-          .withSession(TokenName -> token).get()).body
-      crypto.compareSignedTokens(token, returned) must beTrue
-    }
+    "allow accessing the token from the http context" in
+      withServer(Seq("play.http.filters" -> "play.filters.csrf.CsrfFilters")) {
+        case _ => javaAction[MyAction]("getToken", myAction.getToken())
+      } {
+        lazy val token = crypto.generateSignedToken
+        import play.api.Play.current
+        val returned = await(
+          ws.url("http://localhost:" + testServerPort)
+            .withSession(TokenName -> token).get()).body
+        crypto.compareSignedTokens(token, returned) must beTrue
+      }
   }
 
   class MyAction extends Controller {

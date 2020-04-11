@@ -54,8 +54,8 @@ class TlsEndpointVerificationSpec
         timeout) { response ⇒
         response.status shouldEqual StatusCodes.OK
         val tlsInfo = response.header[`Tls-Session-Info`].get
-        tlsInfo.peerPrincipal.get
-          .getName shouldEqual "CN=akka.example.org,O=Internet Widgits Pty Ltd,ST=Some-State,C=AU"
+        tlsInfo.peerPrincipal.get.getName shouldEqual
+          "CN=akka.example.org,O=Internet Widgits Pty Ltd,ST=Some-State,C=AU"
       }
     }
     "not accept certificates for foreign hosts" in {

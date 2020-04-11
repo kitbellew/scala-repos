@@ -106,15 +106,13 @@ object CartesianProductExample extends App {
   val result = liftA2(tuple)(xs, ys)
 
   // The expected type of the Cartesian product.
-  type Result = (Int, Double) :: (Int, String) ::
-    (Symbol, Double) :: (Symbol, String) ::
-    (Char, Double) :: (Char, String) :: HNil
+  type Result = (Int, Double) :: (Int, String) :: (Symbol, Double) ::
+    (Symbol, String) :: (Char, Double) :: (Char, String) :: HNil
 
   // The expected value.
   val expected =
-    (1, 4.0) :: (1, "e") ::
-      ('b, 4.0) :: ('b, "e") ::
-      ('c', 4.0) :: ('c', "e") :: HNil
+    (1, 4.0) :: (1, "e") :: ('b, 4.0) :: ('b, "e") :: ('c', 4.0) ::
+      ('c', "e") :: HNil
 
   typed[Result](result)
 

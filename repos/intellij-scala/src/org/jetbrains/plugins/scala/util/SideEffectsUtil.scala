@@ -49,7 +49,8 @@ object SideEffectsUtil {
       case ref: ScReferenceExpression =>
         if (hasImplicitConversion(ref)) false
         else {
-          ref.qualifier.forall(hasNoSideEffects) && (ref.resolve() match {
+          ref.qualifier.forall(hasNoSideEffects) &&
+          (ref.resolve() match {
             case Both(
                   b: ScBindingPattern,
                   ScalaPsiUtil.inNameContext(pd: ScPatternDefinition))
@@ -59,11 +60,9 @@ object SideEffectsUtil {
               !ScFunctionType.isFunctionType(tp.getOrAny)
             case _: ScObject => true
             case p: ScParameter
-                if !p.isCallByNameParameter &&
-                  !ScFunctionType.isFunctionType(
-                    p.getRealParameterType(TypingContext.empty).getOrAny) =>
-              true
-            case _: ScSyntheticFunction => true
+                if !p.isCallByNameParameter && !ScFunctionType.isFunctionType(
+                  p.getRealParameterType(TypingContext.empty).getOrAny) => true
+            case _: ScSyntheticFunction                                 => true
             case m: PsiMethod =>
               methodHasNoSideEffects(
                 m,
@@ -82,8 +81,8 @@ object SideEffectsUtil {
             methodHasNoSideEffects(m, baseExpr.getType().toOption)
           case _ => false
         }
-        checkOperation && hasNoSideEffects(baseExpr) && args
-          .forall(hasNoSideEffects)
+        checkOperation && hasNoSideEffects(baseExpr) &&
+        args.forall(hasNoSideEffects)
       case ScMethodCall(baseExpr, args) =>
         val (checkQual, typeOfQual) = baseExpr match {
           case ScReferenceExpression.withQualifier(qual) =>
@@ -95,8 +94,8 @@ object SideEffectsUtil {
           case ResolvesTo(m: PsiMethod)             => methodHasNoSideEffects(m, typeOfQual)
           case ResolvesTo(_: ScSyntheticFunction)   => true
           case ResolvesTo(td: ScTypedDefinition) =>
-            val withApplyText = baseExpr.getText + ".apply" + args
-              .map(_.getText).mkString("(", ", ", ")")
+            val withApplyText = baseExpr.getText + ".apply" +
+              args.map(_.getText).mkString("(", ", ", ")")
             val withApply = ScalaPsiElementFactory
               .createExpressionWithContextFromText(
                 withApplyText,
@@ -159,8 +158,8 @@ object SideEffectsUtil {
     val immutableCollections = Seq("scala.collection.immutable._")
 
     (excludeNonString ++: javaWrappers ++: otherJavaClasses ++:
-      scalaValueClasses ++: otherFromScalaPackage ++: fromScalaUtil ++: fromScalaMath ++: immutableCollections)
-      .toArray
+      scalaValueClasses ++: otherFromScalaPackage ++: fromScalaUtil ++:
+      fromScalaMath ++: immutableCollections).toArray
   }
 
   private def hasImplicitConversion(refExpr: ScExpression) = {

@@ -12,9 +12,7 @@ class ResponseClassifierTest extends FunSuite {
 
   test("Default classification") {
     assert("DefaultResponseClassifier" == ResponseClassifier.Default.toString)
-    assert(
-      Success ==
-        ResponseClassifier.Default(ReqRep(null, Return("hi"))))
+    assert(Success == ResponseClassifier.Default(ReqRep(null, Return("hi"))))
 
     assert(
       RetryableFailure ==
@@ -42,8 +40,8 @@ class ResponseClassifierTest extends FunSuite {
 
     assert(!classifier.isDefinedAt(ReqRep(0, aReturn)))
     assert(
-      Success == classifier
-        .applyOrElse(ReqRep(0, aReturn), ResponseClassifier.Default))
+      Success ==
+        classifier.applyOrElse(ReqRep(0, aReturn), ResponseClassifier.Default))
   }
 
 }

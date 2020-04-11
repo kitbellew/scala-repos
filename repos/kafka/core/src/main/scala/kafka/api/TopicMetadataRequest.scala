@@ -55,11 +55,15 @@ case class TopicMetadataRequest(
   }
 
   def sizeInBytes(): Int = {
-    2 + /* version id */
-    4 + /* correlation id */
-    shortStringLength(clientId) + /* client id */
-    4 + /* number of topics */
-    topics.foldLeft(0)(_ + shortStringLength(_)) /* topics */
+    2 +
+      /* version id */
+      4 +
+      /* correlation id */
+      shortStringLength(clientId) +
+      /* client id */
+      4 +
+      /* number of topics */
+      topics.foldLeft(0)(_ + shortStringLength(_)) /* topics */
   }
 
   override def toString(): String = { describe(true) }

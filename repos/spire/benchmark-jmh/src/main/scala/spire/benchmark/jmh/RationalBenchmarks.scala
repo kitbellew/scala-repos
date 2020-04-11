@@ -44,19 +44,19 @@ class RationalMultiplyDivideBenchmark {
 
   val pairs = Map(
     "li_li_li" → ((Rational(12345), Rational(67890))),
-    "bi_bi_bi" → (
-      (
-        Rational(12345) + Long.MaxValue,
-        Rational(67890) + Long.MaxValue)),
+    "bi_bi_bi" →
+      ((Rational(12345) + Long.MaxValue, Rational(67890) + Long.MaxValue)),
     "lf_lf_lf" → ((Rational(12345, 67891), Rational(67890, 12347))),
-    "lf_lf_bf" → (
+    "lf_lf_bf" →
       (
-        Rational(Long.MaxValue, Int.MaxValue - 1),
-        Rational(Long.MaxValue, Int.MaxValue - 3))),
-    "bf_bf_bf" → (
+        (
+          Rational(Long.MaxValue, Int.MaxValue - 1),
+          Rational(Long.MaxValue, Int.MaxValue - 3))),
+    "bf_bf_bf" →
       (
-        Rational(Long.MaxValue) + Rational(1, 3),
-        Rational(Long.MaxValue) + Rational(1, 5)))
+        (
+          Rational(Long.MaxValue) + Rational(1, 3),
+          Rational(Long.MaxValue) + Rational(1, 5)))
   )
   check(pairs, _ * _)
   check(pairs, _ / _.inverse)
@@ -91,19 +91,19 @@ class RationalAddSubtractBenchmark {
 
   val pairs = Map(
     "li_li_li" → ((Rational(12345), Rational(67890))),
-    "bi_bi_bi" → (
-      (
-        Rational(12345) + Long.MaxValue,
-        Rational(67890) + Long.MaxValue)),
+    "bi_bi_bi" →
+      ((Rational(12345) + Long.MaxValue, Rational(67890) + Long.MaxValue)),
     "lf_lf_lf" → ((Rational(12345, 67891), Rational(67890, 12347))),
-    "lf_lf_bf" → (
+    "lf_lf_bf" →
       (
-        Rational(Long.MaxValue, Int.MaxValue - 1),
-        Rational(Long.MaxValue, Int.MaxValue - 3))),
-    "bf_bf_bf" → (
+        (
+          Rational(Long.MaxValue, Int.MaxValue - 1),
+          Rational(Long.MaxValue, Int.MaxValue - 3))),
+    "bf_bf_bf" →
       (
-        Rational(Long.MaxValue) + Rational(1, 3),
-        Rational(Long.MaxValue) + Rational(1, 5)))
+        (
+          Rational(Long.MaxValue) + Rational(1, 3),
+          Rational(Long.MaxValue) + Rational(1, 5)))
   )
   check(pairs, _ + _)
   check(pairs, _ - -_)
@@ -135,14 +135,16 @@ class RationalCompareBenchmark {
   val pairs = Map(
     "li_li" → ((Rational(12345), Rational(67890))),
     "lf_lf" → ((Rational(12345, 67891), Rational(67890, 12347))),
-    "lf_lf_intermediateBig" → (
+    "lf_lf_intermediateBig" →
       (
-        Rational(Long.MaxValue, Int.MaxValue - 1),
-        Rational(Long.MaxValue, Int.MaxValue - 3))),
-    "bf_bf" → (
+        (
+          Rational(Long.MaxValue, Int.MaxValue - 1),
+          Rational(Long.MaxValue, Int.MaxValue - 3))),
+    "bf_bf" →
       (
-        Rational(Long.MaxValue) + Rational(1, 3),
-        Rational(Long.MaxValue) + Rational(1, 5)))
+        (
+          Rational(Long.MaxValue) + Rational(1, 3),
+          Rational(Long.MaxValue) + Rational(1, 5)))
   )
   check(pairs)
 

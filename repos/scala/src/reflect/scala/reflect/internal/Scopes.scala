@@ -294,8 +294,8 @@ trait Scopes extends api.Scopes {
       lookupEntry(name) match {
         case null => Iterator.empty
         case e =>
-          lookupAllEntries(name) filter (e1 =>
-            (e eq e1) || (e.depth == e1.depth && e.sym != e1.sym))
+          lookupAllEntries(name) filter
+            (e1 => (e eq e1) || (e.depth == e1.depth && e.sym != e1.sym))
       }
     }
 
@@ -323,9 +323,8 @@ trait Scopes extends api.Scopes {
       */
     def lookupNextEntry(entry: ScopeEntry): ScopeEntry = {
       var e = entry
-      if (hashtable ne null) do {
-        e = e.tail
-      } while ((e ne null) && e.sym.name != entry.sym.name)
+      if (hashtable ne null)
+        do { e = e.tail } while ((e ne null) && e.sym.name != entry.sym.name)
       else do { e = e.next } while ((e ne null) && e.sym.name != entry.sym.name)
       e
     }
@@ -336,8 +335,7 @@ trait Scopes extends api.Scopes {
       */
     def isSameScope(other: Scope) =
       ((size == other.size) // optimization - size is cached
-        && (this isSubScope other)
-        && (other isSubScope this))
+      && (this isSubScope other) && (other isSubScope this))
 
     def isSubScope(other: Scope) = {
       def scopeContainsSym(sym: Symbol): Boolean = {
@@ -347,8 +345,8 @@ trait Scopes extends api.Scopes {
             case null => false
             case _ =>
               val comparableInfo = sym.info.substThis(sym.owner, e.sym.owner)
-              (e.sym.info =:= comparableInfo) || entryContainsSym(
-                lookupNextEntry(e))
+              (e.sym.info =:= comparableInfo) ||
+              entryContainsSym(lookupNextEntry(e))
           }
         entryContainsSym(this lookupEntry sym.name)
       }

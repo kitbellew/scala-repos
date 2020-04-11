@@ -38,20 +38,17 @@ trait Adaptations {
           (if (t.symbol.isConstructor || t.symbol.name == nme.apply) ""
            else "." + t.symbol.decodedName))
       def sigString =
-        t.symbol.owner.decodedName + (if (t.symbol.isConstructor)
-                                        t.symbol.signatureString
-                                      else
-                                        "." + t.symbol.decodedName + t.symbol
-                                          .signatureString)
+        t.symbol.owner.decodedName +
+          (if (t.symbol.isConstructor) t.symbol.signatureString
+           else "." + t.symbol.decodedName + t.symbol.signatureString)
       def givenString = if (args.isEmpty) "<none>" else args.mkString(", ")
       def adaptedArgs =
         if (args.isEmpty) "(): Unit"
         else args.mkString("(", ", ", "): " + applyArg.tpe)
 
       def adaptWarningMessage(msg: String, showAdaptation: Boolean = true) =
-        msg +
-          "\n        signature: " + sigString +
-          "\n  given arguments: " + givenString +
+        msg + "\n        signature: " + sigString + "\n  given arguments: " +
+          givenString +
           (if (showAdaptation)
              "\n after adaptation: " + callString + "(" + adaptedArgs + ")"
            else "")
@@ -68,11 +65,9 @@ trait Adaptations {
         // Unfortunately various "universal" methods and the manner in which
         // they are used limits our ability to enforce anything sensible until
         // an opt-in compiler option is given.
-        oneArgObject && !(isStringAddition(t.symbol)
-          || isArrowAssoc(t.symbol)
-          || t.symbol.name == nme.equals_
-          || t.symbol.name == nme.EQ
-          || t.symbol.name == nme.NE)
+        oneArgObject && !(isStringAddition(t.symbol) ||
+          isArrowAssoc(t.symbol) || t.symbol.name == nme.equals_ ||
+          t.symbol.name == nme.EQ || t.symbol.name == nme.NE)
       }
 
       if (settings.noAdaptedArgs)
@@ -89,11 +84,10 @@ trait Adaptations {
               showAdaptation = false))
         else {
           val msg =
-            "Adaptation of argument list by inserting () has been deprecated: " + (
-              if (isLeakyTarget)
-                "leaky (Object-receiving) target makes this especially dangerous."
-              else "this is unlikely to be what you want."
-            )
+            "Adaptation of argument list by inserting () has been deprecated: " +
+              (if (isLeakyTarget)
+                 "leaky (Object-receiving) target makes this especially dangerous."
+               else "this is unlikely to be what you want.")
           context.deprecationWarning(t.pos, t.symbol, adaptWarningMessage(msg))
         }
       } else if (settings.warnAdaptedArgs)

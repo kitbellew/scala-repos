@@ -79,10 +79,8 @@ class ConversionsSpecs extends Specification {
 
       cal.setTime(converted.get)
 
-      cal
-        .get(
-          Calendar
-            .MILLISECOND) aka "The extracted milliseconds from converted Date" must_== currentMs
+      cal.get(Calendar.MILLISECOND) aka
+        "The extracted milliseconds from converted Date" must_== currentMs
     }
 
     "provide DEF conversion for Seq" in {

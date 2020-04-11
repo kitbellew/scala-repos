@@ -255,8 +255,8 @@ trait Scanners extends ScannersCommon {
       *  @pre inStringInterpolation
       */
     private def inMultiLineInterpolation =
-      inStringInterpolation && sepRegions.tail.nonEmpty && sepRegions.tail
-        .head == STRINGPART
+      inStringInterpolation && sepRegions.tail.nonEmpty &&
+        sepRegions.tail.head == STRINGPART
 
     /** read next token and return last offset
       */
@@ -310,8 +310,8 @@ trait Scanners extends ScannersCommon {
       // Read a token or copy it from `next` tokenData
       if (next.token == EMPTY) {
         lastOffset = charOffset - 1
-        if (lastOffset > 0 && buf(lastOffset) == '\n' && buf(
-              lastOffset - 1) == '\r') { lastOffset -= 1 }
+        if (lastOffset > 0 && buf(lastOffset) == '\n' &&
+            buf(lastOffset - 1) == '\r') { lastOffset -= 1 }
         if (inStringInterpolation) fetchStringPart() else fetchToken()
         if (token == ERROR) {
           if (inMultiLineInterpolation) sepRegions = sepRegions.tail.tail
@@ -328,8 +328,8 @@ trait Scanners extends ScannersCommon {
        * - the current token can start a statement and the one before can end it
        * insert NEWLINES if we are past a blank line, NEWLINE otherwise
        */
-      if (!applyBracePatch() && afterLineEnd() && inLastOfStat(
-            lastToken) && inFirstOfStat(token) &&
+      if (!applyBracePatch() && afterLineEnd() && inLastOfStat(lastToken) &&
+          inFirstOfStat(token) &&
           (sepRegions.isEmpty || sepRegions.head == RBRACE)) {
         next copyFrom this
         offset =
@@ -473,8 +473,8 @@ trait Scanners extends ScannersCommon {
                   nextRawChar()
                   getStringPart(multiLine = true)
                   sepRegions = STRINGPART :: sepRegions // indicate string part
-                  sepRegions =
-                    STRINGLIT :: sepRegions // once more to indicate multi line string part
+                  sepRegions = STRINGLIT ::
+                    sepRegions // once more to indicate multi line string part
                 } else {
                   nextChar()
                   token = STRINGLIT
@@ -483,8 +483,8 @@ trait Scanners extends ScannersCommon {
               } else {
                 offset += 1
                 getStringPart(multiLine = false)
-                sepRegions =
-                  STRINGLIT :: sepRegions // indicate single line string part
+                sepRegions = STRINGLIT ::
+                  sepRegions // indicate single line string part
               }
             } else {
               nextChar()
@@ -507,9 +507,8 @@ trait Scanners extends ScannersCommon {
             if (isIdentifierStart(ch)) charLitOr(getIdentRest)
             else if (isOperatorPart(ch) && (ch != '\\'))
               charLitOr(getOperatorRest)
-            else if (!isAtEnd && (
-                       ch != SU && ch != CR && ch != LF || isUnicodeEscape
-                     )) {
+            else if (!isAtEnd &&
+                     (ch != SU && ch != CR && ch != LF || isUnicodeEscape)) {
               getLitChar()
               if (ch == '\'') {
                 nextChar()
@@ -551,8 +550,8 @@ trait Scanners extends ScannersCommon {
               getOperatorRest()
             } else {
               syntaxError(
-                "illegal character '" + ("" + '\\' + 'u' + "%04x"
-                  .format(ch.toInt)) + "'")
+                "illegal character '" +
+                  ("" + '\\' + 'u' + "%04x".format(ch.toInt)) + "'")
               nextChar()
             }
           }
@@ -722,9 +721,8 @@ trait Scanners extends ScannersCommon {
             "invalid string interpolation: `$$', `$'ident or `$'BlockExpr expected")
         }
       } else {
-        val isUnclosedLiteral = !isUnicodeEscape && (
-          ch == SU || (!multiLine && (ch == CR || ch == LF))
-        )
+        val isUnclosedLiteral = !isUnicodeEscape &&
+          (ch == SU || (!multiLine && (ch == CR || ch == LF)))
         if (isUnclosedLiteral) {
           if (multiLine)
             incompleteInputError("unclosed multi-line string literal")
@@ -812,9 +810,8 @@ trait Scanners extends ScannersCommon {
     }
 
     private def getLitChars(delimiter: Char) = {
-      while (ch != delimiter && !isAtEnd && (
-               ch != SU && ch != CR && ch != LF || isUnicodeEscape
-             )) getLitChar()
+      while (ch != delimiter && !isAtEnd &&
+             (ch != SU && ch != CR && ch != LF || isUnicodeEscape)) getLitChar()
     }
 
     /** read fractional part and exponent of floating point number
@@ -895,9 +892,13 @@ trait Scanners extends ScannersCommon {
               val d = digit2int(strVal charAt i, base)
               if (d < 0) malformed
               else if (value < 0 ||
-                       limit / (base / divider) < value ||
-                       limit - (d / divider) < value * (base / divider) &&
-                       !(negated && limit == value * base - 1 + d)) tooBig
+                       limit /
+                         (base / divider) < value ||
+                         limit -
+                         (d / divider) <
+                         value *
+                         (base / divider) &&
+                         !(negated && limit == value * base - 1 + d)) tooBig
               else convert(value * base + d, i + 1)
             }
           val result = convert(0, 0)
@@ -963,8 +964,8 @@ trait Scanners extends ScannersCommon {
       // consume leading digits, provisionally an Int
       consumeDigits(if (base == 16) 16 else 10)
 
-      val detectedFloat: Boolean =
-        base != 16 && ch == '.' && isDigit(lookaheadReader.getc)
+      val detectedFloat: Boolean = base != 16 && ch == '.' &&
+        isDigit(lookaheadReader.getc)
       if (detectedFloat) restOfNonIntegralNumber() else restOfNumber()
     }
 
@@ -1225,8 +1226,8 @@ trait Scanners extends ScannersCommon {
     private def markedSource = {
       val code = unit.source.content
       val braces = code.indices filter (idx => "{}\n" contains code(idx)) toSet;
-      val mapped = code.indices map (idx =>
-        if (braces(idx)) s"${code(idx)}[$idx]" else "" + code(idx))
+      val mapped = code.indices map
+        (idx => if (braces(idx)) s"${code(idx)}[$idx]" else "" + code(idx))
       mapped.mkString("")
     }
 
@@ -1307,8 +1308,8 @@ trait Scanners extends ScannersCommon {
           import bp._
           val lline = line(loff)
           val rline = line(roff)
-          val tokens = List(lline, lindent, rline, rindent) map (n =>
-            if (n < 0) "??" else "" + n)
+          val tokens = List(lline, lindent, rline, rindent) map
+            (n => if (n < 0) "??" else "" + n)
           "%s:%s to %s:%s".format(tokens: _*)
         }
         val outer = (" " * indent) + rangeString
@@ -1369,8 +1370,8 @@ trait Scanners extends ScannersCommon {
               if (patches1 ne patches) patches1
               else {
                 var lin = line(loff) + 1
-                while (lin < lineStart.length && column(
-                         lineStart(lin)) > lindent) lin += 1
+                while (lin < lineStart.length &&
+                       column(lineStart(lin)) > lindent) lin += 1
                 if (lin < lineStart.length) {
                   val patches1 = insertPatch(
                     patches,

@@ -19,7 +19,8 @@ class VerifySymbols extends Phase {
             }.toMap
             val srcDef = all.getOrElse(s, null)
             throw new SlickTreeException(
-              "Unreachable reference to " + s + " after resolving monadic joins",
+              "Unreachable reference to " + s +
+                " after resolving monadic joins",
               n2,
               mark = (d => (d eq n) || (d eq srcDef)))
           case Bind(s, from, sel: Pure) =>

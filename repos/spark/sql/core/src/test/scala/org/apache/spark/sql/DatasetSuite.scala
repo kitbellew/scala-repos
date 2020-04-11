@@ -93,10 +93,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
   test("as case class - reordered fields by name") {
     val ds = Seq((1, "a"), (2, "b"), (3, "c")).toDF("b", "a").as[ClassData]
     assert(
-      ds.collect() === Array(
-        ClassData("a", 1),
-        ClassData("b", 2),
-        ClassData("c", 3)))
+      ds.collect() ===
+        Array(ClassData("a", 1), ClassData("b", 2), ClassData("c", 3)))
   }
 
   test("as case class - take") {
@@ -499,12 +497,11 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     implicit val kryoEncoder = Encoders.kryo[KryoData]
     val ds = Seq(KryoData(1), KryoData(2)).toDS()
     assert(
-      ds.joinWith(ds, lit(true)).collect().toSet ==
-        Set(
-          (KryoData(1), KryoData(1)),
-          (KryoData(1), KryoData(2)),
-          (KryoData(2), KryoData(1)),
-          (KryoData(2), KryoData(2))))
+      ds.joinWith(ds, lit(true)).collect().toSet == Set(
+        (KryoData(1), KryoData(1)),
+        (KryoData(1), KryoData(2)),
+        (KryoData(2), KryoData(1)),
+        (KryoData(2), KryoData(2))))
   }
 
   test("Java encoder") {
@@ -520,12 +517,11 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     implicit val kryoEncoder = Encoders.javaSerialization[JavaData]
     val ds = Seq(JavaData(1), JavaData(2)).toDS()
     assert(
-      ds.joinWith(ds, lit(true)).collect().toSet ==
-        Set(
-          (JavaData(1), JavaData(1)),
-          (JavaData(1), JavaData(2)),
-          (JavaData(2), JavaData(1)),
-          (JavaData(2), JavaData(2))))
+      ds.joinWith(ds, lit(true)).collect().toSet == Set(
+        (JavaData(1), JavaData(1)),
+        (JavaData(1), JavaData(2)),
+        (JavaData(2), JavaData(1)),
+        (JavaData(2), JavaData(2))))
   }
 
   test("SPARK-11894: Incorrect results are returned when using null") {
@@ -628,18 +624,18 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     assert(
       message ==
         "Try to map struct<a:string,b:int> to Tuple3, " +
-          "but failed as the number of fields does not line up.\n" +
-          " - Input schema: struct<a:string,b:int>\n" +
-          " - Target schema: struct<_1:string,_2:int,_3:bigint>")
+        "but failed as the number of fields does not line up.\n" +
+        " - Input schema: struct<a:string,b:int>\n" +
+        " - Target schema: struct<_1:string,_2:int,_3:bigint>")
 
     val message2 = intercept[AnalysisException] { ds.as[Tuple1[String]] }
       .message
     assert(
       message2 ==
         "Try to map struct<a:string,b:int> to Tuple1, " +
-          "but failed as the number of fields does not line up.\n" +
-          " - Input schema: struct<a:string,b:int>\n" +
-          " - Target schema: struct<_1:string>")
+        "but failed as the number of fields does not line up.\n" +
+        " - Input schema: struct<a:string,b:int>\n" +
+        " - Target schema: struct<_1:string>")
   }
 
   test("SPARK-13440: Resolving option fields") {

@@ -84,81 +84,79 @@ object FormSpec extends Specification {
         .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(2)
-      myForm.errors.get("dueDate").get(0).messages().get(1) must beEqualTo(
-        "error.invalid.java.util.Date")
-      myForm.errors.get("dueDate").get(0).messages().get(0) must beEqualTo(
-        "error.invalid")
-      myForm.errors.get("dueDate").get(0).message() must beEqualTo(
-        "error.invalid.java.util.Date")
+      myForm.errors.get("dueDate").get(0).messages().get(1) must
+        beEqualTo("error.invalid.java.util.Date")
+      myForm.errors.get("dueDate").get(0).messages().get(0) must
+        beEqualTo("error.invalid")
+      myForm.errors.get("dueDate").get(0).message() must
+        beEqualTo("error.invalid.java.util.Date")
     }
-    "have an error due to badly formatted date after using setTransientLang" in new WithApplication(
-      GuiceApplicationBuilder()
-        .configure("play.i18n.langs" -> Seq("en", "en-US", "fr")).build()) {
-      val req = dummyRequest(Map(
-        "id" -> Array("1234567891"),
-        "name" -> Array("peter"),
-        "dueDate" -> Array("2009/11e/11")))
-      Context.current.set(new Context(
-        666,
-        null,
-        req,
-        Map.empty.asJava,
-        Map.empty.asJava,
-        Map.empty.asJava))
+    "have an error due to badly formatted date after using setTransientLang" in
+      new WithApplication(
+        GuiceApplicationBuilder()
+          .configure("play.i18n.langs" -> Seq("en", "en-US", "fr")).build()) {
+        val req = dummyRequest(Map(
+          "id" -> Array("1234567891"),
+          "name" -> Array("peter"),
+          "dueDate" -> Array("2009/11e/11")))
+        Context.current.set(new Context(
+          666,
+          null,
+          req,
+          Map.empty.asJava,
+          Map.empty.asJava,
+          Map.empty.asJava))
 
-      Context.current.get().setTransientLang("fr");
+        Context.current.get().setTransientLang("fr");
 
-      val myForm = formFactory.form(classOf[play.data.models.Task])
-        .bindFromRequest()
-      myForm hasErrors () must beEqualTo(true)
-      myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(3)
-      myForm.errors.get("dueDate").get(0).messages().get(2) must beEqualTo(
-        "error.invalid.dueDate"
-      ) // is ONLY defined in messages.fr
-      myForm.errors.get("dueDate").get(0).messages().get(1) must beEqualTo(
-        "error.invalid.java.util.Date"
-      ) // is defined in play's default messages file
-      myForm.errors.get("dueDate").get(0).messages().get(0) must beEqualTo(
-        "error.invalid"
-      ) // is defined in play's default messages file
-      myForm.errors.get("dueDate").get(0).message() must beEqualTo(
-        "error.invalid.dueDate"
-      ) // is ONLY defined in messages.fr
-    }
-    "have an error due to badly formatted date after using changeLang" in new WithApplication(
-      GuiceApplicationBuilder()
-        .configure("play.i18n.langs" -> Seq("en", "en-US", "fr")).build()) {
-      val req = dummyRequest(Map(
-        "id" -> Array("1234567891"),
-        "name" -> Array("peter"),
-        "dueDate" -> Array("2009/11e/11")))
-      Context.current.set(new Context(
-        666,
-        null,
-        req,
-        Map.empty.asJava,
-        Map.empty.asJava,
-        Map.empty.asJava))
+        val myForm = formFactory.form(classOf[play.data.models.Task])
+          .bindFromRequest()
+        myForm hasErrors () must beEqualTo(true)
+        myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(3)
+        myForm.errors.get("dueDate").get(0).messages().get(2) must
+          beEqualTo("error.invalid.dueDate") // is ONLY defined in messages.fr
+        myForm.errors.get("dueDate").get(0).messages().get(1) must beEqualTo(
+          "error.invalid.java.util.Date"
+        ) // is defined in play's default messages file
+        myForm.errors.get("dueDate").get(0).messages().get(0) must beEqualTo(
+          "error.invalid"
+        ) // is defined in play's default messages file
+        myForm.errors.get("dueDate").get(0).message() must
+          beEqualTo("error.invalid.dueDate") // is ONLY defined in messages.fr
+      }
+    "have an error due to badly formatted date after using changeLang" in
+      new WithApplication(
+        GuiceApplicationBuilder()
+          .configure("play.i18n.langs" -> Seq("en", "en-US", "fr")).build()) {
+        val req = dummyRequest(Map(
+          "id" -> Array("1234567891"),
+          "name" -> Array("peter"),
+          "dueDate" -> Array("2009/11e/11")))
+        Context.current.set(new Context(
+          666,
+          null,
+          req,
+          Map.empty.asJava,
+          Map.empty.asJava,
+          Map.empty.asJava))
 
-      Context.current.get().changeLang("fr");
+        Context.current.get().changeLang("fr");
 
-      val myForm = formFactory.form(classOf[play.data.models.Task])
-        .bindFromRequest()
-      myForm hasErrors () must beEqualTo(true)
-      myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(3)
-      myForm.errors.get("dueDate").get(0).messages().get(2) must beEqualTo(
-        "error.invalid.dueDate"
-      ) // is ONLY defined in messages.fr
-      myForm.errors.get("dueDate").get(0).messages().get(1) must beEqualTo(
-        "error.invalid.java.util.Date"
-      ) // is defined in play's default messages file
-      myForm.errors.get("dueDate").get(0).messages().get(0) must beEqualTo(
-        "error.invalid"
-      ) // is defined in play's default messages file
-      myForm.errors.get("dueDate").get(0).message() must beEqualTo(
-        "error.invalid.dueDate"
-      ) // is ONLY defined in messages.fr
-    }
+        val myForm = formFactory.form(classOf[play.data.models.Task])
+          .bindFromRequest()
+        myForm hasErrors () must beEqualTo(true)
+        myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(3)
+        myForm.errors.get("dueDate").get(0).messages().get(2) must
+          beEqualTo("error.invalid.dueDate") // is ONLY defined in messages.fr
+        myForm.errors.get("dueDate").get(0).messages().get(1) must beEqualTo(
+          "error.invalid.java.util.Date"
+        ) // is defined in play's default messages file
+        myForm.errors.get("dueDate").get(0).messages().get(0) must beEqualTo(
+          "error.invalid"
+        ) // is defined in play's default messages file
+        myForm.errors.get("dueDate").get(0).message() must
+          beEqualTo("error.invalid.dueDate") // is ONLY defined in messages.fr
+      }
     "have an error due to missing required value" in new WithApplication() {
       val req = dummyRequest(
         Map("id" -> Array("1234567891x"), "name" -> Array("peter")))
@@ -173,8 +171,8 @@ object FormSpec extends Specification {
       val myForm = formFactory.form(classOf[play.data.models.Task])
         .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
-      myForm.errors.get("dueDate").get(0).messages().asScala must contain(
-        "error.required")
+      myForm.errors.get("dueDate").get(0).messages().asScala must
+        contain("error.required")
     }
     "have an error due to bad value in Id field" in new WithApplication() {
       val req = dummyRequest(Map(
@@ -192,8 +190,8 @@ object FormSpec extends Specification {
       val myForm = formFactory.form(classOf[play.data.models.Task])
         .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
-      myForm.errors.get("id").get(0).messages().asScala must contain(
-        "error.invalid")
+      myForm.errors.get("id").get(0).messages().asScala must
+        contain("error.invalid")
     }
     "be valid with default date binder" in {
       val req = dummyRequest(Map(
@@ -213,26 +211,27 @@ object FormSpec extends Specification {
         .bindFromRequest()
       myForm hasErrors () must beEqualTo(false)
     }
-    "have an error due to badly formatted date for default date binder" in new WithApplication() {
-      val req = dummyRequest(Map(
-        "id" -> Array("1234567891"),
-        "name" -> Array("peter"),
-        "dueDate" -> Array("15/12/2009"),
-        "endDate" -> Array("2008-11e-21")))
-      Context.current.set(new Context(
-        666,
-        null,
-        req,
-        Map.empty.asJava,
-        Map.empty.asJava,
-        Map.empty.asJava))
+    "have an error due to badly formatted date for default date binder" in
+      new WithApplication() {
+        val req = dummyRequest(Map(
+          "id" -> Array("1234567891"),
+          "name" -> Array("peter"),
+          "dueDate" -> Array("15/12/2009"),
+          "endDate" -> Array("2008-11e-21")))
+        Context.current.set(new Context(
+          666,
+          null,
+          req,
+          Map.empty.asJava,
+          Map.empty.asJava,
+          Map.empty.asJava))
 
-      val myForm = formFactory.form(classOf[play.data.models.Task])
-        .bindFromRequest()
-      myForm hasErrors () must beEqualTo(true)
-      myForm.errors.get("endDate").get(0).messages().asScala must contain(
-        "error.invalid.java.util.Date")
-    }
+        val myForm = formFactory.form(classOf[play.data.models.Task])
+          .bindFromRequest()
+        myForm hasErrors () must beEqualTo(true)
+        myForm.errors.get("endDate").get(0).messages().asScala must
+          contain("error.invalid.java.util.Date")
+      }
 
     "support repeated values for Java binding" in {
 
@@ -248,8 +247,8 @@ object FormSpec extends Specification {
       user2.getName must beEqualTo("Kiki")
       user2.getEmails.size must beEqualTo(1)
 
-      val user3 =
-        formFactory.form(classOf[AnotherUser]).bindFromRequest(dummyRequest(Map(
+      val user3 = formFactory.form(classOf[AnotherUser])
+        .bindFromRequest(dummyRequest(Map(
           "name" -> Array("Kiki"),
           "emails[0]" -> Array("kiki@gmail.com"),
           "emails[1]" -> Array("kiki@zen.com")))).get
@@ -263,8 +262,8 @@ object FormSpec extends Specification {
       user4.getName must beEqualTo("Kiki")
       user4.getEmails.size must beEqualTo(1)
 
-      val user5 =
-        formFactory.form(classOf[AnotherUser]).bindFromRequest(dummyRequest(Map(
+      val user5 = formFactory.form(classOf[AnotherUser])
+        .bindFromRequest(dummyRequest(Map(
           "name" -> Array("Kiki"),
           "emails[]" -> Array("kiki@gmail.com", "kiki@zen.com")))).get
       user5.getName must beEqualTo("Kiki")
@@ -292,8 +291,8 @@ object FormSpec extends Specification {
         .bindFromRequest(dummyRequest(Map("name" -> Array("Kiki")))).get
       user1.getCompany.isPresent must beEqualTo(false)
 
-      val user2 =
-        formFactory.form(classOf[AnotherUser]).bindFromRequest(dummyRequest(
+      val user2 = formFactory.form(classOf[AnotherUser])
+        .bindFromRequest(dummyRequest(
           Map("name" -> Array("Kiki"), "company" -> Array("Acme")))).get
       user2.getCompany.get must beEqualTo("Acme")
     }
@@ -381,13 +380,13 @@ object FormSpec extends Specification {
 
       "render the right number of fields if there's multiple sub fields at a given index when filled from a value" in {
         render(form.fill(new JavaForm(
-          List(new JavaSubForm("somea", "someb")).asJava))) must exactly(
-          "foo[0].a=somea,foo[0].b=someb")
+          List(new JavaSubForm("somea", "someb")).asJava))) must
+          exactly("foo[0].a=somea,foo[0].b=someb")
       }
 
       "render the right number of fields if there's multiple sub fields at a given index when filled from a form" in {
-        render(fillNoBind("somea" -> "someb")) must exactly(
-          "foo[0].a=somea,foo[0].b=someb")
+        render(fillNoBind("somea" -> "someb")) must
+          exactly("foo[0].a=somea,foo[0].b=someb")
       }
 
       "get the order of the fields correct when filled from a value" in {
@@ -404,16 +403,12 @@ object FormSpec extends Specification {
       }
 
       "get the order of the fields correct when filled from a form" in {
-        render(
-          fillNoBind(
-            "a" -> "b",
-            "c" -> "d",
-            "e" -> "f",
-            "g" -> "h")) must exactly(
-          "foo[0].a=a,foo[0].b=b",
-          "foo[1].a=c,foo[1].b=d",
-          "foo[2].a=e,foo[2].b=f",
-          "foo[3].a=g,foo[3].b=h").inOrder
+        render(fillNoBind("a" -> "b", "c" -> "d", "e" -> "f", "g" -> "h")) must
+          exactly(
+            "foo[0].a=a,foo[0].b=b",
+            "foo[1].a=c,foo[1].b=d",
+            "foo[2].a=e,foo[2].b=f",
+            "foo[3].a=g,foo[3].b=h").inOrder
       }
     }
   }

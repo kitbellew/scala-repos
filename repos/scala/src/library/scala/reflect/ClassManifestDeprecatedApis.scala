@@ -36,12 +36,11 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
 
   private def subargs(
       args1: List[OptManifest[_]],
-      args2: List[OptManifest[_]]) =
-    (args1 corresponds args2) {
-      // !!! [Martin] this is wrong, need to take variance into account
-      case (x: ClassManifest[_], y: ClassManifest[_]) => x <:< y
-      case (x, y)                                     => (x eq NoManifest) && (y eq NoManifest)
-    }
+      args2: List[OptManifest[_]]) = (args1 corresponds args2) {
+    // !!! [Martin] this is wrong, need to take variance into account
+    case (x: ClassManifest[_], y: ClassManifest[_]) => x <:< y
+    case (x, y)                                     => (x eq NoManifest) && (y eq NoManifest)
+  }
 
   /** Tests whether the type represented by this manifest is a subtype
     * of the type represented by `that` manifest, subject to the limitations
@@ -54,9 +53,8 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
     // All types which could conform to these types will override <:<.
     def cannotMatch = {
       import Manifest._
-      that.isInstanceOf[AnyValManifest[_]] || (that eq AnyVal) || (
-        that eq Nothing
-      ) || (that eq Null)
+      that.isInstanceOf[AnyValManifest[_]] || (that eq AnyVal) ||
+      (that eq Nothing) || (that eq Null)
     }
 
     // This is wrong, and I don't know how it can be made right
@@ -77,9 +75,8 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
       // this part is wrong for punting unless the rhs has no type
       // arguments, but it's better than a blindfolded pinata swing.
       else
-        that.typeArguments.isEmpty && subtype(
-          this.runtimeClass,
-          that.runtimeClass)
+        that.typeArguments.isEmpty &&
+        subtype(this.runtimeClass, that.runtimeClass)
     }
   }
 
@@ -279,6 +276,5 @@ private class ClassTypeManifest[T](
     extends ClassManifest[T] {
   override def toString =
     (if (prefix.isEmpty) "" else prefix.get.toString + "#") +
-      (if (runtimeClass.isArray) "Array" else runtimeClass.getName) +
-      argString
+      (if (runtimeClass.isArray) "Array" else runtimeClass.getName) + argString
 }

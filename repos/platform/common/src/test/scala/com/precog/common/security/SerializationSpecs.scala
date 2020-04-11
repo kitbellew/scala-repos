@@ -314,8 +314,8 @@ class SerializationSpecs extends Specification {
     }
 
     "Deserialize NewGrantRequest without parentIds" in {
-      (JObject("permissions" -> JArray()))
-        .validated[v1.NewGrantRequest] must beLike { case Success(_) => ok }
+      (JObject("permissions" -> JArray())).validated[v1.NewGrantRequest] must
+        beLike { case Success(_) => ok }
     }
   }
 

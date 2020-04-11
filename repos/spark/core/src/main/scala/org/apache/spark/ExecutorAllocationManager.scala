@@ -280,8 +280,8 @@ private[spark] class ExecutorAllocationManager(
     * and pending tasks, rounded up.
     */
   private def maxNumExecutorsNeeded(): Int = {
-    val numRunningOrPendingTasks = listener.totalPendingTasks + listener
-      .totalRunningTasks
+    val numRunningOrPendingTasks = listener.totalPendingTasks +
+      listener.totalRunningTasks
     (numRunningOrPendingTasks + tasksPerExecutor - 1) / tasksPerExecutor
   }
 
@@ -399,11 +399,10 @@ private[spark] class ExecutorAllocationManager(
       return 0
     }
 
-    val addRequestAcknowledged = testing ||
-      client.requestTotalExecutors(
-        numExecutorsTarget,
-        localityAwareTasks,
-        hostToLocalTaskCount)
+    val addRequestAcknowledged = testing || client.requestTotalExecutors(
+      numExecutorsTarget,
+      localityAwareTasks,
+      hostToLocalTaskCount)
     if (addRequestAcknowledged) {
       val executorsString = "executor" + { if (delta > 1) "s" else "" }
       logInfo(
@@ -442,8 +441,8 @@ private[spark] class ExecutorAllocationManager(
       }
 
       // Do not kill the executor if we have already reached the lower bound
-      val numExistingExecutors = executorIds.size - executorsPendingToRemove
-        .size
+      val numExistingExecutors = executorIds.size -
+        executorsPendingToRemove.size
       if (numExistingExecutors - 1 < minNumExecutors) {
         logDebug(
           s"Not removing idle executor $executorId because there are only " +
@@ -538,8 +537,8 @@ private[spark] class ExecutorAllocationManager(
   private def onExecutorIdle(executorId: String): Unit =
     synchronized {
       if (executorIds.contains(executorId)) {
-        if (!removeTimes.contains(executorId) && !executorsPendingToRemove
-              .contains(executorId)) {
+        if (!removeTimes.contains(executorId) &&
+            !executorsPendingToRemove.contains(executorId)) {
           // Note that it is not necessary to query the executors since all the cached
           // blocks we are concerned with are reported to the driver. Note that this
           // does not include broadcast blocks.

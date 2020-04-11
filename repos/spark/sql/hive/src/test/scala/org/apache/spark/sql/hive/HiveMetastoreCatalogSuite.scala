@@ -62,16 +62,16 @@ class DataSourceWithHiveMetastoreCatalogSuite
     'id cast StringType as 'd2).coalesce(1)
 
   Seq(
-    "parquet" -> (
-      "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
-      "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
-      "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
-    ),
-    "orc" -> (
-      "org.apache.hadoop.hive.ql.io.orc.OrcInputFormat",
-      "org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat",
-      "org.apache.hadoop.hive.ql.io.orc.OrcSerde"
-    )
+    "parquet" ->
+      (
+        "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
+        "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
+        "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"),
+    "orc" ->
+      (
+        "org.apache.hadoop.hive.ql.io.orc.OrcInputFormat",
+        "org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat",
+        "org.apache.hadoop.hive.ql.io.orc.OrcSerde")
   ).foreach {
     case (provider, (inputFormat, outputFormat, serde)) =>
       test(

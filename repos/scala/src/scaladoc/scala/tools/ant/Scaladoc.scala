@@ -643,22 +643,20 @@ class Scaladoc extends ScalaMatchingTask {
       docProcessor.document(sourceFiles.map(_.toString))
       if (reporter.ERROR.count > 0)
         safeBuildError(
-          "Document failed with " +
-            reporter.ERROR.count + " error" +
+          "Document failed with " + reporter.ERROR.count + " error" +
             (if (reporter.ERROR.count > 1) "s" else "") +
             "; see the documenter error output for details.")
       else if (reporter.WARNING.count > 0)
         log(
-          "Document succeeded with " +
-            reporter.WARNING.count + " warning" +
+          "Document succeeded with " + reporter.WARNING.count + " warning" +
             (if (reporter.WARNING.count > 1) "s" else "") +
             "; see the documenter output for details.")
       reporter.printSummary()
     } catch {
       case exception: Throwable =>
         exception.printStackTrace()
-        val msg =
-          Option(exception.getMessage) getOrElse "no error message provided"
+        val msg = Option(exception.getMessage) getOrElse
+          "no error message provided"
         safeBuildError(
           s"Document failed because of an internal documenter error ($msg); see the error output for details.")
     }

@@ -76,8 +76,8 @@ private[spark] class BlockManager(
   val diskBlockManager = {
     // Only perform cleanup if an external service is not serving our shuffle files.
     val deleteFilesOnStop =
-      !externalShuffleServiceEnabled || executorId == SparkContext
-        .DRIVER_IDENTIFIER
+      !externalShuffleServiceEnabled ||
+        executorId == SparkContext.DRIVER_IDENTIFIER
     new DiskBlockManager(conf, deleteFilesOnStop)
   }
 
@@ -224,8 +224,8 @@ private[spark] class BlockManager(
       } catch {
         case e: Exception if i < MAX_ATTEMPTS =>
           logError(
-            s"Failed to connect to external shuffle server, will retry ${MAX_ATTEMPTS - i}"
-              + s" more times after waiting $SLEEP_TIME_SECS seconds...",
+            s"Failed to connect to external shuffle server, will retry ${MAX_ATTEMPTS - i}" +
+              s" more times after waiting $SLEEP_TIME_SECS seconds...",
             e)
           Thread.sleep(SLEEP_TIME_SECS * 1000)
       }
@@ -1078,8 +1078,8 @@ private[spark] class BlockManager(
     peerFetchLock.synchronized {
       val cachedPeersTtl = conf
         .getInt("spark.storage.cachedPeersTtl", 60 * 1000) // milliseconds
-      val timeout = System
-        .currentTimeMillis - lastPeerFetchTime > cachedPeersTtl
+      val timeout = System.currentTimeMillis - lastPeerFetchTime >
+        cachedPeersTtl
       if (cachedPeers == null || forceFetch || timeout) {
         cachedPeers = master.getPeers(blockManagerId).sortBy(_.hashCode)
         lastPeerFetchTime = System.currentTimeMillis

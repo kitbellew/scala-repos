@@ -71,8 +71,8 @@ class DataTypeSuite extends SparkFunSuite {
     intercept[IllegalArgumentException] { struct("e") }
 
     val expectedStruct = StructType(
-      StructField("b", LongType, false) ::
-        StructField("d", FloatType, true) :: Nil)
+      StructField("b", LongType, false) :: StructField("d", FloatType, true) ::
+        Nil)
 
     assert(expectedStruct === struct(Set("b", "d")))
     intercept[IllegalArgumentException] { struct(Set("b", "d", "e", "f")) }
@@ -80,8 +80,7 @@ class DataTypeSuite extends SparkFunSuite {
 
   test("extract field index from a StructType") {
     val struct = StructType(
-      StructField("a", LongType) ::
-        StructField("b", FloatType) :: Nil)
+      StructField("a", LongType) :: StructField("b", FloatType) :: Nil)
 
     assert(struct.fieldIndex("a") === 0)
     assert(struct.fieldIndex("b") === 1)
@@ -91,8 +90,7 @@ class DataTypeSuite extends SparkFunSuite {
 
   test("fieldsMap returns map of name to StructField") {
     val struct = StructType(
-      StructField("a", LongType) ::
-        StructField("b", FloatType) :: Nil)
+      StructField("a", LongType) :: StructField("b", FloatType) :: Nil)
 
     val mapped = StructType.fieldsMap(struct.fields)
 
@@ -105,8 +103,7 @@ class DataTypeSuite extends SparkFunSuite {
 
   test("merge where right is empty") {
     val left = StructType(
-      StructField("a", LongType) ::
-        StructField("b", FloatType) :: Nil)
+      StructField("a", LongType) :: StructField("b", FloatType) :: Nil)
 
     val right = StructType(List())
     val merged = left.merge(right)
@@ -123,8 +120,7 @@ class DataTypeSuite extends SparkFunSuite {
     val left = StructType(List())
 
     val right = StructType(
-      StructField("a", LongType) ::
-        StructField("b", FloatType) :: Nil)
+      StructField("a", LongType) :: StructField("b", FloatType) :: Nil)
 
     val merged = left.merge(right)
 
@@ -137,14 +133,12 @@ class DataTypeSuite extends SparkFunSuite {
 
   test("merge where both are non-empty") {
     val left = StructType(
-      StructField("a", LongType) ::
-        StructField("b", FloatType) :: Nil)
+      StructField("a", LongType) :: StructField("b", FloatType) :: Nil)
 
     val right = StructType(StructField("c", LongType) :: Nil)
 
     val expected = StructType(
-      StructField("a", LongType) ::
-        StructField("b", FloatType) ::
+      StructField("a", LongType) :: StructField("b", FloatType) ::
         StructField("c", LongType) :: Nil)
 
     val merged = left.merge(right)
@@ -160,8 +154,7 @@ class DataTypeSuite extends SparkFunSuite {
 
   test("merge where right contains type conflict") {
     val left = StructType(
-      StructField("a", LongType) ::
-        StructField("b", FloatType) :: Nil)
+      StructField("a", LongType) :: StructField("b", FloatType) :: Nil)
 
     val right = StructType(StructField("b", LongType) :: Nil)
 
@@ -170,8 +163,7 @@ class DataTypeSuite extends SparkFunSuite {
 
   test("existsRecursively") {
     val struct = StructType(
-      StructField("a", LongType) ::
-        StructField("b", FloatType) :: Nil)
+      StructField("a", LongType) :: StructField("b", FloatType) :: Nil)
     assert(struct.existsRecursively(_.isInstanceOf[LongType]))
     assert(struct.existsRecursively(_.isInstanceOf[StructType]))
     assert(!struct.existsRecursively(_.isInstanceOf[IntegerType]))

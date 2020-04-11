@@ -147,16 +147,16 @@ private[akka] class Mailboxes(
 
     val mailboxRequirement: Class[_] = getMailboxRequirement(dispatcherConfig)
 
-    val hasMailboxRequirement: Boolean =
-      mailboxRequirement != classOf[MessageQueue]
+    val hasMailboxRequirement: Boolean = mailboxRequirement !=
+      classOf[MessageQueue]
 
     val hasMailboxType =
       dispatcherConfig.hasPath("mailbox-type") &&
         dispatcherConfig.getString("mailbox-type") != Deploy.NoMailboxGiven
 
     // TODO remove in 2.3
-    if (!hasMailboxType && !mailboxSizeWarningIssued && dispatcherConfig
-          .hasPath("mailbox-size")) {
+    if (!hasMailboxType && !mailboxSizeWarningIssued &&
+        dispatcherConfig.hasPath("mailbox-size")) {
       eventStream.publish(Warning(
         "mailboxes",
         getClass,
@@ -170,8 +170,8 @@ private[akka] class Mailboxes(
         throw new IllegalArgumentException(
           s"produced message queue type [$mqType] does not fulfill requirement for dispatcher [$id]. " +
             s"Must be a subclass of [$mailboxRequirement].")
-      if (hasRequiredType(actorClass) && !actorRequirement
-            .isAssignableFrom(mqType))
+      if (hasRequiredType(actorClass) &&
+          !actorRequirement.isAssignableFrom(mqType))
         throw new IllegalArgumentException(
           s"produced message queue type [$mqType] does not fulfill requirement for actor class [$actorClass]. " +
             s"Must be a subclass of [$actorRequirement].")
@@ -180,8 +180,8 @@ private[akka] class Mailboxes(
 
     if (deploy.mailbox != Deploy.NoMailboxGiven) {
       verifyRequirements(lookup(deploy.mailbox))
-    } else if (deploy.dispatcher != Deploy
-                 .NoDispatcherGiven && hasMailboxType) {
+    } else if (deploy.dispatcher != Deploy.NoDispatcherGiven &&
+               hasMailboxType) {
       verifyRequirements(lookup(dispatcherConfig.getString("id")))
     } else if (hasRequiredType(actorClass)) {
       try verifyRequirements(lookupByQueueType(getRequiredType(actorClass)))
@@ -299,8 +299,8 @@ private[akka] class Mailboxes(
       updateCache(stashCapacityCache.get, key, value) // recursive, try again
     }
 
-    if (dispatcher == Dispatchers.DefaultDispatcherId && mailbox == Mailboxes
-          .DefaultMailboxId) defaultStashCapacity
+    if (dispatcher == Dispatchers.DefaultDispatcherId &&
+        mailbox == Mailboxes.DefaultMailboxId) defaultStashCapacity
     else {
       val cache = stashCapacityCache.get
       val key = dispatcher + "-" + mailbox

@@ -50,12 +50,12 @@ object Message {
   val ValueSizeLength = 4
 
   private val MessageHeaderSizeMap = Map(
-    (0: Byte) -> (
-      CrcLength + MagicLength + AttributesLength + KeySizeLength + ValueSizeLength
-    ),
-    (1: Byte) -> (
-      CrcLength + MagicLength + AttributesLength + TimestampLength + KeySizeLength + ValueSizeLength
-    )
+    (0: Byte) ->
+      (CrcLength + MagicLength + AttributesLength + KeySizeLength +
+        ValueSizeLength),
+    (1: Byte) ->
+      (CrcLength + MagicLength + AttributesLength + TimestampLength +
+        KeySizeLength + ValueSizeLength)
   )
 
   /**
@@ -161,14 +161,10 @@ class Message(
       payloadSize: Int,
       magicValue: Byte) = {
     this(ByteBuffer.allocate(
-      Message.CrcLength +
-        Message.MagicLength +
-        Message.AttributesLength +
+      Message.CrcLength + Message.MagicLength + Message.AttributesLength +
         (if (magicValue == Message.MagicValue_V0) 0
-         else Message.TimestampLength) +
-        Message.KeySizeLength +
-        (if (key == null) 0 else key.length) +
-        Message.ValueSizeLength +
+         else Message.TimestampLength) + Message.KeySizeLength +
+        (if (key == null) 0 else key.length) + Message.ValueSizeLength +
         (if (bytes == null) 0
          else if (payloadSize >= 0) payloadSize
          else bytes.length - payloadOffset)))
@@ -345,9 +341,9 @@ class Message(
   def timestamp: Long = {
     if (magic == MagicValue_V0) Message.NoTimestamp
     // Case 2
-    else if (wrapperMessageTimestampType.exists(
-               _ == TimestampType.LOG_APPEND_TIME) && wrapperMessageTimestamp
-               .isDefined) wrapperMessageTimestamp.get
+    else if (wrapperMessageTimestampType
+               .exists(_ == TimestampType.LOG_APPEND_TIME) &&
+             wrapperMessageTimestamp.isDefined) wrapperMessageTimestamp.get
     else // case 1, 3
       buffer.getLong(Message.TimestampOffset)
   }

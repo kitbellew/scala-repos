@@ -107,16 +107,13 @@ class EngineManifestSerializer
             JObject(
               JField("id", JString(enginemanifest.id)) ::
                 JField("version", JString(enginemanifest.version)) ::
-                JField("name", JString(enginemanifest.name)) ::
-                JField(
+                JField("name", JString(enginemanifest.name)) :: JField(
                   "description",
                   enginemanifest.description.map(x => JString(x))
-                    .getOrElse(JNothing)) ::
-                JField(
+                    .getOrElse(JNothing)) :: JField(
                   "files",
                   JArray(enginemanifest.files.map(x => JString(x)).toList)) ::
                 JField(
                   "engineFactory",
-                  JString(enginemanifest.engineFactory)) ::
-                Nil)
+                  JString(enginemanifest.engineFactory)) :: Nil)
         }))

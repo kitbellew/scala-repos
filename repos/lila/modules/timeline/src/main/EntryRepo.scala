@@ -25,13 +25,12 @@ private[timeline] final class EntryRepo(coll: Coll, userMax: Int) {
       .cursor[Entry]().collect[List]()
 
   def channelUserIdRecentExists(channel: String, userId: String): Fu[Boolean] =
-    coll
-      .count(
-        BSONDocument(
-          "users" -> userId,
-          "chan" -> channel,
-          "date" -> BSONDocument("$gt" -> DateTime.now.minusDays(7)))
-          .some) map (0 !=)
+    coll.count(
+      BSONDocument(
+        "users" -> userId,
+        "chan" -> channel,
+        "date" -> BSONDocument("$gt" -> DateTime.now.minusDays(7))).some) map
+      (0 !=)
 
   def insert(entry: Entry) = coll insert entry void
 }

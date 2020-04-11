@@ -86,8 +86,8 @@ private[mllib] class GridPartitioner(
     obj match {
       case r: GridPartitioner =>
         (this.rows == r.rows) && (this.cols == r.cols) &&
-          (this.rowsPerPart == r.rowsPerPart) && (this.colsPerPart == r
-          .colsPerPart)
+          (this.rowsPerPart == r.rowsPerPart) &&
+          (this.colsPerPart == r.colsPerPart)
       case _ => false
     }
   }
@@ -244,17 +244,15 @@ class BlockMatrix @Since("1.3.0") (
     blockInfo.foreach {
       case ((blockRowIndex, blockColIndex), (m, n)) =>
         if ((blockRowIndex < numRowBlocks - 1 && m != rowsPerBlock) ||
-            (
-              blockRowIndex == numRowBlocks - 1 && (m <= 0 || m > rowsPerBlock)
-            )) {
+            (blockRowIndex == numRowBlocks - 1 &&
+            (m <= 0 || m > rowsPerBlock))) {
           throw new SparkException(
             s"The MatrixBlock at ($blockRowIndex, $blockColIndex) has " +
               dimensionMsg)
         }
         if ((blockColIndex < numColBlocks - 1 && n != colsPerBlock) ||
-            (
-              blockColIndex == numColBlocks - 1 && (n <= 0 || n > colsPerBlock)
-            )) {
+            (blockColIndex == numColBlocks - 1 &&
+            (n <= 0 || n > colsPerBlock))) {
           throw new SparkException(
             s"The MatrixBlock at ($blockRowIndex, $blockColIndex) has " +
               dimensionMsg)
@@ -383,8 +381,8 @@ class BlockMatrix @Since("1.3.0") (
       numCols() == other.numCols(),
       "Both matrices must have the same number of columns. " +
         s"A.numCols: ${numCols()}, B.numCols: ${other.numCols()}")
-    if (rowsPerBlock == other.rowsPerBlock && colsPerBlock == other
-          .colsPerBlock) {
+    if (rowsPerBlock == other.rowsPerBlock &&
+        colsPerBlock == other.colsPerBlock) {
       val newBlocks = blocks.cogroup(other.blocks, createPartitioner()).map {
         case ((blockRowIndex, blockColIndex), (a, b)) =>
           if (a.size > 1 || b.size > 1) {

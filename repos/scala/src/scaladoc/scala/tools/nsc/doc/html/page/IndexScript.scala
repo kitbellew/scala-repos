@@ -71,8 +71,8 @@ class IndexScript(universe: doc.Universe) extends Page {
     Map(allPackages.map((key) => {
       key -> key.templates.collect {
         case t: DocTemplateEntity
-            if !t.isPackage && !universe.settings.hardcoded
-              .isExcluded(t.qualifiedName) => t
+            if !t.isPackage &&
+              !universe.settings.hardcoded.isExcluded(t.qualifiedName) => t
       }
     }): _*)
   }

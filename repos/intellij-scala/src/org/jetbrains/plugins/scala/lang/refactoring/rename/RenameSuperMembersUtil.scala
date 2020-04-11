@@ -163,8 +163,8 @@ object RenameSuperMembersUtil {
         }
 
         override def getContainerText(clazz: PsiClass, name: String): String = {
-          if (clazz == renameAllMarkerObject || clazz == classes
-                .last || oneSuperClass) null //don't show package name
+          if (clazz == renameAllMarkerObject || clazz == classes.last ||
+              oneSuperClass) null //don't show package name
           else super.getContainerText(clazz, name)
         }
       },

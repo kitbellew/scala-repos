@@ -100,11 +100,12 @@ class MainTest extends AsyncTest[JdbcTestDB] {
         val ordersInserts =
           for (u <- allUsers if u.first != "Apu" && u.first != "Snowball";
                i <- 1 to 2)
-            yield orders
-              .map(o => (o.userID, o.product, o.shipped, o.rebate)) += (
-              u.id, "Gizmo " + ((scala.math.random * 10) + 1)
-                .toInt, i == 2, Some(u.first == "Marge")
-            )
+            yield orders.map(o => (o.userID, o.product, o.shipped, o.rebate)) +=
+              (
+                u.id,
+                "Gizmo " + ((scala.math.random * 10) + 1).toInt,
+                i == 2,
+                Some(u.first == "Marge"))
         db.run(seq(ordersInserts: _*))
       }.flatMap { _ =>
         val q3 =
@@ -117,9 +118,9 @@ class MainTest extends AsyncTest[JdbcTestDB] {
       }.flatMap { _ =>
         val q4 = for {
           u <- users
-          o <- u.orders if (o.orderID === (for {
-            o2 <- orders filter (o.userID === _.userID)
-          } yield o2.orderID).max)
+          o <- u.orders if (o.orderID ===
+            (for { o2 <- orders filter (o.userID === _.userID) } yield o2
+              .orderID).max)
         } yield (u.first, o.orderID)
         q4.result.statements.toSeq.length.should(_ >= 1)
 
@@ -193,9 +194,9 @@ class MainTest extends AsyncTest[JdbcTestDB] {
 
         db.run(for {
           r5 <- q5.to[Set].result.named("Users without Orders")
-          _ = r5 shouldBe Set(
-            (3, "Apu", Some("Nahasapeemapetilon")),
-            (7, "Snowball", None))
+          _ =
+            r5 shouldBe
+              Set((3, "Apu", Some("Nahasapeemapetilon")), (7, "Snowball", None))
           deleted <- q5.delete
           _ = deleted shouldBe 2
           _ <- q6.result.head.map(_ shouldBe 0)

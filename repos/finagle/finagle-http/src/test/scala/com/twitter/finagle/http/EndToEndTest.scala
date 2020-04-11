@@ -59,15 +59,14 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
     * Read `n` number of bytes from the bytestream represented by `r`.
     */
   def readNBytes(n: Int, r: Reader): Future[Buf] = {
-    def loop(left: Buf): Future[Buf] =
-      (n - left.length) match {
-        case x if x > 0 =>
-          r.read(x) flatMap {
-            case Some(right) => loop(left concat right)
-            case None        => Future.value(left)
-          }
-        case _ => Future.value(left)
-      }
+    def loop(left: Buf): Future[Buf] = (n - left.length) match {
+      case x if x > 0 =>
+        r.read(x) flatMap {
+          case Some(right) => loop(left concat right)
+          case None        => Future.value(left)
+        }
+      case _ => Future.value(left)
+    }
 
     loop(Buf.Empty)
   }
@@ -306,8 +305,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
             val response = Response()
             response.setChunked(true)
             response.writer.write(buf("hello")) before
-              response.writer.write(buf("world")) before
-              response.close()
+              response.writer.write(buf("world")) before response.close()
             Future.value(response)
           }
         }
@@ -628,17 +626,11 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
 
       assert(st.counters(Seq(clientName, "failure_accrual", "removals")) == 1)
       assert(
-        st.counters(
-            Seq(
-              clientName,
-              "retries",
-              "requeues")) == failureAccrualFailures - 1)
+        st.counters(Seq(clientName, "retries", "requeues")) ==
+          failureAccrualFailures - 1)
       assert(
-        st.counters(
-            Seq(
-              clientName,
-              "failures",
-              "restartable")) == failureAccrualFailures)
+        st.counters(Seq(clientName, "failures", "restartable")) ==
+          failureAccrualFailures)
       client.close()
     }
   }
@@ -662,10 +654,9 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
 
   status("Client/Server") { (service, st, name) =>
     val server = finagle.Http.serve(new InetSocketAddress(0), service)
-    val client = finagle.Http.client.configured(Stats(st))
-      .configured(FailureAccrualFactory.Param(
-        failureAccrualFailures,
-        () => 1.minute)).newService(
+    val client = finagle.Http.client.configured(Stats(st)).configured(
+      FailureAccrualFactory.Param(failureAccrualFailures, () => 1.minute))
+      .newService(
         Name
           .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         name)

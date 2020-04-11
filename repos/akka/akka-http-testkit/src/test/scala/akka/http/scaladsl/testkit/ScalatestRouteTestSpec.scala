@@ -36,9 +36,8 @@ class ScalatestRouteTestSpec
         respondWithHeader(pinkHeader) { complete("abc") }
       } ~> check {
         status shouldEqual OK
-        responseEntity shouldEqual HttpEntity(
-          ContentTypes.`text/plain(UTF-8)`,
-          "abc")
+        responseEntity shouldEqual
+          HttpEntity(ContentTypes.`text/plain(UTF-8)`, "abc")
         header("Fancy") shouldEqual Some(pinkHeader)
       }
     }
@@ -70,9 +69,8 @@ class ScalatestRouteTestSpec
 
       check {
         status shouldEqual OK
-        responseEntity shouldEqual HttpEntity(
-          ContentTypes.`text/plain(UTF-8)`,
-          "abc")
+        responseEntity shouldEqual
+          HttpEntity(ContentTypes.`text/plain(UTF-8)`, "abc")
         header("Fancy") shouldEqual Some(pinkHeader)
       }(result)
     }

@@ -98,8 +98,8 @@ sealed abstract class Tree[A] {
     val f = (s: Stream[Tree[A]]) => {
       Foldable[Stream].foldMap(s)((_: Tree[A]).subForest)
     }
-    Stream.iterate(Stream(this))(f) takeWhile (!_.isEmpty) map (_ map (_
-      .rootLabel))
+    Stream.iterate(Stream(this))(f) takeWhile (!_.isEmpty) map
+      (_ map (_.rootLabel))
   }
 
   /** Binds the given function across all the subtrees of this tree. */
@@ -263,6 +263,6 @@ object Tree extends TreeInstances {
 private trait TreeEqual[A] extends Equal[Tree[A]] {
   def A: Equal[A]
   override final def equal(a1: Tree[A], a2: Tree[A]) =
-    A.equal(a1.rootLabel, a2.rootLabel) && a1.subForest
-      .corresponds(a2.subForest)(equal _)
+    A.equal(a1.rootLabel, a2.rootLabel) &&
+      a1.subForest.corresponds(a2.subForest)(equal _)
 }

@@ -98,9 +98,8 @@ class UnionTests {
     type iiss = FieldType[i, Int] :+: FieldType[s, String] :+: CNil
     typed[iiss](Coproduct[Union.`'i -> Int, 's -> String`.T]('s ->> "foo"))
 
-    type iissbb = FieldType[i, Int] :+: FieldType[s, String] :+: FieldType[
-      b,
-      Boolean] :+: CNil
+    type iissbb = FieldType[i, Int] :+: FieldType[s, String] :+:
+      FieldType[b, Boolean] :+: CNil
     typed[iissbb](
       Coproduct[Union.`'i -> Int, 's -> String, 'b -> Boolean`.T]('b ->> true))
 
@@ -220,9 +219,8 @@ class UnionTests {
     val u2 = Union[U](s = "foo")
     val u3 = Union[U](b = true)
 
-    type UF = (Witness.`'i`.T, Int) :+: (Witness.`'s`.T, String) :+: (
-        Witness.`'b`.T,
-        Boolean) :+: CNil
+    type UF = (Witness.`'i`.T, Int) :+: (Witness.`'s`.T, String) :+:
+      (Witness.`'b`.T, Boolean) :+: CNil
 
     {
       val f1 = u1.fields
@@ -240,9 +238,9 @@ class UnionTests {
     val us2 = Coproduct[US]("second" ->> Option(true))
     val us3 = Coproduct[US]("third" ->> Option.empty[String])
 
-    type USF = (Witness.`"first"`.T, Option[Int]) :+: (
-        Witness.`"second"`.T,
-        Option[Boolean]) :+: (Witness.`"third"`.T, Option[String]) :+: CNil
+    type USF = (Witness.`"first"`.T, Option[Int]) :+:
+      (Witness.`"second"`.T, Option[Boolean]) :+:
+      (Witness.`"third"`.T, Option[String]) :+: CNil
 
     {
       val f1 = us1.fields
@@ -361,10 +359,8 @@ class UnionTests {
 
   @Test
   def testAltSyntax: Unit = {
-    type U0 = Witness.`"foo"`.->>[String] :+:
-      Witness.`"bar"`.->>[Boolean] :+:
-      Witness.`"baz"`.->>[Double] :+:
-      CNil
+    type U0 = Witness.`"foo"`.->>[String] :+: Witness.`"bar"`.->>[Boolean] :+:
+      Witness.`"baz"`.->>[Double] :+: CNil
 
     type U = Union.`"foo" -> String, "bar" -> Boolean, "baz" -> Double`.T
 

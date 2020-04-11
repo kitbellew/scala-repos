@@ -127,8 +127,8 @@ class RFormula(override val uid: String)
     }
 
     // First we index each string column referenced by the input terms.
-    val indexed: Map[String, String] =
-      resolvedFormula.terms.flatten.distinct.map { term =>
+    val indexed: Map[String, String] = resolvedFormula.terms.flatten.distinct
+      .map { term =>
         dataset.schema(term) match {
           case column if column.dataType == StringType =>
             val indexCol = tmpColumn("stridx")
@@ -158,9 +158,8 @@ class RFormula(override val uid: String)
 
     encoderStages += new VectorAssembler(uid).setInputCols(encodedTerms.toArray)
       .setOutputCol($(featuresCol))
-    encoderStages += new VectorAttributeRewriter(
-      $(featuresCol),
-      prefixesToRewrite.toMap)
+    encoderStages +=
+      new VectorAttributeRewriter($(featuresCol), prefixesToRewrite.toMap)
     encoderStages += new ColumnPruner(tempColumns.toSet)
 
     if (dataset.schema.fieldNames.contains(resolvedFormula.label) &&

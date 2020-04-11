@@ -740,9 +740,8 @@ trait DenseVector_SpecialOps extends DenseVectorOps {
       Float], DenseVector[Float], Float] {
       def apply(a: DenseVector[Float], b: DenseVector[Float]) = {
         require(a.length == b.length, s"Vectors must have same length")
-        if (a.noOffsetOrStride && b.noOffsetOrStride && a
-              .length < DenseVectorSupportMethods
-              .MAX_SMALL_DOT_PRODUCT_LENGTH) {
+        if (a.noOffsetOrStride && b.noOffsetOrStride &&
+            a.length < DenseVectorSupportMethods.MAX_SMALL_DOT_PRODUCT_LENGTH) {
           DenseVectorSupportMethods
             .smallDotProduct_Float(a.data, b.data, a.length)
         } else { blasPath(a, b) }
@@ -753,8 +752,8 @@ trait DenseVector_SpecialOps extends DenseVectorOps {
       private def blasPath(
           a: DenseVector[Float],
           b: DenseVector[Float]): Float = {
-        if ((a.length <= 300 || !usingNatives) && a.stride == 1 && b
-              .stride == 1) {
+        if ((a.length <= 300 || !usingNatives) && a.stride == 1 &&
+            b.stride == 1) {
           DenseVectorSupportMethods
             .dotProduct_Float(a.data, a.offset, b.data, b.offset, a.length)
         } else {

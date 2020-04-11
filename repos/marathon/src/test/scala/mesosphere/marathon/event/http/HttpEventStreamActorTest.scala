@@ -38,8 +38,8 @@ class HttpEventStreamActorTest
 
     Then("An actor is created and subscribed to the event stream")
     streamActor.underlyingActor.streamHandleActors should have size 1
-    streamActor.underlyingActor.streamHandleActors.get(handle) should be(
-      'nonEmpty)
+    streamActor.underlyingActor.streamHandleActors.get(handle) should
+      be('nonEmpty)
   }
 
   test("Unregister handlers when switching to standby mode") {

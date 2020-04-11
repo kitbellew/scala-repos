@@ -37,8 +37,8 @@ class ExtendsFilter extends ElementFilter {
           else {
             if (leaf.getNextSibling != null &&
                 leaf.getNextSibling.getNextSibling != null &&
-                leaf.getNextSibling.getNextSibling.getNode
-                  .getElementType == ScalaTokenTypes.kEXTENDS) return false
+                leaf.getNextSibling.getNextSibling.getNode.getElementType ==
+                  ScalaTokenTypes.kEXTENDS) return false
             else return true
           }
         case _ => return false
@@ -54,7 +54,8 @@ class ExtendsFilter extends ElementFilter {
 
   private def getPrevSiblingNotWhitespace(element: PsiElement): PsiElement = {
     var prev = element.getPrevSibling
-    while (prev != null && (prev.isInstanceOf[PsiWhiteSpace] ||
+    while (prev != null &&
+           (prev.isInstanceOf[PsiWhiteSpace] ||
            prev.getNode.getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE))
       prev = prev.getPrevSibling
     prev

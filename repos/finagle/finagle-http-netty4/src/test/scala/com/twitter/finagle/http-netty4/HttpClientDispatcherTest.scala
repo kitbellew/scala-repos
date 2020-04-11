@@ -76,8 +76,7 @@ class HttpClientDispatcherTest extends FunSuite {
 
   def respEquiv(fin: Response, netty: NettyHttp.HttpResponse): Boolean = {
     val convert = Bijections.netty.responseToFinagle(netty)
-    convert.status == fin.status &&
-    convert.headerMap == fin.headerMap &&
+    convert.status == fin.status && convert.headerMap == fin.headerMap &&
     convert.content == fin.content
   }
 

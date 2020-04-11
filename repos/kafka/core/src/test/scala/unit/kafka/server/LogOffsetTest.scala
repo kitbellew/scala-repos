@@ -74,9 +74,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
   def testGetOffsetsForUnknownTopic() {
     val topicAndPartition = TopicAndPartition("foo", 0)
     val request = OffsetRequest(Map(
-      topicAndPartition -> PartitionOffsetRequestInfo(
-        OffsetRequest.LatestTime,
-        10)))
+      topicAndPartition ->
+        PartitionOffsetRequestInfo(OffsetRequest.LatestTime, 10)))
     val offsetResponse = simpleConsumer.getOffsetsBefore(request)
     assertEquals(
       Errors.UNKNOWN_TOPIC_OR_PARTITION.code,
@@ -116,9 +115,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     val topicAndPartition = TopicAndPartition(topic, part)
     val offsetRequest = OffsetRequest(
       Map(
-        topicAndPartition -> PartitionOffsetRequestInfo(
-          OffsetRequest.LatestTime,
-          15)),
+        topicAndPartition ->
+          PartitionOffsetRequestInfo(OffsetRequest.LatestTime, 15)),
       replicaId = 0)
     val consumerOffsets = simpleConsumer.getOffsetsBefore(offsetRequest)
       .partitionErrorAndOffsets(topicAndPartition).offsets
@@ -154,9 +152,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     for (i <- 1 to 14) {
       val topicAndPartition = TopicAndPartition(topic, 0)
       val offsetRequest = OffsetRequest(Map(
-        topicAndPartition -> PartitionOffsetRequestInfo(
-          OffsetRequest.EarliestTime,
-          1)))
+        topicAndPartition ->
+          PartitionOffsetRequestInfo(OffsetRequest.EarliestTime, 1)))
       val consumerOffsets = simpleConsumer.getOffsetsBefore(offsetRequest)
         .partitionErrorAndOffsets(topicAndPartition).offsets
 
@@ -182,8 +179,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
       log.append(new ByteBufferMessageSet(NoCompressionCodec, message))
     log.flush()
 
-    val now = time
-      .milliseconds + 30000 // pretend it is the future to avoid race conditions with the fs
+    val now = time.milliseconds +
+      30000 // pretend it is the future to avoid race conditions with the fs
 
     val offsets = server.apis
       .fetchOffsets(logManager, new TopicPartition(topic, part), now, 15)
@@ -233,9 +230,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
       "Leader should be elected")
     val topicAndPartition = TopicAndPartition(topic, part)
     val offsetRequest = OffsetRequest(Map(
-      topicAndPartition -> PartitionOffsetRequestInfo(
-        OffsetRequest.EarliestTime,
-        10)))
+      topicAndPartition ->
+        PartitionOffsetRequestInfo(OffsetRequest.EarliestTime, 10)))
     val consumerOffsets = simpleConsumer.getOffsetsBefore(offsetRequest)
       .partitionErrorAndOffsets(topicAndPartition).offsets
     assertEquals(Seq(0L), consumerOffsets)

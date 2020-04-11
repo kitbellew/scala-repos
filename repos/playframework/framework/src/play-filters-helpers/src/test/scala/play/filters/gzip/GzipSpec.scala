@@ -29,8 +29,8 @@ object GzipSpec extends Specification {
       val valuesBytes = values.map(_.getBytes("utf-8"))
 
       val result: Array[Byte] = Await.result(
-        Enumerator.enumerate(valuesBytes) &> Gzip.gzip() |>>> Iteratee
-          .consume[Array[Byte]](),
+        Enumerator.enumerate(valuesBytes) &> Gzip.gzip() |>>>
+          Iteratee.consume[Array[Byte]](),
         Duration.Inf)
 
       // Check that it exactly matches the gzip output stream

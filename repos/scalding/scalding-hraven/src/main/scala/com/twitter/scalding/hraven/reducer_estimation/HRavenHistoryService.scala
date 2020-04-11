@@ -111,7 +111,8 @@ object HRavenHistoryService extends HistoryService {
           .take(max)
         if (successfulFlows.isEmpty) {
           LOG.warn(
-            "Unable to find any successful flows in the last " + nFetch + " jobs.")
+            "Unable to find any successful flows in the last " + nFetch +
+              " jobs.")
         }
         successfulFlows
       }

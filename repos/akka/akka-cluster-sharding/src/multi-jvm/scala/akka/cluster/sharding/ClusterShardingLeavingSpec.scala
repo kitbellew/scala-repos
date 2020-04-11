@@ -146,8 +146,8 @@ abstract class ClusterShardingLeavingSpec(
       startSharding()
       within(15.seconds) {
         awaitAssert(cluster.state.members.exists { m ⇒
-          m.uniqueAddress == cluster.selfUniqueAddress && m
-            .status == MemberStatus.Up
+          m.uniqueAddress == cluster.selfUniqueAddress &&
+          m.status == MemberStatus.Up
         } should be(true))
       }
     }
@@ -213,9 +213,8 @@ abstract class ClusterShardingLeavingSpec(
       enterBarrier("stopped")
 
       runOn(second, third, fourth) {
-        system
-          .actorSelection(
-            node(first) / "user" / "shardLocations") ! GetLocations
+        system.actorSelection(node(first) / "user" / "shardLocations") !
+          GetLocations
         val Locations(locations) = expectMsgType[Locations]
         val firstAddress = node(first).address
         awaitAssert {

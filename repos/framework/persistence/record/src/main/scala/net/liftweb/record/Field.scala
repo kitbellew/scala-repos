@@ -407,8 +407,8 @@ trait MandatoryTypedField[ThisType]
       case Full(null) | null => "null"
       case Full(v)           => v.toString
       case _ =>
-        defaultValueBox
-          .map(v => if (v != null) v.toString else "null") openOr ""
+        defaultValueBox.map(v => if (v != null) v.toString else "null") openOr
+          ""
     }
 }
 
@@ -460,8 +460,8 @@ trait OptionalTypedField[ThisType]
       case Full(null) | null => "null"
       case Full(v)           => v.toString
       case _ =>
-        defaultValueBox
-          .map(v => if (v != null) v.toString else "null") openOr ""
+        defaultValueBox.map(v => if (v != null) v.toString else "null") openOr
+          ""
     }
 
 }
@@ -513,8 +513,8 @@ trait KeyField[
 object FieldHelpers {
   def expectedA(what: String, notA: AnyRef): Failure =
     Failure(
-      "Expected a " + what + ", not a " + (if (notA == null) "null"
-                                           else notA.getClass.getName))
+      "Expected a " + what + ", not a " +
+        (if (notA == null) "null" else notA.getClass.getName))
 }
 
 trait LifecycleCallbacks {

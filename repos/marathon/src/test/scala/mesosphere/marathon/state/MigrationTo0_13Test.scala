@@ -83,8 +83,8 @@ class MigrationTo0_13Test
     When("we add another task in old format")
     val task2 = MarathonTestHelper.dummyTaskProto(appId)
     f.legacyTaskStore.store(appId, task2).futureValue
-    f.entityStore.names().futureValue should contain(
-      appId.safePath + ":" + task2.getId)
+    f.entityStore.names().futureValue should
+      contain(appId.safePath + ":" + task2.getId)
 
     And("we run the migration again")
     f.migration.migrateTasks().futureValue

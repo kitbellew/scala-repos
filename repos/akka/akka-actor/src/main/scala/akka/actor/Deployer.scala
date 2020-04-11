@@ -209,8 +209,8 @@ private[akka] class Deployer(
     else {
       // need this for backwards compatibility, resizer enabled when including (parts of) resizer section in the deployment
       val deployment2 =
-        if (config.hasPath("resizer") && !deployment
-              .getBoolean("resizer.enabled"))
+        if (config.hasPath("resizer") &&
+            !deployment.getBoolean("resizer.enabled"))
           resizerEnabled.withFallback(deployment)
         else deployment
 

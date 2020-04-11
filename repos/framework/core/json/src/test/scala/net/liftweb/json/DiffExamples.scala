@@ -53,8 +53,7 @@ object DiffExamples extends Specification {
 
   "Lotto example" in {
     val Diff(changed, added, deleted) = mergedLottoResult diff lotto1
-    (changed mustEqual JNothing) and
-      (added mustEqual JNothing) and
+    (changed mustEqual JNothing) and (added mustEqual JNothing) and
       (deleted mustEqual lotto2)
   }
 
@@ -65,10 +64,8 @@ object DiffExamples extends Specification {
     val expectedAdditions = read("/diff-example-expected-additions.json")
     val expectedDeletions = read("/diff-example-expected-deletions.json")
 
-    json1 diff json2 mustEqual Diff(
-      expectedChanges,
-      expectedAdditions,
-      expectedDeletions)
+    json1 diff json2 mustEqual
+      Diff(expectedChanges, expectedAdditions, expectedDeletions)
   }
 
   private def read(resource: String) =

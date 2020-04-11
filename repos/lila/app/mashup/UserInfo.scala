@@ -71,24 +71,18 @@ object UserInfo {
       insightShare: lila.insight.Share)(
       user: User,
       ctx: Context): Fu[UserInfo] =
-    countUsers() zip
-      getRanks(user.id) zip
-      (gameCached nbPlaying user.id) zip
-      gameCached.nbImportedBy(user.id) zip
+    countUsers() zip getRanks(user.id) zip
+      (gameCached nbPlaying user.id) zip gameCached.nbImportedBy(user.id) zip
       (ctx.me.filter(user !=) ?? { me => crosstableApi(me.id, user.id) }) zip
-      getRatingChart(user) zip
-      relationApi.countFollowing(user.id) zip
+      getRatingChart(user) zip relationApi.countFollowing(user.id) zip
       relationApi.countFollowers(user.id) zip
       (ctx.me ?? Granter(_.UserSpy) ?? {
         relationApi.countBlockers(user.id) map (_.some)
-      }) zip
-      postApi.nbByUser(user.id) zip
-      isDonor(user.id) zip
+      }) zip postApi.nbByUser(user.id) zip isDonor(user.id) zip
       trophyApi.findByUser(user) zip
       (user.count.rated >= 10).??(insightShare.grant(user, ctx.me)) zip
       PlayTime(user) flatMap {
-      case (
-            (
+        case (
               (
                 (
                   (
@@ -97,37 +91,38 @@ object UserInfo {
                         (
                           (
                             (
-                              (((nbUsers, ranks), nbPlaying), nbImported),
-                              crosstable),
-                            ratingChart),
-                          nbFollowing),
-                        nbFollowers),
-                      nbBlockers),
-                    nbPosts),
-                  isDonor),
-                trophies),
-              insightVisible),
-            playTime) =>
-        (nbPlaying > 0) ?? isHostingSimul(user.id) map { hasSimul =>
-          new UserInfo(
-            user = user,
-            ranks = ranks,
-            nbUsers = nbUsers,
-            nbPlaying = nbPlaying,
-            hasSimul = hasSimul,
-            crosstable = crosstable,
-            nbBookmark = bookmarkApi countByUser user,
-            nbImported = nbImported,
-            ratingChart = ratingChart,
-            nbFollowing = nbFollowing,
-            nbFollowers = nbFollowers,
-            nbBlockers = nbBlockers,
-            nbPosts = nbPosts,
-            playTime = playTime,
-            donor = isDonor,
-            trophies = trophies,
-            isStreamer = isStreamer(user.id),
-            insightVisible = insightVisible)
-        }
-    }
+                              (
+                                (((nbUsers, ranks), nbPlaying), nbImported),
+                                crosstable),
+                              ratingChart),
+                            nbFollowing),
+                          nbFollowers),
+                        nbBlockers),
+                      nbPosts),
+                    isDonor),
+                  trophies),
+                insightVisible),
+              playTime) =>
+          (nbPlaying > 0) ?? isHostingSimul(user.id) map { hasSimul =>
+            new UserInfo(
+              user = user,
+              ranks = ranks,
+              nbUsers = nbUsers,
+              nbPlaying = nbPlaying,
+              hasSimul = hasSimul,
+              crosstable = crosstable,
+              nbBookmark = bookmarkApi countByUser user,
+              nbImported = nbImported,
+              ratingChart = ratingChart,
+              nbFollowing = nbFollowing,
+              nbFollowers = nbFollowers,
+              nbBlockers = nbBlockers,
+              nbPosts = nbPosts,
+              playTime = playTime,
+              donor = isDonor,
+              trophies = trophies,
+              isStreamer = isStreamer(user.id),
+              insightVisible = insightVisible)
+          }
+      }
 }

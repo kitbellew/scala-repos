@@ -662,8 +662,8 @@ trait TimeExtractionSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(
-        10, 24, 14, 29, 6, 28, 9, 2, 17, 27, 18, 11, 23, 30, 4, 15)
+      result2 must
+        contain(10, 24, 14, 29, 6, 28, 9, 2, 17, 27, 18, 11, 23, 30, 4, 15)
     }
     "compute day of week" in {
       val input = dag.Operate(
@@ -697,8 +697,8 @@ trait TimeExtractionSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(
-        0, 10, 14, 1, 21, 13, 2, 17, 22, 12, 3, 18, 11, 19, 4)
+      result2 must
+        contain(0, 10, 14, 1, 21, 13, 2, 17, 22, 12, 3, 18, 11, 19, 4)
     }
     "compute minute of hour" in {
       val input = dag.Operate(

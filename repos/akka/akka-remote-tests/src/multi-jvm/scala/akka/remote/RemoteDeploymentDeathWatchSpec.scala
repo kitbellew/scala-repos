@@ -75,48 +75,48 @@ abstract class RemoteDeploymentDeathWatchSpec
 
   "An actor system that deploys actors on another node" must {
 
-    "be able to shutdown when remote node crash" taggedAs LongRunningTest in within(
-      20 seconds) {
-      runOn(second) {
-        // remote deployment to third
-        val hello = system.actorOf(Props[Hello], "hello")
-        hello.path.address should ===(node(third).address)
-        enterBarrier("hello-deployed")
+    "be able to shutdown when remote node crash" taggedAs LongRunningTest in
+      within(20 seconds) {
+        runOn(second) {
+          // remote deployment to third
+          val hello = system.actorOf(Props[Hello], "hello")
+          hello.path.address should ===(node(third).address)
+          enterBarrier("hello-deployed")
 
-        enterBarrier("third-crashed")
+          enterBarrier("third-crashed")
 
-        sleep()
-        // if the remote deployed actor is not removed the system will not shutdown
+          sleep()
+          // if the remote deployed actor is not removed the system will not shutdown
 
-        val timeout = remainingOrDefault
-        try Await.ready(system.whenTerminated, timeout)
-        catch {
-          case _: TimeoutException ⇒
-            fail("Failed to stop [%s] within [%s] \n%s".format(
-              system.name,
-              timeout,
-              system.asInstanceOf[ActorSystemImpl].printTree))
+          val timeout = remainingOrDefault
+          try Await.ready(system.whenTerminated, timeout)
+          catch {
+            case _: TimeoutException ⇒
+              fail("Failed to stop [%s] within [%s] \n%s".format(
+                system.name,
+                timeout,
+                system.asInstanceOf[ActorSystemImpl].printTree))
+          }
         }
+
+        runOn(third) {
+          enterBarrier("hello-deployed")
+          enterBarrier("third-crashed")
+        }
+
+        runOn(first) {
+          enterBarrier("hello-deployed")
+          sleep()
+          testConductor.exit(third, 0).await
+          enterBarrier("third-crashed")
+
+          // second system will be shutdown
+          testConductor.shutdown(second).await
+
+          enterBarrier("after-3")
+        }
+
       }
-
-      runOn(third) {
-        enterBarrier("hello-deployed")
-        enterBarrier("third-crashed")
-      }
-
-      runOn(first) {
-        enterBarrier("hello-deployed")
-        sleep()
-        testConductor.exit(third, 0).await
-        enterBarrier("third-crashed")
-
-        // second system will be shutdown
-        testConductor.shutdown(second).await
-
-        enterBarrier("after-3")
-      }
-
-    }
 
   }
 }

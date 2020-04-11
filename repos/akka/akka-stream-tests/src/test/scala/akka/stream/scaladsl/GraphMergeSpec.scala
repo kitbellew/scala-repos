@@ -110,49 +110,51 @@ class GraphMergeSpec extends TwoStreamsSetup {
 
     commonTests()
 
-    "work with one immediately completed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(completedPublisher, nonemptyPublisher(1 to 4))
-      val subscription1 = subscriber1.expectSubscription()
-      subscription1.request(4)
-      subscriber1.expectNext(1)
-      subscriber1.expectNext(2)
-      subscriber1.expectNext(3)
-      subscriber1.expectNext(4)
-      subscriber1.expectComplete()
+    "work with one immediately completed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(completedPublisher, nonemptyPublisher(1 to 4))
+        val subscription1 = subscriber1.expectSubscription()
+        subscription1.request(4)
+        subscriber1.expectNext(1)
+        subscriber1.expectNext(2)
+        subscriber1.expectNext(3)
+        subscriber1.expectNext(4)
+        subscriber1.expectComplete()
 
-      val subscriber2 = setup(nonemptyPublisher(1 to 4), completedPublisher)
-      val subscription2 = subscriber2.expectSubscription()
-      subscription2.request(4)
-      subscriber2.expectNext(1)
-      subscriber2.expectNext(2)
-      subscriber2.expectNext(3)
-      subscriber2.expectNext(4)
-      subscriber2.expectComplete()
-    }
+        val subscriber2 = setup(nonemptyPublisher(1 to 4), completedPublisher)
+        val subscription2 = subscriber2.expectSubscription()
+        subscription2.request(4)
+        subscriber2.expectNext(1)
+        subscriber2.expectNext(2)
+        subscriber2.expectNext(3)
+        subscriber2.expectNext(4)
+        subscriber2.expectComplete()
+      }
 
-    "work with one delayed completed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(
-        soonToCompletePublisher,
-        nonemptyPublisher(1 to 4))
-      val subscription1 = subscriber1.expectSubscription()
-      subscription1.request(4)
-      subscriber1.expectNext(1)
-      subscriber1.expectNext(2)
-      subscriber1.expectNext(3)
-      subscriber1.expectNext(4)
-      subscriber1.expectComplete()
+    "work with one delayed completed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(
+          soonToCompletePublisher,
+          nonemptyPublisher(1 to 4))
+        val subscription1 = subscriber1.expectSubscription()
+        subscription1.request(4)
+        subscriber1.expectNext(1)
+        subscriber1.expectNext(2)
+        subscriber1.expectNext(3)
+        subscriber1.expectNext(4)
+        subscriber1.expectComplete()
 
-      val subscriber2 = setup(
-        nonemptyPublisher(1 to 4),
-        soonToCompletePublisher)
-      val subscription2 = subscriber2.expectSubscription()
-      subscription2.request(4)
-      subscriber2.expectNext(1)
-      subscriber2.expectNext(2)
-      subscriber2.expectNext(3)
-      subscriber2.expectNext(4)
-      subscriber2.expectComplete()
-    }
+        val subscriber2 = setup(
+          nonemptyPublisher(1 to 4),
+          soonToCompletePublisher)
+        val subscription2 = subscriber2.expectSubscription()
+        subscription2.request(4)
+        subscriber2.expectNext(1)
+        subscriber2.expectNext(2)
+        subscriber2.expectNext(3)
+        subscriber2.expectNext(4)
+        subscriber2.expectComplete()
+      }
 
     "work with one immediately failed and one nonempty publisher" in {
       // This is nondeterministic, multiple scenarios can happen

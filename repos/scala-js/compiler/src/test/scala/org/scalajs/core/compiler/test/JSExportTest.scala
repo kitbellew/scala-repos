@@ -208,8 +208,7 @@ class JSExportTest extends DirectTest with TestHelpers {
         @ScalaJSDefined class B extends js.Object
       }
     }
-    """ hasErrors
-      """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a local class
       |        @JSExport
       |         ^
@@ -229,8 +228,7 @@ class JSExportTest extends DirectTest with TestHelpers {
         @ScalaJSDefined object B extends js.Object
       }
     }
-    """ hasErrors
-      """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a local object
       |        @JSExport
       |         ^
@@ -376,8 +374,7 @@ class JSExportTest extends DirectTest with TestHelpers {
     @JSExport
     @js.native
     trait Test3 extends js.Object
-    """ hasErrors
-      """
+    """ hasErrors """
       |newSource1.scala:3: error: You may not export a trait
       |    @JSExport
       |     ^
@@ -527,8 +524,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       @ScalaJSDefined object Nested2 extends js.Object
     }
-    """ hasErrors
-      """
+    """ hasErrors """
       |newSource1.scala:4: error: You may not export a nested object
       |      @JSExport
       |       ^
@@ -545,8 +541,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       @ScalaJSDefined object Nested2 extends js.Object
     }
-    """ hasErrors
-      """
+    """ hasErrors """
       |newSource1.scala:4: error: You may not export a nested object
       |      @JSExport
       |       ^
@@ -579,8 +574,7 @@ class JSExportTest extends DirectTest with TestHelpers {
     @JSExport
     @js.native
     trait A extends js.Object
-    """ hasErrors
-      """
+    """ hasErrors """
       |newSource1.scala:5: error: You may not export a trait
       |    @JSExport
       |     ^
@@ -664,8 +658,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       @JSExport
       def foo_=(x: Int) = "string"
     }
-    """ hasErrors
-      """
+    """ hasErrors """
       |newSource1.scala:4: error: Exported setters must return Unit
       |      @JSExport
       |       ^
@@ -972,8 +965,7 @@ class JSExportTest extends DirectTest with TestHelpers {
       // Local class is not allowed
       def foo = { new A with B }
     }
-    """ hasErrors
-      """
+    """ hasErrors """
       |newSource1.scala:11: error: You may not export a local class
       |      def foo = { new A with B }
       |                      ^

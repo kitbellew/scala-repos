@@ -76,9 +76,8 @@ class InsertCompiler(val mode: InsertCompiler.Mode) extends Phase {
         tableExpansion.table,
         ProductNode(cols.result),
         allFields.result).infer()
-      ResultSetMapping(linearSym, ins, tree2) :@ CollectionType(
-        TypedCollectionTypeConstructor.seq,
-        ins.nodeType)
+      ResultSetMapping(linearSym, ins, tree2) :@
+        CollectionType(TypedCollectionTypeConstructor.seq, ins.nodeType)
     }
 }
 

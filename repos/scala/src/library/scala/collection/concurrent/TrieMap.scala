@@ -376,8 +376,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                 else null
               }
             case sn: SNode[K, V] =>
-              if (sn.hc == hc && equal(sn.k, k, ct) && (v == null || sn
-                    .v == v)) {
+              if (sn.hc == hc && equal(sn.k, k, ct) &&
+                  (v == null || sn.v == v)) {
                 val ncn = cn.removedAt(pos, flag, gen).toContracted(lev)
                 if (GCAS(cn, ncn, ct)) Some(sn.v) else null
               } else None
@@ -393,7 +393,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                   val idx = (hc >>> (lev - 5)) & 0x1f
                   val bmp = cn.bitmap
                   val flag = 1 << idx
-                  if ((bmp & flag) == 0) {} // somebody already removed this i-node, we're done
+                  if ((bmp & flag) ==
+                        0) {} // somebody already removed this i-node, we're done
                   else {
                     val pos = Integer.bitCount(bmp & (flag - 1))
                     val sub = cn.array(pos)

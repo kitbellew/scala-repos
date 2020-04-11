@@ -53,7 +53,8 @@ private[spark] class TimeBasedRollingPolicy(
     with Logging {
 
   import TimeBasedRollingPolicy._
-  if (checkIntervalConstraint && rolloverIntervalMillis < MINIMUM_INTERVAL_SECONDS * 1000L) {
+  if (checkIntervalConstraint &&
+      rolloverIntervalMillis < MINIMUM_INTERVAL_SECONDS * 1000L) {
     logWarning(
       s"Rolling interval [${rolloverIntervalMillis / 1000L} seconds] is too small. " +
         s"Setting the interval to the acceptable minimum of $MINIMUM_INTERVAL_SECONDS seconds.")
@@ -73,16 +74,17 @@ private[spark] class TimeBasedRollingPolicy(
   def rolledOver() {
     nextRolloverTime = calculateNextRolloverTime()
     logDebug(
-      s"Current time: ${System.currentTimeMillis}, next rollover time: " + nextRolloverTime)
+      s"Current time: ${System.currentTimeMillis}, next rollover time: " +
+        nextRolloverTime)
   }
 
   def bytesWritten(bytes: Long) {} // nothing to do
 
   private def calculateNextRolloverTime(): Long = {
     val now = System.currentTimeMillis()
-    val targetTime = (math
-      .ceil(now.toDouble / rolloverIntervalMillis) * rolloverIntervalMillis)
-      .toLong
+    val targetTime =
+      (math.ceil(now.toDouble / rolloverIntervalMillis) *
+        rolloverIntervalMillis).toLong
     logDebug(s"Next rollover time is $targetTime")
     targetTime
   }

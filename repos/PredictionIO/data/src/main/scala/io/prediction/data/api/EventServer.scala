@@ -58,8 +58,7 @@ class EventServiceActor(
 
   object Json4sProtocol extends Json4sSupport {
     implicit def json4sFormats: Formats =
-      DefaultFormats +
-        new EventJson4sSupport.APISerializer +
+      DefaultFormats + new EventJson4sSupport.APISerializer +
         new BatchEventsJson4sSupport.APISerializer +
         // NOTE: don't use Json4s JodaTimeSerializers since it has issues,
         // some format not converted, or timezone not correct
@@ -144,458 +143,436 @@ class EventServiceActor(
           complete(Map("status" -> "alive"))
         }
       }
-    } ~
-      path("plugins.json") {
-        import Json4sProtocol._
-        get {
-          respondWithMediaType(MediaTypes.`application/json`) {
-            complete {
-              Map(
-                "plugins" -> Map(
-                  "inputblockers" -> pluginContext.inputBlockers.map {
-                    case (n, p) =>
-                      n -> Map(
-                        "name" -> p.pluginName,
-                        "description" -> p.pluginDescription,
-                        "class" -> p.getClass.getName)
-                  },
-                  "inputsniffers" -> pluginContext.inputSniffers.map {
-                    case (n, p) =>
-                      n -> Map(
-                        "name" -> p.pluginName,
-                        "description" -> p.pluginDescription,
-                        "class" -> p.getClass.getName)
-                  }
-                ))
+    } ~ path("plugins.json") {
+      import Json4sProtocol._
+      get {
+        respondWithMediaType(MediaTypes.`application/json`) {
+          complete {
+            Map(
+              "plugins" -> Map(
+                "inputblockers" -> pluginContext.inputBlockers.map {
+                  case (n, p) =>
+                    n -> Map(
+                      "name" -> p.pluginName,
+                      "description" -> p.pluginDescription,
+                      "class" -> p.getClass.getName)
+                },
+                "inputsniffers" -> pluginContext.inputSniffers.map {
+                  case (n, p) =>
+                    n -> Map(
+                      "name" -> p.pluginName,
+                      "description" -> p.pluginDescription,
+                      "class" -> p.getClass.getName)
+                }
+              ))
+          }
+        }
+      }
+    } ~ path("plugins" / Segments) { segments =>
+      get {
+        handleExceptions(Common.exceptionHandler) {
+          authenticate(withAccessKey) { authData =>
+            respondWithMediaType(MediaTypes.`application/json`) {
+              complete {
+                val pluginArgs = segments.drop(2)
+                val pluginType = segments(0)
+                val pluginName = segments(1)
+                pluginType match {
+                  case EventServerPlugin.inputBlocker =>
+                    pluginContext.inputBlockers(pluginName).handleREST(
+                      authData.appId,
+                      authData.channelId,
+                      pluginArgs)
+                  case EventServerPlugin.inputSniffer =>
+                    pluginsActorRef ? PluginsActor.HandleREST(
+                      appId = authData.appId,
+                      channelId = authData.channelId,
+                      pluginName = pluginName,
+                      pluginArgs = pluginArgs) map { _.asInstanceOf[String] }
+                }
+              }
             }
           }
         }
-      } ~
-      path("plugins" / Segments) { segments =>
-        get {
-          handleExceptions(Common.exceptionHandler) {
+      }
+    } ~ path("events" / jsonPath) { eventId =>
+      import Json4sProtocol._
+
+      get {
+        handleExceptions(Common.exceptionHandler) {
+          handleRejections(rejectionHandler) {
             authenticate(withAccessKey) { authData =>
+              val appId = authData.appId
+              val channelId = authData.channelId
               respondWithMediaType(MediaTypes.`application/json`) {
                 complete {
-                  val pluginArgs = segments.drop(2)
-                  val pluginType = segments(0)
-                  val pluginName = segments(1)
-                  pluginType match {
-                    case EventServerPlugin.inputBlocker =>
-                      pluginContext.inputBlockers(pluginName).handleREST(
-                        authData.appId,
-                        authData.channelId,
-                        pluginArgs)
-                    case EventServerPlugin.inputSniffer =>
-                      pluginsActorRef ? PluginsActor.HandleREST(
-                        appId = authData.appId,
-                        channelId = authData.channelId,
-                        pluginName = pluginName,
-                        pluginArgs = pluginArgs) map { _.asInstanceOf[String] }
-                  }
+                  logger.debug(s"GET event ${eventId}.")
+                  val data = eventClient.futureGet(eventId, appId, channelId)
+                    .map { eventOpt =>
+                      eventOpt.map(event => (StatusCodes.OK, event)).getOrElse(
+                        (StatusCodes.NotFound, Map("message" -> "Not Found")))
+                    }
+                  data
                 }
               }
             }
           }
         }
-      } ~
-      path("events" / jsonPath) { eventId =>
-        import Json4sProtocol._
+      } ~ delete {
+        handleExceptions(Common.exceptionHandler) {
+          handleRejections(rejectionHandler) {
+            authenticate(withAccessKey) { authData =>
+              val appId = authData.appId
+              val channelId = authData.channelId
+              respondWithMediaType(MediaTypes.`application/json`) {
+                complete {
+                  logger.debug(s"DELETE event ${eventId}.")
+                  val data = eventClient.futureDelete(eventId, appId, channelId)
+                    .map { found =>
+                      if (found) { (StatusCodes.OK, Map("message" -> "Found")) }
+                      else {
+                        (StatusCodes.NotFound, Map("message" -> "Not Found"))
+                      }
+                    }
+                  data
+                }
+              }
+            }
+          }
+        }
+      }
+    } ~ path("events.json") {
 
-        get {
-          handleExceptions(Common.exceptionHandler) {
-            handleRejections(rejectionHandler) {
-              authenticate(withAccessKey) { authData =>
-                val appId = authData.appId
-                val channelId = authData.channelId
-                respondWithMediaType(MediaTypes.`application/json`) {
-                  complete {
-                    logger.debug(s"GET event ${eventId}.")
-                    val data = eventClient.futureGet(eventId, appId, channelId)
-                      .map { eventOpt =>
-                        eventOpt.map(event => (StatusCodes.OK, event))
-                          .getOrElse((
-                            StatusCodes.NotFound,
-                            Map("message" -> "Not Found")))
+      import Json4sProtocol._
+
+      post {
+        handleExceptions(Common.exceptionHandler) {
+          handleRejections(rejectionHandler) {
+            authenticate(withAccessKey) { authData =>
+              val appId = authData.appId
+              val channelId = authData.channelId
+              val events = authData.events
+              entity(as[Event]) { event =>
+                complete {
+                  if (events.isEmpty || authData.events.contains(event.event)) {
+                    pluginContext.inputBlockers.values.foreach(_.process(
+                      EventInfo(
+                        appId = appId,
+                        channelId = channelId,
+                        event = event),
+                      pluginContext))
+                    val data = eventClient.futureInsert(event, appId, channelId)
+                      .map { id =>
+                        pluginsActorRef ! EventInfo(
+                          appId = appId,
+                          channelId = channelId,
+                          event = event)
+                        val result =
+                          (StatusCodes.Created, Map("eventId" -> s"${id}"))
+                        if (config.stats) {
+                          statsActorRef ! Bookkeeping(appId, result._1, event)
+                        }
+                        result
                       }
                     data
-                  }
-                }
-              }
-            }
-          }
-        } ~
-          delete {
-            handleExceptions(Common.exceptionHandler) {
-              handleRejections(rejectionHandler) {
-                authenticate(withAccessKey) { authData =>
-                  val appId = authData.appId
-                  val channelId = authData.channelId
-                  respondWithMediaType(MediaTypes.`application/json`) {
-                    complete {
-                      logger.debug(s"DELETE event ${eventId}.")
-                      val data = eventClient
-                        .futureDelete(eventId, appId, channelId).map { found =>
-                          if (found) {
-                            (StatusCodes.OK, Map("message" -> "Found"))
-                          } else {
-                            (
-                              StatusCodes.NotFound,
-                              Map("message" -> "Not Found"))
-                          }
-                        }
-                      data
-                    }
-                  }
-                }
-              }
-            }
-          }
-      } ~
-      path("events.json") {
-
-        import Json4sProtocol._
-
-        post {
-          handleExceptions(Common.exceptionHandler) {
-            handleRejections(rejectionHandler) {
-              authenticate(withAccessKey) { authData =>
-                val appId = authData.appId
-                val channelId = authData.channelId
-                val events = authData.events
-                entity(as[Event]) { event =>
-                  complete {
-                    if (events.isEmpty || authData.events
-                          .contains(event.event)) {
-                      pluginContext.inputBlockers.values.foreach(_.process(
-                        EventInfo(
-                          appId = appId,
-                          channelId = channelId,
-                          event = event),
-                        pluginContext))
-                      val data = eventClient
-                        .futureInsert(event, appId, channelId).map { id =>
-                          pluginsActorRef ! EventInfo(
-                            appId = appId,
-                            channelId = channelId,
-                            event = event)
-                          val result =
-                            (StatusCodes.Created, Map("eventId" -> s"${id}"))
-                          if (config.stats) {
-                            statsActorRef ! Bookkeeping(appId, result._1, event)
-                          }
-                          result
-                        }
-                      data
-                    } else {
-                      (
-                        StatusCodes.Forbidden,
-                        Map(
-                          "message" -> s"${event.event} events are not allowed"))
-                    }
-                  }
-                }
-              }
-            }
-          }
-        } ~
-          get {
-            handleExceptions(Common.exceptionHandler) {
-              handleRejections(rejectionHandler) {
-                authenticate(withAccessKey) { authData =>
-                  val appId = authData.appId
-                  val channelId = authData.channelId
-                  parameters(
-                    'startTime.as[Option[String]],
-                    'untilTime.as[Option[String]],
-                    'entityType.as[Option[String]],
-                    'entityId.as[Option[String]],
-                    'event.as[Option[String]],
-                    'targetEntityType.as[Option[String]],
-                    'targetEntityId.as[Option[String]],
-                    'limit.as[Option[Int]],
-                    'reversed.as[Option[Boolean]]
-                  ) {
+                  } else {
                     (
-                        startTimeStr,
-                        untilTimeStr,
-                        entityType,
-                        entityId,
-                        eventName, // only support one event name
-                        targetEntityType,
-                        targetEntityId,
-                        limit,
-                        reversed) =>
-                      respondWithMediaType(MediaTypes.`application/json`) {
-                        complete {
-                          logger.debug(
-                            s"GET events of appId=${appId} " +
-                              s"st=${startTimeStr} ut=${untilTimeStr} " +
-                              s"et=${entityType} eid=${entityId} " +
-                              s"li=${limit} rev=${reversed} ")
-
-                          require(
-                            !((reversed == Some(true))
-                              && (entityType.isEmpty || entityId.isEmpty)),
-                            "the parameter reversed can only be used with" +
-                              " both entityType and entityId specified."
-                          )
-
-                          val parseTime = Future {
-                            val startTime = startTimeStr
-                              .map(Utils.stringToDateTime(_))
-                            val untilTime = untilTimeStr
-                              .map(Utils.stringToDateTime(_))
-                            (startTime, untilTime)
-                          }
-
-                          parseTime.flatMap {
-                            case (startTime, untilTime) =>
-                              val data = eventClient.futureFind(
-                                appId = appId,
-                                channelId = channelId,
-                                startTime = startTime,
-                                untilTime = untilTime,
-                                entityType = entityType,
-                                entityId = entityId,
-                                eventNames = eventName.map(List(_)),
-                                targetEntityType = targetEntityType
-                                  .map(Some(_)),
-                                targetEntityId = targetEntityId.map(Some(_)),
-                                limit = limit.orElse(Some(20)),
-                                reversed = reversed
-                              ).map { eventIter =>
-                                if (eventIter.hasNext) {
-                                  (StatusCodes.OK, eventIter.toArray)
-                                } else {
-                                  (
-                                    StatusCodes.NotFound,
-                                    Map("message" -> "Not Found"))
-                                }
-                              }
-                              data
-                          }.recover {
-                            case e: Exception =>
-                              (
-                                StatusCodes.BadRequest,
-                                Map("message" -> s"${e}"))
-                          }
-                        }
-                      }
-                  }
-                }
-              }
-            }
-          }
-      } ~
-      path("batch" / "events.json") {
-
-        import Json4sProtocol._
-
-        post {
-          handleExceptions(Common.exceptionHandler) {
-            handleRejections(rejectionHandler) {
-              authenticate(withAccessKey) { authData =>
-                val appId = authData.appId
-                val channelId = authData.channelId
-                val allowedEvents = authData.events
-                val handleEvent
-                    : PartialFunction[Try[Event], Future[Map[String, Any]]] = {
-                  case Success(event) => {
-                    if (allowedEvents.isEmpty || allowedEvents
-                          .contains(event.event)) {
-                      pluginContext.inputBlockers.values.foreach(_.process(
-                        EventInfo(
-                          appId = appId,
-                          channelId = channelId,
-                          event = event),
-                        pluginContext))
-                      val data = eventClient
-                        .futureInsert(event, appId, channelId).map { id =>
-                          pluginsActorRef ! EventInfo(
-                            appId = appId,
-                            channelId = channelId,
-                            event = event)
-                          val status = StatusCodes.Created
-                          val result = Map(
-                            "status" -> status.intValue,
-                            "eventId" -> s"${id}")
-                          if (config.stats) {
-                            statsActorRef ! Bookkeeping(appId, status, event)
-                          }
-                          result
-                        }.recover {
-                          case exception =>
-                            Map(
-                              "status" -> StatusCodes.InternalServerError
-                                .intValue,
-                              "message" -> s"${exception.getMessage()}")
-                        }
-                      data
-                    } else {
-                      Future.successful(Map(
-                        "status" -> StatusCodes.Forbidden.intValue,
+                      StatusCodes.Forbidden,
+                      Map(
                         "message" -> s"${event.event} events are not allowed"))
-                    }
-                  }
-                  case Failure(exception) => {
-                    Future.successful(Map(
-                      "status" -> StatusCodes.BadRequest.intValue,
-                      "message" -> s"${exception.getMessage()}"))
-                  }
-                }
-
-                entity(as[Seq[Try[Event]]]) { events =>
-                  complete {
-                    if (events.length <= MaxNumberOfEventsPerBatchRequest) {
-                      Future.traverse(events)(handleEvent)
-                    } else {
-                      (
-                        StatusCodes.BadRequest,
-                        Map(
-                          "message" -> (
-                            s"Batch request must have less than or equal to " +
-                              s"${MaxNumberOfEventsPerBatchRequest} events"
-                          )))
-                    }
                   }
                 }
               }
             }
           }
         }
-      } ~
-      path("stats.json") {
-
-        import Json4sProtocol._
-
-        get {
-          handleExceptions(Common.exceptionHandler) {
-            handleRejections(rejectionHandler) {
-              authenticate(withAccessKey) { authData =>
-                val appId = authData.appId
-                respondWithMediaType(MediaTypes.`application/json`) {
-                  if (config.stats) {
+      } ~ get {
+        handleExceptions(Common.exceptionHandler) {
+          handleRejections(rejectionHandler) {
+            authenticate(withAccessKey) { authData =>
+              val appId = authData.appId
+              val channelId = authData.channelId
+              parameters(
+                'startTime.as[Option[String]],
+                'untilTime.as[Option[String]],
+                'entityType.as[Option[String]],
+                'entityId.as[Option[String]],
+                'event.as[Option[String]],
+                'targetEntityType.as[Option[String]],
+                'targetEntityId.as[Option[String]],
+                'limit.as[Option[Int]],
+                'reversed.as[Option[Boolean]]
+              ) {
+                (
+                    startTimeStr,
+                    untilTimeStr,
+                    entityType,
+                    entityId,
+                    eventName, // only support one event name
+                    targetEntityType,
+                    targetEntityId,
+                    limit,
+                    reversed) =>
+                  respondWithMediaType(MediaTypes.`application/json`) {
                     complete {
-                      statsActorRef ? GetStats(appId) map {
-                        _.asInstanceOf[Map[String, StatsSnapshot]]
+                      logger.debug(
+                        s"GET events of appId=${appId} " +
+                          s"st=${startTimeStr} ut=${untilTimeStr} " +
+                          s"et=${entityType} eid=${entityId} " +
+                          s"li=${limit} rev=${reversed} ")
+
+                      require(
+                        !((reversed == Some(true)) &&
+                          (entityType.isEmpty || entityId.isEmpty)),
+                        "the parameter reversed can only be used with" +
+                          " both entityType and entityId specified."
+                      )
+
+                      val parseTime = Future {
+                        val startTime = startTimeStr
+                          .map(Utils.stringToDateTime(_))
+                        val untilTime = untilTimeStr
+                          .map(Utils.stringToDateTime(_))
+                        (startTime, untilTime)
+                      }
+
+                      parseTime.flatMap {
+                        case (startTime, untilTime) =>
+                          val data = eventClient.futureFind(
+                            appId = appId,
+                            channelId = channelId,
+                            startTime = startTime,
+                            untilTime = untilTime,
+                            entityType = entityType,
+                            entityId = entityId,
+                            eventNames = eventName.map(List(_)),
+                            targetEntityType = targetEntityType.map(Some(_)),
+                            targetEntityId = targetEntityId.map(Some(_)),
+                            limit = limit.orElse(Some(20)),
+                            reversed = reversed
+                          ).map { eventIter =>
+                            if (eventIter.hasNext) {
+                              (StatusCodes.OK, eventIter.toArray)
+                            } else {
+                              (
+                                StatusCodes.NotFound,
+                                Map("message" -> "Not Found"))
+                            }
+                          }
+                          data
+                      }.recover {
+                        case e: Exception =>
+                          (StatusCodes.BadRequest, Map("message" -> s"${e}"))
                       }
                     }
-                  } else {
-                    complete(
-                      StatusCodes.NotFound,
-                      parse(
-                        """{"message": "To see stats, launch Event Server """ +
-                          """with --stats argument."}"""))
                   }
-                }
               }
             }
           }
-        } // stats.json get
-      } ~
-      path("webhooks" / jsonPath) { web =>
-        import Json4sProtocol._
-
-        post {
-          handleExceptions(Common.exceptionHandler) {
-            handleRejections(rejectionHandler) {
-              authenticate(withAccessKey) { authData =>
-                val appId = authData.appId
-                val channelId = authData.channelId
-                respondWithMediaType(MediaTypes.`application/json`) {
-                  entity(as[JObject]) { jObj =>
-                    complete {
-                      Webhooks.postJson(
-                        appId = appId,
-                        channelId = channelId,
-                        web = web,
-                        data = jObj,
-                        eventClient = eventClient,
-                        log = logger,
-                        stats = config.stats,
-                        statsActorRef = statsActorRef)
-                    }
-                  }
-                }
-              }
-            }
-          }
-        } ~
-          get {
-            handleExceptions(Common.exceptionHandler) {
-              handleRejections(rejectionHandler) {
-                authenticate(withAccessKey) { authData =>
-                  val appId = authData.appId
-                  val channelId = authData.channelId
-                  respondWithMediaType(MediaTypes.`application/json`) {
-                    complete {
-                      Webhooks.getJson(
-                        appId = appId,
-                        channelId = channelId,
-                        web = web,
-                        log = logger)
-                    }
-                  }
-                }
-              }
-            }
-          }
-      } ~
-      path("webhooks" / formPath) { web =>
-        post {
-          handleExceptions(Common.exceptionHandler) {
-            handleRejections(rejectionHandler) {
-              authenticate(withAccessKey) { authData =>
-                val appId = authData.appId
-                val channelId = authData.channelId
-                respondWithMediaType(MediaTypes.`application/json`) {
-                  entity(as[FormData]) { formData =>
-                    // logger.debug(formData.toString)
-                    complete {
-                      // respond with JSON
-                      import Json4sProtocol._
-
-                      Webhooks.postForm(
-                        appId = appId,
-                        channelId = channelId,
-                        web = web,
-                        data = formData,
-                        eventClient = eventClient,
-                        log = logger,
-                        stats = config.stats,
-                        statsActorRef = statsActorRef)
-                    }
-                  }
-                }
-              }
-            }
-          }
-        } ~
-          get {
-            handleExceptions(Common.exceptionHandler) {
-              handleRejections(rejectionHandler) {
-                authenticate(withAccessKey) { authData =>
-                  val appId = authData.appId
-                  val channelId = authData.channelId
-                  respondWithMediaType(MediaTypes.`application/json`) {
-                    complete {
-                      // respond with JSON
-                      import Json4sProtocol._
-
-                      Webhooks.getForm(
-                        appId = appId,
-                        channelId = channelId,
-                        web = web,
-                        log = logger)
-                    }
-                  }
-                }
-              }
-            }
-          }
-
+        }
       }
+    } ~ path("batch" / "events.json") {
+
+      import Json4sProtocol._
+
+      post {
+        handleExceptions(Common.exceptionHandler) {
+          handleRejections(rejectionHandler) {
+            authenticate(withAccessKey) { authData =>
+              val appId = authData.appId
+              val channelId = authData.channelId
+              val allowedEvents = authData.events
+              val handleEvent
+                  : PartialFunction[Try[Event], Future[Map[String, Any]]] = {
+                case Success(event) => {
+                  if (allowedEvents.isEmpty ||
+                      allowedEvents.contains(event.event)) {
+                    pluginContext.inputBlockers.values.foreach(_.process(
+                      EventInfo(
+                        appId = appId,
+                        channelId = channelId,
+                        event = event),
+                      pluginContext))
+                    val data = eventClient.futureInsert(event, appId, channelId)
+                      .map { id =>
+                        pluginsActorRef ! EventInfo(
+                          appId = appId,
+                          channelId = channelId,
+                          event = event)
+                        val status = StatusCodes.Created
+                        val result = Map(
+                          "status" -> status.intValue,
+                          "eventId" -> s"${id}")
+                        if (config.stats) {
+                          statsActorRef ! Bookkeeping(appId, status, event)
+                        }
+                        result
+                      }.recover {
+                        case exception =>
+                          Map(
+                            "status" ->
+                              StatusCodes.InternalServerError.intValue,
+                            "message" -> s"${exception.getMessage()}")
+                      }
+                    data
+                  } else {
+                    Future.successful(Map(
+                      "status" -> StatusCodes.Forbidden.intValue,
+                      "message" -> s"${event.event} events are not allowed"))
+                  }
+                }
+                case Failure(exception) => {
+                  Future.successful(Map(
+                    "status" -> StatusCodes.BadRequest.intValue,
+                    "message" -> s"${exception.getMessage()}"))
+                }
+              }
+
+              entity(as[Seq[Try[Event]]]) { events =>
+                complete {
+                  if (events.length <= MaxNumberOfEventsPerBatchRequest) {
+                    Future.traverse(events)(handleEvent)
+                  } else {
+                    (
+                      StatusCodes.BadRequest,
+                      Map(
+                        "message" ->
+                          (s"Batch request must have less than or equal to " +
+                            s"${MaxNumberOfEventsPerBatchRequest} events")))
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } ~ path("stats.json") {
+
+      import Json4sProtocol._
+
+      get {
+        handleExceptions(Common.exceptionHandler) {
+          handleRejections(rejectionHandler) {
+            authenticate(withAccessKey) { authData =>
+              val appId = authData.appId
+              respondWithMediaType(MediaTypes.`application/json`) {
+                if (config.stats) {
+                  complete {
+                    statsActorRef ? GetStats(appId) map {
+                      _.asInstanceOf[Map[String, StatsSnapshot]]
+                    }
+                  }
+                } else {
+                  complete(
+                    StatusCodes.NotFound,
+                    parse(
+                      """{"message": "To see stats, launch Event Server """ +
+                        """with --stats argument."}"""))
+                }
+              }
+            }
+          }
+        }
+      } // stats.json get
+    } ~ path("webhooks" / jsonPath) { web =>
+      import Json4sProtocol._
+
+      post {
+        handleExceptions(Common.exceptionHandler) {
+          handleRejections(rejectionHandler) {
+            authenticate(withAccessKey) { authData =>
+              val appId = authData.appId
+              val channelId = authData.channelId
+              respondWithMediaType(MediaTypes.`application/json`) {
+                entity(as[JObject]) { jObj =>
+                  complete {
+                    Webhooks.postJson(
+                      appId = appId,
+                      channelId = channelId,
+                      web = web,
+                      data = jObj,
+                      eventClient = eventClient,
+                      log = logger,
+                      stats = config.stats,
+                      statsActorRef = statsActorRef)
+                  }
+                }
+              }
+            }
+          }
+        }
+      } ~ get {
+        handleExceptions(Common.exceptionHandler) {
+          handleRejections(rejectionHandler) {
+            authenticate(withAccessKey) { authData =>
+              val appId = authData.appId
+              val channelId = authData.channelId
+              respondWithMediaType(MediaTypes.`application/json`) {
+                complete {
+                  Webhooks.getJson(
+                    appId = appId,
+                    channelId = channelId,
+                    web = web,
+                    log = logger)
+                }
+              }
+            }
+          }
+        }
+      }
+    } ~ path("webhooks" / formPath) { web =>
+      post {
+        handleExceptions(Common.exceptionHandler) {
+          handleRejections(rejectionHandler) {
+            authenticate(withAccessKey) { authData =>
+              val appId = authData.appId
+              val channelId = authData.channelId
+              respondWithMediaType(MediaTypes.`application/json`) {
+                entity(as[FormData]) { formData =>
+                  // logger.debug(formData.toString)
+                  complete {
+                    // respond with JSON
+                    import Json4sProtocol._
+
+                    Webhooks.postForm(
+                      appId = appId,
+                      channelId = channelId,
+                      web = web,
+                      data = formData,
+                      eventClient = eventClient,
+                      log = logger,
+                      stats = config.stats,
+                      statsActorRef = statsActorRef)
+                  }
+                }
+              }
+            }
+          }
+        }
+      } ~ get {
+        handleExceptions(Common.exceptionHandler) {
+          handleRejections(rejectionHandler) {
+            authenticate(withAccessKey) { authData =>
+              val appId = authData.appId
+              val channelId = authData.channelId
+              respondWithMediaType(MediaTypes.`application/json`) {
+                complete {
+                  // respond with JSON
+                  import Json4sProtocol._
+
+                  Webhooks.getForm(
+                    appId = appId,
+                    channelId = channelId,
+                    web = web,
+                    log = logger)
+                }
+              }
+            }
+          }
+        }
+      }
+
+    }
 
   def receive: Actor.Receive = runRoute(route)
 }

@@ -140,8 +140,8 @@ private[r] class RBackendHandler(server: RBackend)
 
         if (index.isEmpty) {
           logWarning(
-            s"cannot find matching method ${cls}.$methodName. "
-              + s"Candidates are:")
+            s"cannot find matching method ${cls}.$methodName. " +
+              s"Candidates are:")
           selectedMethods.foreach { method =>
             logWarning(
               s"$methodName(${method.getParameterTypes.mkString(",")})")
@@ -161,8 +161,8 @@ private[r] class RBackendHandler(server: RBackend)
 
         if (index.isEmpty) {
           logWarning(
-            s"cannot find matching constructor for ${cls}. "
-              + s"Candidates are:")
+            s"cannot find matching constructor for ${cls}. " +
+              s"Candidates are:")
           ctors.foreach { ctor =>
             logWarning(s"$cls(${ctor.getParameterTypes.mkString(",")})")
           }
@@ -250,8 +250,8 @@ private[r] class RBackendHandler(server: RBackend)
           val parameterTypes = parameterTypesOfMethods(index)
 
           (0 until numArgs).map { i =>
-            if (parameterTypes(i) == classOf[Seq[Any]] && args(i).getClass
-                  .isArray) {
+            if (parameterTypes(i) == classOf[Seq[Any]] &&
+                args(i).getClass.isArray) {
               // Convert a Java array to scala Seq
               args(i) = args(i).asInstanceOf[Array[_]].toSeq
             }

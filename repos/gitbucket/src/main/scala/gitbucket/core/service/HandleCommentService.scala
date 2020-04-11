@@ -36,8 +36,7 @@ trait HandleCommentService {
                 if (issue.isPullRequest) recordClosePullRequestActivity _
                 else recordCloseIssueActivity _))
           case "reopen" if (issue.closed) =>
-            false ->
-              (Some("reopen") -> Some(recordReopenIssueActivity _))
+            false -> (Some("reopen") -> Some(recordReopenIssueActivity _))
         }.map {
           case (closed, t) =>
             updateClosed(owner, name, issue.issueId, closed)
@@ -70,9 +69,8 @@ trait HandleCommentService {
            else recordCommentIssueActivity _)
           (owner, name, userName, issue.issueId, _)
         }
-        recordActivity foreach (
-          _(owner, name, userName, issue.issueId, issue.title)
-        )
+        recordActivity foreach
+          (_(owner, name, userName, issue.issueId, issue.title))
 
         // extract references and create refer comment
         content.map { content =>

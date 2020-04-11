@@ -124,8 +124,9 @@ class SingleAppScalingTest
         s"XXX (starting) Current instance count: staged $tasksStaged, running $tasksRunning / $instances")
 
       appInfos += ScalingTestResultFiles.addTimestamp(startTime)(appJson)
-      metrics += ScalingTestResultFiles
-        .addTimestamp(startTime)(marathon.metrics().entityJson)
+      metrics +=
+        ScalingTestResultFiles
+          .addTimestamp(startTime)(marathon.metrics().entityJson)
     }
 
     ScalingTestResultFiles

@@ -275,11 +275,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joined = rdd1.join(rdd2).collect()
     assert(joined.size === 4)
     assert(
-      joined.toSet === Set(
-        (1, (1, 'x')),
-        (1, (2, 'x')),
-        (2, (1, 'y')),
-        (2, (1, 'z'))))
+      joined.toSet ===
+        Set((1, (1, 'x')), (1, (2, 'x')), (2, (1, 'y')), (2, (1, 'z'))))
   }
 
   test("join all-to-all") {
@@ -376,11 +373,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joined = rdd1.join(rdd2, 10).collect()
     assert(joined.size === 4)
     assert(
-      joined.toSet === Set(
-        (1, (1, 'x')),
-        (1, (2, 'x')),
-        (2, (1, 'y')),
-        (2, (1, 'z'))))
+      joined.toSet ===
+        Set((1, (1, 'x')), (1, (2, 'x')), (2, (1, 'y')), (2, (1, 'z'))))
   }
 
   test("groupWith") {

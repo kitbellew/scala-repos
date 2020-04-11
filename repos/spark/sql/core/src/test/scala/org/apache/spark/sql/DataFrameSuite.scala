@@ -346,10 +346,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   test("except") {
     checkAnswer(
       lowerCaseData.except(upperCaseData),
-      Row(1, "a") ::
-        Row(2, "b") ::
-        Row(3, "c") ::
-        Row(4, "d") :: Nil)
+      Row(1, "a") :: Row(2, "b") :: Row(3, "c") :: Row(4, "d") :: Nil)
     checkAnswer(lowerCaseData.except(lowerCaseData), Nil)
     checkAnswer(upperCaseData.except(upperCaseData), Nil)
   }
@@ -357,19 +354,13 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   test("intersect") {
     checkAnswer(
       lowerCaseData.intersect(lowerCaseData),
-      Row(1, "a") ::
-        Row(2, "b") ::
-        Row(3, "c") ::
-        Row(4, "d") :: Nil)
+      Row(1, "a") :: Row(2, "b") :: Row(3, "c") :: Row(4, "d") :: Nil)
     checkAnswer(lowerCaseData.intersect(upperCaseData), Nil)
 
     // check null equality
     checkAnswer(
       nullInts.intersect(nullInts),
-      Row(1) ::
-        Row(2) ::
-        Row(3) ::
-        Row(null) :: Nil)
+      Row(1) :: Row(2) :: Row(3) :: Row(null) :: Nil)
 
     // check if values are de-duplicated
     checkAnswer(allNulls.intersect(allNulls), Row(null) :: Nil)
@@ -379,9 +370,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       .toDF("id", "value")
     checkAnswer(
       df.intersect(df),
-      Row("id1", 1) ::
-        Row("id", 1) ::
-        Row("id1", 2) :: Nil)
+      Row("id1", 1) :: Row("id", 1) :: Row("id1", 2) :: Nil)
   }
 
   test("intersect - nullability") {
@@ -753,11 +742,9 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-7324 dropDuplicates") {
     val testData = sparkContext.parallelize(
-      (2, 1, 2) :: (1, 1, 1) ::
-        (1, 2, 1) :: (2, 1, 2) ::
-        (2, 2, 2) :: (2, 2, 1) ::
-        (2, 1, 1) :: (1, 1, 2) ::
-        (1, 2, 2) :: (1, 2, 1) :: Nil).toDF("key", "value1", "value2")
+      (2, 1, 2) :: (1, 1, 1) :: (1, 2, 1) :: (2, 1, 2) :: (2, 2, 2) ::
+        (2, 2, 1) :: (2, 1, 1) :: (1, 1, 2) :: (1, 2, 2) :: (1, 2, 1) :: Nil)
+      .toDF("key", "value1", "value2")
 
     checkAnswer(
       testData.dropDuplicates(),
@@ -1096,8 +1083,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val df = (1 to 10).map(Tuple1.apply).toDF("i").as("src")
     assert(df.select($"src.i".cast(StringType)).columns.head === "i")
     assert(
-      df.select($"src.i".cast(StringType).cast(IntegerType)).columns
-        .head === "i")
+      df.select($"src.i".cast(StringType).cast(IntegerType)).columns.head ===
+        "i")
   }
 
   test("SPARK-11301: fix case sensitivity for filter on partitioned columns") {
@@ -1301,11 +1288,13 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
 
     val df5 = Seq((1L, Tuple2(1L, "val"), 20.0)).toDF("c1", "c2", "c3")
     assert(
-      df5.toString === "[c1: bigint, c2: struct<_1: bigint, _2: string> ... 1 more field]")
+      df5.toString ===
+        "[c1: bigint, c2: struct<_1: bigint, _2: string> ... 1 more field]")
 
     val df6 = Seq((1L, Tuple2(1L, "val"), 20.0, 1)).toDF("c1", "c2", "c3", "c4")
     assert(
-      df6.toString === "[c1: bigint, c2: struct<_1: bigint, _2: string> ... 2 more fields]")
+      df6.toString ===
+        "[c1: bigint, c2: struct<_1: bigint, _2: string> ... 2 more fields]")
 
     val df7 = Seq((1L, Tuple3(1L, "val", 2), 20.0, 1))
       .toDF("c1", "c2", "c3", "c4")
@@ -1323,9 +1312,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       .toDF("c1", "c2", "c3", "c4")
     assert(
       df9.toString ===
-        "[c1: bigint, c2: struct<_1: bigint," +
-          " _2: struct<_1: bigint," +
-          " _2: bigint ... 2 more fields> ... 2 more fields> ... 2 more fields]")
+        "[c1: bigint, c2: struct<_1: bigint," + " _2: struct<_1: bigint," +
+        " _2: bigint ... 2 more fields> ... 2 more fields> ... 2 more fields]")
 
   }
 

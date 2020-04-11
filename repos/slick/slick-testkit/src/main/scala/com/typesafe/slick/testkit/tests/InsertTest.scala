@@ -63,8 +63,8 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       def ins1 = as.map(a => (a.s1, a.s2)) returning as.map(_.id)
       def ins2 = as.map(a => (a.s1, a.s2)) returning as.map(a => (a.id, a.s1))
       def ins3 =
-        as.map(a => (a.s1, a.s2)) returning as.map(_.id) into ((v, i) =>
-          (i, v._1, v._2))
+        as.map(a => (a.s1, a.s2)) returning as.map(_.id) into
+          ((v, i) => (i, v._1, v._2))
       def ins4 = as.map(a => (a.s1, a.s2)) returning as.map(a => a)
 
       (for {

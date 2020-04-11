@@ -59,8 +59,8 @@ class ParamsExtensionSpec extends Specification {
 
       params.getAs[Bogus]("a") must beSome
 
-      params.getAs[Bogus]("a").get aka "The bogus value" must_== Bogus(
-        "buffybuffy")
+      params.getAs[Bogus]("a").get aka "The bogus value" must_==
+        Bogus("buffybuffy")
 
     }
 
@@ -68,9 +68,8 @@ class ParamsExtensionSpec extends Specification {
 
       val params: Params = FakeParams(Map("a" -> "buffybuffy"))
 
-      params
-        .getAs[Bogus]("a")((s: String) =>
-          Some(Bogus(s.toUpperCase))) must beSome(Bogus("BUFFYBUFFY"))
+      params.getAs[Bogus]("a")((s: String) => Some(Bogus(s.toUpperCase))) must
+        beSome(Bogus("BUFFYBUFFY"))
 
     }
   }
@@ -114,8 +113,8 @@ class ParamsExtensionSpec extends Specification {
       }
 
       multiParams.getAs[Date]("DATES" -> format) must beSome[Seq[Date]]
-      multiParams.getAs[Date]("DATES" -> format).get must containAllOf(
-        expectedDates).inOrder
+      multiParams.getAs[Date]("DATES" -> format).get must
+        containAllOf(expectedDates).inOrder
     }
   }
 }

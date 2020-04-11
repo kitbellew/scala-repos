@@ -39,8 +39,7 @@ private final class Stream(geoIp: MaxMindIpGeo, geoIpCacheTtl: Duration)
     case Stream.Get =>
       sender ! {
         Enumerator.enumerate(games.values.map(game2json(makeMd5))) andThen
-          Enumerator.enumerate(List(loadCompleteJson)) andThen
-          producer
+          Enumerator.enumerate(List(loadCompleteJson)) andThen producer
       }
   }
 

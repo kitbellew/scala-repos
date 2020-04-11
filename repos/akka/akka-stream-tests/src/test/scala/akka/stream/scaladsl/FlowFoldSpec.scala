@@ -39,17 +39,15 @@ class FlowFoldSpec extends AkkaSpec {
     }
 
     "work when using Flow.fold" in assertAllStagesStopped {
-      Await
-        .result(
-          inputSource via foldFlow runWith Sink.head,
-          3.seconds) should be(expected)
+      Await.result(inputSource via foldFlow runWith Sink.head, 3.seconds) should
+        be(expected)
     }
 
-    "work when using Source.fold + Flow.fold + Sink.fold" in assertAllStagesStopped {
-      Await
-        .result(foldSource via foldFlow runWith foldSink, 3.seconds) should be(
-        expected)
-    }
+    "work when using Source.fold + Flow.fold + Sink.fold" in
+      assertAllStagesStopped {
+        Await.result(foldSource via foldFlow runWith foldSink, 3.seconds) should
+          be(expected)
+      }
 
     "propagate an error" in assertAllStagesStopped {
       val error = new Exception with NoStackTrace
@@ -58,12 +56,13 @@ class FlowFoldSpec extends AkkaSpec {
       the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
     }
 
-    "complete future with failure when folding function throws" in assertAllStagesStopped {
-      val error = new Exception with NoStackTrace
-      val future = inputSource
-        .runFold(0)((x, y) ⇒ if (x > 50) throw error else x + y)
-      the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
-    }
+    "complete future with failure when folding function throws" in
+      assertAllStagesStopped {
+        val error = new Exception with NoStackTrace
+        val future = inputSource
+          .runFold(0)((x, y) ⇒ if (x > 50) throw error else x + y)
+        the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
+      }
 
   }
 

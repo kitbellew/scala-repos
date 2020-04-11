@@ -137,8 +137,8 @@ trait ApiControllerBase extends ControllerBase {
   patch("/api/v3/repos/:owner/:repo/branches/:branch")(ownerOnly { repository =>
     import gitbucket.core.api._
     (for {
-      branch <- params.get("branch")
-      if repository.branchList.find(_ == branch).isDefined
+      branch <- params.get("branch") if repository.branchList.find(_ == branch)
+        .isDefined
       protection <-
         extractFromJsonBody[ApiBranchProtection.EnablingAndDisabling]
           .map(_.protection)
@@ -488,9 +488,7 @@ trait ApiControllerBase extends ControllerBase {
 
   private def isEditable(owner: String, repository: String, author: String)(
       implicit context: Context): Boolean =
-    hasWritePermission(
-      owner,
-      repository,
-      context.loginAccount) || author == context.loginAccount.get.userName
+    hasWritePermission(owner, repository, context.loginAccount) ||
+      author == context.loginAccount.get.userName
 
 }

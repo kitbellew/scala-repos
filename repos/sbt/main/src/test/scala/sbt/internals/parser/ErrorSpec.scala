@@ -15,14 +15,14 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
   "Parser " should {
 
     "contains file name and line number" in {
-      val rootPath = getClass.getClassLoader.getResource("")
-        .getPath + "/error-format/"
+      val rootPath = getClass.getClassLoader.getResource("").getPath +
+        "/error-format/"
       println(s"Reading files from: $rootPath")
       foreach(new File(rootPath).listFiles) { file =>
         print(s"Processing ${file.getName}: ")
         val buildSbt = Source.fromFile(file).getLines().mkString("\n")
-        SbtParser(file, buildSbt.lines.toSeq) must throwA[MessageOnlyException]
-          .like {
+        SbtParser(file, buildSbt.lines.toSeq) must
+          throwA[MessageOnlyException].like {
             case exp =>
               val message = exp.getMessage
               println(s"${exp.getMessage}")
@@ -53,13 +53,13 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
           |val a = <a/><b/>
           |val s = '
         """.stripMargin
-      SbtParser(SbtParser.FAKE_FILE, buildSbt.lines.toSeq) must throwA[
-        MessageOnlyException].like {
-        case exp =>
-          val message = exp.getMessage
-          println(s"${exp.getMessage}")
-          message must contain(SbtParser.FAKE_FILE.getName)
-      }
+      SbtParser(SbtParser.FAKE_FILE, buildSbt.lines.toSeq) must
+        throwA[MessageOnlyException].like {
+          case exp =>
+            val message = exp.getMessage
+            println(s"${exp.getMessage}")
+            message must contain(SbtParser.FAKE_FILE.getName)
+        }
     }
 
   }

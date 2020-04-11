@@ -28,8 +28,7 @@ case class BitCount(
     extends StrictKeyCommand {
   val command = Commands.BITCOUNT
   RequireClientProtocol(
-    start.isEmpty && end.isEmpty ||
-      start.isDefined && end.isDefined,
+    start.isEmpty && end.isEmpty || start.isDefined && end.isDefined,
     "Both start and end must be specified")
   def toChannelBuffer = {
     RedisCodec.toUnifiedFormat(
@@ -37,10 +36,11 @@ case class BitCount(
         (start match {
           case Some(i) => Seq(StringToChannelBuffer(i.toString))
           case None    => Seq.empty
-        }) ++ (end match {
-        case Some(i) => Seq(StringToChannelBuffer(i.toString))
-        case None    => Seq.empty
-      }))
+        }) ++
+        (end match {
+          case Some(i) => Seq(StringToChannelBuffer(i.toString))
+          case None    => Seq.empty
+        }))
   }
 }
 object BitCount {
@@ -70,8 +70,8 @@ case class BitOp(
     extends Command {
   val command = Commands.BITOP
   RequireClientProtocol(
-    (op equals BitOp.And) || (op equals BitOp.Or) ||
-      (op equals BitOp.Xor) || (op equals BitOp.Not),
+    (op equals BitOp.And) || (op equals BitOp.Or) || (op equals BitOp.Xor) ||
+      (op equals BitOp.Not),
     "BITOP supports only AND/OR/XOR/NOT")
   RequireClientProtocol(srcKeys.size > 0, "srcKeys must not be empty")
   RequireClientProtocol(
@@ -121,8 +121,8 @@ class DecrBy(val key: ChannelBuffer, val amount: Long)
   override def equals(other: Any) =
     other match {
       case that: DecrBy =>
-        that.canEqual(this) && this.key == that.key && this.amount == that
-          .amount
+        that.canEqual(this) && this.key == that.key &&
+          this.amount == that.amount
       case _ => false
     }
   def canEqual(other: Any) = other.isInstanceOf[DecrBy]
@@ -223,8 +223,8 @@ class IncrBy(val key: ChannelBuffer, val amount: Long)
   override def equals(other: Any) =
     other match {
       case that: IncrBy =>
-        that.canEqual(this) && this.key == that.key && this.amount == that
-          .amount
+        that.canEqual(this) && this.key == that.key &&
+          this.amount == that.amount
       case _ => false
     }
   def canEqual(other: Any) = other.isInstanceOf[IncrBy]

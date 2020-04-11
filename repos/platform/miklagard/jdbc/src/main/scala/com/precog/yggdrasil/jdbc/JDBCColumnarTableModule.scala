@@ -133,8 +133,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
   private def metaToColumn(meta: ResultSetMetaData, index: Int): DBColumns = {
     val columnName = meta.getColumnLabel(index)
-    val selector = paths.Value \ CPath(
-      if (unescapeColumnNames) unescapePath(columnName) else columnName)
+    val selector = paths.Value \
+      CPath(if (unescapeColumnNames) unescapePath(columnName) else columnName)
 
     import Types._
 
@@ -395,8 +395,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
                 case err =>
                   sys.error(
-                    "JDBC path " + path
-                      .path + " does not have the form /dbName/tableName; rollups not yet supported.")
+                    "JDBC path " + path.path +
+                      " does not have the form /dbName/tableName; rollups not yet supported.")
               }
 
             case InitialLoad(Nil) => M.point(None)

@@ -74,9 +74,8 @@ package scalaguide.forms.scalaforms {
 
         controllers.Application.userFormNestedCity === "Shanghai"
 
-        controllers.Application.userFormRepeatedEmails === List(
-          "benewu@gmail.com",
-          "bob@gmail.com")
+        controllers.Application.userFormRepeatedEmails ===
+          List("benewu@gmail.com", "bob@gmail.com")
 
         controllers.Application.userFormOptionalEmail === None
 
@@ -319,12 +318,13 @@ package scalaguide.forms.scalaforms {
 
       val userFormConstraintsAdHoc = Form(
         mapping("name" -> text, "age" -> number)(UserData.apply)(
-          UserData.unapply) verifying (
-          "Failed form constraints!", fields =>
-            fields match {
-              case userData => validate(userData.name, userData.age).isDefined
-            }
-        ))
+          UserData.unapply) verifying
+          (
+            "Failed form constraints!",
+            fields =>
+              fields match {
+                case userData => validate(userData.name, userData.age).isDefined
+              }))
       //#userForm-constraints-ad-hoc
 
       val userFormConstraintsAdhocName = {

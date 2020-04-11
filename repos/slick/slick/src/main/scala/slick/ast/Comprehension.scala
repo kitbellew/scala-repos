@@ -19,17 +19,13 @@ final case class Comprehension(
     extends DefNode {
   type Self = Comprehension
   lazy val children =
-    (ConstArray.newBuilder() + from + select ++ where ++ groupBy ++ orderBy
-      .map(_._1) ++ having ++ distinct ++ fetch ++ offset).result
+    (ConstArray.newBuilder() + from + select ++ where ++ groupBy ++
+      orderBy.map(_._1) ++ having ++ distinct ++ fetch ++ offset).result
   override def childNames =
-    Seq("from " + sym, "select") ++
-      where.map(_ => "where") ++
-      groupBy.map(_ => "groupBy") ++
-      orderBy.map("orderBy " + _._2).toSeq ++
-      having.map(_ => "having") ++
-      distinct.map(_ => "distinct") ++
-      fetch.map(_ => "fetch") ++
-      offset.map(_ => "offset")
+    Seq("from " + sym, "select") ++ where.map(_ => "where") ++
+      groupBy.map(_ => "groupBy") ++ orderBy.map("orderBy " + _._2).toSeq ++
+      having.map(_ => "having") ++ distinct.map(_ => "distinct") ++
+      fetch.map(_ => "fetch") ++ offset.map(_ => "offset")
   protected[this] def rebuild(ch: ConstArray[Node]) = {
     val newFrom = ch(0)
     val newSelect = ch(1)
@@ -79,10 +75,11 @@ final case class Comprehension(
     val fetch2 = mapOrNone(fetch)(_.infer(genScope, typeChildren))
     val offset2 = mapOrNone(offset)(_.infer(genScope, typeChildren))
     // Check if the nodes changed
-    val same = (f2 eq from) && (s2 eq select) && w2.isEmpty && g2.isEmpty && (
-      o2 eq o
-    ) && h2.isEmpty &&
-      distinct2.isEmpty && fetch2.isEmpty && offset2.isEmpty
+    val same =
+      (f2 eq from) &&
+        (s2 eq select) && w2.isEmpty && g2.isEmpty &&
+        (o2 eq o) && h2.isEmpty && distinct2.isEmpty && fetch2.isEmpty &&
+        offset2.isEmpty
     val newType =
       if (!hasType)
         CollectionType(

@@ -25,7 +25,8 @@ object Test extends ScaladocModelTest {
       case other =>
         assert(
           false,
-          "Incorrect valueParams generated: " + other + " instead of (arg11, arg12)(arg21, arg22)(arg31, arg32)")
+          "Incorrect valueParams generated: " + other +
+            " instead of (arg11, arg12)(arg21, arg22)(arg31, arg32)")
     }
   }
 }

@@ -341,11 +341,10 @@ class ScalaArrangementVisitor(
     val first = node.getFirstChild
     var currentNode: PsiElement = node
     var range =
-      if (first != null && first.isInstanceOf[PsiComment] && prev != null && (
-            !prev.isInstanceOf[PsiWhiteSpace] ||
-            prev.isInstanceOf[PsiWhiteSpace] && !prev.getText
-              .contains("\n") && prev.getPrevSibling != null
-          )) {
+      if (first != null && first.isInstanceOf[PsiComment] && prev != null &&
+          (!prev.isInstanceOf[PsiWhiteSpace] ||
+          prev.isInstanceOf[PsiWhiteSpace] &&
+          !prev.getText.contains("\n") && prev.getPrevSibling != null)) {
         new TextRange(
           node.getTextRange.getStartOffset + first.getTextRange.getLength + 1,
           node.getTextRange.getEndOffset)
@@ -400,9 +399,10 @@ class ScalaArrangementVisitor(
   private def parseProperties(
       method: ScFunction,
       entry: ScalaArrangementEntry) {
-    if (!(groupingRules.contains(JAVA_GETTERS_AND_SETTERS) || groupingRules
-          .contains(SCALA_GETTERS_AND_SETTERS)) ||
-        entry == null) { return }
+    if (!(groupingRules.contains(JAVA_GETTERS_AND_SETTERS) ||
+          groupingRules.contains(SCALA_GETTERS_AND_SETTERS)) || entry == null) {
+      return
+    }
     val methodName = method.getName
     val psiParent = method.getParent
     if (ScalaArrangementVisitor.isJavaGetter(method)) {
@@ -459,16 +459,16 @@ class ScalaArrangementVisitor(
 object ScalaArrangementVisitor {
   private def nameStartsWith(name: String, start: String) = {
     val length = name.length
-    name.startsWith(start) && length > start.length && !(Character
-      .isLowerCase(name.charAt(start.length())) &&
-      (length == start.length() + 1 || Character
-        .isLowerCase(name.charAt(start.length() + 1))))
+    name.startsWith(start) && length > start.length &&
+    !(Character.isLowerCase(name.charAt(start.length())) &&
+      (length == start.length() + 1 ||
+        Character.isLowerCase(name.charAt(start.length() + 1))))
   }
 
   private def hasJavaGetterName(method: ScFunction) = {
     val name = method.getName
-    if (nameStartsWith(name, "get") && !(nameStartsWith(name, "getAnd") && name
-          .charAt("getAnd".length).isUpper)) {
+    if (nameStartsWith(name, "get") && !(nameStartsWith(name, "getAnd") &&
+          name.charAt("getAnd".length).isUpper)) {
       method.returnType.getOrAny != Unit
     } else if (nameStartsWith(name, "is")) {
       method.returnType.getOrAny == Boolean
@@ -484,11 +484,11 @@ object ScalaArrangementVisitor {
     method.name.endsWith("_=")
 
   private def hasSetterSignature(method: ScFunction) =
-    method.getParameterList.getParametersCount == 1 && (method.returnType
-      .getOrAny match {
-      case Any                => true
-      case returnType: ScType => returnType == Unit
-    })
+    method.getParameterList.getParametersCount == 1 &&
+      (method.returnType.getOrAny match {
+        case Any                => true
+        case returnType: ScType => returnType == Unit
+      })
 
   private def isJavaGetter(method: ScFunction) =
     hasJavaGetterName(method) && method.getParameterList.getParametersCount == 0

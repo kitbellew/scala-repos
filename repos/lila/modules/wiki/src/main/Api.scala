@@ -15,8 +15,8 @@ private[wiki] final class Api {
       page ←
         $find.one(Json.obj("slug" -> slug, "lang" -> lang)) zip
           $find.one(Json.obj("slug" -> slug, "lang" -> DefaultLang)) map {
-          case (a, b) => a orElse b
-        }
+            case (a, b) => a orElse b
+          }
       pages ← $find(
         $query(Json.obj("lang" -> $in(Seq(lang, DefaultLang))))
           .sort($sort asc "number"))

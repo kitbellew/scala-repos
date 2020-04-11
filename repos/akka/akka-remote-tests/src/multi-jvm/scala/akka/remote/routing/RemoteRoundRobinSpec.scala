@@ -130,49 +130,49 @@ class RemoteRoundRobinSpec
   }
 
   "A remote round robin pool with resizer" must {
-    "be locally instantiated on a remote node after several resize rounds" in within(
-      5 seconds) {
+    "be locally instantiated on a remote node after several resize rounds" in
+      within(5 seconds) {
 
-      runOn(first, second, third) {
-        enterBarrier("start", "broadcast-end", "end")
+        runOn(first, second, third) {
+          enterBarrier("start", "broadcast-end", "end")
+        }
+
+        runOn(fourth) {
+          enterBarrier("start")
+          val actor = system.actorOf(
+            RoundRobinPool(nrOfInstances = 1, resizer = Some(new TestResizer))
+              .props(Props[SomeActor]),
+            "service-hello2")
+          actor.isInstanceOf[RoutedActorRef] should ===(true)
+
+          actor ! GetRoutees
+          // initial nrOfInstances 1 + initial resize => 2
+          expectMsgType[Routees].routees.size should ===(2)
+
+          val repliesFrom: Set[ActorRef] = (for (n ← 3 to 9) yield {
+            // each message trigger a resize, incrementing number of routees with 1
+            actor ! "hit"
+            Await.result(actor ? GetRoutees, timeout.duration)
+              .asInstanceOf[Routees].routees.size should ===(n)
+            expectMsgType[ActorRef]
+          }).toSet
+
+          enterBarrier("broadcast-end")
+          actor ! Broadcast(PoisonPill)
+
+          enterBarrier("end")
+          repliesFrom.size should ===(7)
+          val repliesFromAddresses = repliesFrom.map(_.path.address)
+          repliesFromAddresses should
+            ===(Set(node(first), node(second), node(third)).map(_.address))
+
+          // shut down the actor before we let the other node(s) shut down so we don't try to send
+          // "Terminate" to a shut down node
+          system.stop(actor)
+        }
+
+        enterBarrier("done")
       }
-
-      runOn(fourth) {
-        enterBarrier("start")
-        val actor = system.actorOf(
-          RoundRobinPool(nrOfInstances = 1, resizer = Some(new TestResizer))
-            .props(Props[SomeActor]),
-          "service-hello2")
-        actor.isInstanceOf[RoutedActorRef] should ===(true)
-
-        actor ! GetRoutees
-        // initial nrOfInstances 1 + initial resize => 2
-        expectMsgType[Routees].routees.size should ===(2)
-
-        val repliesFrom: Set[ActorRef] = (for (n ← 3 to 9) yield {
-          // each message trigger a resize, incrementing number of routees with 1
-          actor ! "hit"
-          Await.result(actor ? GetRoutees, timeout.duration)
-            .asInstanceOf[Routees].routees.size should ===(n)
-          expectMsgType[ActorRef]
-        }).toSet
-
-        enterBarrier("broadcast-end")
-        actor ! Broadcast(PoisonPill)
-
-        enterBarrier("end")
-        repliesFrom.size should ===(7)
-        val repliesFromAddresses = repliesFrom.map(_.path.address)
-        repliesFromAddresses should ===(
-          Set(node(first), node(second), node(third)).map(_.address))
-
-        // shut down the actor before we let the other node(s) shut down so we don't try to send
-        // "Terminate" to a shut down node
-        system.stop(actor)
-      }
-
-      enterBarrier("done")
-    }
   }
 
   "A remote round robin group" must {

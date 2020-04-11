@@ -207,8 +207,8 @@ private[spark] class AppClient(
 
       case MasterChanged(masterRef, masterWebUiUrl) =>
         logInfo(
-          "Master has changed, new master is at " + masterRef.address
-            .toSparkURL)
+          "Master has changed, new master is at " +
+            masterRef.address.toSparkURL)
         master = Some(masterRef)
         alreadyDisconnected = false
         masterRef.send(MasterChangeAcknowledged(appId.get))

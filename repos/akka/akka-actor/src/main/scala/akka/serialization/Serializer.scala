@@ -283,7 +283,8 @@ class ByteArraySerializer(val system: ExtendedActorSystem)
       case o: Array[Byte] ⇒ o
       case other ⇒
         throw new IllegalArgumentException(
-          "ByteArraySerializer only serializes byte arrays, not [" + other + "]")
+          "ByteArraySerializer only serializes byte arrays, not [" + other +
+            "]")
     }
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = bytes
 }

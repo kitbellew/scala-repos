@@ -65,9 +65,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
       system.actorFor(system / "c1") should ===(c1)
       system.actorFor(system / "c2") should ===(c2)
       system.actorFor(system / "c2" / "c21") should ===(c21)
-      system.actorFor(system child "c2" child "c21") should ===(
-        c21
-      ) // test Java API
+      system.actorFor(system child "c2" child "c21") should
+        ===(c21) // test Java API
       system.actorFor(system / Seq("c2", "c21")) should ===(c21)
 
       import scala.collection.JavaConverters._
@@ -182,10 +181,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
 
     "find actors by looking up their path" in {
       def check(looker: ActorRef, pathOf: ActorRef, result: ActorRef) {
-        Await
-          .result(
-            looker ? LookupPath(pathOf.path),
-            timeout.duration) should ===(result)
+        Await.result(looker ? LookupPath(pathOf.path), timeout.duration) should
+          ===(result)
       }
       for {
         looker ← all
@@ -230,8 +227,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
 
     "find actors by looking up their relative path" in {
       def check(looker: ActorRef, result: ActorRef, elems: String*) {
-        Await.result(looker ? LookupElems(elems), timeout.duration) should ===(
-          result)
+        Await.result(looker ? LookupElems(elems), timeout.duration) should
+          ===(result)
         Await.result(
           looker ? LookupString(elems mkString "/"),
           timeout.duration) should ===(result)
@@ -253,9 +250,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
       def check(target: ActorRef) {
         for (looker ← all) {
           Await
-            .result(
-              looker ? LookupPath(target.path),
-              timeout.duration) should ===(target)
+            .result(looker ? LookupPath(target.path), timeout.duration) should
+            ===(target)
           Await.result(
             looker ? LookupString(target.path.toString),
             timeout.duration) should ===(target)
@@ -267,8 +263,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
             timeout.duration) should ===(target)
           if (target != root)
             Await.result(
-              looker ? LookupString(
-                target.path.elements.mkString("/", "/", "/")),
+              looker ?
+                LookupString(target.path.elements.mkString("/", "/", "/")),
               timeout.duration) should ===(target)
         }
       }
@@ -290,12 +286,10 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
                LookupString("") -> system.deadLetters,
                LookupString("akka://all-systems/Nobody") -> system.deadLetters,
                LookupPath(system / "hallo") -> empty("user/hallo"),
-               LookupPath(looker.path child "hallo") -> empty(
-                 lookname + "hallo"
-               ), // test Java API
-               LookupPath(looker.path descendant Seq("a", "b").asJava) -> empty(
-                 lookname + "a/b"
-               ), // test Java API
+               LookupPath(looker.path child "hallo") ->
+                 empty(lookname + "hallo"), // test Java API
+               LookupPath(looker.path descendant Seq("a", "b").asJava) ->
+                 empty(lookname + "a/b"), // test Java API
                LookupElems(Seq()) -> system.deadLetters,
                LookupElems(Seq("a")) -> empty(lookname + "a")
              )) checkOne(looker, l, r)
@@ -308,10 +302,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
       val a = expectMsgType[ActorRef]
       a.path.elements.head should ===("temp")
       Await.result(c2 ? LookupPath(a.path), timeout.duration) should ===(a)
-      Await
-        .result(
-          c2 ? LookupString(a.path.toString),
-          timeout.duration) should ===(a)
+      Await.result(c2 ? LookupString(a.path.toString), timeout.duration) should
+        ===(a)
       Await.result(
         c2 ? LookupString(a.path.toStringWithoutAddress),
         timeout.duration) should ===(a)

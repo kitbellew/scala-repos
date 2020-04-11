@@ -189,9 +189,8 @@ object BodyParserSpec
 
     "fail with simple result" in prop { (s: Result) =>
       mustExecute(1) { implicit ec => // one execution from `validateM`
-        run {
-          constant(0).validateM { _ => Future.successful(Left(s)) }
-        } must beLeft(s)
+        run { constant(0).validateM { _ => Future.successful(Left(s)) } } must
+          beLeft(s)
       }
     }
   }

@@ -20,10 +20,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
     val ts = TableQuery[T]
 
     for {
-      _ <- db.run {
-        ts.schema.create >>
-          (ts ++= Seq(2, 3, 1, 5, 4))
-      }
+      _ <- db.run { ts.schema.create >> (ts ++= Seq(2, 3, 1, 5, 4)) }
       q1 = ts.sortBy(_.a).map(_.a)
       f1 = db.run(q1.result)
       r1 <- f1: Future[Seq[Int]]
@@ -83,9 +80,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
     val q1 = ts.sortBy(_.a).map(_.a)
 
     val p1 = db.stream {
-      ts.schema.create >>
-        (ts ++= Seq(2, 3, 1, 5, 4)) >>
-        q1.result
+      ts.schema.create >> (ts ++= Seq(2, 3, 1, 5, 4)) >> q1.result
     }
 
     for {
@@ -127,10 +122,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
     }
     val ts = TableQuery[T]
     for {
-      _ <- db.run {
-        ts.schema.create >>
-          (ts ++= Seq(2, 3, 1, 5, 4))
-      }
+      _ <- db.run { ts.schema.create >> (ts ++= Seq(2, 3, 1, 5, 4)) }
       needFlatten = for (_ <- ts.result) yield ts.result
       result <- db.run(needFlatten.flatten)
       _ = result shouldBe Seq(2, 3, 1, 5, 4)
@@ -145,10 +137,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
     val ts = TableQuery[T]
 
     for {
-      _ <- db.run {
-        ts.schema.create >>
-          (ts ++= Seq(2, 3, 1, 5, 4))
-      }
+      _ <- db.run { ts.schema.create >> (ts ++= Seq(2, 3, 1, 5, 4)) }
       q1 = ts.sortBy(_.a).map(_.a).take(1)
       result <- db.run(q1.result.head.zipWith(q1.result.head)({
         case (a, b) => a + b
@@ -165,10 +154,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
     }
     val ts = TableQuery[T]
     for {
-      _ <- db.run {
-        ts.schema.create >>
-          (ts ++= Seq(2, 3, 1, 5, 4))
-      }
+      _ <- db.run { ts.schema.create >> (ts ++= Seq(2, 3, 1, 5, 4)) }
       q1 = ts.sortBy(_.a).map(_.a).take(1)
       result <- db.run(q1.result.headOption.collect { case Some(a) => a })
       _ = result shouldBe 1

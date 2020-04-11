@@ -49,8 +49,8 @@ object System {
 
     @inline
     def checkIndices(srcLen: Int, destLen: Int): Unit = {
-      if (srcPos < 0 || destPos < 0 || length < 0 ||
-          srcPos + length > srcLen || destPos + length > destLen)
+      if (srcPos < 0 || destPos < 0 || length < 0 || srcPos + length > srcLen ||
+          destPos + length > destLen)
         throw new ArrayIndexOutOfBoundsException("Array index out of bounds")
     }
 

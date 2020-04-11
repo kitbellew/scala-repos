@@ -43,23 +43,16 @@ object Q extends AutoPlugin {
   override def requires: Plugins = A && B
   override def trigger = allRequirements
 
-  override def projectConfigurations: Seq[Configuration] =
-    p ::
-      q ::
-      Nil
+  override def projectConfigurations: Seq[Configuration] = p :: q :: Nil
 
   override def projectSettings: Seq[Setting[_]] =
-    (demo := s"project ${name.value}") ::
-      (del in q := " Q") ::
-      Nil
+    (demo := s"project ${name.value}") :: (del in q := " Q") :: Nil
 
   override def buildSettings: Seq[Setting[_]] =
-    (demo := s"build ${buildCount.getAndIncrement}") ::
-      Nil
+    (demo := s"build ${buildCount.getAndIncrement}") :: Nil
 
   override def globalSettings: Seq[Setting[_]] =
-    (demo := s"global ${globalCount.getAndIncrement}") ::
-      Nil
+    (demo := s"global ${globalCount.getAndIncrement}") :: Nil
 
   // used to ensure the build-level and global settings are only added once
   private[this] val buildCount = new AInt(0)

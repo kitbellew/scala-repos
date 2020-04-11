@@ -49,8 +49,8 @@ class ClassloadVerify extends ScalaMatchingTask {
         log(name + " failed verification with: " + error, Project.MSG_ERR)
       }
       buildError(
-        errors.size + " classload verification errors on " + results
-          .size + " classes.")
+        errors.size + " classload verification errors on " + results.size +
+          " classes.")
     }
   }
 

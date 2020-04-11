@@ -52,18 +52,19 @@ class OutputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
       p.expectMsg("closed")
     }
 
-    "close underlying stream when completion received" in assertAllStagesStopped {
-      val p = TestProbe()
-      Source.empty.runWith(StreamConverters.fromOutputStream(() ⇒
-        new OutputStream {
-          override def write(i: Int): Unit = ()
-          override def write(bytes: Array[Byte]): Unit =
-            p.ref ! ByteString(bytes).utf8String
-          override def close() = p.ref ! "closed"
-        }))
+    "close underlying stream when completion received" in
+      assertAllStagesStopped {
+        val p = TestProbe()
+        Source.empty.runWith(StreamConverters.fromOutputStream(() ⇒
+          new OutputStream {
+            override def write(i: Int): Unit = ()
+            override def write(bytes: Array[Byte]): Unit =
+              p.ref ! ByteString(bytes).utf8String
+            override def close() = p.ref ! "closed"
+          }))
 
-      p.expectMsg("closed")
-    }
+        p.expectMsg("closed")
+      }
 
   }
 

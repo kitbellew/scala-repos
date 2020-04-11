@@ -25,12 +25,11 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 class RedundantBlockInspection extends AbstractInspection {
 
   def actionFor(holder: ProblemsHolder) = {
-    case (block: ScBlock) childOf (
-          (blockOfExpr: ScBlock) childOf (_: ScCaseClause)
-        )
+    case (block: ScBlock) childOf
+        ((blockOfExpr: ScBlock) childOf (_: ScCaseClause))
         if block.hasRBrace && block.getFirstChild.getText == "{" &&
-          blockOfExpr.getChildren.length == 1 && !block.getChildren
-          .exists(_.isInstanceOf[ScCaseClauses]) =>
+          blockOfExpr.getChildren.length == 1 &&
+          !block.getChildren.exists(_.isInstanceOf[ScCaseClauses]) =>
       holder.registerProblem(
         block,
         new TextRange(0, 1),
@@ -81,11 +80,11 @@ object RedundantBlockInspection {
         case _: ScInterpolatedStringLiteral =>
           val text = child.getText
           val nextLetter = next.getText.headOption.getOrElse(' ')
-          val checkId = ScalaNamesUtil.isIdentifier(text) && (
-            nextLetter == '$' || !ScalaNamesUtil.isIdentifier(text + nextLetter)
-          )
-          checkId && !text.startsWith("_") && !text.exists(_ == '$') && !text
-            .startsWith("`")
+          val checkId = ScalaNamesUtil.isIdentifier(text) &&
+            (nextLetter == '$' ||
+              !ScalaNamesUtil.isIdentifier(text + nextLetter))
+          checkId && !text.startsWith("_") && !text.exists(_ == '$') &&
+          !text.startsWith("`")
         case _ => false
       }
     } else false

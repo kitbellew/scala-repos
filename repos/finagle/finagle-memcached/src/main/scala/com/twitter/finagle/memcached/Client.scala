@@ -895,11 +895,11 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
     reqRep.response match {
       case Return(_) => true
       case Throw(f: Failure)
-          if f.cause.exists(_.isInstanceOf[CancelledRequestException]) && f
-            .isFlagged(Failure.Interrupted) => true
+          if f.cause.exists(_.isInstanceOf[CancelledRequestException]) &&
+            f.isFlagged(Failure.Interrupted) => true
       case Throw(f: Failure)
-          if f.cause.exists(_.isInstanceOf[CancelledConnectionException]) && f
-            .isFlagged(Failure.Interrupted) => true
+          if f.cause.exists(_.isInstanceOf[CancelledConnectionException]) &&
+            f.isFlagged(Failure.Interrupted) => true
       // Failure.InterruptedBy(_) would subsume all these eventually after rb/334371
       case Throw(WriteException(_: CancelledRequestException))    => true
       case Throw(_: CancelledRequestException)                    => true
@@ -1110,8 +1110,8 @@ private[finagle] class KetamaPartitionedClient(
       expiry: Time,
       value: Buf,
       casUnique: Buf) =
-    ready.interruptible before super
-      .checkAndSet(key, flags, expiry, value, casUnique)
+    ready.interruptible before
+      super.checkAndSet(key, flags, expiry, value, casUnique)
 
   override def add(key: String, flags: Int, expiry: Time, value: Buf) =
     ready.interruptible before super.add(key, flags, expiry, value)
@@ -1232,8 +1232,9 @@ case class KetamaClientBuilder private[memcached] (
     copy(_ejectFailedHost = eject)
 
   def build(): Client = {
-    val stackBasedClient = (_clientBuilder getOrElse ClientBuilder()
-      .hostConnectionLimit(1).daemon(true)).codec(text.Memcached()).underlying
+    val stackBasedClient =
+      (_clientBuilder getOrElse ClientBuilder().hostConnectionLimit(1)
+        .daemon(true)).codec(text.Memcached()).underlying
 
     val keyHasher = KeyHasher.byName(_hashName.getOrElse("ketama"))
 

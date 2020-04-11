@@ -26,13 +26,13 @@ object QaAnswer extends QaController {
 
   def accept(questionId: QuestionId, answerId: AnswerId) =
     AuthBody { implicit ctx => me =>
-      (api.question findById questionId) zip (api
-        .answer findById answerId) flatMap {
-        case (Some(q), Some(a)) if (QaAuth canEdit q) =>
-          api.answer.accept(q, a) inject Redirect(
-            routes.QaQuestion.show(q.id, q.slug))
-        case _ => notFound
-      }
+      (api.question findById questionId) zip
+        (api.answer findById answerId) flatMap {
+          case (Some(q), Some(a)) if (QaAuth canEdit q) =>
+            api.answer.accept(q, a) inject
+              Redirect(routes.QaQuestion.show(q.id, q.slug))
+          case _ => notFound
+        }
     }
 
   def vote(questionId: QuestionId, answerId: AnswerId) =

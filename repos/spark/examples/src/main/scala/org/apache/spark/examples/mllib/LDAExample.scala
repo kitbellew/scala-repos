@@ -168,8 +168,8 @@ object LDAExample {
 
     if (ldaModel.isInstanceOf[DistributedLDAModel]) {
       val distLDAModel = ldaModel.asInstanceOf[DistributedLDAModel]
-      val avgLogLikelihood = distLDAModel.logLikelihood / actualCorpusSize
-        .toDouble
+      val avgLogLikelihood = distLDAModel.logLikelihood /
+        actualCorpusSize.toDouble
       println(s"\t Training data average log likelihood: $avgLogLikelihood")
       println()
     }

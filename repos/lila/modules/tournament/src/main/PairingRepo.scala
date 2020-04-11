@@ -70,9 +70,9 @@ object PairingRepo {
   def byTourUserNb(
       tourId: String,
       userId: String,
-      nb: Int): Fu[Option[Pairing]] =
-    (nb > 0) ?? coll.find(selectTourUser(tourId, userId)).sort(chronoSort)
-      .skip(nb - 1).one[Pairing]
+      nb: Int): Fu[Option[Pairing]] = (nb > 0) ??
+    coll.find(selectTourUser(tourId, userId)).sort(chronoSort).skip(nb - 1)
+      .one[Pairing]
 
   def removeByTour(tourId: String) = coll.remove(selectTour(tourId)).void
 

@@ -33,8 +33,8 @@ object ApplyUsage extends App {
   assert(Apply[Option].ap(1.some)(none[Int => Int]) === none[Int])
   assert(Apply[Option].ap(none)(none[Int => Int]) === none[Int])
   assert(
-    Apply[List].ap(List(1, 2, 3))(List(double, addTwo)) === List(
-      2, 4, 6, 3, 4, 5))
+    Apply[List].ap(List(1, 2, 3))(List(double, addTwo)) ===
+      List(2, 4, 6, 3, 4, 5))
 
   // from these two methods (map and ap) we are able to derive some
   // very useful methods which allow us to "lift" a function of
@@ -57,14 +57,13 @@ object ApplyUsage extends App {
   // tuple2, tuple3 etc, will construct tuples from values from the
   // provided contexts
   assert(
-    Apply[List].tuple3(List(1, 2, 3), List("a", "b"), List(())) ===
-      List(
-        (1, "a", ()),
-        (1, "b", ()),
-        (2, "a", ()),
-        (2, "b", ()),
-        (3, "a", ()),
-        (3, "b", ())))
+    Apply[List].tuple3(List(1, 2, 3), List("a", "b"), List(())) === List(
+      (1, "a", ()),
+      (1, "b", ()),
+      (2, "a", ()),
+      (2, "b", ()),
+      (3, "a", ()),
+      (3, "b", ())))
 
   // There some helpful syntax available for the Apply typeclass:
   import scalaz.syntax.apply._
@@ -83,24 +82,23 @@ object ApplyUsage extends App {
   def add8(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int, g: Int, h: Int) =
     a + b + c + d + e + f + g + h
   val someOf8Options =
-    (1.some |@| 2.some |@| 3.some |@| 4.some |@|
-      5.some |@| 6.some |@| 7.some |@| 8.some)(add8 _)
+    (1.some |@| 2.some |@| 3.some |@| 4.some |@| 5.some |@| 6.some |@|
+      7.some |@| 8.some)(add8 _)
   assert(someOf8Options === 36.some)
 
   // the applicative builder created by |@| also has a "tupled" method
   // which will tuple the arguments
   assert(
-    (List(1, 2, 3) |@| List("a", "b", "c")).tupled ===
-      List(
-        1 -> "a",
-        1 -> "b",
-        1 -> "c",
-        2 -> "a",
-        2 -> "b",
-        2 -> "c",
-        3 -> "a",
-        3 -> "b",
-        3 -> "c"))
+    (List(1, 2, 3) |@| List("a", "b", "c")).tupled === List(
+      1 -> "a",
+      1 -> "b",
+      1 -> "c",
+      2 -> "a",
+      2 -> "b",
+      2 -> "c",
+      3 -> "a",
+      3 -> "b",
+      3 -> "c"))
 
   // there are ^, ^^, ^^^, etc methods which correspond respectively
   // to apply2, apply, apply4, etc.

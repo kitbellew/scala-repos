@@ -619,11 +619,8 @@ object Buf {
         buf.slice(0, 4).write(arr, 0)
         val rem = buf.slice(4, buf.length)
 
-        val value =
-          ((arr(0) & 0xff) << 24) |
-            ((arr(1) & 0xff) << 16) |
-            ((arr(2) & 0xff) << 8) |
-            ((arr(3) & 0xff))
+        val value = ((arr(0) & 0xff) << 24) | ((arr(1) & 0xff) << 16) |
+          ((arr(2) & 0xff) << 8) | ((arr(3) & 0xff))
         Some((value, rem))
       }
   }
@@ -693,11 +690,8 @@ object Buf {
         buf.slice(0, 4).write(arr, 0)
         val rem = buf.slice(4, buf.length)
 
-        val value =
-          ((arr(0) & 0xff)) |
-            ((arr(1) & 0xff) << 8) |
-            ((arr(2) & 0xff) << 16) |
-            ((arr(3) & 0xff) << 24)
+        val value = ((arr(0) & 0xff)) | ((arr(1) & 0xff) << 8) |
+          ((arr(2) & 0xff) << 16) | ((arr(3) & 0xff) << 24)
         Some((value, rem))
       }
   }

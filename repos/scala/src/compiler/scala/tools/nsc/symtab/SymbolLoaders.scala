@@ -174,9 +174,8 @@ abstract class SymbolLoaders {
       classRep: ClassRepresentation[AbstractFile]) {
     ((classRep.binary, classRep.source): @unchecked) match {
       case (Some(bin), Some(src))
-          if platform.needCompile(bin, src) && !binaryOnly(
-            owner,
-            classRep.name) =>
+          if platform.needCompile(bin, src) &&
+            !binaryOnly(owner, classRep.name) =>
         if (settings.verbose)
           inform("[symloader] picked up newer source file for " + src.path)
         enterToplevelsFromSource(owner, classRep.name, src)
@@ -218,12 +217,13 @@ abstract class SymbolLoaders {
     private var ok = false
 
     private def setSource(sym: Symbol) {
-      sourcefile foreach (sf =>
-        sym match {
-          case cls: ClassSymbol  => cls.associatedFile = sf
-          case mod: ModuleSymbol => mod.moduleClass.associatedFile = sf
-          case _                 => ()
-        })
+      sourcefile foreach
+        (sf =>
+          sym match {
+            case cls: ClassSymbol  => cls.associatedFile = sf
+            case mod: ModuleSymbol => mod.moduleClass.associatedFile = sf
+            case _                 => ()
+          })
     }
 
     override def complete(root: Symbol) {

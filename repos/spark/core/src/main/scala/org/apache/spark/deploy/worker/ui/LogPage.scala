@@ -121,9 +121,7 @@ private[ui] class LogPage(parent: WorkerWebUI)
             .format(params, logType, endByte, byteLength)
         }>
           <button type="button" class="btn btn-default">
-            Next {
-          Utils.bytesToString(math.min(byteLength, logLength - endByte))
-        }
+            Next {Utils.bytesToString(math.min(byteLength, logLength - endByte))}
           </button>
         </a>
       } else {

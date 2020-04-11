@@ -32,13 +32,13 @@ class HttpsRulesSpec extends Specification {
     }
 
     "generate a correct Strict-Transport-Security header without sub-domains" in {
-      HttpsRules(Some(Duration(1440, SECONDS)), false).headers must_== List(
-        "Strict-Transport-Security" -> "max-age=1440")
+      HttpsRules(Some(Duration(1440, SECONDS)), false).headers must_==
+        List("Strict-Transport-Security" -> "max-age=1440")
     }
 
     "generate a correct Strict-Transport-Security header including sub-domains" in {
-      HttpsRules(Some(Duration(1440, SECONDS)), true).headers must_== List(
-        "Strict-Transport-Security" -> "max-age=1440 ; includeSubDomains")
+      HttpsRules(Some(Duration(1440, SECONDS)), true).headers must_==
+        List("Strict-Transport-Security" -> "max-age=1440 ; includeSubDomains")
     }
   }
 }
@@ -46,19 +46,18 @@ class HttpsRulesSpec extends Specification {
 class ContentSecurityPolicySpec extends Specification {
   "ContentSecurityPolicy" should {
     "default to accepting images from everywhere" in {
-      ContentSecurityPolicy().imageSources must_== List(
-        ContentSourceRestriction.All)
+      ContentSecurityPolicy().imageSources must_==
+        List(ContentSourceRestriction.All)
     }
 
     "default to allowing script eval and script sources only from self" in {
-      ContentSecurityPolicy().scriptSources must_== List(
-        ContentSourceRestriction.UnsafeEval,
-        ContentSourceRestriction.Self)
+      ContentSecurityPolicy().scriptSources must_==
+        List(ContentSourceRestriction.UnsafeEval, ContentSourceRestriction.Self)
     }
 
     "default to allowing everything else only from self" in {
-      ContentSecurityPolicy().defaultSources must_== List(
-        ContentSourceRestriction.Self)
+      ContentSecurityPolicy().defaultSources must_==
+        List(ContentSourceRestriction.Self)
       ContentSecurityPolicy().connectSources must_== Nil
       ContentSecurityPolicy().fontSources must_== Nil
       ContentSecurityPolicy().frameSources must_== Nil
@@ -68,8 +67,8 @@ class ContentSecurityPolicySpec extends Specification {
     }
 
     "provide a secure setting that drops image sources to the default restrictions" in {
-      ContentSecurityPolicy.secure.defaultSources must_== List(
-        ContentSourceRestriction.Self)
+      ContentSecurityPolicy.secure.defaultSources must_==
+        List(ContentSourceRestriction.Self)
       ContentSecurityPolicy.secure.imageSources must_== Nil
       ContentSecurityPolicy.secure.connectSources must_== Nil
       ContentSecurityPolicy.secure.fontSources must_== Nil
@@ -80,8 +79,8 @@ class ContentSecurityPolicySpec extends Specification {
     }
 
     "default to reporting to the CSP default report URI" in {
-      ContentSecurityPolicy().reportUri must_== Some(
-        ContentSecurityPolicy.defaultReportUri)
+      ContentSecurityPolicy().reportUri must_==
+        Some(ContentSecurityPolicy.defaultReportUri)
     }
 
     "provide [X-]Content-Security-Policy if enforcement is enabled" in {
@@ -194,8 +193,8 @@ class ContentSecurityPolicySpec extends Specification {
 class FrameRestrictionsSpec extends Specification {
   "FrameRestrictions" should {
     "provide the correct X-Frame-Options setting for SameOrigin restrictions" in {
-      FrameRestrictions.SameOrigin.headers must_== List(
-        "X-Frame-Options" -> "SAMEORIGIN")
+      FrameRestrictions.SameOrigin.headers must_==
+        List("X-Frame-Options" -> "SAMEORIGIN")
     }
 
     "provide the correct X-Frame-Options setting for Deny restrictions" in {
@@ -213,8 +212,8 @@ class SecurityRulesSpec extends Specification {
     }
 
     "default to same-origin frame restrictions" in {
-      SecurityRules().frameRestrictions must_== Some(
-        FrameRestrictions.SameOrigin)
+      SecurityRules().frameRestrictions must_==
+        Some(FrameRestrictions.SameOrigin)
     }
 
     "default to enforcing in no modes and logging in all modes" in {

@@ -24,8 +24,8 @@ class HoconCommentJoinLinesHandler extends JoinLinesHandlerDelegate {
       case hoconFile: HoconPsiFile =>
         import CommonUtil._
         val element = file.findElementAt(start)
-        if (element != null && HoconTokenSets.Comment
-              .contains(element.getNode.getElementType)) {
+        if (element != null &&
+            HoconTokenSets.Comment.contains(element.getNode.getElementType)) {
           val joinedSequence = document.getCharsSequence
             .subSequence(end, document.getTextLength)
           List("#", "//").find(joinedSequence.startsWith).map { nextPrefix =>

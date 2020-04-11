@@ -101,8 +101,8 @@ final class PNCounter private[akka] (
       decrements = that.decrements.merge(this.decrements))
 
   override def needPruningFrom(removedNode: UniqueAddress): Boolean =
-    increments.needPruningFrom(removedNode) || decrements
-      .needPruningFrom(removedNode)
+    increments.needPruningFrom(removedNode) ||
+      decrements.needPruningFrom(removedNode)
 
   override def prune(
       removedNode: UniqueAddress,

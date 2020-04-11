@@ -117,8 +117,8 @@ trait CheckpointState[T] extends WaitingState[Interval[Timestamp]] {
     override def willAccept(available: Interval[Timestamp]) =
       available match {
         case intersection @ Intersection(low, high)
-            if checkInterval(intersection) && hasStarted
-              .compareAndSet(false, true) =>
+            if checkInterval(intersection) &&
+              hasStarted.compareAndSet(false, true) =>
           intersection.toLeftClosedRightOpen match {
             case Some(leftClosedRightOpenIntersection) =>
               val batchToken: T = checkpointStore
@@ -180,7 +180,7 @@ trait CheckpointState[T] extends WaitingState[Interval[Timestamp]] {
     (for {
       lowerBound <- low.least
       upperBound <- high.strictUpperBound
-    } yield checkpointStore.batcher.isLowerBatchEdge(lowerBound)
-      && checkpointStore.batcher.isLowerBatchEdge(upperBound)).getOrElse(false)
+    } yield checkpointStore.batcher.isLowerBatchEdge(lowerBound) &&
+      checkpointStore.batcher.isLowerBatchEdge(upperBound)).getOrElse(false)
 
 }

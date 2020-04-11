@@ -121,8 +121,8 @@ object Coproduct extends Dynamic {
 
   implicit def cpOps[C <: Coproduct](c: C) = new CoproductOps(c)
 
-  def unsafeMkCoproduct(length: Int, value: Any) =
-    (0 until length).foldLeft[Coproduct](Inl(value))((accum, _) => Inr(accum))
+  def unsafeMkCoproduct(length: Int, value: Any) = (0 until length)
+    .foldLeft[Coproduct](Inl(value))((accum, _) => Inr(accum))
 
   @tailrec
   def unsafeGet(c: Coproduct): Any =

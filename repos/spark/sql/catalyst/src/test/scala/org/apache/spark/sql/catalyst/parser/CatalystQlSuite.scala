@@ -259,8 +259,7 @@ class CatalystQlSuite extends PlanTest {
       parser.parsePlan("select * from t1 join t2 using (t1.c1)"))
     assert(error.message.contains("mismatched input '.'"))
     error = intercept[AnalysisException](parser.parsePlan(
-      "select * from t1" +
-        " join t2 using (c1) on t1.c1 = t2.c1"))
+      "select * from t1" + " join t2 using (c1) on t1.c1 = t2.c1"))
     assert(error.message.contains("missing EOF at 'on' near ')'"))
   }
 }

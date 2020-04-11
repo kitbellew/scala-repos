@@ -12,8 +12,7 @@ object QaQuestion extends QaController {
 
   def index(page: Option[Int] = None) =
     Open { implicit ctx =>
-      api.question.recentPaginator(page getOrElse 1, 20) zip
-        fetchPopular map {
+      api.question.recentPaginator(page getOrElse 1, 20) zip fetchPopular map {
         case (questions, popular) => Ok(html.qa.index(questions, popular))
       }
     }
@@ -31,8 +30,7 @@ object QaQuestion extends QaController {
 
   def byTag(tag: String) =
     Open { implicit ctx =>
-      api.question.byTag(tag, 20) zip
-        fetchPopular map {
+      api.question.byTag(tag, 20) zip fetchPopular map {
         case (questions, popular) => Ok(html.qa.byTag(tag, questions, popular))
       }
     }

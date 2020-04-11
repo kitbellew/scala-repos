@@ -102,8 +102,7 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
           {runningExecutorTable}
           {
       if (runningDrivers.nonEmpty) {
-        <h4> Running Drivers ({runningDrivers.size}) </h4> ++
-          runningDriverTable
+        <h4> Running Drivers ({runningDrivers.size}) </h4> ++ runningDriverTable
       }
     }
           {

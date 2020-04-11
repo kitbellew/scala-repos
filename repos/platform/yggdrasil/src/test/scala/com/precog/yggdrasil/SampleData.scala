@@ -49,8 +49,7 @@ case class SampleData(
     schema: Option[(Int, JSchema)] = None) {
   override def toString = {
     "SampleData: \ndata = " + data.map(_.toString.replaceAll("\n", "\n  "))
-      .mkString("[\n  ", ",\n  ", "]\n") +
-      "\nschema: " + schema
+      .mkString("[\n  ", ",\n  ", "]\n") + "\nschema: " + schema
   }
 
   def sortBy[B: Ordering](f: JValue => B) = copy(data = data.sortBy(f))

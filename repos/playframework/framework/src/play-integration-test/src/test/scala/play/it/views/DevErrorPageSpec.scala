@@ -24,8 +24,8 @@ object DevErrorPageSpec extends PlaySpecification {
       _.configure("play.editor" -> "someEditorLinkWith %s:%s")) {
       val result = app.errorHandler
         .onServerError(FakeRequest(), testExceptionSource)
-      contentAsString(result) must contain(
-        """href="someEditorLinkWith someSourceFile:100" """)
+      contentAsString(result) must
+        contain("""href="someEditorLinkWith someSourceFile:100" """)
     }
 
     "show prod error page in prod mode" in {

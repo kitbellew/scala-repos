@@ -21,13 +21,13 @@ object DefaultBodyParserSpec extends PlaySpecification {
     }
 
     "ignore text bodies for DELETE requests" in new WithApplication() {
-      parse("GET", Some("text/plain"), ByteString("bar")) must beRight(
-        AnyContentAsEmpty)
+      parse("GET", Some("text/plain"), ByteString("bar")) must
+        beRight(AnyContentAsEmpty)
     }
 
     "ignore text bodies for GET requests" in new WithApplication() {
-      parse("GET", Some("text/plain"), ByteString("bar")) must beRight(
-        AnyContentAsEmpty)
+      parse("GET", Some("text/plain"), ByteString("bar")) must
+        beRight(AnyContentAsEmpty)
     }
 
     "ignore text bodies for HEAD requests" in new WithApplication() {
@@ -35,18 +35,18 @@ object DefaultBodyParserSpec extends PlaySpecification {
     }
 
     "ignore text bodies for OPTIONS requests" in new WithApplication() {
-      parse("GET", Some("text/plain"), ByteString("bar")) must beRight(
-        AnyContentAsEmpty)
+      parse("GET", Some("text/plain"), ByteString("bar")) must
+        beRight(AnyContentAsEmpty)
     }
 
     "parse XML bodies for PATCH requests" in new WithApplication() {
-      parse("POST", Some("text/xml"), ByteString("<bar></bar>")) must beRight(
-        AnyContentAsXml(<bar></bar>))
+      parse("POST", Some("text/xml"), ByteString("<bar></bar>")) must
+        beRight(AnyContentAsXml(<bar></bar>))
     }
 
     "parse text bodies for POST requests" in new WithApplication() {
-      parse("POST", Some("text/plain"), ByteString("bar")) must beRight(
-        AnyContentAsText("bar"))
+      parse("POST", Some("text/plain"), ByteString("bar")) must
+        beRight(AnyContentAsText("bar"))
     }
 
     "parse JSON bodies for PUT requests" in new WithApplication() {

@@ -57,8 +57,7 @@ class PageRank(args: Args) extends Job(args) {
        * and output should be swapping.
        */
       val nextArgs = args + ("input", Some(args("output"))) +
-        ("temp", Some(args("output"))) +
-        ("output", Some(args("temp"))) +
+        ("temp", Some(args("output"))) + ("output", Some(args("temp"))) +
         ("jobCount", Some((JOB_COUNT + 1).toString))
       //Actually read the error:
       val error = TypedTsv[Double](args("errorOut")).toIterator.next;
@@ -123,14 +122,14 @@ class PageRank(args: Args) extends Job(args) {
       //Here we make a false row that we use to tell dst how much incoming
       //Page rank it needs to add to itself:
         .map(
-          ('src, 'd_src, 'dst, 'rank, 'rowtype) -> (
-            'src, 'd_src, 'dst, 'rank, 'rowtype
-          )) { intup: (Long, Long, Long, Double, Int) =>
-          val (src: Long, d_src: Long, dst: Long, rank: Double, row: Int) =
-            intup
-          //The d_src, and dst are ignored in the merge below
-          //We swap destination into the source position
-          (dst, -1L, "", rank * (1.0 - ALPHA) / d_src, EDGE)
+          ('src, 'd_src, 'dst, 'rank, 'rowtype) ->
+            ('src, 'd_src, 'dst, 'rank, 'rowtype)) {
+          intup: (Long, Long, Long, Double, Int) =>
+            val (src: Long, d_src: Long, dst: Long, rank: Double, row: Int) =
+              intup
+            //The d_src, and dst are ignored in the merge below
+            //We swap destination into the source position
+            (dst, -1L, "", rank * (1.0 - ALPHA) / d_src, EDGE)
         }
 
       /**

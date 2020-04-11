@@ -63,8 +63,9 @@ class BloomFilter[@specialized(Int, Long) T](
   override def equals(other: Any) =
     other match {
       case that: BloomFilter[_] =>
-        this.numBuckets == that.numBuckets && this.numHashFunctions == that
-          .numHashFunctions && this.bits == that.bits
+        this.numBuckets == that.numBuckets &&
+          this.numHashFunctions == that.numHashFunctions &&
+          this.bits == that.bits
       case _ => false
     }
 

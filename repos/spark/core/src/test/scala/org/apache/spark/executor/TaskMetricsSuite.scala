@@ -57,8 +57,8 @@ class TaskMetricsSuite extends SparkFunSuite {
   test("create with unnamed accum") {
     intercept[IllegalArgumentException] {
       new TaskMetrics(
-        InternalAccumulator.createAll() ++ Seq(
-          new Accumulator(0, IntAccumulatorParam, None, internal = true)))
+        InternalAccumulator.createAll() ++
+          Seq(new Accumulator(0, IntAccumulatorParam, None, internal = true)))
     }
   }
 
@@ -76,8 +76,8 @@ class TaskMetricsSuite extends SparkFunSuite {
   test("create with external accum") {
     intercept[IllegalArgumentException] {
       new TaskMetrics(
-        InternalAccumulator.createAll() ++ Seq(
-          new Accumulator(0, IntAccumulatorParam, Some("x"))))
+        InternalAccumulator.createAll() ++
+          Seq(new Accumulator(0, IntAccumulatorParam, Some("x"))))
     }
   }
 
@@ -633,8 +633,8 @@ class TaskMetricsSuite extends SparkFunSuite {
     unregisteredAccums.zipWithIndex.foreach { case (a, i) => a.setValue(i) }
     val registeredAccumInfos = registeredAccums.map(makeInfo)
     val unregisteredAccumInfos = unregisteredAccums.map(makeInfo)
-    val accumUpdates2 =
-      accumUpdates1 ++ registeredAccumInfos ++ unregisteredAccumInfos
+    val accumUpdates2 = accumUpdates1 ++ registeredAccumInfos ++
+      unregisteredAccumInfos
     // Simply checking that this does not crash:
     TaskMetrics.fromAccumulatorUpdates(accumUpdates2)
   }

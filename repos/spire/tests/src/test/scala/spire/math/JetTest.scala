@@ -234,13 +234,13 @@ class JetTest extends FunSuite with Matchers {
 
     def a_times_b[@sp(Double) T: Field: Trig](x: T): T = a(x) * b(x)
     a_times_b(jx).real should be(a(x) * b(x))
-    a_times_b(jx).infinitesimal(0) should be(
-      da(x) * b(x) + a(x) * db(x) +- maxError)
+    a_times_b(jx).infinitesimal(0) should
+      be(da(x) * b(x) + a(x) * db(x) +- maxError)
 
     def a_div_b[@sp(Double) T: Field: Trig](x: T): T = a(x) / b(x)
     a_div_b(jx).real should be(a(x) / b(x))
-    a_div_b(jx).infinitesimal(0) should be(
-      (da(x) * b(x) - a(x) * db(x)) / (b(x) * b(x)) +- maxError)
+    a_div_b(jx).infinitesimal(0) should
+      be((da(x) * b(x) - a(x) * db(x)) / (b(x) * b(x)) +- maxError)
   }
   test("Evaluation and differentiation of exponential and logarithm") {
     val x = 27.98847750
@@ -265,16 +265,16 @@ class JetTest extends FunSuite with Matchers {
     val d = 0.387
     val jxd = jx.pow(d)
     jxd.real should be(scala.math.pow(x, d))
-    jxd.infinitesimal(0) should be(
-      scala.math.exp(d * scala.math.log(x)) * d / x +- maxError)
+    jxd.infinitesimal(0) should
+      be(scala.math.exp(d * scala.math.log(x)) * d / x +- maxError)
     // Variable base and exponent: sin(x) ** x
     val jex = spire.math.sin(jx)
     val jp = jx.pow(jex)
     jp.real should be(scala.math.pow(x, scala.math.sin(x)) +- maxError)
     jp.infinitesimal(0) should be(
       scala.math.exp(scala.math.sin(x) * scala.math.log(x)) *
-        (scala.math.cos(x) * scala.math.log(x) + scala.math
-          .sin(x) / x) +- maxError)
+        (scala.math.cos(x) * scala.math.log(x) + scala.math.sin(x) / x) +-
+        maxError)
     // Square root
     val sq = spire.math.sqrt(jx)
     sq.real should be(scala.math.sqrt(x))
@@ -284,30 +284,30 @@ class JetTest extends FunSuite with Matchers {
     val x = 0.8377469
     val jx = x + Jet.h[Double](0)
     spire.math.cos(jx).real should be(scala.math.cos(x))
-    spire.math.cos(jx).infinitesimal(0) should be(
-      -scala.math.sin(x) +- maxError)
+    spire.math.cos(jx).infinitesimal(0) should
+      be(-scala.math.sin(x) +- maxError)
 
     spire.math.sin(jx).real should be(scala.math.sin(x))
     spire.math.sin(jx).infinitesimal(0) should be(scala.math.cos(x) +- maxError)
 
     spire.math.tan(jx).real should be(scala.math.tan(x))
-    spire.math.tan(jx).infinitesimal(0) should be(
-      1.0 + scala.math.tan(x) * scala.math.tan(x) +- maxError)
+    spire.math.tan(jx).infinitesimal(0) should
+      be(1.0 + scala.math.tan(x) * scala.math.tan(x) +- maxError)
   }
   test("Evaluation and differentiation of inverse trigonometric functions") {
     val x = 0.133645
     val jx = x + Jet.h[Double](0)
     spire.math.acos(jx).real should be(scala.math.acos(x))
-    spire.math.acos(jx).infinitesimal(0) should be(
-      -1.0 / scala.math.sqrt(1.0 - x * x) +- maxError)
+    spire.math.acos(jx).infinitesimal(0) should
+      be(-1.0 / scala.math.sqrt(1.0 - x * x) +- maxError)
 
     spire.math.asin(jx).real should be(scala.math.asin(x))
-    spire.math.asin(jx).infinitesimal(0) should be(
-      1.0 / scala.math.sqrt(1.0 - x * x) +- maxError)
+    spire.math.asin(jx).infinitesimal(0) should
+      be(1.0 / scala.math.sqrt(1.0 - x * x) +- maxError)
 
     spire.math.atan(jx).real should be(scala.math.atan(x))
-    spire.math.atan(jx).infinitesimal(0) should be(
-      1.0 / (1.0 + x * x) +- maxError)
+    spire.math.atan(jx).infinitesimal(0) should
+      be(1.0 / (1.0 + x * x) +- maxError)
 
     val y = 0.857264
     val jy = y + Jet.h[Double](1)
@@ -320,16 +320,16 @@ class JetTest extends FunSuite with Matchers {
     val x = 0.9472836
     val jx = x + Jet.h[Double](0)
     spire.math.cosh(jx).real should be(scala.math.cosh(x))
-    spire.math.cosh(jx).infinitesimal(0) should be(
-      scala.math.sinh(x) +- maxError)
+    spire.math.cosh(jx).infinitesimal(0) should
+      be(scala.math.sinh(x) +- maxError)
 
     spire.math.sinh(jx).real should be(scala.math.sinh(x))
-    spire.math.sinh(jx).infinitesimal(0) should be(
-      scala.math.cosh(x) +- maxError)
+    spire.math.sinh(jx).infinitesimal(0) should
+      be(scala.math.cosh(x) +- maxError)
 
     spire.math.tanh(jx).real should be(scala.math.tanh(x))
-    spire.math.tanh(jx).infinitesimal(0) should be(
-      1.0 - scala.math.tanh(x) * scala.math.tanh(x) +- maxError)
+    spire.math.tanh(jx).infinitesimal(0) should
+      be(1.0 - scala.math.tanh(x) * scala.math.tanh(x) +- maxError)
   }
   test("Chain-rule differentiation") {
     def a[@sp(Double) T: Field: Trig](x: T): T = 2.0 * x * x - 3.14 * x + 2.71

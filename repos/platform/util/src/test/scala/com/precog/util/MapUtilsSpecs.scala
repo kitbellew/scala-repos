@@ -50,8 +50,8 @@ object MapUtilsSpecs extends Specification with ScalaCheck with MapUtils {
         }
 
         val middleContrib = middleKeys.toSeq map { key =>
-          key -> Either3
-            .middle3[Int, (List[Int], List[Int]), Int]((left(key), right(key)))
+          key -> Either3.middle3[Int, (List[Int], List[Int]), Int](
+            (left(key), right(key)))
         }
 
         result must containAllOf(leftContrib)

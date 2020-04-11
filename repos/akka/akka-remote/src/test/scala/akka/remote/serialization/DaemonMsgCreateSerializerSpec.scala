@@ -41,8 +41,8 @@ class DaemonMsgCreateSerializerSpec extends AkkaSpec {
   "Serialization" must {
 
     "resolve DaemonMsgCreateSerializer" in {
-      ser.serializerFor(classOf[DaemonMsgCreate]).getClass should ===(
-        classOf[DaemonMsgCreateSerializer])
+      ser.serializerFor(classOf[DaemonMsgCreate]).getClass should
+        ===(classOf[DaemonMsgCreateSerializer])
     }
 
     "serialize and de-serialize DaemonMsgCreate with FromClassCreator" in {

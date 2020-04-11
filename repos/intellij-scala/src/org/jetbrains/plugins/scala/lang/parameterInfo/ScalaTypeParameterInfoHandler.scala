@@ -77,8 +77,8 @@ class ScalaTypeParameterInfoHandler
   def couldShowInLookup: Boolean = true
 
   def updateUI(p: Any, context: ParameterInfoUIContext): Unit = {
-    if (context == null || context.getParameterOwner == null || !context
-          .getParameterOwner.isValid) return
+    if (context == null || context.getParameterOwner == null ||
+        !context.getParameterOwner.isValid) return
     context.getParameterOwner match {
       case args: ScTypeArgs =>
         var color: Color = context.getDefaultParameterColor
@@ -175,22 +175,22 @@ class ScalaTypeParameterInfoHandler
           param.lowerBound foreach {
             case psi.types.Nothing =>
             case tp: ScType =>
-              paramText = paramText + " >: " + ScType
-                .presentableText(substitutor.subst(tp))
+              paramText = paramText + " >: " +
+                ScType.presentableText(substitutor.subst(tp))
           }
           param.upperBound foreach {
             case psi.types.Any =>
             case tp: ScType =>
-              paramText = paramText + " <: " + ScType
-                .presentableText(substitutor.subst(tp))
+              paramText = paramText + " <: " +
+                ScType.presentableText(substitutor.subst(tp))
           }
           param.viewBound foreach { (tp: ScType) =>
-            paramText = paramText + " <% " + ScType
-              .presentableText(substitutor.subst(tp))
+            paramText = paramText + " <% " +
+              ScType.presentableText(substitutor.subst(tp))
           }
           param.contextBound foreach { (tp: ScType) =>
-            paramText = paramText + " : " + ScType
-              .presentableText(substitutor.subst(tp))
+            paramText = paramText + " : " +
+              ScType.presentableText(substitutor.subst(tp))
           }
           if (isBold) "<b>" + paramText + "</b>" else paramText
         }).mkString(", "))

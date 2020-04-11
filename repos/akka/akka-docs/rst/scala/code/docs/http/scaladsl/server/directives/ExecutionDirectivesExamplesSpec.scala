@@ -48,16 +48,16 @@ class ExecutionDirectivesExamplesSpec extends RoutingSpec {
     Get("/handled/existing") ~> route ~> check {
       responseAs[String] shouldEqual "This path exists"
     }
-    Get("/missing") ~> Route
-      .seal(route) /* applies default handler */ ~> check {
-      status shouldEqual StatusCodes.NotFound
-      responseAs[
-        String] shouldEqual "The requested resource could not be found."
-    }
+    Get("/missing") ~> Route.seal(route) /* applies default handler */ ~>
+      check {
+        status shouldEqual StatusCodes.NotFound
+        responseAs[String] shouldEqual
+          "The requested resource could not be found."
+      }
     Get("/handled/missing") ~> route ~> check {
       status shouldEqual StatusCodes.NotFound
-      responseAs[
-        String] shouldEqual "Oh man, what you are looking for is long gone."
+      responseAs[String] shouldEqual
+        "Oh man, what you are looking for is long gone."
     }
     Get("/handled/boom") ~> route ~> check {
       status shouldEqual StatusCodes.InternalServerError

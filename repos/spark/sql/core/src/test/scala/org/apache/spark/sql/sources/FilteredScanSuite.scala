@@ -126,8 +126,8 @@ case class SimpleFilteredScan(from: Int, to: Int)(
     def eval(a: Int) = {
       val c = (a - 1 + 'a').toChar.toString * 5 + (a - 1 + 'a').toChar.toString
         .toUpperCase * 5
-      filters.forall(translateFilterOnA(_)(a)) && filters
-        .forall(translateFilterOnC(_)(c))
+      filters.forall(translateFilterOnA(_)(a)) &&
+      filters.forall(translateFilterOnC(_)(c))
     }
 
     sqlContext.sparkContext.parallelize(from to to).filter(eval).map(i =>
@@ -170,8 +170,8 @@ class FilteredScanSuite
       Row(
         i,
         i * 2,
-        (i - 1 + 'a').toChar.toString * 5
-          + (i - 1 + 'a').toChar.toString.toUpperCase * 5)).toSeq)
+        (i - 1 + 'a').toChar.toString * 5 + (i - 1 + 'a').toChar.toString
+          .toUpperCase * 5)).toSeq)
 
   sqlTest(
     "SELECT a, b FROM oneToTenFiltered",
@@ -431,8 +431,8 @@ class FilteredScanSuite
         }.get
 
         assert(
-          relation.unhandledFilters(FiltersPushed.list.toArray)
-            .toSet === expectedUnhandledFilters)
+          relation.unhandledFilters(FiltersPushed.list.toArray).toSet ===
+            expectedUnhandledFilters)
 
         if (rawCount != expectedCount) {
           fail(

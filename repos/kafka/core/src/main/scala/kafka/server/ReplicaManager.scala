@@ -215,10 +215,10 @@ class ReplicaManager(
     val now = System.currentTimeMillis()
     isrChangeSet synchronized {
       if (isrChangeSet.nonEmpty &&
-          (lastIsrChangeMs.get() + ReplicaManager
-            .IsrChangePropagationBlackOut < now ||
-          lastIsrPropagationMs.get() + ReplicaManager
-            .IsrChangePropagationInterval < now)) {
+          (lastIsrChangeMs.get() +
+            ReplicaManager.IsrChangePropagationBlackOut < now ||
+            lastIsrPropagationMs.get() +
+            ReplicaManager.IsrChangePropagationInterval < now)) {
         ReplicationUtils.propagateIsrChanges(zkUtils, isrChangeSet)
         isrChangeSet.clear()
         lastIsrPropagationMs.set(now)
@@ -408,15 +408,14 @@ class ReplicaManager(
 
       val produceStatus = localProduceResults.map {
         case (topicPartition, result) =>
-          topicPartition ->
-            ProducePartitionStatus(
-              result.info.lastOffset + 1, // required offset
-              new PartitionResponse(
-                result.errorCode,
-                result.info.firstOffset,
-                result.info.timestamp
-              )
-            ) // response status
+          topicPartition -> ProducePartitionStatus(
+            result.info.lastOffset + 1, // required offset
+            new PartitionResponse(
+              result.errorCode,
+              result.info.firstOffset,
+              result.info.timestamp
+            )
+          ) // response status
       }
 
       if (delayedRequestRequired(
@@ -467,10 +466,9 @@ class ReplicaManager(
       requiredAcks: Short,
       messagesPerPartition: Map[TopicPartition, MessageSet],
       localProduceResults: Map[TopicPartition, LogAppendResult]): Boolean = {
-    requiredAcks == -1 &&
-    messagesPerPartition.size > 0 &&
-    localProduceResults.values.count(_.error.isDefined) < messagesPerPartition
-      .size
+    requiredAcks == -1 && messagesPerPartition.size > 0 &&
+    localProduceResults.values.count(_.error.isDefined) <
+      messagesPerPartition.size
   }
 
   private def isValidRequiredAcks(requiredAcks: Short): Boolean = {
@@ -493,8 +491,8 @@ class ReplicaManager(
           .mark()
 
         // reject appending to internal topics if it is not allowed
-        if (TopicConstants.INTERNAL_TOPICS
-              .contains(topicPartition.topic) && !internalTopicsAllowed) {
+        if (TopicConstants.INTERNAL_TOPICS.contains(topicPartition.topic) &&
+            !internalTopicsAllowed) {
           (
             topicPartition,
             LogAppendResult(
@@ -612,8 +610,8 @@ class ReplicaManager(
     //                        2) fetch request does not require any data
     //                        3) has enough data to respond
     //                        4) some error happens while reading data
-    if (timeout <= 0 || fetchInfo
-          .size <= 0 || bytesReadable >= fetchMinBytes || errorReadingData) {
+    if (timeout <= 0 || fetchInfo.size <= 0 || bytesReadable >= fetchMinBytes ||
+        errorReadingData) {
       val fetchPartitionData = logReadResults.mapValues(result =>
         FetchResponsePartitionData(
           result.errorCode,
@@ -701,8 +699,8 @@ class ReplicaManager(
                   MessageSet.Empty)
             }
 
-            val readToEndOfLog = initialLogEndOffset.messageOffset - logReadInfo
-              .fetchOffsetMetadata.messageOffset <= 0
+            val readToEndOfLog = initialLogEndOffset.messageOffset -
+              logReadInfo.fetchOffsetMetadata.messageOffset <= 0
 
             LogReadResult(
               logReadInfo,
@@ -784,15 +782,16 @@ class ReplicaManager(
       metadataCache: MetadataCache) {
     replicaStateChangeLock synchronized {
       if (updateMetadataRequest.controllerEpoch < controllerEpoch) {
-        val stateControllerEpochErrorMessage = (
-          "Broker %d received update metadata request with correlation id %d from an " +
-            "old controller %d with epoch %d. Latest known controller epoch is %d"
-        ).format(
-          localBrokerId,
-          correlationId,
-          updateMetadataRequest.controllerId,
-          updateMetadataRequest.controllerEpoch,
-          controllerEpoch)
+        val stateControllerEpochErrorMessage =
+          (
+            "Broker %d received update metadata request with correlation id %d from an " +
+              "old controller %d with epoch %d. Latest known controller epoch is %d"
+          ).format(
+            localBrokerId,
+            correlationId,
+            updateMetadataRequest.controllerId,
+            updateMetadataRequest.controllerEpoch,
+            controllerEpoch)
         stateChangeLogger.warn(stateControllerEpochErrorMessage)
         throw new ControllerMovedException(stateControllerEpochErrorMessage)
       } else {

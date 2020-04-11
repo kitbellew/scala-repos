@@ -244,8 +244,8 @@ class JavaUrlConnectionRequestForwarder @Inject() (
         //
         // The host header is used to choose the correct virtual host and should be set to the hostname
         // of the URL for HTTP 1.1. Thus we do not preserve it, even though Marathon does not care.
-        if !name.equalsIgnoreCase("host") && !name
-          .equalsIgnoreCase("connection")
+        if !name.equalsIgnoreCase("host") &&
+          !name.equalsIgnoreCase("connection")
         headerValues <- Option(request.getHeaders(name))
         headerValue <- headerValues.asScala
       } {

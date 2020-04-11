@@ -183,8 +183,8 @@ class GradientBoostedTreesModel @Since("1.2.0") (
           val currentTreeWeight = localTreeWeights(nTree)
           iter.map {
             case (point, (pred, error)) =>
-              val newPred = pred + currentTree
-                .predict(point.features) * currentTreeWeight
+              val newPred = pred +
+                currentTree.predict(point.features) * currentTreeWeight
               val newError = loss.computeError(newPred, point.label)
               (newPred, newError)
           }

@@ -173,8 +173,9 @@ private class StringIteratorReader(val iter: Iterator[String])
       if (iter.hasNext) {
         str = iter.next()
         start = length
-        length += (str
-          .length + 1) // allowance for newline removed by SparkContext.textFile()
+        length +=
+          (str.length +
+            1) // allowance for newline removed by SparkContext.textFile()
       } else { str = null }
     }
   }
@@ -198,10 +199,12 @@ private class StringIteratorReader(val iter: Iterator[String])
   override def read(cbuf: Array[Char], off: Int, len: Int): Int = {
     refill()
     var n = 0
-    if ((off < 0) || (off > cbuf.length) || (len < 0) ||
-        ((off + len) > cbuf.length) || ((off + len) < 0)) {
-      throw new IndexOutOfBoundsException()
-    } else if (len == 0) { n = 0 }
+    if ((off < 0) ||
+        (off > cbuf.length) ||
+        (len < 0) ||
+        ((off + len) > cbuf.length) ||
+        ((off + len) < 0)) { throw new IndexOutOfBoundsException() }
+    else if (len == 0) { n = 0 }
     else {
       if (next >= length) { // end of input
         n = -1

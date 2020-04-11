@@ -56,9 +56,8 @@ class RemoteEventHandler extends Actor {
       EventHandler.error(
         cause,
         server,
-        "RemoteServerWriteFailed - Request[%s] Address[%s]" format (
-          request, clientAddress.toString
-        ))
+        "RemoteServerWriteFailed - Request[%s] Address[%s]" format
+          (request, clientAddress.toString))
     case RemoteServerStarted(server) =>
       EventHandler.info(server, "RemoteServerStarted")
     case RemoteServerShutdown(server) =>
@@ -66,13 +65,13 @@ class RemoteEventHandler extends Actor {
     case RemoteServerClientConnected(server, clientAddress) =>
       EventHandler.info(
         server,
-        "RemoteServerClientConnected - Address[%s]" format clientAddress
-          .toString)
+        "RemoteServerClientConnected - Address[%s]" format
+          clientAddress.toString)
     case RemoteServerClientDisconnected(server, clientAddress) =>
       EventHandler.info(
         server,
-        "RemoteServerClientDisconnected - Address[%s]" format clientAddress
-          .toString)
+        "RemoteServerClientDisconnected - Address[%s]" format
+          clientAddress.toString)
     case RemoteServerClientClosed(server, clientAddress) =>
       EventHandler.info(
         server,

@@ -323,13 +323,13 @@ trait ScExpression
               //numeric literal narrowing
               val needsNarrowing = ScExpression.this match {
                 case _: ScLiteral =>
-                  getNode.getFirstChildNode.getElementType == ScalaTokenTypes
-                    .tINTEGER
+                  getNode.getFirstChildNode.getElementType ==
+                    ScalaTokenTypes.tINTEGER
                 case p: ScPrefixExpr => p.operand match {
                     case l: ScLiteral =>
-                      l.getNode.getFirstChildNode
-                        .getElementType == ScalaTokenTypes.tINTEGER &&
-                        Set("+", "-").contains(p.operation.getText)
+                      l.getNode.getFirstChildNode.getElementType ==
+                        ScalaTokenTypes.tINTEGER && Set("+", "-")
+                          .contains(p.operation.getText)
                     case _ => false
                   }
                 case _ => false
@@ -353,18 +353,18 @@ trait ScExpression
                   }
                   expected.removeAbstracts match {
                     case types.Char =>
-                      if (i >= scala.Char.MinValue.toInt && i <= scala.Char
-                            .MaxValue.toInt) {
+                      if (i >= scala.Char.MinValue.toInt &&
+                          i <= scala.Char.MaxValue.toInt) {
                         return Some(Success(Char, Some(ScExpression.this)))
                       }
                     case types.Byte =>
-                      if (i >= scala.Byte.MinValue.toInt && i <= scala.Byte
-                            .MaxValue.toInt) {
+                      if (i >= scala.Byte.MinValue.toInt &&
+                          i <= scala.Byte.MaxValue.toInt) {
                         return Some(Success(Byte, Some(ScExpression.this)))
                       }
                     case types.Short =>
-                      if (i >= scala.Short.MinValue.toInt && i <= scala.Short
-                            .MaxValue.toInt) {
+                      if (i >= scala.Short.MinValue.toInt &&
+                          i <= scala.Short.MaxValue.toInt) {
                         return Some(Success(Short, Some(ScExpression.this)))
                       }
                     case _ =>
@@ -626,8 +626,8 @@ trait ScExpression
           resolve.apply(0).asInstanceOf[ScalaResolveResult].implicitFunction
         } else None
       case inf: ScInfixExpr
-          if (inf.isLeftAssoc && this == inf.rOp) || (!inf
-            .isLeftAssoc && this == inf.lOp) =>
+          if (inf.isLeftAssoc && this == inf.rOp) ||
+            (!inf.isLeftAssoc && this == inf.lOp) =>
         val resolve = inf.operation.multiResolve(false)
         if (resolve.length == 1) {
           resolve.apply(0).asInstanceOf[ScalaResolveResult].implicitFunction
@@ -731,8 +731,9 @@ trait ScExpression
         case _ =>
       }
     }
-    if (cand.length == 0 && ScalaPsiUtil
-          .approveDynamic(tp, getProject, getResolveScope) && call.isDefined) {
+    if (cand.length == 0 &&
+        ScalaPsiUtil.approveDynamic(tp, getProject, getResolveScope) &&
+        call.isDefined) {
       cand = ScalaPsiUtil.processTypeForUpdateOrApplyCandidates(
         call.get,
         tp,

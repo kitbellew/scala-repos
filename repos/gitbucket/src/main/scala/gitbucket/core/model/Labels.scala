@@ -11,9 +11,8 @@ trait LabelComponent extends TemplateComponent {
     override val labelName = column[String]("LABEL_NAME")
     val color = column[String]("COLOR")
     def * =
-      (userName, repositoryName, labelId, labelName, color) <> (
-        Label.tupled, Label.unapply
-      )
+      (userName, repositoryName, labelId, labelName, color) <>
+        (Label.tupled, Label.unapply)
 
     def byPrimaryKey(owner: String, repository: String, labelId: Int) =
       byLabel(owner, repository, labelId)
@@ -36,8 +35,8 @@ case class Label(
     val g = color.substring(2, 4)
     val b = color.substring(4, 6)
 
-    if (Integer.parseInt(r, 16) + Integer.parseInt(g, 16) + Integer
-          .parseInt(b, 16) > 408) { "000000" }
+    if (Integer.parseInt(r, 16) +
+          Integer.parseInt(g, 16) + Integer.parseInt(b, 16) > 408) { "000000" }
     else { "ffffff" }
   }
 }

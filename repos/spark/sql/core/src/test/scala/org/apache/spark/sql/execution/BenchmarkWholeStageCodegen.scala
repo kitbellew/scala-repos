@@ -166,8 +166,8 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     runBenchmark("Join w 2 ints", N) {
       sqlContext.range(N).join(
         dim2,
-        (col("id") bitwiseAND M).cast(IntegerType) === col("k1")
-          && (col("id") bitwiseAND M).cast(IntegerType) === col("k2")).count()
+        (col("id") bitwiseAND M).cast(IntegerType) === col("k1") &&
+          (col("id") bitwiseAND M).cast(IntegerType) === col("k2")).count()
     }
 
     /**
@@ -185,8 +185,8 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     runBenchmark("Join w 2 longs", N) {
       sqlContext.range(N).join(
         dim3,
-        (col("id") bitwiseAND M) === col("k1") && (col(
-          "id") bitwiseAND M) === col("k2")).count()
+        (col("id") bitwiseAND M) === col("k1") && (col("id") bitwiseAND M) ===
+          col("k2")).count()
     }
 
     /**
@@ -384,8 +384,8 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
       var s = 0
       i = 0
       while (i < N) {
-        val key = ((i & 100000).toLong << 32) + Integer
-          .rotateRight(i & 100000, 15)
+        val key =
+          ((i & 100000).toLong << 32) + Integer.rotateRight(i & 100000, 15)
         if (map.get(key) != null) { s += 1 }
         i += 1
       }

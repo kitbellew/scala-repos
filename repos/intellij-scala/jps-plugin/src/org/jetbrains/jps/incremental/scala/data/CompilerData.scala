@@ -39,9 +39,9 @@ object CompilerData {
             Either.cond(
               absentJars.isEmpty,
               Some(jars),
-              "Scala compiler JARs not found (module '" + chunk
-                .representativeTarget().getModule.getName + "'): "
-                + absentJars.map(_.getPath).mkString(", ")
+              "Scala compiler JARs not found (module '" +
+                chunk.representativeTarget().getModule.getName + "'): " +
+                absentJars.map(_.getPath).mkString(", ")
             )
         }
       } else { Right(None) }
@@ -64,8 +64,8 @@ object CompilerData {
         val globalSettings = SettingsManager.getGlobalSettings(model.getGlobal)
 
         val jvmSdk =
-          if (globalSettings.isCompileServerEnabled && JavaBuilderUtil
-                .CONSTANT_SEARCH_SERVICE.get(context) != null) {
+          if (globalSettings.isCompileServerEnabled &&
+              JavaBuilderUtil.CONSTANT_SEARCH_SERVICE.get(context) != null) {
             Option(globalSettings.getCompileServerSdk).flatMap { sdkName =>
               val libraries = model.getGlobal.getLibraryCollection
                 .getLibraries(JpsJavaSdkType.INSTANCE).asScala
@@ -136,8 +136,8 @@ object CompilerData {
                       "2.10"
                     ) => // TODO implement a better version comparison
                 find(extraJars, "scala-reflect", ".jar").left.toOption.map(
-                  _ + " in Scala compiler classpath in Scala SDK " + sdk
-                    .getName)
+                  _ + " in Scala compiler classpath in Scala SDK " +
+                    sdk.getName)
               case _ => None
             }
         }

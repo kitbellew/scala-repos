@@ -61,10 +61,10 @@ private[timeline] final class Push(
       .fold(fufail[Entry]("[timeline] invalid entry data " + data)) { entry =>
         entryRepo.findRecent(entry.typ, DateTime.now minusMinutes 50) flatMap {
           entries =>
-            entries.exists(_ similarTo entry) fold (
-              fufail[Entry]("[timeline] a similar entry already exists"),
-              entryRepo insert entry inject entry
-            )
+            entries.exists(_ similarTo entry) fold
+              (
+                fufail[Entry]("[timeline] a similar entry already exists"),
+                entryRepo insert entry inject entry)
         }
       }
 }

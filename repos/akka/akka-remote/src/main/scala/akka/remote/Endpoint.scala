@@ -86,10 +86,11 @@ private[remote] class DefaultMessageDispatcher(
         if (LogReceive) log.debug("received local message {}", msgLog)
         payload match {
           case sel: ActorSelectionMessage ⇒
-            if (UntrustedMode && (!TrustedSelectionPaths
+            if (UntrustedMode &&
+                (!TrustedSelectionPaths
                   .contains(sel.elements.mkString("/", "/", "")) ||
-                sel.msg.isInstanceOf[PossiblyHarmful] || l != provider
-                  .rootGuardian))
+                sel.msg.isInstanceOf[PossiblyHarmful] ||
+                l != provider.rootGuardian))
               log.debug(
                 "operating in UntrustedMode, dropping inbound actor selection to [{}], " +
                   "allow it by adding the path to 'akka.remote.trusted-selection-paths' configuration",
@@ -280,8 +281,8 @@ private[remote] class ReliableDeliverySupervisor(
       )
       uidConfirmed = false // Need confirmation of UID again
       if (bufferWasInUse) {
-        if ((resendBuffer.nacked.nonEmpty || resendBuffer.nonAcked
-              .nonEmpty) && bailoutAt.isEmpty)
+        if ((resendBuffer.nacked.nonEmpty || resendBuffer.nonAcked.nonEmpty) &&
+            bailoutAt.isEmpty)
           bailoutAt = Some(Deadline.now + settings.InitialSysMsgDeliveryTimeout)
         context
           .become(gated(writerTerminated = false, earlyUngateRequested = false))
@@ -406,8 +407,8 @@ private[remote] class ReliableDeliverySupervisor(
         // Ungate was sent from EndpointManager, but we must wait for Terminated first.
         context
           .become(gated(writerTerminated = false, earlyUngateRequested = true))
-      } else if (resendBuffer.nonAcked.nonEmpty || resendBuffer.nacked
-                   .nonEmpty) {
+      } else if (resendBuffer.nonAcked.nonEmpty ||
+                 resendBuffer.nacked.nonEmpty) {
         // If we talk to a system we have not talked to before (or has given up talking to in the past) stop
         // system delivery attempts after the specified time. This act will drop the pending system messages and gate the
         // remote address at the EndpointManager level stopping this actor. In case the remote system becomes reachable
@@ -735,8 +736,9 @@ private[remote] class EndpointWriter(
         Logging.DebugLevel)
     case Handle(inboundHandle) ⇒
       // Assert handle == None?
-      context.parent ! ReliableDeliverySupervisor
-        .GotUid(inboundHandle.handshakeInfo.uid, remoteAddress)
+      context.parent !
+        ReliableDeliverySupervisor
+          .GotUid(inboundHandle.handshakeInfo.uid, remoteAddress)
       handle = Some(inboundHandle)
       reader = startReadEndpoint(inboundHandle)
       eventPublisher
@@ -1027,8 +1029,8 @@ private[remote] class EndpointWriter(
         handle.handshakeInfo.uid,
         reliableDeliverySupervisor,
         receiveBuffers)).withDeploy(Deploy.local),
-      "endpointReader-" + AddressUrlEncoder(remoteAddress) + "-" + readerId
-        .next()
+      "endpointReader-" + AddressUrlEncoder(remoteAddress) + "-" +
+        readerId.next()
     ))
     handle.readHandlerPromise.success(ActorHandleEventListener(newReader))
     Some(newReader)

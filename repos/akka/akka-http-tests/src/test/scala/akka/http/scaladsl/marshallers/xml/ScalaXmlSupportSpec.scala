@@ -27,10 +27,9 @@ class ScalaXmlSupportSpec
 
   "NodeSeqMarshaller should" - {
     "marshal xml snippets to `text/xml` content in UTF-8" in {
-      marshal(<employee><nr>Ha“llo</nr></employee>) shouldEqual
-        HttpEntity(
-          ContentTypes.`text/xml(UTF-8)`,
-          "<employee><nr>Ha“llo</nr></employee>")
+      marshal(<employee><nr>Ha“llo</nr></employee>) shouldEqual HttpEntity(
+        ContentTypes.`text/xml(UTF-8)`,
+        "<employee><nr>Ha“llo</nr></employee>")
     }
     "unmarshal `text/xml` content in UTF-8 to NodeSeqs" in {
       Unmarshal(HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<int>Hällö</int>"))
@@ -79,9 +78,8 @@ class ScalaXmlSupportSpec
       "gracefully fail when there are too many nested entities" in {
         val nested =
           for (x ← 1 to 30)
-            yield "<!ENTITY laugh" + x + " \"&laugh" + (x - 1) + ";&laugh" + (
-              x - 1
-            ) + ";\">"
+            yield "<!ENTITY laugh" + x + " \"&laugh" + (x - 1) + ";&laugh" +
+              (x - 1) + ";\">"
         val xml = s"""<?xml version="1.0"?>
            | <!DOCTYPE billion [
            | <!ELEMENT billion (#PCDATA)>

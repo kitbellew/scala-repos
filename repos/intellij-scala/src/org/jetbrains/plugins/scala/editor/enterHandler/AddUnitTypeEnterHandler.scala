@@ -36,9 +36,8 @@ class AddUnitTypeEnterHandler extends EnterHandlerDelegateAdapter {
     @inline
     def checkBlock2(block: ScBlockExpr) = {
       val children: Array[PsiElement] = block.getChildren
-      children.length == 3 && children.apply(1)
-        .isInstanceOf[PsiWhiteSpace] && children.apply(1).getText
-        .count(_ == '\n') == 2
+      children.length == 3 && children.apply(1).isInstanceOf[PsiWhiteSpace] &&
+      children.apply(1).getText.count(_ == '\n') == 2
     }
 
     element.getParent match {

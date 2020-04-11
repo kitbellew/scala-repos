@@ -20,8 +20,8 @@ class WebSocketServerSpec
 
   "The server-side WebSocket integration should" - {
     "establish a websocket connection when the user requests it" - {
-      "when user handler instantly tries to send messages" in Utils
-        .assertAllStagesStopped {
+      "when user handler instantly tries to send messages" in
+        Utils.assertAllStagesStopped {
           new TestSetup {
             send("""GET /chat HTTP/1.1
               |Host: server.example.com

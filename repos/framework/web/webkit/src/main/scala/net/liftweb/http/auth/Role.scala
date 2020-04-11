@@ -115,11 +115,10 @@ trait Role {
   /**
     * Verifies if this Role is a child of a role having the name <i>roleName</i>
     */
-  def isChildOf(roleName: String): Boolean =
-    (this.name == roleName) match {
-      case true => return true
-      case _    => this.parent.map(_ isChildOf (roleName)) openOr false
-    }
+  def isChildOf(roleName: String): Boolean = (this.name == roleName) match {
+    case true => return true
+    case _    => this.parent.map(_ isChildOf (roleName)) openOr false
+  }
 
   /**
     * Verifies if this Role is the parent of the given Role

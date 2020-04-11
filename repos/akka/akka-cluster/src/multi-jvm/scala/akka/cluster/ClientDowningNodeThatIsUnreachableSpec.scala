@@ -58,36 +58,38 @@ abstract class ClientDowningNodeThatIsUnreachableSpec(
 
   "Client of a 4 node cluster" must {
 
-    "be able to DOWN a node that is UNREACHABLE (killed)" taggedAs LongRunningTest in {
-      val thirdAddress = address(third)
-      awaitClusterUp(first, second, third, fourth)
+    "be able to DOWN a node that is UNREACHABLE (killed)" taggedAs
+      LongRunningTest in {
+        val thirdAddress = address(third)
+        awaitClusterUp(first, second, third, fourth)
 
-      runOn(first) {
-        // kill 'third' node
-        testConductor.exit(third, 0).await
-        markNodeAsUnavailable(thirdAddress)
+        runOn(first) {
+          // kill 'third' node
+          testConductor.exit(third, 0).await
+          markNodeAsUnavailable(thirdAddress)
 
-        // mark 'third' node as DOWN
-        cluster.down(thirdAddress)
-        enterBarrier("down-third-node")
+          // mark 'third' node as DOWN
+          cluster.down(thirdAddress)
+          enterBarrier("down-third-node")
 
-        awaitMembersUp(
-          numberOfMembers = 3,
-          canNotBePartOfMemberRing = Set(thirdAddress))
-        clusterView.members.exists(_.address == thirdAddress) should ===(false)
+          awaitMembersUp(
+            numberOfMembers = 3,
+            canNotBePartOfMemberRing = Set(thirdAddress))
+          clusterView.members.exists(_.address == thirdAddress) should
+            ===(false)
+        }
+
+        runOn(third) { enterBarrier("down-third-node") }
+
+        runOn(second, fourth) {
+          enterBarrier("down-third-node")
+
+          awaitMembersUp(
+            numberOfMembers = 3,
+            canNotBePartOfMemberRing = Set(thirdAddress))
+        }
+
+        enterBarrier("await-completion")
       }
-
-      runOn(third) { enterBarrier("down-third-node") }
-
-      runOn(second, fourth) {
-        enterBarrier("down-third-node")
-
-        awaitMembersUp(
-          numberOfMembers = 3,
-          canNotBePartOfMemberRing = Set(thirdAddress))
-      }
-
-      enterBarrier("await-completion")
-    }
   }
 }

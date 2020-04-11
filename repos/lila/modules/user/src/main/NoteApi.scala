@@ -22,8 +22,8 @@ final class NoteApi(
     coll.find(
       BSONDocument(
         "to" -> user.id,
-        "from" -> BSONDocument("$in" -> (myFriendIds + me.id))) ++ me.troll
-        .fold(BSONDocument(), BSONDocument("troll" -> false)))
+        "from" -> BSONDocument("$in" -> (myFriendIds + me.id))) ++
+        me.troll.fold(BSONDocument(), BSONDocument("troll" -> false)))
       .sort(BSONDocument("date" -> -1)).cursor[Note]().collect[List](100)
 
   def write(to: User, text: String, from: User) = {
@@ -37,8 +37,9 @@ final class NoteApi(
       date = DateTime.now)
 
     import lila.hub.actorApi.timeline.{Propagate, NoteCreate}
-    timeline ! (Propagate(NoteCreate(note.from, note.to)) toFriendsOf from
-      .id exceptUser note.to)
+    timeline !
+      (Propagate(NoteCreate(note.from, note.to)) toFriendsOf from.id exceptUser
+        note.to)
 
     coll insert note
   }

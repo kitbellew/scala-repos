@@ -106,8 +106,8 @@ class JDBCSuite
       """.stripMargin.replaceAll("\n", " "))
 
     conn.prepareStatement(
-      "create table test.inttypes (a INT, b BOOLEAN, c TINYINT, "
-        + "d SMALLINT, e BIGINT)").executeUpdate()
+      "create table test.inttypes (a INT, b BOOLEAN, c TINYINT, " +
+        "d SMALLINT, e BIGINT)").executeUpdate()
     conn.prepareStatement(
       "insert into test.inttypes values (1, false, 3, 4, 1234567890123)")
       .executeUpdate()
@@ -122,9 +122,8 @@ class JDBCSuite
       """.stripMargin.replaceAll("\n", " "))
 
     conn.prepareStatement(
-      "create table test.strtypes (a BINARY(20), b VARCHAR(20), "
-        + "c VARCHAR_IGNORECASE(20), d CHAR(20), e BLOB, f CLOB)")
-      .executeUpdate()
+      "create table test.strtypes (a BINARY(20), b VARCHAR(20), " +
+        "c VARCHAR_IGNORECASE(20), d CHAR(20), e BLOB, f CLOB)").executeUpdate()
     val stmt = conn
       .prepareStatement("insert into test.strtypes values (?, ?, ?, ?, ?, ?)")
     stmt.setBytes(1, testBytes)
@@ -144,11 +143,11 @@ class JDBCSuite
       "create table test.timetypes (a TIME, b DATE, c TIMESTAMP)")
       .executeUpdate()
     conn.prepareStatement(
-      "insert into test.timetypes values ('12:34:56', "
-        + "'1996-01-01', '2002-02-20 11:22:33.543543543')").executeUpdate()
+      "insert into test.timetypes values ('12:34:56', " +
+        "'1996-01-01', '2002-02-20 11:22:33.543543543')").executeUpdate()
     conn.prepareStatement(
-      "insert into test.timetypes values ('12:34:56', "
-        + "null, '2002-02-20 11:22:33.543543543')").executeUpdate()
+      "insert into test.timetypes values ('12:34:56', " +
+        "null, '2002-02-20 11:22:33.543543543')").executeUpdate()
     conn.commit()
     sql(s"""
         |CREATE TEMPORARY TABLE timetypes
@@ -160,10 +159,10 @@ class JDBCSuite
       "create table test.flttypes (a DOUBLE, b REAL, c DECIMAL(38, 18))")
       .executeUpdate()
     conn.prepareStatement(
-      "insert into test.flttypes values ("
-        + "1.0000000000000002220446049250313080847263336181640625, "
-        + "1.00000011920928955078125, "
-        + "123456789012345.543215432154321)").executeUpdate()
+      "insert into test.flttypes values (" +
+        "1.0000000000000002220446049250313080847263336181640625, " +
+        "1.00000011920928955078125, " + "123456789012345.543215432154321)")
+      .executeUpdate()
     conn.commit()
     sql(s"""
         |CREATE TEMPORARY TABLE flttypes
@@ -177,9 +176,9 @@ class JDBCSuite
         |m DOUBLE, n REAL, o DECIMAL(38, 18))
       """.stripMargin.replaceAll("\n", " ")).executeUpdate()
     conn.prepareStatement(
-      "insert into test.nulltypes values ("
-        + "null, null, null, null, null, null, null, null, null, "
-        + "null, null, null, null, null, null)").executeUpdate()
+      "insert into test.nulltypes values (" +
+        "null, null, null, null, null, null, null, null, null, " +
+        "null, null, null, null, null, null)").executeUpdate()
     conn.commit()
     sql(s"""
          |CREATE TEMPORARY TABLE nulltypes
@@ -265,8 +264,8 @@ class JDBCSuite
         .size == 2)
     assert(
       checkPushdown(sql(
-        "SELECT * FROM foobar WHERE THEID = 1 OR NAME = 'mary' "
-          + "AND THEID = 2")).collect().size == 2)
+        "SELECT * FROM foobar WHERE THEID = 1 OR NAME = 'mary' " +
+          "AND THEID = 2")).collect().size == 2)
     assert(
       checkPushdown(sql("SELECT * FROM foobar WHERE NAME LIKE 'fr%'")).collect()
         .size == 1)
@@ -320,8 +319,8 @@ class JDBCSuite
     // correctly handles this case by assigning `requiredColumns` properly. See PR 10427 for more
     // discussions.
     assert(
-      sql("SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect
-        .toSet === Set(Row(1)))
+      sql("SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect.toSet ===
+        Set(Row(1)))
   }
 
   test("SELECT * WHERE (quoted strings)") {
@@ -520,8 +519,8 @@ class JDBCSuite
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
     assert(rows(1).getAs[java.sql.Date](1) === null)
     assert(
-      cachedRows(0).getAs[java.sql.Date](1) === java.sql.Date
-        .valueOf("1996-01-01"))
+      cachedRows(0).getAs[java.sql.Date](1) ===
+        java.sql.Date.valueOf("1996-01-01"))
   }
 
   test("test DATE types in cache") {
@@ -533,8 +532,8 @@ class JDBCSuite
     assert(
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
     assert(
-      cachedRows(0).getAs[java.sql.Date](1) === java.sql.Date
-        .valueOf("1996-01-01"))
+      cachedRows(0).getAs[java.sql.Date](1) ===
+        java.sql.Date.valueOf("1996-01-01"))
   }
 
   test("test types for null value") {
@@ -629,34 +628,33 @@ class JDBCSuite
     assert(
       doCompileFilter(Not(EqualTo("col1", "abc"))) === "(NOT (col1 = 'abc'))")
     assert(
-      doCompileFilter(And(EqualTo("col0", 0), EqualTo("col1", "def")))
-        === "(col0 = 0) AND (col1 = 'def')")
+      doCompileFilter(And(EqualTo("col0", 0), EqualTo("col1", "def"))) ===
+        "(col0 = 0) AND (col1 = 'def')")
     assert(
-      doCompileFilter(Or(EqualTo("col0", 2), EqualTo("col1", "ghi")))
-        === "(col0 = 2) OR (col1 = 'ghi')")
+      doCompileFilter(Or(EqualTo("col0", 2), EqualTo("col1", "ghi"))) ===
+        "(col0 = 2) OR (col1 = 'ghi')")
     assert(doCompileFilter(LessThan("col0", 5)) === "col0 < 5")
     assert(
-      doCompileFilter(LessThan(
-        "col3",
-        Timestamp
-          .valueOf(
-            "1995-11-21 00:00:00.0"))) === "col3 < '1995-11-21 00:00:00.0'")
-    assert(
       doCompileFilter(
-        LessThan("col4", Date.valueOf("1983-08-04"))) === "col4 < '1983-08-04'")
+        LessThan("col3", Timestamp.valueOf("1995-11-21 00:00:00.0"))) ===
+        "col3 < '1995-11-21 00:00:00.0'")
+    assert(
+      doCompileFilter(LessThan("col4", Date.valueOf("1983-08-04"))) ===
+        "col4 < '1983-08-04'")
     assert(doCompileFilter(LessThanOrEqual("col0", 5)) === "col0 <= 5")
     assert(doCompileFilter(GreaterThan("col0", 3)) === "col0 > 3")
     assert(doCompileFilter(GreaterThanOrEqual("col0", 3)) === "col0 >= 3")
     assert(doCompileFilter(In("col1", Array("jkl"))) === "col1 IN ('jkl')")
     assert(
-      doCompileFilter(Not(In("col1", Array("mno", "pqr"))))
-        === "(NOT (col1 IN ('mno', 'pqr')))")
+      doCompileFilter(Not(In("col1", Array("mno", "pqr")))) ===
+        "(NOT (col1 IN ('mno', 'pqr')))")
     assert(doCompileFilter(IsNull("col1")) === "col1 IS NULL")
     assert(doCompileFilter(IsNotNull("col1")) === "col1 IS NOT NULL")
     assert(
-      doCompileFilter(And(EqualNullSafe("col0", "abc"), EqualTo("col1", "def")))
-        === "((NOT (col0 != 'abc' OR col0 IS NULL OR 'abc' IS NULL) "
-          + "OR (col0 IS NULL AND 'abc' IS NULL))) AND (col1 = 'def')")
+      doCompileFilter(
+        And(EqualNullSafe("col0", "abc"), EqualTo("col1", "def"))) ===
+        "((NOT (col0 != 'abc' OR col0 IS NULL OR 'abc' IS NULL) " +
+        "OR (col0 IS NULL AND 'abc' IS NULL))) AND (col1 = 'def')")
   }
 
   test("Dialect unregister") {
@@ -689,27 +687,27 @@ class JDBCSuite
   test("DB2Dialect type mapping") {
     val db2Dialect = JdbcDialects.get("jdbc:db2://127.0.0.1/db")
     assert(
-      db2Dialect.getJDBCType(StringType).map(_.databaseTypeDefinition)
-        .get == "CLOB")
+      db2Dialect.getJDBCType(StringType).map(_.databaseTypeDefinition).get ==
+        "CLOB")
     assert(
-      db2Dialect.getJDBCType(BooleanType).map(_.databaseTypeDefinition)
-        .get == "CHAR(1)")
+      db2Dialect.getJDBCType(BooleanType).map(_.databaseTypeDefinition).get ==
+        "CHAR(1)")
   }
 
   test("PostgresDialect type mapping") {
     val Postgres = JdbcDialects.get("jdbc:postgresql://127.0.0.1/db")
     assert(
-      Postgres.getCatalystType(java.sql.Types.OTHER, "json", 1, null) === Some(
-        StringType))
+      Postgres.getCatalystType(java.sql.Types.OTHER, "json", 1, null) ===
+        Some(StringType))
     assert(
-      Postgres.getCatalystType(java.sql.Types.OTHER, "jsonb", 1, null) === Some(
-        StringType))
+      Postgres.getCatalystType(java.sql.Types.OTHER, "jsonb", 1, null) ===
+        Some(StringType))
     assert(
-      Postgres.getJDBCType(FloatType).map(_.databaseTypeDefinition)
-        .get == "FLOAT4")
+      Postgres.getJDBCType(FloatType).map(_.databaseTypeDefinition).get ==
+        "FLOAT4")
     assert(
-      Postgres.getJDBCType(DoubleType).map(_.databaseTypeDefinition)
-        .get == "FLOAT8")
+      Postgres.getJDBCType(DoubleType).map(_.databaseTypeDefinition).get ==
+        "FLOAT8")
     val errMsg = intercept[IllegalArgumentException] {
       Postgres.getJDBCType(ByteType)
     }
@@ -720,14 +718,14 @@ class JDBCSuite
   test("DerbyDialect jdbc type mapping") {
     val derbyDialect = JdbcDialects.get("jdbc:derby:db")
     assert(
-      derbyDialect.getJDBCType(StringType).map(_.databaseTypeDefinition)
-        .get == "CLOB")
+      derbyDialect.getJDBCType(StringType).map(_.databaseTypeDefinition).get ==
+        "CLOB")
     assert(
-      derbyDialect.getJDBCType(ByteType).map(_.databaseTypeDefinition)
-        .get == "SMALLINT")
+      derbyDialect.getJDBCType(ByteType).map(_.databaseTypeDefinition).get ==
+        "SMALLINT")
     assert(
-      derbyDialect.getJDBCType(BooleanType).map(_.databaseTypeDefinition)
-        .get == "BOOLEAN")
+      derbyDialect.getJDBCType(BooleanType).map(_.databaseTypeDefinition).get ==
+        "BOOLEAN")
   }
 
   test("table exists query by jdbc dialect") {
@@ -756,8 +754,8 @@ class JDBCSuite
     assert(
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
     assert(
-      rows(0).getAs[java.sql.Timestamp](2)
-        === java.sql.Timestamp.valueOf("2002-02-20 11:22:33.543543"))
+      rows(0).getAs[java.sql.Timestamp](2) ===
+        java.sql.Timestamp.valueOf("2002-02-20 11:22:33.543543"))
   }
 
   test("test credentials in the properties are not in plan output") {
@@ -785,7 +783,7 @@ class JDBCSuite
   test("SPARK 12941: The data type mapping for StringType to Oracle") {
     val oracleDialect = JdbcDialects.get("jdbc:oracle://127.0.0.1/db")
     assert(
-      oracleDialect.getJDBCType(StringType).map(_.databaseTypeDefinition)
-        .get == "VARCHAR2(255)")
+      oracleDialect.getJDBCType(StringType).map(_.databaseTypeDefinition).get ==
+        "VARCHAR2(255)")
   }
 }

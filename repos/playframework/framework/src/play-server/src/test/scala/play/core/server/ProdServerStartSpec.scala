@@ -94,8 +94,8 @@ object ProdServerStartSpec extends Specification {
 
   "ProdServerStartSpec.start" should {
 
-    "read settings, create custom ServerProvider, create a pid file, start the the server and register shutdown hooks" in withTempDir {
-      tempDir =>
+    "read settings, create custom ServerProvider, create a pid file, start the the server and register shutdown hooks" in
+      withTempDir { tempDir =>
         val process = new FakeServerProcess(
           args = Seq(tempDir.getAbsolutePath),
           propertyMap = Map(
@@ -114,7 +114,7 @@ object ProdServerStartSpec extends Specification {
         } finally { process.shutdown() }
         pidFile.exists must beFalse
         fakeServer.stopCallCount must_== 1
-    }
+      }
 
     "read configuration for ports" in withTempDir { tempDir =>
       val process = new FakeServerProcess(

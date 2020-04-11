@@ -32,15 +32,13 @@ object UserAnalysis extends LilaController with TheftPrevention {
 
   def load(urlFen: String, variant: Variant) =
     Open { implicit ctx =>
-      val fenStr = Some(urlFen.trim.replace("_", " "))
-        .filter(_.nonEmpty) orElse get("fen")
+      val fenStr = Some(urlFen.trim.replace("_", " ")).filter(_.nonEmpty) orElse
+        get("fen")
       val decodedFen = fenStr.map {
         java.net.URLDecoder.decode(_, "UTF-8").trim
       }.filter(_.nonEmpty)
-      val situation = decodedFen
-        .flatMap { Forsyth.<<<@(variant, _) } | SituationPlus(
-        Situation(variant),
-        1)
+      val situation = decodedFen.flatMap { Forsyth.<<<@(variant, _) } |
+        SituationPlus(Situation(variant), 1)
       val pov = makePov(situation)
       val orientation = get("color").flatMap(chess.Color.apply) | pov.color
       Env.api.roundApi.userAnalysisJson(
@@ -118,11 +116,11 @@ object UserAnalysis extends LilaController with TheftPrevention {
             forecasts =>
               Env.round.forecastApi.save(pov, forecasts) >>
                 Env.round.forecastApi.loadForDisplay(pov) map {
-                case None     => Ok(Json.obj("none" -> true))
-                case Some(fc) => Ok(Json toJson fc) as JSON
-              } recover {
-                case Forecast.OutOfSync => Ok(Json.obj("reload" -> true))
-              }
+                  case None     => Ok(Json.obj("none" -> true))
+                  case Some(fc) => Ok(Json toJson fc) as JSON
+                } recover {
+                  case Forecast.OutOfSync => Ok(Json.obj("reload" -> true))
+                }
           )
       }
     }

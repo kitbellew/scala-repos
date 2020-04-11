@@ -102,8 +102,8 @@ abstract class ContextCleanerSuiteBase(
     System
       .gc() // Make a best effort to run the garbage collection. It *usually* runs GC.
     // Wait until a weak reference object has been GCed
-    while (System.currentTimeMillis - startTime < 10000 && weakRef
-             .get != null) {
+    while (System.currentTimeMillis - startTime < 10000 &&
+           weakRef.get != null) {
       System.gc()
       Thread.sleep(200)
     }
@@ -487,7 +487,8 @@ class CleanerTester(
       eventually(waitTimeout, interval(100 millis)) {
         assert(
           isAllCleanedUp,
-          "The following resources were not cleaned up:\n" + uncleanedResourcesToString)
+          "The following resources were not cleaned up:\n" +
+            uncleanedResourcesToString)
       }
       postCleanupValidate()
     } finally {
@@ -518,20 +519,21 @@ class CleanerTester(
     shuffleIds.foreach { shuffleId =>
       assert(
         mapOutputTrackerMaster.containsShuffle(shuffleId),
-        "Shuffle " + shuffleId + " have not been registered, cannot start cleaner test")
+        "Shuffle " + shuffleId +
+          " have not been registered, cannot start cleaner test")
 
       assert(
         !getShuffleBlocks(shuffleId).isEmpty,
-        "Blocks of shuffle " + shuffleId + " cannot be found in block manager, " +
-          "cannot start cleaner test")
+        "Blocks of shuffle " + shuffleId +
+          " cannot be found in block manager, " + "cannot start cleaner test")
     }
 
     // Verify that the broadcast blocks are present
     broadcastIds.foreach { broadcastId =>
       assert(
         !getBroadcastBlocks(broadcastId).isEmpty,
-        "Blocks of broadcast " + broadcastId + "cannot be found in block manager, " +
-          "cannot start cleaner test")
+        "Blocks of broadcast " + broadcastId +
+          "cannot be found in block manager, " + "cannot start cleaner test")
     }
   }
 
@@ -555,18 +557,21 @@ class CleanerTester(
     shuffleIds.foreach { shuffleId =>
       assert(
         !mapOutputTrackerMaster.containsShuffle(shuffleId),
-        "Shuffle " + shuffleId + " was not deregistered from map output tracker")
+        "Shuffle " + shuffleId +
+          " was not deregistered from map output tracker")
 
       assert(
         getShuffleBlocks(shuffleId).isEmpty,
-        "Blocks of shuffle " + shuffleId + " were not cleared from block manager")
+        "Blocks of shuffle " + shuffleId +
+          " were not cleared from block manager")
     }
 
     // Verify that the broadcast blocks are present
     broadcastIds.foreach { broadcastId =>
       assert(
         getBroadcastBlocks(broadcastId).isEmpty,
-        "Blocks of broadcast " + broadcastId + " were not cleared from block manager")
+        "Blocks of broadcast " + broadcastId +
+          " were not cleared from block manager")
     }
   }
 

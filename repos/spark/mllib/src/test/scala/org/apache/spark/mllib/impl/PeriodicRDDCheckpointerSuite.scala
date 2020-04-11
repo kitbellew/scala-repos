@@ -108,8 +108,7 @@ private object PeriodicRDDCheckpointerSuite {
       case _: AssertionError =>
         throw new Exception(
           s"PeriodicRDDCheckpointerSuite.checkPersistence failed with:\n" +
-            s"\t gIndex = $gIndex\n" +
-            s"\t iteration = $iteration\n" +
+            s"\t gIndex = $gIndex\n" + s"\t iteration = $iteration\n" +
             s"\t rdd.getStorageLevel = ${rdd.getStorageLevel}\n")
     }
   }
@@ -150,7 +149,8 @@ private object PeriodicRDDCheckpointerSuite {
       if (gIndex % checkpointInterval == 0) {
         // We allow 2 checkpoint intervals since we perform an action (checkpointing a second rdd)
         // only AFTER PeriodicRDDCheckpointer decides whether to remove the previous checkpoint.
-        if (iteration - 2 * checkpointInterval < gIndex && gIndex <= iteration) {
+        if (iteration - 2 * checkpointInterval < gIndex &&
+            gIndex <= iteration) {
           assert(rdd.isCheckpointed, "RDD should be checkpointed")
           assert(
             rdd.getCheckpointFile.nonEmpty,
@@ -167,8 +167,7 @@ private object PeriodicRDDCheckpointerSuite {
       case e: AssertionError =>
         throw new Exception(
           s"PeriodicRDDCheckpointerSuite.checkCheckpoint failed with:\n" +
-            s"\t gIndex = $gIndex\n" +
-            s"\t iteration = $iteration\n" +
+            s"\t gIndex = $gIndex\n" + s"\t iteration = $iteration\n" +
             s"\t checkpointInterval = $checkpointInterval\n" +
             s"\t rdd.isCheckpointed = ${rdd.isCheckpointed}\n" +
             s"\t rdd.getCheckpointFile = ${rdd.getCheckpointFile.mkString(", ")}\n" +

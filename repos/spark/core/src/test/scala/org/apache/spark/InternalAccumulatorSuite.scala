@@ -222,8 +222,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       assert(
         secondStageAccum.value.get.asInstanceOf[Long] === numPartitions * 10)
       assert(
-        thirdStageAccum.value.get
-          .asInstanceOf[Long] === numPartitions * 2 * 100)
+        thirdStageAccum.value.get.asInstanceOf[Long] ===
+          numPartitions * 2 * 100)
     }
     rdd.count()
   }
@@ -249,8 +249,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
         // This job runs 2 stages, and we're in the second stage. Therefore, any task attempt
         // ID that's < 2 * numPartitions belongs to the first attempt of this stage.
         val taskContext = TaskContext.get()
-        val isFirstStageAttempt = taskContext
-          .taskAttemptId() < numPartitions * 2
+        val isFirstStageAttempt = taskContext.taskAttemptId() <
+          numPartitions * 2
         if (isFirstStageAttempt) {
           throw new FetchFailedException(
             SparkEnv.get.blockManager.blockManagerId,

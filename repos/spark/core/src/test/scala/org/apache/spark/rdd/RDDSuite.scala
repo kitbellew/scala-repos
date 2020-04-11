@@ -49,22 +49,18 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     assert(nums.map(_.toString).collect().toList === List("1", "2", "3", "4"))
     assert(nums.filter(_ > 2).collect().toList === List(3, 4))
     assert(
-      nums.flatMap(x => 1 to x).collect().toList === List(
-        1, 1, 2, 1, 2, 3, 1, 2, 3, 4))
+      nums.flatMap(x => 1 to x).collect().toList ===
+        List(1, 1, 2, 1, 2, 3, 1, 2, 3, 4))
     assert(nums.union(nums).collect().toList === List(1, 2, 3, 4, 1, 2, 3, 4))
     assert(
-      nums.glom().map(_.toList).collect().toList === List(
-        List(1, 2),
-        List(3, 4)))
+      nums.glom().map(_.toList).collect().toList ===
+        List(List(1, 2), List(3, 4)))
     assert(
-      nums.collect({ case i if i >= 3 => i.toString }).collect()
-        .toList === List("3", "4"))
+      nums.collect({ case i if i >= 3 => i.toString }).collect().toList ===
+        List("3", "4"))
     assert(
-      nums.keyBy(_.toString).collect().toList === List(
-        ("1", 1),
-        ("2", 2),
-        ("3", 3),
-        ("4", 4)))
+      nums.keyBy(_.toString).collect().toList ===
+        List(("1", 1), ("2", 2), ("3", 3), ("4", 4)))
     assert(!nums.isEmpty())
     assert(nums.max() === 4)
     assert(nums.min() === 1)
@@ -114,8 +110,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       sc.union(nums, nums).collect().toList === List(1, 2, 3, 4, 1, 2, 3, 4))
     assert(sc.union(Seq(nums)).collect().toList === List(1, 2, 3, 4))
     assert(
-      sc.union(Seq(nums, nums)).collect().toList === List(
-        1, 2, 3, 4, 1, 2, 3, 4))
+      sc.union(Seq(nums, nums)).collect().toList ===
+        List(1, 2, 3, 4, 1, 2, 3, 4))
   }
 
   test(
@@ -157,11 +153,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     val nums2 = makeRDDWithPartitioner(5 to 8)
     assert(nums1.partitioner == nums2.partitioner)
     assert(
-      new PartitionerAwareUnionRDD(sc, Seq(nums1)).collect().toSet === Set(
-        1,
-        2,
-        3,
-        4))
+      new PartitionerAwareUnionRDD(sc, Seq(nums1)).collect().toSet ===
+        Set(1, 2, 3, 4))
 
     val union = new PartitionerAwareUnionRDD(sc, Seq(nums1, nums2))
     assert(union.collect().toSet === Set(1, 2, 3, 4, 5, 6, 7, 8))
@@ -315,8 +308,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       val partitions = repartitioned.glom().collect()
       // assert all elements are present
       assert(
-        repartitioned.collect().sortWith(_ > _).toSeq === input.toSeq
-          .sortWith(_ > _).toSeq)
+        repartitioned.collect().sortWith(_ > _).toSeq ===
+          input.toSeq.sortWith(_ > _).toSeq)
       // assert no bucket is overloaded
       for (partition <- partitions) {
         val avg = input.size / finalPartitions
@@ -341,12 +334,10 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     // Check that the narrow dependency is also specified correctly
     assert(
       coalesced1.dependencies.head.asInstanceOf[NarrowDependency[_]]
-        .getParents(0).toList ===
-        List(0, 1, 2, 3, 4))
+        .getParents(0).toList === List(0, 1, 2, 3, 4))
     assert(
       coalesced1.dependencies.head.asInstanceOf[NarrowDependency[_]]
-        .getParents(1).toList ===
-        List(5, 6, 7, 8, 9))
+        .getParents(1).toList === List(5, 6, 7, 8, 9))
 
     val coalesced2 = data.coalesce(3)
     assert(coalesced2.collect().toList === (1 to 10).toList)
@@ -357,16 +348,16 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     val coalesced3 = data.coalesce(10)
     assert(coalesced3.collect().toList === (1 to 10).toList)
     assert(
-      coalesced3.glom().collect().map(_.toList).toList ===
-        (1 to 10).map(x => List(x)).toList)
+      coalesced3.glom().collect().map(_.toList).toList === (1 to 10).map(x =>
+        List(x)).toList)
 
     // If we try to coalesce into more partitions than the original RDD, it should just
     // keep the original number of partitions.
     val coalesced4 = data.coalesce(20)
     assert(coalesced4.collect().toList === (1 to 10).toList)
     assert(
-      coalesced4.glom().collect().map(_.toList).toList ===
-        (1 to 10).map(x => List(x)).toList)
+      coalesced4.glom().collect().map(_.toList).toList === (1 to 10).map(x =>
+        List(x)).toList)
 
     // we can optionally shuffle to keep the upstream parallel
     val coalesced5 = data.coalesce(1, shuffle = true)
@@ -441,8 +432,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
         .foldLeft(1.0)((perc, loc) => math.min(perc, loc))
       assert(
         minLocality >= 0.90,
-        "Expected 90% locality but got " +
-          (minLocality * 100.0).toInt + "%")
+        "Expected 90% locality but got " + (minLocality * 100.0).toInt + "%")
 
       // test that the groups are load balanced with 100 +/- 20 elements in each
       val maxImbalance = coalesced2.partitions
@@ -507,9 +497,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   test("collect large number of empty partitions") {
     // Regression test for SPARK-4019
     assert(
-      sc.makeRDD(0 until 10, 1000).repartition(2001).collect().toSet === (
-        0 until 10
-      ).toSet)
+      sc.makeRDD(0 until 10, 1000).repartition(2001).collect().toSet ===
+        (0 until 10).toSet)
   }
 
   test("take") {
@@ -760,11 +749,11 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
 
     import scala.reflect.classTag
     assert(
-      data.sortBy(parse, true, 2)(AgeOrdering, classTag[Person])
-        .collect() === ageOrdered)
+      data.sortBy(parse, true, 2)(AgeOrdering, classTag[Person]).collect() ===
+        ageOrdered)
     assert(
-      data.sortBy(parse, true, 2)(NameOrdering, classTag[Person])
-        .collect() === nameOrdered)
+      data.sortBy(parse, true, 2)(NameOrdering, classTag[Person]).collect() ===
+        nameOrdered)
   }
 
   test("repartitionAndSortWithinPartitions") {

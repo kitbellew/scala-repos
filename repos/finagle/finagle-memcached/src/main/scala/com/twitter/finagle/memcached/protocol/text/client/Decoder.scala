@@ -64,10 +64,9 @@ class Decoder extends AbstractDecoder with StateMachine {
       case AwaitingData(valuesSoFar, tokens, bytesNeeded) =>
         decodeData(bytesNeeded, buffer) { data =>
           awaitResponseOrEnd(
-            valuesSoFar :+
-              TokensWithData(
-                tokens.map(ChannelBufferBuf.Owned(_)),
-                ChannelBufferBuf.Owned(data)))
+            valuesSoFar :+ TokensWithData(
+              tokens.map(ChannelBufferBuf.Owned(_)),
+              ChannelBufferBuf.Owned(data)))
           NeedMoreData
         }
       case AwaitingResponseOrEnd(valuesSoFar) => decodeLine(buffer, needsData) {

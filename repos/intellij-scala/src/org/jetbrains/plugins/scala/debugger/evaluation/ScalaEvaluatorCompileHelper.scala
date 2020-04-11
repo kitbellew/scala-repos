@@ -44,9 +44,8 @@ class ScalaEvaluatorCompileHelper(project: Project)
     override def sessionDetached(session: DebuggerSession) = {
       clearTempFiles()
 
-      if (!ScalaCompileServerSettings.getInstance()
-            .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper
-            .needCompileServer) {
+      if (!ScalaCompileServerSettings.getInstance().COMPILE_SERVER_ENABLED &&
+          EvaluatorCompileHelper.needCompileServer) {
         CompileServerLauncher.ensureNotRunning(project)
       }
     }

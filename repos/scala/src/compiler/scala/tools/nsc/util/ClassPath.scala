@@ -35,8 +35,9 @@ object ClassPath {
 
     /* Get all subdirectories, jars, zips out of a directory. */
     def lsDir(dir: Directory, filt: String => Boolean = _ => true) =
-      dir.list filter (x =>
-        filt(x.name) && (x.isDirectory || isJarOrZip(x))) map (_.path) toList
+      dir.list filter
+        (x => filt(x.name) && (x.isDirectory || isJarOrZip(x))) map
+        (_.path) toList
 
     if (pattern == "*") lsDir(Directory("."))
     else if (pattern endsWith wildSuffix) lsDir(Directory(pattern dropRight 2))
@@ -50,8 +51,8 @@ object ClassPath {
   }
 
   /** Split classpath using platform-dependent path separator */
-  def split(path: String): List[String] =
-    (path split pathSeparator).toList filterNot (_ == "") distinct
+  def split(path: String): List[String] = (path split pathSeparator)
+    .toList filterNot (_ == "") distinct
 
   /** Join classpath using platform-dependent path separator */
   def join(paths: String*): String =
@@ -69,8 +70,8 @@ object ClassPath {
     AbstractFile getDirectory extdir match {
       case null => Nil
       case dir =>
-        dir filter (_.isClassContainer) map (x =>
-          new java.io.File(dir.file, x.name) getPath) toList
+        dir filter (_.isClassContainer) map
+          (x => new java.io.File(dir.file, x.name) getPath) toList
     }
   }
 
@@ -82,8 +83,8 @@ object ClassPath {
     if (!file.isFile) return Nil
 
     val baseDir = file.parent
-    new Jar(file).classPathElements map (elem =>
-      specToURL(elem) getOrElse (baseDir / elem).toURL)
+    new Jar(file).classPathElements map
+      (elem => specToURL(elem) getOrElse (baseDir / elem).toURL)
   }
 
   def specToURL(spec: String): Option[URL] =
@@ -179,9 +180,10 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
   /** Merge classpath of `platform` and `urls` into merged classpath */
   def mergeUrlsIntoClassPath(urls: URL*): MergedClassPath[T] = {
     // Collect our new jars/directories and add them to the existing set of classpaths
-    val allEntries = (entries ++
-      urls.map(url => context.newClassPath(io.AbstractFile.getURL(url))))
-      .distinct
+    val allEntries =
+      (entries ++
+        urls.map(url => context.newClassPath(io.AbstractFile.getURL(url))))
+        .distinct
 
     // Combine all of our classpaths (old and new) into one merged classpath
     new MergedClassPath(allEntries, context)
@@ -339,14 +341,13 @@ class MergedClassPath[T](
 
   def name = entries.head.name
   def asURLs = (entries flatMap (_.asURLs)).toList
-  lazy val sourcepaths: IndexedSeq[AbstractFile] =
-    entries flatMap (_.sourcepaths)
+  lazy val sourcepaths: IndexedSeq[AbstractFile] = entries flatMap
+    (_.sourcepaths)
 
   override def origin =
     Some(
-      entries map (x => x.origin getOrElse x.name) mkString (
-        "Merged(", ", ", ")"
-      ))
+      entries map (x => x.origin getOrElse x.name) mkString
+        ("Merged(", ", ", ")"))
   override def asClassPathString: String =
     join(entries map (_.asClassPathString): _*)
 

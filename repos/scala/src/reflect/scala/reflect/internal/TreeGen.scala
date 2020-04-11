@@ -210,8 +210,9 @@ abstract class TreeGen {
 
   def mkAttributedSelect(qual: Tree, sym: Symbol): RefTree = {
     // Tests involving the repl fail without the .isEmptyPackage condition.
-    if (qual.symbol != null && (qual.symbol.isEffectiveRoot || qual.symbol
-          .isEmptyPackage)) mkAttributedIdent(sym)
+    if (qual.symbol != null &&
+        (qual.symbol.isEffectiveRoot || qual.symbol.isEmptyPackage))
+      mkAttributedIdent(sym)
     else {
       // Have to recognize anytime a selection is made on a package
       // so it can be rewritten to foo.bar.`package`.name rather than
@@ -222,19 +223,16 @@ abstract class TreeGen {
         (if (qual.tpe ne null) qual.tpe.typeSymbol
          else if (qual.symbol ne null) qual.symbol
          else NoSymbol)
-      val needsPackageQualifier = ((sym ne null)
-        && qualsym.hasPackageFlag
-        && !(
+      val needsPackageQualifier =
+        ((sym ne null) && qualsym.hasPackageFlag && !(
           sym.isDefinedInPackage || sym.moduleClass.isDefinedInPackage
         ) // SI-7817 work around strangeness in post-flatten `Symbol#owner`
-      )
+        )
       val pkgQualifier =
         if (needsPackageQualifier) {
           val packageObject = qualsym.packageObject
-          Select(
-            qual,
-            nme.PACKAGE) setSymbol packageObject setType packageObject
-            .typeOfThis
+          Select(qual, nme.PACKAGE) setSymbol packageObject setType
+            packageObject.typeOfThis
         } else qual
 
       val tree = Select(pkgQualifier, sym)
@@ -409,9 +407,8 @@ abstract class TreeGen {
     var vparamss1 = mmap(vparamss) { vd =>
       val param = atPos(vd.pos.makeTransparent) {
         val mods = Modifiers(
-          vd.mods.flags & (
-            IMPLICIT | DEFAULTPARAM | BYNAMEPARAM
-          ) | PARAM | PARAMACCESSOR)
+          vd.mods.flags & (IMPLICIT | DEFAULTPARAM | BYNAMEPARAM) | PARAM |
+            PARAMACCESSOR)
         ValDef(
           mods withAnnotations vd.mods.annotations,
           vd.name,
@@ -450,8 +447,9 @@ abstract class TreeGen {
             Block(lvdefs, Literal(Constant(()))))))
       } else {
         // convert (implicit ... ) to ()(implicit ... ) if it's the only parameter section
-        if (vparamss1.isEmpty || !vparamss1.head.isEmpty && vparamss1.head.head
-              .mods.isImplicit) vparamss1 = List() :: vparamss1
+        if (vparamss1.isEmpty ||
+            !vparamss1.head.isEmpty && vparamss1.head.head.mods.isImplicit)
+          vparamss1 = List() :: vparamss1
         val superCall =
           pendingSuperCall // we can't know in advance which of the parents will end up as a superclass
         // this requires knowing which of the parents is a type macro and which is not
@@ -474,17 +472,18 @@ abstract class TreeGen {
     constr foreach (ensureNonOverlapping(_, parents ::: gvdefs, focus = false))
     // Field definitions for the class - remove defaults.
 
-    val fieldDefs = vparamss.flatten map (vd => {
-      val field = copyValDef(vd)(
-        mods = vd.mods &~ DEFAULTPARAM,
-        rhs = EmptyTree)
-      // Prevent overlapping of `field` end's position with default argument's start position.
-      // This is needed for `Positions.Locator(pos).traverse` to return the correct tree when
-      // the `pos` is a point position with all its values equal to `vd.rhs.pos.start`.
-      if (field.pos.isRange && vd.rhs.pos.isRange)
-        field.pos = field.pos.withEnd(vd.rhs.pos.start - 1)
-      field
-    })
+    val fieldDefs = vparamss.flatten map
+      (vd => {
+        val field = copyValDef(vd)(
+          mods = vd.mods &~ DEFAULTPARAM,
+          rhs = EmptyTree)
+        // Prevent overlapping of `field` end's position with default argument's start position.
+        // This is needed for `Positions.Locator(pos).traverse` to return the correct tree when
+        // the `pos` is a point position with all its values equal to `vd.rhs.pos.start`.
+        if (field.pos.isRange && vd.rhs.pos.isRange)
+          field.pos = field.pos.withEnd(vd.rhs.pos.start - 1)
+        field
+      })
 
     global.Template(
       parents,
@@ -506,8 +505,8 @@ abstract class TreeGen {
       name: TypeName,
       tparams: List[TypeDef],
       templ: Template): ClassDef = {
-    val isInterface =
-      mods.isTrait && (templ.body forall treeInfo.isInterfaceMember)
+    val isInterface = mods.isTrait &&
+      (templ.body forall treeInfo.isInterfaceMember)
     val mods1 = if (isInterface) (mods | Flags.INTERFACE) else mods
     ClassDef(mods1, name, tparams, templ)
   }
@@ -819,10 +818,8 @@ abstract class TreeGen {
         val rhs1 = mkFor(
           List(ValFrom(defpat1, rhs).setPos(t.pos)),
           Yield(
-            Block(
-              pdefs,
-              atPos(wrappingPos(ids)) { mkTuple(ids) }) setPos wrappingPos(
-              pdefs)))
+            Block(pdefs, atPos(wrappingPos(ids)) { mkTuple(ids) }) setPos
+              wrappingPos(pdefs)))
         val allpats = (pat :: pats) map (_.duplicate)
         val pos1 =
           if (t.pos == NoPosition) NoPosition

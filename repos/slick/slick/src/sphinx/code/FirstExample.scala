@@ -65,15 +65,12 @@ object FirstExample extends App {
       // Create the tables, including primary and foreign keys
       (suppliers.schema ++ coffees.schema).create,
       // Insert some suppliers
-      suppliers += (
-        101, "Acme, Inc.", "99 Market Street", "Groundsville", "CA", "95199"
-      ),
-      suppliers += (
-        49, "Superior Coffee", "1 Party Place", "Mendocino", "CA", "95460"
-      ),
-      suppliers += (
-        150, "The High Ground", "100 Coffee Lane", "Meadows", "CA", "93966"
-      ),
+      suppliers +=
+        (101, "Acme, Inc.", "99 Market Street", "Groundsville", "CA", "95199"),
+      suppliers +=
+        (49, "Superior Coffee", "1 Party Place", "Mendocino", "CA", "95460"),
+      suppliers +=
+        (150, "The High Ground", "100 Coffee Lane", "Meadows", "CA", "93966"),
       // Equivalent SQL code:
       // insert into SUPPLIERS(SUP_ID, SUP_NAME, STREET, CITY, STATE, ZIP) values (?,?,?,?,?,?)
 
@@ -96,7 +93,8 @@ object FirstExample extends App {
       println("Coffees:")
       db.run(coffees.result).map(_.foreach {
         case (name, supID, price, sales, total) => println(
-            "  " + name + "\t" + supID + "\t" + price + "\t" + sales + "\t" + total)
+            "  " + name + "\t" + supID + "\t" + price + "\t" + sales + "\t" +
+              total)
       })
       // Equivalent SQL code:
       // select COF_NAME, SUP_ID, PRICE, SALES, TOTAL from COFFEES
@@ -110,11 +108,10 @@ object FirstExample extends App {
       //#projection
       val q1 =
         for (c <- coffees)
-          yield LiteralColumn("  ") ++ c.name ++ "\t" ++ c.supID
-            .asColumnOf[String] ++
-            "\t" ++ c.price.asColumnOf[String] ++ "\t" ++ c.sales
-            .asColumnOf[String] ++
-            "\t" ++ c.total.asColumnOf[String]
+          yield LiteralColumn("  ") ++ c.name ++ "\t" ++
+            c.supID.asColumnOf[String] ++ "\t" ++ c.price.asColumnOf[String] ++
+            "\t" ++ c.sales.asColumnOf[String] ++ "\t" ++
+            c.total.asColumnOf[String]
       // The first string constant needs to be lifted manually to a LiteralColumn
       // so that the proper ++ operator is found
 

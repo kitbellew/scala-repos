@@ -51,10 +51,10 @@ object InfixType {
         }
     }
     var assoc: Int = 0 //this mark associativity: left - 1, right - -1
-    while (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && (!builder
-             .newlineBeforeCurrentToken) &&
-           (!star || builder.getTokenText != "*") && (!isPattern || builder
-             .getTokenText != "|")) {
+    while (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER &&
+           (!builder.newlineBeforeCurrentToken) &&
+           (!star || builder.getTokenText != "*") &&
+           (!isPattern || builder.getTokenText != "|")) {
       count = count + 1
       //need to know associativity
       val s = builder.getTokenText

@@ -211,8 +211,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
           cellMatrix: CellMatrix,
           cells: List[Cell]): List[Cell] =
         if (queue.isEmpty) { cells }
-        else if (cells.isEmpty || cellMatrix
-                   .compare(queue.head, cells.head) == EQ) {
+        else if (cells.isEmpty ||
+                 cellMatrix.compare(queue.head, cells.head) == EQ) {
           dequeueEqual(queue, cellMatrix, queue.dequeue() :: cells)
         } else { cells }
 
@@ -330,8 +330,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         streamId: String,
         keyRefs: List[ColumnRef],
         valRefs: List[ColumnRef]) {
-      val name = streamId + ";krefs=" + keyRefs
-        .mkString("[", ",", "]") + ";vrefs=" + valRefs.mkString("[", ",", "]")
+      val name = streamId + ";krefs=" + keyRefs.mkString("[", ",", "]") +
+        ";vrefs=" + valRefs.mkString("[", ",", "]")
     }
 
     type IndexMap = Map[IndexKey, SliceSorter]
@@ -1241,8 +1241,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
             // Although we have a global count of inserts, we also want to
             // specifically track counts on the index since some operations
             // may not use all indices (e.g. groupByN)
-            val newIndex = index.copy(count =
-              index.count + (newInsertCount - jdbmState.insertCount))
+            val newIndex = index.copy(count = index.count +
+              (newInsertCount - jdbmState.insertCount))
 
             jdbmState.copy(
               indices = jdbmState.indices + (indexMapKey -> newIndex),
@@ -1287,8 +1287,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
           case (SortedSlice(name, kslice, vslice, _, _, _, _), index) =>
             val slice = new Slice {
               val size = kslice.size
-              val columns = kslice.wrap(CPathIndex(0)).columns ++ vslice
-                .wrap(CPathIndex(1)).columns
+              val columns = kslice.wrap(CPathIndex(0)).columns ++
+                vslice.wrap(CPathIndex(1)).columns
             }
 
             // We can actually get the last key, but is that necessary?
@@ -1424,23 +1424,23 @@ trait BlockStoreColumnarTableModule[M[+_]]
           .tupled flatMap {
           case (Right(left), Right(right)) => orderHint match {
               case Some(JoinOrder.LeftOrder) =>
-                hashJoin(right.slice, left, flip = true) map (JoinOrder
-                  .LeftOrder -> _)
+                hashJoin(right.slice, left, flip = true) map
+                  (JoinOrder.LeftOrder -> _)
               case Some(JoinOrder.RightOrder) =>
-                hashJoin(left.slice, right, flip = false) map (JoinOrder
-                  .RightOrder -> _)
+                hashJoin(left.slice, right, flip = false) map
+                  (JoinOrder.RightOrder -> _)
               case _ =>
-                hashJoin(right.slice, left, flip = true) map (JoinOrder
-                  .LeftOrder -> _)
+                hashJoin(right.slice, left, flip = true) map
+                  (JoinOrder.LeftOrder -> _)
             }
 
           case (Right(left), Left(right)) =>
-            hashJoin(left.slice, right, flip = false) map (JoinOrder
-              .RightOrder -> _)
+            hashJoin(left.slice, right, flip = false) map
+              (JoinOrder.RightOrder -> _)
 
           case (Left(left), Right(right)) =>
-            hashJoin(right.slice, left, flip = true) map (JoinOrder
-              .LeftOrder -> _)
+            hashJoin(right.slice, left, flip = true) map
+              (JoinOrder.LeftOrder -> _)
 
           case (leftE, rightE) =>
             val idT = Predef.identity[Table](_)
@@ -1644,9 +1644,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         case (streamIds, indices) =>
           val streams = indices.groupBy(_._1.streamId)
           streamIds.toStream map { streamId =>
-            streams get streamId map (
-              loadTable(sortMergeEngine, _, sortOrder)
-            ) getOrElse Table.empty
+            streams get streamId map
+              (loadTable(sortMergeEngine, _, sortOrder)) getOrElse Table.empty
           }
       }
     }

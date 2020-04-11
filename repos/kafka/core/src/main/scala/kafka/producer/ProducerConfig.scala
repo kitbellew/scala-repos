@@ -41,7 +41,8 @@ object ProducerConfig extends Config {
   def validateBatchSize(batchSize: Int, queueSize: Int) {
     if (batchSize > queueSize)
       throw new InvalidConfigException(
-        "Batch size = " + batchSize + " can't be larger than queue size = " + queueSize)
+        "Batch size = " + batchSize + " can't be larger than queue size = " +
+          queueSize)
   }
 
   def validateProducerType(producerType: String) {
@@ -50,7 +51,8 @@ object ProducerConfig extends Config {
       case "async" =>
       case _ =>
         throw new InvalidConfigException(
-          "Invalid value " + producerType + " for producer.type, valid values are sync/async")
+          "Invalid value " + producerType +
+            " for producer.type, valid values are sync/async")
     }
   }
 }

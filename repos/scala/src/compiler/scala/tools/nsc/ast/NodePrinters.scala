@@ -65,9 +65,8 @@ abstract class NodePrinters {
       if (infolevel == InfoLevel.Quiet) ""
       else {
         try {
-          List(showSymbol(tree), showType(tree)) filterNot (
-            _ == ""
-          ) mkString ", " trim
+          List(showSymbol(tree), showType(tree)) filterNot (_ == "") mkString
+            ", " trim
         } catch { case ex: Throwable => "sym= <error> " + ex.getMessage }
       }
     }

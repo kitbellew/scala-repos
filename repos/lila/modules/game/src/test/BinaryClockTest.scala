@@ -12,8 +12,8 @@ class BinaryClockTest extends Specification {
 
   val _0_ = "00000000"
   val since = org.joda.time.DateTime.now.minusHours(1)
-  def write(c: Clock): List[String] =
-    (BinaryFormat.clock(since) write c).showBytes.split(',').toList
+  def write(c: Clock): List[String] = (BinaryFormat.clock(since) write c)
+    .showBytes.split(',').toList
   def read(bytes: List[String]): Clock =
     (BinaryFormat.clock(since).read(ByteArray.parseBytes(bytes), false, false))(
       chess.White)
@@ -27,12 +27,12 @@ class BinaryClockTest extends Specification {
     "write" in {
       write(clock) must_== { bits22 ::: List.fill(10)(_0_) }
       write(clock.giveTime(chess.White, 0.03f)) must_== {
-        bits22 ::: List("10000000", "00000000", "00000011") ::: List
-          .fill(7)(_0_)
+        bits22 ::: List("10000000", "00000000", "00000011") :::
+          List.fill(7)(_0_)
       }
       write(clock.giveTime(chess.White, -0.03f)) must_== {
-        bits22 ::: List("00000000", "00000000", "00000011") ::: List
-          .fill(7)(_0_)
+        bits22 ::: List("00000000", "00000000", "00000011") :::
+          List.fill(7)(_0_)
       }
       write(Clock(0, 3)) must_== {
         List(
@@ -49,11 +49,11 @@ class BinaryClockTest extends Specification {
     "read" in {
       read(bits22 ::: List.fill(11)(_0_)) must_== { clock }
       read(
-        bits22 ::: List("10000000", "00000000", "00000011") ::: List
-          .fill(8)(_0_)) must_== { clock.giveTime(chess.White, 0.03f) }
+        bits22 ::: List("10000000", "00000000", "00000011") :::
+          List.fill(8)(_0_)) must_== { clock.giveTime(chess.White, 0.03f) }
       read(
-        bits22 ::: List("00000000", "00000000", "00000011") ::: List
-          .fill(8)(_0_)) must_== { clock.giveTime(chess.White, -0.03f) }
+        bits22 ::: List("00000000", "00000000", "00000011") :::
+          List.fill(8)(_0_)) must_== { clock.giveTime(chess.White, -0.03f) }
     }
     "isomorphism" in {
 

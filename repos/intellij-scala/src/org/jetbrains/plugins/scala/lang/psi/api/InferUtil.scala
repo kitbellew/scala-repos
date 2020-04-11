@@ -389,8 +389,8 @@ object InferUtil {
         fromSAM: Boolean = false): ScType = {
       expectedType match {
         case Some(expectedType @ ScFunctionType(expectedRet, expectedParams))
-            if expectedParams.length == mt.params.length
-              && !mt.returnType.conforms(expectedType) =>
+            if expectedParams.length == mt.params.length &&
+              !mt.returnType.conforms(expectedType) =>
           mt.returnType match {
             case methodType: ScMethodType =>
               return mt.copy(returnType = applyImplicitViewToResult(
@@ -557,9 +557,8 @@ object InferUtil {
                     typez.recursiveUpdate {
                       case tpt: ScTypeParameterType =>
                         typeParams.find(tp =>
-                          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
-                            tpt.name, tpt.getId
-                          )) match {
+                          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+                            (tpt.name, tpt.getId)) match {
                           case None => (true, tpt)
                           case _ =>
                             hasRecursiveTypeParameters = true
@@ -574,8 +573,8 @@ object InferUtil {
                     case Some(_addLower) =>
                       val substedLowerType = unSubst.subst(lower)
                       val addLower =
-                        if (tp.typeParams.nonEmpty && !_addLower
-                              .isInstanceOf[ScParameterizedType] &&
+                        if (tp.typeParams.nonEmpty &&
+                            !_addLower.isInstanceOf[ScParameterizedType] &&
                             !tp.typeParams.exists(_.name == "_"))
                           ScParameterizedType(
                             _addLower,
@@ -592,8 +591,8 @@ object InferUtil {
                     case Some(_addUpper) =>
                       val substedUpperType = unSubst.subst(upper)
                       val addUpper =
-                        if (tp.typeParams.nonEmpty && !_addUpper
-                              .isInstanceOf[ScParameterizedType] &&
+                        if (tp.typeParams.nonEmpty &&
+                            !_addUpper.isInstanceOf[ScParameterizedType] &&
                             !tp.typeParams.exists(_.name == "_"))
                           ScParameterizedType(
                             _addUpper,
@@ -627,9 +626,8 @@ object InferUtil {
                       typez.recursiveUpdate {
                         case tpt: ScTypeParameterType =>
                           typeParams.find(tp =>
-                            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
-                              tpt.name, tpt.getId
-                            )) match {
+                            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+                              (tpt.name, tpt.getId)) match {
                             case None => (true, tpt)
                             case _ =>
                               hasRecursiveTypeParameters = true
@@ -686,8 +684,8 @@ object InferUtil {
                                   typeParams: Seq[ScTypeParam]): Boolean = {
                                 named match {
                                   case t: ScTypeParametersOwner =>
-                                    if (typeParams.length != t.typeParameters
-                                          .length) return false
+                                    if (typeParams.length !=
+                                          t.typeParameters.length) return false
                                     typeParams.zip(t.typeParameters).forall {
                                       case (p1: ScTypeParam, p2: ScTypeParam) =>
                                         if (p1.typeParameters.nonEmpty)
@@ -695,8 +693,9 @@ object InferUtil {
                                         else true
                                     }
                                   case p: PsiTypeParameterListOwner =>
-                                    if (typeParams.length != p.getTypeParameters
-                                          .length) return false
+                                    if (typeParams.length !=
+                                          p.getTypeParameters.length)
+                                      return false
                                     typeParams.forall(_.typeParameters.isEmpty)
                                   case _ => false
                                 }

@@ -154,12 +154,11 @@ trait ModelBuilders {
       try {
         if (sym == RootPackage) { Some(root) }
         else if (sym.hasPackageFlag) { Some(fromSymbol(sym)) }
-        else if (!sym.nameString.contains("$") && (sym != NoSymbol) && (sym
-                   .tpe != NoType)) {
-          if (sym.isClass || sym.isTrait || sym.isModule ||
-              sym.isModuleClass || sym.isPackageClass) {
-            Some(TypeInfo(sym.tpe, PosNeededAvail))
-          } else { None }
+        else if (!sym.nameString.contains("$") && (sym != NoSymbol) &&
+                 (sym.tpe != NoType)) {
+          if (sym.isClass || sym.isTrait || sym.isModule || sym.isModuleClass ||
+              sym.isPackageClass) { Some(TypeInfo(sym.tpe, PosNeededAvail)) }
+          else { None }
         } else { None }
       } catch { case e: Throwable => None }
     }
@@ -228,10 +227,9 @@ trait ModelBuilders {
       }
       val nameString = sym.nameString
       val (name, localName) =
-        if (sym.isClass || sym.isTrait || sym.isModule ||
-            sym.isModuleClass || sym.isPackageClass) {
-          (typeFullName(tpe), nameString)
-        } else { (nameString, nameString) }
+        if (sym.isClass || sym.isTrait || sym.isModule || sym.isModuleClass ||
+            sym.isPackageClass) { (typeFullName(tpe), nameString) }
+        else { (nameString, nameString) }
       val ownerTpe =
         if (sym.owner != NoSymbol && sym.owner.tpe != NoType) {
           Some(sym.owner.tpe)

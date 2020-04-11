@@ -23,8 +23,8 @@ trait MatchTranslation {
 
   // Always map repeated params to sequences
   private def setVarInfo(sym: Symbol, info: Type) =
-    sym setInfo debug
-      .patmatResult(s"changing ${sym.defString} to")(repeatedToSeq(info))
+    sym setInfo
+      debug.patmatResult(s"changing ${sym.defString} to")(repeatedToSeq(info))
 
   private def hasSym(t: Tree) = t.symbol != null && t.symbol != NoSymbol
 
@@ -201,8 +201,7 @@ trait MatchTranslation {
       // infers a weird type for an unapply call. By going back to the parameterType for the
       // extractor call we get a saner type, so let's just do that for now.
       def ensureConformsTo(paramType: Type): Boolean =
-        ((tpe =:= paramType)
-          || (tpe <:< paramType) && setInfo(paramType))
+        ((tpe =:= paramType) || (tpe <:< paramType) && setInfo(paramType))
 
       private def concreteType = tpe.bounds.hi
       private def unbound = unbind(tree)
@@ -270,9 +269,8 @@ trait MatchTranslation {
       val pt = repeatedToSeq(origPt)
 
       // val packedPt = repeatedToSeq(typer.packedType(match_, context.owner))
-      val selectorSym =
-        freshSym(selector.pos, pureType(selectorTp)) setFlag treeInfo
-          .SYNTH_CASE_FLAGS
+      val selectorSym = freshSym(selector.pos, pureType(selectorTp)) setFlag
+        treeInfo.SYNTH_CASE_FLAGS
 
       // pt = Any* occurs when compiling test/files/pos/annotDepMethType.scala  with -Xexperimental
       val combined = combineCases(
@@ -315,8 +313,8 @@ trait MatchTranslation {
           }
 
           for (cases <- emitTypeSwitch(bindersAndCases, pt).toList
-               if cases forall treeInfo
-                 .isCatchCase; // must check again, since it's not guaranteed -- TODO: can we eliminate this? e.g., a type test could test for a trait or a non-trivial prefix, which are not handled by the back-end
+               if cases forall
+                 treeInfo.isCatchCase; // must check again, since it's not guaranteed -- TODO: can we eliminate this? e.g., a type test could test for a trait or a non-trivial prefix, which are not handled by the back-end
                cse <- cases)
             yield fixerUpper(matchOwner, pos)(cse).asInstanceOf[CaseDef]
         }
@@ -384,8 +382,8 @@ trait MatchTranslation {
       */
     def translateCase(scrutSym: Symbol, pt: Type)(caseDef: CaseDef) = {
       val CaseDef(pattern, guard, body) = caseDef
-      translatePattern(BoundTree(scrutSym, pattern)) ++ translateGuard(
-        guard) :+ translateBody(body, pt)
+      translatePattern(BoundTree(scrutSym, pattern)) ++ translateGuard(guard) :+
+        translateBody(body, pt)
     }
 
     def translatePattern(bound: BoundTree): List[TreeMaker] = bound.translate()
@@ -499,10 +497,8 @@ trait MatchTranslation {
       lazy val subBoundTrees = (args, subPatTypes).zipped map newBoundTree
 
       // never store these in local variables (for PreserveSubPatBinders)
-      lazy val ignoredSubPatBinders: Set[Symbol] =
-        subPatBinders zip args collect {
-          case (b, PatternBoundToUnderscore()) => b
-        } toSet
+      lazy val ignoredSubPatBinders: Set[Symbol] = subPatBinders zip
+        args collect { case (b, PatternBoundToUnderscore()) => b } toSet
 
       // do repeated-parameter expansion to match up with the expected number of arguments (in casu, subpatterns)
       private def nonStarSubPatTypes = aligner.typedNonStarPatterns map (_.tpe)
@@ -516,8 +512,8 @@ trait MatchTranslation {
 
       private def productElemsToN(binder: Symbol, n: Int): List[Tree] =
         1 to n map tupleSel(binder) toList
-      private def genTake(binder: Symbol, n: Int): List[Tree] =
-        (0 until n).toList map (codegen index seqTree(binder))
+      private def genTake(binder: Symbol, n: Int): List[Tree] = (0 until n)
+        .toList map (codegen index seqTree(binder))
       private def genDrop(binder: Symbol, n: Int): List[Tree] =
         codegen.drop(seqTree(binder))(expectedLength) :: Nil
 
@@ -541,9 +537,8 @@ trait MatchTranslation {
         // [2] then we have to index the binder that represents the sequence for the remaining subpatterns, except for...
         // [3] the last one -- if the last subpattern is a sequence wildcard:
         //       drop the prefix (indexed by the refs on the preceding line), return the remainder
-        (productElemsToN(binder, firstIndexingBinder)
-          ++ genTake(binder, expectedLength)
-          ++ lastTrees).toList
+        (productElemsToN(binder, firstIndexingBinder) ++
+          genTake(binder, expectedLength) ++ lastTrees).toList
       }
 
       // the trees that select the subpatterns on the extractor's result, referenced by `binder`
@@ -621,14 +616,15 @@ trait MatchTranslation {
         }
         val mutableBinders =
           (if (!binder.info.typeSymbol.hasTransOwner(ScalaPackageClass) &&
-               (paramAccessors exists (x =>
-                 x.isMutable || definitions.isRepeated(x)))) {
+               (paramAccessors exists
+                 (x => x.isMutable || definitions.isRepeated(x)))) {
 
              subPatBinders.zipWithIndex.flatMap {
                case (binder, idx) =>
                  val param = paramAccessorAt(idx)
-                 if (param.isMutable || (definitions
-                       .isRepeated(param) && !aligner.isStar)) binder :: Nil
+                 if (param.isMutable ||
+                     (definitions.isRepeated(param) && !aligner.isStar))
+                   binder :: Nil
                  else Nil
              }
            } else Nil)
@@ -684,8 +680,8 @@ trait MatchTranslation {
         // directly from the extractor's result type
         val binder = freshSym(pos, pureType(resultInMonad))
         val potentiallyMutableBinders: Set[Symbol] =
-          if (extractorApply.tpe.typeSymbol
-                .isNonBottomSubClass(OptionClass) && !aligner.isSeq) Set.empty
+          if (extractorApply.tpe.typeSymbol.isNonBottomSubClass(OptionClass) &&
+              !aligner.isSeq) Set.empty
           else
             // Ensures we capture unstable bound variables eagerly. These can arise under name based patmat or by indexing into mutable Seqs. See run t9003.scala
             subPatBinders.toSet

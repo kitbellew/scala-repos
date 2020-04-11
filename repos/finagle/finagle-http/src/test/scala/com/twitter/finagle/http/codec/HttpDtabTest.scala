@@ -36,10 +36,8 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
       .add("Dtab-Local", "/srv#/prod/local/role=>/$/fail;/srv=>/srv#/staging")
     m.headers.add("Dtab-Local", "/srv/local=>/srv/other,/srv=>/srv#/devel")
     val expected = Dtab.read(
-      "/srv#/prod/local/role => /$/fail;" +
-        "/srv => /srv#/staging;" +
-        "/srv/local => /srv/other;" +
-        "/srv => /srv#/devel")
+      "/srv#/prod/local/role => /$/fail;" + "/srv => /srv#/staging;" +
+        "/srv/local => /srv/other;" + "/srv => /srv#/devel")
     assert(HttpDtab.read(m).get() == expected)
   }
 
@@ -51,10 +49,8 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
     HttpDtab.write(Dtab.read("/srv => /$/nil"), m)
     m.headers.add("Dtab-Local", "/srv/local=>/srv/other,/srv=>/srv#/devel")
     val expected = Dtab.read(
-      "/srv => /$/nil;" +
-        "/srv#/prod/local/role => /$/fail;" +
-        "/srv => /srv#/staging;" +
-        "/srv/local => /srv/other;" +
+      "/srv => /$/nil;" + "/srv#/prod/local/role => /$/fail;" +
+        "/srv => /srv#/staging;" + "/srv/local => /srv/other;" +
         "/srv => /srv#/devel")
     assert(HttpDtab.read(m).get() == expected)
   }

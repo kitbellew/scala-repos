@@ -118,8 +118,8 @@ object ScSynteticSugarClassesUtil {
       case _ => tp match {
           case p: ScParameterizedType =>
             def startsWith(clazz: PsiClass, qualNamePrefix: String) =
-              clazz.qualifiedName != null && clazz.qualifiedName
-                .startsWith(qualNamePrefix)
+              clazz.qualifiedName != null &&
+                clazz.qualifiedName.startsWith(qualNamePrefix)
 
             ScType.extractClassType(p.designator) match {
               case Some((clazz: ScTypeDefinition, sub))

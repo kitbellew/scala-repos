@@ -375,8 +375,8 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     assert(errorResponse6.highestProtocolVersion === null)
     assert(errorResponse7.highestProtocolVersion === null)
     assert(
-      errorResponse8.highestProtocolVersion === RestSubmissionServer
-        .PROTOCOL_VERSION)
+      errorResponse8.highestProtocolVersion ===
+        RestSubmissionServer.PROTOCOL_VERSION)
   }
 
   test("server returns unknown fields") {

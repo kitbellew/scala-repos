@@ -283,8 +283,7 @@ class AppUpdateTest extends MarathonSpec {
     import Formats._
     val result = Json.fromJson[AppUpdate](Json.parse(json))
     assert(
-      result == JsError(
-        JsPath \ "ports",
-        ValidationError("Ports must be unique.")))
+      result ==
+        JsError(JsPath \ "ports", ValidationError("Ports must be unique.")))
   }
 }

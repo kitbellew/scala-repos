@@ -23,9 +23,9 @@ object ServerResultUtils {
             .exists(_.equalsIgnoreCase(CLOSE))) {
         // Close connection, header already exists
         DefaultClose
-      } else if ((result.body.isInstanceOf[HttpEntity.Streamed] && result.body
-                   .contentLength.isEmpty)
-                 || request.headers.get(CONNECTION)
+      } else if ((result.body.isInstanceOf[HttpEntity.Streamed] &&
+                 result.body.contentLength.isEmpty) ||
+                 request.headers.get(CONNECTION)
                    .exists(_.equalsIgnoreCase(CLOSE))) {
         // We need to close the connection and set the header
         SendClose
@@ -33,8 +33,8 @@ object ServerResultUtils {
     } else {
       if (result.header.headers.get(CONNECTION)
             .exists(_.equalsIgnoreCase(CLOSE))) { DefaultClose }
-      else if ((result.body.isInstanceOf[HttpEntity.Streamed] && result.body
-                 .contentLength.isEmpty) ||
+      else if ((result.body.isInstanceOf[HttpEntity.Streamed] &&
+               result.body.contentLength.isEmpty) ||
                request.headers.get(CONNECTION)
                  .forall(!_.equalsIgnoreCase(KEEP_ALIVE))) { DefaultClose }
       else { SendKeepAlive }
@@ -48,14 +48,14 @@ object ServerResultUtils {
     */
   def validateResult(request: RequestHeader, result: Result)(implicit
       mat: Materializer): Result = {
-    if (request.version == HttpProtocol.HTTP_1_0 && result.body
-          .isInstanceOf[HttpEntity.Chunked]) {
+    if (request.version == HttpProtocol.HTTP_1_0 &&
+        result.body.isInstanceOf[HttpEntity.Chunked]) {
       cancelEntity(result.body)
       Results.Status(Status.HTTP_VERSION_NOT_SUPPORTED).apply(
         "The response to this request is chunked and hence requires HTTP 1.1 to be sent, but this is a HTTP 1.0 request.")
         .withHeaders(CONNECTION -> CLOSE)
-    } else if (!mayHaveEntity(result.header.status) && !result.body
-                 .isKnownEmpty) {
+    } else if (!mayHaveEntity(result.header.status) &&
+               !result.body.isKnownEmpty) {
       cancelEntity(result.body)
       result.copy(body = HttpEntity
         .Strict(ByteString.empty, result.body.contentType))

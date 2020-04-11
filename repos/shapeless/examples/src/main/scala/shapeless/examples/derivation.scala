@@ -88,24 +88,15 @@ object TypeClassesDemo {
 
     val out = adt.show
     val exp =
-      "IndirectADTRec(s = top, " +
-        "as = List(" +
-        "Ctor(s = child), " +
-        "ExtCtor(ExtCtor!(true)), " +
-        "ADTRec(a = ExtCtor(ExtCtor!(false))), " +
+      "IndirectADTRec(s = top, " + "as = List(" + "Ctor(s = child), " +
+        "ExtCtor(ExtCtor!(true)), " + "ADTRec(a = ExtCtor(ExtCtor!(false))), " +
         //"CtorRec(c = Ctor(s = otherchild)), "+
-        "CtorRec(c = s = otherchild), " +
-        "IndirectADTRec(s = treeChild, " +
-        "as = List(" +
-        "Ctor(s = grandchild), " +
+        "CtorRec(c = s = otherchild), " + "IndirectADTRec(s = treeChild, " +
+        "as = List(" + "Ctor(s = grandchild), " +
         "Ctor(s = otherGrandchild), " +
         "ExtIndirectADTRec(s = blah, oa = Ctor(s = wibble)), " +
         "RefMutual(m = RefADT(a = Ctor(s = mutual))), " +
-        "Show2Dep(Show2Dep: >23<)" +
-        ")" +
-        ")" +
-        ")" +
-        ")"
+        "Show2Dep(Show2Dep: >23<)" + ")" + ")" + ")" + ")"
     assert(out == exp)
 
     val adt2: ADT2 = Ctor2a("foo")

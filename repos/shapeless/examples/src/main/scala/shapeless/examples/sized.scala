@@ -58,8 +58,8 @@ object SizedExamples extends App {
     //val badFormatted = csv(threeHdrs, rows)               // Does not compile
 
     // Extend the rows to match ...
-    val extendedRows =
-      rows map (_ :+ "-") // List[Sized[IndexedSeq[String], _3]]
+    val extendedRows = rows map
+      (_ :+ "-") // List[Sized[IndexedSeq[String], _3]]
 
     val extendedFormatted = csv(extendedHdrs, extendedRows) // Compiles
     extendedFormatted foreach println

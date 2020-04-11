@@ -11,12 +11,11 @@ final class TimeChart(game: Game, moves: List[String]) {
 
   private val pgnMoves = moves.toIndexedSeq
 
-  def series =
-    (moves.size > 3) option {
-      Json stringify {
-        Json.obj("white" -> points(true), "black" -> points(false))
-      }
+  def series = (moves.size > 3) option {
+    Json stringify {
+      Json.obj("white" -> points(true), "black" -> points(false))
     }
+  }
 
   private def points(white: Boolean) =
     indexedMoveTimes collect {

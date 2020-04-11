@@ -24,8 +24,8 @@ class SeqCoder(words: List[String]) {
   /** A map from digit strings to the words that represent
     *  them e.g. `5282` -> List(`Java`, `Kata`, `Lava`, ...)
     */
-  val wordsForNum: Map[String, Seq[String]] =
-    (words groupBy wordCode).map(t => (t._1, t._2.toSeq)) withDefaultValue Seq()
+  val wordsForNum: Map[String, Seq[String]] = (words groupBy wordCode)
+    .map(t => (t._1, t._2.toSeq)) withDefaultValue Seq()
 
   val memo = collection.mutable.Map[String, Set[Seq[String]]]("" -> Set(Seq()))
   val wfnmemo = collection.mutable.Map[(String, String), Set[Seq[String]]]()
@@ -87,9 +87,8 @@ class ParCoder(words: List[String]) {
   /** A map from digit strings to the words that represent
     *  them e.g. `5282` -> List(`Java`, `Kata`, `Lava`, ...)
     */
-  val wordsForNum: Map[String, ParSeq[String]] =
-    (words groupBy wordCode)
-      .map(t => (t._1, t._2.toSeq.par)) withDefaultValue ParSeq()
+  val wordsForNum: Map[String, ParSeq[String]] = (words groupBy wordCode)
+    .map(t => (t._1, t._2.toSeq.par)) withDefaultValue ParSeq()
 
   val comparison = new SeqCoder(words)
 
@@ -126,7 +125,8 @@ class ParCoder(words: List[String]) {
     val m = comparison.subsmemo((num, subsfrom, word))
     if (r != m) {
       println(
-        "map for number from subs and word: " + num + ", " + subsfrom + ", " + word)
+        "map for number from subs and word: " + num + ", " + subsfrom + ", " +
+          word)
       println("parset: " + r.size)
       println("memoed: " + m.size)
       error("r != m")

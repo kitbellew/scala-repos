@@ -131,17 +131,15 @@ class ZkSessionTest extends FunSuite with Eventually with IntegrationPatience {
       tc.advance(20.milliseconds)
       timer.tick()
       assert(
-        watchedZk.value.opq == Seq(
-          ExistsWatch("/foo/bar"),
-          ExistsWatch("/foo/bar")))
+        watchedZk.value.opq ==
+          Seq(ExistsWatch("/foo/bar"), ExistsWatch("/foo/bar")))
       assert(ref.get == Activity.Pending)
 
       watchedZk.value.opq(1).res() = Throw(
         new KeeperException.SessionExpired(None))
       assert(
-        watchedZk.value.opq == Seq(
-          ExistsWatch("/foo/bar"),
-          ExistsWatch("/foo/bar")))
+        watchedZk.value.opq ==
+          Seq(ExistsWatch("/foo/bar"), ExistsWatch("/foo/bar")))
       val Activity.Failed(exc) = ref.get
       assert(exc.isInstanceOf[KeeperException.SessionExpired])
     }
@@ -212,9 +210,8 @@ class ZkSessionTest extends FunSuite with Eventually with IntegrationPatience {
       timer.tick()
       eventually {
         assert(
-          watchedZk.value.opq == Seq(
-            AddAuthInfo("digest", Buf.Utf8(authInfo)),
-            Close(Time.Bottom)))
+          watchedZk.value.opq ==
+            Seq(AddAuthInfo("digest", Buf.Utf8(authInfo)), Close(Time.Bottom)))
       }
 
       zkState() = WatchState.SessionState(SessionState.SyncConnected)

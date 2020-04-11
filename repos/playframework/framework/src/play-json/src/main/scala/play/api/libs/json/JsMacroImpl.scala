@@ -148,8 +148,8 @@ object JsMacroImpl {
             initsMatch && lastMatch
           } => apply
       case (apply: MethodSymbol)
-          if apply.paramLists.headOption
-            .map(_.map(_.asTerm.typeSignature)) == unapplyReturnTypes => apply
+          if apply.paramLists.headOption.map(_.map(_.asTerm.typeSignature)) ==
+            unapplyReturnTypes => apply
     }
 
     val params = maybeApply match {
@@ -243,8 +243,9 @@ object JsMacroImpl {
                 readsWritesHelper("set")
               else if (tpe.typeConstructor <:< typeOf[Seq[_]].typeConstructor)
                 readsWritesHelper("seq")
-              else if (tpe.typeConstructor <:< typeOf[Map[_, _]]
-                         .typeConstructor) readsWritesHelper("map")
+              else if (tpe.typeConstructor <:<
+                         typeOf[Map[_, _]].typeConstructor)
+                readsWritesHelper("map")
               else List(q"this.lazyStuff")
 
             q"$jspathTree.$lazyCall(..$arg)"

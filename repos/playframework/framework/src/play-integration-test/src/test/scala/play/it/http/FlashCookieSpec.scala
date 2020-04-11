@@ -65,8 +65,8 @@ trait FlashCookieSpec
       }
     }
 
-    "allow the setting of additional cookies when cleaned up" in withClientAndServer {
-      ws =>
+    "allow the setting of additional cookies when cleaned up" in
+      withClientAndServer { ws =>
         val response = await(ws.url("/flash").withFollowRedirects(false).get())
         val Some(flashCookie) = readFlashCookie(response)
         val response2 = await(
@@ -81,10 +81,10 @@ trait FlashCookieSpec
           case cookie => cookie.value must beSome("some-value")
         }
 
-    }
+      }
 
-    "honor configuration for flash.secure" in Helpers
-      .running(_.configure("play.http.flash.secure" -> true)) { _ =>
+    "honor configuration for flash.secure" in
+      Helpers.running(_.configure("play.http.flash.secure" -> true)) { _ =>
         Flash.encodeAsCookie(Flash()).secure must beTrue
       }
   }

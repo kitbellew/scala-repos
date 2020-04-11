@@ -153,9 +153,8 @@ private[finagle] class DeadlineFilter[Req, Rep](
 
         // Exceeded the deadline within tolerance, and there are enough
         // tokens to reject the request
-        if (remaining < Duration.Zero
-            && -remaining <= tolerance
-            && rejectBucket.tryGet(rejectWithdrawal)) {
+        if (remaining < Duration.Zero && -remaining <= tolerance &&
+            rejectBucket.tryGet(rejectWithdrawal)) {
           exceededStat.incr()
           rejectedStat.incr()
           service(request) // When turned on this will be Future.exception

@@ -72,8 +72,7 @@ object EventValidation {
     * @return true if event name starts with \$ or pio_, false otherwise
     */
   def isReservedPrefix(name: String): Boolean =
-    name.startsWith("$") ||
-      name.startsWith("pio_")
+    name.startsWith("$") || name.startsWith("pio_")
 
   /** PredictionIO reserves some single entity event names. They are currently
     * \$set, \$unset, and \$delete.
@@ -135,8 +134,7 @@ object EventValidation {
         ((e.targetEntityType == None) && (e.targetEntityId == None)),
       s"Reserved event ${e.event} cannot have targetEntity")
     require(
-      !isReservedPrefix(e.entityType) ||
-        isBuiltinEntityTypes(e.entityType),
+      !isReservedPrefix(e.entityType) || isBuiltinEntityTypes(e.entityType),
       s"The entityType ${e.entityType} is not allowed. " +
         s"'pio_' is a reserved name prefix."
     )

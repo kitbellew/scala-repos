@@ -28,8 +28,7 @@ object PluginsTest extends Specification {
     }
     "enable plugins that are required by the requested plugins" in {
       val ns = deducePlugin(Q, log)
-      (ns must contain(A)) and
-        (ns must contain(B))
+      (ns must contain(A)) and (ns must contain(B))
     }
     "throw an AutoPluginException on conflicting requirements" in {
       deducePlugin(S, log) must throwAn[AutoPluginException](message =

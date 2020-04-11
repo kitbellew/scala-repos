@@ -72,8 +72,8 @@ object ScalaMacroDebuggingUtil {
     val canonicalPath = file.getVirtualFile.getCanonicalPath
 
     def createFile(): PsiFile = {
-      val dataStream = SYNTHETIC_SOURCE_ATTRIBUTE readAttribute file
-        .getVirtualFile
+      val dataStream = SYNTHETIC_SOURCE_ATTRIBUTE readAttribute
+        file.getVirtualFile
       if (dataStream == null) return null
 
       var line = dataStream readUTF ()
@@ -120,9 +120,8 @@ object ScalaMacroDebuggingUtil {
   }
 
   def readPreimageName(file: PsiFile): Option[String] =
-    Option(SOURCE_FILE_NAME readAttributeBytes file.getVirtualFile) map (
-      new String(_)
-    )
+    Option(SOURCE_FILE_NAME readAttributeBytes file.getVirtualFile) map
+      (new String(_))
 
   def getPreimageFile(file: PsiFile) = PREIMAGE_CACHE get file
 
@@ -189,8 +188,10 @@ object ScalaMacroDebuggingUtil {
     for (elt <- macrosToExpand.toList.sortWith((a, b) =>
            a.getTextOffset > b.getTextOffset)) {
       var macroCall = macrosheetFile.findElementAt(elt.getTextOffset)
-      while (macroCall != null && !ScalaMacroDebuggingUtil
-               .isMacroCall(macroCall)) { macroCall = macroCall.getParent }
+      while (macroCall != null &&
+             !ScalaMacroDebuggingUtil.isMacroCall(macroCall)) {
+        macroCall = macroCall.getParent
+      }
       if (macroCall != null) {
         //        extensions.inWriteAction {
         WriteCommandAction.runWriteCommandAction(

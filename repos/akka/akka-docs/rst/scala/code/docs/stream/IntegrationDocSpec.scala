@@ -173,8 +173,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     import Supervision.resumingDecider
 
     val emailAddresses: Source[String, NotUsed] = authors.via(
-      Flow[Author]
-        .mapAsync(4)(author => addressSystem.lookupEmail(author.handle))
+      Flow[Author].mapAsync(4)(author =>
+        addressSystem.lookupEmail(author.handle))
         .withAttributes(supervisionStrategy(resumingDecider)))
     //#email-addresses-mapAsync-supervision
   }

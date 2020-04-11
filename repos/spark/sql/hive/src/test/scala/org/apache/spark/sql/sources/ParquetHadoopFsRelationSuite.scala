@@ -149,10 +149,10 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
       val df = sqlContext.read.parquet(path).filter('a === 0).select('b)
       val physicalPlan = df.queryExecution.sparkPlan
 
-      assert(physicalPlan.collect { case p: execution.Project => p }
-        .length === 1)
-      assert(physicalPlan.collect { case p: execution.Filter => p }
-        .length === 1)
+      assert(
+        physicalPlan.collect { case p: execution.Project => p }.length === 1)
+      assert(
+        physicalPlan.collect { case p: execution.Filter => p }.length === 1)
     }
   }
 
@@ -171,8 +171,8 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
         // The schema consists of the leading columns of the first part-file
         // in the lexicographic order.
         assert(
-          sqlContext.read.parquet(dir.getCanonicalPath).schema.map(_.name)
-            === Seq("a", "b", "c", "d", "part"))
+          sqlContext.read.parquet(dir.getCanonicalPath).schema.map(_.name) ===
+            Seq("a", "b", "c", "d", "part"))
       }
     }
   }

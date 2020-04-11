@@ -113,8 +113,8 @@ class ReplicatorChaosSpec
           replicator ! Update(KeyB, PNCounter(), WriteLocal)(_ - 1)
           replicator ! Update(KeyC, GCounter(), WriteAll(timeout))(_ + 1)
         }
-        receiveN(15).map(_.getClass).toSet should be(
-          Set(classOf[UpdateSuccess[_]]))
+        receiveN(15).map(_.getClass).toSet should
+          be(Set(classOf[UpdateSuccess[_]]))
       }
 
       runOn(second) {

@@ -66,12 +66,12 @@ private[util] trait Props extends Logger {
     getInt(name) openOr defVal // props.get(name).map(toInt(_)) getOrElse defVal
   def getLong(name: String): Box[Long] = get(name).flatMap(asLong)
   def getLong(name: String, defVal: Long): Long =
-    getLong(
-      name) openOr defVal // props.get(name).map(toLong(_)) getOrElse defVal
+    getLong(name) openOr
+      defVal // props.get(name).map(toLong(_)) getOrElse defVal
   def getBool(name: String): Box[Boolean] = get(name).map(toBoolean)
   def getBool(name: String, defVal: Boolean): Boolean =
-    getBool(
-      name) openOr defVal // props.get(name).map(toBoolean(_)) getOrElse defVal
+    getBool(name) openOr
+      defVal // props.get(name).map(toBoolean(_)) getOrElse defVal
   def get(name: String, defVal: String): String = get(name) getOrElse defVal
 
   /**
@@ -91,8 +91,8 @@ private[util] trait Props extends Logger {
       case Nil =>
       case bad =>
         throw new Exception(
-          "The following required properties are not defined: " + bad
-            .mkString(","))
+          "The following required properties are not defined: " +
+            bad.mkString(","))
     }
   }
 
@@ -225,7 +225,8 @@ private[util] trait Props extends Logger {
 
     def onModificationProhibited() {
       warn(
-        "Setting property " + name + " has no effect. Run mode already initialised to " + mode + ".")
+        "Setting property " + name +
+          " has no effect. Run mode already initialised to " + mode + ".")
     }
   }
 
@@ -370,18 +371,17 @@ private[util] trait Props extends Logger {
       if (modeName == "") "(Development)" else modeName))
 
     def vendStreams: List[(String, () => Box[InputStream])] =
-      whereToLook() :::
-        toTry.map { f =>
-          {
-            val name = f() + "props"
-            name -> { () =>
-              val res = tryo { getClass.getResourceAsStream(name) }
-                .filter(_ ne null)
-              trace("Trying to open resource %s. Result=%s".format(name, res))
-              res
-            }
+      whereToLook() ::: toTry.map { f =>
+        {
+          val name = f() + "props"
+          name -> { () =>
+            val res = tryo { getClass.getResourceAsStream(name) }
+              .filter(_ ne null)
+            trace("Trying to open resource %s. Result=%s".format(name, res))
+            res
           }
         }
+      }
 
     // find the first property file that is available
     first(vendStreams) {
@@ -411,8 +411,8 @@ private[util] trait Props extends Logger {
 
       case _ =>
         error(
-          "Failed to find a properties file (but properties were accessed).  Searched: " + tried
-            .reverse.mkString(", "))
+          "Failed to find a properties file (but properties were accessed).  Searched: " +
+            tried.reverse.mkString(", "))
         Map()
     }
   }

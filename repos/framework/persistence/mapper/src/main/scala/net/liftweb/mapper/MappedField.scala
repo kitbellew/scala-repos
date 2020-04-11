@@ -698,7 +698,8 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     (other match {
       case e: scala.Equals => e canEqual this
       case _               => true
-    }) && (other match {
+    }) &&
+    (other match {
       case mapped: MappedField[_, _] => this.i_is_! == mapped.i_is_!
       case ov: AnyRef
           if (ov ne null) && dbFieldClass.isAssignableFrom(ov.getClass) =>

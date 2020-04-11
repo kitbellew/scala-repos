@@ -27,9 +27,7 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
   private case class Blame(player: Player, outcome: Outcome)
 
   private def blameable(game: Game) =
-    game.source.contains(Source.Lobby) &&
-      game.hasClock &&
-      !isRematch(game.id)
+    game.source.contains(Source.Lobby) && game.hasClock && !isRematch(game.id)
 
   def abort(pov: Pov): Funit =
     blameable(pov.game) ?? {

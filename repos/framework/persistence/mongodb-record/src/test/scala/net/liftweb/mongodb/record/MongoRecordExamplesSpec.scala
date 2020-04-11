@@ -276,8 +276,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
           t.person.value.children(i).name must_== tr.person.value.children(i)
             .name
           t.person.value.children(i).age must_== tr.person.value.children(i).age
-          t.person.value.children(i).birthdate must_== tr.person.value
-            .children(i).birthdate
+          t.person.value.children(i).birthdate must_==
+            tr.person.value.children(i).birthdate
         }
       }
 
@@ -342,8 +342,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     // fetch a refdoc
     val refFromFetch = md1.refdocId.obj
     refFromFetch.isDefined must_== true
-    refFromFetch.openOrThrowException("we know this is Full").id
-      .get must_== ref1.id.get
+    refFromFetch.openOrThrowException("we know this is Full").id.get must_==
+      ref1.id.get
 
     // query for a single doc with a JObject query
     val md1a = MainDoc.find(("name") -> "md1")

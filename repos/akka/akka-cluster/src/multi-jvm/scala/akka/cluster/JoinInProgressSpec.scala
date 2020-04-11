@@ -36,23 +36,24 @@ abstract class JoinInProgressSpec
   import JoinInProgressMultiJvmSpec._
 
   "A cluster node" must {
-    "send heartbeats immediately when joining to avoid false failure detection due to delayed gossip" taggedAs LongRunningTest in {
+    "send heartbeats immediately when joining to avoid false failure detection due to delayed gossip" taggedAs
+      LongRunningTest in {
 
-      runOn(first) { startClusterNode() }
+        runOn(first) { startClusterNode() }
 
-      enterBarrier("first-started")
+        enterBarrier("first-started")
 
-      runOn(second) { cluster.join(first) }
+        runOn(second) { cluster.join(first) }
 
-      runOn(first) {
-        val until = Deadline.now + 5.seconds
-        while (!until.isOverdue) {
-          Thread.sleep(200)
-          cluster.failureDetector.isAvailable(second) should ===(true)
+        runOn(first) {
+          val until = Deadline.now + 5.seconds
+          while (!until.isOverdue) {
+            Thread.sleep(200)
+            cluster.failureDetector.isAvailable(second) should ===(true)
+          }
         }
-      }
 
-      enterBarrier("after")
-    }
+        enterBarrier("after")
+      }
   }
 }

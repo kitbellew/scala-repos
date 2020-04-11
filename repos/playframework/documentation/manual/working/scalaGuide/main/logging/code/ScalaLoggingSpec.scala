@@ -68,8 +68,8 @@ class ScalaLoggingSpec extends Specification with Mockito {
       val logger: Logger = Logger(this.getClass())
       //#logging-create-logger-class
 
-      logger.underlyingLogger.getName must equalTo(
-        "scalaguide.logging.ScalaLoggingSpec")
+      logger.underlyingLogger.getName must
+        equalTo("scalaguide.logging.ScalaLoggingSpec")
     }
 
     "allow for using multiple loggers" in {

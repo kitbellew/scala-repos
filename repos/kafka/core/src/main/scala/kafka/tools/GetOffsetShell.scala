@@ -80,9 +80,8 @@ object GetOffsetShell {
       maxWaitMs).topicsMetadata
     if (topicsMetadata.size != 1 || !topicsMetadata(0).topic.equals(topic)) {
       System.err.println(
-        (
-          "Error: no valid topic metadata for topic: %s, " + " probably the topic does not exist, run "
-        ).format(topic) +
+        ("Error: no valid topic metadata for topic: %s, " +
+          " probably the topic does not exist, run ").format(topic) +
           "kafka-list-topic.sh to verify")
       System.exit(1)
     }
@@ -104,9 +103,8 @@ object GetOffsetShell {
                 clientId)
               val topicAndPartition = TopicAndPartition(topic, partitionId)
               val request = OffsetRequest(Map(
-                topicAndPartition -> PartitionOffsetRequestInfo(
-                  time,
-                  nOffsets)))
+                topicAndPartition ->
+                  PartitionOffsetRequestInfo(time, nOffsets)))
               val offsets = consumer.getOffsetsBefore(request)
                 .partitionErrorAndOffsets(topicAndPartition).offsets
 

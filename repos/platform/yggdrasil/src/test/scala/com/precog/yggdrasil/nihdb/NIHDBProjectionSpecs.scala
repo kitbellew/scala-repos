@@ -144,8 +144,8 @@ class NIHDBProjectionSpecs
             min mustEqual 0L
             max mustEqual 0L
             data.size mustEqual 3
-            data.toJsonElements.map(_("value")) must containAllOf(expected).only
-              .inOrder
+            data.toJsonElements.map(_("value")) must containAllOf(expected)
+              .only.inOrder
         })
     }
 
@@ -168,8 +168,7 @@ class NIHDBProjectionSpecs
             // Ensure we handle skips/overlap properly. First tests a complete skip, second tests partial
             nihdb.insert((0L to 2L).toSeq.map { i =>
               NIHDB.Batch(i, Seq(JNum(i)))
-            }) >>
-            nihdb.insert((0L to 4L).toSeq.map { i =>
+            }) >> nihdb.insert((0L to 4L).toSeq.map { i =>
               NIHDB.Batch(i, Seq(JNum(i)))
             })
 
@@ -234,14 +233,14 @@ class NIHDBProjectionSpecs
           min1 mustEqual 0L
           max1 mustEqual 0L
           data1.size mustEqual 1200
-          data1.toJsonElements.map(_("value")) must containAllOf(
-            expected.take(1200)).only.inOrder
+          data1.toJsonElements.map(_("value")) must
+            containAllOf(expected.take(1200)).only.inOrder
 
           min2 mustEqual 1L
           max2 mustEqual 1L
           data2.size mustEqual 751
-          data2.toJsonElements.map(_("value")) must containAllOf(
-            expected.drop(1200)).only.inOrder
+          data2.toJsonElements.map(_("value")) must
+            containAllOf(expected.drop(1200)).only.inOrder
       })
     }
 

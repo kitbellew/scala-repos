@@ -168,7 +168,8 @@ object Plugins extends PluginsFunctions {
     if (defined0.isEmpty)(_, _) => Nil
     else {
       // TODO: defined should return all the plugins
-      val allReqs = (defined0 flatMap { asRequirements }).toSet
+      val allReqs =
+        (defined0 flatMap { asRequirements }).toSet
       val diff = allReqs diff defined0.toSet
       val defined = if (diff.nonEmpty) diff.toList ::: defined0 else defined0
 
@@ -287,14 +288,14 @@ object Plugins extends PluginsFunctions {
           (if (c.requires != empty && c.trigger == allRequirements)
              List(s"enabled by ${c.requires.toString}")
            else Nil) ++ {
-          val reqs = selected filter { x => asRequirements(x) contains c }
-          if (reqs.nonEmpty) List(s"""required by ${reqs.mkString(", ")}""")
-          else Nil
-        } ++ {
-          val exs = selected filter { x => asExclusions(x) contains c }
-          if (exs.nonEmpty) List(s"""excluded by ${exs.mkString(", ")}""")
-          else Nil
-        }
+            val reqs = selected filter { x => asRequirements(x) contains c }
+            if (reqs.nonEmpty) List(s"""required by ${reqs.mkString(", ")}""")
+            else Nil
+          } ++ {
+            val exs = selected filter { x => asExclusions(x) contains c }
+            if (exs.nonEmpty) List(s"""excluded by ${exs.mkString(", ")}""")
+            else Nil
+          }
         s"""  - conflict: ${c.label} is ${reasons.mkString("; ")}"""
       }).mkString("\n")
     throw AutoPluginException(s"""Contradiction in enabled plugins:

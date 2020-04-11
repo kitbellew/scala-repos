@@ -44,14 +44,16 @@ final class ProjectNavigation(s: State) {
     if (structure.units(uri).defined.contains(to)) setProject(uri, to)
     else
       fail(
-        "Invalid project name '" + to + "' in build " + uri + " (type 'projects' to list available projects).")
+        "Invalid project name '" + to + "' in build " + uri +
+          " (type 'projects' to list available projects).")
 
   def changeBuild(newBuild: URI): State =
     if (structure.units contains newBuild)
       setProject(newBuild, getRoot(newBuild))
     else
       fail(
-        "Invalid build unit '" + newBuild + "' (type 'projects' to list available builds).")
+        "Invalid build unit '" + newBuild +
+          "' (type 'projects' to list available builds).")
 
   def fail(msg: String): State = {
     s.log.error(msg)

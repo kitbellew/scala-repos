@@ -32,9 +32,8 @@ object Scaladoc extends AutoPlugin {
 
   override lazy val projectSettings = {
     inTask(doc)(Seq(
-      scalacOptions in Compile <++= (
-        version,
-        baseDirectory in ThisBuild) map scaladocOptions,
+      scalacOptions in Compile <++= (version, baseDirectory in ThisBuild) map
+        scaladocOptions,
       autoAPIMappings := CliOptions.scaladocAutoAPI.get)) ++
       Seq(validateDiagrams in Compile := true) ++
       CliOptions.scaladocDiagramsEnabled.ifTrue(doc in Compile := {
@@ -119,8 +118,9 @@ object UnidocRoot extends AutoPlugin {
     // genjavadoc needs to generate synthetic methods since the java code uses them
     scalacOptions += "-P:genjavadoc:suppressSynthetic=false",
     // FIXME: see #18056
-    sources in (JavaUnidoc, unidoc) ~= (_.filterNot(
-      _.getPath.contains("Access$minusControl$minusAllow$minusOrigin")))
+    sources in (JavaUnidoc, unidoc) ~=
+      (_.filterNot(
+        _.getPath.contains("Access$minusControl$minusAllow$minusOrigin")))
   )).getOrElse(Nil)
 
   def settings(ignoreAggregates: Seq[Project], ignoreProjects: Seq[Project]) = {
@@ -140,17 +140,16 @@ object UnidocRoot extends AutoPlugin {
 
   override lazy val projectSettings =
     CliOptions.genjavadocEnabled.ifTrue(scalaJavaUnidocSettings)
-      .getOrElse(scalaUnidocSettings) ++
-      settings(
-        Seq(AkkaBuild.samples),
-        Seq(
-          AkkaBuild.remoteTests,
-          AkkaBuild.benchJmh,
-          AkkaBuild.parsing,
-          AkkaBuild.protobuf,
-          AkkaBuild.osgiDiningHakkersSampleMavenTest,
-          AkkaBuild.akkaScalaNightly)
-      )
+      .getOrElse(scalaUnidocSettings) ++ settings(
+      Seq(AkkaBuild.samples),
+      Seq(
+        AkkaBuild.remoteTests,
+        AkkaBuild.benchJmh,
+        AkkaBuild.parsing,
+        AkkaBuild.protobuf,
+        AkkaBuild.osgiDiningHakkersSampleMavenTest,
+        AkkaBuild.akkaScalaNightly)
+    )
 }
 
 /**
@@ -167,7 +166,8 @@ object Unidoc extends AutoPlugin {
         scalacOptions in Compile += "-P:genjavadoc:fabricateParams=true",
         unidocGenjavadocVersion in Global := "0.9",
         // FIXME: see #18056
-        sources in (Genjavadoc, doc) ~= (_.filterNot(
-          _.getPath.contains("Access$minusControl$minusAllow$minusOrigin")))
+        sources in (Genjavadoc, doc) ~=
+          (_.filterNot(
+            _.getPath.contains("Access$minusControl$minusAllow$minusOrigin")))
       )).getOrElse(Seq.empty)
 }

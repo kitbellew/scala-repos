@@ -80,8 +80,8 @@ class TypeCheckCanBeMatchInspection
       ifStmt: ScIfStmt,
       isInstOf: ScGenericCall): Boolean = {
     val chainSize = listOfIfAndIsInstOf(ifStmt, isInstOf, onlyFirst = true).size
-    val typeCastsNumber = findAsInstOfCalls(ifStmt.condition, isInstOf)
-      .size + findAsInstOfCalls(ifStmt.thenBranch, isInstOf).size
+    val typeCastsNumber = findAsInstOfCalls(ifStmt.condition, isInstOf).size +
+      findAsInstOfCalls(ifStmt.thenBranch, isInstOf).size
     chainSize > 1 || typeCastsNumber > 0
   }
 }
@@ -129,8 +129,8 @@ object TypeCheckToMatchUtil {
           ifStmt,
           isInstOfUnderFix,
           onlyFirst)
-        val matchStmtText =
-          s"$matchedExprText match { \n " + caseClausesText + "}"
+        val matchStmtText = s"$matchedExprText match { \n " + caseClausesText +
+          "}"
         val matchStmt = ScalaPsiElementFactory
           .createExpressionFromText(matchStmtText, ifStmt.getManager)
           .asInstanceOf[ScMatchStmt]
@@ -266,8 +266,8 @@ object TypeCheckToMatchUtil {
       case Some(block: ScBlock) =>
         for (elem <- block.children) {
           val elementType: IElementType = elem.getNode.getElementType
-          if (elementType != ScalaTokenTypes
-                .tLBRACE && elementType != ScalaTokenTypes.tRBRACE)
+          if (elementType != ScalaTokenTypes.tLBRACE &&
+              elementType != ScalaTokenTypes.tRBRACE)
             builder.append(elem.getText)
         }
       case Some(expr: ScExpression) => builder.append(expr.getText)
@@ -289,10 +289,8 @@ object TypeCheckToMatchUtil {
             nextCall <- findIsInstanceOfCalls(nextCond, onlyFirst)
             nextBase <- baseExpr(nextCall) if equiv(currentBase, nextBase)
           } {
-            return (currentIfStmt, currentCall) :: listOfIfAndIsInstOf(
-              nextIfStmt,
-              nextCall,
-              onlyFirst)
+            return (currentIfStmt, currentCall) ::
+              listOfIfAndIsInstOf(nextIfStmt, nextCall, onlyFirst)
           }
           return (currentIfStmt, currentCall) :: Nil
         case _ => return (currentIfStmt, currentCall) :: Nil
@@ -483,14 +481,14 @@ object TypeCheckToMatchUtil {
       case parenth: ScParenthesisedExpr => parenth.expr match {
           case Some(infixExpr: ScInfixExpr)
               if infixExpr.operation.refName == "&&" =>
-            separateConditions(infixExpr.lOp) ::: separateConditions(
-              infixExpr.rOp) ::: Nil
+            separateConditions(infixExpr.lOp) :::
+              separateConditions(infixExpr.rOp) ::: Nil
           case genCall: ScGenericCall => genCall :: Nil
           case _                      => parenth :: Nil
         }
       case infixExpr: ScInfixExpr if infixExpr.operation.refName == "&&" =>
-        separateConditions(infixExpr.lOp) ::: separateConditions(
-          infixExpr.rOp) ::: Nil
+        separateConditions(infixExpr.lOp) :::
+          separateConditions(infixExpr.rOp) ::: Nil
       case _ => expr :: Nil
     }
   }

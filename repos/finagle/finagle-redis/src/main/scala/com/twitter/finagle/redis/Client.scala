@@ -95,10 +95,11 @@ class BaseClient(service: Service[Command, Reply]) {
     */
   private[redis] def doRequest[T](cmd: Command)(
       handler: PartialFunction[Reply, Future[T]]) =
-    service(cmd) flatMap (handler orElse {
-      case ErrorReply(message) => Future.exception(new ServerError(message))
-      case _                   => Future.exception(new IllegalStateException)
-    })
+    service(cmd) flatMap
+      (handler orElse {
+        case ErrorReply(message) => Future.exception(new ServerError(message))
+        case _                   => Future.exception(new IllegalStateException)
+      })
 
   /**
     * Helper function to convert a Redis multi-bulk reply into a map of pairs

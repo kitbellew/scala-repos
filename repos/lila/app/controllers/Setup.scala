@@ -86,9 +86,9 @@ object Setup extends LilaController with TheftPrevention {
                   )
                   env.processor.saveFriendConfig(config) >>
                     (Env.challenge.api create challenge) >> negotiate(
-                    html = fuccess(
-                      Redirect(routes.Round.watcher(challenge.id, "white"))),
-                    api = _ => Challenge showChallenge challenge)
+                      html = fuccess(
+                        Redirect(routes.Round.watcher(challenge.id, "white"))),
+                      api = _ => Challenge showChallenge challenge)
               }
           }
         )
@@ -122,14 +122,11 @@ object Setup extends LilaController with TheftPrevention {
               (ctx.userId ?? Env.relation.api.fetchBlocking) flatMap {
                 blocking =>
                   env.processor
-                    .hook(
-                      config,
-                      uid,
-                      HTTPRequest sid req,
-                      blocking) map hookResponse recover {
-                    case e: IllegalArgumentException =>
-                      BadRequest(jsonError(e.getMessage)) as JSON
-                  }
+                    .hook(config, uid, HTTPRequest sid req, blocking) map
+                    hookResponse recover {
+                      case e: IllegalArgumentException =>
+                        BadRequest(jsonError(e.getMessage)) as JSON
+                    }
               }
           )
         }
@@ -146,14 +143,12 @@ object Setup extends LilaController with TheftPrevention {
             } flatMap { config =>
               (ctx.userId ?? Env.relation.api.fetchBlocking) flatMap {
                 blocking =>
-                  env.processor.hook(
-                    config,
-                    uid,
-                    HTTPRequest sid ctx.req,
-                    blocking) map hookResponse recover {
-                    case e: IllegalArgumentException =>
-                      BadRequest(jsonError(e.getMessage)) as JSON
-                  }
+                  env.processor
+                    .hook(config, uid, HTTPRequest sid ctx.req, blocking) map
+                    hookResponse recover {
+                      case e: IllegalArgumentException =>
+                        BadRequest(jsonError(e.getMessage)) as JSON
+                    }
               }
             }
           }

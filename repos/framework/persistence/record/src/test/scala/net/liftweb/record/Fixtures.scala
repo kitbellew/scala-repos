@@ -46,9 +46,7 @@ class PasswordTestRecord private () extends Record[PasswordTestRecord] {
   def meta = PasswordTestRecord
 
   object password extends PasswordField(this) {
-    override def validations =
-      validateNonEmptyPassword _ ::
-        super.validations
+    override def validations = validateNonEmptyPassword _ :: super.validations
 
     def validateNonEmptyPassword(v: String): List[FieldError] =
       v match {

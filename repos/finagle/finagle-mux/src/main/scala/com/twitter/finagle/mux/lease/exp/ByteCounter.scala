@@ -85,11 +85,8 @@ private[lease] class WindowedByteCounter private[lease] (
   private[this] def lastRate(): Double = allocs(idx).inBytes / P.inMilliseconds
 
   override def toString =
-    "WindowedByteCounter(windowed=" +
-      rate() + "bpms; last=" +
-      lastRate() + "bpms; count=" +
-      count + "; sum=" +
-      sum() + "bytes)"
+    "WindowedByteCounter(windowed=" + rate() + "bpms; last=" + lastRate() +
+      "bpms; count=" + count + "; sum=" + sum() + "bytes)"
 
   /**
     * Measures the amount of bytes used since the last sample, and bumps
@@ -139,6 +136,6 @@ private[lease] object WindowedByteCounter {
   // TODO: W, P could be configurable--for some servers, 100ms may be too slow
   private[lease] val W = 2000.milliseconds // window size
   private[lease] val P = 100.milliseconds // poll period
-  private[lease] val N =
-    (W.inMilliseconds / P.inMilliseconds).toInt // # of polls in a window
+  private[lease] val N = (W.inMilliseconds / P.inMilliseconds)
+    .toInt // # of polls in a window
 }

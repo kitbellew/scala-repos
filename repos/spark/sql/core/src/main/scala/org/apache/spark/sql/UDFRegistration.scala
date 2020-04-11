@@ -155,8 +155,8 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       func: Function2[A1, A2, RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -173,8 +173,9 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       func: Function3[A1, A2, A3, RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -191,9 +192,10 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       func: Function4[A1, A2, A3, A4, RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -216,10 +218,11 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       func: Function5[A1, A2, A3, A4, A5, RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -243,10 +246,12 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       func: Function6[A1, A2, A3, A4, A5, A6, RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -271,11 +276,13 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       func: Function7[A1, A2, A3, A4, A5, A6, A7, RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -302,12 +309,14 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       : UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -335,12 +344,15 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       : UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -369,13 +381,16 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       : UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -405,14 +420,17 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       : UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -443,14 +461,18 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
       : UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -495,15 +517,19 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: ScalaReflection
-        .schemaFor[A13].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType ::
+        ScalaReflection.schemaFor[A13].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -550,16 +576,20 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: ScalaReflection
-        .schemaFor[A13].dataType :: ScalaReflection.schemaFor[A14]
-        .dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType ::
+        ScalaReflection.schemaFor[A13].dataType ::
+        ScalaReflection.schemaFor[A14].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -608,16 +638,21 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: ScalaReflection
-        .schemaFor[A13].dataType :: ScalaReflection.schemaFor[A14]
-        .dataType :: ScalaReflection.schemaFor[A15].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType ::
+        ScalaReflection.schemaFor[A13].dataType ::
+        ScalaReflection.schemaFor[A14].dataType ::
+        ScalaReflection.schemaFor[A15].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -668,17 +703,22 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: ScalaReflection
-        .schemaFor[A13].dataType :: ScalaReflection.schemaFor[A14]
-        .dataType :: ScalaReflection.schemaFor[A15].dataType :: ScalaReflection
-        .schemaFor[A16].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType ::
+        ScalaReflection.schemaFor[A13].dataType ::
+        ScalaReflection.schemaFor[A14].dataType ::
+        ScalaReflection.schemaFor[A15].dataType ::
+        ScalaReflection.schemaFor[A16].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -731,18 +771,23 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: ScalaReflection
-        .schemaFor[A13].dataType :: ScalaReflection.schemaFor[A14]
-        .dataType :: ScalaReflection.schemaFor[A15].dataType :: ScalaReflection
-        .schemaFor[A16].dataType :: ScalaReflection.schemaFor[A17]
-        .dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType ::
+        ScalaReflection.schemaFor[A13].dataType ::
+        ScalaReflection.schemaFor[A14].dataType ::
+        ScalaReflection.schemaFor[A15].dataType ::
+        ScalaReflection.schemaFor[A16].dataType ::
+        ScalaReflection.schemaFor[A17].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -797,18 +842,24 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: ScalaReflection
-        .schemaFor[A13].dataType :: ScalaReflection.schemaFor[A14]
-        .dataType :: ScalaReflection.schemaFor[A15].dataType :: ScalaReflection
-        .schemaFor[A16].dataType :: ScalaReflection.schemaFor[A17]
-        .dataType :: ScalaReflection.schemaFor[A18].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType ::
+        ScalaReflection.schemaFor[A13].dataType ::
+        ScalaReflection.schemaFor[A14].dataType ::
+        ScalaReflection.schemaFor[A15].dataType ::
+        ScalaReflection.schemaFor[A16].dataType ::
+        ScalaReflection.schemaFor[A17].dataType ::
+        ScalaReflection.schemaFor[A18].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -865,19 +916,25 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: ScalaReflection
-        .schemaFor[A13].dataType :: ScalaReflection.schemaFor[A14]
-        .dataType :: ScalaReflection.schemaFor[A15].dataType :: ScalaReflection
-        .schemaFor[A16].dataType :: ScalaReflection.schemaFor[A17]
-        .dataType :: ScalaReflection.schemaFor[A18].dataType :: ScalaReflection
-        .schemaFor[A19].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType ::
+        ScalaReflection.schemaFor[A13].dataType ::
+        ScalaReflection.schemaFor[A14].dataType ::
+        ScalaReflection.schemaFor[A15].dataType ::
+        ScalaReflection.schemaFor[A16].dataType ::
+        ScalaReflection.schemaFor[A17].dataType ::
+        ScalaReflection.schemaFor[A18].dataType ::
+        ScalaReflection.schemaFor[A19].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -936,20 +993,26 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: ScalaReflection
-        .schemaFor[A13].dataType :: ScalaReflection.schemaFor[A14]
-        .dataType :: ScalaReflection.schemaFor[A15].dataType :: ScalaReflection
-        .schemaFor[A16].dataType :: ScalaReflection.schemaFor[A17]
-        .dataType :: ScalaReflection.schemaFor[A18].dataType :: ScalaReflection
-        .schemaFor[A19].dataType :: ScalaReflection.schemaFor[A20]
-        .dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType ::
+        ScalaReflection.schemaFor[A13].dataType ::
+        ScalaReflection.schemaFor[A14].dataType ::
+        ScalaReflection.schemaFor[A15].dataType ::
+        ScalaReflection.schemaFor[A16].dataType ::
+        ScalaReflection.schemaFor[A17].dataType ::
+        ScalaReflection.schemaFor[A18].dataType ::
+        ScalaReflection.schemaFor[A19].dataType ::
+        ScalaReflection.schemaFor[A20].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -1010,20 +1073,27 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: ScalaReflection
-        .schemaFor[A13].dataType :: ScalaReflection.schemaFor[A14]
-        .dataType :: ScalaReflection.schemaFor[A15].dataType :: ScalaReflection
-        .schemaFor[A16].dataType :: ScalaReflection.schemaFor[A17]
-        .dataType :: ScalaReflection.schemaFor[A18].dataType :: ScalaReflection
-        .schemaFor[A19].dataType :: ScalaReflection.schemaFor[A20]
-        .dataType :: ScalaReflection.schemaFor[A21].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType ::
+        ScalaReflection.schemaFor[A13].dataType ::
+        ScalaReflection.schemaFor[A14].dataType ::
+        ScalaReflection.schemaFor[A15].dataType ::
+        ScalaReflection.schemaFor[A16].dataType ::
+        ScalaReflection.schemaFor[A17].dataType ::
+        ScalaReflection.schemaFor[A18].dataType ::
+        ScalaReflection.schemaFor[A19].dataType ::
+        ScalaReflection.schemaFor[A20].dataType ::
+        ScalaReflection.schemaFor[A21].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)
@@ -1086,21 +1156,28 @@ class UDFRegistration private[sql] (functionRegistry: FunctionRegistry)
         RT]): UserDefinedFunction = {
     val dataType = ScalaReflection.schemaFor[RT].dataType
     val inputTypes = Try(
-      ScalaReflection.schemaFor[A1].dataType :: ScalaReflection.schemaFor[A2]
-        .dataType :: ScalaReflection.schemaFor[A3].dataType :: ScalaReflection
-        .schemaFor[A4].dataType :: ScalaReflection.schemaFor[A5]
-        .dataType :: ScalaReflection.schemaFor[A6].dataType :: ScalaReflection
-        .schemaFor[A7].dataType :: ScalaReflection.schemaFor[A8]
-        .dataType :: ScalaReflection.schemaFor[A9].dataType :: ScalaReflection
-        .schemaFor[A10].dataType :: ScalaReflection.schemaFor[A11]
-        .dataType :: ScalaReflection.schemaFor[A12].dataType :: ScalaReflection
-        .schemaFor[A13].dataType :: ScalaReflection.schemaFor[A14]
-        .dataType :: ScalaReflection.schemaFor[A15].dataType :: ScalaReflection
-        .schemaFor[A16].dataType :: ScalaReflection.schemaFor[A17]
-        .dataType :: ScalaReflection.schemaFor[A18].dataType :: ScalaReflection
-        .schemaFor[A19].dataType :: ScalaReflection.schemaFor[A20]
-        .dataType :: ScalaReflection.schemaFor[A21].dataType :: ScalaReflection
-        .schemaFor[A22].dataType :: Nil).toOption
+      ScalaReflection.schemaFor[A1].dataType ::
+        ScalaReflection.schemaFor[A2].dataType ::
+        ScalaReflection.schemaFor[A3].dataType ::
+        ScalaReflection.schemaFor[A4].dataType ::
+        ScalaReflection.schemaFor[A5].dataType ::
+        ScalaReflection.schemaFor[A6].dataType ::
+        ScalaReflection.schemaFor[A7].dataType ::
+        ScalaReflection.schemaFor[A8].dataType ::
+        ScalaReflection.schemaFor[A9].dataType ::
+        ScalaReflection.schemaFor[A10].dataType ::
+        ScalaReflection.schemaFor[A11].dataType ::
+        ScalaReflection.schemaFor[A12].dataType ::
+        ScalaReflection.schemaFor[A13].dataType ::
+        ScalaReflection.schemaFor[A14].dataType ::
+        ScalaReflection.schemaFor[A15].dataType ::
+        ScalaReflection.schemaFor[A16].dataType ::
+        ScalaReflection.schemaFor[A17].dataType ::
+        ScalaReflection.schemaFor[A18].dataType ::
+        ScalaReflection.schemaFor[A19].dataType ::
+        ScalaReflection.schemaFor[A20].dataType ::
+        ScalaReflection.schemaFor[A21].dataType ::
+        ScalaReflection.schemaFor[A22].dataType :: Nil).toOption
     def builder(e: Seq[Expression]) =
       ScalaUDF(func, dataType, e, inputTypes.getOrElse(Nil))
     functionRegistry.registerFunction(name, builder)

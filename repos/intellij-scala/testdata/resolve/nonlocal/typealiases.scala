@@ -4,10 +4,6 @@ object TypeAliases {
   }
 
   class B {
-    def r(a: A[String]) {
-      def rr(aa: a.t) =
-        aa.< ref > toLowerCase
-          6
-    }
+    def r(a: A[String]) { def rr(aa: a.t) = aa.< ref > toLowerCase 6 }
   }
 }

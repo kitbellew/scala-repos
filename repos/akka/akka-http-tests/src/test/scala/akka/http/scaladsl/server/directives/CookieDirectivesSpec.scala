@@ -37,16 +37,15 @@ class CookieDirectivesSpec extends RoutingSpec {
 
   "The 'deleteCookie' directive" should {
     "add a respective Set-Cookie headers to successful responses" in {
-      Get() ~> {
-        deleteCookie("myCookie", "test.com") { completeOk }
-      } ~> check {
-        status shouldEqual OK
-        header[`Set-Cookie`] shouldEqual Some(`Set-Cookie`(HttpCookie(
-          "myCookie",
-          "deleted",
-          expires = deletedTimeStamp,
-          domain = Some("test.com"))))
-      }
+      Get() ~> { deleteCookie("myCookie", "test.com") { completeOk } } ~>
+        check {
+          status shouldEqual OK
+          header[`Set-Cookie`] shouldEqual Some(`Set-Cookie`(HttpCookie(
+            "myCookie",
+            "deleted",
+            expires = deletedTimeStamp,
+            domain = Some("test.com"))))
+        }
     }
 
     "support deleting multiple cookies at a time" in {
@@ -89,8 +88,8 @@ class CookieDirectivesSpec extends RoutingSpec {
         setCookie(HttpCookie("myCookie", "test.com")) { completeOk }
       } ~> check {
         status shouldEqual OK
-        header[`Set-Cookie`] shouldEqual Some(
-          `Set-Cookie`(HttpCookie("myCookie", "test.com")))
+        header[`Set-Cookie`] shouldEqual
+          Some(`Set-Cookie`(HttpCookie("myCookie", "test.com")))
       }
     }
 

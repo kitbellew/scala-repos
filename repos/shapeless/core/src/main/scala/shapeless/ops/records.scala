@@ -591,8 +591,7 @@ package record {
         def apply(l: FieldType[HK, HV] :: TH :: TT) =
           tailToMap(l.tail).map {
             case (k, v) => keyLub.right(k) -> valueLub.right(v)
-          } +
-            (keyLub.left(wk.value) -> valueLub.left(l.head: HV))
+          } + (keyLub.left(wk.value) -> valueLub.left(l.head: HV))
       }
   }
 
@@ -621,9 +620,10 @@ package record {
 
     implicit def hconsMapValues[HF, K, V, T <: HList](implicit
         hc: Case1[HF, V],
-        mapValuesTail: MapValues[HF, T]): Aux[HF, FieldType[
-      K,
-      V] :: T, FieldType[K, hc.Result] :: mapValuesTail.Out] =
+        mapValuesTail: MapValues[HF, T]): Aux[
+      HF,
+      FieldType[K, V] :: T,
+      FieldType[K, hc.Result] :: mapValuesTail.Out] =
       new MapValues[HF, FieldType[K, V] :: T] {
         type Out = FieldType[K, hc.Result] :: mapValuesTail.Out
         def apply(l: FieldType[K, V] :: T) =

@@ -295,9 +295,9 @@ trait WikiService {
 
           if (headId != null) {
             JGitUtil.processTree(git, headId) { (path, tree) =>
-              if (path == currentPageName + ".md" && currentPageName != newPageName) {
-                removed = true
-              } else if (path != newPageName + ".md") {
+              if (path == currentPageName + ".md" &&
+                  currentPageName != newPageName) { removed = true }
+              else if (path != newPageName + ".md") {
                 builder.add(JGitUtil.createDirCacheEntry(
                   path,
                   tree.getEntryFileMode,

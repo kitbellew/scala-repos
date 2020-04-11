@@ -56,10 +56,9 @@ private[spark] class TaskCompletionListenerException(
     else {
       errorMessages.zipWithIndex.map { case (msg, i) => s"Exception $i: $msg" }
         .mkString("\n")
-    } +
-      previousError.map { e =>
-        "\n\nPrevious exception in task: " + e.getMessage + "\n" +
-          e.getStackTrace.mkString("\t", "\n\t", "")
-      }.getOrElse("")
+    } + previousError.map { e =>
+      "\n\nPrevious exception in task: " + e.getMessage + "\n" +
+        e.getStackTrace.mkString("\t", "\n\t", "")
+    }.getOrElse("")
   }
 }

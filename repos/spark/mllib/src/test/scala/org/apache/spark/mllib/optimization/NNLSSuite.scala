@@ -54,9 +54,8 @@ class NNLSSuite extends SparkFunSuite {
       val x = new BDV(NNLS.solve(ata.data, atb.data, ws))
       assert(x.length === n)
       val answer = new BDV(Array.fill(n)(1.0))
-      val solved =
-        (breeze.linalg.norm(x - answer) < 0.01) && // L2 norm
-          ((x - answer).toArray.map(_.abs).max < 0.001) // inf norm
+      val solved = (breeze.linalg.norm(x - answer) < 0.01) && // L2 norm
+        ((x - answer).toArray.map(_.abs).max < 0.001) // inf norm
       if (solved) { numSolved += 1 }
     }
 

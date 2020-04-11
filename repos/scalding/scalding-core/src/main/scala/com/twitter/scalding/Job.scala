@@ -427,9 +427,10 @@ trait DefaultDateRangeJob extends Job {
       if (nextStartDate + Days(period - 1) > endDate) None // we're done
       else // return a new job with the new startDate
         Some(clone(
-          args + ("date" -> List(
-            nextStartDate.toString("yyyy-MM-dd"),
-            endDate.toString("yyyy-MM-dd")))))
+          args +
+            ("date" -> List(
+              nextStartDate.toString("yyyy-MM-dd"),
+              endDate.toString("yyyy-MM-dd")))))
     } else None
 }
 

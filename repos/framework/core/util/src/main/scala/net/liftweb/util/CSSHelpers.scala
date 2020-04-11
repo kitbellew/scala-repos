@@ -106,14 +106,9 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
     elem(
       "path",
       c =>
-        c.isLetterOrDigit ||
-          c == '?' || c == '/' ||
-          c == '&' || c == '@' ||
-          c == ';' || c == '.' ||
-          c == '+' || c == '-' ||
-          c == '=' || c == ':' ||
-          c == ' ' || c == '_' ||
-          c == '#' || c == ',' ||
+        c.isLetterOrDigit || c == '?' || c == '/' || c == '&' || c == '@' ||
+          c == ';' || c == '.' || c == '+' || c == '-' || c == '=' ||
+          c == ':' || c == ' ' || c == '_' || c == '#' || c == ',' ||
           c == '%' || additionalCharacters.contains(c)
     ).+ ^^ { case l => l.mkString("") }
   }
@@ -153,10 +148,9 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
 
   lazy val phrase =
     (((contentParser ~ singleQuotedPath) |||
-      (contentParser ~ doubleQuotedPath) |||
-      (contentParser ~ quotelessPath)).* ^^ {
-      case l                           => l.flatMap(f => f._1 + f._2).mkString("")
-    }) ~ contentParser ^^ { case a ~ b => a + b }
+      (contentParser ~ doubleQuotedPath) ||| (contentParser ~ quotelessPath))
+      .* ^^ { case l                => l.flatMap(f => f._1 + f._2).mkString("") }) ~
+      contentParser ^^ { case a ~ b => a + b }
 
   def fixCss(cssString: String): Box[String] = {
     phrase(cssString) match {

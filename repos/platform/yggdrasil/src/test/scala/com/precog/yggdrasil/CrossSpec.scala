@@ -53,9 +53,8 @@ trait CrossSpec[M[+_]]
       rv <- r.data
     } yield {
       JObject(
-        JField("left", removeUndefined(lv)) :: JField(
-          "right",
-          removeUndefined(rv)) :: Nil)
+        JField("left", removeUndefined(lv)) ::
+          JField("right", removeUndefined(rv)) :: Nil)
     }
 
     val result = ltable.cross(rtable)(InnerObjectConcat(

@@ -34,27 +34,25 @@ object AkkaBuild extends Build {
   val parallelExecutionByDefault =
     false // TODO: enable this once we're sure it doesn not break things
 
-  lazy val buildSettings = Dependencies.Versions ++ Seq(
-    organization := "com.typesafe.akka",
-    version := "2.4-SNAPSHOT")
+  lazy val buildSettings = Dependencies.Versions ++
+    Seq(organization := "com.typesafe.akka", version := "2.4-SNAPSHOT")
 
   lazy val rootSettings = parentSettings ++ Release.settings ++
     SphinxDoc.akkaSettings ++ Dist.settings ++ s3Settings ++
-    UnidocRoot.akkaSettings ++
-    Protobuf.settings ++ Seq(
-    parallelExecution in GlobalScope := System.getProperty(
-      "akka.parallelExecution",
-      parallelExecutionByDefault.toString).toBoolean,
-    Dist.distExclude := Seq(actorTests.id, docs.id, samples.id, osgi.id),
-    S3.host in S3.upload := "downloads.typesafe.com.s3.amazonaws.com",
-    S3.progress in S3.upload := true,
-    mappings in S3.upload <<= (Release.releaseDirectory, version) map {
-      (d, v) =>
-        val downloads = d / "downloads"
-        val archivesPathFinder = downloads * s"*$v.zip"
-        archivesPathFinder.get.map(file => (file -> ("akka/" + file.getName)))
-    }
-  )
+    UnidocRoot.akkaSettings ++ Protobuf.settings ++ Seq(
+      parallelExecution in GlobalScope := System.getProperty(
+        "akka.parallelExecution",
+        parallelExecutionByDefault.toString).toBoolean,
+      Dist.distExclude := Seq(actorTests.id, docs.id, samples.id, osgi.id),
+      S3.host in S3.upload := "downloads.typesafe.com.s3.amazonaws.com",
+      S3.progress in S3.upload := true,
+      mappings in S3.upload <<= (Release.releaseDirectory, version) map {
+        (d, v) =>
+          val downloads = d / "downloads"
+          val archivesPathFinder = downloads * s"*$v.zip"
+          archivesPathFinder.get.map(file => (file -> ("akka/" + file.getName)))
+      }
+    )
 
   lazy val root = Project(
     id = "akka",
@@ -196,9 +194,8 @@ object AkkaBuild extends Build {
   lazy val remoteTests = Project(
     id = "akka-remote-tests",
     base = file("akka-remote-tests"),
-    dependencies = Seq(actorTests % "test->test", multiNodeTestkit)) configs (
-    MultiJvm
-  )
+    dependencies = Seq(actorTests % "test->test", multiNodeTestkit)) configs
+    (MultiJvm)
 
   lazy val cluster = Project(
     id = "akka-cluster",
@@ -220,9 +217,8 @@ object AkkaBuild extends Build {
     id = "akka-cluster-tools",
     base = file("akka-cluster-tools"),
     dependencies = Seq(
-      cluster % "compile->compile;test->test;multi-jvm->multi-jvm")) configs (
-    MultiJvm
-  )
+      cluster % "compile->compile;test->test;multi-jvm->multi-jvm")) configs
+    (MultiJvm)
 
   lazy val clusterSharding = Project(
     id = "akka-cluster-sharding",
@@ -497,8 +493,7 @@ object AkkaBuild extends Build {
           publishM2 in osgi,
           publishM2 in slf4j,
           publishM2 in persistence,
-          compile in Compile) map
-          ((_, _, _, _, _, _, _, c) => c),
+          compile in Compile) map ((_, _, _, _, _, _, _, c) => c),
       test in Test ~= { x =>
         {
           def executeMvnCommands(failureMessage: String, commands: String*) = {
@@ -528,11 +523,9 @@ object AkkaBuild extends Build {
   val dontPublishDocsSettings = Seq(sources in doc in Compile := List())
 
   override lazy val settings =
-    super.settings ++
-      buildSettings ++
-      Seq(
-        shellPrompt := { s => Project.extract(s).currentProject.id + " > " }) ++
-      resolverSettings
+    super.settings ++ buildSettings ++ Seq(shellPrompt := { s =>
+      Project.extract(s).currentProject.id + " > "
+    }) ++ resolverSettings
 
   lazy val parentSettings = Seq(publishArtifact := false) ++ dontPublishSettings
 
@@ -579,51 +572,50 @@ object AkkaBuild extends Build {
           .toBoolean) Seq(resolvers += Resolver.sonatypeRepo("snapshots"))
     else Seq.empty
   } ++ Seq(
-    pomIncludeRepository := (_ =>
-      false) // do not leak internal repositories during staging
+    pomIncludeRepository :=
+      (_ => false) // do not leak internal repositories during staging
   )
 
   private def allWarnings: Boolean =
     System.getProperty("akka.allwarnings", "false").toBoolean
 
-  lazy val defaultSettings = resolverSettings ++
-    TestExtras.Filter.settings ++
+  lazy val defaultSettings = resolverSettings ++ TestExtras.Filter.settings ++
     Protobuf.settings ++ Seq(
-    // compile options
-    scalacOptions in Compile ++= Seq(
-      "-encoding",
-      "UTF-8",
-      "-target:jvm-1.8",
-      "-feature",
-      "-unchecked",
-      "-Xlog-reflective-calls",
-      "-Xlint"),
-    scalacOptions in Compile ++= (if (allWarnings) Seq("-deprecation")
-                                  else Nil),
-    scalacOptions in Test := (scalacOptions in Test).value.filterNot(opt =>
-      opt == "-Xlog-reflective-calls" || opt.contains("genjavadoc")),
-    // -XDignore.symbol.file suppresses sun.misc.Unsafe warnings
-    javacOptions in compile ++= Seq(
-      "-encoding",
-      "UTF-8",
-      "-source",
-      "1.8",
-      "-target",
-      "1.8",
-      "-Xlint:unchecked",
-      "-XDignore.symbol.file"),
-    javacOptions in compile ++= (if (allWarnings) Seq("-Xlint:deprecation")
-                                 else Nil),
-    javacOptions in doc ++= Seq(),
-    incOptions := incOptions.value.withNameHashing(true),
-    crossVersion := CrossVersion.binary,
-    ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet,
-    licenses := Seq((
-      "Apache License, Version 2.0",
-      url("http://www.apache.org/licenses/LICENSE-2.0"))),
-    homepage := Some(url("http://akka.io/")),
-    initialCommands :=
-      """|import language.postfixOps
+      // compile options
+      scalacOptions in Compile ++= Seq(
+        "-encoding",
+        "UTF-8",
+        "-target:jvm-1.8",
+        "-feature",
+        "-unchecked",
+        "-Xlog-reflective-calls",
+        "-Xlint"),
+      scalacOptions in Compile ++=
+        (if (allWarnings) Seq("-deprecation") else Nil),
+      scalacOptions in Test := (scalacOptions in Test).value.filterNot(opt =>
+        opt == "-Xlog-reflective-calls" || opt.contains("genjavadoc")),
+      // -XDignore.symbol.file suppresses sun.misc.Unsafe warnings
+      javacOptions in compile ++= Seq(
+        "-encoding",
+        "UTF-8",
+        "-source",
+        "1.8",
+        "-target",
+        "1.8",
+        "-Xlint:unchecked",
+        "-XDignore.symbol.file"),
+      javacOptions in compile ++=
+        (if (allWarnings) Seq("-Xlint:deprecation") else Nil),
+      javacOptions in doc ++= Seq(),
+      incOptions := incOptions.value.withNameHashing(true),
+      crossVersion := CrossVersion.binary,
+      ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet,
+      licenses := Seq((
+        "Apache License, Version 2.0",
+        url("http://www.apache.org/licenses/LICENSE-2.0"))),
+      homepage := Some(url("http://akka.io/")),
+      initialCommands :=
+        """|import language.postfixOps
          |import akka.actor._
          |import ActorDSL._
          |import scala.concurrent._
@@ -638,28 +630,26 @@ object AkkaBuild extends Build {
          |implicit def ec = system.dispatcher
          |implicit val timeout = Timeout(5 seconds)
          |""".stripMargin,
-    /**
-      * Test settings
-      */
+      /**
+        * Test settings
+        */
 
-    parallelExecution in Test := System.getProperty(
-      "akka.parallelExecution",
-      parallelExecutionByDefault.toString).toBoolean,
-    logBuffered in Test := System.getProperty("akka.logBufferedTests", "false")
-      .toBoolean,
-    // show full stack traces and test case durations
-    testOptions in Test += Tests.Argument("-oDF"),
-    // don't save test output to a file
-    testListeners in (Test, test) := Seq(TestLogger(
-      streams.value.log,
-      { _ => streams.value.log },
-      logBuffered.value)),
-    // -v Log "test run started" / "test started" / "test run finished" events on log level "info" instead of "debug".
-    // -a Show stack traces and exception class name for AssertionErrors.
-    testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
-  ) ++
-    mavenLocalResolverSettings ++
-    JUnitFileReporting.settings ++
+      parallelExecution in Test := System.getProperty(
+        "akka.parallelExecution",
+        parallelExecutionByDefault.toString).toBoolean,
+      logBuffered in Test :=
+        System.getProperty("akka.logBufferedTests", "false").toBoolean,
+      // show full stack traces and test case durations
+      testOptions in Test += Tests.Argument("-oDF"),
+      // don't save test output to a file
+      testListeners in (Test, test) := Seq(TestLogger(
+        streams.value.log,
+        { _ => streams.value.log },
+        logBuffered.value)),
+      // -v Log "test run started" / "test started" / "test run finished" events on log level "info" instead of "debug".
+      // -a Show stack traces and exception class name for AssertionErrors.
+      testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
+    ) ++ mavenLocalResolverSettings ++ JUnitFileReporting.settings ++
     docLintingSettings
 
   lazy val docLintingSettings = Seq(

@@ -51,15 +51,12 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         val sessionStat = listener.getSession(parameterId).getOrElse(null)
         require(sessionStat != null, "Invalid sessionID[" + parameterId + "]")
 
-        generateBasicStats() ++
-          <br/> ++
-          <h4>
+        generateBasicStats() ++ <br/> ++ <h4>
         User {sessionStat.userName},
         IP {sessionStat.ip},
         Session created at {formatDate(sessionStat.startTimestamp)},
         Total run {sessionStat.totalExecution} SQL
-        </h4> ++
-          generateSQLStatsTable(sessionStat.sessionId)
+        </h4> ++ generateSQLStatsTable(sessionStat.sessionId)
       }
     UIUtils.headerSparkPage("JDBC/ODBC Session", content, parent, Some(5000))
   }
@@ -136,8 +133,7 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
       } else { None }
 
     val content =
-      <h5>SQL Statistics</h5> ++
-        <div>
+      <h5>SQL Statistics</h5> ++ <div>
           <ul class="unstyled">
             {table.getOrElse("No statistics have been generated yet.")}
           </ul>
@@ -157,8 +153,7 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         + details
-      </span> ++
-          <div class="stacktrace-details collapsed">
+      </span> ++ <div class="stacktrace-details collapsed">
         <pre>{errorMessage}</pre>
       </div>
         // scalastyle:on
@@ -172,8 +167,8 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
     val numBatches = sessionList.size
     val table =
       if (numBatches > 0) {
-        val dataRows =
-          sessionList.sortBy(_.startTimestamp).reverse.map(session =>
+        val dataRows = sessionList.sortBy(_.startTimestamp).reverse
+          .map(session =>
             Seq(
               session.userName,
               session.ip,
@@ -195,8 +190,7 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
       } else { None }
 
     val content =
-      <h5>Session Statistics</h5> ++
-        <div>
+      <h5>Session Statistics</h5> ++ <div>
         <ul class="unstyled">
           {table.getOrElse("No statistics have been generated yet.")}
         </ul>

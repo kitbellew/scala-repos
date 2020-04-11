@@ -75,7 +75,8 @@ private[sql] class DefaultSource
     // SPARK-9849 DirectParquetOutputCommitter qualified name should be backward compatible
     val committerClassName = conf
       .get(SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key)
-    if (committerClassName == "org.apache.spark.sql.parquet.DirectParquetOutputCommitter") {
+    if (committerClassName ==
+          "org.apache.spark.sql.parquet.DirectParquetOutputCommitter") {
       conf.set(
         SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key,
         classOf[DirectParquetOutputCommitter].getCanonicalName)
@@ -92,8 +93,8 @@ private[sql] class DefaultSource
           classOf[ParquetOutputCommitter].getCanonicalName)
     } else {
       logInfo(
-        "Using user defined output committer for Parquet: " + committerClass
-          .getCanonicalName)
+        "Using user defined output committer for Parquet: " +
+          committerClass.getCanonicalName)
     }
 
     val compressionCodec: Option[String] = options.get("compression").map {

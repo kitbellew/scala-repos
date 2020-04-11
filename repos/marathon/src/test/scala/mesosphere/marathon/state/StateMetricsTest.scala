@@ -45,8 +45,7 @@ class StateMetricsTest
     metrics.metrics.registry.getHistograms.get(tested.durationHistogramName)
       .getCount should be(1)
     metrics.metrics.registry.getHistograms.get(tested.durationHistogramName)
-      .getSnapshot.getMax should
-      be(1.second.toMillis)
+      .getSnapshot.getMax should be(1.second.toMillis)
 
     And("the original failure is preserved")
     attempt.failed.get should be(failure)
@@ -105,8 +104,7 @@ class StateMetricsTest
     metrics.metrics.registry.getHistograms.get(tested.durationHistogramName)
       .getCount should be(1)
     metrics.metrics.registry.getHistograms.get(tested.durationHistogramName)
-      .getSnapshot.getMax should
-      be(1.second.toMillis)
+      .getSnapshot.getMax should be(1.second.toMillis)
 
     And("the original result is preserved")
     result.futureValue should be(())
@@ -166,8 +164,7 @@ class StateMetricsTest
     metrics.metrics.registry.getHistograms.get(tested.durationHistogramName)
       .getCount should be(1)
     metrics.metrics.registry.getHistograms.get(tested.durationHistogramName)
-      .getSnapshot.getMax should
-      be(1.second.toMillis)
+      .getSnapshot.getMax should be(1.second.toMillis)
 
     And("the failure should be preserved")
     result.failed.futureValue should be(failure)

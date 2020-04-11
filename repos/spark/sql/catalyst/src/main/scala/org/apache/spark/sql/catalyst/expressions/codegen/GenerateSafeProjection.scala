@@ -160,8 +160,7 @@ object GenerateSafeProjection
       case (e, i) =>
         val evaluationCode = e.gen(ctx)
         val converter = convertToSafe(ctx, evaluationCode.value, e.dataType)
-        evaluationCode.code +
-          s"""
+        evaluationCode.code + s"""
             if (${evaluationCode.isNull}) {
               mutableRow.setNullAt($i);
             } else {

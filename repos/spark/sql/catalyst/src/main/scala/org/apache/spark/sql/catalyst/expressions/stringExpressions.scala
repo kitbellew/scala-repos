@@ -146,8 +146,7 @@ case class ConcatWs(children: Seq[Expression])
           }
       }.unzip
 
-      evals.map(_.code).mkString("\n") +
-        s"""
+      evals.map(_.code).mkString("\n") + s"""
         int $varargNum = ${children.count(_.dataType == StringType) - 1};
         int $idxInVararg = 0;
         ${varargCount.mkString("\n")}

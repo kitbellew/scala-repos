@@ -44,8 +44,8 @@ class UdpConnectedIntegrationSpec
       val server = bindUdp(serverAddress, testActor)
       val data1 = ByteString("To infinity and beyond!")
       val data2 = ByteString("All your datagram belong to us")
-      connectUdp(localAddress = None, serverAddress, testActor) ! UdpConnected
-        .Send(data1)
+      connectUdp(localAddress = None, serverAddress, testActor) !
+        UdpConnected.Send(data1)
 
       val clientAddress = expectMsgPF() {
         case Udp.Received(d, a) ⇒
@@ -64,8 +64,8 @@ class UdpConnectedIntegrationSpec
       val server = bindUdp(serverAddress, testActor)
       val data1 = ByteString("To infinity and beyond!")
       val data2 = ByteString("All your datagram belong to us")
-      connectUdp(Some(clientAddress), serverAddress, testActor) ! UdpConnected
-        .Send(data1)
+      connectUdp(Some(clientAddress), serverAddress, testActor) !
+        UdpConnected.Send(data1)
 
       expectMsgPF() {
         case Udp.Received(d, a) ⇒

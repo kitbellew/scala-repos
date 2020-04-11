@@ -115,9 +115,8 @@ object Challenge {
         case TimeControl.Correspondence(d) => d.some
         case _                             => none
       }).orElse {
-      (variant == FromPosition) option perfTypeOf(
-        chess.variant.Standard,
-        timeControl)
+      (variant == FromPosition) option
+        perfTypeOf(chess.variant.Standard, timeControl)
     }.|(PerfType.Correspondence)
 
   private val idSize = 8

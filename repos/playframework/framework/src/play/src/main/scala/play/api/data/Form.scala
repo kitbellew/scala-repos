@@ -418,8 +418,8 @@ private[data] object FormUtils {
         fields.map {
           case (key, value) =>
             fromJson(
-              Option(prefix).filterNot(_.isEmpty).map(_ + ".")
-                .getOrElse("") + key,
+              Option(prefix).filterNot(_.isEmpty).map(_ + ".").getOrElse("") +
+                key,
               value)
         }.foldLeft(Map.empty[String, String])(_ ++ _)
       }

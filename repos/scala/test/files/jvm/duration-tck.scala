@@ -96,10 +96,10 @@ object Test extends App {
   inputs filterNot (_.isFinite) foreach (x => x / zero mustBe x.toUnit(DAYS))
   inputs filterNot (_.isFinite) foreach (_ * 0d mustBe undef)
   inputs filterNot (_.isFinite) foreach (_ * -0d mustBe undef)
-  inputs filterNot (_.isFinite) foreach (x =>
-    x * Double.PositiveInfinity mustBe x)
-  inputs filterNot (_.isFinite) foreach (x =>
-    x * Double.NegativeInfinity mustBe -x)
+  inputs filterNot (_.isFinite) foreach
+    (x => x * Double.PositiveInfinity mustBe x)
+  inputs filterNot (_.isFinite) foreach
+    (x => x * Double.NegativeInfinity mustBe -x)
 
   inf.toUnit(SECONDS) mustBe Double.PositiveInfinity
   minf.toUnit(MINUTES) mustBe Double.NegativeInfinity
@@ -126,10 +126,10 @@ object Test extends App {
   undef * 1 mustBe undef
   undef * nan mustBe undef
   inputs foreach (x => x / zero mustBe x.toUnit(SECONDS) / 0d)
-  inputs foreach (x =>
-    x / 0d mustBe Duration.fromNanos(x.toUnit(NANOSECONDS) / 0d))
-  inputs foreach (x =>
-    x / -0d mustBe Duration.fromNanos(x.toUnit(NANOSECONDS) / -0d))
+  inputs foreach
+    (x => x / 0d mustBe Duration.fromNanos(x.toUnit(NANOSECONDS) / 0d))
+  inputs foreach
+    (x => x / -0d mustBe Duration.fromNanos(x.toUnit(NANOSECONDS) / -0d))
 
   inputs filterNot (_ eq undef) foreach (_ compareTo undef mustBe -1)
   inputs filterNot (_ eq undef) foreach (undef compareTo _ mustBe 1)
@@ -211,8 +211,8 @@ object Test extends App {
   (1.second / 2).unit mustBe MILLISECONDS
 
   // check statically retaining finite-ness
-  val finiteDuration: FiniteDuration = 1.second * 2 / 3 mul 5 div 4 plus 3
-    .seconds minus 1.millisecond min 1.second max 1.second
+  val finiteDuration: FiniteDuration = 1.second * 2 / 3 mul 5 div 4 plus
+    3.seconds minus 1.millisecond min 1.second max 1.second
   val finite2: FiniteDuration = 2 * 1.second + 3L * 2.seconds
   finite2 mustBe 8.seconds
   ((2 seconds fromNow).timeLeft: FiniteDuration) < 4.seconds mustBe true

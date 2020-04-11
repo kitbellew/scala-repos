@@ -307,8 +307,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
         numPartitionsInBM > 0,
         "Some partitions must be in BlockManager for this test")
       rdd.removeBlocks()
-      assert(rdd.map { bytes => new String(bytes).toInt }
-        .collect().toSet === testData.toSet)
+      assert(
+        rdd.map { bytes => new String(bytes).toInt }.collect().toSet ===
+          testData.toSet)
     }
   }
 

@@ -60,8 +60,8 @@ trait RingLaws[A] extends GroupLaws[A] {
     new MultiplicativeProperties(
       base = _.group(A.multiplicative),
       parent = Some(multiplicativeMonoid),
-      "reciprocal consistent" → forAll((x: A) =>
-        pred(x) ==> ((A.one / x) === x.reciprocal)))
+      "reciprocal consistent" →
+        forAll((x: A) => pred(x) ==> ((A.one / x) === x.reciprocal)))
 
   def multiplicativeAbGroup(implicit A: MultiplicativeAbGroup[A]) =
     new MultiplicativeProperties(
@@ -77,13 +77,12 @@ trait RingLaws[A] extends GroupLaws[A] {
       ml = multiplicativeSemigroup,
       parents = Seq.empty,
       "distributive" → forAll((x: A, y: A, z: A) =>
-        (
-          x * (y + z) === (x * y + x * z)
-        ) && (((x + y) * z) === (x * z + y * z))),
+        (x * (y + z) === (x * y + x * z)) &&
+          (((x + y) * z) === (x * z + y * z))),
       "pow" → forAll((x: A) =>
-        ((x pow 1) === x) && ((x pow 2) === x * x) && (
-          (x pow 3) === x * x * x
-        )))
+        ((x pow 1) === x) &&
+          ((x pow 2) === x * x) &&
+          ((x pow 3) === x * x * x)))
 
   def rng(implicit A: Rng[A]) =
     new RingProperties(

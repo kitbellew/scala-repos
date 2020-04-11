@@ -185,12 +185,12 @@ trait RangeDirectives {
       extract(rangeHeaderOfGetRequests).flatMap {
         case Some(Range(RangeUnits.Bytes, ranges)) ⇒
           if (ranges.size <= rangeCountLimit)
-            applyRanges(ranges) & RangeDirectives
-              .respondWithAcceptByteRangesHeader
+            applyRanges(ranges) &
+              RangeDirectives.respondWithAcceptByteRangesHeader
           else reject(TooManyRangesRejection(rangeCountLimit))
         case _ ⇒
-          MethodDirectives.get & RangeDirectives
-            .respondWithAcceptByteRangesHeader | pass
+          MethodDirectives.get &
+            RangeDirectives.respondWithAcceptByteRangesHeader | pass
       }
     }
 }

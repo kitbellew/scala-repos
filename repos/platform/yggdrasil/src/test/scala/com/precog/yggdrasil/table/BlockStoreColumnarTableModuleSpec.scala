@@ -71,7 +71,8 @@ trait BlockStoreColumnarTableModuleSpec[M[+_]]
     }
     "sort" >> {
       "fully homogeneous data" in homogeneousSortSample
-      "fully homogeneous data with object" in homogeneousSortSampleWithNonexistentSortKey
+      "fully homogeneous data with object" in
+        homogeneousSortSampleWithNonexistentSortKey
       "data with undefined sort keys" in partiallyUndefinedSortSample
       "heterogeneous sort keys" in heterogeneousSortSample
       "heterogeneous sort keys case 2" in heterogeneousSortSample2

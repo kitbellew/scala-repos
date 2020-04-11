@@ -22,8 +22,8 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
 
   "The connection-level client implementation" should {
 
-    "be able to handle 100 pipelined requests across one connection" in Utils
-      .assertAllStagesStopped {
+    "be able to handle 100 pipelined requests across one connection" in
+      Utils.assertAllStagesStopped {
         val (_, serverHostName, serverPort) = TestUtils
           .temporaryServerHostnameAndPort()
 
@@ -42,14 +42,13 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
             val s = r.data.utf8String; log.debug(s); s.toInt
           }.runFold(0)(_ + _)
 
-        result.futureValue(PatienceConfig(10.seconds)) shouldEqual N * (
-          N + 1
-        ) / 2
+        result.futureValue(PatienceConfig(10.seconds)) shouldEqual
+          N * (N + 1) / 2
         binding.futureValue.unbind()
       }
 
-    "be able to handle 100 pipelined requests across 4 connections (client-flow is reusable)" in Utils
-      .assertAllStagesStopped {
+    "be able to handle 100 pipelined requests across 4 connections (client-flow is reusable)" in
+      Utils.assertAllStagesStopped {
         val (_, serverHostName, serverPort) = TestUtils
           .temporaryServerHostnameAndPort()
 
@@ -80,9 +79,8 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
             val s = r.data.utf8String; log.debug(s); s.toInt
           }.runFold(0)(_ + _)
 
-        result.futureValue(PatienceConfig(10.seconds)) shouldEqual C * N * (
-          N + 1
-        ) / 2
+        result.futureValue(PatienceConfig(10.seconds)) shouldEqual
+          C * N * (N + 1) / 2
         binding.futureValue.unbind()
       }
 
@@ -103,8 +101,8 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
         .via(Http().outgoingConnection(serverHostName, serverPort)).grouped(10)
         .runWith(Sink.head)
 
-      a[One2OneBidiFlow.OutputTruncationException.type] should be thrownBy Await
-        .result(x, 3.second)
+      a[One2OneBidiFlow.OutputTruncationException.type] should be thrownBy
+        Await.result(x, 3.second)
       binding.futureValue.unbind()
     }
 

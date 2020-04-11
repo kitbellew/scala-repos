@@ -44,8 +44,8 @@ case class ImportData(pgn: String, analyse: Option[String]) {
               tags find (_.name == which(Tag)) map (_.value)
 
             val initBoard = tag(_.FEN) flatMap Forsyth.<< map (_.board)
-            val fromPosition = initBoard.nonEmpty && tag(_.FEN) != Forsyth
-              .initial.some
+            val fromPosition = initBoard.nonEmpty &&
+              tag(_.FEN) != Forsyth.initial.some
             val variant = {
               tag(_.Variant).map(Chess960.fixVariantName)
                 .flatMap(chess.variant.Variant.byName) | {
@@ -79,8 +79,8 @@ case class ImportData(pgn: String, analyse: Option[String]) {
               mode = Mode.Casual,
               variant = variant,
               source = Source.Import,
-              pgnImport =
-                PgnImport.make(user = user, date = date, pgn = pgn).some
+              pgnImport = PgnImport.make(user = user, date = date, pgn = pgn)
+                .some
             ).copy(binaryPgn = BinaryFormat.pgn write replay.state.pgnMoves)
               .start
 

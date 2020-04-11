@@ -165,8 +165,8 @@ class ParquetQuerySuite
         Utils.deleteRecursively(new File(basePath + "/foo=1/_metadata"))
         Utils.deleteRecursively(new File(basePath + "/foo=1/_common_metadata"))
         assert(
-          sqlContext.read.parquet(basePath).columns
-            .length === expectedColumnNumber)
+          sqlContext.read.parquet(basePath).columns.length ===
+            expectedColumnNumber)
       }
     }
 
@@ -192,8 +192,8 @@ class ParquetQuerySuite
         sqlContext.range(0, 10).toDF("b").write
           .parquet(new Path(basePath, "foo=2").toString)
         assert(
-          sqlContext.read.parquet(basePath).columns
-            .length === expectedColumnNumber)
+          sqlContext.read.parquet(basePath).columns.length ===
+            expectedColumnNumber)
       }
     }
 

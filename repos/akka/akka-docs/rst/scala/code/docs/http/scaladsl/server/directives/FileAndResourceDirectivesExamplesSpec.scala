@@ -40,14 +40,13 @@ class FileAndResourceDirectivesExamplesSpec extends RoutingSpec {
   }
   "listDirectoryContents-examples" in compileOnlySpec {
     val route =
-      path("tmp") { listDirectoryContents("/tmp") } ~
-        path("custom") {
-          val renderer = new DirectoryRenderer {
-            override def marshaller(renderVanityFooter: Boolean)
-                : ToEntityMarshaller[DirectoryListing] = ???
-          }
-          listDirectoryContents("/tmp")(renderer)
+      path("tmp") { listDirectoryContents("/tmp") } ~ path("custom") {
+        val renderer = new DirectoryRenderer {
+          override def marshaller(renderVanityFooter: Boolean)
+              : ToEntityMarshaller[DirectoryListing] = ???
         }
+        listDirectoryContents("/tmp")(renderer)
+      }
 
     // tests:
     Get("/logs/example") ~> route ~> check {

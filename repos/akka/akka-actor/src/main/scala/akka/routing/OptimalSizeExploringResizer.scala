@@ -218,8 +218,8 @@ case class DefaultOptimalSizeExploringResizer(
     val messagesInRoutees = currentRoutees map {
       case ActorRefRoutee(a: ActorRefWithCell) ⇒ a.underlying match {
           case cell: ActorCell ⇒
-            cell.mailbox.numberOfMessages + (if (cell.currentMessage != null) 1
-                                             else 0)
+            cell.mailbox.numberOfMessages +
+              (if (cell.currentMessage != null) 1 else 0)
           case cell ⇒ cell.numberOfMessages
         }
       case x ⇒ 0
@@ -240,8 +240,8 @@ case class DefaultOptimalSizeExploringResizer(
             utilized)))
 
     val newPerformanceLog: PerformanceLog =
-      if (fullyUtilized && record.underutilizationStreak.isEmpty && record
-            .checkTime > 0) {
+      if (fullyUtilized && record.underutilizationStreak.isEmpty &&
+          record.checkTime > 0) {
         val totalMessageReceived = messageCounter - record.messageCount
         val queueSizeChange = record.totalQueueLength - totalQueueLength
         val totalProcessed = queueSizeChange + totalMessageReceived
@@ -251,9 +251,8 @@ case class DefaultOptimalSizeExploringResizer(
           val last: Duration = duration / totalProcessed
           //exponentially decrease the weight of old last metrics data
           val toUpdate = performanceLog.get(currentSize).fold(last) { oldSpeed ⇒
-            (oldSpeed * (1.0 - weightOfLatestMetric)) + (
-              last * weightOfLatestMetric
-            )
+            (oldSpeed * (1.0 - weightOfLatestMetric)) +
+              (last * weightOfLatestMetric)
           }
           performanceLog + (currentSize → toUpdate)
         } else performanceLog
@@ -279,17 +278,15 @@ case class DefaultOptimalSizeExploringResizer(
           (record.underutilizationStreak.get.highestUtilization * downsizeRatio)
             .toInt
         Math.min(downsizeTo - currentSize, 0)
-      } else if (performanceLog.isEmpty || record.underutilizationStreak
-                   .isDefined) { 0 }
+      } else if (performanceLog.isEmpty ||
+                 record.underutilizationStreak.isDefined) { 0 }
       else {
         if (!stopExploring && random.nextDouble() < explorationProbability)
           explore(currentSize)
         else optimize(currentSize)
       }
-    Math
-      .max(
-        lowerBound,
-        Math.min(proposedChange + currentSize, upperBound)) - currentSize
+    Math.max(lowerBound, Math.min(proposedChange + currentSize, upperBound)) -
+      currentSize
   }
 
   private def optimize(currentSize: PoolSize): Int = {
@@ -297,8 +294,8 @@ case class DefaultOptimalSizeExploringResizer(
     val adjacentDispatchWaits: Map[PoolSize, Duration] = {
       def adjacency = (size: Int) ⇒ Math.abs(currentSize - size)
       val sizes = performanceLog.keys.toSeq
-      val numOfSizesEachSide =
-        numOfAdjacentSizesToConsiderDuringOptimization / 2
+      val numOfSizesEachSide = numOfAdjacentSizesToConsiderDuringOptimization /
+        2
       val leftBoundary = sizes.filter(_ < currentSize).sortBy(adjacency)
         .take(numOfSizesEachSide).lastOption.getOrElse(currentSize)
       val rightBoundary = sizes.filter(_ >= currentSize).sortBy(adjacency)

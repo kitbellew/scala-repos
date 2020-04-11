@@ -54,8 +54,8 @@ class StackRegistryTest extends FunSuite {
       def registryName: String = "test"
     }
     val stk = newStack()
-    val params = Stack.Params.empty + param1 + param.Label("foo") + param
-      .ProtocolLibrary("qux")
+    val params = Stack.Params.empty + param1 + param.Label("foo") +
+      param.ProtocolLibrary("qux")
     val simple = new SimpleRegistry()
     GlobalRegistry.withRegistry(simple) {
       reg.register("bar", stk, params)
@@ -73,8 +73,8 @@ class StackRegistryTest extends FunSuite {
       def registryName: String = "test"
     }
     val stk = newStack()
-    val params = Stack.Params.empty + param1 + param.Label("foo") + param
-      .ProtocolLibrary("qux")
+    val params = Stack.Params.empty + param1 + param.Label("foo") +
+      param.ProtocolLibrary("qux")
     val simple = new SimpleRegistry()
     GlobalRegistry.withRegistry(simple) {
       reg.register("bar", stk, params)
@@ -96,8 +96,8 @@ class StackRegistryTest extends FunSuite {
       def registryName: String = "test"
     }
     val stk = newStack()
-    val params = Stack.Params.empty + param1 + param.Label("foo") + param
-      .ProtocolLibrary("qux")
+    val params = Stack.Params.empty + param1 + param.Label("foo") +
+      param.ProtocolLibrary("qux")
     val simple = new SimpleRegistry()
     GlobalRegistry.withRegistry(simple) {
       reg.register("bar", stk, params)

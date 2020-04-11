@@ -151,10 +151,8 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
   }
 
   "allow escaping arbitrary characters when serializing" in {
-    JsonAST
-      .render(
-        JString("aaabbb"),
-        JsonAST.RenderSettings(0, Set('c'))) must not be matching("a".r)
+    JsonAST.render(JString("aaabbb"), JsonAST.RenderSettings(0, Set('c'))) must
+      not be matching("a".r)
   }
 
   "escape bad JSON characters by default" in {
@@ -185,22 +183,17 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
 
   "find all children" in {
     val subject = JObject(
-      JField("alpha", JString("apple")) ::
-        JField(
-          "beta",
-          JObject(
-            JField("alpha", JString("bacon")) ::
-              JField("charlie", JString("i'm a masseuse")) ::
-              Nil)) ::
-        Nil)
-
-    subject \\ "alpha" must_==
-      JObject(
-        JField("alpha", JString("apple")) ::
+      JField("alpha", JString("apple")) :: JField(
+        "beta",
+        JObject(
           JField("alpha", JString("bacon")) ::
-          Nil)
-    subject \\ "charlie" must_== JObject(
-      List(JField("charlie", JString("i'm a masseuse"))))
+            JField("charlie", JString("i'm a masseuse")) :: Nil)) :: Nil)
+
+    subject \\ "alpha" must_== JObject(
+      JField("alpha", JString("apple")) :: JField("alpha", JString("bacon")) ::
+        Nil)
+    subject \\ "charlie" must_==
+      JObject(List(JField("charlie", JString("i'm a masseuse"))))
   }
 
   private def reorderFields(json: JValue) =

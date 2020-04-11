@@ -17,8 +17,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
   def flagsToStr(clazz: Boolean, flags: Int): String = {
     val buffer = new StringBuffer()
     var x: StringBuffer = buffer
-    if (((flags & 0x0007) == 0) &&
-        ((flags & 0x0002) != 0)) x = buffer.append("private ")
+    if (((flags & 0x0007) == 0) && ((flags & 0x0002) != 0))
+      x = buffer.append("private ")
     if ((flags & 0x0004) != 0) x = buffer.append("protected ")
     if ((flags & 0x0010) != 0) x = buffer.append("final ")
     if ((flags & 0x0400) != 0)

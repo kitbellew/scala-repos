@@ -63,8 +63,8 @@ object ApplicationBuild extends Build {
         (sources ** "*").get
       },
       // trump sbt-web into not looking at public/
-      resourceDirectory in Assets := (sourceDirectory in Compile)
-        .value / "assets"
+      resourceDirectory in Assets := (sourceDirectory in Compile).value /
+        "assets"
     ))
 
   lazy val modules = Seq(
@@ -196,9 +196,8 @@ object ApplicationBuild extends Build {
     .settings(libraryDependencies ++= provided(play.test, play.api, RM, PRM))
 
   lazy val memo = project("memo", Seq(common, db)).settings(
-    libraryDependencies ++= Seq(guava, findbugs, spray.caching) ++ provided(
-      play.api,
-      RM))
+    libraryDependencies ++= Seq(guava, findbugs, spray.caching) ++
+      provided(play.api, RM))
 
   lazy val search = project("search", Seq(common, hub))
     .settings(libraryDependencies ++= provided(play.api))

@@ -70,11 +70,9 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
       val (errors, failures, tests) =
         (count(TStatus.Error), count(TStatus.Failure), events.size)
 
-      val result = <testsuite hostname={hostname} name={name} tests={
-        tests + ""
-      } errors={errors + ""} failures={failures + ""} time={
-        (duration / 1000.0).toString
-      }>
+      val result = <testsuite hostname={hostname} name={name} tests={tests + ""} errors={
+        errors + ""
+      } failures={failures + ""} time={(duration / 1000.0).toString}>
                      {properties}
                      {
         for (e <- events) yield <testcase classname={name} name={

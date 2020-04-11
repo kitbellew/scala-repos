@@ -142,9 +142,8 @@ private[math] object Primality {
     } else {
       // To check if 'n' is divisible by some prime of the table
       for (i <- 1 until Primes.length) {
-        if (Division
-              .remainderArrayByInt(n.digits, n.numberLength, Primes(i)) == 0)
-          return false
+        if (Division.remainderArrayByInt(n.digits, n.numberLength, Primes(i)) ==
+              0) return false
       }
 
       // To set the number of iterations necessary for Miller-Rabin test

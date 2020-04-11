@@ -121,8 +121,8 @@ abstract class AbstractTable[T](
   def tableConstraints: Iterator[Constraint] =
     for {
       m <- getClass().getMethods.iterator
-      if m.getParameterTypes.length == 0 && classOf[Constraint]
-        .isAssignableFrom(m.getReturnType)
+      if m.getParameterTypes.length == 0 &&
+        classOf[Constraint].isAssignableFrom(m.getReturnType)
       q = m.invoke(this).asInstanceOf[Constraint]
     } yield q
 

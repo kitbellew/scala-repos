@@ -114,8 +114,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     val absolutePath1 = file1.getAbsolutePath
 
     val file2 = File.createTempFile("someprefix2", "somesuffix2", dir)
-    val relativePath = file2.getParent + "/../" + file2.getParentFile
-      .getName + "/" + file2.getName
+    val relativePath = file2.getParent + "/../" + file2.getParentFile.getName +
+      "/" + file2.getName
     val absolutePath2 = file2.getAbsolutePath
 
     try {
@@ -288,8 +288,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
 
       // Test textFile, hadoopFile, and newAPIHadoopFile for file3, file4, and file5
       assert(
-        sc.textFile(filepath3 + "," + filepath4 + "," + filepath5)
-          .count() == 5L)
+        sc.textFile(filepath3 + "," + filepath4 + "," + filepath5).count() ==
+          5L)
       assert(
         sc.hadoopFile(
           filepath3 + "," + filepath4 + "," + filepath5,

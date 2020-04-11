@@ -97,8 +97,8 @@ case class Window(
     if (partitionSpec.isEmpty) {
       // Only show warning when the number of bytes is larger than 100 MB?
       logWarning(
-        "No Partition Defined for Window operation! Moving all data to a single "
-          + "partition, this can cause serious performance degradation.")
+        "No Partition Defined for Window operation! Moving all data to a single " +
+          "partition, this can cause serious performance degradation.")
       AllTuples :: Nil
     } else ClusteredDistribution(partitionSpec) :: Nil
   }
@@ -621,8 +621,8 @@ private[execution] final class OffsetWindowFunctionFrame(
     val boundExpressions = Seq.fill(ordinal)(NoOp) ++ expressions.toSeq.map {
       case e: OffsetWindowFunction =>
         val input = BindReferences.bindReference(e.input, inputAttrs)
-        if (e.default == null || e.default.foldable && e.default
-              .eval() == null) {
+        if (e.default == null ||
+            e.default.foldable && e.default.eval() == null) {
           // Without default value.
           input
         } else {
@@ -712,8 +712,8 @@ private[execution] final class SlidingWindowFunctionFrame(
 
     // Add all rows to the buffer for which the input row value is equal to or less than
     // the output row upper bound.
-    while (nextRow != null && ubound
-             .compare(nextRow, inputHighIndex, current, index) <= 0) {
+    while (nextRow != null &&
+           ubound.compare(nextRow, inputHighIndex, current, index) <= 0) {
       buffer.add(nextRow.copy())
       nextRow = input.next()
       inputHighIndex += 1
@@ -722,8 +722,8 @@ private[execution] final class SlidingWindowFunctionFrame(
 
     // Drop all rows from the buffer for which the input row value is smaller than
     // the output row lower bound.
-    while (!buffer.isEmpty && lbound
-             .compare(buffer.peek(), inputLowIndex, current, index) < 0) {
+    while (!buffer.isEmpty &&
+           lbound.compare(buffer.peek(), inputLowIndex, current, index) < 0) {
       buffer.remove()
       inputLowIndex += 1
       bufferUpdated = true
@@ -818,8 +818,8 @@ private[execution] final class UnboundedPrecedingWindowFunctionFrame(
 
     // Add all rows to the aggregates for which the input row value is equal to or less than
     // the output row upper bound.
-    while (nextRow != null && ubound
-             .compare(nextRow, inputIndex, current, index) <= 0) {
+    while (nextRow != null &&
+           ubound.compare(nextRow, inputIndex, current, index) <= 0) {
       processor.update(nextRow)
       nextRow = input.next()
       inputIndex += 1
@@ -877,8 +877,8 @@ private[execution] final class UnboundedFollowingWindowFunctionFrame(
     // the output row lower bound.
     tmp.skip(inputIndex)
     var nextRow = tmp.next()
-    while (nextRow != null && lbound
-             .compare(nextRow, inputIndex, current, index) < 0) {
+    while (nextRow != null &&
+           lbound.compare(nextRow, inputIndex, current, index) < 0) {
       nextRow = tmp.next()
       inputIndex += 1
       bufferUpdated = true

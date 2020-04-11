@@ -104,8 +104,8 @@ final class SinatraRouteMatcher(pattern: String)
     private def splat: Parser[Builder => Builder] =
       "*" ^^^ { builder => builder addSplat }
 
-    private def prefixedOptional: Parser[Builder => Builder] =
-      ("." | "/") ~ "?:" ~ """\w+""".r ~ "?" ^^ {
+    private def prefixedOptional: Parser[Builder => Builder] = ("." | "/") ~
+      "?:" ~ """\w+""".r ~ "?" ^^ {
         case p ~ "?:" ~ o ~ "?" => builder => builder addPrefixedOptional (o, p)
       }
 
@@ -195,8 +195,9 @@ final class RailsRouteMatcher(pattern: String)
         builder optional subBuilder
       }
 
-    private def static: Parser[Builder => Builder] =
-      (escaped | char) ^^ { str => builder => builder addStatic str }
+    private def static: Parser[Builder => Builder] = (escaped | char) ^^ {
+      str => builder => builder addStatic str
+    }
 
     private def identifier: Regex = """[a-zA-Z_]\w*""".r
 

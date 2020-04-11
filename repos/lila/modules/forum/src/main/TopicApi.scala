@@ -43,47 +43,47 @@ private[forum] final class TopicApi(
 
   def makeTopic(categ: Categ, data: DataForm.TopicData)(implicit
       ctx: UserContext): Fu[Topic] =
-    TopicRepo.nextSlug(categ, data.name) zip detectLanguage(
-      data.post.text) flatMap {
-      case (slug, lang) =>
-        val topic = Topic.make(
-          categId = categ.slug,
-          slug = slug,
-          name = data.name,
-          troll = ctx.troll,
-          featured = true)
-        val post = Post.make(
-          topicId = topic.id,
-          author = data.post.author,
-          userId = ctx.me map (_.id),
-          ip = ctx.isAnon option ctx.req.remoteAddress,
-          troll = ctx.troll,
-          hidden = topic.hidden,
-          text = lila.security.Spam.replace(data.post.text),
-          lang = lang map (_.language),
-          number = 1,
-          categId = categ.id
-        )
-        $insert(post) >>
-          $insert(topic withPost post) >>
-          $update(categ withTopic post) >>-
-          (indexer ! InsertPost(post)) >>
-          env.recent.invalidate >>-
-          ctx.userId.?? { userId =>
-            val text = topic.name + " " + post.text
-            shutup ! post.isTeam.fold(
-              lila.hub.actorApi.shutup.RecordTeamForumMessage(userId, text),
-              lila.hub.actorApi.shutup.RecordPublicForumMessage(userId, text))
-          } >>- {
-          (ctx.userId ifFalse post.troll) ?? { userId =>
-            timeline ! Propagate(
-              ForumPost(userId, topic.id.some, topic.name, post.id)).|>(prop =>
-              post.isStaff
-                .fold(prop toStaffFriendsOf userId, prop toFollowersOf userId))
-          }
-          lila.mon.forum.post.create()
-        } inject topic
-    }
+    TopicRepo.nextSlug(categ, data.name) zip
+      detectLanguage(data.post.text) flatMap {
+        case (slug, lang) =>
+          val topic = Topic.make(
+            categId = categ.slug,
+            slug = slug,
+            name = data.name,
+            troll = ctx.troll,
+            featured = true)
+          val post = Post.make(
+            topicId = topic.id,
+            author = data.post.author,
+            userId = ctx.me map (_.id),
+            ip = ctx.isAnon option ctx.req.remoteAddress,
+            troll = ctx.troll,
+            hidden = topic.hidden,
+            text = lila.security.Spam.replace(data.post.text),
+            lang = lang map (_.language),
+            number = 1,
+            categId = categ.id
+          )
+          $insert(post) >>
+            $insert(topic withPost post) >> $update(categ withTopic post) >>-
+            (indexer ! InsertPost(post)) >>
+            env.recent.invalidate >>- ctx.userId.?? { userId =>
+              val text = topic.name + " " + post.text
+              shutup ! post.isTeam.fold(
+                lila.hub.actorApi.shutup.RecordTeamForumMessage(userId, text),
+                lila.hub.actorApi.shutup.RecordPublicForumMessage(userId, text))
+            } >>- {
+              (ctx.userId ifFalse post.troll) ?? { userId =>
+                timeline ! Propagate(
+                  ForumPost(userId, topic.id.some, topic.name, post.id))
+                  .|>(prop =>
+                    post.isStaff.fold(
+                      prop toStaffFriendsOf userId,
+                      prop toFollowersOf userId))
+              }
+              lila.mon.forum.post.create()
+            } inject topic
+      }
 
   def paginator(
       categ: Categ,
@@ -104,8 +104,7 @@ private[forum] final class TopicApi(
   def delete(categ: Categ, topic: Topic): Funit =
     PostRepo.idsByTopicId(topic.id) flatMap { postIds =>
       (PostRepo removeByTopic topic.id zip $remove(topic)) >>
-        (env.categApi denormalize categ) >>-
-        (indexer ! RemovePosts(postIds)) >>
+        (env.categApi denormalize categ) >>- (indexer ! RemovePosts(postIds)) >>
         env.recent.invalidate
     }
 

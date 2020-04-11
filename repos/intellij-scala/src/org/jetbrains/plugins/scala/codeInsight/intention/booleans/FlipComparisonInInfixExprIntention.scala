@@ -35,9 +35,9 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
 
     val oper = infixExpr.operation.nameId.getText
 
-    if (oper != "equals" && oper != "==" && oper != "!=" && oper != "eq" && oper != "ne" &&
-        oper != ">" && oper != "<" && oper != ">=" && oper != "<=" &&
-        oper != "&&" && oper != "||") return false
+    if (oper != "equals" && oper != "==" && oper != "!=" && oper != "eq" &&
+        oper != "ne" && oper != ">" && oper != "<" && oper != ">=" &&
+        oper != "<=" && oper != "&&" && oper != "||") return false
 
     val range: TextRange = infixExpr.operation.nameId.getTextRange
     val offset = editor.getCaretModel.getOffset
@@ -61,8 +61,8 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
     if (infixExpr == null || !infixExpr.isValid) return
 
     val start = infixExpr.getTextRange.getStartOffset
-    val diff = editor.getCaretModel.getOffset - infixExpr.operation.nameId
-      .getTextRange.getStartOffset
+    val diff = editor.getCaretModel.getOffset -
+      infixExpr.operation.nameId.getTextRange.getStartOffset
     val expr = new StringBuilder
     val replaceOper = Map(
       "equals" -> "equals",
@@ -85,8 +85,7 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
       .createExpressionFromText(expr.toString(), element.getManager)
 
     val size = newInfixExpr.asInstanceOf[ScInfixExpr].operation.nameId
-      .getTextRange.getStartOffset -
-      newInfixExpr.getTextRange.getStartOffset
+      .getTextRange.getStartOffset - newInfixExpr.getTextRange.getStartOffset
 
     inWriteAction {
       infixExpr.replace(newInfixExpr)

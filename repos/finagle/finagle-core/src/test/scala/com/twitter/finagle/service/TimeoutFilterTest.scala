@@ -81,8 +81,8 @@ class TimeoutFilterTest extends FunSuite with MockitoSugar {
 
     Time.withCurrentTimeFrozen { tc =>
       assert(
-        Await.result(timeoutService((): Unit)) == Some(
-          Deadline(Time.now, Time.now + 1.second)))
+        Await.result(timeoutService((): Unit)) ==
+          Some(Deadline(Time.now, Time.now + 1.second)))
 
       // Adjust existing ones.
       val f = Contexts.broadcast.let(
@@ -91,8 +91,8 @@ class TimeoutFilterTest extends FunSuite with MockitoSugar {
         timeoutService((): Unit)
       }
       assert(
-        Await.result(f) == Some(
-          Deadline(Time.now, Time.now + 200.milliseconds)))
+        Await.result(f) ==
+          Some(Deadline(Time.now, Time.now + 200.milliseconds)))
     }
   }
 
@@ -102,8 +102,8 @@ class TimeoutFilterTest extends FunSuite with MockitoSugar {
 
     Time.withCurrentTimeFrozen { tc =>
       assert(
-        Await.result(timeoutService((): Unit)) == Some(
-          Deadline(Time.now, Time.Top)))
+        Await.result(timeoutService((): Unit)) ==
+          Some(Deadline(Time.now, Time.Top)))
 
       // Adjust existing ones
       val f = Contexts.broadcast

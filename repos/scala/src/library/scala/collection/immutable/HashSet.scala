@@ -958,8 +958,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
             val sizeNew = size - sub.size
             // if we have only one child, which is not a HashTrieSet but a self-contained set like
             // HashSet1 or HashSetCollision1, return the child instead
-            if (elemsNew.length == 1 && !elemsNew(0)
-                  .isInstanceOf[HashTrieSet[_]]) elemsNew(0)
+            if (elemsNew.length == 1 &&
+                !elemsNew(0).isInstanceOf[HashTrieSet[_]]) elemsNew(0)
             else new HashTrieSet(bitmapNew, elemsNew, sizeNew)
           } else null
         } else if (elems.length == 1 && !subNew.isInstanceOf[HashTrieSet[_]]) {
@@ -1051,8 +1051,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
       } else if (rs == size0) {
         // unchanged
         this
-      } else if (offset == offset0 + 1 && !buffer(offset0)
-                   .isInstanceOf[HashTrieSet[A]]) {
+      } else if (offset == offset0 + 1 &&
+                 !buffer(offset0).isInstanceOf[HashTrieSet[A]]) {
         // leaf
         buffer(offset0)
       } else {

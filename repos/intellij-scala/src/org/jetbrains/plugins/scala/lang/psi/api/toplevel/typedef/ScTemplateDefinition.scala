@@ -209,11 +209,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
   def supers: Seq[PsiClass] = extendsBlock.supers
 
   def allTypeAliases =
-    TypeDefinitionMembers.getTypes(this).allFirstSeq().flatMap(n =>
-      n.map {
-          case (_, x) => (x.info, x.substitutor)
-        }) ++ syntheticTypeDefinitions.filter(!_.isObject)
-      .map((_, ScSubstitutor.empty))
+    TypeDefinitionMembers.getTypes(this).allFirstSeq()
+      .flatMap(n => n.map { case (_, x) => (x.info, x.substitutor) }) ++
+      syntheticTypeDefinitions.filter(!_.isObject).map((_, ScSubstitutor.empty))
 
   def allTypeAliasesIncludingSelfType = {
     selfType match {
@@ -345,8 +343,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
         languageLevel,
         false)
     }
-    if (extendsBlock.templateBody.isDefined &&
-        PsiTreeUtil.isContextAncestor(
+    if (extendsBlock.templateBody.isDefined && PsiTreeUtil.isContextAncestor(
           extendsBlock.templateBody.get,
           place,
           false) && lastParent != null) return true
@@ -408,22 +405,19 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
           case Some(ed) if PsiTreeUtil.isContextAncestor(ed, place, true) =>
           case _ => extendsBlock match {
               case e: ScExtendsBlock if e != null =>
-                if (PsiTreeUtil
-                      .isContextAncestor(e, place, true) || !PsiTreeUtil
-                      .isContextAncestor(this, place, true)) {
+                if (PsiTreeUtil.isContextAncestor(e, place, true) ||
+                    !PsiTreeUtil.isContextAncestor(this, place, true)) {
                   this match {
                     case t: ScTypeDefinition
                         if selfTypeElement != None &&
                           !PsiTreeUtil.isContextAncestor(
                             selfTypeElement.get,
                             place,
-                            true) &&
-                          PsiTreeUtil.isContextAncestor(
+                            true) && PsiTreeUtil.isContextAncestor(
                             e.templateBody.orNull,
                             place,
-                            true) &&
-                          processor.isInstanceOf[BaseProcessor] && !t
-                          .isInstanceOf[ScObject] =>
+                            true) && processor.isInstanceOf[BaseProcessor] &&
+                          !t.isInstanceOf[ScObject] =>
                       selfTypeElement match {
                         case Some(_) =>
                           processor.asInstanceOf[BaseProcessor]
@@ -523,8 +517,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                 case _ if !c.isInstanceOf[ScTemplateDefinition] => true
                 case _                                          => false
               }
-              if (value && c.name == baseName && c
-                    .qualifiedName == baseQualifiedName && value) return true
+              if (value && c.name == baseName &&
+                  c.qualifiedName == baseQualifiedName && value) return true
               if (deep && isInheritorInner(base, c, deep)) return true
             }
           case _ =>
@@ -543,8 +537,9 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       }
       false
     }
-    if (baseClass == null || DumbService.getInstance(baseClass.getProject)
-          .isDumb) return false //to prevent failing during indexes
+    if (baseClass == null ||
+        DumbService.getInstance(baseClass.getProject).isDumb)
+      return false //to prevent failing during indexes
 
     // This doesn't appear in the superTypes at the moment, so special case required.
     if (baseQualifiedName == "java.lang.Object") return true

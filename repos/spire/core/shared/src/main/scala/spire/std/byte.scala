@@ -74,18 +74,18 @@ class ByteIsBitString extends BitString[Byte] with Serializable {
   def toHexString(n: Byte): String = Integer.toHexString(n & 0xff)
 
   def bitCount(n: Byte): Int = Integer.bitCount(n & 0xff)
-  def highestOneBit(n: Byte): Byte =
-    (Integer.highestOneBit(n & 0xff) & 0xff).toByte
-  def lowestOneBit(n: Byte): Byte =
-    (Integer.lowestOneBit(n & 0xff) & 0xff).toByte
+  def highestOneBit(n: Byte): Byte = (Integer.highestOneBit(n & 0xff) & 0xff)
+    .toByte
+  def lowestOneBit(n: Byte): Byte = (Integer.lowestOneBit(n & 0xff) & 0xff)
+    .toByte
   def numberOfLeadingZeros(n: Byte): Int =
     Integer.numberOfLeadingZeros(n & 0xff) - 24
   def numberOfTrailingZeros(n: Byte): Int =
     if (n == 0) 8 else Integer.numberOfTrailingZeros(n & 0xff)
 
   def leftShift(n: Byte, i: Int): Byte = (((n & 0xff) << (i & 7)) & 0xff).toByte
-  def rightShift(n: Byte, i: Int): Byte =
-    (((n & 0xff) >>> (i & 7)) & 0xff).toByte
+  def rightShift(n: Byte, i: Int): Byte = (((n & 0xff) >>> (i & 7)) & 0xff)
+    .toByte
   def signedRightShift(n: Byte, i: Int): Byte = ((n >> (i & 7)) & 0xff).toByte
   def rotateLeft(n: Byte, i: Int): Byte = {
     val j = i & 7

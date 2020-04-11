@@ -85,9 +85,8 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
       responseAs[String] shouldEqual "Full URI: http://example.com/234"
     }
     Get("/abcdefghijkl") ~> route ~> check {
-      rejection shouldEqual ValidationRejection(
-        "Path too long: '/abcdefghijkl'",
-        None)
+      rejection shouldEqual
+        ValidationRejection("Path too long: '/abcdefghijkl'", None)
     }
   }
 }

@@ -29,8 +29,8 @@ private[streaming] object HdfsUtils {
     // If the file exists and we have append support, append instead of creating a new file
     val stream: FSDataOutputStream = {
       if (dfs.isFile(dfsPath)) {
-        if (conf.getBoolean("hdfs.append.support", false) || dfs
-              .isInstanceOf[RawLocalFileSystem]) { dfs.append(dfsPath) }
+        if (conf.getBoolean("hdfs.append.support", false) ||
+            dfs.isInstanceOf[RawLocalFileSystem]) { dfs.append(dfsPath) }
         else {
           throw new IllegalStateException(
             "File exists and there is no append support!")

@@ -87,9 +87,8 @@ class ScalaCompilerSettings(state: ScalaCompilerSettingsState) {
 
     val pluginOptions = plugins.map(path => "-Xplugin:" + path)
 
-    (
-      toggledOptions :+ debuggingLevelOption
-    ) ++ pluginOptions ++ additionalCompilerOptions
+    (toggledOptions :+ debuggingLevelOption) ++ pluginOptions ++
+      additionalCompilerOptions
   }
 
   def initFrom(options: Seq[String]) { initFrom0(normalized(options)) }

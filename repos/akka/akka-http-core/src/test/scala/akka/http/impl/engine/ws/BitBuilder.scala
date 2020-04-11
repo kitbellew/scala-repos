@@ -93,12 +93,12 @@ class BitSpecParser(val input: ParserInput) extends parboiled2.Parser {
   def one: Rule1[BitElement] = rule { '1' ~ push(One) ~ ws }
   def multi: Rule1[Multibit] =
     rule {
-      capture(oneOrMore('x' ~ ws)) ~> (_
-        .count(_ == 'x')) ~ '=' ~ value ~ ws ~> Multibit
+      capture(oneOrMore('x' ~ ws)) ~> (_.count(_ == 'x')) ~ '=' ~ value ~ ws ~>
+        Multibit
     }
   def value: Rule1[Long] =
     rule {
-      capture(oneOrMore(CharPredicate.HexDigit)) ~> ((str: String) ⇒
-        java.lang.Long.parseLong(str, 16))
+      capture(oneOrMore(CharPredicate.HexDigit)) ~>
+        ((str: String) ⇒ java.lang.Long.parseLong(str, 16))
     }
 }

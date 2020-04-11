@@ -239,11 +239,11 @@ case class HyperLogLogPlusPlus(
 
     // The estimates are sorted so we can use a binary search to find the index of the
     // interpolation estimate closest to the current estimate.
-    val nearestEstimateIndex =
-      util.Arrays.binarySearch(estimates, 0, numEstimates, e) match {
-        case ix if ix < 0 => -(ix + 1)
-        case ix           => ix
-      }
+    val nearestEstimateIndex = util.Arrays
+      .binarySearch(estimates, 0, numEstimates, e) match {
+      case ix if ix < 0 => -(ix + 1)
+      case ix           => ix
+    }
 
     // Use square of the difference between the current estimate and the estimate at the given
     // index as distance metric.

@@ -29,7 +29,7 @@ class ConvertStringConcatenationToInterpolatedString
     if (!super
           .isAvailable(project: Project, editor: Editor, element: PsiElement))
       return false
-    element.scalaLanguageLevel
-      .getOrElse(ScalaLanguageLevel.Default) >= Scala_2_10
+    element.scalaLanguageLevel.getOrElse(ScalaLanguageLevel.Default) >=
+      Scala_2_10
   }
 }

@@ -21,8 +21,8 @@ final class ChallengeApi(
   import Challenge._
 
   def allFor(userId: User.ID): Fu[AllChallenges] =
-    createdByDestId(userId) zip createdByChallengerId(userId) map (AllChallenges
-      .apply _).tupled
+    createdByDestId(userId) zip createdByChallengerId(userId) map
+      (AllChallenges.apply _).tupled
 
   def create(c: Challenge): Funit = {
     repo like c flatMap { _ ?? repo.cancel }
@@ -93,19 +93,16 @@ final class ChallengeApi(
   private[challenge] def sweep: Funit =
     repo.realTimeUnseenSince(DateTime.now minusSeconds 10, max = 50).flatMap {
       cs => lila.common.Future.applySequentially(cs)(offline).void
-    } >>
-      repo.expiredIds(max = 50).flatMap { ids =>
-        lila.common.Future.applySequentially(ids)(remove).void
-      }
+    } >> repo.expiredIds(max = 50).flatMap { ids =>
+      lila.common.Future.applySequentially(ids)(remove).void
+    }
 
   private def remove(id: Challenge.ID) =
     repo.remove(id) >> countInFor.remove(id)
 
   private def uncacheAndNotify(c: Challenge) = {
-    (c.destUserId ?? countInFor.remove) >>-
-      (c.destUserId ?? notify) >>-
-      (c.challengerUserId ?? notify) >>-
-      socketReload(c.id)
+    (c.destUserId ?? countInFor.remove) >>- (c.destUserId ?? notify) >>-
+      (c.challengerUserId ?? notify) >>- socketReload(c.id)
   }
 
   private def socketReload(id: Challenge.ID) {

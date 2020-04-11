@@ -55,8 +55,8 @@ class AdjustTypesIntention extends PsiElementBaseIntentionAction {
   private def containsPossiblyAdjustableRef(elem: PsiElement) =
     elem.depthFirst.exists {
       case ref: ScReferenceElement =>
-        ref.qualifier.isDefined && PsiTreeUtil
-          .getParentOfType(ref, classOf[ScImportExpr]) == null
+        ref.qualifier.isDefined &&
+          PsiTreeUtil.getParentOfType(ref, classOf[ScImportExpr]) == null
       case _ => false
     }
 }

@@ -646,8 +646,7 @@ private[spark] class MesosClusterScheduler(
     */
   private def shouldRelaunch(state: MesosTaskState): Boolean = {
     state == MesosTaskState.TASK_FAILED ||
-    state == MesosTaskState.TASK_KILLED ||
-    state == MesosTaskState.TASK_LOST
+    state == MesosTaskState.TASK_KILLED || state == MesosTaskState.TASK_LOST
   }
 
   override def statusUpdate(
@@ -663,8 +662,8 @@ private[spark] class MesosClusterScheduler(
         }
         val state = launchedDrivers(taskId)
         // Check if the driver is supervise enabled and can be relaunched.
-        if (state.driverDescription.supervise && shouldRelaunch(
-              status.getState)) {
+        if (state.driverDescription.supervise &&
+            shouldRelaunch(status.getState)) {
           removeFromLaunchedDrivers(taskId)
           state.finishDate = Some(new Date())
           val retryState: Option[MesosClusterRetryState] = state

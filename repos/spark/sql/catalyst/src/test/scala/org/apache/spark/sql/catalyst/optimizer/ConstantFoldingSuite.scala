@@ -33,13 +33,12 @@ class ConstantFoldingSuite extends PlanTest {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
     val batches =
-      Batch("AnalysisNodes", Once, EliminateSubqueryAliases) ::
-        Batch(
-          "ConstantFolding",
-          Once,
-          OptimizeIn,
-          ConstantFolding,
-          BooleanSimplification) :: Nil
+      Batch("AnalysisNodes", Once, EliminateSubqueryAliases) :: Batch(
+        "ConstantFolding",
+        Once,
+        OptimizeIn,
+        ConstantFolding,
+        BooleanSimplification) :: Nil
   }
 
   val testRelation = LocalRelation('a.int, 'b.int, 'c.int)
@@ -62,8 +61,7 @@ class ConstantFoldingSuite extends PlanTest {
       Literal(2) * Literal(3) + Literal(4) as Symbol("2*3+4"),
       Literal(2) * (Literal(3) + Literal(4)) as Symbol("2*(3+4)")
     ).where(
-      Literal(1) === Literal(1) &&
-        Literal(2) > Literal(3) ||
+      Literal(1) === Literal(1) && Literal(2) > Literal(3) ||
         Literal(3) > Literal(2)).groupBy(
       Literal(2) * Literal(3) - Literal(6) / (Literal(4) - Literal(2)))(
       Literal(9) / Literal(3) as Symbol("9/3"))
@@ -124,8 +122,8 @@ class ConstantFoldingSuite extends PlanTest {
   test("Constant folding test: expressions have foldable functions") {
     val originalQuery = testRelation.select(
       Cast(Literal("2"), IntegerType) + Literal(3) + 'a as Symbol("c1"),
-      Coalesce(Seq(Cast(Literal("abc"), IntegerType), Literal(3))) as Symbol(
-        "c2"))
+      Coalesce(Seq(Cast(Literal("abc"), IntegerType), Literal(3))) as
+        Symbol("c2"))
 
     val optimized = Optimize.execute(originalQuery.analyze)
 
@@ -153,9 +151,8 @@ class ConstantFoldingSuite extends PlanTest {
     val originalQuery = testRelation.select(
       IsNull(Literal(null)) as 'c1,
       IsNotNull(Literal(null)) as 'c2,
-      UnresolvedExtractValue(
-        Literal.create(null, ArrayType(IntegerType)),
-        1) as 'c3,
+      UnresolvedExtractValue(Literal.create(null, ArrayType(IntegerType)), 1) as
+        'c3,
       UnresolvedExtractValue(
         Literal.create(Seq(1), ArrayType(IntegerType)),
         Literal.create(null, IntegerType)) as 'c4,

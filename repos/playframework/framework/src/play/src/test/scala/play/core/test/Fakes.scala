@@ -102,10 +102,9 @@ case class FakeRequest[A](
     */
   def withFlash(data: (String, String)*): FakeRequest[A] = {
     withHeaders(
-      play.api.http.HeaderNames.COOKIE ->
-        Cookies.mergeCookieHeader(
-          headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
-          Seq(Flash.encodeAsCookie(new Flash(flash.data ++ data)))))
+      play.api.http.HeaderNames.COOKIE -> Cookies.mergeCookieHeader(
+        headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
+        Seq(Flash.encodeAsCookie(new Flash(flash.data ++ data)))))
   }
 
   /**
@@ -113,10 +112,9 @@ case class FakeRequest[A](
     */
   def withCookies(cookies: Cookie*): FakeRequest[A] = {
     withHeaders(
-      play.api.http.HeaderNames.COOKIE ->
-        Cookies.mergeCookieHeader(
-          headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
-          cookies))
+      play.api.http.HeaderNames.COOKIE -> Cookies.mergeCookieHeader(
+        headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
+        cookies))
   }
 
   /**
@@ -124,11 +122,9 @@ case class FakeRequest[A](
     */
   def withSession(newSessions: (String, String)*): FakeRequest[A] = {
     withHeaders(
-      play.api.http.HeaderNames.COOKIE ->
-        Cookies.mergeCookieHeader(
-          headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
-          Seq(
-            Session.encodeAsCookie(new Session(session.data ++ newSessions)))))
+      play.api.http.HeaderNames.COOKIE -> Cookies.mergeCookieHeader(
+        headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
+        Seq(Session.encodeAsCookie(new Session(session.data ++ newSessions)))))
   }
 
   /**

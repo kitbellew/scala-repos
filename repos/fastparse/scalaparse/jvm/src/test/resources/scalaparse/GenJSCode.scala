@@ -200,9 +200,11 @@ abstract class GenJSCode
          * (at least for non-nested lambdas, which we cannot translate anyway),
          * we process class defs in reverse order here.
          */
-        val fullClassDefs = (nonRawJSFunctionDefs.reverse filterNot { cd =>
-          cd.symbol.isAnonymousFunction && tryGenAndRecordAnonFunctionClass(cd)
-        }).reverse
+        val fullClassDefs =
+          (nonRawJSFunctionDefs.reverse filterNot { cd =>
+            cd.symbol.isAnonymousFunction &&
+            tryGenAndRecordAnonFunctionClass(cd)
+          }).reverse
 
         /* Finally, we emit true code for the remaining class defs. */
         for (cd <- fullClassDefs) {
@@ -238,11 +240,8 @@ abstract class GenJSCode
                 .setKind(tree.kind).setSuperClass(tree.superClass.map(_.name))
                 .addInterfaces(tree.interfaces.map(_.name))
 
-              generatedClasses += (
-                (
-                  sym,
-                  tree,
-                  currentClassInfoBuilder.result()))
+              generatedClasses +=
+                ((sym, tree, currentClassInfoBuilder.result()))
             }
           }
         }
@@ -286,9 +285,10 @@ abstract class GenJSCode
         (fullName.startsWith("scala.collection.mutable.ArrayOps$of"))
       }
 
-      val shouldMarkInline = (sym.hasAnnotation(InlineAnnotationClass) ||
-        (sym.isAnonymousFunction && !sym.isSubClass(PartialFunctionClass)) ||
-        isStdLibClassWithAdHocInlineAnnot(sym))
+      val shouldMarkInline =
+        (sym.hasAnnotation(InlineAnnotationClass) ||
+          (sym.isAnonymousFunction && !sym.isSubClass(PartialFunctionClass)) ||
+          isStdLibClassWithAdHocInlineAnnot(sym))
 
       val optimizerHints = OptimizerHints.empty.withInline(shouldMarkInline)
         .withNoinline(sym.hasAnnotation(NoinlineAnnotationClass))
@@ -310,8 +310,8 @@ abstract class GenJSCode
             val sym = dd.symbol
 
             val isExport = jsInterop.isExport(sym)
-            val isNamedExport = isExport && sym.annotations
-              .exists(_.symbol == JSExportNamedAnnotation)
+            val isNamedExport = isExport &&
+              sym.annotations.exists(_.symbol == JSExportNamedAnnotation)
 
             if (isNamedExport) generatedMethods += genNamedExporterDef(dd)
             else generatedMethods ++= genMethod(dd)
@@ -598,8 +598,7 @@ abstract class GenJSCode
 
             val shouldMarkNoinline = {
               sym.hasAnnotation(NoinlineAnnotationClass) &&
-              !isTraitImplForwarder &&
-              !ignoreNoinlineAnnotation(sym)
+              !isTraitImplForwarder && !ignoreNoinlineAnnotation(sym)
             }
 
             val optimizerHints = OptimizerHints.empty
@@ -635,10 +634,11 @@ abstract class GenJSCode
                 // OK, we're good (common case)
                 methodDef
               } else {
-                val patches = (unmutatedMutableLocalVars
-                  .map(encodeLocalSym(_).name -> false) :::
-                  mutatedImmutableLocalVals.map(encodeLocalSym(_).name -> true))
-                  .toMap
+                val patches =
+                  (unmutatedMutableLocalVars
+                    .map(encodeLocalSym(_).name -> false) :::
+                    mutatedImmutableLocalVals
+                      .map(encodeLocalSym(_).name -> true)).toMap
                 patchMutableFlagOfLocals(methodDef, patches)
               }
             }
@@ -756,18 +756,16 @@ abstract class GenJSCode
       import scala.reflect.internal.Flags
 
       // Flags of members we do not want to consider for reflective call proxys
-      val excludedFlags = (Flags.BRIDGE |
-        Flags.PRIVATE |
-        Flags.MACRO)
+      val excludedFlags = (Flags.BRIDGE | Flags.PRIVATE | Flags.MACRO)
 
       /** Check if two method symbols conform in name and parameter types */
       def weakMatch(s1: Symbol)(s2: Symbol) = {
         val p1 = s1.tpe.params
         val p2 = s2.tpe.params
         s1 == s2 || // Shortcut
-        s1.name == s2.name &&
-        p1.size == p2.size &&
-        (p1 zip p2).forall { case (s1, s2) => s1.tpe =:= s2.tpe }
+        s1.name == s2.name && p1.size == p2.size && (p1 zip p2).forall {
+          case (s1, s2) => s1.tpe =:= s2.tpe
+        }
       }
 
       /** Check if the symbol's owner's superclass has a matching member (and
@@ -788,9 +786,7 @@ abstract class GenJSCode
         requiredFlags = Flags.METHOD)
 
       val candidates = methods filterNot { s =>
-        s.isConstructor ||
-        superHasProxy(s) ||
-        jsInterop.isExport(s)
+        s.isConstructor || superHasProxy(s) || jsInterop.isExport(s)
       }
 
       val proxies = candidates filter { c =>
@@ -889,8 +885,8 @@ abstract class GenJSCode
                 fakeTailJumpParamRepl := (thisDef.symbol, initialThis.symbol))
           }): _*) {
             val innerBody = js.Block(
-              otherStats.map(genStat) :+ (if (bodyIsStat) genStat(rhs)
-                                          else genExpr(rhs)))
+              otherStats.map(genStat) :+
+                (if (bodyIsStat) genStat(rhs) else genExpr(rhs)))
 
             if (methodTailJumpThisSym.get == NoSymbol) { innerBody }
             else {
@@ -1018,9 +1014,8 @@ abstract class GenJSCode
             assert(
               tree.symbol.isModuleClass,
               "Trying to access the this of another class: " +
-                "tree.symbol = " + tree.symbol +
-                ", class symbol = " + currentClassSym.get +
-                " compilation unit:" + currentUnit
+                "tree.symbol = " + tree.symbol + ", class symbol = " +
+                currentClassSym.get + " compilation unit:" + currentUnit
             )
             genLoadModule(tree.symbol)
           }
@@ -1079,9 +1074,10 @@ abstract class GenJSCode
             abort(s"Assignment to static member ${sym.fullName} not supported")
           val genLhs = lhs match {
             case Select(qualifier, _) =>
-              val ctorAssignment = (currentMethodSym.isClassConstructor &&
-                currentMethodSym.owner == qualifier.symbol &&
-                qualifier.isInstanceOf[This])
+              val ctorAssignment =
+                (currentMethodSym.isClassConstructor &&
+                  currentMethodSym.owner == qualifier.symbol &&
+                  qualifier.isInstanceOf[This])
               if (!ctorAssignment && !suspectFieldMutable(sym))
                 unexpectedMutatedFields += sym
               js.Select(genExpr(qualifier), encodeFieldSym(sym))(toIRType(
@@ -1105,8 +1101,8 @@ abstract class GenJSCode
 
         case _ =>
           abort(
-            "Unexpected tree in genExpr: " +
-              tree + "/" + tree.getClass + " at: " + tree.pos)
+            "Unexpected tree in genExpr: " + tree + "/" + tree.getClass +
+              " at: " + tree.pos)
       }
     } // end of GenJSCode.genExpr()
 
@@ -1385,8 +1381,8 @@ abstract class GenJSCode
         case Object_asInstanceOf => true
         case _ =>
           abort(
-            "Unexpected type application " + fun +
-              "[sym: " + sym.fullName + "]" + " in: " + tree)
+            "Unexpected type application " + fun + "[sym: " + sym.fullName +
+              "]" + " in: " + tree)
       }
 
       val to = targs.head.tpe
@@ -1932,8 +1928,8 @@ abstract class GenJSCode
             clauses = (genAlts, genBody(body)) :: clauses
           case _ =>
             abort(
-              "Invalid case statement in switch-like pattern match: " +
-                tree + " at: " + (tree.pos))
+              "Invalid case statement in switch-like pattern match: " + tree +
+                " at: " + (tree.pos))
         }
       }
 
@@ -2090,9 +2086,8 @@ abstract class GenJSCode
 
       def isLongOp(ltpe: Type, rtpe: Type) =
         (isLongType(ltpe) || isLongType(rtpe)) &&
-          !(toTypeKind(ltpe).isInstanceOf[FLOAT] ||
-            toTypeKind(rtpe).isInstanceOf[FLOAT] ||
-            isStringType(ltpe) || isStringType(rtpe))
+          !(toTypeKind(ltpe).isInstanceOf[FLOAT] || toTypeKind(rtpe)
+            .isInstanceOf[FLOAT] || isStringType(ltpe) || isStringType(rtpe))
 
       val sources = args map genExpr
 
@@ -2289,12 +2284,12 @@ abstract class GenJSCode
        * Number or Character, not using the rich equality is possible (their
        * own equals method will do ok.)
        */
-      val mustUseAnyComparator: Boolean =
-        isRawJSType(ltpe) || isRawJSType(rtpe) || {
-          val areSameFinals =
-            ltpe.isFinalType && rtpe.isFinalType && (ltpe =:= rtpe)
-          !areSameFinals && isMaybeBoxed(ltpe.typeSymbol) && isMaybeBoxed(
-            rtpe.typeSymbol)
+      val mustUseAnyComparator: Boolean = isRawJSType(ltpe) ||
+        isRawJSType(rtpe) || {
+          val areSameFinals = ltpe.isFinalType && rtpe.isFinalType &&
+            (ltpe =:= rtpe)
+          !areSameFinals && isMaybeBoxed(ltpe.typeSymbol) &&
+          isMaybeBoxed(rtpe.typeSymbol)
         }
 
       if (mustUseAnyComparator) {
@@ -2543,10 +2538,8 @@ abstract class GenJSCode
         params.size == 2 && params.head.tpe.typeSymbol == IntClass ||
         sym.name == nme.apply &&
         params.size == 1 && params.head.tpe.typeSymbol == IntClass ||
-        sym.name == nme.length &&
-        params.size == 0 ||
-        sym.name == nme.clone_ &&
-        params.size == 0
+        sym.name == nme.length && params.size == 0 ||
+        sym.name == nme.clone_ && params.size == 0
       }
 
       /**
@@ -2558,9 +2551,8 @@ abstract class GenJSCode
       def matchingSymIn(clazz: Symbol) =
         clazz.tpe.member(sym.name).suchThat { s =>
           val sParams = s.tpe.params
-          !s.isBridge &&
-          params.size == sParams.size &&
-          (params zip sParams).forall { case (s1, s2) => s1.tpe =:= s2.tpe }
+          !s.isBridge && params.size == sParams.size && (params zip sParams)
+            .forall { case (s1, s2) => s1.tpe =:= s2.tpe }
         }
 
       val ApplyDynamic(receiver, args) = tree
@@ -2684,8 +2676,7 @@ abstract class GenJSCode
                         case _: INT | LONG => true
                         case _             => false
                       }
-                    if (rtClass == BoxedDoubleClass &&
-                        toTypeKind(
+                    if (rtClass == BoxedDoubleClass && toTypeKind(
                           implMethodSym.tpe.resultType) == DoubleKind &&
                         isIntOrLongKind(toTypeKind(sym.tpe.resultType))) {
                       // This must be an Int, and not a Double
@@ -2931,8 +2922,7 @@ abstract class GenJSCode
               val applyMeth = getMemberMethod(inputClass, nme.apply) suchThat {
                 s =>
                   val ps = s.paramss
-                  ps.size == 1 &&
-                  ps.head.size == arity &&
+                  ps.size == 1 && ps.head.size == arity &&
                   ps.head.forall(_.tpe.typeSymbol == ObjectClass)
               }
               val fCaptureParam = js.ParamDef(
@@ -3606,8 +3596,8 @@ abstract class GenJSCode
                 fail(s"Non-primary constructor $ddsym in anon function $cd")
             } else {
               val name = dd.name.toString
-              if (name == "apply" || (ddsym.isSpecialized && name
-                    .startsWith("apply$"))) {
+              if (name == "apply" ||
+                  (ddsym.isSpecialized && name.startsWith("apply$"))) {
                 if ((applyDef eq null) || ddsym.isSpecialized) applyDef = dd
               } else {
                 // Found a method we cannot encode in the rewriting

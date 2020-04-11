@@ -173,9 +173,7 @@ object LoadBalancerFactory {
               if (isClosed) return Future.exception(new ServiceClosedException)
               if (underlying == null)
                 underlying = next.make(
-                  params +
-                    Transporter.EndpointAddr(addr) +
-                    param.Stats(stats) +
+                  params + Transporter.EndpointAddr(addr) + param.Stats(stats) +
                     param.Monitor(composite))
             }
             underlying(conn)

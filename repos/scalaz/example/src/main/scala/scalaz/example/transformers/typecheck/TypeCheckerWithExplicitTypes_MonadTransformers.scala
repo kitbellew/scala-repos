@@ -16,12 +16,8 @@ object TypeCheckerWithExplicitTypes_MonadTransformers {
     env.find(_._1 == s).map(p => success(p._2))
       .getOrElse(typeError("not found: " + s))
 
-  def compare(
-      t1: Type,
-      t2: Type,
-      resultType: Type,
-      errorMsg: String): String \/ Type =
-    if (t1 == t2) success(resultType) else typeError(errorMsg)
+  def compare(t1: Type, t2: Type, resultType: Type, errorMsg: String): String \/
+    Type = if (t1 == t2) success(resultType) else typeError(errorMsg)
 
   type V[+T] = String \/ T
 
@@ -64,9 +60,11 @@ object TypeCheckerWithExplicitTypes_MonadTransformers {
                 argType,
                 operandType,
                 resultType,
-                "function expected arg of type: " + argType + ", but got: " + operandType)
+                "function expected arg of type: " + argType + ", but got: " +
+                  operandType)
             case _ => typeError(
-                "function application expected function, but got: " + operatorType)
+                "function application expected function, but got: " +
+                  operatorType)
           })
         } yield res
     }

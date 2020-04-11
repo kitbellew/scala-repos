@@ -149,13 +149,13 @@ class ScPackagingImpl private (
 
     //If stub is not null, then we are not trying to resolve packaging reference.
     if (getStub != null || !reference.contains(lastParent)) {
-      val pName =
-        (if (prefix.length == 0) "" else prefix + ".") + getPackageName
+      val pName = (if (prefix.length == 0) "" else prefix + ".") +
+        getPackageName
       ProgressManager.checkCanceled()
       val p = ScPackageImpl(
         JavaPsiFacade.getInstance(getProject).findPackage(pName))
-      if (p != null && !p
-            .processDeclarations(processor, state, lastParent, place)) {
+      if (p != null &&
+          !p.processDeclarations(processor, state, lastParent, place)) {
         return false
       }
 

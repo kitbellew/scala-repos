@@ -24,31 +24,32 @@ class GraphBalanceSpec extends AkkaSpec {
   "A balance" must {
     import GraphDSL.Implicits._
 
-    "balance between subscribers which signal demand" in assertAllStagesStopped {
-      val c1 = TestSubscriber.manualProbe[Int]()
-      val c2 = TestSubscriber.manualProbe[Int]()
+    "balance between subscribers which signal demand" in
+      assertAllStagesStopped {
+        val c1 = TestSubscriber.manualProbe[Int]()
+        val c2 = TestSubscriber.manualProbe[Int]()
 
-      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
-        val balance = b.add(Balance[Int](2))
-        Source(List(1, 2, 3)) ~> balance.in
-        balance.out(0) ~> Sink.fromSubscriber(c1)
-        balance.out(1) ~> Sink.fromSubscriber(c2)
-        ClosedShape
-      }).run()
+        RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+          val balance = b.add(Balance[Int](2))
+          Source(List(1, 2, 3)) ~> balance.in
+          balance.out(0) ~> Sink.fromSubscriber(c1)
+          balance.out(1) ~> Sink.fromSubscriber(c2)
+          ClosedShape
+        }).run()
 
-      val sub1 = c1.expectSubscription()
-      val sub2 = c2.expectSubscription()
+        val sub1 = c1.expectSubscription()
+        val sub2 = c2.expectSubscription()
 
-      sub1.request(1)
-      c1.expectNext(1)
-      c1.expectNoMsg(100.millis)
+        sub1.request(1)
+        c1.expectNext(1)
+        c1.expectNoMsg(100.millis)
 
-      sub2.request(2)
-      c2.expectNext(2)
-      c2.expectNext(3)
-      c1.expectComplete()
-      c2.expectComplete()
-    }
+        sub2.request(2)
+        c2.expectNext(2)
+        c2.expectNext(3)
+        c1.expectComplete()
+        c2.expectComplete()
+      }
 
     "support waiting for demand from all downstream subscriptions" in {
       val s1 = TestSubscriber.manualProbe[Int]()
@@ -81,42 +82,43 @@ class GraphBalanceSpec extends AkkaSpec {
       s2.expectComplete()
     }
 
-    "support waiting for demand from all non-cancelled downstream subscriptions" in assertAllStagesStopped {
-      val s1 = TestSubscriber.manualProbe[Int]()
+    "support waiting for demand from all non-cancelled downstream subscriptions" in
+      assertAllStagesStopped {
+        val s1 = TestSubscriber.manualProbe[Int]()
 
-      val (p2, p3) = RunnableGraph.fromGraph(
-        GraphDSL
-          .create(Sink.asPublisher[Int](false), Sink.asPublisher[Int](false))(
-            Keep.both) { implicit b ⇒ (p2Sink, p3Sink) ⇒
-            val balance = b.add(Balance[Int](3, waitForAllDownstreams = true))
-            Source(List(1, 2, 3)) ~> balance.in
-            balance.out(0) ~> Sink.fromSubscriber(s1)
-            balance.out(1) ~> p2Sink
-            balance.out(2) ~> p3Sink
-            ClosedShape
-          }).run()
+        val (p2, p3) = RunnableGraph.fromGraph(
+          GraphDSL
+            .create(Sink.asPublisher[Int](false), Sink.asPublisher[Int](false))(
+              Keep.both) { implicit b ⇒ (p2Sink, p3Sink) ⇒
+              val balance = b.add(Balance[Int](3, waitForAllDownstreams = true))
+              Source(List(1, 2, 3)) ~> balance.in
+              balance.out(0) ~> Sink.fromSubscriber(s1)
+              balance.out(1) ~> p2Sink
+              balance.out(2) ~> p3Sink
+              ClosedShape
+            }).run()
 
-      val sub1 = s1.expectSubscription()
-      sub1.request(1)
+        val sub1 = s1.expectSubscription()
+        sub1.request(1)
 
-      val s2 = TestSubscriber.manualProbe[Int]()
-      p2.subscribe(s2)
-      val sub2 = s2.expectSubscription()
+        val s2 = TestSubscriber.manualProbe[Int]()
+        p2.subscribe(s2)
+        val sub2 = s2.expectSubscription()
 
-      val s3 = TestSubscriber.manualProbe[Int]()
-      p3.subscribe(s3)
-      val sub3 = s3.expectSubscription()
+        val s3 = TestSubscriber.manualProbe[Int]()
+        p3.subscribe(s3)
+        val sub3 = s3.expectSubscription()
 
-      sub2.request(2)
-      s1.expectNoMsg(200.millis)
-      sub3.cancel()
+        sub2.request(2)
+        s1.expectNoMsg(200.millis)
+        sub3.cancel()
 
-      s1.expectNext(1)
-      s2.expectNext(2)
-      s2.expectNext(3)
-      s1.expectComplete()
-      s2.expectComplete()
-    }
+        s1.expectNext(1)
+        s2.expectNext(2)
+        s2.expectNext(3)
+        s1.expectComplete()
+        s2.expectComplete()
+      }
 
     "work with one-way merge" in {
       val result = Source.fromGraph(GraphDSL.create() { implicit b ⇒
@@ -146,8 +148,8 @@ class GraphBalanceSpec extends AkkaSpec {
             ClosedShape
         }).run()
 
-      Set(s1, s2, s3, s4, s5) flatMap (Await.result(_, 3.seconds)) should be(
-        (0 to 14).toSet)
+      Set(s1, s2, s3, s4, s5) flatMap (Await.result(_, 3.seconds)) should
+        be((0 to 14).toSet)
     }
 
     "balance between all three outputs" in {

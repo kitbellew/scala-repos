@@ -104,8 +104,8 @@ class ScatterGatherFirstCompletedSpec
         ScatterGatherFirstCompletedPool(nrOfInstances = 0, within = 5.seconds)
           .props(Props.empty))
       router.tell("hello", probe.ref)
-      probe.expectMsgType[Status.Failure](2.seconds).cause.getClass should be(
-        classOf[TimeoutException])
+      probe.expectMsgType[Status.Failure](2.seconds).cause.getClass should
+        be(classOf[TimeoutException])
     }
 
   }

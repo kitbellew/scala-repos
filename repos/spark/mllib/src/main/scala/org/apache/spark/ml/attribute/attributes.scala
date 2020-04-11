@@ -434,9 +434,7 @@ class NominalAttribute private[ml] (
   override def equals(other: Any): Boolean = {
     other match {
       case o: NominalAttribute =>
-        (name == o.name) &&
-          (index == o.index) &&
-          (isOrdinal == o.isOrdinal) &&
+        (name == o.name) && (index == o.index) && (isOrdinal == o.isOrdinal) &&
           (numValues == o.numValues) &&
           (values.map(_.toSeq) == o.values.map(_.toSeq))
       case _ => false
@@ -552,8 +550,7 @@ class BinaryAttribute private[ml] (
   override def equals(other: Any): Boolean = {
     other match {
       case o: BinaryAttribute =>
-        (name == o.name) &&
-          (index == o.index) &&
+        (name == o.name) && (index == o.index) &&
           (values.map(_.toSeq) == o.values.map(_.toSeq))
       case _ => false
     }

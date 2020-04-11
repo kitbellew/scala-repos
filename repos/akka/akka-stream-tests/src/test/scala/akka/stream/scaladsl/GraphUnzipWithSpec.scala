@@ -105,12 +105,12 @@ class GraphUnzipWithSpec extends AkkaSpec {
         val unzip = b.add(UnzipWith(f))
         Source(1 to 4) ~> unzip.in
 
-        unzip.out0 ~> Flow[LeftOutput]
-          .buffer(4, OverflowStrategy.backpressure) ~> Sink
-          .fromSubscriber(leftProbe)
-        unzip.out1 ~> Flow[RightOutput]
-          .buffer(4, OverflowStrategy.backpressure) ~> Sink
-          .fromSubscriber(rightProbe)
+        unzip.out0 ~>
+          Flow[LeftOutput].buffer(4, OverflowStrategy.backpressure) ~>
+          Sink.fromSubscriber(leftProbe)
+        unzip.out1 ~>
+          Flow[RightOutput].buffer(4, OverflowStrategy.backpressure) ~>
+          Sink.fromSubscriber(rightProbe)
 
         ClosedShape
       }).run()
@@ -270,8 +270,8 @@ class GraphUnzipWithSpec extends AkkaSpec {
         Source.single((0 to 19).toList) ~> unzip.in
 
         def createSink[T](o: Outlet[T]) =
-          o ~> Flow[T].buffer(1, OverflowStrategy.backpressure) ~> Sink
-            .fromSubscriber(TestSubscriber.manualProbe[T]())
+          o ~> Flow[T].buffer(1, OverflowStrategy.backpressure) ~>
+            Sink.fromSubscriber(TestSubscriber.manualProbe[T]())
 
         unzip.out0 ~> Sink.fromSubscriber(probe0)
         createSink(unzip.out1)

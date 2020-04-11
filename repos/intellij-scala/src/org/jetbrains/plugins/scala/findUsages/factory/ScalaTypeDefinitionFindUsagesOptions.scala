@@ -23,9 +23,8 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
     o match {
       case other: ScalaTypeDefinitionFindUsagesOptions =>
         if (!super.equals(o)) return false
-        if (other
-              .isImplementingTypeDefinitions != isImplementingTypeDefinitions)
-          return false
+        if (other.isImplementingTypeDefinitions !=
+              isImplementingTypeDefinitions) return false
         if (other.isMembersUsages != isMembersUsages) return false
         if (other.isSearchCompanionModule != isSearchCompanionModule)
           return false

@@ -572,9 +572,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     val fieldValues = productIterator.toSeq ++ otherCopyArgs
     assert(
       fieldNames.length == fieldValues.length,
-      s"${getClass.getSimpleName} fields: " +
-        fieldNames.mkString(", ") + s", values: " + fieldValues.map(_.toString)
-        .mkString(", ")
+      s"${getClass.getSimpleName} fields: " + fieldNames.mkString(", ") +
+        s", values: " + fieldValues.map(_.toString).mkString(", ")
     )
 
     fieldNames.zip(fieldValues).map {
@@ -607,10 +606,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       case dt: DataType => dt.jsonValue
       case m: Metadata  => m.jsonValue
       case s: StorageLevel =>
-        ("useDisk" -> s.useDisk) ~ ("useMemory" -> s.useMemory) ~ (
-          "useOffHeap" -> s.useOffHeap
-        ) ~
-          ("deserialized" -> s.deserialized) ~ ("replication" -> s.replication)
+        ("useDisk" -> s.useDisk) ~ ("useMemory" -> s.useMemory) ~
+          ("useOffHeap" -> s.useOffHeap) ~ ("deserialized" -> s.deserialized) ~
+          ("replication" -> s.replication)
       case n: TreeNode[_] => n.jsonValue
       case o: Option[_]   => o.map(parseToJson)
       case t: Seq[_]      => JArray(t.map(parseToJson).toList)
@@ -629,8 +627,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           val fieldNames = getConstructorParameterNames(p.getClass)
           val fieldValues = p.productIterator.toSeq
           assert(fieldNames.length == fieldValues.length)
-          ("product-class" -> JString(p.getClass.getName)) :: fieldNames
-            .zip(fieldValues).map {
+          ("product-class" -> JString(p.getClass.getName)) ::
+            fieldNames.zip(fieldValues).map {
               case (name, value) => name -> parseToJson(value)
             }.toList
         } catch { case _: RuntimeException => null }
@@ -675,10 +673,10 @@ object TreeNode {
 
         val maybeCtor = cls.getConstructors.find { p =>
           val expectedTypes = p.getParameterTypes
-          expectedTypes.length == fields.length && expectedTypes
-            .zip(fields.map(_._2)).forall {
-              case (cls, tpe) => cls == getClassFromType(tpe)
-            }
+          expectedTypes.length == fields.length &&
+          expectedTypes.zip(fields.map(_._2)).forall {
+            case (cls, tpe) => cls == getClassFromType(tpe)
+          }
         }
         if (maybeCtor.isEmpty) {
           sys.error(s"No valid constructor for ${cls.getName}")

@@ -1037,8 +1037,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
       _ => Iterator.empty,
       (_, x) => Iterator.single(x),
       (_, pr, m, sf) =>
-        sf.reverseIterator ++ m.reverseIterator.flatMap(_.reverseIterator) ++ pr
-          .reverseIterator)
+        sf.reverseIterator ++ m.reverseIterator.flatMap(_.reverseIterator) ++
+          pr.reverseIterator)
 
   /** Convert the leaves of the tree to a `scala.Stream` */
   def toStream: Stream[A] = map(x => x)(Reducer.StreamReducer[A]).measure
@@ -1089,11 +1089,7 @@ sealed abstract class FingerTreeInstances {
   implicit def nodeMeasure[A, V](implicit
       m: Reducer[A, V]): Reducer[Node[V, A], V] = {
     implicit val vm = m.monoid
-    UnitReducer((a: Node[V, A]) =>
-      a fold (
-        (v, _, _) => v,
-        (v, _, _, _) => v
-      ))
+    UnitReducer((a: Node[V, A]) => a fold ((v, _, _) => v, (v, _, _, _) => v))
   }
 
   implicit def fingerTreeMeasure[A, V](implicit

@@ -12,7 +12,8 @@ object ForkParallelTest extends Build {
     file("."),
     settings = defaultSettings ++ Seq(
       scalaVersion := "2.9.2",
-      libraryDependencies += "com.novocode" % "junit-interface" % "0.10" % "test",
+      libraryDependencies +=
+        "com.novocode" % "junit-interface" % "0.10" % "test",
       fork in Test := true,
       check := {
         val nbProc = java.lang.Runtime.getRuntime().availableProcessors()
@@ -22,10 +23,10 @@ object ForkParallelTest extends Build {
         } else {
           // we've got at least 4 processors, we'll check the upper end but also 3 and 4 as the upper might not
           // be reached if the system is under heavy load.
-          if (!(file("max-concurrent-tests_3").exists() || file(
-                "max-concurrent-tests_4").exists() ||
-                file("max-concurrent-tests_" + (nbProc - 1)).exists() || file(
-                "max-concurrent-tests_" + nbProc).exists())) {
+          if (!(file("max-concurrent-tests_3").exists() ||
+                file("max-concurrent-tests_4").exists() ||
+                file("max-concurrent-tests_" + (nbProc - 1)).exists() ||
+                file("max-concurrent-tests_" + nbProc).exists())) {
             sys.error("Forked tests were not executed in parallel!")
           }
         }

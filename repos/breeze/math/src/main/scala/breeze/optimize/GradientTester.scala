@@ -74,16 +74,16 @@ object GradientTester extends SerializableLogging {
         xx(k) += epsilon
         val grad = (f(xx) - fx) / epsilon
         xx(k) -= epsilon
-        val relDif = (grad - trueGrad(k)).abs / math
-          .max(trueGrad(k).abs, grad.abs).max(1e-4)
+        val relDif = (grad - trueGrad(k)).abs /
+          math.max(trueGrad(k).abs, grad.abs).max(1e-4)
         if (relDif < tolerance) {
           ok += 1
           logger.debug(s"OK: ${toString(k)} $relDif")
         } else {
           logger.warn(
-            toString(
-              k) + " relDif: %.3e [eps : %e, calculated: %4.3e empirical: %4.3e]"
-              .format(relDif, epsilon, trueGrad(k), grad))
+            toString(k) +
+              " relDif: %.3e [eps : %e, calculated: %4.3e empirical: %4.3e]"
+                .format(relDif, epsilon, trueGrad(k), grad))
         }
         differences(k) = relDif
         tried += 1

@@ -14,22 +14,20 @@ object OSGi {
   // a pain. Create bundles but publish them to the normal .../jars directory.
   def osgiSettings =
     defaultOsgiSettings ++ Seq(
-      packagedArtifact in (Compile, packageBin) <<= (
-        artifact in (Compile, packageBin),
-        OsgiKeys.bundle).identityMap)
+      packagedArtifact in (Compile, packageBin) <<=
+        (artifact in (Compile, packageBin), OsgiKeys.bundle).identityMap)
 
   val actor = osgiSettings ++ Seq(
     OsgiKeys.exportPackage := Seq("akka*"),
     OsgiKeys.privatePackage := Seq("akka.osgi.impl"),
     //akka-actor packages are not imported, as contained in the CP
-    OsgiKeys.importPackage := (
-      osgiOptionalImports map optionalResolution
-    ) ++ Seq(
-      "!sun.misc",
-      scalaJava8CompatImport(),
-      scalaVersion(scalaImport).value,
-      configImport(),
-      "*"),
+    OsgiKeys.importPackage := (osgiOptionalImports map optionalResolution) ++
+      Seq(
+        "!sun.misc",
+        scalaJava8CompatImport(),
+        scalaVersion(scalaImport).value,
+        configImport(),
+        "*"),
     // dynamicImportPackage needed for loading classes defined in configuration
     OsgiKeys.dynamicImportPackage := Seq("*")
   )

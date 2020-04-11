@@ -32,8 +32,8 @@ class SplitInfo(
     val underlyingSplit: Any) {
   override def toString(): String = {
     "SplitInfo " + super.toString + " .. inputFormatClazz " + inputFormatClazz +
-      ", hostLocation : " + hostLocation + ", path : " + path +
-      ", length : " + length + ", underlyingSplit " + underlyingSplit
+      ", hostLocation : " + hostLocation + ", path : " + path + ", length : " +
+      length + ", underlyingSplit " + underlyingSplit
   }
 
   override def hashCode(): Int = {
@@ -53,8 +53,7 @@ class SplitInfo(
       case that: SplitInfo => {
         this.hostLocation == that.hostLocation &&
         this.inputFormatClazz == that.inputFormatClazz &&
-        this.path == that.path &&
-        this.length == that.length &&
+        this.path == that.path && this.length == that.length &&
         // other split specific checks (like start for FileSplit)
         this.underlyingSplit == that.underlyingSplit
       }
@@ -84,12 +83,8 @@ object SplitInfo {
     val retval = new ArrayBuffer[SplitInfo]()
     val length = mapreduceSplit.getLength
     for (host <- mapreduceSplit.getLocations) {
-      retval += new SplitInfo(
-        inputFormatClazz,
-        host,
-        path,
-        length,
-        mapreduceSplit)
+      retval +=
+        new SplitInfo(inputFormatClazz, host, path, length, mapreduceSplit)
     }
     retval
   }

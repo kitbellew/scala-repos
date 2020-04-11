@@ -79,9 +79,8 @@ class ReplicatorMessageSerializerSpec
         data1,
         pruning = Map(
           address1 -> PruningState(address2, PruningPerformed),
-          address3 -> PruningState(
-            address2,
-            PruningInitialized(Set(address1.address))))))
+          address3 ->
+            PruningState(address2, PruningInitialized(Set(address1.address))))))
       checkSerialization(Write("A", DataEnvelope(data1)))
       checkSerialization(WriteAck)
       checkSerialization(Read("A"))

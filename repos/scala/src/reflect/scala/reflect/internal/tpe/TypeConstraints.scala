@@ -150,10 +150,9 @@ private[internal] trait TypeConstraints {
     def instWithinBounds = instValid && isWithinBounds(inst)
 
     def isWithinBounds(tp: Type): Boolean =
-      (lobounds.forall(_ <:< tp)
-        && hibounds.forall(tp <:< _)
-        && (numlo == NoType || (numlo weak_<:< tp))
-        && (numhi == NoType || (tp weak_<:< numhi)))
+      (lobounds.forall(_ <:< tp) && hibounds.forall(tp <:< _) &&
+        (numlo == NoType || (numlo weak_<:< tp)) &&
+        (numhi == NoType || (tp weak_<:< numhi)))
 
     var inst: Type = NoType // @M reduce visibility?
 
@@ -208,9 +207,10 @@ private[internal] trait TypeConstraints {
         //Console.println("solveOne0(tv, tp, v, b)="+(tvar, tparam, variance, bound))
         var cyclic = bound contains tparam
         foreach3(tvars, tparams, variances)((tvar2, tparam2, variance2) => {
-          val ok = (tparam2 != tparam) && ((bound contains tparam2)
-            || up && (tparam2.info.bounds.lo =:= tparam.tpeHK)
-            || !up && (tparam2.info.bounds.hi =:= tparam.tpeHK))
+          val ok = (tparam2 != tparam) &&
+            ((bound contains tparam2) ||
+              up && (tparam2.info.bounds.lo =:= tparam.tpeHK) ||
+              !up && (tparam2.info.bounds.hi =:= tparam.tpeHK))
           if (ok) {
             if (tvar2.constr.inst eq null) cyclic = true
             solveOne(tvar2, tparam2, variance2)
@@ -227,13 +227,13 @@ private[internal] trait TypeConstraints {
               case TypeRef(_, `tparam`, _) =>
                 debuglog(
                   s"$tvar addHiBound $tparam2.tpeHK.instantiateTypeParams($tparams, $tvars)")
-                tvar addHiBound tparam2.tpeHK
-                  .instantiateTypeParams(tparams, tvars)
+                tvar addHiBound
+                  tparam2.tpeHK.instantiateTypeParams(tparams, tvars)
               case _ =>
             }
           } else {
-            if (bound.typeSymbol != NothingClass && bound
-                  .typeSymbol != tparam) {
+            if (bound.typeSymbol != NothingClass &&
+                bound.typeSymbol != tparam) {
               debuglog(
                 s"$tvar addLoBound $bound.instantiateTypeParams($tparams, $tvars)")
               tvar addLoBound bound.instantiateTypeParams(tparams, tvars)
@@ -242,8 +242,8 @@ private[internal] trait TypeConstraints {
               case TypeRef(_, `tparam`, _) =>
                 debuglog(
                   s"$tvar addLoBound $tparam2.tpeHK.instantiateTypeParams($tparams, $tvars)")
-                tvar addLoBound tparam2.tpeHK
-                  .instantiateTypeParams(tparams, tvars)
+                tvar addLoBound
+                  tparam2.tpeHK.instantiateTypeParams(tparams, tvars)
               case _ =>
             }
           }

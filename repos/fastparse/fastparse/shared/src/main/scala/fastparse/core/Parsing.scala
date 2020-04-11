@@ -156,8 +156,8 @@ object Parsed {
         last: String) = {
       val body =
         for (Frame(index, p) <- stack) yield formatParser(p, input, index)
-      (body :+ last).mkString(" / ") + " ..." + literalize(
-        input.slice(index, index + 10))
+      (body :+ last).mkString(" / ") + " ..." +
+        literalize(input.slice(index, index + 10))
     }
     def filterFullStack(fullStack: Seq[Frame]) = {
       fullStack.collect { case f @ Frame(i, p) if p.shortTraced => f }

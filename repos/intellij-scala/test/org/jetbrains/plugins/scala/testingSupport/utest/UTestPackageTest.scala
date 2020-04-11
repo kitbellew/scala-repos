@@ -73,26 +73,22 @@ trait UTestPackageTest extends UTestTestCase {
           "[root]",
           "Test1",
           "tests",
-          "test1") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test1",
-            "tests",
-            "test2") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test2",
-            "tests",
-            "test1") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test2",
-            "tests",
-            "test2") &&
-          checkResultTreeDoesNotHaveNodes(root, "[root]", "test")
+          "test1") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test1",
+          "tests",
+          "test2") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test2",
+          "tests",
+          "test1") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test2",
+          "tests",
+          "test2") && checkResultTreeDoesNotHaveNodes(root, "[root]", "test")
     )
   }
 
@@ -107,31 +103,27 @@ trait UTestPackageTest extends UTestTestCase {
           "[root]",
           "Test1",
           "tests",
-          "test1") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test1",
-            "tests",
-            "test2") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test2",
-            "tests",
-            "test1") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test2",
-            "tests",
-            "test2") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test2",
-            "tests",
-            "test")
+          "test1") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test1",
+          "tests",
+          "test2") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test2",
+          "tests",
+          "test1") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test2",
+          "tests",
+          "test2") && checkResultTreeHasExactNamedPath(
+          root,
+          "[root]",
+          "Test2",
+          "tests",
+          "test")
     )
   }
 }

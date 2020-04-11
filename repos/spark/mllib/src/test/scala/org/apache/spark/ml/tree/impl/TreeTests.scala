@@ -92,8 +92,8 @@ private[ml] object TreeTests extends SparkFunSuite {
       case ex: Exception =>
         throw new AssertionError(
           "checkEqual failed since the two trees were not identical.\n" +
-            "TREE A:\n" + a.toDebugString + "\n" +
-            "TREE B:\n" + b.toDebugString + "\n",
+            "TREE A:\n" + a.toDebugString + "\n" + "TREE B:\n" +
+            b.toDebugString + "\n",
           ex)
     }
   }

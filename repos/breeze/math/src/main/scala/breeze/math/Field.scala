@@ -150,8 +150,8 @@ object Field {
     def %(a: Float, b: Float) = a % b
     def pow(a: Float, b: Float) = numerics.pow(a, b)
 
-    override def close(a: Float, b: Float, tolerance: Double) =
-      (a - b).abs <= math.max(a.abs, b.abs) * tolerance
+    override def close(a: Float, b: Float, tolerance: Double) = (a - b).abs <=
+      math.max(a.abs, b.abs) * tolerance
 
     implicit val normImpl: norm.Impl[Float, Double] =
       new norm.Impl[Float, Double] {
@@ -172,8 +172,8 @@ object Field {
     def %(a: Double, b: Double): Double = a % b
     def pow(a: Double, b: Double): Double = Math.pow(a, b)
 
-    override def close(a: Double, b: Double, tolerance: Double) =
-      (a - b).abs <= math.max(a.abs, b.abs) * tolerance
+    override def close(a: Double, b: Double, tolerance: Double) = (a - b).abs <=
+      math.max(a.abs, b.abs) * tolerance
 
     implicit val normImpl: norm.Impl[Double, Double] =
       new norm.Impl[Double, Double] {

@@ -75,22 +75,21 @@ class ApiController1()(implicit val swagger: Swagger)
 
   protected val applicationDescription: String = "The first API"
 
-  val listFoos = (apiOperation[List[String]]("listFoos")
-    summary "Show all foos"
-    notes "Shows all available foos.")
+  val listFoos =
+    (apiOperation[List[String]]("listFoos") summary "Show all foos" notes
+      "Shows all available foos.")
 
   get("/", operation(listFoos)) { List.empty[String] }
 
-  val getFoo = (apiOperation[String]("getFoo")
-    summary "Retrieve a single foo by id"
-    notes "Foo"
-    parameters Parameter(
-      "id",
-      DataType.Int,
-      Some("The id"),
-      None,
-      ParamType.Path,
-      required = true))
+  val getFoo =
+    (apiOperation[String]("getFoo") summary "Retrieve a single foo by id" notes
+      "Foo" parameters Parameter(
+        "id",
+        DataType.Int,
+        Some("The id"),
+        None,
+        ParamType.Path,
+        required = true))
 
   get("/:id", operation(getFoo)) { "Foo!" }
 
@@ -104,22 +103,21 @@ class ApiController2()(implicit val swagger: Swagger)
 
   protected val applicationDescription: String = "The second API"
 
-  val listFoos = (apiOperation[List[String]]("listBars")
-    summary "Show all bars"
-    notes "Shows all available bars.")
+  val listFoos =
+    (apiOperation[List[String]]("listBars") summary "Show all bars" notes
+      "Shows all available bars.")
 
   get("/", operation(listFoos)) { List.empty[String] }
 
-  val getBar = (apiOperation[String]("getBar")
-    summary "Retrieve a single bar by id"
-    notes "Bar"
-    parameters Parameter(
-      "id",
-      DataType.Int,
-      Some("The id"),
-      None,
-      ParamType.Path,
-      required = true))
+  val getBar =
+    (apiOperation[String]("getBar") summary "Retrieve a single bar by id" notes
+      "Bar" parameters Parameter(
+        "id",
+        DataType.Int,
+        Some("The id"),
+        None,
+        ParamType.Path,
+        required = true))
 
   get("/:id", operation(getBar)) { "Bar!" }
 

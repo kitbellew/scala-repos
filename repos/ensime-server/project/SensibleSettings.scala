@@ -62,7 +62,8 @@ object Sensible {
       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
       "org.scala-lang" % "scalap" % scalaVersion.value,
       "org.scala-lang.modules" %% "scala-xml" % scalaModulesVersion,
-      "org.scala-lang.modules" %% "scala-parser-combinators" % scalaModulesVersion,
+      "org.scala-lang.modules" %% "scala-parser-combinators" %
+        scalaModulesVersion,
       "org.scalamacros" %% "quasiquotes" % quasiquotesVersion,
       "org.scalatest" %% "scalatest" % scalatestVersion
     ) ++ logback ++ guava ++ shapeless(scalaVersion.value)
@@ -75,27 +76,28 @@ object Sensible {
       // one JVM per test suite
       fork := true,
       testForkedParallel := true,
-      testGrouping <<= (
-        definedTests,
-        baseDirectory,
-        javaOptions,
-        outputStrategy,
-        envVars,
-        javaHome,
-        connectInput).map {
-        (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
-          val opts = ForkOptions(
-            bootJars = Nil,
-            javaHome = javaHomeDir,
-            connectInput = connectIn,
-            outputStrategy = strategy,
-            runJVMOptions = options,
-            workingDirectory = Some(base),
-            envVars = env)
-          tests.map { test =>
-            Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
-          }
-      },
+      testGrouping <<=
+        (
+          definedTests,
+          baseDirectory,
+          javaOptions,
+          outputStrategy,
+          envVars,
+          javaHome,
+          connectInput).map {
+          (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
+            val opts = ForkOptions(
+              bootJars = Nil,
+              javaHome = javaHomeDir,
+              connectInput = connectIn,
+              outputStrategy = strategy,
+              runJVMOptions = options,
+              workingDirectory = Some(base),
+              envVars = env)
+            tests.map { test =>
+              Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
+            }
+        },
       testOptions ++= noColorIfEmacs,
       testFrameworks := Seq(TestFrameworks.ScalaTest, TestFrameworks.JUnit)
     )

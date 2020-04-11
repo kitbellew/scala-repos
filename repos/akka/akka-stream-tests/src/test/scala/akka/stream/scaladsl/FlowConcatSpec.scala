@@ -61,82 +61,91 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
 
     commonTests()
 
-    "work with one immediately completed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(completedPublisher, nonemptyPublisher(1 to 4))
-      val subscription1 = subscriber1.expectSubscription()
-      subscription1.request(5)
-      (1 to 4).foreach(subscriber1.expectNext)
-      subscriber1.expectComplete()
+    "work with one immediately completed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(completedPublisher, nonemptyPublisher(1 to 4))
+        val subscription1 = subscriber1.expectSubscription()
+        subscription1.request(5)
+        (1 to 4).foreach(subscriber1.expectNext)
+        subscriber1.expectComplete()
 
-      val subscriber2 = setup(nonemptyPublisher(1 to 4), completedPublisher)
-      val subscription2 = subscriber2.expectSubscription()
-      subscription2.request(5)
-      (1 to 4).foreach(subscriber2.expectNext)
-      subscriber2.expectComplete()
-    }
+        val subscriber2 = setup(nonemptyPublisher(1 to 4), completedPublisher)
+        val subscription2 = subscriber2.expectSubscription()
+        subscription2.request(5)
+        (1 to 4).foreach(subscriber2.expectNext)
+        subscriber2.expectComplete()
+      }
 
-    "work with one delayed completed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(
-        soonToCompletePublisher,
-        nonemptyPublisher(1 to 4))
-      val subscription1 = subscriber1.expectSubscription()
-      subscription1.request(5)
-      (1 to 4).foreach(subscriber1.expectNext)
-      subscriber1.expectComplete()
+    "work with one delayed completed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(
+          soonToCompletePublisher,
+          nonemptyPublisher(1 to 4))
+        val subscription1 = subscriber1.expectSubscription()
+        subscription1.request(5)
+        (1 to 4).foreach(subscriber1.expectNext)
+        subscriber1.expectComplete()
 
-      val subscriber2 = setup(
-        nonemptyPublisher(1 to 4),
-        soonToCompletePublisher)
-      val subscription2 = subscriber2.expectSubscription()
-      subscription2.request(5)
-      (1 to 4).foreach(subscriber2.expectNext)
-      subscriber2.expectComplete()
-    }
+        val subscriber2 = setup(
+          nonemptyPublisher(1 to 4),
+          soonToCompletePublisher)
+        val subscription2 = subscriber2.expectSubscription()
+        subscription2.request(5)
+        (1 to 4).foreach(subscriber2.expectNext)
+        subscriber2.expectComplete()
+      }
 
-    "work with one immediately failed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(failedPublisher, nonemptyPublisher(1 to 4))
-      subscriber1.expectSubscriptionAndError(TestException)
-    }
+    "work with one immediately failed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(failedPublisher, nonemptyPublisher(1 to 4))
+        subscriber1.expectSubscriptionAndError(TestException)
+      }
 
-    "work with one nonempty and one immediately failed publisher" in assertAllStagesStopped {
-      val subscriber = setup(nonemptyPublisher(1 to 4), failedPublisher)
-      subscriber.expectSubscription().request(5)
+    "work with one nonempty and one immediately failed publisher" in
+      assertAllStagesStopped {
+        val subscriber = setup(nonemptyPublisher(1 to 4), failedPublisher)
+        subscriber.expectSubscription().request(5)
 
-      val errorSignalled = (1 to 4).foldLeft(false)((errorSignalled, e) ⇒
+        val errorSignalled = (1 to 4).foldLeft(false)((errorSignalled, e) ⇒
+          if (!errorSignalled)
+            subscriber.expectNextOrError(e, TestException).isLeft
+          else true)
         if (!errorSignalled)
-          subscriber.expectNextOrError(e, TestException).isLeft
-        else true)
-      if (!errorSignalled) subscriber.expectSubscriptionAndError(TestException)
-    }
+          subscriber.expectSubscriptionAndError(TestException)
+      }
 
-    "work with one delayed failed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber = setup(soonToFailPublisher, nonemptyPublisher(1 to 4))
-      subscriber.expectSubscriptionAndError(TestException)
-    }
+    "work with one delayed failed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber = setup(soonToFailPublisher, nonemptyPublisher(1 to 4))
+        subscriber.expectSubscriptionAndError(TestException)
+      }
 
-    "work with one nonempty and one delayed failed publisher" in assertAllStagesStopped {
-      val subscriber = setup(nonemptyPublisher(1 to 4), soonToFailPublisher)
-      subscriber.expectSubscription().request(5)
+    "work with one nonempty and one delayed failed publisher" in
+      assertAllStagesStopped {
+        val subscriber = setup(nonemptyPublisher(1 to 4), soonToFailPublisher)
+        subscriber.expectSubscription().request(5)
 
-      val errorSignalled = (1 to 4).foldLeft(false)((errorSignalled, e) ⇒
+        val errorSignalled = (1 to 4).foldLeft(false)((errorSignalled, e) ⇒
+          if (!errorSignalled)
+            subscriber.expectNextOrError(e, TestException).isLeft
+          else true)
         if (!errorSignalled)
-          subscriber.expectNextOrError(e, TestException).isLeft
-        else true)
-      if (!errorSignalled) subscriber.expectSubscriptionAndError(TestException)
-    }
+          subscriber.expectSubscriptionAndError(TestException)
+      }
 
-    "correctly handle async errors in secondary upstream" in assertAllStagesStopped {
-      val promise = Promise[Int]()
-      val subscriber = TestSubscriber.manualProbe[Int]()
-      Source(List(1, 2, 3)).concat(Source.fromFuture(promise.future))
-        .runWith(Sink.fromSubscriber(subscriber))
+    "correctly handle async errors in secondary upstream" in
+      assertAllStagesStopped {
+        val promise = Promise[Int]()
+        val subscriber = TestSubscriber.manualProbe[Int]()
+        Source(List(1, 2, 3)).concat(Source.fromFuture(promise.future))
+          .runWith(Sink.fromSubscriber(subscriber))
 
-      val subscription = subscriber.expectSubscription()
-      subscription.request(4)
-      (1 to 3).foreach(subscriber.expectNext)
-      promise.failure(TestException)
-      subscriber.expectError(TestException)
-    }
+        val subscription = subscriber.expectSubscription()
+        subscription.request(4)
+        (1 to 3).foreach(subscriber.expectNext)
+        promise.failure(TestException)
+        subscriber.expectError(TestException)
+      }
 
     "work with Source DSL" in {
       val testSource = Source(1 to 5).concatMat(Source(6 to 10))(Keep.both)

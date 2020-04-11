@@ -54,8 +54,8 @@ object BuildCapabilitiesTable extends App {
       if (c.toString.endsWith(".other")) "" else c.toString)
   } yield (
     cap,
-    linkBase + cap.toString
-      .replaceFirst(".*\\.", "") + ":slick.basic.Capability")
+    linkBase + cap.toString.replaceFirst(".*\\.", "") +
+      ":slick.basic.Capability")
 
   val out = new FileOutputStream(args(0))
   try {

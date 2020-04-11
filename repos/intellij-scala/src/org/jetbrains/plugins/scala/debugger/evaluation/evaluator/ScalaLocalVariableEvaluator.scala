@@ -105,14 +105,14 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
       if (frameProxy == null || myParameterIndex < 0) None
       else {
         val frameMethodName = frameProxy.location().method().name()
-        if ((myMethodName == null) || frameMethodName
-              .startsWith(myMethodName)) {
+        if ((myMethodName == null) ||
+            frameMethodName.startsWith(myMethodName)) {
           try {
             val values = frameProxy.getArgumentValues
-            if (values != null && !values
-                  .isEmpty && myParameterIndex >= 0 && myParameterIndex < values
-                  .size()) { Some(values.get(myParameterIndex)) }
-            else { None }
+            if (values != null && !values.isEmpty && myParameterIndex >= 0 &&
+                myParameterIndex < values.size()) {
+              Some(values.get(myParameterIndex))
+            } else { None }
           } catch { case ignore: InternalException => None }
         } else None
       }

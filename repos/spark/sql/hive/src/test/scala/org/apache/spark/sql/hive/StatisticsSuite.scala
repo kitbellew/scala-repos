@@ -104,8 +104,8 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
       """.stripMargin).collect()
 
     assert(
-      queryTotalSize("analyzeTable_part") === hiveContext.conf
-        .defaultSizeInBytes)
+      queryTotalSize("analyzeTable_part") ===
+        hiveContext.conf.defaultSizeInBytes)
 
     sql("ANALYZE TABLE analyzeTable_part COMPUTE STATISTICS noscan")
 
@@ -150,9 +150,9 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
           r.statistics.sizeInBytes
       }
       assert(
-        sizes.size === 2 && sizes(0) <= hiveContext.conf
-          .autoBroadcastJoinThreshold
-          && sizes(1) <= hiveContext.conf.autoBroadcastJoinThreshold,
+        sizes.size === 2 &&
+          sizes(0) <= hiveContext.conf.autoBroadcastJoinThreshold &&
+          sizes(1) <= hiveContext.conf.autoBroadcastJoinThreshold,
         s"query should contain two relations, each of which has size smaller than autoConvertSize"
       )
 
@@ -220,9 +220,9 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
             .isAssignableFrom(r.getClass) => r.statistics.sizeInBytes
     }
     assert(
-      sizes.size === 2 && sizes(1) <= hiveContext.conf
-        .autoBroadcastJoinThreshold
-        && sizes(0) <= hiveContext.conf.autoBroadcastJoinThreshold,
+      sizes.size === 2 &&
+        sizes(1) <= hiveContext.conf.autoBroadcastJoinThreshold &&
+        sizes(0) <= hiveContext.conf.autoBroadcastJoinThreshold,
       s"query should contain two relations, each of which has size smaller than autoConvertSize"
     )
 

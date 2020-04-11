@@ -69,8 +69,8 @@ object GlobalPlugin {
     val taskInit = Def.task {
       val intcp = (internalDependencyClasspath in Runtime).value
       val prods = (exportedProducts in Runtime).value
-      val depMap = projectDescriptors.value + ivyModule.value
-        .dependencyMapping(state.log)
+      val depMap = projectDescriptors.value +
+        ivyModule.value.dependencyMapping(state.log)
       // If we reference it directly (if it's an executionRoot) then it forces an update, which is not what we want.
       val updateReport = Def.taskDyn { Def.task { update.value } }.value
 
@@ -82,8 +82,8 @@ object GlobalPlugin {
         (fullClasspath in Runtime).value,
         (prods ++ intcp).distinct)(updateReport)
     }
-    val resolvedTaskInit = taskInit mapReferenced Project
-      .mapScope(Scope replaceThis p)
+    val resolvedTaskInit = taskInit mapReferenced
+      Project.mapScope(Scope replaceThis p)
     val task = resolvedTaskInit evaluate data
     val roots = resolvedTaskInit.dependencies
     evaluate(state, structure, task, roots)

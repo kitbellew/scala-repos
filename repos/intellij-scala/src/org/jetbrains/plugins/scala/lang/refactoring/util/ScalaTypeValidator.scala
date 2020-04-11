@@ -108,11 +108,9 @@ class ScalaTypeValidator(
         true
       case typeDefinition: ScTypeDefinition =>
         if ((typeDefinition.getName == name) &&
-            (PsiTreeUtil.getParentOfType(
-              typeDefinition,
-              classOf[ScFunctionDefinition]) == null)) {
-          buf += ((typeDefinition, messageForClassMember(name)))
-        }
+            (PsiTreeUtil
+              .getParentOfType(typeDefinition, classOf[ScFunctionDefinition]) ==
+              null)) { buf += ((typeDefinition, messageForClassMember(name))) }
         true
       case _ => true
     }

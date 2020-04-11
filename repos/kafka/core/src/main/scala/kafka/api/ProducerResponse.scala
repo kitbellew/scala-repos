@@ -75,20 +75,23 @@ case class ProducerResponse(
   val sizeInBytes = {
     val throttleTimeSize = if (requestVersion > 0) 4 else 0
     val groupedStatus = statusGroupedByTopic
-    4 + /* correlation id */
-    4 + /* topic count */
-    groupedStatus.foldLeft(0)((foldedTopics, currTopic) => {
-      foldedTopics +
-        shortStringLength(currTopic._1) +
-        4 + /* partition count for this topic */
-      currTopic._2.size * {
-        4 + /* partition id */
-        2 + /* error code */
-        8 + /* offset */
-        8 /* timestamp */
-      }
-    }) +
-      throttleTimeSize
+    4 +
+      /* correlation id */
+      4 +
+      /* topic count */
+      groupedStatus.foldLeft(0)((foldedTopics, currTopic) => {
+        foldedTopics + shortStringLength(currTopic._1) + 4 +
+          /* partition count for this topic */
+          currTopic._2.size * {
+            4 +
+              /* partition id */
+              2 +
+              /* error code */
+              8 +
+              /* offset */
+              8 /* timestamp */
+          }
+      }) + throttleTimeSize
   }
 
   def writeTo(buffer: ByteBuffer) {

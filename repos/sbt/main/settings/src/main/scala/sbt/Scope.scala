@@ -38,8 +38,8 @@ object Scope {
       thisScope: Scope,
       current: URI,
       rootProject: URI => String): Scope => Scope =
-    resolveProject(current, rootProject) compose replaceThis(
-      thisScope) compose subThisProject
+    resolveProject(current, rootProject) compose replaceThis(thisScope) compose
+      subThisProject
 
   def resolveBuildScope(thisScope: Scope, current: URI): Scope => Scope =
     buildResolve(current) compose replaceThis(thisScope) compose subThisProject

@@ -80,8 +80,7 @@ private[sql] class SessionState(ctx: SQLContext) {
   lazy val analyzer: Analyzer = {
     new Analyzer(catalog, functionRegistry, conf) {
       override val extendedResolutionRules =
-        python.ExtractPythonUDFs ::
-          PreInsertCastAndRename ::
+        python.ExtractPythonUDFs :: PreInsertCastAndRename ::
           DataSourceAnalysis ::
           (if (conf.runSQLOnFile) new ResolveDataSource(ctx) :: Nil else Nil)
 

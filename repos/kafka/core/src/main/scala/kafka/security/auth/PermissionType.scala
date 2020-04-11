@@ -38,8 +38,9 @@ object PermissionType {
       .find(pType => pType.name.equalsIgnoreCase(permissionType))
     pType.getOrElse(
       throw new KafkaException(
-        permissionType + " not a valid permissionType name. The valid names are " + values
-          .mkString(",")))
+        permissionType +
+          " not a valid permissionType name. The valid names are " +
+          values.mkString(",")))
   }
 
   def values: Seq[PermissionType] = List(Allow, Deny)

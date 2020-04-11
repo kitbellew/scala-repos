@@ -201,8 +201,8 @@ class BehaviorSpec extends TypedSpec {
   trait Unhandled extends Common {
     def `must return Unhandled`(): Unit = {
       val Setup(ctx, inbox) = mkCtx()
-      ctx.currentBehavior.message(ctx, Miss) should ===(
-        ScalaDSL.Unhandled[Command])
+      ctx.currentBehavior.message(ctx, Miss) should
+        ===(ScalaDSL.Unhandled[Command])
       inbox.receiveAll() should ===(Missed :: Nil)
     }
   }

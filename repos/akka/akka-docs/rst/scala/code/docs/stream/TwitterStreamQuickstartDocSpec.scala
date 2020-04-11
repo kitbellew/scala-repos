@@ -36,8 +36,7 @@ object TwitterStreamQuickstartDocSpec {
     Tweet(Author("rolandkuhn"), System.currentTimeMillis, "#akka rocks!") ::
       Tweet(Author("patriknw"), System.currentTimeMillis, "#akka !") ::
       Tweet(Author("bantonsson"), System.currentTimeMillis, "#akka !") ::
-      Tweet(Author("drewhk"), System.currentTimeMillis, "#akka !") ::
-      Tweet(
+      Tweet(Author("drewhk"), System.currentTimeMillis, "#akka !") :: Tweet(
         Author("ktosopl"),
         System.currentTimeMillis,
         "#akka on the rocks!") ::
@@ -48,8 +47,7 @@ object TwitterStreamQuickstartDocSpec {
       Tweet(
         Author("drama"),
         System.currentTimeMillis,
-        "we compared #apples to #oranges!") ::
-      Nil)
+        "we compared #apples to #oranges!") :: Nil)
 }
 
 class TwitterStreamQuickstartDocSpec extends AkkaSpec {
@@ -156,10 +154,11 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
       import scala.concurrent.duration._
 
       //#backpressure-by-readline
-      val completion: Future[Done] = Source(1 to 10)
-        .map(i => { println(s"map => $i"); i }).runForeach { i =>
-          readLine(s"Element = $i; continue reading? [press enter]\n")
-        }
+      val completion: Future[Done] = Source(1 to 10).map(i => {
+        println(s"map => $i"); i
+      }).runForeach { i =>
+        readLine(s"Element = $i; continue reading? [press enter]\n")
+      }
 
       Await.ready(completion, 1.minute)
       //#backpressure-by-readline

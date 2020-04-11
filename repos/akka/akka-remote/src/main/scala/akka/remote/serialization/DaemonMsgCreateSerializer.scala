@@ -58,9 +58,9 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
           val builder = PropsData.newBuilder.setClazz(props.clazz.getName)
             .setDeploy(deployProto(props.deploy))
           props.args map serialize foreach builder.addArgs
-          props.args map (a ⇒
-            if (a == null) "null" else a.getClass.getName) foreach builder
-            .addClasses
+          props.args map
+            (a ⇒ if (a == null) "null" else a.getClass.getName) foreach
+            builder.addClasses
           builder.build
         }
 
@@ -101,8 +101,9 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
       val clazz = system.dynamicAccess
         .getClassFor[AnyRef](proto.getProps.getClazz).get
       val args: Vector[AnyRef] =
-        (proto.getProps.getArgsList.asScala zip proto.getProps.getClassesList
-          .asScala).map(deserialize)(collection.breakOut)
+        (proto.getProps.getArgsList.asScala zip
+          proto.getProps.getClassesList.asScala)
+          .map(deserialize)(collection.breakOut)
       Props(deploy(proto.getProps.getDeploy), clazz, args)
     }
 

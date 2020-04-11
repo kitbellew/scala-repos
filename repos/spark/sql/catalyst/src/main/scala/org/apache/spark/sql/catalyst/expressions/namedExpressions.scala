@@ -62,8 +62,8 @@ trait NamedExpression extends Expression {
     * multiple qualifiers, it is possible that there are other possible way to refer to this
     * attribute.
     */
-  def qualifiedName: String =
-    (qualifiers.headOption.toSeq :+ name).mkString(".")
+  def qualifiedName: String = (qualifiers.headOption.toSeq :+ name)
+    .mkString(".")
 
   /**
     * All possible qualifiers for the expression.
@@ -138,8 +138,8 @@ case class Alias(child: Expression, name: String)(
 
   // Alias(Generator, xx) need to be transformed into Generate(generator, ...)
   override lazy val resolved =
-    childrenResolved && checkInputDataTypes().isSuccess && !child
-      .isInstanceOf[Generator]
+    childrenResolved && checkInputDataTypes().isSuccess &&
+      !child.isInstanceOf[Generator]
 
   override def eval(input: InternalRow): Any = child.eval(input)
 
@@ -182,9 +182,8 @@ case class Alias(child: Expression, name: String)(
   override def equals(other: Any): Boolean =
     other match {
       case a: Alias =>
-        name == a.name && exprId == a.exprId && child == a
-          .child && qualifiers == a.qualifiers &&
-          explicitMetadata == a.explicitMetadata
+        name == a.name && exprId == a.exprId && child == a.child &&
+          qualifiers == a.qualifiers && explicitMetadata == a.explicitMetadata
       case _ => false
     }
 
@@ -228,8 +227,8 @@ case class AttributeReference(
     other match {
       case ar: AttributeReference =>
         name == ar.name && dataType == ar.dataType && nullable == ar.nullable &&
-          metadata == ar.metadata && exprId == ar.exprId && qualifiers == ar
-          .qualifiers
+          metadata == ar.metadata && exprId == ar.exprId &&
+          qualifiers == ar.qualifiers
       case _ => false
     }
 

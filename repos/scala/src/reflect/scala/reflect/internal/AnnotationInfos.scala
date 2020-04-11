@@ -162,7 +162,8 @@ trait AnnotationInfos extends api.Annotations {
      */
     def fitsInOneString: Boolean = {
       // due to escaping, a zero byte in a classfile-annotation of string-type takes actually two characters.
-      val numZeros = (sevenBitsMayBeZero count { b => b == 0 })
+      val numZeros =
+        (sevenBitsMayBeZero count { b => b == 0 })
 
       (sevenBitsMayBeZero.length + numZeros) <= 65535
     }
@@ -215,8 +216,8 @@ trait AnnotationInfos extends api.Annotations {
           val metaSyms = metas collect {
             case ann if !ann.symbol.isInstanceOf[StubSymbol] => ann.symbol
           }
-          categories exists (category =>
-            metaSyms exists (_ isNonBottomSubClass category))
+          categories exists
+            (category => metaSyms exists (_ isNonBottomSubClass category))
       }
   }
 
@@ -244,8 +245,9 @@ trait AnnotationInfos extends api.Annotations {
     import annInfo._
     val s_args = if (!args.isEmpty) args.mkString("(", ", ", ")") else ""
     val s_assocs =
-      if (!assocs.isEmpty)
-        (assocs map { case (x, y) => x + " = " + y } mkString ("(", ", ", ")"))
+      if (!assocs.isEmpty)(assocs map {
+        case (x, y) => x + " = " + y
+      } mkString ("(", ", ", ")"))
       else ""
     s"${atp}${s_args}${s_assocs}"
   }
@@ -429,9 +431,8 @@ trait AnnotationInfos extends api.Annotations {
           jargs: List[(Name, ClassfileAnnotArg)]): List[Tree] =
         jargs match {
           case (name, jarg) :: rest =>
-            AssignOrNamedArg(
-              Ident(name),
-              reverseEngineerArg(jarg)) :: reverseEngineerArgs(rest)
+            AssignOrNamedArg(Ident(name), reverseEngineerArg(jarg)) ::
+              reverseEngineerArgs(rest)
           case Nil => Nil
         }
       if (ann.javaArgs.isEmpty) ann.scalaArgs
@@ -469,11 +470,11 @@ trait AnnotationInfos extends api.Annotations {
             case Nil => Nil
           }
         val atp = tpt.tpe
-        if (atp != null && (atp
-              .typeSymbol isNonBottomSubClass StaticAnnotationClass))
+        if (atp != null &&
+            (atp.typeSymbol isNonBottomSubClass StaticAnnotationClass))
           AnnotationInfo(atp, args, Nil)
-        else if (atp != null && (atp
-                   .typeSymbol isNonBottomSubClass ClassfileAnnotationClass))
+        else if (atp != null &&
+                 (atp.typeSymbol isNonBottomSubClass ClassfileAnnotationClass))
           AnnotationInfo(atp, Nil, encodeJavaArgs(args))
         else
           throw new Exception(

@@ -29,9 +29,8 @@ class WeightedPageRankSpec extends WordSpec with Matchers {
       .source(Tsv("./pagerank_0"), List((1, 0.086), (2, 0.192), (3, 0.722)))
       .typedSink(TypedTsv[Double]("./totaldiff")) { ob =>
         (idx + ": have low error") in {
-          ob.head shouldBe (
-            0.722 - 0.461 + 0.2964 - 0.192 + 0.2426 - 0.086
-          ) +- 0.001
+          ob.head shouldBe (0.722 - 0.461 + 0.2964 - 0.192 + 0.2426 - 0.086) +-
+            0.001
         }
         idx += 1
       }.sink[(Int, Double)](Tsv("./pagerank_1")) { outputBuffer =>

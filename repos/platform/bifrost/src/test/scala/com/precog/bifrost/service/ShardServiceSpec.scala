@@ -251,8 +251,8 @@ trait TestShardService
                   case chunk =>
                     Right(StreamT.wrapEffect(
                       chunkToFutureString.apply(chunk).map(s =>
-                        CharBuffer.wrap(JString(s).renderCompact) :: StreamT
-                          .empty[Future, CharBuffer])))
+                        CharBuffer.wrap(JString(s).renderCompact) ::
+                          StreamT.empty[Future, CharBuffer])))
                 }
               }
           }
@@ -369,10 +369,8 @@ class ShardServiceSpec extends TestShardService {
       } yield result
 
       val expected = JObject(
-        JField("warnings", JArray(Nil)) ::
-          JField("errors", JArray(Nil)) ::
-          JField("data", JArray(JNum(2) :: Nil)) ::
-          Nil)
+        JField("warnings", JArray(Nil)) :: JField("errors", JArray(Nil)) ::
+          JField("data", JArray(JNum(2) :: Nil)) :: Nil)
 
       res.copoint must_== expected
     }
@@ -417,10 +415,8 @@ class ShardServiceSpec extends TestShardService {
       val expected = JObject(
         JField("serverErrors", JArray(Nil)) ::
           JField("serverWarnings", JArray(Nil)) ::
-          JField("warnings", JArray(Nil)) ::
-          JField("errors", JArray(Nil)) ::
-          JField("data", JArray(JNum(2) :: Nil)) ::
-          Nil)
+          JField("warnings", JArray(Nil)) :: JField("errors", JArray(Nil)) ::
+          JField("data", JArray(JNum(2) :: Nil)) :: Nil)
 
       result.copoint must_== expected
     }

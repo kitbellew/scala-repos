@@ -69,10 +69,8 @@ case class ArrayType(elementType: DataType, containsNull: Boolean)
     DataType.buildFormattedString(elementType, s"$prefix    |", builder)
   }
 
-  override private[sql] def jsonValue =
-    ("type" -> typeName) ~
-      ("elementType" -> elementType.jsonValue) ~
-      ("containsNull" -> containsNull)
+  override private[sql] def jsonValue = ("type" -> typeName) ~
+    ("elementType" -> elementType.jsonValue) ~ ("containsNull" -> containsNull)
 
   /**
     * The default size of a value of the ArrayType is 100 * the default size of the element type.

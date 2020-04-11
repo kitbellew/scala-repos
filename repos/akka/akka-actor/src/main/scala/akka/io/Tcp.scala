@@ -565,12 +565,11 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
     import akka.util.Helpers.ConfigOps
     import _config._
 
-    val NrOfSelectors: Int =
-      getInt("nr-of-selectors") requiring (_ > 0, "nr-of-selectors must be > 0")
+    val NrOfSelectors: Int = getInt("nr-of-selectors") requiring
+      (_ > 0, "nr-of-selectors must be > 0")
 
-    val BatchAcceptLimit: Int = getInt("batch-accept-limit") requiring (
-      _ > 0, "batch-accept-limit must be > 0"
-    )
+    val BatchAcceptLimit: Int = getInt("batch-accept-limit") requiring
+      (_ > 0, "batch-accept-limit must be > 0")
     val DirectBufferSize: Int = getIntBytes("direct-buffer-size")
     val MaxDirectBufferPoolSize: Int = getInt("direct-buffer-pool-limit")
     val RegisterTimeout: Duration = getString("register-timeout") match {
@@ -591,10 +590,8 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
 
     val MaxChannelsPerSelector: Int =
       if (MaxChannels == -1) -1 else math.max(MaxChannels / NrOfSelectors, 1)
-    val FinishConnectRetries: Int = getInt("finish-connect-retries") requiring (
-      _ > 0,
-      "finish-connect-retries must be > 0"
-    )
+    val FinishConnectRetries: Int = getInt("finish-connect-retries") requiring
+      (_ > 0, "finish-connect-retries must be > 0")
 
     val WindowsConnectionAbortWorkaroundEnabled: Boolean = getString(
       "windows-connection-abort-workaround-enabled") match {

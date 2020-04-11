@@ -384,10 +384,9 @@ class DirectKafkaStreamSuite
       TopicAndPartition(topic, 0) -> 50L,
       TopicAndPartition(topic, 1) -> 50L)
     assert(
-      kafkaStream.maxMessagesPerPartition(input).get ==
-        Map(
-          TopicAndPartition(topic, 0) -> 10L,
-          TopicAndPartition(topic, 1) -> 10L))
+      kafkaStream.maxMessagesPerPartition(input).get == Map(
+        TopicAndPartition(topic, 0) -> 10L,
+        TopicAndPartition(topic, 1) -> 10L))
   }
 
   test("maxMessagesPerPartition with no lag") {
@@ -412,10 +411,9 @@ class DirectKafkaStreamSuite
       TopicAndPartition(topic, 0) -> 1000L,
       TopicAndPartition(topic, 1) -> 1000L)
     assert(
-      kafkaStream.maxMessagesPerPartition(input).get ==
-        Map(
-          TopicAndPartition(topic, 0) -> 10L,
-          TopicAndPartition(topic, 1) -> 10L))
+      kafkaStream.maxMessagesPerPartition(input).get == Map(
+        TopicAndPartition(topic, 0) -> 10L,
+        TopicAndPartition(topic, 1) -> 10L))
   }
 
   test("using rate controller") {

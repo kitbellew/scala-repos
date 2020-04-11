@@ -550,8 +550,8 @@ object Serializers {
         } else if (lineDiff >= -32 && lineDiff < 32 && columnIsByte) {
           writeByte((lineDiff << Format2Shift) | Format2MaskValue)
           writeByte(column)
-        } else if (lineDiff >= Short.MinValue && lineDiff <= Short
-                     .MaxValue && columnIsByte) {
+        } else if (lineDiff >= Short.MinValue && lineDiff <= Short.MaxValue &&
+                   columnIsByte) {
           writeByte(Format3MaskValue)
           writeShort(lineDiff)
           writeByte(column)
@@ -642,8 +642,8 @@ object Serializers {
             readClassType(),
             readIdent(),
             readTrees())(readType())
-          if (useHacks065 && result1.tpe != NoType && isConstructorName(
-                result1.method.name)) result1.copy()(NoType)
+          if (useHacks065 && result1.tpe != NoType &&
+              isConstructorName(result1.method.name)) result1.copy()(NoType)
           else result1
         case TagApplyStatic =>
           ApplyStatic(readClassType(), readIdent(), readTrees())(readType())

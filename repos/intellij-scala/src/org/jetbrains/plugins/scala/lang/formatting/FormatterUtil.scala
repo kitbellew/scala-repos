@@ -21,8 +21,8 @@ object FormatterUtil {
               if parent.getLastChild == ifStmt && parent.elseBranch != None =>
             calcIndent(node.getTreeParent)
           case parent =>
-            calcAbsolutePosition(node) - calcAbsolutePosition(
-              parent.getNode) match {
+            calcAbsolutePosition(node) -
+              calcAbsolutePosition(parent.getNode) match {
               case i if i >= 0 => i + calcIndent(parent.getNode)
               case _           => calcIndent(parent.getNode)
             }
@@ -41,9 +41,8 @@ object FormatterUtil {
 
   def getNormalIndentString(project: Project) = {
     String.format(
-      "%1$" +
-        ScalaCodeStyleSettings.getInstance(project).getContainer
-          .getIndentSize(ScalaFileType.SCALA_FILE_TYPE) + "s",
+      "%1$" + ScalaCodeStyleSettings.getInstance(project)
+        .getContainer.getIndentSize(ScalaFileType.SCALA_FILE_TYPE) + "s",
       " ")
   }
 }

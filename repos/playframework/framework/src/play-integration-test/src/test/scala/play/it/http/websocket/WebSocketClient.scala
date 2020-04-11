@@ -260,9 +260,8 @@ object WebSocketClient {
             val merge = b.add(Merge[WebSocketFrame](2, eagerComplete = true))
 
             val handleServerClose = Flow[WebSocketFrame].filter { frame =>
-              if (frame
-                    .isInstanceOf[CloseWebSocketFrame] && !clientInitiatedClose
-                    .get()) {
+              if (frame.isInstanceOf[CloseWebSocketFrame] &&
+                  !clientInitiatedClose.get()) {
                 serverInitiatedClose.set(true)
                 true
               } else {
@@ -304,9 +303,8 @@ object WebSocketClient {
               frame
             }
 
-            merge
-              .out ~> clientConnection ~> handleConnectionTerminated ~> retainForBroadcast ~> broadcast
-              .in
+            merge.out ~> clientConnection ~> handleConnectionTerminated ~>
+              retainForBroadcast ~> broadcast.in
             merge.in(0) <~ handleServerClose <~ broadcast.out(0)
 
             FlowShape(merge.in(1), broadcast.out(1))

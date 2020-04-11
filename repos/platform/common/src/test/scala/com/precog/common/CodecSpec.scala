@@ -125,9 +125,8 @@ class CodecSpec extends Specification with ScalaCheck {
   "BooleanCodec" should surviveRoundTrip(Codec.BooleanCodec)
   "DoubleCodec" should surviveRoundTrip(Codec.DoubleCodec)
   "Utf8Codec" should surviveRoundTrip(Codec.Utf8Codec)
-  "BigDecimalCodec" should surviveRoundTrip(Codec.BigDecimalCodec)(
-    arbBigDecimal,
-    implicitly)
+  "BigDecimalCodec" should
+    surviveRoundTrip(Codec.BigDecimalCodec)(arbBigDecimal, implicitly)
   "BitSetCodec" should surviveRoundTrip(Codec.BitSetCodec)
   "SparseBitSet" should {
     "survive round-trip" in {

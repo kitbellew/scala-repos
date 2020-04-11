@@ -226,8 +226,9 @@ class BigInteger extends Number with Comparable[BigInteger] {
   def this(s: String, radix: Int) = {
     this()
     checkNotNull(s)
-    if ((radix < java.lang.Character.MIN_RADIX) || (radix > java.lang.Character
-          .MAX_RADIX)) throw new NumberFormatException("Radix out of range")
+    if ((radix < java.lang.Character.MIN_RADIX) ||
+        (radix > java.lang.Character.MAX_RADIX))
+      throw new NumberFormatException("Radix out of range")
     if (s.isEmpty) throw new NumberFormatException("Zero length BigInteger")
 
     this.setFromString(s, radix)
@@ -427,8 +428,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
   override def equals(x: Any): Boolean =
     x match {
       case that: BigInteger =>
-        this.sign == that.sign &&
-          this.numberLength == that.numberLength &&
+        this.sign == that.sign && this.numberLength == that.numberLength &&
           this.equalsArrays(that.digits)
       case _ => false
     }
@@ -762,22 +762,20 @@ class BigInteger extends Number with Comparable[BigInteger] {
     @inline @tailrec
     def loop(): Unit =
       if (bytesLen > highBytes) {
-        digits(i) =
-          (byteValues(bytesLen - 1) & 0xFF) |
-            (byteValues(bytesLen - 2) & 0xFF) << 8 |
-            (byteValues(bytesLen - 3) & 0xFF) << 16 |
-            (byteValues(bytesLen - 4) & 0xFF) << 24
+        digits(i) = (byteValues(bytesLen - 1) & 0xFF) |
+          (byteValues(bytesLen - 2) & 0xFF) << 8 |
+          (byteValues(bytesLen - 3) & 0xFF) << 16 |
+          (byteValues(bytesLen - 4) & 0xFF) << 24
         bytesLen -= 4
         if (digits(i) != 0) {
           digits(i) = -digits(i)
           firstNonzeroDigit = i
           i += 1
           while (bytesLen > highBytes) {
-            digits(i) =
-              (byteValues(bytesLen - 1) & 0xFF) |
-                (byteValues(bytesLen - 2) & 0xFF) << 8 |
-                (byteValues(bytesLen - 3) & 0xFF) << 16 |
-                (byteValues(bytesLen - 4) & 0xFF) << 24
+            digits(i) = (byteValues(bytesLen - 1) & 0xFF) |
+              (byteValues(bytesLen - 2) & 0xFF) << 8 |
+              (byteValues(bytesLen - 3) & 0xFF) << 16 |
+              (byteValues(bytesLen - 4) & 0xFF) << 24
             bytesLen -= 4
             digits(i) = ~digits(i)
             i += 1
@@ -815,11 +813,10 @@ class BigInteger extends Number with Comparable[BigInteger] {
     // Put bytes to the int array starting from the end of the byte array
     var i = 0
     while (bytesLen > highBytes) {
-      digits(i) =
-        (byteValues(bytesLen - 1) & 0xFF) |
-          (byteValues(bytesLen - 2) & 0xFF) << 8 |
-          (byteValues(bytesLen - 3) & 0xFF) << 16 |
-          (byteValues(bytesLen - 4) & 0xFF) << 24
+      digits(i) = (byteValues(bytesLen - 1) & 0xFF) |
+        (byteValues(bytesLen - 2) & 0xFF) << 8 |
+        (byteValues(bytesLen - 3) & 0xFF) << 16 |
+        (byteValues(bytesLen - 4) & 0xFF) << 24
       bytesLen = bytesLen - 4
       i += 1
     }

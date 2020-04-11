@@ -72,18 +72,18 @@ object AlgorithmsSpec extends Specification {
     }
 
     "decompose SHA1" in {
-      decomposes("SHA1WithRSA") must containTheSameElementsAs(
-        Seq("SHA1", "SHA-1", "RSA"))
+      decomposes("SHA1WithRSA") must
+        containTheSameElementsAs(Seq("SHA1", "SHA-1", "RSA"))
     }
 
     "map SHA-1 to SHA1" in {
-      decomposes("SHA-1WithRSA") must containTheSameElementsAs(
-        Seq("SHA1", "SHA-1", "RSA"))
+      decomposes("SHA-1WithRSA") must
+        containTheSameElementsAs(Seq("SHA1", "SHA-1", "RSA"))
     }
 
     "decompose SHA256" in {
-      decomposes("SHA256WithRSA") must containTheSameElementsAs(
-        Seq("SHA256", "RSA"))
+      decomposes("SHA256WithRSA") must
+        containTheSameElementsAs(Seq("SHA256", "RSA"))
     }
 
   }

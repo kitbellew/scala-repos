@@ -800,8 +800,9 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         new Map(f, targetarr, offset + fp, howmany - fp))
     }
     def shouldSplitFurther =
-      howmany > scala.collection.parallel
-        .thresholdFromSize(length, tasksupport.parallelismLevel)
+      howmany >
+        scala.collection.parallel
+          .thresholdFromSize(length, tasksupport.parallelismLevel)
   }
 
   /* serialization */

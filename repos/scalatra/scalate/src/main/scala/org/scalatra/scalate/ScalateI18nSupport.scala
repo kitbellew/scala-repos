@@ -16,11 +16,8 @@ trait ScalateI18nSupport extends ScalateSupport with I18nSupport {
    * on first access. However, on subsequent accesses, it worked fine.
    */
   before() {
-    templateEngine.bindings ::= Binding(
-      "messages",
-      classOf[Messages].getName,
-      true,
-      isImplicit = true)
+    templateEngine.bindings ::=
+      Binding("messages", classOf[Messages].getName, true, isImplicit = true)
   }
 
   /**

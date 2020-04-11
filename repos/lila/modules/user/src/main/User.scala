@@ -35,8 +35,8 @@ case class User(
     }
 
   override def toString =
-    s"User $username(${perfs.bestRating}) games:${count
-      .game}${troll ?? " troll"}${engine ?? " engine"}"
+    s"User $username(${perfs.bestRating}) games:${count.game}${troll ??
+      " troll"}${engine ?? " engine"}"
 
   def light = LightUser(id = id, name = username, title = title)
 

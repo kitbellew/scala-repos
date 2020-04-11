@@ -149,10 +149,11 @@ trait BaseGetPoster {
       capture: (String, HttpClient, HttpMethodBase) => ResponseType)
       : ResponseType = {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
-    val fullUrl = url + (params
-      .map(v => urlEncode(v._1) + "=" + urlEncode(v._2)).mkString("&") match {
-      case s if s.length == 0 => ""; case s => "?" + s
-    })
+    val fullUrl = url +
+      (params.map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
+        .mkString("&") match {
+        case s if s.length == 0 => ""; case s => "?" + s
+      })
     val getter = new GetMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers) getter.setRequestHeader(name, value)
@@ -175,10 +176,11 @@ trait BaseGetPoster {
       capture: (String, HttpClient, HttpMethodBase) => ResponseType)
       : ResponseType = {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
-    val fullUrl = url + (params
-      .map(v => urlEncode(v._1) + "=" + urlEncode(v._2)).mkString("&") match {
-      case s if s.length == 0 => ""; case s => "?" + s
-    })
+    val fullUrl = url +
+      (params.map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
+        .mkString("&") match {
+        case s if s.length == 0 => ""; case s => "?" + s
+      })
     val getter = new DeleteMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers) getter.setRequestHeader(name, value)
@@ -611,14 +613,15 @@ object TestHelpers {
   def getCookie(
       headers: List[(String, String)],
       respHeaders: Map[String, List[String]]): Box[String] = {
-    val ret = (headers.filter { case ("Cookie", _) => true; case _ => false }
-      .map(_._2) :::
-      respHeaders.get("Set-Cookie").toList.flatMap(x => x)) match {
-      case Nil       => Empty
-      case "" :: Nil => Empty
-      case "" :: xs  => Full(xs.mkString(","))
-      case xs        => Full(xs.mkString(","))
-    }
+    val ret =
+      (headers.filter { case ("Cookie", _) => true; case _ => false }
+        .map(_._2) :::
+        respHeaders.get("Set-Cookie").toList.flatMap(x => x)) match {
+        case Nil       => Empty
+        case "" :: Nil => Empty
+        case "" :: xs  => Full(xs.mkString(","))
+        case xs        => Full(xs.mkString(","))
+      }
     ret
   }
 
@@ -921,8 +924,8 @@ abstract class BaseResponse(
   def xmlMatch(
       findFunc: Elem => NodeSeq,
       filterFunc: Node => Boolean): Boolean =
-    xml.toList flatMap (theXml => findFunc(theXml)) exists (n =>
-      filterFunc(trim(n)))
+    xml.toList flatMap (theXml => findFunc(theXml)) exists
+      (n => filterFunc(trim(n)))
 
   def getOrFail(success: Boolean, msg: String, errorFunc: ReportFailure) =
     if (success) this.asInstanceOf[SelfType] else errorFunc.fail(msg)

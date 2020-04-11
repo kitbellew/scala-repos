@@ -20,9 +20,9 @@ object GenerateRoundtripSources {
     object Tables extends Tables(profile)
     import Tables._
     import Tables.profile.api._
-    val ddl = posts.schema ++ categories.schema ++ typeTest.schema ++ large
-      .schema ++ `null`.schema ++ X.schema ++ SingleNonOptionColumn
-      .schema ++ SelfRef.schema
+    val ddl = posts.schema ++ categories.schema ++ typeTest.schema ++
+      large.schema ++ `null`.schema ++ X.schema ++
+      SingleNonOptionColumn.schema ++ SelfRef.schema
     val a1 = profile.createModel(ignoreInvalidDefaults = false).map(m =>
       new SourceCodeGenerator(m) {
         override def tableName = {
@@ -331,21 +331,24 @@ class Tables(val profile: JdbcProfile) {
         (p3i1, p3i2, p3i3, p3i4, p3i5, p3i6),
         (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6),
         (p5i1, p5i2, p5i3, p5i4, p5i5, p5i6),
-        (p6i1, p6i2, p6i3, p6i4, p6i5, p6i6)).shaped <> ({
-        case (id, p1, p2, p3, p4, p5, p6) =>
-          // We could do this without .shaped but then we'd have to write a type annotation for the parameters
-          Whole(
-            id,
-            Part.tupled.apply(p1),
-            Part.tupled.apply(p2),
-            Part.tupled.apply(p3),
-            Part.tupled.apply(p4),
-            Part.tupled.apply(p5),
-            Part.tupled.apply(p6))
-      }, { w: Whole =>
-        def f(p: Part) = Part.unapply(p).get
-        Some((w.id, f(w.p1), f(w.p2), f(w.p3), f(w.p4), f(w.p5), f(w.p6)))
-      })
+        (p6i1, p6i2, p6i3, p6i4, p6i5, p6i6)).shaped <>
+        (
+          {
+            case (id, p1, p2, p3, p4, p5, p6) =>
+              // We could do this without .shaped but then we'd have to write a type annotation for the parameters
+              Whole(
+                id,
+                Part.tupled.apply(p1),
+                Part.tupled.apply(p2),
+                Part.tupled.apply(p3),
+                Part.tupled.apply(p4),
+                Part.tupled.apply(p5),
+                Part.tupled.apply(p6))
+          },
+          { w: Whole =>
+            def f(p: Part) = Part.unapply(p).get
+            Some((w.id, f(w.p1), f(w.p2), f(w.p3), f(w.p4), f(w.p5), f(w.p6)))
+          })
   }
   val large = TableQuery[Large]
 }

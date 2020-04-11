@@ -150,8 +150,8 @@ object TopicCommand extends Logging {
     topics.foreach { topic =>
       val configs = AdminUtils
         .fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
-      if (opts.options.has(opts.configOpt) || opts.options
-            .has(opts.deleteConfigOpt)) {
+      if (opts.options.has(opts.configOpt) ||
+          opts.options.has(opts.deleteConfigOpt)) {
         println(
           "WARNING: Altering topic configuration from this script has been deprecated and may be removed in future releases.")
         println(
@@ -238,8 +238,8 @@ object TopicCommand extends Logging {
     for (topic <- topics) {
       zkUtils.getPartitionAssignmentForTopics(List(topic)).get(topic) match {
         case Some(topicPartitionAssignment) =>
-          val describeConfigs: Boolean =
-            !reportUnavailablePartitions && !reportUnderReplicatedPartitions
+          val describeConfigs: Boolean = !reportUnavailablePartitions &&
+            !reportUnderReplicatedPartitions
           val describePartitions: Boolean = !reportOverriddenConfigs
           val sortedPartitions = topicPartitionAssignment.toList
             .sortWith((m1, m2) => m1._1 < m2._1)
@@ -263,13 +263,12 @@ object TopicCommand extends Logging {
               val inSyncReplicas = zkUtils
                 .getInSyncReplicasForPartition(topic, partitionId)
               val leader = zkUtils.getLeaderForPartition(topic, partitionId)
-              if ((
-                    !reportUnderReplicatedPartitions && !reportUnavailablePartitions
-                  ) ||
-                  (reportUnderReplicatedPartitions && inSyncReplicas
-                    .size < assignedReplicas.size) ||
-                  (reportUnavailablePartitions && (!leader
-                    .isDefined || !liveBrokers.contains(leader.get)))) {
+              if ((!reportUnderReplicatedPartitions &&
+                  !reportUnavailablePartitions) ||
+                  (reportUnderReplicatedPartitions &&
+                  inSyncReplicas.size < assignedReplicas.size) ||
+                  (reportUnavailablePartitions &&
+                  (!leader.isDefined || !liveBrokers.contains(leader.get)))) {
                 print("\tTopic: " + topic)
                 print("\tPartition: " + partitionId)
                 print(
@@ -358,8 +357,8 @@ object TopicCommand extends Logging {
     val configOpt = parser.accepts(
       "config",
       "A topic configuration override for the topic being created or altered." +
-        "The following is a list of valid configurations: " + nl + LogConfig
-        .configNames.map("\t" + _).mkString(nl) + nl +
+        "The following is a list of valid configurations: " + nl +
+        LogConfig.configNames.map("\t" + _).mkString(nl) + nl +
         "See the Kafka documentation for full details on the topic configs."
     ).withRequiredArg.describedAs("name=value").ofType(classOf[String])
     val deleteConfigOpt = parser.accepts(
@@ -453,20 +452,20 @@ object TopicCommand extends Logging {
         parser,
         options,
         reportUnderReplicatedPartitionsOpt,
-        allTopicLevelOpts -- Set(
-          describeOpt) + reportUnavailablePartitionsOpt + topicsWithOverridesOpt)
+        allTopicLevelOpts -- Set(describeOpt) + reportUnavailablePartitionsOpt +
+          topicsWithOverridesOpt)
       CommandLineUtils.checkInvalidArgs(
         parser,
         options,
         reportUnavailablePartitionsOpt,
-        allTopicLevelOpts -- Set(
-          describeOpt) + reportUnderReplicatedPartitionsOpt + topicsWithOverridesOpt)
+        allTopicLevelOpts -- Set(describeOpt) +
+          reportUnderReplicatedPartitionsOpt + topicsWithOverridesOpt)
       CommandLineUtils.checkInvalidArgs(
         parser,
         options,
         topicsWithOverridesOpt,
-        allTopicLevelOpts -- Set(
-          describeOpt) + reportUnderReplicatedPartitionsOpt + reportUnavailablePartitionsOpt)
+        allTopicLevelOpts -- Set(describeOpt) +
+          reportUnderReplicatedPartitionsOpt + reportUnavailablePartitionsOpt)
       CommandLineUtils.checkInvalidArgs(
         parser,
         options,

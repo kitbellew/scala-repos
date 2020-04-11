@@ -211,10 +211,10 @@ object Test {
     val isChar = bi >= Char.MinValue && bi <= Char.MaxValue
     val isInt = bi >= Int.MinValue && bi <= Int.MaxValue
     val isLong = bi >= Long.MinValue && bi <= Long.MaxValue
-    val isFloat = !bi.toFloat.isInfinity && bd
-      .compare(BigDecimal(new java.math.BigDecimal(bi.toFloat))) == 0
-    val isDouble = !bi.toDouble.isInfinity && bd
-      .compare(BigDecimal(new java.math.BigDecimal(bi.toDouble))) == 0
+    val isFloat = !bi.toFloat.isInfinity &&
+      bd.compare(BigDecimal(new java.math.BigDecimal(bi.toFloat))) == 0
+    val isDouble = !bi.toDouble.isInfinity &&
+      bd.compare(BigDecimal(new java.math.BigDecimal(bi.toDouble))) == 0
 
     assert(bd.isWhole, bd)
     assert(bd.isBinaryDouble == isDouble, bd)

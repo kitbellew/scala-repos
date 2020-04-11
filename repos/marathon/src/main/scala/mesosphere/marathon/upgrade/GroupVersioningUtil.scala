@@ -40,8 +40,8 @@ object GroupVersioningUtil {
             log.info(
               s"[${newApp.id}]: scaling op detected for app (oldVersion ${oldApp.versionInfo})")
             oldApp.versionInfo.withScaleOrRestartChange(newVersion = version)
-          } else if (oldApp.versionInfo != newApp.versionInfo && newApp
-                       .versionInfo == VersionInfo.NoVersion) {
+          } else if (oldApp.versionInfo != newApp.versionInfo &&
+                     newApp.versionInfo == VersionInfo.NoVersion) {
             log.info(
               s"[${newApp.id}]: restart detected for app (oldVersion ${oldApp.versionInfo})")
             oldApp.versionInfo.withScaleOrRestartChange(newVersion = version)

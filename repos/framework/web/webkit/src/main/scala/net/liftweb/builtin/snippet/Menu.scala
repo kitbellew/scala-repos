@@ -173,8 +173,7 @@ object Menu extends DispatchSnippet {
                   true,
                   <xml:group> <a href={uri}>{text}</a>{
                     ifExpandCurrent(buildUlLine(kids))
-                  }</xml:group>) %
-                  S.prefixedAttrsToMetaData("li_item", liMap)
+                  }</xml:group>) % S.prefixedAttrsToMetaData("li_item", liMap)
               )
 
             case MenuItem(text, uri, kids, true, _, _) => Helpers.addCssClass(
@@ -187,8 +186,7 @@ object Menu extends DispatchSnippet {
                   true,
                   <xml:group> <span>{text}</span>{
                     ifExpandCurrent(buildUlLine(kids))
-                  }</xml:group>) %
-                  S.prefixedAttrsToMetaData("li_item", liMap)
+                  }</xml:group>) % S.prefixedAttrsToMetaData("li_item", liMap)
               )
 
             // Not current, but on the path, so we need to expand children to show the current one
@@ -202,8 +200,7 @@ object Menu extends DispatchSnippet {
                   true,
                   <xml:group> <a href={uri}>{text}</a>{
                     buildUlLine(kids)
-                  }</xml:group>) %
-                  S.prefixedAttrsToMetaData("li_path", liMap)
+                  }</xml:group>) % S.prefixedAttrsToMetaData("li_path", liMap)
               )
 
             case MenuItem(text, uri, kids, _, _, _) =>
@@ -417,8 +414,7 @@ object Menu extends DispatchSnippet {
         link <- loc.createDefaultLink
         linkText <- loc.linkText
       } yield {
-        s"$linkSelector $hrefSelector" #> link &
-          s"$linkSelector *" #> linkText
+        s"$linkSelector $hrefSelector" #> link & s"$linkSelector *" #> linkText
       }
     }
   }
@@ -473,11 +469,12 @@ object Menu extends DispatchSnippet {
       .map(Helpers.toBoolean) openOr false
 
     val text =
-      ("a" #> ((n: NodeSeq) =>
-        n match {
-          case e: Elem => e.child
-          case xs      => xs
-        })).apply(_text)
+      ("a" #>
+        ((n: NodeSeq) =>
+          n match {
+            case e: Elem => e.child
+            case xs      => xs
+          })).apply(_text)
 
     for { name <- S.attr("name").toList } yield {
       type T = Q forSome { type Q }
@@ -505,8 +502,7 @@ object Menu extends DispatchSnippet {
           } yield {
             Helpers.addCssClass(
               typedLoc.cssClassForMenuItem,
-              <a href={link}></a> %
-                S.prefixedAttrsToMetaData("a"))
+              <a href={link}></a> % S.prefixedAttrsToMetaData("a"))
           }) openOr { Text("") }
         }
 

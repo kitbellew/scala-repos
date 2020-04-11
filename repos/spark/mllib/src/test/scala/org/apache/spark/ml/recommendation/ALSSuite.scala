@@ -192,12 +192,13 @@ class ALSSuite
         val dstEncodedIndex = compressed.dstEncodedIndices(j)
         val dstBlockId = encoder.blockId(dstEncodedIndex)
         val dstLocalIndex = encoder.localIndex(dstEncodedIndex)
-        decompressed += (
+        decompressed +=
           (
-            compressed.srcIds(i),
-            dstBlockId,
-            dstLocalIndex,
-            compressed.ratings(j)))
+            (
+              compressed.srcIds(i),
+              dstBlockId,
+              dstLocalIndex,
+              compressed.ratings(j)))
         j += 1
       }
       i += 1
@@ -647,8 +648,8 @@ object ALSSuite {
     * This is useful for tests which need to exercise all Params, such as save/load.
     * This excludes input columns to simplify some tests.
     */
-  val allEstimatorParamSettings: Map[String, Any] =
-    allModelParamSettings ++ Map(
+  val allEstimatorParamSettings: Map[String, Any] = allModelParamSettings ++
+    Map(
       "maxIter" -> 1,
       "rank" -> 1,
       "regParam" -> 0.01,

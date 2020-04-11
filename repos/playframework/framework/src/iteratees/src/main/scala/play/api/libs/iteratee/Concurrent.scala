@@ -159,11 +159,12 @@ object Concurrent {
           redeemed() match {
             case None =>
               iteratees.transform(
-                _ :+ (
+                _ :+
                   (
-                    it,
-                    (result: Promise[Iteratee[E, A]])
-                      .asInstanceOf[Promise[Iteratee[E, _]]])))
+                    (
+                      it,
+                      (result: Promise[Iteratee[E, A]])
+                        .asInstanceOf[Promise[Iteratee[E, _]]])))
               None
             case Some(notWaiting) => Some(notWaiting)
           }
@@ -264,10 +265,8 @@ object Concurrent {
           case other =>
             Iteratee.flatten(
               Future.firstCompletedOf(
-                it.unflatten.map(Left(_))(dec) :: timeoutFuture(
-                  Right(()),
-                  timeout,
-                  unit) :: Nil)(dec).map {
+                it.unflatten.map(Left(_))(dec) ::
+                  timeoutFuture(Right(()), timeout, unit) :: Nil)(dec).map {
                 case Left(Step.Cont(k)) => Cont(step(k(other)))
                 case Left(done)         => Done(done.it, other)
                 case Right(_)           => Error("iteratee is taking too long", other)
@@ -418,8 +417,8 @@ object Concurrent {
     */
   def dropInputIfNotReady[E](
       duration: Long,
-      unit: java.util.concurrent.TimeUnit =
-        java.util.concurrent.TimeUnit.MILLISECONDS): Enumeratee[E, E] =
+      unit: java.util.concurrent.TimeUnit = java.util.concurrent.TimeUnit
+        .MILLISECONDS): Enumeratee[E, E] =
     new Enumeratee[E, E] {
 
       val busy = scala.concurrent.stm.Ref(false)
@@ -722,11 +721,12 @@ object Concurrent {
               redeemed() match {
                 case None =>
                   iteratees.transform(
-                    _ :+ (
+                    _ :+
                       (
-                        it,
-                        (result: Promise[Iteratee[E, A]])
-                          .asInstanceOf[Promise[Iteratee[E, _]]])))
+                        (
+                          it,
+                          (result: Promise[Iteratee[E, A]])
+                            .asInstanceOf[Promise[Iteratee[E, _]]])))
                   None
                 case Some(notWaiting) => Some(notWaiting)
               }
@@ -856,9 +856,10 @@ object Concurrent {
                 ref() = newRef
                 newRef
               }
-              e |>> refIteratee(
-                newRef
-              ) //TODO maybe do something if the enumerator is done, maybe not
+              e |>>
+                refIteratee(
+                  newRef
+                ) //TODO maybe do something if the enumerator is done, maybe not
               false
             })
           }

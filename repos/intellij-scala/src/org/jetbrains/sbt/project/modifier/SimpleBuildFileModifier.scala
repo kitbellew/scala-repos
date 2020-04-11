@@ -109,8 +109,9 @@ object SimpleBuildFileModifier {
     ScalaPsiElementFactory.createNewLine(PsiManager.getInstance(project))
 
   def createSeqString(normalIndent: String, seq: Seq[String]): String =
-    "Seq(\n" + seq.tail
-      .fold(normalIndent + seq.head)(_ + ",\n" + normalIndent + _) + "\n)"
+    "Seq(\n" +
+      seq.tail.fold(normalIndent + seq.head)(_ + ",\n" + normalIndent + _) +
+      "\n)"
 
   def createSeqPsiExpr(
       project: IJProject,

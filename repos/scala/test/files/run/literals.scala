@@ -35,8 +35,8 @@ object Test {
     //check_success("\"\\0x61\\0x62\".trim() == \"x61\\0x62\"", "\0x61\0x62".substring(1), "x61\0x62")
     check_success(
       """"\0x61\0x62".getBytes == Array(0, 120, ...)""",
-      "\0x61\0x62".getBytes(io.Codec.UTF8.charSet) sameElements Array[Byte](
-        0, 120, 54, 49, 0, 120, 54, 50),
+      "\0x61\0x62".getBytes(io.Codec.UTF8.charSet) sameElements
+        Array[Byte](0, 120, 54, 49, 0, 120, 54, 50),
       true)
 
     // boolean

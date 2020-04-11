@@ -150,12 +150,9 @@ class TypeParameter(
   override def equals(other: Any): Boolean =
     other match {
       case that: TypeParameter =>
-        (that canEqual this) &&
-          name == that.name &&
-          typeParams == that.typeParams &&
-          lowerType() == that.lowerType() &&
-          upperType() == that.upperType() &&
-          ptp == that.ptp
+        (that canEqual this) && name == that.name &&
+          typeParams == that.typeParams && lowerType() == that.lowerType() &&
+          upperType() == that.upperType() && ptp == that.ptp
       case _ => false
     }
 
@@ -327,8 +324,8 @@ case class ScTypePolymorphicType(
             }
             if (pair != null) {
               val (tpName, id) = pair
-              if (tp.name == tpName && id == ScalaPsiUtil
-                    .getPsiElementId(tp.ptp)) {
+              if (tp.name == tpName &&
+                  id == ScalaPsiUtil.getPsiElementId(tp.ptp)) {
                 if (i == -1) contraVariant += 1 else coOrInVariant += 1
               }
             }
@@ -352,9 +349,8 @@ case class ScTypePolymorphicType(
       typez.recursiveUpdate {
         case tpt: ScTypeParameterType =>
           typeParameters.find(tp =>
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
-              tpt.name, tpt.getId
-            )) match {
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+              (tpt.name, tpt.getId)) match {
             case None => (true, tpt)
             case _ =>
               hasRecursiveTypeParameters = true
@@ -389,9 +385,8 @@ case class ScTypePolymorphicType(
       typez.recursiveUpdate {
         case tpt: ScTypeParameterType =>
           typeParameters.find(tp =>
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
-              tpt.name, tpt.getId
-            )) match {
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+              (tpt.name, tpt.getId)) match {
             case None => (true, tpt)
             case _ =>
               hasRecursiveTypeParameters = true

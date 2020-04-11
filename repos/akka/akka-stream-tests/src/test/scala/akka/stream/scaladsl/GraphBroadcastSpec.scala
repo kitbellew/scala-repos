@@ -25,10 +25,10 @@ class GraphBroadcastSpec extends AkkaSpec {
       RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
         val bcast = b.add(Broadcast[Int](2))
         Source(List(1, 2, 3)) ~> bcast.in
-        bcast.out(0) ~> Flow[Int]
-          .buffer(16, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c1)
-        bcast.out(1) ~> Flow[Int]
-          .buffer(16, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c2)
+        bcast.out(0) ~> Flow[Int].buffer(16, OverflowStrategy.backpressure) ~>
+          Sink.fromSubscriber(c1)
+        bcast.out(1) ~> Flow[Int].buffer(16, OverflowStrategy.backpressure) ~>
+          Sink.fromSubscriber(c2)
         ClosedShape
       }).run()
 
@@ -239,49 +239,53 @@ class GraphBroadcastSpec extends AkkaSpec {
       Await.result(result, 3.seconds) should be(List.fill(22)(List(1, 2, 3)))
     }
 
-    "produce to other even though downstream cancels" in assertAllStagesStopped {
-      val c1 = TestSubscriber.manualProbe[Int]()
-      val c2 = TestSubscriber.manualProbe[Int]()
+    "produce to other even though downstream cancels" in
+      assertAllStagesStopped {
+        val c1 = TestSubscriber.manualProbe[Int]()
+        val c2 = TestSubscriber.manualProbe[Int]()
 
-      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
-        val bcast = b.add(Broadcast[Int](2))
-        Source(List(1, 2, 3)) ~> bcast.in
-        bcast.out(0) ~> Flow[Int] ~> Sink.fromSubscriber(c1)
-        bcast.out(1) ~> Flow[Int] ~> Sink.fromSubscriber(c2)
-        ClosedShape
-      }).run()
+        RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+          val bcast = b.add(Broadcast[Int](2))
+          Source(List(1, 2, 3)) ~> bcast.in
+          bcast.out(0) ~> Flow[Int] ~> Sink.fromSubscriber(c1)
+          bcast.out(1) ~> Flow[Int] ~> Sink.fromSubscriber(c2)
+          ClosedShape
+        }).run()
 
-      val sub1 = c1.expectSubscription()
-      sub1.cancel()
-      val sub2 = c2.expectSubscription()
-      sub2.request(3)
-      c2.expectNext(1)
-      c2.expectNext(2)
-      c2.expectNext(3)
-      c2.expectComplete()
-    }
+        val sub1 = c1.expectSubscription()
+        sub1.cancel()
+        val sub2 = c2.expectSubscription()
+        sub2.request(3)
+        c2.expectNext(1)
+        c2.expectNext(2)
+        c2.expectNext(3)
+        c2.expectComplete()
+      }
 
-    "produce to downstream even though other cancels" in assertAllStagesStopped {
-      val c1 = TestSubscriber.manualProbe[Int]()
-      val c2 = TestSubscriber.manualProbe[Int]()
+    "produce to downstream even though other cancels" in
+      assertAllStagesStopped {
+        val c1 = TestSubscriber.manualProbe[Int]()
+        val c2 = TestSubscriber.manualProbe[Int]()
 
-      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
-        val bcast = b.add(Broadcast[Int](2))
-        Source(List(1, 2, 3)) ~> bcast.in
-        bcast.out(0) ~> Flow[Int].named("identity-a") ~> Sink.fromSubscriber(c1)
-        bcast.out(1) ~> Flow[Int].named("identity-b") ~> Sink.fromSubscriber(c2)
-        ClosedShape
-      }).run()
+        RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+          val bcast = b.add(Broadcast[Int](2))
+          Source(List(1, 2, 3)) ~> bcast.in
+          bcast.out(0) ~> Flow[Int].named("identity-a") ~>
+            Sink.fromSubscriber(c1)
+          bcast.out(1) ~> Flow[Int].named("identity-b") ~>
+            Sink.fromSubscriber(c2)
+          ClosedShape
+        }).run()
 
-      val sub1 = c1.expectSubscription()
-      val sub2 = c2.expectSubscription()
-      sub2.cancel()
-      sub1.request(3)
-      c1.expectNext(1)
-      c1.expectNext(2)
-      c1.expectNext(3)
-      c1.expectComplete()
-    }
+        val sub1 = c1.expectSubscription()
+        val sub2 = c2.expectSubscription()
+        sub2.cancel()
+        sub1.request(3)
+        c1.expectNext(1)
+        c1.expectNext(2)
+        c1.expectNext(3)
+        c1.expectComplete()
+      }
 
     "cancel upstream when downstreams cancel" in assertAllStagesStopped {
       val p1 = TestPublisher.manualProbe[Int]()

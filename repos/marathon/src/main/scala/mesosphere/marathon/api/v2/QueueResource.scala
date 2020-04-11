@@ -46,8 +46,8 @@ class QueueResource @Inject() (
               "app" -> taskCount.app,
               "count" -> taskCount.tasksLeftToLaunch,
               "delay" -> Json.obj(
-                "timeLeftSeconds" -> math
-                  .max(0, timeLeft.toSeconds), //deadlines can be negative
+                "timeLeftSeconds" ->
+                  math.max(0, timeLeft.toSeconds), //deadlines can be negative
                 "overdue" -> (timeLeft < 0.seconds))
             )
         }

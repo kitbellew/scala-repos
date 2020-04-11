@@ -144,8 +144,7 @@ object Dentry {
 
   implicit val equiv: Equiv[Dentry] = new Equiv[Dentry] {
     def equiv(d1: Dentry, d2: Dentry): Boolean =
-      (d1.prefix == d2.prefix &&
-        d1.dst.simplified == d2.dst.simplified)
+      (d1.prefix == d2.prefix && d1.dst.simplified == d2.dst.simplified)
   }
 }
 
@@ -155,8 +154,9 @@ object Dentry {
 object Dtab {
   implicit val equiv: Equiv[Dtab] = new Equiv[Dtab] {
     def equiv(d1: Dtab, d2: Dtab): Boolean =
-      (d1.size == d2.size &&
-        d1.zip(d2).forall { case (de1, de2) => Equiv[Dentry].equiv(de1, de2) })
+      (d1.size == d2.size && d1.zip(d2).forall {
+        case (de1, de2) => Equiv[Dentry].equiv(de1, de2)
+      })
   }
 
   /**

@@ -53,8 +53,8 @@ object ForumTopic extends LilaController with ForumController {
             case (categ, topic, posts) =>
               ctx.userId ?? Env.timeline.status(s"forum:${topic.id}") flatMap {
                 unsub =>
-                  (!posts.hasNextPage && isGrantedWrite(categSlug) && topic
-                    .open) ?? forms.postWithCaptcha.map(_.some) map { form =>
+                  (!posts.hasNextPage && isGrantedWrite(categSlug) &&
+                  topic.open) ?? forms.postWithCaptcha.map(_.some) map { form =>
                     html.forum.topic.show(categ, topic, posts, form, unsub)
                   }
               }

@@ -55,9 +55,7 @@ private[http] trait LiftMerge {
     val allJs =
       LiftRules.javaScriptSettings.vend().map { settingsFn =>
         LiftJavaScript.initCmd(settingsFn(this))
-      }.toList ++
-        S.jsToAppend() ++
-        List(eventJs)
+      }.toList ++ S.jsToAppend() ++ List(eventJs)
 
     allJs.foldLeft(js.JsCmds.Noop)(_ & _)
   }
@@ -81,8 +79,8 @@ private[http] trait LiftMerge {
     def waitUntilSnippetsDone() {
       val myMillis = millis
       snippetHashs.synchronized {
-        if (myMillis >= waitUntil || snippetHashs.isEmpty || !snippetHashs
-              .values.toIterator.contains(Empty)) ()
+        if (myMillis >= waitUntil || snippetHashs.isEmpty ||
+            !snippetHashs.values.toIterator.contains(Empty)) ()
         else {
           snippetHashs.wait(waitUntil - myMillis)
           waitUntilSnippetsDone()
@@ -107,11 +105,10 @@ private[http] trait LiftMerge {
         e.child.find {
           case e: Elem if e.label == "head" => true
           case _                            => false
-        }.isDefined &&
-          e.child.find {
-            case e: Elem if e.label == "body" => true
-            case _                            => false
-          }.isDefined
+        }.isDefined && e.child.find {
+          case e: Elem if e.label == "body" => true
+          case _                            => false
+        }.isDefined
       case _ => false
     }.isDefined
 
@@ -150,8 +147,8 @@ private[http] trait LiftMerge {
               startingState.copy(htmlDescendant = true && mergeHeadAndTail)
 
             case element: Elem
-                if element
-                  .label == "head" && htmlDescendant && !bodyDescendant =>
+                if element.label == "head" && htmlDescendant &&
+                  !bodyDescendant =>
               headElement = element
 
               startingState.copy(headChild = true && mergeHeadAndTail)
@@ -159,15 +156,13 @@ private[http] trait LiftMerge {
             case element: Elem
                 if mergeHeadAndTail &&
                   (element.label == "head" ||
-                    element.label.startsWith("head_")) &&
-                  htmlDescendant &&
+                    element.label.startsWith("head_")) && htmlDescendant &&
                   bodyDescendant => startingState.copy(headInBodyChild = true)
 
             case element: Elem
-                if mergeHeadAndTail &&
-                  element.label == "tail" &&
-                  htmlDescendant &&
-                  bodyDescendant => startingState.copy(tailInBodyChild = true)
+                if mergeHeadAndTail && element.label == "tail" &&
+                  htmlDescendant && bodyDescendant =>
+              startingState.copy(tailInBodyChild = true)
 
             case element: Elem if element.label == "body" && htmlDescendant =>
               bodyElement = element
@@ -201,8 +196,7 @@ private[http] trait LiftMerge {
           }.map { normalizedResults: NodeAndEventJs =>
             node match {
               case e: Elem
-                  if e.label == "node" &&
-                    e.prefix == "lift_deferred" =>
+                  if e.label == "node" && e.prefix == "lift_deferred" =>
                 val deferredNodes: Seq[NodesAndEventJs] = for {
                   idAttribute <- e.attributes("id").take(1)
                   id = idAttribute.text
@@ -254,11 +248,7 @@ private[http] trait LiftMerge {
 
       // Appends ajax script to body
       if (LiftRules.autoIncludeAjaxCalc.vend().apply(this)) {
-        bodyChildren +=
-          <script src={
-            S.encodeURL(
-              contextPath + "/" + LiftRules.resourceServerPath + "/lift.js")
-          }
+        bodyChildren += <script src={S.encodeURL(contextPath + "/" + LiftRules.resourceServerPath + "/lift.js")}
                 type="text/javascript"/>
         bodyChildren += nl
       }
@@ -279,8 +269,8 @@ private[http] trait LiftMerge {
         if (stateful_? && (autoIncludeComet || LiftRules.enableLiftGC)) {
           ("data-lift-gc" -> RenderVersion.get) ::
             (if (autoIncludeComet) {
-               ("data-lift-session-id" -> (S.session
-                 .map(_.uniqueId) openOr "xx")) ::
+               ("data-lift-session-id" ->
+                 (S.session.map(_.uniqueId) openOr "xx")) ::
                  S.requestCometVersions.is.toList.map {
                    case CometVersionPair(guid, version) =>
                      (s"data-lift-comet-$guid" -> version.toString)
@@ -291,8 +281,9 @@ private[http] trait LiftMerge {
       htmlKids += nl
       htmlKids += headElement.copy(child = headChildren.toList)
       htmlKids += nl
-      htmlKids += bodyAttributes
-        .foldLeft(bodyElement.copy(child = bodyChildren.toList))(_ % _)
+      htmlKids +=
+        bodyAttributes
+          .foldLeft(bodyElement.copy(child = bodyChildren.toList))(_ % _)
       htmlKids += nl
 
       val tmpRet = Elem(

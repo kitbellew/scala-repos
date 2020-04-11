@@ -40,9 +40,8 @@ object AhcConfigSpec extends Specification with Mockito {
       parser.parse()
     }
 
-    "case class defaults must match reference.conf defaults" in new WithApplication {
-      AhcWSClientConfig() must_== parseThis("")
-    }
+    "case class defaults must match reference.conf defaults" in
+      new WithApplication { AhcWSClientConfig() must_== parseThis("") }
 
     "parse ws ahc section" in new WithApplication {
       val actual = parseThis(
@@ -74,21 +73,23 @@ object AhcConfigSpec extends Specification with Mockito {
         actual.keepAlive must beTrue
       }
 
-      "throw exception on play.ws.ning.allowPoolingConnection" in new WithApplication {
-        {
-          parseThis("""
+      "throw exception on play.ws.ning.allowPoolingConnection" in
+        new WithApplication {
+          {
+            parseThis("""
                       |play.ws.ning.allowPoolingConnection = false
                     """.stripMargin)
-        }.must(throwAn[play.api.PlayException])
-      }
+          }.must(throwAn[play.api.PlayException])
+        }
 
-      "throw exception on play.ws.ning.allowSslConnectionPool" in new WithApplication {
-        {
-          parseThis("""
+      "throw exception on play.ws.ning.allowSslConnectionPool" in
+        new WithApplication {
+          {
+            parseThis("""
                       |play.ws.ning.allowSslConnectionPool = false
                     """.stripMargin)
-        }.must(throwAn[play.api.PlayException])
-      }
+          }.must(throwAn[play.api.PlayException])
+        }
     }
 
     "with basic options" should {
@@ -100,14 +101,14 @@ object AhcConfigSpec extends Specification with Mockito {
 
         actual.getReadTimeout must_== defaultWsConfig.idleTimeout.toMillis
         actual.getRequestTimeout must_== defaultWsConfig.requestTimeout.toMillis
-        actual.getConnectTimeout must_== defaultWsConfig.connectionTimeout
-          .toMillis
+        actual.getConnectTimeout must_==
+          defaultWsConfig.connectionTimeout.toMillis
         actual.isFollowRedirect must_== defaultWsConfig.followRedirects
 
-        actual.getEnabledCipherSuites.toSeq must not contain Ciphers
-          .deprecatedCiphers
-        actual.getEnabledProtocols.toSeq must not contain Protocols
-          .deprecatedProtocols
+        actual.getEnabledCipherSuites.toSeq must not contain
+          Ciphers.deprecatedCiphers
+        actual.getEnabledProtocols.toSeq must not contain
+          Protocols.deprecatedProtocols
       }
 
       "use an explicit idle timeout" in {
@@ -160,8 +161,8 @@ object AhcConfigSpec extends Specification with Mockito {
 
           proxyServerSelector must not(beNull)
 
-          proxyServerSelector must not be_== ProxyServerSelector
-            .NO_PROXY_SELECTOR
+          proxyServerSelector must not be_==
+            ProxyServerSelector.NO_PROXY_SELECTOR
         } finally {
           // Unset http.proxyHost
           System.clearProperty(ProxyUtils.PROXY_HOST)
@@ -317,8 +318,8 @@ object AhcConfigSpec extends Specification with Mockito {
 
           val actual = builder.configureProtocols(existingProtocols, sslConfig)
 
-          actual.toSeq must containTheSameElementsAs(
-            Protocols.recommendedProtocols)
+          actual.toSeq must
+            containTheSameElementsAs(Protocols.recommendedProtocols)
         }
 
         "provide explicit protocols if specified" in {
@@ -431,8 +432,8 @@ object AhcConfigSpec extends Specification with Mockito {
 
           val actual = builder.configureCipherSuites(existingCiphers, sslConfig)
 
-          actual.toSeq must containTheSameElementsAs(
-            Seq("badone", "goodone", "goodtwo"))
+          actual.toSeq must
+            containTheSameElementsAs(Seq("badone", "goodone", "goodtwo"))
         }
 
       }

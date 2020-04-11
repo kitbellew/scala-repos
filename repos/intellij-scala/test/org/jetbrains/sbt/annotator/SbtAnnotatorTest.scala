@@ -134,10 +134,9 @@ object Expectations {
       SbtBundle("sbt.annotation.expressionMustConform", "String"))
   )
 
-  val sbt013 = sbt0137 :+
-    Error(
-      "version := \"SNAPSHOT\"",
-      SbtBundle("sbt.annotation.blankLineRequired", "0.13.1"))
+  val sbt013 = sbt0137 :+ Error(
+    "version := \"SNAPSHOT\"",
+    SbtBundle("sbt.annotation.blankLineRequired", "0.13.1"))
 
   val sbt012 = sbt0137 ++ Seq(
     Error(

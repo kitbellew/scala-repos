@@ -41,8 +41,8 @@ class SFXDelegateSpec extends FlatSpec {
     new DoubleProperty(null, "double property (with different name)")
 
   "SFXDelegate" should "delegate toString" in {
-    doubleProperty.toString should be(
-      "[SFX]DoubleProperty [name: double property, value: 0.0]")
+    doubleProperty.toString should
+      be("[SFX]DoubleProperty [name: double property, value: 0.0]")
   }
 
   it should "delegate equals" in {

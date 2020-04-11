@@ -57,13 +57,15 @@ private[round] final class Socket(
 
     private def isHostingSimul: Fu[Boolean] =
       userId ?? { u =>
-        simulActor ? lila.hub.actorApi.simul.GetHostIds mapTo manifest[Set[
-          String]] map (_ contains u)
+        simulActor ? lila.hub.actorApi.simul.GetHostIds mapTo
+          manifest[Set[String]] map (_ contains u)
       }
 
     def isGone =
-      if (time < (nowMillis - isBye.fold(ragequitTimeout, disconnectTimeout)
-            .toMillis)) isHostingSimul map (!_)
+      if (time <
+            (nowMillis -
+              isBye.fold(ragequitTimeout, disconnectTimeout).toMillis))
+        isHostingSimul map (!_)
       else fuccess(false)
   }
 

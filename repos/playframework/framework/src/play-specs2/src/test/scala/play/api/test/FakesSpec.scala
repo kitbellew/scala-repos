@@ -74,19 +74,21 @@ object FakesSpec extends PlaySpecification {
       }
     }
 
-    "set a Content-Type header when one is unspecified and required" in new WithApplication() {
-      val request = FakeRequest(GET, "/testCall")
-        .withJsonBody(Json.obj("foo" -> "bar"))
+    "set a Content-Type header when one is unspecified and required" in
+      new WithApplication() {
+        val request = FakeRequest(GET, "/testCall")
+          .withJsonBody(Json.obj("foo" -> "bar"))
 
-      contentTypeForFakeRequest(request) must contain("application/json")
-    }
-    "not overwrite the Content-Type header when specified" in new WithApplication() {
-      val request = FakeRequest(GET, "/testCall")
-        .withJsonBody(Json.obj("foo" -> "bar"))
-        .withHeaders(CONTENT_TYPE -> "application/test+json")
+        contentTypeForFakeRequest(request) must contain("application/json")
+      }
+    "not overwrite the Content-Type header when specified" in
+      new WithApplication() {
+        val request = FakeRequest(GET, "/testCall")
+          .withJsonBody(Json.obj("foo" -> "bar"))
+          .withHeaders(CONTENT_TYPE -> "application/test+json")
 
-      contentTypeForFakeRequest(request) must contain("application/test+json")
-    }
+        contentTypeForFakeRequest(request) must contain("application/test+json")
+      }
   }
 
   def contentTypeForFakeRequest[T](request: FakeRequest[AnyContentAsJson])(

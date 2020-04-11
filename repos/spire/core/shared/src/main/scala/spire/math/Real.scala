@@ -305,13 +305,12 @@ object Real extends RealInstances {
   def apply(s: String): Real = Exact(Rational(s))
 
   lazy val pi: Real =
-    Real(16) * atan(Real(Rational(1, 5))) - Real.four * atan(
-      Real(Rational(1, 239)))
+    Real(16) * atan(Real(Rational(1, 5))) -
+      Real.four * atan(Real(Rational(1, 239)))
 
   lazy val e: Real = exp(Real.one)
 
-  lazy val phi: Real =
-    (Real.one + Real(5).sqrt) / Real.two
+  lazy val phi: Real = (Real.one + Real(5).sqrt) / Real.two
 
   def log(x: Real): Real = {
     val t = x(2)

@@ -156,8 +156,8 @@ class IngestServiceHandler(
       : EitherT[Future, NonEmptyList[String], IngestResult] =
     right(chooseProcessing(apiKey, path, authorities, request)) flatMap {
       case Some(processing) => EitherT {
-          (processing.forRequest(request) tuple request.content
-            .toSuccess(nels("Ingest request missing body content."))) traverse {
+          (processing.forRequest(request) tuple request.content.toSuccess(nels(
+            "Ingest request missing body content."))) traverse {
             case (processor, data) =>
               processor.ingest(durability, errorHandling, storeMode, data)
           } map { _.disjunction }
@@ -182,7 +182,8 @@ class IngestServiceHandler(
 
   private def jobErrorResponse(message: String) = {
     logger.error(
-      "Internal error during ingest; got bad response from the jobs server: " + message)
+      "Internal error during ingest; got bad response from the jobs server: " +
+        message)
     HttpResponse(
       InternalServerError,
       content = Some(JString("Internal error from job service: " + message)))
@@ -233,8 +234,8 @@ class IngestServiceHandler(
                 case _ =>
                   left[Future, String, (Durability, WriteMode)](
                     Promise.successful(
-                      "HTTP method " + request
-                        .method + " not supported for data ingest."))
+                      "HTTP method " + request.method +
+                        " not supported for data ingest."))
               }
 
               durabilityM flatMap {
@@ -326,7 +327,8 @@ class IngestServiceHandler(
                 HttpResponse(
                   BadRequest,
                   content = Some(JString(
-                    "Errors were encountered processing your ingest request: " + errors)))
+                    "Errors were encountered processing your ingest request: " +
+                      errors)))
               }
             } getOrElse {
               logger.warn(

@@ -98,8 +98,8 @@ class OffsetCheckpoint(val file: File) extends Logging {
             while (line != null) {
               WhiteSpacesPattern.split(line) match {
                 case Array(topic, partition, offset) =>
-                  offsets += TopicAndPartition(topic, partition.toInt) -> offset
-                    .toLong
+                  offsets += TopicAndPartition(topic, partition.toInt) ->
+                    offset.toLong
                   line = reader.readLine()
                 case _ => throw malformedLineException(line)
               }
@@ -110,7 +110,8 @@ class OffsetCheckpoint(val file: File) extends Logging {
             offsets
           case _ =>
             throw new IOException(
-              "Unrecognized version of the highwatermark checkpoint file: " + version)
+              "Unrecognized version of the highwatermark checkpoint file: " +
+                version)
         }
       } catch {
         case e: NumberFormatException => throw malformedLineException(line)

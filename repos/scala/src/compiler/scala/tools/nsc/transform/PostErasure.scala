@@ -37,9 +37,9 @@ trait PostErasure
        */
       def binop(lhs: Tree, op: Symbol, rhs: Tree) =
         finish(
-          localTyper typed (Apply(
-            Select(lhs, op.name) setPos tree.pos,
-            rhs :: Nil) setPos tree.pos))
+          localTyper typed
+            (Apply(Select(lhs, op.name) setPos tree.pos, rhs :: Nil) setPos
+              tree.pos))
 
       super.transform(tree) setType elimErasedValueType(tree.tpe) match {
         case AsInstanceOf(v, tpe) if v.tpe <:< tpe =>

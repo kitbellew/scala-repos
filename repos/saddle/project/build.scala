@@ -48,9 +48,8 @@ object SaddleBuild extends sbt.Build {
                 |import org.saddle._
                 |import org.saddle.time._
                 |import org.saddle.io._""".stripMargin('|'),
-      unmanagedClasspath in (
-        LocalProject("saddle-core"), Test
-      ) <++= (fullClasspath in (LocalProject("saddle-test-framework"), Test)),
+      unmanagedClasspath in (LocalProject("saddle-core"), Test) <++=
+        (fullClasspath in (LocalProject("saddle-test-framework"), Test)),
       libraryDependencies <++= scalaVersion(v =>
         Seq(
           "joda-time" % "joda-time" % "2.1",
@@ -86,15 +85,15 @@ object SaddleBuild extends sbt.Build {
       id = "saddle-test-framework",
       base = file("saddle-test-framework"),
       settings = Seq(
-        libraryDependencies <++= scalaVersion(v =>
-          Shared.testDeps(v, "compile")))) dependsOn (core)
+        libraryDependencies <++=
+          scalaVersion(v => Shared.testDeps(v, "compile")))) dependsOn (core)
 
   def project(id: String, base: File, settings: Seq[Project.Setting[_]] = Nil) =
     Project(
       id = id,
       base = base,
-      settings = assemblySettings ++ Project.defaultSettings ++ Shared
-        .settings ++ releaseSettings ++ settings)
+      settings = assemblySettings ++ Project.defaultSettings ++
+        Shared.settings ++ releaseSettings ++ settings)
 }
 
 object Shared {
@@ -152,8 +151,10 @@ object Shared {
       "[%s]$ " format (Project.extract(state).currentProject.id)
     },
     resolvers ++= Seq(
-      "Sonatype OSS Releases" at "http://oss.sonatype.org/content/repositories/releases/",
-      "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
+      "Sonatype OSS Releases" at
+        "http://oss.sonatype.org/content/repositories/releases/",
+      "Sonatype OSS Snapshots" at
+        "http://oss.sonatype.org/content/repositories/snapshots/"
     ),
     publishTo <<= (version) { version: String =>
       val nexus = "https://oss.sonatype.org/"

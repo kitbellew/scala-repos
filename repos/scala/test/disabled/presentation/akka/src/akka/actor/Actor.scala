@@ -363,12 +363,11 @@ trait Actor {
     val optRef = Actor.actorRefInCreation.get
     if (optRef.isEmpty)
       throw new ActorInitializationException(
-        "ActorRef for instance of actor [" + getClass
-          .getName + "] is not in scope." +
+        "ActorRef for instance of actor [" + getClass.getName +
+          "] is not in scope." +
           "\n\tYou can not create an instance of an actor explicitly using 'new MyActor'." +
           "\n\tYou have to use one of the factory methods in the 'Actor' object to create a new actor." +
-          "\n\tEither use:" +
-          "\n\t\t'val actor = Actor.actorOf[MyActor]', or" +
+          "\n\tEither use:" + "\n\t\t'val actor = Actor.actorOf[MyActor]', or" +
           "\n\t\t'val actor = Actor.actorOf(new MyActor(..))'")
     Actor.actorRefInCreation.set(None)
     optRef.asInstanceOf[Some[ActorRef]].get.id =
@@ -473,12 +472,12 @@ trait Actor {
     message match { //Same logic as apply(msg) but without the unhandled catch-all
       case l: AutoReceivedMessage => true
       case msg
-          if behaviorStack.nonEmpty &&
-            behaviorStack.head.isDefinedAt(msg) => true
+          if behaviorStack.nonEmpty && behaviorStack.head.isDefinedAt(msg) =>
+        true
       case msg
-          if behaviorStack.isEmpty &&
-            processingBehavior.isDefinedAt(msg) => true
-      case _                                    => false
+          if behaviorStack.isEmpty && processingBehavior.isDefinedAt(msg) =>
+        true
+      case _ => false
     }
   }
 
@@ -510,11 +509,11 @@ trait Actor {
     msg match {
       case l: AutoReceivedMessage => autoReceiveMessage(l)
       case msg
-          if behaviorStack.nonEmpty &&
-            behaviorStack.head.isDefinedAt(msg) => behaviorStack.head.apply(msg)
+          if behaviorStack.nonEmpty && behaviorStack.head.isDefinedAt(msg) =>
+        behaviorStack.head.apply(msg)
       case msg
-          if behaviorStack.isEmpty &&
-            processingBehavior.isDefinedAt(msg) => processingBehavior.apply(msg)
+          if behaviorStack.isEmpty && processingBehavior.isDefinedAt(msg) =>
+        processingBehavior.apply(msg)
       case unknown =>
         unhandled(
           unknown

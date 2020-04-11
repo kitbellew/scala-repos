@@ -173,8 +173,8 @@ class LocalActorRefProviderSpec
       intercept[InvalidActorNameException](system.actorOf(Props.empty, ""))
         .getMessage should include("empty")
       intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, "$hallo")).getMessage should include(
-        "not start with `$`")
+        system.actorOf(Props.empty, "$hallo")).getMessage should
+        include("not start with `$`")
       intercept[InvalidActorNameException](system.actorOf(Props.empty, "a%"))
         .getMessage should include("Invalid actor path element")
       intercept[InvalidActorNameException](system.actorOf(Props.empty, "%3"))
@@ -195,14 +195,14 @@ class LocalActorRefProviderSpec
         .getMessage should include("include only ASCII")
 
       intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, """he"llo""")).getMessage should include(
-        """["] at position: 2""")
+        system.actorOf(Props.empty, """he"llo""")).getMessage should
+        include("""["] at position: 2""")
       intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, """$hello""")).getMessage should include(
-        """[$] at position: 0""")
+        system.actorOf(Props.empty, """$hello""")).getMessage should
+        include("""[$] at position: 0""")
       intercept[InvalidActorNameException](
-        system.actorOf(Props.empty, """hell>o""")).getMessage should include(
-        """[>] at position: 4""")
+        system.actorOf(Props.empty, """hell>o""")).getMessage should
+        include("""[>] at position: 4""")
     }
 
   }

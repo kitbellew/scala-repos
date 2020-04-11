@@ -64,8 +64,8 @@ class NaiveBayesSuite
       thetaData: Matrix,
       model: NaiveBayesModel): Unit = {
     assert(
-      Vectors.dense(model.pi.toArray.map(math.exp)) ~==
-        Vectors.dense(piData.toArray.map(math.exp)) absTol 0.05,
+      Vectors.dense(model.pi.toArray.map(math.exp)) ~== Vectors.dense(
+        piData.toArray.map(math.exp)) absTol 0.05,
       "pi mismatch")
     assert(
       model.theta.map(math.exp) ~== thetaData.map(math.exp) absTol 0.05,
@@ -75,8 +75,8 @@ class NaiveBayesSuite
   def expectedMultinomialProbabilities(
       model: NaiveBayesModel,
       feature: Vector): Vector = {
-    val logClassProbs: BV[Double] = model.pi.toBreeze + model.theta
-      .multiply(feature).toBreeze
+    val logClassProbs: BV[Double] = model.pi.toBreeze +
+      model.theta.multiply(feature).toBreeze
     val classProbs = logClassProbs.toArray.map(math.exp)
     val classProbsSum = classProbs.sum
     Vectors.dense(classProbs.map(_ / classProbsSum))
@@ -89,8 +89,8 @@ class NaiveBayesSuite
     val negFeature = Vectors.dense(feature.toArray.map(v => 1.0 - v))
     val piTheta: BV[Double] = model.pi.toBreeze + model.theta.multiply(feature)
       .toBreeze
-    val logClassProbs: BV[Double] = piTheta + negThetaMatrix
-      .multiply(negFeature).toBreeze
+    val logClassProbs: BV[Double] = piTheta +
+      negThetaMatrix.multiply(negFeature).toBreeze
     val classProbs = logClassProbs.toArray.map(math.exp)
     val classProbsSum = classProbs.sum
     Vectors.dense(classProbs.map(_ / classProbsSum))

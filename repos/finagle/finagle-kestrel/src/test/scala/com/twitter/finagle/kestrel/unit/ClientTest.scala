@@ -180,8 +180,8 @@ class ClientTest extends FunSuite with MockitoSugar {
     promise.setInterruptHandler { case _cause => wasInterrupted = true }
 
     when(
-      finagledClient
-        .get(queueName, 1, Int.MaxValue, Int.MaxValue)) thenReturn promise
+      finagledClient.get(queueName, 1, Int.MaxValue, Int.MaxValue)) thenReturn
+      promise
 
     val rh = client.read(queueName)
 

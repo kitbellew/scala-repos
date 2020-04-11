@@ -27,19 +27,17 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
       (if (ddlEnabled) {
          "\n/** DDL for all tables. Call .create to execute. */" +
            (if (tables.length > 5)
-              "\nlazy val schema: profile.SchemaDescription = Array(" + tables
-                .map(_.TableValue.name + ".schema")
-                .mkString(", ") + ").reduceLeft(_ ++ _)"
+              "\nlazy val schema: profile.SchemaDescription = Array(" +
+                tables.map(_.TableValue.name + ".schema").mkString(", ") +
+                ").reduceLeft(_ ++ _)"
             else if (tables.nonEmpty)
-              "\nlazy val schema: profile.SchemaDescription = " + tables
-                .map(_.TableValue.name + ".schema").mkString(" ++ ")
+              "\nlazy val schema: profile.SchemaDescription = " +
+                tables.map(_.TableValue.name + ".schema").mkString(" ++ ")
             else
               "\nlazy val schema: profile.SchemaDescription = profile.DDL(Nil, Nil)") +
            "\n@deprecated(\"Use .schema instead of .ddl\", \"3.0\")" +
-           "\ndef ddl = schema" +
-           "\n\n"
-       } else "") +
-      tables.map(_.code.mkString("\n")).mkString("\n\n")
+           "\ndef ddl = schema" + "\n\n"
+       } else "") + tables.map(_.code.mkString("\n")).mkString("\n\n")
   }
 
   protected def tuple(i: Int) = termName(s"_${i + 1}")
@@ -156,8 +154,8 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR
       }
       def code = {
         val prns = parents.map(" with " + _).mkString("")
-        val args = model.name.schema.map(n => s"""Some("$n")""") ++ Seq(
-          "\"" + model.name.table + "\"")
+        val args = model.name.schema.map(n => s"""Some("$n")""") ++
+          Seq("\"" + model.name.table + "\"")
         s"""
 class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
           .mkString(", ")})$prns {
@@ -270,8 +268,8 @@ trait StringGeneratorHelpers
     def isIdent =
       if (s.isEmpty) false
       else
-        Character.isJavaIdentifierStart(s.head) && s.tail
-          .forall(Character.isJavaIdentifierPart)
+        Character.isJavaIdentifierStart(s.head) &&
+        s.tail.forall(Character.isJavaIdentifierPart)
     scalaKeywords.contains(s) || !isIdent
   }
   def termName(name: String) =

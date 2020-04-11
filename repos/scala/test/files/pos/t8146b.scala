@@ -74,22 +74,15 @@ class HListBench {
 
   trait B
       extends A[
-        Int :: Int :: Int :: Int :: Int ::
-          Int :: Int :: Int :: Int :: Int ::
-          Int :: Int :: Int :: Int :: Int ::
-          Int :: Int :: Int :: Int :: Int ::
-          Int :: Int :: Int :: Int :: Int ::
-          Int :: Int :: HNil] {
+        Int :: Int :: Int :: Int :: Int :: Int :: Int :: Int :: Int :: Int ::
+          Int :: Int :: Int :: Int :: Int :: Int :: Int :: Int :: Int :: Int ::
+          Int :: Int :: Int :: Int :: Int :: Int :: Int :: HNil] {
 
     def c: Column[Int]
 
     def * =
-      c :: c :: c :: c :: c ::
-        c :: c :: c :: c :: c ::
-        c :: c :: c :: c :: c ::
-        c :: c :: c :: c :: c ::
-        c :: c :: c :: c :: c ::
-        c :: c :: HNil
+      c :: c :: c :: c :: c :: c :: c :: c :: c :: c :: c :: c :: c :: c :: c ::
+        c :: c :: c :: c :: c :: c :: c :: c :: c :: c :: c :: c :: HNil
 
   }
 }

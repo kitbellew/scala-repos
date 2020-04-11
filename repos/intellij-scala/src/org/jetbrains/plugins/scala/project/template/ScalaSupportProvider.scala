@@ -20,8 +20,8 @@ class ScalaSupportProvider extends FrameworkSupportInModuleProvider {
   override def isEnabledForModuleType(
       moduleType: ModuleType[_ <: ModuleBuilder]) = {
     val id = moduleType.getId
-    id == ModuleTypeId
-      .JAVA_MODULE || id == "PLUGIN_MODULE" // PluginModuleType.getInstance.getId
+    id == ModuleTypeId.JAVA_MODULE ||
+    id == "PLUGIN_MODULE" // PluginModuleType.getInstance.getId
   }
 
   override def isSupportAlreadyAdded(

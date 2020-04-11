@@ -69,8 +69,8 @@ object HttpServer {
     val respond = new Respond
 
     // compose the Filters and Service together:
-    val myService: Service[Request, Response] =
-      handleExceptions andThen authorize andThen respond
+    val myService: Service[Request, Response] = handleExceptions andThen
+      authorize andThen respond
 
     val server: Server = ServerBuilder().codec(Http())
       .bindTo(new InetSocketAddress(8080)).name("httpserver").build(myService)

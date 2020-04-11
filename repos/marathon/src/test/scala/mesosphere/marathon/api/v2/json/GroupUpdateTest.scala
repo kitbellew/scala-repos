@@ -47,8 +47,8 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
     apps.get.apps should have size 1
     val app = apps.get.apps.head
     app.id.toString should be("/apps/app1")
-    app.dependencies should be(
-      Set("/apps/d1".toPath, "/test/foo".toPath, "/test".toPath))
+    app.dependencies should
+      be(Set("/apps/d1".toPath, "/test/foo".toPath, "/test".toPath))
   }
 
   test("A group update can be applied to existing entries") {
@@ -100,8 +100,8 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
     apps.get.apps should have size 1
     val app = apps.get.apps.head
     app.id.toString should be("/apps/app1")
-    app.dependencies should be(
-      Set("/apps/d1".toPath, "/test/foo".toPath, "/test".toPath))
+    app.dependencies should
+      be(Set("/apps/d1".toPath, "/test/foo".toPath, "/test".toPath))
   }
 
   test("GroupUpdate will update a Group correctly") {

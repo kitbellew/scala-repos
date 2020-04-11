@@ -80,9 +80,9 @@ object UserSpy {
         "user",
         BSONDocument(
           field -> BSONDocument("$in" -> values),
-          "user" -> BSONDocument("$ne" -> user.id)).some) map lila.db.BSON
-        .asStrings flatMap { userIds =>
-        userIds.nonEmpty ?? (UserRepo byIds userIds) map (_.toSet)
-      }
+          "user" -> BSONDocument("$ne" -> user.id)).some) map
+        lila.db.BSON.asStrings flatMap { userIds =>
+          userIds.nonEmpty ?? (UserRepo byIds userIds) map (_.toSet)
+        }
     }
 }

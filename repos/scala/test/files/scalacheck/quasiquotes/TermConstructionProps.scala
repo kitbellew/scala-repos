@@ -72,8 +72,7 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   property("unquote into new") = forAll { (name: TypeName, body: List[Tree]) =>
-    q"new $name { ..$body }" ≈
-      q"""{
+    q"new $name { ..$body }" ≈ q"""{
         final class $$anon extends $name {
           ..$body
         }
@@ -119,12 +118,13 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   def blockInvariant(quote: Tree, trees: List[Tree]) =
-    quote ≈ (trees match {
-      case Nil                       => q"{}"
-      case _ :+ last if !last.isTerm => Block(trees, q"()")
-      case head :: Nil               => head
-      case init :+ last              => Block(init, last)
-    })
+    quote ≈
+      (trees match {
+        case Nil                       => q"{}"
+        case _ :+ last if !last.isTerm => Block(trees, q"()")
+        case head :: Nil               => head
+        case init :+ last              => Block(init, last)
+      })
 
   property("unquote list of trees into block (1)") = forAll {
     (trees: List[Tree]) => blockInvariant(q"{ ..$trees }", trees)
@@ -318,7 +318,8 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
     val q"$a = $b = $c = $d = $e = $f = $g = $h = $k = $l" =
       q"a = b = c = d = e = f = g = h = k = l"
     assert(
-      a ≈ q"a" && b ≈ q"b" && c ≈ q"c" && d ≈ q"d" && e ≈ q"e" && g ≈ q"g" && h ≈ q"h" && k ≈ q"k" && l ≈ q"l")
+      a ≈ q"a" && b ≈ q"b" && c ≈ q"c" && d ≈ q"d" && e ≈ q"e" && g ≈ q"g" &&
+        h ≈ q"h" && k ≈ q"k" && l ≈ q"l")
   }
 
   property("SI-8385 a") = test {

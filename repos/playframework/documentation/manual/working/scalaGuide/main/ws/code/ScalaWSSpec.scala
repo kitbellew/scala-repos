@@ -495,8 +495,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       import play.api._
       import play.api.libs.ws._
 
-      val configuration = Configuration.reference ++ Configuration(
-        ConfigFactory.parseString("""
+      val configuration = Configuration.reference ++
+        Configuration(ConfigFactory.parseString("""
           |ws.followRedirects = true
         """.stripMargin))
 

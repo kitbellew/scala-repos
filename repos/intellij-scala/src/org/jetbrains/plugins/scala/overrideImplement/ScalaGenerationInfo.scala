@@ -190,8 +190,8 @@ object ScalaGenerationInfo {
           clauses.map(_.parameters.map(_.name).mkString("(", ", ", ")"))
             .mkString
         case method: PsiMethod =>
-          if (method.isAccessor && method.getParameterList
-                .getParametersCount == 0) ""
+          if (method.isAccessor &&
+              method.getParameterList.getParametersCount == 0) ""
           else
             method.getParameterList.getParameters.map(paramText)
               .mkString("(", ", ", ")")

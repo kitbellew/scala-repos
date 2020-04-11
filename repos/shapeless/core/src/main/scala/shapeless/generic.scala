@@ -309,16 +309,16 @@ trait CaseClassMacros extends ReprTypes {
     if (tpe.takesTypeArgs) appliedType(tpe, List(typeOf[Any])).dealias else tpe
 
   def isProductAux(tpe: Type): Boolean =
-    tpe.typeSymbol.isClass && (isCaseClassLike(
-      classSym(tpe)) || HasApplyUnapply(tpe) || HasCtorUnapply(tpe))
+    tpe.typeSymbol.isClass &&
+      (isCaseClassLike(classSym(tpe)) || HasApplyUnapply(tpe) ||
+        HasCtorUnapply(tpe))
 
   def isProduct(tpe: Type): Boolean =
     tpe =:= typeOf[Unit] || (!(tpe =:= typeOf[AnyRef]) && isProductAux(tpe))
 
   def isProduct1(tpe: Type): Boolean =
-    lowerKind(tpe) =:= typeOf[Unit] || (
-      !(lowerKind(tpe) =:= typeOf[AnyRef]) && isProductAux(tpe)
-    )
+    lowerKind(tpe) =:= typeOf[Unit] ||
+      (!(lowerKind(tpe) =:= typeOf[AnyRef]) && isProductAux(tpe))
 
   def isCoproduct(tpe: Type): Boolean = {
     val sym = tpe.typeSymbol
@@ -368,9 +368,8 @@ trait CaseClassMacros extends ReprTypes {
   def accessiblePrimaryCtorOf(tpe: Type): Option[Symbol] = {
     for {
       ctor <- tpe.decls.find { sym =>
-        sym.isMethod && sym.asMethod.isPrimaryConstructor && isAccessible(
-          tpe,
-          sym)
+        sym.isMethod && sym.asMethod.isPrimaryConstructor &&
+        isAccessible(tpe, sym)
       } if !ctor.isJava || productCtorsOf(tpe).size == 1
     } yield ctor
   }
@@ -441,8 +440,8 @@ trait CaseClassMacros extends ReprTypes {
                 val (valPre, valSym) = mkDependentRef(basePre, path)
                 c.internal.singleType(valPre, valSym)
               } else {
-                val path = suffix.tail.init.map(_.name.toTermName) :+ suffix
-                  .last.name.toTypeName
+                val path = suffix.tail.init.map(_.name.toTermName) :+
+                  suffix.last.name.toTypeName
                 val (subTpePre, subTpeSym) = mkDependentRef(basePre, path)
                 c.internal.typeRef(subTpePre, subTpeSym, substituteArgs)
               }
@@ -647,9 +646,9 @@ trait CaseClassMacros extends ReprTypes {
   def isCaseObjectLike(sym: ClassSymbol): Boolean = sym.isModuleClass
 
   def isCaseAccessorLike(sym: TermSymbol): Boolean =
-    !isNonGeneric(sym) && sym.isPublic && (if (sym.owner.asClass.isCaseClass)
-                                             sym.isCaseAccessor
-                                           else sym.isAccessor)
+    !isNonGeneric(sym) && sym.isPublic &&
+      (if (sym.owner.asClass.isCaseClass) sym.isCaseAccessor
+       else sym.isAccessor)
 
   def isSealedHierarchyClassSymbol(symbol: ClassSymbol): Boolean = {
     def helper(classSym: ClassSymbol): Boolean = {
@@ -849,10 +848,9 @@ trait CaseClassMacros extends ReprTypes {
       val sym = tpe.typeSymbol
       val companionTpe = sym.companion.info
       val applySym = companionTpe.member(TermName("apply"))
-      if (applySym.isTerm && !applySym.asTerm.isOverloaded && applySym
-            .isMethod && !isNonGeneric(applySym) && isAccessible(
-            companionTpe,
-            applySym)) {
+      if (applySym.isTerm && !applySym.asTerm.isOverloaded &&
+          applySym.isMethod && !isNonGeneric(applySym) &&
+          isAccessible(companionTpe, applySym)) {
         val applyParamss = applySym.asMethod.paramLists
         if (applyParamss.length == 1)
           alignFields(
@@ -868,10 +866,9 @@ trait CaseClassMacros extends ReprTypes {
       val sym = tpe.typeSymbol
       val companionTpe = sym.companion.info
       val unapplySym = companionTpe.member(TermName("unapply"))
-      if (unapplySym.isTerm && !unapplySym.asTerm.isOverloaded && unapplySym
-            .isMethod && !isNonGeneric(unapplySym) && isAccessible(
-            companionTpe,
-            unapplySym))
+      if (unapplySym.isTerm && !unapplySym.asTerm.isOverloaded &&
+          unapplySym.isMethod && !isNonGeneric(unapplySym) &&
+          isAccessible(companionTpe, unapplySym))
         unapplySym.asMethod.infoIn(companionTpe).finalResultType
           .baseType(symbolOf[Option[_]]) match {
           case TypeRef(_, _, List(o @ TypeRef(_, _, args)))
@@ -886,9 +883,8 @@ trait CaseClassMacros extends ReprTypes {
   object HasUniqueCtor {
     def unapply(tpe: Type): Option[List[(TermName, Type)]] =
       tpe.decls.find { sym =>
-        sym.isMethod && sym.asMethod.isPrimaryConstructor && isAccessible(
-          tpe,
-          sym)
+        sym.isMethod && sym.asMethod.isPrimaryConstructor &&
+        isAccessible(tpe, sym)
       } match {
         case Some(ctorSym) if !isNonGeneric(ctorSym) =>
           val ctorParamss = ctorSym.asMethod.infoIn(tpe).paramLists

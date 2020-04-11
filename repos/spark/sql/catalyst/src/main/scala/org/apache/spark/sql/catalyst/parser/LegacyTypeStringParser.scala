@@ -28,19 +28,13 @@ import org.apache.spark.sql.types._
 object LegacyTypeStringParser extends RegexParsers {
 
   protected lazy val primitiveType: Parser[DataType] =
-    ("StringType" ^^^ StringType
-      | "FloatType" ^^^ FloatType
-      | "IntegerType" ^^^ IntegerType
-      | "ByteType" ^^^ ByteType
-      | "ShortType" ^^^ ShortType
-      | "DoubleType" ^^^ DoubleType
-      | "LongType" ^^^ LongType
-      | "BinaryType" ^^^ BinaryType
-      | "BooleanType" ^^^ BooleanType
-      | "DateType" ^^^ DateType
-      | "DecimalType()" ^^^ DecimalType.USER_DEFAULT
-      | fixedDecimalType
-      | "TimestampType" ^^^ TimestampType)
+    ("StringType" ^^^ StringType | "FloatType" ^^^ FloatType |
+      "IntegerType" ^^^ IntegerType | "ByteType" ^^^ ByteType |
+      "ShortType" ^^^ ShortType | "DoubleType" ^^^ DoubleType |
+      "LongType" ^^^ LongType | "BinaryType" ^^^ BinaryType |
+      "BooleanType" ^^^ BooleanType | "DateType" ^^^ DateType |
+      "DecimalType()" ^^^ DecimalType.USER_DEFAULT | fixedDecimalType |
+      "TimestampType" ^^^ TimestampType)
 
   protected lazy val fixedDecimalType: Parser[DataType] =
     ("DecimalType(" ~> "[0-9]+".r) ~ ("," ~> "[0-9]+".r <~ ")") ^^ {
@@ -59,15 +53,14 @@ object LegacyTypeStringParser extends RegexParsers {
     }
 
   protected lazy val structField: Parser[StructField] =
-    ("StructField(" ~> "[a-zA-Z0-9_]*".r) ~ ("," ~> dataType) ~ (
-      "," ~> boolVal <~ ")"
-    ) ^^ {
-      case name ~ tpe ~ nullable => StructField(name, tpe, nullable = nullable)
-    }
+    ("StructField(" ~> "[a-zA-Z0-9_]*".r) ~ ("," ~> dataType) ~
+      ("," ~> boolVal <~ ")") ^^ {
+        case name ~ tpe ~ nullable =>
+          StructField(name, tpe, nullable = nullable)
+      }
 
   protected lazy val boolVal: Parser[Boolean] =
-    ("true" ^^^ true
-      | "false" ^^^ false)
+    ("true" ^^^ true | "false" ^^^ false)
 
   protected lazy val structType: Parser[DataType] =
     "StructType\\([A-zA-z]*\\(".r ~> repsep(structField, ",") <~ "))" ^^ {
@@ -75,10 +68,7 @@ object LegacyTypeStringParser extends RegexParsers {
     }
 
   protected lazy val dataType: Parser[DataType] =
-    (arrayType
-      | mapType
-      | structType
-      | primitiveType)
+    (arrayType | mapType | structType | primitiveType)
 
   /**
     * Parses a string representation of a DataType.

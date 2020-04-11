@@ -67,8 +67,8 @@ object ResourceMatcher {
         }
       }
 
-      noAssociatedDisk && acceptedRoles(resource.getRole) && resource
-        .hasReservation == reserved && hasRequiredLabels
+      noAssociatedDisk && acceptedRoles(resource.getRole) &&
+      resource.hasReservation == reserved && hasRequiredLabels
     }
 
     override def toString: String = {
@@ -223,8 +223,7 @@ object ResourceMatcher {
       if (scalarMatchResults.exists(!_.matches)) {
         val basicResourceString = scalarMatchResults.mkString(", ")
         log.info(
-          s"Offer [${offer.getId.getValue}]. " +
-            s"$selector. " +
+          s"Offer [${offer.getId.getValue}]. " + s"$selector. " +
             s"Not all basic resources satisfied: $basicResourceString")
       }
     }

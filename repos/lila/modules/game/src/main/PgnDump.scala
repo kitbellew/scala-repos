@@ -47,8 +47,8 @@ final class PgnDump(
 
   private def gameLightUsers(
       game: Game): (Option[LightUser], Option[LightUser]) =
-    (game.whitePlayer.userId ?? getLightUser) -> (game.blackPlayer
-      .userId ?? getLightUser)
+    (game.whitePlayer.userId ?? getLightUser) ->
+      (game.blackPlayer.userId ?? getLightUser)
 
   private val dateFormat = DateTimeFormat forPattern "yyyy.MM.dd";
 

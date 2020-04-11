@@ -52,8 +52,9 @@ sealed trait Node[P <: Platform[P]] {
   def toStringWithPrefix(prefix: String): String = {
     prefix + getNameFallback + "\n" + members.foldLeft("") {
       case (str, producer) =>
-        str + prefix + "\t" + producer.getClass.getName
-          .replaceFirst("com.twitter.summingbird.", "") + "\n"
+        str + prefix + "\t" +
+          producer.getClass.getName
+            .replaceFirst("com.twitter.summingbird.", "") + "\n"
     }
   }
 

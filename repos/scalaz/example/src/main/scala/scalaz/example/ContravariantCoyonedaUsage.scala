@@ -51,8 +51,8 @@ object ContravariantCoyonedaUsage extends App {
   // and the other two we’ll be using for this example.
 
   def parseCommaNum(s: String): Long \/ String =
-    ("""-?[0-9,]+""".r findFirstIn s
-      flatMap (_.filter(_ != ',').parseLong.toOption)) <\/ s
+    ("""-?[0-9,]+""".r findFirstIn s flatMap
+      (_.filter(_ != ',').parseLong.toOption)) <\/ s
 
   def caseInsensitively(s: String): String = s.toUpperCase.toLowerCase
 
@@ -369,11 +369,11 @@ object ContravariantCoyonedaUsage extends App {
     mainLtoRsort.tail)
 
   println(
-    "list of mainLtoRcoyo.I: " |+|
-      unstructuredData.map(r => mainLtoRcoyo.k(r).toString).shows)
+    "list of mainLtoRcoyo.I: " |+| unstructuredData.map(r =>
+      mainLtoRcoyo.k(r).toString).shows)
   println(
-    "list of mainLtoRtailcoyo.I: " |+|
-      unstructuredData.map(r => mainLtoRtailcoyo.k(r).toString).shows)
+    "list of mainLtoRtailcoyo.I: " |+| unstructuredData.map(r =>
+      mainLtoRtailcoyo.k(r).toString).shows)
 
   // Digression: the monoid
   // ----------------------
@@ -394,8 +394,8 @@ object ContravariantCoyonedaUsage extends App {
   val mainLtoRcoyoL: CtCoyo[Order, Vector[String]] = sortSpecOrdL(mainLtoRsort)
 
   println(
-    "list of mainLtoRcoyoL.I: " |+|
-      unstructuredData.map(r => mainLtoRcoyoL.k(r).toString).shows)
+    "list of mainLtoRcoyoL.I: " |+| unstructuredData.map(r =>
+      mainLtoRcoyoL.k(r).toString).shows)
 
   // Now the type looks like this:
   //
@@ -483,9 +483,7 @@ object ContravariantCoyonedaUsage extends App {
     implicit def desc_\/[A, B](implicit
         a: Binfmt[A],
         b: Binfmt[B]): Binfmt[A \/ B] =
-      Binfmt(
-        "<" |+| a.describe |+| "\\/"
-          |+| b.describe |+| ">")
+      Binfmt("<" |+| a.describe |+| "\\/" |+| b.describe |+| ">")
     implicit def desc2Tuple[A, B](implicit
         a: Binfmt[A],
         b: Binfmt[B]): Binfmt[(A, B)] = Binfmt(a.describe |+| b.describe)

@@ -104,12 +104,11 @@ private[mllib] class SlidingRDD[T: ClassTag](
             j += 1
           }
           if (sizes(i) + tail.length >= offset + windowSize) {
-            partitions +=
-              new SlidingRDDPartition[T](
-                partitionIndex,
-                parentPartitions(i),
-                tail,
-                offset)
+            partitions += new SlidingRDDPartition[T](
+              partitionIndex,
+              parentPartitions(i),
+              tail,
+              offset)
             partitionIndex += 1
           }
         }

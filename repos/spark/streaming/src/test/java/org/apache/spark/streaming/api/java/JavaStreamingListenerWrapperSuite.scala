@@ -230,8 +230,8 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
       batchInfo: BatchInfo): Unit = {
     assert(javaBatchInfo.batchTime === batchInfo.batchTime)
     assert(
-      javaBatchInfo.streamIdToInputInfo.size === batchInfo.streamIdToInputInfo
-        .size)
+      javaBatchInfo.streamIdToInputInfo.size ===
+        batchInfo.streamIdToInputInfo.size)
     batchInfo.streamIdToInputInfo.foreach {
       case (streamId, streamInputInfo) =>
         assertStreamingInfo(
@@ -240,11 +240,11 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
     }
     assert(javaBatchInfo.submissionTime === batchInfo.submissionTime)
     assert(
-      javaBatchInfo.processingStartTime === batchInfo.processingStartTime
-        .getOrElse(-1))
+      javaBatchInfo.processingStartTime ===
+        batchInfo.processingStartTime.getOrElse(-1))
     assert(
-      javaBatchInfo.processingEndTime === batchInfo.processingEndTime
-        .getOrElse(-1))
+      javaBatchInfo.processingEndTime ===
+        batchInfo.processingEndTime.getOrElse(-1))
     assert(
       javaBatchInfo.schedulingDelay === batchInfo.schedulingDelay.getOrElse(-1))
     assert(
@@ -252,8 +252,8 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
     assert(javaBatchInfo.totalDelay === batchInfo.totalDelay.getOrElse(-1))
     assert(javaBatchInfo.numRecords === batchInfo.numRecords)
     assert(
-      javaBatchInfo.outputOperationInfos.size === batchInfo.outputOperationInfos
-        .size)
+      javaBatchInfo.outputOperationInfos.size ===
+        batchInfo.outputOperationInfos.size)
     batchInfo.outputOperationInfos.foreach {
       case (outputOperationId, outputOperationInfo) =>
         assertOutputOperationInfo(
@@ -269,8 +269,8 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
     assert(javaStreamInputInfo.numRecords === streamInputInfo.numRecords)
     assert(javaStreamInputInfo.metadata === streamInputInfo.metadata.asJava)
     assert(
-      javaStreamInputInfo.metadataDescription === streamInputInfo
-        .metadataDescription.orNull)
+      javaStreamInputInfo.metadataDescription ===
+        streamInputInfo.metadataDescription.orNull)
   }
 
   private def assertOutputOperationInfo(
@@ -282,14 +282,14 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
     assert(
       javaOutputOperationInfo.description === outputOperationInfo.description)
     assert(
-      javaOutputOperationInfo.startTime === outputOperationInfo.startTime
-        .getOrElse(-1))
+      javaOutputOperationInfo.startTime ===
+        outputOperationInfo.startTime.getOrElse(-1))
     assert(
-      javaOutputOperationInfo.endTime === outputOperationInfo.endTime
-        .getOrElse(-1))
+      javaOutputOperationInfo.endTime ===
+        outputOperationInfo.endTime.getOrElse(-1))
     assert(
-      javaOutputOperationInfo.failureReason === outputOperationInfo
-        .failureReason.orNull)
+      javaOutputOperationInfo.failureReason ===
+        outputOperationInfo.failureReason.orNull)
   }
 }
 

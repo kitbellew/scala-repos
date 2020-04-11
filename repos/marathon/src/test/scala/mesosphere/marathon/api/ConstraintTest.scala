@@ -41,18 +41,18 @@ class ConstraintTest extends MarathonSpec with Matchers {
     import mesosphere.marathon.api.v2.json.Formats._
     Json.parse("""[]""").asOpt[Constraint] should be(empty)
     Json.parse("""["foo", "UNKNOWN"]""").asOpt[Constraint] should be(empty)
-    Json.parse("""["foo", "UNKNOWN", "bla"]""").asOpt[Constraint] should be(
-      empty)
-    Json.parse("""["foo", "CLUSTER", "bla"]""").asOpt[Constraint] should be(
-      defined)
-    Json.parse("""["foo", "CLUSTER", "bla", "bla2"]""")
-      .asOpt[Constraint] should be(empty)
+    Json.parse("""["foo", "UNKNOWN", "bla"]""").asOpt[Constraint] should
+      be(empty)
+    Json.parse("""["foo", "CLUSTER", "bla"]""").asOpt[Constraint] should
+      be(defined)
+    Json.parse("""["foo", "CLUSTER", "bla", "bla2"]""").asOpt[Constraint] should
+      be(empty)
     val ex = intercept[JsResultException](
       Json.parse("""["foo", "CLUSTER", "bla", "bla2"]""").as[Constraint])
     ex.errors should have size 1
     ex.errors.head._2 should have size 1
-    ex.errors.head._2.head.messages.head should startWith(
-      "Constraint definition must be an array of string")
+    ex.errors.head._2.head.messages.head should
+      startWith("Constraint definition must be an array of string")
 
   }
 
@@ -63,8 +63,8 @@ class ConstraintTest extends MarathonSpec with Matchers {
       Json.parse("""["foo", "unique"]""").as[Constraint])
     ex.errors should have size 1
     ex.errors.head._2 should have size 1
-    ex.errors.head._2.head.messages.head should startWith(
-      "Constraint operator must be one of the following")
+    ex.errors.head._2.head.messages.head should
+      startWith("Constraint operator must be one of the following")
   }
 
   test("Serialize") {

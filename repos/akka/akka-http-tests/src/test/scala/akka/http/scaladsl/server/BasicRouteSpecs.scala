@@ -13,14 +13,12 @@ class BasicRouteSpecs extends RoutingSpec {
 
   "routes created by the concatenation operator '~'" should {
     "yield the first sub route if it succeeded" in {
-      Get() ~> {
-        get { complete("first") } ~ get { complete("second") }
-      } ~> check { responseAs[String] shouldEqual "first" }
+      Get() ~> { get { complete("first") } ~ get { complete("second") } } ~>
+        check { responseAs[String] shouldEqual "first" }
     }
     "yield the second sub route if the first did not succeed" in {
-      Get() ~> {
-        post { complete("first") } ~ get { complete("second") }
-      } ~> check { responseAs[String] shouldEqual "second" }
+      Get() ~> { post { complete("first") } ~ get { complete("second") } } ~>
+        check { responseAs[String] shouldEqual "second" }
     }
     "collect rejections from both sub routes" in {
       Delete() ~> { get { completeOk } ~ put { completeOk } } ~> check {
@@ -29,8 +27,7 @@ class BasicRouteSpecs extends RoutingSpec {
     }
     "clear rejections that have already been 'overcome' by previous directives" in {
       Put() ~> {
-        put { parameter('yeah) { echoComplete } } ~
-          get { completeOk }
+        put { parameter('yeah) { echoComplete } } ~ get { completeOk }
       } ~> check { rejection shouldEqual MissingQueryParamRejection("yeah") }
     }
   }
@@ -134,38 +131,36 @@ class BasicRouteSpecs extends RoutingSpec {
 
   case object MyException extends RuntimeException
   "Route sealing" should {
-    "catch route execution exceptions" in EventFilter[MyException.type](
-      occurrences = 1).intercept {
-      Get("/abc") ~> Route.seal { get { ctx ⇒ throw MyException } } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
+    "catch route execution exceptions" in
+      EventFilter[MyException.type](occurrences = 1).intercept {
+        Get("/abc") ~> Route.seal { get { ctx ⇒ throw MyException } } ~> check {
+          status shouldEqual StatusCodes.InternalServerError
+        }
       }
-    }
-    "catch route building exceptions" in EventFilter[MyException.type](
-      occurrences = 1).intercept {
-      Get("/abc") ~> Route.seal { get { throw MyException } } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
+    "catch route building exceptions" in
+      EventFilter[MyException.type](occurrences = 1).intercept {
+        Get("/abc") ~> Route.seal { get { throw MyException } } ~> check {
+          status shouldEqual StatusCodes.InternalServerError
+        }
       }
-    }
-    "convert all rejections to responses" in EventFilter[RuntimeException](
-      occurrences = 1).intercept {
-      object MyRejection extends Rejection
-      Get("/abc") ~> Route.seal { get { reject(MyRejection) } } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
+    "convert all rejections to responses" in
+      EventFilter[RuntimeException](occurrences = 1).intercept {
+        object MyRejection extends Rejection
+        Get("/abc") ~> Route.seal { get { reject(MyRejection) } } ~> check {
+          status shouldEqual StatusCodes.InternalServerError
+        }
       }
-    }
     "always prioritize MethodRejections over AuthorizationFailedRejections" in {
       Get("/abc") ~> Route.seal {
-        post { completeOk } ~
-          authorize(false) { completeOk }
+        post { completeOk } ~ authorize(false) { completeOk }
       } ~> check {
         status shouldEqual StatusCodes.MethodNotAllowed
-        responseAs[
-          String] shouldEqual "HTTP method not allowed, supported methods: POST"
+        responseAs[String] shouldEqual
+          "HTTP method not allowed, supported methods: POST"
       }
 
       Get("/abc") ~> Route.seal {
-        authorize(false) { completeOk } ~
-          post { completeOk }
+        authorize(false) { completeOk } ~ post { completeOk }
       } ~> check { status shouldEqual StatusCodes.MethodNotAllowed }
     }
   }

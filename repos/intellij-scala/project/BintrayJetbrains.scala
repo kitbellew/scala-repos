@@ -9,8 +9,8 @@ object BintrayJetbrains {
     jbBintrayResolver(name, "sbt-plugins", patterns)
 
   object Resolvers {
-    val mavenPatched =
-      "jb-maven-patched" at "http://dl.bintray.com/jetbrains/maven-patched/"
+    val mavenPatched = "jb-maven-patched" at
+      "http://dl.bintray.com/jetbrains/maven-patched/"
     val scalaTestFindersPatched = jbBintrayResolver(
       "scalatest-finders-patched",
       "scalatest",

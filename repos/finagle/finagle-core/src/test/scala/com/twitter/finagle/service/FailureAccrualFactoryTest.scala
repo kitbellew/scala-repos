@@ -38,8 +38,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val underlyingService = mock[Service[Int, Int]]
     when(underlyingService.close(any[Time])) thenReturn Future.Done
     when(underlyingService.status) thenReturn Status.Open
-    when(underlyingService(Matchers.anyInt)) thenReturn Future
-      .exception(new Exception)
+    when(underlyingService(Matchers.anyInt)) thenReturn
+      Future.exception(new Exception)
 
     val underlying = mock[ServiceFactory[Int, Int]]
     when(underlying.close(any[Time])) thenReturn Future.Done
@@ -192,8 +192,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val underlyingService = mock[Service[Int, Int]]
     when(underlyingService.close(any[Time])) thenReturn Future.Done
     when(underlyingService.status) thenReturn Status.Open
-    when(underlyingService(Matchers.anyInt)) thenReturn Future
-      .exception(new Exception)
+    when(underlyingService(Matchers.anyInt)) thenReturn
+      Future.exception(new Exception)
 
     val underlying = mock[ServiceFactory[Int, Int]]
     when(underlying.close(any[Time])) thenReturn Future.Done

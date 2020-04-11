@@ -86,8 +86,8 @@ private[round] final class Player(
                   fuccess(progress.events))
           }
       else
-        requestFishnet(game) >> fufail(
-          FishnetError("Invalid AI move current FEN"))
+        requestFishnet(game) >>
+          fufail(FishnetError("Invalid AI move current FEN"))
     } else fufail(FishnetError("Not AI turn"))
 
   private def applyUci(

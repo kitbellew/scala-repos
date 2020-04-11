@@ -110,8 +110,8 @@ class ConsumerBroadcast(
         val deactivationListFuture = deactivationListPromise.future
 
         allActivationFutures = allActivationFutures :+ activationListFuture
-        allDeactivationFutures =
-          allDeactivationFutures :+ deactivationListFuture
+        allDeactivationFutures = allDeactivationFutures :+
+          deactivationListFuture
         val routee = context.actorOf(
           Props(
             classOf[Registrar],
@@ -123,8 +123,8 @@ class ConsumerBroadcast(
         routee.path.toString
       }
       promise.success(
-        Future.sequence(allActivationFutures) -> Future
-          .sequence(allDeactivationFutures))
+        Future.sequence(allActivationFutures) ->
+          Future.sequence(allDeactivationFutures))
 
       broadcaster = Some(
         context.actorOf(BroadcastGroup(routeePaths).props(), "registrarRouter"))

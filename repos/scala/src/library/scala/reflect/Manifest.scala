@@ -60,9 +60,8 @@ trait Manifest[T] extends ClassManifest[T] with Equals {
   override def equals(that: Any): Boolean =
     that match {
       case m: Manifest[_] =>
-        (m canEqual this) && (this.runtimeClass == m.runtimeClass) && (
-          this <:< m
-        ) && (m <:< this)
+        (m canEqual this) && (this.runtimeClass == m.runtimeClass) &&
+          (this <:< m) && (m <:< this)
       case _ => false
     }
   override def hashCode = this.runtimeClass.##
@@ -321,8 +320,7 @@ object ManifestFactory {
     new Manifest[T] {
       def runtimeClass = upperBound.runtimeClass
       override def toString =
-        "_" +
-          (if (lowerBound eq Nothing) "" else " >: " + lowerBound) +
+        "_" + (if (lowerBound eq Nothing) "" else " >: " + lowerBound) +
           (if (upperBound eq Nothing) "" else " <: " + upperBound)
     }
 

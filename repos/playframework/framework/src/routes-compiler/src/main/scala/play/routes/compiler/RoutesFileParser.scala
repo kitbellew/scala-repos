@@ -88,7 +88,8 @@ object RoutesFileParser {
             if (p.fixed.isDefined || p.default.isDefined) {
               errors += RoutesCompilationError(
                 file,
-                "It is not allowed to specify a fixed or default value for parameter: '" + name + "' extracted from the path",
+                "It is not allowed to specify a fixed or default value for parameter: '" +
+                  name + "' extracted from the path",
                 Some(p.pos.line),
                 Some(p.pos.column))
             }
@@ -233,20 +234,19 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
       "GET" | "POST" | "PUT" | "PATCH" | "HEAD" | "DELETE" | "OPTIONS",
       "HTTP Verb expected") ^^ { case v => HttpVerb(v) }
 
-  def singleComponentPathPart: Parser[DynamicPart] =
-    (":" ~> identifier) ^^ {
-      case name => DynamicPart(name, """[^/]+""", encode = true)
-    }
+  def singleComponentPathPart: Parser[DynamicPart] = (":" ~> identifier) ^^ {
+    case name => DynamicPart(name, """[^/]+""", encode = true)
+  }
 
-  def multipleComponentsPathPart: Parser[DynamicPart] =
-    ("*" ~> identifier) ^^ {
-      case name => DynamicPart(name, """.+""", encode = false)
-    }
+  def multipleComponentsPathPart: Parser[DynamicPart] = ("*" ~> identifier) ^^ {
+    case name => DynamicPart(name, """.+""", encode = false)
+  }
 
   def regexComponentPathPart: Parser[DynamicPart] =
-    "$" ~> identifier ~ ("<" ~> (not(">") ~> """[^\s]""".r +) <~ ">" ^^ {
-      case c                  => c.mkString
-    }) ^^ { case name ~ regex => DynamicPart(name, regex, encode = false) }
+    "$" ~> identifier ~
+      ("<" ~> (not(">") ~> """[^\s]""".r +) <~ ">" ^^ {
+        case c                  => c.mkString
+      }) ^^ { case name ~ regex => DynamicPart(name, regex, encode = false) }
 
   def staticPathPart: Parser[StaticPart] =
     (not(":") ~> not("*") ~> not("$") ~> """[^\s]""".r +) ^^ {
@@ -254,11 +254,12 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def path: Parser[PathPattern] =
-    "/" ~ ((positioned(singleComponentPathPart) | positioned(
-      multipleComponentsPathPart) | positioned(
-      regexComponentPathPart) | staticPathPart) *) ^^ {
-      case _ ~ parts => PathPattern(parts)
-    }
+    "/" ~
+      ((positioned(singleComponentPathPart) |
+        positioned(multipleComponentsPathPart) |
+        positioned(regexComponentPathPart) | staticPathPart) *) ^^ {
+        case _ ~ parts => PathPattern(parts)
+      }
 
   def space(s: String): Parser[String] =
     (ignoreWhiteSpace ~> s <~ ignoreWhiteSpace)
@@ -267,18 +268,16 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def simpleType: Parser[String] = {
     ((stableId <~ ignoreWhiteSpace) ~ opt(typeArgs)) ^^ {
-      case sid ~ ta => sid.toString + ta.getOrElse("")
-    } |
-      (space("(") ~ types ~ space(")")) ^^ { case _ ~ b ~ _ => "(" + b + ")" }
+      case sid ~ ta                                           => sid.toString + ta.getOrElse("")
+    } | (space("(") ~ types ~ space(")")) ^^ { case _ ~ b ~ _ => "(" + b + ")" }
   }
 
   def typeArgs: Parser[String] = {
     (space("[") ~ types ~ space("]") ~ opt(typeArgs)) ^^ {
       case _ ~ ts ~ _ ~ ta => "[" + ts + "]" + ta.getOrElse("")
-    } |
-      (space("#") ~ identifier ~ opt(typeArgs)) ^^ {
-        case _ ~ id ~ ta => "#" + id + ta.getOrElse("")
-      }
+    } | (space("#") ~ identifier ~ opt(typeArgs)) ^^ {
+      case _ ~ id ~ ta => "#" + id + ta.getOrElse("")
+    }
   }
 
   def types: Parser[String] =
@@ -299,16 +298,16 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     "?=" ~ ignoreWhiteSpace ~ expression ^^ { case a ~ _ ~ b => a + b }
 
   def parameter: Parser[Parameter] =
-    ((identifier | tickedIdentifier) <~ ignoreWhiteSpace) ~ opt(
-      parameterType) ~ (ignoreWhiteSpace ~> opt(
-      parameterDefaultValue | parameterFixedValue)) ^^ {
-      case name ~ t ~ d =>
-        Parameter(
-          name,
-          t.getOrElse("String"),
-          d.filter(_.startsWith("=")).map(_.drop(1)),
-          d.filter(_.startsWith("?")).map(_.drop(2)))
-    }
+    ((identifier | tickedIdentifier) <~ ignoreWhiteSpace) ~ opt(parameterType) ~
+      (ignoreWhiteSpace ~>
+        opt(parameterDefaultValue | parameterFixedValue)) ^^ {
+        case name ~ t ~ d =>
+          Parameter(
+            name,
+            t.getOrElse("String"),
+            d.filter(_.startsWith("=")).map(_.drop(1)),
+            d.filter(_.startsWith("?")).map(_.drop(2)))
+      }
 
   def parameters: Parser[List[Parameter]] =
     "(" ~> repsep(
@@ -354,9 +353,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def sentence: Parser[Product with Serializable] =
     namedError(
       (comment | positioned(include) | positioned(route)),
-      "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~ (
-      newLine | EOF
-    )
+      "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~
+      (newLine | EOF)
 
   def parser: Parser[List[Rule]] =
     phrase((blankLine | sentence *) <~ end) ^^ {

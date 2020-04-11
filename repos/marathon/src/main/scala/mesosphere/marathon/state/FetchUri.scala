@@ -29,12 +29,8 @@ object FetchUri {
       cache = uri.getCache)
 
   def isExtract(uri: String): Boolean = {
-    uri.endsWith(".tgz") ||
-    uri.endsWith(".tar.gz") ||
-    uri.endsWith(".tbz2") ||
-    uri.endsWith(".tar.bz2") ||
-    uri.endsWith(".txz") ||
-    uri.endsWith(".tar.xz") ||
-    uri.endsWith(".zip")
+    uri.endsWith(".tgz") || uri.endsWith(".tar.gz") || uri.endsWith(".tbz2") ||
+    uri.endsWith(".tar.bz2") || uri.endsWith(".txz") ||
+    uri.endsWith(".tar.xz") || uri.endsWith(".zip")
   }
 }

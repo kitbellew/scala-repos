@@ -57,9 +57,8 @@ object Main extends LilaController {
         s"""document.write("<iframe src='${Env.api.Net
           .BaseUrl}?embed=" + document.domain + "' class='lichess-iframe' allowtransparency='true' frameBorder='0' style='width: ${getInt(
           "w",
-          req) | 820}px; height: ${getInt(
-          "h",
-          req) | 650}px;' title='Lichess free online chess'></iframe>");"""
+          req) | 820}px; height: ${getInt("h", req) |
+          650}px;' title='Lichess free online chess'></iframe>");"""
       } as JAVASCRIPT withHeaders (CACHE_CONTROL -> "max-age=86400")
     }
 

@@ -244,8 +244,8 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
         "test".getBytes)).get
     }
     assertTrue(
-      "Unexpected exception while sending to an invalid topic " + thrown
-        .getCause,
+      "Unexpected exception while sending to an invalid topic " +
+        thrown.getCause,
       thrown.getCause.isInstanceOf[InvalidTopicException])
   }
 
@@ -307,8 +307,8 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
             !e.getCause.isInstanceOf[TimeoutException]) {
           fail(
             "Expected NotEnoughReplicasException or NotEnoughReplicasAfterAppendException when producing to topic " +
-              "with fewer brokers than min.insync.replicas, but saw " + e
-              .getCause)
+              "with fewer brokers than min.insync.replicas, but saw " +
+              e.getCause)
         }
     }
 

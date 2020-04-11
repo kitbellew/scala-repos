@@ -262,8 +262,8 @@ object Test {
         case _ => Nil
       }
       assertEquals(
-        "res instance" + res
-          .isInstanceOf[Seq[Con] forSome { type Con }] + " res(0)=" + res(0),
+        "res instance" + res.isInstanceOf[Seq[Con] forSome { type Con }] +
+          " res(0)=" + res(0),
         true,
         res.isInstanceOf[Seq[Foo] forSome { type Foo }] && res(0) == Foo())
     }

@@ -43,14 +43,12 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       checkStaticMembers(classDef)
       classDef.kind match {
         case ClassKind.RawJSType =>
-          if (classDef.fields.nonEmpty ||
-              classDef.memberMethods.nonEmpty ||
+          if (classDef.fields.nonEmpty || classDef.memberMethods.nonEmpty ||
               classDef.abstractMethods.nonEmpty ||
               classDef.exportedMembers.nonEmpty ||
               classDef.classExports.nonEmpty) {
             reportError(
-              s"Raw JS type ${classDef.name} cannot " +
-                "have instance members")
+              s"Raw JS type ${classDef.name} cannot " + "have instance members")
           }
         case _ => checkScalaClassDef(classDef)
       }
@@ -118,10 +116,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           case member @ ModuleExportDef(_) =>
             checkModuleExportDef(member, classDef)
           // Anything else is illegal
-          case _ =>
-            reportError(
-              "Illegal class export of type " +
-                tree.getClass.getName)
+          case _ => reportError(
+              "Illegal class export of type " + tree.getClass.getName)
         }
       }
     } else {

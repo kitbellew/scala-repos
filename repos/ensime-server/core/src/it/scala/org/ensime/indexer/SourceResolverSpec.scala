@@ -19,14 +19,14 @@ class SourceResolverSpec
       find("java.lang", "String.java") shouldBe Some("/java/lang/String.java")
   }
 
-  it should "resolve scala sources in the project dependencies" in withSourceResolver {
-    implicit r =>
+  it should "resolve scala sources in the project dependencies" in
+    withSourceResolver { implicit r =>
       find("scala.collection.immutable", "List.scala") shouldBe
         Some("/scala/collection/immutable/List.scala")
 
       find("org.scalatest", "FunSpec.scala") shouldBe
         Some("/org/scalatest/FunSpec.scala")
-  }
+    }
 
   it should "resolve sources in the project" in withSourceResolver { (c, r) =>
     implicit val config = c
@@ -35,13 +35,13 @@ class SourceResolverSpec
       Some((scalaMain / "org/example/Foo.scala").getAbsolutePath)
   }
 
-  it should "should resolve files in parent directories in the project" in withSourceResolver {
-    (c, r) =>
+  it should "should resolve files in parent directories in the project" in
+    withSourceResolver { (c, r) =>
       implicit val config = c
       implicit val resolver = r
       find("org.example", "bad-convention.scala") shouldBe
         Some((scalaMain / "bad-convention.scala").getAbsolutePath)
-  }
+    }
 }
 
 trait SourceResolverTestUtils {

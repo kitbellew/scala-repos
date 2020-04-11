@@ -88,23 +88,23 @@ object EventService {
 
   object ServiceConfig {
     def fromConfiguration(config: Configuration) = {
-      (ServiceLocation
-        .fromConfig(config.detach("eventService")) |@| ServiceLocation
-        .fromConfig(config.detach("bifrost"))) { (serviceLoc, shardLoc) =>
-        ServiceConfig(
-          serviceLocation = serviceLoc,
-          shardLocation = shardLoc,
-          ingestTimeout = akka.util
-            .Timeout(config[Long]("insert.timeout", 10000L)),
-          ingestBatchSize = config[Int]("ingest.batch_size", 500),
-          ingestMaxFields = config[Int]("ingest.max_fields", 1024),
-          ingestTmpDir = config.get[String]("ingest.tmpdir").map(new File(_))
-            .orElse(Option(
-              File.createTempFile("ingest.tmpfile", null).getParentFile))
-            .get, //fail fast
-          deleteTimeout = akka.util
-            .Timeout(config[Long]("delete.timeout", 10000L))
-        )
+      (ServiceLocation.fromConfig(config.detach("eventService")) |@|
+        ServiceLocation.fromConfig(config.detach("bifrost"))) {
+        (serviceLoc, shardLoc) =>
+          ServiceConfig(
+            serviceLocation = serviceLoc,
+            shardLocation = shardLoc,
+            ingestTimeout = akka.util
+              .Timeout(config[Long]("insert.timeout", 10000L)),
+            ingestBatchSize = config[Int]("ingest.batch_size", 500),
+            ingestMaxFields = config[Int]("ingest.max_fields", 1024),
+            ingestTmpDir = config.get[String]("ingest.tmpdir").map(new File(_))
+              .orElse(Option(
+                File.createTempFile("ingest.tmpfile", null).getParentFile))
+              .get, //fail fast
+            deleteTimeout = akka.util
+              .Timeout(config[Long]("delete.timeout", 10000L))
+          )
       }
     }
   }
@@ -187,26 +187,22 @@ trait EventService
           startup {
             import context._
             Future(configureEventService(config))
-          } ->
-            request { (state: State) =>
-              import CORSHeaderHandler.allowOrigin
-              implicit val FR = M
-                .compose[({ type l[a] = Function2[APIKey, Path, a] })#l]
+          } -> request { (state: State) =>
+            import CORSHeaderHandler.allowOrigin
+            implicit val FR = M
+              .compose[({ type l[a] = Function2[APIKey, Path, a] })#l]
 
-              allowOrigin("*", executionContext) {
-                encode[ByteChunk, Future[HttpResponse[JValue]], Future[
-                  HttpResponse[ByteChunk]]] {
-                  produce(application / json) {
-                    //jsonp {
-                    fsService(state) ~
-                      dataService(state)
-                    //}
-                  }
-                } ~
-                  shardProxy(state.shardClient)
-              }
-            } ->
-            stop { state => state.stop }
+            allowOrigin("*", executionContext) {
+              encode[ByteChunk, Future[HttpResponse[JValue]], Future[
+                HttpResponse[ByteChunk]]] {
+                produce(application / json) {
+                  //jsonp {
+                  fsService(state) ~ dataService(state)
+                  //}
+                }
+              } ~ shardProxy(state.shardClient)
+            }
+          } -> stop { state => state.stop }
         }
       }
     }
@@ -215,13 +211,11 @@ trait EventService
   def fsService(state: State): AsyncHttpService[ByteChunk, JValue] = {
     jsonAPIKey(state.accessControl) {
       dataPath("/fs") {
-        post(state.ingestHandler) ~
-          delete(state.archiveHandler)
+        post(state.ingestHandler) ~ delete(state.archiveHandler)
       } ~ //legacy handler
         path("/(?<sync>a?sync)") {
           dataPath("/fs") {
-            post(state.ingestHandler) ~
-              delete(state.archiveHandler)
+            post(state.ingestHandler) ~ delete(state.archiveHandler)
           }
         }
     }
@@ -234,12 +228,11 @@ trait EventService
       path("/data") {
         dataPath("/fs") {
           accept(ApplicationJson, XJsonStream) {
-            post { state.dataHandler } ~
-              put { state.dataHandler } ~
-              patch { state.dataHandler }
+            post { state.dataHandler } ~ put { state.dataHandler } ~ patch {
+              state.dataHandler
+            }
           } ~ {
-            post { state.fileCreateHandler } ~
-              put { state.fileCreateHandler }
+            post { state.fileCreateHandler } ~ put { state.fileCreateHandler }
           }
         }
       }

@@ -182,10 +182,8 @@ class SourceMapTest {
       /**/
       assert(get(json, 8, "comment") == "// /* <!-- --")
       assert(
-        get(
-          json,
-          8,
-          "jsontext") == "{\"object with 1 member\":[\"array with 1 element\"]}")
+        get(json, 8, "jsontext") ==
+          "{\"object with 1 member\":[\"array with 1 element\"]}")
       assert(get(json, 19) == "rosebud") /**/
     }
 

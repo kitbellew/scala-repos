@@ -40,21 +40,21 @@ class ScalaDocCompletionContributor extends ScalaCompletionContributor {
         }
 
         if (posParent != null) {
-          val allowedTags =
-            posParent.asInstanceOf[ScDocComment].getOwner match {
-              case _: ScFunction => MyScaladocParsing.allTags
-              case _: ScClass =>
-                MyScaladocParsing.allTags - MyScaladocParsing.RETURN_TAG
-              case _: ScTypeAlias | _: ScTrait =>
-                MyScaladocParsing.allTags --
-                  Set(
-                    MyScaladocParsing.RETURN_TAG,
-                    MyScaladocParsing.THROWS_TAG,
-                    MyScaladocParsing.PARAM_TAG)
-              case _ =>
-                MyScaladocParsing.allTags -- MyScaladocParsing
-                  .tagsWithParameters - MyScaladocParsing.RETURN_TAG
-            }
+          val allowedTags = posParent.asInstanceOf[ScDocComment]
+            .getOwner match {
+            case _: ScFunction => MyScaladocParsing.allTags
+            case _: ScClass =>
+              MyScaladocParsing.allTags - MyScaladocParsing.RETURN_TAG
+            case _: ScTypeAlias | _: ScTrait =>
+              MyScaladocParsing.allTags -- Set(
+                MyScaladocParsing.RETURN_TAG,
+                MyScaladocParsing.THROWS_TAG,
+                MyScaladocParsing.PARAM_TAG)
+            case _ =>
+              MyScaladocParsing.allTags --
+                MyScaladocParsing.tagsWithParameters -
+                MyScaladocParsing.RETURN_TAG
+          }
 
           for (tag <- allowedTags) {
             result.addElement(new LookupElement {

@@ -19,13 +19,13 @@ class RailsLikeUrlGeneratorTest extends FunSuite with Matchers {
   test("static string") { url("/foo") should equal("/foo") }
 
   test("dynamic segment") {
-    url(":foo.example.com", "foo" -> "vanilla") should equal(
-      "vanilla.example.com")
+    url(":foo.example.com", "foo" -> "vanilla") should
+      equal("vanilla.example.com")
   }
 
   test("dynamic segment with leading underscore") {
-    url(":_foo.example.com", "_foo" -> "vanilla") should equal(
-      "vanilla.example.com")
+    url(":_foo.example.com", "_foo" -> "vanilla") should
+      equal("vanilla.example.com")
   }
 
   test("skip invalid group names: 123") {
@@ -47,8 +47,8 @@ class RailsLikeUrlGeneratorTest extends FunSuite with Matchers {
   }
 
   test("static string and dynamic segment inside optional segment") {
-    url("foo(/bar.:extension)", "extension" -> "json") should equal(
-      "foo/bar.json")
+    url("foo(/bar.:extension)", "extension" -> "json") should
+      equal("foo/bar.json")
     url("foo(/bar.:extension)") should equal("foo")
   }
 
@@ -57,13 +57,13 @@ class RailsLikeUrlGeneratorTest extends FunSuite with Matchers {
   }
 
   test("glob segment at the beginning") {
-    url("*files/foo.txt", "files" -> "/home/thib") should equal(
-      "/home/thib/foo.txt")
+    url("*files/foo.txt", "files" -> "/home/thib") should
+      equal("/home/thib/foo.txt")
   }
 
   test("glob segment in the middle") {
-    url("src/*files/foo.txt", "files" -> "a/b/c") should equal(
-      "src/a/b/c/foo.txt")
+    url("src/*files/foo.txt", "files" -> "a/b/c") should
+      equal("src/a/b/c/foo.txt")
   }
 
   test("multiple glob segments") {

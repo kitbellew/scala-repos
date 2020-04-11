@@ -113,11 +113,12 @@ trait CorsSupport extends Handler with Initializable {
       .asInstanceOf[CORSConfig]
     import corsCfg._
     if (enabled) {
-      logger debug "Enabled CORS Support with:\nallowedOrigins:\n\t%s\nallowedMethods:\n\t%s\nallowedHeaders:\n\t%s"
-        .format(
-          allowedOrigins mkString ", ",
-          allowedMethods mkString ", ",
-          allowedHeaders mkString ", ")
+      logger debug
+        "Enabled CORS Support with:\nallowedOrigins:\n\t%s\nallowedMethods:\n\t%s\nallowedHeaders:\n\t%s"
+          .format(
+            allowedOrigins mkString ", ",
+            allowedMethods mkString ", ",
+            allowedHeaders mkString ", ")
     } else { logger debug "Cors support is disabled" }
   }
 
@@ -133,9 +134,9 @@ trait CorsSupport extends Handler with Initializable {
     response.headers(AccessControlAllowMethodsHeader) = corsConfig
       .allowedMethods mkString ","
     // 5.2.10
-    val rh = corsConfig.allowedHeaders ++ request
-      .getHeaders(AccessControlRequestHeadersHeader).asScala
-      .flatMap(_ split (","))
+    val rh = corsConfig.allowedHeaders ++
+      request.getHeaders(AccessControlRequestHeadersHeader).asScala
+        .flatMap(_ split (","))
     response.headers(AccessControlAllowHeadersHeader) = rh mkString ","
     response.end()
 
@@ -184,8 +185,8 @@ trait CorsSupport extends Handler with Initializable {
     val matchesOrigin = originMatches
     val methodAllowed = allowsMethod
     val allowsHeaders = headersAreAllowed
-    val result =
-      isCors && validRoute && isPreflight && enabled && matchesOrigin && methodAllowed && allowsHeaders
+    val result = isCors && validRoute && isPreflight && enabled &&
+      matchesOrigin && methodAllowed && allowsHeaders
     result
   }
 
@@ -195,10 +196,11 @@ trait CorsSupport extends Handler with Initializable {
 
   private[this] def isSimpleHeader(header: String): Boolean = {
     val ho = header.blankOption
-    ho.isDefined && (ho forall { h ⇒
+    ho.isDefined &&
+    (ho forall { h ⇒
       val hu = h.toUpperCase(ENGLISH)
-      SimpleHeaders.contains(hu) || (hu == "CONTENT-TYPE" &&
-      SimpleContentTypes.exists(
+      SimpleHeaders.contains(hu) ||
+      (hu == "CONTENT-TYPE" && SimpleContentTypes.exists(
         (request.contentType.getOrElse("")).toUpperCase(ENGLISH).startsWith))
     })
   }
@@ -213,8 +215,8 @@ trait CorsSupport extends Handler with Initializable {
     val isCors = isCORSRequest
     val enabled = isEnabled
     val allOrigins = allOriginsMatch
-    val res = isCors && enabled && allOrigins && request.headers.keys
-      .forall(isSimpleHeader)
+    val res = isCors && enabled && allOrigins &&
+      request.headers.keys.forall(isSimpleHeader)
     //    logger debug "This is a simple request: %s, because: %s, %s, %s".format(res, isCors, enabled, allOrigins)
     res
   }

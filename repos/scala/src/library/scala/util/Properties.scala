@@ -53,8 +53,8 @@ private[scala] trait PropertiesTrait {
   def propOrNull(name: String) = propOrElse(name, null)
   def propOrNone(name: String) = Option(propOrNull(name))
   def propOrFalse(name: String) =
-    propOrNone(name) exists (x =>
-      List("yes", "on", "true") contains x.toLowerCase)
+    propOrNone(name) exists
+      (x => List("yes", "on", "true") contains x.toLowerCase)
   def setProp(name: String, value: String) = System.setProperty(name, value)
   def clearProp(name: String) = System.clearProperty(name)
 
@@ -104,8 +104,8 @@ private[scala] trait PropertiesTrait {
   /** The version number of the jar this was loaded from plus "version " prefix,
     *  or "version (unknown)" if it cannot be determined.
     */
-  val versionString =
-    "version " + scalaPropOrElse("version.number", "(unknown)")
+  val versionString = "version " +
+    scalaPropOrElse("version.number", "(unknown)")
   val copyrightString = scalaPropOrElse(
     "copyright.string",
     "Copyright 2002-2016, LAMP/EPFL")

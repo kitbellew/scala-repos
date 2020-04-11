@@ -223,9 +223,8 @@ class PreferredReplicaPartitionLeaderSelector(
           .format(currentLeader, topicAndPartition) +
           " Trigerring preferred replica leader election")
       // check if preferred replica is not the current leader and is alive and in the isr
-      if (controllerContext.liveBrokerIds
-            .contains(preferredReplica) && currentLeaderAndIsr.isr
-            .contains(preferredReplica)) {
+      if (controllerContext.liveBrokerIds.contains(preferredReplica) &&
+          currentLeaderAndIsr.isr.contains(preferredReplica)) {
         (
           new LeaderAndIsr(
             preferredReplica,

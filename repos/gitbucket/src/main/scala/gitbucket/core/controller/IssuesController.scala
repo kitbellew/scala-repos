@@ -74,8 +74,8 @@ trait IssuesControllerBase extends ControllerBase {
     val q = request.getParameter("q")
     if (Option(q).exists(_.contains("is:pr"))) {
       redirect(
-        s"/${repository.owner}/${repository.name}/pulls?q=" + StringUtil
-          .urlEncode(q))
+        s"/${repository.owner}/${repository.name}/pulls?q=" +
+          StringUtil.urlEncode(q))
     } else { searchIssues(repository) }
   })
 
@@ -87,10 +87,9 @@ trait IssuesControllerBase extends ControllerBase {
             _,
             getComments(owner, name, issueId.toInt),
             getIssueLabels(owner, name, issueId.toInt),
-            (getCollaborators(owner, name) ::: (
-              if (getAccountByUserName(owner).get.isGroupAccount) Nil
-              else List(owner)
-            )).sorted,
+            (getCollaborators(owner, name) :::
+              (if (getAccountByUserName(owner).get.isGroupAccount) Nil
+               else List(owner))).sorted,
             getMilestonesWithIssueCount(owner, name),
             getLabels(owner, name),
             hasWritePermission(owner, name, context.loginAccount),
@@ -103,10 +102,9 @@ trait IssuesControllerBase extends ControllerBase {
   get("/:owner/:repository/issues/new")(readableUsersOnly { repository =>
     defining(repository.owner, repository.name) {
       case (owner, name) => html.create(
-          (getCollaborators(owner, name) ::: (
-            if (getAccountByUserName(owner).get.isGroupAccount) Nil
-            else List(owner)
-          )).sorted,
+          (getCollaborators(owner, name) :::
+            (if (getAccountByUserName(owner).get.isGroupAccount) Nil
+             else List(owner))).sorted,
           getMilestones(owner, name),
           getLabels(owner, name),
           hasWritePermission(owner, name, context.loginAccount),
@@ -494,10 +492,8 @@ trait IssuesControllerBase extends ControllerBase {
 
   private def isEditable(owner: String, repository: String, author: String)(
       implicit context: Context): Boolean =
-    hasWritePermission(
-      owner,
-      repository,
-      context.loginAccount) || author == context.loginAccount.get.userName
+    hasWritePermission(owner, repository, context.loginAccount) ||
+      author == context.loginAccount.get.userName
 
   private def executeBatch(repository: RepositoryService.RepositoryInfo)(
       execute: Int => Unit) = {

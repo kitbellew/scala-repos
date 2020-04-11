@@ -75,8 +75,8 @@ object Team extends LilaController {
           forms.edit(team).bindFromRequest.fold(
             err => BadRequest(html.team.edit(team, err)).fuccess,
             data =>
-              api.update(team, data, me) inject Redirect(
-                routes.Team.show(team.id)))
+              api.update(team, data, me) inject
+                Redirect(routes.Team.show(team.id)))
         }
       }
     }
@@ -97,9 +97,8 @@ object Team extends LilaController {
       OptionFuResult(api team id) { team =>
         Owner(team) {
           implicit val req = ctx.body
-          forms.kick.bindFromRequest.value ?? {
-            api.kick(team, _)
-          } inject Redirect(routes.Team.show(team.id))
+          forms.kick.bindFromRequest.value ?? { api.kick(team, _) } inject
+            Redirect(routes.Team.show(team.id))
         }
       }
     }
@@ -187,8 +186,8 @@ object Team extends LilaController {
               BadRequest(html.team.requestForm(team, err, captcha))
             },
           setup =>
-            api.createRequest(team, setup, me) inject Redirect(
-              routes.Team.show(team.id))
+            api.createRequest(team, setup, me) inject
+              Redirect(routes.Team.show(team.id))
         )
       }
     }
@@ -206,10 +205,8 @@ object Team extends LilaController {
             {
               case (decision, url) =>
                 api
-                  .processRequest(
-                    team,
-                    request,
-                    (decision === "accept")) inject url
+                  .processRequest(team, request, (decision === "accept")) inject
+                  url
             })
         }
       }
@@ -223,10 +220,8 @@ object Team extends LilaController {
   private def OnePerWeek[A <: Result](me: UserModel)(a: => Fu[A])(implicit
       ctx: Context): Fu[Result] =
     api.hasCreatedRecently(me) flatMap { did =>
-      (did && !Granter.superAdmin(me)) fold (
-        Forbidden(views.html.team.createLimit()).fuccess,
-        a
-      )
+      (did && !Granter.superAdmin(me)) fold
+        (Forbidden(views.html.team.createLimit()).fuccess, a)
     }
 
   private def Owner(team: TeamModel)(a: => Fu[Result])(implicit

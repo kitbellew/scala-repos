@@ -507,10 +507,11 @@ case class Hex(child: Expression)
       ev,
       (c) => {
         val hex = Hex.getClass.getName.stripSuffix("$")
-        s"${ev.value} = " + (child.dataType match {
-          case StringType => s"""$hex.hex($c.getBytes());"""
-          case _          => s"""$hex.hex($c);"""
-        })
+        s"${ev.value} = " +
+          (child.dataType match {
+            case StringType => s"""$hex.hex($c.getBytes());"""
+            case _          => s"""$hex.hex($c);"""
+          })
       }
     )
   }

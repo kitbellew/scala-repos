@@ -71,8 +71,8 @@ class ActorsLeakSpec
 
     "not leak actors" in {
       val ref = system.actorOf(Props[EchoActor], "echo")
-      val echoPath =
-        RootActorPath(RARP(system).provider.getDefaultAddress) / "user" / "echo"
+      val echoPath = RootActorPath(RARP(system).provider.getDefaultAddress) /
+        "user" / "echo"
 
       val targets = List("/system/endpointManager", "/system/transports").map {
         path ⇒
@@ -145,8 +145,9 @@ class ActorsLeakSpec
         probe.expectMsgType[ActorIdentity].ref.nonEmpty should be(true)
 
         // Watch a remote actor - this results in system message traffic
-        system.actorSelection(
-          RootActorPath(remoteAddress) / "user" / "stoppable") ! Identify(1)
+        system
+          .actorSelection(RootActorPath(remoteAddress) / "user" / "stoppable") !
+          Identify(1)
         val remoteActor = expectMsgType[ActorIdentity].ref.get
         watch(remoteActor)
         remoteActor ! "stop"

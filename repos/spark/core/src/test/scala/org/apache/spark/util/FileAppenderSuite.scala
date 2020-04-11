@@ -294,8 +294,8 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     import scala.collection.JavaConverters._
     loggingEventCaptor.getAllValues.asScala.foreach { loggingEvent =>
       assert(
-        loggingEvent.getThrowableInformation === null
-          || !loggingEvent.getThrowableInformation.getThrowable
+        loggingEvent.getThrowableInformation === null ||
+          !loggingEvent.getThrowableInformation.getThrowable
             .isInstanceOf[IOException])
     }
   }

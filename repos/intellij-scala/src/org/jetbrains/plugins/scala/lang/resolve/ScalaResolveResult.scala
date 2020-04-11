@@ -163,8 +163,8 @@ class ScalaResolveResult(
     }
 
   override def hashCode: Int =
-    element.hashCode + innerResolveResult.hashCode() * 31 + nameShadow
-      .hashCode() * 31 * 31 + implicitFunction.hashCode() * 31 * 31
+    element.hashCode + innerResolveResult.hashCode() * 31 +
+      nameShadow.hashCode() * 31 * 31 + implicitFunction.hashCode() * 31 * 31
 
   override def toString = {
     val name = element match {
@@ -251,8 +251,8 @@ class ScalaResolveResult(
                 case "scala"                      => return SCALA
                 case _ => clazz match {
                     case o: ScObject
-                        if o.isPackageObject && !PsiTreeUtil
-                          .isContextAncestor(o, place, false) =>
+                        if o.isPackageObject &&
+                          !PsiTreeUtil.isContextAncestor(o, place, false) =>
                       var q = o.qualifiedName
                       val packageSuffix: String = ".`package`"
                       if (q.endsWith(packageSuffix))

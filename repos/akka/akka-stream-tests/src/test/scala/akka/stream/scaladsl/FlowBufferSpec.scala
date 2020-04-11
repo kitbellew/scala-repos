@@ -41,17 +41,18 @@ class FlowBufferSpec extends AkkaSpec {
       Await.result(future, 3.seconds) should be(1 to 1000)
     }
 
-    "pass elements through a chain of backpressured buffers of different size" in assertAllStagesStopped {
-      val future = Source(1 to 1000)
-        .buffer(1, overflowStrategy = OverflowStrategy.backpressure)
-        .buffer(10, overflowStrategy = OverflowStrategy.backpressure)
-        .buffer(256, overflowStrategy = OverflowStrategy.backpressure)
-        .buffer(1, overflowStrategy = OverflowStrategy.backpressure)
-        .buffer(5, overflowStrategy = OverflowStrategy.backpressure)
-        .buffer(128, overflowStrategy = OverflowStrategy.backpressure)
-        .grouped(1001).runWith(Sink.head)
-      Await.result(future, 3.seconds) should be(1 to 1000)
-    }
+    "pass elements through a chain of backpressured buffers of different size" in
+      assertAllStagesStopped {
+        val future = Source(1 to 1000)
+          .buffer(1, overflowStrategy = OverflowStrategy.backpressure)
+          .buffer(10, overflowStrategy = OverflowStrategy.backpressure)
+          .buffer(256, overflowStrategy = OverflowStrategy.backpressure)
+          .buffer(1, overflowStrategy = OverflowStrategy.backpressure)
+          .buffer(5, overflowStrategy = OverflowStrategy.backpressure)
+          .buffer(128, overflowStrategy = OverflowStrategy.backpressure)
+          .grouped(1001).runWith(Sink.head)
+        Await.result(future, 3.seconds) should be(1 to 1000)
+      }
 
     "accept elements that fit in the buffer while downstream is silent" in {
       val publisher = TestPublisher.probe[Int]()
@@ -194,32 +195,33 @@ class FlowBufferSpec extends AkkaSpec {
       subscriber.cancel()
     }
 
-    "fail upstream if buffer is full and configured so" in assertAllStagesStopped {
-      val publisher = TestPublisher.probe[Int]()
-      val subscriber = TestSubscriber.manualProbe[Int]()
+    "fail upstream if buffer is full and configured so" in
+      assertAllStagesStopped {
+        val publisher = TestPublisher.probe[Int]()
+        val subscriber = TestSubscriber.manualProbe[Int]()
 
-      Source.fromPublisher(publisher)
-        .buffer(100, overflowStrategy = OverflowStrategy.fail)
-        .to(Sink.fromSubscriber(subscriber)).run()
-      val sub = subscriber.expectSubscription()
+        Source.fromPublisher(publisher)
+          .buffer(100, overflowStrategy = OverflowStrategy.fail)
+          .to(Sink.fromSubscriber(subscriber)).run()
+        val sub = subscriber.expectSubscription()
 
-      // Fill up buffer
-      for (i ← 1 to 100) publisher.sendNext(i)
+        // Fill up buffer
+        for (i ← 1 to 100) publisher.sendNext(i)
 
-      // drain
-      for (i ← 1 to 10) {
-        sub.request(1)
-        subscriber.expectNext(i)
+        // drain
+        for (i ← 1 to 10) {
+          sub.request(1)
+          subscriber.expectNext(i)
+        }
+
+        // overflow the buffer
+        for (i ← 101 to 111) publisher.sendNext(i)
+
+        publisher.expectCancellation()
+        val error = new BufferOverflowException(
+          "Buffer overflow (max capacity was: 100)!")
+        subscriber.expectError(error)
       }
-
-      // overflow the buffer
-      for (i ← 101 to 111) publisher.sendNext(i)
-
-      publisher.expectCancellation()
-      val error =
-        new BufferOverflowException("Buffer overflow (max capacity was: 100)!")
-      subscriber.expectError(error)
-    }
 
     for (strategy ← List(
            OverflowStrategy.dropHead,

@@ -42,8 +42,9 @@ class ConvertFromInfixIntention extends PsiElementBaseIntentionAction {
     }
 
     if (element == null) return
-    val newTypeText = infixTypeElement.ref.getText + "[" + infixTypeElement.lOp
-      .getText + ", " + infixTypeElement.rOp.map(_.getText).getOrElse("") + "]"
+    val newTypeText = infixTypeElement.ref.getText + "[" +
+      infixTypeElement.lOp.getText + ", " + infixTypeElement.rOp.map(_.getText)
+        .getOrElse("") + "]"
     val newTypeElement = ScalaPsiElementFactory
       .createTypeElementFromText(newTypeText, element.getManager)
     val replaced = elementToReplace.replace(newTypeElement)

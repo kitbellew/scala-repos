@@ -317,9 +317,8 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
     }
 
   /** Run a validation function and back to disjunction again. Alias for `@\?/` */
-  def validationed[AA, BB](
-      k: Validation[A, B] => Validation[AA, BB]): AA \/ BB =
-    k(validation).disjunction
+  def validationed[AA, BB](k: Validation[A, B] => Validation[AA, BB]): AA \/
+    BB = k(validation).disjunction
 
   /** Run a validation function and back to disjunction again. Alias for `validationed` */
   def @\?/[AA, BB](k: Validation[A, B] => Validation[AA, BB]): AA \/ BB =

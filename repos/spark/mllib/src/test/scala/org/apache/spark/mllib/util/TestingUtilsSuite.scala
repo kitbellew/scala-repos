@@ -60,11 +60,11 @@ class TestingUtilsSuite extends SparkFunSuite {
 
     // Comparisons of numbers very close to zero.
     assert(
-      10 * Double.MinPositiveValue ~== 9.5 * Double
-        .MinPositiveValue relTol 0.01)
+      10 * Double.MinPositiveValue ~== 9.5 * Double.MinPositiveValue relTol
+        0.01)
     assert(
-      10 * Double.MinPositiveValue !~== 11 * Double
-        .MinPositiveValue relTol 0.01)
+      10 * Double.MinPositiveValue !~==
+        11 * Double.MinPositiveValue relTol 0.01)
 
     assert(
       -Double.MinPositiveValue ~== 1.18 * -Double.MinPositiveValue relTol 0.012)
@@ -96,60 +96,60 @@ class TestingUtilsSuite extends SparkFunSuite {
 
     // Comparisons of numbers very close to zero, and both side of zeros
     assert(
-      Double.MinPositiveValue ~== 4 * Double.MinPositiveValue absTol 5 * Double
-        .MinPositiveValue)
+      Double.MinPositiveValue ~== 4 * Double.MinPositiveValue absTol
+        5 * Double.MinPositiveValue)
     assert(
-      Double.MinPositiveValue !~== 6 * Double.MinPositiveValue absTol 5 * Double
-        .MinPositiveValue)
+      Double.MinPositiveValue !~== 6 * Double.MinPositiveValue absTol
+        5 * Double.MinPositiveValue)
 
     assert(
-      -Double.MinPositiveValue ~== 3 * Double.MinPositiveValue absTol 5 * Double
-        .MinPositiveValue)
+      -Double.MinPositiveValue ~== 3 * Double.MinPositiveValue absTol
+        5 * Double.MinPositiveValue)
     assert(
-      Double.MinPositiveValue !~== -4 * Double
-        .MinPositiveValue absTol 5 * Double.MinPositiveValue)
+      Double.MinPositiveValue !~== -4 * Double.MinPositiveValue absTol
+        5 * Double.MinPositiveValue)
   }
 
   test("Comparing vectors using relative error.") {
 
     // Comparisons of two dense vectors
     assert(
-      Vectors.dense(Array(3.1, 3.5)) ~== Vectors
-        .dense(Array(3.130, 3.534)) relTol 0.01)
+      Vectors.dense(Array(3.1, 3.5)) ~== Vectors.dense(
+        Array(3.130, 3.534)) relTol 0.01)
     assert(
-      Vectors.dense(Array(3.1, 3.5)) !~== Vectors
-        .dense(Array(3.135, 3.534)) relTol 0.01)
+      Vectors.dense(Array(3.1, 3.5)) !~==
+        Vectors.dense(Array(3.135, 3.534)) relTol 0.01)
     assert(
-      Vectors.dense(Array(3.1, 3.5)) ~= Vectors
-        .dense(Array(3.130, 3.534)) relTol 0.01)
+      Vectors.dense(Array(3.1, 3.5)) ~= Vectors.dense(
+        Array(3.130, 3.534)) relTol 0.01)
     assert(
-      Vectors.dense(Array(3.1, 3.5)) !~= Vectors
-        .dense(Array(3.135, 3.534)) relTol 0.01)
+      Vectors.dense(Array(3.1, 3.5)) !~=
+        Vectors.dense(Array(3.135, 3.534)) relTol 0.01)
     assert(
-      !(Vectors.dense(Array(3.1, 3.5)) !~= Vectors
-        .dense(Array(3.130, 3.534)) relTol 0.01))
+      !(Vectors.dense(Array(3.1, 3.5)) !~=
+        Vectors.dense(Array(3.130, 3.534)) relTol 0.01))
     assert(
-      !(Vectors.dense(Array(3.1, 3.5)) ~= Vectors
-        .dense(Array(3.135, 3.534)) relTol 0.01))
+      !(Vectors.dense(Array(3.1, 3.5)) ~= Vectors.dense(
+        Array(3.135, 3.534)) relTol 0.01))
 
     // Should throw exception with message when test fails.
     intercept[TestFailedException](
-      Vectors.dense(Array(3.1, 3.5)) !~== Vectors
-        .dense(Array(3.130, 3.534)) relTol 0.01)
+      Vectors.dense(Array(3.1, 3.5)) !~==
+        Vectors.dense(Array(3.130, 3.534)) relTol 0.01)
 
     intercept[TestFailedException](
-      Vectors.dense(Array(3.1, 3.5)) ~== Vectors
-        .dense(Array(3.135, 3.534)) relTol 0.01)
+      Vectors.dense(Array(3.1, 3.5)) ~== Vectors.dense(
+        Array(3.135, 3.534)) relTol 0.01)
 
     // Comparing against zero should fail the test and throw exception with message
     // saying that the relative error is meaningless in this situation.
     intercept[TestFailedException](
-      Vectors.dense(Array(3.1, 0.01)) ~== Vectors
-        .dense(Array(3.13, 0.0)) relTol 0.01)
+      Vectors.dense(Array(3.1, 0.01)) ~== Vectors.dense(Array(3.13, 0.0)) relTol
+        0.01)
 
     intercept[TestFailedException](
-      Vectors.dense(Array(3.1, 0.01)) ~== Vectors
-        .sparse(2, Array(0), Array(3.13)) relTol 0.01)
+      Vectors.dense(Array(3.1, 0.01)) ~==
+        Vectors.sparse(2, Array(0), Array(3.13)) relTol 0.01)
 
     // Comparisons of two sparse vectors
     assert(
@@ -165,16 +165,16 @@ class TestingUtilsSuite extends SparkFunSuite {
 
     // Comparisons of two dense vectors
     assert(
-      Vectors.dense(Array(3.1, 3.5, 0.0)) ~==
-        Vectors.dense(Array(3.1 + 1e-8, 3.5 + 2e-7, 1e-8)) absTol 1e-6)
+      Vectors.dense(Array(3.1, 3.5, 0.0)) ~== Vectors.dense(
+        Array(3.1 + 1e-8, 3.5 + 2e-7, 1e-8)) absTol 1e-6)
 
     assert(
       Vectors.dense(Array(3.1, 3.5, 0.0)) !~==
         Vectors.dense(Array(3.1 + 1e-5, 3.5 + 2e-7, 1 + 1e-3)) absTol 1e-6)
 
     assert(
-      Vectors.dense(Array(3.1, 3.5, 0.0)) ~=
-        Vectors.dense(Array(3.1 + 1e-8, 3.5 + 2e-7, 1e-8)) absTol 1e-6)
+      Vectors.dense(Array(3.1, 3.5, 0.0)) ~= Vectors.dense(
+        Array(3.1 + 1e-8, 3.5 + 2e-7, 1e-8)) absTol 1e-6)
 
     assert(
       Vectors.dense(Array(3.1, 3.5, 0.0)) !~=
@@ -185,8 +185,8 @@ class TestingUtilsSuite extends SparkFunSuite {
         Vectors.dense(Array(3.1 + 1e-8, 3.5 + 2e-7, 1e-8)) absTol 1e-6))
 
     assert(
-      !(Vectors.dense(Array(3.1, 3.5, 0.0)) ~=
-        Vectors.dense(Array(3.1 + 1e-5, 3.5 + 2e-7, 1 + 1e-3)) absTol 1e-6))
+      !(Vectors.dense(Array(3.1, 3.5, 0.0)) ~= Vectors.dense(
+        Array(3.1 + 1e-5, 3.5 + 2e-7, 1 + 1e-3)) absTol 1e-6))
 
     // Should throw exception with message when test fails.
     intercept[TestFailedException](
@@ -194,14 +194,14 @@ class TestingUtilsSuite extends SparkFunSuite {
         Vectors.dense(Array(3.1 + 1e-8, 3.5 + 2e-7, 1e-8)) absTol 1e-6)
 
     intercept[TestFailedException](
-      Vectors.dense(Array(3.1, 3.5, 0.0)) ~==
-        Vectors.dense(Array(3.1 + 1e-5, 3.5 + 2e-7, 1 + 1e-3)) absTol 1e-6)
+      Vectors.dense(Array(3.1, 3.5, 0.0)) ~== Vectors.dense(
+        Array(3.1 + 1e-5, 3.5 + 2e-7, 1 + 1e-3)) absTol 1e-6)
 
     // Comparisons of two sparse vectors
     assert(
       Vectors.sparse(3, Array(0, 2), Array(3.1, 2.4)) ~==
-        Vectors
-          .sparse(3, Array(0, 2), Array(3.1 + 1e-8, 2.4 + 1e-7)) absTol 1e-6)
+        Vectors.sparse(3, Array(0, 2), Array(3.1 + 1e-8, 2.4 + 1e-7)) absTol
+          1e-6)
 
     assert(
       Vectors.sparse(3, Array(0, 2), Array(3.1 + 1e-8, 2.4 + 1e-7)) ~==
@@ -217,8 +217,8 @@ class TestingUtilsSuite extends SparkFunSuite {
 
     // Comparisons of a dense vector and a sparse vector
     assert(
-      Vectors.sparse(3, Array(0, 2), Array(3.1, 2.4)) ~==
-        Vectors.dense(Array(3.1 + 1e-8, 0, 2.4 + 1e-7)) absTol 1e-6)
+      Vectors.sparse(3, Array(0, 2), Array(3.1, 2.4)) ~== Vectors.dense(
+        Array(3.1 + 1e-8, 0, 2.4 + 1e-7)) absTol 1e-6)
 
     assert(
       Vectors.dense(Array(3.1 + 1e-8, 0, 2.4 + 1e-7)) ~==

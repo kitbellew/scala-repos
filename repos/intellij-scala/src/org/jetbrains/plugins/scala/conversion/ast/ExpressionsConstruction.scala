@@ -17,14 +17,9 @@ case class ClassCast(
     extends IntermediateNode
     with TypedElement {
   def canSimplify: Boolean =
-    isPrimitive && List(
-      "Int",
-      "Long",
-      "Double",
-      "Float",
-      "Byte",
-      "Char",
-      "Short").contains(castType.asInstanceOf[TypeConstruction].inType)
+    isPrimitive &&
+      List("Int", "Long", "Double", "Float", "Byte", "Char", "Short")
+        .contains(castType.asInstanceOf[TypeConstruction].inType)
 
   override def getType: TypeConstruction =
     castType.asInstanceOf[TypedElement].getType

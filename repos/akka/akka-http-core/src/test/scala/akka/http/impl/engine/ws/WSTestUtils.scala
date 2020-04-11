@@ -21,10 +21,8 @@ object WSTestUtils {
     def set(should: Boolean, mask: Int): Int = if (should) mask else 0
 
     val flags =
-      set(fin, Protocol.FIN_MASK) |
-        set(rsv1, Protocol.RSV1_MASK) |
-        set(rsv2, Protocol.RSV2_MASK) |
-        set(rsv3, Protocol.RSV3_MASK)
+      set(fin, Protocol.FIN_MASK) | set(rsv1, Protocol.RSV1_MASK) |
+        set(rsv2, Protocol.RSV2_MASK) | set(rsv3, Protocol.RSV3_MASK)
 
     val opcodeByte = opcode.code | flags
 

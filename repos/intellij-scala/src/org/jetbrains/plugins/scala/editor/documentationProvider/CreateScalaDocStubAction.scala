@@ -80,10 +80,11 @@ class CreateScalaDocStubAction
 
           val docRange = docOwner.getDocComment.getTextRange
           extensions inWriteAction {
-            CodeStyleManager getInstance project reformatText (
-              docOwner.getContainingFile, docRange.getStartOffset, docRange
-                .getEndOffset + 2
-            )
+            CodeStyleManager getInstance project reformatText
+              (
+                docOwner.getContainingFile,
+                docRange.getStartOffset,
+                docRange.getEndOffset + 2)
           }
         }
       },
@@ -165,10 +166,11 @@ class CreateScalaDocStubAction
 
             PsiDocumentManager getInstance project commitDocument psiDocument
             val range = docOwner.getDocComment.getTextRange
-            CodeStyleManager getInstance project reformatText (
-              docOwner.getContainingFile, range.getStartOffset, range
-                .getEndOffset
-            )
+            CodeStyleManager getInstance project reformatText
+              (
+                docOwner.getContainingFile,
+                range.getStartOffset,
+                range.getEndOffset)
           }
         }
       },

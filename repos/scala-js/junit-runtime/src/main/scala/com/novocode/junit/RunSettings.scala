@@ -34,8 +34,8 @@ class RunSettings private (
   def buildColoredMessage(t: Throwable, c1: String): String = {
     if (t == null) "null"
     else {
-      if (!logExceptionClass || (!logAssert && t
-            .isInstanceOf[AssertionError])) { t.getMessage }
+      if (!logExceptionClass ||
+          (!logAssert && t.isInstanceOf[AssertionError])) { t.getMessage }
       else {
         val b = new StringBuilder()
         val cn = decodeName(t.getClass.getName)

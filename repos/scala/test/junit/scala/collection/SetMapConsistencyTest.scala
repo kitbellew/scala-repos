@@ -403,14 +403,11 @@ class SetMapConsistencyTest {
   // Actual tests
   val smallKeys = Array(0, 1, 42, 9127)
   val intKeys = smallKeys ++ Array(-1, Int.MaxValue, Int.MinValue, -129385)
-  val longKeys = intKeys.map(_.toLong) ++ Array(
-    Long.MaxValue,
-    Long.MinValue,
-    1397198789151L,
-    -41402148014L)
+  val longKeys = intKeys.map(_.toLong) ++
+    Array(Long.MaxValue, Long.MinValue, 1397198789151L, -41402148014L)
   val stringKeys = intKeys.map(_.toString) ++ Array("", null)
-  val anyKeys =
-    stringKeys.filter(_ != null) ++ Array(0L) ++ Array(true) ++ Array(math.Pi)
+  val anyKeys = stringKeys.filter(_ != null) ++ Array(0L) ++ Array(true) ++
+    Array(math.Pi)
 
   @Test
   def churnIntMaps() {
@@ -521,8 +518,8 @@ class SetMapConsistencyTest {
       val lm2 = new LongMap[Unit](2000000)
       for (i <- 0 until 1000000) lm2(i) = ()
 
-      lm2.size == 1000000 &&
-      (0 to 1100000 by 100000).forall(i => (lm2 contains i) == i < 1000000)
+      lm2.size == 1000000 && (0 to 1100000 by 100000)
+        .forall(i => (lm2 contains i) == i < 1000000)
     }
 
     lm = LongMap(8L -> 22L, -5L -> 5L, Long.MinValue -> 0L)
@@ -541,9 +538,8 @@ class SetMapConsistencyTest {
       val hm2 = (new HashMap[Long, String]) ++= lm2
       List(Long.MinValue, 0L, 1L, 5L).forall(i =>
         lm2.get(i) == hm2.get(i) &&
-          lm2.getOrElse(i, "") == hm2.getOrElse(i, "") &&
-          lm2(i) == hm2.get(i).getOrElse(i.toString) &&
-          lm2.getOrNull(i) == hm2.get(i).orNull)
+          lm2.getOrElse(i, "") == hm2.getOrElse(i, "") && lm2(i) == hm2.get(i)
+            .getOrElse(i.toString) && lm2.getOrNull(i) == hm2.get(i).orNull)
     }
   }
 
@@ -561,8 +557,8 @@ class SetMapConsistencyTest {
     assert {
       val arm2 = new AnyRefMap[java.lang.Integer, Unit](2000000)
       for (i <- 0 until 1000000) arm2(java.lang.Integer.valueOf(i)) = ()
-      arm2.size == 1000000 &&
-      (0 to 1100000 by 100000).map(java.lang.Integer.valueOf)
+      arm2.size == 1000000 && (0 to 1100000 by 100000)
+        .map(java.lang.Integer.valueOf)
         .forall(i => (arm2 contains i) == i < 1000000)
     }
 
@@ -571,10 +567,8 @@ class SetMapConsistencyTest {
     assert {
       var s = ""
       arm.foreachKey(s += _)
-      s.length == "herondovebudgie".length &&
-      s.contains("heron") &&
-      s.contains("dove") &&
-      s.contains("budgie")
+      s.length == "herondovebudgie".length && s.contains("heron") &&
+      s.contains("dove") && s.contains("budgie")
     }
 
     assert { var s = 0L; arm.foreachValue(s += _); s == 27L }
@@ -592,8 +586,7 @@ class SetMapConsistencyTest {
       val hm2 = (new HashMap[String, String]) ++= arm2
       List(null, "cod", "sparrow", "Rarity").forall(i =>
         arm2.get(i) == hm2.get(i) &&
-          arm2.getOrElse(i, "") == hm2.getOrElse(i, "") &&
-          arm2(i) == hm2.get(i)
+          arm2.getOrElse(i, "") == hm2.getOrElse(i, "") && arm2(i) == hm2.get(i)
             .getOrElse(if (i == null) "null" else i.toString) &&
           arm2.getOrNull(i) == hm2.get(i).orNull)
     }

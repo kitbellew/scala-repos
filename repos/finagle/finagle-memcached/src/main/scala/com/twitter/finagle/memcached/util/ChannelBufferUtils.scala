@@ -32,7 +32,8 @@ private[finagle] object ChannelBufferUtils {
       if (buffer.writerIndex < enoughBytesForDelimeter) return false
 
       val control = buffer.getByte(guessedIndex)
-      control == '\u0000' || control == '\n' || control == '\r' || control == ' '
+      control == '\u0000' || control == '\n' || control == '\r' ||
+      control == ' '
     }
   }
 

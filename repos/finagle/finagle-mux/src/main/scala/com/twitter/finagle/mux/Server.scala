@@ -339,8 +339,7 @@ private[twitter] class ServerDispatcher(
 
     statsReceiver.counter("draining").incr()
     val done = write(Message.Tdrain(1)) before
-      tracker.drained.within(deadline - Time.now) before
-      trans.close(deadline)
+      tracker.drained.within(deadline - Time.now) before trans.close(deadline)
     done.transform {
       case Return(_) =>
         statsReceiver.counter("drained").incr()

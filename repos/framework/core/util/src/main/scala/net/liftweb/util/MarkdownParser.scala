@@ -35,7 +35,8 @@ object MarkdownParser {
     for {
       str <- Helpers.tryo(threadLocalTransformer.apply(in))
       res = Html5.parse(
-        "<html><head><title>I eat yaks</title></head><body>" + str + "</body></html>")
+        "<html><head><title>I eat yaks</title></head><body>" + str +
+          "</body></html>")
       info <- res.map { res =>
         (res \ "body").collect { case e: Elem => e }.flatMap(_.child)
       }

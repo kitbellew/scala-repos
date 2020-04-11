@@ -37,24 +37,20 @@ object ExtractionExamples extends Specification {
 
   "Extraction with path expression example" in {
     val json = parse(testJson)
-    (json \ "address").extract[Address] mustEqual Address(
-      "Bulevard",
-      "Helsinki")
+    (json \ "address").extract[Address] mustEqual
+      Address("Bulevard", "Helsinki")
   }
 
   "Partial extraction example" in {
     val json = parse(testJson)
-    json.extract[SimplePerson] mustEqual SimplePerson(
-      "joe",
-      Address("Bulevard", "Helsinki"))
+    json.extract[SimplePerson] mustEqual
+      SimplePerson("joe", Address("Bulevard", "Helsinki"))
   }
 
   "Extract with a default value" in {
     val json = parse(testJson)
-    (json \ "address2")
-      .extractOrElse(Address("Tie", "Helsinki")) mustEqual Address(
-      "Tie",
-      "Helsinki")
+    (json \ "address2").extractOrElse(Address("Tie", "Helsinki")) mustEqual
+      Address("Tie", "Helsinki")
   }
 
   "Map with primitive values extraction example" in {
@@ -65,12 +61,11 @@ object ExtractionExamples extends Specification {
 
   "Map with object values extraction example" in {
     val json = parse(twoAddresses)
-    json.extract[PersonWithAddresses] mustEqual
-      PersonWithAddresses(
-        "joe",
-        Map(
-          "address1" -> Address("Bulevard", "Helsinki"),
-          "address2" -> Address("Soho", "London")))
+    json.extract[PersonWithAddresses] mustEqual PersonWithAddresses(
+      "joe",
+      Map(
+        "address1" -> Address("Bulevard", "Helsinki"),
+        "address2" -> Address("Soho", "London")))
   }
 
   "Simple value extraction example" in {
@@ -85,8 +80,8 @@ object ExtractionExamples extends Specification {
     (json \ "name").extract[String] mustEqual "joe"
     (json \ "name").extractOpt[String] mustEqual Some("joe")
     (json \ "name").extractOpt[Int] mustEqual None
-    ((json \ "children")(0) \ "birthdate").extract[Date] mustEqual date(
-      "2004-09-04T18:06:22Z")
+    ((json \ "children")(0) \ "birthdate").extract[Date] mustEqual
+      date("2004-09-04T18:06:22Z")
 
     JInt(1).extract[Int] mustEqual 1
     JInt(1).extract[String] mustEqual "1"
@@ -118,26 +113,20 @@ object ExtractionExamples extends Specification {
 
   "Timestamp extraction example" in {
     val json = parse("""{"timestamp":"2009-09-04T18:06:22Z"}""")
-    new Date(
-      (json \ "timestamp").extract[java.sql.Timestamp].getTime) mustEqual date(
-      "2009-09-04T18:06:22Z")
+    new Date((json \ "timestamp").extract[java.sql.Timestamp].getTime) mustEqual
+      date("2009-09-04T18:06:22Z")
   }
 
   "Option extraction example" in {
     val json = parse(
       """{ "name": null, "age": 5, "mother":{"name":"Marilyn"}}""")
-    json.extract[OChild] mustEqual OChild(
-      None,
-      5,
-      Some(Parent("Marilyn")),
-      None)
+    json.extract[OChild] mustEqual
+      OChild(None, 5, Some(Parent("Marilyn")), None)
   }
 
   "Missing JSON array can be extracted as an empty List" in {
-    parse(missingChildren).extract[Person] mustEqual Person(
-      "joe",
-      Address("Bulevard", "Helsinki"),
-      Nil)
+    parse(missingChildren).extract[Person] mustEqual
+      Person("joe", Address("Bulevard", "Helsinki"), Nil)
   }
 
   "Multidimensional array extraction example" in {
@@ -160,8 +149,8 @@ object ExtractionExamples extends Specification {
   "Unflatten example with top level string and int" in {
     val m = Map(".name" -> "\"joe\"", ".age" -> "32")
 
-    Extraction.unflatten(m) mustEqual JObject(
-      List(JField("name", JString("joe")), JField("age", JInt(32))))
+    Extraction.unflatten(m) mustEqual
+      JObject(List(JField("name", JString("joe")), JField("age", JInt(32))))
   }
 
   "Unflatten example with top level string and double" in {
@@ -189,8 +178,8 @@ object ExtractionExamples extends Specification {
   "Unflatten example with top level array" in {
     val m = Map(".foo[2]" -> "2", ".foo[0]" -> "0", ".foo[1]" -> "1")
 
-    Extraction.unflatten(m) mustEqual JObject(
-      List(JField("foo", JArray(List(JInt(0), JInt(1), JInt(2))))))
+    Extraction.unflatten(m) mustEqual
+      JObject(List(JField("foo", JArray(List(JInt(0), JInt(1), JInt(2))))))
   }
 
   "Unflatten example with common prefixes" in {
@@ -231,9 +220,8 @@ object ExtractionExamples extends Specification {
 
   "Map extraction example" in {
     val json = parse(testJson) \ "address"
-    json.extract[Map[String, String]] mustEqual Map(
-      "street" -> "Bulevard",
-      "city" -> "Helsinki")
+    json.extract[Map[String, String]] mustEqual
+      Map("street" -> "Bulevard", "city" -> "Helsinki")
   }
 
   "Extraction and decomposition are symmetric" in {
@@ -275,12 +263,10 @@ object ExtractionExamples extends Specification {
   }
 
   "Partial JSON extraction" in {
-    parse(stringField).extract[ClassWithJSON] mustEqual ClassWithJSON(
-      "one",
-      JString("msg"))
-    parse(objField).extract[ClassWithJSON] mustEqual ClassWithJSON(
-      "one",
-      JObject(List(JField("yes", JString("woo")))))
+    parse(stringField).extract[ClassWithJSON] mustEqual
+      ClassWithJSON("one", JString("msg"))
+    parse(objField).extract[ClassWithJSON] mustEqual
+      ClassWithJSON("one", JObject(List(JField("yes", JString("woo")))))
   }
 
   "Double can be coerced to Int or Long" in {
@@ -289,8 +275,8 @@ object ExtractionExamples extends Specification {
   }
 
   "Map with nested non-polymorphic list extraction example" in {
-    parse("""{"a":["b"]}""").extract[Map[String, List[String]]] mustEqual Map(
-      "a" -> List("b"))
+    parse("""{"a":["b"]}""").extract[Map[String, List[String]]] mustEqual
+      Map("a" -> List("b"))
   }
 
   "List with nested non-polymorphic list extraction example" in {
@@ -299,8 +285,8 @@ object ExtractionExamples extends Specification {
 
   "Complex nested non-polymorphic collections extraction example" in {
     parse("""{"a":[{"b":"c"}]}""")
-      .extract[Map[String, List[Map[String, String]]]] mustEqual Map(
-      "a" -> List(Map("b" -> "c")))
+      .extract[Map[String, List[Map[String, String]]]] mustEqual
+      Map("a" -> List(Map("b" -> "c")))
   }
 
   val testJson = """

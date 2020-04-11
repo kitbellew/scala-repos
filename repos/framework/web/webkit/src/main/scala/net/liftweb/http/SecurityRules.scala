@@ -265,9 +265,8 @@ final case class ContentSecurityPolicy(
 
     val restrictionString = allRestrictions.collect {
       case (category, restrictions) if restrictions.nonEmpty =>
-        category +
-          " " +
-          restrictions.map(_.sourceRestrictionString).mkString(" ")
+        category + " " + restrictions.map(_.sourceRestrictionString)
+          .mkString(" ")
     }.mkString("; ")
 
     reportUri.map { uri => s"$restrictionString; report-uri $uri" } getOrElse {

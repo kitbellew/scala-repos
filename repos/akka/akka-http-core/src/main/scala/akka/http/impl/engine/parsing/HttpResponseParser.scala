@@ -86,9 +86,8 @@ private[http] class HttpResponseParser(
             "Response reason phrase exceeds the configured limit of " +
               maxResponseReasonLength + " characters")
       skipReason(startIdx)
-    } else if (byteChar(input, cursor + 3) == '\r' && byteChar(
-                 input,
-                 cursor + 4) == '\n') {
+    } else if (byteChar(input, cursor + 3) == '\r' &&
+               byteChar(input, cursor + 4) == '\n') {
       throw new ParsingException("Status code misses trailing space")
     } else badStatusCode
   }
@@ -111,16 +110,16 @@ private[http] class HttpResponseParser(
     def emitResponseStart(
         createEntity: EntityCreator[ResponseOutput, ResponseEntity],
         headers: List[HttpHeader] = headers) = {
-      val close =
-        contextForCurrentResponse.get.oneHundredContinueTrigger match {
-          case None ⇒ closeAfterResponseCompletion
-          case Some(trigger) if statusCode.isSuccess ⇒
-            trigger.trySuccess(())
-            closeAfterResponseCompletion
-          case Some(trigger) ⇒
-            trigger.tryFailure(OneHundredContinueError)
-            true
-        }
+      val close = contextForCurrentResponse.get
+        .oneHundredContinueTrigger match {
+        case None ⇒ closeAfterResponseCompletion
+        case Some(trigger) if statusCode.isSuccess ⇒
+          trigger.trySuccess(())
+          closeAfterResponseCompletion
+        case Some(trigger) ⇒
+          trigger.tryFailure(OneHundredContinueError)
+          true
+      }
       emit(ResponseStart(statusCode, protocol, headers, createEntity, close))
     }
 
@@ -143,8 +142,8 @@ private[http] class HttpResponseParser(
           startNewMessage(input, bodyStart)
       }
 
-    if (statusCode.allowsEntity && (contextForCurrentResponse.get
-          .requestMethod != HttpMethods.HEAD)) {
+    if (statusCode.allowsEntity &&
+        (contextForCurrentResponse.get.requestMethod != HttpMethods.HEAD)) {
       teh match {
         case None ⇒ clh match {
             case Some(`Content-Length`(contentLength)) ⇒

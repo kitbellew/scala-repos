@@ -245,9 +245,10 @@ object union {
 
     implicit def cconsMapValues[HF, K, V, T <: Coproduct](implicit
         hc: Case1[HF, V],
-        tailMapValues: MapValues[HF, T]): Aux[HF, FieldType[
-      K,
-      V] :+: T, FieldType[K, hc.Result] :+: tailMapValues.Out] =
+        tailMapValues: MapValues[HF, T]): Aux[
+      HF,
+      FieldType[K, V] :+: T,
+      FieldType[K, hc.Result] :+: tailMapValues.Out] =
       new MapValues[HF, FieldType[K, V] :+: T] {
         type Out = FieldType[K, hc.Result] :+: tailMapValues.Out
         def apply(c: FieldType[K, V] :+: T) =

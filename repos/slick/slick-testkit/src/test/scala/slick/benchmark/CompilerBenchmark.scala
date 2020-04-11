@@ -81,7 +81,8 @@ object CompilerBenchmark {
   }
 
   def allQueries =
-    queriesFromNewComposition ++ queriesFromAdancedFusion ++ queriesFromExpansion ++ queriesFromNewFusion
+    queriesFromNewComposition ++ queriesFromAdancedFusion ++
+      queriesFromExpansion ++ queriesFromNewFusion
 
   def queriesFromNewComposition: Vector[Rep[_]] = {
     class SuppliersStd(tag: Tag)
@@ -147,8 +148,8 @@ object CompilerBenchmark {
       c <- coffees.sortBy(c => (c.name, c.price.desc)).take(2)
       s <- suppliers
     } yield ((c.name, (s.city ++ ":")), c, s, c.totalComputed)
-    val q1b_0 =
-      coffees.sortBy(_.price).take(3) join suppliers on (_.supID === _.id)
+    val q1b_0 = coffees.sortBy(_.price).take(3) join suppliers on
+      (_.supID === _.id)
     def q1b =
       for {
         (c, s) <- q1b_0.sortBy(_._1.price).take(2)
@@ -199,8 +200,8 @@ object CompilerBenchmark {
     } yield (c.name, c.supID, c.total)
     val q7 = for {
       c <-
-        coffees.filter(_.price < 800).map((_, 1)) union coffees
-          .filter(_.price > 950).map((_, 2))
+        coffees.filter(_.price < 800).map((_, 1)) union
+          coffees.filter(_.price > 950).map((_, 2))
     } yield (c._1.name, c._1.supID, c._2)
     val q71 =
       for { c <- coffees.filter(_.price < 800).map((_, 1)) } yield (
@@ -210,8 +211,8 @@ object CompilerBenchmark {
     val q7b = q7 filter (_._1 =!= "Colombian")
     val q8 = for {
       (c1, c2) <-
-        coffees.filter(_.price < 900) joinLeft coffees
-          .filter(_.price < 800) on (_.name === _.name)
+        coffees.filter(_.price < 900) joinLeft coffees.filter(_.price < 800) on
+          (_.name === _.name)
     } yield (c1.name, c2.map(_.name))
     val q8b = for {
       t <- coffees.sortBy(_.sales).take(1) joinLeft coffees.sortBy(_.sales)

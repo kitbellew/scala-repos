@@ -65,38 +65,32 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
     assert(desc.storage.locationUri == Some("/user/external/page_view"))
     assert(
       desc.schema ==
-        CatalogColumn("viewtime", "int") ::
-          CatalogColumn("userid", "bigint") ::
-          CatalogColumn("page_url", "string") ::
-          CatalogColumn("referrer_url", "string") ::
-          CatalogColumn(
-            "ip",
-            "string",
-            comment = Some("IP Address of the User")) ::
-          CatalogColumn(
-            "country",
-            "string",
-            comment = Some("country of origination")) :: Nil)
+        CatalogColumn("viewtime", "int") :: CatalogColumn("userid", "bigint") ::
+        CatalogColumn("page_url", "string") ::
+        CatalogColumn("referrer_url", "string") :: CatalogColumn(
+          "ip",
+          "string",
+          comment = Some("IP Address of the User")) :: CatalogColumn(
+          "country",
+          "string",
+          comment = Some("country of origination")) :: Nil)
     // TODO will be SQLText
     assert(desc.viewText == Option("This is the staging page view table"))
     assert(
       desc.partitionColumns ==
         CatalogColumn("dt", "string", comment = Some("date type")) ::
-          CatalogColumn(
-            "hour",
-            "string",
-            comment = Some("hour of the day")) :: Nil)
+        CatalogColumn("hour", "string", comment = Some("hour of the day")) ::
+        Nil)
     assert(
-      desc.storage.serdeProperties ==
-        Map(
-          (serdeConstants.SERIALIZATION_FORMAT, "\u002C"),
-          (serdeConstants.FIELD_DELIM, "\u002C")))
+      desc.storage.serdeProperties == Map(
+        (serdeConstants.SERIALIZATION_FORMAT, "\u002C"),
+        (serdeConstants.FIELD_DELIM, "\u002C")))
     assert(
-      desc.storage.inputFormat == Some(
-        "org.apache.hadoop.hive.ql.io.RCFileInputFormat"))
+      desc.storage.inputFormat ==
+        Some("org.apache.hadoop.hive.ql.io.RCFileInputFormat"))
     assert(
-      desc.storage.outputFormat == Some(
-        "org.apache.hadoop.hive.ql.io.RCFileOutputFormat"))
+      desc.storage.outputFormat ==
+        Some("org.apache.hadoop.hive.ql.io.RCFileOutputFormat"))
     assert(
       desc.storage.serde ==
         Some("org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe"))
@@ -130,34 +124,29 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
     assert(desc.storage.locationUri == Some("/user/external/page_view"))
     assert(
       desc.schema ==
-        CatalogColumn("viewtime", "int") ::
-          CatalogColumn("userid", "bigint") ::
-          CatalogColumn("page_url", "string") ::
-          CatalogColumn("referrer_url", "string") ::
-          CatalogColumn(
-            "ip",
-            "string",
-            comment = Some("IP Address of the User")) ::
-          CatalogColumn(
-            "country",
-            "string",
-            comment = Some("country of origination")) :: Nil)
+        CatalogColumn("viewtime", "int") :: CatalogColumn("userid", "bigint") ::
+        CatalogColumn("page_url", "string") ::
+        CatalogColumn("referrer_url", "string") :: CatalogColumn(
+          "ip",
+          "string",
+          comment = Some("IP Address of the User")) :: CatalogColumn(
+          "country",
+          "string",
+          comment = Some("country of origination")) :: Nil)
     // TODO will be SQLText
     assert(desc.viewText == Option("This is the staging page view table"))
     assert(
       desc.partitionColumns ==
         CatalogColumn("dt", "string", comment = Some("date type")) ::
-          CatalogColumn(
-            "hour",
-            "string",
-            comment = Some("hour of the day")) :: Nil)
+        CatalogColumn("hour", "string", comment = Some("hour of the day")) ::
+        Nil)
     assert(desc.storage.serdeProperties == Map())
     assert(
-      desc.storage.inputFormat == Some(
-        "parquet.hive.DeprecatedParquetInputFormat"))
+      desc.storage.inputFormat ==
+        Some("parquet.hive.DeprecatedParquetInputFormat"))
     assert(
-      desc.storage.outputFormat == Some(
-        "parquet.hive.DeprecatedParquetOutputFormat"))
+      desc.storage.outputFormat ==
+        Some("parquet.hive.DeprecatedParquetOutputFormat"))
     assert(desc.storage.serde == Some("parquet.hive.serde.ParquetHiveSerDe"))
     assert(desc.properties == Map(("p1", "v1"), ("p2", "v2")))
   }
@@ -174,8 +163,8 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
     assert(desc.viewText == None) // TODO will be SQLText
     assert(desc.storage.serdeProperties == Map())
     assert(
-      desc.storage.inputFormat == Some(
-        "org.apache.hadoop.mapred.TextInputFormat"))
+      desc.storage.inputFormat ==
+        Some("org.apache.hadoop.mapred.TextInputFormat"))
     assert(
       desc.storage.outputFormat ==
         Some("org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat"))
@@ -210,18 +199,17 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
     assert(desc.schema == Seq.empty[CatalogColumn])
     assert(desc.viewText == None) // TODO will be SQLText
     assert(
-      desc.storage.serdeProperties == Map(
-        ("serde_p1" -> "p1"),
-        ("serde_p2" -> "p2")))
+      desc.storage.serdeProperties ==
+        Map(("serde_p1" -> "p1"), ("serde_p2" -> "p2")))
     assert(
-      desc.storage.inputFormat == Some(
-        "org.apache.hadoop.hive.ql.io.RCFileInputFormat"))
+      desc.storage.inputFormat ==
+        Some("org.apache.hadoop.hive.ql.io.RCFileInputFormat"))
     assert(
-      desc.storage.outputFormat == Some(
-        "org.apache.hadoop.hive.ql.io.RCFileOutputFormat"))
+      desc.storage.outputFormat ==
+        Some("org.apache.hadoop.hive.ql.io.RCFileOutputFormat"))
     assert(
-      desc.storage.serde == Some(
-        "org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe"))
+      desc.storage.serde ==
+        Some("org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe"))
     assert(desc.properties == Map(("tbl_p1" -> "p11"), ("tbl_p2" -> "p22")))
   }
 

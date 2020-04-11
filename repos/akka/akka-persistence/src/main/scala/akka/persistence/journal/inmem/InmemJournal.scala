@@ -64,10 +64,11 @@ private[persistence] trait InmemMessages {
   var messages = Map.empty[String, Vector[PersistentRepr]]
 
   def add(p: PersistentRepr): Unit =
-    messages = messages + (messages.get(p.persistenceId) match {
-      case Some(ms) ⇒ p.persistenceId -> (ms :+ p)
-      case None ⇒ p.persistenceId -> Vector(p)
-    })
+    messages = messages +
+      (messages.get(p.persistenceId) match {
+        case Some(ms) ⇒ p.persistenceId -> (ms :+ p)
+        case None ⇒ p.persistenceId -> Vector(p)
+      })
 
   def update(pid: String, snr: Long)(f: PersistentRepr ⇒ PersistentRepr): Unit =
     messages = messages.get(pid) match {

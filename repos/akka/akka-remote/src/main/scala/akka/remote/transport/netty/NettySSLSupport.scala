@@ -151,8 +151,8 @@ private[akka] object NettySSLSupport {
             e)
         case e: IOException ⇒
           throw new RemoteTransportException(
-            "Client SSL connection could not be established because: " + e
-              .getMessage,
+            "Client SSL connection could not be established because: " +
+              e.getMessage,
             e)
         case e: GeneralSecurityException ⇒
           throw new RemoteTransportException(
@@ -244,8 +244,8 @@ private[akka] object NettySSLSupport {
             e)
         case e: IOException ⇒
           throw new RemoteTransportException(
-            "Server SSL connection could not be established because: " + e
-              .getMessage,
+            "Server SSL connection could not be established because: " +
+              e.getMessage,
             e)
         case e: GeneralSecurityException ⇒
           throw new RemoteTransportException(

@@ -66,59 +66,61 @@ abstract class ConvergenceSpec(multiNodeConfig: ConvergenceMultiNodeConfig)
       enterBarrier("after-1")
     }
 
-    "not reach convergence while any nodes are unreachable" taggedAs LongRunningTest in {
-      val thirdAddress = address(third)
-      enterBarrier("before-shutdown")
+    "not reach convergence while any nodes are unreachable" taggedAs
+      LongRunningTest in {
+        val thirdAddress = address(third)
+        enterBarrier("before-shutdown")
 
-      runOn(first) {
-        // kill 'third' node
-        testConductor.exit(third, 0).await
-        markNodeAsUnavailable(thirdAddress)
-      }
-
-      runOn(first, second) {
-
-        within(28 seconds) {
-          // third becomes unreachable
-          awaitAssert(clusterView.unreachableMembers.size should ===(1))
-          awaitSeenSameState(first, second)
-          // still one unreachable
-          clusterView.unreachableMembers.size should ===(1)
-          clusterView.unreachableMembers.head.address should ===(thirdAddress)
-          clusterView.members.size should ===(3)
-
-        }
-      }
-
-      enterBarrier("after-2")
-    }
-
-    "not move a new joining node to Up while there is no convergence" taggedAs LongRunningTest in {
-      runOn(fourth) {
-        // try to join
-        cluster.join(first)
-      }
-
-      def memberStatus(address: Address): Option[MemberStatus] =
-        clusterView.members.collectFirst {
-          case m if m.address == address ⇒ m.status
+        runOn(first) {
+          // kill 'third' node
+          testConductor.exit(third, 0).await
+          markNodeAsUnavailable(thirdAddress)
         }
 
-      enterBarrier("after-join")
+        runOn(first, second) {
 
-      runOn(first, second, fourth) {
-        for (n ← 1 to 5) {
-          awaitAssert(clusterView.members.size should ===(4))
-          awaitSeenSameState(first, second, fourth)
-          memberStatus(first) should ===(Some(MemberStatus.Up))
-          memberStatus(second) should ===(Some(MemberStatus.Up))
-          memberStatus(fourth) should ===(Some(MemberStatus.Joining))
-          // wait and then check again
-          Thread.sleep(1.second.dilated.toMillis)
+          within(28 seconds) {
+            // third becomes unreachable
+            awaitAssert(clusterView.unreachableMembers.size should ===(1))
+            awaitSeenSameState(first, second)
+            // still one unreachable
+            clusterView.unreachableMembers.size should ===(1)
+            clusterView.unreachableMembers.head.address should ===(thirdAddress)
+            clusterView.members.size should ===(3)
+
+          }
         }
+
+        enterBarrier("after-2")
       }
 
-      enterBarrier("after-3")
-    }
+    "not move a new joining node to Up while there is no convergence" taggedAs
+      LongRunningTest in {
+        runOn(fourth) {
+          // try to join
+          cluster.join(first)
+        }
+
+        def memberStatus(address: Address): Option[MemberStatus] =
+          clusterView.members.collectFirst {
+            case m if m.address == address ⇒ m.status
+          }
+
+        enterBarrier("after-join")
+
+        runOn(first, second, fourth) {
+          for (n ← 1 to 5) {
+            awaitAssert(clusterView.members.size should ===(4))
+            awaitSeenSameState(first, second, fourth)
+            memberStatus(first) should ===(Some(MemberStatus.Up))
+            memberStatus(second) should ===(Some(MemberStatus.Up))
+            memberStatus(fourth) should ===(Some(MemberStatus.Joining))
+            // wait and then check again
+            Thread.sleep(1.second.dilated.toMillis)
+          }
+        }
+
+        enterBarrier("after-3")
+      }
   }
 }

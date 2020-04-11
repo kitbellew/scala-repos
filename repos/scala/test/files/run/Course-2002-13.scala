@@ -23,8 +23,7 @@ class Tokenizer(s: String, delimiters: String) extends Iterator[String] {
       var ch = s.charAt(i); i = i + 1;
       if (isDelimiter(ch)) ch.toString()
       else {
-        while (i < s.length() &&
-               s.charAt(i) > ' ' &&
+        while (i < s.length() && s.charAt(i) > ' ' &&
                !isDelimiter(s.charAt(i))) { i = i + 1 }
         s.substring(start, i)
       }
@@ -258,61 +257,35 @@ object Prolog {
 object Test {
   def main(args: Array[String]): Unit = {
     Prolog.process(
-      "sujet(jean).\n" +
-        "sujet(marie).\n" +
-        "verbe(mange).\n" +
-        "verbe(dort).\n" +
-        "article(le).\n" +
-        "article(la).\n" +
-        "adjectif(grand).\n" +
-        "adjectif(belle).\n" +
-        "nom(table).\n" +
+      "sujet(jean).\n" + "sujet(marie).\n" + "verbe(mange).\n" +
+        "verbe(dort).\n" + "article(le).\n" + "article(la).\n" +
+        "adjectif(grand).\n" + "adjectif(belle).\n" + "nom(table).\n" +
         "nom(cheval).\n" +
-
         "complement(A,D,N) :- article(A), adjectif(D), nom(N).\n" +
         "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
-
         "?phrase(S,V,A,D,N).\n" + "?more.\n");
     Console.println;
 
     Prolog.process(
-      "sujet(jean).\n" +
-        "sujet(marie).\n" +
-        "verbe(mange).\n" +
-        "verbe(dort).\n" +
-        "article(le,m).\n" +
-        "article(la,f).\n" +
-        "adjectif(grand,m).\n" +
-        "adjectif(belle,f).\n" +
-        "nom(table,f).\n" +
+      "sujet(jean).\n" + "sujet(marie).\n" + "verbe(mange).\n" +
+        "verbe(dort).\n" + "article(le,m).\n" + "article(la,f).\n" +
+        "adjectif(grand,m).\n" + "adjectif(belle,f).\n" + "nom(table,f).\n" +
         "nom(cheval,m).\n" +
-
         "complement(A,D,N) :- article(A,G), adjectif(D,G), nom(N,G).\n" +
         "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
-
         "?phrase(S,V,A,D,N).\n" + "?more.\n");
     Console.println;
 
     Prolog.process(
-      "sujet(jean).\n" +
-        "sujet(marie).\n" +
-        "verbe(mange).\n" +
-        "verbe(dort).\n" +
-        "article(le,m).\n" +
-        "article(la,f).\n" +
-        "adjectif(grand,m).\n" +
-        "adjectif(belle,f).\n" +
-        "nom(table,f).\n" +
-        "nom(cheval,m).\n" +
-
-        "adjectifs(nil,G).\n" +
+      "sujet(jean).\n" + "sujet(marie).\n" + "verbe(mange).\n" +
+        "verbe(dort).\n" + "article(le,m).\n" + "article(la,f).\n" +
+        "adjectif(grand,m).\n" + "adjectif(belle,f).\n" + "nom(table,f).\n" +
+        "nom(cheval,m).\n" + "adjectifs(nil,G).\n" +
         "adjectifs(cons(A1,nil),G) :- adjectif(A1,G).\n" +
         "adjectifs(cons(A1,cons(A2,nil)),G) :- adjectif(A1,G),adjectif(A2,G).\n" +
         "complement(A,D,N) :- article(A,G), adjectifs(D,G), nom(N,G).\n" +
         "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
-
         "?phrase(S,V,A,D,N).\n" + "?more.\n" + "?more.\n" + "?more.\n" +
-
         "?phrase(jean,mange,le,nil,cheval).\n" +
         "?phrase(jean,mange,le,cons(grand,nil),cheval).\n" +
         "?phrase(jean,mange,le,cons(grand,nil),table).\n");

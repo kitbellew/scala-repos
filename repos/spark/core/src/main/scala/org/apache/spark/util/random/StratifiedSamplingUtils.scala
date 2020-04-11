@@ -111,8 +111,8 @@ private[spark] object StratifiedSamplingUtils extends Logging {
         if (copiesAccepted > 0) { acceptResult.numAccepted += copiesAccepted }
         val copiesWaitlisted = rng.nextPoisson(acceptResult.waitListBound)
         if (copiesWaitlisted > 0) {
-          acceptResult.waitList ++= ArrayBuffer
-            .fill(copiesWaitlisted)(rng.nextUniform())
+          acceptResult.waitList ++=
+            ArrayBuffer.fill(copiesWaitlisted)(rng.nextUniform())
         }
       } else {
         // We use the streaming version of the algorithm for sampling without replacement to avoid
@@ -181,8 +181,8 @@ private[spark] object StratifiedSamplingUtils extends Logging {
           logWarning("WaitList too short")
           thresholdByKey += (key -> acceptResult.waitListBound)
         } else {
-          thresholdByKey += (key -> acceptResult.waitList.sorted
-            .apply(numWaitListAccepted))
+          thresholdByKey +=
+            (key -> acceptResult.waitList.sorted.apply(numWaitListAccepted))
         }
       }
     }
@@ -248,9 +248,8 @@ private[spark] object StratifiedSamplingUtils extends Logging {
           val copiesAccepted =
             if (acceptBound == 0) 0L else rng.nextPoisson(acceptBound)
           val copiesWaitlisted = rng.nextPoisson(finalResult(key).waitListBound)
-          val copiesInSample = copiesAccepted +
-            (0 until copiesWaitlisted)
-              .count(i => rng.nextUniform() < thresholdByKey(key))
+          val copiesInSample = copiesAccepted + (0 until copiesWaitlisted)
+            .count(i => rng.nextUniform() < thresholdByKey(key))
           if (copiesInSample > 0) { Iterator.fill(copiesInSample.toInt)(item) }
           else { Iterator.empty }
         }

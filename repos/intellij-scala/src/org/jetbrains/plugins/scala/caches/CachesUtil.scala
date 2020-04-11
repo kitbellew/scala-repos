@@ -388,8 +388,8 @@ object CachesUtil {
       while (cur != null) {
         val (fun, proj) = cur
         val isValid: Boolean = fun.isValid
-        if ((!isValid || fun.returnTypeHasChangedSinceLastCheck) && !proj
-              .isDisposed) {
+        if ((!isValid || fun.returnTypeHasChangedSinceLastCheck) &&
+            !proj.isDisposed) {
           //if there's more than one, just increment the general modCount If there's one, go up th
           if (!isValid || checkSize) {
             ScalaPsiManager.instance(proj).incModificationCount()

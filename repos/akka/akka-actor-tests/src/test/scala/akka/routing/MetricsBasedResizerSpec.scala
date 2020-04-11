@@ -94,8 +94,8 @@ class MetricsBasedResizerSpec
     "be false if the last resize is too close within actionInterval enough history" in {
       val resizer = DefaultOptimalSizeExploringResizer(actionInterval = 10
         .seconds)
-      resizer.record = ResizeRecord(checkTime = System.nanoTime() - 8.seconds
-        .toNanos)
+      resizer.record = ResizeRecord(checkTime = System.nanoTime() -
+        8.seconds.toNanos)
 
       resizer.isTimeForResize(100) should ===(false)
     }
@@ -103,8 +103,8 @@ class MetricsBasedResizerSpec
     "be true if the last resize is before actionInterval ago" in {
       val resizer = DefaultOptimalSizeExploringResizer(actionInterval = 10
         .seconds)
-      resizer.record = ResizeRecord(checkTime = System.nanoTime() - 11.seconds
-        .toNanos)
+      resizer.record = ResizeRecord(checkTime = System.nanoTime() -
+        11.seconds.toNanos)
 
       resizer.isTimeForResize(100) should ===(true)
     }
@@ -276,8 +276,8 @@ class MetricsBasedResizerSpec
       resizer.reportMessageCount(router.routees, router.msgs.size)
 
       val after = LocalDateTime.now
-      resizer.performanceLog(2).toMillis shouldBe (java.time.Duration
-        .between(before, after).toMillis / 2 +- 1)
+      resizer.performanceLog(2).toMillis shouldBe
+        (java.time.Duration.between(before, after).toMillis / 2 +- 1)
 
       router.close()
     }
@@ -313,9 +313,8 @@ class MetricsBasedResizerSpec
       val after = LocalDateTime.now
       val newSpeed = java.time.Duration.between(before, after).toMillis / 2
 
-      resizer.performanceLog(2).toMillis shouldBe (
-        (newSpeed + oldSpeed) / 2 +- 1
-      )
+      resizer.performanceLog(2).toMillis shouldBe
+        ((newSpeed + oldSpeed) / 2 +- 1)
 
       router.close()
     }

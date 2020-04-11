@@ -84,8 +84,8 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
 
         case HttpEntity.Streamed(data, _, contentType) =>
           // It's above the chunked threshold, compress through the gzip flow, and send as chunked
-          val gzipped = data via GzipFlow.gzip(config.bufferSize) map (d =>
-            HttpChunk.Chunk(d))
+          val gzipped = data via GzipFlow.gzip(config.bufferSize) map
+            (d => HttpChunk.Chunk(d))
           Future.successful(
             Result(header, HttpEntity.Chunked(gzipped, contentType)))
 
@@ -113,8 +113,9 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
                 // Broadcast the stream through two separate flows, one that collects chunks and turns them into
                 // ByteStrings, sends those ByteStrings through the Gzip flow, and then turns them back into chunks,
                 // the other that just allows the last chunk through. Then concat those two flows together.
-                broadcast.out(0) ~> extractChunks ~> GzipFlow
-                  .gzip(config.bufferSize) ~> createChunks ~> concat.in(0)
+                broadcast.out(0) ~> extractChunks ~>
+                  GzipFlow.gzip(config.bufferSize) ~> createChunks ~>
+                  concat.in(0)
                 broadcast.out(1) ~> filterLastChunk ~> concat.in(1)
 
                 new FlowShape(broadcast.in, concat.out)
@@ -150,8 +151,8 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
       codings collectFirst { case (q, c) if c equalsIgnoreCase coding => q }
     def defaultQValue(coding: String) = if (coding == "identity") 0.001d else 0d
     def qvalue(coding: String) =
-      explicitQValue(coding) orElse explicitQValue("*") getOrElse defaultQValue(
-        coding)
+      explicitQValue(coding) orElse explicitQValue("*") getOrElse
+        defaultQValue(coding)
 
     qvalue("gzip") > 0d && qvalue("gzip") >= qvalue("identity")
   }
@@ -162,8 +163,7 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
     * actually always get bigger.
     */
   private def shouldCompress(result: Result) =
-    isAllowedContent(result.header) &&
-      isNotAlreadyCompressed(result.header) &&
+    isAllowedContent(result.header) && isNotAlreadyCompressed(result.header) &&
       !result.body.isKnownEmpty
 
   /**
@@ -180,10 +180,8 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
     header.headers.get(CONTENT_ENCODING).isEmpty
 
   private def setupHeader(header: Map[String, String]): Map[String, String] = {
-    header + (CONTENT_ENCODING -> "gzip") + addToVaryHeader(
-      header,
-      VARY,
-      ACCEPT_ENCODING)
+    header + (CONTENT_ENCODING -> "gzip") +
+      addToVaryHeader(header, VARY, ACCEPT_ENCODING)
   }
 
   /**

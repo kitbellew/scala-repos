@@ -18,9 +18,8 @@ object Directory {
         // default is HOME/.gitbucket
         case None => {
           val oldHome = new File(System.getProperty("user.home"), "gitbucket")
-          if (oldHome.exists && oldHome.isDirectory && new File(
-                oldHome,
-                "version").exists) {
+          if (oldHome.exists && oldHome.isDirectory &&
+              new File(oldHome, "version").exists) {
             //FileUtils.moveDirectory(oldHome, newHome)
             oldHome
           } else { new File(System.getProperty("user.home"), ".gitbucket") }

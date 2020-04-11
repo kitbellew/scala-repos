@@ -88,10 +88,8 @@ object Broker {
               val host = brokerInfo("host").asInstanceOf[String]
               val port = brokerInfo("port").asInstanceOf[Int]
               Map(
-                SecurityProtocol.PLAINTEXT -> new EndPoint(
-                  host,
-                  port,
-                  SecurityProtocol.PLAINTEXT))
+                SecurityProtocol.PLAINTEXT ->
+                  new EndPoint(host, port, SecurityProtocol.PLAINTEXT))
             } else {
               val listeners = brokerInfo("endpoints").asInstanceOf[List[String]]
               listeners.map { listener =>

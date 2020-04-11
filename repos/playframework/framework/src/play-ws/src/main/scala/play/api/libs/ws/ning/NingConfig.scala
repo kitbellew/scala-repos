@@ -106,8 +106,8 @@ class NingAsyncHttpClientConfigBuilder(
       modify: DefaultAsyncHttpClientConfig.Builder => DefaultAsyncHttpClientConfig.Builder)
       : NingAsyncHttpClientConfigBuilder = {
     new NingAsyncHttpClientConfigBuilder(ningConfig) {
-      override val addCustomSettings =
-        modify compose NingAsyncHttpClientConfigBuilder.this.addCustomSettings
+      override val addCustomSettings = modify compose
+        NingAsyncHttpClientConfigBuilder.this.addCustomSettings
       override val builder = NingAsyncHttpClientConfigBuilder.this.builder
     }
   }

@@ -48,8 +48,8 @@ class AdaDeltaGradientDescent[T](
   }
 
   override protected def takeStep(state: State, dir: T, stepSize: Double): T = {
-    val newAvgSqGradient = (state.history.avgSqGradient * rho) :+ ((state
-      .grad :* state.grad) * (1 - rho))
+    val newAvgSqGradient = (state.history.avgSqGradient * rho) :+
+      ((state.grad :* state.grad) * (1 - rho))
     val rmsGradient = sqrt(newAvgSqGradient + epsilon)
     val rmsDelta = sqrt(state.history.avgSqDelta + epsilon)
     val delta = dir :* rmsDelta :/ rmsGradient

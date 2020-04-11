@@ -82,8 +82,8 @@ object TestLinearWriteSpeed {
     val numFiles = options.valueOf(filesOpt).intValue
     val reportingInterval = options.valueOf(reportingIntervalOpt).longValue
     val dir = options.valueOf(dirOpt)
-    val maxThroughputBytes = options.valueOf(maxThroughputOpt)
-      .intValue * 1024L * 1024L
+    val maxThroughputBytes = options.valueOf(maxThroughputOpt).intValue *
+      1024L * 1024L
     val buffer = ByteBuffer.allocate(bufferSize)
     val messageSize = options.valueOf(messageSizeOpt).intValue
     val flushInterval = options.valueOf(flushIntervalOpt).longValue
@@ -110,9 +110,8 @@ object TestLinearWriteSpeed {
         writables(i) =
           new ChannelWritable(new File(dir, "kafka-test-" + i + ".dat"), buffer)
       } else if (options.has(logOpt)) {
-        val segmentSize = rand
-          .nextInt(
-            512) * 1024 * 1024 + 64 * 1024 * 1024 // vary size to avoid herd effect
+        val segmentSize = rand.nextInt(512) * 1024 * 1024 +
+          64 * 1024 * 1024 // vary size to avoid herd effect
         val logProperties = new Properties()
         logProperties
           .put(LogConfig.SegmentBytesProp, segmentSize: java.lang.Integer)
@@ -149,8 +148,8 @@ object TestLinearWriteSpeed {
       written += writeSize
       count += 1
       totalWritten += writeSize
-      if ((start - lastReport) / (1000.0 * 1000.0) > reportingInterval
-            .doubleValue) {
+      if ((start - lastReport) / (1000.0 * 1000.0) >
+            reportingInterval.doubleValue) {
         val ellapsedSecs = (start - lastReport) / (1000.0 * 1000.0 * 1000.0)
         val mb = written / (1024.0 * 1024.0)
         println("%10.3f\t%10.3f\t%10.3f".format(

@@ -152,8 +152,8 @@ class EndToEndTest
       Contexts.broadcast
         .let(testContext, TestContext(Buf.Utf8("hello context world"))) {
           assert(
-            Await
-              .result(client.query("ok"), 5.seconds) == "hello context world")
+            Await.result(client.query("ok"), 5.seconds) ==
+              "hello context world")
         }
     }
   }
@@ -278,8 +278,8 @@ class EndToEndTest
       Contexts.broadcast
         .let(testContext, TestContext(Buf.Utf8("hello context world"))) {
           assert(
-            Await
-              .result(client.query("ok"), 5.seconds) == "hello context world")
+            Await.result(client.query("ok"), 5.seconds) ==
+              "hello context world")
         }
     }
   }
@@ -297,8 +297,8 @@ class EndToEndTest
       Await.result(client.query("ok"))
     }
     assert(
-      thrown
-        .getMessage == "Internal error processing query: 'java.lang.Exception: sad panda'")
+      thrown.getMessage ==
+        "Internal error processing query: 'java.lang.Exception: sad panda'")
   }
 
   test(
@@ -487,8 +487,8 @@ class EndToEndTest
       Await.result(client.query("ok"))
     }
     assert(
-      thrown
-        .getMessage == "Internal error processing query: 'java.lang.Exception: sad panda'")
+      thrown.getMessage ==
+        "Internal error processing query: 'java.lang.Exception: sad panda'")
   }
 
   test("thriftmux server should count exceptions as failures") {
@@ -993,8 +993,8 @@ class EndToEndTest
       assert(serverSr.counters(Seq("thrift", "requests")) == 1)
       assert(serverSr.counters(Seq("thrift", "connects")) == 1)
       assert(
-        serverSr
-          .counters(Seq("thrift", "thriftmux", "downgraded_connects")) == 1)
+        serverSr.counters(Seq("thrift", "thriftmux", "downgraded_connects")) ==
+          1)
 
       assert(sr.counters(Seq("client", "requests")) == 1)
       assert(sr.counters(Seq("client", "failures")) == 1)

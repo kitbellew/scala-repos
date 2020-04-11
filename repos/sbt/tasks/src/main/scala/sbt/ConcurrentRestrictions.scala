@@ -113,8 +113,9 @@ object ConcurrentRestrictions {
     m.updated(a, newb)
   }
   private[this] def merge[A, B](m: Map[A, B], n: Map[A, B])(
-      f: (B, B) => B): Map[A, B] =
-    (m /: n) { case (acc, (a, b)) => update(acc, a, b)(f) }
+      f: (B, B) => B): Map[A, B] = (m /: n) {
+    case (acc, (a, b)) => update(acc, a, b)(f)
+  }
 
   /**
     * Constructs a CompletionService suitable for backing task execution based on the provided restrictions on concurrent task execution.

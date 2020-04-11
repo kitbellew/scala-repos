@@ -45,16 +45,15 @@ object TestServer extends App {
             Thread.sleep(1000)
             complete(index)
           }
-        } ~
-          path("secure") {
-            authenticateBasicPF("My very secure site", auth) { user ⇒
-              complete(<html><body>Hello <b>{
-                user
-              }</b>. Access has been granted!</body></html>)
-            }
-          } ~
-          path("ping") { complete("PONG!") } ~
-          path("crash") { complete(sys.error("BOOM!")) }
+        } ~ path("secure") {
+          authenticateBasicPF("My very secure site", auth) { user ⇒
+            complete(<html><body>Hello <b>{
+              user
+            }</b>. Access has been granted!</body></html>)
+          }
+        } ~ path("ping") { complete("PONG!") } ~ path("crash") {
+          complete(sys.error("BOOM!"))
+        }
       } ~ pathPrefix("inner")(getFromResourceDirectory("someDir"))
     },
     interface = "localhost",

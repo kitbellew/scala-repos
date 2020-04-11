@@ -169,8 +169,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         scope: GlobalSearchScope,
         fqn: String): Option[PsiClass] = {
       val clazz = JavaPsiFacade.getInstance(project).findClass(fqn, scope)
-      if (clazz == null || clazz.isInstanceOf[ScTemplateDefinition] || clazz
-            .isInstanceOf[PsiClassWrapper]) None
+      if (clazz == null || clazz.isInstanceOf[ScTemplateDefinition] ||
+          clazz.isInstanceOf[PsiClassWrapper]) None
       else Option(clazz)
     }
 
@@ -262,8 +262,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         fqn: String): Array[PsiClass] = {
       val classes = JavaPsiFacade.getInstance(project).findClasses(fqn, scope)
         .filterNot { p =>
-          p.isInstanceOf[ScTemplateDefinition] || p
-            .isInstanceOf[PsiClassWrapper]
+          p.isInstanceOf[ScTemplateDefinition] ||
+          p.isInstanceOf[PsiClassWrapper]
         }
 
       ArrayUtil

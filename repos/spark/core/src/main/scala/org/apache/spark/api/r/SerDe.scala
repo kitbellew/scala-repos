@@ -368,8 +368,8 @@ private[spark] object SerDe {
           }
 
         case _ =>
-          if (sqlSerDe == null || sqlSerDe._2 == null || !(sqlSerDe
-                ._2)(dos, value)) {
+          if (sqlSerDe == null || sqlSerDe._2 == null ||
+              !(sqlSerDe._2)(dos, value)) {
             writeType(dos, "jobj")
             writeJObj(dos, value)
           }

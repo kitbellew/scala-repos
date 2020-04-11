@@ -157,8 +157,8 @@ trait OverrideCatalog extends Catalog {
 
   abstract override def getTables(
       databaseName: Option[String]): Seq[(String, Boolean)] = {
-    overrides.keySet().asScala.map(_ -> true).toSeq ++ super
-      .getTables(databaseName)
+    overrides.keySet().asScala.map(_ -> true).toSeq ++
+      super.getTables(databaseName)
   }
 
   override def registerTable(

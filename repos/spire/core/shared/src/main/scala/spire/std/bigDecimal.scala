@@ -98,9 +98,8 @@ trait BigDecimalIsNRoot extends NRoot[BigDecimal] {
     def approxSqrt(x: BigDecimal): BigDecimal =
       if (x < Double.MaxValue) BigDecimal(Math.sqrt(x.toDouble), x.mc)
       else
-        approxSqrt(x / Double.MaxValue) * BigDecimal(
-          Math.sqrt(Double.MaxValue),
-          x.mc)
+        approxSqrt(x / Double.MaxValue) *
+          BigDecimal(Math.sqrt(Double.MaxValue), x.mc)
 
     @tailrec
     def loop(x: BigDecimal, y: BigDecimal): BigDecimal =

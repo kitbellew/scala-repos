@@ -41,9 +41,8 @@ object AssociationRulesExample {
 
     results.collect().foreach { rule =>
       println(
-        "[" + rule.antecedent.mkString(",")
-          + "=>"
-          + rule.consequent.mkString(",") + "]," + rule.confidence)
+        "[" + rule.antecedent.mkString(",") + "=>" +
+          rule.consequent.mkString(",") + "]," + rule.confidence)
     }
     // $example off$
   }

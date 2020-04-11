@@ -172,11 +172,11 @@ object Evolutions {
   def toHumanReadableScript(scripts: Seq[Script]): String = {
     val txt = scripts.map {
       case UpScript(ev) =>
-        "# --- Rev:" + ev.revision + ",Ups - " + ev.hash.take(7) + "\n" + ev
-          .sql_up + "\n"
+        "# --- Rev:" + ev.revision + ",Ups - " + ev.hash.take(7) + "\n" +
+          ev.sql_up + "\n"
       case DownScript(ev) =>
-        "# --- Rev:" + ev.revision + ",Downs - " + ev.hash.take(7) + "\n" + ev
-          .sql_down + "\n"
+        "# --- Rev:" + ev.revision + ",Downs - " + ev.hash.take(7) + "\n" +
+          ev.sql_down + "\n"
     }.mkString("\n")
 
     val hasDownWarning =
@@ -307,8 +307,8 @@ object OfflineEvolutions {
       .scripts(dbName, evolutions.evolutionsReader, schema)
     if (!isTest) {
       logger.warn(
-        "Applying evolution scripts for database '" + dbName + "':\n\n" + Evolutions
-          .toHumanReadableScript(scripts))
+        "Applying evolution scripts for database '" + dbName + "':\n\n" +
+          Evolutions.toHumanReadableScript(scripts))
     }
     evolutions.evolutionsApi.evolve(dbName, scripts, autocommit, schema)
   }

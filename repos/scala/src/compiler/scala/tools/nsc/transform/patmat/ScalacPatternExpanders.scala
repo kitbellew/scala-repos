@@ -39,9 +39,8 @@ trait ScalacPatternExpanders {
     def elementTypeOf(tpe: Type) = {
       val seq = repeatedToSeq(tpe)
 
-      (typeOfMemberNamedHead(seq)
-        orElse typeOfMemberNamedApply(seq)
-        orElse definitions.elementType(ArrayClass, seq))
+      (typeOfMemberNamedHead(seq) orElse typeOfMemberNamedApply(seq) orElse
+        definitions.elementType(ArrayClass, seq))
     }
     def newExtractor(
         whole: Type,
@@ -138,14 +137,13 @@ trait ScalacPatternExpanders {
         err("Star pattern must correspond with varargs or unapplySeq")
       else if (elementArity < 0) arityError("not enough")
       else if (elementArity > 0 && !isSeq) arityError("too many")
-      else if (settings
-                 .warnStarsAlign && isSeq && productArity > 0 && elementArity > 0)
-        warn {
-          if (isStar)
-            "Sequence wildcard (_*) does not align with repeated case parameter or extracted sequence; the result may be unexpected."
-          else
-            "A repeated case parameter or extracted sequence is not matched by a sequence wildcard (_*), and may fail at runtime."
-        }
+      else if (settings.warnStarsAlign && isSeq && productArity > 0 &&
+               elementArity > 0) warn {
+        if (isStar)
+          "Sequence wildcard (_*) does not align with repeated case parameter or extracted sequence; the result may be unexpected."
+        else
+          "A repeated case parameter or extracted sequence is not matched by a sequence wildcard (_*), and may fail at runtime."
+      }
 
       aligned
     }
@@ -182,14 +180,14 @@ trait ScalacPatternExpanders {
       def acceptMessage =
         if (extractor.isErroneous) ""
         else s" to hold ${extractor.offeringString}"
-      val requiresTupling = isUnapply && patterns
-        .totalArity == 1 && productArity > 1
+      val requiresTupling = isUnapply && patterns.totalArity == 1 &&
+        productArity > 1
 
       val normalizedExtractor =
         if (requiresTupling) {
           val tupled = extractor.asSinglePattern
-          if (effectivePatternArity(args) == 1 && isTupleType(
-                extractor.typeOfSinglePattern)) {
+          if (effectivePatternArity(args) == 1 &&
+              isTupleType(extractor.typeOfSinglePattern)) {
             val sym = sel.symbol.owner
             currentRun.reporting.deprecationWarning(
               sel.pos,

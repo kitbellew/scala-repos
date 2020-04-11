@@ -135,8 +135,8 @@ trait BaseParsers extends RegexParsers {
         Failure("No chars before current char, cannot look behind.", in)
       } else if (!cs.contains(source.charAt(offset - 1))) {
         Failure(
-          "Previous char was '" + source
-            .charAt(offset - 1) + "' expected one of " + cs,
+          "Previous char was '" + source.charAt(offset - 1) +
+            "' expected one of " + cs,
           in)
       } else { Success((), in) }
     }
@@ -156,8 +156,8 @@ trait BaseParsers extends RegexParsers {
       if (begin <= c && c <= end) Success(c, in.rest)
       else
         Failure(
-          verboseString(c) + " not in range " +
-            verboseString(begin) + " - " + verboseString(end),
+          verboseString(c) + " not in range " + verboseString(begin) + " - " +
+            verboseString(end),
           in)
     }
 
@@ -175,8 +175,8 @@ trait BaseParsers extends RegexParsers {
         if (begin <= c && c <= end) Success(c, in.rest)
         else
           Failure(
-            verboseString(c) + " not in range " +
-              verboseString(begin) + " - " + verboseString(end),
+            verboseString(c) + " not in range " + verboseString(begin) + " - " +
+              verboseString(end),
             in)
       }
     }

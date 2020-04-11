@@ -148,8 +148,8 @@ private[kafka] class StaticTopicCount(
     obj match {
       case null => false
       case n: StaticTopicCount =>
-        consumerIdString == n.consumerIdString && topicCountMap == n
-          .topicCountMap
+        consumerIdString == n.consumerIdString &&
+          topicCountMap == n.topicCountMap
       case _ => false
     }
   }

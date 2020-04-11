@@ -173,8 +173,7 @@ object SerializationExamples extends Specification {
   "Case class with internal state example" in {
     val m = Members("s", 1)
     val ser = swrite(m)
-    (ser mustEqual """{"x":"s","y":1}""") and
-      (read[Members](ser) mustEqual m)
+    (ser mustEqual """{"x":"s","y":1}""") and (read[Members](ser) mustEqual m)
   }
 
   "Case class from type constructors example" in {
@@ -255,7 +254,8 @@ object CustomTypeHintFieldNameExample extends TypeHintExamples {
   "Serialized JSON contains configured field name" in {
     val animals = Animals(Dog("pluto") :: Fish(1.2) :: Nil, Dog("pluto"))
     val ser = swrite(animals)
-    ser mustEqual """{"animals":[{"$type$":"Dog","name":"pluto"},{"$type$":"Fish","weight":1.2}],"pet":{"$type$":"Dog","name":"pluto"}}"""
+    ser mustEqual
+      """{"animals":[{"$type$":"Dog","name":"pluto"},{"$type$":"Fish","weight":1.2}],"pet":{"$type$":"Dog","name":"pluto"}}"""
   }
 }
 
@@ -362,7 +362,8 @@ object CustomSerializerExamples extends Specification {
   }
 
   implicit val formats = Serialization.formats(NoTypeHints) +
-    new IntervalSerializer + new PatternSerializer + new DateSerializer + new IndexedSeqSerializer
+    new IntervalSerializer + new PatternSerializer + new DateSerializer +
+    new IndexedSeqSerializer
 
   "Interval serialization example" in {
     val i = new Interval(1, 4)

@@ -27,8 +27,8 @@ class ScalaClassNameMacro extends Macro {
   override def getName: String = MacroUtil.scalaIdPrefix + "className"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
-      .message("macro.classname")
+    MacroUtil.scalaPresentablePrefix +
+      CodeInsightBundle.message("macro.classname")
 
   override def isAcceptableInContext(context: TemplateContextType): Boolean =
     context.isInstanceOf[ScalaCodeContextType]

@@ -47,8 +47,8 @@ class HttpEventActorTest
 
     Then("The callback listener is rate limited")
     waitUntil("Wait for rate limiting 2 subscribers", 1.second) {
-      aut.underlyingActor.limiter("host1").backoffUntil.isDefined && aut
-        .underlyingActor.limiter("host2").backoffUntil.isDefined
+      aut.underlyingActor.limiter("host1").backoffUntil.isDefined &&
+      aut.underlyingActor.limiter("host2").backoffUntil.isDefined
     }
   }
 
@@ -69,9 +69,8 @@ class HttpEventActorTest
   test("A rate limited subscriber will not be notified") {
     Given("A HttpEventActor with 2 subscribers")
     val aut = TestActorRef(new NoHttpEventActor(Set("host1", "host2")))
-    aut.underlyingActor.limiter += "host1" -> EventNotificationLimit(
-      23,
-      Some(100.seconds.fromNow))
+    aut.underlyingActor.limiter += "host1" ->
+      EventNotificationLimit(23, Some(100.seconds.fromNow))
 
     When("An event is send to the actor")
     Then("Only one subscriber is limited")
@@ -91,9 +90,8 @@ class HttpEventActorTest
     Given(
       "A HttpEventActor with 2 subscribers, where one has a overdue backoff")
     val aut = TestActorRef(new NoHttpEventActor(Set("host1", "host2")))
-    aut.underlyingActor.limiter += "host1" -> EventNotificationLimit(
-      23,
-      Some((-100).seconds.fromNow))
+    aut.underlyingActor.limiter += "host1" ->
+      EventNotificationLimit(23, Some((-100).seconds.fromNow))
     aut.underlyingActor.limiter.map(_._2.backoffUntil)
       .forall(_.map(_.isOverdue()).getOrElse(true))
 

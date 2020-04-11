@@ -13,7 +13,8 @@ object Scalatest {
     tmpfile.write(src)
     tmpfile.close
     exec(
-      javac + " -d " + outputdir + " -classpath " + classpath + " " + opts + tmpfilename)
+      javac + " -d " + outputdir + " -classpath " + classpath + " " + opts +
+        tmpfilename)
   }
 
   def java(cname: String) = exec(javacmd + " -cp " + classpath + " " + cname)

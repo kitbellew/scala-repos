@@ -185,12 +185,12 @@ trait WebSocketSpec
         }
       }
 
-      "allow rejecting a websocket with a result" in allowRejectingTheWebSocketWithAResult {
-        _ => statusCode =>
+      "allow rejecting a websocket with a result" in
+        allowRejectingTheWebSocketWithAResult { _ => statusCode =>
           WebSocket.acceptOrResult[String, String] { req =>
             Future.successful(Left(Results.Status(statusCode)))
           }
-      }
+        }
 
       "aggregate text frames" in {
         val consumed = Promise[List[String]]()
@@ -336,12 +336,12 @@ trait WebSocketSpec
         }
       }
 
-      "allow rejecting a websocket with a result" in allowRejectingTheWebSocketWithAResult {
-        _ => statusCode =>
+      "allow rejecting a websocket with a result" in
+        allowRejectingTheWebSocketWithAResult { _ => statusCode =>
           WebSocket.tryAccept[String] { req =>
             Future.successful(Left(Results.Status(statusCode)))
           }
-      }
+        }
     }
 
     "allow handling a WebSocket with an actor" in {
@@ -391,13 +391,13 @@ trait WebSocketSpec
         }
       }
 
-      "allow rejecting a websocket with a result" in allowRejectingTheWebSocketWithAResult {
-        implicit app => statusCode =>
+      "allow rejecting a websocket with a result" in
+        allowRejectingTheWebSocketWithAResult { implicit app => statusCode =>
           import app.materializer
           WebSocket.tryAcceptWithActor[String, String] { req =>
             Future.successful(Left(Results.Status(statusCode)))
           }
-      }
+        }
 
     }
 
@@ -438,11 +438,11 @@ trait WebSocketSpec
         WebSocketSpecJavaActions.closeWhenTheConsumerIsDone()
       }
 
-      "allow rejecting a websocket with a result" in allowRejectingTheWebSocketWithAResult {
-        _ => statusCode =>
+      "allow rejecting a websocket with a result" in
+        allowRejectingTheWebSocketWithAResult { _ => statusCode =>
           WebSocketSpecJavaActions
             .allowRejectingAWebSocketWithAResult(statusCode)
-      }
+        }
 
     }
 
@@ -507,10 +507,10 @@ trait WebSocketSpec
         }
       }
 
-      "allow rejecting a websocket with a result" in allowRejectingTheWebSocketWithAResult {
-        _ => statusCode =>
+      "allow rejecting a websocket with a result" in
+        allowRejectingTheWebSocketWithAResult { _ => statusCode =>
           JWebSocket.reject[String](JResults.status(statusCode))
-      }
+        }
 
       "allow handling a websocket with an actor" in allowSendingMessages {
         _ => messages =>

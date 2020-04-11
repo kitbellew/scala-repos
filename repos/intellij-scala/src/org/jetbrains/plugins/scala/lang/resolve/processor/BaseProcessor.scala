@@ -137,17 +137,16 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         case null                    => true
         case DeclarationKind.PACKAGE => kinds contains ResolveTargets.PACKAGE
         case DeclarationKind.CLASS if classKind =>
-          (
-            kinds contains ResolveTargets.CLASS
-          ) || (kinds contains ResolveTargets.OBJECT) ||
-            (kinds contains ResolveTargets
-              .METHOD) //case classes get 'apply' generated
+          (kinds contains ResolveTargets.CLASS) ||
+            (kinds contains ResolveTargets.OBJECT) ||
+            (kinds contains
+              ResolveTargets.METHOD) //case classes get 'apply' generated
         case DeclarationKind.VARIABLE =>
-          (kinds contains ResolveTargets.VAR) || (kinds contains ResolveTargets
-            .VAL)
+          (kinds contains ResolveTargets.VAR) ||
+            (kinds contains ResolveTargets.VAL)
         case DeclarationKind.FIELD =>
-          (kinds contains ResolveTargets.VAR) || (kinds contains ResolveTargets
-            .VAL)
+          (kinds contains ResolveTargets.VAR) ||
+            (kinds contains ResolveTargets.VAL)
         case DeclarationKind.METHOD => kinds contains ResolveTargets.METHOD
         case _                      => false
       }
@@ -339,8 +338,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       case proj @ ScProjectionType(des, elem, _) =>
         val s: ScSubstitutor =
           if (updateWithProjectionSubst)
-            new ScSubstitutor(Map.empty, Map.empty, Some(proj)) followed proj
-              .actualSubst
+            new ScSubstitutor(Map.empty, Map.empty, Some(proj)) followed
+              proj.actualSubst
           else proj.actualSubst
         processElement(
           proj.actualElement,

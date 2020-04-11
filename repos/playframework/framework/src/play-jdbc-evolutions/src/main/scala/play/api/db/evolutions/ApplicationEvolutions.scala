@@ -350,8 +350,8 @@ class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
     // Since not all the datasources will necessarily appear in the db map, because some will come from deprecated
     // configuration, we create a map of them to the default config, and then override any of them with the ones
     // from db.
-    val datasourceConfigMap = datasources.map(_ -> config).toMap ++ config
-      .getPrototypedMap("db", "")
+    val datasourceConfigMap = datasources.map(_ -> config).toMap ++
+      config.getPrototypedMap("db", "")
     val datasourceConfig = datasourceConfigMap.map {
       case (datasource, dsConfig) =>
         val enabled = dsConfig.get[Boolean]("enabled")

@@ -133,11 +133,8 @@ trait Conductor {
       rateMBit: Double): Future[Done] = {
     import Settings.QueryTimeout
     requireTestConductorTranport()
-    controller ? Throttle(
-      node,
-      target,
-      direction,
-      rateMBit.toFloat) mapTo classTag[Done]
+    controller ? Throttle(node, target, direction, rateMBit.toFloat) mapTo
+      classTag[Done]
   }
 
   /**
@@ -223,8 +220,8 @@ trait Conductor {
     import system.dispatcher
     // the recover is needed to handle ClientDisconnectedException exception,
     // which is normal during shutdown
-    controller ? Terminate(node, Right(exitValue)) mapTo classTag[
-      Done] recover { case _: ClientDisconnectedException ⇒ Done }
+    controller ? Terminate(node, Right(exitValue)) mapTo
+      classTag[Done] recover { case _: ClientDisconnectedException ⇒ Done }
   }
 
   /**
@@ -542,16 +539,15 @@ private[akka] class Controller(
             if (nodes contains node)
               sender() ! ToClient(AddressReply(node, nodes(node).addr))
             else
-              addrInterest += node -> (
-                (addrInterest get node getOrElse Set()) + sender()
-              )
+              addrInterest += node ->
+                ((addrInterest get node getOrElse Set()) + sender())
           case _: Done ⇒ //FIXME what should happen?
         }
       case op: CommandOp ⇒ op match {
           case Throttle(node, target, direction, rateMBit) ⇒
             val t = nodes(target)
-            nodes(node).fsm forward ToClient(
-              ThrottleMsg(t.addr, direction, rateMBit))
+            nodes(node).fsm forward
+              ToClient(ThrottleMsg(t.addr, direction, rateMBit))
           case Disconnect(node, target, abort) ⇒
             val t = nodes(target)
             nodes(node).fsm forward ToClient(DisconnectMsg(t.addr, abort))
@@ -606,9 +602,8 @@ private[akka] object BarrierCoordinator {
   final case class WrongBarrier(barrier: String, client: ActorRef, data: Data)
       extends RuntimeException(
         data.clients.find(_.fsm == client).map(_.name.toString)
-          .getOrElse(client.toString) +
-          " tried to enter '" + barrier + "' while we were waiting for '" + data
-          .barrier + "'")
+          .getOrElse(client.toString) + " tried to enter '" + barrier +
+          "' while we were waiting for '" + data.barrier + "'")
       with NoStackTrace
       with Printer
   final case class BarrierEmpty(data: Data, msg: String)
@@ -734,8 +729,8 @@ private[akka] class BarrierCoordinator
   }
 
   def getDeadline(timeout: Option[FiniteDuration]): Deadline = {
-    Deadline.now + timeout
-      .getOrElse(TestConductor().Settings.BarrierTimeout.duration)
+    Deadline.now +
+      timeout.getOrElse(TestConductor().Settings.BarrierTimeout.duration)
   }
 
 }

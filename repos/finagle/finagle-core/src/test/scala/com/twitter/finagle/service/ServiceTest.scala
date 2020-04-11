@@ -17,9 +17,7 @@ class ServiceTest extends FunSuite {
 
     assert(
       Try(
-        Await
-          .result(
-            Service.rescue(exceptionThrowingService)(1),
-            1.second)) == Throw(e))
+        Await.result(Service.rescue(exceptionThrowingService)(1), 1.second)) ==
+        Throw(e))
   }
 }

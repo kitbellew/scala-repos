@@ -67,10 +67,10 @@ trait GenSymbols {
        *    object B { object B } => selectType(staticModule("B"), "B")
        *    object B { package B } => impossible
        */
-      val hasPackagelessParent =
-        sym.ownerChain.tail.tail exists (_.isEmptyPackageClass)
-      if (sym.isStatic && (sym.isClass || sym
-            .isModule) && !hasPackagelessParent) {
+      val hasPackagelessParent = sym.ownerChain.tail.tail exists
+        (_.isEmptyPackageClass)
+      if (sym.isStatic && (sym.isClass || sym.isModule) &&
+          !hasPackagelessParent) {
         // SI-6238: if applicable, emit references to StandardDefinitions instead of staticClass/staticModule calls
         val resolver = if (sym.isType) nme.staticClass else nme.staticModule
         mirrorMirrorCall(resolver, reify(sym.fullName))
@@ -85,8 +85,8 @@ trait GenSymbols {
         val rowner = reify(sym.owner)
         val rname = reify(sym.name.toString)
         if (sym.isType) mirrorBuildCall(nme.selectType, rowner, rname)
-        else if (sym.isMethod && sym.owner.isClass && sym.owner.info
-                   .decl(sym.name).isOverloaded) {
+        else if (sym.isMethod && sym.owner.isClass &&
+                 sym.owner.info.decl(sym.name).isOverloaded) {
           val index = sym.owner.info.decl(sym.name).alternatives indexOf sym
           assert(index >= 0, sym)
           mirrorBuildCall(
@@ -108,13 +108,11 @@ trait GenSymbols {
     reifyIntoSymtab(binding.symbol) { sym =>
       if (reifyDebug)
         println(
-          "Free term" + (if (sym.isCapturedVariable) " (captured)"
-                         else "") + ": " + sym + "(" + sym
-            .accurateKindString + ")")
+          "Free term" + (if (sym.isCapturedVariable) " (captured)" else "") +
+            ": " + sym + "(" + sym.accurateKindString + ")")
       val name = newTermName(
-        "" + nme.REIFY_FREE_PREFIX + sym.name + (if (sym.isType)
-                                                   nme.REIFY_FREE_THIS_SUFFIX
-                                                 else ""))
+        "" + nme.REIFY_FREE_PREFIX + sym.name +
+          (if (sym.isType) nme.REIFY_FREE_THIS_SUFFIX else ""))
       // We need to note whether the free value being reified is stable or not to guide subsequent reflective compilation.
       // Here's why reflection compilation needs our help.
       //
@@ -223,8 +221,8 @@ trait GenSymbols {
       //    produces valid Scala code (with vals in a block depending only on lexically preceding vals)
       val reification = reificode(sym)
       import reification.{name, binding}
-      val tree =
-        reification.tree updateAttachment ReifyBindingAttachment(binding)
+      val tree = reification.tree updateAttachment
+        ReifyBindingAttachment(binding)
       state.symtab += (sym, name.toTermName, tree)
     }
     fromSymtab

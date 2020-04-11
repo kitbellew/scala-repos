@@ -66,9 +66,8 @@ object Mod extends LilaController {
         lila.user.DataForm.title.bindFromRequest.fold(
           err => fuccess(redirect(username, mod = true)),
           title =>
-            modApi.setTitle(me.id, username, title) inject redirect(
-              username,
-              mod = false))
+            modApi.setTitle(me.id, username, title) inject
+              redirect(username, mod = false))
       else fuccess(authorizationFailed(ctx.req))
     }
 
@@ -80,9 +79,8 @@ object Mod extends LilaController {
           Env.security.forms.modEmail(user).bindFromRequest.fold(
             err => BadRequest(err.toString).fuccess,
             email =>
-              modApi.setEmail(me.id, user.id, email) inject redirect(
-                user.username,
-                mod = true))
+              modApi.setEmail(me.id, user.id, email) inject
+                redirect(user.username, mod = true))
         else fuccess(authorizationFailed(ctx.req))
       }
     }
@@ -90,8 +88,8 @@ object Mod extends LilaController {
   def notifySlack(username: String) =
     Auth { implicit ctx => me =>
       OptionFuResult(UserRepo named username) { user =>
-        Env.slack.api.userMod(user = user, mod = me) inject redirect(
-          user.username)
+        Env.slack.api.userMod(user = user, mod = me) inject
+          redirect(user.username)
       }
     }
 
@@ -159,9 +157,9 @@ object Mod extends LilaController {
     Secure(_.SeeReport) { implicit ctx => me =>
       Env.mod.gamify.leaderboards zip
         Env.mod.gamify.history(orCompute = true) map {
-        case (leaderboards, history) =>
-          Ok(html.mod.gamify.index(leaderboards, history))
-      }
+          case (leaderboards, history) =>
+            Ok(html.mod.gamify.index(leaderboards, history))
+        }
     }
   def gamifyPeriod(periodStr: String) =
     Secure(_.SeeReport) { implicit ctx => me =>

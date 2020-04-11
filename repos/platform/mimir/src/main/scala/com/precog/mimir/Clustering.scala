@@ -451,9 +451,8 @@ trait KMediansCoreSetClustering {
 
         require(
           j < sideLengths.length,
-          "Point (%d) found outside of grid (%d). What to do..." format (
-            j, sideLengths.length
-          ))
+          "Point (%d) found outside of grid (%d). What to do..." format
+            (j, sideLengths.length))
 
         val sideLength = sideLengths(j)
         val scaledPoint = {
@@ -463,8 +462,8 @@ trait KMediansCoreSetClustering {
 
         var i = 0
         while (i < scaledPoint.length) {
-          scaledPoint(i) = center(i) + math
-            .floor(scaledPoint(i)) * sideLength + (sideLength / 2)
+          scaledPoint(i) = center(i) + math.floor(scaledPoint(i)) * sideLength +
+            (sideLength / 2)
           i += 1
         }
         new GridPoint(scaledPoint)
@@ -591,32 +590,33 @@ trait ClusteringLibModule[M[+_]]
           def reduce(schema: CSchema, range: Range): KS = {
             val columns = schema
               .columns(JObjectFixedT(Map("value" -> JNumberT)))
-            val cols: List[Int] = (columns flatMap {
-              case lc: LongColumn =>
-                range collect {
-                  case i if lc.isDefinedAt(i) && lc(i) > 0 => lc(i).toInt
-                }
+            val cols: List[Int] =
+              (columns flatMap {
+                case lc: LongColumn =>
+                  range collect {
+                    case i if lc.isDefinedAt(i) && lc(i) > 0 => lc(i).toInt
+                  }
 
-              case dc: DoubleColumn =>
-                range flatMap { i =>
-                  if (dc.isDefinedAt(i)) {
-                    val n = dc(i)
-                    if (n.isValidInt && n > 0) { Some(n.toInt) }
-                    else { None }
-                  } else { None }
-                }
+                case dc: DoubleColumn =>
+                  range flatMap { i =>
+                    if (dc.isDefinedAt(i)) {
+                      val n = dc(i)
+                      if (n.isValidInt && n > 0) { Some(n.toInt) }
+                      else { None }
+                    } else { None }
+                  }
 
-              case nc: NumColumn =>
-                range flatMap { i =>
-                  if (nc.isDefinedAt(i)) {
-                    val n = nc(i)
-                    if (n.isValidInt && n > 0) { Some(n.toInt) }
-                    else { None }
-                  } else { None }
-                }
+                case nc: NumColumn =>
+                  range flatMap { i =>
+                    if (nc.isDefinedAt(i)) {
+                      val n = nc(i)
+                      if (n.isValidInt && n > 0) { Some(n.toInt) }
+                      else { None }
+                    } else { None }
+                  }
 
-              case _ => List.empty[Int]
-            }).toList
+                case _ => List.empty[Int]
+              }).toList
             cols
           }
         }
@@ -636,9 +636,8 @@ trait ClusteringLibModule[M[+_]]
                 mapped
             }
 
-            values map { v =>
-              CoreSetTree.fromPoints(v, k)
-            } getOrElse CoreSetTree.empty
+            values map { v => CoreSetTree.fromPoints(v, k) } getOrElse
+              CoreSetTree.empty
           }
         }
 

@@ -92,8 +92,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         //   if there are too many super / sub / implicit nodes, represent
         //   them by on node with a corresponding tooltip
         superClasses =
-          if (_superClasses.length > settings.docDiagramsMaxNormalClasses
-                .value) {
+          if (_superClasses.length >
+                settings.docDiagramsMaxNormalClasses.value) {
             val superClassesTooltip = Some(
               limitSize(_superClasses.map(_.tpe.name).mkString(", ")))
             List(
@@ -113,8 +113,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
           } else _subClasses
 
         incomingImplicits =
-          if (_incomingImplicits.length > settings.docDiagramsMaxImplicitClasses
-                .value) {
+          if (_incomingImplicits.length >
+                settings.docDiagramsMaxImplicitClasses.value) {
             val incomingImplicitsTooltip = Some(
               limitSize(_incomingImplicits.map(_.tpe.name).mkString(", ")))
             List(
@@ -124,8 +124,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
           } else _incomingImplicits
 
         outgoingImplicits =
-          if (_outgoingImplicits.length > settings.docDiagramsMaxImplicitClasses
-                .value) {
+          if (_outgoingImplicits.length >
+                settings.docDiagramsMaxImplicitClasses.value) {
             val outgoingImplicitsTooltip = Some(
               limitSize(_outgoingImplicits.map(_.tpe.name).mkString(", ")))
             List(
@@ -136,11 +136,11 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
 
         thisNode = _thisNode
         nodes = List()
-        edges = (thisNode -> superClasses) :: subClasses
-          .map(_ -> List(thisNode))
-        node2Index = (
-          thisNode :: subClasses ::: superClasses ::: incomingImplicits ::: outgoingImplicits
-        ).zipWithIndex.toMap
+        edges =
+          (thisNode -> superClasses) :: subClasses.map(_ -> List(thisNode))
+        node2Index =
+          (thisNode :: subClasses ::: superClasses ::: incomingImplicits :::
+            outgoingImplicits).zipWithIndex.toMap
         isInheritanceDiagram = true
         incomingImplicitNodes = incomingImplicits
       case _ =>
@@ -154,79 +154,66 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       if (!isInheritanceDiagram) ""
       else {
         // dot cluster containing thisNode
-        val thisCluster = "subgraph clusterThis {\n" +
-          "style=\"invis\"\n" +
-          node2Dot(thisNode) +
-          "}"
+        val thisCluster = "subgraph clusterThis {\n" + "style=\"invis\"\n" +
+          node2Dot(thisNode) + "}"
         // dot cluster containing incoming implicit nodes, if any
         val incomingCluster = {
           if (incomingImplicits.isEmpty) ""
           else
-            "subgraph clusterIncoming {\n" +
-              "style=\"invis\"\n" +
+            "subgraph clusterIncoming {\n" + "style=\"invis\"\n" +
               incomingImplicits.reverse.map(n => node2Dot(n)).mkString +
               (if (incomingImplicits.size > 1)
                  incomingImplicits.map(n => "node" + node2Index(n))
                    .mkString(" -> ") +
                    " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
-               else "") +
-              "}"
+               else "") + "}"
         }
         // dot cluster containing outgoing implicit nodes, if any
         val outgoingCluster = {
           if (outgoingImplicits.isEmpty) ""
           else
-            "subgraph clusterOutgoing {\n" +
-              "style=\"invis\"\n" +
+            "subgraph clusterOutgoing {\n" + "style=\"invis\"\n" +
               outgoingImplicits.reverse.map(n => node2Dot(n)).mkString +
               (if (outgoingImplicits.size > 1)
                  outgoingImplicits.map(n => "node" + node2Index(n))
                    .mkString(" -> ") +
                    " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
-               else "") +
-              "}"
+               else "") + "}"
         }
 
         // assemble clusters into another cluster
-        val incomingTooltip = incomingImplicits.map(_.name)
-          .mkString(", ") + " can be implicitly converted to " + thisNode.name
-        val outgoingTooltip = thisNode
-          .name + " can be implicitly converted to " + outgoingImplicits
-          .map(_.name).mkString(", ")
-        "subgraph clusterAll {\n" +
-          "style=\"invis\"\n" +
-          outgoingCluster + "\n" +
-          thisCluster + "\n" +
-          incomingCluster + "\n" +
+        val incomingTooltip = incomingImplicits.map(_.name).mkString(", ") +
+          " can be implicitly converted to " + thisNode.name
+        val outgoingTooltip = thisNode.name +
+          " can be implicitly converted to " + outgoingImplicits.map(_.name)
+            .mkString(", ")
+        "subgraph clusterAll {\n" + "style=\"invis\"\n" + outgoingCluster +
+          "\n" + thisCluster + "\n" + incomingCluster + "\n" +
           // incoming implicit edge
           (if (!incomingImplicits.isEmpty) {
              val n = incomingImplicits.last
              "node" + node2Index(n) + " -> node" + node2Index(thisNode) +
-               " [id=\"" + cssClass(n, thisNode) + "|" + node2Index(
-               n) + "_" + node2Index(
-               thisNode) + "\", tooltip=\"" + incomingTooltip + "\"" +
+               " [id=\"" + cssClass(n, thisNode) + "|" + node2Index(n) + "_" +
+               node2Index(thisNode) + "\", tooltip=\"" + incomingTooltip +
+               "\"" +
                ", constraint=\"false\", minlen=\"2\", ltail=\"clusterIncoming\", lhead=\"clusterThis\", label=\"implicitly\"];\n"
            } else "") +
           // outgoing implicit edge
           (if (!outgoingImplicits.isEmpty) {
              val n = outgoingImplicits.head
              "node" + node2Index(thisNode) + " -> node" + node2Index(n) +
-               " [id=\"" + cssClass(thisNode, n) + "|" + node2Index(
-               thisNode) + "_" + node2Index(
-               n) + "\", tooltip=\"" + outgoingTooltip + "\"" +
+               " [id=\"" + cssClass(thisNode, n) + "|" + node2Index(thisNode) +
+               "_" + node2Index(n) + "\", tooltip=\"" + outgoingTooltip + "\"" +
                ", constraint=\"false\", minlen=\"2\", ltail=\"clusterThis\", lhead=\"clusterOutgoing\", label=\"implicitly\"];\n"
-           } else "") +
-          "}"
+           } else "") + "}"
       }
     }
 
     // assemble graph
     val graph = "digraph G {\n" +
       // graph / node / edge attributes
-      graphAttributesStr +
-      "node [" + nodeAttributesStr + "];\n" +
-      "edge [" + edgeAttributesStr + "];\n" +
-      implicitsDot + "\n" +
+      graphAttributesStr + "node [" + nodeAttributesStr + "];\n" + "edge [" +
+      edgeAttributesStr + "];\n" + implicitsDot + "\n" +
       // inheritance nodes
       nodes.map(n => node2Dot(n)).mkString +
       subClasses.map(n => node2Dot(n)).mkString +
@@ -235,19 +222,18 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       edges.map {
         case (from, tos) =>
           tos.map(to => {
-            val id =
-              "graph" + counter + "_" + node2Index(to) + "_" + node2Index(from)
+            val id = "graph" + counter + "_" + node2Index(to) + "_" +
+              node2Index(from)
             // the X -> Y edge is inverted twice to keep the diagram flowing the right way
             // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
             "node" + node2Index(to) + " -> node" + node2Index(from) +
               " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
-              "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
-                                            " are subtypes of "
-                                          else " is a subtype of ") +
-              to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
+              "tooltip=\"" + from.name +
+              (if (from.name.endsWith(MultiSuffix)) " are subtypes of "
+               else " is a subtype of ") + to.name +
+              "\", dir=\"back\", arrowtail=\"empty\"];\n"
           }).mkString
-      }.mkString +
-      "}"
+      }.mkString + "}"
 
     tDot += System.currentTimeMillis
     DiagramStats.addDotGenerationTime(tDot)
@@ -302,13 +288,12 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       else ""
 
     if (!img.equals("")) {
-      img = "<TD><IMG SCALE=\"TRUE\" SRC=\"" + settings.outdir
-        .value + "/lib/" + img + "\" /></TD>"
+      img = "<TD><IMG SCALE=\"TRUE\" SRC=\"" + settings.outdir.value + "/lib/" +
+        img + "\" /></TD>"
       name = name + " "
     }
-    val label = "<<TABLE BORDER=\"0\" CELLBORDER=\"0\">" +
-      "<TR>" + img + "<TD VALIGN=\"MIDDLE\">" + name + "</TD></TR>" +
-      "</TABLE>>"
+    val label = "<<TABLE BORDER=\"0\" CELLBORDER=\"0\">" + "<TR>" + img +
+      "<TD VALIGN=\"MIDDLE\">" + name + "</TD></TR>" + "</TABLE>>"
 
     // dot does not allow to specify a CSS class, therefore
     // set the id to "{class}|{id}", which will be used in
@@ -317,8 +302,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     attr += ("id" -> (cssClass(node) + "|" + id))
 
     // return dot string
-    "node" + node2Index(node) + " [label=" + label + "," + flatten(
-      attr.toMap) + "];\n"
+    "node" + node2Index(node) + " [label=" + label + "," + flatten(attr.toMap) +
+      "];\n"
   }
 
   /**
@@ -370,8 +355,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               settings.printMsg(
                 "\n\n**********************************************************************")
               settings.printMsg(
-                "Encountered an error while generating page for " + template
-                  .qualifiedName)
+                "Encountered an error while generating page for " +
+                  template.qualifiedName)
               settings.printMsg(
                 dotInput.toString.split("\n")
                   .mkString("\nDot input:\n\t", "\n\t", ""))
@@ -386,11 +371,11 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                 "\n\n**********************************************************************")
             } else {
               settings.printMsg(
-                "\nThe diagram for " + template
-                  .qualifiedName + " could not be created due to an internal error.")
+                "\nThe diagram for " + template.qualifiedName +
+                  " could not be created due to an internal error.")
               settings.printMsg(
-                "Use " + settings.docDiagramsDebug
-                  .name + " for more information and please file this as a bug.")
+                "Use " + settings.docDiagramsDebug.name +
+                  " for more information and please file this as a bug.")
             }
             NodeSeq.Empty
         }

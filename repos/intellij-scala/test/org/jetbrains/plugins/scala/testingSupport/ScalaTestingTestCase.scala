@@ -175,7 +175,8 @@ abstract class ScalaTestingTestCase(
       fileName: String,
       lineNumber: Int,
       offset: Int) =
-    "Failed to create run configuration for test from file " + fileName + " from line " + lineNumber + " at offset " + offset
+    "Failed to create run configuration for test from file " + fileName +
+      " from line " + lineNumber + " at offset " + offset
 
   private def failedConfigMessage(packageName: String) =
     "Failed to create run configuration for test from package " + packageName

@@ -37,15 +37,16 @@ class FlowInterleaveSpec extends BaseTwoStreamsSetup {
       probe.expectComplete()
     }
 
-    "work when segmentSize is not equal elements in stream" in assertAllStagesStopped {
-      val probe = TestSubscriber.manualProbe[Int]()
+    "work when segmentSize is not equal elements in stream" in
+      assertAllStagesStopped {
+        val probe = TestSubscriber.manualProbe[Int]()
 
-      Source(0 to 2).interleave(Source(3 to 5), 2)
-        .runWith(Sink.fromSubscriber(probe))
-      probe.expectSubscription().request(10)
-      probe.expectNext(0, 1, 3, 4, 2, 5)
-      probe.expectComplete()
-    }
+        Source(0 to 2).interleave(Source(3 to 5), 2)
+          .runWith(Sink.fromSubscriber(probe))
+        probe.expectSubscription().request(10)
+        probe.expectNext(0, 1, 3, 4, 2, 5)
+        probe.expectComplete()
+      }
 
     "work with segmentSize = 1" in assertAllStagesStopped {
       val probe = TestSubscriber.manualProbe[Int]()
@@ -62,57 +63,60 @@ class FlowInterleaveSpec extends BaseTwoStreamsSetup {
         Source(0 to 2).interleave(Source(3 to 5), 0).runWith(Sink.head))
     }
 
-    "not work when segmentSize > than stream elements" in assertAllStagesStopped {
-      val probe = TestSubscriber.manualProbe[Int]()
-      Source(0 to 2).interleave(Source(3 to 15), 10)
-        .runWith(Sink.fromSubscriber(probe))
-      probe.expectSubscription().request(25)
-      (0 to 15).foreach(probe.expectNext)
-      probe.expectComplete()
+    "not work when segmentSize > than stream elements" in
+      assertAllStagesStopped {
+        val probe = TestSubscriber.manualProbe[Int]()
+        Source(0 to 2).interleave(Source(3 to 15), 10)
+          .runWith(Sink.fromSubscriber(probe))
+        probe.expectSubscription().request(25)
+        (0 to 15).foreach(probe.expectNext)
+        probe.expectComplete()
 
-      val probe2 = TestSubscriber.manualProbe[Int]()
-      Source(1 to 20).interleave(Source(21 to 25), 10)
-        .runWith(Sink.fromSubscriber(probe2))
-      probe2.expectSubscription().request(100)
-      (1 to 10).foreach(probe2.expectNext)
-      (21 to 25).foreach(probe2.expectNext)
-      (11 to 20).foreach(probe2.expectNext)
-      probe2.expectComplete()
-    }
+        val probe2 = TestSubscriber.manualProbe[Int]()
+        Source(1 to 20).interleave(Source(21 to 25), 10)
+          .runWith(Sink.fromSubscriber(probe2))
+        probe2.expectSubscription().request(100)
+        (1 to 10).foreach(probe2.expectNext)
+        (21 to 25).foreach(probe2.expectNext)
+        (11 to 20).foreach(probe2.expectNext)
+        probe2.expectComplete()
+      }
 
     commonTests()
 
-    "work with one immediately completed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(completedPublisher, nonemptyPublisher(1 to 4))
-      val subscription1 = subscriber1.expectSubscription()
-      subscription1.request(4)
-      (1 to 4).foreach(subscriber1.expectNext)
-      subscriber1.expectComplete()
+    "work with one immediately completed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(completedPublisher, nonemptyPublisher(1 to 4))
+        val subscription1 = subscriber1.expectSubscription()
+        subscription1.request(4)
+        (1 to 4).foreach(subscriber1.expectNext)
+        subscriber1.expectComplete()
 
-      val subscriber2 = setup(nonemptyPublisher(1 to 4), completedPublisher)
-      val subscription2 = subscriber2.expectSubscription()
-      subscription2.request(4)
-      (1 to 4).foreach(subscriber2.expectNext)
-      subscriber2.expectComplete()
-    }
+        val subscriber2 = setup(nonemptyPublisher(1 to 4), completedPublisher)
+        val subscription2 = subscriber2.expectSubscription()
+        subscription2.request(4)
+        (1 to 4).foreach(subscriber2.expectNext)
+        subscriber2.expectComplete()
+      }
 
-    "work with one delayed completed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(
-        soonToCompletePublisher,
-        nonemptyPublisher(1 to 4))
-      val subscription1 = subscriber1.expectSubscription()
-      subscription1.request(4)
-      (1 to 4).foreach(subscriber1.expectNext)
-      subscriber1.expectComplete()
+    "work with one delayed completed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(
+          soonToCompletePublisher,
+          nonemptyPublisher(1 to 4))
+        val subscription1 = subscriber1.expectSubscription()
+        subscription1.request(4)
+        (1 to 4).foreach(subscriber1.expectNext)
+        subscriber1.expectComplete()
 
-      val subscriber2 = setup(
-        nonemptyPublisher(1 to 4),
-        soonToCompletePublisher)
-      val subscription2 = subscriber2.expectSubscription()
-      subscription2.request(4)
-      (1 to 4).foreach(subscriber2.expectNext)
-      subscriber2.expectComplete()
-    }
+        val subscriber2 = setup(
+          nonemptyPublisher(1 to 4),
+          soonToCompletePublisher)
+        val subscription2 = subscriber2.expectSubscription()
+        subscription2.request(4)
+        (1 to 4).foreach(subscriber2.expectNext)
+        subscriber2.expectComplete()
+      }
 
     "work with one immediately failed and one nonempty publisher" in {
       val subscriber1 = setup(failedPublisher, nonemptyPublisher(1 to 4))

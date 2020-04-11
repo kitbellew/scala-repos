@@ -242,9 +242,7 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
       val statsReceiver =
         if (serverLabel.isEmpty) stats else stats.scope(serverLabel)
 
-      val serverParams = params +
-        Label(serverLabel) +
-        Stats(statsReceiver) +
+      val serverParams = params + Label(serverLabel) + Stats(statsReceiver) +
         Monitor(reporter(label, None) andThen monitor)
 
       val serviceFactory = (stack ++ Stack.Leaf(Endpoint, factory))
@@ -297,8 +295,8 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
           // However we don't want to wait on the above because it will only complete
           // when #4 is finished.  So we ignore it and close everything else.  Note that
           // closing the connections here will do #2 and drain them via the Dispatcher.
-          val everythingElse = Seq[Closable](factory) ++ connections.asScala
-            .toSeq
+          val everythingElse = Seq[Closable](factory) ++
+            connections.asScala.toSeq
 
           // and once they're drained we can then wait on the listener physically closing them
           Closable.all(everythingElse: _*).close(deadline) before ulClosed

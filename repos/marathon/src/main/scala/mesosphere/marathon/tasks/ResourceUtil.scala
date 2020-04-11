@@ -39,8 +39,8 @@ object ResourceUtil {
     require(resource.getType == usedResource.getType)
 
     def consumeScalarResource: Option[MesosProtos.Resource] = {
-      val leftOver: Double = resource.getScalar.getValue - usedResource
-        .getScalar.getValue
+      val leftOver: Double = resource.getScalar.getValue -
+        usedResource.getScalar.getValue
       if (leftOver <= 0) { None }
       else {
         Some(

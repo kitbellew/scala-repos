@@ -184,9 +184,7 @@ class UnreachableCodeTest extends ClearAfterClass {
 
   @Test
   def bytecodeEquivalence: Unit = {
-    assertTrue(
-      List(VarOp(ILOAD, 1)) ===
-        List(VarOp(ILOAD, 2)))
+    assertTrue(List(VarOp(ILOAD, 1)) === List(VarOp(ILOAD, 2)))
     assertTrue(
       List(VarOp(ILOAD, 1), VarOp(ISTORE, 1)) ===
         List(VarOp(ILOAD, 2), VarOp(ISTORE, 2)))
@@ -202,8 +200,7 @@ class UnreachableCodeTest extends ClearAfterClass {
         List(VarOp(ILOAD, 2), VarOp(ISTORE, 1)))
 
     assertTrue(
-      List(Label(1), Label(2), Label(1)) ===
-        List(Label(2), Label(4), Label(2)))
+      List(Label(1), Label(2), Label(1)) === List(Label(2), Label(4), Label(2)))
     assertTrue(
       List(LineNumber(1, Label(1)), Label(1)) ===
         List(LineNumber(1, Label(3)), Label(3)))
@@ -216,12 +213,11 @@ class UnreachableCodeTest extends ClearAfterClass {
         TableSwitch(TABLESWITCH, 1, 3, Label(4), List(Label(5), Label(6))),
         Label(4),
         Label(5),
-        Label(6)) ===
-        List(
-          TableSwitch(TABLESWITCH, 1, 3, Label(9), List(Label(3), Label(4))),
-          Label(9),
-          Label(3),
-          Label(4)))
+        Label(6)) === List(
+        TableSwitch(TABLESWITCH, 1, 3, Label(9), List(Label(3), Label(4))),
+        Label(9),
+        Label(3),
+        Label(4)))
 
     assertTrue(
       List(
@@ -230,14 +226,13 @@ class UnreachableCodeTest extends ClearAfterClass {
           List(INTEGER, DOUBLE, Label(3)),
           List("java/lang/Object", Label(4))),
         Label(3),
-        Label(4)) ===
-        List(
-          FrameEntry(
-            F_FULL,
-            List(INTEGER, DOUBLE, Label(1)),
-            List("java/lang/Object", Label(3))),
-          Label(1),
-          Label(3)))
+        Label(4)) === List(
+        FrameEntry(
+          F_FULL,
+          List(INTEGER, DOUBLE, Label(1)),
+          List("java/lang/Object", Label(3))),
+        Label(1),
+        Label(3)))
   }
 
   @Test

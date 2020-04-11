@@ -118,8 +118,8 @@ trait HeadActionSpec
       notInSecond must beEmpty
     }
 
-    "return 404 in response to a URL without an associated GET handler" in withServer {
-      client =>
+    "return 404 in response to a URL without an associated GET handler" in
+      withServer { client =>
         val collectedFutures = for {
           putRoute <- client.url("/put").head()
           patchRoute <- client.url("/patch").head()
@@ -130,10 +130,10 @@ trait HeadActionSpec
         val responseList = await(collectedFutures)
 
         foreach(responseList)((_: WSResponse).status must_== NOT_FOUND)
-    }
+      }
 
-    "tag request with DefaultHttpRequestHandler" in serverWithAction(
-      new RequestTaggingHandler with EssentialAction {
+    "tag request with DefaultHttpRequestHandler" in
+      serverWithAction(new RequestTaggingHandler with EssentialAction {
         def tagRequest(request: RequestHeader) =
           request.copy(tags = Map(RouteComments -> "some comment"))
         def apply(rh: RequestHeader) =
@@ -142,10 +142,10 @@ trait HeadActionSpec
               rh.tags.get(RouteComments).map(RouteComments -> _).toSeq: _*)
           }(rh)
       }) { client =>
-      val result = await(client.url("/get").head())
-      result.status must_== OK
-      result.header(RouteComments) must beSome("some comment")
-    }
+        val result = await(client.url("/get").head())
+        result.status must_== OK
+        result.header(RouteComments) must beSome("some comment")
+      }
 
     "omit Content-Length for chunked responses" in withServer { client =>
       val response = await(client.url("/chunked").head())

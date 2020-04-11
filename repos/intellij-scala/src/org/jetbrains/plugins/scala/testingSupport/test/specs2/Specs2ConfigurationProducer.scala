@@ -47,8 +47,8 @@ with AbstractTestConfigurationProducer {
     val element = location.getPsiElement
     if (element == null) return None
 
-    if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+    if (element.isInstanceOf[PsiPackage] ||
+        element.isInstanceOf[PsiDirectory]) {
       val name = element match {
         case p: PsiPackage   => p.getName
         case d: PsiDirectory => d.getName
@@ -103,8 +103,8 @@ with AbstractTestConfigurationProducer {
       location: Location[_ <: PsiElement]): Boolean = {
     val element = location.getPsiElement
     if (element == null) return false
-    if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+    if (element.isInstanceOf[PsiPackage] ||
+        element.isInstanceOf[PsiDirectory]) {
       if (!configuration.isInstanceOf[Specs2RunConfiguration]) return false
       return TestConfigurationUtil
         .isPackageConfiguration(element, configuration)
@@ -128,8 +128,8 @@ with AbstractTestConfigurationProducer {
 
     configuration match {
       case configuration: Specs2RunConfiguration
-          if configuration.getTestKind == TestKind.CLASS &&
-            testName == null => testClassPath == configuration.getTestClassPath
+          if configuration.getTestKind == TestKind.CLASS && testName == null =>
+        testClassPath == configuration.getTestClassPath
       case configuration: Specs2RunConfiguration
           if configuration.getTestKind == TestKind.TEST_NAME =>
         testClassPath == configuration.getTestClassPath && testName != null &&

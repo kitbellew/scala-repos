@@ -82,12 +82,13 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
             (key, (value, casUnique))
         }
       val expected = Map(
-        "foos" -> (
+        "foos" ->
           (
-            "xyz",
-            "1"
-          )
-        ), // the "cas unique" values are predictable from a fresh memcached
+            (
+              "xyz",
+              "1"
+            )
+          ), // the "cas unique" values are predictable from a fresh memcached
         "bazs" -> (("zyx", "3")))
       assert(result == expected)
     }

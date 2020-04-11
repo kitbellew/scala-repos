@@ -99,8 +99,7 @@ package scala.collection.mutable {
 
       allEntries.forall {
         case (k, v) =>
-          map.contains(k) == entries.contains(k) &&
-            map.get(k) == entries.get(k)
+          map.contains(k) == entries.contains(k) && map.get(k) == entries.get(k)
       }
     }
 
@@ -162,16 +161,16 @@ package scala.collection.mutable {
       val map = mutable.TreeMap[K, V]()
       map ++= entries
 
-      map.keysIteratorFrom(k).toSeq == entries.keysIterator.filter(_ >= k).toSeq
-        .sorted
+      map.keysIteratorFrom(k).toSeq == entries.keysIterator.filter(_ >= k)
+        .toSeq.sorted
     }
 
     property("valuesIteratorFrom") = forAll { (entries: Map[K, V], k: K) =>
       val map = mutable.TreeMap[K, V]()
       map ++= entries
 
-      map.valuesIteratorFrom(k).toSeq == entries.filterKeys(_ >= k).toSeq.sorted
-        .map(_._2)
+      map.valuesIteratorFrom(k).toSeq == entries.filterKeys(_ >= k)
+        .toSeq.sorted.map(_._2)
     }
 
     property("headOption") = forAll { (map: mutable.TreeMap[K, V]) =>
@@ -242,10 +241,10 @@ package scala.collection.mutable {
         val mapView = map.rangeImpl(from, until)
         allEntries.forall {
           case (k, v) =>
-            mapView.contains(k) == (in(k, from, until) && entries
-              .contains(k)) &&
-              mapView.get(k) == (if (in(k, from, until)) entries.get(k)
-                                 else None)
+            mapView.contains(k) ==
+              (in(k, from, until) && entries.contains(k)) &&
+              mapView.get(k) ==
+              (if (in(k, from, until)) entries.get(k) else None)
         }
     }
 
@@ -274,9 +273,8 @@ package scala.collection.mutable {
         val mapView = map.rangeImpl(from, until)
         mapView += (k -> v)
 
-        map.contains(k) && map.get(k) == Some(v) && map
-          .size == newExpectedSize &&
-        mapView.contains(k) == isInRange &&
+        map.contains(k) && map.get(k) == Some(v) &&
+        map.size == newExpectedSize && mapView.contains(k) == isInRange &&
         mapView.get(k) == (if (isInRange) Some(v) else None)
     }
 
@@ -305,8 +303,7 @@ package scala.collection.mutable {
         mapView -= k
 
         !map.contains(k) && map.get(k) == None && map.size == newExpectedSize &&
-        !mapView.contains(k) &&
-        mapView.get(k) == None
+        !mapView.contains(k) && mapView.get(k) == None
     }
 
     property("--=") = forAll {
@@ -326,8 +323,8 @@ package scala.collection.mutable {
         map ++= entries
 
         val mapView = map.rangeImpl(from, until)
-        mapView.iterator.toSeq == entriesInView(entries, from, until).toSeq
-          .sorted
+        mapView.iterator.toSeq == entriesInView(entries, from, until)
+          .toSeq.sorted
     }
 
     property("iteratorFrom") = forAll {
@@ -348,10 +345,8 @@ package scala.collection.mutable {
 
         val mapView = map.rangeImpl(from, until)
         val newLower = Some(from.fold(k)(ord.max(_, k)))
-        mapView.keysIteratorFrom(k).toSeq == entriesInView(
-          entries,
-          newLower,
-          until).toSeq.sorted.map(_._1)
+        mapView.keysIteratorFrom(k).toSeq ==
+          entriesInView(entries, newLower, until).toSeq.sorted.map(_._1)
     }
 
     property("valuesIteratorFrom") = forAll {
@@ -361,17 +356,15 @@ package scala.collection.mutable {
 
         val mapView = map.rangeImpl(from, until)
         val newLower = Some(from.fold(k)(ord.max(_, k)))
-        mapView.valuesIteratorFrom(k).toSeq == entriesInView(
-          entries,
-          newLower,
-          until).toSeq.sorted.map(_._2)
+        mapView.valuesIteratorFrom(k).toSeq ==
+          entriesInView(entries, newLower, until).toSeq.sorted.map(_._2)
     }
 
     property("headOption") = forAll {
       (map: mutable.TreeMap[K, V], from: Option[K], until: Option[K]) =>
         val mapView = map.rangeImpl(from, until)
-        mapView.headOption == Try(
-          entriesInView(map.iterator, from, until).next()).toOption
+        mapView.headOption ==
+          Try(entriesInView(map.iterator, from, until).next()).toOption
     }
 
     property("lastOption") = forAll {

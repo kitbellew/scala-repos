@@ -116,8 +116,8 @@ class ScalaDocFormattingPanel(val settings: CodeStyleSettings)
   override def isModified(settings: CodeStyleSettings): Boolean = {
     val scalaSettings = settings
       .getCustomSettings(classOf[ScalaCodeStyleSettings])
-    super.isModified(settings) || myEnableCheckBox.isSelected != scalaSettings
-      .ENABLE_SCALADOC_FORMATTING ||
+    super.isModified(settings) ||
+    myEnableCheckBox.isSelected != scalaSettings.ENABLE_SCALADOC_FORMATTING ||
     myAsteriskStyleCheckBox.isSelected != scalaSettings.USE_SCALADOC2_FORMATTING
   }
 

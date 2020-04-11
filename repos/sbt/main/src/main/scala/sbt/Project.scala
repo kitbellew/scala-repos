@@ -105,9 +105,8 @@ sealed trait ProjectDefinition[PR <: ProjectReference] {
     val dep = ifNonEmpty("dependencies", dependencies)
     val conf = ifNonEmpty("configurations", configurations)
     val autos = ifNonEmpty("autoPlugins", autoPlugins.map(_.label))
-    val fields = s"id $id" :: s"base: $base" :: agg ::: dep ::: conf ::: (
-      s"plugins: List($plugins)" :: autos
-    )
+    val fields = s"id $id" :: s"base: $base" :: agg ::: dep ::: conf :::
+      (s"plugins: List($plugins)" :: autos)
     s"Project(${fields.mkString(", ")})"
   }
   private[this] def ifNonEmpty[T](
@@ -588,16 +587,15 @@ object Project extends ProjectExtra {
     def commandsIn(axis: ResolvedReference) =
       commands in axis get structure.data toList;
 
-    val allCommands = commandsIn(ref) ++ commandsIn(BuildRef(ref.build)) ++ (
-      commands in Global get structure.data toList
-    )
+    val allCommands = commandsIn(ref) ++ commandsIn(BuildRef(ref.build)) ++
+      (commands in Global get structure.data toList)
     val history = get(historyPath) flatMap idFun
     val prompt = get(shellPrompt)
     val watched = get(watch)
     val commandDefs = allCommands.distinct.flatten[Command]
       .map(_ tag (projectCommand, true))
-    val newDefinedCommands = commandDefs ++ BasicCommands
-      .removeTagged(s.definedCommands, projectCommand)
+    val newDefinedCommands = commandDefs ++
+      BasicCommands.removeTagged(s.definedCommands, projectCommand)
     val newAttrs = setCond(Watched.Configuration, watched, s.attributes)
       .put(historyPath.key, history)
     s.copy(
@@ -758,10 +756,7 @@ object Project extends ProjectExtra {
           .mkString(label + ":\n\t", "\n\t", more)
       }
 
-    data + "\n" +
-      description +
-      providedBy +
-      definedAt +
+    data + "\n" + description + providedBy + definedAt +
       printDepScopes("Dependencies", "derived from", depends, derivedDepends) +
       printDepScopes(
         "Reverse dependencies",

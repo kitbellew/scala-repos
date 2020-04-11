@@ -173,8 +173,8 @@ class QuaternionCheck
     }
 
     forAll { (r: Real, i: Real, j: Real, k: Real) =>
-      Quaternion(r, i, j, k) == Complex(r, i) shouldBe (j == Real
-        .zero && k == Real.zero)
+      Quaternion(r, i, j, k) == Complex(r, i) shouldBe
+        (j == Real.zero && k == Real.zero)
     }
   }
 }

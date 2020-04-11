@@ -141,8 +141,8 @@ class SocketServer(
       new Gauge[Double] {
         def value =
           allMetricNames
-            .map(metricName => metrics.metrics().get(metricName).value())
-            .sum / totalProcessorThreads
+            .map(metricName => metrics.metrics().get(metricName).value()).sum /
+            totalProcessorThreads
       }
     )
 
@@ -551,11 +551,13 @@ private[kafka] class Processor(
             // that are sitting in the server's socket buffer
             curr.request.updateRequestMetrics
             trace(
-              "Socket server received empty response to send, registering for read: " + curr)
+              "Socket server received empty response to send, registering for read: " +
+                curr)
             selector.unmute(curr.request.connectionId)
           case RequestChannel.SendAction =>
             trace(
-              "Socket server received response to send, registering for write and sending data: " + curr)
+              "Socket server received response to send, registering for write and sending data: " +
+                curr)
             selector.send(curr.responseSend)
             inflightResponses += (curr.request.connectionId -> curr)
           case RequestChannel.CloseConnectionAction =>
@@ -584,8 +586,8 @@ private[kafka] class Processor(
       val channel = newConnections.poll()
       try {
         debug(
-          "Processor " + id + " listening to new connection from " + channel
-            .socket.getRemoteSocketAddress)
+          "Processor " + id + " listening to new connection from " +
+            channel.socket.getRemoteSocketAddress)
         val localHost = channel.socket().getLocalAddress.getHostAddress
         val localPort = channel.socket().getLocalPort
         val remoteHost = channel.socket().getInetAddress.getHostAddress
@@ -600,8 +602,8 @@ private[kafka] class Processor(
           // need to close the channel here to avoid socket leak.
           close(channel)
           error(
-            "Processor " + id + " closed connection from " + channel
-              .getRemoteAddress,
+            "Processor " + id + " closed connection from " +
+              channel.getRemoteAddress,
             e)
       }
     }

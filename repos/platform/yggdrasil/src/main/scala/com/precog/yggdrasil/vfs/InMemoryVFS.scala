@@ -205,12 +205,9 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
         val path = key._1
         appendTo match {
           case Some(record @ BinaryRecord(resource, uuid)) =>
-            acc + ((path, Version.Archived(uuid)) -> record) + ((
-              path,
-              Version.Current) -> JsonRecord(
-              Vector(values: _*),
-              writeAs,
-              newVersion))
+            acc + ((path, Version.Archived(uuid)) -> record) +
+              ((path, Version.Current) ->
+                JsonRecord(Vector(values: _*), writeAs, newVersion))
 
           case Some(rec @ JsonRecord(resource, _)) =>
             //TODO: fix the ugly
@@ -224,8 +221,8 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
       }
 
       IO {
-        data = (events groupBy { case (offset, msg) => msg.path })
-          .foldLeft(data) {
+        data =
+          (events groupBy { case (offset, msg) => msg.path }).foldLeft(data) {
             case (acc, (path, messages)) =>
               val currentKey = (path, Version.Current)
               // We can discard the event IDs for the purposes of this class
@@ -283,23 +280,25 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
                       // append when it is the same id
                       rec.resource.append(NIHDB.Batch(0, records.map(_.value)))
                         .unsafePerformIO
-                      acc + ((if (acc.contains(currentKey)) currentKey
-                              else archiveKey) -> rec)
+                      acc +
+                        ((if (acc.contains(currentKey)) currentKey
+                          else archiveKey) -> rec)
 
                     case record =>
                       // replace when id is not recognized, or when record is binary
-                      acc + (
-                        (path, Version.Archived(record.versionId)) -> record
-                      ) + (currentKey -> JsonRecord(
+                      acc +
+                        ((path, Version.Archived(record.versionId)) -> record) +
+                        (currentKey -> JsonRecord(
+                          Vector(records.map(_.value): _*),
+                          writeAs,
+                          id))
+                  } getOrElse {
+                    // start a new current version
+                    acc +
+                      (currentKey -> JsonRecord(
                         Vector(records.map(_.value): _*),
                         writeAs,
                         id))
-                  } getOrElse {
-                    // start a new current version
-                    acc + (currentKey -> JsonRecord(
-                      Vector(records.map(_.value): _*),
-                      writeAs,
-                      id))
                   }
 
                 case (

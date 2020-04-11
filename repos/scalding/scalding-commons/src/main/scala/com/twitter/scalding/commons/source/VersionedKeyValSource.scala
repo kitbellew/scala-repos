@@ -238,8 +238,8 @@ class VersionedKeyValSource[K, V](
   override def equals(other: Any) =
     if (other.isInstanceOf[VersionedKeyValSource[_, _]]) {
       val otherSrc = other.asInstanceOf[VersionedKeyValSource[K, V]]
-      otherSrc.path == path && otherSrc
-        .sourceVersion == sourceVersion && otherSrc.sinkVersion == sinkVersion
+      otherSrc.path == path && otherSrc.sourceVersion == sourceVersion &&
+      otherSrc.sinkVersion == sinkVersion
     } else { false }
 
   override def hashCode = toString.hashCode

@@ -46,8 +46,8 @@ object ActorMaterializer {
       context: ActorRefFactory): ActorMaterializer = {
     val system = actorSystemOf(context)
 
-    val settings =
-      materializerSettings getOrElse ActorMaterializerSettings(system)
+    val settings = materializerSettings getOrElse
+      ActorMaterializerSettings(system)
     apply(settings, namePrefix.getOrElse("flow"))(context)
   }
 
@@ -403,8 +403,8 @@ final class ActorMaterializerSettings private (
   def withInputBuffer(
       initialSize: Int,
       maxSize: Int): ActorMaterializerSettings = {
-    if (initialSize == this.initialInputBufferSize && maxSize == this
-          .maxInputBufferSize) this
+    if (initialSize == this.initialInputBufferSize &&
+        maxSize == this.maxInputBufferSize) this
     else
       copy(initialInputBufferSize = initialSize, maxInputBufferSize = maxSize)
   }
@@ -514,8 +514,7 @@ final class ActorMaterializerSettings private (
           s.debugLogging == debugLogging &&
           s.outputBurstLimit == outputBurstLimit &&
           s.syncProcessingLimit == syncProcessingLimit &&
-          s.fuzzingMode == fuzzingMode &&
-          s.autoFusing == autoFusing
+          s.fuzzingMode == fuzzingMode && s.autoFusing == autoFusing
       case _ ⇒ false
     }
 

@@ -42,11 +42,10 @@ abstract class ScalaRenameTestBase
 
   protected val folderPath: String = TestUtils.getTestDataPath + "/rename3/"
 
-  private def rootBefore =
-    (folderPath + getTestName(true) + "/before")
-      .replace(File.separatorChar, '/')
-  private def rootAfter =
-    (folderPath + getTestName(true) + "/after").replace(File.separatorChar, '/')
+  private def rootBefore = (folderPath + getTestName(true) + "/before")
+    .replace(File.separatorChar, '/')
+  private def rootAfter = (folderPath + getTestName(true) + "/after")
+    .replace(File.separatorChar, '/')
 
   protected def doTest(newName: String = "NameAfterRename") {
     myDirectory = PsiTestUtil.createTestProjectStructure(
@@ -136,12 +135,12 @@ abstract class ScalaRenameTestBase
       newName: String): String = {
     val element = TargetElementUtil.findTargetElement(
       InjectedLanguageUtil.getEditorForInjectedLanguageNoCommit(editor, file),
-      TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil
-        .ELEMENT_NAME_ACCEPTED
+      TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED |
+        TargetElementUtil.ELEMENT_NAME_ACCEPTED
     )
     assert(element != null, "Reference is not specified.")
-    val searchInComments = element.getText != null && element.getText
-      .contains("Comments")
+    val searchInComments = element.getText != null &&
+      element.getText.contains("Comments")
     var oldName: String = ""
     inWriteAction {
       val subst = RenamePsiElementProcessor.forElement(element)

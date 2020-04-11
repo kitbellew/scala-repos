@@ -55,8 +55,8 @@ class MesosFormatsTest extends FunSuite with Matchers with GivenWhenThen {
         "mem": 0.0
       },
      */
-    agent.offeredResources should equal(
-      ITResources("cpus" -> 0.0, "disk" -> 0.0, "mem" -> 0.0))
+    agent.offeredResources should
+      equal(ITResources("cpus" -> 0.0, "disk" -> 0.0, "mem" -> 0.0))
     /*
       "reserved_resources": {
         "marathon": {

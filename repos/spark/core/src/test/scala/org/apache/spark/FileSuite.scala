@@ -102,10 +102,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     // Try reading the output back as a SequenceFile
     val output = sc.sequenceFile[IntWritable, Text](outputDir)
     assert(
-      output.map(_.toString).collect().toList === List(
-        "(1,a)",
-        "(2,aa)",
-        "(3,aaa)"))
+      output.map(_.toString).collect().toList ===
+        List("(1,a)", "(2,aa)", "(3,aaa)"))
   }
 
   test("SequenceFile (compressed)") {
@@ -140,10 +138,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     // Try reading the output back as a SequenceFile
     val output = sc.sequenceFile[IntWritable, Text](outputDir)
     assert(
-      output.map(_.toString).collect().toList === List(
-        "(1,a)",
-        "(2,aa)",
-        "(3,aaa)"))
+      output.map(_.toString).collect().toList ===
+        List("(1,a)", "(2,aa)", "(3,aaa)"))
   }
 
   test("SequenceFile with writable value") {
@@ -154,10 +150,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     // Try reading the output back as a SequenceFile
     val output = sc.sequenceFile[IntWritable, Text](outputDir)
     assert(
-      output.map(_.toString).collect().toList === List(
-        "(1,a)",
-        "(2,aa)",
-        "(3,aaa)"))
+      output.map(_.toString).collect().toList ===
+        List("(1,a)", "(2,aa)", "(3,aaa)"))
   }
 
   test("SequenceFile with writable key and value") {
@@ -169,10 +163,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     // Try reading the output back as a SequenceFile
     val output = sc.sequenceFile[IntWritable, Text](outputDir)
     assert(
-      output.map(_.toString).collect().toList === List(
-        "(1,a)",
-        "(2,aa)",
-        "(3,aaa)"))
+      output.map(_.toString).collect().toList ===
+        List("(1,a)", "(2,aa)", "(3,aaa)"))
   }
 
   test("implicit conversions in reading SequenceFiles") {
@@ -188,16 +180,12 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     // Also try having one type be a subclass of Writable and one not
     val output2 = sc.sequenceFile[Int, Text](outputDir)
     assert(
-      output2.map(_.toString).collect().toList === List(
-        "(1,a)",
-        "(2,aa)",
-        "(3,aaa)"))
+      output2.map(_.toString).collect().toList ===
+        List("(1,a)", "(2,aa)", "(3,aaa)"))
     val output3 = sc.sequenceFile[IntWritable, String](outputDir)
     assert(
-      output3.map(_.toString).collect().toList === List(
-        "(1,a)",
-        "(2,aa)",
-        "(3,aaa)"))
+      output3.map(_.toString).collect().toList ===
+        List("(1,a)", "(2,aa)", "(3,aaa)"))
   }
 
   test("object files of ints") {
@@ -256,10 +244,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
       outputDir)
     val output = sc.sequenceFile[IntWritable, Text](outputDir)
     assert(
-      output.map(_.toString).collect().toList === List(
-        "(1,a)",
-        "(2,aa)",
-        "(3,aaa)"))
+      output.map(_.toString).collect().toList ===
+        List("(1,a)", "(2,aa)", "(3,aaa)"))
   }
 
   test("read SequenceFile using new Hadoop API") {
@@ -274,10 +260,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
         IntWritable,
         Text]](outputDir)
     assert(
-      output.map(_.toString).collect().toList === List(
-        "(1,a)",
-        "(2,aa)",
-        "(3,aaa)"))
+      output.map(_.toString).collect().toList ===
+        List("(1,a)", "(2,aa)", "(3,aaa)"))
   }
 
   test("binary file input as byte array") {
@@ -557,8 +541,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     job.set("mapred.output.dir", tempDir.getPath + "/outputDataset_old")
     randomRDD.saveAsHadoopDataset(job)
     assert(
-      new File(tempDir.getPath + "/outputDataset_old/part-00000")
-        .exists() === true)
+      new File(tempDir.getPath + "/outputDataset_old/part-00000").exists() ===
+        true)
   }
 
   test("save Hadoop Dataset through new Hadoop API") {
@@ -574,8 +558,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     jobConfig.set("mapred.output.dir", tempDir.getPath + "/outputDataset_new")
     randomRDD.saveAsNewAPIHadoopDataset(jobConfig)
     assert(
-      new File(tempDir.getPath + "/outputDataset_new/part-r-00000")
-        .exists() === true)
+      new File(tempDir.getPath + "/outputDataset_new/part-r-00000").exists() ===
+        true)
   }
 
   test("Get input files via old Hadoop API") {

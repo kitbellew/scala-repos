@@ -199,15 +199,15 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
         s"Table description of table ${model.name.table}. Objects of this class serve as prototypes for rows in queries." + {
           val collidingTerms = columns.map(_.rawName) intersect scalaKeywords
           if (collidingTerms.nonEmpty)
-            "\nNOTE: The following names collided with Scala keywords and were escaped: " + collidingTerms
-              .mkString(", ")
+            "\nNOTE: The following names collided with Scala keywords and were escaped: " +
+              collidingTerms.mkString(", ")
           else ""
         } + {
-          val collidingTerms = columns
-            .map(_.rawName) intersect slickTableTermMembersNoArgs
+          val collidingTerms = columns.map(_.rawName) intersect
+            slickTableTermMembersNoArgs
           if (collidingTerms.nonEmpty)
-            "\nNOTE: The following names collided with Scala method names and were disambiguated: " + collidingTerms
-              .mkString(", ")
+            "\nNOTE: The following names collided with Scala method names and were disambiguated: " +
+              collidingTerms.mkString(", ")
           else ""
         }
       def rawName: String = tableName(model.name.table)
@@ -442,9 +442,9 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       val dbName = model.name.getOrElse(table.model.name.table + "_INDEX_" + id)
       def rawName = disambiguateTerm("index" + id)
       def doc: String =
-        (if (model.unique) "Uniqueness " else "") +
-          "Index over " + columns.map(_.name)
-          .mkString("(", ",", ")") + s" (database name ${dbName})"
+        (if (model.unique) "Uniqueness " else "") + "Index over " +
+          columns.map(_.name).mkString("(", ",", ")") +
+          s" (database name ${dbName})"
     }
 
     /** Common interface for any kind of definition within the generated code */
@@ -519,8 +519,7 @@ trait GeneratorHelpers[Code, TermName, TypeName] {
   def indent(code: String): String = {
     val lines = code.split("\n")
     lines.tail.foldLeft(lines.head) { (out, line) =>
-      out + '\n' +
-        (if (line.isEmpty) line else "  " + line)
+      out + '\n' + (if (line.isEmpty) line else "  " + line)
     }
   }
 

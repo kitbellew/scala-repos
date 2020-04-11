@@ -91,8 +91,7 @@ object Integer {
       signed: scala.Boolean): scala.Int = {
     def fail = throw new NumberFormatException(s"""For input string: "$s"""")
 
-    if (s == null || s.size == 0 ||
-        radix < Character.MIN_RADIX ||
+    if (s == null || s.size == 0 || radix < Character.MIN_RADIX ||
         radix > Character.MAX_RADIX) fail
     else {
       var i = if ((signed && s(0) == '-') || s(0) == '+') 1 else 0
@@ -223,8 +222,8 @@ object Integer {
 
   @inline // because radix is almost certainly constant at call site
   def toString(i: Int, radix: Int): String = {
-    if (radix == 10 || radix < Character.MIN_RADIX || radix > Character
-          .MAX_RADIX) { Integer.toString(i) }
+    if (radix == 10 || radix < Character.MIN_RADIX ||
+        radix > Character.MAX_RADIX) { Integer.toString(i) }
     else {
       import js.JSNumberOps.enableJSNumberOps
       i.toString(radix)

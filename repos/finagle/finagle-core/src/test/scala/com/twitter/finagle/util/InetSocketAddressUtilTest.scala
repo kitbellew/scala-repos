@@ -49,14 +49,13 @@ class InetSocketAddressUtilTest extends FunSuite {
     // }
 
     assert(
-      InetSocketAddressUtil.resolveHostPorts(Seq(("127.0.0.1", port1))) == Set(
-        new InetSocketAddress("127.0.0.1", port1)))
+      InetSocketAddressUtil.resolveHostPorts(Seq(("127.0.0.1", port1))) ==
+        Set(new InetSocketAddress("127.0.0.1", port1)))
     assert(
-      InetSocketAddressUtil
-        .resolveHostPorts(Seq(("127.0.0.1", port1), ("127.0.0.1", port2))) ==
-        Set(
-          new InetSocketAddress("127.0.0.1", port1),
-          new InetSocketAddress("127.0.0.1", port2)))
+      InetSocketAddressUtil.resolveHostPorts(
+        Seq(("127.0.0.1", port1), ("127.0.0.1", port2))) == Set(
+        new InetSocketAddress("127.0.0.1", port1),
+        new InetSocketAddress("127.0.0.1", port2)))
   }
 
   test("parseHosts") {
@@ -67,38 +66,36 @@ class InetSocketAddressUtilTest extends FunSuite {
     }
 
     assert(
-      InetSocketAddressUtil.parseHosts("127.0.0.1:" + port1) == Seq(
-        new InetSocketAddress("127.0.0.1", port1)))
+      InetSocketAddressUtil.parseHosts("127.0.0.1:" + port1) ==
+        Seq(new InetSocketAddress("127.0.0.1", port1)))
     assert(
-      InetSocketAddressUtil.parseHosts("127.0.0.1:" + port1) == Seq(
-        new InetSocketAddress("127.0.0.1", port1)))
+      InetSocketAddressUtil.parseHosts("127.0.0.1:" + port1) ==
+        Seq(new InetSocketAddress("127.0.0.1", port1)))
     assert(
-      InetSocketAddressUtil.parseHosts("127.0.0.1:" + port1 + ",") == Seq(
-        new InetSocketAddress("127.0.0.1", port1)))
+      InetSocketAddressUtil.parseHosts("127.0.0.1:" + port1 + ",") ==
+        Seq(new InetSocketAddress("127.0.0.1", port1)))
     assert(
-      InetSocketAddressUtil.parseHosts(",127.0.0.1:" + port1 + ",") == Seq(
-        new InetSocketAddress("127.0.0.1", port1)))
+      InetSocketAddressUtil.parseHosts(",127.0.0.1:" + port1 + ",") ==
+        Seq(new InetSocketAddress("127.0.0.1", port1)))
     assert(
-      InetSocketAddressUtil.parseHosts("127.0.0.1:" + port1 + " ") == Seq(
-        new InetSocketAddress("127.0.0.1", port1)))
+      InetSocketAddressUtil.parseHosts("127.0.0.1:" + port1 + " ") ==
+        Seq(new InetSocketAddress("127.0.0.1", port1)))
     assert(
-      InetSocketAddressUtil.parseHosts(" 127.0.0.1:" + port1 + " ") == Seq(
-        new InetSocketAddress("127.0.0.1", port1)))
-    assert(
-      InetSocketAddressUtil
-        .parseHosts("127.0.0.1:" + port1 + ",127.0.0.1:" + port2) ==
-        Seq(
-          new InetSocketAddress("127.0.0.1", port1),
-          new InetSocketAddress("127.0.0.1", port2)))
+      InetSocketAddressUtil.parseHosts(" 127.0.0.1:" + port1 + " ") ==
+        Seq(new InetSocketAddress("127.0.0.1", port1)))
     assert(
       InetSocketAddressUtil
-        .parseHosts("127.0.0.1:" + port1 + " 127.0.0.1:" + port2) ==
-        Seq(
-          new InetSocketAddress("127.0.0.1", port1),
-          new InetSocketAddress("127.0.0.1", port2)))
+        .parseHosts("127.0.0.1:" + port1 + ",127.0.0.1:" + port2) == Seq(
+        new InetSocketAddress("127.0.0.1", port1),
+        new InetSocketAddress("127.0.0.1", port2)))
+    assert(
+      InetSocketAddressUtil
+        .parseHosts("127.0.0.1:" + port1 + " 127.0.0.1:" + port2) == Seq(
+        new InetSocketAddress("127.0.0.1", port1),
+        new InetSocketAddress("127.0.0.1", port2)))
 
     assert(
-      InetSocketAddressUtil.parseHosts(":" + port1) == Seq(
-        new InetSocketAddress("0.0.0.0", port1)))
+      InetSocketAddressUtil.parseHosts(":" + port1) ==
+        Seq(new InetSocketAddress("0.0.0.0", port1)))
   }
 }

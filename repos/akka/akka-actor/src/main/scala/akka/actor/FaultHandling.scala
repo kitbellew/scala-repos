@@ -63,8 +63,8 @@ final case class ChildRestartStats(
         restartTimeWindowStartNanos = now
         now
       } else restartTimeWindowStartNanos
-    val insideWindow = (now - windowStart) <= TimeUnit.MILLISECONDS
-      .toNanos(window)
+    val insideWindow =
+      (now - windowStart) <= TimeUnit.MILLISECONDS.toNanos(window)
     if (insideWindow) {
       maxNrOfRetriesCount = retriesDone
       retriesDone <= retries
@@ -515,8 +515,9 @@ case class AllForOneStrategy(
       children: Iterable[ChildRestartStats]): Unit = {
     if (children.nonEmpty) {
       if (restart && children.forall(_.requestRestartPermission(retriesWindow)))
-        children foreach (crs ⇒
-          restartChild(crs.child, cause, suspendFirst = (crs.child != child)))
+        children foreach
+          (crs ⇒
+            restartChild(crs.child, cause, suspendFirst = (crs.child != child)))
       else for (c ← children) context.stop(c.child)
     }
   }

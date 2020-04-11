@@ -146,11 +146,9 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
         apiChecks(weibull)
 
         val expectedMean = math.exp(Gamma.logGamma(1 + (1 / alpha))) * beta
-        val expectedVariance = math
-          .exp(
-            Gamma
-              .logGamma(
-                1 + (2 / alpha))) * beta * beta - expectedMean * expectedMean
+        val expectedVariance =
+          math.exp(Gamma.logGamma(1 + (2 / alpha))) * beta * beta -
+            expectedMean * expectedMean
         val expectedStd = math.sqrt(expectedVariance)
         distributionChecks(weibull, expectedMean, expectedStd, 0.1)
     }

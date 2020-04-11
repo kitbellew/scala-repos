@@ -63,8 +63,8 @@ trait Enumeratee2TFunctions {
                     for {
                       _ <- head[J, IterateeM]
                       a <- iterateeT[J, IterateeM, StepM[A]](
-                        advance(left, rbuf, scont(contf)) >>== (step(_, rbuf)
-                          .value))
+                        advance(left, rbuf, scont(contf)) >>==
+                          (step(_, rbuf).value))
                     } yield a
 
                   case (Some(left), Some(right)) => for {

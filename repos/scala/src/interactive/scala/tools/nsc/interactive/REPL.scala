@@ -14,8 +14,7 @@ import scala.tools.nsc.io._
   */
 object REPL {
 
-  val versionMsg = "Scala compiler " +
-    Properties.versionString + " -- " +
+  val versionMsg = "Scala compiler " + Properties.versionString + " -- " +
     Properties.copyrightString
 
   val prompt = "> "

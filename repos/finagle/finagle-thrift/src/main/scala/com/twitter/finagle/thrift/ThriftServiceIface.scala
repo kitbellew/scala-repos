@@ -111,8 +111,7 @@ object ThriftServiceIface {
       thriftService: Service[ThriftClientRequest, Array[Byte]],
       pf: TProtocolFactory,
       stats: StatsReceiver): Service[method.Args, method.Result] = {
-    statsFilter(method, stats) andThen
-      thriftCodecFilter(method, pf) andThen
+    statsFilter(method, stats) andThen thriftCodecFilter(method, pf) andThen
       thriftService
   }
 

@@ -118,10 +118,10 @@ class FutureSpec
         val empty = Promise[String]().future
         val timedOut = Promise.successful[String]("Timedout").future
 
-        Await.result(failure fallbackTo timedOut, timeout.duration) should ===(
-          "Timedout")
-        Await.result(timedOut fallbackTo empty, timeout.duration) should ===(
-          "Timedout")
+        Await.result(failure fallbackTo timedOut, timeout.duration) should
+          ===("Timedout")
+        Await.result(timedOut fallbackTo empty, timeout.duration) should
+          ===("Timedout")
         Await.result(
           failure fallbackTo failure fallbackTo timedOut,
           timeout.duration) should ===("Timedout")
@@ -230,8 +230,9 @@ class FutureSpec
                       if a.getStackTrace.isEmpty || b.getStackTrace.isEmpty ⇒
                     a.getClass.toString == b.getClass.toString
                   case _ ⇒ false
-                }) :| result.value.get
-                  .toString + " is expected to be " + expected.toString
+                }) :|
+                  result.value.get.toString +
+                  " is expected to be " + expected.toString
               },
               minSuccessful(10000),
               workers(4)
@@ -285,8 +286,8 @@ class FutureSpec
             val actor2 = system.actorOf(Props(new Actor {
               def receive = {
                 case s: String ⇒
-                  sender() ! Status
-                    .Failure(new ArithmeticException("/ by zero"))
+                  sender() !
+                    Status.Failure(new ArithmeticException("/ by zero"))
               }
             }))
             val future = actor1 ? "Hello" flatMap {
@@ -393,8 +394,9 @@ class FutureSpec
             case e: ArithmeticException ⇒ 0
           } map (_.toString)
 
-          val future6 =
-            future2 recover { case e: MatchError ⇒ 0 } map (_.toString)
+          val future6 = future2 recover {
+            case e: MatchError ⇒ 0
+          } map (_.toString)
 
           val future7 = future3 recover {
             case e: ArithmeticException ⇒ "You got ERROR"
@@ -477,13 +479,10 @@ class FutureSpec
       }
 
       "firstCompletedOf" in {
-        val futures = Vector
-          .fill[Future[Int]](10)(Promise[Int]().future) :+ Promise
-          .successful[Int](5).future
-        Await
-          .result(
-            Future.firstCompletedOf(futures),
-            timeout.duration) should ===(5)
+        val futures = Vector.fill[Future[Int]](10)(Promise[Int]().future) :+
+          Promise.successful[Int](5).future
+        Await.result(Future.firstCompletedOf(futures), timeout.duration) should
+          ===(5)
       }
 
       "find" in {
@@ -578,8 +577,8 @@ class FutureSpec
       "reduce results" in {
         val futures = (1 to 10).toList map { i ⇒ Future(i) }
         assert(
-          Await
-            .result(Future.reduce(futures)(_ + _), remainingOrDefault) === 55)
+          Await.result(Future.reduce(futures)(_ + _), remainingOrDefault) ===
+            55)
       }
 
       "reduce results with Exception" in {
@@ -628,8 +627,8 @@ class FutureSpec
         val oddFutures = List.fill(100)(oddActor ? 'GetNext mapTo classTag[Int])
 
         assert(
-          Await.result(Future.sequence(oddFutures), timeout.duration)
-            .sum === 10000)
+          Await.result(Future.sequence(oddFutures), timeout.duration).sum ===
+            10000)
         system.stop(oddActor)
 
         val list = (1 to 100).toList
@@ -743,8 +742,8 @@ class FutureSpec
       }
 
       "not deadlock with nested await (ticket 1313)" in {
-        val simple = Future(()) map (_ ⇒
-          Await.result((Future(()) map (_ ⇒ ())), timeout.duration))
+        val simple = Future(()) map
+          (_ ⇒ Await.result((Future(()) map (_ ⇒ ())), timeout.duration))
         FutureSpec.ready(simple, timeout.duration) should be('completed)
 
         val l1, l2 = new TestLatch
@@ -808,8 +807,8 @@ class FutureSpec
     "not timeout" in { f((future, _) ⇒ FutureSpec.ready(future, 0 millis)) }
     "filter result" in {
       f { (future, result) ⇒
-        Await.result((future filter (_ ⇒ true)), timeout.duration) should ===(
-          result)
+        Await.result((future filter (_ ⇒ true)), timeout.duration) should
+          ===(result)
         intercept[java.util.NoSuchElementException] {
           Await.result((future filter (_ ⇒ false)), timeout.duration)
         }
@@ -817,10 +816,8 @@ class FutureSpec
     }
     "transform result with map" in {
       f((future, result) ⇒
-        Await
-          .result(
-            (future map (_.toString.length)),
-            timeout.duration) should ===(result.toString.length))
+        Await.result((future map (_.toString.length)), timeout.duration) should
+          ===(result.toString.length))
     }
     "compose result with flatMap" in {
       f { (future, result) ⇒
@@ -867,8 +864,8 @@ class FutureSpec
       f((future, result) ⇒
         (intercept[NoSuchElementException] {
           Await.result(future.failed, timeout.duration)
-        }).getMessage should ===(
-          "Future.failed not completed with a throwable."))
+        }).getMessage should
+          ===("Future.failed not completed with a throwable."))
     }
     "not perform action on exception" is pending
     "cast using mapTo" in {
@@ -946,8 +943,8 @@ class FutureSpec
     "not perform action on result" is pending
     "project a failure" in {
       f((future, message) ⇒
-        Await.result(future.failed, timeout.duration).getMessage should ===(
-          message))
+        Await.result(future.failed, timeout.duration).getMessage should
+          ===(message))
     }
     "perform action on exception" in {
       f { (future, message) ⇒

@@ -117,10 +117,11 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
       }
     }
 
-    "forward messages from the child to the parent of the supervisor" in new Setup2 {
-      child ! (("TO_PARENT", "TEST_MESSAGE"))
-      probe.expectMsg("TEST_MESSAGE")
-    }
+    "forward messages from the child to the parent of the supervisor" in
+      new Setup2 {
+        child ! (("TO_PARENT", "TEST_MESSAGE"))
+        probe.expectMsg("TEST_MESSAGE")
+      }
 
     class SlowlyFailingActor(latch: CountDownLatch) extends Actor {
       def receive = {

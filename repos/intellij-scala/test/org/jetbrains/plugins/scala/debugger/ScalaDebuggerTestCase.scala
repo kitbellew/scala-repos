@@ -175,8 +175,8 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
   private def clearXBreakpoints(): Unit = {
     UsefulTestCase.edt(new Runnable {
       def run() {
-        val xBreakpointManager =
-          XDebuggerManager.getInstance(getProject).getBreakpointManager
+        val xBreakpointManager = XDebuggerManager.getInstance(getProject)
+          .getBreakpointManager
         inWriteAction {
           xBreakpointManager.getAllBreakpoints
             .foreach(xBreakpointManager.removeBreakpoint)

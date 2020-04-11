@@ -121,8 +121,8 @@ trait IntroduceExpressions {
 
         val callback = new Pass[OccurrencesChooser.ReplaceChoice] {
           def pass(replaceChoice: OccurrencesChooser.ReplaceChoice) {
-            val replaceAll = OccurrencesChooser.ReplaceChoice
-              .NO != replaceChoice
+            val replaceAll = OccurrencesChooser.ReplaceChoice.NO !=
+              replaceChoice
             val suggestedNames: Array[String] = NameSuggester
               .suggestNames(expr, validator)
             import scala.collection.JavaConversions.asJavaCollection
@@ -292,8 +292,8 @@ trait IntroduceExpressions {
         e match {
           case extBl: ScExtendsBlock => Some(extBl)
           case elem
-              if PsiTreeUtil
-                .getParentOfType(elem, classOf[ScClassParents]) != null =>
+              if PsiTreeUtil.getParentOfType(elem, classOf[ScClassParents]) !=
+                null =>
             PsiTreeUtil.getParentOfType(elem, classOf[ScExtendsBlock]) match {
               case _ childOf (_: ScNewTemplateDefinition) => None
               case extBl                                  => Some(extBl)
@@ -310,9 +310,8 @@ trait IntroduceExpressions {
       val selectedText = model.getSelectedText
       val lineNumber = document.getLineNumber(model.getSelectionStart)
 
-      val oneLineSelected =
-        selectedText != null && lineText != null && selectedText
-          .trim == lineText.trim
+      val oneLineSelected = selectedText != null && lineText != null &&
+        selectedText.trim == lineText.trim
 
       val element = file.findElementAt(model.getSelectionStart)
       var parent = element
@@ -322,8 +321,8 @@ trait IntroduceExpressions {
           elem.getTextRange.getEndOffset)
         offsets.forall(document.getLineNumber(_) == lineNumber)
       }
-      while (parent != null && !parent.isInstanceOf[PsiFile] && atSameLine(
-               parent)) { parent = parent.getParent }
+      while (parent != null && !parent.isInstanceOf[PsiFile] &&
+             atSameLine(parent)) { parent = parent.getParent }
       val insideExpression = parent match {
         case null | _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
             _: PsiFile => false
@@ -359,9 +358,9 @@ trait IntroduceExpressions {
     val parentExprs =
       if (occCount == 1)
         ScalaRefactoringUtil.findParentExpr(file, firstRange) match {
-          case _ childOf (
-                (block: ScBlock) childOf ((_) childOf (call: ScMethodCall))
-              ) if isFunExpr && block.statements.size == 1 => Seq(call)
+          case _ childOf
+              ((block: ScBlock) childOf ((_) childOf (call: ScMethodCall)))
+              if isFunExpr && block.statements.size == 1 => Seq(call)
           case _ childOf ((block: ScBlock) childOf (infix: ScInfixExpr))
               if isFunExpr && block.statements.size == 1 => Seq(infix)
           case expr                                      => Seq(expr)
@@ -441,9 +440,8 @@ trait IntroduceExpressions {
             extBl.addEarlyDefinitions()
           case _ =>
             val container = ScalaRefactoringUtil.container(commonParent, file)
-            val needBraces = !commonParent
-              .isInstanceOf[ScBlock] && ScalaRefactoringUtil
-              .needBraces(commonParent, nextParent)
+            val needBraces = !commonParent.isInstanceOf[ScBlock] &&
+              ScalaRefactoringUtil.needBraces(commonParent, nextParent)
             if (needBraces) {
               firstRange = firstRange.shiftRight(1)
               val replaced = commonParent

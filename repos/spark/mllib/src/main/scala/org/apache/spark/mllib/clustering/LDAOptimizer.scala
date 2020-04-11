@@ -545,8 +545,8 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
     val alpha = this.alpha.toBreeze.toDenseVector
     val logphat: BDM[Double] =
       sum(LDAUtils.dirichletExpectation(gammat)(::, breeze.linalg.*)) / N
-    val gradf =
-      N * (-LDAUtils.dirichletExpectation(alpha) + logphat.toDenseVector)
+    val gradf = N *
+      (-LDAUtils.dirichletExpectation(alpha) + logphat.toDenseVector)
 
     val c = N * trigamma(sum(alpha))
     val q = -N * trigamma(alpha)
@@ -628,9 +628,8 @@ private[clustering] object OnlineLDAOptimizer {
     while (meanGammaChange > 1e-3) {
       val lastgamma = gammad.copy
       //        K                  K * ids               ids
-      gammad := (
-        expElogthetad :* (expElogbetad.t * (ctsVector :/ phiNorm))
-      ) :+ alpha
+      gammad := (expElogthetad :* (expElogbetad.t * (ctsVector :/ phiNorm))) :+
+        alpha
       expElogthetad := exp(LDAUtils.dirichletExpectation(gammad))
       // TODO: Keep more values in log space, and only exponentiate when needed.
       phiNorm := expElogbetad * expElogthetad :+ 1e-100

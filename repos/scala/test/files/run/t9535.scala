@@ -23,7 +23,7 @@ object Test extends App {
   assert(genSig("g") == "public E C.g() throws java.lang.Exception")
 
   assert(
-    sig(
-      "h") == "public int C.h() throws java.lang.Exception,java.lang.Exception")
+    sig("h") ==
+      "public int C.h() throws java.lang.Exception,java.lang.Exception")
   assert(genSig("h") == "public int C.h() throws E,java.lang.Exception")
 }

@@ -91,11 +91,11 @@ class AccountsTask(settings: Settings)
       val grantId = (g \ "grantId").deserialize[String]
 
       val body = JObject("grantId" -> JString(grantId)).renderCompact
-      val req = (accounts / accountId2 / "grants" / "").POST
-        .as(user1, pass1) << body
+      val req = (accounts / accountId2 / "grants" / "").POST.as(user1, pass1) <<
+        body
       val r = http(req)().complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(
-        g)
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        contain(g)
     }
 
     // "describe account's plan" in {}

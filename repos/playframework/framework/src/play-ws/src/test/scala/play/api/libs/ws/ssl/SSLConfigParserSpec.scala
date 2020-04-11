@@ -46,14 +46,14 @@ object SSLConfigParserSpec extends Specification {
         _ must beEqualTo(Seq(new java.net.URL("http://example.com")))
       }
       actual.enabledCipherSuites must beSome.which(
-        _ must containTheSameElementsAs(
-          Seq("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")))
+        _ must
+          containTheSameElementsAs(Seq("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")))
       actual.enabledProtocols must beSome.which(
         _ must containTheSameElementsAs(Seq("TLSv1.2", "TLSv1.1", "SSLv3")))
-      actual.disabledSignatureAlgorithms must containTheSameElementsAs(
-        Seq("md2", "md3"))
-      actual.disabledKeyAlgorithms must containTheSameElementsAs(
-        Seq("RSA keySize < 1024"))
+      actual.disabledSignatureAlgorithms must
+        containTheSameElementsAs(Seq("md2", "md3"))
+      actual.disabledKeyAlgorithms must
+        containTheSameElementsAs(Seq("RSA keySize < 1024"))
       actual.secureRandom must beNone
     }
 

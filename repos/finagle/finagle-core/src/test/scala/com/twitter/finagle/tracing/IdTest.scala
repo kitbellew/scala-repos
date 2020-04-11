@@ -10,20 +10,14 @@ import org.scalatest.junit.JUnitRunner
 class IdTest extends FunSuite {
   test("compare unequal ids") {
     assert(
-      TraceId(None, None, SpanId(0L), None) != TraceId(
-        None,
-        None,
-        SpanId(1L),
-        None))
+      TraceId(None, None, SpanId(0L), None) !=
+        TraceId(None, None, SpanId(1L), None))
   }
 
   test("compare equal ids") {
     assert(
-      TraceId(None, None, SpanId(0L), None) == TraceId(
-        None,
-        None,
-        SpanId(0L),
-        None))
+      TraceId(None, None, SpanId(0L), None) ==
+        TraceId(None, None, SpanId(0L), None))
   }
 
   test("compare synthesized parentId") {
@@ -54,8 +48,8 @@ class IdTest extends FunSuite {
 
   test("return sampled true if debug mode") {
     assert(
-      TraceId(None, None, SpanId(0L), None, Flags().setDebug).sampled == Some(
-        true))
+      TraceId(None, None, SpanId(0L), None, Flags().setDebug).sampled ==
+        Some(true))
   }
 
   def hex(l: Long) = new RichU64Long(l).toU64HexString

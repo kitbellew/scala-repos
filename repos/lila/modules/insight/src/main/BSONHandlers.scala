@@ -29,7 +29,8 @@ private object BSONHandlers {
   implicit val RelativeStrengthBSONHandler =
     new BSONHandler[BSONInteger, RelativeStrength] {
       def read(b: BSONInteger) =
-        RelativeStrength.byId get b.value err s"Invalid relative strength ${b.value}"
+        RelativeStrength.byId get b.value err
+          s"Invalid relative strength ${b.value}"
       def write(e: RelativeStrength) = BSONInteger(e.id)
     }
   implicit val ResultBSONHandler = new BSONHandler[BSONInteger, Result] {

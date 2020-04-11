@@ -111,7 +111,8 @@ private[akka] final class FilePublisher(
         case -1 ⇒ // EOF
           eofReachedAtOffset = chan.position
           log.debug(
-            "No more bytes available to read (got `-1` from `read`), marking final bytes of file @ " + eofReachedAtOffset)
+            "No more bytes available to read (got `-1` from `read`), marking final bytes of file @ " +
+              eofReachedAtOffset)
           chunks
         case 0 ⇒
           readAhead(maxChunks, chunks) // had nothing to read into this chunk

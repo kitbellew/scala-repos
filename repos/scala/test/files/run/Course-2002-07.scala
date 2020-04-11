@@ -52,12 +52,10 @@ object M0 {
   def test = {
     Console.println("        0 = " + eval(new Number(0)));
     Console.println("        1 = " + eval(new Number(1)));
-    Console.println(
-      "    0 + 1 = " +
-        eval(new Sum(new Number(0), new Number(1))));
-    Console.println(
-      "    1 + 2 = " +
-        eval(new Sum(new Number(1), new Number(2))));
+    Console
+      .println("    0 + 1 = " + eval(new Sum(new Number(0), new Number(1))));
+    Console
+      .println("    1 + 2 = " + eval(new Sum(new Number(1), new Number(2))));
     Console.println(
       "2 + 3 + 4 = " +
         eval(new Sum(new Sum(new Number(2), new Number(3)), new Number(4))));
@@ -83,12 +81,10 @@ object M1 {
   def test = {
     Console.println("        0 = " + new Number(0).eval);
     Console.println("        1 = " + new Number(1).eval);
-    Console.println(
-      "    0 + 1 = " +
-        new Sum(new Number(0), new Number(1)).eval);
-    Console.println(
-      "    1 + 2 = " +
-        new Sum(new Number(1), new Number(2)).eval);
+    Console
+      .println("    0 + 1 = " + new Sum(new Number(0), new Number(1)).eval);
+    Console
+      .println("    1 + 2 = " + new Sum(new Number(1), new Number(2)).eval);
     Console.println(
       "2 + 3 + 4 = " +
         new Sum(new Sum(new Number(2), new Number(3)), new Number(4)).eval);
@@ -716,9 +712,13 @@ object MB {
     Console.println("th(x) = " + th);
     Console.println;
 
-    val f4 = (x + _3) * (_2 + x) * x * (x + _1) + (x + _5) * (
-      x * (x + _2) + x + _1
-    ) + (x ^ 2) + x;
+    val f4 =
+      (x + _3) *
+        (_2 + x) * x *
+        (x + _1) +
+        (x + _5) *
+        (x * (x + _2) + x + _1) +
+        (x ^ 2) + x;
     val f3 = f4.derive(x);
     val f2 = f3.derive(x);
     val f1 = f2.derive(x);

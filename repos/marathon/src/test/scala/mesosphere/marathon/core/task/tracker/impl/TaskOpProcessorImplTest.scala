@@ -113,8 +113,8 @@ class TaskOpProcessorImplTest
     Given("a taskRepository and existing task")
     val taskState = MarathonTestHelper.stagedTaskForApp(appId)
     val task = taskState.marathonTask
-    f.taskRepository.store(task) returns Future
-      .failed(new RuntimeException("fail"))
+    f.taskRepository.store(task) returns
+      Future.failed(new RuntimeException("fail"))
     f.taskRepository.task(task.getId) returns Future.successful(Some(task))
 
     When("the processor processes an update")
@@ -212,8 +212,8 @@ class TaskOpProcessorImplTest
     val storeFailed: RuntimeException =
       new scala.RuntimeException("store failed")
     f.taskRepository.store(task) returns Future.failed(storeFailed)
-    f.taskRepository.task(task.getId) returns Future
-      .failed(new RuntimeException("task failed"))
+    f.taskRepository.task(task.getId) returns
+      Future.failed(new RuntimeException("task failed"))
 
     When("the processor processes an update")
     var result: Try[Unit] = Failure(
@@ -263,9 +263,8 @@ class TaskOpProcessorImplTest
       TaskOpProcessor.Action.Expunge))
 
     Then("it replies with unit immediately")
-    result.futureValue should be(
-      ()
-    ) // first we make sure that the call completes
+    result.futureValue should
+      be(()) // first we make sure that the call completes
 
     And("it calls expunge")
     verify(f.taskRepository).expunge(taskId)
@@ -286,8 +285,8 @@ class TaskOpProcessorImplTest
 
     Given("a taskRepository")
     val taskId = Task.Id.forApp(appId)
-    f.taskRepository.expunge(taskId.idString) returns Future
-      .failed(new RuntimeException("expunge fails"))
+    f.taskRepository.expunge(taskId.idString) returns
+      Future.failed(new RuntimeException("expunge fails"))
     f.taskRepository.task(taskId.idString) returns Future.successful(None)
 
     When("the processor processes an update")
@@ -298,9 +297,8 @@ class TaskOpProcessorImplTest
       TaskOpProcessor.Action.Expunge))
 
     Then("it replies with unit immediately")
-    result.futureValue should be(
-      ()
-    ) // first we make sure that the call completes
+    result.futureValue should
+      be(()) // first we make sure that the call completes
 
     And("it calls expunge")
     verify(f.taskRepository).expunge(taskId.idString)
@@ -338,9 +336,8 @@ class TaskOpProcessorImplTest
       TaskOpProcessor.Action.Expunge))
 
     Then("it replies with unit immediately")
-    result.futureValue should be(
-      ()
-    ) // first we make sure that the call completes
+    result.futureValue should
+      be(()) // first we make sure that the call completes
 
     And("it calls expunge")
     verify(f.taskRepository).expunge(taskId)
@@ -376,9 +373,8 @@ class TaskOpProcessorImplTest
       TaskOpProcessor.Action.UpdateStatus(update)))
 
     Then("it replies with unit immediately")
-    result.futureValue should be(
-      ()
-    ) // first we make sure that the call completes
+    result.futureValue should
+      be(()) // first we make sure that the call completes
 
     And("it calls expunge")
     verify(f.statusUpdateResolver).resolve(Task.Id(taskId), update)
@@ -404,8 +400,8 @@ class TaskOpProcessorImplTest
     val killed: TaskStatus = MarathonTestHelper
       .statusForState(taskId, TaskState.TASK_KILLED)
     f.taskRepository.store(marathonTask) returns Future.successful(marathonTask)
-    f.statusUpdateResolver.resolve(Task.Id(taskId), killed) returns Future
-      .successful(TaskOpProcessor.Action.Update(unlaunched))
+    f.statusUpdateResolver.resolve(Task.Id(taskId), killed) returns
+      Future.successful(TaskOpProcessor.Action.Update(unlaunched))
 
     When("the processor processes an update")
     val result = f.processor.process(TaskOpProcessor.Operation(

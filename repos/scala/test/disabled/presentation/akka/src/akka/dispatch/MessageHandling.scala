@@ -44,12 +44,13 @@ final case class FutureInvocation[T](
     cleanup: () => Unit)
     extends Runnable {
   def run = {
-    future complete (try { Right(function()) }
-    catch {
-      case e =>
-        EventHandler.error(e, this, e.getMessage)
-        Left(e)
-    } finally { cleanup() })
+    future complete
+      (try { Right(function()) }
+      catch {
+        case e =>
+          EventHandler.error(e, this, e.getMessage)
+          Left(e)
+      } finally { cleanup() })
   }
 }
 

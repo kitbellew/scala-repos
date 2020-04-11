@@ -99,14 +99,14 @@ class ScalatraBroadcasterFactory(
       createIfNull: Boolean): T = {
     val bOpt = store get id
     if (bOpt.isDefined && !c.isAssignableFrom(bOpt.get.getClass)) {
-      val msg = "Invalid lookup class " + c
-        .getName + ". Cached class is: " + bOpt.get.getClass.getName
+      val msg = "Invalid lookup class " + c.getName + ". Cached class is: " +
+        bOpt.get.getClass.getName
       logger.warn(msg)
       throw new IllegalStateException(msg)
     }
 
-    if ((bOpt.isEmpty && createIfNull) || (bOpt.isDefined && bOpt.get
-          .isDestroyed)) {
+    if ((bOpt.isEmpty && createIfNull) ||
+        (bOpt.isDefined && bOpt.get.isDestroyed)) {
       if (bOpt.isDefined) {
         val b = bOpt.get
         logger.debug("Removing destroyed Broadcaster %s" format b.getID)

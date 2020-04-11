@@ -206,8 +206,8 @@ object AutoUpdate {
       FileUtils.readFileToString(versionFile, "UTF-8").trim.split("\\.") match {
         case Array(majorVersion, minorVersion) => {
           versions.find { v =>
-            v.majorVersion == majorVersion.toInt && v
-              .minorVersion == minorVersion.toInt
+            v.majorVersion == majorVersion.toInt &&
+            v.minorVersion == minorVersion.toInt
           }.getOrElse(Version(0, 0))
         }
         case _ => Version(0, 0)

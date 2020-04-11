@@ -331,9 +331,10 @@ class ActorContextSpec
                 ChildEvent(GotSignal(PreRestart(`ex`))) ::
                 ChildEvent(GotSignal(PostRestart(`ex`))) :: Nil)
             log.assertDone(500.millis)
-            child ! BecomeInert(
-              self
-            ) // necessary to avoid PostStop/Terminated interference
+            child !
+              BecomeInert(
+                self
+              ) // necessary to avoid PostStop/Terminated interference
             (subj, child)
         }.expectMessageKeep(500.millis) {
           case (msg, (subj, child)) ⇒

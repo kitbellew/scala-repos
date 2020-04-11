@@ -21,25 +21,25 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
   "Interpreter" must {
 
-    "implement map correctly" in new OneBoundedSetup[Int](Seq(
-      Map((x: Int) ⇒ x + 1, stoppingDecider))) {
-      lastEvents() should be(Set.empty)
+    "implement map correctly" in
+      new OneBoundedSetup[Int](Seq(Map((x: Int) ⇒ x + 1, stoppingDecider))) {
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(0)
-      lastEvents() should be(Set(OnNext(1)))
+        upstream.onNext(0)
+        lastEvents() should be(Set(OnNext(1)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(1)
-      lastEvents() should be(Set(OnNext(2)))
+        upstream.onNext(1)
+        lastEvents() should be(Set(OnNext(2)))
 
-      upstream.onComplete()
-      lastEvents() should be(Set(OnComplete))
-    }
+        upstream.onComplete()
+        lastEvents() should be(Set(OnComplete))
+      }
 
     "implement chain of maps correctly" in new OneBoundedSetup[Int](Seq(
       Map((x: Int) ⇒ x + 1, stoppingDecider),
@@ -77,53 +77,55 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should be(Set(OnComplete))
     }
 
-    "implement one-to-many many-to-one chain correctly" in new OneBoundedSetup[
-      Int](Seq(Doubler(), Filter((x: Int) ⇒ x != 0, stoppingDecider))) {
+    "implement one-to-many many-to-one chain correctly" in
+      new OneBoundedSetup[Int](
+        Seq(Doubler(), Filter((x: Int) ⇒ x != 0, stoppingDecider))) {
 
-      lastEvents() should be(Set.empty)
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(0)
-      lastEvents() should be(Set(RequestOne))
+        upstream.onNext(0)
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(1)
-      lastEvents() should be(Set(OnNext(1)))
+        upstream.onNext(1)
+        lastEvents() should be(Set(OnNext(1)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnNext(1)))
+        downstream.requestOne()
+        lastEvents() should be(Set(OnNext(1)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onComplete()
-      lastEvents() should be(Set(OnComplete))
-    }
+        upstream.onComplete()
+        lastEvents() should be(Set(OnComplete))
+      }
 
-    "implement many-to-one one-to-many chain correctly" in new OneBoundedSetup[
-      Int](Seq(Filter((x: Int) ⇒ x != 0, stoppingDecider), Doubler())) {
+    "implement many-to-one one-to-many chain correctly" in
+      new OneBoundedSetup[Int](
+        Seq(Filter((x: Int) ⇒ x != 0, stoppingDecider), Doubler())) {
 
-      lastEvents() should be(Set.empty)
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(0)
-      lastEvents() should be(Set(RequestOne))
+        upstream.onNext(0)
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(1)
-      lastEvents() should be(Set(OnNext(1)))
+        upstream.onNext(1)
+        lastEvents() should be(Set(OnNext(1)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnNext(1)))
+        downstream.requestOne()
+        lastEvents() should be(Set(OnNext(1)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      downstream.cancel()
-      lastEvents() should be(Set(Cancel))
-    }
+        downstream.cancel()
+        lastEvents() should be(Set(Cancel))
+      }
 
     "implement take" in new OneBoundedSetup[Int](Seq(Take(2))) {
 
@@ -206,17 +208,18 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should be(Set(Cancel))
     }
 
-    "work if fold completes while not in a push position" in new OneBoundedSetup[
-      Int](Seq(Fold(0, (agg: Int, x: Int) ⇒ agg + x, stoppingDecider))) {
+    "work if fold completes while not in a push position" in
+      new OneBoundedSetup[Int](Seq(
+        Fold(0, (agg: Int, x: Int) ⇒ agg + x, stoppingDecider))) {
 
-      lastEvents() should be(Set.empty)
+        lastEvents() should be(Set.empty)
 
-      upstream.onComplete()
-      lastEvents() should be(Set.empty)
+        upstream.onComplete()
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnComplete, OnNext(0)))
-    }
+        downstream.requestOne()
+        lastEvents() should be(Set(OnComplete, OnNext(0)))
+      }
 
     "implement grouped" in new OneBoundedSetup[Int](Seq(Grouped(3))) {
       lastEvents() should be(Set.empty)
@@ -276,32 +279,32 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should be(Set(Cancel))
     }
 
-    "implement expand" in new OneBoundedSetup[Int](new Expand(
-      Iterator.continually(_: Int))) {
+    "implement expand" in
+      new OneBoundedSetup[Int](new Expand(Iterator.continually(_: Int))) {
 
-      lastEvents() should be(Set(RequestOne))
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(0)
-      lastEvents() should be(Set.empty)
+        upstream.onNext(0)
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne, OnNext(0)))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne, OnNext(0)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnNext(0)))
+        downstream.requestOne()
+        lastEvents() should be(Set(OnNext(0)))
 
-      upstream.onNext(1)
-      lastEvents() should be(Set.empty)
+        upstream.onNext(1)
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne, OnNext(1)))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne, OnNext(1)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnNext(1)))
+        downstream.requestOne()
+        lastEvents() should be(Set(OnNext(1)))
 
-      upstream.onComplete()
-      lastEvents() should be(Set(OnComplete))
-    }
+        upstream.onComplete()
+        lastEvents() should be(Set(OnComplete))
+      }
 
     "work with batch-batch (conflate-conflate)" in new OneBoundedSetup[Int](
       Batch(
@@ -362,9 +365,8 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should be(Set.empty)
 
       downstream.requestOne()
-      lastEvents() should be(
-        Set(RequestOne, OnNext(2))
-      ) // One element is still in the pipeline
+      lastEvents() should
+        be(Set(RequestOne, OnNext(2))) // One element is still in the pipeline
 
       downstream.requestOne()
       lastEvents() should be(Set(OnNext(10)))
@@ -434,103 +436,103 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     // Note, the new interpreter has no jumpback table, still did not want to remove the test
-    "work with jumpback table and completed elements" in new OneBoundedSetup[
-      Int](Seq(
-      Map((x: Int) ⇒ x, stoppingDecider),
-      Map((x: Int) ⇒ x, stoppingDecider),
-      KeepGoing(),
-      Map((x: Int) ⇒ x, stoppingDecider),
-      Map((x: Int) ⇒ x, stoppingDecider))) {
+    "work with jumpback table and completed elements" in
+      new OneBoundedSetup[Int](Seq(
+        Map((x: Int) ⇒ x, stoppingDecider),
+        Map((x: Int) ⇒ x, stoppingDecider),
+        KeepGoing(),
+        Map((x: Int) ⇒ x, stoppingDecider),
+        Map((x: Int) ⇒ x, stoppingDecider))) {
 
-      lastEvents() should be(Set.empty)
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(1)
-      lastEvents() should be(Set(OnNext(1)))
+        upstream.onNext(1)
+        lastEvents() should be(Set(OnNext(1)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(2)
-      lastEvents() should be(Set(OnNext(2)))
+        upstream.onNext(2)
+        lastEvents() should be(Set(OnNext(2)))
 
-      upstream.onComplete()
-      lastEvents() should be(Set.empty)
+        upstream.onComplete()
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnNext(2)))
+        downstream.requestOne()
+        lastEvents() should be(Set(OnNext(2)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnNext(2)))
+        downstream.requestOne()
+        lastEvents() should be(Set(OnNext(2)))
 
-    }
+      }
 
-    "work with pushAndFinish if upstream completes with pushAndFinish" in new OneBoundedSetup[
-      Int](Seq(new PushFinishStage)) {
+    "work with pushAndFinish if upstream completes with pushAndFinish" in
+      new OneBoundedSetup[Int](Seq(new PushFinishStage)) {
 
-      lastEvents() should be(Set.empty)
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNextAndComplete(0)
-      lastEvents() should be(Set(OnNext(0), OnComplete))
-    }
+        upstream.onNextAndComplete(0)
+        lastEvents() should be(Set(OnNext(0), OnComplete))
+      }
 
-    "work with pushAndFinish if indirect upstream completes with pushAndFinish" in new OneBoundedSetup[
-      Int](Seq(
-      Map((x: Any) ⇒ x, stoppingDecider),
-      new PushFinishStage,
-      Map((x: Any) ⇒ x, stoppingDecider))) {
+    "work with pushAndFinish if indirect upstream completes with pushAndFinish" in
+      new OneBoundedSetup[Int](Seq(
+        Map((x: Any) ⇒ x, stoppingDecider),
+        new PushFinishStage,
+        Map((x: Any) ⇒ x, stoppingDecider))) {
 
-      lastEvents() should be(Set.empty)
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNextAndComplete(1)
-      lastEvents() should be(Set(OnNext(1), OnComplete))
-    }
+        upstream.onNextAndComplete(1)
+        lastEvents() should be(Set(OnNext(1), OnComplete))
+      }
 
-    "work with pushAndFinish if upstream completes with pushAndFinish and downstream immediately pulls" in new OneBoundedSetup[
-      Int](Seq(
-      new PushFinishStage,
-      Fold(0, (x: Int, y: Int) ⇒ x + y, stoppingDecider))) {
+    "work with pushAndFinish if upstream completes with pushAndFinish and downstream immediately pulls" in
+      new OneBoundedSetup[Int](Seq(
+        new PushFinishStage,
+        Fold(0, (x: Int, y: Int) ⇒ x + y, stoppingDecider))) {
 
-      lastEvents() should be(Set.empty)
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNextAndComplete(1)
-      lastEvents() should be(Set(OnNext(1), OnComplete))
-    }
+        upstream.onNextAndComplete(1)
+        lastEvents() should be(Set(OnNext(1), OnComplete))
+      }
 
-    "report error if pull is called while op is terminating" in new OneBoundedSetup[
-      Int](Seq(new PushPullStage[Any, Any] {
-      override def onPull(ctx: Context[Any]): SyncDirective = ctx.pull()
-      override def onPush(elem: Any, ctx: Context[Any]): SyncDirective =
-        ctx.pull()
-      override def onUpstreamFinish(ctx: Context[Any]): TerminationDirective =
-        ctx.absorbTermination()
-    })) {
-      lastEvents() should be(Set.empty)
+    "report error if pull is called while op is terminating" in
+      new OneBoundedSetup[Int](Seq(new PushPullStage[Any, Any] {
+        override def onPull(ctx: Context[Any]): SyncDirective = ctx.pull()
+        override def onPush(elem: Any, ctx: Context[Any]): SyncDirective =
+          ctx.pull()
+        override def onUpstreamFinish(ctx: Context[Any]): TerminationDirective =
+          ctx.absorbTermination()
+      })) {
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      EventFilter[IllegalArgumentException](
-        pattern = ".*Cannot pull closed port.*",
-        occurrences = 1).intercept { upstream.onComplete() }
-      val ev = lastEvents()
-      ev.nonEmpty should be(true)
-      ev.forall {
-        case OnError(_: IllegalArgumentException) ⇒ true
-        case _ ⇒ false
-      } should be(true)
-    }
+        EventFilter[IllegalArgumentException](
+          pattern = ".*Cannot pull closed port.*",
+          occurrences = 1).intercept { upstream.onComplete() }
+        val ev = lastEvents()
+        ev.nonEmpty should be(true)
+        ev.forall {
+          case OnError(_: IllegalArgumentException) ⇒ true
+          case _ ⇒ false
+        } should be(true)
+      }
 
     "implement take-take" in new OneBoundedSetup[Int](Seq(Take(1), Take(1))) {
       lastEvents() should be(Set.empty)
@@ -543,17 +545,17 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
     }
 
-    "implement take-take with pushAndFinish from upstream" in new OneBoundedSetup[
-      Int](Seq(Take(1), Take(1))) {
-      lastEvents() should be(Set.empty)
+    "implement take-take with pushAndFinish from upstream" in
+      new OneBoundedSetup[Int](Seq(Take(1), Take(1))) {
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNextAndComplete(1)
-      lastEvents() should be(Set(OnNext(1), OnComplete))
+        upstream.onNextAndComplete(1)
+        lastEvents() should be(Set(OnNext(1), OnComplete))
 
-    }
+      }
 
     class InvalidAbsorbTermination extends PushPullStage[Int, Int] {
       override def onPull(ctx: Context[Int]): SyncDirective = ctx.pull()
@@ -563,18 +565,18 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
         ctx.absorbTermination()
     }
 
-    "not allow absorbTermination from onDownstreamFinish()" in new OneBoundedSetup[
-      Int](Seq(new InvalidAbsorbTermination)) {
-      lastEvents() should be(Set.empty)
+    "not allow absorbTermination from onDownstreamFinish()" in
+      new OneBoundedSetup[Int](Seq(new InvalidAbsorbTermination)) {
+        lastEvents() should be(Set.empty)
 
-      EventFilter[UnsupportedOperationException](
-        "It is not allowed to call absorbTermination() from onDownstreamFinish.",
-        occurrences = 1).intercept {
-        downstream.cancel()
-        lastEvents() should be(Set(Cancel))
+        EventFilter[UnsupportedOperationException](
+          "It is not allowed to call absorbTermination() from onDownstreamFinish.",
+          occurrences = 1).intercept {
+          downstream.cancel()
+          lastEvents() should be(Set(Cancel))
+        }
+
       }
-
-    }
 
   }
 

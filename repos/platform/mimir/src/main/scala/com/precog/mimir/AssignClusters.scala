@@ -276,8 +276,8 @@ trait AssignClusterModule[M[+_]]
                       }
 
                       assert(colsByPath.length == centerPaths.length)
-                      val zipped: Array[(Column, CPath)] =
-                        colsByPath zip centerPaths
+                      val zipped: Array[(Column, CPath)] = colsByPath zip
+                        centerPaths
 
                       val pref = CPath(TableModule.paths.Value)
 
@@ -297,9 +297,8 @@ trait AssignClusterModule[M[+_]]
                         CPathField(model.name),
                         CPathField("clusterId"))
                       val centerId = Map(
-                        ColumnRef(idPath, CString) -> ArrayStrColumn(
-                          definedModel,
-                          resultArray))
+                        ColumnRef(idPath, CString) ->
+                          ArrayStrColumn(definedModel, resultArray))
 
                       centers ++ centerId
                   }

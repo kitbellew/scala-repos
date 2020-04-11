@@ -24,8 +24,8 @@ class ComposeTests extends CatsSuite {
     // Alternative composition
 
     implicit val alternativeListVector
-        : Alternative[Lambda[A => List[Vector[A]]]] =
-      Alternative[List] compose Alternative[Vector]
+        : Alternative[Lambda[A => List[Vector[A]]]] = Alternative[List] compose
+      Alternative[Vector]
     implicit val iso = CartesianTests.Isomorphisms
       .invariant[Lambda[A => List[Vector[A]]]]
 
@@ -38,8 +38,8 @@ class ComposeTests extends CatsSuite {
     // Applicative composition
 
     implicit val applicativeListVector
-        : Applicative[Lambda[A => List[Vector[A]]]] =
-      Applicative[List] compose Applicative[Vector]
+        : Applicative[Lambda[A => List[Vector[A]]]] = Applicative[List] compose
+      Applicative[Vector]
     implicit val iso = CartesianTests.Isomorphisms
       .invariant[Lambda[A => List[Vector[A]]]]
 

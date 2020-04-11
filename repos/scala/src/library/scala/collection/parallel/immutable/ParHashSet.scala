@@ -221,8 +221,9 @@ private[immutable] abstract class HashSetCombiner[T]
         new CreateTrie(bucks, root, offset + fp, howmany - fp))
     }
     def shouldSplitFurther =
-      howmany > scala.collection.parallel
-        .thresholdFromSize(root.length, combinerTaskSupport.parallelismLevel)
+      howmany >
+        scala.collection.parallel
+          .thresholdFromSize(root.length, combinerTaskSupport.parallelismLevel)
   }
 }
 

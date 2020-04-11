@@ -119,8 +119,8 @@ trait ScBlock
           val visitedWithT = visited + t
           t match {
             case ScDesignatorType(p: ScParameter)
-                if p.owner.isInstanceOf[ScFunctionExpr] && p.owner
-                  .asInstanceOf[ScFunctionExpr].result == Some(this) =>
+                if p.owner.isInstanceOf[ScFunctionExpr] &&
+                  p.owner.asInstanceOf[ScFunctionExpr].result == Some(this) =>
               val t = existize(
                 p.getType(TypingContext.empty).getOrAny,
                 visitedWithT)
@@ -128,8 +128,8 @@ trait ScBlock
               new ScTypeVariable(p.name)
             case ScDesignatorType(typed: ScBindingPattern)
                 if typed.nameContext.isInstanceOf[ScCaseClause] &&
-                  typed.nameContext.asInstanceOf[ScCaseClause].expr == Some(
-                    this) =>
+                  typed.nameContext.asInstanceOf[ScCaseClause].expr ==
+                  Some(this) =>
               val t = existize(
                 typed.getType(TypingContext.empty).getOrAny,
                 visitedWithT)

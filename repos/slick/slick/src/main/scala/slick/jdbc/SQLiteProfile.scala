@@ -76,24 +76,14 @@ import slick.sql.SqlProfile
 trait SQLiteProfile extends JdbcProfile {
 
   override protected def computeCapabilities: Set[Capability] =
-    (
-      super.computeCapabilities
-        - RelationalCapabilities.functionDatabase
-        - RelationalCapabilities.functionUser
-        - RelationalCapabilities.joinFull
-        - RelationalCapabilities.joinRight
-        - JdbcCapabilities.mutable
-        - SqlCapabilities.sequence
-        - JdbcCapabilities.returnInsertOther
-        - RelationalCapabilities.typeBigDecimal
-        - RelationalCapabilities.typeBlob
-        - RelationalCapabilities.zip
-        - JdbcCapabilities.insertOrUpdate
-        - JdbcCapabilities.defaultValueMetaData
-        - JdbcCapabilities.booleanMetaData
-        - JdbcCapabilities.supportsByte
-        - JdbcCapabilities.distinguishesIntTypes
-    )
+    (super.computeCapabilities - RelationalCapabilities.functionDatabase -
+      RelationalCapabilities.functionUser - RelationalCapabilities.joinFull -
+      RelationalCapabilities.joinRight - JdbcCapabilities.mutable -
+      SqlCapabilities.sequence - JdbcCapabilities.returnInsertOther -
+      RelationalCapabilities.typeBigDecimal - RelationalCapabilities.typeBlob -
+      RelationalCapabilities.zip - JdbcCapabilities.insertOrUpdate -
+      JdbcCapabilities.defaultValueMetaData - JdbcCapabilities.booleanMetaData -
+      JdbcCapabilities.supportsByte - JdbcCapabilities.distinguishesIntTypes)
 
   class ModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       implicit ec: ExecutionContext)

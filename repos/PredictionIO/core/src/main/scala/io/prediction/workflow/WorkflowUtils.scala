@@ -170,8 +170,8 @@ object WorkflowUtils extends Logging {
       case JField(f, _) => f == field
       case _            => false
     } map { jv =>
-      implicit lazy val formats = Utils
-        .json4sDefaultFormats + new NameParamsSerializer
+      implicit lazy val formats = Utils.json4sDefaultFormats +
+        new NameParamsSerializer
       val np: NameParams =
         try { jv._2.extract[NameParams] }
         catch {

@@ -51,8 +51,8 @@ class StorageClient(val config: StorageClientConfig)
     case e: MasterNotRunningException =>
       error(
         "HBase master is not running (ZooKeeper ensemble: " +
-          conf
-            .get("hbase.zookeeper.quorum") + "). Please make sure that HBase " +
+          conf.get("hbase.zookeeper.quorum") +
+          "). Please make sure that HBase " +
           "is running properly, and that the configuration is pointing at the " +
           "correct ZooKeeper ensemble.")
       throw e

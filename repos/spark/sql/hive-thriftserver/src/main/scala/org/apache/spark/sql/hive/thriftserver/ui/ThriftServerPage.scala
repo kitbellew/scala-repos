@@ -46,14 +46,10 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
   def render(request: HttpServletRequest): Seq[Node] = {
     val content = listener
       .synchronized { // make sure all parts in this page are consistent
-        generateBasicStats() ++
-          <br/> ++
-          <h4>
+        generateBasicStats() ++ <br/> ++ <h4>
         {listener.getOnlineSessionNum} session(s) are online,
         running {listener.getTotalRunning} SQL statement(s)
-        </h4> ++
-          generateSessionStatsTable() ++
-          generateSQLStatsTable()
+        </h4> ++ generateSessionStatsTable() ++ generateSQLStatsTable()
       }
     UIUtils.headerSparkPage("JDBC/ODBC Server", content, parent, Some(5000))
   }
@@ -128,8 +124,7 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
       } else { None }
 
     val content =
-      <h5 id="sqlstat">SQL Statistics</h5> ++
-        <div>
+      <h5 id="sqlstat">SQL Statistics</h5> ++ <div>
           <ul class="unstyled">
             {table.getOrElse("No statistics have been generated yet.")}
           </ul>
@@ -149,8 +144,7 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
         <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         + details
-      </span> ++
-          <div class="stacktrace-details collapsed">
+      </span> ++ <div class="stacktrace-details collapsed">
         <pre>{errorMessage}</pre>
       </div>
         // scalastyle:on
@@ -183,9 +177,7 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
           <td> {session.ip} </td>
           <td> <a href={sessionLink}> {session.sessionId} </a> </td>
           <td> {formatDate(session.startTimestamp)} </td>
-          <td> {
-            if (session.finishTimestamp > 0) formatDate(session.finishTimestamp)
-          } </td>
+          <td> {if (session.finishTimestamp > 0) formatDate(session.finishTimestamp)} </td>
           <td> {formatDurationOption(Some(session.totalTime))} </td>
           <td> {session.totalExecution.toString} </td>
         </tr>
@@ -201,8 +193,7 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
       } else { None }
 
     val content =
-      <h5 id="sessionstat">Session Statistics</h5> ++
-        <div>
+      <h5 id="sessionstat">Session Statistics</h5> ++ <div>
         <ul class="unstyled">
           {table.getOrElse("No statistics have been generated yet.")}
         </ul>

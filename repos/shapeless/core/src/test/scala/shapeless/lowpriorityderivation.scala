@@ -189,8 +189,8 @@ object LowPriorityDerivationTests {
         new MkGenericTupleTC[H :: T] {
           lazy val tc = instance[H :: T] { n =>
             val tailMsg = tail.tc.msg(n - 1)
-            head.value.msg(n - 1) + (if (tailMsg.isEmpty) ""
-                                     else ", " + tailMsg)
+            head.value.msg(n - 1) +
+              (if (tailMsg.isEmpty) "" else ", " + tailMsg)
           }
         }
     }

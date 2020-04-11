@@ -14,8 +14,8 @@ object JsonFormat {
 
   val parserISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
-  val jsonFormats =
-    Serialization.formats(NoTypeHints) + new CustomSerializer[Date](format =>
+  val jsonFormats = Serialization.formats(NoTypeHints) +
+    new CustomSerializer[Date](format =>
       (
         {
           case JString(s) =>
@@ -25,20 +25,16 @@ object JsonFormat {
         {
           case x: Date =>
             JString(parserISO.print(new DateTime(x).withZone(DateTimeZone.UTC)))
-        })) + FieldSerializer[ApiUser]() +
-      FieldSerializer[ApiPullRequest]() +
-      FieldSerializer[ApiRepository]() +
-      FieldSerializer[ApiCommitListItem.Parent]() +
-      FieldSerializer[ApiCommitListItem]() +
-      FieldSerializer[ApiCommitListItem.Commit]() +
-      FieldSerializer[ApiCommitStatus]() +
-      FieldSerializer[FieldSerializable]() +
-      FieldSerializer[ApiCombinedCommitStatus]() +
-      FieldSerializer[ApiPullRequest.Commit]() +
-      FieldSerializer[ApiIssue]() +
-      FieldSerializer[ApiComment]() +
-      FieldSerializer[ApiLabel]() +
-      ApiBranchProtection.enforcementLevelSerializer
+        })) + FieldSerializer[ApiUser]() + FieldSerializer[ApiPullRequest]() +
+    FieldSerializer[ApiRepository]() +
+    FieldSerializer[ApiCommitListItem.Parent]() +
+    FieldSerializer[ApiCommitListItem]() +
+    FieldSerializer[ApiCommitListItem.Commit]() +
+    FieldSerializer[ApiCommitStatus]() + FieldSerializer[FieldSerializable]() +
+    FieldSerializer[ApiCombinedCommitStatus]() +
+    FieldSerializer[ApiPullRequest.Commit]() + FieldSerializer[ApiIssue]() +
+    FieldSerializer[ApiComment]() + FieldSerializer[ApiLabel]() +
+    ApiBranchProtection.enforcementLevelSerializer
 
   def apiPathSerializer(c: Context) =
     new CustomSerializer[ApiPath](format =>

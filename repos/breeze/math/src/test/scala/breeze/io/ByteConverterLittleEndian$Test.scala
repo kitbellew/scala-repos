@@ -94,41 +94,20 @@ class ByteConverterLittleEndian$Test extends FunSuite {
     var ba = int64ToBytes(valueL)
     assert(ba.length == 8)
     assert(
-      valueL == bytesToInt64(
-        ba(0),
-        ba(1),
-        ba(2),
-        ba(3),
-        ba(4),
-        ba(5),
-        ba(6),
-        ba(7)))
+      valueL ==
+        bytesToInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))
 
     valueL = -9223372036854775808L
     ba = int64ToBytes(valueL)
     assert(
-      valueL == bytesToInt64(
-        ba(0),
-        ba(1),
-        ba(2),
-        ba(3),
-        ba(4),
-        ba(5),
-        ba(6),
-        ba(7)))
+      valueL ==
+        bytesToInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))
 
     valueL = 9223372036854775807L
     ba = int64ToBytes(valueL)
     assert(
-      valueL == bytesToInt64(
-        ba(0),
-        ba(1),
-        ba(2),
-        ba(3),
-        ba(4),
-        ba(5),
-        ba(6),
-        ba(7)))
+      valueL ==
+        bytesToInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))
   }
 
   test("UInt64") {
@@ -136,60 +115,31 @@ class ByteConverterLittleEndian$Test extends FunSuite {
     var ba = uInt64ToBytes(valueL)
     assert(ba.length == 8)
     assert(
-      valueL == bytesToUInt64(
-        ba(0),
-        ba(1),
-        ba(2),
-        ba(3),
-        ba(4),
-        ba(5),
-        ba(6),
-        ba(7)))
+      valueL ==
+        bytesToUInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))
 
     valueL = ULong(9223372036854775807L)
     ba = uInt64ToBytes(valueL)
     assert(
-      valueL == bytesToUInt64(
-        ba(0),
-        ba(1),
-        ba(2),
-        ba(3),
-        ba(4),
-        ba(5),
-        ba(6),
-        ba(7)))
+      valueL ==
+        bytesToUInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))
 
     valueL = ULong(9223372036854775807L) + ULong(1000)
     ba = uInt64ToBytes(valueL)
     assert(
-      valueL == bytesToUInt64(
-        ba(0),
-        ba(1),
-        ba(2),
-        ba(3),
-        ba(4),
-        ba(5),
-        ba(6),
-        ba(7)))
+      valueL ==
+        bytesToUInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))
 
     valueL = ULong(9223372036854775807L) + ULong(1)
     ba = uInt64ToBytes(valueL)
-    assert((-9223372036854775807L - 1L == (
-      bytesToInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7))
-    )))
+    assert((-9223372036854775807L - 1L ==
+      (bytesToInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))))
 
     valueL = ULong(4000000000000000000L)
     ba = uInt64ToBytes(valueL)
     assert(
-      valueL == bytesToUInt64(
-        ba(0),
-        ba(1),
-        ba(2),
-        ba(3),
-        ba(4),
-        ba(5),
-        ba(6),
-        ba(7)))
+      valueL ==
+        bytesToUInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))
   }
 
   test("UInt64Shifted") {

@@ -345,17 +345,17 @@ class TlsSpec
     object SessionRenegotiationFirstOne extends PayloadScenario {
       override def flow = logCipherSuite
       def inputs =
-        NegotiateNewSession
-          .withCipherSuites("TLS_RSA_WITH_AES_128_CBC_SHA") :: send(
-          "hello") :: Nil
+        NegotiateNewSession.withCipherSuites("TLS_RSA_WITH_AES_128_CBC_SHA") ::
+          send("hello") :: Nil
       def output = ByteString("TLS_RSA_WITH_AES_128_CBC_SHAhello")
     }
 
     object SessionRenegotiationFirstTwo extends PayloadScenario {
       override def flow = logCipherSuite
       def inputs =
-        NegotiateNewSession.withCipherSuites(
-          "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
+        NegotiateNewSession
+          .withCipherSuites("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA") ::
+          send("hello") :: Nil
       def output = ByteString("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHAhello")
     }
 
@@ -377,102 +377,107 @@ class TlsSpec
       commPattern ← communicationPatterns
       scenario ← scenarios
     } {
-      s"work in mode ${commPattern.name} while sending ${scenario.name}" in assertAllStagesStopped {
-        val onRHS = debug.via(scenario.flow)
-        val f = Source(scenario.inputs).via(commPattern.decorateFlow(
-          scenario.leftClosing,
-          scenario.rightClosing,
-          onRHS)).transform(() ⇒
-          new PushStage[SslTlsInbound, SslTlsInbound] {
-            override def onPush(
-                elem: SslTlsInbound,
-                ctx: Context[SslTlsInbound]) = ctx.push(elem)
-            override def onDownstreamFinish(ctx: Context[SslTlsInbound]) = {
-              system.log.debug("me cancelled")
-              ctx.finish()
+      s"work in mode ${commPattern.name} while sending ${scenario.name}" in
+        assertAllStagesStopped {
+          val onRHS = debug.via(scenario.flow)
+          val f = Source(scenario.inputs).via(commPattern.decorateFlow(
+            scenario.leftClosing,
+            scenario.rightClosing,
+            onRHS)).transform(() ⇒
+            new PushStage[SslTlsInbound, SslTlsInbound] {
+              override def onPush(
+                  elem: SslTlsInbound,
+                  ctx: Context[SslTlsInbound]) = ctx.push(elem)
+              override def onDownstreamFinish(ctx: Context[SslTlsInbound]) = {
+                system.log.debug("me cancelled")
+                ctx.finish()
+              }
+            }).via(debug).collect { case SessionBytes(_, b) ⇒ b }
+            .scan(ByteString.empty)(_ ++ _).via(new Timeout(6.seconds))
+            .dropWhile(_.size < scenario.output.size).runWith(Sink.head)
+
+          Await.result(f, 8.seconds).utf8String should
+            be(scenario.output.utf8String)
+
+          commPattern.cleanup()
+
+          // flush log so as to not mix up logs of different test cases
+          if (log.isDebugEnabled)
+            EventFilter.debug("stopgap", occurrences = 1) intercept {
+              log.debug("stopgap")
             }
-          }).via(debug).collect { case SessionBytes(_, b) ⇒ b }
-          .scan(ByteString.empty)(_ ++ _).via(new Timeout(6.seconds))
-          .dropWhile(_.size < scenario.output.size).runWith(Sink.head)
+        }
+    }
 
-        Await.result(f, 8.seconds).utf8String should be(
-          scenario.output.utf8String)
+    "emit an error if the TLS handshake fails certificate checks" in
+      assertAllStagesStopped {
+        val getError = Flow[SslTlsInbound]
+          .map[Either[SslTlsInbound, SSLException]](i ⇒ Left(i)).recover {
+            case e: SSLException ⇒ Right(e)
+          }.collect { case Right(e) ⇒ e }.toMat(Sink.head)(Keep.right)
 
-        commPattern.cleanup()
+        val simple = Flow
+          .fromSinkAndSourceMat(getError, Source.maybe[SslTlsOutbound])(
+            Keep.left)
 
-        // flush log so as to not mix up logs of different test cases
-        if (log.isDebugEnabled)
-          EventFilter.debug("stopgap", occurrences = 1) intercept {
-            log.debug("stopgap")
-          }
+        // The creation of actual TCP connections is necessary. It is the easiest way to decouple the client and server
+        // under error conditions, and has the bonus of matching most actual SSL deployments.
+        val (server, serverErr) = Tcp().bind("localhost", 0).map(c ⇒ {
+          c.flow.joinMat(serverTls(IgnoreBoth).reversed.joinMat(simple)(
+            Keep.right))(Keep.right).run()
+        }).toMat(Sink.head)(Keep.both).run()
+
+        val clientErr = simple.join(badClientTls(IgnoreBoth)).join(
+          Tcp().outgoingConnection(Await.result(server, 1.second).localAddress))
+          .run()
+
+        Await.result(serverErr.flatMap(identity), 1.second).getMessage should
+          include("certificate_unknown")
+        Await.result(clientErr, 1.second).getMessage should
+          equal("General SSLEngine problem")
       }
-    }
 
-    "emit an error if the TLS handshake fails certificate checks" in assertAllStagesStopped {
-      val getError = Flow[SslTlsInbound]
-        .map[Either[SslTlsInbound, SSLException]](i ⇒ Left(i)).recover {
-          case e: SSLException ⇒ Right(e)
-        }.collect { case Right(e) ⇒ e }.toMat(Sink.head)(Keep.right)
+    "reliably cancel subscriptions when TransportIn fails early" in
+      assertAllStagesStopped {
+        val ex = new Exception("hello")
+        val (sub, out1, out2) = RunnableGraph.fromGraph(
+          GraphDSL.create(
+            Source.asSubscriber[SslTlsOutbound],
+            Sink.head[ByteString],
+            Sink.head[SslTlsInbound])((_, _, _)) { implicit b ⇒ (s, o1, o2) ⇒
+            val tls = b.add(clientTls(EagerClose))
+            s ~> tls.in1; tls.out1 ~> o1
+            o2 <~ tls.out2; tls.in2 <~ Source.failed(ex)
+            ClosedShape
+          }).run()
+        the[Exception] thrownBy Await.result(out1, 1.second) should be(ex)
+        the[Exception] thrownBy Await.result(out2, 1.second) should be(ex)
+        Thread.sleep(500)
+        val pub = TestPublisher.probe()
+        pub.subscribe(sub)
+        pub.expectSubscription().expectCancellation()
+      }
 
-      val simple = Flow
-        .fromSinkAndSourceMat(getError, Source.maybe[SslTlsOutbound])(Keep.left)
-
-      // The creation of actual TCP connections is necessary. It is the easiest way to decouple the client and server
-      // under error conditions, and has the bonus of matching most actual SSL deployments.
-      val (server, serverErr) = Tcp().bind("localhost", 0).map(c ⇒ {
-        c.flow.joinMat(serverTls(IgnoreBoth).reversed.joinMat(simple)(
-          Keep.right))(Keep.right).run()
-      }).toMat(Sink.head)(Keep.both).run()
-
-      val clientErr = simple.join(badClientTls(IgnoreBoth)).join(
-        Tcp().outgoingConnection(Await.result(server, 1.second).localAddress))
-        .run()
-
-      Await.result(serverErr.flatMap(identity), 1.second)
-        .getMessage should include("certificate_unknown")
-      Await.result(clientErr, 1.second).getMessage should equal(
-        "General SSLEngine problem")
-    }
-
-    "reliably cancel subscriptions when TransportIn fails early" in assertAllStagesStopped {
-      val ex = new Exception("hello")
-      val (sub, out1, out2) = RunnableGraph.fromGraph(
-        GraphDSL.create(
-          Source.asSubscriber[SslTlsOutbound],
-          Sink.head[ByteString],
-          Sink.head[SslTlsInbound])((_, _, _)) { implicit b ⇒ (s, o1, o2) ⇒
-          val tls = b.add(clientTls(EagerClose))
-          s ~> tls.in1; tls.out1 ~> o1
-          o2 <~ tls.out2; tls.in2 <~ Source.failed(ex)
-          ClosedShape
-        }).run()
-      the[Exception] thrownBy Await.result(out1, 1.second) should be(ex)
-      the[Exception] thrownBy Await.result(out2, 1.second) should be(ex)
-      Thread.sleep(500)
-      val pub = TestPublisher.probe()
-      pub.subscribe(sub)
-      pub.expectSubscription().expectCancellation()
-    }
-
-    "reliably cancel subscriptions when UserIn fails early" in assertAllStagesStopped {
-      val ex = new Exception("hello")
-      val (sub, out1, out2) = RunnableGraph.fromGraph(
-        GraphDSL.create(
-          Source.asSubscriber[ByteString],
-          Sink.head[ByteString],
-          Sink.head[SslTlsInbound])((_, _, _)) { implicit b ⇒ (s, o1, o2) ⇒
-          val tls = b.add(clientTls(EagerClose))
-          Source.failed[SslTlsOutbound](ex) ~> tls.in1; tls.out1 ~> o1
-          o2 <~ tls.out2; tls.in2 <~ s
-          ClosedShape
-        }).run()
-      the[Exception] thrownBy Await.result(out1, 1.second) should be(ex)
-      the[Exception] thrownBy Await.result(out2, 1.second) should be(ex)
-      Thread.sleep(500)
-      val pub = TestPublisher.probe()
-      pub.subscribe(sub)
-      pub.expectSubscription().expectCancellation()
-    }
+    "reliably cancel subscriptions when UserIn fails early" in
+      assertAllStagesStopped {
+        val ex = new Exception("hello")
+        val (sub, out1, out2) = RunnableGraph.fromGraph(
+          GraphDSL.create(
+            Source.asSubscriber[ByteString],
+            Sink.head[ByteString],
+            Sink.head[SslTlsInbound])((_, _, _)) { implicit b ⇒ (s, o1, o2) ⇒
+            val tls = b.add(clientTls(EagerClose))
+            Source.failed[SslTlsOutbound](ex) ~> tls.in1; tls.out1 ~> o1
+            o2 <~ tls.out2; tls.in2 <~ s
+            ClosedShape
+          }).run()
+        the[Exception] thrownBy Await.result(out1, 1.second) should be(ex)
+        the[Exception] thrownBy Await.result(out2, 1.second) should be(ex)
+        Thread.sleep(500)
+        val pub = TestPublisher.probe()
+        pub.subscribe(sub)
+        pub.expectSubscription().expectCancellation()
+      }
 
   }
 

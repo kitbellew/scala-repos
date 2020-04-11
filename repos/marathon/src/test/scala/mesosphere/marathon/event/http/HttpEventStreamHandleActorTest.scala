@@ -90,8 +90,8 @@ class HttpEventStreamHandleActorTest
     handleActor ! subscribe
 
     Then("The actor stores the events in reverse order")
-    handleActor.underlyingActor.outstanding should be(
-      subscribe :: detached :: Nil)
+    handleActor.underlyingActor.outstanding should
+      be(subscribe :: detached :: Nil)
 
     When("The first event is delivered")
     latch.countDown()
@@ -99,7 +99,8 @@ class HttpEventStreamHandleActorTest
     Then("All events are transferred in correct order")
     awaitCond(events.size == 3)
     events.reverse should be(
-      "event_stream_attached" :: "event_stream_detached" :: "subscribe_event" :: Nil)
+      "event_stream_attached" :: "event_stream_detached" :: "subscribe_event" ::
+        Nil)
   }
 
   var handleActor: TestActorRef[HttpEventStreamHandleActor] = _

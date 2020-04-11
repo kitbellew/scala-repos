@@ -62,8 +62,8 @@ object ServerSSLEngine {
     for (constructor <- providerClass.getConstructors) {
       val parameterTypes = constructor.getParameterTypes
       if (parameterTypes.length == 0) { noArgsConstructor = constructor }
-      else if (parameterTypes.length == 1 && classOf[
-                 play.server.ApplicationProvider]
+      else if (parameterTypes.length == 1 &&
+               classOf[play.server.ApplicationProvider]
                  .isAssignableFrom(parameterTypes(0))) {
         providerArgsConstructor = constructor
       } else if (parameterTypes.length == 2 &&
@@ -110,7 +110,8 @@ object ServerSSLEngine {
       if (parameterTypes.length == 0) {
         noArgsConstructor = constructor
           .asInstanceOf[Constructor[ScalaSSLEngineProvider]]
-      } else if (parameterTypes.length == 1 && classOf[ApplicationProvider]
+      } else if (parameterTypes.length == 1 &&
+                 classOf[ApplicationProvider]
                    .isAssignableFrom(parameterTypes(0))) {
         providerArgsConstructor = constructor
           .asInstanceOf[Constructor[ScalaSSLEngineProvider]]

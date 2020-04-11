@@ -63,8 +63,8 @@ case class StringContext(parts: String*) {
   def checkLengths(args: Seq[Any]): Unit =
     if (parts.length != args.length + 1)
       throw new IllegalArgumentException(
-        "wrong number of arguments (" + args.length
-          + ") for interpolated string with " + parts.length + " parts")
+        "wrong number of arguments (" + args.length +
+          ") for interpolated string with " + parts.length + " parts")
 
   /** The simple string interpolator.
     *
@@ -231,8 +231,8 @@ object StringContext {
               if (idx < len && '0' <= str(idx) && str(idx) <= '7') {
                 oct = oct * 8 + str(idx) - '0'
                 idx += 1
-                if (idx < len && leadch <= '3' && '0' <= str(idx) && str(
-                      idx) <= '7') {
+                if (idx < len && leadch <= '3' && '0' <= str(idx) &&
+                    str(idx) <= '7') {
                   oct = oct * 8 + str(idx) - '0'
                   idx += 1
                 }

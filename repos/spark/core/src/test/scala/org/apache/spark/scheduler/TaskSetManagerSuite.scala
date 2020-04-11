@@ -457,7 +457,8 @@ class TaskSetManagerSuite
       val offerResult = manager.resourceOffer("exec1.1", "host1", NODE_LOCAL)
       assert(
         offerResult.isDefined,
-        "Expect resource offer to return a task for exec1.1, offerResult = " + offerResult)
+        "Expect resource offer to return a task for exec1.1, offerResult = " +
+          offerResult)
 
       assert(offerResult.get.index === 0)
       assert(offerResult.get.executorId === "exec1.1")
@@ -874,9 +875,8 @@ class TaskSetManagerSuite
     assert(TaskLocation("host1") === HostTaskLocation("host1"))
     assert(TaskLocation("hdfs_cache_host1") === HDFSCacheTaskLocation("host1"))
     assert(
-      TaskLocation("executor_host1_3") === ExecutorCacheTaskLocation(
-        "host1",
-        "3"))
+      TaskLocation("executor_host1_3") ===
+        ExecutorCacheTaskLocation("host1", "3"))
   }
 
   private def createTaskResult(

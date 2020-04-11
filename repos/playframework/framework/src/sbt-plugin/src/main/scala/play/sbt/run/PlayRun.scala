@@ -273,8 +273,8 @@ object PlayRun {
         state.fail
       case Right(_) =>
         val stagingBin = Some(
-          extracted.get(stagingDirectory in Universal) / "bin" / extracted
-            .get(executableScriptName)).map { f =>
+          extracted.get(stagingDirectory in Universal) / "bin" /
+            extracted.get(executableScriptName)).map { f =>
           if (System.getProperty("os.name")
                 .toLowerCase(java.util.Locale.ENGLISH).contains("win"))
             f.getAbsolutePath + ".bat"
@@ -288,9 +288,9 @@ object PlayRun {
         //  java.nio.charset.IllegalCharsetNameException: "UTF-8"
         // Things are working without passing system properties, and I'm unsure that they need to be passed explicitly. If def main(args: Array[String]){
         // problem occurs in this area then at least we know what to look at.
-        val args = Seq(stagingBin) ++
-          properties.map { case (key, value) => s"-D$key=$value" } ++
-          javaProductionOptions ++
+        val args = Seq(stagingBin) ++ properties.map {
+          case (key, value) => s"-D$key=$value"
+        } ++ javaProductionOptions ++
           Seq("-Dhttp.port=" + httpPort.getOrElse("disabled"))
         val builder = new java.lang.ProcessBuilder(args.asJava)
         new Thread {

@@ -56,8 +56,8 @@ class HTTPRequestServlet(
 
   def headers(name: String): List[String] =
     for {
-      h <- (Box !! req.getHeaders(name))
-        .asA[java.util.Enumeration[String]].toList
+      h <- (Box !! req.getHeaders(name)).asA[java.util.Enumeration[String]]
+        .toList
       li <- enumToList[String](h) if null != li
     } yield li
 
@@ -100,8 +100,8 @@ class HTTPRequestServlet(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] = headers find (_
-    .name equalsIgnoreCase "user-agent") flatMap (_.values.headOption)
+  lazy val userAgent: Box[String] = headers find
+    (_.name equalsIgnoreCase "user-agent") flatMap (_.values.headOption)
 
   def remotePort: Int = req.getRemotePort
 
@@ -209,8 +209,7 @@ class HTTPRequestServlet(
   lazy val suspendResumeSupport_? = {
     LiftRules.asyncProviderMeta.map(
       _.suspendResumeSupport_? &&
-        (asyncProvider.map(_.suspendResumeSupport_?) openOr
-          false)) openOr false
+        (asyncProvider.map(_.suspendResumeSupport_?) openOr false)) openOr false
   }
 }
 
@@ -312,7 +311,7 @@ private class OfflineRequestSnapshot(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] = headers find (_
-    .name equalsIgnoreCase "user-agent") flatMap (_.values.headOption)
+  lazy val userAgent: Box[String] = headers find
+    (_.name equalsIgnoreCase "user-agent") flatMap (_.values.headOption)
 
 }

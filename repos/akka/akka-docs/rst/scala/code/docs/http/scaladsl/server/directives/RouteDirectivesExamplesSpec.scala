@@ -13,13 +13,11 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
 
   "complete-examples" in {
     val route =
-      path("a") { complete(HttpResponse(entity = "foo")) } ~
-        path("b") {
-          complete((StatusCodes.Created, "bar"))
-        } ~
-        (path("c") & complete(
-          "baz"
-        )) // `&` also works with `complete` as the 2nd argument
+      path("a") { complete(HttpResponse(entity = "foo")) } ~ path("b") {
+        complete((StatusCodes.Created, "bar"))
+      } ~
+        (path("c") &
+          complete("baz")) // `&` also works with `complete` as the 2nd argument
 
     // tests:
     Get("/a") ~> route ~> check {
@@ -42,13 +40,11 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
     val route =
       path("a") {
         reject // don't handle here, continue on
-      } ~
-        path("a") { complete("foo") } ~
-        path("b") {
-          // trigger a ValidationRejection explicitly
-          // rather than through the `validate` directive
-          reject(ValidationRejection("Restricted!"))
-        }
+      } ~ path("a") { complete("foo") } ~ path("b") {
+        // trigger a ValidationRejection explicitly
+        // rather than through the `validate` directive
+        reject(ValidationRejection("Restricted!"))
+      }
 
     // tests:
     Get("/a") ~> route ~> check { responseAs[String] shouldEqual "foo" }
@@ -60,8 +56,9 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
 
   "redirect-examples" in {
     val route = pathPrefix("foo") {
-      pathSingleSlash { complete("yes") } ~
-        pathEnd { redirect("/foo/", StatusCodes.PermanentRedirect) }
+      pathSingleSlash { complete("yes") } ~ pathEnd {
+        redirect("/foo/", StatusCodes.PermanentRedirect)
+      }
     }
 
     // tests:
@@ -69,7 +66,8 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
 
     Get("/foo") ~> route ~> check {
       status shouldEqual StatusCodes.PermanentRedirect
-      responseAs[String] shouldEqual """The request, and all future requests should be repeated using <a href="/foo/">this URI</a>."""
+      responseAs[String] shouldEqual
+        """The request, and all future requests should be repeated using <a href="/foo/">this URI</a>."""
     }
   }
 

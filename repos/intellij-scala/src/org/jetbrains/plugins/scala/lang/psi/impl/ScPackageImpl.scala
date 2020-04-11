@@ -50,8 +50,8 @@ class ScPackageImpl private (val pack: PsiPackage)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    if (place.getLanguage == ScalaFileType.SCALA_LANGUAGE && pack
-          .getQualifiedName == "scala") {
+    if (place.getLanguage == ScalaFileType.SCALA_LANGUAGE &&
+        pack.getQualifiedName == "scala") {
       if (!BaseProcessor.isImplicitProcessor(processor)) {
         val scope = processor match {
           case r: ResolveProcessor => r.getResolveScope

@@ -66,9 +66,10 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     val sfPercentiles = soi.getStructFieldRef("percentiles")
 
     assert(
-      2 === soi.getStructFieldData(b, sfCounts)
-        .asInstanceOf[util.Map[LongWritable, LongWritable]]
-        .get(new LongWritable(1L)).get())
+      2 ===
+        soi.getStructFieldData(b, sfCounts)
+          .asInstanceOf[util.Map[LongWritable, LongWritable]]
+          .get(new LongWritable(1L)).get())
     assert(
       0.1 === soi.getStructFieldData(b, sfPercentiles)
         .asInstanceOf[util.ArrayList[DoubleWritable]].get(0).get())
@@ -80,14 +81,10 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
   Locale.setDefault(Locale.US)
 
   val data =
-    Literal(true) ::
-      Literal(0.asInstanceOf[Byte]) ::
-      Literal(0.asInstanceOf[Short]) ::
-      Literal(0) ::
-      Literal(0.asInstanceOf[Long]) ::
-      Literal(0.asInstanceOf[Float]) ::
-      Literal(0.asInstanceOf[Double]) ::
-      Literal("0") ::
+    Literal(true) :: Literal(0.asInstanceOf[Byte]) ::
+      Literal(0.asInstanceOf[Short]) :: Literal(0) ::
+      Literal(0.asInstanceOf[Long]) :: Literal(0.asInstanceOf[Float]) ::
+      Literal(0.asInstanceOf[Double]) :: Literal("0") ::
       Literal(java.sql.Date.valueOf("2014-09-23")) ::
       Literal(Decimal(BigDecimal(123.123))) ::
       Literal(new java.sql.Timestamp(123123)) ::
@@ -99,10 +96,8 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
       Literal.create(
         Row(1, 2.0d, 3.0f),
         StructType(
-          StructField("c1", IntegerType) ::
-            StructField("c2", DoubleType) ::
-            StructField("c3", FloatType) :: Nil)) ::
-      Nil
+          StructField("c1", IntegerType) :: StructField("c2", DoubleType) ::
+            StructField("c3", FloatType) :: Nil)) :: Nil
 
   val row = data.map(_.eval(null))
   val dataTypes = data.map(_.dataType)

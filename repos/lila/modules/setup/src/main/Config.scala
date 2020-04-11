@@ -62,8 +62,8 @@ trait Positional {
   }
 
   def fenGame(builder: ChessGame => Game): Game = {
-    val baseState =
-      fen ifTrue (variant == chess.variant.FromPosition) flatMap Forsyth.<<<
+    val baseState = fen ifTrue (variant == chess.variant.FromPosition) flatMap
+      Forsyth.<<<
     val (chessGame, state) = baseState.fold(makeGame -> none[SituationPlus]) {
       case sit @ SituationPlus(Situation(board, color), _) =>
         val game = ChessGame(
@@ -96,15 +96,13 @@ trait BaseConfig {
   val variantDefault = chess.variant.Standard
 
   val variantsWithFen = variants :+ chess.variant.FromPosition.id
-  val aiVariants = variants :+
-    chess.variant.KingOfTheHill.id :+
-    chess.variant.ThreeCheck.id :+
-    chess.variant.FromPosition.id
+  val aiVariants = variants :+ chess.variant.KingOfTheHill.id :+
+    chess.variant.ThreeCheck.id :+ chess.variant.FromPosition.id
   val variantsWithVariants =
-    variants :+ chess.variant.Crazyhouse.id :+ chess.variant.KingOfTheHill
-      .id :+ chess.variant.ThreeCheck.id :+ chess.variant.Antichess.id :+ chess
-      .variant.Atomic.id :+ chess.variant.Horde.id :+ chess.variant.RacingKings
-      .id
+    variants :+ chess.variant.Crazyhouse.id :+ chess.variant.KingOfTheHill.id :+
+      chess.variant.ThreeCheck.id :+ chess.variant.Antichess.id :+
+      chess.variant.Atomic.id :+ chess.variant.Horde.id :+
+      chess.variant.RacingKings.id
   val variantsWithFenAndVariants =
     variantsWithVariants :+ chess.variant.FromPosition.id
 

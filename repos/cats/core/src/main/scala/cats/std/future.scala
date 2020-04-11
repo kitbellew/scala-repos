@@ -63,8 +63,9 @@ private[cats] abstract class FutureCoflatMap(implicit ec: ExecutionContext)
 
 private[cats] class FutureSemigroup[A: Semigroup](implicit ec: ExecutionContext)
     extends Semigroup[Future[A]] {
-  def combine(fx: Future[A], fy: Future[A]): Future[A] =
-    (fx zip fy).map { case (x, y) => x |+| y }
+  def combine(fx: Future[A], fy: Future[A]): Future[A] = (fx zip fy).map {
+    case (x, y) => x |+| y
+  }
 }
 
 private[cats] class FutureMonoid[A](implicit A: Monoid[A], ec: ExecutionContext)
@@ -77,6 +78,6 @@ private[cats] class FutureGroup[A](implicit A: Group[A], ec: ExecutionContext)
     extends FutureMonoid[A]
     with Group[Future[A]] {
   def inverse(fx: Future[A]): Future[A] = fx.map(_.inverse)
-  override def remove(fx: Future[A], fy: Future[A]): Future[A] =
-    (fx zip fy).map { case (x, y) => x |-| y }
+  override def remove(fx: Future[A], fy: Future[A]): Future[A] = (fx zip fy)
+    .map { case (x, y) => x |-| y }
 }

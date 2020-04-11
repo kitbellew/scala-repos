@@ -59,12 +59,9 @@ private[hive] class HiveSessionState(ctx: HiveContext)
   override lazy val analyzer: Analyzer = {
     new Analyzer(catalog, functionRegistry, conf) {
       override val extendedResolutionRules =
-        catalog.ParquetConversions ::
-          catalog.CreateTables ::
-          catalog.PreInsertionCasts ::
-          python.ExtractPythonUDFs ::
-          PreInsertCastAndRename ::
-          DataSourceAnalysis ::
+        catalog.ParquetConversions :: catalog.CreateTables ::
+          catalog.PreInsertionCasts :: python.ExtractPythonUDFs ::
+          PreInsertCastAndRename :: DataSourceAnalysis ::
           (if (conf.runSQLOnFile) new ResolveDataSource(ctx) :: Nil else Nil)
 
       override val extendedCheckRules = Seq(PreWriteCheck(catalog))

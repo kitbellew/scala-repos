@@ -86,8 +86,8 @@ class ReplicatedMetrics(
       val heap = memoryMBean.getHeapMemoryUsage
       val used = heap.getUsed
       val max = heap.getMax
-      replicator ! Update(UsedHeapKey, LWWMap.empty[Long], WriteLocal)(
-        _ + (node -> used))
+      replicator !
+        Update(UsedHeapKey, LWWMap.empty[Long], WriteLocal)(_ + (node -> used))
       replicator ! Update(MaxHeapKey, LWWMap.empty[Long], WriteLocal) { data ⇒
         data.get(node) match {
           case Some(`max`) ⇒ data // unchanged
@@ -119,10 +119,10 @@ class ReplicatedMetrics(
           case (d, key) ⇒ d - key
         }
 
-      replicator ! Update(UsedHeapKey, LWWMap.empty[Long], WriteLocal)(
-        cleanupRemoved)
-      replicator ! Update(MaxHeapKey, LWWMap.empty[Long], WriteLocal)(
-        cleanupRemoved)
+      replicator !
+        Update(UsedHeapKey, LWWMap.empty[Long], WriteLocal)(cleanupRemoved)
+      replicator !
+        Update(MaxHeapKey, LWWMap.empty[Long], WriteLocal)(cleanupRemoved)
   }
 
 }

@@ -84,12 +84,11 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
       }
     }
 
-    "properly set up S with a String url and session" withSFor (
-      testUrl, testSession
-    ) in {
-      TestVar("foo!")
-      TestVar.is must_== "foo!"
-    }
+    "properly set up S with a String url and session" withSFor
+      (testUrl, testSession) in {
+        TestVar("foo!")
+        TestVar.is must_== "foo!"
+      }
 
     "properly re-use a provided session" withSFor (testUrl, testSession) in {
       TestVar.is must_== "foo!"
@@ -104,36 +103,33 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
       _.path.partPath must_== List("stateless", "works")
     }
 
-    "properly set up a Req with a String url and context path" withReqFor (
-      testUrl, "/test"
-    ) in { _.path.partPath must_== List("stateless") }
+    "properly set up a Req with a String url and context path" withReqFor
+      (testUrl, "/test") in { _.path.partPath must_== List("stateless") }
 
     "properly set up a Req with a HttpServletRequest" withReqFor (testReq) in {
       _.uri must_== "/this"
     }
 
-    "properly set a plain text body" withReqFor (testUrl) withPost (
-      "This is a test"
-    ) in { req =>
-      req.contentType must_== Full("text/plain")
-      req.post_? must_== true
-      req.body match {
-        case Full(body) => (new String(body)) must_== "This is a test"
-        case _          => failure("No body set")
+    "properly set a plain text body" withReqFor (testUrl) withPost
+      ("This is a test") in { req =>
+        req.contentType must_== Full("text/plain")
+        req.post_? must_== true
+        req.body match {
+          case Full(body) => (new String(body)) must_== "This is a test"
+          case _          => failure("No body set")
+        }
       }
-    }
 
-    "properly set a JSON body" withReqFor (
-      testUrl
-    ) withPut (("name" -> "Joe")) in { req =>
-      req.json_? must_== true
-      req.put_? must_== true
-      req.json match {
-        case Full(jval) =>
-          jval must_== JObject(List(JField("name", JString("Joe"))))
-        case _ => failure("No body set")
+    "properly set a JSON body" withReqFor (testUrl) withPut
+      (("name" -> "Joe")) in { req =>
+        req.json_? must_== true
+        req.put_? must_== true
+        req.json match {
+          case Full(jval) =>
+            jval must_== JObject(List(JField("name", JString("Joe"))))
+          case _ => failure("No body set")
+        }
       }
-    }
 
     "properly set an XML body" withSFor (testUrl) withPost (<test/>) in {
       S.request match {
@@ -145,26 +141,24 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
       }
     }
 
-    "properly mutate the request" withSFor (testUrl) withMods (_.contentType =
-      "application/xml") in {
-      (S.request.map(_.xml_?) openOr false) must_== true
-    }
+    "properly mutate the request" withSFor (testUrl) withMods
+      (_.contentType = "application/xml") in {
+        (S.request.map(_.xml_?) openOr false) must_== true
+      }
 
-    "process a JSON RestHelper Request" withReqFor (
-      "http://foo.com/api/info.json"
-    ) in { req =>
-      (WebSpecSpecRest(req)() match {
-        case Full(JsonResponse(_, _, _, 200)) => success
-        case other                            => failure("Invalid response : " + other)
-      })
-    }
+    "process a JSON RestHelper Request" withReqFor
+      ("http://foo.com/api/info.json") in { req =>
+        (WebSpecSpecRest(req)() match {
+          case Full(JsonResponse(_, _, _, 200)) => success
+          case other                            => failure("Invalid response : " + other)
+        })
+      }
 
-    "properly process a template" withTemplateFor (
-      "http://foo.com/net/liftweb/mockweb/webspecspectemplate"
-    ) in {
-      case Full(template) =>
-        template.toString.contains("Hello, WebSpec!") must_== true
-      case other => failure("Error on template : " + other)
-    }
+    "properly process a template" withTemplateFor
+      ("http://foo.com/net/liftweb/mockweb/webspecspectemplate") in {
+        case Full(template) =>
+          template.toString.contains("Hello, WebSpec!") must_== true
+        case other => failure("Error on template : " + other)
+      }
   }
 }

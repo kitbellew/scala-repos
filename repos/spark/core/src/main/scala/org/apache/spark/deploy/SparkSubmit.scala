@@ -291,9 +291,8 @@ object SparkSubmit {
       }
 
       // Make sure YARN is included in our build if we're trying to use it
-      if (!Utils
-            .classIsLoadable("org.apache.spark.deploy.yarn.Client") && !Utils
-            .isTesting) {
+      if (!Utils.classIsLoadable("org.apache.spark.deploy.yarn.Client") &&
+          !Utils.isTesting) {
         printErrorAndExit(
           "Could not load YARN classes. " +
             "This copy of Spark may not have been compiled with YARN support.")
@@ -391,8 +390,8 @@ object SparkSubmit {
         // If a python file is provided, add it to the child arguments and list of files to deploy.
         // Usage: PythonAppRunner <main python file> <extra python files> [app arguments]
         args.mainClass = "org.apache.spark.deploy.PythonRunner"
-        args.childArgs = ArrayBuffer(args.primaryResource, args.pyFiles) ++ args
-          .childArgs
+        args.childArgs = ArrayBuffer(args.primaryResource, args.pyFiles) ++
+          args.childArgs
         if (clusterManager != YARN) {
           // The YARN backend distributes the primary file differently, so don't merge it.
           args.files = mergeFileLists(args.files, args.primaryResource)
@@ -640,8 +639,7 @@ object SparkSubmit {
 
     // Map all arguments to command-line options or system properties for our chosen mode
     for (opt <- options) {
-      if (opt.value != null &&
-          (deployMode & opt.deployMode) != 0 &&
+      if (opt.value != null && (deployMode & opt.deployMode) != 0 &&
           (clusterManager & opt.clusterManager) != 0) {
         if (opt.clOption != null) { childArgs += (opt.clOption, opt.value) }
         if (opt.sysProp != null) { sysProps.put(opt.sysProp, opt.value) }

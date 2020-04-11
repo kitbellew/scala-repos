@@ -99,8 +99,8 @@ object Dependency {
               e.qualifiedName)
           case (function: ScFunctionDefinition) && ContainingClass(
                 obj: ScObject)
-              if function.isSynthetic || function.name == "apply" || function
-                .name == "unapply" => withEntity(obj.qualifiedName)
+              if function.isSynthetic || function.name == "apply" ||
+                function.name == "unapply" => withEntity(obj.qualifiedName)
           case (member: ScMember) && ContainingClass(obj: ScObject) =>
             val memberName = member match {
               case named: ScNamedElement => named.name

@@ -51,10 +51,8 @@ private[video] final class Sheet(url: String, api: VideoApi) {
             api.video.save(video)
           case _ => funit
         }.recover { case e: Exception => logger.warn("sheet update", e) }
-      }.sequenceFu.void >>
-        api.video.removeNotIn(entries.map(_.youtubeId)) >>
-        api.video.count.clearCache >>
-        api.tag.clearCache
+      }.sequenceFu.void >> api.video.removeNotIn(entries.map(_.youtubeId)) >>
+        api.video.count.clearCache >> api.tag.clearCache
     }
 
   private def fetch: Fu[List[Entry]] =

@@ -62,12 +62,10 @@ private[hive] case class CreateTableAsSelect(
 
   override def output: Seq[Attribute] = Seq.empty[Attribute]
   override lazy val resolved: Boolean =
-    tableDesc.name.database.isDefined &&
-      tableDesc.schema.nonEmpty &&
+    tableDesc.name.database.isDefined && tableDesc.schema.nonEmpty &&
       tableDesc.storage.serde.isDefined &&
       tableDesc.storage.inputFormat.isDefined &&
-      tableDesc.storage.outputFormat.isDefined &&
-      childrenResolved
+      tableDesc.storage.outputFormat.isDefined && childrenResolved
 }
 
 private[hive] case class CreateViewAsSelect(
@@ -242,9 +240,8 @@ private[hive] class HiveQl(conf: ParserConf)
             "TOK_ANALYZE",
             Token(
               "TOK_TAB",
-              Token(
-                "TOK_TABNAME",
-                tableNameParts) :: partitionSpec) :: isNoscan) =>
+              Token("TOK_TABNAME", tableNameParts) :: partitionSpec) ::
+            isNoscan) =>
         // Reference:
         // https://cwiki.apache.org/confluence/display/Hive/StatsDev#StatsDev-ExistingTables
         if (partitionSpec.nonEmpty) {
@@ -342,12 +339,8 @@ private[hive] class HiveQl(conf: ParserConf)
             case t @ Token("TOK_QUERY", _) => t
           }.nonEmpty =>
         // Reference: https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL
-        val (Some(tableNameParts) ::
-          _ /* likeTable */ ::
-          externalTable ::
-          Some(query) ::
-          allowExisting +:
-          _) = getClauses(
+        val (Some(tableNameParts) :: _ /* likeTable */ :: externalTable :: Some(
+          query) :: allowExisting +: _) = getClauses(
           Seq(
             "TOK_TABNAME",
             "TOK_LIKETABLE",
@@ -542,9 +535,8 @@ private[hive] class HiveQl(conf: ParserConf)
 
           case Token(
                 "TOK_TABLESERIALIZER",
-                Token(
-                  "TOK_SERDENAME",
-                  Token(serdeName, Nil) :: otherProps) :: Nil) =>
+                Token("TOK_SERDENAME", Token(serdeName, Nil) :: otherProps) ::
+                Nil) =>
             tableDesc = tableDesc
               .withNewStorage(serde = Option(unquoteString(serdeName)))
 
@@ -600,10 +592,9 @@ private[hive] class HiveQl(conf: ParserConf)
               Token("TOK_SERDE", inputSerdeClause) ::
               Token("TOK_RECORDWRITER", writerClause) ::
               // TODO: Need to support other types of (in/out)put
-              Token(script, Nil) ::
-              Token("TOK_SERDE", outputSerdeClause) ::
-              Token("TOK_RECORDREADER", readerClause) ::
-              outputClause) :: Nil) =>
+              Token(script, Nil) :: Token("TOK_SERDE", outputSerdeClause) ::
+              Token("TOK_RECORDREADER", readerClause) :: outputClause) ::
+            Nil) =>
         val (output, schemaLess) = outputClause match {
           case Token("TOK_ALIASLIST", aliases) :: Nil =>
             (
@@ -650,12 +641,10 @@ private[hive] class HiveQl(conf: ParserConf)
 
             case Token(
                   "TOK_SERDENAME",
-                  Token(serdeClass, Nil) ::
-                  Token(
+                  Token(serdeClass, Nil) :: Token(
                     "TOK_TABLEPROPERTIES",
-                    Token(
-                      "TOK_TABLEPROPLIST",
-                      propsClause) :: Nil) :: Nil) :: Nil =>
+                    Token("TOK_TABLEPROPLIST", propsClause) :: Nil) :: Nil) ::
+                Nil =>
               val serdeProps = propsClause.map {
                 case Token(
                       "TOK_TABLEPROPERTY",
@@ -806,8 +795,8 @@ private[hive] class HiveQl(conf: ParserConf)
           case Token(precision, Nil) :: Nil =>
             precision + "," + HiveDecimal.USER_DEFAULT_SCALE
           case Nil =>
-            HiveDecimal.USER_DEFAULT_PRECISION + "," + HiveDecimal
-              .USER_DEFAULT_SCALE
+            HiveDecimal.USER_DEFAULT_PRECISION + "," +
+              HiveDecimal.USER_DEFAULT_SCALE
           case _ => noParseRule("Decimal", node)
         }
         s"${serdeConstants.DECIMAL_TYPE_NAME}($precisionAndScale)"

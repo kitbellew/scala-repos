@@ -30,8 +30,8 @@ class CaseFilter extends ElementFilter {
       val parent = leaf.getParent
       parent match {
         case _: ScalaFile =>
-          if (leaf.getNextSibling != null && leaf.getNextSibling.getNextSibling
-                .isInstanceOf[ScPackaging] &&
+          if (leaf.getNextSibling != null &&
+              leaf.getNextSibling.getNextSibling.isInstanceOf[ScPackaging] &&
               leaf.getNextSibling.getNextSibling.getText.indexOf('{') == -1)
             return false
         case _ =>
@@ -73,10 +73,10 @@ class CaseFilter extends ElementFilter {
             case _: ScReferenceExpression =>
             case _                        => return false
           }
-          if (leaf.getPrevSibling == null || leaf.getPrevSibling
-                .getPrevSibling == null ||
-              leaf.getPrevSibling.getPrevSibling.getNode
-                .getElementType != ScalaTokenTypes.kDEF) return true
+          if (leaf.getPrevSibling == null ||
+              leaf.getPrevSibling.getPrevSibling == null ||
+              leaf.getPrevSibling.getPrevSibling.getNode.getElementType !=
+                ScalaTokenTypes.kDEF) return true
         case _: ScCaseClause =>
           if (parent.getParent.getNode
                 .findChildByType(ScalaTokenTypes.tFUNTYPE) != null) return true
@@ -85,16 +85,16 @@ class CaseFilter extends ElementFilter {
       }
       if (leaf.getPrevSibling != null &&
           leaf.getPrevSibling.getPrevSibling != null &&
-          ((leaf.getPrevSibling.getPrevSibling.getNode
-            .getElementType == ScalaElementTypes.MATCH_STMT &&
-          leaf.getPrevSibling.getPrevSibling.getLastChild
-            .isInstanceOf[PsiErrorElement]) ||
-          (leaf.getPrevSibling.getPrevSibling.getNode
-            .getElementType == ScalaElementTypes.TRY_STMT &&
-          leaf.getPrevSibling.getPrevSibling.getLastChild
-            .isInstanceOf[ScCatchBlock] &&
-          leaf.getPrevSibling.getPrevSibling.getLastChild.getLastChild
-            .isInstanceOf[PsiErrorElement]))) return true
+          ((leaf.getPrevSibling.getPrevSibling.getNode.getElementType ==
+            ScalaElementTypes.MATCH_STMT &&
+            leaf.getPrevSibling.getPrevSibling.getLastChild
+              .isInstanceOf[PsiErrorElement]) ||
+          (leaf.getPrevSibling.getPrevSibling.getNode.getElementType ==
+            ScalaElementTypes.TRY_STMT &&
+            leaf.getPrevSibling.getPrevSibling.getLastChild
+              .isInstanceOf[ScCatchBlock] &&
+            leaf.getPrevSibling.getPrevSibling.getLastChild.getLastChild
+              .isInstanceOf[PsiErrorElement]))) return true
       if (parent.isInstanceOf[ScTemplateBody]) {
         if (leaf.getPrevSibling != null &&
             leaf.getPrevSibling.getPrevSibling != null &&

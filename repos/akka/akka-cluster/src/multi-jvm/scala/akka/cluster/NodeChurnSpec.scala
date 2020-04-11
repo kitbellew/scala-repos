@@ -89,33 +89,34 @@ abstract class NodeChurnSpec
       awaitMembersUp(roles.size)
     }
 
-    "join and remove transient nodes without growing gossip payload" taggedAs LongRunningTest in {
-      // This test is configured with log-frame-size-exceeding and the LogListener
-      // will send to the testActor if unexpected increase in message payload size.
-      // It will fail after a while if vector clock entries of removed nodes are not pruned.
-      for (n ← 1 to rounds) {
-        log.info("round-" + n)
-        val systems = Vector
-          .fill(5)(ActorSystem(system.name, system.settings.config))
-        systems.foreach { s ⇒
-          muteDeadLetters()(s)
-          Cluster(s).joinSeedNodes(seedNodes)
+    "join and remove transient nodes without growing gossip payload" taggedAs
+      LongRunningTest in {
+        // This test is configured with log-frame-size-exceeding and the LogListener
+        // will send to the testActor if unexpected increase in message payload size.
+        // It will fail after a while if vector clock entries of removed nodes are not pruned.
+        for (n ← 1 to rounds) {
+          log.info("round-" + n)
+          val systems = Vector
+            .fill(5)(ActorSystem(system.name, system.settings.config))
+          systems.foreach { s ⇒
+            muteDeadLetters()(s)
+            Cluster(s).joinSeedNodes(seedNodes)
+          }
+          awaitAllMembersUp(systems)
+          enterBarrier("members-up-" + n)
+          systems.foreach { node ⇒
+            if (n % 2 == 0) Cluster(node).down(Cluster(node).selfAddress)
+            else Cluster(node).leave(Cluster(node).selfAddress)
+          }
+          awaitRemoved(systems)
+          enterBarrier("members-removed-" + n)
+          systems.foreach(_.terminate().await)
+          log.info("end of round-" + n)
+          // log listener will send to testActor if payload size exceed configured log-frame-size-exceeding
+          expectNoMsg(2.seconds)
         }
-        awaitAllMembersUp(systems)
-        enterBarrier("members-up-" + n)
-        systems.foreach { node ⇒
-          if (n % 2 == 0) Cluster(node).down(Cluster(node).selfAddress)
-          else Cluster(node).leave(Cluster(node).selfAddress)
-        }
-        awaitRemoved(systems)
-        enterBarrier("members-removed-" + n)
-        systems.foreach(_.terminate().await)
-        log.info("end of round-" + n)
-        // log listener will send to testActor if payload size exceed configured log-frame-size-exceeding
-        expectNoMsg(2.seconds)
+        expectNoMsg(5.seconds)
       }
-      expectNoMsg(5.seconds)
-    }
 
   }
 }

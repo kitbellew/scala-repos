@@ -351,8 +351,9 @@ object TypedActor
         me match {
           case l: PreRestart ⇒ l.preRestart(reason, message)
           case _ ⇒
-            context.children foreach context
-              .stop //Can't be super.preRestart(reason, message) since that would invoke postStop which would set the actorVar to DL and proxyVar to null
+            context.children foreach
+              context
+                .stop //Can't be super.preRestart(reason, message) since that would invoke postStop which would set the actorVar to DL and proxyVar to null
         }
       }
 
@@ -496,8 +497,8 @@ object TypedActor
       method.getName match {
         case "toString" ⇒ actor.toString
         case "equals" ⇒
-          (args.length == 1 && (proxy eq args(0)) || actor == extension
-            .getActorRefFor(args(0)))
+          (args.length == 1 && (proxy eq args(0)) ||
+            actor == extension.getActorRefFor(args(0)))
             .asInstanceOf[AnyRef] //Force boxing of the boolean
         case "hashCode" ⇒ actor.hashCode.asInstanceOf[AnyRef]
         case _ ⇒
@@ -730,8 +731,8 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
     * or if the interface class is not an interface, all the interfaces it implements.
     */
   def withoutInterface(interface: Class[_ >: T]): TypedProps[T] =
-    this.copy(interfaces = interfaces diff TypedProps
-      .extractInterfaces(interface))
+    this.copy(interfaces = interfaces diff
+      TypedProps.extractInterfaces(interface))
 
   /**
     * Returns the akka.actor.Props representation of this TypedProps
@@ -797,8 +798,8 @@ class TypedActorExtension(val system: ExtendedActorSystem)
     //Warning, do not change order of the following statements, it's some elaborate chicken-n-egg handling
     val actorVar = new AtomVar[ActorRef](null)
     val proxy = Proxy.newProxyInstance(
-      (props.loader orElse props.interfaces
-        .collectFirst { case any ⇒ any.getClassLoader })
+      (props.loader orElse
+        props.interfaces.collectFirst { case any ⇒ any.getClassLoader })
         .orNull, //If we have no loader, we arbitrarily take the loader of the first interface
       props.interfaces.toArray,
       new TypedActorInvocationHandler(
@@ -811,8 +812,10 @@ class TypedActorExtension(val system: ExtendedActorSystem)
       actorVar set actorRef
       proxy
     } else {
-      proxyVar set proxy // Chicken and egg situation we needed to solve, set the proxy so that we can set the self-reference inside each receive
-      actorVar set actorRef //Make sure the InvocationHandler gets a hold of the actor reference, this is not a problem since the proxy hasn't escaped this method yet
+      proxyVar set
+        proxy // Chicken and egg situation we needed to solve, set the proxy so that we can set the self-reference inside each receive
+      actorVar set
+        actorRef //Make sure the InvocationHandler gets a hold of the actor reference, this is not a problem since the proxy hasn't escaped this method yet
       proxyVar.get
     }
   }
@@ -822,15 +825,15 @@ class TypedActorExtension(val system: ExtendedActorSystem)
     */
   private[akka] def invocationHandlerFor(
       typedActor: AnyRef): TypedActorInvocationHandler =
-    if ((typedActor ne null) && classOf[Proxy].isAssignableFrom(
-          typedActor.getClass) && Proxy.isProxyClass(typedActor.getClass))
-      typedActor match {
-        case null ⇒ null
-        case other ⇒ Proxy.getInvocationHandler(other) match {
-            case null ⇒ null
-            case handler: TypedActorInvocationHandler ⇒ handler
-            case _ ⇒ null
-          }
-      }
+    if ((typedActor ne null) &&
+        classOf[Proxy].isAssignableFrom(typedActor.getClass) &&
+        Proxy.isProxyClass(typedActor.getClass)) typedActor match {
+      case null ⇒ null
+      case other ⇒ Proxy.getInvocationHandler(other) match {
+          case null ⇒ null
+          case handler: TypedActorInvocationHandler ⇒ handler
+          case _ ⇒ null
+        }
+    }
     else null
 }

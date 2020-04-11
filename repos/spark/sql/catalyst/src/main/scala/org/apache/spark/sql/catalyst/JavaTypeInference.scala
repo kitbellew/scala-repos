@@ -442,9 +442,8 @@ object JavaTypeInference {
                 inputObject,
                 p.getReadMethod.getName,
                 inferExternalType(fieldType.getRawType))
-              expressions.Literal(fieldName) :: extractorFor(
-                fieldValue,
-                fieldType) :: Nil
+              expressions.Literal(fieldName) ::
+                extractorFor(fieldValue, fieldType) :: Nil
             })
           } else {
             throw new UnsupportedOperationException(

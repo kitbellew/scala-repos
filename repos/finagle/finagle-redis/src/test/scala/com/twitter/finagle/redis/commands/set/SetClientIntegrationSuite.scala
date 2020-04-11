@@ -138,8 +138,7 @@ final class SetClientIntegrationSuite extends RedisClientTest {
         "Could not remove one Element")
       assert(
         Await.result(client.sRem(key, List(moo))) == 0,
-        "Removed an element when it should "
-          + "not have been possible")
+        "Removed an element when it should " + "not have been possible")
     }
   }
 
@@ -170,15 +169,13 @@ final class SetClientIntegrationSuite extends RedisClientTest {
         "The two member set had an incorrect number of members")
       assert(
         twoMembers.forall(allMembers.contains(_)) == true,
-        "The two member set did not " +
-          "match the original Sequence")
+        "The two member set did not " + "match the original Sequence")
 
       val setMembers = Await.result(client.sRandMember(key, count = Some(5)))
       assert(setMembers.size == 2)
       assert(
         setMembers.forall(allMembers.contains(_)) == true,
-        "The set members did not match " +
-          "the original Sequence")
+        "The set members did not match " + "the original Sequence")
 
       val negMembers = Await.result(client.sRandMember(key, count = Some(-4)))
       assert(negMembers.size == 4, "The set did not handle a negative member")

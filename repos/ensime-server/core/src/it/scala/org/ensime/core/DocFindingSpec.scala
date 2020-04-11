@@ -68,15 +68,13 @@ class DocFindingSpec
 
         label match {
           case "0" =>
-            sig.scala shouldBe DocSig(
-              DocFqn("scala", "Some"),
-              Some("map[B](f:A=>B):Option[B]"))
+            sig.scala shouldBe
+              DocSig(DocFqn("scala", "Some"), Some("map[B](f:A=>B):Option[B]"))
           case "0.5" =>
             sig.scala shouldBe DocSig(DocFqn("scala", "Boolean"), None)
           case "1" =>
-            sig.scala shouldBe DocSig(
-              DocFqn("scala", "Option"),
-              Some("isDefined:Boolean"))
+            sig.scala shouldBe
+              DocSig(DocFqn("scala", "Option"), Some("isDefined:Boolean"))
           case "2" =>
             sig.scala shouldBe DocSig(
               DocFqn("scala", "Some"),
@@ -94,9 +92,8 @@ class DocFindingSpec
               DocFqn("scala", "Some"),
               Some("mkString(start:String,sep:String,end:String):String"))
           case "6" =>
-            sig.scala shouldBe DocSig(
-              DocFqn("scala", "Some"),
-              Some("mkString:String"))
+            sig.scala shouldBe
+              DocSig(DocFqn("scala", "Some"), Some("mkString:String"))
           case "7" =>
             sig.scala shouldBe DocSig(
               DocFqn("scala", "Some"),
@@ -146,31 +143,27 @@ class DocFindingSpec
               DocFqn("java.lang", "Class"),
               Some("isInstance(java.lang.Object)"))
           case "22" =>
-            sig.scala shouldBe DocSig(
-              DocFqn("scala", "Predef$$DummyImplicit$"),
-              None)
+            sig.scala shouldBe
+              DocSig(DocFqn("scala", "Predef$$DummyImplicit$"), None)
           case "23" =>
             sig.java shouldBe DocSig(DocFqn("java.util", "HashMap"), None)
           case "24" =>
-            sig.java shouldBe DocSig(
-              DocFqn("java.util", "HashMap"),
-              Some("entrySet()"))
+            sig.java shouldBe
+              DocSig(DocFqn("java.util", "HashMap"), Some("entrySet()"))
           case "25" =>
             sig.java shouldBe DocSig(DocFqn("java.util", "Map.Entry"), None)
           case "26" =>
             sig.java shouldBe DocSig(DocFqn("java.util", "package"), None)
           case "27" =>
-            sig.java shouldBe DocSig(
-              DocFqn("scala.collection", "package"),
-              None)
+            sig.java shouldBe
+              DocSig(DocFqn("scala.collection", "package"), None)
           // TODO: Would be nice to be able to inspect a particular constructor. The problem is that
           // symbolAt returns the type itself when point is in 'File', and it's not totally clear
           // that's wrong.
           //            case "28" => sig.java shouldBe DocSig("java.io.File", Some("File(java.lang.String, java.lang.String)")
           case "28" =>
-            sig.scala shouldBe DocSig(
-              DocFqn("scala", "package"),
-              Some("Exception=Exception"))
+            sig.scala shouldBe
+              DocSig(DocFqn("scala", "package"), Some("Exception=Exception"))
 
           // Check @usecase handling.
           case "29" =>

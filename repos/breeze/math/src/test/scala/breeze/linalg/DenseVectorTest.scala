@@ -24,8 +24,8 @@ class DenseVectorTest extends FunSuite with Checkers {
 
   def assertClose(a: Complex, b: Complex) =
     assert(
-      math.abs(a.real - b.real) < TOLERANCE && math
-        .abs(a.imag - b.imag) < TOLERANCE)
+      math.abs(a.real - b.real) < TOLERANCE &&
+        math.abs(a.imag - b.imag) < TOLERANCE)
 
   test("update/valueAt properly works") {
     val v = DenseVector(2f, 0f, 3f, 2f, -1f)
@@ -151,10 +151,8 @@ class DenseVectorTest extends FunSuite with Checkers {
     // assert result is a dense matrix
     val m: DenseMatrix[Double] = a * b.t
     assert(
-      m === DenseMatrix(
-        (6.0, -4.0, 8.0),
-        (12.0, -8.0, 16.0),
-        (18.0, -12.0, 24.0)))
+      m ===
+        DenseMatrix((6.0, -4.0, 8.0), (12.0, -8.0, 16.0), (18.0, -12.0, 24.0)))
   }
 
   test("Range") {

@@ -716,7 +716,8 @@ class ShardRegion(
         if (tot <= bufferSize / 2) log.info(logMsg)
         else
           log.warning(
-            logMsg + " The coordinator might not be available. You might want to check cluster membership status.")
+            logMsg +
+              " The coordinator might not be available. You might want to check cluster membership status.")
       }
     }
   }

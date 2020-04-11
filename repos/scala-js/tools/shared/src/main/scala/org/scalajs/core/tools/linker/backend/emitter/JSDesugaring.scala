@@ -715,8 +715,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 CallHelper(helper, recs(args))(arg.tpe)
 
               case If(cond, thenp, elsep)
-                  if noExtractYet && isExpression(thenp) && isExpression(
-                    elsep) => If(rec(cond), thenp, elsep)(arg.tpe)
+                  if noExtractYet && isExpression(thenp) &&
+                    isExpression(elsep) => If(rec(cond), thenp, elsep)(arg.tpe)
 
               case _ =>
                 val temp = newSyntheticVar()
@@ -835,11 +835,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
           // Casts
           case AsInstanceOf(expr, _) =>
-            (allowSideEffects || semantics.asInstanceOfs == Unchecked) && test(
-              expr)
+            (allowSideEffects || semantics.asInstanceOfs == Unchecked) &&
+              test(expr)
           case Unbox(expr, _) =>
-            (allowSideEffects || semantics.asInstanceOfs == Unchecked) && test(
-              expr)
+            (allowSideEffects || semantics.asInstanceOfs == Unchecked) &&
+              test(expr)
 
           // Because the linking info is a frozen object, linkingInfo["envInfo"] is pure
           case JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")) =>
@@ -862,9 +862,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case JSDotMethodApply(receiver, method, args) =>
             allowSideEffects && test(receiver) && (args forall test)
           case JSBracketMethodApply(receiver, method, args) =>
-            allowSideEffects && test(receiver) && test(method) && (
-              args forall test
-            )
+            allowSideEffects && test(receiver) && test(method) &&
+              (args forall test)
           case JSSuperBracketSelect(_, qualifier, item) =>
             allowSideEffects && test(qualifier) && test(item)
           case LoadJSModule(_) => allowSideEffects
@@ -1150,9 +1149,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                       // add the break statement
                       newBody = js.Block(pushLhsInto(newLhs, body), js.Break())
                       // desugar alternatives into several cases falling through
-                      caze <- (
-                          newValues.init map (v => (v, js.Skip()))
-                      ) :+ (newValues.last, newBody)
+                      caze <- (newValues.init map (v => (v, js.Skip()))) :+
+                        (newValues.last, newBody)
                     } yield { caze }
                   }
                   val newDefault =
@@ -1421,15 +1419,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                     _: StoreModule | _: ClassDef => transformStat(rhs)
                 case _ =>
                   sys.error(
-                    "Illegal tree in JSDesugar.pushLhsInto():\n" +
-                      "lhs = " + lhs + "\n" + "rhs = " + rhs +
-                      " of class " + rhs.getClass)
+                    "Illegal tree in JSDesugar.pushLhsInto():\n" + "lhs = " +
+                      lhs + "\n" + "rhs = " + rhs + " of class " + rhs.getClass)
               }
             } else {
               sys.error(
-                "Illegal tree in JSDesugar.pushLhsInto():\n" +
-                  "lhs = " + lhs + "\n" + "rhs = " + rhs +
-                  " of class " + rhs.getClass)
+                "Illegal tree in JSDesugar.pushLhsInto():\n" + "lhs = " + lhs +
+                  "\n" + "rhs = " + rhs + " of class " + rhs.getClass)
             }
         })
     }

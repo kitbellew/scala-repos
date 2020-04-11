@@ -62,17 +62,17 @@ import scala.concurrent.duration._
 
 object ZkSecurityMigrator extends Logging {
   val usageMessage =
-    ("ZooKeeper Migration Tool Help. This tool updates the ACLs of "
-      + "znodes as part of the process of setting up ZooKeeper "
-      + "authentication.")
+    ("ZooKeeper Migration Tool Help. This tool updates the ACLs of " +
+      "znodes as part of the process of setting up ZooKeeper " +
+      "authentication.")
 
   def run(args: Array[String]) {
     var jaasFile = System.getProperty(JaasUtils.JAVA_LOGIN_CONFIG_PARAM)
     val parser = new OptionParser()
     val zkAclOpt = parser.accepts(
       "zookeeper.acl",
-      "Indicates whether to make the Kafka znodes in ZooKeeper secure or unsecure."
-        + " The options are 'secure' and 'unsecure'").withRequiredArg()
+      "Indicates whether to make the Kafka znodes in ZooKeeper secure or unsecure." +
+        " The options are 'secure' and 'unsecure'").withRequiredArg()
       .ofType(classOf[String])
     val zkUrlOpt = parser.accepts(
       "zookeeper.connect",
@@ -198,12 +198,12 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
           // Starting a new session isn't really a problem, but it'd complicate
           // the logic of the tool, so we quit and let the user re-run it.
           System.out.println("ZooKeeper session expired while changing ACLs")
-          promise failure ZkException
-            .create(KeeperException.create(Code.get(rc)))
+          promise failure
+            ZkException.create(KeeperException.create(Code.get(rc)))
         case _ =>
           System.out.println("Unexpected return code: %d".format(rc))
-          promise failure ZkException
-            .create(KeeperException.create(Code.get(rc)))
+          promise failure
+            ZkException.create(KeeperException.create(Code.get(rc)))
       }
     }
   }
@@ -233,12 +233,12 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
           // Starting a new session isn't really a problem, but it'd complicate
           // the logic of the tool, so we quit and let the user re-run it.
           System.out.println("ZooKeeper session expired while changing ACLs")
-          promise failure ZkException
-            .create(KeeperException.create(Code.get(rc)))
+          promise failure
+            ZkException.create(KeeperException.create(Code.get(rc)))
         case _ =>
           System.out.println("Unexpected return code: %d".format(rc))
-          promise failure ZkException
-            .create(KeeperException.create(Code.get(rc)))
+          promise failure
+            ZkException.create(KeeperException.create(Code.get(rc)))
       }
     }
   }

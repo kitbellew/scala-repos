@@ -169,12 +169,11 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
 
     eventually {
       assert(
-        (zkStates map { case (s, _) => s }).reverse ==
-          Seq(
-            SessionState.SyncConnected,
-            SessionState.Disconnected,
-            SessionState.Expired,
-            SessionState.SyncConnected))
+        (zkStates map { case (s, _) => s }).reverse == Seq(
+          SessionState.SyncConnected,
+          SessionState.Disconnected,
+          SessionState.Expired,
+          SessionState.SyncConnected))
     }
     assert(sessions.size == 2)
   }

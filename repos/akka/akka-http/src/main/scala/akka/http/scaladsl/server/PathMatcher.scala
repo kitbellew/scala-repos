@@ -446,7 +446,8 @@ trait PathMatchers {
                   Tuple1(value))
             } else {
               if (value == minusOne) digits(ix + 1, a)
-              else if (value <= maxDivBase && value * base <= max - a) // protect from overflow
+              else if (value <= maxDivBase &&
+                       value * base <= max - a) // protect from overflow
                 digits(ix + 1, value * base + a)
               else Unmatched
             }

@@ -78,8 +78,8 @@ private[stat] object Correlations {
     catch {
       case nse: NoSuchElementException =>
         throw new IllegalArgumentException(
-          "Unrecognized method name. Supported correlations: "
-            + CorrelationNames.nameToObjectMap.keys.mkString(", "))
+          "Unrecognized method name. Supported correlations: " +
+            CorrelationNames.nameToObjectMap.keys.mkString(", "))
     }
   }
 }

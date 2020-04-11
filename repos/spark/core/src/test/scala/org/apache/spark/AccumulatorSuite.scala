@@ -335,8 +335,8 @@ private[spark] object AccumulatorSuite {
     sc.listenerBus.waitUntilEmpty(10 * 1000)
     val accums = listener.getCompletedStageInfos.flatMap(_.accumulables.values)
     val isSet = accums.exists { a =>
-      a.name == Some(PEAK_EXECUTION_MEMORY) && a.value
-        .exists(_.asInstanceOf[Long] > 0L)
+      a.name == Some(PEAK_EXECUTION_MEMORY) &&
+      a.value.exists(_.asInstanceOf[Long] > 0L)
     }
     if (!isSet) {
       throw new TestFailedException(

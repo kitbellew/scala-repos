@@ -40,8 +40,8 @@ sealed abstract class PostRepo(troll: Boolean) {
       nb: Int)(categIds: List[String], langs: List[String]): Fu[List[Post]] =
     $find(
       $query(
-        selectCategs(categIds) ++ selectLangs(
-          langs) ++ selectNotHidden) sort $sort.createdDesc,
+        selectCategs(categIds) ++ selectLangs(langs) ++ selectNotHidden) sort
+        $sort.createdDesc,
       nb)
 
   def removeByTopic(topicId: String): Fu[Unit] = $remove(selectTopic(topicId))
@@ -77,11 +77,10 @@ sealed abstract class PostRepo(troll: Boolean) {
 
   def userIdsByTopicId(topicId: String): Fu[List[String]] =
     postTube.coll
-      .distinct("userId", BSONDocument("topicId" -> topicId).some) map lila.db
-      .BSON.asStrings
+      .distinct("userId", BSONDocument("topicId" -> topicId).some) map
+      lila.db.BSON.asStrings
 
   def idsByTopicId(topicId: String): Fu[List[String]] =
-    postTube.coll
-      .distinct("_id", BSONDocument("topicId" -> topicId).some) map lila.db.BSON
-      .asStrings
+    postTube.coll.distinct("_id", BSONDocument("topicId" -> topicId).some) map
+      lila.db.BSON.asStrings
 }

@@ -251,9 +251,8 @@ private[sbt] object SettingCompletions {
           .toSet
       }
       Act.optionalAxis(
-        inParser ~> token(Space) ~> token(
-          scalaID(fullChoices, label),
-          completions),
+        inParser ~> token(Space) ~>
+          token(scalaID(fullChoices, label), completions),
         This)
     }
     val configurations: Map[String, Configuration] = context.configurations
@@ -280,10 +279,9 @@ private[sbt] object SettingCompletions {
     val completions = fixedCompletions { (seen, level) =>
       completeAssign(seen, level, key).toSet
     }
-    val identifier = Act.filterStrings(
-      Op,
-      Assign.values.map(_.toString),
-      "assignment method") map Assign.withName
+    val identifier = Act
+      .filterStrings(Op, Assign.values.map(_.toString), "assignment method") map
+      Assign.withName
     token(Space) ~> token(optionallyQuoted(identifier), completions)
   }
 
@@ -299,11 +297,9 @@ private[sbt] object SettingCompletions {
   }
 
   /** Produce a new parser that allows the input accepted by `p` to be quoted in backticks. */
-  def optionallyQuoted[T](p: Parser[T]): Parser[T] =
-    (Backtick.? ~ p) flatMap {
-      case (quote, id) =>
-        if (quote.isDefined) Backtick.? ^^^ id else success(id)
-    }
+  def optionallyQuoted[T](p: Parser[T]): Parser[T] = (Backtick.? ~ p) flatMap {
+    case (quote, id) => if (quote.isDefined) Backtick.? ^^^ id else success(id)
+  }
 
   /**
     * Completions for an assignment method for `key` given the tab completion `level` and existing partial string `seen`.
@@ -351,8 +347,8 @@ private[sbt] object SettingCompletions {
     val applicable = all.toSeq.filter { case (k, v) => k startsWith seen }
     val prominentOnly = applicable filter { case (k, v) => prominent(k, v) }
 
-    val showAll = (level >= 3) || (level == 2 && prominentOnly
-      .size <= detailLimit) || prominentOnly.isEmpty
+    val showAll = (level >= 3) ||
+      (level == 2 && prominentOnly.size <= detailLimit) || prominentOnly.isEmpty
     val showKeys = if (showAll) applicable else prominentOnly
     val showDescriptions = (level >= 2) || (showKeys.size <= detailLimit)
     completeDescribed(seen, showDescriptions, showKeys)(s =>

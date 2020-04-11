@@ -28,8 +28,8 @@ trait OrderLaws[A] extends Laws {
       parent = None,
       "reflexitivity" → forAll((x: A) => x <= x),
       "antisymmetry" → forAll((x: A, y: A) => (x <= y && y <= x) imp (x === y)),
-      "transitivity" → forAll((x: A, y: A, z: A) =>
-        (x <= y && y <= z) imp (x <= z)),
+      "transitivity" →
+        forAll((x: A, y: A, z: A) => (x <= y && y <= z) imp (x <= z)),
       "gteqv" → forAll((x: A, y: A) => (x <= y) === (y >= x)),
       "lt" → forAll((x: A, y: A) => (x < y) === (x <= y && x =!= y)),
       "gt" → forAll((x: A, y: A) => (x < y) === (y > x)))

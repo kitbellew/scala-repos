@@ -252,9 +252,9 @@ trait ResolvableStableCodeReferenceElement
         x = true
         //todo: improve checking for this and super
         val refText: String = ref.getText
-        if (!refText.contains("this") && !refText.contains("super") && (refText
-              .contains(".") || ref.getContext
-              .isInstanceOf[ScStableCodeReferenceElement])) {
+        if (!refText.contains("this") && !refText.contains("super") &&
+            (refText.contains(".") ||
+            ref.getContext.isInstanceOf[ScStableCodeReferenceElement])) {
           //so this is full qualified reference => findClass, or findPackage
           val facade = JavaPsiFacade.getInstance(getProject)
           val manager = ScalaPsiManager.instance(getProject)
@@ -353,8 +353,8 @@ trait ResolvableStableCodeReferenceElement
             true // scala classes are available from default package
           // Other classes from default package are available only for top-level Scala statements
           case _ =>
-            PsiTreeUtil
-              .getContextOfType(this, true, classOf[ScPackaging]) == null
+            PsiTreeUtil.getContextOfType(this, true, classOf[ScPackaging]) ==
+              null
         }
       case _ => true
     }

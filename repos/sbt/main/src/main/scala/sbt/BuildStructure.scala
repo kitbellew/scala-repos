@@ -90,8 +90,8 @@ final class LoadedBuildUnit(
     * It includes build definition and plugin classes and classes for .sbt file statements and expressions.
     */
   def classpath: Seq[File] =
-    unit.definitions.target ++ unit.plugins.classpath ++ unit.definitions
-      .dslDefinitions.classpath
+    unit.definitions.target ++ unit.plugins.classpath ++
+      unit.definitions.dslDefinitions.classpath
 
   /**
     * The class loader to use for this build unit's publicly visible code.
@@ -332,8 +332,8 @@ object BuildStreams {
       case Global => GlobalPath
       case This =>
         sys.error(
-          "Unresolved This reference for " + label + " in " + displayFull(
-            scoped))
+          "Unresolved This reference for " + label + " in " +
+            displayFull(scoped))
       case Select(t) => show(t)
     }
   def nonProjectPath[T](scoped: ScopedKey[T]): Seq[String] = {
@@ -341,8 +341,7 @@ object BuildStreams {
     pathComponent(scope.config, scoped, "config")(_.name) ::
       pathComponent(scope.task, scoped, "task")(_.label) ::
       pathComponent(scope.extra, scoped, "extra")(showAMap) ::
-      scoped.key.label ::
-      Nil
+      scoped.key.label :: Nil
   }
   def showAMap(a: AttributeMap): String =
     a.entries.toSeq.sortBy(_.key.label).map {

@@ -15,9 +15,7 @@ object Docs {
   def siteInclude(f: File) = !siteExcludes.contains(f.getName)
 
   def settings: Seq[Setting[_]] =
-    site.settings ++
-      site.includeScaladoc("api") ++
-      siteIncludeSxr("sxr") ++
+    site.settings ++ site.includeScaladoc("api") ++ siteIncludeSxr("sxr") ++
       ghPagesSettings
 
   def ghPagesSettings =
@@ -33,13 +31,13 @@ object Docs {
       // distinguish between building to update the site or not so that CI jobs
       //  that don't commit+publish don't leave uncommitted changes in the working directory
       val status = if (isSnapshot.value) "snapshot" else "public"
-      Path.userHome / ".sbt" / "ghpages" / status / organization.value / name
-        .value
+      Path.userHome / ".sbt" / "ghpages" / status / organization.value /
+        name.value
     }
 
   def siteIncludeSxr(prefix: String) =
-    Seq(mappings in sxr <<= sxr.map(dir => Path.allSubpaths(dir).toSeq)) ++ site
-      .addMappingsToSiteDir(mappings in sxr, prefix)
+    Seq(mappings in sxr <<= sxr.map(dir => Path.allSubpaths(dir).toSeq)) ++
+      site.addMappingsToSiteDir(mappings in sxr, prefix)
 
   def synchLocalImpl =
     (ghkeys.privateMappings, ghkeys.updatedRepository, version, streams) map {

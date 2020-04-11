@@ -84,11 +84,9 @@ final class SeekApi(
     coll.remove(BSONDocument("_id" -> seek.id)).void >> cache.clear
 
   def archive(seek: Seek, gameId: String) = {
-    val archiveDoc = Seek.seekBSONHandler.write(seek) ++ BSONDocument(
-      "gameId" -> gameId,
-      "archivedAt" -> DateTime.now)
-    coll.remove(BSONDocument("_id" -> seek.id)).void >>
-      cache.clear >>
+    val archiveDoc = Seek.seekBSONHandler.write(seek) ++
+      BSONDocument("gameId" -> gameId, "archivedAt" -> DateTime.now)
+    coll.remove(BSONDocument("_id" -> seek.id)).void >> cache.clear >>
       archiveColl.insert(archiveDoc)
   }
 
@@ -96,6 +94,6 @@ final class SeekApi(
     archiveColl.find(BSONDocument("gameId" -> gameId)).one[Seek]
 
   def removeBy(seekId: String, userId: String) =
-    coll.remove(BSONDocument("_id" -> seekId, "user.id" -> userId))
-      .void >> cache.clear
+    coll.remove(BSONDocument("_id" -> seekId, "user.id" -> userId)).void >>
+      cache.clear
 }

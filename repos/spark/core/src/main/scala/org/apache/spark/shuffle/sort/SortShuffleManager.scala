@@ -208,7 +208,8 @@ private[spark] object SortShuffleManager extends Logging {
       log.debug(
         s"Can't use serialized shuffle for shuffle $shufId because an aggregator is defined")
       false
-    } else if (numPartitions > MAX_SHUFFLE_OUTPUT_PARTITIONS_FOR_SERIALIZED_MODE) {
+    } else if (numPartitions >
+                 MAX_SHUFFLE_OUTPUT_PARTITIONS_FOR_SERIALIZED_MODE) {
       log.debug(
         s"Can't use serialized shuffle for shuffle $shufId because it has more than " +
           s"$MAX_SHUFFLE_OUTPUT_PARTITIONS_FOR_SERIALIZED_MODE partitions")

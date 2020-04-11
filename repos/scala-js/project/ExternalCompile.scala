@@ -32,8 +32,8 @@ object ExternalCompile {
 
         // List all my dependencies (recompile if any of these changes)
 
-        val allMyDependencies =
-          classpath filterNot (_ == classesDirectory) flatMap { cpFile =>
+        val allMyDependencies = classpath filterNot
+          (_ == classesDirectory) flatMap { cpFile =>
             if (cpFile.isDirectory) (cpFile ** "*.class").get else Seq(cpFile)
           }
 
@@ -45,9 +45,8 @@ object ExternalCompile {
           FilesInfo.exists) {
           dependencies =>
             logger.info(
-              "Compiling %d Scala sources to %s..." format (
-                sources.size, classesDirectory
-              ))
+              "Compiling %d Scala sources to %s..." format
+                (sources.size, classesDirectory))
 
             if (classesDirectory.exists) IO.delete(classesDirectory)
             IO.createDirectory(classesDirectory)
@@ -75,10 +74,8 @@ object ExternalCompile {
               run.run(
                 "scala.tools.nsc.Main",
                 compilerCp,
-                "-cp" :: cpStr ::
-                  "-d" :: classesDirectory.getAbsolutePath() ::
-                  options ++:
-                  sourcesArgs,
+                "-cp" :: cpStr :: "-d" :: classesDirectory.getAbsolutePath() ::
+                  options ++: sourcesArgs,
                 patchedLogger) foreach sys.error
             }
 

@@ -132,8 +132,8 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
     }
 
     "evaluate a simple object concatenation" in {
-      "{a:1} with {b:2}" must evalTo(
-        JObject(Map("a" -> JNum(1), "b" -> JNum(2))))
+      "{a:1} with {b:2}" must
+        evalTo(JObject(Map("a" -> JNum(1), "b" -> JNum(2))))
     }
 
     "evaluate a simple object deref" in { "{a:1}.a" must evalTo(JNum(1)) }
@@ -260,9 +260,8 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
     def inner(q: String): Boolean = {
       val actual = doEval(q)
 
-      expect.length == actual.length && (expect zip actual forall {
-        case (a, b) => a == b
-      })
+      expect.length == actual.length &&
+      (expect zip actual forall { case (a, b) => a == b })
     }
 
     def message(q: String): String = {

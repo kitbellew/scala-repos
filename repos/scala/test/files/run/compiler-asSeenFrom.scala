@@ -111,8 +111,8 @@ package ll {
     def fname(sym: Symbol) = {
       val p = "" + sym.owner.name
       val x =
-        if (sym.owner.isPackageClass || sym.owner.isModuleClass || sym.owner
-              .isTerm) "."
+        if (sym.owner.isPackageClass || sym.owner.isModuleClass ||
+            sym.owner.isTerm) "."
         else "#"
       sym.kindString + " " + p + x + sym.name
     }
@@ -139,13 +139,13 @@ package ll {
         case (site, xs) => block(fmt(site)) {
             fmt("type", "seen from prefix", "is") ::
               fmt("----", "----------------", "--") :: {
-              xs.groupBy(_._2).toList.sortBy(_._1.toString) flatMap {
-                case (tp, ys) =>
-                  (ys map {
-                    case (_, _, prefix, seen) => fmt(tp, prefix, seen)
-                  }).sorted.distinct
+                xs.groupBy(_._2).toList.sortBy(_._1.toString) flatMap {
+                  case (tp, ys) =>
+                    (ys map {
+                      case (_, _, prefix, seen) => fmt(tp, prefix, seen)
+                    }).sorted.distinct
+                }
               }
-            }
           }
       }
     }
@@ -155,18 +155,17 @@ package ll {
     if (xs.isEmpty) "" else xs.mkString("\n  ", "\n  ", "\n")
 
   def signaturesIn(info: Type): List[String] =
-    (info.members.toList
-      filterNot (s =>
-        s.isType || s.owner == ObjectClass || s.owner == AnyClass || s
-          .isConstructor)
-      map (_.defString))
+    (info.members.toList filterNot
+      (s =>
+        s.isType || s.owner == ObjectClass || s.owner == AnyClass ||
+          s.isConstructor) map (_.defString))
 
   def check(source: String, unit: global.CompilationUnit) = {
     import syms._
 
     exitingTyper {
-      val typeArgs = List[Type](IntClass.tpe, ListClass[Int]) ++ tparams
-        .map(_.tpe)
+      val typeArgs = List[Type](IntClass.tpe, ListClass[Int]) ++
+        tparams.map(_.tpe)
       permute(typeArgs) foreach println
     }
     for (x <- classes ++ terms) {

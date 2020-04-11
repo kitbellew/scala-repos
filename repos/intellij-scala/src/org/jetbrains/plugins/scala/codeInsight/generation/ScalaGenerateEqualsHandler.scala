@@ -192,13 +192,13 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
         val equalsMethod = Option(
           if (needEquals) createEquals(aClass, project) else null)
 
-        val needCanEqual = needEquals && hasCanEqual(aClass).isEmpty && !aClass
-          .hasFinalModifier
+        val needCanEqual = needEquals && hasCanEqual(aClass).isEmpty &&
+          !aClass.hasFinalModifier
         val canEqualMethod = Option(
           if (needCanEqual) createCanEqual(aClass, project) else null)
 
-        val newMethods =
-          hashCodeMethod ++: equalsMethod ++: canEqualMethod ++: Nil
+        val newMethods = hashCodeMethod ++: equalsMethod ++: canEqualMethod ++:
+          Nil
         GenerationUtil.addMembers(aClass, newMethods, editor.getDocument)
       }
     } finally { cleanup() }
@@ -211,8 +211,8 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
       case Some(c: ScClass) if !c.isCase => true
       case _                             => false
     }
-    file != null && ScalaFileType.SCALA_FILE_TYPE == file
-      .getFileType && isSuitableClass
+    file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType &&
+    isSuitableClass
   }
 
   private def hasEquals(aClass: ScClass): Option[ScFunction] = {

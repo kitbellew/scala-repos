@@ -75,8 +75,8 @@ class CachedTest extends CachedTestBase {
       thread2.start() //this thread should be waiting outside synchronized block
       //NOTE: we are not guaranteed which thread will be waiting where. They might switch, but that's still fine
 
-      while (thread1.getState != Thread.State.WAITING && thread2
-               .getState != Thread.State.WAITING) {
+      while (thread1.getState != Thread.State.WAITING &&
+             thread2.getState != Thread.State.WAITING) {
         //busy waiting is bad, but this is in a test, so it is fine. Should put a timeout here?
         Thread.`yield`()
       }

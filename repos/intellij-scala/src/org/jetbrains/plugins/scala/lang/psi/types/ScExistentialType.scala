@@ -543,8 +543,8 @@ case class ScExistentialType(
       tp.recursiveUpdate {
         case tp @ ScDesignatorType(element) => element match {
             case a: ScTypeAlias
-                if a.getContext.isInstanceOf[ScExistentialClause]
-                  && wildcards.exists(_.name == a.name) =>
+                if a.getContext.isInstanceOf[ScExistentialClause] &&
+                  wildcards.exists(_.name == a.name) =>
               res = true
               (res, tp)
             case _ => (res, tp)

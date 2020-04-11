@@ -147,8 +147,8 @@ abstract class BaseYarnClusterSuite
     val propsFile = createConfFile(
       extraClassPath = extraClassPath,
       extraConf = extraConf)
-    val env =
-      Map("YARN_CONF_DIR" -> hadoopConfDir.getAbsolutePath()) ++ extraEnv
+    val env = Map("YARN_CONF_DIR" -> hadoopConfDir.getAbsolutePath()) ++
+      extraEnv
 
     val launcher = new SparkLauncher(env.asJava)
     if (klass.endsWith(".py")) { launcher.setAppResource(klass) }
@@ -207,8 +207,7 @@ abstract class BaseYarnClusterSuite
     props.put(SPARK_JARS.key, "local:" + fakeSparkJar.getAbsolutePath())
 
     val testClasspath = new TestClasspathBuilder().buildClassPath(
-      logConfDir.getAbsolutePath() +
-        File.pathSeparator +
+      logConfDir.getAbsolutePath() + File.pathSeparator +
         extraClassPath.mkString(File.pathSeparator)).asScala
       .mkString(File.pathSeparator)
 

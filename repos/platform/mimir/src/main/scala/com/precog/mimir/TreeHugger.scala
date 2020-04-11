@@ -44,11 +44,10 @@ class Code extends UsefulStuff {
   }
 
   val imports = BLOCK(
-    IMPORT("bytecode.Library") :: IMPORT("bytecode.BuiltInFunc1") :: IMPORT(
-      "java.lang.Math") :: IMPORT("java.lang.String") :: IMPORT(
-      "bytecode.BuiltInFunc2") :: IMPORT("yggdrasil._") :: Nil: _*) inPackage (
-    "mimir"
-  ) inPackage ("com.precog")
+    IMPORT("bytecode.Library") :: IMPORT("bytecode.BuiltInFunc1") ::
+      IMPORT("java.lang.Math") :: IMPORT("java.lang.String") ::
+      IMPORT("bytecode.BuiltInFunc2") :: IMPORT("yggdrasil._") ::
+      Nil: _*) inPackage ("mimir") inPackage ("com.precog")
 
   val methods: Array[String] = classOf[Math].getMethods.map(_.getName)
   val parameters = classOf[Math].getMethods.map(_.getParameterTypes)
@@ -82,18 +81,18 @@ class Code extends UsefulStuff {
   }
 
   def objects1(method: String): Tree = {
-    OBJECTDEF(method) withParents ("""BIF1(Vector("std", "math"), "%s")"""
-      .format(method)) := BLOCK(
+    OBJECTDEF(method) withParents
+      ("""BIF1(Vector("std", "math"), "%s")""".format(method)) := BLOCK(
       VAL("operandType") := (REF("Some(SDecimal)")),
       VAL("operation", sym.PartialFunction1) := BLOCK(
-        CASE(REF("SDecimal(num)")) ==> REF(
-          """SDecimal(Math.%s(num.toDouble))""".format(method)))
+        CASE(REF("SDecimal(num)")) ==>
+          REF("""SDecimal(Math.%s(num.toDouble))""".format(method)))
     )
   }
 
   def objects2(method: String): Tree = {
-    OBJECTDEF(method) withParents ("""BIF2(Vector("std", "math"), "%s")"""
-      .format(method)) := BLOCK(
+    OBJECTDEF(method) withParents
+      ("""BIF2(Vector("std", "math"), "%s")""".format(method)) := BLOCK(
       VAL("operandType") := (REF("(Some(SDecimal), Some(SDecimal))")),
       VAL("operation", sym.PartialFunction2) := BLOCK(
         CASE(REF("(SDecimal(num1), SDecimal(num2))")) ==> REF(

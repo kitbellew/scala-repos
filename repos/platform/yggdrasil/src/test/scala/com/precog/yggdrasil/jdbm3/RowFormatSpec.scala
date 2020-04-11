@@ -85,21 +85,22 @@ class RowFormatSpec
   def verify(rows: List[List[CValue]], cols: List[Column]) = {
     rows.zipWithIndex foreach {
       case (values, row) =>
-        (values zip cols) foreach (_ must beLike {
-          case (CUndefined, col) if !col.isDefinedAt(row) => ok
-          case (_, col) if !col.isDefinedAt(row)          => ko
-          case (CString(s), col: StrColumn)               => col(row) must_== s
-          case (CBoolean(x), col: BoolColumn)             => col(row) must_== x
-          case (CLong(x), col: LongColumn)                => col(row) must_== x
-          case (CDouble(x), col: DoubleColumn)            => col(row) must_== x
-          case (CNum(x), col: NumColumn)                  => col(row) must_== x
-          case (CDate(x), col: DateColumn)                => col(row) must_== x
-          case (CNull, col: NullColumn)                   => ok
-          case (CEmptyObject, col: EmptyObjectColumn)     => ok
-          case (CEmptyArray, col: EmptyArrayColumn)       => ok
-          case (CArray(xs, cType), col: HomogeneousArrayColumn[_])
-              if cType == col.tpe => col(row) must_== xs
-        })
+        (values zip cols) foreach
+          (_ must beLike {
+            case (CUndefined, col) if !col.isDefinedAt(row) => ok
+            case (_, col) if !col.isDefinedAt(row)          => ko
+            case (CString(s), col: StrColumn)               => col(row) must_== s
+            case (CBoolean(x), col: BoolColumn)             => col(row) must_== x
+            case (CLong(x), col: LongColumn)                => col(row) must_== x
+            case (CDouble(x), col: DoubleColumn)            => col(row) must_== x
+            case (CNum(x), col: NumColumn)                  => col(row) must_== x
+            case (CDate(x), col: DateColumn)                => col(row) must_== x
+            case (CNull, col: NullColumn)                   => ok
+            case (CEmptyObject, col: EmptyObjectColumn)     => ok
+            case (CEmptyArray, col: EmptyArrayColumn)       => ok
+            case (CArray(xs, cType), col: HomogeneousArrayColumn[_])
+                if cType == col.tpe => col(row) must_== xs
+          })
     }
   }
 
@@ -112,9 +113,9 @@ class RowFormatSpec
 
   "ValueRowFormat" should { checkRoundTrips(RowFormat.forValues(_)) }
 
-  private def identityCols(len: Int): List[ColumnRef] =
-    (0 until len).map({ i => ColumnRef(CPath(CPathIndex(i)), CLong) })(
-      scala.collection.breakOut)
+  private def identityCols(len: Int): List[ColumnRef] = (0 until len).map({ i =>
+    ColumnRef(CPath(CPathIndex(i)), CLong)
+  })(scala.collection.breakOut)
 
   "IdentitiesRowFormat" should {
     "round-trip CLongs" in {

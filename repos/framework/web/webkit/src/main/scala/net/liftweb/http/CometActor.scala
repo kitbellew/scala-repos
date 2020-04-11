@@ -209,8 +209,7 @@ trait ListenerManager {
   private var listeners: List[ActorTest] = Nil
 
   protected def messageHandler: PartialFunction[Any, Unit] =
-    highPriority orElse mediumPriority orElse
-      listenerService orElse lowPriority
+    highPriority orElse mediumPriority orElse listenerService orElse lowPriority
 
   protected def listenerService: PartialFunction[Any, Unit] = {
     case AddAListener(who, wantsMessage) =>
@@ -289,8 +288,8 @@ abstract class LiftActorJWithListenerManager
     extends LiftActorJ
     with ListenerManager {
   protected override def messageHandler: PartialFunction[Any, Unit] =
-    highPriority orElse mediumPriority orElse
-      listenerService orElse lowPriority orElse _messageHandler
+    highPriority orElse mediumPriority orElse listenerService orElse
+      lowPriority orElse _messageHandler
 }
 
 /**
@@ -1205,8 +1204,8 @@ trait BaseCometActor
     if (!_running && (millis - 20000L) > _shutDownAt)
       _mediumPriority orElse _lowPriority
     else
-      highPriority orElse mediumPriority orElse
-        _mediumPriority orElse lowPriority orElse _lowPriority
+      highPriority orElse mediumPriority orElse _mediumPriority orElse
+        lowPriority orElse _lowPriority
   }
 
   /**
@@ -1415,15 +1414,15 @@ private[http] class XmlOrJsCmd(
     val updateJs =
       (if (ignoreHtmlOnJs) Empty else xml, javaScript, displayAll) match {
         case (Full(xml), Full(js), false) =>
-          LiftRules.jsArtifacts.setHtml(id, Helpers.stripHead(xml)) & JsCmds
-            .JsTry(js, false)
+          LiftRules.jsArtifacts.setHtml(id, Helpers.stripHead(xml)) &
+            JsCmds.JsTry(js, false)
         case (Full(xml), _, false) =>
           LiftRules.jsArtifacts.setHtml(id, Helpers.stripHead(xml))
         case (Full(xml), Full(js), true) =>
           LiftRules.jsArtifacts.setHtml(
             id + "_outer",
-            (spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml
-              .openOr(Text("")))) & JsCmds.JsTry(js, false)
+            (spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(Text("")))) &
+            JsCmds.JsTry(js, false)
         case (Full(xml), _, true) =>
           LiftRules.jsArtifacts.setHtml(
             id + "_outer",
@@ -1434,19 +1433,14 @@ private[http] class XmlOrJsCmd(
     val fullUpdateJs = LiftRules.cometUpdateExceptionHandler.vend
       .foldLeft(updateJs) { (commands, catchHandler) =>
         JsCmds.Run(
-          "try{" +
-            commands.toJsCmd +
-            "}catch(e){" +
-            catchHandler.toJsCmd +
-            "}")
+          "try{" + commands.toJsCmd + "}catch(e){" + catchHandler.toJsCmd + "}")
       }
 
     var ret: JsCmd = JsCmds.JsTry(JsCmds.Run("destroy_" + id + "();"), false) &
-      fullUpdateJs &
-      JsCmds.JsTry(
+      fullUpdateJs & JsCmds.JsTry(
         JsCmds.Run(
-          "destroy_" + id + " = function() {" + (destroy.openOr(JsCmds.Noop)
-            .toJsCmd) + "};"),
+          "destroy_" + id + " = function() {" +
+            (destroy.openOr(JsCmds.Noop).toJsCmd) + "};"),
         false)
 
     S.appendNotices(notices)
@@ -1459,8 +1453,8 @@ private[http] class XmlOrJsCmd(
 
   def outSpan: NodeSeq =
     Script(Run(
-      "var destroy_" + id + " = function() {" + (destroy.openOr(JsCmds.Noop)
-        .toJsCmd) + "}")) ++
+      "var destroy_" + id + " = function() {" +
+        (destroy.openOr(JsCmds.Noop).toJsCmd) + "}")) ++
       fixedXhtml.openOr(Text(""))
 }
 

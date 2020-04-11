@@ -68,8 +68,7 @@ object ScalaDoc extends ScalaDoc {
         "where possible scaladoc",
         shouldExplain = false,
         x => x.isStandard && settings.isScaladocSpecific(x.name)) +
-        "\n\nStandard scalac options also available:" +
-        createUsageMsg(x =>
+        "\n\nStandard scalac options also available:" + createUsageMsg(x =>
           x.isStandard && !settings.isScaladocSpecific(x.name)))
   }
 

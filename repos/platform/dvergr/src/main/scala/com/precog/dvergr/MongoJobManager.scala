@@ -192,8 +192,8 @@ final class MongoJobManager(
     // TODO: Get Job object, find current status ID, then use that as since.
     // It'll include at least the last status, but rarely much more.
 
-    listMessages(jobId, channels.Status, None) map (_.lastOption flatMap (Status
-      .fromMessage(_)))
+    listMessages(jobId, channels.Status, None) map
+      (_.lastOption flatMap (Status.fromMessage(_)))
   }
 
   private def nextMessageId(jobId: JobId): Future[Long] = {
@@ -201,8 +201,8 @@ final class MongoJobManager(
       selectAndUpsert(settings.jobs).set(JPath("sequence") inc 1)
         .where("id" === jobId).returnNew(true)) map {
       case Some(obj) =>
-        (obj \ "sequence").validated[Long] getOrElse sys
-          .error("Expected an integral sequence number.")
+        (obj \ "sequence").validated[Long] getOrElse
+          sys.error("Expected an integral sequence number.")
       case None =>
         sys.error("Sequence number doesn't exist. This shouldn't happen.")
     }

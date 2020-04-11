@@ -60,8 +60,8 @@ class BidiFlowSpec extends AkkaSpec {
     "work as a Flow that is open on the left" in {
       val f = bidi.join(Flow[Long].map(x ⇒ ByteString(s"Hello $x")))
       val result = Source(List(1, 2, 3)).via(f).limit(10).runWith(Sink.seq)
-      Await.result(result, 1.second) should ===(
-        Seq("Hello 3", "Hello 4", "Hello 5"))
+      Await.result(result, 1.second) should
+        ===(Seq("Hello 3", "Hello 4", "Hello 5"))
     }
 
     "work as a Flow that is open on the right" in {
@@ -88,8 +88,8 @@ class BidiFlowSpec extends AkkaSpec {
     "materialize to its value" in {
       val f = RunnableGraph.fromGraph(GraphDSL.create(bidiMat) {
         implicit b ⇒ bidi ⇒
-          Flow[String].map(Integer.valueOf(_).toInt) <~> bidi <~> Flow[Long]
-            .map(x ⇒ ByteString(s"Hello $x"))
+          Flow[String].map(Integer.valueOf(_).toInt) <~> bidi <~>
+            Flow[Long].map(x ⇒ ByteString(s"Hello $x"))
           ClosedShape
       }).run()
       Await.result(f, 1.second) should ===(42)

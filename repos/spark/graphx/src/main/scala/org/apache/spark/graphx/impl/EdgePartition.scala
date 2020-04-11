@@ -242,8 +242,8 @@ private[graphx] class EdgePartition[
       et.srcAttr = vertexAttrs(localSrcId)
       et.dstAttr = vertexAttrs(localDstId)
       et.attr = data(i)
-      if (vpred(et.srcId, et.srcAttr) && vpred(et.dstId, et.dstAttr) && epred(
-            et)) {
+      if (vpred(et.srcId, et.srcAttr) && vpred(et.dstId, et.dstAttr) &&
+          epred(et)) {
         builder.add(et.srcId, et.dstId, localSrcId, localDstId, et.attr)
       }
       i += 1
@@ -333,10 +333,10 @@ private[graphx] class EdgePartition[
       // ... forward j to the index of the corresponding edge in `other`, and...
       while (j < other.size && other.srcIds(j) < srcId) { j += 1 }
       if (j < other.size && other.srcIds(j) == srcId) {
-        while (j < other.size && other.srcIds(j) == srcId && other
-                 .dstIds(j) < dstId) { j += 1 }
-        if (j < other.size && other.srcIds(j) == srcId && other
-              .dstIds(j) == dstId) {
+        while (j < other.size && other.srcIds(j) == srcId &&
+               other.dstIds(j) < dstId) { j += 1 }
+        if (j < other.size && other.srcIds(j) == srcId &&
+            other.dstIds(j) == dstId) {
           // ... run `f` on the matching edge
           builder.add(
             srcId,

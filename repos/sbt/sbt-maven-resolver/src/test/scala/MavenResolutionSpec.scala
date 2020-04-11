@@ -24,13 +24,19 @@ class MavenResolutionSpec extends BaseIvySpecification {
   it should "use ivy for conflict resolution" in resolveMajorConflicts
   it should "handle cross configuration deps" in resolveCrossConfigurations
   it should "publish with maven-metadata" in publishMavenMetadata
-  it should "resolve transitive maven dependencies" in resolveTransitiveMavenDependency
-  it should "resolve intransitive maven dependencies" in resolveIntransitiveMavenDependency
-  it should "handle transitive configuration shifts" in resolveTransitiveConfigurationMavenDependency
+  it should "resolve transitive maven dependencies" in
+    resolveTransitiveMavenDependency
+  it should "resolve intransitive maven dependencies" in
+    resolveIntransitiveMavenDependency
+  it should "handle transitive configuration shifts" in
+    resolveTransitiveConfigurationMavenDependency
   it should "resolve source and doc" in resolveSourceAndJavadoc
-  it should "resolve nonstandard (jdk5) classifier" in resolveNonstandardClassifier
-  it should "Resolve pom artifact dependencies" in resolvePomArtifactAndDependencies
-  it should "Fail if JAR artifact is not found w/ POM" in failIfMainArtifactMissing
+  it should "resolve nonstandard (jdk5) classifier" in
+    resolveNonstandardClassifier
+  it should "Resolve pom artifact dependencies" in
+    resolvePomArtifactAndDependencies
+  it should "Fail if JAR artifact is not found w/ POM" in
+    failIfMainArtifactMissing
   it should "Fail if POM.xml is not found" in failIfPomMissing
   it should "resolve publication date for -SNAPSHOT" in resolveSnapshotPubDate
 
@@ -142,8 +148,8 @@ class MavenResolutionSpec extends BaseIvySpecification {
     System.err.println(s"${newJars.mkString("\n")}")
     (newJars should have size 1)
     (oldJars should have size 1)
-    (oldJars.map(_._2) should not(
-      contain theSameElementsAs (newJars.map(_._2))))
+    (oldJars.map(_._2) should
+      not(contain theSameElementsAs (newJars.map(_._2))))
   }
 
   def resolveSnapshotPubDate = {
@@ -248,8 +254,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
     } yield f
     val directJars = for {
       conf <- report.configurations if conf.configuration == "compile"
-      m <- conf.modules if (m.module.name contains "akka-actor") && (m.module
-        .name contains "testkit")
+      m <- conf.modules
+      if (m.module.name contains "akka-actor") &&
+        (m.module.name contains "testkit")
       (a, f) <- m.artifacts if a.extension == "jar"
     } yield f
     (report.configurations should have size configurations.size)

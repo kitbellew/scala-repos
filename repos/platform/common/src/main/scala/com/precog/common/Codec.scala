@@ -233,15 +233,15 @@ object Codec {
 
     def writeInit(c: C, buf: ByteBuffer): Option[S] = {
       val (a, b) = from(c)
-      (codecA.writeInit(a, buf) map (s => Left((s, b)))) orElse (codecB
-        .writeInit(b, buf) map (Right(_)))
+      (codecA.writeInit(a, buf) map (s => Left((s, b)))) orElse
+        (codecB.writeInit(b, buf) map (Right(_)))
     }
 
     def writeMore(more: S, buf: ByteBuffer) =
       more match {
         case Left((s, b)) =>
-          (codecA.writeMore(s, buf) map (s => Left((s, b)))) orElse (codecB
-            .writeInit(b, buf) map (Right(_)))
+          (codecA.writeMore(s, buf) map (s => Left((s, b)))) orElse
+            (codecB.writeInit(b, buf) map (Right(_)))
         case Right(s) => codecB.writeMore(s, buf) map (Right(_))
       }
 
@@ -295,9 +295,8 @@ object Codec {
         case FALSE_VALUE => false
         case invalid =>
           sys.error(
-            "Error reading boolean: expecting %d or %d, found %d" format (
-              TRUE_VALUE, FALSE_VALUE, invalid
-            ))
+            "Error reading boolean: expecting %d or %d, found %d" format
+              (TRUE_VALUE, FALSE_VALUE, invalid))
       }
   }
 
@@ -530,9 +529,8 @@ object Codec {
       more match {
         case Left(as) => writeInit(as, sink)
         case Right((s, as)) =>
-          elemCodec.writeMore(s, sink) map (Right(_, as)) orElse writeArray(
-            as.toList,
-            sink)
+          elemCodec.writeMore(s, sink) map (Right(_, as)) orElse
+            writeArray(as.toList, sink)
       }
 
     def read(src: ByteBuffer): IndexedSeq[A] =
@@ -609,8 +607,8 @@ object Codec {
       more match {
         case Left(as) => writeInit(as, sink)
         case Right((s, as, row)) =>
-          elemCodec.writeMore(s, sink) map (s =>
-            Right((s, as, row))) orElse writeArray(as, row, sink)
+          elemCodec.writeMore(s, sink) map (s => Right((s, as, row))) orElse
+            writeArray(as, row, sink)
       }
 
     def read(src: ByteBuffer): Array[A] = {
@@ -711,9 +709,10 @@ object Codec {
 
     override def skip(buf: ByteBuffer) {
       var b = buf.get()
-      while ((b & 3) != 0 && (b & 12) != 0 && (b & 48) != 0 && (b & 192) != 0) {
-        b = buf.get()
-      }
+      while ((b & 3) != 0 &&
+             (b & 12) != 0 &&
+             (b & 48) != 0 &&
+             (b & 192) != 0) { b = buf.get() }
     }
 
     def writeBitSet(bs: BitSet): Array[Byte] = {
@@ -828,9 +827,10 @@ object Codec {
 
     override def skip(buf: ByteBuffer) {
       var b = buf.get()
-      while ((b & 3) != 0 && (b & 12) != 0 && (b & 48) != 0 && (b & 192) != 0) {
-        b = buf.get()
-      }
+      while ((b & 3) != 0 &&
+             (b & 12) != 0 &&
+             (b & 48) != 0 &&
+             (b & 192) != 0) { b = buf.get() }
     }
 
     def writeBitSet(bs: RawBitSet): Array[Byte] = {

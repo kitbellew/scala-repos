@@ -618,7 +618,8 @@ trait GrouperSpec[M[+_]]
       val JNum(k) = record \ "key"
       val JNum(v) = record \ "value"
 
-      v mustEqual ((rawData1 ++ rawData2) filter { k == _ } length)
+      v mustEqual
+        ((rawData1 ++ rawData2) filter { k == _ } length)
     }
   }
 
@@ -714,8 +715,8 @@ trait GrouperSpec[M[+_]]
 
     // in order to get a binding for both 'a and 'b, values must come from
     // rawData1 and 'a must be in the join keys.
-    resultJson must haveSize(
-      rawData1.filter({ case (a, b) => joinKeys(a) }).distinct.size)
+    resultJson must
+      haveSize(rawData1.filter({ case (a, b) => joinKeys(a) }).distinct.size)
 
     val grouped1ab = grouped1.mapValues(_.groupBy(_._2.get))
     forall(resultJson) { v =>
@@ -724,8 +725,8 @@ trait GrouperSpec[M[+_]]
           val JArray(JNum(ka) :: JNum(kb) :: Nil) = obj \ "key"
           val JNum(v) = obj \ "value"
 
-          v must_== (grouped1ab(ka.toInt)(kb.toInt).size + grouped2(ka.toInt)
-            .size)
+          v must_==
+            (grouped1ab(ka.toInt)(kb.toInt).size + grouped2(ka.toInt).size)
         }
       }
     }
@@ -834,13 +835,11 @@ trait GrouperSpec[M[+_]]
       (row1a, Some(row1b)) <- rawData1
       row2 <- rawData2
     } yield {
-      JObject(
-        JField("a", JNum(row2)) ::
-          JField("b", JNum(row1b)) :: Nil)
+      JObject(JField("a", JNum(row2)) :: JField("b", JNum(row1b)) :: Nil)
     }
 
-    resultJson must haveSize(
-      joinRows.map(_._1).distinct.size + crossRows.distinct.size)
+    resultJson must
+      haveSize(joinRows.map(_._1).distinct.size + crossRows.distinct.size)
   }
 
   def testNonTrivial = {
@@ -979,8 +978,7 @@ trait GrouperSpec[M[+_]]
         bazPJson must not(beEmpty)
 
         val result = Stream(JObject(
-          JField("a", a) ::
-            JField("b", b) ::
+          JField("a", a) :: JField("b", b) ::
             JField("foo", JNum(fooPJson.size)) ::
             JField("bar", JNum(barPJson.size)) ::
             JField("baz", JNum(bazPJson.size)) :: Nil))
@@ -1023,17 +1021,18 @@ trait GrouperSpec[M[+_]]
 
   "simple single-key grouping" should {
     "scalacheck a histogram by value" in check1NoShrink(testHistogramByValue _)
-    "histogram for two of the same value" in testHistogramByValue(
-      Stream(2147483647, 2147483647))
-    "histogram when observing spans of equal values" in testHistogramByValue(
-      Stream(24, -10, 0, -1, -1, 0, 24, 0, 0, 24, -1, 0, 0, 24))
-    "compute a histogram by value (mapping target)" in check(
-      testHistogramByValueMapped _)
-    "compute a histogram by value (mapping target) trivial example" in testHistogramByValueMapped(
-      Stream(0))
+    "histogram for two of the same value" in
+      testHistogramByValue(Stream(2147483647, 2147483647))
+    "histogram when observing spans of equal values" in
+      testHistogramByValue(Stream(
+        24, -10, 0, -1, -1, 0, 24, 0, 0, 24, -1, 0, 0, 24))
+    "compute a histogram by value (mapping target)" in
+      check(testHistogramByValueMapped _)
+    "compute a histogram by value (mapping target) trivial example" in
+      testHistogramByValueMapped(Stream(0))
     "compute a histogram by even/odd" in check(testHistogramEvenOdd _)
-    "compute a histogram by even/odd trivial example" in testHistogramEvenOdd(
-      Stream(0))
+    "compute a histogram by even/odd trivial example" in
+      testHistogramEvenOdd(Stream(0))
   }
 
   "simple multi-key grouping" should {
@@ -1051,9 +1050,8 @@ trait GrouperSpec[M[+_]]
     "compute ctr on value" in propNoShrink(testCtr _)
     "compute ctr with an empty dataset" in testCtr(Stream(), Stream(1))
     "compute ctr with singleton datasets" in testCtr(Stream(1), Stream(1))
-    "compute ctr with simple datasets with repeats" in testCtr(
-      Stream(1, 1, 1),
-      Stream(1))
+    "compute ctr with simple datasets with repeats" in
+      testCtr(Stream(1, 1, 1), Stream(1))
     "compute ctr with simple datasets" in testCtr(
       Stream(-565998477, 1911906594, 1),
       Stream(1948335811, -528723320, 1))
@@ -1088,36 +1086,35 @@ trait GrouperSpec[M[+_]]
           0, -297579588, -1, 2147483647, -1, -1536865491, 1049246142,
           -2147483648, -2147483648, 766980226, -1047565460)
       )
-      "and with repeated group keys in joinable datasets" >> testCtrPartialJoinAnd(
-        Stream(
-          (1, Some(-421523375)),
-          (1381663801, Some(2145939312)),
-          (975603510, Some(-456843566)),
-          (-260964705, Some(-811947401)),
-          (-1643830562, Some(0)),
-          (382901678, Some(-2147483648)),
-          (-1770905652, Some(-1)),
-          (1172197808, Some(1)),
-          (-206421051, Some(307500840)),
-          (2147483647, Some(-1)),
-          (2147483647, Some(-1)),
-          (-1775980054, Some(2147483647))
-        ),
-        Stream(
-          1, -1, -2005746103, 720318134, 852618110, 1813748094, -1, -1676020815,
-          -627348537, 2147483647, -2147483648)
-      )
+      "and with repeated group keys in joinable datasets" >>
+        testCtrPartialJoinAnd(
+          Stream(
+            (1, Some(-421523375)),
+            (1381663801, Some(2145939312)),
+            (975603510, Some(-456843566)),
+            (-260964705, Some(-811947401)),
+            (-1643830562, Some(0)),
+            (382901678, Some(-2147483648)),
+            (-1770905652, Some(-1)),
+            (1172197808, Some(1)),
+            (-206421051, Some(307500840)),
+            (2147483647, Some(-1)),
+            (2147483647, Some(-1)),
+            (-1775980054, Some(2147483647))
+          ),
+          Stream(
+            1, -1, -2005746103, 720318134, 852618110, 1813748094, -1,
+            -1676020815, -627348537, 2147483647, -2147483648)
+        )
 
       // TODO: the performance of the following is too awful to run under scalacheck, even with a minimal
       // number of examples.
       "or" >> propNoShrink(testCtrPartialJoinOr _).set(minTestsOk -> 10)
       "or with empty 1st dataset" >> testCtrPartialJoinOr(Stream(), Stream(1))
-      "or with empty 2nd dataset" >> testCtrPartialJoinOr(
-        Stream((1, Some(2))),
-        Stream())
-      "or with un-joinable datasets" >> testCtrPartialJoinOr(
-        Stream((-2, Some(1))),
-        Stream(-1))
+      "or with empty 2nd dataset" >>
+        testCtrPartialJoinOr(Stream((1, Some(2))), Stream())
+      "or with un-joinable datasets" >>
+        testCtrPartialJoinOr(Stream((-2, Some(1))), Stream(-1))
       "or with a join in datasets" >> testCtrPartialJoinOr(
         Stream((2, Some(-1)), (1, Some(-1)), (3, Some(4)), (1, Some(-1))),
         Stream(-2, 1, 1, 5, 0, 6))

@@ -105,6 +105,6 @@ class SbtDependencyAnnotator extends Annotator {
   }
 
   private def isDynamicVersion(version: String): Boolean =
-    version.startsWith("latest") || version.endsWith("+") || "[]()"
-      .exists(version.contains(_))
+    version.startsWith("latest") || version.endsWith("+") ||
+      "[]()".exists(version.contains(_))
 }

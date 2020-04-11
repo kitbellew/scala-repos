@@ -109,8 +109,7 @@ abstract class Specs2RegExpTestNameTest extends Specs2TestCase {
           "[root]",
           regExpClassName,
           "First should",
-          "run") &&
-          checkResultTreeDoesNotHaveNodes(root, "Second should")
+          "run") && checkResultTreeDoesNotHaveNodes(root, "Second should")
     )
 
     runTestByLocation(
@@ -124,8 +123,7 @@ abstract class Specs2RegExpTestNameTest extends Specs2TestCase {
           "[root]",
           regExpClassName,
           "Second should",
-          "run") &&
-          checkResultTreeDoesNotHaveNodes(root, "First should")
+          "run") && checkResultTreeDoesNotHaveNodes(root, "First should")
     )
   }
 }

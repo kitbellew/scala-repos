@@ -2692,9 +2692,10 @@ trait Trees {
 
     /** Traverses a list of trees with a given owner symbol. */
     def traverseStats(stats: List[Tree], exprOwner: Symbol) {
-      stats foreach (stat =>
-        if (exprOwner != currentOwner) atOwner(exprOwner)(traverse(stat))
-        else traverse(stat))
+      stats foreach
+        (stat =>
+          if (exprOwner != currentOwner) atOwner(exprOwner)(traverse(stat))
+          else traverse(stat))
     }
 
     /** Performs a traversal with a given owner symbol. */
@@ -2790,10 +2791,11 @@ trait Trees {
 
     /** Traverses a list of trees with a given owner symbol. */
     def transformStats(stats: List[Tree], exprOwner: Symbol): List[Tree] =
-      stats mapConserve (stat =>
-        if (exprOwner != currentOwner && stat.isTerm)
-          atOwner(exprOwner)(transform(stat))
-        else transform(stat)) filter (EmptyTree != _)
+      stats mapConserve
+        (stat =>
+          if (exprOwner != currentOwner && stat.isTerm)
+            atOwner(exprOwner)(transform(stat))
+          else transform(stat)) filter (EmptyTree != _)
 
     /** Transforms `Modifiers`. */
     def transformModifiers(mods: Modifiers): Modifiers = {

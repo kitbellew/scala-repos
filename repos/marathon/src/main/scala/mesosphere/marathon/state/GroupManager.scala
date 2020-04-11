@@ -233,8 +233,8 @@ class GroupManager @Singleton @Inject() (
       from: Group,
       to: Group): Group = {
     val portRange = Range(config.localPortMin(), config.localPortMax())
-    var taken = from.transitiveApps.flatMap(_.portNumbers) ++ to.transitiveApps
-      .flatMap(_.portNumbers)
+    var taken = from.transitiveApps.flatMap(_.portNumbers) ++
+      to.transitiveApps.flatMap(_.portNumbers)
 
     def nextGlobalFreePort: Int =
       synchronized {

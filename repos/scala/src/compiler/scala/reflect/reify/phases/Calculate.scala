@@ -16,9 +16,11 @@ trait Calculate {
 
   implicit class RichCalculateType(tpe: Type) {
     def isLocalToReifee =
-      tpe != null && (tpe exists (tp =>
-        (localSymbols contains tp.typeSymbol) || (localSymbols contains tp
-          .termSymbol)))
+      tpe != null &&
+        (tpe exists
+          (tp =>
+            (localSymbols contains tp.typeSymbol) ||
+              (localSymbols contains tp.termSymbol)))
   }
 
   private def localSymbols: Map[Symbol, Int] =
@@ -67,8 +69,8 @@ trait Calculate {
           }
           Some(tree) collect {
             case labelDef: LabelDef =>
-              labelDef.params foreach (param =>
-                bindRelatedSymbol(param.symbol, "labelParam"))
+              labelDef.params foreach
+                (param => bindRelatedSymbol(param.symbol, "labelParam"))
           }
           def bindRelatedSymbol(related: Symbol, name: String): Unit =
             if (related != null && related != NoSymbol) {

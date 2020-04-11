@@ -114,9 +114,8 @@ private object RenderSupport {
     import chunk._
     val renderedSize = // buffer space required for rendering (without trailer)
       CharUtils.numberOfHexDigits(data.length) +
-        (if (extension.isEmpty) 0 else extension.length + 1) +
-        data.length +
-        2 + 2
+        (if (extension.isEmpty) 0 else extension.length + 1) + data.length + 2 +
+        2
     val r = new ByteStringRendering(renderedSize)
     r ~~% data.length
     if (extension.nonEmpty) r ~~ ';' ~~ extension

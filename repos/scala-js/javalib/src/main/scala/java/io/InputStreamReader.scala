@@ -157,9 +157,9 @@ class InputStreamReader(
           inBuf.compact()
           if (!inBuf.hasRemaining) {
             throw new AssertionError(
-              "Scala.js implementation restriction: " +
-                inBuf.capacity + " bytes do not seem to be enough for " +
-                getEncoding + " to decode a single code point. " +
+              "Scala.js implementation restriction: " + inBuf.capacity +
+                " bytes do not seem to be enough for " + getEncoding +
+                " to decode a single code point. " +
                 "Please report this as a bug.")
           }
           inBuf.limit(inBuf.position)

@@ -74,9 +74,8 @@ case class ArraySegment[@spec(Boolean, Long, Double) A](
   override def equals(that: Any): Boolean =
     that match {
       case ArraySegment(`blockid`, `cpath`, ct2, d2, values2) =>
-        ctype == ct2 && defined == d2 && arrayEq[A](
-          values,
-          values2.asInstanceOf[Array[A]])
+        ctype == ct2 && defined == d2 &&
+          arrayEq[A](values, values2.asInstanceOf[Array[A]])
       case _ => false
     }
 

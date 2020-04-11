@@ -67,20 +67,18 @@ object Cast {
           resolvableNullability(fn || forceNullable(fromType, toType), tn)
 
       case (MapType(fromKey, fromValue, fn), MapType(toKey, toValue, tn)) =>
-        canCast(fromKey, toKey) &&
-          (!forceNullable(fromKey, toKey)) &&
+        canCast(fromKey, toKey) && (!forceNullable(fromKey, toKey)) &&
           canCast(fromValue, toValue) &&
           resolvableNullability(fn || forceNullable(fromValue, toValue), tn)
 
       case (StructType(fromFields), StructType(toFields)) =>
-        fromFields.length == toFields.length &&
-          fromFields.zip(toFields).forall {
+        fromFields.length == toFields.length && fromFields.zip(toFields)
+          .forall {
             case (fromField, toField) =>
               canCast(fromField.dataType, toField.dataType) &&
                 resolvableNullability(
-                  fromField.nullable || forceNullable(
-                    fromField.dataType,
-                    toField.dataType),
+                  fromField.nullable ||
+                    forceNullable(fromField.dataType, toField.dataType),
                   toField.nullable)
           }
 
@@ -477,15 +475,14 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val eval = child.gen(ctx)
     val nullSafeCast = nullSafeCastFunction(child.dataType, dataType, ctx)
-    eval.code +
-      castCode(
-        ctx,
-        eval.value,
-        eval.isNull,
-        ev.value,
-        ev.isNull,
-        dataType,
-        nullSafeCast)
+    eval.code + castCode(
+      ctx,
+      eval.value,
+      eval.isNull,
+      ev.value,
+      ev.isNull,
+      dataType,
+      nullSafeCast)
   }
 
   // three function arguments are: child.primitive, result.primitive and result.isNull

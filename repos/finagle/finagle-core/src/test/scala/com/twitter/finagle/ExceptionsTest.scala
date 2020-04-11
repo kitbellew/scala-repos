@@ -127,7 +127,8 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
       Some(ClientId(downstreamId)),
       traceId))
     assert(
-      exc.getMessage() == "foo. Remote Info: Upstream Address: /2.3.4.5:100, Upstream Client Id: upstream, " +
+      exc.getMessage() ==
+        "foo. Remote Info: Upstream Address: /2.3.4.5:100, Upstream Client Id: upstream, " +
         "Downstream Address: /1.2.3.4:100, Downstream Client Id: downstream, " +
         s"Trace Id: $traceId")
   }
@@ -141,8 +142,8 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
     assert(
       ex.getMessage ==
         "No hosts are available for /s/cool/story, " +
-          s"Dtab.base=[${Dtab.base.show}], " +
-          "Dtab.local=[/foo=>/$/com.twitter.butt]. " +
-          "Remote Info: Not Available")
+        s"Dtab.base=[${Dtab.base.show}], " +
+        "Dtab.local=[/foo=>/$/com.twitter.butt]. " +
+        "Remote Info: Not Available")
   }
 }

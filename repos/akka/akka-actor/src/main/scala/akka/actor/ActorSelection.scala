@@ -230,8 +230,8 @@ object ActorSelection {
                   else {
                     val m = sel.copy(
                       elements = iter.toVector,
-                      wildcardFanOut = sel.wildcardFanOut || matchingChildren
-                        .size > 1)
+                      wildcardFanOut = sel.wildcardFanOut ||
+                        matchingChildren.size > 1)
                     matchingChildren.foreach(c ⇒
                       deliverSelection(
                         c.asInstanceOf[InternalActorRef],

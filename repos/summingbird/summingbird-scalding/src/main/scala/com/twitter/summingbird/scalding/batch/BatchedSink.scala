@@ -106,9 +106,9 @@ trait BatchedSink[T] extends Sink[T] {
           : Try[((Interval[Timestamp], Mode), FlowToPipe[T])] = {
         val (aBatches, aFlows) = existing.unzip
         val flows = aFlows ++ (optBuilt.map { _._2 })
-        val batches = aBatches ++ (optBuilt.map { pair =>
-          BatchID.toIterable(pair._1)
-        }.getOrElse(Iterable.empty))
+        val batches = aBatches ++
+          (optBuilt.map { pair => BatchID.toIterable(pair._1) }
+            .getOrElse(Iterable.empty))
 
         if (flows.isEmpty)
           Left(List(

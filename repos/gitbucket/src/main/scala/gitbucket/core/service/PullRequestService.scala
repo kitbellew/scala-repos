@@ -98,8 +98,7 @@ trait PullRequestService {
       case (t1, t2) =>
         (t1.requestUserName === userName.bind) &&
           (t1.requestRepositoryName === repositoryName.bind) &&
-          (t1.requestBranch === branch.bind) &&
-          (t2.closed === closed.bind)
+          (t1.requestBranch === branch.bind) && (t2.closed === closed.bind)
     }.map { case (t1, t2) => t1 }.list
 
   /**
@@ -195,21 +194,22 @@ object PullRequestService {
       commitIdTo: String) {
 
     val statuses: List[CommitStatus] =
-      commitStatues ++ (branchProtection.contexts.toSet -- commitStatues
-        .map(_.context).toSet).map(CommitStatus.pending(
-        branchProtection.owner,
-        branchProtection.repository,
-        _))
-    val hasRequiredStatusProblem = needStatusCheck && branchProtection.contexts
-      .exists(context =>
-        statuses.find(_.context == context).map(_.state) != Some(
-          CommitState.SUCCESS))
-    val hasProblem = hasRequiredStatusProblem || hasConflict || (!statuses
-      .isEmpty && CommitState
-      .combine(statuses.map(_.state).toSet) != CommitState.SUCCESS)
+      commitStatues ++
+        (branchProtection.contexts.toSet -- commitStatues.map(_.context).toSet)
+          .map(CommitStatus.pending(
+            branchProtection.owner,
+            branchProtection.repository,
+            _))
+    val hasRequiredStatusProblem = needStatusCheck &&
+      branchProtection.contexts.exists(context =>
+        statuses.find(_.context == context).map(_.state) !=
+          Some(CommitState.SUCCESS))
+    val hasProblem = hasRequiredStatusProblem || hasConflict ||
+      (!statuses.isEmpty &&
+        CommitState.combine(statuses.map(_.state).toSet) != CommitState.SUCCESS)
     val canUpdate = branchIsOutOfDate && !hasConflict
-    val canMerge =
-      hasMergePermission && !hasConflict && !hasRequiredStatusProblem
+    val canMerge = hasMergePermission && !hasConflict &&
+      !hasRequiredStatusProblem
     lazy val commitStateSummary: (CommitState, String) = {
       val stateMap = statuses.groupBy(_.state)
       val state = CommitState.combine(stateMap.keySet)

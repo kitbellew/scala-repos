@@ -249,8 +249,8 @@ class FileHandler(
       val rotatedFiles = new File(filename).getParentFile()
         .listFiles(new FilenameFilter {
           def accept(f: File, fname: String): Boolean =
-            fname != name && fname.startsWith(prefixName) && fname
-              .endsWith(filenameSuffix)
+            fname != name && fname.startsWith(prefixName) &&
+              fname.endsWith(filenameSuffix)
         }).sortBy(_.getName)
 
       val toDeleteCount = math.max(0, rotatedFiles.length - rotateCount)
@@ -261,8 +261,8 @@ class FileHandler(
   def roll() =
     synchronized {
       stream.close()
-      val newFilename =
-        filenamePrefix + "-" + timeSuffix(new Date(openTime)) + filenameSuffix
+      val newFilename = filenamePrefix + "-" + timeSuffix(new Date(openTime)) +
+        filenameSuffix
       new File(filename).renameTo(new File(newFilename))
       openLog()
       removeOldFiles()

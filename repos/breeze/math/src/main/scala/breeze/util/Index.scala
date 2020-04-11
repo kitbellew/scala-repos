@@ -313,8 +313,8 @@ class OptionIndex[T](inner: Index[T]) extends Index[Option[T]] {
   }
 
   def pairs =
-    inner.pairs.map { case (l, i) => Some(l) -> i } ++ Iterator(
-      None -> inner.size)
+    inner.pairs.map { case (l, i) => Some(l) -> i } ++
+      Iterator(None -> inner.size)
 
   def iterator = inner.iterator.map { Some(_) } ++ Iterator(None)
 

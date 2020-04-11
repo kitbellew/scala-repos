@@ -141,8 +141,7 @@ trait Config[T] extends (() => T) {
         for (method <- nullaryMethods) {
           val name = method.getName
           val rt = method.getReturnType
-          if (name != "required" &&
-              name != "optional" &&
+          if (name != "required" && name != "optional" &&
               !name.endsWith("$outer") && // no loops!
               interestingReturnTypes.exists(_.isAssignableFrom(rt))) {
             method.invoke(config) match {

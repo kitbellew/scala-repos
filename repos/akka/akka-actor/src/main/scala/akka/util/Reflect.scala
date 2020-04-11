@@ -132,8 +132,8 @@ private[akka] object Reflect {
   def findMarker(root: Class[_], marker: Class[_]): Type = {
     @tailrec
     def rec(curr: Class[_]): Type = {
-      if (curr.getSuperclass != null && marker
-            .isAssignableFrom(curr.getSuperclass)) rec(curr.getSuperclass)
+      if (curr.getSuperclass != null &&
+          marker.isAssignableFrom(curr.getSuperclass)) rec(curr.getSuperclass)
       else
         curr.getGenericInterfaces collectFirst {
           case c: Class[_] if marker isAssignableFrom c ⇒ c

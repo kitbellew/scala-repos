@@ -98,9 +98,8 @@ trait ClassConstruction {
 
   property("unquote type name into class parents") = forAll {
     (name: TypeName, parent: TypeName) =>
-      q"class $name extends $parent" ≈ classWith(
-        name,
-        parents = List(Ident(parent)))
+      q"class $name extends $parent" ≈
+        classWith(name, parents = List(Ident(parent)))
   }
 
   property("param flags are consistent with raw code") = test {
@@ -205,21 +204,17 @@ trait TypeDefConstruction {
   self: QuasiquoteProperties =>
   property("unquote type name into typedef") = forAll {
     (name1: TypeName, name2: TypeName) =>
-      q"type $name1 = $name2" ≈ TypeDef(
-        Modifiers(),
-        name1,
-        List(),
-        Ident(name2))
+      q"type $name1 = $name2" ≈
+        TypeDef(Modifiers(), name1, List(), Ident(name2))
   }
 
   property("unquote type names into type bounds") = forAll {
     (T1: TypeName, T2: TypeName, T3: TypeName) =>
-      q"type $T1 >: $T2 <: $T3" ≈
-        TypeDef(
-          Modifiers(DEFERRED),
-          T1,
-          List(),
-          TypeBoundsTree(Ident(T2), Ident(T3)))
+      q"type $T1 >: $T2 <: $T3" ≈ TypeDef(
+        Modifiers(DEFERRED),
+        T1,
+        List(),
+        TypeBoundsTree(Ident(T2), Ident(T3)))
   }
 
   property("unquote trees names into type bounds") = forAll {
@@ -235,70 +230,55 @@ trait TypeDefConstruction {
 
   property("unquote tparams into typedef (2)") = forAll {
     (T: TypeName, targs1: List[TypeDef], targs2: List[TypeDef], t: Tree) =>
-      q"type $T[..$targs1, ..$targs2] = $t" ≈ TypeDef(
-        Modifiers(),
-        T,
-        targs1 ++ targs2,
-        t)
+      q"type $T[..$targs1, ..$targs2] = $t" ≈
+        TypeDef(Modifiers(), T, targs1 ++ targs2, t)
   }
 
   property("unquote tparams into typedef (3)") = forAll {
     (T: TypeName, targ: TypeDef, targs: List[TypeDef], t: Tree) =>
-      q"type $T[$targ, ..$targs] = $t" ≈ TypeDef(
-        Modifiers(),
-        T,
-        targ :: targs,
-        t)
+      q"type $T[$targ, ..$targs] = $t" ≈
+        TypeDef(Modifiers(), T, targ :: targs, t)
   }
 
   property("unquote typename into typedef with default bounds") = forAll {
     (T1: TypeName, T2: TypeName, t: Tree) =>
-      q"type $T1[$T2 >: Any <: Nothing] = $t" ≈
-        TypeDef(
-          Modifiers(),
-          T1,
-          List(TypeDef(
-            Modifiers(PARAM),
-            T2,
-            List(),
-            TypeBoundsTree(
-              Ident(TypeName("Any")),
-              Ident(TypeName("Nothing"))))),
-          t)
+      q"type $T1[$T2 >: Any <: Nothing] = $t" ≈ TypeDef(
+        Modifiers(),
+        T1,
+        List(TypeDef(
+          Modifiers(PARAM),
+          T2,
+          List(),
+          TypeBoundsTree(Ident(TypeName("Any")), Ident(TypeName("Nothing"))))),
+        t)
   }
 
   property("unquote type names into compound type tree") = forAll {
     (T: TypeName, A: TypeName, B: TypeName) =>
-      q"type $T = $A with $B" ≈
-        TypeDef(
-          Modifiers(),
-          T,
-          List(),
-          CompoundTypeTree(Template(
-            List(Ident(A), Ident(B)),
-            ValDef(
-              Modifiers(PRIVATE),
-              termNames.WILDCARD,
-              TypeTree(),
-              EmptyTree),
-            List())))
+      q"type $T = $A with $B" ≈ TypeDef(
+        Modifiers(),
+        T,
+        List(),
+        CompoundTypeTree(Template(
+          List(Ident(A), Ident(B)),
+          ValDef(Modifiers(PRIVATE), termNames.WILDCARD, TypeTree(), EmptyTree),
+          List())))
   }
 
   property("unquote trees into existential type tree") = forAll {
     (T1: TypeName, T2: TypeName, X: TypeName, Lo: TypeName, Hi: TypeName) =>
-      q"type $T1 = $T2[$X] forSome { type $X >: $Lo <: $Hi }" ≈
-        TypeDef(
-          Modifiers(),
-          T1,
-          List(),
-          ExistentialTypeTree(
-            AppliedTypeTree(Ident(T2), List(Ident(X))),
-            List(TypeDef(
-              Modifiers(DEFERRED),
-              X,
-              List(),
-              TypeBoundsTree(Ident(Lo), Ident(Hi)))))
-        )
+      q"type $T1 = $T2[$X] forSome { type $X >: $Lo <: $Hi }" ≈ TypeDef(
+        Modifiers(),
+        T1,
+        List(),
+        ExistentialTypeTree(
+          AppliedTypeTree(Ident(T2), List(Ident(X))),
+          List(TypeDef(
+            Modifiers(DEFERRED),
+            X,
+            List(),
+            TypeBoundsTree(Ident(Lo), Ident(Hi)))))
+      )
   }
 
   property("unquote tree into singleton type tree") = forAll {
@@ -308,12 +288,11 @@ trait TypeDefConstruction {
 
   property("unquote into applied type tree") = forAll {
     (T1: TypeName, T2: TypeName, args: List[Tree]) =>
-      q"type $T1 = $T2[..$args]" ≈
-        TypeDef(
-          Modifiers(),
-          T1,
-          List(),
-          if (args.nonEmpty) AppliedTypeTree(Ident(T2), args) else Ident(T2))
+      q"type $T1 = $T2[..$args]" ≈ TypeDef(
+        Modifiers(),
+        T1,
+        List(),
+        if (args.nonEmpty) AppliedTypeTree(Ident(T2), args) else Ident(T2))
   }
 }
 

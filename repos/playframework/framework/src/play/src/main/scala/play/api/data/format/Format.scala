@@ -223,8 +223,8 @@ object Formats {
 
       def unbind(key: String, value: Date) =
         Map(
-          key -> formatter
-            .print(new org.joda.time.DateTime(value).withZone(jodaTimeZone)))
+          key -> formatter.print(
+            new org.joda.time.DateTime(value).withZone(jodaTimeZone)))
     }
 
   /**

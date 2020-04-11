@@ -54,8 +54,8 @@ class WebAPIKeyFinderSpec extends APIKeyFinderSpec[Future] with AkkaDefaults {
     val client = new HttpClient[ByteChunk] {
       def isDefinedAt(req: HttpRequest[ByteChunk]) = true
       def apply(req: HttpRequest[ByteChunk]) =
-        service.service(req) getOrElse Future(
-          HttpResponse(HttpStatus(NotFound)))
+        service.service(req) getOrElse
+          Future(HttpResponse(HttpStatus(NotFound)))
     }
 
     val apiKeyFinder = new WebAPIKeyFinder {

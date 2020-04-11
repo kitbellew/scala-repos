@@ -396,9 +396,8 @@ class ScImplicitlyConvertible(
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
                       f.typeParameters.find(tp =>
-                        (tp.name, ScalaPsiUtil.getPsiElementId(tp)) == (
-                          tpt.name, tpt.getId
-                        )) match {
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp)) ==
+                          (tpt.name, tpt.getId)) match {
                         case None => (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true
@@ -448,8 +447,8 @@ class ScImplicitlyConvertible(
                     })
 
                     def probablyHasDepententMethodTypes: Boolean = {
-                      if (f.paramClauses.clauses.length != 2 || !f.paramClauses
-                            .clauses.last.isImplicit) return false
+                      if (f.paramClauses.clauses.length != 2 ||
+                          !f.paramClauses.clauses.last.isImplicit) return false
                       val implicitClauseParameters = f.paramClauses.clauses.last
                         .parameters
                       var res = false
@@ -477,8 +476,8 @@ class ScImplicitlyConvertible(
                               None,
                               place,
                               check = false,
-                              abstractSubstitutor =
-                                subst followed dependentSubst followed unSubst)
+                              abstractSubstitutor = subst followed
+                                dependentSubst followed unSubst)
                           inferredParams.zip(expr).map {
                             case (param: Parameter, expr: Expression) =>
                               (
@@ -607,13 +606,13 @@ class ScImplicitlyConvertible(
               if (clauses.isEmpty) {
                 val rt = subst.subst(f.returnType.getOrElse(return true))
                 if (funType == null || !rt.conforms(funType)) return true
-              } else if (clauses.head.parameters.length != 1 || clauses.head
-                           .isImplicit) return true
+              } else if (clauses.head.parameters.length != 1 ||
+                         clauses.head.isImplicit) return true
               addResult(new ScalaResolveResult(f, subst, getImports(state)))
             case b: ScBindingPattern => ScalaPsiUtil.nameContext(b) match {
                 case d: ScDeclaredElementsHolder
-                    if (d.isInstanceOf[ScValue] || d
-                      .isInstanceOf[ScVariable]) &&
+                    if (d.isInstanceOf[ScValue] ||
+                      d.isInstanceOf[ScVariable]) &&
                       d.asInstanceOf[ScModifierListOwner]
                         .hasModifierProperty("implicit") =>
                   if (!ResolveUtils
@@ -650,9 +649,8 @@ class ScImplicitlyConvertible(
   }
 
   private def isConformsMethod(f: ScFunction): Boolean = {
-    (f.name == "conforms" || f.name == "$conforms") &&
-    Option(f.containingClass).flatMap(cls => Option(cls.qualifiedName))
-      .contains("scala.Predef")
+    (f.name == "conforms" || f.name == "$conforms") && Option(f.containingClass)
+      .flatMap(cls => Option(cls.qualifiedName)).contains("scala.Predef")
   }
 }
 
@@ -673,8 +671,8 @@ object ScImplicitlyConvertible {
 
   val IMPLICIT_REFERENCE_NAME = "implicitReferenceName"
   val IMPLICIT_EXPRESSION_NAME = "implicitExpressionName"
-  val IMPLICIT_CALL_TEXT =
-    IMPLICIT_REFERENCE_NAME + "(" + IMPLICIT_EXPRESSION_NAME + ")"
+  val IMPLICIT_CALL_TEXT = IMPLICIT_REFERENCE_NAME + "(" +
+    IMPLICIT_EXPRESSION_NAME + ")"
 
   val FAKE_RESOLVE_RESULT_KEY: Key[ScalaResolveResult] = Key
     .create("fake.resolve.result.key")

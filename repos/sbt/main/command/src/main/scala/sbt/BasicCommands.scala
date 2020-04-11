@@ -89,8 +89,8 @@ object BasicCommands {
     val notQuoted = (NotQuoted ~ any.*) map {
       case (nq, s) => (nq +: s).mkString
     }
-    val quotedOrUnquotedSingleArgument =
-      Space ~> (StringVerbatim | StringEscapable | notQuoted)
+    val quotedOrUnquotedSingleArgument = Space ~>
+      (StringVerbatim | StringEscapable | notQuoted)
 
     applyEffect(token(quotedOrUnquotedSingleArgument ?? "" examples ("", " ")))(
       runCompletions(state))
@@ -178,10 +178,9 @@ object BasicCommands {
       case (state, (cp, args)) =>
         val parentLoader = getClass.getClassLoader
         state.log.info(
-          "Applying State transformations " + args.mkString(", ") + (
-            if (cp.isEmpty) ""
-            else " from " + cp.mkString(File.pathSeparator)
-          ))
+          "Applying State transformations " + args.mkString(", ") +
+            (if (cp.isEmpty) ""
+             else " from " + cp.mkString(File.pathSeparator)))
         val loader =
           if (cp.isEmpty) parentLoader
           else toLoader(cp.map(f => new File(f)), parentLoader)
@@ -190,12 +189,11 @@ object BasicCommands {
         (state /: loaded)((s, obj) => obj(s))
     }
   def callParser: Parser[(Seq[String], Seq[String])] =
-    token(Space) ~> ((classpathOptionParser ?? Nil) ~ rep1sep(
-      className,
-      token(Space)))
+    token(Space) ~>
+      ((classpathOptionParser ?? Nil) ~ rep1sep(className, token(Space)))
   private[this] def className: Parser[String] = {
-    val base =
-      StringBasic & not('-' ~> any.*, "Class name cannot start with '-'.")
+    val base = StringBasic &
+      not('-' ~> any.*, "Class name cannot start with '-'.")
     def single(s: String) = Completions.single(Completion.displayOnly(s))
     val compl = TokenCompletions.fixed((seen, level) =>
       if (seen.startsWith("-")) Completions.nil else single("<class name>"))
@@ -215,8 +213,8 @@ object BasicCommands {
         s,
         Watched.Configuration,
         "Continuous execution not configured.") { w =>
-        val repeat = ContinuousExecutePrefix + (if (arg.startsWith(" ")) arg
-                                                else " " + arg)
+        val repeat = ContinuousExecutePrefix +
+          (if (arg.startsWith(" ")) arg else " " + arg)
         Watched.executeContinuously(w, s, arg, repeat)
       }
     }
@@ -278,8 +276,8 @@ object BasicCommands {
       case Right(from) =>
         val notFound = notReadable(from)
         if (notFound.isEmpty)
-          readLines(
-            from) ::: s // this means that all commands from all files are loaded, parsed, and inserted before any are executed
+          readLines(from) :::
+            s // this means that all commands from all files are loaded, parsed, and inserted before any are executed
         else {
           s.log.error(
             "Command file(s) not readable: \n\t" + notFound.mkString("\n\t"))
@@ -303,8 +301,8 @@ object BasicCommands {
       val name = token(OpOrID.examples(aliasNames(s): _*))
       val assign = token(OptSpace ~ '=' ~ OptSpace)
       val sfree = removeAliases(s)
-      val to = matched(sfree.combinedParser, partial = true)
-        .failOnException | any.+.string
+      val to = matched(sfree.combinedParser, partial = true).failOnException |
+        any.+.string
       val base = (OptSpace ~> (name ~ (assign ~> to.?).?).?)
       applyEffect(base)(t => runAlias(s, t))
     }

@@ -23,8 +23,8 @@ class FlowInitialDelaySpec extends AkkaSpec {
         1.second) should ===(1 to 10)
     }
 
-    "delay elements by the specified time but not more" in Utils
-      .assertAllStagesStopped {
+    "delay elements by the specified time but not more" in
+      Utils.assertAllStagesStopped {
         a[TimeoutException] shouldBe thrownBy {
           Await.result(
             Source(1 to 10).initialDelay(2.seconds).initialTimeout(1.second)
@@ -38,8 +38,8 @@ class FlowInitialDelaySpec extends AkkaSpec {
           2.seconds)
       }
 
-    "properly ignore timer while backpressured" in Utils
-      .assertAllStagesStopped {
+    "properly ignore timer while backpressured" in
+      Utils.assertAllStagesStopped {
         val probe = TestSubscriber.probe[Int]()
         Source(1 to 10).initialDelay(0.5.second)
           .runWith(Sink.fromSubscriber(probe))

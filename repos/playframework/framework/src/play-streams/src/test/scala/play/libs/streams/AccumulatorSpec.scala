@@ -74,8 +74,8 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
         await(fAcc.run(source, m)) must throwA[ExecutionException].like {
           case ex =>
             val cause = ex.getCause
-            cause.isInstanceOf[RuntimeException] must beTrue and (cause
-              .getMessage must_== "failed")
+            cause.isInstanceOf[RuntimeException] must beTrue and
+              (cause.getMessage must_== "failed")
         }
       }
 
@@ -88,8 +88,8 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
         await(fAcc.run(errorSource, m)) must throwA[ExecutionException].like {
           case ex =>
             val cause = ex.getCause
-            cause.isInstanceOf[RuntimeException] must beTrue and (cause
-              .getMessage must_== "error")
+            cause.isInstanceOf[RuntimeException] must beTrue and
+              (cause.getMessage must_== "error")
         }
       }
     }

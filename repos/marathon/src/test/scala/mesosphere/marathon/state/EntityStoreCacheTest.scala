@@ -112,8 +112,8 @@ class EntityStoreCacheTest
     "Fetching a versioned entry will succeed with querying store in direct mode") {
     Given("A UNfilled entityCache")
     val store = mock[EntityStore[TestApp]]
-    store.fetch("b:1970-01-01T00:00:00.000Z") returns Future
-      .successful(Some(TestApp("b")))
+    store.fetch("b:1970-01-01T00:00:00.000Z") returns
+      Future.successful(Some(TestApp("b")))
     entityCache = new EntityStoreCache[TestApp](store)
 
     When("Fetching an existing entry with version")
@@ -210,8 +210,9 @@ class EntityStoreCacheTest
     Given("A pre-filled entityCache")
     val names = Set("a", "b", "c")
     val now = Timestamp.now()
-    content ++= (names.map(t => t -> TestApp(t)) ++ names
-      .map(t => s"$t:$now" -> TestApp(t, now)))
+    content ++=
+      (names.map(t => t -> TestApp(t)) ++
+        names.map(t => s"$t:$now" -> TestApp(t, now)))
     content should have size 6
     entityCache.onElected.futureValue
 
@@ -229,8 +230,9 @@ class EntityStoreCacheTest
     Given("A store with three entries")
     val names = Set("a", "b", "c")
     val now = Timestamp.now()
-    content ++= (names.map(t => t -> TestApp(t)) ++ names
-      .map(t => s"$t:$now" -> TestApp(t, now)))
+    content ++=
+      (names.map(t => t -> TestApp(t)) ++
+        names.map(t => s"$t:$now" -> TestApp(t, now)))
     content should have size 6
 
     When("Get all names in the cache")

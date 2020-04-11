@@ -166,8 +166,8 @@ object Act {
   def config(confs: Set[String]): Parser[ParsedAxis[String]] = {
     val sep = ':' !!! "Expected ':' (if selecting a configuration)"
     token(
-      (GlobalString ^^^ ParsedGlobal | value(
-        examples(ID, confs, "configuration"))) <~ sep) ?? Omitted
+      (GlobalString ^^^ ParsedGlobal |
+        value(examples(ID, confs, "configuration"))) <~ sep) ?? Omitted
   }
 
   def configs(
@@ -223,8 +223,8 @@ object Act {
       knownKeys: Map[String, AttributeKey[_]],
       knownValues: IMap[AttributeKey, Set]): Parser[ScopeAxis[AttributeMap]] = {
     val extrasP = extrasParser(knownKeys, knownValues)
-    val extras =
-      token('(', hide = _ == 1 && knownValues.isEmpty) ~> extrasP <~ token(')')
+    val extras = token('(', hide = _ == 1 && knownValues.isEmpty) ~> extrasP <~
+      token(')')
     optionalAxis(extras, Global)
   }
 
@@ -239,12 +239,11 @@ object Act {
     val normKeys = taskKeys(_.label)
     val valid = allKnown ++ normKeys ++ taskKeys(_.rawLabel)
     val suggested = normKeys.map(_._1).toSet
-    val keyP = filterStrings(
-      examples(ID, suggested, "key"),
-      valid.keySet,
-      "key") map valid
-    (token(value(keyP) | GlobalString ^^^ ParsedGlobal) <~ token(
-      "::".id)) ?? Omitted
+    val keyP =
+      filterStrings(examples(ID, suggested, "key"), valid.keySet, "key") map
+        valid
+    (token(value(keyP) | GlobalString ^^^ ParsedGlobal) <~ token("::".id)) ??
+      Omitted
   }
   def resolveTask(task: ParsedAxis[AttributeKey[_]]): Option[AttributeKey[_]] =
     task match {
@@ -266,15 +265,15 @@ object Act {
     }
     if (validKeys.isEmpty) failure("No valid extra keys.")
     else
-      rep1sep(extraParser(validKeys, knownValues), spacedComma) map AttributeMap
-        .apply
+      rep1sep(extraParser(validKeys, knownValues), spacedComma) map
+        AttributeMap.apply
   }
 
   def extraParser(
       knownKeys: Map[String, AttributeKey[_]],
       knownValues: IMap[AttributeKey, Set]): Parser[AttributeEntry[_]] = {
-    val keyp =
-      knownIDParser(knownKeys, "Not a valid extra key") <~ token(':' ~ OptSpace)
+    val keyp = knownIDParser(knownKeys, "Not a valid extra key") <~
+      token(':' ~ OptSpace)
     keyp flatMap {
       case key: AttributeKey[t] =>
         val valueMap: Map[String, t] = knownValues(key)
@@ -291,11 +290,8 @@ object Act {
       knownPlugins: Map[String, T],
       label: String): Parser[T] = {
     val pluginLabelParser = rep1sep(ID, '.').map(_.mkString("."))
-    token(
-      examplesStrict(
-        pluginLabelParser,
-        knownPlugins.keys.toSet,
-        label)) map knownPlugins
+    token(examplesStrict(pluginLabelParser, knownPlugins.keys.toSet, label)) map
+      knownPlugins
   }
 
   def projectRef(
@@ -372,8 +368,8 @@ object Act {
 
   private[this] def actionParser: Parser[ActAction] =
     token(
-      ((ShowCommand ^^^ ShowAction) |
-        (MultiTaskCommand ^^^ MultiAction)) <~ Space) ?? SingleAction
+      ((ShowCommand ^^^ ShowAction) | (MultiTaskCommand ^^^ MultiAction)) <~
+        Space) ?? SingleAction
 
   @deprecated("No longer used.", "0.13.2")
   def showParser = token((ShowCommand ~ Space) ^^^ true) ?? false

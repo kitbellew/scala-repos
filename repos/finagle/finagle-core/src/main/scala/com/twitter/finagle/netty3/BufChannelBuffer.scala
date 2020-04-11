@@ -193,9 +193,8 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
   }
 
   def getBytes(index: Int, dst: Array[Byte], dstIndex: Int, length: Int) {
-    if (index < 0 || dstIndex < 0 || index + length > buf
-          .length || dstIndex + length > dst.length)
-      throw new IndexOutOfBoundsException()
+    if (index < 0 || dstIndex < 0 || index + length > buf.length ||
+        dstIndex + length > dst.length) throw new IndexOutOfBoundsException()
 
     buf.slice(index, index + length).write(dst, dstIndex)
   }
@@ -286,13 +285,9 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
     buf.slice(index, index + 3).write(bytes, 0)
     endianness match {
       case ByteOrder.BIG_ENDIAN =>
-        ((bytes(0) & 0xff) << 16) |
-          ((bytes(1) & 0xff) << 8) |
-          (bytes(2) & 0xff)
+        ((bytes(0) & 0xff) << 16) | ((bytes(1) & 0xff) << 8) | (bytes(2) & 0xff)
       case ByteOrder.LITTLE_ENDIAN =>
-        (bytes(0) & 0xff) |
-          ((bytes(1) & 0xff) << 8) |
-          ((bytes(2) & 0xff) << 16)
+        (bytes(0) & 0xff) | ((bytes(1) & 0xff) << 8) | ((bytes(2) & 0xff) << 16)
     }
   }
 
@@ -305,15 +300,11 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
     buf.slice(index, index + 4).write(bytes, 0)
     endianness match {
       case ByteOrder.BIG_ENDIAN =>
-        ((bytes(0) & 0xff) << 24) |
-          ((bytes(1) & 0xff) << 16) |
-          ((bytes(2) & 0xff) << 8) |
-          (bytes(3) & 0xff)
+        ((bytes(0) & 0xff) << 24) | ((bytes(1) & 0xff) << 16) |
+          ((bytes(2) & 0xff) << 8) | (bytes(3) & 0xff)
       case ByteOrder.LITTLE_ENDIAN =>
-        (bytes(0) & 0xff) |
-          ((bytes(1) & 0xff) << 8) |
-          ((bytes(2) & 0xff) << 16) |
-          ((bytes(3) & 0xff) << 24)
+        (bytes(0) & 0xff) | ((bytes(1) & 0xff) << 8) |
+          ((bytes(2) & 0xff) << 16) | ((bytes(3) & 0xff) << 24)
     }
   }
 
@@ -335,10 +326,8 @@ private class BufChannelBuffer(val buf: Buf, endianness: ByteOrder)
           ((bytes(6) & 0xff).toLong << 8) |
           (bytes(7) & 0xff).toLong
       case ByteOrder.LITTLE_ENDIAN =>
-        (bytes(0) & 0xff).toLong |
-          ((bytes(1) & 0xff).toLong << 8) |
-          ((bytes(2) & 0xff).toLong << 16) |
-          ((bytes(3) & 0xff).toLong << 24)
+        (bytes(0) & 0xff).toLong | ((bytes(1) & 0xff).toLong << 8) |
+          ((bytes(2) & 0xff).toLong << 16) | ((bytes(3) & 0xff).toLong << 24)
         ((bytes(4) & 0xff).toLong << 32)
         ((bytes(5) & 0xff).toLong << 40)
         ((bytes(6) & 0xff).toLong << 48)

@@ -47,27 +47,28 @@ class TestPublisherSubscriberSpec extends AkkaSpec {
       }
     }
 
-    "handle gracefully partial function that is not suitable" in assertAllStagesStopped {
-      val upstream = TestPublisher.manualProbe[Int]()
-      val downstream = TestSubscriber.manualProbe[Int]()
-      Source.fromPublisher(upstream)
-        .runWith(Sink.asPublisher(false))(materializer).subscribe(downstream)
-      val upstreamSubscription = upstream.expectSubscription()
-      val downstreamSubscription: Subscription = downstream.expectEventPF {
-        case OnSubscribe(sub) ⇒ sub
-      }
+    "handle gracefully partial function that is not suitable" in
+      assertAllStagesStopped {
+        val upstream = TestPublisher.manualProbe[Int]()
+        val downstream = TestSubscriber.manualProbe[Int]()
+        Source.fromPublisher(upstream)
+          .runWith(Sink.asPublisher(false))(materializer).subscribe(downstream)
+        val upstreamSubscription = upstream.expectSubscription()
+        val downstreamSubscription: Subscription = downstream.expectEventPF {
+          case OnSubscribe(sub) ⇒ sub
+        }
 
-      upstreamSubscription.sendNext(1)
-      downstreamSubscription.request(1)
-      an[AssertionError] should be thrownBy upstream.expectEventPF {
-        case Subscribe(e) ⇒ e
-      }
-      an[AssertionError] should be thrownBy downstream.expectNextPF[String] {
-        case e: String ⇒ e
-      }
+        upstreamSubscription.sendNext(1)
+        downstreamSubscription.request(1)
+        an[AssertionError] should be thrownBy upstream.expectEventPF {
+          case Subscribe(e) ⇒ e
+        }
+        an[AssertionError] should be thrownBy downstream.expectNextPF[String] {
+          case e: String ⇒ e
+        }
 
-      upstreamSubscription.sendComplete()
-    }
+        upstreamSubscription.sendComplete()
+      }
 
   }
 }

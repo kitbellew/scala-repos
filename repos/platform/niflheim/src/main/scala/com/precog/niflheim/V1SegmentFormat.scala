@@ -159,8 +159,8 @@ object V1SegmentFormat extends SegmentFormat {
     private def writeBooleanSegment(
         channel: WritableByteChannel,
         segment: BooleanSegment) = {
-      val maxSize = Codec.BitSetCodec.maxSize(segment.defined) + Codec
-        .BitSetCodec.maxSize(segment.values) + 4
+      val maxSize = Codec.BitSetCodec.maxSize(segment.defined) +
+        Codec.BitSetCodec.maxSize(segment.values) + 4
       writeChunk(channel, maxSize) { buffer =>
         buffer.putInt(segment.length)
         Codec.BitSetCodec.writeUnsafe(segment.defined, buffer)

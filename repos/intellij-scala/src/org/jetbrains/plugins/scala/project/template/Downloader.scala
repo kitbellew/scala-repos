@@ -17,8 +17,7 @@ object Downloader extends Downloader {
     download(version, listener)
 
   override protected def sbtCommandsFor(version: String) =
-    Seq(s"""set scalaVersion := "$version"""") ++
-      super.sbtCommandsFor(version)
+    Seq(s"""set scalaVersion := "$version"""") ++ super.sbtCommandsFor(version)
 }
 
 trait Downloader {
@@ -56,8 +55,8 @@ trait Downloader {
   }
 
   private def osCommandsFor(file: File) = {
-    val launcher = jarWith[this.type].getParentFile
-      .getParentFile / "launcher" / "sbt-launch.jar"
+    val launcher = jarWith[this.type].getParentFile.getParentFile / "launcher" /
+      "sbt-launch.jar"
 
     if (launcher.exists()) {
       Seq(

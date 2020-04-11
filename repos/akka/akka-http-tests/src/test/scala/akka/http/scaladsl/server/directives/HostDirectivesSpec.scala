@@ -12,9 +12,8 @@ class HostDirectivesSpec extends FreeSpec with GenericRoutingSpec {
   "The 'host' directive" - {
     "in its simple String form should" - {
       "block requests to unmatched hosts" in {
-        Get() ~> Host("spray.io") ~> {
-          host("spray.com") { completeOk }
-        } ~> check { handled shouldEqual false }
+        Get() ~> Host("spray.io") ~> { host("spray.com") { completeOk } } ~>
+          check { handled shouldEqual false }
       }
 
       "let requests to matching hosts pass" in {
@@ -32,9 +31,8 @@ class HostDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       }
 
       "let requests to matching hosts pass and extract the full host" in {
-        Get() ~> Host("spray.io") ~> {
-          host("spra.*".r) { echoComplete }
-        } ~> check { responseAs[String] shouldEqual "spray.io" }
+        Get() ~> Host("spray.io") ~> { host("spra.*".r) { echoComplete } } ~>
+          check { responseAs[String] shouldEqual "spray.io" }
       }
     }
 
@@ -46,9 +44,8 @@ class HostDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       }
 
       "let requests to matching hosts pass and extract the full host" in {
-        Get() ~> Host("spray.io") ~> {
-          host("spra(.*)".r) { echoComplete }
-        } ~> check { responseAs[String] shouldEqual "y.io" }
+        Get() ~> Host("spray.io") ~> { host("spra(.*)".r) { echoComplete } } ~>
+          check { responseAs[String] shouldEqual "y.io" }
       }
     }
   }

@@ -284,8 +284,8 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       }.size == 1)
 
       assert(
-        Await.result(client.complex_return("a string")).arg_two
-          == "%s".format(Trace.id.spanId.toString))
+        Await.result(client.complex_return("a string")).arg_two ==
+          "%s".format(Trace.id.spanId.toString))
 
       intercept[AnException] { Await.result(client.add(1, 2)) }
       Await.result(client.add_one(1, 2)) // don't block!

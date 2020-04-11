@@ -411,8 +411,8 @@ object ProducerFeatureTest {
             context.sender() ! akka.actor.Status.Failure(
               new AkkaCamelException(new Exception("failure"), msg.headers))
           case _ ⇒
-            context.sender() ! (msg
-              .mapBody { body: String ⇒ "received %s" format body })
+            context.sender() !
+              (msg.mapBody { body: String ⇒ "received %s" format body })
         }
     }
   }
@@ -420,8 +420,8 @@ object ProducerFeatureTest {
   class ReplyingForwardTarget extends Actor {
     def receive = {
       case msg: CamelMessage ⇒
-        context.sender() ! (msg
-          .copy(headers = msg.headers + ("test" -> "result")))
+        context.sender() !
+          (msg.copy(headers = msg.headers + ("test" -> "result")))
       case msg: akka.actor.Status.Failure ⇒ msg.cause match {
           case e: AkkaCamelException ⇒
             context.sender() ! Status.Failure(

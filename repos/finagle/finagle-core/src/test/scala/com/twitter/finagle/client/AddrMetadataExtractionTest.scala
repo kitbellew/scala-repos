@@ -35,8 +35,8 @@ class AddrMetadataExtractionTest extends FunSuite with AssertionsForJUnit {
         new StackBuilder[ServiceFactory[String, String]](
           nilStack[String, String]).push(verifyModule(expected))
           .push(AddrMetadataExtraction.module).make(
-            Stack.Params.empty + LoadBalancerFactory.Dest(addr) + BindingFactory
-              .Dest(name))
+            Stack.Params.empty + LoadBalancerFactory.Dest(addr) +
+              BindingFactory.Dest(name))
 
       factory()
     }

@@ -49,14 +49,13 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   "path-example" in {
     val route =
-      path("foo") { complete("/foo") } ~
-        path("foo" / "bar") { complete("/foo/bar") } ~
-        pathPrefix("ball") {
-          pathEnd { complete("/ball") } ~
-            path(IntNumber) { int =>
-              complete(if (int % 2 == 0) "even ball" else "odd ball")
-            }
+      path("foo") { complete("/foo") } ~ path("foo" / "bar") {
+        complete("/foo/bar")
+      } ~ pathPrefix("ball") {
+        pathEnd { complete("/ball") } ~ path(IntNumber) { int =>
+          complete(if (int % 2 == 0) "even ball" else "odd ball")
         }
+      }
 
     // tests:
     Get("/") ~> route ~> check { handled shouldEqual false }
@@ -74,8 +73,7 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   "pathEnd-" in {
     val route = pathPrefix("foo") {
-      pathEnd { complete("/foo") } ~
-        path("bar") { complete("/foo/bar") }
+      pathEnd { complete("/foo") } ~ path("bar") { complete("/foo/bar") }
     }
 
     // tests:
@@ -90,8 +88,9 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   "pathEndOrSingleSlash-" in {
     val route = pathPrefix("foo") {
-      pathEndOrSingleSlash { complete("/foo") } ~
-        path("bar") { complete("/foo/bar") }
+      pathEndOrSingleSlash { complete("/foo") } ~ path("bar") {
+        complete("/foo/bar")
+      }
     }
 
     // tests:
@@ -106,10 +105,9 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   "pathPrefix-" in {
     val route = pathPrefix("ball") {
-      pathEnd { complete("/ball") } ~
-        path(IntNumber) { int =>
-          complete(if (int % 2 == 0) "even ball" else "odd ball")
-        }
+      pathEnd { complete("/ball") } ~ path(IntNumber) { int =>
+        complete(if (int % 2 == 0) "even ball" else "odd ball")
+      }
     }
 
     // tests:
@@ -124,8 +122,9 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   "pathPrefixTest-" in {
     val route = pathPrefixTest("foo" | "bar") {
-      pathPrefix("foo") { completeWithUnmatchedPath } ~
-        pathPrefix("bar") { completeWithUnmatchedPath }
+      pathPrefix("foo") { completeWithUnmatchedPath } ~ pathPrefix("bar") {
+        completeWithUnmatchedPath
+      }
     }
 
     // tests:
@@ -136,13 +135,11 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   "pathSingleSlash-" in {
     val route =
-      pathSingleSlash { complete("root") } ~
-        pathPrefix("ball") {
-          pathSingleSlash { complete("/ball/") } ~
-            path(IntNumber) { int =>
-              complete(if (int % 2 == 0) "even ball" else "odd ball")
-            }
+      pathSingleSlash { complete("root") } ~ pathPrefix("ball") {
+        pathSingleSlash { complete("/ball/") } ~ path(IntNumber) { int =>
+          complete(if (int % 2 == 0) "even ball" else "odd ball")
         }
+      }
 
     // tests:
     Get("/") ~> route ~> check { responseAs[String] shouldEqual "root" }
@@ -174,8 +171,7 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
   "pathSuffixTest-" in {
     val route =
-      pathSuffixTest(Slash) { complete("slashed") } ~
-        complete("unslashed")
+      pathSuffixTest(Slash) { complete("slashed") } ~ complete("unslashed")
 
     // tests:
     Get("/foo/") ~> route ~> check { responseAs[String] shouldEqual "slashed" }
@@ -216,19 +212,17 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
       path("foo"./) {
         // We require the explicit trailing slash in the path
         complete("OK")
-      } ~
-        path("bad-1") {
-          // MISTAKE!
-          // Missing `/` in path, causes this path to never match,
-          // because it is inside a `redirectToTrailingSlashIfMissing`
-          ???
-        } ~
-        path("bad-2/") {
-          // MISTAKE!
-          // / should be explicit as path element separator and not *in* the path element
-          // So it should be: "bad-1" /
-          ???
-        }
+      } ~ path("bad-1") {
+        // MISTAKE!
+        // Missing `/` in path, causes this path to never match,
+        // because it is inside a `redirectToTrailingSlashIfMissing`
+        ???
+      } ~ path("bad-2/") {
+        // MISTAKE!
+        // / should be explicit as path element separator and not *in* the path element
+        // So it should be: "bad-1" /
+        ???
+      }
     }
 
     // tests:
@@ -265,16 +259,15 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
       path("foo") {
         // We require the explicit trailing slash in the path
         complete("OK")
-      } ~
-        path("bad"./) {
-          // MISTAKE!
-          // Since inside a `redirectToNoTrailingSlashIfPresent` directive
-          // the matched path here will never contain a trailing slash,
-          // thus this path will never match.
-          //
-          // It should be `path("bad")` instead.
-          ???
-        }
+      } ~ path("bad"./) {
+        // MISTAKE!
+        // Since inside a `redirectToNoTrailingSlashIfPresent` directive
+        // the matched path here will never contain a trailing slash,
+        // thus this path will never match.
+        //
+        // It should be `path("bad")` instead.
+        ???
+      }
     }
 
     // tests:

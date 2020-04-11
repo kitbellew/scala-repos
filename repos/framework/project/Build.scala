@@ -72,12 +72,8 @@ object BuildDef extends Build {
 
   lazy val common = coreProject("common").settings(
     description := "Common Libraties and Utilities",
-    libraryDependencies ++= Seq(
-      slf4j_api,
-      logback,
-      slf4j_log4j12,
-      scala_xml,
-      scala_parser))
+    libraryDependencies ++=
+      Seq(slf4j_api, logback, slf4j_log4j12, scala_xml, scala_parser))
 
   lazy val actor = coreProject("actor").dependsOn(common)
     .settings(description := "Simple Actor", parallelExecution in Test := false)
@@ -130,11 +126,9 @@ object BuildDef extends Build {
     libraryDependencies ++= Seq(commons_httpclient, servlet_api))
   lazy val webkit = webProject("webkit").dependsOn(util, testkit % "provided")
     .settings(
-      libraryDependencies ++= Seq(
-        mockito_all,
-        jquery,
-        jasmineCore,
-        jasmineAjax)).settings(yuiCompressor.Plugin.yuiSettings: _*).settings(
+      libraryDependencies ++=
+        Seq(mockito_all, jquery, jasmineCore, jasmineAjax))
+    .settings(yuiCompressor.Plugin.yuiSettings: _*).settings(
       description := "Webkit Library",
       parallelExecution in Test := false,
       libraryDependencies <++= scalaVersion { sv =>

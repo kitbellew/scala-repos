@@ -57,8 +57,8 @@ final class JsonView(
       "schedule" -> tour.schedule.map(scheduleJson),
       "secondsToFinish" -> tour.isStarted.option(tour.secondsToFinish),
       "secondsToStart" -> tour.isCreated.option(tour.secondsToStart),
-      "startsAt" -> tour.isCreated
-        .option(ISODateTimeFormat.dateTime.print(tour.startsAt)),
+      "startsAt" ->
+        tour.isCreated.option(ISODateTimeFormat.dateTime.print(tour.startsAt)),
       "pairings" -> data.pairings,
       "standing" -> stand,
       "me" -> myInfo.map(myInfoJson),
@@ -141,8 +141,8 @@ final class JsonView(
       case s: arena.ScoringSystem.Sheet =>
         Json.obj(
           "game" -> s.scores.size,
-          "berserk" -> pairings
-            .foldLeft(0) { case (nb, p) => nb + p.berserkOf(userId) },
+          "berserk" ->
+            pairings.foldLeft(0) { case (nb, p) => nb + p.berserkOf(userId) },
           "win" -> s.scores.count(_.isWin))
     }
 
@@ -154,8 +154,8 @@ final class JsonView(
         PairingRepo
           .finishedByPlayerChronological(tour.id, p.player.userId) map {
           pairings =>
-            p.player.userId -> tour.system.scoringSystem
-              .sheet(tour, p.player.userId, pairings)
+            p.player.userId ->
+              tour.system.scoringSystem.sheet(tour, p.player.userId, pairings)
         }
       }.sequenceFu.map(_.toMap)
     } yield Json.obj(
@@ -199,10 +199,11 @@ final class JsonView(
     Json.obj(
       "id" -> game.id,
       "fen" -> (chess.format.Forsyth exportBoard game.toChess.board),
-      "color" -> (game.variant match {
-        case chess.variant.RacingKings => chess.White
-        case _                         => game.firstColor
-      }).name,
+      "color" ->
+        (game.variant match {
+          case chess.variant.RacingKings => chess.White
+          case _                         => game.firstColor
+        }).name,
       "lastMove" -> ~game.castleLastMoveTime.lastMoveString,
       "white" -> playerJson(featured.white, game player chess.White),
       "black" -> playerJson(featured.black, game player chess.Black)
@@ -289,12 +290,13 @@ final class JsonView(
     Json.obj(
       "id" -> p.gameId,
       "u" -> Json.arr(pairingUserJson(p.user1), pairingUserJson(p.user2)),
-      "s" -> (if (p.finished) p.winner match {
-                case Some(w) if w == p.user1 => 2
-                case Some(w)                 => 3
-                case _                       => 1
-              }
-              else 0)
+      "s" ->
+        (if (p.finished) p.winner match {
+           case Some(w) if w == p.user1 => 2
+           case Some(w)                 => 3
+           case _                       => 1
+         }
+         else 0)
     )
 }
 

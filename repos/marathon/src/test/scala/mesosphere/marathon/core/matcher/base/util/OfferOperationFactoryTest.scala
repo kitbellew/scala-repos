@@ -131,10 +131,10 @@ class OfferOperationFactoryTest
     volume.getDisk.hasPersistence shouldEqual true
     volume.getDisk.getPersistence.getId shouldEqual originalVolume.id.idString
     volume.getDisk.hasVolume shouldEqual true
-    volume.getDisk.getVolume.getContainerPath shouldEqual originalVolume
-      .persistentVolume.containerPath
-    volume.getDisk.getVolume.getMode shouldEqual originalVolume.persistentVolume
-      .mode
+    volume.getDisk.getVolume.getContainerPath shouldEqual
+      originalVolume.persistentVolume.containerPath
+    volume.getDisk.getVolume.getMode shouldEqual
+      originalVolume.persistentVolume.mode
   }
 
   class Fixture {

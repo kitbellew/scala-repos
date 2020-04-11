@@ -59,16 +59,16 @@ private[round] final class Round(
       } >>- monitorMove((nowNanos - p.atNanos).some)
 
     case FishnetPlay(uci, currentFen) =>
-      handle { game => player.fishnet(game, uci, currentFen) } >>- monitorMove(
-        none)
+      handle { game => player.fishnet(game, uci, currentFen) } >>-
+        monitorMove(none)
 
     case Abort(playerId) => handle(playerId) { pov =>
         pov.game.abortable ?? finisher.abort(pov)
       }
 
     case Resign(playerId) => handle(playerId) { pov =>
-        pov.game.resignable ?? finisher
-          .other(pov.game, _.Resign, Some(!pov.color))
+        pov.game.resignable ??
+          finisher.other(pov.game, _.Resign, Some(!pov.color))
       }
 
     case GoBerserk(color) => handle(color) { pov =>
@@ -76,8 +76,8 @@ private[round] final class Round(
           messenger.system(
             pov.game,
             (_.untranslated(s"${pov.color.name.capitalize} is going berserk!")))
-          GameRepo.save(progress) >> GameRepo.goBerserk(pov) inject progress
-            .events
+          GameRepo.save(progress) >> GameRepo.goBerserk(pov) inject
+            progress.events
         }
       }
 
@@ -234,8 +234,8 @@ private[round] final class Round(
 
   private def handleGame(game: Fu[Option[Game]])(
       op: Game => Fu[Events]): Funit =
-    publish { game flatten "game not found" flatMap op } recover errorHandler(
-      "handleGame")
+    publish { game flatten "game not found" flatMap op } recover
+      errorHandler("handleGame")
 
   private def publish[A](op: Fu[Events]): Funit =
     op.addEffect { events =>

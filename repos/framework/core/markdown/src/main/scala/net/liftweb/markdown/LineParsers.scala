@@ -186,9 +186,8 @@ trait LineParsers extends InlineParsers {
   /** The title in a link definition.
     */
   def linkDefinitionTitle: Parser[String] =
-    ows ~> ("""\"[^\n]*["]""".r |
-      """\'[^\n]*\'""".r |
-      """\([^\n]*\)""".r) <~ ows ^^ { s => s.substring(1, s.length - 1) }
+    ows ~> ("""\"[^\n]*["]""".r | """\'[^\n]*\'""".r | """\([^\n]*\)""".r) <~
+      ows ^^ { s => s.substring(1, s.length - 1) }
 
   /** A link definition that later gets stripped from the output.
     * Either a link definition on one line or the first line of a two line link definition.
@@ -303,8 +302,8 @@ trait LineParsers extends InlineParsers {
   ///////////////////////////////////////////////////////////////
   /** First tries for a setext header level 2, then for a ruler.
     */
-  val setext2OrRulerOrUItem: Parser[MarkdownLine] =
-    setextHeader2 | ruler | uItemStartLine
+  val setext2OrRulerOrUItem: Parser[MarkdownLine] = setextHeader2 | ruler |
+    uItemStartLine
 
   /** First tries for a ruler, then for an unordered list item start.
     */
@@ -316,6 +315,6 @@ trait LineParsers extends InlineParsers {
 
   /** Parses one of the fenced code lines
     */
-  val fencedCodeStartOrEnd: Parser[MarkdownLine] =
-    extendedFencedCodeLine | fencedCodeLine
+  val fencedCodeStartOrEnd: Parser[MarkdownLine] = extendedFencedCodeLine |
+    fencedCodeLine
 }

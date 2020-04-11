@@ -12,7 +12,8 @@ private[forum] final class CategApi(env: Env) {
   def list(teams: Set[String], troll: Boolean): Fu[List[CategView]] =
     for {
       categs ← CategRepo withTeams teams
-      views ← (categs map { categ =>
+      views ←
+        (categs map { categ =>
           env.postApi get (categ lastPostId troll) map { topicPost =>
             CategView(
               categ,
@@ -56,16 +57,15 @@ private[forum] final class CategApi(env: Env) {
         userId = "lichess".some,
         ip = none,
         text =
-          "Welcome to the %s forum!\nOnly members of the team can post here, but everybody can read." format name,
+          "Welcome to the %s forum!\nOnly members of the team can post here, but everybody can read." format
+            name,
         number = 1,
         troll = false,
         hidden = topic.hidden,
         lang = "en".some,
         categId = categ.id
       )
-      $insert(categ) >>
-        $insert(post) >>
-        $insert(topic withPost post) >>
+      $insert(categ) >> $insert(post) >> $insert(topic withPost post) >>
         $update(categ withTopic post)
     }
 

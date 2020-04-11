@@ -131,7 +131,8 @@ trait GroupSolver
               }
             } else { forestErrors }
 
-          childErrors ++ specErrors ++ forestErrors2 ++ constrErrors ++ finalErrors
+          childErrors ++ specErrors ++ forestErrors2 ++ constrErrors ++
+            finalErrors
         }
 
         case Assert(_, pred, child) =>
@@ -413,10 +414,8 @@ trait GroupSolver
       }
 
       case expr
-          if listTicVars(Some(b), expr, sigma).isEmpty && !listTicVars(
-            None,
-            expr,
-            sigma).isEmpty =>
+          if listTicVars(Some(b), expr, sigma).isEmpty &&
+            !listTicVars(None, expr, sigma).isEmpty =>
         (None, Set(Error(expr, ConstraintsWithinInnerSolve)))
 
       case _ if listTicVars(Some(b), expr, sigma).isEmpty =>
@@ -452,8 +451,8 @@ trait GroupSolver
     }
 
     case t @ TicVar(_, `tv`) =>
-      !free && t.binding == SolveBinding(b) || free && t.binding == FreeBinding(
-        b)
+      !free && t.binding == SolveBinding(b) ||
+        free && t.binding == FreeBinding(b)
   }
 
   private def enterLet(sigma: Sigma, let: Let, actuals: Vector[Expr]): Sigma = {
@@ -489,10 +488,9 @@ trait GroupSolver
       case Relate(_, _, _, in) => isTranspecable(in, from, sigma)
 
       case Cond(_, pred, left, right) =>
-        isTranspecable(pred, from, sigma) && isTranspecable(
-          left,
-          from,
-          sigma) && isTranspecable(right, from, sigma)
+        isTranspecable(pred, from, sigma) &&
+          isTranspecable(left, from, sigma) &&
+          isTranspecable(right, from, sigma)
 
       case to @ Dispatch(_, id, actuals) => {
         to.binding match {
@@ -726,14 +724,13 @@ trait GroupSolver
       case New(_, child) => listTicVars(b, child, sigma)
 
       case Relate(_, from, to, in) =>
-        listTicVars(b, from, sigma) ++ listTicVars(b, to, sigma) ++ listTicVars(
-          b,
-          in,
-          sigma)
+        listTicVars(b, from, sigma) ++ listTicVars(b, to, sigma) ++
+          listTicVars(b, in, sigma)
 
       case t @ TicVar(_, name)
-          if b.isDefined && (t.binding == SolveBinding(b.get) || t
-            .binding == FreeBinding(b.get)) => {
+          if b.isDefined &&
+            (t.binding == SolveBinding(b.get) ||
+              t.binding == FreeBinding(b.get)) => {
         t.binding match {
           case SolveBinding(b2) => Set((Some(b2), name))
           case FreeBinding(b2)  => Set((Some(b2), name))
@@ -817,9 +814,8 @@ trait GroupSolver
       // iterate
       if (results.isEmpty) {
         val kernels2 = kernels map { k =>
-          val (nodes2Unflatten, sigma2Unflatten) = k.nodes map {
-            _.expr
-          } map enumerateParents(k.sigma) unzip
+          val (nodes2Unflatten, sigma2Unflatten) = k.nodes map { _.expr } map
+            enumerateParents(k.sigma) unzip
 
           val nodes2 = nodes2Unflatten.flatten map ExprWrapper
           val sigma2: Sigma = Map(sigma2Unflatten.flatten.toSeq: _*)

@@ -66,13 +66,13 @@ abstract class ImplicitsTestBase
     assert(expr != null, "Not specified expression in range to infer type.")
     val implicitConversions = expr.getImplicitConversions(fromUnder = false)
     val res = implicitConversions._1.map(_.name).sorted
-      .mkString("Seq(", ",\n    ", ")") + ",\n" + (implicitConversions
-      ._2 match {
-      case None                        => "None"
-      case Some(elem: PsiNamedElement) => "Some(" + elem.name + ")"
-      case _ =>
-        assert(assertion = false, message = "elem is not PsiNamedElement")
-    })
+      .mkString("Seq(", ",\n    ", ")") + ",\n" +
+      (implicitConversions._2 match {
+        case None                        => "None"
+        case Some(elem: PsiNamedElement) => "Some(" + elem.name + ")"
+        case _ =>
+          assert(assertion = false, message = "elem is not PsiNamedElement")
+      })
     val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
     val text = lastPsi.getText
     val output = lastPsi.getNode.getElementType match {

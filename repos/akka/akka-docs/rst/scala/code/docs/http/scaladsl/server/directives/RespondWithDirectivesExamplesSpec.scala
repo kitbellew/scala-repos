@@ -16,8 +16,8 @@ class RespondWithDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Get("/foo") ~> route ~> check {
-      header("Funky-Muppet") shouldEqual Some(
-        RawHeader("Funky-Muppet", "gonzo"))
+      header("Funky-Muppet") shouldEqual
+        Some(RawHeader("Funky-Muppet", "gonzo"))
       responseAs[String] shouldEqual "beep"
     }
   }
@@ -51,14 +51,14 @@ class RespondWithDirectivesExamplesSpec extends RoutingSpec {
     }
 
     Get("/el-tonno") ~> route ~> check {
-      header("X-Fish-Name") shouldEqual Some(
-        RawHeader("X-Fish-Name", "El Tonno"))
+      header("X-Fish-Name") shouldEqual
+        Some(RawHeader("X-Fish-Name", "El Tonno"))
       responseAs[String] shouldEqual "¡Ay blippy!"
     }
 
     Get("/los-tonnos") ~> route ~> check {
-      header("X-Fish-Name") shouldEqual Some(
-        RawHeader("X-Fish-Name", "El Tonno"))
+      header("X-Fish-Name") shouldEqual
+        Some(RawHeader("X-Fish-Name", "El Tonno"))
       responseAs[String] shouldEqual "¡Ay ay blippy!"
     }
   }
@@ -73,8 +73,8 @@ class RespondWithDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Get("/foo") ~> route ~> check {
-      header("Funky-Muppet") shouldEqual Some(
-        RawHeader("Funky-Muppet", "gonzo"))
+      header("Funky-Muppet") shouldEqual
+        Some(RawHeader("Funky-Muppet", "gonzo"))
       header[Origin] shouldEqual Some(Origin(HttpOrigin("http://akka.io")))
       responseAs[String] shouldEqual "beep"
     }

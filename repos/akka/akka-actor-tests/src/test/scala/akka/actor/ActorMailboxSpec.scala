@@ -250,10 +250,11 @@ class ActorMailboxSpec(conf: Config)
 
     actor ! "ping"
     val q = expectMsgType[MessageQueue]
-    types foreach (t ⇒
-      assert(
-        t isInstance q,
-        s"Type [${q.getClass.getName}] is not assignable to [${t.getName}]"))
+    types foreach
+      (t ⇒
+        assert(
+          t isInstance q,
+          s"Type [${q.getClass.getName}] is not assignable to [${t.getName}]"))
     q
   }
 
@@ -380,8 +381,8 @@ class ActorMailboxSpec(conf: Config)
         Props[QueueReportingActor],
         "default-bounded-mailbox-with-zero-pushtimeout",
         BoundedMailboxTypes)
-      q.asInstanceOf[BoundedMessageQueueSemantics].pushTimeOut should ===(
-        Duration.Zero)
+      q.asInstanceOf[BoundedMessageQueueSemantics].pushTimeOut should
+        ===(Duration.Zero)
     }
 
     "get an unbounded message queue when it's configured as mailbox overriding bounded in dispatcher" in {

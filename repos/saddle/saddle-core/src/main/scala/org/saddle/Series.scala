@@ -797,8 +797,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       how: JoinType = LeftJoin): Frame[X, Int, T] = {
     val tmpFrame = other.joinS(this, how)
     Frame(
-      tmpFrame.values.last +: tmpFrame.values
-        .slice(0, tmpFrame.values.length - 1),
+      tmpFrame.values.last +:
+        tmpFrame.values.slice(0, tmpFrame.values.length - 1),
       tmpFrame.rowIx,
       IndexIntRange(other.colIx.length + 1))
   }
@@ -818,8 +818,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       how: JoinType = LeftJoin): Frame[X, Int, Any] = {
     val tmpFrame = other.joinAnyS(this, how)
     Panel(
-      tmpFrame.values.last +: tmpFrame.values
-        .slice(0, tmpFrame.values.length - 1),
+      tmpFrame.values.last +:
+        tmpFrame.values.slice(0, tmpFrame.values.length - 1),
       tmpFrame.rowIx,
       IndexIntRange(other.colIx.length + 1))
   }
@@ -920,8 +920,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
         lst.mkString(" ")
       }
 
-      def createVal(r: Int) =
-        ("%" + vlen + "s\n").format(vsca.show(values.raw(r)))
+      def createVal(r: Int) = ("%" + vlen + "s\n")
+        .format(vsca.show(values.raw(r)))
 
       buf.append(util.buildStr(
         len,
@@ -946,8 +946,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
   override def equals(other: Any): Boolean =
     other match {
       case s: Series[_, _] =>
-        (this eq s) || (length == s.length) && index == s.index && values == s
-          .values
+        (this eq s) || (length == s.length) &&
+          index == s.index && values == s.values
       case _ => false
     }
 

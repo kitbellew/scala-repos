@@ -172,9 +172,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     /** Fuse adjacent string literals */
     def fuse(l: List[Tree]): List[Tree] =
       l match {
-        case Literal(Constant(s1: String)) :: Literal(
-              Constant(s2: String)) :: ss => fuse(
-            Literal(Constant(s1 + s2)) :: ss)
+        case Literal(Constant(s1: String)) :: Literal(Constant(s2: String)) ::
+            ss       => fuse(Literal(Constant(s1 + s2)) :: ss)
         case s :: ss => s :: fuse(ss)
         case Nil     => Nil
       }
@@ -224,10 +223,11 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
                   TypeTree(),
                   EmptyTree)),
               Block(
-                remaining.toList map (sp =>
-                  Apply(
-                    Select(sp.tree, TermName("apply")),
-                    List(Ident(TermName("u")), Ident(TermName("pp"))))),
+                remaining.toList map
+                  (sp =>
+                    Apply(
+                      Select(sp.tree, TermName("apply")),
+                      List(Ident(TermName("u")), Ident(TermName("pp"))))),
                 Literal(Constant(())))
             ))
           )

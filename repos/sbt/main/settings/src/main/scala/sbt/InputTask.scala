@@ -34,13 +34,14 @@ object InputTask {
     import std.FullInstance._
     def toTask(in: String): Initialize[Task[T]] =
       flatten((Def.stateKey zipWith i)((sTask, it) =>
-        sTask map (s =>
-          Parser.parse(in, it.parser(s)) match {
-            case Right(t) => Def.value(t)
-            case Left(msg) =>
-              val indented = msg.lines.map("   " + _).mkString("\n")
-              sys.error(s"Invalid programmatic input:\n$indented")
-          })))
+        sTask map
+          (s =>
+            Parser.parse(in, it.parser(s)) match {
+              case Right(t) => Def.value(t)
+              case Left(msg) =>
+                val indented = msg.lines.map("   " + _).mkString("\n")
+                sys.error(s"Invalid programmatic input:\n$indented")
+            })))
   }
 
   implicit def inputTaskParsed[T](in: InputTask[T]): std.ParserInputTask[T] =
@@ -101,8 +102,8 @@ object InputTask {
       action: TaskKey[I] => Initialize[Task[T]]): Initialize[InputTask[T]] = {
     val dummyKey = localKey[Task[I]]
     val (marker, dummy) = dummyTask[I]
-    val it =
-      action(TaskKey(dummyKey)) mapConstant subResultForDummy(dummyKey, dummy)
+    val it = action(TaskKey(dummyKey)) mapConstant
+      subResultForDummy(dummyKey, dummy)
     val act = it { tsk => (value: I) => subForDummy(marker, value, tsk) }
     separate(p)(act)
   }

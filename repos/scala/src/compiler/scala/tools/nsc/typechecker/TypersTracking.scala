@@ -107,9 +107,8 @@ trait TypersTracking {
         if (pt.isWildcard || context.inTypeConstructorAllowed) ""
         else s": pt=$pt"
       def all_s =
-        List(tree_s, pt_s, mode, fullSiteString(context)) filterNot (
-          _ == ""
-        ) mkString " "
+        List(tree_s, pt_s, mode, fullSiteString(context)) filterNot
+          (_ == "") mkString " "
 
       atLowerIndent(show(indented("""|-- """ + all_s)))
     }
@@ -174,6 +173,6 @@ trait TypersTracking {
     printTypings && (settings.debug.value || !noPrint(t))
   def noPrintTyping(t: Tree) = (t.tpe ne null) || !printingOk(t)
   def noPrintAdapt(tree1: Tree, tree2: Tree) =
-    !printingOk(tree1) || ((tree1.tpe == tree2.tpe)
-      && (tree1.symbol == tree2.symbol))
+    !printingOk(tree1) ||
+      ((tree1.tpe == tree2.tpe) && (tree1.symbol == tree2.symbol))
 }

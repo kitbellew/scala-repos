@@ -42,7 +42,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         case Full(f: BaseField) => f
         case Full(_) =>
           org.squeryl.internals.Utils.throwError(
-            "field " + name + " in Record metadata for " + clasz + " is not a TypedField")
+            "field " + name + " in Record metadata for " + clasz +
+              " is not a TypedField")
         case _ =>
           org.squeryl.internals.Utils.throwError(
             "failed to find field " + name + " in Record metadata for " + clasz)
@@ -59,8 +60,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         } catch {
           case ex: Exception =>
             org.squeryl.internals.Utils.throwError(
-              "failed to find MetaRecord for " + clasz + " due to exception " + ex
-                .toString)
+              "failed to find MetaRecord for " + clasz + " due to exception " +
+                ex.toString)
         }
     }
   }
@@ -165,7 +166,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
           case tf: TypedField[_] => tf
           case other =>
             org.squeryl.internals.Utils.throwError(
-              "Field's used with Squeryl must inherit from net.liftweb.record.TypedField : " + other)
+              "Field's used with Squeryl must inherit from net.liftweb.record.TypedField : " +
+                other)
         }
 
       /**
@@ -180,7 +182,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
             }
           case other =>
             org.squeryl.internals.Utils.throwError(
-              "RecordMetaDataFactory can not set fields on non Record objects : " + other)
+              "RecordMetaDataFactory can not set fields on non Record objects : " +
+                other)
         }
 
       override def setFromResultSet(target: AnyRef, rs: ResultSet, index: Int) =
@@ -229,9 +232,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
 
     // Extract the MetaRecord for the companion object. This
     // is done only once for each class.
-    val metaRecord = Class.forName(
-      posoMetaData.clasz.getName +
-        "$").getField("MODULE$").get(null).asInstanceOf[MetaRecord[_]]
+    val metaRecord = Class.forName(posoMetaData.clasz.getName + "$")
+      .getField("MODULE$").get(null).asInstanceOf[MetaRecord[_]]
 
     () => metaRecord.createRecord.asInstanceOf[AnyRef]
   }

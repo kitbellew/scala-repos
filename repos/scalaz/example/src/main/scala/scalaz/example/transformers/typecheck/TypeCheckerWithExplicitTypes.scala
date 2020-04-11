@@ -52,7 +52,8 @@ object TypeCheckerWithExplicitTypes {
               argType,
               operandType,
               resultType,
-              "function expected arg of type: " + argType + ", but got: " + operandType)
+              "function expected arg of type: " + argType + ", but got: " +
+                operandType)
           case t => typeError(
               "function application expected function, but got: " + t)
         }

@@ -147,8 +147,8 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
         }
 
         if ((clazz.isInterface || clazz.isInstanceOf[ScTrait] ||
-            clazz.hasModifierPropertyScala("abstract")) && !item
-              .typeParametersProblem) {
+            clazz.hasModifierPropertyScala("abstract")) &&
+            !item.typeParametersProblem) {
           context.setLaterRunnable(new Runnable {
             def run() {
               val file = context.getFile
@@ -156,9 +156,9 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
               if (element == null) return
 
               element.getParent match {
-                case (_: ScTemplateBody) childOf ((
-                      _: ScExtendsBlock
-                    ) childOf (newTemplateDef: ScNewTemplateDefinition)) =>
+                case (_: ScTemplateBody) childOf
+                    ((_: ScExtendsBlock) childOf
+                    (newTemplateDef: ScNewTemplateDefinition)) =>
                   val members = ScalaOIUtil
                     .getMembersToImplement(newTemplateDef)
                   ScalaOIUtil.runAction(

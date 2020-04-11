@@ -375,8 +375,8 @@ private[engine] final class HttpHeaderParser private (
   }
 
   private def rowIx(msb: Int) = (msb - 1) * 3
-  private def nodeBits(rowIx: Int, char: Int) =
-    (((rowIx / 3 + 1) << 8) | char).toChar
+  private def nodeBits(rowIx: Int, char: Int) = (((rowIx / 3 + 1) << 8) | char)
+    .toChar
 
   /**
     * Renders the trie structure into an ASCII representation.
@@ -462,8 +462,8 @@ private[engine] final class HttpHeaderParser private (
           def branch(ix: Int): Map[String, Int] =
             if (ix > 0) build(ix) else Map.empty
           val rix = rowIx(msb)
-          branch(branchData(rix + 0)) ++ branch(branchData(rix + 1)) ++ branch(
-            branchData(rix + 2))
+          branch(branchData(rix + 0)) ++ branch(branchData(rix + 1)) ++
+            branch(branchData(rix + 2))
       }
     }
     build()
@@ -473,14 +473,12 @@ private[engine] final class HttpHeaderParser private (
     * Returns a string representation of the raw trie data.
     */
   def formatRawTrie: String = {
-    def char(c: Char) =
-      (c >> 8).toString + (if ((c & 0xFF) > 0) "/" + (c & 0xFF).toChar
-                           else "/Ω")
+    def char(c: Char) = (c >> 8).toString +
+      (if ((c & 0xFF) > 0) "/" + (c & 0xFF).toChar else "/Ω")
     s"nodes: ${nodes take nodeCount map char mkString ", "}\n" +
       s"branchData: ${branchData take branchDataCount grouped 3 map {
         case Array(a, b, c) ⇒ s"$a/$b/$c"
-      } mkString ", "}\n" +
-      s"values: ${values take valueCount mkString ", "}"
+      } mkString ", "}\n" + s"values: ${values take valueCount mkString ", "}"
   }
 
   /**

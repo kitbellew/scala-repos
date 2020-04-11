@@ -118,8 +118,8 @@ object Unmarshaller
       */
     def forContentTypes(ranges: ContentTypeRange*): FromEntityUnmarshaller[A] =
       Unmarshaller.withMaterializer { implicit ec ⇒ implicit mat ⇒ entity ⇒
-        if (entity.contentType == ContentTypes.NoContentType || ranges
-              .exists(_ matches entity.contentType)) {
+        if (entity.contentType == ContentTypes.NoContentType ||
+            ranges.exists(_ matches entity.contentType)) {
           underlying(entity).fast.recover[A](
             barkAtUnsupportedContentTypeException(ranges, entity.contentType))
         } else FastFuture.failed(UnsupportedContentTypeException(ranges: _*))

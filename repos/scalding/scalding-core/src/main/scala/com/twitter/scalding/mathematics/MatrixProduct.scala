@@ -466,8 +466,10 @@ object MatrixProduct extends java.io.Serializable {
           left: RowVector[IdxT, ValT],
           right: ColVector[IdxT, ValT]): Scalar[ValT] = {
         // Normal matrix multiplication works here, but we need to convert to a Scalar
-        val prod =
-          (left.toMatrix(0) * right.toMatrix(0)): Matrix[Int, Int, ValT]
+        val prod = (left.toMatrix(0) * right.toMatrix(0)): Matrix[
+          Int,
+          Int,
+          ValT]
         new Scalar[ValT](prod.valSym, prod.pipe.project(prod.valSym))
       }
     }
@@ -564,9 +566,10 @@ object MatrixProduct extends java.io.Serializable {
               newRightPipe)
             // Do the product:
             .map(
-              (left.valSym.append(getField(newRightFields, 2))) -> left
-                .valSym) { pair: (ValT, ValT) => ring.times(pair._1, pair._2) }
-            .groupBy(left.rowSym.append(getField(newRightFields, 1))) {
+              (left.valSym.append(getField(newRightFields, 2))) ->
+                left.valSym) { pair: (ValT, ValT) =>
+              ring.times(pair._1, pair._2)
+            }.groupBy(left.rowSym.append(getField(newRightFields, 1))) {
               // We should use the size hints to set the number of reducers here
               _.reduce(left.valSym) { (x: Tuple1[ValT], y: Tuple1[ValT]) =>
                 Tuple1(ring.plus(x._1, y._1))
@@ -613,9 +616,8 @@ object MatrixProduct extends java.io.Serializable {
               newRightPipe)
             // Do the product:
             .map(
-              (
-                left.valSym.append(getField(newRightFields, 2))
-              ) -> getField(newRightFields, 2)) { pair: (ValT, ValT) =>
+              (left.valSym.append(getField(newRightFields, 2))) ->
+                getField(newRightFields, 2)) { pair: (ValT, ValT) =>
               ring.times(pair._1, pair._2)
             }
             // Keep the names from the right:
@@ -673,8 +675,10 @@ object MatrixProduct extends java.io.Serializable {
               newRightPipe)
             // Do the product:
             .map(
-              (left.valSym.append(getField(newRightFields, 1))) -> left
-                .valSym) { pair: (ValT, ValT) => ring.times(pair._1, pair._2) }
+              (left.valSym.append(getField(newRightFields, 1))) ->
+                left.valSym) { pair: (ValT, ValT) =>
+              ring.times(pair._1, pair._2)
+            }
         }
         // Keep the names from the left:
           .project(left.idxSym, left.valSym)

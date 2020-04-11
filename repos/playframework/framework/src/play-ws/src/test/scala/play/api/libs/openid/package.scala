@@ -47,7 +47,8 @@ package object openid {
     Map(
       "openid.ns" -> "http://specs.openid.net/auth/2.0",
       "openid.mode" -> "id_res",
-      "openid.op_endpoint" -> "https://www.google.com/a/example.com/o8/ud?be=o8",
+      "openid.op_endpoint" ->
+        "https://www.google.com/a/example.com/o8/ud?be=o8",
       "openid.claimed_id" -> claimedId,
       "openid.identity" -> identity,
       "openid.return_to" -> "https://example.com/openid?abc=false",

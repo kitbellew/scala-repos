@@ -108,14 +108,13 @@ object ResourceServer {
         () => stream.close,
         uc.getContentLength,
         (if (lastModified == 0L) Nil
-         else List("Last-Modified" -> toInternetDate(lastModified))) :::
-          List(
-            "Expires" -> toInternetDate(millis + 30.days),
-            "Date" -> Helpers.nowAsInternetDate,
-            "Pragma" -> "",
-            "Cache-Control" -> "",
-            "Content-Type" -> detectContentType(rw.last)
-          ),
+         else List("Last-Modified" -> toInternetDate(lastModified))) ::: List(
+          "Expires" -> toInternetDate(millis + 30.days),
+          "Date" -> Helpers.nowAsInternetDate,
+          "Pragma" -> "",
+          "Cache-Control" -> "",
+          "Content-Type" -> detectContentType(rw.last)
+        ),
         Nil,
         200
       )

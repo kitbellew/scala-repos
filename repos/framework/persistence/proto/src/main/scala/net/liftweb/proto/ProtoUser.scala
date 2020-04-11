@@ -382,8 +382,7 @@ trait ProtoUser {
     */
   protected def loginMenuLocParams: List[LocParam[Unit]] =
     If(notLoggedIn_? _, S.?("already.logged.in")) ::
-      Template(() => wrapIt(login)) ::
-      Nil
+      Template(() => wrapIt(login)) :: Nil
 
   /**
     * If you have more than 1 ProtoUser in your application, you'll need to distinguish the menu names.
@@ -406,9 +405,7 @@ trait ProtoUser {
     * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
     */
   protected def logoutMenuLocParams: List[LocParam[Unit]] =
-    Template(() => wrapIt(logout)) ::
-      testLogginIn ::
-      Nil
+    Template(() => wrapIt(logout)) :: testLogginIn :: Nil
 
   /**
     * The menu item for creating the user/sign up (make this "Empty" to disable)
@@ -426,8 +423,7 @@ trait ProtoUser {
     */
   protected def createUserMenuLocParams: List[LocParam[Unit]] =
     Template(() => wrapIt(signupFunc.map(_()) openOr signup)) ::
-      If(notLoggedIn_? _, S.?("logout.first")) ::
-      Nil
+      If(notLoggedIn_? _, S.?("logout.first")) :: Nil
 
   /**
     * The menu item for lost password (make this "Empty" to disable)
@@ -446,8 +442,7 @@ trait ProtoUser {
     */
   protected def lostPasswordMenuLocParams: List[LocParam[Unit]] =
     Template(() => wrapIt(lostPassword)) ::
-      If(notLoggedIn_? _, S.?("logout.first")) ::
-      Nil
+      If(notLoggedIn_? _, S.?("logout.first")) :: Nil
 
   /**
     * The menu item for resetting the password (make this "Empty" to disable)
@@ -465,10 +460,8 @@ trait ProtoUser {
     * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
     */
   protected def resetPasswordMenuLocParams: List[LocParam[Unit]] =
-    Hidden ::
-      Template(() => wrapIt(passwordReset(snarfLastItem))) ::
-      If(notLoggedIn_? _, S.?("logout.first")) ::
-      Nil
+    Hidden :: Template(() => wrapIt(passwordReset(snarfLastItem))) ::
+      If(notLoggedIn_? _, S.?("logout.first")) :: Nil
 
   /**
     * The menu item for editing the user (make this "Empty" to disable)
@@ -485,9 +478,7 @@ trait ProtoUser {
     * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
     */
   protected def editUserMenuLocParams: List[LocParam[Unit]] =
-    Template(() => wrapIt(editFunc.map(_()) openOr edit)) ::
-      testLogginIn ::
-      Nil
+    Template(() => wrapIt(editFunc.map(_()) openOr edit)) :: testLogginIn :: Nil
 
   /**
     * The menu item for changing password (make this "Empty" to disable)
@@ -504,9 +495,7 @@ trait ProtoUser {
     * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
     */
   protected def changePasswordMenuLocParams: List[LocParam[Unit]] =
-    Template(() => wrapIt(changePassword)) ::
-      testLogginIn ::
-      Nil
+    Template(() => wrapIt(changePassword)) :: testLogginIn :: Nil
 
   /**
     * The menu item for validating a user (make this "Empty" to disable)
@@ -523,10 +512,8 @@ trait ProtoUser {
     * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
     */
   protected def validateUserMenuLocParams: List[LocParam[Unit]] =
-    Hidden ::
-      Template(() => wrapIt(validateUser(snarfLastItem))) ::
-      If(notLoggedIn_? _, S.?("logout.first")) ::
-      Nil
+    Hidden :: Template(() => wrapIt(validateUser(snarfLastItem))) ::
+      If(notLoggedIn_? _, S.?("logout.first")) :: Nil
 
   /**
     * An alias for the sitemap property
@@ -713,8 +700,8 @@ trait ProtoUser {
     * send non-HTML mail or alternative mail bodies.
     */
   def sendValidationEmail(user: TheUserType) {
-    val resetLink = S.hostAndPath + "/" + validateUserPath.mkString("/") +
-      "/" + urlEncode(user.getUniqueId())
+    val resetLink = S.hostAndPath + "/" + validateUserPath.mkString("/") + "/" +
+      urlEncode(user.getUniqueId())
 
     val email: String = user.getEmail
 
@@ -723,8 +710,7 @@ trait ProtoUser {
     Mailer.sendMail(
       From(emailFrom),
       Subject(signupMailSubject),
-      (To(user.getEmail) ::
-        generateValidationEmailBodies(user, resetLink) :::
+      (To(user.getEmail) :: generateValidationEmailBodies(user, resetLink) :::
         (bccEmail.toList.map(BCC(_)))): _*)
   }
 
@@ -798,9 +784,8 @@ trait ProtoUser {
     }
 
     def innerSignup = {
-      ("type=submit" #> signupSubmitButton(
-        S ? "sign.up",
-        testSignup _)) apply signupXhtml(theUser)
+      ("type=submit" #> signupSubmitButton(S ? "sign.up", testSignup _)) apply
+        signupXhtml(theUser)
     }
 
     innerSignup
@@ -887,8 +872,7 @@ trait ProtoUser {
       S.param("username")
         .flatMap(username => findUserByUserName(username)) match {
         case Full(user)
-            if user.validated_? &&
-              user.testPassword(S.param("password")) => {
+            if user.validated_? && user.testPassword(S.param("password")) => {
           val preLoginState = capturePreLoginState()
           val redir = loginRedirect.get match {
             case Full(url) =>
@@ -918,8 +902,7 @@ trait ProtoUser {
     val emailElemId = nextFuncName
     S.appendJs(Focus(emailElemId))
     val bind =
-      ".email [id]" #> emailElemId &
-        ".email [name]" #> "username" &
+      ".email [id]" #> emailElemId & ".email [name]" #> "username" &
         ".password [name]" #> "password" &
         "type=submit" #> loginSubmitButton(S.?("log.in"))
 
@@ -987,16 +970,15 @@ trait ProtoUser {
       case Full(user) if user.validated_? =>
         user.resetUniqueId().save
         val resetLink = S.hostAndPath +
-          passwordResetPath.mkString("/", "/", "/") + urlEncode(
-          user.getUniqueId())
+          passwordResetPath.mkString("/", "/", "/") +
+          urlEncode(user.getUniqueId())
 
         val email: String = user.getEmail
 
         Mailer.sendMail(
           From(emailFrom),
           Subject(passwordResetEmailSubject),
-          (To(user.getEmail) ::
-            generateResetEmailBodies(user, resetLink) :::
+          (To(user.getEmail) :: generateResetEmailBodies(user, resetLink) :::
             (bccEmail.toList.map(BCC(_)))): _*)
 
         S.notice(S.?("password.reset.email.sent"))
@@ -1161,9 +1143,8 @@ trait ProtoUser {
     }
 
     def innerEdit = {
-      ("type=submit" #> editSubmitButton(
-        S.?("save"),
-        testEdit _)) apply editXhtml(theUser)
+      ("type=submit" #> editSubmitButton(S.?("save"), testEdit _)) apply
+        editXhtml(theUser)
     }
 
     innerEdit

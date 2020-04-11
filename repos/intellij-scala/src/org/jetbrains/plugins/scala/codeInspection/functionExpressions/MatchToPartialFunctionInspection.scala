@@ -36,14 +36,14 @@ class MatchToPartialFunctionInspection
     case fun @ ScFunctionExpr(
           Seq(param),
           Some(ms @ ScMatchStmt(ref: ScReferenceExpression, _)))
-        if ref.resolve() == param && !(param.typeElement
-          .isDefined && notExpectedType(fun)) && checkSameResolve(fun) =>
-      registerProblem(holder, ms, fun)
+        if ref.resolve() == param &&
+          !(param.typeElement.isDefined && notExpectedType(fun)) &&
+          checkSameResolve(fun) => registerProblem(holder, ms, fun)
     case fun @ ScFunctionExpr(
           Seq(param),
           Some(ScBlock(ms @ ScMatchStmt(ref: ScReferenceExpression, _))))
-        if ref.resolve() == param && !(param.typeElement
-          .isDefined && notExpectedType(fun)) && checkSameResolve(fun) =>
+        if ref.resolve() == param && !(param.typeElement.isDefined &&
+          notExpectedType(fun)) && checkSameResolve(fun) =>
       registerProblem(
         holder,
         ms,
@@ -73,8 +73,8 @@ class MatchToPartialFunctionInspection
       }
     }
     for (offset <- leftBraceOffset(ms)) {
-      val endOffsetInParent = offset - fExprToReplace.getTextRange
-        .getStartOffset
+      val endOffsetInParent = offset -
+        fExprToReplace.getTextRange.getStartOffset
       val rangeInParent = new TextRange(0, endOffsetInParent)
       val fix = new MatchToPartialFunctionQuickFix(ms, fExprToReplace)
       holder.registerProblem(

@@ -305,8 +305,8 @@ object ImportInfo {
         val qualifiedDeepRef =
           try qualifiedRef(deepRef)
           catch { case _: IllegalStateException => return None }
-        val prefixQual = qualifiedDeepRef + withDot(
-          explicitQualifierString(qualifier, withDeepest = false))
+        val prefixQual = qualifiedDeepRef +
+          withDot(explicitQualifierString(qualifier, withDeepest = false))
         val relative = qualifiedDeepRef != deepRef.getText
         (prefixQual, relative)
       }

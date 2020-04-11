@@ -65,17 +65,16 @@ object InstructionStackEffect {
       methodDesc: String,
       insn: AbstractInsnNode,
       forClassfile: Boolean): Int = {
-    val consumesReceiver = insn.getOpcode != INVOKESTATIC && insn
-      .getOpcode != INVOKEDYNAMIC
+    val consumesReceiver = insn.getOpcode != INVOKESTATIC &&
+      insn.getOpcode != INVOKEDYNAMIC
     if (forClassfile) {
       val sizes = Type.getArgumentsAndReturnSizes(methodDesc)
       val cons = (sizes >> 2) - (if (consumesReceiver) 0 else 1)
       val prod = sizes & 0x03
       t(cons, prod)
     } else {
-      val cons =
-        Type.getArgumentTypes(methodDesc).length + (if (consumesReceiver) 1
-                                                    else 0)
+      val cons = Type.getArgumentTypes(methodDesc).length +
+        (if (consumesReceiver) 1 else 0)
       val prod = if (Type.getReturnType(methodDesc) == Type.VOID_TYPE) 0 else 1
       t(cons, prod)
     }

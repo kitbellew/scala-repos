@@ -22,8 +22,7 @@ abstract class CustomInitFilesTest extends JSEnvTest {
   def customInitFilesTest: Unit = {
     """
     customPrint("hello");
-    """ hasOutput
-      """|custom: hello
+    """ hasOutput """|custom: hello
        |""".stripMargin
   }
 }

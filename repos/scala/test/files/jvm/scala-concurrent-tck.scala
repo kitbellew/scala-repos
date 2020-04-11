@@ -700,8 +700,8 @@ trait GlobalExecutionContext extends TestBase {
   def testNameOfGlobalECThreads(): Unit =
     once { done =>
       Future({
-        val expectedName = "scala-execution-context-global-" + Thread
-          .currentThread.getId
+        val expectedName = "scala-execution-context-global-" +
+          Thread.currentThread.getId
         done(expectedName == Thread.currentThread.getName)
       })(ExecutionContext.global)
     }

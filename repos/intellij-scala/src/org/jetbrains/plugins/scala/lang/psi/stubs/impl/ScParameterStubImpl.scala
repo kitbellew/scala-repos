@@ -104,8 +104,9 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
   def getTypeElement: Option[ScTypeElement] = {
     if (myTypeElement != null) {
       val typeElement = myTypeElement.get
-      if (typeElement != null && (typeElement.isEmpty || (typeElement.get
-            .getContext eq getPsi))) return typeElement
+      if (typeElement != null &&
+          (typeElement.isEmpty || (typeElement.get.getContext eq getPsi)))
+        return typeElement
     }
     val res: Option[ScTypeElement] =
       if (getTypeText != "")
@@ -134,8 +135,9 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
   def getDefaultExpr: Option[ScExpression] = {
     if (myDefaultExpression != null) {
       val expression = myDefaultExpression.get
-      if (expression != null && (expression.isEmpty || (expression.get
-            .getContext eq getPsi))) return expression
+      if (expression != null &&
+          (expression.isEmpty || (expression.get.getContext eq getPsi)))
+        return expression
     }
     val res: Option[ScExpression] = getDefaultExprText match {
       case None     => None

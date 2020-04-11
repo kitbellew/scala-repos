@@ -39,8 +39,7 @@ final class ESClientHttp(endpoint: String, val index: Index, writeable: Boolean)
     }
 
   def deleteById(id: lila.search.Id) =
-    writeable ??
-      HTTP(s"delete/id/${index.name}/${id.value}", Json.obj())
+    writeable ?? HTTP(s"delete/id/${index.name}/${id.value}", Json.obj())
 
   def deleteByIds(ids: List[lila.search.Id]) =
     writeable ??

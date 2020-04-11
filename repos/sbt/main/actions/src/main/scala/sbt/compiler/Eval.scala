@@ -178,10 +178,9 @@ final class Eval(
     // is defined in multiple evaluated instances with a backing.  This leads to issues with finding a previous
     // value on the classpath when compiling.
     val hash = Hash.toHex(Hash(bytes(
-      stringSeqBytes(content) :: optBytes(backing)(
-        fileExistsBytes) :: stringSeqBytes(options) ::
-        seqBytes(classpath)(fileModifiedBytes) :: stringSeqBytes(
-        imports.strings.map(_._1)) :: optBytes(tpeName)(bytes) ::
+      stringSeqBytes(content) :: optBytes(backing)(fileExistsBytes) ::
+        stringSeqBytes(options) :: seqBytes(classpath)(fileModifiedBytes) ::
+        stringSeqBytes(imports.strings.map(_._1)) :: optBytes(tpeName)(bytes) ::
         bytes(ev.extraHash) :: Nil)))
     val moduleName = makeModuleName(hash)
 
@@ -329,9 +328,10 @@ final class Eval(
     override def traverse(tree: Tree): Unit =
       tree match {
         case ValDef(_, n, actualTpe, _)
-            if isTopLevelModule(tree.symbol.owner) && isAcceptableType(
-              actualTpe.tpe) => vals ::= nme.localToGetter(n).encoded
-        case _               => super.traverse(tree)
+            if isTopLevelModule(tree.symbol.owner) &&
+              isAcceptableType(actualTpe.tpe) =>
+          vals ::= nme.localToGetter(n).encoded
+        case _ => super.traverse(tree)
       }
   }
   // inlined implemented of Symbol.isTopLevelModule that was removed in e5b050814deb2e7e1d6d05511d3a6cb6b013b549
@@ -567,11 +567,9 @@ private[sbt] object Eval {
     else seqBytes(fs)(fileModifiedBytes)
   def fileModifiedBytes(f: File): Array[Byte] =
     (if (f.isDirectory) filesModifiedBytes(f listFiles classDirFilter)
-     else bytes(f.lastModified)) ++
-      bytes(f.getAbsolutePath)
+     else bytes(f.lastModified)) ++ bytes(f.getAbsolutePath)
   def fileExistsBytes(f: File): Array[Byte] =
-    bytes(f.exists) ++
-      bytes(f.getAbsolutePath)
+    bytes(f.exists) ++ bytes(f.getAbsolutePath)
 
   def bytes(s: String): Array[Byte] = s getBytes "UTF-8"
   def bytes(l: Long): Array[Byte] = {
@@ -605,6 +603,6 @@ private[sbt] object Eval {
     clazz.getField("MODULE$").get(null)
   }
 
-  private val classDirFilter: FileFilter =
-    DirectoryFilter || GlobFilter("*.class")
+  private val classDirFilter: FileFilter = DirectoryFilter ||
+    GlobFilter("*.class")
 }

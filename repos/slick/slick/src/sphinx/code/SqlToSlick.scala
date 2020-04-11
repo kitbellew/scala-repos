@@ -423,9 +423,8 @@ object SqlToSlick extends App {
 
         val slickInsert = {
           //#slickQueryInsert
-          people.map(p => (p.name, p.age, p.addressId)) += (
-            "M Odersky", 12345, 1
-          )
+          people.map(p => (p.name, p.age, p.addressId)) +=
+            ("M Odersky", 12345, 1)
           //#slickQueryInsert
         }
         val slickUpdate = {
@@ -466,9 +465,8 @@ object SqlToSlick extends App {
         val slick =
           //#slickCase
           people.map(p =>
-            Case
-              If (p.addressId === 1) Then "A"
-              If (p.addressId === 2) Then "B").result
+            Case If (p.addressId === 1) Then "A" If (p.addressId === 2) Then
+              "B").result
         //#slickCase
         val (sqlRes, slickRes) = Await
           .result(db.run(sql zip slick), Duration.Inf)

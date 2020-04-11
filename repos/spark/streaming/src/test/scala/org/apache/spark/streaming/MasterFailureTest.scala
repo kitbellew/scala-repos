@@ -359,8 +359,8 @@ private[streaming] class KillingThread(
     try {
       // If it is the first killing, then allow the first checkpoint to be created
       var minKillWaitTime = if (MasterFailureTest.killCount == 0) 5000 else 2000
-      val killWaitTime = minKillWaitTime + math
-        .abs(Random.nextLong % maxKillWaitTime)
+      val killWaitTime = minKillWaitTime +
+        math.abs(Random.nextLong % maxKillWaitTime)
       logInfo("Kill wait time = " + killWaitTime)
       Thread.sleep(killWaitTime)
       logInfo(
@@ -419,7 +419,8 @@ private[streaming] class FileGeneratingThread(
             case ioe: IOException => {
               fs = testDir.getFileSystem(new Configuration())
               logWarning(
-                "Attempt " + tries + " at generating file " + hadoopFile + " failed.",
+                "Attempt " + tries + " at generating file " + hadoopFile +
+                  " failed.",
                 ioe)
             }
           }

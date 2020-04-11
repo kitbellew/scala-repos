@@ -306,8 +306,8 @@ case class AhcWSRequest(
           try {
             // Only parse out the form body if we are doing the signature calculation.
             if (ct.contains(
-                  HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED) && calc
-                  .isDefined) {
+                  HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED) &&
+                calc.isDefined) {
               // If we are taking responsibility for setting the request body, we should block any
               // externally defined Content-Length field (see #5221 for the details)
               val filteredHeaders = this.headers.filterNot {

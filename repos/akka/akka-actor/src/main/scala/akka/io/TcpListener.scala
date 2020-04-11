@@ -141,10 +141,8 @@ private[io] class TcpListener(
           bind.handler,
           bind.options,
           bind.pullMode)
-      selectorRouter ! WorkerForCommand(
-        RegisterIncoming(socketChannel),
-        self,
-        props)
+      selectorRouter !
+        WorkerForCommand(RegisterIncoming(socketChannel), self, props)
       acceptAllPending(registration, limit - 1)
     } else if (bind.pullMode) limit
     else BatchAcceptLimit

@@ -109,8 +109,8 @@ abstract class LambdaLift extends InfoTransform {
     private val liftedDefs = new LinkedHashMap[Symbol, List[Tree]]
 
     private def isSameOwnerEnclosure(sym: Symbol) =
-      sym.owner.logicallyEnclosingMember == currentOwner
-        .logicallyEnclosingMember
+      sym.owner.logicallyEnclosingMember ==
+        currentOwner.logicallyEnclosingMember
 
     /** Mark symbol `sym` as being free in `enclosure`, unless `sym`
       *  is defined in `enclosure` or there is a class between `enclosure`s owner
@@ -251,8 +251,8 @@ abstract class LambdaLift extends InfoTransform {
           //         that a sub-class happens to lifts out a method with the *same* name.
           if (originalName.isTermName && calledFromInner(sym))
             newTermNameCached(
-              nonAnon(sym.enclClass.fullName('$')) + nme
-                .EXPAND_SEPARATOR_STRING + name)
+              nonAnon(sym.enclClass.fullName('$')) +
+                nme.EXPAND_SEPARATOR_STRING + name)
           else name
         }
       }
@@ -265,9 +265,8 @@ abstract class LambdaLift extends InfoTransform {
 
       afterOwnPhase {
         for ((owner, freeValues) <- free.toList) {
-          val newFlags =
-            SYNTHETIC | (if (owner.isClass) PARAMACCESSOR | PrivateLocal
-                         else PARAM)
+          val newFlags = SYNTHETIC |
+            (if (owner.isClass) PARAMACCESSOR | PrivateLocal else PARAM)
 
           proxies(owner) = for (fv <- freeValues.toList) yield {
             val proxyName = proxyNames.getOrElse(fv, fv.name)
@@ -287,12 +286,11 @@ abstract class LambdaLift extends InfoTransform {
       def searchIn(enclosure: Symbol): Symbol = {
         if (enclosure eq NoSymbol)
           throw new IllegalArgumentException(
-            "Could not find proxy for " + sym.defString + " in " + sym
-              .ownerChain + " (currentOwner= " + currentOwner + " )")
+            "Could not find proxy for " + sym.defString + " in " +
+              sym.ownerChain + " (currentOwner= " + currentOwner + " )")
         debuglog(
-          "searching for " + sym + "(" + sym
-            .owner + ") in " + enclosure + " " + enclosure
-            .logicallyEnclosingMember)
+          "searching for " + sym + "(" + sym.owner + ") in " + enclosure + " " +
+            enclosure.logicallyEnclosingMember)
 
         val proxyName = proxyNames.getOrElse(sym, sym.name)
         val ps = (proxies get enclosure.logicallyEnclosingMember).toList
@@ -370,8 +368,8 @@ abstract class LambdaLift extends InfoTransform {
           if (ps.isEmpty) tree
           else {
             val paramSyms = cloneSymbols(ps).map(_.setFlag(PARAM))
-            val paramDefs =
-              ps map (p => ValDef(p) setPos tree.pos setType NoType)
+            val paramDefs = ps map
+              (p => ValDef(p) setPos tree.pos setType NoType)
 
             sym.updateInfo(lifted(MethodType(
               addFree(sym, free = paramSyms, original = sym.info.params),
@@ -381,8 +379,8 @@ abstract class LambdaLift extends InfoTransform {
           }
 
         case ClassDef(_, _, _, _) =>
-          val freeParamDefs =
-            freeParams(sym) map (p => ValDef(p) setPos tree.pos setType NoType)
+          val freeParamDefs = freeParams(sym) map
+            (p => ValDef(p) setPos tree.pos setType NoType)
 
           if (freeParamDefs.isEmpty) tree
           else
@@ -474,8 +472,8 @@ abstract class LambdaLift extends InfoTransform {
             treeCopy.ValDef(tree, mods, name, tpt1, factoryCall)
           } else tree
         case Return(Block(stats, value)) =>
-          Block(stats, treeCopy.Return(tree, value)) setType tree
-            .tpe setPos tree.pos
+          Block(stats, treeCopy.Return(tree, value)) setType tree.tpe setPos
+            tree.pos
         case Return(expr) =>
           assert(sym == currentMethod, sym)
           tree
@@ -557,11 +555,14 @@ abstract class LambdaLift extends InfoTransform {
       sym: Symbol,
       free: List[A],
       original: List[A]): List[A] = {
-    val prependFree = (!sym
-      .isConstructor // this condition is redundant for now. It will be needed if we remove the second condition in 2.12.x
-      && (settings.Ydelambdafy.value == "method" && sym
-        .isDelambdafyTarget) // SI-8359 Makes the lambda body a viable as the target MethodHandle for a call to LambdaMetafactory
-    )
+    val prependFree =
+      (!sym
+        .isConstructor // this condition is redundant for now. It will be needed if we remove the second condition in 2.12.x
+      &&
+        (
+          settings.Ydelambdafy.value == "method" && sym.isDelambdafyTarget
+        ) // SI-8359 Makes the lambda body a viable as the target MethodHandle for a call to LambdaMetafactory
+      )
     if (prependFree) free ::: original else original ::: free
   }
 }

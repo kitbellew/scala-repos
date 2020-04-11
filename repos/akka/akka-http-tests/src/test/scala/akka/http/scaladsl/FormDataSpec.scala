@@ -28,12 +28,12 @@ class FormDataSpec extends AkkaSpec {
 
     "properly marshal www-urlencoded forms containing special chars" in {
       Marshal(FormData(Map("name" -> "Smith&Wesson"))).to[HttpEntity]
-        .flatMap(Unmarshal(_).to[String])
-        .futureValue shouldEqual "name=Smith%26Wesson"
+        .flatMap(Unmarshal(_).to[String]).futureValue shouldEqual
+        "name=Smith%26Wesson"
 
       Marshal(FormData(Map("name" -> "Smith+Wesson; hopefully!")))
-        .to[HttpEntity].flatMap(Unmarshal(_).to[String])
-        .futureValue shouldEqual "name=Smith%2BWesson%3B+hopefully%21"
+        .to[HttpEntity].flatMap(Unmarshal(_).to[String]).futureValue shouldEqual
+        "name=Smith%2BWesson%3B+hopefully%21"
     }
   }
 

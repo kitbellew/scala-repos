@@ -77,8 +77,7 @@ object QueueLaws extends Properties("Queue") {
     // Make sure we can fit everything
     val q = Queue.arrayBlocking[(Int, Try[Int])](items.size + 1)
     items.foreach { i => q.put((i, Try(i * i))) }
-    q.foldLeft(true) { case (works, (i, Return(ii))) => (ii == i * i) } && (q
-      .size == 0)
+    q.foldLeft(true) { case (works, (i, Return(ii))) => (ii == i * i) } && (q.size == 0)
   }
 
   property("Queue poll + size is correct") = forAll { (items: List[Int]) =>

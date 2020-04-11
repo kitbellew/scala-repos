@@ -137,37 +137,38 @@ object PlayDocsPlugin extends AutoPlugin {
       playDocsValidationConfig := ValidationConfig(),
       manualPath := baseDirectory.value,
       run <<= docsRunSetting,
-      generateMarkdownRefReport <<= PlayDocsValidation
-        .generateMarkdownRefReportTask,
+      generateMarkdownRefReport <<=
+        PlayDocsValidation.generateMarkdownRefReportTask,
       validateDocs <<= PlayDocsValidation.validateDocsTask,
       validateExternalLinks <<= PlayDocsValidation.validateExternalLinksTask,
       docsVersion := PlayVersion.current,
       docsName := "play-docs",
       docsJarFile <<= docsJarFileSetting,
-      PlayDocsKeys.resources := Seq(
-        PlayDocsDirectoryResource(manualPath.value)) ++
-        docsJarFile.value
-          .map(jar => PlayDocsJarFileResource(jar, Some("play/docs/content")))
-          .toSeq,
+      PlayDocsKeys.resources :=
+        Seq(PlayDocsDirectoryResource(manualPath.value)) ++
+          docsJarFile.value
+            .map(jar => PlayDocsJarFileResource(jar, Some("play/docs/content")))
+            .toSeq,
       docsJarScalaBinaryVersion <<= scalaBinaryVersion,
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% docsName.value % PlayVersion.current,
-        "com.typesafe.play" % s"${docsName.value}_${docsJarScalaBinaryVersion.value}" % docsVersion
-          .value % "docs" notTransitive ()
+        "com.typesafe.play" %
+          s"${docsName.value}_${docsJarScalaBinaryVersion.value}" %
+          docsVersion.value % "docs" notTransitive ()
       )
     )
 
   def docsReportSettings =
     Seq(
-      generateMarkdownCodeSamplesReport <<= PlayDocsValidation
-        .generateMarkdownCodeSamplesTask,
-      generateUpstreamCodeSamplesReport <<= PlayDocsValidation
-        .generateUpstreamCodeSamplesTask,
+      generateMarkdownCodeSamplesReport <<=
+        PlayDocsValidation.generateMarkdownCodeSamplesTask,
+      generateUpstreamCodeSamplesReport <<=
+        PlayDocsValidation.generateUpstreamCodeSamplesTask,
       translationCodeSamplesReportFile := target.value / "report.html",
-      translationCodeSamplesReport <<= PlayDocsValidation
-        .translationCodeSamplesReportTask,
-      cachedTranslationCodeSamplesReport <<= PlayDocsValidation
-        .cachedTranslationCodeSamplesReportTask
+      translationCodeSamplesReport <<=
+        PlayDocsValidation.translationCodeSamplesReportTask,
+      cachedTranslationCodeSamplesReport <<=
+        PlayDocsValidation.cachedTranslationCodeSamplesReportTask
     )
 
   def docsTestSettings =
@@ -176,45 +177,45 @@ object PlayDocsPlugin extends AutoPlugin {
       javaManualSourceDirectories := Nil,
       scalaManualSourceDirectories := Nil,
       commonManualSourceDirectories := Nil,
-      unmanagedSourceDirectories in Test ++= javaManualSourceDirectories
-        .value ++ scalaManualSourceDirectories.value ++
-        commonManualSourceDirectories.value ++ migrationManualSources.value,
-      unmanagedResourceDirectories in Test ++= javaManualSourceDirectories
-        .value ++ scalaManualSourceDirectories.value ++
-        commonManualSourceDirectories.value ++ migrationManualSources.value,
+      unmanagedSourceDirectories in Test ++=
+        javaManualSourceDirectories.value ++
+          scalaManualSourceDirectories.value ++
+          commonManualSourceDirectories.value ++ migrationManualSources.value,
+      unmanagedResourceDirectories in Test ++=
+        javaManualSourceDirectories.value ++
+          scalaManualSourceDirectories.value ++
+          commonManualSourceDirectories.value ++ migrationManualSources.value,
       javaTwirlSourceManaged := target.value / "twirl" / "java",
       scalaTwirlSourceManaged := target.value / "twirl" / "scala",
       managedSourceDirectories in Test ++= Seq(
         javaTwirlSourceManaged.value,
         scalaTwirlSourceManaged.value),
       // Need to ensure that templates in the Java docs get Java imports, and in the Scala docs get Scala imports
-      sourceGenerators in Test <+= (
-        javaManualSourceDirectories,
-        javaTwirlSourceManaged,
-        streams) map { (from, to, s) =>
-        compileTemplates(
-          from,
-          to,
-          TemplateImports.defaultJavaTemplateImports.asScala,
-          s.log)
-      },
-      sourceGenerators in Test <+= (
-        scalaManualSourceDirectories,
-        scalaTwirlSourceManaged,
-        streams) map { (from, to, s) =>
-        compileTemplates(
-          from,
-          to,
-          TemplateImports.defaultScalaTemplateImports.asScala,
-          s.log)
-      },
+      sourceGenerators in Test <+=
+        (javaManualSourceDirectories, javaTwirlSourceManaged, streams) map {
+          (from, to, s) =>
+            compileTemplates(
+              from,
+              to,
+              TemplateImports.defaultJavaTemplateImports.asScala,
+              s.log)
+        },
+      sourceGenerators in Test <+=
+        (scalaManualSourceDirectories, scalaTwirlSourceManaged, streams) map {
+          (from, to, s) =>
+            compileTemplates(
+              from,
+              to,
+              TemplateImports.defaultScalaTemplateImports.asScala,
+              s.log)
+        },
       routesCompilerTasks in Test := {
         val javaRoutes = (javaManualSourceDirectories.value * "*.routes").get
         val scalaRoutes = (scalaManualSourceDirectories.value * "*.routes").get
         val commonRoutes = (commonManualSourceDirectories.value * "*.routes")
           .get
-        (javaRoutes.map(_ -> Seq("play.libs.F")) ++ scalaRoutes
-          .map(_ -> Nil) ++ commonRoutes.map(_ -> Nil)).map {
+        (javaRoutes.map(_ -> Seq("play.libs.F")) ++ scalaRoutes.map(_ -> Nil) ++
+          commonRoutes.map(_ -> Nil)).map {
           case (file, imports) =>
             RoutesCompilerTask(file, imports, true, true, true)
         }
@@ -342,8 +343,8 @@ object PlayDocsPlugin extends AutoPlugin {
 
     println()
     println(Colors.green(
-      "Documentation server started, you can now view the docs by going to http://" + server
-        .mainAddress()))
+      "Documentation server started, you can now view the docs by going to http://" +
+        server.mainAddress()))
     println()
 
     waitForKey()

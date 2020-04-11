@@ -48,8 +48,7 @@ object JavaStreamEnrichmentsProperties
   implicit def teq[T1: Equiv, T2: Equiv]: Equiv[(T1, T2)] =
     new Equiv[(T1, T2)] {
       def equiv(a: (T1, T2), b: (T1, T2)) = {
-        Equiv[T1].equiv(a._1, b._1) &&
-        Equiv[T2].equiv(a._2, b._2)
+        Equiv[T1].equiv(a._1, b._1) && Equiv[T2].equiv(a._2, b._2)
       }
     }
 

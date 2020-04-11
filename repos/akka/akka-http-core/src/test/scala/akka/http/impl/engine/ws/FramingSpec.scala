@@ -26,8 +26,8 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
                   0000 # opcode
               0        # mask?
                0000000 # length
-          """ should parseTo(
-            FrameHeader(Opcode.Continuation, None, 0, fin = true))
+          """ should
+            parseTo(FrameHeader(Opcode.Continuation, None, 0, fin = true))
         }
         "RSV1" in {
           b"""0100     # flags
@@ -60,8 +60,8 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
                   xxxx=0 # opcode
               0          # mask?
                0000000   # length
-          """ should parseTo(
-            FrameHeader(Opcode.Continuation, None, 0, fin = false))
+          """ should
+            parseTo(FrameHeader(Opcode.Continuation, None, 0, fin = false))
         }
         "Text" in {
           b"""0000       # flags
@@ -126,8 +126,8 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
                   xxxx=0 # opcode
               0          # mask?
                xxxxxxx=5 # length
-          """ should parseTo(
-            FrameHeader(Opcode.Continuation, None, 5, fin = false))
+          """ should
+            parseTo(FrameHeader(Opcode.Continuation, None, 5, fin = false))
         }
         "126" in {
           b"""0000          # flags
@@ -136,8 +136,8 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
                xxxxxxx=7e   # length
               xxxxxxxx
               xxxxxxxx=007e # length16
-          """ should parseTo(
-            FrameHeader(Opcode.Continuation, None, 126, fin = false))
+          """ should
+            parseTo(FrameHeader(Opcode.Continuation, None, 126, fin = false))
         }
         "127" in {
           b"""0000          # flags
@@ -146,8 +146,8 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
                xxxxxxx=7e   # length
               xxxxxxxx
               xxxxxxxx=007f # length16
-          """ should parseTo(
-            FrameHeader(Opcode.Continuation, None, 127, fin = false))
+          """ should
+            parseTo(FrameHeader(Opcode.Continuation, None, 127, fin = false))
         }
         "127 < length < 65536" in {
           b"""0000          # flags
@@ -156,8 +156,8 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
                xxxxxxx=7e   # length
               xxxxxxxx
               xxxxxxxx=d28e # length16
-          """ should parseTo(
-            FrameHeader(Opcode.Continuation, None, 0xd28e, fin = false))
+          """ should
+            parseTo(FrameHeader(Opcode.Continuation, None, 0xd28e, fin = false))
         }
         "65535" in {
           b"""0000          # flags
@@ -166,8 +166,8 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
                xxxxxxx=7e   # length
               xxxxxxxx
               xxxxxxxx=ffff # length16
-          """ should parseTo(
-            FrameHeader(Opcode.Continuation, None, 0xffff, fin = false))
+          """ should
+            parseTo(FrameHeader(Opcode.Continuation, None, 0xffff, fin = false))
         }
         "65536" in {
           b"""0000          # flags

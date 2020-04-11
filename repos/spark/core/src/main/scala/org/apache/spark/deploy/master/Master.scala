@@ -74,8 +74,8 @@ private[deploy] class Master(
   private def createDateFormat =
     new SimpleDateFormat("yyyyMMddHHmmss") // For application IDs
 
-  private val WORKER_TIMEOUT_MS = conf
-    .getLong("spark.worker.timeout", 60) * 1000
+  private val WORKER_TIMEOUT_MS = conf.getLong("spark.worker.timeout", 60) *
+    1000
   private val RETAINED_APPLICATIONS = conf
     .getInt("spark.deploy.retainedApplications", 200)
   private val RETAINED_DRIVERS = conf
@@ -239,8 +239,8 @@ private[deploy] class Master(
       val (storedApps, storedDrivers, storedWorkers) = persistenceEngine
         .readPersistedData(rpcEnv)
       state =
-        if (storedApps.isEmpty && storedDrivers.isEmpty && storedWorkers
-              .isEmpty) { RecoveryState.ALIVE }
+        if (storedApps.isEmpty && storedDrivers.isEmpty &&
+            storedWorkers.isEmpty) { RecoveryState.ALIVE }
         else { RecoveryState.RECOVERING }
       logInfo("I have been elected leader! New state: " + state)
       if (state == RecoveryState.RECOVERING) {
@@ -307,8 +307,8 @@ private[deploy] class Master(
             val normalExit = exitStatus == Some(0)
             // Only retry certain number of times so we don't go into an infinite loop.
             if (!normalExit) {
-              if (appInfo.incrementRetryCount() < ApplicationState
-                    .MAX_NUM_RETRY) { schedule() }
+              if (appInfo.incrementRetryCount() <
+                    ApplicationState.MAX_NUM_RETRY) { schedule() }
               else {
                 val execs = appInfo.executors.values
                 if (!execs.exists(_.state == ExecutorState.RUNNING)) {
@@ -470,8 +470,8 @@ private[deploy] class Master(
             "Worker registration failed. Attempted to re-register worker at same " +
               "address: " + workerAddress)
           context.reply(RegisterWorkerFailed(
-            "Attempted to re-register worker at same address: "
-              + workerAddress))
+            "Attempted to re-register worker at same address: " +
+              workerAddress))
         }
       }
     }
@@ -699,19 +699,19 @@ private[deploy] class Master(
     /** Return whether the specified worker can launch an executor for this app. */
     def canLaunchExecutor(pos: Int): Boolean = {
       val keepScheduling = coresToAssign >= minCoresPerExecutor
-      val enoughCores =
-        usableWorkers(pos).coresFree - assignedCores(pos) >= minCoresPerExecutor
+      val enoughCores = usableWorkers(pos).coresFree - assignedCores(pos) >=
+        minCoresPerExecutor
 
       // If we allow multiple executors per worker, then we can always launch new executors.
       // Otherwise, if there is already an executor on this worker, just give it more cores.
-      val launchingNewExecutor =
-        !oneExecutorPerWorker || assignedExecutors(pos) == 0
+      val launchingNewExecutor = !oneExecutorPerWorker ||
+        assignedExecutors(pos) == 0
       if (launchingNewExecutor) {
         val assignedMemory = assignedExecutors(pos) * memoryPerExecutor
-        val enoughMemory = usableWorkers(pos)
-          .memoryFree - assignedMemory >= memoryPerExecutor
-        val underLimit = assignedExecutors.sum + app.executors.size < app
-          .executorLimit
+        val enoughMemory = usableWorkers(pos).memoryFree - assignedMemory >=
+          memoryPerExecutor
+        val underLimit = assignedExecutors.sum + app.executors.size <
+          app.executorLimit
         keepScheduling && enoughCores && enoughMemory && underLimit
       } else {
         // We're adding cores to an existing executor, so no need
@@ -821,8 +821,8 @@ private[deploy] class Master(
       while (numWorkersVisited < numWorkersAlive && !launched) {
         val worker = shuffledAliveWorkers(curPos)
         numWorkersVisited += 1
-        if (worker.memoryFree >= driver.desc.mem && worker.coresFree >= driver
-              .desc.cores) {
+        if (worker.memoryFree >= driver.desc.mem &&
+            worker.coresFree >= driver.desc.cores) {
           launchDriver(worker, driver)
           waitingDrivers -= driver
           launched = true
@@ -855,8 +855,8 @@ private[deploy] class Master(
     // There may be one or more refs to dead workers on this same node (w/ different ID's),
     // remove them.
     workers.filter { w =>
-      (w.host == worker.host && w.port == worker.port) && (w
-        .state == WorkerState.DEAD)
+      (w.host == worker.host && w.port == worker.port) &&
+      (w.state == WorkerState.DEAD)
     }.foreach { w => workers -= w }
 
     val workerAddress = worker.endpoint.address
@@ -1017,8 +1017,8 @@ private[deploy] class Master(
     idToApp.get(appId) match {
       case Some(appInfo) =>
         logInfo(
-          s"Application $appId requests to kill executors: " + executorIds
-            .mkString(", "))
+          s"Application $appId requests to kill executors: " +
+            executorIds.mkString(", "))
         val (known, unknown) = executorIds.partition(appInfo.executors.contains)
         known.foreach { executorId =>
           val desc = appInfo.executors(executorId)
@@ -1027,8 +1027,8 @@ private[deploy] class Master(
         }
         if (unknown.nonEmpty) {
           logWarning(
-            s"Application $appId attempted to kill non-existent executors: "
-              + unknown.mkString(", "))
+            s"Application $appId attempted to kill non-existent executors: " +
+              unknown.mkString(", "))
         }
         schedule()
         true
@@ -1094,9 +1094,8 @@ private[deploy] class Master(
         appAttemptId = None,
         compressionCodecName = app.desc.eventLogCodec)
       val fs = Utils.getHadoopFileSystem(eventLogDir, hadoopConf)
-      val inProgressExists = fs.exists(new Path(
-        eventLogFilePrefix +
-          EventLoggingListener.IN_PROGRESS))
+      val inProgressExists = fs
+        .exists(new Path(eventLogFilePrefix + EventLoggingListener.IN_PROGRESS))
 
       val eventLogFile =
         if (inProgressExists) {
@@ -1180,10 +1179,10 @@ private[deploy] class Master(
             .format(worker.id, WORKER_TIMEOUT_MS / 1000))
         removeWorker(worker)
       } else {
-        if (worker.lastHeartbeat < currentTime - (
-              (REAPER_ITERATIONS + 1) * WORKER_TIMEOUT_MS
-            )) {
-          workers -= worker // we've seen this DEAD worker in the UI, etc. for long enough; cull it
+        if (worker.lastHeartbeat <
+              currentTime - ((REAPER_ITERATIONS + 1) * WORKER_TIMEOUT_MS)) {
+          workers -=
+            worker // we've seen this DEAD worker in the UI, etc. for long enough; cull it
         }
       }
     }

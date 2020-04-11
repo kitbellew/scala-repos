@@ -60,8 +60,8 @@ object ThreadRepo {
 
   def visibleByUserContainingExists(user: ID, containing: String): Fu[Boolean] =
     $count.exists(
-      visibleByUserQuery(user) ++ Json
-        .obj("posts.0.text" -> $regex(containing)))
+      visibleByUserQuery(user) ++
+        Json.obj("posts.0.text" -> $regex(containing)))
 
   def userQuery(user: String) = Json.obj("userIds" -> user)
 

@@ -55,8 +55,8 @@ class AttributeGroupSuite extends SparkFunSuite {
     assert(group0.size === 10)
     assert(group0.attributes.isEmpty)
     assert(
-      group0 === AttributeGroup
-        .fromMetadata(group0.toMetadataImpl, group0.name))
+      group0 ===
+        AttributeGroup.fromMetadata(group0.toMetadataImpl, group0.name))
     assert(group0 === AttributeGroup.fromStructField(group0.toStructField()))
 
     val group1 = new AttributeGroup("item")

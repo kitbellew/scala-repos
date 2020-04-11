@@ -145,7 +145,8 @@ class VerifiableProperties(val props: Properties) extends Logging {
       val v = getProperty(name)
       require(
         v == "true" || v == "false",
-        "Unacceptable value for property '" + name + "', boolean values must be either 'true' or 'false")
+        "Unacceptable value for property '" + name +
+          "', boolean values must be either 'true' or 'false")
       v.toBoolean
     }
   }

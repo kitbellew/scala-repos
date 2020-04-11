@@ -64,12 +64,8 @@ trait NormalizationSpecs[M[+_]]
 
           obj("model1") must beLike {
             case SObject(summary) =>
-              summary.keySet mustEqual Set(
-                "count",
-                "stdDev",
-                "min",
-                "max",
-                "mean")
+              summary.keySet mustEqual
+                Set("count", "stdDev", "min", "max", "mean")
 
               summary("count") must beLike {
                 case SDecimal(d) => d.toDouble mustEqual (13)

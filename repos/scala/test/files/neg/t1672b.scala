@@ -30,7 +30,8 @@ object Test {
   def bar(i: Int): Int = {
     if (i == 0) 0
     else
-      1 + (try { throw new RuntimeException }
-      catch { case _: Throwable => bar(i - 1) })
+      1 +
+        (try { throw new RuntimeException }
+        catch { case _: Throwable => bar(i - 1) })
   }
 }

@@ -67,8 +67,7 @@ object RoutesCompiler extends AutoPlugin {
   val autoImport = RoutesKeys
 
   override def projectSettings =
-    defaultSettings ++
-      inConfig(Compile)(routesSettings) ++
+    defaultSettings ++ inConfig(Compile)(routesSettings) ++
       inConfig(Test)(routesSettings)
 
   def routesSettings =
@@ -100,8 +99,8 @@ object RoutesCompiler extends AutoPlugin {
         }
       },
       watchSources in Defaults.ConfigGlobal <++= sources in routes,
-      target in routes := crossTarget.value / "routes" / Defaults
-        .nameForSrc(configuration.value.name),
+      target in routes := crossTarget.value / "routes" / Defaults.nameForSrc(
+        configuration.value.name),
       routes <<= compileRoutesFiles,
       sourceGenerators <+= routes,
       managedSourceDirectories <+= target in routes
@@ -132,7 +131,8 @@ object RoutesCompiler extends AutoPlugin {
         }
       },
       namespaceReverseRouter := false,
-      routesGenerator := InjectedRoutesGenerator, // changed from StaticRoutesGenerator in 2.5.0
+      routesGenerator :=
+        InjectedRoutesGenerator, // changed from StaticRoutesGenerator in 2.5.0
       sourcePositionMappers += routesPositionMapper
     )
 
@@ -156,8 +156,9 @@ object RoutesCompiler extends AutoPlugin {
     val (products, errors) = syncIncremental(cacheDirectory, ops) {
       opsToRun: Seq[RoutesCompilerOp] =>
         val results = opsToRun.map { op =>
-          op -> play.routes.compiler.RoutesCompiler
-            .compile(op.task, generator, generatedDir)
+          op ->
+            play.routes.compiler.RoutesCompiler
+              .compile(op.task, generator, generatedDir)
         }
         val opResults = results.map {
           case (op, Right(inputs)) =>

@@ -202,8 +202,8 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
       extends SelectionHandlerSettings(_config) {
     import _config._
 
-    val NrOfSelectors: Int =
-      getInt("nr-of-selectors") requiring (_ > 0, "nr-of-selectors must be > 0")
+    val NrOfSelectors: Int = getInt("nr-of-selectors") requiring
+      (_ > 0, "nr-of-selectors must be > 0")
     val DirectBufferSize: Int = getIntBytes("direct-buffer-size")
     val MaxDirectBufferPoolSize: Int = getInt("direct-buffer-pool-limit")
     val BatchReceiveLimit: Int = getInt("receive-throughput")

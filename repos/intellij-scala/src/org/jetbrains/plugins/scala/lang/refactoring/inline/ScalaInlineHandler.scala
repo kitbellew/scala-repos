@@ -67,9 +67,9 @@ class ScalaInlineHandler extends InlineHandler {
     def removeElementWithNonSignificantSibilings(value: PsiElement) = {
       val children = new ArrayBuffer[PsiElement]
       var psiElement = value.getNextSibling
-      while (psiElement != null && (psiElement.getNode
-               .getElementType == ScalaTokenTypes.tSEMICOLON || psiElement
-               .getText.trim == "")) {
+      while (psiElement != null &&
+             (psiElement.getNode.getElementType == ScalaTokenTypes.tSEMICOLON ||
+             psiElement.getText.trim == "")) {
         children += psiElement
         psiElement = psiElement.getNextSibling
       }
@@ -200,12 +200,12 @@ class ScalaInlineHandler extends InlineHandler {
         showErrorHint(
           ScalaBundle.message("cannot.inline.never.used"),
           inlineTitleSuffix)
-      else if (!psiNamedElement.isInstanceOf[ScTypeAliasDefinition] && refs
-                 .exists(ref =>
-                   ScalaPsiUtil.getParentOfType(
-                     ref.getElement,
-                     classOf[ScStableCodeReferenceElement],
-                     classOf[ScStableReferenceElementPattern]) != null))
+      else if (!psiNamedElement.isInstanceOf[ScTypeAliasDefinition] &&
+               refs.exists(ref =>
+                 ScalaPsiUtil.getParentOfType(
+                   ref.getElement,
+                   classOf[ScStableCodeReferenceElement],
+                   classOf[ScStableReferenceElementPattern]) != null))
         showErrorHint(
           ScalaBundle.message("cannot.inline.stable.reference"),
           inlineTitleSuffix)
@@ -261,8 +261,8 @@ class ScalaInlineHandler extends InlineHandler {
         }
         showErrorHint(message, "element")
       case named: ScNamedElement
-          if named.getContainingFile != PsiDocumentManager
-            .getInstance(editor.getProject).getPsiFile(editor.getDocument) =>
+          if named.getContainingFile != PsiDocumentManager.getInstance(
+            editor.getProject).getPsiFile(editor.getDocument) =>
         showErrorHint(
           ScalaBundle.message("cannot.inline.different.files"),
           "element")
@@ -304,8 +304,8 @@ class ScalaInlineHandler extends InlineHandler {
         if (funDef.isLocal) getSettings(funDef, "Method", "local method")
         else getSettings(funDef, "Method", "method")
       case typeAlias: ScTypeAliasDefinition
-          if isParametrizedTypeAlias(typeAlias) || !isSimpleTypeAlias(
-            typeAlias) =>
+          if isParametrizedTypeAlias(typeAlias) ||
+            !isSimpleTypeAlias(typeAlias) =>
         showErrorHint(
           ScalaBundle.message("cannot.inline.notsimple.typealias"),
           "Type Alias")
@@ -320,8 +320,8 @@ class ScalaInlineHandler extends InlineHandler {
       case member: ScMember =>
         ReferencesSearch.search(named, named.getUseScope).findAll.asScala
           .forall { ref =>
-            member.containingClass == null || PsiTreeUtil
-              .isAncestor(member.containingClass, ref.getElement, true)
+            member.containingClass == null ||
+            PsiTreeUtil.isAncestor(member.containingClass, ref.getElement, true)
           }
       case _ => true
     }

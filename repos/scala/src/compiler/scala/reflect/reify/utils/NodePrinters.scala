@@ -67,18 +67,20 @@ trait NodePrinters {
         s
       })
 
-      val isExpr = reification.length > 0 && reification(0).trim
-        .startsWith("Expr[")
-      var rtree = reification dropWhile (!_.trim.startsWith(
-        s"val ${nme.UNIVERSE_SHORT}: U = ${nme.MIRROR_UNTYPED}.universe;"))
+      val isExpr = reification.length > 0 &&
+        reification(0).trim.startsWith("Expr[")
+      var rtree = reification dropWhile
+        (!_.trim.startsWith(
+          s"val ${nme.UNIVERSE_SHORT}: U = ${nme.MIRROR_UNTYPED}.universe;"))
       rtree = rtree drop 2
       rtree = rtree takeWhile (_ != "    }")
-      rtree = rtree map (s0 => {
-        var s = s0
-        mirrorIsUsed |= s contains nme.MIRROR_PREFIX.toString
-        s = s.replace(nme.MIRROR_PREFIX.toString, "")
-        s.trim
-      })
+      rtree = rtree map
+        (s0 => {
+          var s = s0
+          mirrorIsUsed |= s contains nme.MIRROR_PREFIX.toString
+          s = s.replace(nme.MIRROR_PREFIX.toString, "")
+          s.trim
+        })
 
       val printout = scala.collection.mutable.ListBuffer[String]()
       printout += universe.trim
@@ -105,9 +107,8 @@ trait NodePrinters {
 
       // printout mkString EOL
       val prefix = "// produced from " + reifier.defaultErrorPosition
-      (prefix +: "object Test extends App {" +: (
-        printout map ("  " + _)
-      ) :+ "}") mkString EOL
+      (prefix +: "object Test extends App {" +: (printout map ("  " + _)) :+
+        "}") mkString EOL
     }
   }
 }

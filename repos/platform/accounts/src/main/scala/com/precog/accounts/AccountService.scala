@@ -151,52 +151,44 @@ trait AccountService
 
             State(handlers, stoppable)
           }
-        } ->
-          request {
-            case State(handlers, _) =>
-              import CORSHeaderHandler.allowOrigin
-              import handlers._
-              allowOrigin("*", executionContext) {
-                jsonp {
-                  jvalue[ByteChunk] {
-                    path("/accounts/") {
-                      post(PostAccountHandler) ~
-                        path("'accountId/password/reset") {
-                          post(GenerateResetTokenHandler) ~
-                            path("/'resetToken") { post(PasswordResetHandler) }
-                        } ~
-                        path("search") { get(SearchAccountsHandler) } ~
-                        path("'accountId/grants/") {
-                          post(CreateAccountGrantHandler)
-                        } ~
-                        auth(handlers.accountManager) {
-                          get(ListAccountsHandler) ~
-                            path("'accountId") {
-                              get(GetAccountDetailsHandler) ~
-                                delete(DeleteAccountHandler) ~
-                                path("/password") {
-                                  put(PutAccountPasswordHandler)
-                                } ~
-                                path("/plan") {
-                                  get(GetAccountPlanHandler) ~
-                                    put(PutAccountPlanHandler) ~
-                                    delete(DeleteAccountPlanHandler)
-                                }
+        } -> request {
+          case State(handlers, _) =>
+            import CORSHeaderHandler.allowOrigin
+            import handlers._
+            allowOrigin("*", executionContext) {
+              jsonp {
+                jvalue[ByteChunk] {
+                  path("/accounts/") {
+                    post(PostAccountHandler) ~
+                      path("'accountId/password/reset") {
+                        post(GenerateResetTokenHandler) ~ path("/'resetToken") {
+                          post(PasswordResetHandler)
+                        }
+                      } ~ path("search") { get(SearchAccountsHandler) } ~
+                      path("'accountId/grants/") {
+                        post(CreateAccountGrantHandler)
+                      } ~ auth(handlers.accountManager) {
+                        get(ListAccountsHandler) ~ path("'accountId") {
+                          get(GetAccountDetailsHandler) ~
+                            delete(DeleteAccountHandler) ~ path("/password") {
+                              put(PutAccountPasswordHandler)
+                            } ~ path("/plan") {
+                              get(GetAccountPlanHandler) ~
+                                put(PutAccountPlanHandler) ~
+                                delete(DeleteAccountPlanHandler)
                             }
                         }
-                    }
+                      }
                   }
                 }
-              } ~
-                orFail { req: HttpRequest[ByteChunk] =>
-                  self.logger
-                    .error("Request " + req + " could not be serviced.")
-                  (
-                    HttpStatusCodes.NotFound,
-                    "Request " + req + " could not be serviced.")
-                }
-          } ->
-          stop { s: State => s.stop }
+              }
+            } ~ orFail { req: HttpRequest[ByteChunk] =>
+              self.logger.error("Request " + req + " could not be serviced.")
+              (
+                HttpStatusCodes.NotFound,
+                "Request " + req + " could not be serviced.")
+            }
+        } -> stop { s: State => s.stop }
       }
     }
   }

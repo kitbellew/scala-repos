@@ -168,8 +168,8 @@ private[spark] class DTStatsAggregator(
   def merge(other: DTStatsAggregator): DTStatsAggregator = {
     require(
       allStatsSize == other.allStatsSize,
-      s"DTStatsAggregator.merge requires that both aggregators have the same length stats vectors."
-        + s" This aggregator is of length $allStatsSize, but the other is ${other.allStatsSize}."
+      s"DTStatsAggregator.merge requires that both aggregators have the same length stats vectors." +
+        s" This aggregator is of length $allStatsSize, but the other is ${other.allStatsSize}."
     )
     var i = 0
     // TODO: Test BLAS.axpy

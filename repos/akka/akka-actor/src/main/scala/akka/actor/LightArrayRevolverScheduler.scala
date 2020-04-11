@@ -205,8 +205,8 @@ class LightArrayRevolverScheduler(
       // 1 second margin in the error message due to rounding
       throw new IllegalArgumentException(
         s"Task scheduled with [${delayNanos.nanos.toSeconds}] seconds delay, " +
-          s"which is too far in future, maximum delay is [${(tickNanos * Int
-            .MaxValue).nanos.toSeconds - 1}] seconds")
+          s"which is too far in future, maximum delay is [${(tickNanos *
+            Int.MaxValue).nanos.toSeconds - 1}] seconds")
 
   private val stopped = new AtomicReference[Promise[immutable.Seq[TimerTask]]]
   private def stop(): Future[immutable.Seq[TimerTask]] = {
@@ -234,8 +234,8 @@ class LightArrayRevolverScheduler(
           case x ⇒ collect(q, acc :+ x)
         }
       }
-      ((0 until WheelSize) flatMap (i ⇒
-        collect(wheel(i), Vector.empty))) ++ collect(queue, Vector.empty)
+      ((0 until WheelSize) flatMap (i ⇒ collect(wheel(i), Vector.empty))) ++
+        collect(queue, Vector.empty)
     }
 
     @tailrec
@@ -249,7 +249,7 @@ class LightArrayRevolverScheduler(
               val futureTick =
                 ((time - start + // calculate the nanos since timer start
                   (ticks * tickNanos) + // adding the desired delay
-                  tickNanos - 1 // rounding up
+                    tickNanos - 1 // rounding up
                 ) / tickNanos).toInt // and converting to slot number
               // tick is an Int that will wrap around, but toInt of futureTick gives us modulo operations
               // and the difference (offset) will be correct in any case

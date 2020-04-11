@@ -35,8 +35,8 @@ case class FetchPartitionStatus(
     fetchInfo: PartitionFetchInfo) {
 
   override def toString =
-    "[startOffsetMetadata: " + startOffsetMetadata + ", " +
-      "fetchInfo: " + fetchInfo + "]"
+    "[startOffsetMetadata: " + startOffsetMetadata + ", " + "fetchInfo: " +
+      fetchInfo + "]"
 }
 
 /**
@@ -50,8 +50,8 @@ case class FetchMetadata(
     fetchPartitionStatus: Map[TopicAndPartition, FetchPartitionStatus]) {
 
   override def toString =
-    "[minBytes: " + fetchMinBytes + ", " +
-      "onlyLeader:" + fetchOnlyLeader + ", "
+    "[minBytes: " + fetchMinBytes + ", " + "onlyLeader:" + fetchOnlyLeader +
+      ", "
   "onlyCommitted: " + fetchOnlyCommitted + ", "
   "partitionStatus: " + fetchPartitionStatus + "]"
 }

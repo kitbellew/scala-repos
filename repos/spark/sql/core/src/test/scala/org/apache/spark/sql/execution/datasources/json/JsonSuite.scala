@@ -293,8 +293,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         StructType(
           StructField("Charset", StringType, true) ::
             StructField("Host", StringType, true) :: Nil),
-        true) ::
-        StructField("ip", StringType, true) ::
+        true) :: StructField("ip", StringType, true) ::
         StructField("nullstr", StringType, true) :: Nil)
 
     assert(expectedSchema === jsonDF.schema)
@@ -487,15 +486,13 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     checkAnswer(
       sql("select * from jsonTable"),
       Row("true", 11L, null, 1.1, "13.1", "str1") ::
-        Row("12", null, 21474836470.9, null, null, "true") ::
-        Row(
+        Row("12", null, 21474836470.9, null, null, "true") :: Row(
           "false",
           21474836470L,
           92233720368547758070d,
           100,
           "str1",
-          "false") ::
-        Row(
+          "false") :: Row(
           null,
           21474836570L,
           1.1,
@@ -521,8 +518,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     // Widening to DecimalType
     checkAnswer(
       sql("select num_num_2 + 1.3 from jsonTable where num_num_2 > 1.1"),
-      Row(21474836472.2) ::
-        Row(92233720368547758071.3) :: Nil)
+      Row(21474836472.2) :: Row(92233720368547758071.3) :: Nil)
 
     // Widening to Double
     checkAnswer(
@@ -588,8 +584,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     // Number and String conflict: resolve the type as number in this query.
     checkAnswer(
       sql("select num_str + 1.2 from jsonTable where num_str > 13"),
-      Row(BigDecimal("14.3")) :: Row(
-        BigDecimal("92233720368547758071.2")) :: Nil)
+      Row(BigDecimal("14.3")) :: Row(BigDecimal("92233720368547758071.2")) ::
+        Nil)
   }
 
   test("Type conflict in complex field values") {
@@ -598,12 +594,10 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val expectedSchema = StructType(
       StructField("array", ArrayType(LongType, true), true) ::
         StructField("num_struct", StringType, true) ::
-        StructField("str_array", StringType, true) ::
-        StructField(
+        StructField("str_array", StringType, true) :: StructField(
           "struct",
           StructType(StructField("field", StringType, true) :: Nil),
-          true) ::
-        StructField("struct_array", StringType, true) :: Nil)
+          true) :: StructField("struct_array", StringType, true) :: Nil)
 
     assert(expectedSchema === jsonDF.schema)
 
@@ -613,8 +607,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       sql("select * from jsonTable"),
       Row(Seq(), "11", "[1,2,3]", Row(null), "[]") ::
         Row(null, """{"field":false}""", null, null, "{}") ::
-        Row(Seq(4, 5, 6), null, "str", Row(null), "[7,8,9]") ::
-        Row(
+        Row(Seq(4, 5, 6), null, "str", Row(null), "[7,8,9]") :: Row(
           Seq(7),
           "{}",
           """["str1","str2",33]""",
@@ -627,14 +620,13 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val jsonDF = sqlContext.read.json(arrayElementTypeConflict)
 
     val expectedSchema = StructType(
-      StructField("array1", ArrayType(StringType, true), true) ::
-        StructField(
-          "array2",
-          ArrayType(
-            StructType(StructField("field", LongType, true) :: Nil),
-            true),
-          true) ::
-        StructField("array3", ArrayType(StringType, true), true) :: Nil)
+      StructField("array1", ArrayType(StringType, true), true) :: StructField(
+        "array2",
+        ArrayType(
+          StructType(StructField("field", LongType, true) :: Nil),
+          true),
+        true) :: StructField("array3", ArrayType(StringType, true), true) ::
+        Nil)
 
     assert(expectedSchema === jsonDF.schema)
 
@@ -668,14 +660,11 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val jsonDF = sqlContext.read.json(missingFields)
 
     val expectedSchema = StructType(
-      StructField("a", BooleanType, true) ::
-        StructField("b", LongType, true) ::
-        StructField("c", ArrayType(LongType, true), true) ::
-        StructField(
+      StructField("a", BooleanType, true) :: StructField("b", LongType, true) ::
+        StructField("c", ArrayType(LongType, true), true) :: StructField(
           "d",
           StructType(StructField("field", BooleanType, true) :: Nil),
-          true) ::
-        StructField("e", StringType, true) :: Nil)
+          true) :: StructField("e", StringType, true) :: Nil)
 
     assert(expectedSchema === jsonDF.schema)
 
@@ -987,19 +976,12 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     checkAnswer(
       sql("select `map` from jsonWithSimpleMap"),
-      Row(Map("a" -> 1)) ::
-        Row(Map("b" -> 2)) ::
-        Row(Map("c" -> 3)) ::
-        Row(Map("c" -> 1, "d" -> 4)) ::
-        Row(Map("e" -> null)) :: Nil)
+      Row(Map("a" -> 1)) :: Row(Map("b" -> 2)) :: Row(Map("c" -> 3)) ::
+        Row(Map("c" -> 1, "d" -> 4)) :: Row(Map("e" -> null)) :: Nil)
 
     checkAnswer(
       sql("select `map`['c'] from jsonWithSimpleMap"),
-      Row(null) ::
-        Row(null) ::
-        Row(3) ::
-        Row(1) ::
-        Row(null) :: Nil)
+      Row(null) :: Row(null) :: Row(3) :: Row(1) :: Row(null) :: Nil)
 
     val innerStruct = StructType(
       StructField("field1", ArrayType(IntegerType, true), true) ::
@@ -1015,22 +997,16 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     checkAnswer(
       sql("select `map` from jsonWithComplexMap"),
       Row(Map("a" -> Row(Seq(1, 2, 3, null), null))) ::
-        Row(Map("b" -> Row(null, 2))) ::
-        Row(Map("c" -> Row(Seq(), 4))) ::
+        Row(Map("b" -> Row(null, 2))) :: Row(Map("c" -> Row(Seq(), 4))) ::
         Row(Map("c" -> Row(null, 3), "d" -> Row(Seq(null), null))) ::
-        Row(Map("e" -> null)) ::
-        Row(Map("f" -> Row(null, null))) :: Nil
+        Row(Map("e" -> null)) :: Row(Map("f" -> Row(null, null))) :: Nil
     )
 
     checkAnswer(
       sql(
         "select `map`['a'].field1, `map`['c'].field2 from jsonWithComplexMap"),
-      Row(Seq(1, 2, 3, null), null) ::
-        Row(null, null) ::
-        Row(null, 4) ::
-        Row(null, 3) ::
-        Row(null, null) ::
-        Row(null, null) :: Nil
+      Row(Seq(1, 2, 3, null), null) :: Row(null, null) :: Row(null, 4) ::
+        Row(null, 3) :: Row(null, null) :: Row(null, null) :: Nil
     )
   }
 
@@ -1081,10 +1057,9 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
           |select a, b, c
           |from jsonTable
         """.stripMargin),
-      Row("str_a_1", null, null) ::
-        Row("str_a_2", null, null) ::
-        Row(null, "str_b_3", null) ::
-        Row("str_a_4", "str_b_4", "str_c_4") :: Nil
+      Row("str_a_1", null, null) :: Row("str_a_2", null, null) ::
+        Row(null, "str_b_3", null) :: Row("str_a_4", "str_b_4", "str_c_4") ::
+        Nil
     )
   }
 
@@ -1165,9 +1140,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
               |FROM jsonTable
               |WHERE _unparsed IS NOT NULL
             """.stripMargin),
-          Row("{") ::
-            Row("""{"a":1, b:2}""") ::
-            Row("""{"a":{, b:3}""") ::
+          Row("{") :: Row("""{"a":1, b:2}""") :: Row("""{"a":{, b:3}""") ::
             Row("]") :: Nil
         )
       }
@@ -1184,27 +1157,24 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         ArrayType(
           ArrayType(ArrayType(ArrayType(StringType, true), true), true),
           true),
-        true) ::
-        StructField(
-          "field2",
+        true) :: StructField(
+        "field2",
+        ArrayType(
           ArrayType(
-            ArrayType(
-              StructType(StructField("Test", LongType, true) :: Nil),
-              true),
+            StructType(StructField("Test", LongType, true) :: Nil),
             true),
-          true) ::
-        StructField(
-          "field3",
+          true),
+        true) :: StructField(
+        "field3",
+        ArrayType(
           ArrayType(
-            ArrayType(
-              StructType(StructField("Test", StringType, true) :: Nil),
-              true),
+            StructType(StructField("Test", StringType, true) :: Nil),
             true),
-          true) ::
-        StructField(
-          "field4",
-          ArrayType(ArrayType(ArrayType(LongType, true), true), true),
-          true) :: Nil)
+          true),
+        true) :: StructField(
+        "field4",
+        ArrayType(ArrayType(ArrayType(LongType, true), true), true),
+        true) :: Nil)
 
     assert(schema === jsonDF.schema)
 
@@ -1247,11 +1217,11 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val result = df2.toJSON.collect()
     // scalastyle:off
     assert(
-      result(
-        0) === "{\"f1\":1,\"f2\":\"A1\",\"f3\":true,\"f4\":[\"1\",\" A1\",\" true\",\" null\"]}")
+      result(0) ===
+        "{\"f1\":1,\"f2\":\"A1\",\"f3\":true,\"f4\":[\"1\",\" A1\",\" true\",\" null\"]}")
     assert(
-      result(
-        3) === "{\"f1\":4,\"f2\":\"D4\",\"f3\":true,\"f4\":[\"4\",\" D4\",\" true\",\" 2147483644\"],\"f5\":2147483644}")
+      result(3) ===
+        "{\"f1\":4,\"f2\":\"D4\",\"f3\":true,\"f4\":[\"4\",\" D4\",\" true\",\" 2147483644\"],\"f5\":2147483644}")
     // scalastyle:on
 
     val schema2 = StructType(
@@ -1279,8 +1249,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     assert(
       result2(1) === "{\"f1\":{\"f11\":2,\"f12\":false},\"f2\":{\"B2\":null}}")
     assert(
-      result2(
-        3) === "{\"f1\":{\"f11\":4,\"f12\":true},\"f2\":{\"D4\":2147483644}}")
+      result2(3) ===
+        "{\"f1\":{\"f11\":4,\"f12\":true},\"f2\":{\"D4\":2147483644}}")
 
     val jsonDF = sqlContext.read.json(primitiveFieldAndType)
     val primTable = sqlContext.read.json(jsonDF.toJSON.rdd)
@@ -1396,10 +1366,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     withSQLConf(SQLConf.COLUMN_NAME_OF_CORRUPT_RECORD.key -> "_unparsed") {
       withTempDir { dir =>
         val schemaWithSimpleMap = StructType(
-          StructField(
-            "map",
-            MapType(StringType, IntegerType, true),
-            false) :: Nil)
+          StructField("map", MapType(StringType, IntegerType, true), false) ::
+            Nil)
         val df = sqlContext.read.schema(schemaWithSimpleMap).json(mapType1)
 
         val path = dir.getAbsolutePath
@@ -1528,8 +1496,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     )
     val data =
       Row.fromSeq(
-        Seq(
-          "Spark " + sqlContext.sparkContext.version) ++ constantValues) :: Nil
+        Seq("Spark " + sqlContext.sparkContext.version) ++ constantValues) ::
+        Nil
 
     // Data generated by previous versions.
     // scalastyle:off
@@ -1540,7 +1508,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         """{"col0":"Spark 1.4.1","col1":"YSBzdHJpbmcgaW4gYmluYXJ5","col3":true,"col4":1,"col5":2,"col6":3,"col7":9223372036854775807,"col8":0.25,"col9":0.75,"col10":1234.23456,"col11":1.23456,"col12":"2015-01-01","col13":"2015-01-01 23:50:59.123","col14":[2,3,4],"col15":{"a string":2000},"col16":{"f1":4.75,"f2":[false,true]},"col17":[0.25,2.25,4.25]}""" ::
         """{"col0":"Spark 1.4.1","col1":"YSBzdHJpbmcgaW4gYmluYXJ5","col3":true,"col4":1,"col5":2,"col6":3,"col7":9223372036854775807,"col8":0.25,"col9":0.75,"col10":1234.23456,"col11":1.23456,"col12":"2015-01-01","col13":"2015-01-01 23:50:59.123","col14":[2,3,4],"col15":{"a string":2000},"col16":{"f1":4.75,"f2":[false,true]},"col17":[0.25,2.25,4.25]}""" ::
         """{"col0":"Spark 1.5.0","col1":"YSBzdHJpbmcgaW4gYmluYXJ5","col3":true,"col4":1,"col5":2,"col6":3,"col7":9223372036854775807,"col8":0.25,"col9":0.75,"col10":1234.23456,"col11":1.23456,"col12":"2015-01-01","col13":"2015-01-01 23:50:59.123","col14":[2,3,4],"col15":{"a string":2000},"col16":{"f1":4.75,"f2":[false,true]},"col17":[0.25,2.25,4.25]}""" ::
-        """{"col0":"Spark 1.5.0","col1":"YSBzdHJpbmcgaW4gYmluYXJ5","col3":true,"col4":1,"col5":2,"col6":3,"col7":9223372036854775807,"col8":0.25,"col9":0.75,"col10":1234.23456,"col11":1.23456,"col12":"16436","col13":"2015-01-01 23:50:59.123","col14":[2,3,4],"col15":{"a string":2000},"col16":{"f1":4.75,"f2":[false,true]},"col17":[0.25,2.25,4.25]}""" :: Nil
+        """{"col0":"Spark 1.5.0","col1":"YSBzdHJpbmcgaW4gYmluYXJ5","col3":true,"col4":1,"col5":2,"col6":3,"col7":9223372036854775807,"col8":0.25,"col9":0.75,"col10":1234.23456,"col11":1.23456,"col12":"16436","col13":"2015-01-01 23:50:59.123","col14":[2,3,4],"col15":{"a string":2000},"col16":{"f1":4.75,"f2":[false,true]},"col17":[0.25,2.25,4.25]}""" ::
+        Nil
     // scalastyle:on
 
     // Generate data for the current version.
@@ -1552,8 +1521,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       // df.toJSON will convert internal rows to external rows first and then generate
       // JSON objects. While, df.write.format("json") will write internal rows directly.
       val allJSON =
-        existingJSONData ++
-          df.toJSON.collect() ++
+        existingJSONData ++ df.toJSON.collect() ++
           sparkContext.textFile(path.getCanonicalPath).collect()
 
       Utils.deleteRecursively(path)
@@ -1636,10 +1604,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
                 |SELECT dummy, _unparsed
                 |FROM jsonTable
               """.stripMargin),
-            Row("test", null) ::
-              Row(null, """[1,2,3]""") ::
-              Row(null, """":"test", "a":1}""") ::
-              Row(null, """42""") ::
+            Row("test", null) :: Row(null, """[1,2,3]""") ::
+              Row(null, """":"test", "a":1}""") :: Row(null, """42""") ::
               Row(null, """     ","ian":"test"}""") :: Nil
           )
         }
@@ -1657,9 +1623,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         .saveAsTextFile(path)
 
       val schema = StructType(
-        StructField(
-          "a",
-          StructType(StructField("b", StringType) :: Nil)) :: Nil)
+        StructField("a", StructType(StructField("b", StringType) :: Nil)) ::
+          Nil)
       val jsonDF = sqlContext.read.schema(schema).json(path)
       assert(jsonDF.count() == 2)
     }

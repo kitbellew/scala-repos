@@ -40,7 +40,8 @@ class ScalaConsoleExecuteAction extends AnAction {
     val console = ScalaConsoleInfo.getConsole(editor)
     val processHandler = ScalaConsoleInfo.getProcessHandler(editor)
     val model = ScalaConsoleInfo.getController(editor)
-    if (editor != null && console != null && processHandler != null && model != null) {
+    if (editor != null && console != null && processHandler != null &&
+        model != null) {
       val document = console.getEditorDocument
       val text = document.getText
 
@@ -71,8 +72,7 @@ class ScalaConsoleExecuteAction extends AnAction {
       })
     } else {
       ScalaConsoleExecuteAction.LOG.info(new Throwable(
-        s"Enter action in console failed: $editor, " +
-          s"$console"))
+        s"Enter action in console failed: $editor, " + s"$console"))
     }
   }
 }

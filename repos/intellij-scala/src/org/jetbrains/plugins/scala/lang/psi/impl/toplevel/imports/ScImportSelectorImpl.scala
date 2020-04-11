@@ -76,14 +76,14 @@ class ScImportSelectorImpl private (
         t = node.getElementType
       }
     } while (
-      node != null && !(t == ScalaElementTypes
-        .IMPORT_SELECTOR || t == ScalaTokenTypes.tUNDER)
+      node != null &&
+        !(t == ScalaElementTypes.IMPORT_SELECTOR || t == ScalaTokenTypes.tUNDER)
     )
 
     expr.selectors match {
       case Seq(sel: ScImportSelector) if !sel.isAliasedImport =>
-        val withoutBracesText = expr.qualifier.getText + "." + sel.reference
-          .getText
+        val withoutBracesText = expr.qualifier.getText + "." +
+          sel.reference.getText
         val newImportExpr = ScalaPsiElementFactory
           .createImportExprFromText(withoutBracesText, expr.getManager)
         expr.replace(newImportExpr)
@@ -96,8 +96,7 @@ class ScImportSelectorImpl private (
       case stub: ScImportSelectorStub => stub.isAliasedImport
       case _ =>
         PsiTreeUtil.getParentOfType(this, classOf[ScImportExpr]).selectors
-          .nonEmpty &&
-          !getLastChild.isInstanceOf[ScStableCodeReferenceElement]
+          .nonEmpty && !getLastChild.isInstanceOf[ScStableCodeReferenceElement]
     }
   }
 }

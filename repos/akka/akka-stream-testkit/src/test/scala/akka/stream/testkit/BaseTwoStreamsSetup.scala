@@ -49,10 +49,11 @@ abstract class BaseTwoStreamsSetup extends AkkaSpec {
       subscriber.expectSubscriptionAndComplete()
     }
 
-    "work with one immediately completed and one delayed completed publisher" in assertAllStagesStopped {
-      val subscriber = setup(completedPublisher, soonToCompletePublisher)
-      subscriber.expectSubscriptionAndComplete()
-    }
+    "work with one immediately completed and one delayed completed publisher" in
+      assertAllStagesStopped {
+        val subscriber = setup(completedPublisher, soonToCompletePublisher)
+        subscriber.expectSubscriptionAndComplete()
+      }
 
     "work with two immediately failed publishers" in assertAllStagesStopped {
       val subscriber = setup(failedPublisher, failedPublisher)
@@ -66,15 +67,17 @@ abstract class BaseTwoStreamsSetup extends AkkaSpec {
 
     // Warning: The two test cases below are somewhat implementation specific and might fail if the implementation
     // is changed. They are here to be an early warning though.
-    "work with one immediately failed and one delayed failed publisher (case 1)" in assertAllStagesStopped {
-      val subscriber = setup(soonToFailPublisher, failedPublisher)
-      subscriber.expectSubscriptionAndError(TestException)
-    }
+    "work with one immediately failed and one delayed failed publisher (case 1)" in
+      assertAllStagesStopped {
+        val subscriber = setup(soonToFailPublisher, failedPublisher)
+        subscriber.expectSubscriptionAndError(TestException)
+      }
 
-    "work with one immediately failed and one delayed failed publisher (case 2)" in assertAllStagesStopped {
-      val subscriber = setup(failedPublisher, soonToFailPublisher)
-      subscriber.expectSubscriptionAndError(TestException)
-    }
+    "work with one immediately failed and one delayed failed publisher (case 2)" in
+      assertAllStagesStopped {
+        val subscriber = setup(failedPublisher, soonToFailPublisher)
+        subscriber.expectSubscriptionAndError(TestException)
+      }
   }
 
 }

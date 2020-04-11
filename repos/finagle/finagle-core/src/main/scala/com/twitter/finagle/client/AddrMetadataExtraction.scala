@@ -45,8 +45,8 @@ object AddrMetadataExtraction {
         }
 
         // delay construction of the ServiceFactory while Addr is Pending
-        val futureFactory: Future[ServiceFactory[Req, Rep]] =
-          addr.changes.collect {
+        val futureFactory: Future[ServiceFactory[Req, Rep]] = addr.changes
+          .collect {
             case Addr.Failed(_) | Addr.Neg =>
               next.make(params + AddrMetadata(idMetadata))
 

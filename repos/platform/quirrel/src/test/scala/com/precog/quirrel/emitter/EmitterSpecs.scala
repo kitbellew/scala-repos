@@ -55,9 +55,8 @@ object EmitterSpecs
 
   def testEmit(
       v: String)(head: Vector[Instruction], streams: Vector[Instruction]*) =
-    compileEmit(v)
-      .filter { case _: Line => false; case _ => true } must beOneOf(
-      (head +: streams): _*)
+    compileEmit(v).filter { case _: Line => false; case _ => true } must
+      beOneOf((head +: streams): _*)
 
   def testEmitLine(
       v: String)(head: Vector[Instruction], streams: Vector[Instruction]*) =

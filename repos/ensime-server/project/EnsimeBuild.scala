@@ -30,86 +30,78 @@ object EnsimeBuild extends Build {
     javaOptions ++= Seq("-XX:+PerfDisableSharedMem"),
     javaOptions in Test ++= Seq(
       "-Dlogback.configurationFile=../logback-test.xml"),
-    dependencyOverrides ++= Set(
-      "org.apache.lucene" % "lucene-core" % luceneVersion),
+    dependencyOverrides ++=
+      Set("org.apache.lucene" % "lucene-core" % luceneVersion),
     EnsimeKeys.scalariform := ScalariformKeys.preferences.value
 
     // https://github.com/sbt/sbt/issues/2459 --- misses shapeless in core/it:test
     // updateOptions := updateOptions.value.withCachedResolution(true)
   ) ++ sonatype("ensime", "ensime-server", GPL3)
 
-  lazy val commonItSettings = inConfig(It)(
-    Defaults.testSettings ++ Sensible
-      .testSettings) ++ scalariformSettingsWithIt ++ Seq(
-    javaOptions in It ++= Seq("-Dlogback.configurationFile=../logback-it.xml"))
+  lazy val commonItSettings =
+    inConfig(It)(Defaults.testSettings ++ Sensible.testSettings) ++
+      scalariformSettingsWithIt ++ Seq(
+        javaOptions in It ++= Seq(
+          "-Dlogback.configurationFile=../logback-it.xml"))
 
   lazy val JavaTools: File = JdkDir / "lib/tools.jar"
 
   ////////////////////////////////////////////////
   // modules
-  lazy val monkeys =
-    Project("monkeys", file("monkeys")) settings (commonSettings) settings (
-      libraryDependencies ++= Seq(
-        "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-        "org.apache.commons" % "commons-vfs2" % "2.0" exclude (
-          "commons-logging", "commons-logging"
-        ))
-    )
+  lazy val monkeys = Project("monkeys", file("monkeys")) settings
+    (commonSettings) settings
+    (libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+      "org.apache.commons" % "commons-vfs2" % "2.0" exclude
+        ("commons-logging", "commons-logging")))
 
-  lazy val util =
-    Project("util", file("util")) settings (commonSettings) settings (
-      libraryDependencies ++= List(
-        "org.apache.commons" % "commons-vfs2" % "2.0" exclude (
-          "commons-logging", "commons-logging"
-        )) ++ Sensible.guava
-    )
+  lazy val util = Project("util", file("util")) settings
+    (commonSettings) settings
+    (libraryDependencies ++= List(
+      "org.apache.commons" % "commons-vfs2" % "2.0" exclude
+        ("commons-logging", "commons-logging")) ++ Sensible.guava)
 
-  lazy val testutil = Project("testutil", file("testutil")) settings (
-    commonSettings
-  ) dependsOn (util, api) settings (
-    libraryDependencies += "commons-io" % "commons-io" % "2.4",
-    libraryDependencies ++= Sensible.testLibs("compile")
-  )
+  lazy val testutil = Project("testutil", file("testutil")) settings
+    (commonSettings) dependsOn (util, api) settings
+    (
+      libraryDependencies += "commons-io" % "commons-io" % "2.4",
+      libraryDependencies ++= Sensible.testLibs("compile"))
 
-  lazy val s_express = Project("s-express", file("s-express")) settings (
-    commonSettings
-  ) dependsOn (
-    util,
-    testutil % "test"
-  ) settings (libraryDependencies ++= Seq(
-    "org.parboiled" %% "parboiled" % "2.1.2") ++ Sensible
-    .shapeless(scalaVersion.value))
+  lazy val s_express = Project("s-express", file("s-express")) settings
+    (commonSettings) dependsOn (util, testutil % "test") settings
+    (libraryDependencies ++= Seq("org.parboiled" %% "parboiled" % "2.1.2") ++
+      Sensible.shapeless(scalaVersion.value))
 
-  lazy val api =
-    Project("api", file("api")) settings (commonSettings) settings (
+  lazy val api = Project("api", file("api")) settings (commonSettings) settings
+    (
       libraryDependencies ++= Seq("org.scalariform" %% "scalariform" % "0.1.8"),
-      licenses := Seq(Apache2)
-  )
+      licenses := Seq(Apache2))
 
   // the JSON protocol
-  lazy val jerky = Project("jerky", file("protocol-jerky")) settings (
-    commonSettings
-  ) dependsOn (
-    util,
-    api,
-    testutil % "test",
-    api % "test->test" // for the test data
-  ) settings (libraryDependencies ++= Seq(
-    "com.github.fommil" %% "spray-json-shapeless" % "1.2.0",
-    "com.typesafe.akka" %% "akka-slf4j" % Sensible.akkaVersion) ++ Sensible
-    .shapeless(scalaVersion.value))
+  lazy val jerky = Project("jerky", file("protocol-jerky")) settings
+    (commonSettings) dependsOn
+    (
+      util,
+      api,
+      testutil % "test",
+      api % "test->test" // for the test data
+    ) settings
+    (libraryDependencies ++= Seq(
+      "com.github.fommil" %% "spray-json-shapeless" % "1.2.0",
+      "com.typesafe.akka" %% "akka-slf4j" % Sensible.akkaVersion) ++
+      Sensible.shapeless(scalaVersion.value))
 
   // the S-Exp protocol
-  lazy val swanky = Project("swanky", file("protocol-swanky")) settings (
-    commonSettings
-  ) dependsOn (
-    api,
-    testutil % "test",
-    api % "test->test", // for the test data
-    s_express
-  ) settings (libraryDependencies ++= Seq(
-    "com.typesafe.akka" %% "akka-slf4j" % Sensible.akkaVersion) ++ Sensible
-    .shapeless(scalaVersion.value))
+  lazy val swanky = Project("swanky", file("protocol-swanky")) settings
+    (commonSettings) dependsOn
+    (
+      api,
+      testutil % "test",
+      api % "test->test", // for the test data
+      s_express) settings
+    (libraryDependencies ++=
+      Seq("com.typesafe.akka" %% "akka-slf4j" % Sensible.akkaVersion) ++
+        Sensible.shapeless(scalaVersion.value))
 
   lazy val core = Project("core", file("core")).dependsOn(
     api,
@@ -128,8 +120,9 @@ object EnsimeBuild extends Build {
     testingJava % "test,it"
   ).configs(It).settings(commonSettings, commonItSettings).settings(
     unmanagedJars in Compile += JavaTools,
-    EnsimeKeys.unmanagedSourceArchives += file(".")
-      .getCanonicalFile / "openjdk-langtools/openjdk6-langtools-src.zip",
+    EnsimeKeys.unmanagedSourceArchives +=
+      file(".").getCanonicalFile /
+        "openjdk-langtools/openjdk6-langtools-src.zip",
     libraryDependencies ++= Seq(
       "com.h2database" % "h2" % "1.4.190",
       "com.typesafe.slick" %% "slick" % "3.1.1",
@@ -146,16 +139,17 @@ object EnsimeBuild extends Build {
       "org.scala-lang" % "scalap" % scalaVersion.value,
       "com.typesafe.akka" %% "akka-actor" % Sensible.akkaVersion,
       "com.typesafe.akka" %% "akka-slf4j" % Sensible.akkaVersion,
-      "org.scala-refactoring" %% "org.scala-refactoring.library" % "0.9.1-SNAPSHOT",
+      "org.scala-refactoring" %% "org.scala-refactoring.library" %
+        "0.9.1-SNAPSHOT",
       "commons-lang" % "commons-lang" % "2.6",
       "com.googlecode.java-diff-utils" % "diffutils" % "1.3.0"
     ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(scalaVersion.value)
-  ) enablePlugins BuildInfoPlugin settings (
-    buildInfoPackage := organization.value,
-    buildInfoKeys += BuildInfoKey.action("gitSha")(
-      Try("git rev-parse --verify HEAD".!! dropRight 1) getOrElse "n/a"),
-    buildInfoOptions += BuildInfoOption.BuildTime
-  )
+  ) enablePlugins BuildInfoPlugin settings
+    (
+      buildInfoPackage := organization.value,
+      buildInfoKeys += BuildInfoKey.action("gitSha")(
+        Try("git rev-parse --verify HEAD".!! dropRight 1) getOrElse "n/a"),
+      buildInfoOptions += BuildInfoOption.BuildTime)
 
   val luceneVersion = "4.7.2"
   val streamsVersion = "1.0"
@@ -175,20 +169,23 @@ object EnsimeBuild extends Build {
       "com.typesafe.akka" %% "akka-stream-experimental" % streamsVersion,
       "com.typesafe.akka" %% "akka-http-core-experimental" % streamsVersion,
       "com.typesafe.akka" %% "akka-http-experimental" % streamsVersion,
-      "com.typesafe.akka" %% "akka-http-spray-json-experimental" % streamsVersion,
+      "com.typesafe.akka" %% "akka-http-spray-json-experimental" %
+        streamsVersion,
       "com.typesafe.akka" %% "akka-http-xml-experimental" % streamsVersion,
-      "com.typesafe.akka" %% "akka-http-testkit-experimental" % streamsVersion % "test,it"
+      "com.typesafe.akka" %% "akka-http-testkit-experimental" % streamsVersion %
+        "test,it"
     ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(scalaVersion.value))
 
   // testing modules
   lazy val testingEmpty = Project("testingEmpty", file("testing/empty"))
 
   lazy val testingSimple =
-    Project("testingSimple", file("testing/simple")) settings (
-      scalacOptions in Compile := Seq(),
-      libraryDependencies += "org.scalatest" %% "scalatest" % Sensible
-        .scalatestVersion % "test" intransitive ()
-  )
+    Project("testingSimple", file("testing/simple")) settings
+      (
+        scalacOptions in Compile := Seq(),
+        libraryDependencies +=
+          "org.scalatest" %%
+            "scalatest" % Sensible.scalatestVersion % "test" intransitive ())
 
   lazy val testingSimpleJar = Project(
     "testingSimpleJar",
@@ -201,10 +198,10 @@ object EnsimeBuild extends Build {
   )
 
   lazy val testingImplicits =
-    Project("testingImplicits", file("testing/implicits")) settings (
-      libraryDependencies += "org.scalatest" %% "scalatest" % Sensible
-        .scalatestVersion % "test" intransitive ()
-    )
+    Project("testingImplicits", file("testing/implicits")) settings
+      (libraryDependencies +=
+        "org.scalatest" %%
+          "scalatest" % Sensible.scalatestVersion % "test" intransitive ())
 
   lazy val testingTiming = Project("testingTiming", file("testing/timing"))
 
@@ -224,32 +221,42 @@ object EnsimeBuild extends Build {
     .settings(crossPaths := false, autoScalaLibrary := false)
 
   // manual root project so we can exclude the testing projects from publication
-  lazy val root = Project(id = "ensime", base = file(".")) settings (
-    commonSettings
-  ) aggregate (
-    api, monkeys, util, testutil, s_express, jerky, swanky, core, server
-  ) dependsOn (server) settings (
-    // e.g. `sbt ++2.11.8 ensime/assembly`
-    test in assembly := {},
-    aggregate in assembly := false,
-    assemblyMergeStrategy in assembly := {
-      case PathList("META-INF", "namedservices", xs @ _*) =>
-        MergeStrategy.filterDistinctLines
-      case "META-INF/netbeans/translate.names" =>
-        MergeStrategy.filterDistinctLines
-      case "META-INF/namedservices.index" => MergeStrategy.filterDistinctLines
-      case "META-INF/generated-layer.xml" => MergeStrategy.rename
-      case PathList("org", "apache", "commons", "vfs2", xs @ _*) =>
-        MergeStrategy.first // assumes our classpath is setup correctly
-      case other => MergeStrategy.defaultMergeStrategy(other)
-    },
-    assemblyExcludedJars in assembly <<= (fullClasspath in assembly).map {
-      everything =>
-        everything.filter { attr =>
-          val n = attr.data.getName
-          n.startsWith("scala-library") | n.startsWith("scala-compiler") |
-            n.startsWith("scala-reflect") | n.startsWith("scalap")
-        } :+ Attributed.blank(JavaTools)
-    },
-    assemblyJarName in assembly := s"ensime_${scalaBinaryVersion.value}-${version.value}-assembly.jar")
+  lazy val root = Project(id = "ensime", base = file(".")) settings
+    (commonSettings) aggregate
+    (
+      api,
+      monkeys,
+      util,
+      testutil,
+      s_express,
+      jerky,
+      swanky,
+      core,
+      server) dependsOn
+    (server) settings
+    (
+      // e.g. `sbt ++2.11.8 ensime/assembly`
+      test in assembly := {},
+      aggregate in assembly := false,
+      assemblyMergeStrategy in assembly := {
+        case PathList("META-INF", "namedservices", xs @ _*) =>
+          MergeStrategy.filterDistinctLines
+        case "META-INF/netbeans/translate.names" =>
+          MergeStrategy.filterDistinctLines
+        case "META-INF/namedservices.index" => MergeStrategy.filterDistinctLines
+        case "META-INF/generated-layer.xml" => MergeStrategy.rename
+        case PathList("org", "apache", "commons", "vfs2", xs @ _*) =>
+          MergeStrategy.first // assumes our classpath is setup correctly
+        case other => MergeStrategy.defaultMergeStrategy(other)
+      },
+      assemblyExcludedJars in assembly <<= (fullClasspath in assembly).map {
+        everything =>
+          everything.filter { attr =>
+            val n = attr.data.getName
+            n.startsWith("scala-library") | n.startsWith("scala-compiler") |
+              n.startsWith("scala-reflect") | n.startsWith("scalap")
+          } :+ Attributed.blank(JavaTools)
+      },
+      assemblyJarName in assembly :=
+        s"ensime_${scalaBinaryVersion.value}-${version.value}-assembly.jar")
 }

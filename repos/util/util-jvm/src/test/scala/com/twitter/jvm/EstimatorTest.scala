@@ -55,8 +55,8 @@ object EstimatorApp extends App {
   }
 
   val lines = scala.io.Source.stdin.getLines().drop(1)
-  val states =
-    lines.toArray map (_.split(" ") filter (_ != "") map (_.toDouble)) collect {
+  val states = lines.toArray map
+    (_.split(" ") filter (_ != "") map (_.toDouble)) collect {
       case Array(
             s0c,
             s1c,

@@ -26,10 +26,8 @@ class tileTest extends FunSuite {
   test("tile ( DenseMatrix , Int, Int) non-square matrix.") {
     val m = new DenseMatrix(1, 2, Array.range(0, 2))
     assert(
-      tile(m, 2, 3) == new DenseMatrix[Int](
-        2,
-        6,
-        Array(0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1)))
+      tile(m, 2, 3) ==
+        new DenseMatrix[Int](2, 6, Array(0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1)))
   }
 
   test("tile (DenseVector, Int) ") {

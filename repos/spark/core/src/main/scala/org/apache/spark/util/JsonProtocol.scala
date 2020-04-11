@@ -104,8 +104,7 @@ private[spark] object JsonProtocol {
     val stageInfo = stageInfoToJson(stageSubmitted.stageInfo)
     val properties = propertiesToJson(stageSubmitted.properties)
     ("Event" -> Utils.getFormattedClassName(stageSubmitted)) ~
-      ("Stage Info" -> stageInfo) ~
-      ("Properties" -> properties)
+      ("Stage Info" -> stageInfo) ~ ("Properties" -> properties)
   }
 
   def stageCompletedToJson(
@@ -150,17 +149,16 @@ private[spark] object JsonProtocol {
     ("Event" -> Utils.getFormattedClassName(jobStart)) ~
       ("Job ID" -> jobStart.jobId) ~
       ("Submission Time" -> jobStart.time) ~
-      ("Stage Infos" -> jobStart.stageInfos
-        .map(stageInfoToJson)) ~ // Added in Spark 1.2.0
-      ("Stage IDs" -> jobStart.stageIds) ~
-      ("Properties" -> properties)
+      ("Stage Infos" ->
+        jobStart.stageInfos.map(stageInfoToJson)) ~ // Added in Spark 1.2.0
+        ("Stage IDs" -> jobStart.stageIds) ~
+        ("Properties" -> properties)
   }
 
   def jobEndToJson(jobEnd: SparkListenerJobEnd): JValue = {
     val jobResult = jobResultToJson(jobEnd.jobResult)
     ("Event" -> Utils.getFormattedClassName(jobEnd)) ~
-      ("Job ID" -> jobEnd.jobId) ~
-      ("Completion Time" -> jobEnd.time) ~
+      ("Job ID" -> jobEnd.jobId) ~ ("Completion Time" -> jobEnd.time) ~
       ("Job Result" -> jobResult)
   }
 
@@ -251,11 +249,10 @@ private[spark] object JsonProtocol {
       ("Executor ID" -> execId) ~
       ("Metrics Updated" -> accumUpdates.map {
         case (taskId, stageId, stageAttemptId, updates) =>
-          ("Task ID" -> taskId) ~
-            ("Stage ID" -> stageId) ~
+          ("Task ID" -> taskId) ~ ("Stage ID" -> stageId) ~
             ("Stage Attempt ID" -> stageAttemptId) ~
-            ("Accumulator Updates" -> JArray(
-              updates.map(accumulableInfoToJson).toList))
+            ("Accumulator Updates" ->
+              JArray(updates.map(accumulableInfoToJson).toList))
       })
   }
 
@@ -282,8 +279,8 @@ private[spark] object JsonProtocol {
       ("Submission Time" -> submissionTime) ~
       ("Completion Time" -> completionTime) ~
       ("Failure Reason" -> failureReason) ~
-      ("Accumulables" -> JArray(
-        stageInfo.accumulables.values.map(accumulableInfoToJson).toList))
+      ("Accumulables" ->
+        JArray(stageInfo.accumulables.values.map(accumulableInfoToJson).toList))
   }
 
   def taskInfoToJson(taskInfo: TaskInfo): JValue = {
@@ -298,18 +295,18 @@ private[spark] object JsonProtocol {
       ("Getting Result Time" -> taskInfo.gettingResultTime) ~
       ("Finish Time" -> taskInfo.finishTime) ~
       ("Failed" -> taskInfo.failed) ~
-      ("Accumulables" -> JArray(
-        taskInfo.accumulables.map(accumulableInfoToJson).toList))
+      ("Accumulables" ->
+        JArray(taskInfo.accumulables.map(accumulableInfoToJson).toList))
   }
 
   def accumulableInfoToJson(accumulableInfo: AccumulableInfo): JValue = {
     val name = accumulableInfo.name
     ("ID" -> accumulableInfo.id) ~
       ("Name" -> name) ~
-      ("Update" -> accumulableInfo.update
-        .map { v => accumValueToJson(name, v) }) ~
-      ("Value" -> accumulableInfo.value
-        .map { v => accumValueToJson(name, v) }) ~
+      ("Update" ->
+        accumulableInfo.update.map { v => accumValueToJson(name, v) }) ~
+      ("Value" ->
+        accumulableInfo.value.map { v => accumValueToJson(name, v) }) ~
       ("Internal" -> accumulableInfo.internal) ~
       ("Count Failed Values" -> accumulableInfo.countFailedValues) ~
       ("Metadata" -> accumulableInfo.metadata)
@@ -368,8 +365,7 @@ private[spark] object JsonProtocol {
     }.getOrElse(JNothing)
     val inputMetrics: JValue = taskMetrics.inputMetrics.map { im =>
       ("Data Read Method" -> im.readMethod.toString) ~
-        ("Bytes Read" -> im.bytesRead) ~
-        ("Records Read" -> im.recordsRead)
+        ("Bytes Read" -> im.bytesRead) ~ ("Records Read" -> im.recordsRead)
     }.getOrElse(JNothing)
     val outputMetrics: JValue = taskMetrics.outputMetrics.map { om =>
       ("Data Write Method" -> om.writeMethod.toString) ~
@@ -378,8 +374,7 @@ private[spark] object JsonProtocol {
     }.getOrElse(JNothing)
     val updatedBlocks = JArray(taskMetrics.updatedBlockStatuses.toList.map {
       case (id, status) =>
-        ("Block ID" -> id.toString) ~
-          ("Status" -> blockStatusToJson(status))
+        ("Block ID" -> id.toString) ~ ("Status" -> blockStatusToJson(status))
     })
     ("Executor Deserialize Time" -> taskMetrics.executorDeserializeTime) ~
       ("Executor Run Time" -> taskMetrics.executorRunTime) ~
@@ -430,8 +425,7 @@ private[spark] object JsonProtocol {
 
   def blockManagerIdToJson(blockManagerId: BlockManagerId): JValue = {
     ("Executor ID" -> blockManagerId.executorId) ~
-      ("Host" -> blockManagerId.host) ~
-      ("Port" -> blockManagerId.port)
+      ("Host" -> blockManagerId.host) ~ ("Port" -> blockManagerId.port)
   }
 
   def jobResultToJson(jobResult: JobResult): JValue = {
@@ -468,8 +462,7 @@ private[spark] object JsonProtocol {
 
   def blockStatusToJson(blockStatus: BlockStatus): JValue = {
     val storageLevel = storageLevelToJson(blockStatus.storageLevel)
-    ("Storage Level" -> storageLevel) ~
-      ("Memory Size" -> blockStatus.memSize) ~
+    ("Storage Level" -> storageLevel) ~ ("Memory Size" -> blockStatus.memSize) ~
       ("Disk Size" -> blockStatus.diskSize)
   }
 

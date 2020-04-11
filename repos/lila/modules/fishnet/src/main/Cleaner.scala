@@ -35,8 +35,8 @@ private final class Cleaner(
 
   private def cleanAnalysis: Funit =
     analysisColl.find(BSONDocument(
-      "acquired.date" -> BSONDocument(
-        "$lt" -> durationAgo(analysisTimeoutBase))))
+      "acquired.date" ->
+        BSONDocument("$lt" -> durationAgo(analysisTimeoutBase))))
       .sort(BSONDocument("acquired.date" -> 1)).cursor[Work.Analysis]()
       .collect[List](100).flatMap {
         _.filter { ana =>

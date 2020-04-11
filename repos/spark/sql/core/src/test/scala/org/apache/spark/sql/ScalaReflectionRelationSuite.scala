@@ -92,20 +92,19 @@ class ScalaReflectionRelationSuite extends SparkFunSuite with SharedSQLContext {
     Seq(data).toDF().registerTempTable("reflectData")
 
     assert(
-      sql("SELECT * FROM reflectData").collect().head ===
-        Row(
-          "a",
-          1,
-          1L,
-          1.toFloat,
-          1.toDouble,
-          1.toShort,
-          1.toByte,
-          true,
-          new java.math.BigDecimal(1),
-          Date.valueOf("1970-01-01"),
-          new Timestamp(12345),
-          Seq(1, 2, 3)))
+      sql("SELECT * FROM reflectData").collect().head === Row(
+        "a",
+        1,
+        1L,
+        1.toFloat,
+        1.toDouble,
+        1.toShort,
+        1.toByte,
+        true,
+        new java.math.BigDecimal(1),
+        Date.valueOf("1970-01-01"),
+        new Timestamp(12345),
+        Seq(1, 2, 3)))
   }
 
   test("query case class RDD with nulls") {
@@ -151,18 +150,17 @@ class ScalaReflectionRelationSuite extends SparkFunSuite with SharedSQLContext {
 
     Seq(data).toDF().registerTempTable("reflectComplexData")
     assert(
-      sql("SELECT * FROM reflectComplexData").collect().head ===
+      sql("SELECT * FROM reflectComplexData").collect().head === Row(
+        Seq(1, 2, 3),
+        Seq(1, 2, null),
+        Map(1 -> 10L, 2 -> 20L),
+        Map(1 -> 10L, 2 -> 20L, 3 -> null),
         Row(
-          Seq(1, 2, 3),
-          Seq(1, 2, null),
-          Map(1 -> 10L, 2 -> 20L),
-          Map(1 -> 10L, 2 -> 20L, 3 -> null),
-          Row(
-            Seq(10, 20, 30),
-            Seq(10, 20, null),
-            Map(10 -> 100L, 20 -> 200L),
-            Map(10 -> 100L, 20 -> 200L, 30 -> null),
-            Row(null, "abc"))
-        ))
+          Seq(10, 20, 30),
+          Seq(10, 20, null),
+          Map(10 -> 100L, 20 -> 200L),
+          Map(10 -> 100L, 20 -> 200L, 30 -> null),
+          Row(null, "abc"))
+      ))
   }
 }

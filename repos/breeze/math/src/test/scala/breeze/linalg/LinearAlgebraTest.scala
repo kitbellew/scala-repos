@@ -59,12 +59,8 @@ class LinearAlgebraTest
     assert(ranks(DenseVector(3, -1, 2)).toList === List(3.0, 1.0, 2.0))
     assert(ranks(DenseVector(1, 2, 3, 3)).toList === List(1.0, 2.0, 3.5, 3.5))
     assert(
-      ranks(DenseVector(1, 2, 3, 3, 3)).toList === List(
-        1.0,
-        2.0,
-        4.0,
-        4.0,
-        4.0))
+      ranks(DenseVector(1, 2, 3, 3, 3)).toList ===
+        List(1.0, 2.0, 4.0, 4.0, 4.0))
   }
 
   test("cholesky") {
@@ -481,10 +477,8 @@ class LinearAlgebraTest
     assert(w === DenseVector(1.0, 1.0))
     assert(wi === DenseVector(1.0, -1.0))
     assert(
-      max(
-        abs(
-          v - diag(
-            DenseVector(0.7071067811865475, -0.7071067811865475)))) < 1e-7)
+      max(abs(v - diag(DenseVector(0.7071067811865475, -0.7071067811865475)))) <
+        1e-7)
     // TODO, we seem to throw out VI... these seems bad...
   }
 
@@ -803,10 +797,8 @@ class LinearAlgebraTest
     assert(mpow(X, 1) === X)
     assert(
       max(
-        abs(
-          mpow(X, .5) - DenseMatrix(
-            (.82426, 0.11716),
-            (.17574, 0.88284)))) < 1e-5,
+        abs(mpow(X, .5) - DenseMatrix((.82426, 0.11716), (.17574, 0.88284)))) <
+        1e-5,
       mpow(X, .5))
   }
 
@@ -883,8 +875,7 @@ class LinearAlgebraTest
         val dld = c * 5 + r
         bcsc(r, c) = dld
         rcsc(dld % 3, dld / 3) = dld
-        reshape(bcsc, 3, 5) === rcsc &&
-        reshape(rcsc, 5, 3) === bcsc
+        reshape(bcsc, 3, 5) === rcsc && reshape(rcsc, 5, 3) === bcsc
     }
     check(pcLists)
   }

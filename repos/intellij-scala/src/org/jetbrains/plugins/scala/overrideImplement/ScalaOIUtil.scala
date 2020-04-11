@@ -203,8 +203,8 @@ object ScalaOIUtil {
       clazz: ScTemplateDefinition,
       withSelfType: Boolean): Iterable[Object] = {
     if (withSelfType)
-      clazz.allMethodsIncludingSelfType ++ clazz
-        .allTypeAliasesIncludingSelfType ++ clazz.allValsIncludingSelfType
+      clazz.allMethodsIncludingSelfType ++
+        clazz.allTypeAliasesIncludingSelfType ++ clazz.allValsIncludingSelfType
     else clazz.allMethods ++ clazz.allTypeAliases ++ clazz.allVals
   }
 
@@ -220,9 +220,9 @@ object ScalaOIUtil {
       case x if x.containingClass == clazz             => false
       case x: PsiModifierListOwner
           if (x.hasModifierPropertyScala("abstract") &&
-            !x.isInstanceOf[ScFunctionDefinition])
-            || x.hasModifierPropertyScala("final") => false
-      case x if x.isConstructor                    => false
+            !x.isInstanceOf[ScFunctionDefinition]) ||
+            x.hasModifierPropertyScala("final") => false
+      case x if x.isConstructor                 => false
       case method
           if !ResolveUtils
             .isAccessible(method, clazz.extendsBlock, forCompletion = false) =>
@@ -261,13 +261,13 @@ object ScalaOIUtil {
       case x if !withOwn && x.containingClass == clazz => false
       case x
           if x.containingClass != null && x.containingClass.isInterface &&
-            !x.containingClass.isInstanceOf[ScTrait] && x
-            .hasModifierProperty("abstract") => true
+            !x.containingClass.isInstanceOf[ScTrait] &&
+            x.hasModifierProperty("abstract") => true
       case x
-          if x.hasModifierPropertyScala("abstract") && !x
-            .isInstanceOf[ScFunctionDefinition] &&
-            !x.isInstanceOf[ScPatternDefinition] && !x
-            .isInstanceOf[ScVariableDefinition] => true
+          if x.hasModifierPropertyScala("abstract") &&
+            !x.isInstanceOf[ScFunctionDefinition] &&
+            !x.isInstanceOf[ScPatternDefinition] &&
+            !x.isInstanceOf[ScVariableDefinition] => true
       case x: ScFunctionDeclaration
           if x.hasAnnotation("scala.native") == None => true
       case _                                         => false
@@ -295,8 +295,8 @@ object ScalaOIUtil {
           //containingClass == clazz so we sure that this is ScFunction (it is safe cast)
           signe.method match {
             case fun: ScFunction =>
-              if (fun.parameters.length == 0 && declaredElements
-                    .exists(_.name == fun.name)) flag = true
+              if (fun.parameters.length == 0 &&
+                  declaredElements.exists(_.name == fun.name)) flag = true
             case _ => //todo: ScPrimaryConstructor?
           }
         }

@@ -108,8 +108,7 @@ object Mysql
         high = 1,
         bufferSize = 0,
         idleTime = Duration.Top,
-        maxWaiters = Int.MaxValue) +
-        ProtocolLibrary("mysql"))
+        maxWaiters = Int.MaxValue) + ProtocolLibrary("mysql"))
       extends StdStackClient[Request, Result, Client]
       with WithSessionPool[Client]
       with WithDefaultLoadBalancer[Client]

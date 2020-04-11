@@ -40,8 +40,7 @@ object StronglyConnectedComponents {
       numIter: Int): Graph[VertexId, ED] = {
     require(
       numIter > 0,
-      s"Number of iterations must be greater than 0," +
-        s" but got ${numIter}")
+      s"Number of iterations must be greater than 0," + s" but got ${numIter}")
 
     // the graph we update with final SCC ids, and the graph we return at the end
     var sccGraph = graph.mapVertices { case (vid, _) => vid }

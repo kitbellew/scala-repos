@@ -40,8 +40,9 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
     val userNameByIDRangeAndProduct = for {
       (min, (max, product)) <- Parameters[(Int, (Int, String))]
       u <- users
-      if u.id >= min && u.id <= max && orders
-        .filter(o => (u.id === o.userID) && (o.product === product)).exists
+      if u.id >= min && u.id <= max &&
+        orders.filter(o => (u.id === o.userID) && (o.product === product))
+          .exists
     } yield u.first
     val q4 = userNameByIDRangeAndProduct(2, (5, "Product A"))
 
@@ -57,9 +58,8 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
       uids <- users.map(_.id).result
       _ <- DBIO.seq(
         uids.map(uid =>
-          orders.map(o => (o.userID, o.product)) += (
-            uid, if (uid < 4) "Product A" else "Product B"
-          )): _*)
+          orders.map(o => (o.userID, o.product)) +=
+            (uid, if (uid < 4) "Product A" else "Product B")): _*)
       _ <- q1.result.map(_ shouldBe List("Apu"))
       _ <- q2.result.map(_ shouldBe List("Apu"))
       _ <- q3.result.map(_.toSet shouldBe Set("Marge", "Apu", "Carl", "Lenny"))

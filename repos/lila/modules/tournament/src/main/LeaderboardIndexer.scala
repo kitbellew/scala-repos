@@ -32,13 +32,13 @@ private final class LeaderboardIndexer(
     }.void
 
   def indexOne(tour: Tournament): Funit =
-    leaderboardColl.remove(BSONDocument("t" -> tour.id)) >>
-      generateTour(tour) flatMap saveEntries
+    leaderboardColl.remove(BSONDocument("t" -> tour.id)) >> generateTour(
+      tour) flatMap saveEntries
 
   private def saveEntries(entries: Seq[Entry]) =
     entries.nonEmpty ?? leaderboardColl.bulkInsert(
-      documents =
-        entries.map(BSONHandlers.leaderboardEntryHandler.write).toStream,
+      documents = entries.map(BSONHandlers.leaderboardEntryHandler.write)
+        .toStream,
       ordered = false).void
 
   private def generateTour(tour: Tournament): Fu[List[Entry]] =

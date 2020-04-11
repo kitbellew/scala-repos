@@ -44,8 +44,8 @@ class PMMLModelExportFactorySuite extends SparkFunSuite {
   }
 
   test(
-    "PMMLModelExportFactory create GeneralizedLinearPMMLModelExport when passing a "
-      + "LinearRegressionModel, RidgeRegressionModel or LassoModel") {
+    "PMMLModelExportFactory create GeneralizedLinearPMMLModelExport when passing a " +
+      "LinearRegressionModel, RidgeRegressionModel or LassoModel") {
     val linearInput = LinearDataGenerator
       .generateLinearInput(3.0, Array(10.0, 10.0), 1, 17)
 
@@ -69,8 +69,8 @@ class PMMLModelExportFactorySuite extends SparkFunSuite {
   }
 
   test(
-    "PMMLModelExportFactory create BinaryClassificationPMMLModelExport "
-      + "when passing a LogisticRegressionModel or SVMModel") {
+    "PMMLModelExportFactory create BinaryClassificationPMMLModelExport " +
+      "when passing a LogisticRegressionModel or SVMModel") {
     val linearInput = LinearDataGenerator
       .generateLinearInput(3.0, Array(10.0, 10.0), 1, 17)
 
@@ -88,8 +88,8 @@ class PMMLModelExportFactorySuite extends SparkFunSuite {
   }
 
   test(
-    "PMMLModelExportFactory throw IllegalArgumentException "
-      + "when passing a Multinomial Logistic Regression") {
+    "PMMLModelExportFactory throw IllegalArgumentException " +
+      "when passing a Multinomial Logistic Regression") {
 
     /** 3 classes, 2 features */
     val multiclassLogisticRegressionModel = new LogisticRegressionModel(

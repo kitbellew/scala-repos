@@ -30,9 +30,8 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
   private val listener = parent.listener
 
   def render(request: HttpServletRequest): Seq[Node] = {
-    val content = rddTable(listener.rddInfoList) ++
-      receiverBlockTables(
-        listener.allExecutorStreamBlockStatus.sortBy(_.executorId))
+    val content = rddTable(listener.rddInfoList) ++ receiverBlockTables(
+      listener.allExecutorStreamBlockStatus.sortBy(_.executorId))
     UIUtils.headerSparkPage("Storage", content, parent)
   }
 
@@ -191,9 +190,8 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
         block._1,
         replications.head,
         replications.size,
-        true) ++
-        replications.tail.flatMap(
-          streamBlockTableSubrow(block._1, _, replications.size, false))
+        true) ++ replications.tail.flatMap(
+        streamBlockTableSubrow(block._1, _, replications.size, false))
     }
   }
 
@@ -226,9 +224,10 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
     if (block.storageLevel.useDisk) { ("Disk", block.diskSize) }
     else if (block.storageLevel.useMemory && block.storageLevel.deserialized) {
       ("Memory", block.memSize)
-    } else if (block.storageLevel.useMemory && !block.storageLevel
-                 .deserialized) { ("Memory Serialized", block.memSize) }
-    else {
+    } else if (block.storageLevel.useMemory &&
+               !block.storageLevel.deserialized) {
+      ("Memory Serialized", block.memSize)
+    } else {
       throw new IllegalStateException(
         s"Invalid Storage Level: ${block.storageLevel}")
     }

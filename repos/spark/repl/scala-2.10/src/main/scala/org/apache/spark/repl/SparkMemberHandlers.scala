@@ -235,14 +235,14 @@ private[repl] trait SparkMemberHandlers {
 
     /** Complete list of names imported by a wildcard */
     lazy val wildcardNames: List[Name] = wildcardSymbols map (_.name)
-    lazy val individualNames: List[Name] =
-      selectorRenames filterNot (_ == nme.USCOREkw) flatMap (_.bothNames)
+    lazy val individualNames: List[Name] = selectorRenames filterNot
+      (_ == nme.USCOREkw) flatMap (_.bothNames)
 
     /** The names imported by this statement */
-    override lazy val importedNames: List[Name] =
-      wildcardNames ++ individualNames
-    lazy val importsSymbolNamed: Set[String] =
-      importedNames map (_.toString) toSet
+    override lazy val importedNames: List[Name] = wildcardNames ++
+      individualNames
+    lazy val importsSymbolNamed: Set[String] = importedNames map
+      (_.toString) toSet
 
     def importString = imp.toString
     override def resultExtractionCode(req: Request) =

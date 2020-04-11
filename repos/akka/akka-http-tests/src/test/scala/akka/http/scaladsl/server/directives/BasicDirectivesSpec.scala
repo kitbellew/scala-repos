@@ -17,9 +17,8 @@ class BasicDirectivesSpec extends RoutingSpec {
 
   "The `extract` directive" should {
     "extract from the RequestContext" in {
-      Get("/abc") ~> {
-        extract(_.request.method.value) { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "GET" }
+      Get("/abc") ~> { extract(_.request.method.value) { echoComplete } } ~>
+        check { responseAs[String] shouldEqual "GET" }
     }
   }
 }

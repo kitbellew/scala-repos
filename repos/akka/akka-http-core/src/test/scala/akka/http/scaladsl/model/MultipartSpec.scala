@@ -51,8 +51,9 @@ class MultipartSpec
           Multipart.FormData.BodyPart("bar", defaultEntity("BAR")) :: Nil))
       val strict = Await.result(streamed.toStrict(1.second), 1.second)
 
-      strict shouldEqual Multipart
-        .FormData(Map("foo" -> HttpEntity("FOO"), "bar" -> HttpEntity("BAR")))
+      strict shouldEqual
+        Multipart
+          .FormData(Map("foo" -> HttpEntity("FOO"), "bar" -> HttpEntity("BAR")))
     }
   }
 

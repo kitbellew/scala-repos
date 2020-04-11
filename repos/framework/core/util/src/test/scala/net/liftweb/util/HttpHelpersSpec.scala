@@ -40,9 +40,8 @@ object HttpHelpersSpec
     }
     "a paramsToUrlParams function to translate a map of parameters to a URL query" in {
       paramsToUrlParams(
-        List(
-          ("firstname", "hello"),
-          ("lastname", "world"))) must_== "firstname=hello&lastname=world"
+        List(("firstname", "hello"), ("lastname", "world"))) must_==
+        "firstname=hello&lastname=world"
     }
     "an appendParams function to add parameters to a URL query" in {
       "creating the param list with ? if there are no existing params" in {
@@ -58,9 +57,8 @@ object HttpHelpersSpec
           "www.helloworld.com/params?firstname=hello&lastname=world"
       }
       "returning the url if no param list is passed" in {
-        appendParams(
-          "www.helloworld.com/params",
-          Nil) must_== "www.helloworld.com/params"
+        appendParams("www.helloworld.com/params", Nil) must_==
+          "www.helloworld.com/params"
       }
     }
     "a couldBeHtml function" in {
@@ -86,21 +84,17 @@ object HttpHelpersSpec
       }
     }
     "a toHashMap function transforming a Map to a mutable HashMap" in {
-      toHashMap(Map(1 -> 2, 3 -> 4)) must haveClass[
-        scala.collection.mutable.HashMap[Int, Int]]
+      toHashMap(Map(1 -> 2, 3 -> 4)) must
+        haveClass[scala.collection.mutable.HashMap[Int, Int]]
     }
     "an insureField function" in {
       "checking that the appropriate fields are in the header" in {
-        insureField(
-          List(("name", "hello")),
-          List(("name", "hello"))) must_== List(("name", "hello"))
+        insureField(List(("name", "hello")), List(("name", "hello"))) must_==
+          List(("name", "hello"))
       }
       "checking that the appropriate fields are in the header, adding them if necessary" in {
-        insureField(
-          List(("name2", "hello")),
-          List(("name", "hello"))) must_== List(
-          ("name", "hello"),
-          ("name2", "hello"))
+        insureField(List(("name2", "hello")), List(("name", "hello"))) must_==
+          List(("name", "hello"), ("name2", "hello"))
       }
     }
     "an implicit definition to transform a pair to an UnprefixedAttribute" in {

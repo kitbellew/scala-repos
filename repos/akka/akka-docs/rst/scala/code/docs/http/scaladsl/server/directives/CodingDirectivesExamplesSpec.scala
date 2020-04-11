@@ -74,10 +74,10 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
     Post("/", helloDeflated) ~> `Content-Encoding`(deflate) ~> route ~> check {
       responseAs[String] shouldEqual "Request content: 'Hello'"
     }
-    Post("/", "hello uncompressed") ~> `Content-Encoding`(
-      identity) ~> route ~> check {
-      responseAs[String] shouldEqual "Request content: 'hello uncompressed'"
-    }
+    Post("/", "hello uncompressed") ~> `Content-Encoding`(identity) ~> route ~>
+      check {
+        responseAs[String] shouldEqual "Request content: 'hello uncompressed'"
+      }
   }
   "decodeRequestWith-0" in {
     val route = decodeRequestWith(Gzip) {
@@ -113,10 +113,10 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
         UnsupportedRequestEncodingRejection(gzip),
         UnsupportedRequestEncodingRejection(identity))
     }
-    Post("/", "hello uncompressed") ~> `Content-Encoding`(
-      identity) ~> route ~> check {
-      responseAs[String] shouldEqual "Request content: 'hello uncompressed'"
-    }
+    Post("/", "hello uncompressed") ~> `Content-Encoding`(identity) ~> route ~>
+      check {
+        responseAs[String] shouldEqual "Request content: 'hello uncompressed'"
+      }
   }
 
   def haveContentEncoding(encoding: HttpEncoding): Matcher[HttpResponse] =

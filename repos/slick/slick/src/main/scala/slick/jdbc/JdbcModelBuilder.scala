@@ -60,8 +60,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
           .map(_._2.sortBy(_.ordinalPosition)) // respect order
       case Failure(e: java.sql.SQLException) => // TODO: this needs a test!
         logger.debug(
-          s"Skipping indices of table ${t.name.name} due to exception during getIndexInfo: " + e
-            .getMessage.trim)
+          s"Skipping indices of table ${t.name.name} due to exception during getIndexInfo: " +
+            e.getMessage.trim)
         Seq()
       case Failure(e) => throw e
     }
@@ -249,8 +249,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     /** Indicates whether a ColumnOption Primary key should be put into the model.
       * Only valid for single column primary keys. */
     def createPrimaryKeyColumnOption: Boolean =
-      tableBuilder.mPrimaryKeys.size == 1 && tableBuilder.mPrimaryKeys.head
-        .column == meta.name
+      tableBuilder.mPrimaryKeys.size == 1 &&
+        tableBuilder.mPrimaryKeys.head.column == meta.name
 
     /** A (potentially non-portable) database column type for string types, this should not
       * include a length ascription for other types it should */
@@ -332,8 +332,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
               d.getOrElse(
                 throw new SlickException(
                   s"Invalid default value $d for non-nullable column ${tableBuilder.namer
-                    .qualifiedName.asString}.$name of type $tpe, meta data: " + meta
-                    .toString))))
+                    .qualifiedName.asString}.$name of type $tpe, meta data: " +
+                    meta.toString))))
       }
 
     private def convenientDefault
@@ -342,8 +342,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       catch {
         case e: java.lang.NumberFormatException if ignoreInvalidDefaults =>
           logger.debug(
-            s"NumberFormatException: Could not parse" + formatDefault(
-              rawDefault))
+            s"NumberFormatException: Could not parse" +
+              formatDefault(rawDefault))
           None
         case e: scala.MatchError =>
           val msg = "Could not parse" + formatDefault(rawDefault)
@@ -359,12 +359,10 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
         table = tableBuilder.namer.qualifiedName,
         tpe = tpe,
         nullable = nullable,
-        options = Set() ++
-          dbType.map(SqlProfile.ColumnOption.SqlType) ++
+        options = Set() ++ dbType.map(SqlProfile.ColumnOption.SqlType) ++
           (if (autoInc) Some(ColumnOption.AutoInc) else None) ++
           (if (createPrimaryKeyColumnOption) Some(ColumnOption.PrimaryKey)
-           else None) ++
-          length.map(
+           else None) ++ length.map(
             RelationalProfile.ColumnOption.Length
               .apply(_, varying = varying)) ++
           (if (!autoInc) convenientDefault else None)
@@ -431,11 +429,12 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       * - indices matching foreign keys referenced columns */
     def enabled =
       (idx.indexType != DatabaseMetaData.tableIndexStatistic &&
-        (tableBuilder.mPrimaryKeys.isEmpty || tableBuilder.mPrimaryKeys
-          .map(_.column).toSet != columns.toSet) &&
+        (tableBuilder.mPrimaryKeys.isEmpty ||
+          tableBuilder.mPrimaryKeys.map(_.column).toSet != columns.toSet) &&
         // preserve additional uniqueness constraints on (usually not unique) fk columns
-        (unique || tableBuilder.mForeignKeys
-          .forall(_.map(_.fkColumn).toSet != columns.toSet)) &&
+        (unique ||
+          tableBuilder.mForeignKeys
+            .forall(_.map(_.fkColumn).toSet != columns.toSet)) &&
         // postgres may refer to column oid, skipping index for now. Maybe we should generate a column and include it
         // instead. And maybe this should be moved into PostgresModelBuilder.
         // TODO: This needs a test case!

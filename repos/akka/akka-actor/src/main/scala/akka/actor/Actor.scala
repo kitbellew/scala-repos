@@ -226,8 +226,7 @@ final case class PreRestartException private[akka] (
         (if (originalCause == null) "null" else originalCause.getClass) + ", " +
         (messageOption match {
           case Some(m: AnyRef) ⇒ m.getClass; case _ ⇒ "None"
-        }) +
-        ")",
+        }) + ")",
       cause)
 
 /**
@@ -245,8 +244,8 @@ final case class PostRestartException private[akka] (
     originalCause: Throwable)
     extends ActorInitializationException(
       actor,
-      "exception post restart (" + (if (originalCause == null) "null"
-                                    else originalCause.getClass) + ")",
+      "exception post restart (" +
+        (if (originalCause == null) "null" else originalCause.getClass) + ")",
       cause)
 
 /**

@@ -83,8 +83,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       val star = starGraph(sc, n)
       assert(
         star.triplets.map(et => (et.srcId, et.dstId, et.srcAttr, et.dstAttr))
-          .collect().toSet
-          === (1 to n).map(x => (0: VertexId, x: VertexId, "v", "v")).toSet)
+          .collect().toSet === (1 to n)
+          .map(x => (0: VertexId, x: VertexId, "v", "v")).toSet)
     }
   }
 
@@ -220,10 +220,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       // Access replicated vertices, exposing the erased type
       val graph2 = graph1.mapTriplets(t => t.srcAttr.get)
       assert(
-        graph2.edges.map(_.attr).collect().toSet === Set[java.lang.Double](
-          1.0,
-          2.0,
-          3.0))
+        graph2.edges.map(_.attr).collect().toSet ===
+          Set[java.lang.Double](1.0, 2.0, 3.0))
     }
   }
 
@@ -245,8 +243,7 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       val star = starGraph(sc, n)
       assert(
         star.mapTriplets(et => et.srcAttr + et.dstAttr).edges.collect()
-          .toSet ===
-          (1L to n).map(x => Edge(0, x, "vv")).toSet)
+          .toSet === (1L to n).map(x => Edge(0, x, "vv")).toSet)
     }
   }
 
@@ -289,8 +286,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
 
       // And 4 edges.
       assert(
-        subgraph.edges.map(_.copy()).collect().toSet ===
-          (2 to n by 2).map(x => Edge(0, x, 1)).toSet)
+        subgraph.edges.map(_.copy()).collect().toSet === (2 to n by 2)
+          .map(x => Edge(0, x, 1)).toSet)
     }
   }
 
@@ -331,8 +328,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       val star2 = doubleStar.groupEdges { (a, b) => a }
       assert(
         star2.edges.collect().toArray
-          .sorted(Edge.lexicographicOrdering[Int]) ===
-          star.edges.collect().toArray.sorted(Edge.lexicographicOrdering[Int]))
+          .sorted(Edge.lexicographicOrdering[Int]) === star.edges.collect()
+          .toArray.sorted(Edge.lexicographicOrdering[Int]))
       assert(star2.vertices.collect().toSet === star.vertices.collect().toSet)
     }
   }
@@ -344,8 +341,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
         ctx => {
           if (ctx.dstAttr != null) {
             throw new Exception(
-              "expected ctx.dstAttr to be null due to TripletFields, but it was " + ctx
-                .dstAttr)
+              "expected ctx.dstAttr to be null due to TripletFields, but it was " +
+                ctx.dstAttr)
           }
           ctx.sendToDst(ctx.srcAttr)
         },
@@ -381,8 +378,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
         (vid, a, bOpt) => a + bOpt.getOrElse("")
       }
       assert(
-        newReverseStar.vertices.map(_._2).collect().toSet ===
-          (0 to n).map(x => "v%d".format(x)).toSet)
+        newReverseStar.vertices.map(_._2).collect().toSet === (0 to n)
+          .map(x => "v%d".format(x)).toSet)
     }
   }
 
@@ -395,10 +392,9 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       val triplets = graph.triplets
         .map(et => (et.srcId, et.dstId, et.srcAttr, et.dstAttr)).collect().toSet
       assert(
-        triplets ===
-          Set(
-            (1: VertexId, 2: VertexId, "a", "b"),
-            (2: VertexId, 1: VertexId, "b", "a")))
+        triplets === Set(
+          (1: VertexId, 2: VertexId, "a", "b"),
+          (2: VertexId, 1: VertexId, "b", "a")))
     }
   }
 

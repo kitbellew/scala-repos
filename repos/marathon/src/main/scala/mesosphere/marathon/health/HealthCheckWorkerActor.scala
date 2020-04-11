@@ -95,8 +95,8 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
     get(url).map { response =>
       if (acceptableResponses contains response.status.intValue)
         Some(Healthy(task.taskId, launched.appVersion))
-      else if (check.ignoreHttp1xx && (toIgnoreResponses contains response
-                 .status.intValue)) {
+      else if (check.ignoreHttp1xx &&
+               (toIgnoreResponses contains response.status.intValue)) {
         log.debug(s"Ignoring health check HTTP response ${response.status
           .intValue} for ${task.taskId}")
         None

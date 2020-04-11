@@ -81,8 +81,8 @@ trait JSEncoding extends SubComponent {
 
   private lazy val allRefClasses: Set[Symbol] = {
     import definitions._
-    (Set(ObjectRefClass, VolatileObjectRefClass) ++
-      refClass.values ++ volatileRefClass.values)
+    (Set(ObjectRefClass, VolatileObjectRefClass) ++ refClass.values ++
+      volatileRefClass.values)
   }
 
   def encodeFieldSym(sym: Symbol)(implicit pos: Position): js.Ident = {

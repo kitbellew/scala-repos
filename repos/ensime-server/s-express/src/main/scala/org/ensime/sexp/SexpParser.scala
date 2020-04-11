@@ -70,9 +70,8 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   private def SexpConsP: Rule1[SexpCons] =
     rule {
-      LeftBrace ~ SexpP ~ Whitespace ~ '.' ~ Whitespace ~ SexpP ~ RightBrace ~> {
-        (x: Sexp, y: Sexp) => SexpCons(x, y)
-      }
+      LeftBrace ~ SexpP ~ Whitespace ~ '.' ~ Whitespace ~ SexpP ~
+        RightBrace ~> { (x: Sexp, y: Sexp) => SexpCons(x, y) }
     }
 
   private def SexpListP: Rule1[Sexp] =
@@ -99,19 +98,11 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   def EscapedCharSB =
     rule(
-      QuoteSlashBackSlash ~ appendSB()
-        | '\"' ~ appendSB('\"')
-        | 'b' ~ appendSB('\b')
-        | 's' ~ appendSB(' ')
-        | 'f' ~ appendSB('\f')
-        | 'n' ~ appendSB('\n')
-        | 'r' ~ appendSB('\r')
-        | 't' ~ appendSB('\t')
-        | ' ' ~ appendSB(
-          ""
-        ) // special emacs magic for comments \<space< and \<newline> are removed
-        | '\n' ~ appendSB("")
-        | 'a' ~ appendSB('\u0007') // bell
+      QuoteSlashBackSlash ~ appendSB() | '\"' ~ appendSB('\"') |
+        'b' ~ appendSB('\b') | 's' ~ appendSB(' ') | 'f' ~ appendSB('\f') |
+        'n' ~ appendSB('\n') | 'r' ~ appendSB('\r') | 't' ~ appendSB('\t') |
+        ' ' ~ appendSB("") // special emacs magic for comments \<space< and \<newline> are removed
+        | '\n' ~ appendSB("") | 'a' ~ appendSB('\u0007') // bell
         | 'v' ~ appendSB('\u000b') // vertical tab
         | 'e' ~ appendSB('\u001b') // escape
         | 'd' ~ appendSB('\u007f') // DEL
@@ -136,8 +127,7 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   private def SexpNaNP: Rule1[SexpAtom] =
     rule {
-      "-1.0e+INF" ~ push(SexpNegInf) |
-        "1.0e+INF" ~ push(SexpPosInf) |
+      "-1.0e+INF" ~ push(SexpNegInf) | "1.0e+INF" ~ push(SexpPosInf) |
         optional('-') ~ "0.0e+NaN" ~ push(SexpNaN)
     }
 
@@ -148,9 +138,9 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
     rule {
       // ? allowed at the end of symbol names
       capture(
-        oneOrMore(SymbolStartCharPredicate) ~ zeroOrMore(
-          SymbolBodyCharPredicate) ~ optional('?')) ~> { sym: String =>
-        if (sym == "nil") SexpNil else SexpSymbol(sym)
+        oneOrMore(SymbolStartCharPredicate) ~
+          zeroOrMore(SymbolBodyCharPredicate) ~ optional('?')) ~> {
+        sym: String => if (sym == "nil") SexpNil else SexpSymbol(sym)
       }
     }
 

@@ -17,8 +17,8 @@ private[puzzle] final class Selector(
 
   private def popularSelector(mate: Boolean) =
     BSONDocument(
-      Puzzle.BSONFields.voteSum -> BSONDocument(
-        "$gt" -> BSONInteger(mate.fold(anonMinRating, 0))))
+      Puzzle.BSONFields.voteSum ->
+        BSONDocument("$gt" -> BSONInteger(mate.fold(anonMinRating, 0))))
 
   private def mateSelector(mate: Boolean) = BSONDocument("mate" -> mate)
 

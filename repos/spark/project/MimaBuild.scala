@@ -82,8 +82,8 @@ object MimaBuild {
       else { IO.read(memberExcludeFilePath).split("\n") }
 
     defaultExcludes ++ ignoredClasses.flatMap(excludeClass) ++
-      ignoredMembers.flatMap(excludeMember) ++ MimaExcludes
-      .excludes(currentSparkVersion)
+      ignoredMembers.flatMap(excludeMember) ++
+      MimaExcludes.excludes(currentSparkVersion)
   }
 
   def mimaSettings(sparkHome: File, projectRef: ProjectRef) = {
@@ -93,13 +93,12 @@ object MimaBuild {
     // Remove the setting on updating previousSparkVersion.
     val previousSparkVersion = "1.6.0"
     val fullId = "spark-" + projectRef.project + "_2.11"
-    mimaDefaultSettings ++
-      Seq(
-        previousArtifact := Some(organization % fullId % previousSparkVersion),
-        binaryIssueFilters ++= ignoredABIProblems(sparkHome, version.value),
-        sbt.Keys.resolvers +=
-          "MQTT Repository" at "https://repo.eclipse.org/content/repositories/paho-releases"
-      )
+    mimaDefaultSettings ++ Seq(
+      previousArtifact := Some(organization % fullId % previousSparkVersion),
+      binaryIssueFilters ++= ignoredABIProblems(sparkHome, version.value),
+      sbt.Keys.resolvers += "MQTT Repository" at
+        "https://repo.eclipse.org/content/repositories/paho-releases"
+    )
   }
 
 }

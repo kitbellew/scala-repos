@@ -31,8 +31,8 @@ object ScalaLibraryDescription extends ScalaLibraryDescription {
   }
 
   override def sdks(contextDirectory: VirtualFile) =
-    super.sdks(contextDirectory) ++
-      systemSdks.sortBy(_.version).map(SdkChoice(_, "System"))
+    super.sdks(contextDirectory) ++ systemSdks.sortBy(_.version)
+      .map(SdkChoice(_, "System"))
 
   override def getDefaultLevel = LibrariesContainer.LibraryLevel.GLOBAL
 
@@ -93,9 +93,9 @@ trait ScalaLibraryDescription extends CustomLibraryDescription {
   def sdks(contextDirectory: VirtualFile): Seq[SdkChoice] = {
     val localSdks = Option(contextDirectory).toSeq
       .map(cDir => virtualToIoFile(contextDirectory) / "lib").flatMap(sdkIn)
-    localSdks.map(SdkChoice(_, "Project")) ++
-      ivySdks.sortBy(_.version).map(SdkChoice(_, "Ivy")) ++
-      mavenSdks.sortBy(_.version).map(SdkChoice(_, "Maven"))
+    localSdks.map(SdkChoice(_, "Project")) ++ ivySdks.sortBy(_.version)
+      .map(SdkChoice(_, "Ivy")) ++ mavenSdks.sortBy(_.version)
+      .map(SdkChoice(_, "Maven"))
   }
 
   def getSuitableLibraryKinds = Collections.singleton(libraryKind)

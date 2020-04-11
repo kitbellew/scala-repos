@@ -43,8 +43,8 @@ object FakeKeyStore {
 
   def certificateTooWeak(c: java.security.cert.Certificate): Boolean = {
     val key: RSAPublicKey = c.getPublicKey.asInstanceOf[RSAPublicKey]
-    key.getModulus.bitLength < 2048 || c.asInstanceOf[X509CertImpl]
-      .getSigAlgName != SignatureAlgorithmName
+    key.getModulus.bitLength < 2048 ||
+    c.asInstanceOf[X509CertImpl].getSigAlgName != SignatureAlgorithmName
   }
 
   def keyManagerFactory(appPath: File): KeyManagerFactory = {
@@ -53,8 +53,8 @@ object FakeKeyStore {
     if (shouldGenerate(keyStoreFile)) {
 
       logger.info(
-        "Generating HTTPS key pair in " + keyStoreFile
-          .getAbsolutePath + " - this may take some time. If nothing happens, try moving the mouse/typing on the keyboard to generate some entropy.")
+        "Generating HTTPS key pair in " + keyStoreFile.getAbsolutePath +
+          " - this may take some time. If nothing happens, try moving the mouse/typing on the keyboard to generate some entropy.")
 
       // Generate the key pair
       val keyPairGenerator = KeyPairGenerator.getInstance("RSA")

@@ -269,22 +269,24 @@ class DoublePropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty() should be(true)
   }
 
-  it should "support bindable infix greater than or equal to with a property" in {
-    booleanProperty <== doubleProperty >= doubleProperty2
-    doubleProperty() = 18349
-    doubleProperty2() = 4985
-    booleanProperty() should be(true)
-    doubleProperty2() = 234564
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix greater than or equal to with a property" in {
+      booleanProperty <== doubleProperty >= doubleProperty2
+      doubleProperty() = 18349
+      doubleProperty2() = 4985
+      booleanProperty() should be(true)
+      doubleProperty2() = 234564
+      booleanProperty() should be(false)
+    }
 
-  it should "support bindable infix greater than or equal to with a constant" in {
-    booleanProperty <== doubleProperty >= 18349
-    doubleProperty() = 4985
-    booleanProperty() should be(false)
-    doubleProperty() = 234564
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix greater than or equal to with a constant" in {
+      booleanProperty <== doubleProperty >= 18349
+      doubleProperty() = 4985
+      booleanProperty() should be(false)
+      doubleProperty() = 234564
+      booleanProperty() should be(true)
+    }
 
   it should "support invalidate/change triggers on binding expressions" in {
     var invalidateCount = 0

@@ -70,10 +70,8 @@ class BrokerEndPointTest extends Logging {
 
   @Test
   def testFromJsonV2 {
-    val brokerInfoStr = "{\"version\":2," +
-      "\"host\":\"localhost\"," +
-      "\"port\":9092," +
-      "\"jmx_port\":9999," +
+    val brokerInfoStr = "{\"version\":2," + "\"host\":\"localhost\"," +
+      "\"port\":9092," + "\"jmx_port\":9999," +
       "\"timestamp\":\"1416974968782\"," +
       "\"endpoints\":[\"PLAINTEXT://localhost:9092\"]}"
     val broker = Broker.createBroker(1, brokerInfoStr)
@@ -90,8 +88,8 @@ class BrokerEndPointTest extends Logging {
     val broker = Broker.createBroker(1, brokerInfoStr)
     assert(broker.id == 1)
     assert(
-      broker.getBrokerEndPoint(SecurityProtocol.PLAINTEXT)
-        .host == "172.16.8.243")
+      broker.getBrokerEndPoint(SecurityProtocol.PLAINTEXT).host ==
+        "172.16.8.243")
     assert(broker.getBrokerEndPoint(SecurityProtocol.PLAINTEXT).port == 9091)
   }
 

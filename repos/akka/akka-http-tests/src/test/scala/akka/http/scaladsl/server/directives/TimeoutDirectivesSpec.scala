@@ -44,14 +44,13 @@ class TimeoutDirectivesSpec extends IntegrationRoutingSpec {
             complete(response)
           }
         }
-      } ~
-        path("equivalent") {
-          // updates timeout and handler at
-          withRequestTimeout(500.millis, request ⇒ timeoutResponse) {
-            val response: Future[String] = slowFuture() // very slow
-            complete(response)
-          }
+      } ~ path("equivalent") {
+        // updates timeout and handler at
+        withRequestTimeout(500.millis, request ⇒ timeoutResponse) {
+          val response: Future[String] = slowFuture() // very slow
+          complete(response)
         }
+      }
 
     Get("/timeout") ~!> route ~!> { response ⇒
       import response._

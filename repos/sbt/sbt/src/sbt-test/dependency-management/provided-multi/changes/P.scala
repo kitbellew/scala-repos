@@ -9,16 +9,18 @@ object P extends Build {
   def configIvyScala = ivyScala ~= { _.map(_.copy(checkExplicit = false)) }
 
   val declared = SettingKey[Boolean]("declared")
-  lazy val a = Project("A", file("a")) settings (
-    libraryDependencies += "org.scala-tools.sbinary" %% "sbinary" % "0.4.0" % "provided",
-    configIvyScala
-  )
+  lazy val a = Project("A", file("a")) settings
+    (
+      libraryDependencies +=
+        "org.scala-tools.sbinary" %% "sbinary" % "0.4.0" % "provided",
+      configIvyScala)
 
-  lazy val b = Project("B", file("b")) dependsOn (a) settings (
-    libraryDependencies <<= declared(d =>
-      if (d) Seq("org.scala-tools.sbinary" %% "sbinary" % "0.4.0" % "provided")
-      else Nil),
-    declared <<= baseDirectory(_ / "declare.lib" exists),
-    configIvyScala
-  )
+  lazy val b = Project("B", file("b")) dependsOn (a) settings
+    (
+      libraryDependencies <<= declared(d =>
+        if (d)
+          Seq("org.scala-tools.sbinary" %% "sbinary" % "0.4.0" % "provided")
+        else Nil),
+      declared <<= baseDirectory(_ / "declare.lib" exists),
+      configIvyScala)
 }

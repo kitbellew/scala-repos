@@ -38,10 +38,9 @@ trait VectorSpaceLaws[V, A] extends Laws {
         val w = r *: s *: v
         w === ((r * s) *: v)
       },
-      "scalar distributes over vector" → forAll((r: A, v: V, w: V) =>
-        (r *: (v + w)) === ((r *: v) + (r *: w))),
-      "vector distributes over scalar" → forAll((r: A, s: A, v: V) =>
-        ((r + s) *: v) === ((r *: v) + (s *: v))) /*,
+      "scalar distributes over vector" →
+        forAll((r: A, v: V, w: V) => (r *: (v + w)) === ((r *: v) + (r *: w))),
+      "vector distributes over scalar" → forAll((r: A, s: A, v: V) => ((r + s) *: v) === ((r *: v) + (s *: v))) /*,
     "scalar identity is identity" → forAll((v: V) =>
       (V.scalar.one *: v) === v
     )*/
@@ -66,8 +65,8 @@ trait VectorSpaceLaws[V, A] extends Laws {
       "identity" → forAll((x: V, y: V) =>
         if (x === y) V.distance(x, y) === A.zero
         else V.distance(x, y) =!= A.zero),
-      "symmetric" → forAll((x: V, y: V) =>
-        V.distance(x, y) === V.distance(y, x)),
+      "symmetric" →
+        forAll((x: V, y: V) => V.distance(x, y) === V.distance(y, x)),
       "triangle inequality" → forAll((x: V, y: V, z: V) =>
         V.distance(x, z) <= (V.distance(x, y) + V.distance(y, z))))
 

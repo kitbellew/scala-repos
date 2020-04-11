@@ -223,7 +223,8 @@ class StringContextTest {
       f"${new java.math.BigInteger("120")}%d" -> "120",
       f"${4}%#10X" -> "       0X4",
       f"She is ${fff}%#s feet tall." -> "She is 4 feet tall.",
-      f"Just want to say ${"hello, world"}%#s..." -> "Just want to say hello, world...", {
+      f"Just want to say ${"hello, world"}%#s..." ->
+        "Just want to say hello, world...", {
         implicit val strToShort = (s: String) => java.lang.Short.parseShort(s);
         f"${"120"}%d"
       } -> "120",
@@ -246,8 +247,7 @@ class StringContextTest {
       f"""${"1234"}%TD""" -> "05/26/12",
       // literals and arg indexes
       f"%%" -> "%",
-      f" mind%n------%nmatter" ->
-        """| mind
+      f" mind%n------%nmatter" -> """| mind
           |------
           |matter""".stripMargin.lines.mkString(compat.Platform.EOL),
       f"${i}%d %<d ${9}%d" -> "42 42 9",

@@ -301,8 +301,8 @@ class TrafficDistributorTest extends FunSuite {
     val (first, _) = Await.result(q, 1.second)
     assert(first.isReturn)
     assert(
-      balancers.head.endpoints.sample() ==
-        Set(1).map(Address(_)).map(AddressFactory))
+      balancers.head.endpoints.sample() == Set(1).map(Address(_))
+        .map(AddressFactory))
 
     // initial resolution
     val resolved: Set[Address] = Set(1, 2, 3).map(Address(_))
@@ -382,9 +382,9 @@ class TrafficDistributorTest extends FunSuite {
 
     assert(balancers.head.endpoints.sample().size == 16)
     assert(
-      balancers.head.endpoints.sample() == update
-        .flatMap(ConcurrentLoadBalancerFactory.replicate(4))
-        .map(AddressFactory))
+      balancers.head.endpoints.sample() ==
+        update.flatMap(ConcurrentLoadBalancerFactory.replicate(4))
+          .map(AddressFactory))
   })
 
   // todo: move this to util-stats?

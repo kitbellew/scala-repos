@@ -32,8 +32,8 @@ object RandomSocket {
       s.getLocalPort
     } catch {
       case NonFatal(e) =>
-        if (e.getClass == classOf[IOException] || e.getClass == classOf[
-              IllegalArgumentException])
+        if (e.getClass == classOf[IOException] ||
+            e.getClass == classOf[IllegalArgumentException])
           throw new Exception(
             "Couldn't find an open port: %s".format(e.getMessage))
         else throw e

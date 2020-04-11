@@ -6,9 +6,8 @@ object Test {
   def test1(x: String, x1: String, default: String) =
     pf {
       case _
-          if (x.isEmpty
-            && default.isEmpty // was binding to synthetic param
-            && x1.isEmpty // was binding to synthetic param
+          if (x.isEmpty && default.isEmpty // was binding to synthetic param
+          && x1.isEmpty // was binding to synthetic param
           ) =>
         x.isEmpty
         default.isEmpty // was binding to synthetic param
@@ -18,10 +17,7 @@ object Test {
 
   def test2(x: String, x1: String, default: String) =
     f1 {
-      case _
-          if (x.isEmpty
-            && default.isEmpty
-            && x1.isEmpty) =>
+      case _ if (x.isEmpty && default.isEmpty && x1.isEmpty) =>
         x.isEmpty
         default.isEmpty
         x1.isEmpty

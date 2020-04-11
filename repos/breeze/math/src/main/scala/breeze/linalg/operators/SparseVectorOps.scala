@@ -670,8 +670,8 @@ trait SparseVectorOps {
                 }
                 assert(
                   newAoff > aoff,
-                  bind + " " + aoff + " " + newAoff + " " + a
-                    .index(aoff) + " " + a.index(newAoff) + " " + a + " " + b)
+                  bind + " " + aoff + " " + newAoff + " " + a.index(aoff) +
+                    " " + a.index(newAoff) + " " + a + " " + b)
                 aoff = newAoff
               }
             } else {
@@ -1237,21 +1237,18 @@ trait SparseVectorOps {
           sum
         } else if (n == 2) {
           var sum: Double = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = f.sNorm(v); sum += nn * nn
-          })
+          activeValuesIterator foreach
+            (v => { val nn = f.sNorm(v); sum += nn * nn })
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max: Double = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = f.sNorm(v); if (nn > max) max = nn
-          })
+          activeValuesIterator foreach
+            (v => { val nn = f.sNorm(v); if (nn > max) max = nn })
           max
         } else {
           var sum: Double = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = f.sNorm(v); sum += math.pow(nn, n)
-          })
+          activeValuesIterator foreach
+            (v => { val nn = f.sNorm(v); sum += math.pow(nn, n) })
           math.pow(sum, 1.0 / n)
         }
       }
@@ -1269,21 +1266,18 @@ trait SparseVectorOps {
           sum
         } else if (n == 2) {
           var sum: Double = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = v.abs.toDouble; sum += nn * nn
-          })
+          activeValuesIterator foreach
+            (v => { val nn = v.abs.toDouble; sum += nn * nn })
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max: Double = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = v.abs.toDouble; if (nn > max) max = nn
-          })
+          activeValuesIterator foreach
+            (v => { val nn = v.abs.toDouble; if (nn > max) max = nn })
           max
         } else {
           var sum: Double = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = v.abs.toDouble; sum += math.pow(nn, n)
-          })
+          activeValuesIterator foreach
+            (v => { val nn = v.abs.toDouble; sum += math.pow(nn, n) })
           math.pow(sum, 1.0 / n)
         }
       }
@@ -1316,15 +1310,15 @@ trait SparseVectorOps {
         val vb = new VectorBuilder[RV](from.length)
         var off1, off2 = 0
         while (off1 < from.activeSize) {
-          while (off2 < from2.activeSize && from2.indexAt(off2) < from
-                   .indexAt(off1)) {
+          while (off2 < from2.activeSize &&
+                 from2.indexAt(off2) < from.indexAt(off1)) {
             val index = from2.indexAt(off2)
             vb.add(index, fn(from.default, from2.valueAt(off2)))
             off2 += 1
           }
 
-          if (off2 < from2.activeSize && from.indexAt(off1) == from2
-                .indexAt(off2)) {
+          if (off2 < from2.activeSize &&
+              from.indexAt(off1) == from2.indexAt(off2)) {
             val index = from2.indexAt(off2)
             vb.add(index, fn(from.valueAt(off1), from2.valueAt(off2)))
             off2 += 1
@@ -1390,15 +1384,15 @@ trait SparseVectorOps {
       val vb = new VectorBuilder[RV](from.length)
       var off1, off2 = 0
       while (off1 < from.activeSize) {
-        while (off2 < from2.activeSize && from2.indexAt(off2) < from
-                 .indexAt(off1)) {
+        while (off2 < from2.activeSize &&
+               from2.indexAt(off2) < from.indexAt(off1)) {
           val index = from2.indexAt(off2)
           vb.add(index, fn(index, from.default, from2.valueAt(off2)))
           off2 += 1
         }
 
-        if (off2 < from2.activeSize && from.indexAt(off1) == from2
-              .indexAt(off2)) {
+        if (off2 < from2.activeSize &&
+            from.indexAt(off1) == from2.indexAt(off2)) {
           val index = from2.indexAt(off2)
           vb.add(index, fn(index, from.valueAt(off1), from2.valueAt(off2)))
           off2 += 1

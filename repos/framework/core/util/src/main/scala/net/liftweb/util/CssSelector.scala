@@ -195,25 +195,25 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   private lazy val topParser: Parser[CssSelector] =
     phrase(
       rep1(
-        (_idMatch | _dataNameMatch | _nameMatch | _classMatch | _attrMatch | _elemMatch |
-          _colonMatch | _starMatch) <~ (rep1(' ') | atEnd)) ~ opt(subNode)) ^^ {
+        (_idMatch | _dataNameMatch | _nameMatch | _classMatch | _attrMatch |
+          _elemMatch | _colonMatch | _starMatch) <~ (rep1(' ') | atEnd)) ~
+        opt(subNode)) ^^ {
       case (one :: Nil) ~ sn => fixAll(List(one), sn)
       case all ~ None if all.takeRight(1).head == StarSelector(Empty, false) =>
         fixAll(all.dropRight(1), Some(KidsSubNode()))
       case all ~ sn => fixAll(all, sn)
     }
 
-  private lazy val _colonMatch: Parser[CssSelector] =
-    (':' ~> id) ^? {
-      case "button"   => AttrSelector("type", "button", Empty)
-      case "checkbox" => AttrSelector("type", "checkbox", Empty)
-      case "file"     => AttrSelector("type", "file", Empty)
-      case "password" => AttrSelector("type", "password", Empty)
-      case "radio"    => AttrSelector("type", "radio", Empty)
-      case "reset"    => AttrSelector("type", "reset", Empty)
-      case "submit"   => AttrSelector("type", "submit", Empty)
-      case "text"     => AttrSelector("type", "text", Empty)
-    }
+  private lazy val _colonMatch: Parser[CssSelector] = (':' ~> id) ^? {
+    case "button"   => AttrSelector("type", "button", Empty)
+    case "checkbox" => AttrSelector("type", "checkbox", Empty)
+    case "file"     => AttrSelector("type", "file", Empty)
+    case "password" => AttrSelector("type", "password", Empty)
+    case "radio"    => AttrSelector("type", "radio", Empty)
+    case "reset"    => AttrSelector("type", "reset", Empty)
+    case "submit"   => AttrSelector("type", "submit", Empty)
+    case "text"     => AttrSelector("type", "text", Empty)
+  }
 
   private lazy val _idMatch: Parser[CssSelector] = '#' ~> id ^^ {
     case id => IdSelector(id, Empty)
@@ -227,9 +227,9 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
     case elem => ElemSelector(elem, Empty)
   }
 
-  private lazy val _starMatch: Parser[CssSelector] = ('*' ^^ {
-    case sn              => StarSelector(Empty, false)
-  }) | ('^' ^^ { case sn => StarSelector(Empty, true) })
+  private lazy val _starMatch: Parser[CssSelector] =
+    ('*' ^^ { case sn   => StarSelector(Empty, false) }) |
+      ('^' ^^ { case sn => StarSelector(Empty, true) })
 
   private lazy val _dataNameMatch: Parser[CssSelector] = ';' ~> id ^^ {
     case name => AttrSelector("data-name", name, Empty)
@@ -245,10 +245,10 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
       case n ~ _ ~ v          => AttrSelector(n, v, Empty)
     }
 
-  private lazy val id: Parser[String] = letter ~
-    rep(letter | number | '-' | '_' | ':' | '.') ^^ {
-    case first ~ rest => (first :: rest).mkString
-  }
+  private lazy val id: Parser[String] =
+    letter ~ rep(letter | number | '-' | '_' | ':' | '.') ^^ {
+      case first ~ rest => (first :: rest).mkString
+    }
 
   private def isLetter(c: Char): Boolean = c.isLetter
 
@@ -263,34 +263,32 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
     }) |
       (opt('*') ~ '[' ~> attrName <~ '!' ~ ']' ^^ { name =>
         AttrRemoveSubNode(name)
-      }) | (opt('*') ~ '[' ~> attrName <~ ']' ^^ { name =>
-      AttrSubNode(name)
-    }) |
-
+      }) |
+      (opt('*') ~ '[' ~> attrName <~ ']' ^^ { name => AttrSubNode(name) }) |
       ('!' ~ '!' ^^ (a => DontMergeAttributes)) |
-      ('<' ~ '*' ~ '>') ^^ (a => SurroundKids()) |
+      ('<' ~ '*' ~ '>') ^^
+      (a => SurroundKids()) |
       ('-' ~ '*' ^^ (a => PrependKidsSubNode())) |
       ('>' ~ '*' ^^ (a => PrependKidsSubNode())) |
       ('*' ~ '+' ^^ (a => AppendKidsSubNode())) |
       ('*' ~ '<' ^^ (a => AppendKidsSubNode())) |
-      '*' ^^ (a => KidsSubNode()) |
-      '^' ~ '*' ^^ (a => SelectThisNode(true)) |
-      '^' ~ '^' ^^ (a => SelectThisNode(false)))
+      '*' ^^
+      (a => KidsSubNode()) |
+      '^' ~ '*' ^^
+      (a => SelectThisNode(true)) |
+      '^' ~ '^' ^^
+      (a => SelectThisNode(false)))
 
-  private lazy val attrName: Parser[String] = (letter | '_' | ':') ~
-    rep(letter | number | '-' | '_' | ':' | '.') ^^ {
+  private lazy val attrName: Parser[String] = (letter | '_' | ':') ~ rep(
+    letter | number | '-' | '_' | ':' | '.') ^^ {
     case first ~ rest => (first :: rest).mkString
   }
 
   private lazy val attrConst: Parser[String] = {
-    (('\'' ~> rep(
-      elem("isValid", (c: Char) => { c != '\'' && c >= ' ' })) <~ '\'') ^^ {
-      case s => s.mkString
-    }) |
-      (('"' ~> rep(
-        elem("isValid", (c: Char) => { c != '"' && c >= ' ' })) <~ '"') ^^ {
-        case s => s.mkString
-      }) |
+    (('\'' ~> rep(elem("isValid", (c: Char) => { c != '\'' && c >= ' ' })) <~
+      '\'') ^^ { case s => s.mkString }) |
+      (('"' ~> rep(elem("isValid", (c: Char) => { c != '"' && c >= ' ' })) <~
+        '"') ^^ { case s => s.mkString }) |
       (rep1(
         elem("isValid", (c: Char) => { c != '\'' && c != '"' && c > ' ' })) ^^ {
         case s => s.mkString

@@ -332,8 +332,8 @@ class KafkaApis(
         case (topicPartition, _) =>
           !metadataCache.contains(topicPartition.topic)
       }
-      val filteredRequestInfo = offsetCommitRequest.offsetData.asScala
-        .toMap -- invalidRequestsInfo.keys
+      val filteredRequestInfo = offsetCommitRequest.offsetData.asScala.toMap --
+        invalidRequestsInfo.keys
 
       val (authorizedRequestInfo, unauthorizedRequestInfo) = filteredRequestInfo
         .partition {
@@ -347,8 +347,9 @@ class KafkaApis(
       // the callback for sending an offset commit response
       def sendResponseCallback(
           commitStatus: immutable.Map[TopicPartition, Short]) {
-        val mergedCommitStatus = commitStatus ++ unauthorizedRequestInfo
-          .mapValues(_ => Errors.TOPIC_AUTHORIZATION_FAILED.code)
+        val mergedCommitStatus = commitStatus ++
+          unauthorizedRequestInfo
+            .mapValues(_ => Errors.TOPIC_AUTHORIZATION_FAILED.code)
 
         mergedCommitStatus.foreach {
           case (topicPartition, errorCode) =>
@@ -360,8 +361,9 @@ class KafkaApis(
             }
         }
         val combinedCommitStatus = mergedCommitStatus
-          .mapValues(new JShort(_)) ++ invalidRequestsInfo
-          .map(_._1 -> new JShort(Errors.UNKNOWN_TOPIC_OR_PARTITION.code))
+          .mapValues(new JShort(_)) ++
+          invalidRequestsInfo
+            .map(_._1 -> new JShort(Errors.UNKNOWN_TOPIC_OR_PARTITION.code))
 
         val responseHeader = new ResponseHeader(header.correlationId)
         val responseBody = new OffsetCommitResponse(combinedCommitStatus.asJava)
@@ -381,8 +383,9 @@ class KafkaApis(
             try {
               if (!metadataCache.hasTopicMetadata(topicPartition.topic))
                 (topicPartition, Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
-              else if (partitionData.metadata != null && partitionData.metadata
-                         .length > config.offsetMetadataMaxSize)
+              else if (partitionData.metadata != null &&
+                       partitionData.metadata.length >
+                         config.offsetMetadataMaxSize)
                 (topicPartition, Errors.OFFSET_METADATA_TOO_LARGE.code)
               else {
                 zkUtils.updatePersistentPath(
@@ -402,8 +405,8 @@ class KafkaApis(
         // if it is v1 or not specified by user, we can use the default retention
         val offsetRetention =
           if (header.apiVersion <= 1 ||
-              offsetCommitRequest.retentionTime == OffsetCommitRequest
-                .DEFAULT_RETENTION_TIME)
+              offsetCommitRequest.retentionTime ==
+                OffsetCommitRequest.DEFAULT_RETENTION_TIME)
             coordinator.offsetConfig.offsetsRetentionMs
           else offsetCommitRequest.retentionTime
 
@@ -423,8 +426,9 @@ class KafkaApis(
             offsetMetadata = OffsetMetadata(partitionData.offset, metadata),
             commitTimestamp = currentTimestamp,
             expireTimestamp = {
-              if (partitionData.timestamp == OffsetCommitRequest
-                    .DEFAULT_TIMESTAMP) defaultExpireTimestamp
+              if (partitionData.timestamp ==
+                    OffsetCommitRequest.DEFAULT_TIMESTAMP)
+                defaultExpireTimestamp
               else offsetRetention + partitionData.timestamp
             })
         }
@@ -466,8 +470,8 @@ class KafkaApis(
     def sendResponseCallback(
         responseStatus: Map[TopicPartition, PartitionResponse]) {
 
-      val mergedResponseStatus = responseStatus ++ unauthorizedRequestInfo
-        .mapValues(_ =>
+      val mergedResponseStatus = responseStatus ++
+        unauthorizedRequestInfo.mapValues(_ =>
           new PartitionResponse(
             Errors.TOPIC_AUTHORIZATION_FAILED.code,
             -1,
@@ -539,8 +543,8 @@ class KafkaApis(
 
     if (authorizedRequestInfo.isEmpty) sendResponseCallback(Map.empty)
     else {
-      val internalTopicsAllowed = request.header.clientId == AdminUtils
-        .AdminClientId
+      val internalTopicsAllowed = request.header.clientId ==
+        AdminUtils.AdminClientId
 
       // Convert ByteBuffer to ByteBufferMessageSet
       val authorizedMessagesPerPartition = authorizedRequestInfo.map {
@@ -622,8 +626,8 @@ class KafkaApis(
           }
         } else responsePartitionData
 
-      val mergedPartitionData =
-        convertedPartitionData ++ unauthorizedPartitionData
+      val mergedPartitionData = convertedPartitionData ++
+        unauthorizedPartitionData
 
       mergedPartitionData.foreach {
         case (topicAndPartition, data) =>
@@ -722,8 +726,8 @@ class KafkaApis(
             topicPartition,
             partitionData.timestamp,
             partitionData.maxNumOffsets)
-          if (offsetRequest.replicaId != ListOffsetRequest
-                .CONSUMER_REPLICA_ID) { allOffsets }
+          if (offsetRequest.replicaId !=
+                ListOffsetRequest.CONSUMER_REPLICA_ID) { allOffsets }
           else {
             val hw = localReplica.highWatermark.messageOffset
             if (allOffsets.exists(_ > hw)) hw +: allOffsets.dropWhile(_ > hw)
@@ -785,9 +789,8 @@ class KafkaApis(
       TopicAndPartition(topicPartition.topic, topicPartition.partition)) match {
       case Some(log) => fetchOffsetsBefore(log, timestamp, maxNumOffsets)
       case None =>
-        if (timestamp == ListOffsetRequest
-              .LATEST_TIMESTAMP || timestamp == ListOffsetRequest
-              .EARLIEST_TIMESTAMP) Seq(0L)
+        if (timestamp == ListOffsetRequest.LATEST_TIMESTAMP ||
+            timestamp == ListOffsetRequest.EARLIEST_TIMESTAMP) Seq(0L)
         else Nil
     }
   }
@@ -1146,8 +1149,9 @@ class KafkaApis(
               request.session,
               Describe,
               new Resource(Group, groupId))) {
-          groupId -> DescribeGroupsResponse.GroupMetadata
-            .forError(Errors.GROUP_AUTHORIZATION_FAILED)
+          groupId ->
+            DescribeGroupsResponse.GroupMetadata
+              .forError(Errors.GROUP_AUTHORIZATION_FAILED)
         } else {
           val (error, summary) = coordinator.handleDescribeGroup(groupId)
           val members = summary.members.map { member =>
@@ -1342,18 +1346,16 @@ class KafkaApis(
     )
 
     val quotaManagers = Map[Short, ClientQuotaManager](
-      ApiKeys.PRODUCE.id ->
-        new ClientQuotaManager(
-          producerQuotaManagerCfg,
-          metrics,
-          ApiKeys.PRODUCE.name,
-          new org.apache.kafka.common.utils.SystemTime),
-      ApiKeys.FETCH.id ->
-        new ClientQuotaManager(
-          consumerQuotaManagerCfg,
-          metrics,
-          ApiKeys.FETCH.name,
-          new org.apache.kafka.common.utils.SystemTime)
+      ApiKeys.PRODUCE.id -> new ClientQuotaManager(
+        producerQuotaManagerCfg,
+        metrics,
+        ApiKeys.PRODUCE.name,
+        new org.apache.kafka.common.utils.SystemTime),
+      ApiKeys.FETCH.id -> new ClientQuotaManager(
+        consumerQuotaManagerCfg,
+        metrics,
+        ApiKeys.FETCH.name,
+        new org.apache.kafka.common.utils.SystemTime)
     )
     quotaManagers
   }

@@ -151,8 +151,7 @@ trait EvaluatorModule[M[+_]]
     def fullRewriteDAG(
         optimize: Boolean,
         ctx: EvaluationContext): DepGraph => DepGraph = {
-      stagedRewriteDAG(optimize, ctx) andThen
-        (orderCrosses _) andThen
+      stagedRewriteDAG(optimize, ctx) andThen (orderCrosses _) andThen
         composeOptimizations(
           optimize,
           List[DepGraph => DepGraph](
@@ -323,8 +322,8 @@ trait EvaluatorModule[M[+_]]
                 for {
                   pending <- f(graph)
                   _ <- monadState.modify { state =>
-                    state.copy(assume =
-                      state.assume + (graph -> (pending.table, pending.sort)))
+                    state.copy(assume = state.assume +
+                      (graph -> (pending.table, pending.sort)))
                   }
                 } yield pending
               }
@@ -336,11 +335,8 @@ trait EvaluatorModule[M[+_]]
             assumedResult: Option[(Table, TableOrder)] =>
               val liftedAssumption = assumedResult map {
                 case (table, sort) =>
-                  monadState point PendingTable(
-                    table,
-                    graph,
-                    TransSpec1.Id,
-                    sort)
+                  monadState point
+                    PendingTable(table, graph, TransSpec1.Id, sort)
               }
 
               liftedAssumption getOrElse memoizedResult
@@ -518,10 +514,11 @@ trait EvaluatorModule[M[+_]]
             val joinSpec = buildWrappedJoinSpec(idMatch)(spec)
             val resultM = (isSorted(leftSort), isSorted(rightSort)) match {
               case (true, true) =>
-                M point (KeyOrder -> simpleJoin(leftResult, rightResult)(
-                  leftKeySpec,
-                  rightKeySpec,
-                  joinSpec))
+                M point
+                  (KeyOrder -> simpleJoin(leftResult, rightResult)(
+                    leftKeySpec,
+                    rightKeySpec,
+                    joinSpec))
               case (lSorted, rSorted) =>
                 val hint = Some(
                   if (lSorted) LeftOrder
@@ -669,8 +666,8 @@ trait EvaluatorModule[M[+_]]
             case dag.New(parent) => for {
                 pendingTable <- prepareEval(parent, splits)
                 idSpec = makeTableTrans(Map(
-                  paths.Key -> trans
-                    .WrapArray(Scan(Leaf(Source), freshIdScanner))))
+                  paths.Key ->
+                    trans.WrapArray(Scan(Leaf(Source), freshIdScanner))))
                 tableM2 =
                   pendingTable.table.transform(liftToValues(pendingTable.trans))
                     .transform(idSpec)
@@ -695,8 +692,8 @@ trait EvaluatorModule[M[+_]]
                       case fatal =>
                         report.error(
                           graph.loc,
-                          "Fatal error while loading dataset") >> report
-                          .die() >> Table.empty.point[N]
+                          "Fatal error while loading dataset") >>
+                          report.die() >> Table.empty.point[N]
                     },
                     table => table.point[N]
                   )
@@ -709,8 +706,8 @@ trait EvaluatorModule[M[+_]]
                 Path(prefixStr) = ctx.basePath
                 Path(midStr) = ctx.scriptPath
                 fullPrefix =
-                  prefixStr.replaceAll("([^/])$", "$1/") + midStr
-                    .replaceAll("([^/])$", "$1/")
+                  prefixStr.replaceAll("([^/])$", "$1/") +
+                    midStr.replaceAll("([^/])$", "$1/")
 
                 f1 = concatString(MorphContext(ctx, graph))
                   .applyl(CString(fullPrefix))
@@ -727,8 +724,8 @@ trait EvaluatorModule[M[+_]]
                       case fatal =>
                         report.error(
                           graph.loc,
-                          "Fatal error while loading dataset") >> report
-                          .die() >> Table.empty.point[N]
+                          "Fatal error while loading dataset") >>
+                          report.die() >> Table.empty.point[N]
                     },
                     table => table.point[N]
                   )
@@ -764,19 +761,13 @@ trait EvaluatorModule[M[+_]]
                   : StateT[N, EvaluatorState, (Morph1Apply, PendingTable)] = mor
                 .alignment match {
                 case MorphismAlignment.Cross(morph1) =>
-                  ((transState liftM mn(morph1)) |@| cross(
-                    graph,
-                    left,
-                    right,
-                    None)(spec)).tupled
+                  ((transState liftM mn(morph1)) |@|
+                    cross(graph, left, right, None)(spec)).tupled
 
                 case MorphismAlignment.Match(morph1)
                     if areJoinable(left, right) =>
-                  ((transState liftM mn(morph1)) |@| join(
-                    graph,
-                    left,
-                    right,
-                    IdentitySort)(spec)).tupled
+                  ((transState liftM mn(morph1)) |@|
+                    join(graph, left, right, IdentitySort)(spec)).tupled
 
                 // TODO: Remove and see if things break. Also,
                 case MorphismAlignment.Match(morph1) =>
@@ -784,11 +775,8 @@ trait EvaluatorModule[M[+_]]
                     if (left.isSingleton || !right.isSingleton)
                       CrossOrder.CrossRight
                     else CrossOrder.CrossLeft
-                  ((transState liftM mn(morph1)) |@| cross(
-                    graph,
-                    left,
-                    right,
-                    Some(hint))(spec)).tupled
+                  ((transState liftM mn(morph1)) |@|
+                    cross(graph, left, right, Some(hint))(spec)).tupled
 
                 case MorphismAlignment.Custom(idPolicy, f) =>
                   val pair =
@@ -828,21 +816,21 @@ trait EvaluatorModule[M[+_]]
 
               joined flatMap {
                 case (morph1, PendingTable(joinedTable, _, _, sort)) =>
-                  transState liftM mn(
-                    morph1(joinedTable, MorphContext(ctx, graph))) map {
-                    table =>
-                      PendingTable(
-                        table,
-                        graph,
-                        TransSpec1.Id,
-                        findMorphOrder(mor.idPolicy, sort))
-                  }
+                  transState liftM
+                    mn(morph1(joinedTable, MorphContext(ctx, graph))) map {
+                      table =>
+                        PendingTable(
+                          table,
+                          graph,
+                          TransSpec1.Id,
+                          findMorphOrder(mor.idPolicy, sort))
+                    }
               }
 
             case dag.Distinct(parent) =>
               val idSpec = makeTableTrans(Map(
-                paths.Key -> trans
-                  .WrapArray(Scan(Leaf(Source), freshIdScanner))))
+                paths.Key ->
+                  trans.WrapArray(Scan(Leaf(Source), freshIdScanner))))
 
               for {
                 pending <- prepareEval(parent, splits)
@@ -902,8 +890,8 @@ trait EvaluatorModule[M[+_]]
 
                 _ <- monadState.modify { state =>
                   state.copy(
-                    assume =
-                      state.assume + (m -> (wrapped, IdentityOrder.empty)),
+                    assume = state.assume +
+                      (m -> (wrapped, IdentityOrder.empty)),
                     reductions = state.reductions + (m -> rvalue))
                 }
               } yield {
@@ -926,8 +914,8 @@ trait EvaluatorModule[M[+_]]
 
             case s @ dag.Split(spec, child, id) =>
               val idSpec = makeTableTrans(Map(
-                paths.Key -> trans
-                  .WrapArray(Scan(Leaf(Source), freshIdScanner))))
+                paths.Key ->
+                  trans.WrapArray(Scan(Leaf(Source), freshIdScanner))))
 
               val params = child.foldDown(true) {
                 case param: dag.SplitParam if param.parentId == id => Set(param)
@@ -937,8 +925,8 @@ trait EvaluatorModule[M[+_]]
                 grouping <- resolveTopLevelGroup(spec, splits)
                 state <- monadState.gets(identity)
                 grouping2 <- transState liftM grouping
-                result <- transState liftM mn(Table.merge(grouping2) {
-                  (key, map) =>
+                result <-
+                  transState liftM mn(Table.merge(grouping2) { (key, map) =>
                     val splits2 = splits + (id -> (map andThen mn))
                     val rewritten = params.foldLeft(child) {
                       case (child, param) =>
@@ -951,7 +939,7 @@ trait EvaluatorModule[M[+_]]
                       splits2,
                       id :: splits.keys.toList)
                     back.eval(state)
-                })
+                  })
               } yield { result.transform(idSpec) }
 
               table map {
@@ -963,9 +951,9 @@ trait EvaluatorModule[M[+_]]
                 childPending <- prepareEval(child, splits)
 
                 liftedTrans = liftToValues(predPending.trans)
-                predTable = predPending.table transform DerefObjectStatic(
-                  liftedTrans,
-                  paths.Value)
+                predTable =
+                  predPending.table transform
+                    DerefObjectStatic(liftedTrans, paths.Value)
 
                 truthiness <- transState liftM mn(
                   predTable.reduce(Forall reducer MorphContext(ctx, graph))(
@@ -1090,9 +1078,8 @@ trait EvaluatorModule[M[+_]]
                       InnerObjectConcat(
                         ObjectDelete(
                           Leaf(Source),
-                          Set(
-                            CPathField("sort-" + id),
-                            paths.Value) ++ oldSortFields),
+                          Set(CPathField("sort-" + id), paths.Value) ++
+                            oldSortFields),
                         wrappedSort),
                       wrappedValue)
 
@@ -1116,8 +1103,8 @@ trait EvaluatorModule[M[+_]]
         val back = memoized(graph, evalTransSpecable)
         val endTime = System.nanoTime
 
-        val timingM = transState liftM report
-          .timing(graph.loc, endTime - startTime)
+        val timingM = transState liftM
+          report.timing(graph.loc, endTime - startTime)
 
         timingM >> back
       }
@@ -1150,8 +1137,9 @@ trait EvaluatorModule[M[+_]]
                 _ <- prepareEval(point, splits)
                 rewritten <- stagedOptimizations(graph, ctx, optimize)
 
-                toEval = listStagingPoints(
-                  Queue(rewritten)) filter referencesOnlySplit(parentSplits)
+                toEval =
+                  listStagingPoints(Queue(rewritten)) filter
+                    referencesOnlySplit(parentSplits)
                 result <- stage(toEval, rewritten)
               } yield result
             }
@@ -1162,8 +1150,8 @@ trait EvaluatorModule[M[+_]]
 
         // find the topologically-sorted forcing points (excluding the endpoint)
         // at the current split level
-        val toEval = listStagingPoints(Queue(graph)) filter referencesOnlySplit(
-          parentSplits)
+        val toEval = listStagingPoints(Queue(graph)) filter
+          referencesOnlySplit(parentSplits)
 
         for {
           rewrittenGraph <- stage(toEval, graph)
@@ -1179,9 +1167,8 @@ trait EvaluatorModule[M[+_]]
 
       val resultTable: N[Table] = resultState.eval(EvaluatorState())
       resultTable map {
-        _ paged maxSliceSize compact DerefObjectStatic(
-          Leaf(Source),
-          paths.Value)
+        _ paged maxSliceSize compact
+          DerefObjectStatic(Leaf(Source), paths.Value)
       }
     }
 

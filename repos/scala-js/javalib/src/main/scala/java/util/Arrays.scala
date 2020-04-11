@@ -585,7 +585,8 @@ object Arrays {
 
   @inline
   private def equalsImpl[T](a: Array[T], b: Array[T]): Boolean = {
-    (a eq b) || (a != null && b != null && a.length == b.length &&
+    (a eq b) ||
+    (a != null && b != null && a.length == b.length &&
     a.indices.forall(i => a(i) == b(i)))
   }
 

@@ -137,8 +137,7 @@ class LiftServlet extends Loggable {
   def service(req: Req, resp: HTTPResponse): Boolean = {
     try {
       def doIt: Boolean = {
-        if (LiftRules.lockedSecurityRules.logInDevMode &&
-            Props.devMode &&
+        if (LiftRules.lockedSecurityRules.logInDevMode && Props.devMode &&
             LiftRules.lockedSecurityRules.https.isDefined &&
             !req.hostAndPath.startsWith("https")) {
           logger.warn(s"""
@@ -150,8 +149,8 @@ class LiftServlet extends Loggable {
         if (LiftRules.logServiceRequestTiming) {
           logTime {
             val ret = doService(req, resp)
-            val msg = "Service request (" + req.request.method + ") " + req
-              .request.uri + " returned " + resp.getStatus + ","
+            val msg = "Service request (" + req.request.method + ") " +
+              req.request.uri + " returned " + resp.getStatus + ","
             (msg, ret)
           }
         } else { doService(req, resp) }
@@ -279,8 +278,8 @@ class LiftServlet extends Loggable {
       val (isComet, isAjax) = cometOrAjax_?(req)
       val sessionIdCalc = new SessionIdCalc(req)
 
-      if (LiftRules.redirectAsyncOnSessionLoss && !sessionExists_?(
-            sessionIdCalc.id) && (isComet || isAjax)) {
+      if (LiftRules.redirectAsyncOnSessionLoss &&
+          !sessionExists_?(sessionIdCalc.id) && (isComet || isAjax)) {
         val theId = sessionIdCalc.id
 
         // okay after 2 attempts to redirect, just ignore calls to the
@@ -291,8 +290,8 @@ class LiftServlet extends Loggable {
           val cmd =
             if (isComet)
               js.JE.JsRaw(
-                LiftRules.noCometSessionCmd.vend
-                  .toJsCmd + ";lift.setToWatch({});").cmd
+                LiftRules.noCometSessionCmd.vend.toJsCmd +
+                  ";lift.setToWatch({});").cmd
             else js.JE.JsRaw(LiftRules.noAjaxSessionCmd.vend.toJsCmd).cmd
 
           Full(new JsCommands(cmd :: Nil).toResponse)
@@ -782,8 +781,8 @@ class LiftServlet extends Loggable {
           result
 
         case Right(future) =>
-          val ret = future.get(ajaxPostTimeout) openOr net.liftweb.common
-            .Failure("AJAX retry timeout.")
+          val ret = future.get(ajaxPostTimeout) openOr
+            net.liftweb.common.Failure("AJAX retry timeout.")
 
           ret
       }
@@ -878,8 +877,8 @@ class LiftServlet extends Loggable {
     if (actors.isEmpty)
       Left(Full(
         new JsCommands(
-          LiftRules.noCometSessionCmd.vend :: js.JE
-            .JsRaw("lift.setToWatch({});").cmd :: Nil).toResponse))
+          LiftRules.noCometSessionCmd.vend ::
+            js.JE.JsRaw("lift.setToWatch({});").cmd :: Nil).toResponse))
     else
       requestState.request.suspendResumeSupport_? match {
         case true => {
@@ -970,13 +969,12 @@ class LiftServlet extends Loggable {
 
   private def logIfDump(request: Req, response: BasicResponse) {
     if (dumpRequestResponse) {
-      val toDump = request.uri + "\n" +
-        request.params + "\n" +
-        response.headers + "\n" +
-        (response match {
-          case InMemoryResponse(data, _, _, _) => new String(data, "UTF-8")
-          case _                               => "data"
-        })
+      val toDump =
+        request.uri + "\n" + request.params + "\n" + response.headers + "\n" +
+          (response match {
+            case InMemoryResponse(data, _, _, _) => new String(data, "UTF-8")
+            case _                               => "data"
+          })
 
       logger.trace(toDump)
     }
@@ -991,20 +989,21 @@ class LiftServlet extends Loggable {
       response: HTTPResponse,
       request: Req) {
     def fixHeaders(headers: List[(String, String)]) =
-      headers map ((v) =>
-        v match {
-          case ("Location", uri) =>
-            val u = request
-            (
-              v._1,
-              ((for (updated <- Full(
-                       (if (!LiftRules.excludePathFromContextPathRewriting
-                              .vend(uri)) u.contextPath
-                        else "") + uri).filter(ignore => uri.startsWith("/"));
-                     rwf <- URLRewriter.rewriteFunc)
-                yield rwf(updated)) openOr uri))
-          case _ => v
-        })
+      headers map
+        ((v) =>
+          v match {
+            case ("Location", uri) =>
+              val u = request
+              (
+                v._1,
+                ((for (updated <- Full(
+                         (if (!LiftRules.excludePathFromContextPathRewriting
+                                .vend(uri)) u.contextPath
+                          else "") + uri).filter(ignore => uri.startsWith("/"));
+                       rwf <- URLRewriter.rewriteFunc)
+                  yield rwf(updated)) openOr uri))
+            case _ => v
+          })
 
     def pairFromRequest(req: Req): (Box[Req], Box[String]) = {
       val acceptHeader =

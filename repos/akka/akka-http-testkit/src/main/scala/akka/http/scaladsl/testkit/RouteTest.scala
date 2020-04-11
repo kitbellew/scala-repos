@@ -123,8 +123,8 @@ trait RouteTest
   }
 
   def isWebSocketUpgrade: Boolean =
-    status == StatusCodes.SwitchingProtocols && header[Upgrade]
-      .exists(_.hasWebSocket)
+    status == StatusCodes.SwitchingProtocols &&
+      header[Upgrade].exists(_.hasWebSocket)
 
   /**
     * Asserts that the received response is a WebSocket upgrade response and the extracts

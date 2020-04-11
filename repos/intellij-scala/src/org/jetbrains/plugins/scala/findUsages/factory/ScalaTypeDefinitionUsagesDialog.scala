@@ -102,9 +102,9 @@ class ScalaTypeDefinitionUsagesDialog(
       if (isSelected(myCbUsages)) { myCbCompanionModule.makeSelectable() }
       else { myCbCompanionModule.makeUnselectable(false) }
     }
-    val hasSelected: Boolean =
-      isSelected(myCbUsages) || isSelected(myCbMembersUsages) ||
-        isSelected(myCbImplementingTypeDefinitions)
+    val hasSelected: Boolean = isSelected(myCbUsages) ||
+      isSelected(myCbMembersUsages) ||
+      isSelected(myCbImplementingTypeDefinitions)
     setOKActionEnabled(hasSelected)
   }
 }

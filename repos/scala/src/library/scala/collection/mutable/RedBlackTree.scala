@@ -36,7 +36,8 @@ private[collection] object RedBlackTree {
       extends Serializable {
 
     override def toString: String =
-      "Node(" + key + ", " + value + ", " + red + ", " + left + ", " + right + ")"
+      "Node(" + key + ", " + value + ", " + red + ", " + left + ", " + right +
+        ")"
   }
 
   object Tree {
@@ -552,8 +553,8 @@ private[collection] object RedBlackTree {
     }
 
     private[this] def setNullIfAfterEnd(): Unit =
-      if (end.isDefined && (nextNode ne null) && ord
-            .compare(nextNode.key, end.get) >= 0) nextNode = null
+      if (end.isDefined && (nextNode ne null) &&
+          ord.compare(nextNode.key, end.get) >= 0) nextNode = null
 
     setNullIfAfterEnd()
   }
@@ -595,8 +596,8 @@ private[collection] object RedBlackTree {
     * - The size variable in `tree` corresponds to the actual size of the tree.
     */
   def isValid[A: Ordering, B](tree: Tree[A, B]): Boolean =
-    isValidBST(tree.root) && hasProperParentRefs(tree) && isValidRedBlackTree(
-      tree) && size(tree.root) == tree.size
+    isValidBST(tree.root) && hasProperParentRefs(tree) &&
+      isValidRedBlackTree(tree) && size(tree.root) == tree.size
 
   /**
     * Returns true if all non-null nodes have their `parent` reference correct.
@@ -652,7 +653,7 @@ private[collection] object RedBlackTree {
       }
     }
 
-    isBlack(tree.root) && noRedAfterRed(tree.root) && blackHeight(
-      tree.root) >= 0
+    isBlack(tree.root) && noRedAfterRed(tree.root) &&
+    blackHeight(tree.root) >= 0
   }
 }

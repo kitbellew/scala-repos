@@ -187,8 +187,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
         "Cleared " + oldFiles.size + " old files that were older than " +
           (time - rememberDuration) + ": " + oldFiles.keys.mkString(", "))
       logDebug(
-        "Cleared files are:\n" +
-          oldFiles.map(p => (p._1, p._2.mkString(", "))).mkString("\n"))
+        "Cleared files are:\n" + oldFiles.map(p => (p._1, p._2.mkString(", ")))
+          .mkString("\n"))
     }
     // Delete file mod times that weren't accessed in the last round of getting new files
     fileToModTime.clearOldValues(lastNewFileFindingTime - 1)
@@ -208,8 +208,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
       // Calculate ignore threshold
       val modTimeIgnoreThreshold = math.max(
         initialModTimeIgnoreThreshold, // initial threshold based on newFilesOnly setting
-        currentTime - durationToRemember
-          .milliseconds // trailing end of the remember window
+        currentTime -
+          durationToRemember.milliseconds // trailing end of the remember window
       )
       logDebug(
         s"Getting new files for time $currentTime, " +
@@ -304,7 +304,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
       }
       if (rdd.partitions.isEmpty) {
         logError(
-          "File " + file + " has no data in it. Spark Streaming can only ingest " +
+          "File " + file +
+            " has no data in it. Spark Streaming can only ingest " +
             "files that have been \"moved\" to the directory assigned to the file stream. " +
             "Refer to the streaming programming guide for more details.")
       }

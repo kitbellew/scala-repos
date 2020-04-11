@@ -146,18 +146,18 @@ class Same extends ScalaMatchingTask {
     if (!allEqualNow)
       if (failing)
         sys.error(
-          "There were differences between '" + origin
-            .get + "' and '" + destination.get + "'")
+          "There were differences between '" + origin.get + "' and '" +
+            destination.get + "'")
       else
         log(
-          "There were differences between '" + origin
-            .get + "' and '" + destination.get + "'")
+          "There were differences between '" + origin.get + "' and '" +
+            destination.get + "'")
     else {
       if (!resultProperty.isEmpty)
         getProject.setProperty(resultProperty.get, "yes")
       log(
-        "All files in '" + origin.get + "' and '" + destination
-          .get + "' are equal",
+        "All files in '" + origin.get + "' and '" + destination.get +
+          "' are equal",
         Project.MSG_VERBOSE)
     }
   }

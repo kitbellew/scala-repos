@@ -26,14 +26,13 @@ object SameElementsToEquals extends SimplificationType {
     }
 
   private def isOfSameKind(left: ScExpression, right: ScExpression) = {
-    isSet(left) && isSet(right) ||
-    isSeq(left) && isSeq(right) ||
+    isSet(left) && isSet(right) || isSeq(left) && isSeq(right) ||
     isMap(left) && isMap(right)
   }
 
   private def bothSortedSetsOrMaps(left: ScExpression, right: ScExpression) = {
-    isSortedSet(left) && isSortedSet(right) || isSortedMap(left) && isSortedMap(
-      right)
+    isSortedSet(left) && isSortedSet(right) ||
+    isSortedMap(left) && isSortedMap(right)
   }
 }
 

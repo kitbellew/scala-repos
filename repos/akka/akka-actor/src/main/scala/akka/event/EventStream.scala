@@ -114,8 +114,9 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
               publish(Logging.Debug(
                 simpleName(this),
                 this.getClass,
-                "initialized unsubscriber to: " + unsubscriber + ", registering " + subscribers
-                  .size + " initial subscribers with it"))
+                "initialized unsubscriber to: " + unsubscriber +
+                  ", registering " + subscribers.size +
+                  " initial subscribers with it"))
             subscribers foreach registerWithUnsubscriber
             true
           } else {
@@ -169,8 +170,9 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
           unregisterIfNoMoreSubscribedChannels(subscriber)
 
       case Right(unsubscriber) ⇒
-        unsubscriber ! EventStreamUnsubscriber
-          .UnregisterIfNoMoreSubscribedChannels(subscriber)
+        unsubscriber !
+          EventStreamUnsubscriber
+            .UnregisterIfNoMoreSubscribedChannels(subscriber)
     }
   }
 

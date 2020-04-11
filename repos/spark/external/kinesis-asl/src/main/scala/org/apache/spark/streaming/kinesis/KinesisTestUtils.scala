@@ -163,8 +163,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
 
   private def waitForStreamToBeActive(streamNameToWaitFor: String): Unit = {
     val startTime = System.currentTimeMillis()
-    val endTime = startTime + TimeUnit.SECONDS
-      .toMillis(createStreamTimeoutSeconds)
+    val endTime = startTime +
+      TimeUnit.SECONDS.toMillis(createStreamTimeoutSeconds)
     while (System.currentTimeMillis() < endTime) {
       Thread.sleep(TimeUnit.SECONDS.toMillis(describeStreamPollTimeSeconds))
       describeStream(streamNameToWaitFor).foreach { description =>

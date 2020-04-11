@@ -186,8 +186,8 @@ object ColumnDefinitionProviderImpl {
                 c.enclosingPosition,
                 "Hit a size macro where we couldn't parse the value. Probably not a literal constant. Only literal constants are supported.")
             case (tpe, _)
-                if tpe <:< typeOf[
-                  com.twitter.scalding.db.macros.ScaldingDBAnnotation] =>
+                if tpe <:<
+                  typeOf[com.twitter.scalding.db.macros.ScaldingDBAnnotation] =>
               (tpe, None)
           }
         (m, fieldName, defaultVal, annotationInfo)

@@ -87,8 +87,8 @@ class ConsumerFetcherManager(
           val topic = tmd.topic
           tmd.partitionsMetadata.foreach { pmd =>
             val topicAndPartition = TopicAndPartition(topic, pmd.partitionId)
-            if (pmd.leader.isDefined && noLeaderPartitionSet
-                  .contains(topicAndPartition)) {
+            if (pmd.leader.isDefined &&
+                noLeaderPartitionSet.contains(topicAndPartition)) {
               val leaderBroker = pmd.leader.get
               leaderForPartitionsMap.put(topicAndPartition, leaderBroker)
               noLeaderPartitionSet -= topicAndPartition
@@ -155,8 +155,8 @@ class ConsumerFetcherManager(
       partitionMap = topicInfos
         .map(tpi => (TopicAndPartition(tpi.topic, tpi.partitionId), tpi)).toMap
       this.cluster = cluster
-      noLeaderPartitionSet ++= topicInfos
-        .map(tpi => TopicAndPartition(tpi.topic, tpi.partitionId))
+      noLeaderPartitionSet ++=
+        topicInfos.map(tpi => TopicAndPartition(tpi.topic, tpi.partitionId))
       cond.signalAll()
     }
   }

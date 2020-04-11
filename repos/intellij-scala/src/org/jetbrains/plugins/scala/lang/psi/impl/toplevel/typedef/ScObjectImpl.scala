@@ -113,8 +113,8 @@ class ScObjectImpl protected (
     if (stub != null) {
       stub.asInstanceOf[ScTemplateDefinitionStub].isPackageObject
     } else
-      findChildByType[PsiElement](
-        ScalaTokenTypes.kPACKAGE) != null || name == "`package`"
+      findChildByType[PsiElement](ScalaTokenTypes.kPACKAGE) != null ||
+      name == "`package`"
   }
 
   def hasPackageKeyword: Boolean =

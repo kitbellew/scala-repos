@@ -32,14 +32,14 @@ trait DateHelper {
   private def dateTimeFormatter(ctx: Context): DateTimeFormatter =
     dateTimeFormatters.getOrElseUpdate(
       lang(ctx).language,
-      DateTimeFormat forStyle dateTimeStyle withLocale new Locale(
-        lang(ctx).language))
+      DateTimeFormat forStyle dateTimeStyle withLocale
+        new Locale(lang(ctx).language))
 
   private def dateFormatter(ctx: Context): DateTimeFormatter =
     dateFormatters.getOrElseUpdate(
       lang(ctx).language,
-      DateTimeFormat forStyle dateStyle withLocale new Locale(
-        lang(ctx).language))
+      DateTimeFormat forStyle dateStyle withLocale
+        new Locale(lang(ctx).language))
 
   private def periodFormatter(ctx: Context): PeriodFormatter =
     periodFormatters.getOrElseUpdate(

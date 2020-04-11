@@ -162,8 +162,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
             resolve match {
               case fun: ScFunction =>
                 val clauses = fun.effectiveParameterClauses
-                if (clauses.length > 1 && clauses.last.isImplicit && clauses
-                      .length == cmc + 1) {
+                if (clauses.length > 1 && clauses.last.isImplicit &&
+                    clauses.length == cmc + 1) {
                   showErrorHint(InspectionBundle.message(
                     "remove.apply.implicit.parameter",
                     resolve.asInstanceOf[PsiNamedElement].name))
@@ -184,8 +184,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
                     resolve match {
                       case con: ScPrimaryConstructor =>
                         val clauses = con.effectiveParameterClauses
-                        if (clauses.length > 1 && clauses.last
-                              .isImplicit && clauses.length == argsCount + 1) {
+                        if (clauses.length > 1 && clauses.last.isImplicit &&
+                            clauses.length == argsCount + 1) {
                           showErrorHint(InspectionBundle.message(
                             "remove.apply.constructor.implicit.parameter",
                             parents.constructor.get.getText))
@@ -193,8 +193,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
                         }
                       case fun: ScFunction =>
                         val clauses = fun.effectiveParameterClauses
-                        if (clauses.length > 1 && clauses.last
-                              .isImplicit && clauses.length == argsCount + 1) {
+                        if (clauses.length > 1 && clauses.last.isImplicit &&
+                            clauses.length == argsCount + 1) {
                           showErrorHint(InspectionBundle.message(
                             "remove.apply.constructor.implicit.parameter",
                             parents.constructor.get.getText))

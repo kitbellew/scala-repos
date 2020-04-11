@@ -60,8 +60,8 @@ class CaseClassPickling(
                         s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
                   }
                 })
-            if (!allowReflection && (pickle.requiresReflection || unpickle
-                  .requiresReflection)) {
+            if (!allowReflection &&
+                (pickle.requiresReflection || unpickle.requiresReflection)) {
               def reflectionErrorMessage(ast: IrAst): List[String] =
                 ast match {
                   case x: SetField if x.requiresReflection =>
@@ -81,8 +81,9 @@ class CaseClassPickling(
                   // TODO - other instances we need to delegate?
                   case _ => List()
                 }
-              val errors = (reflectionErrorMessage(
-                pickle) ++ reflectionErrorMessage(unpickle))
+              val errors =
+                (reflectionErrorMessage(pickle) ++
+                  reflectionErrorMessage(unpickle))
               val errorString =
                 if (errors.isEmpty) "   unknown reason"
                 else errors.mkString("   - ", "\n   - ", "")

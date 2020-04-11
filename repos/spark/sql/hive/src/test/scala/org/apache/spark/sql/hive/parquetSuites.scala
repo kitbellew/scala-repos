@@ -815,16 +815,9 @@ abstract class ParquetPartitioningTest
     test(s"project the partitioning column $table") {
       checkAnswer(
         sql(s"SELECT p, count(*) FROM $table group by p"),
-        Row(1, 10) ::
-          Row(2, 10) ::
-          Row(3, 10) ::
-          Row(4, 10) ::
-          Row(5, 10) ::
-          Row(6, 10) ::
-          Row(7, 10) ::
-          Row(8, 10) ::
-          Row(9, 10) ::
-          Row(10, 10) :: Nil
+        Row(1, 10) :: Row(2, 10) :: Row(3, 10) :: Row(4, 10) :: Row(5, 10) ::
+          Row(6, 10) :: Row(7, 10) :: Row(8, 10) :: Row(9, 10) :: Row(10, 10) ::
+          Nil
       )
     }
 
@@ -832,15 +825,10 @@ abstract class ParquetPartitioningTest
       checkAnswer(
         sql(
           s"SELECT stringField, p, count(intField) FROM $table GROUP BY p, stringField"),
-        Row("part-1", 1, 10) ::
-          Row("part-2", 2, 10) ::
-          Row("part-3", 3, 10) ::
-          Row("part-4", 4, 10) ::
-          Row("part-5", 5, 10) ::
-          Row("part-6", 6, 10) ::
-          Row("part-7", 7, 10) ::
-          Row("part-8", 8, 10) ::
-          Row("part-9", 9, 10) ::
+        Row("part-1", 1, 10) :: Row("part-2", 2, 10) :: Row("part-3", 3, 10) ::
+          Row("part-4", 4, 10) :: Row("part-5", 5, 10) ::
+          Row("part-6", 6, 10) :: Row("part-7", 7, 10) ::
+          Row("part-8", 8, 10) :: Row("part-9", 9, 10) ::
           Row("part-10", 10, 10) :: Nil
       )
     }

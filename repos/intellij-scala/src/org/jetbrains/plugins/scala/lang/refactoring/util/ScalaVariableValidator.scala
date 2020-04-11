@@ -173,11 +173,13 @@ class ScalaVariableValidator(
         case x: ScParameter if x.name == name =>
           buf += ((x, messageForParameter(x.name)))
         case x: ScFunctionDefinition if x.name == name =>
-          buf += (if (x.isLocal) (x, messageForLocal(x.name))
-                  else (x, messageForMember(x.name)))
+          buf +=
+            (if (x.isLocal) (x, messageForLocal(x.name))
+             else (x, messageForMember(x.name)))
         case x: ScBindingPattern if x.name == name =>
-          buf += (if (x.isClassMember) (x, messageForMember(x.name))
-                  else (x, messageForLocal(x.name)))
+          buf +=
+            (if (x.isClassMember) (x, messageForMember(x.name))
+             else (x, messageForLocal(x.name)))
         case _ =>
       }
     }
@@ -204,13 +206,15 @@ class ScalaVariableValidator(
           case x: ScVariableDefinition =>
             val elems = x.declaredElements
             for (elem <- elems; if elem.name == name)
-              buf += (if (x.isLocal) (elem, messageForLocal(elem.name))
-                      else (elem, messageForMember(elem.name)))
+              buf +=
+                (if (x.isLocal) (elem, messageForLocal(elem.name))
+                 else (elem, messageForMember(elem.name)))
           case x: ScPatternDefinition =>
             val elems = x.declaredElements
             for (elem <- elems; if elem.name == name)
-              buf += (if (x.isLocal) (elem, messageForLocal(elem.name))
-                      else (elem, messageForMember(elem.name)))
+              buf +=
+                (if (x.isLocal) (elem, messageForLocal(elem.name))
+                 else (elem, messageForMember(elem.name)))
           case _ =>
         }
         fromDoubles = fromDoubles.getPrevSibling

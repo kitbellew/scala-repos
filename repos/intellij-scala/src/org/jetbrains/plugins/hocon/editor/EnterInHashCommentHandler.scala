@@ -38,8 +38,8 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
           val text = document.getText
           if (token.getElementType == HoconTokenType.HashComment) {
             val offset = CharArrayUtil.shiftForward(text, caretOffset, " \t")
-            if (offset < document.getTextLength && text
-                  .charAt(offset) != '\n') {
+            if (offset < document.getTextLength &&
+                text.charAt(offset) != '\n') {
               var prefix = "#"
               if (!StringUtil.startsWith(text, offset, prefix)) {
                 if (text.charAt(caretOffset) != ' ' && !prefix.endsWith(" ")) {
@@ -48,8 +48,8 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
                 document.insertString(caretOffset, prefix)
               } else {
                 val afterPrefix = offset + prefix.length
-                if (afterPrefix < document.getTextLength && text
-                      .charAt(afterPrefix) != ' ') {
+                if (afterPrefix < document.getTextLength &&
+                    text.charAt(afterPrefix) != ' ') {
                   document.insertString(afterPrefix, " ")
                 }
                 caretOffsetRef.set(offset)
@@ -75,8 +75,8 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
         def lineNumber(psi: PsiElement) =
           editor.getDocument.getLineNumber(psi.getTextRange.getStartOffset)
         def isHashComment(psi: PsiElement) =
-          psi != null && psi.getNode.getElementType == HoconTokenType
-            .HashComment
+          psi != null &&
+            psi.getNode.getElementType == HoconTokenType.HashComment
 
         if (isHashComment(psiAtOffset) && isHashComment(prevPsi) &&
             lineNumber(psiAtOffset) == lineNumber(prevPsi) + 1 &&

@@ -174,9 +174,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     val partitions = nonEmptyRDD.partitions.map {
       _.asInstanceOf[KinesisBackedBlockRDDPartition]
     }.toSeq
-    assert(partitions.map {
-      _.seqNumberRanges
-    } === Seq(seqNumRanges1, seqNumRanges2))
+    assert(
+      partitions.map { _.seqNumberRanges } ===
+        Seq(seqNumRanges1, seqNumRanges2))
     assert(partitions.map { _.blockId } === Seq(blockId1, blockId2))
     assert(partitions.forall { _.isBlockIdValid === true })
 
@@ -361,8 +361,8 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
         }
 
         // Verify the recovered data
-        assert(rdd.map { bytes => new String(bytes).toInt }
-          .collect().toSeq === data)
+        assert(
+          rdd.map { bytes => new String(bytes).toInt }.collect().toSeq === data)
       }
     }
     ssc.stop()

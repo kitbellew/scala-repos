@@ -31,9 +31,8 @@ trait NonObjectStackSpecs extends EvalStackSpecs {
           //test/empty_array
         """.stripMargin
 
-      eval(input) mustEqual Set(
-        SArray(Vector()),
-        SObject(Map("foo" -> SArray(Vector()))))
+      eval(input) mustEqual
+        Set(SArray(Vector()), SObject(Map("foo" -> SArray(Vector()))))
     }
 
     "handle query on empty object" >> {
@@ -41,9 +40,8 @@ trait NonObjectStackSpecs extends EvalStackSpecs {
           //test/empty_object
         """.stripMargin
 
-      eval(input) mustEqual Set(
-        SObject(Map()),
-        SObject(Map("foo" -> SObject(Map()))))
+      eval(input) mustEqual
+        Set(SObject(Map()), SObject(Map("foo" -> SObject(Map()))))
     }
 
     "handle query on null" >> {

@@ -37,8 +37,8 @@ class VM(
         arguments.get("suspend").setValue("true")
 
         log.info(
-          "Using Connector: " + connector.name + " : " + connector
-            .description())
+          "Using Connector: " + connector.name + " : " +
+            connector.description())
         log.info("Connector class: " + connector.getClass.getName)
         log.info("Debugger VM args: " + allVMOpts)
         log.info("Debugger program args: " + commandLine)
@@ -54,8 +54,8 @@ class VM(
         env.get("hostname").setValue(hostname)
 
         log.info(
-          "Using Connector: " + connector.name + " : " + connector
-            .description())
+          "Using Connector: " + connector.name + " : " +
+            connector.description())
         log.info("Debugger arguments: " + env)
         log.info("Attach to VM")
         val vm = connector.attach(env)
@@ -236,8 +236,8 @@ class VM(
       case v: ArrayReference =>
         val length = v.length()
         if (length > 3)
-          "Array[" + v.getValues(0, 3).map(valueSummary)
-            .mkString(", ") + ",...]"
+          "Array[" + v.getValues(0, 3).map(valueSummary).mkString(", ") +
+            ",...]"
         else "Array[" + v.getValues.map(valueSummary).mkString(", ") + "]"
       case v: ObjectReference =>
         val tpe = v.referenceType()
@@ -377,9 +377,9 @@ class VM(
       None
     } else {
       log.info(
-        "DebugManager.callMethod(obj = " + obj + " of type " + obj
-          .referenceType + ", name = " +
-          name + ", signature = " + signature + ", args = " + args)
+        "DebugManager.callMethod(obj = " + obj + " of type " +
+          obj.referenceType + ", name = " + name + ", signature = " +
+          signature + ", args = " + args)
       obj.referenceType.methodsByName("toString", "()Ljava/lang/String;")
         .headOption match {
         case Some(m) =>

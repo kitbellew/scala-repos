@@ -29,14 +29,13 @@ class PruneFiltersSuite extends PlanTest {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
     val batches =
-      Batch("Subqueries", Once, EliminateSubqueryAliases) ::
-        Batch(
-          "Filter Pushdown and Pruning",
-          Once,
-          CombineFilters,
-          PruneFilters,
-          PushPredicateThroughProject,
-          PushPredicateThroughJoin) :: Nil
+      Batch("Subqueries", Once, EliminateSubqueryAliases) :: Batch(
+        "Filter Pushdown and Pruning",
+        Once,
+        CombineFilters,
+        PruneFilters,
+        PushPredicateThroughProject,
+        PushPredicateThroughJoin) :: Nil
   }
 
   val testRelation = LocalRelation('a.int, 'b.int, 'c.int)
@@ -79,8 +78,7 @@ class PruneFiltersSuite extends PlanTest {
       Some("tr1.a".attr === "tr2.a".attr))
     // different order of "tr2.a" and "tr1.a"
     val queryWithUselessFilter = query.where(
-      ("tr1.a".attr > 10 || "tr1.c".attr < 10) &&
-        'd.attr < 100 &&
+      ("tr1.a".attr > 10 || "tr1.c".attr < 10) && 'd.attr < 100 &&
         "tr2.a".attr === "tr1.a".attr)
 
     val optimized = Optimize.execute(queryWithUselessFilter.analyze)

@@ -45,8 +45,8 @@ class RecipeMultiGroupBy extends RecipeSpec {
         .map(g => g.head._2.name + g.map(_._1).mkString("[", ", ", "]"))
         .limit(10).runWith(Sink.seq)
 
-      Await.result(result, 3.seconds).toSet should be(
-        Set("1[1: a, 1: b, all: c, all: d, 1: e]", "2[all: c, all: d]"))
+      Await.result(result, 3.seconds).toSet should
+        be(Set("1[1: a, 1: b, all: c, all: d, 1: e]", "2[all: c, all: d]"))
 
     }
 

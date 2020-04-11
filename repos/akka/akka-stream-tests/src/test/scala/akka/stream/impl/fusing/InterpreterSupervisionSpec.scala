@@ -75,14 +75,14 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
   "Interpreter error handling" must {
 
-    "handle external failure" in new OneBoundedSetup[Int](Seq(
-      Map((x: Int) ⇒ x + 1, stoppingDecider))) {
-      lastEvents() should be(Set.empty)
+    "handle external failure" in
+      new OneBoundedSetup[Int](Seq(Map((x: Int) ⇒ x + 1, stoppingDecider))) {
+        lastEvents() should be(Set.empty)
 
-      upstream.onError(TE)
-      lastEvents() should be(Set(OnError(TE)))
+        upstream.onError(TE)
+        lastEvents() should be(Set(OnError(TE)))
 
-    }
+      }
 
     "emit failure when op throws" in new OneBoundedSetup[Int](Seq(
       Map((x: Int) ⇒ if (x == 0) throw TE else x, stoppingDecider))) {
@@ -97,22 +97,22 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should be(Set(Cancel, OnError(TE)))
     }
 
-    "emit failure when op throws in middle of the chain" in new OneBoundedSetup[
-      Int](Seq(
-      Map((x: Int) ⇒ x + 1, stoppingDecider),
-      Map((x: Int) ⇒ if (x == 0) throw TE else x + 10, stoppingDecider),
-      Map((x: Int) ⇒ x + 100, stoppingDecider))) {
+    "emit failure when op throws in middle of the chain" in
+      new OneBoundedSetup[Int](Seq(
+        Map((x: Int) ⇒ x + 1, stoppingDecider),
+        Map((x: Int) ⇒ if (x == 0) throw TE else x + 10, stoppingDecider),
+        Map((x: Int) ⇒ x + 100, stoppingDecider))) {
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
-      upstream.onNext(2)
-      lastEvents() should be(Set(OnNext(113)))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
+        upstream.onNext(2)
+        lastEvents() should be(Set(OnNext(113)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
-      upstream.onNext(-1) // boom
-      lastEvents() should be(Set(Cancel, OnError(TE)))
-    }
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
+        upstream.onNext(-1) // boom
+        lastEvents() should be(Set(Cancel, OnError(TE)))
+      }
 
     "resume when Map throws" in new OneBoundedSetup[Int](Seq(
       Map((x: Int) ⇒ if (x == 0) throw TE else x, resumingDecider))) {
@@ -139,25 +139,25 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should be(Set(OnNext(4)))
     }
 
-    "resume when Map throws in middle of the chain" in new OneBoundedSetup[Int](
-      Seq(
+    "resume when Map throws in middle of the chain" in
+      new OneBoundedSetup[Int](Seq(
         Map((x: Int) ⇒ x + 1, resumingDecider),
         Map((x: Int) ⇒ if (x == 0) throw TE else x + 10, resumingDecider),
         Map((x: Int) ⇒ x + 100, resumingDecider))) {
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
-      upstream.onNext(2)
-      lastEvents() should be(Set(OnNext(113)))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
+        upstream.onNext(2)
+        lastEvents() should be(Set(OnNext(113)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
-      upstream.onNext(-1) // boom
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
+        upstream.onNext(-1) // boom
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(3)
-      lastEvents() should be(Set(OnNext(114)))
-    }
+        upstream.onNext(3)
+        lastEvents() should be(Set(OnNext(114)))
+      }
 
     "resume when Map throws before Grouped" in new OneBoundedSetup[Int](Seq(
       Map((x: Int) ⇒ x + 1, resumingDecider),
@@ -179,26 +179,26 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should be(Set(OnNext(Vector(13, 14, 15))))
     }
 
-    "complete after resume when Map throws before Grouped" in new OneBoundedSetup[
-      Int](Seq(
-      Map((x: Int) ⇒ x + 1, resumingDecider),
-      Map((x: Int) ⇒ if (x <= 0) throw TE else x + 10, resumingDecider),
-      Grouped(1000))) {
+    "complete after resume when Map throws before Grouped" in
+      new OneBoundedSetup[Int](Seq(
+        Map((x: Int) ⇒ x + 1, resumingDecider),
+        Map((x: Int) ⇒ if (x <= 0) throw TE else x + 10, resumingDecider),
+        Grouped(1000))) {
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne))
-      upstream.onNext(2)
-      lastEvents() should be(Set(RequestOne))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne))
+        upstream.onNext(2)
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(-1) // boom
-      lastEvents() should be(Set(RequestOne))
+        upstream.onNext(-1) // boom
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(3)
-      lastEvents() should be(Set(RequestOne))
+        upstream.onNext(3)
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onComplete()
-      lastEvents() should be(Set(OnNext(Vector(13, 14)), OnComplete))
-    }
+        upstream.onComplete()
+        lastEvents() should be(Set(OnNext(Vector(13, 14)), OnComplete))
+      }
 
     "restart when onPush throws" in {
       val stage = new RestartTestStage {
@@ -373,51 +373,51 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should be(Set(OnNext(25))) // 1 + 4 + 20
     }
 
-    "fail when Expand `seed` throws" in new OneBoundedSetup[Int](
-      new Expand((in: Int) ⇒
+    "fail when Expand `seed` throws" in
+      new OneBoundedSetup[Int](new Expand((in: Int) ⇒
         if (in == 2) throw TE
         else Iterator(in) ++ Iterator.continually(-math.abs(in)))) {
 
-      lastEvents() should be(Set(RequestOne))
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(1)
-      lastEvents() should be(Set.empty)
+        upstream.onNext(1)
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne, OnNext(1)))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne, OnNext(1)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnNext(-1)))
+        downstream.requestOne()
+        lastEvents() should be(Set(OnNext(-1)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnNext(-1)))
+        downstream.requestOne()
+        lastEvents() should be(Set(OnNext(-1)))
 
-      upstream.onNext(2) // boom
-      lastEvents() should be(Set(OnError(TE), Cancel))
-    }
+        upstream.onNext(2) // boom
+        lastEvents() should be(Set(OnError(TE), Cancel))
+      }
 
-    "fail when Expand `extrapolate` throws" in new OneBoundedSetup[Int](
-      new Expand((in: Int) ⇒
+    "fail when Expand `extrapolate` throws" in
+      new OneBoundedSetup[Int](new Expand((in: Int) ⇒
         if (in == 2) Iterator.continually(throw TE)
         else Iterator(in) ++ Iterator.continually(-math.abs(in)))) {
 
-      lastEvents() should be(Set(RequestOne))
+        lastEvents() should be(Set(RequestOne))
 
-      upstream.onNext(1)
-      lastEvents() should be(Set.empty)
+        upstream.onNext(1)
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(RequestOne, OnNext(1)))
+        downstream.requestOne()
+        lastEvents() should be(Set(RequestOne, OnNext(1)))
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnNext(-1)))
+        downstream.requestOne()
+        lastEvents() should be(Set(OnNext(-1)))
 
-      upstream.onNext(2) // boom
-      lastEvents() should be(Set.empty)
+        upstream.onNext(2) // boom
+        lastEvents() should be(Set.empty)
 
-      downstream.requestOne()
-      lastEvents() should be(Set(OnError(TE), Cancel))
-    }
+        downstream.requestOne()
+        lastEvents() should be(Set(OnError(TE), Cancel))
+      }
 
     "fail when onPull throws before pushing all generated elements" in {
       def test(

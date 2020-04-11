@@ -1523,10 +1523,10 @@ object H5Store {
 
     val cx = didx concat iidx concat sidx concat lidx concat fidx concat tidx
 
-    val cols = toGeneric(mxDouble.cols) ++ toGeneric(mxInt.cols) ++ toGeneric(
-      mxString.cols) ++
-      toGeneric(mxLong.cols) ++ toGeneric(mxFloat.cols) ++ toGeneric(
-      mxDates.cols.map(v => new VecTime(v / 1000000)))
+    val cols = toGeneric(mxDouble.cols) ++ toGeneric(mxInt.cols) ++
+      toGeneric(mxString.cols) ++ toGeneric(mxLong.cols) ++
+      toGeneric(mxFloat.cols) ++
+      toGeneric(mxDates.cols.map(v => new VecTime(v / 1000000)))
 
     val result = Frame(cols, ix0, cx)
 

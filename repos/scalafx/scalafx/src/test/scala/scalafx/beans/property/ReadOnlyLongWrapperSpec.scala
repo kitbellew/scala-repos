@@ -41,10 +41,11 @@ class ReadOnlyLongWrapperSpec extends FlatSpec with BeforeAndAfterEach {
     assert(p.isInstanceOf[LongProperty])
   }
 
-  it should "have public field `readOnlyProperty` that is an instance of `ReadOnlyLongProperty`" in {
-    val p = new ReadOnlyLongWrapper()
-    assert(p.readOnlyProperty.isInstanceOf[ReadOnlyLongProperty])
-  }
+  it should
+    "have public field `readOnlyProperty` that is an instance of `ReadOnlyLongProperty`" in {
+      val p = new ReadOnlyLongWrapper()
+      assert(p.readOnlyProperty.isInstanceOf[ReadOnlyLongProperty])
+    }
 
   it should "propagate value changes to `readOnlyProperty`" in {
     val p = new ReadOnlyLongWrapper()

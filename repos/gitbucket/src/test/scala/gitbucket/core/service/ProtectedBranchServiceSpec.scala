@@ -26,10 +26,8 @@ class ProtectedBranchServiceSpec
     it("should empty is disabled") {
       withTestDB { implicit session =>
         assert(
-          getProtectedBranchInfo(
-            "user1",
-            "repo1",
-            "branch") == ProtectedBranchInfo.disabled("user1", "repo1"))
+          getProtectedBranchInfo("user1", "repo1", "branch") ==
+            ProtectedBranchInfo.disabled("user1", "repo1"))
       }
     }
     it("should enable and update and disable") {
@@ -37,15 +35,8 @@ class ProtectedBranchServiceSpec
         generateNewUserWithDBRepository("user1", "repo1")
         enableBranchProtection("user1", "repo1", "branch", false, Nil)
         assert(
-          getProtectedBranchInfo(
-            "user1",
-            "repo1",
-            "branch") == ProtectedBranchInfo(
-            "user1",
-            "repo1",
-            true,
-            Nil,
-            false))
+          getProtectedBranchInfo("user1", "repo1", "branch") ==
+            ProtectedBranchInfo("user1", "repo1", true, Nil, false))
         enableBranchProtection(
           "user1",
           "repo1",
@@ -53,21 +44,17 @@ class ProtectedBranchServiceSpec
           true,
           Seq("hoge", "huge"))
         assert(
-          getProtectedBranchInfo(
-            "user1",
-            "repo1",
-            "branch") == ProtectedBranchInfo(
-            "user1",
-            "repo1",
-            true,
-            Seq("hoge", "huge"),
-            true))
+          getProtectedBranchInfo("user1", "repo1", "branch") ==
+            ProtectedBranchInfo(
+              "user1",
+              "repo1",
+              true,
+              Seq("hoge", "huge"),
+              true))
         disableBranchProtection("user1", "repo1", "branch")
         assert(
-          getProtectedBranchInfo(
-            "user1",
-            "repo1",
-            "branch") == ProtectedBranchInfo.disabled("user1", "repo1"))
+          getProtectedBranchInfo("user1", "repo1", "branch") ==
+            ProtectedBranchInfo.disabled("user1", "repo1"))
       }
     }
     it("should empty contexts is no-include-administrators") {
@@ -90,10 +77,8 @@ class ProtectedBranchServiceSpec
         enableBranchProtection("user1", "repo1", "branch2", false, Seq("fuga"))
         enableBranchProtection("user1", "repo1", "branch3", true, Seq("hoge"))
         assert(
-          getProtectedBranchList("user1", "repo1").toSet == Set(
-            "branch",
-            "branch2",
-            "branch3"))
+          getProtectedBranchList("user1", "repo1").toSet ==
+            Set("branch", "branch2", "branch3"))
       }
     }
     it("getBranchProtectedReason on force push from admin") {
@@ -112,8 +97,8 @@ class ProtectedBranchServiceSpec
             receiveHook.preReceive("user1", "repo1", rp, rc, "user1") == None)
           enableBranchProtection("user1", "repo1", "branch", false, Nil)
           assert(
-            receiveHook.preReceive("user1", "repo1", rp, rc, "user1") == Some(
-              "Cannot force-push to a protected branch"))
+            receiveHook.preReceive("user1", "repo1", rp, rc, "user1") ==
+              Some("Cannot force-push to a protected branch"))
         }
       }
     }
@@ -133,8 +118,8 @@ class ProtectedBranchServiceSpec
             receiveHook.preReceive("user1", "repo1", rp, rc, "user2") == None)
           enableBranchProtection("user1", "repo1", "branch", false, Nil)
           assert(
-            receiveHook.preReceive("user1", "repo1", rp, rc, "user2") == Some(
-              "Cannot force-push to a protected branch"))
+            receiveHook.preReceive("user1", "repo1", rp, rc, "user2") ==
+              Some("Cannot force-push to a protected branch"))
         }
       }
     }
@@ -154,8 +139,8 @@ class ProtectedBranchServiceSpec
             receiveHook.preReceive("user1", "repo1", rp, rc, "user2") == None)
           enableBranchProtection("user1", "repo1", "branch", false, Seq("must"))
           assert(
-            receiveHook.preReceive("user1", "repo1", rp, rc, "user2") == Some(
-              "Required status check \"must\" is expected"))
+            receiveHook.preReceive("user1", "repo1", rp, rc, "user2") ==
+              Some("Required status check \"must\" is expected"))
           enableBranchProtection(
             "user1",
             "repo1",
@@ -163,8 +148,8 @@ class ProtectedBranchServiceSpec
             false,
             Seq("must", "must2"))
           assert(
-            receiveHook.preReceive("user1", "repo1", rp, rc, "user2") == Some(
-              "2 of 2 required status checks are expected"))
+            receiveHook.preReceive("user1", "repo1", rp, rc, "user2") ==
+              Some("2 of 2 required status checks are expected"))
           createCommitStatus(
             "user1",
             "repo1",
@@ -176,8 +161,8 @@ class ProtectedBranchServiceSpec
             now,
             user1)
           assert(
-            receiveHook.preReceive("user1", "repo1", rp, rc, "user2") == Some(
-              "2 of 2 required status checks are expected"))
+            receiveHook.preReceive("user1", "repo1", rp, rc, "user2") ==
+              Some("2 of 2 required status checks are expected"))
           createCommitStatus(
             "user1",
             "repo1",
@@ -189,8 +174,8 @@ class ProtectedBranchServiceSpec
             now,
             user1)
           assert(
-            receiveHook.preReceive("user1", "repo1", rp, rc, "user2") == Some(
-              "Required status check \"must2\" is expected"))
+            receiveHook.preReceive("user1", "repo1", rp, rc, "user2") ==
+              Some("Required status check \"must2\" is expected"))
           createCommitStatus(
             "user1",
             "repo1",
@@ -225,8 +210,8 @@ class ProtectedBranchServiceSpec
             receiveHook.preReceive("user1", "repo1", rp, rc, "user1") == None)
           enableBranchProtection("user1", "repo1", "branch", true, Seq("must"))
           assert(
-            receiveHook.preReceive("user1", "repo1", rp, rc, "user1") == Some(
-              "Required status check \"must\" is expected"))
+            receiveHook.preReceive("user1", "repo1", rp, rc, "user1") ==
+              Some("Required status check \"must\" is expected"))
           enableBranchProtection(
             "user1",
             "repo1",
@@ -242,8 +227,8 @@ class ProtectedBranchServiceSpec
             true,
             Seq("must", "must2"))
           assert(
-            receiveHook.preReceive("user1", "repo1", rp, rc, "user1") == Some(
-              "2 of 2 required status checks are expected"))
+            receiveHook.preReceive("user1", "repo1", rp, rc, "user1") ==
+              Some("2 of 2 required status checks are expected"))
           createCommitStatus(
             "user1",
             "repo1",
@@ -255,8 +240,8 @@ class ProtectedBranchServiceSpec
             now,
             user1)
           assert(
-            receiveHook.preReceive("user1", "repo1", rp, rc, "user1") == Some(
-              "2 of 2 required status checks are expected"))
+            receiveHook.preReceive("user1", "repo1", rp, rc, "user1") ==
+              Some("2 of 2 required status checks are expected"))
           createCommitStatus(
             "user1",
             "repo1",
@@ -268,8 +253,8 @@ class ProtectedBranchServiceSpec
             now,
             user1)
           assert(
-            receiveHook.preReceive("user1", "repo1", rp, rc, "user1") == Some(
-              "Required status check \"must2\" is expected"))
+            receiveHook.preReceive("user1", "repo1", rp, rc, "user1") ==
+              Some("Required status check \"must2\" is expected"))
           createCommitStatus(
             "user1",
             "repo1",

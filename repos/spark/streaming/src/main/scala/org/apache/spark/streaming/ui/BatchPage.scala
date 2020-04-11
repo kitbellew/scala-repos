@@ -156,13 +156,8 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         {sparkJob.completedStageIndices.size}/{
       sparkJob.stageIds.size - sparkJob.numSkippedStages
     }
-        {
-      if (sparkJob.numFailedStages > 0) s"(${sparkJob.numFailedStages} failed)"
-    }
-        {
-      if (sparkJob.numSkippedStages > 0)
-        s"(${sparkJob.numSkippedStages} skipped)"
-    }
+        {if (sparkJob.numFailedStages > 0) s"(${sparkJob.numFailedStages} failed)"}
+        {if (sparkJob.numSkippedStages > 0) s"(${sparkJob.numSkippedStages} skipped)"}
       </td>
       <td class="progress-cell">
         {

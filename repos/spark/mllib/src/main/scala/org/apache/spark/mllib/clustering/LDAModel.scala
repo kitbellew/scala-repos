@@ -336,8 +336,8 @@ class LocalLDAModel private[spark] (
         // E[log p(doc | theta, beta)]
         termCounts.foreachActive {
           case (idx, count) =>
-            docBound += count * LDAUtils
-              .logSumExp(Elogthetad + localElogbeta(idx, ::).t)
+            docBound +=
+              count * LDAUtils.logSumExp(Elogthetad + localElogbeta(idx, ::).t)
         }
         // E[log p(theta | alpha) - log q(theta | gamma)]
         docBound += sum((brzAlpha - gammad) :* Elogthetad)
@@ -483,8 +483,10 @@ object LocalLDAModel extends Loader[LocalLDAModel] {
 
       val k = topicsMatrix.numCols
       val metadata = compact(render(
-        ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-          ("k" -> k) ~ ("vocabSize" -> topicsMatrix.numRows) ~
+        ("class" -> thisClassName) ~
+          ("version" -> thisFormatVersion) ~
+          ("k" -> k) ~
+          ("vocabSize" -> topicsMatrix.numRows) ~
           ("docConcentration" -> docConcentration.toArray.toSeq) ~
           ("topicConcentration" -> topicConcentration) ~
           ("gammaShape" -> gammaShape)))
@@ -637,8 +639,8 @@ class DistributedLDAModel private[clustering] (
         for ((termId, n_wk) <- termVertices) {
           var topic = 0
           while (topic < numTopics) {
-            queues(topic) += (n_wk(topic) / N_k(topic) -> index2term(
-              termId.toInt))
+            queues(topic) +=
+              (n_wk(topic) / N_k(topic) -> index2term(termId.toInt))
             topic += 1
           }
         }
@@ -925,8 +927,10 @@ object DistributedLDAModel extends Loader[DistributedLDAModel] {
       import sqlContext.implicits._
 
       val metadata = compact(render(
-        ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-          ("k" -> k) ~ ("vocabSize" -> vocabSize) ~
+        ("class" -> thisClassName) ~
+          ("version" -> thisFormatVersion) ~
+          ("k" -> k) ~
+          ("vocabSize" -> vocabSize) ~
           ("docConcentration" -> docConcentration.toArray.toSeq) ~
           ("topicConcentration" -> topicConcentration) ~
           ("iterationTimes" -> iterationTimes.toSeq) ~

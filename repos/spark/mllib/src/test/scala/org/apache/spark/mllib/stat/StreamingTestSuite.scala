@@ -253,9 +253,8 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
       numBatches)
 
     assert(
-      outputBatches.flatten.length == (
-        numBatches - peacePeriod
-      ) * pointsPerBatch)
+      outputBatches.flatten.length == (numBatches - peacePeriod) *
+        pointsPerBatch)
   }
 
   test("null hypothesis when only data from one group is present") {
@@ -306,10 +305,9 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     val data = (0 until numBatches).map { i =>
       (0 until numTrues).map { idx =>
         BinarySample(true, meanA + stdevA * rand.nextGaussian())
-      } ++
-        (pointsPerBatch / 2 until pointsPerBatch).map { idx =>
-          BinarySample(false, meanB + stdevB * rand.nextGaussian())
-        }
+      } ++ (pointsPerBatch / 2 until pointsPerBatch).map { idx =>
+        BinarySample(false, meanB + stdevB * rand.nextGaussian())
+      }
     }
 
     data

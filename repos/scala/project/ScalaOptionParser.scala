@@ -36,9 +36,9 @@ object ScalaOptionParser {
         name: String,
         choices: List[String]): Parser[String] =
       concat(
-        token(concat(name ~ ":")) ~ rep1sep(
-          token(StringBasic.examples(choices: _*)),
-          token(",")).map(_.mkString))
+        token(concat(name ~ ":")) ~
+          rep1sep(token(StringBasic.examples(choices: _*)), token(","))
+            .map(_.mkString))
     def PathSetting(name: String): Parser[String] = {
       concat(
         concat(token(name) ~ Space.string) ~ rep1sep(
@@ -57,18 +57,16 @@ object ScalaOptionParser {
     }
     def ScalaVersionSetting(name: String): Parser[String] = {
       concat(
-        concat(token(name ~ Space.string)) ~ token(
-          StringBasic,
-          TokenCompletions.displayOnly("<scala version>")))
+        concat(token(name ~ Space.string)) ~
+          token(StringBasic, TokenCompletions.displayOnly("<scala version>")))
     }
     val Property: Parser[String] = {
       val PropName = concat(token(
         "-D" ~ oneOrMore(NotSpaceClass & not('=', "not =")).string,
         TokenCompletions.displayOnly("-D<property name>")))
       val EqualsValue = concat(
-        "=" ~ token(
-          OptNotSpace,
-          TokenCompletions.displayOnly("<property value>")))
+        "=" ~
+          token(OptNotSpace, TokenCompletions.displayOnly("<property value>")))
       concat(PropName ~ EqualsValue.?.map(_.getOrElse("")))
     }
 
@@ -76,31 +74,31 @@ object ScalaOptionParser {
 
     // TODO Allow JVM settings via -J-... and temporarily add them to the ForkOptions
     val UniversalOpt = Property | oneOf(
-      pathSettingNames.map(PathSetting) ++ phaseSettings
-        .map(PhaseSettingParser) ++ booleanSettingNames
-        .map(BooleanSetting) ++ stringSettingNames
-        .map(StringSetting) ++ multiStringSettingNames
-        .map(MultiStringSetting) ++ intSettingNames
-        .map(IntSetting) ++ choiceSettingNames.map {
-        case (k, v) => ChoiceSetting(k, v)
-      } ++ multiChoiceSettingNames.map {
-        case (k, v) => MultiChoiceSetting(k, v)
-      } ++ scalaVersionSettings.map(ScalaVersionSetting))
+      pathSettingNames.map(PathSetting) ++
+        phaseSettings.map(PhaseSettingParser) ++
+        booleanSettingNames.map(BooleanSetting) ++
+        stringSettingNames.map(StringSetting) ++
+        multiStringSettingNames.map(MultiStringSetting) ++
+        intSettingNames.map(IntSetting) ++ choiceSettingNames.map {
+          case (k, v) => ChoiceSetting(k, v)
+        } ++ multiChoiceSettingNames.map {
+          case (k, v) => MultiChoiceSetting(k, v)
+        } ++ scalaVersionSettings.map(ScalaVersionSetting))
     val ScalacOpt = sourceFile | UniversalOpt
 
     val ScalaExtraSettings = oneOf(
-      scalaChoiceSettingNames.map { case (k, v) => ChoiceSetting(k, v) }.toList
-        ++ scalaStringSettingNames.map(StringSetting)
-        ++ scalaBooleanSettingNames.map(BooleanSetting))
+      scalaChoiceSettingNames.map { case (k, v) => ChoiceSetting(k, v) }
+        .toList ++ scalaStringSettingNames.map(StringSetting) ++
+        scalaBooleanSettingNames.map(BooleanSetting))
     val ScalaOpt = UniversalOpt | ScalaExtraSettings
 
     val ScalaDocExtraSettings = oneOf(
-      scalaDocBooleanSettingNames.map(BooleanSetting)
-        ++ scalaDocIntSettingNames.map(IntSetting)
-        ++ scalaDocChoiceSettingNames.map { case (k, v) => ChoiceSetting(k, v) }
-        ++ scaladocStringSettingNames.map(StringSetting)
-        ++ scaladocPathSettingNames.map(PathSetting)
-        ++ scaladocMultiStringSettingNames.map(MultiStringSetting))
+      scalaDocBooleanSettingNames.map(BooleanSetting) ++
+        scalaDocIntSettingNames.map(IntSetting) ++
+        scalaDocChoiceSettingNames.map { case (k, v) => ChoiceSetting(k, v) } ++
+        scaladocStringSettingNames.map(StringSetting) ++
+        scaladocPathSettingNames.map(PathSetting) ++
+        scaladocMultiStringSettingNames.map(MultiStringSetting))
     val ScalaDocOpt = ScalacOpt | ScalaDocExtraSettings
 
     val P = entryPoint match {
@@ -116,9 +114,10 @@ object ScalaOptionParser {
               Space).map(_.mkString(" ")))))
         val options = rep1sep(ScalaOpt, Space).map(_.mkString(" "))
         Opt(
-          Space ~> (options | concat(
-            concat(
-              options ~ Space.string) ~ runnableAndArgs) | runnableAndArgs))
+          Space ~>
+            (options |
+              concat(concat(options ~ Space.string) ~ runnableAndArgs) |
+              runnableAndArgs))
       case "scaladoc" => Opt(
           Space ~> Opt(repsep(ScalaDocOpt, Space).map(_.mkString(" "))))
       case "scalac" => Opt(
@@ -350,13 +349,8 @@ object ScalaOptionParser {
         "inline-project",
         "inline-global"
       ),
-      "-Ystatistics" -> List(
-        "parser",
-        "typer",
-        "patmat",
-        "erasure",
-        "cleanup",
-        "jvm")
+      "-Ystatistics" ->
+        List("parser", "typer", "patmat", "erasure", "cleanup", "jvm")
     )
   private def scalaVersionSettings = List("-Xmigration", "-Xsource")
 

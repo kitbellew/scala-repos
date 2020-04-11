@@ -216,8 +216,8 @@ class ObservableMapSpec[K, V]
 
     // First Verification
     map should equal(ObservableMap((10 to 20).map(i => (i, i.toString))))
-    removedEntries.toList should equal(
-      (0 to 9).map(i => (i, i.toString)).toList)
+    removedEntries.toList should
+      equal((0 to 9).map(i => (i, i.toString)).toList)
 
     removedEntries.clear()
     // Retain even keys
@@ -228,14 +228,14 @@ class ObservableMapSpec[K, V]
     for (k <- map.keys.toArray if (k % 2 != 0)) { map.remove(k) }
     map should equal(
       ObservableMap((10 to 20).filter(_ % 2 == 0).map(i => (i, i.toString))))
-    removedEntries.toList.sortWith(_._1 < _._1) should equal(
-      (10 to 20).filter(_ % 2 != 0).map(i => (i, i.toString)).toList)
+    removedEntries.toList.sortWith(_._1 < _._1) should
+      equal((10 to 20).filter(_ % 2 != 0).map(i => (i, i.toString)).toList)
 
     removedEntries.clear()
     // Clear Map
     map.clear()
-    removedEntries.toList.sortWith(_._1 < _._1) should equal(
-      (10 to 20).filter(_ % 2 == 0).map(i => (i, i.toString)).toList)
+    removedEntries.toList.sortWith(_._1 < _._1) should
+      equal((10 to 20).filter(_ % 2 == 0).map(i => (i, i.toString)).toList)
     map should be('empty)
   }
 
@@ -271,9 +271,8 @@ class ObservableMapSpec[K, V]
     expectedEntries += ((9, "nine", 9.toString))
     map ++= List((10, "ten"), (11, "eleven"))
     expectedEntries += ((10, "ten", 10.toString), (11, "eleven", 11.toString))
-    map put (
-      12, 12.toString
-    ) // repeating a value. It will not be change the map
+    map put
+      (12, 12.toString) // repeating a value. It will not be change the map
     map put (12, "twelve")
     expectedEntries += ((12, "twelve", 12.toString))
     map getOrElseUpdate (13, "thirteen") // Map will not be updated

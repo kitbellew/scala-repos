@@ -301,21 +301,15 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val m7 = jobs.addMessage(job.id, "chat", say("Tom", "That sucks."))
         .copoint
 
-      jobs.listMessages(job.id, "chat", Some(m1.id)).copoint
-        .toList must_== List(m2, m3, m4, m5, m6, m7)
-      jobs.listMessages(job.id, "chat", Some(m4.id)).copoint
-        .toList must_== List(m5, m6, m7)
-      jobs.listMessages(job.id, "chat", Some(m6.id)).copoint
-        .toList must_== List(m7)
+      jobs.listMessages(job.id, "chat", Some(m1.id)).copoint.toList must_==
+        List(m2, m3, m4, m5, m6, m7)
+      jobs.listMessages(job.id, "chat", Some(m4.id)).copoint.toList must_==
+        List(m5, m6, m7)
+      jobs.listMessages(job.id, "chat", Some(m6.id)).copoint.toList must_==
+        List(m7)
       jobs.listMessages(job.id, "chat", Some(m7.id)).copoint.toList must_== Nil
-      jobs.listMessages(job.id, "chat", None).copoint.toList must_== List(
-        m1,
-        m2,
-        m3,
-        m4,
-        m5,
-        m6,
-        m7)
+      jobs.listMessages(job.id, "chat", None).copoint.toList must_==
+        List(m1, m2, m3, m4, m5, m6, m7)
     }
 
     "list channels that have been posted to" in {
@@ -333,20 +327,20 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val state = job.state
       val jobId = job.id
 
-      jobs.cancel(job.id, "I didn't like the way it looked at me.")
-        .copoint must beLike {
-        case Right(
-              Job(
-                `jobId`,
-                _,
-                _,
-                _,
-                _,
-                Cancelled(
-                  "I didn't like the way it looked at me.",
+      jobs.cancel(job.id, "I didn't like the way it looked at me.").copoint must
+        beLike {
+          case Right(
+                Job(
+                  `jobId`,
                   _,
-                  `state`))) => ok
-      }
+                  _,
+                  _,
+                  _,
+                  Cancelled(
+                    "I didn't like the way it looked at me.",
+                    _,
+                    `state`))) => ok
+        }
 
       jobs.findJob(jobId).copoint must beLike {
         case Some(Job(`jobId`, _, _, _, _, Cancelled(_, _, `state`))) => ok

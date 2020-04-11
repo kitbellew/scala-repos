@@ -51,8 +51,7 @@ object BatcherLaws extends Properties("Batcher") {
   def batchesIncreaseByAtMostOne(batcher: Batcher) =
     forAll { (d: Timestamp) =>
       val nextTimeB = batcher.batchOf(d.next)
-      batcher.batchOf(d) == nextTimeB ||
-      batcher.batchOf(d) == nextTimeB.prev
+      batcher.batchOf(d) == nextTimeB || batcher.batchOf(d) == nextTimeB.prev
     }
 
   def batchesCoveredByIdent(batcher: Batcher) =
@@ -85,10 +84,8 @@ object BatcherLaws extends Properties("Batcher") {
     }
 
   def batcherLaws(batcher: Batcher) =
-    earliestIs_<=(batcher) &&
-      batchesAreWeakOrderings(batcher) &&
-      batchesIncreaseByAtMostOne(batcher) &&
-      batchesCoveredByIdent(batcher) &&
+    earliestIs_<=(batcher) && batchesAreWeakOrderings(batcher) &&
+      batchesIncreaseByAtMostOne(batcher) && batchesCoveredByIdent(batcher) &&
       batchIntervalTransformToTs(batcher, Interval.leftOpenRightClosed(_, _)) &&
       batchIntervalTransformToTs(batcher, Interval.leftClosedRightOpen(_, _))
 
@@ -132,8 +129,8 @@ object BatcherLaws extends Properties("Batcher") {
   property(
     "DurationBatcher should fully enclose each batch with a single batch") =
     forAll { i: Int =>
-      hourlyBatcher.enclosedBy(BatchID(i), hourlyBatcher).toList == List(
-        BatchID(i))
+      hourlyBatcher.enclosedBy(BatchID(i), hourlyBatcher).toList ==
+        List(BatchID(i))
     }
 
   property("batchesCoveredBy is a subset of covers") = forAll {

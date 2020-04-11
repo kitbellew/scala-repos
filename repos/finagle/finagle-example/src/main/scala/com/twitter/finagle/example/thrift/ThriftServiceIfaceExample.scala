@@ -71,8 +71,8 @@ object ThriftServiceIfaceExample {
       val timer = DefaultTimer.twitter
       new TimeoutFilter[Req, Rep](duration, exc, timer)
     }
-    val filteredLog = timeoutFilter(
-      2.seconds) andThen uppercaseFilter andThen clientServiceIface.log
+    val filteredLog = timeoutFilter(2.seconds) andThen uppercaseFilter andThen
+      clientServiceIface.log
 
     filteredLog(Log.Args("hello", 2))
     // [2] Server received: 'HELLO'

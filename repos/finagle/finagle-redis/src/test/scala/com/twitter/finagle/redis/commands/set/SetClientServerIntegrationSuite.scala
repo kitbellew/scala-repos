@@ -27,8 +27,7 @@ final class SetClientServerIntegrationSuite
         addMemErrMessage)
       assert(
         Await.result(client(SAdd(key, List(foo)))) == IntegerReply(0),
-        "Added unknown " +
-          "member to set")
+        "Added unknown " + "member to set")
       assert(
         Await.result(client(SAdd(key, List(bar)))) == IntegerReply(1),
         addMemErrMessage)
@@ -85,12 +84,10 @@ final class SetClientServerIntegrationSuite
     withRedisClient { client =>
       assert(
         Await.result(client(SIsMember(key, foo))) == IntegerReply(0),
-        "Found member where " +
-          "none was expected")
+        "Found member where " + "none was expected")
       assert(
         Await.result(client(SIsMember(key, bar))) == IntegerReply(0),
-        "Found member where " +
-          "none was expected")
+        "Found member where " + "none was expected")
     }
   }
 
@@ -101,8 +98,7 @@ final class SetClientServerIntegrationSuite
     withRedisClient { client =>
       assert(
         Await.result(client(SCard(key))) == IntegerReply(0),
-        "Found member where none was " +
-          "expected")
+        "Found member where none was " + "expected")
 
       assert(
         Await.result(client(SAdd(key, List(foo)))) == IntegerReply(1),
@@ -134,12 +130,10 @@ final class SetClientServerIntegrationSuite
 
       assert(
         Await.result(client(SRem(key, List(moo)))) == IntegerReply(1),
-        "Could not remove " +
-          "element from set")
+        "Could not remove " + "element from set")
       assert(
         Await.result(client(SIsMember(key, moo))) == IntegerReply(0),
-        "Found member where " +
-          "none was expected")
+        "Found member where " + "none was expected")
     }
   }
 

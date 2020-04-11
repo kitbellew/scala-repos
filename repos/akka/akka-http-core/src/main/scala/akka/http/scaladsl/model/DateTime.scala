@@ -102,9 +102,8 @@ final case class DateTime private (
     put_##(
       put_##(
         put_##(
-          put_##(
-            r ~~ weekdayStr ~~ ',' ~~ ' ',
-            day) ~~ ' ' ~~ monthStr ~~ ' ' ~~ year ~~ ' ',
+          put_##(r ~~ weekdayStr ~~ ',' ~~ ' ', day) ~~ ' ' ~~ monthStr ~~
+            ' ' ~~ year ~~ ' ',
           hour) ~~ ':',
         minute) ~~ ':',
       second) ~~ " GMT"
@@ -197,8 +196,8 @@ object DateTime {
     val yd = y / 100
     d += y * 365 + (y >> 2) - yd + (yd >> 2)
     val dn = d - (1969 * 365 + 492 - 19 + 4)
-    val c =
-      (dn - 1) * 86400L + hour * 3600L + minute * 60L + second // seconds since Jan 1, 1970, 00:00:00
+    val c = (dn - 1) * 86400L + hour * 3600L + minute * 60L +
+      second // seconds since Jan 1, 1970, 00:00:00
 
     new DateTime(
       year,
@@ -220,8 +219,8 @@ object DateTime {
   def apply(clicks: Long): DateTime = {
     require(
       DateTime.MinValue.clicks <= clicks && clicks <= DateTime.MaxValue.clicks,
-      "DateTime value must be >= " + DateTime.MinValue + " and <= " + DateTime
-        .MaxValue)
+      "DateTime value must be >= " + DateTime.MinValue + " and <= " +
+        DateTime.MaxValue)
 
     // based on a fast RFC1123 implementation (C) 2000 by Tim Kientzle <kientzle@acm.org>
     val c = clicks - clicks % 1000
@@ -282,12 +281,11 @@ object DateTime {
       isLeapYear = isLeap)
   }
 
-  private def isLeapYear(year: Int): Boolean =
-    ((year & 0x03) == 0) && {
-      val q = year / 100
-      val r = year % 100
-      r != 0 || (q & 0x03) == 0
-    }
+  private def isLeapYear(year: Int): Boolean = ((year & 0x03) == 0) && {
+    val q = year / 100
+    val r = year % 100
+    r != 0 || (q & 0x03) == 0
+  }
 
   /**
     * Creates a new `DateTime` instance for the current point in time.
@@ -311,11 +309,11 @@ object DateTime {
     def check(len: Int): Boolean =
       len match {
         case 19 ⇒
-          c(4) == '-' && c(7) == '-' && c(10) == 'T' && c(13) == ':' && c(
-            16) == ':'
+          c(4) == '-' && c(7) == '-' && c(10) == 'T' && c(13) == ':' &&
+            c(16) == ':'
         case 24 ⇒
-          check(19) && c(19) == '.' && isDigit(c(20)) && isDigit(
-            c(21)) && isDigit(c(22)) && c(23) == 'Z'
+          check(19) && c(19) == '.' && isDigit(c(20)) && isDigit(c(21)) &&
+            isDigit(c(22)) && c(23) == 'Z'
         case _ ⇒ false
       }
     def mul10(i: Int) = (i << 3) + (i << 1)

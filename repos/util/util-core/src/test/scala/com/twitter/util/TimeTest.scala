@@ -391,9 +391,9 @@ class TimeTest extends {
       assert(t0 == t1)
       assert(t0.hashCode == t1.hashCode)
       val pairs = List((t0, "foo"), (t1, "bar"))
-      assert(pairs.groupBy {
-        case (time: Time, value: String) => time
-      } == Map(t0 -> pairs))
+      assert(
+        pairs.groupBy { case (time: Time, value: String) => time } ==
+          Map(t0 -> pairs))
     }
 
     "now should be now" in {
@@ -539,20 +539,20 @@ class TimeTest extends {
 
     "max" in {
       assert(
-        (10.seconds.afterEpoch max 5.seconds.afterEpoch) == 10.seconds
-          .afterEpoch)
+        (10.seconds.afterEpoch max 5.seconds.afterEpoch) ==
+          10.seconds.afterEpoch)
       assert(
-        (5.seconds.afterEpoch max 10.seconds.afterEpoch) == 10.seconds
-          .afterEpoch)
+        (5.seconds.afterEpoch max 10.seconds.afterEpoch) ==
+          10.seconds.afterEpoch)
     }
 
     "min" in {
       assert(
-        (10.seconds.afterEpoch min 5.seconds.afterEpoch) == 5.seconds
-          .afterEpoch)
+        (10.seconds.afterEpoch min 5.seconds.afterEpoch) ==
+          5.seconds.afterEpoch)
       assert(
-        (5.seconds.afterEpoch min 10.seconds.afterEpoch) == 5.seconds
-          .afterEpoch)
+        (5.seconds.afterEpoch min 10.seconds.afterEpoch) ==
+          5.seconds.afterEpoch)
     }
 
     "moreOrLessEquals" in {
@@ -634,8 +634,8 @@ class TimeTest extends {
 
       val currentTimeMicros = System.currentTimeMillis() * 1000
       assert(
-        Time.fromMicroseconds(currentTimeMicros)
-          .inNanoseconds == currentTimeMicros.microseconds.inNanoseconds)
+        Time.fromMicroseconds(currentTimeMicros).inNanoseconds ==
+          currentTimeMicros.microseconds.inNanoseconds)
     }
 
     "fromMillis" in {
@@ -651,8 +651,8 @@ class TimeTest extends {
 
       val currentTimeMs = System.currentTimeMillis
       assert(
-        Time.fromMilliseconds(currentTimeMs)
-          .inNanoseconds == currentTimeMs * 1000000L)
+        Time.fromMilliseconds(currentTimeMs).inNanoseconds ==
+          currentTimeMs * 1000000L)
     }
 
     "until" in {

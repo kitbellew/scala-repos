@@ -89,7 +89,8 @@ object MacroSupportInterpolationImpl {
                 case c2 =>
                   ctx.abort(
                     ctx.enclosingPosition,
-                    "Invalid escaped character '" + c2 + "' in literal \"" + str + "\"")
+                    "Invalid escaped character '" + c2 + "' in literal \"" +
+                      str + "\"")
               }
             }
           case c => sb append c
@@ -118,25 +119,22 @@ object MacroSupportInterpolationImpl {
           else ctx.abort(ae.tree.pos, "Unknown type. Must be Node or Symbol.")
         case '!' =>
           exprs ++= appendString(s.substring(0, len - 1))
-          exprs += Apply(
-            Ident(TermName("expr")),
-            List(a, Literal(Constant(true))))
+          exprs +=
+            Apply(Ident(TermName("expr")), List(a, Literal(Constant(true))))
         case _ =>
           exprs ++= appendString(s)
           //println("### tpe: "+ae.actualType)
           //println("### is String: "+(ae.actualType <:< stringType))
           //println("### is Node: "+(ae.actualType <:< nodeType))
-          exprs += (if (ae.actualType <:< stringType) append(a)
-                    else if (ae.actualType <:< definitions.AnyValTpe)
-                      append(toStr(a))
-                    else if (ae.actualType <:< nodeType)
-                      Apply(
-                        Ident(TermName("expr")),
-                        List(a, Literal(Constant(false))))
-                    else
-                      ctx.abort(
-                        ae.tree.pos,
-                        "Unknown type. Must be Node, String or AnyVal."))
+          exprs +=
+            (if (ae.actualType <:< stringType) append(a)
+             else if (ae.actualType <:< definitions.AnyValTpe) append(toStr(a))
+             else if (ae.actualType <:< nodeType)
+               Apply(Ident(TermName("expr")), List(a, Literal(Constant(false))))
+             else
+               ctx.abort(
+                 ae.tree.pos,
+                 "Unknown type. Must be Node, String or AnyVal."))
       }
     }
     exprs ++= appendString(pit.next())

@@ -254,8 +254,8 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
         uri._authority.fold(false)(a2 => URI.escapeAwareCompare(a1, a2) == 0)
       }
 
-    if (this.isOpaque || uri.isOpaque ||
-        this._scheme != uri._scheme || !authoritiesEqual) uri
+    if (this.isOpaque || uri.isOpaque || this._scheme != uri._scheme ||
+        !authoritiesEqual) uri
     else {
       val thisN = this.normalize()
       val uriN = uri.normalize()
@@ -347,24 +347,37 @@ object URI {
     val relem = "(?::" + block + ")"
     val ipv4 = ipv4address
 
-    "(?:" +
-      lelem + "{7}" + block + "|" + // 1:2:3:4:5:6:7:8
-      lelem + "{1,7}:|" + // 1::                                        1:2:3:4:5:6:7::
-      lelem + "{1,6}" + relem + "|" + // 1::8                  1:2:3:4:5:6::8       1:2:3:4:5:6::8
-      lelem + "{1,5}" + relem + "{1,2}|" + // 1::7:8                1:2:3:4:5::7:8       1:2:3:4:5::8
-      lelem + "{1,4}" + relem + "{1,3}|" + // 1::6:7:8              1:2:3:4::6:7:8       1:2:3:4::8
-      lelem + "{1,3}" + relem + "{1,4}|" + // 1::5:6:7:8            1:2:3::5:6:7:8       1:2:3::8
-      lelem + "{1,2}" + relem + "{1,5}|" + // 1::4:5:6:7:8          1:2::4:5:6:7:8       1:2::8
-      lelem + relem + "{1,6}|" + // 1::3:4:5:6:7:8        1::3:4:5:6:7:8       1::8
-      ":(?:" + relem + "{1,7}|:)|" + // ::2:3:4:5:6:7:8       ::2:3:4:5:6:7:8      ::8       ::
-      lelem + "{6}" + ipv4 + "|" + // 1:2:3:4:5:6:10.0.0.1
-      lelem + "{1,5}:" + ipv4 + "|" + // 1::10.0.0.1           1:2:3:4:5::10.0.0.1
-      lelem + "{1,4}" + relem + ":" + ipv4 + "|" + // 1::6:10.0.0.1         1:2:3:4::6:10.0.0.1
-      lelem + "{1,3}" + relem + "{1,2}:" + ipv4 + "|" + // 1::5:6:10.0.0.1       1:2:3::5:6:10.0.0.1  1:2:3::6:10.0.0.1
-      lelem + "{1,2}" + relem + "{1,3}:" + ipv4 + "|" + // 1::4:5:6:10.0.0.1     1:2::4:5:6:10.0.0.1  1:2::6:10.0.0.1
-      lelem + relem + "{1,4}:" + ipv4 + "|" + // 1::3:4:5:6:10.0.0.1   1::3:4:5:6:10.0.0.1  1::6:10.0.0.1
-      "::" + lelem + "{1,5}" + ipv4 + // ::2:3:4:5:10.0.0.1    ::5:10.0.0.1         ::10.0.0.1
-      ")(?:%[0-9a-z]+)?"
+    "(?:" + lelem + "{7}" + block + "|" + // 1:2:3:4:5:6:7:8
+      lelem +
+      "{1,7}:|" + // 1::                                        1:2:3:4:5:6:7::
+        lelem + "{1,6}" + relem +
+        "|" + // 1::8                  1:2:3:4:5:6::8       1:2:3:4:5:6::8
+          lelem + "{1,5}" + relem +
+          "{1,2}|" + // 1::7:8                1:2:3:4:5::7:8       1:2:3:4:5::8
+            lelem + "{1,4}" + relem +
+            "{1,3}|" + // 1::6:7:8              1:2:3:4::6:7:8       1:2:3:4::8
+              lelem + "{1,3}" + relem +
+              "{1,4}|" + // 1::5:6:7:8            1:2:3::5:6:7:8       1:2:3::8
+                lelem + "{1,2}" + relem +
+                "{1,5}|" + // 1::4:5:6:7:8          1:2::4:5:6:7:8       1:2::8
+                  lelem + relem +
+                  "{1,6}|" + // 1::3:4:5:6:7:8        1::3:4:5:6:7:8       1::8
+                    ":(?:" + relem +
+                    "{1,7}|:)|" + // ::2:3:4:5:6:7:8       ::2:3:4:5:6:7:8      ::8       ::
+                      lelem + "{6}" + ipv4 + "|" + // 1:2:3:4:5:6:10.0.0.1
+                        lelem + "{1,5}:" + ipv4 +
+                        "|" + // 1::10.0.0.1           1:2:3:4:5::10.0.0.1
+                          lelem + "{1,4}" + relem + ":" + ipv4 +
+                          "|" + // 1::6:10.0.0.1         1:2:3:4::6:10.0.0.1
+                            lelem + "{1,3}" + relem + "{1,2}:" + ipv4 +
+                            "|" + // 1::5:6:10.0.0.1       1:2:3::5:6:10.0.0.1  1:2:3::6:10.0.0.1
+                              lelem + "{1,2}" + relem + "{1,3}:" + ipv4 +
+                              "|" + // 1::4:5:6:10.0.0.1     1:2::4:5:6:10.0.0.1  1:2::6:10.0.0.1
+                                lelem + relem + "{1,4}:" + ipv4 +
+                                "|" + // 1::3:4:5:6:10.0.0.1   1::3:4:5:6:10.0.0.1  1::6:10.0.0.1
+                                  "::" + lelem + "{1,5}" +
+                                  ipv4 + // ::2:3:4:5:10.0.0.1    ::5:10.0.0.1         ::10.0.0.1
+                                    ")(?:%[0-9a-z]+)?"
 
     // scalastyle:off line.size.limit
 
@@ -412,8 +425,8 @@ object URI {
       "[^\u0000-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]"
 
     // uric          = reserved | unreserved | escaped | other
-    val uric =
-      "(?:[;/?:@&=+$,\\[\\]a-z0-9-_.!~*'()]|" + escaped + "|" + other + ")"
+    val uric = "(?:[;/?:@&=+$,\\[\\]a-z0-9-_.!~*'()]|" + escaped + "|" + other +
+      ")"
 
     // pchar         = unreserved | escaped | other |
     //                 ":" | "@" | "&" | "=" | "+" | "$" | ","
@@ -437,8 +450,8 @@ object URI {
 
     // host          = hostname | IPv4address | IPv6reference
     //               ; IPv6reference added by RFC2732
-    val host =
-      "(" + hostname + "|" + ipv4address + "|" + ipv6reference + ")" /*CAPT*/
+    val host = "(" + hostname + "|" + ipv4address + "|" + ipv6reference +
+      ")" /*CAPT*/
 
     // Inlined definition
     // port          = *digit
@@ -459,8 +472,8 @@ object URI {
 
     // reg_name      = 1*( unreserved | escaped | other | "$" | "," |
     //                     ";" | ":" | "@" | "&" | "=" | "+" )
-    val reg_name =
-      "(?:[a-z0-9-_.!~*'()$,;:@&=+]|" + escaped + "|" + other + ")+"
+    val reg_name = "(?:[a-z0-9-_.!~*'()$,;:@&=+]|" + escaped + "|" + other +
+      ")+"
 
     // authority     = server | reg_name
     val authority = server + "|" + reg_name
@@ -491,8 +504,8 @@ object URI {
     //                     ";" | "@" | "&" | "=" | "+" | "$" | "," )
 
     // rel_path      = rel_segment [ abs_path ]
-    val rel_path =
-      "(?:[a-z0-9-_.!~*'();@&=+$,]|" + escaped + ")*(?:" + abs_path + ")?"
+    val rel_path = "(?:[a-z0-9-_.!~*'();@&=+$,]|" + escaped + ")*(?:" +
+      abs_path + ")?"
 
     ///////////////////
     /// Query/Frag  ///
@@ -508,16 +521,16 @@ object URI {
     ///////////////////
 
     // hier_part     = ( net_path | abs_path ) [ "?" query ]
-    val hier_part =
-      "(?:" + net_path + "|(" + abs_path + "))(?:\\?" + query + ")?" /*CAPT*/
+    val hier_part = "(?:" + net_path + "|(" + abs_path + "))(?:\\?" + query +
+      ")?" /*CAPT*/
 
     // Inlined definition
     // uric_no_slash = unreserved | escaped | ";" | "?" | ":" | "@" |
     //                 "&" | "=" | "+" | "$" | ","
 
     // opaque_part   = uric_no_slash *uric
-    val opaque_part =
-      "(?:[a-z0-9-_.!~*'();?:@&=+$,]|" + escaped + ")" + uric + "*"
+    val opaque_part = "(?:[a-z0-9-_.!~*'();?:@&=+$,]|" + escaped + ")" + uric +
+      "*"
 
     ///////////////////
     ///    URIs     ///
@@ -527,16 +540,17 @@ object URI {
     val scheme = "([a-z][a-z0-9+-.]*)" /*CAPT*/
 
     // absoluteURI   = scheme ":" ( hier_part | opaque_part )
-    val absoluteURI =
-      scheme + ":(?:(" + hier_part + ")|(" + opaque_part + "))" /*2CAPT*/
+    val absoluteURI = scheme + ":(?:(" + hier_part + ")|(" + opaque_part +
+      "))" /*2CAPT*/
 
     // relativeURI   = ( net_path | abs_path | rel_path ) [ "?" query ]
     val relativeURI = /*3CAPT*/
-    "((?:" + net_path + "|(" + abs_path + ")|(" + rel_path + "))(?:\\?" + query + ")?)"
+    "((?:" + net_path + "|(" + abs_path + ")|(" + rel_path + "))(?:\\?" +
+      query + ")?)"
 
     // URI-reference = [ absoluteURI | relativeURI ] [ "#" fragment ]
-    val uriRef =
-      "^(?:" + absoluteURI + "|" + relativeURI + ")(?:#" + fragment + ")?$"
+    val uriRef = "^(?:" + absoluteURI + "|" + relativeURI + ")(?:#" + fragment +
+      ")?$"
 
     new RegExp(uriRef, "i")
   }
@@ -552,8 +566,8 @@ object URI {
     final val AbsAbsPath = AbsNetPath + 1
     final val AbsQuery = AbsAbsPath + 1
     final val AbsOpaquePart = AbsQuery + 1
-    final val RelSchemeSpecificPart =
-      AbsOpaquePart + 1 // Everything but the fragment
+    final val RelSchemeSpecificPart = AbsOpaquePart +
+      1 // Everything but the fragment
     final val RelAuthority = RelSchemeSpecificPart + 1
     final val RelUserInfo = RelAuthority + 1
     final val RelHost = RelUserInfo + 1

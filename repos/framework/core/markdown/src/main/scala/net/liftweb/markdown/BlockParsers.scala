@@ -363,12 +363,11 @@ trait BlockParsers extends Parsers {
     */
   def fencedCodeBlock: Parser[FencedCodeBlock] =
     (line(classOf[ExtendedFencedCode]) | line(classOf[FencedCode])) ~
-      (notLine(classOf[FencedCode]) *) ~
-      opt(line(classOf[FencedCode])) ^^ {
-      case (start: ExtendedFencedCode) ~ lines ~ _ =>
-        new FencedCodeBlock(start.languageFormat, lines)
-      case _ ~ lines ~ _ => new FencedCodeBlock("", lines)
-    }
+      (notLine(classOf[FencedCode]) *) ~ opt(line(classOf[FencedCode])) ^^ {
+        case (start: ExtendedFencedCode) ~ lines ~ _ =>
+          new FencedCodeBlock(start.languageFormat, lines)
+        case _ ~ lines ~ _ => new FencedCodeBlock("", lines)
+      }
 
   //line(classOf[FencedCodeStart]) ~
   //((not(line(classOf[FencedCodeEnd]))*) ~
@@ -389,10 +388,9 @@ trait BlockParsers extends Parsers {
     * by more blockquote or paragraph lines, ends optionally with empty lines
     */
   def blockquoteFragment: Parser[List[MarkdownLine]] =
-    line(classOf[BlockQuoteLine]) ~ ((line(classOf[BlockQuoteLine]) | line(
-      classOf[OtherLine])) *) ~ (optEmptyLines) ^^ {
-      case l ~ ls ~ e => (l :: ls ++ e)
-    }
+    line(classOf[BlockQuoteLine]) ~
+      ((line(classOf[BlockQuoteLine]) | line(classOf[OtherLine])) *) ~
+      (optEmptyLines) ^^ { case l ~ ls ~ e => (l :: ls ++ e) }
 
   /**
     * Parses a quoted block. A quoted block starts with a line starting with "> "
@@ -423,20 +421,20 @@ trait BlockParsers extends Parsers {
   /**parses an item in an unsorted list
     */
   def uItem: Parser[ListItem] =
-    lookup ~ line(classOf[UItemStartLine]) ~ itemLines ~ (
-      itemContinuation *
-    ) ~ optEmptyLines ^^ {
-      case lu ~ s ~ ls ~ cs ~ e => new ListItem(s :: ls ++ cs.flatten ++ e, lu)
-    }
+    lookup ~ line(classOf[UItemStartLine]) ~
+      itemLines ~ (itemContinuation *) ~ optEmptyLines ^^ {
+        case lu ~ s ~ ls ~ cs ~ e =>
+          new ListItem(s :: ls ++ cs.flatten ++ e, lu)
+      }
 
   /**parses an item in a sorted list
     */
   def oItem: Parser[ListItem] =
-    lookup ~ line(classOf[OItemStartLine]) ~ itemLines ~ (
-      itemContinuation *
-    ) ~ optEmptyLines ^^ {
-      case lu ~ s ~ ls ~ cs ~ e => new ListItem(s :: ls ++ cs.flatten ++ e, lu)
-    }
+    lookup ~ line(classOf[OItemStartLine]) ~
+      itemLines ~ (itemContinuation *) ~ optEmptyLines ^^ {
+        case lu ~ s ~ ls ~ cs ~ e =>
+          new ListItem(s :: ls ++ cs.flatten ++ e, lu)
+      }
 
   /** parses an unordered list
     */

@@ -31,8 +31,10 @@ class AhcCurlRequestLoggerSpec
         val logger = mock[Logger]
 
         val headers = Seq(
-          "accept" -> "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-          "user-agent" -> "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.94 Safari/537.36"
+          "accept" ->
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+          "user-agent" ->
+            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.94 Safari/537.36"
         )
 
         val responseFuture = client
@@ -69,25 +71,26 @@ class AhcCurlRequestLoggerSpec
         there was one(logger).info(curlStatement)
       }
 
-      "log a request with POST with an explicit content type" in new WithServer() {
-        val client = wsUrl("/")
-        val logger = mock[Logger]
-        val headers = Seq("Content-Type" -> "text/plain; charset=utf-8")
+      "log a request with POST with an explicit content type" in
+        new WithServer() {
+          val client = wsUrl("/")
+          val logger = mock[Logger]
+          val headers = Seq("Content-Type" -> "text/plain; charset=utf-8")
 
-        val responseFuture = client
-          .withRequestFilter(AhcCurlRequestLogger(logger))
-          .withHeaders(headers: _*).post("this is plain text")
-        responseFuture must beAnInstanceOf[AhcWSResponse].await
+          val responseFuture = client
+            .withRequestFilter(AhcCurlRequestLogger(logger))
+            .withHeaders(headers: _*).post("this is plain text")
+          responseFuture must beAnInstanceOf[AhcWSResponse].await
 
-        val curlStatement = s"""curl \\
+          val curlStatement = s"""curl \\
                               |  --verbose \\
                               |  --request POST \\
                               |  --header 'Content-Type: text/plain; charset=utf-8' \\
                               |  --data 'this is plain text' \\
                               |  'http://localhost:$testServerPort/'"""
-          .stripMargin
-        there was one(logger).info(curlStatement)
-      }
+            .stripMargin
+          there was one(logger).info(curlStatement)
+        }
 
       "log a query string" in new WithServer() {
         val client = wsUrl("/")

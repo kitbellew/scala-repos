@@ -200,8 +200,8 @@ private[hive] object SparkSQLCLIDriver extends Logging {
           catch {
             case e: IOException =>
               logWarning(
-                "WARNING: Failed to write command history file: " + e
-                  .getMessage)
+                "WARNING: Failed to write command history file: " +
+                  e.getMessage)
           }
         case _ =>
       }
@@ -288,14 +288,12 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
     val cmd_lower = cmd_trimmed.toLowerCase(Locale.ENGLISH)
     val tokens: Array[String] = cmd_trimmed.split("\\s+")
     val cmd_1: String = cmd_trimmed.substring(tokens(0).length()).trim()
-    if (cmd_lower.equals("quit") ||
-        cmd_lower.equals("exit")) {
+    if (cmd_lower.equals("quit") || cmd_lower.equals("exit")) {
       sessionState.close()
       System.exit(0)
     }
     if (tokens(0).toLowerCase(Locale.ENGLISH).equals("source") ||
-        cmd_trimmed.startsWith("!") ||
-        tokens(0).toLowerCase.equals("list") ||
+        cmd_trimmed.startsWith("!") || tokens(0).toLowerCase.equals("list") ||
         isRemoteMode) {
       val start = System.currentTimeMillis()
       super.processCmd(cmd)

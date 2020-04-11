@@ -40,10 +40,8 @@ class StorageLevel private (
   override def equals(other: Any): Boolean =
     other match {
       case s: StorageLevel =>
-        s.useDisk == useDisk &&
-          s.useMemory == useMemory &&
-          s.deserialized == deserialized &&
-          s.replication == replication
+        s.useDisk == useDisk && s.useMemory == useMemory &&
+          s.deserialized == deserialized && s.replication == replication
       case _ => false
     }
 
@@ -146,8 +144,8 @@ class StorageLevel2(
   override def equals(other: Any): Boolean =
     other.isInstanceOf[StorageLevel2] && {
       val o = other.asInstanceOf[StorageLevel2]
-      o.useDisk_ == useDisk_ && o.useMemory_ == useMemory_ && o
-        .deserialized_ == deserialized_ && o.replication_ == replication_
+      o.useDisk_ == useDisk_ && o.useMemory_ == useMemory_ &&
+      o.deserialized_ == deserialized_ && o.replication_ == replication_
     }
 }
 

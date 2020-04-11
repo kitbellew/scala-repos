@@ -146,8 +146,8 @@ abstract class AdaptiveLoadBalancingRouterSpec
     // it may take some time until router receives cluster member events
     awaitAssert { currentRoutees(router).size should ===(roles.size) }
     val routees = currentRoutees(router)
-    routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }
-      .toSet should ===(roles.map(address).toSet)
+    routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should
+      ===(roles.map(address).toSet)
     router
   }
 
@@ -157,31 +157,32 @@ abstract class AdaptiveLoadBalancingRouterSpec
       enterBarrier("after-1")
     }
 
-    "use all nodes in the cluster when not overloaded" taggedAs LongRunningTest in {
-      runOn(first) {
-        val router1 = startRouter("router1")
+    "use all nodes in the cluster when not overloaded" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          val router1 = startRouter("router1")
 
-        // collect some metrics before we start
-        Thread.sleep(cluster.settings.MetricsInterval.toMillis * 10)
+          // collect some metrics before we start
+          Thread.sleep(cluster.settings.MetricsInterval.toMillis * 10)
 
-        val iterationCount = 100
-        1 to iterationCount foreach { _ ⇒
-          router1 ! "hit"
-          // wait a while between each message, since metrics is collected periodically
-          Thread.sleep(10)
+          val iterationCount = 100
+          1 to iterationCount foreach { _ ⇒
+            router1 ! "hit"
+            // wait a while between each message, since metrics is collected periodically
+            Thread.sleep(10)
+          }
+
+          val replies = receiveReplies(iterationCount)
+
+          replies(first) should be > (0)
+          replies(second) should be > (0)
+          replies(third) should be > (0)
+          replies.values.sum should ===(iterationCount)
+
         }
 
-        val replies = receiveReplies(iterationCount)
-
-        replies(first) should be > (0)
-        replies(second) should be > (0)
-        replies(third) should be > (0)
-        replies.values.sum should ===(iterationCount)
-
+        enterBarrier("after-2")
       }
-
-      enterBarrier("after-2")
-    }
 
     "prefer node with more free heap capacity" taggedAs LongRunningTest in {
       System.gc()
@@ -220,23 +221,25 @@ abstract class AdaptiveLoadBalancingRouterSpec
         // it may take some time until router receives cluster member events
         awaitAssert { currentRoutees(router3).size should ===(9) }
         val routees = currentRoutees(router3)
-        routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }
-          .toSet should ===(Set(address(first)))
+        routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should
+          ===(Set(address(first)))
       }
       enterBarrier("after-4")
     }
 
-    "create routees from cluster.enabled configuration" taggedAs LongRunningTest in {
-      runOn(first) {
-        val router4 = system.actorOf(FromConfig.props(Props[Memory]), "router4")
-        // it may take some time until router receives cluster member events
-        awaitAssert { currentRoutees(router4).size should ===(6) }
-        val routees = currentRoutees(router4)
-        routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }
-          .toSet should ===(
-          Set(address(first), address(second), address(third)))
+    "create routees from cluster.enabled configuration" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          val router4 = system
+            .actorOf(FromConfig.props(Props[Memory]), "router4")
+          // it may take some time until router receives cluster member events
+          awaitAssert { currentRoutees(router4).size should ===(6) }
+          val routees = currentRoutees(router4)
+          routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }
+            .toSet should
+            ===(Set(address(first), address(second), address(third)))
+        }
+        enterBarrier("after-5")
       }
-      enterBarrier("after-5")
-    }
   }
 }

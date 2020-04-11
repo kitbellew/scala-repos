@@ -221,8 +221,8 @@ object Validators {
       (allCatch opt {
         val u = URI.create(url).normalize()
         !absolute || u.isAbsolute
-      }).isDefined && (allowLocalHost || UrlValidator.getInstance()
-        .isValid(url))
+      }).isDefined &&
+        (allowLocalHost || UrlValidator.getInstance().isValid(url))
     }
     new PredicateValidator[String](fieldName, validator, messageFormat)
   }

@@ -340,29 +340,30 @@ object KafkaTools extends Command {
          Some(ExactTime(msg.timestamp.getMillis, state.index))
        } else {
          // see if we can deduce from the data (assuming Nathan's twitter feed or SE postings)
-         val timestamps = (msg.data.map(_.value \ "timeStamp") ++ msg.data
-           .map(_.value \ "timestamp")).flatMap {
-           case JString(date) =>
-             // Dirty hack for trying variations of ISO8601 in use by customers
-             List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
-               .flatMap { date => List(date, date + ".000Z") }
-           case _ => None
-         }.flatMap { date =>
-           try {
-             val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
-             if (ts.getMillis > lastTimestamp.time) {
-               //println("Assigning new timestamp: " + ts)
-               Some(ts)
-             } else {
-               //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
-               None
+         val timestamps =
+           (msg.data.map(_.value \ "timeStamp") ++
+             msg.data.map(_.value \ "timestamp")).flatMap {
+             case JString(date) =>
+               // Dirty hack for trying variations of ISO8601 in use by customers
+               List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
+                 .flatMap { date => List(date, date + ".000Z") }
+             case _ => None
+           }.flatMap { date =>
+             try {
+               val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
+               if (ts.getMillis > lastTimestamp.time) {
+                 //println("Assigning new timestamp: " + ts)
+                 Some(ts)
+               } else {
+                 //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
+                 None
+               }
+             } catch {
+               case t =>
+                 //println("Error on datetime parse: " + t)
+                 None
              }
-           } catch {
-             case t =>
-               //println("Error on datetime parse: " + t)
-               None
            }
-         }
 
          //println("Deducing timestamp from " + timestamps)
 
@@ -399,8 +400,8 @@ object KafkaTools extends Command {
 
         ReportState(
           state.index + 1,
-          state.pathSize + (path -> (state.pathSize
-            .getOrElse(path, 0L) + size)))
+          state.pathSize +
+            (path -> (state.pathSize.getOrElse(path, 0L) + size)))
       } else { state.inc }
     }
 
@@ -495,8 +496,8 @@ object KafkaTools extends Command {
                   println(
                     JObject(
                       "index" -> JNum(timestamp),
-                      "account" -> JString(
-                        accountLookup.getOrElse(account, account)),
+                      "account" ->
+                        JString(accountLookup.getOrElse(account, account)),
                       "size" -> JNum(byAccount.getOrElse(account, 0L)))
                       .renderCompact)
                 }
@@ -1072,9 +1073,8 @@ object ImportTools extends Command with Logging {
 
             if (!errors.isEmpty) {
               sys.error(
-                "found %d parse errors.\nfirst 5 were: %s" format (
-                  errors.length, errors.take(5)
-                ))
+                "found %d parse errors.\nfirst 5 were: %s" format
+                  (errors.length, errors.take(5)))
             } else if (results.size > 0) {
               val eventidobj = EventId(pid, sid.getAndIncrement)
               logger.info("Sending %d events".format(results.size))
@@ -1102,8 +1102,7 @@ object ImportTools extends Command with Logging {
       }
 
     val complete =
-      grantWrite(config.apiKey) >>
-        logGrants(config.apiKey) >>
+      grantWrite(config.apiKey) >> logGrants(config.apiKey) >>
         runIngest(config.apiKey) >>
         Future(logger.info("Finalizing chef work-in-progress")) >>
         chefs.toList.traverse(gracefulStop(_, stopTimeout)) >>
@@ -1228,8 +1227,8 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
     val job = for {
       (apiKeys, stoppable) <- apiKeyManager(config)
       actions =
-        (config.list).option(list(apiKeys)).toSeq ++
-          (config.showRoot).option(showRoot(apiKeys)).toSeq ++
+        (config.list).option(list(apiKeys)).toSeq ++ (config.showRoot)
+          .option(showRoot(apiKeys)).toSeq ++
 //              config.listChildren.map(listChildren(_, apiKeys)) ++
           config.accountId.map(p => create(p, config.newAPIKeyName, apiKeys)) ++
           config.delete.map(delete(_, apiKeys))

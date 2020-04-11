@@ -13,8 +13,8 @@ object Scripted {
   lazy val scriptedSource = SettingKey[File]("scripted-source")
   lazy val scriptedPrescripted = TaskKey[File => Unit]("scripted-prescripted")
 
-  lazy val MavenResolverPluginTest =
-    config("mavenResolverPluginTest") extend Compile
+  lazy val MavenResolverPluginTest = config("mavenResolverPluginTest") extend
+    Compile
 
   import sbt.complete._
   import DefaultParsers._

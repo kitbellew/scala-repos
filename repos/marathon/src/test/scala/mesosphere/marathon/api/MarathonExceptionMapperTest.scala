@@ -72,8 +72,8 @@ class MarathonExceptionMapperTest
     response.getStatus should be(400)
     val entityString = response.getEntity.asInstanceOf[String]
     val entity = Json.parse(entityString)
-    (entity \ "message").as[String] should be(
-      "Please specify data in JSON format")
+    (entity \ "message").as[String] should
+      be("Please specify data in JSON format")
     (entity \ "details").as[String] should be(
       "No content to map due to end-of-input\n at [Source: ; line: 1, column: 1]")
   }

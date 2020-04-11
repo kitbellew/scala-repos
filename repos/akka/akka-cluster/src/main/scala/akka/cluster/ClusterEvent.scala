@@ -298,8 +298,8 @@ object ClusterEvent {
         .allUnreachableOrTerminated
       (newGossip.overview.reachability.allUnreachableOrTerminated.collect {
         case node
-            if !oldUnreachableNodes
-              .contains(node) && node != selfUniqueAddress ⇒
+            if !oldUnreachableNodes.contains(node) &&
+              node != selfUniqueAddress ⇒
           UnreachableMember(newGossip.member(node))
       })(collection.breakOut)
     }
@@ -315,8 +315,9 @@ object ClusterEvent {
     else {
       (oldGossip.overview.reachability.allUnreachable.collect {
         case node
-            if newGossip.hasMember(node) && newGossip.overview.reachability
-              .isReachable(node) && node != selfUniqueAddress ⇒
+            if newGossip.hasMember(node) &&
+              newGossip.overview.reachability.isReachable(node) &&
+              node != selfUniqueAddress ⇒
           ReachableMember(newGossip.member(node))
       })(collection.breakOut)
 
@@ -335,8 +336,8 @@ object ClusterEvent {
         .flatten.groupBy(_.uniqueAddress)
       val changedMembers = membersGroupedByAddress collect {
         case (_, newMember :: oldMember :: Nil)
-            if newMember.status != oldMember.status || newMember
-              .upNumber != oldMember.upNumber ⇒ newMember
+            if newMember.status != oldMember.status ||
+              newMember.upNumber != oldMember.upNumber ⇒ newMember
       }
       val memberEvents = (newMembers ++ changedMembers) collect {
         case m if m.status == Joining ⇒ MemberJoined(m)
@@ -393,8 +394,8 @@ object ClusterEvent {
     else {
       val newConvergence = newGossip.convergence(selfUniqueAddress)
       val newSeenBy = newGossip.seenBy
-      if (newConvergence != oldGossip
-            .convergence(selfUniqueAddress) || newSeenBy != oldGossip.seenBy)
+      if (newConvergence != oldGossip.convergence(selfUniqueAddress) ||
+          newSeenBy != oldGossip.seenBy)
         List(SeenChanged(newConvergence, newSeenBy.map(_.address)))
       else Nil
     }

@@ -188,8 +188,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
   protected def handleChangedParameters(
       change: ChangeInfo,
       usage: ScalaNamedElementUsageInfo): Unit = {
-    if (!change.isParameterNamesChanged && !change
-          .isParameterSetOrOrderChanged && !change.isParameterTypesChanged)
+    if (!change.isParameterNamesChanged &&
+        !change.isParameterSetOrOrderChanged && !change.isParameterTypesChanged)
       return
 
     val named = usage.namedElement
@@ -366,12 +366,12 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
             val text = param.getDefaultValue
             if (text != "") Seq(text) else Seq.empty
           } else {
-            val (argExprs, wasNamed) =
-              oldArgsInfo.byOldParameterIndex.get(oldIndex) match {
-                case Some(Seq(ScAssignStmt(_, Some(expr)))) => (Seq(expr), true)
-                case Some(seq)                              => (seq, false)
-                case _                                      => return Seq.empty
-              }
+            val (argExprs, wasNamed) = oldArgsInfo.byOldParameterIndex
+              .get(oldIndex) match {
+              case Some(Seq(ScAssignStmt(_, Some(expr)))) => (Seq(expr), true)
+              case Some(seq)                              => (seq, false)
+              case _                                      => return Seq.empty
+            }
             if (jChangeInfo.isArrayToVarargs) {
               argExprs match {
                 case Seq(ScMethodCall(ElementText("Array"), arrayArgs)) =>
@@ -496,8 +496,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       else
         change match {
           case sc: ScalaChangeInfo
-              if !sc.function.isConstructor && sc.function != usage
-                .namedElement => None
+              if !sc.function.isConstructor &&
+                sc.function != usage.namedElement => None
           case sc: ScalaChangeInfo if sc.isAddDefaultArgs =>
             paramInfo.getDefaultValue match {
               case "" | null => Some(" ")

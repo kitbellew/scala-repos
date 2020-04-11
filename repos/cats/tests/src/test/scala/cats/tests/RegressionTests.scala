@@ -49,8 +49,8 @@ class RegressionTests extends CatsSuite {
     val allocated = names.map(alloc)
     val state = Traverse[List].sequence[State[Int, ?], Person](allocated)
     val (people, counter) = state.run(0)
-    people should ===(
-      List(Person(0, "Alice"), Person(1, "Bob"), Person(2, "Claire")))
+    people should
+      ===(List(Person(0, "Alice"), Person(1, "Bob"), Person(2, "Claire")))
     counter should ===(3)
 
     // ensure that side-effects occurred in "correct" order

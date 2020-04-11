@@ -31,8 +31,8 @@ object InlineWarningTest extends ClearAfterClass.Clearable {
   val argsNoWarn = "-Yopt:l:classpath"
   val args = argsNoWarn + " -Yopt-warnings"
   var compiler = newCompiler(extraArgs = args)
-  var compilerWarnAll = newCompiler(extraArgs =
-    argsNoWarn + " -Yopt-warnings:_")
+  var compilerWarnAll = newCompiler(extraArgs = argsNoWarn +
+    " -Yopt-warnings:_")
   def clear(): Unit = { compiler = null; compilerWarnAll = null }
 }
 
@@ -126,7 +126,8 @@ class InlineWarningTest extends ClearAfterClass {
       code,
       allowMessage = i => {
         c += 1;
-        i.msg contains "operand stack at the callsite in C::t1()V contains more values"
+        i.msg contains
+          "operand stack at the callsite in C::t1()V contains more values"
       })
     assert(c == 1, c)
   }
@@ -164,14 +165,12 @@ class InlineWarningTest extends ClearAfterClass {
     assert(c == 1, c)
 
     // no warnings here
-    compileClasses(newCompiler(extraArgs = InlineWarningTest
-      .argsNoWarn + " -Yopt-warnings:none"))(
-      scalaCode,
-      List((javaCode, "A.java")))
+    compileClasses(newCompiler(extraArgs = InlineWarningTest.argsNoWarn +
+      " -Yopt-warnings:none"))(scalaCode, List((javaCode, "A.java")))
 
     c = 0
-    compileClasses(newCompiler(extraArgs = InlineWarningTest
-      .argsNoWarn + " -Yopt-warnings:no-inline-mixed"))(
+    compileClasses(newCompiler(extraArgs = InlineWarningTest.argsNoWarn +
+      " -Yopt-warnings:no-inline-mixed"))(
       scalaCode,
       List((javaCode, "A.java")),
       allowMessage = i => { c += 1; warns.exists(i.msg contains _) })

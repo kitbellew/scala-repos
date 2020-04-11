@@ -93,8 +93,7 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
       val schema = new StructType().add("decimal", DecimalType(7, 2))
 
       val data =
-        Row(new BigDecimal("10.02")) ::
-          Row(new BigDecimal("20000.99")) ::
+        Row(new BigDecimal("10.02")) :: Row(new BigDecimal("20000.99")) ::
           Row(new BigDecimal("10000")) :: Nil
       val df = hiveContext
         .createDataFrame(sparkContext.parallelize(data), schema)

@@ -448,11 +448,8 @@ class MatrixTest extends WordSpec with Matchers {
         List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Int, Double)](Tsv("product")) { ob =>
           "correctly compute products" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 17.0,
-              (1, 2) -> 12.0,
-              (2, 1) -> 12.0,
-              (2, 2) -> 9.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 17.0, (1, 2) -> 12.0, (2, 1) -> 12.0, (2, 2) -> 9.0)
           }
         }.run.finish
     }
@@ -619,17 +616,13 @@ class MatrixTest extends WordSpec with Matchers {
         List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Int, Double)](Tsv("times3")) { ob =>
           "correctly compute M * 3" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 3.0,
-              (2, 2) -> 9.0,
-              (1, 2) -> 12.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 3.0, (2, 2) -> 9.0, (1, 2) -> 12.0)
           }
         }.sink[(Int, Int, Double)](Tsv("3times")) { ob =>
           "correctly compute 3 * M" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 3.0,
-              (2, 2) -> 9.0,
-              (1, 2) -> 12.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 3.0, (2, 2) -> 9.0, (1, 2) -> 12.0)
           }
         }.sink[(Int, Int, Double)](Tsv("div3")) { ob =>
           "correctly compute M / 3" in {
@@ -640,17 +633,13 @@ class MatrixTest extends WordSpec with Matchers {
           }
         }.sink[(Int, Int, Double)](Tsv("timestrace")) { ob =>
           "correctly compute M * Tr(M)" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 4.0,
-              (2, 2) -> 12.0,
-              (1, 2) -> 16.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 4.0, (2, 2) -> 12.0, (1, 2) -> 16.0)
           }
         }.sink[(Int, Int, Double)](Tsv("tracetimes")) { ob =>
           "correctly compute Tr(M) * M" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 4.0,
-              (2, 2) -> 12.0,
-              (1, 2) -> 16.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 4.0, (2, 2) -> 12.0, (1, 2) -> 16.0)
           }
         }.sink[(Int, Int, Double)](Tsv("divtrace")) { ob =>
           "correctly compute M / Tr(M)" in {
@@ -673,10 +662,8 @@ class MatrixTest extends WordSpec with Matchers {
           List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Int, Double)](Tsv("diag-mat")) { ob =>
           "correctly compute diag * matrix" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 1.0,
-              (1, 2) -> 4.0,
-              (2, 2) -> 9.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 1.0, (1, 2) -> 4.0, (2, 2) -> 9.0)
           }
         }.sink[(Int, Double)](Tsv("diag-diag")) { ob =>
           "correctly compute diag * diag" in {
@@ -684,10 +671,8 @@ class MatrixTest extends WordSpec with Matchers {
           }
         }.sink[(Int, Int, Double)](Tsv("mat-diag")) { ob =>
           "correctly compute matrix * diag" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 1.0,
-              (1, 2) -> 12.0,
-              (2, 2) -> 9.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 1.0, (1, 2) -> 12.0, (2, 2) -> 9.0)
           }
         }.sink[(Int, Double)](Tsv("diag-col")) { ob =>
           "correctly compute diag * col" in { ob.toMap shouldBe Map(1 -> 1.0) }
@@ -787,11 +772,8 @@ class MatrixTest extends WordSpec with Matchers {
         List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Int, Double)](Tsv("outerProd")) { ob =>
           "correctly compute the outer product of a column and row vector" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 1.0,
-              (1, 2) -> 4.0,
-              (2, 1) -> 4.0,
-              (2, 2) -> 16.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 1.0, (1, 2) -> 4.0, (2, 1) -> 4.0, (2, 2) -> 16.0)
           }
         }.run.finish
     }
@@ -998,18 +980,14 @@ class MatrixTest extends WordSpec with Matchers {
         .source(Tsv("col1", ('x, 'v)), List((1, 1.0), (2, -2.0), (3, 6.0)))
         .sink[(Int, Double)](Tsv("colLZeroNorm")) { ob =>
           s"$idx: correctly compute a new col vector" in {
-            ob.toMap shouldBe Map(
-              1 -> (1.0 / 3.0),
-              2 -> (-2.0 / 3.0),
-              3 -> (6.0 / 3.0))
+            ob.toMap shouldBe
+              Map(1 -> (1.0 / 3.0), 2 -> (-2.0 / 3.0), 3 -> (6.0 / 3.0))
           }
           idx += 1
         }.sink[(Int, Double)](Tsv("colLOneNorm")) { ob =>
           s"$idx: correctly compute a new col vector" in {
-            ob.toMap shouldBe Map(
-              1 -> (1.0 / 9.0),
-              2 -> (-2.0 / 9.0),
-              3 -> (6.0 / 9.0))
+            ob.toMap shouldBe
+              Map(1 -> (1.0 / 9.0), 2 -> (-2.0 / 9.0), 3 -> (6.0 / 9.0))
           }
           idx += 1
         }.run.finish
@@ -1033,18 +1011,14 @@ class MatrixTest extends WordSpec with Matchers {
         .source(Tsv("row1", ('x, 'v)), List((1, 1.0), (2, -2.0), (3, 6.0)))
         .sink[(Int, Double)](Tsv("rowLZeroNorm")) { ob =>
           s"$idx: correctly compute a new row vector" in {
-            ob.toMap shouldBe Map(
-              1 -> (1.0 / 3.0),
-              2 -> (-2.0 / 3.0),
-              3 -> (6.0 / 3.0))
+            ob.toMap shouldBe
+              Map(1 -> (1.0 / 3.0), 2 -> (-2.0 / 3.0), 3 -> (6.0 / 3.0))
           }
           idx += 1
         }.sink[(Int, Double)](Tsv("rowLOneNorm")) { ob =>
           s"$idx: correctly compute a new row vector" in {
-            ob.toMap shouldBe Map(
-              1 -> (1.0 / 9.0),
-              2 -> (-2.0 / 9.0),
-              3 -> (6.0 / 9.0))
+            ob.toMap shouldBe
+              Map(1 -> (1.0 / 9.0), 2 -> (-2.0 / 9.0), 3 -> (6.0 / 9.0))
           }
           idx += 1
         }.run.finish

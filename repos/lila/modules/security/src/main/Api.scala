@@ -91,8 +91,8 @@ final class Api(
           "user",
           BSONDocument(
             field -> BSONDocument("$in" -> values),
-            "user" -> BSONDocument("$ne" -> userId)).some) map lila.db.BSON
-          .asStrings
+            "user" -> BSONDocument("$ne" -> userId)).some) map
+          lila.db.BSON.asStrings
     }
 
   def recentUserIdsByFingerprint = recentUserIdsByField("fp") _
@@ -105,8 +105,8 @@ final class Api(
       "user",
       BSONDocument(
         field -> value,
-        "date" -> BSONDocument("$gt" -> DateTime.now.minusYears(1)))
-        .some) map lila.db.BSON.asStrings
+        "date" -> BSONDocument("$gt" -> DateTime.now.minusYears(1))).some) map
+      lila.db.BSON.asStrings
 }
 
 object Api {

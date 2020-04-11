@@ -305,11 +305,12 @@ trait GenJSExports extends SubComponent {
       val (varArgMeths, normalMeths) = alts.partition(_.hasRepeatedParam)
 
       // Highest non-repeated argument count
-      val maxArgc = (
-        // We have argc - 1, since a repeated parameter list may also be empty
-        // (unlike a normal parameter)
-        varArgMeths.map(_.params.size - 1) ++
-          normalMeths.map(_.params.size)).max
+      val maxArgc =
+        (
+          // We have argc - 1, since a repeated parameter list may also be empty
+          // (unlike a normal parameter)
+          varArgMeths.map(_.params.size - 1) ++ normalMeths.map(_.params.size))
+          .max
 
       // Calculates possible arg counts for normal method
       def argCounts(ex: Exported) =
@@ -357,8 +358,7 @@ trait GenJSExports extends SubComponent {
       assert(
         {
           val argcs = caseDefinitions.values.flatten.toList
-          argcs == argcs.distinct &&
-          argcs.forall(_ <= maxArgc)
+          argcs == argcs.distinct && argcs.forall(_ <= maxArgc)
         },
         "every argc should appear only once and be lower than max"
       )
@@ -485,8 +485,8 @@ trait GenJSExports extends SubComponent {
                 subAlts.exists {
                   case ExportedSymbol(p) =>
                     val params = p.tpe.params
-                    params.size > paramIndex &&
-                    params(paramIndex).hasFlag(Flags.DEFAULTPARAM)
+                    params.size > paramIndex && params(paramIndex)
+                      .hasFlag(Flags.DEFAULTPARAM)
                   case _: ExportedBody => false
                 }
 
@@ -537,8 +537,8 @@ trait GenJSExports extends SubComponent {
 
         if (!alt.isClassConstructor) {
           // get parameter type while resolving repeated params
-          if (paramsTypesUncurry.size <= paramIndex || isRepeatedUncurry(
-                paramIndex)) {
+          if (paramsTypesUncurry.size <= paramIndex ||
+              isRepeatedUncurry(paramIndex)) {
             assert(isRepeatedUncurry.last)
             repeatedToSingle(paramsTypesUncurry.last)
           } else { paramTypePosterasure }
@@ -589,8 +589,7 @@ trait GenJSExports extends SubComponent {
       val restArg =
         if (hasRestParam) js.JSSpread(genRestArgRef()) :: Nil else Nil
 
-      val allArgs =
-        (1 to minArgc).map(genFormalArgRef(_, minArgc)) ++: restArg
+      val allArgs = (1 to minArgc).map(genFormalArgRef(_, minArgc)) ++: restArg
 
       val cls = jstpe.ClassType(encodeClassFullName(currentClassSym))
       val receiver = js.This()(jstpe.AnyType)
@@ -720,12 +719,11 @@ trait GenJSExports extends SubComponent {
             unboxedArg
           }
 
-        result +=
-          js.VarDef(
-            js.Ident("prep" + i),
-            verifiedOrDefault.tpe,
-            mutable = false,
-            verifiedOrDefault)
+        result += js.VarDef(
+          js.Ident("prep" + i),
+          verifiedOrDefault.tpe,
+          mutable = false,
+          verifiedOrDefault)
       }
 
       result.toList

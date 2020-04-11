@@ -40,7 +40,8 @@ trait NetworkFailureSpec extends DefaultTimeout {
       try {
         enableNetworkThrottling()
         println(
-          "===>>> Throttling network with [" + BytesPerSecond + ", " + DelayMillis + "] for [" + duration + "]")
+          "===>>> Throttling network with [" + BytesPerSecond + ", " +
+            DelayMillis + "] for [" + duration + "]")
         Thread.sleep(duration.toMillis)
         restoreIP
       } catch {

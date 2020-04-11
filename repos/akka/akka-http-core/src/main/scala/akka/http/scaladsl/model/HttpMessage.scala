@@ -179,8 +179,8 @@ final class HttpRequest(
     entity.isKnownEmpty || method.isEntityAccepted,
     s"Requests with method '${method.value}' must have an empty entity")
   require(
-    protocol != HttpProtocols.`HTTP/1.0` || !entity
-      .isInstanceOf[HttpEntity.Chunked],
+    protocol != HttpProtocols.`HTTP/1.0` ||
+      !entity.isInstanceOf[HttpEntity.Chunked],
     "HTTP/1.0 requests must not have a chunked entity")
 
   type Self = HttpRequest
@@ -276,11 +276,8 @@ final class HttpRequest(
   override def equals(obj: scala.Any): Boolean =
     obj match {
       case HttpRequest(_method, _uri, _headers, _entity, _protocol) =>
-        method == _method &&
-          uri == _uri &&
-          headers == _headers &&
-          entity == _entity &&
-          protocol == _protocol
+        method == _method && uri == _uri && headers == _headers &&
+          entity == _entity && protocol == _protocol
       case _ => false
     }
 
@@ -326,8 +323,8 @@ object HttpRequest {
       uri.toEffectiveHttpRequestUri(host, port, securedConnection)
     } else // http://tools.ietf.org/html/rfc7230#section-5.4
     if (hostHeader.isEmpty || uri.authority.isEmpty && hostHeader.get.isEmpty ||
-        hostHeader.get.host.equalsIgnoreCase(uri.authority.host) && hostHeader
-          .get.port == uri.authority.port) uri
+        hostHeader.get.host.equalsIgnoreCase(uri.authority.host) &&
+        hostHeader.get.port == uri.authority.port) uri
     else
       throw IllegalUriException(
         s"'Host' header value of request to `$uri` doesn't match request target authority",
@@ -349,8 +346,8 @@ object HttpRequest {
         case 4
             if c(0) == 'h' && c(1) == 't' && c(2) == 't' && c(3) == 'p' ⇒ // ok
         case 5
-            if c(0) == 'h' && c(1) == 't' && c(2) == 't' && c(3) == 'p' && c(
-              4) == 's' ⇒ // ok
+            if c(0) == 'h' && c(1) == 't' && c(2) == 't' && c(3) == 'p' &&
+              c(4) == 's' ⇒ // ok
         case _ ⇒
           throw new IllegalArgumentException(
             """`uri` must have scheme "http", "https" or no scheme""")
@@ -385,8 +382,8 @@ final class HttpResponse(
     entity.isKnownEmpty || status.allowsEntity,
     "Responses with this status code must have an empty entity")
   require(
-    protocol == HttpProtocols.`HTTP/1.1` || !entity
-      .isInstanceOf[HttpEntity.Chunked],
+    protocol == HttpProtocols.`HTTP/1.1` ||
+      !entity.isInstanceOf[HttpEntity.Chunked],
     "HTTP/1.0 responses must not have a chunked entity")
 
   type Self = HttpResponse
@@ -438,9 +435,7 @@ final class HttpResponse(
   override def equals(obj: scala.Any): Boolean =
     obj match {
       case HttpResponse(_status, _headers, _entity, _protocol) =>
-        status == _status &&
-          headers == _headers &&
-          entity == _entity &&
+        status == _status && headers == _headers && entity == _entity &&
           protocol == _protocol
       case _ => false
     }

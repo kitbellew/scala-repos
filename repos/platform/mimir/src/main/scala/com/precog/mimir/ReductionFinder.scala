@@ -87,20 +87,24 @@ trait ReductionFinderModule[M[+_]]
         }
 
       // for each ancestor, assemble a list of the parents it created
-      val parentsByAncestor = (info groupBy { _.ancestor })
-        .foldLeft(Map[DepGraph, List[DepGraph]]()) {
-          case (parentsByAncestor, (ancestor, lst)) =>
-            parentsByAncestor + (ancestor -> (lst map {
-              _.reduce.parent
-            } distinct))
-        }
+      val parentsByAncestor =
+        (info groupBy { _.ancestor })
+          .foldLeft(Map[DepGraph, List[DepGraph]]()) {
+            case (parentsByAncestor, (ancestor, lst)) =>
+              parentsByAncestor +
+                (ancestor ->
+                  (lst map { _.reduce.parent } distinct))
+          }
 
       // for each parent, assemble a list of the reduces it created
-      val reducesByParent = (info groupBy { _.reduce.parent })
-        .foldLeft(Map[DepGraph, List[dag.Reduce]]()) {
-          case (reducesByParent, (parent, lst)) =>
-            reducesByParent + (parent -> (lst map { _.reduce }))
-        }
+      val reducesByParent =
+        (info groupBy { _.reduce.parent })
+          .foldLeft(Map[DepGraph, List[dag.Reduce]]()) {
+            case (reducesByParent, (parent, lst)) =>
+              reducesByParent +
+                (parent ->
+                  (lst map { _.reduce }))
+          }
 
       MegaReduceState(
         ancestorByReduce,
@@ -139,8 +143,8 @@ trait ReductionFinderModule[M[+_]]
               result
             }
 
-            val firstIndex = st.parentsByAncestor(ancestor)
-              .reverse indexOf parent
+            val firstIndex = st.parentsByAncestor(ancestor).reverse indexOf
+              parent
             val secondIndex = st.reducesByParent(parent).reverse indexOf graph
 
             dag.Join(

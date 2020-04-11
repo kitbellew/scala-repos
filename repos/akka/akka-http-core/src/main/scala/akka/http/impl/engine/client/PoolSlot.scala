@@ -131,8 +131,8 @@ private object PoolSlot {
 
     def waitingForSubscribePending: Receive = {
       case SubscribePending ⇒
-        exposedPublisher.takePendingSubscribers() foreach (s ⇒
-          self ! ActorPublisher.Internal.Subscribe(s))
+        exposedPublisher.takePendingSubscribers() foreach
+          (s ⇒ self ! ActorPublisher.Internal.Subscribe(s))
         log.debug("become unconnected, from subscriber pending")
         context.become(unconnected)
     }

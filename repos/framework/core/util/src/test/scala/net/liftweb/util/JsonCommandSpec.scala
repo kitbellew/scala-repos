@@ -42,8 +42,8 @@ object JsonCommandSpec extends Specification {
 
     "Parse even if target missing" in {
       JsonCommand.unapply(parse(
-        """{"command": "frog", "foo": "bar", "params": 99} """)) must_== Some(
-        ("frog", None, JInt(99)))
+        """{"command": "frog", "foo": "bar", "params": 99} """)) must_==
+        Some(("frog", None, JInt(99)))
     }
 
     "Parse the whole thing" in {

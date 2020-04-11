@@ -60,14 +60,13 @@ trait JxBase {
           if (m.key == "class") {
             // JsRaw(varName+".setAttribute('className',"+x.text.encJs+");").cmd
 
-            JsRaw(varName + ".className = " + x.text.encJs).cmd &
-              JsRaw(
-                varName + ".setAttribute(" + m.key.encJs + "," + x.text
-                  .encJs + ");").cmd
+            JsRaw(varName + ".className = " + x.text.encJs).cmd & JsRaw(
+              varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs +
+                ");").cmd
           } else {
             JsRaw(
-              varName + ".setAttribute(" + m.key.encJs + "," + x.text
-                .encJs + ");").cmd
+              varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs +
+                ");").cmd
           }
       }.foldLeft(Noop)(_ & _)
     }.foldLeft(Noop)(_ & _)
@@ -92,8 +91,8 @@ trait JxBase {
             .encJs + "));").cmd
       case a: Atom[_] =>
         JsRaw(
-          parent + ".appendChild(document.createTextNode(" + a.text
-            .encJs + "));").cmd
+          parent + ".appendChild(document.createTextNode(" + a.text.encJs +
+            "));").cmd
       case e: scala.xml.Elem =>
         val varName = "v" + Helpers.nextFuncName
         JsCrVar(
@@ -134,12 +133,9 @@ case class JxMap(in: JsExp, what: JxYieldFunc) extends Node with JxBase {
     val ran = "v" + Helpers.nextFuncName
     val fr = "f" + Helpers.nextFuncName
     val cr = "c" + Helpers.nextFuncName
-    JsCrVar(ran, in) &
-      JsCrVar(fr, what.yieldFunction) &
-      JsRaw(
-        "for (" + cr + " = 0; " + cr + " < " + ran + ".length; " + cr + "++) {" +
-          parentName + ".appendChild(" + fr + "(" + ran + "[" + cr + "]));" +
-          "}")
+    JsCrVar(ran, in) & JsCrVar(fr, what.yieldFunction) & JsRaw(
+      "for (" + cr + " = 0; " + cr + " < " + ran + ".length; " + cr + "++) {" +
+        parentName + ".appendChild(" + fr + "(" + ran + "[" + cr + "]));" + "}")
   }
 }
 
@@ -154,15 +150,10 @@ case class JxMatch(exp: JsExp, cases: JxCase*) extends Node with JxBase {
 
   def appendToParent(parentName: String): JsCmd = {
     val vn = "v" + Helpers.nextFuncName
-    JsCrVar(vn, exp) &
-      JsRaw(
-        "if (false) {\n} " +
-          cases.map { c =>
-            " else if (" + vn + " == " + c.toMatch.toJsCmd + ") {" +
-              addToDocFrag(parentName, c.toDo.toList).toJsCmd +
-              "\n}"
-          }.mkString("") +
-          " else {throw new Exception('Unmatched: '+" + vn + ");}")
+    JsCrVar(vn, exp) & JsRaw("if (false) {\n} " + cases.map { c =>
+      " else if (" + vn + " == " + c.toMatch.toJsCmd + ") {" +
+        addToDocFrag(parentName, c.toDo.toList).toJsCmd + "\n}"
+    }.mkString("") + " else {throw new Exception('Unmatched: '+" + vn + ");}")
   }
 }
 
@@ -174,8 +165,7 @@ case class JxIf(toTest: JsExp, ifTrue: NodeSeq) extends Node with JxBase {
   def appendToParent(parentName: String): JsCmd = {
     JsRaw(
       "if (" + toTest.toJsCmd + ") {\n" +
-        addToDocFrag(parentName, ifTrue.toList).toJsCmd +
-        "}\n")
+        addToDocFrag(parentName, ifTrue.toList).toJsCmd + "}\n")
   }
 }
 
@@ -187,10 +177,8 @@ case class JxIfElse(toTest: JsExp, ifTrue: NodeSeq, ifFalse: NodeSeq)
   def appendToParent(parentName: String): JsCmd = {
     JsRaw(
       "if (" + toTest.toJsCmd + ") {\n" +
-        addToDocFrag(parentName, ifTrue.toList).toJsCmd +
-        "} else {\n" +
-        addToDocFrag(parentName, ifFalse.toList).toJsCmd +
-        "}\n")
+        addToDocFrag(parentName, ifTrue.toList).toJsCmd + "} else {\n" +
+        addToDocFrag(parentName, ifFalse.toList).toJsCmd + "}\n")
   }
 }
 
@@ -204,7 +192,6 @@ case class Jx(child: NodeSeq) extends Node with JxBase with JxYieldFunc {
     AnonFunc(
       "it",
       JsCrVar("df", JsRaw("document.createDocumentFragment()")) &
-        addToDocFrag("df", child.toList) &
-        JsRaw("return df"))
+        addToDocFrag("df", child.toList) & JsRaw("return df"))
 
 }

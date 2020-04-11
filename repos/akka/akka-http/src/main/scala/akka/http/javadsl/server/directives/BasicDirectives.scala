@@ -169,14 +169,14 @@ abstract class BasicDirectives extends BasicDirectivesBase {
         }
       def paramsMatch(params: Seq[Class[_]]): Boolean = {
         val res =
-          params.size == extractionTypes.size &&
-            (params, extractionTypes).zipped.forall(paramMatches)
+          params.size == extractionTypes.size && (params, extractionTypes)
+            .zipped.forall(paramMatches)
 
         res
       }
       def returnTypeMatches(method: Method): Boolean =
-        method.getReturnType == classOf[RouteResult] || returnsFuture(
-          method) || returnsCompletionStage(method)
+        method.getReturnType == classOf[RouteResult] || returnsFuture(method) ||
+          returnsCompletionStage(method)
 
       def returnsFuture(method: Method): Boolean =
         method.getReturnType == classOf[Future[_]] &&

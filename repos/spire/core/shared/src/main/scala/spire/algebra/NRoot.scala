@@ -100,8 +100,8 @@ object NRoot {
       val leader =
         if (intPart.size % k == 0) Stream.empty
         else { Stream.fill(k - intPart.size % k)(0) }
-      val digits = leader ++ intPart.toStream ++ fracPart ++ Stream
-        .continually(0)
+      val digits = leader ++ intPart.toStream ++ fracPart ++
+        Stream.continually(0)
       val radixPowK = BigInt(radix) pow k
 
       // Total # of digits to compute.

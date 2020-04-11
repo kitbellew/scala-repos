@@ -291,9 +291,9 @@ class ScReferenceExpressionImpl(node: ASTNode)
                                   if (simple.singleton) {
                                     simple.reference match {
                                       case Some(ref)
-                                          if ref.refName == p.name && ref
-                                            .resolve() == p => found = true
-                                      case _                =>
+                                          if ref.refName == p.name &&
+                                            ref.resolve() == p => found = true
+                                      case _                   =>
                                     }
                                   }
                                   super.visitSimpleTypeElement(simple)
@@ -372,15 +372,15 @@ class ScReferenceExpressionImpl(node: ASTNode)
           case Some(fT) if param.isVal && stableTypeRequired =>
             ScProjectionType(fT, param, superReference = false)
           case Some(ScThisType(clazz))
-              if owner != null && PsiTreeUtil
-                .isContextAncestor(owner, this, true) &&
-                stableTypeRequired && owner
-                .isInstanceOf[ScTypeDefinition] && owner == clazz =>
+              if owner != null &&
+                PsiTreeUtil.isContextAncestor(owner, this, true) &&
+                stableTypeRequired && owner.isInstanceOf[ScTypeDefinition] &&
+                owner == clazz =>
             ScType
               .designator(param) //todo: think about projection from this type?
           case _
-              if owner != null && PsiTreeUtil
-                .isContextAncestor(owner, this, true) &&
+              if owner != null &&
+                PsiTreeUtil.isContextAncestor(owner, this, true) &&
                 stableTypeRequired && !owner.isInstanceOf[ScTypeDefinition] =>
             ScType.designator(param)
           case _ =>

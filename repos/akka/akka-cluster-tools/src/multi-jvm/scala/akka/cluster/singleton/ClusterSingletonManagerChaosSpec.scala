@@ -111,8 +111,8 @@ class ClusterSingletonManagerChaosSpec
 
   def awaitMemberUp(memberProbe: TestProbe, nodes: RoleName*): Unit = {
     runOn(nodes.filterNot(_ == nodes.head): _*) {
-      memberProbe.expectMsgType[MemberUp](15.seconds).member.address should ===(
-        node(nodes.head).address)
+      memberProbe.expectMsgType[MemberUp](15.seconds).member.address should
+        ===(node(nodes.head).address)
     }
     runOn(nodes.head) {
       memberProbe.receiveN(nodes.size, 15.seconds).collect {
@@ -151,32 +151,32 @@ class ClusterSingletonManagerChaosSpec
 
       runOn(controller) {
         echo(first) ! "hello"
-        expectMsgType[ActorRef](3.seconds).path.address should ===(
-          node(first).address)
+        expectMsgType[ActorRef](3.seconds).path.address should
+          ===(node(first).address)
       }
       enterBarrier("first-verified")
 
     }
 
-    "take over when three oldest nodes crash in 6 nodes cluster" in within(
-      90 seconds) {
-      // mute logging of deadLetters during shutdown of systems
-      if (!log.isDebugEnabled)
-        system.eventStream.publish(Mute(DeadLettersFilter[Any]))
-      enterBarrier("logs-muted")
+    "take over when three oldest nodes crash in 6 nodes cluster" in
+      within(90 seconds) {
+        // mute logging of deadLetters during shutdown of systems
+        if (!log.isDebugEnabled)
+          system.eventStream.publish(Mute(DeadLettersFilter[Any]))
+        enterBarrier("logs-muted")
 
-      crash(first, second, third)
-      enterBarrier("after-crash")
-      runOn(fourth) { expectMsg(EchoStarted) }
-      enterBarrier("fourth-active")
+        crash(first, second, third)
+        enterBarrier("after-crash")
+        runOn(fourth) { expectMsg(EchoStarted) }
+        enterBarrier("fourth-active")
 
-      runOn(controller) {
-        echo(fourth) ! "hello"
-        expectMsgType[ActorRef](3.seconds).path.address should ===(
-          node(fourth).address)
+        runOn(controller) {
+          echo(fourth) ! "hello"
+          expectMsgType[ActorRef](3.seconds).path.address should
+            ===(node(fourth).address)
+        }
+        enterBarrier("fourth-verified")
+
       }
-      enterBarrier("fourth-verified")
-
-    }
   }
 }

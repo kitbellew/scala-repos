@@ -85,7 +85,8 @@ object LoggingMagnet {
       request ⇒
         response ⇒
           Some(LogEntry(
-            "Response for\n  Request : " + request + "\n  Response: " + response,
+            "Response for\n  Request : " + request + "\n  Response: " +
+              response,
             marker,
             level))
     }

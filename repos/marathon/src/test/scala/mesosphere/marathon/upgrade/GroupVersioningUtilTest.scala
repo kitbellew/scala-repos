@@ -62,8 +62,8 @@ class GroupVersioningUtilTest
     def update(maybeApp: Option[AppDefinition]): AppDefinition =
       maybeApp
         .map(_.copy(versionInfo = VersionInfo.forNewConfig(Timestamp(10)))).get
-    updated should be(
-      nestedApp.updateApp(PathId("/nested/app"), update, Timestamp(10)))
+    updated should
+      be(nestedApp.updateApp(PathId("/nested/app"), update, Timestamp(10)))
   }
 
   test("A scaled app should get proper versionInfo") {

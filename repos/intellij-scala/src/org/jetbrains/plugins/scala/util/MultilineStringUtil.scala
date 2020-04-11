@@ -85,8 +85,8 @@ object MultilineStringUtil {
   }
 
   def needAddStripMargin(element: PsiElement, marginChar: String): Boolean = {
-    findAllMethodCallsOnMLString(element, "stripMargin")
-      .isEmpty && !hasMarginChars(element, marginChar)
+    findAllMethodCallsOnMLString(element, "stripMargin").isEmpty &&
+    !hasMarginChars(element, marginChar)
   }
 
   def needAddByType(literal: ScLiteral): Boolean =
@@ -97,8 +97,8 @@ object MultilineStringUtil {
               case funDef: ScFunction =>
                 val tpe = funDef.returnType
                 tpe.exists(scType =>
-                  scType.canonicalText.endsWith("java.lang.String") || scType
-                    .canonicalText.endsWith("scala.Predef.String"))
+                  scType.canonicalText.endsWith("java.lang.String") ||
+                    scType.canonicalText.endsWith("scala.Predef.String"))
               case _ => true
             }
           case _ => true
@@ -200,8 +200,8 @@ object MultilineStringUtil {
     for (arg <- currentArgs) {
       val argsString = arg.map(_.getText).sorted
 
-      if (myArgs.sameElements(argsString) || myArgs.reverse
-            .sameElements(argsString)) return true
+      if (myArgs.sameElements(argsString) ||
+          myArgs.reverse.sameElements(argsString)) return true
     }
 
     false
@@ -239,8 +239,8 @@ object MultilineStringUtil {
           .substring(startLineOffset, startLineEndOffset).trim
           .startsWith(firstMLQuote)
         val multipleLines = endLineNumber != startLineNumber
-        val needNewLineBefore = settings
-          .quotesOnNewLine && multipleLines && !startsOnNewLine
+        val needNewLineBefore = settings.quotesOnNewLine && multipleLines &&
+          !startsOnNewLine
         val marginChar = getMarginChar(literal)
 
         extensions.inWriteAction {
@@ -248,9 +248,8 @@ object MultilineStringUtil {
           if (!needNewLineBefore) {
             val quotesIndent = settings.getSmartLength(
               document.getText.substring(startLineOffset, literalStart))
-            val marginIndent =
-              quotesIndent + interpolatorPrefixLength(literal) + settings
-                .marginIndent
+            val marginIndent = quotesIndent +
+              interpolatorPrefixLength(literal) + settings.marginIndent
             for (lineNumber <- startLineNumber + 1 to endLineNumber) {
               insertIndent(lineNumber, marginIndent, Some(marginChar))
             }
@@ -258,9 +257,8 @@ object MultilineStringUtil {
             val oldIndent = settings.prefixLength(
               document.getText.substring(startLineOffset, literalStart))
             val quotesIndent = oldIndent + settings.regularIndent
-            val marginIndent =
-              quotesIndent + interpolatorPrefixLength(literal) + settings
-                .marginIndent
+            val marginIndent = quotesIndent +
+              interpolatorPrefixLength(literal) + settings.marginIndent
             for (lineNumber <- startLineNumber + 1 to endLineNumber) {
               insertIndent(lineNumber, marginIndent, Some(marginChar))
             }
@@ -300,8 +298,8 @@ class MultilineStringSettings(project: Project) {
 
   def getSmartSpaces(count: Int) =
     if (useTabs) {
-      StringUtil.repeat("\t", count / tabSize) + StringUtil
-        .repeat(" ", count % tabSize)
+      StringUtil.repeat("\t", count / tabSize) +
+        StringUtil.repeat(" ", count % tabSize)
     } else { StringUtil.repeat(" ", count) }
 
   def getSmartLength(line: String) =

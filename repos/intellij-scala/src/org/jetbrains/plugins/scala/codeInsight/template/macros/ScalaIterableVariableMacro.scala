@@ -20,8 +20,8 @@ class ScalaIterableVariableMacro extends ScalaVariableOfTypeMacro {
   override def getName: String = MacroUtil.scalaIdPrefix + "iterableVariable"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
-      .message("macro.iterable.variable")
+    MacroUtil.scalaPresentablePrefix +
+      CodeInsightBundle.message("macro.iterable.variable")
 
   override def addLookupItems(
       exprs: Array[String],

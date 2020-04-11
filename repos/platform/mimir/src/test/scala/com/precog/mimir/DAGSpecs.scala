@@ -37,53 +37,50 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
   "dag decoration" should {
     "recognize root instructions" in {
       "push_str" >> {
-        decorate(Vector(Line(1, 1, ""), PushString("test"))) mustEqual Right(
-          Const(CString("test"))(Line(1, 1, "")))
+        decorate(Vector(Line(1, 1, ""), PushString("test"))) mustEqual
+          Right(Const(CString("test"))(Line(1, 1, "")))
       }
 
       "push_num" >> {
-        decorate(Vector(Line(1, 1, ""), PushNum("42"))) mustEqual Right(
-          Const(CLong(42))(Line(1, 1, "")))
+        decorate(Vector(Line(1, 1, ""), PushNum("42"))) mustEqual
+          Right(Const(CLong(42))(Line(1, 1, "")))
       }
 
       "push_true" >> {
-        decorate(Vector(Line(1, 1, ""), PushTrue)) mustEqual Right(
-          Const(CTrue)(Line(1, 1, "")))
+        decorate(Vector(Line(1, 1, ""), PushTrue)) mustEqual
+          Right(Const(CTrue)(Line(1, 1, "")))
       }
 
       "push_false" >> {
-        decorate(Vector(Line(1, 1, ""), PushFalse)) mustEqual Right(
-          Const(CFalse)(Line(1, 1, "")))
+        decorate(Vector(Line(1, 1, ""), PushFalse)) mustEqual
+          Right(Const(CFalse)(Line(1, 1, "")))
       }
 
       "push_null" >> {
-        decorate(Vector(Line(1, 1, ""), PushNull)) mustEqual Right(
-          Const(CNull)(Line(1, 1, "")))
+        decorate(Vector(Line(1, 1, ""), PushNull)) mustEqual
+          Right(Const(CNull)(Line(1, 1, "")))
       }
 
       "push_object" >> {
-        decorate(Vector(Line(1, 1, ""), PushObject)) mustEqual Right(
-          Const(RObject.empty)(Line(1, 1, "")))
+        decorate(Vector(Line(1, 1, ""), PushObject)) mustEqual
+          Right(Const(RObject.empty)(Line(1, 1, "")))
       }
 
       "push_array" >> {
-        decorate(Vector(Line(1, 1, ""), PushArray)) mustEqual Right(
-          Const(RArray.empty)(Line(1, 1, "")))
+        decorate(Vector(Line(1, 1, ""), PushArray)) mustEqual
+          Right(Const(RArray.empty)(Line(1, 1, "")))
       }
 
       "push_undefined" >> {
-        decorate(Vector(Line(1, 1, ""), PushUndefined)) mustEqual Right(
-          Undefined(Line(1, 1, "")))
+        decorate(Vector(Line(1, 1, ""), PushUndefined)) mustEqual
+          Right(Undefined(Line(1, 1, "")))
       }
     }
 
     "recognize a new instruction" in {
       decorate(
-        Vector(
-          Line(1, 1, ""),
-          PushNum("5"),
-          Map1(instructions.New))) mustEqual Right(
-        dag.New(Const(CLong(5))(Line(1, 1, "")))(Line(1, 1, "")))
+        Vector(Line(1, 1, ""), PushNum("5"), Map1(instructions.New))) mustEqual
+        Right(dag.New(Const(CLong(5))(Line(1, 1, "")))(Line(1, 1, "")))
     }
 
     "parse out absolute_load" in {
@@ -104,8 +101,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
     "parse out map1" in {
       val result = decorate(Vector(Line(1, 1, ""), PushTrue, Map1(Neg)))
-      result mustEqual Right(
-        Operate(Neg, Const(CTrue)(Line(1, 1, "")))(Line(1, 1, "")))
+      result mustEqual
+        Right(Operate(Neg, Const(CTrue)(Line(1, 1, "")))(Line(1, 1, "")))
     }
 
     "parse out reduce" in {
@@ -123,8 +120,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     "parse out distinct" in {
       val result = decorate(
         Vector(Line(1, 1, ""), PushNull, instructions.Distinct))
-      result mustEqual Right(
-        dag.Distinct(Const(CNull)(Line(1, 1, "")))(Line(1, 1, "")))
+      result mustEqual
+        Right(dag.Distinct(Const(CNull)(Line(1, 1, "")))(Line(1, 1, "")))
     }
 
     // TODO morphisms
@@ -642,29 +639,29 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         val line = Line(1, 1, "")
         val result = decorate(
           Vector(line, PushTrue, PushNum("42"), instructions.Assert))
-        result mustEqual Right(
-          dag.Assert(Const(CTrue)(line), Const(CLong(42))(line))(line))
+        result mustEqual
+          Right(dag.Assert(Const(CTrue)(line), Const(CLong(42))(line))(line))
       }
 
       "iunion" >> {
         val line = Line(1, 1, "")
         val result = decorate(Vector(line, PushTrue, PushFalse, IUnion))
-        result mustEqual Right(
-          IUI(true, Const(CTrue)(line), Const(CFalse)(line))(line))
+        result mustEqual
+          Right(IUI(true, Const(CTrue)(line), Const(CFalse)(line))(line))
       }
 
       "iintersect" >> {
         val line = Line(1, 1, "")
         val result = decorate(Vector(line, PushTrue, PushFalse, IIntersect))
-        result mustEqual Right(
-          IUI(false, Const(CTrue)(line), Const(CFalse)(line))(line))
+        result mustEqual
+          Right(IUI(false, Const(CTrue)(line), Const(CFalse)(line))(line))
       }
 
       "set difference" >> {
         val line = Line(1, 1, "")
         val result = decorate(Vector(line, PushTrue, PushFalse, SetDifference))
-        result mustEqual Right(
-          Diff(Const(CTrue)(line), Const(CFalse)(line))(line))
+        result mustEqual
+          Right(Diff(Const(CTrue)(line), Const(CFalse)(line))(line))
       }
     }
 
@@ -697,8 +694,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       {
         val line = Line(1, 1, "")
         val result = decorate(Vector(line, PushTrue, Dup, IUnion))
-        result mustEqual Right(
-          IUI(true, Const(CTrue)(line), Const(CTrue)(line))(line))
+        result mustEqual
+          Right(IUI(true, Const(CTrue)(line), Const(CTrue)(line))(line))
       }
 
       {
@@ -718,8 +715,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         val line = Line(1, 1, "")
         val result = decorate(
           Vector(line, PushFalse, PushTrue, Swap(1), IUnion))
-        result mustEqual Right(
-          IUI(true, Const(CTrue)(line), Const(CFalse)(line))(line))
+        result mustEqual
+          Right(IUI(true, Const(CTrue)(line), Const(CFalse)(line))(line))
       }
 
       "3" >> {
@@ -756,28 +753,28 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
     "reject a line-less stream" in {
       decorate(Vector(PushTrue)) mustEqual Left(UnknownLine)
-      decorate(Vector(PushTrue, PushFalse, Map1(Comp))) mustEqual Left(
-        UnknownLine)
+      decorate(Vector(PushTrue, PushFalse, Map1(Comp))) mustEqual
+        Left(UnknownLine)
     }
 
     "detect stack underflow" in {
       "map1" >> { // historic sidebar: since we don't have pop, this is the *only* map1 underflow case!
         val instr = Map1(Neg)
-        decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-          StackUnderflow(instr))
+        decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+          Left(StackUnderflow(instr))
       }
 
       "map2_match" >> {
         {
           val instr = Map2Match(Add)
-          decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
           val instr = Map2Match(Add)
-          decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
@@ -794,14 +791,14 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       "map2_cross" >> {
         {
           val instr = Map2Cross(Add)
-          decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
           val instr = Map2Cross(Add)
-          decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
@@ -818,38 +815,38 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       "reduce" >> { // similar to map1, only one underflow case!
         val instr = instructions
           .Reduce(BuiltInReduction(Reduction(Vector(), "count", 0x2000)))
-        decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-          StackUnderflow(instr))
+        decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+          Left(StackUnderflow(instr))
       }
 
       "set-reduce" >> { // similar to map1, only one underflow case!
         val instr = instructions.Distinct
-        decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-          StackUnderflow(instr))
+        decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+          Left(StackUnderflow(instr))
       }
 
       "iunion" >> { // similar to map1, only one underflow case!
         val instr = IUnion
-        decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-          StackUnderflow(instr))
+        decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+          Left(StackUnderflow(instr))
       }
 
       "iintersect" >> { // similar to map1, only one underflow case!
         val instr = IIntersect
-        decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-          StackUnderflow(instr))
+        decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+          Left(StackUnderflow(instr))
       }
 
       "set difference" >> { // similar to map1, only one underflow case!
         val instr = SetDifference
-        decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-          StackUnderflow(instr))
+        decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+          Left(StackUnderflow(instr))
       }
 
       "split" >> { // similar to map1, only one underflow case!
         val instr = instructions.Split
-        decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-          StackUnderflow(instr))
+        decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+          Left(StackUnderflow(instr))
       }
 
       // merge cannot stack underflow; curious, no?
@@ -857,14 +854,14 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       "filter_match" >> {
         {
           val instr = FilterMatch
-          decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
           val instr = FilterMatch
-          decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
@@ -881,14 +878,14 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       "filter_cross" >> {
         {
           val instr = FilterCross
-          decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
           val instr = FilterCross
-          decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
@@ -903,54 +900,49 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       }
 
       "dup" >> {
-        decorate(Vector(Line(1, 1, ""), Dup)) mustEqual Left(
-          StackUnderflow(Dup))
+        decorate(Vector(Line(1, 1, ""), Dup)) mustEqual
+          Left(StackUnderflow(Dup))
       }
 
       "swap" >> {
         {
           val instr = Swap(1)
-          decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
           val instr = Swap(1)
-          decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
           val instr = Swap(2)
-          decorate(
-            Vector(Line(1, 1, ""), PushTrue, PushTrue, instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), PushTrue, PushTrue, instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
 
         {
           val instr = Swap(5)
-          decorate(
-            Vector(Line(1, 1, ""), PushTrue, PushTrue, instr)) mustEqual Left(
-            StackUnderflow(instr))
+          decorate(Vector(Line(1, 1, ""), PushTrue, PushTrue, instr)) mustEqual
+            Left(StackUnderflow(instr))
         }
       }
 
       "load_local" >> {
         val instr = instructions.AbsoluteLoad
-        decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
-          StackUnderflow(instr))
+        decorate(Vector(Line(1, 1, ""), instr)) mustEqual
+          Left(StackUnderflow(instr))
       }
     }
 
     "reject multiple stack values at end" in {
-      decorate(Vector(Line(1, 1, ""), PushTrue, PushFalse)) mustEqual Left(
-        MultipleStackValuesAtEnd)
+      decorate(Vector(Line(1, 1, ""), PushTrue, PushFalse)) mustEqual
+        Left(MultipleStackValuesAtEnd)
       decorate(
-        Vector(
-          Line(1, 1, ""),
-          PushTrue,
-          PushFalse,
-          PushNum("42"))) mustEqual Left(MultipleStackValuesAtEnd)
+        Vector(Line(1, 1, ""), PushTrue, PushFalse, PushNum("42"))) mustEqual
+        Left(MultipleStackValuesAtEnd)
       decorate(Vector(
         Line(1, 1, ""),
         PushTrue,
@@ -962,21 +954,21 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     "reject negative swap depth" in {
       {
         val instr = Swap(-1)
-        decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual Left(
-          NonPositiveSwapDepth(instr))
+        decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual
+          Left(NonPositiveSwapDepth(instr))
       }
 
       {
         val instr = Swap(-255)
-        decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual Left(
-          NonPositiveSwapDepth(instr))
+        decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual
+          Left(NonPositiveSwapDepth(instr))
       }
     }
 
     "reject zero swap depth" in {
       val instr = Swap(0)
-      decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual Left(
-        NonPositiveSwapDepth(instr))
+      decorate(Vector(Line(1, 1, ""), PushTrue, instr)) mustEqual
+        Left(NonPositiveSwapDepth(instr))
     }
 
     "reject merge with deepened stack" in {
@@ -1033,8 +1025,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     }
 
     "reject unmatched merge" in {
-      decorate(Vector(Line(1, 1, ""), PushTrue, Merge)) mustEqual Left(
-        UnmatchedMerge)
+      decorate(Vector(Line(1, 1, ""), PushTrue, Merge)) mustEqual
+        Left(UnmatchedMerge)
     }
 
     "reject split without corresponding merge" in {

@@ -52,7 +52,8 @@ class AkkaGraphiteReporter(
       .map(_.size).sum + List(knownOpsInTimespanCounters, hdrHistograms)
       .map(_.size).sum
     sendWithBanner(
-      "== AkkaGraphiteReporter @ " + dateTime + " == (" + metricsCount + " metrics)",
+      "== AkkaGraphiteReporter @ " + dateTime + " == (" + metricsCount +
+        " metrics)",
       '=')
 
     try {

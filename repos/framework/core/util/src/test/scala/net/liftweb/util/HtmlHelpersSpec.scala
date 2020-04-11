@@ -112,13 +112,13 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
     }
 
     "ignore non-head" in {
-      Helpers.stripHead(<head3><i>hello</i></head3>) must ==/(
-        <head3><i>hello</i></head3>)
+      Helpers.stripHead(<head3><i>hello</i></head3>) must
+        ==/(<head3><i>hello</i></head3>)
     }
 
     "String subhead" in {
-      Helpers.stripHead(<head3><i><head>hello</head></i></head3>) must ==/(
-        <head3><i>hello</i></head3>)
+      Helpers.stripHead(<head3><i><head>hello</head></i></head3>) must
+        ==/(<head3><i>hello</i></head3>)
     }
   }
 

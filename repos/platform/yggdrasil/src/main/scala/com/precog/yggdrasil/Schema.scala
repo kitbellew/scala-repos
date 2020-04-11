@@ -134,9 +134,8 @@ object Schema {
 
         case JNumberT =>
           val path = CPath(nodes.reverse)
-          ColumnRef(path, CLong: CType) :: ColumnRef(
-            path,
-            CDouble) :: ColumnRef(path, CNum) :: Nil
+          ColumnRef(path, CLong: CType) :: ColumnRef(path, CDouble) ::
+            ColumnRef(path, CNum) :: Nil
 
         case JTextT => ColumnRef(CPath(nodes.reverse), CString) :: Nil
 
@@ -218,8 +217,8 @@ object Schema {
           lazy val nonemptyCrit = {
             if (seenPathLength + 1 <= path.nodes.length) {
               val pathToCompare = path.nodes.take(seenPathLength)
-              pathToCompare == seenPath.nodes && checkNode(
-                path.nodes(seenPathLength))
+              pathToCompare == seenPath.nodes &&
+              checkNode(path.nodes(seenPathLength))
             } else { false }
           }
 
@@ -347,14 +346,15 @@ object Schema {
     * in the case of homogeneous arrays when only need a few elements).
     */
   def requiredBy(jtpe: JType, path: CPath, ctpe: CType): Boolean =
-    includes(jtpe, path, ctpe) || ((jtpe, path, ctpe) match {
-      case (
-            JArrayFixedT(elements),
-            CPath(CPathArray, tail @ _*),
-            CArrayType(elemType)) =>
-        elements.values exists (requiredBy(_, CPath(tail: _*), elemType))
-      case _ => false
-    })
+    includes(jtpe, path, ctpe) ||
+      ((jtpe, path, ctpe) match {
+        case (
+              JArrayFixedT(elements),
+              CPath(CPathArray, tail @ _*),
+              CArrayType(elemType)) =>
+          elements.values exists (requiredBy(_, CPath(tail: _*), elemType))
+        case _ => false
+      })
 
   /**
     * Tests whether the supplied JType includes the supplied CPath and CType.

@@ -37,8 +37,8 @@ object ShouldNotTypecheck {
         if ((expected ne null) && !(expPat.matcher(msg)).matches)
           ctx.abort(
             ctx.enclosingPosition,
-            "Type-checking failed in an unexpected way.\n" +
-              expMsg + "\nActual error: " + msg)
+            "Type-checking failed in an unexpected way.\n" + expMsg +
+              "\nActual error: " + msg)
         else return reify(())
     }
 

@@ -4,26 +4,26 @@ import Keys._
 import complete.DefaultParsers._
 
 object PomRepoTest extends Build {
-  lazy val root = Project("root", file(".")) settings (
-    resolvers ++= Seq(
-      local,
-      Resolver.sonatypeRepo("releases"),
-      Resolver.sonatypeRepo("snapshots")),
-    InputKey[Unit]("check-pom") <<= InputTask(_ => spaceDelimited("<args>")) {
-      result => (makePom, result, streams) map checkPomRepositories
-    },
-    makePomConfiguration <<= (makePomConfiguration, baseDirectory) {
-      (conf, base) =>
-        conf.copy(filterRepositories = pomIncludeRepository(
-          base,
-          conf.filterRepositories))
-    },
-    ivyPaths <<= baseDirectory(dir => new IvyPaths(dir, Some(dir / "ivy-home")))
-  )
+  lazy val root = Project("root", file(".")) settings
+    (
+      resolvers ++= Seq(
+        local,
+        Resolver.sonatypeRepo("releases"),
+        Resolver.sonatypeRepo("snapshots")),
+      InputKey[Unit]("check-pom") <<= InputTask(_ => spaceDelimited("<args>")) {
+        result => (makePom, result, streams) map checkPomRepositories
+      },
+      makePomConfiguration <<= (makePomConfiguration, baseDirectory) {
+        (conf, base) =>
+          conf.copy(filterRepositories = pomIncludeRepository(
+            base,
+            conf.filterRepositories))
+      },
+      ivyPaths <<=
+        baseDirectory(dir => new IvyPaths(dir, Some(dir / "ivy-home"))))
 
-  val local =
-    "local-maven-repo" at "file://" + (Path.userHome / ".m2" / "repository")
-      .absolutePath
+  val local = "local-maven-repo" at
+    "file://" + (Path.userHome / ".m2" / "repository").absolutePath
 
   def pomIncludeRepository(base: File, prev: MavenRepository => Boolean) =
     (r: MavenRepository) =>

@@ -14,21 +14,19 @@ class ParameterDirectivesSpec
     with Inside {
   "when used with 'as[Int]' the parameter directive should" - {
     "extract a parameter value as Int" in {
-      Get("/?amount=123") ~> {
-        parameter('amount.as[Int]) { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "123" }
+      Get("/?amount=123") ~> { parameter('amount.as[Int]) { echoComplete } } ~>
+        check { responseAs[String] shouldEqual "123" }
     }
     "cause a MalformedQueryParamRejection on illegal Int values" in {
-      Get("/?amount=1x3") ~> {
-        parameter('amount.as[Int]) { echoComplete }
-      } ~> check {
-        inside(rejection) {
-          case MalformedQueryParamRejection(
-                "amount",
-                "'1x3' is not a valid 32-bit signed integer value",
-                Some(_)) ⇒
+      Get("/?amount=1x3") ~> { parameter('amount.as[Int]) { echoComplete } } ~>
+        check {
+          inside(rejection) {
+            case MalformedQueryParamRejection(
+                  "amount",
+                  "'1x3' is not a valid 32-bit signed integer value",
+                  Some(_)) ⇒
+          }
         }
-      }
     }
     "supply typed default values" in {
       Get() ~> { parameter('amount ? 45) { echoComplete } } ~> check {
@@ -97,9 +95,8 @@ class ParameterDirectivesSpec
       }
     }
     "supply typed default values" in {
-      Get() ~> {
-        parameter('amount.as(HexInt) ? 45) { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "45" }
+      Get() ~> { parameter('amount.as(HexInt) ? 45) { echoComplete } } ~>
+        check { responseAs[String] shouldEqual "45" }
     }
     "create typed optional parameters that" - {
       "extract Some(value) when present" in {
@@ -108,9 +105,8 @@ class ParameterDirectivesSpec
         } ~> check { responseAs[String] shouldEqual "Some(10)" }
       }
       "extract None when not present" in {
-        Get() ~> {
-          parameter("amount".as(HexInt).?) { echoComplete }
-        } ~> check { responseAs[String] shouldEqual "None" }
+        Get() ~> { parameter("amount".as(HexInt).?) { echoComplete } } ~>
+          check { responseAs[String] shouldEqual "None" }
       }
       "cause a MalformedQueryParamRejection on illegal Int values" in {
         Get("/?amount=x") ~> {
@@ -137,9 +133,8 @@ class ParameterDirectivesSpec
       } ~> check { responseAs[String] shouldEqual "false" }
     }
     "extract optional parameter values as Boolean" in {
-      Get() ~> {
-        parameter('really.as[Boolean] ? false) { echoComplete }
-      } ~> check { responseAs[String] shouldEqual "false" }
+      Get() ~> { parameter('really.as[Boolean] ? false) { echoComplete } } ~>
+        check { responseAs[String] shouldEqual "false" }
     }
     "cause a MalformedQueryParamRejection on illegal Boolean values" in {
       Get("/?really=absolutely") ~> {
@@ -198,9 +193,8 @@ class ParameterDirectivesSpec
 
   "The 'parameter' requirement directive should" - {
     "block requests that do not contain the required parameter" in {
-      Get("/person?age=19") ~> {
-        parameter('nose ! "large") { completeOk }
-      } ~> check { handled shouldEqual false }
+      Get("/person?age=19") ~> { parameter('nose ! "large") { completeOk } } ~>
+        check { handled shouldEqual false }
     }
     "block requests that contain the required parameter but with an unmatching value" in {
       Get("/person?age=19&nose=small") ~> {
@@ -214,8 +208,9 @@ class ParameterDirectivesSpec
     }
     "be useable for method tunneling" in {
       val route = {
-        (post | parameter('method ! "post")) { complete("POST") } ~
-          get { complete("GET") }
+        (post | parameter('method ! "post")) { complete("POST") } ~ get {
+          complete("GET")
+        }
       }
       Get("/?method=post") ~> route ~> check {
         responseAs[String] shouldEqual "POST"
@@ -227,9 +222,8 @@ class ParameterDirectivesSpec
 
   "The 'parameter' repeated directive should" - {
     "extract an empty Iterable when the parameter is absent" in {
-      Get("/person?age=19") ~> {
-        parameter('hobby.*) { echoComplete }
-      } ~> check { responseAs[String] === "List()" }
+      Get("/person?age=19") ~> { parameter('hobby.*) { echoComplete } } ~>
+        check { responseAs[String] === "List()" }
     }
     "extract all occurrences into an Iterable when parameter is present" in {
       Get("/person?age=19&hobby=cooking&hobby=reading") ~> {

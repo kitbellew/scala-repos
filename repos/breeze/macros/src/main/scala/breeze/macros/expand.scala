@@ -104,13 +104,13 @@ object expand {
             if (typesLeftAbstract.nonEmpty)
               c.error(
                 tree.pos,
-                "Can't valify: Not all types were grounded: " + typesLeftAbstract
-                  .mkString(", "))
+                "Can't valify: Not all types were grounded: " +
+                  typesLeftAbstract.mkString(", "))
             if (newvargs.exists(_.nonEmpty))
               c.error(
                 tree.pos,
-                "Can't valify: Not all arguments were grounded: " + newvargs
-                  .map(_.mkString(", ")).mkString("(", ")(", ")"))
+                "Can't valify: Not all arguments were grounded: " +
+                  newvargs.map(_.mkString(", ")).mkString("(", ")(", ")"))
             ValDef(mods, newName, newtpt, grounded)
           } else {
             val newTargs = typesLeftAbstract

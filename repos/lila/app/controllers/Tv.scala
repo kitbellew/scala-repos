@@ -23,8 +23,7 @@ object Tv extends LilaController {
         case None => notFound
         case Some(channel) => OptionFuResult(GameRepo.pov(gameId, color)) {
             pov =>
-              Env.tv.tv.getChampions zip
-                Env.game.crosstableApi(pov.game) map {
+              Env.tv.tv.getChampions zip Env.game.crosstableApi(pov.game) map {
                 case (champions, crosstable) =>
                   Ok(html.tv.sides(
                     channel,
@@ -48,13 +47,12 @@ object Tv extends LilaController {
             pov,
             lila.api.Mobile.Api.currentVersion,
             tv = onTv.some,
-            withOpening = false) zip
-            Env.game.crosstableApi(game) zip
+            withOpening = false) zip Env.game.crosstableApi(game) zip
             Env.tv.tv.getChampions map {
-            case ((data, cross), champions) => NoCache {
-                Ok(html.tv.index(channel, champions, pov, data, cross, flip))
-              }
-          }
+              case ((data, cross), champions) => NoCache {
+                  Ok(html.tv.index(channel, champions, pov, data, cross, flip))
+                }
+            }
         },
         api = apiVersion =>
           Env.api.roundApi
@@ -72,8 +70,7 @@ object Tv extends LilaController {
     }
 
   private def lichessGames(channel: lila.tv.Tv.Channel)(implicit ctx: Context) =
-    Env.tv.tv.getChampions zip
-      Env.tv.tv.getGames(channel, 9) map {
+    Env.tv.tv.getChampions zip Env.tv.tv.getGames(channel, 9) map {
       case (champs, games) => NoCache {
           Ok(html.tv.games(channel, games map lila.game.Pov.first, champs))
         }
@@ -101,8 +98,8 @@ object Tv extends LilaController {
       implicit val encoder = play.api.libs.Comet.CometMessage.jsonMessages
       Env.round.tvBroadcast ? TvBroadcast.GetEnumerator mapTo
         manifest[TvBroadcast.EnumeratorType] map { enum =>
-        Ok.chunked(enum &> EventSource()).as("text/event-stream")
-      }
+          Ok.chunked(enum &> EventSource()).as("text/event-stream")
+        }
     }
 
   def streamConfig =
@@ -119,8 +116,8 @@ object Tv extends LilaController {
         fuccess(html.tv.streamConfig(err))
       } { text =>
         Env.tv.streamerList.store.set(text) >>
-          Env.mod.logApi.streamConfig(me.id) inject Redirect(
-          routes.Tv.streamConfig)
+          Env.mod.logApi.streamConfig(me.id) inject
+          Redirect(routes.Tv.streamConfig)
       }
     }
 

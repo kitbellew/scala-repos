@@ -5,8 +5,8 @@ import org.jboss.netty.buffer.{ChannelBuffer => CB}
 private object ThriftMuxUtil {
   val role = Stack.Role("ProtocolRecorder")
   def bufferToArray(buf: CB): Array[Byte] =
-    if (buf.hasArray && buf.arrayOffset == 0
-        && buf.readableBytes == buf.array().length) { buf.array() }
+    if (buf.hasArray && buf.arrayOffset == 0 &&
+        buf.readableBytes == buf.array().length) { buf.array() }
     else {
       val arr = new Array[Byte](buf.readableBytes)
       buf.readBytes(arr)

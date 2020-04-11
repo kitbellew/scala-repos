@@ -72,11 +72,11 @@ class CSVTypeCastSuite extends SparkFunSuite {
 
   test("String type should always return the same as the input") {
     assert(
-      CSVTypeCast.castTo("", StringType, nullable = true) == UTF8String
-        .fromString(""))
+      CSVTypeCast.castTo("", StringType, nullable = true) ==
+        UTF8String.fromString(""))
     assert(
-      CSVTypeCast.castTo("", StringType, nullable = false) == UTF8String
-        .fromString(""))
+      CSVTypeCast.castTo("", StringType, nullable = false) ==
+        UTF8String.fromString(""))
   }
 
   test("Throws exception for empty string with non null type") {
@@ -99,9 +99,8 @@ class CSVTypeCastSuite extends SparkFunSuite {
       CSVTypeCast.castTo(timestamp, TimestampType) ==
         DateTimeUtils.stringToTime(timestamp).getTime * 1000L)
     assert(
-      CSVTypeCast.castTo("2015-01-01", DateType) ==
-        DateTimeUtils
-          .millisToDays(DateTimeUtils.stringToTime("2015-01-01").getTime))
+      CSVTypeCast.castTo("2015-01-01", DateType) == DateTimeUtils.millisToDays(
+        DateTimeUtils.stringToTime("2015-01-01").getTime))
   }
 
   test("Float and Double Types are cast correctly with Locale") {

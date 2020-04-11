@@ -67,11 +67,8 @@ class ArchiveSpecs
       }
 
       results.size mustEqual 9
-      results.map(_.apiKey).toSet mustEqual Set(
-        "test1",
-        "test2",
-        "test3",
-        "test4")
+      results.map(_.apiKey).toSet mustEqual
+        Set("test1", "test2", "test3", "test4")
     }
 
     "read new archives" in {

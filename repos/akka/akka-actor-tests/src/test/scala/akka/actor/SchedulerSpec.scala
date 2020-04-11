@@ -74,35 +74,38 @@ trait SchedulerSpec
       expectNoMsg(500 millis)
     }
 
-    "stop continuous scheduling if the receiving actor has been terminated" taggedAs TimingTest in {
-      val actor = system.actorOf(Props(new Actor {
-        def receive = { case x ⇒ sender() ! x }
-      }))
+    "stop continuous scheduling if the receiving actor has been terminated" taggedAs
+      TimingTest in {
+        val actor = system.actorOf(Props(new Actor {
+          def receive = { case x ⇒ sender() ! x }
+        }))
 
-      // run immediately and then every 100 milliseconds
-      collectCancellable(
-        system.scheduler
-          .schedule(0 milliseconds, 100 milliseconds, actor, "msg"))
-      expectMsg("msg")
+        // run immediately and then every 100 milliseconds
+        collectCancellable(
+          system.scheduler
+            .schedule(0 milliseconds, 100 milliseconds, actor, "msg"))
+        expectMsg("msg")
 
-      // stop the actor and, hence, the continuous messaging from happening
-      system stop actor
+        // stop the actor and, hence, the continuous messaging from happening
+        system stop actor
 
-      expectNoMsg(500 millis)
-    }
+        expectNoMsg(500 millis)
+      }
 
-    "stop continuous scheduling if the task throws exception" taggedAs TimingTest in {
-      val count = new AtomicInteger(0)
-      collectCancellable(system.scheduler.schedule(0 milliseconds, 20.millis) {
-        val c = count.incrementAndGet()
-        testActor ! c
-        if (c == 3) throw new RuntimeException("TEST") with NoStackTrace
-      })
-      expectMsg(1)
-      expectMsg(2)
-      expectMsg(3)
-      expectNoMsg(500 millis)
-    }
+    "stop continuous scheduling if the task throws exception" taggedAs
+      TimingTest in {
+        val count = new AtomicInteger(0)
+        collectCancellable(
+          system.scheduler.schedule(0 milliseconds, 20.millis) {
+            val c = count.incrementAndGet()
+            testActor ! c
+            if (c == 3) throw new RuntimeException("TEST") with NoStackTrace
+          })
+        expectMsg(1)
+        expectMsg(2)
+        expectMsg(3)
+        expectNoMsg(500 millis)
+      }
 
     "schedule once" taggedAs TimingTest in {
       case object Tick
@@ -253,25 +256,26 @@ trait SchedulerSpec
       Await.ready(ticks, 3 seconds)
     }
 
-    "schedule with different initial delay and frequency" taggedAs TimingTest in {
-      val ticks = new TestLatch(3)
+    "schedule with different initial delay and frequency" taggedAs
+      TimingTest in {
+        val ticks = new TestLatch(3)
 
-      case object Msg
+        case object Msg
 
-      val actor = system.actorOf(Props(new Actor {
-        def receive = { case Msg ⇒ ticks.countDown() }
-      }))
+        val actor = system.actorOf(Props(new Actor {
+          def receive = { case Msg ⇒ ticks.countDown() }
+        }))
 
-      val startTime = System.nanoTime()
-      collectCancellable(
-        system.scheduler.schedule(1 second, 300 milliseconds, actor, Msg))
-      Await.ready(ticks, 3 seconds)
+        val startTime = System.nanoTime()
+        collectCancellable(
+          system.scheduler.schedule(1 second, 300 milliseconds, actor, Msg))
+        Await.ready(ticks, 3 seconds)
 
-      // LARS is a bit more aggressive in scheduling recurring tasks at the right
-      // frequency and may execute them a little earlier; the actual expected timing
-      // is 1599ms on a fast machine or 1699ms on a loaded one (plus some room for jenkins)
-      (System.nanoTime() - startTime).nanos.toMillis should ===(1750L +- 250)
-    }
+        // LARS is a bit more aggressive in scheduling recurring tasks at the right
+        // frequency and may execute them a little earlier; the actual expected timing
+        // is 1599ms on a fast machine or 1699ms on a loaded one (plus some room for jenkins)
+        (System.nanoTime() - startTime).nanos.toMillis should ===(1750L +- 250)
+      }
 
     "adjust for scheduler inaccuracy" taggedAs TimingTest in {
       val startTime = System.nanoTime
@@ -280,8 +284,8 @@ trait SchedulerSpec
       system.scheduler.schedule(25.millis, 25.millis) { latch.countDown() }
       Await.ready(latch, 6.seconds)
       // Rate
-      n * 1000.0 / (System.nanoTime - startTime).nanos.toMillis should ===(
-        40.0 +- 4)
+      n * 1000.0 / (System.nanoTime - startTime).nanos.toMillis should
+        ===(40.0 +- 4)
     }
 
     "not be affected by long running task" taggedAs TimingTest in {
@@ -294,8 +298,8 @@ trait SchedulerSpec
       }
       Await.ready(latch, 6.seconds)
       // Rate
-      n * 1000.0 / (System.nanoTime - startTime).nanos.toMillis should ===(
-        4.4 +- 0.5)
+      n * 1000.0 / (System.nanoTime - startTime).nanos.toMillis should
+        ===(4.4 +- 0.5)
     }
 
     "handle timeouts equal to multiple of wheel period" taggedAs TimingTest in {
@@ -430,8 +434,8 @@ class LightArrayRevolverSchedulerSpec
         def delay =
           if (ThreadLocalRandom.current.nextBoolean) step * 2 else step
         val N = 1000000
-        (1 to N) foreach (_ ⇒
-          sched.scheduleOnce(delay)(counter.incrementAndGet()))
+        (1 to N) foreach
+          (_ ⇒ sched.scheduleOnce(delay)(counter.incrementAndGet()))
         sched.close()
         Await.result(terminated, 3.seconds.dilated) should be > 10
         awaitCond(counter.get == N)
@@ -443,8 +447,8 @@ class LightArrayRevolverSchedulerSpec
         implicit def ec = localEC
         import driver._
         val start = step / 2
-        (0 to 3) foreach (i ⇒
-          sched.scheduleOnce(start + step * i, testActor, "hello"))
+        (0 to 3) foreach
+          (i ⇒ sched.scheduleOnce(start + step * i, testActor, "hello"))
         expectNoMsg(step)
         wakeUp(step)
         expectWait(step)
@@ -475,8 +479,8 @@ class LightArrayRevolverSchedulerSpec
         implicit def ec = localEC
         import driver._
         val start = step / 2
-        (0 to 3) foreach (i ⇒
-          sched.scheduleOnce(start + step * i, probe.ref, "hello"))
+        (0 to 3) foreach
+          (i ⇒ sched.scheduleOnce(start + step * i, probe.ref, "hello"))
         probe.expectNoMsg(step)
         wakeUp(step)
         expectWait(step)
@@ -503,8 +507,8 @@ class LightArrayRevolverSchedulerSpec
         implicit def ec = localEC
         import driver._
         val start = step / 2
-        (0 to 3) foreach (i ⇒
-          sched.scheduleOnce(start + step * i, testActor, "hello"))
+        (0 to 3) foreach
+          (i ⇒ sched.scheduleOnce(start + step * i, testActor, "hello"))
         expectNoMsg(step)
         wakeUp(step)
         expectWait(step)
@@ -534,9 +538,9 @@ class LightArrayRevolverSchedulerSpec
         val headroom = 200
         var overrun = headroom
         val cap = 1000000
-        val (success, failure) = Iterator.continually(
-          Try(sched.scheduleOnce(100.millis)(counter.incrementAndGet())))
-          .take(cap).takeWhile(_.isSuccess || { overrun -= 1; overrun >= 0 })
+        val (success, failure) = Iterator.continually(Try(
+          sched.scheduleOnce(100.millis)(counter.incrementAndGet()))).take(cap)
+          .takeWhile(_.isSuccess || { overrun -= 1; overrun >= 0 })
           .partition(_.isSuccess)
         val s = success.size
         s should be < cap
@@ -582,10 +586,11 @@ class LightArrayRevolverSchedulerSpec
       override protected def waitNanos(ns: Long): Unit = {
         // println(s"waiting $ns")
         prb.ref ! ns
-        try time += (lbq.get match {
-          case q: LinkedBlockingQueue[Long] ⇒ q.take()
-          case _ ⇒ 0L
-        })
+        try time +=
+          (lbq.get match {
+            case q: LinkedBlockingQueue[Long] ⇒ q.take()
+            case _ ⇒ 0L
+          })
         catch {
           case _: InterruptedException ⇒ Thread.currentThread.interrupt()
         }

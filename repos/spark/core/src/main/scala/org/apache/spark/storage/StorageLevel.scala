@@ -85,10 +85,8 @@ class StorageLevel private (
   override def equals(other: Any): Boolean =
     other match {
       case s: StorageLevel =>
-        s.useDisk == useDisk &&
-          s.useMemory == useMemory &&
-          s.useOffHeap == useOffHeap &&
-          s.deserialized == deserialized &&
+        s.useDisk == useDisk && s.useMemory == useMemory &&
+          s.useOffHeap == useOffHeap && s.deserialized == deserialized &&
           s.replication == replication
       case _ => false
     }

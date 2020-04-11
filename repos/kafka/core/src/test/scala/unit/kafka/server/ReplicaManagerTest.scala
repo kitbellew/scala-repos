@@ -131,16 +131,16 @@ class ReplicaManagerTest {
     try {
       def callback(responseStatus: Map[TopicPartition, PartitionResponse]) = {
         assert(
-          responseStatus.values.head.errorCode == Errors.INVALID_REQUIRED_ACKS
-            .code)
+          responseStatus.values.head.errorCode ==
+            Errors.INVALID_REQUIRED_ACKS.code)
       }
       rm.appendMessages(
         timeout = 0,
         requiredAcks = 3,
         internalTopicsAllowed = false,
         messagesPerPartition = Map(
-          new TopicPartition("test1", 0) -> new ByteBufferMessageSet(
-            new Message("first message".getBytes))),
+          new TopicPartition("test1", 0) ->
+            new ByteBufferMessageSet(new Message("first message".getBytes))),
         responseCallback = callback
       )
     } finally {
@@ -214,13 +214,8 @@ class ReplicaManagerTest {
         0,
         0,
         collection.immutable.Map(
-          new TopicPartition(topic, 0) -> new PartitionState(
-            0,
-            0,
-            0,
-            brokerList,
-            0,
-            brokerSet)).asJava,
+          new TopicPartition(topic, 0) ->
+            new PartitionState(0, 0, 0, brokerList, 0, brokerSet)).asJava,
         Set(
           new BrokerEndPoint(0, "host1", 0),
           new BrokerEndPoint(1, "host2", 1)).asJava)
@@ -237,8 +232,8 @@ class ReplicaManagerTest {
         requiredAcks = -1,
         internalTopicsAllowed = false,
         messagesPerPartition = Map(
-          new TopicPartition(topic, 0) -> new ByteBufferMessageSet(new Message(
-            "first message".getBytes))),
+          new TopicPartition(topic, 0) ->
+            new ByteBufferMessageSet(new Message("first message".getBytes))),
         responseCallback = produceCallback
       )
 
@@ -257,13 +252,8 @@ class ReplicaManagerTest {
         0,
         0,
         collection.immutable.Map(
-          new TopicPartition(topic, 0) -> new PartitionState(
-            0,
-            1,
-            1,
-            brokerList,
-            0,
-            brokerSet)).asJava,
+          new TopicPartition(topic, 0) ->
+            new PartitionState(0, 1, 1, brokerList, 0, brokerSet)).asJava,
         Set(
           new BrokerEndPoint(0, "host1", 0),
           new BrokerEndPoint(1, "host2", 1)).asJava)

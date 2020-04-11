@@ -23,9 +23,9 @@ object Reflect {
       try cls.getDeclaredField(name)
       catch {
         case nsf: NoSuchFieldException =>
-          if ((cls.getSuperclass != null) && (
-                cls.getSuperclass != classOf[Object]
-              ) && cls.getSuperclass != cls) getFieldHelper(cls.getSuperclass)
+          if ((cls.getSuperclass != null) &&
+              (cls.getSuperclass != classOf[Object]) &&
+              cls.getSuperclass != cls) getFieldHelper(cls.getSuperclass)
           else
             throw new PicklingException(
               s"Could not find field [$name] in [$cls]")
@@ -39,10 +39,9 @@ object Reflect {
       try cls.getDeclaredMethod(name, args: _*)
       catch {
         case nsf: NoSuchMethodException =>
-          if ((
-                cls.getSuperclass != null
-              ) && cls.getSuperclass != classOf[Object] && cls
-                .getSuperclass != cls) getMethodHelper(cls.getSuperclass)
+          if ((cls.getSuperclass != null) &&
+              cls.getSuperclass != classOf[Object] && cls.getSuperclass != cls)
+            getMethodHelper(cls.getSuperclass)
           else
             throw new PicklingException(
               s"Could not find method [$name(${args.mkString(", ")})] in [$cls]")

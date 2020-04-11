@@ -66,10 +66,8 @@ class StringTemplateSupport(
     (1 to 32).flatMap { v =>
       def kv(prod: Boolean, keys: String*) =
         keys.map(k => (k + "_" + v) -> prod.asInstanceOf[Object])
-      kv(ver == v, "eq", "gte", "lte") ++ kv(ver > v, "gt", "gte") ++ kv(
-        ver < v,
-        "lt",
-        "lte")
+      kv(ver == v, "eq", "gte", "lte") ++ kv(ver > v, "gt", "gte") ++
+        kv(ver < v, "lt", "lte")
     }.toMap
 
   private def expandToPackageMap(pkg: Map[String, Any]): Map[String, Any] = {
@@ -79,9 +77,8 @@ class StringTemplateSupport(
       lmap.groupBy(_._1.head).mapValues(_.map { case (k, v) => k.tail -> v })
         .mapValues { m: Map[List[String], Any] =>
           val (leaves, branches) = m.partition(_._1.length == 1)
-          leaves.map { case (k, v) => k.head -> v } ++ expand(
-            branches,
-            level + 1)
+          leaves.map { case (k, v) => k.head -> v } ++
+            expand(branches, level + 1)
         }.map(identity)
     }
 

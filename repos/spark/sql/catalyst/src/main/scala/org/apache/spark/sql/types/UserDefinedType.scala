@@ -59,10 +59,8 @@ abstract class UserDefinedType[UserType >: Null]
   def deserialize(datum: Any): UserType
 
   override private[sql] def jsonValue: JValue = {
-    ("type" -> "udt") ~
-      ("class" -> this.getClass.getName) ~
-      ("pyClass" -> pyUDT) ~
-      ("sqlType" -> sqlType.jsonValue)
+    ("type" -> "udt") ~ ("class" -> this.getClass.getName) ~
+      ("pyClass" -> pyUDT) ~ ("sqlType" -> sqlType.jsonValue)
   }
 
   /**
@@ -110,8 +108,7 @@ private[sql] class PythonUserDefinedType(
   override def userClass: java.lang.Class[Any] = null
 
   override private[sql] def jsonValue: JValue = {
-    ("type" -> "udt") ~
-      ("pyClass" -> pyUDT) ~
+    ("type" -> "udt") ~ ("pyClass" -> pyUDT) ~
       ("serializedClass" -> serializedPyClass) ~
       ("sqlType" -> sqlType.jsonValue)
   }

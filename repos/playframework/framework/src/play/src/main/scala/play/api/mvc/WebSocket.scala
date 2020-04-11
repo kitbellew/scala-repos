@@ -256,9 +256,8 @@ object WebSocket {
         val enumeratorCompletion = Promise[Enumerator[A]]()
         val nonCompletingEnumerator = onEOF(
           enumerator,
-          () => {
-            enumeratorCompletion.success(Enumerator.empty)
-          }) >>> Enumerator.flatten(enumeratorCompletion.future)
+          () => { enumeratorCompletion.success(Enumerator.empty) }) >>>
+          Enumerator.flatten(enumeratorCompletion.future)
         val publisher = Streams.enumeratorToPublisher(nonCompletingEnumerator)
         val (subscriber, _) = Streams.iterateeToSubscriber(iteratee)
         Flow.fromSinkAndSource(

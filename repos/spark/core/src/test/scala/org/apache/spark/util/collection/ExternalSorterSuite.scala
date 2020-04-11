@@ -262,8 +262,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       None,
       None)
     sorter.insertAll(
-      (1 to size).iterator.map(i => (i, i)) ++ Iterator(
-        (Int.MaxValue, Int.MaxValue)))
+      (1 to size).iterator.map(i => (i, i)) ++
+        Iterator((Int.MaxValue, Int.MaxValue)))
     assert(sorter.numSpills > 0, "sorter did not spill")
     val it = sorter.iterator
     while (it.hasNext) {
@@ -424,8 +424,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       Some(ord))
     sorter.insertAll(elements.iterator)
     assert(
-      sorter.partitionedIterator.map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+      sorter.partitionedIterator.map(p => (p._1, p._2.toSet)).toSet ===
+        expected)
     sorter.stop()
 
     // Only aggregator
@@ -436,8 +436,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       None)
     sorter2.insertAll(elements.iterator)
     assert(
-      sorter2.partitionedIterator.map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+      sorter2.partitionedIterator.map(p => (p._1, p._2.toSet)).toSet ===
+        expected)
     sorter2.stop()
 
     // Only ordering
@@ -448,8 +448,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       Some(ord))
     sorter3.insertAll(elements.iterator)
     assert(
-      sorter3.partitionedIterator.map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+      sorter3.partitionedIterator.map(p => (p._1, p._2.toSet)).toSet ===
+        expected)
     sorter3.stop()
 
     // Neither aggregator nor ordering
@@ -460,8 +460,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       None)
     sorter4.insertAll(elements.iterator)
     assert(
-      sorter4.partitionedIterator.map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+      sorter4.partitionedIterator.map(p => (p._1, p._2.toSet)).toSet ===
+        expected)
     sorter4.stop()
   }
 

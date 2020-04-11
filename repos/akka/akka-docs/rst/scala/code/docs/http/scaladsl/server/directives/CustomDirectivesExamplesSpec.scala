@@ -25,8 +25,8 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
     val lengthDirective: Directive1[Int] = textParam.map(text => text.length)
 
     // tests:
-    Get("/?text=abcdefg") ~> lengthDirective(x =>
-      complete(x.toString)) ~> check { responseAs[String] === "7" }
+    Get("/?text=abcdefg") ~> lengthDirective(x => complete(x.toString)) ~>
+      check { responseAs[String] === "7" }
   }
 
   "tmap-1" in {

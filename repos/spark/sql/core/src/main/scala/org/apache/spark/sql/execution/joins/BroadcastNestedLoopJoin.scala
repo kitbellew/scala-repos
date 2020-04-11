@@ -36,8 +36,8 @@ case class BroadcastNestedLoopJoin(
     extends BinaryNode {
 
   override private[sql] lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" ->
+      SQLMetrics.createLongMetric(sparkContext, "number of output rows"))
 
   /** BuildRight means the right relation <=> the broadcast relation. */
   private val (streamed, broadcast) = buildSide match {
@@ -48,11 +48,11 @@ case class BroadcastNestedLoopJoin(
   override def requiredChildDistribution: Seq[Distribution] =
     buildSide match {
       case BuildLeft =>
-        BroadcastDistribution(
-          IdentityBroadcastMode) :: UnspecifiedDistribution :: Nil
+        BroadcastDistribution(IdentityBroadcastMode) ::
+          UnspecifiedDistribution :: Nil
       case BuildRight =>
-        UnspecifiedDistribution :: BroadcastDistribution(
-          IdentityBroadcastMode) :: Nil
+        UnspecifiedDistribution ::
+          BroadcastDistribution(IdentityBroadcastMode) :: Nil
     }
 
   private[this] def genResultProjection: InternalRow => InternalRow = {
@@ -75,8 +75,8 @@ case class BroadcastNestedLoopJoin(
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
       case FullOuter =>
-        left.output.map(_.withNullability(true)) ++ right.output
-          .map(_.withNullability(true))
+        left.output.map(_.withNullability(true)) ++
+          right.output.map(_.withNullability(true))
       case LeftSemi => left.output
       case x =>
         throw new IllegalArgumentException(

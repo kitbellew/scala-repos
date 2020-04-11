@@ -238,12 +238,12 @@ class HadoopRDD[K, V](
 
       // Find a function that will return the FileSystem bytes read by this thread. Do this before
       // creating RecordReader, because RecordReader's constructor might read some bytes
-      val getBytesReadCallback: Option[() => Long] =
-        split.inputSplit.value match {
-          case _: FileSplit | _: CombineFileSplit =>
-            SparkHadoopUtil.get.getFSBytesReadOnThreadCallback()
-          case _ => None
-        }
+      val getBytesReadCallback: Option[() => Long] = split.inputSplit
+        .value match {
+        case _: FileSplit | _: CombineFileSplit =>
+          SparkHadoopUtil.get.getFSBytesReadOnThreadCallback()
+        case _ => None
+      }
 
       // For Hadoop 2.5+, we get our input bytes from thread-local Hadoop FileSystem statistics.
       // If we do a coalesce, however, we are likely to compute multiple partitions in the same
@@ -275,8 +275,10 @@ class HadoopRDD[K, V](
         try { finished = !reader.next(key, value) }
         catch { case eof: EOFException => finished = true }
         if (!finished) { inputMetrics.incRecordsReadInternal(1) }
-        if (inputMetrics.recordsRead % SparkHadoopUtil
-              .UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) { updateBytesRead() }
+        if (inputMetrics.recordsRead %
+              SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
+          updateBytesRead()
+        }
         (key, value)
       }
 

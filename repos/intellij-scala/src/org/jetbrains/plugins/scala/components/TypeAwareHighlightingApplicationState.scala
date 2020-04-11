@@ -46,6 +46,6 @@ object TypeAwareHighlightingApplicationState {
   }
 
   def getInstance =
-    ApplicationManager.getApplication getComponent classOf[
-      TypeAwareHighlightingApplicationState]
+    ApplicationManager.getApplication getComponent
+      classOf[TypeAwareHighlightingApplicationState]
 }

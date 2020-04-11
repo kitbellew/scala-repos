@@ -24,8 +24,8 @@ object IntentionUtil {
 
     def getElements(it: Iterator[PsiElement]) = {
       def acceptableElem(elem: PsiElement) = {
-        (elem.isInstanceOf[PsiComment] || elem
-          .isInstanceOf[PsiWhiteSpace]) && !hasLineBreaks(elem)
+        (elem.isInstanceOf[PsiComment] || elem.isInstanceOf[PsiWhiteSpace]) &&
+        !hasLineBreaks(elem)
       }
 
       it.takeWhile { a => acceptableElem(a) }
@@ -42,8 +42,8 @@ object IntentionUtil {
       commentsAroundElement: CommentsAroundElement): Boolean = {
     val allComments = PsiTreeUtil
       .getChildrenOfTypeAsList(element, classOf[PsiComment])
-    allComments.size() > commentsAroundElement.before
-      .size + commentsAroundElement.after.size
+    allComments.size() >
+      commentsAroundElement.before.size + commentsAroundElement.after.size
   }
 
   def addComments(

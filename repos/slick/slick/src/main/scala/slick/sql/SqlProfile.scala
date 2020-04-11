@@ -65,10 +65,10 @@ trait SqlProfile
       */
     override def ++(other: DDL): DDL =
       new DDL {
-        protected lazy val createPhase1 = self.createPhase1 ++ other
-          .createPhase1
-        protected lazy val createPhase2 = self.createPhase2 ++ other
-          .createPhase2
+        protected lazy val createPhase1 = self.createPhase1 ++
+          other.createPhase1
+        protected lazy val createPhase2 = self.createPhase2 ++
+          other.createPhase2
         protected lazy val dropPhase1 = other.dropPhase1 ++ self.dropPhase1
         protected lazy val dropPhase2 = other.dropPhase2 ++ self.dropPhase2
       }

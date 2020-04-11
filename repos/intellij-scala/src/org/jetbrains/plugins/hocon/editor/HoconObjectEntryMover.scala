@@ -52,8 +52,8 @@ class HoconObjectEntryMover extends LineMover {
       file: PsiFile,
       info: MoveInfo,
       down: Boolean): Boolean =
-    super.checkAvailable(editor, file, info, down) && !editor.getSelectionModel
-      .hasSelection &&
+    super.checkAvailable(editor, file, info, down) &&
+      !editor.getSelectionModel.hasSelection &&
       (file match {
         case hoconFile: HoconPsiFile =>
           checkAvailableHocon(editor, hoconFile, info, down)
@@ -143,9 +143,8 @@ class HoconObjectEntryMover extends LineMover {
 
         field.parent.flatMap(_.prefixingField).map(_.enclosingObjectField)
           .filter(of =>
-            field.parent
-              .exists(pp => edgeLine(of) == edgeLine(pp)) && canInsert(of))
-          .map(of =>
+            field.parent.exists(pp => edgeLine(of) == edgeLine(pp)) &&
+              canInsert(of)).map(of =>
             (of, of.keyedField.fieldsInPathForward.map(keyString).toList))
       } else None
 

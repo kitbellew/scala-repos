@@ -10,13 +10,13 @@ object Test extends App {
 
   def forceCode(prefix: String, tp: Type): String = {
     def isLazyAccessorOrObject(sym: Symbol) =
-      ((sym.isMethod && sym.asMethod.isLazy)
-        || sym.isModule)
+      ((sym.isMethod && sym.asMethod.isLazy) || sym.isModule)
     val forceables = tp.members.sorted.filter(isLazyAccessorOrObject)
     forceables.map { sym =>
       val path = s"$prefix.${sym.name}"
-      "    " + (if (sym.isPrivate || sym.isProtected) s"// inaccessible: $path"
-                else path)
+      "    " +
+        (if (sym.isPrivate || sym.isProtected) s"// inaccessible: $path"
+         else path)
     }.mkString("\n")
   }
 
@@ -65,8 +65,8 @@ object Test extends App {
   import java.io.File
   val testFile = new File(sys.props("partest.test-path"))
   val actualFile = new java.io.File(
-    testFile
-      .getParent + "/../../../src/reflect/scala/reflect/runtime/JavaUniverseForce.scala")
+    testFile.getParent +
+      "/../../../src/reflect/scala/reflect/runtime/JavaUniverseForce.scala")
     .getCanonicalFile
   val actual = scala.io.Source.fromFile(actualFile)
   val actualLines = actual.getLines.toList

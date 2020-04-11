@@ -107,8 +107,8 @@ trait StdAttachments {
     */
   def isMacroExpansionSuppressed(tree: Tree): Boolean =
     (settings.Ymacroexpand.value == settings.MacroExpand.None // SI-6812
-      || tree.hasAttachment[SuppressMacroExpansionAttachment.type]
-      || (tree match {
+    || tree.hasAttachment[SuppressMacroExpansionAttachment.type] ||
+      (tree match {
         // we have to account for the fact that during typechecking an expandee might become wrapped,
         // i.e. surrounded by an inferred implicit argument application or by an inferred type argument application.
         // in that case the expandee itself will no longer be suppressed and we need to look at the core

@@ -23,8 +23,7 @@ case class UserRecord(
   def nbBadOutcomesBeforeBan = if (bans.isEmpty) 4 else 2
 
   def newBan: Option[TempBan] = {
-    !banInEffect &&
-    nbBadOutcomes >= nbBadOutcomesBeforeBan &&
+    !banInEffect && nbBadOutcomes >= nbBadOutcomesBeforeBan &&
     badOutcomeRatio >= 1d / 3
   } option bans.lastOption.filterNot(_.isOld).fold(TempBan.initial) { prev =>
     TempBan(prev.mins * 2)

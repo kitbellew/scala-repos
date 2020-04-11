@@ -103,8 +103,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     proto.getCmd.hasValue should be(true)
     proto.getCmd.getShell should be(false)
     proto.getCmd.getValue should be("bash")
-    proto.getCmd.getArgumentsList.asScala should be(
-      Seq("bash", "foo-*/start", "-Dhttp.port=$PORT"))
+    proto.getCmd.getArgumentsList.asScala should
+      be(Seq("bash", "foo-*/start", "-Dhttp.port=$PORT"))
 
     val read = AppDefinition().mergeFromProto(proto)
     read should be(app)

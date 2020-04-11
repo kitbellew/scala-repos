@@ -78,8 +78,8 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
     val blockTableHTML =
       try {
         val _blockTable = new BlockPagedTable(
-          UIUtils
-            .prependBaseUri(parent.basePath) + s"/storage/rdd/?id=${rddId}",
+          UIUtils.prependBaseUri(parent.basePath) +
+            s"/storage/rdd/?id=${rddId}",
           rddStorageInfo.partitions.get,
           blockPageSize,
           blockSortColumn,
@@ -279,10 +279,8 @@ private[ui] class BlockPagedTable(
 
   override def pageLink(page: Int): String = {
     val encodedSortColumn = URLEncoder.encode(sortColumn, "UTF-8")
-    basePath +
-      s"&$pageNumberFormField=$page" +
-      s"&block.sort=$encodedSortColumn" +
-      s"&block.desc=$desc" +
+    basePath + s"&$pageNumberFormField=$page" +
+      s"&block.sort=$encodedSortColumn" + s"&block.desc=$desc" +
       s"&$pageSizeFormField=$pageSize"
   }
 
@@ -307,10 +305,8 @@ private[ui] class BlockPagedTable(
       blockHeaders.map { header =>
         if (header == sortColumn) {
           val headerLink = Unparsed(
-            basePath +
-              s"&block.sort=${URLEncoder.encode(header, "UTF-8")}" +
-              s"&block.desc=${!desc}" +
-              s"&block.pageSize=$pageSize")
+            basePath + s"&block.sort=${URLEncoder.encode(header, "UTF-8")}" +
+              s"&block.desc=${!desc}" + s"&block.pageSize=$pageSize")
           val arrow = if (desc) "&#x25BE;" else "&#x25B4;" // UP or DOWN
           <th>
             <a href={headerLink}>
@@ -320,8 +316,7 @@ private[ui] class BlockPagedTable(
           </th>
         } else {
           val headerLink = Unparsed(
-            basePath +
-              s"&block.sort=${URLEncoder.encode(header, "UTF-8")}" +
+            basePath + s"&block.sort=${URLEncoder.encode(header, "UTF-8")}" +
               s"&block.pageSize=$pageSize")
           <th>
             <a href={headerLink}>

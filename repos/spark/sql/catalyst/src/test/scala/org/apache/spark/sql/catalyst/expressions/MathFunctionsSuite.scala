@@ -144,8 +144,7 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     if (!actual.asInstanceOf[Double].isNaN) {
       fail(
         s"Incorrect evaluation (codegen off): $expression, " +
-          s"actual: $actual, " +
-          s"expected: NaN")
+          s"actual: $actual, " + s"expected: NaN")
     }
   }
 
@@ -670,12 +669,11 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       3.141593)
 
     val shortResults: Seq[Short] =
-      Seq[Short](0, 0, 30000, 31000, 31400, 31420) ++
-        Seq.fill[Short](7)(31415)
+      Seq[Short](0, 0, 30000, 31000, 31400, 31420) ++ Seq.fill[Short](7)(31415)
 
-    val intResults: Seq[Int] = Seq(
-      314000000, 314200000, 314160000, 314159000, 314159300, 314159270) ++ Seq
-      .fill(7)(314159265)
+    val intResults: Seq[Int] =
+      Seq(314000000, 314200000, 314160000, 314159000, 314159300, 314159270) ++
+        Seq.fill(7)(314159265)
 
     val longResults: Seq[Long] = Seq(
       31415926536000000L, 31415926535900000L, 31415926535900000L,

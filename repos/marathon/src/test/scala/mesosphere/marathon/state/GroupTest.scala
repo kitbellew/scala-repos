@@ -274,14 +274,14 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
         "/some/nested",
         "/some/nested/path",
         "/some/nested/path2"))
-      changed.transitiveApps.map(_.id.toString) should be(
-        Set("/some/nested", "/some/nested/path2/app"))
+      changed.transitiveApps.map(_.id.toString) should
+        be(Set("/some/nested", "/some/nested/path2/app"))
 
       Then("the conflict will be detected by our V2 API model validation")
       val result = validate(changed)
       result.isFailure should be(true)
-      ValidationHelper.getAllRuleConstrains(result).head.message should be(
-        "Groups and Applications may not have the same identifier.")
+      ValidationHelper.getAllRuleConstrains(result).head.message should
+        be("Groups and Applications may not have the same identifier.")
     }
 
     it("can marshal and unmarshal from to protos") {

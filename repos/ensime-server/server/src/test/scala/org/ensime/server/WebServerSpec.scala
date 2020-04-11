@@ -47,12 +47,11 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
     Set(File("foo-javadoc.jar"), File("bar-javadoc.jar"))
 
   "WebServer" should "respond to REST queries" in {
-    Post(
-      "/rpc",
-      """{"typehint":"ConnectionInfoReq"}""".parseJson) ~> route ~> check {
-      status shouldBe StatusCodes.OK
-      responseAs[JsValue] shouldBe expected
-    }
+    Post("/rpc", """{"typehint":"ConnectionInfoReq"}""".parseJson) ~> route ~>
+      check {
+        status shouldBe StatusCodes.OK
+        responseAs[JsValue] shouldBe expected
+      }
   }
 
   it should "error to bad REST queries" in {
@@ -87,8 +86,7 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
       import StreamlinedXmlEquality._
 
       // err, the Equality[NodeSeq] doesn't seem to work... reformatting breaks it
-      responseAs[NodeSeq] shouldEqual
-        <html>
+      responseAs[NodeSeq] shouldEqual <html>
           <head/>
           <body>
             <h1>ENSIME: Your Project's Documentation</h1>

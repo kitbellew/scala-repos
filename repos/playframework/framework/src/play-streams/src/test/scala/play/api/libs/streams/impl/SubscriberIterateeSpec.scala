@@ -25,15 +25,16 @@ object SubscriberIterateeSpec extends Specification {
       isEmptyAfterDelay() must beTrue
     }
 
-    "not consume anything from the enumerator while there is no demand" in new TestEnv {
-      iteratee.fold { folder =>
-        // Record if the folder was invoked
-        record(folder)
-        Future.successful(())
+    "not consume anything from the enumerator while there is no demand" in
+      new TestEnv {
+        iteratee.fold { folder =>
+          // Record if the folder was invoked
+          record(folder)
+          Future.successful(())
+        }
+        next() must beAnInstanceOf[OnSubscribe]
+        isEmptyAfterDelay() must beTrue
       }
-      next() must beAnInstanceOf[OnSubscribe]
-      isEmptyAfterDelay() must beTrue
-    }
 
     "not enter cont state until demand is requested" in new TestEnv {
       val step = iteratee.unflatten
@@ -97,8 +98,8 @@ object SubscriberIterateeSpec extends Specification {
     }
 
     "become done when the stream is cancelled" in new TestEnv {
-      val result = Enumerator(10, 20, 30) |>>> iteratee
-        .flatMap(_ => Iteratee.getChunks[Int])
+      val result = Enumerator(10, 20, 30) |>>>
+        iteratee.flatMap(_ => Iteratee.getChunks[Int])
       next() must beLike {
         case OnSubscribe(sub) =>
           sub.request(1)

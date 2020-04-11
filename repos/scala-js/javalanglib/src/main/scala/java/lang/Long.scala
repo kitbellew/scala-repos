@@ -102,8 +102,8 @@ object Long {
 
   @inline // because radix is almost certainly constant at call site
   def toString(i: scala.Long, radix: Int): String = {
-    if (radix == 10 || radix < Character.MIN_RADIX || radix > Character
-          .MAX_RADIX) toString(i)
+    if (radix == 10 || radix < Character.MIN_RADIX ||
+        radix > Character.MAX_RADIX) toString(i)
     else toStringImpl(i, radix)
   }
 

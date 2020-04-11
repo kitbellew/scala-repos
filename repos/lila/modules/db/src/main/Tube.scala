@@ -122,26 +122,22 @@ object JsTube {
     }
 
     def rename(from: Symbol, to: Symbol) =
-      __.json update ((__ \ to).json copyFrom (__ \ from).json.pick) andThen (
-        __ \ from
-      ).json.prune
+      __.json update ((__ \ to).json copyFrom (__ \ from).json.pick) andThen
+        (__ \ from).json.prune
 
-    def readDate(field: Symbol) =
-      (__ \ field).json.update(of[JsObject] map { o =>
-        (o \ "$date").toOption err s"Can't read date of $o"
-      })
+    def readDate(field: Symbol) = (__ \ field).json.update(of[JsObject] map {
+      o => (o \ "$date").toOption err s"Can't read date of $o"
+    })
 
     def readDateOpt(field: Symbol) = readDate(field) orElse json.reader
 
-    def writeDate(field: Symbol) =
-      (__ \ field).json.update(of[JsNumber] map { millis =>
-        Json.obj("$date" -> millis)
-      })
+    def writeDate(field: Symbol) = (__ \ field).json.update(of[JsNumber] map {
+      millis => Json.obj("$date" -> millis)
+    })
 
-    def writeDateOpt(field: Symbol) =
-      (__ \ field).json.update(of[JsNumber] map { millis =>
-        Json.obj("$date" -> millis)
-      }) orElse json.reader
+    def writeDateOpt(field: Symbol) = (__ \ field).json
+      .update(of[JsNumber] map { millis => Json.obj("$date" -> millis) }) orElse
+      json.reader
 
     def merge(obj: JsObject) = __.read[JsObject] map (obj ++)
   }

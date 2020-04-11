@@ -59,8 +59,8 @@ object ClusterClientSettings {
         .getDuration("establishing-get-contacts-interval", MILLISECONDS).millis,
       refreshContactsInterval = config
         .getDuration("refresh-contacts-interval", MILLISECONDS).millis,
-      heartbeatInterval =
-        config.getDuration("heartbeat-interval", MILLISECONDS).millis,
+      heartbeatInterval = config.getDuration("heartbeat-interval", MILLISECONDS)
+        .millis,
       acceptableHeartbeatPause = config
         .getDuration("acceptable-heartbeat-pause", MILLISECONDS).millis,
       bufferSize = config.getInt("buffer-size"),
@@ -357,8 +357,8 @@ final class ClusterClient(settings: ClusterClientSettings)
 
   def active(receptionist: ActorRef): Actor.Receive = {
     case Send(path, msg, localAffinity) ⇒
-      receptionist forward DistributedPubSubMediator
-        .Send(path, msg, localAffinity)
+      receptionist forward
+        DistributedPubSubMediator.Send(path, msg, localAffinity)
     case SendToAll(path, msg) ⇒
       receptionist forward DistributedPubSubMediator.SendToAll(path, msg)
     case Publish(topic, msg) ⇒
@@ -452,8 +452,8 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     * receptionist.
     */
   def isTerminated: Boolean =
-    Cluster(system).isTerminated || !role
-      .forall(Cluster(system).selfRoles.contains)
+    Cluster(system).isTerminated ||
+      !role.forall(Cluster(system).selfRoles.contains)
 
   /**
     * Register the actors that should be reachable for the clients in this [[DistributedPubSubMediator]].
@@ -473,8 +473,8 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     * but it can also be explicitly unregistered before termination.
     */
   def unregisterService(actor: ActorRef): Unit =
-    pubSubMediator ! DistributedPubSubMediator
-      .Remove(actor.path.toStringWithoutAddress)
+    pubSubMediator !
+      DistributedPubSubMediator.Remove(actor.path.toStringWithoutAddress)
 
   /**
     * Register an actor that should be reachable for the clients to a named topic.

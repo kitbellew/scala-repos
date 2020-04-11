@@ -10,8 +10,8 @@ object RuntimeDependencyInjection extends PlaySpecification {
 
   "Play's runtime dependency injection support" should {
     "support constructor injection" in new WithApplication() {
-      app.injector.instanceOf[constructor.MyComponent] must beAnInstanceOf[
-        constructor.MyComponent]
+      app.injector.instanceOf[constructor.MyComponent] must
+        beAnInstanceOf[constructor.MyComponent]
     }
     "support singleton scope" in new WithApplication() {
       app.injector.instanceOf[singleton.CurrentSharePrice].set(10)
@@ -24,8 +24,8 @@ object RuntimeDependencyInjection extends PlaySpecification {
       cleanup.MessageQueue.stopped must_== true
     }
     "support implemented by annotation" in new WithApplication() {
-      app.injector.instanceOf[implemented.Hello]
-        .sayHello("world") must_== "Hello world"
+      app.injector.instanceOf[implemented.Hello].sayHello("world") must_==
+        "Hello world"
     }
   }
 

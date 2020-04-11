@@ -49,11 +49,11 @@ object IntervalSeqSampleCheck extends Properties("IntervalSeq.Sample") {
       op: (Boolean, Boolean, Boolean) => Boolean) = {
     val support = (a.edges ++ b.edges ++ c.edges).toArray.sorted.distinct
     support.forall { value =>
-      val sameBefore =
-        r.below(value) === op(a.below(value), b.below(value), c.below(value))
+      val sameBefore = r.below(value) ===
+        op(a.below(value), b.below(value), c.below(value))
       val sameAt = r.at(value) === op(a.at(value), b.at(value), c.at(value))
-      val sameAfter =
-        r.above(value) === op(a.above(value), b.above(value), c.above(value))
+      val sameAfter = r.above(value) ===
+        op(a.above(value), b.above(value), c.above(value))
       sameBefore & sameAt & sameAfter
     }
   }

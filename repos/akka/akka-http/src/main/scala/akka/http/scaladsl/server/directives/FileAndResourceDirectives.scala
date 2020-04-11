@@ -93,8 +93,8 @@ trait FileAndResourceDirectives {
       contentType: ContentType,
       classLoader: ClassLoader = defaultClassLoader): Route =
     if (!resourceName.endsWith("/")) get {
-      Option(classLoader.getResource(resourceName)) flatMap ResourceFile
-        .apply match {
+      Option(classLoader.getResource(resourceName)) flatMap
+        ResourceFile.apply match {
         case Some(ResourceFile(url, length, lastModified)) ⇒
           conditionalFor(length, lastModified) {
             if (length > 0) {
@@ -185,8 +185,8 @@ trait FileAndResourceDirectives {
   def getFromBrowseableDirectories(directories: String*)(implicit
       renderer: DirectoryRenderer,
       resolver: ContentTypeResolver): Route = {
-    directories.map(getFromDirectory).reduceLeft(_ ~ _) ~ listDirectoryContents(
-      directories: _*)
+    directories.map(getFromDirectory).reduceLeft(_ ~ _) ~
+      listDirectoryContents(directories: _*)
   }
 
   /**
@@ -395,8 +395,8 @@ object DirectoryListing {
           val secondToLastSlash = path
             .lastIndexOf('/', path.lastIndexOf('/', path.length - 1) - 1)
           sb.append(
-            "<a href=\"%s/\">../</a>\n" format path
-              .substring(0, secondToLastSlash))
+            "<a href=\"%s/\">../</a>\n" format
+              path.substring(0, secondToLastSlash))
         }
         def lastModified(file: File) =
           DateTime(file.lastModified).toIsoLikeDateTimeString

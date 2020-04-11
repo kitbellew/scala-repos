@@ -39,8 +39,8 @@ abstract class RatioBasedEstimator extends ReducerEstimator {
     val ratio = current / past.toDouble
     if (threshold > 0 && (ratio < threshold || ratio > 1 / threshold)) {
       LOG.warn(
-        "Input sizes differ too much to use for estimation: " +
-          "current: " + current + ", past: " + past)
+        "Input sizes differ too much to use for estimation: " + "current: " +
+          current + ", past: " + past)
       false
     } else true
   }
@@ -84,9 +84,8 @@ abstract class RatioBasedEstimator extends ReducerEstimator {
               val e = (baseEstimate * reducerRatio).ceil.toInt max 1
 
               LOG.info(
-                "\nRatioBasedEstimator"
-                  + "\n - past reducer ratio: " + reducerRatio
-                  + "\n - reducer estimate:   " + e)
+                "\nRatioBasedEstimator" + "\n - past reducer ratio: " +
+                  reducerRatio + "\n - reducer estimate:   " + e)
 
               e
             }

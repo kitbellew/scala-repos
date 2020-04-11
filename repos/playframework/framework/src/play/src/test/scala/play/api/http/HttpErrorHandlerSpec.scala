@@ -38,10 +38,10 @@ object HttpErrorHandlerSpec extends Specification {
           .status must_== 418
       }
       "refuse to render something that isn't a client error" in {
-        await(errorHandler.onClientError(FakeRequest(), 500)).header
-          .status must throwAn[IllegalArgumentException]
-        await(errorHandler.onClientError(FakeRequest(), 399)).header
-          .status must throwAn[IllegalArgumentException]
+        await(errorHandler.onClientError(FakeRequest(), 500)).header.status must
+          throwAn[IllegalArgumentException]
+        await(errorHandler.onClientError(FakeRequest(), 399)).header.status must
+          throwAn[IllegalArgumentException]
       }
       "render a server error" in {
         await(errorHandler.onServerError(FakeRequest(), new RuntimeException()))
@@ -50,8 +50,8 @@ object HttpErrorHandlerSpec extends Specification {
     }
 
     "work if a scala handler is defined" in {
-      "in dev mode" in sharedSpecs(
-        handler(classOf[DefaultHttpErrorHandler].getName, Mode.Dev))
+      "in dev mode" in
+        sharedSpecs(handler(classOf[DefaultHttpErrorHandler].getName, Mode.Dev))
       "in prod mode" in sharedSpecs(
         handler(classOf[DefaultHttpErrorHandler].getName, Mode.Prod))
     }
@@ -82,14 +82,13 @@ object HttpErrorHandlerSpec extends Specification {
       .from(Map("play.http.errorHandler" -> handlerClass))
     val env = Environment.simple(mode = mode)
     Fakes.injectorFromBindings(
-      HttpErrorHandler.bindingsFromConfiguration(env, config)
-        ++ Seq(
-          BindingKey(classOf[Router]).to(Router.empty),
-          BindingKey(classOf[OptionalSourceMapper])
-            .to(new OptionalSourceMapper(None)),
-          BindingKey(classOf[Configuration]).to(config),
-          BindingKey(classOf[Environment]).to(env)
-        )).instanceOf[HttpErrorHandler]
+      HttpErrorHandler.bindingsFromConfiguration(env, config) ++ Seq(
+        BindingKey(classOf[Router]).to(Router.empty),
+        BindingKey(classOf[OptionalSourceMapper])
+          .to(new OptionalSourceMapper(None)),
+        BindingKey(classOf[Configuration]).to(config),
+        BindingKey(classOf[Environment]).to(env)
+      )).instanceOf[HttpErrorHandler]
   }
 
   class CustomScalaErrorHandler extends HttpErrorHandler {

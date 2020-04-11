@@ -384,8 +384,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
           // Find and report unsupported JUnit annotations
           annotations.foreach {
             case ann
-                if ann.atp.typeSymbol == TestClass && ann.original
-                  .isInstanceOf[Block] =>
+                if ann.atp.typeSymbol == TestClass &&
+                  ann.original.isInstanceOf[Block] =>
               reporter.error(
                 ann.pos,
                 "@Test(timeout = ...) is not " +

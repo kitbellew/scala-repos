@@ -36,32 +36,25 @@ object Dist {
 
   lazy val settings: Seq[Setting[_]] = Seq(
     distExclude := Seq.empty,
-    distAllClasspaths <<= (
-      thisProjectRef,
-      buildStructure,
-      distExclude) flatMap aggregated(dependencyClasspath.task in Compile),
+    distAllClasspaths <<= (thisProjectRef, buildStructure, distExclude) flatMap
+      aggregated(dependencyClasspath.task in Compile),
     distDependencies <<= distAllClasspaths map {
       _.flatten.map(_.data).filter(ClasspathUtilities.isArchive).distinct
     },
-    distLibJars <<= (
-      thisProjectRef,
-      buildStructure,
-      distExclude) flatMap aggregated(packageBin.task in Compile),
-    distSrcJars <<= (
-      thisProjectRef,
-      buildStructure,
-      distExclude) flatMap aggregated(packageSrc.task in Compile),
-    distDocJars <<= (
-      thisProjectRef,
-      buildStructure,
-      distExclude) flatMap aggregated(packageDoc.task in Compile),
-    distSources <<= (
-      distDependencies,
-      distLibJars,
-      distSrcJars,
-      distDocJars,
-      doc in ScalaUnidoc,
-      generate in Sphinx in docsProject) map DistSources,
+    distLibJars <<= (thisProjectRef, buildStructure, distExclude) flatMap
+      aggregated(packageBin.task in Compile),
+    distSrcJars <<= (thisProjectRef, buildStructure, distExclude) flatMap
+      aggregated(packageSrc.task in Compile),
+    distDocJars <<= (thisProjectRef, buildStructure, distExclude) flatMap
+      aggregated(packageDoc.task in Compile),
+    distSources <<=
+      (
+        distDependencies,
+        distLibJars,
+        distSrcJars,
+        distDocJars,
+        doc in ScalaUnidoc,
+        generate in Sphinx in docsProject) map DistSources,
     distDirectory <<= crossTarget / "dist",
     distUnzipped <<= distDirectory / "unzipped",
     distFile <<= (distDirectory, version, scalaBinaryVersion) { (dir, v, sbv) =>
@@ -104,8 +97,8 @@ object Dist {
           val docs = doc / "docs"
           val docJars = doc / "jars"
           val libs = allSources.depJars ++ allSources.libJars
-          val (scalaLibs, akkaLibs) =
-            libs partition (_.name.contains("scala-library"))
+          val (scalaLibs, akkaLibs) = libs partition
+            (_.name.contains("scala-library"))
           val lib = base / "lib"
           val libAkka = lib / "akka"
           val src = base / "src" / "akka"
@@ -157,8 +150,8 @@ object Dist {
       overwrite: Boolean,
       preserveLastModified: Boolean,
       setExecutable: Boolean)(source: File, target: File): File = {
-    if (overwrite || !target.exists || source.lastModified > target
-          .lastModified) {
+    if (overwrite || !target.exists ||
+        source.lastModified > target.lastModified) {
       if (source.isDirectory) IO.createDirectory(target)
       else {
         IO.createDirectory(target.getParentFile)

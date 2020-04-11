@@ -68,8 +68,8 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
   def unequalSettings(s1: Settings, s2: Settings): Set[Settings#Setting] = {
     val ignoreSettings = Set("-d", "-encoding", "-currentDir")
     def trim(s: Settings): Set[Settings#Setting] =
-      (s.userSetSettings.toSet[Settings#Setting] filterNot (ss =>
-        ignoreSettings exists (ss respondsTo _)))
+      (s.userSetSettings.toSet[Settings#Setting] filterNot
+        (ss => ignoreSettings exists (ss respondsTo _)))
     val ss1 = trim(s1)
     val ss2 = trim(s2)
 
@@ -82,8 +82,8 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
     val input = in.readLine()
 
     def fscError(msg: String): Unit =
-      out println (FakePos(
-        "fsc") + msg + "\n  fsc -help  gives more information")
+      out println
+        (FakePos("fsc") + msg + "\n  fsc -help  gives more information")
     if (input == null || password != guessedPassword) return
 
     val args = input.split("\u0000", -1).toList

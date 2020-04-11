@@ -58,8 +58,8 @@ object Query {
   def nowPlaying(u: String) = Json.obj(F.playingUids -> u)
 
   def recentlyPlaying(u: String) =
-    nowPlaying(u) ++ Json
-      .obj(F.updatedAt -> $gt($date(DateTime.now minusMinutes 5)))
+    nowPlaying(u) ++
+      Json.obj(F.updatedAt -> $gt($date(DateTime.now minusMinutes 5)))
 
   // use the us index
   def win(u: String) = user(u) ++ Json.obj(F.winnerId -> u)

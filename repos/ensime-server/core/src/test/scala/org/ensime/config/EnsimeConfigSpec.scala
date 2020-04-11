@@ -116,8 +116,8 @@ class EnsimeConfigSpec extends EnsimeSpec {
           { implicit config =>
             config.sourceMode shouldBe sourceMode
             config.runtimeClasspath shouldBe Set(abc)
-            config.compileClasspath shouldBe (if (sourceMode) Set.empty
-                                              else Set(abc))
+            config.compileClasspath shouldBe
+              (if (sourceMode) Set.empty else Set(abc))
           }
         )
       }

@@ -213,8 +213,7 @@ class FsHistoryProviderSuite
     updateAndCheck(provider) { list =>
       list.size should be(1)
       list.head.attempts.head.asInstanceOf[FsApplicationAttemptInfo]
-        .logPath should
-        endWith(EventLoggingListener.IN_PROGRESS)
+        .logPath should endWith(EventLoggingListener.IN_PROGRESS)
     }
 
     logFile1.renameTo(newLogFile("app1", None, inProgress = false))

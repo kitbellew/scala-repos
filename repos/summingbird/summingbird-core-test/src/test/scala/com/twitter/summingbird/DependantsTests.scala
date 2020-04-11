@@ -45,8 +45,8 @@ object DependantsTest extends Properties("Dependants") {
   }
   property("we don't depend on ourself") = forAll {
     (prod: Producer[Memory, _]) =>
-      !((Producer.dependenciesOf(prod) ++ Producer
-        .transitiveDependenciesOf(prod)).toSet.contains(prod))
+      !((Producer.dependenciesOf(prod) ++
+        Producer.transitiveDependenciesOf(prod)).toSet.contains(prod))
   }
 
   property("if transitive deps == non-transitive, then parents are sources") =
@@ -63,12 +63,10 @@ object DependantsTest extends Properties("Dependants") {
       val deps = Dependants(prod)
       deps.nodes.forall { t =>
         val tdepth = deps.depth(t).get
-        implies(tdepth == 0, t.isInstanceOf[Source[_, _]]) &&
-        implies(
+        implies(tdepth == 0, t.isInstanceOf[Source[_, _]]) && implies(
           tdepth > 0,
-          (Producer.dependenciesOf(t).map { deps.depth(_).get }
-            .max) < tdepth) &&
-        implies(
+          (Producer.dependenciesOf(t).map { deps.depth(_).get }.max) <
+            tdepth) && implies(
           tdepth > 0,
           Producer.dependenciesOf(t).exists {
             deps.depth(_) == Some(tdepth - 1)
@@ -133,10 +131,8 @@ object DependantsTest extends Properties("Dependants") {
       val alln = fix[Producer[Memory, Any]](Set(prod))(allParents _)
       val deps = Dependants(prod)
       val tails = alln.filter(deps.fanOut(_).get == 0)
-      (tails == deps.allTails.toSet) &&
-      (tails.size == deps.allTails.size) &&
-      (deps.nodes.toSet == alln) &&
-      (deps.nodes.size == alln.size)
+      (tails == deps.allTails.toSet) && (tails.size == deps.allTails.size) &&
+      (deps.nodes.toSet == alln) && (deps.nodes.size == alln.size)
   }
 
   property("tails <= AlsoProducer count + 1") = forAll {
@@ -185,8 +181,9 @@ object DependantsTest extends Properties("Dependants") {
         }.flatMap { n => n :: Producer.transitiveDependenciesOf(n) }.toSet
 
         depTillWrite.collectFirst { case MergedProducer(_, _) => true }
-          .getOrElse(false) || writerDependencies.isEmpty || ((depTillWrite
-          .toSet intersect writerDependencies) == depTillWrite.toSet)
+          .getOrElse(false) || writerDependencies.isEmpty ||
+        ((depTillWrite.toSet intersect writerDependencies) ==
+          depTillWrite.toSet)
       }
     }
 
@@ -201,8 +198,8 @@ object DependantsTest extends Properties("Dependants") {
         }.flatMap { dependants.transitiveDependantsOf(_) }
           .toSet[Producer[Memory, Any]]
         tillWrite.collectFirst { case MergedProducer(_, _) => true }
-          .getOrElse(false) || (tillWrite.toSet & outputChildren.toSet)
-          .size == 0
+          .getOrElse(false) || (tillWrite.toSet & outputChildren.toSet).size ==
+          0
       }
     }
 

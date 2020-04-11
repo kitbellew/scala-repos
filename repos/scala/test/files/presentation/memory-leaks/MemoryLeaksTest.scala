@@ -56,14 +56,14 @@ object Test extends InteractiveTest {
     val filename = "usedmem-%tF.txt".format(Calendar.getInstance.getTime)
 
     val typerUnit = AbstractFile.getFile(
-      baseDir.parent.parent.parent
-        .parent / "src/compiler/scala/tools/nsc/typechecker/Typers.scala")
+      baseDir.parent.parent.parent.parent /
+        "src/compiler/scala/tools/nsc/typechecker/Typers.scala")
     val typesUnit = AbstractFile.getFile(
-      baseDir.parent.parent.parent
-        .parent / "src/reflect/scala/reflect/internal/Types.scala")
+      baseDir.parent.parent.parent.parent /
+        "src/reflect/scala/reflect/internal/Types.scala")
     val treesUnit = AbstractFile.getFile(
-      baseDir.parent.parent.parent
-        .parent / "src/reflect/scala/reflect/internal/Trees.scala")
+      baseDir.parent.parent.parent.parent /
+        "src/reflect/scala/reflect/internal/Trees.scala")
 
     askReload(Seq(
       new BatchSourceFile(typerUnit),
@@ -127,8 +127,8 @@ object Test extends InteractiveTest {
     val meanXs = mean(xs)
     val meanYs = mean(ys)
 
-    val beta = (mean((xs, ys).zipped.map(_ * _)) - meanXs * meanYs) / (mean(
-      xs.map(x => x * x)) - meanXs * meanXs)
+    val beta = (mean((xs, ys).zipped.map(_ * _)) - meanXs * meanYs) /
+      (mean(xs.map(x => x * x)) - meanXs * meanXs)
     val alfa = meanYs - beta * meanXs
 
     (alfa, beta)

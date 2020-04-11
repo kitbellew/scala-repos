@@ -176,8 +176,8 @@ class ClientBuilderTest
       val numFailures = 5
 
       val service = mock[Service[String, String]]
-      when(service("123")) thenReturn Future
-        .exception(WriteException(new Exception()))
+      when(service("123")) thenReturn
+        Future.exception(WriteException(new Exception()))
       when(service.close(any[Time])) thenReturn Future.Done
       preparedServicePromise() = Return(service)
 
@@ -230,8 +230,8 @@ class ClientBuilderTest
       val client = builder.build()
 
       val service = mock[Service[String, String]]
-      when(service("123")) thenReturn Future
-        .exception(WriteException(new Exception()))
+      when(service("123")) thenReturn
+        Future.exception(WriteException(new Exception()))
       when(service.close(any[Time])) thenReturn Future.Done
       preparedServicePromise() = Return(service)
 

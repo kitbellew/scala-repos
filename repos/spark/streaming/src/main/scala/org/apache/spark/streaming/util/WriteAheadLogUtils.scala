@@ -78,8 +78,8 @@ private[streaming] object WriteAheadLogUtils extends Logging {
   }
 
   def isBatchingEnabled(conf: SparkConf, isDriver: Boolean): Boolean = {
-    isDriver && conf
-      .getBoolean(DRIVER_WAL_BATCHING_CONF_KEY, defaultValue = true)
+    isDriver &&
+    conf.getBoolean(DRIVER_WAL_BATCHING_CONF_KEY, defaultValue = true)
   }
 
   /**

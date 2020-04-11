@@ -62,8 +62,8 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
         "/",
         includeContextPath = swagger.baseUrlIncludeContextPath,
         includeServletPath = swagger.baseUrlIncludeServletPath)) ~
-        ("swaggerVersion" -> swagger.swaggerVersion) ~
-        ("apiVersion" -> swagger.apiVersion)
+      ("swaggerVersion" -> swagger.swaggerVersion) ~
+      ("apiVersion" -> swagger.apiVersion)
     val consumes = dontAddOnEmpty("consumes", doc.consumes) _
     val produces = dontAddOnEmpty("produces", doc.produces) _
     val protocols = dontAddOnEmpty("protocols", doc.protocols) _
@@ -85,19 +85,18 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
       ("swaggerVersion" -> swagger.swaggerVersion) ~
       ("apis" ->
         (docs.filter(_.apis.nonEmpty).toList map { doc =>
-          ("path" -> (url(
-            doc.resourcePath,
-            includeServletPath = false,
-            includeContextPath = false) + (if (includeFormatParameter)
-                                             ".{format}"
-                                           else ""))) ~
+          ("path" ->
+            (url(
+              doc.resourcePath,
+              includeServletPath = false,
+              includeContextPath = false) +
+              (if (includeFormatParameter) ".{format}" else ""))) ~
             ("description" -> doc.description)
         })) ~
       ("authorizations" -> swagger.authorizations.foldLeft(JObject(Nil)) {
         (acc, auth) =>
           acc merge JObject(List(auth.`type` -> Extraction.decompose(auth)))
-      }) ~
-      ("info" -> Option(swagger.apiInfo).map(Extraction.decompose(_)))
+      }) ~ ("info" -> Option(swagger.apiInfo).map(Extraction.decompose(_)))
   }
 
   error {

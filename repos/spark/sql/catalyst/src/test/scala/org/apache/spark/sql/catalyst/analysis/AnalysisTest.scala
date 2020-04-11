@@ -42,13 +42,12 @@ trait AnalysisTest extends PlanTest {
       EmptyFunctionRegistry,
       caseSensitiveConf) {
       override val extendedResolutionRules = EliminateSubqueryAliases :: Nil
-    } ->
-      new Analyzer(
-        caseInsensitiveCatalog,
-        EmptyFunctionRegistry,
-        caseInsensitiveConf) {
-        override val extendedResolutionRules = EliminateSubqueryAliases :: Nil
-      }
+    } -> new Analyzer(
+      caseInsensitiveCatalog,
+      EmptyFunctionRegistry,
+      caseInsensitiveConf) {
+      override val extendedResolutionRules = EliminateSubqueryAliases :: Nil
+    }
   }
 
   protected def getAnalyzer(caseSensitive: Boolean) = {

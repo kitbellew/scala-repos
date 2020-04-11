@@ -25,7 +25,8 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
 
     Get("/") ~> Route.seal(route) ~> check {
       status shouldEqual BadRequest
-      responseAs[String] shouldEqual "Request is missing required HTTP header 'X-User-Id'"
+      responseAs[String] shouldEqual
+        "Request is missing required HTTP header 'X-User-Id'"
     }
   }
   "headerValue-0" in {
@@ -44,8 +45,8 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     }
     Get("/") ~> Route.seal(route) ~> check {
       status shouldEqual NotFound
-      responseAs[
-        String] shouldEqual "The requested resource could not be found."
+      responseAs[String] shouldEqual
+        "The requested resource could not be found."
     }
   }
   "optionalHeaderValue-0" in {
@@ -114,8 +115,8 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     }
     Get("/") ~> Route.seal(route) ~> check {
       status shouldEqual NotFound
-      responseAs[
-        String] shouldEqual "The requested resource could not be found."
+      responseAs[String] shouldEqual
+        "The requested resource could not be found."
     }
   }
   "optionalHeaderValuePF-0" in {
@@ -155,8 +156,8 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     // tests:
     // extract a header if the type is matching
     Get("abc") ~> originHeader ~> route ~> check {
-      responseAs[
-        String] shouldEqual "The first origin was http://localhost:8080"
+      responseAs[String] shouldEqual
+        "The first origin was http://localhost:8080"
     }
 
     // reject a request if no header of the given type is present
@@ -176,8 +177,8 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     // tests:
     // extract Some(header) if the type is matching
     Get("abc") ~> originHeader ~> route ~> check {
-      responseAs[
-        String] shouldEqual "The first origin was http://localhost:8080"
+      responseAs[String] shouldEqual
+        "The first origin was http://localhost:8080"
     }
 
     // extract None if no header of the given type is present

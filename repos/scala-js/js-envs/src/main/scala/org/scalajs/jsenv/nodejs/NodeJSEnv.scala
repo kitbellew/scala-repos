@@ -311,9 +311,7 @@ class NodeJSEnv private (
 
     /** Libraries are loaded via require in Node.js */
     override protected def getLibJSFiles(): Seq[VirtualJSFile] = {
-      initFiles() ++
-        customInitFiles() ++
-        libs.map(requireLibrary)
+      initFiles() ++ customInitFiles() ++ libs.map(requireLibrary)
     }
 
     /** Rewrites a library virtual file to a require statement if possible */
@@ -351,9 +349,8 @@ class NodeJSEnv private (
       val nodePath = libCache.cacheDir.getAbsolutePath +
         baseNodePath.fold("")(p => File.pathSeparator + p)
 
-      sys.env ++ Seq(
-        "NODE_MODULE_CONTEXTS" -> "0",
-        "NODE_PATH" -> nodePath) ++ additionalEnv
+      sys.env ++ Seq("NODE_MODULE_CONTEXTS" -> "0", "NODE_PATH" -> nodePath) ++
+        additionalEnv
     }
   }
 

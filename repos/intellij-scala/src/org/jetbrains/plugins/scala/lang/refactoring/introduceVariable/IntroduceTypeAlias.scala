@@ -203,11 +203,11 @@ trait IntroduceTypeAlias {
                 val computable = ApplicationManager.getApplication
                   .runWriteAction(introduceRunnable)
 
-                val namedElement: ScNamedElement =
-                  computable._1.getElement match {
-                    case typeAlias: ScTypeAliasDefinition => typeAlias
-                    case _                                => null
-                  }
+                val namedElement: ScNamedElement = computable._1
+                  .getElement match {
+                  case typeAlias: ScTypeAliasDefinition => typeAlias
+                  case _                                => null
+                }
 
                 val mtypeElement = computable._2.getElement match {
                   case typeElement: ScTypeElement => typeElement
@@ -247,9 +247,8 @@ trait IntroduceTypeAlias {
         val currentScope = currentDataObject.currentScope
 
         //need open modal dialog in inplace mode
-        if ((StartMarkAction.canStart(project) != null) && (
-              currentScope != null
-            )) {
+        if ((StartMarkAction.canStart(project) != null) &&
+            (currentScope != null)) {
           currentDataObject.isCallModalDialogInProgress = true
           val templateState: TemplateState = TemplateManagerImpl
             .getTemplateState(InjectedLanguageUtil.getTopLevelEditor(editor))

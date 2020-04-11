@@ -137,8 +137,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       RuleCall(
         Right(call),
         Literal(Constant(
-          callName(call) getOrElse c
-            .abort(call.pos, "Illegal rule call: " + call))))
+          callName(call) getOrElse
+            c.abort(call.pos, "Illegal rule call: " + call))))
   }
 
   def OpTree(tree: Tree): OpTree =
@@ -270,7 +270,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
     def render(wrapped: Boolean): Tree = {
       def unrollUnwrapped(s: String, ix: Int = 0): Tree =
         if (ix < s.length) q"""
-          if (_root_.java.lang.Character.toLowerCase(cursorChar) == ${s charAt ix}) {
+          if (_root_.java.lang.Character.toLowerCase(cursorChar) == ${s charAt
+          ix}) {
             __advance()
             ${unrollUnwrapped(s, ix + 1)}
           } else false"""
@@ -493,8 +494,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
     def ruleTraceNonTerminalKey =
       q"..$inits; akka.parboiled2.RuleTrace.Times(min, max)"
     def renderInner(wrapped: Boolean): Tree = {
-      val recurse =
-        if (separator eq null) q"rec(count + 1, __saveState)" else q"""
+      val recurse = if (separator eq null) q"rec(count + 1, __saveState)" else q"""
           val m = __saveState; if (${separator(wrapped)}) rec(count + 1, m)
           else (count >= min) && { __restoreState(m); true }"""
 

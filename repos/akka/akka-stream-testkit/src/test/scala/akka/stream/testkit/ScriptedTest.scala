@@ -129,8 +129,8 @@ trait ScriptedTest extends Matchers {
 
     var _debugLog = Vector.empty[String]
     var currentScript = script
-    var remainingDemand = script.expectedOutputs.size + ThreadLocalRandom
-      .current().nextInt(1, maximumOverrun)
+    var remainingDemand = script.expectedOutputs.size +
+      ThreadLocalRandom.current().nextInt(1, maximumOverrun)
     debugLog(s"starting with remainingDemand=$remainingDemand")
     var pendingRequests = 0L
     var outstandingDemand = 0L
@@ -157,8 +157,8 @@ trait ScriptedTest extends Matchers {
     }
 
     def mayProvideInput: Boolean =
-      currentScript.someInsPending && (pendingRequests > 0) && (currentScript
-        .pendingOuts <= maximumBuffer)
+      currentScript.someInsPending && (pendingRequests > 0) &&
+        (currentScript.pendingOuts <= maximumBuffer)
     def mayRequestMore: Boolean = remainingDemand > 0
 
     def shakeIt(): Boolean = {

@@ -38,31 +38,28 @@ private[ui] class AllExecutionsPage(parent: SQLTab)
     val content = listener.synchronized {
       val _content = mutable.ListBuffer[Node]()
       if (listener.getRunningExecutions.nonEmpty) {
-        _content ++=
-          new RunningExecutionTable(
-            parent,
-            "Running Queries",
-            currentTime,
-            listener.getRunningExecutions.sortBy(_.submissionTime).reverse)
-            .toNodeSeq
+        _content ++= new RunningExecutionTable(
+          parent,
+          "Running Queries",
+          currentTime,
+          listener.getRunningExecutions.sortBy(_.submissionTime).reverse)
+          .toNodeSeq
       }
       if (listener.getCompletedExecutions.nonEmpty) {
-        _content ++=
-          new CompletedExecutionTable(
-            parent,
-            "Completed Queries",
-            currentTime,
-            listener.getCompletedExecutions.sortBy(_.submissionTime).reverse)
-            .toNodeSeq
+        _content ++= new CompletedExecutionTable(
+          parent,
+          "Completed Queries",
+          currentTime,
+          listener.getCompletedExecutions.sortBy(_.submissionTime).reverse)
+          .toNodeSeq
       }
       if (listener.getFailedExecutions.nonEmpty) {
-        _content ++=
-          new FailedExecutionTable(
-            parent,
-            "Failed Queries",
-            currentTime,
-            listener.getFailedExecutions.sortBy(_.submissionTime).reverse)
-            .toNodeSeq
+        _content ++= new FailedExecutionTable(
+          parent,
+          "Failed Queries",
+          currentTime,
+          listener.getFailedExecutions.sortBy(_.submissionTime).reverse)
+          .toNodeSeq
       }
       _content
     }
@@ -89,8 +86,8 @@ private[ui] abstract class ExecutionTable(
       currentTime: Long,
       executionUIData: SQLExecutionUIData): Seq[Node] = {
     val submissionTime = executionUIData.submissionTime
-    val duration = executionUIData.completionTime
-      .getOrElse(currentTime) - submissionTime
+    val duration = executionUIData.completionTime.getOrElse(currentTime) -
+      submissionTime
 
     val runningJobs = executionUIData.runningJobs.map { jobId =>
       <a href={jobURL(jobId)}>{jobId.toString}</a><br/>
@@ -145,8 +142,7 @@ private[ui] abstract class ExecutionTable(
         <span onclick="this.parentNode.querySelector('.stage-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
-      </span> ++
-          <div class="stage-details collapsed">
+      </span> ++ <div class="stage-details collapsed">
         <pre>{execution.details}</pre>
       </div>
       } else { Nil }
@@ -169,8 +165,7 @@ private[ui] abstract class ExecutionTable(
         <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
-      </span> ++
-          <div class="stacktrace-details collapsed">
+      </span> ++ <div class="stacktrace-details collapsed">
           <pre>{physicalPlan}</pre>
         </div>
         // scalastyle:on

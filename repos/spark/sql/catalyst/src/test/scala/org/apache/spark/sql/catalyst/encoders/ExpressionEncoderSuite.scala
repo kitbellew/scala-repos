@@ -258,8 +258,8 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
   test("nullable of encoder schema") {
     def checkNullable[T: ExpressionEncoder](nullable: Boolean*): Unit = {
       assert(
-        implicitly[ExpressionEncoder[T]].schema.map(_.nullable) === nullable
-          .toSeq)
+        implicitly[ExpressionEncoder[T]].schema.map(_.nullable) ===
+          nullable.toSeq)
     }
 
     // test for flat encoders

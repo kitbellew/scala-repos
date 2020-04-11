@@ -86,15 +86,15 @@ object LDAPUtil {
       if (ldapSettings.mailAttribute.getOrElse("").isEmpty) {
         Right(LDAPUserInfo(
           userName = userName,
-          fullName = ldapSettings.fullNameAttribute
-            .flatMap { fullNameAttribute =>
+          fullName = ldapSettings.fullNameAttribute.flatMap {
+            fullNameAttribute =>
               findFullName(
                 conn,
                 userDN,
                 ldapSettings.userNameAttribute,
                 userName,
                 fullNameAttribute)
-            }.getOrElse(userName),
+          }.getOrElse(userName),
           mailAddress = createDummyMailAddress(userName)
         ))
       } else {
@@ -106,15 +106,15 @@ object LDAPUtil {
           ldapSettings.mailAttribute.get) match {
           case Some(mailAddress) => Right(LDAPUserInfo(
               userName = getUserNameFromMailAddress(userName),
-              fullName = ldapSettings.fullNameAttribute
-                .flatMap { fullNameAttribute =>
+              fullName = ldapSettings.fullNameAttribute.flatMap {
+                fullNameAttribute =>
                   findFullName(
                     conn,
                     userDN,
                     ldapSettings.userNameAttribute,
                     userName,
                     fullNameAttribute)
-                }.getOrElse(userName),
+              }.getOrElse(userName),
               mailAddress = mailAddress
             ))
           case None => Left("Can't find mail address.")
@@ -198,11 +198,12 @@ object LDAPUtil {
       if (results.hasMore) {
         getEntries(
           results,
-          entries :+ (try { Option(results.next) }
-          catch {
-            case ex: LDAPReferralException =>
-              None // NOTE(tanacasino): Referral follow is off. so ignores it.(for AD)
-          })
+          entries :+
+            (try { Option(results.next) }
+            catch {
+              case ex: LDAPReferralException =>
+                None // NOTE(tanacasino): Referral follow is off. so ignores it.(for AD)
+            })
         )
       } else { entries.flatten }
     }

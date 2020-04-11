@@ -63,7 +63,8 @@ object LangList {
     "ff" -> "Fulfulde, Pulaar, Pular",
     "gl" -> "Galego",
     "ka" -> "ქართული",
-    "kb" -> "Taqvaylit", // should be kab http://en.wikipedia.org/wiki/Kabyle_language
+    "kb" ->
+      "Taqvaylit", // should be kab http://en.wikipedia.org/wiki/Kabyle_language
     "de" -> "Deutsch",
     "el" -> "Ελληνικά",
     "gn" -> "avañe'ẽ",
@@ -79,7 +80,8 @@ object LangList {
     "id" -> "Bahasa Indonesia",
     "ie" -> "Interlingue",
     "ig" -> "Asụsụ Igbo",
-    "ik" -> "Iñupiaq, Iñupiatun", // lots of different writing systems (and therefore spellings) for 'ik' -- the Inupiat language
+    "ik" ->
+      "Iñupiaq, Iñupiatun", // lots of different writing systems (and therefore spellings) for 'ik' -- the Inupiat language
     "io" -> "Ido",
     "is" -> "Íslenska",
     "it" -> "Italiano",
@@ -126,7 +128,8 @@ object LangList {
     "nn" -> "Norsk nynorsk",
     "nr" -> "isiNdebele",
     "oc" -> "Occitan",
-    "oj" -> "Ojibwe", // difficult to find a native name for this language group. Also, the spelling is nonstandard but this seems to be the most prominent in recent source
+    "oj" ->
+      "Ojibwe", // difficult to find a native name for this language group. Also, the spelling is nonstandard but this seems to be the most prominent in recent source
     "cu" -> "словѣ́ньскъ ѩзꙑ́къ",
     "om" -> "Afaan Oromo",
     "or" -> "ଓଡ଼ି",

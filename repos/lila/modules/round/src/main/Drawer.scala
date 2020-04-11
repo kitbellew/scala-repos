@@ -27,8 +27,9 @@ private[round] final class Drawer(
       import Pref.PrefZero
       pov.player.userId ?? prefApi.getPref map { pref =>
         pref.autoThreefold == Pref.AutoThreefold.ALWAYS || {
-          pref.autoThreefold == Pref.AutoThreefold.TIME &&
-          game.clock ?? { _.remainingTime(pov.color) < 30 }
+          pref.autoThreefold == Pref.AutoThreefold.TIME && game.clock ?? {
+            _.remainingTime(pov.color) < 30
+          }
         }
       } map (_ option pov)
     }.sequenceFu map (_.flatten.headOption)
@@ -64,8 +65,8 @@ private[round] final class Drawer(
     }
 
   def claim(pov: Pov): Fu[Events] =
-    (pov.game.playable && pov.game.toChessHistory
-      .threefoldRepetition) ?? finisher.other(pov.game, _.Draw)
+    (pov.game.playable && pov.game.toChessHistory.threefoldRepetition) ??
+      finisher.other(pov.game, _.Draw)
 
   def force(game: Game): Fu[Events] = finisher.other(game, _.Draw, None, None)
 }

@@ -567,8 +567,8 @@ abstract class TernaryExpression extends Expression {
       val nullSafeEval =
         leftGen.code + ctx.nullSafeExec(children(0).nullable, leftGen.isNull) {
           midGen.code + ctx.nullSafeExec(children(1).nullable, midGen.isNull) {
-            rightGen.code + ctx
-              .nullSafeExec(children(2).nullable, rightGen.isNull) {
+            rightGen.code +
+              ctx.nullSafeExec(children(2).nullable, rightGen.isNull) {
                 s"""
                 ${ev.isNull} = false; // resultCode could change nullability.
                 $resultCode

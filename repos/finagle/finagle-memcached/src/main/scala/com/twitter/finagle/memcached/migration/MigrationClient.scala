@@ -328,10 +328,10 @@ object MigrationClient {
     val zkClient = DefaultZkClientFactory
       .get(DefaultZkClientFactory.hostSet(zkHosts))._1
 
-    val oldPoolPath = zkPath + "/" + MigrationConstants.PoolNames.OldPool
-      .toString
-    val newPoolPath = zkPath + "/" + MigrationConstants.PoolNames.NewPool
-      .toString
+    val oldPoolPath = zkPath + "/" +
+      MigrationConstants.PoolNames.OldPool.toString
+    val newPoolPath = zkPath + "/" +
+      MigrationConstants.PoolNames.NewPool.toString
 
     // verify the format of the path (zkPath, zkClient)
     assert(zkClient.get().exists(zkPath, false) != null)

@@ -183,10 +183,9 @@ private[akka] class SubclassifiedIndex[K, V] private (
     * Find all values for a given key in the index.
     */
   protected final def findValues(key: K): Set[V] = root.innerFindValues(key)
-  protected def innerFindValues(key: K): Set[V] =
-    (Set.empty[V] /: subkeys) { (s, n) ⇒
-      if (sc.isSubclass(key, n.key)) s ++ n.innerFindValues(key) else s
-    }
+  protected def innerFindValues(key: K): Set[V] = (Set.empty[V] /: subkeys) {
+    (s, n) ⇒ if (sc.isSubclass(key, n.key)) s ++ n.innerFindValues(key) else s
+  }
 
   /**
     * Find all subkeys of a given key in the index excluding some subkeys.
@@ -197,16 +196,16 @@ private[akka] class SubclassifiedIndex[K, V] private (
     root.innerFindSubKeys(key, except)
   protected def innerFindSubKeys(
       key: K,
-      except: Vector[Nonroot[K, V]]): Set[K] =
-    (Set.empty[K] /: subkeys) { (s, n) ⇒
+      except: Vector[Nonroot[K, V]]): Set[K] = (Set.empty[K] /: subkeys) {
+    (s, n) ⇒
       if (sc.isEqual(key, n.key)) s
       else
         n.innerFindSubKeys(key, except) ++ {
-          if (sc.isSubclass(n.key, key) && !except
-                .exists(e ⇒ sc.isEqual(key, e.key))) s + n.key
+          if (sc.isSubclass(n.key, key) &&
+              !except.exists(e ⇒ sc.isEqual(key, e.key))) s + n.key
           else s
         }
-    }
+  }
 
   override def toString =
     subkeys.mkString("SubclassifiedIndex(" + values + ",\n", ",\n", ")")

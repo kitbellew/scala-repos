@@ -413,8 +413,8 @@ private[util] class FieldAccessFinder(
         for (cl <- fields.keys if cl.getName == owner.replace('/', '.')) {
           // Check for calls a getter method for a variable in an interpreter wrapper object.
           // This means that the corresponding field will be accessed, so we should save it.
-          if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name
-                .endsWith("$outer")) { fields(cl) += name }
+          if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") &&
+              !name.endsWith("$outer")) { fields(cl) += name }
           // Optionally visit other methods to find fields that are transitively referenced
           if (findTransitively) {
             val m = MethodIdentifier(cl, name, desc)
@@ -467,8 +467,8 @@ private class InnerClosureFinder(output: Set[Class[_]])
           desc: String,
           itf: Boolean) {
         val argTypes = Type.getArgumentTypes(desc)
-        if (op == INVOKESPECIAL && name == "<init>" && argTypes.length > 0
-            && argTypes(0).toString.startsWith("L") // is it an object?
+        if (op == INVOKESPECIAL && name == "<init>" && argTypes.length > 0 &&
+            argTypes(0).toString.startsWith("L") // is it an object?
             && argTypes(0).getInternalName == myName) {
           // scalastyle:off classforname
           output += Class.forName(

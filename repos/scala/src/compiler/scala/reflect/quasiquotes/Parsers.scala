@@ -121,10 +121,10 @@ trait Parsers {
           owner: Name,
           implicitmod: Int,
           caseParam: Boolean): ValDef =
-        if (isHole && lookingAhead {
-              in.token == COMMA || in.token == RPAREN
-            }) { ParamPlaceholder(implicitmod, ident()) }
-        else super.param(owner, implicitmod, caseParam)
+        if (isHole &&
+            lookingAhead { in.token == COMMA || in.token == RPAREN }) {
+          ParamPlaceholder(implicitmod, ident())
+        } else super.param(owner, implicitmod, caseParam)
 
       // q"($x) => ..." && q"class X { selfie => }
       override def convertToParam(tree: Tree): ValDef =
@@ -182,8 +182,8 @@ trait Parsers {
             in.nextToken()
             annot :: readAnnots(annot)
           case _ if isHole && lookingAhead {
-                isAnnotation || isModifier || isDefIntro || isIdent || isStatSep || in
-                  .token == LPAREN
+                isAnnotation || isModifier || isDefIntro || isIdent ||
+                isStatSep || in.token == LPAREN
               } =>
             val ann = ModsPlaceholder(in.name)
             in.nextToken()
@@ -206,10 +206,11 @@ trait Parsers {
         }
 
       override def isTypedParam(tree: Tree) =
-        super.isTypedParam(tree) || (tree match {
-          case Ident(name) if isHole(name) => true
-          case _                           => false
-        })
+        super.isTypedParam(tree) ||
+          (tree match {
+            case Ident(name) if isHole(name) => true
+            case _                           => false
+          })
 
       override def topStat =
         super.topStat.orElse {

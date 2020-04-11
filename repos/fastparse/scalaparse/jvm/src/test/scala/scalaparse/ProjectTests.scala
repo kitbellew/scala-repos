@@ -43,8 +43,8 @@ object ProjectTests extends TestSuite {
       }
 
       'test - {
-        val testSource =
-          scala.io.Source.fromInputStream(getClass.getResourceAsStream(
+        val testSource = scala.io.Source
+          .fromInputStream(getClass.getResourceAsStream(
             "/scalaparse/Test.scala")).mkString
         TestUtil.check(testSource)
       }

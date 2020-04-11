@@ -152,8 +152,8 @@ class StreamingJobProgressListenerSuite extends TestSuiteBase with Matchers {
       .onBatchCompleted(StreamingListenerBatchCompleted(batchInfoCompleted))
     listener.waitingBatches should be(Nil)
     listener.runningBatches should be(Nil)
-    listener.retainedCompletedBatches should be(
-      List(BatchUIData(batchInfoCompleted)))
+    listener.retainedCompletedBatches should
+      be(List(BatchUIData(batchInfoCompleted)))
     listener.lastCompletedBatch should be(Some(BatchUIData(batchInfoCompleted)))
     listener.numUnprocessedBatches should be(0)
     listener.numTotalCompletedBatches should be(1)
@@ -254,15 +254,15 @@ class StreamingJobProgressListenerSuite extends TestSuiteBase with Matchers {
     val batchUIData = listener.getBatchUIData(Time(1000 + limit * 100))
     batchUIData should not be None
     batchUIData.get.batchTime should be(batchInfoSubmitted.batchTime)
-    batchUIData.get.schedulingDelay should be(
-      batchInfoSubmitted.schedulingDelay)
-    batchUIData.get.processingDelay should be(
-      batchInfoSubmitted.processingDelay)
+    batchUIData.get.schedulingDelay should
+      be(batchInfoSubmitted.schedulingDelay)
+    batchUIData.get.processingDelay should
+      be(batchInfoSubmitted.processingDelay)
     batchUIData.get.totalDelay should be(batchInfoSubmitted.totalDelay)
     batchUIData.get.streamIdToInputInfo should be(Map.empty)
     batchUIData.get.numRecords should be(0)
-    batchUIData.get.outputOpIdSparkJobIdPairs.toSeq should be(
-      Seq(OutputOpIdAndSparkJobId(0, 0)))
+    batchUIData.get.outputOpIdSparkJobIdPairs.toSeq should
+      be(Seq(OutputOpIdAndSparkJobId(0, 0)))
 
     // A lot of "onBatchCompleted"s happen before "onJobStart"
     for (i <- limit + 1 to limit * 2) {
@@ -286,7 +286,8 @@ class StreamingJobProgressListenerSuite extends TestSuiteBase with Matchers {
     }
 
     // We should not leak memory
-    listener.batchTimeToOutputOpIdSparkJobIdPair.size() should be <=
+    listener.batchTimeToOutputOpIdSparkJobIdPair.size() should
+      be <=
       (listener.waitingBatches.size + listener.runningBatches.size +
         listener.retainedCompletedBatches.size + 10)
   }
@@ -351,7 +352,8 @@ class StreamingJobProgressListenerSuite extends TestSuiteBase with Matchers {
     listener.waitingBatches.size should be(0)
     listener.runningBatches.size should be(0)
     listener.retainedCompletedBatches.size should be(limit)
-    listener.batchTimeToOutputOpIdSparkJobIdPair.size() should be <=
+    listener.batchTimeToOutputOpIdSparkJobIdPair.size() should
+      be <=
       (listener.waitingBatches.size + listener.runningBatches.size +
         listener.retainedCompletedBatches.size + 10)
   }

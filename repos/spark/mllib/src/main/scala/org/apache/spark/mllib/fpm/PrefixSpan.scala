@@ -191,9 +191,8 @@ class PrefixSpan private (
           sequenceBuilder += itemsetBuilder.result()
           itemsetBuilder.clear()
         } else {
-          itemsetBuilder += freqItems(
-            x - 1
-          ) // using 1-indexing in internal format
+          itemsetBuilder +=
+            freqItems(x - 1) // using 1-indexing in internal format
         }
         i += 1
       }

@@ -150,9 +150,7 @@ object Hashable extends LowPriorityHashable {
       hasher.update(key)
 
       val d = hasher.digest()
-      (d(0) & 0xff) |
-        ((d(1) & 0xff) << 8) |
-        ((d(2) & 0xff) << 16) |
+      (d(0) & 0xff) | ((d(1) & 0xff) << 8) | ((d(2) & 0xff) << 16) |
         ((d(3) & 0xff) << 24)
     }
 

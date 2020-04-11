@@ -37,8 +37,8 @@ trait ScentrySupport[UserType <: AnyRef] extends Initializable {
 
   private def readStrategiesFromConfig(config: ConfigT) =
     _strategiesFromConfig = {
-      config.context.getInitParameter("scentry.strategies").blankOption map (s ⇒
-        (s split ";").toList) getOrElse Nil
+      config.context.getInitParameter("scentry.strategies").blankOption map
+        (s ⇒ (s split ";").toList) getOrElse Nil
     }
 
   private def registerStrategiesFromConfig =

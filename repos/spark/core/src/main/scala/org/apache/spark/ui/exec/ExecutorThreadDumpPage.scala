@@ -47,8 +47,8 @@ private[ui] class ExecutorThreadDumpPage(parent: ExecutorsTab)
             if (threadTrace2.threadName.contains("Executor task launch")) 1
             else 0
           if (v1 == v2) {
-            threadTrace1.threadName.toLowerCase < threadTrace2.threadName
-              .toLowerCase
+            threadTrace1.threadName.toLowerCase <
+              threadTrace2.threadName.toLowerCase
           } else { v1 > v2 }
         }
       }.map { thread =>
@@ -88,9 +88,7 @@ private[ui] class ExecutorThreadDumpPage(parent: ExecutorsTab)
         <p></p>
         // scalastyle:on
       }
-      <table class={
-        UIUtils.TABLE_CLASS_STRIPED + " accordion-group" + " sortable"
-      }>
+      <table class={UIUtils.TABLE_CLASS_STRIPED + " accordion-group" + " sortable"}>
         <thead>
           <th onClick="collapseAllThreadStackTrace(false)">Thread ID</th>
           <th onClick="collapseAllThreadStackTrace(false)">Thread Name</th>

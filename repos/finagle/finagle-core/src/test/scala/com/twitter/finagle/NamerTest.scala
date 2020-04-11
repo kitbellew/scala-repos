@@ -146,14 +146,14 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
   test("NameTree.bind: Alt with Fail/Empty")(new Ctx {
     assert(
-      namer.bind(NameTree.read("(! | /test/1 | /test/2)")).sample() == NameTree
-        .Fail)
+      namer.bind(NameTree.read("(! | /test/1 | /test/2)")).sample() ==
+        NameTree.Fail)
     assert(
-      namer.bind(NameTree.read("(~ | /$/fail | /test/1)")).sample() == NameTree
-        .Fail)
+      namer.bind(NameTree.read("(~ | /$/fail | /test/1)")).sample() ==
+        NameTree.Fail)
     assert(
-      namer.bind(NameTree.read("(/$/nil | /$/fail | /test/1)"))
-        .sample() == NameTree.Empty)
+      namer.bind(NameTree.read("(/$/nil | /$/fail | /test/1)")).sample() ==
+        NameTree.Empty)
   })
 
   def assertLookup(path: String, addrs: Address*) {
@@ -193,28 +193,23 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
   }
 
   test("Namer.global: /$/fail") {
+    assert(Namer.global.lookup(Path.read("/$/fail")).sample() == NameTree.Fail)
     assert(
-      Namer.global.lookup(Path.read("/$/fail")).sample()
-        == NameTree.Fail)
-    assert(
-      Namer.global.lookup(Path.read("/$/fail/foo/bar")).sample()
-        == NameTree.Fail)
+      Namer.global.lookup(Path.read("/$/fail/foo/bar")).sample() ==
+        NameTree.Fail)
   }
 
   test("Namer.global: /$/nil") {
+    assert(Namer.global.lookup(Path.read("/$/nil")).sample() == NameTree.Empty)
     assert(
-      Namer.global.lookup(Path.read("/$/nil")).sample()
-        == NameTree.Empty)
-    assert(
-      Namer.global.lookup(Path.read("/$/nil/foo/bar")).sample()
-        == NameTree.Empty)
+      Namer.global.lookup(Path.read("/$/nil/foo/bar")).sample() ==
+        NameTree.Empty)
   }
 
   test("Namer.global: /$/{className}") {
     assert(
       Namer.global.lookup(Path.read("/$/com.twitter.finagle.TestNamer/foo"))
-        .sample()
-        == NameTree.Leaf(Name.Path(Path.Utf8("bar"))))
+        .sample() == NameTree.Leaf(Name.Path(Path.Utf8("bar"))))
   }
 
   test("Namer.global: /$/{className} ServiceNamer") {
@@ -265,11 +260,9 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
   test("Namer.global: negative resolution") {
     assert(
-      Namer.global.lookup(Path.read("/foo/bar/bah/blah")).sample()
-        == NameTree.Neg)
-    assert(
-      Namer.global.lookup(Path.read("/foo/bar")).sample()
-        == NameTree.Neg)
+      Namer.global.lookup(Path.read("/foo/bar/bah/blah")).sample() ==
+        NameTree.Neg)
+    assert(Namer.global.lookup(Path.read("/foo/bar")).sample() == NameTree.Neg)
   }
 
   test("Namer.resolve") {

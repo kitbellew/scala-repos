@@ -181,12 +181,12 @@ object Tests {
       log.debug(excludeTestsSet.mkString("Excluding tests: \n\t", "\n\t", ""))
     if (undefinedFrameworks.nonEmpty)
       log.warn(
-        "Arguments defined for test frameworks that are not present:\n\t" + undefinedFrameworks
-          .mkString("\n\t"))
+        "Arguments defined for test frameworks that are not present:\n\t" +
+          undefinedFrameworks.mkString("\n\t"))
 
     def includeTest(test: TestDefinition) =
-      !excludeTestsSet.contains(test.name) && testFilters
-        .forall(filter => filter(test.name))
+      !excludeTestsSet.contains(test.name) &&
+        testFilters.forall(filter => filter(test.name))
     val filtered0 = discovered.filter(includeTest).toList.distinct
     val tests =
       if (orderedFilters.isEmpty) filtered0
@@ -346,9 +346,9 @@ object Tests {
         case Nil => acc
       }
 
-    task { processRunnable(runnables.toList, List.empty) } dependsOn (
-      setupTasks
-    )
+    task {
+      processRunnable(runnables.toList, List.empty)
+    } dependsOn (setupTasks)
   }
 
   def processResults(results: Iterable[(String, SuiteResult)]): Output =

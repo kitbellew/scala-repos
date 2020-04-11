@@ -29,73 +29,64 @@ class CacheConditionDirectivesSpec extends RoutingSpec {
     }
 
     "return OK for non-matching resources" in {
-      Get() ~> `If-None-Match`(
-        EntityTag("old")) ~> taggedAndTimestamped ~> check {
-        status shouldEqual OK
-        headers should contain theSameElementsAs (responseHeaders)
-      }
-      Get() ~> `If-Modified-Since`(
-        timestamp - 1000) ~> taggedAndTimestamped ~> check {
-        status shouldEqual OK
-        headers should contain theSameElementsAs (responseHeaders)
-      }
-      Get() ~> `If-None-Match`(EntityTag("old")) ~> `If-Modified-Since`(
-        timestamp - 1000) ~> taggedAndTimestamped ~> check {
-        status shouldEqual OK
-        headers should contain theSameElementsAs (responseHeaders)
-      }
+      Get() ~> `If-None-Match`(EntityTag("old")) ~> taggedAndTimestamped ~>
+        check {
+          status shouldEqual OK
+          headers should contain theSameElementsAs (responseHeaders)
+        }
+      Get() ~> `If-Modified-Since`(timestamp - 1000) ~> taggedAndTimestamped ~>
+        check {
+          status shouldEqual OK
+          headers should contain theSameElementsAs (responseHeaders)
+        }
+      Get() ~> `If-None-Match`(EntityTag("old")) ~>
+        `If-Modified-Since`(timestamp - 1000) ~> taggedAndTimestamped ~> check {
+          status shouldEqual OK
+          headers should contain theSameElementsAs (responseHeaders)
+        }
     }
 
     "ignore If-Modified-Since if If-None-Match is defined" in {
-      Get() ~> `If-None-Match`(tag) ~> `If-Modified-Since`(
-        timestamp - 1000) ~> taggedAndTimestamped ~> check {
-        status shouldEqual NotModified
-      }
-      Get() ~> `If-None-Match`(
-        EntityTag("old")) ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
-        status shouldEqual OK
-      }
+      Get() ~> `If-None-Match`(tag) ~> `If-Modified-Since`(timestamp - 1000) ~>
+        taggedAndTimestamped ~> check { status shouldEqual NotModified }
+      Get() ~> `If-None-Match`(EntityTag("old")) ~> ifModifiedSince ~>
+        taggedAndTimestamped ~> check { status shouldEqual OK }
     }
 
     "return PreconditionFailed for matched but unsafe resources" in {
-      Put() ~> `If-None-Match`(
-        tag) ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
-        status shouldEqual PreconditionFailed
-        headers shouldEqual Nil
-      }
+      Put() ~> `If-None-Match`(tag) ~> ifModifiedSince ~>
+        taggedAndTimestamped ~> check {
+          status shouldEqual PreconditionFailed
+          headers shouldEqual Nil
+        }
     }
 
     "return NotModified for matching resources" in {
-      Get() ~> `If-None-Match`
-        .`*` ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
-        status shouldEqual NotModified
-        headers should contain theSameElementsAs (responseHeaders)
-      }
-      Get() ~> `If-None-Match`(
-        tag) ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
-        status shouldEqual NotModified
-        headers should contain theSameElementsAs (responseHeaders)
-      }
-      Get() ~> `If-None-Match`(tag) ~> `If-Modified-Since`(
-        timestamp + 1000) ~> taggedAndTimestamped ~> check {
-        status shouldEqual NotModified
-        headers should contain theSameElementsAs (responseHeaders)
-      }
-      Get() ~> `If-None-Match`(
-        tag
-          .copy(weak =
-            true)) ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
-        status shouldEqual NotModified
-        headers should contain theSameElementsAs (responseHeaders)
-      }
-      Get() ~> `If-None-Match`(
-        tag,
-        EntityTag("some"),
-        EntityTag(
-          "other")) ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
-        status shouldEqual NotModified
-        headers should contain theSameElementsAs (responseHeaders)
-      }
+      Get() ~> `If-None-Match`.`*` ~> ifModifiedSince ~> taggedAndTimestamped ~>
+        check {
+          status shouldEqual NotModified
+          headers should contain theSameElementsAs (responseHeaders)
+        }
+      Get() ~> `If-None-Match`(tag) ~> ifModifiedSince ~>
+        taggedAndTimestamped ~> check {
+          status shouldEqual NotModified
+          headers should contain theSameElementsAs (responseHeaders)
+        }
+      Get() ~> `If-None-Match`(tag) ~> `If-Modified-Since`(timestamp + 1000) ~>
+        taggedAndTimestamped ~> check {
+          status shouldEqual NotModified
+          headers should contain theSameElementsAs (responseHeaders)
+        }
+      Get() ~> `If-None-Match`(tag.copy(weak = true)) ~> ifModifiedSince ~>
+        taggedAndTimestamped ~> check {
+          status shouldEqual NotModified
+          headers should contain theSameElementsAs (responseHeaders)
+        }
+      Get() ~> `If-None-Match`(tag, EntityTag("some"), EntityTag("other")) ~>
+        ifModifiedSince ~> taggedAndTimestamped ~> check {
+          status shouldEqual NotModified
+          headers should contain theSameElementsAs (responseHeaders)
+        }
     }
 
     "return NotModified when only one matching header is set" in {
@@ -117,15 +108,13 @@ class CacheConditionDirectivesSpec extends RoutingSpec {
       val weakTag = tag.copy(weak = true)
       Get() ~> `If-None-Match`(tag) ~> weak ~> check {
         status shouldEqual NotModified
-        headers should contain theSameElementsAs (
-          List(ETag(weakTag), `Last-Modified`(timestamp))
-        )
+        headers should contain theSameElementsAs
+          (List(ETag(weakTag), `Last-Modified`(timestamp)))
       }
       Get() ~> `If-None-Match`(weakTag) ~> weak ~> check {
         status shouldEqual NotModified
-        headers should contain theSameElementsAs (
-          List(ETag(weakTag), `Last-Modified`(timestamp))
-        )
+        headers should contain theSameElementsAs
+          (List(ETag(weakTag), `Last-Modified`(timestamp)))
       }
     }
 
@@ -149,22 +138,18 @@ class CacheConditionDirectivesSpec extends RoutingSpec {
         status shouldEqual PreconditionFailed
         headers shouldEqual Nil
       }
-      Put() ~> `If-Unmodified-Since`(
-        timestamp - 1000) ~> taggedAndTimestamped ~> check {
-        status shouldEqual PreconditionFailed
-        headers shouldEqual Nil
-      }
+      Put() ~> `If-Unmodified-Since`(timestamp - 1000) ~>
+        taggedAndTimestamped ~> check {
+          status shouldEqual PreconditionFailed
+          headers shouldEqual Nil
+        }
     }
 
     "ignore If-Unmodified-Since if If-Match is defined" in {
-      Put() ~> `If-Match`(tag) ~> `If-Unmodified-Since`(
-        timestamp - 1000) ~> taggedAndTimestamped ~> check {
-        status shouldEqual OK
-      }
-      Put() ~> `If-Match`(
-        EntityTag("old")) ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
-        status shouldEqual PreconditionFailed
-      }
+      Put() ~> `If-Match`(tag) ~> `If-Unmodified-Since`(timestamp - 1000) ~>
+        taggedAndTimestamped ~> check { status shouldEqual OK }
+      Put() ~> `If-Match`(EntityTag("old")) ~> ifModifiedSince ~>
+        taggedAndTimestamped ~> check { status shouldEqual PreconditionFailed }
     }
 
     "not filter out a `Range` header if `If-Range` does match the timestamp" in {

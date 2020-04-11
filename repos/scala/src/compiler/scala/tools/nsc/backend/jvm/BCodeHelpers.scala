@@ -59,8 +59,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     */
   def isAnonymousOrLocalClass(classSym: Symbol): Boolean = {
     assert(classSym.isClass, s"not a class: $classSym")
-    val r = exitingPickler(classSym.isAnonymousClass) || !classSym.originalOwner
-      .isClass
+    val r = exitingPickler(classSym.isAnonymousClass) ||
+      !classSym.originalOwner.isClass
     if (r) {
       // phase travel necessary: after flatten, the name includes the name of outer classes.
       // if some outer name contains $lambda, a non-lambda class is considered lambda.
@@ -195,8 +195,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       classDesc: Symbol => String,
       methodDesc: Symbol => String): Option[EnclosingMethodEntry] = {
     // trait impl classes are always top-level, see comment in BTypes
-    if (isAnonymousOrLocalClass(
-          classSym) && !considerAsTopLevelImplementationArtifact(classSym)) {
+    if (isAnonymousOrLocalClass(classSym) &&
+        !considerAsTopLevelImplementationArtifact(classSym)) {
       val enclosingClass = enclosingClassForEnclosingMethodAttribute(classSym)
       val methodOpt = enclosingMethodForEnclosingMethodAttribute(
         classSym) match {
@@ -228,8 +228,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     * the owner of U is T, so UModuleClass.isStatic is true. Phase travel does not help here.
     */
   def isOriginallyStaticOwner(sym: Symbol): Boolean =
-    sym.isPackageClass || sym.isModuleClass && isOriginallyStaticOwner(
-      sym.originalOwner)
+    sym.isPackageClass ||
+      sym.isModuleClass && isOriginallyStaticOwner(sym.originalOwner)
 
   /**
     * This is a hack to work around SI-9111. The completer of `methodSym` may report type errors. We
@@ -297,9 +297,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             // 1. Why the phase travel? Concrete trait methods obtain the lateDEFERRED flag in Mixin.
             //    This makes isEffectivelyFinalOrNotOverridden false, which would prevent non-final
             //    but non-overridden methods of sealed traits from being inlined.
-            val effectivelyFinal = exitingPickler(
-              methodSym.isEffectivelyFinalOrNotOverridden) && !(methodSym.owner
-              .isTrait && methodSym.isModule)
+            val effectivelyFinal =
+              exitingPickler(methodSym.isEffectivelyFinalOrNotOverridden) &&
+                !(methodSym.owner.isTrait && methodSym.isModule)
 
             val info = MethodInlineInfo(
               effectivelyFinal = effectivelyFinal,
@@ -679,8 +679,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       annot.atp.typeSymbol.getAnnotation(AnnotationRetentionAttr) match {
         case Some(retentionAnnot) =>
           retentionAnnot.assocs.contains(
-            nme.value -> LiteralAnnotArg(
-              Constant(AnnotationRetentionPolicyRuntimeValue)))
+            nme.value ->
+              LiteralAnnotArg(Constant(AnnotationRetentionPolicyRuntimeValue)))
         case _ =>
           // SI-8926: if the annotation class symbol doesn't have a @RetentionPolicy annotation, the
           // annotation is emitted with visibility `RUNTIME`
@@ -916,10 +916,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         // without it.  This is particularly bad because the availability of
         // generic information could disappear as a consequence of a seemingly
         // unrelated change.
-        settings.Ynogenericsig
-          || sym.isArtifact
-          || sym.isLiftedMethod
-          || sym.isBridge)
+        settings.Ynogenericsig || sym.isArtifact || sym.isLiftedMethod ||
+          sym.isBridge)
 
     /* @return
      *   - `null` if no Java signature is to be added (`null` is what ASM expects in these cases).
@@ -977,8 +975,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       if ((settings.check containsName phaseName)) {
         val normalizedTpe = enteringErasure(erasure.prepareSigMap(memberTpe))
         val bytecodeTpe = owner.thisType.memberInfo(sym)
-        if (!sym.isType && !sym.isConstructor && !(erasure
-              .erasure(sym)(normalizedTpe) =:= bytecodeTpe)) {
+        if (!sym.isType && !sym.isConstructor &&
+            !(erasure.erasure(sym)(normalizedTpe) =:= bytecodeTpe)) {
           reporter.warning(
             sym.pos,
             """|compiler bug: created generic signature for %s in %s that does not conform to its erasure
@@ -1023,8 +1021,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
           case _ => false
         }
       val needsAnnotation = {
-        (isRemoteClass ||
-        isRemote(meth) && isJMethodPublic) && !hasThrowsRemoteException
+        (isRemoteClass || isRemote(meth) && isJMethodPublic) &&
+        !hasThrowsRemoteException
       }
       if (needsAnnotation) {
         val c = Constant(definitions.RemoteExceptionClass.tpe)
@@ -1072,15 +1070,14 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
        */
       // TODO: evaluate the other flags we might be dropping on the floor here.
       // TODO: ACC_SYNTHETIC ?
-      val flags =
-        GenBCode.PublicStatic | (if (m.isVarargsMethod) asm.Opcodes.ACC_VARARGS
-                                 else 0)
+      val flags = GenBCode.PublicStatic |
+        (if (m.isVarargsMethod) asm.Opcodes.ACC_VARARGS else 0)
 
       // TODO needed? for(ann <- m.annotations) { ann.symbol.initialize }
       val jgensig = staticForwarderGenericSignature(m, module)
       addRemoteExceptionAnnot(isRemoteClass, hasPublicBitSet(flags), m)
-      val (throws, others) =
-        m.annotations partition (_.symbol == definitions.ThrowsClass)
+      val (throws, others) = m.annotations partition
+        (_.symbol == definitions.ThrowsClass)
       val thrownExceptions: List[String] = getExceptions(throws)
 
       val jReturnType = typeToBType(methodInfo.resultType)
@@ -1152,12 +1149,12 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       for (m <- moduleClass.info.membersBasedOnFlags(
              BCodeHelpers.ExcludedForwarderFlags,
              symtab.Flags.METHOD)) {
-        if (m.isType || m.isDeferred || (m.owner eq definitions
-              .ObjectClass) || m.isConstructor)
+        if (m.isType || m.isDeferred || (m.owner eq definitions.ObjectClass) ||
+            m.isConstructor)
           debuglog(
             s"No forwarder for '$m' from $jclassName to '$moduleClass': ${m
-              .isType} || ${m.isDeferred} || ${m.owner eq definitions
-              .ObjectClass} || ${m.isConstructor}")
+              .isType} || ${m.isDeferred} || ${m.owner eq
+              definitions.ObjectClass} || ${m.isConstructor}")
         else if (conflictingNames(m.name))
           log(s"No forwarder for $m due to conflict with ${linkedClass.info
             .member(m.name)}")
@@ -1312,19 +1309,14 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
            g = f.getterIn(cls);
            s = f.setterIn(cls); if g.isPublic && !(f.name startsWith "$")) {
         // inserting $outer breaks the bean
-        fieldList =
-          javaSimpleName(f) :: javaSimpleName(g) :: (if (s != NoSymbol)
-                                                       javaSimpleName(s)
-                                                     else null) :: fieldList
+        fieldList = javaSimpleName(f) :: javaSimpleName(g) ::
+          (if (s != NoSymbol) javaSimpleName(s) else null) :: fieldList
       }
 
       val methodList: List[String] =
         for (m <- methodSymbols
-             if !m.isConstructor &&
-               m.isPublic &&
-               !(m.name startsWith "$") &&
-               !m.isGetter &&
-               !m.isSetter) yield javaSimpleName(m)
+             if !m.isConstructor && m.isPublic && !(m.name startsWith "$") &&
+               !m.isGetter && !m.isSetter) yield javaSimpleName(m)
 
       val constructor = beanInfoClass.visitMethod(
         asm.Opcodes.ACC_PUBLIC,
@@ -1336,9 +1328,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
       val stringArrayJType: BType = ArrayBType(StringRef)
       val conJType: BType = MethodBType(
-        classBTypeFromSymbol(
-          definitions
-            .ClassClass) :: stringArrayJType :: stringArrayJType :: Nil,
+        classBTypeFromSymbol(definitions.ClassClass) :: stringArrayJType ::
+          stringArrayJType :: Nil,
         UNIT)
 
       def push(lst: List[String]) {
@@ -1457,7 +1448,8 @@ object BCodeHelpers {
   val ExcludedForwarderFlags = {
     import scala.tools.nsc.symtab.Flags._
     // Should include DEFERRED but this breaks findMember.
-    SPECIALIZED | LIFTED | PROTECTED | STATIC | EXPANDEDNAME | BridgeAndPrivateFlags | MACRO
+    SPECIALIZED | LIFTED | PROTECTED | STATIC | EXPANDEDNAME |
+      BridgeAndPrivateFlags | MACRO
   }
 
   /**
@@ -1465,13 +1457,11 @@ object BCodeHelpers {
     * See http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.7.6
     */
   val INNER_CLASSES_FLAGS = {
-    asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_PRIVATE | asm.Opcodes
-      .ACC_PROTECTED |
-      asm.Opcodes.ACC_STATIC | asm.Opcodes.ACC_FINAL | asm.Opcodes
-      .ACC_INTERFACE |
-      asm.Opcodes.ACC_ABSTRACT | asm.Opcodes.ACC_SYNTHETIC | asm.Opcodes
-      .ACC_ANNOTATION |
-      asm.Opcodes.ACC_ENUM
+    asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_PRIVATE |
+      asm.Opcodes.ACC_PROTECTED | asm.Opcodes.ACC_STATIC |
+      asm.Opcodes.ACC_FINAL | asm.Opcodes.ACC_INTERFACE |
+      asm.Opcodes.ACC_ABSTRACT | asm.Opcodes.ACC_SYNTHETIC |
+      asm.Opcodes.ACC_ANNOTATION | asm.Opcodes.ACC_ENUM
   }
 
   class TestOp(val op: Int) extends AnyVal {

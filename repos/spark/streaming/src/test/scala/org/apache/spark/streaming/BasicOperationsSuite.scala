@@ -605,12 +605,12 @@ class BasicOperationsSuite extends TestSuiteBase {
     // Checkpoint remember durations
     assert(windowedStream2.rememberDuration === rememberDuration)
     assert(
-      windowedStream1.rememberDuration === rememberDuration + windowedStream2
-        .windowDuration)
+      windowedStream1.rememberDuration ===
+        rememberDuration + windowedStream2.windowDuration)
     assert(
       mappedStream.rememberDuration ===
-        rememberDuration + windowedStream2.windowDuration + windowedStream1
-          .windowDuration)
+        rememberDuration +
+        windowedStream2.windowDuration + windowedStream1.windowDuration)
 
     // WindowedStream2 should remember till 7 seconds: 10, 9, 8, 7
     // WindowedStream1 should remember till 4 seconds: 10, 9, 8, 7, 6, 5, 4

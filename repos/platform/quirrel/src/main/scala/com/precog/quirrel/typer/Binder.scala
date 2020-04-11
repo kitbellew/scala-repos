@@ -56,9 +56,8 @@ trait Binder extends parser.AST {
               m + (s -> FormalBinding(b))
             }
             val env2 = env.copy(names = names2)
-            loop(left, env2) ++ loop(
-              right,
-              env.copy(names = env.names + (id -> LetBinding(b))))
+            loop(left, env2) ++
+              loop(right, env.copy(names = env.names + (id -> LetBinding(b))))
           }
         }
 
@@ -80,9 +79,8 @@ trait Binder extends parser.AST {
           }
 
           val bindings = ids map { id => id -> SolveBinding(b) }
-          loop(
-            child,
-            env.copy(vars = env.vars ++ bindings)) ++ constErrors ++ errors
+          loop(child, env.copy(vars = env.vars ++ bindings)) ++ constErrors ++
+            errors
         }
 
         case Import(_, spec, child) => { //todo see scalaz's Boolean.option
@@ -152,7 +150,8 @@ trait Binder extends parser.AST {
         }
 
         case d @ Dispatch(_, name, actuals) => {
-          val recursive = (actuals map { loop(_, env) }).fold(Set()) { _ ++ _ }
+          val recursive =
+            (actuals map { loop(_, env) }).fold(Set()) { _ ++ _ }
           if (env.names contains name) {
             val binding = env.names(name)
 
@@ -223,12 +222,9 @@ trait Binder extends parser.AST {
     // hashCode and the Binding hashCode seems non-deterministic. In
     // any case, we just shouldn't have a Set of Bindings where two or
     // more have the same name.
-    val builtIns = lib1.map(Op1Binding) ++
-      lib2.map(Op2Binding) ++
-      libReduction.map(ReductionBinding) ++
-      libMorphism1.map(Morphism1Binding).filterNot {
-        _.name == ExpandGlobBinding.name
-      } ++
+    val builtIns = lib1.map(Op1Binding) ++ lib2.map(Op2Binding) ++
+      libReduction.map(ReductionBinding) ++ libMorphism1.map(Morphism1Binding)
+        .filterNot { _.name == ExpandGlobBinding.name } ++
       libMorphism2.map(Morphism2Binding) ++
       Set(LoadBinding, RelLoadBinding, DistinctBinding, ExpandGlobBinding)
 
@@ -245,8 +241,8 @@ trait Binder extends parser.AST {
         listFreeVars(env)(left) ++ listFreeVars(env)(right)
       case Solve(_, _, _) => Set()
       case Relate(_, from, to, in) =>
-        listFreeVars(env)(from) ++ listFreeVars(env)(to) ++ listFreeVars(env)(
-          in)
+        listFreeVars(env)(from) ++ listFreeVars(env)(to) ++
+          listFreeVars(env)(in)
       case New(_, child)                                => listFreeVars(env)(child)
       case TicVar(_, name) if env.vars contains name    => Set()
       case TicVar(_, name) if !(env.vars contains name) => Set(name)

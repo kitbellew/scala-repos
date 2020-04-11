@@ -41,9 +41,9 @@ trait Holes {
   private def inferUnliftable(tpe: Type): Tree =
     inferParamImplicit(unliftableType, tpe)
   private def isLiftableType(tpe: Type) = inferLiftable(tpe) != EmptyTree
-  private def isNativeType(tpe: Type) =
-    (tpe <:< treeType) || (tpe <:< nameType) || (tpe <:< modsType) ||
-      (tpe <:< flagsType) || (tpe <:< symbolType)
+  private def isNativeType(tpe: Type) = (tpe <:< treeType) ||
+    (tpe <:< nameType) || (tpe <:< modsType) || (tpe <:< flagsType) ||
+    (tpe <:< symbolType)
   private def isBottomType(tpe: Type) =
     tpe <:< NothingClass.tpe || tpe <:< NullClass.tpe
   private def extractIterableTParam(tpe: Type) =
@@ -87,9 +87,8 @@ trait Holes {
         limit = annotatedRank)
       if (isBottomType(strippedTpe)) cantSplice()
       else if (isNativeType(strippedTpe)) {
-        if (strippedRank != NoDot && !(
-              strippedTpe <:< treeType
-            ) && !isLiftableType(strippedTpe)) cantSplice()
+        if (strippedRank != NoDot && !(strippedTpe <:< treeType) &&
+            !isLiftableType(strippedTpe)) cantSplice()
         else (strippedTpe, iterableTypeFromRank(annotatedRank, strippedTpe))
       } else if (isLiftableType(strippedTpe))
         (strippedTpe, iterableTypeFromRank(annotatedRank, treeType))
@@ -120,9 +119,8 @@ trait Holes {
           s"using $iterableRank"
         else "omitting the dots"
       val rankSuggestion = if (suggestRank) unquoteeRankMsg else ""
-      val suggestLifting = (
-        annotatedRank == NoDot || iterableRank != NoDot
-      ) && !(iterableType <:< treeType) && !isLiftableType(iterableType)
+      val suggestLifting = (annotatedRank == NoDot || iterableRank != NoDot) &&
+        !(iterableType <:< treeType) && !isLiftableType(iterableType)
       val liftedTpe = if (annotatedRank != NoDot) iterableType else unquotee.tpe
       val liftSuggestion =
         if (suggestLifting)

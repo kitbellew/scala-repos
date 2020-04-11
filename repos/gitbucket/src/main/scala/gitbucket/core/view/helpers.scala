@@ -385,11 +385,12 @@ object helpers
         val url = m.group(0)
         val href = url.replace("\"", "&quot;")
         (
-          x ++ (Seq(
-            if (pos < m.start)
-              Some(HtmlFormat.escape(text.substring(pos, m.start)))
-            else None,
-            Some(Html(s"""<a href="${href}">${url}</a>"""))).flatten),
+          x ++
+            (Seq(
+              if (pos < m.start)
+                Some(HtmlFormat.escape(text.substring(pos, m.start)))
+              else None,
+              Some(Html(s"""<a href="${href}">${url}</a>"""))).flatten),
           m.end)
     }
     // append rest fragment

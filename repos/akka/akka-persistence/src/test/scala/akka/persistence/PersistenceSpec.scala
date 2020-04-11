@@ -112,10 +112,8 @@ trait PersistenceMatchers {
       extends Matcher[immutable.Seq[Any]] {
     override def apply(_left: immutable.Seq[Any]) = {
       val left = _left.map(_.toString)
-      val mapped = left
-        .groupBy(l ⇒ prefixes.indexWhere(p ⇒ l.startsWith(p))) - (
-        -1
-      ) // ignore other messages
+      val mapped = left.groupBy(l ⇒ prefixes.indexWhere(p ⇒ l.startsWith(p))) -
+        (-1) // ignore other messages
       val results = for {
         (pos, seq) ← mapped
         nrs = seq.map(_.replaceFirst(prefixes(pos), "").toInt)

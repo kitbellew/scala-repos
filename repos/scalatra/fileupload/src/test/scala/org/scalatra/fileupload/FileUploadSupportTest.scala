@@ -104,13 +104,13 @@ class FileUploadSupportTest extends ScalatraFunSuite {
   }
 
   test("sets multiple file params") {
-    multipartResponse().getHeader("file-two-with-brackets") should equal(
-      "twothree")
+    multipartResponse().getHeader("file-two-with-brackets") should
+      equal("twothree")
   }
 
   test("looks for params with [] suffix, Ruby style") {
-    multipartResponse().getHeader("file-two-without-brackets") should equal(
-      "twothree")
+    multipartResponse().getHeader("file-two-without-brackets") should
+      equal("twothree")
   }
 
   test("fileParams returns first input for multiple file params") {
@@ -139,8 +139,8 @@ class FileUploadSupportTest extends ScalatraFunSuite {
   }
 
   test("query parameters don't shadow post parameters") {
-    multipartResponse("/multipart-param?string=bar")
-      .getHeader("string") should equal("bar;foo")
+    multipartResponse("/multipart-param?string=bar").getHeader("string") should
+      equal("bar;foo")
   }
 
   test("max size is respected") {

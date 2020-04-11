@@ -108,9 +108,9 @@ class TestRunner(
                     combineStack(ex.getCause, ex.getStackTrace.toList ::: base)
                 }
               val trace = combineStack(e, Nil).takeWhile(e =>
-                e.getClassName != myTrace.getClassName || e
-                  .getFileName != myTrace.getFileName || e
-                  .getMethodName != myTrace.getMethodName).dropRight(2)
+                e.getClassName != myTrace.getClassName ||
+                  e.getFileName != myTrace.getFileName ||
+                  e.getMethodName != myTrace.getMethodName).dropRight(2)
               (false, trace, Full(e))
           }
 
@@ -146,9 +146,9 @@ class TestRunner(
                             ex.getStackTrace.toList ::: base)
                       }
                     val trace = combineStack(e, Nil).takeWhile(e =>
-                      e.getClassName != myTrace.getClassName || e
-                        .getFileName != myTrace.getFileName || e
-                        .getMethodName != myTrace.getMethodName).dropRight(2)
+                      e.getClassName != myTrace.getClassName ||
+                        e.getFileName != myTrace.getFileName ||
+                        e.getMethodName != myTrace.getMethodName).dropRight(2)
                     (false, trace, Full(e))
                 }
 
@@ -200,14 +200,12 @@ case class TestResults(res: List[Tracker]) {
       case (ft, fa) =>
         "\n" + ft.length + " Failed Tests:\n" + ft.map(v =>
           v.name + " " + v.exception.openOrThrowException("This should be safe")
-            .getMessage + " \n" +
-            v.trace.map(st => "           " + st.toString).mkString("\n"))
-          .mkString("\n")
+            .getMessage + " \n" + v.trace.map(st => "           " + st.toString)
+            .mkString("\n")).mkString("\n")
     }
 
-    "Ran " + testCnt + " tests and " + assertCnt + " asserts in " + (
-      end - start
-    ) / 1000L + " seconds" + append
+    "Ran " + testCnt + " tests and " + assertCnt + " asserts in " +
+      (end - start) / 1000L + " seconds" + append
   }
 }
 

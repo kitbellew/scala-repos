@@ -90,8 +90,7 @@ private[prediction] object SegmentIOConnector extends JsonConnector {
   def toEventJson(common: Common, track: Events.Track): JObject = {
     import org.json4s.JsonDSL._
     val eventProperties =
-      ("properties" → track.properties) ~
-        ("event" → track.event)
+      ("properties" → track.properties) ~ ("event" → track.event)
     toJson(common, eventProperties)
   }
 
@@ -103,24 +102,21 @@ private[prediction] object SegmentIOConnector extends JsonConnector {
   def toEventJson(common: Common, screen: Events.Screen): JObject = {
     import org.json4s.JsonDSL._
     val eventProperties =
-      ("name" → screen.name) ~
-        ("properties" → screen.properties)
+      ("name" → screen.name) ~ ("properties" → screen.properties)
     toJson(common, eventProperties)
   }
 
   def toEventJson(common: Common, page: Events.Page): JObject = {
     import org.json4s.JsonDSL._
     val eventProperties =
-      ("name" → page.name) ~
-        ("properties" → page.properties)
+      ("name" → page.name) ~ ("properties" → page.properties)
     toJson(common, eventProperties)
   }
 
   def toEventJson(common: Common, group: Events.Group): JObject = {
     import org.json4s.JsonDSL._
     val eventProperties =
-      ("group_id" → group.group_id) ~
-        ("traits" → group.traits)
+      ("group_id" → group.group_id) ~ ("traits" → group.traits)
     toJson(common, eventProperties)
   }
 
@@ -149,9 +145,7 @@ private[prediction] object SegmentIOConnector extends JsonConnector {
     import org.json4s.JsonDSL._
     common.user_id.orElse(common.anonymous_id) match {
       case Some(userId) ⇒
-        ("event" → typ) ~
-          ("entityType" → "user") ~
-          ("entityId" → userId) ~
+        ("event" → typ) ~ ("entityType" → "user") ~ ("entityId" → userId) ~
           ("eventTime" → common.timestamp)
 
       case None ⇒

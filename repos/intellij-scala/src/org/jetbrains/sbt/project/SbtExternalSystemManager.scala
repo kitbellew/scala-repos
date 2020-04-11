@@ -98,8 +98,8 @@ object SbtExternalSystemManager {
     val projectJdkName = getProjectJdkName(project, projectSettings)
     val vmExecutable = getVmExecutable(projectJdkName, settings)
     val vmOptions = getVmOptions(settings)
-    val environment =
-      Map.empty ++ getAndroidEnvironmentVariables(projectJdkName)
+    val environment = Map.empty ++
+      getAndroidEnvironmentVariables(projectJdkName)
 
     new SbtExecutionSettings(
       realProjectPath,
@@ -180,8 +180,8 @@ object SbtExternalSystemManager {
         val optName = opt.split('=').head + "="
         userOptions.exists(_.startsWith(optName))
       }
-    Seq(
-      s"-Xmx${settings.getMaximumHeapSize}M") ++ userOptions ++ ideaProxyOptions
+    Seq(s"-Xmx${settings.getMaximumHeapSize}M") ++ userOptions ++
+      ideaProxyOptions
   }
 
   private def proxyOptionsFor(http: HttpConfigurable): Seq[String] = {
@@ -190,9 +190,8 @@ object SbtExternalSystemManager {
 
     useProxy.seq(
       s"-Dhttp.proxyHost=${http.PROXY_HOST}",
-      s"-Dhttp.proxyPort=${http.PROXY_PORT}") ++
-      useCredentials.seq(
-        s"-Dhttp.proxyUser=${http.PROXY_LOGIN}",
-        s"-Dhttp.proxyPassword=${http.getPlainProxyPassword}")
+      s"-Dhttp.proxyPort=${http.PROXY_PORT}") ++ useCredentials.seq(
+      s"-Dhttp.proxyUser=${http.PROXY_LOGIN}",
+      s"-Dhttp.proxyPassword=${http.getPlainProxyPassword}")
   }
 }

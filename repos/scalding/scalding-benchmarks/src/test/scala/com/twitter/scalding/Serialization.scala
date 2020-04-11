@@ -126,8 +126,8 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons
-            .unsignedLongCompare(a(pos), a(pos + 1))
+          effectInt ^=
+            UnsignedComparisons.unsignedLongCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }
@@ -147,8 +147,8 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons
-            .unsignedIntCompare(a(pos), a(pos + 1))
+          effectInt ^=
+            UnsignedComparisons.unsignedIntCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }
@@ -168,8 +168,8 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons
-            .unsignedShortCompare(a(pos), a(pos + 1))
+          effectInt ^=
+            UnsignedComparisons.unsignedShortCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }
@@ -189,8 +189,8 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons
-            .unsignedByteCompare(a(pos), a(pos + 1))
+          effectInt ^=
+            UnsignedComparisons.unsignedByteCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }

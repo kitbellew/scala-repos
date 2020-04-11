@@ -89,8 +89,10 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
   def awaitAnyTermination(): Unit = {
     awaitTerminationLock.synchronized {
       while (lastTerminatedQuery == null) { awaitTerminationLock.wait(10) }
-      if (lastTerminatedQuery != null && lastTerminatedQuery.exception
-            .nonEmpty) { throw lastTerminatedQuery.exception.get }
+      if (lastTerminatedQuery != null &&
+          lastTerminatedQuery.exception.nonEmpty) {
+        throw lastTerminatedQuery.exception.get
+      }
     }
   }
 
@@ -124,8 +126,10 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
       while (!isTimedout && lastTerminatedQuery == null) {
         awaitTerminationLock.wait(10)
       }
-      if (lastTerminatedQuery != null && lastTerminatedQuery.exception
-            .nonEmpty) { throw lastTerminatedQuery.exception.get }
+      if (lastTerminatedQuery != null &&
+          lastTerminatedQuery.exception.nonEmpty) {
+        throw lastTerminatedQuery.exception.get
+      }
       lastTerminatedQuery != null
     }
   }

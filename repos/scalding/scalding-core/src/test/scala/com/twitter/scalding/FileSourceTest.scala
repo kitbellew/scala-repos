@@ -94,9 +94,8 @@ class FileSourceTest extends WordSpec with Matchers {
   "TextLine.toIterator" should {
     "correctly read strings" in {
       TextLine("../tutorial/data/hello.txt")
-        .toIterator(Config.default, Local(true)).toList shouldBe List(
-        "Hello world",
-        "Goodbye world")
+        .toIterator(Config.default, Local(true)).toList shouldBe
+        List("Hello world", "Goodbye world")
     }
   }
 
@@ -229,13 +228,13 @@ class FileSourceTest extends WordSpec with Matchers {
 
     "accept a multi-dir glob if all dirs with non-hidden files have _SUCCESS while dirs with " +
       "hidden ones don't" in {
-      pathIsGood("test_data/2013/{04,05}/*") shouldBe true
-    }
+        pathIsGood("test_data/2013/{04,05}/*") shouldBe true
+      }
 
     "accept a multi-dir glob if all dirs with non-hidden files have _SUCCESS while other dirs " +
       "are empty or don't exist" in {
-      pathIsGood("test_data/2013/{02,04,05}/*") shouldBe true
-    }
+        pathIsGood("test_data/2013/{02,04,05}/*") shouldBe true
+      }
   }
 
   "FixedPathSource.hdfsWritePath" should {
@@ -248,23 +247,23 @@ class FileSourceTest extends WordSpec with Matchers {
     }
 
     "remove /* from a path ending in /*" in {
-      TestFixedPathSource("test_data/2013/06/*")
-        .hdfsWritePath shouldBe "test_data/2013/06"
+      TestFixedPathSource("test_data/2013/06/*").hdfsWritePath shouldBe
+        "test_data/2013/06"
     }
 
     "leave path as-is when it ends in a directory name" in {
-      TestFixedPathSource("test_data/2013/06")
-        .hdfsWritePath shouldBe "test_data/2013/06"
+      TestFixedPathSource("test_data/2013/06").hdfsWritePath shouldBe
+        "test_data/2013/06"
     }
 
     "leave path as-is when it ends in a directory name/" in {
-      TestFixedPathSource("test_data/2013/06/")
-        .hdfsWritePath shouldBe "test_data/2013/06/"
+      TestFixedPathSource("test_data/2013/06/").hdfsWritePath shouldBe
+        "test_data/2013/06/"
     }
 
     "leave path as-is when it ends in * without a preceeding /" in {
-      TestFixedPathSource("test_data/2013/06*")
-        .hdfsWritePath shouldBe "test_data/2013/06*"
+      TestFixedPathSource("test_data/2013/06*").hdfsWritePath shouldBe
+        "test_data/2013/06*"
     }
   }
 
@@ -273,8 +272,9 @@ class FileSourceTest extends WordSpec with Matchers {
       TestInvalidFileSource.createHdfsReadTap shouldBe a[InvalidSourceTap]
     }
     "Throw in toIterator because no data is present" in {
-      an[InvalidSourceException] should be thrownBy (TestInvalidFileSource
-        .toIterator(Config.default, Hdfs(true, new JobConf())))
+      an[InvalidSourceException] should be thrownBy
+        (TestInvalidFileSource
+          .toIterator(Config.default, Hdfs(true, new JobConf())))
     }
   }
 }
@@ -286,8 +286,8 @@ object TestPath {
       case "scalding-core" => getCurrentDirectory
       case _               => getCurrentDirectory + "/scalding-core"
     }
-  val testfsPathRoot =
-    prefix + "/src/test/resources/com/twitter/scalding/test_filesystem/"
+  val testfsPathRoot = prefix +
+    "/src/test/resources/com/twitter/scalding/test_filesystem/"
 }
 
 object TestFileSource extends FileSource {

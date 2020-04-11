@@ -123,20 +123,17 @@ abstract class TimeSeqPathedSource(
     }
 
   override def toString =
-    "TimeSeqPathedSource(" + patterns.mkString(",") +
-      ", " + dateRange + ", " + tz + ")"
+    "TimeSeqPathedSource(" + patterns.mkString(",") + ", " + dateRange + ", " +
+      tz + ")"
 
-  override def equals(that: Any) =
-    (that != null) &&
-      (this.getClass == that.getClass) &&
-      this.patterns == that.asInstanceOf[TimeSeqPathedSource].patterns &&
-      this.dateRange == that.asInstanceOf[TimeSeqPathedSource].dateRange &&
-      this.tz == that.asInstanceOf[TimeSeqPathedSource].tz
+  override def equals(that: Any) = (that != null) &&
+    (this.getClass == that.getClass) &&
+    this.patterns == that.asInstanceOf[TimeSeqPathedSource].patterns &&
+    this.dateRange == that.asInstanceOf[TimeSeqPathedSource].dateRange &&
+    this.tz == that.asInstanceOf[TimeSeqPathedSource].tz
 
   override def hashCode =
-    patterns.hashCode +
-      31 * dateRange.hashCode +
-      (31 ^ 2) * tz.hashCode
+    patterns.hashCode + 31 * dateRange.hashCode + (31 ^ 2) * tz.hashCode
 }
 
 /**

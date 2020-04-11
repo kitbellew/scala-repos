@@ -100,7 +100,8 @@ object EventHandler extends ListenerManagement {
     case "DEBUG"   => DebugLevel
     case unknown =>
       throw new ConfigurationException(
-        "Configuration option 'akka.event-handler-level' is invalid [" + unknown + "]")
+        "Configuration option 'akka.event-handler-level' is invalid [" +
+          unknown + "]")
   }
 
   /**

@@ -39,8 +39,7 @@ private[ui] class StageTableBase(
     <th>Stage Id</th> ++ {
       if (isFairScheduler) { <th>Pool Name</th> }
       else Seq.empty
-    } ++
-      <th>Description</th>
+    } ++ <th>Description</th>
     <th>Submitted</th>
     <th>Duration</th>
     <th>Tasks: Succeeded/Total</th>
@@ -52,8 +51,8 @@ private[ui] class StageTableBase(
         of on top) because the shuffle write column is the last column on the right side and
         the tooltip is wider than the column, so it doesn't fit on top. -->
       <span data-toggle="tooltip" data-placement="left" title={
-        ToolTips.SHUFFLE_WRITE
-      }>
+      ToolTips.SHUFFLE_WRITE
+    }>
         Shuffle Write
       </span>
     </th>
@@ -105,16 +104,14 @@ private[ui] class StageTableBase(
       <span onclick="this.parentNode.querySelector('.stage-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
-      </span> ++
-        <div class="stage-details collapsed">
+      </span> ++ <div class="stage-details collapsed">
         {
-          if (cachedRddInfos.nonEmpty) {
-            Text("RDD: ") ++
-              cachedRddInfos.map { i =>
-                <a href={s"$basePathUri/storage/rdd?id=${i.id}"}>{i.name}</a>
-              }
+        if (cachedRddInfos.nonEmpty) {
+          Text("RDD: ") ++ cachedRddInfos.map { i =>
+            <a href={s"$basePathUri/storage/rdd?id=${i.id}"}>{i.name}</a>
           }
         }
+      }
         <pre>{s.details}</pre>
       </div>
     }
@@ -130,15 +127,14 @@ private[ui] class StageTableBase(
     <td>{stageId}</td> ++ {
       if (isFairScheduler) { <td>-</td> }
       else Seq.empty
-    } ++
-      <td>No data available for this stage</td> ++ // Description
+    } ++ <td>No data available for this stage</td> ++ // Description
       <td></td> ++ // Submitted
-      <td></td> ++ // Duration
-      <td></td> ++ // Tasks: Succeeded/Total
-      <td></td> ++ // Input
-      <td></td> ++ // Output
-      <td></td> ++ // Shuffle Read
-      <td></td> // Shuffle Write
+        <td></td> ++ // Duration
+          <td></td> ++ // Tasks: Succeeded/Total
+            <td></td> ++ // Input
+              <td></td> ++ // Output
+                <td></td> ++ // Shuffle Read
+                  <td></td> // Shuffle Write
   }
 
   protected def stageRow(s: StageInfo): Seq[Node] = {
@@ -192,23 +188,22 @@ private[ui] class StageTableBase(
         </a>
       </td>
       } else { Seq.empty }
-    } ++
-      <td>{makeDescription(s)}</td>
+    } ++ <td>{makeDescription(s)}</td>
     <td sorttable_customkey={s.submissionTime.getOrElse(0).toString} valign="middle">
       {submissionTime}
     </td>
     <td sorttable_customkey={duration.getOrElse(-1).toString}>{
-        formattedDuration
-      }</td>
+      formattedDuration
+    }</td>
     <td class="progress-cell">
       {
-        UIUtils.makeProgressBar(
-          started = stageData.numActiveTasks,
-          completed = stageData.completedIndices.size,
-          failed = stageData.numFailedTasks,
-          skipped = 0,
-          total = s.numTasks)
-      }
+      UIUtils.makeProgressBar(
+        started = stageData.numActiveTasks,
+        completed = stageData.completedIndices.size,
+        failed = stageData.numFailedTasks,
+        skipped = 0,
+        total = s.numTasks)
+    }
     </td>
     <td sorttable_customkey={inputRead.toString}>{inputReadWithUnit}</td>
     <td sorttable_customkey={outputWrite.toString}>{outputWriteWithUnit}</td>
@@ -250,8 +245,7 @@ private[ui] class FailedStageTable(
         <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
-      </span> ++
-          <div class="stacktrace-details collapsed">
+      </span> ++ <div class="stacktrace-details collapsed">
           <pre>{failureReason}</pre>
         </div>
         // scalastyle:on

@@ -3,15 +3,15 @@ import Keys._
 import Import._
 
 object B extends Build {
-  lazy val root = Project("root", file(".")) settings (
-    autoScalaLibrary := false,
-    libraryDependencies += "log4j" % "log4j" % "1.2.16",
-    retrieveManaged := true,
-    commands ++= Seq(
-      addExtra("add1", addExtra1),
-      addExtra("add2", addExtra2),
-      checkExtra)
-  )
+  lazy val root = Project("root", file(".")) settings
+    (
+      autoScalaLibrary := false,
+      libraryDependencies += "log4j" % "log4j" % "1.2.16",
+      retrieveManaged := true,
+      commands ++= Seq(
+        addExtra("add1", addExtra1),
+        addExtra("add2", addExtra2),
+        checkExtra))
   def addExtra(name: String, f: (State, Seq[File]) => State) =
     Command.command(name) { s => f(s, (file("lib_managed") ** "*.jar").get) }
   def checkExtra =

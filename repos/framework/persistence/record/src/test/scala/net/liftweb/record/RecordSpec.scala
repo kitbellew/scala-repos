@@ -50,8 +50,8 @@ object RecordSpec extends Specification {
     } yield flavor + typeName + "Field").toList
 
     "introspect only the expected fields" in {
-      rec.fields().map(_.name).sortWith(_ < _) must_== allExpectedFieldNames
-        .sortWith(_ < _)
+      rec.fields().map(_.name).sortWith(_ < _) must_==
+        allExpectedFieldNames.sortWith(_ < _)
     }
 
     "correctly look up fields by name" in {

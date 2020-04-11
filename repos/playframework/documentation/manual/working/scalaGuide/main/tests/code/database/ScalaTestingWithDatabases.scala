@@ -169,12 +169,12 @@ object ScalaTestingWithDatabases extends Specification {
         Evolutions.cleanupEvolutions(database)
         //#cleanup-evolutions-simple
 
-        connection.prepareStatement("select * from test")
-          .executeQuery() must throwAn[SQLException]
+        connection.prepareStatement("select * from test").executeQuery() must
+          throwAn[SQLException]
     }
 
-    "allow running evolutions from a custom path" in play.api.db.Databases
-      .withInMemory() { database =>
+    "allow running evolutions from a custom path" in
+      play.api.db.Databases.withInMemory() { database =>
         //#apply-evolutions-custom-path
         import play.api.db.evolutions._
 
@@ -185,8 +185,8 @@ object ScalaTestingWithDatabases extends Specification {
         ok
       }
 
-    "allow play to manage evolutions for you" in play.api.db.Databases
-      .withInMemory() { database =>
+    "allow play to manage evolutions for you" in
+      play.api.db.Databases.withInMemory() { database =>
         //#with-evolutions
         import play.api.db.evolutions._
 

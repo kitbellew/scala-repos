@@ -123,9 +123,8 @@ trait QueryTHoist[Q[+_]]
     QueryT[Q, M, A](M.map(ma)(Q.point(_)))
 
   def hoist[M[+_]: Monad, N[+_]](f: M ~> N) =
-    new (({ type λ[α] = QueryT[Q, M, α] })#λ ~> ({
-      type λ[α] = QueryT[Q, N, α]
-    })#λ) {
+    new (({ type λ[α] = QueryT[Q, M, α] })#λ ~>
+      ({ type λ[α] = QueryT[Q, N, α] })#λ) {
       def apply[A](ma: QueryT[Q, M, A]): QueryT[Q, N, A] = QueryT(f(ma.run))
     }
 

@@ -101,9 +101,8 @@ object TestOffsetManager {
         groupId,
         immutable.Map(
           (1 to partitionCount).map(
-            TopicAndPartition("topic-" + id, _) -> OffsetAndMetadata(
-              offset,
-              metadata)): _*))
+            TopicAndPartition("topic-" + id, _) ->
+              OffsetAndMetadata(offset, metadata)): _*))
       try {
         ensureConnected()
         offsetsChannel.send(commitRequest)

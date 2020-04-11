@@ -132,7 +132,8 @@ class ConfigEntrySuite extends SparkFunSuite {
     conf.set(enum, "d")
     val enumError = intercept[IllegalArgumentException] { conf.get(enum) }
     assert(
-      enumError.getMessage === s"The value of ${enum.key} should be one of a, b, c, but was d")
+      enumError.getMessage ===
+        s"The value of ${enum.key} should be one of a, b, c, but was d")
   }
 
   test("conf entry: conversion error") {
@@ -144,7 +145,8 @@ class ConfigEntrySuite extends SparkFunSuite {
       conf.get(conversionTest)
     }
     assert(
-      conversionError.getMessage === s"${conversionTest.key} should be double, but was abc")
+      conversionError.getMessage ===
+        s"${conversionTest.key} should be double, but was abc")
   }
 
   test("default value handling is null-safe") {

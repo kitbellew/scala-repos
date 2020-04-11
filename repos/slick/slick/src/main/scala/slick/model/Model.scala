@@ -15,8 +15,7 @@ case class QualifiedName(
 
   /** human readable String representation */
   def asString =
-    catalog.map(_ + ".").getOrElse("") +
-      schema.map(_ + ".").getOrElse("") +
+    catalog.map(_ + ".").getOrElse("") + schema.map(_ + ".").getOrElse("") +
       table
 }
 
@@ -113,8 +112,8 @@ case class Model(tables: Seq[Table], options: Set[ModelOption[_]] = Set()) {
         }
       }
       assert(
-        foreignKeys.count(_.name.isDefined) == foreignKeys
-          .filter(_.name.isDefined).map(_.name).distinct.size,
+        foreignKeys.count(_.name.isDefined) ==
+          foreignKeys.filter(_.name.isDefined).map(_.name).distinct.size,
         "duplicate foreign key names detected")
       foreignKeys.foreach { fk =>
         assert(

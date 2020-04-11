@@ -207,8 +207,8 @@ trait MMRegistry2[R] {
       ops(ReflectionUtil.boxedFromPrimitive(a) -> b) = op
       if (b.isPrimitive) {
         ops(
-          ReflectionUtil.boxedFromPrimitive(a) -> ReflectionUtil
-            .boxedFromPrimitive(b)) = op
+          ReflectionUtil.boxedFromPrimitive(a) ->
+            ReflectionUtil.boxedFromPrimitive(b)) = op
       }
     }
     cache.clear()
@@ -325,11 +325,11 @@ trait MMRegistry3[R] {
     for (pair @ (aa, bb, cc) <- options.keys) {
       // if there is no option (aaa,bbb) s.t. aaa <: aa && bbb <: bb, then add it to the list
       if (!bestCandidates.exists(pair =>
-            aa.isAssignableFrom(pair._1) && bb.isAssignableFrom(pair._2)) && cc
-            .isAssignableFrom(pair._3)) {
+            aa.isAssignableFrom(pair._1) && bb.isAssignableFrom(pair._2)) &&
+          cc.isAssignableFrom(pair._3)) {
         bestCandidates = bestCandidates.filterNot(pair =>
-          pair._1.isAssignableFrom(aa) && pair._2.isAssignableFrom(bb) && pair
-            ._3.isAssignableFrom(cc))
+          pair._1.isAssignableFrom(aa) && pair._2.isAssignableFrom(bb) &&
+            pair._3.isAssignableFrom(cc))
         bestCandidates += pair
       }
     }

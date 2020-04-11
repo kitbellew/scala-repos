@@ -403,9 +403,8 @@ trait Slice {
 
         (jType, cType, cPath) match {
           case (JUnionT(aJType, bJType), _, _) =>
-            flattenDeleteTree(aJType, cType, cPath) andThen (
-              _ flatMap flattenDeleteTree(bJType, cType, cPath)
-            )
+            flattenDeleteTree(aJType, cType, cPath) andThen
+              (_ flatMap flattenDeleteTree(bJType, cType, cPath))
           case (JTextT, CString, CPath.Identity)                  => delete
           case (JBooleanT, CBoolean, CPath.Identity)              => delete
           case (JNumberT, CLong | CDouble | CNum, CPath.Identity) => delete
@@ -414,25 +413,19 @@ trait Slice {
                 JObjectFixedT(fields),
                 _,
                 CPath(CPathField(name), cPath @ _*)) =>
-            fields get name map (flattenDeleteTree(
-              _,
-              cType,
-              CPath(cPath: _*))) getOrElse (retain)
+            fields get name map
+              (flattenDeleteTree(_, cType, CPath(cPath: _*))) getOrElse (retain)
           case (JArrayUnfixedT, _, CPath(CPathArray | CPathIndex(_), _*)) =>
             delete
           case (JArrayFixedT(elems), cType, CPath(CPathIndex(i), cPath @ _*)) =>
-            elems get i map (flattenDeleteTree(
-              _,
-              cType,
-              CPath(cPath: _*))) getOrElse (retain)
+            elems get i map
+              (flattenDeleteTree(_, cType, CPath(cPath: _*))) getOrElse (retain)
           case (
                 JArrayFixedT(elems),
                 CArrayType(cElemType),
                 CPath(CPathArray, cPath @ _*)) =>
-            val mappers = elems mapValues (flattenDeleteTree(
-              _,
-              cElemType,
-              CPath(cPath: _*)))
+            val mappers = elems mapValues
+              (flattenDeleteTree(_, cElemType, CPath(cPath: _*)))
             xs =>
               Some(xs.zipWithIndex map {
                 case (x, j) => mappers get j match {
@@ -463,8 +456,8 @@ trait Slice {
               val tpe = ctype
               def isDefinedAt(row: Int) = col.isDefinedAt(row)
               def apply(row: Int): Array[a] =
-                trans(col(row).asInstanceOf[Array[a]]) getOrElse sys
-                  .error("Oh dear, this cannot be happening to me.")
+                trans(col(row).asInstanceOf[Array[a]]) getOrElse
+                  sys.error("Oh dear, this cannot be happening to me.")
             }))
 
         case (ref, col) => Some((ref, col))
@@ -480,8 +473,8 @@ trait Slice {
       }
 
       private val becomeEmpty = BitSetUtil.filteredRange(0, source.size) { i =>
-        Column.isDefinedAt(removed.values.toArray, i) && !Column
-          .isDefinedAt(withoutPrefixes.values.toArray, i)
+        Column.isDefinedAt(removed.values.toArray, i) &&
+        !Column.isDefinedAt(withoutPrefixes.values.toArray, i)
       }
 
       private val ref = ColumnRef(CPath.Identity, CEmptyObject)
@@ -557,12 +550,12 @@ trait Slice {
           val includedBits = BitSetUtil.filteredRange(0, size)(included)
 
           Map(
-            ColumnRef(CPath.Identity, CBoolean) -> BoolColumn
-              .Either(definedBits, includedBits))
+            ColumnRef(CPath.Identity, CBoolean) ->
+              BoolColumn.Either(definedBits, includedBits))
         } else {
           Map(
-            ColumnRef(CPath.Identity, CBoolean) -> BoolColumn
-              .False(definedBits))
+            ColumnRef(CPath.Identity, CBoolean) ->
+              BoolColumn.False(definedBits))
         }
     }
 
@@ -981,9 +974,11 @@ trait Slice {
       val columns: Map[ColumnRef, Column] = other.columns
         .foldLeft(source.columns) {
           case (acc, (ref, col)) =>
-            acc + (ref -> (acc get ref flatMap { c =>
-              cf.util.UnionRight(c, col)
-            } getOrElse col))
+            acc +
+              (ref ->
+                (acc get ref flatMap { c =>
+                  cf.util.UnionRight(c, col)
+                } getOrElse col))
         }
     }
   }
@@ -1095,8 +1090,8 @@ trait Slice {
             case CPathField(name) :: tail => {
               target match {
                 case SchemaNode.Obj(nodes) => {
-                  val subTarget = nodes get name getOrElse SchemaNode
-                    .Union(Set())
+                  val subTarget = nodes get name getOrElse
+                    SchemaNode.Union(Set())
                   val result = insert(
                     subTarget,
                     ColumnRef(CPath(tail), ctype),
@@ -1334,9 +1329,9 @@ trait Slice {
               case '\t' => pushStr("\\t")
 
               case c => {
-                if ((c >= '\u0000' && c < '\u001f') || (
-                      c >= '\u0080' && c < '\u00a0'
-                    ) || (c >= '\u2000' && c < '\u2100')) {
+                if ((c >= '\u0000' && c < '\u001f') ||
+                    (c >= '\u0080' && c < '\u00a0') ||
+                    (c >= '\u2000' && c < '\u2100')) {
                   pushStr("\\u")
                   pushStr("%04x".format(Character.codePointAt(str, idx)))
                 } else { push(c) }
@@ -1691,8 +1686,8 @@ trait Slice {
   def toString(row: Int): Option[String] = {
     (columns.toList.sortBy(_._1) map {
       case (ref, col) =>
-        ref.toString + ": " + (if (col.isDefinedAt(row)) col.strValue(row)
-                               else "(undefined)")
+        ref.toString + ": " +
+          (if (col.isDefinedAt(row)) col.strValue(row) else "(undefined)")
     }) match {
       case Nil => None
       case l   => Some(l.mkString("[", ", ", "]"))
@@ -1703,8 +1698,8 @@ trait Slice {
     (0 until size).map(i => prefix + " " + toJson(i)).mkString("\n")
   }
 
-  override def toString =
-    (0 until size).map(toString(_).getOrElse("")).mkString("\n")
+  override def toString = (0 until size).map(toString(_).getOrElse(""))
+    .mkString("\n")
 }
 
 object Slice {

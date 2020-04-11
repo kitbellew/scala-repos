@@ -26,21 +26,20 @@ class WebSocketDirectivesSpec extends RoutingSpec {
     "handle websocket requests" in {
       val wsClient = WSProbe()
 
-      WS("http://localhost/", wsClient.flow) ~> websocketRoute ~>
-        check {
-          isWebSocketUpgrade shouldEqual true
-          wsClient.sendMessage("Peter")
-          wsClient.expectMessage("Hello Peter!")
+      WS("http://localhost/", wsClient.flow) ~> websocketRoute ~> check {
+        isWebSocketUpgrade shouldEqual true
+        wsClient.sendMessage("Peter")
+        wsClient.expectMessage("Hello Peter!")
 
-          wsClient.sendMessage(BinaryMessage(ByteString("abcdef")))
-          // wsClient.expectNoMessage() // will be checked implicitly by next expectation
+        wsClient.sendMessage(BinaryMessage(ByteString("abcdef")))
+        // wsClient.expectNoMessage() // will be checked implicitly by next expectation
 
-          wsClient.sendMessage("John")
-          wsClient.expectMessage("Hello John!")
+        wsClient.sendMessage("John")
+        wsClient.expectMessage("Hello John!")
 
-          wsClient.sendCompletion()
-          wsClient.expectCompletion()
-        }
+        wsClient.sendCompletion()
+        wsClient.expectCompletion()
+      }
     }
     "choose subprotocol from offered ones" in {
       val wsClient = WSProbe()
@@ -68,23 +67,21 @@ class WebSocketDirectivesSpec extends RoutingSpec {
         }
     }
     "reject websocket requests if no subprotocol matches" in {
-      WS(
-        "http://localhost/",
-        Flow[Message],
-        List("other")) ~> websocketMultipleProtocolRoute ~> check {
-        rejections.collect {
-          case UnsupportedWebSocketSubprotocolRejection(p) ⇒ p
-        }.toSet shouldEqual Set("greeter", "echo")
-      }
+      WS("http://localhost/", Flow[Message], List("other")) ~>
+        websocketMultipleProtocolRoute ~> check {
+          rejections.collect {
+            case UnsupportedWebSocketSubprotocolRejection(p) ⇒ p
+          }.toSet shouldEqual Set("greeter", "echo")
+        }
 
-      WS("http://localhost/", Flow[Message], List("other")) ~> Route
-        .seal(websocketMultipleProtocolRoute) ~> check {
-        status shouldEqual StatusCodes.BadRequest
-        responseAs[String] shouldEqual "None of the websocket subprotocols offered in the request are supported. Supported are 'echo','greeter'."
-        header[`Sec-WebSocket-Protocol`].get.protocols.toSet shouldEqual Set(
-          "greeter",
-          "echo")
-      }
+      WS("http://localhost/", Flow[Message], List("other")) ~>
+        Route.seal(websocketMultipleProtocolRoute) ~> check {
+          status shouldEqual StatusCodes.BadRequest
+          responseAs[String] shouldEqual
+            "None of the websocket subprotocols offered in the request are supported. Supported are 'echo','greeter'."
+          header[`Sec-WebSocket-Protocol`].get.protocols.toSet shouldEqual
+            Set("greeter", "echo")
+        }
     }
     "reject non-websocket requests" in {
       Get("http://localhost/") ~> websocketRoute ~> check {

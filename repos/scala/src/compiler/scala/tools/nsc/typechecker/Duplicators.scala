@@ -81,13 +81,14 @@ abstract class Duplicators extends Analyzer {
       override def mapOver(tpe: Type): Type =
         tpe match {
           case TypeRef(NoPrefix, sym, args) if sym.isTypeParameterOrSkolem =>
-            val sym1 = (context.scope lookup sym.name orElse {
-              // try harder (look in outer scopes)
-              // with virtpatmat, this can happen when the sym is referenced in the scope of a LabelDef but
-              // is defined in the scope of an outer DefDef (e.g., in AbstractPartialFunction's andThen)
-              BodyDuplicator.super.silent(_ typedType Ident(sym.name))
-                .fold(NoSymbol: Symbol)(_.symbol)
-            } filter (_ ne sym))
+            val sym1 =
+              (context.scope lookup sym.name orElse {
+                // try harder (look in outer scopes)
+                // with virtpatmat, this can happen when the sym is referenced in the scope of a LabelDef but
+                // is defined in the scope of an outer DefDef (e.g., in AbstractPartialFunction's andThen)
+                BodyDuplicator.super.silent(_ typedType Ident(sym.name))
+                  .fold(NoSymbol: Symbol)(_.symbol)
+              } filter (_ ne sym))
             if (sym1.exists) {
               debuglog(s"fixing $sym -> $sym1")
               typeRef(NoPrefix, sym1, mapOverArgs(args, sym1.typeParams))
@@ -138,8 +139,8 @@ abstract class Duplicators extends Analyzer {
 
     private def invalidate(tree: Tree, owner: Symbol = NoSymbol) {
       debuglog(s"attempting to invalidate symbol = ${tree.symbol}")
-      if ((tree.isDef || tree.isInstanceOf[Function]) && tree
-            .symbol != NoSymbol) {
+      if ((tree.isDef || tree.isInstanceOf[Function]) &&
+          tree.symbol != NoSymbol) {
         debuglog("invalid " + tree.symbol)
         invalidSyms(tree.symbol) = tree
 
@@ -161,9 +162,8 @@ abstract class Duplicators extends Analyzer {
             newsym.setInfo(fixType(vdef.symbol.info))
             vdef.symbol = newsym
             debuglog(
-              "newsym: " + newsym + " info: " + newsym
-                .info + ", owner: " + newsym.owner + ", " + newsym.owner
-                .isClass)
+              "newsym: " + newsym + " info: " + newsym.info + ", owner: " +
+                newsym.owner + ", " + newsym.owner.isClass)
             if (newsym.owner.isClass) newsym.owner.info.decls enter newsym
 
           case DefDef(_, name, tparams, vparamss, _, rhs) =>
@@ -207,8 +207,8 @@ abstract class Duplicators extends Analyzer {
     override def typed(tree: Tree, mode: Mode, pt: Type): Tree = {
       debuglog("typing " + tree + ": " + tree.tpe + ", " + tree.getClass)
       val origtreesym = tree.symbol
-      if (tree.hasSymbolField && tree.symbol != NoSymbol
-          && !tree.symbol
+      if (tree.hasSymbolField && tree.symbol != NoSymbol &&
+          !tree.symbol
             .isLabel // labels cannot be retyped by the type checker as LabelDef has no ValDef/return type trees
           && invalidSyms.isDefinedAt(tree.symbol)) {
         debuglog("removed symbol " + tree.symbol)
@@ -267,9 +267,9 @@ abstract class Duplicators extends Analyzer {
             }
 
           val params1 = params map newParam
-          val rhs1 = (new TreeSubstituter(
-            params map (_.symbol),
-            params1) transform rhs) // TODO: duplicate?
+          val rhs1 =
+            (new TreeSubstituter(params map (_.symbol), params1) transform
+              rhs) // TODO: duplicate?
 
           super.typed(
             treeCopy.LabelDef(tree, name, params1, rhs1.clearType()),
@@ -288,8 +288,8 @@ abstract class Duplicators extends Analyzer {
 
         case Ident(_) if (origtreesym ne null) && origtreesym.isLazy =>
           debuglog(
-            "Ident to a lazy val " + tree + ", " + tree
-              .symbol + " updated to " + origtreesym)
+            "Ident to a lazy val " + tree + ", " + tree.symbol +
+              " updated to " + origtreesym)
           tree.symbol = updateSym(origtreesym)
           super.typed(tree.clearType(), mode, pt)
 
@@ -318,9 +318,10 @@ abstract class Duplicators extends Analyzer {
                        .defStringSeenAs(tpe)}\n  Overload was: $memberString")
                    Select(This(newClassOwner), alt)
                  case xs =>
-                   alts filter (alt =>
-                     (alt.paramss corresponds tree.symbol.paramss)(
-                       _.size == _.size)) match {
+                   alts filter
+                     (alt =>
+                       (alt.paramss corresponds tree.symbol.paramss)(
+                         _.size == _.size)) match {
                      case alt :: Nil =>
                        log(
                          s"Resorted to parameter list arity to disambiguate to $alt\n  Overload was: $memberString")

@@ -323,8 +323,9 @@ object Enumeratee {
             case Input.El(e) =>
               new CheckDone[From, To] {
                 def continue[A](k: K[To, A]) = Cont(step(k))
-              } &> Iteratee
-                .flatten(Future(f(e))(pec).flatMap(_.apply(Cont(k)))(dec))
+              } &>
+                Iteratee
+                  .flatten(Future(f(e))(pec).flatMap(_.apply(Cont(k)))(dec))
 
             case Input.Empty =>
               new CheckDone[From, To] {
@@ -367,8 +368,9 @@ object Enumeratee {
             case in =>
               new CheckDone[From, To] {
                 def continue[A](k: K[To, A]) = Cont(step(k))
-              } &> Iteratee
-                .flatten(Future(f(in))(pec).flatMap(_.apply(Cont(k)))(dec))
+              } &>
+                Iteratee
+                  .flatten(Future(f(in))(pec).flatMap(_.apply(Cont(k)))(dec))
           }
 
           def continue[A](k: K[To, A]) = Cont(step(k))

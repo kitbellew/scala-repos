@@ -204,8 +204,8 @@ object ScalaReflection extends ScalaReflection {
         case t if t <:< localTypeOf[Option[_]] =>
           val TypeRef(_, _, Seq(optType)) = t
           val className = getClassNameFromType(optType)
-          val newTypePath =
-            s"""- option value class: "$className"""" +: walkedTypePath
+          val newTypePath = s"""- option value class: "$className"""" +:
+            walkedTypePath
           WrapOption(
             constructorFor(optType, path, newTypePath),
             dataTypeFor(optType))
@@ -292,8 +292,8 @@ object ScalaReflection extends ScalaReflection {
             Invoke(getPath, method, arrayClassFor(elementType))
           }.getOrElse {
             val className = getClassNameFromType(elementType)
-            val newTypePath =
-              s"""- array element class: "$className"""" +: walkedTypePath
+            val newTypePath = s"""- array element class: "$className"""" +:
+              walkedTypePath
             Invoke(
               MapObjects(
                 p => constructorFor(elementType, Some(p), newTypePath),
@@ -307,8 +307,8 @@ object ScalaReflection extends ScalaReflection {
           val TypeRef(_, _, Seq(elementType)) = t
           val Schema(dataType, nullable) = schemaFor(elementType)
           val className = getClassNameFromType(elementType)
-          val newTypePath =
-            s"""- array element class: "$className"""" +: walkedTypePath
+          val newTypePath = s"""- array element class: "$className"""" +:
+            walkedTypePath
 
           val mapFunction: Expression => Expression = p => {
             val converter = constructorFor(elementType, Some(p), newTypePath)
@@ -372,7 +372,8 @@ object ScalaReflection extends ScalaReflection {
               val Schema(dataType, nullable) = schemaFor(fieldType)
               val clsName = getClassNameFromType(fieldType)
               val newTypePath =
-                s"""- field (class: "$clsName", name: "$fieldName")""" +: walkedTypePath
+                s"""- field (class: "$clsName", name: "$fieldName")""" +:
+                  walkedTypePath
               // For tuples, we based grab the inner fields by ordinal instead of name.
               if (cls.getName startsWith "scala.Tuple") {
                 constructorFor(
@@ -404,9 +405,8 @@ object ScalaReflection extends ScalaReflection {
           } else { newInstance }
 
         case t
-            if Utils.classIsLoadable(className) &&
-              Utils.classForName(className)
-                .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
+            if Utils.classIsLoadable(className) && Utils.classForName(className)
+              .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
           val udt = Utils.classForName(className)
             .getAnnotation(classOf[SQLUserDefinedType]).udt().newInstance()
           val obj = NewInstance(
@@ -462,8 +462,8 @@ object ScalaReflection extends ScalaReflection {
             dataType = ArrayType(catalystType, nullable))
         } else {
           val clsName = getClassNameFromType(elementType)
-          val newPath =
-            s"""- array element class: "$clsName"""" +: walkedTypePath
+          val newPath = s"""- array element class: "$clsName"""" +:
+            walkedTypePath
           MapObjects(
             extractorFor(_, elementType, newPath),
             input,
@@ -532,8 +532,8 @@ object ScalaReflection extends ScalaReflection {
               // For non-primitives, we can just extract the object from the Option and then recurse.
               case other =>
                 val className = getClassNameFromType(optType)
-                val newPath =
-                  s"""- option value class: "$className"""" +: walkedTypePath
+                val newPath = s"""- option value class: "$className"""" +:
+                  walkedTypePath
 
                 val optionObjectType: DataType = other match {
                   // Special handling is required for arrays, as getClassFromType(<Array>) will fail
@@ -561,11 +561,10 @@ object ScalaReflection extends ScalaReflection {
                   dataTypeFor(fieldType))
                 val clsName = getClassNameFromType(fieldType)
                 val newPath =
-                  s"""- field (class: "$clsName", name: "$fieldName")""" +: walkedTypePath
-                expressions.Literal(fieldName) :: extractorFor(
-                  fieldValue,
-                  fieldType,
-                  newPath) :: Nil
+                  s"""- field (class: "$clsName", name: "$fieldName")""" +:
+                    walkedTypePath
+                expressions.Literal(fieldName) ::
+                  extractorFor(fieldValue, fieldType, newPath) :: Nil
             })
             val nullOutput = expressions.Literal
               .create(null, nonNullOutput.dataType)
@@ -764,9 +763,8 @@ trait ScalaReflection {
       tpe match {
 
         case t
-            if Utils.classIsLoadable(className) &&
-              Utils.classForName(className)
-                .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
+            if Utils.classIsLoadable(className) && Utils.classForName(className)
+              .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
           // Note: We check for classIsLoadable above since Utils.classForName uses Java reflection,
           //       whereas className is from Scala reflection.  This can make it hard to find classes
           //       in some cases, such as when a class is enclosed in an object (in which case
@@ -898,8 +896,8 @@ trait ScalaReflection {
     val formalTypeArgs = tpe.typeSymbol.asClass.typeParams
     val TypeRef(_, _, actualTypeArgs) = tpe
     constructParams(tpe).map { p =>
-      p.name.toString -> p.typeSignature
-        .substituteTypes(formalTypeArgs, actualTypeArgs)
+      p.name.toString ->
+        p.typeSignature.substituteTypes(formalTypeArgs, actualTypeArgs)
     }
   }
 

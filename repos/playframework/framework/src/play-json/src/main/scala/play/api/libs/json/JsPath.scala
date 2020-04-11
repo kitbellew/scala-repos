@@ -251,8 +251,8 @@ case class JsPath(path: List[PathNode] = List()) {
       node match {
         case KeyPathNode(key) =>
           JsSuccess(
-            JsObject(json.fields.filterNot(_._1 == key)) ++ Json
-              .obj(key -> value))
+            JsObject(json.fields.filterNot(_._1 == key)) ++
+              Json.obj(key -> value))
         case _ =>
           JsError(JsPath(), ValidationError("error.expected.keypathnode"))
       }

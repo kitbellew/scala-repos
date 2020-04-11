@@ -135,15 +135,16 @@ class JobTest(cons: (Args) => Job) {
   // for the counters in the final job's FlowStat.
   def counter(counter: String, group: String = Stats.ScaldingGroup)(
       op: Long => Unit) = {
-    statsCallbacks += ((stats: CascadingStats) =>
-      op(Stats.getCounterValue(counter, group)(stats)))
+    statsCallbacks +=
+      ((stats: CascadingStats) =>
+        op(Stats.getCounterValue(counter, group)(stats)))
     this
   }
 
   // Used to check an assertion on all custom counters of a given scalding job.
   def counters(op: Map[String, Long] => Unit) = {
-    statsCallbacks += ((stats: CascadingStats) =>
-      op(Stats.getAllCustomCounters()(stats)))
+    statsCallbacks +=
+      ((stats: CascadingStats) => op(Stats.getAllCustomCounters()(stats)))
     this
   }
 
@@ -211,8 +212,8 @@ class JobTest(cons: (Args) => Job) {
     System.setProperty("cascading.update.skip", "true")
 
     // create cascading 3.0 planner trace files during tests
-    if (System.getenv.asScala
-          .getOrElse("SCALDING_CASCADING3_DEBUG", "0") == "1") {
+    if (System.getenv.asScala.getOrElse("SCALDING_CASCADING3_DEBUG", "0") ==
+          "1") {
       System.setProperty(
         "cascading.planner.plan.path",
         "target/test/cascading/traceplan/" + job.name)

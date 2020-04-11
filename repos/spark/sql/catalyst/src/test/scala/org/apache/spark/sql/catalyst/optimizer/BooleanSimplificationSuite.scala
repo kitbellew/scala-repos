@@ -30,14 +30,13 @@ class BooleanSimplificationSuite extends PlanTest with PredicateHelper {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
     val batches =
-      Batch("AnalysisNodes", Once, EliminateSubqueryAliases) ::
-        Batch(
-          "Constant Folding",
-          FixedPoint(50),
-          NullPropagation,
-          ConstantFolding,
-          BooleanSimplification,
-          PruneFilters) :: Nil
+      Batch("AnalysisNodes", Once, EliminateSubqueryAliases) :: Batch(
+        "Constant Folding",
+        FixedPoint(50),
+        NullPropagation,
+        ConstantFolding,
+        BooleanSimplification,
+        PruneFilters) :: Nil
   }
 
   val testRelation = LocalRelation('a.int, 'b.int, 'c.int, 'd.string)
@@ -71,13 +70,15 @@ class BooleanSimplificationSuite extends PlanTest with PredicateHelper {
 
     checkCondition('a < 2 || ('a < 2 && 'a > 3 && 'b > 5), 'a < 2)
 
-    val input = ('a === 'b && 'b > 3 && 'c > 2) ||
-      ('a === 'b && 'c < 1 && 'a === 5) ||
-      ('a === 'b && 'b < 5 && 'a > 1)
+    val input =
+      ('a === 'b && 'b > 3 && 'c > 2) ||
+        ('a === 'b && 'c < 1 && 'a === 5) ||
+        ('a === 'b && 'b < 5 && 'a > 1)
 
-    val expected = 'a === 'b && (
-      ('b > 3 && 'c > 2) || ('c < 1 && 'a === 5) || ('b < 5 && 'a > 1)
-    )
+    val expected = 'a === 'b &&
+      (('b > 3 && 'c > 2) ||
+        ('c < 1 && 'a === 5) ||
+        ('b < 5 && 'a > 1))
 
     checkCondition(input, expected)
   }
@@ -95,7 +96,9 @@ class BooleanSimplificationSuite extends PlanTest with PredicateHelper {
       'a < 2 || ('b > 3 && 'c > 5))
 
     checkCondition(
-      ('a === 'b || 'b > 3) && ('a === 'b || 'a > 3) && ('a === 'b || 'a < 5),
+      ('a === 'b || 'b > 3) &&
+        ('a === 'b || 'a > 3) &&
+        ('a === 'b || 'a < 5),
       'a === 'b || 'b > 3 && 'a > 3 && 'a < 5)
   }
 

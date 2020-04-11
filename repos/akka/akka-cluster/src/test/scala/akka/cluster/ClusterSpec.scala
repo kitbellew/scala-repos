@@ -104,8 +104,8 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
       expectMsgClass(classOf[ClusterEvent.CurrentClusterState])
 
       cluster.shutdown()
-      expectMsgType[ClusterEvent.MemberRemoved].member.address should ===(
-        selfAddress)
+      expectMsgType[ClusterEvent.MemberRemoved].member.address should
+        ===(selfAddress)
 
       callbackProbe.expectMsg("OnMemberRemoved")
     }

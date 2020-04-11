@@ -41,12 +41,12 @@ case class DashboardConfig(ip: String = "localhost", port: Int = 9000)
 object Dashboard extends Logging with SSLConfiguration {
   def main(args: Array[String]): Unit = {
     val parser = new scopt.OptionParser[DashboardConfig]("Dashboard") {
-      opt[String]("ip") action { (x, c) => c.copy(ip = x) } text (
-        "IP to bind to (default: localhost)."
-      )
-      opt[Int]("port") action { (x, c) => c.copy(port = x) } text (
-        "Port to bind to (default: 9000)."
-      )
+      opt[String]("ip") action { (x, c) =>
+        c.copy(ip = x)
+      } text ("IP to bind to (default: localhost).")
+      opt[Int]("port") action { (x, c) =>
+        c.copy(port = x)
+      } text ("Port to bind to (default: 9000).")
     }
 
     parser.parse(args, DashboardConfig()) map { dc => createDashboard(dc) }
@@ -97,46 +97,41 @@ trait DashboardService
           }
         }
       }
-    } ~
-      pathPrefix("engine_instances" / Segment) { instanceId =>
-        path("evaluator_results.txt") {
+    } ~ pathPrefix("engine_instances" / Segment) { instanceId =>
+      path("evaluator_results.txt") {
+        get {
+          respondWithMediaType(`text/plain`) {
+            evaluationInstances.get(instanceId).map { i =>
+              complete(i.evaluatorResults)
+            } getOrElse { complete(StatusCodes.NotFound) }
+          }
+        }
+      } ~ path("evaluator_results.html") {
+        get {
+          respondWithMediaType(`text/html`) {
+            evaluationInstances.get(instanceId).map { i =>
+              complete(i.evaluatorResultsHTML)
+            } getOrElse { complete(StatusCodes.NotFound) }
+          }
+        }
+      } ~ path("evaluator_results.json") {
+        get {
+          respondWithMediaType(`application/json`) {
+            evaluationInstances.get(instanceId).map { i =>
+              complete(i.evaluatorResultsJSON)
+            } getOrElse { complete(StatusCodes.NotFound) }
+          }
+        }
+      } ~ cors {
+        path("local_evaluator_results.json") {
           get {
-            respondWithMediaType(`text/plain`) {
+            respondWithMediaType(`application/json`) {
               evaluationInstances.get(instanceId).map { i =>
-                complete(i.evaluatorResults)
+                complete(i.evaluatorResultsJSON)
               } getOrElse { complete(StatusCodes.NotFound) }
             }
           }
-        } ~
-          path("evaluator_results.html") {
-            get {
-              respondWithMediaType(`text/html`) {
-                evaluationInstances.get(instanceId).map { i =>
-                  complete(i.evaluatorResultsHTML)
-                } getOrElse { complete(StatusCodes.NotFound) }
-              }
-            }
-          } ~
-          path("evaluator_results.json") {
-            get {
-              respondWithMediaType(`application/json`) {
-                evaluationInstances.get(instanceId).map { i =>
-                  complete(i.evaluatorResultsJSON)
-                } getOrElse { complete(StatusCodes.NotFound) }
-              }
-            }
-          } ~
-          cors {
-            path("local_evaluator_results.json") {
-              get {
-                respondWithMediaType(`application/json`) {
-                  evaluationInstances.get(instanceId).map { i =>
-                    complete(i.evaluatorResultsJSON)
-                  } getOrElse { complete(StatusCodes.NotFound) }
-                }
-              }
-            }
-          }
-      } ~
-      pathPrefix("assets") { getFromResourceDirectory("assets") }
+        }
+      }
+    } ~ pathPrefix("assets") { getFromResourceDirectory("assets") }
 }

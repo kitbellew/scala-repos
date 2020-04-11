@@ -31,8 +31,8 @@ class TypedMultiMapSpec
       val m1 = TypedMultiMap.empty[AbstractKey, KV]
       val m2 = m1.inserted(Key(1))(MyValue(42))
       m2.get(Key(1)) should ===(Set(MyValue(42)))
-      m2.removed(Key(1))(MyValue(42)).get(Key(1)) should ===(
-        Set.empty[MyValue[Int]])
+      m2.removed(Key(1))(MyValue(42)).get(Key(1)) should
+        ===(Set.empty[MyValue[Int]])
       val m3 = m2.inserted(Key(1))(MyValue(43))
       m3.get(Key(1)) should ===(Set(MyValue(42), MyValue(43)))
       m3.removed(Key(1))(MyValue(42)).get(Key(1)) should ===(Set(MyValue(43)))
@@ -42,8 +42,8 @@ class TypedMultiMapSpec
       val m1 = TypedMultiMap.empty[AbstractKey, KV]
       val m2 = m1.inserted(Key(1))(MyValue(42)).inserted(Key(2))(MyValue(43))
       m2.get(Key(1)) should ===(Set(MyValue(42)))
-      m2.removed(Key(1))(MyValue(42)).get(Key(1)) should ===(
-        Set.empty[MyValue[Int]])
+      m2.removed(Key(1))(MyValue(42)).get(Key(1)) should
+        ===(Set.empty[MyValue[Int]])
       m2.get(Key(2)) should ===(Set(MyValue(43)))
       m2.removed(Key(1))(MyValue(42)).get(Key(2)) should ===(Set(MyValue(43)))
     }

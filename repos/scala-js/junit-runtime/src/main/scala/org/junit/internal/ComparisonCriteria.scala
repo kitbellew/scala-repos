@@ -63,8 +63,7 @@ abstract class ComparisonCriteria {
     val expectedsLength = expecteds.asInstanceOf[Array[_]].length
     if (actualsLength != expectedsLength) {
       Assert.fail(
-        header +
-          "array lengths differed, expected.length=" + expectedsLength +
+        header + "array lengths differed, expected.length=" + expectedsLength +
           " actual.length=" + actualsLength)
     }
     expectedsLength

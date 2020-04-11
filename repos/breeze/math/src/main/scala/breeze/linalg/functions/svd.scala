@@ -92,13 +92,11 @@ object svd extends UFunc {
       case ReducedSVD  => DenseMatrix.zeros[Double](m min n, n)
     }
     val iwork = new Array[Int](8 * (m min n))
-    val workSize = (3
-      * scala.math.min(m, n)
-      * scala.math.min(m, n)
-      + scala.math.max(
+    val workSize =
+      (3 * scala.math.min(m, n) * scala.math.min(m, n) + scala.math.max(
         scala.math.max(m, n),
-        4 * scala.math.min(m, n)
-          * scala.math.min(m, n) + 4 * scala.math.min(m, n)))
+        4 * scala.math.min(m, n) * scala.math.min(m, n) +
+          4 * scala.math.min(m, n)))
     val work = new Array[Double](workSize)
     val info = new intW(0)
     val cm = copy(mat)
@@ -153,13 +151,11 @@ object svd extends UFunc {
       case "S" => DenseMatrix.zeros[Float](m min n, n)
     }
     val iwork = new Array[Int](8 * (m min n))
-    val workSize = (3
-      * scala.math.min(m, n)
-      * scala.math.min(m, n)
-      + scala.math.max(
+    val workSize =
+      (3 * scala.math.min(m, n) * scala.math.min(m, n) + scala.math.max(
         scala.math.max(m, n),
-        4 * scala.math.min(m, n)
-          * scala.math.min(m, n) + 4 * scala.math.min(m, n)))
+        4 * scala.math.min(m, n) * scala.math.min(m, n) +
+          4 * scala.math.min(m, n)))
     val work = new Array[Float](workSize)
     val info = new intW(0)
     val cm = copy(mat)
@@ -253,8 +249,7 @@ object svd extends UFunc {
         val z = mulTrans(matTrans, x)
         if (z.length <= k)
           throw new IllegalArgumentException(
-            "The number of rows or columns " +
-              "should be bigger than k.")
+            "The number of rows or columns " + "should be bigger than k.")
         y := mul(mat, z)
       }
 
@@ -394,8 +389,8 @@ object svd extends UFunc {
 
         val va = mp.map { case (ek, ev) => ev }
         val uOutput = DenseMatrix(va.map(r => r.toArray).toSeq: _*).t
-        val vtOutput = siMatrix * DenseMatrix(
-          va.map(r => mulTrans(mtTrans, r).toArray).toSeq: _*)
+        val vtOutput = siMatrix *
+          DenseMatrix(va.map(r => mulTrans(mtTrans, r).toArray).toSeq: _*)
         SVD(uOutput, s, vtOutput)
       }
     }

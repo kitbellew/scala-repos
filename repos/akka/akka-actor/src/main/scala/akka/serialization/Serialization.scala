@@ -187,19 +187,20 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         def unique(
             possibilities: immutable.Seq[(Class[_], Serializer)]): Boolean =
           possibilities.size == 1 ||
-            (possibilities forall (_._1 isAssignableFrom possibilities(0)
-              ._1)) ||
+            (possibilities forall
+              (_._1 isAssignableFrom possibilities(0)._1)) ||
             (possibilities forall (_._2 == possibilities(0)._2))
 
         val ser = bindings filter { _._1 isAssignableFrom clazz } match {
           case Seq() ⇒
             throw new NotSerializableException(
-              "No configured serialization-bindings for class [%s]" format clazz
-                .getName)
+              "No configured serialization-bindings for class [%s]" format
+                clazz.getName)
           case possibilities ⇒
             if (!unique(possibilities))
               log.warning(
-                "Multiple serializers found for " + clazz + ", choosing first: " + possibilities)
+                "Multiple serializers found for " + clazz +
+                  ", choosing first: " + possibilities)
             possibilities(0)._2
         }
         serializerMap.putIfAbsent(clazz, ser) match {
@@ -257,8 +258,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   // The reason for this special case is for backwards compatibility so that we still can
   // include "com.google.protobuf.GeneratedMessage" = proto in configured serialization-bindings.
   private def checkGoogleProtobuf(className: String): Boolean =
-    (!className.startsWith("com.google.protobuf") || system.dynamicAccess
-      .getClassFor[Any](className).isSuccess)
+    (!className.startsWith("com.google.protobuf") ||
+      system.dynamicAccess.getClassFor[Any](className).isSuccess)
 
   /**
     * Sort so that subtypes always precede their supertypes, but without

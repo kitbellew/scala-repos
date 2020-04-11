@@ -412,9 +412,8 @@ class IntervalCheck
           val ok = c.contains(g(x, y))
           if (!ok)
             println(
-              "(%s, %s) failed on (%s, %s)" format (
-                a, b, x.toString, y.toString
-              ))
+              "(%s, %s) failed on (%s, %s)" format
+                (a, b, x.toString, y.toString))
           ok shouldBe true
       }
     }
@@ -442,8 +441,8 @@ class IntervalCheck
     forAll { (x: Rational, y: Rational) =>
       val a = Interval.point(x)
       val b = Interval.point(y)
-      PartialOrder[Interval[Rational]].tryCompare(a, b).get shouldBe Order[
-        Rational].compare(x, y)
+      PartialOrder[Interval[Rational]].tryCompare(a, b).get shouldBe
+        Order[Rational].compare(x, y)
       val Some(Point(vmin)) = a.pmin(b)
       vmin shouldBe x.min(y)
       val Some(Point(vmax)) = a.pmax(b)

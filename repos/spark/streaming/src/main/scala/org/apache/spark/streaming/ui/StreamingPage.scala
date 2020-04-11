@@ -67,8 +67,7 @@ private[ui] class GraphUIData(
       jsCollector.addStatement(
         "drawTimeline(" +
           s"'#$timelineDivId', $dataJavaScriptName, $minX, $maxX, $minY, $maxY, '$unitY'," +
-          s" ${batchInterval.get}" +
-          ");")
+          s" ${batchInterval.get}" + ");")
     } else {
       jsCollector.addStatement(
         s"drawTimeline('#$timelineDivId', $dataJavaScriptName, $minX, $maxX, $minY, $maxY," +
@@ -152,12 +151,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
   def render(request: HttpServletRequest): Seq[Node] = {
     val resources = generateLoadResources()
     val basicInfo = generateBasicInfo()
-    val content = resources ++
-      basicInfo ++
-      listener.synchronized {
-        generateStatTable() ++
-          generateBatchListTables()
-      }
+    val content = resources ++ basicInfo ++ listener.synchronized {
+      generateStatTable() ++ generateBatchListTables()
+    }
     SparkUIUtils
       .headerSparkPage("Streaming Statistics", content, parent, Some(5000))
   }
@@ -312,8 +308,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
 
     val numCompletedBatches = listener.retainedCompletedBatches.size
     val numActiveBatches = batchTimes.length - numCompletedBatches
-    val numReceivers = listener.numInactiveReceivers + listener
-      .numActiveReceivers
+    val numReceivers = listener.numInactiveReceivers +
+      listener.numActiveReceivers
     val table =
       // scalastyle:off
       <table id="stat-table" class="table table-bordered" style="width: auto">
@@ -341,13 +337,7 @@ private[ui] class StreamingPage(parent: StreamingTab)
         } else { <strong>Input Rate</strong> }
       }
               </div>
-              {
-        if (numReceivers > 0) {
-          <div>Receivers: {listener.numActiveReceivers} / {
-            numReceivers
-          } active</div>
-        }
-      }
+              {if (numReceivers > 0) { <div>Receivers: {listener.numActiveReceivers} / {numReceivers} active</div> }}
               <div>Avg: {eventRateForAllStreams.formattedAvg} events/sec</div>
             </div>
           </td>
@@ -551,11 +541,10 @@ private[ui] class StreamingPage(parent: StreamingTab)
     val activeBatchesContent = {
       <h4 id="active">Active Batches ({
         runningBatches.size + waitingBatches.size
-      })</h4> ++
-        new ActiveBatchTable(
-          runningBatches,
-          waitingBatches,
-          listener.batchDuration).toNodeSeq
+      })</h4> ++ new ActiveBatchTable(
+        runningBatches,
+        waitingBatches,
+        listener.batchDuration).toNodeSeq
     }
 
     val completedBatchesContent = {
@@ -563,9 +552,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
         Completed Batches (last {completedBatches.size} out of {
         listener.numTotalCompletedBatches
       })
-      </h4> ++
-        new CompletedBatchTable(completedBatches, listener.batchDuration)
-          .toNodeSeq
+      </h4> ++ new CompletedBatchTable(completedBatches, listener.batchDuration)
+        .toNodeSeq
     }
 
     activeBatchesContent ++ completedBatchesContent

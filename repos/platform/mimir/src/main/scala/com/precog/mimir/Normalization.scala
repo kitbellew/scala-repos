@@ -96,8 +96,8 @@ trait NormalizationHelperModule[M[+_]]
             def collectReduction(reduction: Reduction): Set[CPath] = {
               refs collect {
                 case ColumnRef(selector, ctype)
-                    if selector.hasSuffix(CPathField(reduction.name)) && ctype
-                      .isNumeric =>
+                    if selector.hasSuffix(CPathField(reduction.name)) &&
+                      ctype.isNumeric =>
                   selector.take(selector.length - 1) getOrElse CPath.Identity
               }
             }
@@ -112,8 +112,8 @@ trait NormalizationHelperModule[M[+_]]
                 val augPath = path \ CPathField(reduction.name)
                 val jtype = Schema.mkType(List(ColumnRef(augPath, CNum)))
 
-                val cols = jtype map { schema.columns } getOrElse Set
-                  .empty[Column]
+                val cols = jtype map { schema.columns } getOrElse
+                  Set.empty[Column]
                 val unifiedCol = unifyNumColumns(cols.toList)
 
                 (path, unifiedCol)
@@ -155,8 +155,8 @@ trait NormalizationHelperModule[M[+_]]
             table.transform(spec)
         }
 
-        val result = resultTables reduceOption { _ concat _ } getOrElse Table
-          .empty
+        val result = resultTables reduceOption { _ concat _ } getOrElse
+          Table.empty
 
         M.point(result)
       }
@@ -208,9 +208,8 @@ trait NormalizationHelperModule[M[+_]]
               }
 
               val bitsets = resultsAll.values map { _.definedAt(0, range.end) }
-              val definedBitset = bitsets reduceOption {
-                _ & _
-              } getOrElse BitSetUtil.create()
+              val definedBitset = bitsets reduceOption { _ & _ } getOrElse
+                BitSetUtil.create()
 
               def intersectColumn(col: NumColumn): NumColumn = {
                 new BitsetColumn(definedBitset) with NumColumn {

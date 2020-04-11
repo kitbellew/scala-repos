@@ -217,8 +217,8 @@ object DebuggerUtil {
     }
     val simpleParameters = function.effectiveParameterClauses
       .flatMap(_.effectiveParameters)
-    val parameters =
-      valueClassParameter ++: simpleParameters ++: localParameters
+    val parameters = valueClassParameter ++: simpleParameters ++:
+      localParameters
     val paramTypes = parameters.map(parameterForJVMSignature(_, subst))
       .mkString("(", "", ")")
     val resultType = function match {
@@ -422,8 +422,8 @@ object DebuggerUtil {
       case t: ScTypeDefinition =>
         if (isLocalClass(t)) new JVMClassAt(SourcePosition.createFromElement(t))
         else {
-          val qual =
-            t.getQualifiedNameForDebugger + classnamePostfix(t, withPostfix)
+          val qual = t.getQualifiedNameForDebugger +
+            classnamePostfix(t, withPostfix)
           JVMNameUtil.getJVMRawText(qual)
         }
       case _ => JVMNameUtil.getJVMQualifiedName(clazz)
@@ -593,22 +593,22 @@ object DebuggerUtil {
       case _: PsiParameter     => true
       case b: ScBindingPattern => ScalaPsiUtil.nameContext(b) match {
           case v @ (_: ScValue | _: ScVariable) =>
-            !v.getContext.isInstanceOf[ScTemplateBody] && !v.getContext
-              .isInstanceOf[ScEarlyDefinitions]
+            !v.getContext.isInstanceOf[ScTemplateBody] &&
+              !v.getContext.isInstanceOf[ScEarlyDefinitions]
           case clause: ScCaseClause => true
           case _                    => true //todo: for generator/enumerators
         }
       case o: ScObject =>
-        !o.getContext.isInstanceOf[ScTemplateBody] && ScalaPsiUtil
-          .getContextOfType(o, true, classOf[PsiClass]) != null
+        !o.getContext.isInstanceOf[ScTemplateBody] &&
+          ScalaPsiUtil.getContextOfType(o, true, classOf[PsiClass]) != null
       case _ => false
     }
   }
 
   def generatesAnonClass(newTd: ScNewTemplateDefinition) = {
     val extBl = newTd.extendsBlock
-    extBl.templateBody.nonEmpty || extBl.templateParents
-      .exists(_.typeElementsWithoutConstructor.nonEmpty)
+    extBl.templateBody.nonEmpty ||
+    extBl.templateParents.exists(_.typeElementsWithoutConstructor.nonEmpty)
   }
 
   @tailrec

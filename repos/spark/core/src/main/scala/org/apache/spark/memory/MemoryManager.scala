@@ -152,8 +152,8 @@ private[spark] abstract class MemoryManager(
     */
   final def executionMemoryUsed: Long =
     synchronized {
-      onHeapExecutionMemoryPool.memoryUsed + offHeapExecutionMemoryPool
-        .memoryUsed
+      onHeapExecutionMemoryPool.memoryUsed +
+        offHeapExecutionMemoryPool.memoryUsed
     }
 
   /**

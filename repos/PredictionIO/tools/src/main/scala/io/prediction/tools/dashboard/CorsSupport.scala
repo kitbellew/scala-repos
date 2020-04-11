@@ -59,9 +59,7 @@ trait CORSSupport {
             HttpResponse().withHeaders(
               `Access-Control-Allow-Methods`(
                 HttpMethods.OPTIONS,
-                allowedMethods: _*) ::
-                allowOriginHeader ::
-                optionsCorsHeaders)
+                allowedMethods: _*) :: allowOriginHeader :: optionsCorsHeaders)
           }
         }
       }.withHttpResponseHeadersMapped { headers =>

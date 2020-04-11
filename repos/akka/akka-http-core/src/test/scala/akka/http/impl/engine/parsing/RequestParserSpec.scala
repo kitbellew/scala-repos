@@ -242,8 +242,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
 
       "message chunk with and without extension" in new Test {
         Seq(
-          start +
-            """3
+          start + """3
             |abc
             |10;some=stuff;bla
             |0123456789ABCDEF
@@ -284,8 +283,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             | apo
             |Bar: xyz
             |
-            |""") should generalMultiParseTo(
-          Right(baseRequest.withEntity(Chunked(
+            |""") should
+          generalMultiParseTo(Right(baseRequest.withEntity(Chunked(
             `application/pdf`,
             source(LastChunk(
               "nice=true",
@@ -311,8 +310,9 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       }
     }
 
-    "properly parse a chunked request with additional transfer encodings" in new Test {
-      """PATCH /data HTTP/1.1
+    "properly parse a chunked request with additional transfer encodings" in
+      new Test {
+        """PATCH /data HTTP/1.1
         |Transfer-Encoding: fancy, chunked
         |Content-Type: application/pdf
         |Host: ping
@@ -320,14 +320,14 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         |0
         |
         |""" should parseTo(HttpRequest(
-        PATCH,
-        "/data",
-        List(
-          `Transfer-Encoding`(TransferEncodings.Extension("fancy")),
-          Host("ping")),
-        HttpEntity.Chunked(`application/pdf`, source(LastChunk))))
-      closeAfterResponseCompletion shouldEqual Seq(false)
-    }
+          PATCH,
+          "/data",
+          List(
+            `Transfer-Encoding`(TransferEncodings.Extension("fancy")),
+            Host("ping")),
+          HttpEntity.Chunked(`application/pdf`, source(LastChunk))))
+        closeAfterResponseCompletion shouldEqual Seq(false)
+      }
 
     "support `rawRequestUriHeader` setting" in new Test {
       override protected def newParser: HttpRequestParser =
@@ -423,14 +423,13 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       }
 
       "a too long HTTP method" in new Test {
-        "ABCDEFGHIJKLMNOPQ " should
-          parseToError(
-            BadRequest,
-            ErrorInfo(
-              "Unsupported HTTP method",
-              "HTTP method too long (started with 'ABCDEFGHIJKLMNOP'). Increase `akka.http.server.parsing.max-method-length` to support HTTP methods with more characters."
-            )
+        "ABCDEFGHIJKLMNOPQ " should parseToError(
+          BadRequest,
+          ErrorInfo(
+            "Unsupported HTTP method",
+            "HTTP method too long (started with 'ABCDEFGHIJKLMNOP'). Increase `akka.http.server.parsing.max-method-length` to support HTTP methods with more characters."
           )
+        )
       }
 
       "two Content-Length headers" in new Test {
@@ -467,10 +466,11 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
 
       "with a too-long header name" in new Test {
         """|GET / HTTP/1.1
-          |UserxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxAgent: curl/7.19.7""" should parseToError(
-          BadRequest,
-          ErrorInfo(
-            "HTTP header name exceeds the configured limit of 64 characters"))
+          |UserxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxAgent: curl/7.19.7""" should
+          parseToError(
+            BadRequest,
+            ErrorInfo(
+              "HTTP header name exceeds the configured limit of 64 characters"))
       }
 
       "with a too-long header-value" in new Test {
@@ -542,10 +542,10 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       override def equals(other: scala.Any): Boolean =
         other match {
           case other: StrictEqualHttpRequest ⇒
-            this.req.copy(entity = HttpEntity.Empty) == other.req
-              .copy(entity = HttpEntity.Empty) &&
+            this.req.copy(entity = HttpEntity.Empty) ==
+              other.req.copy(entity = HttpEntity.Empty) &&
               this.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost) ==
-                other.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost)
+              other.req.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost)
         }
 
       override def toString = req.toString
@@ -587,10 +587,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         parser: HttpRequestParser,
         expected: Either[RequestOutput, HttpRequest]*): Matcher[Seq[String]] =
       equal(expected.map(strictEqualify))
-        .matcher[
-          Seq[
-            Either[RequestOutput, StrictEqualHttpRequest]]] compose multiParse(
-        parser)
+        .matcher[Seq[Either[RequestOutput, StrictEqualHttpRequest]]] compose
+        multiParse(parser)
 
     def multiParse(parser: HttpRequestParser)(input: Seq[String])
         : Seq[Either[RequestOutput, StrictEqualHttpRequest]] =

@@ -26,8 +26,8 @@ final class JUnitTask(val taskDef: TaskDef, runner: JUnitBaseRunner)
 
     if (runner.runSettings.verbose) richLogger.info(c("Test run started", INFO))
 
-    val bootstrapperName = taskDef
-      .fullyQualifiedName + "$scalajs$junit$bootstrapper"
+    val bootstrapperName = taskDef.fullyQualifiedName +
+      "$scalajs$junit$bootstrapper"
 
     val startTime = System.nanoTime
 
@@ -42,14 +42,13 @@ final class JUnitTask(val taskDef: TaskDef, runner: JUnitBaseRunner)
 
       case Success(_) =>
         richLogger.error(
-          "Error while loading test class: " +
-            taskDef.fullyQualifiedName + ", expected " + bootstrapperName +
+          "Error while loading test class: " + taskDef.fullyQualifiedName +
+            ", expected " + bootstrapperName +
             " to extend JUnitTestBootstrapper")
 
       case Failure(exception) =>
         richLogger.error(
-          "Error while loading test class: " +
-            taskDef.fullyQualifiedName,
+          "Error while loading test class: " + taskDef.fullyQualifiedName,
           exception)
     }
 

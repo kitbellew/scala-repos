@@ -60,9 +60,8 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
   }
 
   def testLiteralOverflowInt() {
-    val longStrings =
-      longValues.map(_.toString) ++ randomLongValues(numOfGenInteger)
-        .flatMap(expandIntegerLiteral).distinct
+    val longStrings = longValues.map(_.toString) ++
+      randomLongValues(numOfGenInteger).flatMap(expandIntegerLiteral).distinct
     for (s <- longStrings ++ Seq("2147483648", "-2147483649")) {
       assertMatches(messages(s"val a = $s")) {
         case Error(s, OverflowIntPattern()) :: Nil =>

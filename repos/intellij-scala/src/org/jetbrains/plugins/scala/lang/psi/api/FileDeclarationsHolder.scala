@@ -55,7 +55,8 @@ trait FileDeclarationsHolder
       case _                                                        => false
     }
 
-    if (isScriptProcessed && !super[ScDeclarationSequenceHolder]
+    if (isScriptProcessed &&
+        !super[ScDeclarationSequenceHolder]
           .processDeclarations(processor, state, lastParent, place))
       return false
 
@@ -81,8 +82,8 @@ trait FileDeclarationsHolder
           if ref.refName == "_root_" && ref.qualifier == None => {
         val top = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
-        if (top != null && !processor
-              .execute(top, state.put(ResolverEnv.nameKey, "_root_")))
+        if (top != null &&
+            !processor.execute(top, state.put(ResolverEnv.nameKey, "_root_")))
           return false
         state.put(ResolverEnv.nameKey, null)
       }
@@ -90,16 +91,16 @@ trait FileDeclarationsHolder
           if ref.refName == "_root_" && ref.qualifier == None => {
         val top = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
-        if (top != null && !processor
-              .execute(top, state.put(ResolverEnv.nameKey, "_root_")))
+        if (top != null &&
+            !processor.execute(top, state.put(ResolverEnv.nameKey, "_root_")))
           return false
         state.put(ResolverEnv.nameKey, null)
       }
       case _ => {
         val defaultPackage = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
-        if (place != null && PsiTreeUtil
-              .getParentOfType(place, classOf[ScPackaging]) == null) {
+        if (place != null &&
+            PsiTreeUtil.getParentOfType(place, classOf[ScPackaging]) == null) {
           if (defaultPackage != null &&
               !ResolveUtils.packageProcessDeclarations(
                 defaultPackage,
@@ -107,8 +108,8 @@ trait FileDeclarationsHolder
                 state,
                 null,
                 place)) return false
-        } else if (defaultPackage != null && !BaseProcessor
-                     .isImplicitProcessor(processor)) {
+        } else if (defaultPackage != null &&
+                   !BaseProcessor.isImplicitProcessor(processor)) {
           //we will add only packages
           //only packages resolve, no classes from default package
           val name = processor match {
@@ -201,7 +202,8 @@ trait FileDeclarationsHolder
         ProgressManager.checkCanceled()
         val pack: PsiPackage = ScalaPsiManager.instance(getProject)
           .getCachedPackage(implP).orNull
-        if (pack != null && !ResolveUtils
+        if (pack != null &&
+            !ResolveUtils
               .packageProcessDeclarations(pack, processor, state, null, place))
           return false
       }

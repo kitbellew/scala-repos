@@ -35,10 +35,10 @@ case class InheritanceDiagram(
     outgoingImplicits: List[ImplicitNode])
     extends Diagram {
   def nodes =
-    thisNode :: superClasses ::: subClasses ::: incomingImplicits ::: outgoingImplicits
-  def edges =
-    (thisNode -> (superClasses ::: outgoingImplicits)) ::
-      (subClasses ::: incomingImplicits).map(_ -> List(thisNode))
+    thisNode :: superClasses ::: subClasses ::: incomingImplicits :::
+      outgoingImplicits
+  def edges = (thisNode -> (superClasses ::: outgoingImplicits)) ::
+    (subClasses ::: incomingImplicits).map(_ -> List(thisNode))
 
   override def isInheritanceDiagram = true
   lazy val depthInfo = new DepthInfo {

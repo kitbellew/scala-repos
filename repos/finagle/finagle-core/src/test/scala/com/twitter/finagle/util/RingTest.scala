@@ -18,8 +18,7 @@ class RingTest extends FunSuite {
 
       assert(
         math.abs(a - b) / math.max(a, b) < 0.15,
-        s"$i=$a,$j=$b is unbalanced. " +
-          s"Histo:${histo.mkString(",")}")
+        s"$i=$a,$j=$b is unbalanced. " + s"Histo:${histo.mkString(",")}")
     }
   }
 

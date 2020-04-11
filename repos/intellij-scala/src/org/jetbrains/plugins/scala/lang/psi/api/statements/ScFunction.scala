@@ -524,8 +524,8 @@ trait ScFunction
   override def getIcon(flags: Int) = Icons.FUNCTION
 
   def getReturnType: PsiType = {
-    if (DumbService.getInstance(getProject).isDumb || !SyntheticClasses
-          .get(getProject).isClassesRegistered) {
+    if (DumbService.getInstance(getProject).isDumb ||
+        !SyntheticClasses.get(getProject).isClassesRegistered) {
       return null //no resolve during dumb mode or while synthetic classes is not registered
     }
     getReturnTypeImpl
@@ -596,14 +596,14 @@ trait ScFunction
       signs.fastPhysicalSignatureGet(s) match {
         case Some(x) if x.info.namedElement == this => x.supers.map { _.info }
         case Some(x) =>
-          x.supers.filter { _.info.namedElement != this }.map { _.info } :+ x
-            .info
+          x.supers.filter { _.info.namedElement != this }.map { _.info } :+
+            x.info
         case None => signs.get(s) match {
             case Some(x) if x.info.namedElement == this =>
               x.supers.map { _.info }
             case Some(x) =>
-              x.supers.filter { _.info.namedElement != this }
-                .map { _.info } :+ x.info
+              x.supers.filter { _.info.namedElement != this }.map { _.info } :+
+                x.info
             case None => Seq.empty
           }
       }
@@ -729,8 +729,8 @@ trait ScFunction
   }
 
   override def isDeprecated = {
-    hasAnnotation("scala.deprecated").isDefined || hasAnnotation(
-      "java.lang.Deprecated").isDefined
+    hasAnnotation("scala.deprecated").isDefined ||
+    hasAnnotation("java.lang.Deprecated").isDefined
   }
 
   override def getName = {
@@ -827,8 +827,8 @@ object ScFunction {
       FlatMap,
       Filter,
       WithFilter)
-    val Special: Set[String] =
-      Set(Apply, Update) ++ Unapplies ++ ForComprehensions
+    val Special: Set[String] = Set(Apply, Update) ++ Unapplies ++
+      ForComprehensions
   }
 
   /** Is this function sometimes invoked without it's name appearing at the call site? */

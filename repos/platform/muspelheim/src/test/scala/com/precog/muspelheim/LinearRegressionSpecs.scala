@@ -537,10 +537,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     def testPredict(model: Map[String, SValue]) = {
-      model.keySet mustEqual Set(
-        "fit",
-        "confidenceInterval",
-        "predictionInterval")
+      model.keySet mustEqual
+        Set("fit", "confidenceInterval", "predictionInterval")
 
       model("fit") must beLike { case SDecimal(_) => ok }
       model("confidenceInterval") must beLike {
@@ -768,52 +766,51 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       model must haveAllElementsLike {
         case (ids, values) =>
           ids must haveSize(0)
-          values mustEqual
-            SObject(Map(
-              "model1" -> SObject(Map(
-                "residualStandardError" -> SObject(Map(
-                  "degreesOfFreedom" -> SDecimal(21),
-                  "estimate" -> SDecimal(0.5714938945329378))),
-                "varianceCovarianceMatrix" -> SArray(Vector(
-                  SArray(Vector(
-                    SDecimal(0.029179094730367727),
-                    SDecimal(0.000005132290591506178),
-                    SDecimal(0.0012941789523089743),
-                    SDecimal(-4.641629704480576))),
-                  SArray(Vector(
-                    SDecimal(0.000005132290591506234),
-                    SDecimal(1.7232175428295578e-7),
-                    SDecimal(0.0000026890467037135995),
-                    SDecimal(0.0014286230989684486))),
-                  SArray(Vector(
-                    SDecimal(0.0012941789523089743),
-                    SDecimal(0.000002689046703713597),
-                    SDecimal(0.0015709703355553353),
-                    SDecimal(-0.2661999465513123))),
-                  SArray(Vector(
-                    SDecimal(-4.641629704480575),
-                    SDecimal(0.0014286230989684614),
-                    SDecimal(-0.2661999465513122),
-                    SDecimal(1389.6506067743135)))
+          values mustEqual SObject(Map(
+            "model1" -> SObject(Map(
+              "residualStandardError" -> SObject(Map(
+                "degreesOfFreedom" -> SDecimal(21),
+                "estimate" -> SDecimal(0.5714938945329378))),
+              "varianceCovarianceMatrix" -> SArray(Vector(
+                SArray(Vector(
+                  SDecimal(0.029179094730367727),
+                  SDecimal(0.000005132290591506178),
+                  SDecimal(0.0012941789523089743),
+                  SDecimal(-4.641629704480576))),
+                SArray(Vector(
+                  SDecimal(0.000005132290591506234),
+                  SDecimal(1.7232175428295578e-7),
+                  SDecimal(0.0000026890467037135995),
+                  SDecimal(0.0014286230989684486))),
+                SArray(Vector(
+                  SDecimal(0.0012941789523089743),
+                  SDecimal(0.000002689046703713597),
+                  SDecimal(0.0015709703355553353),
+                  SDecimal(-0.2661999465513123))),
+                SArray(Vector(
+                  SDecimal(-4.641629704480575),
+                  SDecimal(0.0014286230989684614),
+                  SDecimal(-0.2661999465513122),
+                  SDecimal(1389.6506067743135)))
+              )),
+              "coefficients" -> SArray(Vector(
+                SObject(Map(
+                  "x1" -> SObject(Map(
+                    "estimate" -> SDecimal(-0.000353609260803943),
+                    "standardError" -> SDecimal(0.0004151165550576799))),
+                  "x2" -> SObject(Map(
+                    "standardError" -> SDecimal(0.03963546815108074),
+                    "estimate" -> SDecimal(0.058266092643983664))),
+                  "x3" -> SObject(Map(
+                    "standardError" -> SDecimal(37.2780177420194),
+                    "estimate" -> SDecimal(-13.04059432806976)))
                 )),
-                "coefficients" -> SArray(Vector(
-                  SObject(Map(
-                    "x1" -> SObject(Map(
-                      "estimate" -> SDecimal(-0.000353609260803943),
-                      "standardError" -> SDecimal(0.0004151165550576799))),
-                    "x2" -> SObject(Map(
-                      "standardError" -> SDecimal(0.03963546815108074),
-                      "estimate" -> SDecimal(0.058266092643983664))),
-                    "x3" -> SObject(Map(
-                      "standardError" -> SDecimal(37.2780177420194),
-                      "estimate" -> SDecimal(-13.04059432806976)))
-                  )),
-                  SObject(Map(
-                    "estimate" -> SDecimal(0.06398145974561122),
-                    "standardError" -> SDecimal(0.17081889453560964)))
-                )),
-                "RSquared" -> SDecimal(0.1389644021522881)
-              ))))
+                SObject(Map(
+                  "estimate" -> SDecimal(0.06398145974561122),
+                  "standardError" -> SDecimal(0.17081889453560964)))
+              )),
+              "RSquared" -> SDecimal(0.1389644021522881)
+            ))))
       }
 
       prediction must haveAllElementsLike {

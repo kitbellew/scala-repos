@@ -33,8 +33,8 @@ class NegateComparisonIntention extends PsiElementBaseIntentionAction {
 
     val oper = infixExpr.operation.nameId.getText
 
-    if (oper != "==" && oper != "!=" && oper != ">" && oper != "<" && oper != ">=" && oper != "<=")
-      return false
+    if (oper != "==" && oper != "!=" && oper != ">" && oper != "<" &&
+        oper != ">=" && oper != "<=") return false
 
     val range: TextRange = infixExpr.operation.nameId.getTextRange
     val offset = editor.getCaretModel.getOffset
@@ -67,8 +67,8 @@ class NegateComparisonIntention extends PsiElementBaseIntentionAction {
       "<=" -> ">")
 
     val start = infixExpr.getTextRange.getStartOffset
-    val diff = editor.getCaretModel.getOffset - infixExpr.operation.nameId
-      .getTextRange.getStartOffset
+    val diff = editor.getCaretModel.getOffset -
+      infixExpr.operation.nameId.getTextRange.getStartOffset
 
     val buf = new StringBuilder
 

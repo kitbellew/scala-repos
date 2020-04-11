@@ -61,26 +61,27 @@ class FlowOnCompleteSpec extends AkkaSpec with ScriptedTest {
       onCompleteProbe.expectNoMsg(100.millis)
     }
 
-    "invoke callback after transform and foreach steps " in assertAllStagesStopped {
-      val onCompleteProbe = TestProbe()
-      val p = TestPublisher.manualProbe[Int]()
-      import system.dispatcher // for the Future.onComplete
-      val foreachSink = Sink.foreach[Int] { x ⇒
-        onCompleteProbe.ref ! ("foreach-" + x)
+    "invoke callback after transform and foreach steps " in
+      assertAllStagesStopped {
+        val onCompleteProbe = TestProbe()
+        val p = TestPublisher.manualProbe[Int]()
+        import system.dispatcher // for the Future.onComplete
+        val foreachSink = Sink.foreach[Int] { x ⇒
+          onCompleteProbe.ref ! ("foreach-" + x)
+        }
+        val future = Source.fromPublisher(p).map { x ⇒
+          onCompleteProbe.ref ! ("map-" + x)
+          x
+        }.runWith(foreachSink)
+        future onComplete { onCompleteProbe.ref ! _ }
+        val proc = p.expectSubscription
+        proc.expectRequest()
+        proc.sendNext(42)
+        proc.sendComplete()
+        onCompleteProbe.expectMsg("map-42")
+        onCompleteProbe.expectMsg("foreach-42")
+        onCompleteProbe.expectMsg(Success(Done))
       }
-      val future = Source.fromPublisher(p).map { x ⇒
-        onCompleteProbe.ref ! ("map-" + x)
-        x
-      }.runWith(foreachSink)
-      future onComplete { onCompleteProbe.ref ! _ }
-      val proc = p.expectSubscription
-      proc.expectRequest()
-      proc.sendNext(42)
-      proc.sendComplete()
-      onCompleteProbe.expectMsg("map-42")
-      onCompleteProbe.expectMsg("foreach-42")
-      onCompleteProbe.expectMsg(Success(Done))
-    }
 
   }
 

@@ -156,8 +156,8 @@ trait TimePeriodSpecs[M[+_]]
 
       val result = testEval(input)
 
-      result mustEqual Set(
-        (Vector(), SArray(Vector(SString("1987-12-09T18:33:02.037Z")))))
+      result mustEqual
+        Set((Vector(), SArray(Vector(SString("1987-12-09T18:33:02.037Z")))))
     }
 
     "compute correct range given different timezones" in {

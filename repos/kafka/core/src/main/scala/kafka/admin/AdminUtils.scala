@@ -159,10 +159,10 @@ object AdminUtils extends Logging {
       if (fixedStartIndex >= 0) fixedStartIndex
       else rand.nextInt(brokerArray.length)
     for (_ <- 0 until nPartitions) {
-      if (currentPartitionId > 0 && (currentPartitionId % brokerArray
-            .length == 0)) nextReplicaShift += 1
-      val firstReplicaIndex = (currentPartitionId + startIndex) % brokerArray
-        .length
+      if (currentPartitionId > 0 &&
+          (currentPartitionId % brokerArray.length == 0)) nextReplicaShift += 1
+      val firstReplicaIndex =
+        (currentPartitionId + startIndex) % brokerArray.length
       val replicaBuffer = mutable.ArrayBuffer(brokerArray(firstReplicaIndex))
       for (j <- 0 until replicationFactor - 1)
         replicaBuffer += brokerArray(replicaIndex(
@@ -197,8 +197,9 @@ object AdminUtils extends Logging {
       if (fixedStartIndex >= 0) fixedStartIndex
       else rand.nextInt(arrangedBrokerList.size)
     for (_ <- 0 until nPartitions) {
-      if (currentPartitionId > 0 && (currentPartitionId % arrangedBrokerList
-            .size == 0)) nextReplicaShift += 1
+      if (currentPartitionId > 0 &&
+          (currentPartitionId % arrangedBrokerList.size == 0))
+        nextReplicaShift += 1
       val firstReplicaIndex =
         (currentPartitionId + startIndex) % arrangedBrokerList.size
       val leader = arrangedBrokerList(firstReplicaIndex)
@@ -219,10 +220,10 @@ object AdminUtils extends Logging {
           // 1. there is already a broker in the same rack that has assigned a replica AND there is one or more racks
           //    that do not have any replica, or
           // 2. the broker has already assigned a replica AND there is one or more brokers that do not have replica assigned
-          if ((!racksWithReplicas.contains(rack) || racksWithReplicas
-                .size == numRacks)
-              && (!brokersWithReplicas.contains(broker) || brokersWithReplicas
-                .size == numBrokers)) {
+          if ((!racksWithReplicas.contains(rack) ||
+              racksWithReplicas.size == numRacks) &&
+              (!brokersWithReplicas.contains(broker) ||
+              brokersWithReplicas.size == numBrokers)) {
             replicaBuffer += broker
             racksWithReplicas += rack
             brokersWithReplicas += broker
@@ -339,8 +340,8 @@ object AdminUtils extends Logging {
     if (unmatchedRepFactorList.size != 0)
       throw new AdminOperationException(
         "The replication factor in manual replication assignment " +
-          " is not equal to the existing replication factor for the topic " + existingReplicaListForPartitionZero
-          .size)
+          " is not equal to the existing replication factor for the topic " +
+          existingReplicaListForPartitionZero.size)
 
     info(
       "Add partition list for %s is %s".format(topic, newPartitionReplicaList))
@@ -372,12 +373,12 @@ object AdminUtils extends Logging {
       if (brokerList.size != brokerList.toSet.size)
         throw new AdminOperationException(
           "duplicate brokers in replica assignment: " + brokerList)
-      if (checkBrokerAvailable && !brokerList.toSet
-            .subsetOf(availableBrokerList))
+      if (checkBrokerAvailable &&
+          !brokerList.toSet.subsetOf(availableBrokerList))
         throw new AdminOperationException(
-          "some specified brokers not available. specified brokers: " + brokerList
-            .toString +
-            "available broker:" + availableBrokerList.toString)
+          "some specified brokers not available. specified brokers: " +
+            brokerList.toString + "available broker:" +
+            availableBrokerList.toString)
       ret.put(partitionId, brokerList.toList)
       if (ret(partitionId).size != ret(startPartitionId).size)
         throw new AdminOperationException(
@@ -463,8 +464,8 @@ object AdminUtils extends Logging {
       .map(brokerIds => allBrokers.filter(b => brokerIds.contains(b.id)))
       .getOrElse(allBrokers)
     val brokersWithRack = brokers.filter(_.rack.nonEmpty)
-    if (rackAwareMode == RackAwareMode.Enforced && brokersWithRack
-          .nonEmpty && brokersWithRack.size < brokers.size) {
+    if (rackAwareMode == RackAwareMode.Enforced && brokersWithRack.nonEmpty &&
+        brokersWithRack.size < brokers.size) {
       throw new AdminOperationException(
         "Not all brokers have rack information. Add --disable-rack-aware in command line" +
           " to make replica assignment without rack information.")
@@ -617,8 +618,8 @@ object AdminUtils extends Logging {
     writeEntityConfig(zkUtils, entityType, entityName, configs)
 
     // create the change notification
-    val seqNode = ZkUtils
-      .EntityConfigChangesPath + "/" + EntityConfigChangeZnodePrefix
+    val seqNode = ZkUtils.EntityConfigChangesPath + "/" +
+      EntityConfigChangeZnodePrefix
     val content = Json.encode(getConfigChangeZnodeData(entityType, entityName))
     zkUtils.zkClient.createPersistentSequential(seqNode, content)
   }
@@ -730,7 +731,8 @@ object AdminUtils extends Logging {
           .getInSyncReplicasForPartition(topic, partition)
         val leader = zkUtils.getLeaderForPartition(topic, partition)
         debug(
-          "replicas = " + replicas + ", in sync replicas = " + inSyncReplicas + ", leader = " + leader)
+          "replicas = " + replicas + ", in sync replicas = " + inSyncReplicas +
+            ", leader = " + leader)
 
         var leaderInfo: Node = Node.noNode()
         var replicaInfo: Seq[Node] = Nil

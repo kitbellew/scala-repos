@@ -187,9 +187,8 @@ class LDASuite
     val topics = model.describeTopics(3)
     assert(topics.count() === k)
     assert(
-      topics.select("topic").rdd.map(_.getInt(0)).collect().toSet === Range(
-        0,
-        k).toSet)
+      topics.select("topic").rdd.map(_.getInt(0)).collect().toSet ===
+        Range(0, k).toSet)
     topics.select("termIndices").collect().foreach {
       case r: Row =>
         val termIndices = r.getAs[Seq[Int]](0)
@@ -199,8 +198,8 @@ class LDASuite
       case r: Row =>
         val termWeights = r.getAs[Seq[Double]](0)
         assert(
-          termWeights.length === 3 && termWeights
-            .forall(w => w >= 0.0 && w <= 1.0))
+          termWeights.length === 3 &&
+            termWeights.forall(w => w >= 0.0 && w <= 1.0))
     }
   }
 
@@ -232,11 +231,11 @@ class LDASuite
     def checkModelData(model: LDAModel, model2: LDAModel): Unit = {
       assert(model.vocabSize === model2.vocabSize)
       assert(
-        Vectors.dense(model.topicsMatrix.toArray) ~==
-          Vectors.dense(model2.topicsMatrix.toArray) absTol 1e-6)
+        Vectors.dense(model.topicsMatrix.toArray) ~== Vectors.dense(
+          model2.topicsMatrix.toArray) absTol 1e-6)
       assert(
-        Vectors.dense(model.getDocConcentration) ~==
-          Vectors.dense(model2.getDocConcentration) absTol 1e-6)
+        Vectors.dense(model.getDocConcentration) ~== Vectors.dense(
+          model2.getDocConcentration) absTol 1e-6)
     }
     val lda = new LDA()
     testEstimatorAndModelReadWrite(
@@ -250,11 +249,11 @@ class LDASuite
     def checkModelData(model: LDAModel, model2: LDAModel): Unit = {
       assert(model.vocabSize === model2.vocabSize)
       assert(
-        Vectors.dense(model.topicsMatrix.toArray) ~==
-          Vectors.dense(model2.topicsMatrix.toArray) absTol 1e-6)
+        Vectors.dense(model.topicsMatrix.toArray) ~== Vectors.dense(
+          model2.topicsMatrix.toArray) absTol 1e-6)
       assert(
-        Vectors.dense(model.getDocConcentration) ~==
-          Vectors.dense(model2.getDocConcentration) absTol 1e-6)
+        Vectors.dense(model.getDocConcentration) ~== Vectors.dense(
+          model2.getDocConcentration) absTol 1e-6)
     }
     val lda = new LDA()
     testEstimatorAndModelReadWrite(

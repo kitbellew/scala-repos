@@ -83,8 +83,8 @@ object Templates {
       val outDir: File = target.value / "prepared-templates"
 
       streams.value.log.info(
-        "Preparing templates for Play " + params(
-          "PLAY_VERSION") + " with Scala " + params("SCALA_VERSION"))
+        "Preparing templates for Play " + params("PLAY_VERSION") +
+          " with Scala " + params("SCALA_VERSION"))
 
       // Don't sync directories or .gitkeep files. We can remove
       // .gitkeep files. These files are only there to make sure we preserve
@@ -313,7 +313,8 @@ object Templates {
               false
             case (name, key, Right(uuid)) =>
               logger.info(
-                "Template " + name + " published successfully with uuid: " + uuid)
+                "Template " + name + " published successfully with uuid: " +
+                  uuid)
               overall
           }
         }
@@ -356,8 +357,8 @@ object Templates {
     }
 
     val setCommand = createSetCommand(templateDirs)
-    val setBack = templates in extracted.currentRef get extracted.structure
-      .data map createSetCommand toList
+    val setBack = templates in extracted.currentRef get
+      extracted.structure.data map createSetCommand toList
 
     if (command == "") setCommand :: state
     else setCommand :: command :: setBack ::: state
@@ -376,8 +377,8 @@ object Templates {
           case None                  => failure("No template with name " + name)
         }
       }
-    (Space ~> rep1sep(templateParser, Space)) ~ (token(
-      Space ~> matched(state.combinedParser)) ?? "")
+    (Space ~> rep1sep(templateParser, Space)) ~
+      (token(Space ~> matched(state.combinedParser)) ?? "")
   }
 
   private class TemplateBuildFailed(template: String)

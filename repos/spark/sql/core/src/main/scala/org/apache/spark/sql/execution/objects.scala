@@ -179,8 +179,8 @@ case class CoGroup(
     ClusteredDistribution(leftGroup) :: ClusteredDistribution(rightGroup) :: Nil
 
   override def requiredChildOrdering: Seq[Seq[SortOrder]] =
-    leftGroup.map(SortOrder(_, Ascending)) :: rightGroup
-      .map(SortOrder(_, Ascending)) :: Nil
+    leftGroup.map(SortOrder(_, Ascending)) ::
+      rightGroup.map(SortOrder(_, Ascending)) :: Nil
 
   override protected def doExecute(): RDD[InternalRow] = {
     left.execute().zipPartitions(right.execute()) { (leftData, rightData) =>

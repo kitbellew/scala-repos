@@ -21,8 +21,8 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
       Flow[Message].mapConcat {
         case tm: TextMessage ⇒
           TextMessage(
-            Source.single("Hello ") ++ tm.textStream ++ Source
-              .single("!")) :: Nil
+            Source.single("Hello ") ++ tm.textStream ++ Source.single("!")) ::
+            Nil
         case bm: BinaryMessage ⇒
           // ignore binary messages but drain content to avoid the stream being clogged
           bm.dataStream.runWith(Sink.ignore)
@@ -35,24 +35,23 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
     val wsClient = WSProbe()
 
     // WS creates a WebSocket request for testing
-    WS("/greeter", wsClient.flow) ~> websocketRoute ~>
-      check {
-        // check response for WS Upgrade headers
-        isWebSocketUpgrade shouldEqual true
+    WS("/greeter", wsClient.flow) ~> websocketRoute ~> check {
+      // check response for WS Upgrade headers
+      isWebSocketUpgrade shouldEqual true
 
-        // manually run a WS conversation
-        wsClient.sendMessage("Peter")
-        wsClient.expectMessage("Hello Peter!")
+      // manually run a WS conversation
+      wsClient.sendMessage("Peter")
+      wsClient.expectMessage("Hello Peter!")
 
-        wsClient.sendMessage(BinaryMessage(ByteString("abcdef")))
-        wsClient.expectNoMessage(100.millis)
+      wsClient.sendMessage(BinaryMessage(ByteString("abcdef")))
+      wsClient.expectNoMessage(100.millis)
 
-        wsClient.sendMessage("John")
-        wsClient.expectMessage("Hello John!")
+      wsClient.sendMessage("John")
+      wsClient.expectMessage("Hello John!")
 
-        wsClient.sendCompletion()
-        wsClient.expectCompletion()
-      }
+      wsClient.sendCompletion()
+      wsClient.expectCompletion()
+    }
   }
 
   "handle-multiple-protocols" in {
@@ -60,8 +59,8 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
       Flow[Message].mapConcat {
         case tm: TextMessage ⇒
           TextMessage(
-            Source.single("Hello ") ++ tm.textStream ++ Source
-              .single("!")) :: Nil
+            Source.single("Hello ") ++ tm.textStream ++ Source.single("!")) ::
+            Nil
         case bm: BinaryMessage ⇒
           // ignore binary messages but drain content to avoid the stream being clogged
           bm.dataStream.runWith(Sink.ignore)
@@ -84,8 +83,7 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
 
     // WS creates a WebSocket request for testing
     WS("/services", wsClient.flow, List("other", "echo")) ~>
-      websocketMultipleProtocolRoute ~>
-      check {
+      websocketMultipleProtocolRoute ~> check {
         expectWebSocketUpgradeWithProtocol { protocol ⇒
           protocol shouldEqual "echo"
 

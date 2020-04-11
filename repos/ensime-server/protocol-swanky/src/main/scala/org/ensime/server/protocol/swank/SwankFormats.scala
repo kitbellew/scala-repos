@@ -1073,8 +1073,8 @@ object SwankProtocolRequest {
     def read(sexp: Sexp): RpcRequestEnvelope =
       sexp match {
         case SexpList(
-              SexpSymbol(":swank-rpc") :: form :: SexpNumber(
-                callIdBI) :: Nil) =>
+              SexpSymbol(":swank-rpc") :: form :: SexpNumber(callIdBI) ::
+              Nil) =>
           val callId = callIdBI.intValue()
           Try(form.convertTo[RpcRequest]) match {
             case Success(v)  => RpcRequestEnvelope(v, callId)

@@ -42,8 +42,8 @@ package object reify {
       rClassTree orElse Apply(Select(gen.mkAnonymousNew(Nil), sn.GetClass), Nil)
     }
     // JavaUniverse is defined in scala-reflect.jar, so we must be very careful in case someone reifies stuff having only scala-library.jar on the classpath
-    val isJavaUniverse = JavaUniverseClass != NoSymbol && universe
-      .tpe <:< JavaUniverseClass.toTypeConstructor
+    val isJavaUniverse = JavaUniverseClass != NoSymbol &&
+      universe.tpe <:< JavaUniverseClass.toTypeConstructor
     if (isJavaUniverse && !enclosingErasure.isEmpty)
       Apply(
         Select(universe, nme.runtimeMirror),
@@ -103,8 +103,8 @@ package object reify {
           List(componentErasure))
       case _ =>
         var erasure = tpe.erasure
-        if (tpe.typeSymbol.isDerivedValueClass && global.phase.id < global
-              .currentRun.erasurePhase.id) erasure = tpe
+        if (tpe.typeSymbol.isDerivedValueClass &&
+            global.phase.id < global.currentRun.erasurePhase.id) erasure = tpe
         gen.mkNullaryCall(
           currentRun.runDefinitions.Predef_classOf,
           List(erasure))
@@ -119,19 +119,15 @@ package object reify {
     def isThisInScope =
       typer0.context.enclosingContextChain exists (_.tree.isInstanceOf[ImplDef])
     if (isThisInScope) {
-      val enclosingClasses =
-        typer0.context.enclosingContextChain map (_.tree) collect {
-          case classDef: ClassDef => classDef
-        }
+      val enclosingClasses = typer0.context.enclosingContextChain map
+        (_.tree) collect { case classDef: ClassDef => classDef }
       val classInScope = enclosingClasses.headOption getOrElse EmptyTree
       def isUnsafeToUseThis = {
         val isInsideConstructorSuper = typer0.context
           .enclosingContextChain exists (_.inSelfSuperCall)
         // Note: It's ok to check for any object here, because if we were in an enclosing class, we'd already have returned its classOf
-        val isInsideObject =
-          typer0.context.enclosingContextChain map (_.tree) exists {
-            case _: ModuleDef => true; case _ => false
-          }
+        val isInsideObject = typer0.context.enclosingContextChain map
+          (_.tree) exists { case _: ModuleDef => true; case _ => false }
         isInsideConstructorSuper && isInsideObject
       }
       if (!classInScope.isEmpty)

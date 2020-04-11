@@ -78,9 +78,8 @@ case class EnsimeModule(
     docJars: List[File],
     referenceSourceRoots: List[File]) {
   // only check the files, not the directories, see below
-  (compileDeps ::: runtimeDeps :::
-    testDeps ::: referenceSourceRoots).foreach { f =>
-    require(f.exists, "" + f + " is required but does not exist")
+  (compileDeps ::: runtimeDeps ::: testDeps ::: referenceSourceRoots).foreach {
+    f => require(f.exists, "" + f + " is required but does not exist")
   }
 
   /*

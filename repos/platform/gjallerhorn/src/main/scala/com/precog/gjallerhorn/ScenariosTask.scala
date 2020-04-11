@@ -45,9 +45,8 @@ class ScenariosTask(settings: Settings)
         _ / account.bareRootPath / "foo")
 
       EventuallyResults.eventually(10, 1.second) {
-        val res = (analytics / "fs" / account.bareRootPath) <<? List(
-          "apiKey" -> account.apiKey,
-          "q" -> "count(//foo)")
+        val res = (analytics / "fs" / account.bareRootPath) <<?
+          List("apiKey" -> account.apiKey, "q" -> "count(//foo)")
         val str = Http(res OK as.String)()
         val json = JParser.parseFromString(Http(res OK as.String)())
           .valueOr(throw _)

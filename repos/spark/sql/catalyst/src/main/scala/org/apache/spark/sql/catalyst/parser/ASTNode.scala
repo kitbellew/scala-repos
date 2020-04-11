@@ -78,9 +78,8 @@ case class ASTNode(
       (l == null && r == null) || l.equals(r)
     }
     if (other == null) { false }
-    else if (!check(_.token.getType)
-             || !check(_.token.getText)
-             || !check(_.numChildren)) { false }
+    else if (!check(_.token.getType) || !check(_.token.getText) ||
+             !check(_.numChildren)) { false }
     else {
       children.zip(other.children).forall { case (l, r) => l treeEquals r }
     }

@@ -162,8 +162,9 @@ class ReplyCodec extends UnifiedProtocolCodec {
             decodeMBulkLines(
               i - 1,
               stack,
-              IntegerReply(NumberFormat.toLong(BytesToString(
-                line.drop(1).getBytes))) :: lines)
+              IntegerReply(
+                NumberFormat.toLong(BytesToString(line.drop(1).getBytes))) ::
+                lines)
           case ERROR_REPLY =>
             decodeMBulkLines(
               i - 1,

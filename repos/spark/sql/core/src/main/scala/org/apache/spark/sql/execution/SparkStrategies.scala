@@ -55,11 +55,9 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             case logical.Limit(
                   IntegerLiteral(limit),
                   logical.Sort(order, true, child)) =>
-              execution.TakeOrderedAndProject(
-                limit,
-                order,
-                None,
-                planLater(child)) :: Nil
+              execution
+                .TakeOrderedAndProject(limit, order, None, planLater(child)) ::
+                Nil
             case logical.Limit(
                   IntegerLiteral(limit),
                   logical
@@ -159,8 +157,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       * Matches a plan whose single partition should be small enough to build a hash table.
       */
     def canBuildHashMap(plan: LogicalPlan): Boolean = {
-      plan.statistics.sizeInBytes < conf.autoBroadcastJoinThreshold * conf
-        .numShufflePartitions
+      plan.statistics.sizeInBytes <
+        conf.autoBroadcastJoinThreshold * conf.numShufflePartitions
     }
 
     /**
@@ -232,9 +230,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               left,
               right)
-            if !conf.preferSortMergeJoin && shouldShuffleHashJoin(
-              left,
-              right) ||
+            if !conf.preferSortMergeJoin &&
+              shouldShuffleHashJoin(left, right) ||
               !RowOrdering.isOrderable(leftKeys) =>
           val buildSide =
             if (right.statistics.sizeInBytes <= left.statistics.sizeInBytes) {
@@ -305,9 +302,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               left,
               right)
-            if !conf.preferSortMergeJoin && canBuildHashMap(
-              right) && muchSmaller(right, left) ||
-              !RowOrdering.isOrderable(leftKeys) =>
+            if !conf.preferSortMergeJoin && canBuildHashMap(right) &&
+              muchSmaller(right, left) || !RowOrdering.isOrderable(leftKeys) =>
           Seq(joins.ShuffledHashJoin(
             leftKeys,
             rightKeys,
@@ -324,9 +320,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               left,
               right)
-            if !conf.preferSortMergeJoin && canBuildHashMap(
-              left) && muchSmaller(left, right) ||
-              !RowOrdering.isOrderable(leftKeys) =>
+            if !conf.preferSortMergeJoin && canBuildHashMap(left) &&
+              muchSmaller(left, right) || !RowOrdering.isOrderable(leftKeys) =>
           Seq(joins.ShuffledHashJoin(
             leftKeys,
             rightKeys,
@@ -496,8 +491,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
     def apply(plan: LogicalPlan): Seq[SparkPlan] =
       plan match {
         case logical.Join(left, right, Inner, None) =>
-          execution.joins
-            .CartesianProduct(planLater(left), planLater(right)) :: Nil
+          execution.joins.CartesianProduct(planLater(left), planLater(right)) ::
+            Nil
         case logical.Join(left, right, Inner, Some(condition)) =>
           execution.Filter(
             condition,
@@ -600,8 +595,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         case logical.SortPartitions(sortExprs, child) =>
           // This sort only sorts tuples within a partition. Its requiredDistribution will be
           // an UnspecifiedDistribution.
-          execution
-            .Sort(sortExprs, global = false, child = planLater(child)) :: Nil
+          execution.Sort(sortExprs, global = false, child = planLater(child)) ::
+            Nil
         case logical.Sort(sortExprs, global, child) =>
           execution.Sort(sortExprs, global, planLater(child)) :: Nil
         case logical.Project(projectList, child) =>
@@ -611,14 +606,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         case e @ logical.Expand(_, _, child) =>
           execution.Expand(e.projections, e.output, planLater(child)) :: Nil
         case logical.Window(windowExprs, partitionSpec, orderSpec, child) =>
-          execution.Window(
-            windowExprs,
-            partitionSpec,
-            orderSpec,
-            planLater(child)) :: Nil
-        case logical.Sample(lb, ub, withReplacement, seed, child) =>
           execution
-            .Sample(lb, ub, withReplacement, seed, planLater(child)) :: Nil
+            .Window(windowExprs, partitionSpec, orderSpec, planLater(child)) ::
+            Nil
+        case logical.Sample(lb, ub, withReplacement, seed, child) =>
+          execution.Sample(lb, ub, withReplacement, seed, planLater(child)) ::
+            Nil
         case logical.LocalRelation(output, data) =>
           LocalTableScan(output, data) :: Nil
         case logical.LocalLimit(IntegerLiteral(limit), child) =>

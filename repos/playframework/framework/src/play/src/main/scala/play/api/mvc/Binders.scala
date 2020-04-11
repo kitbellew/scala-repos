@@ -595,7 +595,8 @@ object QueryStringBindable {
   }
 
   private def javascriptUnbindSeq(jsUnbindT: String) =
-    "function(k,vs){var l=vs&&vs.length,r=[],i=0;for(;i<l;i++){r[i]=(" + jsUnbindT + ")(k,vs[i])}return r.join('&')}"
+    "function(k,vs){var l=vs&&vs.length,r=[],i=0;for(;i<l;i++){r[i]=(" +
+      jsUnbindT + ")(k,vs[i])}return r.join('&')}"
 
   /**
     * QueryString binder for QueryStringBindable.

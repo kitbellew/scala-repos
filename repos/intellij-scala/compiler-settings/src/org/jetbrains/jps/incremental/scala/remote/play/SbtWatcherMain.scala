@@ -89,8 +89,8 @@ object SbtWatcherMain {
 
         currentExec match {
           case Some((watcher, cons, args))
-              if watcher.isRunning && args.head == argsTail
-                .head && cm == LOOP =>
+              if watcher.isRunning && args.head == argsTail.head &&
+                cm == LOOP =>
             val oldDelegate = cons.delegate
             val newDelegate = delegate
             cons.delegate = newDelegate

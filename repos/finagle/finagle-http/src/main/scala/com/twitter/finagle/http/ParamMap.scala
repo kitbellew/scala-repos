@@ -163,9 +163,9 @@ class RequestParamMap(val request: Request) extends ParamMap {
 
   private[this] val postParams: JMap[String, JList[String]] = {
     if (request.method != Method.Trace &&
-        request.mediaType == Some(MediaType.WwwForm) &&
-        request.length > 0) { parseParams("?" + request.contentString) }
-    else { ParamMap.EmptyJMap }
+        request.mediaType == Some(MediaType.WwwForm) && request.length > 0) {
+      parseParams("?" + request.contentString)
+    } else { ParamMap.EmptyJMap }
   }
 
   // Convert IllegalArgumentException to ParamMapException so it can be handled

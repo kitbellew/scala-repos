@@ -92,9 +92,9 @@ class EncoderResolutionSuite extends PlanTest {
       assert(
         intercept[AnalysisException](encoder.validate(attrs)).message ==
           "Try to map struct<a:string,b:bigint,c:int> to Tuple2, " +
-            "but failed as the number of fields does not line up.\n" +
-            " - Input schema: struct<a:string,b:bigint,c:int>\n" +
-            " - Target schema: struct<_1:string,_2:bigint>")
+          "but failed as the number of fields does not line up.\n" +
+          " - Input schema: struct<a:string,b:bigint,c:int>\n" +
+          " - Target schema: struct<_1:string,_2:bigint>")
     }
 
     {
@@ -102,9 +102,9 @@ class EncoderResolutionSuite extends PlanTest {
       assert(
         intercept[AnalysisException](encoder.validate(attrs)).message ==
           "Try to map struct<a:string> to Tuple2, " +
-            "but failed as the number of fields does not line up.\n" +
-            " - Input schema: struct<a:string>\n" +
-            " - Target schema: struct<_1:string,_2:bigint>")
+          "but failed as the number of fields does not line up.\n" +
+          " - Input schema: struct<a:string>\n" +
+          " - Target schema: struct<_1:string,_2:bigint>")
     }
   }
 
@@ -117,9 +117,9 @@ class EncoderResolutionSuite extends PlanTest {
       assert(
         intercept[AnalysisException](encoder.validate(attrs)).message ==
           "Try to map struct<x:bigint,y:string,z:int> to Tuple2, " +
-            "but failed as the number of fields does not line up.\n" +
-            " - Input schema: struct<a:string,b:struct<x:bigint,y:string,z:int>>\n" +
-            " - Target schema: struct<_1:string,_2:struct<_1:bigint,_2:string>>")
+          "but failed as the number of fields does not line up.\n" +
+          " - Input schema: struct<a:string,b:struct<x:bigint,y:string,z:int>>\n" +
+          " - Target schema: struct<_1:string,_2:struct<_1:bigint,_2:string>>")
     }
 
     {
@@ -127,9 +127,9 @@ class EncoderResolutionSuite extends PlanTest {
       assert(
         intercept[AnalysisException](encoder.validate(attrs)).message ==
           "Try to map struct<x:bigint> to Tuple2, " +
-            "but failed as the number of fields does not line up.\n" +
-            " - Input schema: struct<a:string,b:struct<x:bigint>>\n" +
-            " - Target schema: struct<_1:string,_2:struct<_1:bigint,_2:string>>")
+          "but failed as the number of fields does not line up.\n" +
+          " - Input schema: struct<a:string,b:struct<x:bigint>>\n" +
+          " - Target schema: struct<_1:string,_2:struct<_1:bigint,_2:string>>")
     }
   }
 
@@ -137,9 +137,7 @@ class EncoderResolutionSuite extends PlanTest {
     val msg1 = intercept[AnalysisException] {
       ExpressionEncoder[StringIntClass].resolve(Seq('a.string, 'b.long), null)
     }.message
-    assert(
-      msg1 ==
-        s"""
+    assert(msg1 == s"""
          |Cannot up cast `b` from bigint to int as it may truncate
          |The type path of the target object is:
          |- field (class: "scala.Int", name: "b")
@@ -153,9 +151,7 @@ class EncoderResolutionSuite extends PlanTest {
       ExpressionEncoder[ComplexClass]
         .resolve(Seq('a.long, 'b.struct(structType)), null)
     }.message
-    assert(
-      msg2 ==
-        s"""
+    assert(msg2 == s"""
          |Cannot up cast `b`.`b` from decimal(38,18) to bigint as it may truncate
          |The type path of the target object is:
          |- field (class: "scala.Long", name: "b")

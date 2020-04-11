@@ -114,9 +114,8 @@ class HealthCheckActor(
     // Ignore failures during the grace period, until the task becomes green
     // for the first time.  Also ignore failures while the task is staging.
     task.launched.fold(true) { launched =>
-      health.firstSuccess.isEmpty &&
-      launched.status.startedAt.fold(true) { startedAt =>
-        startedAt + healthCheck.gracePeriod > Timestamp.now()
+      health.firstSuccess.isEmpty && launched.status.startedAt.fold(true) {
+        startedAt => startedAt + healthCheck.gracePeriod > Timestamp.now()
       }
     }
   }

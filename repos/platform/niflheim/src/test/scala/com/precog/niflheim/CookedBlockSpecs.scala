@@ -66,8 +66,8 @@ trait CookedBlockFormatSpecs
         999L,
         1,
         Array(
-          SegmentId(1234L, CPath("a.b.c"), CLong) -> new File(
-            "/hello/there/abc.cooked"))))
+          SegmentId(1234L, CPath("a.b.c"), CLong) ->
+            new File("/hello/there/abc.cooked"))))
     }
 
     "roundtrip arbitrary blocks" in {

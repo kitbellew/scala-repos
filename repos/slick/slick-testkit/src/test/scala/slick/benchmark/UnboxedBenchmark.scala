@@ -29,8 +29,8 @@ object UnboxedBenchmark extends App {
 
   // Fast path
   val q2 = as.map(a =>
-    a.proj <> (A.tupled, A.unapply)
-      fastPath (new FastPath(_) {
+    a.proj <> (A.tupled, A.unapply) fastPath
+      (new FastPath(_) {
         val (a, b, c, d) = (next[Int], next[Int], next[Int], next[Int])
         override def read(r: Reader) =
           new A(a.read(r), b.read(r), c.read(r), d.read(r))
@@ -39,8 +39,8 @@ object UnboxedBenchmark extends App {
   // Allocation-free fast path
   val sharedA = new A(0, 0, 0, 0)
   val q3 = as.map(a =>
-    a.proj <> (A.tupled, A.unapply)
-      fastPath (new FastPath(_) {
+    a.proj <> (A.tupled, A.unapply) fastPath
+      (new FastPath(_) {
         val (a, b, c, d) = (next[Int], next[Int], next[Int], next[Int])
         override def read(r: Reader) = {
           sharedA.a = a.read(r)

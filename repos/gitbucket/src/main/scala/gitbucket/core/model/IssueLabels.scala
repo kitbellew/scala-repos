@@ -11,9 +11,8 @@ trait IssueLabelComponent extends TemplateComponent {
       with IssueTemplate
       with LabelTemplate {
     def * =
-      (userName, repositoryName, issueId, labelId) <> (
-        IssueLabel.tupled, IssueLabel.unapply
-      )
+      (userName, repositoryName, issueId, labelId) <>
+        (IssueLabel.tupled, IssueLabel.unapply)
     def byPrimaryKey(
         owner: String,
         repository: String,

@@ -181,9 +181,8 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
       infos: collection.Set[reporter.Info],
       content: Array[Char]) {
     override def toString =
-      "Sourcefile: " + inputs(sfidx) +
-        "\nChanges:\n  " + changes.mkString("\n  ") +
-        "\nErrors:\n  " + infos.mkString("\n  ") +
+      "Sourcefile: " + inputs(sfidx) + "\nChanges:\n  " +
+        changes.mkString("\n  ") + "\nErrors:\n  " + infos.mkString("\n  ") +
         "\nContents:\n" + content.mkString
   }
 
@@ -211,8 +210,8 @@ object Tester {
     val settings = new Settings()
     val (_, filenames) = settings.processArguments(args.toList.tail, true)
     println("filenames = " + filenames)
-    val files = filenames.toArray map (str =>
-      new BatchSourceFile(AbstractFile.getFile(str)): SourceFile)
+    val files = filenames.toArray map
+      (str => new BatchSourceFile(AbstractFile.getFile(str)): SourceFile)
     new Tester(args(0).toInt, files, settings).run()
     sys.exit(0)
   }

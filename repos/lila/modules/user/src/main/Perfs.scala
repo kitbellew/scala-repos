@@ -134,8 +134,8 @@ case class Perfs(
           val nb = subs.map(_.nb).sum
           val glicko = Glicko(
             rating = subs.map(s => s.glicko.rating * (s.nb / nb.toDouble)).sum,
-            deviation =
-              subs.map(s => s.glicko.deviation * (s.nb / nb.toDouble)).sum,
+            deviation = subs.map(s => s.glicko.deviation * (s.nb / nb.toDouble))
+              .sum,
             volatility = subs
               .map(s => s.glicko.volatility * (s.nb / nb.toDouble)).sum
           )

@@ -79,8 +79,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
       .createExpressionFromText(expr.toString(), element.getManager)
 
     val size = newMethodCallExpr.asInstanceOf[ScMethodCall].getInvokedExpr
-      .asInstanceOf[ScReferenceExpression].nameId.getTextRange
-      .getStartOffset - newMethodCallExpr.getTextRange.getStartOffset
+      .asInstanceOf[ScReferenceExpression].nameId.getTextRange.getStartOffset -
+      newMethodCallExpr.getTextRange.getStartOffset
 
     inWriteAction {
       methodCallExpr.replace(newMethodCallExpr)

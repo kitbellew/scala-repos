@@ -151,16 +151,10 @@ trait IndicesSpec[M[+_]]
       .copoint
 
     "determine unique groupkey values" in {
-      index.getUniqueKeys(0) must_== Set(
-        CLong(1),
-        CLong(2),
-        CLong(3),
-        CString("foo"))
-      index.getUniqueKeys(1) must_== Set(
-        CLong(2),
-        CLong(999),
-        CString("bar"),
-        CString(""))
+      index.getUniqueKeys(0) must_==
+        Set(CLong(1), CLong(2), CLong(3), CString("foo"))
+      index.getUniqueKeys(1) must_==
+        Set(CLong(2), CLong(999), CString("bar"), CString(""))
     }
 
     "determine unique groupkey sets" in {

@@ -142,8 +142,8 @@ object Xml {
           else {
             val children = directChildren(n)
             XNode(
-              buildAttrs(n) ::: children.map(nameOf).toList
-                .zip(buildNodes(children))) :: Nil
+              buildAttrs(n) :::
+                children.map(nameOf).toList.zip(buildNodes(children))) :: Nil
           }
         case nodes: NodeSeq =>
           val allLabels = nodes.map(_.label)

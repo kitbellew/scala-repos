@@ -93,8 +93,7 @@ class StackTest extends FunSuite {
     assert(stack.remove(testRole3).make(empty) == Seq(10, 1, 2, 3, 4))
 
     assert(
-      (stack ++ stack).remove(testRole2).make(empty) ==
-        Seq(20, 20, 1, 2, 3, 4))
+      (stack ++ stack).remove(testRole2).make(empty) == Seq(20, 20, 1, 2, 3, 4))
   }
 
   test("Stack.replace") {

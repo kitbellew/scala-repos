@@ -18,13 +18,12 @@ private[akka] class ResizableMultiReaderRingBuffer[T](
     maxSize: Int, // constructor param, not field
     val cursors: Cursors) {
   require(
-    Integer.lowestOneBit(maxSize) == maxSize && 0 < maxSize && maxSize <= Int
-      .MaxValue / 2,
+    Integer.lowestOneBit(maxSize) == maxSize && 0 < maxSize &&
+      maxSize <= Int.MaxValue / 2,
     "maxSize must be a power of 2 that is > 0 and < Int.MaxValue/2")
   require(
-    Integer
-      .lowestOneBit(
-        initialSize) == initialSize && 0 < initialSize && initialSize <= maxSize,
+    Integer.lowestOneBit(initialSize) == initialSize && 0 < initialSize &&
+      initialSize <= maxSize,
     "initialSize must be a power of 2 that is > 0 and <= maxSize")
 
   private[this] val maxSizeBit = Integer.numberOfTrailingZeros(maxSize)
@@ -123,7 +122,8 @@ private[akka] class ResizableMultiReaderRingBuffer[T](
   }
 
   def onCursorRemoved(cursor: Cursor): Unit =
-    if (cursor.cursor == readIx) // if this cursor is the last one it must be at readIx
+    if (cursor.cursor ==
+          readIx) // if this cursor is the last one it must be at readIx
       updateReadIx()
 
   private def updateReadIx(): Unit = {

@@ -116,8 +116,8 @@ sealed abstract class Heap[A] {
     fold(
       Empty[A],
       (_, leq, t) =>
-        t foldMap (x =>
-          if (p(x.value)) singletonWith(leq, x.value) else Empty[A]))
+        t foldMap
+          (x => if (p(x.value)) singletonWith(leq, x.value) else Empty[A]))
 
   /**Partition the heap according to a predicate. The first heap contains all elements that
     * satisfy the predicate. The second contains all elements that fail the predicate. O(n)*/

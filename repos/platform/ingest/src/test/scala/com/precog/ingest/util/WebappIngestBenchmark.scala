@@ -258,7 +258,8 @@ class WebappIngestProducer(args: Array[String]) extends IngestProducer(args) {
   }
 
   override def usageMessage =
-    super.usageMessage + """
+    super.usageMessage +
+      """
 serviceUrl - base url for web application (default: http://localhost:30050/vfs/)
   """
 

@@ -44,16 +44,14 @@ object EnumeratorTTest extends SpecLite {
 
   "flatMap" in {
     val enum = enumStream[Int, Id](Stream(1, 2, 3))
-    (consume[Int, Id, List] &= enum.flatMap(i => enum.map(_ + i)))
-      .run must_=== (List(2, 3, 4, 3, 4, 5, 4, 5, 6))
+    (consume[Int, Id, List] &= enum.flatMap(i => enum.map(_ + i))).run must_===
+      (List(2, 3, 4, 3, 4, 5, 4, 5, 6))
   }
 
   "flatten in a generalized fashion" in {
     val enum = enumOne[List[Int], List](List(1, 2, 3))
-    (consume[Int, List, List] &= enum.flatten).run.flatten must_=== (List(
-      1,
-      2,
-      3))
+    (consume[Int, List, List] &= enum.flatten).run.flatten must_===
+      (List(1, 2, 3))
   }
 
   "uniq" in {
@@ -63,25 +61,20 @@ object EnumeratorTTest extends SpecLite {
 
   "zipWithIndex" in {
     val enum = enumStream[Int, Id](Stream(3, 4, 5))
-    (consume[(Int, Long), Id, List] &= enum.zipWithIndex).run must_=== (List(
-      (3, 0L),
-      (4, 1L),
-      (5, 2L)))
+    (consume[(Int, Long), Id, List] &= enum.zipWithIndex).run must_===
+      (List((3, 0L), (4, 1L), (5, 2L)))
   }
 
   "zipWithIndex" in {
     val enum = enumStream[Int, Id](Stream(3, 4, 5))
-    (consume[(Int, Long), Id, List] &= enum.zipWithIndex).run must_=== (List(
-      (3, 0L),
-      (4, 1L),
-      (5, 2L)))
+    (consume[(Int, Long), Id, List] &= enum.zipWithIndex).run must_===
+      (List((3, 0L), (4, 1L), (5, 2L)))
   }
 
   "zipWithIndex in combination with another function" in {
     val enum = enumStream[Int, Id](Stream(3, 4, 4, 5))
-    (consume[(Int, Long), Id, List] &= enum.uniq.zipWithIndex).run must_=== (
-      List((3, 0L), (4, 1L), (5, 2L))
-    )
+    (consume[(Int, Long), Id, List] &= enum.uniq.zipWithIndex).run must_===
+      (List((3, 0L), (4, 1L), (5, 2L)))
   }
 
   "lift" in {
@@ -118,9 +111,8 @@ object EnumeratorTTest extends SpecLite {
       case (true, i)  => if (i <= 2) v == 0 else v == 1
     }
 
-    (testIter &= (enum |+| effect |+| enum2)).run.unsafePerformIO must_=== (
-      true
-    )
+    (testIter &= (enum |+| effect |+| enum2)).run.unsafePerformIO must_===
+      (true)
   }
 
   //checkAll(functor.laws[Enum])

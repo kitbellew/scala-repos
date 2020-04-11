@@ -57,8 +57,8 @@ object ByNameParameter extends AnnotatorPart[ScExpression] {
       .filterByType(classOf[ScLiteral]).map(_.getTextRange).toList
     val literalIndices = literalRanges
       .flatMap(r => List(r.getStartOffset, r.getEndOffset))
-    val allIndices = exp.getTextRange.getStartOffset :: literalIndices ::: exp
-      .getTextRange.getEndOffset :: Nil
+    val allIndices = exp.getTextRange.getStartOffset :: literalIndices :::
+      exp.getTextRange.getEndOffset :: Nil
     allIndices.grouped(2).map(it => new TextRange(it.head, it(1)))
       .filterNot(_.isEmpty).toList
   }

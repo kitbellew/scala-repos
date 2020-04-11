@@ -38,8 +38,9 @@ private[tournament] case class WaitingUsers(
     copy(
       date = newDate,
       clock = clock,
-      hash = hash.filterKeys(us.contains) ++
-        us.filterNot(hash.contains).map { _ -> newDate })
+      hash = hash.filterKeys(us.contains) ++ us.filterNot(hash.contains).map {
+        _ -> newDate
+      })
   }
 
   def intersect(us: Seq[String]) = copy(hash = hash filterKeys us.contains)

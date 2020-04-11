@@ -149,8 +149,8 @@ final case class BalancingPool(
 
       other match {
         case p: Pool ⇒
-          if ((this.supervisorStrategy eq Pool.defaultSupervisorStrategy)
-              && (p.supervisorStrategy ne Pool.defaultSupervisorStrategy))
+          if ((this.supervisorStrategy eq Pool.defaultSupervisorStrategy) &&
+              (p.supervisorStrategy ne Pool.defaultSupervisorStrategy))
             this.withSupervisorStrategy(p.supervisorStrategy)
           else this
 

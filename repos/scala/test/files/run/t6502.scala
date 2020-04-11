@@ -10,8 +10,8 @@ object Test extends StoreReporterDirectTest {
   lazy val promptLength = replProps.prompt.lines.size - 1 // extra newlines
 
   def compileCode(code: String, jarFileName: String) = {
-    val classpath = List(sys.props("partest.lib"), testOutput.path) mkString sys
-      .props("path.separator")
+    val classpath = List(sys.props("partest.lib"), testOutput.path) mkString
+      sys.props("path.separator")
     compileString(
       newCompiler("-cp", classpath, "-d", s"${testOutput.path}/$jarFileName"))(
       code)
@@ -95,8 +95,8 @@ object Test extends StoreReporterDirectTest {
     lines = lines drop promptLength
     val msg = lines.next
     assert {
-      msg.contains("test2.jar") && msg
-        .contains("existing classpath entries conflict")
+      msg.contains("test2.jar") &&
+      msg.contains("existing classpath entries conflict")
     }
   }
 
@@ -135,8 +135,8 @@ object Test extends StoreReporterDirectTest {
     lines = lines drop promptLength
     val msg = lines.next
     assert {
-      msg.contains("test1.jar") && msg
-        .contains("existing classpath entries conflict")
+      msg.contains("test1.jar") &&
+      msg.contains("existing classpath entries conflict")
     }
   }
 

@@ -276,13 +276,13 @@ class BucketedReadSuite
           .asInstanceOf[SortMergeJoin]
 
         assert(
-          joinOperator.left.find(_.isInstanceOf[ShuffleExchange])
-            .isDefined == shuffleLeft,
+          joinOperator.left.find(_.isInstanceOf[ShuffleExchange]).isDefined ==
+            shuffleLeft,
           s"expected shuffle in plan to be $shuffleLeft but found\n${joinOperator.left}"
         )
         assert(
-          joinOperator.right.find(_.isInstanceOf[ShuffleExchange])
-            .isDefined == shuffleRight,
+          joinOperator.right.find(_.isInstanceOf[ShuffleExchange]).isDefined ==
+            shuffleRight,
           s"expected shuffle in plan to be $shuffleRight but found\n${joinOperator.right}"
         )
       }

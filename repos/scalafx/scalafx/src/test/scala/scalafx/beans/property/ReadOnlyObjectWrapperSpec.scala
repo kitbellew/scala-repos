@@ -203,14 +203,15 @@ class ReadOnlyObjectWrapperSpec
 
   it should "support implicit conversion to a String Binding" is (pending)
 
-  it should "support implicit conversion from a ScalaFX ReadOnlyObjectWrapper with a SFXDelegate of a type T to a JavaFX ReadOnlyObjectWrapper of type T" in {
-    val scalaObjProperty: ReadOnlyObjectWrapper[Button] =
-      ReadOnlyObjectWrapper[Button](new Button("Test"))
-    val javaObjProperty: jfxbp.ReadOnlyObjectWrapper[jfxsc.Button] =
-      scalaObjProperty
+  it should
+    "support implicit conversion from a ScalaFX ReadOnlyObjectWrapper with a SFXDelegate of a type T to a JavaFX ReadOnlyObjectWrapper of type T" in {
+      val scalaObjProperty: ReadOnlyObjectWrapper[Button] =
+        ReadOnlyObjectWrapper[Button](new Button("Test"))
+      val javaObjProperty: jfxbp.ReadOnlyObjectWrapper[jfxsc.Button] =
+        scalaObjProperty
 
-    javaObjProperty.get should be(scalaObjProperty.get.delegate)
-  }
+      javaObjProperty.get should be(scalaObjProperty.get.delegate)
+    }
 
   it should "support readOnlyProperty" in {
     val wrapper = ReadOnlyObjectWrapper("Test")
@@ -240,18 +241,20 @@ class ReadOnlyObjectWrapperSpec
     assert(13.2 === readOnlyProperty())
   }
 
-  it should "readOnlyProperty holding a value type like Double should bind to JFX" in {
-    val p = ReadOnlyObjectWrapper[Double](42.1)
-    assert(42.1 === p.value)
-    val readOnlyProperty = p.readOnlyProperty
-    assert(42.1 === readOnlyProperty())
+  it should
+    "readOnlyProperty holding a value type like Double should bind to JFX" in {
+      val p = ReadOnlyObjectWrapper[Double](42.1)
+      assert(42.1 === p.value)
+      val readOnlyProperty = p.readOnlyProperty
+      assert(42.1 === readOnlyProperty())
 
-    val jfxProperty = new jfxbp.SimpleObjectProperty[Double](this, "jfx", 224.3)
-    assert(224.3 === jfxProperty())
+      val jfxProperty =
+        new jfxbp.SimpleObjectProperty[Double](this, "jfx", 224.3)
+      assert(224.3 === jfxProperty())
 
-    jfxProperty <== readOnlyProperty
-    p.value = 13.4
-    assert(13.4 === jfxProperty())
-    assert(13.4 === readOnlyProperty())
-  }
+      jfxProperty <== readOnlyProperty
+      p.value = 13.4
+      assert(13.4 === jfxProperty())
+      assert(13.4 === readOnlyProperty())
+    }
 }

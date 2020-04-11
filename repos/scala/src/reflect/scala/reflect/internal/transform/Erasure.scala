@@ -25,10 +25,10 @@ trait Erasure {
          * owners (e.g. when computing lubs, <root> is used). All packageClass symbols have `isJavaDefined == true`.
          */
         case TypeRef(_, sym, _)
-            if sym.isAbstractType && (!sym.owner.isJavaDefined || sym
-              .hasFlag(Flags.EXISTENTIAL))   => tp
-        case ExistentialType(tparams, restp) => genericCore(restp)
-        case _                               => NoType
+            if sym.isAbstractType &&
+              (!sym.owner.isJavaDefined || sym.hasFlag(Flags.EXISTENTIAL)) => tp
+        case ExistentialType(tparams, restp)                               => genericCore(restp)
+        case _                                                             => NoType
       }
 
     /** If `tp` is of the form Array[...Array[T]...] where `T` is an abstract type
@@ -119,8 +119,8 @@ trait Erasure {
             if (unboundedGenericArrayLevel(tp) == 1) ObjectTpe
             else if (args.head.typeSymbol.isBottomClass) arrayType(ObjectTpe)
             else typeRef(apply(pre), sym, args map applyInArray)
-          else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
-            ObjectTpe
+          else if (sym == AnyClass || sym == AnyValClass ||
+                   sym == SingletonClass) ObjectTpe
           else if (sym == UnitClass) BoxedUnitTpe
           else if (sym.isRefinementClass) apply(mergeParents(tp.parents))
           else if (sym.isDerivedValueClass) eraseDerivedValueClassRef(tref)
@@ -271,7 +271,8 @@ trait Erasure {
       val old = scalaErasure(tp)
       if (!(res =:= old))
         log(
-          "Identified divergence between java/scala erasure:\n  scala: " + old + "\n   java: " + res)
+          "Identified divergence between java/scala erasure:\n  scala: " + old +
+            "\n   java: " + res)
       res
     }
   }
@@ -317,8 +318,8 @@ trait Erasure {
       } else {
         // implement new spec for erasure of refined types.
         def isUnshadowed(psym: Symbol) =
-          !(psyms exists (qsym =>
-            (psym ne qsym) && (qsym isNonBottomSubClass psym)))
+          !(psyms exists
+            (qsym => (psym ne qsym) && (qsym isNonBottomSubClass psym)))
         val cs = parents.iterator.filter {
           p => // isUnshadowed is a bit expensive, so try classes first
             val psym = p.typeSymbol
@@ -361,8 +362,7 @@ trait Erasure {
             UnitTpe)
       }
       else specialErasure(sym)(tp)
-    } else if (sym.owner != NoSymbol &&
-               sym.owner.owner == ArrayClass &&
+    } else if (sym.owner != NoSymbol && sym.owner.owner == ArrayClass &&
                sym == Array_update.paramss.head(1)) {
       // special case for Array.update: the non-erased type remains, i.e. (Int,A)Unit
       // since the erasure type map gets applied to every symbol, we have to catch the

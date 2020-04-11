@@ -445,8 +445,8 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
       val buf = new StringBuilder()
       val strFn = (col: Int) => {
         val l = lenMap(col)
-        "%" + { if (l > 0) l else 1 } + "s " format scalarTag
-          .show(apply(r, col))
+        "%" + { if (l > 0) l else 1 } + "s " format
+          scalarTag.show(apply(r, col))
       }
       buf.append(util.buildStr(ncols, numCols, strFn))
       buf.append("\n")
@@ -478,17 +478,19 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
   override def equals(o: Any): Boolean =
     o match {
       case rv: Mat[_] =>
-        (this eq rv) || this.numRows == rv.numRows && this.numCols == rv
-          .numCols && {
-          var i = 0
-          var eq = true
-          while (eq && i < length) {
-            eq &&= (apply(i) == rv(i) || this.scalarTag
-              .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i)))
-            i += 1
+        (this eq rv) ||
+          this.numRows == rv.numRows && this.numCols == rv.numCols && {
+            var i = 0
+            var eq = true
+            while (eq && i < length) {
+              eq &&=
+                (apply(i) == rv(i) ||
+                this.scalarTag.isMissing(apply(i)) &&
+                rv.scalarTag.isMissing(rv(i)))
+              i += 1
+            }
+            eq
           }
-          eq
-        }
       case _ => false
     }
 }

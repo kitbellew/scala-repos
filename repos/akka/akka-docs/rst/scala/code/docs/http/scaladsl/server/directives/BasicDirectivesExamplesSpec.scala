@@ -224,8 +224,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Get("/abcdef?ghi=12") ~> route ~> check {
-      responseAs[
-        String] shouldEqual "The path is /abcdef and the query is ghi=12"
+      responseAs[String] shouldEqual
+        "The path is /abcdef and the query is ghi=12"
     }
     //#
   }
@@ -365,12 +365,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     val route = removeIdHeader { echoRequestHeaders { complete("test") } }
 
     // tests:
-    Get("/") ~> RawHeader("id", "12345") ~> RawHeader(
-      "id2",
-      "67890") ~> route ~> check {
-      header("id") shouldEqual None
-      header("id2").get.value shouldEqual "67890"
-    }
+    Get("/") ~> RawHeader("id", "12345") ~> RawHeader("id2", "67890") ~>
+      route ~> check {
+        header("id") shouldEqual None
+        header("id2").get.value shouldEqual "67890"
+      }
     //#
   }
   "mapInnerRoute" in {
@@ -390,7 +389,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "Got IllegalArgumentException 'BLIP! BLOP! Everything broke'"
+      responseAs[String] shouldEqual
+        "Got IllegalArgumentException 'BLIP! BLOP! Everything broke'"
     }
     //#
   }
@@ -429,12 +429,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
           authenticateBasic("my-realm", neverAuth) { user =>
             complete("Welcome to the bat-cave!")
           }
-        } ~
-          path("always") {
-            authenticateBasic("my-realm", alwaysAuth) { user =>
-              complete("Welcome to the secret place!")
-            }
+        } ~ path("always") {
+          authenticateBasic("my-realm", alwaysAuth) { user =>
+            complete("Welcome to the secret place!")
           }
+        }
       }
     }
 
@@ -629,10 +628,12 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Post("/", "text") ~> route ~> check {
-      responseAs[String] shouldEqual "Request method is POST and content-type is text/plain; charset=UTF-8"
+      responseAs[String] shouldEqual
+        "Request method is POST and content-type is text/plain; charset=UTF-8"
     }
     Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "Request method is GET and content-type is none/none"
+      responseAs[String] shouldEqual
+        "Request method is GET and content-type is none/none"
     }
     //#
   }
@@ -645,8 +646,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Get("/") ~> route ~> check {
-      responseAs[
-        String] shouldEqual s"RoutingSettings.renderVanityFooter = true"
+      responseAs[String] shouldEqual
+        s"RoutingSettings.renderVanityFooter = true"
     }
     //#
   }
@@ -665,8 +666,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Get("/") ~> route ~> check {
-      responseAs[
-        String] shouldEqual s"RoutingSettings.fileGetConditional = false"
+      responseAs[String] shouldEqual
+        s"RoutingSettings.fileGetConditional = false"
     }
     //#
   }
@@ -682,10 +683,12 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Post("/", "text") ~> route ~> check {
-      responseAs[String] shouldEqual "Request method is POST and content-type is text/plain; charset=UTF-8"
+      responseAs[String] shouldEqual
+        "Request method is POST and content-type is text/plain; charset=UTF-8"
     }
     Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "Request method is GET and content-type is none/none"
+      responseAs[String] shouldEqual
+        "Request method is GET and content-type is none/none"
     }
     //#
   }

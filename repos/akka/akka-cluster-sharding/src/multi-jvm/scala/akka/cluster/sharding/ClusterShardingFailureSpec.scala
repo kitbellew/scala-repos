@@ -164,8 +164,8 @@ abstract class ClusterShardingFailureSpec(
       enterBarrier("peristence-started")
 
       runOn(first, second) {
-        system.actorSelection(node(controller) / "user" / "store") ! Identify(
-          None)
+        system.actorSelection(node(controller) / "user" / "store") !
+          Identify(None)
         val sharedStore = expectMsgType[ActorIdentity].ref.get
         SharedLeveldbJournal.setStore(sharedStore, system)
       }

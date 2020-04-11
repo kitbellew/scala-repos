@@ -40,7 +40,8 @@ abstract class CheckPrivateAccessTestBase
     val offset = fileText.indexOf(refMarker) + refMarker.length
     assert(
       offset != refMarker.length - 1,
-      "Not specified caret marker in test case. Use " + refMarker + " in scala file for this.")
+      "Not specified caret marker in test case. Use " + refMarker +
+        " in scala file for this.")
     val elem = scalaFile.findElementAt(offset).getParent
     if (!elem.isInstanceOf[ScReferenceElement])
       assert(assertion = true, message = "Ref marker should point on reference")

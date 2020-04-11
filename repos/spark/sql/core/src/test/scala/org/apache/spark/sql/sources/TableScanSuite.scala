@@ -237,15 +237,13 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
         StructField(
           "structFieldComplex",
           StructType(
-            StructField("key", ArrayType(StringType), true) ::
-              StructField(
-                "Value",
-                StructType(
-                  StructField("value_(2)", ArrayType(DateType), true) :: Nil),
-                true) :: Nil),
+            StructField("key", ArrayType(StringType), true) :: StructField(
+              "Value",
+              StructType(
+                StructField("value_(2)", ArrayType(DateType), true) :: Nil),
+              true) :: Nil),
           true
-        ) ::
-        Nil)
+        ) :: Nil)
 
     assert(
       expectedSchema == caseInsensitiveContext.table("tableWithSchema").schema)

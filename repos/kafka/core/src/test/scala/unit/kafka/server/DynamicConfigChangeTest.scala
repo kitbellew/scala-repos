@@ -137,7 +137,8 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
       configManager.ConfigChangedNotificationHandler
         .processNotification(Json.encode(jsonMap))
       fail(
-        "Should have thrown an Exception while parsing incorrect notification " + jsonMap)
+        "Should have thrown an Exception while parsing incorrect notification " +
+          jsonMap)
     } catch { case t: Throwable => }
     // Version is provided. EntityType is incorrect
     try {
@@ -148,7 +149,8 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
       configManager.ConfigChangedNotificationHandler
         .processNotification(Json.encode(jsonMap))
       fail(
-        "Should have thrown an Exception while parsing incorrect notification " + jsonMap)
+        "Should have thrown an Exception while parsing incorrect notification " +
+          jsonMap)
     } catch { case t: Throwable => }
 
     // EntityName isn't provided
@@ -157,7 +159,8 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
       configManager.ConfigChangedNotificationHandler
         .processNotification(Json.encode(jsonMap))
       fail(
-        "Should have thrown an Exception while parsing incorrect notification " + jsonMap)
+        "Should have thrown an Exception while parsing incorrect notification " +
+          jsonMap)
     } catch { case t: Throwable => }
 
     // Everything is provided

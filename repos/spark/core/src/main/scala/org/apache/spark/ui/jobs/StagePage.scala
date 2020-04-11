@@ -56,9 +56,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
       legendPairs.zipWithIndex.map {
         case ((classAttr, name), index) =>
-          <rect x={5 + (index / 3) * 210 + "px"} y={
-            10 + (index % 3) * 15 + "px"
-          }
+          <rect x={5 + (index / 3) * 210 + "px"} y={10 + (index % 3) * 15 + "px"}
                 width="10px" height="10px" class={classAttr}></rect>
                 <text x={25 + (index / 3) * 210 + "px"}
                   y={20 + (index % 3) * 15 + "px"}>{name}</text>
@@ -418,8 +416,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             case TaskUIData(_, metrics, _) =>
               metrics.get.executorRunTime.toDouble
           }
-          val serviceQuantiles =
-            <td>Duration</td> +: getFormattedTimeQuantiles(serviceTimes)
+          val serviceQuantiles = <td>Duration</td> +:
+            getFormattedTimeQuantiles(serviceTimes)
 
           val gcTimes = validTasks.map {
             case TaskUIData(_, metrics, _) => metrics.get.jvmGCTime.toDouble
@@ -453,8 +451,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                   title={ToolTips.GETTING_RESULT_TIME} data-placement="right">
                 Getting Result Time
               </span>
-            </td> +:
-              getFormattedTimeQuantiles(gettingResultTimes)
+            </td> +: getFormattedTimeQuantiles(gettingResultTimes)
 
           val peakExecutionMemory = validTasks.map {
             case TaskUIData(_, metrics, _) =>
@@ -531,8 +528,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                     title={ToolTips.SHUFFLE_READ_BLOCKED_TIME} data-placement="right">
                 Shuffle Read Blocked Time
               </span>
-            </td> +:
-              getFormattedTimeQuantiles(shuffleReadBlockedTimes)
+            </td> +: getFormattedTimeQuantiles(shuffleReadBlockedTimes)
 
           val shuffleReadTotalSizes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
@@ -550,10 +546,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                     title={ToolTips.SHUFFLE_READ} data-placement="right">
                 Shuffle Read Size / Records
               </span>
-            </td> +:
-              getFormattedSizeQuantilesWithRecords(
-                shuffleReadTotalSizes,
-                shuffleReadTotalRecords)
+            </td> +: getFormattedSizeQuantilesWithRecords(
+              shuffleReadTotalSizes,
+              shuffleReadTotalRecords)
 
           val shuffleReadRemoteSizes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
@@ -566,8 +561,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                     title={ToolTips.SHUFFLE_READ_REMOTE_SIZE} data-placement="right">
                 Shuffle Remote Reads
               </span>
-            </td> +:
-              getFormattedSizeQuantiles(shuffleReadRemoteSizes)
+            </td> +: getFormattedSizeQuantiles(shuffleReadRemoteSizes)
 
           val shuffleWriteSizes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
@@ -666,9 +660,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         else Seq()
 
       val content =
-        summary ++
-          dagViz ++
-          showAdditionalMetrics ++
+        summary ++ dagViz ++ showAdditionalMetrics ++
           makeTimeline(
             // Only show the tasks in the table
             stageData.taskData.values.toSeq
@@ -677,10 +669,10 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           <h4>Summary Metrics for {numCompleted} Completed Tasks</h4> ++
           <div>{
             summaryTable.getOrElse("No tasks have reported metrics yet.")
-          }</div> ++
-          <h4>Aggregated Metrics by Executor</h4> ++ executorTable.toNodeSeq ++
-          maybeAccumulableTable ++
-          <h4 id="tasks-section">Tasks</h4> ++ taskTableHTML ++ jsForScrollingDownToTaskTable
+          }</div> ++ <h4>Aggregated Metrics by Executor</h4> ++
+          executorTable.toNodeSeq ++ maybeAccumulableTable ++
+          <h4 id="tasks-section">Tasks</h4> ++ taskTableHTML ++
+          jsForScrollingDownToTaskTable
       UIUtils
         .headerSparkPage(stageHeader, content, parent, showVisualization = true)
     }
@@ -711,9 +703,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         val shuffleReadTime = metricsOpt
           .flatMap(_.shuffleReadMetrics.map(_.fetchWaitTime)).getOrElse(0L)
         val shuffleReadTimeProportion = toProportion(shuffleReadTime)
-        val shuffleWriteTime = (metricsOpt
-          .flatMap(_.shuffleWriteMetrics.map(_.writeTime)).getOrElse(0L) / 1e6)
-          .toLong
+        val shuffleWriteTime =
+          (metricsOpt.flatMap(_.shuffleWriteMetrics.map(_.writeTime))
+            .getOrElse(0L) / 1e6).toLong
         val shuffleWriteTimeProportion = toProportion(shuffleWriteTime)
 
         val serializationTime = metricsOpt.map(_.resultSerializationTime)
@@ -738,8 +730,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             metricsOpt.map(_.executorRunTime).getOrElse(
               totalExecutionTime - executorOverhead - gettingResultTime)
           }
-        val executorComputingTime =
-          executorRunTime - shuffleReadTime - shuffleWriteTime
+        val executorComputingTime = executorRunTime - shuffleReadTime -
+          shuffleWriteTime
         val executorComputingTimeProportion =
           (100 - schedulerDelayProportion - shuffleReadTimeProportion -
             shuffleWriteTimeProportion - serializationTimeProportion -
@@ -839,17 +831,16 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
     <span class="expand-task-assignment-timeline">
       <span class="expand-task-assignment-timeline-arrow arrow-closed"></span>
       <a>Event Timeline</a>
-    </span> ++
-      <div id="task-assignment-timeline" class="collapsed">
+    </span> ++ <div id="task-assignment-timeline" class="collapsed">
       {
-        if (MAX_TIMELINE_TASKS < tasks.size) {
-          <strong>
+      if (MAX_TIMELINE_TASKS < tasks.size) {
+        <strong>
             This stage has more than the maximum number of tasks that can be shown in the
             visualization! Only the most recent {MAX_TIMELINE_TASKS} tasks
             (of {tasks.size} total) are shown.
           </strong>
-        } else { Seq.empty }
-      }
+      } else { Seq.empty }
+    }
       <div class="control-panel">
         <div id="task-assignment-timeline-zoom-lock">
           <input type="checkbox"></input>
@@ -857,13 +848,12 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         </div>
       </div>
       {TIMELINE_LEGEND}
-    </div> ++
-      <script type="text/javascript">
+    </div> ++ <script type="text/javascript">
       {
-        Unparsed(
-          s"drawTaskAssignmentTimeline(" +
-            s"$groupArrayStr, $executorsArrayStr, $minLaunchTime, $maxFinishTime)")
-      }
+      Unparsed(
+        s"drawTaskAssignmentTimeline(" +
+          s"$groupArrayStr, $executorsArrayStr, $minLaunchTime, $maxFinishTime)")
+    }
     </script>
   }
 
@@ -888,8 +878,8 @@ private[ui] object StagePage {
       currentTime: Long): Long = {
     if (info.finished) {
       val totalExecutionTime = info.finishTime - info.launchTime
-      val executorOverhead = (metrics.executorDeserializeTime +
-        metrics.resultSerializationTime)
+      val executorOverhead =
+        (metrics.executorDeserializeTime + metrics.resultSerializationTime)
       math.max(
         0,
         totalExecutionTime - metrics.executorRunTime - executorOverhead -
@@ -1423,10 +1413,8 @@ private[ui] class TaskPagedTable(
 
   override def pageLink(page: Int): String = {
     val encodedSortColumn = URLEncoder.encode(sortColumn, "UTF-8")
-    basePath +
-      s"&$pageNumberFormField=$page" +
-      s"&task.sort=$encodedSortColumn" +
-      s"&task.desc=$desc" +
+    basePath + s"&$pageNumberFormField=$page" +
+      s"&task.sort=$encodedSortColumn" + s"&task.desc=$desc" +
       s"&$pageSizeFormField=$pageSize"
   }
 
@@ -1483,8 +1471,7 @@ private[ui] class TaskPagedTable(
         if (hasBytesSpilled) {
           Seq(("Shuffle Spill (Memory)", ""), ("Shuffle Spill (Disk)", ""))
         } else { Nil }
-      } ++
-        Seq(("Errors", ""))
+      } ++ Seq(("Errors", ""))
 
     if (!taskHeadersAndCssClasses.map(_._1).contains(sortColumn)) {
       throw new IllegalArgumentException(s"Unknown column: $sortColumn")
@@ -1495,10 +1482,8 @@ private[ui] class TaskPagedTable(
         case (header, cssClass) =>
           if (header == sortColumn) {
             val headerLink = Unparsed(
-              basePath +
-                s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
-                s"&task.desc=${!desc}" +
-                s"&task.pageSize=$pageSize")
+              basePath + s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
+                s"&task.desc=${!desc}" + s"&task.pageSize=$pageSize")
             val arrow = if (desc) "&#x25BE;" else "&#x25B4;" // UP or DOWN
             <th class={cssClass}>
             <a href={headerLink}>
@@ -1508,8 +1493,7 @@ private[ui] class TaskPagedTable(
           </th>
           } else {
             val headerLink = Unparsed(
-              basePath +
-                s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
+              basePath + s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
                 s"&task.pageSize=$pageSize")
             <th class={cssClass}>
             <a href={headerLink}>
@@ -1603,8 +1587,7 @@ private[ui] class TaskPagedTable(
         <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
-      </span> ++
-          <div class="stacktrace-details collapsed">
+      </span> ++ <div class="stacktrace-details collapsed">
           <pre>{error}</pre>
         </div>
         // scalastyle:on

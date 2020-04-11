@@ -103,8 +103,8 @@ sealed abstract class DefinedPosition extends Position {
   override def equals(that: Any) =
     that match {
       case that: DefinedPosition =>
-        source.file == that.source.file && start == that.start && point == that
-          .point && end == that.end
+        source.file == that.source.file && start == that.start &&
+          point == that.point && end == that.end
       case _ => false
     }
   override def hashCode = Seq[Any](source.file, start, point, end).##
@@ -248,9 +248,10 @@ private[util] trait InternalPositionImpl {
     var idx = source.lineToOffset(source.offsetToLine(point))
     var col = 0
     while (idx != point) {
-      col += (if (source.content(idx) == '\t')
-                Position.tabInc - col % Position.tabInc
-              else 1)
+      col +=
+        (if (source.content(idx) == '\t')
+           Position.tabInc - col % Position.tabInc
+         else 1)
       idx += 1
     }
     col + 1

@@ -56,8 +56,8 @@ class JavaJsonSpec extends Specification {
     }
     "stringify" in {
       "stringify" in new JsonScope {
-        Json.stringify(testJson) must_== Json
-          .stringify(Json.parse(testJsonString))
+        Json.stringify(testJson) must_==
+          Json.stringify(Json.parse(testJsonString))
       }
       "asciiStringify" in new JsonScope {
         val resultString = Json.stringify(Json.parse(testJsonString))
@@ -68,13 +68,13 @@ class JavaJsonSpec extends Specification {
         Json.prettyPrint(testJson) must_== testJsonString
       }
     }
-    "ignore unknown fields when deserializing to a POJO" in new JsonScope(
-      Json.newDefaultMapper()) {
-      val javaPOJO = Json.fromJson(testJson, classOf[JavaPOJO])
-      javaPOJO.getBar must_== "baz"
-      javaPOJO.getFoo must_== "bar"
-      javaPOJO.getInstant must_== Instant.ofEpochSecond(1425435861L)
-      javaPOJO.getOptNumber must_== Optional.of(55555)
-    }
+    "ignore unknown fields when deserializing to a POJO" in
+      new JsonScope(Json.newDefaultMapper()) {
+        val javaPOJO = Json.fromJson(testJson, classOf[JavaPOJO])
+        javaPOJO.getBar must_== "baz"
+        javaPOJO.getFoo must_== "bar"
+        javaPOJO.getInstant must_== Instant.ofEpochSecond(1425435861L)
+        javaPOJO.getOptNumber must_== Optional.of(55555)
+      }
   }
 }

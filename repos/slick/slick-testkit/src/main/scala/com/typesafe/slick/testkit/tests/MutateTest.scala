@@ -17,9 +17,8 @@ class MutateTest extends AsyncTest[JdbcTestDB] {
 
       var seenEndMarker = false
       db.run(
-        data.schema.create >> (
-          data ++= Seq((1, "a"), (2, "b"), (3, "c"), (4, "d"))
-        )).flatMap { _ =>
+        data.schema.create >>
+          (data ++= Seq((1, "a"), (2, "b"), (3, "c"), (4, "d")))).flatMap { _ =>
         foreach(db.stream(data.mutate.transactionally)) { m =>
           if (!m.end) {
             if (m.row._1 == 1) m.row = m.row.copy(_2 = "aa")

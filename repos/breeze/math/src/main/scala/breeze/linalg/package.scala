@@ -189,8 +189,8 @@ package object linalg {
     while (i < as.length) {
       // count number of tied values at rank i
       var numTiedValuesAtI = 1
-      while (i + numTiedValuesAtI < as.length && a(
-               as(i + numTiedValuesAtI)) == a(as(i))) { numTiedValuesAtI += 1 }
+      while (i + numTiedValuesAtI < as.length &&
+             a(as(i + numTiedValuesAtI)) == a(as(i))) { numTiedValuesAtI += 1 }
 
       // set return value for next numTiedValuesAtI indexes in as
       val rank = 1 + i + (numTiedValuesAtI - 1) / 2.0

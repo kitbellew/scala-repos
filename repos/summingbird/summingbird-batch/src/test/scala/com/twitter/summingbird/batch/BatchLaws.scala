@@ -35,8 +35,8 @@ object BatchLaws extends Properties("BatchID") {
   }
 
   property("BatchID should respect ordering") = forAll { (a: Long, b: Long) =>
-    a.compare(b) == implicitly[Ordering[BatchID]]
-      .compare(BatchID(a), BatchID(b))
+    a.compare(b) ==
+      implicitly[Ordering[BatchID]].compare(BatchID(a), BatchID(b))
   }
 
   property("BatchID should respect addition and subtraction") = forAll {
@@ -46,8 +46,7 @@ object BatchLaws extends Properties("BatchID") {
   }
 
   property("BatchID should roll forward and backward") = forAll { (b: Long) =>
-    BatchID(b).next.prev == BatchID(b) &&
-    BatchID(b).prev.next == BatchID(b) &&
+    BatchID(b).next.prev == BatchID(b) && BatchID(b).prev.next == BatchID(b) &&
     BatchID(b).prev == BatchID(b - 1L)
   }
 

@@ -23,13 +23,9 @@ object JvmPlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   override lazy val projectSettings: Seq[Setting[_]] =
-    Defaults.runnerSettings ++
-      Defaults.paths ++
-      Classpaths.jvmPublishSettings ++
-      Classpaths.jvmBaseSettings ++
-      Defaults.projectTasks ++
-      Defaults.packageBase ++
-      Defaults.compileBase ++
+    Defaults.runnerSettings ++ Defaults.paths ++
+      Classpaths.jvmPublishSettings ++ Classpaths.jvmBaseSettings ++
+      Defaults.projectTasks ++ Defaults.packageBase ++ Defaults.compileBase ++
       Defaults.defaultConfigs
   override lazy val globalSettings: Seq[Setting[_]] = Defaults.globalJvmCore
 

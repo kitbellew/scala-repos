@@ -260,6 +260,6 @@ private[akka] abstract class MultiStreamOutputProcessor(
   }
 
   override def activeReceive: Receive =
-    primaryInputs.subreceive orElse primaryOutputs
-      .subreceive orElse outputSubstreamManagement
+    primaryInputs.subreceive orElse primaryOutputs.subreceive orElse
+      outputSubstreamManagement
 }

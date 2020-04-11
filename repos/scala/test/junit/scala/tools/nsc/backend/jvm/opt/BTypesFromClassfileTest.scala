@@ -77,8 +77,8 @@ class BTypesFromClassfileTest {
         // So a class may be public in bytecode, but the symbol still says private.
         if (fromSym.nestedInfo.isEmpty) fromSym.flags == fromClassfile.flags
         else
-          (fromSym.flags | ACC_PRIVATE | ACC_PUBLIC) == (fromClassfile
-            .flags | ACC_PRIVATE | ACC_PUBLIC)
+          (fromSym.flags | ACC_PRIVATE | ACC_PUBLIC) ==
+            (fromClassfile.flags | ACC_PRIVATE | ACC_PUBLIC)
       },
       s"class flags differ\n$fromSym\n$fromClassfile"
     )

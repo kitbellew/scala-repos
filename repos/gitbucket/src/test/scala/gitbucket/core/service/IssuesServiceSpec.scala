@@ -76,13 +76,8 @@ class IssuesServiceSpec extends FunSuite with ServiceSpecBase {
         user1)
       assert(
         getCommitStatues == Map(
-          ("user1", "repo1", 2) -> CommitStatusInfo(
-            2,
-            1,
-            None,
-            None,
-            None,
-            None)))
+          ("user1", "repo1", 2) ->
+            CommitStatusInfo(2, 1, None, None, None, None)))
 
       // get only statuses in query issues
       val (is3, pr3) = generateNewPullRequest(
@@ -100,13 +95,8 @@ class IssuesServiceSpec extends FunSuite with ServiceSpecBase {
         user1)
       assert(
         getCommitStatues == Map(
-          ("user1", "repo1", 2) -> CommitStatusInfo(
-            2,
-            1,
-            None,
-            None,
-            None,
-            None)))
+          ("user1", "repo1", 2) ->
+            CommitStatusInfo(2, 1, None, None, None, None)))
     }
   }
 }

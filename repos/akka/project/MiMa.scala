@@ -54,7 +54,8 @@ object MiMa extends AutoPlugin {
         case _ if akka242NewArtifacts.contains(projectName) =>
           akka24StreamVersions
         case _ =>
-          akka24NoStreamVersions ++ akka24StreamVersions // Only Akka 2.4.x for scala > than 2.11
+          akka24NoStreamVersions ++
+            akka24StreamVersions // Only Akka 2.4.x for scala > than 2.11
       }
     }
 

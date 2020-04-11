@@ -156,8 +156,8 @@ object RemoteServerConnector {
 
       val differ =
         if (linesLength > 2) {
-          val i = lines(linesLength - 2) indexOf WorksheetSourceProcessor
-            .END_GENERATED_MARKER
+          val i = lines(linesLength - 2) indexOf
+            WorksheetSourceProcessor.END_GENERATED_MARKER
           if (i > -1) i + length else 0
         } else 0
 
@@ -171,10 +171,10 @@ object RemoteServerConnector {
 
           val lines1 = lines(linesLength - 1)
 
-          buffer append lines(linesLength - 2)
-            .substring(differ) append "\n" append (if (lines1.length > differ)
-                                                     lines1.substring(differ)
-                                                   else lines1) append "\n"
+          buffer append lines(linesLength - 2).substring(differ) append
+            "\n" append
+            (if (lines1.length > differ) lines1.substring(differ)
+             else lines1) append "\n"
           buffer.toString()
         }
 
@@ -241,7 +241,8 @@ object RemoteServerConnector {
     }
 
     override def trace(thr: Throwable) {
-      worksheetPrinter internalError s"${thr.getMessage}\n${thr.getStackTrace mkString "\n"}"
+      worksheetPrinter internalError
+        s"${thr.getMessage}\n${thr.getStackTrace mkString "\n"}"
     }
   }
 }

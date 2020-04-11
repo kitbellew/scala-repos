@@ -156,12 +156,13 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
         "openid.claimed_id" -> claimedId,
         "openid.identity" -> identity,
         "openid.return_to" -> callbackURL
-      ) ++ axParameters(axRequired, axOptional) ++ realm
-        .map("openid.realm" -> _).toList
+      ) ++ axParameters(axRequired, axOptional) ++
+        realm.map("openid.realm" -> _).toList
       val separator = if (server.url.contains("?")) "&" else "?"
-      server.url + separator + parameters
-        .map(pair => pair._1 + "=" + URLEncoder.encode(pair._2, "UTF-8"))
-        .mkString("&")
+      server.url + separator +
+        parameters
+          .map(pair => pair._1 + "=" + URLEncoder.encode(pair._2, "UTF-8"))
+          .mkString("&")
     })
   }
 
@@ -200,8 +201,9 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
     */
   private def directVerification(queryString: Map[String, Seq[String]])(
       server: OpenIDServer) = {
-    val fields = (queryString - "openid.mode" + ("openid.mode" -> Seq(
-      "check_authentication")))
+    val fields =
+      (queryString - "openid.mode" +
+        ("openid.mode" -> Seq("check_authentication")))
     ws.url(server.url).post(fields).map(response => {
       if (response.status == 200 && response.body.contains("is_valid:true")) {
         UserInfo(queryString)
@@ -227,7 +229,8 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
 
       Seq(
         "openid.ns.ax" -> "http://openid.net/srv/ax/1.0",
-        "openid.ax.mode" -> "fetch_request") ++ axRequiredParams ++ axOptionalParams ++ definitions
+        "openid.ax.mode" -> "fetch_request") ++ axRequiredParams ++
+        axOptionalParams ++ definitions
     }
   }
 }
@@ -301,8 +304,8 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
   def discoverServer(openID: String): Future[OpenIDServer] = {
     val discoveryUrl = normalizeIdentifier(openID)
     ws.url(discoveryUrl).get().map(response => {
-      val maybeOpenIdServer = new XrdsResolver()
-        .resolve(response) orElse new HtmlResolver().resolve(response)
+      val maybeOpenIdServer = new XrdsResolver().resolve(response) orElse
+        new HtmlResolver().resolve(response)
       maybeOpenIdServer.getOrElse(throw Errors.NETWORK_ERROR)
     })
   }
@@ -333,10 +336,9 @@ private[openid] object Discovery {
       } yield OpenIDServer(typeId, uri, None)
 
     private def findUriWithType(xml: Node)(typeId: String) =
-      (xml \ "XRD" \ "Service" find (node =>
-        (node \ "Type").find(inner => inner.text == typeId).isDefined)).map {
-        node => (typeId, (node \ "URI").text.trim)
-      }
+      (xml \ "XRD" \ "Service" find
+        (node => (node \ "Type").find(inner => inner.text == typeId).isDefined))
+        .map { node => (typeId, (node \ "URI").text.trim) }
   }
 
   class HtmlResolver extends Resolver {

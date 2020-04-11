@@ -118,8 +118,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           val canElim = vi.getOpcode != ASTORE || {
             val currentFieldValueProds = prodCons
               .initialProducersForValueAt(vi, vi.`var`)
-            currentFieldValueProds.size == 1 && (currentFieldValueProds
-              .head match {
+            currentFieldValueProds.size == 1 &&
+            (currentFieldValueProds.head match {
               case ParameterProducer(0) =>
                 !isStaticMethod(
                   method
@@ -133,8 +133,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           else {
             val prods = prodCons
               .producersForValueAt(vi, prodCons.frameAt(vi).stackTop)
-            val isStoreNull = prods.size == 1 && prods.head
-              .getOpcode == ACONST_NULL
+            val isStoreNull = prods.size == 1 &&
+              prods.head.getOpcode == ACONST_NULL
             toNullOut += ((vi, isStoreNull))
           }
 
@@ -451,8 +451,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
                 mi,
                 numArgs + 1
               ) // removes the producers of args and receiver
-            } else if (receiverProd.getOpcode == DUP && toRemove
-                         .contains(receiverProd)) {
+            } else if (receiverProd.getOpcode == DUP &&
+                       toRemove.contains(receiverProd)) {
               val dupProds = producersIfSingleConsumer(
                 receiverProd,
                 prodCons.frameAt(receiverProd).stackTop)
@@ -462,10 +462,11 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
                   mi,
                   numArgs
                 ) // removes the producers of args. the producer of the receiver is DUP and already in toRemove.
-                queue += ProducedValue(
-                  dupProds.head,
-                  1
-                ) // removes the NEW (which is NOT the producer of the receiver!)
+                queue +=
+                  ProducedValue(
+                    dupProds.head,
+                    1
+                  ) // removes the NEW (which is NOT the producer of the receiver!)
               }
             }
           }
@@ -613,8 +614,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           if (pairStartStack.nonEmpty) {
             (pairStartStack.top, top) match {
               case ((ldNull: InsnNode, depends), store: VarInsnNode)
-                  if ldNull.getOpcode == ACONST_NULL && store
-                    .getOpcode == ASTORE =>
+                  if ldNull.getOpcode == ACONST_NULL &&
+                    store.getOpcode == ASTORE =>
                 pairStartStack.pop()
                 addDepends(mkRemovePair(store, ldNull, depends.toList))
                 // example: store; (null; store;) (store; load;) load

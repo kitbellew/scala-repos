@@ -242,10 +242,10 @@ class ScForStatementImpl(node: ASTNode)
           patts.foreach(patt => {
             if (patt != null && patt.desugarizedPatternIndex != -1) {
               var element = expr.findElementAt(patt.desugarizedPatternIndex)
-              while (element != null && (element.getTextLength < patt
-                       .getTextLength ||
-                     (!element.isInstanceOf[ScPattern] && element
-                       .getTextLength == patt.getTextLength)))
+              while (element != null &&
+                     (element.getTextLength < patt.getTextLength ||
+                     (!element.isInstanceOf[ScPattern] &&
+                     element.getTextLength == patt.getTextLength)))
                 element = element.getParent
               if (element != null && element.getText == patt.getText) {
                 element match {
@@ -276,8 +276,8 @@ class ScForStatementImpl(node: ASTNode)
         }
       }
     }
-    if ((enums.isEmpty && guards.isEmpty && gens.length == 1) || gens
-          .isEmpty || res.isEmpty) res
+    if ((enums.isEmpty && guards.isEmpty && gens.length == 1) || gens.isEmpty ||
+        res.isEmpty) res
     else {
       val expr = res.get
       nextEnumerator(gens.head) match {

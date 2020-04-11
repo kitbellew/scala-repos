@@ -304,8 +304,11 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 
               case '\"' =>
                 in.next()
-                while (in.ch != '\"' && (in.isUnicode || in.ch != CR && in
-                         .ch != LF && in.ch != SU)) { getlitch() }
+                while (in.ch != '\"' &&
+                       (in.isUnicode ||
+                       in.ch != CR && in.ch != LF && in.ch != SU)) {
+                  getlitch()
+                }
                 if (in.ch == '\"') {
                   token = STRINGLIT
                   setName()
@@ -719,9 +722,13 @@ trait JavaScanners extends ast.parser.ScannersCommon {
             return 0
           }
           if (value < 0 ||
-              limit / (base / divider) < value ||
-              limit - (d / divider) < value * (base / divider) &&
-              !(negated && limit == value * base - 1 + d)) {
+              limit /
+                (base / divider) < value ||
+                limit -
+                (d / divider) <
+                value *
+                (base / divider) &&
+                !(negated && limit == value * base - 1 + d)) {
             syntaxError("integer number too large")
             return 0
           }
@@ -775,8 +782,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
         }
       }
       if (base <= 10 &&
-          (in.ch == 'e' || in.ch == 'E' ||
-          in.ch == 'f' || in.ch == 'F' ||
+          (in.ch == 'e' || in.ch == 'E' || in.ch == 'f' || in.ch == 'F' ||
           in.ch == 'd' || in.ch == 'D')) { return getFraction() }
       setName()
       if (in.ch == 'l' || in.ch == 'L') {

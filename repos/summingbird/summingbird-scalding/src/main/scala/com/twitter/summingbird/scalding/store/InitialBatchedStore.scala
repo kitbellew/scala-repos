@@ -39,7 +39,8 @@ class InitialBatchedStore[K, V](
     if (batchID >= firstNonZero) proxy.writeLast(batchID, lastVals)
     else
       sys.error(
-        "Earliest batch set at :" + firstNonZero + " but tried to write: " + batchID)
+        "Earliest batch set at :" + firstNonZero + " but tried to write: " +
+          batchID)
 
   // Here is where we switch:
   override def readLast(
@@ -50,7 +51,8 @@ class InitialBatchedStore[K, V](
       Right((firstNonZero.prev, Scalding.emptyFlowProducer[(K, V)]))
     else
       Left(List(
-        "Earliest batch set at :" + firstNonZero + " but tried to read: " + exclusiveUB))
+        "Earliest batch set at :" + firstNonZero + " but tried to read: " +
+          exclusiveUB))
   }
 
   override def toString =

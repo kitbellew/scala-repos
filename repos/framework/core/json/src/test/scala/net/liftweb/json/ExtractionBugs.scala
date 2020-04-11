@@ -74,13 +74,13 @@ object ExtractionBugs extends Specification {
   }
 
   "Extraction should work with unicode encoded field names (issue 1075)" in {
-    parse("""{"foo.bar,baz":"x"}""")
-      .extract[UnicodeFieldNames] mustEqual UnicodeFieldNames("x")
+    parse("""{"foo.bar,baz":"x"}""").extract[UnicodeFieldNames] mustEqual
+      UnicodeFieldNames("x")
   }
 
   "Extraction should not fail if case class has a companion object" in {
-    parse("""{"nums":[10]}""").extract[HasCompanion] mustEqual HasCompanion(
-      List(10))
+    parse("""{"nums":[10]}""").extract[HasCompanion] mustEqual
+      HasCompanion(List(10))
   }
 
   "Issue 1169" in {
@@ -90,17 +90,16 @@ object ExtractionBugs extends Specification {
 
   "Extraction should handle List[Option[String]]" in {
     val json = JsonParser.parse("""["one", "two", null]""")
-    json.extract[List[Option[String]]] mustEqual List(
-      Some("one"),
-      Some("two"),
-      None)
+    json.extract[List[Option[String]]] mustEqual
+      List(Some("one"), Some("two"), None)
   }
 
   "Extraction should fail if you're attempting to extract an option and you're given data of the wrong type" in {
     val json = JsonParser.parse("""{"opt": "hi"}""")
     json.extract[OptionOfInt] must throwA[MappingException].like {
       case e =>
-        e.getMessage mustEqual "No usable value for opt\nDo not know how to convert JString(hi) into int"
+        e.getMessage mustEqual
+          "No usable value for opt\nDo not know how to convert JString(hi) into int"
     }
 
     val json2 = JString("hi")

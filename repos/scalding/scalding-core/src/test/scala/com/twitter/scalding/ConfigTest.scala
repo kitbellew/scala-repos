@@ -26,19 +26,18 @@ class ConfigTest extends WordSpec with Matchers {
   "A Config" should {
     "cascadingAppJar works" in {
       val cls = getClass
-      Config.default.setCascadingAppJar(cls).getCascadingAppJar should contain(
-        Success(cls))
+      Config.default.setCascadingAppJar(cls).getCascadingAppJar should
+        contain(Success(cls))
     }
     "default has serialization set" in {
       val sers = Config.default.get("io.serializations").get.split(",").toList
-      sers.last shouldBe (classOf[com.twitter.chill.hadoop.KryoSerialization]
-        .getName)
+      sers.last shouldBe
+        (classOf[com.twitter.chill.hadoop.KryoSerialization].getName)
     }
     "default has chill configured" in {
       Config.default
-        .get(
-          com.twitter.chill.config.ConfiguredInstantiator
-            .KEY) should not be empty
+        .get(com.twitter.chill.config.ConfiguredInstantiator.KEY) should not be
+        empty
     }
     "setting timestamp twice does not change it" in {
       val date = RichDate.now

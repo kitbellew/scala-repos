@@ -87,8 +87,8 @@ class TaskStatusUpdateProcessorImplTest
 
     Given("an unknown task")
     import scala.concurrent.ExecutionContext.Implicits.global
-    f.taskTracker.task(taskId)(global) returns Future
-      .successful(Some(MarathonTestHelper.minimalReservedTask(
+    f.taskTracker.task(taskId)(global) returns
+      Future.successful(Some(MarathonTestHelper.minimalReservedTask(
         taskId.appId,
         Task.Reservation(
           Iterable.empty,
@@ -147,8 +147,8 @@ class TaskStatusUpdateProcessorImplTest
     Given("a known task")
     import scala.concurrent.ExecutionContext.Implicits.global
     f.taskTracker.task(taskId) returns Future.successful(Some(taskState))
-    f.taskUpdater.statusUpdate(appId, status)
-      .asInstanceOf[Future[Unit]] returns Future.successful(())
+    f.taskUpdater.statusUpdate(appId, status).asInstanceOf[Future[Unit]] returns
+      Future.successful(())
     f.appRepository.app(appId, version) returns Future.successful(Some(app))
     And("and a cooperative launchQueue")
     f.launchQueue.notifyOfTaskUpdate(any) returns Future.successful(None)

@@ -265,7 +265,8 @@ final class KafkaRelayAgent(
             // cannot relay event without a resolved owner account ID; fail loudly.
             // this will abort the future, ensuring that state doesn't get corrupted
             sys.error(
-              "Unable to establish owner account ID for ingest of event " + event)
+              "Unable to establish owner account ID for ingest of event " +
+                event)
 
           case Authorized(
                 archive @ Archive(apiKey, path, jobId, timestamp),
@@ -312,8 +313,8 @@ final class KafkaRelayAgent(
     } valueOr { error =>
       Promise successful {
         logger.error(
-          "Deserialization errors occurred reading events from Kafka: " + error
-            .message)
+          "Deserialization errors occurred reading events from Kafka: " +
+            error.message)
       }
     }
   }

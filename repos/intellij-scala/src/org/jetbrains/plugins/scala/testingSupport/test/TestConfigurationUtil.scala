@@ -65,8 +65,8 @@ object TestConfigurationUtil {
     if (pack == null) return false
     configuration match {
       case configuration: AbstractTestRunConfiguration =>
-        configuration.getTestKind == TestRunConfigurationForm.TestKind
-          .ALL_IN_PACKAGE &&
+        configuration.getTestKind ==
+          TestRunConfigurationForm.TestKind.ALL_IN_PACKAGE &&
           configuration.getTestPackagePath == pack.getQualifiedName
       case _ => false
     }
@@ -111,8 +111,8 @@ object TestConfigurationUtil {
           if literal.isString && literal.getValue.isInstanceOf[String] =>
         Some(escapeTestName(literal.getValue.asInstanceOf[String]))
       case literal: ScLiteral
-          if allowSymbolLiterals && literal.isSymbol && literal.getValue
-            .isInstanceOf[Symbol] =>
+          if allowSymbolLiterals && literal.isSymbol &&
+            literal.getValue.isInstanceOf[Symbol] =>
         Some(escapeTestName(literal.getValue.asInstanceOf[Symbol].name))
       case literal: ScLiteral if literal.getValue.isInstanceOf[Number] =>
         Some(literal.getValue)

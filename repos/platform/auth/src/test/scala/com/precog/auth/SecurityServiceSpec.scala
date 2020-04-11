@@ -171,9 +171,9 @@ class SecurityServiceSpec
   def getPermissions(authAPIKey: String, path: Path) =
     authService.query("apiKey", authAPIKey).get("/permissions/fs/" + path)
 
-  def equalGrant(g1: Grant, g2: Grant) =
-    (g1.grantId == g2.grantId) && (g1.permissions == g2.permissions) && (g1
-      .expirationDate == g2.expirationDate)
+  def equalGrant(g1: Grant, g2: Grant) = (g1.grantId == g2.grantId) &&
+    (g1.permissions == g2.permissions) &&
+    (g1.expirationDate == g2.expirationDate)
 
   def mkNewGrantRequest(grant: Grant) =
     grant match {
@@ -396,8 +396,8 @@ class SecurityServiceSpec
       result must awaited(to) {
         beLike {
           case v1.APIKeyDetails(apiKey, name, description, grants, _) =>
-            grants.flatMap(_.permissions) must haveTheSameElementsAs(
-              user1Grant.permissions)
+            grants.flatMap(_.permissions) must
+              haveTheSameElementsAs(user1Grant.permissions)
         }
       }
     }
@@ -462,19 +462,17 @@ class SecurityServiceSpec
         beLike {
           case HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) =>
             val gs = jgs.deserialize[Set[v1.GrantDetails]]
-            gs.map(_.grantId) must haveTheSameElementsAs(
-              Seq(user1Grant.grantId))
+            gs.map(_.grantId) must
+              haveTheSameElementsAs(Seq(user1Grant.grantId))
         }
       }
     }
 
     "add a specified grant to an API key" in {
-      addAPIKeyGrant(
-        user1.apiKey,
-        user2.apiKey,
-        user1Grant.grantId) must awaited(to) {
-        beLike { case HttpResponse(HttpStatus(Created, _), _, None, _) => ok }
-      }
+      addAPIKeyGrant(user1.apiKey, user2.apiKey, user1Grant.grantId) must
+        awaited(to) {
+          beLike { case HttpResponse(HttpStatus(Created, _), _, None, _) => ok }
+        }
     }
 
     "get existing grant" in {
@@ -540,20 +538,20 @@ class SecurityServiceSpec
                 _) if elems.contains("error") =>
             elems("error") must beLike {
               case JString(msg) =>
-                msg must startWith(
-                  "Requestor lacks permissions to create grant")
+                msg must
+                  startWith("Requestor lacks permissions to create grant")
             }
         }
       }
     }
 
     "remove a specified grant from an API key" in {
-      removeAPIKeyGrant(
-        user3.apiKey,
-        user3.apiKey,
-        user3Grant.grantId) must awaited(to) {
-        beLike { case HttpResponse(HttpStatus(NoContent, _), _, None, _) => ok }
-      }
+      removeAPIKeyGrant(user3.apiKey, user3.apiKey, user3Grant.grantId) must
+        awaited(to) {
+          beLike {
+            case HttpResponse(HttpStatus(NoContent, _), _, None, _) => ok
+          }
+        }
     }
 
     "retrieve the child grants of the given grant" in {
@@ -608,16 +606,16 @@ class SecurityServiceSpec
         HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <-
           getGrantChildren(user1.apiKey, user1Grant.grantId)
         afterDelete = jgs.deserialize[Set[v1.GrantDetails]]
-      } yield !afterDelete.exists(_.grantId == details.grantId)) must awaited(
-        to) { beTrue }
+      } yield !afterDelete.exists(_.grantId == details.grantId)) must
+        awaited(to) { beTrue }
     }
 
     "retrieve permissions for a given path owned by user" in {
       getPermissions(user1.apiKey, Path("/user1")) must awaited(to) {
         beLike {
           case HttpResponse(HttpStatus(OK, _), _, Some(jperms), _) =>
-            val perms = jperms.deserialize[Set[Permission]] map Permission
-              .accessType
+            val perms = jperms.deserialize[Set[Permission]] map
+              Permission.accessType
             val types = Set("read", "write", "delete")
             perms must_== types
         }

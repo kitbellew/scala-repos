@@ -156,12 +156,11 @@ object RequestChannel extends Logging {
       if (requestId == ApiKeys.FETCH.id) {
         val isFromFollower = requestObj.asInstanceOf[FetchRequest]
           .isFromFollower
-        metricsList ::= (if (isFromFollower)
-                           RequestMetrics
-                             .metricsMap(RequestMetrics.followFetchMetricName)
-                         else
-                           RequestMetrics.metricsMap(
-                             RequestMetrics.consumerFetchMetricName))
+        metricsList ::=
+          (if (isFromFollower)
+             RequestMetrics.metricsMap(RequestMetrics.followFetchMetricName)
+           else
+             RequestMetrics.metricsMap(RequestMetrics.consumerFetchMetricName))
       }
       metricsList.foreach { m =>
         m.requestRate.mark()
@@ -317,8 +316,8 @@ object RequestMetrics {
   val metricsMap = new scala.collection.mutable.HashMap[String, RequestMetrics]
   val consumerFetchMetricName = ApiKeys.FETCH.name + "Consumer"
   val followFetchMetricName = ApiKeys.FETCH.name + "Follower"
-  (ApiKeys.values().toList.map(e => e.name)
-    ++ List(consumerFetchMetricName, followFetchMetricName))
+  (ApiKeys.values().toList.map(e => e.name) ++
+    List(consumerFetchMetricName, followFetchMetricName))
     .foreach(name => metricsMap.put(name, new RequestMetrics(name)))
 }
 

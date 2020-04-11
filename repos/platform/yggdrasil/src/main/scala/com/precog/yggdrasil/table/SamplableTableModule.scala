@@ -249,9 +249,8 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
             }
           case (src, dest) =>
             sys.error(
-              "Slice lied about column type. Expected %s, but found %s." format (
-                ref.ctype, src.tpe
-              ))
+              "Slice lied about column type. Expected %s, but found %s." format
+                (ref.ctype, src.tpe))
         }
     }
   }

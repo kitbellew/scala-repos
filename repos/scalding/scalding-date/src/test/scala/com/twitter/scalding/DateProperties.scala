@@ -54,8 +54,7 @@ object DateProperties extends Properties("Date Properties") {
 
   property("Arithmetic works as expected") = forAll {
     (dr: DateRange, r: Duration) =>
-      (dr + r) - r == dr &&
-      (dr.start + r) - r == dr.start
+      (dr + r) - r == dr && (dr.start + r) - r == dr.start
   }
   property("fromMillisecs toMillisecs") = forAll { (ad: AbsoluteDuration) =>
     val ms = ad.toMillisecs
@@ -65,9 +64,8 @@ object DateProperties extends Properties("Date Properties") {
   def asInt(b: Boolean) = if (b) 1 else 0
 
   property("Before/After works") = forAll { (dr: DateRange, rd: RichDate) =>
-    (asInt(dr.contains(rd)) + asInt(dr.isBefore(rd)) + asInt(
-      dr.isAfter(rd)) == 1) &&
-    (dr.isBefore(dr.end + (dr.end - dr.start))) &&
+    (asInt(dr.contains(rd)) + asInt(dr.isBefore(rd)) + asInt(dr.isAfter(rd)) ==
+      1) && (dr.isBefore(dr.end + (dr.end - dr.start))) &&
     (dr.isAfter(dr.start - (dr.end - dr.start)))
   }
 
@@ -81,8 +79,7 @@ object DateProperties extends Properties("Date Properties") {
 
   property("Embiggen/extend always contains") = forAll {
     (dr: DateRange, d: Duration) =>
-      dr.embiggen(d).contains(dr) &&
-      dr.extend(d).contains(dr)
+      dr.embiggen(d).contains(dr) && dr.extend(d).contains(dr)
   }
 
   property("RichDate subtraction Roundtrip") = forAll {
@@ -97,17 +94,21 @@ object DateProperties extends Properties("Date Properties") {
 
   property("AbsoluteDuration group properties") = forAll {
     (a: AbsoluteDuration, b: AbsoluteDuration, c: AbsoluteDuration) =>
-      (a + b) - c == a + (b - c) &&
-      (a + b) + c == a + (b + c) &&
-      (a - a) == fromMillisecs(0) &&
-      (b - b) == fromMillisecs(0) &&
-      (c - c) == fromMillisecs(0) && {
-        b.toMillisecs == 0 || {
-          // Don't divide by zero:
-          val (d, rem) = (a / b)
-          a == b * d + rem && (rem.toMillisecs.abs < b.toMillisecs.abs)
+      (a + b) - c ==
+        a +
+        (b - c) &&
+        (a + b) + c ==
+        a +
+        (b + c) &&
+        (a - a) == fromMillisecs(0) &&
+        (b - b) == fromMillisecs(0) &&
+        (c - c) == fromMillisecs(0) && {
+          b.toMillisecs == 0 || {
+            // Don't divide by zero:
+            val (d, rem) = (a / b)
+            a == b * d + rem && (rem.toMillisecs.abs < b.toMillisecs.abs)
+          }
         }
-      }
   }
 
   property("DateRange.length is correct") = forAll { (dr: DateRange) =>

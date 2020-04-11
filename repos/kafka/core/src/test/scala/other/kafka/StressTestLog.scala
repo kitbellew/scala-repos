@@ -93,8 +93,8 @@ object StressTestLog {
       val logAppendInfo = log
         .append(TestUtils.singleMessageSet(offset.toString.getBytes))
       require(
-        logAppendInfo.firstOffset == offset && logAppendInfo
-          .lastOffset == offset)
+        logAppendInfo.firstOffset == offset &&
+          logAppendInfo.lastOffset == offset)
       offset += 1
       if (offset % 1000 == 0) Thread.sleep(500)
     }

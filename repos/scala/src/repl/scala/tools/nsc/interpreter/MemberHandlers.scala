@@ -245,8 +245,8 @@ trait MemberHandlers {
     def implicitSymbols = importedSymbols filter (_.isImplicit)
     def importedSymbols = individualSymbols ++ wildcardSymbols
 
-    private val selectorNames =
-      selectorRenames filterNot (_ == nme.USCOREkw) flatMap (_.bothNames) toSet
+    private val selectorNames = selectorRenames filterNot
+      (_ == nme.USCOREkw) flatMap (_.bothNames) toSet
     lazy val individualSymbols: List[Symbol] = exitingTyper(
       importableTargetMembers filter (m => selectorNames(m.name)))
     lazy val wildcardSymbols: List[Symbol] = exitingTyper(
@@ -257,10 +257,10 @@ trait MemberHandlers {
     lazy val individualNames: List[Name] = individualSymbols map (_.name)
 
     /** The names imported by this statement */
-    override lazy val importedNames: List[Name] =
-      wildcardNames ++ individualNames
-    lazy val importsSymbolNamed: Set[String] =
-      importedNames map (_.toString) toSet
+    override lazy val importedNames: List[Name] = wildcardNames ++
+      individualNames
+    lazy val importsSymbolNamed: Set[String] = importedNames map
+      (_.toString) toSet
 
     def importString = imp.toString
     override def resultExtractionCode(req: Request) =

@@ -63,8 +63,8 @@ trait MarkupParsers {
       if (ch == SU) throw TruncatedXMLControl else reportSyntaxError(msg)
 
     var input: CharArrayReader = _
-    def lookahead(): BufferedIterator[Char] =
-      (input.buf drop input.charOffset).iterator.buffered
+    def lookahead(): BufferedIterator[Char] = (input.buf drop input.charOffset)
+      .iterator.buffered
 
     import parser.{symbXMLBuilder => handle, o2p, r2p}
 
@@ -234,17 +234,16 @@ trait MarkupParsers {
       *  Trees are appended to `ts` as a side-effect.
       *  @return true if an end tag (without consuming it)
       */
-    private def content_LT(ts: ArrayBuffer[Tree]): Boolean =
-      (ch == '/') || {
-        val toAppend = ch match {
-          case '!' =>
-            nextch(); if (ch == '[') xCharData else xComment // CDATA or Comment
-          case '?' => nextch(); xProcInstr // PI
-          case _   => element // child node
-        }
-        ts append toAppend
-        false
+    private def content_LT(ts: ArrayBuffer[Tree]): Boolean = (ch == '/') || {
+      val toAppend = ch match {
+        case '!' =>
+          nextch(); if (ch == '[') xCharData else xComment // CDATA or Comment
+        case '?' => nextch(); xProcInstr // PI
+        case _   => element // child node
       }
+      ts append toAppend
+      false
+    }
 
     def content: Buffer[Tree] = {
       val ts = new ArrayBuffer[Tree]

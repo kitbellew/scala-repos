@@ -163,8 +163,8 @@ private[sql] object StatFunctions extends Logging {
       while (opsIdx < sorted.length) {
         val currentSample = sorted(opsIdx)
         // Add all the samples before the next observation.
-        while (sampleIdx < sampled.size && sampled(sampleIdx)
-                 .value <= currentSample) {
+        while (sampleIdx < sampled.size &&
+               sampled(sampleIdx).value <= currentSample) {
           newSamples.append(sampled(sampleIdx))
           sampleIdx += 1
         }
@@ -172,8 +172,8 @@ private[sql] object StatFunctions extends Logging {
         // If it is the first one to insert, of if it is the last one
         currentCount += 1
         val delta =
-          if (newSamples.isEmpty || (sampleIdx == sampled
-                .size && opsIdx == sorted.length - 1)) { 0 }
+          if (newSamples.isEmpty ||
+              (sampleIdx == sampled.size && opsIdx == sorted.length - 1)) { 0 }
           else { math.floor(2 * relativeError * currentCount).toInt }
 
         val tuple = Stats(currentSample, 1, delta)

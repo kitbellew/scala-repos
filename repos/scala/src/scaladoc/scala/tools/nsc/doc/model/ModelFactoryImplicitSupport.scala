@@ -93,9 +93,8 @@ trait ModelFactoryImplicitSupport {
       inTpl: DocTemplateImpl): List[ImplicitConversionImpl] =
     // Nothing and Null are somewhat special -- they can be transformed by any implicit conversion available in scope.
     // But we don't want that, so we'll simply refuse to find implicit conversions on for Nothing and Null
-    if (!(sym.isClass || sym
-          .isTrait || sym == AnyRefClass) || sym == NothingClass || sym == NullClass)
-      Nil
+    if (!(sym.isClass || sym.isTrait || sym == AnyRefClass) ||
+        sym == NothingClass || sym == NullClass) Nil
     else {
       val context: global.analyzer.Context = global.analyzer
         .rootContext(NoCompilationUnit)
@@ -227,8 +226,8 @@ trait ModelFactoryImplicitSupport {
           inTpl)
         // TODO: no substitution constraints appear in the library and compiler scaladoc. Maybe they can be removed?
         val substConstraints = makeSubstitutionConstraints(result.subst, inTpl)
-        val constraints =
-          implParamConstraints ::: boundsConstraints ::: substConstraints
+        val constraints = implParamConstraints ::: boundsConstraints :::
+          substConstraints
 
         List(new ImplicitConversionImpl(
           sym,
@@ -333,7 +332,8 @@ trait ModelFactoryImplicitSupport {
       case (from, to) =>
         new EqualTypeParamConstraint {
           error(
-            "Scaladoc implicits: Unexpected type substitution constraint from: " + from + " to: " + to)
+            "Scaladoc implicits: Unexpected type substitution constraint from: " +
+              from + " to: " + to)
           val typeParamName = from.toString
           val rhs = makeType(to, inTpl)
         }
@@ -372,10 +372,8 @@ trait ModelFactoryImplicitSupport {
               case other =>
                 // this is likely an error on the lub/glb side
                 error(
-                  "Scaladoc implicits: Error computing lub/glb for: " + (
-                    (
-                      tparam,
-                      constr)) + ":\n" + other)
+                  "Scaladoc implicits: Error computing lub/glb for: " +
+                    ((tparam, constr)) + ":\n" + other)
                 Nil
             }
         }
@@ -440,8 +438,8 @@ trait ModelFactoryImplicitSupport {
         constraints foreach { constr => debug("      - " + constr) }
       }
       debug("   -> members:")
-      memberSyms foreach (sym =>
-        debug("      - " + sym.decodedName + " : " + sym.info))
+      memberSyms foreach
+        (sym => debug("      - " + sym.decodedName + " : " + sym.info))
       debug("")
 
       memberSyms.flatMap({ aSym =>
@@ -461,8 +459,8 @@ trait ModelFactoryImplicitSupport {
     def isHiddenConversion = settings.hiddenImplicits(conversionQualifiedName)
 
     override def toString =
-      "Implicit conversion from " + sym
-        .tpe + " to " + toType + " done by " + convSym
+      "Implicit conversion from " + sym.tpe + " to " + toType + " done by " +
+        convSym
   }
 
   /* ========================= HELPER METHODS ========================== */
@@ -486,8 +484,8 @@ trait ModelFactoryImplicitSupport {
       }
 
     for (conv <- convs) {
-      val otherConvMembers: Map[Name, List[MemberImpl]] =
-        convs filterNot (_ == conv) flatMap (_.memberImpls) groupBy (_.sym.name)
+      val otherConvMembers: Map[Name, List[MemberImpl]] = convs filterNot
+        (_ == conv) flatMap (_.memberImpls) groupBy (_.sym.name)
 
       for (member <- conv.memberImpls) {
         val sym1 = member.sym
@@ -496,19 +494,16 @@ trait ModelFactoryImplicitSupport {
         // check if it's shadowed by a member in the original class.
         val shadowed = membersByName.get(sym1.name).toList.flatten filter {
           other =>
-            !settings.docImplicitsSoundShadowing
-              .value || !isDistinguishableFrom(
-              tpe1,
-              inTpl.sym.info.memberInfo(other.sym))
+            !settings.docImplicitsSoundShadowing.value ||
+            !isDistinguishableFrom(tpe1, inTpl.sym.info.memberInfo(other.sym))
         }
 
         // check if it's shadowed by another conversion.
         val ambiguous = otherConvMembers.get(sym1.name).toList.flatten filter {
           other =>
             val tpe2 = convsByMember(other).toType.memberInfo(other.sym)
-            !isDistinguishableFrom(tpe1, tpe2) || !isDistinguishableFrom(
-              tpe2,
-              tpe1)
+            !isDistinguishableFrom(tpe1, tpe2) ||
+            !isDistinguishableFrom(tpe2, tpe1)
         }
 
         // we finally have the shadowing info
@@ -619,10 +614,14 @@ trait ModelFactoryImplicitSupport {
     // - common methods (in Any, AnyRef, Object) as they are automatically removed
     // - private and protected members (not accessible following an implicit conversion)
     // - members starting with _ (usually reserved for internal stuff)
-    localShouldDocument(aSym) && (!aSym.isConstructor) && (aSym
-      .owner != AnyValClass) &&
-    (aSym.owner != AnyClass) && (aSym.owner != ObjectClass) &&
-    (!aSym.isProtected) && (!aSym.isPrivate) && (!aSym.name.startsWith("_")) &&
+    localShouldDocument(aSym) &&
+    (!aSym.isConstructor) &&
+    (aSym.owner != AnyValClass) &&
+    (aSym.owner != AnyClass) &&
+    (aSym.owner != ObjectClass) &&
+    (!aSym.isProtected) &&
+    (!aSym.isPrivate) &&
+    (!aSym.name.startsWith("_")) &&
     (aSym.isMethod || aSym.isGetter || aSym.isSetter) &&
     (aSym.nameString != "getClass")
   }

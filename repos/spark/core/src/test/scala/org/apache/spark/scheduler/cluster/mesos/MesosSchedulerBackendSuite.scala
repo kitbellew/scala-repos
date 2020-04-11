@@ -399,12 +399,12 @@ class MesosSchedulerBackendSuite
     assert(cpusDev.getRole.equals("dev"))
     val executorResources = taskInfo.getExecutor.getResourcesList.asScala
     assert(executorResources.exists { r =>
-      r.getName.equals("mem") && r.getScalar.getValue.equals(484.0) && r.getRole
-        .equals("prod")
+      r.getName.equals("mem") && r.getScalar.getValue.equals(484.0) &&
+      r.getRole.equals("prod")
     })
     assert(executorResources.exists { r =>
-      r.getName.equals("cpus") && r.getScalar.getValue.equals(1.0) && r.getRole
-        .equals("prod")
+      r.getName.equals("cpus") && r.getScalar.getValue.equals(1.0) &&
+      r.getRole.equals("prod")
     })
   }
 }

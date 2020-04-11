@@ -638,8 +638,7 @@ object Test extends Properties("HtmlFactory") {
           "<pre>a typicial indented\ncomment on multiple\ncomment lines</pre>") &&
         s.contains("<pre>one liner</pre>") &&
         s.contains("<pre>two lines, one useful</pre>") &&
-        s.contains("<pre>line1\nline2\nline3\nline4</pre>") &&
-        s.contains(
+        s.contains("<pre>line1\nline2\nline3\nline4</pre>") && s.contains(
           "<pre>a ragged example\na (condition)\n  the t h e n branch\nan alternative\n  the e l s e branch</pre>") &&
         s.contains("<pre>Trait example {\n  Val x = a\n  Val y = b\n}</pre>") &&
         s.contains("<pre>l1\n\nl2\n\nl3\n\nl4\n\nl5</pre>")
@@ -666,8 +665,7 @@ object Test extends Properties("HtmlFactory") {
     oneAuthor match {
       case node: scala.xml.Node => {
         val s = node.toString
-        s.contains("<h6>Author:</h6>") &&
-        s.contains("<p>The Only Author</p>")
+        s.contains("<h6>Author:</h6>") && s.contains("<p>The Only Author</p>")
       }
       case _ => false
     }
@@ -700,8 +698,8 @@ object Test extends Properties("HtmlFactory") {
           node.toString contains "title=\"gt4s: $colon$colon\""
 
         property("gt4s of a deprecated method") =
-          node
-            .toString contains "title=\"gt4s: $colon$colon$colon$colon. Deprecated: "
+          node.toString contains
+            "title=\"gt4s: $colon$colon$colon$colon. Deprecated: "
         true
       }
       case _ => false
@@ -749,25 +747,22 @@ object Test extends Properties("HtmlFactory") {
     implicit class AssertionAwareNode(node: scala.xml.NodeSeq) {
 
       def assertTypeLink(expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq = node \\ "div" \@ (
-          "id", "definition"
-        ) \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq = node \\ "div" \@ ("id", "definition") \\
+          "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
       def assertMemberLink(
           group: String)(memberName: String, expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq = node \\ "div" \@ ("id", group) \\ "li" \@ (
-          "name", memberName
-        ) \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq = node \\ "div" \@ ("id", group) \\ "li" \@
+          ("name", memberName) \\ "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
       def assertValuesLink(memberName: String, expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq =
-          node \\ "div" \@ ("class", "values members") \\ "li" \@ (
-            "name", memberName
-          ) \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq = node \\ "div" \@
+          ("class", "values members") \\ "li" \@ ("name", memberName) \\
+          "span" \@ ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 

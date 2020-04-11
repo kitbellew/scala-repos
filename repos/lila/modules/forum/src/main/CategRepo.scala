@@ -18,9 +18,8 @@ object CategRepo {
 
   def nextPosition: Fu[Int] =
     $primitive
-      .one($select.all, "pos", _ sort $sort.desc("pos"))(_.asOpt[Int]) map (
-      ~_ + 1
-    )
+      .one($select.all, "pos", _ sort $sort.desc("pos"))(_.asOpt[Int]) map
+      (~_ + 1)
 
   def nbPosts(id: String): Fu[Int] =
     $primitive.one($select(id), "nbPosts")(_.asOpt[Int]) map (~_)

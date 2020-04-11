@@ -169,8 +169,8 @@ object ProvenanceCheckingSpecs
         |   id(foo, bar)
         """.stripMargin
       val tree = compileSingle(input)
-      tree.provenance.possibilities must containAllOf(
-        List(StaticProvenance("/foo"), StaticProvenance("/bar")))
+      tree.provenance.possibilities must
+        containAllOf(List(StaticProvenance("/foo"), StaticProvenance("/bar")))
       tree.errors must beEmpty
     }
 
@@ -197,8 +197,8 @@ object ProvenanceCheckingSpecs
         |   id(foo, bar)
         """.stripMargin
       val tree = compileSingle(input)
-      tree.provenance.possibilities must containAllOf(
-        List(StaticProvenance("foo"), StaticProvenance("bar")))
+      tree.provenance.possibilities must
+        containAllOf(List(StaticProvenance("foo"), StaticProvenance("bar")))
       tree.errors must beEmpty
     }
 
@@ -498,8 +498,8 @@ object ProvenanceCheckingSpecs
 
     "accept a dispatch to a function wrapping Add with explicitly related parameters" in {
       val tree = compileSingle("a(b) := b + //foo //foo ~ //bar a(//bar)")
-      tree.provenance.possibilities must containAllOf(
-        List(StaticProvenance("/foo"), StaticProvenance("/bar")))
+      tree.provenance.possibilities must
+        containAllOf(List(StaticProvenance("/foo"), StaticProvenance("/bar")))
       tree.errors must beEmpty
     }
 
@@ -818,9 +818,8 @@ object ProvenanceCheckingSpecs
 
       val tree = compileSingle(input)
 
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/baz"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/baz"))
       tree.errors must beEmpty
     }
 
@@ -843,9 +842,8 @@ object ProvenanceCheckingSpecs
 
       val tree = compileSingle(input)
 
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/baz"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/baz"))
       tree.errors must beEmpty
     }
 
@@ -901,9 +899,8 @@ object ProvenanceCheckingSpecs
 
       // in this case we are "removing" all of `bar` from `fb`
       // but the provenance alone does not tell us this
-      tree.provenance mustEqual CoproductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        CoproductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
@@ -1175,9 +1172,8 @@ object ProvenanceCheckingSpecs
 
       tree.provenance mustEqual NullProvenance
       // both errors are propogated through here because we're handling parametric provenances
-      tree.errors mustEqual Set(
-        IntersectProvenanceDifferentLength,
-        IntersectWithNoCommonalities)
+      tree.errors mustEqual
+        Set(IntersectProvenanceDifferentLength, IntersectWithNoCommonalities)
     }
 
     "reject difference through a function on product provenances" in {
@@ -1196,9 +1192,8 @@ object ProvenanceCheckingSpecs
 
       tree.provenance mustEqual NullProvenance
       // both errors are propogated through here because we're handling parametric provenances
-      tree.errors mustEqual Set(
-        DifferenceProvenanceDifferentLength,
-        DifferenceWithNoCommonalities)
+      tree.errors mustEqual
+        Set(DifferenceProvenanceDifferentLength, DifferenceWithNoCommonalities)
     }
 
     "reject addition on different loads" in {

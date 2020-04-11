@@ -32,8 +32,7 @@ final class TeamApi(
         description = s.description,
         open = s.isOpen,
         createdBy = me)
-      $insert(team) >>
-        MemberRepo.add(team.id, me.id) >>- {
+      $insert(team) >> MemberRepo.add(team.id, me.id) >>- {
         (cached.teamIdsCache invalidate me.id)
         (forum ! MakeTeam(team.id, team.name))
         (indexer ! InsertTeam(team))
@@ -122,8 +121,7 @@ final class TeamApi(
 
   def doJoin(team: Team, userId: String): Funit =
     (!belongsTo(team.id, userId)) ?? {
-      MemberRepo.add(team.id, userId) >>
-        TeamRepo.incMembers(team.id, +1) >>- {
+      MemberRepo.add(team.id, userId) >> TeamRepo.incMembers(team.id, +1) >>- {
         cached.teamIdsCache invalidate userId
         timeline ! Propagate(TeamJoin(userId, team.id)).toFollowersOf(userId)
       }
@@ -139,8 +137,7 @@ final class TeamApi(
 
   def doQuit(team: Team, userId: String): Funit =
     belongsTo(team.id, userId) ?? {
-      MemberRepo.remove(team.id, userId) >>
-        TeamRepo.incMembers(team.id, -1) >>-
+      MemberRepo.remove(team.id, userId) >> TeamRepo.incMembers(team.id, -1) >>-
         (cached.teamIdsCache invalidate userId)
     }
 
@@ -156,8 +153,7 @@ final class TeamApi(
 
   // delete for ever, with members but not forums
   def delete(team: Team): Funit =
-    $remove(team) >>
-      MemberRepo.removeByteam(team.id) >>-
+    $remove(team) >> MemberRepo.removeByteam(team.id) >>-
       (indexer ! RemoveTeam(team.id))
 
   def belongsTo(teamId: String, userId: String): Boolean =

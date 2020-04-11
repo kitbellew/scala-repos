@@ -103,9 +103,8 @@ object ClassFileParser extends ByteCodeReader {
 
   // NOTE currently most constants just evaluate to a string description
   // TODO evaluate to useful values
-  val utf8String = (u2 >> bytes) ^^ add1 { raw => pool =>
-    raw.fromUTF8StringAndBytes
-  }
+  val utf8String =
+    (u2 >> bytes) ^^ add1 { raw => pool => raw.fromUTF8StringAndBytes }
   val intConstant = u4 ^^ add1 { x => pool => x }
   val floatConstant = bytes(4) ^^ add1 { raw => pool => "Float: TODO" }
   val longConstant = bytes(8) ^^ add2 { raw => pool => raw.toLong }
@@ -129,8 +128,8 @@ object ClassFileParser extends ByteCodeReader {
   val invokeDynamic = u2 ~ u2 ^^ add1 {
     case bootstrapMethodAttrIndex ~ nameAndTypeIndex =>
       pool =>
-        "InvokeDynamic: " + "bootstrapMethodAttrIndex = " + bootstrapMethodAttrIndex + ", " + pool(
-          nameAndTypeIndex)
+        "InvokeDynamic: " + "bootstrapMethodAttrIndex = " +
+          bootstrapMethodAttrIndex + ", " + pool(nameAndTypeIndex)
   }
 
   val constantPoolEntry = u1 >> {
@@ -183,8 +182,8 @@ object ClassFileParser extends ByteCodeReader {
     }
 
   val element_value_pair = u2 ~ element_value ^~^ AnnotationElement
-  val annotation: Parser[Annotation] =
-    u2 ~ (u2 >> element_value_pair.times) ^~^ Annotation
+  val annotation: Parser[Annotation] = u2 ~ (u2 >> element_value_pair.times) ^~^
+    Annotation
   val annotations = u2 >> annotation.times
 
   val field = u2 ~ u2 ~ u2 ~ attributes ^~~~^ Field
@@ -194,7 +193,8 @@ object ClassFileParser extends ByteCodeReader {
   val methods = u2 >> method.times
 
   val header =
-    magicNumber -~ u2 ~ u2 ~ constantPool ~ u2 ~ u2 ~ u2 ~ interfaces ^~~~~~~^ ClassFileHeader
+    magicNumber -~ u2 ~ u2 ~ constantPool ~ u2 ~ u2 ~ u2 ~ interfaces ^~~~~~~^
+      ClassFileHeader
   val classFile = header ~ fields ~ methods ~ attributes ~- !u1 ^~~~^ ClassFile
 
   // TODO create a useful object, not just a string

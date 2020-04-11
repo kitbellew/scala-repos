@@ -57,8 +57,8 @@ private[puzzle] final class PuzzleApi(
                   insertPuzzles(rest) map (Success(id) :: _)
                 }
               case _ =>
-                insertPuzzles(rest) map (Failure(
-                  new Exception("Duplicate puzzle")) :: _)
+                insertPuzzles(rest) map
+                  (Failure(new Exception("Duplicate puzzle")) :: _)
             }
           }
       }
@@ -100,10 +100,10 @@ private[puzzle] final class PuzzleApi(
             puzzleColl.update(
               BSONDocument("_id" -> p2.id),
               BSONDocument(
-                "$set" -> BSONDocument(
-                  Puzzle.BSONFields.vote -> p2.vote))) map {
-            case _ => p2 -> a2
-          }
+                "$set" ->
+                  BSONDocument(Puzzle.BSONFields.vote -> p2.vote))) map {
+              case _ => p2 -> a2
+            }
       }
 
     def add(a: Attempt) = attemptColl insert a void
@@ -111,14 +111,14 @@ private[puzzle] final class PuzzleApi(
     def hasPlayed(user: User, puzzle: Puzzle): Fu[Boolean] =
       attemptColl.count(
         BSONDocument(
-          Attempt.BSONFields.id -> Attempt.makeId(puzzle.id, user.id))
-          .some) map (0 !=)
+          Attempt.BSONFields.id -> Attempt.makeId(puzzle.id, user.id)).some) map
+        (0 !=)
 
     def playedIds(user: User, max: Int): Fu[BSONArray] =
       attemptColl.distinct(
         Attempt.BSONFields.puzzleId,
-        BSONDocument(Attempt.BSONFields.userId -> user.id).some) map BSONArray
-        .apply
+        BSONDocument(Attempt.BSONFields.userId -> user.id).some) map
+        BSONArray.apply
 
     def hasVoted(user: User): Fu[Boolean] =
       attemptColl.find(

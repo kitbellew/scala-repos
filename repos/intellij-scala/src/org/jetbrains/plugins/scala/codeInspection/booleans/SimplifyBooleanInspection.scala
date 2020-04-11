@@ -70,8 +70,8 @@ object SimplifyBooleanUtil {
               isOfBooleanType(left) && isOfBooleanType(right)
           case _ => false
         }
-        isBooleanOperation && isOfBooleanType(expr) && children
-          .exists(canBeSimplified(_, isTopLevel = false))
+        isBooleanOperation && isOfBooleanType(expr) &&
+        children.exists(canBeSimplified(_, isTopLevel = false))
     }
   }
 

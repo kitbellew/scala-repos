@@ -145,8 +145,8 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
   private def charAtIsEOL(idx: Int)(p: Char => Boolean) = {
     // don't identify the CR in CR LF as a line break, since LF will do.
     def notCRLF0 =
-      content(idx) != CR || !content.isDefinedAt(idx + 1) || content(
-        idx + 1) != LF
+      content(idx) != CR || !content.isDefinedAt(idx + 1) ||
+        content(idx + 1) != LF
 
     idx < length && notCRLF0 && p(content(idx))
   }
@@ -154,10 +154,8 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
   def isLineBreak(idx: Int) = charAtIsEOL(idx)(isLineBreakChar)
 
   /** True if the index is included by an EOL sequence. */
-  def isEndOfLine(idx: Int) =
-    (content isDefinedAt idx) && PartialFunction.cond(content(idx)) {
-      case CR | LF => true
-    }
+  def isEndOfLine(idx: Int) = (content isDefinedAt idx) &&
+    PartialFunction.cond(content(idx)) { case CR | LF => true }
 
   /** True if the index is end of an EOL sequence. */
   def isAtEndOfLine(idx: Int) =

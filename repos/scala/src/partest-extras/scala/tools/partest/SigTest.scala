@@ -26,8 +26,8 @@ trait SigTest {
   }
   def methods[T: ClassTag](p: JMethod => Boolean) = {
     val cl = classTag[T].runtimeClass
-    val ms = (cl.getMethods ++ cl.getDeclaredMethods).distinct sortBy (x =>
-      (x.getName, x.isBridge))
+    val ms = (cl.getMethods ++ cl.getDeclaredMethods).distinct sortBy
+      (x => (x.getName, x.isBridge))
 
     ms filter p
   }

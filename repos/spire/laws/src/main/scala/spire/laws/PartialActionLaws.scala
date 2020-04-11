@@ -36,10 +36,8 @@ trait PartialActionLaws[G, A] extends Laws {
       sl = _.semigroupoid(G0),
       parents = Seq.empty,
       "left compatibility" → forAll { (g: G, h: G, a: A) =>
-        ((h ??|+|> a) && (g |+|?? h)) ==>
-          ((g |+|? h).get ??|+|> a) && ((g |+|? h).get ?|+|> a).get === (
-          g ?|+|> (h ?|+|> a).get
-        ).get
+        ((h ??|+|> a) && (g |+|?? h)) ==> ((g |+|? h).get ??|+|> a) &&
+        ((g |+|? h).get ?|+|> a).get === (g ?|+|> (h ?|+|> a).get).get
       })
 
   def rightSemigroupoidPartialAction(implicit
@@ -50,10 +48,8 @@ trait PartialActionLaws[G, A] extends Laws {
       sl = _.semigroupoid(G0),
       parents = Seq.empty,
       "right compatibility" → forAll { (g: G, h: G, a: A) =>
-        ((a <|+|?? g) && (g |+|?? h)) ==>
-          (a <|+|?? (g |+|? h).get) && (
-          (a <|+|? (g |+|? h).get).get === ((a <|+|? g).get <|+|? h).get
-        )
+        ((a <|+|?? g) && (g |+|?? h)) ==> (a <|+|?? (g |+|? h).get) &&
+        ((a <|+|? (g |+|? h).get).get === ((a <|+|? g).get <|+|? h).get)
       })
 
   def semigroupoidPartialAction(implicit
@@ -76,13 +72,12 @@ trait PartialActionLaws[G, A] extends Laws {
           ((g.rightId ??|+|> a) && ((g.rightId ?|+|> a).get === a))
       },
       "right action identity" → forAll { (g: G, a: A) =>
-        (a <|+|?? g) ==>
-          ((a <|+|?? g.leftId) && ((a <|+|? g.leftId).get === a))
+        (a <|+|?? g) ==> ((a <|+|?? g.leftId) && ((a <|+|? g.leftId).get === a))
       },
       "left and right partial action compatibility" → forAll { (a: A, g: G) =>
         (a <|+|?? g) ==>
-          ((g.inverse ??|+|> a) && ((a <|+|? g).get === (g.inverse ?|+|> a)
-            .get))
+          ((g.inverse ??|+|> a) &&
+          ((a <|+|? g).get === (g.inverse ?|+|> a).get))
       })
 
   def leftSemigroupPartialAction(implicit
@@ -154,12 +149,12 @@ trait PartialActionLaws[G, A] extends Laws {
       sl = _.group(G0),
       parents = Seq(monoidPartialAction),
       "right -> left action compatibility" → forAll { (a: A, g: G) =>
-        !(a <|+|?? g) || ((g ??|+|> a) && ((a <|+|? g).get === (g
-          .inverse ?|+|> a).get))
+        !(a <|+|?? g) ||
+        ((g ??|+|> a) && ((a <|+|? g).get === (g.inverse ?|+|> a).get))
       },
       "left -> right action compatibility" → forAll { (a: A, g: G) =>
-        !(g ??|+|> a) || ((a <|+|?? g) && ((g ?|+|> a).get === (a <|+|? g
-          .inverse).get))
+        !(g ??|+|> a) ||
+        ((a <|+|?? g) && ((g ?|+|> a).get === (a <|+|? g.inverse).get))
       })
 
   class ActionProperties(

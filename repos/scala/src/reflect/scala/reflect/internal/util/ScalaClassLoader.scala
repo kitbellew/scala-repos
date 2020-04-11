@@ -62,15 +62,14 @@ trait ScalaClassLoader extends JClassLoader {
       val clazz = Class.forName(path, /*initialize =*/ true, /*loader =*/ this)
       if (classTag[T].runtimeClass isAssignableFrom clazz) {
         val ctor = {
-          val maybes = clazz.getConstructors filter (c =>
-            c.getParameterCount == args.size &&
-              (c.getParameterTypes zip args).forall {
-                case (k, a) => k isAssignableFrom a.getClass
-              })
+          val maybes = clazz.getConstructors filter
+            (c =>
+              c.getParameterCount == args.size && (c.getParameterTypes zip args)
+                .forall { case (k, a) => k isAssignableFrom a.getClass })
           if (maybes.size == 1) maybes.head
           else
-            fail(s"Constructor must accept arg list (${args map (_.getClass
-              .getName) mkString ", "}): ${path}")
+            fail(s"Constructor must accept arg list (${args map
+              (_.getClass.getName) mkString ", "}): ${path}")
         }
         (ctor.newInstance(args: _*)).asInstanceOf[T]
       } else {
@@ -103,9 +102,8 @@ trait ScalaClassLoader extends JClassLoader {
 
   /** Run the main method of a class to be loaded by this classloader */
   def run(objectName: String, arguments: Seq[String]) {
-    val clsToRun = tryToInitializeClass(objectName) getOrElse (
-      throw new ClassNotFoundException(objectName)
-    )
+    val clsToRun = tryToInitializeClass(objectName) getOrElse
+      (throw new ClassNotFoundException(objectName))
     val method = clsToRun.getMethod("main", classOf[Array[String]])
     if (!Modifier.isStatic(method.getModifiers))
       throw new NoSuchMethodException(objectName + ".main is not static")
@@ -170,6 +168,6 @@ object ScalaClassLoader {
 
   /** Finding what jar a clazz or instance came from */
   def originOfClass(x: Class[_]): Option[URL] =
-    Option(x.getProtectionDomain.getCodeSource) flatMap (x =>
-      Option(x.getLocation))
+    Option(x.getProtectionDomain.getCodeSource) flatMap
+      (x => Option(x.getLocation))
 }

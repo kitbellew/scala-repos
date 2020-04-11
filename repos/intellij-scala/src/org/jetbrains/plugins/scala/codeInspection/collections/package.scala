@@ -255,14 +255,12 @@ package object collections {
             case ScInfixExpr(left, oper, right) if oper.refName == operName =>
               (stripped(left), stripped(right)) match {
                 case (leftRef: ScReferenceExpression, rightExpr)
-                    if leftRef.resolve() == x && isIndependentOf(
-                      rightExpr,
-                      x) => Some(rightExpr)
+                    if leftRef.resolve() == x &&
+                      isIndependentOf(rightExpr, x) => Some(rightExpr)
                 case (leftExpr: ScExpression, rightRef: ScReferenceExpression)
-                    if rightRef.resolve() == x && isIndependentOf(
-                      leftExpr,
-                      x) => Some(leftExpr)
-                case _   => None
+                    if rightRef.resolve() == x &&
+                      isIndependentOf(leftExpr, x) => Some(leftExpr)
+                case _                             => None
               }
             case _ => None
           }
@@ -527,9 +525,8 @@ package object collections {
 
       def isSideEffectCollectionMethod(ref: ScReferenceExpression): Boolean = {
         val refName = ref.refName
-        (refName.endsWith("=") || refName
-          .endsWith("=:") || sideEffectsCollectionMethods.contains(refName)) &&
-        checkResolve(
+        (refName.endsWith("=") || refName.endsWith("=:") ||
+        sideEffectsCollectionMethods.contains(refName)) && checkResolve(
           ref,
           Array("scala.collection.mutable._", "scala.collection.Iterator"))
       }
@@ -587,8 +584,8 @@ package object collections {
                     .inNameContext(v @ (_: ScVariable | _: ScValue)))),
               Some(ref),
               _)
-            if isSideEffectCollectionMethod(ref) || isSetter(
-              ref) || hasUnitReturnType(ref) => itself
+            if isSideEffectCollectionMethod(ref) || isSetter(ref) ||
+              hasUnitReturnType(ref) => itself
         case MethodRepr(itself, None, Some(ref @ definedOutside(_)), _)
             if hasUnitReturnType(ref) => itself
       }.toSeq

@@ -119,8 +119,8 @@ trait PasswordTypedField extends TypedField[String] {
         invalidPw = true; invalidMsg = notOptionalErrorMessage
       }
       case Full(s)
-          if s == "" || s == PasswordField.blankPw || s.length < PasswordField
-            .minPasswordLength => {
+          if s == "" || s == PasswordField.blankPw ||
+            s.length < PasswordField.minPasswordLength => {
         invalidPw = true; invalidMsg = S.?("password.too.short")
       }
       case _ => { invalidPw = false; invalidMsg = "" }

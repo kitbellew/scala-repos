@@ -38,8 +38,7 @@ private[pickling] object WillRobinsonPickling extends PicklingAlgorithm {
       // TODO - We should probably try the constructor unification thing.
       val fields = allScalaField(tpe, logger)
       val unpickleBasic = UnpickleBehavior(
-        Seq(AllocateInstance(tpe)) ++
-          fields.map(f => f.setter).toSeq)
+        Seq(AllocateInstance(tpe)) ++ fields.map(f => f.setter).toSeq)
       val pickleBasic = PickleEntry((fields.map(f => f.getter)))
 
       val pickle = SubclassDispatch
@@ -48,8 +47,8 @@ private[pickling] object WillRobinsonPickling extends PicklingAlgorithm {
         .apply(Nil, tpe, Some(unpickleBasic), lookupRuntime = true)
       AlgorithmSucccess(PickleUnpickleImplementation(pickle, unpickle))
       // We special case AnyRef to be PURE reflection-based pickling.
-    } else if ((tpe.className == "java.lang.Object") || (tpe
-                 .className == "AnyRef")) {
+    } else if ((tpe.className == "java.lang.Object") ||
+               (tpe.className == "AnyRef")) {
       val pickle = SubclassDispatch.apply(Nil, tpe, None, lookupRuntime = true)
       val unpickle = SubclassUnpicklerDelegation
         .apply(Nil, tpe, None, lookupRuntime = true)

@@ -210,8 +210,8 @@ class BitSet(numBits: Int) extends Serializable {
     val subIndex = fromIndex & 0x3f
     var word = words(wordIndex) >> subIndex
     if (word != 0) {
-      return (wordIndex << 6) + subIndex + java.lang.Long
-        .numberOfTrailingZeros(word)
+      return (wordIndex << 6) + subIndex +
+        java.lang.Long.numberOfTrailingZeros(word)
     }
 
     // Find the next set bit in the rest of the words

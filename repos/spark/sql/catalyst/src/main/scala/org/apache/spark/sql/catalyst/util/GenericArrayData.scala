@@ -85,11 +85,13 @@ class GenericArrayData(val array: Array[Any]) extends ArrayData {
               return false
             }
           case f1: Float if java.lang.Float.isNaN(f1) =>
-            if (!o2.isInstanceOf[Float] || !java.lang.Float
-                  .isNaN(o2.asInstanceOf[Float])) { return false }
+            if (!o2.isInstanceOf[Float] ||
+                !java.lang.Float.isNaN(o2.asInstanceOf[Float])) { return false }
           case d1: Double if java.lang.Double.isNaN(d1) =>
-            if (!o2.isInstanceOf[Double] || !java.lang.Double
-                  .isNaN(o2.asInstanceOf[Double])) { return false }
+            if (!o2.isInstanceOf[Double] ||
+                !java.lang.Double.isNaN(o2.asInstanceOf[Double])) {
+              return false
+            }
           case _ => if (o1 != o2) { return false }
         }
       }

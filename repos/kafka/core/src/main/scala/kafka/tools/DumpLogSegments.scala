@@ -177,9 +177,8 @@ object DumpLogSegments {
       if (messageAndOffset.offset != entry.offset + index.baseOffset) {
         var misMatchesSeq = misMatchesForIndexFilesMap
           .getOrElse(file.getAbsolutePath, List[(Long, Long)]())
-        misMatchesSeq ::= (
-          entry.offset + index.baseOffset, messageAndOffset.offset
-        )
+        misMatchesSeq ::=
+          (entry.offset + index.baseOffset, messageAndOffset.offset)
         misMatchesForIndexFilesMap.put(file.getAbsolutePath, misMatchesSeq)
       }
       // since it is a sparse file, in the event of a crash there may be many zero entries, stop if we see one
@@ -302,8 +301,8 @@ object DumpLogSegments {
 
         if (lastOffset == -1) lastOffset = messageAndOffset.offset
         // If we are iterating uncompressed messages, offsets must be consecutive
-        else if (msg.compressionCodec == NoCompressionCodec && messageAndOffset
-                   .offset != lastOffset + 1) {
+        else if (msg.compressionCodec == NoCompressionCodec &&
+                 messageAndOffset.offset != lastOffset + 1) {
           var nonConsecutivePairsSeq = nonConsecutivePairsForLogFilesMap
             .getOrElse(file.getAbsolutePath, List[(Long, Long)]())
           nonConsecutivePairsSeq ::= (lastOffset, messageAndOffset.offset)
@@ -313,10 +312,10 @@ object DumpLogSegments {
         lastOffset = messageAndOffset.offset
 
         print(
-          "offset: " + messageAndOffset
-            .offset + " position: " + validBytes + " isvalid: " + msg.isValid +
-            " payloadsize: " + msg.payloadSize + " magic: " + msg.magic +
-            " compresscodec: " + msg.compressionCodec + " crc: " + msg.checksum)
+          "offset: " + messageAndOffset.offset + " position: " + validBytes +
+            " isvalid: " + msg.isValid + " payloadsize: " + msg.payloadSize +
+            " magic: " + msg.magic + " compresscodec: " + msg.compressionCodec +
+            " crc: " + msg.checksum)
         if (msg.hasKey) print(" keysize: " + msg.keySize)
         if (printContents) {
           val (key, payload) = parser.parse(msg)

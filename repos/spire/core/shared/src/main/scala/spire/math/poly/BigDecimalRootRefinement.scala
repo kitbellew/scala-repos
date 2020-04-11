@@ -155,8 +155,8 @@ object BigDecimalRootRefinement {
       mc: MathContext = new MathContext(0))
       extends ApproximationContext {
     def getEps(x: JBigDecimal): Int =
-      x.scale - spire.math.ceil(x.unscaledValue.bitLength * bits2dec).toInt + mc
-        .getPrecision + 1
+      x.scale - spire.math.ceil(x.unscaledValue.bitLength * bits2dec).toInt +
+        mc.getPrecision + 1
 
     def evalExact(x: JBigDecimal): JBigDecimal =
       poly(new BigDecimal(x, MathContext.UNLIMITED)).bigDecimal.round(mc)

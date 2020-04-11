@@ -97,12 +97,12 @@ trait JdbcStatementBuilderComponent {
       if (ibr.table.baseIdentity != standardInsert.table.baseIdentity)
         throw new SlickException(
           "Returned key columns must be from same table as inserted columns (" +
-            ibr.table.baseIdentity + " != " + standardInsert.table
-            .baseIdentity + ")")
-      val returnOther = ibr.fields.length > 1 || !ibr.fields.head.options
-        .contains(ColumnOption.AutoInc)
-      if (!capabilities
-            .contains(JdbcCapabilities.returnInsertOther) && returnOther)
+            ibr.table.baseIdentity + " != " +
+            standardInsert.table.baseIdentity + ")")
+      val returnOther = ibr.fields.length > 1 ||
+        !ibr.fields.head.options.contains(ColumnOption.AutoInc)
+      if (!capabilities.contains(JdbcCapabilities.returnInsertOther) &&
+          returnOther)
         throw new SlickException(
           "This DBMS allows only a single AutoInc column to be returned from an INSERT")
       (
@@ -487,8 +487,8 @@ trait JdbcStatementBuilderComponent {
               b")"
             case n =>
               throw new SlickException(
-                "Unexpected function call " + n + " -- SQL prefix: " + b.build
-                  .sql)
+                "Unexpected function call " + n + " -- SQL prefix: " +
+                  b.build.sql)
           }
         case c: IfThenElse =>
           b"(case"
@@ -562,11 +562,13 @@ trait JdbcStatementBuilderComponent {
               (sym, from, where, ch.map { case Select(Ref(_), field) => field })
             case _ =>
               throw new SlickException(
-                "A query for an UPDATE statement must select table columns only -- Unsupported shape: " + select)
+                "A query for an UPDATE statement must select table columns only -- Unsupported shape: " +
+                  select)
           }
         case o =>
           throw new SlickException(
-            "A query for an UPDATE statement must resolve to a comprehension with a single table -- Unsupported shape: " + o)
+            "A query for an UPDATE statement must resolve to a comprehension with a single table -- Unsupported shape: " +
+              o)
       }
 
       val qtn = quoteTableName(from)
@@ -605,7 +607,8 @@ trait JdbcStatementBuilderComponent {
           }
         case o =>
           fail(
-            "Unsupported shape: " + o + " -- A single SQL comprehension is required")
+            "Unsupported shape: " + o +
+              " -- A single SQL comprehension is required")
       }
       val qtn = quoteTableName(from)
       symbolName(gen) =
@@ -695,8 +698,9 @@ trait JdbcStatementBuilderComponent {
     override def buildInsert: InsertBuilderResult = {
       val start = buildMergeStart
       val end = buildMergeEnd
-      val paramSel = "select " + allNames.map(n => "? as " + n).iterator
-        .mkString(",") + scalarFrom.map(n => " from " + n).getOrElse("")
+      val paramSel = "select " + allNames.map(n => "? as " + n)
+        .iterator.mkString(",") + scalarFrom.map(n => " from " + n)
+        .getOrElse("")
       // We'd need a way to alias the column names at the top level in order to support merges from a source Query
       new InsertBuilderResult(table, start + paramSel + end, syms)
     }
@@ -753,22 +757,22 @@ trait JdbcStatementBuilderComponent {
     def buildDDL: DDL = {
       if (primaryKeys.size > 1)
         throw new SlickException(
-          "Table " + tableNode.tableName + " defines multiple primary keys ("
-            + primaryKeys.map(_.name).mkString(", ") + ")")
+          "Table " + tableNode.tableName + " defines multiple primary keys (" +
+            primaryKeys.map(_.name).mkString(", ") + ")")
       DDL(createPhase1, createPhase2, dropPhase1, dropPhase2)
     }
 
     protected def createPhase1 =
-      Iterable(createTable) ++ primaryKeys.map(createPrimaryKey) ++ indexes
-        .map(createIndex)
+      Iterable(createTable) ++ primaryKeys.map(createPrimaryKey) ++
+        indexes.map(createIndex)
     protected def createPhase2 = foreignKeys.map(createForeignKey)
     protected def dropPhase1 = foreignKeys.map(dropForeignKey)
     protected def dropPhase2 =
       primaryKeys.map(dropPrimaryKey) ++ Iterable(dropTable)
 
     protected def createTable: String = {
-      val b = new StringBuilder append "create table " append quoteTableName(
-        tableNode) append " ("
+      val b = new StringBuilder append "create table " append
+        quoteTableName(tableNode) append " ("
       var first = true
       for (c <- columns) {
         if (first) first = false else b append ","
@@ -786,23 +790,23 @@ trait JdbcStatementBuilderComponent {
     protected def createIndex(idx: Index): String = {
       val b = new StringBuilder append "create "
       if (idx.unique) b append "unique "
-      b append "index " append quoteIdentifier(
-        idx.name) append " on " append quoteTableName(tableNode) append " ("
+      b append "index " append quoteIdentifier(idx.name) append " on " append
+        quoteTableName(tableNode) append " ("
       addIndexColumnList(idx.on, b, idx.table.tableName)
       b append ")"
       b.toString
     }
 
     protected def createForeignKey(fk: ForeignKey): String = {
-      val sb = new StringBuilder append "alter table " append quoteTableName(
-        tableNode) append " add "
+      val sb = new StringBuilder append "alter table " append
+        quoteTableName(tableNode) append " add "
       addForeignKey(fk, sb)
       sb.toString
     }
 
     protected def addForeignKey(fk: ForeignKey, sb: StringBuilder) {
-      sb append "constraint " append quoteIdentifier(
-        fk.name) append " foreign key("
+      sb append "constraint " append quoteIdentifier(fk.name) append
+        " foreign key("
       addForeignKeyColumnList(
         fk.linearizedSourceColumns,
         sb,
@@ -817,26 +821,26 @@ trait JdbcStatementBuilderComponent {
     }
 
     protected def createPrimaryKey(pk: PrimaryKey): String = {
-      val sb = new StringBuilder append "alter table " append quoteTableName(
-        tableNode) append " add "
+      val sb = new StringBuilder append "alter table " append
+        quoteTableName(tableNode) append " add "
       addPrimaryKey(pk, sb)
       sb.toString
     }
 
     protected def addPrimaryKey(pk: PrimaryKey, sb: StringBuilder) {
-      sb append "constraint " append quoteIdentifier(
-        pk.name) append " primary key("
+      sb append "constraint " append quoteIdentifier(pk.name) append
+        " primary key("
       addPrimaryKeyColumnList(pk.columns, sb, tableNode.tableName)
       sb append ")"
     }
 
     protected def dropForeignKey(fk: ForeignKey): String =
-      "alter table " + quoteTableName(
-        tableNode) + " drop constraint " + quoteIdentifier(fk.name)
+      "alter table " + quoteTableName(tableNode) + " drop constraint " +
+        quoteIdentifier(fk.name)
 
     protected def dropPrimaryKey(pk: PrimaryKey): String =
-      "alter table " + quoteTableName(
-        tableNode) + " drop constraint " + quoteIdentifier(pk.name)
+      "alter table " + quoteTableName(tableNode) + " drop constraint " +
+        quoteIdentifier(pk.name)
 
     protected def addIndexColumnList(
         columns: IndexedSeq[Node],
@@ -868,10 +872,12 @@ trait JdbcStatementBuilderComponent {
           sb append quoteIdentifier(field.name)
           if (requiredTableName != t.tableName)
             throw new SlickException(
-              "All columns in " + typeInfo + " must belong to table " + requiredTableName)
+              "All columns in " + typeInfo + " must belong to table " +
+                requiredTableName)
         case _ =>
           throw new SlickException(
-            "Cannot use column " + c + " in " + typeInfo + " (only named columns are allowed)")
+            "Cannot use column " + c + " in " + typeInfo +
+              " (only named columns are allowed)")
       }
     }
   }
@@ -931,9 +937,8 @@ trait JdbcStatementBuilderComponent {
   /** Builder for DDL statements for sequences. */
   class SequenceDDLBuilder(seq: Sequence[_]) {
     def buildDDL: DDL = {
-      val b =
-        new StringBuilder append "create sequence " append quoteIdentifier(
-          seq.name)
+      val b = new StringBuilder append "create sequence " append
+        quoteIdentifier(seq.name)
       seq._increment.foreach { b append " increment " append _ }
       seq._minValue.foreach { b append " minvalue " append _ }
       seq._maxValue.foreach { b append " maxvalue " append _ }

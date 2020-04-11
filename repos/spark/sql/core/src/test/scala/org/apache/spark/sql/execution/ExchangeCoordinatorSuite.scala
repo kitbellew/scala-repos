@@ -426,8 +426,8 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
           case None =>
             assert(exchanges.forall(_.coordinator.isDefined))
             assert(
-              exchanges.map(_.outputPartitioning.numPartitions).toSeq
-                .toSet === Set(1, 2))
+              exchanges.map(_.outputPartitioning.numPartitions).toSeq.toSet ===
+                Set(1, 2))
         }
       }
 
@@ -467,8 +467,8 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
           case None =>
             assert(exchanges.forall(_.coordinator.isDefined))
             assert(
-              exchanges.map(_.outputPartitioning.numPartitions).toSeq
-                .toSet === Set(2, 3))
+              exchanges.map(_.outputPartitioning.numPartitions).toSeq.toSet ===
+                Set(2, 3))
         }
       }
 

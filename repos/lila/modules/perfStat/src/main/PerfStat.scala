@@ -134,10 +134,11 @@ case class Count(
       tour = tour + pov.game.isTournament.fold(1, 0),
       berserk = berserk + pov.player.berserk.fold(1, 0),
       opAvg = pov.opponent.stableRating.fold(opAvg)(opAvg.agg),
-      seconds = seconds + (pov.game.durationSeconds match {
-        case s if s > 3 * 60 * 60 => 0
-        case s                    => s
-      }),
+      seconds = seconds +
+        (pov.game.durationSeconds match {
+          case s if s > 3 * 60 * 60 => 0
+          case s                    => s
+        }),
       disconnects = disconnects + {
         ~pov.loss && pov.game.status == chess.Status.Timeout
       }.fold(1, 0)
@@ -174,11 +175,12 @@ case class Result(opInt: Int, opId: UserId, at: DateTime, gameId: String)
 case class Results(results: List[Result]) {
   def agg(pov: Pov, comp: Int) =
     pov.opponent.rating.ifTrue(pov.game.rated).fold(this) { opInt =>
-      copy(results = (Result(
-        opInt,
-        UserId(~pov.opponent.userId),
-        pov.game.updatedAtOrCreatedAt,
-        pov.game.id) :: results).sortBy(_.opInt * comp) take Results.nb)
+      copy(results =
+        (Result(
+          opInt,
+          UserId(~pov.opponent.userId),
+          pov.game.updatedAtOrCreatedAt,
+          pov.game.id) :: results).sortBy(_.opInt * comp) take Results.nb)
     }
 }
 object Results {

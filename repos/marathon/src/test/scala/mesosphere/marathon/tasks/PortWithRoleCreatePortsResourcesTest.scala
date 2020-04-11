@@ -24,8 +24,8 @@ class PortWithRoleCreatePortsResourcesTest extends MarathonSpec {
     val result = PortWithRole
       .createPortsResources(Seq(PortWithRole("*", 2), PortWithRole("*", 10)))
     assert(
-      result == Seq(
-        rangesResource(Seq(Range(2, 2), Range(10, 10)), role = "*")))
+      result ==
+        Seq(rangesResource(Seq(Range(2, 2), Range(10, 10)), role = "*")))
   }
 
   test("one ranges resource for consecutive multiple ports of the same role") {

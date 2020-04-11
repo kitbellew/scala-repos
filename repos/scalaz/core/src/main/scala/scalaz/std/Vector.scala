@@ -293,8 +293,8 @@ private trait VectorEqual[A] extends Equal[Vector[A]] {
 
   override def equalIsNatural: Boolean = A.equalIsNatural
 
-  override def equal(a1: Vector[A], a2: Vector[A]) =
-    (a1 corresponds a2)(Equal[A].equal)
+  override def equal(a1: Vector[A], a2: Vector[A]) = (a1 corresponds a2)(
+    Equal[A].equal)
 }
 
 private trait VectorOrder[A] extends Order[Vector[A]] with VectorEqual[A] {

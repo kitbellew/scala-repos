@@ -85,8 +85,8 @@ private[akka] class ClusterReadView(cluster: Cluster) extends Closeable {
                 case LeaderChanged(leader) ⇒
                   _state = _state.copy(leader = leader)
                 case RoleLeaderChanged(role, leader) ⇒
-                  _state = _state.copy(roleLeaderMap =
-                    _state.roleLeaderMap + (role -> leader))
+                  _state = _state.copy(roleLeaderMap = _state.roleLeaderMap +
+                    (role -> leader))
                 case stats: CurrentInternalStats ⇒ _latestStats = stats
                 case ClusterMetricsChanged(nodes) ⇒ _clusterMetrics = nodes
                 case ClusterShuttingDown ⇒
@@ -154,8 +154,7 @@ private[akka] class ClusterReadView(cluster: Cluster) extends Closeable {
   def isAvailable: Boolean = {
     val myself = self
     !unreachableMembers.contains(myself) &&
-    myself.status != MemberStatus.Down &&
-    myself.status != MemberStatus.Removed
+    myself.status != MemberStatus.Down && myself.status != MemberStatus.Removed
   }
 
   def reachability: Reachability = _reachability

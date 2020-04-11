@@ -134,10 +134,8 @@ class ZipperTests {
 
   val dept = Dept(
     Employee("Agamemnon", 5000),
-    Employee("Menelaus", 3000) ::
-      Employee("Achilles", 2000) ::
-      Employee("Odysseus", 2000) ::
-      HNil)
+    Employee("Menelaus", 3000) :: Employee("Achilles", 2000) ::
+      Employee("Odysseus", 2000) :: HNil)
 
   @Test
   def testCaseClasses {
@@ -225,10 +223,8 @@ class ZipperTests {
     assertEquals(
       Dept(
         Employee("King Agamemnon", 8000),
-        Employee("Menelaus", 3000) ::
-          Employee("Achilles", 3000) ::
-          Employee("Odysseus", 4000) ::
-          HNil),
+        Employee("Menelaus", 3000) :: Employee("Achilles", 3000) ::
+          Employee("Odysseus", 4000) :: HNil),
       z3)
   }
 }

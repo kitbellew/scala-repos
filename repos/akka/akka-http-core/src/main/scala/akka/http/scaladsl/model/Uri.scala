@@ -590,9 +590,8 @@ object Uri {
             else
               build(
                 Slash(
-                  decode(
-                    string.substring(ix + 1, segmentEnd),
-                    charset) :: path),
+                  decode(string.substring(ix + 1, segmentEnd), charset) ::
+                    path),
                 ix - 1)
           else if (segmentEnd == 0) build(path, ix - 1, ix + 1)
           else build(path, ix - 1, segmentEnd)
@@ -882,8 +881,8 @@ object Uri {
         }
 
         var lastPercentSignIndexPlus3 = ix + 3
-        while (lastPercentSignIndexPlus3 < string.length && string
-                 .charAt(lastPercentSignIndexPlus3) == '%')
+        while (lastPercentSignIndexPlus3 < string.length &&
+               string.charAt(lastPercentSignIndexPlus3) == '%')
           lastPercentSignIndexPlus3 += 3
         val bytesCount = (lastPercentSignIndexPlus3 - ix) / 3
         val bytes = new Array[Byte](bytesCount)
@@ -897,8 +896,8 @@ object Uri {
           } else oredBytes
 
         // if we have only ASCII chars and the charset is ASCII compatible we don't need to involve it in decoding
-        if (((decodeBytes() >> 7) == 0) && UriRendering
-              .isAsciiCompatible(charset)) {
+        if (((decodeBytes() >> 7) == 0) &&
+            UriRendering.isAsciiCompatible(charset)) {
           @tailrec
           def appendBytes(i: Int = 0): Unit =
             if (i < bytesCount) {
@@ -1006,8 +1005,8 @@ object Uri {
       path: Path,
       queryString: Option[String],
       fragment: Option[String]): Uri =
-    if (path.isEmpty && scheme.isEmpty && authority.isEmpty && queryString
-          .isEmpty && fragment.isEmpty) Empty
+    if (path.isEmpty && scheme.isEmpty && authority.isEmpty &&
+        queryString.isEmpty && fragment.isEmpty) Empty
     else
       new Uri(scheme, authority, path, queryString, fragment) {
         def isEmpty = false
@@ -1144,8 +1143,8 @@ object UriRendering {
     @tailrec
     def rec(ix: Int): r.type = {
       def appendEncoded(byte: Byte): Unit =
-        r ~~ '%' ~~ CharUtils.upperHexDigit(byte >>> 4) ~~ CharUtils
-          .upperHexDigit(byte)
+        r ~~ '%' ~~ CharUtils.upperHexDigit(byte >>> 4) ~~
+          CharUtils.upperHexDigit(byte)
       if (ix < string.length) {
         val charSize = string.charAt(ix) match {
           case c if keep(c) ⇒ { r ~~ c; 1 }

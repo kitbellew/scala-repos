@@ -84,10 +84,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
   test("Correctly encode ZCOUNT") {
     Map(
-      "foo -inf +inf" -> ZCount(
-        StringToChannelBuffer("foo"),
-        ZInterval.MIN,
-        ZInterval.MAX),
+      "foo -inf +inf" ->
+        ZCount(StringToChannelBuffer("foo"), ZInterval.MIN, ZInterval.MAX),
       "foo (1.0 3.0" -> ZCount(
         StringToChannelBuffer("foo"),
         ZInterval.exclusive(1),

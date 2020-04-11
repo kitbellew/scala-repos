@@ -46,8 +46,7 @@ object VectorTest extends SpecLite {
   }
 
   "spanM" ! forAll { (xs: Vector[Int]) =>
-    (xs.spanM[Id](evenp)
-      must_=== (xs.takeWhile(evenp) -> xs.dropWhile(evenp)))
+    (xs.spanM[Id](evenp) must_=== (xs.takeWhile(evenp) -> xs.dropWhile(evenp)))
   }
 
   "takeWhileM" ! forAll { (xs: Vector[Int]) =>
@@ -55,15 +54,15 @@ object VectorTest extends SpecLite {
   }
 
   "groupWhen" ! forAll { (xs: Vector[Int]) =>
-    (xs.groupWhen(_ < _)
-      must_=== (list.groupWhen(xs.toList)(_ < _).map(_.toVector).toVector))
+    (xs.groupWhen(_ < _) must_===
+      (list.groupWhen(xs.toList)(_ < _).map(_.toVector).toVector))
   }
 
   "partitionM" ! forAll { (xs: Vector[Int]) =>
     val (evens, odds) = xs.partitionM[Id](evenp)
     (evens.toSet & odds.toSet) must_=== (Set[Int]())
-    (evens.filter(evenp) ++
-      odds.filter(i => !evenp(i))).toSet must_=== (xs.toSet)
+    (evens.filter(evenp) ++ odds.filter(i => !evenp(i))).toSet must_===
+      (xs.toSet)
   }
 
   "findM" ! forAll { (xs: Vector[Int]) =>
@@ -76,9 +75,8 @@ object VectorTest extends SpecLite {
   }
 
   "mapAccumLeft" ! forAll { (xs: Vector[Int]) =>
-    mapAccumLeft(xs)(
-      Vector[Int](),
-      (c: Vector[Int], a) => (c :+ a, a)) must_=== (xs, xs)
+    mapAccumLeft(xs)(Vector[Int](), (c: Vector[Int], a) => (c :+ a, a)) must_===
+      (xs, xs)
   }
 
   "mapAccumRight" ! forAll { (xs: Vector[Int]) =>

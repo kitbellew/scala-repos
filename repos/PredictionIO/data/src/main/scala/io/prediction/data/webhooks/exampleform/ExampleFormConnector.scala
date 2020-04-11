@@ -89,9 +89,10 @@ private[prediction] object ExampleFormConnector extends FormConnector {
         ("entityType" -> "user") ~
         ("entityId" -> data("userId")) ~
         ("eventTime" -> data("timestamp")) ~
-        ("properties" -> (("context" -> context) ~
-          ("anotherProperty1" -> data("anotherProperty1").toInt) ~
-          ("anotherProperty2" -> data.get("anotherProperty2"))))
+        ("properties" ->
+          (("context" -> context) ~
+            ("anotherProperty1" -> data("anotherProperty1").toInt) ~
+            ("anotherProperty2" -> data.get("anotherProperty2"))))
     json
   }
 
@@ -105,12 +106,15 @@ private[prediction] object ExampleFormConnector extends FormConnector {
         ("targetEntityType" -> "item") ~
         ("targetEntityId" -> data("itemId")) ~
         ("eventTime" -> data("timestamp")) ~
-        ("properties" -> (("context" -> (("ip" -> data("context[ip]")) ~
-          ("prop1" -> data("context[prop1]").toDouble) ~
-          ("prop2" -> data("context[prop2]")))) ~
-          ("anotherPropertyA" -> data.get("anotherPropertyA").map(_.toDouble)) ~
-          ("anotherPropertyB" -> data.get("anotherPropertyB")
-            .map(_.toBoolean))))
+        ("properties" ->
+          (("context" ->
+            (("ip" -> data("context[ip]")) ~
+              ("prop1" -> data("context[prop1]").toDouble) ~
+              ("prop2" -> data("context[prop2]")))) ~
+            ("anotherPropertyA" ->
+              data.get("anotherPropertyA").map(_.toDouble)) ~
+            ("anotherPropertyB" ->
+              data.get("anotherPropertyB").map(_.toBoolean))))
     json
   }
 

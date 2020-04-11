@@ -437,8 +437,8 @@ class SparkILoop(
 
     handlers.filterNot(_.importedSymbols.isEmpty).zipWithIndex foreach {
       case (handler, idx) =>
-        val (types, terms) =
-          handler.importedSymbols partition (_.name.isTypeName)
+        val (types, terms) = handler.importedSymbols partition
+          (_.name.isTypeName)
         val imps = handler.implicitSymbols
         val found = tokens filter (handler importsSymbolNamed _)
         val typeMsg = if (types.isEmpty) "" else types.size + " types"
@@ -446,9 +446,8 @@ class SparkILoop(
         val implicitMsg = if (imps.isEmpty) "" else imps.size + " are implicit"
         val foundMsg =
           if (found.isEmpty) "" else found.mkString(" // imports: ", ", ", "")
-        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot (
-          _ == ""
-        ) mkString ("(", ", ", ")")
+        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot
+          (_ == "") mkString ("(", ", ", ")")
 
         intp.reporter.printMessage("%2d) %-30s %s%s".format(
           idx + 1,
@@ -482,8 +481,8 @@ class SparkILoop(
       filtered foreach {
         case (source, syms) =>
           p(
-            "/* " + syms.size + " implicit members imported from " + source
-              .fullName + " */")
+            "/* " + syms.size + " implicit members imported from " +
+              source.fullName + " */")
 
           // This groups the members by where the symbol is defined
           val byOwner = syms groupBy (_.owner)
@@ -500,8 +499,9 @@ class SparkILoop(
               val memberGroups: List[List[Symbol]] = {
                 val groups = members groupBy (_.tpe.finalResultType) toList
                 val (big, small) = groups partition (_._2.size > 3)
-                val xss = ((big sortBy (_._1.toString) map (_._2)) :+
-                  (small flatMap (_._2)))
+                val xss =
+                  ((big sortBy (_._1.toString) map (_._2)) :+
+                    (small flatMap (_._2)))
 
                 xss map (xs => xs sortBy (_.name.toString))
               }
@@ -565,8 +565,8 @@ class SparkILoop(
           // the end of the flattened name.
           def className = intp flatName path
           def moduleName =
-            (intp flatName path
-              .stripSuffix(MODULE_SUFFIX_STRING)) + MODULE_SUFFIX_STRING
+            (intp flatName path.stripSuffix(MODULE_SUFFIX_STRING)) +
+              MODULE_SUFFIX_STRING
 
           val bytes = super.tryClass(className)
           if (bytes.nonEmpty) bytes else super.tryClass(moduleName)
@@ -766,8 +766,8 @@ class SparkILoop(
     }
     if (intp.namedDefinedTerms.nonEmpty)
       echo(
-        "Forgetting all expression results and named terms: " + intp
-          .namedDefinedTerms.mkString(", "))
+        "Forgetting all expression results and named terms: " +
+          intp.namedDefinedTerms.mkString(", "))
     if (intp.definedTypes.nonEmpty)
       echo("Forgetting defined types: " + intp.definedTypes.mkString(", "))
 
@@ -788,8 +788,8 @@ class SparkILoop(
       line match {
         case "" => showUsage()
         case _ =>
-          val toRun =
-            classOf[ProcessResult].getName + "(" + string2codeQuoted(line) + ")"
+          val toRun = classOf[ProcessResult].getName + "(" +
+            string2codeQuoted(line) + ")"
           intp interpret toRun
           ()
       }
@@ -959,8 +959,8 @@ class SparkILoop(
     else if (!paste.running && code.trim.startsWith(PromptString)) {
       paste.transcript(code)
       None
-    } else if (Completion.looksLikeInvocation(code) && intp
-                 .mostRecentVar != "") {
+    } else if (Completion.looksLikeInvocation(code) &&
+               intp.mostRecentVar != "") {
       interpretStartingWith(intp.mostRecentVar + code)
     } else if (code.trim startsWith "//") {
       // line comment, do nothing
@@ -994,7 +994,8 @@ class SparkILoop(
       catch {
         case ex @ (_: Exception | _: NoClassDefFoundError) =>
           echo(
-            "Failed to created SparkJLineReader: " + ex + "\nFalling back to SimpleReader.")
+            "Failed to created SparkJLineReader: " + ex +
+              "\nFalling back to SimpleReader.")
           SimpleReader()
       }
   }
@@ -1041,8 +1042,8 @@ class SparkILoop(
         import scala.tools.nsc.io._
         import Properties.userHome
         import scala.compat.Platform.EOL
-        val autorun =
-          replProps.replAutorunCode.option flatMap (f => io.File(f).safeSlurp())
+        val autorun = replProps.replAutorunCode.option flatMap
+          (f => io.File(f).safeSlurp())
         if (autorun.isDefined) intp.quietRun(autorun.get)
       })
 

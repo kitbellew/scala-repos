@@ -47,8 +47,8 @@ private[feature] trait MaxAbsScalerParams
     require(
       !schema.fieldNames.contains($(outputCol)),
       s"Output column ${$(outputCol)} already exists.")
-    val outputFields =
-      schema.fields :+ StructField($(outputCol), new VectorUDT, false)
+    val outputFields = schema.fields :+
+      StructField($(outputCol), new VectorUDT, false)
     StructType(outputFields)
   }
 }

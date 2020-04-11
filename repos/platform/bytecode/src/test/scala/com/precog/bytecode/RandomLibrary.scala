@@ -81,8 +81,8 @@ trait RandomLibrary extends Library {
   lazy val lib2 = containerOfN[Set, Op2](30, genOp2).sample.get
     .map(op => (op.opcode, op)).toMap.values
     .toSet //make sure no duplicate opcodes
-  lazy val libReduction =
-    reductions ++ containerOfN[Set, Reduction](30, genReduction).sample.get
+  lazy val libReduction = reductions ++
+    containerOfN[Set, Reduction](30, genReduction).sample.get
       .map(op => (op.opcode, op)).toMap.values
       .toSet //make sure no duplicate opcodes
 

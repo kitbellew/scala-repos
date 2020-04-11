@@ -286,8 +286,8 @@ class VectorsSuite extends SparkFunSuite with Logging {
 
       // SparseVector vs. SparseVector
       assert(
-        Vectors
-          .sqdist(sparseVector1, sparseVector2) ~== squaredDist relTol 1e-8)
+        Vectors.sqdist(sparseVector1, sparseVector2) ~== squaredDist relTol
+          1e-8)
       // DenseVector  vs. SparseVector
       assert(
         Vectors.sqdist(denseVector1, sparseVector2) ~== squaredDist relTol 1e-8)
@@ -323,18 +323,18 @@ class VectorsSuite extends SparkFunSuite with Logging {
       .sparse(6, Seq((1, -1.2), (2, 3.1), (3, 0.0), (4, -4.5), (5, 1.9)))
 
     assert(
-      Vectors.norm(dv, 1.0) ~== dv.toArray
-        .foldLeft(0.0)((a, v) => a + math.abs(v)) relTol 1e-8)
+      Vectors.norm(dv, 1.0) ~== dv.toArray.foldLeft(0.0)((a, v) =>
+        a + math.abs(v)) relTol 1e-8)
     assert(
-      Vectors.norm(sv, 1.0) ~== sv.toArray
-        .foldLeft(0.0)((a, v) => a + math.abs(v)) relTol 1e-8)
+      Vectors.norm(sv, 1.0) ~== sv.toArray.foldLeft(0.0)((a, v) =>
+        a + math.abs(v)) relTol 1e-8)
 
     assert(
-      Vectors.norm(dv, 2.0) ~== math
-        .sqrt(dv.toArray.foldLeft(0.0)((a, v) => a + v * v)) relTol 1e-8)
+      Vectors.norm(dv, 2.0) ~== math.sqrt(dv.toArray.foldLeft(0.0)((a, v) =>
+        a + v * v)) relTol 1e-8)
     assert(
-      Vectors.norm(sv, 2.0) ~== math
-        .sqrt(sv.toArray.foldLeft(0.0)((a, v) => a + v * v)) relTol 1e-8)
+      Vectors.norm(sv, 2.0) ~== math.sqrt(sv.toArray.foldLeft(0.0)((a, v) =>
+        a + v * v)) relTol 1e-8)
 
     assert(
       Vectors.norm(dv, Double.PositiveInfinity) ~== dv.toArray.map(math.abs)
@@ -402,10 +402,8 @@ class VectorsSuite extends SparkFunSuite with Logging {
     assert(v.slice(Array(0, 2)) === new SparseVector(2, Array(1), Array(2.2)))
     assert(v.slice(Array(2, 0)) === new SparseVector(2, Array(0), Array(2.2)))
     assert(
-      v.slice(Array(2, 0, 3, 4)) === new SparseVector(
-        4,
-        Array(0, 3),
-        Array(2.2, 4.4)))
+      v.slice(Array(2, 0, 3, 4)) ===
+        new SparseVector(4, Array(0, 3), Array(2.2, 4.4)))
   }
 
   test("toJson/fromJson") {

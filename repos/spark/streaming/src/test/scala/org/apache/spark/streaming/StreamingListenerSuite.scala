@@ -93,8 +93,8 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
       info.streamIdToInputInfo should be(Map(0 -> StreamInputInfo(0, 1L)))
     }
 
-    isInIncreasingOrder(
-      batchInfosStarted.asScala.map(_.submissionTime)) should be(true)
+    isInIncreasingOrder(batchInfosStarted.asScala.map(_.submissionTime)) should
+      be(true)
     isInIncreasingOrder(
       batchInfosStarted.asScala.map(_.processingStartTime.get)) should be(true)
 
@@ -119,8 +119,8 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     isInIncreasingOrder(
       batchInfosCompleted.asScala.map(_.submissionTime)) should be(true)
     isInIncreasingOrder(
-      batchInfosCompleted.asScala.map(_.processingStartTime.get)) should be(
-      true)
+      batchInfosCompleted.asScala.map(_.processingStartTime.get)) should
+      be(true)
     isInIncreasingOrder(
       batchInfosCompleted.asScala.map(_.processingEndTime.get)) should be(true)
   }
@@ -161,10 +161,10 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     ssc.start()
     try {
       eventually(timeout(30 seconds), interval(20 millis)) {
-        collector.startedOutputOperationIds.asScala.take(3) should be(
-          Seq(0, 1, 2))
-        collector.completedOutputOperationIds.asScala.take(3) should be(
-          Seq(0, 1, 2))
+        collector.startedOutputOperationIds.asScala.take(3) should
+          be(Seq(0, 1, 2))
+        collector.completedOutputOperationIds.asScala.take(3) should
+          be(Seq(0, 1, 2))
       }
     } finally { ssc.stop() }
   }

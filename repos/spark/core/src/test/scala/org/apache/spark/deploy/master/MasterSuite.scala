@@ -130,8 +130,8 @@ class MasterSuite
       rpcEnv.awaitTermination()
     }
 
-    CustomRecoveryModeFactory
-      .instantiationAttempts should be > instantiationAttempts
+    CustomRecoveryModeFactory.instantiationAttempts should
+      be > instantiationAttempts
   }
 
   test("master/worker web ui available") {
@@ -563,10 +563,8 @@ class MasterSuite
 
     eventually(timeout(10.seconds)) {
       assert(
-        killedExecutors.asScala.toList.sorted === List(
-          "0" -> 0,
-          "1" -> 1,
-          "2" -> 2))
+        killedExecutors.asScala.toList.sorted ===
+          List("0" -> 0, "1" -> 1, "2" -> 2))
       assert(killedDrivers.asScala.toList.sorted === List("0", "1", "2"))
     }
   }

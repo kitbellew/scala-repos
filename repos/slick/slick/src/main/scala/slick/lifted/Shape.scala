@@ -439,8 +439,8 @@ object ShapedValue {
       }
 
     val fpName = Constant(
-      "Fast Path of (" + fields.map(_._2).mkString(", ") + ").mapTo[" + rTag
-        .tpe + "]")
+      "Fast Path of (" + fields.map(_._2).mkString(", ") + ").mapTo[" +
+        rTag.tpe + "]")
     val fpChildren = fields.map { case (_, t, n)     => q"val $n = next[$t]" }
     val fpReadChildren = fields.map { case (_, _, n) => q"$n.read(r)" }
     val fpSetChildren = fields.map {

@@ -48,20 +48,21 @@ object DataTypeTestUtils {
   val numericTypes: Set[NumericType] = integralType ++ fractionalTypes
 
   // TODO: remove this once we find out how to handle decimal properly in property check
-  val numericTypeWithoutDecimal: Set[DataType] =
-    integralType ++ Set(DoubleType, FloatType)
+  val numericTypeWithoutDecimal: Set[DataType] = integralType ++
+    Set(DoubleType, FloatType)
 
   /**
     * Instances of all [[NumericType]]s and [[CalendarIntervalType]]
     */
-  val numericAndInterval: Set[DataType] =
-    numericTypeWithoutDecimal + CalendarIntervalType
+  val numericAndInterval: Set[DataType] = numericTypeWithoutDecimal +
+    CalendarIntervalType
 
   /**
     * All the types that support ordering
     */
   val ordered: Set[DataType] =
-    numericTypeWithoutDecimal + BooleanType + TimestampType + DateType + StringType + BinaryType
+    numericTypeWithoutDecimal + BooleanType + TimestampType + DateType +
+      StringType + BinaryType
 
   /**
     * All the types that we can use in a property check
@@ -71,12 +72,8 @@ object DataTypeTestUtils {
   /**
     * Instances of all [[AtomicType]]s.
     */
-  val atomicTypes: Set[DataType] = numericTypes ++ Set(
-    BinaryType,
-    BooleanType,
-    DateType,
-    StringType,
-    TimestampType)
+  val atomicTypes: Set[DataType] = numericTypes ++
+    Set(BinaryType, BooleanType, DateType, StringType, TimestampType)
 
   /**
     * Instances of [[ArrayType]] for all [[AtomicType]]s. Arrays of these types may contain null.

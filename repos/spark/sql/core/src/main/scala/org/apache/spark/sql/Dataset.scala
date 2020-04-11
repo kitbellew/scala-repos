@@ -332,8 +332,8 @@ class Dataset[T] private[sql] (
       schema.size == colNames.size,
       "The number of columns doesn't match.\n" +
         s"Old column names (${schema.size}): " + schema.fields.map(_.name)
-        .mkString(", ") + "\n" +
-        s"New column names (${colNames.size}): " + colNames.mkString(", ")
+          .mkString(", ") + "\n" + s"New column names (${colNames.size}): " +
+        colNames.mkString(", ")
     )
 
     val newCols = logicalPlan.output.zip(colNames).map {
@@ -1810,12 +1810,12 @@ class Dataset[T] private[sql] (
 
       // The list of summary statistics to compute, in the form of expressions.
       val statistics = List[(String, Expression => Expression)](
-        "count" -> ((child: Expression) =>
-          Count(child).toAggregateExpression()),
-        "mean" -> ((child: Expression) =>
-          Average(child).toAggregateExpression()),
-        "stddev" -> ((child: Expression) =>
-          StddevSamp(child).toAggregateExpression()),
+        "count" ->
+          ((child: Expression) => Count(child).toAggregateExpression()),
+        "mean" ->
+          ((child: Expression) => Average(child).toAggregateExpression()),
+        "stddev" ->
+          ((child: Expression) => StddevSamp(child).toAggregateExpression()),
         "min" -> ((child: Expression) => Min(child).toAggregateExpression()),
         "max" -> ((child: Expression) => Max(child).toAggregateExpression())
       )
@@ -1846,8 +1846,8 @@ class Dataset[T] private[sql] (
 
       // All columns are string type
       val schema = StructType(
-        StructField("summary", StringType) :: outputCols
-          .map(StructField(_, StringType))).toAttributes
+        StructField("summary", StringType) ::
+          outputCols.map(StructField(_, StringType))).toAttributes
       LocalRelation.fromExternalRows(schema, ret)
     }
 

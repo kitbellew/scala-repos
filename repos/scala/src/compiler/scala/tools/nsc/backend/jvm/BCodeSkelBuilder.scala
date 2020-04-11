@@ -109,16 +109,18 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
       gen(cd.impl)
 
-      val shouldAddLambdaDeserialize = (settings.target.value == "jvm-1.8"
-        && settings.Ydelambdafy.value == "method"
-        && indyLambdaHosts.contains(cnode.name))
+      val shouldAddLambdaDeserialize =
+        (settings.target.value == "jvm-1.8" &&
+          settings.Ydelambdafy.value == "method" &&
+          indyLambdaHosts.contains(cnode.name))
 
       if (shouldAddLambdaDeserialize) backendUtils.addLambdaDeserialize(cnode)
 
       cnode.visitAttribute(classBType.inlineInfoAttribute.get)
 
-      if (AsmUtils.traceClassEnabled && cnode.name
-            .contains(AsmUtils.traceClassPattern)) AsmUtils.traceClass(cnode)
+      if (AsmUtils.traceClassEnabled &&
+          cnode.name.contains(AsmUtils.traceClassPattern))
+        AsmUtils.traceClass(cnode)
 
       assert(
         cd.symbol == claszSymbol,
@@ -181,8 +183,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
             // it must be a top level class (name contains no $s)
             val isCandidateForForwarders = {
               exitingPickler {
-                !(lmoc.name.toString contains '$') && lmoc
-                  .hasModuleFlag && !lmoc.isNestedClass
+                !(lmoc.name.toString contains '$') && lmoc.hasModuleFlag &&
+                !lmoc.isNestedClass
               }
             }
             if (isCandidateForForwarders) {
@@ -560,8 +562,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
       val jgensig = getGenericSignature(methSymbol, claszSymbol)
       addRemoteExceptionAnnot(isCZRemote, hasPublicBitSet(flags), methSymbol)
-      val (excs, others) =
-        methSymbol.annotations partition (_.symbol == definitions.ThrowsClass)
+      val (excs, others) = methSymbol.annotations partition
+        (_.symbol == definitions.ThrowsClass)
       val thrownExceptions: List[String] = getExceptions(excs)
 
       val bytecodeName =
@@ -650,12 +652,11 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
                 Block(_, Throw(_)) => ()
             case EmptyTree =>
               globalError(
-                "Concrete method has no definition: " + dd + (
-                  if (settings.debug)
-                    "(found: " + methSymbol.owner.info.decls.toList
-                      .mkString(", ") + ")"
-                  else ""
-                ))
+                "Concrete method has no definition: " + dd +
+                  (if (settings.debug)
+                     "(found: " +
+                       methSymbol.owner.info.decls.toList.mkString(", ") + ")"
+                   else ""))
             case _ => bc emitRETURN returnType
           }
           if (emitVars) {
@@ -690,8 +691,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         // The only non-instruction nodes to be found are LabelNode and LineNumberNode.
       }
 
-      if (AsmUtils.traceMethodEnabled && mnode.name
-            .contains(AsmUtils.traceMethodPattern)) AsmUtils.traceMethod(mnode)
+      if (AsmUtils.traceMethodEnabled &&
+          mnode.name.contains(AsmUtils.traceMethodPattern))
+        AsmUtils.traceMethod(mnode)
 
       mnode = null
     } // end of method genDefDef()

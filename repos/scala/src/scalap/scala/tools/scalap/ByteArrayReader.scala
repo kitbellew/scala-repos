@@ -77,16 +77,14 @@ class ByteArrayReader(content: Array[Byte]) {
 
   /** extract a character at position bp from buf
     */
-  def getChar(bp: Int): Char =
-    (((buf(bp) & 0xff) << 8) + (buf(bp + 1) & 0xff)).asInstanceOf[Char]
+  def getChar(bp: Int): Char = (((buf(bp) & 0xff) << 8) + (buf(bp + 1) & 0xff))
+    .asInstanceOf[Char]
 
   /** extract an integer at position bp from buf
     */
-  def getInt(bp: Int): Int =
-    ((buf(bp) & 0xff) << 24) +
-      ((buf(bp + 1) & 0xff) << 16) +
-      ((buf(bp + 2) & 0xff) << 8) +
-      (buf(bp + 3) & 0xff)
+  def getInt(bp: Int): Int = ((buf(bp) & 0xff) << 24) +
+    ((buf(bp + 1) & 0xff) << 16) + ((buf(bp + 2) & 0xff) << 8) +
+    (buf(bp + 3) & 0xff)
 
   /** extract a long integer at position bp from buf
     */

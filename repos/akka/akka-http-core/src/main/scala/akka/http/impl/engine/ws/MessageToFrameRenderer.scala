@@ -25,9 +25,8 @@ private[http] object MessageToFrameRenderer {
     def streamedFrames[M](
         opcode: Opcode,
         data: Source[ByteString, M]): Source[FrameStart, NotUsed] =
-      Source.single(FrameEvent.empty(opcode, fin = false)) ++
-        data.map(
-          FrameEvent.fullFrame(Opcode.Continuation, None, _, fin = false)) ++
+      Source.single(FrameEvent.empty(opcode, fin = false)) ++ data.map(
+        FrameEvent.fullFrame(Opcode.Continuation, None, _, fin = false)) ++
         Source.single(FrameEvent.emptyLastContinuationFrame)
 
     Flow[Message].flatMapConcat {

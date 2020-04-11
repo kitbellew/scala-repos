@@ -222,8 +222,8 @@ abstract class ScTypeDefinitionImpl protected (
       case memberOrLocal: ScMemberOrLocal => return memberOrLocal.isLocal
       case _                              =>
     }
-    containingClass == null && PsiTreeUtil
-      .getParentOfType(this, classOf[ScTemplateDefinition]) != null
+    containingClass == null &&
+    PsiTreeUtil.getParentOfType(this, classOf[ScTemplateDefinition]) != null
   }
 
   def nameId: PsiElement =
@@ -278,9 +278,8 @@ abstract class ScTypeDefinitionImpl protected (
   def getQualifiedNameForDebugger: String = {
     containingClass match {
       case td: ScTypeDefinition =>
-        td.getQualifiedNameForDebugger + "$" + transformName(
-          encodeName = true,
-          name)
+        td.getQualifiedNameForDebugger + "$" +
+          transformName(encodeName = true, name)
       case _ =>
         if (this.isPackageObject)
           qualifiedName("", encodeName = true) + ".package"
@@ -409,8 +408,8 @@ abstract class ScTypeDefinitionImpl protected (
   override def delete() {
     var toDelete: PsiElement = this
     var parent: PsiElement = getParent
-    while (parent.isInstanceOf[ScToplevelElement] && parent
-             .asInstanceOf[ScToplevelElement].typeDefinitions.length == 1) {
+    while (parent.isInstanceOf[ScToplevelElement] &&
+           parent.asInstanceOf[ScToplevelElement].typeDefinitions.length == 1) {
       toDelete = parent
       parent = toDelete.getParent
     }
@@ -435,10 +434,10 @@ abstract class ScTypeDefinitionImpl protected (
     super[ScTypeDefinition].isInheritor(baseClass, deep)
 
   def signaturesByName(name: String): Seq[PhysicalSignature] = {
-    (for ((s: PhysicalSignature, _) <- TypeDefinitionMembers.getSignatures(this)
-            .forName(name)._1) yield s) ++
-      syntheticMethodsNoOverride.filter(_.name == name)
-        .map(new PhysicalSignature(_, ScSubstitutor.empty))
+    (for ((s: PhysicalSignature, _) <-
+            TypeDefinitionMembers.getSignatures(this).forName(name)._1)
+      yield s) ++ syntheticMethodsNoOverride.filter(_.name == name)
+      .map(new PhysicalSignature(_, ScSubstitutor.empty))
   }
 
   override def getNameIdentifier: PsiIdentifier = {
@@ -480,8 +479,8 @@ abstract class ScTypeDefinitionImpl protected (
     if (stub != null) {
       return stub.asInstanceOf[ScTemplateDefinitionStub].isDeprecated
     }
-    hasAnnotation("scala.deprecated").isDefined || hasAnnotation(
-      "java.lang.Deprecated").isDefined
+    hasAnnotation("scala.deprecated").isDefined ||
+    hasAnnotation("java.lang.Deprecated").isDefined
   }
 
   override def getInnerClasses: Array[PsiClass] = {

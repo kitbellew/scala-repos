@@ -171,8 +171,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
         // Closure needs to know (from the parser), if the call has a bound
         // `this` or not. Since JSDesugar inserts protects calls if necessary,
         // it is sufficient to check if we have a select as target
-        if (!fun.isInstanceOf[DotSelect] &&
-            !fun.isInstanceOf[BracketSelect])
+        if (!fun.isInstanceOf[DotSelect] && !fun.isInstanceOf[BracketSelect])
           node.putBooleanProp(Node.FREE_CALL, true)
 
         node

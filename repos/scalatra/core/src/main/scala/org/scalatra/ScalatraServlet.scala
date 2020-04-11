@@ -19,12 +19,13 @@ object ScalatraServlet {
       request != null,
       "The request can't be null for getting the request path")
     def startIndex(r: HttpServletRequest) =
-      r.getContextPath.blankOption.map(_.length).getOrElse(0) + r.getServletPath
-        .blankOption.map(_.length).getOrElse(0)
+      r.getContextPath.blankOption.map(_.length).getOrElse(0) +
+        r.getServletPath.blankOption.map(_.length).getOrElse(0)
     def getRequestPath(r: HttpServletRequest) = {
-      val u = (catching(classOf[NullPointerException]) opt {
-        r.getRequestURI
-      } getOrElse "/")
+      val u =
+        (catching(classOf[NullPointerException]) opt {
+          r.getRequestURI
+        } getOrElse "/")
       requestPath(u, startIndex(r))
     }
 
@@ -37,8 +38,9 @@ object ScalatraServlet {
 
   def requestPath(uri: String, idx: Int): String = {
     val u1 = UriDecoder.firstStep(uri)
-    val u2 = (u1.blankOption map { _.substring(idx) } flatMap (_
-      .blankOption) getOrElse "/")
+    val u2 =
+      (u1.blankOption map { _.substring(idx) } flatMap (_.blankOption) getOrElse
+        "/")
     val pos = u2.indexOf(';')
     if (pos > -1) u2.substring(0, pos) else u2
   }

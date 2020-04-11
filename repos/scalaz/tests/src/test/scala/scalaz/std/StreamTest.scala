@@ -21,8 +21,8 @@ object StreamTest extends SpecLite {
 
   "Order[Stream[Int]] is consistent with Order[List[Int]]" ! forAll {
     (a: Stream[Int], b: Stream[Int]) =>
-      Order[Stream[Int]].order(a, b) must_=== Order[List[Int]]
-        .order(a.toList, b.toList)
+      Order[Stream[Int]].order(a, b) must_===
+        Order[List[Int]].order(a.toList, b.toList)
   }
 
   "Order[Stream[Int]] is lazy" ! {
@@ -40,8 +40,8 @@ object StreamTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: Stream[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a.intersperse(b).zipWithIndex.filter(p => isEven(p._2))
-        .map(_._1) must_=== (a)
+      a.intersperse(b).zipWithIndex.filter(p => isEven(p._2)).map(_._1) must_===
+        (a)
   }
 
   "intercalate is same as intersperse(s).flatten" ! forAll {
@@ -66,14 +66,14 @@ object StreamTest extends SpecLite {
 
   "foldl is foldLeft" ! forAll { (rnge: Stream[List[Int]]) =>
     val F = Foldable[Stream]
-    (rnge.foldLeft(List[Int]())(_ ++ _)
-      must_=== (F.foldLeft(rnge, List[Int]())(_ ++ _)))
+    (rnge.foldLeft(List[Int]())(_ ++ _) must_===
+      (F.foldLeft(rnge, List[Int]())(_ ++ _)))
   }
 
   "foldr is foldRight" ! forAll { (rnge: Stream[List[Int]]) =>
     val F = Foldable[Stream]
-    (rnge.foldRight(List[Int]())(_ ++ _)
-      must_=== (F.foldRight(rnge, List[Int]())(_ ++ _)))
+    (rnge.foldRight(List[Int]())(_ ++ _) must_===
+      (F.foldRight(rnge, List[Int]())(_ ++ _)))
   }
 
   "foldMap evaluates lazily" in {
@@ -82,8 +82,8 @@ object StreamTest extends SpecLite {
   }
 
   "foldRight evaluates lazily" in {
-    Foldable[Stream]
-      .foldRight(Stream.continually(true), true)(_ || _) must_=== (true)
+    Foldable[Stream].foldRight(Stream.continually(true), true)(_ || _) must_===
+      (true)
   }
 
   "zipL" in {
@@ -93,8 +93,8 @@ object StreamTest extends SpecLite {
     val F = Traverse[Stream]
     F.zipL(infinite, infinite)
     F.zipL(finite, infinite).length must_=== (size)
-    F.zipL(finite, infinite) must_=== ((finite zip infinite)
-      .map { x => (x._1, Option(x._2)) })
+    F.zipL(finite, infinite) must_===
+      ((finite zip infinite).map { x => (x._1, Option(x._2)) })
     F.zipL(infinite, finite).take(1000).length must_=== (1000)
     F.zipL(infinite, finite).takeWhile(_._2.isDefined).length must_=== (size)
   }

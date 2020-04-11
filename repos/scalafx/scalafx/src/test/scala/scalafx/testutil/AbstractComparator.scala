@@ -71,8 +71,8 @@ private[testutil] trait AbstractComparator extends Assertions {
       */
     private def findMethodWithManyArgs(argTypes: List[Class[_]])(
         scalaMethod: Method): Boolean =
-      (scalaMethod.getParameterTypes.length == argTypes.size) && (scalaMethod
-        .getParameterTypes.toList == argTypes)
+      (scalaMethod.getParameterTypes.length == argTypes.size) &&
+        (scalaMethod.getParameterTypes.toList == argTypes)
 
     /**
       *
@@ -122,8 +122,9 @@ private[testutil] trait AbstractComparator extends Assertions {
         pattern: String,
         parametersLength: Int,
         returnEvaluator: Class[_] => Boolean) =
-      m.getName.matches(pattern) && (m.getParameterTypes
-        .length == parametersLength) && returnEvaluator(m.getReturnType)
+      m.getName.matches(pattern) &&
+        (m.getParameterTypes.length == parametersLength) &&
+        returnEvaluator(m.getReturnType)
 
     private def isSetter(m: Method): Boolean =
       isValid(m, setterPattern, 1, (_ == JVoid))
@@ -191,8 +192,8 @@ private[testutil] trait AbstractComparator extends Assertions {
           .mkString(", ")
     }
 
-    classParameterToString(m.getReturnType) + " " + m
-      .getName + "(" + strParameters + ")"
+    classParameterToString(m.getReturnType) + " " + m.getName + "(" +
+      strParameters + ")"
   }
 
   private val nameComparator: (Method, Method) => Boolean = (m1, m2) =>
@@ -265,9 +266,8 @@ private[testutil] trait AbstractComparator extends Assertions {
 
     assert(
       methodsNotFound.isEmpty,
-      "Missing %s Methods: "
-        .format(if (useStatic) "Static" else "Declared") + methodsNotFound
-        .map(methodToString).mkString(", "))
+      "Missing %s Methods: ".format(if (useStatic) "Static" else "Declared") +
+        methodsNotFound.map(methodToString).mkString(", "))
   }
 
   //////////////////

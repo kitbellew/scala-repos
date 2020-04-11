@@ -53,10 +53,8 @@ import slick.util.MacroSupport.macroSupportInterpolation
 trait PostgresProfile extends JdbcProfile {
 
   override protected def computeCapabilities: Set[Capability] =
-    (super.computeCapabilities
-      - JdbcCapabilities.insertOrUpdate
-      - JdbcCapabilities.nullableNoDefault
-      - JdbcCapabilities.supportsByte)
+    (super.computeCapabilities - JdbcCapabilities.insertOrUpdate -
+      JdbcCapabilities.nullableNoDefault - JdbcCapabilities.supportsByte)
 
   class ModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       implicit ec: ExecutionContext)
@@ -174,10 +172,9 @@ trait PostgresProfile extends JdbcProfile {
           if (eligible(onNodes) && eligible(selNodes) &&
               onNodes.iterator.collect[List[TermSymbol]] {
                 case FwdPath(ss) => ss
-              }.toSet ==
-                selNodes.iterator.collect[List[TermSymbol]] {
-                  case FwdPath(ss) => ss
-                }.toSet) b"distinct "
+              }.toSet == selNodes.iterator.collect[List[TermSymbol]] {
+                case FwdPath(ss) => ss
+              }.toSet) b"distinct "
           else super.buildSelectModifiers(c)
         case _ => super.buildSelectModifiers(c)
       }
@@ -236,9 +233,8 @@ trait PostgresProfile extends JdbcProfile {
       }
       if (dropLobs.isEmpty) super.dropPhase1
       else
-        Seq(
-          "delete from " + quoteIdentifier(
-            table.tableName)) ++ dropLobs ++ super.dropPhase1
+        Seq("delete from " + quoteIdentifier(table.tableName)) ++ dropLobs ++
+          super.dropPhase1
     }
   }
 
@@ -247,8 +243,8 @@ trait PostgresProfile extends JdbcProfile {
     override def appendColumn(sb: StringBuilder) {
       sb append quoteIdentifier(column.name) append ' '
       if (autoIncrement && !customSqlType) {
-        sb append (if (sqlType.toUpperCase == "BIGINT") "BIGSERIAL"
-                   else "SERIAL")
+        sb append
+          (if (sqlType.toUpperCase == "BIGINT") "BIGSERIAL" else "SERIAL")
       } else appendType(sb)
       autoIncrement = false
       appendOptions(sb)
@@ -260,11 +256,10 @@ trait PostgresProfile extends JdbcProfile {
     def createLobTrigger(tname: String): Option[String] =
       if (sqlType == "lo")
         Some(
-          "create trigger " + lobTrigger(
-            tname) + " before update or delete on " +
-            quoteIdentifier(
-              tname) + " for each row execute procedure lo_manage(" + quoteIdentifier(
-            column.name) + ")")
+          "create trigger " + lobTrigger(tname) +
+            " before update or delete on " + quoteIdentifier(tname) +
+            " for each row execute procedure lo_manage(" +
+            quoteIdentifier(column.name) + ")")
       else None
 
     def dropLobTrigger(tname: String): Option[String] =

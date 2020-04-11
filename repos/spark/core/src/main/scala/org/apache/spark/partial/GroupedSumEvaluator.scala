@@ -74,8 +74,7 @@ private[spark] class GroupedSumEvaluator[T](
         val countVar = (counter.count + 1) * (1 - p) / (p * p)
         val sumEstimate = meanEstimate * countEstimate
         val sumVar = (meanEstimate * meanEstimate * countVar) +
-          (countEstimate * countEstimate * meanVar) +
-          (meanVar * countVar)
+          (countEstimate * countEstimate * meanVar) + (meanVar * countVar)
         val sumStdev = math.sqrt(sumVar)
         val confFactor = studentTCacher.get(counter.count)
         val low = sumEstimate - confFactor * sumStdev

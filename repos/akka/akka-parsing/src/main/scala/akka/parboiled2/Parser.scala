@@ -495,9 +495,8 @@ abstract class Parser(
   @tailrec
   final def __matchNoneOf(string: String, ix: Int = 0): Boolean =
     if (ix < string.length)
-      _cursorChar != EOI && string.charAt(ix) != _cursorChar && __matchNoneOf(
-        string,
-        ix + 1)
+      _cursorChar != EOI && string.charAt(ix) != _cursorChar &&
+      __matchNoneOf(string, ix + 1)
     else __advance()
 
   /**

@@ -153,8 +153,7 @@ class UserDefinedTypeSuite
     checkAnswer(
       jsonRDD,
       Row(1, new MyDenseVector(Array(1.1, 2.2, 3.3, 4.4))) ::
-        Row(2, new MyDenseVector(Array(2.25, 4.5, 8.75))) ::
-        Nil)
+        Row(2, new MyDenseVector(Array(2.25, 4.5, 8.75))) :: Nil)
   }
 
   test("SPARK-10472 UserDefinedType.typeName") {

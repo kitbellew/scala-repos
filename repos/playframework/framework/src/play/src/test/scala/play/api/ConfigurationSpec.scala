@@ -71,8 +71,8 @@ object ConfigurationSpec extends Specification {
       exampleConfig.getIntSeq("blah.1").get must ===(Seq(1, 2, 3))
       exampleConfig.getDoubleSeq("blah.2").get must ===(Seq(1.1, 2.2, 3.3))
       exampleConfig.getLongSeq("blah.3").get must ===(Seq(1L, 2L, 3L))
-      exampleConfig.getStringSeq("blah.4").get must contain(
-        exactly("one", "two", "three"))
+      exampleConfig.getStringSeq("blah.4").get must
+        contain(exactly("one", "two", "three"))
     }
 
     "handle invalid and null configuration values" in {
@@ -126,12 +126,12 @@ object PlayConfigSpec extends Specification {
         config("foo.bar" -> null).get[Option[String]]("foo.bar") must beNone
       }
       "when set" in {
-        config("foo.bar" -> "bar").get[Option[String]]("foo.bar") must beSome(
-          "bar")
+        config("foo.bar" -> "bar").get[Option[String]]("foo.bar") must
+          beSome("bar")
       }
       "when undefined" in {
-        config().get[Option[String]]("foo.bar") must throwA[
-          ConfigException.Missing]
+        config().get[Option[String]]("foo.bar") must
+          throwA[ConfigException.Missing]
       }
     }
     "support getting prototyped seqs" in {

@@ -312,8 +312,8 @@ private class AppTaskLauncherActor(
   private[this] def receiveAddCount: Receive = {
     case AppTaskLauncherActor.AddTasks(newApp, addCount) =>
       val configChange = app.isUpgrade(newApp)
-      if (configChange || app.needsRestart(newApp) || app
-            .isOnlyScaleChange(newApp)) {
+      if (configChange || app.needsRestart(newApp) ||
+          app.isOnlyScaleChange(newApp)) {
         app = newApp
         tasksToLaunch = addCount
 
@@ -357,8 +357,8 @@ private class AppTaskLauncherActor(
       tasksLeftToLaunch = tasksToLaunch,
       taskLaunchesInFlight = inFlightTaskOperations.size,
       // don't count tasks that are not launched in the tasksMap
-      tasksLaunched = tasksMap.values
-        .count(_.launched.isDefined) - inFlightTaskOperations.size,
+      tasksLaunched = tasksMap.values.count(_.launched.isDefined) -
+        inFlightTaskOperations.size,
       backOffUntil.getOrElse(clock.now())
     )
   }
@@ -449,8 +449,8 @@ private class AppTaskLauncherActor(
     }
 
     val inFlight = inFlightTaskOperations.size
-    val tasksLaunchedOrRunning = tasksMap.values
-      .count(_.launched.isDefined) - inFlight
+    val tasksLaunchedOrRunning = tasksMap.values.count(_.launched.isDefined) -
+      inFlight
     val instanceCountDelta = tasksMap.size + tasksToLaunch - app.instances
     val matchInstanceStr =
       if (instanceCountDelta == 0) ""

@@ -146,17 +146,18 @@ class MergeToComprehensions extends Phase {
                 case FwdPath(s :: ElementSymbol(1) :: rest) if s == s1 => rest
               },
               stopOnMatch = true)
-            val isParam = leakedPaths.nonEmpty && ({
-              logger.debug(
-                "Leaked paths to GroupBy keys: " + leakedPaths
-                  .map(l => ("_" :: l).mkString(".")).mkString(", "))
-              val targets = leakedPaths.map(_.foldLeft(b2)(_ select _))
-              targets.indexWhere(_.findNode {
-                case _: QueryParameter => true
-                case n: LiteralNode    => n.volatileHint
-                case _                 => false
-              }.isDefined) >= 0
-            })
+            val isParam = leakedPaths.nonEmpty &&
+              ({
+                logger.debug(
+                  "Leaked paths to GroupBy keys: " + leakedPaths.map(l =>
+                    ("_" :: l).mkString(".")).mkString(", "))
+                val targets = leakedPaths.map(_.foldLeft(b2)(_ select _))
+                targets.indexWhere(_.findNode {
+                  case _: QueryParameter => true
+                  case n: LiteralNode    => n.volatileHint
+                  case _                 => false
+                }.isDefined) >= 0
+              })
             if (isParam) {
               logger.debug(
                 "Pushing GroupBy source into subquery to avoid repeated parameter")
@@ -420,13 +421,11 @@ class MergeToComprehensions extends Phase {
         val p2 = applyReplacements(p1, replacements1a, c1a)
         val c2 =
           if (c1a.groupBy.isEmpty)
-            c1a
-              .copy(where = Some(c1a.where.fold(p2)(and(_, p2)).infer())) :@ c1a
-              .nodeType
+            c1a.copy(where = Some(c1a.where.fold(p2)(and(_, p2)).infer())) :@
+              c1a.nodeType
           else
-            c1a
-              .copy(having = Some(
-                c1a.having.fold(p2)(and(p2, _)).infer())) :@ c1a.nodeType
+            c1a.copy(having = Some(c1a.having.fold(p2)(and(p2, _)).infer())) :@
+              c1a.nodeType
         logger.debug("Merged Filter into Comprehension:", c2)
         (c2, replacements1a)
 

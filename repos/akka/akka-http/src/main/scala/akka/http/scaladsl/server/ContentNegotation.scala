@@ -229,8 +229,8 @@ final class LanguageNegotiator(requestHeaders: Seq[HttpHeader]) {
     .sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
       case _: LanguageRange.`*` ⇒ 1f // most general, needs to come last
       case x ⇒
-        -(2 * x.subTags.size + x
-          .qValue) // more subtags -> more specific -> go first
+        -(2 * x.subTags.size +
+          x.qValue) // more subtags -> more specific -> go first
     }.toList
 
   /**

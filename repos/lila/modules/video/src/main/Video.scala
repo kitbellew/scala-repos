@@ -18,10 +18,9 @@ case class Video(
 
   def thumbnail = s"http://img.youtube.com/vi/$id/0.jpg"
 
-  def similarity(other: Video) =
-    (tags intersect other.tags).size +
-      (targets intersect other.targets).size +
-      (if (author == other.author) 1 else 0)
+  def similarity(other: Video) = (tags intersect other.tags).size +
+    (targets intersect other.targets).size +
+    (if (author == other.author) 1 else 0)
 
   def durationString =
     metadata.duration.map { seconds =>

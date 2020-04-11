@@ -423,8 +423,7 @@ private[netty3] class ServerBridge[In, Out](
     }
 
     val msg = "Unhandled exception in connection with " +
-      e.getChannel.getRemoteAddress.toString +
-      " , shutting down connection"
+      e.getChannel.getRemoteAddress.toString + " , shutting down connection"
 
     log.log(severity(cause), msg, cause)
     if (e.getChannel.isOpen) Channels.close(e.getChannel)

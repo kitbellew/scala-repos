@@ -35,8 +35,7 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
         case JNull | JNothing => Empty
         case JObject(
               JField("box_failure", JString("Failure")) ::
-              JField("msg", JString(msg)) ::
-              JField("exception", exception) ::
+              JField("msg", JString(msg)) :: JField("exception", exception) ::
               JField("chain", chain) :: Nil) =>
           Failure(
             msg,
@@ -45,8 +44,7 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
               .asInstanceOf[Box[Failure]])
         case JObject(
               JField("box_failure", JString("ParamFailure")) ::
-              JField("msg", JString(msg)) ::
-              JField("exception", exception) ::
+              JField("msg", JString(msg)) :: JField("exception", exception) ::
               JField("chain", chain) ::
               JField("paramType", JString(paramType)) ::
               JField("param", param) :: Nil) =>
@@ -78,8 +76,7 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
         JField("box_failure", JString("ParamFailure")) ::
           JField("msg", JString(msg)) ::
           JField("exception", serializeException(exception)) ::
-          JField("chain", decompose(chain)) ::
-          JField(
+          JField("chain", decompose(chain)) :: JField(
             "paramType",
             JString(param.asInstanceOf[AnyRef].getClass.getName)) ::
           JField("param", decompose(param)) :: Nil)

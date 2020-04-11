@@ -201,8 +201,9 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
           while (j < order.length - 1) {
             leftRegion += dependent(order(j))
             rightRegion -= dependent(order(j))
-            val error = (leftRegion.error * (j + 1) +
-              rightRegion.error * (order.length - j - 1)) / order.length
+            val error =
+              (leftRegion.error * (j + 1) +
+                rightRegion.error * (order.length - j - 1)) / order.length
             if (error < minError) {
               minError = error
               minVar = axis
@@ -239,8 +240,9 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
           // We split the region directly between the left's furthest right point
           // and the right's furthest left point.
 
-          val boundary = (independent(featureOrder(minIdx))(minVar) +
-            independent(featureOrder(minIdx + 1))(minVar)) / 2
+          val boundary =
+            (independent(featureOrder(minIdx))(minVar) +
+              independent(featureOrder(minIdx + 1))(minVar)) / 2
           Split(minVar, boundary, growTree(leftOrders), growTree(rightOrders))
         }
       }
@@ -438,9 +440,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   trait RandomForestLib extends ColumnarTableLib {
 
     override def _libMorphism2 =
-      super._libMorphism2 ++ Set(
-        RandomForestClassification,
-        RandomForestRegression)
+      super._libMorphism2 ++
+        Set(RandomForestClassification, RandomForestRegression)
 
     object RandomForestClassification
         extends RandomForest[RValue, ClassificationForest[RValue]](
@@ -605,9 +606,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         val schemas: M[List[JType]] =
           table.transform(independentSpec).schemas map { _.toList }
 
-        schemas flatMap (_ traverse { tpe =>
-          makeForest(table, tpe) map (tpe -> _)
-        })
+        schemas flatMap
+          (_ traverse { tpe => makeForest(table, tpe) map (tpe -> _) })
       }
 
       def makeForest(
@@ -664,8 +664,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 (forests zip validationSamples) traverse {
                   case (forest, table) => withData(table) {
                       (actual, features) =>
-                        val predicted =
-                          features map (forest.predict) // TODO: Unbox me!
+                        val predicted = features map
+                          (forest.predict) // TODO: Unbox me!
                         val error = findError(actual, predicted)
                         error
                     }

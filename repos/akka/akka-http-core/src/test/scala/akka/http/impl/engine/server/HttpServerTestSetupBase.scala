@@ -41,8 +41,8 @@ abstract class HttpServerTestSetupBase {
         remoteAddress = remoteAddress,
         log = NoLogging)) { implicit b ⇒ server ⇒
         import GraphDSL.Implicits._
-        Source.fromPublisher(netIn) ~> Flow[ByteString]
-          .map(SessionBytes(null, _)) ~> server.in2
+        Source.fromPublisher(netIn) ~>
+          Flow[ByteString].map(SessionBytes(null, _)) ~> server.in2
         server.out1 ~> Flow[SslTlsOutbound].collect { case SendBytes(x) ⇒ x }
           .buffer(1, OverflowStrategy.backpressure) ~> netOut.sink
         server.out2 ~> Sink.fromSubscriber(requests)

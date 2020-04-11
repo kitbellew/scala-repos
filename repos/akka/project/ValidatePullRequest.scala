@@ -128,8 +128,10 @@ object ValidatePullRequest extends AutoPlugin {
     sourceBranch in Global in ValidatePR := {
       sys.env.get(SourceBranchEnvVarName) orElse
         sys.env.get(SourcePullIdJenkinsEnvVarName)
-          .map("pullreq/" + _) getOrElse // Set by "GitHub pull request builder plugin"
-        "HEAD"
+          .map(
+            "pullreq/" +
+              _) getOrElse // Set by "GitHub pull request builder plugin"
+          "HEAD"
     },
     targetBranch in Global in ValidatePR := {
       (localTargetBranch, jenkinsTargetBranch) match {
@@ -193,27 +195,27 @@ object ValidatePullRequest extends AutoPlugin {
             .map(_.takeWhile(_ != '/'))
             .filter(dir => dir.startsWith("akka-") || dir == "project").toSet
           log.info(
-            "Detected uncomitted changes in directories (including in dependency analysis): " + dirtyDirectories
-              .mkString("[", ",", "]"))
+            "Detected uncomitted changes in directories (including in dependency analysis): " +
+              dirtyDirectories.mkString("[", ",", "]"))
           dirtyDirectories
         }
 
       val allModuleNames = dirtyModuleNames ++ diffedModuleNames
       log.info(
-        "Detected changes in directories: " + allModuleNames
-          .mkString("[", ", ", "]"))
+        "Detected changes in directories: " +
+          allModuleNames.mkString("[", ", ", "]"))
       allModuleNames
     }
   )
 
   override lazy val projectSettings =
     inConfig(ValidatePR)(Defaults.testTasks) ++ Seq(
-      testOptions in ValidatePR += Tests
-        .Argument(TestFrameworks.ScalaTest, "-l", "performance"),
-      testOptions in ValidatePR += Tests
-        .Argument(TestFrameworks.ScalaTest, "-l", "long-running"),
-      testOptions in ValidatePR += Tests
-        .Argument(TestFrameworks.ScalaTest, "-l", "timing"),
+      testOptions in ValidatePR +=
+        Tests.Argument(TestFrameworks.ScalaTest, "-l", "performance"),
+      testOptions in ValidatePR +=
+        Tests.Argument(TestFrameworks.ScalaTest, "-l", "long-running"),
+      testOptions in ValidatePR +=
+        Tests.Argument(TestFrameworks.ScalaTest, "-l", "timing"),
       projectBuildMode in ValidatePR := {
         val log = streams.value.log
         log.debug(
@@ -259,11 +261,12 @@ object ValidatePullRequest extends AutoPlugin {
 
         buildMode.log(name.value, log)
 
-        val validationTasks = buildMode.task.toSeq ++ (buildMode match {
-          case BuildSkip =>
-            Seq.empty // do not run the additional task if project is skipped during pr validation
-          case _ => (additionalTasks in ValidatePR).value
-        })
+        val validationTasks = buildMode.task.toSeq ++
+          (buildMode match {
+            case BuildSkip =>
+              Seq.empty // do not run the additional task if project is skipped during pr validation
+            case _ => (additionalTasks in ValidatePR).value
+          })
 
         // Create a task for every validation task key and
         // then zip all of the tasks together discarding outputs.

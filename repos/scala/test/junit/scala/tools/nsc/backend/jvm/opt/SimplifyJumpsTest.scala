@@ -40,8 +40,7 @@ class SimplifyJumpsTest {
       Label(3),
       Op(ATHROW))
     val method = genMethod()(
-      Op(ACONST_NULL) ::
-        Jump(GOTO, Label(2)) :: // replaced by ATHROW
+      Op(ACONST_NULL) :: Jump(GOTO, Label(2)) :: // replaced by ATHROW
         rest: _*)
     assertTrue(LocalOptImpls.simplifyJumps(method))
     assertSameCode(
@@ -113,8 +112,8 @@ class SimplifyJumpsTest {
     // Label(22) will be re-written (jump-chain collapsing), so in a second round, the IFGE is still
     // rewritten to IFLT
     val twoRounds = genMethod()(
-      List(VarOp(ILOAD, 1), Jump(IFLE, Label(22))) ::: begin ::: Label(
-        22) :: rest: _*)
+      List(VarOp(ILOAD, 1), Jump(IFLE, Label(22))) ::: begin ::: Label(22) ::
+        rest: _*)
     assertTrue(LocalOptImpls.simplifyJumps(twoRounds))
     assertSameCode(
       instructionsFromMethod(twoRounds),
@@ -129,11 +128,8 @@ class SimplifyJumpsTest {
   @Test
   def ensureGotoRemoved(): Unit = {
     def code(jumps: Instruction*) =
-      List(VarOp(ILOAD, 1)) ::: jumps.toList ::: List(
-        Label(2),
-        Op(RETURN),
-        Label(3),
-        Op(RETURN))
+      List(VarOp(ILOAD, 1)) ::: jumps.toList :::
+        List(Label(2), Op(RETURN), Label(3), Op(RETURN))
 
     // ensures that the goto is safely removed. ASM supports removing while iterating, but not the
     // next element of the current. Here, the current is the IFGE, the next is the GOTO.
@@ -229,9 +225,8 @@ class SimplifyJumpsTest {
   @Test
   def thenElseSameTargetLoop(): Unit = {
     def ops(br: List[Instruction]) =
-      List(VarOp(ILOAD, 1), VarOp(ILOAD, 2)) ::: br ::: List(
-        Label(1),
-        Jump(GOTO, Label(1)))
+      List(VarOp(ILOAD, 1), VarOp(ILOAD, 2)) ::: br :::
+        List(Label(1), Jump(GOTO, Label(1)))
     val method = genMethod()(ops(List(Jump(IF_ICMPGE, Label(1)))): _*)
     assertTrue(LocalOptImpls.simplifyJumps(method))
     assertSameCode(instructionsFromMethod(method), ops(List(Op(POP), Op(POP))))

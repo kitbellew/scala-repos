@@ -488,8 +488,8 @@ class SemanticHighlightingSpec
       List(OperatorFieldSymbol)
     )
     // Call to foo is missing
-    sds should ===(
-      List((OperatorFieldSymbol, "!"), (OperatorFieldSymbol, "==")))
+    sds should
+      ===(List((OperatorFieldSymbol, "!"), (OperatorFieldSymbol, "==")))
   }
 
   it should "highlight implicit conversions" in withPresCompiler {
@@ -547,7 +547,7 @@ class SemanticHighlightingSpec
           """,
         List(FunctionCallSymbol)
       )
-      sds should ===(
-        List((FunctionCallSymbol, "fun"), (FunctionCallSymbol, "foo")))
+      sds should
+        ===(List((FunctionCallSymbol, "fun"), (FunctionCallSymbol, "foo")))
   }
 }

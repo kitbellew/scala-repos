@@ -31,14 +31,15 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
 
   private val adaptersTable: Map[String, TransportAdapterProvider] =
     for ((name, fqn) ← settings.Adapters) yield {
-      name -> system.dynamicAccess
-        .createInstanceFor[TransportAdapterProvider](fqn, immutable.Seq.empty)
-        .recover({
-          case e ⇒
-            throw new IllegalArgumentException(
-              s"Cannot instantiate transport adapter [${fqn}]",
-              e)
-        }).get
+      name ->
+        system.dynamicAccess
+          .createInstanceFor[TransportAdapterProvider](fqn, immutable.Seq.empty)
+          .recover({
+            case e ⇒
+              throw new IllegalArgumentException(
+                s"Cannot instantiate transport adapter [${fqn}]",
+                e)
+          }).get
     }
 
   def getAdapterProvider(name: String): TransportAdapterProvider =
@@ -200,9 +201,8 @@ abstract class ActorTransportAdapter(
   protected var manager: ActorRef = _
 
   private def registerManager(): Future[ActorRef] =
-    (system.actorSelection("/system/transports") ? RegisterTransportActor(
-      managerProps,
-      managerName)).mapTo[ActorRef]
+    (system.actorSelection("/system/transports") ?
+      RegisterTransportActor(managerProps, managerName)).mapTo[ActorRef]
 
   override def interceptListen(
       listenAddress: Address,

@@ -117,11 +117,11 @@ trait PrecogLibModule[M[+_]]
             range: Range): M[Map[ColumnRef, Column]] = {
           val slice = Slice(columns, range.end)
           val params = slice.deref(CPathIndex(1))
-          val urls =
-            params.columns.get(ColumnRef(CPath("url"), CString)) match {
-              case Some(col: StrColumn) => col
-              case _                    => ArrayStrColumn.empty(0)
-            }
+          val urls = params.columns
+            .get(ColumnRef(CPath("url"), CString)) match {
+            case Some(col: StrColumn) => col
+            case _                    => ArrayStrColumn.empty(0)
+          }
           val values = slice.deref(CPathIndex(0))
 
           // A list of (row, definedness) pairs. The row is the first row with
@@ -196,8 +196,8 @@ trait PrecogLibModule[M[+_]]
                     response <- httpError <-: responseE.validation
                     body <- httpError <-: response.ok.validation
                     json <-
-                      jsonError <-: (Error.thrown(_)) <-: JParser
-                        .parseFromString(body)
+                      jsonError <-: (Error.thrown(_)) <-:
+                        JParser.parseFromString(body)
                     data <- jsonError <-: (json \ "data")
                       .validated[List[JValue]]
                     result <- jsonError <-: populate(data)
@@ -214,11 +214,12 @@ trait PrecogLibModule[M[+_]]
               M point resultSlice
 
             case Failure(errors) =>
-              val messages = errors.toList map (_.fold(
-                { httpError =>
-                  "Error making HTTP request: " + httpError.userMessage
-                },
-                { jsonError => "Error parsing JSON: " + jsonError.message }))
+              val messages = errors.toList map
+                (_.fold(
+                  { httpError =>
+                    "Error making HTTP request: " + httpError.userMessage
+                  },
+                  { jsonError => "Error parsing JSON: " + jsonError.message }))
               val units: M[List[Unit]] = messages traverse (ctx.logger.error(_))
               units flatMap { _ => ctx.logger.die() map { _ => Map.empty } }
           }

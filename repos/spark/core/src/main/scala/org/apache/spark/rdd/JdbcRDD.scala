@@ -90,8 +90,8 @@ class JdbcRDD[T: ClassTag](
       if (conn.getMetaData.getURL.matches("jdbc:mysql:.*")) {
         stmt.setFetchSize(Integer.MIN_VALUE)
         logInfo(
-          "statement fetch size set to: " + stmt
-            .getFetchSize + " to force MySQL streaming ")
+          "statement fetch size set to: " + stmt.getFetchSize +
+            " to force MySQL streaming ")
       }
 
       stmt.setLong(1, part.lower)

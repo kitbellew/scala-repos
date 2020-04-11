@@ -38,8 +38,8 @@ object PluginCommandTest extends Specification {
         "plugin sbt.subpackage.PluginCommandTestPlugin1",
         PluginCommandTestPlugin0,
         PluginCommandTestPlugin1)
-      output must contain(
-        "sbt.subpackage.PluginCommandTestPlugin1 is activated.")
+      output must
+        contain("sbt.subpackage.PluginCommandTestPlugin1 is activated.")
     }
 
     "suggest a plugin when given an incorrect plugin with a similar name" in {

@@ -83,12 +83,10 @@ trait Kinds {
       (if (xs.isEmpty) "" else xs map f.tupled mkString ("\n", ", ", ""))
 
     def errorMessage(targ: Type, tparam: Symbol): String =
-      ((
-        targ + "'s type parameters do not match " + tparam + "'s expected parameters:"
-      )
-        + buildMessage(arity, arityMessage)
-        + buildMessage(variance, varianceMessage)
-        + buildMessage(strictness, strictnessMessage))
+      ((targ + "'s type parameters do not match " + tparam +
+        "'s expected parameters:") + buildMessage(arity, arityMessage) +
+        buildMessage(variance, varianceMessage) +
+        buildMessage(strictness, strictnessMessage))
   }
   val NoKindErrors = KindErrors(Nil, Nil, Nil)
 
@@ -107,8 +105,7 @@ trait Kinds {
     *  If `sym2` is invariant, `sym1`'s variance is irrelevant. Otherwise they must be equal.
     */
   private def variancesMatch(sym1: Symbol, sym2: Symbol) =
-    (sym2.variance.isInvariant
-      || sym1.variance == sym2.variance)
+    (sym2.variance.isInvariant || sym1.variance == sym2.variance)
 
   /** Check well-kindedness of type application (assumes arities are already checked) -- @M
     *
@@ -157,11 +154,14 @@ trait Kinds {
 
       if (settings.debug) {
         log(
-          "checkKindBoundsHK expected: " + param + " with params " + hkparams + " by definition in " + paramowner)
+          "checkKindBoundsHK expected: " + param + " with params " + hkparams +
+            " by definition in " + paramowner)
         log(
-          "checkKindBoundsHK supplied: " + arg + " with params " + hkargs + " from " + owner)
+          "checkKindBoundsHK supplied: " + arg + " with params " + hkargs +
+            " from " + owner)
         log(
-          "checkKindBoundsHK under params: " + underHKParams + " with args " + withHKArgs)
+          "checkKindBoundsHK under params: " + underHKParams + " with args " +
+            withHKArgs)
       }
 
       if (!sameLength(hkargs, hkparams)) {
@@ -197,16 +197,16 @@ trait Kinds {
               _ strictnessError (hkarg -> hkparam))
 
             debuglog(
-              "checkKindBoundsHK base case: " + hkparam +
-                " declared bounds: " + declaredBounds +
-                " after instantiating earlier hkparams: " + declaredBoundsInst + "\n" +
-                "checkKindBoundsHK base case: " + hkarg +
-                " has bounds: " + argumentBounds)
+              "checkKindBoundsHK base case: " + hkparam + " declared bounds: " +
+                declaredBounds + " after instantiating earlier hkparams: " +
+                declaredBoundsInst + "\n" + "checkKindBoundsHK base case: " +
+                hkarg + " has bounds: " + argumentBounds)
           } else {
             hkarg
               .initialize // SI-7902 otherwise hkarg.typeParams yields List(NoSymbol)!
             debuglog(
-              "checkKindBoundsHK recursing to compare params of " + hkparam + " with " + hkarg)
+              "checkKindBoundsHK recursing to compare params of " + hkparam +
+                " with " + hkarg)
             kindErrors ++= checkKindBoundsHK(
               hkarg.typeParams,
               hkarg,
@@ -222,8 +222,8 @@ trait Kinds {
 
     if (settings.debug && (tparams.nonEmpty || targs.nonEmpty))
       log(
-        "checkKindBounds0(" + tparams + ", " + targs + ", " + pre + ", "
-          + owner + ", " + explainErrors + ")")
+        "checkKindBounds0(" + tparams + ", " + targs + ", " + pre + ", " +
+          owner + ", " + explainErrors + ")")
 
     flatMap2(tparams, targs) { (tparam, targ) =>
       // Prevent WildcardType from causing kind errors, as typevars may be higher-order
@@ -328,10 +328,11 @@ trait Kinds {
         }
       // Replace Head(o, Some(1), a) with Head(o, None, a) if countByOrder(o) <= 1, so F1[A] becomes F[A]
       def removeOnes: StringState = {
-        val maxOrder = (tokens map {
-          case Head(o, _, _) => o
-          case _             => 0
-        }).max
+        val maxOrder =
+          (tokens map {
+            case Head(o, _, _) => o
+            case _             => 0
+          }).max
         StringState((tokens /: (0 to maxOrder)) {
           (ts: Seq[ScalaNotation], o: Int) =>
             if (countByOrder(o) <= 1) ts map {

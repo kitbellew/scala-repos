@@ -3,14 +3,14 @@ import Import._
 import Keys._
 
 object TestProject extends Build {
-  lazy val root = Project("root", file(".")) settings (
-    ivyPaths <<= (baseDirectory, target)((dir, t) =>
-      new IvyPaths(dir, Some(t / "ivy-cache"))),
-    libraryDependencies <+= baseDirectory(
-      transitive("javax.mail" % "mail" % "1.4.1")),
-    TaskKey[Unit]("check-transitive") <<= check(true),
-    TaskKey[Unit]("check-intransitive") <<= check(false)
-  )
+  lazy val root = Project("root", file(".")) settings
+    (
+      ivyPaths <<= (baseDirectory, target)((dir, t) =>
+        new IvyPaths(dir, Some(t / "ivy-cache"))),
+      libraryDependencies <+=
+        baseDirectory(transitive("javax.mail" % "mail" % "1.4.1")),
+      TaskKey[Unit]("check-transitive") <<= check(true),
+      TaskKey[Unit]("check-intransitive") <<= check(false))
 
   def transitive(dep: ModuleID)(base: File) =
     if ((base / "transitive").exists) dep else dep.intransitive()

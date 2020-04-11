@@ -212,8 +212,8 @@ class StreamExecution(
 
       lastExecution = new QueryExecution(sqlContext, newPlan)
       val executedPlan = lastExecution.executedPlan
-      val optimizerTime = (System.nanoTime() - optimizerStart)
-        .toDouble / 1000000
+      val optimizerTime = (System.nanoTime() - optimizerStart).toDouble /
+        1000000
       logDebug(s"Optimized batch in ${optimizerTime}ms")
 
       streamProgress.synchronized {

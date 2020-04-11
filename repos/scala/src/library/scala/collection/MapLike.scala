@@ -173,12 +173,10 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       with Serializable {
     def contains(key: A) = self.contains(key)
     def iterator = keysIterator
-    def +(elem: A): Set[A] =
-      (Set[A]() ++ this + elem)
-        .asInstanceOf[Set[A]] // !!! concrete overrides abstract problem
-    def -(elem: A): Set[A] =
-      (Set[A]() ++ this - elem)
-        .asInstanceOf[Set[A]] // !!! concrete overrides abstract problem
+    def +(elem: A): Set[A] = (Set[A]() ++ this + elem)
+      .asInstanceOf[Set[A]] // !!! concrete overrides abstract problem
+    def -(elem: A): Set[A] = (Set[A]() ++ this - elem)
+      .asInstanceOf[Set[A]] // !!! concrete overrides abstract problem
     override def size = self.size
     override def foreach[U](f: A => U) = self.keysIterator foreach f
   }

@@ -100,8 +100,8 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
   def vmOptions(): List[String] =
     List(
       "-classpath",
-      config.runtimeClasspath
-        .mkString("\"", File.pathSeparator, "\"")) ++ config.debugVMArgs
+      config.runtimeClasspath.mkString("\"", File.pathSeparator, "\"")) ++
+      config.debugVMArgs
 
   def withVM[T](action: (VM => T)): Option[T] = {
     maybeVM.synchronized {

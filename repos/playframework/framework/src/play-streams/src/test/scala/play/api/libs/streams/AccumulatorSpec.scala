@@ -51,11 +51,11 @@ object AccumulatorSpec extends Specification {
 
     "be recoverable" in {
 
-      "when the exception is introduced in the materialized value" in withMaterializer {
-        implicit m =>
+      "when the exception is introduced in the materialized value" in
+        withMaterializer { implicit m =>
           await(
             sum.map(error[Int]).recover { case e => 20 }.run(source)) must_== 20
-      }
+        }
 
       "when the exception comes from the stream" in withMaterializer {
         implicit m =>
@@ -65,18 +65,18 @@ object AccumulatorSpec extends Specification {
 
     "be recoverable with a future" in {
 
-      "when the exception is introduced in the materialized value" in withMaterializer {
-        implicit m =>
+      "when the exception is introduced in the materialized value" in
+        withMaterializer { implicit m =>
           await(
             sum.map(error[Int]).recoverWith { case e => Future(20) }
               .run(source)) must_== 20
-      }
+        }
 
       "when the exception comes from the stream" in withMaterializer {
         implicit m =>
           await(
-            sum.recoverWith { case e => Future(20) }
-              .run(errorSource)) must_== 20
+            sum.recoverWith { case e => Future(20) }.run(errorSource)) must_==
+            20
       }
     }
 
@@ -84,9 +84,10 @@ object AccumulatorSpec extends Specification {
       await(sum.through(Flow[Int].map(_ * 2)).run(source)) must_== 12
     }
 
-    "be able to be composed in a left to right asociate way" in withMaterializer {
-      implicit m => await(source ~>: Flow[Int].map(_ * 2) ~>: sum) must_== 12
-    }
+    "be able to be composed in a left to right asociate way" in
+      withMaterializer { implicit m =>
+        await(source ~>: Flow[Int].map(_ * 2) ~>: sum) must_== 12
+      }
 
     "be flattenable from a future of itself" in {
 
@@ -102,8 +103,8 @@ object AccumulatorSpec extends Specification {
       }
 
       "for a failed stream" in withMaterializer { implicit m =>
-        await(Accumulator.flatten(Future(sum)).run(errorSource)) must throwA[
-          RuntimeException]("error")
+        await(Accumulator.flatten(Future(sum)).run(errorSource)) must
+          throwA[RuntimeException]("error")
       }
     }
 

@@ -56,25 +56,19 @@ private[deploy] object JsonProtocol {
   }
 
   def writeApplicationDescription(obj: ApplicationDescription): JObject = {
-    ("name" -> obj.name) ~
-      ("cores" -> obj.maxCores) ~
-      ("memoryperslave" -> obj.memoryPerExecutorMB) ~
-      ("user" -> obj.user) ~
+    ("name" -> obj.name) ~ ("cores" -> obj.maxCores) ~
+      ("memoryperslave" -> obj.memoryPerExecutorMB) ~ ("user" -> obj.user) ~
       ("command" -> obj.command.toString)
   }
 
   def writeExecutorRunner(obj: ExecutorRunner): JObject = {
-    ("id" -> obj.execId) ~
-      ("memory" -> obj.memory) ~
-      ("appid" -> obj.appId) ~
+    ("id" -> obj.execId) ~ ("memory" -> obj.memory) ~ ("appid" -> obj.appId) ~
       ("appdesc" -> writeApplicationDescription(obj.appDesc))
   }
 
   def writeDriverInfo(obj: DriverInfo): JObject = {
-    ("id" -> obj.id) ~
-      ("starttime" -> obj.startTime.toString) ~
-      ("state" -> obj.state.toString) ~
-      ("cores" -> obj.desc.cores) ~
+    ("id" -> obj.id) ~ ("starttime" -> obj.startTime.toString) ~
+      ("state" -> obj.state.toString) ~ ("cores" -> obj.desc.cores) ~
       ("memory" -> obj.desc.mem)
   }
 
@@ -101,7 +95,7 @@ private[deploy] object JsonProtocol {
       ("memory" -> obj.memory) ~
       ("memoryused" -> obj.memoryUsed) ~
       ("executors" -> obj.executors.toList.map(writeExecutorRunner)) ~
-      ("finishedexecutors" -> obj.finishedExecutors.toList
-        .map(writeExecutorRunner))
+      ("finishedexecutors" ->
+        obj.finishedExecutors.toList.map(writeExecutorRunner))
   }
 }

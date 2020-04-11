@@ -366,29 +366,27 @@ private[precog] case class VectorN[+A](vector: Vector[A])
     }
   }
 
-  override def init =
-    (vector.length - 1) match {
-      case x if x <= 0 => Vector0
-      case 1           => Vector1(vector(0))
-      case 2           => Vector2(vector(0), vector(1))
-      case 3           => Vector3(vector(0), vector(1), vector(2))
-      case 4           => Vector4(vector(0), vector(1), vector(2), vector(3))
-      case _           => VectorN(vector.init)
-    }
+  override def init = (vector.length - 1) match {
+    case x if x <= 0 => Vector0
+    case 1           => Vector1(vector(0))
+    case 2           => Vector2(vector(0), vector(1))
+    case 3           => Vector3(vector(0), vector(1), vector(2))
+    case 4           => Vector4(vector(0), vector(1), vector(2), vector(3))
+    case _           => VectorN(vector.init)
+  }
 
   override def slice(from: Int, until: Int) = take(until).drop(from)
 
   override def splitAt(n: Int) = (take(n), drop(n))
 
-  override def tail =
-    (vector.length - 1) match {
-      case x if x <= 0 => Vector0
-      case 1           => Vector1(vector(1))
-      case 2           => Vector2(vector(1), vector(2))
-      case 3           => Vector3(vector(1), vector(2), vector(3))
-      case 4           => Vector4(vector(1), vector(2), vector(3), vector(4))
-      case _           => VectorN(vector.tail)
-    }
+  override def tail = (vector.length - 1) match {
+    case x if x <= 0 => Vector0
+    case 1           => Vector1(vector(1))
+    case 2           => Vector2(vector(1), vector(2))
+    case 3           => Vector3(vector(1), vector(2), vector(3))
+    case 4           => Vector4(vector(1), vector(2), vector(3), vector(4))
+    case _           => VectorN(vector.tail)
+  }
 
   override def take(n: Int) = {
     if (n >= length) { this }

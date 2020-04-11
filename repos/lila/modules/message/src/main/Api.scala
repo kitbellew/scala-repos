@@ -52,11 +52,11 @@ final class Api(
             if (me.troll || lila.security.Spam.detect(data.subject, data.text))
               t deleteFor invited
             else t
-          sendUnlessBlocked(thread, fromMod) >>-
-            updateUser(invited) >>- {
+          sendUnlessBlocked(thread, fromMod) >>- updateUser(invited) >>- {
             val text = s"${data.subject} ${data.text}"
-            shutup ! lila.hub.actorApi.shutup
-              .RecordPrivateMessage(me.id, invited.id, text)
+            shutup !
+              lila.hub.actorApi.shutup
+                .RecordPrivateMessage(me.id, invited.id, text)
           } inject thread
         }
       }
@@ -93,8 +93,9 @@ final class Api(
             }
           } >>- {
             val toUserId = newThread otherUserId me
-            shutup ! lila.hub.actorApi.shutup
-              .RecordPrivateMessage(me.id, toUserId, text)
+            shutup !
+              lila.hub.actorApi.shutup
+                .RecordPrivateMessage(me.id, toUserId, text)
           } inject newThread
       }
   }

@@ -97,14 +97,12 @@ object ScalaRefactoringUtil {
     var end = editor.getSelectionModel.getSelectionEnd
     if (start == end) return
     while (file.findElementAt(start).isInstanceOf[PsiWhiteSpace] ||
-           (file.findElementAt(start)
-             .isInstanceOf[PsiComment] && trimComments) ||
-           file.getText.charAt(start) == '\n' ||
+           (file.findElementAt(start).isInstanceOf[PsiComment] &&
+           trimComments) || file.getText.charAt(start) == '\n' ||
            file.getText.charAt(start) == ' ') start = start + 1
     while (file.findElementAt(end - 1).isInstanceOf[PsiWhiteSpace] ||
-           (file.findElementAt(end - 1)
-             .isInstanceOf[PsiComment] && trimComments) ||
-           file.getText.charAt(end - 1) == '\n' ||
+           (file.findElementAt(end - 1).isInstanceOf[PsiComment] &&
+           trimComments) || file.getText.charAt(end - 1) == '\n' ||
            file.getText.charAt(end - 1) == ' ') end = end - 1
     editor.getSelectionModel.setSelection(start, end)
   }
@@ -434,8 +432,8 @@ object ScalaRefactoringUtil {
         }
         val filter: ScLiteral => Boolean = {
           case toCheck: ScInterpolatedStringLiteral =>
-            toCheck.reference.fold("")(_.refName) == prefix && toCheck
-              .depthFirst.forall {
+            toCheck.reference.fold("")(_.refName) == prefix &&
+              toCheck.depthFirst.forall {
                 case ref: ScReferenceExpression =>
                   refNameToResolved.get(ref.refName).contains(ref.resolve())
                 case _ => true
@@ -903,8 +901,8 @@ object ScalaRefactoringUtil {
                   .isInstanceOf[ScTypeArgs] =>
             case typeInParenthesis: ScParenthesisedTypeElement =>
               val inType = typeInParenthesis.typeElement
-              if (inType.isDefined && !res
-                    .contains(typeInParenthesis.typeElement.get)) {
+              if (inType.isDefined &&
+                  !res.contains(typeInParenthesis.typeElement.get)) {
                 res += typeInParenthesis.typeElement.get
               }
             case typeElement: ScTypeElement => res += typeElement
@@ -975,8 +973,8 @@ object ScalaRefactoringUtil {
   }
 
   def isInplaceAvailable(editor: Editor): Boolean =
-    editor.getSettings.isVariableInplaceRenameEnabled && !ApplicationManager
-      .getApplication.isUnitTestMode
+    editor.getSettings.isVariableInplaceRenameEnabled &&
+      !ApplicationManager.getApplication.isUnitTestMode
 
   def enclosingContainer(parent: PsiElement): PsiElement = {
     Option(parent)
@@ -1113,12 +1111,11 @@ object ScalaRefactoringUtil {
         val afterWord = textRange.getStartOffset > 0 && {
           val prevElemType = file.findElementAt(textRange.getStartOffset - 1)
             .getNode.getElementType
-          ScalaTokenTypes.IDENTIFIER_TOKEN_SET
-            .contains(prevElemType) || ScalaTokenTypes.KEYWORDS
-            .contains(prevElemType)
+          ScalaTokenTypes.IDENTIFIER_TOKEN_SET.contains(prevElemType) ||
+          ScalaTokenTypes.KEYWORDS.contains(prevElemType)
         }
-        shift = pars.getTextRange.getStartOffset - inner.getTextRange
-          .getStartOffset + (if (afterWord) 1 else 0)
+        shift = pars.getTextRange.getStartOffset -
+          inner.getTextRange.getStartOffset + (if (afterWord) 1 else 0)
         document.replaceString(
           textRange.getStartOffset,
           textRange.getEndOffset,
@@ -1148,16 +1145,16 @@ object ScalaRefactoringUtil {
         if (replaceAsInjection) {
           val withNextChar = file.getText
             .substring(newRange.getStartOffset, newRange.getEndOffset + 1)
-          val needBraces = ScalaNamesUtil
-            .isIdentifier(withNextChar) && withNextChar.last != '$'
+          val needBraces = ScalaNamesUtil.isIdentifier(withNextChar) &&
+            withNextChar.last != '$'
           val text = if (needBraces) s"$${$newString}" else s"$$$newString"
           shift += (if (needBraces) 2 else 1)
           document
             .replaceString(newRange.getStartOffset, newRange.getEndOffset, text)
         } else {
           val quote = if (lit.isMultiLineString) "\"\"\"" else "\""
-          val isStart = newRange.getStartOffset == lit.contentRange
-            .getStartOffset
+          val isStart = newRange.getStartOffset ==
+            lit.contentRange.getStartOffset
           val isEnd = newRange.getEndOffset == lit.contentRange.getEndOffset
           val firstPart = if (!isStart) s"$quote + " else ""
           val lastPart = if (!isEnd) s" + $prefix$quote" else ""
@@ -1224,8 +1221,8 @@ object ScalaRefactoringUtil {
     val interpolated = Option(
       PsiTreeUtil
         .getParentOfType(elem, classOf[ScInterpolatedStringLiteral], false))
-    val expr = interpolated getOrElse PsiTreeUtil
-      .getParentOfType(elem, classOf[ScExpression], false)
+    val expr = interpolated getOrElse
+      PsiTreeUtil.getParentOfType(elem, classOf[ScExpression], false)
     val nextPar = nextParent(expr, elem.getContainingFile)
     nextPar match {
       case prevExpr: ScExpression if !checkEnd(nextPar, expr) =>
@@ -1329,9 +1326,8 @@ object ScalaRefactoringUtil {
         case _                              => false
       }
 
-      if (funDef != null && PsiTreeUtil
-            .isAncestor(candidate, funDef, true) && oneExprBody(funDef))
-        funDef.body.get
+      if (funDef != null && PsiTreeUtil.isAncestor(candidate, funDef, true) &&
+          oneExprBody(funDef)) funDef.body.get
       else if (isCaseClausesBlock) container(candidate.getContext, file)
       else candidate
     }
@@ -1403,8 +1399,8 @@ object ScalaRefactoringUtil {
       return true
     }
 
-    if (elements.isEmpty || !elements
-          .exists(_.isInstanceOf[ScBlockStatement])) {
+    if (elements.isEmpty ||
+        !elements.exists(_.isInstanceOf[ScBlockStatement])) {
       showErrorHint(
         ScalaBundle.message("cannot.extract.empty.message"),
         project,
@@ -1421,9 +1417,10 @@ object ScalaRefactoringUtil {
       place: PsiElement): Option[ScBlockStatement] = {
     place match {
       case null => None
-      case (bs: ScBlockStatement) childOf (_: ScBlock | _: ScEarlyDefinitions |
-          _: ScalaFile | _: ScTemplateBody) => Some(bs)
-      case other                            => findEnclosingBlockStatement(other.getParent)
+      case (bs: ScBlockStatement) childOf
+          (_: ScBlock | _: ScEarlyDefinitions | _: ScalaFile |
+          _: ScTemplateBody) => Some(bs)
+      case other             => findEnclosingBlockStatement(other.getParent)
     }
   }
 

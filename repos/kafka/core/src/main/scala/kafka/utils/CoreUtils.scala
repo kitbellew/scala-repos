@@ -231,10 +231,8 @@ object CoreUtils extends Logging {
     * Read a big-endian integer from a byte array
     */
   def readInt(bytes: Array[Byte], offset: Int): Int = {
-    ((bytes(offset) & 0xFF) << 24) |
-      ((bytes(offset + 1) & 0xFF) << 16) |
-      ((bytes(offset + 2) & 0xFF) << 8) |
-      (bytes(offset + 3) & 0xFF)
+    ((bytes(offset) & 0xFF) << 24) | ((bytes(offset + 1) & 0xFF) << 16) |
+      ((bytes(offset + 2) & 0xFF) << 8) | (bytes(offset + 3) & 0xFF)
   }
 
   /**
@@ -272,10 +270,9 @@ object CoreUtils extends Logging {
        * encode the C1 codes, but we do to be safe.
        */
       case c
-          if (
-            (c >= '\u0000' && c <= '\u001f') || (c >= '\u007f' && c <= '\u009f')
-          )  => "\\u%04x".format(c: Int)
-      case c => c
+          if ((c >= '\u0000' && c <= '\u001f') ||
+            (c >= '\u007f' && c <= '\u009f')) => "\\u%04x".format(c: Int)
+      case c                                  => c
     }.mkString
   }
 

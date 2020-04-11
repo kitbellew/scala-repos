@@ -185,8 +185,8 @@ class ActorEventBusSpec(conf: Config)
   def createNewEventBus(): BusType = new MyActorEventBus(system)
 
   // different actor in each event because we want each event to have a different classifier (see EventBusSpec tests)
-  def createEvents(numberOfEvents: Int) =
-    (0 until numberOfEvents).map(Notification(TestProbe().ref, _)).toSeq
+  def createEvents(numberOfEvents: Int) = (0 until numberOfEvents)
+    .map(Notification(TestProbe().ref, _)).toSeq
 
   def createSubscriber(pipeTo: ActorRef) =
     system.actorOf(Props(new TestActorWrapperActor(pipeTo)))

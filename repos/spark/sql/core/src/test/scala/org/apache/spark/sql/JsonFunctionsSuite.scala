@@ -38,10 +38,8 @@ class JsonFunctionsSuite extends QueryTest with SharedSQLContext {
       (
         "3",
         """{"f1": "value13", "f4": "value44", "f3": "value33", "f2": 2, "f5": 5.01}""") ::
-      ("4", null) ::
-      ("5", """{"f1": "", "f5": null}""") ::
-      ("6", "[invalid JSON string]") ::
-      Nil
+      ("4", null) :: ("5", """{"f1": "", "f5": null}""") ::
+      ("6", "[invalid JSON string]") :: Nil
 
   test("function get_json_object - null") {
     val df: DataFrame = tuples.toDF("key", "jstring")
@@ -51,8 +49,7 @@ class JsonFunctionsSuite extends QueryTest with SharedSQLContext {
         Row("3", "value13", "2", "value33", "value44", "5.01") ::
         Row("4", null, null, null, null, null) ::
         Row("5", "", null, null, null, null) ::
-        Row("6", null, null, null, null, null) ::
-        Nil
+        Row("6", null, null, null, null, null) :: Nil
 
     checkAnswer(
       df.select(
@@ -75,8 +72,7 @@ class JsonFunctionsSuite extends QueryTest with SharedSQLContext {
         Row("3", "value13", "2", "value33", "value44", "5.01") ::
         Row("4", null, null, null, null, null) ::
         Row("5", "", null, null, null, null) ::
-        Row("6", null, null, null, null, null) ::
-        Nil
+        Row("6", null, null, null, null, null) :: Nil
 
     checkAnswer(
       df.select(
@@ -94,10 +90,7 @@ class JsonFunctionsSuite extends QueryTest with SharedSQLContext {
     val expr = df.select(functions.json_tuple($"jstring", "f1", "f2"))
       .where($"c0".isNotNull).groupBy($"c1").count()
 
-    val expected = Row(null, 1) ::
-      Row("2", 2) ::
-      Row("value2", 1) ::
-      Nil
+    val expected = Row(null, 1) :: Row("2", 2) :: Row("value2", 1) :: Nil
 
     checkAnswer(expr, expected)
   }

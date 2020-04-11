@@ -44,8 +44,8 @@ class PullRequestServiceSpec
         val r3 = swap(
           generateNewPullRequest("user1/repo1/master4", "user1/repo1/head1"))
         assert(
-          getPullRequestFromBranch("user1", "repo1", "head1", "master") == Some(
-            r2))
+          getPullRequestFromBranch("user1", "repo1", "head1", "master") ==
+            Some(r2))
         updateClosed("user1", "repo1", r2._1.issueId, true)
         assert(Seq(r1, r2).contains(
           getPullRequestFromBranch("user1", "repo1", "head1", "master").get))

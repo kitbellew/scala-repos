@@ -86,7 +86,8 @@ class BalancingDispatcherSpec extends AkkaSpec(BalancingDispatcherSpec.config) {
       fast.underlying.asInstanceOf[ActorCell].actor.asInstanceOf[DelayableActor]
         .invocationCount should be > sentToFast
       fast.underlying.asInstanceOf[ActorCell].actor.asInstanceOf[DelayableActor]
-        .invocationCount should be >
+        .invocationCount should
+        be >
         (slow.underlying.asInstanceOf[ActorCell].actor
           .asInstanceOf[DelayableActor].invocationCount)
       system.stop(slow)

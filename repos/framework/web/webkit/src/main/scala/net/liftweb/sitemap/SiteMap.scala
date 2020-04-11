@@ -54,16 +54,13 @@ case class SiteMap(
     val name = in.name
     if (locs.isDefinedAt(name))
       throw new SiteMapException(
-        "Location " + name + " defined twice " +
-          locs(name) + " and " + in)
+        "Location " + name + " defined twice " + locs(name) + " and " + in)
     else locs = locs + (name -> in.asInstanceOf[Loc[_]])
 
     if (SiteMap.enforceUniqueLinks && !in.link.external_? &&
         locPath.contains(in.link.uriList))
       throw new SiteMapException(
-        "Location " + name +
-          " defines a duplicate link " +
-          in.link.uriList)
+        "Location " + name + " defines a duplicate link " + in.link.uriList)
 
     if (!in.link.external_?) locPath += in.link.uriList
   }

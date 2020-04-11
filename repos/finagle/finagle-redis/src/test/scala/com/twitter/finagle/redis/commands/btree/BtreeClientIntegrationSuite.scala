@@ -156,8 +156,8 @@ final class BtreeClientIntegrationSuite
       val target = client.bCard(StringToChannelBuffer(outerKey))
       assert(
         inner.size == Await.result(target),
-        "BCARD failed for " + outerKey + " expected " + inner
-          .size + " got " + Await.result(target))
+        "BCARD failed for " + outerKey + " expected " + inner.size + " got " +
+          Await.result(target))
     }
 
     println("Test BCARD succeeded")
@@ -174,7 +174,8 @@ final class BtreeClientIntegrationSuite
         val targetVal = CBToString(Await.result(target).get)
         assert(
           value == targetVal,
-          "BGET failed for " + outerKey + " expected " + value + " got " + targetVal)
+          "BGET failed for " + outerKey + " expected " + value + " got " +
+            targetVal)
       }
     }
 
@@ -337,8 +338,8 @@ final class BtreeClientIntegrationSuite
       got: Seq[(ChannelBuffer, ChannelBuffer)]) {
     assert(
       got.size == exp.size,
-      "BRANGE failed for " + outerKey + " expected size " + exp
-        .size + " got size " + got.size)
+      "BRANGE failed for " + outerKey + " expected size " + exp.size +
+        " got size " + got.size)
 
     for (i <- 0 until exp.size) {
       val expKey = exp(i)._1
@@ -347,10 +348,12 @@ final class BtreeClientIntegrationSuite
       val gotVal = CBToString(got(i)._2)
       assert(
         exp(i)._1 == CBToString(got(i)._1),
-        "Key mismatch for outerKey " + outerKey + " expected " + expKey + "got " + gotKey)
+        "Key mismatch for outerKey " + outerKey + " expected " + expKey +
+          "got " + gotKey)
       assert(
         exp(i)._2 == CBToString(got(i)._2),
-        "Value mismatch for outerKey " + outerKey + " expected " + expVal + "got " + gotVal)
+        "Value mismatch for outerKey " + outerKey + " expected " + expVal +
+          "got " + gotVal)
     }
   }
 }

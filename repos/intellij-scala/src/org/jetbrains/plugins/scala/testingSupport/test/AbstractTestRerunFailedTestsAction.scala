@@ -75,18 +75,16 @@ class AbstractTestRerunFailedTestsAction(
                 case None =>
                   parent = parent.getParent
                   if (parent == null)
-                    buffer += (
-                      (
-                        classNames.values.iterator.next(),
-                        getTestName(failed)))
+                    buffer +=
+                      ((classNames.values.iterator.next(), getTestName(failed)))
                 case Some(s) =>
                   buffer += ((s, getTestName(failed)))
                   parent = null
               }
             }
           }
-          if (extensionConfiguration != this && extensionConfiguration
-                .isInstanceOf[MyRunProfileAdapter] &&
+          if (extensionConfiguration != this &&
+              extensionConfiguration.isInstanceOf[MyRunProfileAdapter] &&
               extensionConfiguration.asInstanceOf[MyRunProfileAdapter]
                 .previoslyFailed != null) {
             var added = false

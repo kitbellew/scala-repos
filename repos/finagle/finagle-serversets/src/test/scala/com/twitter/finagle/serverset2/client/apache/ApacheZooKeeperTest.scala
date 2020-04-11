@@ -141,22 +141,23 @@ class ApacheZooKeeperTest
     assert(statsReceiver.counter("write_successes")() == 1)
   }
 
-  "create" should "submit properly constructed ephemeral empty znode create" in {
-    val created = zk.create(path, None, List(acl), ephMode)
+  "create" should
+    "submit properly constructed ephemeral empty znode create" in {
+      val created = zk.create(path, None, List(acl), ephMode)
 
-    verify(mockZK).create(
-      meq(path),
-      meq(null),
-      meq(apacheACLS),
-      meq(apacheEphMode),
-      stringCB.capture,
-      meq(null))
+      verify(mockZK).create(
+        meq(path),
+        meq(null),
+        meq(apacheACLS),
+        meq(apacheEphMode),
+        stringCB.capture,
+        meq(null))
 
-    val expected = path + "_expected"
-    stringCB.getValue.processResult(apacheOk, path, null, expected)
-    assert(Await.result(created) == expected)
-    assert(statsReceiver.counter("ephemeral_successes")() == 1)
-  }
+      val expected = path + "_expected"
+      stringCB.getValue.processResult(apacheOk, path, null, expected)
+      assert(Await.result(created) == expected)
+      assert(statsReceiver.counter("ephemeral_successes")() == 1)
+    }
 
   "create" should "submit properly constructed create" in {
     val created = zk.create(path, Some(data), List(acl), mode)
@@ -434,16 +435,17 @@ class ApacheZooKeeperTest
     assert(statsReceiver.counter("write_successes")() == 1)
   }
 
-  "setData" should "submit properly constructed unversioned empty znode setData" in {
-    val nodeStat = zk.setData(path, None, None)
+  "setData" should
+    "submit properly constructed unversioned empty znode setData" in {
+      val nodeStat = zk.setData(path, None, None)
 
-    verify(mockZK)
-      .setData(meq(path), meq(null), meq(-1), statCB.capture, meq(null))
+      verify(mockZK)
+        .setData(meq(path), meq(null), meq(-1), statCB.capture, meq(null))
 
-    statCB.getValue.processResult(apacheOk, path, null, apacheStat)
-    assert(Await.result(nodeStat) == stat)
-    assert(statsReceiver.counter("write_successes")() == 1)
-  }
+      statCB.getValue.processResult(apacheOk, path, null, apacheStat)
+      assert(Await.result(nodeStat) == stat)
+      assert(statsReceiver.counter("write_successes")() == 1)
+    }
 
   "setData" should "handle ZK error" in {
     val nodeStat = zk.setData(path, Some(data), Some(version))

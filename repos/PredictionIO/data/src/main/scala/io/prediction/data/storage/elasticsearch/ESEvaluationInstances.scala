@@ -48,20 +48,16 @@ class ESEvaluationInstances(
       (estype ->
         ("properties" ->
           ("status" -> ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-            ("startTime" -> ("type" -> "date")) ~
-            ("endTime" -> ("type" -> "date")) ~
-            ("evaluationClass" ->
-              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-            ("engineParamsGeneratorClass" ->
-              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-            ("batch" ->
-              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-            ("evaluatorResults" ->
-              ("type" -> "string") ~ ("index" -> "no")) ~
-            ("evaluatorResultsHTML" ->
-              ("type" -> "string") ~ ("index" -> "no")) ~
-            ("evaluatorResultsJSON" ->
-              ("type" -> "string") ~ ("index" -> "no"))))
+          ("startTime" -> ("type" -> "date")) ~
+          ("endTime" -> ("type" -> "date")) ~
+          ("evaluationClass" -> ("type" -> "string") ~
+            ("index" -> "not_analyzed")) ~
+          ("engineParamsGeneratorClass" -> ("type" -> "string") ~
+            ("index" -> "not_analyzed")) ~
+          ("batch" -> ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
+          ("evaluatorResults" -> ("type" -> "string") ~ ("index" -> "no")) ~
+          ("evaluatorResultsHTML" -> ("type" -> "string") ~ ("index" -> "no")) ~
+          ("evaluatorResultsJSON" -> ("type" -> "string") ~ ("index" -> "no"))))
     indices.preparePutMapping(index).setType(estype)
       .setSource(compact(render(json))).get
   }

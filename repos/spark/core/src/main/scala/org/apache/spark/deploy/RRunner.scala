@@ -46,8 +46,8 @@ object RRunner {
       // but kept here for backward compatibility.
       var cmd = sys.props.getOrElse("spark.sparkr.r.command", "Rscript")
       cmd = sys.props.getOrElse("spark.r.command", cmd)
-      if (sys.props
-            .getOrElse("spark.submit.deployMode", "client") == "client") {
+      if (sys.props.getOrElse("spark.submit.deployMode", "client") ==
+            "client") {
         cmd = sys.props.getOrElse("spark.r.driver.command", cmd)
       }
       cmd

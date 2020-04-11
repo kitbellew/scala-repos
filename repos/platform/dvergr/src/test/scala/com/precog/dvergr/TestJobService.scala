@@ -149,8 +149,7 @@ class JobServiceSpec extends TestJobService {
       prev: Option[BigDecimal] = None) = {
     putStatusRaw(jobId, prev)(JObject(
       JField("message", JString(message)) ::
-        JField("progress", JNum(progress)) ::
-        JField("unit", JString(unit)) ::
+        JField("progress", JNum(progress)) :: JField("unit", JString(unit)) ::
         (info map (JField("info", _) :: Nil) getOrElse Nil)))
   }
 
@@ -192,8 +191,8 @@ class JobServiceSpec extends TestJobService {
     "start job in unstarted state" in {
       postJob(simpleJob, validAPIKey).copoint must beLike {
         case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
-          (obj \ "state").validated[JobState] must_== Success(
-            JobState.NotStarted)
+          (obj \ "state").validated[JobState] must_==
+            Success(JobState.NotStarted)
       }
     }
 
@@ -259,13 +258,11 @@ class JobServiceSpec extends TestJobService {
 
     val cancellation: JValue = JObject(
       JField("state", JString("cancelled")) ::
-        JField("reason", JString("Because I said so.")) ::
-        Nil)
+        JField("reason", JString("Because I said so.")) :: Nil)
 
     val abort: JValue = JObject(
       JField("state", JString("aborted")) ::
-        JField("reason", JString("Yabba dabba doo!")) ::
-        Nil)
+        JField("reason", JString("Yabba dabba doo!")) :: Nil)
 
     "cancel started job with reason" in {
       val st = (for {
@@ -492,8 +489,8 @@ class JobServiceSpec extends TestJobService {
           Some(id2))
       } yield res).copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
-          obj \ "value" \ "message" must_== JString(
-            "Very nearly, almost there!")
+          obj \ "value" \ "message" must_==
+            JString("Very nearly, almost there!")
       }
     }
 
@@ -520,13 +517,11 @@ class JobServiceSpec extends TestJobService {
         jobId <- postJobAndGetId(simpleJob)
         res1 <- putStatusRaw(jobId, None)(JObject(Nil))
         res2 <- putStatusRaw(jobId, None)(JObject(
-          JField("message", JString("a")) :: JField(
-            "unit",
-            JString("%")) :: Nil))
+          JField("message", JString("a")) :: JField("unit", JString("%")) ::
+            Nil))
         res3 <- putStatusRaw(jobId, None)(JObject(
-          JField("message", JString("a")) :: JField(
-            "progress",
-            JNum(99)) :: Nil))
+          JField("message", JString("a")) :: JField("progress", JNum(99)) ::
+            Nil))
         res4 <- putStatusRaw(jobId, None)(JObject(
           JField("progress", JNum(99)) :: JField("unit", JString("%")) :: Nil))
       } yield (res1, res2, res3, res4)).copoint

@@ -44,8 +44,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           () => call.expectedType(),
           isUnderscore = false)
       case call: ScMethodCall =>
-        val args = call.argumentExpressions ++ call.getContext
-          .asInstanceOf[ScAssignStmt].getRExpression.toList
+        val args = call.argumentExpressions ++
+          call.getContext.asInstanceOf[ScAssignStmt].getRExpression.toList
         ContextInfo(Some(args), () => None, isUnderscore = false)
       case section: ScUnderscoreSection =>
         ContextInfo(None, () => section.expectedType(), isUnderscore = true)

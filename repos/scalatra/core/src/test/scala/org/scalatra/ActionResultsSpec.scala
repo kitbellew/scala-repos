@@ -75,8 +75,9 @@ abstract class ActionResultsSpec extends MutableScalatraSpec {
 
     "infer contentType for Array[Byte]" in {
       get("/bytes") {
-        response.getContentType mustEqual "text/plain; charset=" + java.nio
-          .charset.Charset.defaultCharset.displayName
+        response.getContentType mustEqual
+          "text/plain; charset=" +
+          java.nio.charset.Charset.defaultCharset.displayName
       }
     }
 
@@ -102,15 +103,15 @@ abstract class ActionResultsSpec extends MutableScalatraSpec {
 
     "set the Content-Type header if it exists in the headers map" in {
       get("/contentType") {
-        header(
-          "Content-Type") mustEqual "application/vnd.ms-excel; charset=UTF-8"
+        header("Content-Type") mustEqual
+          "application/vnd.ms-excel; charset=UTF-8"
       }
     }
 
     "set the Content-Type header if it's in lowercase in the headers map" in {
       get("/contentType?lcase=true") {
-        header(
-          "Content-Type") mustEqual "application/vnd.ms-excel; charset=UTF-8"
+        header("Content-Type") mustEqual
+          "application/vnd.ms-excel; charset=UTF-8"
       }
     }
   }

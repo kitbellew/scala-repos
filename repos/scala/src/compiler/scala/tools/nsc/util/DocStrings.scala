@@ -47,19 +47,20 @@ object DocStrings {
       val idx = skipWhitespace(str, start + 1)
       if (idx < str.length && (str charAt idx) == '*')
         skipWhitespace(str, idx + 1)
-      else if (idx + 2 < str.length && (str charAt idx) == '/' && (
-                 str charAt (idx + 1)
-               ) == '*' && (str charAt (idx + 2)) == '*')
-        skipWhitespace(str, idx + 3)
+      else if (idx + 2 < str.length &&
+               (str charAt idx) == '/' &&
+               (str charAt (idx + 1)) == '*' &&
+               (str charAt (idx + 2)) == '*') skipWhitespace(str, idx + 3)
       else idx
     }
 
   /** Skips to next occurrence of `\n` or to the position after the `/``**` sequence following index `start`.
     */
   def skipToEol(str: String, start: Int): Int =
-    if (start + 2 < str.length && (str charAt start) == '/' && (
-          str charAt (start + 1)
-        ) == '*' && (str charAt (start + 2)) == '*') start + 3
+    if (start + 2 < str.length &&
+        (str charAt start) == '/' &&
+        (str charAt (start + 1)) == '*' &&
+        (str charAt (start + 2)) == '*') start + 3
     else if (start < str.length && (str charAt start) != '\n')
       skipToEol(str, start + 1)
     else start
@@ -130,8 +131,8 @@ object DocStrings {
     startsWithTag(str, section._1, tag)
 
   def startsWithTag(str: String, start: Int, tag: String): Boolean =
-    str.startsWith(tag, start) && !isIdentifierPart(
-      str charAt (start + tag.length))
+    str.startsWith(tag, start) &&
+      !isIdentifierPart(str charAt (start + tag.length))
 
   /** The first start tag of a list of tag intervals,
     *  or the end of the whole comment string - 2 if list is empty
@@ -169,8 +170,8 @@ object DocStrings {
 
   /** Extracts variable name from a string, stripping any pair of surrounding braces */
   def variableName(str: String): String =
-    if (str.length >= 2 && (str charAt 0) == '{' && (str charAt (str
-          .length - 1)) == '}') str.substring(1, str.length - 1)
+    if (str.length >= 2 && (str charAt 0) == '{' &&
+        (str charAt (str.length - 1)) == '}') str.substring(1, str.length - 1)
     else str
 
   /** Returns index following variable, or start index if no variable was recognized
@@ -202,8 +203,7 @@ object DocStrings {
   def extractSectionParam(str: String, section: (Int, Int)): String = {
     val (beg, _) = section
     assert(
-      str.startsWith("@param", beg) ||
-        str.startsWith("@tparam", beg) ||
+      str.startsWith("@param", beg) || str.startsWith("@tparam", beg) ||
         str.startsWith("@throws", beg))
 
     val start = skipWhitespace(str, skipTag(str, beg))
@@ -215,8 +215,7 @@ object DocStrings {
   /** Extract the section text, except for the tag and comment newlines */
   def extractSectionText(str: String, section: (Int, Int)): (Int, Int) = {
     val (beg, end) = section
-    if (str.startsWith("@param", beg) ||
-        str.startsWith("@tparam", beg) ||
+    if (str.startsWith("@param", beg) || str.startsWith("@tparam", beg) ||
         str.startsWith("@throws", beg))
       (
         skipWhitespace(

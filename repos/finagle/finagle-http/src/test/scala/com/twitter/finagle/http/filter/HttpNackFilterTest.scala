@@ -109,8 +109,8 @@ class HttpNackFilterTest extends FunSuite {
       assert(rep.status == Status.InternalServerError)
       assert(rep.headerMap.get(HttpNackFilter.Header) == None)
       assert(
-        clientSr.counters
-          .get(Seq("http-client", "requeue", "requeues")) == None)
+        clientSr.counters.get(Seq("http-client", "requeue", "requeues")) ==
+          None)
 
       assert(serverSr.counters.get(Seq("myservice", "success")) == None)
       assert(serverSr.counters(Seq("myservice", "failures")) == 1)
@@ -134,8 +134,8 @@ class HttpNackFilterTest extends FunSuite {
       assert(rep.status == Status.InternalServerError)
       assert(rep.headerMap.get(HttpNackFilter.Header) == None)
       assert(
-        clientSr.counters
-          .get(Seq("http-client", "requeue", "requeues")) == None)
+        clientSr.counters.get(Seq("http-client", "requeue", "requeues")) ==
+          None)
 
       assert(serverSr.counters.get(Seq("myservice", "success")) == None)
       assert(serverSr.counters(Seq("myservice", "failures")) == 1)

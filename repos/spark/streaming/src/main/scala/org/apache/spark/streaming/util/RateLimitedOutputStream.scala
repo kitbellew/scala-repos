@@ -79,7 +79,8 @@ private[streaming] class RateLimitedOutputStream(
       if (sleepTimeInMillis > 0) {
         logTrace(
           "Natural rate is " + rate + " per second but desired rate is " +
-            desiredBytesPerSec + ", sleeping for " + sleepTimeInMillis + " ms to compensate.")
+            desiredBytesPerSec + ", sleeping for " + sleepTimeInMillis +
+            " ms to compensate.")
         Thread.sleep(sleepTimeInMillis)
       }
       waitToWrite(numBytes)

@@ -295,8 +295,7 @@ class MultiReaderTest
           ISet(
             (handle.messages ??),
             (handle.messages ??),
-            (handle.messages ??)) ==
-            ISet(ms(0), ms(1), ms(2)))
+            (handle.messages ??)) == ISet(ms(0), ms(1), ms(2)))
       }
     }
   }

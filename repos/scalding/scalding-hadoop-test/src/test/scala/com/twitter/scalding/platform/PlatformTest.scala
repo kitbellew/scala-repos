@@ -412,9 +412,8 @@ class PlatformTest
         .source(dataInput, data).sink(typedThrowAwayOutput) {
           _.toSet should have size 4
         }.sink(typedRealOutput) {
-          _.map { f: Float => (f * 10).toInt }.toList shouldBe (outputData.map {
-            f: Float => (f * 10).toInt
-          }.toList)
+          _.map { f: Float => (f * 10).toInt }.toList shouldBe
+            (outputData.map { f: Float => (f * 10).toInt }.toList)
         }.run
     }
   }

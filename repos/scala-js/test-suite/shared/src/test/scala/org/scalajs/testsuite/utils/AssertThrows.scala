@@ -29,8 +29,8 @@ object AssertThrows {
             actualThrown.asInstanceOf[T]
           } else {
             val mismatchMessage = "unexpected exception type thrown;" +
-              expectedThrowable.getSimpleName + " " + actualThrown.getClass
-              .getSimpleName
+              expectedThrowable.getSimpleName + " " +
+              actualThrown.getClass.getSimpleName
 
             val assertionError = new AssertionError(mismatchMessage)
             assertionError.initCause(actualThrown)

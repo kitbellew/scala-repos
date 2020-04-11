@@ -20,8 +20,8 @@ class HttpConfigurationSpec extends AkkaSpec {
 
   "Reference configurations" should {
     "have default client and server `parsing` settings" in {
-      ServerSettings(system).parserSettings.toString should ===(
-        ClientConnectionSettings(system).parserSettings.toString)
+      ServerSettings(system).parserSettings.toString should
+        ===(ClientConnectionSettings(system).parserSettings.toString)
     }
     "have default client and pool `parsing` settings" in {
       ServerSettings(system).parserSettings.toString should ===(
@@ -29,8 +29,8 @@ class HttpConfigurationSpec extends AkkaSpec {
           .toString)
     }
     "have default client and pool `client` settings" in {
-      ClientConnectionSettings(system).toString should ===(
-        ConnectionPoolSettings(system).connectionSettings.toString)
+      ClientConnectionSettings(system).toString should
+        ===(ConnectionPoolSettings(system).connectionSettings.toString)
     }
 
     "override value from `akka.http.parsing` by setting `akka.http.client.parsing`" in {
@@ -40,8 +40,8 @@ class HttpConfigurationSpec extends AkkaSpec {
         client.parserSettings.illegalHeaderWarnings should ===(Off)
 
         val pool = ConnectionPoolSettings(sys)
-        pool.connectionSettings.parserSettings.illegalHeaderWarnings should ===(
-          Off)
+        pool.connectionSettings.parserSettings.illegalHeaderWarnings should
+          ===(Off)
 
         val server = ServerSettings(sys)
         server.parserSettings.illegalHeaderWarnings should ===(On)
@@ -56,8 +56,8 @@ class HttpConfigurationSpec extends AkkaSpec {
           client.parserSettings.illegalHeaderWarnings should ===(On)
 
           val pool = ConnectionPoolSettings(sys)
-          pool.connectionSettings.parserSettings
-            .illegalHeaderWarnings should ===(Off)
+          pool.connectionSettings.parserSettings.illegalHeaderWarnings should
+            ===(Off)
 
           val server = ServerSettings(sys)
           server.parserSettings.illegalHeaderWarnings should ===(On)
@@ -77,9 +77,8 @@ class HttpConfigurationSpec extends AkkaSpec {
           pool.connectionSettings.idleTimeout should ===(1337.seconds)
 
           val server = ServerSettings(sys)
-          server.idleTimeout should ===(
-            60.seconds
-          ) // no change, default akka.http.server.idle-timeout
+          server.idleTimeout should
+            ===(60.seconds) // no change, default akka.http.server.idle-timeout
       }
     }
     "set `akka.http.server.idle-timeout` only" in {
@@ -104,8 +103,8 @@ class HttpConfigurationSpec extends AkkaSpec {
           client.parserSettings.illegalHeaderWarnings should ===(Off)
 
           val pool = ConnectionPoolSettings(sys)
-          pool.connectionSettings.parserSettings
-            .illegalHeaderWarnings should ===(Off)
+          pool.connectionSettings.parserSettings.illegalHeaderWarnings should
+            ===(Off)
 
           val server = ServerSettings(sys)
           server.parserSettings.illegalHeaderWarnings should ===(Off)
@@ -124,8 +123,8 @@ class HttpConfigurationSpec extends AkkaSpec {
         client.parserSettings.illegalHeaderWarnings should ===(On)
 
         val pool = ConnectionPoolSettings(sys)
-        pool.connectionSettings.parserSettings.illegalHeaderWarnings should ===(
-          On)
+        pool.connectionSettings.parserSettings.illegalHeaderWarnings should
+          ===(On)
 
         val server = ServerSettings(sys)
         server.parserSettings.illegalHeaderWarnings should ===(On)
@@ -145,8 +144,8 @@ class HttpConfigurationSpec extends AkkaSpec {
         client.parserSettings.illegalHeaderWarnings should ===(On)
 
         val pool = ConnectionPoolSettings(sys)
-        pool.connectionSettings.parserSettings.illegalHeaderWarnings should ===(
-          Off)
+        pool.connectionSettings.parserSettings.illegalHeaderWarnings should
+          ===(Off)
 
         val server = ServerSettings(sys)
         server.parserSettings.illegalHeaderWarnings should ===(On)

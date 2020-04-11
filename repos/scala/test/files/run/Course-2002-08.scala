@@ -336,8 +336,7 @@ object M5 {
       halfAdder(ain, bin, sout, cout);
 
       def result =
-        ((if (sout.getSignal) 1 else 0) +
-          (if (cout.getSignal) 2 else 0));
+        ((if (sout.getSignal) 1 else 0) + (if (cout.getSignal) 2 else 0));
 
       def test(a: Int, b: Int) = {
         ain setSignal (if (a == 0) false else true);
@@ -366,8 +365,7 @@ object M5 {
       fullAdder(ain, bin, cin, sout, cout);
 
       def result =
-        ((if (sout.getSignal) 1 else 0) +
-          (if (cout.getSignal) 2 else 0));
+        ((if (sout.getSignal) 1 else 0) + (if (cout.getSignal) 2 else 0));
 
       def test(a: Int, b: Int, c: Int) = {
         ain setSignal (if (a == 0) false else true);

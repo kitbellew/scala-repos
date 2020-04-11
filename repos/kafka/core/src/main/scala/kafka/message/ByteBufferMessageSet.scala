@@ -376,7 +376,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
         val size = topIter.getInt()
         if (size < Message.MinMessageOverhead)
           throw new InvalidMessageException(
-            "Message found with corrupt size (" + size + ") in shallow iterator")
+            "Message found with corrupt size (" + size +
+              ") in shallow iterator")
 
         // we have an incomplete message
         if (topIter.remaining < size) return allDone()
@@ -434,7 +435,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       messageFormatVersion: Byte = Message.CurrentMagicValue,
       messageTimestampType: TimestampType,
       messageTimestampDiffMaxMs: Long): (ByteBufferMessageSet, Boolean) = {
-    if (sourceCodec == NoCompressionCodec && targetCodec == NoCompressionCodec) {
+    if (sourceCodec == NoCompressionCodec &&
+        targetCodec == NoCompressionCodec) {
       // check the magic value
       if (!isMagicValueInAllWrapperMessages(messageFormatVersion)) {
         // Message format conversion
@@ -467,9 +469,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       // 4. Message format conversion is needed.
 
       // No in place assignment situation 1 and 2
-      var inPlaceAssignment =
-        sourceCodec == targetCodec && messageFormatVersion > Message
-          .MagicValue_V0
+      var inPlaceAssignment = sourceCodec == targetCodec &&
+        messageFormatVersion > Message.MagicValue_V0
 
       var maxTimestamp = Message.NoTimestamp
       val expectedInnerOffset = new LongRef(0)
@@ -478,8 +479,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
         val message = messageAndOffset.message
         validateMessageKey(message, compactedTopic)
 
-        if (message.magic > Message
-              .MagicValue_V0 && messageFormatVersion > Message.MagicValue_V0) {
+        if (message.magic > Message.MagicValue_V0 &&
+            messageFormatVersion > Message.MagicValue_V0) {
           // No in place assignment situation 3
           // Validate the timestamp
           validateTimestamp(
@@ -493,8 +494,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
           maxTimestamp = math.max(maxTimestamp, message.timestamp)
         }
 
-        if (sourceCodec != NoCompressionCodec && message
-              .compressionCodec != NoCompressionCodec)
+        if (sourceCodec != NoCompressionCodec &&
+            message.compressionCodec != NoCompressionCodec)
           throw new InvalidMessageException(
             "Compressed outer message should not have an inner message with a " +
               s"compression attribute set: $message")
@@ -510,9 +511,9 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
         val wrapperMessageTimestamp = {
           if (messageFormatVersion == Message.MagicValue_V0)
             Some(Message.NoTimestamp)
-          else if (messageFormatVersion > Message
-                     .MagicValue_V0 && messageTimestampType == TimestampType
-                     .CREATE_TIME) Some(maxTimestamp)
+          else if (messageFormatVersion > Message.MagicValue_V0 &&
+                   messageTimestampType == TimestampType.CREATE_TIME)
+            Some(maxTimestamp)
           else // Log append time
             Some(now)
         }
@@ -536,8 +537,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
         val attributeOffset = MessageSet.LogOverhead + Message.AttributesOffset
         val timestamp = buffer.getLong(timestampOffset)
         val attributes = buffer.get(attributeOffset)
-        if (messageTimestampType == TimestampType
-              .CREATE_TIME && timestamp == maxTimestamp)
+        if (messageTimestampType == TimestampType.CREATE_TIME &&
+            timestamp == maxTimestamp)
           // We don't need to recompute crc if the timestamp is not updated.
           crcUpdateNeeded = false
         else if (messageTimestampType == TimestampType.LOG_APPEND_TIME) {
@@ -573,8 +574,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       timestampType: TimestampType,
       messageTimestampDiffMaxMs: Long,
       toMagicValue: Byte): ByteBufferMessageSet = {
-    val sizeInBytesAfterConversion = shallowValidBytes + this
-      .internalIterator(isShallow = true).map { messageAndOffset =>
+    val sizeInBytesAfterConversion = shallowValidBytes +
+      this.internalIterator(isShallow = true).map { messageAndOffset =>
         Message.headerSizeDiff(messageAndOffset.message.magic, toMagicValue)
       }.sum
     val newBuffer = ByteBuffer.allocate(sizeInBytesAfterConversion)
@@ -589,8 +590,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
           messageTimestampDiffMaxMs)
         newBuffer.position(newMessagePosition)
         newBuffer.putLong(offsetCounter.getAndIncrement())
-        val newMessageSize = message.size + Message
-          .headerSizeDiff(message.magic, toMagicValue)
+        val newMessageSize = message.size +
+          Message.headerSizeDiff(message.magic, toMagicValue)
         newBuffer.putInt(newMessageSize)
         val newMessageBuffer = newBuffer.slice()
         newMessageBuffer.limit(newMessageSize)
@@ -654,8 +655,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       now: Long,
       timestampType: TimestampType,
       timestampDiffMaxMs: Long) {
-    if (timestampType == TimestampType.CREATE_TIME && math
-          .abs(message.timestamp - now) > timestampDiffMaxMs)
+    if (timestampType == TimestampType.CREATE_TIME &&
+        math.abs(message.timestamp - now) > timestampDiffMaxMs)
       throw new InvalidTimestampException(
         s"Timestamp ${message.timestamp} of message is out of range. " +
           s"The timestamp should be within [${now - timestampDiffMaxMs}, ${now + timestampDiffMaxMs}")

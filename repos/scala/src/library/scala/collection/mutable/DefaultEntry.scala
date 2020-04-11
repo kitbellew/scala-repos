@@ -19,8 +19,7 @@ final class DefaultEntry[A, B](val key: A, var value: B)
   override def toString = chainString
 
   def chainString = {
-    "(kv: " + key + ", " + value + ")" + (if (next != null)
-                                            " -> " + next.toString
-                                          else "")
+    "(kv: " + key + ", " + value + ")" +
+      (if (next != null) " -> " + next.toString else "")
   }
 }

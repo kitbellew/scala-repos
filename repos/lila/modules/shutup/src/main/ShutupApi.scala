@@ -63,18 +63,19 @@ final class ShutupApi(
               selector = BSONDocument("_id" -> userId),
               update = BSONDocument("$push" -> push),
               fetchNewObject = true,
-              upsert = true).map(_.value) map2 UserRecordBSONHandler
-              .read flatMap {
-              case None             => fufail(s"can't find user record for $userId")
-              case Some(userRecord) => legiferate(userRecord)
-            } logFailure lila.log("shutup")
+              upsert = true).map(_.value) map2
+              UserRecordBSONHandler.read flatMap {
+                case None             => fufail(s"can't find user record for $userId")
+                case Some(userRecord) => legiferate(userRecord)
+              } logFailure lila.log("shutup")
         }
     }
 
   private def legiferate(userRecord: UserRecord): Funit =
     userRecord.reports.exists(_.unacceptable) ?? {
-      reporter ! lila.hub.actorApi.report
-        .Shutup(userRecord.userId, reportText(userRecord))
+      reporter !
+        lila.hub.actorApi.report
+          .Shutup(userRecord.userId, reportText(userRecord))
       coll.update(
         BSONDocument("_id" -> userRecord.userId),
         BSONDocument(

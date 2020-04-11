@@ -48,8 +48,8 @@ object CharUtils {
     */
   def lowerHexDigit(int: Int): Char = lowerHexDigit_internal(int & 0x0F)
 
-  private def lowerHexDigit_internal(i: Int) =
-    (48 + i + (39 & ((9 - i) >> 31))).toChar
+  private def lowerHexDigit_internal(i: Int) = (48 + i + (39 & ((9 - i) >> 31)))
+    .toChar
 
   /**
     * Returns the upper-case hex digit corresponding to the last 4 bits of the given Long.
@@ -64,8 +64,8 @@ object CharUtils {
     */
   def upperHexDigit(int: Int): Char = upperHexDigit_internal(int & 0x0F)
 
-  private def upperHexDigit_internal(i: Int) =
-    (48 + i + (7 & ((9 - i) >> 31))).toChar
+  private def upperHexDigit_internal(i: Int) = (48 + i + (7 & ((9 - i) >> 31)))
+    .toChar
 
   /**
     * Efficiently converts the given long into an upper-case hex string.

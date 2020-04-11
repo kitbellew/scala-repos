@@ -31,8 +31,8 @@ class GraphMatValueSpec extends AkkaSpec {
           val f = RunnableGraph.fromGraph(GraphDSL.create(foldSink) {
             implicit b ⇒ fold ⇒
               Source(1 to 10) ~> fold
-              b.materializedValue.mapAsync(4)(identity) ~> Sink
-                .fromSubscriber(sub)
+              b.materializedValue.mapAsync(4)(identity) ~>
+                Sink.fromSubscriber(sub)
               ClosedShape
           }).run()
 
@@ -81,8 +81,8 @@ class GraphMatValueSpec extends AkkaSpec {
         "allow exposing the materialized value as port even if wrapped and the final materialized value is Unit" in {
           val noMatSource: Source[Int, Unit] = foldFeedbackSource
             .mapAsync(4)(identity).map(_ + 100).mapMaterializedValue((_) ⇒ ())
-          Await.result(noMatSource.runWith(Sink.head), 3.seconds) should ===(
-            155)
+          Await.result(noMatSource.runWith(Sink.head), 3.seconds) should
+            ===(155)
         }
 
         "work properly with nesting and reusing" in {
@@ -173,9 +173,9 @@ class GraphMatValueSpec extends AkkaSpec {
 
         "produce NotUsed when starting from Flow.via with transformation" in {
           var done = false
-          Source.empty.viaMat(Flow[Int].via(
-            Flow[Int].mapMaterializedValue(_ ⇒ done = true)))(Keep.right)
-            .to(Sink.ignore).run() should ===(akka.NotUsed)
+          Source.empty.viaMat(Flow[Int].via(Flow[Int].mapMaterializedValue(_ ⇒
+            done = true)))(Keep.right).to(Sink.ignore).run() should
+            ===(akka.NotUsed)
           done should ===(true)
         }
 

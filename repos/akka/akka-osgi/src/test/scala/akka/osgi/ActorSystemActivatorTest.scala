@@ -85,9 +85,9 @@ class RuntimeNameActorSystemActivatorTest
 
     "register an ActorSystem and add the bundle id to the system name" in {
       filterErrors() {
-        serviceForType[ActorSystem].name should be(
-          TestActivators.ACTOR_SYSTEM_NAME_PATTERN
-            .format(bundleForName(TEST_BUNDLE_NAME).getBundleId))
+        serviceForType[ActorSystem].name should
+          be(TestActivators.ACTOR_SYSTEM_NAME_PATTERN.format(
+            bundleForName(TEST_BUNDLE_NAME).getBundleId))
       }
     }
   }

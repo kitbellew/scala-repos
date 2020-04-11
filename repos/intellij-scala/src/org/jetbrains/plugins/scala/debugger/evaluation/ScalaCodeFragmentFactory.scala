@@ -100,10 +100,10 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
 
   def isContextAccepted(contextElement: PsiElement): Boolean = {
     if (contextElement.isInstanceOf[PsiCodeBlock]) {
-      return contextElement.getContext != null && contextElement.getContext
-        .getContext != null &&
-        contextElement.getContext.getContext.getLanguage == ScalaFileType
-          .SCALA_LANGUAGE
+      return contextElement.getContext != null &&
+        contextElement.getContext.getContext != null &&
+        contextElement.getContext.getContext.getLanguage ==
+        ScalaFileType.SCALA_LANGUAGE
     }
     if (contextElement == null) return false
     contextElement.getLanguage == ScalaFileType.SCALA_LANGUAGE
@@ -161,8 +161,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
     val names = markupMap.collect {
       case (obj: ObjectReference, markup: ValueMarkup)
           if StringUtil.isJavaIdentifier(markup.getText) =>
-        val labelName = markup.getText + CodeFragmentFactoryContextWrapper
-          .DEBUG_LABEL_SUFFIX
+        val labelName = markup.getText +
+          CodeFragmentFactoryContextWrapper.DEBUG_LABEL_SUFFIX
         reverseMap.put(labelName, obj)
         labelName
     }

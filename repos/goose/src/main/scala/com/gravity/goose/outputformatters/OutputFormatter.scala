@@ -179,8 +179,9 @@ trait OutputFormatter {
       for (el <- allNodes) {
         try {
           val stopWords = StopWords.getStopWordCount(el.text)
-          if (stopWords.getStopWordCount < 3 && el.getElementsByTag("object")
-                .size == 0 && el.getElementsByTag("embed").size == 0) {
+          if (stopWords.getStopWordCount < 3 &&
+              el.getElementsByTag("object").size == 0 &&
+              el.getElementsByTag("embed").size == 0) {
             logger.debug(
               "removeParagraphsWithFewWords - swcnt: %d removing text: %s"
                 .format(stopWords.getStopWordCount, el.text()))

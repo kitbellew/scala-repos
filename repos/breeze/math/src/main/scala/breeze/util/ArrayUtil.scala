@@ -222,8 +222,8 @@ object ArrayUtil {
     val ac = a.getClass
     val bc = b.getClass
     if (ac != bc || alength != blength) false
-    else if (aoffset == 0 && astride == 1 && alength == a
-               .length && boffset == 0 && bstride == 1 && blength == b.length) {
+    else if (aoffset == 0 && astride == 1 && alength == a.length &&
+             boffset == 0 && bstride == 1 && blength == b.length) {
       ArrayUtil.equals(a, b)
     } else {
       a match {

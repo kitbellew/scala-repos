@@ -98,12 +98,12 @@ abstract class Pickler extends SubComponent {
       *  added to fix that bug, but there may be a better way.
       */
     private def localizedOwner(sym: Symbol) =
-      if (isLocalToPickle(sym) && !isRootSym(sym) && !isLocalToPickle(
-            sym.owner))
+      if (isLocalToPickle(sym) && !isRootSym(sym) &&
+          !isLocalToPickle(sym.owner))
         // don't use a class as the localized owner for type parameters that are not owned by a class: those are not instantiated by asSeenFrom
         // however, they would suddenly be considered by asSeenFrom if their localized owner became a class (causing the crashes of #4079, #2741)
-        (if ((sym.isTypeParameter || sym.isValueParameter) && !sym.owner
-               .isClass) nonClassRoot
+        (if ((sym.isTypeParameter || sym.isValueParameter) &&
+             !sym.owner.isClass) nonClassRoot
          else root)
       else sym.owner
 
@@ -111,12 +111,11 @@ abstract class Pickler extends SubComponent {
       *  anyway? This is the case if symbol is a refinement class,
       *  an existentially bound variable, or a higher-order type parameter.
       */
-    private def isLocalToPickle(sym: Symbol): Boolean =
-      (sym != NoSymbol) && !sym.isPackageClass && (isRootSym(sym)
-        || sym.isRefinementClass
-        || sym.isAbstractType && sym.hasFlag(EXISTENTIAL) // existential param
-        || sym.isParameter
-        || isLocalToPickle(sym.owner))
+    private def isLocalToPickle(sym: Symbol): Boolean = (sym != NoSymbol) &&
+      !sym.isPackageClass &&
+      (isRootSym(sym) || sym.isRefinementClass ||
+        sym.isAbstractType && sym.hasFlag(EXISTENTIAL) // existential param
+        || sym.isParameter || isLocalToPickle(sym.owner))
     private def isExternalSymbol(sym: Symbol): Boolean =
       (sym != NoSymbol) && !isLocalToPickle(sym)
 
@@ -194,8 +193,9 @@ abstract class Pickler extends SubComponent {
                 // initially, but seems not to work, as the bug shows).
                 // Adding the LOCAL_CHILD is necessary to retain exhaustivity warnings under separate
                 // compilation. See test neg/aladdin1055.
-                val parents = (if (sym.isTrait) List(definitions.ObjectTpe)
-                               else Nil) ::: List(sym.tpe)
+                val parents =
+                  (if (sym.isTrait) List(definitions.ObjectTpe) else Nil) :::
+                    List(sym.tpe)
                 globals + sym.newClassWithInfo(
                   tpnme.LOCAL_CHILD,
                   parents,
@@ -205,8 +205,9 @@ abstract class Pickler extends SubComponent {
 
             putChildren(sym, children.toList sortBy (_.sealedSortName))
           }
-          for (annot <- (sym.annotations filter (ann =>
-                   ann.isStatic && !ann.isErroneous)).reverse)
+          for (annot <-
+                 (sym.annotations filter
+                   (ann => ann.isStatic && !ann.isErroneous)).reverse)
             putAnnotation(sym, annot)
         } else if (sym != NoSymbol) {
           putEntry(if (sym.isModuleClass) sym.name.toTermName else sym.name)

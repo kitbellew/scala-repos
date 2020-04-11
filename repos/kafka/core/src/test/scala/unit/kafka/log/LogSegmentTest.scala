@@ -230,8 +230,8 @@ class LogSegmentTest {
       for (i <- 0 until messagesAppended) seg.append(i, messages(i, i.toString))
       val offsetToBeginCorruption = TestUtils.random.nextInt(messagesAppended)
       // start corrupting somewhere in the middle of the chosen record all the way to the end
-      val position = seg.log.searchFor(offsetToBeginCorruption, 0)
-        .position + TestUtils.random.nextInt(15)
+      val position = seg.log.searchFor(offsetToBeginCorruption, 0).position +
+        TestUtils.random.nextInt(15)
       TestUtils.writeNonsenseToFile(
         seg.log.file,
         position,

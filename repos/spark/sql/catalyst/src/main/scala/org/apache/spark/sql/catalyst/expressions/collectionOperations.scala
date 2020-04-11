@@ -153,17 +153,17 @@ case class ArrayContains(left: Expression, right: Expression)
     if (right.dataType == NullType) {
       TypeCheckResult
         .TypeCheckFailure("Null typed values cannot be used as arguments")
-    } else if (!left.dataType.isInstanceOf[ArrayType]
-               || left.dataType.asInstanceOf[ArrayType].elementType != right
-                 .dataType) {
+    } else if (!left.dataType.isInstanceOf[ArrayType] ||
+               left.dataType.asInstanceOf[ArrayType].elementType !=
+                 right.dataType) {
       TypeCheckResult.TypeCheckFailure(
         "Arguments must be an array followed by a value of same type as the array members")
     } else { TypeCheckResult.TypeCheckSuccess }
   }
 
   override def nullable: Boolean = {
-    left.nullable || right.nullable || left.dataType.asInstanceOf[ArrayType]
-      .containsNull
+    left.nullable || right.nullable ||
+    left.dataType.asInstanceOf[ArrayType].containsNull
   }
 
   override def nullSafeEval(arr: Any, value: Any): Any = {

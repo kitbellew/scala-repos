@@ -60,10 +60,9 @@ private[ui] class HistoryNotFoundPage(parent: MasterWebUI)
     }.map { msg =>
       <div class="row-fluid">
           <div class="span12" style="font-size:14px">{msg}</div>
-        </div> ++
-        Option(exceptionParam).map { e => URLDecoder.decode(e, "UTF-8") }.map {
-          e => <pre>{e}</pre>
-        }.getOrElse(Seq.empty)
+        </div> ++ Option(exceptionParam).map { e =>
+        URLDecoder.decode(e, "UTF-8")
+      }.map { e => <pre>{e}</pre> }.getOrElse(Seq.empty)
     }.getOrElse(defaultContent)
 
     UIUtils.basicSparkPage(content, title)

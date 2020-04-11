@@ -252,15 +252,16 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       }
 
       def isSpecializedVersion(specName: String, nonSpecName: String) =
-        specName.startsWith(nonSpecName) && specializationSuffix.pattern
-          .matcher(specName.substring(nonSpecName.length)).matches
+        specName.startsWith(nonSpecName) &&
+          specializationSuffix.pattern
+            .matcher(specName.substring(nonSpecName.length)).matches
 
       def sameOrSpecializedType(specTp: Type, nonSpecTp: Type) = {
         specTp == nonSpecTp || {
           val specDesc = specTp.getDescriptor
           val nonSpecDesc = nonSpecTp.getDescriptor
-          specDesc.length == 1 && primitives
-            .contains(specDesc) && nonSpecDesc == ObjectRef.descriptor
+          specDesc.length == 1 && primitives.contains(specDesc) &&
+          nonSpecDesc == ObjectRef.descriptor
         }
       }
 
@@ -269,9 +270,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           nonSpecMethodDesc: String) = {
         val specArgs = Type.getArgumentTypes(specMethodDesc)
         val nonSpecArgs = Type.getArgumentTypes(nonSpecMethodDesc)
-        specArgs
-          .corresponds(nonSpecArgs)(
-            sameOrSpecializedType) && sameOrSpecializedType(
+        specArgs.corresponds(nonSpecArgs)(sameOrSpecializedType) &&
+        sameOrSpecializedType(
           Type.getReturnType(specMethodDesc),
           Type.getReturnType(nonSpecMethodDesc))
       }
@@ -325,8 +325,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       val res = new Array[Option[AbstractInsnNode]](invokeArgTypes.length)
       for (i <- invokeArgTypes.indices) {
         if (invokeArgTypes(i) == implMethodArgTypes(i)) { res(i) = None }
-        else if (isPrimitiveType(implMethodArgTypes(i)) && invokeArgTypes(i)
-                   .getDescriptor == ObjectRef.descriptor) {
+        else if (isPrimitiveType(implMethodArgTypes(i)) &&
+                 invokeArgTypes(i).getDescriptor == ObjectRef.descriptor) {
           res(i) = Some(getScalaUnbox(implMethodArgTypes(i)))
         } else if (isPrimitiveType(invokeArgTypes(i)) && implMethodArgTypes(i)
                      .getDescriptor == ObjectRef.descriptor) {
@@ -376,8 +376,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     // update maxStack
     // One slot per value is correct for long / double, see comment in the `analysis` package object.
     val numCapturedValues = localsForCapturedValues.locals.length
-    val invocationStackHeight =
-      stackHeight + numCapturedValues - 1 // -1 because the closure is gone
+    val invocationStackHeight = stackHeight + numCapturedValues -
+      1 // -1 because the closure is gone
     if (invocationStackHeight > ownerMethod.maxStack)
       ownerMethod.maxStack = invocationStackHeight
 
@@ -406,14 +406,14 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
 
     val bodyReturnType = Type.getReturnType(lambdaBodyHandle.getDesc)
     val invocationReturnType = Type.getReturnType(invocation.desc)
-    if (isPrimitiveType(invocationReturnType) && bodyReturnType
-          .getDescriptor == ObjectRef.descriptor) {
+    if (isPrimitiveType(invocationReturnType) &&
+        bodyReturnType.getDescriptor == ObjectRef.descriptor) {
       val op =
         if (invocationReturnType.getSort == Type.VOID) getPop(1)
         else getScalaUnbox(invocationReturnType)
       ownerMethod.instructions.insertBefore(invocation, op)
-    } else if (isPrimitiveType(bodyReturnType) && invocationReturnType
-                 .getDescriptor == ObjectRef.descriptor) {
+    } else if (isPrimitiveType(bodyReturnType) &&
+               invocationReturnType.getDescriptor == ObjectRef.descriptor) {
       val op =
         if (bodyReturnType.getSort == Type.VOID) getBoxedUnit
         else getScalaBox(bodyReturnType)
@@ -444,8 +444,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       case (bodyMethodNode, bodyMethodDeclClass) =>
         val bodyDeclClassType = classBTypeFromParsedClassfile(
           bodyMethodDeclClass)
-        val canInlineFromSource = compilerSettings
-          .YoptInlineGlobal || bodyMethodIsBeingCompiled
+        val canInlineFromSource = compilerSettings.YoptInlineGlobal ||
+          bodyMethodIsBeingCompiled
         Callee(
           callee = bodyMethodNode,
           calleeDeclarationClass = bodyDeclClassType,
@@ -488,8 +488,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     // (x: T) => ??? has return type Nothing$, and an ATHROW is added (see fixLoadedNothingOrNullValue).
     unreachableCodeEliminated -= ownerMethod
 
-    if (hasAdaptedImplMethod(closureInit) && inliner
-          .canInlineBody(bodyMethodCallsite).isEmpty)
+    if (hasAdaptedImplMethod(closureInit) &&
+        inliner.canInlineBody(bodyMethodCallsite).isEmpty)
       inliner.inlineCallsite(bodyMethodCallsite)
   }
 
@@ -509,8 +509,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
 
     val localsForCaptures = LocalsList
       .fromTypes(firstCaptureLocal, capturedTypes)
-    closureInit.ownerMethod.maxLocals = firstCaptureLocal + localsForCaptures
-      .size
+    closureInit.ownerMethod.maxLocals = firstCaptureLocal +
+      localsForCaptures.size
 
     insertStoreOps(indy, closureInit.ownerMethod, localsForCaptures, _ => None)
     insertLoadOps(indy, closureInit.ownerMethod, localsForCaptures)

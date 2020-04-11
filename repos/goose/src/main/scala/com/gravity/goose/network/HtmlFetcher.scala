@@ -118,8 +118,8 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
       HttpConnectionParams.setSoTimeout(params, config.getSocketTimeout())
 
       trace(
-        "Setting UserAgent To: " + HttpProtocolParams
-          .getUserAgent(httpClient.getParams))
+        "Setting UserAgent To: " +
+          HttpProtocolParams.getUserAgent(httpClient.getParams))
       val response: HttpResponse = httpClient.execute(httpget, localContext)
 
       HttpStatusValidator
@@ -196,12 +196,11 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
       is = new ByteArrayInputStream(htmlResult.getBytes("UTF-8"))
       mimeType = URLConnection.guessContentTypeFromStream(is)
       if (mimeType != null) {
-        if ((mimeType == "text/html") == true || (
-              mimeType == "application/xml"
-            ) == true) { return Some(htmlResult) }
+        if ((mimeType == "text/html") == true ||
+            (mimeType == "application/xml") == true) { return Some(htmlResult) }
         else {
-          if (htmlResult.contains("<title>") == true && htmlResult
-                .contains("<p>") == true) { return Some(htmlResult) }
+          if (htmlResult.contains("<title>") == true &&
+              htmlResult.contains("<p>") == true) { return Some(htmlResult) }
           trace("GRVBIGFAIL: " + mimeType + " - " + cleanUrl)
           throw new NotHtmlException(cleanUrl)
         }

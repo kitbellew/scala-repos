@@ -161,8 +161,9 @@ trait Crudify {
       "List " + Prefix,
       listPath,
       showAllMenuName,
-      addlMenuLocParams ::: (locSnippets :: Loc.Template(showAllTemplate) ::
-        showAllMenuLocParams))))
+      addlMenuLocParams :::
+        (locSnippets :: Loc.Template(showAllTemplate) ::
+          showAllMenuLocParams))))
 
   /**
     * Override to include new Params for the show all menu
@@ -177,8 +178,8 @@ trait Crudify {
       "Create " + Prefix,
       createPath,
       createMenuName,
-      (addlMenuLocParams ::: (locSnippets :: Loc.Template(createTemplate) ::
-        createMenuLocParams)))))
+      (addlMenuLocParams :::
+        (locSnippets :: Loc.Template(createTemplate) :: createMenuLocParams)))))
 
   /**
     * Override to include new Params for the create menu
@@ -201,10 +202,7 @@ trait Crudify {
         pointer <- fieldsForDisplay
         field <- computeFieldFromPointer(entry, pointer).toList
         if field.shouldDisplay_?
-      } yield {
-        ".name *" #> field.displayHtml &
-          ".value *" #> field.asHtml
-      }
+      } yield { ".name *" #> field.displayHtml & ".value *" #> field.asHtml }
     }
   }
 
@@ -354,10 +352,7 @@ trait Crudify {
         pointer <- fieldsForDisplay
         field <- computeFieldFromPointer(item, pointer).toList
         if field.shouldDisplay_?
-      } yield {
-        ".name *" #> field.displayHtml &
-          ".value *" #> field.asHtml
-      }
+      } yield { ".name *" #> field.displayHtml & ".value *" #> field.asHtml }
     }
   }
 
@@ -668,12 +663,9 @@ trait Crudify {
   protected def crudAllPrev(first: Long): (NodeSeq) => NodeSeq = {
     if (first < rowsPerPage) { ClearNodes }
     else {
-      "^ <*>" #>
-        <a href={
-          listPathString +
-            "?first=" + (0L max (first -
-            rowsPerPage.toLong))
-        }></a>
+      "^ <*>" #> <a href={
+        listPathString + "?first=" + (0L max (first - rowsPerPage.toLong))
+      }></a>
     }
   }
 
@@ -685,11 +677,9 @@ trait Crudify {
       list: List[TheCrudType]): (NodeSeq) => NodeSeq = {
     if (first < rowsPerPage) { ClearNodes }
     else {
-      "^ <*>" #>
-        <a href={
-          listPathString + "?first=" + (first +
-            rowsPerPage.toLong)
-        }></a>
+      "^ <*>" #> <a href={
+        listPathString + "?first=" + (first + rowsPerPage.toLong)
+      }></a>
     }
   }
 
@@ -701,10 +691,8 @@ trait Crudify {
     val first = S.param("first").map(toLong) openOr 0L
     val list = findForList(first, rowsPerPage)
 
-    ".header-item" #> doCrudAllHeaderItems &
-      ".row" #> doCrudAllRows(list) &
-      ".previous" #> crudAllPrev(first) &
-      ".next" #> crudAllNext(first, list)
+    ".header-item" #> doCrudAllHeaderItems & ".row" #> doCrudAllRows(list) &
+      ".previous" #> crudAllPrev(first) & ".next" #> crudAllNext(first, list)
   }
 
   lazy val locSnippets = new DispatchLocSnippets {
@@ -759,7 +747,8 @@ trait Crudify {
     def loop(html: NodeSeq): NodeSeq = {
       def error(field: BaseField): NodeSeq = {
         field.uniqueFieldId match {
-          case fid @ Full(id) => S.getNotices.filter(_._3 == fid).flatMap(err =>
+          case fid @ Full(id) =>
+            S.getNotices.filter(_._3 == fid).flatMap(err =>
               List(Text(" "), <span class={editErrorClass}>{err._2}</span>))
 
           case _ => NodeSeq.Empty
@@ -771,12 +760,10 @@ trait Crudify {
           pointer <- fieldsForEditing
           field <- computeFieldFromPointer(item, pointer).toList if field.show_?
           form <- field.toForm.toList
-          bindNode =
-            ".name *" #> {
-              wrapNameInRequired(field.displayHtml, field.required_?) ++
-                error(field)
-            } &
-              ".form *" #> form
+          bindNode = ".name *" #> {
+            wrapNameInRequired(field.displayHtml, field.required_?) ++
+              error(field)
+          } & ".form *" #> form
           node <- bindNode(html)
         } yield node
 
@@ -793,8 +780,7 @@ trait Crudify {
         }
 
       val bind =
-        ".field" #> doFields _ &
-          "type=submit" #> SHtml.onSubmitUnit(doSubmit _)
+        ".field" #> doFields _ & "type=submit" #> SHtml.onSubmitUnit(doSubmit _)
 
       bind(html)
     }

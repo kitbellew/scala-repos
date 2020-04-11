@@ -33,7 +33,8 @@ class DebuggingDirectivesSpec extends RoutingSpec {
       resetDebugMsg()
       Get("/hello") ~> route ~> check {
         response shouldEqual Ok
-        debugMsg shouldEqual "1: HttpRequest(HttpMethod(GET),http://example.com/hello,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1))\n"
+        debugMsg shouldEqual
+          "1: HttpRequest(HttpMethod(GET),http://example.com/hello,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1))\n"
       }
     }
   }
@@ -45,7 +46,8 @@ class DebuggingDirectivesSpec extends RoutingSpec {
       resetDebugMsg()
       Get("/hello") ~> route ~> check {
         response shouldEqual Ok
-        debugMsg shouldEqual "2: Complete(HttpResponse(200 OK,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1)))\n"
+        debugMsg shouldEqual
+          "2: Complete(HttpResponse(200 OK,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1)))\n"
       }
     }
   }
@@ -57,7 +59,8 @@ class DebuggingDirectivesSpec extends RoutingSpec {
       resetDebugMsg()
       Get("/hello") ~> route ~> check {
         response shouldEqual Ok
-        debugMsg shouldEqual """|3: Response for
+        debugMsg shouldEqual
+          """|3: Response for
                               |  Request : HttpRequest(HttpMethod(GET),http://example.com/hello,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1))
                               |  Response: Complete(HttpResponse(200 OK,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1)))
                               |""".stripMarginWithNewline("\n")

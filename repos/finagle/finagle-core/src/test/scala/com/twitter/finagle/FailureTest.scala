@@ -36,8 +36,7 @@ class FailureTest
     forAll(flag2) { f =>
       val e1, e2 = new Exception
 
-      Failure(e1, f) == Failure(e1, f) &&
-      Failure(e1, f) != Failure(e2, f) &&
+      Failure(e1, f) == Failure(e1, f) && Failure(e1, f) != Failure(e2, f) &&
       Failure(e1, f) != Failure(e1, ~f) &&
       Failure(e1, f).hashCode == Failure(e1, f).hashCode
     }
@@ -48,11 +47,9 @@ class FailureTest
 
     for (flags <- Seq(flag, flag2)) {
       forAll(flags.suchThat(_ != 0)) { f =>
-        Failure(e, f).isFlagged(f) &&
-        Failure(e).flagged(f) == Failure(e, f) &&
-        Failure(e, f) != Failure(e, f).unflagged(f) &&
-        Failure(e, f).isFlagged(f) &&
-        !Failure(e, 0).isFlagged(f)
+        Failure(e, f).isFlagged(f) && Failure(e).flagged(f) == Failure(e, f) &&
+        Failure(e, f) != Failure(e, f).unflagged(f) && Failure(e, f)
+          .isFlagged(f) && !Failure(e, 0).isFlagged(f)
       }
     }
   }
@@ -80,9 +77,8 @@ class FailureTest
 
   test("Failure.show") {
     assert(
-      Failure("ok", Failure.Restartable | Failure.Interrupted).show == Failure(
-        "ok",
-        Failure.Interrupted))
+      Failure("ok", Failure.Restartable | Failure.Interrupted).show ==
+        Failure("ok", Failure.Interrupted))
     val inner = new Exception
     assert(Failure.wrap(inner).show == inner)
     assert(Failure.wrap(Failure.wrap(inner)).show == inner)
@@ -122,8 +118,8 @@ class FailureTest
       Failure(
         "abc",
         new Exception,
-        Failure.Interrupted | Failure.Restartable | Failure.Naming | Failure
-          .Wrapped),
+        Failure.Interrupted | Failure.Restartable | Failure.Naming |
+          Failure.Wrapped),
       Failure("abc"),
       new Exception)
     val categories = Seq(

@@ -70,11 +70,11 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
     } finally { logData.close() }
     assert(eventMonster.loggedEvents.size === 2)
     assert(
-      eventMonster.loggedEvents(0) === JsonProtocol
-        .sparkEventToJson(applicationStart))
+      eventMonster.loggedEvents(0) ===
+        JsonProtocol.sparkEventToJson(applicationStart))
     assert(
-      eventMonster.loggedEvents(1) === JsonProtocol
-        .sparkEventToJson(applicationEnd))
+      eventMonster.loggedEvents(1) ===
+        JsonProtocol.sparkEventToJson(applicationEnd))
   }
 
   // This assumes the correctness of EventLoggingListener

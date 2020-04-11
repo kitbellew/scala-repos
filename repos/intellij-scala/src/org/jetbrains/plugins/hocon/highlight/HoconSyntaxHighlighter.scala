@@ -42,12 +42,12 @@ object HoconSyntaxHighlighter extends SyntaxHighlighter {
     QMark -> Array(HHC.OptionalSubstitutionSign),
     UnquotedChars -> Array(HHC.UnquotedString),
     Period -> Array(HHC.UnquotedString),
-    StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN -> Array(
-      HHC.ValidStringEscape),
-    StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN -> Array(
-      HHC.InvalidStringEscape),
-    StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN -> Array(
-      HHC.InvalidStringEscape)
+    StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN ->
+      Array(HHC.ValidStringEscape),
+    StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN ->
+      Array(HHC.InvalidStringEscape),
+    StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN ->
+      Array(HHC.InvalidStringEscape)
   )
 
   def getTokenHighlights(tokenType: IElementType) =

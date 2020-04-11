@@ -129,9 +129,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
           |SELECT r.*
           |FROM testData l join testData2 r on (l.key = r.a)
         """.stripMargin),
-      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
-        3,
-        2) :: Nil
+      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) ::
+        Row(3, 2) :: Nil
     )
   }
 
@@ -651,9 +650,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         |  (SELECT * FROM testData2 WHERE a = 1) x JOIN
         |  (SELECT * FROM testData2 WHERE a = 1) y
         |WHERE x.a = y.a""".stripMargin),
-      Row(1, 1, 1, 1) ::
-        Row(1, 1, 1, 2) ::
-        Row(1, 2, 1, 1) ::
+      Row(1, 1, 1, 1) :: Row(1, 1, 1, 2) :: Row(1, 2, 1, 1) ::
         Row(1, 2, 1, 2) :: Nil
     )
   }
@@ -690,20 +687,15 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("cartesian product join") {
     checkAnswer(
       testData3.join(testData3),
-      Row(1, null, 1, null) ::
-        Row(1, null, 2, 2) ::
-        Row(2, 2, 1, null) ::
+      Row(1, null, 1, null) :: Row(1, null, 2, 2) :: Row(2, 2, 1, null) ::
         Row(2, 2, 2, 2) :: Nil)
   }
 
   test("left outer join") {
     checkAnswer(
       sql("SELECT * FROM upperCaseData LEFT OUTER JOIN lowerCaseData ON n = N"),
-      Row(1, "A", 1, "a") ::
-        Row(2, "B", 2, "b") ::
-        Row(3, "C", 3, "c") ::
-        Row(4, "D", 4, "d") ::
-        Row(5, "E", null, null) ::
+      Row(1, "A", 1, "a") :: Row(2, "B", 2, "b") :: Row(3, "C", 3, "c") ::
+        Row(4, "D", 4, "d") :: Row(5, "E", null, null) ::
         Row(6, "F", null, null) :: Nil
     )
   }
@@ -712,11 +704,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       sql(
         "SELECT * FROM lowerCaseData RIGHT OUTER JOIN upperCaseData ON n = N"),
-      Row(1, "a", 1, "A") ::
-        Row(2, "b", 2, "B") ::
-        Row(3, "c", 3, "C") ::
-        Row(4, "d", 4, "D") ::
-        Row(null, null, 5, "E") ::
+      Row(1, "a", 1, "A") :: Row(2, "b", 2, "B") :: Row(3, "c", 3, "C") ::
+        Row(4, "d", 4, "D") :: Row(null, null, 5, "E") ::
         Row(null, null, 6, "F") :: Nil
     )
   }
@@ -730,11 +719,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
           |  (SELECT * FROM upperCaseData WHERE N >= 3) rightTable
           |    ON leftTable.N = rightTable.N
         """.stripMargin),
-      Row(1, "A", null, null) ::
-        Row(2, "B", null, null) ::
-        Row(3, "C", 3, "C") ::
-        Row(4, "D", 4, "D") ::
-        Row(null, null, 5, "E") ::
+      Row(1, "A", null, null) :: Row(2, "B", null, null) ::
+        Row(3, "C", 3, "C") :: Row(4, "D", 4, "D") :: Row(null, null, 5, "E") ::
         Row(null, null, 6, "F") :: Nil
     )
   }
@@ -762,13 +748,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       sql(
         "SELECT * FROM lowerCaseData INNER JOIN subset1 ON subset1.n = lowerCaseData.n"),
-      Row(3, "c", 3) ::
-        Row(4, "d", 4) :: Nil)
+      Row(3, "c", 3) :: Row(4, "d", 4) :: Nil)
     checkAnswer(
       sql(
         "SELECT * FROM lowerCaseData INNER JOIN subset2 ON subset2.n = lowerCaseData.n"),
-      Row(1, "a", 1) ::
-        Row(2, "b", 2) :: Nil)
+      Row(1, "a", 1) :: Row(2, "b", 2) :: Nil)
   }
 
   test("mixed-case keywords") {
@@ -780,11 +764,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
           |  (sElEcT * FROM upperCaseData whERe N >= 3) rightTable
           |    oN leftTable.N = rightTable.N
         """.stripMargin),
-      Row(1, "A", null, null) ::
-        Row(2, "B", null, null) ::
-        Row(3, "C", 3, "C") ::
-        Row(4, "D", 4, "D") ::
-        Row(null, null, 5, "E") ::
+      Row(1, "A", null, null) :: Row(2, "B", null, null) ::
+        Row(3, "C", 3, "C") :: Row(4, "D", 4, "D") :: Row(null, null, 5, "E") ::
         Row(null, null, 6, "F") :: Nil
     )
   }
@@ -845,20 +826,17 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("UNION") {
     checkAnswer(
       sql("SELECT * FROM lowerCaseData UNION SELECT * FROM upperCaseData"),
-      Row(1, "A") :: Row(1, "a") :: Row(2, "B") :: Row(2, "b") :: Row(
-        3,
-        "C") :: Row(3, "c") ::
-        Row(4, "D") :: Row(4, "d") :: Row(5, "E") :: Row(6, "F") :: Nil
+      Row(1, "A") :: Row(1, "a") :: Row(2, "B") :: Row(2, "b") :: Row(3, "C") ::
+        Row(3, "c") :: Row(4, "D") :: Row(4, "d") :: Row(5, "E") ::
+        Row(6, "F") :: Nil
     )
     checkAnswer(
       sql("SELECT * FROM lowerCaseData UNION SELECT * FROM lowerCaseData"),
       Row(1, "a") :: Row(2, "b") :: Row(3, "c") :: Row(4, "d") :: Nil)
     checkAnswer(
       sql("SELECT * FROM lowerCaseData UNION ALL SELECT * FROM lowerCaseData"),
-      Row(1, "a") :: Row(1, "a") :: Row(2, "b") :: Row(2, "b") :: Row(
-        3,
-        "c") :: Row(3, "c") ::
-        Row(4, "d") :: Row(4, "d") :: Nil
+      Row(1, "a") :: Row(1, "a") :: Row(2, "b") :: Row(2, "b") :: Row(3, "c") ::
+        Row(3, "c") :: Row(4, "d") :: Row(4, "d") :: Nil
     )
   }
 
@@ -867,16 +845,15 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       sql(
         "SELECT n,l FROM lowerCaseData UNION SELECT N as x1, L as x2 FROM upperCaseData"),
-      Row(1, "A") :: Row(1, "a") :: Row(2, "B") :: Row(2, "b") :: Row(
-        3,
-        "C") :: Row(3, "c") ::
-        Row(4, "D") :: Row(4, "d") :: Row(5, "E") :: Row(6, "F") :: Nil
+      Row(1, "A") :: Row(1, "a") :: Row(2, "B") :: Row(2, "b") :: Row(3, "C") ::
+        Row(3, "c") :: Row(4, "D") :: Row(4, "d") :: Row(5, "E") ::
+        Row(6, "F") :: Nil
     )
     // Column type mismatches are not allowed, forcing a type coercion.
     checkAnswer(
       sql("SELECT n FROM lowerCaseData UNION SELECT L FROM upperCaseData"),
-      ("1" :: "2" :: "3" :: "4" :: "A" :: "B" :: "C" :: "D" :: "E" :: "F" :: Nil)
-        .map(Row(_)))
+      ("1" :: "2" :: "3" :: "4" :: "A" :: "B" :: "C" :: "D" :: "E" :: "F" ::
+        Nil).map(Row(_)))
     // Column type mismatches where a coercion is not possible, in this case between integer
     // and array types, trigger a TreeNodeException.
     intercept[AnalysisException] {
@@ -887,10 +864,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("EXCEPT") {
     checkAnswer(
       sql("SELECT * FROM lowerCaseData EXCEPT SELECT * FROM upperCaseData"),
-      Row(1, "a") ::
-        Row(2, "b") ::
-        Row(3, "c") ::
-        Row(4, "d") :: Nil)
+      Row(1, "a") :: Row(2, "b") :: Row(3, "c") :: Row(4, "d") :: Nil)
     checkAnswer(
       sql("SELECT * FROM lowerCaseData EXCEPT SELECT * FROM lowerCaseData"),
       Nil)
@@ -902,10 +876,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("INTERSECT") {
     checkAnswer(
       sql("SELECT * FROM lowerCaseData INTERSECT SELECT * FROM lowerCaseData"),
-      Row(1, "a") ::
-        Row(2, "b") ::
-        Row(3, "c") ::
-        Row(4, "d") :: Nil)
+      Row(1, "a") :: Row(2, "b") :: Row(3, "c") :: Row(4, "d") :: Nil)
     checkAnswer(
       sql("SELECT * FROM lowerCaseData INTERSECT SELECT * FROM upperCaseData"),
       Nil)
@@ -938,9 +909,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     sql(s"SET ${testKey + testKey}=${testVal + testVal}")
     checkAnswer(
       sql("set"),
-      overrideConfs ++ Seq(
-        Row(testKey, testVal),
-        Row(testKey + testKey, testVal + testVal)))
+      overrideConfs ++
+        Seq(Row(testKey, testVal), Row(testKey + testKey, testVal + testVal)))
 
     // "set key"
     checkAnswer(sql(s"SET $testKey"), Row(testKey, testVal))
@@ -977,17 +947,12 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     df1.registerTempTable("applySchema1")
     checkAnswer(
       sql("SELECT * FROM applySchema1"),
-      Row(1, "A1", true, null) ::
-        Row(2, "B2", false, null) ::
-        Row(3, "C3", true, null) ::
-        Row(4, "D4", true, 2147483644) :: Nil)
+      Row(1, "A1", true, null) :: Row(2, "B2", false, null) ::
+        Row(3, "C3", true, null) :: Row(4, "D4", true, 2147483644) :: Nil)
 
     checkAnswer(
       sql("SELECT f1, f4 FROM applySchema1"),
-      Row(1, null) ::
-        Row(2, null) ::
-        Row(3, null) ::
-        Row(4, 2147483644) :: Nil)
+      Row(1, null) :: Row(2, null) :: Row(3, null) :: Row(4, 2147483644) :: Nil)
 
     val schema2 = StructType(
       StructField(
@@ -1018,10 +983,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       sql("SELECT f1.f11, f2['D4'] FROM applySchema2"),
-      Row(1, null) ::
-        Row(2, null) ::
-        Row(3, null) ::
-        Row(4, 2147483644) :: Nil)
+      Row(1, null) :: Row(2, null) :: Row(3, null) :: Row(4, 2147483644) :: Nil)
 
     // The value of a MapType column can be a mutable map.
     val rowRDD3 = unparsedStrings.map { r =>
@@ -1039,10 +1001,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       sql("SELECT f1.f11, f2['D4'] FROM applySchema3"),
-      Row(1, null) ::
-        Row(2, null) ::
-        Row(3, null) ::
-        Row(4, 2147483644) :: Nil)
+      Row(1, null) :: Row(2, null) :: Row(3, null) :: Row(4, 2147483644) :: Nil)
   }
 
   test("SPARK-3423 BETWEEN") {
@@ -1359,8 +1318,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-6898: complete support for special chars in column names") {
     sqlContext.read.json(sparkContext.makeRDD(
-      """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" :: Nil))
-      .registerTempTable("t")
+      """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" ::
+        Nil)).registerTempTable("t")
 
     checkAnswer(
       sql("SELECT a.`c.b`, `b.$q`[0].`a@!.q`, `q.w`.`w.i&`[0] FROM t"),
@@ -1741,34 +1700,24 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       structDf.select($"record.a", $"record.b"),
-      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
-        3,
-        2) :: Nil)
+      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) ::
+        Row(3, 2) :: Nil)
 
     checkAnswer(
       structDf.select($"record.*"),
-      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
-        3,
-        2) :: Nil)
+      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) ::
+        Row(3, 2) :: Nil)
 
     checkAnswer(
       structDf.select($"record.*", $"record.*"),
-      Row(1, 1, 1, 1) :: Row(1, 2, 1, 2) :: Row(2, 1, 2, 1) :: Row(
-        2,
-        2,
-        2,
-        2) ::
-        Row(3, 1, 3, 1) :: Row(3, 2, 3, 2) :: Nil)
+      Row(1, 1, 1, 1) :: Row(1, 2, 1, 2) :: Row(2, 1, 2, 1) ::
+        Row(2, 2, 2, 2) :: Row(3, 1, 3, 1) :: Row(3, 2, 3, 2) :: Nil)
 
     checkAnswer(
       sql("select struct(a, b) as r1, struct(b, a) as r2 from testData2")
         .select($"r1.*", $"r2.*"),
-      Row(1, 1, 1, 1) :: Row(1, 2, 2, 1) :: Row(2, 1, 1, 2) :: Row(
-        2,
-        2,
-        2,
-        2) ::
-        Row(3, 1, 1, 3) :: Row(3, 2, 2, 3) :: Nil
+      Row(1, 1, 1, 1) :: Row(1, 2, 2, 1) :: Row(2, 1, 1, 2) ::
+        Row(2, 2, 2, 2) :: Row(3, 1, 1, 3) :: Row(3, 2, 2, 3) :: Nil
     )
 
     // Try with a registered table.
@@ -1776,9 +1725,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       .registerTempTable("structTable")
     checkAnswer(
       sql("SELECT record.* FROM structTable"),
-      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
-        3,
-        2) :: Nil)
+      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) ::
+        Row(3, 2) :: Nil)
 
     checkAnswer(
       sql("""
@@ -1836,12 +1784,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       nestedStructData.select($"record.*"),
-      Row(Row(1, 1), Row(1, 1)) :: Row(Row(1, 2), Row(2, 1)) :: Row(
-        Row(2, 1),
-        Row(1, 2)) ::
-        Row(Row(2, 2), Row(2, 2)) :: Row(Row(3, 1), Row(1, 3)) :: Row(
-        Row(3, 2),
-        Row(2, 3)) :: Nil
+      Row(Row(1, 1), Row(1, 1)) :: Row(Row(1, 2), Row(2, 1)) ::
+        Row(Row(2, 1), Row(1, 2)) :: Row(Row(2, 2), Row(2, 2)) ::
+        Row(Row(3, 1), Row(1, 3)) :: Row(Row(3, 2), Row(2, 3)) :: Nil
     )
     checkAnswer(
       nestedStructData.select($"record.r1"),
@@ -1849,9 +1794,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         Row(Row(3, 1)) :: Row(Row(3, 2)) :: Nil)
     checkAnswer(
       nestedStructData.select($"record.r1.*"),
-      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
-        3,
-        2) :: Nil)
+      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) ::
+        Row(3, 2) :: Nil)
 
     // Try with a registered table
     withTempTable("nestedStructTable") {
@@ -1909,17 +1853,14 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       // Unqualified should resolve to table.
       checkAnswer(
         sql("SELECT nameConflict.* FROM nameConflict"),
-        Row(Row(1, 1), 1) :: Row(Row(1, 2), 1) :: Row(Row(2, 1), 2) :: Row(
-          Row(2, 2),
-          2) ::
-          Row(Row(3, 1), 3) :: Row(Row(3, 2), 3) :: Nil
+        Row(Row(1, 1), 1) :: Row(Row(1, 2), 1) :: Row(Row(2, 1), 2) ::
+          Row(Row(2, 2), 2) :: Row(Row(3, 1), 3) :: Row(Row(3, 2), 3) :: Nil
       )
       // Qualify the struct type with the table name.
       checkAnswer(
         sql("SELECT nameConflict.nameConflict.* FROM nameConflict"),
-        Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
-          3,
-          2) :: Nil)
+        Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) ::
+          Row(3, 2) :: Nil)
     }
   }
 
@@ -2037,12 +1978,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       sql(
         "select course, year, sum(earnings) from courseSales group by rollup(course, year)" +
           " order by course, year"),
-      Row(null, null, 113000.0) ::
-        Row("Java", null, 50000.0) ::
-        Row("Java", 2012, 20000.0) ::
-        Row("Java", 2013, 30000.0) ::
-        Row("dotNET", null, 63000.0) ::
-        Row("dotNET", 2012, 15000.0) ::
+      Row(null, null, 113000.0) :: Row("Java", null, 50000.0) ::
+        Row("Java", 2012, 20000.0) :: Row("Java", 2013, 30000.0) ::
+        Row("dotNET", null, 63000.0) :: Row("dotNET", 2012, 15000.0) ::
         Row("dotNET", 2013, 48000.0) :: Nil
     )
   }
@@ -2053,13 +1991,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         "select course, sum(earnings) as sum from courseSales group by course, earnings " +
           "grouping sets((), (course), (course, earnings)) " +
           "order by course, sum"),
-      Row(null, 113000.0) ::
-        Row("Java", 20000.0) ::
-        Row("Java", 30000.0) ::
-        Row("Java", 50000.0) ::
-        Row("dotNET", 5000.0) ::
-        Row("dotNET", 10000.0) ::
-        Row("dotNET", 48000.0) ::
+      Row(null, 113000.0) :: Row("Java", 20000.0) :: Row("Java", 30000.0) ::
+        Row("Java", 50000.0) :: Row("dotNET", 5000.0) ::
+        Row("dotNET", 10000.0) :: Row("dotNET", 48000.0) ::
         Row("dotNET", 63000.0) :: Nil
     )
 
@@ -2068,14 +2002,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         "select course, sum(earnings) as sum, grouping_id(course, earnings) from courseSales " +
           "group by course, earnings grouping sets((), (course), (course, earnings)) " +
           "order by course, sum"),
-      Row(null, 113000.0, 3) ::
-        Row("Java", 20000.0, 0) ::
-        Row("Java", 30000.0, 0) ::
-        Row("Java", 50000.0, 1) ::
-        Row("dotNET", 5000.0, 0) ::
-        Row("dotNET", 10000.0, 0) ::
-        Row("dotNET", 48000.0, 0) ::
-        Row("dotNET", 63000.0, 1) :: Nil
+      Row(null, 113000.0, 3) :: Row("Java", 20000.0, 0) ::
+        Row("Java", 30000.0, 0) :: Row("Java", 50000.0, 1) ::
+        Row("dotNET", 5000.0, 0) :: Row("dotNET", 10000.0, 0) ::
+        Row("dotNET", 48000.0, 0) :: Row("dotNET", 63000.0, 1) :: Nil
     )
   }
 
@@ -2083,14 +2013,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       sql(
         "select course, year, sum(earnings) from courseSales group by cube(course, year)"),
-      Row("Java", 2012, 20000.0) ::
-        Row("Java", 2013, 30000.0) ::
-        Row("Java", null, 50000.0) ::
-        Row("dotNET", 2012, 15000.0) ::
-        Row("dotNET", 2013, 48000.0) ::
-        Row("dotNET", null, 63000.0) ::
-        Row(null, 2012, 35000.0) ::
-        Row(null, 2013, 78000.0) ::
+      Row("Java", 2012, 20000.0) :: Row("Java", 2013, 30000.0) ::
+        Row("Java", null, 50000.0) :: Row("dotNET", 2012, 15000.0) ::
+        Row("dotNET", 2013, 48000.0) :: Row("dotNET", null, 63000.0) ::
+        Row(null, 2012, 35000.0) :: Row(null, 2013, 78000.0) ::
         Row(null, null, 113000.0) :: Nil
     )
   }
@@ -2100,26 +2026,22 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       sql(
         "select course, year, sum(earnings) from courseSales group by course, year " +
           "grouping sets(course, year)"),
-      Row("Java", null, 50000.0) ::
-        Row("dotNET", null, 63000.0) ::
-        Row(null, 2012, 35000.0) ::
-        Row(null, 2013, 78000.0) :: Nil
+      Row("Java", null, 50000.0) :: Row("dotNET", null, 63000.0) ::
+        Row(null, 2012, 35000.0) :: Row(null, 2013, 78000.0) :: Nil
     )
 
     checkAnswer(
       sql(
         "select course, year, sum(earnings) from courseSales group by course, year " +
           "grouping sets(course)"),
-      Row("Java", null, 50000.0) ::
-        Row("dotNET", null, 63000.0) :: Nil
+      Row("Java", null, 50000.0) :: Row("dotNET", null, 63000.0) :: Nil
     )
 
     checkAnswer(
       sql(
         "select course, year, sum(earnings) from courseSales group by course, year " +
           "grouping sets(year)"),
-      Row(null, 2012, 35000.0) ::
-        Row(null, 2013, 78000.0) :: Nil
+      Row(null, 2012, 35000.0) :: Row(null, 2013, 78000.0) :: Nil
     )
   }
 
@@ -2128,14 +2050,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       sql(
         "select course, year, grouping(course), grouping(year), grouping_id(course, year)" +
           " from courseSales group by cube(course, year)"),
-      Row("Java", 2012, 0, 0, 0) ::
-        Row("Java", 2013, 0, 0, 0) ::
-        Row("Java", null, 0, 1, 1) ::
-        Row("dotNET", 2012, 0, 0, 0) ::
-        Row("dotNET", 2013, 0, 0, 0) ::
-        Row("dotNET", null, 0, 1, 1) ::
-        Row(null, 2012, 1, 0, 2) ::
-        Row(null, 2013, 1, 0, 2) ::
+      Row("Java", 2012, 0, 0, 0) :: Row("Java", 2013, 0, 0, 0) ::
+        Row("Java", null, 0, 1, 1) :: Row("dotNET", 2012, 0, 0, 0) ::
+        Row("dotNET", 2013, 0, 0, 0) :: Row("dotNET", null, 0, 1, 1) ::
+        Row(null, 2012, 1, 0, 2) :: Row(null, 2013, 1, 0, 2) ::
         Row(null, null, 1, 1, 3) :: Nil
     )
 
@@ -2144,22 +2062,22 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         "select course, year, grouping(course) from courseSales group by course, year")
     }
     assert(
-      error
-        .getMessage contains "grouping() can only be used with GroupingSets/Cube/Rollup")
+      error.getMessage contains
+        "grouping() can only be used with GroupingSets/Cube/Rollup")
     error = intercept[AnalysisException] {
       sql(
         "select course, year, grouping_id(course, year) from courseSales group by course, year")
     }
     assert(
-      error
-        .getMessage contains "grouping_id() can only be used with GroupingSets/Cube/Rollup")
+      error.getMessage contains
+        "grouping_id() can only be used with GroupingSets/Cube/Rollup")
     error = intercept[AnalysisException] {
       sql(
         "select course, year, grouping__id from courseSales group by cube(course, year)")
     }
     assert(
-      error
-        .getMessage contains "grouping__id is deprecated; use grouping_id() instead")
+      error.getMessage contains
+        "grouping__id is deprecated; use grouping_id() instead")
   }
 
   test("SPARK-13056: Null in map value causes NPE") {
@@ -2240,10 +2158,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
       checkAnswer(
         sql("SELECT * FROM nt1 natural left join nt2 order by v1, v2"),
-        Row("one", 1, 1) :: Row("one", 1, 5) :: Row("two", 2, 22) :: Row(
-          "three",
-          3,
-          null) :: Nil)
+        Row("one", 1, 1) :: Row("one", 1, 5) :: Row("two", 2, 22) ::
+          Row("three", 3, null) :: Nil)
 
       checkAnswer(
         sql("SELECT * FROM nt1 natural right join nt2 order by v1, v2"),

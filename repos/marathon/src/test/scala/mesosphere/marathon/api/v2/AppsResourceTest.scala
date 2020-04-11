@@ -52,8 +52,8 @@ class AppsResourceTest
     val group = Group(PathId("/"), Set(app))
     val plan = DeploymentPlan(group, group)
     val body = Json.stringify(Json.toJson(app)).getBytes("UTF-8")
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
     groupManager.rootGroup() returns Future.successful(group)
 
     When("The create request is made")
@@ -86,8 +86,8 @@ class AppsResourceTest
     var group = Group(PathId("/"), Set(app))
     var plan = DeploymentPlan(group, group)
     var body = Json.stringify(Json.toJson(app)).getBytes("UTF-8")
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
     groupManager.rootGroup() returns Future.successful(group)
 
     Then("A constraint violation exception is thrown")
@@ -102,8 +102,8 @@ class AppsResourceTest
     group = Group(PathId("/"), Set(app))
     plan = DeploymentPlan(group, group)
     body = Json.stringify(Json.toJson(app)).getBytes("UTF-8")
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
     groupManager.rootGroup() returns Future.successful(group)
 
     response = appsResource.create(body, false, auth.request)
@@ -117,8 +117,8 @@ class AppsResourceTest
     group = Group(PathId("/"), Set(app))
     plan = DeploymentPlan(group, group)
     body = Json.stringify(Json.toJson(app)).getBytes("UTF-8")
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
     groupManager.rootGroup() returns Future.successful(group)
 
     response = appsResource.create(body, false, auth.request)
@@ -136,12 +136,12 @@ class AppsResourceTest
     val group = Group(PathId("/"), Set(app))
     val plan = DeploymentPlan(group, group)
     val appJson = Json.toJson(app).as[JsObject]
-    val appJsonWithOnlyPorts =
-      appJson - "portDefinitions" + ("ports" -> Json.parse("""[1000, 1001]"""))
+    val appJsonWithOnlyPorts = appJson - "portDefinitions" +
+      ("ports" -> Json.parse("""[1000, 1001]"""))
     val body = Json.stringify(appJsonWithOnlyPorts).getBytes("UTF-8")
 
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
     groupManager.rootGroup() returns Future.successful(group)
 
     When("The create request is made")
@@ -170,8 +170,8 @@ class AppsResourceTest
     val group = Group(PathId("/"), Set(app))
     val plan = DeploymentPlan(group, group)
     val body = Json.stringify(Json.toJson(app)).getBytes("UTF-8")
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
 
     Then("A constraint violation exception is thrown")
     val response = appsResource.create(body, false, auth.request)
@@ -184,8 +184,8 @@ class AppsResourceTest
       .stringify(Json.obj("id" -> "/foo", "cmd" -> "cmd", "instances" -> 0.1))
     val group = Group(PathId("/"), Set.empty)
     val plan = DeploymentPlan(group, group)
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
     groupManager.rootGroup() returns Future.successful(group)
 
     Then("A constraint violation exception is thrown")
@@ -201,8 +201,8 @@ class AppsResourceTest
     val group = Group(PathId("/"), Set(app))
     val plan = DeploymentPlan(group, group)
     val body = """{ "cmd": "bla" }""".getBytes("UTF-8")
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
     groupManager.app(PathId("/app")) returns Future.successful(Some(app))
 
     When("The application is updated")
@@ -219,14 +219,13 @@ class AppsResourceTest
     val app = AppDefinition(id = PathId("/app"), cmd = Some("foo"))
     val group = Group(PathId("/"), Set(app))
     val plan = DeploymentPlan(group, group)
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
     groupManager.app(PathId("/app")) returns Future.successful(Some(app))
 
     val appJson = Json.toJson(app).as[JsObject]
-    val appJsonWithOnlyPorts =
-      appJson - "uris" - "portDefinitions" - "version" +
-        ("ports" -> Json.parse("""[1000, 1001]"""))
+    val appJsonWithOnlyPorts = appJson - "uris" - "portDefinitions" -
+      "version" + ("ports" -> Json.parse("""[1000, 1001]"""))
     val body = Json.stringify(appJsonWithOnlyPorts).getBytes("UTF-8")
 
     When("The application is updated")
@@ -249,8 +248,8 @@ class AppsResourceTest
         |    "type": "DOCKER"
         |  }
         |}""".stripMargin.getBytes("UTF-8")
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
 
     When("The application is updated")
     val response = appsResource
@@ -285,8 +284,8 @@ class AppsResourceTest
         |  }
         |}
       """.stripMargin.getBytes("UTF-8")
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
 
     When("The request is processed")
     val response = appsResource.create(body, false, auth.request)
@@ -314,8 +313,8 @@ class AppsResourceTest
         |    }
         |  }
         |}""".stripMargin.getBytes("UTF-8")
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
 
     When("The application is updated")
     val response = appsResource
@@ -334,8 +333,8 @@ class AppsResourceTest
     service.deploy(any, any) returns Future.successful(())
     groupManager.app(PathId("/app")) returns Future.successful(Some(app))
 
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .successful(plan)
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.successful(plan)
     val response = appsResource
       .restart(app.id.toString, force = true, auth.request)
     response.getStatus should be(200)
@@ -345,8 +344,8 @@ class AppsResourceTest
     val missing = PathId("/app")
     groupManager.app(PathId("/app")) returns Future.successful(None)
 
-    groupManager.updateApp(any, any, any, any, any) returns Future
-      .failed(new UnknownAppException(missing))
+    groupManager.updateApp(any, any, any, any, any) returns
+      Future.failed(new UnknownAppException(missing))
 
     intercept[UnknownAppException] {
       appsResource.restart(missing.toString, force = true, auth.request)
@@ -361,8 +360,8 @@ class AppsResourceTest
       app,
       maybeDeployments = Some(Seq(Identifiable("deployment-123"))),
       maybeCounts = Some(TaskCounts(1, 2, 3, 4)))
-    appInfoService.selectAppsBy(any, eq(expectedEmbeds)) returns Future
-      .successful(Seq(appInfo))
+    appInfoService.selectAppsBy(any, eq(expectedEmbeds)) returns
+      Future.successful(Seq(appInfo))
 
     When("The the index is fetched without any filters")
     val response = appsResource
@@ -370,8 +369,8 @@ class AppsResourceTest
 
     Then("The response holds counts and deployments")
     val appJson = Json.parse(response.getEntity.asInstanceOf[String])
-    (appJson \ "apps" \\ "deployments" head) should be(
-      Json.arr(Json.obj("id" -> "deployment-123")))
+    (appJson \ "apps" \\ "deployments" head) should
+      be(Json.arr(Json.obj("id" -> "deployment-123")))
     (appJson \ "apps" \\ "tasksStaged" head) should be(JsNumber(1))
   }
 
@@ -398,38 +397,34 @@ class AppsResourceTest
     search(cmd = Some(""), id = None, label = None) should be(Set(app1, app2))
     search(cmd = Some("party"), id = None, label = None) should be(Set(app1))
     search(cmd = Some("work"), id = None, label = None) should be(Set(app2))
-    search(cmd = Some("hard"), id = None, label = None) should be(
-      Set(app1, app2))
+    search(cmd = Some("hard"), id = None, label = None) should
+      be(Set(app1, app2))
     search(cmd = Some("none"), id = None, label = None) should be(Set.empty)
 
-    search(cmd = None, id = Some("app"), label = None) should be(
-      Set(app1, app2))
-    search(cmd = None, id = Some("service-a"), label = None) should be(
-      Set(app1))
-    search(cmd = Some("party"), id = Some("app"), label = None) should be(
-      Set(app1))
-    search(cmd = Some("work"), id = Some("app"), label = None) should be(
-      Set(app2))
-    search(cmd = Some("hard"), id = Some("service-a"), label = None) should be(
-      Set(app1))
-    search(cmd = Some(""), id = Some(""), label = None) should be(
-      Set(app1, app2))
+    search(cmd = None, id = Some("app"), label = None) should
+      be(Set(app1, app2))
+    search(cmd = None, id = Some("service-a"), label = None) should
+      be(Set(app1))
+    search(cmd = Some("party"), id = Some("app"), label = None) should
+      be(Set(app1))
+    search(cmd = Some("work"), id = Some("app"), label = None) should
+      be(Set(app2))
+    search(cmd = Some("hard"), id = Some("service-a"), label = None) should
+      be(Set(app1))
+    search(cmd = Some(""), id = Some(""), label = None) should
+      be(Set(app1, app2))
 
     search(cmd = None, id = None, label = Some("b==2")) should be(Set(app1))
-    search(
-      cmd = Some("party"),
-      id = Some("app"),
-      label = Some("a==1")) should be(Set(app1))
-    search(
-      cmd = Some("work"),
-      id = Some("app"),
-      label = Some("a==1")) should be(Set(app2))
+    search(cmd = Some("party"), id = Some("app"), label = Some("a==1")) should
+      be(Set(app1))
+    search(cmd = Some("work"), id = Some("app"), label = Some("a==1")) should
+      be(Set(app2))
     search(
       cmd = Some("hard"),
       id = Some("service-a"),
       label = Some("a==1")) should be(Set(app1))
-    search(cmd = Some(""), id = Some(""), label = Some("")) should be(
-      Set(app1, app2))
+    search(cmd = Some(""), id = Some(""), label = Some("")) should
+      be(Set(app1, app2))
   }
 
   test("access without authentication is denied") {
@@ -481,8 +476,8 @@ class AppsResourceTest
     Given("A real Group Manager with one app")
     useRealGroupManager()
     val group = Group(PathId.empty, apps = Set(AppDefinition("/a".toRootPath)))
-    groupRepository.group(GroupRepository.zkRootName) returns Future
-      .successful(Some(group))
+    groupRepository.group(GroupRepository.zkRootName) returns
+      Future.successful(Some(group))
     groupRepository.rootGroup returns Future.successful(Some(group))
 
     Given("An unauthorized request")
@@ -561,8 +556,8 @@ class AppsResourceTest
 
     When("We try to remove a non-existing application")
     useRealGroupManager()
-    groupRepository.group(GroupRepository.zkRootName) returns Future
-      .successful(Some(Group.empty))
+    groupRepository.group(GroupRepository.zkRootName) returns
+      Future.successful(Some(Group.empty))
     groupRepository.rootGroup returns Future.successful(Some(Group.empty))
 
     Then("A 404 is returned")

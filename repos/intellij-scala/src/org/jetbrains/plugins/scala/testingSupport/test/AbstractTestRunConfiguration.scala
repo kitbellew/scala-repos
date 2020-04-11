@@ -385,8 +385,8 @@ abstract class AbstractTestRunConfiguration(
         buffer.toSeq
       }
       for (cl <- getClasses(pack)) {
-        if (!isInvalidSuite(cl) && ScalaPsiUtil
-              .cachedDeepIsInheritor(cl, suiteClass)) classes += cl
+        if (!isInvalidSuite(cl) &&
+            ScalaPsiUtil.cachedDeepIsInheritor(cl, suiteClass)) classes += cl
       }
     }
 
@@ -651,9 +651,8 @@ abstract class AbstractTestRunConfiguration(
 trait SuiteValidityChecker {
   protected[test] def isInvalidSuite(clazz: PsiClass): Boolean = {
     val list: PsiModifierList = clazz.getModifierList
-    list != null && list
-      .hasModifierProperty(PsiModifier.ABSTRACT) || lackSuitableConstructor(
-      clazz)
+    list != null && list.hasModifierProperty(PsiModifier.ABSTRACT) ||
+    lackSuitableConstructor(clazz)
   }
 
   protected[test] def lackSuitableConstructor(clazz: PsiClass): Boolean
@@ -683,8 +682,8 @@ object AbstractTestRunConfiguration extends SuiteValidityChecker {
   protected[test] def lackSuitableConstructor(clazz: PsiClass): Boolean = {
     val constructors = clazz match {
       case c: ScClass =>
-        c.secondaryConstructors.filter(_.isConstructor).toList ::: c.constructor
-          .toList
+        c.secondaryConstructors.filter(_.isConstructor).toList :::
+          c.constructor.toList
       case _ => clazz.getConstructors.toList
     }
     for (con <- constructors) {

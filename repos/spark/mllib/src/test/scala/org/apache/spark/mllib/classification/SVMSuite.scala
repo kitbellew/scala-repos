@@ -52,8 +52,8 @@ object SVMSuite {
     val x = Array.fill[Array[Double]](nPoints)(
       Array.fill[Double](weights.length)(rnd.nextDouble() * 2.0 - 1.0))
     val y = x.map { xi =>
-      val yD = new BDV(xi).dot(weightsMat) + intercept + 0.01 * rnd
-        .nextGaussian()
+      val yD = new BDV(xi).dot(weightsMat) + intercept +
+        0.01 * rnd.nextGaussian()
       if (yD < 0) 0.0 else 1.0
     }
     y.zip(x).map(p => LabeledPoint(p._1, Vectors.dense(p._2)))

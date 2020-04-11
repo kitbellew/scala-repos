@@ -16,10 +16,11 @@ class HikariCPConfigSpec extends Specification {
 
     "set dataSourceClassName when present" in new Configs {
       val config = from(
-        "hikaricp.dataSourceClassName" -> "org.postgresql.ds.PGPoolingDataSource")
+        "hikaricp.dataSourceClassName" ->
+          "org.postgresql.ds.PGPoolingDataSource")
       new HikariCPConfig(DatabaseConfig(None, None, None, None, None), config)
-        .toHikariConfig.getDataSourceClassName must beEqualTo(
-        "org.postgresql.ds.PGPoolingDataSource")
+        .toHikariConfig.getDataSourceClassName must
+        beEqualTo("org.postgresql.ds.PGPoolingDataSource")
     }
 
     "set dataSource sub properties" in new Configs {
@@ -29,15 +30,15 @@ class HikariCPConfigSpec extends Specification {
       val hikariConfig: HikariConfig = new HikariCPConfig(dbConfig, config)
         .toHikariConfig
 
-      hikariConfig.getDataSourceProperties.getProperty("user") must beEqualTo(
-        "user")
-      hikariConfig.getDataSourceProperties
-        .getProperty("password") must beEqualTo("password")
+      hikariConfig.getDataSourceProperties.getProperty("user") must
+        beEqualTo("user")
+      hikariConfig.getDataSourceProperties.getProperty("password") must
+        beEqualTo("password")
     }
 
     "set database url" in new Configs {
-      new HikariCPConfig(dbConfig, reference).toHikariConfig
-        .getJdbcUrl must beEqualTo("jdbc:h2:mem:")
+      new HikariCPConfig(dbConfig, reference).toHikariConfig.getJdbcUrl must
+        beEqualTo("jdbc:h2:mem:")
     }
 
     "set connectionInitSql config" in new Configs {
@@ -48,8 +49,8 @@ class HikariCPConfigSpec extends Specification {
 
     "respect the defaults as" in {
       "autoCommit to true" in new Configs {
-        new HikariCPConfig(dbConfig, reference).toHikariConfig
-          .isAutoCommit must beTrue
+        new HikariCPConfig(dbConfig, reference).toHikariConfig.isAutoCommit must
+          beTrue
       }
 
       "connectionTimeout to 30 seconds" in new Configs {
@@ -98,8 +99,8 @@ class HikariCPConfigSpec extends Specification {
       }
 
       "readOnly to false" in new Configs {
-        new HikariCPConfig(dbConfig, reference).toHikariConfig
-          .isReadOnly must beFalse
+        new HikariCPConfig(dbConfig, reference).toHikariConfig.isReadOnly must
+          beFalse
       }
 
       "registerMBeans to false" in new Configs {
@@ -116,8 +117,8 @@ class HikariCPConfigSpec extends Specification {
     "override the defaults for property" in {
       "autoCommit" in new Configs {
         val config = from("hikaricp.autoCommit" -> "false")
-        new HikariCPConfig(dbConfig, config).toHikariConfig
-          .isAutoCommit must beFalse
+        new HikariCPConfig(dbConfig, config).toHikariConfig.isAutoCommit must
+          beFalse
       }
 
       "connectionTimeout" in new Configs {
@@ -128,14 +129,14 @@ class HikariCPConfigSpec extends Specification {
 
       "idleTimeout" in new Configs {
         val config = from("hikaricp.idleTimeout" -> "5 minutes")
-        new HikariCPConfig(dbConfig, config).toHikariConfig
-          .getIdleTimeout must beEqualTo(5.minutes.toMillis)
+        new HikariCPConfig(dbConfig, config).toHikariConfig.getIdleTimeout must
+          beEqualTo(5.minutes.toMillis)
       }
 
       "maxLifetime" in new Configs {
         val config = from("hikaricp.maxLifetime" -> "15 minutes")
-        new HikariCPConfig(dbConfig, config).toHikariConfig
-          .getMaxLifetime must beEqualTo(15.minutes.toMillis)
+        new HikariCPConfig(dbConfig, config).toHikariConfig.getMaxLifetime must
+          beEqualTo(15.minutes.toMillis)
       }
 
       "validationTimeout" in new Configs {
@@ -148,8 +149,8 @@ class HikariCPConfigSpec extends Specification {
         val config = from(
           "hikaricp.minimumIdle" -> "20",
           "hikaricp.maximumPoolSize" -> "40")
-        new HikariCPConfig(dbConfig, config).toHikariConfig
-          .getMinimumIdle must beEqualTo(20)
+        new HikariCPConfig(dbConfig, config).toHikariConfig.getMinimumIdle must
+          beEqualTo(20)
       }
 
       "maximumPoolSize" in new Configs {
@@ -178,8 +179,8 @@ class HikariCPConfigSpec extends Specification {
 
       "readOnly" in new Configs {
         val config = from("hikaricp.readOnly" -> "true")
-        new HikariCPConfig(dbConfig, config).toHikariConfig
-          .isReadOnly must beTrue
+        new HikariCPConfig(dbConfig, config).toHikariConfig.isReadOnly must
+          beTrue
       }
 
       "leakDetectionThreshold" in new Configs {

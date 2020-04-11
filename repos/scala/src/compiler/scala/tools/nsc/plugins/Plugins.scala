@@ -27,8 +27,8 @@ trait Plugins {
     */
   protected def loadRoughPluginsList(): List[Plugin] = {
     def asPath(p: String) = ClassPath split p
-    val paths =
-      settings.plugin.value filter (_ != "") map (s => asPath(s) map Path.apply)
+    val paths = settings.plugin.value filter (_ != "") map
+      (s => asPath(s) map Path.apply)
     val dirs = {
       def injectDefault(s: String) =
         if (s.isEmpty) Defaults.scalaPluginPath else s
@@ -37,12 +37,13 @@ trait Plugins {
     val maybes = Plugin.loadAllFrom(paths, dirs, settings.disable.value)
     val (goods, errors) = maybes partition (_.isSuccess)
     // Explicit parameterization of recover to avoid -Xlint warning about inferred Any
-    errors foreach (_.recover[Any] {
-      // legacy behavior ignores altogether, so at least warn devs
-      case e: MissingPluginException =>
-        if (global.isDeveloper) warning(e.getMessage)
-      case e: Exception => inform(e.getMessage)
-    })
+    errors foreach
+      (_.recover[Any] {
+        // legacy behavior ignores altogether, so at least warn devs
+        case e: MissingPluginException =>
+          if (global.isDeveloper) warning(e.getMessage)
+        case e: Exception => inform(e.getMessage)
+      })
     val classes = goods map (_.get) // flatten
 
     // Each plugin must only be instantiated once. A common pattern
@@ -81,9 +82,8 @@ trait Plugins {
         fail("[disabling plugin: %s]")
       else if (!commonPhases.isEmpty)
         fail(
-          "[skipping plugin %s because it repeats phase names: " + (
-            commonPhases mkString ", "
-          ) + "]")
+          "[skipping plugin %s because it repeats phase names: " +
+            (commonPhases mkString ", ") + "]")
       else {
         note("[loaded plugin %s]")
         withPlug
@@ -101,21 +101,22 @@ trait Plugins {
 
     // Verify no non-existent plugin given with -P
     for {
-      opt <- settings.pluginOptions.value
-      if !(plugs exists (opt startsWith _.name + ":"))
+      opt <- settings.pluginOptions.value if !(plugs exists
+        (opt startsWith _.name + ":"))
     } globalError("bad option: -P:" + opt)
 
     // Plugins may opt out, unless we just want to show info
-    plugs filter (p =>
-      p.init(p.options, globalError) || (settings.debug && settings.isInfo))
+    plugs filter
+      (p =>
+        p.init(p.options, globalError) || (settings.debug && settings.isInfo))
   }
 
   lazy val plugins: List[Plugin] = loadPlugins()
 
   /** A description of all the plugins that are loaded */
   def pluginDescriptions: String =
-    roughPluginsList map (x =>
-      "%s - %s".format(x.name, x.description)) mkString "\n"
+    roughPluginsList map (x => "%s - %s".format(x.name, x.description)) mkString
+      "\n"
 
   /**
     * Extract all phases supplied by plugins and add them to the phasesSet.

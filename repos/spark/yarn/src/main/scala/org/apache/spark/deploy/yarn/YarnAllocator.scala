@@ -115,8 +115,8 @@ private[yarn] class YarnAllocator(
   // Executor memory in MB.
   protected val executorMemory = args.executorMemory
   // Additional memory overhead.
-  protected val memoryOverhead: Int =
-    sparkConf.get(EXECUTOR_MEMORY_OVERHEAD).getOrElse(math.max(
+  protected val memoryOverhead: Int = sparkConf.get(EXECUTOR_MEMORY_OVERHEAD)
+    .getOrElse(math.max(
       (MEMORY_OVERHEAD_FACTOR * executorMemory).toInt,
       MEMORY_OVERHEAD_MIN)).toInt
   // Number of cores per executor.
@@ -712,7 +712,7 @@ private object YarnAllocator {
       pattern: Pattern): String = {
     val matcher = pattern.matcher(diagnostics)
     val diag = if (matcher.find()) " " + matcher.group() + "." else ""
-    ("Container killed by YARN for exceeding memory limits." + diag
-      + " Consider boosting spark.yarn.executor.memoryOverhead.")
+    ("Container killed by YARN for exceeding memory limits." + diag +
+      " Consider boosting spark.yarn.executor.memoryOverhead.")
   }
 }

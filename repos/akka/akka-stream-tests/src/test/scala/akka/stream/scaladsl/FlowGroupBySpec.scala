@@ -122,8 +122,8 @@ class FlowGroupBySpec extends AkkaSpec {
       Source(List("Aaa", "Abb", "Bcc", "Cdd", "Cee"))
         .groupBy(3, _.substring(0, 1)).grouped(10).mergeSubstreams.grouped(10)
         .runWith(Sink.head).futureValue(Timeout(3.seconds))
-        .sortBy(_.head) should ===(
-        List(List("Aaa", "Abb"), List("Bcc"), List("Cdd", "Cee")))
+        .sortBy(_.head) should
+        ===(List(List("Aaa", "Abb"), List("Bcc"), List("Cdd", "Cee")))
     }
 
     "accept cancellation of substreams" in assertAllStagesStopped {
@@ -146,18 +146,19 @@ class FlowGroupBySpec extends AkkaSpec {
       }
     }
 
-    "accept cancellation of master stream when not consumed anything" in assertAllStagesStopped {
-      val publisherProbeProbe = TestPublisher.manualProbe[Int]()
-      val publisher = Source.fromPublisher(publisherProbeProbe)
-        .groupBy(2, _ % 2).lift(_ % 2).runWith(Sink.asPublisher(false))
-      val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
-      publisher.subscribe(subscriber)
+    "accept cancellation of master stream when not consumed anything" in
+      assertAllStagesStopped {
+        val publisherProbeProbe = TestPublisher.manualProbe[Int]()
+        val publisher = Source.fromPublisher(publisherProbeProbe)
+          .groupBy(2, _ % 2).lift(_ % 2).runWith(Sink.asPublisher(false))
+        val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
+        publisher.subscribe(subscriber)
 
-      val upstreamSubscription = publisherProbeProbe.expectSubscription()
-      val downstreamSubscription = subscriber.expectSubscription()
-      downstreamSubscription.cancel()
-      upstreamSubscription.expectCancellation()
-    }
+        val upstreamSubscription = publisherProbeProbe.expectSubscription()
+        val downstreamSubscription = subscriber.expectSubscription()
+        downstreamSubscription.cancel()
+        upstreamSubscription.expectCancellation()
+      }
 
     "work with empty input stream" in assertAllStagesStopped {
       val publisher = Source(List.empty[Int]).groupBy(2, _ % 2).lift(_ % 2)
@@ -186,34 +187,35 @@ class FlowGroupBySpec extends AkkaSpec {
       subscriber.expectError(e)
     }
 
-    "abort on onError from upstream when substreams are running" in assertAllStagesStopped {
-      val publisherProbeProbe = TestPublisher.manualProbe[Int]()
-      val publisher = Source.fromPublisher(publisherProbeProbe)
-        .groupBy(2, _ % 2).lift(_ % 2).runWith(Sink.asPublisher(false))
-      val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
-      publisher.subscribe(subscriber)
+    "abort on onError from upstream when substreams are running" in
+      assertAllStagesStopped {
+        val publisherProbeProbe = TestPublisher.manualProbe[Int]()
+        val publisher = Source.fromPublisher(publisherProbeProbe)
+          .groupBy(2, _ % 2).lift(_ % 2).runWith(Sink.asPublisher(false))
+        val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
+        publisher.subscribe(subscriber)
 
-      val upstreamSubscription = publisherProbeProbe.expectSubscription()
+        val upstreamSubscription = publisherProbeProbe.expectSubscription()
 
-      val downstreamSubscription = subscriber.expectSubscription()
-      downstreamSubscription.request(100)
+        val downstreamSubscription = subscriber.expectSubscription()
+        downstreamSubscription.request(100)
 
-      upstreamSubscription.sendNext(1)
+        upstreamSubscription.sendNext(1)
 
-      val (_, substream) = subscriber.expectNext()
-      val substreamPuppet = StreamPuppet(
-        substream.runWith(Sink.asPublisher(false)))
+        val (_, substream) = subscriber.expectNext()
+        val substreamPuppet = StreamPuppet(
+          substream.runWith(Sink.asPublisher(false)))
 
-      substreamPuppet.request(1)
-      substreamPuppet.expectNext(1)
+        substreamPuppet.request(1)
+        substreamPuppet.expectNext(1)
 
-      val e = TE("test")
-      upstreamSubscription.sendError(e)
+        val e = TE("test")
+        upstreamSubscription.sendError(e)
 
-      substreamPuppet.expectError(e)
-      subscriber.expectError(e)
+        substreamPuppet.expectError(e)
+        subscriber.expectError(e)
 
-    }
+      }
 
     "fail stream when groupBy function throws" in assertAllStagesStopped {
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()

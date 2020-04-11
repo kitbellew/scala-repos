@@ -104,8 +104,9 @@ trait SortedMapLike[
           from: Option[A],
           until: Option[A]): SortedMap[A, C] =
         self.rangeImpl(from, until).mapValues(f)
-      override def iteratorFrom(start: A) =
-        (self iteratorFrom start) map { case (k, v) => (k, f(v)) }
+      override def iteratorFrom(start: A) = (self iteratorFrom start) map {
+        case (k, v) => (k, f(v))
+      }
       override def keysIteratorFrom(start: A) = self keysIteratorFrom start
       override def valuesIteratorFrom(start: A) =
         self valuesIteratorFrom start map f

@@ -17,8 +17,8 @@ trait ContravariantTests[F[_]] extends InvariantTests[F] {
       name = "contravariant",
       parent = Some(invariant[A, B, C]),
       "contravariant identity" -> forAll(laws.contravariantIdentity[A] _),
-      "contravariant composition" -> forAll(
-        laws.contravariantComposition[A, B, C] _))
+      "contravariant composition" ->
+        forAll(laws.contravariantComposition[A, B, C] _))
   }
 }
 

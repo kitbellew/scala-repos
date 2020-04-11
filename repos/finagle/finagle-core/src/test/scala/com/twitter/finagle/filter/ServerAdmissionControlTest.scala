@@ -66,9 +66,8 @@ class ServerAdmissionControlTest extends FunSuite with MockitoSugar {
     val ctx = new Ctx
     import ctx._
 
-    val factory = stack.make(
-      StackServer.defaultParams +
-        ServerAdmissionControl.Param(false))
+    val factory = stack
+      .make(StackServer.defaultParams + ServerAdmissionControl.Param(false))
     val svc = Await.result(factory(), 5.seconds)
     assert(Await.result(svc(1), 5.seconds) == 1)
     assert(a.get == 1)

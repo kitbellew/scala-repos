@@ -212,8 +212,10 @@ trait StringLike[+Repr]
   def stripMargin: String = stripMargin('|')
 
   private def escape(ch: Char): String =
-    if ((ch >= 'a') && (ch <= 'z') ||
-        (ch >= 'A') && (ch <= 'Z') ||
+    if ((ch >= 'a') &&
+        (ch <= 'z') ||
+        (ch >= 'A') &&
+        (ch <= 'Z') ||
         (ch >= '0' && ch <= '9')) ch.toString
     else "\\" + ch
 

@@ -26,52 +26,49 @@ final class PostApi(
 
   def makePost(categ: Categ, topic: Topic, data: DataForm.PostData)(implicit
       ctx: UserContext): Fu[Post] =
-    lastNumberOf(topic) zip detectLanguage(data.text) zip userIds(
-      topic) flatMap {
-      case ((number, lang), topicUserIds) =>
-        val post = Post.make(
-          topicId = topic.id,
-          author = data.author,
-          userId = ctx.me map (_.id),
-          ip = ctx.req.remoteAddress.some,
-          text = lila.security.Spam.replace(data.text),
-          number = number + 1,
-          lang = lang map (_.language),
-          troll = ctx.troll,
-          hidden = topic.hidden,
-          categId = categ.id
-        )
-        PostRepo findDuplicate post flatMap {
-          case Some(dup) => fuccess(dup)
-          case _ =>
-            $insert(post) >>
-              $update(topic withPost post) >> {
-              shouldHideOnPost(topic) ?? TopicRepo.hide(topic.id, true)
-            } >>
-              $update(categ withTopic post) >>-
-              (indexer ! InsertPost(post)) >>
-              (env.recent.invalidate inject post) >>-
-              ctx.userId.?? { userId =>
-                shutup ! post.isTeam.fold(
-                  lila.hub.actorApi.shutup
-                    .RecordTeamForumMessage(userId, post.text),
-                  lila.hub.actorApi.shutup
-                    .RecordPublicForumMessage(userId, post.text))
+    lastNumberOf(topic) zip detectLanguage(data.text) zip
+      userIds(topic) flatMap {
+        case ((number, lang), topicUserIds) =>
+          val post = Post.make(
+            topicId = topic.id,
+            author = data.author,
+            userId = ctx.me map (_.id),
+            ip = ctx.req.remoteAddress.some,
+            text = lila.security.Spam.replace(data.text),
+            number = number + 1,
+            lang = lang map (_.language),
+            troll = ctx.troll,
+            hidden = topic.hidden,
+            categId = categ.id
+          )
+          PostRepo findDuplicate post flatMap {
+            case Some(dup) => fuccess(dup)
+            case _ =>
+              $insert(post) >> $update(topic withPost post) >> {
+                shouldHideOnPost(topic) ?? TopicRepo.hide(topic.id, true)
+              } >> $update(
+                categ withTopic
+                  post) >>- (indexer ! InsertPost(post)) >> (env.recent.invalidate inject post) >>- ctx.userId.?? {
+                userId =>
+                  shutup ! post.isTeam.fold(
+                    lila.hub.actorApi.shutup
+                      .RecordTeamForumMessage(userId, post.text),
+                    lila.hub.actorApi.shutup
+                      .RecordPublicForumMessage(userId, post.text))
               } >>- {
-              (ctx.userId ifFalse post.troll) ?? { userId =>
-                timeline ! Propagate(ForumPost(
-                  userId,
-                  topic.id.some,
-                  topic.name,
-                  post.id)).|>(prop =>
-                  post.isStaff.fold(
-                    prop toStaffFriendsOf userId,
-                    prop toFollowersOf userId toUsers topicUserIds exceptUser userId))
-              }
-              lila.mon.forum.post.create()
-            } inject post
-        }
-    }
+                (ctx.userId ifFalse post.troll) ?? { userId =>
+                  timeline ! Propagate(
+                    ForumPost(userId, topic.id.some, topic.name, post.id))
+                    .|>(prop =>
+                      post.isStaff.fold(
+                        prop toStaffFriendsOf userId,
+                        prop toFollowersOf userId toUsers
+                          topicUserIds exceptUser userId))
+                }
+                lila.mon.forum.post.create()
+              } inject post
+          }
+      }
 
   private val quickHideCategs = Set("lichess-feedback", "off-topic-discussion")
 
@@ -167,10 +164,8 @@ final class PostApi(
         first ← PostRepo.isFirstPost(view.topic.id, view.post.id)
         _ ← first.fold(
           env.topicApi.delete(view.categ, view.topic),
-          $remove[Post](view.post) >>
-            (env.topicApi denormalize view.topic) >>
-            (env.categApi denormalize view.categ) >>
-            env.recent.invalidate >>-
+          $remove[Post](view.post) >> (env.topicApi denormalize view.topic) >>
+            (env.categApi denormalize view.categ) >> env.recent.invalidate >>-
             (indexer ! RemovePost(post))
         )
         _ ← MasterGranter(_.ModerateForum)(mod) ?? modLog.deletePost(

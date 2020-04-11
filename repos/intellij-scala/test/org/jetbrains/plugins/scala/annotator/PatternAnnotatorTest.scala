@@ -128,8 +128,8 @@ class PatternAnnotatorTest
     checkWarning(
       code,
       "seq: Seq[Int]",
-      fruitless("List[String]", "Seq[Int]") + ScalaBundle
-        .message("erasure.warning"))
+      fruitless("List[String]", "Seq[Int]") +
+        ScalaBundle.message("erasure.warning"))
     assertNoErrors(code)
   }
 
@@ -363,8 +363,7 @@ class PatternAnnotatorTest
       Error("ONE", ScalaBundle.message("stable.identifier.required", "ONE")) ::
         Error(
           "`two`",
-          ScalaBundle.message("stable.identifier.required", "`two`")) ::
-        Error(
+          ScalaBundle.message("stable.identifier.required", "`two`")) :: Error(
           "this.two",
           ScalaBundle.message("stable.identifier.required", "this.two")) :: Nil
     checkErrors(code, errors)

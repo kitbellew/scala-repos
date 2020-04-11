@@ -44,17 +44,17 @@ object Test extends App {
     println(
       s"=========members of ${tpe.typeSymbol.name} in a mirror of D=========")
     println(
-      "field #1: " + failsafe(
-        im.reflectField(tpe.member(TermName("foo")).asTerm).get))
+      "field #1: " +
+        failsafe(im.reflectField(tpe.member(TermName("foo")).asTerm).get))
     println(
-      "method #1: " + failsafe(
-        im.reflectMethod(tpe.member(TermName("bar")).asMethod)()))
+      "method #1: " +
+        failsafe(im.reflectMethod(tpe.member(TermName("bar")).asMethod)()))
     println(
-      "field #2: " + failsafe(
-        im.reflectField(tpe.member(TermName("quux")).asTerm).get))
+      "field #2: " +
+        failsafe(im.reflectField(tpe.member(TermName("quux")).asTerm).get))
     println(
-      "method #2: " + failsafe(
-        im.reflectMethod(tpe.member(TermName("baz")).asMethod)()))
+      "method #2: " +
+        failsafe(im.reflectMethod(tpe.member(TermName("baz")).asMethod)()))
     println(
       "constructor #1: " + failsafe(
         cm.reflectClass(im.symbol)
@@ -69,8 +69,8 @@ object Test extends App {
           typeOf[C].member(TypeName("C")).asClass.info
             .member(termNames.CONSTRUCTOR).asMethod)()))
     println(
-      "object: " + failsafe(
-        im.reflectModule(tpe.member(TermName("O")).asModule).instance))
+      "object: " +
+        failsafe(im.reflectModule(tpe.member(TermName("O")).asModule).instance))
     println()
   }
 

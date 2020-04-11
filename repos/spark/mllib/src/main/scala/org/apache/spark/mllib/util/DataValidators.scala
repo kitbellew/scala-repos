@@ -39,7 +39,8 @@ object DataValidators extends Logging {
     val numInvalid = data.filter(x => x.label != 1.0 && x.label != 0.0).count()
     if (numInvalid != 0) {
       logError(
-        "Classification labels should be 0 or 1. Found " + numInvalid + " invalid labels")
+        "Classification labels should be 0 or 1. Found " + numInvalid +
+          " invalid labels")
     }
     numInvalid == 0
   }

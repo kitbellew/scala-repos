@@ -109,8 +109,8 @@ class ZookeeperSystemCoordinationSpec extends Specification {
         }
     }
 
-    "relay agent registration retries in case of stale registration" in TestZookeeperClient() {
-      factory: ClientFactory =>
+    "relay agent registration retries in case of stale registration" in
+      TestZookeeperClient() { factory: ClientFactory =>
         val client1 = factory()
         val sc1 = newSystemCoordination(client1)
 
@@ -132,10 +132,10 @@ class ZookeeperSystemCoordinationSpec extends Specification {
           case Success(EventRelayState(0, 1, IdSequenceBlock(0, 1, 10000))) =>
             ok
         }
-    }
+      }
 
-    "relay agent registration fails after reasonable attempt to detect stale registration" in TestZookeeperClient() {
-      factory: ClientFactory =>
+    "relay agent registration fails after reasonable attempt to detect stale registration" in
+      TestZookeeperClient() { factory: ClientFactory =>
         val client1 = factory()
         val sc1 = newSystemCoordination(client1)
 
@@ -147,14 +147,14 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         val result2 = sc2.registerRelayAgent("test_agent", 10000)
         result2 must beLike { case Failure(_) => ok }
-    }
+      }
 
     "distinguish between normal and abnormal relay agent shutdown" in { todo }
 
     "handle sequenceid overflow by assigning new producer id" in { todo }
 
-    "not load a missing checkpoint (checkpoints for new shards should be inserted manually via YggUtils)" in TestZookeeperClient() {
-      factory: ClientFactory =>
+    "not load a missing checkpoint (checkpoints for new shards should be inserted manually via YggUtils)" in
+      TestZookeeperClient() { factory: ClientFactory =>
         val client = factory()
         val sc = newSystemCoordination(client)
 
@@ -165,7 +165,7 @@ class ZookeeperSystemCoordinationSpec extends Specification {
                 Failure(
                   blueeyes.json.serialization.Extractor.Invalid(_, None))) => ok
         }
-    }
+      }
 
     "persist checkpoints between sessions" in TestZookeeperClient() {
       factory: ClientFactory =>

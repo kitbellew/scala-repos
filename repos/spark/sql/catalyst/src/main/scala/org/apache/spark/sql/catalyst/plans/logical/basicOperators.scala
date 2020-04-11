@@ -48,8 +48,8 @@ case class Project(projectList: Seq[NamedExpression], child: LogicalPlan)
       case window: WindowExpression => window
     }.nonEmpty)
 
-    !expressions
-      .exists(!_.resolved) && childrenResolved && !hasSpecialExpressions
+    !expressions.exists(!_.resolved) && childrenResolved &&
+    !hasSpecialExpressions
   }
 
   override def validConstraints: Set[Expression] =
@@ -84,8 +84,7 @@ case class Generate(
   def generatedSet: AttributeSet = AttributeSet(generatorOutput)
 
   override lazy val resolved: Boolean = {
-    generator.resolved &&
-    childrenResolved &&
+    generator.resolved && childrenResolved &&
     generator.elementTypes.length == generatorOutput.length &&
     generatorOutput.forall(_.resolved)
   }
@@ -150,12 +149,10 @@ case class Intersect(left: LogicalPlan, right: LogicalPlan)
   // Intersect are only resolved if they don't introduce ambiguous expression ids,
   // since the Optimizer will convert Intersect to Join.
   override lazy val resolved: Boolean =
-    childrenResolved &&
-      left.output.length == right.output.length &&
+    childrenResolved && left.output.length == right.output.length &&
       left.output.zip(right.output).forall {
         case (l, r) => l.dataType == r.dataType
-      } &&
-      duplicateResolved
+      } && duplicateResolved
 
   override def maxRows: Option[Long] = {
     if (children.exists(_.maxRows.isEmpty)) { None }
@@ -179,8 +176,7 @@ case class Except(left: LogicalPlan, right: LogicalPlan)
   override protected def validConstraints: Set[Expression] = leftConstraints
 
   override lazy val resolved: Boolean =
-    childrenResolved &&
-      left.output.length == right.output.length &&
+    childrenResolved && left.output.length == right.output.length &&
       left.output.zip(right.output).forall {
         case (l, r) => l.dataType == r.dataType
       }
@@ -263,8 +259,8 @@ case class Join(
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
       case FullOuter =>
-        left.output.map(_.withNullability(true)) ++ right.output
-          .map(_.withNullability(true))
+        left.output.map(_.withNullability(true)) ++
+          right.output.map(_.withNullability(true))
       case _ => left.output ++ right.output
     }
   }
@@ -290,9 +286,7 @@ case class Join(
   // Joins are only resolved if they don't introduce ambiguous expression ids.
   // NaturalJoin should be ready for resolution only if everything else is resolved here
   lazy val resolvedExceptNatural: Boolean = {
-    childrenResolved &&
-    expressions.forall(_.resolved) &&
-    duplicateResolved &&
+    childrenResolved && expressions.forall(_.resolved) && duplicateResolved &&
     condition.forall(_.dataType == BooleanType)
   }
 
@@ -328,8 +322,8 @@ case class InsertIntoTable(
   override def output: Seq[Attribute] = Seq.empty
 
   assert(overwrite || !ifNotExists)
-  override lazy val resolved: Boolean = childrenResolved && child.output
-    .zip(table.output).forall {
+  override lazy val resolved: Boolean = childrenResolved &&
+    child.output.zip(table.output).forall {
       case (childAttr, tableAttr) =>
         DataType.equalsIgnoreCompatibleNullability(
           childAttr.dataType,
@@ -391,9 +385,8 @@ case class Range(
   val numElements: BigInt = {
     val safeStart = BigInt(start)
     val safeEnd = BigInt(end)
-    if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (
-          step > 0
-        )) { (safeEnd - safeStart) / step }
+    if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) !=
+          (step > 0)) { (safeEnd - safeStart) / step }
     else {
       // the remainder has the same sign with range, could add 1 more
       (safeEnd - safeStart) / step + 1
@@ -420,8 +413,8 @@ case class Aggregate(
       case window: WindowExpression => window
     }.nonEmpty)
 
-    !expressions
-      .exists(!_.resolved) && childrenResolved && !hasWindowExpressions
+    !expressions.exists(!_.resolved) && childrenResolved &&
+    !hasWindowExpressions
   }
 
   override def output: Seq[Attribute] = aggregateExpressions.map(_.toAttribute)

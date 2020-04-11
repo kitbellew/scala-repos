@@ -52,8 +52,8 @@ private[nio] final class ByteArrayBits(
     if (isBigEndian) makeCharBE(b0, b1) else makeCharBE(b1, b0)
 
   @inline
-  private def makeCharBE(b0: Byte, b1: Byte): Char =
-    ((b0 << 8) | (b1 & 0xff)).toChar
+  private def makeCharBE(b0: Byte, b1: Byte): Char = ((b0 << 8) | (b1 & 0xff))
+    .toChar
 
   @inline
   private def makeShort(bs: (Byte, Byte)): Short = makeShort(bs._1, bs._2)
@@ -63,8 +63,8 @@ private[nio] final class ByteArrayBits(
     if (isBigEndian) makeShortBE(b0, b1) else makeShortBE(b1, b0)
 
   @inline
-  private def makeShortBE(b0: Byte, b1: Byte): Short =
-    ((b0 << 8) | (b1 & 0xff)).toShort
+  private def makeShortBE(b0: Byte, b1: Byte): Short = ((b0 << 8) | (b1 & 0xff))
+    .toShort
 
   @inline
   private def makeInt(bs: (Byte, Byte, Byte, Byte)): Int =

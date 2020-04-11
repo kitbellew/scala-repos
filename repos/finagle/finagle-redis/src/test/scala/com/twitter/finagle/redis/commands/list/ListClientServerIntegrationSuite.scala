@@ -52,8 +52,8 @@ final class ListClientServerIntegrationSuite
       assert(Await.result(client(LPush(foo, List(bar)))) == IntegerReply(1))
 
       assert(
-        Await.result(client(LInsert(foo, "BEFORE", bar, moo))) == IntegerReply(
-          2))
+        Await.result(client(LInsert(foo, "BEFORE", bar, moo))) ==
+          IntegerReply(2))
     }
   }
 

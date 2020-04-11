@@ -43,8 +43,8 @@ object MongoRulesSpec extends Specification {
     }
     "snakify collection name" in {
       MongoRules.collectionName.doWith((_, name) => snakify(name) + "s") {
-        CollectionNameTestDoc
-          .collectionName must_== "net.liftweb.mongodb.collection_name_test_docs"
+        CollectionNameTestDoc.collectionName must_==
+          "net.liftweb.mongodb.collection_name_test_docs"
       }
     }
   }

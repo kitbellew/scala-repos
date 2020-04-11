@@ -3,8 +3,8 @@ import Keys._
 
 object Dependencies {
   val android = "com.google.android" % "android" % "4.1.1.4" % "provided"
-  val android_support_v4 =
-    "com.google.android" % "support-v4" % "r7" % "provided"
+  val android_support_v4 = "com.google.android" % "support-v4" % "r7" %
+    "provided"
   val scaloidVersion = "4.3-SNAPSHOT"
   val scaloid = "org.scaloid" %% "scaloid" % scaloidVersion
 
@@ -35,8 +35,7 @@ object ScaloidBuild extends Build {
       else Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
     pomIncludeRepository := { _ => false },
-    pomExtra :=
-      <url>http://scaloid.org</url>
+    pomExtra := <url>http://scaloid.org</url>
         <licenses>
           <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -58,9 +57,9 @@ object ScaloidBuild extends Build {
         </developers>,
     scalacOptions := Seq("-target:jvm-1.6", "-deprecation", "-feature"),
     javacOptions ++= Seq("-source", "1.6", "-target", "1.6"),
-    resolvers += "Android Repository" at (new File(
-      System.getenv("ANDROID_HOME")) / "extras" / "android" / "m2repository")
-      .getCanonicalFile.toURI.toString,
+    resolvers += "Android Repository" at
+      (new File(System.getenv("ANDROID_HOME")) / "extras" / "android" /
+        "m2repository").getCanonicalFile.toURI.toString,
     addCompilerPlugin(
       "org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   )
@@ -78,12 +77,8 @@ object ScaloidBuild extends Build {
   lazy val common = Project("scaloid", file("scaloid-common"))
     .settings(name := "scaloid", exportJars := true).settings(basicSettings: _*)
     .settings(scaloidSettings: _*).settings(
-      libraryDependencies ++= Seq(
-        robolectric,
-        scalaTest,
-        junit,
-        junitInterface,
-        android),
+      libraryDependencies ++=
+        Seq(robolectric, scalaTest, junit, junitInterface, android),
       libraryDependencies <+= (scalaVersion)(
         "org.scala-lang" % "scala-reflect" % _)
     )

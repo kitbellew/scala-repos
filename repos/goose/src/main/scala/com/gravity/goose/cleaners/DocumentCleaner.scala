@@ -154,8 +154,8 @@ trait DocumentCleaner {
     for (node <- naughtyList5) {
 
       trace(
-        "Removing node with class: " + node.attr("class") + " id: " + node
-          .id + " name: " + node.attr("name"))
+        "Removing node with class: " + node.attr("class") + " id: " + node.id +
+          " name: " + node.attr("name"))
 
       removeNode(node)
     }
@@ -304,9 +304,8 @@ trait DocumentCleaner {
         if (replaceText.trim().length > 1) {
 
           var prevSibNode = kidTextNode.previousSibling()
-          while (prevSibNode != null && prevSibNode
-                   .nodeName() == "a" && prevSibNode
-                   .attr("grv-usedalready") != "yes") {
+          while (prevSibNode != null && prevSibNode.nodeName() == "a" &&
+                 prevSibNode.attr("grv-usedalready") != "yes") {
             replacementText.append(" " + prevSibNode.outerHtml() + " ")
             nodesToRemove += prevSibNode
             prevSibNode.attr("grv-usedalready", "yes")
@@ -319,9 +318,8 @@ trait DocumentCleaner {
 
           //          check the next set of links that might be after text (see businessinsider2.txt)
           var nextSibNode = kidTextNode.nextSibling()
-          while (nextSibNode != null && nextSibNode
-                   .nodeName() == "a" && nextSibNode
-                   .attr("grv-usedalready") != "yes") {
+          while (nextSibNode != null && nextSibNode.nodeName() == "a" &&
+                 nextSibNode.attr("grv-usedalready") != "yes") {
             replacementText.append(" " + nextSibNode.outerHtml() + " ")
             nodesToRemove += nextSibNode
             nextSibNode.attr("grv-usedalready", "yes")

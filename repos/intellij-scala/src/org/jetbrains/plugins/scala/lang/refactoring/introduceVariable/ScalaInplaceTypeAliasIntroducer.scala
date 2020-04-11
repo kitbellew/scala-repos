@@ -82,8 +82,8 @@ class ScalaInplaceTypeAliasIntroducer(
       oldName) {
 
   override def setAdvertisementText(text: String) = {
-    myAdvertisementText =
-      "Press ctrl + alt + v" + " to show dialog with more options"
+    myAdvertisementText = "Press ctrl + alt + v" +
+      " to show dialog with more options"
   }
 
   override def startsOnTheSameElement(
@@ -96,8 +96,8 @@ class ScalaInplaceTypeAliasIntroducer(
 
     element match {
       case typeAliasDefinition: ScTypeAliasDefinition =>
-        checkEquals(typeAliasDefinition) && handler
-          .isInstanceOf[ScalaIntroduceVariableHandler]
+        checkEquals(typeAliasDefinition) &&
+          handler.isInstanceOf[ScalaIntroduceVariableHandler]
       case _ => false
     }
   }
@@ -109,9 +109,9 @@ class ScalaInplaceTypeAliasIntroducer(
   protected override def moveOffsetAfter(success: Boolean): Unit = {
     if (success) {
       // don't know about element to refactor place
-    } else if (myInsertedName != null && !UndoManager.getInstance(myProject)
-                 .isUndoInProgress
-               && !editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
+    } else if (myInsertedName != null &&
+               !UndoManager.getInstance(myProject).isUndoInProgress &&
+               !editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
                  .isCallModalDialogInProgress) {
 
       val revertInfo = myEditor

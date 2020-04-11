@@ -97,8 +97,7 @@ trait Loc[T] {
     * Calculate the Query parameters
     */
   def queryParameters(what: Box[T]): List[(String, String)] =
-    addlQueryParams.flatMap(_()) :::
-      calcQueryParams.flatMap(_(what))
+    addlQueryParams.flatMap(_()) ::: calcQueryParams.flatMap(_(what))
 
   protected def appendQueryParams(what: T)(nodeSeq: NodeSeq): NodeSeq =
     Text(appendQueryParameters(nodeSeq.text, Full(what)))
@@ -123,8 +122,7 @@ trait Loc[T] {
   def params: List[Loc.LocParam[T]]
 
   def allParams: List[Loc.AnyLocParam] =
-    (params.asInstanceOf[List[Loc.AnyLocParam]]) :::
-      parentParams :::
+    (params.asInstanceOf[List[Loc.AnyLocParam]]) ::: parentParams :::
       siteMap.globalParams
 
   private def parentParams: List[Loc.AnyLocParam] =
@@ -397,17 +395,15 @@ trait Loc[T] {
   }
 
   def doesMatch_?(req: Req): Boolean = {
-    link.isDefinedAt(req) &&
-    testAllParams(allParams, req) &&
-    (currentValue.isDefined ||
-    params.contains(Loc.MatchWithoutCurrentValue))
+    link.isDefinedAt(req) && testAllParams(allParams, req) &&
+    (currentValue.isDefined || params.contains(Loc.MatchWithoutCurrentValue))
   }
 
   def breadCrumbs: List[Loc[_]] = _menu.breadCrumbs ::: List(this)
 
   def buildKidMenuItems(kids: Seq[Menu]): List[MenuItem] = {
-    kids.toList
-      .flatMap(_.loc.buildItem(Nil, false, false)) ::: supplementalKidMenuItems
+    kids.toList.flatMap(_.loc.buildItem(Nil, false, false)) :::
+      supplementalKidMenuItems
   }
 
   def supplementalKidMenuItems: List[MenuItem] =

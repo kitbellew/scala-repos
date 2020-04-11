@@ -50,8 +50,8 @@ trait SymbolTrackers {
     def symbolSnapshot(unit: CompilationUnit): Map[Symbol, Set[Tree]] = {
       if (unit.body == null) Map()
       else
-        unit.body filter containsSymbol groupBy (_.symbol) mapValues (_
-          .toSet) toMap
+        unit.body filter containsSymbol groupBy (_.symbol) mapValues
+          (_.toSet) toMap
     }
     def apply(unit: CompilationUnit) =
       new SymbolTracker(() =>
@@ -143,13 +143,11 @@ trait SymbolTrackers {
         if (root == NoSymbol)
           children map (c => c.indentString(indent)) mkString "\n"
         else {
-          indicatorString + indent + symString(root) + (if (children.isEmpty) ""
-                                                        else
-                                                          children map (c =>
-                                                            c.indentString(
-                                                              indent + "    ")) mkString (
-                                                            "\n", "\n", ""
-                                                          ))
+          indicatorString + indent + symString(root) +
+            (if (children.isEmpty) ""
+             else
+               children map (c => c.indentString(indent + "    ")) mkString
+                 ("\n", "\n", ""))
         }
       }
     }
@@ -199,10 +197,11 @@ trait SymbolTrackers {
           case (t, i) => "(%2s) ".format(i + 1) + detailString(t)
         } mkString "\n"
 
-      "" + hierarchy + (if (removed.isEmpty) ""
-                        else
-                          "\n\n!!! " + label + ", " + removed
-                            .size + " symbols vanished:\n" + removedString)
+      "" + hierarchy +
+        (if (removed.isEmpty) ""
+         else
+           "\n\n!!! " + label + ", " + removed.size + " symbols vanished:\n" +
+             removedString)
     }
   }
 }

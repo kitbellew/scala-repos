@@ -146,8 +146,8 @@ class BisectingKMeans private (
   def run(input: RDD[Vector]): BisectingKMeansModel = {
     if (input.getStorageLevel == StorageLevel.NONE) {
       logWarning(
-        s"The input RDD ${input.id} is not directly cached, which may hurt performance if"
-          + " its parent RDDs are also not cached.")
+        s"The input RDD ${input.id} is not directly cached, which may hurt performance if" +
+          " its parent RDDs are also not cached.")
     }
     val d = input.map(_.size).first()
     logInfo(s"Feature dimension: $d.")
@@ -172,13 +172,13 @@ class BisectingKMeans private (
     val random = new Random(seed)
     var numLeafClustersNeeded = k - 1
     var level = 1
-    while (activeClusters
-             .nonEmpty && numLeafClustersNeeded > 0 && level < LEVEL_LIMIT) {
+    while (activeClusters.nonEmpty && numLeafClustersNeeded > 0 &&
+           level < LEVEL_LIMIT) {
       // Divisible clusters are sufficiently large and have non-trivial cost.
       var divisibleClusters = activeClusters.filter {
         case (_, summary) =>
-          (summary.size >= minSize) && (summary.cost > MLUtils.EPSILON * summary
-            .size)
+          (summary.size >= minSize) &&
+            (summary.cost > MLUtils.EPSILON * summary.size)
       }
       // If we don't need all divisible clusters, take the larger ones.
       if (divisibleClusters.size > numLeafClustersNeeded) {

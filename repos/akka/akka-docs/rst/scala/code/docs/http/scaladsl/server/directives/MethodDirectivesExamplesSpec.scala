@@ -83,17 +83,16 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
 
     Get("/") ~> Route.seal(route) ~> check {
       status shouldEqual StatusCodes.MethodNotAllowed
-      responseAs[
-        String] shouldEqual "HTTP method not allowed, supported methods: PUT"
+      responseAs[String] shouldEqual
+        "HTTP method not allowed, supported methods: PUT"
     }
   }
 
   "extractMethod-example" in {
     val route =
-      get { complete("This is a GET request.") } ~
-        extractMethod { method =>
-          complete(s"This ${method.name} request, clearly is not a GET!")
-        }
+      get { complete("This is a GET request.") } ~ extractMethod { method =>
+        complete(s"This ${method.name} request, clearly is not a GET!")
+      }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -110,8 +109,9 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
 
   "overrideMethodWithParameter-0" in {
     val route = overrideMethodWithParameter("method") {
-      get { complete("This looks like a GET request.") } ~
-        post { complete("This looks like a POST request.") }
+      get { complete("This looks like a GET request.") } ~ post {
+        complete("This looks like a POST request.")
+      }
     }
 
     // tests:

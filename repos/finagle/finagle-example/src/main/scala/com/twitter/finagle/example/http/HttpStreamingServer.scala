@@ -17,8 +17,8 @@ object HttpStreamingServer {
 
   // Int, sleep, repeat.
   def ints(): AsyncStream[Int] =
-    random.nextInt +::
-      AsyncStream.fromFuture(Future.sleep(100.millis)).flatMap(_ => ints())
+    random.nextInt +:: AsyncStream.fromFuture(Future.sleep(100.millis))
+      .flatMap(_ => ints())
 
   def main(args: Array[String]): Unit = {
     val service = new Service[Request, Response] {

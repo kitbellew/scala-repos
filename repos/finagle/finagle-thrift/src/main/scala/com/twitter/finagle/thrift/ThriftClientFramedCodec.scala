@@ -196,9 +196,8 @@ private[finagle] case class ThriftClientPreparer(
       // TODO: also apply this for Protocols.binaryFactory
 
       val seqIdFilter =
-        if (protocolFactory
-              .isInstanceOf[TBinaryProtocol.Factory] && !useCallerSeqIds)
-          new SeqIdFilter
+        if (protocolFactory.isInstanceOf[TBinaryProtocol.Factory] &&
+            !useCallerSeqIds) new SeqIdFilter
         else Filter.identity[ThriftClientRequest, Array[Byte]]
 
       seqIdFilter.andThen(ttwitter).andThen(service)

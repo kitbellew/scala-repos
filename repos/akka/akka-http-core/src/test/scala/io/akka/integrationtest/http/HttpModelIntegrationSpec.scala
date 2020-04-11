@@ -82,8 +82,8 @@ class HttpModelIntegrationSpec
             ("Content-Length", contentLength.toString))
         case _ ⇒ ???
       }
-      val textHeaders: Seq[(String, String)] =
-        entityTextHeaders ++ partialTextHeaders
+      val textHeaders: Seq[(String, String)] = entityTextHeaders ++
+        partialTextHeaders
       textHeaders shouldEqual Seq(
         "Content-Type" -> "application/json",
         "Content-Length" -> "5",

@@ -57,8 +57,8 @@ class BinaryClassificationMetricsSuite
     assertSequencesMatch(metrics.thresholds().collect(), expectedThresholds)
     assertTupleSequencesMatch(metrics.roc().collect(), expectedROCCurve)
     assert(
-      metrics.areaUnderROC() ~== AreaUnderCurve
-        .of(expectedROCCurve) absTol 1e-5)
+      metrics.areaUnderROC() ~== AreaUnderCurve.of(expectedROCCurve) absTol
+        1e-5)
     assertTupleSequencesMatch(metrics.pr().collect(), expectedPRCurve)
     assert(
       metrics.areaUnderPR() ~== AreaUnderCurve.of(expectedPRCurve) absTol 1e-5)
@@ -203,8 +203,7 @@ class BinaryClassificationMetricsSuite
         (0.6, 1.0),
         (0.8, 1.0),
         (1.0, 1.0),
-        (1.0, 1.0)) ==
-        originalROC)
+        (1.0, 1.0)) == originalROC)
 
     val numBins = 4
 
@@ -223,8 +222,7 @@ class BinaryClassificationMetricsSuite
         (0.6, 0.75),
         (0.8, 1.0),
         (1.0, 1.0),
-        (1.0, 1.0)) ==
-        downsampledROC)
+        (1.0, 1.0)) == downsampledROC)
   }
 
 }

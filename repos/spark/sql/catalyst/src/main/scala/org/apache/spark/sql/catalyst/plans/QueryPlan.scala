@@ -35,8 +35,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
       constraints: Set[Expression]): Set[Expression] = {
     constraints.union(inferAdditionalConstraints(constraints))
       .union(constructIsNotNullConstraints(constraints)).filter(constraint =>
-        constraint.references.nonEmpty && constraint.references
-          .subsetOf(outputSet))
+        constraint.references.nonEmpty &&
+          constraint.references.subsetOf(outputSet))
   }
 
   /**
@@ -292,8 +292,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
     val right = plan.canonicalized
     left.getClass == right.getClass &&
     left.children.size == right.children.size &&
-    left.cleanArgs == right.cleanArgs &&
-    (left.children, right.children).zipped.forall(_ sameResult _)
+    left.cleanArgs == right.cleanArgs && (left.children, right.children).zipped
+      .forall(_ sameResult _)
   }
 
   /**

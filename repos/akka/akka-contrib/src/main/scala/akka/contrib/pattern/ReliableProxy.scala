@@ -289,8 +289,8 @@ class ReliableProxy(
     resetBackoff()
   }
 
-  if (targetPath.address.host.isEmpty && self.path.address == targetPath
-        .address) {
+  if (targetPath.address.host.isEmpty &&
+      self.path.address == targetPath.address) {
     logDebug(
       "Unnecessary to use ReliableProxy for local target: {}",
       targetPath)

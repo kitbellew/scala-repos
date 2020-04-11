@@ -217,7 +217,8 @@ object Multipart {
       f: Formatter,
       contentDisposition: String,
       filename: Option[String]): Unit = {
-    f ~~ "Content-Disposition: form-data; name=" ~~ '"' ~~ contentDisposition ~~ '"'
+    f ~~ "Content-Disposition: form-data; name=" ~~ '"' ~~ contentDisposition ~~
+      '"'
     filename.foreach { name => f ~~ "; filename=" ~~ '"' ~~ name ~~ '"' }
     f ~~ CrLf
   }

@@ -24,7 +24,8 @@ class DocStubGenerationTest extends ScalaDocEnterActionTestBase {
 
   def testSimpleMethodParamStub() {
     genericTestStub(
-      "  /**\n   * \n   * @param i\n   * @param j\n   */\n" + " def f(i: Int, j: Int) " + standartFooter,
+      "  /**\n   * \n   * @param i\n   * @param j\n   */\n" +
+        " def f(i: Int, j: Int) " + standartFooter,
       " def f(i: Int, j: Int) " + standartFooter)
   }
 
@@ -48,7 +49,8 @@ class DocStubGenerationTest extends ScalaDocEnterActionTestBase {
     checkGeneratedTextFromString(
       standartDocCommentStart,
       "class A[E, T](i: Int, j: String) {}",
-      "/**\n * \n * @param i\n * @param j\n * @tparam E\n * @tparam T\n */\n" + "class A[E, T](i: Int, j: String) {}"
+      "/**\n * \n * @param i\n * @param j\n * @tparam E\n * @tparam T\n */\n" +
+        "class A[E, T](i: Int, j: String) {}"
     )
   }
 
@@ -56,12 +58,14 @@ class DocStubGenerationTest extends ScalaDocEnterActionTestBase {
     checkGeneratedTextFromString(
       standartDocCommentStart,
       " trait F[A, B, C] {}",
-      "/**\n * \n * @tparam A\n * @tparam B\n * @tparam C\n */\n" + "trait F[A, B, C] {}")
+      "/**\n * \n * @tparam A\n * @tparam B\n * @tparam C\n */\n" +
+        "trait F[A, B, C] {}")
   }
 
   def testTypeAliasStub() {
     genericTestStub(
-      "  /**\n   * \n   * @tparam A\n   * @tparam B\n   */\n" + " type AA[A, B] = String",
+      "  /**\n   * \n   * @tparam A\n   * @tparam B\n   */\n" +
+        " type AA[A, B] = String",
       " type AA[A, B] = String")
   }
 
@@ -84,7 +88,8 @@ class DocStubGenerationTest extends ScalaDocEnterActionTestBase {
   def testOverrideScala() {
     val testText = "override def f[T](i: Int) {} }"
     val stub =
-      "  /**\n    * \n    * @param i 777\n    * @tparam T lkjh\n    */\n   " + testText
+      "  /**\n    * \n    * @param i 777\n    * @tparam T lkjh\n    */\n   " +
+        testText
     val header =
       "class A {\n /**\n  * @tparam T lkjh\n * @param i 777\n */\ndef f[T](i: Int) {}\n}\n\n class B extends A {\n "
     checkGeneratedTextFromString(

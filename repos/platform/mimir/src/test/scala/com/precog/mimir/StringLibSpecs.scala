@@ -291,13 +291,9 @@ trait StringLibSpecs[M[+_]]
         case (ids, SString(d)) if ids.length == 1 => d
       }
 
-      result2 must contain(
-        "",
-        "quirky",
-        "solstice",
-        "Monkey: ",
-        "(\"alpha\"",
-        "  Whites").only
+      result2 must
+        contain("", "quirky", "solstice", "Monkey: ", "(\"alpha\"", "  Whites")
+          .only
     }
     "determine takeRight with valid integer" in {
       val input = op2Input(takeRight, CLong(8), homStrings)
@@ -309,13 +305,9 @@ trait StringLibSpecs[M[+_]]
         case (ids, SString(d)) if ids.length == 1 => d
       }
 
-      result2 must contain(
-        "",
-        "quirky",
-        "tice + 7",
-        "[Brains]",
-        "\"gamma\")",
-        "!!1!!   ").only
+      result2 must
+        contain("", "quirky", "tice + 7", "[Brains]", "\"gamma\")", "!!1!!   ")
+          .only
     }
     "determine dropLeft with valid integer" in {
       val input = op2Input(dropLeft, CLong(8), homStrings)
@@ -793,13 +785,9 @@ trait StringLibSpecs[M[+_]]
         case (ids, SString(d)) if ids.length == 1 => d
       }
 
-      result2 must contain(
-        "",
-        "quirky",
-        "solstice",
-        "Monkey: ",
-        "(\"alpha\"",
-        "  Whites").only
+      result2 must
+        contain("", "quirky", "solstice", "Monkey: ", "(\"alpha\"", "  Whites")
+          .only
     }
     "determine takeRight with valid integer" in {
       val input = Join(
@@ -815,13 +803,9 @@ trait StringLibSpecs[M[+_]]
         case (ids, SString(d)) if ids.length == 1 => d
       }
 
-      result2 must contain(
-        "",
-        "quirky",
-        "tice + 7",
-        "[Brains]",
-        "\"gamma\")",
-        "!!1!!   ").only
+      result2 must
+        contain("", "quirky", "tice + 7", "[Brains]", "\"gamma\")", "!!1!!   ")
+          .only
     }
     "determine dropLeft with valid integer" in {
       val input = Join(

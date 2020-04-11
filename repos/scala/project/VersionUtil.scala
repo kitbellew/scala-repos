@@ -24,14 +24,14 @@ object VersionUtil {
 
   lazy val generatePropertiesFileSettings = Seq[Setting[_]](
     copyrightString := "Copyright 2002-2016, LAMP/EPFL",
-    resourceGenerators in Compile += generateVersionPropertiesFile
-      .map(file => Seq(file)).taskValue,
+    resourceGenerators in Compile += generateVersionPropertiesFile.map(file =>
+      Seq(file)).taskValue,
     generateVersionPropertiesFile := generateVersionPropertiesFileImpl.value
   )
 
   lazy val generateBuildCharacterFileSettings = Seq[Setting[_]](
-    generateBuildCharacterPropertiesFile := generateBuildCharacterPropertiesFileImpl
-      .value)
+    generateBuildCharacterPropertiesFile :=
+      generateBuildCharacterPropertiesFileImpl.value)
 
   case class Versions(
       canonicalVersion: String,
@@ -117,11 +117,10 @@ object VersionUtil {
   private lazy val generateVersionPropertiesFileImpl
       : Def.Initialize[Task[File]] = Def.task {
     writeProps(
-      versionProperties.value.toMap + ("copyright.string" -> copyrightString
-        .value),
-      (
-        resourceManaged in Compile
-      ).value / s"${thisProject.value.id}.properties")
+      versionProperties.value.toMap +
+        ("copyright.string" -> copyrightString.value),
+      (resourceManaged in Compile).value /
+        s"${thisProject.value.id}.properties")
   }
 
   private lazy val generateBuildCharacterPropertiesFileImpl

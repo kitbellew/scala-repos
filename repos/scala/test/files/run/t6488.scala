@@ -29,11 +29,11 @@ object Test {
 
   // fork the data spewer, wait for input, then destroy the process
   def test() {
-    val f = new File(javaHome, "bin").listFiles.sorted filter (_
-      .getName startsWith "java") find (_.canExecute) getOrElse {
-      // todo signal test runner that test is skipped
-      new File("/bin/ls") // innocuous
-    }
+    val f = new File(javaHome, "bin").listFiles.sorted filter
+      (_.getName startsWith "java") find (_.canExecute) getOrElse {
+        // todo signal test runner that test is skipped
+        new File("/bin/ls") // innocuous
+      }
     //Process(f.getAbsolutePath).run(ProcessLogger { _ => () }).destroy
     val reading = new CountDownLatch(1)
     val count = new AtomicInteger

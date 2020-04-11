@@ -230,8 +230,8 @@ object GraphGenerators extends Logging {
   private def pickQuadrant(a: Double, b: Double, c: Double, d: Double): Int = {
     if (a + b + c + d != 1.0) {
       throw new IllegalArgumentException(
-        "R-MAT probability parameters sum to " + (a + b + c + d)
-          + ", should sum to 1.0")
+        "R-MAT probability parameters sum to " + (a + b + c + d) +
+          ", should sum to 1.0")
     }
     val rand = new Random()
     val result = rand.nextDouble()

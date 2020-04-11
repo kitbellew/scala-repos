@@ -88,16 +88,14 @@ case class MetricEvaluatorResult[R](
 
     val strings = Seq(
       "MetricEvaluatorResult:",
-      s"  # engine params evaluated: ${engineParamsScores.size}") ++
-      Seq(
-        "Optimal Engine Params:",
-        s"  $bestEPStr",
-        "Metrics:",
-        s"  $metricHeader: ${bestScore.score}") ++
+      s"  # engine params evaluated: ${engineParamsScores.size}") ++ Seq(
+      "Optimal Engine Params:",
+      s"  $bestEPStr",
+      "Metrics:",
+      s"  $metricHeader: ${bestScore.score}") ++
       otherMetricHeaders.zip(bestScore.otherScores).map {
         case (h, s) => s"  $h: $s"
-      } ++
-      outputPath.toSeq.map { p =>
+      } ++ outputPath.toSeq.map { p =>
         s"The best variant params can be found in $p"
       }
 

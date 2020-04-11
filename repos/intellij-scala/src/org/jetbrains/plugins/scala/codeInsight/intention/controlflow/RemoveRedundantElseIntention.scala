@@ -39,8 +39,8 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
       return false
 
     val offset = editor.getCaretModel.getOffset
-    if (!(thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch
-          .getTextRange.getStartOffset)) return false
+    if (!(thenBranch.getTextRange.getEndOffset <= offset &&
+          offset <= elseBranch.getTextRange.getStartOffset)) return false
 
     thenBranch match {
       case tb: ScBlockExpr =>

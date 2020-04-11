@@ -36,9 +36,8 @@ object ExistsEquals extends SimplificationType {
       qual.getContext,
       qual) match {
       case ScMethodCall(ref: ScReferenceExpression, Seq(a)) =>
-        ref.resolve() != null &&
-          a.expectedType(fromUnderscore = false)
-            .exists(a.getType().getOrNothing.conforms(_))
+        ref.resolve() != null && a.expectedType(fromUnderscore = false)
+          .exists(a.getType().getOrNothing.conforms(_))
       case _ => false
     }
 

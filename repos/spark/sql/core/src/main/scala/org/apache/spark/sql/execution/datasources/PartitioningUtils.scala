@@ -214,9 +214,8 @@ private[sql] object PartitioningUtils {
         //  - After we get the new currentPath, this new currentPath represent the top level dir
         //    i.e. currentPath.getParent == null. For the example of "/table/a=1/",
         //    the top level dir is "/table".
-        finished =
-          (maybeColumn.isEmpty && !columns.isEmpty) || currentPath
-            .getParent == null
+        finished = (maybeColumn.isEmpty && !columns.isEmpty) ||
+          currentPath.getParent == null
 
         if (!finished) {
           // For the above example, currentPath will be "/table/".
@@ -320,8 +319,8 @@ private[sql] object PartitioningUtils {
       "For partitioned table directories, data files should only live in leaf directories.\n" +
       "And directories at the same level should have the same partition column name.\n" +
       "Please check the following directories for unexpected files or " +
-      "inconsistent partition column names:\n" +
-      suspiciousPaths.map("\t" + _).mkString("\n", "\n", "")
+      "inconsistent partition column names:\n" + suspiciousPaths.map("\t" + _)
+        .mkString("\n", "\n", "")
   }
 
   /**

@@ -109,9 +109,8 @@ sealed abstract class Future[+A] {
       case BindAsync(onFinish, g) if !cancel.get =>
         onFinish(x =>
           if (!cancel.get)
-            Trampoline.delay(g(x)) map (
-              _ unsafePerformListenInterruptibly (cb, cancel)
-            )
+            Trampoline.delay(g(x)) map
+              (_ unsafePerformListenInterruptibly (cb, cancel))
           else Trampoline.done(()))
       case _ if cancel.get => ()
     }

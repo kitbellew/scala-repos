@@ -42,9 +42,8 @@ case class Binomial(n: Int, p: Double)(implicit rand: RandBasis = Rand)
     if (p == 0) logI(k == 0)
     else if (p == 1) logI(k == n)
     else {
-      lgamma(n + 1) - lgamma(k + 1) - lgamma(n - k + 1) + k * log(p) + (
-        n - k
-      ) * log(1 - p)
+      lgamma(n + 1) - lgamma(k + 1) - lgamma(n - k + 1) + k * log(p) + (n - k) *
+        log(1 - p)
     }
   }
 
@@ -78,9 +77,9 @@ case class Binomial(n: Int, p: Double)(implicit rand: RandBasis = Rand)
         } while (bnl < 0.0 || bnl >= (n + 1.0))
         bnl = floor(bnl)
         t = 1.2 * sq * (1.0 + y * y) * exp(
-          nfact - breeze.numerics.lgamma(bnl + 1.0)
-            - breeze.numerics.lgamma(n - bnl + 1.0)
-            + bnl * plog + (n - bnl) * pclog)
+          nfact - breeze.numerics.lgamma(bnl + 1.0) -
+            breeze.numerics.lgamma(n - bnl + 1.0) + bnl * plog + (n - bnl) *
+            pclog)
       } while (rand.uniform.get > t)
     }
     if (p != pp) bnl = n - bnl

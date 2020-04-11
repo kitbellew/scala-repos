@@ -45,10 +45,10 @@ trait SyntheticMethods extends ast.TreeDSL {
     Product_iterator,
     Product_canEqual)
   private lazy val valueSymbols = List(Any_hashCode, Any_equals)
-  private lazy val caseSymbols =
-    List(Object_hashCode, Object_toString) ::: productSymbols
-  private lazy val caseValueSymbols =
-    Any_toString :: valueSymbols ::: productSymbols
+  private lazy val caseSymbols = List(Object_hashCode, Object_toString) :::
+    productSymbols
+  private lazy val caseValueSymbols = Any_toString :: valueSymbols :::
+    productSymbols
   private lazy val caseObjectSymbols = Object_equals :: caseSymbols
   private def symbolsToSynthesize(clazz: Symbol): List[Symbol] = {
     if (clazz.isCase) {
@@ -75,8 +75,8 @@ trait SyntheticMethods extends ast.TreeDSL {
       clazz0: Symbol,
       context: Context): Template = {
     val syntheticsOk = (phase.id <= currentRun.typerPhase.id) && {
-      symbolsToSynthesize(clazz0) filter (_ matchingSymbol clazz0
-        .info isSynthetic) match {
+      symbolsToSynthesize(clazz0) filter
+        (_ matchingSymbol clazz0.info isSynthetic) match {
         case Nil => true
         case syms =>
           log(
@@ -121,8 +121,8 @@ trait SyntheticMethods extends ast.TreeDSL {
     def hasOverridingImplementation(meth: Symbol) = {
       val sym = clazz.info nonPrivateMember meth.name
       sym.alternatives exists { m0 =>
-        (m0 ne meth) && !m0.isDeferred && !m0.isSynthetic && (m0
-          .owner != AnyValClass) && (typeInClazz(m0) matches typeInClazz(meth))
+        (m0 ne meth) && !m0.isDeferred && !m0.isSynthetic &&
+        (m0.owner != AnyValClass) && (typeInClazz(m0) matches typeInClazz(meth))
       }
     }
     def productIteratorMethod = {
@@ -188,22 +188,22 @@ trait SyntheticMethods extends ast.TreeDSL {
      */
     def equalsCore(eqmeth: Symbol, accessors: List[Symbol]) = {
       val otherName = context.unit.freshTermName(clazz.name + "$")
-      val otherSym = eqmeth
-        .newValue(otherName, eqmeth.pos, SYNTHETIC) setInfo clazz.tpe
-      val pairwise = accessors map (acc =>
-        fn(
-          Select(mkThis, acc),
-          acc.tpe member nme.EQ,
-          Select(Ident(otherSym), acc)))
+      val otherSym = eqmeth.newValue(otherName, eqmeth.pos, SYNTHETIC) setInfo
+        clazz.tpe
+      val pairwise = accessors map
+        (acc =>
+          fn(
+            Select(mkThis, acc),
+            acc.tpe member nme.EQ,
+            Select(Ident(otherSym), acc)))
       val canEq = gen.mkMethodCall(otherSym, nme.canEqual_, Nil, List(mkThis))
       val tests =
         if (clazz.isDerivedValueClass || clazz.isFinal && syntheticCanEqual)
           pairwise
         else pairwise :+ canEq
 
-      thatTest(eqmeth) AND Block(
-        ValDef(otherSym, thatCast(eqmeth)),
-        AND(tests: _*))
+      thatTest(eqmeth) AND
+        Block(ValDef(otherSym, thatCast(eqmeth)), AND(tests: _*))
     }
 
     /* The equality method for case classes.
@@ -260,12 +260,12 @@ trait SyntheticMethods extends ast.TreeDSL {
     // methods for both classes and objects
     def productMethods = {
       List(
-        Product_productPrefix -> (() =>
-          constantNullary(nme.productPrefix, clazz.name.decode)),
-        Product_productArity -> (() =>
-          constantNullary(nme.productArity, arity)),
-        Product_productElement -> (() =>
-          perElementMethod(nme.productElement, AnyTpe)(mkThisSelect)),
+        Product_productPrefix ->
+          (() => constantNullary(nme.productPrefix, clazz.name.decode)),
+        Product_productArity ->
+          (() => constantNullary(nme.productArity, arity)),
+        Product_productElement ->
+          (() => perElementMethod(nme.productElement, AnyTpe)(mkThisSelect)),
         Product_iterator -> (() => productIteratorMethod),
         Product_canEqual -> (() => canEqualMethod)
         // This is disabled pending a reimplementation which doesn't add any
@@ -293,12 +293,13 @@ trait SyntheticMethods extends ast.TreeDSL {
         val accumulator = m
           .newVariable(newTermName("acc"), m.pos, SYNTHETIC) setInfo IntTpe
         val valdef = ValDef(accumulator, Literal(Constant(0xcafebabe)))
-        val mixes = accessors map (acc =>
-          Assign(
-            Ident(accumulator),
-            callStaticsMethod("mix")(
+        val mixes = accessors map
+          (acc =>
+            Assign(
               Ident(accumulator),
-              hashcodeImplementation(acc))))
+              callStaticsMethod("mix")(
+                Ident(accumulator),
+                hashcodeImplementation(acc))))
         val finish = callStaticsMethod("finalizeHash")(
           Ident(accumulator),
           Literal(Constant(arity)))
@@ -318,21 +319,23 @@ trait SyntheticMethods extends ast.TreeDSL {
         Any_equals -> (() => equalsDerivedValueClassMethod))
 
     def caseClassMethods =
-      productMethods ++ /*productNMethods ++*/ Seq(
-        Object_hashCode -> (() => chooseHashcode),
-        Object_toString -> (() => forwardToRuntime(Object_toString)),
-        Object_equals -> (() => equalsCaseClassMethod))
+      productMethods ++
+        /*productNMethods ++*/ Seq(
+          Object_hashCode -> (() => chooseHashcode),
+          Object_toString -> (() => forwardToRuntime(Object_toString)),
+          Object_equals -> (() => equalsCaseClassMethod))
 
     def valueCaseClassMethods =
-      productMethods ++ /*productNMethods ++*/ valueClassMethods ++ Seq(
-        Any_toString -> (() => forwardToRuntime(Object_toString)))
+      productMethods ++
+        /*productNMethods ++*/ valueClassMethods ++
+        Seq(Any_toString -> (() => forwardToRuntime(Object_toString)))
 
     def caseObjectMethods =
       productMethods ++ Seq(
-        Object_hashCode -> (() =>
-          constantMethod(nme.hashCode_, clazz.name.decode.hashCode)),
-        Object_toString -> (() =>
-          constantMethod(nme.toString_, clazz.name.decode))
+        Object_hashCode ->
+          (() => constantMethod(nme.hashCode_, clazz.name.decode.hashCode)),
+        Object_toString ->
+          (() => constantMethod(nme.toString_, clazz.name.decode))
         // Not needed, as reference equality is the default.
         // Object_equals   -> (() => createMethod(Object_equals)(m => This(clazz) ANY_EQ Ident(m.firstParam)))
       )
@@ -344,10 +347,8 @@ trait SyntheticMethods extends ast.TreeDSL {
      * for all case objects.)
      */
     def needsReadResolve =
-      (clazz.isModuleClass
-        && clazz.isSerializable
-        && !hasConcreteImpl(nme.readResolve)
-        && clazz.isStatic)
+      (clazz.isModuleClass && clazz.isSerializable &&
+        !hasConcreteImpl(nme.readResolve) && clazz.isStatic)
 
     def synthesize(): List[Tree] = {
       val methods =
@@ -364,18 +365,18 @@ trait SyntheticMethods extends ast.TreeDSL {
       def impls = {
         def shouldGenerate(m: Symbol) = {
           !hasOverridingImplementation(m) || {
-            clazz.isDerivedValueClass && (
-              m == Any_hashCode || m == Any_equals
-            ) && {
+            clazz.isDerivedValueClass &&
+            (m == Any_hashCode || m == Any_equals) && {
               // Without a means to suppress this warning, I've thought better of it.
               if (settings.warnValueOverrides) {
-                (clazz.info nonPrivateMember m.name) filter (m =>
-                  (m.owner != AnyClass) && (m.owner != clazz) && !m
-                    .isDeferred) andAlso { m =>
-                  typer.context.warning(
-                    clazz.pos,
-                    s"Implementation of ${m.name} inherited from ${m.owner} overridden in $clazz to enforce value class semantics")
-                }
+                (clazz.info nonPrivateMember m.name) filter
+                  (m =>
+                    (m.owner != AnyClass) && (m.owner != clazz) &&
+                      !m.isDeferred) andAlso { m =>
+                    typer.context.warning(
+                      clazz.pos,
+                      s"Implementation of ${m.name} inherited from ${m.owner} overridden in $clazz to enforce value class semantics")
+                  }
               }
               true
             }

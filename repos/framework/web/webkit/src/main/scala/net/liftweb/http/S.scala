@@ -592,9 +592,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def templateFromTemplateAttr: Box[NodeSeq] =
     for (templateName <- attr("template") ?~ "Template Attribute missing";
          tmplList = templateName.roboSplit("/");
-         template <-
-           Templates(tmplList) ?~
-             "couldn't find template") yield template
+         template <- Templates(tmplList) ?~ "couldn't find template")
+      yield template
 
   /**
     * Returns the Locale for this request based on the LiftRules.localeCalculator
@@ -629,9 +628,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see Req.isIE
     */
   def legacyIeCompatibilityMode: Boolean =
-    session
-      .map(
-        _.legacyIeCompatibilityMode.is) openOr false // LiftRules.calcIEMode()
+    session.map(_.legacyIeCompatibilityMode.is) openOr
+      false // LiftRules.calcIEMode()
 
   /**
     * Get the current instance of HtmlProperties
@@ -660,8 +658,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see DispatchHolder
     */
   def highLevelSessionDispatchList: List[DispatchHolder] =
-    session map (_.highLevelSessionDispatcher.toList.map(t =>
-      DispatchHolder(t._1, t._2))) openOr Nil
+    session map
+      (
+        _.highLevelSessionDispatcher.toList
+          .map(t => DispatchHolder(t._1, t._2))) openOr Nil
 
   /**
     * Adds a dispatch function for the current session, as opposed to a global
@@ -745,8 +745,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see LiftRules # rewrite
     */
   def sessionRewriter: List[RewriteHolder] =
-    session map (
-      _.sessionRewriter.toList.map(t => RewriteHolder(t._1, t._2))) openOr Nil
+    session map
+      (_.sessionRewriter.toList.map(t => RewriteHolder(t._1, t._2))) openOr Nil
 
   /**
     * Adds a per-session rewrite function. This can be used if you only want a particular rewrite
@@ -851,9 +851,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def addComet(cometActor: LiftCometActor): Unit = {
     requestCometVersions.set(
-      requestCometVersions.is + CVP(
-        cometActor.uniqueId,
-        cometActor.lastRenderTime))
+      requestCometVersions.is +
+        CVP(cometActor.uniqueId, cometActor.lastRenderTime))
   }
 
   /**
@@ -981,8 +980,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     val globalJs = _globalJsToAppend.is.toList
     val postPageJs = S.session.toList.flatMap { session =>
       session.postPageJavaScript(
-        RenderVersion.get ::
-          currentCometActor.map(_.uniqueId).toList)
+        RenderVersion.get :: currentCometActor.map(_.uniqueId).toList)
     }
     val cometJs = commandsForComets
 
@@ -1111,8 +1109,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                     val clz = this.getClass.getClassLoader
                       .loadClass("java.util.ResourceBundle")
                     val meth = clz.getDeclaredMethods.filter { m =>
-                      m.getName == "clearCache" && m.getParameterTypes
-                        .length == 0
+                      m.getName == "clearCache" &&
+                      m.getParameterTypes.length == 0
                     }.toList.head
                     meth.invoke(null)
                   }
@@ -1121,8 +1119,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
               }.openOr(
                 NamedPF.applyBox(
                   (name, loc),
-                  LiftRules.resourceBundleFactories.toList)
-                  .map(List(_)) openOr Nil)))
+                  LiftRules.resourceBundleFactories.toList).map(List(_)) openOr
+                  Nil)))
         _resBundle.value
       }
       case Full(bundles) => bundles
@@ -1280,8 +1278,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     } yield queryString
 
   def uriAndQueryString: Box[String] =
-    for { req <- this.request } yield req.uri + (queryString
-      .map(s => "?" + s) openOr "")
+    for { req <- this.request } yield req.uri +
+      (queryString.map(s => "?" + s) openOr "")
 
   /**
     * Run any configured exception handlers and make sure errors in
@@ -1659,8 +1657,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def getResponseHeaders(in: List[(String, String)]): List[(String, String)] = {
     Box.legacyNullTest(_responseHeaders.value).map(rh =>
-      rh.headers.iterator.toList :::
-        in.filter { case (n, v) => !rh.headers.contains(n) }).openOr(Nil)
+      rh.headers.iterator.toList ::: in.filter {
+        case (n, v) => !rh.headers.contains(n)
+      }).openOr(Nil)
   }
 
   /**
@@ -1783,12 +1782,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   private def doStatefulRewrite(old: Box[Req]): Box[Req] = {
     // Don't even try to rewrite Req.nil
     old.map { req =>
-      if (statefulRequest_? && req.path.partPath.nonEmpty && (req
-            .request ne null)) {
+      if (statefulRequest_? && req.path.partPath.nonEmpty &&
+          (req.request ne null)) {
         Req(
           req,
-          S.sessionRewriter.map(_.rewrite) :::
-            LiftRules.statefulRewrite.toList,
+          S.sessionRewriter.map(_.rewrite) ::: LiftRules.statefulRewrite.toList,
           Nil,
           LiftRules.statelessReqTest.toList)
       } else { req }
@@ -2836,8 +2834,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       }.foldLeft(JsCmds.Noop)(_ & _)
 
       val onErrorFunc: String =
-        onError.map(f =>
-          JsCmds.Run("function onError_" + key + "() {" + f.toJsCmd + """
+        onError.map(f => JsCmds.Run("function onError_" + key + "() {" + f.toJsCmd + """
   }
 
    """).toJsCmd) openOr ""
@@ -2850,13 +2847,12 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       (
         JsonCall(key),
         JsCmds.Run(
-          name.map(n =>
-            onErrorFunc +
-              "/* JSON Func " + n + " $$ " + key + " */").openOr("") +
-            "function " + key + "(obj) {lift.ajax(" +
-            "'" + key + "='+ encodeURIComponent(" +
-            LiftRules.jsArtifacts.jsonStringify(JE.JsRaw("obj"))
-              .toJsCmd + "), null," + onErrorParam + ");}"))
+          name
+            .map(n => onErrorFunc + "/* JSON Func " + n + " $$ " + key + " */")
+            .openOr("") + "function " + key + "(obj) {lift.ajax(" + "'" + key +
+            "='+ encodeURIComponent(" +
+            LiftRules.jsArtifacts.jsonStringify(JE.JsRaw("obj")).toJsCmd +
+            "), null," + onErrorParam + ");}"))
     }
   }
 
@@ -2966,8 +2962,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * Returns all the HTTP parameters having 'n' name
     */
   def params(n: String): List[String] =
-    paramsForComet.get.get(n) getOrElse
-      request.flatMap(_.params.get(n)).openOr(Nil)
+    paramsForComet.get.get(n) getOrElse request.flatMap(_.params.get(n))
+      .openOr(Nil)
 
   /**
     * Returns the HTTP parameter having 'n' name

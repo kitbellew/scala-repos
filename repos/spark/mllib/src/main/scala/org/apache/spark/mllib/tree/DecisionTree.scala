@@ -752,8 +752,8 @@ object DecisionTree extends Serializable with Logging {
           logDebug("best split = " + split)
 
           // Extract info for this node.  Create children if not leaf.
-          val isLeaf = (stats.gain <= 0) || (Node
-            .indexToLevel(nodeIndex) == metadata.maxDepth)
+          val isLeaf = (stats.gain <= 0) ||
+            (Node.indexToLevel(nodeIndex) == metadata.maxDepth)
           assert(node.id == nodeIndex)
           node.predict = predict
           node.isLeaf = isLeaf
@@ -763,8 +763,8 @@ object DecisionTree extends Serializable with Logging {
 
           if (!isLeaf) {
             node.split = Some(split)
-            val childIsLeaf = (Node.indexToLevel(nodeIndex) + 1) == metadata
-              .maxDepth
+            val childIsLeaf =
+              (Node.indexToLevel(nodeIndex) + 1) == metadata.maxDepth
             val leftChildIsLeaf = childIsLeaf || (stats.leftImpurity == 0.0)
             val rightChildIsLeaf = childIsLeaf || (stats.rightImpurity == 0.0)
             node.leftNode = Some(Node(
@@ -794,11 +794,11 @@ object DecisionTree extends Serializable with Logging {
             }
 
             logDebug(
-              "leftChildIndex = " + node.leftNode.get.id +
-                ", impurity = " + stats.leftImpurity)
+              "leftChildIndex = " + node.leftNode.get.id + ", impurity = " +
+                stats.leftImpurity)
             logDebug(
-              "rightChildIndex = " + node.rightNode.get.id +
-                ", impurity = " + stats.rightImpurity)
+              "rightChildIndex = " + node.rightNode.get.id + ", impurity = " +
+                stats.rightImpurity)
           }
         }
     }
@@ -840,8 +840,8 @@ object DecisionTree extends Serializable with Logging {
     val leftWeight = leftCount / totalCount.toDouble
     val rightWeight = rightCount / totalCount.toDouble
 
-    val gain =
-      impurity - leftWeight * leftImpurity - rightWeight * rightImpurity
+    val gain = impurity - leftWeight * leftImpurity -
+      rightWeight * rightImpurity
 
     // if information gain doesn't satisfy minimum information gain,
     // then this split is invalid, return invalid information gain stats.
@@ -999,8 +999,8 @@ object DecisionTree extends Serializable with Logging {
         }
 
         logDebug(
-          "Centroids for categorical variable: " + centroidForCategories
-            .mkString(","))
+          "Centroids for categorical variable: " +
+            centroidForCategories.mkString(","))
 
         // bins sorted by centroids
         val categoriesSortedByCentroid = centroidForCategories.toList

@@ -64,9 +64,8 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
   private def handleKillRequest(
       request: HttpServletRequest,
       action: String => Unit): Unit = {
-    if (parent.killEnabled &&
-        parent.master.securityMgr
-          .checkModifyPermissions(request.getRemoteUser)) {
+    if (parent.killEnabled && parent.master.securityMgr.checkModifyPermissions(
+          request.getRemoteUser)) {
       val killFlag = Option(request.getParameter("terminate"))
         .getOrElse("false").toBoolean
       val id = Option(request.getParameter("id"))
@@ -217,8 +216,8 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
   private def appRow(app: ApplicationInfo): Seq[Node] = {
     val killLink =
       if (parent.killEnabled &&
-          (app.state == ApplicationState.RUNNING || app
-            .state == ApplicationState.WAITING)) {
+          (app.state == ApplicationState.RUNNING ||
+          app.state == ApplicationState.WAITING)) {
         val confirm =
           s"if (window.confirm('Are you sure you want to kill application ${app.id} ?')) " +
             "{ this.parentNode.submit(); return true; } else { return false; }"

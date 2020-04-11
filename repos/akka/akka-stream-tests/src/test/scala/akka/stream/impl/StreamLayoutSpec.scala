@@ -299,10 +299,10 @@ class StreamLayoutSpec extends AkkaSpec {
       }
     }
 
-    materializer.publishers.distinct.size should be(
-      materializer.publishers.size)
-    materializer.subscribers.distinct.size should be(
-      materializer.subscribers.size)
+    materializer.publishers.distinct.size should
+      be(materializer.publishers.size)
+    materializer.subscribers.distinct.size should
+      be(materializer.subscribers.size)
 
     (materializer.publishers.toSet, materializer.subscribers.toSet)
   }

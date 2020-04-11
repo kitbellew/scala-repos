@@ -104,8 +104,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     classOf[LifecycleCallbacks].isAssignableFrom(m.getReturnType)
 
   private def isField(m: Method) = {
-    val ret = !m.isSynthetic && classOf[Field[_, _]]
-      .isAssignableFrom(m.getReturnType)
+    val ret = !m.isSynthetic &&
+      classOf[Field[_, _]].isAssignableFrom(m.getReturnType)
     ret
   }
 

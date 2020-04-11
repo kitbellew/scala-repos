@@ -67,19 +67,16 @@ trait SQLServerProfile extends JdbcProfile {
     .getStringOpt("defaultStringType")
 
   override protected def computeCapabilities: Set[Capability] =
-    (super.computeCapabilities
-      - JdbcCapabilities.forceInsert
-      - JdbcCapabilities.returnInsertOther
-      - JdbcCapabilities.insertOrUpdate
-      - SqlCapabilities.sequence
-      - JdbcCapabilities.supportsByte)
+    (super.computeCapabilities - JdbcCapabilities.forceInsert -
+      JdbcCapabilities.returnInsertOther - JdbcCapabilities.insertOrUpdate -
+      SqlCapabilities.sequence - JdbcCapabilities.supportsByte)
 
   override protected def computeQueryCompiler =
     (super.computeQueryCompiler
       .addAfter(new RemoveTakeDrop(translateTake = false), Phase.expandSums)
       .addBefore(new ProtectGroupBy, Phase.mergeToComprehensions)
-      .replace(new RemoveFieldNames(alwaysKeepSubqueryNames = true))
-      + Phase.rewriteBooleans)
+      .replace(new RemoveFieldNames(alwaysKeepSubqueryNames = true)) +
+      Phase.rewriteBooleans)
   override protected lazy val useServerSideUpsert = true
   override protected lazy val useServerSideUpsertReturning = false
   override val columnTypes = new JdbcTypes
@@ -142,8 +139,8 @@ trait SQLServerProfile extends JdbcProfile {
           case None => defaultStringType match {
               case Some(s) => s
               case None =>
-                if (sym
-                      .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
+                if (sym.flatMap(
+                      _.findColumnOption[ColumnOption.PrimaryKey.type])
                       .isDefined) "VARCHAR(254)"
                 else "VARCHAR(MAX)"
             }
@@ -188,8 +185,8 @@ trait SQLServerProfile extends JdbcProfile {
       n match {
         // Cast bind variables of type TIME to TIME (otherwise they're treated as TIMESTAMP)
         case c @ LiteralNode(v)
-            if c.volatileHint && jdbcTypeFor(c.nodeType) == columnTypes
-              .timeJdbcType =>
+            if c.volatileHint &&
+              jdbcTypeFor(c.nodeType) == columnTypes.timeJdbcType =>
           b"cast("
           super.expr(n, skipParens)
           b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"
@@ -221,8 +218,8 @@ trait SQLServerProfile extends JdbcProfile {
     override protected def addForeignKey(fk: ForeignKey, sb: StringBuilder) {
       val updateAction = fk.onUpdate.action
       val deleteAction = fk.onDelete.action
-      sb append "constraint " append quoteIdentifier(
-        fk.name) append " foreign key("
+      sb append "constraint " append quoteIdentifier(fk.name) append
+        " foreign key("
       addForeignKeyColumnList(
         fk.linearizedSourceColumns,
         sb,
@@ -233,12 +230,10 @@ trait SQLServerProfile extends JdbcProfile {
         sb,
         fk.targetTable.tableName)
       // SQLServer has no RESTRICT. Equivalent is NO ACTION. http://technet.microsoft.com/en-us/library/aa902684%28v=sql.80%29.aspx
-      sb append ") on update " append (if (updateAction == "RESTRICT")
-                                         "NO ACTION"
-                                       else updateAction)
-      sb append " on delete " append (if (deleteAction == "RESTRICT")
-                                        "NO ACTION"
-                                      else deleteAction)
+      sb append ") on update " append
+        (if (updateAction == "RESTRICT") "NO ACTION" else updateAction)
+      sb append " on delete " append
+        (if (deleteAction == "RESTRICT") "NO ACTION" else deleteAction)
     }
   }
 

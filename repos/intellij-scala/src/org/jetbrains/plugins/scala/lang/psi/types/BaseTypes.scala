@@ -28,8 +28,8 @@ object BaseTypes {
       case ScDesignatorType(td: ScTemplateDefinition) =>
         reduce(td.superTypes.flatMap(tp =>
           if (!notAll)
-            BaseTypes.get(tp, notAll, visitedAliases = visitedAliases) ++ Seq(
-              tp)
+            BaseTypes.get(tp, notAll, visitedAliases = visitedAliases) ++
+              Seq(tp)
           else Seq(tp)))
       case ScDesignatorType(c: PsiClass) =>
         reduce(c.getSuperTypes.flatMap { p =>
@@ -93,8 +93,8 @@ object BaseTypes {
                 BaseTypes.get(
                   p.substitutor.subst(tp),
                   notAll,
-                  visitedAliases = visitedAliases) ++ Seq(
-                  p.substitutor.subst(tp))
+                  visitedAliases = visitedAliases) ++
+                  Seq(p.substitutor.subst(tp))
               else Seq(p.substitutor.subst(tp))
             })
           case Some(clazz) =>
@@ -119,17 +119,16 @@ object BaseTypes {
           if (notAll) comps
           else
             comps.flatMap(comp =>
-              BaseTypes.get(comp, visitedAliases = visitedAliases) ++ Seq(
-                comp)))
+              BaseTypes.get(comp, visitedAliases = visitedAliases) ++
+                Seq(comp)))
       case proj @ ScProjectionType(p, elem, _) =>
         val s = proj.actualSubst
         elem match {
           case td: ScTypeDefinition =>
             reduce(td.superTypes.flatMap { tp =>
               if (!notAll)
-                BaseTypes
-                  .get(s.subst(tp), visitedAliases = visitedAliases) ++ Seq(
-                  s.subst(tp))
+                BaseTypes.get(s.subst(tp), visitedAliases = visitedAliases) ++
+                  Seq(s.subst(tp))
               else Seq(s.subst(tp))
             })
           case c: PsiClass =>
@@ -139,8 +138,8 @@ object BaseTypes {
                 if (!notAll)
                   BaseTypes.get(
                     s.subst(ScType.create(st, proj)),
-                    visitedAliases = visitedAliases) ++ Seq(
-                    s.subst(ScType.create(st, proj)))
+                    visitedAliases = visitedAliases) ++
+                    Seq(s.subst(ScType.create(st, proj)))
                 else Seq(s.subst(ScType.create(st, proj)))
               }
             })

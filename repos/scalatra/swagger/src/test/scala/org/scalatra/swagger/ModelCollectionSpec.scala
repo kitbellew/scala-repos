@@ -49,8 +49,8 @@ object ModelCollectionSpec {
   val thingModels = taggedThingModels + Swagger.modelToSwagger[Thing]
 
   case class OptionListThing(id: Long, things: Option[List[TaggedThing]])
-  val optionThingModels = taggedThingModels + Swagger
-    .modelToSwagger[OptionListThing]
+  val optionThingModels = taggedThingModels +
+    Swagger.modelToSwagger[OptionListThing]
 }
 
 class ModelCollectionSpec extends Specification {
@@ -73,31 +73,30 @@ class ModelCollectionSpec extends Specification {
 
     "not return Options" in {
       Swagger.collectModels[Option[String]](Set.empty) must beEmpty
-      Swagger.collectModels[Option[OnlyPrimitives]](Set.empty) must_== Set(
-        onlyPrimitivesModel)
+      Swagger.collectModels[Option[OnlyPrimitives]](Set.empty) must_==
+        Set(onlyPrimitivesModel)
     }
 
     "not return Lists" in {
       Swagger.collectModels[List[String]](Set.empty) must beEmpty
-      Swagger.collectModels[List[OnlyPrimitives]](Set.empty) must_== Set(
-        onlyPrimitivesModel)
+      Swagger.collectModels[List[OnlyPrimitives]](Set.empty) must_==
+        Set(onlyPrimitivesModel)
     }
 
     "only return the top level object for a case class with only primitives" in {
-      Swagger.collectModels[OnlyPrimitives](Set.empty) must_== Set(
-        onlyPrimitivesModel)
+      Swagger.collectModels[OnlyPrimitives](Set.empty) must_==
+        Set(onlyPrimitivesModel)
     }
 
     "collect all the models in a nested structure" in {
-      Swagger
-        .collectModels[TaggedThing](Set.empty) must containTheSameElementsAs(
-        taggedThingModels.flatten.toSeq)
+      Swagger.collectModels[TaggedThing](Set.empty) must
+        containTheSameElementsAs(taggedThingModels.flatten.toSeq)
     }
 
     "collect models when hiding in a list" in {
       val collected = Swagger.collectModels[Things](Set.empty)
-      collected.map(_.id) must containTheSameElementsAs(
-        thingsModels.flatten.map(_.id).toSeq)
+      collected.map(_.id) must
+        containTheSameElementsAs(thingsModels.flatten.map(_.id).toSeq)
     }
     "collect models when hiding in a map" in {
       val collected = Swagger.collectModels[MapThings](Set.empty)
@@ -114,20 +113,18 @@ class ModelCollectionSpec extends Specification {
     "collect models when provided as a list inside an option" in {
       val collected = Swagger.collectModels[OptionListThing](Set.empty)
       val r = collected.find(_.id == "OptionListThing")
-      r.flatMap(
-          _.properties.find(_._1 == "things").map(_._2.`type`)) must beSome(
-        DataType[List[TaggedThing]])
-      r.flatMap(
-          _.properties.find(_._1 == "things").map(_._2.required)) must beSome(
-        false)
+      r.flatMap(_.properties.find(_._1 == "things").map(_._2.`type`)) must
+        beSome(DataType[List[TaggedThing]])
+      r.flatMap(_.properties.find(_._1 == "things").map(_._2.required)) must
+        beSome(false)
     }
 
     "collect models when hiding in an option" in {
       val collected = Swagger.collectModels[Thing](Set.empty)
       collected must containTheSameElementsAs(thingModels.flatten.toSeq)
-      collected.find(_.id == "Thing").flatMap(
-        _.properties.find(_._1 == "thing").map(_._2.`type`)) must beSome(
-        DataType[TaggedThing])
+      collected.find(_.id == "Thing")
+        .flatMap(_.properties.find(_._1 == "thing").map(_._2.`type`)) must
+        beSome(DataType[TaggedThing])
     }
 
     "collect Asset model" in {

@@ -97,8 +97,8 @@ class FamilyFormatsSpec extends FormatSpec with FamilyFormats {
     val fieldTerm = FieldTerm("thing is ten", DatabaseField("THING"), "10")
     val expectField = SexpData(
       SexpSymbol(":text") -> SexpString("thing is ten"),
-      SexpSymbol(":field") -> SexpData(
-        SexpSymbol(":column") -> SexpString("THING")),
+      SexpSymbol(":field") ->
+        SexpData(SexpSymbol(":column") -> SexpString("THING")),
       SexpSymbol(":value") -> SexpString("10")
     )
 

@@ -141,9 +141,10 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
       .add(Vectors.sparse(3, Seq((1, 1.9), (2, 0.0))))
 
     assert(
-      summarizer.mean ~==
-        Vectors
-          .dense(0.583333333333, -0.416666666666, -0.183333333333) absTol 1e-5,
+      summarizer.mean ~== Vectors.dense(
+        0.583333333333,
+        -0.416666666666,
+        -0.183333333333) absTol 1e-5,
       "mean mismatch")
 
     assert(
@@ -159,9 +160,10 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
       "numNonzeros mismatch")
 
     assert(
-      summarizer.variance ~==
-        Vectors
-          .dense(3.857666666666, 7.0456666666666, 2.48166666666666) absTol 1e-5,
+      summarizer.variance ~== Vectors.dense(
+        3.857666666666,
+        7.0456666666666,
+        2.48166666666666) absTol 1e-5,
       "variance mismatch")
 
     assert(summarizer.count === 6)
@@ -180,9 +182,10 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
     val summarizer = summarizer1.merge(summarizer2)
 
     assert(
-      summarizer.mean ~==
-        Vectors
-          .dense(0.583333333333, -0.416666666666, -0.183333333333) absTol 1e-5,
+      summarizer.mean ~== Vectors.dense(
+        0.583333333333,
+        -0.416666666666,
+        -0.183333333333) absTol 1e-5,
       "mean mismatch")
 
     assert(
@@ -198,9 +201,10 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
       "numNonzeros mismatch")
 
     assert(
-      summarizer.variance ~==
-        Vectors
-          .dense(3.857666666666, 7.0456666666666, 2.48166666666666) absTol 1e-5,
+      summarizer.variance ~== Vectors.dense(
+        3.857666666666,
+        7.0456666666666,
+        2.48166666666666) absTol 1e-5,
       "variance mismatch")
 
     assert(summarizer.count === 6)
@@ -287,17 +291,16 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
     // which defines the reliability weight used for computing the unbiased estimation of variance
     // for weighted instances.
     assert(
-      summarizer.mean ~== Vectors.dense(Array(-0.42, -0.107, -0.44))
-        absTol 1e-10,
+      summarizer.mean ~== Vectors.dense(Array(-0.42, -0.107, -0.44)) absTol
+        1e-10,
       "mean mismatch")
     assert(
-      summarizer.variance ~== Vectors
-        .dense(Array(0.17657142857, 1.645115714, 2.42057142857))
-        absTol 1e-8,
+      summarizer.variance ~== Vectors.dense(
+        Array(0.17657142857, 1.645115714, 2.42057142857)) absTol 1e-8,
       "variance mismatch")
     assert(
-      summarizer.numNonzeros ~== Vectors.dense(Array(0.3, 0.5, 0.4))
-        absTol 1e-10,
+      summarizer.numNonzeros ~== Vectors.dense(Array(0.3, 0.5, 0.4)) absTol
+        1e-10,
       "numNonzeros mismatch")
     assert(
       summarizer.max ~== Vectors.dense(Array(0.0, 1.7, 1.3)) absTol 1e-10,
@@ -306,9 +309,10 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
       summarizer.min ~== Vectors.dense(Array(-0.8, -1.2, -1.7)) absTol 1e-10,
       "min mismatch")
     assert(
-      summarizer.normL2 ~== Vectors
-        .dense(0.387298335, 0.762571308141, 0.9715966241192)
-        absTol 1e-8,
+      summarizer.normL2 ~== Vectors.dense(
+        0.387298335,
+        0.762571308141,
+        0.9715966241192) absTol 1e-8,
       "normL2 mismatch")
     assert(
       summarizer.normL1 ~== Vectors.dense(0.21, 0.4265, 0.61) absTol 1e-10,

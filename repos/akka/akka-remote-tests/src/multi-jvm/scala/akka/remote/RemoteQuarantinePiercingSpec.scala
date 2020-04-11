@@ -60,74 +60,75 @@ abstract class RemoteQuarantinePiercingSpec
 
   "RemoteNodeShutdownAndComesBack" must {
 
-    "allow piercing through the quarantine when remote UID is new" taggedAs LongRunningTest in {
-      runOn(first) {
-        val secondAddress = node(second).address
-        enterBarrier("actors-started")
+    "allow piercing through the quarantine when remote UID is new" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          val secondAddress = node(second).address
+          enterBarrier("actors-started")
 
-        // Acquire ActorRef from first system
-        val (uidFirst, subjectFirst) = identify(second, "subject")
-        enterBarrier("actor-identified")
+          // Acquire ActorRef from first system
+          val (uidFirst, subjectFirst) = identify(second, "subject")
+          enterBarrier("actor-identified")
 
-        // Manually Quarantine the other system
-        RARP(system).provider.transport
-          .quarantine(node(second).address, Some(uidFirst))
+          // Manually Quarantine the other system
+          RARP(system).provider.transport
+            .quarantine(node(second).address, Some(uidFirst))
 
-        // Quarantine is up -- Cannot communicate with remote system any more
-        system
-          .actorSelection(
-            RootActorPath(secondAddress) / "user" / "subject") ! "identify"
-        expectNoMsg(2.seconds)
+          // Quarantine is up -- Cannot communicate with remote system any more
+          system
+            .actorSelection(RootActorPath(secondAddress) / "user" / "subject") !
+            "identify"
+          expectNoMsg(2.seconds)
 
-        // Shut down the other system -- which results in restart (see runOn(second))
-        Await.result(testConductor.shutdown(second), 30.seconds)
+          // Shut down the other system -- which results in restart (see runOn(second))
+          Await.result(testConductor.shutdown(second), 30.seconds)
 
-        // Now wait until second system becomes alive again
-        within(30.seconds) {
-          // retry because the Subject actor might not be started yet
-          awaitAssert {
-            system.actorSelection(
-              RootActorPath(secondAddress) / "user" / "subject") ! "identify"
-            val (uidSecond, subjectSecond) = expectMsgType[(Int, ActorRef)](
-              1.second)
-            uidSecond should not be (uidFirst)
-            subjectSecond should not be (subjectFirst)
+          // Now wait until second system becomes alive again
+          within(30.seconds) {
+            // retry because the Subject actor might not be started yet
+            awaitAssert {
+              system.actorSelection(
+                RootActorPath(secondAddress) / "user" / "subject") ! "identify"
+              val (uidSecond, subjectSecond) = expectMsgType[(Int, ActorRef)](
+                1.second)
+              uidSecond should not be (uidFirst)
+              subjectSecond should not be (subjectFirst)
+            }
           }
+
+          // If we got here the Quarantine was successfully pierced since it is configured to last 1 day
+
+          system
+            .actorSelection(RootActorPath(secondAddress) / "user" / "subject") !
+            "shutdown"
+
         }
 
-        // If we got here the Quarantine was successfully pierced since it is configured to last 1 day
+        runOn(second) {
+          val addr = system.asInstanceOf[ExtendedActorSystem].provider
+            .getDefaultAddress
+          system.actorOf(Props[Subject], "subject")
+          enterBarrier("actors-started")
 
-        system
-          .actorSelection(
-            RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
+          enterBarrier("actor-identified")
 
-      }
+          Await.ready(system.whenTerminated, 30.seconds)
 
-      runOn(second) {
-        val addr = system.asInstanceOf[ExtendedActorSystem].provider
-          .getDefaultAddress
-        system.actorOf(Props[Subject], "subject")
-        enterBarrier("actors-started")
-
-        enterBarrier("actor-identified")
-
-        Await.ready(system.whenTerminated, 30.seconds)
-
-        val freshSystem = ActorSystem(
-          system.name,
-          ConfigFactory.parseString(s"""
+          val freshSystem = ActorSystem(
+            system.name,
+            ConfigFactory.parseString(s"""
                     akka.remote.netty.tcp {
                       hostname = ${addr.host.get}
                       port = ${addr.port.get}
                     }
                     """).withFallback(system.settings.config)
-        )
-        freshSystem.actorOf(Props[Subject], "subject")
+          )
+          freshSystem.actorOf(Props[Subject], "subject")
 
-        Await.ready(freshSystem.whenTerminated, 30.seconds)
+          Await.ready(freshSystem.whenTerminated, 30.seconds)
+        }
+
       }
-
-    }
 
   }
 }

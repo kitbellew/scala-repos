@@ -70,14 +70,14 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       GSetKeyManifest -> (bytes ⇒ GSetKey(keyIdFromBinary(bytes))),
       ORSetKeyManifest -> (bytes ⇒ ORSetKey(keyIdFromBinary(bytes))),
       FlagKeyManifest -> (bytes ⇒ FlagKey(keyIdFromBinary(bytes))),
-      LWWRegisterKeyManifest -> (bytes ⇒
-        LWWRegisterKey(keyIdFromBinary(bytes))),
+      LWWRegisterKeyManifest ->
+        (bytes ⇒ LWWRegisterKey(keyIdFromBinary(bytes))),
       GCounterKeyManifest -> (bytes ⇒ GCounterKey(keyIdFromBinary(bytes))),
       PNCounterKeyManifest -> (bytes ⇒ PNCounterKey(keyIdFromBinary(bytes))),
       ORMapKeyManifest -> (bytes ⇒ ORMapKey(keyIdFromBinary(bytes))),
       LWWMapKeyManifest -> (bytes ⇒ LWWMapKey(keyIdFromBinary(bytes))),
-      PNCounterMapKeyManifest -> (bytes ⇒
-        PNCounterMapKey(keyIdFromBinary(bytes))),
+      PNCounterMapKeyManifest ->
+        (bytes ⇒ PNCounterMapKey(keyIdFromBinary(bytes))),
       ORMultiMapKeyManifest -> (bytes ⇒ ORMultiMapKey(keyIdFromBinary(bytes)))
     )
 
@@ -296,8 +296,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   def gcounterFromProto(gcounter: rd.GCounter): GCounter = {
     new GCounter(
       state = gcounter.getEntriesList.asScala.map(entry ⇒
-        uniqueAddressFromProto(entry.getNode) -> BigInt(
-          entry.getValue.toByteArray))(breakOut))
+        uniqueAddressFromProto(entry.getNode) ->
+          BigInt(entry.getValue.toByteArray))(breakOut))
   }
 
   def pncounterToProto(pncounter: PNCounter): rd.PNCounter =

@@ -49,10 +49,11 @@ trait ScValue
   def typeElement: Option[ScTypeElement]
 
   def declaredType: Option[ScType] =
-    typeElement flatMap (_.getType(TypingContext.empty) match {
-      case Success(t, _) => Some(t)
-      case _             => None
-    })
+    typeElement flatMap
+      (_.getType(TypingContext.empty) match {
+        case Success(t, _) => Some(t)
+        case _             => None
+      })
 
   def getType(ctx: TypingContext): TypeResult[ScType]
 
@@ -83,8 +84,8 @@ trait ScValue
   def getValToken: PsiElement = findFirstChildByType(ScalaTokenTypes.kVAL)
 
   override def isDeprecated =
-    hasAnnotation("scala.deprecated") != None || hasAnnotation(
-      "java.lang.Deprecated") != None
+    hasAnnotation("scala.deprecated") != None ||
+      hasAnnotation("java.lang.Deprecated") != None
 
   override def modifiableReturnType: Option[ScType] =
     getType(TypingContext.empty).toOption

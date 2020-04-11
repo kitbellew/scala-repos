@@ -60,8 +60,9 @@ class ChannelTransport[In, Out](ch: Channel)
         need(-1)
 
       case e: ChannelStateEvent
-          if e.getState == ChannelState.OPEN && e.getValue != java.lang.Boolean
-            .TRUE => fail(new ChannelClosedException(ch.getRemoteAddress))
+          if e.getState == ChannelState.OPEN &&
+            e.getValue != java.lang.Boolean.TRUE =>
+        fail(new ChannelClosedException(ch.getRemoteAddress))
 
       case e: ChannelStateEvent if e.getState == ChannelState.INTEREST_OPS =>
         // Make sure we have the right interest ops. This allows us to fix
@@ -79,8 +80,8 @@ class ChannelTransport[In, Out](ch: Channel)
         need(0)
 
       case e: ChannelStateEvent
-          if e.getState == ChannelState.CONNECTED
-            && e.getValue == java.lang.Boolean.TRUE => need(0)
+          if e.getState == ChannelState.CONNECTED &&
+            e.getValue == java.lang.Boolean.TRUE => need(0)
 
       case e: ExceptionEvent => fail(
           ChannelException(e.getCause, ch.getRemoteAddress))
@@ -155,13 +156,13 @@ class ChannelTransport[In, Out](ch: Channel)
   def localAddress: SocketAddress = ch.getLocalAddress()
   def remoteAddress: SocketAddress = ch.getRemoteAddress()
 
-  val peerCertificate: Option[Certificate] =
-    ch.getPipeline.get(classOf[SslHandler]) match {
-      case null => None
-      case handler =>
-        try { handler.getEngine.getSession.getPeerCertificates.headOption }
-        catch { case NonFatal(_) => None }
-    }
+  val peerCertificate: Option[Certificate] = ch.getPipeline
+    .get(classOf[SslHandler]) match {
+    case null => None
+    case handler =>
+      try { handler.getEngine.getSession.getPeerCertificates.headOption }
+      catch { case NonFatal(_) => None }
+  }
 
   private[this] val closep = new Promise[Throwable]
   val onClose: Future[Throwable] = closep

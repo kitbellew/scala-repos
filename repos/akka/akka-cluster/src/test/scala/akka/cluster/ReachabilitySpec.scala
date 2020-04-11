@@ -75,8 +75,8 @@ class ReachabilitySpec extends WordSpec with Matchers {
       r.isReachable(nodeB) should ===(false)
       r.isReachable(nodeC) should ===(false)
       r.allUnreachableOrTerminated should ===(Set(nodeA, nodeB, nodeC))
-      r.removeObservers(Set(nodeB)).allUnreachableOrTerminated should ===(
-        Set(nodeB))
+      r.removeObservers(Set(nodeB)).allUnreachableOrTerminated should
+        ===(Set(nodeB))
     }
 
     "be pruned when all records of an observer are Reachable" in {

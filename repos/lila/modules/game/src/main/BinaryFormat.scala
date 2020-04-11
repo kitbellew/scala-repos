@@ -64,10 +64,9 @@ object BinaryFormat {
       ByteArray {
         def time(t: Float) = writeSignedInt24((t * 100).toInt)
         def timer(seconds: Double) = writeTimer((seconds * 100).toLong)
-        Array(writeClockLimit(clock.limit), writeInt8(clock.increment)) ++
-          time(clock.whiteTime) ++
-          time(clock.blackTime) ++
-          timer(clock.timerOption getOrElse 0d) map (_.toByte)
+        Array(writeClockLimit(clock.limit), writeInt8(clock.increment)) ++ time(
+          clock.whiteTime) ++ time(clock.blackTime) ++ timer(
+          clock.timerOption getOrElse 0d) map (_.toByte)
       }
 
     def read(
@@ -156,9 +155,9 @@ object BinaryFormat {
       }
       val time = clmt.lastMoveTime getOrElse 0
 
-      val ints = Array(
-        (castleInt << 4) + (lastMoveInt >> 8),
-        (lastMoveInt & 255)) ++ writeInt24(time) ++ clmt.check.map(posInt)
+      val ints =
+        Array((castleInt << 4) + (lastMoveInt >> 8), (lastMoveInt & 255)) ++
+          writeInt24(time) ++ clmt.check.map(posInt)
 
       ByteArray(ints.map(_.toByte))
     }
@@ -204,10 +203,9 @@ object BinaryFormat {
     } toArray
 
     def write(pieces: PieceMap): ByteArray = {
-      def posInt(pos: Pos): Int =
-        (pieces get pos).fold(0) { piece =>
-          piece.color.fold(0, 8) + roleToInt(piece.role)
-        }
+      def posInt(pos: Pos): Int = (pieces get pos).fold(0) { piece =>
+        piece.color.fold(0, 8) + roleToInt(piece.role)
+      }
       ByteArray(groupedPos map {
         case (p1, p2) => ((posInt(p1) << 4) + posInt(p2)).toByte
       })

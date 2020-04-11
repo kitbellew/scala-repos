@@ -42,11 +42,9 @@ import slick.util.MacroSupport.macroSupportInterpolation
 trait DB2Profile extends JdbcProfile {
 
   override protected def computeCapabilities: Set[Capability] =
-    (super.computeCapabilities
-      - RelationalCapabilities.reverse
-      - JdbcCapabilities.insertOrUpdate
-      - JdbcCapabilities.supportsByte
-      - JdbcCapabilities.booleanMetaData)
+    (super.computeCapabilities - RelationalCapabilities.reverse -
+      JdbcCapabilities.insertOrUpdate - JdbcCapabilities.supportsByte -
+      JdbcCapabilities.booleanMetaData)
 
   override protected lazy val useServerSideUpsert = true
   override protected lazy val useServerSideUpsertReturning = false
@@ -54,8 +52,8 @@ trait DB2Profile extends JdbcProfile {
     .ScrollSensitive
 
   override protected def computeQueryCompiler =
-    (super.computeQueryCompiler.addAfter(Phase.removeTakeDrop, Phase.expandSums)
-      + Phase.rewriteBooleans)
+    (super.computeQueryCompiler
+      .addAfter(Phase.removeTakeDrop, Phase.expandSums) + Phase.rewriteBooleans)
   override val columnTypes = new JdbcTypes
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
@@ -132,10 +130,10 @@ trait DB2Profile extends JdbcProfile {
          * index) because DB2 does not allow a FOREIGN KEY CONSTRAINT to
          * reference columns which have a UNIQUE INDEX but not a nominal UNIQUE
          * CONSTRAINT. */
-        val sb = new StringBuilder append "ALTER TABLE " append quoteIdentifier(
-          table.tableName) append " ADD "
-        sb append "CONSTRAINT " append quoteIdentifier(
-          idx.name) append " UNIQUE("
+        val sb = new StringBuilder append "ALTER TABLE " append
+          quoteIdentifier(table.tableName) append " ADD "
+        sb append "CONSTRAINT " append quoteIdentifier(idx.name) append
+          " UNIQUE("
         addIndexColumnList(idx.on, sb, idx.table.tableName)
         sb append ")"
         sb.toString
@@ -160,9 +158,8 @@ trait DB2Profile extends JdbcProfile {
   class SequenceDDLBuilder[T](seq: Sequence[T])
       extends super.SequenceDDLBuilder(seq) {
     override def buildDDL: DDL = {
-      val b =
-        new StringBuilder append "create sequence " append quoteIdentifier(
-          seq.name)
+      val b = new StringBuilder append "create sequence " append
+        quoteIdentifier(seq.name)
       b append " as " append jdbcTypeFor(seq.tpe).sqlTypeName(None)
       seq._start.foreach { b append " start with " append _ }
       seq._increment.foreach { b append " increment by " append _ }

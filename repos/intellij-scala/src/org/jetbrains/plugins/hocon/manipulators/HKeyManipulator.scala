@@ -19,10 +19,9 @@ class HKeyManipulator extends AbstractElementManipulator[HKey] {
     lazy val escapedContent = StringUtil.escapeStringCharacters(newContent)
 
     lazy val needsQuoting =
-      newContent.isEmpty || newContent.startsWith(" ") || newContent
-        .endsWith(" ") ||
-        escapedContent != newContent || newContent
-        .exists(HoconLexer.ForbiddenCharsAndDot.contains)
+      newContent.isEmpty || newContent.startsWith(" ") ||
+        newContent.endsWith(" ") || escapedContent != newContent ||
+        newContent.exists(HoconLexer.ForbiddenCharsAndDot.contains)
 
     val quotedEscapedContent =
       if (allStringTypes.contains(MultilineString))

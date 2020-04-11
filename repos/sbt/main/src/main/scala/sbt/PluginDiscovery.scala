@@ -73,8 +73,7 @@ object PluginDiscovery {
     val files =
       writeDescriptor(names.plugins, dir, Plugins) ::
         writeDescriptor(names.autoPlugins, dir, AutoPlugins) ::
-        writeDescriptor(names.builds, dir, Builds) ::
-        Nil
+        writeDescriptor(names.builds, dir, Builds) :: Nil
     files.flatMap(_.toList)
   }
 
@@ -183,8 +182,8 @@ object PluginDiscovery {
     val msgExtra =
       if (evictedStrings.isEmpty) ""
       else
-        "\nNote that conflicts were resolved for some dependencies:\n\t" + evictedStrings
-          .mkString("\n\t")
+        "\nNote that conflicts were resolved for some dependencies:\n\t" +
+          evictedStrings.mkString("\n\t")
     throw new IncompatiblePluginsException(msgBase + msgExtra, t)
   }
 }

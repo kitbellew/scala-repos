@@ -163,8 +163,8 @@ trait DiagramDirectiveParser {
   // TODO: This could certainly be improved -- right now the only regex is *, but there's no way to match a single identifier
   private val NodeSpecRegex = "\\\"[A-Za-z\\*][A-Za-z\\.\\*]*\\\""
   private val NodeSpecPattern = Pattern.compile(NodeSpecRegex)
-  private val EdgeSpecRegex =
-    "\\(" + NodeSpecRegex + "\\s*\\->\\s*" + NodeSpecRegex + "\\)"
+  private val EdgeSpecRegex = "\\(" + NodeSpecRegex + "\\s*\\->\\s*" +
+    NodeSpecRegex + "\\)"
   // And the composed regexes:
   private val HideNodesRegex = new Regex(
     "^hideNodes(\\s*" + NodeSpecRegex + ")+$")
@@ -243,10 +243,9 @@ trait DiagramDirectiveParser {
           // don't need to do anything about it
           case _ =>
             warning(
-              "Could not understand diagram annotation in " + template
-                .kind + " " + template.qualifiedName +
-                ": unmatched entry \"" + entry + "\".\n" +
-                "  This could be because:\n" +
+              "Could not understand diagram annotation in " + template.kind +
+                " " + template.qualifiedName + ": unmatched entry \"" + entry +
+                "\".\n" + "  This could be because:\n" +
                 "   - you forgot to separate entries by commas\n" +
                 "   - you used a tag that is not allowed in the current context (like @contentDiagram hideSuperclasses)\n" +
                 "   - you did not use one of the allowed tags (see docs.scala-lang.org for scaladoc annotations)")
@@ -273,8 +272,8 @@ trait DiagramDirectiveParser {
               hideEdgesFilter = hideEdgesFilter0
             )
 
-        if (settings
-              .docDiagramsDebug && result != NoDiagramAtAll && result != FullDiagram)
+        if (settings.docDiagramsDebug && result != NoDiagramAtAll &&
+            result != FullDiagram)
           settings.printMsg(
             template.kind + " " + template.qualifiedName + " filter: " + result)
         tFilter += System.currentTimeMillis

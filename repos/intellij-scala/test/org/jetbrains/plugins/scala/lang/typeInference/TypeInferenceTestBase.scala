@@ -126,10 +126,11 @@ abstract class TypeInferenceTestBase
       case Failure(msg, elem) =>
         assert(
           assertion = false,
-          msg + " :: " + (elem match {
-            case Some(x) => x.getText
-            case None    => "empty element"
-          }))
+          msg + " :: " +
+            (elem match {
+              case Some(x) => x.getText
+              case None    => "empty element"
+            }))
     }
   }
 }

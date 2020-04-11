@@ -84,7 +84,8 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
 
     // Creat the board canvas
     val boardCanvas = jQuery(
-      "<canvas width='" + BoardSizePx + "' height='" + BoardSizePx + "'></canvas>")
+      "<canvas width='" + BoardSizePx + "' height='" + BoardSizePx +
+        "'></canvas>")
     val domCanvas = boardCanvas.get(0).asInstanceOf[HTMLCanvasElement]
     val context = domCanvas.getContext("2d")
       .asInstanceOf[CanvasRenderingContext2D]
@@ -167,8 +168,8 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
   def startTurn() {
     val (scoreWhite, scoreBlack) = computeScore()
     status.text(
-      currentPlayer + "'s turn -- White: " + scoreWhite +
-        " -- Black: " + scoreBlack)
+      currentPlayer + "'s turn -- White: " + scoreWhite + " -- Black: " +
+        scoreBlack)
 
     passButton.prop("disabled", true)
 
@@ -186,8 +187,8 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
           else if (scoreBlack > scoreWhite) "Black won!"
           else "Draw"
         status.text(
-          "Game finished -- White: " + scoreWhite +
-            " -- Black: " + scoreBlack + " -- " + winnerText)
+          "Game finished -- White: " + scoreWhite + " -- Black: " + scoreBlack +
+            " -- " + winnerText)
       }
     }
   }

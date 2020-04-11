@@ -19,10 +19,11 @@ object CookiesSpec extends Specification {
       c must beAnInstanceOf[Cookies]
     }
 
-    "should create an empty Cookies instance with no header" in withApplication {
-      val c = Cookies.fromCookieHeader(None)
-      c must beAnInstanceOf[Cookies]
-    }
+    "should create an empty Cookies instance with no header" in
+      withApplication {
+        val c = Cookies.fromCookieHeader(None)
+        c must beAnInstanceOf[Cookies]
+      }
   }
 
   "Cookie" should {
@@ -124,10 +125,8 @@ object CookiesSpec extends Specification {
         Cookie("foo", "foo2"),
         Cookie("bar", "bar"),
         Cookie("baz", "baz")).cookies
-      cookies.toSet must_== Set(
-        Cookie("foo", "foo2"),
-        Cookie("bar", "bar"),
-        Cookie("baz", "baz"))
+      cookies.toSet must_==
+        Set(Cookie("foo", "foo2"), Cookie("bar", "bar"), Cookie("baz", "baz"))
     }
   }
 }

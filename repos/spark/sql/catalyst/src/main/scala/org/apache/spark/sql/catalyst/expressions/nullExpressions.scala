@@ -74,10 +74,9 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
       ${firstEval.code}
       boolean ${ev.isNull} = ${firstEval.isNull};
       ${ctx.javaType(dataType)} ${ev.value} = ${firstEval.value};
-    """ +
-      rest.map { e =>
-        val eval = e.gen(ctx)
-        s"""
+    """ + rest.map { e =>
+      val eval = e.gen(ctx)
+      s"""
         if (${ev.isNull}) {
           ${eval.code}
           if (!${eval.isNull}) {
@@ -86,7 +85,7 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
           }
         }
       """
-      }.mkString("\n")
+    }.mkString("\n")
   }
 }
 

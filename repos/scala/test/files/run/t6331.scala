@@ -14,14 +14,15 @@ object Test extends DirectTest {
       val const2 = Constant(c2)
       val equal = const1 == const2
       def show(a: Any) =
-        "" + a + (a match {
-          case _: Byte   => ".toByte"
-          case _: Short  => ".toShort"
-          case _: Long   => "L"
-          case _: Float  => "f"
-          case _: Double => "d"
-          case _         => ""
-        })
+        "" + a +
+          (a match {
+            case _: Byte   => ".toByte"
+            case _: Short  => ".toShort"
+            case _: Long   => "L"
+            case _: Float  => "f"
+            case _: Double => "d"
+            case _         => ""
+          })
       val op = if (equal) "==" else "!="
       println(f"${show(c1)}%12s $op ${show(c2)}")
 

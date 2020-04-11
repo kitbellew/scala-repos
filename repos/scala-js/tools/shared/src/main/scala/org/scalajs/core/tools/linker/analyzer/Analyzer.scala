@@ -243,11 +243,8 @@ private final class Analyzer(
     val delayedCalls = mutable.Map.empty[String, From]
 
     def isNeededAtAll =
-      areInstanceTestsUsed ||
-        isDataAccessed ||
-        isAnySubclassInstantiated ||
-        isAnyStaticMethodReachable ||
-        isAnyDefaultMethodReachable
+      areInstanceTestsUsed || isDataAccessed || isAnySubclassInstantiated ||
+        isAnyStaticMethodReachable || isAnyDefaultMethodReachable
 
     def isAnyStaticMethodReachable =
       staticMethodInfos.values.exists(_.isReachable)

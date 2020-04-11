@@ -85,8 +85,8 @@ class WorksheetAutoRunner(project: Project, woof: WolfTheProblemSolver)
 
     @inline
     private def isDisabledOn(file: PsiFile) = {
-      WorksheetAutoRunner.isSetDisabled(file) || !settings
-        .isInteractiveMode && !WorksheetAutoRunner.isSetEnabled(file)
+      WorksheetAutoRunner.isSetDisabled(file) ||
+      !settings.isInteractiveMode && !WorksheetAutoRunner.isSetEnabled(file)
     }
 
     override def documentChanged(e: DocumentEvent) {
@@ -98,14 +98,14 @@ class WorksheetAutoRunner(project: Project, woof: WolfTheProblemSolver)
       val virtualFile = psiFile.getVirtualFile
       myAlarm.cancelAllRequests()
 
-      if (woof.hasSyntaxErrors(virtualFile) || WorksheetProcessManager
-            .running(virtualFile)) return
+      if (woof.hasSyntaxErrors(virtualFile) ||
+          WorksheetProcessManager.running(virtualFile)) return
 
       myAlarm.addRequest(
         new Runnable {
           override def run() {
-            if (!woof.hasSyntaxErrors(virtualFile) && !WorksheetProcessManager
-                  .running(virtualFile))
+            if (!woof.hasSyntaxErrors(virtualFile) &&
+                !WorksheetProcessManager.running(virtualFile))
               RunWorksheetAction.runCompiler(project, auto = true)
           }
         },

@@ -358,10 +358,11 @@ class ZkUtils(
     } catch {
       case e: ZkNodeExistsException =>
         throw new RuntimeException(
-          "A broker is already registered on the path " + brokerIdPath
-            + ". This probably " + "indicates that you either have configured a brokerid that is already in use, or "
-            + "else you have shutdown this broker and restarted it faster than the zookeeper "
-            + "timeout so it appears to be re-registering.")
+          "A broker is already registered on the path " + brokerIdPath +
+            ". This probably " +
+            "indicates that you either have configured a brokerid that is already in use, or " +
+            "else you have shutdown this broker and restarted it faster than the zookeeper " +
+            "timeout so it appears to be re-registering.")
     }
   }
 
@@ -461,12 +462,14 @@ class ZkUtils(
         }
         if (storedData == null || storedData != data) {
           info(
-            "conflict in " + path + " data: " + data + " stored data: " + storedData)
+            "conflict in " + path + " data: " + data + " stored data: " +
+              storedData)
           throw e
         } else {
           // otherwise, the creation succeeded, return normally
           info(
-            path + " exists with value " + data + " during connection loss; this is ok")
+            path + " exists with value " + data +
+              " during connection loss; this is ok")
         }
       }
       case e2: Throwable => throw e2
@@ -870,8 +873,8 @@ class ZkUtils(
   def deletePartition(brokerId: Int, topic: String) {
     val brokerIdPath = BrokerIdsPath + "/" + brokerId
     zkClient.delete(brokerIdPath)
-    val brokerPartTopicPath = ZkUtils
-      .BrokerTopicsPath + "/" + topic + "/" + brokerId
+    val brokerPartTopicPath = ZkUtils.BrokerTopicsPath + "/" + topic + "/" +
+      brokerId
     zkClient.delete(brokerPartTopicPath)
   }
 

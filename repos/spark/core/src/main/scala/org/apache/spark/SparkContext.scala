@@ -437,8 +437,8 @@ class SparkContext(config: SparkConf)
     }
 
     // System property spark.yarn.app.id must be set if user code ran by AM on a YARN cluster
-    if (master == "yarn" && deployMode == "cluster" && !_conf
-          .contains("spark.yarn.app.id")) {
+    if (master == "yarn" && deployMode == "cluster" &&
+        !_conf.contains("spark.yarn.app.id")) {
       throw new SparkException(
         "Detected yarn cluster mode, but isn't running on a cluster. " +
           "Deployment to YARN is not supported directly by SparkContext. Please use spark-submit.")
@@ -497,8 +497,8 @@ class SparkContext(config: SparkConf)
     _statusTracker = new SparkStatusTracker(this)
 
     _progressBar =
-      if (_conf.getBoolean("spark.ui.showConsoleProgress", true) && !log
-            .isInfoEnabled) { Some(new ConsoleProgressBar(this)) }
+      if (_conf.getBoolean("spark.ui.showConsoleProgress", true) &&
+          !log.isInfoEnabled) { Some(new ConsoleProgressBar(this)) }
       else { None }
 
     _ui =
@@ -787,9 +787,8 @@ class SparkContext(config: SparkConf)
       val numElements: BigInt = {
         val safeStart = BigInt(start)
         val safeEnd = BigInt(end)
-        if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (
-              step > 0
-            )) { (safeEnd - safeStart) / step }
+        if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) !=
+              (step > 0)) { (safeEnd - safeStart) / step }
         else {
           // the remainder has the same sign with range, could add 1 more
           (safeEnd - safeStart) / step + 1
@@ -1470,8 +1469,8 @@ class SparkContext(config: SparkConf)
       useCache = false)
 
     logInfo(
-      "Added file " + path + " at " + key + " with timestamp " + addedFiles(
-        key))
+      "Added file " + path + " at " + key + " with timestamp " +
+        addedFiles(key))
     postEnvironmentUpdate()
   }
 
@@ -1726,7 +1725,8 @@ class SparkContext(config: SparkConf)
                   // The spark examples don't really need the jar distributed since its also
                   // the app jar.
                   logError(
-                    "Error adding jar (" + e + "), was the --addJars option used?")
+                    "Error adding jar (" + e +
+                      "), was the --addJars option used?")
                   null
               }
             } else {
@@ -1740,7 +1740,8 @@ class SparkContext(config: SparkConf)
                   // The spark examples don't really need the jar distributed since its also
                   // the app jar.
                   logError(
-                    "Error adding jar (" + e + "), was the --addJars option used?")
+                    "Error adding jar (" + e +
+                      "), was the --addJars option used?")
                   null
               }
             }
@@ -1752,8 +1753,8 @@ class SparkContext(config: SparkConf)
       if (key != null) {
         addedJars(key) = System.currentTimeMillis
         logInfo(
-          "Added JAR " + path + " at " + key + " with timestamp " + addedJars(
-            key))
+          "Added JAR " + path + " at " + key + " with timestamp " +
+            addedJars(key))
       }
     }
     postEnvironmentUpdate()
@@ -1977,8 +1978,8 @@ class SparkContext(config: SparkConf)
       timeout,
       localProperties.get)
     logInfo(
-      "Job finished: " + callSite.shortForm + ", took " + (System
-        .nanoTime - start) / 1e9 + " s")
+      "Job finished: " + callSite.shortForm + ", took " +
+        (System.nanoTime - start) / 1e9 + " s")
     result
   }
 

@@ -743,8 +743,8 @@ private[sql] object HadoopFsRelation extends Logging {
     // The only reason that we are not doing it now is that Parquet needs to find those
     // metadata files from leaf files returned by this methods. We should refactor
     // this logic to not mix metadata files with data files.
-    pathName == "_SUCCESS" || pathName == "_temporary" || pathName
-      .startsWith(".")
+    pathName == "_SUCCESS" || pathName == "_temporary" ||
+    pathName.startsWith(".")
   }
 
   // We don't filter files/directories whose name start with "_" except "_temporary" here, as

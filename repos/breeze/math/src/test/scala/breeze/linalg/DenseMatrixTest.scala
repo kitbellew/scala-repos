@@ -308,10 +308,8 @@ class DenseMatrixTest
     // should be dense
     val y: DenseMatrix[Double] = a.t * a
     assert(
-      y === DenseMatrix(
-        (17.0, 22.0, 27.0),
-        (22.0, 29.0, 36.0),
-        (27.0, 36.0, 45.0)))
+      y ===
+        DenseMatrix((17.0, 22.0, 27.0), (22.0, 29.0, 36.0), (27.0, 36.0, 45.0)))
 
     val z: DenseMatrix[Double] = b * (b + 1.0)
     assert(
@@ -405,20 +403,14 @@ class DenseMatrixTest
         (Complex(0, 74), Complex(0, -16), Complex(0, 50)),
         (Complex(0, 170), Complex(0, -46), Complex(0, 134))))
     assert(
-      b * c === DenseVector(
-        Complex(62, 62),
-        Complex(-21, -21),
-        Complex(87, 87)))
+      b * c ===
+        DenseVector(Complex(62, 62), Complex(-21, -21), Complex(87, 87)))
     assert(
-      b * cs === DenseVector(
-        Complex(62, 62),
-        Complex(-21, -21),
-        Complex(87, 87)))
+      b * cs ===
+        DenseVector(Complex(62, 62), Complex(-21, -21), Complex(87, 87)))
     assert(
-      b.t * c === DenseVector(
-        Complex(72, -72),
-        Complex(-18, 18),
-        Complex(65, -65)))
+      b.t * c ===
+        DenseVector(Complex(72, -72), Complex(-18, 18), Complex(65, -65)))
   }
 
   test("Multiply BigDecimal") {
@@ -427,17 +419,14 @@ class DenseMatrixTest
       .mapValues(BigDecimal(_))
     val c = DenseVector(6, 2, 3).mapValues(BigDecimal(_))
     assert(
-      a.*(b)(DenseMatrix.op_DM_DM_Semiring[BigDecimal]) === DenseMatrix(
-        (37, -8, 25),
-        (85, -23, 67)).mapValues(BigDecimal(_)))
+      a.*(b)(DenseMatrix.op_DM_DM_Semiring[BigDecimal]) ===
+        DenseMatrix((37, -8, 25), (85, -23, 67)).mapValues(BigDecimal(_)))
     assert(a * c === DenseVector(19, 52).mapValues(BigDecimal(_)))
     assert(b * c === DenseVector(62, -21, 87).mapValues(BigDecimal(_)))
     assert(b.t * c === DenseVector(72, -18, 65).mapValues(BigDecimal(_)))
     assert(
-      a.t * DenseVector(4, 3).mapValues(BigDecimal(_)) === DenseVector(
-        16,
-        23,
-        30).mapValues(BigDecimal(_)))
+      a.t * DenseVector(4, 3).mapValues(BigDecimal(_)) ===
+        DenseVector(16, 23, 30).mapValues(BigDecimal(_)))
 
     // should be dense
     val x = a * a.t
@@ -449,8 +438,8 @@ class DenseMatrixTest
       y === DenseMatrix((17, 22, 27), (22, 29, 36), (27, 36, 45))
         .mapValues(BigDecimal(_)))
 
-    val z: DenseMatrix[BigDecimal] =
-      b * ((b + BigDecimal(1)): DenseMatrix[BigDecimal])
+    val z: DenseMatrix[BigDecimal] = b *
+      ((b + BigDecimal(1)): DenseMatrix[BigDecimal])
     assert(
       z === DenseMatrix((164, 5, 107), (-5, 10, -27), (161, -7, 138))
         .mapValues(BigDecimal(_)))
@@ -497,8 +486,8 @@ class DenseMatrixTest
 
   test("Solve") {
     // square solve
-    val r1: DenseMatrix[Double] =
-      DenseMatrix((1.0, 3.0), (2.0, 0.0)) \ DenseMatrix((1.0, 2.0), (3.0, 4.0))
+    val r1: DenseMatrix[Double] = DenseMatrix((1.0, 3.0), (2.0, 0.0)) \
+      DenseMatrix((1.0, 2.0), (3.0, 4.0))
     assert(r1 === DenseMatrix((1.5, 2.0), (-1.0 / 6, 0.0)))
 
     // matrix-vector solve
@@ -513,9 +502,9 @@ class DenseMatrixTest
         inf) < 1e-5)
 
     // wide matrix solve
-    val r3: DenseMatrix[Double] = DenseMatrix(
-      (1.0, 3.0, 4.0),
-      (2.0, 0.0, 6.0)) \ DenseMatrix((1.0, 2.0), (3.0, 4.0))
+    val r3: DenseMatrix[Double] =
+      DenseMatrix((1.0, 3.0, 4.0), (2.0, 0.0, 6.0)) \
+        DenseMatrix((1.0, 2.0), (3.0, 4.0))
     matricesNearlyEqual(
       r3,
       DenseMatrix(
@@ -524,10 +513,9 @@ class DenseMatrixTest
         (0.43956043956043944, 0.5934065934065933)))
 
     // tall matrix solve
-    val r4: DenseMatrix[Double] = DenseMatrix(
-      (1.0, 3.0),
-      (2.0, 0.0),
-      (4.0, 6.0)) \ DenseMatrix((1.0, 4.0), (2.0, 5.0), (3.0, 6.0))
+    val r4: DenseMatrix[Double] =
+      DenseMatrix((1.0, 3.0), (2.0, 0.0), (4.0, 6.0)) \
+        DenseMatrix((1.0, 4.0), (2.0, 5.0), (3.0, 6.0))
     assert(
       max(abs(
         r4 - DenseMatrix(
@@ -537,15 +525,14 @@ class DenseMatrixTest
 
   test("Solve Float") {
     // square solve
-    val r1: DenseMatrix[Float] = DenseMatrix(
-      (1.0f, 3.0f),
-      (2.0f, 0.0f)) \ DenseMatrix((1.0f, 2.0f), (3.0f, 4.0f))
+    val r1: DenseMatrix[Float] = DenseMatrix((1.0f, 3.0f), (2.0f, 0.0f)) \
+      DenseMatrix((1.0f, 2.0f), (3.0f, 4.0f))
     assert(r1 === DenseMatrix((1.5f, 2.0f), (-1.0f / 6, 0.0f)))
 
     // matrix-vector solve
-    val r2: DenseVector[Float] = DenseMatrix(
-      (1.0f, 3.0f, 4.0f),
-      (2.0f, 0.0f, 6.0f)) \ DenseVector(1.0f, 3.0f)
+    val r2: DenseVector[Float] =
+      DenseMatrix((1.0f, 3.0f, 4.0f), (2.0f, 0.0f, 6.0f)) \
+        DenseVector(1.0f, 3.0f)
     assert(
       norm(
         r2 - DenseVector(
@@ -554,9 +541,9 @@ class DenseMatrixTest
           0.43956043956043944f)) < 1e-5)
 
     // wide matrix solve
-    val r3: DenseMatrix[Float] = DenseMatrix(
-      (1.0f, 3.0f, 4.0f),
-      (2.0f, 0.0f, 6.0f)) \ DenseMatrix((1.0f, 2.0f), (3.0f, 4.0f))
+    val r3: DenseMatrix[Float] =
+      DenseMatrix((1.0f, 3.0f, 4.0f), (2.0f, 0.0f, 6.0f)) \
+        DenseMatrix((1.0f, 2.0f), (3.0f, 4.0f))
     assert(
       max(abs(
         r3 - DenseMatrix(
@@ -565,10 +552,9 @@ class DenseMatrixTest
           (0.43956043956043944f, 0.5934065934065933f)))) < 1e-5)
 
     // tall matrix solve
-    val r4: DenseMatrix[Float] = DenseMatrix(
-      (1.0f, 3.0f),
-      (2.0f, 0.0f),
-      (4.0f, 6.0f)) \ DenseMatrix((1.0f, 4.0f), (2.0f, 5.0f), (3.0f, 6.0f))
+    val r4: DenseMatrix[Float] =
+      DenseMatrix((1.0f, 3.0f), (2.0f, 0.0f), (4.0f, 6.0f)) \
+        DenseMatrix((1.0f, 4.0f), (2.0f, 5.0f), (3.0f, 6.0f))
     assert(
       max(abs(
         r4 - DenseMatrix(
@@ -590,36 +576,30 @@ class DenseMatrixTest
     assert(sum(A, Axis._0) === DenseVector(3.0, 7.0).t)
     assert(sum(A(::, *)) === DenseVector(3.0, 7.0).t)
     assert(
-      sum(
-        DenseMatrix((1.0, 3.0, 5.0), (2.0, 4.0, 6.0)),
-        Axis._0) === DenseVector(3.0, 7.0, 11.0).t)
+      sum(DenseMatrix((1.0, 3.0, 5.0), (2.0, 4.0, 6.0)), Axis._0) ===
+        DenseVector(3.0, 7.0, 11.0).t)
     assert(
-      sum(
-        DenseMatrix((1.0, 3.0), (2.0, 4.0), (5.0, 6.0)),
-        Axis._0) === DenseVector(8.0, 13.0).t)
+      sum(DenseMatrix((1.0, 3.0), (2.0, 4.0), (5.0, 6.0)), Axis._0) ===
+        DenseVector(8.0, 13.0).t)
 
     assert(sum(A, Axis._1) === DenseVector(4.0, 6.0))
     assert(
-      sum(
-        DenseMatrix((1.0, 3.0, 5.0), (2.0, 4.0, 6.0)),
-        Axis._1) === DenseVector(9.0, 12.0))
+      sum(DenseMatrix((1.0, 3.0, 5.0), (2.0, 4.0, 6.0)), Axis._1) ===
+        DenseVector(9.0, 12.0))
     assert(
-      sum(
-        DenseMatrix((1.0, 3.0), (2.0, 4.0), (5.0, 6.0)),
-        Axis._1) === DenseVector(4.0, 6.0, 11.0))
+      sum(DenseMatrix((1.0, 3.0), (2.0, 4.0), (5.0, 6.0)), Axis._1) ===
+        DenseVector(4.0, 6.0, 11.0))
     assert(sum(A) === 10.0)
   }
 
   test("normalize rows and columns") {
     val A = DenseMatrix((1.0, 3.0), (2.0, 4.0))
     assert(
-      normalize(A, Axis._0, 1) === DenseMatrix(
-        (1.0 / 3.0, 3.0 / 7.0),
-        (2.0 / 3.0, 4.0 / 7.0)))
+      normalize(A, Axis._0, 1) ===
+        DenseMatrix((1.0 / 3.0, 3.0 / 7.0), (2.0 / 3.0, 4.0 / 7.0)))
     assert(
-      normalize(A, Axis._1, 1) === DenseMatrix(
-        (1.0 / 4.0, 3.0 / 4.0),
-        (2.0 / 6.0, 4.0 / 6.0)))
+      normalize(A, Axis._1, 1) ===
+        DenseMatrix((1.0 / 4.0, 3.0 / 4.0), (2.0 / 6.0, 4.0 / 6.0)))
     // handle odd sized matrices (test for a bug.)
     val dm = DenseMatrix.tabulate(2, 5)((i, j) => i * j * 1.0 + 1)
     dm := normalize(dm, Axis._1, 2)
@@ -726,8 +706,8 @@ class DenseMatrixTest
 
     assert((dm(::, 0 until 0) * dm(0 until 0, ::)) === dm)
     assert(
-      (dm(0 until 0, ::) * dm(::, 0 until 0)) === DenseMatrix
-        .zeros[Double](0, 0))
+      (dm(0 until 0, ::) * dm(::, 0 until 0)) ===
+        DenseMatrix.zeros[Double](0, 0))
 //    assert( (dm(::, 2 until 0 by -1) * dm(2 until 0 by -1, ::)) === dm)
   }
 
@@ -821,8 +801,8 @@ class DenseMatrixTest
 
   test("lhs scalars") {
     assert(
-      1.0 :/ (DenseMatrix.fill(2, 2)(10.0)) === DenseMatrix
-        .fill(2, 2)(1 / 10.0))
+      1.0 :/ (DenseMatrix.fill(2, 2)(10.0)) ===
+        DenseMatrix.fill(2, 2)(1 / 10.0))
     assert(
       1.0 :- (DenseMatrix.fill(2, 2)(10.0)) === DenseMatrix.fill(2, 2)(-9.0))
   }

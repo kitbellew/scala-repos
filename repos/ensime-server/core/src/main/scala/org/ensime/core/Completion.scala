@@ -198,8 +198,7 @@ trait CompletionControl {
             context.prefix,
             makeAll(context, maxResults, caseSens).sortWith({ (c1, c2) =>
               c1.relevance > c2.relevance ||
-              (c1.relevance == c2.relevance &&
-              c1.name.length < c2.name.length)
+              (c1.relevance == c2.relevance && c1.name.length < c2.name.length)
             }).take(maxResults)
           )
         case _ => CompletionInfoList("", Nil)
@@ -292,15 +291,12 @@ trait CompletionControl {
         m match {
           case m @ ScopeMember(sym, tpe, accessible, viaView) =>
             val p = sym.pos
-            val inSymbol = p.isRange && (context.offset >= p
-              .startOrCursor && context.offset <= p.endOrCursor)
+            val inSymbol = p.isRange &&
+              (context.offset >= p.startOrCursor &&
+                context.offset <= p.endOrCursor)
             if (!sym.isConstructor && !inSymbol) {
-              buff ++= toCompletionInfo(
-                context,
-                sym,
-                tpe,
-                inherited = false,
-                NoSymbol)
+              buff ++=
+                toCompletionInfo(context, sym, tpe, inherited = false, NoSymbol)
             }
           case m @ TypeMember(sym, tpe, accessible, inherited, viaView) =>
             if (!sym.isConstructor) {
@@ -319,8 +315,8 @@ trait CompletionControl {
       } else Seq()
     }
 
-    buff.toList ++ typeSearchResults.getOrElse(Nil) ++ keywordCompletions(
-      context.prefix)
+    buff.toList ++ typeSearchResults.getOrElse(Nil) ++
+      keywordCompletions(context.prefix)
 
   }
 

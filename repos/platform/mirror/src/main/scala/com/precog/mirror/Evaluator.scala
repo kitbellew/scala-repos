@@ -79,7 +79,8 @@ trait EvaluatorModule
       }
 
       // done in this order for eagerness reasons
-      raw zip (Stream from init map { Vector(_) }) map { case (a, b) => (b, a) }
+      raw zip
+        (Stream from init map { Vector(_) }) map { case (a, b) => (b, a) }
     }
 
     def loop(
@@ -119,9 +120,8 @@ trait EvaluatorModule
           }
 
           // done in this order for eagerness reasons
-          raw zip (Stream from init map { Vector(_) }) map {
-            case (a, b) => (b, a)
-          }
+          raw zip
+            (Stream from init map { Vector(_) }) map { case (a, b) => (b, a) }
         }
 
         case Relate(_, from, to, in) => {
@@ -247,8 +247,8 @@ trait EvaluatorModule
 
           expr.binding match {
             case LetBinding(b) => {
-              val env2 =
-                env ++ ((Stream continually b) zip b.params zip actualSets)
+              val env2 = env ++
+                ((Stream continually b) zip b.params zip actualSets)
               loop(env2, restrict)(b.left)
             }
 
@@ -286,8 +286,8 @@ trait EvaluatorModule
             case ReductionBinding(red) => {
               val values = actualSets.head map { case (_, v) => v }
 
-              val result = values collect red
-                .prepare reduceOption red orElse red.zero
+              val result = values collect red.prepare reduceOption red orElse
+                red.zero
 
               result.toSeq map { v => (Vector(), v) }
             }
@@ -531,10 +531,10 @@ trait EvaluatorModule
         right: Dataset,
         rightProv: Provenance)(
         pf: PartialFunction[(JValue, JValue), JValue]): Dataset = {
-      val intersected = leftProv.possibilities intersect rightProv
-        .possibilities filter { p =>
-        p != ValueProvenance && p != NullProvenance
-      }
+      val intersected = leftProv.possibilities intersect
+        rightProv.possibilities filter { p =>
+          p != ValueProvenance && p != NullProvenance
+        }
 
       if (intersected.isEmpty) cross(left, right)(pf)
       else join(left, leftProv, right, rightProv)(pf)
@@ -629,8 +629,8 @@ trait EvaluatorModule
             case (l, r) => CoproductProvenance(l, r)
           }
 
-          merged ++ (leftRec drop merged.length) ++ (rightRec drop merged
-            .length)
+          merged ++ (leftRec drop merged.length) ++
+            (rightRec drop merged.length)
         }
 
         case prov => prov :: Nil

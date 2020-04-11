@@ -106,12 +106,12 @@ class ScalaLineBreakpointType
     val dumbService = DumbService.getInstance(project)
     if (dumbService.isDumb) return emptyList
 
-    val file =
-      PsiManager.getInstance(project).findFile(position.getFile) match {
-        case null          => return emptyList
-        case sf: ScalaFile => sf
-        case _             => return emptyList
-      }
+    val file = PsiManager.getInstance(project)
+      .findFile(position.getFile) match {
+      case null          => return emptyList
+      case sf: ScalaFile => sf
+      case _             => return emptyList
+    }
     val line = position.getLine
 
     if (ScalaPositionManager.positionsOnLine(file, line).size <= 1)
@@ -151,8 +151,8 @@ class ScalaLineBreakpointType
     val method = getContainingMethod(breakpoint)
     if (method == null) return false
 
-    if (!breakpoint.isInstanceOf[RunToCursorBreakpoint] && lambdaOrdinal(
-          breakpoint) == null) return true
+    if (!breakpoint.isInstanceOf[RunToCursorBreakpoint] &&
+        lambdaOrdinal(breakpoint) == null) return true
 
     DebuggerUtil.inTheMethod(position, method)
   }

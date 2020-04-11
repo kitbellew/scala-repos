@@ -19,8 +19,8 @@ final class Env(
     emailAddress: lila.security.EmailAddress) {
 
   private object settings {
-    val CollectionPlayerAssessment =
-      config getString "collection.player_assessment"
+    val CollectionPlayerAssessment = config getString
+      "collection.player_assessment"
     val CollectionBoosting = config getString "collection.boosting"
     val CollectionModlog = config getString "collection.modlog"
     val CollectionGamingHistory = config getString "collection.gaming_history"

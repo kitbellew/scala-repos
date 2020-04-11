@@ -62,9 +62,7 @@ object ProbabilisticClassifierSuite {
     * This is useful for tests which need to exercise all Params, such as save/load.
     * This excludes input columns to simplify some tests.
     */
-  val allParamSettings: Map[String, Any] = ClassifierSuite
-    .allParamSettings ++ Map(
-    "probabilityCol" -> "myProbability",
-    "thresholds" -> Array(0.4, 0.6))
+  val allParamSettings: Map[String, Any] = ClassifierSuite.allParamSettings ++
+    Map("probabilityCol" -> "myProbability", "thresholds" -> Array(0.4, 0.6))
 
 }

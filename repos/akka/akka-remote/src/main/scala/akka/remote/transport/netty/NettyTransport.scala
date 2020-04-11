@@ -113,9 +113,8 @@ class NettyTransportSettings(config: Config) {
       throw new ConfigurationException(s"Unknown transport: [$unknown]")
   }
 
-  val EnableSsl: Boolean = getBoolean("enable-ssl") requiring (
-    !_ || TransportMode == Tcp, s"$TransportMode does not support SSL"
-  )
+  val EnableSsl: Boolean = getBoolean("enable-ssl") requiring
+    (!_ || TransportMode == Tcp, s"$TransportMode does not support SSL")
 
   val UseDispatcherForIo: Option[String] = getString(
     "use-dispatcher-for-io") match {
@@ -143,16 +142,14 @@ class NettyTransportSettings(config: Config) {
 
   val SendBufferSize: Option[Int] = optionSize("send-buffer-size")
 
-  val ReceiveBufferSize: Option[Int] = optionSize(
-    "receive-buffer-size") requiring (
-    s ⇒
-      s.isDefined || TransportMode != Udp, "receive-buffer-size must be specified for UDP"
-  )
+  val ReceiveBufferSize: Option[Int] =
+    optionSize("receive-buffer-size") requiring
+      (
+        s ⇒ s.isDefined || TransportMode != Udp,
+        "receive-buffer-size must be specified for UDP")
 
-  val MaxFrameSize: Int = getBytes("maximum-frame-size").toInt requiring (
-    _ >= 32000,
-    s"Setting 'maximum-frame-size' must be at least 32000 bytes"
-  )
+  val MaxFrameSize: Int = getBytes("maximum-frame-size").toInt requiring
+    (_ >= 32000, s"Setting 'maximum-frame-size' must be at least 32000 bytes")
 
   val Backlog: Int = getInt("backlog")
 
@@ -376,8 +373,8 @@ class NettyTransport(
       case dispatcherName ⇒ Some(dispatcherName)
     }).map(system.dispatchers.lookup).getOrElse(system.dispatcher)
 
-  override val schemeIdentifier: String =
-    (if (EnableSsl) "ssl." else "") + TransportMode
+  override val schemeIdentifier: String = (if (EnableSsl) "ssl." else "") +
+    TransportMode
   override def maximumPayloadBytes: Int = settings.MaxFrameSize
 
   private final val isDatagram = TransportMode == Udp
@@ -398,8 +395,8 @@ class NettyTransport(
     new ConcurrentHashMap[SocketAddress, HandleEventListener]()
 
   private def createExecutorService() =
-    UseDispatcherForIo.map(system.dispatchers.lookup) getOrElse Executors
-      .newCachedThreadPool(system.threadFactory)
+    UseDispatcherForIo.map(system.dispatchers.lookup) getOrElse
+      Executors.newCachedThreadPool(system.threadFactory)
 
   /*
    * Be aware, that the close() method of DefaultChannelGroup is racy, because it uses an iterator over a ConcurrentHashMap.

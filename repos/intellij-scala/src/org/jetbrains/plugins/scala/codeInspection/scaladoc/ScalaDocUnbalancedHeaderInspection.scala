@@ -27,10 +27,9 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
 
         if (firstChildElementType == null) { return }
 
-        if (firstChildElementType == VALID_DOC_HEADER && (
-              lastChildElementType == VALID_DOC_HEADER ||
-              lastChildElementType == DOC_HEADER
-            )) {
+        if (firstChildElementType == VALID_DOC_HEADER &&
+            (lastChildElementType == VALID_DOC_HEADER ||
+            lastChildElementType == DOC_HEADER)) {
           if (s.getFirstChild.getTextLength != s.getLastChild.getTextLength) {
             holder.registerProblem(holder.getManager.createProblemDescriptor(
               s.getLastChild,
@@ -45,8 +44,8 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
 
           var sibl = s.getNextSibling
           val firstSibl = sibl
-          while (sibl != null && sibl.getNode
-                   .getElementType != DOC_COMMENT_END &&
+          while (sibl != null &&
+                 sibl.getNode.getElementType != DOC_COMMENT_END &&
                  sibl.getNode.getElementType != DOC_WHITESPACE) {
             val highlightedElement =
               if (s.getNextSibling != null) s.getNextSibling else s

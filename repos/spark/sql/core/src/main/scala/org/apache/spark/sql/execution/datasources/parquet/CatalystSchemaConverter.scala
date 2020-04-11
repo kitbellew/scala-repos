@@ -68,10 +68,10 @@ private[parquet] class CatalystSchemaConverter(
 
   def this(conf: Configuration) =
     this(
-      assumeBinaryIsString =
-        conf.get(SQLConf.PARQUET_BINARY_AS_STRING.key).toBoolean,
-      assumeInt96IsTimestamp =
-        conf.get(SQLConf.PARQUET_INT96_AS_TIMESTAMP.key).toBoolean,
+      assumeBinaryIsString = conf.get(SQLConf.PARQUET_BINARY_AS_STRING.key)
+        .toBoolean,
+      assumeInt96IsTimestamp = conf.get(SQLConf.PARQUET_INT96_AS_TIMESTAMP.key)
+        .toBoolean,
       writeLegacyParquetFormat = conf.get(
         SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key,
         SQLConf.PARQUET_WRITE_LEGACY_FORMAT.defaultValue.get.toString)
@@ -244,8 +244,8 @@ private[parquet] class CatalystSchemaConverter(
 
         val keyValueType = field.getType(0).asGroupType()
         CatalystSchemaConverter.checkConversionRequirement(
-          keyValueType.isRepetition(REPEATED) && keyValueType
-            .getFieldCount == 2,
+          keyValueType.isRepetition(REPEATED) &&
+            keyValueType.getFieldCount == 2,
           s"Invalid map type: $field")
 
         val keyType = keyValueType.getType(0)
@@ -412,8 +412,8 @@ private[parquet] class CatalystSchemaConverter(
 
       // Uses INT64 for 1 <= precision <= 18
       case DecimalType.Fixed(precision, scale)
-          if precision <= Decimal
-            .MAX_LONG_DIGITS && !writeLegacyParquetFormat =>
+          if precision <= Decimal.MAX_LONG_DIGITS &&
+            !writeLegacyParquetFormat =>
         Types.primitive(INT64, repetition).as(DECIMAL).precision(precision)
           .scale(scale).named(field.name)
 

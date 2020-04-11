@@ -80,8 +80,8 @@ class PrimitiveApiTest
     val replica = servers.head.replicaManager.getReplica(topic, 0).get
     assertTrue(
       "HighWatermark should equal logEndOffset with just 1 replica",
-      replica.logEndOffset.messageOffset > 0 && replica.logEndOffset
-        .equals(replica.highWatermark)
+      replica.logEndOffset.messageOffset > 0 &&
+        replica.logEndOffset.equals(replica.highWatermark)
     )
 
     val request = new FetchRequestBuilder().clientId("test-client")

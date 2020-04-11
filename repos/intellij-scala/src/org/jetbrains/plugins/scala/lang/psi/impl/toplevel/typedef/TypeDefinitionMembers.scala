@@ -105,8 +105,8 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement]) {
       for (method <- clazz.getMethods
-           if nonBridge(place, method) &&
-             !method.isConstructor && !method.hasModifierProperty("static") &&
+           if nonBridge(place, method) && !method.isConstructor &&
+             !method.hasModifierProperty("static") &&
              method.getParameterList.getParametersCount == 0) {
         val phys = new PhysicalSignature(method, subst)
         map addToMap (phys, new Node(phys, subst))
@@ -224,8 +224,9 @@ object TypeDefinitionMembers {
               }
             }
           case f: ScFunction
-              if nonBridge(place, f) && !f.isConstructor && f.parameters
-                .isEmpty => addSignature(new PhysicalSignature(f, subst))
+              if nonBridge(place, f) && !f.isConstructor &&
+                f.parameters.isEmpty =>
+            addSignature(new PhysicalSignature(f, subst))
           case o: ScObject if nonBridge(place, o) =>
             addSignature(new Signature(o.name, Seq.empty, 0, subst, o))
           case c: ScTypeDefinition
@@ -269,8 +270,8 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement]) {
       for ((sign, _) <- cp.signatureMap) {
-        if (sign.paramLength.sum == 0 && (ScalaPsiUtil
-              .nameContext(sign.namedElement) match {
+        if (sign.paramLength.sum == 0 &&
+            (ScalaPsiUtil.nameContext(sign.namedElement) match {
               case m: PsiMember => nonBridge(place, m)
               case _            => false
             })) { map addToMap (sign, new Node(sign, sign.substitutor)) }
@@ -315,8 +316,7 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement]) {
       for (inner <- clazz.getInnerClasses
-           if nonBridge(place, inner) &&
-             !inner.hasModifierProperty("static")) {
+           if nonBridge(place, inner) && !inner.hasModifierProperty("static")) {
         map addToMap (inner, new Node(inner, subst))
       }
     }
@@ -404,8 +404,8 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement]) {
       for (method <- clazz.getMethods
-           if nonBridge(place, method) &&
-             !method.isConstructor && !method.hasModifierProperty("static")) {
+           if nonBridge(place, method) && !method.isConstructor &&
+             !method.hasModifierProperty("static")) {
         val phys = new PhysicalSignature(method, subst)
         map addToMap (phys, new Node(phys, subst))
       }
@@ -818,8 +818,8 @@ object TypeDefinitionMembers {
       }
     }
 
-    if (BaseProcessor.isImplicitProcessor(processor) && !clazz
-          .isInstanceOf[ScTemplateDefinition]) return true
+    if (BaseProcessor.isImplicitProcessor(processor) &&
+        !clazz.isInstanceOf[ScTemplateDefinition]) return true
 
     if (!privateProcessDeclarations(
           processor,
@@ -841,9 +841,8 @@ object TypeDefinitionMembers {
             .processDeclarations(processor, state, lastParent, place)))
       return false
 
-    if (shouldProcessMethods(processor) && !processEnum(
-          clazz,
-          processor.execute(_, state))) return false
+    if (shouldProcessMethods(processor) &&
+        !processEnum(clazz, processor.execute(_, state))) return false
     true
   }
 
@@ -972,16 +971,15 @@ object TypeDefinitionMembers {
           elem match {
             case p: ScClassParameter
                 if processValsForScala && !p.isVar && !p.isVal &&
-                  (checkName(p.name) || checkNameGetSetIs(
-                    p.name)) && isScalaProcessor =>
+                  (checkName(p.name) || checkNameGetSetIs(p.name)) &&
+                  isScalaProcessor =>
               val clazz = PsiTreeUtil
                 .getContextOfType(p, true, classOf[ScTemplateDefinition])
-              if (clazz != null && clazz.isInstanceOf[ScClass] && !p
-                    .isEffectiveVal) {
+              if (clazz != null && clazz.isInstanceOf[ScClass] &&
+                  !p.isEffectiveVal) {
                 //this is member only for class scope
-                if (PsiTreeUtil
-                      .isContextAncestor(clazz, place, false) && checkName(
-                      p.name)) {
+                if (PsiTreeUtil.isContextAncestor(clazz, place, false) &&
+                    checkName(p.name)) {
                   //we can accept this member
                   if (!processor.execute(
                         elem,
@@ -989,8 +987,7 @@ object TypeDefinitionMembers {
                           ScSubstitutor.key,
                           n.substitutor followed subst))) return false
                 } else {
-                  if (n.supers.nonEmpty &&
-                      !processor.execute(
+                  if (n.supers.nonEmpty && !processor.execute(
                         n.supers.apply(0).info.asInstanceOf[Signature]
                           .namedElement,
                         state.put(
@@ -1025,20 +1022,19 @@ object TypeDefinitionMembers {
               elem match {
                 case t: ScTypedDefinition =>
                   def process(method: PsiMethod): Boolean = {
-                    if (processValsForScala &&
-                        !processor.execute(
+                    if (processValsForScala && !processor.execute(
                           method,
                           state.put(
                             ScSubstitutor.key,
                             n.substitutor followed subst))) return false
                     true
                   }
-                  if (decodedName.startsWith("set") && !process(
-                        t.getSetBeanMethod)) return false
-                  if (decodedName.startsWith("get") && !process(
-                        t.getGetBeanMethod)) return false
-                  if (decodedName.startsWith("is") && !process(
-                        t.getIsBeanMethod)) return false
+                  if (decodedName.startsWith("set") &&
+                      !process(t.getSetBeanMethod)) return false
+                  if (decodedName.startsWith("get") &&
+                      !process(t.getGetBeanMethod)) return false
+                  if (decodedName.startsWith("is") &&
+                      !process(t.getIsBeanMethod)) return false
                   if (decodedName.isEmpty) {
                     //completion processor    a
                     val beanMethodsIterator = t.getBeanMethods.iterator
@@ -1101,8 +1097,8 @@ object TypeDefinitionMembers {
                     if (!addMethod(phys.method)) return false
                   case phys: PhysicalSignature => //do nothing
                   case s: Signature
-                      if processMethods && s.namedElement
-                        .isInstanceOf[PsiMethod] =>
+                      if processMethods &&
+                        s.namedElement.isInstanceOf[PsiMethod] =>
                     //this is compound type case
                     if (!addMethod(s.namedElement)) return false
                   case _ if processValsForScala =>
@@ -1225,8 +1221,7 @@ object TypeDefinitionMembers {
         val iterator = l.iterator
         while (iterator.hasNext) {
           val (_, n) = iterator.next()
-          if (n.info.isInstanceOf[ScTypeDefinition] &&
-              !processor.execute(
+          if (n.info.isInstanceOf[ScTypeDefinition] && !processor.execute(
                 n.info,
                 state.put(ScSubstitutor.key, n.substitutor followed subst)))
             return false
@@ -1241,8 +1236,7 @@ object TypeDefinitionMembers {
             val (_, n) = iterator.next()
             if (checkName(n.info.name)) {
               ProgressManager.checkCanceled()
-              if (n.info.isInstanceOf[ScTypeDefinition] &&
-                  !processor.execute(
+              if (n.info.isInstanceOf[ScTypeDefinition] && !processor.execute(
                     n.info,
                     state.put(ScSubstitutor.key, n.substitutor followed subst)))
                 return false
@@ -1263,8 +1257,8 @@ object TypeDefinitionMembers {
         (kinds contains VAR) || (kinds contains VAL) || (kinds contains OBJECT)
       case _ =>
         val hint: ElementClassHint = processor.getHint(ElementClassHint.KEY)
-        hint == null || hint
-          .shouldProcess(ElementClassHint.DeclarationKind.VARIABLE)
+        hint == null ||
+        hint.shouldProcess(ElementClassHint.DeclarationKind.VARIABLE)
     }
 
   def shouldProcessMethods(processor: PsiScopeProcessor) =
@@ -1272,8 +1266,8 @@ object TypeDefinitionMembers {
       case BaseProcessor(kinds) => kinds contains METHOD
       case _ =>
         val hint = processor.getHint(ElementClassHint.KEY)
-        hint == null || hint
-          .shouldProcess(ElementClassHint.DeclarationKind.METHOD)
+        hint == null ||
+        hint.shouldProcess(ElementClassHint.DeclarationKind.METHOD)
     }
 
   def shouldProcessMethodRefs(processor: PsiScopeProcessor) =
@@ -1310,8 +1304,8 @@ object TypeDefinitionMembers {
     if (clazz.isEnum && !clazz.isInstanceOf[ScTemplateDefinition]) {
       containsValues = clazz.getMethods.exists {
         case method =>
-          method.getName == "values" && method.getParameterList
-            .getParametersCount == 0 &&
+          method.getName == "values" &&
+            method.getParameterList.getParametersCount == 0 &&
             method.hasModifierProperty("static")
       }
     }
@@ -1321,8 +1315,7 @@ object TypeDefinitionMembers {
         .getInstance(clazz.getProject).getElementFactory
       //todo: cache like in PsiClassImpl
       val valuesMethod: PsiMethod = elementFactory.createMethodFromText(
-        "public static " + clazz.name +
-          "[] values() {}",
+        "public static " + clazz.name + "[] values() {}",
         clazz)
       val valueOfMethod: PsiMethod = elementFactory.createMethodFromText(
         "public static " + clazz.name +

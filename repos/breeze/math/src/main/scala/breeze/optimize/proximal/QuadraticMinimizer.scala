@@ -337,8 +337,8 @@ class QuadraticMinimizer(
       s := u
       s *= rho
 
-      val epsPrimal =
-        convergenceScale * abstol + reltol * max(norm(x, 2), norm(residual, 2))
+      val epsPrimal = convergenceScale * abstol +
+        reltol * max(norm(x, 2), norm(residual, 2))
       val epsDual = convergenceScale * abstol + reltol * norm(s, 2)
 
       if (residualNorm < epsPrimal && sNorm < epsDual) {
@@ -689,8 +689,8 @@ object QuadraticMinimizer {
 
     println(s"Objective lu $luObj bfgs $bfgsObj qp $qpObj")
 
-    println(
-      s"dim ${problemSize} lu ${luTime / 1e6} ms qp ${qpTime / 1e6} ms cg ${cgTime / 1e6} ms bfgs ${bfgsTime / 1e6} ms")
+    println(s"dim ${problemSize} lu ${luTime / 1e6} ms qp ${qpTime /
+      1e6} ms cg ${cgTime / 1e6} ms bfgs ${bfgsTime / 1e6} ms")
 
     val lambdaL1 = lambda * beta
     val lambdaL2 = lambda * (1 - beta)

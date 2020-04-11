@@ -225,8 +225,8 @@ object Storage extends Logging {
 
   /** Get the StorageClient config data from PIO Framework's environment variables */
   def getConfig(sourceName: String): Option[StorageClientConfig] = {
-    if (s2cm.contains(sourceName) && s2cm.get(sourceName).nonEmpty
-        && s2cm.get(sourceName).get.nonEmpty) {
+    if (s2cm.contains(sourceName) && s2cm.get(sourceName).nonEmpty &&
+        s2cm.get(sourceName).get.nonEmpty) {
       Some(s2cm.get(sourceName).get.get.config)
     } else None
   }
@@ -307,9 +307,8 @@ object Storage extends Logging {
           "Unable to instantiate data object with class '" +
             constructor.getDeclaringClass.getName + " because its constructor" +
             " does not have the right number of arguments." +
-            " Number of required constructor arguments: " +
-            ctorArgs.size + "." +
-            " Number of existing constructor arguments: " +
+            " Number of required constructor arguments: " + ctorArgs.size +
+            "." + " Number of existing constructor arguments: " +
             constructor.getParameterTypes.size + "." +
             s" Storage source name: ${sourceName}." +
             s" Exception message: ${e.getMessage}).",

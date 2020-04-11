@@ -26,11 +26,8 @@ object Serbench extends Benchmark {
   )
 
   val jvalueProject = {
-    ("name" -> "test") ~
-      ("startDate" -> new Date().getTime) ~
-      ("lang" ->
-        (("name" -> "Scala") ~
-          ("version" -> 2.75))) ~
+    ("name" -> "test") ~ ("startDate" -> new Date().getTime) ~
+      ("lang" -> (("name" -> "Scala") ~ ("version" -> 2.75))) ~
       ("teams" -> List(
         ("role" -> "QA") ~
           ("members" -> List(

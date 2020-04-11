@@ -208,8 +208,8 @@ class ClusterSingletonManagerSpec
 
   def awaitMemberUp(memberProbe: TestProbe, nodes: RoleName*): Unit = {
     runOn(nodes.filterNot(_ == nodes.head): _*) {
-      memberProbe.expectMsgType[MemberUp](15.seconds).member.address should ===(
-        node(nodes.head).address)
+      memberProbe.expectMsgType[MemberUp](15.seconds).member.address should
+        ===(node(nodes.head).address)
     }
     runOn(nodes.head) {
       memberProbe.receiveN(nodes.size, 15.seconds).collect {
@@ -368,15 +368,15 @@ class ClusterSingletonManagerSpec
       enterBarrier("after-1")
     }
 
-    "let the proxy route messages to the singleton in a 6 node cluster" in within(
-      60 seconds) {
-      verifyProxyMsg(first, first, msg = msg())
-      verifyProxyMsg(first, second, msg = msg())
-      verifyProxyMsg(first, third, msg = msg())
-      verifyProxyMsg(first, fourth, msg = msg())
-      verifyProxyMsg(first, fifth, msg = msg())
-      verifyProxyMsg(first, sixth, msg = msg())
-    }
+    "let the proxy route messages to the singleton in a 6 node cluster" in
+      within(60 seconds) {
+        verifyProxyMsg(first, first, msg = msg())
+        verifyProxyMsg(first, second, msg = msg())
+        verifyProxyMsg(first, third, msg = msg())
+        verifyProxyMsg(first, fourth, msg = msg())
+        verifyProxyMsg(first, fifth, msg = msg())
+        verifyProxyMsg(first, sixth, msg = msg())
+      }
 
     "hand over when oldest leaves in 6 nodes cluster " in within(30 seconds) {
       val leaveRole = first

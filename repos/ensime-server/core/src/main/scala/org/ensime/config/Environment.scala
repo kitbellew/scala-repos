@@ -20,10 +20,10 @@ object Environment {
   private def osVersion: String = System.getProperty("os.name")
 
   private def javaVersion: String = {
-    val vmInfo = System.getProperty("java.vm.name") + " " + System
-      .getProperty("java.vm.version")
-    val rtInfo = System.getProperty("java.runtime.name") + " " + System
-      .getProperty("java.runtime.version")
+    val vmInfo = System.getProperty("java.vm.name") + " " +
+      System.getProperty("java.vm.version")
+    val rtInfo = System.getProperty("java.runtime.name") + " " +
+      System.getProperty("java.runtime.version")
     vmInfo + ", " + rtInfo
   }
 

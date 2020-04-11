@@ -10,16 +10,16 @@ object RouterSpec extends PlaySpecification {
 
   "reverse routes containing boolean parameters" in {
     "in the query string" in {
-      controllers.routes.Application.takeBool(true).url must equalTo(
-        "/take-bool?b=true")
-      controllers.routes.Application.takeBool(false).url must equalTo(
-        "/take-bool?b=false")
+      controllers.routes.Application.takeBool(true).url must
+        equalTo("/take-bool?b=true")
+      controllers.routes.Application.takeBool(false).url must
+        equalTo("/take-bool?b=false")
     }
     "in the  path" in {
-      controllers.routes.Application.takeBool2(true).url must equalTo(
-        "/take-bool-2/true")
-      controllers.routes.Application.takeBool2(false).url must equalTo(
-        "/take-bool-2/false")
+      controllers.routes.Application.takeBool2(true).url must
+        equalTo("/take-bool-2/true")
+      controllers.routes.Application.takeBool2(false).url must
+        equalTo("/take-bool-2/false")
     }
   }
 
@@ -35,11 +35,11 @@ object RouterSpec extends PlaySpecification {
       contentAsString(result2) must equalTo("false")
       // Bind boolean values from 1 and 0 integers too
       contentAsString(
-        route(implicitApp, FakeRequest(GET, "/take-bool?b=1"))
-          .get) must equalTo("true")
+        route(implicitApp, FakeRequest(GET, "/take-bool?b=1")).get) must
+        equalTo("true")
       contentAsString(
-        route(implicitApp, FakeRequest(GET, "/take-bool?b=0"))
-          .get) must equalTo("false")
+        route(implicitApp, FakeRequest(GET, "/take-bool?b=0")).get) must
+        equalTo("false")
     }
     "from the path" in new WithApplication() {
       val Some(result) = route(
@@ -52,11 +52,11 @@ object RouterSpec extends PlaySpecification {
       contentAsString(result2) must equalTo("false")
       // Bind boolean values from 1 and 0 integers too
       contentAsString(
-        route(implicitApp, FakeRequest(GET, "/take-bool-2/1"))
-          .get) must equalTo("true")
+        route(implicitApp, FakeRequest(GET, "/take-bool-2/1")).get) must
+        equalTo("true")
       contentAsString(
-        route(implicitApp, FakeRequest(GET, "/take-bool-2/0"))
-          .get) must equalTo("false")
+        route(implicitApp, FakeRequest(GET, "/take-bool-2/0")).get) must
+        equalTo("false")
     }
   }
 
@@ -92,22 +92,26 @@ object RouterSpec extends PlaySpecification {
         FakeRequest(GET, "/take-list-tick-param?b[]=4&b[]=5&b[]=6"))
       contentAsString(result) must equalTo("4,5,6")
     }
-    "using backticked names urlencoded on route params" in new WithApplication() {
-      val Some(result) = route(
-        implicitApp,
-        FakeRequest(GET, "/take-list-tick-param?b%5B%5D=4&b%5B%5D=5&b%5B%5D=6"))
-      contentAsString(result) must equalTo("4,5,6")
-    }
+    "using backticked names urlencoded on route params" in
+      new WithApplication() {
+        val Some(result) = route(
+          implicitApp,
+          FakeRequest(
+            GET,
+            "/take-list-tick-param?b%5B%5D=4&b%5B%5D=5&b%5B%5D=6"))
+        contentAsString(result) must equalTo("4,5,6")
+      }
   }
 
-  "use a new instance for each instantiated controller" in new WithApplication() {
-    route(implicitApp, FakeRequest(GET, "/instance")) must beSome.like {
-      case result => contentAsString(result) must_== "1"
+  "use a new instance for each instantiated controller" in
+    new WithApplication() {
+      route(implicitApp, FakeRequest(GET, "/instance")) must beSome.like {
+        case result => contentAsString(result) must_== "1"
+      }
+      route(implicitApp, FakeRequest(GET, "/instance")) must beSome.like {
+        case result => contentAsString(result) must_== "1"
+      }
     }
-    route(implicitApp, FakeRequest(GET, "/instance")) must beSome.like {
-      case result => contentAsString(result) must_== "1"
-    }
-  }
 
   "URL encoding and decoding works correctly" in new WithApplication() {
     def checkDecoding(
@@ -165,8 +169,8 @@ object RouterSpec extends PlaySpecification {
   "allow reverse routing of routes includes" in new WithApplication() {
     // Force the router to bootstrap the prefix
     implicitApp.injector.instanceOf[play.api.routing.Router]
-    controllers.module.routes.ModuleController.index()
-      .url must_== "/module/index"
+    controllers.module.routes.ModuleController.index().url must_==
+      "/module/index"
   }
 
   "document the router" in new WithApplication() {
@@ -185,18 +189,19 @@ object RouterSpec extends PlaySpecification {
       .url must_== "/take-list-tick-param?b[]=1&b[]=2&b[]=3"
   }
 
-  "choose the first matching route for a call in reverse routes" in new WithApplication() {
-    controllers.routes.Application.hello().url must_== "/hello"
-  }
+  "choose the first matching route for a call in reverse routes" in
+    new WithApplication() {
+      controllers.routes.Application.hello().url must_== "/hello"
+    }
 
   "The assets reverse route support" should {
     "fingerprint assets" in new WithApplication() {
-      controllers.routes.Assets.versioned("css/main.css")
-        .url must_== "/public/css/abcd1234-main.css"
+      controllers.routes.Assets.versioned("css/main.css").url must_==
+        "/public/css/abcd1234-main.css"
     }
     "selected the minified version" in new WithApplication() {
-      controllers.routes.Assets.versioned("css/minmain.css")
-        .url must_== "/public/css/abcd1234-minmain-min.css"
+      controllers.routes.Assets.versioned("css/minmain.css").url must_==
+        "/public/css/abcd1234-minmain-min.css"
     }
     "work for non fingerprinted assets" in new WithApplication() {
       controllers.routes.Assets.versioned("css/nonfingerprinted.css")

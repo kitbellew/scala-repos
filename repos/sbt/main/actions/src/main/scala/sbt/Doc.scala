@@ -160,8 +160,8 @@ sealed trait Doc {
       log.info("No sources available, skipping " + logSnip + "...")
     else {
       log.info(
-        "Generating " + logSnip + " for " + label + " sources to " + outputDirectory
-          .absolutePath + "...")
+        "Generating " + logSnip + " for " + label + " sources to " +
+          outputDirectory.absolutePath + "...")
       IO.delete(outputDirectory)
       IO.createDirectory(outputDirectory)
       docf(sources, classpath, outputDirectory, options, maxErrors, log)

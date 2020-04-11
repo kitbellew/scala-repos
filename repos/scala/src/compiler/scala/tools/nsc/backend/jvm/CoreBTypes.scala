@@ -79,8 +79,8 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     */
   lazy val boxResultType: Map[Symbol, ClassBType] = {
     for ((valueClassSym, boxMethodSym) <- currentRun.runDefinitions.boxMethod)
-      yield boxMethodSym -> boxedClassOfPrimitive(
-        primitiveTypeToBType(valueClassSym))
+      yield boxMethodSym ->
+        boxedClassOfPrimitive(primitiveTypeToBType(valueClassSym))
   }
 
   /**
@@ -291,8 +291,9 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   // scala/Tuple3 -> MethodNameAndType(<init>,(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V)
   // scala/Tuple2$mcZC$sp -> MethodNameAndType(<init>,(ZC)V)
   lazy val tupleClassConstructors: Map[InternalName, MethodNameAndType] = {
-    val tupleClassSymbols = TupleClass.seq ++ specializedSubclasses(
-      TupleClass(1)) ++ specializedSubclasses(TupleClass(2))
+    val tupleClassSymbols = TupleClass.seq ++
+      specializedSubclasses(TupleClass(1)) ++
+      specializedSubclasses(TupleClass(2))
     nonOverloadedConstructors(tupleClassSymbols)
   }
 
@@ -345,11 +346,12 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
 
   /* The Object => String overload. */
   lazy val String_valueOf: Symbol = {
-    getMember(StringModule, nme.valueOf) filter (sym =>
-      sym.info.paramTypes match {
-        case List(pt) => pt.typeSymbol == ObjectClass
-        case _        => false
-      })
+    getMember(StringModule, nme.valueOf) filter
+      (sym =>
+        sym.info.paramTypes match {
+          case List(pt) => pt.typeSymbol == ObjectClass
+          case _        => false
+        })
   }
 
   lazy val lambdaMetaFactoryBootstrapHandle = new asm.Handle(

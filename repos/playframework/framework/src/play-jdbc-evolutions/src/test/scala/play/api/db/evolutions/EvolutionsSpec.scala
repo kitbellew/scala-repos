@@ -71,12 +71,12 @@ object EvolutionsSpec extends Specification {
       val broken = evolutions.scripts(Seq(c1, a2, a3))
       val fixed = evolutions.scripts(Seq(a1, a2, a3))
 
-      evolutions.evolve(broken, autocommit = true) must throwAn[
-        InconsistentDatabase]
+      evolutions.evolve(broken, autocommit = true) must
+        throwAn[InconsistentDatabase]
 
       // inconsistent until resolved
-      evolutions.evolve(fixed, autocommit = true) must throwAn[
-        InconsistentDatabase]
+      evolutions.evolve(fixed, autocommit = true) must
+        throwAn[InconsistentDatabase]
 
       evolutions.resolve(1)
 
@@ -129,26 +129,26 @@ object EvolutionsSpec extends Specification {
     "apply down scripts" in new DownScripts with WithEvolutions
     "apply down scripts derby" in new DownScripts with WithDerbyEvolutions
 
-    "report inconsistent state and resolve" in new ReportInconsistentStateAndResolve
-      with WithEvolutions
-    "report inconsistent state and resolve derby" in new ReportInconsistentStateAndResolve
-      with WithDerbyEvolutions
+    "report inconsistent state and resolve" in
+      new ReportInconsistentStateAndResolve with WithEvolutions
+    "report inconsistent state and resolve derby" in
+      new ReportInconsistentStateAndResolve with WithDerbyEvolutions
 
     "reset the database" in new ResetDatabase with WithEvolutions
     "reset the database derby" in new ResetDatabase with WithDerbyEvolutions
 
-    "provide a helper for testing" in new ProvideHelperForTesting
-      with WithEvolutions
-    "provide a helper for testing derby" in new ProvideHelperForTesting
-      with WithDerbyEvolutions
+    "provide a helper for testing" in
+      new ProvideHelperForTesting with WithEvolutions
+    "provide a helper for testing derby" in
+      new ProvideHelperForTesting with WithDerbyEvolutions
 
     // Test if the play_evolutions table gets created within a schema
-    "create test schema derby" in new CreateSchema
-      with WithDerbyEvolutionsSchema
-    "reset the database to trigger creation of the play_evolutions table in the testschema derby" in new ResetDatabase
-      with WithDerbyEvolutionsSchema
-    "provide a helper for testing derby schema" in new ProvideHelperForTestingSchema
-      with WithDerbyEvolutionsSchema
+    "create test schema derby" in
+      new CreateSchema with WithDerbyEvolutionsSchema
+    "reset the database to trigger creation of the play_evolutions table in the testschema derby" in
+      new ResetDatabase with WithDerbyEvolutionsSchema
+    "provide a helper for testing derby schema" in
+      new ProvideHelperForTestingSchema with WithDerbyEvolutionsSchema
   }
 
   trait WithEvolutions extends After {

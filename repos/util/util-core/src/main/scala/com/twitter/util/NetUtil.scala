@@ -13,8 +13,8 @@ object NetUtil {
         val addr = ip.getAddress
         if (addr(0) == 10.toByte) // 10/8
           true
-        else if (addr(0) == 172.toByte && (addr(1) & 0xf0) == 16
-                   .toByte) // 172/12
+        else if (addr(0) == 172.toByte && (addr(1) & 0xf0) ==
+                   16.toByte) // 172/12
           true
         else if (addr(0) == 192.toByte && addr(1) == 168.toByte) // 192.168/16
           true
@@ -70,10 +70,8 @@ object NetUtil {
     inetAddress match {
       case inetAddress: Inet4Address =>
         val addr = inetAddress.getAddress
-        ((addr(0) & 0xff) << 24) |
-          ((addr(1) & 0xff) << 16) |
-          ((addr(2) & 0xff) << 8) |
-          (addr(3) & 0xff)
+        ((addr(0) & 0xff) << 24) | ((addr(1) & 0xff) << 16) |
+          ((addr(2) & 0xff) << 8) | (addr(3) & 0xff)
       case _ =>
         throw new IllegalArgumentException(
           "non-Inet4Address cannot be converted to an Int")

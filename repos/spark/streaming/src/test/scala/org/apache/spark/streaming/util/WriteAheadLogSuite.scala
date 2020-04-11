@@ -238,7 +238,8 @@ abstract class CommonWriteAheadLogTests(
   }
 
   test(
-    testPrefix + "parallel recovery not enabled if closeFileAfterWrite = false") {
+    testPrefix +
+      "parallel recovery not enabled if closeFileAfterWrite = false") {
     // write some data
     val writtenData = (1 to 10).flatMap { i =>
       val data = generateRandomData()

@@ -50,8 +50,8 @@ object GridPageRank {
       val oldPr = pr
       pr = new Array[Double](nRows * nCols)
       for (ind <- 0 until (nRows * nCols)) {
-        pr(ind) = resetProb + (1.0 - resetProb) *
-          inNbrs(ind).map(nbr => oldPr(nbr) / outDegree(nbr)).sum
+        pr(ind) = resetProb + (1.0 - resetProb) * inNbrs(ind)
+          .map(nbr => oldPr(nbr) / outDegree(nbr)).sum
       }
     }
     (0L until (nRows * nCols)).zip(pr)
@@ -89,9 +89,8 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
       val staticErrors = staticRanks2.map {
         case (vid, pr) =>
           val p = math.abs(
-            pr - (
-              resetProb + (1.0 - resetProb) * (resetProb * (nVertices - 1))
-            ))
+            pr -
+              (resetProb + (1.0 - resetProb) * (resetProb * (nVertices - 1))))
           val correct =
             (vid > 0 && pr == resetProb) || (vid == 0L && p < 1.0e-5)
           if (!correct) 1 else 0
@@ -123,8 +122,7 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
 
       val staticErrors = staticRanks2.map {
         case (vid, pr) =>
-          val correct = (vid > 0 && pr == 0.0) ||
-            (vid == 0 && pr == resetProb)
+          val correct = (vid > 0 && pr == 0.0) || (vid == 0 && pr == resetProb)
           if (!correct) 1 else 0
       }
       assert(staticErrors.sum === 0)

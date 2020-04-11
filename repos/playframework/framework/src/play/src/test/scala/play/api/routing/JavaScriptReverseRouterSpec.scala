@@ -17,10 +17,10 @@ class JavaScriptReverseRouterSpec extends Specification {
       router.body must contain("var lightbendRoutes = ")
       router.body must contain("return doAjaxRequest(c)")
       router.body must contain("'lightbend.com'")
-      router.body must contain(
-        s"_root['controllers']['FooController']['foo'] = $foo")
-      router.body must contain(
-        s"_root['controllers']['BarController']['bar'] = $bar")
+      router.body must
+        contain(s"_root['controllers']['FooController']['foo'] = $foo")
+      router.body must
+        contain(s"_root['controllers']['BarController']['bar'] = $bar")
     }
   }
 }

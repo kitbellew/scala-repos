@@ -115,10 +115,9 @@ class BaseReplicationClient(
         clients: Seq[Client],
         currentRes: GetResult): Future[GetResult] =
       clients match {
-        case _
-            if currentRes.misses.isEmpty &&
-              currentRes.failures.isEmpty => Future.value(currentRes)
-        case Seq()                        => Future.value(currentRes)
+        case _ if currentRes.misses.isEmpty && currentRes.failures.isEmpty =>
+          Future.value(currentRes)
+        case Seq() => Future.value(currentRes)
         case Seq(c, tail @ _*) =>
           val missing = currentRes.misses ++ currentRes.failures.keySet
           c.getResult(missing) flatMap {

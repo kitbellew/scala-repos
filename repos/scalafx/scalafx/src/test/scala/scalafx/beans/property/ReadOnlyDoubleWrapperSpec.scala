@@ -41,10 +41,11 @@ class ReadOnlyDoubleWrapperSpec extends FlatSpec with BeforeAndAfterEach {
     assert(p.isInstanceOf[DoubleProperty])
   }
 
-  it should "have public field `readOnlyProperty` that is an instance of `ReadOnlyDoubleProperty`" in {
-    val p = new ReadOnlyDoubleWrapper()
-    assert(p.readOnlyProperty.isInstanceOf[ReadOnlyDoubleProperty])
-  }
+  it should
+    "have public field `readOnlyProperty` that is an instance of `ReadOnlyDoubleProperty`" in {
+      val p = new ReadOnlyDoubleWrapper()
+      assert(p.readOnlyProperty.isInstanceOf[ReadOnlyDoubleProperty])
+    }
 
   it should "propagate value changes to `readOnlyProperty`" in {
     val p = new ReadOnlyDoubleWrapper

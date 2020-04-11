@@ -109,8 +109,8 @@ class CompileServerLauncher extends ApplicationComponent {
           if (bootClassPathLibs.isEmpty) Nil
           else
             Seq(
-              "-Xbootclasspath/a:" + bootClassPathLibs
-                .mkString(File.pathSeparator))
+              "-Xbootclasspath/a:" +
+                bootClassPathLibs.mkString(File.pathSeparator))
         val classpath = (jdk.tools +: presentFiles).map(_.canonicalPath)
           .mkString(File.pathSeparator)
         val settings = ScalaCompileServerSettings.getInstance
@@ -131,8 +131,8 @@ class CompileServerLauncher extends ApplicationComponent {
             Seq(s"-Dshutdown.delay=$shutdownDelay")
           } else Nil
 
-        val commands = jdk.executable
-          .canonicalPath +: bootclasspathArg ++: "-cp" +: classpath +: jvmParameters ++: shutdownDelayArg ++:
+        val commands = jdk.executable.canonicalPath +: bootclasspathArg ++:
+          "-cp" +: classpath +: jvmParameters ++: shutdownDelayArg ++:
           ngRunnerFqn +: freePort.toString +: id.toString +: Nil
 
         val builder = new ProcessBuilder(commands.asJava)
@@ -264,11 +264,10 @@ object CompileServerLauncher {
       case Some(instance) =>
         val useProjectHome = ScalaCompileServerSettings.getInstance()
           .USE_PROJECT_HOME_AS_WORKING_DIR
-        val workingDirChanged =
-          useProjectHome && projectHome(project) != serverInstance
-            .map(_.workingDir)
-        workingDirChanged || instance.bootClasspath != withTimestamps(
-          bootClasspath(project))
+        val workingDirChanged = useProjectHome &&
+          projectHome(project) != serverInstance.map(_.workingDir)
+        workingDirChanged ||
+        instance.bootClasspath != withTimestamps(bootClasspath(project))
     }
   }
 

@@ -172,8 +172,8 @@ private[niflheim] class NIHDBImpl private[niflheim] (
   def insertVerified(batch: Seq[NIHDB.Batch]): Future[InsertResult] =
     (actor ? Insert(batch, true)).mapTo[InsertResult]
 
-  def getSnapshot(): Future[NIHDBSnapshot] =
-    (actor ? GetSnapshot).mapTo[NIHDBSnapshot]
+  def getSnapshot(): Future[NIHDBSnapshot] = (actor ? GetSnapshot)
+    .mapTo[NIHDBSnapshot]
 
   def getBlockAfter(
       id: Option[Long],
@@ -231,7 +231,8 @@ private[niflheim] object NIHDBActor extends Logging {
         for {
           _ <- IO {
             logger.info(
-              "No current descriptor found for " + baseDir + "; " + authorities + ", creating fresh descriptor")
+              "No current descriptor found for " + baseDir + "; " +
+                authorities + ", creating fresh descriptor")
           }
           _ <- ProjectionState.toFile(state, descriptorFile)
         } yield { success(state) }
@@ -443,8 +444,8 @@ private[niflheim] class NIHDBActor private (
       // ID
       //TODO: LENSES!!!!!!!~
       state.blockState = state.blockState.copy(
-        cooked = CookedReader.load(cookedDir, file) :: state.blockState.cooked
-          .filterNot(_.id == id),
+        cooked = CookedReader.load(cookedDir, file) ::
+          state.blockState.cooked.filterNot(_.id == id),
         pending = state.blockState.pending - id)
 
       state.currentBlocks = computeBlockMap(state.blockState)

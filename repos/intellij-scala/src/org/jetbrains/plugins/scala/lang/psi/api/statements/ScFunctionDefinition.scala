@@ -38,8 +38,8 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
   def returnUsages(withBooleanInfix: Boolean = false): Array[PsiElement] =
     body.fold(Array.empty[PsiElement])(exp => {
       (exp.depthFirst(!_.isInstanceOf[ScFunction])
-        .filter(_.isInstanceOf[ScReturnStmt]) ++ exp
-        .calculateReturns(withBooleanInfix))
+        .filter(_.isInstanceOf[ScReturnStmt]) ++
+        exp.calculateReturns(withBooleanInfix))
         .filter(_.getContainingFile == getContainingFile).toArray.distinct
     })
 

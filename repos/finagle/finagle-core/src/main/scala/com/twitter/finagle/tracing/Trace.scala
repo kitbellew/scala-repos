@@ -253,12 +253,13 @@ object Trace {
     * trace is sampled
     */
   def isActivelyTracing: Boolean =
-    tracingEnabled && (id match {
-      case TraceId(_, _, _, Some(false), flags) if !flags.isDebug => false
-      case TraceId(_, _, _, _, Flags(Flags.Debug))                => true
-      case _ =>
-        tracers.nonEmpty && (tracers.size > 1 || tracers.head != NullTracer)
-    })
+    tracingEnabled &&
+      (id match {
+        case TraceId(_, _, _, Some(false), flags) if !flags.isDebug => false
+        case TraceId(_, _, _, _, Flags(Flags.Debug))                => true
+        case _ =>
+          tracers.nonEmpty && (tracers.size > 1 || tracers.head != NullTracer)
+      })
 
   /**
     * Record a raw record without checking if it's sampled/enabled/etc.

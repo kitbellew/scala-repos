@@ -157,8 +157,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
         val res = deadlineService("marco")
         assert(statsReceiver.counters.get(List("exceeded")) == None)
         assert(
-          statsReceiver.counters.get(List("exceeded_beyond_tolerance")) == Some(
-            1))
+          statsReceiver.counters.get(List("exceeded_beyond_tolerance")) ==
+            Some(1))
         assert(statsReceiver.counters.get(List("rejected")) == None)
         assert(Await.result(res, 1.second) == "polo")
       }

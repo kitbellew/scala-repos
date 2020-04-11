@@ -135,8 +135,8 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
             throw new IllegalStateException(msg)
         }
 
-        if (server.kafkaController.isActive
-            && (previousEpoch) < server.kafkaController.epoch) {
+        if (server.kafkaController.isActive && (previousEpoch) <
+              server.kafkaController.epoch) {
           controller = server
           found = true
         }

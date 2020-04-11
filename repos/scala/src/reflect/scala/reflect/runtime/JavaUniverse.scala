@@ -78,8 +78,8 @@ class JavaUniverse
                 val tpe =
                   if (manifest.typeArguments.isEmpty) sym.toType
                   else {
-                    val tags = manifest.typeArguments map (targ =>
-                      ju.internal.manifestToTypeTag(jm, targ))
+                    val tags = manifest.typeArguments map
+                      (targ => ju.internal.manifestToTypeTag(jm, targ))
                     ju.appliedType(
                       sym.toTypeConstructor,
                       tags map (_.in(jm).tpe))

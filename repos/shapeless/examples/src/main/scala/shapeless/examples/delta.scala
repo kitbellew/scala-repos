@@ -34,8 +34,8 @@ object DeltaExamples extends App {
   assert(
     Bar(true, "foo", Some(Bar(true, "bar", None)))
       .delta(Bar(false, "food", Some(Bar(true, "barf", None)))) ==
-      false :: ("foo", "food") :: Inl(
-        Some(true :: ("bar", "barf") :: Inl(None) :: HNil)) :: HNil)
+      false :: ("foo", "food") ::
+      Inl(Some(true :: ("bar", "barf") :: Inl(None) :: HNil)) :: HNil)
 }
 
 trait Delta[In] {

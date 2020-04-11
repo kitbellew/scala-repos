@@ -148,8 +148,8 @@ class DeploymentPlanTest
     val to = Group("/group".toPath, update)
     val plan = DeploymentPlan(from, to)
 
-    plan.affectedApplicationIds should equal(
-      Set("/app".toPath, "/app2".toPath, "/app3".toPath, "/app4".toPath))
+    plan.affectedApplicationIds should
+      equal(Set("/app".toPath, "/app2".toPath, "/app3".toPath, "/app4".toPath))
     plan.isAffectedBy(plan) should equal(right = true)
     plan.isAffectedBy(DeploymentPlan(from, from)) should equal(right = false)
   }
@@ -169,13 +169,12 @@ class DeploymentPlanTest
         Some("mng1"),
         instances = 4,
         upgradeStrategy = strategy,
-        versionInfo = versionInfo) ->
-        AppDefinition(
-          mongoId,
-          Some("mng2"),
-          instances = 8,
-          upgradeStrategy = strategy,
-          versionInfo = versionInfo)
+        versionInfo = versionInfo) -> AppDefinition(
+        mongoId,
+        Some("mng2"),
+        instances = 8,
+        upgradeStrategy = strategy,
+        versionInfo = versionInfo)
 
     val service: (AppDefinition, AppDefinition) =
       AppDefinition(
@@ -183,14 +182,13 @@ class DeploymentPlanTest
         Some("srv1"),
         instances = 4,
         upgradeStrategy = strategy,
-        versionInfo = versionInfo) ->
-        AppDefinition(
-          serviceId,
-          Some("srv2"),
-          dependencies = Set(mongoId),
-          instances = 10,
-          upgradeStrategy = strategy,
-          versionInfo = versionInfo)
+        versionInfo = versionInfo) -> AppDefinition(
+        serviceId,
+        Some("srv2"),
+        dependencies = Set(mongoId),
+        instances = 10,
+        upgradeStrategy = strategy,
+        versionInfo = versionInfo)
 
     val from = Group(
       id = "/test".toPath,
@@ -210,8 +208,8 @@ class DeploymentPlanTest
     Then("the deployment steps are correct")
     plan.steps should have size 2
     plan.steps(0).actions.toSet should equal(Set(RestartApplication(mongo._2)))
-    plan.steps(1).actions.toSet should equal(
-      Set(RestartApplication(service._2)))
+    plan.steps(1).actions.toSet should
+      equal(Set(RestartApplication(service._2)))
   }
 
   test(
@@ -236,8 +234,8 @@ class DeploymentPlanTest
     Then("the first with all StartApplication actions")
     plan.steps(0).actions.toSet should equal(apps.map(StartApplication(_, 0)))
     Then("and the second with all ScaleApplication actions")
-    plan.steps(1).actions.toSet should equal(
-      apps.map(ScaleApplication(_, instances)))
+    plan.steps(1).actions.toSet should
+      equal(apps.map(ScaleApplication(_, instances)))
   }
 
   test(
@@ -255,13 +253,12 @@ class DeploymentPlanTest
         Some("mng1"),
         instances = 4,
         upgradeStrategy = strategy,
-        versionInfo = versionInfo) ->
-        AppDefinition(
-          mongoId,
-          Some("mng2"),
-          instances = 8,
-          upgradeStrategy = strategy,
-          versionInfo = versionInfo)
+        versionInfo = versionInfo) -> AppDefinition(
+        mongoId,
+        Some("mng2"),
+        instances = 8,
+        upgradeStrategy = strategy,
+        versionInfo = versionInfo)
 
     val service =
       AppDefinition(
@@ -269,13 +266,12 @@ class DeploymentPlanTest
         Some("srv1"),
         instances = 4,
         upgradeStrategy = strategy,
-        versionInfo = versionInfo) ->
-        AppDefinition(
-          serviceId,
-          Some("srv2"),
-          instances = 10,
-          upgradeStrategy = strategy,
-          versionInfo = versionInfo)
+        versionInfo = versionInfo) -> AppDefinition(
+        serviceId,
+        Some("srv2"),
+        instances = 10,
+        upgradeStrategy = strategy,
+        versionInfo = versionInfo)
 
     val from: Group = Group(
       "/test".toPath,
@@ -294,8 +290,8 @@ class DeploymentPlanTest
 
     Then("the deployment steps are correct")
     plan.steps should have size 1
-    plan.steps(0).actions.toSet should equal(
-      Set(RestartApplication(mongo._2), RestartApplication(service._2)))
+    plan.steps(0).actions.toSet should
+      equal(Set(RestartApplication(mongo._2), RestartApplication(service._2)))
   }
 
   test(
@@ -314,13 +310,12 @@ class DeploymentPlanTest
         Some("mng1"),
         instances = 4,
         upgradeStrategy = strategy,
-        versionInfo = versionInfo) ->
-        AppDefinition(
-          mongoId,
-          Some("mng2"),
-          instances = 8,
-          upgradeStrategy = strategy,
-          versionInfo = versionInfo)
+        versionInfo = versionInfo) -> AppDefinition(
+        mongoId,
+        Some("mng2"),
+        instances = 8,
+        upgradeStrategy = strategy,
+        versionInfo = versionInfo)
 
     val service =
       AppDefinition(
@@ -328,26 +323,24 @@ class DeploymentPlanTest
         Some("srv1"),
         instances = 4,
         upgradeStrategy = strategy,
-        versionInfo = versionInfo) ->
-        AppDefinition(
-          serviceId,
-          Some("srv2"),
-          dependencies = Set(mongoId),
-          instances = 10,
-          upgradeStrategy = strategy,
-          versionInfo = versionInfo)
+        versionInfo = versionInfo) -> AppDefinition(
+        serviceId,
+        Some("srv2"),
+        dependencies = Set(mongoId),
+        instances = 10,
+        upgradeStrategy = strategy,
+        versionInfo = versionInfo)
 
     val independent =
       AppDefinition(
         appId,
         Some("app1"),
         instances = 1,
-        upgradeStrategy = strategy) ->
-        AppDefinition(
-          appId,
-          Some("app2"),
-          instances = 3,
-          upgradeStrategy = strategy)
+        upgradeStrategy = strategy) -> AppDefinition(
+        appId,
+        Some("app2"),
+        instances = 3,
+        upgradeStrategy = strategy)
 
     val toStop = AppDefinition(
       "/test/service/toStop".toPath,
@@ -389,8 +382,8 @@ class DeploymentPlanTest
     plan.steps(1).actions.toSet should equal(Set(StartApplication(toStart, 0)))
     plan.steps(2).actions.toSet should equal(
       Set(RestartApplication(mongo._2), RestartApplication(independent._2)))
-    plan.steps(3).actions.toSet should equal(
-      Set(RestartApplication(service._2)))
+    plan.steps(3).actions.toSet should
+      equal(Set(RestartApplication(service._2)))
     plan.steps(4).actions.toSet should equal(Set(ScaleApplication(toStart, 2)))
   }
 
@@ -459,8 +452,8 @@ class DeploymentPlanTest
     val to = from.copy(apps = Set(appNew))
 
     DeploymentPlan(from, to).steps should have size (1)
-    DeploymentPlan(from, to).steps.head should be(
-      DeploymentStep(Seq(RestartApplication(appNew))))
+    DeploymentPlan(from, to).steps.head should
+      be(DeploymentStep(Seq(RestartApplication(appNew))))
   }
 
   test("ScaleApplication step is created with TasksToKill") {
@@ -492,10 +485,8 @@ class DeploymentPlanTest
 
     Then("DeploymentSteps should include ScaleApplication w/ tasksToKill")
     plan.steps should not be empty
-    plan.steps.head.actions.head shouldEqual ScaleApplication(
-      newApp,
-      5,
-      Some(Set(taskToKill)))
+    plan.steps.head.actions.head shouldEqual
+      ScaleApplication(newApp, 5, Some(Set(taskToKill)))
   }
 
   test("Deployment plan allows valid updates for resident tasks") {

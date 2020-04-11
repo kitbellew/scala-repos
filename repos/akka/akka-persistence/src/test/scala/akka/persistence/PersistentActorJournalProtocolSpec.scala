@@ -205,10 +205,10 @@ class PersistentActorJournalProtocolSpec
       }
 
       "using large number of persistAsync() calls" in {
-        def msgs(start: Int, end: Int) =
-          (start until end).map(i ⇒ Msgs(s"a-$i-1", s"a-$i-2"))
-        def commands(start: Int, end: Int) =
-          (start until end).map(i ⇒ PersistAsync(i, s"a-$i-1", s"a-$i-2"))
+        def msgs(start: Int, end: Int) = (start until end)
+          .map(i ⇒ Msgs(s"a-$i-1", s"a-$i-2"))
+        def commands(start: Int, end: Int) = (start until end)
+          .map(i ⇒ PersistAsync(i, s"a-$i-1", s"a-$i-2"))
         def expectDone(start: Int, end: Int) =
           for (i ← start until end; j ← 1 to 2) expectMsg(Done(i, j))
 

@@ -167,15 +167,15 @@ class KleisliTests extends CatsSuite {
 
   test("local composes functions") {
     forAll { (f: Int => Option[String], g: Int => Int, i: Int) =>
-      f(g(i)) should ===(
-        Kleisli.local[Option, String, Int](g)(Kleisli(f)).run(i))
+      f(g(i)) should
+        ===(Kleisli.local[Option, String, Int](g)(Kleisli(f)).run(i))
     }
   }
 
   test("pure consistent with ask") {
     forAll { (i: Int) =>
-      Kleisli.pure[Option, Int, Int](i).run(i) should ===(
-        Kleisli.ask[Option, Int].run(i))
+      Kleisli.pure[Option, Int, Int](i).run(i) should
+        ===(Kleisli.ask[Option, Int].run(i))
     }
   }
 

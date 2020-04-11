@@ -25,8 +25,9 @@ final class RichDouble(val self: Double)
 
   override def isWhole = {
     val l = self.toLong
-    l.toDouble == self || l == Long.MaxValue && self < Double
-      .PositiveInfinity || l == Long.MinValue && self > Double.NegativeInfinity
+    l.toDouble == self ||
+    l == Long.MaxValue && self < Double.PositiveInfinity ||
+    l == Long.MinValue && self > Double.NegativeInfinity
   }
   override def isValidByte = self.toByte.toDouble == self
   override def isValidShort = self.toShort.toDouble == self

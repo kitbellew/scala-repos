@@ -133,7 +133,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
   """.stripMargin.trim
 
   def banner =
-    customBanner getOrElse """
+    customBanner getOrElse
+      """
     |Power mode enabled. :phase is at typer.
     |import scala.tools.nsc._, intp.global._, definitions._
     |Try :help or completions for vals._ and power._
@@ -190,10 +191,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
 
     /** Standard noise reduction filter. */
     def excludeMember(s: Symbol) =
-      (isSpecialized(s)
-        || isImplClass(s)
-        || s.isAnonOrRefinementClass
-        || s.isAnonymousFunction)
+      (isSpecialized(s) || isImplClass(s) || s.isAnonOrRefinementClass ||
+        s.isAnonymousFunction)
     def symbol = compilerSymbolFromTag(tag)
     def tpe = compilerTypeFromTag(tag)
     def members = membersUnabridged filterNot excludeMember
@@ -219,8 +218,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
           case x: Name => List(x.decode)
           case Tuple2(k, v) =>
             List(
-              prettify(k).toIterator ++ Iterator("->") ++ prettify(
-                v) mkString " ")
+              prettify(k).toIterator ++ Iterator("->") ++ prettify(v) mkString
+                " ")
           case xs: Array[_]           => xs.iterator flatMap prettify
           case xs: TraversableOnce[_] => xs flatMap prettify
           case x                      => List(Prettifier.stringOf(x))
@@ -254,9 +253,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     def pp(f: Seq[T] => Seq[T]): Unit =
       pretty prettify f(value) foreach (StringPrettifier show _)
 
-    def freq[U](p: T => U) =
-      (value.toSeq groupBy p mapValues (_.size)).toList sortBy (-_._2) map (_
-        .swap)
+    def freq[U](p: T => U) = (value.toSeq groupBy p mapValues (_.size))
+      .toList sortBy (-_._2) map (_.swap)
 
     def >>(implicit ord: Ordering[T]): Unit = pp(_.sorted)
     def >!(): Unit = pp(_.distinct)
@@ -301,10 +299,10 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
       def compare(s1: Symbol, s2: Symbol) =
         if (s1 eq s2) 0 else if (s1 isLess s2) -1 else 1
     }
-    implicit lazy val powerSymbolOrdering: Ordering[Symbol] =
-      Ordering[Name] on (_.name)
-    implicit lazy val powerTypeOrdering: Ordering[Type] =
-      Ordering[Symbol] on (_.typeSymbol)
+    implicit lazy val powerSymbolOrdering: Ordering[Symbol] = Ordering[Name] on
+      (_.name)
+    implicit lazy val powerTypeOrdering: Ordering[Type] = Ordering[Symbol] on
+      (_.typeSymbol)
 
     implicit def replInternalInfo[T: ru.TypeTag: ClassTag](
         x: T): InternalInfoWrapper[T] = new InternalInfoWrapper[T](Some(x))

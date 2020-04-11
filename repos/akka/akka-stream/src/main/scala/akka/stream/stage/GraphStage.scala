@@ -416,11 +416,10 @@ abstract class GraphStageLogic private[stream] (
   final protected def grab[T](in: Inlet[T]): T = {
     val connection = conn(in)
     // Fast path
-    if ((
-          interpreter.portStates(connection) & (InReady | InFailed)
-        ) == InReady &&
-        (interpreter.connectionSlots(connection)
-          .asInstanceOf[AnyRef] ne Empty)) {
+    if ((interpreter.portStates(connection) & (InReady | InFailed)) ==
+          InReady &&
+          (interpreter.connectionSlots(connection).asInstanceOf[AnyRef] ne
+            Empty)) {
       val elem = interpreter.connectionSlots(connection)
       interpreter.connectionSlots(connection) = Empty
       elem.asInstanceOf[T]
@@ -460,9 +459,8 @@ abstract class GraphStageLogic private[stream] (
       interpreter.connectionSlots(connection).asInstanceOf[AnyRef] ne Empty
     else {
       // Slow path on failure
-      if ((interpreter.portStates(conn(in)) & (InReady | InFailed)) == (
-            InReady | InFailed
-          )) {
+      if ((interpreter.portStates(conn(in)) & (InReady | InFailed)) ==
+            (InReady | InFailed)) {
         interpreter.connectionSlots(connection) match {
           case Failed(_, elem) ⇒ elem.asInstanceOf[AnyRef] ne Empty
           case _ ⇒
@@ -484,9 +482,8 @@ abstract class GraphStageLogic private[stream] (
     * used to check if the port is ready to be pushed or not.
     */
   final protected def push[T](out: Outlet[T], elem: T): Unit = {
-    if ((
-          interpreter.portStates(conn(out)) & (OutReady | OutClosed)
-        ) == OutReady && (elem != null)) { interpreter.push(conn(out), elem) }
+    if ((interpreter.portStates(conn(out)) & (OutReady | OutClosed)) ==
+          OutReady && (elem != null)) { interpreter.push(conn(out), elem) }
     else {
       // Detailed error information should not add overhead to the hot path
       ReactiveStreamsCompliance.requireNonNullElement(elem)

@@ -118,8 +118,8 @@ object CanConvolve extends SerializableLogging {
               padding match {
                 case OptPadding.Cyclical => data(dl - leftPadding to dl - 1)
                 case OptPadding.Boundary =>
-                  DenseVector.ones[T](leftPadding /*kernel.length-1*/ ) * data(
-                    0)
+                  DenseVector.ones[T](leftPadding /*kernel.length-1*/ ) *
+                    data(0)
                 case OptPadding.Zero => DenseVector.zeros[T](leftPadding)
                 case OptPadding.ValueOpt(v: T) =>
                   DenseVector.ones[T](leftPadding) * v
@@ -222,8 +222,8 @@ object CanConvolve extends SerializableLogging {
           "data and kernel must be non-empty DenseVectors")
         require(
           data.length >= kernel.length,
-          "kernel (" + kernel.length + ") cannot be longer than data(" + data
-            .length + ") to be convolved/correlated!")
+          "kernel (" + kernel.length + ") cannot be longer than data(" +
+            data.length + ") to be convolved/correlated!")
         require(
           range.start >= 0 && range.last <= (data.length - kernel.length + 1),
           logger

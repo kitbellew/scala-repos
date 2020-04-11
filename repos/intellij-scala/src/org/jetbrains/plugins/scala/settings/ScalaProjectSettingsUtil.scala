@@ -46,14 +46,14 @@ object ScalaProjectSettingsUtil {
       private def checkInput(
           inputString: String,
           checkExcludes: Boolean): Boolean = {
-        if (checkExcludes && inputString
-              .startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX))
+        if (checkExcludes &&
+            inputString.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX))
           checkInput(
             inputString.substring(ScalaCodeStyleSettings.EXCLUDE_PREFIX.length),
             checkExcludes = false)
         else
-          inputString.contains(".") && ScalaProjectSettingsUtil
-            .isValidPackage(inputString)
+          inputString.contains(".") &&
+          ScalaProjectSettingsUtil.isValidPackage(inputString)
       }
 
       def canClose(inputString: String): Boolean = { checkInput(inputString) }
@@ -161,8 +161,8 @@ object ScalaProjectSettingsUtil {
           }
           val index = patternJBList.getList.getSelectedIndex
           if (index != -1) {
-            if (listModel.get(index) == ScalaCodeStyleSettings
-                  .ALL_OTHER_IMPORTS) return
+            if (listModel.get(index) ==
+                  ScalaCodeStyleSettings.ALL_OTHER_IMPORTS) return
             val size = listModel.size()
             listModel.remove(index)
             val to = if (index == size - 1) index - 1 else index

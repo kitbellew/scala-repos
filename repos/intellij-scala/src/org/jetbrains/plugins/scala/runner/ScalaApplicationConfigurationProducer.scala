@@ -125,11 +125,10 @@ abstract class BaseScalaApplicationConfigurationProducer[
       .getInstanceEx(location.getProject).asInstanceOf[RunManagerImpl]
       .getConfigurationTemplate(getConfigurationFactory).getConfiguration
       .asInstanceOf[T].getConfigurationModule.getModule
-    JavaExecutionUtil.getRuntimeQualifiedName(aClass) == configuration
-      .MAIN_CLASS_NAME &&
-    (location.getModule == configuration.getConfigurationModule
-      .getModule || predefinedModule == configuration.getConfigurationModule
-      .getModule)
+    JavaExecutionUtil.getRuntimeQualifiedName(aClass) ==
+      configuration.MAIN_CLASS_NAME &&
+      (location.getModule == configuration.getConfigurationModule.getModule ||
+      predefinedModule == configuration.getConfigurationModule.getModule)
   }
 
   override def setupConfigurationFromContext(

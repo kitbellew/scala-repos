@@ -1234,13 +1234,11 @@ class BlockManagerSuite
     assert(
       store.master
         .getMatchingBlockIds(_.toString.contains("list"), askSlaves = false)
-        .size
-        === 3)
+        .size === 3)
     assert(
       store.master
         .getMatchingBlockIds(_.toString.contains("list1"), askSlaves = false)
-        .size
-        === 1)
+        .size === 1)
 
     // insert some more blocks
     store.putIterator(
@@ -1263,13 +1261,11 @@ class BlockManagerSuite
     assert(
       store.master
         .getMatchingBlockIds(_.toString.contains("newlist"), askSlaves = false)
-        .size
-        === 1)
+        .size === 1)
     assert(
       store.master
         .getMatchingBlockIds(_.toString.contains("newlist"), askSlaves = true)
-        .size
-        === 3)
+        .size === 3)
 
     val blockIds = Seq(RDDBlockId(1, 0), RDDBlockId(1, 1), RDDBlockId(2, 0))
     blockIds.foreach { blockId =>

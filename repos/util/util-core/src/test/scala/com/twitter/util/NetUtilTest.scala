@@ -45,23 +45,23 @@ class NetUtilTest extends WordSpec {
       assert(
         NetUtil.isPrivateAddress(InetAddress.getByName("0.0.0.0")) == false)
       assert(
-        NetUtil
-          .isPrivateAddress(InetAddress.getByName("199.59.148.13")) == false)
+        NetUtil.isPrivateAddress(InetAddress.getByName("199.59.148.13")) ==
+          false)
       assert(
         NetUtil.isPrivateAddress(InetAddress.getByName("10.0.0.0")) == true)
       assert(
-        NetUtil
-          .isPrivateAddress(InetAddress.getByName("10.255.255.255")) == true)
+        NetUtil.isPrivateAddress(InetAddress.getByName("10.255.255.255")) ==
+          true)
       assert(
         NetUtil.isPrivateAddress(InetAddress.getByName("172.16.0.0")) == true)
       assert(
-        NetUtil
-          .isPrivateAddress(InetAddress.getByName("172.31.255.255")) == true)
+        NetUtil.isPrivateAddress(InetAddress.getByName("172.31.255.255")) ==
+          true)
       assert(
         NetUtil.isPrivateAddress(InetAddress.getByName("192.168.0.0")) == true)
       assert(
-        NetUtil
-          .isPrivateAddress(InetAddress.getByName("192.168.255.255")) == true)
+        NetUtil.isPrivateAddress(InetAddress.getByName("192.168.255.255")) ==
+          true)
     }
 
     "ipToInt" in {
@@ -76,20 +76,17 @@ class NetUtilTest extends WordSpec {
     "inetAddressToInt" in {
       assert(NetUtil.inetAddressToInt(InetAddress.getByName("0.0.0.0")) == 0)
       assert(
-        NetUtil
-          .inetAddressToInt(
-            InetAddress.getByName("255.255.255.255")) == 0xFFFFFFFF)
+        NetUtil.inetAddressToInt(InetAddress.getByName("255.255.255.255")) ==
+          0xFFFFFFFF)
       assert(
-        NetUtil
-          .inetAddressToInt(
-            InetAddress.getByName("255.255.255.0")) == 0xFFFFFF00)
+        NetUtil.inetAddressToInt(InetAddress.getByName("255.255.255.0")) ==
+          0xFFFFFF00)
       assert(
-        NetUtil
-          .inetAddressToInt(InetAddress.getByName("255.0.255.0")) == 0xFF00FF00)
+        NetUtil.inetAddressToInt(InetAddress.getByName("255.0.255.0")) ==
+          0xFF00FF00)
       assert(
-        NetUtil
-          .inetAddressToInt(
-            InetAddress.getByName("61.197.253.56")) == 0x3dc5fd38)
+        NetUtil.inetAddressToInt(InetAddress.getByName("61.197.253.56")) ==
+          0x3dc5fd38)
       intercept[IllegalArgumentException] {
         NetUtil.inetAddressToInt(InetAddress.getByName("::1"))
       }
@@ -110,17 +107,17 @@ class NetUtilTest extends WordSpec {
       val block = NetUtil.cidrToIpBlock("192.168.0.0/16")
 
       assert(
-        NetUtil.isInetAddressInBlock(
-          InetAddress.getByName("192.168.0.1"),
-          block) == true)
+        NetUtil
+          .isInetAddressInBlock(InetAddress.getByName("192.168.0.1"), block) ==
+          true)
       assert(
         NetUtil.isInetAddressInBlock(
           InetAddress.getByName("192.168.255.254"),
           block) == true)
       assert(
-        NetUtil.isInetAddressInBlock(
-          InetAddress.getByName("192.169.0.1"),
-          block) == false)
+        NetUtil
+          .isInetAddressInBlock(InetAddress.getByName("192.169.0.1"), block) ==
+          false)
     }
 
     "isIpInBlocks" in {

@@ -127,12 +127,9 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
   def printUsageAndExit(exitCode: Int) {
     // scalastyle:off println
     System.err.println(
-      "Usage: Worker [options] <master>\n" +
-        "\n" +
-        "Master must be a URL of the form spark://hostname:port\n" +
-        "\n" +
-        "Options:\n" +
-        "  -c CORES, --cores CORES  Number of cores to use\n" +
+      "Usage: Worker [options] <master>\n" + "\n" +
+        "Master must be a URL of the form spark://hostname:port\n" + "\n" +
+        "Options:\n" + "  -c CORES, --cores CORES  Number of cores to use\n" +
         "  -m MEM, --memory MEM     Amount of memory to use (e.g. 1000M, 2G)\n" +
         "  -d DIR, --work-dir DIR   Directory to run apps in (default: SPARK_HOME/work)\n" +
         "  -i HOST, --ip IP         Hostname to listen on (deprecated, please use --host or -h)\n" +

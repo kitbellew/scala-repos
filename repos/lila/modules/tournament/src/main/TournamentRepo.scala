@@ -17,8 +17,8 @@ object TournamentRepo {
   private def selectId(id: String) = BSONDocument("_id" -> id)
 
   private val enterableSelect = BSONDocument(
-    "status" -> BSONDocument(
-      "$in" -> List(Status.Created.id, Status.Started.id)))
+    "status" ->
+      BSONDocument("$in" -> List(Status.Created.id, Status.Started.id)))
 
   private val createdSelect = BSONDocument("status" -> Status.Created.id)
   private val startedSelect = BSONDocument("status" -> Status.Started.id)
@@ -90,8 +90,8 @@ object TournamentRepo {
 
   def publicStarted: Fu[List[Tournament]] =
     coll.find(
-      startedSelect ++ BSONDocument(
-        "private" -> BSONDocument("$exists" -> false)))
+      startedSelect ++
+        BSONDocument("private" -> BSONDocument("$exists" -> false)))
       .sort(BSONDocument("createdAt" -> -1)).cursor[Tournament]()
       .collect[List]()
 
@@ -147,13 +147,13 @@ object TournamentRepo {
       "$or" -> BSONArray(
         BSONDocument("schedule" -> BSONDocument("$exists" -> false)),
         BSONDocument(
-          "startsAt" -> BSONDocument(
-            "$lt" -> (DateTime.now plusMinutes aheadMinutes)))))
+          "startsAt" ->
+            BSONDocument("$lt" -> (DateTime.now plusMinutes aheadMinutes)))))
 
   def publicCreatedSorted(aheadMinutes: Int): Fu[List[Tournament]] =
     coll.find(
-      allCreatedSelect(aheadMinutes) ++ BSONDocument(
-        "private" -> BSONDocument("$exists" -> false)))
+      allCreatedSelect(aheadMinutes) ++
+        BSONDocument("private" -> BSONDocument("$exists" -> false)))
       .sort(BSONDocument("startsAt" -> 1)).cursor[Tournament]().collect[List]()
 
   def allCreated(aheadMinutes: Int): Fu[List[Tournament]] =
@@ -162,8 +162,8 @@ object TournamentRepo {
 
   private def stillWorthEntering: Fu[List[Tournament]] =
     coll.find(
-      startedSelect ++ BSONDocument(
-        "private" -> BSONDocument("$exists" -> false)))
+      startedSelect ++
+        BSONDocument("private" -> BSONDocument("$exists" -> false)))
       .sort(BSONDocument("startsAt" -> 1)).toList[Tournament](none) map {
       _.filter(_.isStillWorthEntering)
     }
@@ -220,19 +220,18 @@ object TournamentRepo {
       freq: Schedule.Freq,
       since: DateTime): Fu[List[Tournament]] =
     coll.find(
-      finishedSelect ++ sinceSelect(since) ++ variantSelect(
-        chess.variant.Standard) ++ BSONDocument(
-        "schedule.freq" -> freq.name,
-        "schedule.speed" -> BSONDocument(
-          "$in" -> Schedule.Speed.mostPopular.map(_.name))))
+      finishedSelect ++ sinceSelect(since) ++
+        variantSelect(chess.variant.Standard) ++ BSONDocument(
+          "schedule.freq" -> freq.name,
+          "schedule.speed" ->
+            BSONDocument("$in" -> Schedule.Speed.mostPopular.map(_.name))))
       .sort(BSONDocument("startsAt" -> -1))
       .toList[Tournament](Schedule.Speed.mostPopular.size.some)
 
   def lastFinishedDaily(variant: Variant): Fu[Option[Tournament]] =
     coll.find(
       finishedSelect ++ sinceSelect(DateTime.now minusDays 1) ++ variantSelect(
-        variant) ++
-        BSONDocument("schedule.freq" -> Schedule.Freq.Daily.name))
+        variant) ++ BSONDocument("schedule.freq" -> Schedule.Freq.Daily.name))
       .sort(BSONDocument("startsAt" -> -1)).one[Tournament]
 
   def update(tour: Tournament) =
@@ -246,18 +245,15 @@ object TournamentRepo {
 
   def isFinished(id: String): Fu[Boolean] =
     coll
-      .count(
-        BSONDocument("_id" -> id, "status" -> Status.Finished.id).some) map (
-      0 !=
-    )
+      .count(BSONDocument("_id" -> id, "status" -> Status.Finished.id).some) map
+      (0 !=)
 
   def toursToWithdrawWhenEntering(tourId: String): Fu[List[Tournament]] =
     coll.find(
       enterableSelect ++ BSONDocument(
         "_id" -> BSONDocument("$ne" -> tourId),
         "schedule.freq" -> BSONDocument(
-          "$nin" -> List(
-            Schedule.Freq.Marathon.name,
-            Schedule.Freq.Unique.name))) ++ nonEmptySelect).cursor[Tournament]()
-      .collect[List]()
+          "$nin" ->
+            List(Schedule.Freq.Marathon.name, Schedule.Freq.Unique.name))) ++
+        nonEmptySelect).cursor[Tournament]().collect[List]()
 }

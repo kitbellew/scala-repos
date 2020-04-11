@@ -170,9 +170,8 @@ abstract class HtmlPage extends Page {
       case Nil       => NodeSeq.Empty
       case List(tpe) => typeToHtml(tpe, hasLinks)
       case tpe :: rest =>
-        typeToHtml(tpe, hasLinks) ++ scala.xml.Text(" with ") ++ typeToHtml(
-          rest,
-          hasLinks)
+        typeToHtml(tpe, hasLinks) ++ scala.xml.Text(" with ") ++
+          typeToHtml(rest, hasLinks)
     }
 
   def typeToHtml(tpe: model.TypeEntity, hasLinks: Boolean): NodeSeq = {
@@ -183,9 +182,8 @@ abstract class HtmlPage extends Page {
         scala.xml.Text(string.slice(inPos, string.length))
       else if (inPos == starts.head) toLinksIn(inPos, starts)
       else {
-        scala.xml.Text(string.slice(inPos, starts.head)) ++ toLinksIn(
-          starts.head,
-          starts)
+        scala.xml.Text(string.slice(inPos, starts.head)) ++
+          toLinksIn(starts.head, starts)
       }
     }
     def toLinksIn(inPos: Int, starts: List[Int]): NodeSeq = {
@@ -312,8 +310,8 @@ abstract class HtmlPage extends Page {
       }
 
     val templatePath = templateToPath(containingTemplate)
-    val url = "../" * (templatePath.size - 1) + templatePath.reverse
-      .mkString("/")
+    val url = "../" * (templatePath.size - 1) +
+      templatePath.reverse.mkString("/")
     url + signature.map("#" + _).getOrElse("")
   }
 }

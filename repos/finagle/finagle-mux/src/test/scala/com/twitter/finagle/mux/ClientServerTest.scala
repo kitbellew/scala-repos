@@ -192,8 +192,8 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     val req = Request(Path.empty, buf(1))
     when(service(req)).thenReturn(Future.exception(new Exception("sad panda")))
     assert(
-      client(req).poll == Some(
-        Throw(ServerApplicationError("java.lang.Exception: sad panda"))))
+      client(req).poll ==
+        Some(Throw(ServerApplicationError("java.lang.Exception: sad panda"))))
   }
 
   test("propagate interrupts") {
@@ -211,8 +211,8 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     val exc = new Exception("sad panda")
     f.raise(exc)
     assert(
-      p.isInterrupted == Some(
-        ClientDiscardedRequestException("java.lang.Exception: sad panda")))
+      p.isInterrupted ==
+        Some(ClientDiscardedRequestException("java.lang.Exception: sad panda")))
 
     assert(f.poll == Some(Throw(exc)))
   }

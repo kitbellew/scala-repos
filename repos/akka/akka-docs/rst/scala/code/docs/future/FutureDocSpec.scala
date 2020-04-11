@@ -20,8 +20,9 @@ object FutureDocSpec {
     def receive = {
       case x: String => sender() ! x.toUpperCase
       case x: Int if x < 0 =>
-        sender() ! Status
-          .Failure(new ArithmeticException("Negative values not supported"))
+        sender() !
+          Status
+            .Failure(new ArithmeticException("Negative values not supported"))
       case x: Int => sender() ! x
     }
   }

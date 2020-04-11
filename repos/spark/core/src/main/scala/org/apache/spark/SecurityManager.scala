@@ -212,9 +212,9 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
 
   private val secretKey = generateSecretKey()
   logInfo(
-    "SecurityManager: authentication " + (if (authOn) "enabled"
-                                          else "disabled") +
-      "; ui acls " + (if (aclsOn) "enabled" else "disabled") +
+    "SecurityManager: authentication " +
+      (if (authOn) "enabled" else "disabled") + "; ui acls " +
+      (if (aclsOn) "enabled" else "disabled") +
       "; users with view permissions: " + viewAcls.toString() +
       "; users with modify permissions: " + modifyAcls.toString())
 
@@ -421,8 +421,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     logDebug(
       "user=" + user + " aclsEnabled=" + aclsEnabled() + " viewAcls=" +
         viewAcls.mkString(","))
-    !aclsEnabled || user == null || viewAcls.contains(user) || viewAcls
-      .contains("*")
+    !aclsEnabled || user == null || viewAcls.contains(user) ||
+    viewAcls.contains("*")
   }
 
   /**
@@ -438,8 +438,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     logDebug(
       "user=" + user + " aclsEnabled=" + aclsEnabled() + " modifyAcls=" +
         modifyAcls.mkString(","))
-    !aclsEnabled || user == null || modifyAcls.contains(user) || modifyAcls
-      .contains("*")
+    !aclsEnabled || user == null || modifyAcls.contains(user) ||
+    modifyAcls.contains("*")
   }
 
   /**

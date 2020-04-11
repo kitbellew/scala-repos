@@ -61,8 +61,7 @@ object CompilationUnit {
             if (!completed && !builder.newlineBeforeCurrentToken) {
               builder.error(ErrMsg("semi.expected"))
             }
-            if (ScalaTokenTypes.kPACKAGE == askType &&
-                !ParserUtils.lookAhead(
+            if (ScalaTokenTypes.kPACKAGE == askType && !ParserUtils.lookAhead(
                   builder,
                   ScalaTokenTypes.kPACKAGE,
                   ScalaTokenTypes.kOBJECT)) {

@@ -44,13 +44,14 @@ class MemcachedTest
       params[FailureAccrualFactory.Param]
     assert(policy() == failureAccrualPolicy)
     assert(
-      markDeadFor.take(10).force.toSeq === (0 until 10 map { _ => 1.second }))
+      markDeadFor.take(10).force.toSeq ===
+        (0 until 10 map { _ => 1.second }))
     assert(
-      params[Transporter.ConnectTimeout] == Transporter
-        .ConnectTimeout(100.milliseconds))
+      params[Transporter.ConnectTimeout] ==
+        Transporter.ConnectTimeout(100.milliseconds))
     assert(
-      params[Memcached.param.EjectFailedHost] == Memcached.param
-        .EjectFailedHost(false))
+      params[Memcached.param.EjectFailedHost] ==
+        Memcached.param.EjectFailedHost(false))
     assert(params[FailFastFactory.FailFast] == FailFastFactory.FailFast(false))
   }
 

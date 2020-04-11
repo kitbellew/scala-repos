@@ -49,8 +49,9 @@ private class WhenLeaderActor(childProps: => Props)
 
     case unhandled: Any =>
       log.debug("unhandled message in suspend: {}", unhandled)
-      sender() ! Status
-        .Failure(new IllegalStateException(s"not currently active ($self)"))
+      sender() !
+        Status
+          .Failure(new IllegalStateException(s"not currently active ($self)"))
   }
 
   private[impl] def starting(

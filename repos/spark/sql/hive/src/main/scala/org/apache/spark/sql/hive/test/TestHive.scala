@@ -171,13 +171,12 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     if (System.getProperty("user.dir")
           .endsWith("sql" + File.separator + "hive")) {
       new File(
-        "src" + File.separator + "test" + File.separator + "resources" + File
-          .separator)
+        "src" + File.separator + "test" + File.separator + "resources" +
+          File.separator)
     } else {
       new File(
-        "sql" + File.separator + "hive" + File.separator + "src" + File
-          .separator + "test" +
-          File.separator + "resources")
+        "sql" + File.separator + "hive" + File.separator + "src" +
+          File.separator + "test" + File.separator + "resources")
     }
 
   def getHiveFile(path: String): File = {
@@ -204,10 +203,9 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
 
       // Make sure any test tables referenced are loaded.
       val referencedTables =
-        describedTables ++
-          logical.collect {
-            case UnresolvedRelation(tableIdent, _) => tableIdent.table
-          }
+        describedTables ++ logical.collect {
+          case UnresolvedRelation(tableIdent, _) => tableIdent.table
+        }
       val referencedTestTables = referencedTables.filter(testTables.contains)
       logDebug(
         s"Query references test tables: ${referencedTestTables.mkString(", ")}")

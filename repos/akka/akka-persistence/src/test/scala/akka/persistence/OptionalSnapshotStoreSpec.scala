@@ -63,8 +63,8 @@ class OptionalSnapshotStoreSpec
       val persistentActor = system
         .actorOf(Props(classOf[AnyPersistentActor], name))
       persistentActor ! "snap"
-      expectMsgType[SaveSnapshotFailure].cause.getMessage should include(
-        "No snapshot store configured")
+      expectMsgType[SaveSnapshotFailure].cause.getMessage should
+        include("No snapshot store configured")
     }
 
     "successfully save a snapshot when no default snapshot-store configured, yet PersistentActor picked one explicitly" in {

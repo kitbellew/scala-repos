@@ -47,8 +47,8 @@ object ExecutionSpec extends Specification {
       } catch { case _: StackOverflowError => () }
 
       // Now verify that we don't overflow
-      Try(executeRecursively(trampoline, overflowTimes)) must beSuccessfulTry[
-        Unit]
+      Try(executeRecursively(trampoline, overflowTimes)) must
+        beSuccessfulTry[Unit]
     }
 
     "execute code in the order it was submitted" in {

@@ -54,28 +54,26 @@ object DottyLibraryDescription extends ScalaLibraryDescription {
         true
       case Component(DottyArtifact.Interfaces, _, _, _) => true
       case _                                            => false
-    } ++
-      files.filter {
-        case Component(
-              Artifact.ScalaLibrary,
-              _,
-              Some(Version(ScalaVersion)),
-              _) => true
-        case Component(
-              Artifact.ScalaReflect,
-              _,
-              Some(Version(ScalaVersion)),
-              _) => true
-        case _   => false
-      } ++
-      files.filter {
-        case Component(
-              Artifact.ScalaCompiler,
-              _,
-              Some(Version(PatchedCompilerVersion)),
-              _) => true
-        case _   => false
-      }
+    } ++ files.filter {
+      case Component(
+            Artifact.ScalaLibrary,
+            _,
+            Some(Version(ScalaVersion)),
+            _) => true
+      case Component(
+            Artifact.ScalaReflect,
+            _,
+            Some(Version(ScalaVersion)),
+            _) => true
+      case _   => false
+    } ++ files.filter {
+      case Component(
+            Artifact.ScalaCompiler,
+            _,
+            Some(Version(PatchedCompilerVersion)),
+            _) => true
+      case _   => false
+    }
 
     val dottyInterfacesFile = CompileServerLauncher.dottyInterfacesJar
     val interfaceComponent = Component.discoverIn(Seq(dottyInterfacesFile))

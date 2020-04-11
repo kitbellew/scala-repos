@@ -211,8 +211,8 @@ class DurationTest extends {
 
     "toString should handle negative durations" in {
       assert(
-        (-9999999.seconds)
-          .toString == "-115.days-17.hours-46.minutes-39.seconds")
+        (-9999999.seconds).toString ==
+          "-115.days-17.hours-46.minutes-39.seconds")
     }
 
     "parse the format from toString" in {

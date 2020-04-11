@@ -131,8 +131,7 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
 trait BaseSyntaxTest {
   def testEqSyntax[A: Eq](a: A, b: A) = {
     import spire.syntax.eq._
-    ((a === b) == Eq[A].eqv(a, b)) &&
-    ((a =!= b) == Eq[A].neqv(a, b))
+    ((a === b) == Eq[A].eqv(a, b)) && ((a =!= b) == Eq[A].neqv(a, b))
   }
 
   def testPartialOrderSyntax[A: PartialOrder](a: A, b: A) = {
@@ -177,10 +176,8 @@ trait BaseSyntaxTest {
 
   def testIsRealSyntax[A: IsReal](a: A) = {
     import spire.syntax.isReal._
-    (a.ceil == IsReal[A].ceil(a)) &&
-    (a.floor == IsReal[A].floor(a)) &&
-    (a.round == IsReal[A].round(a)) &&
-    (a.isWhole == IsReal[A].isWhole(a))
+    (a.ceil == IsReal[A].ceil(a)) && (a.floor == IsReal[A].floor(a)) &&
+    (a.round == IsReal[A].round(a)) && (a.isWhole == IsReal[A].isWhole(a))
   }
 
   def testSemigroupSyntax[A: Semigroup](a: A, b: A) = {
@@ -343,8 +340,7 @@ trait BaseSyntaxTest {
   def testNRootSyntax[A: NRoot: Field](a: A) = {
     import spire.syntax.nroot._
     val half = Field[A].fromDouble(0.5)
-    (a.sqrt == NRoot[A].sqrt(a)) &&
-    ((a nroot 5) == NRoot[A].nroot(a, 5)) &&
+    (a.sqrt == NRoot[A].sqrt(a)) && ((a nroot 5) == NRoot[A].nroot(a, 5)) &&
     ((a fpow half) == NRoot[A].fpow(a, half)) &&
     ((a ** 0.5) == NRoot[A].fpow(a, half))
   }
@@ -439,10 +435,8 @@ trait BaseSyntaxTest {
 
   def testBoolSyntax[A: Bool](a: A, b: A) = {
     import spire.syntax.bool._
-    ((a & b) == Bool[A].and(a, b)) &&
-    ((a | b) == Bool[A].or(a, b)) &&
-    ((a ^ b) == Bool[A].xor(a, b)) &&
-    (~a == Bool[A].complement(a))
+    ((a & b) == Bool[A].and(a, b)) && ((a | b) == Bool[A].or(a, b)) &&
+    ((a ^ b) == Bool[A].xor(a, b)) && (~a == Bool[A].complement(a))
   }
 }
 

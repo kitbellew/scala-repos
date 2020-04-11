@@ -238,8 +238,8 @@ class LogisticRegressionSuite
       case (prediction, expected) => prediction != expected.label
     }
     // At least 83% of the predictions should be on.
-    ((input.length - numOffPredictions).toDouble / input
-      .length) should be > expectedAcc
+    ((input.length - numOffPredictions).toDouble / input.length) should
+      be > expectedAcc
   }
 
   // Test if we can correctly learn A, B where Y = logistic(A + B*X)

@@ -127,11 +127,10 @@ class SecurityServiceHandlers(
 
         case Failure(e) =>
           logger.warn(
-            "The API key request body \n" + requestBody
-              .renderPretty + "\n was invalid: " + e)
-          Promise successful badRequest(
-            "Invalid new API key request body.",
-            Some(e.message))
+            "The API key request body \n" + requestBody.renderPretty +
+              "\n was invalid: " + e)
+          Promise successful
+            badRequest("Invalid new API key request body.", Some(e.message))
       }
     }
 
@@ -216,8 +215,8 @@ class SecurityServiceHandlers(
 
         case Failure(e) =>
           logger.warn(
-            "Unable to parse grant ID from \n" + requestBody
-              .renderPretty + "\n: " + e)
+            "Unable to parse grant ID from \n" + requestBody.renderPretty +
+              "\n: " + e)
           Promise successful badRequest(
             "Invalid add grant request body.",
             Some("Invalid add grant request body: " + e))
@@ -256,11 +255,12 @@ class SecurityServiceHandlers(
               badRequest(
                 "Invalid remove grant request.",
                 Some(
-                  "Unable to remove grant " + grantId + " from API key " + apiKey))
+                  "Unable to remove grant " + grantId + " from API key " +
+                    apiKey))
           }
         } getOrElse {
-          Promise successful badRequest(
-            "Missing API key or grant ID from request URL")
+          Promise successful
+            badRequest("Missing API key or grant ID from request URL")
         }
       }
 
@@ -301,11 +301,10 @@ class SecurityServiceHandlers(
 
         case Failure(e) =>
           logger.warn(
-            "The grant creation request body \n" + requestBody
-              .renderPretty + "\n was invalid: " + e)
-          Promise successful badRequest(
-            "Invalid new grant request body.",
-            Some(e.message))
+            "The grant creation request body \n" + requestBody.renderPretty +
+              "\n was invalid: " + e)
+          Promise successful
+            badRequest("Invalid new grant request body.", Some(e.message))
       }
     }
 
@@ -376,9 +375,8 @@ class SecurityServiceHandlers(
           }
 
         case Failure(e) =>
-          Promise successful badRequest(
-            "Invalid new child grant request body.",
-            Some(e.message))
+          Promise successful
+            badRequest("Invalid new child grant request body.", Some(e.message))
       }
     }
 
@@ -423,13 +421,14 @@ class SecurityServiceHandlers(
                       deleteGrant(grantId)
                     else
                       Promise successful badRequest(
-                        "Requestor does not have permission to delete grant " + grantId)
+                        "Requestor does not have permission to delete grant " +
+                          grantId)
                 }
               }
 
             case None =>
-              Promise successful badRequest(
-                "Unable to find grant " + grantId + " for deletion.")
+              Promise successful
+                badRequest("Unable to find grant " + grantId + " for deletion.")
           }
         } getOrElse {
           Promise successful badRequest("Missing grant ID from request URL.")

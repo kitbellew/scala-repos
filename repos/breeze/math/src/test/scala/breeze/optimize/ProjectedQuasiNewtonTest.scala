@@ -42,9 +42,8 @@ class ProjectedQuasiNewtonTest
       }
 
       val result = optimizer.minimize(f, init)
-      result should beSimilarTo(
-        DenseVector.fill(result.size)(3.0),
-        allowedDeviation = 1e-5)
+      result should
+        beSimilarTo(DenseVector.fill(result.size)(3.0), allowedDeviation = 1e-5)
     }
   }
 

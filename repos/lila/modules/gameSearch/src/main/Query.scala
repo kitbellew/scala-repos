@@ -28,22 +28,11 @@ case class Query(
     blackUser: Option[String] = None) {
 
   def nonEmpty =
-    user1.nonEmpty ||
-      user2.nonEmpty ||
-      winner.nonEmpty ||
-      winnerColor.nonEmpty ||
-      perf.nonEmpty ||
-      source.nonEmpty ||
-      status.nonEmpty ||
-      turns.nonEmpty ||
-      averageRating.nonEmpty ||
-      hasAi.nonEmpty ||
-      aiLevel.nonEmpty ||
-      rated.nonEmpty ||
-      date.nonEmpty ||
-      duration.nonEmpty ||
-      clock.nonEmpty ||
-      analysed.nonEmpty
+    user1.nonEmpty || user2.nonEmpty || winner.nonEmpty ||
+      winnerColor.nonEmpty || perf.nonEmpty || source.nonEmpty ||
+      status.nonEmpty || turns.nonEmpty || averageRating.nonEmpty ||
+      hasAi.nonEmpty || aiLevel.nonEmpty || rated.nonEmpty || date.nonEmpty ||
+      duration.nonEmpty || clock.nonEmpty || analysed.nonEmpty
 }
 
 object Query {
@@ -57,11 +46,10 @@ object Query {
   implicit val jsonWriter = Json.writes[Query]
 
   val durations = {
-    ((30, "30 seconds") ::
-      options(
-        List(60, 60 * 2, 60 * 3, 60 * 5, 60 * 10, 60 * 15, 60 * 20, 60 * 30),
-        _ / 60,
-        "%d minute{s}").toList) :+
+    ((30, "30 seconds") :: options(
+      List(60, 60 * 2, 60 * 3, 60 * 5, 60 * 10, 60 * 15, 60 * 20, 60 * 30),
+      _ / 60,
+      "%d minute{s}").toList) :+
       (60 * 60 * 1, "One hour") :+
       (60 * 60 * 3, "Three hours") :+
       (60 * 60 * 24, "One day") :+

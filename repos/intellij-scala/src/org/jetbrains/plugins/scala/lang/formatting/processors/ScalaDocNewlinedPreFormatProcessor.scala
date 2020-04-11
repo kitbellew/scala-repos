@@ -56,13 +56,12 @@ class ScalaDocNewlinedPreFormatProcessor
           //process newlines between tags
           val newlinesNew =
             if (isParamTag(prevElement) && !isParamTag(element) &&
-                scalaSettings
-                  .SD_BLANK_LINE_AFTER_PARAMETERS_COMMENTS || isReturnTag(
-                  prevElement) && !isReturnTag(element) &&
-                scalaSettings.SD_BLANK_LINE_AFTER_RETURN_COMMENTS || isParamTag(
-                  prevElement) && isParamTag(element) &&
-                scalaSettings.SD_BLANK_LINE_BETWEEN_PARAMETERS || !isParamTag(
-                  prevElement) && isParamTag(element) &&
+                scalaSettings.SD_BLANK_LINE_AFTER_PARAMETERS_COMMENTS ||
+                isReturnTag(prevElement) && !isReturnTag(element) &&
+                scalaSettings.SD_BLANK_LINE_AFTER_RETURN_COMMENTS ||
+                isParamTag(prevElement) && isParamTag(element) &&
+                scalaSettings.SD_BLANK_LINE_BETWEEN_PARAMETERS ||
+                !isParamTag(prevElement) && isParamTag(element) &&
                 scalaSettings.SD_BLANK_LINE_BEFORE_PARAMETERS) 2
             else 1
           fixNewlinesBetweenElements(
@@ -72,14 +71,16 @@ class ScalaDocNewlinedPreFormatProcessor
         case (false, true) =>
           var current = prevElement
           //do not insert newlines when there is no description
-          while (current != null && (current.getNode
-                   .getElementType == ScalaDocTokenType.DOC_WHITESPACE ||
-                 current.getNode.getElementType == ScalaDocTokenType
-                   .DOC_COMMENT_LEADING_ASTERISKS)) {
+          while (current != null &&
+                 (current.getNode.getElementType ==
+                   ScalaDocTokenType.DOC_WHITESPACE ||
+                   current.getNode.getElementType ==
+                   ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)) {
             current = current.getPrevSibling
           }
-          if (current != null && current.getNode
-                .getElementType != ScalaDocTokenType.DOC_COMMENT_START) {
+          if (current != null &&
+              current.getNode.getElementType !=
+                ScalaDocTokenType.DOC_COMMENT_START) {
             //process newlines between description and tags
             fixNewlinesBetweenElements(
               prevElement,
@@ -95,8 +96,8 @@ class ScalaDocNewlinedPreFormatProcessor
     val nextElement = PsiTreeUtil.nextLeaf(element)
     val parent = element.getParent
     //add asterisks inside multi-line newLines (e.g. "\n\n\n" -> "\n*\n*\n")
-    if (nextElement != null && ScalaDocNewlinedPreFormatProcessor
-          .isNewLine(element)) {
+    if (nextElement != null &&
+        ScalaDocNewlinedPreFormatProcessor.isNewLine(element)) {
       val manager = PsiManager.getInstance(element.getProject)
       for (_ <- 2 to element.getText.count(_ == '\n')) {
         parent.addAfter(
@@ -134,8 +135,8 @@ class ScalaDocNewlinedPreFormatProcessor
       settings: ScalaCodeStyleSettings): Unit = {
     linesCountAndLastWsBeforeElement(wsAnchor) match {
       case Some((newlinesOld, lastWs)) =>
-        if (newlinesOld > newlinesNew && !settings
-              .SD_KEEP_BLANK_LINES_BETWEEN_TAGS) {
+        if (newlinesOld > newlinesNew &&
+            !settings.SD_KEEP_BLANK_LINES_BETWEEN_TAGS) {
           //remove unnecessary newlines along with leading asterisks
           for (i <- 1 to newlinesOld - newlinesNew) {
             lastWs.getPrevSibling.getNode.getElementType match {
@@ -171,9 +172,9 @@ class ScalaDocNewlinedPreFormatProcessor
       element: PsiElement): Option[(Int, PsiElement)] = {
     import ScalaDocNewlinedPreFormatProcessor._
     var currentChild = element
-    while (currentChild != null && currentChild.getNode
-             .getElementType != ScalaDocTokenType
-             .DOC_COMMENT_LEADING_ASTERISKS) {
+    while (currentChild != null &&
+           currentChild.getNode.getElementType !=
+             ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS) {
       currentChild = currentChild.getPrevSibling
     }
     if (currentChild == null) return None

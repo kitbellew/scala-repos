@@ -20,44 +20,38 @@ class CalendarOpsTest extends WordSpec {
 
     "truncate to a year" in {
       assert(
-        dateParser.parse("January 1, 2002") ===
-          CalendarOps.truncate(
-            dateParser.parse("February 12, 2002 12:34:56.789"),
-            Calendar.YEAR))
+        dateParser.parse("January 1, 2002") === CalendarOps.truncate(
+          dateParser.parse("February 12, 2002 12:34:56.789"),
+          Calendar.YEAR))
 
       assert(
-        dateParser.parse("January 1, 2001") ===
-          CalendarOps.truncate(
-            dateParser.parse("November 18, 2001 1:23:11.321"),
-            Calendar.YEAR))
+        dateParser.parse("January 1, 2001") === CalendarOps.truncate(
+          dateParser.parse("November 18, 2001 1:23:11.321"),
+          Calendar.YEAR))
     }
 
     "truncate to a month" in {
       assert(
-        dateParser.parse("February 1, 2002") ===
-          CalendarOps.truncate(
-            dateParser.parse("February 12, 2002 12:34:56.789"),
-            Calendar.MONTH))
+        dateParser.parse("February 1, 2002") === CalendarOps.truncate(
+          dateParser.parse("February 12, 2002 12:34:56.789"),
+          Calendar.MONTH))
 
       assert(
-        dateParser.parse("November 1, 2001") ===
-          CalendarOps.truncate(
-            dateParser.parse("November 18, 2001 1:23:11.321"),
-            Calendar.MONTH))
+        dateParser.parse("November 1, 2001") === CalendarOps.truncate(
+          dateParser.parse("November 18, 2001 1:23:11.321"),
+          Calendar.MONTH))
     }
 
     "truncate to a date" in {
       assert(
-        dateParser.parse("February 12, 2002") ==
-          CalendarOps.truncate(
-            dateParser.parse("February 12, 2002 12:34:56.789"),
-            Calendar.DATE))
+        dateParser.parse("February 12, 2002") == CalendarOps.truncate(
+          dateParser.parse("February 12, 2002 12:34:56.789"),
+          Calendar.DATE))
 
       assert(
-        dateParser.parse("November 18, 2001") ===
-          CalendarOps.truncate(
-            dateParser.parse("November 18, 2001 1:23:11.321"),
-            Calendar.DATE))
+        dateParser.parse("November 18, 2001") === CalendarOps.truncate(
+          dateParser.parse("November 18, 2001 1:23:11.321"),
+          Calendar.DATE))
     }
 
     "truncate to a minute" in {

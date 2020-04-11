@@ -44,9 +44,11 @@ object FetchResponsePartitionData {
   }
 
   val headerSize =
-    2 + /* error code */
-    8 + /* high watermark */
-    4 /* messageSetSize */
+    2 +
+      /* error code */
+      8 +
+      /* high watermark */
+      4 /* messageSetSize */
 }
 
 case class FetchResponsePartitionData(
@@ -114,16 +116,15 @@ object TopicData {
   }
 
   def headerSize(topic: String) =
-    shortStringLength(topic) +
-      4 /* partition count */
+    shortStringLength(topic) + 4 /* partition count */
 }
 
 case class TopicData(
     topic: String,
     partitionData: Map[Int, FetchResponsePartitionData]) {
   val sizeInBytes =
-    TopicData.headerSize(topic) + partitionData.values
-      .foldLeft(0)(_ + _.sizeInBytes + 4)
+    TopicData.headerSize(topic) +
+      partitionData.values.foldLeft(0)(_ + _.sizeInBytes + 4)
 
   val headerSize = TopicData.headerSize(topic)
 }
@@ -192,9 +193,11 @@ object FetchResponse {
   // Returns the size of the response header
   def headerSize(requestVersion: Int): Int = {
     val throttleTimeSize = if (requestVersion > 0) 4 else 0
-    4 + /* correlationId */
-    4 + /* topic count */
-    throttleTimeSize
+    4 +
+      /* correlationId */
+      4 +
+      /* topic count */
+      throttleTimeSize
   }
 
   // Returns the size of entire fetch response in bytes (including the header size)
@@ -203,17 +206,16 @@ object FetchResponse {
         String,
         Map[TopicAndPartition, FetchResponsePartitionData]],
       requestVersion: Int): Int = {
-    headerSize(requestVersion) +
-      dataGroupedByTopic.foldLeft(0) {
-        case (folded, (topic, partitionDataMap)) =>
-          val topicData = TopicData(
-            topic,
-            partitionDataMap.map {
-              case (topicAndPartition, partitionData) =>
-                (topicAndPartition.partition, partitionData)
-            })
-          folded + topicData.sizeInBytes
-      }
+    headerSize(requestVersion) + dataGroupedByTopic.foldLeft(0) {
+      case (folded, (topic, partitionDataMap)) =>
+        val topicData = TopicData(
+          topic,
+          partitionDataMap.map {
+            case (topicAndPartition, partitionData) =>
+              (topicAndPartition.partition, partitionData)
+          })
+        folded + topicData.sizeInBytes
+    }
   }
 }
 

@@ -73,12 +73,13 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
 
       assert(
         result == Map(
-          "foos" -> (
+          "foos" ->
             (
-              "xyz",
-              "1"
-            )
-          ), // the "cas unique" values are predictable from a fresh memcached
+              (
+                "xyz",
+                "1"
+              )
+            ), // the "cas unique" values are predictable from a fresh memcached
           "bazs" -> (("zyx", "3"))))
     }
   }

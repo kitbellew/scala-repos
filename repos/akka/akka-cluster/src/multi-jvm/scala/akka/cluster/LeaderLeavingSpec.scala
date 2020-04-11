@@ -38,72 +38,71 @@ abstract class LeaderLeavingSpec
 
   "A LEADER that is LEAVING" must {
 
-    "be moved to LEAVING, then to EXITING, then to REMOVED, then be shut down and then a new LEADER should be elected" taggedAs LongRunningTest in {
+    "be moved to LEAVING, then to EXITING, then to REMOVED, then be shut down and then a new LEADER should be elected" taggedAs
+      LongRunningTest in {
 
-      awaitClusterUp(first, second, third)
+        awaitClusterUp(first, second, third)
 
-      val oldLeaderAddress = clusterView.leader.get
+        val oldLeaderAddress = clusterView.leader.get
 
-      within(30.seconds) {
+        within(30.seconds) {
 
-        if (clusterView.isLeader) {
+          if (clusterView.isLeader) {
 
-          enterBarrier("registered-listener")
+            enterBarrier("registered-listener")
 
-          cluster.leave(oldLeaderAddress)
-          enterBarrier("leader-left")
+            cluster.leave(oldLeaderAddress)
+            enterBarrier("leader-left")
 
-          // verify that the LEADER is shut down
-          awaitCond(cluster.isTerminated)
-          enterBarrier("leader-shutdown")
+            // verify that the LEADER is shut down
+            awaitCond(cluster.isTerminated)
+            enterBarrier("leader-shutdown")
 
-        } else {
+          } else {
 
-          val exitingLatch = TestLatch()
+            val exitingLatch = TestLatch()
 
-          cluster.subscribe(
-            system.actorOf(
-              Props(new Actor {
-                def receive = {
-                  case state: CurrentClusterState ⇒
-                    if (state.members.exists(m ⇒
-                          m.address == oldLeaderAddress && m.status == Exiting))
+            cluster.subscribe(
+              system.actorOf(
+                Props(new Actor {
+                  def receive = {
+                    case state: CurrentClusterState ⇒
+                      if (state.members.exists(m ⇒
+                            m.address == oldLeaderAddress &&
+                              m.status == Exiting)) exitingLatch.countDown()
+                    case MemberExited(m) if m.address == oldLeaderAddress ⇒
                       exitingLatch.countDown()
-                  case MemberExited(m) if m.address == oldLeaderAddress ⇒
-                    exitingLatch.countDown()
-                  case _ ⇒ // ignore
-                }
-              }).withDeploy(Deploy.local)),
-            classOf[MemberEvent]
-          )
-          enterBarrier("registered-listener")
+                    case _ ⇒ // ignore
+                  }
+                }).withDeploy(Deploy.local)),
+              classOf[MemberEvent]
+            )
+            enterBarrier("registered-listener")
 
-          enterBarrier("leader-left")
+            enterBarrier("leader-left")
 
-          // verify that the LEADER is EXITING
-          exitingLatch.await
+            // verify that the LEADER is EXITING
+            exitingLatch.await
 
-          enterBarrier("leader-shutdown")
-          markNodeAsUnavailable(oldLeaderAddress)
+            enterBarrier("leader-shutdown")
+            markNodeAsUnavailable(oldLeaderAddress)
 
-          // verify that the LEADER is no longer part of the 'members' set
-          awaitAssert(
-            clusterView.members.map(_.address) should not contain (
-              oldLeaderAddress
-            ))
+            // verify that the LEADER is no longer part of the 'members' set
+            awaitAssert(
+              clusterView.members.map(_.address) should not contain
+                (oldLeaderAddress))
 
-          // verify that the LEADER is not part of the 'unreachable' set
-          awaitAssert(
-            clusterView.unreachableMembers.map(_.address) should not contain (
-              oldLeaderAddress
-            ))
+            // verify that the LEADER is not part of the 'unreachable' set
+            awaitAssert(
+              clusterView.unreachableMembers.map(_.address) should not contain
+                (oldLeaderAddress))
 
-          // verify that we have a new LEADER
-          awaitAssert(clusterView.leader should not be (oldLeaderAddress))
+            // verify that we have a new LEADER
+            awaitAssert(clusterView.leader should not be (oldLeaderAddress))
+          }
+
+          enterBarrier("finished")
         }
-
-        enterBarrier("finished")
       }
-    }
   }
 }

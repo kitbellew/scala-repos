@@ -41,7 +41,8 @@ final case class SessionSettings(
     currentEval: () => Eval) {
   assert(
     currentProject contains currentBuild,
-    "Current build (" + currentBuild + ") not associated with a current project.")
+    "Current build (" + currentBuild +
+      ") not associated with a current project.")
 
   /**
     * Modifiy the current state.
@@ -157,9 +158,8 @@ object SessionSettings {
       .flatMap(_.append).flatMap(_._2)
     if (newSession.append.isEmpty && oldSettings.nonEmpty)
       oldState.log.warn(
-        "Discarding " + pluralize(
-          oldSettings.size,
-          " session setting") + ".  Use 'session save' to persist session settings.")
+        "Discarding " + pluralize(oldSettings.size, " session setting") +
+          ".  Use 'session save' to persist session settings.")
   }
 
   @deprecated("This method will no longer be public", "0.13.7")
@@ -237,10 +237,8 @@ object SessionSettings {
 
     val path = writeTo.getAbsolutePath
     val (inFile, other, _) =
-      ((
-        List[Setting[_]](),
-        List[Setting[_]](),
-        Set.empty[ScopedKey[_]]) /: original.reverse) {
+      ((List[Setting[_]](), List[Setting[_]](), Set.empty[ScopedKey[_]]) /:
+        original.reverse) {
         case ((in, oth, keys), s) => s.pos match {
             case RangePosition(`path`, _) if !keys.contains(s.key) =>
               (s :: in, oth, keys + s.key)
@@ -363,21 +361,21 @@ save, save-all
   /** Parser for the session command. */
   lazy val parser =
     token(Space) ~>
-      (token("list-all" ^^^ new Print(true)) | token(
-        "list" ^^^ new Print(false)) | token("clear" ^^^ new Clear(false)) |
-        token("save-all" ^^^ new Save(true)) | token(
-        "save" ^^^ new Save(false)) | token("clear-all" ^^^ new Clear(true)) |
-        remove)
+      (token("list-all" ^^^ new Print(true)) |
+        token("list" ^^^ new Print(false)) |
+        token("clear" ^^^ new Clear(false)) |
+        token("save-all" ^^^ new Save(true)) |
+        token("save" ^^^ new Save(false)) |
+        token("clear-all" ^^^ new Clear(true)) | remove)
 
-  lazy val remove = token("remove") ~> token(Space) ~> natSelect
-    .map(ranges => new Remove(ranges))
+  lazy val remove = token("remove") ~> token(Space) ~>
+    natSelect.map(ranges => new Remove(ranges))
 
   def natSelect = rep1sep(token(range, "<range>"), ',')
 
-  def range: Parser[(Int, Int)] =
-    (NatBasic ~ ('-' ~> NatBasic).?).map {
-      case lo ~ hi => (lo, hi getOrElse lo)
-    }
+  def range: Parser[(Int, Int)] = (NatBasic ~ ('-' ~> NatBasic).?).map {
+    case lo ~ hi => (lo, hi getOrElse lo)
+  }
 
   /** The raw implementation of the session command. */
   def command(s: State) =

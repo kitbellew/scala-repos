@@ -46,8 +46,7 @@ case class HistoricalData(
     val activeStr = active.mkString("[", ", ", "]")
 
     (s"HistoricalData($ticker, ${timeIndex.head}, ${timeIndex.last}, \n" +
-      s"  adjClose=$adjCloseStr\n" +
-      s"  adjReturn=$adjReturnStr\n" +
+      s"  adjClose=$adjCloseStr\n" + s"  adjReturn=$adjReturnStr\n" +
       s"  active=$activeStr)")
   }
 }

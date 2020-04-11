@@ -204,8 +204,7 @@ trait ScPattern extends ScalaPsiElement {
         }
         tpe.getType().toOption
       case Some(ScalaResolveResult(fun: ScFunction, substitutor: ScSubstitutor))
-          if fun.name == "unapply" &&
-            fun.parameters.length == 1 =>
+          if fun.name == "unapply" && fun.parameters.length == 1 =>
         val subst =
           if (fun.typeParameters.isEmpty) substitutor
           else {
@@ -223,11 +222,11 @@ trait ScPattern extends ScalaPsiElement {
                   .followed(new ScSubstitutor(ScThisType(clazz)))
               case _ =>
             }
-            val firstParameterType =
-              fun.parameters.head.getType(TypingContext.empty) match {
-                case Success(tp, _) => tp
-                case _              => return None
-              }
+            val firstParameterType = fun.parameters.head
+              .getType(TypingContext.empty) match {
+              case Success(tp, _) => tp
+              case _              => return None
+            }
             val funType = undefSubst.subst(firstParameterType)
             expected match {
               case Some(tp) => calculateSubstitutor(tp, funType, substitutor)
@@ -264,22 +263,21 @@ trait ScPattern extends ScalaPsiElement {
           case _ => None
         }
       case Some(ScalaResolveResult(fun: ScFunction, substitutor: ScSubstitutor))
-          if fun.name == "unapplySeq" &&
-            fun.parameters.length == 1 =>
+          if fun.name == "unapplySeq" && fun.parameters.length == 1 =>
         val subst =
           if (fun.typeParameters.isEmpty) substitutor
           else {
-            val undefSubst = substitutor followed fun.typeParameters
-              .foldLeft(ScSubstitutor.empty) { (s, p) =>
+            val undefSubst = substitutor followed
+              fun.typeParameters.foldLeft(ScSubstitutor.empty) { (s, p) =>
                 s.bindT(
                   (p.name, ScalaPsiUtil.getPsiElementId(p)),
                   ScUndefinedType(new ScTypeParameterType(p, substitutor)))
               }
-            val firstParameterRetTp =
-              fun.parameters.head.getType(TypingContext.empty) match {
-                case Success(tp, _) => tp
-                case _              => return None
-              }
+            val firstParameterRetTp = fun.parameters.head
+              .getType(TypingContext.empty) match {
+              case Success(tp, _) => tp
+              case _              => return None
+            }
             val funType = undefSubst.subst(firstParameterRetTp)
             expected match {
               case Some(tp) => calculateSubstitutor(tp, funType, substitutor)
@@ -561,8 +559,8 @@ object ScPattern {
                       productClass <- ScalaPsiManager.instance(place.getProject)
                         .getCachedClass(place.getResolveScope, productFqn)
                       clazz <- ScType.extractClass(tp, Some(place.getProject))
-                    } yield clazz == productClass || clazz
-                      .isInheritor(productClass, true)).filter(identity)
+                    } yield clazz == productClass ||
+                      clazz.isInheritor(productClass, true)).filter(identity)
                       .fold(Seq(tp))(_ => productChance)
                   }
                 }
@@ -582,10 +580,9 @@ object ScPattern {
   def isQuasiquote(fun: ScFunction) = {
     val fqnO = Option(fun.containingClass).map(_.qualifiedName)
     fqnO.exists(fqn =>
-      fqn.contains('.') && fqn
-        .substring(
-          0,
-          fqn.lastIndexOf('.')) == "scala.reflect.api.Quasiquotes.Quasiquote")
+      fqn.contains('.') &&
+        fqn.substring(0, fqn.lastIndexOf('.')) ==
+        "scala.reflect.api.Quasiquotes.Quasiquote")
   }
 
 }

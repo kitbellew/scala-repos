@@ -185,7 +185,8 @@ trait HeapBackend extends RelationalBackend with Logging {
           val e = extract(row)
           if (hash contains e)
             throw new SlickException(
-              "Uniqueness constraint " + name + " violated. Duplicate data: " + e)
+              "Uniqueness constraint " + name + " violated. Duplicate data: " +
+                e)
         }
         def inserted(row: Row) { hash += extract(row) }
       }

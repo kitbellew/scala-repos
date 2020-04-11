@@ -215,10 +215,10 @@ object DBIOAction {
           def run(context: BasicBackend#Context) = {
             val b = cbf()
             g.foreach(a =>
-              b += a
-                .asInstanceOf[
-                  SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
-                .run(context))
+              b +=
+                a.asInstanceOf[
+                    SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
+                  .run(context))
             b.result()
           }
           override def nonFusedEquivalentAction = SequenceAction[R, M[R], E](g)
@@ -254,10 +254,10 @@ object DBIOAction {
             def run(context: BasicBackend#Context) = {
               val b = new ArrayBuffer[R](g.length)
               g.foreach(a =>
-                b += a
-                  .asInstanceOf[
-                    SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
-                  .run(context))
+                b +=
+                  a.asInstanceOf[
+                      SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
+                    .run(context))
               b
             }
             override def nonFusedEquivalentAction =

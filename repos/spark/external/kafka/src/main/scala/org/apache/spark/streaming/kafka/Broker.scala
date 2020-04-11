@@ -31,10 +31,8 @@ final class Broker private (
     extends Serializable {
   override def equals(obj: Any): Boolean =
     obj match {
-      case that: Broker =>
-        this.host == that.host &&
-          this.port == that.port
-      case _ => false
+      case that: Broker => this.host == that.host && this.port == that.port
+      case _            => false
     }
 
   override def hashCode: Int = { 41 * (41 + host.hashCode) + port }

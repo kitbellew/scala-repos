@@ -104,9 +104,8 @@ class ActorSelectionSpec
       identify(system / "c1") should ===(Some(c1))
       identify(system / "c2") should ===(Some(c2))
       identify(system / "c2" / "c21") should ===(Some(c21))
-      identify(system child "c2" child "c21") should ===(
-        Some(c21)
-      ) // test Java API
+      identify(system child "c2" child "c21") should
+        ===(Some(c21)) // test Java API
       identify(system / Seq("c2", "c21")) should ===(Some(c21))
 
       import scala.collection.JavaConverters._
@@ -203,15 +202,13 @@ class ActorSelectionSpec
 
     "select actors by their string path representation" in {
       def check(looker: ActorRef, pathOf: ActorRef, result: ActorRef) {
-        askNode(
-          looker,
-          SelectString(pathOf.path.toStringWithoutAddress)) should ===(
-          Some(result))
+        askNode(looker, SelectString(pathOf.path.toStringWithoutAddress)) should
+          ===(Some(result))
         // with trailing /
         askNode(
           looker,
-          SelectString(pathOf.path.toStringWithoutAddress + "/")) should ===(
-          Some(result))
+          SelectString(pathOf.path.toStringWithoutAddress + "/")) should
+          ===(Some(result))
       }
       for {
         looker ← all
@@ -221,15 +218,12 @@ class ActorSelectionSpec
 
     "select actors by their root-anchored relative path" in {
       def check(looker: ActorRef, pathOf: ActorRef, result: ActorRef) {
+        askNode(looker, SelectString(pathOf.path.toStringWithoutAddress)) should
+          ===(Some(result))
         askNode(
           looker,
-          SelectString(pathOf.path.toStringWithoutAddress)) should ===(
-          Some(result))
-        askNode(
-          looker,
-          SelectString(
-            pathOf.path.elements.mkString("/", "/", "/"))) should ===(
-          Some(result))
+          SelectString(pathOf.path.elements.mkString("/", "/", "/"))) should
+          ===(Some(result))
       }
       for {
         looker ← all
@@ -239,10 +233,10 @@ class ActorSelectionSpec
 
     "select actors by their relative path" in {
       def check(looker: ActorRef, result: ActorRef, elems: String*) {
-        askNode(looker, SelectString(elems mkString "/")) should ===(
-          Some(result))
-        askNode(looker, SelectString(elems mkString ("", "/", "/"))) should ===(
-          Some(result))
+        askNode(looker, SelectString(elems mkString "/")) should
+          ===(Some(result))
+        askNode(looker, SelectString(elems mkString ("", "/", "/"))) should
+          ===(Some(result))
       }
       check(c1, user, "..")
       for {
@@ -258,17 +252,17 @@ class ActorSelectionSpec
       def check(target: ActorRef) {
         for (looker ← all) {
           askNode(looker, SelectPath(target.path)) should ===(Some(target))
-          askNode(looker, SelectString(target.path.toString)) should ===(
-            Some(target))
-          askNode(looker, SelectString(target.path.toString + "/")) should ===(
-            Some(target))
+          askNode(looker, SelectString(target.path.toString)) should
+            ===(Some(target))
+          askNode(looker, SelectString(target.path.toString + "/")) should
+            ===(Some(target))
         }
         if (target != root)
           askNode(
             c1,
             SelectString(
-              "../.." + target.path.elements
-                .mkString("/", "/", "/"))) should ===(Some(target))
+              "../.." + target.path.elements.mkString("/", "/", "/"))) should
+            ===(Some(target))
       }
       for (target ← Seq(root, syst, user)) check(target)
     }
@@ -337,8 +331,8 @@ class ActorSelectionSpec
     "resolve one actor with explicit timeout" in {
       val s = system.actorSelection(system / "c2")
       // Java and Scala API
-      Await.result(s.resolveOne(1.second.dilated), timeout.duration) should ===(
-        c2)
+      Await.result(s.resolveOne(1.second.dilated), timeout.duration) should
+        ===(c2)
     }
 
     "resolve one actor with implicit timeout" in {
@@ -356,22 +350,18 @@ class ActorSelectionSpec
     }
 
     "compare equally" in {
-      ActorSelection(c21, "../*/hello") should ===(
-        ActorSelection(c21, "../*/hello"))
-      ActorSelection(c21, "../*/hello").## should ===(
-        ActorSelection(c21, "../*/hello").##)
-      ActorSelection(c2, "../*/hello") should not be ActorSelection(
-        c21,
-        "../*/hello")
-      ActorSelection(c2, "../*/hello").## should not be ActorSelection(
-        c21,
-        "../*/hello").##
-      ActorSelection(c21, "../*/hell") should not be ActorSelection(
-        c21,
-        "../*/hello")
-      ActorSelection(c21, "../*/hell").## should not be ActorSelection(
-        c21,
-        "../*/hello").##
+      ActorSelection(c21, "../*/hello") should
+        ===(ActorSelection(c21, "../*/hello"))
+      ActorSelection(c21, "../*/hello").## should
+        ===(ActorSelection(c21, "../*/hello").##)
+      ActorSelection(c2, "../*/hello") should not be
+        ActorSelection(c21, "../*/hello")
+      ActorSelection(c2, "../*/hello").## should not be
+        ActorSelection(c21, "../*/hello").##
+      ActorSelection(c21, "../*/hell") should not be
+        ActorSelection(c21, "../*/hello")
+      ActorSelection(c21, "../*/hell").## should not be
+        ActorSelection(c21, "../*/hello").##
     }
 
     "print nicely" in {
@@ -380,17 +370,16 @@ class ActorSelectionSpec
     }
 
     "have a stringly serializable path" in {
-      system.actorSelection(system / "c2").toSerializationFormat should ===(
-        "akka://ActorSelectionSpec/user/c2")
-      system.actorSelection(system / "c2" / "c21")
-        .toSerializationFormat should ===(
-        "akka://ActorSelectionSpec/user/c2/c21")
-      ActorSelection(c2, "/").toSerializationFormat should ===(
-        "akka://ActorSelectionSpec/user/c2")
-      ActorSelection(c2, "../*/hello").toSerializationFormat should ===(
-        "akka://ActorSelectionSpec/user/c2/../*/hello")
-      ActorSelection(c2, "/../*/hello").toSerializationFormat should ===(
-        "akka://ActorSelectionSpec/user/c2/../*/hello")
+      system.actorSelection(system / "c2").toSerializationFormat should
+        ===("akka://ActorSelectionSpec/user/c2")
+      system.actorSelection(system / "c2" / "c21").toSerializationFormat should
+        ===("akka://ActorSelectionSpec/user/c2/c21")
+      ActorSelection(c2, "/").toSerializationFormat should
+        ===("akka://ActorSelectionSpec/user/c2")
+      ActorSelection(c2, "../*/hello").toSerializationFormat should
+        ===("akka://ActorSelectionSpec/user/c2/../*/hello")
+      ActorSelection(c2, "/../*/hello").toSerializationFormat should
+        ===("akka://ActorSelectionSpec/user/c2/../*/hello")
     }
 
     "send ActorSelection targeted to missing actor to deadLetters" in {
@@ -416,8 +405,8 @@ class ActorSelectionSpec
 
       val probe = TestProbe()
       system.actorSelection("/user/a/*").tell(Identify(1), probe.ref)
-      probe.receiveN(2).map { case ActorIdentity(1, r) ⇒ r }.toSet should ===(
-        Set[Option[ActorRef]](Some(b1), Some(b2)))
+      probe.receiveN(2).map { case ActorIdentity(1, r) ⇒ r }.toSet should
+        ===(Set[Option[ActorRef]](Some(b1), Some(b2)))
       probe.expectNoMsg(200.millis)
 
       system.actorSelection("/user/a/b1/*").tell(Identify(2), probe.ref)

@@ -66,10 +66,9 @@ class LoggingReceive(source: Option[AnyRef], r: Receive, label: Option[String])(
       context.system.eventStream.publish(Debug(
         str,
         clazz,
-        "received " + (if (handled) "handled"
-                       else "unhandled") + " message " + o
-          + " from " + context.sender()
-          + (label match {
+        "received " + (if (handled) "handled" else "unhandled") + " message " +
+          o + " from " + context.sender() +
+          (label match {
             case Some(l) ⇒ " in state " + l
             case _ ⇒ ""
           })))

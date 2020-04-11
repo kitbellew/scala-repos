@@ -103,15 +103,14 @@ class Date private (private val date: js.Date)
   def toGMTString(): String = {
     date.getUTCDate() + " " + Months(date.getUTCMonth()) + " " +
       date.getUTCFullYear() + " " + pad0(date.getUTCHours()) + ":" +
-      pad0(date.getUTCMinutes()) + ":" +
-      pad0(date.getUTCSeconds()) + " GMT"
+      pad0(date.getUTCMinutes()) + ":" + pad0(date.getUTCSeconds()) + " GMT"
   }
 
   @Deprecated
   def toLocaleString(): String = {
-    date.getDate() + "-" + Months(date.getMonth()) + "-" +
-      date.getFullYear() + "-" + pad0(date.getHours()) + ":" +
-      pad0(date.getMinutes()) + ":" + pad0(date.getSeconds())
+    date.getDate() + "-" + Months(date.getMonth()) + "-" + date.getFullYear() +
+      "-" + pad0(date.getHours()) + ":" + pad0(date.getMinutes()) + ":" +
+      pad0(date.getSeconds())
   }
 
   override def toString(): String = {

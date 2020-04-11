@@ -133,13 +133,14 @@ class UpgradedImageIExtractor(
       parentDepthLevel: Int,
       siblingDepthLevel: Int): Option[Image] = {
     trace(
-      "Checking for large images - parent depth " + parentDepthLevel + " sibling depth: " + siblingDepthLevel)
+      "Checking for large images - parent depth " + parentDepthLevel +
+        " sibling depth: " + siblingDepthLevel)
 
     getImageCandidates(node) match {
       case Some(goodImages) => {
         trace(
-          "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages
-            .size + " at parent depth: " + parentDepthLevel)
+          "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " +
+            goodImages.size + " at parent depth: " + parentDepthLevel)
         val scoredImages = downloadImagesAndGetResults(
           goodImages,
           parentDepthLevel)
@@ -154,8 +155,8 @@ class UpgradedImageIExtractor(
             mainImage.confidenceScore =
               if (scoredImages.size > 0) (100 / scoredImages.size) else 0
             trace(
-              "IMAGE COMPLETE: High Score Image is: " + mainImage
-                .imageSrc + " Score is: " + highScoreImage._2)
+              "IMAGE COMPLETE: High Score Image is: " + mainImage.imageSrc +
+                " Score is: " + highScoreImage._2)
             return Some(mainImage)
           }
           case None => {
@@ -198,7 +199,8 @@ class UpgradedImageIExtractor(
     val MAX_PARENT_DEPTH = 2
     if (parentDepth > MAX_PARENT_DEPTH) {
       trace(
-        "ParentDepth is greater than " + MAX_PARENT_DEPTH + ", aborting depth traversal")
+        "ParentDepth is greater than " + MAX_PARENT_DEPTH +
+          ", aborting depth traversal")
       None
     } else {
       val siblingNode = node.previousElementSibling()
@@ -239,8 +241,8 @@ class UpgradedImageIExtractor(
         fileExtension = locallyStoredImage.fileExtension
         if (fileExtension != ".gif" && fileExtension != "NA")
         imageSrc = locallyStoredImage.imgSrc
-        if ((depthLevel >= 1 && locallyStoredImage
-          .width > 300) || depthLevel < 1)
+        if ((depthLevel >= 1 && locallyStoredImage.width > 300) ||
+          depthLevel < 1)
         if (!isBannerDimensions(width, height))
       } {
         val sequenceScore: Float = 1.0f / cnt
@@ -255,7 +257,8 @@ class UpgradedImageIExtractor(
           totalScore = sequenceScore * areaDifference
         }
         trace(
-          "IMG: " + imageSrc + " Area is: " + area + " sequence score: " + sequenceScore + " totalScore: " + totalScore)
+          "IMG: " + imageSrc + " Area is: " + area + " sequence score: " +
+            sequenceScore + " totalScore: " + totalScore)
         cnt += 1
 
         imageResults += locallyStoredImage -> totalScore
@@ -362,12 +365,11 @@ class UpgradedImageIExtractor(
           case Some(locallyStoredImage) => {
 
             val bytes = locallyStoredImage.bytes
-            if ((
-                  bytes == 0 || bytes > minBytesForImages
-                ) && bytes < MAX_BYTES_SIZE) {
+            if ((bytes == 0 || bytes > minBytesForImages) &&
+                bytes < MAX_BYTES_SIZE) {
               trace(
-                "findImagesThatPassByteSizeTest: Found potential image - size: " + bytes + " src: " + image
-                  .attr("src"))
+                "findImagesThatPassByteSizeTest: Found potential image - size: " +
+                  bytes + " src: " + image.attr("src"))
               goodImages.add(image)
             } else {
               trace("Removing image: " + image.attr("src"))

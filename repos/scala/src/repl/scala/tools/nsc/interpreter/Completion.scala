@@ -25,9 +25,6 @@ object Completion {
   val NoCandidates = Candidates(-1, Nil)
 
   def looksLikeInvocation(code: String) =
-    ((code != null)
-      && (code startsWith ".")
-      && !(code == ".")
-      && !(code startsWith "./")
-      && !(code startsWith ".."))
+    ((code != null) && (code startsWith ".") && !(code == ".") &&
+      !(code startsWith "./") && !(code startsWith ".."))
 }

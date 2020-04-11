@@ -95,8 +95,8 @@ class FutureTests extends MinimalScalaTest {
       p.toString mustBe expectNotCompleteString
       Promise[Int]().success(s).toString mustBe expectSuccessString
       Promise[Int]().failure(f).toString mustBe expectFailureString
-      Await.ready(Future { throw f }, 2000 millis)
-        .toString mustBe expectFailureString
+      Await.ready(Future { throw f }, 2000 millis).toString mustBe
+        expectFailureString
       Await.ready(Future { s }, 2000 millis).toString mustBe expectSuccessString
 
       Future.never.toString mustBe "Future(<never>)"
@@ -243,12 +243,11 @@ class FutureTests extends MinimalScalaTest {
           fail("transformWith should not have been called"))(ec) eq test)
       ECNotUsed(ec => test.map(identity)(ec) eq test)
       ECNotUsed(ec =>
-        test
-          .flatMap(_ => fail("flatMap should not have been called"))(
-            ec) eq test)
+        test.flatMap(_ => fail("flatMap should not have been called"))(ec) eq
+          test)
       ECNotUsed(ec =>
-        test
-          .filter(_ => fail("filter should not have been called"))(ec) eq test)
+        test.filter(_ => fail("filter should not have been called"))(ec) eq
+          test)
       ECNotUsed(ec =>
         test.collect({ case _ => fail("collect should not have been called") })(
           ec) eq test)
@@ -338,11 +337,13 @@ class FutureTests extends MinimalScalaTest {
       val future2 = future1 map (_ / 0)
       val future3 = future2 map (_.toString)
 
-      val future4 =
-        future1 recover { case e: ArithmeticException => 0 } map (_.toString)
+      val future4 = future1 recover {
+        case e: ArithmeticException => 0
+      } map (_.toString)
 
-      val future5 =
-        future2 recover { case e: ArithmeticException => 0 } map (_.toString)
+      val future5 = future2 recover {
+        case e: ArithmeticException => 0
+      } map (_.toString)
 
       val future6 = future2 recover { case e: MatchError => 0 } map (_.toString)
 
@@ -549,8 +550,8 @@ class FutureTests extends MinimalScalaTest {
 
     "firstCompletedOf" in {
       def futures =
-        Vector.fill[Future[Int]](10) { Promise[Int]().future } :+ Future
-          .successful[Int](5)
+        Vector.fill[Future[Int]](10) { Promise[Int]().future } :+
+          Future.successful[Int](5)
 
       Await.result(Future.firstCompletedOf(futures), defaultTimeout) mustBe (5)
       Await

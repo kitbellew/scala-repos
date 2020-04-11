@@ -161,25 +161,12 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         // Return one query for each insert clause.
         val queries = insertClauses.map {
           case Token("TOK_INSERT", singleInsert) =>
-            val (
-              intoClause ::
-                destClause ::
-                selectClause ::
-                selectDistinctClause ::
-                whereClause ::
-                groupByClause ::
-                rollupGroupByClause ::
-                cubeGroupByClause ::
-                groupingSetsClause ::
-                orderByClause ::
-                havingClause ::
-                sortByClause ::
-                clusterByClause ::
-                distributeByClause ::
-                limitClause ::
-                lateralViewClause ::
-                windowClause :: Nil
-            ) = {
+            val (intoClause :: destClause :: selectClause ::
+              selectDistinctClause :: whereClause :: groupByClause ::
+              rollupGroupByClause :: cubeGroupByClause :: groupingSetsClause ::
+              orderByClause :: havingClause :: sortByClause ::
+              clusterByClause :: distributeByClause :: limitClause ::
+              lateralViewClause :: windowClause :: Nil) = {
               getClauses(
                 Seq(
                   "TOK_INSERT_INTO",
@@ -338,10 +325,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             val windowDefinitions = windowClause.map(_.children.collect {
               case Token(
                     "TOK_WINDOWDEF",
-                    Token(windowName, Nil) :: Token(
-                      "TOK_WINDOWSPEC",
-                      spec) :: Nil) =>
-                windowName -> nodesToWindowSpecification(spec)
+                    Token(windowName, Nil) :: Token("TOK_WINDOWSPEC", spec) ::
+                    Nil) => windowName -> nodesToWindowSpecification(spec)
             }.toMap)
             // Handle cases like
             // window w1 as (partition by p_mfgr order by p_name
@@ -408,9 +393,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           if (clauses.last.text.startsWith("TOK")) { (clauses, None) }
           else { (clauses.dropRight(1), Some(clauses.last)) }
 
-        val (Some(tableNameParts) ::
-          splitSampleClause ::
-          bucketSampleClause :: Nil) = {
+        val (Some(tableNameParts) :: splitSampleClause :: bucketSampleClause ::
+          Nil) = {
           getClauses(
             Seq("TOK_TABNAME", "TOK_TABLESPLITSAMPLE", "TOK_TABLEBUCKETSAMPLE"),
             nonAliasClauses)
@@ -433,8 +417,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             // function takes X PERCENT as the input and the range of X is [0, 100], we need to
             // adjust the fraction.
             require(
-              fraction.toDouble >= (0.0 - RandomSampler.roundingEpsilon)
-                && fraction.toDouble <= (100.0 + RandomSampler.roundingEpsilon),
+              fraction.toDouble >= (0.0 - RandomSampler.roundingEpsilon) &&
+                fraction.toDouble <= (100.0 + RandomSampler.roundingEpsilon),
               s"Sampling fraction ($fraction) must be on interval [0, 100]"
             )
             Sample(
@@ -445,8 +429,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               relation)(isTableSample = true)
           case Token(
                 "TOK_TABLEBUCKETSAMPLE",
-                Token(numerator, Nil) ::
-                Token(denominator, Nil) :: Nil) =>
+                Token(numerator, Nil) :: Token(denominator, Nil) :: Nil) =>
             val fraction = numerator.toDouble / denominator.toDouble
             Sample(
               0.0,
@@ -761,11 +744,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         In(nodeToExpr(value), list.map(nodeToExpr))
       case Token(
             "TOK_FUNCTION",
-            Token(BETWEEN(), Nil) ::
-            kw ::
-            target ::
-            minValue ::
-            maxValue :: Nil) =>
+            Token(BETWEEN(), Nil) :: kw :: target :: minValue :: maxValue ::
+            Nil) =>
         val targetExpression = nodeToExpr(target)
         val betweenExpr = And(
           GreaterThanOrEqual(targetExpression, nodeToExpr(minValue)),
@@ -922,9 +902,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         // Handle Partition By and Order By.
         val (partitionSpec, orderSpec) = partitionClause.map {
           partitionAndOrdering =>
-            val (
-              partitionByClause :: orderByClause :: sortByClause :: clusterByClause :: Nil
-            ) = getClauses(
+            val (partitionByClause :: orderByClause :: sortByClause ::
+              clusterByClause :: Nil) = getClauses(
               Seq(
                 "TOK_DISTRIBUTEBY",
                 "TOK_ORDERBY",

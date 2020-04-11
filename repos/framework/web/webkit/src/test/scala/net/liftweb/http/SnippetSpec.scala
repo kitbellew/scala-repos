@@ -236,8 +236,8 @@ object SnippetSpec extends Specification with XmlMatchers {
         }
       }
 
-      (ret.openOrThrowException("legacy code") \ "@class")
-        .text must_== "snippeterror"
+      (ret.openOrThrowException("legacy code") \ "@class").text must_==
+        "snippeterror"
     }
 
     object myInfo extends SessionVar("")
@@ -266,8 +266,8 @@ object SnippetSpec extends Specification with XmlMatchers {
         }
       }
 
-      (ret.openOrThrowException("legacy code") \ "@class")
-        .text must_== "snippeterror"
+      (ret.openOrThrowException("legacy code") \ "@class").text must_==
+        "snippeterror"
     }
 
     "Snippet invocation succeeds in normal mode" in {
@@ -294,8 +294,8 @@ object SnippetSpec extends Specification with XmlMatchers {
         }
       }
 
-      (ret.openOrThrowException("legacy code") \ "@class")
-        .text must_== "snippeterror"
+      (ret.openOrThrowException("legacy code") \ "@class").text must_==
+        "snippeterror"
     }
 
     "Snippet invocation succeeds in normal mode (function table)" in {
@@ -330,8 +330,8 @@ object SnippetSpec extends Specification with XmlMatchers {
         val ret = SHtml.onSubmitBoolean(s => ())(<input type="checkbox"/>)
 
         ret.size must_== 2
-        (ret \\ "input").flatMap(_ \ "@name").map(_.text).mkString
-          .length must be > 0
+        (ret \\ "input").flatMap(_ \ "@name").map(_.text).mkString.length must
+          be > 0
       }
     }
 

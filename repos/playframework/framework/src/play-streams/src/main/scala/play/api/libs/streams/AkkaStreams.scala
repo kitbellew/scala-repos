@@ -55,10 +55,9 @@ object AkkaStreams {
           } ~> flow ~> merge.in(0)
 
           // Bypass flow, need to ignore downstream finish
-          broadcast.out(1) ~> ignoreAfterCancellation[
-            Either[FlowIn, Out]] ~> Flow[Either[FlowIn, Out]].collect {
-            case Right(out) => out
-          } ~> merge.in(1)
+          broadcast.out(1) ~> ignoreAfterCancellation[Either[FlowIn, Out]] ~>
+            Flow[Either[FlowIn, Out]].collect { case Right(out) => out } ~>
+            merge.in(1)
 
           FlowShape(broadcast.in, merge.out)
       })

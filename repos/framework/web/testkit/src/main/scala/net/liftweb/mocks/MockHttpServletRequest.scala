@@ -271,10 +271,11 @@ class MockHttpServletRequest(
   var session: HttpSession = null
 
   // BEGIN PRIMARY CONSTRUCTOR LOGIC
-  if (contextPath.length > 0 && (contextPath(0) != '/' || contextPath
-        .last == '/')) {
+  if (contextPath.length > 0 &&
+      (contextPath(0) != '/' || contextPath.last == '/')) {
     throw new IllegalArgumentException(
-      "Context path must be empty, or must start with a '/' and not end with a '/': " + contextPath)
+      "Context path must be empty, or must start with a '/' and not end with a '/': " +
+        contextPath)
   }
 
   if (url != null) { processUrl(url) }
@@ -419,8 +420,8 @@ class MockHttpServletRequest(
 
     parameters.foreach {
       case (k, v) =>
-        newMap += k -> (newMap(
-          k) ::: v :: Nil) // Ugly, but it works and keeps order
+        newMap += k ->
+          (newMap(k) ::: v :: Nil) // Ugly, but it works and keeps order
     }
 
     newMap.map { case (k, v) => (k, v.toArray) }

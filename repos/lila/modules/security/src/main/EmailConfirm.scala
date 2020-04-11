@@ -42,8 +42,8 @@ final class EmailConfirmMailGun(
         .post(Map(
           "from" -> Seq(sender),
           "to" -> Seq(email),
-          "subject" -> Seq(
-            s"Confirm your lichess.org account, ${user.username}"),
+          "subject" ->
+            Seq(s"Confirm your lichess.org account, ${user.username}"),
           "text" -> Seq(s"""
 Final step!
 
@@ -81,17 +81,16 @@ Please do not reply to this message; it was sent from an unmonitored email addre
         base64 encode token
       }
 
-    def read(token: String): Fu[Option[User]] =
-      (base64 decode token) ?? {
-        _ split separator match {
-          case Array(userId, userHashedEmail, hash)
-              if makeHash(makePayload(userId, userHashedEmail)) == hash =>
-            getHashedEmail(userId) flatMap { hashedEmail =>
-              (userHashedEmail == hashedEmail) ?? (UserRepo enabledById userId)
-            }
-          case _ => fuccess(none)
-        }
+    def read(token: String): Fu[Option[User]] = (base64 decode token) ?? {
+      _ split separator match {
+        case Array(userId, userHashedEmail, hash)
+            if makeHash(makePayload(userId, userHashedEmail)) == hash =>
+          getHashedEmail(userId) flatMap { hashedEmail =>
+            (userHashedEmail == hashedEmail) ?? (UserRepo enabledById userId)
+          }
+        case _ => fuccess(none)
       }
+    }
   }
 
   private object base64 {

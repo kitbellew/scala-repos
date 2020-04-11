@@ -94,8 +94,8 @@ sealed abstract class ==>>[A, B] {
     updateWithKey(k, (_, x) => f(x))
 
   /** like [[update]] but with the key available in the update function - O(log n) */
-  def updateWithKey(k: A, f: (A, B) => Option[B])(implicit
-      o: Order[A]): A ==>> B =
+  def updateWithKey(k: A, f: (A, B) => Option[B])(implicit o: Order[A]): A ==>>
+    B =
     this match {
       case Tip() => empty
       case Bin(kx, x, l, r) => o.order(k, kx) match {
@@ -394,9 +394,8 @@ sealed abstract class ==>>[A, B] {
   def mapKeys[C](f: A => C)(implicit o: Order[C]): C ==>> B =
     foldlWithKey(empty[C, B])((xs, k, x) => xs.insert(f(k), x))
 
-  def mapKeysWith[C](f: A => C, f2: (B, B) => B)(implicit
-      o: Order[C]): C ==>> B =
-    fromListWith[C, B](toList.map(x => (f(x._1), x._2)))(f2)
+  def mapKeysWith[C](f: A => C, f2: (B, B) => B)(implicit o: Order[C]): C ==>>
+    B = fromListWith[C, B](toList.map(x => (f(x._1), x._2)))(f2)
 
   /* Folds */
   def fold[C](z: C)(f: (A, B, C) => C): C = foldrWithKey(z)(f)
@@ -620,8 +619,8 @@ sealed abstract class ==>>[A, B] {
   def mapOption[C](f: B => Option[C])(implicit o: Order[A]): A ==>> C =
     mapOptionWithKey((_, x) => f(x))
 
-  def mapOptionWithKey[C](f: (A, B) => Option[C])(implicit
-      o: Order[A]): A ==>> C =
+  def mapOptionWithKey[C](f: (A, B) => Option[C])(implicit o: Order[A]): A ==>>
+    C =
     this match {
       case Tip() => empty
       case Bin(kx, x, l, r) => f(kx, x) match {
@@ -751,8 +750,8 @@ sealed abstract class ==>>[A, B] {
         }
     }
 
-  protected def join(kx: A, x: B, other: A ==>> B)(implicit
-      o: Order[A]): A ==>> B =
+  protected def join(kx: A, x: B, other: A ==>> B)(implicit o: Order[A]): A ==>>
+    B =
     (this, other) match {
       case (Tip(), r) => r.insertMin(kx, x)
       case (l, Tip()) => l.insertMax(kx, x)
@@ -946,8 +945,8 @@ private[scalaz] sealed trait MapEqual[A, B] extends Equal[A ==>> B] {
   implicit def A: Equal[A]
   implicit def B: Equal[B]
   final override def equal(a1: A ==>> B, a2: A ==>> B) =
-    Equal[Int].equal(a1.size, a2.size) && Equal[List[(A, B)]]
-      .equal(a1.toAscList, a2.toAscList)
+    Equal[Int].equal(a1.size, a2.size) &&
+      Equal[List[(A, B)]].equal(a1.toAscList, a2.toAscList)
 }
 
 object ==>> extends MapInstances {
@@ -979,8 +978,8 @@ object ==>> extends MapInstances {
   final def fromList[A: Order, B](l: List[(A, B)]): A ==>> B =
     l.foldLeft(empty[A, B]) { (t, x) => t.insert(x._1, x._2) }
 
-  final def fromListWith[A: Order, B](l: List[(A, B)])(
-      f: (B, B) => B): A ==>> B = fromListWithKey(l)((_, x, y) => f(x, y))
+  final def fromListWith[A: Order, B](l: List[(A, B)])(f: (B, B) => B): A ==>>
+    B = fromListWithKey(l)((_, x, y) => f(x, y))
 
   final def fromListWithKey[A: Order, B](l: List[(A, B)])(
       f: (A, B, B) => B): A ==>> B =
@@ -1001,9 +1000,8 @@ object ==>> extends MapInstances {
   final def unions[A: Order, B](xs: List[A ==>> B]): A ==>> B =
     xs.foldLeft(empty[A, B])((a, c) => a.union(c))
 
-  final def unionsWith[A: Order, B](f: (B, B) => B)(
-      xs: List[A ==>> B]): A ==>> B =
-    xs.foldLeft(empty[A, B])((a, c) => a.unionWith(c)(f))
+  final def unionsWith[A: Order, B](f: (B, B) => B)(xs: List[A ==>> B]): A ==>>
+    B = xs.foldLeft(empty[A, B])((a, c) => a.unionWith(c)(f))
 
   private[scalaz] final val ratio = 2
   private[scalaz] final val delta = 4
@@ -1028,18 +1026,12 @@ object ==>> extends MapInstances {
       case Tip() => sys.error("rotateL Tip")
     }
 
-  private def singleL[A, B](
-      k1: A,
-      x1: B,
-      t1: A ==>> B,
-      r: Bin[A, B]): A ==>> B =
+  private def singleL[A, B](k1: A, x1: B, t1: A ==>> B, r: Bin[A, B]): A ==>>
+    B =
     r match { case Bin(k2, x2, t2, t3) => Bin(k2, x2, Bin(k1, x1, t1, t2), t3) }
 
-  private def doubleL[A, B](
-      k1: A,
-      x1: B,
-      t1: A ==>> B,
-      r: Bin[A, B]): A ==>> B =
+  private def doubleL[A, B](k1: A, x1: B, t1: A ==>> B, r: Bin[A, B]): A ==>>
+    B =
     r match {
       case Bin(k2, x2, Bin(k3, x3, t2, t3), t4) =>
         Bin(k3, x3, Bin(k1, x1, t1, t2), Bin(k2, x2, t3, t4))
@@ -1055,18 +1047,12 @@ object ==>> extends MapInstances {
       case Tip() => sys.error("rotateR Tip")
     }
 
-  private def singleR[A, B](
-      k1: A,
-      x1: B,
-      l: Bin[A, B],
-      t3: A ==>> B): A ==>> B =
+  private def singleR[A, B](k1: A, x1: B, l: Bin[A, B], t3: A ==>> B): A ==>>
+    B =
     l match { case Bin(k2, x2, t1, t2) => Bin(k2, x2, t1, Bin(k1, x1, t2, t3)) }
 
-  private def doubleR[A, B](
-      k1: A,
-      x1: B,
-      l: Bin[A, B],
-      t4: A ==>> B): A ==>> B =
+  private def doubleR[A, B](k1: A, x1: B, l: Bin[A, B], t4: A ==>> B): A ==>>
+    B =
     l match {
       case Bin(k2, x2, t1, Bin(k3, x3, t2, t3)) =>
         Bin(k3, x3, Bin(k2, x2, t1, t2), Bin(k1, x1, t3, t4))

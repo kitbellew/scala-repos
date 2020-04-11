@@ -66,8 +66,8 @@ private[serverset2] class ZkSession(
       case None =>
         // if there was no previous value, ensure we have a gauge
         synchronized {
-          watchUpdateGauges ::= statsReceiver
-            .addGauge("last_watch_update", path) {
+          watchUpdateGauges ::=
+            statsReceiver.addGauge("last_watch_update", path) {
               Time.now.inLongSeconds - lastGoodUpdate.getOrElse(path, 0L)
             }
         }
@@ -329,13 +329,13 @@ private[serverset2] object ZkSession {
       // Upon initial connection, send auth info, then update `u`.
       zkSession.state.changes.filter {
         _ == WatchState.SessionState(SessionState.SyncConnected)
-      }.toFuture.unit before zkSession
-        .addAuthInfo("digest", Buf.Utf8(authInfo)) onSuccess { _ =>
-        logger.info(
-          s"New ZKSession is connected. Session ID: ${zkSession.sessionIdAsHex}")
-        v() = zkSession
-        backoff.reset()
-      }
+      }.toFuture.unit before
+        zkSession.addAuthInfo("digest", Buf.Utf8(authInfo)) onSuccess { _ =>
+          logger.info(
+            s"New ZKSession is connected. Session ID: ${zkSession.sessionIdAsHex}")
+          v() = zkSession
+          backoff.reset()
+        }
 
       // Kick off a delayed reconnection on session expiration.
       zkSession.state.changes.filter {

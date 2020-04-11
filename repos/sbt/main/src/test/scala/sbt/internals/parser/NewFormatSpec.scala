@@ -15,8 +15,8 @@ class NewFormatSpec extends AbstractSpec {
 
   "New Format " should {
     "Handle lines " in {
-      val rootPath = getClass.getClassLoader.getResource("")
-        .getPath + "/new-format/"
+      val rootPath = getClass.getClassLoader.getResource("").getPath +
+        "/new-format/"
       println(s"Reading files from: $rootPath")
       val allFiles = new File(rootPath).listFiles.toList
       foreach(allFiles) { path =>

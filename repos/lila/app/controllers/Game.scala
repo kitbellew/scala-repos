@@ -56,9 +56,9 @@ object Game extends LilaController {
                 (DateTimeFormat forPattern "yyyy-MM-dd") print new DateTime
               Ok.chunked(Env.api.pgnDump exportUserGames userId).withHeaders(
                 CONTENT_TYPE -> ContentTypes.TEXT,
-                CONTENT_DISPOSITION -> (
-                  "attachment; filename=" + s"lichess_${me.username}_$date.pgn"
-                ))
+                CONTENT_DISPOSITION ->
+                  ("attachment; filename=" +
+                    s"lichess_${me.username}_$date.pgn"))
             }
         )
       else notFound

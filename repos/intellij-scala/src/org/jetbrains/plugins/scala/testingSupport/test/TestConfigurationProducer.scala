@@ -90,9 +90,9 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
         (context.getModule == configurationModule ||
         context.getRunManager.getConfigurationTemplate(getConfigurationFactory)
           .getConfiguration.asInstanceOf[AbstractTestRunConfiguration]
-          .getConfigurationModule
-          .getModule == configurationModule) && configuration
-          .getTestClassPath == null && configuration.getTestName == null
+          .getConfigurationModule.getModule == configurationModule) &&
+        configuration.getTestClassPath == null &&
+        configuration.getTestName == null
       }
     } else false
   }

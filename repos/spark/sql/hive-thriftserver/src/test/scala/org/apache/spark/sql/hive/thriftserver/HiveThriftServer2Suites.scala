@@ -367,8 +367,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         // to demonstrate that cancellation works.
         val f = Future {
           statement.executeQuery(
-            "SELECT COUNT(*) FROM test_map " +
-              List.fill(10)("join test_map").mkString(" "))
+            "SELECT COUNT(*) FROM test_map " + List.fill(10)("join test_map")
+              .mkString(" "))
         }
         // Note that this is slightly race-prone: if the cancel is issued before the statement
         // begins executing then we'll fail with a timeout. As a result, this fixed delay is set
@@ -383,8 +383,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         try {
           val sf = Future {
             statement.executeQuery(
-              "SELECT COUNT(*) FROM test_map " +
-                List.fill(4)("join test_map").mkString(" "))
+              "SELECT COUNT(*) FROM test_map " + List.fill(4)("join test_map")
+                .mkString(" "))
           }
           // Similarly, this is also slightly race-prone on fast machines where the query above
           // might race and complete before we issue the cancel.
@@ -528,8 +528,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
 
   test("SPARK-11043 check operation log root directory") {
     val expectedLine =
-      "Operation log root directory is created: " + operationLogPath
-        .getAbsoluteFile
+      "Operation log root directory is created: " +
+        operationLogPath.getAbsoluteFile
     assert(Source.fromFile(logPath).getLines().exists(_.contains(expectedLine)))
   }
 }
@@ -747,8 +747,7 @@ abstract class HiveThriftServer2Test
 
     val command = serverStartCommand(port)
 
-    diagnosisBuffer ++=
-      s"""
+    diagnosisBuffer ++= s"""
          |### Attempt $attempt ###
          |HiveThriftServer2 command line: $command
          |Listening port: $port

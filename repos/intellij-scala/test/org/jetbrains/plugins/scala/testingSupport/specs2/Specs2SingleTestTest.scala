@@ -46,12 +46,11 @@ abstract class Specs2SingleTestTest extends Specs2TestCase {
           "[root]",
           specsTestClassName,
           "The 'SpecificationTest' should",
-          "run single test") &&
-          checkResultTreeDoesNotHaveNodes(
-            root,
-            "ignore other test",
-            "run greater test",
-            "run exclamation test"),
+          "run single test") && checkResultTreeDoesNotHaveNodes(
+          root,
+          "ignore other test",
+          "run greater test",
+          "run exclamation test"),
       debug = true
     )
 
@@ -66,12 +65,11 @@ abstract class Specs2SingleTestTest extends Specs2TestCase {
           "[root]",
           specsTestClassName,
           "The 'SpecificationTest' should",
-          "run exclamation test") &&
-          checkResultTreeDoesNotHaveNodes(
-            root,
-            "ignore other test",
-            "run single test",
-            "run greater test")
+          "run exclamation test") && checkResultTreeDoesNotHaveNodes(
+          root,
+          "ignore other test",
+          "run single test",
+          "run greater test")
     )
 
     runTestByLocation(
@@ -85,12 +83,11 @@ abstract class Specs2SingleTestTest extends Specs2TestCase {
           "[root]",
           specsTestClassName,
           "The 'SpecificationTest' should",
-          "run greater test") &&
-          checkResultTreeDoesNotHaveNodes(
-            root,
-            "ignore other test",
-            "run single test",
-            "run exclamation test")
+          "run greater test") && checkResultTreeDoesNotHaveNodes(
+          root,
+          "ignore other test",
+          "run single test",
+          "run exclamation test")
     )
   }
 }

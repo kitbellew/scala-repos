@@ -52,8 +52,9 @@ case class ClassName(pack: PackageName, name: String)
     else ClassName.cleanupPackage(pack.fqnString + "." + name)
 
   def internalString =
-    "L" + (if (pack.path.isEmpty) name
-           else pack.path.mkString("/") + "/" + name) + ";"
+    "L" +
+      (if (pack.path.isEmpty) name else pack.path.mkString("/") + "/" + name) +
+      ";"
 }
 
 object ClassName {

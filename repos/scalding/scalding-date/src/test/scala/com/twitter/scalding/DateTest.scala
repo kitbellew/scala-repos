@@ -120,8 +120,8 @@ class DateTest extends WordSpec {
       val start_str = "2011-10-24 20:03:00"
       //string -> date -> string
       assert(
-        RichDate(start_str)
-          .toString(DateOps.DATETIME_HMS_WITH_DASH) === start_str)
+        RichDate(start_str).toString(DateOps.DATETIME_HMS_WITH_DASH) ===
+          start_str)
       //long -> date == date -> long -> date
       val long_val = 1319511818135L
       val date = RichDate(long_val)
@@ -170,8 +170,8 @@ class DateTest extends WordSpec {
         Seconds(1).floorOf(RichDate.upperBound("2010-10-01 14")) === Seconds(1)
           .floorOf(RichDate("2010-10-01 14:59:59")))
       assert(
-        Seconds(1).floorOf(RichDate.upperBound("2010-10-01 14:15")) === Seconds(
-          1).floorOf(RichDate("2010-10-01 14:15:59")))
+        Seconds(1).floorOf(RichDate.upperBound("2010-10-01 14:15")) ===
+          Seconds(1).floorOf(RichDate("2010-10-01 14:15:59")))
     }
     "Have an implicit Ordering" in {
       implicitly[Ordering[RichDate]]
@@ -220,12 +220,11 @@ class DateTest extends WordSpec {
     "have each partition disjoint and adjacent" in {
       def eachIsDisjoint(d: DateRange, dur: Duration) {
         val dl = d.each(dur)
-        assert(
-          dl.zip(dl.tail).forall {
-            case (da, db) =>
-              da.isBefore(db.start) && db.isAfter(da.end) && ((da
-                .end + Millisecs(1)) == db.start)
-          })
+        assert(dl.zip(dl.tail).forall {
+          case (da, db) =>
+            da.isBefore(db.start) && db.isAfter(da.end) &&
+              ((da.end + Millisecs(1)) == db.start)
+        })
       }
       eachIsDisjoint(DateRange("2010-10-01", "2010-10-03"), Days(1))
       eachIsDisjoint(DateRange("2010-10-01", "2010-10-03"), Weeks(1))
@@ -333,8 +332,7 @@ class DateTest extends WordSpec {
             List("/2011/12/*/", "/2012/01/01/", "/2012/01/02/")) ::
           (
             t2.globify(DateRange("2011-11-01T12", "2011-12-02T14")),
-            List("/2011/11/*/", "/2011/12/01/", "/2011/12/02/")) ::
-          Nil
+            List("/2011/11/*/", "/2011/12/01/", "/2011/12/02/")) :: Nil
 
       testcases.foreach { case (l, r) => assert(l === r) }
     }
@@ -353,8 +351,8 @@ class DateTest extends WordSpec {
       hourlyTestCases.foreach { dr =>
         val resultantDR = globifierOps.hourlyRtGlobifier(dr)
         assert(
-          globifierOps.normalizeHrDr(dr) === globifierOps
-            .normalizeHrDr(resultantDR))
+          globifierOps.normalizeHrDr(dr) ===
+            globifierOps.normalizeHrDr(resultantDR))
       }
 
       val dailyTestCases = List(
@@ -368,8 +366,8 @@ class DateTest extends WordSpec {
       dailyTestCases.foreach { dr =>
         val resultantDR = globifierOps.dailyRtGlobifier(dr)
         assert(
-          globifierOps.normalizeDayDr(dr) === globifierOps
-            .normalizeDayDr(resultantDR))
+          globifierOps.normalizeDayDr(dr) ===
+            globifierOps.normalizeDayDr(resultantDR))
       }
     }
 
@@ -393,8 +391,8 @@ class DateTest extends WordSpec {
 
       val r = new java.util.Random()
       (0 until 100) foreach { step =>
-        val start = RichDate("2011-08-03").value.getTime + r
-          .nextInt(Int.MaxValue)
+        val start = RichDate("2011-08-03").value.getTime +
+          r.nextInt(Int.MaxValue)
         val dr = DateRange(start, start + r.nextInt(Int.MaxValue))
         val splits = bruteForce(pattern, dr, Hours(1))
         val globed = t1.globify(dr)

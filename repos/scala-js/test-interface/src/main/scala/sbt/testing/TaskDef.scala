@@ -104,8 +104,7 @@ final class TaskDef(
       case that: TaskDef =>
         this.fullyQualifiedName == that.fullyQualifiedName &&
           this.fingerprint == that.fingerprint &&
-          this.explicitlySpecified == that.explicitlySpecified &&
-          Arrays.equals(
+          this.explicitlySpecified == that.explicitlySpecified && Arrays.equals(
             this.selectors.asInstanceOf[Array[AnyRef]],
             that.selectors.asInstanceOf[Array[AnyRef]])
       case _ => false
@@ -116,8 +115,8 @@ final class TaskDef(
     retVal = 31 * retVal + _fullyQualifiedName.hashCode()
     retVal = 31 * retVal + _fingerprint.hashCode()
     retVal = 31 * retVal + (if (_explicitlySpecified) 1 else 0)
-    retVal = 31 * retVal + Arrays
-      .hashCode(_selectors.asInstanceOf[Array[AnyRef]])
+    retVal = 31 * retVal +
+      Arrays.hashCode(_selectors.asInstanceOf[Array[AnyRef]])
     retVal
   }
 

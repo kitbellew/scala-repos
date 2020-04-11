@@ -34,12 +34,10 @@ class PromiseTests extends MinimalScalaTest {
       val empty = Promise[String]().future
       val timedOut = Promise.successful[String]("Timedout").future
 
-      Await.result(failure fallbackTo timedOut, defaultTimeout) mustBe (
-        "Timedout"
-      )
-      Await.result(timedOut fallbackTo empty, defaultTimeout) mustBe (
-        "Timedout"
-      )
+      Await.result(failure fallbackTo timedOut, defaultTimeout) mustBe
+        ("Timedout")
+      Await.result(timedOut fallbackTo empty, defaultTimeout) mustBe
+        ("Timedout")
       Await.result(
         otherFailure fallbackTo failure fallbackTo timedOut,
         defaultTimeout) mustBe ("Timedout")
@@ -161,9 +159,8 @@ class PromiseTests extends MinimalScalaTest {
 
     "filter result" in {
       f { (future, result) =>
-        Await.result((future filter (_ => true)), defaultTimeout) mustBe (
-          result
-        )
+        Await.result((future filter (_ => true)), defaultTimeout) mustBe
+          (result)
         intercept[NoSuchElementException] {
           Await.result((future filter (_ => false)), defaultTimeout)
         }
@@ -172,9 +169,8 @@ class PromiseTests extends MinimalScalaTest {
 
     "transform result with map" in {
       f((future, result) =>
-        Await.result((future map (_.toString.length)), defaultTimeout) mustBe (
-          result.toString.length
-        ))
+        Await.result((future map (_.toString.length)), defaultTimeout) mustBe
+          (result.toString.length))
     }
 
     "compose result with flatMap" in {
@@ -210,9 +206,8 @@ class PromiseTests extends MinimalScalaTest {
     "not recover from exception" in {
       f((future, result) =>
         Await
-          .result(
-            future.recover({ case _ => "pigdog" }),
-            defaultTimeout) mustBe (result))
+          .result(future.recover({ case _ => "pigdog" }), defaultTimeout) mustBe
+          (result))
     }
 
     "perform action on result" in {
@@ -260,8 +255,8 @@ class PromiseTests extends MinimalScalaTest {
 
     "throw exception with 'Await.result'" in {
       f { (future, message) =>
-        intercept[E] { Await.result(future, defaultTimeout) }
-          .getMessage mustBe (message)
+        intercept[E] { Await.result(future, defaultTimeout) }.getMessage mustBe
+          (message)
       }
     }
 

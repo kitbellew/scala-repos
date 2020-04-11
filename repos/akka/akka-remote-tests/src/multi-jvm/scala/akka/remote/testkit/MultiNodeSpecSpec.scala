@@ -29,10 +29,11 @@ class MultiNodeSpecSpec
 
   "A MultiNodeSpec" must {
 
-    "wait for all nodes to remove themselves before we shut the conductor down" taggedAs LongRunningTest in {
-      enterBarrier("startup")
-      // this test is empty here since it only exercises the shutdown code in the MultiNodeSpec
-    }
+    "wait for all nodes to remove themselves before we shut the conductor down" taggedAs
+      LongRunningTest in {
+        enterBarrier("startup")
+        // this test is empty here since it only exercises the shutdown code in the MultiNodeSpec
+      }
 
   }
 }

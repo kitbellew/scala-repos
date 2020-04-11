@@ -70,8 +70,8 @@ trait NamesDefaults {
   }
 
   /** returns `true` if every element is equal to its index */
-  def allArgsArePositional(a: Array[Int]) =
-    (0 until a.length).forall(i => a(i) == i)
+  def allArgsArePositional(a: Array[Int]) = (0 until a.length)
+    .forall(i => a(i) == i)
 
   /**
     * Transform a function application into a Block, and assigns typer.context
@@ -174,8 +174,8 @@ trait NamesDefaults {
       def blockWithQualifier(qual: Tree, selected: Name) = {
         val sym = blockTyper.context.owner.newValue(
           unit.freshTermName(nme.QUAL_PREFIX),
-          newFlags = ARTIFACT) setInfo uncheckedBounds(qual.tpe) setPos (qual
-          .pos.makeTransparent)
+          newFlags = ARTIFACT) setInfo uncheckedBounds(qual.tpe) setPos
+          (qual.pos.makeTransparent)
         blockTyper.context.scope enter sym
         val vd = atPos(sym.pos)(ValDef(sym, qual) setType NoType)
         // it stays in Vegas: SI-5720, SI-5727
@@ -332,14 +332,12 @@ trait NamesDefaults {
           val body =
             if (byName) {
               val res = blockTyper.typed(Function(List(), arg))
-              new ChangeOwnerTraverser(
-                context.owner,
-                res.symbol) traverse arg // fixes #2290
+              new ChangeOwnerTraverser(context.owner, res.symbol) traverse
+                arg // fixes #2290
               res
             } else {
-              new ChangeOwnerTraverser(
-                context.owner,
-                sym) traverse arg // fixes #4502
+              new ChangeOwnerTraverser(context.owner, sym) traverse
+                arg // fixes #4502
               if (repeated) arg match {
                 case WildcardStarArg(expr) => expr
                 case _                     => blockTyper typed gen.mkSeqApply(resetAttrs(arg))
@@ -470,8 +468,8 @@ trait NamesDefaults {
         val n = argName(arg)
         n.isEmpty || n.get != p.name
       })
-    val allPositional = missingParams.length == paramsWithoutPositionalArg
-      .length
+    val allPositional = missingParams.length ==
+      paramsWithoutPositionalArg.length
     (missingParams, allPositional)
   }
 
@@ -498,28 +496,29 @@ trait NamesDefaults {
         params,
         nameOfNamedArg)
       if (missing forall (_.hasDefault)) {
-        val defaultArgs = missing flatMap (p => {
-          val defGetter = defaultGetter(p, context)
-          // TODO #3649 can create spurious errors when companion object is gone (because it becomes unlinked from scope)
-          if (defGetter == NoSymbol)
-            None // prevent crash in erroneous trees, #3649
-          else {
-            var default1: Tree = qual match {
-              case Some(q) => gen.mkAttributedSelect(q.duplicate, defGetter)
-              case None    => gen.mkAttributedRef(defGetter)
+        val defaultArgs = missing flatMap
+          (p => {
+            val defGetter = defaultGetter(p, context)
+            // TODO #3649 can create spurious errors when companion object is gone (because it becomes unlinked from scope)
+            if (defGetter == NoSymbol)
+              None // prevent crash in erroneous trees, #3649
+            else {
+              var default1: Tree = qual match {
+                case Some(q) => gen.mkAttributedSelect(q.duplicate, defGetter)
+                case None    => gen.mkAttributedRef(defGetter)
 
+              }
+              default1 =
+                if (targs.isEmpty) default1
+                else TypeApply(default1, targs.map(_.duplicate))
+              val default2 = (default1 /: previousArgss)((tree, args) =>
+                Apply(tree, args.map(_.duplicate)))
+              Some(atPos(pos) {
+                if (positional) default2
+                else AssignOrNamedArg(Ident(p.name), default2)
+              })
             }
-            default1 =
-              if (targs.isEmpty) default1
-              else TypeApply(default1, targs.map(_.duplicate))
-            val default2 = (default1 /: previousArgss)((tree, args) =>
-              Apply(tree, args.map(_.duplicate)))
-            Some(atPos(pos) {
-              if (positional) default2
-              else AssignOrNamedArg(Ident(p.name), default2)
-            })
-          }
-        })
+          })
         (givenArgs ::: defaultArgs, Nil)
       } else (givenArgs, missing filterNot (_.hasDefault))
     } else (givenArgs, Nil)
@@ -530,8 +529,8 @@ trait NamesDefaults {
     * the default getter.
     */
   def defaultGetter(param: Symbol, context: Context): Symbol = {
-    val i = param.owner.paramss.flatten
-      .indexWhere(p => p.name == param.name) + 1
+    val i = param.owner.paramss.flatten.indexWhere(p => p.name == param.name) +
+      1
     if (i > 0) {
       val defGetterName = nme.defaultGetterName(param.owner.name, i)
       if (param.owner.isConstructor) {

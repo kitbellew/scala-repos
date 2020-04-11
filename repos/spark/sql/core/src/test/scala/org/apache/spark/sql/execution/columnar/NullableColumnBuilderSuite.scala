@@ -109,8 +109,8 @@ class NullableColumnBuilderSuite extends SparkFunSuite {
       (0 until 4).foreach { _ =>
         columnType.extract(buffer, actual, 0)
         assert(
-          converter(actual.get(0, dataType)) === converter(
-            randomRow.get(0, dataType)),
+          converter(actual.get(0, dataType)) ===
+            converter(randomRow.get(0, dataType)),
           "Extracted value didn't equal to the original one")
       }
 

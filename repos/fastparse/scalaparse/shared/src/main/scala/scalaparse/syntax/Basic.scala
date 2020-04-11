@@ -26,8 +26,9 @@ object Basic {
   def isOpChar(c: Char) = {
     // scalac 2.10 crashes if OtherOrMathSymbol below is substituted by its body
     // Same thing for LetterDigit, LowerChar, UpperChar
-    fastparse.CharPredicates.isOtherSymbol(c) || fastparse.CharPredicates
-      .isMathSymbol(c) || "!#%&*+-/:<=>?@\\^|~".contains(c)
+    fastparse.CharPredicates.isOtherSymbol(c) ||
+    fastparse.CharPredicates.isMathSymbol(c) ||
+    "!#%&*+-/:<=>?@\\^|~".contains(c)
   }
   val Letter = P(CharPred(c => c.isLetter | c.isDigit | "$_".contains(c)))
   val LetterDigitDollarUnderscore = P(

@@ -42,51 +42,52 @@ abstract class InitialHeartbeatSpec
 
   "A member" must {
 
-    "detect failure even though no heartbeats have been received" taggedAs LongRunningTest in {
-      val firstAddress = address(first)
-      val secondAddress = address(second)
-      awaitClusterUp(first)
+    "detect failure even though no heartbeats have been received" taggedAs
+      LongRunningTest in {
+        val firstAddress = address(first)
+        val secondAddress = address(second)
+        awaitClusterUp(first)
 
-      runOn(first) {
-        within(10 seconds) {
-          awaitAssert(
-            {
-              cluster.sendCurrentClusterState(testActor)
-              expectMsgType[CurrentClusterState].members
-                .map(_.address) should contain(secondAddress)
-            },
-            interval = 50.millis)
+        runOn(first) {
+          within(10 seconds) {
+            awaitAssert(
+              {
+                cluster.sendCurrentClusterState(testActor)
+                expectMsgType[CurrentClusterState].members.map(_.address) should
+                  contain(secondAddress)
+              },
+              interval = 50.millis)
+          }
         }
-      }
-      runOn(second) {
-        cluster.join(first)
-        within(10 seconds) {
-          awaitAssert(
-            {
-              cluster.sendCurrentClusterState(testActor)
-              expectMsgType[CurrentClusterState].members
-                .map(_.address) should contain(firstAddress)
-            },
-            interval = 50.millis)
+        runOn(second) {
+          cluster.join(first)
+          within(10 seconds) {
+            awaitAssert(
+              {
+                cluster.sendCurrentClusterState(testActor)
+                expectMsgType[CurrentClusterState].members.map(_.address) should
+                  contain(firstAddress)
+              },
+              interval = 50.millis)
+          }
         }
-      }
-      enterBarrier("second-joined")
+        enterBarrier("second-joined")
 
-      runOn(controller) {
-        // It is likely that second has not started heartbeating to first yet,
-        // and when it does the messages doesn't go through and the first extra heartbeat is triggered.
-        // If the first heartbeat arrives, it will detect the failure anyway but not really exercise the
-        // part that we are trying to test here.
-        testConductor.blackhole(first, second, Direction.Both).await
-      }
-
-      runOn(second) {
-        within(15 seconds) {
-          awaitCond(!cluster.failureDetector.isAvailable(first))
+        runOn(controller) {
+          // It is likely that second has not started heartbeating to first yet,
+          // and when it does the messages doesn't go through and the first extra heartbeat is triggered.
+          // If the first heartbeat arrives, it will detect the failure anyway but not really exercise the
+          // part that we are trying to test here.
+          testConductor.blackhole(first, second, Direction.Both).await
         }
-      }
 
-      enterBarrier("after-1")
-    }
+        runOn(second) {
+          within(15 seconds) {
+            awaitCond(!cluster.failureDetector.isAvailable(first))
+          }
+        }
+
+        enterBarrier("after-1")
+      }
   }
 }

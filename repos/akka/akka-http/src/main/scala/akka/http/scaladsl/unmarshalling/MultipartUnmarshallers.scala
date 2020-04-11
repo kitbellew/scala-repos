@@ -106,8 +106,8 @@ trait MultipartUnmarshallers {
       log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null): FromEntityUnmarshaller[T] =
     Unmarshaller.withMaterializer { implicit ec ⇒ mat => entity ⇒
-      if (entity.contentType.mediaType.isMultipart && mediaRange
-            .matches(entity.contentType.mediaType)) {
+      if (entity.contentType.mediaType.isMultipart &&
+          mediaRange.matches(entity.contentType.mediaType)) {
         entity.contentType.mediaType.params.get("boundary") match {
           case None ⇒
             FastFuture.failed(new RuntimeException(
@@ -138,7 +138,8 @@ trait MultipartUnmarshallers {
                         case x: HttpEntity.Strict ⇒ x
                         case x ⇒
                           throw new IllegalStateException(
-                            "Unexpected entity type from strict BodyPartParser: " + x)
+                            "Unexpected entity type from strict BodyPartParser: " +
+                              x)
                       }
                       builder += createStrictBodyPart(entity, headers)
                     case ParseError(errorInfo) ⇒

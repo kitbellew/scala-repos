@@ -280,11 +280,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
           assert(handler.getLevel == Level.INFO)
           val formatter = handler.formatter
           assert(
-            formatter
-              .formatPrefix(
-                javalog.Level.WARNING,
-                "10:55",
-                "hello") == "WARNING 10:55 hello")
+            formatter.formatPrefix(javalog.Level.WARNING, "10:55", "hello") ==
+              "WARNING 10:55 hello")
           assert(log.name == "com.twitter")
           assert(formatter.truncateAt == 1024)
           assert(formatter.useFullPackageNames == true)
@@ -307,8 +304,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
             assert(log.getHandlers.length == 1)
             val h = log.getHandlers()(0).asInstanceOf[SyslogHandler]
             assert(
-              h.dest.asInstanceOf[InetSocketAddress]
-                .getHostName == "example.com")
+              h.dest.asInstanceOf[InetSocketAddress].getHostName ==
+                "example.com")
             assert(h.dest.asInstanceOf[InetSocketAddress].getPort == 212)
             val formatter = h.formatter.asInstanceOf[SyslogFormatter]
             assert(formatter.serverName == Some("elmo"))

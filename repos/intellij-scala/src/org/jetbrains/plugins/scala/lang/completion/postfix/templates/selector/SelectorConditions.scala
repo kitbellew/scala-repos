@@ -41,8 +41,8 @@ object SelectorConditions {
                   ancestorFqn,
                   GlobalSearchScope.allScope(project),
                   ClassCategory.ALL)
-                (psiClass != null && base != null && ScEquivalenceUtil
-                  .areClassesEquivalent(psiClass, base)) ||
+                (psiClass != null && base != null &&
+                ScEquivalenceUtil.areClassesEquivalent(psiClass, base)) ||
                 manager.cachedDeepIsInheritor(psiClass, base)
               }
             }.getOrElse(false)

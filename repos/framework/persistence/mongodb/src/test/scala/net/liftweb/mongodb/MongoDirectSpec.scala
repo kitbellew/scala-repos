@@ -134,8 +134,8 @@ class MongoDirectSpec extends Specification with MongoTestKit {
 
       // get the count using a query
       coll
-        .getCount(
-          new BasicDBObject("i", new BasicDBObject("$gt", 50))) must_== 50
+        .getCount(new BasicDBObject("i", new BasicDBObject("$gt", 50))) must_==
+        50
 
       // use a cursor to get all docs
       val cur = coll.find

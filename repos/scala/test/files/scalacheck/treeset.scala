@@ -114,8 +114,8 @@ object Test extends Properties("TreeSet") {
   property("slice") = forAll(genSliceParms) {
     case (subject, from, until) =>
       val slice = subject.slice(from, until)
-      slice.size == until - from && subject.toSeq == subject.take(from)
-        .toSeq ++ slice ++ subject.drop(until)
+      slice.size == until - from &&
+      subject.toSeq == subject.take(from).toSeq ++ slice ++ subject.drop(until)
   }
 
   property("takeWhile") = forAll { (subject: TreeSet[Int]) =>
@@ -154,8 +154,8 @@ object Test extends Properties("TreeSet") {
     subject.size > 1 ==> {
       val n = choose(1, subject.size - 1).sample.get
       val until = subject.drop(n).firstKey
-      subject.until(until).lastKey == subject.take(n).lastKey && subject
-        .until(until).forall(_ <= until)
+      subject.until(until).lastKey == subject.take(n).lastKey &&
+      subject.until(until).forall(_ <= until)
     }
   }
 
@@ -163,8 +163,8 @@ object Test extends Properties("TreeSet") {
     subject.nonEmpty ==> {
       val element = oneOf(subject.toSeq).sample.get
       val removed = subject - element
-      subject.contains(element) && !removed.contains(element) && subject
-        .size - 1 == removed.size
+      subject.contains(element) && !removed.contains(element) &&
+      subject.size - 1 == removed.size
     }
   }
 

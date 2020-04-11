@@ -97,9 +97,9 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
     val caretIndex = text.indexOf(CARET_MARKER)
     val highlights: mutable.Buffer[HighlightInfo] = for {
       info <- myFixture.doHighlighting() if info.getDescription == annotation
-      if caretIndex == -1 || new TextRange(
-        info.getStartOffset,
-        info.getEndOffset).contains(caretIndex)
+      if caretIndex == -1 ||
+        new TextRange(info.getStartOffset, info.getEndOffset)
+          .contains(caretIndex)
     } yield info
     val ranges = highlights.map(info => (info.startOffset, info.endOffset))
     assert(
@@ -194,12 +194,13 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
 
     val ranges = withRightDescription
       .map(info => (info.getStartOffset, info.getEndOffset))
-    val message = "Highlights with this description are at " + ranges
-      .mkString(" ") + ", but has to be at " + (selectionStart, selectionEnd)
+    val message = "Highlights with this description are at " +
+      ranges.mkString(" ") + ", but has to be at " +
+      (selectionStart, selectionEnd)
     assert(
       withRightDescription.exists(info =>
-        info.getStartOffset == selectionStart && info
-          .getEndOffset == selectionEnd),
+        info.getStartOffset == selectionStart &&
+          info.getEndOffset == selectionEnd),
       message)
 
   }
@@ -229,11 +230,11 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       else startOffset <= caretIndex && endOffset >= caretIndex
     }
     myFixture.doHighlighting().foreach(info =>
-      if (info != null && info.quickFixActionRanges != null && checkCaret(
-            info.getStartOffset,
-            info.getEndOffset))
-        actions ++= (for (pair <- info.quickFixActionRanges if pair != null)
-          yield pair.getFirst.getAction))
+      if (info != null && info.quickFixActionRanges != null &&
+          checkCaret(info.getStartOffset, info.getEndOffset))
+        actions ++=
+          (for (pair <- info.quickFixActionRanges if pair != null)
+            yield pair.getFirst.getAction))
 
     assert(actions.nonEmpty, "There is no available fixes.")
 

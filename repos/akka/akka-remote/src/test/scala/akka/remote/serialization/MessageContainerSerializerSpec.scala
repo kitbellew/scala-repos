@@ -19,8 +19,8 @@ class MessageContainerSerializerSpec extends AkkaSpec {
   "DaemonMsgCreateSerializer" must {
 
     "resolve serializer for ActorSelectionMessage" in {
-      ser.serializerFor(classOf[ActorSelectionMessage]).getClass should ===(
-        classOf[MessageContainerSerializer])
+      ser.serializerFor(classOf[ActorSelectionMessage]).getClass should
+        ===(classOf[MessageContainerSerializer])
     }
 
     "serialize and de-serialize ActorSelectionMessage" in {

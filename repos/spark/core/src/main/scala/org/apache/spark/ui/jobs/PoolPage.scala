@@ -56,9 +56,9 @@ private[ui] class PoolPage(parent: StagesTab) extends WebUIPage("pool") {
       val poolTable = new PoolTable(pools, parent)
 
       val content =
-        <h4>Summary </h4> ++ poolTable.toNodeSeq ++
-          <h4>{activeStages.size} Active Stages</h4> ++ activeStagesTable
-          .toNodeSeq
+        <h4>Summary </h4> ++ poolTable.toNodeSeq ++ <h4>{
+          activeStages.size
+        } Active Stages</h4> ++ activeStagesTable.toNodeSeq
 
       UIUtils
         .headerSparkPage("Fair Scheduler Pool: " + poolName, content, parent)

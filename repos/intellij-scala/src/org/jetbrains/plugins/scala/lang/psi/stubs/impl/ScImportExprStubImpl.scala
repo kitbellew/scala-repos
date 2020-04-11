@@ -46,9 +46,11 @@ class ScImportExprStubImpl[ParentPsi <: PsiElement](
   def reference: Option[ScStableCodeReferenceElement] = {
     if (myReference != null) {
       val referenceElement = myReference.get
-      if (referenceElement != null && (referenceElement.isEmpty || (
-            referenceElement.get.getContext eq getPsi
-          ))) { return referenceElement }
+      if (referenceElement != null &&
+          (referenceElement.isEmpty ||
+          (referenceElement.get.getContext eq getPsi))) {
+        return referenceElement
+      }
     }
     val res =
       if (referenceText == StringRef.fromString("")) None

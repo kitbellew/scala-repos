@@ -58,9 +58,11 @@ object ScopeSuggester {
       for (elementOwner <- owners) {
         val pparent = PsiTreeUtil
           .getParentOfType(parent, classOf[ScTemplateDefinition])
-        if (pparent != null && (!elementOwner
-              .isAncestorOf(pparent) || !elementOwner
-              .isInstanceOf[ScTemplateDefinition])) { result = false }
+        if (pparent != null &&
+            (!elementOwner.isAncestorOf(pparent) ||
+            !elementOwner.isInstanceOf[ScTemplateDefinition])) {
+          result = false
+        }
       }
       result
     }
@@ -69,8 +71,8 @@ object ScopeSuggester {
       .isScriptFile()
 
     val owners = ScalaRefactoringUtil
-      .getTypeParameterOwnerList(currentElement) ++ ScalaRefactoringUtil
-      .getTypeAliasOwnersList(currentElement)
+      .getTypeParameterOwnerList(currentElement) ++
+      ScalaRefactoringUtil.getTypeAliasOwnersList(currentElement)
     var parent = getParent(currentElement, isScriptFile)
 
     //forbid to work with no template definition level

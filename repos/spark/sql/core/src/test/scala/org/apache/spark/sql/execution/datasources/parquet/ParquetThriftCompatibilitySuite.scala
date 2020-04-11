@@ -71,7 +71,8 @@ class ParquetThriftCompatibilitySuite
         )
 
         Row(
-          nonNullablePrimitiveValues ++ nullablePrimitiveValues ++ complexValues: _*)
+          nonNullablePrimitiveValues ++ nullablePrimitiveValues ++
+            complexValues: _*)
       }
     )
   }

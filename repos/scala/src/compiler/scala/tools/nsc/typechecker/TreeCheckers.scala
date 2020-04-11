@@ -131,8 +131,9 @@ abstract class TreeCheckers extends Analyzer {
         val s2 = wholetreestr(tree)
         if (s1 contains s2) ()
         else
-          movedMsgs += ("\n** %s moved:\n** Previously:\n%s\n** Currently:\n%s"
-            .format(ownerstr(sym), s1 mkString ", ", s2))
+          movedMsgs +=
+            ("\n** %s moved:\n** Previously:\n%s\n** Currently:\n%s"
+              .format(ownerstr(sym), s1 mkString ", ", s2))
       }
     }
 
@@ -332,7 +333,8 @@ abstract class TreeCheckers extends Analyzer {
 
                     assertFn(
                       agetter == sym || asetter == sym,
-                      sym + " is getter or setter, but accessed sym " + accessed + " shows " + agetter + " and " + asetter)
+                      sym + " is getter or setter, but accessed sym " +
+                        accessed + " shows " + agetter + " and " + asetter)
                   }
               }
             }
@@ -340,8 +342,8 @@ abstract class TreeCheckers extends Analyzer {
             if (sym.hasGetter && !sym.isOuterField && !sym.isOuterAccessor) {
               assertFn(
                 sym.getterIn(sym.owner) != NoSymbol,
-                ownerstr(sym) + " has getter but cannot be found. " + sym
-                  .ownerChain)
+                ownerstr(sym) + " has getter but cannot be found. " +
+                  sym.ownerChain)
             }
           case Apply(fn, args) =>
             if (args exists (_ == EmptyTree))
@@ -353,11 +355,11 @@ abstract class TreeCheckers extends Analyzer {
           case This(_) =>
             checkSym(tree)
             if (sym.isStatic && sym.hasModuleFlag) ()
-            else if (currentOwner.ownerChain takeWhile (_ != sym) exists (
-                       _ == NoSymbol
-                     ))
+            else if (currentOwner.ownerChain takeWhile (_ != sym) exists
+                       (_ == NoSymbol))
               return fail(
-                "tree symbol " + sym + " does not point to enclosing class; tree = ")
+                "tree symbol " + sym +
+                  " does not point to enclosing class; tree = ")
 
           /* XXX: temporary while Import nodes are arriving untyped. */
           case Import(_, _) => return
@@ -370,24 +372,25 @@ abstract class TreeCheckers extends Analyzer {
 
           tree match {
             case x: PackageDef =>
-              if ((sym.ownerChain contains currentOwner) || currentOwner
-                    .isEmptyPackageClass) ()
+              if ((sym.ownerChain contains currentOwner) ||
+                  currentOwner.isEmptyPackageClass) ()
               else
                 fail(
-                  sym + " owner chain does not contain currentOwner " + currentOwner + sym
-                    .ownerChain)
+                  sym + " owner chain does not contain currentOwner " +
+                    currentOwner + sym.ownerChain)
             case _ =>
               def cond(s: Symbol) = !s.isTerm || s.isMethod || s == sym.owner
 
               if (sym.owner != currentOwner) {
-                val expected =
-                  currentOwner.ownerChain find (x => cond(x)) getOrElse {
+                val expected = currentOwner.ownerChain find
+                  (x => cond(x)) getOrElse {
                     fail("DefTree can't find owner: "); NoSymbol
                   }
                 if (sym.owner != expected) fail(sm"""|
-                            | currentOwner chain: ${currentOwner.ownerChain take 3 mkString " -> "}
-                            |       symbol chain: ${sym
-                  .ownerChain mkString " -> "}""")
+                            | currentOwner chain: ${currentOwner.ownerChain take
+                  3 mkString " -> "}
+                            |       symbol chain: ${sym.ownerChain mkString
+                  " -> "}""")
               }
           }
         }
@@ -415,16 +418,16 @@ abstract class TreeCheckers extends Analyzer {
           treeSym hasTransOwner sym.enclosingSuchThat(x =>
             !x.isTypeParameterOrSkolem) // account for higher order type params
         def isEligible(sym: Symbol) =
-          (sym ne NoSymbol) && (sym.isTypeParameter
-            || sym.isLocalToBlock)
+          (sym ne NoSymbol) && (sym.isTypeParameter || sym.isLocalToBlock)
         val referencedSymbols = (treeSym :: referencesInType(treeInfo))
           .distinct filter (sym => isEligible(sym) && !isOk(sym))
         def mk[T](
             what: String,
             x: T,
             str: T => String = (x: T) => "" + x): ((Any, String)) =
-          x -> s"%10s  %-20s %s"
-            .format(what, classString(x), truncate(str(x), 80).trim)
+          x ->
+            s"%10s  %-20s %s"
+              .format(what, classString(x), truncate(str(x), 80).trim)
 
         def encls =
           enclosingMemberDefs.filterNot(_.symbol == treeSym).zipWithIndex map {
@@ -460,11 +463,12 @@ abstract class TreeCheckers extends Analyzer {
           lines.mkString("Out of scope symbol reference {\n", "\n", "\n}")
         }
 
-        referencedSymbols foreach (sym =>
-          if (!reportedAlready((tree, sym))) {
-            errorFn("\n" + mkErrorMsg(sym))
-            reportedAlready += ((tree, sym))
-          })
+        referencedSymbols foreach
+          (sym =>
+            if (!reportedAlready((tree, sym))) {
+              errorFn("\n" + mkErrorMsg(sym))
+              reportedAlready += ((tree, sym))
+            })
       }
 
       private def checkReturnReferencesDirectlyEnclosingDef(tree: Tree): Unit =
@@ -489,10 +493,9 @@ abstract class TreeCheckers extends Analyzer {
             tpeOfTree get tree foreach { oldtpe =>
               if (tree.tpe eq null)
                 errorFn(
-                  s"tree.tpe=null for " + tree
-                    .shortClass + " (symbol: " + classString(
-                    tree.symbol) + " " + signature(
-                    tree.symbol) + "), last seen tpe was " + oldtpe)
+                  s"tree.tpe=null for " + tree.shortClass + " (symbol: " +
+                    classString(tree.symbol) + " " + signature(tree.symbol) +
+                    "), last seen tpe was " + oldtpe)
               else if (oldtpe =:= tree.tpe) ()
               else typesDiffer(tree, oldtpe, tree.tpe)
 

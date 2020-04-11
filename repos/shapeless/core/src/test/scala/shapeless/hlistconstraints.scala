@@ -116,18 +116,13 @@ class HListConstraintsTests {
     object price extends FieldOf[Double]
     object inPrint extends FieldOf[Boolean]
 
-    val book =
-      (author ->> "Benjamin Pierce") ::
-        (title ->> "Types and Programming Languages") ::
-        (id ->> 262162091) ::
-        (price ->> 44.11) ::
-        HNil
+    val book = (author ->> "Benjamin Pierce") ::
+      (title ->> "Types and Programming Languages") :: (id ->> 262162091) ::
+      (price ->> 44.11) :: HNil
 
-    val summary =
-      (author ->> "Benjamin Pierce") ::
-        (title ->> "Types and Programming Languages") ::
-        (id ->> 262162091) ::
-        HNil
+    val summary = (author ->> "Benjamin Pierce") ::
+      (title ->> "Types and Programming Languages") :: (id ->> 262162091) ::
+      HNil
 
     def acceptKeys[R <: HList: Keys[
       author.type :: title.type :: id.type :: HNil]#λ](r: R) = true

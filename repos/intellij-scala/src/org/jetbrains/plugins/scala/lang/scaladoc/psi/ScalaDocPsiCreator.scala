@@ -27,8 +27,8 @@ object ScalaDocPsiCreator {
         element.setFlag(a.getFlagConst)
 
         var parentNode = node
-        while (parentNode.getTreeParent != null && parentNode
-                 .getElementType != SCALA_DOC_COMMENT) {
+        while (parentNode.getTreeParent != null &&
+               parentNode.getElementType != SCALA_DOC_COMMENT) {
           parentNode = parentNode.getTreeParent
           parentNode.getElementType match {
             case a: ScaladocSyntaxElementType => element.setFlag(a.getFlagConst)
@@ -50,12 +50,14 @@ object ScalaDocPsiCreator {
 //        new ScDocTagValueImpl(node)
         var parent = node.getTreeParent
 
-        while (parent != null && parent.getPsi != null && !parent.getPsi
-                 .isInstanceOf[ScDocTag]) { parent = parent.getTreeParent }
+        while (parent != null && parent.getPsi != null &&
+               !parent.getPsi.isInstanceOf[ScDocTag]) {
+          parent = parent.getTreeParent
+        }
 
         if (parent != null && parent.getPsi != null &&
-            parent.getPsi.asInstanceOf[ScDocTag].name == MyScaladocParsing
-              .THROWS_TAG) { new ScDocThrowTagValueImpl(node) }
+            parent.getPsi.asInstanceOf[ScDocTag].name ==
+              MyScaladocParsing.THROWS_TAG) { new ScDocThrowTagValueImpl(node) }
         else { new ScDocTagValueImpl(node) }
       case ScalaDocTokenType.DOC_CODE_LINK_VALUE =>
         new ScDocResolvableCodeReferenceImpl(node)

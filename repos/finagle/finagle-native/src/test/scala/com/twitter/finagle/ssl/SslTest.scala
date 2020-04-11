@@ -44,13 +44,10 @@ class SslTest extends FunSuite {
   } catch {
     case e: java.io.IOException =>
       println(
-        "IOException: I/O error in running setupCA script: " +
-          e.getMessage())
+        "IOException: I/O error in running setupCA script: " + e.getMessage())
       throw e
     case NonFatal(e) =>
-      println(
-        "Unknown exception in running setupCA script: " +
-          e.getMessage())
+      println("Unknown exception in running setupCA script: " + e.getMessage())
       throw e
   }
 
@@ -187,8 +184,8 @@ class SslTest extends FunSuite {
       out.read(outBuf)
       val outBufStr = new String(outBuf)
       assert(
-        "Verify return code: 0 \\(ok\\)".r.findFirstIn(outBufStr) == Some(
-          """Verify return code: 0 (ok)"""))
+        "Verify return code: 0 \\(ok\\)".r.findFirstIn(outBufStr) ==
+          Some("""Verify return code: 0 (ok)"""))
     } catch {
       case ex: java.io.IOException =>
         println(

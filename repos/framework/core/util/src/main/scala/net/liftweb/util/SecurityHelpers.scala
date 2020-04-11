@@ -232,12 +232,12 @@ trait SecurityHelpers {
 
     parserFactory.setNamespaceAware(false)
     parserFactory.setFeature(
-      Constants.SAX_FEATURE_PREFIX + Constants
-        .EXTERNAL_GENERAL_ENTITIES_FEATURE,
+      Constants.SAX_FEATURE_PREFIX +
+        Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE,
       false)
     parserFactory.setFeature(
-      Constants.SAX_FEATURE_PREFIX + Constants
-        .EXTERNAL_PARAMETER_ENTITIES_FEATURE,
+      Constants.SAX_FEATURE_PREFIX +
+        Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE,
       false)
     parserFactory.setFeature(
       Constants.XERCES_FEATURE_PREFIX + Constants.DISALLOW_DOCTYPE_DECL_FEATURE,

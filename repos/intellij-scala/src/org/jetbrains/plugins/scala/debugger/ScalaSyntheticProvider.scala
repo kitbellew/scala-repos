@@ -25,11 +25,12 @@ object ScalaSyntheticProvider {
 
     typeComponent match {
       case m: Method
-          if m.isConstructor && ScalaPositionManager
-            .isAnonfunType(m.declaringType()) => true
+          if m.isConstructor &&
+            ScalaPositionManager.isAnonfunType(m.declaringType()) => true
       case m: Method
-          if m.name() == "apply" && hasSpecializationMethod(
-            m.declaringType()) && !isMacroDefined(m)         => true
+          if m.name() == "apply" &&
+            hasSpecializationMethod(m.declaringType()) && !isMacroDefined(m) =>
+        true
       case m: Method if isDefaultArg(m)                      => true
       case m: Method if isTraitForwarder(m)                  => true
       case m: Method if m.name().endsWith("$adapted")        => true
@@ -37,8 +38,8 @@ object ScalaSyntheticProvider {
       case f: Field if f.name().startsWith("bitmap$")        => true
       case _ =>
         val machine: VirtualMachine = typeComponent.virtualMachine
-        machine != null && machine.canGetSyntheticAttribute && typeComponent
-          .isSynthetic
+        machine != null && machine.canGetSyntheticAttribute &&
+        typeComponent.isSynthetic
     }
   }
 
@@ -89,8 +90,8 @@ object ScalaSyntheticProvider {
       else if (instr == DecompilerUtil.Opcodes.invokeStatic) {
         val nextIdx = i + 3
         val nextInstr = bytecodes(nextIdx)
-        return nextIdx == (bytecodes.length - 1) && BytecodeUtil.returnCodes
-          .contains(nextInstr)
+        return nextIdx == (bytecodes.length - 1) &&
+          BytecodeUtil.returnCodes.contains(nextInstr)
       } else return false
     }
     false
@@ -106,8 +107,8 @@ object ScalaSyntheticProvider {
         for {
           interface <- interfaces
           traitImpl <- allTraitImpls
-          if traitImpl.name().stripSuffix("$class") == interface
-            .name() && !traitImpl.methodsByName(m.name).isEmpty
+          if traitImpl.name().stripSuffix("$class") == interface.name() &&
+            !traitImpl.methodsByName(m.name).isEmpty
         } { return true }
         false
       case _ => false

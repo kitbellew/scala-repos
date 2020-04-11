@@ -91,8 +91,8 @@ private[process] trait ProcessImpl {
     def isAlive() = processThread.isAlive()
     def destroy() = destroyer()
     def exitValue() =
-      getExitValue._2() getOrElse scala.sys
-        .error("No exit code: process destroyed.")
+      getExitValue._2() getOrElse
+        scala.sys.error("No exit code: process destroyed.")
     def start() = getExitValue
 
     protected lazy val (processThread, getExitValue, destroyer) = {
@@ -248,16 +248,15 @@ private[process] trait ProcessImpl {
       try p.waitFor() // wait for the process to terminate
       finally inputThread
         .interrupt() // we interrupt the input thread to notify it that it can terminate
-      outputThreads foreach (
-        _.join()
-      ) // this ensures that all output is complete before returning (waitFor does not ensure this)
+      outputThreads foreach
+        (_.join()) // this ensures that all output is complete before returning (waitFor does not ensure this)
 
       p.exitValue()
     }
     override def destroy() = {
       try {
-        outputThreads foreach (_
-          .interrupt()) // on destroy, don't bother consuming any more output
+        outputThreads foreach
+          (_.interrupt()) // on destroy, don't bother consuming any more output
         p.destroy()
       } finally inputThread.interrupt()
     }

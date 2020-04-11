@@ -45,11 +45,7 @@ object ProjectMacro extends Properties("ProjectMacro") {
   property("Directory overridable") = secure { check(z, "z", "dir") }
 
   def check(p: Project, id: String, dir: String): Prop = {
-    s"Expected id: $id" |:
-      s"Expected dir: $dir" |:
-      s"Actual id: ${p.id}" |:
-      s"Actual dir: ${p.base}" |:
-      (p.id == id) &&
-    (p.base.getName == dir)
+    s"Expected id: $id" |: s"Expected dir: $dir" |: s"Actual id: ${p.id}" |:
+      s"Actual dir: ${p.base}" |: (p.id == id) && (p.base.getName == dir)
   }
 }

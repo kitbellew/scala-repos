@@ -159,8 +159,8 @@ class ClientQuotaManager(
     val quota = config.quota()
     val difference = clientMetric.value() - quota.bound
     // Use the precise window used by the rate calculation
-    val throttleTimeMs = difference / quota.bound * rateMetric
-      .windowSize(config, time.milliseconds())
+    val throttleTimeMs = difference / quota.bound *
+      rateMetric.windowSize(config, time.milliseconds())
     throttleTimeMs.round.toInt
   }
 

@@ -74,11 +74,8 @@ class UnsavedFileTest
           project ! TypecheckFileReq(unsaved)
           expectMsgPF() { case EnsimeServerError(e) => }
 
-          project ! SymbolDesignationsReq(
-            Right(unsaved),
-            0,
-            0,
-            SourceSymbol.allSymbols)
+          project !
+            SymbolDesignationsReq(Right(unsaved), 0, 0, SourceSymbol.allSymbols)
           expectMsgPF() { case EnsimeServerError(e) => }
 
           project ! CompletionsReq(unsaved, 0, 0, false, false)

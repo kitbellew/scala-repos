@@ -120,8 +120,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     }
     val typeParamsForCall: String = {
       val typeParams = prototype.typeParameters
-      val parametersAndRetType = prototype.parameters ++ prototype
-        .returnTypeElement
+      val parametersAndRetType = prototype.parameters ++
+        prototype.returnTypeElement
       if (typeParams.exists(!typeParameterUsedIn(_, parametersAndRetType))) {
         typeParams.map(_.nameId.getText).mkString("[", ", ", "]")
       } else ""
@@ -192,14 +192,14 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       place: PsiElement): Seq[ScMethodMember] = {
     object isSuitable {
       def unapply(srr: ScalaResolveResult): Option[PhysicalSignature] = {
-        if (srr.implicitConversionClass.nonEmpty || srr.implicitFunction
-              .nonEmpty) return None
+        if (srr.implicitConversionClass.nonEmpty ||
+            srr.implicitFunction.nonEmpty) return None
         srr.getElement match {
           case meth: PsiMethod
               if meth.isConstructor || meth.getContainingClass == null => None
           case meth: PsiMethod
-              if meth.getContainingClass.getQualifiedName == CommonClassNames
-                .JAVA_LANG_OBJECT => None
+              if meth.getContainingClass.getQualifiedName ==
+                CommonClassNames.JAVA_LANG_OBJECT => None
           case meth: PsiMethod
               if !ResolveUtils
                 .isAccessible(meth, place, forCompletion = true) => None
@@ -275,15 +275,15 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       case method: ScMethodMember => method.getElement match {
           case m: PsiMethod if {
                 val cl = m.getContainingClass;
-                cl != null && cl.getQualifiedName == CommonClassNames
-                  .JAVA_LANG_OBJECT
+                cl != null &&
+                cl.getQualifiedName == CommonClassNames.JAVA_LANG_OBJECT
               } => false
           case f: ScFunction =>
-            (f.isParameterless || f.isEmptyParen) && ResolveUtils
-              .isAccessible(f, clazz, forCompletion = false)
+            (f.isParameterless || f.isEmptyParen) &&
+              ResolveUtils.isAccessible(f, clazz, forCompletion = false)
           case m: PsiMethod =>
-            m.isAccessor && ResolveUtils
-              .isAccessible(m, clazz, forCompletion = false)
+            m.isAccessor &&
+              ResolveUtils.isAccessible(m, clazz, forCompletion = false)
           case _ => false
         }
       case v @ (_: ScValueMember | _: ScVariableMember | _: JavaFieldMember)

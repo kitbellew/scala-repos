@@ -151,12 +151,12 @@ object BackendReporting {
         case m @ MethodNotFound(_, _, _, missing) =>
           if (m.isArrayMethod) false
           else
-            settings.YoptWarningNoInlineMissingBytecode || missing
-              .exists(_.emitWarning(settings))
+            settings.YoptWarningNoInlineMissingBytecode ||
+            missing.exists(_.emitWarning(settings))
 
         case FieldNotFound(_, _, _, missing) =>
-          settings.YoptWarningNoInlineMissingBytecode || missing
-            .exists(_.emitWarning(settings))
+          settings.YoptWarningNoInlineMissingBytecode ||
+            missing.exists(_.emitWarning(settings))
       }
   }
 
@@ -216,14 +216,16 @@ object BackendReporting {
     override def toString =
       this match {
         case MethodInlineInfoIncomplete(_, _, _, cause) =>
-          s"The inline information for $warningMessageSignature may be incomplete:\n" + cause
+          s"The inline information for $warningMessageSignature may be incomplete:\n" +
+            cause
 
         case MethodInlineInfoMissing(_, _, _, cause) =>
           s"No inline information for method $warningMessageSignature could be found." +
             cause.map(" Possible reason:\n" + _).getOrElse("")
 
         case MethodInlineInfoError(_, _, _, cause) =>
-          s"Error while computing the inline information for method $warningMessageSignature:\n" + cause
+          s"Error while computing the inline information for method $warningMessageSignature:\n" +
+            cause
 
         case RewriteTraitCallToStaticImplMethodFailed(_, _, _, cause) =>
           cause.toString
@@ -426,7 +428,8 @@ object BackendReporting {
     override def toString: String =
       this match {
         case RewriteClosureAccessCheckFailed(_, cause) =>
-          s"Failed to rewrite the closure invocation to its implementation method:\n" + cause
+          s"Failed to rewrite the closure invocation to its implementation method:\n" +
+            cause
         case RewriteClosureIllegalAccess(_, callsiteClass) =>
           s"The closure body invocation cannot be rewritten because the target method is not accessible in class $callsiteClass."
       }

@@ -99,8 +99,8 @@ class LogCleaner(
     new Gauge[Int] {
       def value: Int = {
         val stats = cleaners.map(_.lastStats)
-        val recopyRate = stats.map(_.bytesWritten).sum.toDouble / math
-          .max(stats.map(_.bytesRead).sum, 1)
+        val recopyRate = stats.map(_.bytesWritten).sum.toDouble /
+          math.max(stats.map(_.bytesRead).sum, 1)
         (100 * recopyRate).toInt
       }
     }
@@ -306,10 +306,10 @@ class LogCleaner(
             .format(
               mb(stats.bytesRead),
               stats.elapsedSecs - stats.elapsedIndexSecs,
-              mb(stats.bytesRead) / (stats.elapsedSecs - stats
-                .elapsedIndexSecs),
-              100 * (stats.elapsedSecs - stats.elapsedIndexSecs)
-                .toDouble / stats.elapsedSecs
+              mb(stats.bytesRead) /
+                (stats.elapsedSecs - stats.elapsedIndexSecs),
+              100 * (stats.elapsedSecs - stats.elapsedIndexSecs).toDouble /
+                stats.elapsedSecs
             ) +
           "\tStart size: %,.1f MB (%,d messages)%n"
             .format(mb(stats.bytesRead), stats.messagesRead) +
@@ -388,11 +388,11 @@ private[log] class Cleaner(
 
     // figure out the timestamp below which it is safe to remove delete tombstones
     // this position is defined to be a configurable time beneath the last modified time of the last clean segment
-    val deleteHorizonMs =
-      log.logSegments(0, cleanable.firstDirtyOffset).lastOption match {
-        case None      => 0L
-        case Some(seg) => seg.lastModified - log.config.deleteRetentionMs
-      }
+    val deleteHorizonMs = log.logSegments(0, cleanable.firstDirtyOffset)
+      .lastOption match {
+      case None      => 0L
+      case Some(seg) => seg.lastModified - log.config.deleteRetentionMs
+    }
 
     // group the segments and clean the groups
     info("Cleaning log %s (discarding tombstones prior to %s)...".format(
@@ -661,15 +661,15 @@ private[log] class Cleaner(
     * Double the I/O buffer capacity
     */
   def growBuffers() {
-    if (readBuffer.capacity >= maxIoBufferSize || writeBuffer
-          .capacity >= maxIoBufferSize)
+    if (readBuffer.capacity >= maxIoBufferSize ||
+        writeBuffer.capacity >= maxIoBufferSize)
       throw new IllegalStateException(
         "This log contains a message larger than maximum allowable size of %s."
           .format(maxIoBufferSize))
     val newSize = math.min(this.readBuffer.capacity * 2, maxIoBufferSize)
     info(
-      "Growing cleaner I/O buffers from " + readBuffer
-        .capacity + "bytes to " + newSize + " bytes.")
+      "Growing cleaner I/O buffers from " + readBuffer.capacity + "bytes to " +
+        newSize + " bytes.")
     this.readBuffer = ByteBuffer.allocate(newSize)
     this.writeBuffer = ByteBuffer.allocate(newSize)
   }
@@ -706,11 +706,10 @@ private[log] class Cleaner(
       var logSize = segs.head.size
       var indexSize = segs.head.index.sizeInBytes
       segs = segs.tail
-      while (!segs.isEmpty &&
-             logSize + segs.head.size <= maxSize &&
+      while (!segs.isEmpty && logSize + segs.head.size <= maxSize &&
              indexSize + segs.head.index.sizeInBytes <= maxIndexSize &&
-             segs.head.index.lastOffset - group.last.index.baseOffset <= Int
-               .MaxValue) {
+             segs.head.index.lastOffset - group.last.index.baseOffset <=
+               Int.MaxValue) {
         group = segs.head :: group
         logSize += segs.head.size
         indexSize += segs.head.index.sizeInBytes

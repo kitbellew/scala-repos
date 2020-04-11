@@ -102,8 +102,8 @@ class ResidentTaskIntegrationTest
       state.value.agents.head.usedResources should equal(f.itMesosResources)
     }
     withClue("reserved_resources") {
-      state.value.agents.head.reservedResourcesByRole.get("foo") should equal(
-        Some(f.itMesosResources))
+      state.value.agents.head.reservedResourcesByRole.get("foo") should
+        equal(Some(f.itMesosResources))
     }
 
     When("the app is suspended")
@@ -117,8 +117,8 @@ class ResidentTaskIntegrationTest
       state2.value.agents.head.usedResources should be(empty)
     }
     withClue("reserved_resources") {
-      state2.value.agents.head.reservedResourcesByRole.get("foo") should equal(
-        Some(f.itMesosResources))
+      state2.value.agents.head.reservedResourcesByRole.get("foo") should
+        equal(Some(f.itMesosResources))
     }
 
   // we check for a blank slate of mesos reservations after each test

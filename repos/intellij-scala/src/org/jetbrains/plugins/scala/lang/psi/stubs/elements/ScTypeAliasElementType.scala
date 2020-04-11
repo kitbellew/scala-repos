@@ -50,8 +50,8 @@ abstract class ScTypeAliasElementType[Func <: ScTypeAlias](debugName: String)
           .getOrElse("")
     }
     val containingClass = psi.containingClass
-    val isStableQualifier = ScalaPsiUtil.hasStablePath(psi) && containingClass
-      .isInstanceOf[ScObject]
+    val isStableQualifier = ScalaPsiUtil.hasStablePath(psi) &&
+      containingClass.isInstanceOf[ScObject]
     new ScTypeAliasStubImpl[ParentPsi](
       parentStub,
       this,

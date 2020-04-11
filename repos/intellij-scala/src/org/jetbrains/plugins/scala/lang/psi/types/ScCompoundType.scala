@@ -25,8 +25,8 @@ case class ScCompoundType(
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = components.hashCode() + (signatureMap.hashCode() * 31 + typesMap
-        .hashCode()) * 31
+      hash = components.hashCode() +
+        (signatureMap.hashCode() * 31 + typesMap.hashCode()) * 31
     }
     hash
   }
@@ -329,43 +329,47 @@ object ScCompoundType {
     for (decl <- decls) {
       decl match {
         case fun: ScFunction =>
-          signatureMapVal += (
+          signatureMapVal +=
             (
-              new Signature(
-                fun.name,
-                PhysicalSignature.typesEval(fun),
-                PhysicalSignature.paramLength(fun),
-                TypeParameter.fromArray(fun.getTypeParameters),
-                subst,
-                fun,
-                PhysicalSignature.hasRepeatedParam(fun)),
-              fun.returnType.getOrAny))
+              (
+                new Signature(
+                  fun.name,
+                  PhysicalSignature.typesEval(fun),
+                  PhysicalSignature.paramLength(fun),
+                  TypeParameter.fromArray(fun.getTypeParameters),
+                  subst,
+                  fun,
+                  PhysicalSignature.hasRepeatedParam(fun)),
+                fun.returnType.getOrAny))
         case varDecl: ScVariable =>
           for (e <- varDecl.declaredElements) {
             val varType = e.getType(TypingContext.empty)
-            signatureMapVal += (
+            signatureMapVal +=
               (
-                new Signature(e.name, Seq.empty, 0, subst, e),
-                varType.getOrAny))
-            signatureMapVal += (
+                (
+                  new Signature(e.name, Seq.empty, 0, subst, e),
+                  varType.getOrAny))
+            signatureMapVal +=
               (
-                new Signature(
-                  e.name + "_=",
-                  Seq(() => varType.getOrAny),
-                  1,
-                  subst,
-                  e),
-                psi.types.Unit
-              )
-            ) //setter
+                (
+                  new Signature(
+                    e.name + "_=",
+                    Seq(() => varType.getOrAny),
+                    1,
+                    subst,
+                    e),
+                  psi.types.Unit
+                )
+              ) //setter
           }
         case valDecl: ScValue =>
           for (e <- valDecl.declaredElements) {
             val valType = e.getType(TypingContext.empty)
-            signatureMapVal += (
+            signatureMapVal +=
               (
-                new Signature(e.name, Seq.empty, 0, subst, e),
-                valType.getOrAny))
+                (
+                  new Signature(e.name, Seq.empty, 0, subst, e),
+                  valType.getOrAny))
           }
       }
     }

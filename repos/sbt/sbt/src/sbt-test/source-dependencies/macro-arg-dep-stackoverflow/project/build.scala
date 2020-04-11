@@ -4,8 +4,8 @@ import Import._
 
 object build extends Build {
   val defaultSettings = Seq(
-    libraryDependencies <+= scalaVersion(
-      "org.scala-lang" % "scala-reflect" % _),
+    libraryDependencies <+=
+      scalaVersion("org.scala-lang" % "scala-reflect" % _),
     incOptions := incOptions.value.withNameHashing(true))
 
   lazy val root = Project(

@@ -28,11 +28,11 @@ trait GroupLaws[A] extends Laws {
     new GroupProperties(
       name = "semigroup",
       parent = None,
-      "associative" → forAll((x: A, y: A, z: A) =>
-        ((x |+| y) |+| z) === (x |+| (y |+| z))),
+      "associative" →
+        forAll((x: A, y: A, z: A) => ((x |+| y) |+| z) === (x |+| (y |+| z))),
       "combinen(a, 1) === a" → forAll((a: A) => A.combinen(a, 1) === a),
-      "combinen(a, 2) === a |+| a" → forAll((a: A) =>
-        A.combinen(a, 2) === (a |+| a)))
+      "combinen(a, 2) === a |+| a" →
+        forAll((a: A) => A.combinen(a, 2) === (a |+| a)))
 
   def monoid(implicit A: Monoid[A]) =
     new GroupProperties(

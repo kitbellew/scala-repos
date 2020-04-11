@@ -39,7 +39,8 @@ class ControllerSpec
       expectMsg(ToClient(Done))
       c ! Controller.GetNodes
       expectMsgType[Iterable[RoleName]].toSet should ===(Set(A, B))
-      c ! PoisonPill // clean up so network connections don't accumulate during test run
+      c !
+        PoisonPill // clean up so network connections don't accumulate during test run
     }
 
   }

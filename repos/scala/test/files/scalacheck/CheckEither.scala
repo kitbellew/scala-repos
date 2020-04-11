@@ -30,10 +30,11 @@ object Test extends Properties("Either") {
     val prop_value = forAll((n: Int) => Left(n).left.get == n)
 
     val prop_getOrElse = forAll((e: Either[Int, Int], or: Int) =>
-      e.left.getOrElse(or) == (e match {
-        case Left(a)  => a
-        case Right(_) => or
-      }))
+      e.left.getOrElse(or) ==
+        (e match {
+          case Left(a)  => a
+          case Right(_) => or
+        }))
 
     val prop_forall = forAll((e: Either[Int, Int]) =>
       e.left.forall(_ % 2 == 0) == (e.isRight || e.left.get % 2 == 0))
@@ -53,8 +54,8 @@ object Test extends Properties("Either") {
     val prop_flatMapComposition = forAll((e: Either[Int, Int]) => {
       def f(x: Int) = if (x % 2 == 0) Left(x) else Right(x)
       def g(x: Int) = if (x % 7 == 0) Right(x) else Left(x)
-      e.left.flatMap(f(_)).left.flatMap(g(_)) == e.left
-        .flatMap(f(_).left.flatMap(g(_)))
+      e.left.flatMap(f(_)).left.flatMap(g(_)) ==
+        e.left.flatMap(f(_).left.flatMap(g(_)))
     })
 
     val prop_mapIdentity = forAll((e: Either[Int, Int]) =>
@@ -71,26 +72,29 @@ object Test extends Properties("Either") {
         (if (e.isRight || e.left.get % 2 != 0) None else Some(e)))
 
     val prop_seq = forAll((e: Either[Int, Int]) =>
-      e.left.toSeq == (e match {
-        case Left(a)  => Seq(a)
-        case Right(_) => Seq.empty
-      }))
+      e.left.toSeq ==
+        (e match {
+          case Left(a)  => Seq(a)
+          case Right(_) => Seq.empty
+        }))
 
     val prop_option = forAll((e: Either[Int, Int]) =>
-      e.left.toOption == (e match {
-        case Left(a)  => Some(a)
-        case Right(_) => None
-      }))
+      e.left.toOption ==
+        (e match {
+          case Left(a)  => Some(a)
+          case Right(_) => None
+        }))
   }
 
   object CheckRightProjection {
     val prop_value = forAll((n: Int) => Right(n).right.get == n)
 
     val prop_getOrElse = forAll((e: Either[Int, Int], or: Int) =>
-      e.right.getOrElse(or) == (e match {
-        case Left(_)  => or
-        case Right(b) => b
-      }))
+      e.right.getOrElse(or) ==
+        (e match {
+          case Left(_)  => or
+          case Right(b) => b
+        }))
 
     val prop_forall = forAll((e: Either[Int, Int]) =>
       e.right.forall(_ % 2 == 0) == (e.isLeft || e.right.get % 2 == 0))
@@ -110,8 +114,8 @@ object Test extends Properties("Either") {
     val prop_flatMapComposition = forAll((e: Either[Int, Int]) => {
       def f(x: Int) = if (x % 2 == 0) Left(x) else Right(x)
       def g(x: Int) = if (x % 7 == 0) Right(x) else Left(x)
-      e.right.flatMap(f(_)).right.flatMap(g(_)) == e.right
-        .flatMap(f(_).right.flatMap(g(_)))
+      e.right.flatMap(f(_)).right.flatMap(g(_)) ==
+        e.right.flatMap(f(_).right.flatMap(g(_)))
     })
 
     val prop_mapIdentity = forAll((e: Either[Int, Int]) =>
@@ -128,16 +132,18 @@ object Test extends Properties("Either") {
         (if (e.isLeft || e.right.get % 2 != 0) None else Some(e)))
 
     val prop_seq = forAll((e: Either[Int, Int]) =>
-      e.right.toSeq == (e match {
-        case Left(_)  => Seq.empty
-        case Right(b) => Seq(b)
-      }))
+      e.right.toSeq ==
+        (e match {
+          case Left(_)  => Seq.empty
+          case Right(b) => Seq(b)
+        }))
 
     val prop_option = forAll((e: Either[Int, Int]) =>
-      e.right.toOption == (e match {
-        case Left(_)  => None
-        case Right(b) => Some(b)
-      }))
+      e.right.toOption ==
+        (e match {
+          case Left(_)  => None
+          case Right(b) => Some(b)
+        }))
   }
 
   val prop_Either_left = forAll((n: Int) => Left(n).left.get == n)
@@ -157,10 +163,11 @@ object Test extends Properties("Either") {
     })
 
   val prop_Either_reduce = forAll((e: Either[Int, Int]) =>
-    e.merge == (e match {
-      case Left(a)  => a
-      case Right(a) => a
-    }))
+    e.merge ==
+      (e match {
+        case Left(a)  => a
+        case Right(a) => a
+      }))
 
   /** Hard to believe I'm "fixing" a test to reflect B before A ... */
   val prop_Either_cond = forAll((c: Boolean, a: Int, b: Int) =>

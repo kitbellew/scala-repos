@@ -31,9 +31,7 @@ trait Nondeterminism[F[_]] extends Monad[F] {
     * The default implementation calls `chooseAny` with a
     * two-element list and uses the `Functor` for `F` to fix up types.
     */
-  def choose[A, B](a: F[A], b: F[B]): F[
-    (A, F[B]) \/
-      (F[A], B)] =
+  def choose[A, B](a: F[A], b: F[B]): F[(A, F[B]) \/ (F[A], B)] =
     map(chooseAny(List[F[A \/ B]](map(a)(\/.left), map(b)(\/.right))).get) {
       (x: (A \/ B, Seq[F[A \/ B]])) =>
         x match {

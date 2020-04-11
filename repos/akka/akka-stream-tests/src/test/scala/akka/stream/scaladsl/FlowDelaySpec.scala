@@ -61,34 +61,41 @@ class FlowDelaySpec extends AkkaSpec {
       c.expectComplete()
     }
 
-    "drop tail for internal buffer if it's full in DropTail mode" in assertAllStagesStopped {
-      Await.result(
-        Source(1 to 20).delay(1.seconds, DelayOverflowStrategy.dropTail)
-          .withAttributes(inputBuffer(16, 16)).grouped(100).runWith(Sink.head),
-        1200.millis) should ===((1 to 15).toList :+ 20)
-    }
+    "drop tail for internal buffer if it's full in DropTail mode" in
+      assertAllStagesStopped {
+        Await.result(
+          Source(1 to 20).delay(1.seconds, DelayOverflowStrategy.dropTail)
+            .withAttributes(inputBuffer(16, 16)).grouped(100)
+            .runWith(Sink.head),
+          1200.millis) should ===((1 to 15).toList :+ 20)
+      }
 
-    "drop head for internal buffer if it's full in DropHead mode" in assertAllStagesStopped {
-      Await.result(
-        Source(1 to 20).delay(1.seconds, DelayOverflowStrategy.dropHead)
-          .withAttributes(inputBuffer(16, 16)).grouped(100).runWith(Sink.head),
-        1200.millis) should ===(5 to 20)
-    }
+    "drop head for internal buffer if it's full in DropHead mode" in
+      assertAllStagesStopped {
+        Await.result(
+          Source(1 to 20).delay(1.seconds, DelayOverflowStrategy.dropHead)
+            .withAttributes(inputBuffer(16, 16)).grouped(100)
+            .runWith(Sink.head),
+          1200.millis) should ===(5 to 20)
+      }
 
-    "clear all for internal buffer if it's full in DropBuffer mode" in assertAllStagesStopped {
-      Await.result(
-        Source(1 to 20).delay(1.seconds, DelayOverflowStrategy.dropBuffer)
-          .withAttributes(inputBuffer(16, 16)).grouped(100).runWith(Sink.head),
-        1200.millis) should ===(17 to 20)
-    }
+    "clear all for internal buffer if it's full in DropBuffer mode" in
+      assertAllStagesStopped {
+        Await.result(
+          Source(1 to 20).delay(1.seconds, DelayOverflowStrategy.dropBuffer)
+            .withAttributes(inputBuffer(16, 16)).grouped(100)
+            .runWith(Sink.head),
+          1200.millis) should ===(17 to 20)
+      }
 
-    "pass elements with delay through normally in backpressured mode" in assertAllStagesStopped {
-      Source(1 to 3).delay(300.millis, DelayOverflowStrategy.backpressure)
-        .runWith(TestSink.probe[Int]).request(5).expectNoMsg(200.millis)
-        .expectNext(200.millis, 1).expectNoMsg(200.millis)
-        .expectNext(200.millis, 2).expectNoMsg(200.millis)
-        .expectNext(200.millis, 3)
-    }
+    "pass elements with delay through normally in backpressured mode" in
+      assertAllStagesStopped {
+        Source(1 to 3).delay(300.millis, DelayOverflowStrategy.backpressure)
+          .runWith(TestSink.probe[Int]).request(5).expectNoMsg(200.millis)
+          .expectNext(200.millis, 1).expectNoMsg(200.millis)
+          .expectNext(200.millis, 2).expectNoMsg(200.millis)
+          .expectNext(200.millis, 3)
+      }
 
     "fail on overflow in Fail mode" in assertAllStagesStopped {
       Source(1 to 20).delay(300.millis, DelayOverflowStrategy.fail)
@@ -98,22 +105,24 @@ class FlowDelaySpec extends AkkaSpec {
 
     }
 
-    "emit early when buffer is full and in EmitEarly mode" in assertAllStagesStopped {
-      val c = TestSubscriber.manualProbe[Int]()
-      val p = TestPublisher.manualProbe[Int]()
+    "emit early when buffer is full and in EmitEarly mode" in
+      assertAllStagesStopped {
+        val c = TestSubscriber.manualProbe[Int]()
+        val p = TestPublisher.manualProbe[Int]()
 
-      Source.fromPublisher(p).delay(10.seconds, DelayOverflowStrategy.emitEarly)
-        .withAttributes(inputBuffer(16, 16)).to(Sink.fromSubscriber(c)).run()
-      val cSub = c.expectSubscription()
-      val pSub = p.expectSubscription()
-      cSub.request(20)
+        Source.fromPublisher(p)
+          .delay(10.seconds, DelayOverflowStrategy.emitEarly)
+          .withAttributes(inputBuffer(16, 16)).to(Sink.fromSubscriber(c)).run()
+        val cSub = c.expectSubscription()
+        val pSub = p.expectSubscription()
+        cSub.request(20)
 
-      for (i ← 1 to 16) pSub.sendNext(i)
-      c.expectNoMsg(300.millis)
-      pSub.sendNext(17)
-      c.expectNext(100.millis, 1)
-      //fail will terminate despite of non empty internal buffer
-      pSub.sendError(new RuntimeException() with NoStackTrace)
-    }
+        for (i ← 1 to 16) pSub.sendNext(i)
+        c.expectNoMsg(300.millis)
+        pSub.sendNext(17)
+        c.expectNext(100.millis, 1)
+        //fail will terminate despite of non empty internal buffer
+        pSub.sendError(new RuntimeException() with NoStackTrace)
+      }
   }
 }

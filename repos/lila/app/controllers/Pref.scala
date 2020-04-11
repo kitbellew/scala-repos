@@ -63,8 +63,7 @@ object Pref extends LilaController {
   )
 
   private def save(name: String)(value: String, ctx: Context): Fu[Cookie] =
-    ctx.me ?? {
-      api.setPrefString(_, name, value, notifyChange = false)
-    } inject LilaCookie.session(name, value)(ctx.req)
+    ctx.me ?? { api.setPrefString(_, name, value, notifyChange = false) } inject
+      LilaCookie.session(name, value)(ctx.req)
 
 }

@@ -115,8 +115,8 @@ case class FilesystemIngestFailureLog(
       message: EventMessage,
       lastKnownGood: YggCheckpoint): IngestFailureLog = {
     copy(
-      failureLog =
-        failureLog + (message -> LogRecord(offset, message, lastKnownGood)),
+      failureLog = failureLog +
+        (message -> LogRecord(offset, message, lastKnownGood)),
       restoreFrom = lastKnownGood min restoreFrom)
   }
 
@@ -188,8 +188,9 @@ object FilesystemIngestFailureLog {
       def decompose(rec: LogRecord) =
         JObject(
           "offset" -> rec.offset.serialize,
-          "messageType" -> rec.message
-            .fold(_ => "ingest", _ => "archive", _ => "storeFile").serialize,
+          "messageType" ->
+            rec.message.fold(_ => "ingest", _ => "archive", _ => "storeFile")
+              .serialize,
           "message" -> rec.message.serialize,
           "lastKnownGood" -> rec.lastKnownGood.serialize
         )
@@ -313,8 +314,8 @@ abstract class KafkaShardIngestActor(
       } else {
         //logger.error("Halting ingest due to excessive consecutive failures at Kafka offsets: " + ingestCache.keys.map(_.offset).mkString("[", ", ", "]"))
         logger.error(
-          "Skipping ingest batch due to excessive consecutive failures at Kafka offsets: " + ingestCache
-            .keys.map(_.offset).mkString("[", ", ", "]"))
+          "Skipping ingest batch due to excessive consecutive failures at Kafka offsets: " +
+            ingestCache.keys.map(_.offset).mkString("[", ", ", "]"))
         logger.error(
           "Metadata is consistent up to the lower bound:" + ingestCache.head._1)
         logger.error(
@@ -347,8 +348,8 @@ abstract class KafkaShardIngestActor(
             case Success((messages, checkpoint)) =>
               if (messages.size > 0) {
                 logger.debug(
-                  "Sending " + messages
-                    .size + " events to batch ingest handler.")
+                  "Sending " + messages.size +
+                    " events to batch ingest handler.")
 
                 // update the cache
                 lastCheckpoint = checkpoint
@@ -369,8 +370,8 @@ abstract class KafkaShardIngestActor(
 
             case Failure(error) =>
               logger.error(
-                "Error(s) occurred retrieving data from Kafka: " + error
-                  .message)
+                "Error(s) occurred retrieving data from Kafka: " +
+                  error.message)
               runningBatches.getAndDecrement
               requestor ! IngestErrors(
                 List("Error(s) retrieving data from Kafka: " + error.message))
@@ -390,8 +391,8 @@ abstract class KafkaShardIngestActor(
       } catch {
         case t: Throwable =>
           logger.error("Exception caught during ingest poll", t)
-          requestor ! IngestErrors(
-            List("Exception during poll: " + t.getMessage))
+          requestor !
+            IngestErrors(List("Exception during poll: " + t.getMessage))
       }
   }
 
@@ -417,9 +418,8 @@ abstract class KafkaShardIngestActor(
       input match {
         case Nil => (batch, checkpoint)
 
-        case (
-              offset,
-              event @ IngestMessage(_, _, _, records, _, _, _)) :: tail =>
+        case (offset, event @ IngestMessage(_, _, _, records, _, _, _)) ::
+            tail =>
           val newCheckpoint =
             if (records.isEmpty) { checkpoint.skipTo(offset) }
             else {
@@ -447,9 +447,8 @@ abstract class KafkaShardIngestActor(
               .format(offset, eventId.uid))
           (batch, checkpoint)
 
-        case (
-              offset,
-              ar @ ArchiveMessage(_, _, _, EventId(pid, sid), _)) :: tail =>
+        case (offset, ar @ ArchiveMessage(_, _, _, EventId(pid, sid), _)) ::
+            tail =>
           // TODO: Where is the authorization checking credentials for the archive done?
           logger.debug(
             "Singleton batch of ArchiveMessage at offset/id %d/%d"
@@ -572,8 +571,8 @@ abstract class KafkaShardIngestActor(
     JObject(
       JField(
         "Ingest",
-        JObject(
-          JField("lastCheckpoint", lastCheckpoint.serialize) :: Nil)) :: Nil)
+        JObject(JField("lastCheckpoint", lastCheckpoint.serialize) :: Nil)) ::
+        Nil)
 
   override def postStop() = {
     consumer.close

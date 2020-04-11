@@ -174,9 +174,8 @@ object JsonAST {
         json match {
           case JObject(fields) => fields.foldLeft(List[JField]()) {
               case (matchingFields, JField(name, value)) =>
-                matchingFields :::
-                  List(JField(name, value)).filter(_.name == nameToFind) :::
-                  find(value)
+                matchingFields ::: List(JField(name, value))
+                  .filter(_.name == nameToFind) ::: find(value)
             }
 
           case JArray(fields) => fields.foldLeft(List[JField]()) {
@@ -851,8 +850,8 @@ object JsonAST {
         case '\r' => "\\r"
         case '\t' => "\\t"
         case c
-            if ((c >= '\u0000' && c < '\u0020')) || settings.escapeChars
-              .contains(c) => "\\u%04x".format(c: Int)
+            if ((c >= '\u0000' && c < '\u0020')) ||
+              settings.escapeChars.contains(c) => "\\u%04x".format(c: Int)
 
         case _ => ""
       }

@@ -217,8 +217,8 @@ object Duration {
       divisor match {
         case _: Infinite => Double.NaN
         case x =>
-          Double.PositiveInfinity * (if ((this > Zero) ^ (divisor >= Zero)) -1
-                                     else 1)
+          Double.PositiveInfinity *
+            (if ((this > Zero) ^ (divisor >= Zero)) -1 else 1)
       }
 
     final def isFinite() = false
@@ -659,8 +659,8 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
 
   // see https://www.securecoding.cert.org/confluence/display/java/NUM00-J.+Detect+or+prevent+integer+overflow
   private[this] def safeAdd(a: Long, b: Long): Long = {
-    if ((b > 0) && (a > Long.MaxValue - b) ||
-        (b < 0) && (a < Long.MinValue - b))
+    if ((b > 0) && (a > Long.MaxValue - b) || (b < 0) &&
+        (a < Long.MinValue - b))
       throw new IllegalArgumentException("integer overflow")
     a + b
   }

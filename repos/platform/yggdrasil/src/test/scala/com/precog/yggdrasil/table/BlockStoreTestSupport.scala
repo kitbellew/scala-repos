@@ -128,8 +128,8 @@ trait BaseBlockStoreTestModule[M[+_]]
                 case (ref @ ColumnRef(jpath, ctype), _) =>
                   jpath.nodes.head == CPathField("key") || reqCols.exists {
                     ref =>
-                      (CPathField("value") \ ref.selector) == jpath && ref
-                        .ctype == ctype
+                      (CPathField("value") \ ref.selector) == jpath &&
+                      ref.ctype == ctype
                   }
               }
             }.getOrElse(s.columns)
@@ -137,8 +137,8 @@ trait BaseBlockStoreTestModule[M[+_]]
 
           BlockProjectionData[JArray, Slice](
             s0.toJson(0).getOrElse(JUndefined) \ "key" --> classOf[JArray],
-            s0.toJson(s0.size - 1).getOrElse(JUndefined) \ "key" --> classOf[
-              JArray],
+            s0.toJson(s0.size - 1).getOrElse(JUndefined) \ "key" -->
+              classOf[JArray],
             s0)
         }
       }

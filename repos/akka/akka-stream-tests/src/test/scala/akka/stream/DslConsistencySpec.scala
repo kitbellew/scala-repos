@@ -57,24 +57,22 @@ class DslConsistencySpec extends WordSpec with Matchers {
       "notifyAll",
       "wait",
       "toString",
-      "getClass") ++
-      Set(
-        "productArity",
-        "canEqual",
-        "productPrefix",
-        "copy",
-        "productIterator",
-        "productElement") ++
-      Set(
-        "create",
-        "apply",
-        "ops",
-        "appendJava",
-        "andThen",
-        "andThenMat",
-        "isIdentity",
-        "withAttributes",
-        "transformMaterializing") ++
+      "getClass") ++ Set(
+      "productArity",
+      "canEqual",
+      "productPrefix",
+      "copy",
+      "productIterator",
+      "productElement") ++ Set(
+      "create",
+      "apply",
+      "ops",
+      "appendJava",
+      "andThen",
+      "andThenMat",
+      "isIdentity",
+      "withAttributes",
+      "transformMaterializing") ++
       Set("asScala", "asJava", "deprecatedAndThen", "deprecatedAndThenMat")
 
   val graphHelpers = Set(
@@ -90,12 +88,10 @@ class DslConsistencySpec extends WordSpec with Matchers {
     jFlowClass -> graphHelpers,
     jSourceClass -> graphHelpers,
     // Java subflows can only be nested using .via and .to (due to type system restrictions)
-    jSubFlowClass -> (
-      graphHelpers ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow")
-    ),
-    jSubSourceClass -> (
-      graphHelpers ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow")
-    ),
+    jSubFlowClass ->
+      (graphHelpers ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow")),
+    jSubSourceClass ->
+      (graphHelpers ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow")),
     sFlowClass -> Set("of"),
     sSourceClass -> Set("adapt", "from"),
     sSinkClass -> Set("adapt"),
@@ -120,36 +116,35 @@ class DslConsistencySpec extends WordSpec with Matchers {
       ("Flow" -> List[Class[_]](sFlowClass, jFlowClass)) ::
       ("SubFlow" -> List[Class[_]](sSubFlowClass, jSubFlowClass)) ::
       ("Sink" -> List[Class[_]](sSinkClass, jSinkClass)) ::
-      ("RunanbleFlow" -> List[Class[_]](
-        sRunnableGraphClass,
-        jRunnableGraphClass)) ::
+      ("RunanbleFlow" ->
+        List[Class[_]](sRunnableGraphClass, jRunnableGraphClass)) ::
       Nil foreach {
-      case (element, classes) ⇒
-        s"provide same $element transforming operators" in {
-          val allOps = (for {
-            c ← classes
-            m ← c.getMethods if !Modifier.isStatic(m.getModifiers)
-            if !ignore(m.getName)
-            if !m.getName.contains("$")
-            if !materializing(m)
-          } yield m.getName).toSet
+        case (element, classes) ⇒
+          s"provide same $element transforming operators" in {
+            val allOps = (for {
+              c ← classes
+              m ← c.getMethods if !Modifier.isStatic(m.getModifiers)
+              if !ignore(m.getName)
+              if !m.getName.contains("$")
+              if !materializing(m)
+            } yield m.getName).toSet
 
-          for (c ← classes; op ← allOps) assertHasMethod(c, op)
-        }
+            for (c ← classes; op ← allOps) assertHasMethod(c, op)
+          }
 
-        s"provide same $element materializing operators" in {
-          val materializingOps = (for {
-            c ← classes
-            m ← c.getMethods if !Modifier.isStatic(m.getModifiers)
-            if !ignore(m.getName)
-            if !m.getName.contains("$")
-            if materializing(m)
-          } yield m.getName).toSet
+          s"provide same $element materializing operators" in {
+            val materializingOps = (for {
+              c ← classes
+              m ← c.getMethods if !Modifier.isStatic(m.getModifiers)
+              if !ignore(m.getName)
+              if !m.getName.contains("$")
+              if materializing(m)
+            } yield m.getName).toSet
 
-          for (c ← classes; op ← materializingOps) assertHasMethod(c, op)
-        }
+            for (c ← classes; op ← materializingOps) assertHasMethod(c, op)
+          }
 
-    }
+      }
   }
 
 }

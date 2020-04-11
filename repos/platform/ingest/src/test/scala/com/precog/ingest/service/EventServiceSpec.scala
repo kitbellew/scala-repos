@@ -291,9 +291,8 @@ class EventServiceSpec
         Path("/"),
         Some(testAccount.accountId))(testValue)
       result.copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
-              _) => ok
+        case (HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _), _) =>
+          ok
       }
     }
 

@@ -112,8 +112,8 @@ class BasicFieldDescriptor[T](
         Some(bindingValidators.map(_ apply name).reduce(_ andThen _))
       else None
 
-    copy(validator = validator
-      .flatMap(v => nwValidators.map(v andThen)) orElse nwValidators)
+    copy(validator = validator.flatMap(v => nwValidators.map(v andThen)) orElse
+      nwValidators)
   }
 
   def copy(
@@ -507,9 +507,10 @@ object BindingValidators {
       validate: TValue => Boolean,
       messageFormat: String = "%s is invalid."): BindingValidator[TValue] =
     (s: String) => {
-      _ flatMap Validators
-        .validate(s, messageFormat = messageFormat, validate = validate)
-        .validate
+      _ flatMap
+        Validators
+          .validate(s, messageFormat = messageFormat, validate = validate)
+          .validate
     }
 
   def nonEmptyString: BindingValidator[String] = nonEmptyString()
@@ -543,8 +544,9 @@ object BindingValidators {
       messageFormat: String = "%s must be a absolute valid url.",
       schemes: Seq[String] = Seq("http", "https")): BindingValidator[String] =
     (s: String) => {
-      _ flatMap Validators
-        .validAbsoluteUrl(s, allowLocalHost, messageFormat, schemes).validate
+      _ flatMap
+        Validators.validAbsoluteUrl(s, allowLocalHost, messageFormat, schemes)
+          .validate
     }
 
   def validUrl(

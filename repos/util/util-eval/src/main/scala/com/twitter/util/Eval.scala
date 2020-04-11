@@ -99,11 +99,10 @@ class Eval(target: Option[File]) {
       Seq(
         new ClassScopedResolver(getClass),
         new FilesystemResolver(new File(".")),
-        new FilesystemResolver(new File("." + File.separator + "config"))) ++ (
-        Option(System.getProperty("com.twitter.util.Eval.includePath")) map {
+        new FilesystemResolver(new File("." + File.separator + "config"))) ++
+        (Option(System.getProperty("com.twitter.util.Eval.includePath")) map {
           path => new FilesystemResolver(new File(path))
-        }
-      )))
+        })))
 
   // For derived classes to provide an alternate compiler message handler.
   protected lazy val compilerMessageHandler: Option[Reporter] = None
@@ -302,11 +301,8 @@ class Eval(target: Option[File]) {
    * NB: If this method is changed, make sure `codeWrapperLineOffset` is correct.
    */
   private[this] def wrapCodeInClass(className: String, code: String) = {
-    "class " + className + " extends (() => Any) {\n" +
-      "  def apply() = {\n" +
-      code + "\n" +
-      "  }\n" +
-      "}\n"
+    "class " + className + " extends (() => Any) {\n" + "  def apply() = {\n" +
+      code + "\n" + "  }\n" + "}\n"
   }
 
   /*
@@ -356,20 +352,19 @@ class Eval(target: Option[File]) {
     val currentClassPath = classPath.head
 
     // if there's just one thing in the classpath, and it's a jar, assume an executable jar.
-    currentClassPath ::: (
-      if (currentClassPath.size == 1 && currentClassPath(0).endsWith(".jar")) {
-        val jarFile = currentClassPath(0)
-        val relativeRoot = new File(jarFile).getParentFile()
-        val nestedClassPath = new JarFile(jarFile).getManifest.getMainAttributes
-          .getValue("Class-Path")
-        if (nestedClassPath eq null) { Nil }
-        else {
-          nestedClassPath.split(" ").map { f =>
-            new File(relativeRoot, f).getAbsolutePath
-          }.toList
-        }
-      } else { Nil }
-    ) ::: classPath.tail.flatten
+    currentClassPath :::
+      (if (currentClassPath.size == 1 && currentClassPath(0).endsWith(".jar")) {
+         val jarFile = currentClassPath(0)
+         val relativeRoot = new File(jarFile).getParentFile()
+         val nestedClassPath = new JarFile(jarFile).getManifest
+           .getMainAttributes.getValue("Class-Path")
+         if (nestedClassPath eq null) { Nil }
+         else {
+           nestedClassPath.split(" ").map { f =>
+             new File(relativeRoot, f).getAbsolutePath
+           }.toList
+         }
+       } else { Nil }) ::: classPath.tail.flatten
   }
 
   trait Preprocessor {
@@ -477,39 +472,38 @@ class Eval(target: Option[File]) {
       val messages: Seq[List[String]]
     }
 
-    val reporter = messageHandler getOrElse new AbstractReporter
-      with MessageCollector {
-      val settings = StringCompiler.this.settings
-      val messages = new mutable.ListBuffer[List[String]]
+    val reporter = messageHandler getOrElse
+      new AbstractReporter with MessageCollector {
+        val settings = StringCompiler.this.settings
+        val messages = new mutable.ListBuffer[List[String]]
 
-      def display(pos: Position, message: String, severity: Severity) {
-        severity.count += 1
-        val severityName = severity match {
-          case ERROR   => "error: "
-          case WARNING => "warning: "
-          case _       => ""
+        def display(pos: Position, message: String, severity: Severity) {
+          severity.count += 1
+          val severityName = severity match {
+            case ERROR   => "error: "
+            case WARNING => "warning: "
+            case _       => ""
+          }
+          // the line number is not always available
+          val lineMessage =
+            try { "line " + (pos.line - lineOffset) }
+            catch { case _: Throwable => "" }
+          messages += (severityName + lineMessage + ": " + message) ::
+            (if (pos.isDefined) {
+               pos.inUltimateSource(pos.source).lineContent.stripLineEnd ::
+                 (" " * (pos.column - 1) + "^") :: Nil
+             } else { Nil })
         }
-        // the line number is not always available
-        val lineMessage =
-          try { "line " + (pos.line - lineOffset) }
-          catch { case _: Throwable => "" }
-        messages += (severityName + lineMessage + ": " + message) ::
-          (if (pos.isDefined) {
-             pos.inUltimateSource(pos.source).lineContent.stripLineEnd ::
-               (" " * (pos.column - 1) + "^") ::
-               Nil
-           } else { Nil })
-      }
 
-      def displayPrompt {
-        // no.
-      }
+        def displayPrompt {
+          // no.
+        }
 
-      override def reset {
-        super.reset
-        messages.clear()
+        override def reset {
+          super.reset
+          messages.clear()
+        }
       }
-    }
 
     val global = new Global(settings, reporter)
 
@@ -525,8 +519,10 @@ class Eval(target: Option[File]) {
         case None => { target.asInstanceOf[VirtualDirectory].clear() }
         case Some(t) => {
           target.foreach { abstractFile =>
-            if (abstractFile.file == null || abstractFile.file.getName
-                  .endsWith(".class")) { abstractFile.delete() }
+            if (abstractFile.file == null ||
+                abstractFile.file.getName.endsWith(".class")) {
+              abstractFile.delete()
+            }
           }
         }
       }

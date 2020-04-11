@@ -200,11 +200,10 @@ class SbtProjectResolver
     val (modulesWithoutBinaries, modulesWithBinaries) = repositoryModules
       .partition(_.binaries.isEmpty)
     val otherModuleIds = projects.flatMap(_.dependencies.modules.map(_.id))
-      .toSet --
-      repositoryModules.map(_.id).toSet
+      .toSet -- repositoryModules.map(_.id).toSet
 
-    val libs = modulesWithBinaries.map(createResolvedLibrary) ++ otherModuleIds
-      .map(createUnresolvedLibrary)
+    val libs = modulesWithBinaries.map(createResolvedLibrary) ++
+      otherModuleIds.map(createUnresolvedLibrary)
 
     val modulesWithDocumentation = modulesWithoutBinaries
       .filter(m => m.docs.nonEmpty || m.sources.nonEmpty)
@@ -278,8 +277,8 @@ class SbtProjectResolver
   private def nameFor(id: sbtStructure.ModuleIdentifier) = {
     val classifierOption =
       if (id.classifier.isEmpty) None else Some(id.classifier)
-    s"${id.organization}:${id.name}:${id.revision}" + classifierOption
-      .map(":" + _).getOrElse("") + s":${id.artifactType}"
+    s"${id.organization}:${id.name}:${id.revision}" +
+      classifierOption.map(":" + _).getOrElse("") + s":${id.artifactType}"
   }
 
   private def createModule(
@@ -315,10 +314,10 @@ class SbtProjectResolver
       project: sbtStructure.ProjectData): ContentRootNode = {
     val productionSources = validRootPathsIn(project, "compile")(_.sources)
     val productionResources = validRootPathsIn(project, "compile")(_.resources)
-    val testSources = validRootPathsIn(project, "test")(
-      _.sources) ++ validRootPathsIn(project, "it")(_.sources)
-    val testResources = validRootPathsIn(project, "test")(
-      _.resources) ++ validRootPathsIn(project, "it")(_.resources)
+    val testSources = validRootPathsIn(project, "test")(_.sources) ++
+      validRootPathsIn(project, "it")(_.sources)
+    val testResources = validRootPathsIn(project, "test")(_.resources) ++
+      validRootPathsIn(project, "it")(_.resources)
 
     val result = new ContentRootNode(project.base.path)
 

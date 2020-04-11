@@ -114,8 +114,8 @@ abstract class StatsSampleSpec
       system.actorOf(Props[StatsWorker], "statsWorker")
       system.actorOf(Props[StatsService], "statsService")
 
-      receiveN(3).collect { case MemberUp(m) => m.address }.toSet should be(
-        Set(firstAddress, secondAddress, thirdAddress))
+      receiveN(3).collect { case MemberUp(m) => m.address }.toSet should
+        be(Set(firstAddress, secondAddress, thirdAddress))
 
       Cluster(system).unsubscribe(testActor)
 
@@ -136,8 +136,8 @@ abstract class StatsSampleSpec
       // first attempts might fail because worker actors not started yet
       awaitAssert {
         service ! StatsJob("this is the text that will be analyzed")
-        expectMsgType[StatsResult](1.second).meanWordLength should be(
-          3.875 +- 0.001)
+        expectMsgType[StatsResult](1.second).meanWordLength should
+          be(3.875 +- 0.001)
       }
 
     }

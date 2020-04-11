@@ -94,8 +94,9 @@ object Ensemble extends JFXApp {
     title = "ScalaFX Ensemble"
     icons += new Image("/scalafx/ensemble/images/ScalaFX-icon-64x64.png")
     scene = new Scene(1020, 700) {
-      stylesheets += this.getClass
-        .getResource("/scalafx/ensemble/css/ensemble.css").toExternalForm
+      stylesheets +=
+        this.getClass.getResource("/scalafx/ensemble/css/ensemble.css")
+          .toExternalForm
       root = new BorderPane {
         top = new VBox {
           vgrow = Priority.Always

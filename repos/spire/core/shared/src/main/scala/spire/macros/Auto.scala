@@ -75,8 +75,8 @@ abstract class AutoOps {
     val tpeA = c.weakTypeTag[A].tpe
     val tpeB = c.weakTypeTag[B].tpe
     tpeA.members exists { m =>
-      m.isMethod && m.isPublic && m.name.encodedName.toString == name && (m
-        .typeSignature match {
+      m.isMethod && m.isPublic && m.name.encodedName.toString == name &&
+      (m.typeSignature match {
         case MethodType(Nil, ret) => ret =:= tpeB
         case _                    => false
       })
@@ -89,8 +89,8 @@ abstract class AutoOps {
     val tpeB = c.weakTypeTag[B].tpe
     val tpeC = c.weakTypeTag[C].tpe
     tpeA.members exists { m =>
-      m.isMethod && m.isPublic && m.name.encodedName.toString == name && (m
-        .typeSignature match {
+      m.isMethod && m.isPublic && m.name.encodedName.toString == name &&
+      (m.typeSignature match {
         case MethodType(List(param), ret) =>
           param.typeSignature =:= tpeB && ret =:= tpeC
         case _ => false
@@ -235,13 +235,11 @@ case class JavaAlgebra[C <: Context](c: C) extends AutoAlgebra {
   def plus[A: c.WeakTypeTag]: c.Expr[A] =
     binopSearch[A]("add" :: "plus" :: Nil) getOrElse failedSearch("plus", "+")
   def minus[A: c.WeakTypeTag]: c.Expr[A] =
-    binopSearch[A]("subtract" :: "minus" :: Nil) getOrElse failedSearch(
-      "minus",
-      "-")
+    binopSearch[A]("subtract" :: "minus" :: Nil) getOrElse
+      failedSearch("minus", "-")
   def times[A: c.WeakTypeTag]: c.Expr[A] =
-    binopSearch[A]("multiply" :: "times" :: Nil) getOrElse failedSearch(
-      "times",
-      "*")
+    binopSearch[A]("multiply" :: "times" :: Nil) getOrElse
+      failedSearch("times", "*")
   def div[A: c.WeakTypeTag]: c.Expr[A] =
     binopSearch[A]("divide" :: "div" :: Nil) getOrElse failedSearch("div", "/")
   def negate[A: c.WeakTypeTag]: c.Expr[A] =
@@ -254,9 +252,8 @@ case class JavaAlgebra[C <: Context](c: C) extends AutoAlgebra {
         List(Ident(termName(c)("x")))))
     }
   def quot[A: c.WeakTypeTag]: c.Expr[A] =
-    binopSearch[A]("quot" :: "divide" :: "div" :: Nil) getOrElse failedSearch(
-      "quot",
-      "/~")
+    binopSearch[A]("quot" :: "divide" :: "div" :: Nil) getOrElse
+      failedSearch("quot", "/~")
   def mod[A: c.WeakTypeTag](stub: => c.Expr[A]): c.Expr[A] =
     binopSearch("mod" :: "remainder" :: Nil) getOrElse stub
 

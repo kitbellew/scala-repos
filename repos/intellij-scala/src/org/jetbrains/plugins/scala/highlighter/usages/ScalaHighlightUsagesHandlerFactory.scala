@@ -51,8 +51,8 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
         PsiTreeUtil
           .getParentOfType(element, classOf[ScPatternDefinition]) match {
           case pattern @ ScPatternDefinition.expr(expr)
-              if pattern.pList.allPatternsSimple && pattern.pList.patterns
-                .length == 1 =>
+              if pattern.pList.allPatternsSimple &&
+                pattern.pList.patterns.length == 1 =>
             return new ScalaHighlightExprResultHandler(
               expr,
               editor,
@@ -64,8 +64,8 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
         PsiTreeUtil
           .getParentOfType(element, classOf[ScVariableDefinition]) match {
           case pattern @ ScPatternDefinition.expr(expr)
-              if pattern.pList.allPatternsSimple && pattern.pList.patterns
-                .length == 1 =>
+              if pattern.pList.allPatternsSimple &&
+                pattern.pList.patterns.length == 1 =>
             return new ScalaHighlightExprResultHandler(
               expr,
               editor,

@@ -240,9 +240,8 @@ private[cluster] final case class MetricsGossip(nodes: Set[NodeMetrics]) {
   def :+(newNodeMetrics: NodeMetrics): MetricsGossip =
     nodeMetricsFor(newNodeMetrics.address) match {
       case Some(existingNodeMetrics) ⇒
-        copy(nodes = nodes - existingNodeMetrics + (
-          existingNodeMetrics merge newNodeMetrics
-        ))
+        copy(nodes = nodes - existingNodeMetrics +
+          (existingNodeMetrics merge newNodeMetrics))
       case None ⇒ copy(nodes = nodes + newNodeMetrics)
     }
 
@@ -863,9 +862,8 @@ class SigarMetricsCollector(
   }
 
   override def metrics: Set[Metric] = {
-    super.metrics.filterNot(_.name == SystemLoadAverage) union Set(
-      systemLoadAverage,
-      cpuCombined).flatten
+    super.metrics.filterNot(_.name == SystemLoadAverage) union
+      Set(systemLoadAverage, cpuCombined).flatten
   }
 
   /**
@@ -944,8 +942,8 @@ private[cluster] object MetricsCollector {
         List(classOf[ActorSystem] -> system)).recover {
         case e ⇒
           throw new ConfigurationException(
-            "Could not create custom metrics collector [" + fqcn + "] due to:" + e
-              .toString)
+            "Could not create custom metrics collector [" + fqcn + "] due to:" +
+              e.toString)
       }.get
     }
   }

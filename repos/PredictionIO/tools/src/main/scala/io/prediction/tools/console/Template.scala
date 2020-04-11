@@ -131,27 +131,28 @@ object Template extends Logging {
           .mkString
         read[Map[String, GitHubCache]](cache)
       } catch { case e: Throwable => Map[String, GitHubCache]() }
-    val newReposCache = reposCache ++ (try {
-      repos.map { repo =>
-        val url = s"https://api.github.com/repos/$repo/$apiType"
-        val http = httpOptionalProxy(url)
-        val response = reposCache.get(repo).map { cache =>
-          cache.headers.get("ETag").map { etag =>
-            http.header("If-None-Match", etag).asString
+    val newReposCache = reposCache ++
+      (try {
+        repos.map { repo =>
+          val url = s"https://api.github.com/repos/$repo/$apiType"
+          val http = httpOptionalProxy(url)
+          val response = reposCache.get(repo).map { cache =>
+            cache.headers.get("ETag").map { etag =>
+              http.header("If-None-Match", etag).asString
+            } getOrElse { http.asString }
           } getOrElse { http.asString }
-        } getOrElse { http.asString }
 
-        val body =
-          if (response.code == 304) { reposCache(repo).body }
-          else { response.body }
+          val body =
+            if (response.code == 304) { reposCache(repo).body }
+            else { response.body }
 
-        repo -> GitHubCache(headers = response.headers, body = body)
-      }.toMap
-    } catch {
-      case e: ConnectException =>
-        githubConnectErrorMessage(e)
-        Map()
-    })
+          repo -> GitHubCache(headers = response.headers, body = body)
+        }.toMap
+      } catch {
+        case e: ConnectException =>
+          githubConnectErrorMessage(e)
+          Map()
+      })
     FileUtils.writeStringToFile(
       new File(repoFilename),
       write(newReposCache),
@@ -339,8 +340,7 @@ object Template extends Logging {
         val nameOnly = new File(destFilename).getName
 
         if (organization != "" &&
-            (nameOnly.endsWith(".scala") ||
-            nameOnly == "build.sbt" ||
+            (nameOnly.endsWith(".scala") || nameOnly == "build.sbt" ||
             nameOnly == "engine.json")) { filesToModify += destFilename }
       }
       ze = zis.getNextEntry

@@ -183,8 +183,8 @@ final case class PluginData(
     resolvers: Option[Seq[Resolver]],
     report: Option[UpdateReport],
     scalacOptions: Seq[String]) {
-  val classpath: Seq[Attributed[File]] =
-    definitionClasspath ++ dependencyClasspath
+  val classpath: Seq[Attributed[File]] = definitionClasspath ++
+    dependencyClasspath
 }
 object PluginData {
   @deprecated(
@@ -489,9 +489,8 @@ object EvaluateTask {
       roots: Seq[ScopedKey[_]],
       dummies: DummyTaskMap = DummyTaskMap(Nil)): NodeView[Task] =
     Transform(
-      (dummyRoots, roots) :: (dummyStreamsManager, streams) :: (
-        dummyState,
-        state) :: dummies)
+      (dummyRoots, roots) :: (dummyStreamsManager, streams) ::
+        (dummyState, state) :: dummies)
 
   @deprecated("Use new EvaluateTaskConfig option to runTask", "0.13.5")
   def runTask[T](
@@ -615,18 +614,17 @@ object EvaluateTask {
   def convertCyclic(c: AnyCyclic): String =
     (c.caller, c.target) match {
       case (caller: Task[_], target: Task[_]) =>
-        c.toString + (if (caller eq target) "(task: " + name(caller) + ")"
-                      else
-                        "(caller: " + name(caller) + ", target: " + name(
-                          target) + ")")
+        c.toString +
+          (if (caller eq target) "(task: " + name(caller) + ")"
+           else "(caller: " + name(caller) + ", target: " + name(target) + ")")
       case _ => c.toString
     }
 
   def liftAnonymous: Incomplete => Incomplete = {
     case i @ Incomplete(node, tpe, None, causes, None) =>
       causes.find(inc =>
-        inc.node.isEmpty && (inc.message.isDefined || inc.directCause
-          .isDefined)) match {
+        inc.node.isEmpty &&
+          (inc.message.isDefined || inc.directCause.isDefined)) match {
         case Some(lift) =>
           i.copy(directCause = lift.directCause, message = lift.message)
         case None => i

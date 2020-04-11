@@ -265,8 +265,8 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     _data = ArrayUtil.newArrayLike(data, 0)
   }
 
-  override def equals(p1: Any): Boolean =
-    (this eq p1.asInstanceOf[AnyRef]) || (p1 match {
+  override def equals(p1: Any): Boolean = (this eq p1.asInstanceOf[AnyRef]) ||
+    (p1 match {
       case vb: VectorBuilder[_] =>
         this.length == vb.length && vb.toHashVector == this.toHashVector
       case _ => false

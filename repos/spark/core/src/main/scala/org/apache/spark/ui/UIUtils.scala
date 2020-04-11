@@ -436,8 +436,9 @@ private[spark] object UIUtils extends Logging {
       }
       if (illegalNodes.nonEmpty) {
         throw new IllegalArgumentException(
-          "Only HTML anchors allowed in job descriptions\n" +
-            illegalNodes.map { n => s"${n.label} in $n" }.mkString("\n\t"))
+          "Only HTML anchors allowed in job descriptions\n" + illegalNodes.map {
+            n => s"${n.label} in $n"
+          }.mkString("\n\t"))
       }
 
       // Verify that all links are relative links starting with "/"
@@ -447,8 +448,8 @@ private[spark] object UIUtils extends Logging {
         }
       if (allLinks.exists { !_.startsWith("/") }) {
         throw new IllegalArgumentException(
-          "Links in job descriptions must be root-relative:\n" + allLinks
-            .mkString("\n\t"))
+          "Links in job descriptions must be root-relative:\n" +
+            allLinks.mkString("\n\t"))
       }
 
       // Prepend the relative links with basePathUri

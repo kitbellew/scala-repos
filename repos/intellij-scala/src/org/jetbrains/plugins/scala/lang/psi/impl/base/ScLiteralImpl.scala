@@ -108,8 +108,8 @@ class ScLiteralImpl(node: ASTNode)
         if (chars.length != 1) return null
         Character.valueOf(chars.charAt(0))
       case ScalaTokenTypes.tINTEGER =>
-        val endsWithL = child.getText.endsWith('l') || child.getText
-          .endsWith('L')
+        val endsWithL = child.getText.endsWith('l') ||
+          child.getText.endsWith('L')
         text = if (endsWithL) text.substring(0, text.length - 1) else text
         val (number, base) = text match {
           case t if t.startsWith("0x") || t.startsWith("0X") =>
@@ -124,8 +124,12 @@ class ScLiteralImpl(node: ASTNode)
         var value = 0L
         for (d <- number.map(_.asDigit)) {
           if (value < 0 ||
-              limit / (base / divider) < value / divider ||
-              limit - (d / divider) < value * (base / divider)) { return null }
+              limit /
+                (base / divider) < value / divider ||
+                limit -
+                (d / divider) <
+                value *
+                (base / divider)) { return null }
           value = value * base + d
         }
         if (endsWithL) java.lang.Long.valueOf(value)
@@ -227,8 +231,8 @@ class ScLiteralImpl(node: ASTNode)
     if (getFirstChild.getNode.getElementType != ScalaTokenTypes.kNULL)
       assert(
         assertion = false,
-        message = "Only null literals accepted, type: " + getFirstChild.getNode
-          .getElementType)
+        message = "Only null literals accepted, type: " +
+          getFirstChild.getNode.getElementType)
     typeWithoutImplicits = tp
   }
 
@@ -266,11 +270,11 @@ class ScLiteralImpl(node: ASTNode)
         PsiAnnotationOwner with PsiElement]): Option[PsiAnnotationOwner] = {
     if (!isString) return None
 
-    if (System.currentTimeMillis() > expirationTime || myAnnotationOwner
-          .exists(!_.isValid)) {
+    if (System.currentTimeMillis() > expirationTime ||
+        myAnnotationOwner.exists(!_.isValid)) {
       myAnnotationOwner = annotationOwnerLookUp(this)
-      expirationTime = System.currentTimeMillis() + (2 + expTimeLengthGenerator
-        .nextInt(8)) * 1000
+      expirationTime = System.currentTimeMillis() +
+        (2 + expTimeLengthGenerator.nextInt(8)) * 1000
     }
 
     myAnnotationOwner

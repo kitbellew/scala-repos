@@ -77,10 +77,10 @@ object ASMConverters {
     // toString such that the first field, "opcode: Int", is printed textually.
     final override def toString() = {
       val printOpcode = opcode != -1
-      productPrefix + (if (printOpcode)
-                         Iterator(opcodeToString(opcode)) ++ productIterator
-                           .drop(1)
-                       else productIterator).mkString("(", ", ", ")")
+      productPrefix +
+        (if (printOpcode)
+           Iterator(opcodeToString(opcode)) ++ productIterator.drop(1)
+         else productIterator).mkString("(", ", ", ")")
     }
   }
 
@@ -276,14 +276,13 @@ object ASMConverters {
     }
     def sameVar(v1: Int, v2: Int) = same(v1, v2, varMap)
     def sameLabel(l1: Label, l2: Label) = same(l1.offset, l2.offset, labelMap)
-    def sameLabels(ls1: List[Label], ls2: List[Label]) =
-      (ls1 corresponds ls2)(sameLabel)
+    def sameLabels(ls1: List[Label], ls2: List[Label]) = (ls1 corresponds ls2)(
+      sameLabel)
 
-    def sameFrameTypes(ts1: List[Any], ts2: List[Any]) =
-      (ts1 corresponds ts2) {
-        case (t1: Label, t2: Label) => sameLabel(t1, t2)
-        case (x, y)                 => x == y
-      }
+    def sameFrameTypes(ts1: List[Any], ts2: List[Any]) = (ts1 corresponds ts2) {
+      case (t1: Label, t2: Label) => sameLabel(t1, t2)
+      case (x, y)                 => x == y
+    }
 
     if (as.isEmpty) bs.isEmpty
     else if (bs.isEmpty) false
@@ -298,15 +297,13 @@ object ASMConverters {
         case (
               LookupSwitch(op1, l1, keys1, ls1),
               LookupSwitch(op2, l2, keys2, ls2)) =>
-          op1 == op2 && sameLabel(l1, l2) && keys1 == keys2 && sameLabels(
-            ls1,
-            ls2)
+          op1 == op2 && sameLabel(l1, l2) && keys1 == keys2 &&
+            sameLabels(ls1, ls2)
         case (
               TableSwitch(op1, min1, max1, l1, ls1),
               TableSwitch(op2, min2, max2, l2, ls2)) =>
-          op1 == op2 && min1 == min2 && max1 == max2 && sameLabel(
-            l1,
-            l2) && sameLabels(ls1, ls2)
+          op1 == op2 && min1 == min2 && max1 == max2 && sameLabel(l1, l2) &&
+            sameLabels(ls1, ls2)
         case (LineNumber(line1, l1), LineNumber(line2, l2)) =>
           line1 == line2 && sameLabel(l1, l2)
         case (FrameEntry(tp1, loc1, stk1), FrameEntry(tp2, loc2, stk2)) =>

@@ -17,8 +17,8 @@ object IterateeUsage extends App {
   ((head[Int, IO] &= iter123).run unsafePerformIO ()) assert_=== Some(1)
   ((length[Int, IO] &= iter123).run unsafePerformIO ()) assert_=== 3
   ((peek[Int, IO] &= iter123).run unsafePerformIO ()) assert_=== Some(1)
-  ((head[Int, IO] &= enumIterator[Int, IO](Iterator()))
-    .run unsafePerformIO ()) assert_=== None
+  ((head[Int, IO] &= enumIterator[Int, IO](Iterator())).run unsafePerformIO
+    ()) assert_=== None
 
   val stream1_10 = enumStream[Int, Id]((1 to 10).toStream)
 
@@ -26,21 +26,19 @@ object IterateeUsage extends App {
   (takeWhile[Int, List](_ <= 5) &= stream1_10).run assert_=== (1 to 5).toList
   (takeUntil[Int, List](_ > 5) &= stream1_10).run assert_=== (1 to 5).toList
 
-  val readLn = takeWhile[Char, List](_ != '\n') flatMap (ln =>
-    drop[Char, Id](1).map(_ => ln))
-  (collect[List[Char], List] %= readLn.sequenceI &= enumStream(
-    "Iteratees\nare\ncomposable".toStream)).run assert_=== List(
-    "Iteratees".toList,
-    "are".toList,
-    "composable".toList)
+  val readLn = takeWhile[Char, List](_ != '\n') flatMap
+    (ln => drop[Char, Id](1).map(_ => ln))
+  (collect[List[Char], List] %= readLn.sequenceI &=
+    enumStream("Iteratees\nare\ncomposable".toStream)).run assert_===
+    List("Iteratees".toList, "are".toList, "composable".toList)
 
-  (collect[List[Int], List] %= splitOn(_ % 3 != 0) &= stream1_10)
-    .run assert_=== List(List(1, 2), List(4, 5), List(7, 8), List(10))
+  (collect[List[Int], List] %= splitOn(_ % 3 != 0) &= stream1_10).run assert_===
+    List(List(1, 2), List(4, 5), List(7, 8), List(10))
 
-  (collect[Int, List] %= map((_: String).toInt) &= enumStream(
-    Stream("1", "2", "3"))).run assert_=== List(1, 2, 3)
-  (collect[Int, List] %= filter((_: Int) % 2 == 0) &= stream1_10)
-    .run assert_=== List(2, 4, 6, 8, 10)
+  (collect[Int, List] %= map((_: String).toInt) &=
+    enumStream(Stream("1", "2", "3"))).run assert_=== List(1, 2, 3)
+  (collect[Int, List] %= filter((_: Int) % 2 == 0) &= stream1_10).run assert_===
+    List(2, 4, 6, 8, 10)
 
   (collect[List[Int], List] %= group(3) &= enumStream((1 to 9).toStream))
     .run assert_=== List(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
@@ -70,13 +68,11 @@ object IterateeUsage extends App {
 
   val colc = takeWhile[IoExceptionOr[Char], List](_.fold(_ => false, _ != ' '))
     .up[IO]
-  ((colc &= r).map(_ flatMap (_.toOption))
-    .run unsafePerformIO ()) assert_=== List('f', 'i', 'l', 'e')
+  ((colc &= r).map(_ flatMap (_.toOption)).run unsafePerformIO ()) assert_===
+    List('f', 'i', 'l', 'e')
 
-  val take10And5ThenHead =
-    take[Int, List](10) zip take[Int, List](5) flatMap (ab =>
-      head[Int, Id] map (h => (ab, h)))
-  (take10And5ThenHead &= enumStream((1 to 20).toStream)).run assert_=== (
-    ((1 to 10).toList, (1 to 5).toList), Some(11)
-  )
+  val take10And5ThenHead = take[Int, List](10) zip take[Int, List](5) flatMap
+    (ab => head[Int, Id] map (h => (ab, h)))
+  (take10And5ThenHead &= enumStream((1 to 20).toStream)).run assert_===
+    (((1 to 10).toList, (1 to 5).toList), Some(11))
 }

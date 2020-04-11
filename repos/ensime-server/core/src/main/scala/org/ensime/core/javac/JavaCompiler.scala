@@ -211,8 +211,8 @@ class JavaCompiler(
       }.map(new CompilationInfo(task, _)).toVector
       task.analyze()
       log.info(
-        "Parsed and analyzed for trees: " + (System
-          .currentTimeMillis() - t) + "ms")
+        "Parsed and analyzed for trees: " + (System.currentTimeMillis() - t) +
+          "ms")
       units
     } catch {
       case e @ (_: Abort | _: ArrayIndexOutOfBoundsException |

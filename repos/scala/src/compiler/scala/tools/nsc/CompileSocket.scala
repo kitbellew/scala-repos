@@ -67,9 +67,8 @@ class CompileSocket extends CompileOutputCommon {
   /** The class name of the scala compile server */
   protected val serverClass = "scala.tools.nsc.CompileServer"
   protected def serverClassArgs =
-    (if (verbose) List("-v") else Nil) ::: (if (fixPort > 0)
-                                              List("-p", fixPort.toString)
-                                            else Nil)
+    (if (verbose) List("-v") else Nil) :::
+      (if (fixPort > 0) List("-p", fixPort.toString) else Nil)
 
   /** A temporary directory to use */
   val tmpDir = {
@@ -90,9 +89,8 @@ class CompileSocket extends CompileOutputCommon {
     *  @param vmArgs  the argument string to be passed to the java or scala command
     */
   private def serverCommand(vmArgs: Seq[String]): Seq[String] =
-    Seq(vmCommand) ++ vmArgs ++ Seq(serverClass) ++ serverClassArgs filterNot (
-      _ == ""
-    )
+    Seq(vmCommand) ++ vmArgs ++ Seq(serverClass) ++ serverClassArgs filterNot
+      (_ == "")
 
   /** Start a new server. */
   private def startNewServer(vmArgs: String) = {
@@ -148,7 +146,8 @@ class CompileSocket extends CompileOutputCommon {
     info("[Port number: " + port + "]")
     if (port < 0)
       fatal(
-        "Could not connect to compilation daemon after " + attempts + " attempts.")
+        "Could not connect to compilation daemon after " + attempts +
+          " attempts.")
     port
   }
 
@@ -195,7 +194,8 @@ class CompileSocket extends CompileOutputCommon {
             case Left(err) =>
               info(err.toString)
               info(
-                "[Connecting to compilation daemon at port %d failed; re-trying...]" format port)
+                "[Connecting to compilation daemon at port %d failed; re-trying...]" format
+                  port)
 
               if (attempts % 2 == 0)
                 deletePort(port) // 50% chance to stop trying on this port
@@ -215,9 +215,8 @@ class CompileSocket extends CompileOutputCommon {
   def getSocket(serverAdr: String): Option[Socket] =
     (for ((name, portStr) <-
             splitWhere(serverAdr, _ == ':', doDropIndex = true);
-          port <- parseInt(portStr))
-      yield getSocket(name, port)) getOrElse fatal(
-      "Malformed server address: %s; exiting" format serverAdr)
+          port <- parseInt(portStr)) yield getSocket(name, port)) getOrElse
+      fatal("Malformed server address: %s; exiting" format serverAdr)
 
   def getSocket(hostName: String, port: Int): Option[Socket] = {
     val sock = Socket(hostName, port).opt

@@ -56,9 +56,8 @@ object ScalaMoveUtil {
       .findChildrenOfType(file, classOf[ScTypeDefinition])
     val withSameName = allClasses.asScala
       .filter(_.name == ScalaNamesUtil.scalaName(aClass))
-    withSameName.size == 1 && canBeCompanions(
-      withSameName.head,
-      aClass) || withSameName.isEmpty
+    withSameName.size == 1 && canBeCompanions(withSameName.head, aClass) ||
+    withSameName.isEmpty
   }
 
   def doMoveClass(
@@ -90,17 +89,14 @@ object ScalaMoveUtil {
           val fileWithClassName = moveDestination
             .findFile(className + "." + ScalaFileType.DEFAULT_EXTENSION)
           // moving second of two classes which were in the same file to a different directory (IDEADEV-3089)
-          if (moveDestination != file
-                .getContainingDirectory && fileWithOldFileName != null && classCanBeAdded(
-                file,
-                aClass)) {
+          if (moveDestination != file.getContainingDirectory &&
+              fileWithOldFileName != null && classCanBeAdded(file, aClass)) {
             newClass = fileWithOldFileName.add(td).asInstanceOf[PsiClass]
             deleteClass(td)
           }
           //moving class to the existing file with the same name
-          else if (fileWithClassName != null && classCanBeAdded(
-                     fileWithClassName,
-                     aClass)) {
+          else if (fileWithClassName != null &&
+                   classCanBeAdded(fileWithClassName, aClass)) {
             newClass = fileWithClassName.add(td).asInstanceOf[PsiClass]
             deleteClass(td)
           }
@@ -155,8 +151,8 @@ object ScalaMoveUtil {
         ASSOCIATIONS_KEY,
         if (associations.isEmpty) null else associations.get(0))
     }
-    val alreadyMoved = getMoveDestination(aClass) == aClass.getContainingFile
-      .getContainingDirectory
+    val alreadyMoved = getMoveDestination(aClass) ==
+      aClass.getContainingFile.getContainingDirectory
     aClass.getContainingFile match {
       case file: ScalaFile if !alreadyMoved =>
         collectData(aClass, file)

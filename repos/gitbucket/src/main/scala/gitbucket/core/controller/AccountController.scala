@@ -121,8 +121,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   )(NewGroupForm.apply)
 
   val editGroupForm = mapping(
-    "groupName" -> trim(
-      label("Group name", text(required, maxlength(100), identifier))),
+    "groupName" ->
+      trim(label("Group name", text(required, maxlength(100), identifier))),
     "url" -> trim(label("URL", optional(text(maxlength(200))))),
     "fileId" -> trim(label("File ID", optional(text()))),
     "members" -> trim(label("Members", text(required, members))),
@@ -157,8 +157,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   case class AccountForm(accountName: String)
 
   val accountForm = mapping(
-    "account" -> trim(
-      label("Group/User name", text(required, validAccountName))))(
+    "account" ->
+      trim(label("Group/User name", text(required, validAccountName))))(
     AccountForm.apply)
 
   /**
@@ -480,8 +480,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
       LockUtil.lock(s"${accountName}/${repository.name}") {
         if (getRepository(accountName, repository.name).isDefined ||
-            (accountName != loginUserName && !getGroupsByUserName(loginUserName)
-              .contains(accountName))) {
+            (accountName != loginUserName &&
+            !getGroupsByUserName(loginUserName).contains(accountName))) {
           // redirect to the repository if repository already exists
           redirect(s"/${accountName}/${repository.name}")
         } else {

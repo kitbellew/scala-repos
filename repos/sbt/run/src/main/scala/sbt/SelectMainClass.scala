@@ -29,7 +29,8 @@ object SelectMainClass {
       if (i > 0 && i <= size) Some(i - 1)
       else {
         println(
-          "Number out of range: was " + i + ", expected number between 1 and " + size)
+          "Number out of range: was " + i + ", expected number between 1 and " +
+            size)
         None
       }
     } catch {

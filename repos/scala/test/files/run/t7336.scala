@@ -24,8 +24,8 @@ object Test {
     }
 
     val arraySize = 1000000
-    val tooManyArrays = (Runtime.getRuntime().totalMemory() / arraySize)
-      .toInt + 1
+    val tooManyArrays = (Runtime.getRuntime().totalMemory() / arraySize).toInt +
+      1
     Await.ready(loop(tooManyArrays, arraySize), Duration.Inf)
   }
 }

@@ -82,14 +82,12 @@ class ConstructorAnnotatorTest extends SimpleTestCase {
 
   def testTypeMismatch() {
     assertMatches(messages("new A(false)")) {
-      case Error(
-            "false",
-            "Type mismatch, expected: Int, actual: Boolean") :: Nil =>
+      case Error("false", "Type mismatch, expected: Int, actual: Boolean") ::
+          Nil =>
     }
     assertMatches(messages("new B[Int](false)")) {
-      case Error(
-            "false",
-            "Type mismatch, expected: Int, actual: Boolean") :: Nil =>
+      case Error("false", "Type mismatch, expected: Int, actual: Boolean") ::
+          Nil =>
     }
   }
 

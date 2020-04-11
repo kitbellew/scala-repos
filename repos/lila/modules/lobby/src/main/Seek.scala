@@ -32,16 +32,16 @@ case class Seek(
   def compatibleWith(h: Seek) =
     user.id != h.user.id &&
       compatibilityProperties == h.compatibilityProperties &&
-      (realColor compatibleWith h.realColor) &&
-      ratingRangeCompatibleWith(h) && h.ratingRangeCompatibleWith(this)
+      (realColor compatibleWith h.realColor) && ratingRangeCompatibleWith(h) &&
+      h.ratingRangeCompatibleWith(this)
 
   private def ratingRangeCompatibleWith(h: Seek) =
     realRatingRange.fold(true) { range => h.rating ?? range.contains }
 
   private def compatibilityProperties = (variant, mode, daysPerTurn)
 
-  lazy val realRatingRange: Option[RatingRange] =
-    RatingRange noneIfDefault ratingRange
+  lazy val realRatingRange: Option[RatingRange] = RatingRange noneIfDefault
+    ratingRange
 
   def rating = perfType map (_.key) flatMap user.ratingMap.get
 

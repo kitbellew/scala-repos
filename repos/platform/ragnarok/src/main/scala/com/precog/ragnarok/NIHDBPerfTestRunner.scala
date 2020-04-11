@@ -83,11 +83,11 @@ final class NIHDBPerfTestRunner[T](
     val optimize = self.optimize
     val commandLineConfig = Configuration
       .parse(_rootDir map ("precog.storage.root = " + _) getOrElse "")
-    override val config = (Configuration parse {
-      Option(System.getProperty("precog.storage.root")) map (
-        "precog.storage.root = " + _
-      ) getOrElse ""
-    }) ++ commandLineConfig
+    override val config =
+      (Configuration parse {
+        Option(System.getProperty("precog.storage.root")) map
+          ("precog.storage.root = " + _) getOrElse ""
+      }) ++ commandLineConfig
     val cookThreshold = 10000
     val clock = blueeyes.util.Clock.System
     val storageTimeout = Timeout(Duration(120, "seconds"))

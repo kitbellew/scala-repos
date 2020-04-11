@@ -108,9 +108,8 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
     assert(matcher.portsMatch.isDefined)
     assert(5 == matcher.portsMatch.get.hostPorts.size)
     assert(
-      matcher.portsMatch.get.resources.map(_.getRole).to[Set] == Set(
-        "*",
-        "marathon"))
+      matcher.portsMatch.get.resources.map(_.getRole).to[Set] ==
+        Set("*", "marathon"))
   }
 
   test("get ports from multiple ranges, ignore ranges with unwanted roles") {
@@ -299,8 +298,7 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
     assert(matcher.portsMatch.isDefined)
     assert(matcher.portsMatch.get.hostPorts.toSet == Set(31000, 31001))
     assert(
-      matcher.portsMatch.get.hostPortsWithRole.toSet == Set(
-        PortWithRole("*", 31000),
-        PortWithRole("marathon", 31001)))
+      matcher.portsMatch.get.hostPortsWithRole.toSet ==
+        Set(PortWithRole("*", 31000), PortWithRole("marathon", 31001)))
   }
 }

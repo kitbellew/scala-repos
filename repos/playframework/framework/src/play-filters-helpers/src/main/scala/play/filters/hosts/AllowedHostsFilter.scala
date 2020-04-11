@@ -27,8 +27,8 @@ case class AllowedHostsFilter @Inject() (
     this(config, new JavaHttpErrorHandlerAdapter(errorHandler))
   }
 
-  private val hostMatchers: Seq[HostMatcher] = config.allowed map HostMatcher
-    .apply
+  private val hostMatchers: Seq[HostMatcher] = config.allowed map
+    HostMatcher.apply
 
   override def apply(next: EssentialAction) =
     EssentialAction { req =>
@@ -54,8 +54,8 @@ private[hosts] case class HostMatcher(pattern: String) {
     val hostMatches =
       if (isSuffix) s".$headerHost" endsWith hostPattern
       else headerHost == hostPattern
-    val portMatches =
-      headerPort.forall(_ > 0) && (port.isEmpty || port == headerPort)
+    val portMatches = headerPort.forall(_ > 0) &&
+      (port.isEmpty || port == headerPort)
     hostMatches && portMatches
   }
 

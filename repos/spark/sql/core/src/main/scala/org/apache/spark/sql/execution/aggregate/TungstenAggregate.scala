@@ -52,8 +52,8 @@ case class TungstenAggregate(
       aggregateExpressions.flatMap(_.aggregateFunction.inputAggBufferAttributes)
 
   override private[sql] lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"),
+    "numOutputRows" ->
+      SQLMetrics.createLongMetric(sparkContext, "number of output rows"),
     "dataSize" -> SQLMetrics.createSizeMetric(sparkContext, "data size"),
     "spillSize" -> SQLMetrics.createSizeMetric(sparkContext, "spill size")
   )
@@ -61,9 +61,8 @@ case class TungstenAggregate(
   override def output: Seq[Attribute] = resultExpressions.map(_.toAttribute)
 
   override def producedAttributes: AttributeSet =
-    AttributeSet(aggregateAttributes) ++
-      AttributeSet(
-        resultExpressions.diff(groupingExpressions).map(_.toAttribute)) ++
+    AttributeSet(aggregateAttributes) ++ AttributeSet(
+      resultExpressions.diff(groupingExpressions).map(_.toAttribute)) ++
       AttributeSet(aggregateBufferAttributes)
 
   override def requiredChildDistribution: List[Distribution] = {
@@ -341,8 +340,8 @@ case class TungstenAggregate(
       val mergeExpr = declFunctions.flatMap(_.mergeExpressions)
       val mergeProjection = newMutableProjection(
         mergeExpr,
-        aggregateBufferAttributes ++ declFunctions
-          .flatMap(_.inputAggBufferAttributes),
+        aggregateBufferAttributes ++
+          declFunctions.flatMap(_.inputAggBufferAttributes),
         subexpressionEliminationEnabled)()
       val joinedRow = new JoinedRow()
 
@@ -545,8 +544,8 @@ case class TungstenAggregate(
     val hashEval = BindReferences.bindReference(hashExpr, child.output).gen(ctx)
 
     val inputAttr = aggregateBufferAttributes ++ child.output
-    ctx.currentVars =
-      new Array[ExprCode](aggregateBufferAttributes.length) ++ input
+    ctx.currentVars = new Array[ExprCode](aggregateBufferAttributes.length) ++
+      input
     ctx.INPUT_ROW = buffer
     // TODO: support subexpression elimination
     val evals = updateExpr

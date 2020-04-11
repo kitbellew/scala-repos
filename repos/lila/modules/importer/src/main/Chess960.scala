@@ -13,17 +13,13 @@ object Chess960 {
       rankMatches {
         case Some(Piece(White, King | Queen | Rook | Knight | Bishop)) => true
         case _                                                         => false
-      }(1) &&
-      rankMatches {
+      }(1) && rankMatches {
         case Some(Piece(White, Pawn)) => true
         case _                        => false
-      }(2) &&
-      List(3, 4, 5, 6).forall(rankMatches(_.isEmpty)) &&
-      rankMatches {
+      }(2) && List(3, 4, 5, 6).forall(rankMatches(_.isEmpty)) && rankMatches {
         case Some(Piece(Black, Pawn)) => true
         case _                        => false
-      }(7) &&
-      rankMatches {
+      }(7) && rankMatches {
         case Some(Piece(Black, King | Queen | Rook | Knight | Bishop)) => true
         case _                                                         => false
       }(8)

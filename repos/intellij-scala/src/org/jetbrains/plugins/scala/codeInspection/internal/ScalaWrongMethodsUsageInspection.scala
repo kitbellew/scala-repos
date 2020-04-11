@@ -44,18 +44,20 @@ class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
         val map = new mutable.HashMap[String, Seq[String]]()
         map += (("getContainingClass", Seq("com.intellij.psi.PsiMember")))
         map += (("getQualifiedName", Seq("com.intellij.psi.PsiClass")))
-        map += (
+        map +=
           (
-            "getName",
-            Seq(
-              "com.intellij.navigation.NavigationItem",
-              "com.intellij.psi.PsiNamedElement")))
+            (
+              "getName",
+              Seq(
+                "com.intellij.navigation.NavigationItem",
+                "com.intellij.psi.PsiNamedElement")))
         map += (("getClasses", Seq("com.intellij.psi.PsiClassOwner")))
         map += (("getClassNames", Seq("com.intellij.psi.PsiClassOwnerEx")))
-        map += (
+        map +=
           (
-            "hasModifierProperty",
-            Seq("com.intellij.psi.PsiModifierListOwner")))
+            (
+              "hasModifierProperty",
+              Seq("com.intellij.psi.PsiModifierListOwner")))
         resolve match {
           case m: PsiMethod => map.get(m.name) match {
               case Some(classes) =>
@@ -66,10 +68,10 @@ class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
                     val cachedClass = instance
                       .getCachedClass(m.getResolveScope, clazz).orNull
                     if (cachedClass != null && containingClass != null) {
-                      if (cachedClass == containingClass || instance
-                            .cachedDeepIsInheritor(
-                              cachedClass,
-                              containingClass)) { true }
+                      if (cachedClass == containingClass ||
+                          instance.cachedDeepIsInheritor(
+                            cachedClass,
+                            containingClass)) { true }
                       else false
                     } else false
                 } match {

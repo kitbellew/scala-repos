@@ -149,8 +149,9 @@ private class SelectorMap(binds: List[CssBind])
 
       case i @ CssBind(AttrSelector(name, value, _)) => {
         val oldMap = attrMap.getOrElse(name, Map())
-        attrMap += (name -> (oldMap + (value -> sortBinds(
-          i :: oldMap.getOrElse(value, Nil)))))
+        attrMap +=
+          (name ->
+            (oldMap + (value -> sortBinds(i :: oldMap.getOrElse(value, Nil)))))
       }
     }
 
@@ -248,9 +249,8 @@ private class SelectorMap(binds: List[CssBind])
                   calced.dropRight(1).flatMap(a => a ++ Text(" ")) ++
                     calced.takeRight(1).head
                 } else {
-                  org ++ Text(" ") ++
-                    calced.dropRight(1).flatMap(a => a ++ Text(" ")) ++
-                    calced.takeRight(1).head
+                  org ++ Text(" ") ++ calced.dropRight(1)
+                    .flatMap(a => a ++ Text(" ")) ++ calced.takeRight(1).head
                 }
               } else { org ++ (calced.flatMap(a => a): NodeSeq) }
 
@@ -474,9 +474,10 @@ private class SelectorMap(binds: List[CssBind])
 
             case n => {
               val calcedList = calced.toList
-              val availableIds = (attrs.get("id").toList ++
-                calcedList.collect({ case e: Elem => e.attribute("id") })
-                  .flatten.map(_.toString)).toSet
+              val availableIds =
+                (attrs.get("id").toList ++ calcedList.collect({
+                  case e: Elem => e.attribute("id")
+                }).flatten.map(_.toString)).toSet
               val merged = calcedList
                 .foldLeft((availableIds, Nil: List[Seq[xml.Node]])) {
                   (idsAndResult, a) =>
@@ -484,13 +485,13 @@ private class SelectorMap(binds: List[CssBind])
                     a match {
                       case Group(g) => (ids, g :: result)
                       case e: Elem => {
-                        val targetId = e.attribute("id")
-                          .map(_.toString) orElse (attrs.get("id"))
+                        val targetId = e.attribute("id").map(_.toString) orElse
+                          (attrs.get("id"))
                         val keepId = targetId map { id =>
                           ids.contains(id)
                         } getOrElse (false)
-                        val newIds = targetId filter (_ => keepId) map (i =>
-                          ids - i) getOrElse (ids)
+                        val newIds = targetId filter (_ => keepId) map
+                          (i => ids - i) getOrElse (ids)
                         val newElem = new Elem(
                           e.prefix,
                           e.label,
@@ -751,8 +752,7 @@ trait CssBind extends CssSel {
   def css: Box[CssSelector]
 
   override def toString(): String =
-    "CssBind(" + stringSelector + ", " +
-      css + ")"
+    "CssBind(" + stringSelector + ", " + css + ")"
 
   def apply(in: NodeSeq): NodeSeq =
     css match {

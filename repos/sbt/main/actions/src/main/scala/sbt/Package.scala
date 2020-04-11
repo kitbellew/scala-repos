@@ -83,8 +83,8 @@ object Package {
     val cachedMakeJar = inputChanged(cacheFile / "inputs") {
       (
           inChanged,
-          inputs: Map[File, String] :+: FilesInfo[
-            ModifiedFileInfo] :+: Manifest :+: HNil) =>
+          inputs: Map[File, String] :+: FilesInfo[ModifiedFileInfo] :+:
+            Manifest :+: HNil) =>
         val sources :+: _ :+: manifest :+: HNil = inputs
         outputChanged(cacheFile / "output") {
           (outChanged, jar: PlainFileInfo) =>
@@ -143,9 +143,8 @@ object Package {
     log.info("Done packaging.")
   }
   def sourcesDebugString(sources: Seq[(File, String)]): String =
-    "Input file mappings:\n\t" + (sources map {
-      case (f, s) => s + "\n\t  " + f
-    } mkString ("\n\t"))
+    "Input file mappings:\n\t" +
+      (sources map { case (f, s) => s + "\n\t  " + f } mkString ("\n\t"))
 
   implicit def manifestEquiv: Equiv[Manifest] = defaultEquiv
   implicit def manifestFormat: Format[Manifest] =

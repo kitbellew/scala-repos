@@ -79,8 +79,8 @@ class ExtractorResolveProcessor(
         if (candidatesSet.isEmpty) {
           obj match {
             case FakeCompanionClassOrCompanionClass(cl: ScClass)
-                if cl.tooBigForUnapply && cl.scalaLanguageLevel
-                  .exists(_ >= Scala_2_11) =>
+                if cl.tooBigForUnapply &&
+                  cl.scalaLanguageLevel.exists(_ >= Scala_2_11) =>
               addResult(new ScalaResolveResult(
                 named,
                 ScSubstitutor.empty,
@@ -110,8 +110,8 @@ class ExtractorResolveProcessor(
           r.element match {
             case fun: ScFunction =>
               val clauses = fun.paramClauses.clauses
-              if (clauses.length != 0 && clauses.apply(0).parameters
-                    .length == 1) {
+              if (clauses.length != 0 &&
+                  clauses.apply(0).parameters.length == 1) {
                 for (paramType <- clauses(0).parameters.apply(0)
                        .getType(TypingContext.empty)
                      if tp conforms r.substitutor.subst(paramType)) return true

@@ -48,8 +48,7 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
       if (member.sourceFile != null) {
         if (existing.sourceFile != member.sourceFile)
           error(
-            member + "is defined twice," +
-              "\n in " + existing.sourceFile +
+            member + "is defined twice," + "\n in " + existing.sourceFile +
               "\n and also in " + member.sourceFile)
       }
       existing
@@ -134,8 +133,8 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
       name: String,
       src: AbstractFile) {
     try {
-      if (root.isEffectiveRoot || !src.name
-            .endsWith(".scala")) // RootClass or EmptyPackageClass
+      if (root.isEffectiveRoot ||
+          !src.name.endsWith(".scala")) // RootClass or EmptyPackageClass
         super.enterToplevelsFromSource(root, name, src)
       else browseTopLevel(root, src)
     } catch {

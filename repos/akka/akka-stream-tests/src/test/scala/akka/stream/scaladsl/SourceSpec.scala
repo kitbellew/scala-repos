@@ -81,8 +81,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
   }
 
   "Maybe Source" must {
-    "complete materialized future with None when stream cancels" in Utils
-      .assertAllStagesStopped {
+    "complete materialized future with None when stream cancels" in
+      Utils.assertAllStagesStopped {
         val neverSource = Source.maybe[Int]
         val pubSink = Sink.asPublisher[Int](false)
 
@@ -99,8 +99,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         Await.result(f.future, 500.millis) shouldEqual None
       }
 
-    "allow external triggering of empty completion" in Utils
-      .assertAllStagesStopped {
+    "allow external triggering of empty completion" in
+      Utils.assertAllStagesStopped {
         val neverSource = Source.maybe[Int].filter(_ ⇒ false)
         val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒ acc + 1 }
 
@@ -113,8 +113,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         Await.result(counterFuture, 500.millis) shouldEqual 0
       }
 
-    "allow external triggering of non-empty completion" in Utils
-      .assertAllStagesStopped {
+    "allow external triggering of non-empty completion" in
+      Utils.assertAllStagesStopped {
         val neverSource = Source.maybe[Int]
         val counterSink = Sink.head[Int]
 
@@ -205,8 +205,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
 
     "combine from two inputs with simplified API" in {
       val probes = Seq.fill(2)(TestPublisher.manualProbe[Int]())
-      val source = Source.fromPublisher(probes(0)) :: Source
-        .fromPublisher(probes(1)) :: Nil
+      val source = Source.fromPublisher(probes(0)) ::
+        Source.fromPublisher(probes(1)) :: Nil
       val out = TestSubscriber.manualProbe[Int]
 
       Source.combine(source(0), source(1))(Merge(_))
@@ -247,35 +247,34 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
       Source.unfold((0, 1)) {
         case (a, _) if a > 10000000 ⇒ None
         case (a, b) ⇒ Some((b, a + b) → a)
-      }.runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
-        .futureValue should ===(expected)
+      }.runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }.futureValue should
+        ===(expected)
     }
 
     "terminate with a failure if there is an exception thrown" in {
       val t = new RuntimeException("expected")
       EventFilter[RuntimeException](
         message = "expected",
-        occurrences = 1) intercept
-        whenReady(Source.unfold((0, 1)) {
-          case (a, _) if a > 10000000 ⇒ throw t
-          case (a, b) ⇒ Some((b, a + b) → a)
-        }.runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }.failed) {
-          _ should be theSameInstanceAs (t)
-        }
+        occurrences = 1) intercept whenReady(Source.unfold((0, 1)) {
+        case (a, _) if a > 10000000 ⇒ throw t
+        case (a, b) ⇒ Some((b, a + b) → a)
+      }.runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }.failed) {
+        _ should be theSameInstanceAs (t)
+      }
     }
 
     "generate a finite fibonacci sequence asynchronously" in {
       Source.unfoldAsync((0, 1)) {
         case (a, _) if a > 10000000 ⇒ Future.successful(None)
         case (a, b) ⇒ Future(Some((b, a + b) → a))(system.dispatcher)
-      }.runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
-        .futureValue should ===(expected)
+      }.runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }.futureValue should
+        ===(expected)
     }
 
     "generate an unbounded fibonacci sequence" in {
       Source.unfold((0, 1))({ case (a, b) ⇒ Some((b, a + b) → a) }).take(36)
-        .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
-        .futureValue should ===(expected)
+        .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }.futureValue should
+        ===(expected)
     }
   }
 

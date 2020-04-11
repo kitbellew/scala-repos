@@ -40,12 +40,12 @@ object ComparingUtil {
     }
 
     val areUnrelatedClasses =
-      !areClassesEquivalent(clazz1, clazz2) && !(clazz1
-        .isInheritor(clazz2, true) || clazz2.isInheritor(clazz1, true))
+      !areClassesEquivalent(clazz1, clazz2) &&
+        !(clazz1.isInheritor(clazz2, true) || clazz2.isInheritor(clazz1, true))
 
-    areUnrelatedClasses && (
-      oneFinal || twoNonTraitsOrInterfaces || sealedAndAllChildrenAreIrreconcilable
-    )
+    areUnrelatedClasses &&
+    (oneFinal || twoNonTraitsOrInterfaces ||
+    sealedAndAllChildrenAreIrreconcilable)
   }
 
   def isNeverSubType(
@@ -95,7 +95,7 @@ object ComparingUtil {
     }
 
     isNeverSubClass(clazz1, clazz2) ||
-    ((areClassesEquivalent(clazz1, clazz2) || (!sameType) && clazz1
-      .isInheritor(clazz2, true)) && neverSubArgs())
+    ((areClassesEquivalent(clazz1, clazz2) || (!sameType) &&
+    clazz1.isInheritor(clazz2, true)) && neverSubArgs())
   }
 }

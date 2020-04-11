@@ -24,8 +24,8 @@ final class Winners(
     List(Freq.Monthly, Freq.Weekly, Freq.Daily).map { freq =>
       TournamentRepo.lastFinishedScheduledByFreq(freq, since)
     }.sequenceFu.map(_.flatten) flatMap { stds =>
-      TournamentRepo.lastFinishedDaily(chess.variant.Crazyhouse) map (stds ::: _
-        .toList)
+      TournamentRepo.lastFinishedDaily(chess.variant.Crazyhouse) map
+        (stds ::: _.toList)
     } flatMap toursToWinners
   }
 

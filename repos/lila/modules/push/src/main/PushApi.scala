@@ -100,8 +100,8 @@ private final class PushApi(
               body = describeChallenge(c),
               payload = Json.obj(
                 "userId" -> dest.id,
-                "userData" -> Json
-                  .obj("type" -> "challengeCreate", "challengeId" -> c.id))
+                "userData" ->
+                  Json.obj("type" -> "challengeCreate", "challengeId" -> c.id))
             )
           )
         }
@@ -159,11 +159,11 @@ private final class PushApi(
 
   private def IfAway(pov: Pov)(f: => Funit): Funit = {
     import makeTimeout.short
-    roundSocketHub ? Ask(pov.gameId, IsOnGame(pov.color)) mapTo manifest[
-      Boolean] flatMap {
-      case true  => funit
-      case false => f
-    }
+    roundSocketHub ? Ask(pov.gameId, IsOnGame(pov.color)) mapTo
+      manifest[Boolean] flatMap {
+        case true  => funit
+        case false => f
+      }
   }
 
   private def opponentName(pov: Pov) = Namer playerString pov.opponent

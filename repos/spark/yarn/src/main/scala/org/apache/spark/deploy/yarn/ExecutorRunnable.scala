@@ -172,10 +172,9 @@ private[yarn] class ExecutorRunnable(
         Client.getClusterPath(sparkConf, Utils.libraryPathEnvPrefix(Seq(p))))
     }
 
-    javaOpts += "-Djava.io.tmpdir=" +
-      new Path(
-        YarnSparkHadoopUtil.expandEnvironment(Environment.PWD),
-        YarnConfiguration.DEFAULT_CONTAINER_TEMP_DIR)
+    javaOpts += "-Djava.io.tmpdir=" + new Path(
+      YarnSparkHadoopUtil.expandEnvironment(Environment.PWD),
+      YarnConfiguration.DEFAULT_CONTAINER_TEMP_DIR)
 
     // Certain configs need to be passed here because they are needed before the Executor
     // registers with the Scheduler and transfers the spark configs. Since the Executor backend
@@ -214,8 +213,9 @@ private[yarn] class ExecutorRunnable(
      */
 
     // For log4j configuration to reference
-    javaOpts += ("-Dspark.yarn.app.container.log.dir=" + ApplicationConstants
-      .LOG_DIR_EXPANSION_VAR)
+    javaOpts +=
+      ("-Dspark.yarn.app.container.log.dir=" +
+        ApplicationConstants.LOG_DIR_EXPANSION_VAR)
     YarnCommandBuilderUtils.addPermGenSizeOpt(javaOpts)
 
     val userClassPath = Client.getUserClasspath(sparkConf).flatMap { uri =>
@@ -227,8 +227,8 @@ private[yarn] class ExecutorRunnable(
     }.toSeq
 
     val commands = prefixEnv ++ Seq(
-      YarnSparkHadoopUtil
-        .expandEnvironment(Environment.JAVA_HOME) + "/bin/java",
+      YarnSparkHadoopUtil.expandEnvironment(Environment.JAVA_HOME) +
+        "/bin/java",
       "-server",
       // Kill if OOM is raised - leverage yarn's failure handling to cause rescheduling.
       // Not killing the task leaves various aspects of the executor and (to some extent) the jvm in
@@ -236,27 +236,23 @@ private[yarn] class ExecutorRunnable(
       // TODO: If the OOM is not recoverable by rescheduling it on different node, then do
       // 'something' to fail job ... akin to blacklisting trackers in mapred ?
       YarnSparkHadoopUtil.getOutOfMemoryErrorArgument
-    ) ++
-      javaOpts ++
-      Seq(
-        "org.apache.spark.executor.CoarseGrainedExecutorBackend",
-        "--driver-url",
-        masterAddress.toString,
-        "--executor-id",
-        slaveId.toString,
-        "--hostname",
-        hostname.toString,
-        "--cores",
-        executorCores.toString,
-        "--app-id",
-        appId
-      ) ++
-      userClassPath ++
-      Seq(
-        "1>",
-        ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout",
-        "2>",
-        ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr")
+    ) ++ javaOpts ++ Seq(
+      "org.apache.spark.executor.CoarseGrainedExecutorBackend",
+      "--driver-url",
+      masterAddress.toString,
+      "--executor-id",
+      slaveId.toString,
+      "--hostname",
+      hostname.toString,
+      "--cores",
+      executorCores.toString,
+      "--app-id",
+      appId
+    ) ++ userClassPath ++ Seq(
+      "1>",
+      ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout",
+      "2>",
+      ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr")
 
     // TODO: it would be nicer to just make sure there are no null commands here
     commands.map(s => if (s == null) "null" else s).toList

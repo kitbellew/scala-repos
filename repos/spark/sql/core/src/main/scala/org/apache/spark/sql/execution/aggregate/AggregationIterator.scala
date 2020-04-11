@@ -66,8 +66,8 @@ abstract class AggregationIterator(
       modes.size <= 2,
       s"$aggregateExpressions are not supported because they have more than 2 distinct modes.")
     require(
-      modes.subsetOf(Set(Partial, PartialMerge)) || modes
-        .subsetOf(Set(Final, Complete)),
+      modes.subsetOf(Set(Partial, PartialMerge)) ||
+        modes.subsetOf(Set(Final, Complete)),
       s"$aggregateExpressions can't have Partial/PartialMerge and Final/Complete in the same time."
     )
   }
@@ -111,8 +111,8 @@ abstract class AggregationIterator(
           function.withNewMutableAggBufferOffset(mutableBufferOffset)
         case function => function
       }
-      mutableBufferOffset += funcWithUpdatedAggBufferOffset.aggBufferSchema
-        .length
+      mutableBufferOffset +=
+        funcWithUpdatedAggBufferOffset.aggBufferSchema.length
       functions(i) = funcWithUpdatedAggBufferOffset
       i += 1
     }

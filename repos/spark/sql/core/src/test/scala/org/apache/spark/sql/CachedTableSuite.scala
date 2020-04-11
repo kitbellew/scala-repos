@@ -372,9 +372,9 @@ class CachedTableSuite
         |abc a join abc b on a.key=b.key
         |join abc c on a.key=c.key""".stripMargin).queryExecution.sparkPlan
 
-    assert(sparkPlan.collect { case e: InMemoryColumnarTableScan => e }
-      .size === 3)
-    assert(sparkPlan.collect { case e: PhysicalRDD => e }.size === 0)
+    assert(
+      sparkPlan.collect { case e: InMemoryColumnarTableScan => e }.size === 3)
+    assert(sparkPlan.collect { case e: PhysicalRDD          => e }.size === 0)
   }
 
   /**
@@ -446,8 +446,8 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
-        query.queryExecution.executedPlan.outputPartitioning
-          .numPartitions === 6)
+        query.queryExecution.executedPlan.outputPartitioning.numPartitions ===
+          6)
       checkAnswer(
         query,
         testData.join(testData2, $"key" === $"a")
@@ -467,8 +467,8 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
-        query.queryExecution.executedPlan.outputPartitioning
-          .numPartitions === 6)
+        query.queryExecution.executedPlan.outputPartitioning.numPartitions ===
+          6)
       checkAnswer(
         query,
         testData.join(testData2, $"key" === $"a")
@@ -487,8 +487,8 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
-        query.queryExecution.executedPlan.outputPartitioning
-          .numPartitions === 12)
+        query.queryExecution.executedPlan.outputPartitioning.numPartitions ===
+          12)
       checkAnswer(
         query,
         testData.join(testData2, $"key" === $"a")
@@ -545,8 +545,8 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a and t1.value = t2.b")
       verifyNumExchanges(query, 1)
       assert(
-        query.queryExecution.executedPlan.outputPartitioning
-          .numPartitions === 6)
+        query.queryExecution.executedPlan.outputPartitioning.numPartitions ===
+          6)
       checkAnswer(
         query,
         df1.join(df2, $"key" === $"a" && $"value" === $"b")

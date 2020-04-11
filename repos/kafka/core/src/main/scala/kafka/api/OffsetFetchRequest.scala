@@ -83,16 +83,19 @@ case class OffsetFetchRequest(
   }
 
   override def sizeInBytes =
-    2 + /* versionId */
-    4 + /* correlationId */
-    shortStringLength(clientId) +
-      shortStringLength(groupId) +
-      4 + /* topic count */
-    requestInfoGroupedByTopic.foldLeft(0)((count, t) => {
-      count + shortStringLength(t._1) + /* topic */
-      4 + /* number of partitions */
-      t._2.size * 4 /* partition */
-    })
+    2 +
+      /* versionId */
+      4 +
+      /* correlationId */
+      shortStringLength(clientId) + shortStringLength(groupId) + 4 +
+      /* topic count */
+      requestInfoGroupedByTopic.foldLeft(0)((count, t) => {
+        count + shortStringLength(t._1) +
+          /* topic */
+          4 +
+          /* number of partitions */
+          t._2.size * 4 /* partition */
+      })
 
   override def handleError(
       e: Throwable,

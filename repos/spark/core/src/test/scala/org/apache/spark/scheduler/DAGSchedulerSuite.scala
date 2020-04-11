@@ -76,8 +76,8 @@ class MyRDD(
       context: TaskContext): Iterator[(Int, Int)] =
     throw new RuntimeException("should not be reached")
 
-  override def getPartitions: Array[Partition] =
-    (0 until numPartitions).map(i =>
+  override def getPartitions: Array[Partition] = (0 until numPartitions)
+    .map(i =>
       new Partition {
         override def index: Int = i
       }).toArray
@@ -334,8 +334,8 @@ class DAGSchedulerSuite
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
     assert(sparkListener.stageByOrderOfExecution.length === 2)
     assert(
-      sparkListener.stageByOrderOfExecution(0) < sparkListener
-        .stageByOrderOfExecution(1))
+      sparkListener.stageByOrderOfExecution(0) <
+        sparkListener.stageByOrderOfExecution(1))
   }
 
   test("zero split job") {
@@ -612,8 +612,7 @@ class DAGSchedulerSuite
     // we can see both result blocks now
     assert(
       mapOutputTracker.getMapSizesByExecutorId(shuffleId, 0).map(_._1.host)
-        .toSet ===
-        HashSet("hostA", "hostB"))
+        .toSet === HashSet("hostA", "hostB"))
     complete(taskSets(3), Seq((Success, 43)))
     assert(results === Map(0 -> 42, 1 -> 43))
     assertDataStructuresEmpty()
@@ -949,8 +948,7 @@ class DAGSchedulerSuite
     // The MapOutputTracker should know about both map output locations.
     assert(
       mapOutputTracker.getMapSizesByExecutorId(shuffleId, 0).map(_._1.host)
-        .toSet ===
-        HashSet("hostA", "hostB"))
+        .toSet === HashSet("hostA", "hostB"))
 
     // The first result task fails, with a fetch failure for the output from the first mapper.
     runEvent(makeCompletionEvent(
@@ -1001,12 +999,10 @@ class DAGSchedulerSuite
     // The MapOutputTracker should know about both map output locations.
     assert(
       mapOutputTracker.getMapSizesByExecutorId(shuffleId, 0).map(_._1.host)
-        .toSet ===
-        HashSet("hostA", "hostB"))
+        .toSet === HashSet("hostA", "hostB"))
     assert(
       mapOutputTracker.getMapSizesByExecutorId(shuffleId, 1).map(_._1.host)
-        .toSet ===
-        HashSet("hostA", "hostB"))
+        .toSet === HashSet("hostA", "hostB"))
 
     // The first result task fails, with a fetch failure for the output from the first mapper.
     runEvent(makeCompletionEvent(
@@ -1244,8 +1240,8 @@ class DAGSchedulerSuite
     val stageFailureMessage = "Exception failure in map stage"
     failed(taskSets(0), stageFailureMessage)
     assert(
-      failure
-        .getMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      failure.getMessage ===
+        s"Job aborted due to stage failure: $stageFailureMessage")
 
     // Listener bus should get told about the map stage failing, but not the reduce stage
     // (since the reduce stage hasn't been started yet).
@@ -1516,11 +1512,11 @@ class DAGSchedulerSuite
     assert(sparkListener.failedStages.toSet === Set(0, 2))
 
     assert(
-      listener1
-        .failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      listener1.failureMessage ===
+        s"Job aborted due to stage failure: $stageFailureMessage")
     assert(
-      listener2
-        .failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      listener2.failureMessage ===
+        s"Job aborted due to stage failure: $stageFailureMessage")
     assertDataStructuresEmpty()
   }
 
@@ -2268,8 +2264,8 @@ class DAGSchedulerSuite
     */
   private def assertLocations(taskSet: TaskSet, hosts: Seq[Seq[String]]) {
     assert(hosts.size === taskSet.tasks.size)
-    for ((taskLocs, expectedLocs) <-
-           taskSet.tasks.map(_.preferredLocations).zip(hosts)) {
+    for ((taskLocs, expectedLocs) <- taskSet.tasks.map(_.preferredLocations)
+           .zip(hosts)) {
       assert(taskLocs.map(_.host).toSet === expectedLocs.toSet)
     }
   }

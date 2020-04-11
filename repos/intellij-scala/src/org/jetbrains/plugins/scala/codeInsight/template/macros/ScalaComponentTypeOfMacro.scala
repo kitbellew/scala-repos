@@ -52,8 +52,8 @@ class ScalaComponentTypeOfMacro extends Macro {
   def getName: String = MacroUtil.scalaIdPrefix + "componentTypeOf"
 
   def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
-      .message("macro.component.type.of.array")
+    MacroUtil.scalaPresentablePrefix +
+      CodeInsightBundle.message("macro.component.type.of.array")
 
   override def isAcceptableInContext(context: TemplateContextType): Boolean =
     context.isInstanceOf[ScalaCodeContextType]

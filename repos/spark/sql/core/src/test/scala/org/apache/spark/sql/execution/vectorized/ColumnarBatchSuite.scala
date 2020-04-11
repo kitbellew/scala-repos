@@ -259,8 +259,7 @@ class ColumnarBatchSuite extends SparkFunSuite {
         reference.zipWithIndex.foreach { v =>
           assert(
             v._1 == column.getLong(v._2),
-            "idx=" + v._2 +
-              " Seed = " + seed + " MemMode=" + memMode)
+            "idx=" + v._2 + " Seed = " + seed + " MemMode=" + memMode)
           if (memMode == MemoryMode.OFF_HEAP) {
             val addr = column.valuesNativeAddress()
             assert(v._1 == Platform.getLong(null, addr + 8 * v._2))
@@ -466,8 +465,7 @@ class ColumnarBatchSuite extends SparkFunSuite {
         column.putArray(0, 0, array.length)
         assert(
           ColumnVectorUtils.toPrimitiveJavaArray(column.getArray(0))
-            .asInstanceOf[Array[Int]]
-            === array)
+            .asInstanceOf[Array[Int]] === array)
       }
     }
   }
@@ -729,12 +727,8 @@ class ColumnarBatchSuite extends SparkFunSuite {
   test("Convert rows") {
     (MemoryMode.ON_HEAP :: MemoryMode.OFF_HEAP :: Nil).foreach { memMode =>
       {
-        val rows = Row(1, 2L, "a", 1.2, 'b'.toByte) :: Row(
-          4,
-          5L,
-          "cd",
-          2.3,
-          'a'.toByte) :: Nil
+        val rows = Row(1, 2L, "a", 1.2, 'b'.toByte) ::
+          Row(4, 5L, "cd", 2.3, 'a'.toByte) :: Nil
         val schema = new StructType().add("i1", IntegerType).add("l2", LongType)
           .add("string", StringType).add("d", DoubleType).add("b", ByteType)
 

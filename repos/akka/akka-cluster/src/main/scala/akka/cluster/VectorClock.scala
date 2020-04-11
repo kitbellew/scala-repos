@@ -129,9 +129,8 @@ final case class VectorClock(
           nt1: (Node, Long),
           nt2: (Node, Long),
           currentOrder: Ordering): Ordering =
-        if ((requestedOrder ne FullOrder) && (currentOrder ne Same) && (
-              currentOrder ne requestedOrder
-            )) currentOrder
+        if ((requestedOrder ne FullOrder) && (currentOrder ne Same) &&
+            (currentOrder ne requestedOrder)) currentOrder
         else if ((nt1 eq cmpEndMarker) && (nt2 eq cmpEndMarker)) currentOrder
         // i1 is empty but i2 is not, so i1 can only be Before
         else if (nt1 eq cmpEndMarker) {

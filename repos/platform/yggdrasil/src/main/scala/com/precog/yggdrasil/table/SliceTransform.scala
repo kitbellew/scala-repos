@@ -206,9 +206,9 @@ trait SliceTransforms[M[+_]]
                   case _                                         => true
                 }
 
-                val groupedNonNum = (leftNonNum mapValues {
-                  _ :: Nil
-                }) cogroup (rightNonNum mapValues { _ :: Nil })
+                val groupedNonNum =
+                  (leftNonNum mapValues { _ :: Nil }) cogroup
+                    (rightNonNum mapValues { _ :: Nil })
 
                 val simplifiedGroupNonNum = groupedNonNum map {
                   case (_, Left3(column))  => Left(column)
@@ -244,8 +244,8 @@ trait SliceTransforms[M[+_]]
                 def stripTypes(cols: Map[ColumnRef, Column]) = {
                   cols.foldLeft(Map[CPath, Set[Column]]()) {
                     case (acc, (ColumnRef(path, _), column)) => {
-                      val set =
-                        acc get path map { _ + column } getOrElse Set(column)
+                      val set = acc get path map { _ + column } getOrElse
+                        Set(column)
                       acc.updated(path, set)
                     }
                   }
@@ -285,11 +285,11 @@ trait SliceTransforms[M[+_]]
                 val unifiedNum = new AndLotsColumn(testedNum)
                 val unified = new BoolColumn {
                   def isDefinedAt(row: Int): Boolean =
-                    unifiedNonNum.isDefinedAt(row) || unifiedNum
-                      .isDefinedAt(row)
+                    unifiedNonNum.isDefinedAt(row) ||
+                      unifiedNum.isDefinedAt(row)
                   def apply(row: Int): Boolean = {
-                    val left =
-                      !unifiedNonNum.isDefinedAt(row) || unifiedNonNum(row)
+                    val left = !unifiedNonNum.isDefinedAt(row) ||
+                      unifiedNonNum(row)
                     val right = !unifiedNum.isDefinedAt(row) || unifiedNum(row)
                     left && right
                   }
@@ -347,9 +347,8 @@ trait SliceTransforms[M[+_]]
                 }
 
                 Map(
-                  ColumnRef(CPath.Identity, CBoolean) -> (
-                    if (invert) complement(aggregate) else aggregate
-                  ))
+                  ColumnRef(CPath.Identity, CBoolean) ->
+                    (if (invert) complement(aggregate) else aggregate))
               }
             }
           }
@@ -722,9 +721,9 @@ trait SliceTransforms[M[+_]]
                         .asBitSet(true, size)
                       rightMask.flip(0, size)
 
-                      val grouped = (leftS.columns mapValues {
-                        _ :: Nil
-                      }) cogroup (rightS.columns mapValues { _ :: Nil })
+                      val grouped =
+                        (leftS.columns mapValues { _ :: Nil }) cogroup
+                          (rightS.columns mapValues { _ :: Nil })
 
                       val joined: Map[ColumnRef, Column] = grouped.map({
                         case (ref, Left3(col)) =>
@@ -1310,10 +1309,8 @@ trait SliceTransforms[M[+_]]
         case (a, sl, sr) => M point f0(a, sl, sr)
       }
       def advance(sl: Slice, sr: Slice): M[(SliceTransform2[A], Slice)] =
-        M point ({ (a: A) => SliceTransform2S[A](a, f0) } <-: f0(
-          initial,
-          sl,
-          sr))
+        M point
+          ({ (a: A) => SliceTransform2S[A](a, f0) } <-: f0(initial, sl, sr))
     }
 
     private case class SliceTransform2M[A](
@@ -1404,8 +1401,7 @@ trait ConcatHelpers {
       rightEmptyBits: BitSet,
       leftDefinedBits: BitSet,
       rightDefinedBits: BitSet): BitSet = {
-    (rightEmptyBits & leftEmptyBits) |
-      (rightEmptyBits &~ leftDefinedBits) |
+    (rightEmptyBits & leftEmptyBits) | (rightEmptyBits &~ leftDefinedBits) |
       (leftEmptyBits &~ rightDefinedBits)
   }
 
@@ -1450,13 +1446,14 @@ trait ArrayConcatHelpers extends ConcatHelpers {
     val rightIndices = collectIndices(right)
 
     val maxId = if (leftIndices.isEmpty) -1 else leftIndices.map(_._1).max
-    val newCols = (leftIndices map { case (_, _, ref, col) => ref -> col }) ++
-      (rightIndices map {
-        case (i, xs, ref, col) =>
-          ColumnRef(
-            CPath(CPathIndex(i + maxId + 1) :: xs.toList),
-            ref.ctype) -> col
-      })
+    val newCols =
+      (leftIndices map { case (_, _, ref, col) => ref -> col }) ++
+        (rightIndices map {
+          case (i, xs, ref, col) =>
+            ColumnRef(
+              CPath(CPathIndex(i + maxId + 1) :: xs.toList),
+              ref.ctype) -> col
+        })
 
     newCols.toMap
   }

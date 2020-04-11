@@ -31,9 +31,9 @@ trait MetropolisHastings[T] extends Rand[T] {
   def likelihood(x: T): Double = math.exp(logLikelihood(x))
   def likelihoodRatio(start: T, end: T): Double =
     math.exp(
-      logLikelihood(start) - logLikelihood(end) + logTransitionProbability(
-        start,
-        end) - logTransitionProbability(end, start))
+      logLikelihood(start) - logLikelihood(end) +
+        logTransitionProbability(start, end) -
+        logTransitionProbability(end, start))
   def rand: RandBasis
 
   protected def nextDouble: Double =

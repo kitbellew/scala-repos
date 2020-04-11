@@ -296,8 +296,8 @@ class ReviveOffersActorTest
     Mockito.reset(f.actorRef.underlyingActor.cancellable)
 
     And("we have NOT scheduled the next revive")
-    f.actorRef.underlyingActor.scheduled should have size (f.repetitions
-      .toLong - 1)
+    f.actorRef.underlyingActor.scheduled should have size
+      (f.repetitions.toLong - 1)
     f.actorRef.underlyingActor.revivesNeeded should be(0)
 
     f.verifyNoMoreInteractions()

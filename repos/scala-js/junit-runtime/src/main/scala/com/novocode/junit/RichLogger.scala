@@ -170,9 +170,8 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
       r += c(e.getFileName, if (highlight) TESTFILE1 else null)
       if (e.getLineNumber >= 0) {
         r += ':'
-        r += c(
-          String.valueOf(e.getLineNumber),
-          if (highlight) TESTFILE2 else null)
+        r +=
+          c(String.valueOf(e.getLineNumber), if (highlight) TESTFILE2 else null)
       }
     }
     r += ')'

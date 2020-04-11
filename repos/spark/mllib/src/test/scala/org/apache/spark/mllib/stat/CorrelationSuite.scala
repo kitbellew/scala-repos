@@ -149,9 +149,8 @@ class CorrelationSuite
     for (i <- 0 until A.rows; j <- 0 until A.cols) {
       if (!approxEqual(A(i, j), B(i, j), threshold)) {
         logInfo(
-          "i, j = " + i + ", " + j + " actual: " + A(i, j) + " expected:" + B(
-            i,
-            j))
+          "i, j = " + i + ", " + j + " actual: " + A(i, j) + " expected:" +
+            B(i, j))
         return false
       }
     }

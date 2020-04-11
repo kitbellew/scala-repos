@@ -84,8 +84,8 @@ abstract class AddInterfaces extends InfoTransform {
 
       case Block(stats, expr) =>
         // needs `hasSymbolField` check because `supercall` could be a block (named / default args)
-        val (presuper, supercall :: rest) =
-          stats span (t => t.hasSymbolWhich(_ hasFlag PRESUPER))
+        val (presuper, supercall :: rest) = stats span
+          (t => t.hasSymbolWhich(_ hasFlag PRESUPER))
         treeCopy.Block(
           tree,
           presuper ::: (supercall :: mixinConstructorCalls ::: rest),
@@ -98,12 +98,12 @@ abstract class AddInterfaces extends InfoTransform {
       val sym = tree.symbol
       val tree1 = tree match {
         case DefDef(_, _, _, _, _, _)
-            if sym.isClassConstructor && sym.isPrimaryConstructor && sym
-              .owner != ArrayClass =>
+            if sym.isClassConstructor && sym.isPrimaryConstructor &&
+              sym.owner != ArrayClass =>
           deriveDefDef(tree)(addMixinConstructorCalls(_, sym.owner)) // (3)
         case Template(parents, self, body) =>
-          val parents1 =
-            sym.owner.info.parents map (t => TypeTree(t) setPos tree.pos)
+          val parents1 = sym.owner.info.parents map
+            (t => TypeTree(t) setPos tree.pos)
           treeCopy.Template(tree, parents1, noSelfType, body)
         case _ => tree
       }

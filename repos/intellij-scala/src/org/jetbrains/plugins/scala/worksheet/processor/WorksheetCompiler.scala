@@ -162,9 +162,8 @@ class WorksheetCompiler {
             .getService(project, classOf[MessageView])
           messageView.getContentManager setSelectedContent content
 
-          val toolWindow =
-            ToolWindowManager getInstance project getToolWindow ToolWindowId
-              .MESSAGES_WINDOW
+          val toolWindow = ToolWindowManager getInstance project getToolWindow
+            ToolWindowId.MESSAGES_WINDOW
           if (toolWindow != null) toolWindow.show(null)
         }
       },

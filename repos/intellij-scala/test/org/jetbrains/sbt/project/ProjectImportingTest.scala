@@ -15,9 +15,9 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
     runTest(new project("simple") {
       lazy val scalaLibrary =
         new library("SBT: org.scala-lang:scala-library:2.11.6:jar") {
-          classes += (
-            IvyCacheDir / "org.scala-lang" / "scala-library" / "jars" / "scala-library-2.11.6.jar"
-          ).getAbsolutePath
+          classes +=
+            (IvyCacheDir / "org.scala-lang" / "scala-library" / "jars" /
+              "scala-library-2.11.6.jar").getAbsolutePath
         }
 
       libraries += scalaLibrary

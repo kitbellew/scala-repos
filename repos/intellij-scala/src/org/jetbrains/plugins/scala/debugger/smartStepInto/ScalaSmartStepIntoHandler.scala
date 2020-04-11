@@ -212,12 +212,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
 
       expr match {
         case ScalaPsiUtil.MethodValue(m) =>
-          result += new MethodSmartStepTarget(
-            m,
-            null,
-            expr,
-            true,
-            noStopAtLines)
+          result +=
+            new MethodSmartStepTarget(m, null, expr, true, noStopAtLines)
           return
         case FunExpressionTarget(stmts, presentation) =>
           result += new ScalaFunExprSmartStepTarget(
@@ -272,12 +268,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
       ref match {
         case Some(r @ ResolvesTo(f: ScFunctionDefinition)) =>
           val prefix = s"${r.refName}."
-          result += new MethodSmartStepTarget(
-            f,
-            prefix,
-            r.nameId,
-            false,
-            noStopAtLines)
+          result +=
+            new MethodSmartStepTarget(f, prefix, r.nameId, false, noStopAtLines)
         case _ =>
       }
       super.visitPattern(pat)

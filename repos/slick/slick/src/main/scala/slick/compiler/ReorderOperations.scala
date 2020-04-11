@@ -66,10 +66,8 @@ class ReorderOperations extends Phase {
             s,
             Subquery(from :@ CollectionType(_, tpe), Subquery.AboveDistinct),
             Pure(StructNode(defs), ts1))
-          if isAliasingOrLiteral(s, defs) && isDistinctnessPreserving(
-            s,
-            defs,
-            tpe) =>
+          if isAliasingOrLiteral(s, defs) &&
+            isDistinctnessPreserving(s, defs, tpe) =>
         Subquery(n.copy(from = from), Subquery.AboveDistinct).infer()
 
       // Push any aliasing / literal projection into other Subquery

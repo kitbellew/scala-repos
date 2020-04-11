@@ -51,7 +51,8 @@ object CommandLineUtils extends Logging {
         if (options.has(arg))
           printUsageAndDie(
             parser,
-            "Option \"" + usedOption + "\" can't be used with option\"" + arg + "\"")
+            "Option \"" + usedOption + "\" can't be used with option\"" + arg +
+              "\"")
       }
     }
   }

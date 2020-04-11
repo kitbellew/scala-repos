@@ -171,12 +171,13 @@ object FileSource {
         // HiddenFileFilter should better be called non-hidden but it borrows its name from the
         // private field name in hadoop FileInputFormat
         //
-        dir -> (
-          dir,
-          OrVal(
-            SuccessFileFilter.accept(fileStatus.getPath) && fileStatus.isFile),
-          OrVal(HiddenFileFilter.accept(fileStatus.getPath))
-        )
+        dir ->
+          (
+            dir,
+            OrVal(
+              SuccessFileFilter.accept(fileStatus.getPath) &&
+                fileStatus.isFile),
+            OrVal(HiddenFileFilter.accept(fileStatus.getPath)))
     }
 
     // OR by key
@@ -272,8 +273,8 @@ abstract class FileSource
       case Hdfs(strict, conf) => {
         if (strict && (!hdfsReadPathsAreGood(conf))) {
           throw new InvalidSourceException(
-            "[" + this
-              .toString + "] Data is missing from one or more paths in: " +
+            "[" + this.toString +
+              "] Data is missing from one or more paths in: " +
               hdfsPaths.toString)
         } else if (!hdfsPaths.exists { pathIsGood(_, conf) }) {
           //Check that there is at least one good path:
@@ -396,8 +397,8 @@ trait DelimitedScheme extends SchemedSource {
   override def hdfsScheme = {
     assert(
       types == null || fields.size == types.size,
-      "Fields [" + fields + "] of different size than types array [" + types
-        .mkString(",") + "]")
+      "Fields [" + fields + "] of different size than types array [" +
+        types.mkString(",") + "]")
     HadoopSchemeInstance(new CHTextDelimited(
       fields,
       null,

@@ -45,15 +45,14 @@ final class RelationApi(
   def fetchFriends(userId: ID) =
     coll.aggregate(
       Match(BSONDocument(
-        "$or" -> BSONArray(
-          BSONDocument("u1" -> userId),
-          BSONDocument("u2" -> userId)),
+        "$or" ->
+          BSONArray(BSONDocument("u1" -> userId), BSONDocument("u2" -> userId)),
         "r" -> Follow)),
       List(
         Group(BSONNull)("u1" -> AddToSet("u1"), "u2" -> AddToSet("u2")),
         Project(BSONDocument(
-          "_id" -> BSONDocument(
-            "$setIntersection" -> BSONArray("$u1", "$u2")))))
+          "_id" ->
+            BSONDocument("$setIntersection" -> BSONArray("$u1", "$u2")))))
     ).map {
       ~_.documents.headOption.flatMap(_.getAs[Set[String]]("_id")) - userId
     }

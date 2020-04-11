@@ -38,44 +38,34 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
       |codings are assigned a qvalue of 0, except the identity coding which gets q=0.001,
       |which is the lowest possible acceptable qvalue.
       |This seems to be the most consistent behaviour with respect to the other "accept"
-      |header fields described in sect 14.1-5."""
-      .stripMargin in withApplication(Ok("meep")) { implicit mat =>
-      val (plain, gzipped) = (None, Some("gzip"))
+      |header fields described in sect 14.1-5.""".stripMargin in
+      withApplication(Ok("meep")) { implicit mat =>
+        val (plain, gzipped) = (None, Some("gzip"))
 
-      "Accept-Encoding of request" || "Response" |
-        //------------------------------------++------------+
-        "gzip" !! gzipped |
-        "compress,gzip" !! gzipped |
-        "compress, gzip" !! gzipped |
-        "gzip,compress" !! gzipped |
-        "deflate, gzip,compress" !! gzipped |
-        "gzip, compress" !! gzipped |
-        "identity, gzip, compress" !! gzipped |
-        "GZip" !! gzipped |
-        "*" !! gzipped |
-        "*;q=0" !! plain |
-        "*; q=0" !! plain |
-        "*;q=0.000" !! plain |
-        "gzip;q=0" !! plain |
-        "gzip; q=0.00" !! plain |
-        "*;q=0, gZIP" !! gzipped |
-        "compress;q=0.1, *;q=0, gzip" !! gzipped |
-        "compress;q=0.1, *;q=0, gzip;q=0.005" !! gzipped |
-        "compress, gzip;q=0.001" !! gzipped |
-        "compress, gzip;q=0.002" !! gzipped |
-        "compress;q=1, *;q=0, gzip;q=0.000" !! plain |
-        "compress;q=1, *;q=0" !! plain |
-        "identity" !! plain |
-        "gzip;q=0.5, identity" !! plain |
-        "gzip;q=0.5, identity;q=1" !! plain |
-        "gzip;q=0.6, identity;q=0.5" !! gzipped |
-        "*;q=0.7, gzip;q=0.6, identity;q=0.4" !! gzipped |
-        "" !! plain |> { (codings, expectedEncoding) =>
-        header(CONTENT_ENCODING, requestAccepting(codings)) must be equalTo (
-          expectedEncoding
-        )
+        "Accept-Encoding of request" || "Response" |
+          //------------------------------------++------------+
+          "gzip" !! gzipped | "compress,gzip" !! gzipped |
+          "compress, gzip" !! gzipped | "gzip,compress" !! gzipped |
+          "deflate, gzip,compress" !! gzipped | "gzip, compress" !! gzipped |
+          "identity, gzip, compress" !! gzipped | "GZip" !! gzipped |
+          "*" !! gzipped | "*;q=0" !! plain | "*; q=0" !! plain |
+          "*;q=0.000" !! plain | "gzip;q=0" !! plain | "gzip; q=0.00" !! plain |
+          "*;q=0, gZIP" !! gzipped | "compress;q=0.1, *;q=0, gzip" !! gzipped |
+          "compress;q=0.1, *;q=0, gzip;q=0.005" !! gzipped |
+          "compress, gzip;q=0.001" !! gzipped |
+          "compress, gzip;q=0.002" !! gzipped |
+          "compress;q=1, *;q=0, gzip;q=0.000" !! plain |
+          "compress;q=1, *;q=0" !! plain | "identity" !! plain |
+          "gzip;q=0.5, identity" !! plain |
+          "gzip;q=0.5, identity;q=1" !! plain |
+          "gzip;q=0.6, identity;q=0.5" !! gzipped |
+          "*;q=0.7, gzip;q=0.6, identity;q=0.4" !! gzipped | "" !! plain |> {
+
+            (codings, expectedEncoding) =>
+              header(CONTENT_ENCODING, requestAccepting(codings)) must
+                be equalTo (expectedEncoding)
+          }
       }
-    }
 
     "not gzip empty responses" in withApplication(Ok) { implicit mat =>
       checkNotGzipped(makeGzipRequest, "")
@@ -100,12 +90,12 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
       implicit mat => checkNotGzipped(makeGzipRequest, "")
     }
 
-    "gzip chunked responses" in withApplication(
-      Ok.chunked(Source(List("foo", "bar")))) { implicit mat =>
-      val result = makeGzipRequest
-      checkGzippedBody(result, "foobar")
-      await(result).body must beAnInstanceOf[HttpEntity.Chunked]
-    }
+    "gzip chunked responses" in
+      withApplication(Ok.chunked(Source(List("foo", "bar")))) { implicit mat =>
+        val result = makeGzipRequest
+        checkGzippedBody(result, "foobar")
+        await(result).body must beAnInstanceOf[HttpEntity.Chunked]
+      }
 
     val body = Random.nextString(1000)
 
@@ -118,39 +108,42 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
       await(result).body must beAnInstanceOf[HttpEntity.Chunked]
     }
 
-    "zip a strict body even if it exceeds the threshold" in withApplication(
-      Ok(body),
-      512) { implicit mat =>
-      val result = makeGzipRequest
-      checkGzippedBody(result, body)
-      await(result).body must beAnInstanceOf[HttpEntity.Strict]
-    }
-
-    "preserve original headers" in withApplication(
-      Ok("hello").withHeaders(SERVER -> "Play")) { implicit mat =>
-      val result = makeGzipRequest
-      checkGzipped(result)
-      header(SERVER, result) must beSome("Play")
-    }
-
-    "preserve original Vary header values" in withApplication(
-      Ok("hello").withHeaders(VARY -> "original")) { implicit mat =>
-      val result = makeGzipRequest
-      checkGzipped(result)
-      header(VARY, result) must beSome
-        .which(header => header contains "original,")
-    }
-
-    "preserve original Vary header values and not duplicate case-insensitive ACCEPT-ENCODING" in withApplication(
-      Ok("hello").withHeaders(VARY -> "original,ACCEPT-encoding")) {
-      implicit mat =>
+    "zip a strict body even if it exceeds the threshold" in
+      withApplication(Ok(body), 512) { implicit mat =>
         val result = makeGzipRequest
-        checkGzipped(result)
-        header(VARY, result) must beSome.which(header =>
-          header.split(",").filter(
-            _.toLowerCase(java.util.Locale.ENGLISH) == ACCEPT_ENCODING
-              .toLowerCase(java.util.Locale.ENGLISH)).size == 1)
-    }
+        checkGzippedBody(result, body)
+        await(result).body must beAnInstanceOf[HttpEntity.Strict]
+      }
+
+    "preserve original headers" in
+      withApplication(Ok("hello").withHeaders(SERVER -> "Play")) {
+        implicit mat =>
+          val result = makeGzipRequest
+          checkGzipped(result)
+          header(SERVER, result) must beSome("Play")
+      }
+
+    "preserve original Vary header values" in
+      withApplication(Ok("hello").withHeaders(VARY -> "original")) {
+        implicit mat =>
+          val result = makeGzipRequest
+          checkGzipped(result)
+          header(VARY, result) must
+            beSome.which(header => header contains "original,")
+      }
+
+    "preserve original Vary header values and not duplicate case-insensitive ACCEPT-ENCODING" in
+      withApplication(
+        Ok("hello").withHeaders(VARY -> "original,ACCEPT-encoding")) {
+        implicit mat =>
+          val result = makeGzipRequest
+          checkGzipped(result)
+          header(VARY, result) must beSome.which(header =>
+            header.split(",").filter(
+              _.toLowerCase(java.util.Locale.ENGLISH) ==
+                ACCEPT_ENCODING.toLowerCase(java.util.Locale.ENGLISH)).size ==
+              1)
+      }
   }
 
   class Filters @Inject() (gzipFilter: GzipFilter) extends HttpFilters {
@@ -182,8 +175,8 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
   }
 
   def checkGzipped(result: Future[Result]) = {
-    header(CONTENT_ENCODING, result) aka "Content encoding header" must beSome(
-      "gzip")
+    header(CONTENT_ENCODING, result) aka "Content encoding header" must
+      beSome("gzip")
   }
 
   def checkGzippedBody(result: Future[Result], body: String)(implicit

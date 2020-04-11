@@ -37,8 +37,8 @@ object GettingStartedOverview extends App {
 //#quick-query
         andThen
 //#quick-query
-          // or
-          coffees.filter(_.price < 10.0).map(_.name).result)
+        // or
+        coffees.filter(_.price < 10.0).map(_.name).result)
 //#quick-query
   Await.result(f1, Duration.Inf)
 

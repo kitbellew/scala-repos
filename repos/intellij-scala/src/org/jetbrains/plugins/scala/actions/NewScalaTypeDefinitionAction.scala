@@ -60,8 +60,8 @@ class NewScalaTypeDefinitionAction
     builder.setTitle("Create New Scala Class")
     builder.setValidator(new InputValidatorEx {
       def getErrorText(inputString: String): String = {
-        if (inputString.length > 0 && !PsiNameHelper.getInstance(project)
-              .isQualifiedName(inputString)) {
+        if (inputString.length > 0 &&
+            !PsiNameHelper.getInstance(project).isQualifiedName(inputString)) {
           return "This is not a valid Scala qualified name"
         }
         null
@@ -70,8 +70,8 @@ class NewScalaTypeDefinitionAction
       def checkInput(inputString: String): Boolean = { true }
 
       def canClose(inputString: String): Boolean = {
-        !StringUtil.isEmptyOrSpaces(inputString) && getErrorText(
-          inputString) == null
+        !StringUtil.isEmptyOrSpaces(inputString) &&
+        getErrorText(inputString) == null
       }
     })
   }
@@ -120,10 +120,8 @@ class NewScalaTypeDefinitionAction
       val dirs = view.getDirectories
       for (dir <- dirs) {
         val aPackage = JavaDirectoryService.getInstance.getPackage(dir)
-        if (projectFileIndex
-              .isInSourceContent(dir.getVirtualFile) && aPackage != null) {
-          return true
-        }
+        if (projectFileIndex.isInSourceContent(dir.getVirtualFile) &&
+            aPackage != null) { return true }
       }
     }
     false
@@ -182,8 +180,9 @@ object NewScalaTypeDefinitionAction {
     catch {
       case e: Exception =>
         throw new RuntimeException(
-          "Unable to load template for " + FileTemplateManager.getInstance
-            .internalTemplateToSubject(templateName),
+          "Unable to load template for " +
+            FileTemplateManager.getInstance
+              .internalTemplateToSubject(templateName),
           e)
     }
     val factory: PsiFileFactory = PsiFileFactory.getInstance(project)

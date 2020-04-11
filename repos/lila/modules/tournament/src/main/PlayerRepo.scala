@@ -71,11 +71,8 @@ object PlayerRepo {
     coll.find(selectTourUser(tourId, userId)).one[Player]
 
   def update(tourId: String, userId: String)(f: Player => Fu[Player]) =
-    find(
-      tourId,
-      userId) flatten s"No such player: $tourId/$userId" flatMap f flatMap {
-      player => coll.update(selectId(player._id), player).void
-    }
+    find(tourId, userId) flatten s"No such player: $tourId/$userId" flatMap
+      f flatMap { player => coll.update(selectId(player._id), player).void }
 
   def playerInfo(tourId: String, userId: String): Fu[Option[PlayerInfo]] =
     find(tourId, userId) flatMap {
@@ -123,8 +120,8 @@ object PlayerRepo {
     coll.distinct("uid", selectTour(tourId).some) map lila.db.BSON.asStrings
 
   def activeUserIds(tourId: String): Fu[List[String]] =
-    coll.distinct("uid", (selectTour(tourId) ++ selectActive).some) map lila.db
-      .BSON.asStrings
+    coll.distinct("uid", (selectTour(tourId) ++ selectActive).some) map
+      lila.db.BSON.asStrings
 
   def winner(tourId: String): Fu[Option[Player]] =
     coll.find(selectTour(tourId)).sort(bestSort).one[Player]
@@ -154,8 +151,8 @@ object PlayerRepo {
       tourId: String,
       userIds: Iterable[String]): Fu[List[Player]] =
     coll.find(
-      selectTour(tourId) ++ BSONDocument(
-        "uid" -> BSONDocument("$in" -> userIds))).cursor[Player]()
+      selectTour(tourId) ++
+        BSONDocument("uid" -> BSONDocument("$in" -> userIds))).cursor[Player]()
       .collect[List]().chronometer.logIfSlow(200, logger) { players =>
         s"PlayerRepo.byTourAndUserIds $tourId ${userIds.size} user IDs, ${players.size} players"
       }.result

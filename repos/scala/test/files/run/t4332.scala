@@ -25,14 +25,15 @@ object Test extends DirectTest {
   def checkView(viewType: Type, viewLikeType: Type) {
     val sep = "=" * 70
     println(s"\n$sep\nChecking ${viewType.typeSymbol.fullName}\n$sep")
-    val termMembers = viewType.nonPrivateMembers.toList filter (_
-      .isTerm) map fullyInitializeSymbol
-    val inheritedFromGenericCollection = termMembers filterNot (_.owner.name
-      .decoded contains "ViewLike") filterNot (_.owner == viewType.typeSymbol)
+    val termMembers = viewType.nonPrivateMembers.toList filter (_.isTerm) map
+      fullyInitializeSymbol
+    val inheritedFromGenericCollection = termMembers filterNot
+      (_.owner.name.decoded contains "ViewLike") filterNot
+      (_.owner == viewType.typeSymbol)
     def returnsView(sym: Symbol) =
       viewType.memberType(sym).finalResultType contains viewType.typeSymbol
-    val needOverride =
-      inheritedFromGenericCollection filterNot isExempt filter returnsView
+    val needOverride = inheritedFromGenericCollection filterNot isExempt filter
+      returnsView
 
     val grouped = needOverride.groupBy(_.owner).toSeq.sortBy {
       case (owner, _) => viewType baseTypeIndex owner

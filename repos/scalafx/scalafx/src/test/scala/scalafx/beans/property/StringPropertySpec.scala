@@ -194,91 +194,99 @@ class StringPropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty() should be(false)
   }
 
-  it should "support bindable infix, case-insensitive equality (==~) with a property" in {
-    booleanProperty <== stringProperty ==~ stringProperty2
-    stringProperty() = "something"
-    stringProperty2() = "something else"
-    booleanProperty() should be(false)
-    stringProperty2() = "SOMETHING"
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix, case-insensitive equality (==~) with a property" in {
+      booleanProperty <== stringProperty ==~ stringProperty2
+      stringProperty() = "something"
+      stringProperty2() = "something else"
+      booleanProperty() should be(false)
+      stringProperty2() = "SOMETHING"
+      booleanProperty() should be(true)
+    }
 
-  it should "support bindable infix, case-insensitive equality (==~) with an sfx property" in {
-    booleanProperty <== stringProperty ==~ sfxStringProperty
-    stringProperty() = "something"
-    sfxStringProperty() = "something else"
-    booleanProperty() should be(false)
-    sfxStringProperty() = "SOMETHING"
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix, case-insensitive equality (==~) with an sfx property" in {
+      booleanProperty <== stringProperty ==~ sfxStringProperty
+      stringProperty() = "something"
+      sfxStringProperty() = "something else"
+      booleanProperty() should be(false)
+      sfxStringProperty() = "SOMETHING"
+      booleanProperty() should be(true)
+    }
 
-  it should "support bindable infix, case-insensitive equality (==~) with a string" in {
-    booleanProperty <== stringProperty ==~ "something"
-    stringProperty() = "something"
-    booleanProperty() should be(true)
-    stringProperty() = "SOMETHING"
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix, case-insensitive equality (==~) with a string" in {
+      booleanProperty <== stringProperty ==~ "something"
+      stringProperty() = "something"
+      booleanProperty() should be(true)
+      stringProperty() = "SOMETHING"
+      booleanProperty() should be(true)
+    }
 
-  it should "support null/empty-string comparisons for case-insensitive equals (==~)" in {
-    booleanProperty <== stringProperty ==~ null
-    stringProperty() = "clearly not null"
-    booleanProperty() should be(false)
-    stringProperty() = null
-    booleanProperty() should be(true)
-    stringProperty() = ""
-    booleanProperty() should be(false)
-    booleanProperty <== stringProperty ==~ ""
-    stringProperty() = "clearly not empty"
-    booleanProperty() should be(false)
-    stringProperty() = null
-    booleanProperty() should be(true)
-    stringProperty() = ""
-    booleanProperty() should be(true)
-  }
+  it should
+    "support null/empty-string comparisons for case-insensitive equals (==~)" in {
+      booleanProperty <== stringProperty ==~ null
+      stringProperty() = "clearly not null"
+      booleanProperty() should be(false)
+      stringProperty() = null
+      booleanProperty() should be(true)
+      stringProperty() = ""
+      booleanProperty() should be(false)
+      booleanProperty <== stringProperty ==~ ""
+      stringProperty() = "clearly not empty"
+      booleanProperty() should be(false)
+      stringProperty() = null
+      booleanProperty() should be(true)
+      stringProperty() = ""
+      booleanProperty() should be(true)
+    }
 
-  it should "support bindable infix, case-insensitive inequality (!=~) with a property" in {
-    booleanProperty <== stringProperty !=~ stringProperty2
-    stringProperty() = "something"
-    stringProperty2() = "something else"
-    booleanProperty() should be(true)
-    stringProperty2() = "SOMETHING"
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix, case-insensitive inequality (!=~) with a property" in {
+      booleanProperty <== stringProperty !=~ stringProperty2
+      stringProperty() = "something"
+      stringProperty2() = "something else"
+      booleanProperty() should be(true)
+      stringProperty2() = "SOMETHING"
+      booleanProperty() should be(false)
+    }
 
-  it should "support bindable infix, case-insensitive inequality (!=~) with an sfx property" in {
-    booleanProperty <== stringProperty !=~ sfxStringProperty
-    stringProperty() = "something"
-    sfxStringProperty() = "something else"
-    booleanProperty() should be(true)
-    sfxStringProperty() = "SOMETHING"
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix, case-insensitive inequality (!=~) with an sfx property" in {
+      booleanProperty <== stringProperty !=~ sfxStringProperty
+      stringProperty() = "something"
+      sfxStringProperty() = "something else"
+      booleanProperty() should be(true)
+      sfxStringProperty() = "SOMETHING"
+      booleanProperty() should be(false)
+    }
 
-  it should "support bindable infix, case-insensitive inequality (!=~) with a string" in {
-    booleanProperty <== stringProperty !=~ "something"
-    stringProperty() = "something"
-    booleanProperty() should be(false)
-    stringProperty() = "SOMETHING"
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix, case-insensitive inequality (!=~) with a string" in {
+      booleanProperty <== stringProperty !=~ "something"
+      stringProperty() = "something"
+      booleanProperty() should be(false)
+      stringProperty() = "SOMETHING"
+      booleanProperty() should be(false)
+    }
 
-  it should "support null/empty-string comparisons for case-insensitive not equals (=!=)" in {
-    booleanProperty <== stringProperty !=~ null
-    stringProperty() = "clearly not null"
-    booleanProperty() should be(true)
-    stringProperty() = null
-    booleanProperty() should be(false)
-    stringProperty() = ""
-    booleanProperty() should be(true)
-    booleanProperty <== stringProperty !=~ ""
-    stringProperty() = "clearly not empty"
-    booleanProperty() should be(true)
-    stringProperty() = null
-    booleanProperty() should be(false)
-    stringProperty() = ""
-    booleanProperty() should be(false)
-  }
+  it should
+    "support null/empty-string comparisons for case-insensitive not equals (=!=)" in {
+      booleanProperty <== stringProperty !=~ null
+      stringProperty() = "clearly not null"
+      booleanProperty() should be(true)
+      stringProperty() = null
+      booleanProperty() should be(false)
+      stringProperty() = ""
+      booleanProperty() should be(true)
+      booleanProperty <== stringProperty !=~ ""
+      stringProperty() = "clearly not empty"
+      booleanProperty() should be(true)
+      stringProperty() = null
+      booleanProperty() should be(false)
+      stringProperty() = ""
+      booleanProperty() should be(false)
+    }
 
   it should "support bindable infix less than (<) with a property" in {
     booleanProperty <== stringProperty < stringProperty2
@@ -323,54 +331,58 @@ class StringPropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty() should be(false)
   }
 
-  it should "support bindable infix less than or equal to (<=) with a property" in {
-    booleanProperty <== stringProperty <= stringProperty2
-    stringProperty() = "beta"
-    stringProperty2() = "cappa"
-    booleanProperty() should be(true)
-    stringProperty2() = "beta"
-    booleanProperty() should be(true)
-    stringProperty2() = "alpha"
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix less than or equal to (<=) with a property" in {
+      booleanProperty <== stringProperty <= stringProperty2
+      stringProperty() = "beta"
+      stringProperty2() = "cappa"
+      booleanProperty() should be(true)
+      stringProperty2() = "beta"
+      booleanProperty() should be(true)
+      stringProperty2() = "alpha"
+      booleanProperty() should be(false)
+    }
 
-  it should "support bindable infix less than or equal to (<=) with an sfx property" in {
-    booleanProperty <== stringProperty <= sfxStringProperty
-    stringProperty() = "beta"
-    sfxStringProperty() = "cappa"
-    booleanProperty() should be(true)
-    sfxStringProperty() = "beta"
-    booleanProperty() should be(true)
-    sfxStringProperty() = "alpha"
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix less than or equal to (<=) with an sfx property" in {
+      booleanProperty <== stringProperty <= sfxStringProperty
+      stringProperty() = "beta"
+      sfxStringProperty() = "cappa"
+      booleanProperty() should be(true)
+      sfxStringProperty() = "beta"
+      booleanProperty() should be(true)
+      sfxStringProperty() = "alpha"
+      booleanProperty() should be(false)
+    }
 
-  it should "support bindable infix less than or equal to (<=) with a string" in {
-    booleanProperty <== stringProperty <= "beta"
-    stringProperty() = "alpha"
-    booleanProperty() should be(true)
-    stringProperty() = "beta"
-    booleanProperty() should be(true)
-    stringProperty() = "cappa"
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix less than or equal to (<=) with a string" in {
+      booleanProperty <== stringProperty <= "beta"
+      stringProperty() = "alpha"
+      booleanProperty() should be(true)
+      stringProperty() = "beta"
+      booleanProperty() should be(true)
+      stringProperty() = "cappa"
+      booleanProperty() should be(false)
+    }
 
-  it should "support null/empty-string comparisons for less than or equal to (<=)" in {
-    booleanProperty <== stringProperty <= null
-    stringProperty() = "clearly not null"
-    booleanProperty() should be(false)
-    stringProperty() = null
-    booleanProperty() should be(true)
-    stringProperty() = ""
-    booleanProperty() should be(true)
-    booleanProperty <== stringProperty <= ""
-    stringProperty() = "clearly not empty"
-    booleanProperty() should be(false)
-    stringProperty() = null
-    booleanProperty() should be(true)
-    stringProperty() = ""
-    booleanProperty() should be(true)
-  }
+  it should
+    "support null/empty-string comparisons for less than or equal to (<=)" in {
+      booleanProperty <== stringProperty <= null
+      stringProperty() = "clearly not null"
+      booleanProperty() should be(false)
+      stringProperty() = null
+      booleanProperty() should be(true)
+      stringProperty() = ""
+      booleanProperty() should be(true)
+      booleanProperty <== stringProperty <= ""
+      stringProperty() = "clearly not empty"
+      booleanProperty() should be(false)
+      stringProperty() = null
+      booleanProperty() should be(true)
+      stringProperty() = ""
+      booleanProperty() should be(true)
+    }
 
   it should "support bindable infix greater than (>) with a property" in {
     booleanProperty <== stringProperty > stringProperty2
@@ -415,54 +427,58 @@ class StringPropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty() should be(false)
   }
 
-  it should "support bindable infix greater than or equal to (>=) with a property" in {
-    booleanProperty <== stringProperty >= stringProperty2
-    stringProperty() = "beta"
-    stringProperty2() = "cappa"
-    booleanProperty() should be(false)
-    stringProperty2() = "beta"
-    booleanProperty() should be(true)
-    stringProperty2() = "alpha"
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix greater than or equal to (>=) with a property" in {
+      booleanProperty <== stringProperty >= stringProperty2
+      stringProperty() = "beta"
+      stringProperty2() = "cappa"
+      booleanProperty() should be(false)
+      stringProperty2() = "beta"
+      booleanProperty() should be(true)
+      stringProperty2() = "alpha"
+      booleanProperty() should be(true)
+    }
 
-  it should "support bindable infix greater than or equal to (>=) with an sfx property" in {
-    booleanProperty <== stringProperty >= sfxStringProperty
-    stringProperty() = "beta"
-    sfxStringProperty() = "cappa"
-    booleanProperty() should be(false)
-    sfxStringProperty() = "beta"
-    booleanProperty() should be(true)
-    sfxStringProperty() = "alpha"
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix greater than or equal to (>=) with an sfx property" in {
+      booleanProperty <== stringProperty >= sfxStringProperty
+      stringProperty() = "beta"
+      sfxStringProperty() = "cappa"
+      booleanProperty() should be(false)
+      sfxStringProperty() = "beta"
+      booleanProperty() should be(true)
+      sfxStringProperty() = "alpha"
+      booleanProperty() should be(true)
+    }
 
-  it should "support bindable infix greater than or equal to (>=) with a string" in {
-    booleanProperty <== stringProperty >= "beta"
-    stringProperty() = "alpha"
-    booleanProperty() should be(false)
-    stringProperty() = "beta"
-    booleanProperty() should be(true)
-    stringProperty() = "cappa"
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix greater than or equal to (>=) with a string" in {
+      booleanProperty <== stringProperty >= "beta"
+      stringProperty() = "alpha"
+      booleanProperty() should be(false)
+      stringProperty() = "beta"
+      booleanProperty() should be(true)
+      stringProperty() = "cappa"
+      booleanProperty() should be(true)
+    }
 
-  it should "support null/empty-string comparisons for greater than or equal to (>=)" in {
-    booleanProperty <== stringProperty >= null
-    stringProperty() = "clearly not null"
-    booleanProperty() should be(true)
-    stringProperty() = null
-    booleanProperty() should be(true)
-    stringProperty() = ""
-    booleanProperty() should be(true)
-    booleanProperty <== stringProperty >= ""
-    stringProperty() = "clearly not empty"
-    booleanProperty() should be(true)
-    stringProperty() = null
-    booleanProperty() should be(true)
-    stringProperty() = ""
-    booleanProperty() should be(true)
-  }
+  it should
+    "support null/empty-string comparisons for greater than or equal to (>=)" in {
+      booleanProperty <== stringProperty >= null
+      stringProperty() = "clearly not null"
+      booleanProperty() should be(true)
+      stringProperty() = null
+      booleanProperty() should be(true)
+      stringProperty() = ""
+      booleanProperty() should be(true)
+      booleanProperty <== stringProperty >= ""
+      stringProperty() = "clearly not empty"
+      booleanProperty() should be(true)
+      stringProperty() = null
+      booleanProperty() should be(true)
+      stringProperty() = ""
+      booleanProperty() should be(true)
+    }
 
   it should "support concatenation" in {
     stringProperty <== stringProperty2 + " " + stringProperty3
@@ -478,7 +494,6 @@ class StringPropertySpec extends FlatSpec with BeforeAndAfterEach {
     stringProperty() should equal("HellonullWorld15")
   }
 
-  it should "support concatenation starting with nulls/primitives/strings" is (
-    pending
-  )
+  it should "support concatenation starting with nulls/primitives/strings" is
+    (pending)
 }

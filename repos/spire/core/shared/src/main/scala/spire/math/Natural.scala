@@ -339,8 +339,7 @@ sealed abstract class Natural
           case End(rd) => lhs * rd
           case Digit(rd, rtail) =>
             Digit(UInt(0), Digit(UInt(0), ltail * rtail)) +
-              Digit(UInt(0), ltail * rd) +
-              Digit(UInt(0), rtail * ld) +
+              Digit(UInt(0), ltail * rd) + Digit(UInt(0), rtail * ld) +
               Natural(ld.toLong * rd.toLong)
         }
     }

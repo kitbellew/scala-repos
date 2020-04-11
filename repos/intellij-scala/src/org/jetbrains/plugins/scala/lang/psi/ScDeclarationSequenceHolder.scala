@@ -32,8 +32,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
       def isOkForFakeCompanionModule(t: ScTypeDefinition): Boolean = {
         (processor match {
           case b: BaseProcessor =>
-            b.kinds.contains(ResolveTargets.OBJECT) || b.kinds
-              .contains(ResolveTargets.VAL)
+            b.kinds.contains(ResolveTargets.OBJECT) ||
+              b.kinds.contains(ResolveTargets.VAL)
           case _ => true
         }) && t.fakeCompanionModule.isDefined
       }
@@ -79,9 +79,9 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
         place match {
           case id: ScStableCodeReferenceElement => run match {
               case po: ScObject
-                  if po.isPackageObject && id.qualName == po
-                    .qualifiedName => // do nothing
-              case _               => if (!processElement(run, state)) return false
+                  if po.isPackageObject &&
+                    id.qualName == po.qualifiedName => // do nothing
+              case _                                => if (!processElement(run, state)) return false
             }
           case _ => if (!processElement(run, state)) return false
         }

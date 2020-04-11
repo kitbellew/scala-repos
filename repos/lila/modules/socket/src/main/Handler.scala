@@ -37,10 +37,8 @@ object Handler {
         userId foreach { u => hub.actor.relation ! ReloadOnlineFriends(u) }
       case ("startWatching", o) =>
         o str "d" foreach { ids =>
-          hub.actor.moveBroadcast ! StartWatching(
-            uid,
-            member,
-            ids.split(' ').toSet)
+          hub.actor.moveBroadcast !
+            StartWatching(uid, member, ids.split(' ').toSet)
         }
       case ("moveLat", o) =>
         hub.channel.roundMoveTime ! (~(o boolean "d"))
@@ -53,8 +51,8 @@ object Handler {
                   "step",
                   Json.obj("step" -> step.toJson, "path" -> anaMove.path))
               case scalaz.Failure(err) =>
-                member push lila.socket.Socket
-                  .makeMessage("stepFailure", err.toString)
+                member push
+                  lila.socket.Socket.makeMessage("stepFailure", err.toString)
             }
           }
         }
@@ -66,8 +64,8 @@ object Handler {
                   "step",
                   Json.obj("step" -> step.toJson, "path" -> anaDrop.path))
               case scalaz.Failure(err) =>
-                member push lila.socket.Socket
-                  .makeMessage("stepFailure", err.toString)
+                member push
+                  lila.socket.Socket.makeMessage("stepFailure", err.toString)
             }
           }
         }
@@ -76,11 +74,12 @@ object Handler {
             case Some(req) =>
               member push lila.socket.Socket.makeMessage(
                 "dests",
-                Json.obj("dests" -> req.dests, "path" -> req.path) ++ req
-                  .opening.?? { o => Json.obj("opening" -> o) })
+                Json.obj("dests" -> req.dests, "path" -> req.path) ++
+                  req.opening.?? { o => Json.obj("opening" -> o) })
             case None =>
-              member push lila.socket.Socket
-                .makeMessage("destsFailure", "Bad dests request")
+              member push
+                lila.socket.Socket
+                  .makeMessage("destsFailure", "Bad dests request")
           }
         }
       case _ => // logwarn("Unhandled msg: " + msg)

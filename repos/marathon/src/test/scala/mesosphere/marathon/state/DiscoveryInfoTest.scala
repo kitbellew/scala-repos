@@ -165,8 +165,8 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
       """
 
     val readResult = Json.fromJson[DiscoveryInfo](Json.parse(json))
-    readResult should be(
-      JsError(JsPath() \ "ports", "Port names are not unique."))
+    readResult should
+      be(JsError(JsPath() \ "ports", "Port names are not unique."))
   }
 
   test("Read discovery info with a port with an invalid protocol") {

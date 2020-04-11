@@ -30,15 +30,15 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
   private val form = mapping(
     "baseUrl" -> trim(label("Base URL", optional(text()))),
     "information" -> trim(label("Information", optional(text()))),
-    "allowAccountRegistration" -> trim(
-      label("Account registration", boolean())),
+    "allowAccountRegistration" ->
+      trim(label("Account registration", boolean())),
     "allowAnonymousAccess" -> trim(label("Anonymous access", boolean())),
-    "isCreateRepoOptionPublic" -> trim(
-      label("Default option to create a new repository", boolean())),
+    "isCreateRepoOptionPublic" ->
+      trim(label("Default option to create a new repository", boolean())),
     "gravatar" -> trim(label("Gravatar", boolean())),
     "notification" -> trim(label("Notification", boolean())),
-    "activityLogLimit" -> trim(
-      label("Limit of activity logs", optional(number()))),
+    "activityLogLimit" ->
+      trim(label("Limit of activity logs", optional(number()))),
     "ssh" -> trim(label("SSH access", boolean())),
     "sshHost" -> trim(label("SSH host", optional(text()))),
     "sshPort" -> trim(label("SSH port", optional(number()))),
@@ -64,14 +64,14 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
         "bindDN" -> trim(label("Bind DN", optional(text()))),
         "bindPassword" -> trim(label("Bind Password", optional(text()))),
         "baseDN" -> trim(label("Base DN", text(required))),
-        "userNameAttribute" -> trim(
-          label("User name attribute", text(required))),
-        "additionalFilterCondition" -> trim(
-          label("Additional filter condition", optional(text()))),
-        "fullNameAttribute" -> trim(
-          label("Full name attribute", optional(text()))),
-        "mailAttribute" -> trim(
-          label("Mail address attribute", optional(text()))),
+        "userNameAttribute" ->
+          trim(label("User name attribute", text(required))),
+        "additionalFilterCondition" ->
+          trim(label("Additional filter condition", optional(text()))),
+        "fullNameAttribute" ->
+          trim(label("Full name attribute", optional(text()))),
+        "mailAttribute" ->
+          trim(label("Mail address attribute", optional(text()))),
         "tls" -> trim(label("Enable TLS", optional(boolean()))),
         "ssl" -> trim(label("Enable SSL", optional(boolean()))),
         "keystore" -> trim(label("Keystore", optional(text())))
@@ -142,8 +142,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
   )(NewUserForm.apply)
 
   val editUserForm = mapping(
-    "userName" -> trim(
-      label("Username", text(required, maxlength(100), identifier))),
+    "userName" ->
+      trim(label("Username", text(required, maxlength(100), identifier))),
     "password" -> trim(label("Password", optional(text(maxlength(20))))),
     "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
     "mailAddress" -> trim(label(
@@ -153,8 +153,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     "url" -> trim(label("URL", optional(text(maxlength(200))))),
     "fileId" -> trim(label("File ID", optional(text()))),
     "clearImage" -> trim(label("Clear image", boolean())),
-    "removed" -> trim(
-      label("Disable", boolean(disableByNotYourself("userName"))))
+    "removed" ->
+      trim(label("Disable", boolean(disableByNotYourself("userName"))))
   )(EditUserForm.apply)
 
   val newGroupForm = mapping(
@@ -167,8 +167,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
   )(NewGroupForm.apply)
 
   val editGroupForm = mapping(
-    "groupName" -> trim(
-      label("Group name", text(required, maxlength(100), identifier))),
+    "groupName" ->
+      trim(label("Group name", text(required, maxlength(100), identifier))),
     "url" -> trim(label("URL", optional(text(maxlength(200))))),
     "fileId" -> trim(label("File ID", optional(text()))),
     "members" -> trim(label("Members", text(required, members))),
@@ -352,8 +352,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           value: String,
           messages: Messages): Option[String] = {
         params.get(paramName).flatMap { userName =>
-          if (userName == context.loginAccount.get.userName && params
-                .get("removed") == Some("true"))
+          if (userName == context.loginAccount.get.userName &&
+              params.get("removed") == Some("true"))
             Some("You can't disable your account yourself")
           else None
         }

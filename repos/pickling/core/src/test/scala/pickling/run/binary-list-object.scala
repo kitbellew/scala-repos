@@ -11,9 +11,7 @@ class BinaryListObjectTest extends FunSuite {
     val lst = List(Person("A"), Person("B"), Person("C"))
     val pickle = lst.pickle
     assert(
-      pickle.unpickle[List[Person]] == List(
-        Person("A"),
-        Person("B"),
-        Person("C")))
+      pickle.unpickle[List[Person]] ==
+        List(Person("A"), Person("B"), Person("C")))
   }
 }

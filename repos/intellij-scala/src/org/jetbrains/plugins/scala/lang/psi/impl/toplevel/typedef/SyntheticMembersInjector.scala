@@ -174,8 +174,9 @@ object SyntheticMembersInjector {
           ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
         case _ => source
       }
-      buffer += ScalaPsiElementFactory
-        .createTypeElementFromText(supers, context, source)
+      buffer +=
+        ScalaPsiElementFactory
+          .createTypeElementFromText(supers, context, source)
     } catch {
       case p: ProcessCanceledException => throw p
       case e: Throwable =>

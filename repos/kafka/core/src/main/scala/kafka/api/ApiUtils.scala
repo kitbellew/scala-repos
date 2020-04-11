@@ -85,7 +85,8 @@ object ApiUtils {
     val value = buffer.getInt
     if (value < range._1 || value > range._2)
       throw new KafkaException(
-        name + " has value " + value + " which is not in the range " + range + ".")
+        name + " has value " + value + " which is not in the range " + range +
+          ".")
     else value
   }
 
@@ -100,7 +101,8 @@ object ApiUtils {
     val value = buffer.getShort
     if (value < range._1 || value > range._2)
       throw new KafkaException(
-        name + " has value " + value + " which is not in the range " + range + ".")
+        name + " has value " + value + " which is not in the range " + range +
+          ".")
     else value
   }
 
@@ -115,7 +117,8 @@ object ApiUtils {
     val value = buffer.getLong
     if (value < range._1 || value > range._2)
       throw new KafkaException(
-        name + " has value " + value + " which is not in the range " + range + ".")
+        name + " has value " + value + " which is not in the range " + range +
+          ".")
     else value
   }
 

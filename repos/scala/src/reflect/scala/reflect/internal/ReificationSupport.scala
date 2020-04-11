@@ -430,8 +430,8 @@ trait ReificationSupport {
             if (!ctorArgsCorrespondToFields) None
             else {
               val vparamss = mmap(vparamssRestoredImplicits) { vd =>
-                val originalMods =
-                  modsMap(vd.name) | (vd.mods.flags & DEFAULTPARAM)
+                val originalMods = modsMap(vd.name) |
+                  (vd.mods.flags & DEFAULTPARAM)
                 atPos(vd.pos)(ValDef(originalMods, vd.name, vd.tpt, vd.rhs))
               }
               result(ctorMods, vparamss, edefs, body)
@@ -661,10 +661,10 @@ trait ReificationSupport {
                     MaybeSelectApply(TupleCompanionRef(sym)),
                     targs)),
                 args)
-              if sym == TupleClass(args.length).companionModule
-                && (targs.isEmpty || targs.length == args.length) => Some(args)
-          case _ if tree.isTerm                                   => Some(tree :: Nil)
-          case _                                                  => None
+              if sym == TupleClass(args.length).companionModule &&
+                (targs.isEmpty || targs.length == args.length) => Some(args)
+          case _ if tree.isTerm                                => Some(tree :: Nil)
+          case _                                               => None
         }
     }
 
@@ -790,9 +790,8 @@ trait ReificationSupport {
                 argss) =>
             Some((
               Nil,
-              SyntacticApplied(
-                SyntacticAppliedType(ident, targs),
-                argss) :: Nil,
+              SyntacticApplied(SyntacticAppliedType(ident, targs), argss) ::
+                Nil,
               noSelfType,
               Nil))
           case SyntacticBlock(
@@ -805,8 +804,7 @@ trait ReificationSupport {
                   earlyDefs,
                   parents,
                   selfType,
-                  body) ::
-                Apply(
+                  body) :: Apply(
                   Select(New(Ident(tpnme.ANON_CLASS_NAME)), nme.CONSTRUCTOR),
                   Nil) :: Nil) => Some((earlyDefs, parents, selfType, body))
           case _               => None
@@ -1102,8 +1100,7 @@ trait ReificationSupport {
                 rhs,
                 UnVisitor(
                   name,
-                  CaseDef(pat, EmptyTree, Literal(Constant(true))) ::
-                  CaseDef(
+                  CaseDef(pat, EmptyTree, Literal(Constant(true))) :: CaseDef(
                     Ident(nme.WILDCARD),
                     EmptyTree,
                     Literal(Constant(false))) :: Nil))
@@ -1297,8 +1294,7 @@ trait ReificationSupport {
                             _,
                             Match(
                               _,
-                              cases :+
-                              CaseDef(
+                              cases :+ CaseDef(
                                 Bind(nme.DEFAULT_CASE, Ident(nme.WILDCARD)),
                                 _,
                                 _))),
@@ -1310,8 +1306,8 @@ trait ReificationSupport {
                     List())),
                 pf: TypeTree)
               if pf.tpe != null && pf.tpe.typeSymbol.eq(PartialFunctionClass) &&
-                abspf.tpe != null && abspf.tpe.typeSymbol
-                .eq(AbstractPartialFunctionClass) &&
+                abspf.tpe != null &&
+                abspf.tpe.typeSymbol.eq(AbstractPartialFunctionClass) &&
                 ser.tpe != null && ser.tpe.typeSymbol.eq(SerializableClass) &&
                 clsMods.hasFlag(FINAL) && clsMods.hasFlag(SYNTHETIC) =>
             Some(cases)

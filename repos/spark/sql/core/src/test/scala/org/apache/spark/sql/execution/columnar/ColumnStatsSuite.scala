@@ -73,8 +73,8 @@ class ColumnStatsSuite extends SparkFunSuite {
       import org.apache.spark.sql.execution.columnar.ColumnarTestUtils._
 
       val columnStats = columnStatsClass.newInstance()
-      val rows = Seq.fill(10)(makeRandomRow(columnType)) ++ Seq
-        .fill(10)(makeNullRow(1))
+      val rows = Seq.fill(10)(makeRandomRow(columnType)) ++
+        Seq.fill(10)(makeNullRow(1))
       rows.foreach(columnStats.gatherStats(_, 0))
 
       val values = rows.take(10)
@@ -111,8 +111,8 @@ class ColumnStatsSuite extends SparkFunSuite {
       import org.apache.spark.sql.execution.columnar.ColumnarTestUtils._
 
       val columnStats = new DecimalColumnStats(15, 10)
-      val rows = Seq.fill(10)(makeRandomRow(columnType)) ++ Seq
-        .fill(10)(makeNullRow(1))
+      val rows = Seq.fill(10)(makeRandomRow(columnType)) ++
+        Seq.fill(10)(makeNullRow(1))
       rows.foreach(columnStats.gatherStats(_, 0))
 
       val values = rows.take(10)

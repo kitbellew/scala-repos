@@ -177,16 +177,18 @@ class GoToImplicitConversionAction
                 case _                                               => res += expr
               }
             case expr: ScExpression
-                if guard || expr.getImplicitConversions(fromUnder = false)._2
-                  .isDefined ||
+                if guard ||
+                  expr.getImplicitConversions(fromUnder = false)._2.isDefined ||
                   (ScUnderScoreSectionUtil.isUnderscoreFunction(expr) &&
                     expr.getImplicitConversions(fromUnder = true)._2
-                      .isDefined) || (expr.getAdditionalExpression.isDefined &&
-                  expr.getAdditionalExpression.get._1.getImplicitConversions(
-                    fromUnder = false,
-                    expectedOption = Some(expr.getAdditionalExpression.get._2))
-                    ._2.isDefined) => res += expr
-            case _                 =>
+                      .isDefined) ||
+                  (expr.getAdditionalExpression.isDefined &&
+                    expr.getAdditionalExpression.get._1.getImplicitConversions(
+                      fromUnder = false,
+                      expectedOption = Some(
+                        expr.getAdditionalExpression.get._2))._2.isDefined) =>
+              res += expr
+            case _ =>
           }
           parent = parent.getParent
         }

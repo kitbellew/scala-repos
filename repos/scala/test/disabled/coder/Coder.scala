@@ -126,7 +126,8 @@ class ParCoder(words: List[String]) {
     val m = comparison.subsmemo((num, subsfrom, word))
     if (r != m) {
       println(
-        "map for number from subs and word: " + num + ", " + subsfrom + ", " + word)
+        "map for number from subs and word: " + num + ", " + subsfrom + ", " +
+          word)
       println("parset: " + r.size)
       println("memoed: " + m.size)
       error("r != m")

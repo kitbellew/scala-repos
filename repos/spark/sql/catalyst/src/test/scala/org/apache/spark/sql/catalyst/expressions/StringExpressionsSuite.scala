@@ -272,14 +272,12 @@ class StringExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       Substring(
         s,
         Literal.create(0, IntegerType),
-        Literal.create(2, IntegerType)).nullable
-        === true)
+        Literal.create(2, IntegerType)).nullable === true)
     assert(
       Substring(
         s_notNull,
         Literal.create(0, IntegerType),
-        Literal.create(2, IntegerType)).nullable
-        === false)
+        Literal.create(2, IntegerType)).nullable === false)
     assert(
       Substring(
         s_notNull,
@@ -435,12 +433,12 @@ class StringExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       "abdef" rlike NonFoldableLiteral.create(null, StringType),
       null)
     checkEvaluation(
-      Literal.create(null, StringType) rlike NonFoldableLiteral
-        .create("abdef", StringType),
+      Literal.create(null, StringType) rlike
+        NonFoldableLiteral.create("abdef", StringType),
       null)
     checkEvaluation(
-      Literal.create(null, StringType) rlike NonFoldableLiteral
-        .create(null, StringType),
+      Literal.create(null, StringType) rlike
+        NonFoldableLiteral.create(null, StringType),
       null)
 
     checkEvaluation("abdef" rlike "abdef", true)

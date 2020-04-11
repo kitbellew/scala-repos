@@ -41,8 +41,8 @@ class DeploymentPlanRevertTest
 
       for (groupId <- expectedGroupIds) {
         withClue(s"for group id $groupId") {
-          actual.group(groupId).map(_.withoutChildren) should equal(
-            expected.group(groupId).map(_.withoutChildren))
+          actual.group(groupId).map(_.withoutChildren) should
+            equal(expected.group(groupId).map(_.withoutChildren))
         }
       }
 

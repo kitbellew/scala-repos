@@ -156,8 +156,7 @@ private[streaming] object UIUtils {
         <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
-      </span> ++
-          <div class="stacktrace-details collapsed">
+      </span> ++ <div class="stacktrace-details collapsed">
           <pre>{failureDetails}</pre>
         </div>
         // scalastyle:on

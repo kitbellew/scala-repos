@@ -212,9 +212,8 @@ trait StreamTest extends QueryTest with Timeouts {
     def testActions =
       actions.zipWithIndex.map {
         case (a, i) =>
-          if ((pos == i && startedManually) || (
-                pos == (i + 1) && !startedManually
-              )) { "=> " + a.toString }
+          if ((pos == i && startedManually) ||
+              (pos == (i + 1) && !startedManually)) { "=> " + a.toString }
           else { "   " + a.toString }
       }.mkString("\n")
 
@@ -227,16 +226,14 @@ trait StreamTest extends QueryTest with Timeouts {
         "alive"
       else "dead"
 
-    def testState =
-      s"""
+    def testState = s"""
          |== Progress ==
          |$testActions
          |
          |== Stream ==
          |Stream state: $currentOffsets
          |Thread state: $threadState
-         |${if (streamDeathCause != null) stackTraceToString(streamDeathCause)
-         else ""}
+         |${if (streamDeathCause != null) stackTraceToString(streamDeathCause) else ""}
          |
          |== Sink ==
          |${sink.toDebugString}
@@ -259,12 +256,11 @@ trait StreamTest extends QueryTest with Timeouts {
 
       // Recursively pretty print a exception with truncated stacktrace and internal cause
       def exceptionToString(e: Throwable, prefix: String = ""): String = {
-        val base = s"$prefix${e.getMessage}" +
-          e.getStackTrace.take(10).mkString(s"\n$prefix", s"\n$prefix\t", "\n")
+        val base = s"$prefix${e.getMessage}" + e.getStackTrace.take(10)
+          .mkString(s"\n$prefix", s"\n$prefix\t", "\n")
         if (e.getCause != null) {
-          base + s"\n$prefix\tCaused by: " + exceptionToString(
-            e.getCause,
-            s"$prefix\t")
+          base + s"\n$prefix\tCaused by: " +
+            exceptionToString(e.getCause, s"$prefix\t")
         } else { base }
       }
       val c = Option(cause).map(exceptionToString(_))

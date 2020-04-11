@@ -71,8 +71,7 @@ class TriangleCountSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val rawEdges = sc.parallelize(
         Array(0L -> 1L, 1L -> 2L, 2L -> 0L) ++
-          Array(0L -> 1L, 1L -> 2L, 2L -> 0L) ++
-          Array(1L -> 0L, 1L -> 1L),
+          Array(0L -> 1L, 1L -> 2L, 2L -> 0L) ++ Array(1L -> 0L, 1L -> 1L),
         2)
       val graph = Graph
         .fromEdgeTuples(rawEdges, true, uniqueEdges = Some(RandomVertexCut))

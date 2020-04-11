@@ -46,30 +46,27 @@ class ParametersAnnotatorTest extends SimpleTestCase {
     assertMatches(messages("def f(i: Int, js: Int* = 1) {}")) {
       case Error(
             "(i: Int, js: Int* = 1)",
-            "Parameter section with *-parameter cannot have default arguments") :: Nil =>
+            "Parameter section with *-parameter cannot have default arguments") ::
+          Nil =>
     }
   }
 
   def testByName(): Unit = {
     assertMatches(messages("def f(a: A)(implicit b: => B) {}")) {
-      case Error(
-            "b: => B",
-            "implicit parameters may not be call-by-name") :: Nil =>
+      case Error("b: => B", "implicit parameters may not be call-by-name") ::
+          Nil =>
     }
     assertMatches(messages("case class D(a: A, b: => B)")) {
-      case Error(
-            "b: => B",
-            "case class parameters may not be call-by-name") :: Nil =>
+      case Error("b: => B", "case class parameters may not be call-by-name") ::
+          Nil =>
     }
     assertMatches(messages("class D(a: A, val b: => B)")) {
-      case Error(
-            "val b: => B",
-            "'val' parameters may not be call-by-name") :: Nil =>
+      case Error("val b: => B", "'val' parameters may not be call-by-name") ::
+          Nil =>
     }
     assertMatches(messages("class D(a: A, var b: => B)")) {
-      case Error(
-            "var b: => B",
-            "'var' parameters may not be call-by-name") :: Nil =>
+      case Error("var b: => B", "'var' parameters may not be call-by-name") ::
+          Nil =>
     }
   }
 

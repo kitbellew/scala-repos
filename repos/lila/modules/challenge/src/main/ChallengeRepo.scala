@@ -63,15 +63,15 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
       date: DateTime,
       max: Int): Fu[List[Challenge]] =
     coll.find(
-      selectCreated ++ selectClock ++ BSONDocument(
-        "seenAt" -> BSONDocument("$lt" -> date))).cursor[Challenge]()
-      .collect[List](max)
+      selectCreated ++ selectClock ++
+        BSONDocument("seenAt" -> BSONDocument("$lt" -> date)))
+      .cursor[Challenge]().collect[List](max)
 
   private[challenge] def expiredIds(max: Int): Fu[List[Challenge.ID]] =
     coll.distinct(
       "_id",
-      BSONDocument("expiresAt" -> BSONDocument("$lt" -> DateTime.now))
-        .some) map lila.db.BSON.asStrings
+      BSONDocument("expiresAt" -> BSONDocument("$lt" -> DateTime.now)).some) map
+      lila.db.BSON.asStrings
 
   def setSeenAgain(id: Challenge.ID) =
     coll.update(

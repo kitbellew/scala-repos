@@ -70,9 +70,8 @@ object RelationSpecs
       in.relations mustEqual Map(
         StaticProvenance("/foo") -> Set(StaticProvenance("/bar")),
         StaticProvenance("/bar") -> Set(StaticProvenance("/foo")))
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
@@ -82,25 +81,24 @@ object RelationSpecs
       in.relations mustEqual Map(
         StaticProvenance("foo") -> Set(StaticProvenance("bar")),
         StaticProvenance("bar") -> Set(StaticProvenance("foo")))
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
     "accept object definition on static and dynamic provenances when related" in {
       val tree @ Let(_, _, _, _, Relate(_, _, _, in)) = compileSingle(
         "s := new 1 //foo ~ s { a: //foo, b: s }")
-      (in.relations.keys.toList sorted Provenance.order
-        .toScalaOrdering) must beLike {
-        case DynamicProvenance(_) :: StaticProvenance("/foo") :: Nil => ok
-      }
+      (in.relations.keys.toList sorted Provenance.order.toScalaOrdering) must
+        beLike {
+          case DynamicProvenance(_) :: StaticProvenance("/foo") :: Nil => ok
+        }
       in.relations(StaticProvenance("/foo")).toList(0) must beLike {
         case DynamicProvenance(_) => ok
       }
       (in.relations.values.map(_.toList)) must beLike {
-        case (DynamicProvenance(_) :: Nil) :: (StaticProvenance(
-              "/foo") :: Nil) :: Nil => ok
+        case (DynamicProvenance(_) :: Nil) ::
+            (StaticProvenance("/foo") :: Nil) :: Nil => ok
       }
       tree.provenance must beLike {
         case ProductProvenance(
@@ -125,9 +123,8 @@ object RelationSpecs
       in.relations mustEqual Map(
         StaticProvenance("/foo") -> Set(StaticProvenance("/bar")),
         StaticProvenance("/bar") -> Set(StaticProvenance("/foo")))
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
@@ -137,9 +134,8 @@ object RelationSpecs
       in.relations mustEqual Map(
         StaticProvenance("foo") -> Set(StaticProvenance("bar")),
         StaticProvenance("bar") -> Set(StaticProvenance("foo")))
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -163,17 +159,15 @@ object RelationSpecs
 
     "accept deref on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo[//bar]")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept deref on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo[./bar]")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -198,18 +192,16 @@ object RelationSpecs
     "accept dispatch on different loads when related" in {
       val tree = compileSingle(
         "//foo ~ //bar fun(a, b) := a + b fun(//foo, //bar)")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept dispatch on different relative loads when related" in {
       val tree = compileSingle(
         "./foo ~ ./bar fun(a, b) := a + b fun(./foo, ./bar)")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -235,17 +227,15 @@ object RelationSpecs
 
     "accept where on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo where //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept where on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo where ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -269,17 +259,15 @@ object RelationSpecs
 
     "accept with on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo with //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept with on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo with ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -395,17 +383,15 @@ object RelationSpecs
 
     "accept addition on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo + //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept addition on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo + ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -429,17 +415,15 @@ object RelationSpecs
 
     "accept subtraction on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo - //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept subtraction on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo - ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -463,17 +447,15 @@ object RelationSpecs
 
     "accept multiplication on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo * //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept multiplication on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo * ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -497,17 +479,15 @@ object RelationSpecs
 
     "accept division on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo / //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept division on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo / ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -531,17 +511,15 @@ object RelationSpecs
 
     "accept less-than on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo < //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept less-than on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo < ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -565,17 +543,15 @@ object RelationSpecs
 
     "accept less-than-equal on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo <= //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept less-than-equal on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo <= ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -599,17 +575,15 @@ object RelationSpecs
 
     "accept greater-than on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo > //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept greater-than on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo > ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -633,17 +607,15 @@ object RelationSpecs
 
     "accept greater-than-equal on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo >= //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept greater-than-equal on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo >= ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -667,17 +639,15 @@ object RelationSpecs
 
     "accept equality on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo = //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept equality on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo = ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -701,17 +671,15 @@ object RelationSpecs
 
     "accept not-equality on different loads when related" in {
       val tree = compileSingle("//foo ~ //bar //foo != //bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
       tree.errors must beEmpty
     }
 
     "accept not-equality on different relative loads when related" in {
       val tree = compileSingle("./foo ~ ./bar ./foo != ./bar")
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("foo"),
-        StaticProvenance("bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("foo"), StaticProvenance("bar"))
       tree.errors must beEmpty
     }
 
@@ -818,9 +786,8 @@ object RelationSpecs
     "substitute and resolve relation unification within a function" in {
       val tree = compileSingle("f(a, b) := a ~ b a + b f(//foo, //bar)")
       tree.errors must beEmpty
-      tree.provenance mustEqual ProductProvenance(
-        StaticProvenance("/foo"),
-        StaticProvenance("/bar"))
+      tree.provenance mustEqual
+        ProductProvenance(StaticProvenance("/foo"), StaticProvenance("/bar"))
     }
 
     "accept operations according to the commutative relation" in {
@@ -984,9 +951,8 @@ object RelationSpecs
 
       body.relations mustEqual Map(
         StaticProvenance("/foo") -> Set(StaticProvenance("/bar")),
-        StaticProvenance("/bar") -> Set(
-          StaticProvenance("/foo"),
-          StaticProvenance("/baz")),
+        StaticProvenance("/bar") ->
+          Set(StaticProvenance("/foo"), StaticProvenance("/baz")),
         StaticProvenance("/baz") -> Set(StaticProvenance("/bar"))
       )
 

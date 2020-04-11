@@ -222,7 +222,8 @@ class FlowGraphCompileSpec extends AkkaSpec {
           """Flow(List("a", "b", "c")) ~> zip.out""" shouldNot compile
           "zip.left ~> zip.right" shouldNot compile
           "Flow(List(1, 2, 3)) ~> zip.left ~> wrongOut" shouldNot compile
-          """Flow(List(1 -> "a", 2 -> "b", 3 -> "c")) ~> unzip.in ~> whatever""" shouldNot compile
+          """Flow(List(1 -> "a", 2 -> "b", 3 -> "c")) ~> unzip.in ~> whatever""" shouldNot
+            compile
           ClosedShape
         })
       }.getMessage should include("must correspond to")
@@ -234,8 +235,8 @@ class FlowGraphCompileSpec extends AkkaSpec {
         val merge = b.add(Merge[Fruit](2))
         Source.fromIterator[Fruit](apples) ~> Flow[Fruit] ~> merge.in(0)
         Source.fromIterator[Apple](apples) ~> Flow[Apple] ~> merge.in(1)
-        merge.out ~> Flow[Fruit].map(identity) ~> Sink
-          .fromSubscriber(TestSubscriber.manualProbe[Fruit]())
+        merge.out ~> Flow[Fruit].map(identity) ~>
+          Sink.fromSubscriber(TestSubscriber.manualProbe[Fruit]())
         ClosedShape
       })
     }
@@ -281,10 +282,10 @@ class FlowGraphCompileSpec extends AkkaSpec {
           b.add(Source.fromPublisher(TestPublisher.manualProbe[Apple]()))
         def fruitSource =
           b.add(Source.fromPublisher(TestPublisher.manualProbe[Fruit]()))
-        val outA = b add Sink
-          .fromSubscriber(TestSubscriber.manualProbe[Fruit]())
-        val outB = b add Sink
-          .fromSubscriber(TestSubscriber.manualProbe[Fruit]())
+        val outA = b add
+          Sink.fromSubscriber(TestSubscriber.manualProbe[Fruit]())
+        val outB = b add
+          Sink.fromSubscriber(TestSubscriber.manualProbe[Fruit]())
         val merge = b add Merge[Fruit](11)
         val unzip = b add Unzip[Int, String]()
         val whatever = b add Sink.asPublisher[Any](false)
@@ -296,16 +297,16 @@ class FlowGraphCompileSpec extends AkkaSpec {
         fruitSource ~> Flow[Fruit].map(identity) ~> merge.in(4)
         appleSource ~> Flow[Apple].map(identity) ~> merge.in(5)
         b.add(Source.fromIterator(apples)) ~> merge.in(6)
-        b.add(Source.fromIterator(apples)) ~> Flow[Fruit].map(identity) ~> merge
-          .in(7)
-        b.add(Source.fromIterator(apples)) ~> Flow[Apple].map(identity) ~> merge
-          .in(8)
+        b.add(Source.fromIterator(apples)) ~> Flow[Fruit].map(identity) ~>
+          merge.in(7)
+        b.add(Source.fromIterator(apples)) ~> Flow[Apple].map(identity) ~>
+          merge.in(8)
         merge.out ~> Flow[Fruit].map(identity) ~> outA
 
         b.add(Source.fromIterator(apples)) ~> Flow[Apple] ~> merge.in(9)
         b.add(Source.fromIterator(apples)) ~> Flow[Apple] ~> outB
-        b.add(Source.fromIterator(apples)) ~> Flow[Apple] ~> b
-          .add(Sink.asPublisher[Fruit](false))
+        b.add(Source.fromIterator(apples)) ~> Flow[Apple] ~>
+          b.add(Sink.asPublisher[Fruit](false))
         appleSource ~> Flow[Apple] ~> merge.in(10)
 
         Source(List(1 -> "a", 2 -> "b", 3 -> "c")) ~> unzip.in
@@ -313,7 +314,8 @@ class FlowGraphCompileSpec extends AkkaSpec {
         unzip.out0 ~> b.add(Sink.asPublisher[Any](false))
 
         "merge.out ~> b.add(Broadcast[Apple](2))" shouldNot compile
-        "merge.out ~> Flow[Fruit].map(identity) ~> b.add(Broadcast[Apple](2))" shouldNot compile
+        "merge.out ~> Flow[Fruit].map(identity) ~> b.add(Broadcast[Apple](2))" shouldNot
+          compile
         "fruitSource ~> merge ~> b.add(Broadcast[Apple](2))" shouldNot compile
         ClosedShape
       })

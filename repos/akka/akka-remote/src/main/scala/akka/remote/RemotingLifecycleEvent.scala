@@ -69,8 +69,8 @@ final case class RemotingListenEvent(listenAddresses: Set[Address])
       .asJava
   override def logLevel: Logging.LogLevel = Logging.InfoLevel
   override def toString: String =
-    "Remoting now listens on addresses: " + listenAddresses
-      .mkString("[", ", ", "]")
+    "Remoting now listens on addresses: " +
+      listenAddresses.mkString("[", ", ", "]")
 }
 
 @SerialVersionUID(1L)

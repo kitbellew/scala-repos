@@ -51,9 +51,8 @@ final class SortedSetClientIntegrationSuite extends RedisClientTest {
              true,
              Some(Limit(0, 5)))).left) {
         assert(
-          CBToString.fromTuplesWithDoubles(left.asTuples) == (
-            Seq(("bar", 10), ("baz", 20))
-          ))
+          CBToString.fromTuplesWithDoubles(left.asTuples) ==
+            (Seq(("bar", 10), ("baz", 20))))
       }
       for (left <- Await.result(client.zRangeByScore(
              foo,
@@ -163,8 +162,8 @@ final class SortedSetClientIntegrationSuite extends RedisClientTest {
       assert(Await.result(client.zAdd(foo, 30, boo)) == 1)
       assert(
         Await
-          .result(
-            client.zRemRangeByScore(foo, ZInterval(10), ZInterval(20))) == 2)
+          .result(client.zRemRangeByScore(foo, ZInterval(10), ZInterval(20))) ==
+          2)
       for (right <- Await.result(client.zRange(foo, 0, -1, false)).right)
         assert(CBToString.fromList(right.toList) == List("boo"))
     }

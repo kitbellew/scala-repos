@@ -88,36 +88,50 @@ package json {
     private val primitives = Map[String, Any => Unit](
       FastTypeTag.Unit.key -> ((picklee: Any) => append("\"()\"")),
       FastTypeTag.Null.key -> ((picklee: Any) => append("null")),
-      FastTypeTag.Ref.key -> ((picklee: Any) =>
-        throw new Error("fatal error: shouldn't be invoked explicitly")),
+      FastTypeTag.Ref.key ->
+        ((picklee: Any) =>
+          throw new Error("fatal error: shouldn't be invoked explicitly")),
       FastTypeTag.Int.key -> ((picklee: Any) => append(picklee.toString)),
-      FastTypeTag.Long.key -> ((picklee: Any) =>
-        append("\"" + JSONFormat.quoteString(picklee.toString) + "\"")),
+      FastTypeTag.Long.key ->
+        ((picklee: Any) =>
+          append("\"" + JSONFormat.quoteString(picklee.toString) + "\"")),
       FastTypeTag.Short.key -> ((picklee: Any) => append(picklee.toString)),
       FastTypeTag.Double.key -> ((picklee: Any) => append(picklee.toString)),
       FastTypeTag.Float.key -> ((picklee: Any) => append(picklee.toString)),
       FastTypeTag.Boolean.key -> ((picklee: Any) => append(picklee.toString)),
       FastTypeTag.Byte.key -> ((picklee: Any) => append(picklee.toString)),
-      FastTypeTag.Char.key -> ((picklee: Any) =>
-        append("\"" + JSONFormat.quoteString(picklee.toString) + "\"")),
-      FastTypeTag.String.key -> ((picklee: Any) =>
-        append("\"" + JSONFormat.quoteString(picklee.toString) + "\"")),
-      FastTypeTag.ArrayByte.key -> ((picklee: Any) =>
-        pickleArray(picklee.asInstanceOf[Array[Byte]], FastTypeTag.Byte)),
-      FastTypeTag.ArrayShort.key -> ((picklee: Any) =>
-        pickleArray(picklee.asInstanceOf[Array[Short]], FastTypeTag.Short)),
-      FastTypeTag.ArrayChar.key -> ((picklee: Any) =>
-        pickleArray(picklee.asInstanceOf[Array[Char]], FastTypeTag.Char)),
-      FastTypeTag.ArrayInt.key -> ((picklee: Any) =>
-        pickleArray(picklee.asInstanceOf[Array[Int]], FastTypeTag.Int)),
-      FastTypeTag.ArrayLong.key -> ((picklee: Any) =>
-        pickleArray(picklee.asInstanceOf[Array[Long]], FastTypeTag.Long)),
-      FastTypeTag.ArrayBoolean.key -> ((picklee: Any) =>
-        pickleArray(picklee.asInstanceOf[Array[Boolean]], FastTypeTag.Boolean)),
-      FastTypeTag.ArrayFloat.key -> ((picklee: Any) =>
-        pickleArray(picklee.asInstanceOf[Array[Float]], FastTypeTag.Float)),
-      FastTypeTag.ArrayDouble.key -> ((picklee: Any) =>
-        pickleArray(picklee.asInstanceOf[Array[Double]], FastTypeTag.Double))
+      FastTypeTag.Char.key ->
+        ((picklee: Any) =>
+          append("\"" + JSONFormat.quoteString(picklee.toString) + "\"")),
+      FastTypeTag.String.key ->
+        ((picklee: Any) =>
+          append("\"" + JSONFormat.quoteString(picklee.toString) + "\"")),
+      FastTypeTag.ArrayByte.key ->
+        ((picklee: Any) =>
+          pickleArray(picklee.asInstanceOf[Array[Byte]], FastTypeTag.Byte)),
+      FastTypeTag.ArrayShort.key ->
+        ((picklee: Any) =>
+          pickleArray(picklee.asInstanceOf[Array[Short]], FastTypeTag.Short)),
+      FastTypeTag.ArrayChar.key ->
+        ((picklee: Any) =>
+          pickleArray(picklee.asInstanceOf[Array[Char]], FastTypeTag.Char)),
+      FastTypeTag.ArrayInt.key ->
+        ((picklee: Any) =>
+          pickleArray(picklee.asInstanceOf[Array[Int]], FastTypeTag.Int)),
+      FastTypeTag.ArrayLong.key ->
+        ((picklee: Any) =>
+          pickleArray(picklee.asInstanceOf[Array[Long]], FastTypeTag.Long)),
+      FastTypeTag.ArrayBoolean.key ->
+        ((picklee: Any) =>
+          pickleArray(
+            picklee.asInstanceOf[Array[Boolean]],
+            FastTypeTag.Boolean)),
+      FastTypeTag.ArrayFloat.key ->
+        ((picklee: Any) =>
+          pickleArray(picklee.asInstanceOf[Array[Float]], FastTypeTag.Float)),
+      FastTypeTag.ArrayDouble.key ->
+        ((picklee: Any) =>
+          pickleArray(picklee.asInstanceOf[Array[Double]], FastTypeTag.Double))
     )
     override def beginEntry(picklee: Any, tag: FastTypeTag[_]): PBuilder =
       withHints { hints =>
@@ -215,10 +229,11 @@ package json {
     private val primitives = Map[String, () => Any](
       FastTypeTag.Unit.key -> (() => ()),
       FastTypeTag.Null.key -> (() => null),
-      FastTypeTag.Ref.key -> (() =>
-        lookupUnpicklee(
-          datum.asInstanceOf[JSONObject].obj("$ref").asInstanceOf[Double]
-            .toInt)),
+      FastTypeTag.Ref.key ->
+        (() =>
+          lookupUnpicklee(
+            datum.asInstanceOf[JSONObject].obj("$ref").asInstanceOf[Double]
+              .toInt)),
       FastTypeTag.Int.key -> (() => datum.asInstanceOf[Double].toInt),
       FastTypeTag.Short.key -> (() => datum.asInstanceOf[Double].toShort),
       FastTypeTag.Double.key -> (() => datum.asInstanceOf[Double]),
@@ -228,30 +243,38 @@ package json {
       FastTypeTag.Boolean.key -> (() => datum.asInstanceOf[Boolean]),
       FastTypeTag.Char.key -> (() => datum.asInstanceOf[String].head),
       FastTypeTag.String.key -> (() => datum.asInstanceOf[String]),
-      FastTypeTag.ArrayByte.key -> (() =>
-        datum.asInstanceOf[JSONArray].list
-          .map(el => el.asInstanceOf[Double].toByte).toArray),
-      FastTypeTag.ArrayShort.key -> (() =>
-        datum.asInstanceOf[JSONArray].list
-          .map(el => el.asInstanceOf[Double].toShort).toArray),
-      FastTypeTag.ArrayChar.key -> (() =>
-        datum.asInstanceOf[JSONArray].list
-          .map(el => el.asInstanceOf[String].head).toArray),
-      FastTypeTag.ArrayInt.key -> (() =>
-        datum.asInstanceOf[JSONArray].list
-          .map(el => el.asInstanceOf[Double].toInt).toArray),
-      FastTypeTag.ArrayLong.key -> (() =>
-        datum.asInstanceOf[JSONArray].list
-          .map(el => el.asInstanceOf[String].toLong).toArray),
-      FastTypeTag.ArrayBoolean.key -> (() =>
-        datum.asInstanceOf[JSONArray].list.map(el => el.asInstanceOf[Boolean])
-          .toArray),
-      FastTypeTag.ArrayFloat.key -> (() =>
-        datum.asInstanceOf[JSONArray].list
-          .map(el => el.asInstanceOf[Double].toFloat).toArray),
-      FastTypeTag.ArrayDouble.key -> (() =>
-        datum.asInstanceOf[JSONArray].list.map(el => el.asInstanceOf[Double])
-          .toArray)
+      FastTypeTag.ArrayByte.key ->
+        (() =>
+          datum.asInstanceOf[JSONArray].list
+            .map(el => el.asInstanceOf[Double].toByte).toArray),
+      FastTypeTag.ArrayShort.key ->
+        (() =>
+          datum.asInstanceOf[JSONArray].list
+            .map(el => el.asInstanceOf[Double].toShort).toArray),
+      FastTypeTag.ArrayChar.key ->
+        (() =>
+          datum.asInstanceOf[JSONArray].list
+            .map(el => el.asInstanceOf[String].head).toArray),
+      FastTypeTag.ArrayInt.key ->
+        (() =>
+          datum.asInstanceOf[JSONArray].list
+            .map(el => el.asInstanceOf[Double].toInt).toArray),
+      FastTypeTag.ArrayLong.key ->
+        (() =>
+          datum.asInstanceOf[JSONArray].list
+            .map(el => el.asInstanceOf[String].toLong).toArray),
+      FastTypeTag.ArrayBoolean.key ->
+        (() =>
+          datum.asInstanceOf[JSONArray].list.map(el => el.asInstanceOf[Boolean])
+            .toArray),
+      FastTypeTag.ArrayFloat.key ->
+        (() =>
+          datum.asInstanceOf[JSONArray].list
+            .map(el => el.asInstanceOf[Double].toFloat).toArray),
+      FastTypeTag.ArrayDouble.key ->
+        (() =>
+          datum.asInstanceOf[JSONArray].list.map(el => el.asInstanceOf[Double])
+            .toArray)
     )
     private def mkNestedReader(datum: Any) = {
       val nested = new JSONPickleReader(datum, format)

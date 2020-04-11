@@ -184,8 +184,8 @@ class DateTimeUtilsSuite extends SparkFunSuite {
 
     c.set(2000, 11, 30, 10, 0, 0)
     assert(
-      stringToTime("2000-12-30 10:00:00") === new Timestamp(
-        c.getTimeInMillis()))
+      stringToTime("2000-12-30 10:00:00") ===
+        new Timestamp(c.getTimeInMillis()))
   }
 
   test("string to timestamp") {
@@ -251,8 +251,7 @@ class DateTimeUtilsSuite extends SparkFunSuite {
     c.set(Calendar.MILLISECOND, 0)
     assert(
       stringToTimestamp(UTF8String.fromString("2015-03-18T12:03:17-1:0"))
-        .get ===
-        c.getTimeInMillis * 1000)
+        .get === c.getTimeInMillis * 1000)
     assert(
       stringToTimestamp(UTF8String.fromString("2015-03-18T12:03:17-01:00"))
         .get === c.getTimeInMillis * 1000)
@@ -328,8 +327,7 @@ class DateTimeUtilsSuite extends SparkFunSuite {
     c.set(Calendar.MILLISECOND, 123)
     assert(
       stringToTimestamp(UTF8String.fromString("2015-03-18T12:03:17.12312+7:30"))
-        .get ===
-        c.getTimeInMillis * 1000 + 120)
+        .get === c.getTimeInMillis * 1000 + 120)
 
     c = Calendar.getInstance()
     c.set(Calendar.HOUR_OF_DAY, 18)
@@ -503,32 +501,28 @@ class DateTimeUtilsSuite extends SparkFunSuite {
     val c2 = Calendar.getInstance()
     c2.set(1996, 9, 30, 0, 0, 0)
     assert(
-      monthsBetween(
-        c1.getTimeInMillis * 1000L,
-        c2.getTimeInMillis * 1000L) === 3.94959677)
+      monthsBetween(c1.getTimeInMillis * 1000L, c2.getTimeInMillis * 1000L) ===
+        3.94959677)
     c2.set(2000, 1, 28, 0, 0, 0)
     assert(
-      monthsBetween(
-        c1.getTimeInMillis * 1000L,
-        c2.getTimeInMillis * 1000L) === -36)
+      monthsBetween(c1.getTimeInMillis * 1000L, c2.getTimeInMillis * 1000L) ===
+        -36)
     c2.set(2000, 1, 29, 0, 0, 0)
     assert(
-      monthsBetween(
-        c1.getTimeInMillis * 1000L,
-        c2.getTimeInMillis * 1000L) === -36)
+      monthsBetween(c1.getTimeInMillis * 1000L, c2.getTimeInMillis * 1000L) ===
+        -36)
     c2.set(1996, 2, 31, 0, 0, 0)
     assert(
-      monthsBetween(
-        c1.getTimeInMillis * 1000L,
-        c2.getTimeInMillis * 1000L) === 11)
+      monthsBetween(c1.getTimeInMillis * 1000L, c2.getTimeInMillis * 1000L) ===
+        11)
   }
 
   test("from UTC timestamp") {
     def test(utc: String, tz: String, expected: String): Unit = {
       assert(
         toJavaTimestamp(
-          fromUTCTime(fromJavaTimestamp(Timestamp.valueOf(utc)), tz)).toString
-          === expected)
+          fromUTCTime(fromJavaTimestamp(Timestamp.valueOf(utc)), tz))
+          .toString === expected)
     }
     test("2011-12-25 09:00:00.123456", "UTC", "2011-12-25 09:00:00.123456")
     test("2011-12-25 09:00:00.123456", "JST", "2011-12-25 18:00:00.123456")
@@ -543,8 +537,8 @@ class DateTimeUtilsSuite extends SparkFunSuite {
     def test(utc: String, tz: String, expected: String): Unit = {
       assert(
         toJavaTimestamp(
-          toUTCTime(fromJavaTimestamp(Timestamp.valueOf(utc)), tz)).toString
-          === expected)
+          toUTCTime(fromJavaTimestamp(Timestamp.valueOf(utc)), tz)).toString ===
+          expected)
     }
     test("2011-12-25 09:00:00.123456", "UTC", "2011-12-25 09:00:00.123456")
     test("2011-12-25 18:00:00.123456", "JST", "2011-12-25 09:00:00.123456")

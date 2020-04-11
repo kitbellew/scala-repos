@@ -87,8 +87,8 @@ abstract class HiveComparisonTest
 
   /** The local directory with cached golden answer will be stored. */
   protected val answerCache = new File(
-    "src" + File.separator + "test" +
-      File.separator + "resources" + File.separator + "golden")
+    "src" + File.separator + "test" + File.separator + "resources" +
+      File.separator + "golden")
   if (!answerCache.exists) { answerCache.mkdir() }
 
   /** The [[ClassLoader]] that contains test dependencies.  Used to look for golden answers. */
@@ -352,8 +352,8 @@ abstract class HiveComparisonTest
                     // from Seq("").
                     stringToFile(
                       cachedAnswerFile,
-                      answer.mkString("\n") + (if (answer.nonEmpty) "\n"
-                                               else ""))
+                      answer.mkString("\n") +
+                        (if (answer.nonEmpty) "\n" else ""))
                     answer
                   } catch {
                     case e: Exception =>
@@ -460,8 +460,8 @@ abstract class HiveComparisonTest
                 (!hiveQuery.logical.isInstanceOf[DescribeFunction]) &&
                 preparedHive != catalyst) {
 
-              val hivePrintOut =
-                s"== HIVE - ${preparedHive.size} row(s) ==" +: preparedHive
+              val hivePrintOut = s"== HIVE - ${preparedHive.size} row(s) ==" +:
+                preparedHive
               val catalystPrintOut =
                 s"== CATALYST - ${catalyst.size} row(s) ==" +: catalyst
 

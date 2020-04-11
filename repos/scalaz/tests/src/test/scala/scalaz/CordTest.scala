@@ -32,16 +32,14 @@ object CordTest extends SpecLite {
   }
 
   "isEmpty() must indicate string is empty" ! forAll { (a: Cord, b: Cord) =>
-    a.isEmpty == a.toString.isEmpty &&
-    b.isEmpty == b.toString.isEmpty &&
+    a.isEmpty == a.toString.isEmpty && b.isEmpty == b.toString.isEmpty &&
     (a ++ b).isEmpty == (a.toString.isEmpty && b.toString.isEmpty)
   }
 
   "nonEmpty() must indicate string is non-empty" ! forAll {
     (a: Cord, b: Cord) =>
       val c = a ++ b
-      a.nonEmpty == !a.toString.isEmpty &&
-      b.nonEmpty == !b.toString.isEmpty &&
+      a.nonEmpty == !a.toString.isEmpty && b.nonEmpty == !b.toString.isEmpty &&
       (a ++ b).nonEmpty == (!a.toString.isEmpty || !b.toString.isEmpty)
   }
 

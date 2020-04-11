@@ -42,10 +42,10 @@ private[remote] class AkkaProtocolSettings(config: Config) {
     TransportFailureDetectorConfig.getString("implementation-class")
   val TransportHeartBeatInterval: FiniteDuration = {
     TransportFailureDetectorConfig.getMillisDuration("heartbeat-interval")
-  } requiring (
-    _ > Duration
-      .Zero, "transport-failure-detector.heartbeat-interval must be > 0"
-  )
+  } requiring
+    (
+      _ > Duration.Zero,
+      "transport-failure-detector.heartbeat-interval must be > 0")
 
   val RequireCookie: Boolean = getBoolean("akka.remote.require-cookie")
 
@@ -432,9 +432,8 @@ private[transport] class ProtocolStateActor(
       if (sendAssociate(wrappedHandle, localHandshakeInfo)) {
         failureDetector.heartbeat()
         initHeartbeatTimer()
-        goto(WaitHandshake) using OutboundUnderlyingAssociated(
-          statusPromise,
-          wrappedHandle)
+        goto(WaitHandshake) using
+          OutboundUnderlyingAssociated(statusPromise, wrappedHandle)
 
       } else {
         // Underlying transport was busy -- Associate could not be sent

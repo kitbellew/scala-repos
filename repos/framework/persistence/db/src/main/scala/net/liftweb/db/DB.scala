@@ -191,21 +191,21 @@ trait DB extends Loggable {
         val uniqueId =
           if (logger.isDebugEnabled) Helpers.nextNum.toString else ""
         logger.debug(
-          "Connection ID " + uniqueId + " for JNDI connection " + name
-            .jndiName + " opened")
+          "Connection ID " + uniqueId + " for JNDI connection " +
+            name.jndiName + " opened")
         new SuperConnection(
           c,
           () => {
             logger.debug(
-              "Connection ID " + uniqueId + " for JNDI connection " + name
-                .jndiName + " closed"); c.close
+              "Connection ID " + uniqueId + " for JNDI connection " +
+                name.jndiName + " closed"); c.close
           })
       })
 
     val cmConn = for {
       connectionManager <-
-        threadLocalConnectionManagers.box.flatMap(_.get(name)) or Box(
-          connectionManagers.get(name))
+        threadLocalConnectionManagers.box.flatMap(_.get(name)) or
+          Box(connectionManagers.get(name))
       connection <- cmSuperConnection(connectionManager)
     } yield connection
 
@@ -215,9 +215,9 @@ trait DB extends Loggable {
 
     ret openOr {
       throw new NullPointerException(
-        "Looking for Connection Identifier " + name + " but failed to find either a JNDI data source " +
-          "with the name " + name
-          .jndiName + " or a lift connection manager with the correct name")
+        "Looking for Connection Identifier " + name +
+          " but failed to find either a JNDI data source " + "with the name " +
+          name.jndiName + " or a lift connection manager with the correct name")
     }
   }
 
@@ -336,8 +336,8 @@ trait DB extends Loggable {
     }
     info(name) = ret
     logger.trace(
-      "Acquired " + name + " on thread " + Thread.currentThread +
-        " count " + ret.cnt)
+      "Acquired " + name + " on thread " + Thread.currentThread + " count " +
+        ret.cnt)
     ret.conn
   }
 
@@ -374,8 +374,8 @@ trait DB extends Loggable {
       }
       case Some(ConnectionHolder(c, n, post, rb)) =>
         logger.trace(
-          "Did not release " + name + " on thread " + Thread
-            .currentThread + " count " + (n - 1))
+          "Did not release " + name + " on thread " + Thread.currentThread +
+            " count " + (n - 1))
         info(name) = ConnectionHolder(c, n - 1, post, rb)
       case x =>
       // ignore

@@ -154,30 +154,32 @@ class PackageCollectionFillerSpec extends FlatSpec with RunOnApplicationThread {
     executeAndTestChanges(getOriginalStringObservableList, List("1", "2"))
   }
 
-  "fillCollectionWithOne" should "clean originalCollection if receives null" in {
-    val originalList = getOriginalStringObservableList
-    val analyzer = Analyzer(originalList)
+  "fillCollectionWithOne" should
+    "clean originalCollection if receives null" in {
+      val originalList = getOriginalStringObservableList
+      val analyzer = Analyzer(originalList)
 
-    fillCollectionWithOne(originalList, null)
+      fillCollectionWithOne(originalList, null)
 
-    this.emptyEvaluation(analyzer, originalList)
-    this.finalEvaluation(analyzer)
-  }
+      this.emptyEvaluation(analyzer, originalList)
+      this.finalEvaluation(analyzer)
+    }
 
-  "fillCollectionWithOne" should "replace original content if receives a not null element" in {
-    val originalList = getOriginalStringObservableList
-    val analyzer = Analyzer(originalList)
+  "fillCollectionWithOne" should
+    "replace original content if receives a not null element" in {
+      val originalList = getOriginalStringObservableList
+      val analyzer = Analyzer(originalList)
 
-    val newValue = "1"
-    fillCollectionWithOne(originalList, newValue)
+      val newValue = "1"
+      fillCollectionWithOne(originalList, newValue)
 
-    this.filledEvaluation(
-      analyzer,
-      originalList,
-      List(newValue),
-      (an, li) => an.addedElements.size should be(1))
-    this.finalEvaluation(analyzer)
-  }
+      this.filledEvaluation(
+        analyzer,
+        originalList,
+        List(newValue),
+        (an, li) => an.addedElements.size should be(1))
+      this.finalEvaluation(analyzer)
+    }
 
   "fillSFXCollection" should "clean originalCollection if receives null" in {
     executeAndTestChangesFX(getOriginalNodeObservableList, null)
@@ -193,15 +195,16 @@ class PackageCollectionFillerSpec extends FlatSpec with RunOnApplicationThread {
       List(new ChoiceBox, new Slider))
   }
 
-  "fillSFXCollectionWithOne" should "clean originalCollection if receives null" in {
-    val originalList = getOriginalNodeObservableList
-    val analyzer = Analyzer(originalList)
+  "fillSFXCollectionWithOne" should
+    "clean originalCollection if receives null" in {
+      val originalList = getOriginalNodeObservableList
+      val analyzer = Analyzer(originalList)
 
-    fillSFXCollectionWithOne(originalList, null)
+      fillSFXCollectionWithOne(originalList, null)
 
-    this.emptyEvaluation(analyzer, originalList)
-    this.finalEvaluation(analyzer)
-  }
+      this.emptyEvaluation(analyzer, originalList)
+      this.finalEvaluation(analyzer)
+    }
 
   it should "replace original content if receives a not null element" in {
     val originalList = getOriginalNodeObservableList

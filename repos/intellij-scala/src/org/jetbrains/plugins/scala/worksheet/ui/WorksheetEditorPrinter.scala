@@ -121,13 +121,14 @@ class WorksheetEditorPrinter(
           else if (0 > differ) {
             insertedToOriginal -= differ
 
-            foldingOffsets += (
+            foldingOffsets +=
               (
-                start + insertedToOriginal + differ,
-                outputBuffer.length - outputBuffer.reverseIterator
-                  .takeWhile(_ == '\n').length,
-                end - start + 1,
-                end))
+                (
+                  start + insertedToOriginal + differ,
+                  outputBuffer.length -
+                    outputBuffer.reverseIterator.takeWhile(_ == '\n').length,
+                  end - start + 1,
+                  end))
           }
 
           buffed += linesCount
@@ -152,8 +153,8 @@ class WorksheetEditorPrinter(
   private def init(): Option[Int] = {
     inited = true
 
-    val oldSync = originalEditor getUserData WorksheetEditorPrinter
-      .DIFF_SYNC_SUPPORT
+    val oldSync = originalEditor getUserData
+      WorksheetEditorPrinter.DIFF_SYNC_SUPPORT
     if (oldSync != null) oldSync.dispose()
 
     WorksheetEditorPrinter.synch(
@@ -273,32 +274,34 @@ class WorksheetEditorPrinter(
           project,
           new Runnable {
             override def run() {
-              viewerFolding runBatchFoldingOperation (
-                new Runnable {
-                  override def run() {
-                    foldingOffsetsCopy map {
-                      case (start, end, limit, originalEnd) =>
-                        val offset = originalDocument getLineEndOffset Math
-                          .min(originalEnd, originalDocument.getLineCount)
-                        val linesCount = viewerDocument
-                          .getLineNumber(end) - start - limit + 1
+              viewerFolding runBatchFoldingOperation
+                (
+                  new Runnable {
+                    override def run() {
+                      foldingOffsetsCopy map {
+                        case (start, end, limit, originalEnd) =>
+                          val offset = originalDocument getLineEndOffset
+                            Math.min(originalEnd, originalDocument.getLineCount)
+                          val linesCount = viewerDocument.getLineNumber(end) -
+                            start - limit + 1
 
-                        new WorksheetFoldRegionDelegate(
-                          ed,
-                          viewerDocument.getLineStartOffset(start + limit - 1),
-                          end,
-                          offset,
-                          linesCount,
-                          group,
-                          limit)
-                    } foreach {
-                      case region => viewerFolding addFoldRegion region
+                          new WorksheetFoldRegionDelegate(
+                            ed,
+                            viewerDocument
+                              .getLineStartOffset(start + limit - 1),
+                            end,
+                            offset,
+                            linesCount,
+                            group,
+                            limit)
+                      } foreach {
+                        case region => viewerFolding addFoldRegion region
+                      }
+
+                      WorksheetFoldGroup.save(file, group)
                     }
-
-                    WorksheetFoldGroup.save(file, group)
-                  }
-                }, false
-              )
+                  },
+                  false)
             }
           },
           null,
@@ -403,8 +406,8 @@ object WorksheetEditorPrinter {
                     .hasFocus) return
               recipient.getCaretModel.moveToVisualPosition(new VisualPosition(
                 Math.min(
-                  group left2rightOffset don.getCaretModel.getVisualPosition
-                    .getLine,
+                  group left2rightOffset
+                    don.getCaretModel.getVisualPosition.getLine,
                   recipient.getDocument.getLineCount),
                 0))
             }

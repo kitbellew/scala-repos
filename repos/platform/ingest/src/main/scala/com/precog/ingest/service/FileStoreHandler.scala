@@ -121,8 +121,8 @@ class FileStoreHandler(
         validateFileName(request.headers.get("X-File-Name"), _: WriteMode)
       }
 
-      (pathf0.toValidationNel |@| contentType0.toValidationNel |@| storeMode0
-        .toValidationNel) {
+      (pathf0.toValidationNel |@| contentType0.toValidationNel |@|
+        storeMode0.toValidationNel) {
         (pathf, contentType, storeMode) => (apiKey: APIKey, path: Path) =>
           {
             val timestamp = clock.now()
@@ -142,7 +142,8 @@ class FileStoreHandler(
                     None,
                     Some(timestamp)).map(_.id).leftMap { errors =>
                     logger.error(
-                      "File creation failed due to errors in job service: " + errors)
+                      "File creation failed due to errors in job service: " +
+                        errors)
                     serverError(errors)
                   }
                   bytes <- EitherT {

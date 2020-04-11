@@ -15,8 +15,8 @@ trait Helpers {
     val members =
       if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
         sym.tpe.members
-      } else if (sym.isClass || sym.isPackageClass || sym
-                   .isPackageObjectClass) { sym.companionModule.tpe.members }
+      } else if (sym.isClass || sym.isPackageClass ||
+                 sym.isPackageObjectClass) { sym.companionModule.tpe.members }
       else { List.empty }
     members.toList.filter { _.name.toString == "apply" }
   }
@@ -108,12 +108,10 @@ trait Helpers {
       if (typeSym.isNestedClass) { prefix + nestedClassName(typeSym) }
       else { prefix + typeShortName(typeSym) }
     if (withTpeArgs) {
-      withoutArgs + (if (tpe.typeArgs.size > 0) {
-                       "[" +
-                         tpe.typeArgs.map(typeFullName(_, true))
-                           .mkString(", ") +
-                         "]"
-                     } else { "" })
+      withoutArgs +
+        (if (tpe.typeArgs.size > 0) {
+           "[" + tpe.typeArgs.map(typeFullName(_, true)).mkString(", ") + "]"
+         } else { "" })
     } else withoutArgs
   }
 
@@ -232,8 +230,8 @@ trait Helpers {
       val validSyms = symbols.filter { s =>
         s != EmptyPackage && !isRoot(s) &&
         // This check is necessary to prevent infinite looping..
-        ((isRoot(s.owner) && isRoot(parent)) || (s.owner.fullName == parent
-          .fullName))
+        ((isRoot(s.owner) && isRoot(parent)) ||
+        (s.owner.fullName == parent.fullName))
       }
 
       // the nameString operation is depressingly expensive - mapping to tuples first reduces the overhead.

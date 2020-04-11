@@ -189,6 +189,7 @@ final class SupervisorActor private[akka] (
       maxRestartsHandler(self, max)
     case unknown =>
       throw new SupervisorException(
-        "SupervisorActor can not respond to messages.\n\tUnknown message [" + unknown + "]")
+        "SupervisorActor can not respond to messages.\n\tUnknown message [" +
+          unknown + "]")
   }
 }

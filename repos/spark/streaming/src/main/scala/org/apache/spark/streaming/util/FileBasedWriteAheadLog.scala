@@ -69,8 +69,8 @@ private[streaming] class FileBasedWriteAheadLog(
     .fromExecutorService(forkJoinPool)
 
   override protected def logName = {
-    getClass.getName.stripSuffix("$") +
-      callerName.map("_" + _).getOrElse("").replaceAll("[ ]", "_")
+    getClass.getName.stripSuffix("$") + callerName.map("_" + _).getOrElse("")
+      .replaceAll("[ ]", "_")
   }
 
   private var currentLogPath: Option[String] = None
@@ -219,10 +219,8 @@ private[streaming] class FileBasedWriteAheadLog(
       if (currentLogWriter == null || currentTime > currentLogWriterStopTime) {
         resetWriter()
         currentLogPath.foreach {
-          pastLogs += LogInfo(
-            currentLogWriterStartTime,
-            currentLogWriterStopTime,
-            _)
+          pastLogs +=
+            LogInfo(currentLogWriterStartTime, currentLogWriterStopTime, _)
         }
         currentLogWriterStartTime = currentTime
         currentLogWriterStopTime = currentTime + (rollingIntervalSecs * 1000)

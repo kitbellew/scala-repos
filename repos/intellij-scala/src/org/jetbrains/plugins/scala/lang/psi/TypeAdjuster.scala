@@ -235,8 +235,9 @@ object TypeAdjuster extends ApplicationAdapter {
     def findMaxHolders(infos: Set[ReplacementInfo])
         : Set[(ReplacementInfo, ScImportsHolder)] = {
       val infosToHolders = infos.map(info =>
-        info -> ScalaImportTypeFix
-          .getImportHolder(info.origTypeElem, info.origTypeElem.getProject))
+        info ->
+          ScalaImportTypeFix
+            .getImportHolder(info.origTypeElem, info.origTypeElem.getProject))
       val holders = infosToHolders.map(_._2)
       val maxHolders = holders.filter(h => !holders.exists(_.isAncestorOf(h)))
       infosToHolders.map {
@@ -299,8 +300,8 @@ object TypeAdjuster extends ApplicationAdapter {
             state: ResolveState): Boolean = {
           element match {
             case ta: ScTypeAliasDefinition
-                if ta.isAliasFor(clazz) && !ScTypePresentation
-                  .shouldExpand(ta) =>
+                if ta.isAliasFor(clazz) &&
+                  !ScTypePresentation.shouldExpand(ta) =>
               collected = Some(ta)
               false
             case _ => true
@@ -382,8 +383,8 @@ object TypeAdjuster extends ApplicationAdapter {
       childInfos: Seq[ReplacementInfo])
       extends ReplacementInfo {
 
-    if (childInfos.isEmpty || childInfos
-          .exists(i => !tempTypeElem.isAncestorOf(i.origTypeElem))) {
+    if (childInfos.isEmpty ||
+        childInfos.exists(i => !tempTypeElem.isAncestorOf(i.origTypeElem))) {
       throw new IllegalArgumentException("Wrong usage of CompoundInfo")
     }
 

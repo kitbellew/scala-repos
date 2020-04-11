@@ -29,8 +29,9 @@ private[report] final class ReportApi {
                 reportTube.coll.update(
                   selectRecent(user, reason),
                   Json.obj(
-                    "$set" -> (reportTube.toMongo(report)
-                      .get - "processedBy" - "_id"))) flatMap { res =>
+                    "$set" ->
+                      (reportTube.toMongo(report).get - "processedBy" -
+                        "_id"))) flatMap { res =>
                   (res.n == 0) ?? $insert(report)
                 }
               else $insert(report)
@@ -93,20 +94,19 @@ private[report] final class ReportApi {
   }
 
   def autoBoostReport(userId: String, accompliceId: String): Funit = {
-    UserRepo.byId(userId) zip
-      UserRepo.byId(accompliceId) zip
+    UserRepo.byId(userId) zip UserRepo.byId(accompliceId) zip
       UserRepo.lichess flatMap {
-      case ((Some(user), Some(accomplice)), Some(lichess)) =>
-        create(
-          ReportSetup(
-            user = user,
-            reason = "boost",
-            text = s"with their accomplice @${accomplice.username}",
-            gameId = "",
-            move = ""),
-          lichess)
-      case _ => funit
-    }
+        case ((Some(user), Some(accomplice)), Some(lichess)) =>
+          create(
+            ReportSetup(
+              user = user,
+              reason = "boost",
+              text = s"with their accomplice @${accomplice.username}",
+              gameId = "",
+              move = ""),
+            lichess)
+        case _ => funit
+      }
   }
 
   def clean(userId: String): Funit =
@@ -119,10 +119,8 @@ private[report] final class ReportApi {
     $find byId id flatMap {
       _ ?? { report =>
         $update(
-          Json
-            .obj(
-              "user" -> report.user,
-              "reason" -> report.reason) ++ unprocessedSelect,
+          Json.obj("user" -> report.user, "reason" -> report.reason) ++
+            unprocessedSelect,
           $set("processedBy" -> by.id),
           multi = true)
       } >>- monitorUnprocessed >>- lila.mon.mod.report.close()
@@ -132,10 +130,8 @@ private[report] final class ReportApi {
     $update(
       Json.obj(
         "user" -> userId,
-        "reason" -> $in(
-          List(
-            Reason.Cheat.name,
-            Reason.CheatPrint.name))) ++ unprocessedSelect,
+        "reason" -> $in(List(Reason.Cheat.name, Reason.CheatPrint.name))) ++
+        unprocessedSelect,
       $set("processedBy" -> byModId),
       multi = true) >>- monitorUnprocessed
 
@@ -143,10 +139,9 @@ private[report] final class ReportApi {
     $update(
       Json.obj(
         "user" -> userId,
-        "reason" -> $in(List(
-          Reason.Insult.name,
-          Reason.Troll.name,
-          Reason.Other.name))) ++ unprocessedSelect,
+        "reason" -> $in(
+          List(Reason.Insult.name, Reason.Troll.name, Reason.Other.name))) ++
+        unprocessedSelect,
       $set("processedBy" -> byModId),
       multi = true
     ) >>- monitorUnprocessed

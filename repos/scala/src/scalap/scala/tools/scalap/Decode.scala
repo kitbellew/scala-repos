@@ -57,8 +57,8 @@ object Decode {
 
     classFile annotation SCALA_SIG_ANNOTATION map {
       case Annotation(_, els) =>
-        val bytesElem =
-          els find (x => constant(x.elementNameIndex) == BYTES_VALUE) orNull
+        val bytesElem = els find
+          (x => constant(x.elementNameIndex) == BYTES_VALUE) orNull
         val _bytes = bytesElem.elementValue match {
           case ConstValueIndex(x) => constantWrapped(x)
         }
@@ -88,8 +88,8 @@ object Decode {
         }
         else {
           case x: ClassSymbol if x.name == inner =>
-            val xs = x.children filter (child =>
-              child.isCaseAccessor && (child.name endsWith " "))
+            val xs = x.children filter
+              (child => child.isCaseAccessor && (child.name endsWith " "))
             xs.toList map (_.name dropRight 1)
         }
 

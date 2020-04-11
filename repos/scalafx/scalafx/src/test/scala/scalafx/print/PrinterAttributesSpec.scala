@@ -51,8 +51,8 @@ class PrinterAttributesSpec
       classOf[PrinterAttributes]) {
 
   val skipingMessage: String =
-    if (jfxp.Printer.getDefaultPrinter == null
-        || jfxp.Printer.getDefaultPrinter.getPrinterAttributes == null) {
+    if (jfxp.Printer.getDefaultPrinter == null ||
+        jfxp.Printer.getDefaultPrinter.getPrinterAttributes == null) {
       "Neither Default Printer nor Printer Attributes defined."
     } else { "" }
 

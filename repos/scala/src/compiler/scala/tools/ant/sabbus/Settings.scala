@@ -79,22 +79,18 @@ class Settings {
       (if (!dBf.isEmpty) "-d" :: d.getAbsolutePath :: Nil else Nil) :::
       (if (!encodingBf.isEmpty) "-encoding" :: encoding :: Nil else Nil) :::
       (if (!targetBf.isEmpty) "-target:" + target :: Nil else Nil) :::
-      (if (optimiseBf) "-optimise" :: Nil else Nil) :::
-      extraParamsBf.toList
+      (if (optimiseBf) "-optimise" :: Nil else Nil) ::: extraParamsBf.toList
 
   override def equals(that: Any): Boolean =
     that match {
       case cs: Settings =>
-        this.gBf == cs.gBf &&
-          this.uncheckedBf == cs.uncheckedBf &&
+        this.gBf == cs.gBf && this.uncheckedBf == cs.uncheckedBf &&
           this.classpathBf == cs.classpathBf &&
           this.sourcepathBf == cs.sourcepathBf &&
           this.sourcedirBf == cs.sourcedirBf &&
           this.bootclasspathBf == cs.bootclasspathBf &&
-          this.extdirsBf == cs.extdirsBf &&
-          this.dBf == cs.dBf &&
-          this.encodingBf == cs.encodingBf &&
-          this.targetBf == cs.targetBf &&
+          this.extdirsBf == cs.extdirsBf && this.dBf == cs.dBf &&
+          this.encodingBf == cs.encodingBf && this.targetBf == cs.targetBf &&
           this.optimiseBf == cs.optimiseBf &&
           this.extraParamsBf == cs.extraParamsBf
       case _ => false

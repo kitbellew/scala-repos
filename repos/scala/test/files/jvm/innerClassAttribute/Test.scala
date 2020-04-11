@@ -11,8 +11,8 @@ object Test extends BytecodeTest {
   def assertSame(a: Any, b: Any) = { assert(a == b, s"\na: $a\nb: $b") }
 
   val publicStatic = Flags.ACC_PUBLIC | Flags.ACC_STATIC
-  val publicAbstractInterface = Flags.ACC_PUBLIC | Flags.ACC_ABSTRACT | Flags
-    .ACC_INTERFACE
+  val publicAbstractInterface = Flags.ACC_PUBLIC | Flags.ACC_ABSTRACT |
+    Flags.ACC_INTERFACE
 
   def innerClassNodes(className: String): List[InnerClassNode] = {
     loadClassNode(className).innerClasses.asScala.toList.sortBy(_.name)

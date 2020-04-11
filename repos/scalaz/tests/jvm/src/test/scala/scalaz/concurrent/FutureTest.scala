@@ -85,8 +85,8 @@ object FutureTest extends SpecLite {
       })).unsafePerformSync
       val duration = System.currentTimeMillis() - start
 
-      result.length must_== times.size and duration.toInt mustBe_< times
-        .fold(0)(_ + _)
+      result.length must_== times.size and duration.toInt mustBe_<
+        times.fold(0)(_ + _)
     }
   }
 
@@ -106,7 +106,7 @@ object FutureTest extends SpecLite {
       List(System.currentTimeMillis)
     }))
     else
-      Future.fork(non.both(deadlocks(depth - 1), deadlocks(depth - 1)) map ({
-        case (l, r) => l ++ r
-      }))
+      Future.fork(
+        non.both(deadlocks(depth - 1), deadlocks(depth - 1)) map
+          ({ case (l, r) => l ++ r }))
 }

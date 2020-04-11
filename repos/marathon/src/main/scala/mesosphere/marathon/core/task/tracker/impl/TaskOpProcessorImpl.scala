@@ -85,16 +85,17 @@ private[tracker] class TaskOpProcessorImpl(
         // The update is propagated to the taskTracker which in turn informs the sender about the success (see Ack).
         val marathonTask = TaskSerializer.toProto(task)
         repo.store(marathonTask).map { _ =>
-          taskTrackerRef ! TaskTrackerActor
-            .TaskUpdated(task, TaskTrackerActor.Ack(op.sender))
+          taskTrackerRef !
+            TaskTrackerActor.TaskUpdated(task, TaskTrackerActor.Ack(op.sender))
         }.recoverWith(tryToRecover(op)(expectedTaskState = Some(task)))
 
       case Action.Expunge =>
         // Used for task termination or as a result from a UpdateStatus action.
         // The expunge is propagated to the taskTracker which in turn informs the sender about the success (see Ack).
         repo.expunge(op.taskId.idString).map { _ =>
-          taskTrackerRef ! TaskTrackerActor
-            .TaskRemoved(op.taskId, TaskTrackerActor.Ack(op.sender))
+          taskTrackerRef !
+            TaskTrackerActor
+              .TaskRemoved(op.taskId, TaskTrackerActor.Ack(op.sender))
         }.recoverWith(tryToRecover(op)(expectedTaskState = None))
 
       case Action.UpdateStatus(status) =>
@@ -149,8 +150,8 @@ private[tracker] class TaskOpProcessorImpl(
       repo.task(op.taskId.idString).map {
         case Some(task) =>
           val taskState = TaskSerializer.fromProto(task)
-          taskTrackerRef ! TaskTrackerActor
-            .TaskUpdated(taskState, ack(Some(task)))
+          taskTrackerRef !
+            TaskTrackerActor.TaskUpdated(taskState, ack(Some(task)))
         case None =>
           taskTrackerRef ! TaskTrackerActor.TaskRemoved(op.taskId, ack(None))
       }.recover {

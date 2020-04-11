@@ -73,9 +73,8 @@ abstract class Taggers {
         Apply(
           Select(success, nme.in),
           List(
-            mirror orElse mkDefaultMirrorRef(c.universe)(
-              universe,
-              c.callsiteTyper)))
+            mirror orElse
+              mkDefaultMirrorRef(c.universe)(universe, c.callsiteTyper)))
       case _ =>
         val tagModule = if (concrete) TypeTagModule else WeakTypeTagModule
         materializeTag(

@@ -344,9 +344,10 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
   // cache client needs to be restarted.
   backupPool foreach { pool =>
     if (!pool.isEmpty) {
-      ready within (
-        CachePoolCluster.timer, BackupPoolFallBackTimeout
-      ) onFailure { _ => updatePool(pool) }
+      ready within
+        (CachePoolCluster.timer, BackupPoolFallBackTimeout) onFailure { _ =>
+          updatePool(pool)
+        }
     }
   }
 
@@ -469,8 +470,10 @@ class ZookeeperCacheNodeGroup(
         // pick up the diff only if new members contains exactly the same set of cache node keys,
         // e.g. certain cache node key is re-assigned to another host
         if (removed.forall(_.key.isDefined) && added.forall(_.key.isDefined) &&
-            removed.size == added.size && removed.map(_.key.get) == added
-              .map(_.key.get)) { set() = newMembers }
+            removed.size == added.size &&
+            removed.map(_.key.get) == added.map(_.key.get)) {
+          set() = newMembers
+        }
       }
     }
 }

@@ -93,10 +93,10 @@ trait AccountService {
 
   def getAccountByUserName(userName: String, includeRemoved: Boolean = false)(
       implicit s: Session): Option[Account] =
-    Accounts filter (t =>
-      (t.userName === userName.bind) && (
-        t.removed === false.bind, !includeRemoved
-      )) firstOption
+    Accounts filter
+      (t =>
+        (t.userName === userName.bind) &&
+          (t.removed === false.bind, !includeRemoved)) firstOption
 
   def getAccountsByUserNames(
       userNames: Set[String],
@@ -107,20 +107,21 @@ trait AccountService {
     val needs = userNames -- map.keySet
     if (needs.isEmpty) { map }
     else {
-      map ++ Accounts.filter(t =>
-        (t.userName inSetBind needs) && (
-          t.removed === false.bind, !includeRemoved
-        )).list.map(a => a.userName -> a).toMap
+      map ++
+        Accounts.filter(t =>
+          (t.userName inSetBind needs) &&
+            (t.removed === false.bind, !includeRemoved)).list
+          .map(a => a.userName -> a).toMap
     }
   }
 
   def getAccountByMailAddress(
       mailAddress: String,
       includeRemoved: Boolean = false)(implicit s: Session): Option[Account] =
-    Accounts filter (t =>
-      (t.mailAddress.toLowerCase === mailAddress.toLowerCase.bind) && (
-        t.removed === false.bind, !includeRemoved
-      )) firstOption
+    Accounts filter
+      (t =>
+        (t.mailAddress.toLowerCase === mailAddress.toLowerCase.bind) &&
+          (t.removed === false.bind, !includeRemoved)) firstOption
 
   def getAllUsers(includeRemoved: Boolean = true)(implicit
       s: Session): List[Account] =
@@ -227,9 +228,8 @@ trait AccountService {
   }
 
   def getGroupNames(userName: String)(implicit s: Session): List[String] = {
-    List(userName) ++
-      Collaborators.filter(_.collaboratorName === userName.bind)
-        .sortBy(_.userName).map(_.userName).list
+    List(userName) ++ Collaborators.filter(_.collaboratorName === userName.bind)
+      .sortBy(_.userName).map(_.userName).list
   }
 
 }

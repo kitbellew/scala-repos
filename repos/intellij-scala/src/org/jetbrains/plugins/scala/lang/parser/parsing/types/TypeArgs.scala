@@ -54,8 +54,8 @@ object TypeArgs {
 
           if (checkTypeVariable || Type.parse(builder)) {
             var parsedType = true
-            while (builder.getTokenType == ScalaTokenTypes
-                     .tCOMMA && parsedType) {
+            while (builder.getTokenType == ScalaTokenTypes.tCOMMA &&
+                   parsedType) {
               builder.advanceLexer()
               parsedType = checkTypeVariable || Type.parse(builder)
               if (!parsedType) builder error ScalaBundle.message("wrong.type")

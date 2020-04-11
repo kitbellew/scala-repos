@@ -117,8 +117,8 @@ class PerfTestSuiteSpec extends Specification {
           ts must haveTheSameElementsAs(List(
             Tree.leaf[PerfTest](RunQuery("1")),
             Tree.leaf[PerfTest](RunQuery("2")),
-            Tree.leaf[PerfTest](RunQuery("3")))) ^^ (treeEq[PerfTest]
-            .equal(_, _))
+            Tree
+              .leaf[PerfTest](RunQuery("3")))) ^^ (treeEq[PerfTest].equal(_, _))
       }
     }
   }

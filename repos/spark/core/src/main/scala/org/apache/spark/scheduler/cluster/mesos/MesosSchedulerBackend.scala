@@ -268,16 +268,16 @@ private[spark] class MesosSchedulerBackend(
           //  1. Memory requirements
           //  2. CPU requirements - need at least 1 for executor, 1 for task
           val meetsMemoryRequirements = mem >= executorMemory(sc)
-          val meetsCPURequirements =
-            cpus >= (mesosExecutorCores + scheduler.CPUS_PER_TASK)
+          val meetsCPURequirements = cpus >=
+            (mesosExecutorCores + scheduler.CPUS_PER_TASK)
           val meetsRequirements =
             (meetsMemoryRequirements && meetsCPURequirements) ||
-              (slaveIdToExecutorInfo.contains(slaveId) && cpus >= scheduler
-                .CPUS_PER_TASK)
+              (slaveIdToExecutorInfo.contains(slaveId) &&
+                cpus >= scheduler.CPUS_PER_TASK)
           val debugstr = if (meetsRequirements) "Accepting" else "Declining"
           logDebug(
-            s"$debugstr offer: ${o.getId.getValue} with attributes: "
-              + s"$offerAttributes mem: $mem cpu: $cpus")
+            s"$debugstr offer: ${o.getId.getValue} with attributes: " +
+              s"$offerAttributes mem: $mem cpu: $cpus")
 
           meetsRequirements
       }
@@ -385,8 +385,8 @@ private[spark] class MesosSchedulerBackend(
       val tid = status.getTaskId.getValue.toLong
       val state = TaskState.fromMesos(status.getState)
       synchronized {
-        if (TaskState.isFailed(TaskState.fromMesos(status.getState))
-            && taskIdToSlaveId.contains(tid)) {
+        if (TaskState.isFailed(TaskState.fromMesos(status.getState)) &&
+            taskIdToSlaveId.contains(tid)) {
           // We lost the executor on this slave, so remember that it's gone
           removeExecutor(taskIdToSlaveId(tid), "Lost executor")
         }

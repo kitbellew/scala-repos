@@ -160,8 +160,8 @@ class Node @Since("1.2.0") (
     if (isLeaf) { prefix + s"Predict: ${predict.predict}\n" }
     else {
       prefix + s"If ${splitToString(split.get, left = true)}\n" +
-        leftNode.get.subtreeToString(indentFactor + 1) +
-        prefix + s"Else ${splitToString(split.get, left = false)}\n" +
+        leftNode.get.subtreeToString(indentFactor + 1) + prefix +
+        s"Else ${splitToString(split.get, left = false)}\n" +
         rightNode.get.subtreeToString(indentFactor + 1)
     }
   }
@@ -169,8 +169,8 @@ class Node @Since("1.2.0") (
   /** Returns an iterator that traverses (DFS, left to right) the subtree of this node. */
   private[tree] def subtreeIterator: Iterator[Node] = {
     Iterator.single(this) ++ leftNode.map(_.subtreeIterator)
-      .getOrElse(Iterator.empty) ++
-      rightNode.map(_.subtreeIterator).getOrElse(Iterator.empty)
+      .getOrElse(Iterator.empty) ++ rightNode.map(_.subtreeIterator)
+      .getOrElse(Iterator.empty)
   }
 }
 

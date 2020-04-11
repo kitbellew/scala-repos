@@ -78,8 +78,8 @@ private[spark] trait SizeTracker {
     if (samples.size > 2) { samples.dequeue() }
     val bytesDelta = samples.toList.reverse match {
       case latest :: previous :: tail =>
-        (latest.size - previous.size).toDouble / (latest.numUpdates - previous
-          .numUpdates)
+        (latest.size - previous.size).toDouble /
+          (latest.numUpdates - previous.numUpdates)
       // If fewer than 2 samples, assume no change
       case _ => 0
     }
@@ -92,8 +92,8 @@ private[spark] trait SizeTracker {
     */
   def estimateSize(): Long = {
     assert(samples.nonEmpty)
-    val extrapolatedDelta =
-      bytesPerUpdate * (numUpdates - samples.last.numUpdates)
+    val extrapolatedDelta = bytesPerUpdate *
+      (numUpdates - samples.last.numUpdates)
     (samples.last.size + extrapolatedDelta).toLong
   }
 }

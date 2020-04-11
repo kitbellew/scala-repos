@@ -92,9 +92,8 @@ class SequenceFileRDDFunctions[
       val convertValue = self.valueClass != valueWritableClass
 
       logInfo(
-        "Saving as sequence file of type (" + keyWritableClass
-          .getSimpleName + "," +
-          valueWritableClass.getSimpleName + ")")
+        "Saving as sequence file of type (" + keyWritableClass.getSimpleName +
+          "," + valueWritableClass.getSimpleName + ")")
       val format = classOf[SequenceFileOutputFormat[Writable, Writable]]
       val jobConf = new JobConf(self.context.hadoopConfiguration)
       if (!convertKey && !convertValue) {

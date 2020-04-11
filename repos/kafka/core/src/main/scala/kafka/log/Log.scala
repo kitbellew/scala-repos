@@ -174,8 +174,8 @@ class Log(
     for (file <- dir.listFiles if file.isFile) {
       if (!file.canRead) throw new IOException("Could not read file " + file)
       val filename = file.getName
-      if (filename.endsWith(DeletedFileSuffix) || filename
-            .endsWith(CleanedFileSuffix)) {
+      if (filename.endsWith(DeletedFileSuffix) ||
+          filename.endsWith(CleanedFileSuffix)) {
         // if the file ends in .deleted or .cleaned, delete it
         file.delete()
       } else if (filename.endsWith(SwapFileSuffix)) {
@@ -255,10 +255,8 @@ class Log(
         .substring(0, fileName.length - LogFileSuffix.length).toLong
       val indexFile = new File(
         CoreUtils
-          .replaceSuffix(
-            logFile.getPath,
-            LogFileSuffix,
-            IndexFileSuffix) + SwapFileSuffix)
+          .replaceSuffix(logFile.getPath, LogFileSuffix, IndexFileSuffix) +
+          SwapFileSuffix)
       val index = new OffsetIndex(
         file = indexFile,
         baseOffset = startOffset,
@@ -333,8 +331,8 @@ class Log(
           case e: InvalidOffsetException =>
             val startOffset = curr.baseOffset
             warn(
-              "Found invalid offset during recovery for log " + dir
-                .getName + ". Deleting the corrupt segment and " +
+              "Found invalid offset during recovery for log " + dir.getName +
+                ". Deleting the corrupt segment and " +
                 "creating an empty one with starting offset " + startOffset)
             curr.truncateTo(startOffset)
         }
@@ -429,8 +427,8 @@ class Log(
           // format conversion)
           if (messageSizesMaybeChanged) {
             for (messageAndOffset <- validMessages.shallowIterator) {
-              if (MessageSet.entrySize(messageAndOffset.message) > config
-                    .maxMessageSize) {
+              if (MessageSet.entrySize(messageAndOffset.message) >
+                    config.maxMessageSize) {
                 // we record the original message set size instead of the trimmed size
                 // to be consistent with pre-compression bytesRejectedRate recording
                 BrokerTopicStats.getBrokerTopicStats(topicAndPartition.topic)
@@ -448,8 +446,8 @@ class Log(
 
         } else {
           // we are taking the offsets we are given
-          if (!appendInfo.offsetsMonotonic || appendInfo
-                .firstOffset < nextOffsetMetadata.messageOffset)
+          if (!appendInfo.offsetsMonotonic ||
+              appendInfo.firstOffset < nextOffsetMetadata.messageOffset)
             throw new IllegalArgumentException(
               "Out of order offsets found in " + messages)
         }
@@ -573,7 +571,8 @@ class Log(
     val messageSetValidBytes = info.validBytes
     if (messageSetValidBytes < 0)
       throw new CorruptRecordException(
-        "Illegal length of message set " + messageSetValidBytes + " Message set cannot be appended to log. Possible causes are corrupted produce requests")
+        "Illegal length of message set " + messageSetValidBytes +
+          " Message set cannot be appended to log. Possible causes are corrupted produce requests")
     if (messageSetValidBytes == messages.sizeInBytes) { messages }
     else {
       // trim invalid bytes
@@ -719,9 +718,9 @@ class Log(
   private def maybeRoll(messagesSize: Int): LogSegment = {
     val segment = activeSegment
     if (segment.size > config.segmentSize - messagesSize ||
-        segment.size > 0 && time.milliseconds - segment.created > config
-          .segmentMs - segment.rollJitterMs ||
-        segment.index.isFull) {
+        segment.size > 0 &&
+        time.milliseconds - segment.created >
+          config.segmentMs - segment.rollJitterMs || segment.index.isFull) {
       debug(
         "Rolling new log segment in %s (log_size = %d/%d, index_size = %d/%d, age_ms = %d/%d)."
           .format(
@@ -750,8 +749,8 @@ class Log(
       val indexFile = indexFilename(dir, newOffset)
       for (file <- List(logFile, indexFile); if file.exists) {
         warn(
-          "Newly rolled segment file " + file
-            .getName + " already exists; deleting it first")
+          "Newly rolled segment file " + file.getName +
+            " already exists; deleting it first")
         file.delete()
       }
 
@@ -784,8 +783,8 @@ class Log(
       scheduler.schedule("flush-log", () => flush(newOffset), delay = 0L)
 
       info(
-        "Rolled new log segment for '" + name + "' in %.0f ms."
-          .format((System.nanoTime - start) / (1000.0 * 1000.0)))
+        "Rolled new log segment for '" + name +
+          "' in %.0f ms.".format((System.nanoTime - start) / (1000.0 * 1000.0)))
 
       segment
     }
@@ -808,8 +807,9 @@ class Log(
   def flush(offset: Long): Unit = {
     if (offset <= this.recoveryPoint) return
     debug(
-      "Flushing log '" + name + " up to offset " + offset + ", last flushed: " + lastFlushTime + " current time: " +
-        time.milliseconds + " unflushed = " + unflushedMessages)
+      "Flushing log '" + name + " up to offset " + offset + ", last flushed: " +
+        lastFlushTime + " current time: " + time.milliseconds +
+        " unflushed = " + unflushedMessages)
     for (segment <- logSegments(this.recoveryPoint, offset)) segment.flush()
     lock synchronized {
       if (offset > this.recoveryPoint) {
@@ -1092,8 +1092,8 @@ object Log {
 
   def throwException(dir: File) {
     throw new KafkaException(
-      "Found directory " + dir.getCanonicalPath + ", " +
-        "'" + dir.getName + "' is not in the form of topic-partition\n" +
+      "Found directory " + dir.getCanonicalPath + ", " + "'" + dir.getName +
+        "' is not in the form of topic-partition\n" +
         "If a directory does not contain Kafka topic data it should not exist in Kafka's log " +
         "directory")
   }

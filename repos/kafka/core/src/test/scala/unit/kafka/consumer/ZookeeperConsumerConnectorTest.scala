@@ -152,9 +152,8 @@ class ZookeeperConsumerConnectorTest
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 1)
 
-    val receivedMessages2 = getMessages(
-      topicMessageStreams1,
-      nMessages) ++ getMessages(topicMessageStreams2, nMessages)
+    val receivedMessages2 = getMessages(topicMessageStreams1, nMessages) ++
+      getMessages(topicMessageStreams2, nMessages)
     assertEquals(sentMessages2.sorted, receivedMessages2.sorted)
 
     // also check partition ownership
@@ -178,9 +177,8 @@ class ZookeeperConsumerConnectorTest
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 1)
 
-    val receivedMessages3 = getMessages(
-      topicMessageStreams1,
-      nMessages) ++ getMessages(topicMessageStreams2, nMessages)
+    val receivedMessages3 = getMessages(topicMessageStreams1, nMessages) ++
+      getMessages(topicMessageStreams2, nMessages)
     assertEquals(sentMessages3.sorted, receivedMessages3.sorted)
 
     // also check partition ownership
@@ -261,9 +259,8 @@ class ZookeeperConsumerConnectorTest
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 1)
 
-    val receivedMessages2 = getMessages(
-      topicMessageStreams1,
-      nMessages) ++ getMessages(topicMessageStreams2, nMessages)
+    val receivedMessages2 = getMessages(topicMessageStreams1, nMessages) ++
+      getMessages(topicMessageStreams2, nMessages)
     assertEquals(sentMessages2.sorted, receivedMessages2.sorted)
 
     // also check partition ownership
@@ -290,9 +287,8 @@ class ZookeeperConsumerConnectorTest
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
     waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 1)
 
-    val receivedMessages3 = getMessages(
-      topicMessageStreams1,
-      nMessages) ++ getMessages(topicMessageStreams2, nMessages)
+    val receivedMessages3 = getMessages(topicMessageStreams1, nMessages) ++
+      getMessages(topicMessageStreams2, nMessages)
     assertEquals(sentMessages3.sorted, receivedMessages3.sorted)
 
     // also check partition ownership

@@ -102,9 +102,10 @@ object FormSpec extends Specification {
         f2.errors must beEmpty
 
         val f3 = ScalaForms.form.bind(Map("foo" -> "50"))
-        f3.errors must haveSize(
-          1
-        ) // Only one error because "number.42" can’t be applied since wrapped bind failed
+        f3.errors must
+          haveSize(
+            1
+          ) // Only one error because "number.42" can’t be applied since wrapped bind failed
         f3.errors.find(_.message == "first.digit") must beSome
 
         val f4 = ScalaForms.form.bind(Map("foo" -> "333"))
@@ -199,16 +200,16 @@ object FormSpec extends Specification {
 
   "render form using field[Type] syntax" in {
     val anyData = Map("email" -> "bob@gmail.com", "password" -> "123")
-    ScalaForms.loginForm.bind(anyData).get.toString must equalTo(
-      "(bob@gmail.com,123)")
+    ScalaForms.loginForm.bind(anyData).get.toString must
+      equalTo("(bob@gmail.com,123)")
   }
 
   "support default values" in {
-    ScalaForms.defaultValuesForm.bindFromRequest(Map()).get must equalTo(
-      (42, "default text"))
+    ScalaForms.defaultValuesForm.bindFromRequest(Map()).get must
+      equalTo((42, "default text"))
     ScalaForms.defaultValuesForm
-      .bindFromRequest(Map("name" -> Seq("another text"))).get must equalTo(
-      (42, "another text"))
+      .bindFromRequest(Map("name" -> Seq("another text"))).get must
+      equalTo((42, "another text"))
     ScalaForms.defaultValuesForm.bindFromRequest(Map("pos" -> Seq("123")))
       .get must equalTo((123, "default text"))
     ScalaForms.defaultValuesForm
@@ -221,56 +222,55 @@ object FormSpec extends Specification {
   }
 
   "support repeated values" in {
-    ScalaForms.repeatedForm.bindFromRequest(Map("name" -> Seq("Kiki")))
-      .get must equalTo(("Kiki", Seq()))
+    ScalaForms.repeatedForm.bindFromRequest(Map("name" -> Seq("Kiki"))).get must
+      equalTo(("Kiki", Seq()))
     ScalaForms.repeatedForm.bindFromRequest(
-      Map("name" -> Seq("Kiki"), "emails[0]" -> Seq("kiki@gmail.com")))
-      .get must equalTo(("Kiki", Seq("kiki@gmail.com")))
+      Map("name" -> Seq("Kiki"), "emails[0]" -> Seq("kiki@gmail.com"))).get must
+      equalTo(("Kiki", Seq("kiki@gmail.com")))
     ScalaForms.repeatedForm.bindFromRequest(Map(
       "name" -> Seq("Kiki"),
       "emails[0]" -> Seq("kiki@gmail.com"),
-      "emails[1]" -> Seq("kiki@zen.com"))).get must equalTo(
-      ("Kiki", Seq("kiki@gmail.com", "kiki@zen.com")))
+      "emails[1]" -> Seq("kiki@zen.com"))).get must
+      equalTo(("Kiki", Seq("kiki@gmail.com", "kiki@zen.com")))
     ScalaForms.repeatedForm.bindFromRequest(Map(
       "name" -> Seq("Kiki"),
       "emails[0]" -> Seq(),
       "emails[1]" -> Seq("kiki@zen.com"))).hasErrors must equalTo(true)
     ScalaForms.repeatedForm.bindFromRequest(
-      Map("name" -> Seq("Kiki"), "emails[]" -> Seq("kiki@gmail.com")))
-      .get must equalTo(("Kiki", Seq("kiki@gmail.com")))
+      Map("name" -> Seq("Kiki"), "emails[]" -> Seq("kiki@gmail.com"))).get must
+      equalTo(("Kiki", Seq("kiki@gmail.com")))
     ScalaForms.repeatedForm.bindFromRequest(Map(
       "name" -> Seq("Kiki"),
-      "emails[]" -> Seq("kiki@gmail.com", "kiki@zen.com"))).get must equalTo(
-      ("Kiki", Seq("kiki@gmail.com", "kiki@zen.com")))
+      "emails[]" -> Seq("kiki@gmail.com", "kiki@zen.com"))).get must
+      equalTo(("Kiki", Seq("kiki@gmail.com", "kiki@zen.com")))
   }
 
   "support repeated values with set" in {
     ScalaForms.repeatedFormWithSet.bindFromRequest(Map("name" -> Seq("Kiki")))
       .get must equalTo(("Kiki", Set()))
     ScalaForms.repeatedFormWithSet.bindFromRequest(
-      Map("name" -> Seq("Kiki"), "emails[0]" -> Seq("kiki@gmail.com")))
-      .get must equalTo(("Kiki", Set("kiki@gmail.com")))
+      Map("name" -> Seq("Kiki"), "emails[0]" -> Seq("kiki@gmail.com"))).get must
+      equalTo(("Kiki", Set("kiki@gmail.com")))
     ScalaForms.repeatedFormWithSet.bindFromRequest(Map(
       "name" -> Seq("Kiki"),
       "emails[0]" -> Seq("kiki@gmail.com"),
-      "emails[1]" -> Seq("kiki@zen.com"))).get must equalTo(
-      ("Kiki", Set("kiki@gmail.com", "kiki@zen.com")))
+      "emails[1]" -> Seq("kiki@zen.com"))).get must
+      equalTo(("Kiki", Set("kiki@gmail.com", "kiki@zen.com")))
     ScalaForms.repeatedFormWithSet.bindFromRequest(Map(
       "name" -> Seq("Kiki"),
       "emails[0]" -> Seq(),
       "emails[1]" -> Seq("kiki@zen.com"))).hasErrors must equalTo(true)
     ScalaForms.repeatedFormWithSet.bindFromRequest(
-      Map("name" -> Seq("Kiki"), "emails[]" -> Seq("kiki@gmail.com")))
-      .get must equalTo(("Kiki", Set("kiki@gmail.com")))
+      Map("name" -> Seq("Kiki"), "emails[]" -> Seq("kiki@gmail.com"))).get must
+      equalTo(("Kiki", Set("kiki@gmail.com")))
     ScalaForms.repeatedFormWithSet.bindFromRequest(Map(
       "name" -> Seq("Kiki"),
-      "emails[]" -> Seq("kiki@gmail.com", "kiki@zen.com"))).get must equalTo(
-      ("Kiki", Set("kiki@gmail.com", "kiki@zen.com")))
-    ScalaForms.repeatedFormWithSet
-      .bindFromRequest(Map(
-        "name" -> Seq("Kiki"),
-        "emails[]" -> Seq("kiki@gmail.com", "kiki@gmail.com")))
-      .get must equalTo(("Kiki", Set("kiki@gmail.com")))
+      "emails[]" -> Seq("kiki@gmail.com", "kiki@zen.com"))).get must
+      equalTo(("Kiki", Set("kiki@gmail.com", "kiki@zen.com")))
+    ScalaForms.repeatedFormWithSet.bindFromRequest(Map(
+      "name" -> Seq("Kiki"),
+      "emails[]" -> Seq("kiki@gmail.com", "kiki@gmail.com"))).get must
+      equalTo(("Kiki", Set("kiki@gmail.com")))
   }
 
   "render a form with max 18 fields" in {
@@ -320,8 +320,8 @@ object FormSpec extends Specification {
 
   "support boolean binding from json" in {
     ScalaForms.booleanForm.bind(Json.obj("accepted" -> "true")).get must beTrue
-    ScalaForms.booleanForm.bind(Json.obj("accepted" -> "false"))
-      .get must beFalse
+    ScalaForms.booleanForm.bind(Json.obj("accepted" -> "false")).get must
+      beFalse
   }
 
   "reject boolean binding from an invalid json" in {
@@ -341,8 +341,8 @@ object FormSpec extends Specification {
       Map.empty,
       Seq(FormError("foo", "error.custom", Seq("error.customarg"))),
       None)
-    (form.errorsAsJson \ "foo")(0).asOpt[String] must beSome(
-      "This is a custom error")
+    (form.errorsAsJson \ "foo")(0).asOpt[String] must
+      beSome("This is a custom error")
   }
 }
 

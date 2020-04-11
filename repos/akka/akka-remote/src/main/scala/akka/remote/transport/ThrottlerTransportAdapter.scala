@@ -128,9 +128,8 @@ object ThrottlerTransportAdapter {
       if ((tokens > capacity && availableTokens > 0)) {
         true // Allow messages larger than capacity through, it will be recorded as negative tokens
       } else
-        min(
-          (availableTokens + tokensGenerated(nanoTimeOfSend)),
-          capacity) >= tokens
+        min((availableTokens + tokensGenerated(nanoTimeOfSend)), capacity) >=
+          tokens
 
     override def tryConsumeTokens(
         nanoTimeOfSend: Long,
@@ -149,15 +148,14 @@ object ThrottlerTransportAdapter {
     override def timeToAvailable(
         currentNanoTime: Long,
         tokens: Int): FiniteDuration = {
-      val needed = (if (tokens > capacity) 1 else tokens) - tokensGenerated(
-        currentNanoTime)
+      val needed = (if (tokens > capacity) 1 else tokens) -
+        tokensGenerated(currentNanoTime)
       (needed / tokensPerSecond).seconds
     }
 
     private def tokensGenerated(nanoTimeOfSend: Long): Int =
-      (TimeUnit.NANOSECONDS
-        .toMillis(
-          nanoTimeOfSend - nanoTimeOfLastSend) * tokensPerSecond / 1000.0).toInt
+      (TimeUnit.NANOSECONDS.toMillis(nanoTimeOfSend - nanoTimeOfLastSend) *
+        tokensPerSecond / 1000.0).toInt
   }
 
   @SerialVersionUID(1L)

@@ -35,23 +35,23 @@ object DocGen {
 
   lazy val unidocSettings: Seq[sbt.Setting[_]] =
     site.includeScaladoc(docDirectory) ++ Seq(
-      scalacOptions in doc <++= (
-        version,
-        baseDirectory in LocalProject(aggregateName)).map { (v, rootBase) =>
-        val tagOrBranch = if (v.endsWith("-SNAPSHOT")) "develop" else v
-        val docSourceUrl =
-          "https://github.com/twitter/" + aggregateName + "/tree/" + tagOrBranch + "€{FILE_PATH}.scala"
-        Seq(
-          "-sourcepath",
-          rootBase.getAbsolutePath,
-          "-doc-source-url",
-          docSourceUrl)
-      },
+      scalacOptions in doc <++=
+        (version, baseDirectory in LocalProject(aggregateName)).map {
+          (v, rootBase) =>
+            val tagOrBranch = if (v.endsWith("-SNAPSHOT")) "develop" else v
+            val docSourceUrl = "https://github.com/twitter/" + aggregateName +
+              "/tree/" + tagOrBranch + "€{FILE_PATH}.scala"
+            Seq(
+              "-sourcepath",
+              rootBase.getAbsolutePath,
+              "-doc-source-url",
+              docSourceUrl)
+        },
       Unidoc.unidocDirectory := file(docDirectory),
       gitRemoteRepo := "git@github.com:twitter/" + aggregateName + ".git",
       ghkeys.synchLocal <<= syncLocal
     )
 
-  lazy val publishSettings = site.settings ++ Unidoc.settings ++ ghpages
-    .settings ++ unidocSettings
+  lazy val publishSettings = site.settings ++ Unidoc.settings ++
+    ghpages.settings ++ unidocSettings
 }

@@ -25,7 +25,8 @@ import util._
 
 object DbProviders {
   def asList =
-    PostgreSqlProvider :: MySqlProvider :: DerbyProvider :: H2FileProvider :: H2MemoryProvider :: Nil
+    PostgreSqlProvider :: MySqlProvider :: DerbyProvider :: H2FileProvider ::
+      H2MemoryProvider :: Nil
   // Uncomment to run tests faster, but only against H2 def asList =  H2MemoryProvider :: Nil
 
   case object SnakeConnectionIdentifier extends ConnectionIdentifier {

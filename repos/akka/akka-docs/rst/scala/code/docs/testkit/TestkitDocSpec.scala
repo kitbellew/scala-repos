@@ -104,7 +104,8 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
     assert(fsm.stateName == 1)
     assert(fsm.stateData == "")
-    fsm ! "go" // being a TestActorRef, this runs also on the CallingThreadDispatcher
+    fsm !
+      "go" // being a TestActorRef, this runs also on the CallingThreadDispatcher
     assert(fsm.stateName == 2)
     assert(fsm.stateData == "go")
 

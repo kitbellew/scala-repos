@@ -48,40 +48,42 @@ class Issue190Spec extends FlatSpec with RunOnApplicationThread {
     //    Clipboard.systemClipboard.content.size shouldBe 0
   }
 
-  "ClipboardContent" should "be assignable from Map[DataFormat, T <: AnyRef]" in {
+  "ClipboardContent" should
+    "be assignable from Map[DataFormat, T <: AnyRef]" in {
 
-    val files = List(new File("Test"))
-    //    Clipboard.systemClipboard.content = ClipboardContent(Map(DataFormat.Files -> files.asJava))
-    //    val content = Clipboard.systemClipboard.content
-    val content = ClipboardContent(Map(DataFormat.Files -> files.asJava))
-    content.hasFiles shouldBe true
+      val files = List(new File("Test"))
+      //    Clipboard.systemClipboard.content = ClipboardContent(Map(DataFormat.Files -> files.asJava))
+      //    val content = Clipboard.systemClipboard.content
+      val content = ClipboardContent(Map(DataFormat.Files -> files.asJava))
+      content.hasFiles shouldBe true
 
-    val contentFiles = content.files
-    contentFiles.length shouldBe 1
-    contentFiles.head.getName shouldBe "Test"
-  }
+      val contentFiles = content.files
+      contentFiles.length shouldBe 1
+      contentFiles.head.getName shouldBe "Test"
+    }
 
-  "ClipboardContent" should "be assignable from `DataFormat -> value` pairs" in {
+  "ClipboardContent" should
+    "be assignable from `DataFormat -> value` pairs" in {
 
-    //    Clipboard.systemClipboard.clear()
+      //    Clipboard.systemClipboard.clear()
 
-    //    Clipboard.systemClipboard.content = ClipboardContent(
-    val content = ClipboardContent(
-      DataFormat.Files -> Seq(new File("Test"), new File("Test2")).asJava,
-      DataFormat.PlainText -> "Test3")
+      //    Clipboard.systemClipboard.content = ClipboardContent(
+      val content = ClipboardContent(
+        DataFormat.Files -> Seq(new File("Test"), new File("Test2")).asJava,
+        DataFormat.PlainText -> "Test3")
 
-    //    val content = Clipboard.systemClipboard.content
+      //    val content = Clipboard.systemClipboard.content
 
-    content.size shouldBe 2
+      content.size shouldBe 2
 
-    content.hasFiles shouldBe true
-    val contentFiles = content.files
-    contentFiles.length shouldBe 2
-    contentFiles.head.getName shouldBe "Test"
+      content.hasFiles shouldBe true
+      val contentFiles = content.files
+      contentFiles.length shouldBe 2
+      contentFiles.head.getName shouldBe "Test"
 
-    content.hasString shouldBe true
-    content.string shouldBe "Test3"
-  }
+      content.hasString shouldBe true
+      content.string shouldBe "Test3"
+    }
 
   "ClipboardContent" should "be assignable with `put` methods" in {
 

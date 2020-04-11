@@ -143,8 +143,8 @@ class Slf4jLoggerSpec
       log.info("test")
       awaitCond(outputString.contains("----"), 5 seconds)
       val s = outputString
-      s should include(
-        "akkaSource=[akka.event.slf4j.Slf4jLoggerSpec.MyLogSource]")
+      s should
+        include("akkaSource=[akka.event.slf4j.Slf4jLoggerSpec.MyLogSource]")
       s should include("logger=[akka.event.slf4j.Slf4jLoggerSpec.MyLogSource]")
     }
 

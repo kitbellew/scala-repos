@@ -195,10 +195,11 @@ trait Printers extends api.Printers {
     def printModifiers(tree: Tree, mods: Modifiers): Unit =
       printFlags(
         if (tree.symbol == NoSymbol) mods.flags else tree.symbol.flags,
-        "" + (if (tree.symbol == NoSymbol) mods.privateWithin
-              else if (tree.symbol.hasAccessBoundary)
-                tree.symbol.privateWithin.name
-              else "")
+        "" +
+          (if (tree.symbol == NoSymbol) mods.privateWithin
+           else if (tree.symbol.hasAccessBoundary)
+             tree.symbol.privateWithin.name
+           else "")
       )
 
     def printFlags(flags: Long, privateWithin: String) = {
@@ -466,8 +467,8 @@ trait Printers extends api.Printers {
           if ((tree.tpe eq null) || (printPositions && tt.original != null)) {
             if (tt.original != null) print("<type: ", tt.original, ">")
             else print("<type ?>")
-          } else if ((tree.tpe.typeSymbol ne null) && tree.tpe.typeSymbol
-                       .isAnonymousClass) {
+          } else if ((tree.tpe.typeSymbol ne null) &&
+                     tree.tpe.typeSymbol.isAnonymousClass) {
             print(tree.tpe.typeSymbol.toString)
           } else { print(tree.tpe.toString) }
 
@@ -545,10 +546,12 @@ trait Printers extends api.Printers {
       val brackets = List('[', ']', '(', ')', '{', '}')
 
       def addBackquotes(s: String) =
-        if (decoded && (decName.exists(ch =>
+        if (decoded &&
+            (decName.exists(ch =>
               brackets.contains(ch) || isWhitespace(ch) || isDot(ch)) ||
-            (name.isOperatorName && decName.exists(isOperatorPart) && decName
-              .exists(isScalaLetter) && !decName.contains(bslash)))) s"`$s`"
+            (name.isOperatorName && decName.exists(isOperatorPart) &&
+            decName.exists(isScalaLetter) && !decName.contains(bslash))))
+          s"`$s`"
         else s
 
       if (name == nme.CONSTRUCTOR) "this"
@@ -595,8 +598,9 @@ trait Printers extends api.Printers {
       t match {
         // case for: 1) (if (a) b else c).meth1.meth2 or 2) 1 + 5 should be represented as (1).+(5)
         case Select(qual, name)
-            if (name.isTermName && needsParentheses(qual)(insideLabelDef =
-              false)) || isIntLitWithDecodedOp(qual, name) =>
+            if (name.isTermName &&
+              needsParentheses(qual)(insideLabelDef = false)) ||
+              isIntLitWithDecodedOp(qual, name) =>
           s"(${resolveSelect(qual)}).${printedName(name)}"
         case Select(qual, name) if name.isTermName =>
           s"${resolveSelect(qual)}.${printedName(name)}"
@@ -696,10 +700,12 @@ trait Printers extends api.Printers {
 
     def printModifiers(mods: Modifiers, primaryCtorParam: Boolean): Unit = {
       def modsAccepted =
-        List(currentTree, currentParent) exists (_ map {
-          case _: ClassDef | _: ModuleDef | _: Template | _: PackageDef => true
-          case _                                                        => false
-        } getOrElse false)
+        List(currentTree, currentParent) exists
+          (_ map {
+            case _: ClassDef | _: ModuleDef | _: Template | _: PackageDef =>
+              true
+            case _ => false
+          } getOrElse false)
 
       if (currentParent.isEmpty || modsAccepted)
         printFlags(mods, primaryCtorParam)
@@ -715,10 +721,10 @@ trait Printers extends api.Printers {
           printPosition(tree)
           printAnnotations(vd)
           val mutableOrOverride = mods.isOverride || mods.isMutable
-          val hideCtorMods = mods.isParamAccessor && mods
-            .isPrivateLocal && !mutableOrOverride
-          val hideCaseCtorMods = mods.isCaseAccessor && mods
-            .isPublic && !mutableOrOverride
+          val hideCtorMods = mods.isParamAccessor && mods.isPrivateLocal &&
+            !mutableOrOverride
+          val hideCaseCtorMods = mods.isCaseAccessor && mods.isPublic &&
+            !mutableOrOverride
 
           if (primaryCtorParam && !(hideCtorMods || hideCaseCtorMods)) {
             printModifiers(mods, primaryCtorParam)
@@ -945,8 +951,8 @@ trait Printers extends api.Printers {
             case _          => true
           }
           val modBody = (left ::: right.drop(1))
-          val showBody =
-            !(modBody.isEmpty && (self == noSelfType || self.isEmpty))
+          val showBody = !(modBody.isEmpty &&
+            (self == noSelfType || self.isEmpty))
           if (showBody) {
             if (self.name != nme.WILDCARD) {
               print(" { ", self.name);
@@ -966,8 +972,8 @@ trait Printers extends api.Printers {
            * passing required type for checking
            */
           def insertBraces(body: => Unit): Unit =
-            if (parentsStack.nonEmpty && parentsStack.tail
-                  .exists(_.isInstanceOf[Match])) {
+            if (parentsStack.nonEmpty &&
+                parentsStack.tail.exists(_.isInstanceOf[Match])) {
               print("(")
               body
               print(")")
@@ -1009,8 +1015,8 @@ trait Printers extends api.Printers {
             case EmptyTree | EmptyTypeTree() => printTp()
             // case for untypechecked trees
             case Annotated(annot, arg)
-                if (expr ne null) && (arg ne null) && expr
-                  .equalsStructure(arg) =>
+                if (expr ne null) && (arg ne null) &&
+                  expr.equalsStructure(arg) =>
               printTp() // remove double arg - 5: 5: @unchecked
             case tt: TypeTree if tt.original.isInstanceOf[Annotated] =>
               printTp()
@@ -1033,8 +1039,8 @@ trait Printers extends api.Printers {
                       Select(_, methodName),
                       l2 @ List(Ident(iVDName)))),
                   l3)
-                if sVD.mods.isSynthetic && treeInfo
-                  .isLeftAssoc(methodName) && sVD.name == iVDName =>
+                if sVD.mods.isSynthetic && treeInfo.isLeftAssoc(methodName) &&
+                  sVD.name == iVDName =>
               val printBlock = Block(l1, Apply(a1, l3))
               print(printBlock)
             case Apply(tree1, _)
@@ -1074,19 +1080,21 @@ trait Printers extends api.Printers {
             (currentParent match { //check that Select is not for package def name
               case Some(_: PackageDef) => false
               case _                   => true
-            }) && (tr match { // check that Select contains package
-              case Select(q, _) => checkRootPackage(q)
-              case _: Ident | _: This =>
-                val sym = tr.symbol
-                tr.hasExistingSymbol && sym.hasPackageFlag && sym.name != nme
-                  .ROOTPKG
-              case _ => false
-            })
+            }) &&
+              (tr match { // check that Select contains package
+                case Select(q, _) => checkRootPackage(q)
+                case _: Ident | _: This =>
+                  val sym = tr.symbol
+                  tr.hasExistingSymbol && sym.hasPackageFlag &&
+                  sym.name != nme.ROOTPKG
+                case _ => false
+              })
 
           if (printRootPkg && checkRootPackage(tree))
             print(s"${printedName(nme.ROOTPKG)}.")
-          val printParentheses = needsParentheses(qual)(insideAnnotated =
-            false) || isIntLitWithDecodedOp(qual, name)
+          val printParentheses =
+            needsParentheses(qual)(insideAnnotated = false) ||
+              isIntLitWithDecodedOp(qual, name)
           if (printParentheses)
             print("(", resolveSelect(qual), ").", printedName(name))
           else print(resolveSelect(qual), ".", printedName(name))
@@ -1108,8 +1116,8 @@ trait Printers extends api.Printers {
           x match {
             case Constant(v: String) if {
                   val strValue = x.stringValue
-                  strValue.contains(LF) && strValue
-                    .contains("\"\"\"") && strValue.size > 1
+                  strValue.contains(LF) && strValue.contains("\"\"\"") &&
+                  strValue.size > 1
                 } =>
               val splitValue = x.stringValue.split(s"$LF").toList
               val multilineStringValue =
@@ -1121,9 +1129,8 @@ trait Printers extends api.Printers {
               print(trQuotes)
             case _ =>
               // processing Float constants
-              val printValue =
-                x.escapedStringValue + (if (x.value.isInstanceOf[Float]) "F"
-                                        else "")
+              val printValue = x.escapedStringValue +
+                (if (x.value.isInstanceOf[Float]) "F" else "")
               print(printValue)
           }
 
@@ -1235,8 +1242,8 @@ trait Printers extends api.Printers {
     }
 
     def get[T: ClassTag]: List[(Int, Any)] =
-      classFootnotes[T].toList map (fi =>
-        (fi, classIndex[T].find { case (any, ii) => ii == fi }.get._1))
+      classFootnotes[T].toList map
+        (fi => (fi, classIndex[T].find { case (any, ii) => ii == fi }.get._1))
 
     def print[T: ClassTag](printer: Printers.super.TreePrinter): Unit = {
       val footnotes = get[T]
@@ -1260,8 +1267,8 @@ trait Printers extends api.Printers {
 
     def print(args: Any*): Unit = {
       // don't print type footnotes if the argument is a mere type
-      if (depth == 0 && args.length == 1 && args(0) != null && args(0)
-            .isInstanceOf[Type]) printTypesInFootnotes = false
+      if (depth == 0 && args.length == 1 && args(0) != null &&
+          args(0).isInstanceOf[Type]) printTypesInFootnotes = false
 
       depth += 1
       args foreach {
@@ -1336,8 +1343,8 @@ trait Printers extends api.Printers {
             }
         case mods: Modifiers =>
           print("Modifiers(")
-          if (mods.flags != NoFlags || mods.privateWithin != tpnme.EMPTY || mods
-                .annotations.nonEmpty) print(show(mods.flags))
+          if (mods.flags != NoFlags || mods.privateWithin != tpnme.EMPTY ||
+              mods.annotations.nonEmpty) print(show(mods.flags))
           if (mods.privateWithin != tpnme.EMPTY || mods.annotations.nonEmpty) {
             print(", "); print(mods.privateWithin)
           }

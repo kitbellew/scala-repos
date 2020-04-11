@@ -147,9 +147,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
   def createAccount(email: String, password: String) = {
     val request: JValue = JObject(
-      JField("email", JString(email)) :: JField(
-        "password",
-        JString(password)) :: Nil)
+      JField("email", JString(email)) ::
+        JField("password", JString(password)) :: Nil)
     accounts.post("")(request)
   }
 

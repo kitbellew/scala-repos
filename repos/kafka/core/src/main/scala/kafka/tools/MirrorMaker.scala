@@ -316,8 +316,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         }
 
       // Create mirror maker threads.
-      mirrorMakerThreads = (0 until numStreams) map (i =>
-        new MirrorMakerThread(mirrorMakerConsumers(i), i))
+      mirrorMakerThreads = (0 until numStreams) map
+        (i => new MirrorMakerThread(mirrorMakerConsumers(i), i))
 
       // Create and initialize message handler
       val customMessageHandlerClass = options.valueOf(messageHandlerOpt)
@@ -478,8 +478,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         // still commit offset. When new consumer is used, this is handled by poll(timeout).
         while (!exitingOnSendFailure && !shuttingDown) {
           try {
-            while (!exitingOnSendFailure && !shuttingDown && mirrorMakerConsumer
-                     .hasData) {
+            while (!exitingOnSendFailure && !shuttingDown &&
+                   mirrorMakerConsumer.hasData) {
               val data = mirrorMakerConsumer.receive()
               trace("Sending message with value size %d and offset %d".format(
                 data.value.length,
@@ -518,8 +518,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     }
 
     def maybeFlushAndCommitOffsets() {
-      if (System
-            .currentTimeMillis() - lastOffsetCommitMs > offsetCommitIntervalMs) {
+      if (System.currentTimeMillis() - lastOffsetCommitMs >
+            offsetCommitIntervalMs) {
         debug("Committing MirrorMaker state automatically.")
         producer.flush()
         commitOffsets(mirrorMakerConsumer)

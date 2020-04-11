@@ -83,8 +83,8 @@ class RichFlowDef(val fd: FlowDef) {
         (
           current.copy(
             sourceMap = oFS.sourceMap ++ current.sourceMap,
-            flowConfigUpdates = oFS.flowConfigUpdates ++ current
-              .flowConfigUpdates),
+            flowConfigUpdates = oFS.flowConfigUpdates ++
+              current.flowConfigUpdates),
           ())
       }
     }
@@ -148,8 +148,8 @@ class RichFlowDef(val fd: FlowDef) {
         (
           oldFS.copy(
             sourceMap = subFlowState,
-            flowConfigUpdates = thisFS.flowConfigUpdates ++ oldFS
-              .flowConfigUpdates),
+            flowConfigUpdates = thisFS.flowConfigUpdates ++
+              oldFS.flowConfigUpdates),
           ())
       }
     }

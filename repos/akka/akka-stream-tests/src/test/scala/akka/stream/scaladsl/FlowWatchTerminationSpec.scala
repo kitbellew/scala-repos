@@ -31,12 +31,13 @@ class FlowWatchTerminationSpec extends AkkaSpec {
       p.expectComplete()
     }
 
-    "complete future when stream is cancelled from downstream" in assertAllStagesStopped {
-      val (future, p) = Source(1 to 4).watchTermination()(Keep.right)
-        .toMat(TestSink.probe[Int])(Keep.both).run()
-      p.request(3).expectNext(1, 2, 3).cancel()
-      future.futureValue should ===(Done)
-    }
+    "complete future when stream is cancelled from downstream" in
+      assertAllStagesStopped {
+        val (future, p) = Source(1 to 4).watchTermination()(Keep.right)
+          .toMat(TestSink.probe[Int])(Keep.both).run()
+        p.request(3).expectNext(1, 2, 3).cancel()
+        future.futureValue should ===(Done)
+      }
 
     "fail future when stream is failed" in assertAllStagesStopped {
       val ex = new RuntimeException("Stream failed.") with NoStackTrace

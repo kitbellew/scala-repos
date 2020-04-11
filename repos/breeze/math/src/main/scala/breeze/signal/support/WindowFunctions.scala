@@ -26,8 +26,8 @@ object WindowFunctions {
     if (n == 1) DenseVector(1d)
     else
       DenseVector.tabulate(n)(count =>
-        a0 - a1 * cos(2d * Pi * count / (n - 1)) + a2 * cos(
-          4d * Pi * count / (n - 1)))
+        a0 - a1 * cos(2d * Pi * count / (n - 1)) +
+          a2 * cos(4d * Pi * count / (n - 1)))
   }
 
   def hanningWindow(n: Int) = {

@@ -128,14 +128,17 @@ class BlockManagerReplicationSuite
     }
     val storeIds = stores.map { _.blockManagerId }.toSet
     assert(
-      master.getPeers(stores(0).blockManagerId).toSet ===
-        storeIds.filterNot { _ == stores(0).blockManagerId })
+      master.getPeers(stores(0).blockManagerId).toSet === storeIds.filterNot {
+        _ == stores(0).blockManagerId
+      })
     assert(
-      master.getPeers(stores(1).blockManagerId).toSet ===
-        storeIds.filterNot { _ == stores(1).blockManagerId })
+      master.getPeers(stores(1).blockManagerId).toSet === storeIds.filterNot {
+        _ == stores(1).blockManagerId
+      })
     assert(
-      master.getPeers(stores(2).blockManagerId).toSet ===
-        storeIds.filterNot { _ == stores(2).blockManagerId })
+      master.getPeers(stores(2).blockManagerId).toSet === storeIds.filterNot {
+        _ == stores(2).blockManagerId
+      })
 
     // Add driver store and test whether it is filtered out
     val driverStore = makeBlockManager(1000, SparkContext.DRIVER_IDENTIFIER)
@@ -146,17 +149,17 @@ class BlockManagerReplicationSuite
     // Add a new store and test whether get peers returns it
     val newStore = makeBlockManager(1000, s"store$numStores")
     assert(
-      master.getPeers(stores(0).blockManagerId).toSet ===
-        storeIds.filterNot { _ == stores(0).blockManagerId } + newStore
-          .blockManagerId)
+      master.getPeers(stores(0).blockManagerId).toSet === storeIds.filterNot {
+        _ == stores(0).blockManagerId
+      } + newStore.blockManagerId)
     assert(
-      master.getPeers(stores(1).blockManagerId).toSet ===
-        storeIds.filterNot { _ == stores(1).blockManagerId } + newStore
-          .blockManagerId)
+      master.getPeers(stores(1).blockManagerId).toSet === storeIds.filterNot {
+        _ == stores(1).blockManagerId
+      } + newStore.blockManagerId)
     assert(
-      master.getPeers(stores(2).blockManagerId).toSet ===
-        storeIds.filterNot { _ == stores(2).blockManagerId } + newStore
-          .blockManagerId)
+      master.getPeers(stores(2).blockManagerId).toSet === storeIds.filterNot {
+        _ == stores(2).blockManagerId
+      } + newStore.blockManagerId)
     assert(master.getPeers(newStore.blockManagerId).toSet === storeIds)
 
     // Remove a store and test whether get peers returns it
@@ -338,8 +341,8 @@ class BlockManagerReplicationSuite
     failableStore.initialize("app-id")
     allStores += failableStore // so that this gets stopped after test
     assert(
-      master.getPeers(store.blockManagerId).toSet === Set(
-        failableStore.blockManagerId))
+      master.getPeers(store.blockManagerId).toSet ===
+        Set(failableStore.blockManagerId))
 
     // Test that 2x replication fails by creating only one copy of the block
     assert(replicateAndGetNumCopies("a1") === 1)
@@ -474,8 +477,8 @@ class BlockManagerReplicationSuite
 
         // Assert that the block status in the master for this store has correct memory usage info
         assert(
-          !blockStatus.storageLevel.useMemory || blockStatus
-            .memSize >= blockSize,
+          !blockStatus.storageLevel.useMemory ||
+            blockStatus.memSize >= blockSize,
           s"master does not know size of ${blockId.name} stored in memory of $testStoreName"
         )
 
@@ -497,8 +500,8 @@ class BlockManagerReplicationSuite
           // Assert that the block status in the master either does not exist (block removed
           // from every store) or has zero memory usage for this store
           assert(
-            newBlockStatusOption.isEmpty || newBlockStatusOption.get
-              .memSize === 0,
+            newBlockStatusOption.isEmpty ||
+              newBlockStatusOption.get.memSize === 0,
             s"after dropping, master does not know size of ${blockId.name} " +
               s"stored in memory of $testStoreName"
           )
@@ -508,8 +511,8 @@ class BlockManagerReplicationSuite
         // test whether master has correct disk usage for this store
         if (storageLevel.useDisk) {
           assert(
-            master.getBlockStatus(blockId)(testStore.blockManagerId)
-              .diskSize >= blockSize,
+            master.getBlockStatus(blockId)(testStore.blockManagerId).diskSize >=
+              blockSize,
             s"after dropping, master does not know size of ${blockId.name} " +
               s"stored in disk of $testStoreName"
           )

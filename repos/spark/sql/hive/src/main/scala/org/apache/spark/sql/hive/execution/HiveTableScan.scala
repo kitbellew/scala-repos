@@ -55,12 +55,11 @@ private[hive] case class HiveTableScan(
     "Partition pruning predicates only supported for partitioned tables.")
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" ->
+      SQLMetrics.createLongMetric(sparkContext, "number of output rows"))
 
   override def producedAttributes: AttributeSet =
-    outputSet ++
-      AttributeSet(partitionPruningPred.flatMap(_.references))
+    outputSet ++ AttributeSet(partitionPruningPred.flatMap(_.references))
 
   // Retrieve the original attributes based on expression ID so that capitalization matches.
   val attributes = requestedAttributes.map(relation.attributeMap)

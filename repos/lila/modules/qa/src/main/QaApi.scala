@@ -43,10 +43,8 @@ final class QaApi(
           editedAt = None
         )
 
-        (questionColl insert q) >>
-          tag.clearCache >>
-          relation.clearCache >>-
-          notifier.createQuestion(q, user) inject q
+        (questionColl insert q) >> tag.clearCache >>
+          relation.clearCache >>- notifier.createQuestion(q, user) inject q
       }
 
     def edit(data: QuestionData, id: QuestionId): Fu[Option[Question]] =
@@ -56,8 +54,7 @@ final class QaApi(
             .copy(title = data.title, body = data.body, tags = data.tags)
             .editNow
           questionColl.update(BSONDocument("_id" -> q2.id), q2) >>
-            tag.clearCache >>
-            relation.clearCache inject q2.some
+            tag.clearCache >> relation.clearCache inject q2.some
         }
       }
 
@@ -126,8 +123,8 @@ final class QaApi(
           val newVote = q.vote.add(user.id, v)
           questionColl.update(
             BSONDocument("_id" -> q.id),
-            BSONDocument(
-              "$set" -> BSONDocument("vote" -> newVote))) inject newVote.some
+            BSONDocument("$set" -> BSONDocument("vote" -> newVote))) inject
+            newVote.some
         }
       }
 
@@ -149,9 +146,7 @@ final class QaApi(
 
     def remove(id: QuestionId) =
       questionColl.remove(BSONDocument("_id" -> id)) >>
-        (answer removeByQuestion id) >>
-        tag.clearCache >>
-        relation.clearCache
+        (answer removeByQuestion id) >> tag.clearCache >> relation.clearCache
 
     def removeComment(id: QuestionId, c: CommentId) =
       questionColl.update(
@@ -180,8 +175,7 @@ final class QaApi(
           editedAt = None
         )
 
-        (answerColl insert a) >>
-          (question recountAnswers q.id) >>-
+        (answerColl insert a) >> (question recountAnswers q.id) >>-
           notifier.createAnswer(q, a, user) inject a
       }
 
@@ -196,8 +190,8 @@ final class QaApi(
     def findById(id: AnswerId): Fu[Option[Answer]] =
       answerColl.find(BSONDocument("_id" -> id)).one[Answer]
 
-    def accept(q: Question, a: Answer) =
-      (question accept q) >> answerColl.update(
+    def accept(q: Question, a: Answer) = (question accept q) >>
+      answerColl.update(
         BSONDocument("questionId" -> q.id),
         BSONDocument("$unset" -> BSONDocument("acceptedAt" -> true)),
         multi = true) >> answerColl.update(
@@ -226,8 +220,8 @@ final class QaApi(
           val newVote = a.vote.add(user.id, v)
           answerColl.update(
             BSONDocument("_id" -> a.id),
-            BSONDocument(
-              "$set" -> BSONDocument("vote" -> newVote))) inject newVote.some
+            BSONDocument("$set" -> BSONDocument("vote" -> newVote))) inject
+            newVote.some
         }
       }
 

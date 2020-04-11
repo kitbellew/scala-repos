@@ -126,8 +126,8 @@ class AkkaProtocolSpec
             if sender == localAddress && recipient == remoteAddress ⇒
           codec.decodePdu(payload) match {
             case Associate(info) ⇒
-              info.cookie == cookie && info.origin == localAddress && info
-                .uid == uid
+              info.cookie == cookie && info.origin == localAddress &&
+                info.uid == uid
             case _ ⇒ false
           }
         case _ ⇒ false

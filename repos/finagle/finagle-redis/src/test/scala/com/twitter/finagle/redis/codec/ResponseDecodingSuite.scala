@@ -71,8 +71,8 @@ final class ResponseDecodingSuite extends RedisResponseTest {
 
   test("Correctly decode Long.MaxValue reply") {
     assert(
-      codec(wrap(":9223372036854775807\r\n")) == List(
-        IntegerReply(9223372036854775807L)))
+      codec(wrap(":9223372036854775807\r\n")) ==
+        List(IntegerReply(9223372036854775807L)))
   }
 
   test("Throw ServerError when decoding Long.MaxValue + 1") {
@@ -81,8 +81,8 @@ final class ResponseDecodingSuite extends RedisResponseTest {
 
   test("Correctly decode Long.MinValue") {
     assert(
-      codec(wrap(":-9223372036854775807\r\n")) == List(
-        IntegerReply(-9223372036854775807L)))
+      codec(wrap(":-9223372036854775807\r\n")) ==
+        List(IntegerReply(-9223372036854775807L)))
   }
 
   test("Throw ServerError when decoding Long.MinValue -1") {
@@ -111,10 +111,8 @@ final class ResponseDecodingSuite extends RedisResponseTest {
 
   test("Correctly decodec multi line reply") {
     assert(
-      decomposeMultiElemDecoding(codec(wrap("$3\r\nfoo\r\n$3\r\nbar\r\n"))) == (
-        (
-          "foo",
-          "bar")))
+      decomposeMultiElemDecoding(codec(wrap("$3\r\nfoo\r\n$3\r\nbar\r\n"))) ==
+        (("foo", "bar")))
   }
 
   test("Correctly decode EMPTY bulk reply") {
@@ -163,11 +161,8 @@ final class ResponseDecodingSuite extends RedisResponseTest {
       case reply :: Nil => reply match {
           case MBulkReply(msgs) =>
             assert(
-              ReplyFormat.toString(msgs) == List(
-                "foo",
-                "bar",
-                "Hello",
-                "World"))
+              ReplyFormat.toString(msgs) ==
+                List("foo", "bar", "Hello", "World"))
           case _ => fail("Expected MBulkReply")
         }
       case _ => fail("Expected one element in list")

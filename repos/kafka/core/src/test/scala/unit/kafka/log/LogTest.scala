@@ -160,8 +160,8 @@ class LogTest extends JUnitSuite {
     val set = TestUtils.singleMessageSet("test".getBytes)
     val setSize = set.sizeInBytes
     val msgPerSeg = 10
-    val segmentSize =
-      msgPerSeg * (setSize - 1) // each segment will be 10 messages
+    val segmentSize = msgPerSeg *
+      (setSize - 1) // each segment will be 10 messages
 
     val logProps = new Properties()
     logProps.put(LogConfig.SegmentBytesProp, segmentSize: java.lang.Integer)
@@ -1088,8 +1088,8 @@ class LogTest extends JUnitSuite {
       val dir = new File("")
       Log.parseTopicPartitionName(dir)
       fail(
-        "KafkaException should have been thrown for dir: " + dir
-          .getCanonicalPath)
+        "KafkaException should have been thrown for dir: " +
+          dir.getCanonicalPath)
     } catch {
       case e: Exception => // its GOOD!
     }
@@ -1114,8 +1114,8 @@ class LogTest extends JUnitSuite {
     try {
       Log.parseTopicPartitionName(dir)
       fail(
-        "KafkaException should have been thrown for dir: " + dir
-          .getCanonicalPath)
+        "KafkaException should have been thrown for dir: " +
+          dir.getCanonicalPath)
     } catch {
       case e: Exception => // its GOOD!
     }
@@ -1129,8 +1129,8 @@ class LogTest extends JUnitSuite {
     try {
       Log.parseTopicPartitionName(dir)
       fail(
-        "KafkaException should have been thrown for dir: " + dir
-          .getCanonicalPath)
+        "KafkaException should have been thrown for dir: " +
+          dir.getCanonicalPath)
     } catch {
       case e: Exception => // its GOOD!
     }
@@ -1144,8 +1144,8 @@ class LogTest extends JUnitSuite {
     try {
       Log.parseTopicPartitionName(dir)
       fail(
-        "KafkaException should have been thrown for dir: " + dir
-          .getCanonicalPath)
+        "KafkaException should have been thrown for dir: " +
+          dir.getCanonicalPath)
     } catch {
       case e: Exception => // its GOOD!
     }

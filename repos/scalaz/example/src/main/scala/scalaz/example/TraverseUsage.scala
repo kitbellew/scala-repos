@@ -82,9 +82,8 @@ object TraverseUsage extends App {
 
   assert(evens.traverseU(onlyEvenAllowed) === IList(2, 4, 6, 8).success)
   assert(
-    notAllEvens.traverseU(onlyEvenAllowed) === NonEmptyList(
-      "1 is not even",
-      "3 is not even").failure)
+    notAllEvens.traverseU(onlyEvenAllowed) ===
+      NonEmptyList("1 is not even", "3 is not even").failure)
 
   // there is a traverseS method which allows us to traverse a
   // structure with a function while carrying a state through the

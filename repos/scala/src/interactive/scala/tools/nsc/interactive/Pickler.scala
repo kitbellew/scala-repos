@@ -154,10 +154,7 @@ object Pickler {
   }
 
   private def errorExpected(rd: Lexer, msg: => String) =
-    new UnpickleFailure(
-      "expected: " + msg + "\n" +
-        "found   : " + rd.token,
-      rd)
+    new UnpickleFailure("expected: " + msg + "\n" + "found   : " + rd.token, rd)
 
   private def nextSuccess[T](rd: Lexer, result: T) = {
     rd.nextToken()
@@ -369,10 +366,9 @@ object Pickler {
   implicit def tuple3Pickler[T1, T2, T3](implicit
       p1: Pickler[T1],
       p2: Pickler[T2],
-      p3: Pickler[T3]): Pickler[(T1, T2, T3)] =
-    (p1 ~ p2 ~ p3).wrapped { case x1 ~ x2 ~ x3 => (x1, x2, x3) } {
-      case (x1, x2, x3) => x1 ~ x2 ~ x3
-    }.labelled("tuple3")
+      p3: Pickler[T3]): Pickler[(T1, T2, T3)] = (p1 ~ p2 ~ p3).wrapped {
+    case x1 ~ x2 ~ x3 => (x1, x2, x3)
+  } { case (x1, x2, x3) => x1 ~ x2 ~ x3 }.labelled("tuple3")
 
   /** A pickler for list values */
   implicit def listPickler[T: Pickler]: Pickler[List[T]] =

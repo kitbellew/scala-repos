@@ -38,8 +38,8 @@ trait Logic extends Debugging {
       lineSep: String = "\n"): String = {
     val maxLen = max(xss map (_.length))
     val padded = xss map (xs => xs ++ List.fill(maxLen - xs.length)(null))
-    padded.transpose.map(alignedColumns).transpose map (_
-      .mkString(sep)) mkString (lineSep)
+    padded.transpose.map(alignedColumns).transpose map
+      (_.mkString(sep)) mkString (lineSep)
   }
 
   // ftp://ftp.cis.upenn.edu/pub/cis511/public_html/Spring04/chap3.pdf
@@ -140,8 +140,7 @@ trait Logic extends Debugging {
       override def equals(other: scala.Any): Boolean =
         other match {
           case that: Sym =>
-            this.variable == that.variable &&
-              this.const == that.const
+            this.variable == that.variable && this.const == that.const
           case _ => false
         }
 
@@ -185,12 +184,11 @@ trait Logic extends Debugging {
 
       // limit size to avoid blow up
       def hasImpureAtom(ops: Seq[Prop]): Boolean =
-        ops.size < 10 &&
-          ops.combinations(2).exists {
-            case Seq(a, Not(b)) if a == b => true
-            case Seq(Not(a), b) if a == b => true
-            case _                        => false
-          }
+        ops.size < 10 && ops.combinations(2).exists {
+          case Seq(a, Not(b)) if a == b => true
+          case Seq(Not(a), b) if a == b => true
+          case _                        => false
+        }
 
       // push negation inside formula
       def negationNormalFormNot(p: Prop): Prop =
@@ -561,10 +559,9 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
           // values and null
           lower == upper ||
             // type implication
-            (lower != NullConst && !upper.isValue &&
-              instanceOfTpImplies(
-                if (lower.isValue) lower.wideTp else lower.tp,
-                upper.tp))
+            (lower != NullConst && !upper.isValue && instanceOfTpImplies(
+              if (lower.isValue) lower.wideTp else lower.tp,
+              upper.tp))
 
         // if(r) debug.patmat("implies    : "+(lower, lower.tp, upper, upper.tp))
         // else  debug.patmat("NOT implies: "+(lower, upper))
@@ -645,11 +642,12 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
         equalitySyms map { sym =>
           // if we've already excluded the pair at some point (-A \/ -B), then don't exclude the symmetric one (-B \/ -A)
           // (nor the positive implications -B \/ A, or -A \/ B, which would entail the equality axioms falsifying the whole formula)
-          val todo = equalitySyms filterNot (b =>
-            (b.const == sym.const) || excludedPair(
-              ExcludedPair(b.const, sym.const)))
-          val (excluded, notExcluded) =
-            todo partition (b => excludes(sym.const, b.const))
+          val todo = equalitySyms filterNot
+            (b =>
+              (b.const == sym.const) ||
+                excludedPair(ExcludedPair(b.const, sym.const)))
+          val (excluded, notExcluded) = todo partition
+            (b => excludes(sym.const, b.const))
           val implied = notExcluded filter (b => implies(sym.const, b.const))
 
           debug.patmat("eq axioms for: " + sym.const)
@@ -752,8 +750,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
               orig.tpe
             case _ =>
               // duplicate, don't mutate old tree (TODO: use a map tree -> type instead?)
-              val treeWithNarrowedType = t
-                .duplicate setType freshExistentialSubtype(t.tpe)
+              val treeWithNarrowedType = t.duplicate setType
+                freshExistentialSubtype(t.tpe)
               debug.patmat("uniqued: " + ((t, t.tpe, treeWithNarrowedType.tpe)))
               trees += treeWithNarrowedType
               treeWithNarrowedType.tpe

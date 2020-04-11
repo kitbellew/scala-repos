@@ -60,12 +60,12 @@ object Message extends LilaController {
                   thread,
                   err,
                   blocked,
-                  answerable =
-                    !Env.message.LichessSenders.contains(thread.creatorId)))
+                  answerable = !Env.message.LichessSenders
+                    .contains(thread.creatorId)))
             },
           text =>
-            api.makePost(thread, text, me) inject Redirect(
-              routes.Message.thread(thread.id) + "#bottom")
+            api.makePost(thread, text, me) inject
+              Redirect(routes.Message.thread(thread.id) + "#bottom")
         )
       }
     }

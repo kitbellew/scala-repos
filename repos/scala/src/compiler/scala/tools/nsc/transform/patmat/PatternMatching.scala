@@ -73,8 +73,8 @@ trait PatternMatching
               // TODO: this should never happen; error should've been reported during type checking
               reporter.error(
                 tree.pos,
-                "error during expansion of this match (this is a scalac bug).\nThe underlying error was: " + x
-                  .msg)
+                "error during expansion of this match (this is a scalac bug).\nThe underlying error was: " +
+                  x.msg)
               translated
           }
         case Try(block, catches, finalizer) =>
@@ -215,7 +215,8 @@ trait Interface extends ast.TreeDSL {
 
       reporter.warning(
         pos,
-        "match may not be exhaustive.\nIt would fail on the following " + ceString)
+        "match may not be exhaustive.\nIt would fail on the following " +
+          ceString)
     }
   }
 

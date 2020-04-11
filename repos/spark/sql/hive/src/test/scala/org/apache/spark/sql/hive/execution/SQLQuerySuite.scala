@@ -289,10 +289,10 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("show functions") {
-    val allBuiltinFunctions = (FunctionRegistry.builtin.listFunction()
-      .toSet[String] ++
-      org.apache.hadoop.hive.ql.exec.FunctionRegistry.getFunctionNames.asScala)
-      .toList.sorted
+    val allBuiltinFunctions =
+      (FunctionRegistry.builtin.listFunction().toSet[String] ++
+        org.apache.hadoop.hive.ql.exec.FunctionRegistry.getFunctionNames
+          .asScala).toList.sorted
     // The TestContext is shared by all the test cases, some functions may be registered before
     // this, so we check that all the builtin functions are returned.
     val allFunctions = sql("SHOW functions").collect().map(r => r(0))
@@ -922,18 +922,18 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     val data = (1 to 100000).map { i => (i, i, i) }
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
     assert(
-      100000 ===
-        sql("SELECT TRANSFORM (d1, d2, d3) USING 'cat' AS (a,b,c) FROM script_trans")
-          .queryExecution.toRdd.count())
+      100000 === sql(
+        "SELECT TRANSFORM (d1, d2, d3) USING 'cat' AS (a,b,c) FROM script_trans")
+        .queryExecution.toRdd.count())
   }
 
   test("test script transform for stderr") {
     val data = (1 to 100000).map { i => (i, i, i) }
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
     assert(
-      0 ===
-        sql("SELECT TRANSFORM (d1, d2, d3) USING 'cat 1>&2' AS (a,b,c) FROM script_trans")
-          .queryExecution.toRdd.count())
+      0 === sql(
+        "SELECT TRANSFORM (d1, d2, d3) USING 'cat 1>&2' AS (a,b,c) FROM script_trans")
+        .queryExecution.toRdd.count())
   }
 
   test("test script transform data type") {
@@ -1233,16 +1233,11 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     nums.registerTempTable("nums")
 
     val expected =
-      Row(1, 1, 1, 55, 1, 57) ::
-        Row(0, 2, 3, 55, 2, 60) ::
-        Row(1, 3, 6, 55, 4, 65) ::
-        Row(0, 4, 10, 55, 6, 71) ::
-        Row(1, 5, 15, 55, 9, 79) ::
-        Row(0, 6, 21, 55, 12, 88) ::
-        Row(1, 7, 28, 55, 16, 99) ::
-        Row(0, 8, 36, 55, 20, 111) ::
-        Row(1, 9, 45, 55, 25, 125) ::
-        Row(0, 10, 55, 55, 30, 140) :: Nil
+      Row(1, 1, 1, 55, 1, 57) :: Row(0, 2, 3, 55, 2, 60) ::
+        Row(1, 3, 6, 55, 4, 65) :: Row(0, 4, 10, 55, 6, 71) ::
+        Row(1, 5, 15, 55, 9, 79) :: Row(0, 6, 21, 55, 12, 88) ::
+        Row(1, 7, 28, 55, 16, 99) :: Row(0, 8, 36, 55, 20, 111) ::
+        Row(1, 9, 45, 55, 25, 125) :: Row(0, 10, 55, 55, 30, 140) :: Nil
 
     val actual = sql(
       """
@@ -1268,9 +1263,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     (1 to 5).map(i => (i, i.toString)).toDF("k", "v").registerTempTable("t")
     checkAnswer(
       sql("SELECT CASE k WHEN 2 THEN 22 WHEN 4 THEN 44 ELSE 0 END, v FROM t"),
-      Row(0, "1") :: Row(22, "2") :: Row(0, "3") :: Row(44, "4") :: Row(
-        0,
-        "5") :: Nil)
+      Row(0, "1") :: Row(22, "2") :: Row(0, "3") :: Row(44, "4") ::
+        Row(0, "5") :: Nil)
   }
 
   test("SPARK-7595: Window will cause resolve failed with self join") {
@@ -1442,8 +1436,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   test(
     "SPARK-9371: fix the support for special chars in column names for hive context") {
     read.json(sparkContext.makeRDD(
-      """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" :: Nil))
-      .registerTempTable("t")
+      """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" ::
+        Nil)).registerTempTable("t")
 
     checkAnswer(
       sql("SELECT a.`c.b`, `b.$q`[0].`a@!.q`, `q.w`.`w.i&`[0] FROM t"),
@@ -1645,8 +1639,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   Seq(true, false).foreach { enabled =>
-    val prefix =
-      (if (enabled) "With" else "Without") + " canonical native view: "
+    val prefix = (if (enabled) "With" else "Without") +
+      " canonical native view: "
     test(s"$prefix correctly handle CREATE OR REPLACE VIEW") {
       withSQLConf(
         SQLConf.NATIVE_VIEW.key -> "true",
@@ -1949,9 +1943,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         .partitionBy("I").saveAsTable("tbl11453")
       checkAnswer(
         sqlContext.read.table("tbl11453").select("i", "j").orderBy("i"),
-        Row("1", "10") :: Row("2", "20") :: Row("3", "30") :: Row(
-          "4",
-          "40") :: Nil)
+        Row("1", "10") :: Row("2", "20") :: Row("3", "30") :: Row("4", "40") ::
+          Nil)
     }
   }
 

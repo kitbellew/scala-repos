@@ -318,8 +318,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         typeName = typeName,
         entityProps = qualifiedCounterProps(typeName),
         settings = settings,
-        coordinatorPath =
-          "/user/" + typeName + "Coordinator/singleton/coordinator",
+        coordinatorPath = "/user/" + typeName +
+          "Coordinator/singleton/coordinator",
         extractEntityId = extractEntityId,
         extractShardId = extractShardId,
         handOffStopMessage = PoisonPill
@@ -358,8 +358,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       enterBarrier("peristence-started")
 
       runOn(first, second, third, fourth, fifth, sixth) {
-        system.actorSelection(node(controller) / "user" / "store") ! Identify(
-          None)
+        system.actorSelection(node(controller) / "user" / "store") !
+          Identify(None)
         val sharedStore = expectMsgType[ActorIdentity].ref.get
         SharedLeveldbJournal.setStore(sharedStore, system)
       }
@@ -408,8 +408,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         region ! EntityEnvelope(2, Increment)
         region ! Get(2)
         expectMsg(3)
-        lastSender.path should ===(
-          node(second) / "user" / "counterRegion" / "2" / "2")
+        lastSender.path should
+          ===(node(second) / "user" / "counterRegion" / "2" / "2")
 
         region ! Get(11)
         expectMsg(1)
@@ -417,8 +417,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         lastSender.path should ===(region.path / "11" / "11")
         region ! Get(12)
         expectMsg(1)
-        lastSender.path should ===(
-          node(second) / "user" / "counterRegion" / "0" / "12")
+        lastSender.path should
+          ===(node(second) / "user" / "counterRegion" / "0" / "12")
       }
       enterBarrier("first-update")
 
@@ -532,14 +532,14 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         region ! EntityEnvelope(3, Increment)
         region ! Get(3)
         expectMsg(11)
-        lastSender.path should ===(
-          node(third) / "user" / "counterRegion" / "3" / "3")
+        lastSender.path should
+          ===(node(third) / "user" / "counterRegion" / "3" / "3")
 
         region ! EntityEnvelope(4, Increment)
         region ! Get(4)
         expectMsg(21)
-        lastSender.path should ===(
-          node(fourth) / "user" / "counterRegion" / "4" / "4")
+        lastSender.path should
+          ===(node(fourth) / "user" / "counterRegion" / "4" / "4")
       }
       enterBarrier("first-update")
 
@@ -570,8 +570,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
           within(1.second) {
             region.tell(Get(3), probe3.ref)
             probe3.expectMsg(11)
-            probe3.lastSender.path should ===(
-              node(third) / "user" / "counterRegion" / "3" / "3")
+            probe3.lastSender.path should
+              ===(node(third) / "user" / "counterRegion" / "3" / "3")
           }
         }
         val probe4 = TestProbe()
@@ -579,8 +579,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
           within(1.second) {
             region.tell(Get(4), probe4.ref)
             probe4.expectMsg(21)
-            probe4.lastSender.path should ===(
-              node(fourth) / "user" / "counterRegion" / "4" / "4")
+            probe4.lastSender.path should
+              ===(node(fourth) / "user" / "counterRegion" / "4" / "4")
           }
         }
 
@@ -609,8 +609,9 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
             for (n ← 1 to 10) {
               rebalancingRegion.tell(Get(n), probe.ref)
               probe.expectMsgType[Int]
-              if (probe.lastSender.path == rebalancingRegion.path / (n % 12)
-                    .toString / n.toString) count += 1
+              if (probe.lastSender.path ==
+                    rebalancingRegion.path / (n % 12).toString / n.toString)
+                count += 1
             }
             count should be >= (2)
           }
@@ -662,9 +663,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       expectMsg(1)
       //#counter-usage
 
-      ClusterSharding(system).shardRegion("AnotherCounter") ! EntityEnvelope(
-        123,
-        Decrement)
+      ClusterSharding(system).shardRegion("AnotherCounter") !
+        EntityEnvelope(123, Decrement)
       ClusterSharding(system).shardRegion("AnotherCounter") ! Get(123)
       expectMsg(-1)
     }
@@ -674,9 +674,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     // sixth is a frontend node, i.e. proxy only
     runOn(sixth) {
       for (n ← 1000 to 1010) {
-        ClusterSharding(system).shardRegion("Counter") ! EntityEnvelope(
-          n,
-          Increment)
+        ClusterSharding(system).shardRegion("Counter") !
+          EntityEnvelope(n, Increment)
         ClusterSharding(system).shardRegion("Counter") ! Get(n)
         expectMsg(1)
         lastSender.path.address should not be (Cluster(system).selfAddress)
@@ -871,9 +870,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         awaitAssert(
           {
             counter1.tell(Identify(1), probe.ref)
-            probe.expectMsgType[ActorIdentity](1 second).ref should not be (
-              None
-            )
+            probe.expectMsgType[ActorIdentity](1 second).ref should not be
+              (None)
           },
           5.seconds,
           500.millis)
@@ -899,8 +897,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         autoMigrateRegion ! Get(1)
         expectMsg(2)
         lastSender.path should ===(
-          node(
-            third) / "user" / "AutoMigrateRememberRegionTestRegion" / "1" / "1")
+          node(third) / "user" / "AutoMigrateRememberRegionTestRegion" / "1" /
+            "1")
 
         //Kill region 3
         system.actorSelection(lastSender.path.parent.parent) ! PoisonPill
@@ -916,9 +914,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         awaitAssert(
           {
             counter1.tell(Identify(1), probe.ref)
-            probe.expectMsgType[ActorIdentity](1 second).ref should not be (
-              None
-            )
+            probe.expectMsgType[ActorIdentity](1 second).ref should not be
+              (None)
           },
           5.seconds,
           500 millis)

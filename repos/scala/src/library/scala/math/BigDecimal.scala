@@ -602,19 +602,17 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
 
   /** Returns the minimum of this and that, or this if the two are equal
     */
-  def min(that: BigDecimal): BigDecimal =
-    (this compare that) match {
-      case x if x <= 0 => this
-      case _           => that
-    }
+  def min(that: BigDecimal): BigDecimal = (this compare that) match {
+    case x if x <= 0 => this
+    case _           => that
+  }
 
   /** Returns the maximum of this and that, or this if the two are equal
     */
-  def max(that: BigDecimal): BigDecimal =
-    (this compare that) match {
-      case x if x >= 0 => this
-      case _           => that
-    }
+  def max(that: BigDecimal): BigDecimal = (this compare that) match {
+    case x if x >= 0 => this
+    case _           => that
+  }
 
   /** Remainder after dividing this by that.
     */

@@ -55,8 +55,8 @@ trait BadClientHandlingSpec
       response.body must beLeft
     }
 
-    "allow accessing the raw unparsed path from an error handler" in withServer(
-      new HttpErrorHandler() {
+    "allow accessing the raw unparsed path from an error handler" in
+      withServer(new HttpErrorHandler() {
         def onClientError(
             request: RequestHeader,
             statusCode: Int,
@@ -65,12 +65,12 @@ trait BadClientHandlingSpec
         def onServerError(request: RequestHeader, exception: Throwable) =
           Future.successful(Results.Ok)
       }) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(BasicRequest("GET", "/[", "HTTP/1.1", Map(), ""))(0)
+        val response = BasicHttpClient.makeRequests(port)(
+          BasicRequest("GET", "/[", "HTTP/1.1", Map(), ""))(0)
 
-      response.status must_== 400
-      response.body must beLeft("Bad path: /[")
-    }.skipUntilAkkaHttpFixed
+        response.status must_== 400
+        response.body must beLeft("Bad path: /[")
+      }.skipUntilAkkaHttpFixed
 
   }
 }

@@ -524,18 +524,17 @@ case class CreateExternalRow(children: Seq[Expression], schema: StructType)
     s"""
       boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${children.size}];
-    """ +
-      children.zipWithIndex.map {
-        case (e, i) =>
-          val eval = e.gen(ctx)
-          eval.code + s"""
+    """ + children.zipWithIndex.map {
+      case (e, i) =>
+        val eval = e.gen(ctx)
+        eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
             $values[$i] = ${eval.value};
           }
          """
-      }.mkString("\n") +
+    }.mkString("\n") +
       s"final ${classOf[Row].getName} ${ev.value} = new $rowClass($values, this.$schemaField);"
   }
 }

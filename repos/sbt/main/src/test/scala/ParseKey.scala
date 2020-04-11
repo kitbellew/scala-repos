@@ -39,10 +39,8 @@ object ParseKey extends Properties("Key parser test") {
       val mask = skm.mask.copy(project = false)
       val string = displayMasked(key, mask)
 
-      ("Key: " + displayFull(key)) |:
-        ("Mask: " + mask) |:
-        ("Current: " + structure.current) |:
-        parse(structure, string) {
+      ("Key: " + displayFull(key)) |: ("Mask: " + mask) |:
+        ("Current: " + structure.current) |: parse(structure, string) {
           case Left(err) => false
           case Right(sk) => sk.scope.project == Select(structure.current)
         }
@@ -54,8 +52,7 @@ object ParseKey extends Properties("Key parser test") {
     val mask = skm.mask.copy(task = false)
     val string = displayMasked(key, mask)
 
-    ("Key: " + displayFull(key)) |:
-      ("Mask: " + mask) |:
+    ("Key: " + displayFull(key)) |: ("Mask: " + mask) |:
       parse(structure, string) {
         case Left(err) => false
         case Right(sk) => sk.scope.task == Global
@@ -71,8 +68,7 @@ object ParseKey extends Properties("Key parser test") {
       val resolvedConfig = Resolve
         .resolveConfig(structure.extra, key.key, mask)(key.scope).config
 
-      ("Key: " + displayFull(key)) |:
-        ("Mask: " + mask) |:
+      ("Key: " + displayFull(key)) |: ("Mask: " + mask) |:
         ("Expected configuration: " + resolvedConfig.map(_.name)) |:
         parse(structure, string) {
           case Right(sk) => sk.scope.config == resolvedConfig
@@ -107,23 +103,19 @@ object ParseKey extends Properties("Key parser test") {
       structure: Structure,
       s: String,
       expected: ScopedKey[_],
-      mask: ScopeMask): Prop =
-    ("Expected: " + displayFull(expected)) |:
-      ("Mask: " + mask) |:
-      parse(structure, s) {
-        case Left(err) => false
-        case Right(sk) => Project.equal(sk, expected, mask)
-      }
+      mask: ScopeMask): Prop = ("Expected: " + displayFull(expected)) |:
+    ("Mask: " + mask) |: parse(structure, s) {
+      case Left(err) => false
+      case Right(sk) => Project.equal(sk, expected, mask)
+    }
 
   def parse(structure: Structure, s: String)(
       f: Either[String, ScopedKey[_]] => Prop): Prop = {
     val parser = makeParser(structure)
     val parsed = DefaultParsers.result(parser, s).left.map(_().toString)
     val showParsed = parsed.right.map(displayFull)
-    ("Key string: '" + s + "'") |:
-      ("Parsed: " + showParsed) |:
-      ("Structure: " + structure) |:
-      f(parsed)
+    ("Key string: '" + s + "'") |: ("Parsed: " + showParsed) |:
+      ("Structure: " + structure) |: f(parsed)
   }
 
   // Here we're shadowing the in-scope implicit called `mkEnv` for this method

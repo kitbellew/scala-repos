@@ -104,8 +104,8 @@ object ClosableLazySpec extends Specification {
       // Our get result should happen immediately and throw an IllegalStateException
       // because the ClosableLazy is closed. Use a long duration so this will work
       // on slow machines.
-      Await.result(getResultPromise.future, Duration(1, MINUTES)) must throwAn[
-        IllegalStateException]
+      Await.result(getResultPromise.future, Duration(1, MINUTES)) must
+        throwAn[IllegalStateException]
     }
 
   }

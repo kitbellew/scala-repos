@@ -238,8 +238,8 @@ class DStreamScopeSuite
       showYYYYMMSS = false)
     assert(rddScope.id === s"${baseScopeId}_$batchTime")
     assert(
-      rddScope.name
-        .replaceAll("\\n", " ") === s"$baseScopeName @ $formattedBatchTime")
+      rddScope.name.replaceAll("\\n", " ") ===
+        s"$baseScopeName @ $formattedBatchTime")
     assert(rddScope.parent.isEmpty) // There should not be any higher scope
   }
 

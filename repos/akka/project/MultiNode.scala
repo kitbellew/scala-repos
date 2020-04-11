@@ -52,22 +52,20 @@ object MultiNode extends AutoPlugin {
           "-D" + key + "=" + System.getProperty(key)
       }
 
-    "-Xmx256m" :: akkaProperties ::: CliOptions.sbtLogNoFormat
-      .ifTrue("-Dakka.test.nocolor=true").toList
+    "-Xmx256m" :: akkaProperties :::
+      CliOptions.sbtLogNoFormat.ifTrue("-Dakka.test.nocolor=true").toList
   }
 
   private val multiJvmSettings =
     SbtMultiJvm.multiJvmSettings ++
-      inConfig(MultiJvm)(SbtScalariform.configScalariformSettings) ++
-      Seq(
+      inConfig(MultiJvm)(SbtScalariform.configScalariformSettings) ++ Seq(
         jvmOptions in MultiJvm := defaultMultiJvmOptions,
-        compileInputs in (MultiJvm, compile) <<= (
-          compileInputs in (MultiJvm, compile)
-        ) dependsOn (ScalariformKeys.format in MultiJvm),
+        compileInputs in (MultiJvm, compile) <<=
+          (compileInputs in (MultiJvm, compile)) dependsOn
+            (ScalariformKeys.format in MultiJvm),
         scalacOptions in MultiJvm <<= scalacOptions in Test,
-        compile in MultiJvm <<= (compile in MultiJvm) triggeredBy (
-          compile in Test
-        )
+        compile in MultiJvm <<= (compile in MultiJvm) triggeredBy
+          (compile in Test)
       ) ++
       CliOptions.hostsFileName.map(multiNodeHostsFileName in MultiJvm := _) ++
       CliOptions.javaName.map(multiNodeJavaName in MultiJvm := _) ++

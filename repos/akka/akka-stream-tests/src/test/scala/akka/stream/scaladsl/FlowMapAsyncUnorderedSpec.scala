@@ -30,27 +30,28 @@ class FlowMapAsyncUnorderedSpec extends AkkaSpec {
 
   "A Flow with mapAsyncUnordered" must {
 
-    "produce future elements in the order they are ready" in assertAllStagesStopped {
-      val c = TestSubscriber.manualProbe[Int]()
-      implicit val ec = system.dispatcher
-      val latch = (1 to 4).map(_ -> TestLatch(1)).toMap
-      val p = Source(1 to 4).mapAsyncUnordered(4)(n ⇒
-        Future {
-          Await.ready(latch(n), 5.seconds)
-          n
-        }).to(Sink.fromSubscriber(c)).run()
-      val sub = c.expectSubscription()
-      sub.request(5)
-      latch(2).countDown()
-      c.expectNext(2)
-      latch(4).countDown()
-      c.expectNext(4)
-      latch(3).countDown()
-      c.expectNext(3)
-      latch(1).countDown()
-      c.expectNext(1)
-      c.expectComplete()
-    }
+    "produce future elements in the order they are ready" in
+      assertAllStagesStopped {
+        val c = TestSubscriber.manualProbe[Int]()
+        implicit val ec = system.dispatcher
+        val latch = (1 to 4).map(_ -> TestLatch(1)).toMap
+        val p = Source(1 to 4).mapAsyncUnordered(4)(n ⇒
+          Future {
+            Await.ready(latch(n), 5.seconds)
+            n
+          }).to(Sink.fromSubscriber(c)).run()
+        val sub = c.expectSubscription()
+        sub.request(5)
+        latch(2).countDown()
+        c.expectNext(2)
+        latch(4).countDown()
+        c.expectNext(4)
+        latch(3).countDown()
+        c.expectNext(3)
+        latch(1).countDown()
+        c.expectNext(1)
+        c.expectComplete()
+      }
 
     "not run more futures than requested elements" in {
       val probe = TestProbe()
@@ -169,8 +170,8 @@ class FlowMapAsyncUnorderedSpec extends AkkaSpec {
         .to(Sink.fromSubscriber(c)).run()
       val sub = c.expectSubscription()
       sub.request(10)
-      c.expectError.getMessage should be(
-        ReactiveStreamsCompliance.ElementMustNotBeNullMsg)
+      c.expectError.getMessage should
+        be(ReactiveStreamsCompliance.ElementMustNotBeNullMsg)
     }
 
     "resume when future is completed with null" in {

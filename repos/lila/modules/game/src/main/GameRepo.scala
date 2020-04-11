@@ -79,12 +79,9 @@ object GameRepo {
   def gamesForAssessment(userId: String, nb: Int): Fu[List[Game]] =
     $find(
       $query(
-        Query.finished
-          ++ Query.rated
-          ++ Query.user(userId)
-          ++ Query.analysed(true)
-          ++ Query.turnsMoreThan(20)
-          ++ Query.clock(true)) sort ($sort asc F.createdAt),
+        Query.finished ++ Query.rated ++ Query.user(userId) ++
+          Query.analysed(true) ++ Query.turnsMoreThan(20) ++
+          Query.clock(true)) sort ($sort asc F.createdAt),
       nb)
 
   def unrate(gameId: String) =
@@ -102,8 +99,8 @@ object GameRepo {
       $select(pov.gameId),
       BSONDocument(
         "$set" -> BSONDocument(
-          s"${pov.color.fold(F.whitePlayer, F.blackPlayer)}.${Player.BSONFields
-            .berserk}" -> true)))
+          s"${pov.color.fold(F.whitePlayer, F.blackPlayer)}.${Player.BSONFields.berserk}" ->
+            true)))
 
   def save(progress: Progress): Funit =
     GameDiff(progress.origin, progress.game) match {
@@ -111,9 +108,8 @@ object GameRepo {
       case (sets, unsets) =>
         gameTube.coll.update(
           $select(progress.origin.id),
-          nonEmptyMod("$set", BSONDocument(sets)) ++ nonEmptyMod(
-            "$unset",
-            BSONDocument(unsets))).void
+          nonEmptyMod("$set", BSONDocument(sets)) ++
+            nonEmptyMod("$unset", BSONDocument(unsets))).void
     }
 
   private def nonEmptyMod(mod: String, doc: BSONDocument) =
@@ -124,10 +120,10 @@ object GameRepo {
       $select(id),
       BSONDocument(
         "$set" -> BSONDocument(
-          s"${F.whitePlayer}.${Player.BSONFields.ratingDiff}" -> BSONInteger(
-            white),
-          s"${F.blackPlayer}.${Player.BSONFields.ratingDiff}" -> BSONInteger(
-            black)))
+          s"${F.whitePlayer}.${Player.BSONFields.ratingDiff}" ->
+            BSONInteger(white),
+          s"${F.blackPlayer}.${Player.BSONFields.ratingDiff}" ->
+            BSONInteger(black)))
     )
 
   // used by RatingFest
@@ -136,14 +132,14 @@ object GameRepo {
       $select(id),
       BSONDocument(
         "$set" -> BSONDocument(
-          s"${F.whitePlayer}.${Player.BSONFields.rating}" -> BSONInteger(
-            white._1),
-          s"${F.blackPlayer}.${Player.BSONFields.rating}" -> BSONInteger(
-            black._1),
-          s"${F.whitePlayer}.${Player.BSONFields.ratingDiff}" -> BSONInteger(
-            white._2),
-          s"${F.blackPlayer}.${Player.BSONFields.ratingDiff}" -> BSONInteger(
-            black._2)
+          s"${F.whitePlayer}.${Player.BSONFields.rating}" ->
+            BSONInteger(white._1),
+          s"${F.blackPlayer}.${Player.BSONFields.rating}" ->
+            BSONInteger(black._1),
+          s"${F.whitePlayer}.${Player.BSONFields.ratingDiff}" ->
+            BSONInteger(white._2),
+          s"${F.blackPlayer}.${Player.BSONFields.ratingDiff}" ->
+            BSONInteger(black._2)
         ))
     )
 
@@ -176,11 +172,8 @@ object GameRepo {
   def lastFinishedRatedNotFromPosition(user: User): Fu[Option[Game]] =
     $find.one {
       $query {
-        Query.user(user.id) ++
-          Query.rated ++
-          Query.finished ++
-          Query.turnsMoreThan(2) ++
-          Query.notFromPosition
+        Query.user(user.id) ++ Query.rated ++ Query.finished ++
+          Query.turnsMoreThan(2) ++ Query.notFromPosition
       } sort Query.sortAntiChronological
     }
 
@@ -246,8 +239,8 @@ object GameRepo {
         "$set",
         BSONDocument(
           F.winnerId -> winnerId,
-          F.winnerColor -> winnerColor.map(_.white))) ++ BSONDocument(
-        "$unset" -> unsets))
+          F.winnerColor -> winnerColor.map(_.white))) ++
+        BSONDocument("$unset" -> unsets))
   }
 
   def findRandomStandardCheckmate(distribution: Int): Fu[Option[Game]] =
@@ -306,10 +299,9 @@ object GameRepo {
   def saveNext(game: Game, nextId: ID): Funit =
     $update(
       $select(game.id),
-      $set(F.next -> nextId) ++
-        $unset(
-          "p0." + Player.BSONFields.isOfferingRematch,
-          "p1." + Player.BSONFields.isOfferingRematch))
+      $set(F.next -> nextId) ++ $unset(
+        "p0." + Player.BSONFields.isOfferingRematch,
+        "p1." + Player.BSONFields.isOfferingRematch))
 
   def initialFen(gameId: ID): Fu[Option[String]] =
     $primitive.one($select(gameId), F.initialFen)(_.asOpt[String])

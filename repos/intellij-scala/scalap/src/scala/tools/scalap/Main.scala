@@ -30,9 +30,8 @@ object Main {
   val SCALA_SIG_ANNOTATION = "Lscala/reflect/ScalaSignature;"
   val BYTES_VALUE = "bytes"
 
-  val versionMsg = "Scala classfile decoder " +
-    Properties.versionString + " -- " +
-    Properties.copyrightString + "\n"
+  val versionMsg = "Scala classfile decoder " + Properties.versionString +
+    " -- " + Properties.copyrightString + "\n"
 
   /**Verbose program run?
     */
@@ -317,9 +316,8 @@ object Main {
       printPrivates = arguments contains "-private"
       // construct a custom class path
       def cparg =
-        List("-classpath", "-cp") map (arguments getArgument _) reduceLeft (
-          _ orElse _
-        )
+        List("-classpath", "-cp") map (arguments getArgument _) reduceLeft
+          (_ orElse _)
       val path = cparg map (fromPathString(_)) getOrElse EmptyClasspath
       // print the classpath if output is verbose
       if (verbose) {

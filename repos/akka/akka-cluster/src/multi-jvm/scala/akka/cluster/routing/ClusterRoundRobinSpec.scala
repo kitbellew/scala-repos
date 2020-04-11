@@ -313,34 +313,34 @@ abstract class ClusterRoundRobinSpec
       enterBarrier("after-8")
     }
 
-    "remove routees for unreachable nodes, and add when reachable again" in within(
-      30.seconds) {
+    "remove routees for unreachable nodes, and add when reachable again" in
+      within(30.seconds) {
 
-      // myservice is already running
+        // myservice is already running
 
-      def routees = currentRoutees(router4)
-      def routeeAddresses =
-        (routees map {
-          case ActorSelectionRoutee(sel) ⇒ fullAddress(sel.anchor)
-        }).toSet
+        def routees = currentRoutees(router4)
+        def routeeAddresses =
+          (routees map {
+            case ActorSelectionRoutee(sel) ⇒ fullAddress(sel.anchor)
+          }).toSet
 
-      runOn(first) {
-        // 4 nodes, 2 routees on each node
-        awaitAssert(currentRoutees(router4).size should ===(8))
+        runOn(first) {
+          // 4 nodes, 2 routees on each node
+          awaitAssert(currentRoutees(router4).size should ===(8))
 
-        testConductor.blackhole(first, second, Direction.Both).await
+          testConductor.blackhole(first, second, Direction.Both).await
 
-        awaitAssert(routees.size should ===(6))
-        routeeAddresses should not contain (address(second))
+          awaitAssert(routees.size should ===(6))
+          routeeAddresses should not contain (address(second))
 
-        testConductor.passThrough(first, second, Direction.Both).await
-        awaitAssert(routees.size should ===(8))
-        routeeAddresses should contain(address(second))
+          testConductor.passThrough(first, second, Direction.Both).await
+          awaitAssert(routees.size should ===(8))
+          routeeAddresses should contain(address(second))
 
+        }
+
+        enterBarrier("after-9")
       }
-
-      enterBarrier("after-9")
-    }
 
     "deploy programatically defined routees to other node when a node becomes down" in {
       muteMarkingAsUnreachable()

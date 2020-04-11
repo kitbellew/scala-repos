@@ -145,8 +145,8 @@ class BinaryEncodedRow(
           // Nonbinary strings as stored in the CHAR, VARCHAR, and TEXT data types
           case Type.VarChar | Type.String | Type.VarString | Type.TinyBlob |
               Type.Blob | Type.MediumBlob
-              if !Charset.isBinary(field.charset) && Charset
-                .isCompatible(field.charset) =>
+              if !Charset.isBinary(field.charset) &&
+                Charset.isCompatible(field.charset) =>
             StringValue(buffer.readLengthCodedString(Charset(field.charset)))
 
           case Type.LongBlob =>

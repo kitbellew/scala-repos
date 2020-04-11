@@ -27,8 +27,8 @@ object ListTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: List[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a.intersperse(b).zipWithIndex.filter(p => isEven(p._2))
-        .map(_._1) must_=== (a)
+      a.intersperse(b).zipWithIndex.filter(p => isEven(p._2)).map(_._1) must_===
+        (a)
   }
 
   "intercalate is same as a.intersperse(b).flatten" ! forAll {
@@ -51,18 +51,18 @@ object ListTest extends SpecLite {
       a.groupWhenM[Id](p).map(_.list.toList).flatten must_=== (a)
   }
 
-  "groupByWhenM[Id] ∀(i,j) | 0<i<resut.len & 0<j<result(i).len: p(result(i)(j), p(result(i)(j+1)) yields true" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupByWhenM[Id] ∀(i,j) | 0<i<resut.len & 0<j<result(i).len: p(result(i)(j), p(result(i)(j+1)) yields true" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       a.groupWhenM[Id](p).forall { group: NonEmptyList[Int] =>
         list.adjacentPairs(group.list.toList).forall(p.tupled)
       }
-  }
+    }
 
-  "groupByWhenM[Id] ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupByWhenM[Id] ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       val pairs = list.adjacentPairs(a.groupWhen(p))
       pairs.forall { case (l, r) => !p(l.last, r.head) }
-  }
+    }
 
   "groupBy1" ! forAll { (a: List[String]) =>
     val strlen = (_: String).length
@@ -88,18 +88,18 @@ object ListTest extends SpecLite {
       a.groupWhen(p).map(_.list.toList).flatten must_=== (a)
   }
 
-  "groupByWhen ∀(i,j) | 0<i<resut.len & 0<j<result(i).len: p(result(i)(j), p(result(i)(j+1)) yields true" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupByWhen ∀(i,j) | 0<i<resut.len & 0<j<result(i).len: p(result(i)(j), p(result(i)(j+1)) yields true" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       a.groupWhen(p).forall { group: NonEmptyList[Int] =>
         list.adjacentPairs(group.list.toList).forall(p.tupled)
       }
-  }
+    }
 
-  "groupByWhen ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupByWhen ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       val pairs = list.adjacentPairs(a.groupWhen(p))
       pairs.forall { case (l, r) => !p(l.last, r.head) }
-  }
+    }
 
   "lookups in assoc lists sometime return a value" ! forAll {
     (a: List[(Int, Int)]) =>
@@ -126,14 +126,14 @@ object ListTest extends SpecLite {
 
   "foldl is foldLeft" ! forAll { (rnge: List[List[Int]]) =>
     val F = Foldable[List]
-    (rnge.foldLeft(List[Int]())(_ ++ _)
-      must_=== (F.foldLeft(rnge, List[Int]())(_ ++ _)))
+    (rnge.foldLeft(List[Int]())(_ ++ _) must_===
+      (F.foldLeft(rnge, List[Int]())(_ ++ _)))
   }
 
   "foldr is foldRight" ! forAll { (rnge: List[List[Int]]) =>
     val F = Foldable[List]
-    (rnge.foldRight(List[Int]())(_ ++ _)
-      must_=== (F.foldRight(rnge, List[Int]())(_ ++ _)))
+    (rnge.foldRight(List[Int]())(_ ++ _) must_===
+      (F.foldRight(rnge, List[Int]())(_ ++ _)))
   }
 
   "index" ! forAll { (xs: List[Int], n: Int) =>
@@ -147,16 +147,14 @@ object ListTest extends SpecLite {
 
   "mapAccumLeft" ! forAll { (xs: List[Int]) =>
     val f = (_: Int) + 1
-    xs.mapAccumLeft(List[Int](), (c: List[Int], a) => (c :+ a, f(a))) must_=== (
-      xs, xs.map(f)
-    )
+    xs.mapAccumLeft(List[Int](), (c: List[Int], a) => (c :+ a, f(a))) must_===
+      (xs, xs.map(f))
   }
 
   "mapAccumRight" ! forAll { (xs: List[Int]) =>
     val f = (_: Int) + 1
-    xs.mapAccumRight(
-        List[Int](),
-        (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs.reverse, xs.map(f))
+    xs.mapAccumRight(List[Int](), (c: List[Int], a) => (c :+ a, f(a))) must_===
+      (xs.reverse, xs.map(f))
   }
 
   checkAll(FoldableTests.anyAndAllLazy[List])

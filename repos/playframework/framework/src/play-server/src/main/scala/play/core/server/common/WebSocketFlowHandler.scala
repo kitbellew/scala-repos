@@ -71,8 +71,8 @@ object WebSocketFlowHandler {
                   state = ServerInitiatedClose
                   push(remoteOut, close)
                   // If appOut is closed, then we may need to do our own pull so that we can get the ack
-                  if (isClosed(appOut) && !isClosed(remoteIn) && !hasBeenPulled(
-                        remoteIn)) { pull(remoteIn) }
+                  if (isClosed(appOut) && !isClosed(remoteIn) &&
+                      !hasBeenPulled(remoteIn)) { pull(remoteIn) }
                 } else { state = ServerInitiatingClose(close) }
               } else {
                 // Initiating close when we've already sent a close message means we must have encountered an error in
@@ -105,8 +105,8 @@ object WebSocketFlowHandler {
                     "Unexpected continuation frame"))
                   null
                 case MessageType.Continuation
-                    if currentPartialMessage.data.size + read.data
-                      .size > bufferLimit =>
+                    if currentPartialMessage.data.size + read.data.size >
+                      bufferLimit =>
                   serverInitiatedClose(
                     CloseMessage(CloseCodes.TooBig, "Message was too big"))
                   null

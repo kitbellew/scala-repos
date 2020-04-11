@@ -313,22 +313,21 @@ object Messages {
 
     val messagePattern = namedError(
       rep(
-        ("""\""" ^^ (_ => "")) ~> ( // Ignore the leading \
-          ("\r" ?) ~> "\n" ^^ (_ => "") | // Ignore escaped end of lines \
-            "n" ^^ (_ => "\n") | // Translate literal \n to real newline
-            """\""" | // Handle escaped \\
-            "^.".r ^^ ("""\""" + _)) |
-          "^.".r // Or any character
+        ("""\""" ^^ (_ => "")) ~>
+          ( // Ignore the leading \
+            ("\r" ?) ~> "\n" ^^ (_ => "") | // Ignore escaped end of lines \
+              "n" ^^ (_ => "\n") | // Translate literal \n to real newline
+                """\""" | // Handle escaped \\
+                  "^.".r ^^ ("""\""" + _)) | "^.".r // Or any character
       ) ^^ { case chars => chars.mkString },
       "Message pattern expected"
     )
 
-    val message = ignoreWhiteSpace ~ messageKey ~ (
-      ignoreWhiteSpace ~ "=" ~ ignoreWhiteSpace
-    ) ~ messagePattern ^^ {
-      case (_ ~ k ~ _ ~ v) =>
-        Messages.Message(k, v.trim, messageSource, messageSourceName)
-    }
+    val message = ignoreWhiteSpace ~ messageKey ~
+      (ignoreWhiteSpace ~ "=" ~ ignoreWhiteSpace) ~ messagePattern ^^ {
+        case (_ ~ k ~ _ ~ v) =>
+          Messages.Message(k, v.trim, messageSource, messageSourceName)
+      }
 
     val sentence = (comment | positioned(message)) <~ newLine
 

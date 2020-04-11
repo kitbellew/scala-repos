@@ -20,8 +20,8 @@ object QaComment extends QaController {
             data =>
               api.comment.create(data, Left(q), me) map { comment =>
                 Redirect(
-                  routes.QaQuestion.show(q.id, q.slug) + "#comment-" + comment
-                    .id)
+                  routes.QaQuestion.show(q.id, q.slug) + "#comment-" +
+                    comment.id)
               }
           )
         }
@@ -31,21 +31,21 @@ object QaComment extends QaController {
   def answer(questionId: QuestionId, answerId: AnswerId) =
     AuthBody { implicit ctx => me =>
       IfCanComment {
-        (api.question findById questionId) zip (api
-          .answer findById answerId) flatMap {
-          case (Some(q), Some(a)) =>
-            implicit val req = ctx.body
-            forms.comment.bindFromRequest.fold(
-              err => renderQuestion(q, None),
-              data =>
-                api.comment.create(data, Right(a), me) map { comment =>
-                  Redirect(
-                    routes.QaQuestion.show(q.id, q.slug) + "#comment-" + comment
-                      .id)
-                }
-            )
-          case _ => notFound
-        }
+        (api.question findById questionId) zip
+          (api.answer findById answerId) flatMap {
+            case (Some(q), Some(a)) =>
+              implicit val req = ctx.body
+              forms.comment.bindFromRequest.fold(
+                err => renderQuestion(q, None),
+                data =>
+                  api.comment.create(data, Right(a), me) map { comment =>
+                    Redirect(
+                      routes.QaQuestion.show(q.id, q.slug) + "#comment-" +
+                        comment.id)
+                  }
+              )
+            case _ => notFound
+          }
       }
     }
 

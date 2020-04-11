@@ -85,8 +85,8 @@ case class Spdy(
       override def prepareConnFactory(
           underlying: ServiceFactory[HttpRequest, HttpResponse],
           params: Stack.Params): ServiceFactory[HttpRequest, HttpResponse] = {
-        new GenerateSpdyStreamId andThen super
-          .prepareConnFactory(underlying, params)
+        new GenerateSpdyStreamId andThen
+          super.prepareConnFactory(underlying, params)
       }
 
       override def newClientTransport(
@@ -124,8 +124,8 @@ case class Spdy(
       override def prepareConnFactory(
           underlying: ServiceFactory[HttpRequest, HttpResponse],
           params: Stack.Params): ServiceFactory[HttpRequest, HttpResponse] = {
-        new AnnotateSpdyStreamId andThen super
-          .prepareConnFactory(underlying, params)
+        new AnnotateSpdyStreamId andThen
+          super.prepareConnFactory(underlying, params)
       }
 
       override def newServerDispatcher(

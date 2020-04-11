@@ -127,8 +127,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
       atCaret.getClass)
 
     for (processor <- ScalaSmartEnterProcessor.myEnterProcessors) {
-      if (atCaret != null && processor
-            .doEnter(editor, atCaret, isModified(editor))) return
+      if (atCaret != null &&
+          processor.doEnter(editor, atCaret, isModified(editor))) return
     }
 
     if (!isModified(editor)) plainEnter(editor)
@@ -164,8 +164,9 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
       psiFile: PsiFile): PsiElement = {
     val atCaret: PsiElement = super.getStatementAtCaret(editor, psiFile)
     if (atCaret.isInstanceOf[PsiWhiteSpace] || atCaret == null) return null
-    if (("}" == atCaret.getText) && !atCaret.getParent
-          .isInstanceOf[PsiArrayInitializerExpression]) return null
+    if (("}" == atCaret.getText) &&
+        !atCaret.getParent.isInstanceOf[PsiArrayInitializerExpression])
+      return null
 
     var statementAtCaret: PsiElement = PsiTreeUtil.getParentOfType(
       atCaret,
@@ -178,8 +179,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
 
     if (statementAtCaret.isInstanceOf[PsiBlockStatement]) return null
 
-    if (statementAtCaret != null && statementAtCaret.getParent
-          .isInstanceOf[ScForStatement]) {
+    if (statementAtCaret != null &&
+        statementAtCaret.getParent.isInstanceOf[ScForStatement]) {
       if (!PsiTreeUtil.hasErrorElements(statementAtCaret)) {
         statementAtCaret = statementAtCaret.getParent
       }

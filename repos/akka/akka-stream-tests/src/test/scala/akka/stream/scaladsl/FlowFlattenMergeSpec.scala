@@ -29,14 +29,14 @@ class FlowFlattenMergeSpec extends AkkaSpec {
 
     "work in the nominal case" in {
       Source(List(src10(0), src10(10), src10(20), src10(30)))
-        .flatMapMerge(4, identity).runWith(toSet).futureValue should ===(
-        (0 until 40).toSet)
+        .flatMapMerge(4, identity).runWith(toSet).futureValue should
+        ===((0 until 40).toSet)
     }
 
     "not be held back by one slow stream" in {
       Source(List(src10(0), src10(10), blocked, src10(20), src10(30)))
-        .flatMapMerge(3, identity).take(40).runWith(toSet)
-        .futureValue should ===((0 until 40).toSet)
+        .flatMapMerge(3, identity).take(40).runWith(toSet).futureValue should
+        ===((0 until 40).toSet)
     }
 
     "respect breadth" in {
@@ -84,9 +84,9 @@ class FlowFlattenMergeSpec extends AkkaSpec {
       val p1, p2 = TestPublisher.probe[Int]()
       val ex = new Exception("buh")
       val p = Promise[Source[Int, NotUsed]]
-      (Source(
-        List(Source.fromPublisher(p1), Source.fromPublisher(p2))) ++ Source
-        .fromFuture(p.future)).flatMapMerge(5, identity).runWith(Sink.head)
+      (Source(List(Source.fromPublisher(p1), Source.fromPublisher(p2))) ++
+        Source.fromFuture(p.future)).flatMapMerge(5, identity)
+        .runWith(Sink.head)
       p1.expectRequest()
       p2.expectRequest()
       p.failure(ex)

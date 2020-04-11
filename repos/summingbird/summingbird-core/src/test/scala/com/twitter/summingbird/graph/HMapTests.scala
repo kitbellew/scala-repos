@@ -51,8 +51,7 @@ object HMapTests extends Properties("HMap") {
       val initContains = hmap.contains(k)
       val added = hmap + (k -> v)
       // Adding puts the item in, and does not change the initial
-      (added.get(k) == Some(v)) &&
-      (initContains == hmap.contains(k)) &&
+      (added.get(k) == Some(v)) && (initContains == hmap.contains(k)) &&
       (initContains == hmap.get(k).isDefined)
   }
   property("removing a key works") = forAll {
@@ -60,8 +59,7 @@ object HMapTests extends Properties("HMap") {
       val initContains = hmap.get(k).isDefined
       val next = hmap - k
       // Adding puts the item in, and does not change the initial
-      (!next.contains(k)) &&
-      (initContains == hmap.contains(k)) &&
+      (!next.contains(k)) && (initContains == hmap.contains(k)) &&
       (next.get(k) == None)
   }
 

@@ -73,8 +73,8 @@ class MarathonConfTest extends MarathonSpec {
       case Failure(e)
           if e.getMessage ==
             "requirement failed: " +
-              "--default_accepted_resource_roles contains roles for which we will not receive offers: marathon" =>
-      case other                                                                                                => fail(s"unexpected triedConfig: $other")
+            "--default_accepted_resource_roles contains roles for which we will not receive offers: marathon" =>
+      case other                                                                                              => fail(s"unexpected triedConfig: $other")
     }
   }
 

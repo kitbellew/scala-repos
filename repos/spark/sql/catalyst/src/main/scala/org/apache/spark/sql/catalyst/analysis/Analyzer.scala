@@ -85,24 +85,13 @@ class Analyzer(
     Batch(
       "Resolution",
       fixedPoint,
-      ResolveRelations ::
-        ResolveReferences ::
-        ResolveGroupingAnalytics ::
-        ResolvePivot ::
-        ResolveUpCast ::
-        ResolveSortReferences ::
-        ResolveGenerate ::
-        ResolveFunctions ::
-        ResolveAliases ::
-        ResolveSubquery ::
-        ResolveWindowOrder ::
-        ResolveWindowFrame ::
-        ResolveNaturalAndUsingJoin ::
-        ExtractWindowExpressions ::
-        GlobalAggregates ::
-        ResolveAggregateFunctions ::
-        HiveTypeCoercion.typeCoercionRules ++
-        extendedResolutionRules: _*
+      ResolveRelations :: ResolveReferences :: ResolveGroupingAnalytics ::
+        ResolvePivot :: ResolveUpCast :: ResolveSortReferences ::
+        ResolveGenerate :: ResolveFunctions :: ResolveAliases ::
+        ResolveSubquery :: ResolveWindowOrder :: ResolveWindowFrame ::
+        ResolveNaturalAndUsingJoin :: ExtractWindowExpressions ::
+        GlobalAggregates :: ResolveAggregateFunctions ::
+        HiveTypeCoercion.typeCoercionRules ++ extendedResolutionRules: _*
     ),
     Batch("Nondeterministic", Once, PullOutNondeterministic),
     Batch("UDF", Once, HandleNullInputsForUDF),
@@ -268,8 +257,8 @@ class Analyzer(
               child) =>
           GroupingSets(bitmasks(r), groupByExprs, child, aggregateExpressions)
         case g: GroupingSets
-            if g.expressions.exists(!_.resolved) && hasGroupingId(
-              g.expressions) =>
+            if g.expressions.exists(!_.resolved) &&
+              hasGroupingId(g.expressions) =>
           failAnalysis(
             s"${VirtualColumn.groupingIdName} is deprecated; use grouping_id() instead")
         // Ensure all the expressions have been resolved.
@@ -313,8 +302,8 @@ class Analyzer(
                   e
                 case e if isPartOfAggregation(e) => e
                 case e: GroupingID =>
-                  if (e.groupByExprs.isEmpty || e.groupByExprs == x
-                        .groupByExprs) { gid }
+                  if (e.groupByExprs.isEmpty ||
+                      e.groupByExprs == x.groupByExprs) { gid }
                   else {
                     throw new AnalysisException(
                       s"Columns of grouping_id (${e.groupByExprs.mkString(",")}) does not match " +
@@ -645,8 +634,7 @@ class Analyzer(
             // If this is an inner class of another class, register the outer object in `OuterScopes`.
             // Note that static inner classes (e.g., inner classes within Scala objects) don't need
             // outer pointer registration.
-            if n.outerPointer.isEmpty &&
-              n.cls.isMemberClass &&
+            if n.outerPointer.isEmpty && n.cls.isMemberClass &&
               !Modifier.isStatic(n.cls.getModifiers) =>
           val outer = OuterScopes.outerScopes
             .get(n.cls.getDeclaringClass.getName)
@@ -715,8 +703,8 @@ class Analyzer(
         // Replace the index with the related attribute for ORDER BY
         // which is a 1-base position of the projection list.
         case s @ Sort(orders, global, child)
-            if conf.orderByOrdinal && orders
-              .exists(o => IntegerIndex.unapply(o.child).nonEmpty) =>
+            if conf.orderByOrdinal &&
+              orders.exists(o => IntegerIndex.unapply(o.child).nonEmpty) =>
           val newOrders = orders map {
             case s @ SortOrder(IntegerIndex(index), direction) =>
               if (index > 0 && index <= child.output.size) {
@@ -908,8 +896,8 @@ class Analyzer(
           // Try resolving the condition of the filter as though it is in the aggregate clause
           val aggregatedCondition = Aggregate(
             grouping,
-            Alias(havingCondition, "havingCondition")(isGenerated =
-              true) :: Nil,
+            Alias(havingCondition, "havingCondition")(isGenerated = true) ::
+              Nil,
             child)
           val resolvedOperator = execute(aggregatedCondition)
           def resolvedAggregateFilter =
@@ -917,8 +905,8 @@ class Analyzer(
 
           // If resolution was successful and we see the filter has an aggregate in it, add it to
           // the original aggregate operator.
-          if (resolvedOperator.resolved && containsAggregate(
-                resolvedAggregateFilter)) {
+          if (resolvedOperator.resolved &&
+              containsAggregate(resolvedAggregateFilter)) {
             val aggExprsWithHaving = resolvedAggregateFilter +: originalAggExprs
 
             Project(
@@ -986,8 +974,8 @@ class Analyzer(
                 Sort(
                   finalSortOrders,
                   global,
-                  aggregate.copy(aggregateExpressions =
-                    originalAggExprs ++ needsPushDown)))
+                  aggregate.copy(aggregateExpressions = originalAggExprs ++
+                    needsPushDown)))
             }
           } catch {
             // Attempting to resolve in the aggregate can result in ambiguity.  When this happens,
@@ -997,8 +985,8 @@ class Analyzer(
       }
 
     private def isAggregateExpression(e: Expression): Boolean = {
-      e.isInstanceOf[AggregateExpression] || e.isInstanceOf[Grouping] || e
-        .isInstanceOf[GroupingID]
+      e.isInstanceOf[AggregateExpression] || e.isInstanceOf[Grouping] ||
+      e.isInstanceOf[GroupingID]
     }
     def containsAggregate(condition: Expression): Boolean = {
       condition.find(isAggregateExpression).isDefined
@@ -1043,8 +1031,8 @@ class Analyzer(
 
               resolvedGenerator = Generate(
                 generator,
-                join = projectList
-                  .size > 1, // Only join if there are other expressions in SELECT.
+                join = projectList.size >
+                  1, // Only join if there are other expressions in SELECT.
                 outer = false,
                 qualifier = None,
                 generatorOutput = makeGeneratorOutput(generator, names),
@@ -1168,9 +1156,8 @@ class Analyzer(
             // If a named expression is not in regularExpressions, add it to
             // extractedExprBuffer and replace it with an AttributeReference.
             val missingExpr =
-              AttributeSet(Seq(expr)) -- (
-                regularExpressions ++ extractedExprBuffer
-              )
+              AttributeSet(Seq(expr)) --
+                (regularExpressions ++ extractedExprBuffer)
             if (missingExpr.nonEmpty) { extractedExprBuffer += ne }
             // alias will be cleaned in the rule CleanupAliases
             ne
@@ -1331,8 +1318,7 @@ class Analyzer(
         case f @ Filter(
               condition,
               a @ Aggregate(groupingExprs, aggregateExprs, child))
-            if child.resolved &&
-              hasWindowFunction(aggregateExprs) &&
+            if child.resolved && hasWindowFunction(aggregateExprs) &&
               a.expressions.forall(_.resolved) =>
           val (windowExpressions, aggregateExpressions) = extract(
             aggregateExprs)
@@ -1372,8 +1358,8 @@ class Analyzer(
         // We only extract Window Expressions after all expressions of the Project
         // have been resolved.
         case p @ Project(projectList, child)
-            if hasWindowFunction(projectList) && !p.expressions
-              .exists(!_.resolved) =>
+            if hasWindowFunction(projectList) &&
+              !p.expressions.exists(!_.resolved) =>
           val (windowExpressions, regularExpressions) = extract(projectList)
           // We add a project to get all needed expressions for window expressions from the child
           // of the original Project operator.
@@ -1402,10 +1388,10 @@ class Analyzer(
         // from LogicalPlan, currently we only do it for UnaryNode which has same output
         // schema with its child.
         case p: UnaryNode
-            if p.output == p.child.output && p.expressions
-              .exists(!_.deterministic) =>
-          val nondeterministicExprs =
-            p.expressions.filterNot(_.deterministic).flatMap { expr =>
+            if p.output == p.child.output &&
+              p.expressions.exists(!_.deterministic) =>
+          val nondeterministicExprs = p.expressions.filterNot(_.deterministic)
+            .flatMap { expr =>
               val leafNondeterministic = expr.collect {
                 case n: Nondeterministic => n
               }
@@ -1521,8 +1507,8 @@ class Analyzer(
             .flatMap(col => left.resolveQuoted(col.name, resolver))
           val rCols = usingCols
             .flatMap(col => right.resolveQuoted(col.name, resolver))
-          if ((lCols.length == usingCols.length) && (rCols.length == usingCols
-                .length)) {
+          if ((lCols.length == usingCols.length) &&
+              (rCols.length == usingCols.length)) {
             val joinNames = lCols.map(exp => exp.name)
             commonNaturalJoinProcessing(left, right, joinType, joinNames, None)
           } else { j }
@@ -1571,8 +1557,7 @@ class Analyzer(
         val joinedCols = joinPairs.map {
           case (l, r) => Alias(Coalesce(Seq(l, r)), l.name)()
         }
-        joinedCols ++
-          lUniqueOutput.map(_.withNullability(true)) ++
+        joinedCols ++ lUniqueOutput.map(_.withNullability(true)) ++
           rUniqueOutput.map(_.withNullability(true))
       case Inner => leftKeys ++ lUniqueOutput ++ rUniqueOutput
       case _     => sys.error("Unsupported natural join type " + joinType)
@@ -1685,8 +1670,8 @@ object ResolveUpCast extends Rule[LogicalPlan] {
     throw new AnalysisException(
       s"Cannot up cast ${from.sql} from " +
         s"${from.dataType.simpleString} to ${to.simpleString} as it may truncate\n" +
-        "The type path of the target object is:\n" + walkedTypePath
-        .mkString("", "\n", "\n") +
+        "The type path of the target object is:\n" +
+        walkedTypePath.mkString("", "\n", "\n") +
         "You can either add an explicit cast to the input data or choose a higher precision " +
         "type of the field in the target object")
   }

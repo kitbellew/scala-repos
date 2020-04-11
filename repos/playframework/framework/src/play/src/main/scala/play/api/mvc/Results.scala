@@ -277,8 +277,8 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     */
   private def shouldWarnIfNotRedirect(flash: Flash): Boolean = {
     play.api.Play.privateMaybeApplication.exists(app =>
-      (app.mode == play.api.Mode.Dev) && (!flash.isEmpty) && (header
-        .status < 300 || header.status > 399))
+      (app.mode == play.api.Mode.Dev) && (!flash.isEmpty) &&
+        (header.status < 300 || header.status > 399))
   }
 
   /**

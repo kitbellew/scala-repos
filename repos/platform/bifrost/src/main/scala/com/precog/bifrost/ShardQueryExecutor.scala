@@ -182,8 +182,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
                   case Fault.Warning(pos, msg) =>
                     queryReport.warn(pos, msg) map { _ => false }
                 } map { errors =>
-                  faults -> (if (errors.exists(_ == true)) Table.empty
-                             else table)
+                  faults ->
+                    (if (errors.exists(_ == true)) Table.empty else table)
                 }
               }
             }

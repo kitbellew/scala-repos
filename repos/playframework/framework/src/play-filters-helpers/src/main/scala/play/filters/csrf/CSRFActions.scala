@@ -54,8 +54,8 @@ class CSRFAction(
     def continue = next(request)
 
     // Only filter unsafe methods and content types
-    if (config.checkMethod(request.method) && config
-          .checkContentType(request.contentType)) {
+    if (config.checkMethod(request.method) &&
+        config.checkContentType(request.contentType)) {
 
       if (!requiresCsrfCheck(request, config)) { continue }
       else {
@@ -69,7 +69,8 @@ class CSRFAction(
               continue
             } else {
               filterLogger.trace(
-                "[CSRF] Check failed because invalid token found in query string: " + queryStringToken)
+                "[CSRF] Check failed because invalid token found in query string: " +
+                  queryStringToken)
               checkFailed(request, "Bad CSRF token found in query String")
             }
 
@@ -103,8 +104,8 @@ class CSRFAction(
 
         }
       }
-    } else if (getTokenToValidate(request, config, tokenSigner)
-                 .isEmpty && config.createIfNotFound(request)) {
+    } else if (getTokenToValidate(request, config, tokenSigner).isEmpty &&
+               config.createIfNotFound(request)) {
 
       // No token in header and we have to create one if not found, so create a new token
       val newToken = tokenProvider.generateToken
@@ -190,8 +191,8 @@ class CSRFAction(
   private def extractTokenFromFormBody(
       body: ByteString,
       tokenName: String): Option[String] = {
-    val tokenEquals =
-      ByteString(URLEncoder.encode(tokenName, "utf-8")) ++ ByteString('=')
+    val tokenEquals = ByteString(URLEncoder.encode(tokenName, "utf-8")) ++
+      ByteString('=')
 
     // First check if it's the first token
     if (body.startsWith(tokenEquals)) {
@@ -249,8 +250,9 @@ class CSRFAction(
               extractHeaders(nextCrlf + 2)
             case Array(key, value) =>
               val (endIndex, headers) = extractHeaders(nextCrlf + 2)
-              endIndex -> ((key.trim().toLowerCase(Locale.ENGLISH) -> value
-                .trim()) :: headers)
+              endIndex ->
+                ((key.trim().toLowerCase(Locale.ENGLISH) -> value.trim()) ::
+                  headers)
           }
         }
       }
@@ -443,9 +445,8 @@ object CSRFAction {
   private[csrf] def tagRequest(
       request: RequestHeader,
       token: Token): RequestHeader = {
-    request.copy(tags = request.tags ++ Map(
-      Token.NameRequestTag -> token.name,
-      Token.RequestTag -> token.value))
+    request.copy(tags = request.tags ++
+      Map(Token.NameRequestTag -> token.name, Token.RequestTag -> token.value))
   }
 
   private[csrf] def tagRequest[A](
@@ -466,8 +467,8 @@ object CSRFAction {
   private[csrf] def requiresCsrfCheck(
       request: RequestHeader,
       config: CSRFConfig): Boolean = {
-    if (config.bypassCorsTrustedOrigins && request.tags
-          .contains(CORSFilter.RequestTag)) {
+    if (config.bypassCorsTrustedOrigins &&
+        request.tags.contains(CORSFilter.RequestTag)) {
       filterLogger
         .trace("[CSRF] Bypassing check because CORSFilter request tag found")
       false
@@ -497,8 +498,8 @@ object CSRFAction {
             httpOnly = config.httpOnlyCookie))
       } getOrElse {
 
-        val newSession =
-          result.session(request) + (config.tokenName -> newToken)
+        val newSession = result.session(request) +
+          (config.tokenName -> newToken)
         result.withSession(newSession)
       }
     }
@@ -553,8 +554,8 @@ case class CSRFCheck @Inject() (
         .tagRequestFromHeader(untaggedRequest, config, tokenSigner)
 
       // Maybe bypass
-      if (!CSRFAction.requiresCsrfCheck(request, config) || !config
-            .checkContentType(request.contentType)) { wrapped(request) }
+      if (!CSRFAction.requiresCsrfCheck(request, config) ||
+          !config.checkContentType(request.contentType)) { wrapped(request) }
       else {
         // Get token from header
         CSRFAction.getTokenToValidate(request, config, tokenSigner).flatMap {

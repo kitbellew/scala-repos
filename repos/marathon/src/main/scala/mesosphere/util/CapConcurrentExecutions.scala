@@ -77,8 +77,8 @@ class CapConcurrentExecutions private (
     */
   def apply[T](block: => Future[T]): Future[T] = {
     val promise = Promise[T]()
-    serializeExecutionActorRef ! RestrictParallelExecutionsActor
-      .Execute(promise, () => block)
+    serializeExecutionActorRef !
+      RestrictParallelExecutionsActor.Execute(promise, () => block)
     promise.future
   }
 

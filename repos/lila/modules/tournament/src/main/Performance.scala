@@ -17,8 +17,7 @@ private final class Performance {
         val ratingMap = opponents.map { o => o.userId -> o.finalRating }.toMap
         val performance = pairings.foldLeft(0) {
           case (acc, pairing) =>
-            acc +
-              ~(pairing.opponentOf(player.userId) flatMap ratingMap.get) + {
+            acc + ~(pairing.opponentOf(player.userId) flatMap ratingMap.get) + {
               if (pairing wonBy player.userId) DIFF
               else if (pairing lostBy player.userId) -DIFF
               else 0

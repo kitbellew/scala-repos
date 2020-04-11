@@ -36,8 +36,8 @@ object PairingSystem extends AbstractPairingSystem {
             case _   => evenOrAll(data, users)
           }
       pairings <- preps.map { prep =>
-        UserRepo.firstGetsWhite(prep.user1.some, prep.user2.some) map prep
-          .toPairing
+        UserRepo.firstGetsWhite(prep.user1.some, prep.user2.some) map
+          prep.toPairing
       }.sequenceFu
     } yield pairings
   }.chronometer.logIfSlow(500, pairingLogger) { pairings =>
@@ -63,9 +63,8 @@ object PairingSystem extends AbstractPairingSystem {
         else
           idles.grouped(pairingGroupSize).toList match {
             case a :: b :: c :: _ =>
-              smartPairings(data, a) ::: smartPairings(
-                data,
-                b) ::: naivePairings(tour, c take pairingGroupSize)
+              smartPairings(data, a) ::: smartPairings(data, b) :::
+                naivePairings(tour, c take pairingGroupSize)
             case a :: b :: Nil =>
               smartPairings(data, a) ::: smartPairings(data, b)
             case a :: Nil => smartPairings(data, a)

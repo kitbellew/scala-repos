@@ -167,16 +167,14 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
       try {
         blockingChannel.connect()
         info(
-          "Connected to " + formatAddress(
-            config.host,
-            config.port) + " for producing")
+          "Connected to " + formatAddress(config.host, config.port) +
+            " for producing")
       } catch {
         case e: Exception => {
           disconnect()
           error(
-            "Producer connection to " + formatAddress(
-              config.host,
-              config.port) + " unsuccessful",
+            "Producer connection to " +
+              formatAddress(config.host, config.port) + " unsuccessful",
             e)
           throw e
         }

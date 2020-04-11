@@ -264,8 +264,8 @@ object LoadService {
           case NonFatal(ex) =>
             DefaultLogger.log(
               Level.FATAL,
-              s"LoadService: failed to instantiate '$className' for the requested "
-                + s"service '$ifaceName'",
+              s"LoadService: failed to instantiate '$className' for the requested " +
+                s"service '$ifaceName'",
               ex)
             None
         }

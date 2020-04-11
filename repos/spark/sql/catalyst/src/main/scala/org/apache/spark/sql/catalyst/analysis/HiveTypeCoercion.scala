@@ -51,21 +51,11 @@ import org.apache.spark.sql.types._
 object HiveTypeCoercion {
 
   val typeCoercionRules =
-    PropagateTypes ::
-      InConversion ::
-      WidenSetOperationTypes ::
-      PromoteStrings ::
-      DecimalPrecision ::
-      BooleanEquality ::
-      StringToIntegralCasts ::
-      FunctionArgumentConversion ::
-      CaseWhenCoercion ::
-      IfCoercion ::
-      Division ::
-      PropagateTypes ::
-      ImplicitTypeCasts ::
-      DateTimeOperations ::
-      Nil
+    PropagateTypes :: InConversion :: WidenSetOperationTypes ::
+      PromoteStrings :: DecimalPrecision :: BooleanEquality ::
+      StringToIntegralCasts :: FunctionArgumentConversion :: CaseWhenCoercion ::
+      IfCoercion :: Division :: PropagateTypes :: ImplicitTypeCasts ::
+      DateTimeOperations :: Nil
 
   // See https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types.
   // The conversion for integral and floating point types have a linear widening hierarchy:
@@ -241,10 +231,9 @@ object HiveTypeCoercion {
           s.makeCopy(Array(newChildren.head, newChildren.last))
 
         case s: Union
-            if s.childrenResolved &&
-              s.children
-                .forall(_.output.length == s.children.head.output.length) && !s
-              .resolved =>
+            if s.childrenResolved && s.children.forall(
+              _.output.length == s.children.head.output.length) &&
+              !s.resolved =>
           val newChildren: Seq[LogicalPlan] = buildNewChildrenWithWiderTypes(
             s.children)
           s.makeCopy(Array(newChildren))

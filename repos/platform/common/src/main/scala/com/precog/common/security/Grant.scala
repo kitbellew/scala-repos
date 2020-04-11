@@ -85,10 +85,9 @@ case class Grant(
 object Grant extends Logging {
   implicit val grantIso = Iso.hlist(Grant.apply _, Grant.unapply _)
 
-  val schemaV1 = "grantId" :: "name" :: "description" :: (
-    "issuerKey" ||| "(undefined)"
-  ) :: "parentIds" :: "permissions" :: ("createdAt" ||| new Instant(
-    0L)) :: "expirationDate" :: HNil
+  val schemaV1 = "grantId" :: "name" :: "description" ::
+    ("issuerKey" ||| "(undefined)") :: "parentIds" :: "permissions" ::
+    ("createdAt" ||| new Instant(0L)) :: "expirationDate" :: HNil
 
   val decomposerV1: Decomposer[Grant] = decomposerV[Grant](
     schemaV1,
@@ -101,8 +100,8 @@ object Grant extends Logging {
     "2.1.5")
   val extractorV0: Extractor[Grant] = new Extractor[Grant] {
     override def validated(obj: JValue) = {
-      (obj.validated[GrantId]("gid") |@|
-        obj.validated[Option[APIKey]]("cid").map(_.getOrElse("(undefined)")) |@|
+      (obj.validated[GrantId]("gid") |@| obj.validated[Option[APIKey]]("cid")
+        .map(_.getOrElse("(undefined)")) |@|
         obj.validated[Option[GrantId]]("issuer") |@|
         obj.validated[Permission]("permission")(Permission.extractorV0) |@|
         obj.validated[Option[DateTime]]("permission.expirationDate")).apply {
@@ -121,8 +120,8 @@ object Grant extends Logging {
   }
 
   implicit val decomposer: Decomposer[Grant] = decomposerV1
-  implicit val extractor: Extractor[Grant] =
-    extractorV2 <+> extractorV1 <+> extractorV0
+  implicit val extractor: Extractor[Grant] = extractorV2 <+> extractorV1 <+>
+    extractorV0
 
   def implies(
       grants: Set[Grant],

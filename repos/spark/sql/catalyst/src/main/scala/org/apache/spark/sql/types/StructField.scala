@@ -49,9 +49,7 @@ case class StructField(
   override def toString: String = s"StructField($name,$dataType,$nullable)"
 
   private[sql] def jsonValue: JValue = {
-    ("name" -> name) ~
-      ("type" -> dataType.jsonValue) ~
-      ("nullable" -> nullable) ~
-      ("metadata" -> metadata.jsonValue)
+    ("name" -> name) ~ ("type" -> dataType.jsonValue) ~
+      ("nullable" -> nullable) ~ ("metadata" -> metadata.jsonValue)
   }
 }

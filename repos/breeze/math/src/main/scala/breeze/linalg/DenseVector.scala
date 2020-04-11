@@ -94,8 +94,9 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
     if (noOffsetOrStride) data(i) = v else data(offset + i * stride) = v
 
   private def checkIfSpecialized(): Unit = {
-    if (data.isInstanceOf[Array[Double]] && getClass
-          .getName() == "breeze.linalg.DenseVector") throw new Exception("...")
+    if (data.isInstanceOf[Array[Double]] &&
+        getClass.getName() == "breeze.linalg.DenseVector")
+      throw new Exception("...")
   }
   // uncomment to debug places where specialization fails
   //  checkIfSpecialized()
@@ -210,7 +211,8 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
         "Slice arguments " + start + ", " + end + " invalid.")
     if (end > length || end < 0)
       throw new IllegalArgumentException(
-        "End " + end + "is out of bounds for slice of DenseVector of length " + length)
+        "End " + end + "is out of bounds for slice of DenseVector of length " +
+          length)
     new DenseVector(
       data,
       start * this.stride + offset,
@@ -700,8 +702,8 @@ object DenseVector
         Double] {
     def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
       require(a.length == b.length, s"Vectors must have same length")
-      if (a.noOffsetOrStride && b.noOffsetOrStride && a
-            .length < DenseVectorSupportMethods.MAX_SMALL_DOT_PRODUCT_LENGTH) {
+      if (a.noOffsetOrStride && b.noOffsetOrStride &&
+          a.length < DenseVectorSupportMethods.MAX_SMALL_DOT_PRODUCT_LENGTH) {
         DenseVectorSupportMethods
           .smallDotProduct_Double(a.data, b.data, a.length)
       } else { blasPath(a, b) }
@@ -712,8 +714,8 @@ object DenseVector
     private def blasPath(
         a: DenseVector[Double],
         b: DenseVector[Double]): Double = {
-      if ((a.length <= 300 || !usingNatives) && a.stride == 1 && b
-            .stride == 1) {
+      if ((a.length <= 300 || !usingNatives) && a.stride == 1 &&
+          b.stride == 1) {
         DenseVectorSupportMethods
           .dotProduct_Double(a.data, a.offset, b.data, b.offset, a.length)
       } else {

@@ -564,8 +564,8 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
       lst.size must_== 2
 
       // jobject query now also works
-      val lstjobj = SessCollection
-        .findAll(("name" -> (("$regex" -> "^Mon") ~ ("$flags" -> 0))))
+      val lstjobj = SessCollection.findAll(("name" ->
+        (("$regex" -> "^Mon") ~ ("$flags" -> 0))))
       lstjobj.size must_== 2
 
       // use regex and another clause

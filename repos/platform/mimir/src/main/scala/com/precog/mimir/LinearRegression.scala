@@ -139,8 +139,8 @@ trait LinearRegressionLibModule[M[+_]]
               else if (isEmpty(t2.product)) { t1.product }
               else {
                 assert(
-                  t1.product.getColumnDimension == t2.product
-                    .getColumnDimension &&
+                  t1.product.getColumnDimension ==
+                    t2.product.getColumnDimension &&
                     t1.product.getRowDimension == t2.product.getRowDimension)
 
                 t1.product plus t2.product
@@ -336,8 +336,8 @@ trait LinearRegressionLibModule[M[+_]]
               y <- matrixY
             } yield { x.solve(y.transpose) }
 
-            val res = matrixX map { _.getArray flatten } getOrElse Array
-              .empty[Double]
+            val res = matrixX map { _.getArray flatten } getOrElse
+              Array.empty[Double]
 
             // We weight the results to handle slices of different sizes.
             // Even though we canonicalize the slices to bound their size,

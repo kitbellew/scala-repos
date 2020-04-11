@@ -444,13 +444,14 @@ abstract class ScalaPrimitives {
     val alts = (cls.info member method).alternatives
     if (alts.isEmpty) inform(s"Unknown primitive method $cls.$method")
     else
-      alts foreach (s =>
-        addPrimitive(
-          s,
-          s.info.paramTypes match {
-            case tp :: _ if code == ADD && tp =:= StringTpe => CONCAT
-            case _                                          => code
-          }))
+      alts foreach
+        (s =>
+          addPrimitive(
+            s,
+            s.info.paramTypes match {
+              case tp :: _ if code == ADD && tp =:= StringTpe => CONCAT
+              case _                                          => code
+            }))
   }
 
   def isCoercion(code: Int): Boolean = (code >= B2B) && (code <= D2D)

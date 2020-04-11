@@ -85,9 +85,10 @@ class ExecutionTest extends WordSpec with Matchers {
 
   "An Execution" should {
     "run" in {
-      ExecutionTestJobs.wordCount2(TypedPipe.from(
-        List("a b b c c c", "d d d d"))).waitFor(Config.default, Local(false))
-        .get.toMap shouldBe Map("a" -> 1L, "b" -> 2L, "c" -> 3L, "d" -> 4L)
+      ExecutionTestJobs
+        .wordCount2(TypedPipe.from(List("a b b c c c", "d d d d")))
+        .waitFor(Config.default, Local(false)).get.toMap shouldBe
+        Map("a" -> 1L, "b" -> 2L, "c" -> 3L, "d" -> 4L)
     }
     "run with zip" in {
       (ExecutionTestJobs
@@ -132,9 +133,8 @@ class ExecutionTest extends WordSpec with Matchers {
         neverHappens
       }).shouldFail()
       // If both are good, we succeed:
-      Execution.from(1).zip(Execution.from("1")).shouldSucceed() shouldBe (
-        1, "1"
-      )
+      Execution.from(1).zip(Execution.from("1")).shouldSucceed() shouldBe
+        (1, "1")
     }
 
     "Config transformer will isolate Configs" in {
@@ -243,10 +243,8 @@ class ExecutionTest extends WordSpec with Matchers {
       JobTest(new WordCountEc(_)).arg("input", "in").arg("output", "out")
         .source(TextLine("in"), List((0, "hello world"), (1, "goodbye world")))
         .typedSink(TypedTsv[(String, Long)]("out")) { outBuf =>
-          outBuf.toMap shouldBe Map(
-            "hello" -> 1L,
-            "world" -> 2L,
-            "goodbye" -> 1L)
+          outBuf.toMap shouldBe
+            Map("hello" -> 1L, "world" -> 2L, "goodbye" -> 1L)
         }.run.runHadoop.finish
     }
   }

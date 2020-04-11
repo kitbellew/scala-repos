@@ -42,7 +42,8 @@ private[sql] object FrequentItems extends Logging {
           val minCount = baseMap.values.min
           val remainder = count - minCount
           if (remainder >= 0) {
-            baseMap += key -> count // something will get kicked out, so we can add this
+            baseMap += key ->
+              count // something will get kicked out, so we can add this
             baseMap.retain((k, v) => v > minCount)
             baseMap.transform((k, v) => v - minCount)
           } else { baseMap.transform((k, v) => v - count) }

@@ -83,8 +83,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       }
 
       "a response with a missing reason phrase" in new Test {
-        "HTTP/1.1 200 \r\nContent-Length: 0\r\n\r\n" should parseTo(
-          HttpResponse(OK))
+        "HTTP/1.1 200 \r\nContent-Length: 0\r\n\r\n" should
+          parseTo(HttpResponse(OK))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -105,29 +105,31 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
-      "a response with one header, a body, but no Content-Length header" in new Test {
-        """HTTP/1.0 404 Not Found
+      "a response with one header, a body, but no Content-Length header" in
+        new Test {
+          """HTTP/1.0 404 Not Found
           |Host: api.example.com
           |
           |Foobs""" should parseTo(HttpResponse(
-          NotFound,
-          List(Host("api.example.com")),
-          "Foobs".getBytes,
-          `HTTP/1.0`))
-        closeAfterResponseCompletion shouldEqual Seq(true)
-      }
+            NotFound,
+            List(Host("api.example.com")),
+            "Foobs".getBytes,
+            `HTTP/1.0`))
+          closeAfterResponseCompletion shouldEqual Seq(true)
+        }
 
-      "a response with one header, no body, and no Content-Length header" in new Test {
-        """HTTP/1.0 404 Not Found
+      "a response with one header, no body, and no Content-Length header" in
+        new Test {
+          """HTTP/1.0 404 Not Found
           |Host: api.example.com
           |
           |""" should parseTo(HttpResponse(
-          NotFound,
-          List(Host("api.example.com")),
-          HttpEntity.empty(ContentTypes.`application/octet-stream`),
-          `HTTP/1.0`))
-        closeAfterResponseCompletion shouldEqual Seq(true)
-      }
+            NotFound,
+            List(Host("api.example.com")),
+            HttpEntity.empty(ContentTypes.`application/octet-stream`),
+            `HTTP/1.0`))
+          closeAfterResponseCompletion shouldEqual Seq(true)
+        }
 
       "a response with 3 headers, a body and remaining content" in new Test {
         Seq(
@@ -152,8 +154,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             |Content-Length: 4
             |
             |ABCD"""
-        }.toCharArray.map(_.toString).toSeq should rawMultiParseTo(
-          HttpResponse(entity = "ABCD".getBytes))
+        }.toCharArray.map(_.toString).toSeq should
+          rawMultiParseTo(HttpResponse(entity = "ABCD".getBytes))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
     }
@@ -180,8 +182,7 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
 
       "message chunk with and without extension" in new Test {
         Seq(
-          start +
-            """3
+          start + """3
             |abc
             |10;some=stuff;bla
             |0123456789ABCDEF
@@ -253,32 +254,30 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
 
     "reject a response with" - {
       "HTTP version 1.2" in new Test {
-        Seq("HTTP/1.2 200 OK\r\n") should generalMultiParseTo(
-          Left(MessageStartError(
+        Seq("HTTP/1.2 200 OK\r\n") should
+          generalMultiParseTo(Left(MessageStartError(
             400: StatusCode,
             ErrorInfo("The server-side HTTP version is not supported"))))
       }
 
       "an illegal status code" in new Test {
-        Seq("HTTP/1", ".1 2000 Something") should generalMultiParseTo(
-          Left(MessageStartError(
+        Seq("HTTP/1", ".1 2000 Something") should
+          generalMultiParseTo(Left(MessageStartError(
             400: StatusCode,
             ErrorInfo("Illegal response status code"))))
       }
 
       "a too-long response status reason" in new Test {
-        Seq(
-          "HTTP/1.1 204 12345678",
-          "90123456789012\r\n") should generalMultiParseTo(
-          Left(MessageStartError(
+        Seq("HTTP/1.1 204 12345678", "90123456789012\r\n") should
+          generalMultiParseTo(Left(MessageStartError(
             400: StatusCode,
             ErrorInfo(
               "Response reason phrase exceeds the configured limit of 21 characters"))))
       }
 
       "with a missing reason phrase and no trailing space" in new Test {
-        Seq("HTTP/1.1 200\r\nContent-Length: 0\r\n\r\n") should generalMultiParseTo(
-          Left(MessageStartError(
+        Seq("HTTP/1.1 200\r\nContent-Length: 0\r\n\r\n") should
+          generalMultiParseTo(Left(MessageStartError(
             400: StatusCode,
             ErrorInfo("Status code misses trailing space"))))
       }
@@ -294,10 +293,10 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       override def equals(other: scala.Any): Boolean =
         other match {
           case other: StrictEqualHttpResponse ⇒
-            this.resp.copy(entity = HttpEntity.Empty) == other.resp
-              .copy(entity = HttpEntity.Empty) &&
+            this.resp.copy(entity = HttpEntity.Empty) ==
+              other.resp.copy(entity = HttpEntity.Empty) &&
               Await.result(this.resp.entity.toStrict(250.millis), 250.millis) ==
-                Await.result(other.resp.entity.toStrict(250.millis), 250.millis)
+              Await.result(other.resp.entity.toStrict(250.millis), 250.millis)
         }
 
       override def toString = resp.toString

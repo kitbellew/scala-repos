@@ -80,14 +80,14 @@ trait AssetsSpec
       result.header(CACHE_CONTROL) must_== defaultCacheControl
     }
 
-    "serve a non gzipped asset when gzip is available but not requested" in withServer {
-      client =>
+    "serve a non gzipped asset when gzip is available but not requested" in
+      withServer { client =>
         val result = await(client.url("/foo.txt").get())
 
         result.body must_== "This is a test asset."
         result.header(VARY) must beSome(ACCEPT_ENCODING)
         result.header(CONTENT_ENCODING) must beNone
-    }
+      }
 
     "serve a gzipped asset" in withServer { client =>
       val result = await(
@@ -107,8 +107,7 @@ trait AssetsSpec
     "return not modified when etag matches" in withServer { client =>
       val Some(etag) = await(client.url("/foo.txt").get()).header(ETAG)
       val result = await(
-        client.url("/foo.txt").withHeaders(IF_NONE_MATCH -> etag)
-          get ())
+        client.url("/foo.txt").withHeaders(IF_NONE_MATCH -> etag) get ())
 
       result.status must_== NOT_MODIFIED
       result.body must beEmpty
@@ -117,8 +116,8 @@ trait AssetsSpec
       result.header(LAST_MODIFIED) must beSome
     }
 
-    "return not modified when multiple etags supply and one matches" in withServer {
-      client =>
+    "return not modified when multiple etags supply and one matches" in
+      withServer { client =>
         val Some(etag) = await(client.url("/foo.txt").get()).header(ETAG)
         val result = await(
           client.url("/foo.txt")
@@ -127,7 +126,7 @@ trait AssetsSpec
 
         result.status must_== NOT_MODIFIED
         result.body must beEmpty
-    }
+      }
 
     "return asset when etag doesn't match" in withServer { client =>
       val result = await(
@@ -163,27 +162,28 @@ trait AssetsSpec
       result.body must_== "This is a test asset."
     }
 
-    "ignore if modified since header if if none match header is set" in withServer {
-      client =>
+    "ignore if modified since header if if none match header is set" in
+      withServer { client =>
         val result = await(
           client.url("/foo.txt").withHeaders(
             IF_NONE_MATCH -> "\"foobar\"",
-            IF_MODIFIED_SINCE -> "Wed, 01 Jan 2113 00:00:00 GMT" // might break in 100 years, but I won't be alive, so :P
+            IF_MODIFIED_SINCE ->
+              "Wed, 01 Jan 2113 00:00:00 GMT" // might break in 100 years, but I won't be alive, so :P
           ).get())
 
         result.status must_== OK
         result.body must_== "This is a test asset."
-    }
+      }
 
-    "return the asset if the if modified since header can't be parsed" in withServer {
-      client =>
+    "return the asset if the if modified since header can't be parsed" in
+      withServer { client =>
         val result = await(
           client.url("/foo.txt").withHeaders(IF_MODIFIED_SINCE -> "Not a date")
             .get())
 
         result.status must_== OK
         result.body must_== "This is a test asset."
-    }
+      }
 
     "return 200 if the asset is empty" in withServer { client =>
       val result = await(client.url("/empty.txt").get())

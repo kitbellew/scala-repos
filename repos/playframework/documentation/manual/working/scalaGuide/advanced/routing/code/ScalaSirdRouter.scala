@@ -23,8 +23,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#simple
 
-      router.routes.lift(FakeRequest("GET", "/hello/world")) must beSome[
-        Handler]
+      router.routes.lift(FakeRequest("GET", "/hello/world")) must
+        beSome[Handler]
       router.routes.lift(FakeRequest("GET", "/goodbye/world")) must beNone
     }
 
@@ -36,9 +36,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#full-path
 
-      router.routes
-        .lift(FakeRequest("GET", "/assets/javascripts/main.js")) must beSome[
-        Handler]
+      router.routes.lift(FakeRequest("GET", "/assets/javascripts/main.js")) must
+        beSome[Handler]
       router.routes.lift(FakeRequest("GET", "/foo/bar")) must beNone
     }
 
@@ -62,8 +61,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#required
 
-      router.routes.lift(FakeRequest("GET", "/search?query=foo")) must beSome[
-        Handler]
+      router.routes.lift(FakeRequest("GET", "/search?query=foo")) must
+        beSome[Handler]
       router.routes.lift(FakeRequest("GET", "/search")) must beNone
     }
 
@@ -77,8 +76,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#optional
 
-      router.routes.lift(FakeRequest("GET", "/items?page=10")) must beSome[
-        Handler]
+      router.routes.lift(FakeRequest("GET", "/items?page=10")) must
+        beSome[Handler]
       router.routes.lift(FakeRequest("GET", "/items")) must beSome[Handler]
     }
 
@@ -92,17 +91,16 @@ object ScalaSirdRouter extends Specification {
       }
       //#many
 
-      router.routes.lift(FakeRequest("GET", "/items?tag=a&tag=b")) must beSome[
-        Handler]
+      router.routes.lift(FakeRequest("GET", "/items?tag=a&tag=b")) must
+        beSome[Handler]
       router.routes.lift(FakeRequest("GET", "/items")) must beSome[Handler]
     }
 
     "allow extracting multiple query parameters" in {
       //#multiple
       val router = Router.from {
-        case GET(
-              p"/items" ? q_o"page=$page"
-              & q_o"per_page=$perPage") => Action {
+        case GET(p"/items" ? q_o"page=$page" & q_o"per_page=$perPage") =>
+          Action {
             val thisPage = page.getOrElse("1")
             val pageLength = perPage.getOrElse("10")
 
@@ -111,9 +109,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#multiple
 
-      router.routes
-        .lift(FakeRequest("GET", "/items?page=10&per_page=20")) must beSome[
-        Handler]
+      router.routes.lift(FakeRequest("GET", "/items?page=10&per_page=20")) must
+        beSome[Handler]
       router.routes.lift(FakeRequest("GET", "/items")) must beSome[Handler]
     }
 
@@ -138,8 +135,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#query-int
 
-      router.routes.lift(FakeRequest("GET", "/items?page=21")) must beSome[
-        Handler]
+      router.routes.lift(FakeRequest("GET", "/items?page=21")) must
+        beSome[Handler]
       router.routes.lift(FakeRequest("GET", "/items?page=foo")) must beNone
       router.routes.lift(FakeRequest("GET", "/items")) must beSome[Handler]
     }
@@ -147,15 +144,13 @@ object ScalaSirdRouter extends Specification {
     "allow complex extractors" in {
       //#complex
       val router = Router.from {
-        case rh @ GET(
-              p"/items/${idString @ int(id)}" ?
-              q"price=${int(price)}") if price > 200 =>
-          Action { Results.Ok(s"Expensive item $id") }
+        case rh @ GET(p"/items/${idString @ int(id)}" ? q"price=${int(price)}")
+            if price > 200 => Action { Results.Ok(s"Expensive item $id") }
       }
       //#complex
 
-      router.routes.lift(FakeRequest("GET", "/items/21?price=400")) must beSome[
-        Handler]
+      router.routes.lift(FakeRequest("GET", "/items/21?price=400")) must
+        beSome[Handler]
       router.routes.lift(FakeRequest("GET", "/items/21?price=foo")) must beNone
       router.routes.lift(FakeRequest("GET", "/items/foo?price=400")) must beNone
     }

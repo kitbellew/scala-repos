@@ -177,8 +177,8 @@ object ShuffleExchange {
     if (sortBasedShuffleOn) {
       val bypassIsSupported = SparkEnv.get.shuffleManager
         .isInstanceOf[SortShuffleManager]
-      if (bypassIsSupported && partitioner
-            .numPartitions <= bypassMergeThreshold) {
+      if (bypassIsSupported &&
+          partitioner.numPartitions <= bypassMergeThreshold) {
         // If we're using the original SortShuffleManager and the number of output partitions is
         // sufficiently small, then Spark will fall back to the hash-based shuffle write path, which
         // doesn't buffer deserialized records.

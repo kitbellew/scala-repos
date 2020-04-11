@@ -286,31 +286,32 @@ private[json] object Meta {
     case object `* -> *` extends Kind
     case object `(*,*) -> *` extends Kind
 
-    val primitives = Map[Class[_], Unit]() ++ (List[Class[_]](
-      classOf[String],
-      classOf[Int],
-      classOf[Long],
-      classOf[Double],
-      classOf[Float],
-      classOf[Byte],
-      classOf[BigInt],
-      classOf[Boolean],
-      classOf[Short],
-      classOf[java.lang.Integer],
-      classOf[java.lang.Long],
-      classOf[java.lang.Double],
-      classOf[java.lang.Float],
-      classOf[java.lang.Byte],
-      classOf[java.lang.Boolean],
-      classOf[Number],
-      classOf[java.lang.Short],
-      classOf[Date],
-      classOf[Timestamp],
-      classOf[Symbol],
-      classOf[JValue],
-      classOf[JObject],
-      classOf[JArray]
-    ).map((_, ())))
+    val primitives = Map[Class[_], Unit]() ++
+      (List[Class[_]](
+        classOf[String],
+        classOf[Int],
+        classOf[Long],
+        classOf[Double],
+        classOf[Float],
+        classOf[Byte],
+        classOf[BigInt],
+        classOf[Boolean],
+        classOf[Short],
+        classOf[java.lang.Integer],
+        classOf[java.lang.Long],
+        classOf[java.lang.Double],
+        classOf[java.lang.Float],
+        classOf[java.lang.Byte],
+        classOf[java.lang.Boolean],
+        classOf[Number],
+        classOf[java.lang.Short],
+        classOf[Date],
+        classOf[Timestamp],
+        classOf[Symbol],
+        classOf[JValue],
+        classOf[JObject],
+        classOf[JArray]
+      ).map((_, ())))
 
     private val primaryConstructorArgumentsMemo =
       new Memo[Class[_], List[(String, Type)]]
@@ -355,10 +356,11 @@ private[json] object Meta {
         case c: Class[_] => argsInfo(constructor, Map())
         case p: ParameterizedType =>
           val vars =
-            Map() ++ rawClassOf(p).getTypeParameters.toList
-              .map(_.asInstanceOf[TypeVariable[_]]).zip(
-                p.getActualTypeArguments.toList
-              ) // FIXME this cast should not be needed
+            Map() ++
+              rawClassOf(p).getTypeParameters.toList
+                .map(_.asInstanceOf[TypeVariable[_]]).zip(
+                  p.getActualTypeArguments.toList
+                ) // FIXME this cast should not be needed
           argsInfo(constructor, vars)
         case x => fail("Do not know how query constructor info for " + x)
       }
@@ -438,13 +440,14 @@ private[json] object Meta {
       }
 
     def array_?(x: Any) =
-      x != null && classOf[scala.Array[_]]
-        .isAssignableFrom(x.asInstanceOf[AnyRef].getClass)
+      x != null &&
+        classOf[scala.Array[_]]
+          .isAssignableFrom(x.asInstanceOf[AnyRef].getClass)
 
     def fields(clazz: Class[_]): List[(String, TypeInfo)] = {
       val fs = clazz.getDeclaredFields.toList.filterNot(f =>
-        Modifier.isStatic(f.getModifiers) || Modifier
-          .isTransient(f.getModifiers)).map(f =>
+        Modifier.isStatic(f.getModifiers) ||
+          Modifier.isTransient(f.getModifiers)).map(f =>
         (
           f.getName,
           TypeInfo(
@@ -453,8 +456,8 @@ private[json] object Meta {
               case p: ParameterizedType => Some(p)
               case _                    => None
             })))
-      fs ::: (if (clazz.getSuperclass == null) Nil
-              else fields(clazz.getSuperclass))
+      fs :::
+        (if (clazz.getSuperclass == null) Nil else fields(clazz.getSuperclass))
     }
 
     def setField(a: AnyRef, name: String, value: Any) = {

@@ -136,7 +136,8 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
           val newSuffix = ScalaRenameUtil.setterSuffix(newName)
           val oldSuffix = ScalaRenameUtil.setterSuffix(oldName)
           if (newSuffix == "" && oldSuffix != "")
-            newName + oldSuffix //user typed name without suffix for setter and chose to rename getter too
+            newName +
+              oldSuffix //user typed name without suffix for setter and chose to rename getter too
           else if (newSuffix != "" && oldSuffix == "")
             newName.stripSuffix(newSuffix) //for renaming getters
           else newName
@@ -155,9 +156,10 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
           function.getProject,
           ScalaBundle.message("rename.getters.and.setters.title"))
         dialog.show()
-        if (dialog.getExitCode == DialogWrapper
-              .OK_EXIT_CODE || ApplicationManager.getApplication
-              .isUnitTestMode) { addGettersAndSetters() }
+        if (dialog.getExitCode == DialogWrapper.OK_EXIT_CODE ||
+            ApplicationManager.getApplication.isUnitTestMode) {
+          addGettersAndSetters()
+        }
       }
     }
     RenameSuperMembersUtil.prepareSuperMembers(element, newName, allRenames)

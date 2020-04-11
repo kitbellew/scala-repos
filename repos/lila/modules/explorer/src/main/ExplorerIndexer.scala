@@ -27,8 +27,8 @@ private final class ExplorerIndexer(
   private val separator = "\n\n\n"
   private val datePattern = "yyyy-MM-dd"
   private val dateFormatter = DateTimeFormat forPattern datePattern
-  private val dateTimeFormatter =
-    DateTimeFormat forPattern s"$datePattern HH:mm"
+  private val dateTimeFormatter = DateTimeFormat forPattern
+    s"$datePattern HH:mm"
   private val pgnDateFormat = DateTimeFormat forPattern "yyyy.MM.dd";
   private val endPointUrl = s"$endpoint/import/lichess"
   private val massImportEndPointUrl = s"$massImportEndpoint/import/lichess"
@@ -42,11 +42,8 @@ private final class ExplorerIndexer(
     parseDate(sinceStr).fold(fufail[Unit](s"Invalid date $sinceStr")) { since =>
       logger.info(s"Start indexing since $since")
       val query = $query(
-        Query.createdSince(since) ++
-          Query.rated ++
-          Query.finished ++
-          Query.turnsMoreThan(8) ++
-          Query.noProvisional ++
+        Query.createdSince(since) ++ Query.rated ++ Query.finished ++
+          Query.turnsMoreThan(8) ++ Query.noProvisional ++
           Query.bothRatingsGreaterThan(1501))
       import reactivemongo.api._
       pimpQB(query).sort(Query.sortChronological)
@@ -54,16 +51,15 @@ private final class ExplorerIndexer(
         .enumerate(maxGames, stopOnError = true) &>
         Enumeratee.mapM[Game].apply[Option[GamePGN]] { game =>
           makeFastPgn(game) map { _ map { game -> _ } }
-        } &>
-        Enumeratee.collect { case Some(el) => el } &>
-        Enumeratee.grouped(Iteratee takeUpTo batchSize) |>>>
+        } &> Enumeratee.collect { case Some(el) => el } &> Enumeratee.grouped(
+          Iteratee takeUpTo batchSize) |>>>
         Iteratee.foldM[Seq[GamePGN], Long](nowMillis) {
           case (millis, pairs) =>
             WS.url(massImportEndPointUrl)
               .put(pairs.map(_._2) mkString separator).flatMap {
                 case res if res.status == 200 =>
-                  val date = pairs.headOption
-                    .map(_._1.createdAt) ?? dateTimeFormatter.print
+                  val date = pairs.headOption.map(_._1.createdAt) ??
+                    dateTimeFormatter.print
                   val nb = pairs.size
                   val gameMs = (nowMillis - millis) / nb.toDouble
                   logger.info(
@@ -110,12 +106,10 @@ private final class ExplorerIndexer(
   }
 
   private def valid(game: Game) =
-    game.finished &&
-      game.rated &&
-      game.turns >= 10 &&
+    game.finished && game.rated && game.turns >= 10 &&
       game.variant != chess.variant.FromPosition &&
-      (game.variant != chess.variant.Horde || game.createdAt
-        .isAfter(Query.hordeWhitePawnsSince))
+      (game.variant != chess.variant.Horde ||
+        game.createdAt.isAfter(Query.hordeWhitePawnsSince))
 
   private def stableRating(player: Player) =
     player.rating ifFalse player.provisional

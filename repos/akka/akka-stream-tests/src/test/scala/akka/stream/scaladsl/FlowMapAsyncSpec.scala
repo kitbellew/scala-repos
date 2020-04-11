@@ -183,8 +183,8 @@ class FlowMapAsyncSpec extends AkkaSpec {
         .to(Sink.fromSubscriber(c)).run()
       val sub = c.expectSubscription()
       sub.request(10)
-      c.expectError().getMessage should be(
-        ReactiveStreamsCompliance.ElementMustNotBeNullMsg)
+      c.expectError().getMessage should
+        be(ReactiveStreamsCompliance.ElementMustNotBeNullMsg)
     }
 
     "resume when future is completed with null" in {

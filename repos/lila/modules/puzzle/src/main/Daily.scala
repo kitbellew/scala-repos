@@ -57,8 +57,8 @@ private[puzzle] final class Daily(
       case Some(puzzle) =>
         coll.update(
           BSONDocument("_id" -> puzzle.id),
-          BSONDocument(
-            "$set" -> BSONDocument("day" -> DateTime.now))) inject puzzle.some
+          BSONDocument("$set" -> BSONDocument("day" -> DateTime.now))) inject
+          puzzle.some
       case None => fuccess(none)
     }
 }

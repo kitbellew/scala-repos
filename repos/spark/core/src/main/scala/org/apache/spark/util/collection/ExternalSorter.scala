@@ -407,8 +407,8 @@ private[spark] class ExternalSorter[K, V, C](
           keys += firstPair._1
           combiners += firstPair._2
           val key = firstPair._1
-          while (sorted.hasNext && comparator
-                   .compare(sorted.head._1, key) == 0) {
+          while (sorted.hasNext &&
+                 comparator.compare(sorted.head._1, key) == 0) {
             val pair = sorted.next()
             var i = 0
             var foundKey = false
@@ -500,8 +500,8 @@ private[spark] class ExternalSorter[K, V, C](
 
         assert(
           end >= start,
-          "start = " + start + ", end = " + end +
-            ", batchOffsets = " + batchOffsets.mkString("[", ", ", "]"))
+          "start = " + start + ", end = " + end + ", batchOffsets = " +
+            batchOffsets.mkString("[", ", ", "]"))
 
         val bufferedStream = new BufferedInputStream(
           ByteStreams.limit(fileStream, end - start))

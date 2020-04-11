@@ -34,12 +34,12 @@ class LineTokenizerTest extends FlatSpec with ShouldMatchers {
 
   "The LineTokenizer" should "split input lines correctly" in {
     tokenizer.splitLines("line1\nline2\n") should equal(List("line1", "line2"))
-    tokenizer.splitLines("line1\nline2 no nl") should equal(
-      List("line1", "line2 no nl"))
-    tokenizer.splitLines("test1\n\ntest2\n") should equal(
-      List("test1", "", "test2"))
-    tokenizer.splitLines("test1\n\ntest2\n\n") should equal(
-      List("test1", "", "test2"))
+    tokenizer.splitLines("line1\nline2 no nl") should
+      equal(List("line1", "line2 no nl"))
+    tokenizer.splitLines("test1\n\ntest2\n") should
+      equal(List("test1", "", "test2"))
+    tokenizer.splitLines("test1\n\ntest2\n\n") should
+      equal(List("test1", "", "test2"))
     tokenizer.splitLines("\n\n") should equal(Nil)
     tokenizer.splitLines("\n") should equal(Nil)
     tokenizer.splitLines("") should equal(List(""))
@@ -47,9 +47,8 @@ class LineTokenizerTest extends FlatSpec with ShouldMatchers {
 
   it should "preprocess the input correctly" in {
     tokenizer
-      .tokenize(
-        "[foo]: http://example.com/  \"Optional Title Here\"") should equal(
-      (new MarkdownLineReader(
+      .tokenize("[foo]: http://example.com/  \"Optional Title Here\"") should
+      equal((new MarkdownLineReader(
         List(),
         Map(
           "foo" -> new LinkDefinition(
@@ -64,8 +63,8 @@ some text
 
 [fOo]: http://www.example.com "A Title"
 more text
-[BAR]: <http://www.example.com/bla> (Also a title)""") should equal(
-      new MarkdownLineReader(
+[BAR]: <http://www.example.com/bla> (Also a title)""") should
+      equal(new MarkdownLineReader(
         List(
           new OtherLine("some text"),
           new BlockQuoteLine("> ", "bla"),
@@ -80,10 +79,8 @@ more text
             "baz",
             "http://foo.bar",
             Some("Title next line")),
-          "foo" -> new LinkDefinition(
-            "foo",
-            "http://www.example.com",
-            Some("A Title"))
+          "foo" ->
+            new LinkDefinition("foo", "http://www.example.com", Some("A Title"))
         )))
 
   }

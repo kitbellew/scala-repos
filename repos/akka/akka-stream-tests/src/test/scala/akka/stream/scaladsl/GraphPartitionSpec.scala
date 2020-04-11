@@ -81,27 +81,28 @@ class GraphPartitionSpec extends AkkaSpec {
 
     }
 
-    "remember first pull even though first element targeted another out" in assertAllStagesStopped {
-      val c1 = TestSubscriber.probe[Int]()
-      val c2 = TestSubscriber.probe[Int]()
+    "remember first pull even though first element targeted another out" in
+      assertAllStagesStopped {
+        val c1 = TestSubscriber.probe[Int]()
+        val c2 = TestSubscriber.probe[Int]()
 
-      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
-        val partition = b
-          .add(Partition[Int](2, { case l if l < 6 ⇒ 0; case _ ⇒ 1 }))
-        Source(List(6, 3)) ~> partition.in
-        partition.out(0) ~> Sink.fromSubscriber(c1)
-        partition.out(1) ~> Sink.fromSubscriber(c2)
-        ClosedShape
-      }).run()
+        RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+          val partition = b
+            .add(Partition[Int](2, { case l if l < 6 ⇒ 0; case _ ⇒ 1 }))
+          Source(List(6, 3)) ~> partition.in
+          partition.out(0) ~> Sink.fromSubscriber(c1)
+          partition.out(1) ~> Sink.fromSubscriber(c2)
+          ClosedShape
+        }).run()
 
-      c1.request(1)
-      c1.expectNoMsg(1.seconds)
-      c2.request(1)
-      c2.expectNext(6)
-      c1.expectNext(3)
-      c1.expectComplete()
-      c2.expectComplete()
-    }
+        c1.request(1)
+        c1.expectNoMsg(1.seconds)
+        c2.request(1)
+        c2.expectNext(6)
+        c1.expectNext(3)
+        c1.expectComplete()
+        c2.expectComplete()
+      }
 
     "cancel upstream when downstreams cancel" in assertAllStagesStopped {
       val p1 = TestPublisher.probe[Int]()
@@ -112,10 +113,12 @@ class GraphPartitionSpec extends AkkaSpec {
         val partition = b
           .add(Partition[Int](2, { case l if l < 6 ⇒ 0; case _ ⇒ 1 }))
         Source.fromPublisher(p1.getPublisher) ~> partition.in
-        partition.out(0) ~> Flow[Int]
-          .buffer(16, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c1)
-        partition.out(1) ~> Flow[Int]
-          .buffer(16, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c2)
+        partition.out(0) ~>
+          Flow[Int].buffer(16, OverflowStrategy.backpressure) ~>
+          Sink.fromSubscriber(c1)
+        partition.out(1) ~>
+          Flow[Int].buffer(16, OverflowStrategy.backpressure) ~>
+          Sink.fromSubscriber(c2)
         ClosedShape
       }).run()
 
@@ -179,23 +182,24 @@ class GraphPartitionSpec extends AkkaSpec {
       c2.expectComplete()
     }
 
-    "must fail stage if partitioner outcome is out of bound" in assertAllStagesStopped {
+    "must fail stage if partitioner outcome is out of bound" in
+      assertAllStagesStopped {
 
-      val c1 = TestSubscriber.probe[Int]()
+        val c1 = TestSubscriber.probe[Int]()
 
-      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
-        val partition = b
-          .add(Partition[Int](2, { case l if l < 0 ⇒ -1; case _ ⇒ 0 }))
-        Source(List(-3)) ~> partition.in
-        partition.out(0) ~> Sink.fromSubscriber(c1)
-        partition.out(1) ~> Sink.ignore
-        ClosedShape
-      }).run()
+        RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+          val partition = b
+            .add(Partition[Int](2, { case l if l < 0 ⇒ -1; case _ ⇒ 0 }))
+          Source(List(-3)) ~> partition.in
+          partition.out(0) ~> Sink.fromSubscriber(c1)
+          partition.out(1) ~> Sink.ignore
+          ClosedShape
+        }).run()
 
-      c1.request(1)
-      c1.expectError(Partition.PartitionOutOfBoundsException(
-        "partitioner must return an index in the range [0,1]. returned: [-1] for input [java.lang.Integer]."))
-    }
+        c1.request(1)
+        c1.expectError(Partition.PartitionOutOfBoundsException(
+          "partitioner must return an index in the range [0,1]. returned: [-1] for input [java.lang.Integer]."))
+      }
 
   }
 }

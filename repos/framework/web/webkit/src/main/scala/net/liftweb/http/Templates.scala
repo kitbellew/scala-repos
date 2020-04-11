@@ -108,9 +108,9 @@ object Templates {
       in match {
         case Null => None
         case p: PrefixedAttribute
-            if (p.pre == "l" || p.pre == "lift") &&
-              (p.key == "content_id") => Some(p)
-        case n                        => df(n.next)
+            if (p.pre == "l" || p.pre == "lift") && (p.key == "content_id") =>
+          Some(p)
+        case n => df(n.next)
       }
 
     in.flatMap {
@@ -200,8 +200,8 @@ object Templates {
               val le = sl.iterator
               while (!found && le.hasNext) {
                 val p = le.next
-                val name =
-                  pls + p + (if (suffix.length > 0) "." + suffix else "")
+                val name = pls + p +
+                  (if (suffix.length > 0) "." + suffix else "")
                 import scala.xml.dtd.ValidationException
                 val xmlb =
                   try {
@@ -328,14 +328,12 @@ abstract class SnippetFailureException(msg: String)
       {
         val cn = e.getClassName
         cn.startsWith("net.liftweb.http") ||
-        cn.startsWith("net.liftweb.common") ||
-        cn.startsWith("net.liftweb.util")
+        cn.startsWith("net.liftweb.common") || cn.startsWith("net.liftweb.util")
       }
     }.filter { e =>
       {
         val cn = e.getClassName
-        !cn.startsWith("java.lang") &&
-        !cn.startsWith("sun.")
+        !cn.startsWith("java.lang") && !cn.startsWith("sun.")
       }
     }.take(10).toList.map { e => <code><span><br/>{e.toString}</span></code> }
 }

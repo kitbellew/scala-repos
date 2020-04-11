@@ -66,11 +66,12 @@ object JobStats {
           m.foldLeft(Map.empty[String, Map[String, Long]]) {
             case (acc, (k: String, v: Any)) => v match {
                 case m: Map[_, _] =>
-                  acc + (k -> m.foldLeft(Map.empty[String, Long]) {
-                    case (acc2, (k: String, v: Long)) => acc2 + (k -> v)
-                    case (_, kv) =>
-                      sys.error("inner k, v not (String, Long):" + kv)
-                  })
+                  acc +
+                    (k -> m.foldLeft(Map.empty[String, Long]) {
+                      case (acc2, (k: String, v: Long)) => acc2 + (k -> v)
+                      case (_, kv) =>
+                        sys.error("inner k, v not (String, Long):" + kv)
+                    })
                 case _ => sys.error("inner values are not Maps: " + v)
               }
             case kv => sys.error("Map does not contain string keys: " + (kv))

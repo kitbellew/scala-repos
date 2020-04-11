@@ -50,15 +50,14 @@ private[round] final class Finisher(
       Color.all foreach notifyTimeline(prog.game)
     lila.mon.game.finish(status.name)()
     casualOnly.fold(
-      GameRepo unrate prog.game.id inject prog.game
-        .copy(mode = chess.Mode.Casual),
+      GameRepo unrate prog.game.id inject
+        prog.game.copy(mode = chess.Mode.Casual),
       fuccess(prog.game)) flatMap { g =>
-      (GameRepo save prog) >>
-        GameRepo.finish(
-          id = g.id,
-          winnerColor = winner,
-          winnerId = winner flatMap (g.player(_).userId),
-          status = prog.game.status) >>
+      (GameRepo save prog) >> GameRepo.finish(
+        id = g.id,
+        winnerColor = winner,
+        winnerId = winner flatMap (g.player(_).userId),
+        status = prog.game.status) >>
         UserRepo.pair(g.whitePlayer.userId, g.blackPlayer.userId).flatMap {
           case (whiteO, blackO) => {
             val finish = FinishGame(g, whiteO, blackO)
@@ -78,11 +77,12 @@ private[round] final class Finisher(
     import lila.hub.actorApi.timeline.{Propagate, GameEnd}
     if (!game.aborted) game.player(color).userId foreach { userId =>
       game.perfType foreach { perfType =>
-        timeline ! (Propagate(GameEnd(
-          playerId = game fullIdOf color,
-          opponent = game.player(!color).userId,
-          win = game.winnerColor map (color ==),
-          perf = perfType.key)) toUser userId)
+        timeline !
+          (Propagate(GameEnd(
+            playerId = game fullIdOf color,
+            opponent = game.player(!color).userId,
+            win = game.winnerColor map (color ==),
+            perf = perfType.key)) toUser userId)
       }
     }
   }
@@ -91,10 +91,9 @@ private[round] final class Finisher(
     (!finish.isVsSelf && !finish.game.aborted) ?? {
       (finish.white |@| finish.black).tupled ?? {
         case (white, black) =>
-          crosstableApi add finish.game zip perfsUpdater
-            .save(finish.game, white, black)
-      } zip
-        (finish.white ?? incNbGames(finish.game)) zip
+          crosstableApi add finish.game zip
+            perfsUpdater.save(finish.game, white, black)
+      } zip (finish.white ?? incNbGames(finish.game)) zip
         (finish.black ?? incNbGames(finish.game)) void
     }
 

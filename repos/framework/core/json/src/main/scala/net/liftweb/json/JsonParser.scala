@@ -249,7 +249,8 @@ object JsonParser {
       */
     def nextToken: Token = {
       def isDelimiter(c: Char) =
-        c == ' ' || c == '\n' || c == ',' || c == '\r' || c == '\t' || c == '}' || c == ']'
+        c == ' ' || c == '\n' || c == ',' || c == '\r' || c == '\t' ||
+          c == '}' || c == ']'
 
       def parseString: String =
         try { unquote(buf) }
@@ -269,9 +270,8 @@ object JsonParser {
           else if (c == '.' || c == 'e' || c == 'E') {
             doubleVal = true
             s.append(c)
-          } else if (!(Character
-                       .isDigit(
-                         c) || c == '.' || c == 'e' || c == 'E' || c == '-' || c == '+')) {
+          } else if (!(Character.isDigit(c) || c == '.' || c == 'e' ||
+                       c == 'E' || c == '-' || c == '+')) {
             wasInt = false
             buf.back
           } else s.append(c)
@@ -307,8 +307,8 @@ object JsonParser {
             fail("expected boolean")
           case 'f' =>
             fieldNameMode = true
-            if (buf.next == 'a' && buf.next == 'l' && buf.next == 's' && buf
-                  .next == 'e') { return BoolVal(false) }
+            if (buf.next == 'a' && buf.next == 'l' && buf.next == 's' &&
+                buf.next == 'e') { return BoolVal(false) }
             fail("expected boolean")
           case 'n' =>
             fieldNameMode = true

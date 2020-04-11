@@ -48,7 +48,8 @@ object JsonQueryExamples extends Specification {
       } yield <ip>{ip}</ip>
     }</ips>
 
-    ips mustEqual <ips><ip>192.168.1.125</ip><ip>192.168.1.126</ip><ip>192.168.1.127</ip><ip>192.168.2.125</ip><ip>192.168.2.126</ip></ips>
+    ips mustEqual
+      <ips><ip>192.168.1.125</ip><ip>192.168.1.126</ip><ip>192.168.1.127</ip><ip>192.168.2.125</ip><ip>192.168.2.126</ip></ips>
   }
 
   "List of IPs in cluster2" in {

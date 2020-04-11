@@ -66,7 +66,8 @@ case class SettingGraph(
       this,
       (x: SettingGraph) => x.depends.toSeq.sortBy(_.name),
       (x: SettingGraph) =>
-        "%s = %s" format (x.definedIn getOrElse { "" }, x.dataString))
+        "%s = %s" format
+          (x.definedIn getOrElse { "" }, x.dataString))
 }
 
 object Graph {
@@ -92,8 +93,7 @@ object Graph {
           (s(at).toString match {
             case " " => "|"
             case x   => x
-          }) +
-          s.slice(at + 1, s.length)
+          }) + s.slice(at + 1, s.length)
       else s
     def toAsciiLines(node: A, level: Int): Vector[String] = {
       val line = limitLine(

@@ -188,9 +188,8 @@ class SupervisorSpec
   override def beforeEach() = {}
 
   def ping(pingPongActor: ActorRef) = {
-    Await
-      .result(pingPongActor.?(Ping)(DilatedTimeout), DilatedTimeout) should ===(
-      PongMessage)
+    Await.result(pingPongActor.?(Ping)(DilatedTimeout), DilatedTimeout) should
+      ===(PongMessage)
     expectMsg(Timeout, PingMessage)
   }
 
@@ -499,44 +498,44 @@ class SupervisorSpec
 
     "log pre-creation check failures" when {
 
-      "creating a top-level actor" in EventFilter[ActorInitializationException](
-        occurrences = 1).intercept {
-        val ref = system.actorOf(creator(testActor, fail = true))
-        watch(ref)
-        expectTerminated(ref)
-      }
-
-      "creating a normal child actor" in EventFilter[ConfigurationException](
-        occurrences = 1).intercept {
-        val top = system.actorOf(creator(testActor))
-        top ! creator(testActor)
-        val middle = expectMsgType[ActorRef]
-        middle ! creator(testActor, fail = true)
-        expectMsgPF(hint = "ConfigurationException") {
-          case (top, middle, ex: ConfigurationException) ⇒
-            ex.getCause should ===(failure)
+      "creating a top-level actor" in
+        EventFilter[ActorInitializationException](occurrences = 1).intercept {
+          val ref = system.actorOf(creator(testActor, fail = true))
+          watch(ref)
+          expectTerminated(ref)
         }
-      }
 
-      "creating a top-level router" in EventFilter[
-        ActorInitializationException](occurrences = 1).intercept {
-        val ref = system.actorOf(
-          creator(testActor, fail = true).withRouter(RoundRobinPool(1)))
-        watch(ref)
-        expectTerminated(ref)
-      }
-
-      "creating a router" in EventFilter[ConfigurationException](occurrences =
-        1).intercept {
-        val top = system.actorOf(creator(testActor))
-        top ! creator(testActor)
-        val middle = expectMsgType[ActorRef]
-        middle ! creator(testActor, fail = true).withRouter(RoundRobinPool(1))
-        expectMsgPF(hint = "ConfigurationException") {
-          case (top, middle, ex: ConfigurationException) ⇒
-            ex.getCause should ===(failure)
+      "creating a normal child actor" in
+        EventFilter[ConfigurationException](occurrences = 1).intercept {
+          val top = system.actorOf(creator(testActor))
+          top ! creator(testActor)
+          val middle = expectMsgType[ActorRef]
+          middle ! creator(testActor, fail = true)
+          expectMsgPF(hint = "ConfigurationException") {
+            case (top, middle, ex: ConfigurationException) ⇒
+              ex.getCause should ===(failure)
+          }
         }
-      }
+
+      "creating a top-level router" in
+        EventFilter[ActorInitializationException](occurrences = 1).intercept {
+          val ref = system.actorOf(
+            creator(testActor, fail = true).withRouter(RoundRobinPool(1)))
+          watch(ref)
+          expectTerminated(ref)
+        }
+
+      "creating a router" in
+        EventFilter[ConfigurationException](occurrences = 1).intercept {
+          val top = system.actorOf(creator(testActor))
+          top ! creator(testActor)
+          val middle = expectMsgType[ActorRef]
+          middle ! creator(testActor, fail = true).withRouter(RoundRobinPool(1))
+          expectMsgPF(hint = "ConfigurationException") {
+            case (top, middle, ex: ConfigurationException) ⇒
+              ex.getCause should ===(failure)
+          }
+        }
 
     }
   }

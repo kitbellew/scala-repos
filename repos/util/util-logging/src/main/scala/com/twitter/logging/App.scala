@@ -94,10 +94,8 @@ trait Logging {
   }
 
   def loggerFactories: List[LoggerFactory] = {
-    LoggerFactory(
-      node = "",
-      level = Some(levelFlag()),
-      handlers = handlers) :: Nil
+    LoggerFactory(node = "", level = Some(levelFlag()), handlers = handlers) ::
+      Nil
   }
 
   premain { Logger.configure(loggerFactories) }

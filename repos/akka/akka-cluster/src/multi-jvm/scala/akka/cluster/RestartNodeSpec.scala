@@ -66,75 +66,74 @@ abstract class RestartNodeSpec
   }
 
   "Cluster nodes" must {
-    "be able to restart and join again" taggedAs LongRunningTest in within(
-      60 seconds) {
-      // secondSystem is a separate ActorSystem, to be able to simulate restart
-      // we must transfer its address to first
-      runOn(first, third) {
-        system.actorOf(
-          Props(new Actor {
-            def receive = {
-              case a: UniqueAddress ⇒
-                secondUniqueAddress = a
-                sender() ! "ok"
-            }
-          }).withDeploy(Deploy.local),
-          name = "address-receiver")
-        enterBarrier("second-address-receiver-ready")
-      }
-
-      runOn(second) {
-        enterBarrier("second-address-receiver-ready")
-        secondUniqueAddress = Cluster(secondSystem).selfUniqueAddress
-        List(first, third) foreach { r ⇒
-          system
-            .actorSelection(
-              RootActorPath(
-                r) / "user" / "address-receiver") ! secondUniqueAddress
-          expectMsg(5 seconds, "ok")
+    "be able to restart and join again" taggedAs LongRunningTest in
+      within(60 seconds) {
+        // secondSystem is a separate ActorSystem, to be able to simulate restart
+        // we must transfer its address to first
+        runOn(first, third) {
+          system.actorOf(
+            Props(new Actor {
+              def receive = {
+                case a: UniqueAddress ⇒
+                  secondUniqueAddress = a
+                  sender() ! "ok"
+              }
+            }).withDeploy(Deploy.local),
+            name = "address-receiver")
+          enterBarrier("second-address-receiver-ready")
         }
-      }
-      enterBarrier("second-address-transfered")
 
-      // now we can join first, secondSystem, third together
-      runOn(first, third) {
-        cluster.joinSeedNodes(seedNodes)
-        awaitMembersUp(3)
-      }
-      runOn(second) {
-        Cluster(secondSystem).joinSeedNodes(seedNodes)
-        awaitAssert(Cluster(secondSystem).readView.members.size should ===(3))
-        awaitAssert(
-          Cluster(secondSystem).readView.members.map(_.status) should ===(
-            Set(Up)))
-      }
-      enterBarrier("started")
-
-      // shutdown secondSystem
-      runOn(second) { shutdown(secondSystem, remaining) }
-      enterBarrier("second-shutdown")
-
-      // then immediately start restartedSecondSystem, which has the same address as secondSystem
-      runOn(second) {
-        Cluster(restartedSecondSystem).joinSeedNodes(seedNodes)
-        awaitAssert(
-          Cluster(restartedSecondSystem).readView.members.size should ===(3))
-        awaitAssert(
-          Cluster(restartedSecondSystem).readView.members
-            .map(_.status) should ===(Set(Up)))
-      }
-      runOn(first, third) {
-        awaitAssert {
-          Cluster(system).readView.members.size should ===(3)
-          Cluster(system).readView.members.exists { m ⇒
-            m.address == secondUniqueAddress.address && m.uniqueAddress
-              .uid != secondUniqueAddress.uid
+        runOn(second) {
+          enterBarrier("second-address-receiver-ready")
+          secondUniqueAddress = Cluster(secondSystem).selfUniqueAddress
+          List(first, third) foreach { r ⇒
+            system
+              .actorSelection(RootActorPath(r) / "user" / "address-receiver") !
+              secondUniqueAddress
+            expectMsg(5 seconds, "ok")
           }
         }
-      }
-      enterBarrier("second-restarted")
+        enterBarrier("second-address-transfered")
 
-    }
+        // now we can join first, secondSystem, third together
+        runOn(first, third) {
+          cluster.joinSeedNodes(seedNodes)
+          awaitMembersUp(3)
+        }
+        runOn(second) {
+          Cluster(secondSystem).joinSeedNodes(seedNodes)
+          awaitAssert(Cluster(secondSystem).readView.members.size should ===(3))
+          awaitAssert(
+            Cluster(secondSystem).readView.members.map(_.status) should
+              ===(Set(Up)))
+        }
+        enterBarrier("started")
+
+        // shutdown secondSystem
+        runOn(second) { shutdown(secondSystem, remaining) }
+        enterBarrier("second-shutdown")
+
+        // then immediately start restartedSecondSystem, which has the same address as secondSystem
+        runOn(second) {
+          Cluster(restartedSecondSystem).joinSeedNodes(seedNodes)
+          awaitAssert(
+            Cluster(restartedSecondSystem).readView.members.size should ===(3))
+          awaitAssert(
+            Cluster(restartedSecondSystem).readView.members.map(_.status) should
+              ===(Set(Up)))
+        }
+        runOn(first, third) {
+          awaitAssert {
+            Cluster(system).readView.members.size should ===(3)
+            Cluster(system).readView.members.exists { m ⇒
+              m.address == secondUniqueAddress.address &&
+              m.uniqueAddress.uid != secondUniqueAddress.uid
+            }
+          }
+        }
+        enterBarrier("second-restarted")
+
+      }
 
   }
 }

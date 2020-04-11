@@ -97,8 +97,8 @@ class Analyzer(
 
     scalaCompiler = makeScalaCompiler()
 
-    broadcaster ! SendBackgroundMessageEvent(
-      "Initializing Analyzer. Please wait...")
+    broadcaster !
+      SendBackgroundMessageEvent("Initializing Analyzer. Please wait...")
 
     scalaCompiler.askNotifyWhenReady()
     if (config.sourceMode) scalaCompiler.askReloadAllFiles()
@@ -225,9 +225,9 @@ class Analyzer(
           typeFullName: String,
           memberName: Option[String],
           signatureString: Option[String]) =>
-      sender ! scalaCompiler
-        .askSymbolByName(typeFullName, memberName, signatureString)
-        .getOrElse(FalseResponse)
+      sender !
+        scalaCompiler.askSymbolByName(typeFullName, memberName, signatureString)
+          .getOrElse(FalseResponse)
     case DocUriAtPointReq(file, range: OffsetRange) =>
       val p = pos(file, range)
       scalaCompiler.askLoadedTyped(p.source)
@@ -236,8 +236,9 @@ class Analyzer(
           typeFullName: String,
           memberName: Option[String],
           signatureString: Option[String]) =>
-      sender() ! scalaCompiler
-        .askDocSignatureForSymbol(typeFullName, memberName, signatureString)
+      sender() !
+        scalaCompiler
+          .askDocSignatureForSymbol(typeFullName, memberName, signatureString)
     case InspectPackageByPathReq(path: String) =>
       sender ! scalaCompiler.askPackageByPath(path).getOrElse(FalseResponse)
     case TypeAtPointReq(file, range: OffsetRange) =>

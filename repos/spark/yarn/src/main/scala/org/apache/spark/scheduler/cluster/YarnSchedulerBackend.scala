@@ -137,8 +137,8 @@ private[spark] abstract class YarnSchedulerBackend(
   }
 
   override def sufficientResourcesRegistered(): Boolean = {
-    totalRegisteredExecutors
-      .get() >= totalExpectedExecutors * minRegisteredRatio
+    totalRegisteredExecutors.get() >=
+      totalExpectedExecutors * minRegisteredRatio
   }
 
   /**
@@ -153,8 +153,8 @@ private[spark] abstract class YarnSchedulerBackend(
     }
 
     val hasFilter =
-      filterName != null && filterName.nonEmpty &&
-        filterParams != null && filterParams.nonEmpty
+      filterName != null && filterName.nonEmpty && filterParams != null &&
+        filterParams.nonEmpty
     if (hasFilter) {
       logInfo(s"Add WebUI Filter. $filterName, $filterParams, $proxyBase")
       conf.set("spark.ui.filters", filterName)

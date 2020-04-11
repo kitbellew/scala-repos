@@ -152,8 +152,8 @@ class IncrementalLexerHighlightingTest
   }
 
   def testInterpolatedString() {
-    val text =
-      "s\"\"\"\n    ${if (true)" + CARET_MARKER + "}\n\n\"\"\"\n{}\nval a = 1"
+    val text = "s\"\"\"\n    ${if (true)" + CARET_MARKER +
+      "}\n\n\"\"\"\n{}\nval a = 1"
     genericTestHighlighting(text, ' ')
   }
 
@@ -255,7 +255,8 @@ class Sincronizador(servidor: String, ruta: String, soporte: String, tblsProcesa
         |    val paymentType = 123
         |
         |    if (true) {
-        |      """ + CARET_MARKER + """"Unsupported payment type: [$paymentType]" ; val a = 1
+        |      """ + CARET_MARKER +
+        """"Unsupported payment type: [$paymentType]" ; val a = 1
         |    }
         |  }
         |}

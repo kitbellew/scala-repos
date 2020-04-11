@@ -270,13 +270,15 @@ class ObservableIntegerArraySpec
   it should "return an empty observable array from companion's empty()" in {
     testEmpty(ObservableIntegerArray.empty())
   }
-  it should "not allow a negative dimension array from companion's ofDim(size)" in {
-    testNegativeArraySizeExceptionThrown(new ObservableIntegerArray(-1))
-  }
-  it should "return a dimension array of zeroed elements from companion's ofDim(size)" in {
-    testNonEmpty(ObservableIntegerArray.ofDim(1), new Array(1))
-    testNonEmpty(ObservableIntegerArray.ofDim(10), new Array(10))
-  }
+  it should
+    "not allow a negative dimension array from companion's ofDim(size)" in {
+      testNegativeArraySizeExceptionThrown(new ObservableIntegerArray(-1))
+    }
+  it should
+    "return a dimension array of zeroed elements from companion's ofDim(size)" in {
+      testNonEmpty(ObservableIntegerArray.ofDim(1), new Array(1))
+      testNonEmpty(ObservableIntegerArray.ofDim(10), new Array(10))
+    }
   it should "return valid array from companion's apply(values*)" in {
     testEmpty(ObservableIntegerArray())
     testNonEmpty(ObservableIntegerArray(1), Array(1))
@@ -304,45 +306,48 @@ class ObservableIntegerArraySpec
     testNonEmpty(fillArray(1), Array(1))
     testNonEmpty(fillArray(5), Array(1, 2, 3, 4, 5))
   }
-  it should "return valid initialized array from companion's tabulate(n)(f)" in {
-    def tabulateArray(n: Int): ObservableIntegerArray = {
-      val oa = ObservableIntegerArray.tabulate(n)(_ + 1)
-      testOutOfBoundsExceptionThrown(oa(-1))
-      testOutOfBoundsExceptionThrown(oa(n))
-      oa
+  it should
+    "return valid initialized array from companion's tabulate(n)(f)" in {
+      def tabulateArray(n: Int): ObservableIntegerArray = {
+        val oa = ObservableIntegerArray.tabulate(n)(_ + 1)
+        testOutOfBoundsExceptionThrown(oa(-1))
+        testOutOfBoundsExceptionThrown(oa(n))
+        oa
+      }
+      testEmpty(tabulateArray(-1))
+      testEmpty(tabulateArray(0))
+      testNonEmpty(tabulateArray(1), Array(1))
+      testNonEmpty(tabulateArray(5), Array(1, 2, 3, 4, 5))
     }
-    testEmpty(tabulateArray(-1))
-    testEmpty(tabulateArray(0))
-    testNonEmpty(tabulateArray(1), Array(1))
-    testNonEmpty(tabulateArray(5), Array(1, 2, 3, 4, 5))
-  }
-  it should "return valid initialized array from companion's iterate(start, length)(f)" in {
-    testEmpty(ObservableIntegerArray.iterate(0, -1)(_ + 1))
-    testEmpty(ObservableIntegerArray.iterate(0, 0)(_ + 1))
-    testNonEmpty(ObservableIntegerArray.iterate(0, 1)(_ + 1), Array(0))
-    testNonEmpty(
-      ObservableIntegerArray.iterate(0, 5)(_ + 1),
-      Array(0, 1, 2, 3, 4))
-  }
-  it should "return valid initialized array from companion's range(start, end)" in {
-    testIllegalArgumentExceptionThrown(ObservableIntegerArray.range(1, 2, 0))
-    testEmpty(ObservableIntegerArray.range(1, 0))
-    testEmpty(ObservableIntegerArray.range(1, 0, 1))
-    testEmpty(ObservableIntegerArray.range(1, 1))
-    testEmpty(ObservableIntegerArray.range(1, 1, 1))
-    testNonEmpty(ObservableIntegerArray.range(1, 2, 2), Array(1))
-    testEmpty(ObservableIntegerArray.range(1, 2, -1))
-    testEmpty(ObservableIntegerArray.range(1, 1, -1))
-    testNonEmpty(ObservableIntegerArray.range(1, 0, -2), Array(1))
-    val a123 = Array(1, 2, 3)
-    testNonEmpty(ObservableIntegerArray.range(1, 4), a123)
-    testNonEmpty(ObservableIntegerArray.range(1, 4, 1), a123)
-    testNonEmpty(ObservableIntegerArray.range(3, 0, -1), Array(3, 2, 1))
-    val a135 = Array(1, 3, 5)
-    testNonEmpty(ObservableIntegerArray.range(1, 6, 2), a135)
-    testNonEmpty(ObservableIntegerArray.range(1, 7, 2), a135)
-    val a531 = Array(5, 3, 1)
-    testNonEmpty(ObservableIntegerArray.range(5, 0, -2), a531)
-    testNonEmpty(ObservableIntegerArray.range(5, -1, -2), a531)
-  }
+  it should
+    "return valid initialized array from companion's iterate(start, length)(f)" in {
+      testEmpty(ObservableIntegerArray.iterate(0, -1)(_ + 1))
+      testEmpty(ObservableIntegerArray.iterate(0, 0)(_ + 1))
+      testNonEmpty(ObservableIntegerArray.iterate(0, 1)(_ + 1), Array(0))
+      testNonEmpty(
+        ObservableIntegerArray.iterate(0, 5)(_ + 1),
+        Array(0, 1, 2, 3, 4))
+    }
+  it should
+    "return valid initialized array from companion's range(start, end)" in {
+      testIllegalArgumentExceptionThrown(ObservableIntegerArray.range(1, 2, 0))
+      testEmpty(ObservableIntegerArray.range(1, 0))
+      testEmpty(ObservableIntegerArray.range(1, 0, 1))
+      testEmpty(ObservableIntegerArray.range(1, 1))
+      testEmpty(ObservableIntegerArray.range(1, 1, 1))
+      testNonEmpty(ObservableIntegerArray.range(1, 2, 2), Array(1))
+      testEmpty(ObservableIntegerArray.range(1, 2, -1))
+      testEmpty(ObservableIntegerArray.range(1, 1, -1))
+      testNonEmpty(ObservableIntegerArray.range(1, 0, -2), Array(1))
+      val a123 = Array(1, 2, 3)
+      testNonEmpty(ObservableIntegerArray.range(1, 4), a123)
+      testNonEmpty(ObservableIntegerArray.range(1, 4, 1), a123)
+      testNonEmpty(ObservableIntegerArray.range(3, 0, -1), Array(3, 2, 1))
+      val a135 = Array(1, 3, 5)
+      testNonEmpty(ObservableIntegerArray.range(1, 6, 2), a135)
+      testNonEmpty(ObservableIntegerArray.range(1, 7, 2), a135)
+      val a531 = Array(5, 3, 1)
+      testNonEmpty(ObservableIntegerArray.range(5, 0, -2), a531)
+      testNonEmpty(ObservableIntegerArray.range(5, -1, -2), a531)
+    }
 }

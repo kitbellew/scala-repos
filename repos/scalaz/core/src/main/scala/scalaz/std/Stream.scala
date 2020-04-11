@@ -259,6 +259,6 @@ object stream extends StreamInstances with StreamFunctions {
 
 private trait StreamEqual[A] extends Equal[Stream[A]] {
   def A: Equal[A]
-  override final def equal(a1: Stream[A], a2: Stream[A]) =
-    (a1 corresponds a2)(A.equal)
+  override final def equal(a1: Stream[A], a2: Stream[A]) = (a1 corresponds a2)(
+    A.equal)
 }

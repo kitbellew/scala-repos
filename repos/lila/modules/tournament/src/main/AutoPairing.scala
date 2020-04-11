@@ -62,13 +62,10 @@ final class AutoPairing(
           Color.Black,
           _.withUser(user2.id, PerfPicker.mainOrDefault(game1)(user2.perfs)))
         .withTournamentId(tour.id).withId(pairing.gameId).start
-      _ ←
-        (GameRepo insertDenormalized game2) >>-
-          scheduleIdleCheck(
-            PovRef(game2.id, game2.turnColor),
-            SecondsToDoFirstMove.secondsToMoveFor(tour),
-            true) >>-
-          onStart(game2.id)
+      _ ← (GameRepo insertDenormalized game2) >>- scheduleIdleCheck(
+        PovRef(game2.id, game2.turnColor),
+        SecondsToDoFirstMove.secondsToMoveFor(tour),
+        true) >>- onStart(game2.id)
     } yield game2
 
   private def getUser(username: String): Fu[User] =

@@ -222,8 +222,8 @@ trait SingleMarathonIntegrationTest
       cmd = cmd,
       container = Some(new Container(
         docker = Some(new mesosphere.marathon.state.Container.Docker(
-          image =
-            s"""marathon-buildbase:${sys.env.getOrElse("BUILD_ID", "test")}""",
+          image = s"""marathon-buildbase:${sys.env
+            .getOrElse("BUILD_ID", "test")}""",
           network = Some(Protos.ContainerInfo.DockerInfo.Network.HOST))),
         volumes = collection.immutable.Seq(
           new DockerVolume(
@@ -341,17 +341,15 @@ trait SingleMarathonIntegrationTest
     require(mesos.state.value.agents.size == 1, "one agent expected")
     WaitTestSupport.waitUntil("clean slate in Mesos", 30.seconds) {
       val agent = mesos.state.value.agents.head
-      val empty = agent.usedResources.isEmpty && agent.reservedResourcesByRole
-        .isEmpty
+      val empty = agent.usedResources.isEmpty &&
+        agent.reservedResourcesByRole.isEmpty
       if (!empty) {
         import mesosphere.marathon.integration.facades.MesosFormats._
         log.info(
-          "Waiting for blank slate Mesos...\n \"used_resources\": "
-            + Json
-              .prettyPrint(
-                Json
-                  .toJson(agent.usedResources)) + "\n \"reserved_resources\": "
-            + Json.prettyPrint(Json.toJson(agent.reservedResourcesByRole)))
+          "Waiting for blank slate Mesos...\n \"used_resources\": " +
+            Json.prettyPrint(Json.toJson(agent.usedResources)) +
+            "\n \"reserved_resources\": " +
+            Json.prettyPrint(Json.toJson(agent.reservedResourcesByRole)))
       }
       empty
     }

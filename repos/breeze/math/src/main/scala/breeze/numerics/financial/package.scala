@@ -23,8 +23,8 @@ package object financial {
     if (rate == 0) { -1 * (presentValue + payment * numPeriods) }
     else {
       val fromPv = presentValue * math.pow(1.0 + rate, numPeriods)
-      val fromPayments = payment * ((1.0 + rate * when.t) / rate) * (math
-        .pow(1.0 + rate, numPeriods) - 1.0)
+      val fromPayments = payment * ((1.0 + rate * when.t) / rate) *
+        (math.pow(1.0 + rate, numPeriods) - 1.0)
       -1 * (fromPv + fromPayments)
     }
   }
@@ -39,8 +39,8 @@ package object financial {
     if (rate == 0) { -1 * (futureValue + payment * numPeriods) }
     else {
       val denominator = math.pow(1.0 + rate, numPeriods)
-      val fromPayments = payment * ((1.0 + rate * when.t) / rate) * (math
-        .pow(1.0 + rate, numPeriods) - 1.0)
+      val fromPayments = payment * ((1.0 + rate * when.t) / rate) *
+        (math.pow(1.0 + rate, numPeriods) - 1.0)
       -1 * (futureValue + fromPayments) / denominator
     }
   }
@@ -82,10 +82,10 @@ package object financial {
       when: PaymentTime = End): Double = {
     if (rate == 0) { -1 * (futureValue + presentValue) / numPeriods }
     else {
-      val denominator = ((1.0 + rate * when.t) / rate) * (math
-        .pow(1.0 + rate, numPeriods) - 1.0)
-      -1 * (futureValue + presentValue * math
-        .pow(1.0 + rate, numPeriods)) / denominator
+      val denominator = ((1.0 + rate * when.t) / rate) *
+        (math.pow(1.0 + rate, numPeriods) - 1.0)
+      -1 * (futureValue + presentValue * math.pow(1.0 + rate, numPeriods)) /
+        denominator
     }
   }
 
@@ -211,9 +211,9 @@ package object financial {
 
     val inflowNPV: Double = netPresentValue(reinvestRate, positives)
     val outflowNPV: Double = netPresentValue(financeRate, negatives)
-    val mirr = (pow(math.abs(inflowNPV / outflowNPV), (1.0 / (n - 1))) * (
-      1.0 + reinvestRate
-    ) - 1.0)
+    val mirr =
+      (pow(math.abs(inflowNPV / outflowNPV), (1.0 / (n - 1))) *
+        (1.0 + reinvestRate) - 1.0)
     mirr
   }
 
@@ -267,10 +267,14 @@ package object financial {
     val t1 = pow(1.0 + rate, nper)
     val t2 = pow(1.0 + rate, nper - 1.0)
     val annuityF = fv + pv * t1 + pmt * (t1 - 1) * (1.0 + rate * when.t) / rate
-    val gradAnnuityF = nper * t2 * pv - pmt * (t1 - 1.0) * (1.0 + rate * when
-      .t) / pow(rate, 2.0) +
-      nper * pmt * t2 * (1.0 + rate * when.t) / rate + pmt * (t1 - 1) * when
-      .t / rate
+    val gradAnnuityF = nper * t2 * pv -
+      pmt *
+      (t1 - 1.0) *
+      (1.0 + rate * when.t) / pow(rate, 2.0) +
+      nper * pmt * t2 *
+      (1.0 + rate * when.t) / rate +
+      pmt *
+      (t1 - 1) * when.t / rate
     val fDivGradF = annuityF / gradAnnuityF
     fDivGradF
   }

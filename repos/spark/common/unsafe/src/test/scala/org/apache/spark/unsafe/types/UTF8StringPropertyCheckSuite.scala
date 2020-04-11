@@ -75,8 +75,8 @@ class UTF8StringPropertyCheckSuite
   test("compare") {
     forAll { (s1: String, s2: String) =>
       assert(
-        Math.signum(toUTF8(s1).compareTo(toUTF8(s2))) === Math
-          .signum(s1.compareTo(s2)))
+        Math.signum(toUTF8(s1).compareTo(toUTF8(s2))) ===
+          Math.signum(s1.compareTo(s2)))
     }
   }
 
@@ -220,8 +220,8 @@ class UTF8StringPropertyCheckSuite
   ignore("split") {
     forAll { (s: String, pattern: String, limit: Int) =>
       assert(
-        toUTF8(s).split(toUTF8(pattern), limit) ===
-          s.split(pattern, limit).map(toUTF8(_)))
+        toUTF8(s).split(toUTF8(pattern), limit) === s.split(pattern, limit)
+          .map(toUTF8(_)))
     }
   }
 

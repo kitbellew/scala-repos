@@ -85,8 +85,10 @@ object ExtCoreArtifacts extends JSArtifacts {
         val ret =
           """
 	  try {
-	  var parent1 = document.getElementById(""" + id.encJs + """);
-	  parent1.innerHTML = """ + html + """;
+	  var parent1 = document.getElementById(""" + id.encJs +
+            """);
+	  parent1.innerHTML = """ + html +
+            """;
 	  for (var i = 0; i < parent1.childNodes.length; i++) {
 	    var node = parent1.childNodes[i];
 	    parent1.parentNode.insertBefore(node.cloneNode(true), parent1);
@@ -108,8 +110,8 @@ object ExtCoreArtifacts extends JSArtifacts {
     new JsCmd {
       def toJsCmd =
         fixHtmlCmdFunc(id, xml) { s =>
-          "try { Ext.fly(" + id
-            .encJs + ").dom.innerHTML = " + s + "; } catch (e) {}"
+          "try { Ext.fly(" + id.encJs + ").dom.innerHTML = " + s +
+            "; } catch (e) {}"
         }
     }
 
@@ -152,12 +154,12 @@ object ExtCoreArtifacts extends JSArtifacts {
     (("url : liftAjax.addPageName(" + path(server).toJsCmd + ")") ::
       "params : " + info.data.toJsCmd ::
       ("method : " + info.action.encJs) ::
-      ("dataType : " + info.dataType.encJs) ::
-      "timeout : " + info.timeout ::
+      ("dataType : " + info.dataType.encJs) :: "timeout : " + info.timeout ::
       "disableCaching : " + !info.cache ::
-      "success: function(response, options) { res = Ext.lift.eval(response.responseText);" + info
-        .successFunc.map(_ + "(res);").openOr("") + "}" ::
-      "failure: " + info.failFunc
-        .openOr("function(arg) {alert('Ajax request failed');}") ::
-      Nil) mkString ("{ ", ", ", " }")
+      "success: function(response, options) { res = Ext.lift.eval(response.responseText);" +
+      info.successFunc.map(_ + "(res);").openOr("") + "}" ::
+      "failure: " +
+      info.failFunc.openOr("function(arg) {alert('Ajax request failed');}") ::
+      Nil) mkString
+      ("{ ", ", ", " }")
 }

@@ -229,8 +229,9 @@ object JGitUtil {
           // commit count
           commitCount,
           // branches
-          git.branchList.call.asScala
-            .map { ref => ref.getName.stripPrefix("refs/heads/") }.toList,
+          git.branchList.call.asScala.map { ref =>
+            ref.getName.stripPrefix("refs/heads/")
+          }.toList,
           // tags
           git.tagList.call.asScala.map { ref =>
             val revCommit = getRevCommitFromId(git, ref.getObjectId)
@@ -371,10 +372,12 @@ object JGitUtil {
               getSubmodules(git, revCommit.getTree)
                 .find(_.path == treeWalk.getPathString).map(_.url)
             } else None
-          fileList +:= (
-            treeWalk.getObjectId(0), treeWalk.getFileMode(0), treeWalk
-              .getNameString, linkUrl
-          )
+          fileList +:=
+            (
+              treeWalk.getObjectId(0),
+              treeWalk.getFileMode(0),
+              treeWalk.getNameString,
+              linkUrl)
         }
       }
       revWalk.markStart(revCommit)
@@ -952,9 +955,10 @@ object JGitUtil {
     try {
       using(git.getRepository.getObjectDatabase) { db =>
         val loader = db.open(id)
-        if (loader.isLarge || (fetchLargeFile == false && FileUtil
-              .isLarge(loader.getSize))) { None }
-        else { Some(loader.getBytes) }
+        if (loader.isLarge ||
+            (fetchLargeFile == false && FileUtil.isLarge(loader.getSize))) {
+          None
+        } else { Some(loader.getBytes) }
       }
     } catch { case e: MissingObjectException => None }
 
@@ -1013,9 +1017,8 @@ object JGitUtil {
       requestBranch: String): String =
     defining(getAllCommitIds(oldGit)) { existIds =>
       getCommitLogs(newGit, requestBranch, true) { commit =>
-        existIds.contains(commit.name) && getBranchesOfCommit(
-          oldGit,
-          commit.getName).contains(branch)
+        existIds.contains(commit.name) &&
+        getBranchesOfCommit(oldGit, commit.getName).contains(branch)
       }.head.id
     }
 

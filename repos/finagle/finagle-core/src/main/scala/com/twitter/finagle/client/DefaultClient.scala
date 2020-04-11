@@ -118,17 +118,12 @@ case class DefaultClient[Req, Rep](
   private[this] val endpointStack = transform(
     StackClient.endpointStack[Req, Rep])
 
-  private[this] val params = Stack.Params.empty +
-    param.Label(name) +
-    param.Timer(timer) +
-    param.Monitor(monitor) +
-    param.Stats(statsReceiver) +
-    param.Tracer(tracer) +
-    param.Reporter(reporter) +
+  private[this] val params = Stack.Params.empty + param.Label(name) +
+    param.Timer(timer) + param.Monitor(monitor) + param.Stats(statsReceiver) +
+    param.Tracer(tracer) + param.Reporter(reporter) +
     LoadBalancerFactory.HostStats(hostStatsReceiver) +
     LoadBalancerFactory.Param(loadBalancer) +
-    TimeoutFactory.Param(serviceTimeout) +
-    TimeoutFilter.Param(requestTimeout) +
+    TimeoutFactory.Param(serviceTimeout) + TimeoutFilter.Param(requestTimeout) +
     ExpiringService.Param(maxIdletime, maxLifetime)
 
   private[this] case class Client(

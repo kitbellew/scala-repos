@@ -105,8 +105,8 @@ class MigrationTest
     f.groupRepo.rootGroup() returns Future.successful(None)
     f.groupRepo.store(any, any) returns Future.successful(Group.empty)
 
-    f.store.load("internal:storage:version") returns Future
-      .successful(Some(InMemoryEntity(
+    f.store.load("internal:storage:version") returns
+      Future.successful(Some(InMemoryEntity(
         id = "internal:storage:version",
         version = 0,
         bytes = minVersion.toByteArray)))
@@ -114,8 +114,8 @@ class MigrationTest
 
     Given("An unsupported storage version")
     val unsupportedVersion = StorageVersions(0, 2, 0)
-    f.store.load("internal:storage:version") returns Future
-      .successful(Some(InMemoryEntity(
+    f.store.load("internal:storage:version") returns
+      Future.successful(Some(InMemoryEntity(
         id = "internal:storage:version",
         version = 0,
         bytes = unsupportedVersion.toByteArray)))

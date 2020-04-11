@@ -232,8 +232,8 @@ trait ApplicationAnnotator {
     call.getEffectiveInvokedExpr match {
       case ref: ScReferenceElement => ref.bind() match {
           case Some(r)
-              if r.notCheckedResolveResult || r
-                .isDynamic => //it's unhandled case
+              if r.notCheckedResolveResult ||
+                r.isDynamic => //it's unhandled case
           case _ => call.applyOrUpdateElement match {
               case Some(r) if r.isDynamic => //it's still unhandled
               case _                      => return //it's definetely handled case
@@ -312,9 +312,9 @@ trait ApplicationAnnotator {
       case (exp: ScReferenceExpression) childOf (infix: ScInfixExpr)
           if infix.operation == exp =>
         annotation.registerFix(new CreateMethodQuickFix(exp))
-      case (exp: ScReferenceExpression) childOf (
-            (_: ScGenericCall) childOf (_: ScMethodCall)
-          ) => annotation.registerFix(new CreateMethodQuickFix(exp))
+      case (exp: ScReferenceExpression) childOf
+          ((_: ScGenericCall) childOf (_: ScMethodCall)) =>
+        annotation.registerFix(new CreateMethodQuickFix(exp))
       case (exp: ScReferenceExpression) childOf (_: ScGenericCall) =>
         annotation.registerFix(new CreateParameterlessMethodQuickFix(exp))
       case exp: ScReferenceExpression =>
@@ -322,9 +322,8 @@ trait ApplicationAnnotator {
         annotation.registerFix(new CreateValueQuickFix(exp))
         annotation.registerFix(new CreateVariableQuickFix(exp))
         annotation.registerFix(new CreateObjectQuickFix(exp))
-      case (stRef: ScStableCodeReferenceElement) childOf (
-            st: ScSimpleTypeElement
-          ) if st.singleton =>
+      case (stRef: ScStableCodeReferenceElement) childOf
+          (st: ScSimpleTypeElement) if st.singleton =>
       case (stRef: ScStableCodeReferenceElement) childOf(Both(
             p: ScPattern,
             (_: ScConstructorPattern | _: ScInfixPattern))) =>

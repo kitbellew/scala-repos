@@ -147,8 +147,7 @@ object CachedWithoutModificationCount {
               $cacheVarName = $wrappedResult
               ..${if (hasParameters) putValuesIntoMap else EmptyTree}
             }
-            ${if (valueWrapper == ValueWrapper.None) q"$cacheVarName"
-        else q"$cacheVarName.get"}
+            ${if (valueWrapper == ValueWrapper.None) q"$cacheVarName" else q"$cacheVarName.get"}
           """
         val getValuesIfHasParams =
           if (hasParameters) {

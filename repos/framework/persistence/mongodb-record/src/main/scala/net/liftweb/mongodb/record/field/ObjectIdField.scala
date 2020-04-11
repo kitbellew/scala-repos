@@ -91,9 +91,8 @@ class ObjectIdField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
     }
 
   def asJValue: JValue =
-    valueBox.map(v => JsonObjectId.asJValue(v, owner.meta.formats)) openOr (
-      JNothing: JValue
-    )
+    valueBox.map(v => JsonObjectId.asJValue(v, owner.meta.formats)) openOr
+      (JNothing: JValue)
 
   def createdAt: Date = this.get.getDate
 }

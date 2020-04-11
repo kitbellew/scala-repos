@@ -61,8 +61,7 @@ class ScaldingILoop(in: Option[BufferedReader], out: JPrintWriter)
     val wc = Console.RED
     def wrapFlames(s: String) = s.replaceAll("[()]+", fc + "$0" + wc)
     echo(
-      fc +
-        " (                                           \n" +
+      fc + " (                                           \n" +
         " )\\ )            (   (                       \n" +
         "(()/(         )  )\\  )\\ )  (          (  (   \n" +
         " /(_)) (   ( /( ((_)(()/( )\\   (     )\\))(  \n" +

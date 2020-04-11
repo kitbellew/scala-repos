@@ -138,10 +138,10 @@ class YarnAllocatorSuite
     handler.handleAllocatedContainers(Array(container))
 
     handler.getNumExecutorsRunning should be(1)
-    handler.allocatedContainerToHostMap.get(container.getId).get should be(
-      "host1")
-    handler.allocatedHostToContainersMap.get("host1").get should contain(
-      container.getId)
+    handler.allocatedContainerToHostMap.get(container.getId).get should
+      be("host1")
+    handler.allocatedHostToContainersMap.get("host1").get should
+      contain(container.getId)
 
     val size = rmClient
       .getMatchingRequests(container.getPriority, "host1", containerResource)
@@ -162,18 +162,18 @@ class YarnAllocatorSuite
     handler.handleAllocatedContainers(Array(container1, container2, container3))
 
     handler.getNumExecutorsRunning should be(3)
-    handler.allocatedContainerToHostMap.get(container1.getId).get should be(
-      "host1")
-    handler.allocatedContainerToHostMap.get(container2.getId).get should be(
-      "host1")
-    handler.allocatedContainerToHostMap.get(container3.getId).get should be(
-      "host2")
-    handler.allocatedHostToContainersMap.get("host1").get should contain(
-      container1.getId)
-    handler.allocatedHostToContainersMap.get("host1").get should contain(
-      container2.getId)
-    handler.allocatedHostToContainersMap.get("host2").get should contain(
-      container3.getId)
+    handler.allocatedContainerToHostMap.get(container1.getId).get should
+      be("host1")
+    handler.allocatedContainerToHostMap.get(container2.getId).get should
+      be("host1")
+    handler.allocatedContainerToHostMap.get(container3.getId).get should
+      be("host2")
+    handler.allocatedHostToContainersMap.get("host1").get should
+      contain(container1.getId)
+    handler.allocatedHostToContainersMap.get("host1").get should
+      contain(container2.getId)
+    handler.allocatedHostToContainersMap.get("host2").get should
+      contain(container3.getId)
   }
 
   test("receive more containers than requested") {
@@ -188,16 +188,16 @@ class YarnAllocatorSuite
     handler.handleAllocatedContainers(Array(container1, container2, container3))
 
     handler.getNumExecutorsRunning should be(2)
-    handler.allocatedContainerToHostMap.get(container1.getId).get should be(
-      "host1")
-    handler.allocatedContainerToHostMap.get(container2.getId).get should be(
-      "host2")
-    handler.allocatedContainerToHostMap.contains(container3.getId) should be(
-      false)
-    handler.allocatedHostToContainersMap.get("host1").get should contain(
-      container1.getId)
-    handler.allocatedHostToContainersMap.get("host2").get should contain(
-      container2.getId)
+    handler.allocatedContainerToHostMap.get(container1.getId).get should
+      be("host1")
+    handler.allocatedContainerToHostMap.get(container2.getId).get should
+      be("host2")
+    handler.allocatedContainerToHostMap.contains(container3.getId) should
+      be(false)
+    handler.allocatedHostToContainersMap.get("host1").get should
+      contain(container1.getId)
+    handler.allocatedHostToContainersMap.get("host2").get should
+      contain(container2.getId)
     handler.allocatedHostToContainersMap.contains("host4") should be(false)
   }
 
@@ -215,10 +215,10 @@ class YarnAllocatorSuite
     handler.handleAllocatedContainers(Array(container))
 
     handler.getNumExecutorsRunning should be(1)
-    handler.allocatedContainerToHostMap.get(container.getId).get should be(
-      "host1")
-    handler.allocatedHostToContainersMap.get("host1").get should contain(
-      container.getId)
+    handler.allocatedContainerToHostMap.get(container.getId).get should
+      be("host1")
+    handler.allocatedHostToContainersMap.get("host1").get should
+      contain(container.getId)
 
     handler.requestTotalExecutorsWithPreferredLocalities(2, 0, Map.empty)
     handler.updateResourceRequests()

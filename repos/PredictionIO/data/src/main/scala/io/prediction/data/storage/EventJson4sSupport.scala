@@ -113,15 +113,12 @@ object EventJson4sSupport {
           d.eventId.map(eid => JString(eid)).getOrElse(JNothing)) ::
           JField("event", JString(d.event)) ::
           JField("entityType", JString(d.entityType)) ::
-          JField("entityId", JString(d.entityId)) ::
-          JField(
+          JField("entityId", JString(d.entityId)) :: JField(
             "targetEntityType",
-            d.targetEntityType.map(JString(_)).getOrElse(JNothing)) ::
-          JField(
+            d.targetEntityType.map(JString(_)).getOrElse(JNothing)) :: JField(
             "targetEntityId",
             d.targetEntityId.map(JString(_)).getOrElse(JNothing)) ::
-          JField("properties", d.properties.toJObject) ::
-          JField(
+          JField("properties", d.properties.toJObject) :: JField(
             "eventTime",
             JString(DataUtils.dateTimeToString(d.eventTime))) ::
           // disable tags from API for now
@@ -131,8 +128,7 @@ object EventJson4sSupport {
           // don't show creationTime for now
           JField(
             "creationTime",
-            JString(DataUtils.dateTimeToString(d.creationTime))) ::
-          Nil)
+            JString(DataUtils.dateTimeToString(d.creationTime))) :: Nil)
     }
   }
 
@@ -182,23 +178,18 @@ object EventJson4sSupport {
       JObject(
         JField("event", JString(d.event)) ::
           JField("entityType", JString(d.entityType)) ::
-          JField("entityId", JString(d.entityId)) ::
-          JField(
+          JField("entityId", JString(d.entityId)) :: JField(
             "targetEntityType",
-            d.targetEntityType.map(JString(_)).getOrElse(JNothing)) ::
-          JField(
+            d.targetEntityType.map(JString(_)).getOrElse(JNothing)) :: JField(
             "targetEntityId",
             d.targetEntityId.map(JString(_)).getOrElse(JNothing)) ::
-          JField("properties", d.properties.toJObject) ::
-          JField(
+          JField("properties", d.properties.toJObject) :: JField(
             "eventTime",
             JString(DataUtils.dateTimeToString(d.eventTime))) ::
           JField("tags", JArray(d.tags.toList.map(JString(_)))) ::
-          JField("prId", d.prId.map(JString(_)).getOrElse(JNothing)) ::
-          JField(
+          JField("prId", d.prId.map(JString(_)).getOrElse(JNothing)) :: JField(
             "creationTime",
-            JString(DataUtils.dateTimeToString(d.creationTime))) ::
-          Nil)
+            JString(DataUtils.dateTimeToString(d.creationTime))) :: Nil)
     }
   }
 

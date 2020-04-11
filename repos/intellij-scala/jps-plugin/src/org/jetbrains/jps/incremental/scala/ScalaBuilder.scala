@@ -211,8 +211,8 @@ object ScalaBuilder {
     val settings = SettingsManager
       .getGlobalSettings(context.getProjectDescriptor.getModel.getGlobal)
 
-    if (settings.isCompileServerEnabled && JavaBuilderUtil
-          .CONSTANT_SEARCH_SERVICE.get(context) != null) {
+    if (settings.isCompileServerEnabled &&
+        JavaBuilderUtil.CONSTANT_SEARCH_SERVICE.get(context) != null) {
       cleanLocalServerCache()
       new RemoteServer(
         InetAddress.getByName(null),

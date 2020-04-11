@@ -38,9 +38,8 @@ class RouteConcurrencySpec extends ScalatraWordSpec {
   "A scalatra kernel " should {
     "support adding routes concurrently" in {
       get("/count/get") {
-        body should equal(
-          "251"
-        ) // the 500 we added in the future, plus this count route
+        body should
+          equal("251") // the 500 we added in the future, plus this count route
       }
     }
 

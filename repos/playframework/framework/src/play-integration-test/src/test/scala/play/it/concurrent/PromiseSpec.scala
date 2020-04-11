@@ -37,10 +37,11 @@ class PromiseSpec extends PlaySpecification {
       await(future) must_== "hello"
     }
 
-    "yield any exceptions thrown when generating a message" in new WithApplication() {
-      val future = Promise.timeout[Unit](throw new Exception("error!"), 10)
-      await(future) must throwAn[Exception](message = "error!")
-    }
+    "yield any exceptions thrown when generating a message" in
+      new WithApplication() {
+        val future = Promise.timeout[Unit](throw new Exception("error!"), 10)
+        await(future) must throwAn[Exception](message = "error!")
+      }
 
   }
 

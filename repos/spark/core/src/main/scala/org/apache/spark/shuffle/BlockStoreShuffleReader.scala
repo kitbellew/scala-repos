@@ -51,8 +51,8 @@ private[spark] class BlockStoreShuffleReader[K, C](
         startPartition,
         endPartition),
       // Note: we use getSizeAsMb when no suffix is provided for backwards compatibility
-      SparkEnv.get.conf
-        .getSizeAsMb("spark.reducer.maxSizeInFlight", "48m") * 1024 * 1024,
+      SparkEnv.get.conf.getSizeAsMb("spark.reducer.maxSizeInFlight", "48m") *
+        1024 * 1024,
       SparkEnv.get.conf.getInt("spark.reducer.maxReqsInFlight", Int.MaxValue))
 
     // Wrap the streams for compression based on configuration

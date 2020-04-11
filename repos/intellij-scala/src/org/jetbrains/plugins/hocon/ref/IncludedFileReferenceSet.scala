@@ -63,9 +63,8 @@ class IncludedFileReferenceSet(
   override def getReferenceCompletionFilter: Condition[PsiFileSystemItem] =
     new Condition[PsiFileSystemItem] {
       def value(item: PsiFileSystemItem): Boolean =
-        item.isDirectory ||
-          item.getName.endsWith(ConfExt) || item.getName
-          .endsWith(JsonExt) || item.getName.endsWith(PropsExt)
+        item.isDirectory || item.getName.endsWith(ConfExt) ||
+          item.getName.endsWith(JsonExt) || item.getName.endsWith(PropsExt)
     }
 
   // code mostly based on similar bits in `FileReferenceSet` and `PsiFileReferenceHelper`
@@ -160,8 +159,8 @@ class IncludedFileReference(
 
   private def lacksExtension(text: String) =
     isLast && text.nonEmpty && text != "." && text != ".." && text != "/" &&
-      !text.endsWith(ConfExt) && !text.endsWith(JsonExt) && !text
-      .endsWith(PropsExt)
+      !text.endsWith(ConfExt) && !text.endsWith(JsonExt) &&
+      !text.endsWith(PropsExt)
 
   override def innerResolve(
       caseSensitive: Boolean,

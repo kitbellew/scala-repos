@@ -124,9 +124,11 @@ object JObjectParser extends SimpleInjector {
 
     // FIXME: This is not ideal.
     private def renderInteger(i: BigInt): Object = {
-      if (i <= java.lang.Integer.MAX_VALUE && i >= java.lang.Integer
-            .MIN_VALUE) { new java.lang.Integer(i.intValue) }
-      else if (i <= java.lang.Long.MAX_VALUE && i >= java.lang.Long.MIN_VALUE) {
+      if (i <= java.lang.Integer.MAX_VALUE &&
+          i >= java.lang.Integer.MIN_VALUE) {
+        new java.lang.Integer(i.intValue)
+      } else if (i <= java.lang.Long.MAX_VALUE &&
+                 i >= java.lang.Long.MIN_VALUE) {
         new java.lang.Long(i.longValue)
       } else { i.toString }
     }

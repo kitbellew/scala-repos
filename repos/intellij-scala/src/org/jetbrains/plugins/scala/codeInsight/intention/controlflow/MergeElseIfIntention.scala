@@ -36,8 +36,8 @@ class MergeElseIfIntention extends PsiElementBaseIntentionAction {
     val elseBranch = ifStmt.elseBranch.orNull
     if (thenBranch == null || elseBranch == null) return false
 
-    if (!(thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch
-          .getTextRange.getStartOffset)) return false
+    if (!(thenBranch.getTextRange.getEndOffset <= offset &&
+          offset <= elseBranch.getTextRange.getStartOffset)) return false
 
     val blockExpr = ifStmt.elseBranch.orNull
     if (blockExpr != null && blockExpr.isInstanceOf[ScBlockExpr]) {
@@ -54,14 +54,14 @@ class MergeElseIfIntention extends PsiElementBaseIntentionAction {
     if (ifStmt == null || !ifStmt.isValid) return
 
     val start = ifStmt.getTextRange.getStartOffset
-    val startIndex = ifStmt.thenBranch.get.getTextRange.getEndOffset - ifStmt
-      .getTextRange.getStartOffset
-    val endIndex = ifStmt.elseBranch.get.getTextRange.getStartOffset - ifStmt
-      .getTextRange.getStartOffset
+    val startIndex = ifStmt.thenBranch.get.getTextRange.getEndOffset -
+      ifStmt.getTextRange.getStartOffset
+    val endIndex = ifStmt.elseBranch.get.getTextRange.getStartOffset -
+      ifStmt.getTextRange.getStartOffset
     val elseIndex = ifStmt.getText.substring(startIndex, endIndex)
       .indexOf("else") - 1
-    val diff = editor.getCaretModel.getOffset - ifStmt.thenBranch.get
-      .getTextRange.getEndOffset - elseIndex
+    val diff = editor.getCaretModel.getOffset -
+      ifStmt.thenBranch.get.getTextRange.getEndOffset - elseIndex
 
     val expr = new StringBuilder
     expr.append("if (").append(ifStmt.condition.get.getText).append(") ")

@@ -63,8 +63,8 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
       case Some(c: ScTrait)               => true
       case _                              => false
     }
-    file != null && ScalaFileType.SCALA_FILE_TYPE == file
-      .getFileType && isSuitableClass
+    file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType &&
+    isSuitableClass
   }
 
   override def startInWriteAction(): Boolean = true
@@ -115,6 +115,6 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
 
   private def getAllSuitableMembers(
       aType: ScTypeDefinition): Seq[ScNamedElement] =
-    GenerationUtil.getAllFields(aType) ++ GenerationUtil
-      .getAllParameterlessMethods(aType)
+    GenerationUtil.getAllFields(aType) ++
+      GenerationUtil.getAllParameterlessMethods(aType)
 }

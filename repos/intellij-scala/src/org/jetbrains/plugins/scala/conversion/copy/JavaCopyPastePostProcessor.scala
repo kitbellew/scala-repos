@@ -55,8 +55,8 @@ class JavaCopyPastePostProcessor
       endOffsets: Array[Int]): TextBlockTransferableData = {
     if (DumbService.getInstance(file.getProject).isDumb) return null
     if (!ScalaProjectSettings.getInstance(file.getProject)
-          .isEnableJavaToScalaConversion ||
-        !file.isInstanceOf[PsiJavaFile]) return null
+          .isEnableJavaToScalaConversion || !file.isInstanceOf[PsiJavaFile])
+      return null
 
     sealed trait Part
     case class ElementPart(elem: PsiElement) extends Part
@@ -78,8 +78,8 @@ class JavaCopyPastePostProcessor
           }
           var elem: PsiElement = findElem(startOffset)
           if (elem != null) {
-            while (elem.getParent != null && !elem.getParent
-                     .isInstanceOf[PsiFile] &&
+            while (elem.getParent != null &&
+                   !elem.getParent.isInstanceOf[PsiFile] &&
                    elem.getParent.getTextRange.getEndOffset <= endOffset &&
                    elem.getParent.getTextRange.getStartOffset >= startOffset) {
               elem = elem.getParent
@@ -90,8 +90,8 @@ class JavaCopyPastePostProcessor
                   .substring(file.getText))
             }
             buffer += ElementPart(elem)
-            while (elem.getNextSibling != null && elem.getNextSibling
-                     .getTextRange.getEndOffset <= endOffset) {
+            while (elem.getNextSibling != null &&
+                   elem.getNextSibling.getTextRange.getEndOffset <= endOffset) {
               elem = elem.getNextSibling
               buffer += ElementPart(elem)
             }
@@ -151,11 +151,12 @@ class JavaCopyPastePostProcessor
           new Association(a.kind, range, a.path)
         }
 
-      updatedAssociations ++= associationsHelper
-        .filter(_.itype.isInstanceOf[JavaCodeReferenceStatement]).map { a =>
-          val range = rangeMap.getOrElse(a.itype, new TextRange(0, 0))
-          new Association(a.kind, range, a.path)
-        }
+      updatedAssociations ++=
+        associationsHelper
+          .filter(_.itype.isInstanceOf[JavaCodeReferenceStatement]).map { a =>
+            val range = rangeMap.getOrElse(a.itype, new TextRange(0, 0))
+            new Association(a.kind, range, a.path)
+          }
 
       new ConvertedCode(text, updatedAssociations.toArray)
     } catch {
@@ -201,8 +202,8 @@ class JavaCopyPastePostProcessor
     if (text == "") return //copy as usually
     if (!ScalaProjectSettings.getInstance(project).isDontShowConversionDialog)
       dialog.show()
-    if (ScalaProjectSettings.getInstance(project)
-          .isDontShowConversionDialog || dialog.isOK) {
+    if (ScalaProjectSettings.getInstance(project).isDontShowConversionDialog ||
+        dialog.isOK) {
       val shiftedAssociations = inWriteAction {
         replaceByConvertedCode(editor, bounds, text)
         editor.getCaretModel.moveToOffset(bounds.getStartOffset + text.length)

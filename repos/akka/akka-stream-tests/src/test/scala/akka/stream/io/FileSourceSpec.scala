@@ -105,48 +105,51 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       c.expectComplete()
     }
 
-    "complete only when all contents of a file have been signalled" in assertAllStagesStopped {
-      val chunkSize = 256
-      val bufferAttributes = Attributes.inputBuffer(4, 8)
+    "complete only when all contents of a file have been signalled" in
+      assertAllStagesStopped {
+        val chunkSize = 256
+        val bufferAttributes = Attributes.inputBuffer(4, 8)
 
-      val demandAllButOneChunks = TestText.length / chunkSize - 1
+        val demandAllButOneChunks = TestText.length / chunkSize - 1
 
-      val p = FileIO.fromFile(testFile, chunkSize)
-        .withAttributes(bufferAttributes).runWith(Sink.asPublisher(false))
+        val p = FileIO.fromFile(testFile, chunkSize)
+          .withAttributes(bufferAttributes).runWith(Sink.asPublisher(false))
 
-      val c = TestSubscriber.manualProbe[ByteString]()
-      p.subscribe(c)
-      val sub = c.expectSubscription()
+        val c = TestSubscriber.manualProbe[ByteString]()
+        p.subscribe(c)
+        val sub = c.expectSubscription()
 
-      var remaining = TestText
-      def nextChunk() = {
-        val (chunk, rest) = remaining.splitAt(chunkSize)
-        remaining = rest
-        chunk
+        var remaining = TestText
+        def nextChunk() = {
+          val (chunk, rest) = remaining.splitAt(chunkSize)
+          remaining = rest
+          chunk
+        }
+
+        sub.request(demandAllButOneChunks)
+        for (i ← 1 to demandAllButOneChunks)
+          c.expectNext().utf8String should ===(nextChunk())
+        c.expectNoMsg(300.millis)
+
+        sub.request(1)
+        c.expectNext().utf8String should ===(nextChunk())
+        c.expectNoMsg(200.millis)
+
+        sub.request(1)
+        c.expectNext().utf8String should ===(nextChunk())
+        c.expectComplete()
       }
 
-      sub.request(demandAllButOneChunks)
-      for (i ← 1 to demandAllButOneChunks)
-        c.expectNext().utf8String should ===(nextChunk())
-      c.expectNoMsg(300.millis)
+    "onError whent trying to read from file which does not exist" in
+      assertAllStagesStopped {
+        val p = FileIO.fromFile(notExistingFile)
+          .runWith(Sink.asPublisher(false))
+        val c = TestSubscriber.manualProbe[ByteString]()
+        p.subscribe(c)
 
-      sub.request(1)
-      c.expectNext().utf8String should ===(nextChunk())
-      c.expectNoMsg(200.millis)
-
-      sub.request(1)
-      c.expectNext().utf8String should ===(nextChunk())
-      c.expectComplete()
-    }
-
-    "onError whent trying to read from file which does not exist" in assertAllStagesStopped {
-      val p = FileIO.fromFile(notExistingFile).runWith(Sink.asPublisher(false))
-      val c = TestSubscriber.manualProbe[ByteString]()
-      p.subscribe(c)
-
-      c.expectSubscription()
-      c.expectError()
-    }
+        c.expectSubscription()
+        c.expectError()
+      }
 
     List(
       Settings(chunkSize = 512, readAhead = 2),
@@ -168,22 +171,26 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       }
     }
 
-    "use dedicated blocking-io-dispatcher by default" in assertAllStagesStopped {
-      val sys = ActorSystem("dispatcher-testing", UnboundedMailboxConfig)
-      val materializer = ActorMaterializer()(sys)
-      implicit val timeout = Timeout(500.millis)
+    "use dedicated blocking-io-dispatcher by default" in
+      assertAllStagesStopped {
+        val sys = ActorSystem("dispatcher-testing", UnboundedMailboxConfig)
+        val materializer = ActorMaterializer()(sys)
+        implicit val timeout = Timeout(500.millis)
 
-      try {
-        val p = FileIO.fromFile(manyLines).runWith(TestSink.probe)(materializer)
+        try {
+          val p = FileIO.fromFile(manyLines)
+            .runWith(TestSink.probe)(materializer)
 
-        materializer.asInstanceOf[ActorMaterializerImpl].supervisor
-          .tell(StreamSupervisor.GetChildren, testActor)
-        val ref = expectMsgType[Children].children
-          .find(_.path.toString contains "fileSource").get
-        try assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")
-        finally p.cancel()
-      } finally shutdown(sys)
-    }
+          materializer.asInstanceOf[ActorMaterializerImpl].supervisor
+            .tell(StreamSupervisor.GetChildren, testActor)
+          val ref = expectMsgType[Children].children
+            .find(_.path.toString contains "fileSource").get
+          try assertDispatcher(
+            ref,
+            "akka.stream.default-blocking-io-dispatcher")
+          finally p.cancel()
+        } finally shutdown(sys)
+      }
 
     //FIXME: overriding dispatcher should be made available with dispatcher alias support in materializer (#17929)
     "allow overriding the dispatcher using Attributes" in {

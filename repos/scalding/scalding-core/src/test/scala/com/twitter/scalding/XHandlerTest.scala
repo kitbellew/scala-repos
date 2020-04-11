@@ -25,16 +25,14 @@ class XHandlerTest extends WordSpec with Matchers {
       val rxh = RichXHandler()
       rxh.handlers.find(h => h(new PlannerException)) should not be empty
       rxh.handlers
-        .find(h =>
-          h(new InvalidSourceException("Invalid Source"))) should not be empty
+        .find(h => h(new InvalidSourceException("Invalid Source"))) should
+        not be empty
       rxh.handlers.find(h => h(new NoSuchMethodError)) should not be empty
       rxh.handlers.find(h => h(new AbstractMethodError)) should not be empty
       rxh.handlers.find(h => h(new NoClassDefFoundError)) should not be empty
       rxh.handlers.find(h =>
-        h(
-          new ModeLoadException(
-            "dummy",
-            new ClassNotFoundException))) should not be empty
+        h(new ModeLoadException("dummy", new ClassNotFoundException))) should
+        not be empty
     }
     "be handled if exist in custom mapping" in {
       val cRxh = RichXHandler(
@@ -49,17 +47,17 @@ class XHandlerTest extends WordSpec with Matchers {
     }
     "be valid keys in mapping if defined" in {
       val rxh = RichXHandler()
-      rxh.mapping(classOf[ModeLoadException]) shouldBe RichXHandler
-        .RequiredCascadingFabricNotInClassPath
+      rxh.mapping(classOf[ModeLoadException]) shouldBe
+        RichXHandler.RequiredCascadingFabricNotInClassPath
       rxh.mapping(classOf[PlannerException]) shouldBe RichXHandler.RequireSinks
-      rxh.mapping(classOf[InvalidSourceException]) shouldBe RichXHandler
-        .DataIsMissing
-      rxh.mapping(classOf[NoSuchMethodError]) shouldBe RichXHandler
-        .BinaryProblem
-      rxh.mapping(classOf[AbstractMethodError]) shouldBe RichXHandler
-        .BinaryProblem
-      rxh.mapping(classOf[NoClassDefFoundError]) shouldBe RichXHandler
-        .BinaryProblem
+      rxh.mapping(classOf[InvalidSourceException]) shouldBe
+        RichXHandler.DataIsMissing
+      rxh.mapping(classOf[NoSuchMethodError]) shouldBe
+        RichXHandler.BinaryProblem
+      rxh.mapping(classOf[AbstractMethodError]) shouldBe
+        RichXHandler.BinaryProblem
+      rxh.mapping(classOf[NoClassDefFoundError]) shouldBe
+        RichXHandler.BinaryProblem
       rxh.mapping(classOf[NullPointerException]) shouldBe RichXHandler.Default
     }
     "create a URL link in GitHub wiki" in {
@@ -70,22 +68,20 @@ class XHandlerTest extends WordSpec with Matchers {
         "comtwitterscaldinginvalidsourceexception"
       val PlannerExceptionString = "cascadingflowplannerplannerexception"
       val ModeLoadExceptionString = "comtwitterscaldingmodeloadexception"
-      RichXHandler.createXUrl(new PlannerException) shouldBe (RichXHandler
-        .gitHubUrl + PlannerExceptionString)
+      RichXHandler.createXUrl(new PlannerException) shouldBe
+        (RichXHandler.gitHubUrl + PlannerExceptionString)
       RichXHandler
-        .createXUrl(new InvalidSourceException("Invalid Source")) shouldBe (
-        RichXHandler.gitHubUrl + InvalidSouceExceptionString
-      )
-      RichXHandler.createXUrl(new NoSuchMethodError) shouldBe (RichXHandler
-        .gitHubUrl + NoSuchMethodErrorString)
-      RichXHandler.createXUrl(new AbstractMethodError) shouldBe (RichXHandler
-        .gitHubUrl + AbstractMethodErrorString)
-      RichXHandler.createXUrl(new NoClassDefFoundError) shouldBe (RichXHandler
-        .gitHubUrl + NoClassDefFoundErrorString)
-      RichXHandler.createXUrl(ModeLoadException(
-        "dummy",
-        new ClassNotFoundException)) shouldBe (RichXHandler
-        .gitHubUrl + ModeLoadExceptionString)
+        .createXUrl(new InvalidSourceException("Invalid Source")) shouldBe
+        (RichXHandler.gitHubUrl + InvalidSouceExceptionString)
+      RichXHandler.createXUrl(new NoSuchMethodError) shouldBe
+        (RichXHandler.gitHubUrl + NoSuchMethodErrorString)
+      RichXHandler.createXUrl(new AbstractMethodError) shouldBe
+        (RichXHandler.gitHubUrl + AbstractMethodErrorString)
+      RichXHandler.createXUrl(new NoClassDefFoundError) shouldBe
+        (RichXHandler.gitHubUrl + NoClassDefFoundErrorString)
+      RichXHandler.createXUrl(
+        ModeLoadException("dummy", new ClassNotFoundException)) shouldBe
+        (RichXHandler.gitHubUrl + ModeLoadExceptionString)
     }
   }
 }

@@ -371,11 +371,12 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         for {
           // it's necessary to group by path then traverse since each path will respond to ingest independently.
           // -- a bit of a leak of implementation detail, but that's the actor model for you.
-          allResults <- (data groupBy { case (offset, msg) => msg.path })
-            .toStream traverse {
-            case (path, subset) =>
-              (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
-          }
+          allResults <-
+            (data groupBy { case (offset, msg) => msg.path })
+              .toStream traverse {
+              case (path, subset) => (projectionsActor ? IngestData(subset))
+                  .mapTo[WriteResult]
+            }
         } yield {
           val errors: List[ResourceError] = allResults.toList collect {
             case PathOpFailure(_, error) => error
@@ -528,8 +529,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       case IngestData(messages) =>
         logger.debug("Received %d messages for ingest".format(messages.size))
         val requestor = sender
-        val groupedAndPermissioned = messages
-          .groupBy({ case (_, event) => event.path }).toStream traverse {
+        val groupedAndPermissioned = messages.groupBy({
+          case (_, event) => event.path
+        }).toStream traverse {
           case (path, pathMessages) =>
             targetActor(path) map { pathActor =>
               pathMessages.map(_._2.apiKey).distinct.toStream traverse {
@@ -613,7 +615,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         permissions: Set[WritePermission],
         authorities: Authorities): Boolean = {
       logger.trace(
-        "Checking write permission for " + path + " as " + authorities + " among " + permissions)
+        "Checking write permission for " + path + " as " + authorities +
+          " among " + permissions)
       PermissionsFinder.canWriteAs(
         permissions filter { _.path.isEqualOrParentOf(path) },
         authorities)
@@ -683,8 +686,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           for {
             _ <- IO { versions += (version -> resource) }
             _ <- complete.whenM(
-              versionLog.completeVersion(version) >> versionLog
-                .setHead(version) >> maybeExpireCache(apiKey, resource))
+              versionLog.completeVersion(version) >> versionLog.setHead(
+                version) >> maybeExpireCache(apiKey, resource))
           } yield PrecogUnit
         }
       } yield {
@@ -702,8 +705,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           IO {
             if (blobr.mimeType == FileContent.XQuirrelScript) {
               // invalidate the cache
-              val cachePath =
-                path / Path(".cached") //TODO: factor out this logic
+              val cachePath = path /
+                Path(".cached") //TODO: factor out this logic
               //FIXME: remove eventId from archive messages?
               routingActor ! ArchiveMessage(
                 apiKey,
@@ -742,8 +745,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           _.fold(
             blob =>
               left(IO(NotFound(
-                "Located resource on %s is a BLOB, not a projection" format path
-                  .path))),
+                "Located resource on %s is a BLOB, not a projection" format
+                  path.path))),
             db => right(IO(db)))
         }
       }
@@ -765,15 +768,13 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 _ <- resource.append(batch(msg))
                 // FIXME: completeVersion and setHead should be one op
                 _ <- terminal.whenM(
-                  versionLog.completeVersion(streamId) >> versionLog
-                    .setHead(streamId))
+                  versionLog.completeVersion(streamId) >>
+                    versionLog.setHead(streamId))
               } yield {
                 logger.trace("Sent insert message for " + msg + " to nihdb")
                 // FIXME: We aren't actually guaranteed success here because NIHDB might do something screwy.
-                maybeCompleteJob(
-                  msg,
-                  terminal,
-                  UpdateSuccess(msg.path)) pipeTo requestor
+                maybeCompleteJob(msg, terminal, UpdateSuccess(msg.path)) pipeTo
+                  requestor
                 PrecogUnit
               }
           ).join
@@ -876,8 +877,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                   streamId,
                   false)
                 _ <-
-                  versionLog.completeVersion(streamId) >> versionLog
-                    .setHead(streamId)
+                  versionLog.completeVersion(streamId) >>
+                    versionLog.setHead(streamId)
               } yield PrecogUnit
           }
 

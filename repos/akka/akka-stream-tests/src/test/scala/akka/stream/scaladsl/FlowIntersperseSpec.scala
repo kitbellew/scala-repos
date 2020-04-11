@@ -23,8 +23,8 @@ class FlowIntersperseSpec extends AkkaSpec {
         .runWith(TestSink.probe)
 
       probe.expectSubscription()
-      probe.toStrict(1.second).mkString("") should ===(
-        List(1, 2, 3).mkString(","))
+      probe.toStrict(1.second).mkString("") should
+        ===(List(1, 2, 3).mkString(","))
     }
 
     "inject element between existing elements, when downstream is fold" in {
@@ -38,8 +38,8 @@ class FlowIntersperseSpec extends AkkaSpec {
       val probe = Source(List(1, 2, 3)).map(_.toString)
         .intersperse("[", ",", "]").runWith(TestSink.probe)
 
-      probe.toStrict(1.second).mkString("") should ===(
-        List(1, 2, 3).mkString("[", ",", "]"))
+      probe.toStrict(1.second).mkString("") should
+        ===(List(1, 2, 3).mkString("[", ",", "]"))
     }
 
     "demonstrate how to prepend only" in {
@@ -47,8 +47,8 @@ class FlowIntersperseSpec extends AkkaSpec {
         (Source.single(">> ") ++ Source(List("1", "2", "3")).intersperse(","))
           .runWith(TestSink.probe)
 
-      probe.toStrict(1.second).mkString("") should ===(
-        List(1, 2, 3).mkString(">> ", ",", ""))
+      probe.toStrict(1.second).mkString("") should
+        ===(List(1, 2, 3).mkString(">> ", ",", ""))
     }
 
     "surround empty stream with []" in {
@@ -56,8 +56,8 @@ class FlowIntersperseSpec extends AkkaSpec {
         .runWith(TestSink.probe)
 
       probe.expectSubscription()
-      probe.toStrict(1.second).mkString("") should ===(
-        List().mkString("[", ",", "]"))
+      probe.toStrict(1.second).mkString("") should
+        ===(List().mkString("[", ",", "]"))
     }
 
     "surround single element stream with []" in {
@@ -65,8 +65,8 @@ class FlowIntersperseSpec extends AkkaSpec {
         .runWith(TestSink.probe)
 
       probe.expectSubscription()
-      probe.toStrict(1.second).mkString("") should ===(
-        List(1).mkString("[", ",", "]"))
+      probe.toStrict(1.second).mkString("") should
+        ===(List(1).mkString("[", ",", "]"))
     }
 
     "complete the stage when the Source has been completed" in {

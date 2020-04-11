@@ -11,8 +11,8 @@ import akka.remote.transport.FailureInjectorTransportAdapter.{One, Drop}
 import scala.concurrent.Await
 
 object AkkaProtocolStressTest {
-  val configA: Config = ConfigFactory parseString (
-    """
+  val configA: Config = ConfigFactory parseString
+    ("""
     akka {
       #loglevel = DEBUG
       actor.serialize-messages = off
@@ -36,8 +36,7 @@ object AkkaProtocolStressTest {
       }
 
     }
-                                                   """
-  )
+                                                   """)
 
   object ResendFinal
 
@@ -75,7 +74,8 @@ object AkkaProtocolStressTest {
             context.become(done)
           }
         } else {
-          controller ! s"Received out of order message. Previous: ${maxSeq} Received: ${seq}"
+          controller !
+            s"Received out of order message. Previous: ${maxSeq} Received: ${seq}"
         }
     }
 
@@ -107,23 +107,24 @@ class AkkaProtocolStressTest
   }
 
   "AkkaProtocolTransport" must {
-    "guarantee at-most-once delivery and message ordering despite packet loss" taggedAs TimingTest in {
-      system.eventStream.publish(TestEvent.Mute(DeadLettersFilter[Any]))
-      systemB.eventStream.publish(TestEvent.Mute(DeadLettersFilter[Any]))
-      Await.result(
-        RARP(system).provider.transport
-          .managementCommand(One(addressB, Drop(0.1, 0.1))),
-        3.seconds.dilated)
+    "guarantee at-most-once delivery and message ordering despite packet loss" taggedAs
+      TimingTest in {
+        system.eventStream.publish(TestEvent.Mute(DeadLettersFilter[Any]))
+        systemB.eventStream.publish(TestEvent.Mute(DeadLettersFilter[Any]))
+        Await.result(
+          RARP(system).provider.transport
+            .managementCommand(One(addressB, Drop(0.1, 0.1))),
+          3.seconds.dilated)
 
-      val tester = system
-        .actorOf(Props(classOf[SequenceVerifier], here, self)) ! "start"
+        val tester = system
+          .actorOf(Props(classOf[SequenceVerifier], here, self)) ! "start"
 
-      expectMsgPF(60.seconds) {
-        case (received: Int, lost: Int) ⇒
-          log.debug(
-            s" ######## Received ${received - lost} messages from ${received} ########")
+        expectMsgPF(60.seconds) {
+          case (received: Int, lost: Int) ⇒
+            log.debug(
+              s" ######## Received ${received - lost} messages from ${received} ########")
+        }
       }
-    }
   }
 
   override def beforeTermination() {

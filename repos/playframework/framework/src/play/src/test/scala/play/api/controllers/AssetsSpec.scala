@@ -56,16 +56,16 @@ object AssetsSpec extends Specification {
     "look up assets without percent-decoding the base path" in {
       Assets.resourceNameAt(" ", "x") must beNone
       Assets.resourceNameAt("/1 + 2 = 3", "x") must beSome("/1 + 2 = 3/x")
-      Assets.resourceNameAt("/1%20+%202%20=%203", "x") must beSome(
-        "/1%20+%202%20=%203/x")
+      Assets.resourceNameAt("/1%20+%202%20=%203", "x") must
+        beSome("/1%20+%202%20=%203/x")
     }
 
     "look up assets with percent-encoded resource paths" in {
-      Assets.resourceNameAt("/x", "1%20+%202%20=%203") must beSome(
-        "/x/1 + 2 = 3")
+      Assets.resourceNameAt("/x", "1%20+%202%20=%203") must
+        beSome("/x/1 + 2 = 3")
       Assets.resourceNameAt("/x", "foo%20bar.txt") must beSome("/x/foo bar.txt")
-      Assets.resourceNameAt("/x", "foo+bar%3A%20baz.txt") must beSome(
-        "/x/foo+bar: baz.txt")
+      Assets.resourceNameAt("/x", "foo+bar%3A%20baz.txt") must
+        beSome("/x/foo+bar: baz.txt")
     }
 
     "look up assets with percent-encoded file separators" in {
@@ -76,15 +76,15 @@ object AssetsSpec extends Specification {
 
     "fail when looking up assets with invalid chars in the URL" in {
       Assets.resourceNameAt("a", "|") must throwAn[InvalidUriEncodingException]
-      Assets.resourceNameAt("a", "hello world") must throwAn[
-        InvalidUriEncodingException]
-      Assets.resourceNameAt("a", "b/[c]/d") must throwAn[
-        InvalidUriEncodingException]
+      Assets.resourceNameAt("a", "hello world") must
+        throwAn[InvalidUriEncodingException]
+      Assets.resourceNameAt("a", "b/[c]/d") must
+        throwAn[InvalidUriEncodingException]
     }
 
     "look up assets even if the file path is a valid URI" in {
-      Assets.resourceNameAt("/a", "http://localhost/x") must beSome(
-        "/a/http:/localhost/x")
+      Assets.resourceNameAt("/a", "http://localhost/x") must
+        beSome("/a/http:/localhost/x")
       Assets.resourceNameAt("/a", "//localhost/x") must beSome("/a/localhost/x")
       Assets.resourceNameAt("/a", "../") must beNone
     }
@@ -95,10 +95,10 @@ object AssetsSpec extends Specification {
       Assets.resourceNameAt("/a/b", "../b/c/d") must beSome("/a/b/../b/c/d")
       Assets.resourceNameAt("/a/b", "c/../d") must beSome("/a/b/c/../d")
       Assets.resourceNameAt("/a/b", "c/d/..") must beSome("/a/b/c/d/..")
-      Assets.resourceNameAt("/a/b", "c/d/../../x") must beSome(
-        "/a/b/c/d/../../x")
-      Assets.resourceNameAt("/a/b", "../../a/b/c/d") must beSome(
-        "/a/b/../../a/b/c/d")
+      Assets.resourceNameAt("/a/b", "c/d/../../x") must
+        beSome("/a/b/c/d/../../x")
+      Assets.resourceNameAt("/a/b", "../../a/b/c/d") must
+        beSome("/a/b/../../a/b/c/d")
     }
 
     "not look up assets with dot-segments that escape the parent path" in {

@@ -205,8 +205,8 @@ class ScalaIntroduceFieldFromExpressionHandler
       case _ childOf (ed: ScEarlyDefinitions)
           if onOneLine(document, ed.getTextRange) =>
         def isBlockStmtOrMember(elem: PsiElement) =
-          elem != null && (elem.isInstanceOf[ScBlockStatement] || elem
-            .isInstanceOf[ScMember])
+          elem != null &&
+            (elem.isInstanceOf[ScBlockStatement] || elem.isInstanceOf[ScMember])
         var declaration = createdDeclaration.getText
         if (isBlockStmtOrMember(anchor)) declaration += "; "
         if (isBlockStmtOrMember(anchor.getPrevSibling))
@@ -259,8 +259,8 @@ class ScalaIntroduceFieldFromExpressionHandler
       clazz: ScTemplateDefinition): Boolean = true
 
   private def onOneLine(document: Document, range: TextRange): Boolean = {
-    document.getLineNumber(range.getStartOffset) == document
-      .getLineNumber(range.getEndOffset)
+    document.getLineNumber(range.getStartOffset) ==
+      document.getLineNumber(range.getEndOffset)
   }
 
   private def showErrorMessage(

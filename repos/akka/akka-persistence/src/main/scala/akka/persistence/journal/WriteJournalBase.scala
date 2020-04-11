@@ -42,8 +42,8 @@ private[akka] trait WriteJournalBase {
     // doesn't have an assigned manifest, but when WriteMessages is sent directly to the
     // journal for testing purposes we want to preserve the original manifest instead of
     // letting IdentityEventAdapter clearing it out.
-    if (adapter == IdentityEventAdapter || adapter
-          .isInstanceOf[NoopWriteEventAdapter]) repr
+    if (adapter == IdentityEventAdapter ||
+        adapter.isInstanceOf[NoopWriteEventAdapter]) repr
     else {
       repr.withPayload(adapter.toJournal(payload))
         .withManifest(adapter.manifest(payload))

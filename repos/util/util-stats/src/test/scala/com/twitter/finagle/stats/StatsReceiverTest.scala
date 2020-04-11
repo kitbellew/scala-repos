@@ -157,16 +157,16 @@ class StatsReceiverTest extends FunSuite {
 
     assert("InMemoryStatsReceiver/scope1" == inMem.scope("scope1").toString)
     assert(
-      "InMemoryStatsReceiver/scope1/scope2" ==
-        inMem.scope("scope1").scope("scope2").toString)
+      "InMemoryStatsReceiver/scope1/scope2" == inMem.scope("scope1")
+        .scope("scope2").toString)
 
     assert(
-      "InMemoryStatsReceiver/begin/end" ==
-        inMem.scopeSuffix("end").scope("begin").toString)
+      "InMemoryStatsReceiver/begin/end" == inMem.scopeSuffix("end")
+        .scope("begin").toString)
 
     assert(
-      "InMemoryStatsReceiver/begin/mid/end" ==
-        inMem.scope("begin").scopeSuffix("end").scope("mid").toString)
+      "InMemoryStatsReceiver/begin/mid/end" == inMem.scope("begin")
+        .scopeSuffix("end").scope("mid").toString)
 
     assert(
       "Broadcast(InMemoryStatsReceiver, InMemoryStatsReceiver)" ==

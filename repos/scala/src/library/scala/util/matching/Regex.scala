@@ -657,8 +657,8 @@ object Regex {
     def after(i: Int): CharSequence =
       if (end(i) >= 0) source.subSequence(end(i), source.length) else null
 
-    private lazy val nameToIndex: Map[String, Int] =
-      Map[String, Int]() ++ ("" :: groupNames.toList).zipWithIndex
+    private lazy val nameToIndex: Map[String, Int] = Map[String, Int]() ++
+      ("" :: groupNames.toList).zipWithIndex
 
     /** Returns the group with given name.
       *

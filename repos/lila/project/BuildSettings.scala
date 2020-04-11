@@ -35,9 +35,8 @@ object BuildSettings {
       name,
       file("modules/" + name),
       dependencies = deps,
-      settings = Seq(
-        version := "2.0",
-        libraryDependencies := defaultDeps) ++ buildSettings ++ srcMain)
+      settings = Seq(version := "2.0", libraryDependencies := defaultDeps) ++
+        buildSettings ++ srcMain)
 
   val compilerOptions = Seq(
     "-deprecation",

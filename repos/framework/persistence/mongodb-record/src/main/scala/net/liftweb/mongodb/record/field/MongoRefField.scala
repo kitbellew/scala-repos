@@ -88,10 +88,8 @@ trait MongoRefField[RefType <: MongoRecord[RefType], MyType]
   }
 
   private def elem =
-    SHtml
-      .selectObj[Box[MyType]](buildDisplayList, Full(valueBox), setBox(_)) % (
-      "tabindex" -> tabIndex.toString
-    )
+    SHtml.selectObj[Box[MyType]](buildDisplayList, Full(valueBox), setBox(_)) %
+      ("tabindex" -> tabIndex.toString)
 
   override def toForm =
     if (options.length > 0) uniqueFieldId match {

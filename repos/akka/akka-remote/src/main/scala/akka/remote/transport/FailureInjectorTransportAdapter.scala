@@ -115,13 +115,8 @@ private[remote] class FailureInjectorTransportAdapter(
       remoteAddress: Address,
       statusPromise: Promise[AssociationHandle]): Unit = {
     // Association is simulated to be failed if there was either an inbound or outbound message drop
-    if (shouldDropInbound(
-          remoteAddress,
-          Unit,
-          "interceptAssociate") || shouldDropOutbound(
-          remoteAddress,
-          Unit,
-          "interceptAssociate"))
+    if (shouldDropInbound(remoteAddress, Unit, "interceptAssociate") ||
+        shouldDropOutbound(remoteAddress, Unit, "interceptAssociate"))
       statusPromise.failure(new FailureInjectorException(
         "Simulated failure of association to " + remoteAddress))
     else

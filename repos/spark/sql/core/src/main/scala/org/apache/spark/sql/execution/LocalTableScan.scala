@@ -31,8 +31,8 @@ private[sql] case class LocalTableScan(
     extends LeafNode {
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" ->
+      SQLMetrics.createLongMetric(sparkContext, "number of output rows"))
 
   private val unsafeRows: Array[InternalRow] = {
     val proj = UnsafeProjection.create(output, output)

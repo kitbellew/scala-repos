@@ -93,9 +93,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     def hasIntentAsParam(m: Method): Boolean = {
       val params = m.getParameterTypes
       if (params.length > 0)
-        "android.content.Intent"
-          .equals(m.getParameterTypes.apply(0).getName) && !superMethods(
-          methodSignature(m))
+        "android.content.Intent".equals(m.getParameterTypes.apply(0).getName) &&
+        !superMethods(methodSignature(m))
       else false
     }
 
@@ -120,16 +119,16 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       val accessors = clsMethods.filter { m =>
         val name = m.getName
         val arity = m.getParameterTypes.length
-        !superMethods(methodSignature(m)) && ((arity == 0 && isGetter(
-          name)) || (arity == 1 && isSetter(name)))
+        !superMethods(methodSignature(m)) &&
+        ((arity == 0 && isGetter(name)) || (arity == 1 && isSetter(name)))
       }.filter { m =>
         (
           !cls.getName.endsWith("Service") || !m.getName.equals("setForeground")
         ) && // Android 2.1.1 has a weird undocumented method. manually ignore this.
         (!cls.getName.endsWith("WebView") || !m.getName.equals(
           "getZoomControls")) && //https://github.com/pocorall/scaloid/issues/56
-        (!cls.getName.endsWith("View") || !m.getName
-          .equals("setBackground")) // manually specifies this method
+        (!cls.getName.endsWith("View") ||
+        !m.getName.equals("setBackground")) // manually specifies this method
       }
 
       val allMethodNames = clsMethods.map(_.getName).toSet
@@ -147,8 +146,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
               .map(_.getMethods.find(_.getName == "get" + name.capitalize))
               .flatten.nonEmpty
 
-          if (setters.isEmpty && (getter.isEmpty || getter.get.name
-                .startsWith("is"))) None
+          if (setters.isEmpty &&
+              (getter.isEmpty || getter.get.name.startsWith("is"))) None
           else {
             val nameClashes = allMethodNames(name) || superGetterExists
             val tpe = getter.map(_.retType)
@@ -212,8 +211,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           val specificName = transforms(setter)
           val generalName = "^on".r.replaceAllIn(am.name, "")
 
-          if (specificName.length > am.name.length && specificName
-                .contains(generalName)) specificName
+          if (specificName.length > am.name.length &&
+              specificName.contains(generalName)) specificName
           else am.name
         }
       }
@@ -246,9 +245,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       }
 
     val constructorNames: Map[List[String], List[String]] = {
-      val constRegex = (
-        "public +" + clsName + """(?:\<[\w\<\>\[\]]+)? *\(([^)]*)\) *(?:\{?|[^;])"""
-      ).r
+      val constRegex =
+        ("public +" + clsName +
+          """(?:\<[\w\<\>\[\]]+)? *\(([^)]*)\) *(?:\{?|[^;])""").r
       val argRegex = """(.+?) +([a-z][^\[,. ]*)(?:,|$)""".r
 
       constRegex.findAllIn(source).matchData.map(_.group(1)).filter(_.nonEmpty)
@@ -276,8 +275,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       val typeStrs = javaTypes.reverse match {
         case Nil => Nil
         case last :: init =>
-          (toTypeStr(last, isVarArgs, true) :: init
-            .map(toTypeStr(_, isVarArgs, false))).reverse
+          (toTypeStr(last, isVarArgs, true) ::
+            init.map(toTypeStr(_, isVarArgs, false))).reverse
       }
 
       val args = typeStrs match {
@@ -371,7 +370,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
             ) // excludes inner classes for now - let's deal with it later
         }.filter { n =>
           val name = n.toString
-          !name.contains("webkit") || name
+          !name.contains("webkit") ||
+          name
             .contains(
               "WebView"
             ) // excludes android.webkit.* in Android 2.1.1, which is deprecated

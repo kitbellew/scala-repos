@@ -72,7 +72,8 @@ private[repl] class SparkJLineReader(_completion: => Completion)
         argCompletor setStrict false
 
         this addCompleter argCompletor
-        this setAutoprintThreshold 400 // max completion candidates without warning
+        this setAutoprintThreshold
+          400 // max completion candidates without warning
       }
     }
   }

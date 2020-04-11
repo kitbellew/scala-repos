@@ -46,8 +46,8 @@ class RemoteServerRunner(project: Project) extends RemoteResourceOwner {
             client.debug(
               s"$message\n${e.toString}\n${e.getStackTrace.mkString("\n")}")
           case e: UnknownHostException =>
-            val message =
-              "Unknown IP address of compile server host: " + address.toString
+            val message = "Unknown IP address of compile server host: " +
+              address.toString
             client.error(message)
             client.debug(
               s"$message\n${e.toString}\n${e.getStackTrace.mkString("\n")}")

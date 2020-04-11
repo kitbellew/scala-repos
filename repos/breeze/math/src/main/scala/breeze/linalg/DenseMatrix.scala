@@ -82,11 +82,13 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
 
   if (isTranspose && (math.abs(majorStride) < cols)) {
     throw new IndexOutOfBoundsException(
-      "MajorStride == " + majorStride + " is smaller than cols == " + cols + ", which is impossible")
+      "MajorStride == " + majorStride + " is smaller than cols == " + cols +
+        ", which is impossible")
   }
   if ((!isTranspose) && (math.abs(majorStride) < rows)) {
     throw new IndexOutOfBoundsException(
-      "MajorStride == " + majorStride + " is smaller than rows == " + rows + ", which is impossible")
+      "MajorStride == " + majorStride + " is smaller than rows == " + rows +
+        ", which is impossible")
   }
   if (rows < 0) {
     throw new IndexOutOfBoundsException(
@@ -103,36 +105,33 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   if (majorStride > 0) {
     if (data.length < linearIndex(rows - 1, cols - 1)) {
       throw new IndexOutOfBoundsException(
-        "Storage array has size " + data
-          .size + " but indices can grow as large as " + linearIndex(
-          rows - 1,
-          cols - 1))
+        "Storage array has size " + data.size +
+          " but indices can grow as large as " +
+          linearIndex(rows - 1, cols - 1))
     }
   } else {
     if (data.length < linearIndex(rows - 1, 0)) {
       throw new IndexOutOfBoundsException(
-        "Storage array has size " + data
-          .size + " but indices can grow as large as " + linearIndex(
-          rows - 1,
-          cols - 1))
+        "Storage array has size " + data.size +
+          " but indices can grow as large as " +
+          linearIndex(rows - 1, cols - 1))
     }
     if (linearIndex(0, cols - 1) < 0) {
       throw new IndexOutOfBoundsException(
-        "Storage array has negative stride " + majorStride + " and offset " + offset + " which can result in negative indices.")
+        "Storage array has negative stride " + majorStride + " and offset " +
+          offset + " which can result in negative indices.")
     }
   }
 
   def apply(row: Int, col: Int) = {
     if (row < -rows || row >= rows)
       throw new IndexOutOfBoundsException(
-        (
-          row,
-          col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
+        (row, col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," +
+          cols + ")")
     if (col < -cols || col >= cols)
       throw new IndexOutOfBoundsException(
-        (
-          row,
-          col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
+        (row, col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," +
+          cols + ")")
     val trueRow = if (row < 0) row + rows else row
     val trueCol = if (col < 0) col + cols else col
     data(linearIndex(trueRow, trueCol))
@@ -157,14 +156,12 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   def update(row: Int, col: Int, v: V): Unit = {
     if (row < -rows || row >= rows)
       throw new IndexOutOfBoundsException(
-        (
-          row,
-          col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
+        (row, col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," +
+          cols + ")")
     if (col < -cols || col >= cols)
       throw new IndexOutOfBoundsException(
-        (
-          row,
-          col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
+        (row, col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," +
+          cols + ")")
     val trueRow = if (row < 0) row + rows else row
     val trueCol = if (col < 0) col + cols else col
     data(linearIndex(trueRow, trueCol)) = v
@@ -384,10 +381,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   private def footprint = majorSize * majorStride
 
   /** Returns true if this dense matrix takes up a contiguous segment of the array */
-  def isContiguous: Boolean =
-    (isTranspose && cols == majorStride) || (
-      !isTranspose && rows == majorStride
-    )
+  def isContiguous: Boolean = (isTranspose && cols == majorStride) ||
+    (!isTranspose && rows == majorStride)
 
   /** Returns true if this dense matrix overlaps any content with the other matrix */
   private[linalg] def overlaps(other: DenseMatrix[V]): Boolean =
@@ -396,15 +391,15 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
       val aend = offset + footprint
       val bstart = other.offset
       val bend = other.offset + other.footprint
-      Range(astart, aend).contains(bstart) ||
-      Range(astart, aend).contains(bend) ||
-      Range(bstart, bend).contains(astart) ||
+      Range(astart, aend).contains(bstart) || Range(astart, aend)
+        .contains(bend) || Range(bstart, bend).contains(astart) ||
       Range(bstart, bend).contains(aend)
     }
 
   private def checkIsSpecialized(): Unit = {
-    if (data.isInstanceOf[Array[Double]] && getClass
-          .getName() == "breeze.linalg.DenseMatrix") throw new Exception("...")
+    if (data.isInstanceOf[Array[Double]] &&
+        getClass.getName() == "breeze.linalg.DenseMatrix")
+      throw new Exception("...")
   }
   // uncomment to debug places where specialization fails
 //  checkIsSpecialized()
@@ -427,8 +422,8 @@ object DenseMatrix
       rows: Int,
       cols: Int): DenseMatrix[V] = {
     val data = new Array[V](rows * cols)
-    if (implicitly[Zero[V]] != null && rows * cols != 0 && data(
-          0) != implicitly[Zero[V]].zero)
+    if (implicitly[Zero[V]] != null && rows * cols != 0 &&
+        data(0) != implicitly[Zero[V]].zero)
       ArrayUtil.fill(data, 0, data.length, implicitly[Zero[V]].zero)
     DenseMatrix.create(rows, cols, data)
   }

@@ -31,8 +31,8 @@ class DocResolverSpec
           DocSig(
             DocFqn("scala", "Some"),
             Some("map(scala.Function1)")))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some@map[B](f:A=>B):Option[B]")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some@map[B](f:A=>B):Option[B]")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -47,8 +47,8 @@ class DocResolverSpec
         serv.resolve(DocSigPair(
           DocSig(DocFqn("scala", "Boolean"), None),
           DocSig(DocFqn("", "boolean"), None))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Boolean")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Boolean")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -63,8 +63,8 @@ class DocResolverSpec
         serv.resolve(DocSigPair(
           DocSig(DocFqn("scala", "Option"), Some("isDefined:Boolean")),
           DocSig(DocFqn("scala", "Option"), Some("isDefined")))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Option@isDefined:Boolean")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Option@isDefined:Boolean")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -83,8 +83,8 @@ class DocResolverSpec
           DocSig(
             DocFqn("scala", "Some"),
             Some("flatMap(scala.Function1)")))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some@flatMap[B](f:A=>Option[B]):Option[B]")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some@flatMap[B](f:A=>Option[B]):Option[B]")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -102,8 +102,8 @@ class DocResolverSpec
             Some("flatten[B](implicitev:<:<[A,Option[B]]):Option[B]")),
           DocSig(DocFqn("scala", "Some"), Some("flatten(scala.Predef.<:<)"))
         )) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some@flatten[B](implicitev:<:<[A,Option[B]]):Option[B]")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some@flatten[B](implicitev:<:<[A,Option[B]]):Option[B]")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -122,8 +122,8 @@ class DocResolverSpec
           DocSig(
             DocFqn("scala", "Some"),
             Some("fold(scala.<byname>, scala.Function1)")))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some@fold[B](ifEmpty:=>B)(f:A=>B):B")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some@fold[B](ifEmpty:=>B)(f:A=>B):B")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -144,8 +144,8 @@ class DocResolverSpec
             Some(
               "mkString(java.lang.String, java.lang.String, java.lang.String)"))
         )) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some@mkString(start:String,sep:String,end:String):String")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some@mkString(start:String,sep:String,end:String):String")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -160,8 +160,8 @@ class DocResolverSpec
         serv.resolve(DocSigPair(
           DocSig(DocFqn("scala", "Some"), Some("mkString:String")),
           DocSig(DocFqn("scala", "Some"), Some("mkString")))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some@mkString:String")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some@mkString:String")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -178,8 +178,8 @@ class DocResolverSpec
           DocSig(
             DocFqn("scala", "Some"),
             Some("mkString(java.lang.String)")))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some@mkString(sep:String):String")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some@mkString(sep:String):String")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -198,8 +198,8 @@ class DocResolverSpec
           DocSig(
             DocFqn("scala", "Some"),
             Some("getOrElse(scala.<byname>)")))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some@getOrElse[B>:A](default:=>B):B")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some@getOrElse[B>:A](default:=>B):B")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -216,8 +216,8 @@ class DocResolverSpec
             DocFqn("scala", "Some"),
             Some("grouped(size:Int):Iterator[Repr]")),
           DocSig(DocFqn("scala", "Some"), Some("grouped(int)")))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some@grouped(size:Int):Iterator[Repr]")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some@grouped(size:Int):Iterator[Repr]")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -236,8 +236,8 @@ class DocResolverSpec
           DocSig(
             DocFqn("scala.collection.immutable", "List"),
             Some("empty")))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.collection.immutable.List$@empty[A]:List[A]")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.collection.immutable.List$@empty[A]:List[A]")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -356,8 +356,8 @@ class DocResolverSpec
         serv.resolve(DocSigPair(
           DocSig(DocFqn("scala", "Some"), None),
           DocSig(DocFqn("scala", "Some"), None))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -382,8 +382,8 @@ class DocResolverSpec
         serv.resolve(DocSigPair(
           DocSig(DocFqn("scala", "Int"), None),
           DocSig(DocFqn("", "int"), None))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Int")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Int")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -418,8 +418,8 @@ class DocResolverSpec
         serv.resolve(DocSigPair(
           DocSig(DocFqn("scala", "Predef$$DummyImplicit$"), None),
           DocSig(DocFqn("scala", "Predef.DummyImplicit"), None))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Predef$$DummyImplicit$")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Predef$$DummyImplicit$")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -488,8 +488,8 @@ class DocResolverSpec
         serv.resolve(DocSigPair(
           DocSig(DocFqn("scala", "package"), Some("Exception=Exception")),
           DocSig(DocFqn("scala", "package"), Some("Exception")))) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.package@Exception=Exception")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.package@Exception=Exception")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -511,8 +511,8 @@ class DocResolverSpec
             Some(
               "++(scala.collection.GenTraversableOnce, scala.collection.generic.CanBuildFrom)"))
         )) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.Some@++[B](that:scala.collection.GenTraversableOnce[B]):Option[B]")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.Some@++[B](that:scala.collection.GenTraversableOnce[B]):Option[B]")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -534,8 +534,8 @@ class DocResolverSpec
             Some(
               "flatMap(scala.Function1, scala.collection.generic.CanBuildFrom)"))
         )) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.collection.immutable.List@flatMap[B](f:A=>scala.collection.GenTraversableOnce[B]):List[B]")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.collection.immutable.List@flatMap[B](f:A=>scala.collection.GenTraversableOnce[B]):List[B]")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -557,8 +557,8 @@ class DocResolverSpec
             Some(
               "collect(scala.PartialFunction, scala.collection.generic.CanBuildFrom)"))
         )) shouldBe Some(
-          "docs/scala-library-" + c
-            .scalaVersion + "-javadoc.jar/index.html#scala.collection.immutable.List@collect[B](pf:PartialFunction[A,B]):List[B]")
+          "docs/scala-library-" + c.scalaVersion +
+            "-javadoc.jar/index.html#scala.collection.immutable.List@collect[B](pf:PartialFunction[A,B]):List[B]")
 
         serv.resolve(DocSigPair(
           DocSig(
@@ -579,17 +579,16 @@ class DocResolverSpec
 
         val serv = resolver(Some("1.6"))
 
-        serv.resolve(DocSig(DocFqn("java.io", "File"), None)) shouldBe Some(
-          "http://docs.oracle.com/javase/6/docs/api/java/io/File.html")
+        serv.resolve(DocSig(DocFqn("java.io", "File"), None)) shouldBe
+          Some("http://docs.oracle.com/javase/6/docs/api/java/io/File.html")
 
-        serv
-          .resolve(
-            DocSig(DocFqn("java.util", "Map.Entry"), None)) shouldBe Some(
-          "http://docs.oracle.com/javase/6/docs/api/java/util/Map.Entry.html")
+        serv.resolve(DocSig(DocFqn("java.util", "Map.Entry"), None)) shouldBe
+          Some(
+            "http://docs.oracle.com/javase/6/docs/api/java/util/Map.Entry.html")
 
-        serv
-          .resolve(DocSig(DocFqn("java.util", "package"), None)) shouldBe Some(
-          "http://docs.oracle.com/javase/6/docs/api/java/util/package-summary.html")
+        serv.resolve(DocSig(DocFqn("java.util", "package"), None)) shouldBe
+          Some(
+            "http://docs.oracle.com/javase/6/docs/api/java/util/package-summary.html")
 
       }
   }
@@ -605,17 +604,15 @@ class DocResolverSpec
         Some("getForecast(com.eclipsesource.json.JsonObject)"))) shouldBe Some(
         "docs/ForecastIOLib-1.5.1-javadoc.jar/com/github/dvdme/ForecastIOLib/ForecastIO.html#getForecast-com.eclipsesource.json.JsonObject-")
 
-      serv
-        .resolve(
-          DocSig(DocFqn("java.io", "File"), Some("delete()"))) shouldBe Some(
-        "http://docs.oracle.com/javase/8/docs/api/java/io/File.html#delete--")
+      serv.resolve(DocSig(DocFqn("java.io", "File"), Some("delete()"))) shouldBe
+        Some(
+          "http://docs.oracle.com/javase/8/docs/api/java/io/File.html#delete--")
 
       serv
         .resolve(
-          DocSig(
-            DocFqn("java.lang", "Math"),
-            Some("max(int, int)"))) shouldBe Some(
-        "http://docs.oracle.com/javase/8/docs/api/java/lang/Math.html#max-int-int-")
+          DocSig(DocFqn("java.lang", "Math"), Some("max(int, int)"))) shouldBe
+        Some(
+          "http://docs.oracle.com/javase/8/docs/api/java/lang/Math.html#max-int-int-")
 
       serv.resolve(DocSig(
         DocFqn("java.util", "Arrays"),
