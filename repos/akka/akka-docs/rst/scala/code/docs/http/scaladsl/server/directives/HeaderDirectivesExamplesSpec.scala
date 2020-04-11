@@ -20,14 +20,17 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
       }
 
     // tests:
-    Get("/") ~> RawHeader("X-User-Id", "Joe42") ~> route ~> check {
-      responseAs[String] shouldEqual "The user is Joe42"
-    }
+    Get("/") ~> RawHeader("X-User-Id", "Joe42") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The user is Joe42"
+      }
 
-    Get("/") ~> Route.seal(route) ~> check {
-      status shouldEqual BadRequest
-      responseAs[String] shouldEqual "Request is missing required HTTP header 'X-User-Id'"
-    }
+    Get("/") ~> Route.seal(route) ~>
+      check {
+        status shouldEqual BadRequest
+        responseAs[String] shouldEqual
+          "Request is missing required HTTP header 'X-User-Id'"
+      }
   }
   "headerValue-0" in {
     def extractHostPort: HttpHeader => Option[Int] = {
@@ -43,14 +46,16 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
       }
 
     // tests:
-    Get("/") ~> Host("example.com", 5043) ~> route ~> check {
-      responseAs[String] shouldEqual "The port was 5043"
-    }
-    Get("/") ~> Route.seal(route) ~> check {
-      status shouldEqual NotFound
-      responseAs[
-        String] shouldEqual "The requested resource could not be found."
-    }
+    Get("/") ~> Host("example.com", 5043) ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The port was 5043"
+      }
+    Get("/") ~> Route.seal(route) ~>
+      check {
+        status shouldEqual NotFound
+        responseAs[String] shouldEqual
+          "The requested resource could not be found."
+      }
   }
   "optionalHeaderValue-0" in {
     def extractHostPort: HttpHeader => Option[Int] = {
@@ -79,12 +84,14 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
         }
 
     // tests:
-    Get("/") ~> Host("example.com", 5043) ~> route ~> check {
-      responseAs[String] shouldEqual "The port was 5043"
-    }
-    Get("/") ~> Route.seal(route) ~> check {
-      responseAs[String] shouldEqual "The port was not provided explicitly"
-    }
+    Get("/") ~> Host("example.com", 5043) ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The port was 5043"
+      }
+    Get("/") ~> Route.seal(route) ~>
+      check {
+        responseAs[String] shouldEqual "The port was not provided explicitly"
+      }
   }
   "optionalHeaderValueByName-0" in {
     val route =
@@ -106,12 +113,14 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
         }
 
     // tests:
-    Get("/") ~> RawHeader("X-User-Id", "Joe42") ~> route ~> check {
-      responseAs[String] shouldEqual "The user is Joe42"
-    }
-    Get("/") ~> Route.seal(route) ~> check {
-      responseAs[String] shouldEqual "No user was provided"
-    }
+    Get("/") ~> RawHeader("X-User-Id", "Joe42") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The user is Joe42"
+      }
+    Get("/") ~> Route.seal(route) ~>
+      check {
+        responseAs[String] shouldEqual "No user was provided"
+      }
   }
   "headerValuePF-0" in {
     def extractHostPort: PartialFunction[HttpHeader, Int] = {
@@ -125,14 +134,16 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
       }
 
     // tests:
-    Get("/") ~> Host("example.com", 5043) ~> route ~> check {
-      responseAs[String] shouldEqual "The port was 5043"
-    }
-    Get("/") ~> Route.seal(route) ~> check {
-      status shouldEqual NotFound
-      responseAs[
-        String] shouldEqual "The requested resource could not be found."
-    }
+    Get("/") ~> Host("example.com", 5043) ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The port was 5043"
+      }
+    Get("/") ~> Route.seal(route) ~>
+      check {
+        status shouldEqual NotFound
+        responseAs[String] shouldEqual
+          "The requested resource could not be found."
+      }
   }
   "optionalHeaderValuePF-0" in {
     def extractHostPort: PartialFunction[HttpHeader, Int] = {
@@ -159,12 +170,14 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
         }
 
     // tests:
-    Get("/") ~> Host("example.com", 5043) ~> route ~> check {
-      responseAs[String] shouldEqual "The port was 5043"
-    }
-    Get("/") ~> Route.seal(route) ~> check {
-      responseAs[String] shouldEqual "The port was not provided explicitly"
-    }
+    Get("/") ~> Host("example.com", 5043) ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The port was 5043"
+      }
+    Get("/") ~> Route.seal(route) ~>
+      check {
+        responseAs[String] shouldEqual "The port was not provided explicitly"
+      }
   }
   "headerValueByType-0" in {
     val route =
@@ -176,17 +189,19 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
 
     // tests:
     // extract a header if the type is matching
-    Get("abc") ~> originHeader ~> route ~> check {
-      responseAs[
-        String] shouldEqual "The first origin was http://localhost:8080"
-    }
+    Get("abc") ~> originHeader ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "The first origin was http://localhost:8080"
+      }
 
     // reject a request if no header of the given type is present
-    Get("abc") ~> route ~> check {
-      inside(rejection) {
-        case MissingHeaderRejection("Origin") ⇒
+    Get("abc") ~> route ~>
+      check {
+        inside(rejection) {
+          case MissingHeaderRejection("Origin") ⇒
+        }
       }
-    }
   }
   "optionalHeaderValueByType-0" in {
     val route =
@@ -201,14 +216,16 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
 
     // tests:
     // extract Some(header) if the type is matching
-    Get("abc") ~> originHeader ~> route ~> check {
-      responseAs[
-        String] shouldEqual "The first origin was http://localhost:8080"
-    }
+    Get("abc") ~> originHeader ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "The first origin was http://localhost:8080"
+      }
 
     // extract None if no header of the given type is present
-    Get("abc") ~> route ~> check {
-      responseAs[String] shouldEqual "No Origin header found."
-    }
+    Get("abc") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "No Origin header found."
+      }
   }
 }

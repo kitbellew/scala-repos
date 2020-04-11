@@ -128,9 +128,8 @@ class ScTypeAliasDeclarationImpl private (
       def getPresentableText: String = name
       def getTextAttributesKey: TextAttributesKey = null
       def getLocationString: String =
-        "(" + ScTypeAliasDeclarationImpl.this
-          .containingClass
-          .qualifiedName + ")"
+        "(" + ScTypeAliasDeclarationImpl.this.containingClass.qualifiedName +
+          ")"
       override def getIcon(open: Boolean) =
         ScTypeAliasDeclarationImpl.this.getIcon(0)
     }

@@ -295,19 +295,19 @@ object ClusterSingletonManager {
       }
 
       def handleInitial(state: CurrentClusterState): Unit = {
-        membersByAge = immutable.SortedSet.empty(ageOrdering) union state
-          .members
-          .filter(m ⇒
-            (
-              m.status == MemberStatus.Up || m.status == MemberStatus.Leaving
-            ) && matchingRole(m))
+        membersByAge = immutable.SortedSet.empty(ageOrdering) union
+          state
+            .members
+            .filter(m ⇒
+              (m.status == MemberStatus.Up ||
+                m.status == MemberStatus.Leaving) && matchingRole(m))
         val safeToBeOldest =
           !state
             .members
             .exists { m ⇒
               (
-                m.status == MemberStatus.Down || m.status == MemberStatus
-                  .Exiting
+                m.status == MemberStatus.Down ||
+                m.status == MemberStatus.Exiting
               )
             }
         val initial = InitialOldestState(
@@ -344,8 +344,8 @@ object ClusterSingletonManager {
           add(m)
         case mEvent: MemberEvent
             if (
-              mEvent.isInstanceOf[MemberExited] || mEvent
-                .isInstanceOf[MemberRemoved]
+              mEvent.isInstanceOf[MemberExited] ||
+                mEvent.isInstanceOf[MemberRemoved]
             ) ⇒
           remove(mEvent.member)
         case GetNext if changes.isEmpty ⇒
@@ -368,8 +368,8 @@ object ClusterSingletonManager {
           }
         case mEvent: MemberEvent
             if (
-              mEvent.isInstanceOf[MemberExited] || mEvent
-                .isInstanceOf[MemberRemoved]
+              mEvent.isInstanceOf[MemberExited] ||
+                mEvent.isInstanceOf[MemberRemoved]
             ) ⇒
           remove(mEvent.member)
           if (changes.nonEmpty) {
@@ -717,10 +717,11 @@ class ClusterSingletonManager(
             TakeOverRetry(1),
             handOverRetryInterval,
             repeat = false)
-          goto(WasOldest) using WasOldestData(
-            singleton,
-            singletonTerminated,
-            newOldestOption = Some(a))
+          goto(WasOldest) using
+            WasOldestData(
+              singleton,
+              singletonTerminated,
+              newOldestOption = Some(a))
         case None ⇒
           // new oldest will initiate the hand-over
           setTimer(
@@ -728,10 +729,11 @@ class ClusterSingletonManager(
             TakeOverRetry(1),
             handOverRetryInterval,
             repeat = false)
-          goto(WasOldest) using WasOldestData(
-            singleton,
-            singletonTerminated,
-            newOldestOption = None)
+          goto(WasOldest) using
+            WasOldestData(
+              singleton,
+              singletonTerminated,
+              newOldestOption = None)
       }
 
     case Event(HandOverToMe, OldestData(singleton, singletonTerminated)) ⇒

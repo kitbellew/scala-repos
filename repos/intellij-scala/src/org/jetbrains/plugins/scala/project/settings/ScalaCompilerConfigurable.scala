@@ -22,10 +22,8 @@ class ScalaCompilerConfigurable(
 
   def isModified =
     form.getIncrementalityType != configuration.incrementalityType ||
-      profiles.getDefaultProfile.getSettings.getState != configuration
-        .defaultProfile
-        .getSettings
-        .getState ||
+      profiles.getDefaultProfile.getSettings.getState !=
+      configuration.defaultProfile.getSettings.getState ||
       !profiles
         .getModuleProfiles
         .asScala

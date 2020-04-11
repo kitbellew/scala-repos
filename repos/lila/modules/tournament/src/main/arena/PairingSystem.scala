@@ -41,8 +41,8 @@ object PairingSystem extends AbstractPairingSystem {
       pairings <-
         preps
           .map { prep =>
-            UserRepo.firstGetsWhite(prep.user1.some, prep.user2.some) map prep
-              .toPairing
+            UserRepo.firstGetsWhite(prep.user1.some, prep.user2.some) map
+              prep.toPairing
           }
           .sequenceFu
     } yield pairings
@@ -75,9 +75,8 @@ object PairingSystem extends AbstractPairingSystem {
         else
           idles.grouped(pairingGroupSize).toList match {
             case a :: b :: c :: _ =>
-              smartPairings(data, a) ::: smartPairings(
-                data,
-                b) ::: naivePairings(tour, c take pairingGroupSize)
+              smartPairings(data, a) ::: smartPairings(data, b) :::
+                naivePairings(tour, c take pairingGroupSize)
             case a :: b :: Nil =>
               smartPairings(data, a) ::: smartPairings(data, b)
             case a :: Nil =>
@@ -117,16 +116,12 @@ object PairingSystem extends AbstractPairingSystem {
       type Combination = List[RankedPairing]
 
       def justPlayedTogether(u1: String, u2: String): Boolean =
-        lastOpponents.hash.get(u1).contains(u2) || lastOpponents
-          .hash
-          .get(u2)
-          .contains(u1)
+        lastOpponents.hash.get(u1).contains(u2) ||
+          lastOpponents.hash.get(u2).contains(u1)
 
       def veryMuchJustPlayedTogether(u1: String, u2: String): Boolean =
-        lastOpponents.hash.get(u1).contains(u2) && lastOpponents
-          .hash
-          .get(u2)
-          .contains(u1)
+        lastOpponents.hash.get(u1).contains(u2) &&
+          lastOpponents.hash.get(u2).contains(u1)
 
       // optimized for speed
       def score(pairs: Combination): Score = {
@@ -194,34 +189,33 @@ object PairingSystem extends AbstractPairingSystem {
             }
         }
 
-      val preps = (
-        players match {
-          case x if x.size < 2 =>
-            Nil
-          case List(p1, p2) if onlyTwoActivePlayers =>
-            List(p1.player -> p2.player)
-          case List(p1, p2)
-              if justPlayedTogether(p1.player.userId, p2.player.userId) =>
-            Nil
-          case List(p1, p2) =>
-            List(p1.player -> p2.player)
-          case ps =>
-            findBetter(Nil, Int.MaxValue) match {
-              case Found(best) =>
-                best map {
-                  case (rp0, rp1) =>
-                    rp0.player -> rp1.player
-                }
-              case _ =>
-                pairingLogger
-                  .warn("Could not make smart pairings for arena tournament")
-                players map (_.player) grouped 2 collect {
+      val preps = (players match {
+        case x if x.size < 2 =>
+          Nil
+        case List(p1, p2) if onlyTwoActivePlayers =>
+          List(p1.player -> p2.player)
+        case List(p1, p2)
+            if justPlayedTogether(p1.player.userId, p2.player.userId) =>
+          Nil
+        case List(p1, p2) =>
+          List(p1.player -> p2.player)
+        case ps =>
+          findBetter(Nil, Int.MaxValue) match {
+            case Found(best) =>
+              best map {
+                case (rp0, rp1) =>
+                  rp0.player -> rp1.player
+              }
+            case _ =>
+              pairingLogger
+                .warn("Could not make smart pairings for arena tournament")
+              players map
+                (_.player) grouped 2 collect {
                   case List(p1, p2) =>
                     (p1, p2)
                 } toList
-            }
-        }
-      ) map {
+          }
+      }) map {
         Pairing.prep(tour, _)
       }
       if (!continue)

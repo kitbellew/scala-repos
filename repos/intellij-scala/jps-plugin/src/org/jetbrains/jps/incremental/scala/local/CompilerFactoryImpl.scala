@@ -125,8 +125,8 @@ object CompilerFactoryImpl {
       client: Client): File = {
 
     val scalaVersion = scalaInstance.actualVersion
-    val interfaceId =
-      "compiler-interface-" + scalaVersion + "-" + javaClassVersion
+    val interfaceId = "compiler-interface-" + scalaVersion + "-" +
+      javaClassVersion
     val targetJar = new File(home, interfaceId + ".jar")
 
     if (!targetJar.exists) {

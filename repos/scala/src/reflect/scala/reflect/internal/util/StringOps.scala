@@ -92,12 +92,11 @@ trait StringOps {
       Some(
         (
           str take idx,
-          str drop (
-            if (doDropIndex)
-              idx + 1
-            else
-              idx
-          )))
+          str drop
+            (if (doDropIndex)
+               idx + 1
+             else
+               idx)))
 
   /** Returns a string meaning "n elements".
     */

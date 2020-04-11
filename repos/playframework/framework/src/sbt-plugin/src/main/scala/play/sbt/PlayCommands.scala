@@ -103,9 +103,11 @@ object PlayCommands {
 
     Def.task {
 
-      val allDirectories =
-        (unmanagedSourceDirectories ?? Nil).all(filter).value.flatten ++
-          (unmanagedResourceDirectories ?? Nil).all(filter).value.flatten
+      val allDirectories = (unmanagedSourceDirectories ?? Nil)
+        .all(filter)
+        .value
+        .flatten ++
+        (unmanagedResourceDirectories ?? Nil).all(filter).value.flatten
 
       val existingDirectories = allDirectories.filter(_.exists)
 

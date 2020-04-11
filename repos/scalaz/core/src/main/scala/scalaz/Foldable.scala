@@ -237,12 +237,10 @@ trait Foldable[F[_]] {
 
   def filterLength[A](fa: F[A])(f: A => Boolean): Int =
     foldLeft(fa, 0)((b, a) =>
-      (
-        if (f(a))
-          1
-        else
-          0
-      ) + b)
+      (if (f(a))
+         1
+       else
+         0) + b)
 
   import Ordering.{GT, LT}
   import std.option.{some, none}

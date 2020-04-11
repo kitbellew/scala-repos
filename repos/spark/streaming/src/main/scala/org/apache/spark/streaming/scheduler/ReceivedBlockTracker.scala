@@ -117,7 +117,8 @@ private[streaming] class ReceivedBlockTracker(
     */
   def allocateBlocksToBatch(batchTime: Time): Unit =
     synchronized {
-      if (lastAllocatedBatchTime == null || batchTime > lastAllocatedBatchTime) {
+      if (lastAllocatedBatchTime == null ||
+          batchTime > lastAllocatedBatchTime) {
         val streamIdToBlocks =
           streamIds
             .map { streamId =>

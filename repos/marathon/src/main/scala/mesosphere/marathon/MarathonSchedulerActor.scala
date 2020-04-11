@@ -340,9 +340,8 @@ class MarathonSchedulerActor private (
                 case DeploymentStepInfo(p, _, _) if intersectsWithNewPlan(p) =>
                   p.id
               }
-              origSender ! CommandFailed(
-                cmd,
-                AppLockedException(relatedDeploymentIds))
+              origSender !
+                CommandFailed(cmd, AppLockedException(relatedDeploymentIds))
           }
     }
   }

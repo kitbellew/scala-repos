@@ -15,19 +15,17 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
   "extractClientIP-example" in {
     val route = extractClientIP { ip =>
       complete(
-        "Client's ip is " + ip
-          .toOption
-          .map(_.getHostAddress)
-          .getOrElse("unknown"))
+        "Client's ip is " +
+          ip.toOption.map(_.getHostAddress).getOrElse("unknown"))
     }
 
     // tests:
     Get("/").withHeaders(
-      `Remote-Address`(
-        RemoteAddress(
-          InetAddress.getByName("192.168.3.12")))) ~> route ~> check {
-      responseAs[String] shouldEqual "Client's ip is 192.168.3.12"
-    }
+      `Remote-Address`(RemoteAddress(InetAddress.getByName("192.168.3.12")))) ~>
+      route ~>
+      check {
+        responseAs[String] shouldEqual "Client's ip is 192.168.3.12"
+      }
   }
   "rejectEmptyResponse-example" in {
     val route = rejectEmptyResponse {
@@ -44,12 +42,14 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/even/23") ~> Route.seal(route) ~> check {
-      status shouldEqual StatusCodes.NotFound
-    }
-    Get("/even/28") ~> route ~> check {
-      responseAs[String] shouldEqual "Number 28 is even."
-    }
+    Get("/even/23") ~> Route.seal(route) ~>
+      check {
+        status shouldEqual StatusCodes.NotFound
+      }
+    Get("/even/28") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "Number 28 is even."
+      }
   }
   "requestEntityEmptyPresent-example" in {
     val route =
@@ -61,35 +61,40 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
         }
 
     // tests:
-    Post("/", "text") ~> Route.seal(route) ~> check {
-      responseAs[String] shouldEqual "request entity present"
-    }
-    Post("/") ~> route ~> check {
-      responseAs[String] shouldEqual "request entity empty"
-    }
+    Post("/", "text") ~> Route.seal(route) ~>
+      check {
+        responseAs[String] shouldEqual "request entity present"
+      }
+    Post("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "request entity empty"
+      }
   }
   "selectPreferredLanguage-example" in {
-    val request = Get() ~> `Accept-Language`(
-      Language("en-US"),
-      Language("en") withQValue 0.7f,
-      LanguageRange.`*` withQValue 0.1f,
-      Language("de") withQValue 0.5f)
+    val request = Get() ~>
+      `Accept-Language`(
+        Language("en-US"),
+        Language("en") withQValue 0.7f,
+        LanguageRange.`*` withQValue 0.1f,
+        Language("de") withQValue 0.5f)
 
     request ~> {
       selectPreferredLanguage("en", "en-US") { lang ⇒
         complete(lang.toString)
       }
-    } ~> check {
-      responseAs[String] shouldEqual "en-US"
-    }
+    } ~>
+      check {
+        responseAs[String] shouldEqual "en-US"
+      }
 
     request ~> {
       selectPreferredLanguage("de-DE", "hu") { lang ⇒
         complete(lang.toString)
       }
-    } ~> check {
-      responseAs[String] shouldEqual "de-DE"
-    }
+    } ~>
+      check {
+        responseAs[String] shouldEqual "de-DE"
+      }
   }
   "validate-example" in {
     val route = extractUri { uri =>
@@ -101,13 +106,14 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/234") ~> route ~> check {
-      responseAs[String] shouldEqual "Full URI: http://example.com/234"
-    }
-    Get("/abcdefghijkl") ~> route ~> check {
-      rejection shouldEqual ValidationRejection(
-        "Path too long: '/abcdefghijkl'",
-        None)
-    }
+    Get("/234") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "Full URI: http://example.com/234"
+      }
+    Get("/abcdefghijkl") ~> route ~>
+      check {
+        rejection shouldEqual
+          ValidationRejection("Path too long: '/abcdefghijkl'", None)
+      }
   }
 }

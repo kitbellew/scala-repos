@@ -19,8 +19,8 @@ class C4(val a: Int) extends AnyVal with T {
   def foo {
     class Inner extends T {
       override def foo =
-        super[T]
-          .foo + a // no (direct) error, other than that a nested class is currently illegal.
+        super[T].foo +
+          a // no (direct) error, other than that a nested class is currently illegal.
     }
   }
 }

@@ -32,11 +32,8 @@ class IdeaIncrementalCompiler(scalac: AnalyzingCompiler)
       else
         CompileOutput(compilationData.outputGroups: _*)
     val cArgs = new CompilerArguments(scalac.scalaInstance, scalac.cp)
-    val options = "IntellijIdea.simpleAnalysis" +: cArgs(
-      Nil,
-      compilationData.classpath,
-      None,
-      compilationData.scalaOptions)
+    val options = "IntellijIdea.simpleAnalysis" +:
+      cArgs(Nil, compilationData.classpath, None, compilationData.scalaOptions)
 
     try scalac.compile(
       compilationData.sources,

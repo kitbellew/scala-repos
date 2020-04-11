@@ -76,47 +76,51 @@ class ClusterClientStopSpec
 
   "A Cluster Client" should {
 
-    "startup cluster" in within(30.seconds) {
-      join(first, first)
-      join(second, first)
-      runOn(first) {
-        val service = system.actorOf(Props(classOf[Service]), "testService")
-        ClusterClientReceptionist(system).registerService(service)
-      }
-      runOn(first, second) {
-        awaitCount(1)
-      }
+    "startup cluster" in
+      within(30.seconds) {
+        join(first, first)
+        join(second, first)
+        runOn(first) {
+          val service = system.actorOf(Props(classOf[Service]), "testService")
+          ClusterClientReceptionist(system).registerService(service)
+        }
+        runOn(first, second) {
+          awaitCount(1)
+        }
 
-      enterBarrier("cluster-started")
-    }
-
-    "stop if re-establish fails for too long time" in within(20.seconds) {
-      runOn(client) {
-        val c = system.actorOf(
-          ClusterClient.props(
-            ClusterClientSettings(system).withInitialContacts(initialContacts)),
-          "client1")
-        c ! ClusterClient
-          .Send("/user/testService", "hello", localAffinity = true)
-        expectMsgType[String](3.seconds) should be("hello")
-        enterBarrier("was-in-contact")
-
-        watch(c)
-
-        expectTerminated(c, 10.seconds)
-        EventFilter.warning(
-          start = "Receptionist reconnect not successful within",
-          occurrences = 1)
-
+        enterBarrier("cluster-started")
       }
 
-      runOn(first, second) {
-        enterBarrier("was-in-contact")
-        Await.ready(system.terminate(), 10.seconds)
+    "stop if re-establish fails for too long time" in
+      within(20.seconds) {
+        runOn(client) {
+          val c = system.actorOf(
+            ClusterClient.props(
+              ClusterClientSettings(system)
+                .withInitialContacts(initialContacts)),
+            "client1")
+          c !
+            ClusterClient
+              .Send("/user/testService", "hello", localAffinity = true)
+          expectMsgType[String](3.seconds) should be("hello")
+          enterBarrier("was-in-contact")
+
+          watch(c)
+
+          expectTerminated(c, 10.seconds)
+          EventFilter.warning(
+            start = "Receptionist reconnect not successful within",
+            occurrences = 1)
+
+        }
+
+        runOn(first, second) {
+          enterBarrier("was-in-contact")
+          Await.ready(system.terminate(), 10.seconds)
+
+        }
 
       }
-
-    }
 
   }
 

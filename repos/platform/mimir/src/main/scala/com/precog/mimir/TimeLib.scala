@@ -53,68 +53,70 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     val TimeNamespace = Vector("std", "time")
 
     override def _lib1 =
-      super._lib1 ++ Set(
-        GetMillis,
-        TimeZone,
-        Season,
-        TimeRange,
-        Year,
-        QuarterOfYear,
-        MonthOfYear,
-        WeekOfYear,
-        WeekOfMonth,
-        DayOfYear,
-        DayOfMonth,
-        DayOfWeek,
-        HourOfDay,
-        MinuteOfHour,
-        SecondOfMinute,
-        MillisOfSecond,
-        Date,
-        YearMonth,
-        YearDayOfYear,
-        MonthDay,
-        DateHour,
-        DateHourMinute,
-        DateHourMinuteSecond,
-        DateHourMinuteSecondMillis,
-        TimeWithZone,
-        TimeWithoutZone,
-        HourMinute,
-        HourMinuteSecond,
-        DateHourMin,
-        DateHourMinSec,
-        DateHourMinSecMilli,
-        HourMin,
-        HourMinSec,
-        ParseDateTimeFuzzy,
-        ParsePeriod
-      )
+      super._lib1 ++
+        Set(
+          GetMillis,
+          TimeZone,
+          Season,
+          TimeRange,
+          Year,
+          QuarterOfYear,
+          MonthOfYear,
+          WeekOfYear,
+          WeekOfMonth,
+          DayOfYear,
+          DayOfMonth,
+          DayOfWeek,
+          HourOfDay,
+          MinuteOfHour,
+          SecondOfMinute,
+          MillisOfSecond,
+          Date,
+          YearMonth,
+          YearDayOfYear,
+          MonthDay,
+          DateHour,
+          DateHourMinute,
+          DateHourMinuteSecond,
+          DateHourMinuteSecondMillis,
+          TimeWithZone,
+          TimeWithoutZone,
+          HourMinute,
+          HourMinuteSecond,
+          DateHourMin,
+          DateHourMinSec,
+          DateHourMinSecMilli,
+          HourMin,
+          HourMinSec,
+          ParseDateTimeFuzzy,
+          ParsePeriod
+        )
 
     override def _lib2 =
-      super._lib2 ++ Set(
-        YearsPlus,
-        MonthsPlus,
-        WeeksPlus,
-        DaysPlus,
-        HoursPlus,
-        MinutesPlus,
-        SecondsPlus,
-        MillisPlus,
-        YearsBetween,
-        MonthsBetween,
-        WeeksBetween,
-        DaysBetween,
-        HoursBetween,
-        MinutesBetween,
-        SecondsBetween,
-        MillisBetween,
-        MillisToISO,
-        ChangeTimeZone,
-        ParseDateTime,
-        MinTimeOf,
-        MaxTimeOf
-      )
+      super._lib2 ++
+        Set(
+          YearsPlus,
+          MonthsPlus,
+          WeeksPlus,
+          DaysPlus,
+          HoursPlus,
+          MinutesPlus,
+          SecondsPlus,
+          MillisPlus,
+          YearsBetween,
+          MonthsBetween,
+          WeeksBetween,
+          DaysBetween,
+          HoursBetween,
+          MinutesBetween,
+          SecondsBetween,
+          MillisBetween,
+          MillisToISO,
+          ChangeTimeZone,
+          ParseDateTime,
+          MinTimeOf,
+          MaxTimeOf
+        )
 
     //val textAndDate = JUnionT(JTextT, JDateT)
 
@@ -130,8 +132,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case (c1: StrColumn, c2: StrColumn) =>
             new DateColumn {
               def isDefinedAt(row: Int) =
-                c1.isDefinedAt(row) && c2
-                  .isDefinedAt(row) && isValidFormat(c1(row), c2(row))
+                c1.isDefinedAt(row) && c2.isDefinedAt(row) &&
+                  isValidFormat(c1(row), c2(row))
 
               def apply(row: Int): DateTime = {
                 val time = c1(row)
@@ -208,8 +210,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       def newColumn(c1: DateColumn, c2: StrColumn): DateColumn =
         new DateColumn {
           def isDefinedAt(row: Int) =
-            c1.isDefinedAt(row) && c2
-              .isDefinedAt(row) && isValidTimeZone(c2(row))
+            c1.isDefinedAt(row) && c2.isDefinedAt(row) &&
+              isValidTimeZone(c2(row))
 
           def apply(row: Int) = {
             val time = c1(row)
@@ -583,8 +585,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case (c1: NumColumn, c2: StrColumn) =>
             new DateColumn {
               def isDefinedAt(row: Int) =
-                checkDefined(c1, c2, row) && c1(row) >= Long
-                  .MinValue && c1(row) <= Long.MaxValue
+                checkDefined(c1, c2, row) && c1(row) >= Long.MinValue &&
+                  c1(row) <= Long.MaxValue
 
               def apply(row: Int) = {
                 val time = c1(row)
@@ -598,8 +600,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case (c1: DoubleColumn, c2: StrColumn) =>
             new DateColumn {
               def isDefinedAt(row: Int) =
-                checkDefined(c1, c2, row) && c1(row) >= Long
-                  .MinValue && c1(row) <= Long.MaxValue
+                checkDefined(c1, c2, row) && c1(row) >= Long.MinValue &&
+                  c1(row) <= Long.MaxValue
 
               def apply(row: Int) = {
                 val time = c1(row)

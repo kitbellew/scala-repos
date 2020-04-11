@@ -36,8 +36,8 @@ trait MatchCodeGen extends Interface {
         .newTermSymbol(freshName(prefix), pos, newFlags = SYNTHETIC) setInfo tp
 
     def newSynthCaseLabel(name: String) =
-      NoSymbol.newLabel(freshName(name), NoPosition) setFlag treeInfo
-        .SYNTH_CASE_FLAGS
+      NoSymbol.newLabel(freshName(name), NoPosition) setFlag
+        treeInfo.SYNTH_CASE_FLAGS
 
     // codegen relevant to the structure of the translation (how extractors are combined)
     trait AbsCodegen {
@@ -85,9 +85,10 @@ trait MatchCodeGen extends Interface {
       import CODE._
       def fun(arg: Symbol, body: Tree): Tree = Function(List(ValDef(arg)), body)
       def tupleSel(binder: Symbol)(i: Int): Tree =
-        (REF(binder) DOT nme.productAccessorName(
-          i
-        )) // make tree that accesses the i'th component of the tuple referenced by binder
+        (REF(binder) DOT
+          nme.productAccessorName(
+            i
+          )) // make tree that accesses the i'th component of the tuple referenced by binder
       def index(tgt: Tree)(i: Int): Tree = tgt APPLY (LIT(i))
 
       // Right now this blindly calls drop on the result of the unapplySeq
@@ -163,9 +164,9 @@ trait MatchCodeGen extends Interface {
       def matcher(scrut: Tree, scrutSym: Symbol, restpe: Type)(
           cases: List[Casegen => Tree],
           matchFailGen: Option[Tree => Tree]): Tree =
-        _match(vpmName.runOrElse) APPLY (scrut) APPLY (
-          fun(scrutSym, cases map (f => f(this)) reduceLeft typedOrElse)
-        )
+        _match(vpmName.runOrElse) APPLY
+          (scrut) APPLY
+          (fun(scrutSym, cases map (f => f(this)) reduceLeft typedOrElse))
 
       // __match.one(`res`)
       def one(res: Tree): Tree = (_match(vpmName.one))(res)
@@ -224,9 +225,8 @@ trait MatchCodeGen extends Interface {
           newTermName("x"),
           NoPosition,
           newFlags = SYNTHETIC) setInfo restpe.withoutAnnotations
-        val matchEnd = newSynthCaseLabel("matchEnd") setInfo MethodType(
-          List(matchRes),
-          restpe)
+        val matchEnd = newSynthCaseLabel("matchEnd") setInfo
+          MethodType(List(matchRes), restpe)
 
         def newCaseSym =
           newSynthCaseLabel("case") setInfo MethodType(Nil, restpe)
@@ -279,9 +279,8 @@ trait MatchCodeGen extends Interface {
         // res: T
         // returns MatchMonad[T]
         def one(res: Tree): Tree =
-          matchEnd APPLY (
-            res
-          ) // a jump to a case label is special-cased in typedApply
+          matchEnd APPLY
+            (res) // a jump to a case label is special-cased in typedApply
         protected def zero: Tree = nextCase APPLY ()
 
         // prev: MatchMonad[T]

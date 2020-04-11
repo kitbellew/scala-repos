@@ -32,9 +32,8 @@ class UpdateTaskTrackerStepImplTest
       .toBuilder
       .setState(TaskState.TASK_RUNNING)
       .build()
-    f.taskUpdater
-      .statusUpdate(appId, status)
-      .asInstanceOf[Future[Unit]] returns Future.successful(())
+    f.taskUpdater.statusUpdate(appId, status).asInstanceOf[Future[Unit]] returns
+      Future.successful(())
 
     When("processUpdate is called")
     f.step.processUpdate(updateTimestamp, existingTask, status).futureValue

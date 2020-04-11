@@ -31,8 +31,8 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
 
   def this() = this(None)
 
-  private val indexesDir = testIndexesDir getOrElse SbtResolverIndexesManager
-    .DEFAULT_INDEXES_DIR
+  private val indexesDir = testIndexesDir getOrElse
+    SbtResolverIndexesManager.DEFAULT_INDEXES_DIR
   private val indexes: mutable.Set[SbtResolverIndex] = mutable.Set.empty
   private val updatingIndexes: mutable.Set[SbtResolverIndex] = mutable.Set.empty
 
@@ -152,8 +152,8 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
 }
 
 object SbtResolverIndexesManager {
-  val DEFAULT_INDEXES_DIR =
-    new File(PathManager.getSystemPath) / "sbt" / "indexes"
+  val DEFAULT_INDEXES_DIR = new File(PathManager.getSystemPath) / "sbt" /
+    "indexes"
 
   def notifyWarning(message: String) =
     NotificationUtil.showMessage(null, message, title = "Resolver Indexer")

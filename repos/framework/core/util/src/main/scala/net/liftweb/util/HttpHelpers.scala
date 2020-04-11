@@ -641,15 +641,14 @@ trait HttpHelpers {
     * @param in the element to test &amp; add 'id' to
     * @return the new element and the id
     */
-  def findOrAddId(in: Elem): (Elem, String) =
-    (in \ "@id").toList match {
-      case Nil => {
-        val id = nextFuncName
-        (in % ("id" -> id), id)
-      }
-      case x :: xs =>
-        (in, x.text)
+  def findOrAddId(in: Elem): (Elem, String) = (in \ "@id").toList match {
+    case Nil => {
+      val id = nextFuncName
+      (in % ("id" -> id), id)
     }
+    case x :: xs =>
+      (in, x.text)
+  }
 
   /**
     * Within a NodeSeq, find the first elem and run it through
@@ -675,12 +674,10 @@ trait HttpHelpers {
   def appendFuncToURL(url: String, funcStr: String): String =
     splitAtHash(url) { to =>
       to +
-        (
-          if (to.indexOf("?") >= 0)
-            "&"
-          else
-            "?"
-        ) + funcStr
+        (if (to.indexOf("?") >= 0)
+           "&"
+         else
+           "?") + funcStr
     }
 
   /**
@@ -709,12 +706,10 @@ trait HttpHelpers {
       case ps =>
         splitAtHash(url) { to =>
           to +
-            (
-              if (to.indexOf("?") >= 0)
-                "&"
-              else
-                "?"
-            ) +
+            (if (to.indexOf("?") >= 0)
+               "&"
+             else
+               "?") +
             ps.map {
                 case (n, v) =>
                   urlEncode(n) + "=" + urlEncode(v)

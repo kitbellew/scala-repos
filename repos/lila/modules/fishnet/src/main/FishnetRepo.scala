@@ -24,9 +24,8 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
   def getOfflineClient: Fu[Client] =
     getEnabledClient(Client.offline.key) getOrElse fuccess(Client.offline)
   def updateClient(client: Client): Funit =
-    clientColl
-      .update(selectClient(client.key), client, upsert = true)
-      .void >> clientCache.remove(client.key)
+    clientColl.update(selectClient(client.key), client, upsert = true).void >>
+      clientCache.remove(client.key)
   def updateClientInstance(
       client: Client,
       instance: Client.Instance): Fu[Client] =
@@ -48,8 +47,8 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
     clientColl
       .find(
         BSONDocument(
-          "instance.seenAt" -> BSONDocument(
-            "$gt" -> Client.Instance.recentSince)))
+          "instance.seenAt" ->
+            BSONDocument("$gt" -> Client.Instance.recentSince)))
       .cursor[Client]()
       .collect[List]()
   def lichessClients =

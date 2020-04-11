@@ -383,12 +383,13 @@ class MacrosUnitTests extends WordSpec with Matchers {
       val fields = Macros.toFields[SampleClassB]
       assert(fields.size === 5)
       assert(
-        fields.getTypes === Array[java.lang.reflect.Type](
-          classOf[Int],
-          classOf[String],
-          classOf[Int],
-          classOf[String],
-          classOf[String]))
+        fields.getTypes ===
+          Array[java.lang.reflect.Type](
+            classOf[Int],
+            classOf[String],
+            classOf[Int],
+            classOf[String],
+            classOf[String]))
       val names = List("a1.x", "a1.y", "a2.x", "a2.y", "y")
       names
         .zipWithIndex
@@ -402,28 +403,29 @@ class MacrosUnitTests extends WordSpec with Matchers {
       val fields = Macros.toFields[SampleClassD]
       assert(fields.size === 19)
       assert(
-        fields.getTypes === Array
-          .fill[java.lang.reflect.Type](19)(classOf[java.lang.Object]))
+        fields.getTypes ===
+          Array.fill[java.lang.reflect.Type](19)(classOf[java.lang.Object]))
     }
 
     "Case Class should form expected Fields with Unknown types" in {
       val fields = Macros.toFieldsWithUnknown[SampleClassG]
       assert(fields.size === 1)
       assert(
-        fields
-          .getTypes === Array[java.lang.reflect.Type](classOf[java.util.Date]))
+        fields.getTypes ===
+          Array[java.lang.reflect.Type](classOf[java.util.Date]))
     }
 
     "Case Class should form expected Indexed Fields" in {
       val fields = Macros.toIndexedFields[SampleClassB]
       assert(fields.size === 5)
       assert(
-        fields.getTypes === Array[java.lang.reflect.Type](
-          classOf[Int],
-          classOf[String],
-          classOf[Int],
-          classOf[String],
-          classOf[String]))
+        fields.getTypes ===
+          Array[java.lang.reflect.Type](
+            classOf[Int],
+            classOf[String],
+            classOf[Int],
+            classOf[String],
+            classOf[String]))
       val names = (0 until fields.size)
       names
         .zipWithIndex

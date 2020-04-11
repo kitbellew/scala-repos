@@ -123,10 +123,8 @@ object RenameSuperMembersUtil {
           else {
             val mainOne = classesToNamed(classes(0))
             superMembersToRename.clear()
-            superMembersToRename ++= classes
-              .dropRight(1)
-              .drop(1)
-              .map(classesToNamed)
+            superMembersToRename ++=
+              classes.dropRight(1).drop(1).map(classesToNamed)
             action(mainOne)
           }
           false
@@ -190,8 +188,8 @@ object RenameSuperMembersUtil {
         }
 
         override def getContainerText(clazz: PsiClass, name: String): String = {
-          if (clazz == renameAllMarkerObject || clazz == classes
-                .last || oneSuperClass)
+          if (clazz == renameAllMarkerObject || clazz == classes.last ||
+              oneSuperClass)
             null //don't show package name
           else
             super.getContainerText(clazz, name)

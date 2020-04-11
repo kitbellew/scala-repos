@@ -33,15 +33,15 @@ trait VectorSpaceLaws[V, A] extends Laws {
       sl = _.rng(V.scalar),
       vl = _.abGroup(V.additive),
       parents = Seq.empty,
-      "associative scalar" → forAll { (r: A, s: A, v: V) =>
-        // TODO compiler crash if variable 'w' is replaced by its value
-        val w = r *: s *: v
-        w === ((r * s) *: v)
-      },
-      "scalar distributes over vector" → forAll((r: A, v: V, w: V) =>
-        (r *: (v + w)) === ((r *: v) + (r *: w))),
-      "vector distributes over scalar" → forAll((r: A, s: A, v: V) =>
-        ((r + s) *: v) === ((r *: v) + (s *: v))) /*,
+      "associative scalar" →
+        forAll { (r: A, s: A, v: V) =>
+          // TODO compiler crash if variable 'w' is replaced by its value
+          val w = r *: s *: v
+          w === ((r * s) *: v)
+        },
+      "scalar distributes over vector" →
+        forAll((r: A, v: V, w: V) => (r *: (v + w)) === ((r *: v) + (r *: w))),
+      "vector distributes over scalar" → forAll((r: A, s: A, v: V) => ((r + s) *: v) === ((r *: v) + (s *: v))) /*,
     "scalar identity is identity" → forAll((v: V) =>
       (V.scalar.one *: v) === v
     )*/
@@ -63,15 +63,17 @@ trait VectorSpaceLaws[V, A] extends Laws {
       sl = _.emptyRuleSet,
       vl = _.emptyRuleSet,
       parents = Seq.empty,
-      "identity" → forAll((x: V, y: V) =>
-        if (x === y)
-          V.distance(x, y) === A.zero
-        else
-          V.distance(x, y) =!= A.zero),
-      "symmetric" → forAll((x: V, y: V) =>
-        V.distance(x, y) === V.distance(y, x)),
-      "triangle inequality" → forAll((x: V, y: V, z: V) =>
-        V.distance(x, z) <= (V.distance(x, y) + V.distance(y, z))))
+      "identity" →
+        forAll((x: V, y: V) =>
+          if (x === y)
+            V.distance(x, y) === A.zero
+          else
+            V.distance(x, y) =!= A.zero),
+      "symmetric" →
+        forAll((x: V, y: V) => V.distance(x, y) === V.distance(y, x)),
+      "triangle inequality" →
+        forAll((x: V, y: V, z: V) =>
+          V.distance(x, z) <= (V.distance(x, y) + V.distance(y, z))))
 
   def normedVectorSpace(implicit
       V: NormedVectorSpace[V, A],
@@ -83,11 +85,12 @@ trait VectorSpaceLaws[V, A] extends Laws {
       vl = _.abGroup(V.additive),
       parents = Seq(vectorSpace, metricSpace),
       "scalable" → forAll((a: A, v: V) => a.abs * v.norm === (a.abs *: v).norm),
-      "only 1 zero" → forAll((v: V) => // This is covered by metricSpace...
-        if (v === V.zero)
-          v.norm === Rng[A].zero
-        else
-          v.norm > Rng[A].zero))
+      "only 1 zero" →
+        forAll((v: V) => // This is covered by metricSpace...
+          if (v === V.zero)
+            v.norm === Rng[A].zero
+          else
+            v.norm > Rng[A].zero))
 
   def linearity(f: V => A)(implicit V: Module[V, A]) =
     new SimpleRuleSet(
@@ -103,9 +106,10 @@ trait VectorSpaceLaws[V, A] extends Laws {
       name = "inner-product space",
       parent = vectorSpace,
       "symmetry" → forAll((v: V, w: V) => (v ⋅ w).abs === (w ⋅ v).abs),
-      "linearity of partial inner product" → forAll((w: V) =>
-        // TODO this probably requires some thought -- should `linearity` be a full `RuleSet`?
-        linearity(_ ⋅ w).all)
+      "linearity of partial inner product" →
+        forAll((w: V) =>
+          // TODO this probably requires some thought -- should `linearity` be a full `RuleSet`?
+          linearity(_ ⋅ w).all)
     )
 
   object SpaceProperties {

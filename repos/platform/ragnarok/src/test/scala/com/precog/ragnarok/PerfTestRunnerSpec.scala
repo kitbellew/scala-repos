@@ -39,19 +39,20 @@ class PerfTestRunnerSpec extends Specification {
       import r.timer._
       // implicit val s = r.TimeSpanSemigroup
 
-      r.runAll(t, 1)(identity) must beLike {
-        case Tree.Node((RunSequential, _), results) =>
-          results must have size (2)
-          results map {
-            case Tree.Node((_, time), _) =>
-              time
-          } sliding 2 forall {
-            case Stream(Some((_, t1)), Some((t2, _))) =>
-              t1 <= t2
-            case _ =>
-              false
-          } must_== true
-      }
+      r.runAll(t, 1)(identity) must
+        beLike {
+          case Tree.Node((RunSequential, _), results) =>
+            results must have size (2)
+            results map {
+              case Tree.Node((_, time), _) =>
+                time
+            } sliding 2 forall {
+              case Stream(Some((_, t1)), Some((t2, _))) =>
+                t1 <= t2
+              case _ =>
+                false
+            } must_== true
+        }
     }
   }
 }

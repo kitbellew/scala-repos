@@ -188,11 +188,12 @@ trait DeathWatchSpec {
           .result((supervisor ? Props.empty).mapTo[ActorRef], timeout.duration)
         val brother = Await.result(
           (
-            supervisor ? Props(
-              new Actor {
-                context.watch(failed)
-                def receive = Actor.emptyBehavior
-              })
+            supervisor ?
+              Props(
+                new Actor {
+                  context.watch(failed)
+                  def receive = Actor.emptyBehavior
+                })
           ).mapTo[ActorRef],
           timeout.duration)
 

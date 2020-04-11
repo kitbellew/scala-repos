@@ -175,12 +175,11 @@ class ScalaTestLocationProvider extends SMTestLocator {
         found = true
       }
       val length: Int = elementAtLine.getTextLength
-      offset += (
-        if (length > 1)
-          length - 1
-        else
-          1
-      )
+      offset +=
+        (if (length > 1)
+           length - 1
+         else
+           1)
     }
     withName match {
       case Some(testName) =>

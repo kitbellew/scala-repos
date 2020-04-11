@@ -79,54 +79,56 @@ abstract class UnreachableNodeJoinsAgainSpec
       endBarrier()
     }
 
-    "mark a node as UNREACHABLE when we pull the network" taggedAs LongRunningTest in {
-      // let them send at least one heartbeat to each other after the gossip convergence
-      // because for new joining nodes we remove them from the failure detector when
-      // receive gossip
-      Thread.sleep(2.seconds.dilated.toMillis)
+    "mark a node as UNREACHABLE when we pull the network" taggedAs
+      LongRunningTest in {
+        // let them send at least one heartbeat to each other after the gossip convergence
+        // because for new joining nodes we remove them from the failure detector when
+        // receive gossip
+        Thread.sleep(2.seconds.dilated.toMillis)
 
-      runOn(first) {
-        // pull network for victim node from all nodes
-        allBut(victim).foreach { roleName ⇒
-          testConductor.blackhole(victim, roleName, Direction.Both).await
-        }
-      }
-
-      enterBarrier("unplug_victim")
-
-      val allButVictim = allBut(victim, roles)
-      runOn(victim) {
-        allButVictim.foreach(markNodeAsUnavailable(_))
-        within(30 seconds) {
-          // victim becomes all alone
-          awaitAssert {
-            val members = clusterView.members
-            clusterView.unreachableMembers.size should ===(roles.size - 1)
+        runOn(first) {
+          // pull network for victim node from all nodes
+          allBut(victim).foreach { roleName ⇒
+            testConductor.blackhole(victim, roleName, Direction.Both).await
           }
-          clusterView.unreachableMembers.map(_.address) should ===(
-            (allButVictim map address).toSet)
         }
-      }
 
-      runOn(allButVictim: _*) {
-        markNodeAsUnavailable(victim)
-        within(30 seconds) {
-          // victim becomes unreachable
-          awaitAssert {
-            val members = clusterView.members
+        enterBarrier("unplug_victim")
+
+        val allButVictim = allBut(victim, roles)
+        runOn(victim) {
+          allButVictim.foreach(markNodeAsUnavailable(_))
+          within(30 seconds) {
+            // victim becomes all alone
+            awaitAssert {
+              val members = clusterView.members
+              clusterView.unreachableMembers.size should ===(roles.size - 1)
+            }
+            clusterView.unreachableMembers.map(_.address) should
+              ===((allButVictim map address).toSet)
+          }
+        }
+
+        runOn(allButVictim: _*) {
+          markNodeAsUnavailable(victim)
+          within(30 seconds) {
+            // victim becomes unreachable
+            awaitAssert {
+              val members = clusterView.members
+              clusterView.unreachableMembers.size should ===(1)
+            }
+            awaitSeenSameState(allButVictim map address: _*)
+            // still one unreachable
             clusterView.unreachableMembers.size should ===(1)
+            clusterView.unreachableMembers.head.address should
+              ===(node(victim).address)
+            clusterView.unreachableMembers.head.status should
+              ===(MemberStatus.Up)
           }
-          awaitSeenSameState(allButVictim map address: _*)
-          // still one unreachable
-          clusterView.unreachableMembers.size should ===(1)
-          clusterView.unreachableMembers.head.address should ===(
-            node(victim).address)
-          clusterView.unreachableMembers.head.status should ===(MemberStatus.Up)
         }
-      }
 
-      endBarrier()
-    }
+        endBarrier()
+      }
 
     "mark the node as DOWN" taggedAs LongRunningTest in {
       runOn(master) {
@@ -141,93 +143,92 @@ abstract class UnreachableNodeJoinsAgainSpec
           clusterView.unreachableMembers should ===(Set.empty),
           15 seconds)
         awaitAssert(
-          clusterView.members.map(_.address) should ===(
-            (allButVictim map address).toSet))
+          clusterView.members.map(_.address) should
+            ===((allButVictim map address).toSet))
 
       }
 
       endBarrier()
     }
 
-    "allow fresh node with same host:port to join again when the network is plugged back in" taggedAs LongRunningTest in {
-      val expectedNumberOfMembers = roles.size
+    "allow fresh node with same host:port to join again when the network is plugged back in" taggedAs
+      LongRunningTest in {
+        val expectedNumberOfMembers = roles.size
 
-      // victim actor system will be shutdown, not part of testConductor any more
-      // so we can't use barriers to synchronize with it
-      val masterAddress = address(master)
-      runOn(master) {
-        system.actorOf(Props(classOf[EndActor], testActor, None), "end")
-      }
-      enterBarrier("end-actor-created")
-
-      runOn(first) {
-        // put the network back in
-        allBut(victim).foreach { roleName ⇒
-          testConductor.passThrough(victim, roleName, Direction.Both).await
+        // victim actor system will be shutdown, not part of testConductor any more
+        // so we can't use barriers to synchronize with it
+        val masterAddress = address(master)
+        runOn(master) {
+          system.actorOf(Props(classOf[EndActor], testActor, None), "end")
         }
-      }
+        enterBarrier("end-actor-created")
 
-      enterBarrier("plug_in_victim")
+        runOn(first) {
+          // put the network back in
+          allBut(victim).foreach { roleName ⇒
+            testConductor.passThrough(victim, roleName, Direction.Both).await
+          }
+        }
 
-      runOn(first) {
-        // will shutdown ActorSystem of victim
-        testConductor.shutdown(victim)
-      }
+        enterBarrier("plug_in_victim")
 
-      runOn(victim) {
-        val victimAddress =
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
-        Await.ready(system.whenTerminated, 10 seconds)
-        // create new ActorSystem with same host:port
-        val freshSystem = ActorSystem(
-          system.name,
-          ConfigFactory.parseString(s"""
+        runOn(first) {
+          // will shutdown ActorSystem of victim
+          testConductor.shutdown(victim)
+        }
+
+        runOn(victim) {
+          val victimAddress =
+            system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+          Await.ready(system.whenTerminated, 10 seconds)
+          // create new ActorSystem with same host:port
+          val freshSystem = ActorSystem(
+            system.name,
+            ConfigFactory.parseString(s"""
             akka.remote.netty.tcp {
               hostname = ${victimAddress.host.get}
               port = ${victimAddress.port.get}
             }
             """).withFallback(system.settings.config)
-        )
+          )
 
-        try {
-          Cluster(freshSystem).join(masterAddress)
-          within(15 seconds) {
-            awaitAssert(
-              Cluster(freshSystem)
-                .readView
-                .members
-                .map(_.address) should contain(victimAddress))
-            awaitAssert(
-              Cluster(freshSystem).readView.members.size should ===(
-                expectedNumberOfMembers))
-            awaitAssert(
-              Cluster(freshSystem).readView.members.map(_.status) should ===(
-                Set(MemberStatus.Up)))
+          try {
+            Cluster(freshSystem).join(masterAddress)
+            within(15 seconds) {
+              awaitAssert(
+                Cluster(freshSystem).readView.members.map(_.address) should
+                  contain(victimAddress))
+              awaitAssert(
+                Cluster(freshSystem).readView.members.size should
+                  ===(expectedNumberOfMembers))
+              awaitAssert(
+                Cluster(freshSystem).readView.members.map(_.status) should
+                  ===(Set(MemberStatus.Up)))
+            }
+
+            // signal to master node that victim is done
+            val endProbe = TestProbe()(freshSystem)
+            val endActor = freshSystem.actorOf(
+              Props(classOf[EndActor], endProbe.ref, Some(masterAddress)),
+              "end")
+            endActor ! EndActor.SendEnd
+            endProbe.expectMsg(EndActor.EndAck)
+
+          } finally {
+            shutdown(freshSystem)
           }
-
-          // signal to master node that victim is done
-          val endProbe = TestProbe()(freshSystem)
-          val endActor = freshSystem.actorOf(
-            Props(classOf[EndActor], endProbe.ref, Some(masterAddress)),
-            "end")
-          endActor ! EndActor.SendEnd
-          endProbe.expectMsg(EndActor.EndAck)
-
-        } finally {
-          shutdown(freshSystem)
+          // no barrier here, because it is not part of testConductor roles any more
         }
-        // no barrier here, because it is not part of testConductor roles any more
-      }
 
-      runOn(allBut(victim): _*) {
-        awaitMembersUp(expectedNumberOfMembers)
-        // don't end the test until the freshSystem is done
-        runOn(master) {
-          expectMsg(20 seconds, EndActor.End)
+        runOn(allBut(victim): _*) {
+          awaitMembersUp(expectedNumberOfMembers)
+          // don't end the test until the freshSystem is done
+          runOn(master) {
+            expectMsg(20 seconds, EndActor.End)
+          }
+          endBarrier()
         }
-        endBarrier()
-      }
 
-    }
+      }
   }
 }

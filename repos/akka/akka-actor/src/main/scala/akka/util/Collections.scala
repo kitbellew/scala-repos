@@ -32,7 +32,8 @@ private[akka] object Collections {
 
         @tailrec
         override final def hasNext: Boolean =
-          if (!_hasNext && superIterator
+          if (!_hasNext &&
+              superIterator
                 .hasNext) { // If we need and are able to look for the next value
             val potentiallyNext = superIterator.next()
             if (isDefinedAt(potentiallyNext)) {

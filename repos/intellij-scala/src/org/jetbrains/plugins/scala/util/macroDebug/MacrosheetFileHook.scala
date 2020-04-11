@@ -70,8 +70,8 @@ class MacrosheetFileHook(private val project: Project)
 
   private object MacrosheetEditorListener extends FileEditorManagerListener {
     override def fileOpened(source: FileEditorManager, file: VirtualFile) {
-      if (!ScalaMacroDebuggingUtil
-            .isEnabled || ScalaFileType.DEFAULT_EXTENSION != file.getExtension)
+      if (!ScalaMacroDebuggingUtil.isEnabled ||
+          ScalaFileType.DEFAULT_EXTENSION != file.getExtension)
         return
 
       val document =
@@ -106,9 +106,8 @@ class MacrosheetFileHook(private val project: Project)
             val sourcEditor =
               FileEditorManager.getInstance(project).getSelectedTextEditor
             val macroEditor = WorksheetViewerInfo.getViewer(sourcEditor)
-            if (macroEditor != null && macroEditor
-                  .getDocument
-                  .getTextLength > 0) {
+            if (macroEditor != null &&
+                macroEditor.getDocument.getTextLength > 0) {
               ScalaMacroDebuggingUtil.expandMacros(sourcEditor.getProject)
             }
           }

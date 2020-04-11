@@ -18,11 +18,11 @@ class convertTest extends FunSuite {
 
   test("Double -> {Double, Short, Int}") {
     assert(
-      convert(Array(1.0, 2.0, 3.0), Double)
-        .toIndexedSeq == IndexedSeq(1.0, 2.0, 3.0))
+      convert(Array(1.0, 2.0, 3.0), Double).toIndexedSeq ==
+        IndexedSeq(1.0, 2.0, 3.0))
     assert(
-      convert(Array(1.0, 2.0, 3.0), Short)
-        .toIndexedSeq == IndexedSeq[Short](1, 2, 3))
+      convert(Array(1.0, 2.0, 3.0), Short).toIndexedSeq ==
+        IndexedSeq[Short](1, 2, 3))
     assert(convert(DenseVector(1.0, 2.0, 3.0), Int) == DenseVector(1, 2, 3))
   }
 

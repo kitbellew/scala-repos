@@ -111,7 +111,7 @@ class StopWordsRemoverSuite
       testStopWordsRemover(remover, dataSet)
     }
     assert(
-      thrown
-        .getMessage == s"requirement failed: Column $outputCol already exists.")
+      thrown.getMessage ==
+        s"requirement failed: Column $outputCol already exists.")
   }
 }

@@ -174,8 +174,8 @@ abstract class ClusterShardingFailureSpec(
       enterBarrier("peristence-started")
 
       runOn(first, second) {
-        system
-          .actorSelection(node(controller) / "user" / "store") ! Identify(None)
+        system.actorSelection(node(controller) / "user" / "store") !
+          Identify(None)
         val sharedStore = expectMsgType[ActorIdentity].ref.get
         SharedLeveldbJournal.setStore(sharedStore, system)
       }
@@ -183,97 +183,99 @@ abstract class ClusterShardingFailureSpec(
       enterBarrier("after-1")
     }
 
-    "join cluster" in within(20.seconds) {
-      join(first, first)
-      join(second, first)
+    "join cluster" in
+      within(20.seconds) {
+        join(first, first)
+        join(second, first)
 
-      runOn(first) {
-        region ! Add("10", 1)
-        region ! Add("20", 2)
-        region ! Add("21", 3)
-        region ! Get("10")
-        expectMsg(Value("10", 1))
-        region ! Get("20")
-        expectMsg(Value("20", 2))
-        region ! Get("21")
-        expectMsg(Value("21", 3))
+        runOn(first) {
+          region ! Add("10", 1)
+          region ! Add("20", 2)
+          region ! Add("21", 3)
+          region ! Get("10")
+          expectMsg(Value("10", 1))
+          region ! Get("20")
+          expectMsg(Value("20", 2))
+          region ! Get("21")
+          expectMsg(Value("21", 3))
+        }
+
+        enterBarrier("after-2")
       }
 
-      enterBarrier("after-2")
-    }
+    "recover after journal failure" in
+      within(20.seconds) {
+        runOn(controller) {
+          testConductor.blackhole(controller, first, Direction.Both).await
+          testConductor.blackhole(controller, second, Direction.Both).await
+        }
+        enterBarrier("journal-blackholed")
 
-    "recover after journal failure" in within(20.seconds) {
-      runOn(controller) {
-        testConductor.blackhole(controller, first, Direction.Both).await
-        testConductor.blackhole(controller, second, Direction.Both).await
+        runOn(first) {
+          // try with a new shard, will not reply until journal is available again
+          region ! Add("40", 4)
+          val probe = TestProbe()
+          region.tell(Get("40"), probe.ref)
+          probe.expectNoMsg(1.second)
+        }
+
+        enterBarrier("first-delayed")
+
+        runOn(controller) {
+          testConductor.passThrough(controller, first, Direction.Both).await
+          testConductor.passThrough(controller, second, Direction.Both).await
+        }
+        enterBarrier("journal-ok")
+
+        runOn(first) {
+          region ! Get("21")
+          expectMsg(Value("21", 3))
+          val entity21 = lastSender
+          val shard2 = system.actorSelection(entity21.path.parent)
+
+          //Test the ShardCoordinator allocating shards during a journal failure
+          region ! Add("30", 3)
+
+          //Test the Shard starting entities and persisting during a journal failure
+          region ! Add("11", 1)
+
+          //Test the Shard passivate works during a journal failure
+          shard2.tell(Passivate(PoisonPill), entity21)
+          region ! Add("21", 1)
+
+          region ! Get("21")
+          expectMsg(Value("21", 1))
+
+          region ! Get("30")
+          expectMsg(Value("30", 3))
+
+          region ! Get("11")
+          expectMsg(Value("11", 1))
+
+          region ! Get("40")
+          expectMsg(Value("40", 4))
+        }
+
+        enterBarrier("verified-first")
+
+        runOn(second) {
+          region ! Add("10", 1)
+          region ! Add("20", 2)
+          region ! Add("30", 3)
+          region ! Add("11", 4)
+          region ! Get("10")
+          expectMsg(Value("10", 2))
+          region ! Get("11")
+          expectMsg(Value("11", 5))
+          region ! Get("20")
+          expectMsg(Value("20", 4))
+          region ! Get("30")
+          expectMsg(Value("30", 6))
+        }
+
+        enterBarrier("after-3")
+
       }
-      enterBarrier("journal-blackholed")
-
-      runOn(first) {
-        // try with a new shard, will not reply until journal is available again
-        region ! Add("40", 4)
-        val probe = TestProbe()
-        region.tell(Get("40"), probe.ref)
-        probe.expectNoMsg(1.second)
-      }
-
-      enterBarrier("first-delayed")
-
-      runOn(controller) {
-        testConductor.passThrough(controller, first, Direction.Both).await
-        testConductor.passThrough(controller, second, Direction.Both).await
-      }
-      enterBarrier("journal-ok")
-
-      runOn(first) {
-        region ! Get("21")
-        expectMsg(Value("21", 3))
-        val entity21 = lastSender
-        val shard2 = system.actorSelection(entity21.path.parent)
-
-        //Test the ShardCoordinator allocating shards during a journal failure
-        region ! Add("30", 3)
-
-        //Test the Shard starting entities and persisting during a journal failure
-        region ! Add("11", 1)
-
-        //Test the Shard passivate works during a journal failure
-        shard2.tell(Passivate(PoisonPill), entity21)
-        region ! Add("21", 1)
-
-        region ! Get("21")
-        expectMsg(Value("21", 1))
-
-        region ! Get("30")
-        expectMsg(Value("30", 3))
-
-        region ! Get("11")
-        expectMsg(Value("11", 1))
-
-        region ! Get("40")
-        expectMsg(Value("40", 4))
-      }
-
-      enterBarrier("verified-first")
-
-      runOn(second) {
-        region ! Add("10", 1)
-        region ! Add("20", 2)
-        region ! Add("30", 3)
-        region ! Add("11", 4)
-        region ! Get("10")
-        expectMsg(Value("10", 2))
-        region ! Get("11")
-        expectMsg(Value("11", 5))
-        region ! Get("20")
-        expectMsg(Value("20", 4))
-        region ! Get("30")
-        expectMsg(Value("30", 6))
-      }
-
-      enterBarrier("after-3")
-
-    }
 
   }
 }

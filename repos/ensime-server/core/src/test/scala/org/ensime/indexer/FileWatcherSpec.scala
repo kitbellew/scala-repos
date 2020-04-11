@@ -47,7 +47,8 @@ abstract class FileWatcherSpec
     Thread.sleep(1000)
   }
 
-  "FileWatcher" should "detect added files" taggedAs (Retryable) in
+  "FileWatcher" should "detect added files" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         withTempDir { dir =>
@@ -65,7 +66,8 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "detect added / changed files" taggedAs (Retryable) in
+  it should "detect added / changed files" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         withTempDir { dir =>
@@ -89,7 +91,8 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "detect added / removed files" taggedAs (Retryable) in
+  it should "detect added / removed files" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         withTempDir { dir =>
@@ -113,7 +116,8 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "detect removed base directory" taggedAs (Retryable) in
+  it should "detect removed base directory" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         withTempDir { dir =>
@@ -136,7 +140,8 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "detect removed parent base directory" taggedAs (Retryable) in
+  it should "detect removed parent base directory" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         val parent = Files.createTempDir().canon
@@ -160,7 +165,8 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "survive deletion of the watched directory" taggedAs (Retryable) in
+  it should "survive deletion of the watched directory" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         withTempDir { dir =>
@@ -205,9 +211,8 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "be able to start up from a non-existent directory" taggedAs (
-    Retryable
-  ) in
+  it should "be able to start up from a non-existent directory" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         val dir = Files.createTempDir().canon
@@ -229,9 +234,8 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "survive removed parent base directory and recreated base" taggedAs (
-    Retryable
-  ) in
+  it should "survive removed parent base directory and recreated base" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         val parent = Files.createTempDir().canon
@@ -283,7 +287,8 @@ abstract class FileWatcherSpec
     }
 
   //////////////////////////////////////////////////////////////////////////////
-  it should "detect changes to a file base" taggedAs (Retryable) in
+  it should "detect changes to a file base" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         withTempDir { dir =>
@@ -300,7 +305,8 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "detect removal of a file base" taggedAs (Retryable) in
+  it should "detect removal of a file base" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         withTempDir { dir =>
@@ -317,9 +323,8 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "be able to start up from a non-existent base file" taggedAs (
-    Retryable
-  ) in
+  it should "be able to start up from a non-existent base file" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         withTempDir { dir =>
@@ -335,7 +340,8 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "survive removal of a file base" taggedAs (Retryable) in
+  it should "survive removal of a file base" taggedAs
+    (Retryable) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         withTempDir { dir =>

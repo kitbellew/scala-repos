@@ -553,12 +553,11 @@ trait Polynomial[@sp(Double) C] {
       val ts = bldr.result()
       QuickSort.sort(ts)(Order[Term[C]].reverse, implicitly[ClassTag[Term[C]]])
       val s = ts.mkString
-      "(" + (
-        if (s.take(3) == " - ")
-          "-" + s.drop(3)
-        else
-          s.drop(3)
-      ) + ")"
+      "(" +
+        (if (s.take(3) == " - ")
+           "-" + s.drop(3)
+         else
+           s.drop(3)) + ")"
     }
 }
 
@@ -622,8 +621,8 @@ trait PolynomialEq[@sp(Double) C] extends Eq[Polynomial[C]] {
   implicit def ct: ClassTag[C]
 
   def eqv(x: Polynomial[C], y: Polynomial[C]): Boolean =
-    x.coeffsArray === y
-      .coeffsArray // TODO: This is bad for sparse arrays. Do better.
+    x.coeffsArray ===
+      y.coeffsArray // TODO: This is bad for sparse arrays. Do better.
 }
 
 trait PolynomialInstances0 {

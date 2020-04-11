@@ -39,10 +39,11 @@ class AccountsTask(settings: Settings)
       val body = """{ "email": "%s", "password": "%s" }""".format(user, pass)
       val json = getjson((accounts / "") << body)
 
-      (json \ "accountId") must beLike {
-        case JString(_) =>
-          ok
-      }
+      (json \ "accountId") must
+        beLike {
+          case JString(_) =>
+            ok
+        }
     }
 
     "not create the same account twice" in {
@@ -61,10 +62,11 @@ class AccountsTask(settings: Settings)
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
 
       val json = getjson((accounts / accountId).as(user, pass))
-      (json \ "accountCreationDate") must beLike {
-        case JString(DateTimePattern()) =>
-          ok
-      }
+      (json \ "accountCreationDate") must
+        beLike {
+          case JString(DateTimePattern()) =>
+            ok
+        }
       (json \ "email") must_== JString(user)
       (json \ "accountId") must_== JString(accountId)
       (json \ "apiKey") must_== JString(apiKey)
@@ -95,11 +97,11 @@ class AccountsTask(settings: Settings)
       val grantId = (g \ "grantId").deserialize[String]
 
       val body = JObject("grantId" -> JString(grantId)).renderCompact
-      val req =
-        (accounts / accountId2 / "grants" / "").POST.as(user1, pass1) << body
+      val req = (accounts / accountId2 / "grants" / "").POST.as(user1, pass1) <<
+        body
       val r = http(req)().complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(
-        g)
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        contain(g)
     }
 
     // "describe account's plan" in {}

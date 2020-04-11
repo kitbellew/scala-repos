@@ -63,27 +63,18 @@ class QuantileDiscretizerSuite
 
   test("Test getting splits") {
     val splitTestPoints = Array(
-      Array[Double]() -> Array(
-        Double.NegativeInfinity,
-        0,
-        Double.PositiveInfinity),
-      Array(Double.NegativeInfinity) -> Array(
-        Double.NegativeInfinity,
-        0,
-        Double.PositiveInfinity),
-      Array(Double.PositiveInfinity) -> Array(
-        Double.NegativeInfinity,
-        0,
-        Double.PositiveInfinity),
-      Array(Double.NegativeInfinity, Double.PositiveInfinity)
-        -> Array(Double.NegativeInfinity, 0, Double.PositiveInfinity),
+      Array[Double]() ->
+        Array(Double.NegativeInfinity, 0, Double.PositiveInfinity),
+      Array(Double.NegativeInfinity) ->
+        Array(Double.NegativeInfinity, 0, Double.PositiveInfinity),
+      Array(Double.PositiveInfinity) ->
+        Array(Double.NegativeInfinity, 0, Double.PositiveInfinity),
+      Array(Double.NegativeInfinity, Double.PositiveInfinity) ->
+        Array(Double.NegativeInfinity, 0, Double.PositiveInfinity),
       Array(0.0) -> Array(Double.NegativeInfinity, 0, Double.PositiveInfinity),
       Array(1.0) -> Array(Double.NegativeInfinity, 1, Double.PositiveInfinity),
-      Array(0.0, 1.0) -> Array(
-        Double.NegativeInfinity,
-        0,
-        1,
-        Double.PositiveInfinity)
+      Array(0.0, 1.0) ->
+        Array(Double.NegativeInfinity, 0, 1, Double.PositiveInfinity)
     )
     for ((ori, res) <- splitTestPoints) {
       assert(

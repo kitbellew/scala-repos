@@ -69,7 +69,8 @@ object FSMActorSpec {
     whenUnhandled {
       case Event(msg, _) ⇒ {
         log.warning(
-          "unhandled event " + msg + " in state " + stateName + " with data " + stateData)
+          "unhandled event " + msg + " in state " + stateName + " with data " +
+            stateData)
         unhandledLatch.open
         stay
       }

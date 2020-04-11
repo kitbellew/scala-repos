@@ -34,8 +34,8 @@ class ScalaTestFinder extends JavaTestFinder {
     for (testClassName <- names) {
       if (pattern.matcher(testClassName).matches()) {
         for (testClass <- cache.getClassesByName(testClassName, scope)) {
-          if (frameworks.isTestClass(testClass) || frameworks
-                .isPotentialTestClass(testClass)) {
+          if (frameworks.isTestClass(testClass) ||
+              frameworks.isPotentialTestClass(testClass)) {
             res.add(
               Pair.create(
                 testClass,

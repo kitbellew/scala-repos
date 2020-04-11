@@ -305,8 +305,8 @@ object PlayRun {
       case Right(_) =>
         val stagingBin =
           Some(
-            extracted.get(stagingDirectory in Universal) / "bin" / extracted
-              .get(executableScriptName))
+            extracted.get(stagingDirectory in Universal) / "bin" /
+              extracted.get(executableScriptName))
             .map { f =>
               if (System
                     .getProperty("os.name")
@@ -333,8 +333,7 @@ object PlayRun {
           properties.map {
             case (key, value) =>
               s"-D$key=$value"
-          } ++
-          javaProductionOptions ++
+          } ++ javaProductionOptions ++
           Seq("-Dhttp.port=" + httpPort.getOrElse("disabled"))
         val builder = new java.lang.ProcessBuilder(args.asJava)
         new Thread {

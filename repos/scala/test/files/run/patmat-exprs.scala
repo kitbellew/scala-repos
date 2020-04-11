@@ -146,12 +146,10 @@ trait Pattern {
 
     /** Counts number of occurrences of the given subexpression. */
     def count(condition: Expr[_] => Boolean): Int =
-      (
-        if (condition(this))
-          1
-        else
-          0
-      ) + args.map(_.count(condition)).sum
+      (if (condition(this))
+         1
+       else
+         0) + args.map(_.count(condition)).sum
 
     /** Executes some code for every subexpression in the depth-first order */
     def foreach[U](block: Expr[_] => U): Unit = {

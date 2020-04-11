@@ -39,12 +39,13 @@ object DebugConfigurationSpec extends Specification with After {
     "turn on java.security.debug code" in {
       //setLoggerDebug(certpathDebugLogger)
 
-      Option(System.getProperty("java.security.debug")) must beLike {
-        case Some(value) =>
-          value must beEmpty
-        case None =>
-          ok
-      }
+      Option(System.getProperty("java.security.debug")) must
+        beLike {
+          case Some(value) =>
+            value must beEmpty
+          case None =>
+            ok
+        }
 
       val debugConfig = SSLDebugConfig(certpath = true)
       val config = new DebugConfiguration()
@@ -66,12 +67,13 @@ object DebugConfigurationSpec extends Specification with After {
     "turn on javax.ssl.debug code" in {
       //setLoggerDebug(internalDebugLogger)
 
-      Option(System.getProperty("javax.net.debug")) must beLike {
-        case Some(value) =>
-          value must beEmpty
-        case None =>
-          ok
-      }
+      Option(System.getProperty("javax.net.debug")) must
+        beLike {
+          case Some(value) =>
+            value must beEmpty
+          case None =>
+            ok
+        }
 
       val debugConfig = SSLDebugConfig(ssl = true)
       val config = new DebugConfiguration()

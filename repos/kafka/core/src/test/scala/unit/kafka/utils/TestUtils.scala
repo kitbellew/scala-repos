@@ -427,7 +427,8 @@ object TestUtils extends Logging {
         length1 += 1
       }
       assertFalse(
-        "Iterators have uneven length-- first has more: " + length1 + " > " + length,
+        "Iterators have uneven length-- first has more: " + length1 + " > " +
+          length,
         true);
     }
 
@@ -439,7 +440,8 @@ object TestUtils extends Logging {
         length2 += 1
       }
       assertFalse(
-        "Iterators have uneven length-- second has more: " + length2 + " > " + length,
+        "Iterators have uneven length-- second has more: " + length2 + " > " +
+          length,
         true);
     }
   }
@@ -649,12 +651,12 @@ object TestUtils extends Logging {
     val defaultProps = Map(
       ConsumerConfig.RETRY_BACKOFF_MS_CONFIG -> "100",
       ConsumerConfig.RECONNECT_BACKOFF_MS_CONFIG -> "200",
-      ConsumerConfig
-        .KEY_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArrayDeserializer",
-      ConsumerConfig
-        .VALUE_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArrayDeserializer",
-      ConsumerConfig
-        .PARTITION_ASSIGNMENT_STRATEGY_CONFIG -> partitionAssignmentStrategy,
+      ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG ->
+        "org.apache.kafka.common.serialization.ByteArrayDeserializer",
+      ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG ->
+        "org.apache.kafka.common.serialization.ByteArrayDeserializer",
+      ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG ->
+        partitionAssignmentStrategy,
       ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG -> sessionTimeout.toString,
       ConsumerConfig.GROUP_ID_CONFIG -> groupId
     )
@@ -874,8 +876,8 @@ object TestUtils extends Logging {
         .format(topic, partition, oldLeaderOpt, newLeaderOpt))
 
     var leader: Option[Int] = None
-    while (!isLeaderElectedOrChanged && System
-             .currentTimeMillis() < startTime + timeoutMs) {
+    while (!isLeaderElectedOrChanged &&
+           System.currentTimeMillis() < startTime + timeoutMs) {
       // check if leader is elected
       leader = zkUtils.getLeaderForPartition(topic, partition)
       leader match {
@@ -1254,9 +1256,8 @@ object TestUtils extends Logging {
         val iterator = messageStream.iterator()
         try {
           var i = 0
-          while ((
-                   shouldGetAllMessages && iterator.hasNext()
-                 ) || (i < nMessagesPerThread)) {
+          while ((shouldGetAllMessages && iterator.hasNext()) ||
+                 (i < nMessagesPerThread)) {
             assertTrue(iterator.hasNext)
             val message =
               iterator
@@ -1271,8 +1272,8 @@ object TestUtils extends Logging {
             if (shouldGetAllMessages) {
               // swallow the exception
               debug(
-                "consumer timed out after receiving " + messages
-                  .length + " message(s).")
+                "consumer timed out after receiving " + messages.length +
+                  " message(s).")
             } else {
               throw e
             }
@@ -1306,9 +1307,8 @@ object TestUtils extends Logging {
       () =>
         servers.forall(server =>
           topicAndPartitions.forall(tp =>
-            server
-              .replicaManager
-              .getPartition(tp.topic, tp.partition) == None)),
+            server.replicaManager.getPartition(tp.topic, tp.partition) ==
+              None)),
       "Replica manager's should have deleted all of this topic's partitions"
     )
     // ensure that logs from all replicas are deleted if delete topic is marked successful in zookeeper

@@ -59,10 +59,11 @@ class EnsembleFlowPane extends EnsembleExample {
         prefWrapLength = 200
         padding = Insets(20)
         for (i <- 1 to 5) {
-          children ++= Seq(
-            new Label("Short label"),
-            new Label("I am a slightly longer label."),
-            new ImageView(image))
+          children ++=
+            Seq(
+              new Label("Short label"),
+              new Label("I am a slightly longer label."),
+              new ImageView(image))
         }
       }
 

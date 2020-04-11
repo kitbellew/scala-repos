@@ -219,11 +219,12 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
           val success =
             firstP match {
               case Summer(_, _, _) =>
-                dag.dependenciesOf(n).size > 0 && dag
-                  .dependenciesOf(n)
-                  .forall { otherN =>
-                    otherN.isInstanceOf[FlatMapNode[_]]
-                  }
+                dag.dependenciesOf(n).size > 0 &&
+                  dag
+                    .dependenciesOf(n)
+                    .forall { otherN =>
+                      otherN.isInstanceOf[FlatMapNode[_]]
+                    }
               case _ =>
                 true
             }

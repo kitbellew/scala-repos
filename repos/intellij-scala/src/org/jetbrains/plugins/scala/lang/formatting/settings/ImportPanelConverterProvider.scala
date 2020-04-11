@@ -53,8 +53,8 @@ class ImportPanelConverterProvider
                   componentChild
                     .getChildren
                     .filter { elem =>
-                      elem.getName == "option" && elem
-                        .getAttribute("name") != null &&
+                      elem.getName == "option" &&
+                      elem.getAttribute("name") != null &&
                       actualSettingsSet
                         .contains(elem.getAttribute("name").getValue)
                     }

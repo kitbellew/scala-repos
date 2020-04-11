@@ -68,10 +68,8 @@ object LenseExamples extends App {
 
   // Cumulative result of above updates
   assert(
-    person4 == Person(
-      "Joe Grey",
-      39,
-      Address("Montpelier Road", "Brighton", "BN2 9UA")))
+    person4 ==
+      Person("Joe Grey", 39, Address("Montpelier Road", "Brighton", "BN2 9UA")))
   println(person4)
 
   // Product/composite lenses ...
@@ -88,9 +86,7 @@ object LenseExamples extends App {
   // Update with a tuple distributing values across Person and Address
   val person5 = nameAgeCityLens.set(person)("Joe Soap", 27, "London")
   assert(
-    person5 == Person(
-      "Joe Soap",
-      27,
-      Address("Southover Street", "London", "BN2 9UA")))
+    person5 ==
+      Person("Joe Soap", 27, Address("Southover Street", "London", "BN2 9UA")))
   println(person5)
 }

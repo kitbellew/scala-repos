@@ -39,9 +39,10 @@ class DebuggingDirectivesExamplesSpec extends RoutingSpec {
       .logRequest(LoggingMagnet(_ => printRequestMethod))
 
     // tests:
-    Get("/") ~> logRequestPrintln(complete("logged")) ~> check {
-      responseAs[String] shouldEqual "logged"
-    }
+    Get("/") ~> logRequestPrintln(complete("logged")) ~>
+      check {
+        responseAs[String] shouldEqual "logged"
+      }
   }
   "logRequestResult" in {
     // different possibilities of using logRequestResponse
@@ -73,9 +74,10 @@ class DebuggingDirectivesExamplesSpec extends RoutingSpec {
       .logRequestResult(LoggingMagnet(_ => printRequestMethodAndResponseStatus))
 
     // tests:
-    Get("/") ~> logRequestResultPrintln(complete("logged")) ~> check {
-      responseAs[String] shouldEqual "logged"
-    }
+    Get("/") ~> logRequestResultPrintln(complete("logged")) ~>
+      check {
+        responseAs[String] shouldEqual "logged"
+      }
   }
   "logResult" in {
     // different possibilities of using logResponse
@@ -108,8 +110,9 @@ class DebuggingDirectivesExamplesSpec extends RoutingSpec {
       .logResult(LoggingMagnet(_ => printResponseStatus))
 
     // tests:
-    Get("/") ~> logResultPrintln(complete("logged")) ~> check {
-      responseAs[String] shouldEqual "logged"
-    }
+    Get("/") ~> logResultPrintln(complete("logged")) ~>
+      check {
+        responseAs[String] shouldEqual "logged"
+      }
   }
 }

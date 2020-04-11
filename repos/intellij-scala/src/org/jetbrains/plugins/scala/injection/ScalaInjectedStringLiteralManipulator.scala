@@ -29,9 +29,8 @@ class ScalaInjectedStringLiteralManipulator
         case _ =>
           StringUtil escapeStringCharacters newContent
       }
-    val newText = oldText
-      .substring(0, range.getStartOffset) + contentString + oldText
-      .substring(range.getEndOffset)
+    val newText = oldText.substring(0, range.getStartOffset) + contentString +
+      oldText.substring(range.getEndOffset)
 
     expr match {
       case inter: ScInterpolatedStringLiteral =>
@@ -95,8 +94,8 @@ class ScalaInjectedStringLiteralManipulator
   private def getLiteralRange(text: String): TextRange = {
     val tripleQuote = "\"\"\""
 
-    if (text.length >= 6 && text.startsWith(tripleQuote) && text
-          .endsWith(tripleQuote))
+    if (text.length >= 6 && text.startsWith(tripleQuote) &&
+        text.endsWith(tripleQuote))
       new TextRange(3, text.length - 3)
     else
       new TextRange(1, Math.max(1, text.length - 1))

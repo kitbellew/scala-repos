@@ -36,9 +36,8 @@ import slick.util.MacroSupport.macroSupportInterpolation
 trait HsqldbProfile extends JdbcProfile {
 
   override protected def computeCapabilities: Set[Capability] =
-    (super.computeCapabilities
-      - SqlCapabilities.sequenceCurr
-      - JdbcCapabilities.insertOrUpdate)
+    (super.computeCapabilities - SqlCapabilities.sequenceCurr -
+      JdbcCapabilities.insertOrUpdate)
 
   class ModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       implicit ec: ExecutionContext)
@@ -62,8 +61,8 @@ trait HsqldbProfile extends JdbcProfile {
     MTable.getTables(None, None, None, Some(Seq("TABLE")))
 
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler.replace(Phase.resolveZipJoinsRownumStyle) + Phase
-      .specializeParameters - Phase.fixRowNumberOrdering
+    super.computeQueryCompiler.replace(Phase.resolveZipJoinsRownumStyle) +
+      Phase.specializeParameters - Phase.fixRowNumberOrdering
   override val columnTypes = new JdbcTypes
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
@@ -174,10 +173,10 @@ trait HsqldbProfile extends JdbcProfile {
          * index) because Hsqldb does not allow a FOREIGN KEY CONSTRAINT to
          * reference columns which have a UNIQUE INDEX but not a nominal UNIQUE
          * CONSTRAINT. */
-        val sb = new StringBuilder append "ALTER TABLE " append quoteIdentifier(
-          table.tableName) append " ADD "
-        sb append "CONSTRAINT " append quoteIdentifier(
-          idx.name) append " UNIQUE("
+        val sb = new StringBuilder append "ALTER TABLE " append
+          quoteIdentifier(table.tableName) append " ADD "
+        sb append "CONSTRAINT " append quoteIdentifier(idx.name) append
+          " UNIQUE("
         addIndexColumnList(idx.on, sb, idx.table.tableName)
         sb append ")"
         sb.toString
@@ -199,9 +198,8 @@ trait HsqldbProfile extends JdbcProfile {
             -1
           else
             1)
-      val b =
-        new StringBuilder append "CREATE SEQUENCE " append quoteIdentifier(
-          seq.name)
+      val b = new StringBuilder append "CREATE SEQUENCE " append
+        quoteIdentifier(seq.name)
       seq
         ._increment
         .foreach {

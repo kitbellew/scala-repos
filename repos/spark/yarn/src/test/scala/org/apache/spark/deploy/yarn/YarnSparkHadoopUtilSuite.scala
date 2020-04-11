@@ -186,11 +186,11 @@ class YarnSparkHadoopUtilSuite
   test("test expandEnvironment result") {
     val target = Environment.PWD
     if (classOf[Environment].getMethods().exists(_.getName == "$$")) {
-      YarnSparkHadoopUtil
-        .expandEnvironment(target) should be("{{" + target + "}}")
+      YarnSparkHadoopUtil.expandEnvironment(target) should
+        be("{{" + target + "}}")
     } else if (Utils.isWindows) {
-      YarnSparkHadoopUtil
-        .expandEnvironment(target) should be("%" + target + "%")
+      YarnSparkHadoopUtil.expandEnvironment(target) should
+        be("%" + target + "%")
     } else {
       YarnSparkHadoopUtil.expandEnvironment(target) should be("$" + target)
     }
@@ -266,8 +266,8 @@ class YarnSparkHadoopUtilSuite
       util.getTokenRenewer(hadoopConf)
     }
     assert(
-      caught
-        .getMessage === "Can't get Master Kerberos principal for use as renewer")
+      caught.getMessage ===
+        "Can't get Master Kerberos principal for use as renewer")
   }
 
   test("check different hadoop utils based on env variable") {

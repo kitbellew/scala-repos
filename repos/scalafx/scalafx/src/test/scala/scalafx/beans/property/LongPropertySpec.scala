@@ -281,22 +281,24 @@ class LongPropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty() should be(true)
   }
 
-  it should "support bindable infix greater than or equal to with a property" in {
-    booleanProperty <== longProperty >= longProperty2
-    longProperty() = 18349
-    longProperty2() = 4985
-    booleanProperty() should be(true)
-    longProperty2() = 234564
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix greater than or equal to with a property" in {
+      booleanProperty <== longProperty >= longProperty2
+      longProperty() = 18349
+      longProperty2() = 4985
+      booleanProperty() should be(true)
+      longProperty2() = 234564
+      booleanProperty() should be(false)
+    }
 
-  it should "support bindable infix greater than or equal to with a constant" in {
-    booleanProperty <== longProperty >= 18349
-    longProperty() = 4985
-    booleanProperty() should be(false)
-    longProperty() = 234564
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix greater than or equal to with a constant" in {
+      booleanProperty <== longProperty >= 18349
+      longProperty() = 4985
+      booleanProperty() should be(false)
+      longProperty() = 234564
+      booleanProperty() should be(true)
+    }
 
   it should "support invalidate/change triggers on binding expressions" in {
     var invalidateCount = 0

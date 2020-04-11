@@ -178,8 +178,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
         Right(call),
         Literal(
           Constant(
-            callName(call) getOrElse c
-              .abort(call.pos, "Illegal rule call: " + call))))
+            callName(call) getOrElse
+              c.abort(call.pos, "Illegal rule call: " + call))))
   }
 
   def OpTree(tree: Tree): OpTree =
@@ -339,7 +339,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
       def unrollUnwrapped(s: String, ix: Int = 0): Tree =
         if (ix < s.length)
           q"""
-          if (_root_.java.lang.Character.toLowerCase(cursorChar) == ${s charAt ix}) {
+          if (_root_.java.lang.Character.toLowerCase(cursorChar) == ${s charAt
+            ix}) {
             __advance()
             ${unrollUnwrapped(s, ix + 1)}
           } else false"""

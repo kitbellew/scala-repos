@@ -182,11 +182,12 @@ object Concurrent {
             redeemed() match {
               case None =>
                 iteratees.transform(
-                  _ :+ (
+                  _ :+
                     (
-                      it,
-                      (result: Promise[Iteratee[E, A]])
-                        .asInstanceOf[Promise[Iteratee[E, _]]])))
+                      (
+                        it,
+                        (result: Promise[Iteratee[E, A]])
+                          .asInstanceOf[Promise[Iteratee[E, _]]])))
                 None
               case Some(notWaiting) =>
                 Some(notWaiting)
@@ -316,10 +317,8 @@ object Concurrent {
             Iteratee.flatten(
               Future
                 .firstCompletedOf(
-                  it.unflatten.map(Left(_))(dec) :: timeoutFuture(
-                    Right(()),
-                    timeout,
-                    unit) :: Nil)(dec)
+                  it.unflatten.map(Left(_))(dec) ::
+                    timeoutFuture(Right(()), timeout, unit) :: Nil)(dec)
                 .map {
                   case Left(Step.Cont(k)) =>
                     Cont(step(k(other)))
@@ -857,11 +856,12 @@ object Concurrent {
               redeemed() match {
                 case None =>
                   iteratees.transform(
-                    _ :+ (
+                    _ :+
                       (
-                        it,
-                        (result: Promise[Iteratee[E, A]])
-                          .asInstanceOf[Promise[Iteratee[E, _]]])))
+                        (
+                          it,
+                          (result: Promise[Iteratee[E, A]])
+                            .asInstanceOf[Promise[Iteratee[E, _]]])))
                   None
                 case Some(notWaiting) =>
                   Some(notWaiting)
@@ -1069,11 +1069,12 @@ object Concurrent {
     val result = Promise[(A, Enumerator[E])]()
 
     (
-      enumerator |>>> iteratee.flatMap { a =>
-        val (consumeRemaining, remaining) = Concurrent.joined[E]
-        result.success((a, remaining))
-        consumeRemaining
-      }(dec)
+      enumerator |>>>
+        iteratee.flatMap { a =>
+          val (consumeRemaining, remaining) = Concurrent.joined[E]
+          result.success((a, remaining))
+          consumeRemaining
+        }(dec)
     ).onFailure {
       case e =>
         result.tryFailure(e)

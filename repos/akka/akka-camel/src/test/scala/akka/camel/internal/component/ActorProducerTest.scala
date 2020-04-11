@@ -64,9 +64,9 @@ class ActorProducerTest
         }
 
         "not expect response and not block" taggedAs TimingTest in {
-          time(producer.processExchangeAdapter(exchange)) should be < (
-            200 millis
-          )
+          time(producer.processExchangeAdapter(exchange)) should
+            be <
+            (200 millis)
         }
       }
 
@@ -228,8 +228,8 @@ class ActorProducerTest
               MMatchers.argThat(
                 new ArgumentMatcher[FailureResult] {
                   def matches(failure: AnyRef) = {
-                    failure.asInstanceOf[FailureResult].cause should be(
-                      anInstanceOf[TimeoutException])
+                    failure.asInstanceOf[FailureResult].cause should
+                      be(anInstanceOf[TimeoutException])
                     true
                   }
 
@@ -373,12 +373,10 @@ private[camel] trait ActorProducerFixture
     val sys = mock[ExtendedActorSystem]
     val config = ConfigFactory.defaultReference()
     when(sys.dispatcher) thenReturn system.dispatcher
-    when(sys.dynamicAccess) thenReturn system
-      .asInstanceOf[ExtendedActorSystem]
-      .dynamicAccess
-    when(sys.settings) thenReturn (
-      new Settings(this.getClass.getClassLoader, config, "mocksystem")
-    )
+    when(sys.dynamicAccess) thenReturn
+      system.asInstanceOf[ExtendedActorSystem].dynamicAccess
+    when(sys.settings) thenReturn
+      (new Settings(this.getClass.getClassLoader, config, "mocksystem"))
     when(sys.name) thenReturn ("mocksystem")
 
     def camelWithMocks =
@@ -476,8 +474,8 @@ private[camel] trait ActorProducerFixture
       actor: ActorRef,
       message: CamelMessage = message,
       outCapable: Boolean) {
-    when(actorEndpointPath.findActorIn(any[ActorSystem])) thenReturn Option(
-      actor)
+    when(actorEndpointPath.findActorIn(any[ActorSystem])) thenReturn
+      Option(actor)
     when(exchange.toRequestMessage(any[Map[String, Any]])) thenReturn message
     when(exchange.isOutCapable) thenReturn outCapable
   }

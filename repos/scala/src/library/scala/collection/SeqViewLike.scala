@@ -356,8 +356,8 @@ trait SeqViewLike[
   override def sortBy[B](f: (A) => B)(implicit ord: Ordering[B]): This =
     newForced(thisSeq sortBy f).asInstanceOf[This]
 
-  override def combinations(n: Int): Iterator[This] =
-    (thisSeq combinations n).map(as => newForced(as).asInstanceOf[This])
+  override def combinations(n: Int): Iterator[This] = (thisSeq combinations n)
+    .map(as => newForced(as).asInstanceOf[This])
 
   override def permutations: Iterator[This] =
     thisSeq.permutations.map(as => newForced(as).asInstanceOf[This])

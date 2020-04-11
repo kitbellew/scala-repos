@@ -41,9 +41,8 @@ class StatisticsSpec extends Specification with ScalaCheck {
     (a, b) match {
       case (Some(a), Some(b)) =>
         a.mean must (beEqualTo(b.mean) or beRelativelyCloseTo(b.mean)(1e-10))
-        a.variance must (
-          beEqualTo(b.variance) or beRelativelyCloseTo(b.variance)(1e-10)
-        )
+        a.variance must
+          (beEqualTo(b.variance) or beRelativelyCloseTo(b.variance)(1e-10))
         a.count must_== b.count
         a.min must_== b.min
         a.max must_== b.max
@@ -92,10 +91,11 @@ class StatisticsSpec extends Specification with ScalaCheck {
       java.lang.Double.isNaN(s1.variance) must beTrue
     }
 
-    "be scalable" ! check { (xs: List[Double]) =>
-      statsAreEqual(
-        stats(xs).suml map (_ * 0.0001),
-        stats(xs map (_ * 0.0001)).suml)
-    }
+    "be scalable" !
+      check { (xs: List[Double]) =>
+        statsAreEqual(
+          stats(xs).suml map (_ * 0.0001),
+          stats(xs map (_ * 0.0001)).suml)
+      }
   }
 }

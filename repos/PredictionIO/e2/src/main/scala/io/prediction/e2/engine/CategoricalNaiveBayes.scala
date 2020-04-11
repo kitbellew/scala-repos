@@ -66,10 +66,11 @@ object CategoricalNaiveBayes {
                 .zip(featureCounts2)
                 .map {
                   case (m1, m2) =>
-                    m2 ++ m2.map {
-                      case (k, v) =>
-                        k -> (v + m2(k))
-                    }
+                    m2 ++
+                      m2.map {
+                        case (k, v) =>
+                          k -> (v + m2(k))
+                      }
                 })
           }
         )

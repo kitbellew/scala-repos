@@ -133,8 +133,8 @@ trait ModelBuilders {
           } else if (decl == DeclaredAs.Field) {
             fields += info
           } else if (decl == DeclaredAs.Class || decl == DeclaredAs.Trait ||
-                     decl == DeclaredAs.Interface || decl == DeclaredAs
-                       .Object) {
+                     decl == DeclaredAs.Interface ||
+                     decl == DeclaredAs.Object) {
             nestedTypes += info
           }
         }
@@ -183,11 +183,11 @@ trait ModelBuilders {
           Some(root)
         } else if (sym.hasPackageFlag) {
           Some(fromSymbol(sym))
-        } else if (!sym.nameString.contains("$") && (sym != NoSymbol) && (
-                     sym.tpe != NoType
-                   )) {
-          if (sym.isClass || sym.isTrait || sym.isModule ||
-              sym.isModuleClass || sym.isPackageClass) {
+        } else if (!sym.nameString.contains("$") &&
+                   (sym != NoSymbol) &&
+                   (sym.tpe != NoType)) {
+          if (sym.isClass || sym.isTrait || sym.isModule || sym.isModuleClass ||
+              sym.isPackageClass) {
             Some(TypeInfo(sym.tpe, PosNeededAvail))
           } else {
             None
@@ -281,8 +281,8 @@ trait ModelBuilders {
         }
       val nameString = sym.nameString
       val (name, localName) =
-        if (sym.isClass || sym.isTrait || sym.isModule ||
-            sym.isModuleClass || sym.isPackageClass) {
+        if (sym.isClass || sym.isTrait || sym.isModule || sym.isModuleClass ||
+            sym.isPackageClass) {
           (typeFullName(tpe), nameString)
         } else {
           (nameString, nameString)

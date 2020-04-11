@@ -41,11 +41,8 @@ object MenuSpec extends Specification {
       sitemap.Menu.i("foobaz") / "foo" / "baz",
       sitemap
         .Menu
-        .param[Param](
-          "foobiz",
-          "foobiz",
-          s => Full(Param(s)),
-          p => p.s) / "foo" / "biz" / *
+        .param[Param]("foobiz", "foobiz", s => Full(Param(s)), p => p.s) /
+        "foo" / "biz" / *
     )
 
     f(siteMap)
@@ -71,18 +68,16 @@ object MenuSpec extends Specification {
     "Properly render a menu item with default link text" in {
       testSiteMap("http://test.com/foo/baz") {
         S.withAttrs(new UnprefixedAttribute("name", "foobar", Null)) {
-          Menu
-            .item(NodeSeq.Empty)
-            .toString mustEqual """<a href="/foo/bar">foobar</a>"""
+          Menu.item(NodeSeq.Empty).toString mustEqual
+            """<a href="/foo/bar">foobar</a>"""
         }
       }
     }
     "Properly render a menu item with passed in link text" in {
       testSiteMap("http://test.com/foo/baz") {
         S.withAttrs(new UnprefixedAttribute("name", "foobar", Null)) {
-          Menu
-            .item(Text("Foo"))
-            .toString mustEqual """<a href="/foo/bar">Foo</a>"""
+          Menu.item(Text("Foo")).toString mustEqual
+            """<a href="/foo/bar">Foo</a>"""
         }
       }
     }
@@ -106,9 +101,8 @@ object MenuSpec extends Specification {
       testSiteMap("http://test.com/foo/baz") {
         val linkToSelf = new UnprefixedAttribute("linkToSelf", "true", Null)
         S.withAttrs(new UnprefixedAttribute("name", "foobaz", linkToSelf)) {
-          Menu
-            .item(NodeSeq.Empty)
-            .toString mustEqual """<a href="/foo/baz">foobaz</a>"""
+          Menu.item(NodeSeq.Empty).toString mustEqual
+            """<a href="/foo/baz">foobaz</a>"""
         }
       }
     }

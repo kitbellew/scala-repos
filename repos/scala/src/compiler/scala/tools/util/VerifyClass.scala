@@ -21,9 +21,10 @@ object VerifyClass {
   }
 
   def checkClassesInJar(name: String, cl: ClassLoader) =
-    new Jar(File(name)) filter (_.getName.endsWith(".class")) map { x =>
-      checkClass(x.getName.stripSuffix(".class").replace('/', '.'), cl)
-    } toMap
+    new Jar(File(name)) filter
+      (_.getName.endsWith(".class")) map { x =>
+        checkClass(x.getName.stripSuffix(".class").replace('/', '.'), cl)
+      } toMap
 
   def checkClassesInDir(name: String, cl: ClassLoader) =
     (

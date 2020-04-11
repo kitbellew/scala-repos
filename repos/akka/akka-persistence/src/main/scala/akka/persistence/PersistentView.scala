@@ -284,12 +284,13 @@ trait PersistentView
                   .aroundReceive(receive, SnapshotOffer(metadata, snapshot))
             }
             changeState(replayStarted(await = true))
-            journal ! ReplayMessages(
-              lastSequenceNr + 1L,
-              toSnr,
-              replayMax,
-              persistenceId,
-              self)
+            journal !
+              ReplayMessages(
+                lastSequenceNr + 1L,
+                toSnr,
+                replayMax,
+                persistenceId,
+                self)
           case other ⇒
             internalStash.stash()
         }
@@ -414,12 +415,13 @@ trait PersistentView
 
       def changeStateToReplayStarted(await: Boolean, replayMax: Long): Unit = {
         changeState(replayStarted(await))
-        journal ! ReplayMessages(
-          lastSequenceNr + 1L,
-          Long.MaxValue,
-          replayMax,
-          persistenceId,
-          self)
+        journal !
+          ReplayMessages(
+            lastSequenceNr + 1L,
+            Long.MaxValue,
+            replayMax,
+            persistenceId,
+            self)
       }
     }
 

@@ -50,55 +50,58 @@ class VotingServiceSpec
 
   "Demo of a replicated voting" must {
 
-    "join cluster" in within(20.seconds) {
-      join(node1, node1)
-      join(node2, node1)
-      join(node3, node1)
+    "join cluster" in
+      within(20.seconds) {
+        join(node1, node1)
+        join(node2, node1)
+        join(node3, node1)
 
-      awaitAssert {
-        DistributedData(system).replicator ! GetReplicaCount
-        expectMsg(ReplicaCount(roles.size))
-      }
-      enterBarrier("after-1")
-    }
-
-    "count votes correctly" in within(15.seconds) {
-      import VotingService._
-      val votingService = system.actorOf(Props[VotingService], "votingService")
-      val N = 1000
-      runOn(node1) {
-        votingService ! Open
-        for (n ← 1 to N) {
-          votingService ! Vote("#" + ((n % 20) + 1))
-        }
-      }
-      runOn(node2, node3) {
-        // wait for it to open
-        val p = TestProbe()
         awaitAssert {
-          votingService.tell(GetVotes, p.ref)
-          p.expectMsgPF(3.seconds) {
-            case Votes(_, true) ⇒
-              true
+          DistributedData(system).replicator ! GetReplicaCount
+          expectMsg(ReplicaCount(roles.size))
+        }
+        enterBarrier("after-1")
+      }
+
+    "count votes correctly" in
+      within(15.seconds) {
+        import VotingService._
+        val votingService = system
+          .actorOf(Props[VotingService], "votingService")
+        val N = 1000
+        runOn(node1) {
+          votingService ! Open
+          for (n ← 1 to N) {
+            votingService ! Vote("#" + ((n % 20) + 1))
           }
         }
-        for (n ← 1 to N) {
-          votingService ! Vote("#" + ((n % 20) + 1))
+        runOn(node2, node3) {
+          // wait for it to open
+          val p = TestProbe()
+          awaitAssert {
+            votingService.tell(GetVotes, p.ref)
+            p.expectMsgPF(3.seconds) {
+              case Votes(_, true) ⇒
+                true
+            }
+          }
+          for (n ← 1 to N) {
+            votingService ! Vote("#" + ((n % 20) + 1))
+          }
         }
-      }
-      enterBarrier("voting-done")
-      runOn(node3) {
-        votingService ! Close
-      }
+        enterBarrier("voting-done")
+        runOn(node3) {
+          votingService ! Close
+        }
 
-      val expected = (1 to 20).map(n ⇒ "#" + n -> BigInt(3L * N / 20)).toMap
-      awaitAssert {
-        votingService ! GetVotes
-        expectMsg(3.seconds, Votes(expected, false))
-      }
+        val expected = (1 to 20).map(n ⇒ "#" + n -> BigInt(3L * N / 20)).toMap
+        awaitAssert {
+          votingService ! GetVotes
+          expectMsg(3.seconds, Votes(expected, false))
+        }
 
-      enterBarrier("after-2")
-    }
+        enterBarrier("after-2")
+      }
   }
 
 }

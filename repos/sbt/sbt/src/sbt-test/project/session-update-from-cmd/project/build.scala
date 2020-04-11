@@ -43,8 +43,8 @@ object build extends Build {
       SessionSettings.saveAllSettings(st1)
     }
 
-  lazy val root =
-    Project("root", file(".")) settings (commands ++= Seq(UpdateK1, UpdateK3))
+  lazy val root = Project("root", file(".")) settings
+    (commands ++= Seq(UpdateK1, UpdateK3))
 }
 
 // vim: set ts=4 sw=4 et:

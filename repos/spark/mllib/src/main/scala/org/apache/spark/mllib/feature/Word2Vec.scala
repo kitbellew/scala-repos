@@ -327,7 +327,8 @@ class Word2Vec extends Serializable with Logging {
       throw new RuntimeException(
         "Please increase minCount or decrease vectorSize in Word2Vec" +
           " to avoid an OOM. You are highly recommended to make your vocabSize*vectorSize, " +
-          "which is " + vocabSize + "*" + vectorSize + " for now, less than `Int.MaxValue`.")
+          "which is " + vocabSize + "*" + vectorSize +
+          " for now, less than `Int.MaxValue`.")
     }
 
     val syn0Global =
@@ -354,10 +355,10 @@ class Word2Vec extends Serializable with Logging {
                   lwc = wordCount
                   // TODO: discount by iteration?
                   alpha =
-                    learningRate * (
-                      1 - numPartitions * wordCount
-                        .toDouble / (trainWordsCount + 1)
-                    )
+                    learningRate *
+                      (1 -
+                        numPartitions * wordCount.toDouble /
+                        (trainWordsCount + 1))
                   if (alpha < learningRate * 0.0001)
                     alpha = learningRate * 0.0001
                   logInfo("wordCount = " + wordCount + ", alpha = " + alpha)
@@ -423,19 +424,20 @@ class Word2Vec extends Serializable with Logging {
                 None
               }
             }
-            .flatten ++ Iterator
-            .tabulate(vocabSize) { index =>
-              if (syn1Modify(index) > 0) {
-                Some(
-                  (
-                    index + vocabSize,
-                    syn1Local
-                      .slice(index * vectorSize, (index + 1) * vectorSize)))
-              } else {
-                None
+            .flatten ++
+            Iterator
+              .tabulate(vocabSize) { index =>
+                if (syn1Modify(index) > 0) {
+                  Some(
+                    (
+                      index + vocabSize,
+                      syn1Local
+                        .slice(index * vectorSize, (index + 1) * vectorSize)))
+                } else {
+                  None
+                }
               }
-            }
-            .flatten
+              .flatten
       }
       val synAgg = partial
         .reduceByKey {
@@ -682,8 +684,10 @@ object Word2VecModel extends Loader[Word2VecModel] {
       val numWords = model.size
       val metadata = compact(
         render(
-          ("class" -> classNameV1_0) ~ ("version" -> formatVersionV1_0) ~
-            ("vectorSize" -> vectorSize) ~ ("numWords" -> numWords)))
+          ("class" -> classNameV1_0) ~
+            ("version" -> formatVersionV1_0) ~
+            ("vectorSize" -> vectorSize) ~
+            ("numWords" -> numWords)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // We want to partition the model in partitions of size 32MB

@@ -77,9 +77,8 @@ class KetamaClientTest extends FunSuite with BeforeAndAfter {
 
     assert(client.ketamaNodeGrp().size == 2)
     assert(
-      client.ketamaNodeGrp().map(_._1) == Set(
-        KetamaClientKey(key1.toString),
-        KetamaClientKey(key2.toString)))
+      client.ketamaNodeGrp().map(_._1) ==
+        Set(KetamaClientKey(key1.toString), KetamaClientKey(key2.toString)))
 
     Await.result(client.delete("foo"))
     assert(Await.result(client.get("foo")) == None)

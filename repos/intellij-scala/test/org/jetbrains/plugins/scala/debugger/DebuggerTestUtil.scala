@@ -69,8 +69,8 @@ object DebuggerTestUtil {
     def isJDK(f: File) =
       f.listFiles()
         .exists { b =>
-          b.getName == "bin" && b
-            .listFiles()
+          b.getName == "bin" &&
+          b.listFiles()
             .exists(x => x.getName == "javac.exe" || x.getName == "javac")
         }
     def inJvm(path: String, suffix: String) = {

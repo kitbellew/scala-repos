@@ -111,8 +111,7 @@ class ScalaControlFlowBuilder(
         val ab = new ArrayBuffer[Int]
         for (i <- myPending.size - 1 to (0, -1)) {
           val (inst, scope) = myPending(i)
-          if (scope != null &&
-              !PsiTreeUtil.isAncestor(scope, elem, false)) {
+          if (scope != null && !PsiTreeUtil.isAncestor(scope, elem, false)) {
             addEdge(inst, instruction)
             ab += i
           }
@@ -297,8 +296,8 @@ class ScalaControlFlowBuilder(
     val matchedParams = call.matchedParameters
     def isByNameOrFunction(arg: ScExpression) = {
       val param = matchedParams.toMap.get(arg)
-      param.isEmpty || param.exists(_.isByName) || param
-        .exists(p => ScFunctionType.isFunctionType(p.paramType))
+      param.isEmpty || param.exists(_.isByName) ||
+      param.exists(p => ScFunctionType.isFunctionType(p.paramType))
     }
     val receiver = call.getInvokedExpr
     if (receiver != null) {
@@ -410,14 +409,13 @@ class ScalaControlFlowBuilder(
   }
 
   override def visitReturnStatement(ret: ScReturnStmt) {
-    val isNodeNeeded = myHead == null || (
-      myHead.element match {
+    val isNodeNeeded = myHead == null ||
+      (myHead.element match {
         case Some(e) =>
           e != ret
         case None =>
           false
-      }
-    )
+      })
     ret.expr match {
       case Some(e) =>
         e.accept(this)
@@ -505,8 +503,8 @@ class ScalaControlFlowBuilder(
           ref.resolve() match {
             case p: ScParameter if parameters.contains(p) =>
             case named: PsiNamedElement
-                if !PsiTreeUtil.isAncestor(paramOwner, named, false) && policy
-                  .isElementAccepted(named) =>
+                if !PsiTreeUtil.isAncestor(paramOwner, named, false) &&
+                  policy.isElementAccepted(named) =>
               collectedRefs += ref
             case _ =>
           }
@@ -528,14 +526,13 @@ class ScalaControlFlowBuilder(
   }
 
   override def visitThrowExpression(throwStmt: ScThrowStmt) {
-    val isNodeNeeded = myHead == null || (
-      myHead.element match {
+    val isNodeNeeded = myHead == null ||
+      (myHead.element match {
         case Some(e) =>
           e != throwStmt
         case None =>
           false
-      }
-    )
+      })
     throwStmt.body.map(_.accept(this))
     if (isNodeNeeded)
       startNode(Some(throwStmt)) { rs =>

@@ -316,7 +316,8 @@ class EhCacheApi @Inject() (cache: Ehcache) extends CacheApi {
       .map(_.getObjectValue)
       .filter { v =>
         Primitives.wrap(ct.runtimeClass).isInstance(v) ||
-        ct == ClassTag.Nothing || (ct == ClassTag.Unit && v == ((): Unit))
+        ct == ClassTag.Nothing ||
+        (ct == ClassTag.Unit && v == ((): Unit))
       }
       .asInstanceOf[Option[T]]
   }

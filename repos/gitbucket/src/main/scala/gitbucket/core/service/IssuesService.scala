@@ -19,9 +19,8 @@ trait IssuesService {
   def getIssue(owner: String, repository: String, issueId: String)(implicit
       s: Session) =
     if (issueId forall (_.isDigit))
-      Issues filter (
-        _.byPrimaryKey(owner, repository, issueId.toInt)
-      ) firstOption
+      Issues filter
+        (_.byPrimaryKey(owner, repository, issueId.toInt)) firstOption
     else
       None
 
@@ -74,9 +73,8 @@ trait IssuesService {
       repository: String,
       issueId: Int,
       labelId: Int)(implicit s: Session) =
-    IssueLabels filter (
-      _.byPrimaryKey(owner, repository, issueId, labelId)
-    ) firstOption
+    IssueLabels filter
+      (_.byPrimaryKey(owner, repository, issueId, labelId)) firstOption
 
   /**
     * Returns the count of the search result against  issues.
@@ -186,13 +184,14 @@ trait IssuesService {
                 state,
                 targetUrl,
                 description) =>
-            (userName, repositoryName, issueId) -> CommitStatusInfo(
-              count,
-              successCount,
-              context,
-              state,
-              targetUrl,
-              description)
+            (userName, repositoryName, issueId) ->
+              CommitStatusInfo(
+                count,
+                successCount,
+                context,
+                state,
+                targetUrl,
+                description)
         }
         .toMap
     }
@@ -373,59 +372,49 @@ trait IssuesService {
       //(t1.milestoneId      === condition.milestoneId.get.get.bind, condition.milestoneId.flatten.isDefined) &&
       (t1.milestoneId.? isEmpty, condition.milestone == Some(None)) &&
       (
-        t1.assignedUserName === condition.assigned.get.bind, condition
-          .assigned
-          .isDefined
-      ) &&
+        t1.assignedUserName === condition.assigned.get.bind,
+        condition.assigned.isDefined) &&
       (
-        t1.openedUserName === condition.author.get.bind, condition
-          .author
-          .isDefined
-      ) &&
+        t1.openedUserName === condition.author.get.bind,
+        condition.author.isDefined) &&
       (t1.pullRequest === pullRequest.bind) &&
       // Milestone filter
       (
         Milestones filter { t2 =>
           (t2.byPrimaryKey(t1.userName, t1.repositoryName, t1.milestoneId)) &&
           (t2.title === condition.milestone.get.get.bind)
-        } exists, condition.milestone.flatten.isDefined
-      ) &&
+        } exists,
+        condition.milestone.flatten.isDefined) &&
       // Label filter
       (
         IssueLabels filter { t2 =>
           (t2.byIssue(t1.userName, t1.repositoryName, t1.issueId)) &&
-          (
-            t2.labelId in
-              (
-                Labels filter { t3 =>
-                  (t3.byRepository(t1.userName, t1.repositoryName)) &&
-                  (t3.labelName inSetBind condition.labels)
-                } map (_.labelId)
-              )
-          )
-        } exists, condition.labels.nonEmpty
-      ) &&
+          (t2.labelId in
+            (Labels filter { t3 =>
+              (t3.byRepository(t1.userName, t1.repositoryName)) &&
+              (t3.labelName inSetBind condition.labels)
+            } map
+              (_.labelId)))
+        } exists,
+        condition.labels.nonEmpty) &&
       // Visibility filter
       (
         Repositories filter { t2 =>
           (t2.byRepository(t1.userName, t1.repositoryName)) &&
           (t2.isPrivate === (condition.visibility == Some("private")).bind)
-        } exists, condition.visibility.nonEmpty
-      ) &&
+        } exists,
+        condition.visibility.nonEmpty) &&
       // Organization (group) filter
       (t1.userName inSetBind condition.groups, condition.groups.nonEmpty) &&
       // Mentioned filter
       (
-        (t1.openedUserName === condition.mentioned.get.bind) || t1
-          .assignedUserName === condition.mentioned.get.bind ||
-        (
-          IssueComments filter { t2 =>
-            (t2.byIssue(t1.userName, t1.repositoryName, t1.issueId)) && (
-              t2.commentedUserName === condition.mentioned.get.bind
-            )
-          } exists
-        ), condition.mentioned.isDefined
-      )
+        (t1.openedUserName === condition.mentioned.get.bind) ||
+        t1.assignedUserName === condition.mentioned.get.bind ||
+        (IssueComments filter { t2 =>
+          (t2.byIssue(t1.userName, t1.repositoryName, t1.issueId)) &&
+          (t2.commentedUserName === condition.mentioned.get.bind)
+        } exists),
+        condition.mentioned.isDefined)
     }
 
   def createIssue(
@@ -442,19 +431,20 @@ trait IssuesService {
       .as[Int]
       .firstOption
       .filter { id =>
-        Issues insert Issue(
-          owner,
-          repository,
-          id,
-          loginUser,
-          milestoneId,
-          assignedUserName,
-          title,
-          content,
-          false,
-          currentDate,
-          currentDate,
-          isPullRequest)
+        Issues insert
+          Issue(
+            owner,
+            repository,
+            id,
+            loginUser,
+            milestoneId,
+            assignedUserName,
+            title,
+            content,
+            false,
+            currentDate,
+            currentDate,
+            isPullRequest)
 
         // increment issue id
         IssueId
@@ -475,9 +465,8 @@ trait IssuesService {
       repository: String,
       issueId: Int,
       labelId: Int)(implicit s: Session) =
-    IssueLabels filter (
-      _.byPrimaryKey(owner, repository, issueId, labelId)
-    ) delete
+    IssueLabels filter
+      (_.byPrimaryKey(owner, repository, issueId, labelId)) delete
 
   def createComment(
       owner: String,
@@ -486,16 +475,17 @@ trait IssuesService {
       issueId: Int,
       content: String,
       action: String)(implicit s: Session): Int =
-    IssueComments.autoInc insert IssueComment(
-      userName = owner,
-      repositoryName = repository,
-      issueId = issueId,
-      action = action,
-      commentedUserName = loginUser,
-      content = content,
-      registeredDate = currentDate,
-      updatedDate = currentDate
-    )
+    IssueComments.autoInc insert
+      IssueComment(
+        userName = owner,
+        repositoryName = repository,
+        issueId = issueId,
+        action = action,
+        commentedUserName = loginUser,
+        content = content,
+        registeredDate = currentDate,
+        updatedDate = currentDate
+      )
 
   def updateIssue(
       owner: String,
@@ -721,10 +711,9 @@ object IssuesService {
       groups: Set[String] = Set.empty) {
 
     def isEmpty: Boolean = {
-      labels.isEmpty && milestone.isEmpty && author.isEmpty && assigned
-        .isEmpty &&
-      state == "open" && sort == "created" && direction == "desc" && visibility
-        .isEmpty
+      labels.isEmpty && milestone.isEmpty && author.isEmpty &&
+      assigned.isEmpty && state == "open" && sort == "created" &&
+      direction == "desc" && visibility.isEmpty
     }
 
     def nonEmpty: Boolean = !isEmpty
@@ -736,8 +725,7 @@ object IssuesService {
           author.map(author => s"author:${author}"),
           assigned.map(assignee => s"assignee:${assignee}"),
           mentioned.map(mentioned => s"mentions:${mentioned}")
-        ).flatten ++
-          labels.map(label => s"label:${label}") ++
+        ).flatten ++ labels.map(label => s"label:${label}") ++
           List(
             milestone.map {
               _ match {
@@ -762,36 +750,36 @@ object IssuesService {
                 Some("sort:updated-asc")
             },
             visibility.map(visibility => s"visibility:${visibility}")
-          ).flatten ++
-          groups.map(group => s"group:${group}")
+          ).flatten ++ groups.map(group => s"group:${group}")
       ).mkString(" ")
 
     def toURL: String =
-      "?" + List(
-        if (labels.isEmpty)
-          None
-        else
-          Some("labels=" + urlEncode(labels.mkString(","))),
-        milestone.map {
-          _ match {
-            case Some(x) =>
-              "milestone=" + urlEncode(x)
-            case None =>
-              "milestone=none"
-          }
-        },
-        author.map(x => "author=" + urlEncode(x)),
-        assigned.map(x => "assigned=" + urlEncode(x)),
-        mentioned.map(x => "mentioned=" + urlEncode(x)),
-        Some("state=" + urlEncode(state)),
-        Some("sort=" + urlEncode(sort)),
-        Some("direction=" + urlEncode(direction)),
-        visibility.map(x => "visibility=" + urlEncode(x)),
-        if (groups.isEmpty)
-          None
-        else
-          Some("groups=" + urlEncode(groups.mkString(",")))
-      ).flatten.mkString("&")
+      "?" +
+        List(
+          if (labels.isEmpty)
+            None
+          else
+            Some("labels=" + urlEncode(labels.mkString(","))),
+          milestone.map {
+            _ match {
+              case Some(x) =>
+                "milestone=" + urlEncode(x)
+              case None =>
+                "milestone=none"
+            }
+          },
+          author.map(x => "author=" + urlEncode(x)),
+          assigned.map(x => "assigned=" + urlEncode(x)),
+          mentioned.map(x => "mentioned=" + urlEncode(x)),
+          Some("state=" + urlEncode(state)),
+          Some("sort=" + urlEncode(sort)),
+          Some("direction=" + urlEncode(direction)),
+          visibility.map(x => "visibility=" + urlEncode(x)),
+          if (groups.isEmpty)
+            None
+          else
+            Some("groups=" + urlEncode(groups.mkString(",")))
+        ).flatten.mkString("&")
 
   }
 
@@ -802,8 +790,8 @@ object IssuesService {
         name: String,
         allow: Seq[String] = Nil): Option[String] = {
       val value = request.getParameter(name)
-      if (value == null || value
-            .isEmpty || (allow.nonEmpty && !allow.contains(value)))
+      if (value == null || value.isEmpty ||
+          (allow.nonEmpty && !allow.contains(value)))
         None
       else
         Some(value)

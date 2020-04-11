@@ -210,14 +210,12 @@ case class HttpDigestAuthentication(realmName: String)(
     val response = hexEncode(
       md5(
         (
-          ha1 + ":" + clientAuth.nonce + ":" +
-            clientAuth.nc + ":" + clientAuth.cnonce + ":" +
-            clientAuth.qop + ":" + ha2
+          ha1 + ":" + clientAuth.nonce + ":" + clientAuth.nc + ":" +
+            clientAuth.cnonce + ":" + clientAuth.qop + ":" + ha2
         ).getBytes("UTF-8")));
 
-    (response == clientAuth.response) && (
-      nonceMap.getOrElse(clientAuth.nonce, -1) != -1
-    )
+    (response == clientAuth.response) &&
+    (nonceMap.getOrElse(clientAuth.nonce, -1) != -1)
   }
 }
 

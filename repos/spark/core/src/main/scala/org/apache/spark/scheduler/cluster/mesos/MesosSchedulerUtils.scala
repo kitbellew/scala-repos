@@ -217,15 +217,11 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       .asScala
       .map {
         case r => {
-          if (remain > 0 &&
-              r.getType == Value.Type.SCALAR &&
-              r.getScalar.getValue > 0.0 &&
-              r.getName == resourceName) {
+          if (remain > 0 && r.getType == Value.Type.SCALAR &&
+              r.getScalar.getValue > 0.0 && r.getName == resourceName) {
             val usage = Math.min(remain, r.getScalar.getValue)
-            requestedResources += createResource(
-              resourceName,
-              usage,
-              Some(r.getRole))
+            requestedResources +=
+              createResource(resourceName, usage, Some(r.getRole))
             remain -= usage
             createResource(
               resourceName,
@@ -402,8 +398,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
           .max(
             MEMORY_OVERHEAD_FRACTION * sc.executorMemory,
             MEMORY_OVERHEAD_MINIMUM)
-          .toInt) +
-      sc.executorMemory
+          .toInt) + sc.executorMemory
   }
 
   def setupUris(uris: String, builder: CommandInfo.Builder): Unit = {

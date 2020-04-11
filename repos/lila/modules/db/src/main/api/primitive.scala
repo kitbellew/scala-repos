@@ -22,9 +22,11 @@ object $primitive {
         .query(query)
         .hint(hint)
         .projection(Json.obj(field -> true))
-    } toList [BSONDocument] max map2 { (obj: BSONDocument) =>
-      extract(JsObjectReader.read(obj) \ field get)
-    } map (_.flatten)
+    } toList
+      [BSONDocument] max map2 { (obj: BSONDocument) =>
+        extract(JsObjectReader.read(obj) \ field get)
+      } map
+      (_.flatten)
 
   def one[A: InColl, B](
       query: JsObject,
@@ -39,5 +41,6 @@ object $primitive {
         .projection(Json.obj(field -> true))
     }.one[BSONDocument] map2 { (obj: BSONDocument) =>
       (JsObjectReader.read(obj) \ field).toOption flatMap extract
-    } map (_.flatten)
+    } map
+      (_.flatten)
 }

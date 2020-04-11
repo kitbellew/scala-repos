@@ -40,9 +40,8 @@ object FormattedStringParser extends StringParser {
       // "%d" format 1, "%d" format (1)
       case ScInfixExpr(
             literal: ScLiteral,
-            PsiReferenceEx.resolve(
-              (f: ScFunction) &&
-              ContainingClass(owner: ScTrait)),
+            PsiReferenceEx
+              .resolve((f: ScFunction) && ContainingClass(owner: ScTrait)),
             arg)
           if literal.isString && isFormatMethod(owner.qualifiedName, f.name) =>
         val args =
@@ -60,29 +59,27 @@ object FormattedStringParser extends StringParser {
             PsiReferenceEx
               .resolve((f: ScFunction) && ContainingClass(owner: ScClass)),
             Seq(literal: ScLiteral))
-          if literal
-            .isString && isFormattedMethod(owner.qualifiedName, f.name) =>
+          if literal.isString &&
+            isFormattedMethod(owner.qualifiedName, f.name) =>
         (literal, Seq(arg))
 
       // 1 formatted "%d"
       case ScInfixExpr(
             arg: ScExpression,
-            PsiReferenceEx.resolve(
-              (f: ScFunction) &&
-              ContainingClass(owner: ScClass)),
+            PsiReferenceEx
+              .resolve((f: ScFunction) && ContainingClass(owner: ScClass)),
             literal: ScLiteral)
-          if literal
-            .isString && isFormattedMethod(owner.qualifiedName, f.name) =>
+          if literal.isString &&
+            isFormattedMethod(owner.qualifiedName, f.name) =>
         (literal, Seq(arg))
 
       // String.format("%d", 1)
       case MethodInvocation(
-            PsiReferenceEx.resolve(
-              (f: PsiMethod) &&
-              ContainingClass(owner: PsiClass)),
+            PsiReferenceEx
+              .resolve((f: PsiMethod) && ContainingClass(owner: PsiClass)),
             Seq(literal: ScLiteral, args @ _*))
-          if literal
-            .isString && isStringFormatMethod(owner.qualifiedName, f.getName) =>
+          if literal.isString &&
+            isStringFormatMethod(owner.qualifiedName, f.getName) =>
         (literal, args)
     }
 
@@ -90,9 +87,8 @@ object FormattedStringParser extends StringParser {
     holder == "scala.collection.immutable.StringLike" && method == "format"
 
   private def isFormattedMethod(holder: String, method: String) =
-    (
-      holder == "scala.runtime.StringFormat" || holder == "scala.runtime.StringAdd"
-    ) && method == "formatted"
+    (holder == "scala.runtime.StringFormat" ||
+      holder == "scala.runtime.StringAdd") && method == "formatted"
 
   private def isStringFormatMethod(holder: String, method: String) =
     holder == "java.lang.String" && method == "format"

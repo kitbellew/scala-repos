@@ -11,36 +11,38 @@ object Test {
 
     val q = new scala.concurrent.SyncVar[Int]
 
-    val producers = (1 to 3) map { z =>
-      new Thread {
-        override def run() {
-          var again = true
-          while (again) {
-            val x = i.getAndDecrement()
-            if (x > 0)
-              q put x
-            else
-              again = false
+    val producers =
+      (1 to 3) map { z =>
+        new Thread {
+          override def run() {
+            var again = true
+            while (again) {
+              val x = i.getAndDecrement()
+              if (x > 0)
+                q put x
+              else
+                again = false
+            }
           }
         }
       }
-    }
 
-    val summers = (1 to 7) map { z =>
-      new Thread {
-        override def run() {
-          val x = j.decrementAndGet()
-          if (x >= 0) {
-            sum addAndGet q.take()
-          }
-          if (x > 0) {
-            run()
-          } else {
-            // done
+    val summers =
+      (1 to 7) map { z =>
+        new Thread {
+          override def run() {
+            val x = j.decrementAndGet()
+            if (x >= 0) {
+              sum addAndGet q.take()
+            }
+            if (x > 0) {
+              run()
+            } else {
+              // done
+            }
           }
         }
       }
-    }
 
     summers foreach {
       _.start()

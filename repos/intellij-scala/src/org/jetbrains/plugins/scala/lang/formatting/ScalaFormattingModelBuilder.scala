@@ -71,7 +71,8 @@ object ScalaFormattingModelBuilder {
       }
       var elementTypeToUse: IElementType = TokenType.WHITE_SPACE
       val prevNode: ASTNode = TreeUtil.prevLeaf(leafElement)
-      if (prevNode != null && ScalaTokenTypes
+      if (prevNode != null &&
+          ScalaTokenTypes
             .WHITES_SPACES_FOR_FORMATTER_TOKEN_SET
             .contains(prevNode.getElementType)) {
         elementTypeToUse = prevNode.getElementType

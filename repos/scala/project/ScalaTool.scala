@@ -40,12 +40,11 @@ case class ScalaTool(
       ("@@" -> "@"), // for backwards compatibility
       ("@class@" -> mainClass),
       (
-        "@properties@" -> (
-          properties map {
+        "@properties@" ->
+          (properties map {
             case (k, v) =>
               s"""-D$k="$v""""
-          } mkString " "
-        )
+          } mkString " ")
       ),
       ("@javaflags@" -> javaOpts),
       ("@toolflags@" -> toolFlags),

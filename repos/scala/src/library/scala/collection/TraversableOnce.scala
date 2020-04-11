@@ -504,10 +504,11 @@ object TraversableOnce {
         val its = travs.toIterator
         private var it: Iterator[A] = Iterator.empty
         def hasNext: Boolean =
-          it.hasNext || its.hasNext && {
-            it = its.next().toIterator;
-            hasNext
-          }
+          it.hasNext ||
+            its.hasNext && {
+              it = its.next().toIterator;
+              hasNext
+            }
         def next(): A =
           if (hasNext)
             it.next()

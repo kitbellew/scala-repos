@@ -326,8 +326,8 @@ private class AppTaskLauncherActor(
   private[this] def receiveAddCount: Receive = {
     case AppTaskLauncherActor.AddTasks(newApp, addCount) =>
       val configChange = app.isUpgrade(newApp)
-      if (configChange || app.needsRestart(newApp) || app
-            .isOnlyScaleChange(newApp)) {
+      if (configChange || app.needsRestart(newApp) ||
+          app.isOnlyScaleChange(newApp)) {
         app = newApp
         tasksToLaunch = addCount
 
@@ -368,16 +368,16 @@ private class AppTaskLauncherActor(
   }
 
   private[this] def replyWithQueuedTaskCount(): Unit = {
-    sender() ! QueuedTaskInfo(
-      app,
-      tasksLeftToLaunch = tasksToLaunch,
-      taskLaunchesInFlight = inFlightTaskOperations.size,
-      // don't count tasks that are not launched in the tasksMap
-      tasksLaunched = tasksMap
-        .values
-        .count(_.launched.isDefined) - inFlightTaskOperations.size,
-      backOffUntil.getOrElse(clock.now())
-    )
+    sender() !
+      QueuedTaskInfo(
+        app,
+        tasksLeftToLaunch = tasksToLaunch,
+        taskLaunchesInFlight = inFlightTaskOperations.size,
+        // don't count tasks that are not launched in the tasksMap
+        tasksLaunched = tasksMap.values.count(_.launched.isDefined) -
+          inFlightTaskOperations.size,
+        backOffUntil.getOrElse(clock.now())
+      )
   }
 
   private[this] def receiveProcessOffers: Receive = {
@@ -435,9 +435,10 @@ private class AppTaskLauncherActor(
       status)
 
     updateActorState()
-    sender() ! MatchedTaskOps(
-      offer.getId,
-      Seq(TaskOpWithSource(myselfAsLaunchSource, taskOp)))
+    sender() !
+      MatchedTaskOps(
+        offer.getId,
+        Seq(TaskOpWithSource(myselfAsLaunchSource, taskOp)))
   }
 
   private[this] def scheduleTaskOpTimeout(taskOp: TaskOp): Unit = {
@@ -479,9 +480,8 @@ private class AppTaskLauncherActor(
       }
 
     val inFlight = inFlightTaskOperations.size
-    val tasksLaunchedOrRunning = tasksMap
-      .values
-      .count(_.launched.isDefined) - inFlight
+    val tasksLaunchedOrRunning = tasksMap.values.count(_.launched.isDefined) -
+      inFlight
     val instanceCountDelta = tasksMap.size + tasksToLaunch - app.instances
     val matchInstanceStr =
       if (instanceCountDelta == 0)

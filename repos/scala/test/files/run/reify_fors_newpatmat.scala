@@ -83,10 +83,11 @@ object Test extends App {
         if (xs.isEmpty)
           xs
         else
-          xs.head :: removeDuplicates(
-            for (x <- xs.tail
-                 if x != xs.head)
-              yield x)
+          xs.head ::
+            removeDuplicates(
+              for (x <- xs.tail
+                   if x != xs.head)
+                yield x)
     }
 
     // import all members of object 'persons' in the current scope

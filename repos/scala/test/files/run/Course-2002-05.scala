@@ -109,9 +109,10 @@ object M2 {
     else {
       val x = s.head;
       val withoutX = powerset(s.tail);
-      withoutX ::: withoutX.map { s1: List[a] =>
-        x :: s1
-      }
+      withoutX :::
+        withoutX.map { s1: List[a] =>
+          x :: s1
+        }
     }
   }
 
@@ -150,10 +151,7 @@ object M3 {
       else {
         def isSafe(column: Int, placement: Placement): Boolean =
           placement forall { pos =>
-            (
-              pos._2 != column &&
-              abs(pos._2 - column) != row - pos._1
-            )
+            (pos._2 != column && abs(pos._2 - column) != row - pos._1)
           }
 
         def adjoinRow(placement: Placement): List[Placement] =
@@ -202,11 +200,8 @@ object M4 {
       else {
         def isSafe(col: Int, p: Placement, delta: Int): Boolean =
           (p.isEmpty ||
-            (
-              col != p.head &&
-                abs(col - p.head) != delta &&
-                isSafe(col, p.tail, delta + 1)
-            ));
+            (col != p.head && abs(col - p.head) != delta &&
+              isSafe(col, p.tail, delta + 1)));
 
         for (placement <- placeQueens(row - 1);
              col <- columns;

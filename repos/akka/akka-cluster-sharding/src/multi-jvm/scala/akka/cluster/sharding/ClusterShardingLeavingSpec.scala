@@ -159,8 +159,8 @@ abstract class ClusterShardingLeavingSpec(
             .state
             .members
             .exists { m ⇒
-              m.uniqueAddress == cluster
-                .selfUniqueAddress && m.status == MemberStatus.Up
+              m.uniqueAddress == cluster.selfUniqueAddress &&
+              m.status == MemberStatus.Up
             } should be(true))
       }
     }
@@ -195,14 +195,15 @@ abstract class ClusterShardingLeavingSpec(
       enterBarrier("after-1")
     }
 
-    "join cluster" in within(20.seconds) {
-      join(first, first)
-      join(second, first)
-      join(third, first)
-      join(fourth, first)
+    "join cluster" in
+      within(20.seconds) {
+        join(first, first)
+        join(second, first)
+        join(third, first)
+        join(fourth, first)
 
-      enterBarrier("after-2")
-    }
+        enterBarrier("after-2")
+      }
 
     "initialize shards" in {
       runOn(first) {
@@ -222,37 +223,38 @@ abstract class ClusterShardingLeavingSpec(
       enterBarrier("after-3")
     }
 
-    "recover after leaving coordinator node" in within(30.seconds) {
-      runOn(third) {
-        cluster.leave(node(first).address)
-      }
+    "recover after leaving coordinator node" in
+      within(30.seconds) {
+        runOn(third) {
+          cluster.leave(node(first).address)
+        }
 
-      runOn(first) {
-        watch(region)
-        expectTerminated(region, 15.seconds)
-      }
-      enterBarrier("stopped")
+        runOn(first) {
+          watch(region)
+          expectTerminated(region, 15.seconds)
+        }
+        enterBarrier("stopped")
 
-      runOn(second, third, fourth) {
-        system.actorSelection(
-          node(first) / "user" / "shardLocations") ! GetLocations
-        val Locations(locations) = expectMsgType[Locations]
-        val firstAddress = node(first).address
-        awaitAssert {
-          val probe = TestProbe()
-          locations.foreach {
-            case (id, ref) ⇒
-              region.tell(Ping(id), probe.ref)
-              if (ref.path.address == firstAddress)
-                probe.expectMsgType[ActorRef](1.second) should not be (ref)
-              else
-                probe.expectMsg(1.second, ref) // should not move
+        runOn(second, third, fourth) {
+          system.actorSelection(node(first) / "user" / "shardLocations") !
+            GetLocations
+          val Locations(locations) = expectMsgType[Locations]
+          val firstAddress = node(first).address
+          awaitAssert {
+            val probe = TestProbe()
+            locations.foreach {
+              case (id, ref) ⇒
+                region.tell(Ping(id), probe.ref)
+                if (ref.path.address == firstAddress)
+                  probe.expectMsgType[ActorRef](1.second) should not be (ref)
+                else
+                  probe.expectMsg(1.second, ref) // should not move
+            }
           }
         }
-      }
 
-      enterBarrier("after-4")
-    }
+        enterBarrier("after-4")
+      }
 
   }
 }

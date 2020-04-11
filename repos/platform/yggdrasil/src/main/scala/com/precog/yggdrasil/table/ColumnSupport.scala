@@ -41,9 +41,8 @@ class BitsetColumn(definedAt: BitSet) {
           'x'
         else
           '_'
-    getClass.getName + "(" + (0 until limit)
-      .map(repr)
-      .mkString("[", ",", "]") + ", " + limit + ")"
+    getClass.getName + "(" +
+      (0 until limit).map(repr).mkString("[", ",", "]") + ", " + limit + ")"
   }
 }
 
@@ -139,11 +138,9 @@ class OrLotsColumn(cols: Array[BoolColumn])
 class ConcatColumn[T <: Column](at: Int, c1: T, c2: T) {
   this: T =>
   def isDefinedAt(row: Int) =
-    row >= 0 && (
-      (row < at && c1.isDefinedAt(row)) || (
-        row >= at && c2.isDefinedAt(row - at)
-      )
-    )
+    row >= 0 &&
+      ((row < at && c1.isDefinedAt(row)) ||
+        (row >= at && c2.isDefinedAt(row - at)))
 }
 
 class NConcatColumn[T <: Column](offsets: Array[Int], columns: Array[T]) {
@@ -240,8 +237,8 @@ class SparsenColumn[T <: Column](delegate: T, idx: Array[Int], toSize: Int) {
   val remap: Array[Int] = fill(Array.fill[Int](toSize)(-1), 0)
 
   def isDefinedAt(row: Int) =
-    row >= 0 && row < toSize && remap(row) != -1 && delegate
-      .isDefinedAt(remap(row))
+    row >= 0 && row < toSize && remap(row) != -1 &&
+      delegate.isDefinedAt(remap(row))
 }
 
 class InfiniteColumn {

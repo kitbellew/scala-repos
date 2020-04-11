@@ -183,8 +183,8 @@ object TerminateJson {
         Some({
           val sb = new StringBuilder()
           while (stack.nonEmpty) {
-            sb ++= (
-              stack.pop() match {
+            sb ++=
+              (stack.pop() match {
                 case ExpectValue =>
                   "null"
                 case ExpectField =>
@@ -201,8 +201,7 @@ object TerminateJson {
                   "}"
                 case _ =>
                   sys.error("Unreachable.")
-              }
-            )
+              })
           }
           CharBuffer.wrap(sb.toString)
         })

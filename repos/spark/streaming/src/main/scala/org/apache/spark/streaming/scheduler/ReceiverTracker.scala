@@ -471,8 +471,8 @@ private[streaming] class ReceiverTracker(
         .getMemoryStatus
         .filter {
           case (blockManagerId, _) =>
-            blockManagerId.executorId != SparkContext
-              .DRIVER_IDENTIFIER // Ignore the driver location
+            blockManagerId.executorId !=
+              SparkContext.DRIVER_IDENTIFIER // Ignore the driver location
         }
         .map {
           case (blockManagerId, _) =>

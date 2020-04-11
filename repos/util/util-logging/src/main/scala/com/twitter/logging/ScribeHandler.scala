@@ -357,10 +357,11 @@ class ScribeHandler(
         OLD_SCRIBE_PREFIX
       else
         SCRIBE_PREFIX
-    val messageSize = (count * (recordHeader.capacity + 5)) + texts
-      .foldLeft(0) {
-        _ + _.length
-      } + prefix.length + 5
+    val messageSize =
+      (count * (recordHeader.capacity + 5)) +
+        texts.foldLeft(0) {
+          _ + _.length
+        } + prefix.length + 5
     val buffer = ByteBuffer.wrap(new Array[Byte](messageSize + 4))
     buffer.order(ByteOrder.BIG_ENDIAN)
     // "framing":

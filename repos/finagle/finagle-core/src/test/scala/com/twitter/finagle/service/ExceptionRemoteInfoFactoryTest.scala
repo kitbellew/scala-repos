@@ -49,12 +49,13 @@ class ExceptionRemoteInfoFactoryTest extends FunSuite with MockitoSugar {
       }
     }
     assert(
-      actual.remoteInfo == RemoteInfo.Available(
-        Some(upstreamAddr),
-        Some(ClientId("upstream")),
-        Some(downstreamAddr),
-        Some(ClientId("downstream")),
-        traceId))
+      actual.remoteInfo ==
+        RemoteInfo.Available(
+          Some(upstreamAddr),
+          Some(ClientId("upstream")),
+          Some(downstreamAddr),
+          Some(ClientId("downstream")),
+          traceId))
   }
 
   test(
@@ -85,12 +86,13 @@ class ExceptionRemoteInfoFactoryTest extends FunSuite with MockitoSugar {
       }
     }
     assert(
-      actual.remoteInfo == RemoteInfo.Available(
-        Some(upstreamAddr),
-        Some(ClientId("upstream")),
-        Some(downstreamAddr),
-        Some(ClientId("downstream")),
-        traceId))
+      actual.remoteInfo ==
+        RemoteInfo.Available(
+          Some(upstreamAddr),
+          Some(ClientId("upstream")),
+          Some(downstreamAddr),
+          Some(ClientId("downstream")),
+          traceId))
   }
 
   test("ExceptionRemoteInfoFactory should add remote info to Failures") {
@@ -120,12 +122,13 @@ class ExceptionRemoteInfoFactoryTest extends FunSuite with MockitoSugar {
       }
     }
     assert(
-      actual.getSource(Failure.Source.RemoteInfo) == Some(
-        RemoteInfo.Available(
-          Some(upstreamAddr),
-          Some(ClientId("upstream")),
-          Some(downstreamAddr),
-          Some(ClientId("downstream")),
-          traceId)))
+      actual.getSource(Failure.Source.RemoteInfo) ==
+        Some(
+          RemoteInfo.Available(
+            Some(upstreamAddr),
+            Some(ClientId("upstream")),
+            Some(downstreamAddr),
+            Some(ClientId("downstream")),
+            traceId)))
   }
 }

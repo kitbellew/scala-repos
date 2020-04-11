@@ -647,10 +647,8 @@ class MetastoreDataSourcesSuite
 
       checkAnswer(
         sql("SELECT a FROM arrayInParquet"),
-        Row(ArrayBuffer(1, null)) ::
-          Row(ArrayBuffer(2, 3)) ::
-          Row(ArrayBuffer(4, 5)) ::
-          Row(ArrayBuffer(6, null)) :: Nil)
+        Row(ArrayBuffer(1, null)) :: Row(ArrayBuffer(2, 3)) ::
+          Row(ArrayBuffer(4, 5)) :: Row(ArrayBuffer(6, null)) :: Nil)
     }
   }
 
@@ -708,9 +706,7 @@ class MetastoreDataSourcesSuite
 
       checkAnswer(
         sql("SELECT a FROM mapInParquet"),
-        Row(Map(1 -> null)) ::
-          Row(Map(2 -> 3)) ::
-          Row(Map(4 -> 5)) ::
+        Row(Map(1 -> null)) :: Row(Map(2 -> 3)) :: Row(Map(4 -> 5)) ::
           Row(Map(6 -> null)) :: Nil)
     }
   }
@@ -757,9 +753,10 @@ class MetastoreDataSourcesSuite
           outputFormat = None,
           serde = None,
           serdeProperties = Map(
-            "path" -> sessionState
-              .catalog
-              .hiveDefaultTableFilePath(TableIdentifier(tableName)))
+            "path" ->
+              sessionState
+                .catalog
+                .hiveDefaultTableFilePath(TableIdentifier(tableName)))
         ),
         properties = Map(
           "spark.sql.sources.provider" -> "json",
@@ -1021,7 +1018,7 @@ class MetastoreDataSourcesSuite
         .getTable("default", "skip_hive_metadata")
         .schema
         .forall(column =>
-          HiveMetastoreTypes
-            .toDataType(column.dataType) == ArrayType(StringType)))
+          HiveMetastoreTypes.toDataType(column.dataType) ==
+            ArrayType(StringType)))
   }
 }

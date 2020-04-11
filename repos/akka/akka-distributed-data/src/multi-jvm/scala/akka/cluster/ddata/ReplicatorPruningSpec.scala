@@ -103,8 +103,9 @@ class ReplicatorPruningSpec
       replicator ! Update(KeyB, ORSet(), WriteAll(timeout))(_ + "a" + "b" + "c")
       expectMsg(UpdateSuccess(KeyB, None))
 
-      replicator ! Update(KeyC, PNCounterMap(), WriteAll(timeout))(
-        _ increment "x" increment "y")
+      replicator !
+        Update(KeyC, PNCounterMap(), WriteAll(timeout))(
+          _ increment "x" increment "y")
       expectMsg(UpdateSuccess(KeyC, None))
 
       enterBarrier("updates-done")

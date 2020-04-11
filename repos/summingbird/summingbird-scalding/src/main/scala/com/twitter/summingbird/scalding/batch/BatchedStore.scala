@@ -445,10 +445,9 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
           else
             Left(
               List(
-                "Cannot load initial timestamp " + firstDeltaTimestamp
-                  .toString + " of deltas " +
-                  " at " + this.toString + " only " + readDeltaTimestamps
-                  .toString)))
+                "Cannot load initial timestamp " +
+                  firstDeltaTimestamp.toString + " of deltas " + " at " +
+                  this.toString + " only " + readDeltaTimestamps.toString)))
 
       // Record the timespan we actually read.
       _ <- putState((readDeltaTimestamps, mode))
@@ -487,8 +486,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
       if (batcher.batchesCoveredBy(readTimespan) == Empty()) {
         Left(
           List(
-            "readTimespan is not convering at least one batch: " + readTimespan
-              .toString))
+            "readTimespan is not convering at least one batch: " +
+              readTimespan.toString))
       } else {
         Right(())
       }

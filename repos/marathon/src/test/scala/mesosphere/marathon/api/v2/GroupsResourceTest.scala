@@ -29,8 +29,8 @@ class GroupsResourceTest
   test("dry run update") {
     Given("A real Group Manager with no groups")
     useRealGroupManager()
-    groupRepository.group(GroupRepository.zkRootName) returns Future
-      .successful(Some(Group.empty))
+    groupRepository.group(GroupRepository.zkRootName) returns
+      Future.successful(Some(Group.empty))
 
     val app = AppDefinition(id = "/test/app".toRootPath, cmd = Some("test cmd"))
     val update = GroupUpdate(
@@ -112,8 +112,8 @@ class GroupsResourceTest
     Given("A real group manager with one app")
     useRealGroupManager()
     val group = Group(PathId.empty, apps = Set(AppDefinition("/a".toRootPath)))
-    groupRepository.group(GroupRepository.zkRootName) returns Future
-      .successful(Some(group))
+    groupRepository.group(GroupRepository.zkRootName) returns
+      Future.successful(Some(group))
     groupRepository.rootGroup returns Future.successful(Some(group))
 
     Given("An unauthorized request")
@@ -161,8 +161,8 @@ class GroupsResourceTest
     Given("A real group manager with no apps")
     useRealGroupManager()
     groupRepository.group("/") returns Future.successful(None)
-    groupRepository.group(GroupRepository.zkRootName) returns Future
-      .successful(Some(Group.empty))
+    groupRepository.group(GroupRepository.zkRootName) returns
+      Future.successful(Some(Group.empty))
     groupRepository.rootGroup returns Future.successful(Some(Group.empty))
 
     Given("An unauthorized request")
@@ -182,10 +182,10 @@ class GroupsResourceTest
     "Group Versions for root are transferred as simple json string array (Fix #2329)") {
     Given("Specific Group versions")
     val groupVersions = Seq(Timestamp.now(), Timestamp.now())
-    groupManager.versions(PathId.empty) returns Future
-      .successful(groupVersions.toIterable)
-    groupManager.group(PathId.empty) returns Future
-      .successful(Some(Group(PathId.empty)))
+    groupManager.versions(PathId.empty) returns
+      Future.successful(groupVersions.toIterable)
+    groupManager.group(PathId.empty) returns
+      Future.successful(Some(Group(PathId.empty)))
 
     When("The versions are queried")
     val rootVersionsResponse = groupsResource
@@ -193,20 +193,20 @@ class GroupsResourceTest
 
     Then("The versions are send as simple json array")
     rootVersionsResponse.getStatus should be(200)
-    rootVersionsResponse
-      .getEntity should be(Json.toJson(groupVersions).toString())
+    rootVersionsResponse.getEntity should
+      be(Json.toJson(groupVersions).toString())
   }
 
   test(
     "Group Versions for path are transferred as simple json string array (Fix #2329)") {
     Given("Specific group versions")
     val groupVersions = Seq(Timestamp.now(), Timestamp.now())
-    groupManager.versions(any) returns Future
-      .successful(groupVersions.toIterable)
-    groupManager.versions("/foo/bla/blub".toRootPath) returns Future
-      .successful(groupVersions.toIterable)
-    groupManager.group("/foo/bla/blub".toRootPath) returns Future
-      .successful(Some(Group("/foo/bla/blub".toRootPath)))
+    groupManager.versions(any) returns
+      Future.successful(groupVersions.toIterable)
+    groupManager.versions("/foo/bla/blub".toRootPath) returns
+      Future.successful(groupVersions.toIterable)
+    groupManager.group("/foo/bla/blub".toRootPath) returns
+      Future.successful(Some(Group("/foo/bla/blub".toRootPath)))
 
     When("The versions are queried")
     val rootVersionsResponse = groupsResource
@@ -214,8 +214,8 @@ class GroupsResourceTest
 
     Then("The versions are send as simple json array")
     rootVersionsResponse.getStatus should be(200)
-    rootVersionsResponse
-      .getEntity should be(Json.toJson(groupVersions).toString())
+    rootVersionsResponse.getEntity should
+      be(Json.toJson(groupVersions).toString())
   }
 
   test(
@@ -225,8 +225,8 @@ class GroupsResourceTest
     val group = Group(
       "/group".toRootPath,
       apps = Set(AppDefinition("/group/app".toRootPath)))
-    groupRepository.group(GroupRepository.zkRootName) returns Future
-      .successful(Some(group))
+    groupRepository.group(GroupRepository.zkRootName) returns
+      Future.successful(Some(group))
     groupRepository.rootGroup returns Future.successful(Some(group))
 
     When("creating a group with the same path existing app")
@@ -244,8 +244,8 @@ class GroupsResourceTest
     Given("A real group manager with one app")
     useRealGroupManager()
     val group = Group("/group".toRootPath)
-    groupRepository.group(GroupRepository.zkRootName) returns Future
-      .successful(Some(group))
+    groupRepository.group(GroupRepository.zkRootName) returns
+      Future.successful(Some(group))
     groupRepository.rootGroup returns Future.successful(Some(group))
 
     When("creating a group with the same path existing app")

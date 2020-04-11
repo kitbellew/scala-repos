@@ -36,7 +36,7 @@ final class ResponseEncodingSuite extends RedisResponseTest {
       BulkReply(StringToChannelBuffer("foo")),
       BulkReply(StringToChannelBuffer("bar")))
     assert(
-      codec
-        .send(MBulkReply(messages)) == List("*2\r\n$3\r\nfoo\r\n$3\r\nbar\r\n"))
+      codec.send(MBulkReply(messages)) ==
+        List("*2\r\n$3\r\nfoo\r\n$3\r\nbar\r\n"))
   }
 }

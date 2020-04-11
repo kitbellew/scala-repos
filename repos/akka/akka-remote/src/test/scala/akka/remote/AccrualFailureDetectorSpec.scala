@@ -79,16 +79,14 @@ class AccrualFailureDetectorSpec extends AkkaSpec("akka.loglevel = INFO") {
         1600 -> 10.8,
         1700 -> 15.3)
       for ((timeDiff, expectedPhi) ← test) {
-        fd.phi(
-          timeDiff = timeDiff,
-          mean = 1000.0,
-          stdDeviation = 100.0) should ===(expectedPhi +- (0.1))
+        fd.phi(timeDiff = timeDiff, mean = 1000.0, stdDeviation = 100.0) should
+          ===(expectedPhi +- (0.1))
       }
 
       // larger stdDeviation results => lower phi
-      fd.phi(timeDiff = 1100, mean = 1000.0, stdDeviation = 500.0) should be < (
-        fd.phi(timeDiff = 1100, mean = 1000.0, stdDeviation = 100.0)
-      )
+      fd.phi(timeDiff = 1100, mean = 1000.0, stdDeviation = 500.0) should
+        be <
+        (fd.phi(timeDiff = 1100, mean = 1000.0, stdDeviation = 100.0))
     }
 
     "return phi value of 0.0 on startup for each address, when no heartbeats" in {
@@ -149,9 +147,9 @@ class AccrualFailureDetectorSpec extends AkkaSpec("akka.loglevel = INFO") {
     "mark node as available if it starts heartbeat again after being marked dead due to detection of failure" in {
       // 1000 regular intervals, 5 minute pause, and then a short pause again that should trigger unreachable again
       val regularIntervals = 0L +: Vector.fill(999)(1000L)
-      val timeIntervals = regularIntervals :+ (
-        5 * 60 * 1000L
-      ) :+ 100L :+ 900L :+ 100L :+ 7000L :+ 100L :+ 900L :+ 100L :+ 900L
+      val timeIntervals = regularIntervals :+
+        (5 * 60 * 1000L) :+ 100L :+ 900L :+ 100L :+ 7000L :+ 100L :+ 900L :+
+        100L :+ 900L
       val fd = createFailureDetector(
         threshold = 8,
         acceptableLostDuration = 3.seconds,

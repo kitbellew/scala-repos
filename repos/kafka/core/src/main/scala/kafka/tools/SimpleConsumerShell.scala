@@ -185,7 +185,8 @@ object SimpleConsumerShell extends Logging {
         .err
         .println(
           (
-            "Error: no valid topic metadata for topic: %s, " + "what we get from server is only: %s"
+            "Error: no valid topic metadata for topic: %s, " +
+              "what we get from server is only: %s"
           ).format(topic, topicsMetadata))
       System.exit(1)
     }
@@ -253,8 +254,8 @@ object SimpleConsumerShell extends Logging {
           System
             .err
             .println(
-              "Error in getting earliest or latest offset due to: " + Utils
-                .stackTrace(t))
+              "Error in getting earliest or latest offset due to: " +
+                Utils.stackTrace(t))
           System.exit(1)
       } finally {
         if (simpleConsumer != null)
@@ -310,8 +311,8 @@ object SimpleConsumerShell extends Logging {
                 return
               }
               debug(
-                "multi fetched " + messageSet
-                  .sizeInBytes + " bytes from offset " + offset)
+                "multi fetched " + messageSet.sizeInBytes +
+                  " bytes from offset " + offset)
               for (messageAndOffset <- messageSet
                    if numMessagesConsumed < maxMessages) {
                 try {

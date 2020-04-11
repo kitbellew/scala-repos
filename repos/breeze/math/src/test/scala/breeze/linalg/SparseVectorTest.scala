@@ -310,9 +310,7 @@ class SparseVectorTest extends FunSuite {
       (3, 6, 9, 12, 15, 18),
       (12, 1, 1, 0, 3, 4))
 
-    assert(
-      (m * x) ===
-        m * xd)
+    assert((m * x) === m * xd)
 
   }
 
@@ -321,8 +319,8 @@ class SparseVectorTest extends FunSuite {
     val v2 = SparseVector(0, 1, 0, 0)
 
     // do in two stages to ensure that telling the return type doesn't change type inference
-    val r =
-      v1 + v2 //type mismatch; found : breeze.linalg.Vector[Int] required: breeze.linalg.DenseVector[Int]
+    val r = v1 +
+      v2 //type mismatch; found : breeze.linalg.Vector[Int] required: breeze.linalg.DenseVector[Int]
     val q = r: DenseVector[Int]
     assert(q == DenseVector(0, 1, 0, 0))
   }
@@ -332,8 +330,8 @@ class SparseVectorTest extends FunSuite {
     val v2 = SparseVector(0, 1, 0, 0)
 
     // do in two stages to ensure that telling the return type doesn't change type inference
-    val r =
-      v2 + v1 //type mismatch; found : breeze.linalg.Vector[Int] required: breeze.linalg.DenseVector[Int]
+    val r = v2 +
+      v1 //type mismatch; found : breeze.linalg.Vector[Int] required: breeze.linalg.DenseVector[Int]
     val q = r: DenseVector[Int]
     assert(q == DenseVector(0, 1, 0, 0))
   }

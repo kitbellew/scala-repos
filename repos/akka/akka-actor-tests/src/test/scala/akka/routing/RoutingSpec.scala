@@ -210,15 +210,16 @@ class RoutingSpec
             SupervisorStrategy.Restart
         }
       val supervisor = system.actorOf(Props(new Supervisor(restarter)))
-      supervisor ! RoundRobinPool(3).props(routeeProps = Props(
-        new Actor {
-          def receive = {
-            case x: String ⇒
-              throw new Exception(x)
-          }
-          override def postRestart(reason: Throwable): Unit =
-            testActor ! "restarted"
-        }))
+      supervisor !
+        RoundRobinPool(3).props(routeeProps = Props(
+          new Actor {
+            def receive = {
+              case x: String ⇒
+                throw new Exception(x)
+            }
+            override def postRestart(reason: Throwable): Unit =
+              testActor ! "restarted"
+          }))
       val router = expectMsgType[ActorRef]
       EventFilter[Exception]("die", occurrences = 1) intercept {
         router ! "die"

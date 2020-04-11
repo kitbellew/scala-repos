@@ -198,17 +198,14 @@ private[hive] class IsolatedClientLoader(
 
   protected def isSharedClass(name: String): Boolean = {
     val isHadoopClass =
-      name.startsWith("org.apache.hadoop.") && !name
-        .startsWith("org.apache.hadoop.hive.")
+      name.startsWith("org.apache.hadoop.") &&
+        !name.startsWith("org.apache.hadoop.hive.")
 
-    name.contains("slf4j") ||
-    name.contains("log4j") ||
+    name.contains("slf4j") || name.contains("log4j") ||
     name.startsWith("org.apache.spark.") ||
-    (sharesHadoopClasses && isHadoopClass) ||
-    name.startsWith("scala.") ||
+    (sharesHadoopClasses && isHadoopClass) || name.startsWith("scala.") ||
     (name.startsWith("com.google") && !name.startsWith("com.google.cloud")) ||
-    name.startsWith("java.lang.") ||
-    name.startsWith("java.net") ||
+    name.startsWith("java.lang.") || name.startsWith("java.net") ||
     sharedPrefixes.exists(name.startsWith)
   }
 

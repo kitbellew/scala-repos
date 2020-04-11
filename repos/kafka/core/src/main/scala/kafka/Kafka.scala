@@ -52,10 +52,8 @@ object Kafka extends Logging {
       if (options.nonOptionArguments().size() > 0) {
         CommandLineUtils.printUsageAndDie(
           optionParser,
-          "Found non argument parameters: " + options
-            .nonOptionArguments()
-            .toArray
-            .mkString(","))
+          "Found non argument parameters: " +
+            options.nonOptionArguments().toArray.mkString(","))
       }
 
       props.putAll(

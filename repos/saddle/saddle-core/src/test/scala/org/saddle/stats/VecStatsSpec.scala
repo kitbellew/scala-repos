@@ -92,63 +92,23 @@ class VecStatsSpec extends Specification {
   "Rank works" in {
     val vec = Vec[Double](1.0, 5.0, 4.0, 4.0, NA, 3.0)
 
-    vec.rank(tie = stats.RankTie.Avg, ascending = true) must_== Vec[Double](
-      1.0,
-      5.0,
-      3.5,
-      3.5,
-      NA,
-      2.0)
-    vec.rank(tie = stats.RankTie.Min, ascending = true) must_== Vec[Double](
-      1.0,
-      5.0,
-      3.0,
-      3.0,
-      NA,
-      2.0)
-    vec.rank(tie = stats.RankTie.Max, ascending = true) must_== Vec[Double](
-      1.0,
-      5.0,
-      4.0,
-      4.0,
-      NA,
-      2.0)
-    vec.rank(tie = stats.RankTie.Nat, ascending = true) must_== Vec[Double](
-      1.0,
-      5.0,
-      3.0,
-      4.0,
-      NA,
-      2.0)
+    vec.rank(tie = stats.RankTie.Avg, ascending = true) must_==
+      Vec[Double](1.0, 5.0, 3.5, 3.5, NA, 2.0)
+    vec.rank(tie = stats.RankTie.Min, ascending = true) must_==
+      Vec[Double](1.0, 5.0, 3.0, 3.0, NA, 2.0)
+    vec.rank(tie = stats.RankTie.Max, ascending = true) must_==
+      Vec[Double](1.0, 5.0, 4.0, 4.0, NA, 2.0)
+    vec.rank(tie = stats.RankTie.Nat, ascending = true) must_==
+      Vec[Double](1.0, 5.0, 3.0, 4.0, NA, 2.0)
 
-    vec.rank(tie = stats.RankTie.Avg, ascending = false) must_== Vec[Double](
-      5.0,
-      1.0,
-      2.5,
-      2.5,
-      NA,
-      4.0)
-    vec.rank(tie = stats.RankTie.Min, ascending = false) must_== Vec[Double](
-      5.0,
-      1.0,
-      2.0,
-      2.0,
-      NA,
-      4.0)
-    vec.rank(tie = stats.RankTie.Max, ascending = false) must_== Vec[Double](
-      5.0,
-      1.0,
-      3.0,
-      3.0,
-      NA,
-      4.0)
-    vec.rank(tie = stats.RankTie.Nat, ascending = false) must_== Vec[Double](
-      5.0,
-      1.0,
-      2.0,
-      3.0,
-      NA,
-      4.0)
+    vec.rank(tie = stats.RankTie.Avg, ascending = false) must_==
+      Vec[Double](5.0, 1.0, 2.5, 2.5, NA, 4.0)
+    vec.rank(tie = stats.RankTie.Min, ascending = false) must_==
+      Vec[Double](5.0, 1.0, 2.0, 2.0, NA, 4.0)
+    vec.rank(tie = stats.RankTie.Max, ascending = false) must_==
+      Vec[Double](5.0, 1.0, 3.0, 3.0, NA, 4.0)
+    vec.rank(tie = stats.RankTie.Nat, ascending = false) must_==
+      Vec[Double](5.0, 1.0, 2.0, 3.0, NA, 4.0)
 
     val vec2 = Vec.empty[Double]
     vec2.rank() must_== vec2

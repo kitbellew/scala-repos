@@ -401,9 +401,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
           }
       }
     val groupingSetSQL = "GROUPING SETS(" +
-      groupingSet
-        .map(e => s"(${e.map(_.sql).mkString(", ")})")
-        .mkString(", ") + ")"
+      groupingSet.map(e => s"(${e.map(_.sql).mkString(", ")})").mkString(", ") +
+      ")"
 
     val aggExprs = agg
       .aggregateExpressions

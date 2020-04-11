@@ -93,8 +93,8 @@ private[akka] trait FaultHandling {
       }
       assert(
         mailbox.isSuspended,
-        "mailbox must be suspended during restart, status=" + mailbox
-          .currentStatus)
+        "mailbox must be suspended during restart, status=" +
+          mailbox.currentStatus)
       if (!setChildrenTerminationReason(ChildrenContainer.Recreation(cause)))
         finishRecreate(cause, failedActor)
     } else {
@@ -154,8 +154,8 @@ private[akka] trait FaultHandling {
   protected def faultCreate(): Unit = {
     assert(
       mailbox.isSuspended,
-      "mailbox must be suspended during failed creation, status=" + mailbox
-        .currentStatus)
+      "mailbox must be suspended during failed creation, status=" +
+        mailbox.currentStatus)
     assert(perpetrator == self)
 
     setReceiveTimeout(Duration.Undefined)
@@ -249,8 +249,8 @@ private[akka] trait FaultHandling {
             e,
             self.path.toString,
             clazz(actor),
-            "emergency stop: exception in failure handling for " + t
-              .getClass + Logging.stackTraceFor(t)))
+            "emergency stop: exception in failure handling for " + t.getClass +
+              Logging.stackTraceFor(t)))
         try children foreach stop
         finally finishTerminate()
       }
@@ -311,16 +311,17 @@ private[akka] trait FaultHandling {
         publish(Debug(self.path.toString, clazz(freshActor), "restarted"))
 
       // only after parent is up and running again do restart the children which were not stopped
-      survivors foreach (child ⇒
-        try child.asInstanceOf[InternalActorRef].restart(cause)
-        catch handleNonFatalOrInterruptedException { e ⇒
-          publish(
-            Error(
-              e,
-              self.path.toString,
-              clazz(freshActor),
-              "restarting " + child))
-        })
+      survivors foreach
+        (child ⇒
+          try child.asInstanceOf[InternalActorRef].restart(cause)
+          catch handleNonFatalOrInterruptedException { e ⇒
+            publish(
+              Error(
+                e,
+                self.path.toString,
+                clazz(freshActor),
+                "restarting " + child))
+          })
     } catch handleNonFatalOrInterruptedException { e ⇒
       clearActorFields(
         actor,
@@ -348,8 +349,8 @@ private[akka] trait FaultHandling {
           Debug(
             self.path.toString,
             clazz(actor),
-            "dropping Failed(" + f.cause + ") from old child " + f
-              .child + " (uid=" + stats.uid + " != " + f.uid + ")"))
+            "dropping Failed(" + f.cause + ") from old child " + f.child +
+              " (uid=" + stats.uid + " != " + f.uid + ")"))
       case None ⇒
         publish(
           Debug(

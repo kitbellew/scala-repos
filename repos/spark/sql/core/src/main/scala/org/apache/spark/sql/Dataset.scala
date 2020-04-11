@@ -269,38 +269,39 @@ class Dataset[T] private[sql] (
 
     // For array values, replace Seq and Array with square brackets
     // For cells that are beyond 20 characters, replace it with the first 17 and "..."
-    val rows: Seq[Seq[String]] = schema.fieldNames.toSeq +: data
-      .map {
-        case r: Row =>
-          r
-        case tuple: Product =>
-          Row.fromTuple(tuple)
-        case o =>
-          Row(o)
-      }
-      .map { row =>
-        row
-          .toSeq
-          .map { cell =>
-            val str =
-              cell match {
-                case null =>
-                  "null"
-                case binary: Array[Byte] =>
-                  binary.map("%02X".format(_)).mkString("[", " ", "]")
-                case array: Array[_] =>
-                  array.mkString("[", ", ", "]")
-                case seq: Seq[_] =>
-                  seq.mkString("[", ", ", "]")
-                case _ =>
-                  cell.toString
-              }
-            if (truncate && str.length > 20)
-              str.substring(0, 17) + "..."
-            else
-              str
-          }: Seq[String]
-      }
+    val rows: Seq[Seq[String]] = schema.fieldNames.toSeq +:
+      data
+        .map {
+          case r: Row =>
+            r
+          case tuple: Product =>
+            Row.fromTuple(tuple)
+          case o =>
+            Row(o)
+        }
+        .map { row =>
+          row
+            .toSeq
+            .map { cell =>
+              val str =
+                cell match {
+                  case null =>
+                    "null"
+                  case binary: Array[Byte] =>
+                    binary.map("%02X".format(_)).mkString("[", " ", "]")
+                  case array: Array[_] =>
+                    array.mkString("[", ", ", "]")
+                  case seq: Seq[_] =>
+                    seq.mkString("[", ", ", "]")
+                  case _ =>
+                    cell.toString
+                }
+              if (truncate && str.length > 20)
+                str.substring(0, 17) + "..."
+              else
+                str
+            }: Seq[String]
+        }
 
     formatString(rows, numRows, hasMoreData, truncate)
   }
@@ -356,10 +357,8 @@ class Dataset[T] private[sql] (
     require(
       schema.size == colNames.size,
       "The number of columns doesn't match.\n" +
-        s"Old column names (${schema.size}): " + schema
-        .fields
-        .map(_.name)
-        .mkString(", ") + "\n" +
+        s"Old column names (${schema.size}): " +
+        schema.fields.map(_.name).mkString(", ") + "\n" +
         s"New column names (${colNames.size}): " + colNames.mkString(", ")
     )
 
@@ -1312,8 +1311,8 @@ class Dataset[T] private[sql] (
   @Experimental
   @scala.annotation.varargs
   def groupByKey(cols: Column*): KeyValueGroupedDataset[Row, T] = {
-    val withKeyColumns = logicalPlan
-      .output ++ cols.map(_.expr).map(UnresolvedAlias(_))
+    val withKeyColumns = logicalPlan.output ++
+      cols.map(_.expr).map(UnresolvedAlias(_))
     val withKey = Project(withKeyColumns, logicalPlan)
     val executed = sqlContext.executePlan(withKey)
 
@@ -1925,12 +1924,12 @@ class Dataset[T] private[sql] (
 
       // The list of summary statistics to compute, in the form of expressions.
       val statistics = List[(String, Expression => Expression)](
-        "count" -> ((child: Expression) =>
-          Count(child).toAggregateExpression()),
-        "mean" -> ((child: Expression) =>
-          Average(child).toAggregateExpression()),
-        "stddev" -> ((child: Expression) =>
-          StddevSamp(child).toAggregateExpression()),
+        "count" ->
+          ((child: Expression) => Count(child).toAggregateExpression()),
+        "mean" ->
+          ((child: Expression) => Average(child).toAggregateExpression()),
+        "stddev" ->
+          ((child: Expression) => StddevSamp(child).toAggregateExpression()),
         "min" -> ((child: Expression) => Min(child).toAggregateExpression()),
         "max" -> ((child: Expression) => Max(child).toAggregateExpression())
       )
@@ -1973,8 +1972,8 @@ class Dataset[T] private[sql] (
       // All columns are string type
       val schema =
         StructType(
-          StructField("summary", StringType) :: outputCols
-            .map(StructField(_, StringType))).toAttributes
+          StructField("summary", StringType) ::
+            outputCols.map(StructField(_, StringType))).toAttributes
       LocalRelation.fromExternalRows(schema, ret)
     }
 

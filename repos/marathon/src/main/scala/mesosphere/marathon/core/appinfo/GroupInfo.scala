@@ -11,21 +11,23 @@ case class GroupInfo(
     this
       .maybeApps
       .map { apps =>
-        apps ++ maybeGroups
-          .map {
-            _.flatMap(_.transitiveApps.getOrElse(Seq.empty))
-          }
-          .getOrElse(Seq.empty)
+        apps ++
+          maybeGroups
+            .map {
+              _.flatMap(_.transitiveApps.getOrElse(Seq.empty))
+            }
+            .getOrElse(Seq.empty)
       }
   def transitiveGroups: Option[Seq[GroupInfo]] =
     this
       .maybeGroups
       .map { groups =>
-        groups ++ maybeGroups
-          .map {
-            _.flatMap(_.transitiveGroups.getOrElse(Seq.empty))
-          }
-          .getOrElse(Seq.empty)
+        groups ++
+          maybeGroups
+            .map {
+              _.flatMap(_.transitiveGroups.getOrElse(Seq.empty))
+            }
+            .getOrElse(Seq.empty)
       }
 }
 

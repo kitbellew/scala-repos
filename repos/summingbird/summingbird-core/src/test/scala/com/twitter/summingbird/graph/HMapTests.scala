@@ -74,15 +74,14 @@ object HMapTests extends Properties("HMap") {
       val initKeys = hmap.keysOf(v)
       val added = hmap + (k -> v)
       val finalKeys = added.keysOf(v)
-      val sizeIsConsistent =
-        (finalKeys -- initKeys).size match {
-          case 0 =>
-            hmap.contains(k) // initially present
-          case 1 =>
-            !hmap.contains(k) // initially absent
-          case _ =>
-            false // we can't change the count by more than 1.
-        }
+      val sizeIsConsistent = (finalKeys -- initKeys).size match {
+        case 0 =>
+          hmap.contains(k) // initially present
+        case 1 =>
+          !hmap.contains(k) // initially absent
+        case _ =>
+          false // we can't change the count by more than 1.
+      }
 
       sizeIsConsistent && added.contains(k)
   }

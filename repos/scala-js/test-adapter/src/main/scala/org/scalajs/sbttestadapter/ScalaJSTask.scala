@@ -51,10 +51,9 @@ final class ScalaJSTask private (
         Some(fromJSON[List[TaskInfo]](readJSON(msg)))
     }
 
-    val handlerChain = (eventHandler(handler) orElse
-      loggerHandler(logBuffer) orElse
-      runner.msgHandler(slave) orElse
-      doneHandler)
+    val handlerChain =
+      (eventHandler(handler) orElse loggerHandler(logBuffer) orElse
+        runner.msgHandler(slave) orElse doneHandler)
 
     // Wait for result
     val taskInfos = ComUtils.receiveLoop(slave)(handlerChain)

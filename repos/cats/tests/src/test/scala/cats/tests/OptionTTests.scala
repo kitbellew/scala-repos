@@ -145,8 +145,8 @@ class OptionTTests extends CatsSuite {
   test(
     "implicit Show[OptionT] instance and explicit show method are consistent") {
     forAll { optionT: OptionT[List, Int] =>
-      optionT
-        .show should ===(implicitly[Show[OptionT[List, Int]]].show(optionT))
+      optionT.show should
+        ===(implicitly[Show[OptionT[List, Int]]].show(optionT))
     }
   }
 

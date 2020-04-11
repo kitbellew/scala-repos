@@ -368,8 +368,8 @@ private[sbt] object PluginsDebug {
 
       // Plugins that are newly enabled as a result of selecting the plugins needed for `plugin`, but aren't strictly required for `plugin`.
       //   These could be excluded and `plugin` and the user's current plugins would still be activated.
-      val extraPlugins = incrementalModel
-        .toSet -- minRequiredPlugins -- initialModel
+      val extraPlugins = incrementalModel.toSet -- minRequiredPlugins --
+        initialModel
 
       // Plugins that will no longer be enabled as a result of enabling `plugin`.
       val willRemove = initialModel -- incrementalModel
@@ -385,8 +385,8 @@ private[sbt] object PluginsDebug {
         for (d <- minDeactivate.toList)
           yield {
             // removing any one of these plugins will deactivate `d`.  TODO: This is not an especially efficient implementation.
-            val removeToDeactivate =
-              plugins(minimalModel(d)) -- minRequiredPlugins
+            val removeToDeactivate = plugins(minimalModel(d)) --
+              minRequiredPlugins
             val newlySelected = !initialModel(d)
             // a. suggest removing a plugin in removeOneToDeactivate to deactivate d
             // b. suggest excluding `d` to directly deactivate it in any case
@@ -461,8 +461,7 @@ private[sbt] object PluginsDebug {
             indent(required(enablingPlugins.toList)) ::
             indent(needToDeactivate(deactivate)) ::
             note(willAdd(plugin, extraEnabledPlugins.toList)) ::
-            note(willRemove(plugin, toBeRemoved.toList)) ::
-            Nil
+            note(willRemove(plugin, toBeRemoved.toList)) :: Nil
         parts.filterNot(_.isEmpty).mkString("\n")
       case PluginImpossible(plugin, context, contradictions) =>
         pluginImpossible(plugin, contradictions)

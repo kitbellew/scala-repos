@@ -56,19 +56,17 @@ class StructureViewBuilderSpec
           """
       )
 
-      structure shouldBe List(
-        "(class)Test",
-        "(def)Test.fun",
-        "(object)Test",
-        "(def)Test.apply")
+      structure shouldBe
+        List("(class)Test", "(def)Test.fun", "(object)Test", "(def)Test.apply")
     }
   }
 
-  it should "show nested members" in withPresCompiler { (config, cc) =>
-    val structure = getStructure(
-      config,
-      cc,
-      """
+  it should "show nested members" in
+    withPresCompiler { (config, cc) =>
+      val structure = getStructure(
+        config,
+        cc,
+        """
             package com.example
             object Test {
               type TestType = Int
@@ -80,22 +78,24 @@ class StructureViewBuilderSpec
               }
             }
           """
-    )
+      )
 
-    structure shouldBe List(
-      "(object)Test",
-      "(type)Test.TestType",
-      "(class)Test.Nested",
-      "(def)Test.Nested.fun",
-      "(object)Test.Nested",
-      "(def)Test.Nested.apply")
-  }
+      structure shouldBe
+        List(
+          "(object)Test",
+          "(type)Test.TestType",
+          "(class)Test.Nested",
+          "(def)Test.Nested.fun",
+          "(object)Test.Nested",
+          "(def)Test.Nested.apply")
+    }
 
-  it should "skip accessors" in withPresCompiler { (config, cc) =>
-    val structure = getStructure(
-      config,
-      cc,
-      """
+  it should "skip accessors" in
+    withPresCompiler { (config, cc) =>
+      val structure = getStructure(
+        config,
+        cc,
+        """
             package com.example
             class Test(val accessor: String)
             class CaseTest(x: String, y: Int)
@@ -104,14 +104,15 @@ class StructureViewBuilderSpec
               case class NestedCase(x: String, y:Int)
             }
           """
-    )
+      )
 
-    structure shouldBe List(
-      "(class)Test",
-      "(class)CaseTest",
-      "(object)Test",
-      "(class)Test.Nested",
-      "(class)Test.NestedCase")
-  }
+      structure shouldBe
+        List(
+          "(class)Test",
+          "(class)CaseTest",
+          "(object)Test",
+          "(class)Test.Nested",
+          "(class)Test.NestedCase")
+    }
 
 }

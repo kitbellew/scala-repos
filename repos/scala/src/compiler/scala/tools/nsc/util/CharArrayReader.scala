@@ -104,8 +104,8 @@ abstract class CharArrayReader extends CharArrayReaderData {
         d
       }
     }
-    if (charOffset < buf
-          .length && buf(charOffset) == 'u' && decodeUni && evenSlashPrefix) {
+    if (charOffset < buf.length && buf(charOffset) == 'u' && decodeUni &&
+        evenSlashPrefix) {
       do charOffset += 1 while (
         charOffset < buf.length && buf(charOffset) == 'u'
       )

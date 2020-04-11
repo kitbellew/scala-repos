@@ -86,9 +86,8 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
                   *                            See also [[org.jetbrains.plugins.scala.findUsages.TypeAliasUsagesSearcher]]
                   * innerResolveResult#element apply method
                   */
-                val all = Seq(x.getActualElement, x.element) ++ x
-                  .innerResolveResult
-                  .map(_.getElement)
+                val all = Seq(x.getActualElement, x.element) ++
+                  x.innerResolveResult.map(_.getElement)
                 x.element match {
                   case f: ScFunction if f.isSynthetic =>
                     Seq(x.getActualElement).flatMap(goToTargets)

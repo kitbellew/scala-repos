@@ -487,8 +487,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       .getOrElseUpdate(execId, new ExecutorSummary)
 
     val shuffleWriteDelta =
-      (taskMetrics.shuffleWriteMetrics.map(_.bytesWritten).getOrElse(0L)
-        - oldMetrics
+      (taskMetrics.shuffleWriteMetrics.map(_.bytesWritten).getOrElse(0L) -
+        oldMetrics
           .flatMap(_.shuffleWriteMetrics)
           .map(_.bytesWritten)
           .getOrElse(0L))
@@ -496,8 +496,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
     execSummary.shuffleWrite += shuffleWriteDelta
 
     val shuffleWriteRecordsDelta =
-      (taskMetrics.shuffleWriteMetrics.map(_.recordsWritten).getOrElse(0L)
-        - oldMetrics
+      (taskMetrics.shuffleWriteMetrics.map(_.recordsWritten).getOrElse(0L) -
+        oldMetrics
           .flatMap(_.shuffleWriteMetrics)
           .map(_.recordsWritten)
           .getOrElse(0L))
@@ -505,8 +505,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
     execSummary.shuffleWriteRecords += shuffleWriteRecordsDelta
 
     val shuffleReadDelta =
-      (taskMetrics.shuffleReadMetrics.map(_.totalBytesRead).getOrElse(0L)
-        - oldMetrics
+      (taskMetrics.shuffleReadMetrics.map(_.totalBytesRead).getOrElse(0L) -
+        oldMetrics
           .flatMap(_.shuffleReadMetrics)
           .map(_.totalBytesRead)
           .getOrElse(0L))
@@ -514,8 +514,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
     execSummary.shuffleRead += shuffleReadDelta
 
     val shuffleReadRecordsDelta =
-      (taskMetrics.shuffleReadMetrics.map(_.recordsRead).getOrElse(0L)
-        - oldMetrics
+      (taskMetrics.shuffleReadMetrics.map(_.recordsRead).getOrElse(0L) -
+        oldMetrics
           .flatMap(_.shuffleReadMetrics)
           .map(_.recordsRead)
           .getOrElse(0L))
@@ -523,47 +523,44 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
     execSummary.shuffleReadRecords += shuffleReadRecordsDelta
 
     val inputBytesDelta =
-      (taskMetrics.inputMetrics.map(_.bytesRead).getOrElse(0L)
-        - oldMetrics.flatMap(_.inputMetrics).map(_.bytesRead).getOrElse(0L))
+      (taskMetrics.inputMetrics.map(_.bytesRead).getOrElse(0L) -
+        oldMetrics.flatMap(_.inputMetrics).map(_.bytesRead).getOrElse(0L))
     stageData.inputBytes += inputBytesDelta
     execSummary.inputBytes += inputBytesDelta
 
     val inputRecordsDelta =
-      (taskMetrics.inputMetrics.map(_.recordsRead).getOrElse(0L)
-        - oldMetrics.flatMap(_.inputMetrics).map(_.recordsRead).getOrElse(0L))
+      (taskMetrics.inputMetrics.map(_.recordsRead).getOrElse(0L) -
+        oldMetrics.flatMap(_.inputMetrics).map(_.recordsRead).getOrElse(0L))
     stageData.inputRecords += inputRecordsDelta
     execSummary.inputRecords += inputRecordsDelta
 
     val outputBytesDelta =
-      (taskMetrics.outputMetrics.map(_.bytesWritten).getOrElse(0L)
-        - oldMetrics.flatMap(_.outputMetrics).map(_.bytesWritten).getOrElse(0L))
+      (taskMetrics.outputMetrics.map(_.bytesWritten).getOrElse(0L) -
+        oldMetrics.flatMap(_.outputMetrics).map(_.bytesWritten).getOrElse(0L))
     stageData.outputBytes += outputBytesDelta
     execSummary.outputBytes += outputBytesDelta
 
     val outputRecordsDelta =
-      (taskMetrics.outputMetrics.map(_.recordsWritten).getOrElse(0L)
-        - oldMetrics
-          .flatMap(_.outputMetrics)
-          .map(_.recordsWritten)
-          .getOrElse(0L))
+      (taskMetrics.outputMetrics.map(_.recordsWritten).getOrElse(0L) -
+        oldMetrics.flatMap(_.outputMetrics).map(_.recordsWritten).getOrElse(0L))
     stageData.outputRecords += outputRecordsDelta
     execSummary.outputRecords += outputRecordsDelta
 
     val diskSpillDelta =
-      taskMetrics
-        .diskBytesSpilled - oldMetrics.map(_.diskBytesSpilled).getOrElse(0L)
+      taskMetrics.diskBytesSpilled -
+        oldMetrics.map(_.diskBytesSpilled).getOrElse(0L)
     stageData.diskBytesSpilled += diskSpillDelta
     execSummary.diskBytesSpilled += diskSpillDelta
 
     val memorySpillDelta =
-      taskMetrics
-        .memoryBytesSpilled - oldMetrics.map(_.memoryBytesSpilled).getOrElse(0L)
+      taskMetrics.memoryBytesSpilled -
+        oldMetrics.map(_.memoryBytesSpilled).getOrElse(0L)
     stageData.memoryBytesSpilled += memorySpillDelta
     execSummary.memoryBytesSpilled += memorySpillDelta
 
     val timeDelta =
-      taskMetrics
-        .executorRunTime - oldMetrics.map(_.executorRunTime).getOrElse(0L)
+      taskMetrics.executorRunTime -
+        oldMetrics.map(_.executorRunTime).getOrElse(0L)
     stageData.executorRunTime += timeDelta
   }
 

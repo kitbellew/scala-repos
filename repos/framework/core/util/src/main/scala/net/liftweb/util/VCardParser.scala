@@ -48,16 +48,18 @@ object VCardParser extends Parsers {
   case class VCardEntry(key: VCardKey, value: List[String])
 
   lazy val multiLineSep = opt(elem('\n') ~ elem(' '))
-  lazy val value = (
-    multiLineSep ~> elem(
-      "value",
-      { c =>
-        !c.isControl && c != ';'
-      }) <~ multiLineSep
-  ).* ^^ {
-    case l =>
-      l.mkString
-  }
+  lazy val value =
+    (
+      multiLineSep ~>
+        elem(
+          "value",
+          { c =>
+            !c.isControl && c != ';'
+          }) <~ multiLineSep
+    ).* ^^ {
+      case l =>
+        l.mkString
+    }
   lazy val spaces = (elem(' ') | elem('\t') | elem('\n') | elem('\r')) *
   lazy val key = elem(
     "key",
@@ -69,22 +71,20 @@ object VCardParser extends Parsers {
   }
   lazy val props =
     (
-      (
-        ((elem(';') ~> key <~ elem('=')) ~ key) ^^ {
-          case a ~ b =>
-            (a, b)
-        }
-      ) | (
-        (elem(';') ~> key) ^^ {
+      (((elem(';') ~> key <~ elem('=')) ~ key) ^^ {
+        case a ~ b =>
+          (a, b)
+      }) |
+        ((elem(';') ~> key) ^^ {
           case a =>
             (a, "")
-        }
-      )
+        })
     ) *
-  lazy val left = (key ~ props) ^^ {
-    case k ~ l =>
-      VCardKey(k, l)
-  }
+  lazy val left =
+    (key ~ props) ^^ {
+      case k ~ l =>
+        VCardKey(k, l)
+    }
   lazy val expr =
     (
       ((spaces ~> left ~! elem(':')) ~ repsep(value, ';')) ^^ {

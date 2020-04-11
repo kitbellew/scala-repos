@@ -54,22 +54,25 @@ class KeyFrameSpec
 
   override def getJavaClassInstance = new jfxa.KeyFrame(5 s)
 
-  it should "have a convenient apply construction format and property access for time" in {
-    KeyFrame(10 ms).time should equal(10 ms)
-  }
+  it should
+    "have a convenient apply construction format and property access for time" in {
+      KeyFrame(10 ms).time should equal(10 ms)
+    }
 
-  it should "have a convenient apply construction format and property access for name" in {
-    KeyFrame(10 ms, name = "sample").name should equal("sample")
-  }
+  it should
+    "have a convenient apply construction format and property access for name" in {
+      KeyFrame(10 ms, name = "sample").name should equal("sample")
+    }
 
-  it should "have a convenient apply construction format and property access for finish handlers" in {
-    val finishHandler =
-      new jfxe.EventHandler[jfxe.ActionEvent] {
-        def handle(p1: jfxe.ActionEvent) {}
-      }
-    KeyFrame(10 ms, onFinished = finishHandler)
-      .onFinished should equal(finishHandler)
-  }
+  it should
+    "have a convenient apply construction format and property access for finish handlers" in {
+      val finishHandler =
+        new jfxe.EventHandler[jfxe.ActionEvent] {
+          def handle(p1: jfxe.ActionEvent) {}
+        }
+      KeyFrame(10 ms, onFinished = finishHandler).onFinished should
+        equal(finishHandler)
+    }
 
   it should "have a simpler syntax for finish handlers" in {
     // There is a potential problems with code blocks as event handlers,
@@ -101,24 +104,25 @@ class KeyFrameSpec
     callCount1 should equal(3)
   }
 
-  it should "have a simpler syntax for finish handlers as non-param functions" in {
-    var callCount1 = 0
-    var callCount2 = 0
-    val finishHandler = () => {
-      // There is a potential problems with code blocks as event handlers,
-      // only the last statement is executed during handler invocation
-      // prior statements are executed only once during construction.
-      callCount1 += 1
-      callCount2 += 1
+  it should
+    "have a simpler syntax for finish handlers as non-param functions" in {
+      var callCount1 = 0
+      var callCount2 = 0
+      val finishHandler = () => {
+        // There is a potential problems with code blocks as event handlers,
+        // only the last statement is executed during handler invocation
+        // prior statements are executed only once during construction.
+        callCount1 += 1
+        callCount2 += 1
+      }
+      // Call the handler 3 times
+      KeyFrame(10 ms, onFinished = finishHandler).onFinished.handle(null)
+      KeyFrame(10 ms, onFinished = finishHandler).onFinished.handle(null)
+      KeyFrame(10 ms, onFinished = finishHandler).onFinished.handle(null)
+      // Verify that three calls were made
+      callCount2 should equal(3)
+      callCount1 should equal(3)
     }
-    // Call the handler 3 times
-    KeyFrame(10 ms, onFinished = finishHandler).onFinished.handle(null)
-    KeyFrame(10 ms, onFinished = finishHandler).onFinished.handle(null)
-    KeyFrame(10 ms, onFinished = finishHandler).onFinished.handle(null)
-    // Verify that three calls were made
-    callCount2 should equal(3)
-    callCount1 should equal(3)
-  }
 
   it should "have a simpler syntax for finish handlers with events" in {
     var callCount1 = 0
@@ -137,12 +141,13 @@ class KeyFrameSpec
     callCount1 should equal(3)
   }
 
-  it should "have a convenient apply construction format and property access for values" in {
-    val doubleProperty = new DoubleProperty(null, "sample")
-    val frames = Set(KeyValue(doubleProperty, 50d))
-    KeyFrame(10 ms, values = frames)
-      .values should equal(setAsJavaSet(frames.map(_.delegate)))
-  }
+  it should
+    "have a convenient apply construction format and property access for values" in {
+      val doubleProperty = new DoubleProperty(null, "sample")
+      val frames = Set(KeyValue(doubleProperty, 50d))
+      KeyFrame(10 ms, values = frames).values should
+        equal(setAsJavaSet(frames.map(_.delegate)))
+    }
 
   it should "support the at(duration) {value} syntax" in {
     val doubleProperty = new DoubleProperty(null, "sample")

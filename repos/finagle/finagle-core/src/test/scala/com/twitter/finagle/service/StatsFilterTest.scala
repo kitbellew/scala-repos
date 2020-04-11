@@ -36,9 +36,10 @@ class StatsFilterTest extends FunSuite {
     val sr = new InMemoryStatsReceiver()
     val filter = new StatsFilter[String, String](sr)
     val promise = new Promise[String]
-    val svc = filter andThen new Service[String, String] {
-      def apply(request: String) = promise
-    }
+    val svc = filter andThen
+      new Service[String, String] {
+        def apply(request: String) = promise
+      }
 
     Time.withCurrentTimeFrozen { tc =>
       svc("1")
@@ -56,9 +57,10 @@ class StatsFilterTest extends FunSuite {
         StatsFilter.DefaultExceptions,
         TimeUnit.MICROSECONDS)
     val promise = new Promise[String]
-    val svc = filter andThen new Service[String, String] {
-      def apply(request: String) = promise
-    }
+    val svc = filter andThen
+      new Service[String, String] {
+        def apply(request: String) = promise
+      }
 
     Time.withCurrentTimeFrozen { tc =>
       svc("1")

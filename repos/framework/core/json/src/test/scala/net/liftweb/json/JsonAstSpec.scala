@@ -93,22 +93,18 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
   "Remove all" in {
     val removeAllProp =
       (x: JValue) =>
-        (
-          x remove { _ =>
-            true
-          }
-        ) == JNothing
+        (x remove { _ =>
+          true
+        }) == JNothing
     forAll(removeAllProp)
   }
 
   "Remove nothing" in {
     val removeNothingProp =
       (x: JValue) =>
-        (
-          x remove { _ =>
-            false
-          }
-        ) == x
+        (x remove { _ =>
+          false
+        }) == x
     forAll(removeNothingProp)
   }
 
@@ -180,9 +176,8 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
   }
 
   "allow escaping arbitrary characters when serializing" in {
-    JsonAST.render(
-      JString("aaabbb"),
-      JsonAST.RenderSettings(0, Set('c'))) must not be matching("a".r)
+    JsonAST.render(JString("aaabbb"), JsonAST.RenderSettings(0, Set('c'))) must
+      not be matching("a".r)
   }
 
   "escape bad JSON characters by default" in {
@@ -207,12 +202,13 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
       .find() must beFalse
   }
 
-  "equals hashCode" in prop({ x: JObject =>
-    val y = JObject(scala.util.Random.shuffle(x.obj))
+  "equals hashCode" in
+    prop({ x: JObject =>
+      val y = JObject(scala.util.Random.shuffle(x.obj))
 
-    x must_== y
-    x.## must_== y.##
-  })
+      x must_== y
+      x.## must_== y.##
+    })
 
   "find all children" in {
     val subject = JObject(
@@ -221,17 +217,14 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
           "beta",
           JObject(
             JField("alpha", JString("bacon")) ::
-              JField("charlie", JString("i'm a masseuse")) ::
-              Nil)) ::
-        Nil)
+              JField("charlie", JString("i'm a masseuse")) :: Nil)) :: Nil)
 
     subject \\ "alpha" must_==
       JObject(
         JField("alpha", JString("apple")) ::
-          JField("alpha", JString("bacon")) ::
-          Nil)
-    subject \\ "charlie" must_== JObject(
-      List(JField("charlie", JString("i'm a masseuse"))))
+          JField("alpha", JString("bacon")) :: Nil)
+    subject \\ "charlie" must_==
+      JObject(List(JField("charlie", JString("i'm a masseuse"))))
   }
 
   private def reorderFields(json: JValue) =

@@ -133,8 +133,8 @@ object TestConfigurationUtil {
           if literal.isString && literal.getValue.isInstanceOf[String] =>
         Some(escapeTestName(literal.getValue.asInstanceOf[String]))
       case literal: ScLiteral
-          if allowSymbolLiterals && literal
-            .isSymbol && literal.getValue.isInstanceOf[Symbol] =>
+          if allowSymbolLiterals && literal.isSymbol &&
+            literal.getValue.isInstanceOf[Symbol] =>
         Some(escapeTestName(literal.getValue.asInstanceOf[Symbol].name))
       case literal: ScLiteral if literal.getValue.isInstanceOf[Number] =>
         Some(literal.getValue)

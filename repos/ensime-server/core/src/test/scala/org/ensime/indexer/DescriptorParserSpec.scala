@@ -46,23 +46,24 @@ class DescriptorParserSpec extends EnsimeSpec {
     invert("(I[IILjava/lang/String;Z)V")
   }
 
-  "DescriptorParser's JVM internal mode" should "fail to parse the empty string" in {
-    intercept[Exception](parseType(""))
-  }
+  "DescriptorParser's JVM internal mode" should
+    "fail to parse the empty string" in {
+      intercept[Exception](parseType(""))
+    }
 
   it should "fail to parse a bad string" in {
     intercept[Exception](parseType("not valid"))
   }
 
   it should "handle $_- in package names" in {
-    parseType("Lcom/-$random_/Foo;") should ===(
-      ClassName(PackageName(List("com", "-$random_")), "Foo"))
+    parseType("Lcom/-$random_/Foo;") should
+      ===(ClassName(PackageName(List("com", "-$random_")), "Foo"))
   }
 
   it should "handle examples" in {
     parseType(
-      "Lscalaz/syntax/ToApplicativeOps$ApplicativeIdV$$anonfun$η$1;") should ===(
-      SZ)
+      "Lscalaz/syntax/ToApplicativeOps$ApplicativeIdV$$anonfun$η$1;") should
+      ===(SZ)
     parseType("Ljava/lang/String;") should ===(S)
     parseType("[Ljava/lang/String;") should ===(A(S))
     parseType("[[Ljava/lang/String;") should ===(A(A(S)))

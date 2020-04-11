@@ -179,8 +179,8 @@ object Exception {
   final def allCatcher[T]: Catcher[T] = mkThrowableCatcher(_ => true, throw _)
 
   /** The empty `Catch` object. */
-  final val noCatch: Catch[Nothing] =
-    new Catch(nothingCatcher) withDesc "<nothing>"
+  final val noCatch: Catch[Nothing] = new Catch(nothingCatcher) withDesc
+    "<nothing>"
 
   /** A `Catch` object which catches everything. */
   final def allCatch[T]: Catch[T] =
@@ -200,9 +200,8 @@ object Exception {
     *  to catch exactly what you specify, use `catchingPromiscuously` instead.
     */
   def catching[T](exceptions: Class[_]*): Catch[T] =
-    new Catch(pfFromExceptions(exceptions: _*)) withDesc (
-      exceptions map (_.getName) mkString ", "
-    )
+    new Catch(pfFromExceptions(exceptions: _*)) withDesc
+      (exceptions map (_.getName) mkString ", ")
 
   def catching[T](c: Catcher[T]): Catch[T] = new Catch(c)
 

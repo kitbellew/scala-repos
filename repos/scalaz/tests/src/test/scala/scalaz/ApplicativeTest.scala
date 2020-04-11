@@ -31,21 +31,23 @@ object ApplicativeTest extends SpecLite {
               t))
     }
 
-  "replicateM is the same" ! forAll { (fa: Option[Int]) =>
-    forAll(Gen.choose(0, 100)) { n =>
-      fa.replicateM(n) must_=== (replicateM(n, fa))
+  "replicateM is the same" !
+    forAll { (fa: Option[Int]) =>
+      forAll(Gen.choose(0, 100)) { n =>
+        fa.replicateM(n) must_=== (replicateM(n, fa))
+      }
     }
-  }
 
-  "filterM is the same" ! forAll { (l: List[Int]) =>
-    // don't make `None` too likely
-    def pred(n: Int) =
-      if (n < 0 && n % 2 == 0)
-        None
-      else
-        Some(n % 2 == 0)
-    l.filterM(pred) must_=== (filterM(l, pred))
-  }
+  "filterM is the same" !
+    forAll { (l: List[Int]) =>
+      // don't make `None` too likely
+      def pred(n: Int) =
+        if (n < 0 && n % 2 == 0)
+          None
+        else
+          Some(n % 2 == 0)
+      l.filterM(pred) must_=== (filterM(l, pred))
+    }
 
 }
 

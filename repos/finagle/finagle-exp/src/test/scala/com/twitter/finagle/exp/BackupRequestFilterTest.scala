@@ -68,8 +68,8 @@ class BackupRequestFilterTest extends FunSuite with MockitoSugar with Matchers {
             assert(ideal == actual)
           case error =>
             val epsilon = maxDuration.inMillis * error
-            actual.inMillis.toDouble should be(
-              ideal.inMillis.toDouble +- epsilon)
+            actual.inMillis.toDouble should
+              be(ideal.inMillis.toDouble +- epsilon)
         }
       }
     }

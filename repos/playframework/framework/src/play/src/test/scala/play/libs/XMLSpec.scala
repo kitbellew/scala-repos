@@ -40,10 +40,11 @@ object XMLSpec extends Specification {
                   |   <!ENTITY xxe SYSTEM "${f
              .toURI}">]><foo>hello&xxe;</foo>""".stripMargin
 
-      parse(xml) must throwA[RuntimeException].like {
-        case re =>
-          re.getCause must beAnInstanceOf[SAXException]
-      }
+      parse(xml) must
+        throwA[RuntimeException].like {
+          case re =>
+            re.getCause must beAnInstanceOf[SAXException]
+        }
     }
 
     "parse XML bodies without loading in a related schema from a parameter" in {
@@ -66,18 +67,19 @@ object XMLSpec extends Specification {
                   |   %pe;
                   |   ]><foo>hello&xxe;</foo>""".stripMargin
 
-      parse(xml) must throwA[RuntimeException].like {
-        case re =>
-          re.getCause must beAnInstanceOf[SAXException]
-      }
+      parse(xml) must
+        throwA[RuntimeException].like {
+          case re =>
+            re.getCause must beAnInstanceOf[SAXException]
+        }
     }
 
     "gracefully fail when there are too many nested entities" in {
       val nested =
         for (x <- 1 to 30)
-          yield "<!ENTITY laugh" + x + " \"&laugh" + (x - 1) + ";&laugh" + (
-            x - 1
-          ) + ";\">"
+          yield "<!ENTITY laugh" + x + " \"&laugh" +
+            (x - 1) + ";&laugh" +
+            (x - 1) + ";\">"
       val xml = s"""<?xml version="1.0"?>
                   | <!DOCTYPE billion [
                   | <!ELEMENT billion (#PCDATA)>
@@ -86,10 +88,11 @@ object XMLSpec extends Specification {
                   | ]>
                   | <billion>&laugh30;</billion>""".stripMargin
 
-      parse(xml) must throwA[RuntimeException].like {
-        case re =>
-          re.getCause must beAnInstanceOf[SAXException]
-      }
+      parse(xml) must
+        throwA[RuntimeException].like {
+          case re =>
+            re.getCause must beAnInstanceOf[SAXException]
+        }
     }
 
     "gracefully fail when an entity expands to be very large" in {
@@ -101,10 +104,11 @@ object XMLSpec extends Specification {
                   | ]>
                   | <kaboom>$entities</kaboom>""".stripMargin
 
-      parse(xml) must throwA[RuntimeException].like {
-        case re =>
-          re.getCause must beAnInstanceOf[SAXException]
-      }
+      parse(xml) must
+        throwA[RuntimeException].like {
+          case re =>
+            re.getCause must beAnInstanceOf[SAXException]
+        }
     }
   }
 }

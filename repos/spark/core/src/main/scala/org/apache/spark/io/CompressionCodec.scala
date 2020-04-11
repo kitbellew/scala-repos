@@ -51,9 +51,9 @@ private[spark] object CompressionCodec {
   private[spark] def supportsConcatenationOfSerializedStreams(
       codec: CompressionCodec): Boolean = {
     (
-      codec.isInstanceOf[SnappyCompressionCodec] || codec
-        .isInstanceOf[LZFCompressionCodec]
-      || codec.isInstanceOf[LZ4CompressionCodec]
+      codec.isInstanceOf[SnappyCompressionCodec] ||
+      codec.isInstanceOf[LZFCompressionCodec] ||
+      codec.isInstanceOf[LZ4CompressionCodec]
     )
   }
 

@@ -32,12 +32,11 @@ trait PresentationCompilation {
       // scala> .toInt
       //
       // and for multi-line input.
-      val line1 = partialInput + (
-        if (Completion.looksLikeInvocation(line)) {
-          self.mostRecentVar + line
-        } else
-          line
-      )
+      val line1 = partialInput +
+        (if (Completion.looksLikeInvocation(line)) {
+           self.mostRecentVar + line
+         } else
+           line)
       val compiler = newPresentationCompiler()
       val trees = compiler.newUnitParser(line1).parseStats()
       val importer = global.mkImporter(compiler)

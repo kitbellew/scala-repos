@@ -28,9 +28,10 @@ private[round] final class Finisher(
     }
 
   def rageQuit(game: Game, winner: Option[Color]): Fu[Events] =
-    apply(game, _.Timeout, winner) >>- winner.?? { color =>
-      playban.rageQuit(game, !color)
-    }
+    apply(game, _.Timeout, winner) >>-
+      winner.?? { color =>
+        playban.rageQuit(game, !color)
+      }
 
   def other(
       game: Game,
@@ -50,9 +51,8 @@ private[round] final class Finisher(
       Color.all foreach notifyTimeline(prog.game)
     lila.mon.game.finish(status.name)()
     casualOnly.fold(
-      GameRepo unrate prog.game.id inject prog
-        .game
-        .copy(mode = chess.Mode.Casual),
+      GameRepo unrate prog.game.id inject
+        prog.game.copy(mode = chess.Mode.Casual),
       fuccess(prog.game)) flatMap { g =>
       (GameRepo save prog) >>
         GameRepo.finish(
@@ -84,14 +84,13 @@ private[round] final class Finisher(
     if (!game.aborted)
       game.player(color).userId foreach { userId =>
         game.perfType foreach { perfType =>
-          timeline ! (
-            Propagate(
+          timeline !
+            (Propagate(
               GameEnd(
                 playerId = game fullIdOf color,
                 opponent = game.player(!color).userId,
                 win = game.winnerColor map (color ==),
-                perf = perfType.key)) toUser userId
-          )
+                perf = perfType.key)) toUser userId)
         }
       }
   }
@@ -100,8 +99,8 @@ private[round] final class Finisher(
     (!finish.isVsSelf && !finish.game.aborted) ?? {
       (finish.white |@| finish.black).tupled ?? {
         case (white, black) =>
-          crosstableApi add finish.game zip perfsUpdater
-            .save(finish.game, white, black)
+          crosstableApi add finish.game zip
+            perfsUpdater.save(finish.game, white, black)
       } zip
         (finish.white ?? incNbGames(finish.game)) zip
         (finish.black ?? incNbGames(finish.game)) void

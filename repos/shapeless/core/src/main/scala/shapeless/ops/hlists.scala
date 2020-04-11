@@ -2698,7 +2698,10 @@ object hlist {
         tupler: Tupler[OutT]): Aux[L, tupler.Out] =
       new Unzip[L] {
         type Out = tupler.Out
-        def apply(l: L): Out = (l map productElements).transpose.tupled
+        def apply(l: L): Out =
+          (
+            l map productElements
+          ).transpose.tupled
       }
   }
 

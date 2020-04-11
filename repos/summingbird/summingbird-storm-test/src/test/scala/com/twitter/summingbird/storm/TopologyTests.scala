@@ -190,9 +190,8 @@ class TopologyTests extends WordSpec {
       .sumByKey(TestStore.createStore[Int, Int]()._2)
 
     val opts = Map(
-      nodeName -> Options()
-        .set(FlatMapParallelism(50))
-        .set(SourceParallelism(30)))
+      nodeName ->
+        Options().set(FlatMapParallelism(50)).set(SourceParallelism(30)))
     val storm = Storm.local(opts)
     val stormTopo = storm.plan(p).topology
     // Source producer
@@ -214,9 +213,8 @@ class TopologyTests extends WordSpec {
       .sumByKey(TestStore.createStore[Int, Int]()._2)
 
     val opts = Map(
-      otherNodeName -> Options()
-        .set(SourceParallelism(30))
-        .set(SummerParallelism(50)),
+      otherNodeName ->
+        Options().set(SourceParallelism(30)).set(SummerParallelism(50)),
       nodeName -> Options().set(FlatMapParallelism(50)))
     val storm = Storm.local(opts)
     val stormTopo = storm.plan(p).topology

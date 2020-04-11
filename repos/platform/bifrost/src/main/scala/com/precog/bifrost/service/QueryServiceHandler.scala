@@ -110,9 +110,8 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
 
     opts.output match {
       case FileContent.TextCSV =>
-        response.copy(headers = response
-          .headers + `Content-Type`(text / csv) + `Content-Disposition`(
-          attachment(Some("results.csv"))))
+        response.copy(headers = response.headers + `Content-Type`(text / csv) +
+          `Content-Disposition`(attachment(Some("results.csv"))))
       case _ =>
         response
           .copy(headers = response.headers + `Content-Type`(application / json))
@@ -191,7 +190,8 @@ class AnalysisServiceHandler(
               .toSeq
               .flatMap(_.directives)
             logger.debug(
-              "Received analysis request with cache directives: " + cacheDirectives)
+              "Received analysis request with cache directives: " +
+                cacheDirectives)
 
             val cacheControl0 = CacheControl
               .fromCacheDirectives(cacheDirectives: _*)
@@ -219,7 +219,8 @@ class AnalysisServiceHandler(
               )
             } valueOr { evaluationError =>
               logger.error(
-                "Evaluation errors prevented returning results from stored query: " + evaluationError)
+                "Evaluation errors prevented returning results from stored query: " +
+                  evaluationError)
               HttpResponse(InternalServerError)
             }
           }
@@ -295,9 +296,9 @@ class SyncQueryServiceHandler(
         val data = ensureTermination(data0)
         val prefix = CharBuffer.wrap(
           """{"errors":[],"warnings":[],"serverWarnings":[{"message":"Job service is down; errors/warnings are disabled."}],"data":""")
-        val result: StreamT[Future, CharBuffer] = (prefix :: data) ++ (
-          CharBuffer.wrap("}") :: StreamT.empty[Future, CharBuffer]
-        )
+        val result: StreamT[Future, CharBuffer] =
+          (prefix :: data) ++
+            (CharBuffer.wrap("}") :: StreamT.empty[Future, CharBuffer])
         HttpResponse[QueryResult](OK, content = Some(Right(result)))
           .point[Future]
 
@@ -323,13 +324,14 @@ class SyncQueryServiceHandler(
                     warningsM |@| errorsM |@| serverErrorsM |@| serverWarningsM
                   ) { (warnings, errors, serverErrors, serverWarnings) =>
                     val suffix =
-                      """, "errors": %s, "warnings": %s, "serverErrors": %s, "serverWarnings": %s }""" format (
-                        JArray(errors.toList map (_.value)).renderCompact,
-                        JArray(warnings.toList map (_.value)).renderCompact,
-                        JArray(serverErrors.toList map (_.value)).renderCompact,
-                        JArray(serverWarnings.toList map (_.value))
-                          .renderCompact
-                    )
+                      """, "errors": %s, "warnings": %s, "serverErrors": %s, "serverWarnings": %s }""" format
+                        (
+                          JArray(errors.toList map (_.value)).renderCompact,
+                          JArray(warnings.toList map (_.value)).renderCompact,
+                          JArray(serverErrors.toList map (_.value))
+                            .renderCompact,
+                          JArray(serverWarnings.toList map (_.value))
+                            .renderCompact)
                     Some((CharBuffer.wrap(suffix), None))
                   }
               }

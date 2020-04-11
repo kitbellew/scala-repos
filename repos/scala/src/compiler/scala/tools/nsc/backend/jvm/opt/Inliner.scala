@@ -41,11 +41,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
       val warnings = inline(request)
       for (warning <- warnings) {
-        if ((
-              callee.annotatedInline && btypes
-                .compilerSettings
-                .YoptWarningEmitAtInlineFailed
-            ) || warning.emitWarning(compilerSettings)) {
+        if ((callee.annotatedInline &&
+            btypes.compilerSettings.YoptWarningEmitAtInlineFailed) ||
+            warning.emitWarning(compilerSettings)) {
           val annotWarn =
             if (callee.annotatedInline)
               " is annotated @inline but"
@@ -71,9 +69,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     override def compare(x: InlineRequest, y: InlineRequest): Int = {
       val xCs = x.callsite
       val yCs = y.callsite
-      val cls = xCs.callsiteClass.internalName compareTo yCs
-        .callsiteClass
-        .internalName
+      val cls = xCs.callsiteClass.internalName compareTo
+        yCs.callsiteClass.internalName
       if (cls != 0)
         return cls
 
@@ -600,12 +597,11 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     callsiteMethod.maxLocals += returnType.getSize + callee.maxLocals
     val maxStackOfInlinedCode = {
       // One slot per value is correct for long / double, see comment in the `analysis` package object.
-      val numStoredArgs = calleeParamTypes.length + (
-        if (isStaticMethod(callee))
-          0
-        else
-          1
-      )
+      val numStoredArgs = calleeParamTypes.length +
+        (if (isStaticMethod(callee))
+           0
+         else
+           1)
       callee.maxStack + callsiteStackHeight - numStoredArgs
     }
     val stackHeightAtNullCheck = {
@@ -613,8 +609,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       // If the callsite has other argument values than the receiver on the stack, these are pop'ed
       // and stored into locals before the null check, so in that case the maxStack doesn't grow.
       val stackSlotForNullCheck =
-        if (!isStaticMethod(callee) && !receiverKnownNotNull && calleeParamTypes
-              .isEmpty)
+        if (!isStaticMethod(callee) && !receiverKnownNotNull &&
+            calleeParamTypes.isEmpty)
           1
         else
           0
@@ -625,8 +621,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       callsiteMethod.maxStack,
       math.max(stackHeightAtNullCheck, maxStackOfInlinedCode))
 
-    if (hasSerializableClosureInstantiation && !indyLambdaHosts(
-          callsiteClass.internalName)) {
+    if (hasSerializableClosureInstantiation &&
+        !indyLambdaHosts(callsiteClass.internalName)) {
       indyLambdaHosts += callsiteClass.internalName
       addLambdaDeserialize(
         byteCodeRepository.classNode(callsiteClass.internalName).get)
@@ -652,8 +648,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         callsiteMethod = callsiteMethod,
         callsiteClass = callsiteClass,
         argInfos = argInfos,
-        callsiteStackHeight = callsiteStackHeight + originalCallsite
-          .callsiteStackHeight
+        callsiteStackHeight = callsiteStackHeight +
+          originalCallsite.callsiteStackHeight
       )
       originalCallsite.inlinedClones += ClonedCallsite(newCallsite, callsite)
       callGraph.addCallsite(newCallsite)
@@ -664,8 +660,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         val newIndy = instructionMap(
           originalClosureInit.lambdaMetaFactoryCall.indy)
           .asInstanceOf[InvokeDynamicInsnNode]
-        val capturedArgInfos = originalClosureInit
-          .capturedArgInfos flatMap mapArgInfo
+        val capturedArgInfos = originalClosureInit.capturedArgInfos flatMap
+          mapArgInfo
         val newClosureInit = ClosureInstantiation(
           originalClosureInit.lambdaMetaFactoryCall.copy(indy = newIndy),
           callsiteMethod,
@@ -767,8 +763,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       val expectedArgs = asm
         .Type
         .getArgumentTypes(callsiteInstruction.desc)
-        .length + (
-        callsiteInstruction.getOpcode match {
+        .length +
+        (callsiteInstruction.getOpcode match {
           case INVOKEVIRTUAL | INVOKESPECIAL | INVOKEINTERFACE =>
             1
           case INVOKESTATIC =>
@@ -776,8 +772,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           case INVOKEDYNAMIC =>
             assertionError(
               s"Unexpected opcode, cannot inline ${textify(callsiteInstruction)}")
-        }
-      )
+        })
       callsiteStackHeight > expectedArgs
     }
 
@@ -897,9 +892,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           val isStatic = (ACC_STATIC & memberFlags) != 0
           tryEither {
             val condB2 = from.isSubtypeOf(memberDeclClass).orThrow && {
-              isStatic || memberRefClass.isSubtypeOf(from).orThrow || from
-                .isSubtypeOf(memberRefClass)
-                .orThrow
+              isStatic || memberRefClass.isSubtypeOf(from).orThrow ||
+              from.isSubtypeOf(memberRefClass).orThrow
             }
             Right(
               (condB2 || samePackageAsDestination /* B3 (protected) */ ) &&

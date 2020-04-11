@@ -295,10 +295,11 @@ class DefaultPromiseTest {
            b <- ps)
         yield (a, b)
 
-    var allActions = ps.map(Complete(_)) ++ pPairs.map {
-      case (a, b) =>
-        Link(a, b)
-    } ++ ps.map(AttachHandler(_))
+    var allActions = ps.map(Complete(_)) ++
+      pPairs.map {
+        case (a, b) =>
+          Link(a, b)
+      } ++ ps.map(AttachHandler(_))
     for ((permutation, i) <- allActions.permutations.zipWithIndex) {
       testActions(permutation)
     }

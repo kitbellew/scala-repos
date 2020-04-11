@@ -211,9 +211,8 @@ class LDASuite
     val topics = model.describeTopics(3)
     assert(topics.count() === k)
     assert(
-      topics.select("topic").rdd.map(_.getInt(0)).collect().toSet === Range(
-        0,
-        k).toSet)
+      topics.select("topic").rdd.map(_.getInt(0)).collect().toSet ===
+        Range(0, k).toSet)
     topics
       .select("termIndices")
       .collect()
@@ -229,8 +228,8 @@ class LDASuite
         case r: Row =>
           val termWeights = r.getAs[Seq[Double]](0)
           assert(
-            termWeights.length === 3 && termWeights
-              .forall(w => w >= 0.0 && w <= 1.0))
+            termWeights.length === 3 &&
+              termWeights.forall(w => w >= 0.0 && w <= 1.0))
       }
   }
 

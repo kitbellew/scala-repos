@@ -294,8 +294,9 @@ abstract class EndToEndEventAdapterSpec(
             Persistence(system2)
               .adaptersFor(s"akka.persistence.journal.$journalName")
               .get(classOf[String])
-          }.getMessage should include(
-            "was bound to undefined event-adapter: a (bindings: [a, b], known adapters: b)")
+          }.getMessage should
+            include(
+              "was bound to undefined event-adapter: a (bindings: [a, b], known adapters: b)")
         }
       }
     }

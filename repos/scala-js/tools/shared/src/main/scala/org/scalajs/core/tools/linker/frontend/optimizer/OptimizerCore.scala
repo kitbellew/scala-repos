@@ -1369,7 +1369,10 @@ private[optimizer] abstract class OptimizerCore(
                 staticCall(cls, methodName).toList
               else
                 dynamicCall(cls, methodName)
-            val allocationSites = (treceiver :: targs).map(_.tpe.allocationSite)
+            val allocationSites =
+              (
+                treceiver :: targs
+              ).map(_.tpe.allocationSite)
             if (impls.isEmpty || impls.exists(impl =>
                   scope.implsBeingInlined((allocationSites, impl)))) {
               // isEmpty could happen, have to leave it as is for the TypeError
@@ -1384,10 +1387,10 @@ private[optimizer] abstract class OptimizerCore(
                   targs,
                   isStat,
                   usePreTransform)(cont)
-              } else if (target.inlineable && (
-                           target.shouldInline ||
-                           shouldInlineBecauseOfArgs(target, treceiver :: targs)
-                         )) {
+              } else if (target.inlineable && (target.shouldInline ||
+                         shouldInlineBecauseOfArgs(
+                           target,
+                           treceiver :: targs))) {
                 inline(
                   allocationSites,
                   Some(treceiver),
@@ -1542,11 +1545,12 @@ private[optimizer] abstract class OptimizerCore(
               isStat,
               usePreTransform)(cont)
           } else {
-            val shouldInline = target.inlineable && (
-              target.shouldInline ||
-                shouldInlineBecauseOfArgs(target, treceiver :: targs)
-            )
-            val allocationSites = (treceiver :: targs).map(_.tpe.allocationSite)
+            val shouldInline = target.inlineable && (target.shouldInline ||
+              shouldInlineBecauseOfArgs(target, treceiver :: targs))
+            val allocationSites =
+              (
+                treceiver :: targs
+              ).map(_.tpe.allocationSite)
             val beingInlined = scope
               .implsBeingInlined((allocationSites, target))
 
@@ -1600,9 +1604,8 @@ private[optimizer] abstract class OptimizerCore(
           callIntrinsic(intrinsicCode, None, targs, isStat, usePreTransform)(
             cont)
         } else {
-          val shouldInline = target.inlineable && (
-            target.shouldInline || shouldInlineBecauseOfArgs(target, targs)
-          )
+          val shouldInline = target.inlineable && (target
+            .shouldInline || shouldInlineBecauseOfArgs(target, targs))
           val allocationSites = targs.map(_.tpe.allocationSite)
           val beingInlined = scope.implsBeingInlined((allocationSites, target))
 
@@ -1709,20 +1712,18 @@ private[optimizer] abstract class OptimizerCore(
           isLikelyOptimizable(result)
 
         case PreTransLocalDef(localDef) =>
-          (
-            localDef.replacement match {
-              case TentativeClosureReplacement(_, _, _, _, _, _) =>
-                true
-              case ReplaceWithRecordVarRef(_, _, _, _, _) =>
-                true
-              case InlineClassBeingConstructedReplacement(_, _) =>
-                true
-              case InlineClassInstanceReplacement(_, _, _) =>
-                true
-              case _ =>
-                isTypeLikelyOptimizable(localDef.tpe)
-            }
-          ) && {
+          (localDef.replacement match {
+            case TentativeClosureReplacement(_, _, _, _, _, _) =>
+              true
+            case ReplaceWithRecordVarRef(_, _, _, _, _) =>
+              true
+            case InlineClassBeingConstructedReplacement(_, _) =>
+              true
+            case InlineClassInstanceReplacement(_, _, _) =>
+              true
+            case _ =>
+              isTypeLikelyOptimizable(localDef.tpe)
+          }) && {
             /* java.lang.Character is @inline so that *local* box/unbox pairs
              * can be eliminated. But we don't want that to force inlining of
              * a method only because we pass it a boxed Char.
@@ -1745,14 +1746,12 @@ private[optimizer] abstract class OptimizerCore(
     receiverAndArgs.exists(isLikelyOptimizable) || {
       target
         .toString == "s_reflect_ClassTag$.apply__jl_Class__s_reflect_ClassTag" &&
-      (
-        receiverAndArgs.tail.head match {
-          case PreTransTree(ClassOf(_), _) =>
-            true
-          case _ =>
-            false
-        }
-      )
+      (receiverAndArgs.tail.head match {
+        case PreTransTree(ClassOf(_), _) =>
+          true
+        case _ =>
+          false
+      })
     }
   }
 
@@ -1780,13 +1779,19 @@ private[optimizer] abstract class OptimizerCore(
         assert(isStat, "Found Skip() in expression position")
         cont(
           PreTransTree(
-            Block((optReceiver ++: args).map(finishTransformStat)),
+            Block(
+              (
+                optReceiver ++: args
+              ).map(finishTransformStat)),
             RefinedType.NoRefinedType))
 
       case _: Literal =>
         cont(
           PreTransTree(
-            Block((optReceiver ++: args).map(finishTransformStat) :+ body),
+            Block(
+              (
+                optReceiver ++: args
+              ).map(finishTransformStat) :+ body),
             RefinedType(body.tpe)))
 
       case This() if args.isEmpty =>
@@ -3376,7 +3381,13 @@ private[optimizer] abstract class OptimizerCore(
                 canSubtractLongs(z, x) =>
             if (z - x != Long.MinValue) {
               // Since -(y.toLong) does not overflow, we can negate both sides
-              foldBinaryOp(flippedOp, y, LongLiteral(-(z - x)))
+              foldBinaryOp(
+                flippedOp,
+                y,
+                LongLiteral(
+                  -(
+                    z - x
+                  )))
             } else {
               /* -(y.toLong) > Long.MinValue
                * Depending on the operator, this is either always true or
@@ -3878,7 +3889,11 @@ private[optimizer] abstract class OptimizerCore(
               ptpe,
               mutable,
               rest)(p.pos)
-          ((name -> localDef), newParamDef)
+          (
+            (
+              name -> localDef
+            ),
+            newParamDef)
         }
       ).unzip
 
@@ -4468,16 +4483,14 @@ private[optimizer] object OptimizerCore {
       }
 
     def contains(that: LocalDef): Boolean = {
-      (this eq that) || (
-        replacement match {
-          case TentativeClosureReplacement(_, _, _, captureLocalDefs, _, _) =>
-            captureLocalDefs.exists(_.contains(that))
-          case InlineClassInstanceReplacement(_, fieldLocalDefs, _) =>
-            fieldLocalDefs.valuesIterator.exists(_.contains(that))
-          case _ =>
-            false
-        }
-      )
+      (this eq that) || (replacement match {
+        case TentativeClosureReplacement(_, _, _, captureLocalDefs, _, _) =>
+          captureLocalDefs.exists(_.contains(that))
+        case InlineClassInstanceReplacement(_, fieldLocalDefs, _) =>
+          fieldLocalDefs.valuesIterator.exists(_.contains(that))
+        case _ =>
+          false
+      })
     }
   }
 
@@ -4851,19 +4864,17 @@ private[optimizer] object OptimizerCore {
           (
             (args.size == params.size + 1) &&
               (args.head.isInstanceOf[This]) &&
-              (
-                args
-                  .tail
-                  .zip(params)
-                  .forall {
-                    case (
-                          VarRef(Ident(aname, _)),
-                          ParamDef(Ident(pname, _), _, _, _)) =>
-                      aname == pname
-                    case _ =>
-                      false
-                  }
-                )
+              (args
+                .tail
+                .zip(params)
+                .forall {
+                  case (
+                        VarRef(Ident(aname, _)),
+                        ParamDef(Ident(pname, _), _, _, _)) =>
+                    aname == pname
+                  case _ =>
+                    false
+                })
           )
 
         // Shape of bridges for generic methods

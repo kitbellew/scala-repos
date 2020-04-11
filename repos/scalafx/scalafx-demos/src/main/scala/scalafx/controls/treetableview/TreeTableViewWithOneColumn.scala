@@ -55,12 +55,13 @@ object TreeTableViewWithOneColumn extends JFXApp {
     scene = new Scene {
       title = "TreeTableView with One Column"
       root = new TreeTableView(rootNode) {
-        columns += new TreeTableColumn[String, String]("Column") {
-          prefWidth = 150
-          cellValueFactory = { p =>
-            p.value.value
+        columns +=
+          new TreeTableColumn[String, String]("Column") {
+            prefWidth = 150
+            cellValueFactory = { p =>
+              p.value.value
+            }
           }
-        }
         prefWidth = 152
         showRoot = true
       }

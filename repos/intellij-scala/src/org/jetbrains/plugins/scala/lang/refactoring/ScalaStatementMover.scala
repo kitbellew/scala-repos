@@ -62,8 +62,8 @@ class ScalaStatementMover extends LineMover {
       siblings
         .filter(!_.isInstanceOf[PsiComment])
         .takeWhile(it =>
-          it.isInstanceOf[PsiWhiteSpace] || it.isInstanceOf[PsiComment] || it
-            .isInstanceOf[ScImportStmt] || predicate(it))
+          it.isInstanceOf[PsiWhiteSpace] || it.isInstanceOf[PsiComment] ||
+            it.isInstanceOf[ScImportStmt] || predicate(it))
         .find(predicate)
         .map(rangeOf(_, editor))
     }
@@ -117,9 +117,8 @@ class ScalaStatementMover extends LineMover {
   private def rangeOf(e: PsiElement, editor: Editor) = {
     val begin =
       editor.offsetToLogicalPosition(e.getTextRange.getStartOffset).line
-    val end = editor
-      .offsetToLogicalPosition(e.getTextRange.getEndOffset)
-      .line + 1
+    val end = editor.offsetToLogicalPosition(e.getTextRange.getEndOffset).line +
+      1
     new LineRange(begin, end)
   }
 

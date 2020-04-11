@@ -257,28 +257,29 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
               case (b, o) =>
                 b.nodeType.asInstanceOf[ScalaType[Any]].scalaOrderingFor(o)
             }
-          b ++= fromV
-            .toSeq
-            .sortBy { v =>
-              scope(gen) = v
-              by.toSeq
-                .map {
-                  case (b, _) =>
-                    run(b)
-                }: IndexedSeq[Any]
-            }(
-              new scala.math.Ordering[IndexedSeq[Any]] {
-                def compare(x: IndexedSeq[Any], y: IndexedSeq[Any]): Int = {
-                  var i = 0
-                  while (i < ords.length) {
-                    val v = ords(i).compare(x(i), y(i))
-                    if (v != 0)
-                      return v
-                    i += 1
+          b ++=
+            fromV
+              .toSeq
+              .sortBy { v =>
+                scope(gen) = v
+                by.toSeq
+                  .map {
+                    case (b, _) =>
+                      run(b)
+                  }: IndexedSeq[Any]
+              }(
+                new scala.math.Ordering[IndexedSeq[Any]] {
+                  def compare(x: IndexedSeq[Any], y: IndexedSeq[Any]): Int = {
+                    var i = 0
+                    while (i < ords.length) {
+                      val v = ords(i).compare(x(i), y(i))
+                      if (v != 0)
+                        return v
+                      i += 1
+                    }
+                    0
                   }
-                  0
-                }
-              })
+                })
           scope.remove(gen)
           b.result()
         case GroupBy(gen, from, by, _) =>
@@ -353,11 +354,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                 res
             case _ =>
               val res = run(c.elseClause)
-              if (opt && !c
-                    .elseClause
-                    .nodeType
-                    .asInstanceOf[ScalaType[_]]
-                    .nullable)
+              if (opt &&
+                  !c.elseClause.nodeType.asInstanceOf[ScalaType[_]].nullable)
                 Option(res)
               else
                 res
@@ -378,15 +376,13 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           val condV = run(cond)
           if ((condV.asInstanceOf[AnyRef] eq null) || condV == None) {
             val defaultV = run(default)
-            if (n.nodeType.isInstanceOf[OptionType] && !default
-                  .nodeType
-                  .isInstanceOf[OptionType])
+            if (n.nodeType.isInstanceOf[OptionType] &&
+                !default.nodeType.isInstanceOf[OptionType])
               Some(defaultV)
             else
               defaultV
-          } else if (n.nodeType.isInstanceOf[OptionType] && !cond
-                       .nodeType
-                       .isInstanceOf[OptionType])
+          } else if (n.nodeType.isInstanceOf[OptionType] &&
+                     !cond.nodeType.isInstanceOf[OptionType])
             Some(condV)
           else
             condV
@@ -422,18 +418,16 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                 val (els, singleType) = unwrapSingleColumn(
                   whereV.asInstanceOf[Coll],
                   ct)
-                (
-                  if (singleType.isInstanceOf[OptionType])
-                    els.map(
-                      _.asInstanceOf[Option[Any]] match {
-                        case Some(v) =>
-                          whatBase == v
-                        case None =>
-                          false
-                      })
-                  else
-                    els.map(whatBase.==)
-                ) contains true
+                (if (singleType.isInstanceOf[OptionType])
+                   els.map(
+                     _.asInstanceOf[Option[Any]] match {
+                       case Some(v) =>
+                         whatBase == v
+                       case None =>
+                         false
+                     })
+                 else
+                   els.map(whatBase.==)) contains true
             }
           }
         case Library.Sum(ch) =>

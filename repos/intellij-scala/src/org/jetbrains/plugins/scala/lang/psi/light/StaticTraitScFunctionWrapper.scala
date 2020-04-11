@@ -70,33 +70,34 @@ object StaticTraitScFunctionWrapper {
     val qualName = containingClass.getQualifiedName
     builder.append(
       (
-        (qualName.substring(0, qualName.length() - 6) + " This") +: function
-          .parameters
-          .map {
-            case param =>
-              val builder = new StringBuilder
-              val paramAnnotations = JavaConversionUtil
-                .annotations(param)
-                .mkString(" ")
-              if (!paramAnnotations.isEmpty)
-                builder.append(paramAnnotations).append(" ")
-              param.getRealParameterType(TypingContext.empty) match {
-                case Success(tp, _) =>
-                  if (param.isCallByNameParameter)
-                    builder.append("scala.Function0<")
-                  builder.append(
-                    JavaConversionUtil.typeText(
-                      tp,
-                      function.getProject,
-                      function.getResolveScope))
-                  if (param.isCallByNameParameter)
-                    builder.append(">")
-                case _ =>
-                  builder.append("java.lang.Object")
-              }
-              builder.append(" ").append(param.getName)
-              builder.toString()
-          }
+        (qualName.substring(0, qualName.length() - 6) + " This") +:
+          function
+            .parameters
+            .map {
+              case param =>
+                val builder = new StringBuilder
+                val paramAnnotations = JavaConversionUtil
+                  .annotations(param)
+                  .mkString(" ")
+                if (!paramAnnotations.isEmpty)
+                  builder.append(paramAnnotations).append(" ")
+                param.getRealParameterType(TypingContext.empty) match {
+                  case Success(tp, _) =>
+                    if (param.isCallByNameParameter)
+                      builder.append("scala.Function0<")
+                    builder.append(
+                      JavaConversionUtil.typeText(
+                        tp,
+                        function.getProject,
+                        function.getResolveScope))
+                    if (param.isCallByNameParameter)
+                      builder.append(">")
+                  case _ =>
+                    builder.append("java.lang.Object")
+                }
+                builder.append(" ").append(param.getName)
+                builder.toString()
+            }
       ).mkString("(", ", ", ")"))
 
     builder.append(LightUtil.getThrowsSection(function))

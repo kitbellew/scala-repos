@@ -135,11 +135,11 @@ class UISeleniumSuite
 
       val storageJson = getJson(ui, "storage/rdd")
       storageJson.children.length should be(1)
-      (storageJson \ "storageLevel")
-        .extract[String] should be(StorageLevels.DISK_ONLY.description)
+      (storageJson \ "storageLevel").extract[String] should
+        be(StorageLevels.DISK_ONLY.description)
       val rddJson = getJson(ui, "storage/rdd/0")
-      (rddJson \ "storageLevel")
-        .extract[String] should be(StorageLevels.DISK_ONLY.description)
+      (rddJson \ "storageLevel").extract[String] should
+        be(StorageLevels.DISK_ONLY.description)
 
       rdd.unpersist()
       rdd.persist(StorageLevels.MEMORY_ONLY).count()
@@ -160,11 +160,11 @@ class UISeleniumSuite
 
       val updatedStorageJson = getJson(ui, "storage/rdd")
       updatedStorageJson.children.length should be(1)
-      (updatedStorageJson \ "storageLevel")
-        .extract[String] should be(StorageLevels.MEMORY_ONLY.description)
+      (updatedStorageJson \ "storageLevel").extract[String] should
+        be(StorageLevels.MEMORY_ONLY.description)
       val updatedRddJson = getJson(ui, "storage/rdd/0")
-      (updatedRddJson \ "storageLevel")
-        .extract[String] should be(StorageLevels.MEMORY_ONLY.description)
+      (updatedRddJson \ "storageLevel").extract[String] should
+        be(StorageLevels.MEMORY_ONLY.description)
     }
   }
 
@@ -185,8 +185,8 @@ class UISeleniumSuite
       }
       val stageJson = getJson(sc.ui.get, "stages")
       stageJson.children.length should be(1)
-      (stageJson \ "status")
-        .extract[String] should be(StageStatus.FAILED.name())
+      (stageJson \ "status").extract[String] should
+        be(StageStatus.FAILED.name())
 
       // Regression test for SPARK-2105
       class NotSerializable
@@ -307,15 +307,15 @@ class UISeleniumSuite
       mappedData.count()
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         goToUi(sc, "/jobs")
-        find(cssSelector(".stage-progress-cell")).get.text should be(
-          "2/2 (1 failed)")
+        find(cssSelector(".stage-progress-cell")).get.text should
+          be("2/2 (1 failed)")
         // Ideally, the following test would pass, but currently we overcount completed tasks
         // if task recomputations occur:
         // find(cssSelector(".progress-cell .progress")).get.text should be ("2/2 (1 failed)")
         // Instead, we guarantee that the total number of tasks is always correct, while the number
         // of completed tasks may be higher:
-        find(cssSelector(".progress-cell .progress")).get.text should be(
-          "3/2 (1 failed)")
+        find(cssSelector(".progress-cell .progress")).get.text should
+          be("3/2 (1 failed)")
       }
       val jobJson = getJson(sc.ui.get, "jobs")
       (jobJson \ "numTasks").extract[Int] should be(2)
@@ -495,9 +495,8 @@ class UISeleniumSuite
         find(cssSelector("""ul li a[href*="jobs"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="stages"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="storage"]""")) should not be (None)
-        find(cssSelector("""ul li a[href*="environment"]""")) should not be (
-          None
-        )
+        find(cssSelector("""ul li a[href*="environment"]""")) should not be
+          (None)
         find(cssSelector("""ul li a[href*="foo"]""")) should not be (None)
       }
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
@@ -511,9 +510,8 @@ class UISeleniumSuite
         find(cssSelector("""ul li a[href*="jobs"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="stages"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="storage"]""")) should not be (None)
-        find(cssSelector("""ul li a[href*="environment"]""")) should not be (
-          None
-        )
+        find(cssSelector("""ul li a[href*="environment"]""")) should not be
+          (None)
         find(cssSelector("""ul li a[href*="foo"]""")) should be(None)
       }
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
@@ -544,10 +542,8 @@ class UISeleniumSuite
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         val url =
           new URL(
-            sc.ui
-              .get
-              .appUIAddress
-              .stripSuffix("/") + "/stages/stage/kill/?id=0&terminate=true")
+            sc.ui.get.appUIAddress.stripSuffix("/") +
+              "/stages/stage/kill/?id=0&terminate=true")
         // SPARK-6846: should be POST only but YARN AM doesn't proxy POST
         getResponseCode(url, "GET") should be(200)
         getResponseCode(url, "POST") should be(200)
@@ -586,10 +582,10 @@ class UISeleniumSuite
       eventually(timeout(1 second), interval(50 milliseconds)) {
         goToUi(sc, "/jobs")
         // The completed jobs table should have two rows. The first row will be the most recent job:
-        find("completed-summary").get.text should be(
-          "Completed Jobs: 10, only showing 2")
-        find("completed").get.text should be(
-          "Completed Jobs (10, only showing 2)")
+        find("completed-summary").get.text should
+          be("Completed Jobs: 10, only showing 2")
+        find("completed").get.text should
+          be("Completed Jobs (10, only showing 2)")
         val rows = findAll(cssSelector("tbody tr"))
           .toIndexedSeq
           .map {
@@ -637,10 +633,10 @@ class UISeleniumSuite
 
       eventually(timeout(1 second), interval(50 milliseconds)) {
         goToUi(sc, "/stages")
-        find("completed-summary").get.text should be(
-          "Completed Stages: 20, only showing 3")
-        find("completed").get.text should be(
-          "Completed Stages (20, only showing 3)")
+        find("completed-summary").get.text should
+          be("Completed Stages: 20, only showing 3")
+        find("completed").get.text should
+          be("Completed Stages (20, only showing 3)")
         val rows = findAll(cssSelector("tbody tr"))
           .toIndexedSeq
           .map {
@@ -672,8 +668,8 @@ class UISeleniumSuite
       // nonexistent stage
 
       goToUi(sc, "/stages/stage/?id=12&attempt=0")
-      find("no-info").get.text should be(
-        "No information to display for Stage 12 (Attempt 0)")
+      find("no-info").get.text should
+        be("No information to display for Stage 12 (Attempt 0)")
       val badStage = HistoryServerSuite
         .getContentAndCode(apiUrl(sc.ui.get, "stages/12/0"))
       badStage._1 should be(HttpServletResponse.SC_NOT_FOUND)
@@ -684,8 +680,8 @@ class UISeleniumSuite
         .getContentAndCode(apiUrl(sc.ui.get, "stages/19/15"))
       badAttempt._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badAttempt._2 should be(None)
-      badAttempt._3 should be(
-        Some("unknown attempt for stage 19.  Found attempts: [0]"))
+      badAttempt._3 should
+        be(Some("unknown attempt for stage 19.  Found attempts: [0]"))
 
       val badStageAttemptList = HistoryServerSuite
         .getContentAndCode(apiUrl(sc.ui.get, "stages/12"))
@@ -803,9 +799,7 @@ class UISeleniumSuite
 
   def apiUrl(ui: SparkUI, path: String): URL = {
     new URL(
-      ui.appUIAddress + "/api/v1/applications/" + ui
-        .sc
-        .get
-        .applicationId + "/" + path)
+      ui.appUIAddress + "/api/v1/applications/" + ui.sc.get.applicationId +
+        "/" + path)
   }
 }

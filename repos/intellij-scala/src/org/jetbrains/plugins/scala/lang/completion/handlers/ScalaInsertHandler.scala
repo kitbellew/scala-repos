@@ -139,16 +139,10 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       if (completionChar == '\t') {
         file.findElementAt(startOffset) match {
           case elem
-              if elem.getNode.getElementType == ScalaTokenTypes
-                .tIDENTIFIER && elem
-                .getParent
-                .isInstanceOf[ScReferenceExpression]
-                && elem
-                  .getParent
-                  .getParent
-                  .isInstanceOf[ScReferenceExpression] && item
-                .getAllLookupStrings
-                .size() > 1 =>
+              if elem.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER &&
+                elem.getParent.isInstanceOf[ScReferenceExpression] &&
+                elem.getParent.getParent.isInstanceOf[ScReferenceExpression] &&
+                item.getAllLookupStrings.size() > 1 =>
             val ref = elem.getParent.asInstanceOf[ScReferenceExpression]
             val newRefText = ref.getText
             val newRef = ScalaPsiElementFactory
@@ -223,12 +217,11 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
         editor
           .getCaretModel
           .moveToOffset(
-            endOffset + (
-              if (withSomeNum)
-                someNum
-              else
-                0
-            ))
+            endOffset +
+              (if (withSomeNum)
+                 someNum
+               else
+                 0))
       }
       val documentText: String = document.getText
       val nextChar: Char =
@@ -259,10 +252,9 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
             shiftEndOffset(1)
           }
         }
-      } else if (withSpace && (
-                   nextChar != ' ' || documentText
-                     .charAt(endOffset + 1) != openChar
-                 )) {
+      } else if (withSpace &&
+                 (nextChar != ' ' ||
+                 documentText.charAt(endOffset + 1) != openChar)) {
         document.insertString(endOffset, " ")
         shiftEndOffset(1, withSomeNum = false)
         insertIfNeeded(
@@ -399,9 +391,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                   document.insertString(endOffset, " ")
                   endOffset += 1
                   editor.getCaretModel.moveToOffset(endOffset + someNum)
-                } else if (endOffset == document.getTextLength || document
-                             .getCharsSequence
-                             .charAt(endOffset) != '(') {
+                } else if (endOffset == document.getTextLength ||
+                           document.getCharsSequence.charAt(endOffset) != '(') {
                   disableParenthesesCompletionChar()
                   if (!item.etaExpanded) {
                     if (context.getCompletionChar == '{') {

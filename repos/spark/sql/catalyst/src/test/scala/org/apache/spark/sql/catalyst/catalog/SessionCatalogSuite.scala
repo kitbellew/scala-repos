@@ -384,13 +384,13 @@ class SessionCatalogSuite extends SparkFunSuite {
     val externalCatalog = newBasicCatalog()
     val sessionCatalog = new SessionCatalog(externalCatalog)
     assert(
-      sessionCatalog.getTable(TableIdentifier("tbl1", Some("db2")))
-        == externalCatalog.getTable("db2", "tbl1"))
+      sessionCatalog.getTable(TableIdentifier("tbl1", Some("db2"))) ==
+        externalCatalog.getTable("db2", "tbl1"))
     // Get table without explicitly specifying database
     sessionCatalog.setCurrentDatabase("db2")
     assert(
-      sessionCatalog.getTable(TableIdentifier("tbl1"))
-        == externalCatalog.getTable("db2", "tbl1"))
+      sessionCatalog.getTable(TableIdentifier("tbl1")) ==
+        externalCatalog.getTable("db2", "tbl1"))
   }
 
   test("get table when database/table does not exist") {
@@ -412,17 +412,17 @@ class SessionCatalogSuite extends SparkFunSuite {
     sessionCatalog.setCurrentDatabase("db2")
     // If we explicitly specify the database, we'll look up the relation in that database
     assert(
-      sessionCatalog.lookupRelation(TableIdentifier("tbl1", Some("db2")))
-        == SubqueryAlias("tbl1", CatalogRelation("db2", metastoreTable1)))
+      sessionCatalog.lookupRelation(TableIdentifier("tbl1", Some("db2"))) ==
+        SubqueryAlias("tbl1", CatalogRelation("db2", metastoreTable1)))
     // Otherwise, we'll first look up a temporary table with the same name
     assert(
-      sessionCatalog.lookupRelation(TableIdentifier("tbl1"))
-        == SubqueryAlias("tbl1", tempTable1))
+      sessionCatalog.lookupRelation(TableIdentifier("tbl1")) ==
+        SubqueryAlias("tbl1", tempTable1))
     // Then, if that does not exist, look up the relation in the current database
     sessionCatalog.dropTable(TableIdentifier("tbl1"), ignoreIfNotExists = false)
     assert(
-      sessionCatalog.lookupRelation(TableIdentifier("tbl1"))
-        == SubqueryAlias("tbl1", CatalogRelation("db2", metastoreTable1)))
+      sessionCatalog.lookupRelation(TableIdentifier("tbl1")) ==
+        SubqueryAlias("tbl1", CatalogRelation("db2", metastoreTable1)))
   }
 
   test("lookup table relation with alias") {
@@ -434,9 +434,9 @@ class SessionCatalogSuite extends SparkFunSuite {
       alias,
       SubqueryAlias("tbl1", CatalogRelation("db2", tableMetadata, Some(alias))))
     assert(
-      catalog.lookupRelation(
-        TableIdentifier("tbl1", Some("db2")),
-        alias = None) == relation)
+      catalog
+        .lookupRelation(TableIdentifier("tbl1", Some("db2")), alias = None) ==
+        relation)
     assert(
       catalog.lookupRelation(
         TableIdentifier("tbl1", Some("db2")),
@@ -620,11 +620,11 @@ class SessionCatalogSuite extends SparkFunSuite {
     // Get partition without explicitly specifying database
     catalog.setCurrentDatabase("db2")
     assert(
-      catalog.getPartition(TableIdentifier("tbl2"), part1.spec).spec == part1
-        .spec)
+      catalog.getPartition(TableIdentifier("tbl2"), part1.spec).spec ==
+        part1.spec)
     assert(
-      catalog.getPartition(TableIdentifier("tbl2"), part2.spec).spec == part2
-        .spec)
+      catalog.getPartition(TableIdentifier("tbl2"), part2.spec).spec ==
+        part2.spec)
     // Get non-existent partition
     intercept[AnalysisException] {
       catalog.getPartition(TableIdentifier("tbl2"), part3.spec)
@@ -675,11 +675,11 @@ class SessionCatalogSuite extends SparkFunSuite {
       newSpecs,
       Seq(part1.spec, part2.spec))
     assert(
-      catalog.getPartition(TableIdentifier("tbl2"), part1.spec).spec === part1
-        .spec)
+      catalog.getPartition(TableIdentifier("tbl2"), part1.spec).spec ===
+        part1.spec)
     assert(
-      catalog.getPartition(TableIdentifier("tbl2"), part2.spec).spec === part2
-        .spec)
+      catalog.getPartition(TableIdentifier("tbl2"), part2.spec).spec ===
+        part2.spec)
     intercept[AnalysisException] {
       catalog.getPartition(TableIdentifier("tbl2"), newPart1.spec)
     }
@@ -762,15 +762,13 @@ class SessionCatalogSuite extends SparkFunSuite {
   test("list partitions") {
     val catalog = new SessionCatalog(newBasicCatalog())
     assert(
-      catalog.listPartitions(TableIdentifier("tbl2", Some("db2"))).toSet == Set(
-        part1,
-        part2))
+      catalog.listPartitions(TableIdentifier("tbl2", Some("db2"))).toSet ==
+        Set(part1, part2))
     // List partitions without explicitly specifying database
     catalog.setCurrentDatabase("db2")
     assert(
-      catalog.listPartitions(TableIdentifier("tbl2")).toSet == Set(
-        part1,
-        part2))
+      catalog.listPartitions(TableIdentifier("tbl2")).toSet ==
+        Set(part1, part2))
   }
 
   // --------------------------------------------------------------------------
@@ -787,9 +785,8 @@ class SessionCatalogSuite extends SparkFunSuite {
     sessionCatalog.setCurrentDatabase("mydb")
     sessionCatalog.createFunction(newFunc("myfunc2"))
     assert(
-      externalCatalog.listFunctions("mydb", "*").toSet == Set(
-        "myfunc",
-        "myfunc2"))
+      externalCatalog.listFunctions("mydb", "*").toSet ==
+        Set("myfunc", "myfunc2"))
   }
 
   test("create function when database does not exist") {
@@ -894,8 +891,8 @@ class SessionCatalogSuite extends SparkFunSuite {
     sessionCatalog.setCurrentDatabase("db2")
     // If a database is specified, we'll always return the function in that database
     assert(
-      sessionCatalog
-        .getFunction(FunctionIdentifier("func1", Some("db2"))) == metastoreFunc)
+      sessionCatalog.getFunction(FunctionIdentifier("func1", Some("db2"))) ==
+        metastoreFunc)
     // If no database is specified, we'll first return temporary functions
     assert(sessionCatalog.getFunction(FunctionIdentifier("func1")) == tempFunc)
     // Then, if no such temporary function exist, check the current database
@@ -909,28 +906,23 @@ class SessionCatalogSuite extends SparkFunSuite {
     val sessionCatalog = new SessionCatalog(externalCatalog)
     val newName = "funcky"
     assert(
-      sessionCatalog
-        .getFunction(FunctionIdentifier("func1", Some("db2"))) == newFunc(
-        "func1",
-        Some("db2")))
+      sessionCatalog.getFunction(FunctionIdentifier("func1", Some("db2"))) ==
+        newFunc("func1", Some("db2")))
     assert(externalCatalog.listFunctions("db2", "*").toSet == Set("func1"))
     sessionCatalog.renameFunction(
       FunctionIdentifier("func1", Some("db2")),
       FunctionIdentifier(newName, Some("db2")))
     assert(
-      sessionCatalog
-        .getFunction(FunctionIdentifier(newName, Some("db2"))) == newFunc(
-        newName,
-        Some("db2")))
+      sessionCatalog.getFunction(FunctionIdentifier(newName, Some("db2"))) ==
+        newFunc(newName, Some("db2")))
     assert(externalCatalog.listFunctions("db2", "*").toSet == Set(newName))
     // Rename function without explicitly specifying database
     sessionCatalog.setCurrentDatabase("db2")
     sessionCatalog
       .renameFunction(FunctionIdentifier(newName), FunctionIdentifier("func1"))
     assert(
-      sessionCatalog.getFunction(FunctionIdentifier("func1")) == newFunc(
-        "func1",
-        Some("db2")))
+      sessionCatalog.getFunction(FunctionIdentifier("func1")) ==
+        newFunc("func1", Some("db2")))
     assert(externalCatalog.listFunctions("db2", "*").toSet == Set("func1"))
     // Renaming "db2.func1" to "db1.func2" should fail because databases don't match
     intercept[AnalysisException] {
@@ -988,15 +980,13 @@ class SessionCatalogSuite extends SparkFunSuite {
   test("alter function") {
     val catalog = new SessionCatalog(newBasicCatalog())
     assert(
-      catalog
-        .getFunction(FunctionIdentifier("func1", Some("db2")))
-        .className == funcClass)
+      catalog.getFunction(FunctionIdentifier("func1", Some("db2"))).className ==
+        funcClass)
     catalog
       .alterFunction(newFunc("func1", Some("db2")).copy(className = "muhaha"))
     assert(
-      catalog
-        .getFunction(FunctionIdentifier("func1", Some("db2")))
-        .className == "muhaha")
+      catalog.getFunction(FunctionIdentifier("func1", Some("db2"))).className ==
+        "muhaha")
     // Alter function without explicitly specifying database
     catalog.setCurrentDatabase("db2")
     catalog.alterFunction(newFunc("func1").copy(className = "derpy"))

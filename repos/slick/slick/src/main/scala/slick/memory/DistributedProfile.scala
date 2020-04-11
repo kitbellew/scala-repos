@@ -31,8 +31,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
   lazy val queryCompiler =
     QueryCompiler
       .standard
-      .addAfter(new Distribute, Phase.assignUniqueSymbols) ++ QueryCompiler
-      .interpreterPhases + new MemoryCodeGen
+      .addAfter(new Distribute, Phase.assignUniqueSymbols) ++
+      QueryCompiler.interpreterPhases + new MemoryCodeGen
   lazy val updateCompiler = ??
   lazy val deleteCompiler = ??
   lazy val insertCompiler = ??
@@ -118,20 +118,19 @@ class DistributedProfile(val profiles: RelationalProfile*)
           if (logger.isDebugEnabled)
             logDebug("Wrapped value: " + wr)
           wr
-        case ResultSetMapping(
-              gen,
-              from,
-              CompiledMapping(converter, tpe)) :@ CollectionType(cons, el) =>
+        case ResultSetMapping(gen, from, CompiledMapping(converter, tpe)) :@
+            CollectionType(cons, el) =>
           if (logger.isDebugEnabled)
             logDebug("Evaluating " + n)
           val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
           val b = cons
             .createBuilder(el.classTag)
             .asInstanceOf[Builder[Any, Any]]
-          b ++= fromV.map(v =>
-            converter
-              .asInstanceOf[ResultConverter[MemoryResultConverterDomain, Any]]
-              .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
+          b ++=
+            fromV.map(v =>
+              converter
+                .asInstanceOf[ResultConverter[MemoryResultConverterDomain, Any]]
+                .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
           b.result()
         case n =>
           super.run(n)

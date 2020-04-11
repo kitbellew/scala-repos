@@ -70,8 +70,8 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
   private def makeJobEvent(jobUIDatas: Seq[JobUIData]): Seq[String] = {
     jobUIDatas
       .filter { jobUIData =>
-        jobUIData.status != JobExecutionStatus
-          .UNKNOWN && jobUIData.submissionTime.isDefined
+        jobUIData.status != JobExecutionStatus.UNKNOWN &&
+        jobUIData.submissionTime.isDefined
       }
       .map { jobUIData =>
         val jobId = jobUIData.jobId
@@ -204,8 +204,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
     } data-placement="right">
         Event Timeline
       </a>
-    </span> ++
-      <div id="application-timeline" class="collapsed">
+    </span> ++ <div id="application-timeline" class="collapsed">
       <div class="control-panel">
         <div id="application-timeline-zoom-lock">
           <input type="checkbox"></input>
@@ -418,28 +417,29 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
 
       var content = summary
       val executorListener = parent.executorListener
-      content ++= makeTimeline(
-        activeJobs ++ completedJobs ++ failedJobs,
-        executorListener.executorIdToData,
-        startTime)
+      content ++=
+        makeTimeline(
+          activeJobs ++ completedJobs ++ failedJobs,
+          executorListener.executorIdToData,
+          startTime)
 
       if (shouldShowActiveJobs) {
-        content ++= <h4 id="active">Active Jobs ({
-          activeJobs.size
-        })</h4> ++
-          activeJobsTable
+        content ++=
+          <h4 id="active">Active Jobs ({
+            activeJobs.size
+          })</h4> ++ activeJobsTable
       }
       if (shouldShowCompletedJobs) {
-        content ++= <h4 id="completed">Completed Jobs ({
-          completedJobNumStr
-        })</h4> ++
-          completedJobsTable
+        content ++=
+          <h4 id="completed">Completed Jobs ({
+            completedJobNumStr
+          })</h4> ++ completedJobsTable
       }
       if (shouldShowFailedJobs) {
-        content ++= <h4 id ="failed">Failed Jobs ({
-          failedJobs.size
-        })</h4> ++
-          failedJobsTable
+        content ++=
+          <h4 id ="failed">Failed Jobs ({
+            failedJobs.size
+          })</h4> ++ failedJobsTable
       }
 
       val helpText =

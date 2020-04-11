@@ -118,11 +118,12 @@ private[akka] abstract class AbstractEventsByTagPublisher(
 
   def replaying(limit: Int): Receive = {
     case ReplayedTaggedMessage(p, _, offset) ⇒
-      buf :+= EventEnvelope(
-        offset = offset,
-        persistenceId = p.persistenceId,
-        sequenceNr = p.sequenceNr,
-        event = p.payload)
+      buf :+=
+        EventEnvelope(
+          offset = offset,
+          persistenceId = p.persistenceId,
+          sequenceNr = p.sequenceNr,
+          event = p.payload)
       currOffset = offset + 1
       deliverBuf()
 

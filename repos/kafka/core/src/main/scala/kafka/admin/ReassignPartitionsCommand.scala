@@ -102,9 +102,8 @@ object ReassignPartitionsCommand extends Logging {
       zkUtils: ZkUtils,
       opts: ReassignPartitionsCommandOptions) {
     if (!(
-          opts.options.has(opts.topicsToMoveJsonFileOpt) && opts
-            .options
-            .has(opts.brokerListOpt)
+          opts.options.has(opts.topicsToMoveJsonFileOpt) &&
+            opts.options.has(opts.brokerListOpt)
         ))
       CommandLineUtils.printUsageAndDie(
         opts.parser,
@@ -172,10 +171,11 @@ object ReassignPartitionsCommand extends Logging {
           brokerMetadatas,
           assignment.size,
           replicas.size)
-        partitionsToBeReassigned ++= assignedReplicas.map {
-          case (partition, replicas) =>
-            (TopicAndPartition(topic, partition) -> replicas)
-        }
+        partitionsToBeReassigned ++=
+          assignedReplicas.map {
+            case (partition, replicas) =>
+              (TopicAndPartition(topic, partition) -> replicas)
+          }
     }
 
     (partitionsToBeReassigned, currentAssignment)
@@ -187,7 +187,8 @@ object ReassignPartitionsCommand extends Logging {
     if (!opts.options.has(opts.reassignmentJsonFileOpt))
       CommandLineUtils.printUsageAndDie(
         opts.parser,
-        "If --execute option is used, command must include --reassignment-json-file that was output " + "during the --generate option")
+        "If --execute option is used, command must include --reassignment-json-file that was output " +
+          "during the --generate option")
     val reassignmentJsonFile = opts
       .options
       .valueOf(opts.reassignmentJsonFileOpt)
@@ -407,8 +408,7 @@ class ReassignPartitionsCommand(
         } else {
           error(
             "Skipping reassignment of partition [%s,%d] "
-              .format(topic, partition) +
-              "since it doesn't exist")
+              .format(topic, partition) + "since it doesn't exist")
           false
         }
       case None =>

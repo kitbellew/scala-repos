@@ -135,8 +135,8 @@ trait GlobalSettings {
           .fold("") { app =>
             httpConfigurationCache(app).context.stripSuffix("/")
           }
-      val inContext = context.isEmpty || request
-        .path == context || request.path.startsWith(context + "/")
+      val inContext = context.isEmpty || request.path == context ||
+        request.path.startsWith(context + "/")
       next(request) match {
         case action: EssentialAction if inContext =>
           doFilter(action)

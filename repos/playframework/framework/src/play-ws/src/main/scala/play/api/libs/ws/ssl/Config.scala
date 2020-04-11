@@ -94,8 +94,8 @@ case class SSLDebugConfig(
     */
   def enabled =
     all || ssl || certpath || ocsp || record.isDefined || handshake.isDefined ||
-      keygen || session || defaultctx || sslctx || sessioncache || keymanager || trustmanager ||
-      pluggability
+      keygen || session || defaultctx || sslctx || sessioncache || keymanager ||
+      trustmanager || pluggability
 
   def withAll = this.copy(all = true)
 

@@ -145,9 +145,8 @@ private[annotator] object ModifierChecker {
                       new RemoveModifierQuickFix(owner, "final"))
                   }
                 case e: ScMember
-                    if e.getParent.isInstanceOf[ScTemplateBody] || e
-                      .getParent
-                      .isInstanceOf[ScEarlyDefinitions] =>
+                    if e.getParent.isInstanceOf[ScTemplateBody] ||
+                      e.getParent.isInstanceOf[ScEarlyDefinitions] =>
                   val redundant =
                     (e.containingClass, e) match {
                       case (obj: ScObject, valMember: ScPatternDefinition)
@@ -223,8 +222,8 @@ private[annotator] object ModifierChecker {
                     if !member.isInstanceOf[ScTemplateBody] &&
                       member.getParent.isInstanceOf[ScTemplateBody] =>
                   // 'abstract override' modifier only allowed for members of traits
-                  if (!member.containingClass.isInstanceOf[ScTrait] && owner
-                        .hasModifierProperty("override")) {
+                  if (!member.containingClass.isInstanceOf[ScTrait] &&
+                      owner.hasModifierProperty("override")) {
                     proccessError(
                       ScalaBundle
                         .message("abstract.override.modifier.is.not.allowed"),
@@ -306,10 +305,9 @@ private[annotator] object ModifierChecker {
                                 errorResult()
                               else if (parameters.head.isRepeatedParameter)
                                 errorResult()
-                              else if (clauses.length > 2 || (
-                                         clauses.length == 2 && !clauses(1)
-                                           .isImplicit
-                                       ))
+                              else if (clauses.length > 2 ||
+                                       (clauses.length == 2 &&
+                                       !clauses(1).isImplicit))
                                 errorResult()
                             }
                           case _ =>

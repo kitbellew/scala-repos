@@ -108,10 +108,10 @@ object GuiceInjectorBuilderSpec extends Specification {
           .disable(classOf[AModule], classOf[CModule]) // C won't be disabled
           .injector
 
-      injector.instanceOf[Environment] must throwA[
-        com.google.inject.ConfigurationException]
-      injector
-        .instanceOf[A] must throwA[com.google.inject.ConfigurationException]
+      injector.instanceOf[Environment] must
+        throwA[com.google.inject.ConfigurationException]
+      injector.instanceOf[A] must
+        throwA[com.google.inject.ConfigurationException]
 
       injector.instanceOf[Configuration] must beAnInstanceOf[Configuration]
       injector.instanceOf[B] must beAnInstanceOf[B1]
@@ -127,10 +127,10 @@ object GuiceInjectorBuilderSpec extends Specification {
           .injector
       injector.instanceOf[A] must beAnInstanceOf[A1]
       injector.instanceOf[B] must beAnInstanceOf[B1]
-      injector
-        .instanceOf[B1] must throwA[com.google.inject.ConfigurationException]
-      injector
-        .instanceOf[C1] must throwA[com.google.inject.ConfigurationException]
+      injector.instanceOf[B1] must
+        throwA[com.google.inject.ConfigurationException]
+      injector.instanceOf[C1] must
+        throwA[com.google.inject.ConfigurationException]
     }
 
   }

@@ -426,12 +426,11 @@ package play.api.mvc {
       * Transform this call to an absolute URL.
       */
     def absoluteURL(secure: Boolean)(implicit request: RequestHeader): String =
-      "http" + (
-        if (secure)
-          "s"
-        else
-          ""
-      ) + "://" + request.host + this.url + this.appendFragment
+      "http" +
+        (if (secure)
+           "s"
+         else
+           "") + "://" + request.host + this.url + this.appendFragment
 
     /**
       * Transform this call to an WebSocket URL.
@@ -451,12 +450,11 @@ package play.api.mvc {
       * Transform this call to an WebSocket URL.
       */
     def webSocketURL(secure: Boolean)(implicit request: RequestHeader): String =
-      "ws" + (
-        if (secure)
-          "s"
-        else
-          ""
-      ) + "://" + request.host + this.url
+      "ws" +
+        (if (secure)
+           "s"
+         else
+           "") + "://" + request.host + this.url
 
   }
 
@@ -486,8 +484,7 @@ package play.api.mvc {
       get(key).getOrElse(scala.sys.error("Header doesn't exist"))
 
     override def equals(other: Any) = {
-      other.isInstanceOf[Headers] &&
-      toMap == other.asInstanceOf[Headers].toMap
+      other.isInstanceOf[Headers] && toMap == other.asInstanceOf[Headers].toMap
     }
 
     /**
@@ -638,8 +635,8 @@ package play.api.mvc {
           .split("&")
           .map(_.split("=", 2))
           .map(p =>
-            URLDecoder.decode(p(0), "UTF-8") -> URLDecoder
-              .decode(p(1), "UTF-8"))
+            URLDecoder.decode(p(0), "UTF-8") ->
+              URLDecoder.decode(p(1), "UTF-8"))
           .toMap
       }
 

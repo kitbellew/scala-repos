@@ -66,20 +66,21 @@ final case class GenericHttpCredentials(
     if (!token.isEmpty)
       r ~~ ' ' ~~ token
     if (params.nonEmpty)
-      params foreach new (((String, String)) ⇒ Unit) {
-        var first = true
-        def apply(kvp: (String, String)): Unit = {
-          val (k, v) = kvp
-          if (first) {
-            r ~~ ' ';
-            first = false
-          } else
-            r ~~ ','
-          if (!k.isEmpty)
-            r ~~ k ~~ '='
-          r ~~# v
+      params foreach
+        new (((String, String)) ⇒ Unit) {
+          var first = true
+          def apply(kvp: (String, String)): Unit = {
+            val (k, v) = kvp
+            if (first) {
+              r ~~ ' ';
+              first = false
+            } else
+              r ~~ ','
+            if (!k.isEmpty)
+              r ~~ k ~~ '='
+            r ~~# v
+          }
         }
-      }
     r
   }
 }

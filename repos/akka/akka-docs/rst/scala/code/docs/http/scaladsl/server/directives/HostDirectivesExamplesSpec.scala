@@ -17,10 +17,11 @@ class HostDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get() ~> Host("company.com", 9090) ~> route ~> check {
-      status shouldEqual OK
-      responseAs[String] shouldEqual "Hostname: company.com"
-    }
+    Get() ~> Host("company.com", 9090) ~> route ~>
+      check {
+        status shouldEqual OK
+        responseAs[String] shouldEqual "Hostname: company.com"
+      }
   }
 
   "list-of-hosts" in {
@@ -30,14 +31,16 @@ class HostDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get() ~> Host("rest.company.com") ~> route ~> check {
-      status shouldEqual OK
-      responseAs[String] shouldEqual "Ok"
-    }
+    Get() ~> Host("rest.company.com") ~> route ~>
+      check {
+        status shouldEqual OK
+        responseAs[String] shouldEqual "Ok"
+      }
 
-    Get() ~> Host("notallowed.company.com") ~> route ~> check {
-      handled shouldBe false
-    }
+    Get() ~> Host("notallowed.company.com") ~> route ~>
+      check {
+        handled shouldBe false
+      }
   }
 
   "predicate" in {
@@ -49,14 +52,16 @@ class HostDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get() ~> Host("short.com") ~> route ~> check {
-      status shouldEqual OK
-      responseAs[String] shouldEqual "Ok"
-    }
+    Get() ~> Host("short.com") ~> route ~>
+      check {
+        status shouldEqual OK
+        responseAs[String] shouldEqual "Ok"
+      }
 
-    Get() ~> Host("verylonghostname.com") ~> route ~> check {
-      handled shouldBe false
-    }
+    Get() ~> Host("verylonghostname.com") ~> route ~>
+      check {
+        handled shouldBe false
+      }
   }
 
   "using-regex" in {
@@ -69,15 +74,17 @@ class HostDirectivesExamplesSpec extends RoutingSpec {
         }
 
     // tests:
-    Get() ~> Host("api.company.com") ~> route ~> check {
-      status shouldEqual OK
-      responseAs[String] shouldEqual "Extracted prefix: api"
-    }
+    Get() ~> Host("api.company.com") ~> route ~>
+      check {
+        status shouldEqual OK
+        responseAs[String] shouldEqual "Extracted prefix: api"
+      }
 
-    Get() ~> Host("public.mycompany.com") ~> route ~> check {
-      status shouldEqual OK
-      responseAs[String] shouldEqual "You came through my company"
-    }
+    Get() ~> Host("public.mycompany.com") ~> route ~>
+      check {
+        status shouldEqual OK
+        responseAs[String] shouldEqual "You came through my company"
+      }
   }
 
   "failing-regex" in {

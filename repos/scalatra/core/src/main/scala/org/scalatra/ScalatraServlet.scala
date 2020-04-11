@@ -19,30 +19,31 @@ object ScalatraServlet {
       request != null,
       "The request can't be null for getting the request path")
     def startIndex(r: HttpServletRequest) =
-      r.getContextPath.blankOption.map(_.length).getOrElse(0) + r
-        .getServletPath
-        .blankOption
-        .map(_.length)
-        .getOrElse(0)
+      r.getContextPath.blankOption.map(_.length).getOrElse(0) +
+        r.getServletPath.blankOption.map(_.length).getOrElse(0)
     def getRequestPath(r: HttpServletRequest) = {
-      val u = (catching(classOf[NullPointerException]) opt {
-        r.getRequestURI
-      } getOrElse "/")
+      val u =
+        (catching(classOf[NullPointerException]) opt {
+          r.getRequestURI
+        } getOrElse "/")
       requestPath(u, startIndex(r))
     }
 
-    request.get(RequestPathKey) map (_.toString) getOrElse {
-      val rp = getRequestPath(request)
-      request(RequestPathKey) = rp
-      rp
-    }
+    request.get(RequestPathKey) map
+      (_.toString) getOrElse {
+        val rp = getRequestPath(request)
+        request(RequestPathKey) = rp
+        rp
+      }
   }
 
   def requestPath(uri: String, idx: Int): String = {
     val u1 = UriDecoder.firstStep(uri)
-    val u2 = (u1.blankOption map {
-      _.substring(idx)
-    } flatMap (_.blankOption) getOrElse "/")
+    val u2 =
+      (u1.blankOption map {
+        _.substring(idx)
+      } flatMap
+        (_.blankOption) getOrElse "/")
     val pos = u2.indexOf(';')
     if (pos > -1)
       u2.substring(0, pos)
@@ -129,11 +130,12 @@ trait ScalatraServlet extends HttpServlet with ServletBase with Initializable {
     response.setStatus(404)
     if (isDevelopmentMode) {
       val error = "Requesting \"%s %s\" on servlet \"%s\" but only have: %s"
-      response.getWriter println error.format(
-        request.getMethod,
-        Option(request.getPathInfo) getOrElse "/",
-        request.getServletPath,
-        routes.entryPoints.mkString("<ul><li>", "</li><li>", "</li></ul>"))
+      response.getWriter println
+        error.format(
+          request.getMethod,
+          Option(request.getPathInfo) getOrElse "/",
+          request.getServletPath,
+          routes.entryPoints.mkString("<ul><li>", "</li><li>", "</li></ul>"))
     }
   }
 

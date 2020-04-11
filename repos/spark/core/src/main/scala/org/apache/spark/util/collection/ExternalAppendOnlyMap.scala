@@ -489,8 +489,8 @@ class ExternalAppendOnlyMap[K, V, C](
 
         assert(
           end >= start,
-          "start = " + start + ", end = " + end +
-            ", batchOffsets = " + batchOffsets.mkString("[", ", ", "]"))
+          "start = " + start + ", end = " + end + ", batchOffsets = " +
+            batchOffsets.mkString("[", ", ", "]"))
 
         val bufferedStream =
           new BufferedInputStream(ByteStreams.limit(fileStream, end - start))

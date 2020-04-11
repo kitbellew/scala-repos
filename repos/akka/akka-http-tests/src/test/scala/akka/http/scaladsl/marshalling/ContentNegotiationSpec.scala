@@ -19,37 +19,37 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
   "Content Negotiation should work properly for requests with header(s)" - {
 
     "(without headers)" test { accept ⇒
-      accept(`text/plain` withCharset `UTF-16`) should select(
-        `text/plain` withCharset `UTF-16`)
-      accept(`text/plain`, `text/html`) should select(
-        `text/plain` withCharset `UTF-8`)
-      accept(`text/html`, `text/plain`) should select(
-        `text/html` withCharset `UTF-8`)
+      accept(`text/plain` withCharset `UTF-16`) should
+        select(`text/plain` withCharset `UTF-16`)
+      accept(`text/plain`, `text/html`) should
+        select(`text/plain` withCharset `UTF-8`)
+      accept(`text/html`, `text/plain`) should
+        select(`text/html` withCharset `UTF-8`)
     }
 
     "Accept: */*" test { accept ⇒
       accept(`text/plain`) should select(`text/plain` withCharset `UTF-8`)
-      accept(`text/plain` withCharset `UTF-16`) should select(
-        `text/plain` withCharset `UTF-16`)
+      accept(`text/plain` withCharset `UTF-16`) should
+        select(`text/plain` withCharset `UTF-16`)
     }
 
     "Accept: */*;q=.8" test { accept ⇒
       accept(`text/plain`) should select(`text/plain` withCharset `UTF-8`)
-      accept(`text/plain` withCharset `UTF-16`) should select(
-        `text/plain` withCharset `UTF-16`)
+      accept(`text/plain` withCharset `UTF-16`) should
+        select(`text/plain` withCharset `UTF-16`)
     }
 
     "Accept: text/*" test { accept ⇒
       accept(`text/plain`) should select(`text/plain` withCharset `UTF-8`)
-      accept(`text/xml` withCharset `UTF-16`) should select(
-        `text/xml` withCharset `UTF-16`)
+      accept(`text/xml` withCharset `UTF-16`) should
+        select(`text/xml` withCharset `UTF-16`)
       accept(`audio/ogg`) should reject
     }
 
     "Accept: text/*;q=.8" test { accept ⇒
       accept(`text/plain`) should select(`text/plain` withCharset `UTF-8`)
-      accept(`text/xml` withCharset `UTF-16`) should select(
-        `text/xml` withCharset `UTF-16`)
+      accept(`text/xml` withCharset `UTF-16`) should
+        select(`text/xml` withCharset `UTF-16`)
       accept(`audio/ogg`) should reject
     }
 
@@ -68,23 +68,24 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
       accept(`text/plain` withCharset `UTF-8`) should reject
     }
 
-    "manually created Accept-Charset: UTF-16" in testHeaders(
-      headers.`Accept-Charset`(Vector(HttpCharsets.`UTF-16`.toRange))) {
-      accept ⇒
-        accept(`text/plain`) should select(`text/plain` withCharset `UTF-16`)
-        accept(`text/plain` withCharset `UTF-8`) should reject
-    }
+    "manually created Accept-Charset: UTF-16" in
+      testHeaders(
+        headers.`Accept-Charset`(Vector(HttpCharsets.`UTF-16`.toRange))) {
+        accept ⇒
+          accept(`text/plain`) should select(`text/plain` withCharset `UTF-16`)
+          accept(`text/plain` withCharset `UTF-8`) should reject
+      }
 
     "Accept-Charset: UTF-16, UTF-8" test { accept ⇒
       accept(`text/plain`) should select(`text/plain` withCharset `UTF-16`)
-      accept(`text/plain` withCharset `UTF-8`) should select(
-        `text/plain` withCharset `UTF-8`)
+      accept(`text/plain` withCharset `UTF-8`) should
+        select(`text/plain` withCharset `UTF-8`)
     }
 
     "Accept-Charset: UTF-8;q=.2, UTF-16" test { accept ⇒
       accept(`text/plain`) should select(`text/plain` withCharset `UTF-16`)
-      accept(`text/plain` withCharset `UTF-8`) should select(
-        `text/plain` withCharset `UTF-8`)
+      accept(`text/plain` withCharset `UTF-8`) should
+        select(`text/plain` withCharset `UTF-8`)
     }
 
     "Accept-Charset: ISO-8859-1;q=.2" test { accept ⇒
@@ -94,14 +95,14 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
 
     "Accept-Charset: latin1;q=.1, UTF-8;q=.2" test { accept ⇒
       accept(`text/plain`) should select(`text/plain` withCharset `UTF-8`)
-      accept(`text/plain` withCharset `UTF-8`) should select(
-        `text/plain` withCharset `UTF-8`)
+      accept(`text/plain` withCharset `UTF-8`) should
+        select(`text/plain` withCharset `UTF-8`)
     }
 
     "Accept-Charset: *" test { accept ⇒
       accept(`text/plain`) should select(`text/plain` withCharset `UTF-8`)
-      accept(`text/plain` withCharset `UTF-16`) should select(
-        `text/plain` withCharset `UTF-16`)
+      accept(`text/plain` withCharset `UTF-16`) should
+        select(`text/plain` withCharset `UTF-16`)
     }
 
     "Accept-Charset: *;q=0" test { accept ⇒
@@ -122,49 +123,47 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
     "Accept-Charset: UTF-8, *;q=0.8, us;q=0.1" test { accept ⇒
       accept(
         `text/plain` withCharset `US-ASCII`,
-        `text/plain` withCharset `ISO-8859-1`) should select(
-        `text/plain` withCharset `ISO-8859-1`)
+        `text/plain` withCharset `ISO-8859-1`) should
+        select(`text/plain` withCharset `ISO-8859-1`)
     }
 
     "Accept: text/xml, text/html;q=.5" test { accept ⇒
       accept(`text/plain`) should reject
       accept(`text/xml`) should select(`text/xml` withCharset `UTF-8`)
       accept(`text/html`) should select(`text/html` withCharset `UTF-8`)
-      accept(`text/html`, `text/xml`) should select(
-        `text/xml` withCharset `UTF-8`)
-      accept(`text/xml`, `text/html`) should select(
-        `text/xml` withCharset `UTF-8`)
-      accept(`text/plain`, `text/xml`) should select(
-        `text/xml` withCharset `UTF-8`)
-      accept(`text/plain`, `text/html`) should select(
-        `text/html` withCharset `UTF-8`)
+      accept(`text/html`, `text/xml`) should
+        select(`text/xml` withCharset `UTF-8`)
+      accept(`text/xml`, `text/html`) should
+        select(`text/xml` withCharset `UTF-8`)
+      accept(`text/plain`, `text/xml`) should
+        select(`text/xml` withCharset `UTF-8`)
+      accept(`text/plain`, `text/html`) should
+        select(`text/html` withCharset `UTF-8`)
     }
 
     """Accept: text/html, text/plain;q=0.8, application/*;q=.5, *;q= .2
       |Accept-Charset: UTF-16""" test { accept ⇒
-      accept(`text/plain`, `text/html`, `audio/ogg`) should select(
-        `text/html` withCharset `UTF-16`)
-      accept(
-        `text/plain`,
-        `text/html` withCharset `UTF-8`,
-        `audio/ogg`) should select(`text/plain` withCharset `UTF-16`)
+      accept(`text/plain`, `text/html`, `audio/ogg`) should
+        select(`text/html` withCharset `UTF-16`)
+      accept(`text/plain`, `text/html` withCharset `UTF-8`, `audio/ogg`) should
+        select(`text/plain` withCharset `UTF-16`)
       accept(
         `audio/ogg`,
         `application/javascript`,
-        `text/plain` withCharset `UTF-8`) should select(
-        `application/javascript` withCharset `UTF-16`)
-      accept(`image/gif`, `application/javascript`) should select(
-        `application/javascript` withCharset `UTF-16`)
+        `text/plain` withCharset `UTF-8`) should
+        select(`application/javascript` withCharset `UTF-16`)
+      accept(`image/gif`, `application/javascript`) should
+        select(`application/javascript` withCharset `UTF-16`)
       accept(`image/gif`, `audio/ogg`) should select(`image/gif`)
     }
 
     "Accept: text/xml, text/plain" test { accept ⇒
-      accept(`text/plain` withCharset `UTF-16`) should select(
-        `text/plain` withCharset `UTF-16`)
-      accept(`text/plain`, `text/xml`) should select(
-        `text/plain` withCharset `UTF-8`)
-      accept(`text/xml`, `text/plain`) should select(
-        `text/xml` withCharset `UTF-8`)
+      accept(`text/plain` withCharset `UTF-16`) should
+        select(`text/plain` withCharset `UTF-16`)
+      accept(`text/plain`, `text/xml`) should
+        select(`text/plain` withCharset `UTF-8`)
+      accept(`text/xml`, `text/plain`) should
+        select(`text/xml` withCharset `UTF-8`)
     }
   }
 

@@ -54,10 +54,8 @@ trait LocationLineManager {
     if (!DebuggerUtil.isScala(location.declaringType(), default = false))
       return false
 
-    val synth = DebuggerSettings
-      .getInstance()
-      .SKIP_SYNTHETIC_METHODS && syntheticProvider
-      .isSynthetic(location.method())
+    val synth = DebuggerSettings.getInstance().SKIP_SYNTHETIC_METHODS &&
+      syntheticProvider.isSynthetic(location.method())
     synth || exactLineNumber(location) < 0
   }
 
@@ -202,8 +200,8 @@ trait LocationLineManager {
             .asScala
             .foreach {
               case loc
-                  if BytecodeUtil
-                    .readIload(loc.codeIndex().toInt, bytecodes) == iloadCode =>
+                  if BytecodeUtil.readIload(loc.codeIndex().toInt, bytecodes) ==
+                    iloadCode =>
                 cacheCustomLine(loc, -1)
               case _ =>
             }
@@ -259,8 +257,8 @@ trait LocationLineManager {
           .allLineLocations()
           .asScala
           .filter { l =>
-            BytecodeUtil
-              .readLoadCode(l.codeIndex().toInt, bytecodes) == loadCode
+            BytecodeUtil.readLoadCode(l.codeIndex().toInt, bytecodes) ==
+              loadCode
           }
         loadLocations.foreach(cacheCustomLine(_, -1))
       }

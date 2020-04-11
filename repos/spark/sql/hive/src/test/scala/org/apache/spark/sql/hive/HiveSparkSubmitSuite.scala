@@ -238,8 +238,7 @@ class HiveSparkSubmitSuite
       case to: TestFailedDueToTimeoutException =>
         val historyLog = history.mkString("\n")
         fail(
-          s"Timeout of $commandLine" +
-            s" See the log4j logs for more detail." +
+          s"Timeout of $commandLine" + s" See the log4j logs for more detail." +
             s"\n$historyLog",
           to)
       case t: Throwable =>
@@ -342,7 +341,8 @@ object SparkSQLConfTest extends Logging {
       new SparkConf() {
         override def getAll: Array[(String, String)] = {
           def isMetastoreSetting(conf: String): Boolean = {
-            conf == "spark.sql.hive.metastore.version" || conf == "spark.sql.hive.metastore.jars"
+            conf == "spark.sql.hive.metastore.version" ||
+            conf == "spark.sql.hive.metastore.jars"
           }
           // If there is any metastore settings, remove them.
           val filteredSettings = super
@@ -351,8 +351,7 @@ object SparkSQLConfTest extends Logging {
 
           // Always add these two metastore settings at the beginning.
           ("spark.sql.hive.metastore.version" -> "0.12") +:
-            ("spark.sql.hive.metastore.jars" -> "maven") +:
-            filteredSettings
+            ("spark.sql.hive.metastore.jars" -> "maven") +: filteredSettings
         }
 
         // For this simple test, we do not really clone this object.
@@ -405,9 +404,8 @@ object SPARK_9757 extends QueryTest {
         val df = hiveContext
           .range(10)
           .select(
-            callUDF(
-              "struct",
-              ('id + 0.2) cast DecimalType(10, 3)) as 'dec_struct)
+            callUDF("struct", ('id + 0.2) cast DecimalType(10, 3)) as
+              'dec_struct)
         df.write
           .option("path", dir.getCanonicalPath)
           .mode("overwrite")

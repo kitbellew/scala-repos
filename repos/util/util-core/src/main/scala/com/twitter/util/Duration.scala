@@ -468,23 +468,22 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
   /**
     * Scales this `Duration` by multiplying by `x`.
     */
-  def *(x: Double): Duration =
-    (nanos * x) match {
-      case product if java.lang.Double.isNaN(product) =>
-        Undefined
-      case Double.PositiveInfinity =>
+  def *(x: Double): Duration = (nanos * x) match {
+    case product if java.lang.Double.isNaN(product) =>
+      Undefined
+    case Double.PositiveInfinity =>
+      Top
+    case Double.NegativeInfinity =>
+      Bottom
+    case product =>
+      val productLong = product.toLong
+      if (productLong == Long.MaxValue)
         Top
-      case Double.NegativeInfinity =>
+      else if (productLong == Long.MinValue)
         Bottom
-      case product =>
-        val productLong = product.toLong
-        if (productLong == Long.MaxValue)
-          Top
-        else if (productLong == Long.MinValue)
-          Bottom
-        else
-          fromNanoseconds(productLong)
-    }
+      else
+        fromNanoseconds(productLong)
+  }
 
   /**
     * Scales this `Duration` by dividing by `x`.

@@ -96,172 +96,182 @@ class QueueSourceSpec extends AkkaSpec {
       sub.cancel()
     }
 
-    "not fail when 0 buffer space and demand is signalled" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val queue = Source
-        .queue(0, OverflowStrategy.dropHead)
-        .to(Sink.fromSubscriber(s))
-        .run()
-      val sub = s.expectSubscription
-      sub.request(1)
+    "not fail when 0 buffer space and demand is signalled" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val queue = Source
+          .queue(0, OverflowStrategy.dropHead)
+          .to(Sink.fromSubscriber(s))
+          .run()
+        val sub = s.expectSubscription
+        sub.request(1)
 
-      assertSuccess(queue.offer(1))
+        assertSuccess(queue.offer(1))
 
-      sub.cancel()
-    }
+        sub.cancel()
+      }
 
-    "wait for demand when buffer is 0" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val queue = Source
-        .queue(0, OverflowStrategy.dropHead)
-        .to(Sink.fromSubscriber(s))
-        .run()
-      val sub = s.expectSubscription
-      queue.offer(1).pipeTo(testActor)
-      expectNoMsg(pause)
-      sub.request(1)
-      expectMsg(QueueOfferResult.Enqueued)
-      s.expectNext(1)
-      sub.cancel()
-    }
+    "wait for demand when buffer is 0" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val queue = Source
+          .queue(0, OverflowStrategy.dropHead)
+          .to(Sink.fromSubscriber(s))
+          .run()
+        val sub = s.expectSubscription
+        queue.offer(1).pipeTo(testActor)
+        expectNoMsg(pause)
+        sub.request(1)
+        expectMsg(QueueOfferResult.Enqueued)
+        s.expectNext(1)
+        sub.cancel()
+      }
 
-    "finish offer and complete futures when stream completed" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val queue = Source
-        .queue(0, OverflowStrategy.dropHead)
-        .to(Sink.fromSubscriber(s))
-        .run()
-      val sub = s.expectSubscription
+    "finish offer and complete futures when stream completed" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val queue = Source
+          .queue(0, OverflowStrategy.dropHead)
+          .to(Sink.fromSubscriber(s))
+          .run()
+        val sub = s.expectSubscription
 
-      queue.watchCompletion.pipeTo(testActor)
-      queue.offer(1) pipeTo testActor
-      expectNoMsg(pause)
+        queue.watchCompletion.pipeTo(testActor)
+        queue.offer(1) pipeTo testActor
+        expectNoMsg(pause)
 
-      sub.cancel()
+        sub.cancel()
 
-      expectMsgAllOf(QueueOfferResult.QueueClosed, Done)
-    }
+        expectMsgAllOf(QueueOfferResult.QueueClosed, Done)
+      }
 
-    "fail stream on buffer overflow in fail mode" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val queue = Source
-        .queue(1, OverflowStrategy.fail)
-        .to(Sink.fromSubscriber(s))
-        .run()
-      s.expectSubscription
+    "fail stream on buffer overflow in fail mode" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val queue = Source
+          .queue(1, OverflowStrategy.fail)
+          .to(Sink.fromSubscriber(s))
+          .run()
+        s.expectSubscription
 
-      queue.offer(1)
-      queue.offer(2)
-      s.expectError()
-    }
+        queue.offer(1)
+        queue.offer(2)
+        s.expectError()
+      }
 
-    "remember pull from downstream to send offered element immediately" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val probe = TestProbe()
-      val queue = TestSourceStage(
-        new QueueSource[Int](1, OverflowStrategy.dropHead),
-        probe).to(Sink.fromSubscriber(s)).run()
-      val sub = s.expectSubscription
+    "remember pull from downstream to send offered element immediately" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val probe = TestProbe()
+        val queue = TestSourceStage(
+          new QueueSource[Int](1, OverflowStrategy.dropHead),
+          probe).to(Sink.fromSubscriber(s)).run()
+        val sub = s.expectSubscription
 
-      sub.request(1)
-      probe.expectMsg(GraphStageMessages.Pull)
-      assertSuccess(queue.offer(1))
-      s.expectNext(1)
-      sub.cancel()
-    }
+        sub.request(1)
+        probe.expectMsg(GraphStageMessages.Pull)
+        assertSuccess(queue.offer(1))
+        s.expectNext(1)
+        sub.cancel()
+      }
 
-    "fail offer future if user does not wait in backpressure mode" in assertAllStagesStopped {
-      val (queue, probe) = Source
-        .queue[Int](5, OverflowStrategy.backpressure)
-        .toMat(TestSink.probe)(Keep.both)
-        .run()
+    "fail offer future if user does not wait in backpressure mode" in
+      assertAllStagesStopped {
+        val (queue, probe) = Source
+          .queue[Int](5, OverflowStrategy.backpressure)
+          .toMat(TestSink.probe)(Keep.both)
+          .run()
 
-      for (i ← 1 to 5)
-        assertSuccess(queue.offer(i))
+        for (i ← 1 to 5)
+          assertSuccess(queue.offer(i))
 
-      queue.offer(6).pipeTo(testActor)
+        queue.offer(6).pipeTo(testActor)
 
-      queue.offer(7).pipeTo(testActor)
-      expectMsgType[Status.Failure].cause shouldBe an[IllegalStateException]
+        queue.offer(7).pipeTo(testActor)
+        expectMsgType[Status.Failure].cause shouldBe an[IllegalStateException]
 
-      probe.requestNext(1)
-      expectMsg(QueueOfferResult.Enqueued)
-      queue.complete()
+        probe.requestNext(1)
+        expectMsg(QueueOfferResult.Enqueued)
+        queue.complete()
 
-      probe.request(6).expectNext(2, 3, 4, 5, 6).expectComplete()
-    }
+        probe.request(6).expectNext(2, 3, 4, 5, 6).expectComplete()
+      }
 
-    "complete watching future with failure if stream failed" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val queue = Source
-        .queue(1, OverflowStrategy.fail)
-        .to(Sink.fromSubscriber(s))
-        .run()
-      queue.watchCompletion().pipeTo(testActor)
-      queue.offer(
-        1
-      ) //need to wait when first offer is done as initialization can be done in this moment
-      queue.offer(2)
-      expectMsgClass(classOf[Status.Failure])
-    }
+    "complete watching future with failure if stream failed" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val queue = Source
+          .queue(1, OverflowStrategy.fail)
+          .to(Sink.fromSubscriber(s))
+          .run()
+        queue.watchCompletion().pipeTo(testActor)
+        queue.offer(
+          1
+        ) //need to wait when first offer is done as initialization can be done in this moment
+        queue.offer(2)
+        expectMsgClass(classOf[Status.Failure])
+      }
 
-    "return false when elemen was not added to buffer" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val queue = Source
-        .queue(1, OverflowStrategy.dropNew)
-        .to(Sink.fromSubscriber(s))
-        .run()
-      val sub = s.expectSubscription
+    "return false when elemen was not added to buffer" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val queue = Source
+          .queue(1, OverflowStrategy.dropNew)
+          .to(Sink.fromSubscriber(s))
+          .run()
+        val sub = s.expectSubscription
 
-      queue.offer(1)
-      queue.offer(2) pipeTo testActor
-      expectMsg(QueueOfferResult.Dropped)
+        queue.offer(1)
+        queue.offer(2) pipeTo testActor
+        expectMsg(QueueOfferResult.Dropped)
 
-      sub.request(1)
-      s.expectNext(1)
-      sub.cancel()
-    }
+        sub.request(1)
+        s.expectNext(1)
+        sub.cancel()
+      }
 
-    "wait when buffer is full and backpressure is on" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val queue = Source
-        .queue(1, OverflowStrategy.backpressure)
-        .to(Sink.fromSubscriber(s))
-        .run()
-      val sub = s.expectSubscription
-      assertSuccess(queue.offer(1))
+    "wait when buffer is full and backpressure is on" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val queue = Source
+          .queue(1, OverflowStrategy.backpressure)
+          .to(Sink.fromSubscriber(s))
+          .run()
+        val sub = s.expectSubscription
+        assertSuccess(queue.offer(1))
 
-      queue.offer(2) pipeTo testActor
-      expectNoMsg(pause)
+        queue.offer(2) pipeTo testActor
+        expectNoMsg(pause)
 
-      sub.request(1)
-      s.expectNext(1)
+        sub.request(1)
+        s.expectNext(1)
 
-      sub.request(1)
-      s.expectNext(2)
-      expectMsg(QueueOfferResult.Enqueued)
+        sub.request(1)
+        s.expectNext(2)
+        expectMsg(QueueOfferResult.Enqueued)
 
-      sub.cancel()
-    }
+        sub.cancel()
+      }
 
-    "fail offer future when stream is completed" in assertAllStagesStopped {
-      val s = TestSubscriber.manualProbe[Int]()
-      val queue = Source
-        .queue(1, OverflowStrategy.dropNew)
-        .to(Sink.fromSubscriber(s))
-        .run()
-      val sub = s.expectSubscription
-      queue.watchCompletion().pipeTo(testActor)
-      sub.cancel()
-      expectMsg(Done)
+    "fail offer future when stream is completed" in
+      assertAllStagesStopped {
+        val s = TestSubscriber.manualProbe[Int]()
+        val queue = Source
+          .queue(1, OverflowStrategy.dropNew)
+          .to(Sink.fromSubscriber(s))
+          .run()
+        val sub = s.expectSubscription
+        queue.watchCompletion().pipeTo(testActor)
+        sub.cancel()
+        expectMsg(Done)
 
-      queue
-        .offer(1)
-        .onFailure {
-          case e ⇒
-            e.isInstanceOf[IllegalStateException] should ===(true)
-        }
-    }
+        queue
+          .offer(1)
+          .onFailure {
+            case e ⇒
+              e.isInstanceOf[IllegalStateException] should ===(true)
+          }
+      }
 
     "not share future across materializations" in {
       val source = Source.queue[String](1, OverflowStrategy.fail)

@@ -23,12 +23,10 @@ final case class DiscoveredSubclass(
     extends Discovered
     with TestFingerprint {
   override def toString =
-    (
-      if (isModule)
-        IsModuleLiteral
-      else
-        ""
-    ) + className + SubSuperSeparator + superClassName
+    (if (isModule)
+       IsModuleLiteral
+     else
+       "") + className + SubSuperSeparator + superClassName
 }
 
 /** Represents an annotation on a method or class.*/
@@ -39,10 +37,8 @@ final case class DiscoveredAnnotated(
     extends Discovered
     with AnnotatedFingerprint {
   override def toString =
-    (
-      if (isModule)
-        IsModuleLiteral
-      else
-        ""
-    ) + className + AnnotationSeparator + annotationName
+    (if (isModule)
+       IsModuleLiteral
+     else
+       "") + className + AnnotationSeparator + annotationName
 }

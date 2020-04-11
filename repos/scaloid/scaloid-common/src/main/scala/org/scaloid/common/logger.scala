@@ -75,12 +75,11 @@ trait TagUtil {
 trait Logger {
   @inline
   private def loggingText(str: String, t: Throwable) =
-    str + (
-      if (t == null)
-        ""
-      else
-        "\n" + Log.getStackTraceString(t)
-    )
+    str +
+      (if (t == null)
+         ""
+       else
+         "\n" + Log.getStackTraceString(t))
 
   @inline
   def verbose(str: => String, t: Throwable = null)(implicit tag: LoggerTag) {

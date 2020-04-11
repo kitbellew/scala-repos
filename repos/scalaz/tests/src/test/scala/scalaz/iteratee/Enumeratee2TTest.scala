@@ -44,21 +44,22 @@ object Enumeratee2TTest extends SpecLite {
       val outer2 = outer &= enum
       val inner = outer2.run &= enum2
 
-      inner.run.pointI.run must_== List[Either3[Int, (Int, Int), Int]](
-        left3(1),
-        right3(2),
-        middle3((3, 3)),
-        middle3((3, 3)),
-        right3(4),
-        middle3((5, 5)),
-        middle3((5, 5)),
-        right3(6),
-        left3(7),
-        middle3((8, 8)),
-        middle3((8, 8)),
-        middle3((8, 8)),
-        middle3((8, 8))
-      )
+      inner.run.pointI.run must_==
+        List[Either3[Int, (Int, Int), Int]](
+          left3(1),
+          right3(2),
+          middle3((3, 3)),
+          middle3((3, 3)),
+          right3(4),
+          middle3((5, 5)),
+          middle3((5, 5)),
+          right3(6),
+          left3(7),
+          middle3((8, 8)),
+          middle3((8, 8)),
+          middle3((8, 8)),
+          middle3((8, 8))
+        )
     }
   }
 
@@ -78,8 +79,8 @@ object Enumeratee2TTest extends SpecLite {
 
     val consumer = consume[(Int, Int), Id, List]
     val producer = enum1 cross enum2
-    (consumer &= producer).run must_=== (
-      List(
+    (consumer &= producer).run must_===
+      (List(
         (1, 2),
         (1, 3),
         (1, 4),
@@ -88,8 +89,7 @@ object Enumeratee2TTest extends SpecLite {
         (3, 4),
         (5, 2),
         (5, 3),
-        (5, 4))
-    )
+        (5, 4)))
   }
 
   "join the first element with all of the second iteratee's elements, which compare equal" in {

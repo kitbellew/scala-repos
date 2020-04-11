@@ -138,8 +138,7 @@ object EventJson4sSupport {
           // don't show creationTime for now
           JField(
             "creationTime",
-            JString(DataUtils.dateTimeToString(d.creationTime))) ::
-          Nil)
+            JString(DataUtils.dateTimeToString(d.creationTime))) :: Nil)
     }
   }
 
@@ -204,8 +203,7 @@ object EventJson4sSupport {
           JField("prId", d.prId.map(JString(_)).getOrElse(JNothing)) ::
           JField(
             "creationTime",
-            JString(DataUtils.dateTimeToString(d.creationTime))) ::
-          Nil)
+            JString(DataUtils.dateTimeToString(d.creationTime))) :: Nil)
     }
   }
 

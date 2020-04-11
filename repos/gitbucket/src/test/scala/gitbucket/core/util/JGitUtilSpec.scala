@@ -38,9 +38,10 @@ class JGitUtilSpec extends FunSuite {
         message = "commit3")
 
       assert(
-        list("master", ".") == List(
-          ("dir/subdir", "commit3", true),
-          ("README.md", "commit2", false)))
+        list("master", ".") ==
+          List(
+            ("dir/subdir", "commit3", true),
+            ("README.md", "commit2", false)))
       assert(
         list("master", "dir/subdir") == List(("File3.md", "commit3", false)))
       assert(list("branch", ".") == Nil)
@@ -54,64 +55,64 @@ class JGitUtilSpec extends FunSuite {
         message = "commit4")
 
       assert(
-        list("master", ".") == List(
-          ("dir/subdir", "commit4", true),
-          ("README.md", "commit2", false)))
+        list("master", ".") ==
+          List(
+            ("dir/subdir", "commit4", true),
+            ("README.md", "commit2", false)))
       assert(
-        list("master", "dir/subdir") == List(
-          ("File3.md", "commit3", false),
-          ("File4.md", "commit4", false)))
+        list("master", "dir/subdir") ==
+          List(("File3.md", "commit3", false), ("File4.md", "commit4", false)))
       assert(list("branch", ".") == Nil)
       assert(list("branch", "dir/subdir") == Nil)
 
       createFile(git, "master", "README5.md", "body5", message = "commit5")
 
       assert(
-        list("master", ".") == List(
-          ("dir/subdir", "commit4", true),
-          ("README.md", "commit2", false),
-          ("README5.md", "commit5", false)))
+        list("master", ".") ==
+          List(
+            ("dir/subdir", "commit4", true),
+            ("README.md", "commit2", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("master", "dir/subdir") == List(
-          ("File3.md", "commit3", false),
-          ("File4.md", "commit4", false)))
+        list("master", "dir/subdir") ==
+          List(("File3.md", "commit3", false), ("File4.md", "commit4", false)))
       assert(list("branch", ".") == Nil)
       assert(list("branch", "dir/subdir") == Nil)
 
       createFile(git, "master", "README.md", "body6", message = "commit6")
 
       assert(
-        list("master", ".") == List(
-          ("dir/subdir", "commit4", true),
-          ("README.md", "commit6", false),
-          ("README5.md", "commit5", false)))
+        list("master", ".") ==
+          List(
+            ("dir/subdir", "commit4", true),
+            ("README.md", "commit6", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("master", "dir/subdir") == List(
-          ("File3.md", "commit3", false),
-          ("File4.md", "commit4", false)))
+        list("master", "dir/subdir") ==
+          List(("File3.md", "commit3", false), ("File4.md", "commit4", false)))
       assert(list("branch", ".") == Nil)
       assert(list("branch", "dir/subdir") == Nil)
 
       git.branchCreate().setName("branch").setStartPoint("master").call()
 
       assert(
-        list("master", ".") == List(
-          ("dir/subdir", "commit4", true),
-          ("README.md", "commit6", false),
-          ("README5.md", "commit5", false)))
+        list("master", ".") ==
+          List(
+            ("dir/subdir", "commit4", true),
+            ("README.md", "commit6", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("master", "dir/subdir") == List(
-          ("File3.md", "commit3", false),
-          ("File4.md", "commit4", false)))
+        list("master", "dir/subdir") ==
+          List(("File3.md", "commit3", false), ("File4.md", "commit4", false)))
       assert(
-        list("branch", ".") == List(
-          ("dir/subdir", "commit4", true),
-          ("README.md", "commit6", false),
-          ("README5.md", "commit5", false)))
+        list("branch", ".") ==
+          List(
+            ("dir/subdir", "commit4", true),
+            ("README.md", "commit6", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("branch", "dir/subdir") == List(
-          ("File3.md", "commit3", false),
-          ("File4.md", "commit4", false)))
+        list("branch", "dir/subdir") ==
+          List(("File3.md", "commit3", false), ("File4.md", "commit4", false)))
 
       createFile(
         git,
@@ -121,45 +122,45 @@ class JGitUtilSpec extends FunSuite {
         message = "commit7")
 
       assert(
-        list("master", ".") == List(
-          ("dir/subdir", "commit4", true),
-          ("README.md", "commit6", false),
-          ("README5.md", "commit5", false)))
+        list("master", ".") ==
+          List(
+            ("dir/subdir", "commit4", true),
+            ("README.md", "commit6", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("master", "dir/subdir") == List(
-          ("File3.md", "commit3", false),
-          ("File4.md", "commit4", false)))
+        list("master", "dir/subdir") ==
+          List(("File3.md", "commit3", false), ("File4.md", "commit4", false)))
       assert(
-        list("branch", ".") == List(
-          ("dir/subdir", "commit7", true),
-          ("README.md", "commit6", false),
-          ("README5.md", "commit5", false)))
+        list("branch", ".") ==
+          List(
+            ("dir/subdir", "commit7", true),
+            ("README.md", "commit6", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("branch", "dir/subdir") == List(
-          ("File3.md", "commit7", false),
-          ("File4.md", "commit4", false)))
+        list("branch", "dir/subdir") ==
+          List(("File3.md", "commit7", false), ("File4.md", "commit4", false)))
 
       createFile(git, "master", "dir8/File8.md", "body8", message = "commit8")
 
       assert(
-        list("master", ".") == List(
-          ("dir/subdir", "commit4", true),
-          ("dir8", "commit8", true),
-          ("README.md", "commit6", false),
-          ("README5.md", "commit5", false)))
+        list("master", ".") ==
+          List(
+            ("dir/subdir", "commit4", true),
+            ("dir8", "commit8", true),
+            ("README.md", "commit6", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("master", "dir/subdir") == List(
-          ("File3.md", "commit3", false),
-          ("File4.md", "commit4", false)))
+        list("master", "dir/subdir") ==
+          List(("File3.md", "commit3", false), ("File4.md", "commit4", false)))
       assert(
-        list("branch", ".") == List(
-          ("dir/subdir", "commit7", true),
-          ("README.md", "commit6", false),
-          ("README5.md", "commit5", false)))
+        list("branch", ".") ==
+          List(
+            ("dir/subdir", "commit7", true),
+            ("README.md", "commit6", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("branch", "dir/subdir") == List(
-          ("File3.md", "commit7", false),
-          ("File4.md", "commit4", false)))
+        list("branch", "dir/subdir") ==
+          List(("File3.md", "commit7", false), ("File4.md", "commit4", false)))
 
       createFile(
         git,
@@ -169,37 +170,37 @@ class JGitUtilSpec extends FunSuite {
         message = "commit9")
 
       assert(
-        list("master", ".") == List(
-          ("dir/subdir", "commit4", true),
-          ("dir8", "commit8", true),
-          ("README.md", "commit6", false),
-          ("README5.md", "commit5", false)))
+        list("master", ".") ==
+          List(
+            ("dir/subdir", "commit4", true),
+            ("dir8", "commit8", true),
+            ("README.md", "commit6", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("master", "dir/subdir") == List(
-          ("File3.md", "commit3", false),
-          ("File4.md", "commit4", false)))
+        list("master", "dir/subdir") ==
+          List(("File3.md", "commit3", false), ("File4.md", "commit4", false)))
       assert(
-        list("branch", ".") == List(
-          ("dir", "commit9", true),
-          ("README.md", "commit6", false),
-          ("README5.md", "commit5", false)))
+        list("branch", ".") ==
+          List(
+            ("dir", "commit9", true),
+            ("README.md", "commit6", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("branch", "dir/subdir") == List(
-          ("File3.md", "commit7", false),
-          ("File4.md", "commit4", false)))
+        list("branch", "dir/subdir") ==
+          List(("File3.md", "commit7", false), ("File4.md", "commit4", false)))
 
       mergeAndCommit(git, "master", "branch", message = "merge10")
 
       assert(
-        list("master", ".") == List(
-          ("dir", "commit9", true),
-          ("dir8", "commit8", true),
-          ("README.md", "commit6", false),
-          ("README5.md", "commit5", false)))
+        list("master", ".") ==
+          List(
+            ("dir", "commit9", true),
+            ("dir8", "commit8", true),
+            ("README.md", "commit6", false),
+            ("README5.md", "commit5", false)))
       assert(
-        list("master", "dir/subdir") == List(
-          ("File3.md", "commit7", false),
-          ("File4.md", "commit4", false)))
+        list("master", "dir/subdir") ==
+          List(("File3.md", "commit7", false), ("File4.md", "commit4", false)))
     }
   }
 

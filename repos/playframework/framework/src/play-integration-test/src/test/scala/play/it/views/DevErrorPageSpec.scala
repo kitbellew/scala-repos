@@ -21,14 +21,15 @@ object DevErrorPageSpec extends PlaySpecification {
         def sourceName = "someSourceFile"
       }
 
-    "link the error line if play.editor is configured" in new WithApplication(
-      _.configure("play.editor" -> "someEditorLinkWith %s:%s")) {
-      val result = app
-        .errorHandler
-        .onServerError(FakeRequest(), testExceptionSource)
-      contentAsString(result) must contain(
-        """href="someEditorLinkWith someSourceFile:100" """)
-    }
+    "link the error line if play.editor is configured" in
+      new WithApplication(
+        _.configure("play.editor" -> "someEditorLinkWith %s:%s")) {
+        val result = app
+          .errorHandler
+          .onServerError(FakeRequest(), testExceptionSource)
+        contentAsString(result) must
+          contain("""href="someEditorLinkWith someSourceFile:100" """)
+      }
 
     "show prod error page in prod mode" in {
       val errorHandler =

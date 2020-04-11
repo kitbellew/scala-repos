@@ -342,9 +342,8 @@ class MarathonHealthCheckManagerTest
       hcManager.reconcileWith(appId).futureValue
     }
     assert(
-      captured3.map(_.eventType) == Vector(
-        "add_health_check_event",
-        "add_health_check_event"))
+      captured3.map(_.eventType) ==
+        Vector("add_health_check_event", "add_health_check_event"))
     assert(hcManager.list(appId) == healthChecks(1) ++ healthChecks(2))
 
     // reconcileWith stops health checks which are not current and which are without tasks

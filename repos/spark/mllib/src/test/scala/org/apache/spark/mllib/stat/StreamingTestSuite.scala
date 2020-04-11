@@ -277,9 +277,8 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
       numBatches)
 
     assert(
-      outputBatches.flatten.length == (
-        numBatches - peacePeriod
-      ) * pointsPerBatch)
+      outputBatches.flatten.length ==
+        (numBatches - peacePeriod) * pointsPerBatch)
   }
 
   test("null hypothesis when only data from one group is present") {

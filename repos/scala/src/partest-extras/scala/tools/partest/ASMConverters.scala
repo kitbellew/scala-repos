@@ -94,12 +94,13 @@ object ASMConverters {
     // toString such that the first field, "opcode: Int", is printed textually.
     final override def toString() = {
       val printOpcode = opcode != -1
-      productPrefix + (
-        if (printOpcode)
-          Iterator(opcodeToString(opcode)) ++ productIterator.drop(1)
-        else
-          productIterator
-      ).mkString("(", ", ", ")")
+      productPrefix +
+        (
+          if (printOpcode)
+            Iterator(opcodeToString(opcode)) ++ productIterator.drop(1)
+          else
+            productIterator
+        ).mkString("(", ", ", ")")
     }
   }
 
@@ -323,61 +324,54 @@ object ASMConverters {
     }
     def sameVar(v1: Int, v2: Int) = same(v1, v2, varMap)
     def sameLabel(l1: Label, l2: Label) = same(l1.offset, l2.offset, labelMap)
-    def sameLabels(ls1: List[Label], ls2: List[Label]) =
-      (ls1 corresponds ls2)(sameLabel)
+    def sameLabels(ls1: List[Label], ls2: List[Label]) = (ls1 corresponds ls2)(
+      sameLabel)
 
-    def sameFrameTypes(ts1: List[Any], ts2: List[Any]) =
-      (ts1 corresponds ts2) {
-        case (t1: Label, t2: Label) =>
-          sameLabel(t1, t2)
-        case (x, y) =>
-          x == y
-      }
+    def sameFrameTypes(ts1: List[Any], ts2: List[Any]) = (ts1 corresponds ts2) {
+      case (t1: Label, t2: Label) =>
+        sameLabel(t1, t2)
+      case (x, y) =>
+        x == y
+    }
 
     if (as.isEmpty)
       bs.isEmpty
     else if (bs.isEmpty)
       false
     else
-      (
-        (as.head, bs.head) match {
-          case (VarOp(op1, v1), VarOp(op2, v2)) =>
-            op1 == op2 && sameVar(v1, v2)
-          case (Incr(op1, v1, inc1), Incr(op2, v2, inc2)) =>
-            op1 == op2 && sameVar(v1, v2) && inc1 == inc2
+      ((as.head, bs.head) match {
+        case (VarOp(op1, v1), VarOp(op2, v2)) =>
+          op1 == op2 && sameVar(v1, v2)
+        case (Incr(op1, v1, inc1), Incr(op2, v2, inc2)) =>
+          op1 == op2 && sameVar(v1, v2) && inc1 == inc2
 
-          case (l1 @ Label(_), l2 @ Label(_)) =>
-            sameLabel(l1, l2)
-          case (Jump(op1, l1), Jump(op2, l2)) =>
-            op1 == op2 && sameLabel(l1, l2)
-          case (
-                LookupSwitch(op1, l1, keys1, ls1),
-                LookupSwitch(op2, l2, keys2, ls2)) =>
-            op1 == op2 && sameLabel(l1, l2) && keys1 == keys2 && sameLabels(
-              ls1,
-              ls2)
-          case (
-                TableSwitch(op1, min1, max1, l1, ls1),
-                TableSwitch(op2, min2, max2, l2, ls2)) =>
-            op1 == op2 && min1 == min2 && max1 == max2 && sameLabel(
-              l1,
-              l2) && sameLabels(ls1, ls2)
-          case (LineNumber(line1, l1), LineNumber(line2, l2)) =>
-            line1 == line2 && sameLabel(l1, l2)
-          case (FrameEntry(tp1, loc1, stk1), FrameEntry(tp2, loc2, stk2)) =>
-            tp1 == tp2 && sameFrameTypes(loc1, loc2) && sameFrameTypes(
-              stk1,
-              stk2)
+        case (l1 @ Label(_), l2 @ Label(_)) =>
+          sameLabel(l1, l2)
+        case (Jump(op1, l1), Jump(op2, l2)) =>
+          op1 == op2 && sameLabel(l1, l2)
+        case (
+              LookupSwitch(op1, l1, keys1, ls1),
+              LookupSwitch(op2, l2, keys2, ls2)) =>
+          op1 == op2 && sameLabel(l1, l2) && keys1 == keys2 &&
+            sameLabels(ls1, ls2)
+        case (
+              TableSwitch(op1, min1, max1, l1, ls1),
+              TableSwitch(op2, min2, max2, l2, ls2)) =>
+          op1 == op2 && min1 == min2 && max1 == max2 && sameLabel(l1, l2) &&
+            sameLabels(ls1, ls2)
+        case (LineNumber(line1, l1), LineNumber(line2, l2)) =>
+          line1 == line2 && sameLabel(l1, l2)
+        case (FrameEntry(tp1, loc1, stk1), FrameEntry(tp2, loc2, stk2)) =>
+          tp1 == tp2 && sameFrameTypes(loc1, loc2) && sameFrameTypes(stk1, stk2)
 
-          // this needs to go after the above. For example, Label(1) may not equal Label(1), if before
-          // the left 1 was associated with another right index.
-          case (a, b) if a == b =>
-            true
+        // this needs to go after the above. For example, Label(1) may not equal Label(1), if before
+        // the left 1 was associated with another right index.
+        case (a, b) if a == b =>
+          true
 
-          case _ =>
-            false
-        }
-      ) && equivalentBytecode(as.tail, bs.tail, varMap, labelMap)
+        case _ =>
+          false
+      }) && equivalentBytecode(as.tail, bs.tail, varMap, labelMap)
   }
 
   def applyToMethod(

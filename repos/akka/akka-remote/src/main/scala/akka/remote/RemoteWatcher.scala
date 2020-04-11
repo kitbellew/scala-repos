@@ -173,9 +173,10 @@ private[akka] class RemoteWatcher(
             }
         }
         .toSet[(ActorRef, ActorRef)]
-      sender() ! Stats(
-        watching = watchSet.size,
-        watchingNodes = watchingNodes.size)(watchSet, watchingNodes.toSet)
+      sender() !
+        Stats(watching = watchSet.size, watchingNodes = watchingNodes.size)(
+          watchSet,
+          watchingNodes.toSet)
   }
 
   def receiveHeartbeat(): Unit = sender() ! selfHeartbeatRspMsg
@@ -224,8 +225,8 @@ private[akka] class RemoteWatcher(
 
   def watchNode(watchee: InternalActorRef): Unit = {
     val watcheeAddress = watchee.path.address
-    if (!watcheeByNodes.contains(watcheeAddress) && unreachable(
-          watcheeAddress)) {
+    if (!watcheeByNodes.contains(watcheeAddress) &&
+        unreachable(watcheeAddress)) {
       // first watch to that node after a previous unreachable
       unreachable -= watcheeAddress
       failureDetector.remove(watcheeAddress)
@@ -308,14 +309,14 @@ private[akka] class RemoteWatcher(
             self,
             ExpectedFirstHeartbeat(a))
         }
-        context
-          .actorSelection(RootActorPath(a) / self.path.elements) ! Heartbeat
+        context.actorSelection(RootActorPath(a) / self.path.elements) !
+          Heartbeat
       }
     }
 
   def triggerFirstHeartbeat(address: Address): Unit =
-    if (watcheeByNodes.contains(address) && !failureDetector
-          .isMonitoring(address)) {
+    if (watcheeByNodes.contains(address) &&
+        !failureDetector.isMonitoring(address)) {
       log.debug("Trigger extra expected heartbeat from [{}]", address)
       failureDetector.heartbeat(address)
     }

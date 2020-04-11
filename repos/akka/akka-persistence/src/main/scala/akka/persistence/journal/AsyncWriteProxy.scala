@@ -109,11 +109,12 @@ private[persistence] trait AsyncWriteProxy
     store match {
       case Some(s) ⇒
         (
-          s ? ReplayMessages(
-            persistenceId,
-            fromSequenceNr = 0L,
-            toSequenceNr = 0L,
-            max = 0L)
+          s ?
+            ReplayMessages(
+              persistenceId,
+              fromSequenceNr = 0L,
+              toSequenceNr = 0L,
+              max = 0L)
         ).map {
           case ReplaySuccess(highest) ⇒
             highest

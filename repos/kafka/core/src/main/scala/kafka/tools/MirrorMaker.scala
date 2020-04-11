@@ -349,8 +349,9 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         }
 
       // Create mirror maker threads.
-      mirrorMakerThreads = (0 until numStreams) map (i =>
-        new MirrorMakerThread(mirrorMakerConsumers(i), i))
+      mirrorMakerThreads =
+        (0 until numStreams) map
+          (i => new MirrorMakerThread(mirrorMakerConsumers(i), i))
 
       // Create and initialize message handler
       val customMessageHandlerClass = options.valueOf(messageHandlerOpt)
@@ -394,12 +395,13 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     maybeSetDefaultProperty(consumerConfigProps, "consumer.timeout.ms", "10000")
     // The default client id is group id, we manually set client id to groupId-index to avoid metric collision
     val groupIdString = consumerConfigProps.getProperty("group.id")
-    val connectors = (0 until numStreams) map { i =>
-      consumerConfigProps
-        .setProperty("client.id", groupIdString + "-" + i.toString)
-      val consumerConfig = new ConsumerConfig(consumerConfigProps)
-      new ZookeeperConsumerConnector(consumerConfig)
-    }
+    val connectors =
+      (0 until numStreams) map { i =>
+        consumerConfigProps
+          .setProperty("client.id", groupIdString + "-" + i.toString)
+        val consumerConfig = new ConsumerConfig(consumerConfigProps)
+        new ZookeeperConsumerConnector(consumerConfig)
+      }
 
     // create filters
     val filterSpec =
@@ -438,11 +440,12 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       .setProperty("value.deserializer", classOf[ByteArrayDeserializer].getName)
     // The default client id is group id, we manually set client id to groupId-index to avoid metric collision
     val groupIdString = consumerConfigProps.getProperty("group.id")
-    val consumers = (0 until numStreams) map { i =>
-      consumerConfigProps
-        .setProperty("client.id", groupIdString + "-" + i.toString)
-      new KafkaConsumer[Array[Byte], Array[Byte]](consumerConfigProps)
-    }
+    val consumers =
+      (0 until numStreams) map { i =>
+        consumerConfigProps
+          .setProperty("client.id", groupIdString + "-" + i.toString)
+        new KafkaConsumer[Array[Byte], Array[Byte]](consumerConfigProps)
+      }
     whitelist.getOrElse(
       throw new IllegalArgumentException(
         "White list cannot be empty for new consumer"))
@@ -520,8 +523,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         // still commit offset. When new consumer is used, this is handled by poll(timeout).
         while (!exitingOnSendFailure && !shuttingDown) {
           try {
-            while (!exitingOnSendFailure && !shuttingDown && mirrorMakerConsumer
-                     .hasData) {
+            while (!exitingOnSendFailure && !shuttingDown &&
+                   mirrorMakerConsumer.hasData) {
               val data = mirrorMakerConsumer.receive()
               trace(
                 "Sending message with value size %d and offset %d"
@@ -561,8 +564,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     }
 
     def maybeFlushAndCommitOffsets() {
-      if (System
-            .currentTimeMillis() - lastOffsetCommitMs > offsetCommitIntervalMs) {
+      if (System.currentTimeMillis() - lastOffsetCommitMs >
+            offsetCommitIntervalMs) {
         debug("Committing MirrorMaker state automatically.")
         producer.flush()
         commitOffsets(mirrorMakerConsumer)

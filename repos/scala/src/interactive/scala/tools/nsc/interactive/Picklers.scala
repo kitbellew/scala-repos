@@ -115,8 +115,8 @@ trait Picklers {
 
   lazy val noPosition = singletonPickler(NoPosition)
 
-  implicit lazy val position: Pickler[Position] =
-    transparentPosition | rangePosition | offsetPosition | noPosition
+  implicit lazy val position: Pickler[Position] = transparentPosition |
+    rangePosition | offsetPosition | noPosition
 
   implicit lazy val namePickler: Pickler[Name] =
     pkl[String].wrapped[Name] { str =>
@@ -135,13 +135,15 @@ trait Picklers {
     def ownerNames(sym: Symbol, buf: ListBuffer[Name]): ListBuffer[Name] = {
       if (!sym.isRoot) {
         ownerNames(sym.owner, buf)
-        buf += (
-          if (sym.isModuleClass)
-            sym.sourceModule
-          else
-            sym
-        ).name
-        if (!sym.isType && !sym
+        buf +=
+          (
+            if (sym.isModuleClass)
+              sym.sourceModule
+            else
+              sym
+          ).name
+        if (!sym.isType &&
+            !sym
               .isStable) { // TODO: what's the reasoning behind this condition!?
           val sym1 = sym.owner.info.decl(sym.name)
           if (sym1.isOverloaded) {
@@ -262,9 +264,8 @@ trait Picklers {
 
   implicit def askDocCommentItem: CondPickler[AskDocCommentItem] =
     (
-      pkl[Symbol] ~ pkl[SourceFile] ~ pkl[Symbol] ~ pkl[List[(
-          Symbol,
-          SourceFile)]]
+      pkl[Symbol] ~ pkl[SourceFile] ~ pkl[Symbol] ~
+        pkl[List[(Symbol, SourceFile)]]
     ).wrapped {
         case sym ~ source ~ site ~ fragments =>
           new AskDocCommentItem(sym, source, site, fragments, new Response)
@@ -302,6 +303,8 @@ trait Picklers {
       .asClass(classOf[EmptyAction])
 
   implicit def action: Pickler[() => Unit] =
-    reloadItem | askTypeAtItem | askTypeItem | askTypeCompletionItem | askScopeCompletionItem |
-      askToDoFirstItem | askLinkPosItem | askDocCommentItem | askLoadedTypedItem | askParsedEnteredItem | emptyAction
+    reloadItem | askTypeAtItem | askTypeItem | askTypeCompletionItem |
+      askScopeCompletionItem | askToDoFirstItem | askLinkPosItem |
+      askDocCommentItem | askLoadedTypedItem | askParsedEnteredItem |
+      emptyAction
 }

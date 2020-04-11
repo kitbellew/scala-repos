@@ -34,19 +34,15 @@ class PathSpec extends Specification with ScalaCheck {
 
     "include the original path" in {
       val sample = Path("/my/fancy/path")
-      sample.rollups(3) must haveTheSameElementsAs(
-        sample ::
-          Path("/my/fancy") ::
-          Path("/my") ::
-          Path("/") :: Nil)
+      sample.rollups(3) must
+        haveTheSameElementsAs(
+          sample :: Path("/my/fancy") :: Path("/my") :: Path("/") :: Nil)
     }
 
     "Roll up a limited distance" in {
       val sample = Path("/my/fancy/path")
-      sample.rollups(2) must haveTheSameElementsAs(
-        sample ::
-          Path("/my/fancy") ::
-          Path("/my") :: Nil)
+      sample.rollups(2) must
+        haveTheSameElementsAs(sample :: Path("/my/fancy") :: Path("/my") :: Nil)
     }
 
     "drop a matching prefix using '-'" in {

@@ -21,9 +21,10 @@ object ConsoleProject {
       options: Seq[String] = Nil)(implicit log: Logger): Unit = {
     val extracted = Project extract state
     val cpImports = new Imports(extracted, state)
-    val bindings = ("currentState" -> state) :: ("extracted" -> extracted) :: (
-      "cpHelpers" -> cpImports
-    ) :: Nil
+    val bindings =
+      ("currentState" -> state) ::
+        ("extracted" -> extracted) ::
+        ("cpHelpers" -> cpImports) :: Nil
     val unit = extracted.currentUnit
     val localOnly = false
     val lock = None
@@ -48,8 +49,8 @@ object ConsoleProject {
         case IncrementalCompilerImpl.Compilers(scalac, _) =>
           scalac
       }
-    val imports = BuildUtil.getImports(unit.unit) ++ BuildUtil
-      .importAll(bindings.map(_._1))
+    val imports = BuildUtil.getImports(unit.unit) ++
+      BuildUtil.importAll(bindings.map(_._1))
     val importString = imports.mkString("", ";\n", ";\n\n")
     val initCommands = importString + extra
     // TODO - Hook up dsl classpath correctly...

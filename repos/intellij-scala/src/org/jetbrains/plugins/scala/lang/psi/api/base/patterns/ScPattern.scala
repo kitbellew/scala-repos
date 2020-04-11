@@ -236,8 +236,7 @@ trait ScPattern extends ScalaPsiElement {
           }
         tpe.getType().toOption
       case Some(ScalaResolveResult(fun: ScFunction, substitutor: ScSubstitutor))
-          if fun.name == "unapply" &&
-            fun.parameters.length == 1 =>
+          if fun.name == "unapply" && fun.parameters.length == 1 =>
         val subst =
           if (fun.typeParameters.isEmpty)
             substitutor
@@ -309,19 +308,19 @@ trait ScPattern extends ScalaPsiElement {
             None
         }
       case Some(ScalaResolveResult(fun: ScFunction, substitutor: ScSubstitutor))
-          if fun.name == "unapplySeq" &&
-            fun.parameters.length == 1 =>
+          if fun.name == "unapplySeq" && fun.parameters.length == 1 =>
         val subst =
           if (fun.typeParameters.isEmpty)
             substitutor
           else {
-            val undefSubst = substitutor followed fun
-              .typeParameters
-              .foldLeft(ScSubstitutor.empty) { (s, p) =>
-                s.bindT(
-                  (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                  ScUndefinedType(new ScTypeParameterType(p, substitutor)))
-              }
+            val undefSubst = substitutor followed
+              fun
+                .typeParameters
+                .foldLeft(ScSubstitutor.empty) { (s, p) =>
+                  s.bindT(
+                    (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                    ScUndefinedType(new ScTypeParameterType(p, substitutor)))
+                }
             val firstParameterRetTp =
               fun.parameters.head.getType(TypingContext.empty) match {
                 case Success(tp, _) =>
@@ -350,11 +349,12 @@ trait ScPattern extends ScalaPsiElement {
             val lastArg = args.last
             (lastArg +: BaseTypes.get(lastArg)).find {
               case ScParameterizedType(des, seqArgs) =>
-                seqArgs.length == 1 && ScType
-                  .extractClass(des)
-                  .exists { clazz =>
-                    clazz.qualifiedName == "scala.collection.Seq"
-                  }
+                seqArgs.length == 1 &&
+                  ScType
+                    .extractClass(des)
+                    .exists { clazz =>
+                      clazz.qualifiedName == "scala.collection.Seq"
+                    }
               case _ =>
                 false
             } match {
@@ -684,8 +684,8 @@ object ScPattern {
                             .instance(place.getProject)
                             .getCachedClass(place.getResolveScope, productFqn)
                         clazz <- ScType.extractClass(tp, Some(place.getProject))
-                      } yield clazz == productClass || clazz
-                        .isInheritor(productClass, true)
+                      } yield clazz == productClass ||
+                        clazz.isInheritor(productClass, true)
                     ).filter(identity).fold(Seq(tp))(_ => productChance)
                   }
                 }
@@ -711,9 +711,9 @@ object ScPattern {
   def isQuasiquote(fun: ScFunction) = {
     val fqnO = Option(fun.containingClass).map(_.qualifiedName)
     fqnO.exists(fqn =>
-      fqn.contains('.') && fqn.substring(
-        0,
-        fqn.lastIndexOf('.')) == "scala.reflect.api.Quasiquotes.Quasiquote")
+      fqn.contains('.') &&
+        fqn.substring(0, fqn.lastIndexOf('.')) ==
+        "scala.reflect.api.Quasiquotes.Quasiquote")
   }
 
 }

@@ -45,16 +45,10 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
     } {
       val offset = editor.getCaretModel.getOffset
       //offset is on the word "do" or "while"
-      if ((
-            offset >= doStmt.getTextRange.getStartOffset && offset < body
-              .getTextRange
-              .getStartOffset
-          ) ||
-          (
-            offset > body.getTextRange.getEndOffset && offset < condition
-              .getTextRange
-              .getStartOffset
-          ))
+      if ((offset >= doStmt.getTextRange.getStartOffset &&
+          offset < body.getTextRange.getStartOffset) ||
+          (offset > body.getTextRange.getEndOffset &&
+          offset < condition.getTextRange.getStartOffset))
         return true
     }
 
@@ -175,8 +169,8 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
 
           for (elem <- bodyElements) {
             val elementType: IElementType = elem.getNode.getElementType
-            if (elementType != ScalaTokenTypes
-                  .tLBRACE && elementType != ScalaTokenTypes.tRBRACE)
+            if (elementType != ScalaTokenTypes.tLBRACE &&
+                elementType != ScalaTokenTypes.tRBRACE)
               parent.addBefore(elem, newExpression)
           }
           parent.addBefore(

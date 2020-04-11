@@ -33,11 +33,12 @@ class ModulesSpec extends Specification {
         "play.modules.enabled" -> Seq(classOf[ScalaGuiceModule].getName))
       val located: Seq[Any] = Modules.locate(env, conf)
       located.size must_== 1
-      located.head must beLike {
-        case mod: ScalaGuiceModule =>
-          mod.environment must_== env
-          mod.configuration must_== conf
-      }
+      located.head must
+        beLike {
+          case mod: ScalaGuiceModule =>
+            mod.environment must_== env
+            mod.configuration must_== conf
+        }
     }
 
     "load Guice modules that take a Java Environment and Configuration" in {
@@ -46,11 +47,12 @@ class ModulesSpec extends Specification {
         "play.modules.enabled" -> Seq(classOf[JavaGuiceModule].getName))
       val located: Seq[Any] = Modules.locate(env, conf)
       located.size must_== 1
-      located.head must beLike {
-        case mod: JavaGuiceModule =>
-          mod.environment.underlying must_== env
-          mod.configuration.underlying must_== conf.underlying
-      }
+      located.head must
+        beLike {
+          case mod: JavaGuiceModule =>
+            mod.environment.underlying must_== env
+            mod.configuration.underlying must_== conf.underlying
+        }
     }
 
   }

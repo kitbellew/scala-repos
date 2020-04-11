@@ -55,13 +55,13 @@ class InteractionSuite
     assert(
       encode(Array(1, 1), Vectors.dense(1.1, 2.2)) === Vectors.dense(1.1, 2.2))
     assert(
-      encode(Array(3, 1), Vectors.dense(1, 2.2)) === Vectors
-        .dense(0, 1, 0, 2.2))
+      encode(Array(3, 1), Vectors.dense(1, 2.2)) ===
+        Vectors.dense(0, 1, 0, 2.2))
     assert(
       encode(Array(2, 1), Vectors.dense(1, 2.2)) === Vectors.dense(0, 1, 2.2))
     assert(
-      encode(Array(2, 1, 1), Vectors.dense(0, 2.2, 0)) === Vectors
-        .dense(1, 0, 2.2, 0))
+      encode(Array(2, 1, 1), Vectors.dense(0, 2.2, 0)) ===
+        Vectors.dense(1, 0, 2.2, 0))
     intercept[SparkException] {
       encode(Array(1), "foo")
     }

@@ -18,20 +18,18 @@ sealed trait Advice {
       evalComment ?? { c =>
         s"($c) "
       }) +
-      (
-        this match {
-          case MateAdvice(seq, _, _, _) =>
-            seq.desc
-          case CpAdvice(nag, _, _) =>
-            nag.toString
-        }
-      ) + "." + {
-      withBestMove ?? {
-        info.variation.headOption ?? { move =>
-          s" Best move was $move."
+      (this match {
+        case MateAdvice(seq, _, _, _) =>
+          seq.desc
+        case CpAdvice(nag, _, _) =>
+          nag.toString
+      }) + "." + {
+        withBestMove ?? {
+          info.variation.headOption ?? { move =>
+            s" Best move was $move."
+          }
         }
       }
-    }
 
   def evalComment: Option[String] = {
     List(prev.evalComment, info.evalComment).flatten mkString " → "
@@ -76,14 +74,16 @@ private[analyse] object CpAdvice {
     for {
       cp ← prev.score map (_.ceiled.centipawns)
       infoCp ← info.score map (_.ceiled.centipawns)
-      delta = (infoCp - cp) |> { d =>
-        info.color.fold(-d, d)
-      }
+      delta =
+        (infoCp - cp) |> { d =>
+          info.color.fold(-d, d)
+        }
       nag ←
         cpNags find {
           case (d, n) =>
             d <= delta
-        } map (_._2)
+        } map
+          (_._2)
     } yield CpAdvice(nag, info, prev)
 }
 

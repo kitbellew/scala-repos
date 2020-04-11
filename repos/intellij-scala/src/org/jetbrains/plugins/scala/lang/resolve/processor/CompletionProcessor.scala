@@ -136,11 +136,10 @@ class CompletionProcessor(
                 val iterator = levelSet.iterator()
                 while (iterator.hasNext) {
                   val next = iterator.next()
-                  if (getQualifiedName(next) == getQualifiedName(result) && next
-                        .element != result.element &&
-                      signature == getSignature(
-                        next.element,
-                        next.substitutor)) {
+                  if (getQualifiedName(next) == getQualifiedName(result) &&
+                      next.element != result.element &&
+                      signature ==
+                        getSignature(next.element, next.substitutor)) {
                     iterator.remove()
                   }
                 }

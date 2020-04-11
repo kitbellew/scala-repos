@@ -136,8 +136,8 @@ object EmitManPage {
 
     out println ".\\\""
     out.println(
-      ".\\\" ############################## " + section
-        .title + " ###############################")
+      ".\\\" ############################## " + section.title +
+        " ###############################")
     out println ".\\\""
     val tag =
       if (depth > 1)
@@ -155,21 +155,28 @@ object EmitManPage {
   }
 
   def emitDocument(doc: Document) {
-    out println ".\\\" ##########################################################################"
-    out println ".\\\" #                      __                                                #"
-    out println ".\\\" #      ________ ___   / /  ___     Scala 2 On-line Manual Pages          #"
-    out println ".\\\" #     / __/ __// _ | / /  / _ |    (c) 2002-2013, LAMP/EPFL              #"
-    out println ".\\\" #   __\\ \\/ /__/ __ |/ /__/ __ |                                          #"
-    out println ".\\\" #  /____/\\___/_/ |_/____/_/ | |    http://scala-lang.org/                #"
-    out println ".\\\" #                           |/                                           #"
-    out println ".\\\" ##########################################################################"
+    out println
+      ".\\\" ##########################################################################"
+    out println
+      ".\\\" #                      __                                                #"
+    out println
+      ".\\\" #      ________ ___   / /  ___     Scala 2 On-line Manual Pages          #"
+    out println
+      ".\\\" #     / __/ __// _ | / /  / _ |    (c) 2002-2013, LAMP/EPFL              #"
+    out println
+      ".\\\" #   __\\ \\/ /__/ __ |/ /__/ __ |                                          #"
+    out println
+      ".\\\" #  /____/\\___/_/ |_/____/_/ | |    http://scala-lang.org/                #"
+    out println
+      ".\\\" #                           |/                                           #"
+    out println
+      ".\\\" ##########################################################################"
     out println ".\\\""
     out println ".\\\" Process this file with nroff -man scala.1"
     out println ".\\\""
     out.println(
-      ".TH " + doc.title + " " + doc.category.id +
-        "  \"" + doc.date + "\" \"version " + doc.version +
-        "\" \"" + doc.category + "\"")
+      ".TH " + doc.title + " " + doc.category.id + "  \"" + doc.date +
+        "\" \"version " + doc.version + "\" \"" + doc.category + "\"")
 
     doc.sections foreach (s => emitSection(s, 1))
   }

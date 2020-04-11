@@ -574,8 +574,8 @@ class HttpExtensionApiSpec
             Message]])
         .run(materializer)
 
-      waitFor(pair.first).response.status() should be(
-        StatusCodes.SWITCHING_PROTOCOLS)
+      waitFor(pair.first).response.status() should
+        be(StatusCodes.SWITCHING_PROTOCOLS)
       waitFor(pair.second).asTextMessage.getStrictText should be("hello")
       binding.unbind()
     }
@@ -599,8 +599,8 @@ class HttpExtensionApiSpec
             Message]])
         .run(materializer)
 
-      waitFor(pair.first).response.status() should be(
-        StatusCodes.SWITCHING_PROTOCOLS)
+      waitFor(pair.first).response.status() should
+        be(StatusCodes.SWITCHING_PROTOCOLS)
       waitFor(pair.second).asTextMessage.getStrictText should be("hello")
       binding.unbind()
     }

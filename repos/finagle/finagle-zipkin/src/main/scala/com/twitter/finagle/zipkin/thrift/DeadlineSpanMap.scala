@@ -119,11 +119,10 @@ private final class MutableSpan(val traceId: TraceId, val started: Time) {
 
   def addAnnotation(ann: ZipkinAnnotation): MutableSpan =
     synchronized {
-      if (!_isComplete && (
-            ann.value.equals(Constants.CLIENT_RECV) ||
-            ann.value.equals(Constants.SERVER_SEND) ||
-            ann.value.equals(TimeoutFilter.TimeoutAnnotation)
-          ))
+      if (!_isComplete &&
+          (ann.value.equals(Constants.CLIENT_RECV) ||
+          ann.value.equals(Constants.SERVER_SEND) ||
+          ann.value.equals(TimeoutFilter.TimeoutAnnotation)))
         _isComplete = true
 
       annotations.append(ann)

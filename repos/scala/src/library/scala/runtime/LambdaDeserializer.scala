@@ -93,8 +93,8 @@ object LambdaDeserializer {
               e)
         }
 
-      val flags: Int = LambdaMetafactory.FLAG_SERIALIZABLE | LambdaMetafactory
-        .FLAG_MARKERS
+      val flags: Int = LambdaMetafactory.FLAG_SERIALIZABLE |
+        LambdaMetafactory.FLAG_MARKERS
       val isScalaFunction = functionalInterfaceClass
         .getName
         .startsWith("scala.Function")
@@ -118,8 +118,8 @@ object LambdaDeserializer {
       )
     }
 
-    val key = serialized.getImplMethodName + " : " + serialized
-      .getImplMethodSignature
+    val key = serialized.getImplMethodName + " : " +
+      serialized.getImplMethodSignature
     val factory: MethodHandle =
       if (cache == null) {
         makeCallSite.getTarget

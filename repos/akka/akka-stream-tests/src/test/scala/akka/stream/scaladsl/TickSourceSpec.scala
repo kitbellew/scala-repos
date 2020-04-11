@@ -14,20 +14,24 @@ class TickSourceSpec extends AkkaSpec {
   implicit val materializer = ActorMaterializer()
 
   "A Flow based on tick publisher" must {
-    "produce ticks" in assertAllStagesStopped {
-      val c = TestSubscriber.manualProbe[String]()
-      Source.tick(1.second, 500.millis, "tick").to(Sink.fromSubscriber(c)).run()
-      val sub = c.expectSubscription()
-      sub.request(3)
-      c.expectNoMsg(600.millis)
-      c.expectNext("tick")
-      c.expectNoMsg(200.millis)
-      c.expectNext("tick")
-      c.expectNoMsg(200.millis)
-      c.expectNext("tick")
-      sub.cancel()
-      c.expectNoMsg(200.millis)
-    }
+    "produce ticks" in
+      assertAllStagesStopped {
+        val c = TestSubscriber.manualProbe[String]()
+        Source
+          .tick(1.second, 500.millis, "tick")
+          .to(Sink.fromSubscriber(c))
+          .run()
+        val sub = c.expectSubscription()
+        sub.request(3)
+        c.expectNoMsg(600.millis)
+        c.expectNext("tick")
+        c.expectNoMsg(200.millis)
+        c.expectNext("tick")
+        c.expectNoMsg(200.millis)
+        c.expectNext("tick")
+        sub.cancel()
+        c.expectNoMsg(200.millis)
+      }
 
     "drop ticks when not requested" in {
       val c = TestSubscriber.manualProbe[String]()
@@ -74,10 +78,11 @@ class TickSourceSpec extends AkkaSpec {
             val zip = b.add(Zip[Int, String]())
             Source(1 to 100) ~> zip.in0
             Source.tick(1.second, 1.second, "tick") ~> zip.in1
-            zip.out ~> Flow[(Int, String)].map {
-              case (n, _) ⇒
-                n
-            } ~> Sink.fromSubscriber(c)
+            zip.out ~>
+              Flow[(Int, String)].map {
+                case (n, _) ⇒
+                  n
+              } ~> Sink.fromSubscriber(c)
             ClosedShape
           })
         .run()
@@ -91,23 +96,24 @@ class TickSourceSpec extends AkkaSpec {
       sub.cancel()
     }
 
-    "be possible to cancel" in assertAllStagesStopped {
-      val c = TestSubscriber.manualProbe[String]()
-      val tickSource = Source.tick(1.second, 500.millis, "tick")
-      val cancellable = tickSource.to(Sink.fromSubscriber(c)).run()
-      val sub = c.expectSubscription()
-      sub.request(3)
-      c.expectNoMsg(600.millis)
-      c.expectNext("tick")
-      c.expectNoMsg(200.millis)
-      c.expectNext("tick")
-      c.expectNoMsg(200.millis)
-      c.expectNext("tick")
-      cancellable.cancel()
-      awaitCond(cancellable.isCancelled)
-      sub.request(3)
-      c.expectComplete()
-    }
+    "be possible to cancel" in
+      assertAllStagesStopped {
+        val c = TestSubscriber.manualProbe[String]()
+        val tickSource = Source.tick(1.second, 500.millis, "tick")
+        val cancellable = tickSource.to(Sink.fromSubscriber(c)).run()
+        val sub = c.expectSubscription()
+        sub.request(3)
+        c.expectNoMsg(600.millis)
+        c.expectNext("tick")
+        c.expectNoMsg(200.millis)
+        c.expectNext("tick")
+        c.expectNoMsg(200.millis)
+        c.expectNext("tick")
+        cancellable.cancel()
+        awaitCond(cancellable.isCancelled)
+        sub.request(3)
+        c.expectComplete()
+      }
 
   }
 }

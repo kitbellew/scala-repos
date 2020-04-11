@@ -7,7 +7,9 @@ object B extends Build {
   lazy val root = Project(
     "root",
     file("."),
-    settings = defaultSettings ++ Seq(
-      libraryDependencies += "org.scalatest" %% "scalatest" % "1.9.1" % "test",
-      parallelExecution in test := false))
+    settings = defaultSettings ++
+      Seq(
+        libraryDependencies +=
+          "org.scalatest" %% "scalatest" % "1.9.1" % "test",
+        parallelExecution in test := false))
 }

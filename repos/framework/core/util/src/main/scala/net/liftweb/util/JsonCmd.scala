@@ -51,13 +51,12 @@ object JsonCommand {
       params <- in \ "params"
       if params != JNothing
     } yield {
-      val target =
-        (in \ "target") match {
-          case JString(t) =>
-            Some(t)
-          case _ =>
-            None
-        }
+      val target = (in \ "target") match {
+        case JString(t) =>
+          Some(t)
+        case _ =>
+          None
+      }
       (command, target, params)
     }
   // Some((in.command, in.target, in.params, in.all))

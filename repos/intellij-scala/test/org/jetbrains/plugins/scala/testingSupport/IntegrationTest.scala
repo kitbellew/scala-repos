@@ -74,12 +74,10 @@ trait IntegrationTest {
       root.getValue.isInstanceOf[TestStructureViewElement] && {
         val presentation =
           root.getValue.asInstanceOf[TreeElement].getPresentation
-        presentation.isInstanceOf[TestItemRepresentation] && presentation
-          .getPresentableText == nodeName &&
-        presentation
-          .asInstanceOf[TestItemRepresentation]
-          .testStatus == status &&
-        parentName.map(currentParentName == _).getOrElse(true)
+        presentation.isInstanceOf[TestItemRepresentation] &&
+        presentation.getPresentableText == nodeName &&
+        presentation.asInstanceOf[TestItemRepresentation].testStatus ==
+          status && parentName.map(currentParentName == _).getOrElse(true)
       } ||
       root
         .getChildren
@@ -126,28 +124,26 @@ trait IntegrationTest {
       generatedName: String = ""): Boolean = {
     val config = configAndSettings.getConfiguration
     val testConfig = config.asInstanceOf[AbstractTestRunConfiguration]
-    testConfig.testKind == TestKind.ALL_IN_PACKAGE && testConfig
-      .getTestPackagePath == packageName
+    testConfig.testKind == TestKind.ALL_IN_PACKAGE &&
+    testConfig.getTestPackagePath == packageName
   }
 
   protected def checkConfig(
       testClass: String,
       testNames: Seq[String],
       config: AbstractTestRunConfiguration): Boolean = {
-    config.getTestClassPath == testClass && (
-      config.getTestName match {
-        case "" =>
-          testNames.isEmpty
-        case configTestName =>
-          val configTests = parseTestName(configTestName)
-          configTests.size == testNames.size && (
-            (configTests zip testNames) forall {
-              case (actual, required) =>
-                actual == required
-            }
-          )
-      }
-    )
+    config.getTestClassPath == testClass &&
+    (config.getTestName match {
+      case "" =>
+        testNames.isEmpty
+      case configTestName =>
+        val configTests = parseTestName(configTestName)
+        configTests.size == testNames.size &&
+        ((configTests zip testNames) forall {
+          case (actual, required) =>
+            actual == required
+        })
+    })
   }
 
   protected def checkResultTreeHasExactNamedPath(
@@ -165,10 +161,8 @@ trait IntegrationTest {
     if (root.isLeaf && !names.contains(root.getName))
       true
     else
-      !names.contains(root.getName) && root
-        .getChildren
-        .toList
-        .forall(checkResultTreeDoesNotHaveNodes(_, names))
+      !names.contains(root.getName) &&
+      root.getChildren.toList.forall(checkResultTreeDoesNotHaveNodes(_, names))
   }
 
   protected def getExactNamePathFromResultTree(
@@ -185,9 +179,8 @@ trait IntegrationTest {
           List(_ => true) //got an empty list of names as initial input
         case 1 =>
           ((node: AbstractTestProxy) =>
-            node.getName == names.head && (
-              node.isLeaf || allowTail
-            )) :: acc //last element must be leaf
+            node.getName == names.head && (node.isLeaf || allowTail)) ::
+            acc //last element must be leaf
         case _ =>
           buildConditions(
             names.tail,

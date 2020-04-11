@@ -99,8 +99,7 @@ class DataTypeParserSuite extends SparkFunSuite {
         StructType(
           StructField("deciMal", DecimalType.USER_DEFAULT, true) ::
             StructField("anotherDecimal", DecimalType(5, 2), true) :: Nil),
-        true) ::
-        StructField("MAP", MapType(TimestampType, StringType), true) ::
+        true) :: StructField("MAP", MapType(TimestampType, StringType), true) ::
         StructField("arrAy", ArrayType(DoubleType, true), true) ::
         StructField("anotherArray", ArrayType(StringType, true), true) :: Nil)
   )

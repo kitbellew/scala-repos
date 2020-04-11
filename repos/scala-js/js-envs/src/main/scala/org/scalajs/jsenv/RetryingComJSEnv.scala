@@ -138,8 +138,8 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
           throw cause
 
         _logger.warn(
-          "Retrying to launch a " + baseEnv.getClass.getName +
-            " after " + cause.toString)
+          "Retrying to launch a " + baseEnv.getClass.getName + " after " +
+            cause.toString)
 
         val oldRunner = curRunner
 
@@ -149,8 +149,7 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
           } catch {
             case NonFatal(t) =>
               _logger.error(
-                "Could not retry: creating an new runner failed: " +
-                  t.toString)
+                "Could not retry: creating an new runner failed: " + t.toString)
               throw cause
           }
 

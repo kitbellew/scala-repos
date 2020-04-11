@@ -494,8 +494,8 @@ trait ReificationSupport {
             else {
               val vparamss =
                 mmap(vparamssRestoredImplicits) { vd =>
-                  val originalMods =
-                    modsMap(vd.name) | (vd.mods.flags & DEFAULTPARAM)
+                  val originalMods = modsMap(vd.name) |
+                    (vd.mods.flags & DEFAULTPARAM)
                   atPos(vd.pos)(ValDef(originalMods, vd.name, vd.tpt, vd.rhs))
                 }
               result(ctorMods, vparamss, edefs, body)
@@ -527,12 +527,11 @@ trait ReificationSupport {
           parents: List[Tree],
           selfType: Tree,
           body: List[Tree]): ClassDef = {
-        val extraFlags = PARAMACCESSOR | (
-          if (mods.isCase)
-            CASEACCESSOR
-          else
-            0L
-        )
+        val extraFlags = PARAMACCESSOR |
+          (if (mods.isCase)
+             CASEACCESSOR
+           else
+             0L)
         val vparamss0 = mkParam(
           vparamss,
           extraFlags,
@@ -753,8 +752,8 @@ trait ReificationSupport {
                     MaybeSelectApply(TupleCompanionRef(sym)),
                     targs)),
                 args)
-              if sym == TupleClass(args.length).companionModule
-                && (targs.isEmpty || targs.length == args.length) =>
+              if sym == TupleClass(args.length).companionModule &&
+                (targs.isEmpty || targs.length == args.length) =>
             Some(args)
           case _ if tree.isTerm =>
             Some(tree :: Nil)
@@ -899,9 +898,8 @@ trait ReificationSupport {
             Some(
               (
                 Nil,
-                SyntacticApplied(
-                  SyntacticAppliedType(ident, targs),
-                  argss) :: Nil,
+                SyntacticApplied(SyntacticAppliedType(ident, targs), argss) ::
+                  Nil,
                 noSelfType,
                 Nil))
           case SyntacticBlock(
@@ -1326,9 +1324,11 @@ trait ReificationSupport {
               case (pat, rhs) =>
                 SyntacticValEq(pat, rhs)
             }
-            Some((
-              SyntacticValFrom(pat, rhs) :: innerRest ::: valeqs ::: outerRest,
-              fbody))
+            Some(
+              (
+                SyntacticValFrom(pat, rhs) :: innerRest ::: valeqs :::
+                  outerRest,
+                fbody))
           case ((pat, rhs), filters, body) =>
             Some((SyntacticValFrom(pat, rhs) :: filters, body))
         }
@@ -1490,10 +1490,8 @@ trait ReificationSupport {
                     List())),
                 pf: TypeTree)
               if pf.tpe != null && pf.tpe.typeSymbol.eq(PartialFunctionClass) &&
-                abspf.tpe != null && abspf
-                .tpe
-                .typeSymbol
-                .eq(AbstractPartialFunctionClass) &&
+                abspf.tpe != null &&
+                abspf.tpe.typeSymbol.eq(AbstractPartialFunctionClass) &&
                 ser.tpe != null && ser.tpe.typeSymbol.eq(SerializableClass) &&
                 clsMods.hasFlag(FINAL) && clsMods.hasFlag(SYNTHETIC) =>
             Some(cases)

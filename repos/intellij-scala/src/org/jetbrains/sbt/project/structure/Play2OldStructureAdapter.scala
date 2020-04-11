@@ -48,16 +48,17 @@ object Play2OldStructureAdapter {
         .map(d => (PLAY_CONF_DIR, new StringParsedValue(d.getCanonicalPath)))
         .toSeq
 
-    val keyValues = playVersion ++ confDirectory ++ Seq(
-      (TEMPLATES_IMPORT, new SeqStringParsedValue(data.templatesImports)),
-      (ROUTES_IMPORT, new SeqStringParsedValue(data.routesImports)),
-      (
-        SOURCE_DIR,
-        new StringParsedValue(data.sourceDirectory.getCanonicalPath)),
-      (
-        PROJECT_URI,
-        new StringParsedValue(baseDir.getCanonicalFile.toURI.toString))
-    )
+    val keyValues = playVersion ++ confDirectory ++
+      Seq(
+        (TEMPLATES_IMPORT, new SeqStringParsedValue(data.templatesImports)),
+        (ROUTES_IMPORT, new SeqStringParsedValue(data.routesImports)),
+        (
+          SOURCE_DIR,
+          new StringParsedValue(data.sourceDirectory.getCanonicalPath)),
+        (
+          PROJECT_URI,
+          new StringParsedValue(baseDir.getCanonicalFile.toURI.toString))
+      )
 
     keyValues.map({
       case (k, v) =>

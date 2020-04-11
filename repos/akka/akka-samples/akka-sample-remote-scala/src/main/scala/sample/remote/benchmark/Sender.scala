@@ -123,10 +123,11 @@ class Sender(path: String, totalMessages: Int, burstSize: Int, payloadSize: Int)
       else if (duration >= 500)
         actor ! Continue(nextRemaining, now, now, burstSize)
       else
-        actor ! c.copy(
-          remaining = nextRemaining,
-          burstStartTime = now,
-          n = n + burstSize)
+        actor !
+          c.copy(
+            remaining = nextRemaining,
+            burstStartTime = now,
+            n = n + burstSize)
 
     case Done =>
       val took = (System.nanoTime - startTime).nanos.toMillis

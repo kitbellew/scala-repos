@@ -210,37 +210,37 @@ class DescriptiveStatsTest2 extends FunSuite {
       "median (odd length) should be 2 instead of " + median(dataOdd))
     assert(
       median(dataOddDuplicate) == 2,
-      "median (odd length with duplicate) should be 2 instead of "
-        + median(dataOddDuplicate))
+      "median (odd length with duplicate) should be 2 instead of " +
+        median(dataOddDuplicate))
     assert(
       median(dataEven) == 1.5f,
       "median (even length) should be 1.5f instead of " + median(dataEven))
     assert(
       median(dataEvenDuplicate) == 250,
-      "median (even length with duplicate) should be 250 instead of "
-        + median(dataEvenDuplicate))
+      "median (even length with duplicate) should be 250 instead of " +
+        median(dataEvenDuplicate))
     assert(
       median(dataEvenDuplicate2) == 450,
-      "median (even length with duplicate) should be 450 instead of "
-        + median(dataEvenDuplicate2))
+      "median (even length with duplicate) should be 450 instead of " +
+        median(dataEvenDuplicate2))
 
     assert(
       median(dataOddSeq) == 2,
       "median (odd length) should be 2 instead of " + median(dataOddSeq))
     assert(
       median(dataOddDuplicateSeq) == 2,
-      "median (odd length with duplicate) should be 2 instead of "
-        + median(dataOddDuplicateSeq))
+      "median (odd length with duplicate) should be 2 instead of " +
+        median(dataOddDuplicateSeq))
     assert(
       median(dataEvenSeq) == 1.5f,
       "median (even length) should be 1.5f instead of " + median(dataEvenSeq))
     assert(
       median(dataEvenDuplicateSeq) == 250,
-      "median (even length with duplicate) should be 250 instead of "
-        + median(dataEvenDuplicate))
+      "median (even length with duplicate) should be 250 instead of " +
+        median(dataEvenDuplicate))
     assert(
       median(dataEvenDuplicate2Seq) == 450,
-      "median (even length with duplicate) should be 450 instead of "
-        + median(dataEvenDuplicate2))
+      "median (even length with duplicate) should be 450 instead of " +
+        median(dataEvenDuplicate2))
   }
 }

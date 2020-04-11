@@ -215,8 +215,8 @@ trait Solver extends parser.AST with typer.Binder {
               val ids = let.params map {
                 Identifier(Vector(), _)
               }
-              val sigma2 =
-                sigma ++ (ids zip Stream.continually(let) zip actuals)
+              val sigma2 = sigma ++
+                (ids zip Stream.continually(let) zip actuals)
               solve(let.left, sigma2)(partialPred) // not inner!
             }
 
@@ -269,12 +269,11 @@ trait Solver extends parser.AST with typer.Binder {
         results.foldLeft(const[Option[Expr], Expr](None) _) {
           case (acc, (f, trace)) =>
             e =>
-              acc(e) orElse (
-                f(e) map { e2 =>
+              acc(e) orElse
+                (f(e) map { e2 =>
                   printTrace(trace);
                   e2
-                }
-              )
+                })
         }
       } else if (inLeft && !inRight) {
         inner(left) compose flip(invertLeft)(right)
@@ -312,11 +311,10 @@ trait Solver extends parser.AST with typer.Binder {
         if (results2.isEmpty)
           search(
             newWorkLists,
-            seen ++ (
-              filteredWork map {
+            seen ++
+              (filteredWork map {
                 _.head
-              }
-            ),
+              }),
             results ++ results2)
         else
           results2
@@ -356,8 +354,8 @@ trait Solver extends parser.AST with typer.Binder {
                 val ids = let.params map {
                   Identifier(Vector(), _)
                 }
-                val sigma2 =
-                  sigma ++ (ids zip Stream.continually(let) zip actuals)
+                val sigma2 = sigma ++
+                  (ids zip Stream.continually(let) zip actuals)
                 inner(let.left, sigma2)
               }
 

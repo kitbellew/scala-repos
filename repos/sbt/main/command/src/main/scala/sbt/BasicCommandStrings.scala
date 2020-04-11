@@ -23,7 +23,8 @@ object BasicCommandStrings {
     (
       HelpCommand,
       s"Displays this help message or prints detailed help on requested commands (run '$HelpCommand <command>').")
-  def helpDetailed = HelpCommand + """
+  def helpDetailed =
+    HelpCommand + """
 
 	Prints a help summary.
 
@@ -31,7 +32,8 @@ object BasicCommandStrings {
 
 	Prints detailed help for command <command>.
 
-""" + HelpCommand + """ <regular expression>
+""" + HelpCommand +
+      """ <regular expression>
 
 	Searches the help according to the provided regular expression.
 """
@@ -41,8 +43,8 @@ object BasicCommandStrings {
   def CompletionsBrief = (CompletionsCommand, CompletionsDetailed)
 
   def HistoryHelpBrief =
-    (HistoryCommands
-      .Start -> "History command help.  Lists and describes all history commands.")
+    (HistoryCommands.Start ->
+      "History command help.  Lists and describes all history commands.")
   def historyHelp =
     Help(
       Nil,
@@ -84,8 +86,8 @@ ${runEarly(level.toString)}
     s"$EarlyCommand$sep$command"
   }
   private[sbt] def isEarlyCommand(s: String): Boolean = {
-    s.startsWith(EarlyCommand) && s != Compat.FailureWall && s != Compat
-      .ClearOnFailure
+    s.startsWith(EarlyCommand) && s != Compat.FailureWall &&
+    s != Compat.ClearOnFailure
   }
 
   val EarlyCommand = "--"
@@ -102,7 +104,8 @@ ${runEarly(level.toString)}
   def ReadCommand = "<"
   def ReadFiles = " file1 file2 ..."
   def ReadDetailed =
-    ReadCommand + ReadFiles + """
+    ReadCommand + ReadFiles +
+      """
 
 	Reads the lines from the given files and inserts them as commands.
 	All empty lines and lines that start with '#' are ignored.
@@ -116,7 +119,8 @@ ${runEarly(level.toString)}
 
   def ApplyCommand = "apply"
   def ApplyDetailed =
-    ApplyCommand + """ [-cp|-classpath <classpath>] <module-name>*
+    ApplyCommand +
+      """ [-cp|-classpath <classpath>] <module-name>*
 	Transforms the current State by calling <module-name>.apply(currentState) for each listed module name.
 	Here, currentState is of type sbt.State.
    If a classpath is provided, modules are loaded from a new class loader for this classpath.
@@ -124,7 +128,8 @@ ${runEarly(level.toString)}
 
   def RebootCommand = "reboot"
   def RebootDetailed =
-    RebootCommand + """ [full]
+    RebootCommand +
+      """ [full]
 
 	This command is equivalent to exiting sbt, restarting, and running the
 	  remaining commands with the exception that the JVM is not shut down.
@@ -155,20 +160,18 @@ ${runEarly(level.toString)}
 
 	Prints a list of defined aliases.
 
-""" +
-      AliasCommand + """ name
+""" + AliasCommand + """ name
 
 	Prints the alias defined for `name`.
 
-""" +
-      AliasCommand + """ name=value
+""" + AliasCommand +
+      """ name=value
 
 	Sets the alias `name` to `value`, replacing any existing alias with that name.
 	Whenever `name` is entered, the corresponding `value` is run.
 	If any argument is provided to `name`, it is appended as argument to `value`.
 
-""" +
-      AliasCommand + """ name=
+""" + AliasCommand + """ name=
 
 	Removes the alias for `name`."""
 
@@ -202,7 +205,8 @@ ${runEarly(level.toString)}
   def ClearOnFailure = "sbtClearOnFailure"
   def OnFailure = "onFailure"
   def OnFailureDetailed =
-    OnFailure + """ command
+    OnFailure +
+      """ command
 
 	Registers 'command' to run when a command fails to complete normally.
 

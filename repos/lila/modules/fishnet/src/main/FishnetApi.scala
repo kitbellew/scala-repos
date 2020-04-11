@@ -82,7 +82,8 @@ final class FishnetApi(
         .find(BSONDocument("acquired" -> BSONDocument("$exists" -> false)))
         .sort(
           BSONDocument(
-            "sender.system" -> 1, // user requests first, then lichess auto analysis
+            "sender.system" ->
+              1, // user requests first, then lichess auto analysis
             "createdAt" -> 1 // oldest requests first
           ))
         .one[Work.Analysis]
@@ -108,11 +109,12 @@ final class FishnetApi(
             case Some(uci) =>
               moveDb delete work
               monitor.move(work, client)
-              hub.actor.roundMap ! hubApi
-                .map
-                .Tell(
-                  work.game.id,
-                  hubApi.round.FishnetPlay(uci, work.currentFen))
+              hub.actor.roundMap !
+                hubApi
+                  .map
+                  .Tell(
+                    work.game.id,
+                    hubApi.round.FishnetPlay(uci, work.currentFen))
             case _ =>
               moveDb updateOrGiveUp work.invalid
               monitor.failure(work, client)

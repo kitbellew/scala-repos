@@ -22,8 +22,7 @@ object Global extends GlobalSettings {
   }
 
   private def niceError(req: RequestHeader): Boolean =
-    req.method == "GET" &&
-      HTTPRequest.isSynchronousHttp(req) &&
+    req.method == "GET" && HTTPRequest.isSynchronousHttp(req) &&
       !HTTPRequest.hasFileExtension(req)
 
   override def onHandlerNotFound(req: RequestHeader) =

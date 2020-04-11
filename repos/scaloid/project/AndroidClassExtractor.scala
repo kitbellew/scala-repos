@@ -115,9 +115,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     def hasIntentAsParam(m: Method): Boolean = {
       val params = m.getParameterTypes
       if (params.length > 0)
-        "android.content.Intent"
-          .equals(m.getParameterTypes.apply(0).getName) && !superMethods(
-          methodSignature(m))
+        "android.content.Intent".equals(m.getParameterTypes.apply(0).getName) &&
+        !superMethods(methodSignature(m))
       else
         false
     }
@@ -152,24 +151,17 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         .filter { m =>
           val name = m.getName
           val arity = m.getParameterTypes.length
-          !superMethods(methodSignature(m)) && (
-            (arity == 0 && isGetter(name)) || (arity == 1 && isSetter(name))
-          )
+          !superMethods(methodSignature(m)) &&
+          ((arity == 0 && isGetter(name)) || (arity == 1 && isSetter(name)))
         }
         .filter { m =>
-          (
-            !cls.getName.endsWith("Service") || !m
-              .getName
-              .equals("setForeground")
-          ) && // Android 2.1.1 has a weird undocumented method. manually ignore this.
-          (
-            !cls.getName.endsWith("WebView") || !m
-              .getName
-              .equals("getZoomControls")
-          ) && //https://github.com/pocorall/scaloid/issues/56
-          (
-            !cls.getName.endsWith("View") || !m.getName.equals("setBackground")
-          ) // manually specifies this method
+          (!cls.getName.endsWith("Service") ||
+          !m.getName.equals("setForeground")) && // Android 2.1.1 has a weird undocumented method. manually ignore this.
+          (!cls.getName.endsWith("WebView") ||
+          !m.getName
+            .equals("getZoomControls")) && //https://github.com/pocorall/scaloid/issues/56
+          (!cls.getName.endsWith("View") ||
+          !m.getName.equals("setBackground")) // manually specifies this method
         }
 
       val allMethodNames = clsMethods.map(_.getName).toSet
@@ -192,9 +184,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
                 .flatten
                 .nonEmpty
 
-            if (setters.isEmpty && (
-                  getter.isEmpty || getter.get.name.startsWith("is")
-                ))
+            if (setters.isEmpty &&
+                (getter.isEmpty || getter.get.name.startsWith("is")))
               None
             else {
               val nameClashes = allMethodNames(name) || superGetterExists
@@ -276,8 +267,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           val specificName = transforms(setter)
           val generalName = "^on".r.replaceAllIn(am.name, "")
 
-          if (specificName
-                .length > am.name.length && specificName.contains(generalName))
+          if (specificName.length > am.name.length &&
+              specificName.contains(generalName))
             specificName
           else
             am.name
@@ -321,7 +312,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     val constructorNames: Map[List[String], List[String]] = {
       val constRegex =
         (
-          "public +" + clsName + """(?:\<[\w\<\>\[\]]+)? *\(([^)]*)\) *(?:\{?|[^;])"""
+          "public +" + clsName +
+            """(?:\<[\w\<\>\[\]]+)? *\(([^)]*)\) *(?:\{?|[^;])"""
         ).r
       val argRegex = """(.+?) +([a-z][^\[,. ]*)(?:,|$)""".r
 
@@ -373,8 +365,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
             Nil
           case last :: init =>
             (
-              toTypeStr(last, isVarArgs, true) :: init
-                .map(toTypeStr(_, isVarArgs, false))
+              toTypeStr(last, isVarArgs, true) ::
+                init.map(toTypeStr(_, isVarArgs, false))
             ).reverse
         }
 
@@ -401,8 +393,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         }
 
       val (implicits, explicits) = args.partition(isImplicit)
-      val paramedTypes =
-        (tpe.params ++ args.map(_.tpe)).filter(_.isVar).distinct
+      val paramedTypes = (tpe.params ++ args.map(_.tpe))
+        .filter(_.isVar)
+        .distinct
 
       ScalaConstructor(
         args,
@@ -502,7 +495,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
             }
             .filter { n =>
               val name = n.toString
-              !name.contains("webkit") || name.contains(
+              !name.contains("webkit") ||
+              name.contains(
                 "WebView"
               ) // excludes android.webkit.* in Android 2.1.1, which is deprecated
             }

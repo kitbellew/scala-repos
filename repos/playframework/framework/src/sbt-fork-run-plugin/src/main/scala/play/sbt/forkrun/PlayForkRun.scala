@@ -62,10 +62,9 @@ object PlayForkRun extends AutoPlugin {
   override def projectSettings =
     Seq(
       ivyConfigurations += ForkRun,
-      libraryDependencies += "com.typesafe.play" %% "fork-run" % play
-        .core
-        .PlayVersion
-        .current % ForkRun.name,
+      libraryDependencies +=
+        "com.typesafe.play" %% "fork-run" % play.core.PlayVersion.current %
+          ForkRun.name,
       PlaySettings.manageClasspath(ForkRun),
       playRun <<= PlayRun.playDefaultRunTask,
       playForkOptions <<= forkOptionsTask,
@@ -80,10 +79,11 @@ object PlayForkRun extends AutoPlugin {
       playForkNotifyStart <<= serverStartedTask,
       playForkStarted <<= publishUrlTask,
       playForkReload <<= compileTask,
-      SerializersKeys.registeredSerializers ++= Serializers
-        .serializers
-        .map(x =>
-          RegisteredSerializer(x.serializer, x.unserializer, x.manifest))
+      SerializersKeys.registeredSerializers ++=
+        Serializers
+          .serializers
+          .map(x =>
+            RegisteredSerializer(x.serializer, x.unserializer, x.manifest))
     )
 
   val allInput: Parser[String] = {
@@ -110,8 +110,8 @@ object PlayForkRun extends AutoPlugin {
         jvmOptions = (javaOptions in (Compile, run)).value,
         classpath = (managedClasspath in ForkRun).value.files,
         baseDirectory = (baseDirectory in ThisBuild).value,
-        configKey =
-          thisProjectRef.value.project + "/" + playForkConfig.key.label,
+        configKey = thisProjectRef.value.project + "/" +
+          playForkConfig.key.label,
         logLevel = ((logLevel in (Compile, run)) ?? Level.Info).value,
         logSbtEvents = playForkLogSbtEvents.value,
         shutdownTimeout = playForkShutdownTimeout.value
@@ -155,8 +155,9 @@ object PlayForkRun extends AutoPlugin {
         dependencyClasspath =
           PlayInternalKeys.playDependencyClasspath.value.files,
         allAssets = PlayInternalKeys.playAllAssets.value,
-        docsClasspath =
-          (managedClasspath in PlayRun.DocsApplication).value.files,
+        docsClasspath = (managedClasspath in PlayRun.DocsApplication)
+          .value
+          .files,
         docsJar = PlayKeys.playDocsJar.value,
         devSettings = PlayKeys.devSettings.value,
         defaultHttpPort = PlayKeys.playDefaultPort.value,
@@ -166,10 +167,10 @@ object PlayForkRun extends AutoPlugin {
         monitoredFiles = PlayKeys.playMonitoredFiles.value,
         targetDirectory = target.value,
         pollInterval = pollInterval.value,
-        notifyKey =
-          thisProjectRef.value.project + "/" + playForkNotifyStart.key.label,
-        reloadKey =
-          thisProjectRef.value.project + "/" + playForkReload.key.label,
+        notifyKey = thisProjectRef.value.project + "/" +
+          playForkNotifyStart.key.label,
+        reloadKey = thisProjectRef.value.project + "/" +
+          playForkReload.key.label,
         compileTimeout = playForkCompileTimeout.value.toMillis,
         mainClass = (mainClass in (Compile, run)).value.get
       )

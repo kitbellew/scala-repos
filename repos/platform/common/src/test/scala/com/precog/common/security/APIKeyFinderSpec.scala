@@ -75,9 +75,8 @@ trait APIKeyFinderSpec[M[+_]] extends Specification {
           DeletePermission(path, WrittenByAccount(accountId)),
           WritePermission(path, WriteAs(accountId)))
 
-        keyFinder
-          .hasCapability(key.apiKey, permissions, None)
-          .copoint must beTrue
+        keyFinder.hasCapability(key.apiKey, permissions, None).copoint must
+          beTrue
       }
     }
 

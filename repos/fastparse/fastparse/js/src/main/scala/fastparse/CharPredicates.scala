@@ -5,8 +5,7 @@ object CharPredicates {
   lazy val isPrintableChar = MacroUtils.preCompute { c =>
     val block = java.lang.Character.UnicodeBlock.of(c)
     !java.lang.Character.isISOControl(c) &&
-    !java.lang.Character.isSurrogate(c) &&
-    block != null &&
+    !java.lang.Character.isSurrogate(c) && block != null &&
     block != java.lang.Character.UnicodeBlock.SPECIALS
   }
   lazy val isMathSymbol = MacroUtils

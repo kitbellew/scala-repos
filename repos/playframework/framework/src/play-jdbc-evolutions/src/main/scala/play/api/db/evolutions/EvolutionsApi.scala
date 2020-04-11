@@ -192,8 +192,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         }
         case DownScript(e) => {
           execute(
-            "update ${schema}play_evolutions set state = 'applying_down' where id = " + e
-              .revision)
+            "update ${schema}play_evolutions set state = 'applying_down' where id = " +
+              e.revision)
         }
       }
     }
@@ -202,8 +202,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       script match {
         case UpScript(e) => {
           execute(
-            "update ${schema}play_evolutions set state = 'applied' where id = " + e
-              .revision)
+            "update ${schema}play_evolutions set state = 'applied' where id = " +
+              e.revision)
         }
         case DownScript(e) => {
           execute(
@@ -247,8 +247,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         val message =
           e match {
             case ex: SQLException =>
-              ex.getMessage + " [ERROR:" + ex.getErrorCode + ", SQLSTATE:" + ex
-                .getSQLState + "]"
+              ex.getMessage + " [ERROR:" + ex.getErrorCode + ", SQLSTATE:" +
+                ex.getSQLState + "]"
             case ex =>
               ex.getMessage
           }
@@ -257,19 +257,15 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
 
           connection.rollback()
 
-          val humanScript = "# --- Rev:" + lastScript
-            .evolution
-            .revision + "," + (
-            if (lastScript.isInstanceOf[UpScript])
-              "Ups"
-            else
-              "Downs"
-          ) + " - " + lastScript.evolution.hash + "\n\n" + (
-            if (lastScript.isInstanceOf[UpScript])
-              lastScript.evolution.sql_up
-            else
-              lastScript.evolution.sql_down
-          )
+          val humanScript = "# --- Rev:" + lastScript.evolution.revision + "," +
+            (if (lastScript.isInstanceOf[UpScript])
+               "Ups"
+             else
+               "Downs") + " - " + lastScript.evolution.hash + "\n\n" +
+            (if (lastScript.isInstanceOf[UpScript])
+               lastScript.evolution.sql_up
+             else
+               lastScript.evolution.sql_down)
 
           throw InconsistentDatabase(
             database.name,
@@ -339,12 +335,11 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
 
         logger.error(error)
 
-        val humanScript = "# --- Rev:" + revision + "," + (
-          if (state == "applying_up")
-            "Ups"
-          else
-            "Downs"
-        ) + " - " + hash + "\n\n" + script
+        val humanScript = "# --- Rev:" + revision + "," +
+          (if (state == "applying_up")
+             "Ups"
+           else
+             "Downs") + " - " + hash + "\n\n" + script
 
         throw InconsistentDatabase(
           database.name,
@@ -373,9 +368,11 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
     implicit val connection = database.getConnection(autocommit = true)
     try {
       execute(
-        "update ${schema}play_evolutions set state = 'applied' where state = 'applying_up' and id = " + revision)
+        "update ${schema}play_evolutions set state = 'applied' where state = 'applying_up' and id = " +
+          revision)
       execute(
-        "delete from ${schema}play_evolutions where state = 'applying_down' and id = " + revision);
+        "delete from ${schema}play_evolutions where state = 'applying_down' and id = " +
+          revision);
     } finally {
       connection.close()
     }
@@ -667,15 +664,15 @@ case class InconsistentDatabase(
     autocommit: Boolean)
     extends PlayException.RichDescription(
       "Database '" + db + "' is in an inconsistent state!",
-      "An evolution has not been applied properly. Please check the problem and resolve it manually" + (
-        if (autocommit)
-          " before marking it as resolved."
-        else
-          "."
-      )) {
+      "An evolution has not been applied properly. Please check the problem and resolve it manually" +
+        (if (autocommit)
+           " before marking it as resolved."
+         else
+           ".")) {
 
   def subTitle =
-    "We got the following error: " + error + ", while trying to run this SQL script:"
+    "We got the following error: " + error +
+      ", while trying to run this SQL script:"
   def content = script
 
   private val resolvePathJavascript =

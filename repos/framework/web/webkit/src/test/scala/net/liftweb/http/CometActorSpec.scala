@@ -89,11 +89,12 @@ object CometActorSpec extends Specification {
             update()
         }
 
-      matchingMessage must beLike {
-        case List(RedirectTo(redirectUri)) =>
-          redirectUri must startWith("place")
-          redirectUri must beMatching("^[^?]+\\?F[^=]+=_$".r)
-      }
+      matchingMessage must
+        beLike {
+          case List(RedirectTo(redirectUri)) =>
+            redirectUri must startWith("place")
+            redirectUri must beMatching("^[^?]+\\?F[^=]+=_$".r)
+        }
     }
   }
 }

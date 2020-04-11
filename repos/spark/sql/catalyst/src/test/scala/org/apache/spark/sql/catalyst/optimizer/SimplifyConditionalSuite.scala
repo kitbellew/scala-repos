@@ -82,7 +82,8 @@ class SimplifyConditionalSuite extends PlanTest with PredicateHelper {
     // Test branch elimination and simplification in combination
     assertEquivalent(
       CaseWhen(
-        unreachableBranch :: unreachableBranch :: trueBranch :: normalBranch :: Nil,
+        unreachableBranch :: unreachableBranch :: trueBranch :: normalBranch ::
+          Nil,
         None),
       Literal(5))
 

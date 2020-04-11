@@ -156,8 +156,8 @@ object QuantileDiscretizer
       samples.foldLeft(Map.empty[Double, Int]) { (m, x) =>
         m + ((x, m.getOrElse(x, 0) + 1))
       }
-    val valueCounts =
-      valueCountMap.toSeq.sortBy(_._1).toArray ++ Array((Double.MaxValue, 1))
+    val valueCounts = valueCountMap.toSeq.sortBy(_._1).toArray ++
+      Array((Double.MaxValue, 1))
     val possibleSplits = valueCounts.length - 1
     if (possibleSplits <= numSplits) {
       valueCounts.dropRight(1).map(_._1)
@@ -195,8 +195,8 @@ object QuantileDiscretizer
   private[feature] def getSplits(candidates: Array[Double]): Array[Double] = {
     val effectiveValues =
       if (candidates.nonEmpty) {
-        if (candidates.head == Double.NegativeInfinity
-            && candidates.last == Double.PositiveInfinity) {
+        if (candidates.head == Double.NegativeInfinity &&
+            candidates.last == Double.PositiveInfinity) {
           candidates.drop(1).dropRight(1)
         } else if (candidates.head == Double.NegativeInfinity) {
           candidates.drop(1)
@@ -212,8 +212,8 @@ object QuantileDiscretizer
     if (effectiveValues.isEmpty) {
       Array(Double.NegativeInfinity, 0, Double.PositiveInfinity)
     } else {
-      Array(Double.NegativeInfinity) ++ effectiveValues ++ Array(
-        Double.PositiveInfinity)
+      Array(Double.NegativeInfinity) ++ effectiveValues ++
+        Array(Double.PositiveInfinity)
     }
   }
 

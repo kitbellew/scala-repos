@@ -54,9 +54,10 @@ object FieldSpec extends Specification {
     def commonBehaviorsForMandatory(in: MandatoryTypedField[A]): Unit = {
 
       if (canCheckDefaultValues) {
-        "which have the correct initial value" in S.initIfUninitted(session) {
-          in.get must_== in.defaultValue
-        }
+        "which have the correct initial value" in
+          S.initIfUninitted(session) {
+            in.get must_== in.defaultValue
+          }
       }
 
       "which are readable and writable" in {
@@ -81,15 +82,17 @@ object FieldSpec extends Specification {
       if (!in.optional_?) {
         "which fail when set with an empty string when not optional" in {
           in.setFromString(null)
-          in.valueBox must beLike {
-            case f: Failure =>
-              ok
-          }
+          in.valueBox must
+            beLike {
+              case f: Failure =>
+                ok
+            }
           in.setFromString("")
-          in.valueBox must beLike {
-            case f: Failure =>
-              ok
-          }
+          in.valueBox must
+            beLike {
+              case f: Failure =>
+                ok
+            }
         }
       } else {
         "which don't fail when set with an empty string when optional" in {
@@ -114,8 +117,8 @@ object FieldSpec extends Specification {
         }
       }
 
-      "which have readable and writable boxed values" in S
-        .initIfUninitted(session) {
+      "which have readable and writable boxed values" in
+        S.initIfUninitted(session) {
           in.setBox(Full(example))
           in.valueBox.isDefined must_== true
           in.valueBox must_== Full(example)
@@ -124,8 +127,8 @@ object FieldSpec extends Specification {
         }
 
       if (canCheckDefaultValues) {
-        "which correctly clear back to the default box value" in S
-          .initIfUninitted(session) {
+        "which correctly clear back to the default box value" in
+          S.initIfUninitted(session) {
             in.setBox(Full(example))
             in.valueBox.isDefined must_== true
             in.clear
@@ -189,10 +192,11 @@ object FieldSpec extends Specification {
       "which correctly fail to be set to Empty" in {
         mandatory.valueBox.isDefined must_== true
         mandatory.setBox(Empty)
-        mandatory.valueBox must beLike {
-          case Failure(s, _, _) =>
-            s must_== mandatory.notOptionalErrorMessage
-        }
+        mandatory.valueBox must
+          beLike {
+            case Failure(s, _, _) =>
+              s must_== mandatory.notOptionalErrorMessage
+          }
       }
     }
 
@@ -274,10 +278,11 @@ object FieldSpec extends Specification {
       jvalue: JValue,
       formPattern: Box[NodeSeq]) = {
 
-    "convert to JsExp" in S.initIfUninitted(session) {
-      mandatory.set(example)
-      mandatory.asJs mustEqual jsexp
-    }
+    "convert to JsExp" in
+      S.initIfUninitted(session) {
+        mandatory.set(example)
+        mandatory.asJs mustEqual jsexp
+      }
 
     "convert to JValue" in {
       mandatory.set(example)
@@ -298,24 +303,25 @@ object FieldSpec extends Specification {
         val session = new LiftSession("", randomString(20), Empty)
         S.initIfUninitted(session) {
           val formXml = mandatory.toForm
-          formXml must beLike {
-            case Full(fprime) =>
-              val f =
-                (
-                  "* [name]" #> ".*" & "select *" #> (
-                    ((ns: NodeSeq) =>
-                      ns.filter {
-                        case e: Elem =>
-                          e.attribute("selected").map(_.text) == Some(
-                            "selected")
-                        case _ =>
-                          false
-                      }) andThen "* [value]" #> ".*"
-                  )
-                )(fprime)
-              val ret: Boolean = Helpers.compareXml(f, fp)
-              ret must_== true
-          }
+          formXml must
+            beLike {
+              case Full(fprime) =>
+                val f =
+                  (
+                    "* [name]" #> ".*" &
+                      "select *" #>
+                      (((ns: NodeSeq) =>
+                        ns.filter {
+                          case e: Elem =>
+                            e.attribute("selected").map(_.text) ==
+                              Some("selected")
+                          case _ =>
+                            false
+                        }) andThen "* [value]" #> ".*")
+                  )(fprime)
+                val ret: Boolean = Helpers.compareXml(f, fp)
+                ret must_== true
+            }
         }
       }
     }
@@ -354,29 +360,20 @@ object FieldSpec extends Specification {
     "support java.lang.Boolean" in {
       rec.mandatoryBooleanField.setFromAny(java.lang.Boolean.TRUE)
       rec.optionalBooleanField.setFromAny(java.lang.Boolean.TRUE)
-      (
-        rec.mandatoryBooleanField.get && (
-          rec.optionalBooleanField.get getOrElse false
-        )
-      ) must_== true
+      (rec.mandatoryBooleanField.get &&
+      (rec.optionalBooleanField.get getOrElse false)) must_== true
     }
     "support Full(java.lang.Boolean)" in {
       rec.mandatoryBooleanField.setFromAny(Full(java.lang.Boolean.TRUE))
       rec.optionalBooleanField.setFromAny(Full(java.lang.Boolean.TRUE))
-      (
-        rec.mandatoryBooleanField.get && (
-          rec.optionalBooleanField.get getOrElse false
-        )
-      ) must_== true
+      (rec.mandatoryBooleanField.get &&
+      (rec.optionalBooleanField.get getOrElse false)) must_== true
     }
     "support Some(java.lang.Boolean)" in {
       rec.mandatoryBooleanField.setFromAny(Some(java.lang.Boolean.TRUE))
       rec.optionalBooleanField.setFromAny(Some(java.lang.Boolean.TRUE))
-      (
-        rec.mandatoryBooleanField.get && (
-          rec.optionalBooleanField.get getOrElse false
-        )
-      ) must_== true
+      (rec.mandatoryBooleanField.get &&
+      (rec.optionalBooleanField.get getOrElse false)) must_== true
     }
   }
 
@@ -663,25 +660,23 @@ object FieldSpec extends Specification {
   }
 
   "PasswordField" should {
-    "require a nonempty password" in S.initIfUninitted(session) {
-      val rec = PasswordTestRecord.createRecord.password("")
+    "require a nonempty password" in
+      S.initIfUninitted(session) {
+        val rec = PasswordTestRecord.createRecord.password("")
 
-      rec.validate must_== (
-        FieldError(rec.password, Text(S.?("password.must.be.set"))) ::
-          Nil
-      )
-    }
+        rec.validate must_==
+          (FieldError(rec.password, Text(S.?("password.must.be.set"))) :: Nil)
+      }
 
-    "correctly validate the unencrypted value" in S.initIfUninitted(session) {
-      val rec = PasswordTestRecord.createRecord.password("testvalue")
-      rec.validate must_== Nil
+    "correctly validate the unencrypted value" in
+      S.initIfUninitted(session) {
+        val rec = PasswordTestRecord.createRecord.password("testvalue")
+        rec.validate must_== Nil
 
-      rec.password("1234")
-      rec.validate must_== (
-        FieldError(rec.password, Text(S.?("password.too.short"))) ::
-          Nil
-      )
-    }
+        rec.password("1234")
+        rec.validate must_==
+          (FieldError(rec.password, Text(S.?("password.too.short"))) :: Nil)
+      }
 
     "match with encrypted value" in {
       val rec = PasswordTestRecord.createRecord.password("testpassword")
@@ -768,12 +763,10 @@ object FieldSpec extends Specification {
     "honor validators configured in the usual way" in {
       val rec = StringTestRecord.createRecord
 
-      rec.validate must_== (
-        FieldError(
+      rec.validate must_==
+        (FieldError(
           rec.string,
-          Text("String field name must be at least 3 characters.")) ::
-          Nil
-      )
+          Text("String field name must be at least 3 characters.")) :: Nil)
     }
 
     "honor harnessed validators" in {

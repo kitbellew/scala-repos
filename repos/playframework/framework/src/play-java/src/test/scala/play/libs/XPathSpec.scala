@@ -21,8 +21,8 @@ object XPathSpec extends Specification {
         "x" -> "http://foo.com/",
         "ns" -> "http://www.w3.org/XML/1998/namespace",
         "y" -> "http://foo.com/")
-      XPath.selectText("//x:baz", xmlWithNamespace, ns.asJava) must not(
-        throwAn[UnsupportedOperationException])
+      XPath.selectText("//x:baz", xmlWithNamespace, ns.asJava) must
+        not(throwAn[UnsupportedOperationException])
     }
 
     "find text with namespace" in {

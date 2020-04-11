@@ -22,9 +22,8 @@ class RemoveTakeDrop(
       def tr(n: Node): Node =
         n.replace {
           case n @ TakeDrop(from, t, d)
-              if (translateTake && t.isDefined) || (
-                translateDrop && d.isDefined
-              ) =>
+              if (translateTake && t.isDefined) ||
+                (translateDrop && d.isDefined) =>
             logger.debug(
               s"""Translating "drop $d, then take $t" to zipWithIndex operation:""",
               n)

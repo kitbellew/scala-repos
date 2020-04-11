@@ -105,8 +105,8 @@ class ScImportStmtImpl private (
               set
                 .selectors
                 .exists(selector =>
-                  ScalaPsiUtil.convertMemberName(
-                    selector.reference.refName) == decodedName)
+                  ScalaPsiUtil.convertMemberName(selector.reference.refName) ==
+                    decodedName)
             case None =>
               if (ScalaPsiUtil.convertMemberName(ref.refName) != decodedName)
                 return true
@@ -246,13 +246,13 @@ class ScImportStmtImpl private (
                       s.lastIndexOf(".")) == pack.getQualifiedName)
               val names = new mutable.HashSet[String]()
               for (prefixImport <- prefixImports) {
-                names += prefixImport
-                  .substring(prefixImport.lastIndexOf('.') + 1)
+                names +=
+                  prefixImport.substring(prefixImport.lastIndexOf('.') + 1)
               }
               val excludeNames = new mutable.HashSet[String]()
               for (prefixImport <- excludeImports) {
-                excludeNames += prefixImport
-                  .substring(prefixImport.lastIndexOf('.') + 1)
+                excludeNames +=
+                  prefixImport.substring(prefixImport.lastIndexOf('.') + 1)
               }
               val wildcard = names.contains("_")
               def isOK(name: String): Boolean = {
@@ -261,8 +261,8 @@ class ScImportStmtImpl private (
                 else
                   names.contains(name)
               }
-              val newImportsUsed =
-                Set(importsUsed.toSeq: _*) + ImportExprUsed(importExpr)
+              val newImportsUsed = Set(importsUsed.toSeq: _*) +
+                ImportExprUsed(importExpr)
               val newState = state
                 .put(ScalaCompletionUtil.PREFIX_COMPLETION_KEY, true)
                 .put(ImportUsed.key, newImportsUsed)
@@ -294,8 +294,8 @@ class ScImportStmtImpl private (
           importExpr.selectorSet match {
             case None =>
               // Update the set of used imports
-              val newImportsUsed =
-                Set(importsUsed.toSeq: _*) + ImportExprUsed(importExpr)
+              val newImportsUsed = Set(importsUsed.toSeq: _*) +
+                ImportExprUsed(importExpr)
               var newState: ResolveState = state
                 .put(ImportUsed.key, newImportsUsed)
                 .put(ScSubstitutor.key, subst)
@@ -337,8 +337,8 @@ class ScImportStmtImpl private (
                   .reference
                   .multiResolve(false)
                 selectorResolve foreach { result =>
-                  if (selector.isAliasedImport && selector
-                        .importedName != selector.reference.refName) {
+                  if (selector.isAliasedImport &&
+                      selector.importedName != selector.reference.refName) {
                     //Resolve the name imported by selector
                     //Collect shadowed elements
                     shadowed += ((selector, result.getElement))
@@ -348,8 +348,8 @@ class ScImportStmtImpl private (
                     newState = newState
                       .put(
                         ImportUsed.key,
-                        Set(importsUsed.toSeq: _*) + ImportSelectorUsed(
-                          selector))
+                        Set(importsUsed.toSeq: _*) +
+                          ImportSelectorUsed(selector))
                       .put(ScSubstitutor.key, subst)
                     calculateRefType(checkResolve(result)).foreach { tp =>
                       newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
@@ -420,8 +420,8 @@ class ScImportStmtImpl private (
                       }
 
                     val newImportsUsed: Set[ImportUsed] =
-                      Set(importsUsed.toSeq: _*) + ImportWildcardSelectorUsed(
-                        importExpr)
+                      Set(importsUsed.toSeq: _*) +
+                        ImportWildcardSelectorUsed(importExpr)
                     var newState: ResolveState = state
                       .put(ImportUsed.key, newImportsUsed)
                       .put(ScSubstitutor.key, subst)
@@ -460,8 +460,8 @@ class ScImportStmtImpl private (
                   .multiResolve(false)
                 selectorResolve foreach { result =>
                   var newState: ResolveState = state
-                  if (!selector.isAliasedImport || selector
-                        .importedName == selector.reference.refName) {
+                  if (!selector.isAliasedImport ||
+                      selector.importedName == selector.reference.refName) {
                     val rSubst =
                       result match {
                         case result: ScalaResolveResult =>
@@ -472,8 +472,8 @@ class ScImportStmtImpl private (
                     newState = newState
                       .put(
                         ImportUsed.key,
-                        Set(importsUsed.toSeq: _*) + ImportSelectorUsed(
-                          selector))
+                        Set(importsUsed.toSeq: _*) +
+                          ImportSelectorUsed(selector))
                       .put(ScSubstitutor.key, subst.followed(rSubst))
                     calculateRefType(checkResolve(result)).foreach { tp =>
                       newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)

@@ -137,9 +137,9 @@ final case class VectorClock(
           nt1: (Node, Long),
           nt2: (Node, Long),
           currentOrder: Ordering): Ordering =
-        if ((requestedOrder ne FullOrder) && (currentOrder ne Same) && (
-              currentOrder ne requestedOrder
-            ))
+        if ((requestedOrder ne FullOrder) &&
+            (currentOrder ne Same) &&
+            (currentOrder ne requestedOrder))
           currentOrder
         else if ((nt1 eq cmpEndMarker) && (nt2 eq cmpEndMarker))
           currentOrder

@@ -35,19 +35,20 @@ final class RankingApi(
     }
 
   def save(userId: User.ID, perfType: PerfType, perf: Perf): Funit =
-    (perf.nb >= 2) ?? coll
-      .update(
-        BSONDocument("_id" -> s"$userId:${perfType.id}"),
-        BSONDocument(
-          "user" -> userId,
-          "perf" -> perfType.id,
-          "rating" -> perf.intRating,
-          "prog" -> perf.progress,
-          "stable" -> perf.established,
-          "expiresAt" -> DateTime.now.plusDays(7)),
-        upsert = true
-      )
-      .void
+    (perf.nb >= 2) ??
+      coll
+        .update(
+          BSONDocument("_id" -> s"$userId:${perfType.id}"),
+          BSONDocument(
+            "user" -> userId,
+            "perf" -> perfType.id,
+            "rating" -> perf.intRating,
+            "prog" -> perf.progress,
+            "stable" -> perf.established,
+            "expiresAt" -> DateTime.now.plusDays(7)),
+          upsert = true
+        )
+        .void
 
   def remove(userId: User.ID): Funit =
     UserRepo byId userId flatMap {
@@ -55,15 +56,17 @@ final class RankingApi(
         coll
           .remove(
             BSONDocument(
-              "_id" -> BSONDocument(
-                "$in" -> PerfType
-                  .leaderboardable
-                  .filter { pt =>
-                    user.perfs(pt).nonEmpty
-                  }
-                  .map { pt =>
-                    s"${user.id}:${pt.id}"
-                  })))
+              "_id" ->
+                BSONDocument(
+                  "$in" ->
+                    PerfType
+                      .leaderboardable
+                      .filter { pt =>
+                        user.perfs(pt).nonEmpty
+                      }
+                      .map { pt =>
+                        s"${user.id}:${pt.id}"
+                      })))
           .void
       }
     }
@@ -149,11 +152,13 @@ final class RankingApi(
               Project(
                 BSONDocument(
                   "_id" -> false,
-                  "r" -> BSONDocument(
-                    "$subtract" -> BSONArray(
-                      "$rating",
-                      BSONDocument(
-                        "$mod" -> BSONArray("$rating", Stat.group)))))),
+                  "r" ->
+                    BSONDocument(
+                      "$subtract" ->
+                        BSONArray(
+                          "$rating",
+                          BSONDocument(
+                            "$mod" -> BSONArray("$rating", Stat.group)))))),
               GroupField("r")("nb" -> SumValue(1))
             )
           )

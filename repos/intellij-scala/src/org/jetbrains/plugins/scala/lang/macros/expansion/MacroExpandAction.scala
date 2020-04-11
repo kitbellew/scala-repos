@@ -77,10 +77,8 @@ class MacroExpandAction extends AnAction {
     // if macro is under cursor, expand it, otherwise expand all macros in current file
     resolved
       .find(
-        _.expansion.place.line == sourceEditor
-          .getCaretModel
-          .getLogicalPosition
-          .line + 1)
+        _.expansion.place.line ==
+          sourceEditor.getCaretModel.getLogicalPosition.line + 1)
       .map(expandMacroUnderCursor)
       .getOrElse(expandAllMacroInCurrentFile(resolved))
   }
@@ -150,9 +148,8 @@ class MacroExpandAction extends AnAction {
           if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
             val file = element.getContainingFile
             val nextLeaf = file.findElementAt(element.getTextRange.getEndOffset)
-            if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf
-                  .getText
-                  .contains("\n")) {
+            if (nextLeaf.isInstanceOf[PsiWhiteSpace] &&
+                nextLeaf.getText.contains("\n")) {
               tobeDeleted += element
             }
           }
@@ -339,7 +336,8 @@ class MacroExpandAction extends AnAction {
       "\\<init\\>" -> "this", // replace constructor names
       " *\\<[a-z]+\\> *" -> "", // remove compiler attributes
       "super\\.this\\(\\);" -> "this();", // replace super constructor calls
-      "def this\\(\\) = \\{\\s*this\\(\\);\\s*\\(\\)\\s*\\};" -> "", // remove invalid super constructor calls
+      "def this\\(\\) = \\{\\s*this\\(\\);\\s*\\(\\)\\s*\\};" ->
+        "", // remove invalid super constructor calls
       "_root_." -> "" // _root_ package is obsolete
     )
 

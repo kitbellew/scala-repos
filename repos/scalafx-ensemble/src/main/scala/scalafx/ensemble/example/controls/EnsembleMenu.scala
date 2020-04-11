@@ -79,12 +79,11 @@ class EnsembleMenu extends EnsembleExample {
                     selected.onInvalidate {
                       fooMenuItem.setVisible(selected())
                       println(
-                        """Menu item "foo" is now """ + (
-                          if (fooMenuItem.visible())
-                            ""
-                          else
-                            "not"
-                        ) + " visible")
+                        """Menu item "foo" is now """ +
+                          (if (fooMenuItem.visible())
+                             ""
+                           else
+                             "not") + " visible")
                     }
                   }
                 )

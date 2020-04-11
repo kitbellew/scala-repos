@@ -195,10 +195,11 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
           (jobId, _, _) <- execute(5)
           job <- jobManager.findJob(jobId)
         } yield job
-      ).copoint must beLike {
-        case Some(Job(_, _, _, _, _, Started(_, NotStarted))) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case Some(Job(_, _, _, _, _, Started(_, NotStarted))) =>
+            ok
+        }
     }
 
     "be in a finished state if it completes successfully" in {
@@ -207,10 +208,11 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
           (jobId, _, _) <- execute(1)
           job <- waitForJobCompletion(jobId)
         } yield job
-      ).copoint must beLike {
-        case Job(_, _, _, _, _, Finished(_, _)) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case Job(_, _, _, _, _, Finished(_, _)) =>
+            ok
+        }
     }
 
     "complete successfully if not cancelled" in {
@@ -230,11 +232,12 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
           cancelled <- cancel(jobId, 5)
         } yield (ticks, query)
 
-      result.copoint must beLike {
-        case (ticks, query) =>
-          query.copoint must throwA[QueryCancelledException]
-          ticks.get must be_<(10)
-      }
+      result.copoint must
+        beLike {
+          case (ticks, query) =>
+            query.copoint must throwA[QueryCancelledException]
+            ticks.get must be_<(10)
+        }
     }
 
     "be in an aborted state if cancelled successfully" in {
@@ -246,10 +249,11 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
           job <- jobManager.findJob(jobId)
         } yield job
 
-      job.copoint must beLike {
-        case Some(Job(_, _, _, _, _, Aborted(_, _, Cancelled(_, _, _)))) =>
-          ok
-      }
+      job.copoint must
+        beLike {
+          case Some(Job(_, _, _, _, _, Aborted(_, _, Cancelled(_, _, _)))) =>
+            ok
+        }
     }
 
     "cannot be cancelled after it has successfully completed" in {
@@ -264,11 +268,12 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     }
 
     "be expireable" in {
-      execute(10, Some(3)).copoint must beLike {
-        case (_, ticks, query) =>
-          query.copoint must throwA[QueryExpiredException]
-          ticks.get must be_<(10)
-      }
+      execute(10, Some(3)).copoint must
+        beLike {
+          case (_, ticks, query) =>
+            query.copoint must throwA[QueryExpiredException]
+            ticks.get must be_<(10)
+        }
     }
 
     "expired queries are put in an expired state" in {
@@ -278,10 +283,11 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
           _ <- waitFor(5)
           job <- jobManager.findJob(jobId)
         } yield job
-      ).copoint must beLike {
-        case Some(Job(_, _, _, _, _, Expired(_, _))) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case Some(Job(_, _, _, _, _, Expired(_, _))) =>
+            ok
+        }
     }
 
     "not expire queries that complete before expiration date" in {

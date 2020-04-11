@@ -186,9 +186,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
           * TODO: plumb this through a different way?
           */
         if (enableVectorizedParquetReader &&
-            format
-              .getClass
-              .getName == "org.apache.parquet.hadoop.ParquetInputFormat") {
+            format.getClass.getName ==
+              "org.apache.parquet.hadoop.ParquetInputFormat") {
           val parquetReader: VectorizedParquetRecordReader =
             new VectorizedParquetRecordReader()
           if (!parquetReader.tryInitialize(
@@ -244,8 +243,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
           if (!finished) {
             inputMetrics.incRecordsReadInternal(1)
           }
-          if (inputMetrics.recordsRead % SparkHadoopUtil
-                .UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
+          if (inputMetrics.recordsRead %
+                SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
             updateBytesRead()
           }
           reader.getCurrentValue

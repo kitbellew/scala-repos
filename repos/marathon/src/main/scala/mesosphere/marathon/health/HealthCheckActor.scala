@@ -92,8 +92,8 @@ class HealthCheckActor(
         task
           .launched
           .foreach { launched =>
-            if (launched.appVersion == app.version && launched
-                  .hasStartedRunning) {
+            if (launched.appVersion == app.version &&
+                launched.hasStartedRunning) {
               log.debug("Dispatching health check job for {}", task.taskId)
               val worker: ActorRef = context.actorOf(workerProps)
               worker ! HealthCheckJob(app, task, launched, healthCheck)

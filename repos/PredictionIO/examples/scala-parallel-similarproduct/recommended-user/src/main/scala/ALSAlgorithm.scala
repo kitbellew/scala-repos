@@ -81,13 +81,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
         if (uindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent user ID ${r.user}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent user ID ${r.user}" +
+              " to Int index.")
 
         if (iindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent followedUser ID ${r.followedUser}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent followedUser ID ${r.followedUser}" +
+              " to Int index.")
 
         ((uindex, iindex), 1)
       }

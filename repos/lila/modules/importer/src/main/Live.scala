@@ -60,12 +60,13 @@ final class Live(roundMap: ActorRef) {
     }
 
   private def applyMove(pov: Pov, uci: Uci) {
-    roundMap ! Tell(
-      pov.gameId,
-      HumanPlay(
-        playerId = pov.playerId,
-        uci = uci,
-        blur = false,
-        lag = 0.millis))
+    roundMap !
+      Tell(
+        pov.gameId,
+        HumanPlay(
+          playerId = pov.playerId,
+          uci = uci,
+          blur = false,
+          lag = 0.millis))
   }
 }

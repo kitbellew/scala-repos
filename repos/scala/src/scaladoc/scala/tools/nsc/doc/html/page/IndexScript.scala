@@ -43,8 +43,9 @@ class IndexScript(universe: doc.Universe) extends Page {
                     Seq(
                       kindToString(t) -> relativeLinkTo(t),
                       "kind" -> kindToString(t),
-                      "members" -> membersToJSON(
-                        t.members.filter(!_.isShadowedOrAmbiguousImplicit)),
+                      "members" ->
+                        membersToJSON(
+                          t.members.filter(!_.isShadowedOrAmbiguousImplicit)),
                       "shortDescription" -> shortDesc(t)
                     )
                   }
@@ -81,16 +82,15 @@ class IndexScript(universe: doc.Universe) extends Page {
   def allPackagesWithTemplates = {
     Map(
       allPackages.map((key) => {
-        key -> key
-          .templates
-          .collect {
-            case t: DocTemplateEntity
-                if !t.isPackage && !universe
-                  .settings
-                  .hardcoded
-                  .isExcluded(t.qualifiedName) =>
-              t
-          }
+        key ->
+          key
+            .templates
+            .collect {
+              case t: DocTemplateEntity
+                  if !t.isPackage &&
+                    !universe.settings.hardcoded.isExcluded(t.qualifiedName) =>
+                t
+            }
       }): _*)
   }
 
@@ -146,9 +146,8 @@ class IndexScript(universe: doc.Universe) extends Page {
       JSONObject(
         Map(
           "label" -> m.definitionName.replaceAll(".*#", ""), // member name
-          "member" -> m
-            .definitionName
-            .replaceFirst("#", "."), // full member name
+          "member" ->
+            m.definitionName.replaceFirst("#", "."), // full member name
           "tail" -> memberTail(m),
           "kind" -> memberKindToString(m), // modifiers i.e. "abstract def"
           "link" -> memberToUrl(m)

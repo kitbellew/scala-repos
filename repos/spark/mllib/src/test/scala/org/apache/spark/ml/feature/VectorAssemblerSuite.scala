@@ -50,8 +50,8 @@ class VectorAssemblerSuite
     assert(assemble(0.0, 1.0) === Vectors.sparse(2, Array(1), Array(1.0)))
     val dv = Vectors.dense(2.0, 0.0)
     assert(
-      assemble(0.0, dv, 1.0) === Vectors
-        .sparse(4, Array(1, 3), Array(2.0, 1.0)))
+      assemble(0.0, dv, 1.0) ===
+        Vectors.sparse(4, Array(1, 3), Array(2.0, 1.0)))
     val sv = Vectors.sparse(2, Array(0, 1), Array(3.0, 4.0))
     assert(
       assemble(0.0, dv, 1.0, sv) ===
@@ -92,8 +92,8 @@ class VectorAssemblerSuite
       .foreach {
         case Row(v: Vector) =>
           assert(
-            v === Vectors
-              .sparse(6, Array(1, 2, 4, 5), Array(1.0, 2.0, 3.0, 10.0)))
+            v ===
+              Vectors.sparse(6, Array(1, 2, 4, 5), Array(1.0, 2.0, 3.0, 10.0)))
       }
   }
 
@@ -108,8 +108,8 @@ class VectorAssemblerSuite
       assembler.transform(df)
     }
     assert(
-      thrown
-        .getMessage contains "VectorAssembler does not support the StringType type")
+      thrown.getMessage contains
+        "VectorAssembler does not support the StringType type")
   }
 
   test("ML attributes") {
@@ -159,26 +159,18 @@ class VectorAssemblerSuite
       countOut === NumericAttribute.defaultAttr.withName("count").withIndex(2))
     val userGenderOut = features.getAttr(3)
     assert(
-      userGenderOut === user
-        .getAttr("gender")
-        .withName("user_gender")
-        .withIndex(3))
+      userGenderOut ===
+        user.getAttr("gender").withName("user_gender").withIndex(3))
     val userSalaryOut = features.getAttr(4)
     assert(
-      userSalaryOut === user
-        .getAttr("salary")
-        .withName("user_salary")
-        .withIndex(4))
+      userSalaryOut ===
+        user.getAttr("salary").withName("user_salary").withIndex(4))
     assert(
-      features.getAttr(5) === NumericAttribute
-        .defaultAttr
-        .withIndex(5)
-        .withName("ad_0"))
+      features.getAttr(5) ===
+        NumericAttribute.defaultAttr.withIndex(5).withName("ad_0"))
     assert(
-      features.getAttr(6) === NumericAttribute
-        .defaultAttr
-        .withIndex(6)
-        .withName("ad_1"))
+      features.getAttr(6) ===
+        NumericAttribute.defaultAttr.withIndex(6).withName("ad_1"))
   }
 
   test("read/write") {

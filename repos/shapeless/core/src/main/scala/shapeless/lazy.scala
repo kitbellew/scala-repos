@@ -323,8 +323,8 @@ class LazyMacros(val c: whitebox.Context)
                 .typeSymbol
                 .annotations
                 .find(
-                  _.tree.tpe =:= typeOf[
-                    _root_.scala.annotation.implicitNotFound])
+                  _.tree.tpe =:=
+                    typeOf[_root_.scala.annotation.implicitNotFound])
                 .foreach { infAnn =>
                   val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
                   val analyzer: global.analyzer.type = global.analyzer

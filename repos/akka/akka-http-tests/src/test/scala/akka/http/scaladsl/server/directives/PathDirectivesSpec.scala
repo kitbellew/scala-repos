@@ -91,9 +91,10 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
 
   "pathPrefix(regex)" should {
     "fail when the regex contains more than one group" in {
-      an[IllegalArgumentException] must be thrownBy path("a(b+)(c+)".r) {
-        echoCaptureAndUnmatchedPath
-      }
+      an[IllegalArgumentException] must be thrownBy
+        path("a(b+)(c+)".r) {
+          echoCaptureAndUnmatchedPath
+        }
     }
   }
 
@@ -130,10 +131,10 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
       pathPrefix(JavaUUID) {
         echoCaptureAndUnmatchedPath
       })
-    "accept [/bdea8652-f26c-40ca-8157-0b96a2a8389d]" in test(
-      "bdea8652-f26c-40ca-8157-0b96a2a8389d:")
-    "accept [/bdea8652-f26c-40ca-8157-0b96a2a8389dyes]" in test(
-      "bdea8652-f26c-40ca-8157-0b96a2a8389d:yes")
+    "accept [/bdea8652-f26c-40ca-8157-0b96a2a8389d]" in
+      test("bdea8652-f26c-40ca-8157-0b96a2a8389d:")
+    "accept [/bdea8652-f26c-40ca-8157-0b96a2a8389dyes]" in
+      test("bdea8652-f26c-40ca-8157-0b96a2a8389d:yes")
     "reject [/]" in test()
     "reject [/abc]" in test()
   }
@@ -409,19 +410,21 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
             uri.group(1) match {
               case "accept" if expectedResponse eq null ⇒
                 failTest(
-                  "Example '" + exampleString + "' was missing an expectedResponse")
+                  "Example '" + exampleString +
+                    "' was missing an expectedResponse")
               case "reject" if expectedResponse ne null ⇒
                 failTest(
                   "Example '" + exampleString + "' had an expectedResponse")
               case _ ⇒
             }
 
-            Get(uri.group(2)) ~> route ~> check {
-              if (expectedResponse eq null)
-                handled shouldEqual false
-              else
-                responseAs[String] shouldEqual expectedResponse
-            }
+            Get(uri.group(2)) ~> route ~>
+              check {
+                if (expectedResponse eq null)
+                  handled shouldEqual false
+                else
+                  responseAs[String] shouldEqual expectedResponse
+              }
           case None ⇒
             failTest(
               "Example '" + exampleString + "' doesn't contain a test uri")
@@ -437,9 +440,10 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
       }
 
     "pass if the request path already has a trailing slash" in {
-      Get("/foo/bar/") ~> route ~> check {
-        response shouldEqual Ok
-      }
+      Get("/foo/bar/") ~> route ~>
+        check {
+          response shouldEqual Ok
+        }
     }
 
     "redirect if the request path doesn't have a trailing slash" in {
@@ -447,8 +451,8 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
     }
 
     "preserves the query and the frag when redirect" in {
-      Get("/foo/bar?query#frag") ~> route ~> checkRedirectTo(
-        "/foo/bar/?query#frag")
+      Get("/foo/bar?query#frag") ~> route ~>
+        checkRedirectTo("/foo/bar/?query#frag")
     }
 
     "redirect with the given redirection status code" in {
@@ -477,9 +481,10 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
       }
 
     "pass if the request path already doesn't have a trailing slash" in {
-      Get("/foo/bar") ~> route ~> check {
-        response shouldEqual Ok
-      }
+      Get("/foo/bar") ~> route ~>
+        check {
+          response shouldEqual Ok
+        }
     }
 
     "redirect if the request path has a trailing slash" in {
@@ -487,8 +492,8 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
     }
 
     "preserves the query and the frag when redirect" in {
-      Get("/foo/bar/?query#frag") ~> route ~> checkRedirectTo(
-        "/foo/bar?query#frag")
+      Get("/foo/bar/?query#frag") ~> route ~>
+        checkRedirectTo("/foo/bar?query#frag")
     }
 
     "redirect with the given redirection status code" in {
@@ -510,12 +515,10 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
       status shouldBe a[Redirection]
       inside(header[Location]) {
         case Some(Location(uri)) ⇒
-          (
-            if (expectedUri.isAbsolute)
-              uri
-            else
-              uri.toRelative
-          ) shouldEqual expectedUri
+          (if (expectedUri.isAbsolute)
+             uri
+           else
+             uri.toRelative) shouldEqual expectedUri
       }
     }
 }

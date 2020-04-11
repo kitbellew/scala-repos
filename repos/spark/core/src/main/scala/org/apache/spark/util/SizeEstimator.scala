@@ -171,7 +171,8 @@ object SizeEstimator extends Logging {
           else
             "not"
         logWarning(
-          "Failed to check whether UseCompressedOops is set; assuming " + guessInWords)
+          "Failed to check whether UseCompressedOops is set; assuming " +
+            guessInWords)
         return guess
       }
     }

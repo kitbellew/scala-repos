@@ -102,11 +102,10 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         }
 
         val functions: List[Option[JType => JType]] =
-          jtypes.distinct map (
-            _ map {
+          jtypes.distinct map
+            (_ map {
               Schema.replaceLeaf
-            }
-          )
+            })
 
         coalesce(
           functions map {
@@ -156,12 +155,11 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
           }
 
         // one JType-with-numeric-leaves per schema
-        val jtypes: M[Seq[JType]] = jtypes0 map (
-          _ collect {
+        val jtypes: M[Seq[JType]] = jtypes0 map
+          (_ collect {
             case opt if opt.isDefined =>
               opt.get
-          }
-        )
+          })
 
         val specs: M[Seq[TransSpec1]] = jtypes map {
           _ map {
@@ -170,11 +168,10 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         }
 
         // one table per schema
-        val tables: M[Seq[Table]] = specs map (
-          _ map { spec =>
+        val tables: M[Seq[Table]] = specs map
+          (_ map { spec =>
             table.transform(spec).compact(TransSpec1.Id, AllDefined)
-          }
-        )
+          })
 
         val tablesWithType: M[Seq[(Table, JType)]] =
           for {

@@ -273,7 +273,9 @@ object ActorSystem {
 
     if (ConfigVersion != Version)
       throw new akka.ConfigurationException(
-        "Akka JAR version [" + Version + "] does not match the provided config version [" + ConfigVersion + "]")
+        "Akka JAR version [" + Version +
+          "] does not match the provided config version [" + ConfigVersion +
+          "]")
 
     /**
       * Returns the String representation of the Config that this Settings is backed by
@@ -290,13 +292,12 @@ object ActorSystem {
       Iterator.from(2 /*is the magic number, promise*/ ).map(get) dropWhile {
         c ⇒
           c != null &&
-          (
-            c.getName.startsWith("akka.actor.ActorSystem") ||
-            c.getName.startsWith("scala.Option") ||
-            c.getName.startsWith("scala.collection.Iterator") ||
-            c.getName.startsWith("akka.util.Reflect")
-          )
-      } next () match {
+          (c.getName.startsWith("akka.actor.ActorSystem") ||
+          c.getName.startsWith("scala.Option") ||
+          c.getName.startsWith("scala.collection.Iterator") ||
+          c.getName.startsWith("akka.util.Reflect"))
+      } next
+        () match {
         case null ⇒
           getClass.getClassLoader
         case c ⇒
@@ -304,8 +305,7 @@ object ActorSystem {
       }
 
     Option(Thread.currentThread.getContextClassLoader) orElse
-      (Reflect.getCallerClass map findCaller) getOrElse
-      getClass.getClassLoader
+      (Reflect.getCallerClass map findCaller) getOrElse getClass.getClassLoader
   }
 }
 
@@ -864,8 +864,8 @@ private[akka] class ActorSystemImpl(
         immutable.Seq(
           classOf[Config] -> settings.config,
           classOf[LoggingAdapter] -> log,
-          classOf[ThreadFactory] -> threadFactory
-            .withName(threadFactory.name + "-scheduler"))
+          classOf[ThreadFactory] ->
+            threadFactory.withName(threadFactory.name + "-scheduler"))
       )
       .get
   //#create-scheduler
@@ -915,7 +915,8 @@ private[akka] class ActorSystemImpl(
                 this) match { // Create and initialize the extension
                 case null ⇒
                   throw new IllegalStateException(
-                    "Extension instance created as 'null' for extension [" + ext + "]")
+                    "Extension instance created as 'null' for extension [" +
+                      ext + "]")
                 case instance ⇒
                   extensions.replace(
                     ext,
@@ -989,42 +990,35 @@ private[akka] class ActorSystemImpl(
       node match {
         case wc: ActorRefWithCell ⇒
           val cell = wc.underlying
-          (
-            if (indent.isEmpty)
-              "-> "
-            else
-              indent.dropRight(1) + "⌊-> "
-          ) +
-            node.path.name + " " + Logging.simpleName(node) + " " +
-            (
-              cell match {
-                case real: ActorCell ⇒
-                  if (real.actor ne null)
-                    real.actor.getClass
-                  else
-                    "null"
-                case _ ⇒
-                  Logging.simpleName(cell)
-              }
-            ) +
-            (
-              cell match {
-                case real: ActorCell ⇒
-                  " status=" + real.mailbox.currentStatus
-                case _ ⇒
-                  ""
-              }
-            ) +
-            " " + (
-            cell.childrenRefs match {
+          (if (indent.isEmpty)
+             "-> "
+           else
+             indent.dropRight(1) + "⌊-> ") + node.path.name + " " +
+            Logging.simpleName(node) + " " +
+            (cell match {
+              case real: ActorCell ⇒
+                if (real.actor ne null)
+                  real.actor.getClass
+                else
+                  "null"
+              case _ ⇒
+                Logging.simpleName(cell)
+            }) +
+            (cell match {
+              case real: ActorCell ⇒
+                " status=" + real.mailbox.currentStatus
+              case _ ⇒
+                ""
+            }) + " " +
+            (cell.childrenRefs match {
               case ChildrenContainer
                     .TerminatingChildrenContainer(_, toDie, reason) ⇒
                 "Terminating(" + reason + ")" +
-                  (
-                    toDie.toSeq.sorted mkString (
-                      "\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""
-                    )
-                  )
+                  (toDie.toSeq.sorted mkString
+                    (
+                      "\n" + indent + "   |    toDie: ",
+                      "\n" + indent + "   |           ",
+                      ""))
               case x @ (
                     ChildrenContainer.TerminatedChildrenContainer |
                     ChildrenContainer.EmptyChildrenContainer
@@ -1034,18 +1028,15 @@ private[akka] class ActorSystemImpl(
                 n.c.size + " children"
               case x ⇒
                 Logging.simpleName(x)
-            }
-          ) +
-            (
-              if (cell.childrenRefs.children.isEmpty)
-                ""
-              else
-                "\n"
-            ) +
+            }) +
+            (if (cell.childrenRefs.children.isEmpty)
+               ""
+             else
+               "\n") +
             ({
               val children = cell.childrenRefs.children.toSeq.sorted
-              val bulk = children
-                .dropRight(1) map (printNode(_, indent + "   |"))
+              val bulk = children.dropRight(1) map
+                (printNode(_, indent + "   |"))
               bulk ++ (children.lastOption map (printNode(_, indent + "    ")))
             } mkString ("\n"))
         case _ ⇒

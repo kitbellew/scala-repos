@@ -27,9 +27,8 @@ class FieldFinder[T: ClassTag](
   logger.debug("Created FieldFinder for " + classTag[T].runtimeClass)
 
   def isMagicObject(m: Method) =
-    m.getReturnType.getName.endsWith("$" + m.getName + "$") && m
-      .getParameterTypes
-      .length == 0
+    m.getReturnType.getName.endsWith("$" + m.getName + "$") &&
+      m.getParameterTypes.length == 0
 
   def typeFilter: Class[_] => Boolean =
     classTag[T].runtimeClass.isAssignableFrom
@@ -60,8 +59,8 @@ class FieldFinder[T: ClassTag](
               .filter { f =>
                 val ret = typeFilter(f.getType)
                 logger.trace(
-                  "typeFilter(" + f
-                    .getType + "); T=" + classTag[T].runtimeClass)
+                  "typeFilter(" + f.getType + "); T=" +
+                    classTag[T].runtimeClass)
                 ret
               }
               .map(f => (deMod(f.getName), f)): _*)
@@ -122,8 +121,8 @@ class FieldFinder[T: ClassTag](
             filter(m => Modifier.isPublic(m.getModifiers))
             . // that are public
             filter(m =>
-              fields.contains(
-                m.getName) && // that are associated with private fields
+              fields
+                .contains(m.getName) && // that are associated with private fields
                 fields(m.getName).getType == m.getReturnType)
             .filter(validActualType) // and have a validated type
 

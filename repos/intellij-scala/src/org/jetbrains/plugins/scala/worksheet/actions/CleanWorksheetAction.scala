@@ -108,12 +108,15 @@ object CleanWorksheetAction {
       .deleteWorksheetEvaluation(node.getPsi.asInstanceOf[ScalaFile])
 
     if (rightDocument != null && !project.isDisposed) {
-      ApplicationManager.getApplication runWriteAction new Runnable {
-        override def run() {
-          rightDocument.setText("")
-          PsiDocumentManager.getInstance(project).commitDocument(rightDocument)
+      ApplicationManager.getApplication runWriteAction
+        new Runnable {
+          override def run() {
+            rightDocument.setText("")
+            PsiDocumentManager
+              .getInstance(project)
+              .commitDocument(rightDocument)
+          }
         }
-      }
     }
   }
 }

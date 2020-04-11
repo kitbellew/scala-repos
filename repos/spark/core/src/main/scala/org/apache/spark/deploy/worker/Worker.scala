@@ -74,8 +74,8 @@ private[deploy] class Worker(
   // For worker and executor IDs
   private def createDateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
   // Send a heartbeat every (heartbeat timeout) / 4 milliseconds
-  private val HEARTBEAT_MILLIS = conf
-    .getLong("spark.worker.timeout", 60) * 1000 / 4
+  private val HEARTBEAT_MILLIS = conf.getLong("spark.worker.timeout", 60) *
+    1000 / 4
 
   // Model retries to connect to the master, after Hadoop's model.
   // The first six attempts to reconnect are in shorter intervals (between 5 and 15 seconds)
@@ -90,12 +90,10 @@ private[deploy] class Worker(
       new Random(UUID.randomUUID.getMostSignificantBits)
     randomNumberGenerator.nextDouble + FUZZ_MULTIPLIER_INTERVAL_LOWER_BOUND
   }
-  private val INITIAL_REGISTRATION_RETRY_INTERVAL_SECONDS = (math.round(
-    10 *
-      REGISTRATION_RETRY_FUZZ_MULTIPLIER))
-  private val PROLONGED_REGISTRATION_RETRY_INTERVAL_SECONDS = (math.round(
-    60
-      * REGISTRATION_RETRY_FUZZ_MULTIPLIER))
+  private val INITIAL_REGISTRATION_RETRY_INTERVAL_SECONDS =
+    (math.round(10 * REGISTRATION_RETRY_FUZZ_MULTIPLIER))
+  private val PROLONGED_REGISTRATION_RETRY_INTERVAL_SECONDS =
+    (math.round(60 * REGISTRATION_RETRY_FUZZ_MULTIPLIER))
 
   private val CLEANUP_ENABLED = conf
     .getBoolean("spark.worker.cleanup.enabled", false)
@@ -412,9 +410,8 @@ private[deploy] class Worker(
       msg match {
         case RegisteredWorker(masterRef, masterWebUiUrl) =>
           logInfo(
-            "Successfully registered with master " + masterRef
-              .address
-              .toSparkURL)
+            "Successfully registered with master " +
+              masterRef.address.toSparkURL)
           registered = true
           changeMaster(masterRef, masterWebUiUrl)
           forwordMessageScheduler.scheduleAtFixedRate(
@@ -504,9 +501,8 @@ private[deploy] class Worker(
 
       case MasterChanged(masterRef, masterWebUiUrl) =>
         logInfo(
-          "Master has changed, new master is at " + masterRef
-            .address
-            .toSparkURL)
+          "Master has changed, new master is at " +
+            masterRef.address.toSparkURL)
         changeMaster(masterRef, masterWebUiUrl)
 
         val execs = executors
@@ -612,7 +608,8 @@ private[deploy] class Worker(
       case KillExecutor(masterUrl, appId, execId) =>
         if (masterUrl != activeMasterUrl) {
           logWarning(
-            "Invalid Master (" + masterUrl + ") attempted to launch executor " + execId)
+            "Invalid Master (" + masterUrl + ") attempted to launch executor " +
+              execId)
         } else {
           val fullId = appId + "/" + execId
           executors.get(fullId) match {
@@ -704,8 +701,8 @@ private[deploy] class Worker(
   }
 
   private def maybeCleanupApplication(id: String): Unit = {
-    val shouldCleanup = finishedApps
-      .contains(id) && !executors.values.exists(_.appId == id)
+    val shouldCleanup = finishedApps.contains(id) &&
+      !executors.values.exists(_.appId == id)
     if (shouldCleanup) {
       finishedApps -= id
       appDirectories
@@ -908,8 +905,7 @@ private[deploy] object Worker extends Logging {
           .collect {
             case (key, value) if key.startsWith(prefix) =>
               s"-D$key=$value"
-          } :+
-        s"-D$useNLC=true"
+          } :+ s"-D$useNLC=true"
       cmd.copy(javaOpts = newJavaOpts)
     } else {
       cmd

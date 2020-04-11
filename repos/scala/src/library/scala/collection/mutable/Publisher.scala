@@ -61,8 +61,7 @@ trait Publisher[Evt] {
     filters
       .keys
       .foreach(sub =>
-        if (!suspended.contains(sub) &&
-            filters.entryExists(sub, p => p(event)))
+        if (!suspended.contains(sub) && filters.entryExists(sub, p => p(event)))
           sub.notify(self, event))
   }
 

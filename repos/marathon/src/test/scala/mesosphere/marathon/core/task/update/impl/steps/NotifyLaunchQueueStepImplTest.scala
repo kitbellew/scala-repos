@@ -32,8 +32,8 @@ class NotifyLaunchQueueStepImplTest
       MarathonTaskStatus(status))
 
     Given("a status update")
-    f.launchQueue.notifyOfTaskUpdate(expectedUpdate) returns Future
-      .successful(None)
+    f.launchQueue.notifyOfTaskUpdate(expectedUpdate) returns
+      Future.successful(None)
 
     When("calling processUpdate")
     f.step

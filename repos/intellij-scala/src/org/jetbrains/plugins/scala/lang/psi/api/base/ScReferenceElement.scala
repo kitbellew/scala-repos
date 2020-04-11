@@ -63,8 +63,8 @@ trait ScReferenceElement
   }
 
   private def patternNeedBackticks(name: String) =
-    name != "" && name.charAt(0).isLower && getParent
-      .isInstanceOf[ScStableReferenceElementPattern]
+    name != "" && name.charAt(0).isLower &&
+      getParent.isInstanceOf[ScStableReferenceElementPattern]
 
   def getElement = this
 
@@ -98,8 +98,8 @@ trait ScReferenceElement
   def isSoft: Boolean = false
 
   def handleElementRename(newElementName: String): PsiElement = {
-    val needBackticks = patternNeedBackticks(newElementName) || ScalaNamesUtil
-      .isKeyword(newElementName)
+    val needBackticks = patternNeedBackticks(newElementName) ||
+      ScalaNamesUtil.isKeyword(newElementName)
     val newName =
       if (needBackticks)
         "`" + newElementName + "`"
@@ -183,9 +183,8 @@ trait ScReferenceElement
               }
             }
 
-            if (!break && td.isInstanceOf[ScClass] && td
-                  .asInstanceOf[ScClass]
-                  .isCase && method.isSynthetic) {
+            if (!break && td.isInstanceOf[ScClass] &&
+                td.asInstanceOf[ScClass].isCase && method.isSynthetic) {
               ScalaPsiUtil.getCompanionModule(td) match {
                 case Some(typeDef) =>
                   return isReferenceTo(typeDef)
@@ -316,9 +315,8 @@ trait ScReferenceElement
             if (usedNames.contains(ref.refName)) {
               ref.bind() match {
                 case Some(r: ScalaResolveResult)
-                    if ref != ScReferenceElement.this && r
-                      .importsUsed
-                      .isEmpty =>
+                    if ref != ScReferenceElement.this &&
+                      r.importsUsed.isEmpty =>
                   reject = true
                   return
                 case _ =>

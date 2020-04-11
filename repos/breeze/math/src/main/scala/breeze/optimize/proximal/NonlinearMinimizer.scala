@@ -151,8 +151,8 @@ class NonlinearMinimizer(
         s := u
         s *= rho
 
-        val epsPrimal =
-          scale + reltol * max(norm(resultState.x), norm(residual))
+        val epsPrimal = scale +
+          reltol * max(norm(resultState.x), norm(residual))
         val epsDual = scale + reltol * norm(s)
 
         if (residualNorm < epsPrimal && sNorm < epsDual || iter > admmIters) {
@@ -331,24 +331,23 @@ object NonlinearMinimizer {
 
     println("Linear Regression")
 
-    val owlqnObj = QuadraticMinimizer.computeObjective(
-      regularizedGram,
-      q,
-      owlqnResult.x) + lambdaL1 * owlqnResult
-      .x
-      .foldLeft(0.0) { (agg, entry) =>
-        agg + abs(entry)
-      }
+    val owlqnObj = QuadraticMinimizer
+      .computeObjective(regularizedGram, q, owlqnResult.x) +
+      lambdaL1 *
+      owlqnResult
+        .x
+        .foldLeft(0.0) { (agg, entry) =>
+          agg + abs(entry)
+        }
     val sparseQpL1Obj =
       sparseQpResult
         .x
         .foldLeft(0.0) { (agg, entry) =>
           agg + abs(entry)
         }
-    val sparseQpObj = QuadraticMinimizer.computeObjective(
-      regularizedGram,
-      q,
-      sparseQpResult.x) + lambdaL1 * sparseQpL1Obj
+    val sparseQpObj = QuadraticMinimizer
+      .computeObjective(regularizedGram, q, sparseQpResult.x) +
+      lambdaL1 * sparseQpL1Obj
     val quadraticCostWithL2 = QuadraticMinimizer.Cost(regularizedGram, q)
 
     init := 0.0
@@ -364,24 +363,23 @@ object NonlinearMinimizer {
         .foldLeft(0.0) { (agg, entry) =>
           agg + abs(entry)
         }
-    val nlSparseObj = QuadraticMinimizer.computeObjective(
-      regularizedGram,
-      q,
-      nlSparseResult.x) + lambdaL1 * nlSparseL1Obj
+    val nlSparseObj = QuadraticMinimizer
+      .computeObjective(regularizedGram, q, nlSparseResult.x) +
+      lambdaL1 * nlSparseL1Obj
 
     init := 0.0
     val nlProx = new NonlinearMinimizer(proximal = ProximalL1(lambdaL1))
     val nlProxStart = System.nanoTime()
     val nlProxResult = nlProx.minimizeAndReturnState(quadraticCostWithL2, init)
     val nlProxTime = System.nanoTime() - nlProxStart
-    val nlProxObj = QuadraticMinimizer.computeObjective(
-      regularizedGram,
-      q,
-      nlProxResult.z) + lambdaL1 * nlProxResult
-      .z
-      .foldLeft(0.0) { (agg, entry) =>
-        agg + abs(entry)
-      }
+    val nlProxObj = QuadraticMinimizer
+      .computeObjective(regularizedGram, q, nlProxResult.z) +
+      lambdaL1 *
+      nlProxResult
+        .z
+        .foldLeft(0.0) { (agg, entry) =>
+          agg + abs(entry)
+        }
 
     println(
       s"owlqn ${owlqnTime / 1e6} ms iters ${owlqnResult
@@ -465,8 +463,8 @@ object NonlinearMinimizer {
     val nlProxLogisticSimplexStart = System.nanoTime()
     val nlProxLogisticSimplexResult = nlProxSimplex
       .minimizeAndReturnState(elasticNetLoss, init)
-    val nlProxLogisticSimplexTime = System
-      .nanoTime() - nlProxLogisticSimplexStart
+    val nlProxLogisticSimplexTime = System.nanoTime() -
+      nlProxLogisticSimplexStart
     val nlProxLogisticSimplexObj =
       elasticNetLoss.calculate(nlProxLogisticSimplexResult.z)._1
 
@@ -512,6 +510,7 @@ object NonlinearMinimizer {
     println(
       s"Objective proximalL1 $proximalL1Obj projectL1 $projectL1Obj owlqn $owlqnLogisticObj")
     println(
-      s"time proximalL1 ${nlLogisticProximalL1Time / 1e6} ms projectL1 ${nlLogisticProjectL1Time / 1e6} ms owlqn ${owlqnLogisticTime / 1e6} ms")
+      s"time proximalL1 ${nlLogisticProximalL1Time / 1e6} ms projectL1 ${nlLogisticProjectL1Time /
+        1e6} ms owlqn ${owlqnLogisticTime / 1e6} ms")
   }
 }

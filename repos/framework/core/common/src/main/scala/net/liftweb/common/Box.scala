@@ -912,7 +912,8 @@ sealed abstract class EmptyBox extends Box[Nothing] with Serializable {
 
   def openOrThrowException(justification: String) =
     throw new NullPointerException(
-      "An Empty Box was opened.  The justification for allowing the openOrThrowException was " + justification)
+      "An Empty Box was opened.  The justification for allowing the openOrThrowException was " +
+        justification)
 
   override def openOr[B >: Nothing](default: => B): B = default
 
@@ -952,7 +953,8 @@ sealed case class Failure(
   override def openOrThrowException(justification: String) =
     throw new NullPointerException(
       "An Failure Box was opened.  Failure Message: " + msg +
-        ".  The justification for allowing the openOrThrowException was " + justification) {
+        ".  The justification for allowing the openOrThrowException was " +
+        justification) {
       override def getCause() = exception openOr null
     }
 
@@ -1103,8 +1105,7 @@ final class ParamFailure[T](
     extends Failure(msg, exception, chain)
     with Serializable {
   override def toString(): String =
-    "ParamFailure(" + msg + ", " + exception +
-      ", " + chain + ", " + param + ")"
+    "ParamFailure(" + msg + ", " + exception + ", " + chain + ", " + param + ")"
 
   override def equals(that: Any): Boolean =
     that match {
@@ -1115,14 +1116,13 @@ final class ParamFailure[T](
     }
 
   override def hashCode(): Int =
-    super.hashCode() + (
-      param match {
+    super.hashCode() +
+      (param match {
         case null =>
           0
         case x =>
           x.hashCode()
-      }
-    )
+      })
 
   override def ~>[T](errorCode: => T): ParamFailure[T] =
     ParamFailure(msg, exception, Full(this), errorCode)

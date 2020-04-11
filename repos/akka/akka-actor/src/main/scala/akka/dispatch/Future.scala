@@ -150,8 +150,8 @@ object Futures {
       predicate: JFunc[T, java.lang.Boolean],
       executor: ExecutionContext): Future[JOption[T]] = {
     implicit val ec = executor
-    Future.find[T](futures.asScala)(predicate.apply(_))(executor) map JOption
-      .fromScalaOption
+    Future.find[T](futures.asScala)(predicate.apply(_))(executor) map
+      JOption.fromScalaOption
   }
 
   /**

@@ -167,8 +167,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
     } data-placement="right">
         Event Timeline
       </a>
-    </span> ++
-      <div id="job-timeline" class="collapsed">
+    </span> ++ <div id="job-timeline" class="collapsed">
       <div class="control-panel">
         <div id="job-timeline-zoom-lock">
           <input type="checkbox"></input>
@@ -274,11 +273,11 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           isFairScheduler = parent.isFairScheduler)
 
       val shouldShowActiveStages = activeStages.nonEmpty
-      val shouldShowPendingStages = !isComplete && pendingOrSkippedStages
-        .nonEmpty
+      val shouldShowPendingStages = !isComplete &&
+        pendingOrSkippedStages.nonEmpty
       val shouldShowCompletedStages = completedStages.nonEmpty
-      val shouldShowSkippedStages = isComplete && pendingOrSkippedStages
-        .nonEmpty
+      val shouldShowSkippedStages = isComplete &&
+        pendingOrSkippedStages.nonEmpty
       val shouldShowFailedStages = failedStages.nonEmpty
 
       val summary: NodeSeq =
@@ -359,44 +358,46 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
       val executorListener = parent.executorListener
       val operationGraphListener = parent.operationGraphListener
 
-      content ++= makeTimeline(
-        activeStages ++ completedStages ++ failedStages,
-        executorListener.executorIdToData,
-        appStartTime)
+      content ++=
+        makeTimeline(
+          activeStages ++ completedStages ++ failedStages,
+          executorListener.executorIdToData,
+          appStartTime)
 
-      content ++= UIUtils.showDagVizForJob(
-        jobId,
-        operationGraphListener.getOperationGraphForJob(jobId))
+      content ++=
+        UIUtils.showDagVizForJob(
+          jobId,
+          operationGraphListener.getOperationGraphForJob(jobId))
 
       if (shouldShowActiveStages) {
-        content ++= <h4 id="active">Active Stages ({
-          activeStages.size
-        })</h4> ++
-          activeStagesTable.toNodeSeq
+        content ++=
+          <h4 id="active">Active Stages ({
+            activeStages.size
+          })</h4> ++ activeStagesTable.toNodeSeq
       }
       if (shouldShowPendingStages) {
-        content ++= <h4 id="pending">Pending Stages ({
-          pendingOrSkippedStages.size
-        })</h4> ++
-          pendingOrSkippedStagesTable.toNodeSeq
+        content ++=
+          <h4 id="pending">Pending Stages ({
+            pendingOrSkippedStages.size
+          })</h4> ++ pendingOrSkippedStagesTable.toNodeSeq
       }
       if (shouldShowCompletedStages) {
-        content ++= <h4 id="completed">Completed Stages ({
-          completedStages.size
-        })</h4> ++
-          completedStagesTable.toNodeSeq
+        content ++=
+          <h4 id="completed">Completed Stages ({
+            completedStages.size
+          })</h4> ++ completedStagesTable.toNodeSeq
       }
       if (shouldShowSkippedStages) {
-        content ++= <h4 id="skipped">Skipped Stages ({
-          pendingOrSkippedStages.size
-        })</h4> ++
-          pendingOrSkippedStagesTable.toNodeSeq
+        content ++=
+          <h4 id="skipped">Skipped Stages ({
+            pendingOrSkippedStages.size
+          })</h4> ++ pendingOrSkippedStagesTable.toNodeSeq
       }
       if (shouldShowFailedStages) {
-        content ++= <h4 id ="failed">Failed Stages ({
-          failedStages.size
-        })</h4> ++
-          failedStagesTable.toNodeSeq
+        content ++=
+          <h4 id ="failed">Failed Stages ({
+            failedStages.size
+          })</h4> ++ failedStagesTable.toNodeSeq
       }
       UIUtils.headerSparkPage(
         s"Details for Job $jobId",

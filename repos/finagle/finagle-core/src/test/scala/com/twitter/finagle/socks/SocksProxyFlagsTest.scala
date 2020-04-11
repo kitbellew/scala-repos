@@ -14,8 +14,8 @@ class SocksProxyFlagsTest extends FunSuite with BeforeAndAfter {
     socksProxyHost.let("localhost") {
       socksProxyPort.let(port) {
         assert(
-          SocksProxyFlags
-            .socksProxy == Some(new InetSocketAddress("localhost", port)))
+          SocksProxyFlags.socksProxy ==
+            Some(new InetSocketAddress("localhost", port)))
       }
     }
   }

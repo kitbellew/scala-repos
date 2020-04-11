@@ -114,15 +114,14 @@ class BalancingDispatcherSpec extends AkkaSpec(BalancingDispatcherSpec.config) {
         .asInstanceOf[ActorCell]
         .actor
         .asInstanceOf[DelayableActor]
-        .invocationCount should be >
-        (
-          slow
-            .underlying
-            .asInstanceOf[ActorCell]
-            .actor
-            .asInstanceOf[DelayableActor]
-            .invocationCount
-          )
+        .invocationCount should
+        be >
+        (slow
+          .underlying
+          .asInstanceOf[ActorCell]
+          .actor
+          .asInstanceOf[DelayableActor]
+          .invocationCount)
       system.stop(slow)
       system.stop(fast)
     }

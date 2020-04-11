@@ -65,17 +65,18 @@ final class Env(
 
 object Env {
 
-  lazy val current: Env = "push" boot new Env(
-    db = lila.db.Env.current,
-    system = lila.common.PlayApp.system,
-    getLightUser = lila.user.Env.current.lightUser,
-    roundSocketHub = lila.hub.Env.current.socket.round,
-    appleCertificate = path =>
-      lila
-        .common
-        .PlayApp
-        .withApp {
-          _.classloader.getResourceAsStream(path)
-        },
-    config = lila.common.PlayApp loadConfig "push")
+  lazy val current: Env = "push" boot
+    new Env(
+      db = lila.db.Env.current,
+      system = lila.common.PlayApp.system,
+      getLightUser = lila.user.Env.current.lightUser,
+      roundSocketHub = lila.hub.Env.current.socket.round,
+      appleCertificate = path =>
+        lila
+          .common
+          .PlayApp
+          .withApp {
+            _.classloader.getResourceAsStream(path)
+          },
+      config = lila.common.PlayApp loadConfig "push")
 }

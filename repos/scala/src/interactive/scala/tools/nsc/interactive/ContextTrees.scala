@@ -65,8 +65,8 @@ trait ContextTrees {
         c.retyping = false
         c
       }
-      locateContextTree(contexts, pos) map locateFinestContextTree map (ct =>
-        sanitizeContext(ct.context))
+      locateContextTree(contexts, pos) map locateFinestContextTree map
+        (ct => sanitizeContext(ct.context))
     }
 
   /** Returns the ContextTree containing `pos`, or the ContextTree positioned just before `pos`,
@@ -141,8 +141,8 @@ trait ContextTrees {
           val hi = contexts.length - 1
           if (contexts(hi).pos precedes cpos)
             contexts += new ContextTree(cpos, context)
-          else if (contexts(hi)
-                     .pos properlyIncludes cpos) // fast path w/o search
+          else if (contexts(hi).pos properlyIncludes
+                     cpos) // fast path w/o search
             addContext(contexts(hi).children, context, cpos)
           else if (cpos precedes contexts(0).pos)
             new ContextTree(cpos, context) +=: contexts
@@ -185,7 +185,8 @@ trait ContextTrees {
                   contexts.insert(hi, new ContextTree(cpos, context))
                 else
                   inform(
-                    "internal error? skewed positions: " + lopos + " !< " + cpos + " !< " + hipos)
+                    "internal error? skewed positions: " + lopos + " !< " +
+                      cpos + " !< " + hipos)
               }
             }
             loop(0, hi)
@@ -196,8 +197,8 @@ trait ContextTrees {
           println(ex)
           ex.printStackTrace()
           println(
-            "failure inserting " + cpos + " into " + contexts + "/" + contexts(
-              contexts.length - 1).pos + "/" +
+            "failure inserting " + cpos + " into " + contexts + "/" +
+              contexts(contexts.length - 1).pos + "/" +
               (contexts(contexts.length - 1).pos includes cpos))
           throw ex
       }

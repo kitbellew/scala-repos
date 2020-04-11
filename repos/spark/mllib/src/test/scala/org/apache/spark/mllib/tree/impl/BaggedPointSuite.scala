@@ -34,8 +34,8 @@ class BaggedPointSuite extends SparkFunSuite with MLlibTestSparkContext {
       .collect()
       .foreach { baggedPoint =>
         assert(
-          baggedPoint.subsampleWeights.size == 1 && baggedPoint
-            .subsampleWeights(0) == 1)
+          baggedPoint.subsampleWeights.size == 1 &&
+            baggedPoint.subsampleWeights(0) == 1)
       }
   }
 

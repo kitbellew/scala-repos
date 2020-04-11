@@ -32,8 +32,7 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
   describe("Netty3Transporter") {
     it("creates a Netty3Transporter instance based on Stack params") {
       val inputParams =
-        Stack.Params.empty +
-          Label("test") +
+        Stack.Params.empty + Label("test") +
           Netty3Transporter.TransportFactory.param.default +
           Transporter.ConnectTimeout(1.seconds) +
           LatencyCompensation.Compensation(12.millis) +
@@ -62,37 +61,34 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
                 inputParams[Transporter.TLSHostname].hostname)))
       assert(transporter.httpProxy == inputParams[Transporter.HttpProxy].sa)
       assert(
-        transporter.httpProxyCredentials == inputParams[Transporter.HttpProxy]
-          .credentials)
+        transporter.httpProxyCredentials ==
+          inputParams[Transporter.HttpProxy].credentials)
       assert(transporter.socksProxy == inputParams[Transporter.SocksProxy].sa)
       assert(
-        transporter
-          .socksUsernameAndPassword == inputParams[Transporter.SocksProxy]
-          .credentials)
+        transporter.socksUsernameAndPassword ==
+          inputParams[Transporter.SocksProxy].credentials)
       assert(
-        transporter.channelReaderTimeout == inputParams[Transport.Liveness]
-          .readTimeout)
+        transporter.channelReaderTimeout ==
+          inputParams[Transport.Liveness].readTimeout)
       assert(
-        transporter.channelWriterTimeout == inputParams[Transport.Liveness]
-          .writeTimeout)
+        transporter.channelWriterTimeout ==
+          inputParams[Transport.Liveness].writeTimeout)
       assert(
-        transporter.channelOptions.get("sendBufferSize") == inputParams[
-          Transport.BufferSizes].send)
+        transporter.channelOptions.get("sendBufferSize") ==
+          inputParams[Transport.BufferSizes].send)
       assert(
-        transporter.channelOptions.get("receiveBufferSize") == inputParams[
-          Transport.BufferSizes].recv)
+        transporter.channelOptions.get("receiveBufferSize") ==
+          inputParams[Transport.BufferSizes].recv)
       assert(
-        transporter.channelOptions.get("keepAlive") == inputParams[
-          Transport.Liveness].keepAlive)
+        transporter.channelOptions.get("keepAlive") ==
+          inputParams[Transport.Liveness].keepAlive)
       assert(
         transporter.channelOptions.get("connectTimeoutMillis").get ==
           inputParams[Transporter.ConnectTimeout].howlong.inMilliseconds +
-            inputParams[LatencyCompensation.Compensation]
-              .howlong
-              .inMilliseconds)
+          inputParams[LatencyCompensation.Compensation].howlong.inMilliseconds)
       assert(
-        transporter.channelSnooper.nonEmpty == inputParams[Transport.Verbose]
-          .enabled)
+        transporter.channelSnooper.nonEmpty ==
+          inputParams[Transport.Verbose].enabled)
     }
 
     it("newPipeline handles unresolved InetSocketAddresses") {

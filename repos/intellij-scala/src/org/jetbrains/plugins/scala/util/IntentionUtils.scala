@@ -152,9 +152,8 @@ object IntentionUtils {
       manager: PsiManager,
       buf: scala.StringBuilder) = {
     val parent =
-      if (expr.getParent != null && expr
-            .getParent
-            .isInstanceOf[ScParenthesisedExpr])
+      if (expr.getParent != null &&
+          expr.getParent.isInstanceOf[ScParenthesisedExpr])
         expr.getParent.getParent
       else
         expr.getParent
@@ -189,9 +188,8 @@ object IntentionUtils {
       val size =
         children(0) match {
           case infix: ScInfixExpr =>
-            infix.operation.nameId.getTextRange.getStartOffset - newExpr
-              .getTextRange
-              .getStartOffset
+            infix.operation.nameId.getTextRange.getStartOffset -
+              newExpr.getTextRange.getStartOffset
           case _ =>
             0
         }
@@ -219,15 +217,15 @@ object IntentionUtils {
       case e: ScLiteral =>
         if (e.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.kTRUE)
           "false"
-        else if (e.getNode.getFirstChildNode.getElementType == ScalaTokenTypes
-                   .kFALSE)
+        else if (e.getNode.getFirstChildNode.getElementType ==
+                   ScalaTokenTypes.kFALSE)
           "true"
         else
           "!" + e.getText
       case _ =>
         val exprText = expression.getText
-        if (ScalaNamesUtil.isOpCharacter(exprText(0)) || expression
-              .isInstanceOf[ScInfixExpr])
+        if (ScalaNamesUtil.isOpCharacter(exprText(0)) ||
+            expression.isInstanceOf[ScInfixExpr])
           "!(" + exprText + ")"
         else
           "!" + expression.getText

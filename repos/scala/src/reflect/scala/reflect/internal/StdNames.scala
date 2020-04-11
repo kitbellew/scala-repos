@@ -63,14 +63,13 @@ trait StdNames {
       * MaxNameLength can therefore be computed as follows:
       */
     val marker = "$$$$"
-    val maxSuffixLength = "$.class"
-      .length + 1 // potential module class suffix and file extension
+    val maxSuffixLength = "$.class".length +
+      1 // potential module class suffix and file extension
     val MaxNameLength = math.min(
       settings.maxClassfileName.value - maxSuffixLength,
-      2 * (
-        settings.maxClassfileName.value - maxSuffixLength - 2 * marker
-          .length - 32
-      ))
+      2 *
+        (settings.maxClassfileName.value - maxSuffixLength - 2 * marker.length -
+          32))
     def toMD5(s: String, edge: Int): String = {
       val prefix = s take edge
       val suffix = s takeRight edge
@@ -121,15 +120,12 @@ trait StdNames {
     val CASE_ACCESSOR: NameType = "$access"
 
     val NESTED_IN: String = "$nestedIn"
-    val NESTED_IN_ANON_CLASS: String = NESTED_IN + ANON_CLASS_NAME
-      .toString
-      .replace("$", "")
-    val NESTED_IN_ANON_FUN: String = NESTED_IN + ANON_FUN_NAME
-      .toString
-      .replace("$", "")
-    val NESTED_IN_LAMBDA: String = NESTED_IN + DELAMBDAFY_LAMBDA_CLASS_NAME
-      .toString
-      .replace("$", "")
+    val NESTED_IN_ANON_CLASS: String = NESTED_IN +
+      ANON_CLASS_NAME.toString.replace("$", "")
+    val NESTED_IN_ANON_FUN: String = NESTED_IN +
+      ANON_FUN_NAME.toString.replace("$", "")
+    val NESTED_IN_LAMBDA: String = NESTED_IN +
+      DELAMBDAFY_LAMBDA_CLASS_NAME.toString.replace("$", "")
 
     /**
       * Ensures that name mangling does not accidentally make a class respond `true` to any of
@@ -317,8 +313,8 @@ trait StdNames {
 
     def dropSingletonName(name: Name): TypeName =
       (name dropRight SINGLETON_SUFFIX.length).toTypeName
-    def singletonName(name: Name): TypeName =
-      (name append SINGLETON_SUFFIX).toTypeName
+    def singletonName(name: Name): TypeName = (name append SINGLETON_SUFFIX)
+      .toTypeName
   }
 
   abstract class TermNames extends Keywords with TermNamesApi {
@@ -331,8 +327,8 @@ trait StdNames {
     val BITMAP_PREFIX = "bitmap$"
     val CHECK_IF_REFUTABLE_STRING = "check$ifrefutable$"
     val DEFAULT_GETTER_STRING = "$default$"
-    val DEFAULT_GETTER_INIT_STRING = NameTransformer
-      .encode("<init>") + DEFAULT_GETTER_STRING
+    val DEFAULT_GETTER_INIT_STRING = NameTransformer.encode("<init>") +
+      DEFAULT_GETTER_STRING
     val DO_WHILE_PREFIX = "doWhile$"
     val EVIDENCE_PARAM_PREFIX = "evidence$"
     val EXCEPTION_RESULT_PREFIX = "exceptionResult"
@@ -416,10 +412,10 @@ trait StdNames {
     def isVariableName(name: Name): Boolean = {
       val first = name.startChar
       (
-        ((first.isLower && first.isLetter) || first == '_')
-        && (name != nme.false_)
-        && (name != nme.true_)
-        && (name != nme.null_)
+        ((first.isLower && first.isLetter) || first == '_') &&
+        (name != nme.false_) &&
+        (name != nme.true_) &&
+        (name != nme.null_)
       )
     }
 
@@ -428,8 +424,8 @@ trait StdNames {
         case raw.NE | raw.LE | raw.GE | EMPTY =>
           false
         case _ =>
-          name.endChar == '=' && name
-            .startChar != '=' && isOperatorPart(name.startChar)
+          name.endChar == '=' && name.startChar != '=' &&
+            isOperatorPart(name.startChar)
       }
 
     private def expandedNameInternal(
@@ -543,12 +539,11 @@ trait StdNames {
       newTermName(LOCALDUMMY_PREFIX + clazz.name + ">")
     def superName(name: Name, mix: Name = EMPTY): TermName =
       newTermName(
-        SUPER_PREFIX_STRING + name + (
-          if (mix.isEmpty)
-            ""
-          else
-            "$" + mix
-        ))
+        SUPER_PREFIX_STRING + name +
+          (if (mix.isEmpty)
+             ""
+           else
+             "$" + mix))
 
     /** The name of an accessor for protected symbols. */
     def protName(name: Name): TermName = newTermName(PROTECTED_PREFIX + name)
@@ -1183,14 +1178,14 @@ trait StdNames {
 
     def newBitmapName(bitmapPrefix: Name, n: Int) = bitmapPrefix append ("" + n)
 
-    val BITMAP_NORMAL: NameType =
-      BITMAP_PREFIX + "" // initialization bitmap for public/protected lazy vals
-    val BITMAP_TRANSIENT: NameType =
-      BITMAP_PREFIX + "trans$" // initialization bitmap for transient lazy vals
-    val BITMAP_CHECKINIT: NameType =
-      BITMAP_PREFIX + "init$" // initialization bitmap for checkinit values
-    val BITMAP_CHECKINIT_TRANSIENT: NameType =
-      BITMAP_PREFIX + "inittrans$" // initialization bitmap for transient checkinit values
+    val BITMAP_NORMAL: NameType = BITMAP_PREFIX +
+      "" // initialization bitmap for public/protected lazy vals
+    val BITMAP_TRANSIENT: NameType = BITMAP_PREFIX +
+      "trans$" // initialization bitmap for transient lazy vals
+    val BITMAP_CHECKINIT: NameType = BITMAP_PREFIX +
+      "init$" // initialization bitmap for checkinit values
+    val BITMAP_CHECKINIT_TRANSIENT: NameType = BITMAP_PREFIX +
+      "inittrans$" // initialization bitmap for transient checkinit values
   }
 
   lazy val typeNames: tpnme.type = tpnme

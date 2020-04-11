@@ -36,17 +36,20 @@ trait BaseLaws[A] extends Laws {
       ASR: AdditiveSemigroup[R]) =
     new SimpleRuleSet(
       name = "metricSpace",
-      "non-negative" → forAll((a1: A, a2: A) =>
-        MSA.distance(a1, a2).sign != Sign.Negative),
+      "non-negative" →
+        forAll((a1: A, a2: A) => MSA.distance(a1, a2).sign != Sign.Negative),
       "identity" → forAll((a: A) => MSA.distance(a, a).sign == Sign.Zero),
-      "equality" → forAll((a1: A, a2: A) =>
-        // generating equal values is hard, and Scalacheck will give up if it can't
-        // hence, not using `==>` here
-        a1 =!= a2 || MSA.distance(a1, a2).sign == Sign.Zero),
-      "symmetry" → forAll((a1: A, a2: A) =>
-        MSA.distance(a1, a2) === MSA.distance(a2, a1)),
-      "triangleInequality" → forAll((a1: A, a2: A, a3: A) =>
-        (MSA.distance(a1, a2) + MSA.distance(a2, a3)) >= MSA.distance(a1, a3)))
+      "equality" →
+        forAll((a1: A, a2: A) =>
+          // generating equal values is hard, and Scalacheck will give up if it can't
+          // hence, not using `==>` here
+          a1 =!= a2 || MSA.distance(a1, a2).sign == Sign.Zero),
+      "symmetry" →
+        forAll((a1: A, a2: A) => MSA.distance(a1, a2) === MSA.distance(a2, a1)),
+      "triangleInequality" →
+        forAll((a1: A, a2: A, a3: A) =>
+          (MSA.distance(a1, a2) + MSA.distance(a2, a3)) >=
+            MSA.distance(a1, a3)))
 
 }
 

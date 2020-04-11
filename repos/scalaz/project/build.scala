@@ -73,8 +73,8 @@ object build extends Build {
     isJSProject := true,
     scalacOptions += {
       val a = (baseDirectory in LocalRootProject).value.toURI.toString
-      val g = "https://raw.githubusercontent.com/scalaz/scalaz/" + tagOrHash
-        .value
+      val g = "https://raw.githubusercontent.com/scalaz/scalaz/" +
+        tagOrHash.value
       s"-P:scalajs:mapSourceURI:$a->$g/"
     }
   )
@@ -103,43 +103,42 @@ object build extends Build {
     organization := "org.scalaz",
     scalaVersion := "2.10.6",
     crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.0-M3"),
-    resolvers ++= (
-      if (scalaVersion.value.endsWith("-SNAPSHOT"))
-        List(Opts.resolver.sonatypeSnapshots)
-      else
-        Nil
-    ),
+    resolvers ++=
+      (if (scalaVersion.value.endsWith("-SNAPSHOT"))
+         List(Opts.resolver.sonatypeSnapshots)
+       else
+         Nil),
     fullResolvers ~= {
       _.filterNot(_.name == "jcenter")
     }, // https://github.com/sbt/sbt/issues/2217
     scalaCheckVersion := "1.12.5",
-    scalacOptions ++= Seq(
-      // contains -language:postfixOps (because 1+ as a parameter to a higher-order function is treated as a postfix op)
-      "-deprecation",
-      "-encoding",
-      "UTF-8",
-      "-feature",
-      "-language:implicitConversions",
-      "-language:higherKinds",
-      "-language:existentials",
-      "-language:postfixOps",
-      "-unchecked"
-    ) ++ (
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 10)) =>
-          scalac210Options
-        case _ =>
-          Seq("-Ybackend:GenBCode", "-Ydelambdafy:method", "-target:jvm-1.8")
-      }
-    ),
+    scalacOptions ++=
+      Seq(
+        // contains -language:postfixOps (because 1+ as a parameter to a higher-order function is treated as a postfix op)
+        "-deprecation",
+        "-encoding",
+        "UTF-8",
+        "-feature",
+        "-language:implicitConversions",
+        "-language:higherKinds",
+        "-language:existentials",
+        "-language:postfixOps",
+        "-unchecked"
+      ) ++
+        (CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, 10)) =>
+            scalac210Options
+          case _ =>
+            Seq("-Ybackend:GenBCode", "-Ydelambdafy:method", "-target:jvm-1.8")
+        }),
     scalacOptions in (Compile, doc) ++= {
       val base = (baseDirectory in LocalRootProject).value.getAbsolutePath
       Seq(
         "-sourcepath",
         base,
         "-doc-source-url",
-        "https://github.com/scalaz/scalaz/tree/" + tagOrHash
-          .value + "€{FILE_PATH}.scala")
+        "https://github.com/scalaz/scalaz/tree/" + tagOrHash.value +
+          "€{FILE_PATH}.scala")
     },
     // retronym: I was seeing intermittent heap exhaustion in scalacheck based tests, so opting for determinism.
     parallelExecution in Test := false,
@@ -170,15 +169,16 @@ object build extends Build {
             .map(_.createOrUpdate(dir, streams.value.log))
         }
     },
-    checkGenTypeClasses <<= genTypeClasses.map { classes =>
-      if (classes.exists(_._1 != FileStatus.NoChange))
-        sys.error(
-          classes
-            .groupBy(_._1)
-            .filterKeys(_ != FileStatus.NoChange)
-            .mapValues(_.map(_._2))
-            .toString)
-    },
+    checkGenTypeClasses <<=
+      genTypeClasses.map { classes =>
+        if (classes.exists(_._1 != FileStatus.NoChange))
+          sys.error(
+            classes
+              .groupBy(_._1)
+              .filterKeys(_ != FileStatus.NoChange)
+              .mapValues(_.map(_._2))
+              .toString)
+      },
     typeClasses := Seq(),
     genToSyntax <<= typeClasses map { (tcs: Seq[TypeClass]) =>
       val objects = tcs
@@ -186,43 +186,43 @@ object build extends Build {
           "object %s extends To%sSyntax"
             .format(Util.initLower(tc.name), tc.name))
         .mkString("\n")
-      val all = "object all extends " + tcs
-        .map(tc => "To%sSyntax".format(tc.name))
-        .mkString(" with ")
+      val all = "object all extends " +
+        tcs.map(tc => "To%sSyntax".format(tc.name)).mkString(" with ")
       objects + "\n\n" + all
     },
     typeClassTree <<= typeClasses map { tcs =>
       tcs.map(_.doc).mkString("\n")
     },
-    showDoc in Compile <<= (doc in Compile, target in doc in Compile) map {
-      (_, out) =>
+    showDoc in Compile <<=
+      (doc in Compile, target in doc in Compile) map { (_, out) =>
         val index = out / "index.html"
         if (index.exists())
           Desktop.getDesktop.open(out / "index.html")
-    },
+      },
     credentialsSetting,
     publishSetting,
     publishArtifact in Test := false,
     // adapted from sbt-release defaults
     // (performs `publish-signed` instead of `publish`)
-    releaseProcess := Seq[ReleaseStep](
-      checkSnapshotDependencies,
-      inquireVersions,
-      runTest,
-      setReleaseVersion,
-      commitReleaseVersion,
-      tagRelease,
-      publishSignedArtifacts,
-      setNextVersion,
-      commitNextVersion,
-      pushChanges
-    ),
+    releaseProcess :=
+      Seq[ReleaseStep](
+        checkSnapshotDependencies,
+        inquireVersions,
+        runTest,
+        setReleaseVersion,
+        commitReleaseVersion,
+        tagRelease,
+        publishSignedArtifacts,
+        setNextVersion,
+        commitNextVersion,
+        pushChanges
+      ),
     releaseTagName := tagName.value,
     pomIncludeRepository := { x =>
       false
     },
-    pomExtra := (
-      <url>http://scalaz.org</url>
+    pomExtra :=
+      (<url>http://scalaz.org</url>
         <licenses>
           <license>
             <name>BSD-style</name>
@@ -262,15 +262,15 @@ object build extends Build {
               </developer>
         }
       }
-        </developers>
-    ),
+        </developers>),
     // kind-projector plugin
     resolvers += Resolver.sonatypeRepo("releases"),
     addCompilerPlugin(
       "org.spire-math" % "kind-projector" % "0.7.1" cross CrossVersion.binary)
-  ) ++ osgiSettings ++ Seq[Sett](
-    OsgiKeys.additionalHeaders := Map(
-      "-removeheaders" -> "Include-Resource,Private-Package"))
+  ) ++ osgiSettings ++
+    Seq[Sett](
+      OsgiKeys.additionalHeaders :=
+        Map("-removeheaders" -> "Include-Resource,Private-Package"))
 
   private[this] lazy val jsProjects = Seq[ProjectReference](
     coreJS,
@@ -291,15 +291,17 @@ object build extends Build {
   lazy val scalaz = Project(
     id = "scalaz",
     base = file("."),
-    settings = standardSettings ++ unidocSettings ++ Seq[Sett](
-      artifacts <<= Classpaths.artifactDefs(Seq(packageDoc in Compile)),
-      packagedArtifacts <<= Classpaths.packaged(Seq(packageDoc in Compile)),
-      unidocProjectFilter in (ScalaUnidoc, unidoc) := {
-        jsProjects.foldLeft(inAnyProject)((acc, a) => acc -- inProjects(a))
-      }
-    ) ++ Defaults.packageTaskSettings(
-      packageDoc in Compile,
-      (unidoc in Compile).map(_.flatMap(Path.allSubpaths))),
+    settings = standardSettings ++ unidocSettings ++
+      Seq[Sett](
+        artifacts <<= Classpaths.artifactDefs(Seq(packageDoc in Compile)),
+        packagedArtifacts <<= Classpaths.packaged(Seq(packageDoc in Compile)),
+        unidocProjectFilter in (ScalaUnidoc, unidoc) := {
+          jsProjects.foldLeft(inAnyProject)((acc, a) => acc -- inProjects(a))
+        }
+      ) ++
+      Defaults.packageTaskSettings(
+        packageDoc in Compile,
+        (unidoc in Compile).map(_.flatMap(Path.allSubpaths))),
     aggregate = jvmProjects ++ jsProjects
   )
 
@@ -316,9 +318,10 @@ object build extends Build {
     .settings(standardSettings: _*)
     .settings(
       name := "scalaz-core",
-      sourceGenerators in Compile <+= (sourceManaged in Compile) map { dir =>
-        Seq(GenerateTupleW(dir), TupleNInstances(dir))
-      },
+      sourceGenerators in Compile <+=
+        (sourceManaged in Compile) map { dir =>
+          Seq(GenerateTupleW(dir), TupleNInstances(dir))
+        },
       buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion),
       buildInfoPackage := "scalaz",
       buildInfoObject := "ScalazBuildInfo",
@@ -327,15 +330,18 @@ object build extends Build {
     )
     .enablePlugins(sbtbuildinfo.BuildInfoPlugin)
     .jsSettings(
-      scalajsProjectSettings ++ Seq(
-        libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.1.0"): _*)
+      scalajsProjectSettings ++
+        Seq(
+          libraryDependencies +=
+            "org.scala-js" %%% "scalajs-java-time" % "0.1.0"): _*)
     .jvmSettings(
-      libraryDependencies ++= PartialFunction
-        .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-          case Some((2, 11)) =>
-            "org.scala-lang.modules" %% "scala-java8-compat" % "0.7.0"
-        }
-        .toList,
+      libraryDependencies ++=
+        PartialFunction
+          .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
+            case Some((2, 11)) =>
+              "org.scala-lang.modules" %% "scala-java8-compat" % "0.7.0"
+          }
+          .toList,
       typeClasses := TypeClass.core
     )
 
@@ -347,12 +353,13 @@ object build extends Build {
   lazy val concurrent = Project(
     id = "concurrent",
     base = file("concurrent"),
-    settings = standardSettings ++ Seq(
-      name := ConcurrentName,
-      typeClasses := TypeClass.concurrent,
-      osgiExport("scalaz.concurrent"),
-      OsgiKeys.importPackage := Seq("javax.swing;resolution:=optional", "*")
-    ),
+    settings = standardSettings ++
+      Seq(
+        name := ConcurrentName,
+        typeClasses := TypeClass.concurrent,
+        osgiExport("scalaz.concurrent"),
+        OsgiKeys.importPackage := Seq("javax.swing;resolution:=optional", "*")
+      ),
     dependencies = Seq(coreJVM, effectJVM)
   )
 
@@ -383,9 +390,8 @@ object build extends Build {
     id = "example",
     base = file("example"),
     dependencies = Seq(coreJVM, iterateeJVM, concurrent),
-    settings = standardSettings ++ Seq[Sett](
-      name := "scalaz-example",
-      publishArtifact := false)
+    settings = standardSettings ++
+      Seq[Sett](name := "scalaz-example", publishArtifact := false)
   )
 
   lazy val scalacheckBinding = CrossProject(
@@ -395,8 +401,8 @@ object build extends Build {
     .settings(standardSettings: _*)
     .settings(
       name := "scalaz-scalacheck-binding",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion
-        .value,
+      libraryDependencies +=
+        "org.scalacheck" %%% "scalacheck" % scalaCheckVersion.value,
       osgiExport("scalaz.scalacheck"))
     .dependsOn(core, iteratee)
     .jvmConfigure(_ dependsOn concurrent)
@@ -411,8 +417,8 @@ object build extends Build {
     .settings(
       name := "scalaz-tests",
       publishArtifact := false,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion
-        .value % "test")
+      libraryDependencies +=
+        "org.scalacheck" %%% "scalacheck" % scalaCheckVersion.value % "test")
     .dependsOn(core, effect, iteratee, scalacheckBinding)
     .jvmConfigure(_ dependsOn concurrent)
     .jsSettings(scalajsProjectSettings: _*)
@@ -421,18 +427,18 @@ object build extends Build {
   lazy val testsJVM = tests.jvm
   lazy val testsJS = tests.js
 
-  lazy val publishSetting = publishTo <<= (version).apply { v =>
-    val nexus = "https://oss.sonatype.org/"
-    if (v.trim.endsWith("SNAPSHOT"))
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases" at nexus + "service/local/staging/deploy/maven2")
-  }
+  lazy val publishSetting = publishTo <<=
+    (version).apply { v =>
+      val nexus = "https://oss.sonatype.org/"
+      if (v.trim.endsWith("SNAPSHOT"))
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    }
 
   lazy val credentialsSetting = credentials += {
-    Seq("build.publish.user", "build.publish.password") map sys
-      .props
-      .get match {
+    Seq("build.publish.user", "build.publish.password") map
+      sys.props.get match {
       case Seq(Some(user), Some(pass)) =>
         Credentials(
           "Sonatype Nexus Repository Manager",

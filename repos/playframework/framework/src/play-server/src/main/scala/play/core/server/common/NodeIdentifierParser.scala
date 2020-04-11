@@ -65,12 +65,13 @@ private[common] class NodeIdentifierParser(version: ForwardedHeaderVersion)
 
   private lazy val obfnode = regex("_[\\p{Alnum}\\._-]+".r)
 
-  private lazy val nodeport = (port | obfport) ^^ {
-    case x: Int =>
-      PortNumber(x)
-    case x =>
-      ObfuscatedPort(x.toString)
-  }
+  private lazy val nodeport =
+    (port | obfport) ^^ {
+      case x: Int =>
+        PortNumber(x)
+      case x =>
+        ObfuscatedPort(x.toString)
+    }
 
   private lazy val port = regex("\\d{1,5}".r) ^? {
     case x if x.toInt <= 65535 =>

@@ -176,22 +176,20 @@ class RangeAssignor() extends PartitionAssignor with Logging {
       val nConsumersWithExtraPart = curPartitions.size % curConsumers.size
 
       info(
-        "Consumer " + ctx
-          .consumerId + " rebalancing the following partitions: " + curPartitions +
+        "Consumer " + ctx.consumerId +
+          " rebalancing the following partitions: " + curPartitions +
           " for topic " + topic + " with consumers: " + curConsumers)
 
       for (consumerThreadId <- curConsumers) {
         val myConsumerPosition = curConsumers.indexOf(consumerThreadId)
         assert(myConsumerPosition >= 0)
-        val startPart =
-          nPartsPerConsumer * myConsumerPosition + myConsumerPosition
-            .min(nConsumersWithExtraPart)
-        val nParts = nPartsPerConsumer + (
-          if (myConsumerPosition + 1 > nConsumersWithExtraPart)
-            0
-          else
-            1
-        )
+        val startPart = nPartsPerConsumer * myConsumerPosition +
+          myConsumerPosition.min(nConsumersWithExtraPart)
+        val nParts = nPartsPerConsumer +
+          (if (myConsumerPosition + 1 > nConsumersWithExtraPart)
+             0
+           else
+             1)
 
         /**
           *   Range-partition the sorted partitions to consumers for better locality.
@@ -199,7 +197,8 @@ class RangeAssignor() extends PartitionAssignor with Logging {
           */
         if (nParts <= 0)
           warn(
-            "No broker partitions consumed by consumer thread " + consumerThreadId + " for topic " + topic)
+            "No broker partitions consumed by consumer thread " +
+              consumerThreadId + " for topic " + topic)
         else {
           for (i <- startPart until startPart + nParts) {
             val partition = curPartitions(i)
@@ -208,9 +207,8 @@ class RangeAssignor() extends PartitionAssignor with Logging {
             // record the partition ownership decision
             val assignmentForConsumer = partitionAssignment
               .getAndMaybePut(consumerThreadId.consumer)
-            assignmentForConsumer += (
-              TopicAndPartition(topic, partition) -> consumerThreadId
-            )
+            assignmentForConsumer +=
+              (TopicAndPartition(topic, partition) -> consumerThreadId)
           }
         }
       }

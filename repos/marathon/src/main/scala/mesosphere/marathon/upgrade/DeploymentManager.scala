@@ -71,18 +71,20 @@ class DeploymentManager(
         case _ =>
           log.info(
             s"Conflicting deployments for deployment ${plan.id} have been canceled")
-          scheduler.schedulerActor ! ConflictingDeploymentsCanceled(
-            plan.id,
-            if (conflictingDeployments.nonEmpty) {
-              conflictingDeployments.map(_.plan).to[Seq]
-            } else
-              Seq(plan))
+          scheduler.schedulerActor !
+            ConflictingDeploymentsCanceled(
+              plan.id,
+              if (conflictingDeployments.nonEmpty) {
+                conflictingDeployments.map(_.plan).to[Seq]
+              } else
+                Seq(plan))
       }
 
     case CancelAllDeployments =>
       for ((_, DeploymentInfo(ref, _)) <- runningDeployments)
-        ref ! Cancel(
-          new DeploymentCanceledException("The upgrade has been cancelled"))
+        ref !
+          Cancel(
+            new DeploymentCanceledException("The upgrade has been cancelled"))
       runningDeployments.clear()
       deploymentStatus.clear()
 
@@ -91,12 +93,19 @@ class DeploymentManager(
 
       runningDeployments.get(id) match {
         case Some(info) =>
-          info.ref ! Cancel(
-            new DeploymentCanceledException("The upgrade has been cancelled"))
+          info.ref !
+            Cancel(
+              new DeploymentCanceledException("The upgrade has been cancelled"))
         case None =>
-          origSender ! DeploymentFailed(
-            DeploymentPlan(id, Group.empty, Group.empty, Nil, Timestamp.now()),
-            new DeploymentCanceledException("The upgrade has been cancelled"))
+          origSender !
+            DeploymentFailed(
+              DeploymentPlan(
+                id,
+                Group.empty,
+                Group.empty,
+                Nil,
+                Timestamp.now()),
+              new DeploymentCanceledException("The upgrade has been cancelled"))
       }
 
     case msg @ DeploymentFinished(plan) =>
@@ -125,8 +134,10 @@ class DeploymentManager(
       deploymentStatus += stepInfo.plan.id -> stepInfo
 
     case _: PerformDeployment =>
-      sender() ! Status.Failure(
-        new ConcurrentTaskUpgradeException("Deployment is already in progress"))
+      sender() !
+        Status.Failure(
+          new ConcurrentTaskUpgradeException(
+            "Deployment is already in progress"))
 
     case RetrieveRunningDeployments =>
       sender() ! RunningDeployments(deploymentStatus.values.to[Seq])

@@ -43,10 +43,8 @@ final class QaApi(
           editedAt = None
         )
 
-        (questionColl insert q) >>
-          tag.clearCache >>
-          relation.clearCache >>-
-          notifier.createQuestion(q, user) inject q
+        (questionColl insert q) >> tag.clearCache >>
+          relation.clearCache >>- notifier.createQuestion(q, user) inject q
       }
 
     def edit(data: QuestionData, id: QuestionId): Fu[Option[Question]] =
@@ -56,8 +54,7 @@ final class QaApi(
             q.copy(title = data.title, body = data.body, tags = data.tags)
               .editNow
           questionColl.update(BSONDocument("_id" -> q2.id), q2) >>
-            tag.clearCache >>
-            relation.clearCache inject q2.some
+            tag.clearCache >> relation.clearCache inject q2.some
         }
       }
 
@@ -134,8 +131,8 @@ final class QaApi(
           val newVote = q.vote.add(user.id, v)
           questionColl.update(
             BSONDocument("_id" -> q.id),
-            BSONDocument(
-              "$set" -> BSONDocument("vote" -> newVote))) inject newVote.some
+            BSONDocument("$set" -> BSONDocument("vote" -> newVote))) inject
+            newVote.some
         }
       }
 
@@ -154,16 +151,15 @@ final class QaApi(
         .update(
           BSONDocument("_id" -> id),
           BSONDocument(
-            "$set" -> BSONDocument(
-              "answers" -> BSONInteger(nb),
-              "updatedAt" -> DateTime.now)))
+            "$set" ->
+              BSONDocument(
+                "answers" -> BSONInteger(nb),
+                "updatedAt" -> DateTime.now)))
         .void
 
     def remove(id: QuestionId) =
       questionColl.remove(BSONDocument("_id" -> id)) >>
-        (answer removeByQuestion id) >>
-        tag.clearCache >>
-        relation.clearCache
+        (answer removeByQuestion id) >> tag.clearCache >> relation.clearCache
 
     def removeComment(id: QuestionId, c: CommentId) =
       questionColl.update(
@@ -209,12 +205,14 @@ final class QaApi(
       answerColl.find(BSONDocument("_id" -> id)).one[Answer]
 
     def accept(q: Question, a: Answer) =
-      (question accept q) >> answerColl.update(
-        BSONDocument("questionId" -> q.id),
-        BSONDocument("$unset" -> BSONDocument("acceptedAt" -> true)),
-        multi = true) >> answerColl.update(
-        BSONDocument("_id" -> a.id),
-        BSONDocument("$set" -> BSONDocument("acceptedAt" -> DateTime.now)))
+      (question accept q) >>
+        answerColl.update(
+          BSONDocument("questionId" -> q.id),
+          BSONDocument("$unset" -> BSONDocument("acceptedAt" -> true)),
+          multi = true) >>
+        answerColl.update(
+          BSONDocument("_id" -> a.id),
+          BSONDocument("$set" -> BSONDocument("acceptedAt" -> DateTime.now)))
 
     def popular(questionId: QuestionId): Fu[List[Answer]] =
       answerColl
@@ -226,9 +224,10 @@ final class QaApi(
     def zipWithQuestions(answers: List[Answer]): Fu[List[AnswerWithQuestion]] =
       question.findByIds(answers.map(_.questionId)) map { qs =>
         answers flatMap { a =>
-          qs find (_.id == a.questionId) map {
-            AnswerWithQuestion(a, _)
-          }
+          qs find
+            (_.id == a.questionId) map {
+              AnswerWithQuestion(a, _)
+            }
         }
       }
 
@@ -243,8 +242,8 @@ final class QaApi(
           val newVote = a.vote.add(user.id, v)
           answerColl.update(
             BSONDocument("_id" -> a.id),
-            BSONDocument(
-              "$set" -> BSONDocument("vote" -> newVote))) inject newVote.some
+            BSONDocument("$set" -> BSONDocument("vote" -> newVote))) inject
+            newVote.some
         }
       }
 

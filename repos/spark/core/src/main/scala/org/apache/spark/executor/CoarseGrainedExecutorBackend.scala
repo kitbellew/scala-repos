@@ -282,8 +282,8 @@ private[spark] object CoarseGrainedExecutorBackend extends Logging {
       }
     }
 
-    if (driverUrl == null || executorId == null || hostname == null || cores <= 0 ||
-        appId == null) {
+    if (driverUrl == null || executorId == null || hostname == null ||
+        cores <= 0 || appId == null) {
       printUsageAndExit()
     }
 

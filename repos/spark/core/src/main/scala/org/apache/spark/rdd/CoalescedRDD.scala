@@ -266,7 +266,8 @@ private class PartitionCoalescer(
   def addPartToPGroup(part: Partition, pgroup: PartitionGroup): Boolean = {
     if (!initialHash.contains(part)) {
       pgroup.arr += part // already assign this element
-      initialHash += part // needed to avoid assigning partitions to multiple buckets
+      initialHash +=
+        part // needed to avoid assigning partitions to multiple buckets
       true
     } else {
       false
@@ -291,8 +292,8 @@ private class PartitionCoalescer(
     noLocality = false
 
     // number of iterations needed to be certain that we've seen most preferred locations
-    val expectedCoupons2 =
-      2 * (math.log(targetLen) * targetLen + targetLen + 0.5).toInt
+    val expectedCoupons2 = 2 *
+      (math.log(targetLen) * targetLen + targetLen + 0.5).toInt
     var numCreated = 0
     var tries = 0
 
@@ -314,15 +315,15 @@ private class PartitionCoalescer(
       }
     }
 
-    while (numCreated < targetLen) { // if we don't have enough partition groups, create duplicates
+    while (numCreated <
+             targetLen) { // if we don't have enough partition groups, create duplicates
       var (nxt_replica, nxt_part) = rotIt.next()
       val pgroup = PartitionGroup(nxt_replica)
       groupArr += pgroup
       groupHash.getOrElseUpdate(nxt_replica, ArrayBuffer()) += pgroup
       var tries = 0
-      while (!addPartToPGroup(
-               nxt_part,
-               pgroup) && tries < targetLen) { // ensure at least one part
+      while (!addPartToPGroup(nxt_part, pgroup) &&
+             tries < targetLen) { // ensure at least one part
         nxt_part = rotIt.next()._2
         tries += 1
       }
@@ -362,8 +363,8 @@ private class PartitionCoalescer(
 
     val prefPartActual = prefPart.get
 
-    if (minPowerOfTwo.size + slack <= prefPartActual
-          .size) { // more imbalance than the slack allows
+    if (minPowerOfTwo.size + slack <=
+          prefPartActual.size) { // more imbalance than the slack allows
       minPowerOfTwo // prefer balance over locality
     } else {
       prefPartActual // prefer locality over balance
@@ -378,8 +379,8 @@ private class PartitionCoalescer(
         }
       } else { // no locality available, then simply split partitions based on positions in array
         for (i <- 0 until maxPartitions) {
-          val rangeStart =
-            ((i.toLong * prev.partitions.length) / maxPartitions).toInt
+          val rangeStart = ((i.toLong * prev.partitions.length) / maxPartitions)
+            .toInt
           val rangeEnd =
             (((i.toLong + 1) * prev.partitions.length) / maxPartitions).toInt
           (rangeStart until rangeEnd).foreach { j =>

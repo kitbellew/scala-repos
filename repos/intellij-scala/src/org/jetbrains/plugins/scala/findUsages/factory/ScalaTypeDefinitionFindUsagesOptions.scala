@@ -24,8 +24,8 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
       case other: ScalaTypeDefinitionFindUsagesOptions =>
         if (!super.equals(o))
           return false
-        if (other
-              .isImplementingTypeDefinitions != isImplementingTypeDefinitions)
+        if (other.isImplementingTypeDefinitions !=
+              isImplementingTypeDefinitions)
           return false
         if (other.isMembersUsages != isMembersUsages)
           return false
@@ -39,24 +39,21 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
 
   override def hashCode(): Int = {
     var res = super.hashCode()
-    res = 31 * res + (
-      if (isImplementingTypeDefinitions)
-        1
-      else
-        0
-    )
-    res = 31 * res + (
-      if (isMembersUsages)
-        1
-      else
-        0
-    )
-    res = 31 * res + (
-      if (isSearchCompanionModule)
-        1
-      else
-        0
-    )
+    res = 31 * res +
+      (if (isImplementingTypeDefinitions)
+         1
+       else
+         0)
+    res = 31 * res +
+      (if (isMembersUsages)
+         1
+       else
+         0)
+    res = 31 * res +
+      (if (isSearchCompanionModule)
+         1
+       else
+         0)
     res
   }
 

@@ -75,8 +75,8 @@ class WeightedPageRankFromMatrix(args: Args) extends Job(args) {
     val diff = TypedTsv[Double](diffLoc).toIterator.next
 
     if (currentIteration + 1 < maxIterations && diff > convergenceThreshold) {
-      val newArgs =
-        args + ("currentIteration", Some((currentIteration + 1).toString))
+      val newArgs = args +
+        ("currentIteration", Some((currentIteration + 1).toString))
       Some(clone(newArgs))
     } else {
       None

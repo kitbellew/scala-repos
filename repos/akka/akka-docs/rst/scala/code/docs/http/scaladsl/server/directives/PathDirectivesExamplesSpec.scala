@@ -69,21 +69,25 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
         }
 
     // tests:
-    Get("/") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/") ~> route ~>
+      check {
+        handled shouldEqual false
+      }
 
-    Get("/foo") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo"
-    }
+    Get("/foo") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/foo"
+      }
 
-    Get("/foo/bar") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo/bar"
-    }
+    Get("/foo/bar") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/foo/bar"
+      }
 
-    Get("/ball/1337") ~> route ~> check {
-      responseAs[String] shouldEqual "odd ball"
-    }
+    Get("/ball/1337") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "odd ball"
+      }
   }
 
   "pathEnd-" in {
@@ -98,17 +102,20 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/foo") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo"
-    }
+    Get("/foo") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/foo"
+      }
 
-    Get("/foo/") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/foo/") ~> route ~>
+      check {
+        handled shouldEqual false
+      }
 
-    Get("/foo/bar") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo/bar"
-    }
+    Get("/foo/bar") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/foo/bar"
+      }
   }
 
   "pathEndOrSingleSlash-" in {
@@ -123,17 +130,20 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/foo") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo"
-    }
+    Get("/foo") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/foo"
+      }
 
-    Get("/foo/") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo"
-    }
+    Get("/foo/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/foo"
+      }
 
-    Get("/foo/bar") ~> route ~> check {
-      responseAs[String] shouldEqual "/foo/bar"
-    }
+    Get("/foo/bar") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/foo/bar"
+      }
   }
 
   "pathPrefix-" in {
@@ -152,17 +162,20 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/") ~> route ~>
+      check {
+        handled shouldEqual false
+      }
 
-    Get("/ball") ~> route ~> check {
-      responseAs[String] shouldEqual "/ball"
-    }
+    Get("/ball") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/ball"
+      }
 
-    Get("/ball/1337") ~> route ~> check {
-      responseAs[String] shouldEqual "odd ball"
-    }
+    Get("/ball/1337") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "odd ball"
+      }
   }
 
   "pathPrefixTest-" in {
@@ -177,13 +190,15 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/foo/doo") ~> route ~> check {
-      responseAs[String] shouldEqual "/doo"
-    }
+    Get("/foo/doo") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/doo"
+      }
 
-    Get("/bar/yes") ~> route ~> check {
-      responseAs[String] shouldEqual "/yes"
-    }
+    Get("/bar/yes") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/yes"
+      }
   }
 
   "pathSingleSlash-" in {
@@ -205,21 +220,25 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
         }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "root"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "root"
+      }
 
-    Get("/ball") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/ball") ~> route ~>
+      check {
+        handled shouldEqual false
+      }
 
-    Get("/ball/") ~> route ~> check {
-      responseAs[String] shouldEqual "/ball/"
-    }
+    Get("/ball/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/ball/"
+      }
 
-    Get("/ball/1337") ~> route ~> check {
-      responseAs[String] shouldEqual "odd ball"
-    }
+    Get("/ball/1337") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "odd ball"
+      }
   }
 
   "pathSuffix-" in {
@@ -234,29 +253,32 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/start/middle/end") ~> route ~> check {
-      responseAs[String] shouldEqual "/middle/"
-    }
+    Get("/start/middle/end") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/middle/"
+      }
 
-    Get("/start/something/barbaz/foo") ~> route ~> check {
-      responseAs[String] shouldEqual "/something/"
-    }
+    Get("/start/something/barbaz/foo") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/something/"
+      }
   }
 
   "pathSuffixTest-" in {
     val route =
       pathSuffixTest(Slash) {
         complete("slashed")
-      } ~
-        complete("unslashed")
+      } ~ complete("unslashed")
 
     // tests:
-    Get("/foo/") ~> route ~> check {
-      responseAs[String] shouldEqual "slashed"
-    }
-    Get("/foo") ~> route ~> check {
-      responseAs[String] shouldEqual "unslashed"
-    }
+    Get("/foo/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "slashed"
+      }
+    Get("/foo") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "unslashed"
+      }
   }
 
   "rawPathPrefix-" in {
@@ -271,13 +293,15 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/foobar/baz") ~> route ~> check {
-      responseAs[String] shouldEqual "/baz"
-    }
+    Get("/foobar/baz") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/baz"
+      }
 
-    Get("/foodoo/baz") ~> route ~> check {
-      responseAs[String] shouldEqual "/baz"
-    }
+    Get("/foodoo/baz") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "/baz"
+      }
   }
 
   "rawPathPrefixTest-" in {
@@ -289,13 +313,15 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/foobar") ~> route ~> check {
-      responseAs[String] shouldEqual "bar"
-    }
+    Get("/foobar") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "bar"
+      }
 
-    Get("/foobaz") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/foobaz") ~> route ~>
+      check {
+        handled shouldEqual false
+      }
   }
 
   "redirectToTrailingSlashIfMissing-0" in {
@@ -323,32 +349,36 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     // Redirected:
-    Get("/foo") ~> route ~> check {
-      status shouldEqual StatusCodes.MovedPermanently
+    Get("/foo") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.MovedPermanently
 
-      // results in nice human readable message,
-      // in case the redirect can't be followed automatically:
-      responseAs[String] shouldEqual {
-        "This and all future requests should be directed to " +
-          "<a href=\"http://example.com/foo/\">this URI</a>."
+        // results in nice human readable message,
+        // in case the redirect can't be followed automatically:
+        responseAs[String] shouldEqual {
+          "This and all future requests should be directed to " +
+            "<a href=\"http://example.com/foo/\">this URI</a>."
+        }
       }
-    }
 
     // Properly handled:
-    Get("/foo/") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-      responseAs[String] shouldEqual "OK"
-    }
+    Get("/foo/") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.OK
+        responseAs[String] shouldEqual "OK"
+      }
 
     // MISTAKE! will never match - reason explained in routes
-    Get("/bad-1/") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/bad-1/") ~> route ~>
+      check {
+        handled shouldEqual false
+      }
 
     // MISTAKE! will never match - reason explained in routes
-    Get("/bad-2/") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/bad-2/") ~> route ~>
+      check {
+        handled shouldEqual false
+      }
   }
 
   "redirectToNoTrailingSlashIfPresent-0" in {
@@ -373,26 +403,29 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     // Redirected:
-    Get("/foo/") ~> route ~> check {
-      status shouldEqual StatusCodes.MovedPermanently
+    Get("/foo/") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.MovedPermanently
 
-      // results in nice human readable message,
-      // in case the redirect can't be followed automatically:
-      responseAs[String] shouldEqual {
-        "This and all future requests should be directed to " +
-          "<a href=\"http://example.com/foo\">this URI</a>."
+        // results in nice human readable message,
+        // in case the redirect can't be followed automatically:
+        responseAs[String] shouldEqual {
+          "This and all future requests should be directed to " +
+            "<a href=\"http://example.com/foo\">this URI</a>."
+        }
       }
-    }
 
     // Properly handled:
-    Get("/foo") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-      responseAs[String] shouldEqual "OK"
-    }
+    Get("/foo") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.OK
+        responseAs[String] shouldEqual "OK"
+      }
 
     // MISTAKE! will never match - reason explained in routes
-    Get("/bad") ~> route ~> check {
-      handled shouldEqual false
-    }
+    Get("/bad") ~> route ~>
+      check {
+        handled shouldEqual false
+      }
   }
 }

@@ -493,8 +493,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
         assertResult(df.schema) {
           StructType(
             StructField("a", BooleanType, nullable = true) ::
-              StructField("b", IntegerType, nullable = true) ::
-              Nil)
+              StructField("b", IntegerType, nullable = true) :: Nil)
         }
       }
     }

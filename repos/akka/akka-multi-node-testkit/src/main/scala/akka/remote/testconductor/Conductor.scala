@@ -134,11 +134,8 @@ trait Conductor {
       rateMBit: Double): Future[Done] = {
     import Settings.QueryTimeout
     requireTestConductorTranport()
-    controller ? Throttle(
-      node,
-      target,
-      direction,
-      rateMBit.toFloat) mapTo classTag[Done]
+    controller ? Throttle(node, target, direction, rateMBit.toFloat) mapTo
+      classTag[Done]
   }
 
   /**
@@ -224,11 +221,11 @@ trait Conductor {
     import system.dispatcher
     // the recover is needed to handle ClientDisconnectedException exception,
     // which is normal during shutdown
-    controller ? Terminate(node, Right(exitValue)) mapTo classTag[
-      Done] recover {
-      case _: ClientDisconnectedException ⇒
-        Done
-    }
+    controller ? Terminate(node, Right(exitValue)) mapTo
+      classTag[Done] recover {
+        case _: ClientDisconnectedException ⇒
+          Done
+      }
   }
 
   /**
@@ -372,9 +369,10 @@ private[akka] class ServerFSM(val controller: ActorRef, val channel: Channel)
 
   whenUnhandled {
     case Event(ClientDisconnected, Some(s)) ⇒
-      s ! Status.Failure(
-        new ClientDisconnectedException(
-          "client disconnected in state " + stateName + ": " + channel))
+      s !
+        Status.Failure(
+          new ClientDisconnectedException(
+            "client disconnected in state " + stateName + ": " + channel))
       stop()
     case Event(ClientDisconnected, None) ⇒
       stop()
@@ -525,9 +523,10 @@ private[akka] class Controller(
               (s.getAddress.getHostAddress, s.getPort)
           }
         val name = ip + ":" + port + "-server" + generation.next
-        sender() ! context.actorOf(
-          Props(classOf[ServerFSM], self, channel).withDeploy(Deploy.local),
-          name)
+        sender() !
+          context.actorOf(
+            Props(classOf[ServerFSM], self, channel).withDeploy(Deploy.local),
+            name)
       case c @ NodeInfo(name, addr, fsm) ⇒
         barrier forward c
         if (nodes contains name) {
@@ -564,17 +563,16 @@ private[akka] class Controller(
             if (nodes contains node)
               sender() ! ToClient(AddressReply(node, nodes(node).addr))
             else
-              addrInterest += node -> (
-                (addrInterest get node getOrElse Set()) + sender()
-              )
+              addrInterest += node ->
+                ((addrInterest get node getOrElse Set()) + sender())
           case _: Done ⇒ //FIXME what should happen?
         }
       case op: CommandOp ⇒
         op match {
           case Throttle(node, target, direction, rateMBit) ⇒
             val t = nodes(target)
-            nodes(node)
-              .fsm forward ToClient(ThrottleMsg(t.addr, direction, rateMBit))
+            nodes(node).fsm forward
+              ToClient(ThrottleMsg(t.addr, direction, rateMBit))
           case Disconnect(node, target, abort) ⇒
             val t = nodes(target)
             nodes(node).fsm forward ToClient(DisconnectMsg(t.addr, abort))
@@ -637,9 +635,8 @@ private[akka] object BarrierCoordinator {
           .clients
           .find(_.fsm == client)
           .map(_.name.toString)
-          .getOrElse(client.toString) +
-          " tried to enter '" + barrier + "' while we were waiting for '" + data
-          .barrier + "'")
+          .getOrElse(client.toString) + " tried to enter '" + barrier +
+          "' while we were waiting for '" + data.barrier + "'")
       with NoStackTrace
       with Printer
   final case class BarrierEmpty(data: Data, msg: String)
@@ -713,10 +710,11 @@ private[akka] class BarrierCoordinator
       else if (clients.find(_.fsm == sender()).isEmpty)
         stay replying ToClient(BarrierResult(name, false))
       else {
-        goto(Waiting) using d.copy(
-          barrier = name,
-          arrived = sender() :: Nil,
-          deadline = getDeadline(timeout))
+        goto(Waiting) using
+          d.copy(
+            barrier = name,
+            arrived = sender() :: Nil,
+            deadline = getDeadline(timeout))
       }
     case Event(RemoveClient(name), d @ Data(clients, _, _, _)) ⇒
       if (clients.isEmpty)
@@ -782,8 +780,8 @@ private[akka] class BarrierCoordinator
   }
 
   def getDeadline(timeout: Option[FiniteDuration]): Deadline = {
-    Deadline.now + timeout
-      .getOrElse(TestConductor().Settings.BarrierTimeout.duration)
+    Deadline.now +
+      timeout.getOrElse(TestConductor().Settings.BarrierTimeout.duration)
   }
 
 }

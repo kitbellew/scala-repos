@@ -101,12 +101,11 @@ private[runtime] object RuntimeString {
 
   @inline
   def equalsIgnoreCase(thiz: String, that: String): Boolean =
-    thiz.toLowerCase() == (
-      if (that == null)
-        null
-      else
-        that.toLowerCase()
-    )
+    thiz.toLowerCase() ==
+      (if (that == null)
+         null
+       else
+         that.toLowerCase())
 
   @inline
   def concat(thiz: String, s: String): String = checkNull(thiz) + s
@@ -138,9 +137,7 @@ private[runtime] object RuntimeString {
       dst: Array[Char],
       dstBegin: Int): Unit = {
     if (srcEnd > thiz.length || // first test uses thiz
-        srcBegin < 0 ||
-        srcEnd < 0 ||
-        srcBegin > srcEnd) {
+        srcBegin < 0 || srcEnd < 0 || srcBegin > srcEnd) {
       throw new StringIndexOutOfBoundsException("Index out of Bound")
     }
 
@@ -215,8 +212,8 @@ private[runtime] object RuntimeString {
     checkNull(thiz)
     if (other == null) {
       throw new NullPointerException()
-    } else if (toffset < 0 || ooffset < 0 || toffset + len > thiz
-                 .length || ooffset + len > other.length) {
+    } else if (toffset < 0 || ooffset < 0 || toffset + len > thiz.length ||
+               ooffset + len > other.length) {
       false
     } else if (len <= 0) {
       true

@@ -37,20 +37,22 @@ private[team] final class DataForm(val captcher: akka.actor.ActorSelection)
   def edit(team: Team) =
     Form(
       mapping(Fields.location, Fields.description, Fields.open)(TeamEdit.apply)(
-        TeamEdit.unapply)) fill TeamEdit(
-      location = team.location,
-      description = team.description,
-      open = team.open.fold(1, 0))
+        TeamEdit.unapply)) fill
+      TeamEdit(
+        location = team.location,
+        description = team.description,
+        open = team.open.fold(1, 0))
 
   val request = Form(
     mapping(
       "message" -> text(minLength = 30, maxLength = 2000),
       Fields.gameId,
       Fields.move)(RequestSetup.apply)(RequestSetup.unapply)
-      .verifying(captchaFailMessage, validateCaptcha _)) fill RequestSetup(
-    message = "Hello, I would like to join the team!",
-    gameId = "",
-    move = "")
+      .verifying(captchaFailMessage, validateCaptcha _)) fill
+    RequestSetup(
+      message = "Hello, I would like to join the team!",
+      gameId = "",
+      move = "")
 
   val processRequest = Form(
     tuple("process" -> nonEmptyText, "url" -> nonEmptyText))

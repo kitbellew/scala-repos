@@ -54,12 +54,11 @@ case class EnsimeConfig(
       .toSet
       .flatMap { m: EnsimeModule =>
         m.compileDeps ++ m.testDeps
-      } ++ (
-      if (sourceMode)
-        List.empty
-      else
-        targetClasspath
-    )
+      } ++
+      (if (sourceMode)
+         List.empty
+       else
+         targetClasspath)
 
   def targetClasspath: Set[File] =
     modules
@@ -99,11 +98,9 @@ case class EnsimeModule(
     docJars: List[File],
     referenceSourceRoots: List[File]) {
   // only check the files, not the directories, see below
-  (
-    compileDeps ::: runtimeDeps :::
-      testDeps ::: referenceSourceRoots
-  ).foreach { f =>
-    require(f.exists, "" + f + " is required but does not exist")
+  (compileDeps ::: runtimeDeps ::: testDeps ::: referenceSourceRoots).foreach {
+    f =>
+      require(f.exists, "" + f + " is required but does not exist")
   }
 
   /*

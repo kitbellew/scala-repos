@@ -95,10 +95,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
   test("as case class - reordered fields by name") {
     val ds = Seq((1, "a"), (2, "b"), (3, "c")).toDF("b", "a").as[ClassData]
     assert(
-      ds.collect() === Array(
-        ClassData("a", 1),
-        ClassData("b", 2),
-        ClassData("c", 3)))
+      ds.collect() ===
+        Array(ClassData("a", 1), ClassData("b", 2), ClassData("c", 3)))
   }
 
   test("as case class - take") {
@@ -432,9 +430,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
         .cogroup(ds2.groupByKey(_._1)) {
           case (key, data1, data2) =>
             Iterator(
-              key -> (
-                data1.map(_._2).mkString + "#" + data2.map(_._2).mkString
-              ))
+              key ->
+                (data1.map(_._2).mkString + "#" + data2.map(_._2).mkString))
         }
 
     checkDataset(
@@ -672,9 +669,9 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     assert(
       message ==
         "Try to map struct<a:string,b:int> to Tuple3, " +
-          "but failed as the number of fields does not line up.\n" +
-          " - Input schema: struct<a:string,b:int>\n" +
-          " - Target schema: struct<_1:string,_2:int,_3:bigint>")
+        "but failed as the number of fields does not line up.\n" +
+        " - Input schema: struct<a:string,b:int>\n" +
+        " - Target schema: struct<_1:string,_2:int,_3:bigint>")
 
     val message2 =
       intercept[AnalysisException] {
@@ -683,9 +680,9 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     assert(
       message2 ==
         "Try to map struct<a:string,b:int> to Tuple1, " +
-          "but failed as the number of fields does not line up.\n" +
-          " - Input schema: struct<a:string,b:int>\n" +
-          " - Target schema: struct<_1:string>")
+        "but failed as the number of fields does not line up.\n" +
+        " - Input schema: struct<a:string,b:int>\n" +
+        " - Target schema: struct<_1:string>")
   }
 
   test("SPARK-13440: Resolving option fields") {

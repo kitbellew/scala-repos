@@ -37,9 +37,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
       .union(inferAdditionalConstraints(constraints))
       .union(constructIsNotNullConstraints(constraints))
       .filter(constraint =>
-        constraint.references.nonEmpty && constraint
-          .references
-          .subsetOf(outputSet))
+        constraint.references.nonEmpty &&
+          constraint.references.subsetOf(outputSet))
   }
 
   /**
@@ -81,16 +80,18 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
     var inferredConstraints = Set.empty[Expression]
     constraints.foreach {
       case eq @ EqualTo(l: Attribute, r: Attribute) =>
-        inferredConstraints ++= (constraints - eq).map(
-          _ transform {
-            case a: Attribute if a.semanticEquals(l) =>
-              r
-          })
-        inferredConstraints ++= (constraints - eq).map(
-          _ transform {
-            case a: Attribute if a.semanticEquals(r) =>
-              l
-          })
+        inferredConstraints ++=
+          (constraints - eq).map(
+            _ transform {
+              case a: Attribute if a.semanticEquals(l) =>
+                r
+            })
+        inferredConstraints ++=
+          (constraints - eq).map(
+            _ transform {
+              case a: Attribute if a.semanticEquals(r) =>
+                l
+            })
       case _ => // No inference
     }
     inferredConstraints -- constraints

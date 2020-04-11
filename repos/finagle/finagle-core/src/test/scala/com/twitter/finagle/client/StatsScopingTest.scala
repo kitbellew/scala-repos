@@ -42,10 +42,8 @@ class StatsScopingTest extends FunSuite with AssertionsForJUnit {
           .push(counterServiceModule)
           .push(StatsScoping.module)
           .make(
-            Stack.Params.empty
-              + Stats(stats)
-              + StatsScoping.Scoper(scoper)
-              + AddrMetadata(metadata))
+            Stack.Params.empty + Stats(stats) + StatsScoping.Scoper(scoper) +
+              AddrMetadata(metadata))
 
       Await.result(factory())
     }

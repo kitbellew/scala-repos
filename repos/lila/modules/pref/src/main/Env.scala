@@ -15,8 +15,9 @@ final class Env(config: Config, bus: lila.common.Bus, db: lila.db.Env) {
 
 object Env {
 
-  lazy val current = "pref" boot new Env(
-    config = lila.common.PlayApp loadConfig "pref",
-    bus = lila.common.PlayApp.system.lilaBus,
-    db = lila.db.Env.current)
+  lazy val current = "pref" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "pref",
+      bus = lila.common.PlayApp.system.lilaBus,
+      db = lila.db.Env.current)
 }

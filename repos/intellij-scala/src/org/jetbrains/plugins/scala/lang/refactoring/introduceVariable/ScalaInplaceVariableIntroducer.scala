@@ -101,9 +101,8 @@ class ScalaInplaceVariableIntroducer(
           new TextRange(
             myCaretRangeMarker.getStartOffset,
             myCaretRangeMarker.getEndOffset)
-        if (range.getLength == 0 && UndoManager
-              .getInstance(myProject)
-              .isUndoInProgress) {} else {
+        if (range.getLength == 0 &&
+            UndoManager.getInstance(myProject).isUndoInProgress) {} else {
           val input = myCaretRangeMarker.getDocument.getText(range)
           val numberOfSpaces = input.lastIndexOf(' ') + 1
           val declaration = findDeclaration(
@@ -111,10 +110,9 @@ class ScalaInplaceVariableIntroducer(
           val named: Option[ScNamedElement] = namedElement(declaration)
           if (named.isDefined) {
             setDeclaration(declaration)
-            if (nameIsValid != (
-                  named
-                    .isDefined && isIdentifier(input.trim, myFile.getLanguage)
-                )) {
+            if (nameIsValid !=
+                  (named.isDefined &&
+                  isIdentifier(input.trim, myFile.getLanguage))) {
               nameIsValid = !nameIsValid
             }
             resetBalloonPanel(nameIsValid)
@@ -250,8 +248,8 @@ class ScalaInplaceVariableIntroducer(
               val named: Option[ScNamedElement] = namedElement(getDeclaration)
               if (named.isDefined) {
                 val nameRange = named.get.getNameIdentifier.getTextRange
-                nameRange
-                  .getStartOffset == start && nameRange.getEndOffset <= end
+                nameRange.getStartOffset == start &&
+                nameRange.getEndOffset <= end
               } else
                 false
             }
@@ -385,9 +383,9 @@ class ScalaInplaceVariableIntroducer(
       myBalloonPanel add myChbPanel
       myBalloonPanel remove myLabelPanel
     }
-    Seq(myVarCheckbox, mySpecifyTypeChb) filter (_ != null) foreach (
-      _.setEnabled(nameIsValid)
-    )
+    Seq(myVarCheckbox, mySpecifyTypeChb) filter
+      (_ != null) foreach
+      (_.setEnabled(nameIsValid))
     myBalloon.revalidate()
   }
 
@@ -411,9 +409,8 @@ class ScalaInplaceVariableIntroducer(
             .getCaretModel
             .moveToOffset(declaration.getTextRange.getEndOffset)
         }
-      } else if (getDeclaration != null && !UndoManager
-                   .getInstance(myProject)
-                   .isUndoInProgress) {
+      } else if (getDeclaration != null &&
+                 !UndoManager.getInstance(myProject).isUndoInProgress) {
         val revertInfo = myEditor
           .getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
         if (revertInfo != null) {

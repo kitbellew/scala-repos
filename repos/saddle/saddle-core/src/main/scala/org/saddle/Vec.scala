@@ -510,19 +510,19 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
   override def equals(o: Any): Boolean =
     o match {
       case rv: Vec[_] =>
-        (this eq rv) || (this.length == rv.length) && {
-          var i = 0
-          var eq = true
-          while (eq && i < this.length) {
-            eq &&= (
-              apply(i) == rv(i) || this.scalarTag.isMissing(apply(i)) && rv
-                .scalarTag
-                .isMissing(rv(i))
-            )
-            i += 1
+        (this eq rv) ||
+          (this.length == rv.length) && {
+            var i = 0
+            var eq = true
+            while (eq && i < this.length) {
+              eq &&=
+                (apply(i) == rv(i) ||
+                this.scalarTag.isMissing(apply(i)) &&
+                rv.scalarTag.isMissing(rv(i)))
+              i += 1
+            }
+            eq
           }
-          eq
-        }
       case _ =>
         false
     }

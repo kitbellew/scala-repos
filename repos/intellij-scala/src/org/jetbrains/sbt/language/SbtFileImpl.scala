@@ -45,8 +45,8 @@ class SbtFileImpl(provider: FileViewProvider)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    val expressions = implicitImportExpressions ++ localObjectsWithDefinitions
-      .map(_.qualifiedName + "._")
+    val expressions = implicitImportExpressions ++
+      localObjectsWithDefinitions.map(_.qualifiedName + "._")
 
     // TODO this is a workaround, we need to find out why references stopped resolving via the chained imports
     val expressions0 = expressions.map {

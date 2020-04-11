@@ -98,9 +98,8 @@ object DateTimeUtils {
   def millisToDays(millisUtc: Long): SQLDate = {
     // SPARK-6785: use Math.floor so negative number of days (dates before 1970)
     // will correctly work as input for function toJavaDate(Int)
-    val millisLocal = millisUtc + threadLocalLocalTimeZone
-      .get()
-      .getOffset(millisUtc)
+    val millisLocal = millisUtc +
+      threadLocalLocalTimeZone.get().getOffset(millisUtc)
     Math.floor(millisLocal.toDouble / MILLIS_PER_DAY).toInt
   }
 
@@ -340,10 +339,9 @@ object DateTimeUtils {
       digitsMilli += 1
     }
 
-    if (!justTime && (
-          segments(0) < 0 || segments(0) > 9999 || segments(1) < 1 ||
-          segments(1) > 12 || segments(2) < 1 || segments(2) > 31
-        )) {
+    if (!justTime &&
+        (segments(0) < 0 || segments(0) > 9999 || segments(1) < 1 ||
+        segments(1) > 12 || segments(2) < 1 || segments(2) > 31)) {
       return None
     }
 
@@ -352,12 +350,10 @@ object DateTimeUtils {
       segments(6) = segments(6).toString.take(6).toInt
     }
 
-    if (segments(3) < 0 || segments(3) > 23 || segments(4) < 0 || segments(
-          4) > 59 ||
-        segments(5) < 0 || segments(5) > 59 || segments(6) < 0 || segments(
-          6) > 999999 ||
-        segments(7) < 0 || segments(7) > 23 || segments(8) < 0 || segments(
-          8) > 59) {
+    if (segments(3) < 0 || segments(3) > 23 || segments(4) < 0 ||
+        segments(4) > 59 || segments(5) < 0 || segments(5) > 59 ||
+        segments(6) < 0 || segments(6) > 999999 || segments(7) < 0 ||
+        segments(7) > 23 || segments(8) < 0 || segments(8) > 59) {
       return None
     }
 
@@ -409,8 +405,8 @@ object DateTimeUtils {
     var currentSegmentValue = 0
     val bytes = s.getBytes
     var j = 0
-    while (j < bytes
-             .length && (i < 3 && !(bytes(j) == ' ' || bytes(j) == 'T'))) {
+    while (j < bytes.length &&
+           (i < 3 && !(bytes(j) == ' ' || bytes(j) == 'T'))) {
       val b = bytes(j)
       if (i < 2 && b == '-') {
         if (i == 0 && j != 4) {
@@ -435,9 +431,8 @@ object DateTimeUtils {
       return None
     }
     segments(i) = currentSegmentValue
-    if (segments(0) < 0 || segments(0) > 9999 || segments(1) < 1 || segments(
-          1) > 12 ||
-        segments(2) < 1 || segments(2) > 31) {
+    if (segments(0) < 0 || segments(0) > 9999 || segments(1) < 1 ||
+        segments(1) > 12 || segments(2) < 1 || segments(2) > 31) {
       return None
     }
     val c = threadLocalGmtCalendar.get()
@@ -455,8 +450,8 @@ object DateTimeUtils {
   }
 
   private def localTimestamp(microsec: SQLTimestamp): SQLTimestamp = {
-    absoluteMicroSecond(microsec) + defaultTimeZone
-      .getOffset(microsec / 1000) * 1000L
+    absoluteMicroSecond(microsec) +
+      defaultTimeZone.getOffset(microsec / 1000) * 1000L
   }
 
   /**
@@ -725,8 +720,8 @@ object DateTimeUtils {
     */
   private def getDateFromYear(absoluteYear: Int): SQLDate = {
     val absoluteDays =
-      (absoluteYear * 365 + absoluteYear / 400 - absoluteYear / 100
-        + absoluteYear / 4)
+      (absoluteYear * 365 + absoluteYear / 400 - absoluteYear / 100 +
+        absoluteYear / 4)
     absoluteDays - toYearZero
   }
 
@@ -772,8 +767,8 @@ object DateTimeUtils {
       microseconds: Long): SQLTimestamp = {
     val days = millisToDays(start / 1000L)
     val newDays = dateAddMonths(days, months)
-    daysToMillis(newDays) * 1000L + start - daysToMillis(
-      days) * 1000L + microseconds
+    daysToMillis(newDays) * 1000L + start - daysToMillis(days) * 1000L +
+      microseconds
   }
 
   /**
@@ -797,17 +792,16 @@ object DateTimeUtils {
     val months1 = year1 * 12 + monthInYear1
     val months2 = year2 * 12 + monthInYear2
 
-    if (dayInMonth1 == dayInMonth2 || (
-          (daysToMonthEnd1 == 0) && (daysToMonthEnd2 == 0)
-        )) {
+    if (dayInMonth1 == dayInMonth2 ||
+        ((daysToMonthEnd1 == 0) && (daysToMonthEnd2 == 0))) {
       return (months1 - months2).toDouble
     }
     // milliseconds is enough for 8 digits precision on the right side
     val timeInDay1 = millis1 - daysToMillis(date1)
     val timeInDay2 = millis2 - daysToMillis(date2)
     val timesBetween = (timeInDay1 - timeInDay2).toDouble / MILLIS_PER_DAY
-    val diff = (months1 - months2)
-      .toDouble + (dayInMonth1 - dayInMonth2 + timesBetween) / 31.0
+    val diff = (months1 - months2).toDouble +
+      (dayInMonth1 - dayInMonth2 + timesBetween) / 31.0
     // rounding to 8 digits
     math.round(diff * 1e8) / 1e8
   }

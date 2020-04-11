@@ -41,8 +41,8 @@ import scala.reflect.internal.util.ScalaClassLoader
 class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
 
   private def originOfThis: String =
-    ScalaClassLoader
-      .originOfClass(classOf[ScalacFork]) map (_.toString) getOrElse "<unknown>"
+    ScalaClassLoader.originOfClass(classOf[ScalacFork]) map
+      (_.toString) getOrElse "<unknown>"
 
   /** Sets the `srcdir` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `sourceDir`. */
@@ -100,12 +100,12 @@ class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
       "Executing ant task scalacfork, origin: %s".format(originOfThis),
       Project.MSG_VERBOSE)
 
-    val compilerPath = this.compilerPath getOrElse sys
-      .error("Mandatory attribute 'compilerpath' is not set.")
-    val sourceDir = this.sourceDir getOrElse sys
-      .error("Mandatory attribute 'srcdir' is not set.")
-    val destinationDir = this.destinationDir getOrElse sys
-      .error("Mandatory attribute 'destdir' is not set.")
+    val compilerPath = this.compilerPath getOrElse
+      sys.error("Mandatory attribute 'compilerpath' is not set.")
+    val sourceDir = this.sourceDir getOrElse
+      sys.error("Mandatory attribute 'srcdir' is not set.")
+    val destinationDir = this.destinationDir getOrElse
+      sys.error("Mandatory attribute 'destdir' is not set.")
 
     val settings = new Settings
     settings.d = destinationDir
@@ -150,13 +150,12 @@ class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
     def encodeScalacArgsFile(t: Traversable[String]) =
       t map { s =>
         if (s.find(c => c <= ' ' || "\"'\\".contains(c)).isDefined)
-          "\"" + s.flatMap(c =>
-            (
-              if (c == '"' || c == '\\')
-                "\\"
-              else
-                ""
-            ) + c) + "\""
+          "\"" +
+            s.flatMap(c =>
+              (if (c == '"' || c == '\\')
+                 "\\"
+               else
+                 "") + c) + "\""
         else
           s
       } mkString "\n"
@@ -166,8 +165,8 @@ class ScalacFork extends ScalaMatchingTask with ScalacShared with TaskArgs {
     val tokens = settings.toArgs ++ (includedFiles map (_.getPath))
     tempArgFile writeAll encodeScalacArgsFile(tokens)
 
-    val paths = List(Some(tempArgFile.toAbsolute.path), argfile)
-      .flatten map (_.toString)
+    val paths = List(Some(tempArgFile.toAbsolute.path), argfile).flatten map
+      (_.toString)
     val res = execWithArgFiles(java, paths)
 
     if (failOnError && res != 0)

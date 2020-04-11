@@ -279,15 +279,15 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
       "changes not propagated in timeout period")
     TestUtils.waitUntilTrue(
       () =>
-        Map(resource -> Set(acl3, acl4, acl5)) == simpleAclAuthorizer
-          .getAcls(user2),
+        Map(resource -> Set(acl3, acl4, acl5)) ==
+          simpleAclAuthorizer.getAcls(user2),
       "changes not propagated in timeout period")
 
     val resourceToAcls = Map[Resource, Set[Acl]](
-      new Resource(Topic, Resource.WildCardResource) -> Set[Acl](
-        new Acl(user2, Allow, WildCardHost, Read)),
-      new Resource(Cluster, Resource.WildCardResource) -> Set[Acl](
-        new Acl(user2, Allow, host1, Read)),
+      new Resource(Topic, Resource.WildCardResource) ->
+        Set[Acl](new Acl(user2, Allow, WildCardHost, Read)),
+      new Resource(Cluster, Resource.WildCardResource) ->
+        Set[Acl](new Acl(user2, Allow, host1, Read)),
       new Resource(Group, Resource.WildCardResource) -> acls,
       new Resource(Group, "test-ConsumerGroup") -> acls
     )

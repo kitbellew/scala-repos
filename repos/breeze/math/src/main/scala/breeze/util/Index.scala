@@ -326,21 +326,23 @@ class EitherIndex[L, R](left: Index[L], right: Index[R])
       .map {
         case (l, i) =>
           Left(l) -> i
-      } ++ right
-      .pairs
-      .map {
-        case (r, i) =>
-          Right(r) -> (i + left.size)
-      }
+      } ++
+      right
+        .pairs
+        .map {
+          case (r, i) =>
+            Right(r) -> (i + left.size)
+        }
 
   def iterator =
     left
       .iterator
       .map {
         Left(_)
-      } ++ right.map {
-      Right(_)
-    }
+      } ++
+      right.map {
+        Right(_)
+      }
 
   override def size: Int = left.size + right.size
 }

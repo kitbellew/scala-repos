@@ -49,8 +49,8 @@ class ColorSpec
   override protected def getJavaClassInstance = new jfxsp.Color(0, 0, 0, 0)
 
   private def assertComponent(realValue: Double, expectedValue: Double) {
-    realValue should be(
-      convertNumericToPlusOrMinusWrapper(expectedValue) +- 0.01)
+    realValue should
+      be(convertNumericToPlusOrMinusWrapper(expectedValue) +- 0.01)
   }
 
   private def intToDouble(i: Int): Double = i.toDouble / 255.0

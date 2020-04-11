@@ -212,12 +212,10 @@ trait StringLike[+Repr]
       while (index < len && line.charAt(index) <= ' ')
         index += 1
       buf append
-        (
-          if (index < len && line.charAt(index) == marginChar)
-            line.substring(index + 1)
-          else
-            line
-        )
+        (if (index < len && line.charAt(index) == marginChar)
+           line.substring(index + 1)
+         else
+           line)
     }
     buf.toString
   }
@@ -230,8 +228,10 @@ trait StringLike[+Repr]
   def stripMargin: String = stripMargin('|')
 
   private def escape(ch: Char): String =
-    if ((ch >= 'a') && (ch <= 'z') ||
-        (ch >= 'A') && (ch <= 'Z') ||
+    if ((ch >= 'a') &&
+        (ch <= 'z') ||
+        (ch >= 'A') &&
+        (ch <= 'Z') ||
         (ch >= '0' && ch <= '9'))
       ch.toString
     else

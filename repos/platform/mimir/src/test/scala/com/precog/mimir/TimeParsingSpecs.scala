@@ -128,11 +128,8 @@ trait TimeParsingSpecs[M[+_]]
 
       result must haveSize(4)
 
-      result must contain(
-        "2010-06-03",
-        "2010-06-04",
-        "2011-08-12",
-        "2010-10-09")
+      result must
+        contain("2010-06-03", "2010-06-04", "2011-08-12", "2010-10-09")
     }
 
     "from heterogeneous set" in {
@@ -151,11 +148,12 @@ trait TimeParsingSpecs[M[+_]]
 
       result must haveSize(4)
 
-      result must contain(
-        "2010-06-03T04:12:33.323Z",
-        "2010-06-04T13:31:49.002Z",
-        "2011-08-12T22:42:33.310Z",
-        "2010-10-09T09:27:31.953Z")
+      result must
+        contain(
+          "2010-06-03T04:12:33.323Z",
+          "2010-06-04T13:31:49.002Z",
+          "2011-08-12T22:42:33.310Z",
+          "2010-10-09T09:27:31.953Z")
     }
 
     "ChangeTimeZone function with not fully formed string without tz" in {

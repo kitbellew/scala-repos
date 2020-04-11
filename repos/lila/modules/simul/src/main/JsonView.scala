@@ -15,27 +15,28 @@ final class JsonView(getLightUser: String => Option[LightUser]) {
       val lightHost = getLightUser(simul.hostId)
       Json.obj(
         "id" -> simul.id,
-        "host" -> lightHost.map { host =>
-          Json.obj(
-            "id" -> host.id,
-            "username" -> host.name,
-            "title" -> host.title,
-            "rating" -> simul.hostRating,
-            "gameId" -> simul.hostGameId)
-        },
+        "host" ->
+          lightHost.map { host =>
+            Json.obj(
+              "id" -> host.id,
+              "username" -> host.name,
+              "title" -> host.title,
+              "rating" -> simul.hostRating,
+              "gameId" -> simul.hostGameId)
+          },
         "name" -> simul.name,
         "fullName" -> simul.fullName,
-        "variants" -> simul
-          .variants
-          .map(variantJson(chess.Speed(simul.clock.chessClock.some))),
-        "applicants" -> simul
-          .applicants
-          .sortBy(-_.player.rating)
-          .map(applicantJson),
-        "pairings" -> simul
-          .pairings
-          .sortBy(-_.player.rating)
-          .map(pairingJson(games, simul.hostId)),
+        "variants" ->
+          simul
+            .variants
+            .map(variantJson(chess.Speed(simul.clock.chessClock.some))),
+        "applicants" ->
+          simul.applicants.sortBy(-_.player.rating).map(applicantJson),
+        "pairings" ->
+          simul
+            .pairings
+            .sortBy(-_.player.rating)
+            .map(pairingJson(games, simul.hostId)),
         "isCreated" -> simul.isCreated,
         "isRunning" -> simul.isRunning,
         "isFinished" -> simul.isFinished,
@@ -46,11 +47,8 @@ final class JsonView(getLightUser: String => Option[LightUser]) {
   private def variantJson(speed: chess.Speed)(v: chess.variant.Variant) =
     Json.obj(
       "key" -> v.key,
-      "icon" -> lila
-        .game
-        .PerfPicker
-        .perfType(speed, v, none)
-        .map(_.iconChar.toString),
+      "icon" ->
+        lila.game.PerfPicker.perfType(speed, v, none).map(_.iconChar.toString),
       "name" -> v.name)
 
   private def playerJson(player: SimulPlayer) = {

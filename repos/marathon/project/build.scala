@@ -19,28 +19,18 @@ object MarathonBuild extends Build {
   lazy val pluginInterface: Project = Project(
     id = "plugin-interface",
     base = file("plugin-interface"),
-    settings = baseSettings ++
-      asmSettings ++
-      formatSettings ++
-      scalaStyleSettings ++
-      publishSettings ++
+    settings = baseSettings ++ asmSettings ++ formatSettings ++
+      scalaStyleSettings ++ publishSettings ++
       Seq(libraryDependencies ++= Dependencies.pluginInterface)
   )
 
   lazy val root: Project = Project(
     id = "marathon",
     base = file("."),
-    settings = baseSettings ++
-      buildInfoSettings ++
-      asmSettings ++
-      customReleaseSettings ++
-      formatSettings ++
-      scalaStyleSettings ++
-      revolverSettings ++
-      graphSettings ++
-      testSettings ++
-      integrationTestSettings ++
-      teamCitySetEnvSettings ++
+    settings = baseSettings ++ buildInfoSettings ++ asmSettings ++
+      customReleaseSettings ++ formatSettings ++ scalaStyleSettings ++
+      revolverSettings ++ graphSettings ++ testSettings ++
+      integrationTestSettings ++ teamCitySetEnvSettings ++
       Seq(
         unmanagedResourceDirectories in Compile += file("docs/docs/rest-api"),
         libraryDependencies ++= Dependencies.root,
@@ -54,19 +44,15 @@ object MarathonBuild extends Build {
     .dependsOn(pluginInterface)
     // run mesos-simulation/test:test when running test
     .settings(
-      (test in Test) <<= (test in Test) dependsOn (
-        test in Test in LocalProject("mesos-simulation")
-      ))
+      (test in Test) <<=
+        (test in Test) dependsOn
+          (test in Test in LocalProject("mesos-simulation")))
 
   lazy val mesosSimulation: Project = Project(
     id = "mesos-simulation",
     base = file("mesos-simulation"),
-    settings = baseSettings ++
-      formatSettings ++
-      scalaStyleSettings ++
-      revolverSettings ++
-      testSettings ++
-      integrationTestSettings
+    settings = baseSettings ++ formatSettings ++ scalaStyleSettings ++
+      revolverSettings ++ testSettings ++ integrationTestSettings
   ).dependsOn(root % "compile->compile; test->test").configs(IntegrationTest)
 
   /**
@@ -89,116 +75,124 @@ object MarathonBuild extends Build {
   lazy val integrationTestSettings =
     inConfig(IntegrationTest)(Defaults.testTasks) ++
       Seq(
-        testOptions in IntegrationTest := Seq(
-          formattingTestArg,
-          Tests.Argument("-n", "integration")))
+        testOptions in IntegrationTest :=
+          Seq(formattingTestArg, Tests.Argument("-n", "integration")))
 
   lazy val testSettings = Seq(
-    testOptions in Test := Seq(
-      formattingTestArg,
-      Tests.Argument("-l", "integration")),
+    testOptions in Test :=
+      Seq(formattingTestArg, Tests.Argument("-l", "integration")),
     parallelExecution in Test := false,
     fork in Test := true)
 
   lazy val testScalaStyle = taskKey[Unit]("testScalaStyle")
 
-  lazy val scalaStyleSettings = styleSettings ++ Seq(
-    testScalaStyle := {
-      org
-        .scalastyle
-        .sbt
-        .ScalastylePlugin
-        .scalastyle
-        .in(Compile)
-        .toTask("")
-        .value
-    },
-    (test in Test) <<= (test in Test) dependsOn testScalaStyle)
+  lazy val scalaStyleSettings = styleSettings ++
+    Seq(
+      testScalaStyle := {
+        org
+          .scalastyle
+          .sbt
+          .ScalastylePlugin
+          .scalastyle
+          .in(Compile)
+          .toTask("")
+          .value
+      },
+      (test in Test) <<= (test in Test) dependsOn testScalaStyle)
 
   lazy val IntegrationTest = config("integration") extend Test
 
-  lazy val baseSettings = Defaults.defaultSettings ++ Seq(
-    organization := "mesosphere.marathon",
-    scalaVersion := "2.11.7",
-    crossScalaVersions := Seq(scalaVersion.value),
-    scalacOptions in Compile ++= Seq(
-      "-encoding",
-      "UTF-8",
-      "-target:jvm-1.8",
-      "-deprecation",
-      "-feature",
-      "-unchecked",
-      "-Xlog-reflective-calls",
-      "-Xlint",
-      "-Ywarn-unused-import",
-      "-Xfatal-warnings",
-      "-Yno-adapted-args",
-      "-Ywarn-numeric-widen"
-    ),
-    javacOptions in Compile ++= Seq(
-      "-encoding",
-      "UTF-8",
-      "-source",
-      "1.8",
-      "-target",
-      "1.8",
-      "-Xlint:unchecked",
-      "-Xlint:deprecation"),
-    resolvers ++= Seq(
-      "Mesosphere Public Repo" at "http://downloads.mesosphere.com/maven",
-      "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/",
-      "Spray Maven Repository" at "http://repo.spray.io/"
-    ),
-    fork in Test := true
-  )
+  lazy val baseSettings = Defaults.defaultSettings ++
+    Seq(
+      organization := "mesosphere.marathon",
+      scalaVersion := "2.11.7",
+      crossScalaVersions := Seq(scalaVersion.value),
+      scalacOptions in Compile ++=
+        Seq(
+          "-encoding",
+          "UTF-8",
+          "-target:jvm-1.8",
+          "-deprecation",
+          "-feature",
+          "-unchecked",
+          "-Xlog-reflective-calls",
+          "-Xlint",
+          "-Ywarn-unused-import",
+          "-Xfatal-warnings",
+          "-Yno-adapted-args",
+          "-Ywarn-numeric-widen"
+        ),
+      javacOptions in Compile ++=
+        Seq(
+          "-encoding",
+          "UTF-8",
+          "-source",
+          "1.8",
+          "-target",
+          "1.8",
+          "-Xlint:unchecked",
+          "-Xlint:deprecation"),
+      resolvers ++=
+        Seq(
+          "Mesosphere Public Repo" at "http://downloads.mesosphere.com/maven",
+          "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/",
+          "Spray Maven Repository" at "http://repo.spray.io/"
+        ),
+      fork in Test := true
+    )
 
-  lazy val asmSettings = assemblySettings ++ Seq(
-    mergeStrategy in assembly <<= (mergeStrategy in assembly) { old =>
-      {
-        case "application.conf" =>
-          MergeStrategy.concat
-        case "META-INF/jersey-module-version" =>
-          MergeStrategy.first
-        case "org/apache/hadoop/yarn/util/package-info.class" =>
-          MergeStrategy.first
-        case "org/apache/hadoop/yarn/factories/package-info.class" =>
-          MergeStrategy.first
-        case "org/apache/hadoop/yarn/factory/providers/package-info.class" =>
-          MergeStrategy.first
-        case x =>
-          old(x)
-      }
-    },
-    excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
-      val exclude = Set(
-        "commons-beanutils-1.7.0.jar",
-        "stax-api-1.0.1.jar",
-        "commons-beanutils-core-1.8.0.jar",
-        "servlet-api-2.5.jar",
-        "jsp-api-2.1.jar")
-      cp filter { x =>
-        exclude(x.data.getName)
-      }
-    }
-  )
+  lazy val asmSettings = assemblySettings ++
+    Seq(
+      mergeStrategy in assembly <<=
+        (mergeStrategy in assembly) { old =>
+          {
+            case "application.conf" =>
+              MergeStrategy.concat
+            case "META-INF/jersey-module-version" =>
+              MergeStrategy.first
+            case "org/apache/hadoop/yarn/util/package-info.class" =>
+              MergeStrategy.first
+            case "org/apache/hadoop/yarn/factories/package-info.class" =>
+              MergeStrategy.first
+            case "org/apache/hadoop/yarn/factory/providers/package-info.class" =>
+              MergeStrategy.first
+            case x =>
+              old(x)
+          }
+        },
+      excludedJars in assembly <<=
+        (fullClasspath in assembly) map { cp =>
+          val exclude = Set(
+            "commons-beanutils-1.7.0.jar",
+            "stax-api-1.0.1.jar",
+            "commons-beanutils-core-1.8.0.jar",
+            "servlet-api-2.5.jar",
+            "jsp-api-2.1.jar")
+          cp filter { x =>
+            exclude(x.data.getName)
+          }
+        }
+    )
 
-  lazy val formatSettings = scalariformSettings ++ Seq(
-    ScalariformKeys.preferences := FormattingPreferences()
-      .setPreference(IndentWithTabs, false)
-      .setPreference(IndentSpaces, 2)
-      .setPreference(AlignParameters, true)
-      .setPreference(DoubleIndentClassDeclaration, true)
-      .setPreference(MultilineScaladocCommentsStartOnFirstLine, false)
-      .setPreference(PlaceScaladocAsterisksBeneathSecondAsterisk, true)
-      .setPreference(PreserveDanglingCloseParenthesis, true)
-      .setPreference(CompactControlReadability, true) //MV: should be false!
-      .setPreference(AlignSingleLineCaseStatements, true)
-      .setPreference(PreserveSpaceBeforeArguments, true)
-      .setPreference(SpaceBeforeColon, false)
-      .setPreference(SpaceInsideBrackets, false)
-      .setPreference(SpaceInsideParentheses, false)
-      .setPreference(SpacesWithinPatternBinders, true)
-      .setPreference(FormatXml, true))
+  lazy val formatSettings = scalariformSettings ++
+    Seq(
+      ScalariformKeys.preferences :=
+        FormattingPreferences()
+          .setPreference(IndentWithTabs, false)
+          .setPreference(IndentSpaces, 2)
+          .setPreference(AlignParameters, true)
+          .setPreference(DoubleIndentClassDeclaration, true)
+          .setPreference(MultilineScaladocCommentsStartOnFirstLine, false)
+          .setPreference(PlaceScaladocAsterisksBeneathSecondAsterisk, true)
+          .setPreference(PreserveDanglingCloseParenthesis, true)
+          .setPreference(CompactControlReadability, true) //MV: should be false!
+          .setPreference(AlignSingleLineCaseStatements, true)
+          .setPreference(PreserveSpaceBeforeArguments, true)
+          .setPreference(SpaceBeforeColon, false)
+          .setPreference(SpaceInsideBrackets, false)
+          .setPreference(SpaceInsideParentheses, false)
+          .setPreference(SpacesWithinPatternBinders, true)
+          .setPreference(FormatXml, true))
 
   /**
     * This is the standard release process without
@@ -206,15 +200,17 @@ object MarathonBuild extends Build {
     * -setNextVersion
     * -commitNextVersion
     */
-  lazy val customReleaseSettings = releaseSettings ++ Seq(
-    ReleaseKeys.releaseProcess := Seq[ReleaseStep](
-      checkSnapshotDependencies,
-      inquireVersions,
-      runTest,
-      setReleaseVersion,
-      commitReleaseVersion,
-      tagRelease,
-      pushChanges))
+  lazy val customReleaseSettings = releaseSettings ++
+    Seq(
+      ReleaseKeys.releaseProcess :=
+        Seq[ReleaseStep](
+          checkSnapshotDependencies,
+          inquireVersions,
+          runTest,
+          setReleaseVersion,
+          commitReleaseVersion,
+          tagRelease,
+          pushChanges))
 
   /**
     * This on load trigger is used to set parameters in teamcity.
@@ -243,13 +239,15 @@ object MarathonBuild extends Build {
       (onLoad in Global).value
     })
 
-  lazy val publishSettings = S3Resolver.defaults ++ Seq(
-    publishTo := Some(
-      s3resolver.value(
-        "Mesosphere Public Repo (S3)",
-        s3("downloads.mesosphere.io/maven"))),
-    SbtS3Resolver.s3credentials := new InstanceProfileCredentialsProvider()
-  )
+  lazy val publishSettings = S3Resolver.defaults ++
+    Seq(
+      publishTo :=
+        Some(
+          s3resolver.value(
+            "Mesosphere Public Repo (S3)",
+            s3("downloads.mesosphere.io/maven"))),
+      SbtS3Resolver.s3credentials := new InstanceProfileCredentialsProvider()
+    )
 }
 
 object Dependencies {
@@ -347,43 +345,41 @@ object Dependency {
   val sprayClient = "io.spray" %% "spray-client" % V.Spray
   val sprayHttpx = "io.spray" %% "spray-httpx" % V.Spray
   val playJson = "com.typesafe.play" %% "play-json" % V.PlayJson
-  val chaos = "mesosphere" %% "chaos" % V
-    .Chaos exclude ("org.glassfish.web", "javax.el")
+  val chaos = "mesosphere" %% "chaos" % V.Chaos exclude
+    ("org.glassfish.web", "javax.el")
   val guava = "com.google.guava" % "guava" % V.Guava
   val mesosUtils = "mesosphere" %% "mesos-utils" % V.MesosUtils
-  val jacksonCaseClass = "mesosphere" %% "jackson-case-class-module" % V
-    .JacksonCCM
+  val jacksonCaseClass = "mesosphere" %% "jackson-case-class-module" %
+    V.JacksonCCM
   val jerseyServlet = "com.sun.jersey" % "jersey-servlet" % V.Jersey
-  val jettyEventSource = "org.eclipse.jetty" % "jetty-servlets" % V
-    .JettyServlets
-  val jerseyMultiPart = "com.sun.jersey.contribs" % "jersey-multipart" % V
-    .Jersey
+  val jettyEventSource = "org.eclipse.jetty" % "jetty-servlets" %
+    V.JettyServlets
+  val jerseyMultiPart = "com.sun.jersey.contribs" % "jersey-multipart" %
+    V.Jersey
   val jodaTime = "joda-time" % "joda-time" % V.JodaTime
   val jodaConvert = "org.joda" % "joda-convert" % V.JodaConvert
-  val twitterCommons = "com.twitter.common.zookeeper" % "candidate" % V
-    .TwitterCommons
-  val uuidGenerator = "com.fasterxml.uuid" % "java-uuid-generator" % V
-    .UUIDGenerator
+  val twitterCommons = "com.twitter.common.zookeeper" % "candidate" %
+    V.TwitterCommons
+  val uuidGenerator = "com.fasterxml.uuid" % "java-uuid-generator" %
+    V.UUIDGenerator
   val jGraphT = "org.javabits.jgrapht" % "jgrapht-core" % V.JGraphT
-  val hadoopHdfs = "org.apache.hadoop" % "hadoop-hdfs" % V
-    .Hadoop excludeAll (excludeMortbayJetty, excludeJavaxServlet)
-  val hadoopCommon = "org.apache.hadoop" % "hadoop-common" % V
-    .Hadoop excludeAll (
-    excludeMortbayJetty,
-    excludeJavaxServlet
-  )
+  val hadoopHdfs = "org.apache.hadoop" % "hadoop-hdfs" % V.Hadoop excludeAll
+    (excludeMortbayJetty, excludeJavaxServlet)
+  val hadoopCommon = "org.apache.hadoop" % "hadoop-common" % V.Hadoop excludeAll
+    (excludeMortbayJetty, excludeJavaxServlet)
   val beanUtils = "commons-beanutils" % "commons-beanutils" % "1.9.2"
   val scallop = "org.rogach" %% "scallop" % V.Scallop
-  val jsonSchemaValidator = "com.github.fge" % "json-schema-validator" % V
-    .JsonSchemaValidator
+  val jsonSchemaValidator = "com.github.fge" % "json-schema-validator" %
+    V.JsonSchemaValidator
   val twitterZk = "com.twitter" %% "util-zk" % V.TwitterZk
   val rxScala = "io.reactivex" %% "rxscala" % V.RxScala
   val marathonUI = "mesosphere.marathon" % "ui" % V.MarathonUI
-  val marathonApiConsole = "mesosphere.marathon" % "api-console" % V
-    .MarathonApiConsole
+  val marathonApiConsole = "mesosphere.marathon" % "api-console" %
+    V.MarathonApiConsole
   val graphite = "io.dropwizard.metrics" % "metrics-graphite" % V.Graphite
-  val datadog = "org.coursera" % "dropwizard-metrics-datadog" % V
-    .DataDog exclude ("ch.qos.logback", "logback-classic")
+  val datadog =
+    "org.coursera" % "dropwizard-metrics-datadog" % V.DataDog exclude
+      ("ch.qos.logback", "logback-classic")
   val wixAccord = "com.wix" %% "accord-core" % V.WixAccord
 
   object Test {

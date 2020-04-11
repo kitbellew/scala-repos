@@ -54,9 +54,8 @@ class GitCommandFactorySpec extends FunSpec {
     it("should return UnknownCommand when git command has no valid arguments") {
       // must be: git-upload-pack '/owner/repository_name.git'
       assert(
-        factory
-          .createCommand("git-upload-pack")
-          .isInstanceOf[UnknownCommand] == true)
+        factory.createCommand("git-upload-pack").isInstanceOf[UnknownCommand] ==
+          true)
       assert(
         factory
           .createCommand("git-upload-pack /owner/repo.git")

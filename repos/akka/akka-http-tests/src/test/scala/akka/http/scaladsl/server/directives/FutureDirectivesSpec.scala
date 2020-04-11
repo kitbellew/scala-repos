@@ -32,90 +32,112 @@ class FutureDirectivesSpec extends RoutingSpec {
         onComplete(Future.successful(nextNumber())) {
           echoComplete
         }
-      Get() ~> route ~> check {
-        responseAs[String] shouldEqual "Success(1)"
-      }
-      Get() ~> route ~> check {
-        responseAs[String] shouldEqual "Success(2)"
-      }
+      Get() ~> route ~>
+        check {
+          responseAs[String] shouldEqual "Success(1)"
+        }
+      Get() ~> route ~>
+        check {
+          responseAs[String] shouldEqual "Success(2)"
+        }
     }
     "unwrap a Future in the failure case" in {
-      Get() ~> onComplete(Future.failed[String](new RuntimeException("no"))) {
-        echoComplete
-      } ~> check {
-        responseAs[String] shouldEqual "Failure(java.lang.RuntimeException: no)"
-      }
+      Get() ~>
+        onComplete(Future.failed[String](new RuntimeException("no"))) {
+          echoComplete
+        } ~>
+        check {
+          responseAs[String] shouldEqual
+            "Failure(java.lang.RuntimeException: no)"
+        }
     }
     "catch an exception in the success case" in {
-      Get() ~> onComplete(Future.successful("ok")) {
-        throwTestException("EX when ")
-      } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual s"Oops. akka.http.scaladsl.server.directives.FutureDirectivesSpec$$TestException: EX when Success(ok)"
-      }
+      Get() ~>
+        onComplete(Future.successful("ok")) {
+          throwTestException("EX when ")
+        } ~>
+        check {
+          status shouldEqual StatusCodes.InternalServerError
+          responseAs[String] shouldEqual
+            s"Oops. akka.http.scaladsl.server.directives.FutureDirectivesSpec$$TestException: EX when Success(ok)"
+        }
     }
     "catch an exception in the failure case" in {
-      Get() ~> onComplete(Future.failed[String](new RuntimeException("no"))) {
-        throwTestException("EX when ")
-      } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual s"Oops. akka.http.scaladsl.server.directives.FutureDirectivesSpec$$TestException: EX when Failure(java.lang.RuntimeException: no)"
-      }
+      Get() ~>
+        onComplete(Future.failed[String](new RuntimeException("no"))) {
+          throwTestException("EX when ")
+        } ~>
+        check {
+          status shouldEqual StatusCodes.InternalServerError
+          responseAs[String] shouldEqual
+            s"Oops. akka.http.scaladsl.server.directives.FutureDirectivesSpec$$TestException: EX when Failure(java.lang.RuntimeException: no)"
+        }
     }
   }
 
   "The `onSuccess` directive" should {
     "unwrap a Future in the success case" in {
-      Get() ~> onSuccess(Future.successful("yes")) {
-        echoComplete
-      } ~> check {
-        responseAs[String] shouldEqual "yes"
-      }
+      Get() ~>
+        onSuccess(Future.successful("yes")) {
+          echoComplete
+        } ~>
+        check {
+          responseAs[String] shouldEqual "yes"
+        }
     }
-    "propagate the exception in the failure case" in EventFilter[Exception](
-      occurrences = 1,
-      message = "XXX").intercept {
-      Get() ~> onSuccess(Future.failed(TestException)) {
-        echoComplete
-      } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
+    "propagate the exception in the failure case" in
+      EventFilter[Exception](occurrences = 1, message = "XXX").intercept {
+        Get() ~>
+          onSuccess(Future.failed(TestException)) {
+            echoComplete
+          } ~>
+          check {
+            status shouldEqual StatusCodes.InternalServerError
+          }
       }
-    }
     "catch an exception in the success case" in {
-      Get() ~> onSuccess(Future.successful("ok")) {
-        throwTestException("EX when ")
-      } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual s"Oops. akka.http.scaladsl.server.directives.FutureDirectivesSpec$$TestException: EX when ok"
-      }
+      Get() ~>
+        onSuccess(Future.successful("ok")) {
+          throwTestException("EX when ")
+        } ~>
+        check {
+          status shouldEqual StatusCodes.InternalServerError
+          responseAs[String] shouldEqual
+            s"Oops. akka.http.scaladsl.server.directives.FutureDirectivesSpec$$TestException: EX when ok"
+        }
     }
-    "catch an exception in the failure case" in EventFilter[Exception](
-      occurrences = 1,
-      message = "XXX").intercept {
-      Get() ~> onSuccess(Future.failed(TestException)) {
-        throwTestException("EX when ")
-      } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual "There was an internal server error."
+    "catch an exception in the failure case" in
+      EventFilter[Exception](occurrences = 1, message = "XXX").intercept {
+        Get() ~>
+          onSuccess(Future.failed(TestException)) {
+            throwTestException("EX when ")
+          } ~>
+          check {
+            status shouldEqual StatusCodes.InternalServerError
+            responseAs[String] shouldEqual "There was an internal server error."
+          }
       }
-    }
   }
 
   "The `completeOrRecoverWith` directive" should {
     "complete the request with the Future's value if the future succeeds" in {
-      Get() ~> completeOrRecoverWith(Future.successful("yes")) {
-        echoComplete
-      } ~> check {
-        responseAs[String] shouldEqual "yes"
-      }
+      Get() ~>
+        completeOrRecoverWith(Future.successful("yes")) {
+          echoComplete
+        } ~>
+        check {
+          responseAs[String] shouldEqual "yes"
+        }
     }
     "don't call the inner route if the Future succeeds" in {
-      Get() ~> completeOrRecoverWith(Future.successful("ok")) {
-        throwTestException("EX when ")
-      } ~> check {
-        status shouldEqual StatusCodes.OK
-        responseAs[String] shouldEqual "ok"
-      }
+      Get() ~>
+        completeOrRecoverWith(Future.successful("ok")) {
+          throwTestException("EX when ")
+        } ~>
+        check {
+          status shouldEqual StatusCodes.OK
+          responseAs[String] shouldEqual "ok"
+        }
     }
     "recover using the inner route if the Future fails" in {
       val route =
@@ -124,17 +146,21 @@ class FutureDirectivesSpec extends RoutingSpec {
             complete(s"Exception occurred: ${e.getMessage}")
         }
 
-      Get() ~> route ~> check {
-        responseAs[String] shouldEqual "Exception occurred: XXX"
-      }
+      Get() ~> route ~>
+        check {
+          responseAs[String] shouldEqual "Exception occurred: XXX"
+        }
     }
     "catch an exception during recovery" in {
-      Get() ~> completeOrRecoverWith(Future.failed[String](TestException)) {
-        throwTestException("EX when ")
-      } ~> check {
-        status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] shouldEqual s"Oops. akka.http.scaladsl.server.directives.FutureDirectivesSpec$$TestException: EX when akka.http.scaladsl.server.directives.FutureDirectivesSpec$$TestException$$: XXX"
-      }
+      Get() ~>
+        completeOrRecoverWith(Future.failed[String](TestException)) {
+          throwTestException("EX when ")
+        } ~>
+        check {
+          status shouldEqual StatusCodes.InternalServerError
+          responseAs[String] shouldEqual
+            s"Oops. akka.http.scaladsl.server.directives.FutureDirectivesSpec$$TestException: EX when akka.http.scaladsl.server.directives.FutureDirectivesSpec$$TestException$$: XXX"
+        }
     }
   }
 }

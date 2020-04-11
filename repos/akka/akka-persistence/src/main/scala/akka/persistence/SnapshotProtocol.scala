@@ -140,8 +140,8 @@ final case class SnapshotSelectionCriteria(
     * INTERNAL API.
     */
   private[persistence] def matches(metadata: SnapshotMetadata): Boolean =
-    metadata.sequenceNr <= maxSequenceNr && metadata
-      .timestamp <= maxTimestamp &&
+    metadata
+      .sequenceNr <= maxSequenceNr && metadata.timestamp <= maxTimestamp &&
       metadata.sequenceNr >= minSequenceNr && metadata.timestamp >= minTimestamp
 }
 

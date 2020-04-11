@@ -219,8 +219,8 @@ class KMeans private (
 
     if (data.getStorageLevel == StorageLevel.NONE) {
       logWarning(
-        "The input data is not directly cached, which may hurt performance if its"
-          + " parent RDDs are also uncached.")
+        "The input data is not directly cached, which may hurt performance if its" +
+          " parent RDDs are also uncached.")
     }
 
     // Compute squared norms and cache them.
@@ -238,8 +238,8 @@ class KMeans private (
     // Warn at the end of the run as well, for increased visibility.
     if (data.getStorageLevel == StorageLevel.NONE) {
       logWarning(
-        "The input data was not directly cached, which may hurt performance if its"
-          + " parent RDDs are also uncached.")
+        "The input data was not directly cached, which may hurt performance if its" +
+          " parent RDDs are also uncached.")
     }
     model
   }
@@ -279,9 +279,8 @@ class KMeans private (
       }
     val initTimeInSeconds = (System.nanoTime() - initStartTime) / 1e9
     logInfo(
-      s"Initialization with $initializationMode took " + "%.3f"
-        .format(initTimeInSeconds) +
-        " seconds.")
+      s"Initialization with $initializationMode took " +
+        "%.3f".format(initTimeInSeconds) + " seconds.")
 
     val active = Array.fill(numRuns)(true)
     val costs = Array.fill(numRuns)(0.0)
@@ -348,9 +347,8 @@ class KMeans private (
           if (count != 0) {
             scal(1.0 / count, sum)
             val newCenter = new VectorWithNorm(sum)
-            if (KMeans.fastSquaredDistance(
-                  newCenter,
-                  centers(run)(j)) > epsilon * epsilon) {
+            if (KMeans.fastSquaredDistance(newCenter, centers(run)(j)) >
+                  epsilon * epsilon) {
               changed = true
             }
             centers(run)(j) = newCenter
@@ -521,10 +519,9 @@ class KMeans private (
       .par
       .map { r =>
         val myCenters = centers(r).toArray
-        val myWeights =
-          (0 until myCenters.length)
-            .map(i => weightMap.getOrElse((r, i), 0.0))
-            .toArray
+        val myWeights = (0 until myCenters.length)
+          .map(i => weightMap.getOrElse((r, i), 0.0))
+          .toArray
         LocalKMeans.kMeansPlusPlus(r, myCenters, myWeights, k, 30)
       }
 

@@ -125,17 +125,19 @@ object StormRunner {
       // No Ackers
       override def transformConfig(
           config: Map[String, AnyRef]): Map[String, AnyRef] = {
-        config ++ List(
-          (BTConfig.TOPOLOGY_ACKER_EXECUTORS -> (new java.lang.Integer(0))))
+        config ++
+          List(
+            (BTConfig.TOPOLOGY_ACKER_EXECUTORS -> (new java.lang.Integer(0))))
       }
 
       override def getNamedOptions: Map[String, Options] =
         Map(
-          "DEFAULT" -> Options()
-            .set(SummerParallelism(2))
-            .set(FlatMapParallelism(80))
-            .set(SourceParallelism(16))
-            .set(CacheSize(100)))
+          "DEFAULT" ->
+            Options()
+              .set(SummerParallelism(2))
+              .set(FlatMapParallelism(80))
+              .set(SourceParallelism(16))
+              .set(CacheSize(100)))
       override def graph = wordCount[Storm](spout, storeSupplier)
     }
   }

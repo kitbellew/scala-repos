@@ -102,9 +102,8 @@ class ApplicationAnnotatorTest extends SimpleTestCase {
     assertMatches(
       messages("def f(a: Any, b: Any) {}; f(Seq(null): _*, Seq(null): _*)")) {
       case Error("Seq(null): _*", "Expansion for non-repeated parameter") ::
-          Error(
-            "Seq(null): _*",
-            "Expansion for non-repeated parameter") :: Nil =>
+          Error("Seq(null): _*", "Expansion for non-repeated parameter") ::
+          Nil =>
     }
   }
 

@@ -426,8 +426,8 @@ private[hive] case class HiveScriptIOSchema(
       .map(_.toTypeInfo.getTypeName())
       .mkString(",")
 
-    var propsMap = serdeProps
-      .toMap + (serdeConstants.LIST_COLUMNS -> columns.mkString(","))
+    var propsMap = serdeProps.toMap +
+      (serdeConstants.LIST_COLUMNS -> columns.mkString(","))
     propsMap = propsMap + (serdeConstants.LIST_COLUMN_TYPES -> columnTypesNames)
 
     val properties = new Properties()

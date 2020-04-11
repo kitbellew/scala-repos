@@ -80,10 +80,8 @@ private[collection] object RedBlackTree {
         // right will all be greater than or equal to the lower bound. So 1 for this node plus
         // count the subtrees by stripping off the bounds that we don't need any more
         case _ =>
-          1 + countInRange(tree.left, from, None) + countInRange(
-            tree.right,
-            None,
-            to)
+          1 + countInRange(tree.left, from, None) +
+            countInRange(tree.right, None, to)
 
       }
   def update[A: Ordering, B, B1 >: B](
@@ -755,8 +753,8 @@ private[collection] object RedBlackTree {
       final val right: Tree[A, B])
       extends Serializable {
     @(inline @getter)
-    final val count: Int = 1 + RedBlackTree.count(left) + RedBlackTree
-      .count(right)
+    final val count: Int = 1 + RedBlackTree.count(left) +
+      RedBlackTree.count(right)
     def black: Tree[A, B]
     def red: Tree[A, B]
   }
@@ -863,13 +861,13 @@ private[collection] object RedBlackTree {
          *
          * We also don't store the deepest nodes in the path so the maximum path length is further reduced by one.
          */
-        val maximumHeight =
-          2 * (32 - Integer.numberOfLeadingZeros(root.count + 2 - 1)) - 2 - 1
+        val maximumHeight = 2 *
+          (32 - Integer.numberOfLeadingZeros(root.count + 2 - 1)) - 2 - 1
         new Array[Tree[A, B]](maximumHeight)
       }
     private[this] var index = 0
-    private[this] var lookahead: Tree[A, B] =
-      start map startFrom getOrElse findLeftMostOrPopOnEmpty(root)
+    private[this] var lookahead: Tree[A, B] = start map startFrom getOrElse
+      findLeftMostOrPopOnEmpty(root)
 
     /**
       * Find the leftmost subtree whose key is equal to the given key, or if no such thing,

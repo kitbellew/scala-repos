@@ -37,46 +37,48 @@ trait MathLibModule[M[+_]]
     val MathNamespace = Vector("std", "math")
 
     override def _lib1 =
-      super._lib1 ++ Set(
-        sinh,
-        toDegrees,
-        expm1,
-        getExponent,
-        asin,
-        log10,
-        cos,
-        exp,
-        cbrt,
-        atan,
-        ceil,
-        rint,
-        log1p,
-        sqrt,
-        floor,
-        toRadians,
-        tanh,
-        round,
-        cosh,
-        tan,
-        abs,
-        sin,
-        log,
-        signum,
-        acos,
-        ulp)
+      super._lib1 ++
+        Set(
+          sinh,
+          toDegrees,
+          expm1,
+          getExponent,
+          asin,
+          log10,
+          cos,
+          exp,
+          cbrt,
+          atan,
+          ceil,
+          rint,
+          log1p,
+          sqrt,
+          floor,
+          toRadians,
+          tanh,
+          round,
+          cosh,
+          tan,
+          abs,
+          sin,
+          log,
+          signum,
+          acos,
+          ulp)
 
     override def _lib2 =
-      super._lib2 ++ Set(
-        minOf,
-        min,
-        hypot,
-        pow,
-        maxOf,
-        max,
-        atan2,
-        copySign,
-        roundTo,
-        IEEEremainder)
+      super._lib2 ++
+        Set(
+          minOf,
+          min,
+          hypot,
+          pow,
+          maxOf,
+          max,
+          atan2,
+          copySign,
+          roundTo,
+          IEEEremainder)
 
     import StdLib.{DoubleFrom, doubleIsDefined}
     import java.lang.Math

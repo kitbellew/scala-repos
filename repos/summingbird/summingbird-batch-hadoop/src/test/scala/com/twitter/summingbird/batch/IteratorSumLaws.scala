@@ -46,13 +46,13 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
   property("groupedSum works like groupBy + sum on sorted values") = forAll {
     (in: List[(Int, Long)]) =>
       val sorted = in.sorted
-      groupedSum(sorted.iterator).toMap == in
-        .groupBy {
-          _._1
-        }
-        .mapValues { kvs =>
-          kvs.map(_._2).sum
-        }
+      groupedSum(sorted.iterator).toMap ==
+        in.groupBy {
+            _._1
+          }
+          .mapValues { kvs =>
+            kvs.map(_._2).sum
+          }
   }
   property("partials passes through keys-values") = forAll {
     (in: List[(Int, Long)]) =>
@@ -65,9 +65,8 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
   }
   property("partials gives partial sums") = forAll { (in: List[(Int, Long)]) =>
     val s = partials(in.iterator).toList
-    in.isEmpty || (
-      s.last._2._1.getOrElse(0L) == (in.dropRight(1).map(_._2).sum)
-    )
+    in.isEmpty ||
+    (s.last._2._1.getOrElse(0L) == (in.dropRight(1).map(_._2).sum))
   }
   property("optimizedPairSemigroup works") = {
     val opsg = optimizedPairSemigroup[Int, Long](20)

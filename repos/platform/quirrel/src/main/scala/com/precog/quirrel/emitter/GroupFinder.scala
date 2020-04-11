@@ -84,9 +84,8 @@ trait GroupFinder extends parser.AST with Tracer {
     @tailrec
     def state1(btrace: List[(Sigma, Expr)]): Option[(Sigma, Where)] =
       btrace match {
-        case (
-              _,
-              _: Add | _: Sub | _: Mul | _: Div | _: Neg | _: Paren) :: tail =>
+        case (_, _: Add | _: Sub | _: Mul | _: Div | _: Neg | _: Paren) ::
+            tail =>
           state1(tail)
         case (_, _: ComparisonOp) :: tail =>
           state2(tail)
@@ -131,9 +130,8 @@ trait GroupFinder extends parser.AST with Tracer {
         findVars(solve, id)(pred) ++ findVars(solve, id)(child)
 
       case Relate(_, from, to, in) =>
-        findVars(solve, id)(from) ++ findVars(solve, id)(to) ++ findVars(
-          solve,
-          id)(in)
+        findVars(solve, id)(from) ++ findVars(solve, id)(to) ++
+          findVars(solve, id)(in)
 
       case expr @ TicVar(_, `id`) if expr.binding == SolveBinding(solve) =>
         Set(expr)

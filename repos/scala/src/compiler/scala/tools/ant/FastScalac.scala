@@ -126,8 +126,9 @@ class FastScalac extends Scalac {
       List(
         /*scalac*/
         s.debuginfo,
-        s.target) filter (x => x.value != x.default) map (x =>
-        "%s:%s".format(x.name, x.value))
+        s.target) filter
+        (x => x.value != x.default) map
+        (x => "%s:%s".format(x.name, x.value))
 
     val booleanSettings =
       List(
@@ -150,8 +151,9 @@ class FastScalac extends Scalac {
     val intSettings =
       List(
         /*fsc*/
-        s.idleMins) filter (x => x.value != x.default) flatMap (x =>
-        List(x.name, x.value.toString))
+        s.idleMins) filter
+        (x => x.value != x.default) flatMap
+        (x => List(x.name, x.value.toString))
 
     val phaseSetting = {
       val s = settings.log
@@ -162,7 +164,8 @@ class FastScalac extends Scalac {
     }
 
     val fscOptions =
-      stringSettings ::: choiceSettings ::: booleanSettings ::: intSettings ::: phaseSetting
+      stringSettings ::: choiceSettings ::: booleanSettings ::: intSettings :::
+        phaseSetting
 
     val java = new Java(this)
     java setFork true
@@ -208,13 +211,12 @@ class FastScalac extends Scalac {
     def encodeScalacArgsFile(t: Traversable[String]) =
       t map { s =>
         if (s.find(c => c <= ' ' || "\"'\\".contains(c)).isDefined)
-          "\"" + s.flatMap(c =>
-            (
-              if (c == '"' || c == '\\')
-                "\\"
-              else
-                ""
-            ) + c) + "\""
+          "\"" +
+            s.flatMap(c =>
+              (if (c == '"' || c == '\\')
+                 "\\"
+               else
+                 "") + c) + "\""
         else
           s
       } mkString "\n"
@@ -224,8 +226,8 @@ class FastScalac extends Scalac {
     val tokens = fscOptions ++ (sourceFiles map (_.getPath))
     tempArgFile writeAll encodeScalacArgsFile(tokens)
 
-    val paths = List(Some(tempArgFile.toAbsolute.path), argfile)
-      .flatten map (_.toString)
+    val paths = List(Some(tempArgFile.toAbsolute.path), argfile).flatten map
+      (_.toString)
     val res = execWithArgFiles(java, paths)
 
     if (failonerror && res != 0)

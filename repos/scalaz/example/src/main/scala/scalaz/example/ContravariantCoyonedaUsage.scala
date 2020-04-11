@@ -51,10 +51,8 @@ object ContravariantCoyonedaUsage extends App {
   // and the other two we’ll be using for this example.
 
   def parseCommaNum(s: String): Long \/ String =
-    (
-      """-?[0-9,]+""".r findFirstIn s
-        flatMap (_.filter(_ != ',').parseLong.toOption)
-    ) <\/ s
+    ("""-?[0-9,]+""".r findFirstIn s flatMap
+      (_.filter(_ != ',').parseLong.toOption)) <\/ s
 
   def caseInsensitively(s: String): String = s.toUpperCase.toLowerCase
 
@@ -500,9 +498,7 @@ object ContravariantCoyonedaUsage extends App {
     implicit def desc_\/[A, B](implicit
         a: Binfmt[A],
         b: Binfmt[B]): Binfmt[A \/ B] =
-      Binfmt(
-        "<" |+| a.describe |+| "\\/"
-          |+| b.describe |+| ">")
+      Binfmt("<" |+| a.describe |+| "\\/" |+| b.describe |+| ">")
     implicit def desc2Tuple[A, B](implicit
         a: Binfmt[A],
         b: Binfmt[B]): Binfmt[(A, B)] = Binfmt(a.describe |+| b.describe)

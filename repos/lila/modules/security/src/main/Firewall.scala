@@ -72,8 +72,8 @@ final class Firewall(
     "%s %s %s"
       .format(req.remoteAddress, req.uri, req.headers.get("User-Agent") | "?")
 
-  private def blocksCookies(cookies: Cookies, name: String) =
-    (cookies get name).isDefined
+  private def blocksCookies(cookies: Cookies, name: String) = (cookies get name)
+    .isDefined
 
   // http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address
   private val ipRegex =

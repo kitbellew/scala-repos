@@ -317,9 +317,8 @@ class RFormulaSuite
       assert(model.resolvedFormula.label === model2.resolvedFormula.label)
       assert(model.resolvedFormula.terms === model2.resolvedFormula.terms)
       assert(
-        model.resolvedFormula.hasIntercept === model2
-          .resolvedFormula
-          .hasIntercept)
+        model.resolvedFormula.hasIntercept ===
+          model2.resolvedFormula.hasIntercept)
 
       assert(model.pipelineModel.uid === model2.pipelineModel.uid)
 

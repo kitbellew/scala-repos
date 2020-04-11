@@ -39,9 +39,8 @@ trait FunSpecScopeTest extends FunSpecGenerator {
       funSpecFileName,
       checkConfigAndSettings(_, funSpecClassName, testNames: _*),
       root =>
-        checkResultTreeHasExactNamedPath(
-          root,
-          path1: _*) && checkResultTreeHasExactNamedPath(root, path2: _*) &&
+        checkResultTreeHasExactNamedPath(root, path1: _*) &&
+          checkResultTreeHasExactNamedPath(root, path2: _*) &&
           checkResultTreeDoesNotHaveNodes(root, "OtherScope")
     )
   }

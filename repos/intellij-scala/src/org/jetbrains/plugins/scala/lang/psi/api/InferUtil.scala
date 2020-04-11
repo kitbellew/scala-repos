@@ -269,8 +269,9 @@ object InferUtil {
           throw new SafeCheckException
         resolveResults += results.head
         def updateExpr() {
-          exprs += new Expression(
-            polymorphicSubst subst extractImplicitParameterType(results.head))
+          exprs +=
+            new Expression(
+              polymorphicSubst subst extractImplicitParameterType(results.head))
         }
         val evaluator = ScalaMacroEvaluator.getInstance(place.getProject)
         evaluator.isMacro(results.head.getElement) match {
@@ -316,9 +317,10 @@ object InferUtil {
             val parameter = ScalaPsiElementFactory.createParameterFromText(
               s"$notFoundParameterName: Int",
               place.getManager)
-            resolveResults += new ScalaResolveResult(
-              parameter,
-              implicitSearchState = Some(implicitState))
+            resolveResults +=
+              new ScalaResolveResult(
+                parameter,
+                implicitSearchState = Some(implicitState))
           } else
             resolveResults += r
         })
@@ -431,8 +433,8 @@ object InferUtil {
         fromSAM: Boolean = false): ScType = {
       expectedType match {
         case Some(expectedType @ ScFunctionType(expectedRet, expectedParams))
-            if expectedParams.length == mt.params.length
-              && !mt.returnType.conforms(expectedType) =>
+            if expectedParams.length == mt.params.length &&
+              !mt.returnType.conforms(expectedType) =>
           mt.returnType match {
             case methodType: ScMethodType =>
               return mt.copy(returnType = applyImplicitViewToResult(
@@ -610,9 +612,8 @@ object InferUtil {
                     typez.recursiveUpdate {
                       case tpt: ScTypeParameterType =>
                         typeParams.find(tp =>
-                          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
-                            tpt.name, tpt.getId
-                          )) match {
+                          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+                            (tpt.name, tpt.getId)) match {
                           case None =>
                             (true, tpt)
                           case _ =>
@@ -631,8 +632,8 @@ object InferUtil {
                     case Some(_addLower) =>
                       val substedLowerType = unSubst.subst(lower)
                       val addLower =
-                        if (tp.typeParams.nonEmpty && !_addLower
-                              .isInstanceOf[ScParameterizedType] &&
+                        if (tp.typeParams.nonEmpty &&
+                            !_addLower.isInstanceOf[ScParameterizedType] &&
                             !tp.typeParams.exists(_.name == "_"))
                           ScParameterizedType(
                             _addLower,
@@ -654,8 +655,8 @@ object InferUtil {
                     case Some(_addUpper) =>
                       val substedUpperType = unSubst.subst(upper)
                       val addUpper =
-                        if (tp.typeParams.nonEmpty && !_addUpper
-                              .isInstanceOf[ScParameterizedType] &&
+                        if (tp.typeParams.nonEmpty &&
+                            !_addUpper.isInstanceOf[ScParameterizedType] &&
                             !tp.typeParams.exists(_.name == "_"))
                           ScParameterizedType(
                             _addUpper,
@@ -671,7 +672,8 @@ object InferUtil {
                       upper = unSubst.subst(upper)
                   }
 
-                  if (safeCheck && !undefiningSubstitutor
+                  if (safeCheck &&
+                      !undefiningSubstitutor
                         .subst(lower)
                         .conforms(
                           undefiningSubstitutor.subst(upper),
@@ -695,9 +697,8 @@ object InferUtil {
                       typez.recursiveUpdate {
                         case tpt: ScTypeParameterType =>
                           typeParams.find(tp =>
-                            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
-                              tpt.name, tpt.getId
-                            )) match {
+                            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+                              (tpt.name, tpt.getId)) match {
                             case None =>
                               (true, tpt)
                             case _ =>
@@ -761,8 +762,8 @@ object InferUtil {
                                     typeParams: Seq[ScTypeParam]): Boolean = {
                                   named match {
                                     case t: ScTypeParametersOwner =>
-                                      if (typeParams
-                                            .length != t.typeParameters.length)
+                                      if (typeParams.length !=
+                                            t.typeParameters.length)
                                         return false
                                       typeParams
                                         .zip(t.typeParameters)
@@ -776,9 +777,8 @@ object InferUtil {
                                               true
                                         }
                                     case p: PsiTypeParameterListOwner =>
-                                      if (typeParams.length != p
-                                            .getTypeParameters
-                                            .length)
+                                      if (typeParams.length !=
+                                            p.getTypeParameters.length)
                                         return false
                                       typeParams
                                         .forall(_.typeParameters.isEmpty)

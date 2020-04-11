@@ -24,12 +24,14 @@ class WithDbDataSpec extends PlaySpecification {
 
   "Computer model" should {
 
-    "be retrieved by id" in new WithDbData {
-      // your test code
-    }
-    "be retrieved by email" in new WithDbData {
-      // your test code
-    }
+    "be retrieved by id" in
+      new WithDbData {
+        // your test code
+      }
+    "be retrieved by email" in
+      new WithDbData {
+        // your test code
+      }
   }
   // #scalafunctionaltest-withdbdata
 }

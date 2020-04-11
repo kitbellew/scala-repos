@@ -59,9 +59,8 @@ class StringFunctionsSuite extends QueryTest with SharedSQLContext {
       df.select(
         regexp_replace($"a", "(\\d+)", "num"),
         regexp_extract($"a", "(\\d+)-(\\d+)", 1)),
-      Row("num-num", "100") :: Row("num-num", "100") :: Row(
-        "num-num",
-        "100") :: Nil
+      Row("num-num", "100") :: Row("num-num", "100") :: Row("num-num", "100") ::
+        Nil
     )
 
     // for testing the mutable state of the expression in code gen.
@@ -305,7 +304,7 @@ class StringFunctionsSuite extends QueryTest with SharedSQLContext {
     val df2 = Seq((5L, 4), (4L, 3), (4L, 3), (4L, 3), (3L, 2)).toDF("a", "b")
     checkAnswer(
       df2.filter("b>0").selectExpr("format_number(a, b)"),
-      Row("5.0000") :: Row("4.000") :: Row("4.000") :: Row("4.000") :: Row(
-        "3.00") :: Nil)
+      Row("5.0000") :: Row("4.000") :: Row("4.000") :: Row("4.000") ::
+        Row("3.00") :: Nil)
   }
 }

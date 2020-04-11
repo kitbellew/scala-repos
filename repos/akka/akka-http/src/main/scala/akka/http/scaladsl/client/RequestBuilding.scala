@@ -95,9 +95,8 @@ trait RequestBuilding extends TransformerPipelineSupport {
     _ mapHeaders (_ filterNot clazz.isInstance)
 
   def removeHeaders(names: String*): RequestTransformer =
-    _ mapHeaders (
-      _ filterNot (header ⇒ names exists (_ equalsIgnoreCase header.name))
-    )
+    _ mapHeaders
+      (_ filterNot (header ⇒ names exists (_ equalsIgnoreCase header.name)))
 
   def addCredentials(credentials: HttpCredentials) =
     addHeader(headers.Authorization(credentials))

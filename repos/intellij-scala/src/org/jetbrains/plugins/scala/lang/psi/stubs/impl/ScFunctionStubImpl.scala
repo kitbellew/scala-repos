@@ -99,10 +99,9 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
   def getReturnTypeElement: Option[ScTypeElement] = {
     if (myReturnTypeElement != null) {
       val returnTypeElement = myReturnTypeElement.get
-      if (returnTypeElement != null && (
-            returnTypeElement
-              .isEmpty || (returnTypeElement.get.getContext eq getPsi)
-          )) {
+      if (returnTypeElement != null &&
+          (returnTypeElement.isEmpty ||
+          (returnTypeElement.get.getContext eq getPsi))) {
         return returnTypeElement
       }
     }

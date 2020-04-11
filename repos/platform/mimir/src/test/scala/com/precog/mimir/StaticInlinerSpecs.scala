@@ -152,8 +152,8 @@ trait StaticInlinerSpecs[M[+_]]
             dag.AbsoluteLoad(Const(CString("/foo"))(line))(line),
             Const(CTrue)(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual dag
-          .AbsoluteLoad(Const(CString("/foo"))(line))(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          dag.AbsoluteLoad(Const(CString("/foo"))(line))(line)
       }
 
       "false" >> {
@@ -163,8 +163,8 @@ trait StaticInlinerSpecs[M[+_]]
             dag.AbsoluteLoad(Const(CString("/foo"))(line))(line),
             Const(CBoolean(false))(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          CUndefined)(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(CUndefined)(line)
       }
     }
 
@@ -174,8 +174,8 @@ trait StaticInlinerSpecs[M[+_]]
       "wrap" >> {
         val input = Operate(WrapArray, Const(CBoolean(false))(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          RArray(CBoolean(false)))(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(RArray(CBoolean(false)))(line)
       }
 
       "deref" >> {
@@ -186,8 +186,8 @@ trait StaticInlinerSpecs[M[+_]]
             Const(RArray(CBoolean(false), CTrue))(line),
             Const(CNum(1))(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(CTrue)(
-          line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(CTrue)(line)
       }
 
       "join" >> {
@@ -198,8 +198,8 @@ trait StaticInlinerSpecs[M[+_]]
             Const(RArray(CTrue))(line),
             Const(RArray(CBoolean(false)))(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          RArray(CTrue, CBoolean(false)))(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(RArray(CTrue, CBoolean(false)))(line)
       }
 
       "swap" >> {
@@ -210,8 +210,8 @@ trait StaticInlinerSpecs[M[+_]]
             Const(RArray(CTrue, CBoolean(false), CString("TEST")))(line),
             Const(CNum(1))(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          RArray(CBoolean(false), CTrue, CString("TEST")))(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(RArray(CBoolean(false), CTrue, CString("TEST")))(line)
       }
     }
 
@@ -226,8 +226,8 @@ trait StaticInlinerSpecs[M[+_]]
             Const(CString("k"))(line),
             Const(CTrue)(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          RObject("k" -> CTrue))(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(RObject("k" -> CTrue))(line)
       }
 
       "deref" >> {
@@ -238,8 +238,8 @@ trait StaticInlinerSpecs[M[+_]]
             Const(RObject("k" -> CBoolean(false)))(line),
             Const(CString("k"))(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          CBoolean(false))(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(CBoolean(false))(line)
       }
 
       "join" >> {
@@ -250,8 +250,8 @@ trait StaticInlinerSpecs[M[+_]]
             Const(RObject("k" -> CTrue))(line),
             Const(RObject("l" -> CBoolean(false)))(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          RObject("k" -> CTrue, "l" -> CBoolean(false)))(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(RObject("k" -> CTrue, "l" -> CBoolean(false)))(line)
       }
     }
 
@@ -267,8 +267,8 @@ trait StaticInlinerSpecs[M[+_]]
             Const(CString("k"))(line),
             Cross(None))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          CString("j"))(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(CString("j"))(line)
       }
 
       "const false" >> {
@@ -280,8 +280,8 @@ trait StaticInlinerSpecs[M[+_]]
             Const(CString("k"))(line),
             Cross(None))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          CString("k"))(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(CString("k"))(line)
       }
 
       "invalid const" >> {
@@ -324,8 +324,8 @@ trait StaticInlinerSpecs[M[+_]]
             Const(CUndefined)(line),
             Const(CString("j"))(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          CUndefined)(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(CUndefined)(line)
       }
 
       "predicate" >> {
@@ -336,8 +336,8 @@ trait StaticInlinerSpecs[M[+_]]
             Const(CString("j"))(line),
             Const(CUndefined)(line))(line)
 
-        inlineStatics(input, defaultEvaluationContext) mustEqual Const(
-          CUndefined)(line)
+        inlineStatics(input, defaultEvaluationContext) mustEqual
+          Const(CUndefined)(line)
       }
     }
   }

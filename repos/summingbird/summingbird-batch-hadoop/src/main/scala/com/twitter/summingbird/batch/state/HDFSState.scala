@@ -87,8 +87,7 @@ class HDFSCheckpointStore(val config: HDFSState.Config)(implicit
     .map(InclusiveLower(_))
     .getOrElse {
       sys.error {
-        "You must provide startTime in config " +
-          "at least for the first run!"
+        "You must provide startTime in config " + "at least for the first run!"
       }
     }
 

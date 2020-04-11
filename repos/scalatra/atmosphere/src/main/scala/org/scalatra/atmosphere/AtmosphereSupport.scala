@@ -152,7 +152,8 @@ trait AtmosphereSupport
         .setInitParameter(
           ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT,
           "true")
-    if (trackMessageSize || cfg
+    if (trackMessageSize ||
+        cfg
           .getInitParameter(TrackMessageSize)
           .blankOption
           .map(_.toCheckboxBool)
@@ -271,8 +272,8 @@ trait AtmosphereSupport
     val transport = cometEvent
       .getHttpServletRequest
       .getParameter(HeaderConfig.X_ATMOSPHERE_TRANSPORT)
-    if (transport != null && transport
-          .equalsIgnoreCase(HeaderConfig.WEBSOCKET_TRANSPORT)) {
+    if (transport != null &&
+        transport.equalsIgnoreCase(HeaderConfig.WEBSOCKET_TRANSPORT)) {
       cometEvent.close()
     }
   }
@@ -293,8 +294,8 @@ trait AtmosphereSupport
     val transport = cometEvent
       .getHttpServletRequest
       .getParameter(HeaderConfig.X_ATMOSPHERE_TRANSPORT)
-    if (transport != null && transport
-          .equalsIgnoreCase(HeaderConfig.WEBSOCKET_TRANSPORT)) {
+    if (transport != null &&
+        transport.equalsIgnoreCase(HeaderConfig.WEBSOCKET_TRANSPORT)) {
       cometEvent.close()
     }
   }

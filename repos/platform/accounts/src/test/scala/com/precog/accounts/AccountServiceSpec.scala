@@ -148,9 +148,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
   def createAccount(email: String, password: String) = {
     val request: JValue = JObject(
-      JField("email", JString(email)) :: JField(
-        "password",
-        JString(password)) :: Nil)
+      JField("email", JString(email)) ::
+        JField("password", JString(password)) :: Nil)
     accounts.post("")(request)
   }
 
@@ -220,13 +219,15 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
   "accounts service" should {
     "create accounts" in {
-      createAccount("test0001@email.com", "12345").copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
-          jvalue \ "accountId" must beLike {
-            case JString(id) =>
-              ok
-          }
-      }
+      createAccount("test0001@email.com", "12345").copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
+            jvalue \ "accountId" must
+              beLike {
+                case JString(id) =>
+                  ok
+              }
+        }
     }
 
     "not create duplicate accounts" in {
@@ -238,10 +239,11 @@ class AccountServiceSpec extends TestAccountService with Tags {
             createAccount("test0002@email.com", "password2")
         } yield errorMessage
 
-      msgFuture.copoint must beLike {
-        case JString(msg) =>
-          msg must startWith("An account already exists")
-      }
+      msgFuture.copoint must
+        beLike {
+          case JString(msg) =>
+            msg must startWith("An account already exists")
+        }
     }
 
     "find own account" in {
@@ -251,10 +253,11 @@ class AccountServiceSpec extends TestAccountService with Tags {
           id <- createAccountAndGetId(user, pass)
           resp <- getAccount(id, user, pass)
         } yield resp
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jv), _) =>
-          jv \ "email" must_== JString(user)
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jv), _) =>
+            jv \ "email" must_== JString(user)
+        }
     }
 
     "delete own account" in {
@@ -265,12 +268,13 @@ class AccountServiceSpec extends TestAccountService with Tags {
           res0 <- deleteAccount(id, user, pass)
           res1 <- getAccount(id, user, pass)
         } yield ((res0, res1))
-      ).copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(NoContent, _), _, _, _),
-              HttpResponse(HttpStatus(Unauthorized, _), _, _, _)) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case (
+                HttpResponse(HttpStatus(NoContent, _), _, _, _),
+                HttpResponse(HttpStatus(Unauthorized, _), _, _, _)) =>
+            ok
+        }
     }
 
     "change password of account" in {
@@ -283,13 +287,14 @@ class AccountServiceSpec extends TestAccountService with Tags {
           res1 <- getAccount(id, user, oldPass)
           res2 <- getAccount(id, user, newPass)
         } yield ((res0, res1, res2))
-      ).copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(OK, _), _, _, _),
-              HttpResponse(HttpStatus(Unauthorized, _), _, _, _),
-              HttpResponse(HttpStatus(OK, _), _, _, _)) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case (
+                HttpResponse(HttpStatus(OK, _), _, _, _),
+                HttpResponse(HttpStatus(Unauthorized, _), _, _, _),
+                HttpResponse(HttpStatus(OK, _), _, _, _)) =>
+            ok
+        }
     }
 
     "get account plan type" in {
@@ -299,10 +304,11 @@ class AccountServiceSpec extends TestAccountService with Tags {
           id <- createAccountAndGetId(user, pass)
           res <- getAccountPlan(id, user, pass)
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jv), _) =>
-          jv \ "type" must_== JString("Free")
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jv), _) =>
+            jv \ "type" must_== JString("Free")
+        }
     }
 
     "update account plan type" in {
@@ -313,12 +319,13 @@ class AccountServiceSpec extends TestAccountService with Tags {
           res0 <- putAccountPlan(id, user, pass, "Root")
           res1 <- getAccountPlan(id, user, pass)
         } yield ((res0, res1))
-      ).copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(OK, _), _, _, _),
-              HttpResponse(HttpStatus(OK, _), _, Some(jv), _)) =>
-          jv \ "type" must_== JString("Root")
-      }
+      ).copoint must
+        beLike {
+          case (
+                HttpResponse(HttpStatus(OK, _), _, _, _),
+                HttpResponse(HttpStatus(OK, _), _, Some(jv), _)) =>
+            jv \ "type" must_== JString("Root")
+        }
     }
 
     "delete account plan" in {
@@ -330,10 +337,11 @@ class AccountServiceSpec extends TestAccountService with Tags {
           _ <- removeAccountPlan(id, user, pass)
           res <- getAccountPlan(id, user, pass)
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jv), _) =>
-          jv \ "type" must_== JString("Free")
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jv), _) =>
+            jv \ "type" must_== JString("Free")
+        }
     }
 
     "locate account by api key (account api key or subordinates)" in {
@@ -375,10 +383,11 @@ class AccountServiceSpec extends TestAccountService with Tags {
           id2 <- createAccountAndGetId("some-other-email@email.com", "password")
           resp <- getAccount(id2, user, pass)
         } yield resp
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(Unauthorized, _), _, Some(jv), _) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(Unauthorized, _), _, Some(jv), _) =>
+            ok
+        }
     }
 
     "create and use a password reset token" in {
@@ -409,13 +418,14 @@ class AccountServiceSpec extends TestAccountService with Tags {
           resetResult <- resetPassword(accountId, resetToken, newPass)
           newAuthResult <- getAccount(accountId, user, newPass)
         } yield (genToken, resetResult, newAuthResult)
-      ).copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(OK, _), _, _, _),
-              HttpResponse(HttpStatus(OK, _), _, _, _),
-              HttpResponse(HttpStatus(OK, _), _, _, _)) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case (
+                HttpResponse(HttpStatus(OK, _), _, _, _),
+                HttpResponse(HttpStatus(OK, _), _, _, _),
+                HttpResponse(HttpStatus(OK, _), _, _, _)) =>
+            ok
+        }
     }
 
     "find an account by email address" in {
@@ -424,18 +434,20 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
       val accountId = createAccountAndGetId(user, pass).copoint
 
-      getAccountByEmail(user).copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(JArray(results)), _) =>
-          val JString(id) = results.head \ "accountId"
-          id must_== accountId
-      }
+      getAccountByEmail(user).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(JArray(results)), _) =>
+            val JString(id) = results.head \ "accountId"
+            id must_== accountId
+        }
     }
 
     "not find a non-existent account by email address" in {
-      getAccountByEmail("nobodyhome@precog.com").copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(JArray(Nil)), _) =>
-          ok
-      }
+      getAccountByEmail("nobodyhome@precog.com").copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(JArray(Nil)), _) =>
+            ok
+        }
     }
   }
 }

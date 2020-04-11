@@ -57,9 +57,8 @@ private[launchqueue] class RateLimiter(clock: Clock) {
         } else {
           log.info(
             s"$message. Task launch delay for [${app.id}] changed from [$priorTimeLeft] to [$timeLeft].")
-          taskLaunchDelays += (
-            (app.id, app.versionInfo.lastConfigChangeVersion) -> newDelay
-          )
+          taskLaunchDelays +=
+            ((app.id, app.versionInfo.lastConfigChangeVersion) -> newDelay)
         }
         newDelay.deadline
 
@@ -70,9 +69,8 @@ private[launchqueue] class RateLimiter(clock: Clock) {
   }
 
   def resetDelay(app: AppDefinition): Unit = {
-    if (taskLaunchDelays contains (
-          app.id -> app.versionInfo.lastConfigChangeVersion
-        )) {
+    if (taskLaunchDelays contains
+          (app.id -> app.versionInfo.lastConfigChangeVersion)) {
       log.info(
         s"Task launch delay for [${app.id} - ${app.versionInfo.lastConfigChangeVersion}}] reset to zero")
       taskLaunchDelays -= (app.id -> app.versionInfo.lastConfigChangeVersion)
@@ -94,9 +92,10 @@ private object RateLimiter {
 
     def increased(clock: Clock, app: AppDefinition): Delay = {
       val newDelay: FiniteDuration =
-        app.maxLaunchDelay min FiniteDuration(
-          (delay.toNanos * app.backoffFactor).toLong,
-          TimeUnit.NANOSECONDS)
+        app.maxLaunchDelay min
+          FiniteDuration(
+            (delay.toNanos * app.backoffFactor).toLong,
+            TimeUnit.NANOSECONDS)
       Delay(clock, newDelay)
     }
   }

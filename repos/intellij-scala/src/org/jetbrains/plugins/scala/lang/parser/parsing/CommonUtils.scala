@@ -22,10 +22,10 @@ object CommonUtils {
       else
         ScalaElementTypes.INTERPOLATED_PREFIX_LITERAL_REFERENCE)
     val patternArgsMarker = builder.mark()
-    while (!builder.eof() && builder
-             .getTokenType != ScalaTokenTypes.tINTERPOLATED_STRING_END) {
-      if (builder.getTokenType == ScalaTokenTypes
-            .tINTERPOLATED_STRING_INJECTION) {
+    while (!builder.eof() &&
+           builder.getTokenType != ScalaTokenTypes.tINTERPOLATED_STRING_END) {
+      if (builder.getTokenType ==
+            ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION) {
         builder.advanceLexer()
         if (isPattern) {
           if (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER) {

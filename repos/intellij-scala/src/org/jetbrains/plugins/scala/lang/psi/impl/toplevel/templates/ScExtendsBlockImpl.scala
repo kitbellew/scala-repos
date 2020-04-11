@@ -375,8 +375,8 @@ class ScExtendsBlockImpl private (
       case Some(parents) =>
         val parentElements: Seq[ScTypeElement] =
           parents.allTypeElements.toIndexedSeq
-        val results: Seq[String] =
-          parentElements flatMap (process(_, Vector[String]()))
+        val results: Seq[String] = parentElements flatMap
+          (process(_, Vector[String]()))
         search(results)(isUnderCaseClass).toBuffer
     }
   }

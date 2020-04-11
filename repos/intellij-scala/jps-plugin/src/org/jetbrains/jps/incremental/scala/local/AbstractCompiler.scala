@@ -81,12 +81,13 @@ abstract class AbstractCompiler extends Compiler {
     def problems = entries.reverse.toArray
 
     def log(pos: Position, msg: String, sev: Severity) {
-      entries ::= new Problem {
-        val category = ""
-        val position = pos
-        val message = msg
-        val severity = sev
-      }
+      entries ::=
+        new Problem {
+          val category = ""
+          val position = pos
+          val message = msg
+          val severity = sev
+        }
 
       val kind =
         sev match {

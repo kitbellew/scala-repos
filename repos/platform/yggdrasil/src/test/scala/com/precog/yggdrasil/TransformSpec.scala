@@ -60,14 +60,19 @@ trait TransformSpec[M[+_]]
   }
 
   def testMap1IntLeaf = {
-    val sample = (-10 to 10).map(JNum(_)).toStream
+    val sample =
+      (
+        -10 to 10
+      ).map(JNum(_)).toStream
     val table = fromSample(SampleData(sample))
     val results = toJson(
       table.transform {
         Map1(Leaf(Source), lookupF1(Nil, "negate"))
       })
 
-    results.copoint must_== (-10 to 10).map(x => JNum(-x))
+    results.copoint must_== (
+      -10 to 10
+    ).map(x => JNum(-x))
   }
 
   def testMap1ArrayObject = {
@@ -207,7 +212,9 @@ trait TransformSpec[M[+_]]
         })
 
       val expected = sample.data flatMap { jv =>
-        (jv \ "value") match {
+        (
+          jv \ "value"
+        ) match {
           case JNum(x) if x % 2 == 0 =>
             Some(JBool(true))
           case JNum(_) =>
@@ -272,7 +279,9 @@ trait TransformSpec[M[+_]]
         })
 
       val expected = sample.data flatMap { jv =>
-        (jv \ "value") match {
+        (
+          jv \ "value"
+        ) match {
           case JNum(x) if x % 2 == 0 =>
             Some(jv)
           case _ =>
@@ -319,7 +328,9 @@ trait TransformSpec[M[+_]]
       })
 
     val expected = data flatMap { jv =>
-      (jv \ "value") match {
+      (
+        jv \ "value"
+      ) match {
         case JNum(x) if x % 2 == 0 =>
           Some(jv)
         case _ =>
@@ -428,7 +439,13 @@ trait TransformSpec[M[+_]]
         })
 
       val expected = sample.data flatMap { jv =>
-        ((jv \ "value" \ "value1"), (jv \ "value" \ "value2")) match {
+        (
+          (
+            jv \ "value" \ "value1"
+          ),
+          (
+            jv \ "value" \ "value2"
+          )) match {
           case (JNum(x), JNum(y)) if x == y =>
             Some(JBool(true))
           case (JNum(x), JNum(y)) =>
@@ -461,7 +478,13 @@ trait TransformSpec[M[+_]]
         })
 
       val expected = sample.data flatMap { jv =>
-        ((jv \ "value" \ "value1"), (jv \ "value" \ "value2")) match {
+        (
+          (
+            jv \ "value" \ "value1"
+          ),
+          (
+            jv \ "value" \ "value2"
+          )) match {
           case (JNum(x), JNum(y)) =>
             Some(JNum(x + y))
           case _ =>
@@ -518,11 +541,9 @@ trait TransformSpec[M[+_]]
           Equal(Leaf(Source), Leaf(Source))
         })
 
-      results.copoint must_== (
-        Stream.tabulate(sample.data.size) { _ =>
-          JBool(true)
-        }
-      )
+      results.copoint must_== (Stream.tabulate(sample.data.size) { _ =>
+        JBool(true)
+      })
     }
   }
 
@@ -639,7 +660,13 @@ trait TransformSpec[M[+_]]
       })
 
     val expected = data flatMap { jv =>
-      ((jv \ "value" \ "value1"), (jv \ "value" \ "value2")) match {
+      (
+        (
+          jv \ "value" \ "value1"
+        ),
+        (
+          jv \ "value" \ "value2"
+        )) match {
         case (_, JUndefined) =>
           None
         case (JUndefined, _) =>
@@ -691,7 +718,13 @@ trait TransformSpec[M[+_]]
       })
 
     val expected = data flatMap { jv =>
-      ((jv \ "value" \ "value1"), (jv \ "value" \ "value2")) match {
+      (
+        (
+          jv \ "value" \ "value1"
+        ),
+        (
+          jv \ "value" \ "value2"
+        )) match {
         case (_, JUndefined) =>
           None
         case (JUndefined, _) =>
@@ -746,7 +779,13 @@ trait TransformSpec[M[+_]]
       })
 
     val expected = data flatMap { jv =>
-      ((jv \ "value" \ "value1"), (jv \ "value" \ "value2")) match {
+      (
+        (
+          jv \ "value" \ "value1"
+        ),
+        (
+          jv \ "value" \ "value2"
+        )) match {
         case (_, JUndefined) =>
           None
         case (JUndefined, _) =>
@@ -795,7 +834,13 @@ trait TransformSpec[M[+_]]
       })
 
     val expected = data flatMap { jv =>
-      ((jv \ "value" \ "value1"), (jv \ "value" \ "value2")) match {
+      (
+        (
+          jv \ "value" \ "value1"
+        ),
+        (
+          jv \ "value" \ "value2"
+        )) match {
         case (_, JUndefined) =>
           None
         case (JUndefined, _) =>
@@ -823,7 +868,13 @@ trait TransformSpec[M[+_]]
       })
 
     val expected = sample.data flatMap { jv =>
-      ((jv \ "value" \ "value1"), (jv \ "value" \ "value2")) match {
+      (
+        (
+          jv \ "value" \ "value1"
+        ),
+        (
+          jv \ "value" \ "value2"
+        )) match {
         case (JUndefined, JUndefined) =>
           None
         case (x, y) =>
@@ -836,7 +887,11 @@ trait TransformSpec[M[+_]]
 
   def checkEqual = {
     def hasVal1Val2(jv: JValue): Boolean =
-      (jv \? ".value.value1").nonEmpty && (jv \? ".value.value2").nonEmpty
+      (
+        jv \? ".value.value1"
+      ).nonEmpty && (
+        jv \? ".value.value2"
+      ).nonEmpty
 
     val genBase: Gen[SampleData] =
       sample(_ => Seq(JPath("value1") -> CLong, JPath("value2") -> CLong))
@@ -915,7 +970,9 @@ trait TransformSpec[M[+_]]
         SampleData(
           sd.data.zipWithIndex map {
             case (jv, i) if i % 2 == 0 =>
-              if ((jv \? ".value.value1").nonEmpty) {
+              if ((
+                    jv \? ".value.value1"
+                  ).nonEmpty) {
                 jv.set(
                   JPath(JPathField("value"), JPathField("value1")),
                   JNum(0))
@@ -924,7 +981,9 @@ trait TransformSpec[M[+_]]
               }
 
             case (jv, i) if i % 5 == 0 =>
-              if ((jv \? ".value.value1").nonEmpty) {
+              if ((
+                    jv \? ".value.value1"
+                  ).nonEmpty) {
                 jv.set(
                   JPath(JPathField("value"), JPathField("value1")),
                   JUndefined)
@@ -970,7 +1029,9 @@ trait TransformSpec[M[+_]]
         SampleData(
           sd.data.zipWithIndex map {
             case (jv, i) if i % 2 == 0 =>
-              if ((jv \? ".value.value1").nonEmpty) {
+              if ((
+                    jv \? ".value.value1"
+                  ).nonEmpty) {
                 jv.set(
                   JPath(JPathField("value"), JPathField("value1")),
                   JNum(0))
@@ -979,7 +1040,9 @@ trait TransformSpec[M[+_]]
               }
 
             case (jv, i) if i % 5 == 0 =>
-              if ((jv \? ".value.value1").nonEmpty) {
+              if ((
+                    jv \? ".value.value1"
+                  ).nonEmpty) {
                 jv.set(
                   JPath(JPathField("value"), JPathField("value1")),
                   JUndefined)
@@ -1342,24 +1405,22 @@ trait TransformSpec[M[+_]]
         })
 
       def isOk(results: M[Stream[JValue]]) =
-        results.copoint must_== (
-          sample.data flatMap {
-            case JObject(fields) => {
-              val back = JObject(
-                fields filter {
-                  case (name, value) =>
-                    name == "value" && value.isInstanceOf[JObject]
-                })
-              if (back \ "value" \ "value1" == JUndefined || back \ "value" \ "value2" == JUndefined)
-                None
-              else
-                Some(back)
-            }
-
-            case _ =>
+        results.copoint must_== (sample.data flatMap {
+          case JObject(fields) => {
+            val back = JObject(
+              fields filter {
+                case (name, value) =>
+                  name == "value" && value.isInstanceOf[JObject]
+              })
+            if (back \ "value" \ "value1" == JUndefined || back \ "value" \ "value2" == JUndefined)
               None
+            else
+              Some(back)
           }
-        )
+
+          case _ =>
+            None
+        })
 
       isOk(resultsInner)
       isOk(resultsOuter)
@@ -1404,17 +1465,13 @@ trait TransformSpec[M[+_]]
         })
 
       def isOk(results: M[Stream[JValue]]) =
-        results.copoint must_== (
-          sample.data map {
-            _ \ "value"
-          } collect {
-            case v
-                if (v \ "value1") != JUndefined && (
-                  v \ "value2"
-                ) != JUndefined =>
-              JObject(JField("value1", v \ "value2") :: Nil)
-          }
-        )
+        results.copoint must_== (sample.data map {
+          _ \ "value"
+        } collect {
+          case v
+              if (v \ "value1") != JUndefined && (v \ "value2") != JUndefined =>
+            JObject(JField("value1", v \ "value2") :: Nil)
+        })
 
       isOk(resultsOuter)
       isOk(resultsInner)
@@ -1454,7 +1511,9 @@ trait TransformSpec[M[+_]]
 
       val sample = SampleData(
         sample0.data flatMap { jv =>
-          (jv \ "value") match {
+          (
+            jv \ "value"
+          ) match {
             case JArray(x :: Nil) =>
               None
             case z =>
@@ -1498,22 +1557,22 @@ trait TransformSpec[M[+_]]
         })
 
       def isOk(results: M[Stream[JValue]]) =
-        results.copoint must_== (
-          sample.data flatMap {
-            case obj @ JObject(fields) => {
-              (obj \ "value") match {
-                case JArray(inner) if inner.length >= 2 =>
-                  Some(JObject(JField("value", JArray(inner take 2)) :: Nil))
+        results.copoint must_== (sample.data flatMap {
+          case obj @ JObject(fields) => {
+            (
+              obj \ "value"
+            ) match {
+              case JArray(inner) if inner.length >= 2 =>
+                Some(JObject(JField("value", JArray(inner take 2)) :: Nil))
 
-                case _ =>
-                  None
-              }
+              case _ =>
+                None
             }
-
-            case _ =>
-              None
           }
-        )
+
+          case _ =>
+            None
+        })
 
       isOk(resultsInner)
       isOk(resultsOuter)
@@ -1751,7 +1810,9 @@ trait TransformSpec[M[+_]]
         val expected = sample
           .data
           .flatMap { jv =>
-            (jv \ "value").delete(JPath(field))
+            (
+              jv \ "value"
+            ).delete(JPath(field))
           }
 
         result.copoint must_== expected
@@ -2713,7 +2774,9 @@ trait TransformSpec[M[+_]]
         .data
         .foldLeft((BigDecimal(0), Vector.empty[JValue])) {
           case ((a, s), jv) => {
-            (jv \ "value") match {
+            (
+              jv \ "value"
+            ) match {
               case JNum(i) =>
                 (a + i, s :+ JNum(a + i))
               case _ =>
@@ -2754,7 +2817,9 @@ trait TransformSpec[M[+_]]
         .data
         .foldLeft((BigDecimal(0), Vector.empty[JValue])) {
           case ((a, s), jv) => {
-            (jv \ "value") match {
+            (
+              jv \ "value"
+            ) match {
               case JNum(i) =>
                 (a + i, s :+ JNum(a + i))
               case _ =>
@@ -2782,7 +2847,9 @@ trait TransformSpec[M[+_]]
           .data
           .foldLeft((BigDecimal(0), Vector.empty[JValue])) {
             case ((a, s), jv) => {
-              (jv \ "value") match {
+              (
+                jv \ "value"
+              ) match {
                 case JNum(i) =>
                   (a + i, s :+ JNum(a + i))
                 case _ =>
@@ -2831,7 +2898,9 @@ trait TransformSpec[M[+_]]
         */
       val sample = SampleData(
         sample0.data flatMap { jv =>
-          (jv \ "value") match {
+          (
+            jv \ "value"
+          ) match {
             case JArray(x :: Nil) =>
               None
             case JArray(x :: y :: Nil) =>
@@ -2847,7 +2916,9 @@ trait TransformSpec[M[+_]]
         })
 
       val expected = sample.data flatMap { jv =>
-        (jv \ "value") match {
+        (
+          jv \ "value"
+        ) match {
           case JArray(x :: y :: z :: xs) =>
             Some(JArray(z :: y :: x :: xs))
           case _ =>
@@ -2902,7 +2973,9 @@ trait TransformSpec[M[+_]]
         })
 
       val expected = sample.data flatMap { jv =>
-        (jv \ "value") match {
+        (
+          jv \ "value"
+        ) match {
           case jv @ JNum(x) =>
             Some(
               if (x % 2 == 0)

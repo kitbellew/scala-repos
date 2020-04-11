@@ -35,8 +35,8 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test("Correctly encode BITCOUNT") {
     assert(
-      codec(wrap("BITCOUNT foo\r\n")) == List(
-        BitCount(StringToChannelBuffer("foo"))))
+      codec(wrap("BITCOUNT foo\r\n")) ==
+        List(BitCount(StringToChannelBuffer("foo"))))
   }
 
   test(
@@ -102,11 +102,11 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test("Correctly encode DECRBY") {
     assert(
-      codec(wrap("DECRBY foo 1\r\n")) == List(
-        DecrBy(StringToChannelBuffer("foo"), 1)))
+      codec(wrap("DECRBY foo 1\r\n")) ==
+        List(DecrBy(StringToChannelBuffer("foo"), 1)))
     assert(
-      codec(wrap("DECRBY foo 4096\r\n")) == List(
-        DecrBy(StringToChannelBuffer("foo"), 4096)))
+      codec(wrap("DECRBY foo 4096\r\n")) ==
+        List(DecrBy(StringToChannelBuffer("foo"), 4096)))
   }
 
   test("Throw a ClientError if DECRBY is called with one argument") {
@@ -134,8 +134,8 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test("Correctly encode GETBIT") {
     assert(
-      codec(wrap("GETBIT foo 0\r\n")) == List(
-        GetBit(StringToChannelBuffer("foo"), 0)))
+      codec(wrap("GETBIT foo 0\r\n")) ==
+        List(GetBit(StringToChannelBuffer("foo"), 0)))
   }
 
   test("Throw a ClientError if GETRANGE is called with no arguments") {
@@ -184,15 +184,12 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode INCR with an integer argument") {
-    assert(
-      codec(wrap("INCR 1\r\n")) ==
-        List(Incr(StringToChannelBuffer("1"))))
+    assert(codec(wrap("INCR 1\r\n")) == List(Incr(StringToChannelBuffer("1"))))
   }
 
   test("Correctly encode INCR with a string argument") {
     assert(
-      codec(wrap("INCR foo\r\n")) ==
-        List(Incr(StringToChannelBuffer("foo"))))
+      codec(wrap("INCR foo\r\n")) == List(Incr(StringToChannelBuffer("foo"))))
   }
 
   test("Throw a ClientError if INCR is called with two arguments") {
@@ -203,11 +200,11 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test("Correctly encode INCRBY") {
     assert(
-      codec(wrap("INCRBY foo 1\r\n")) == List(
-        IncrBy(StringToChannelBuffer("foo"), 1)))
+      codec(wrap("INCRBY foo 1\r\n")) ==
+        List(IncrBy(StringToChannelBuffer("foo"), 1)))
     assert(
-      codec(wrap("INCRBY foo 4096\r\n")) == List(
-        IncrBy(StringToChannelBuffer("foo"), 4096)))
+      codec(wrap("INCRBY foo 4096\r\n")) ==
+        List(IncrBy(StringToChannelBuffer("foo"), 4096)))
   }
 
   test("Throw a ClientError if INCRBY is called with one argument") {
@@ -417,8 +414,8 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test("Correctly encode STRLEN") {
     assert(
-      codec(wrap("STRLEN foo\r\n")) == List(
-        Strlen(StringToChannelBuffer("foo"))))
+      codec(wrap("STRLEN foo\r\n")) ==
+        List(Strlen(StringToChannelBuffer("foo"))))
   }
 
   // Unified GET request

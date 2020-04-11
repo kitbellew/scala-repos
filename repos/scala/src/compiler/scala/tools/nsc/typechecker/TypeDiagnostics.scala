@@ -139,12 +139,11 @@ trait TypeDiagnostics {
       })
     def parenthesize(a: String) = s"($a)"
     def genericParams =
-      (Seq("param1") ++ (
-        if (arity > 2)
-          Seq("...")
-        else
-          Nil
-      ) ++ Seq(s"param$arity"))
+      (Seq("param1") ++
+        (if (arity > 2)
+           Seq("...")
+         else
+           Nil) ++ Seq(s"param$arity"))
     parenthesize(varPatterNames.getOrElse(genericParams).mkString(", "))
   }
 
@@ -156,9 +155,9 @@ trait TypeDiagnostics {
         Nil
     }
   def alternativesString(tree: Tree) =
-    alternatives(tree) map (x => "  " + methodTypeErrorString(x)) mkString (
-      "", " <and>\n", "\n"
-    )
+    alternatives(tree) map
+      (x => "  " + methodTypeErrorString(x)) mkString
+      ("", " <and>\n", "\n")
 
   /** The symbol which the given accessor represents (possibly in part).
     *  This is used for error messages, where we want to speak in terms
@@ -182,11 +181,8 @@ trait TypeDiagnostics {
         else
           DEFERRED
 
-      getter
-        .owner
-        .newValue(getter.name.toTermName, getter.pos, flags) setInfo getter
-        .tpe
-        .resultType
+      getter.owner.newValue(getter.name.toTermName, getter.pos, flags) setInfo
+        getter.tpe.resultType
     }
 
   def treeSymTypeMsg(tree: Tree): String = {
@@ -227,14 +223,13 @@ trait TypeDiagnostics {
       case Nil =>
         Nil
       case s :: ss =>
-        s :: (
-          ss map {
+        s ::
+          (ss map {
             case `s` =>
               "(some other)" + s;
             case x =>
               x
-          }
-        )
+          })
     }
 
   // todo: use also for other error messages
@@ -321,21 +316,21 @@ trait TypeDiagnostics {
                 // Don't suggest they change the class declaration if it's somewhere
                 // under scala.* or defined in a java class, because attempting either
                 // would be fruitless.
-                val suggestChange = "\nYou may wish to " + (
-                  if (isScala || isJava)
-                    "investigate a wildcard type such as `_ %s %s`. (SLS 3.2.10)"
-                      .format(op, reqArg)
-                  else
-                    "define %s as %s%s instead. (SLS 4.5)"
-                      .format(param.name, suggest, param.name)
-                )
+                val suggestChange = "\nYou may wish to " +
+                  (if (isScala || isJava)
+                     "investigate a wildcard type such as `_ %s %s`. (SLS 3.2.10)"
+                       .format(op, reqArg)
+                   else
+                     "define %s as %s%s instead. (SLS 4.5)"
+                       .format(param.name, suggest, param.name))
 
                 Some("Note: " + explainFound + explainDef + suggestChange)
               }
               // In these cases the arg is OK and needs no explanation.
-              val conforms = ((arg =:= reqArg)
-                || ((arg <:< reqArg) && param.isCovariant)
-                || ((reqArg <:< arg) && param.isContravariant))
+              val conforms =
+                ((arg =:= reqArg) ||
+                  ((arg <:< reqArg) && param.isCovariant) ||
+                  ((reqArg <:< arg) && param.isContravariant))
               val invariant = param.variance.isInvariant
 
               if (conforms)
@@ -372,13 +367,12 @@ trait TypeDiagnostics {
   // that condition, I see it.
   def foundReqMsg(found: Type, req: Type): String = {
     def baseMessage =
-      (";\n found   : " + found
-        .toLongString + existentialContext(found) + explainAlias(found) +
-        "\n required: " + req + existentialContext(req) + explainAlias(req))
+      (";\n found   : " + found.toLongString + existentialContext(found) +
+        explainAlias(found) + "\n required: " + req + existentialContext(req) +
+        explainAlias(req))
     (
-      withDisambiguation(Nil, found, req)(baseMessage)
-        + explainVariance(found, req)
-        + explainAnyVsAnyRef(found, req)
+      withDisambiguation(Nil, found, req)(baseMessage) +
+        explainVariance(found, req) + explainAnyVsAnyRef(found, req)
     )
   }
 
@@ -389,21 +383,20 @@ trait TypeDiagnostics {
       else
         sym
     val caseString =
-      if (clazz.isCaseClass && (clazz isSubClass ptSym))
-        (
-          clazz.caseFieldAccessors
-            map (_ => "_") // could use the actual param names here
-            mkString (s"`case ${clazz.name}(", ",", ")`")
-        )
+      if (clazz.isCaseClass && (clazz isSubClass ptSym))(
+        clazz.caseFieldAccessors map
+          (_ => "_") // could use the actual param names here
+          mkString
+          (s"`case ${clazz.name}(", ",", ")`")
+      )
       else
-        "`case _: " + (
-          clazz.typeParams match {
+        "`case _: " +
+          (clazz.typeParams match {
             case Nil =>
               "" + clazz.name
             case xs =>
               xs map (_ => "_") mkString (clazz.name + "[", ",", "]")
-          }
-        ) + "`"
+          }) + "`"
 
     if (!clazz.exists)
       ""
@@ -595,23 +588,18 @@ trait TypeDiagnostics {
         def localVars = defnSymbols filter (t => t.isLocalToBlock && t.isVar)
 
         def qualifiesTerm(sym: Symbol) =
-          ((
-            sym.isModule || sym
-              .isMethod || sym.isPrivateLocal || sym.isLocalToBlock
-          )
-            && !nme.isLocalName(sym.name)
-            && !sym.isParameter
-            && !sym.isParamAccessor // could improve this, but it's a pain
-            && !sym
-              .isEarlyInitialized // lots of false positives in the way these are encoded
+          ((sym.isModule || sym.isMethod || sym.isPrivateLocal ||
+            sym.isLocalToBlock) && !nme.isLocalName(sym.name) &&
+            !sym.isParameter &&
+            !sym.isParamAccessor // could improve this, but it's a pain
+            &&
+            !sym.isEarlyInitialized // lots of false positives in the way these are encoded
             && !(sym.isGetter && sym.accessed.isEarlyInitialized))
         def qualifiesType(sym: Symbol) = !sym.isDefinedInPackage
         def qualifies(sym: Symbol) =
-          ((sym ne null)
-            && (
-              sym.isTerm && qualifiesTerm(sym) || sym
-                .isType && qualifiesType(sym)
-            ))
+          ((sym ne null) &&
+            (sym.isTerm && qualifiesTerm(sym) ||
+              sym.isType && qualifiesType(sym)))
 
         override def traverse(t: Tree): Unit = {
           t match {
@@ -627,9 +615,8 @@ trait TypeDiagnostics {
           // definition of the class being referenced.
           if (t.tpe ne null) {
             for (tp <- t.tpe;
-                 if !treeTypes(tp) && !currentOwner
-                   .ownerChain
-                   .contains(tp.typeSymbol)) {
+                 if !treeTypes(tp) &&
+                   !currentOwner.ownerChain.contains(tp.typeSymbol)) {
               tp match {
                 case NoType | NoPrefix    =>
                 case NullaryMethodType(_) =>
@@ -649,22 +636,20 @@ trait TypeDiagnostics {
           super.traverse(t)
         }
         def isUnusedType(m: Symbol): Boolean =
-          (m.isType
-            && !m.isTypeParameterOrSkolem // would be nice to improve this
-            && (m.isPrivate || m.isLocalToBlock)
-            && !(treeTypes.exists(tp =>
-              tp exists (t => t.typeSymbolDirect == m))))
+          (m.isType &&
+            !m.isTypeParameterOrSkolem // would be nice to improve this
+            &&
+            (m.isPrivate || m.isLocalToBlock) &&
+            !(treeTypes.exists(tp => tp exists (t => t.typeSymbolDirect == m))))
         def isUnusedTerm(m: Symbol): Boolean =
-          ((m.isTerm)
-            && (m.isPrivate || m.isLocalToBlock)
-            && !targets(m)
-            && !(m.name == nme.WILDCARD) // e.g. val _ = foo
+          ((m.isTerm) &&
+            (m.isPrivate || m.isLocalToBlock) && !targets(m) &&
+            !(m.name == nme.WILDCARD) // e.g. val _ = foo
             && !ignoreNames(m.name.toTermName) // serialization methods
-            && !isConstantType(
-              m.info.resultType
-            ) // subject to constant inlining
-            && !treeTypes
-              .exists(_ contains m) // e.g. val a = new Foo ; new a.Bar
+            &&
+            !isConstantType(m.info.resultType) // subject to constant inlining
+            &&
+            !treeTypes.exists(_ contains m) // e.g. val a = new Foo ; new a.Bar
           )
         def unusedTypes = defnTrees.toList filter (t => isUnusedType(t.symbol))
         def unusedTerms = defnTrees.toList filter (v => isUnusedTerm(v.symbol))
@@ -700,8 +685,8 @@ trait TypeDiagnostics {
                         "constructor"
                       else if (sym.isVar || sym.isGetter && sym.accessed.isVar)
                         "var"
-                      else if (sym.isVal || sym
-                                 .isGetter && sym.accessed.isVal || sym.isLazy)
+                      else if (sym.isVal ||
+                               sym.isGetter && sym.accessed.isVal || sym.isLazy)
                         "val"
                       else if (sym.isSetter)
                         "setter"
@@ -755,9 +740,8 @@ trait TypeDiagnostics {
 
       @inline
       def updateExpr[A](fn: Tree)(f: => A) = {
-        if (fn.symbol != null && fn.symbol.isMethod && !fn
-              .symbol
-              .isConstructor) {
+        if (fn.symbol != null && fn.symbol.isMethod &&
+            !fn.symbol.isConstructor) {
           exprStack push fn.symbol
           try f
           finally exprStack.pop()
@@ -768,8 +752,8 @@ trait TypeDiagnostics {
         // Error suppression (in context.warning) would squash some of these warnings.
         // It is presumed if you are using a -Y option you would really like to hear
         // the warnings you've requested; thus, use reporter.warning.
-        if (settings
-              .warnDeadCode && context.unit.exists && treeOK(tree) && exprOK)
+        if (settings.warnDeadCode && context.unit.exists && treeOK(tree) &&
+            exprOK)
           reporter.warning(tree.pos, "dead code following this construct")
         tree
       }
@@ -809,12 +793,11 @@ trait TypeDiagnostics {
 
     // warn about class/method/type-members' type parameters that shadow types already in scope
     def warnTypeParameterShadow(tparams: List[TypeDef], sym: Symbol): Unit =
-      if (settings.warnTypeParameterShadow && !isPastTyper && !sym
-            .isSynthetic) {
+      if (settings.warnTypeParameterShadow && !isPastTyper &&
+          !sym.isSynthetic) {
         def enclClassOrMethodOrTypeMember(c: Context): Context =
-          if (!c.owner.exists || c.owner.isClass || c.owner.isMethod || (
-                c.owner.isType && !c.owner.isParameter
-              ))
+          if (!c.owner.exists || c.owner.isClass || c.owner.isMethod ||
+              (c.owner.isType && !c.owner.isParameter))
             c
           else
             enclClassOrMethodOrTypeMember(c.outer)

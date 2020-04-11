@@ -40,8 +40,8 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
       (
         exp
           .depthFirst(!_.isInstanceOf[ScFunction])
-          .filter(_.isInstanceOf[ScReturnStmt]) ++ exp
-          .calculateReturns(withBooleanInfix)
+          .filter(_.isInstanceOf[ScReturnStmt]) ++
+          exp.calculateReturns(withBooleanInfix)
       ).filter(_.getContainingFile == getContainingFile).toArray.distinct
     })
 

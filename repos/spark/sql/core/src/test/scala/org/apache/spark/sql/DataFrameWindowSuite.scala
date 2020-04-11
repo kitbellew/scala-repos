@@ -267,10 +267,9 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       .rangeBetween(-2000L, 1000L)
     checkAnswer(
       df.select($"id", avg($"revenue").over(window).cast("int")),
-      Row(1, 5833) :: Row(2, 2000) :: Row(3, 5500) ::
-        Row(4, 5833) :: Row(5, 5833) :: Row(6, 2833) ::
-        Row(7, 3000) :: Row(8, 3000) :: Row(9, 5500) ::
-        Row(10, 6000) :: Nil
+      Row(1, 5833) :: Row(2, 2000) :: Row(3, 5500) :: Row(4, 5833) ::
+        Row(5, 5833) :: Row(6, 2833) :: Row(7, 3000) :: Row(8, 3000) ::
+        Row(9, 5500) :: Row(10, 6000) :: Nil
     )
   }
 
@@ -283,8 +282,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
         $"value",
         sum($"value").over(window.rangeBetween(Long.MinValue, 1)),
         sum($"value").over(window.rangeBetween(1, Long.MaxValue))),
-      Row(1, 13, null) :: Row(2, 13, 2) :: Row(4, 7, 9) ::
-        Row(3, 11, 6) :: Row(2, 13, 2) :: Row(1, 13, null) :: Nil
+      Row(1, 13, null) :: Row(2, 13, 2) :: Row(4, 7, 9) :: Row(3, 11, 6) ::
+        Row(2, 13, 2) :: Row(1, 13, null) :: Nil
     )
   }
 
@@ -304,8 +303,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
         var_pop($"value").over(window),
         var_samp($"value").over(window),
         approxCountDistinct($"value").over(window)),
-      Seq.fill(4)(Row("a", 1.0d / 4.0d, 1.0d / 3.0d, 2))
-        ++ Seq.fill(3)(Row("b", 2.0d / 3.0d, 1.0d, 3))
+      Seq.fill(4)(Row("a", 1.0d / 4.0d, 1.0d / 3.0d, 2)) ++
+        Seq.fill(3)(Row("b", 2.0d / 3.0d, 1.0d, 3))
     )
   }
 

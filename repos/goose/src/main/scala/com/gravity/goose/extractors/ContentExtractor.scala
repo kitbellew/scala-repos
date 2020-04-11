@@ -236,8 +236,8 @@ trait ContentExtractor {
       }
       if (numberOfNodes > 15) {
         if ((numberOfNodes - i) <= bottomNodesForNegativeScore) {
-          val booster: Float = bottomNodesForNegativeScore
-            .asInstanceOf[Float] - (numberOfNodes - i).asInstanceOf[Float]
+          val booster: Float = bottomNodesForNegativeScore.asInstanceOf[Float] -
+            (numberOfNodes - i).asInstanceOf[Float]
           boostScore = -math
             .pow(booster, 2.asInstanceOf[Float])
             .asInstanceOf[Float]
@@ -249,9 +249,9 @@ trait ContentExtractor {
       }
 
       trace(
-        logPrefix + "Location Boost Score: " + boostScore + " on interation: " + i + "' id='" + node
-          .parent
-          .id + "' class='" + node.parent.attr("class"))
+        logPrefix + "Location Boost Score: " + boostScore + " on interation: " +
+          i + "' id='" + node.parent.id + "' class='" +
+          node.parent.attr("class"))
 
       val nodeText: String = node.text
       val wordStats: WordStats = StopWords.getStopWordCount(nodeText)
@@ -275,10 +275,9 @@ trait ContentExtractor {
     for (e <- parentNodes) {
 
       trace(
-        logPrefix + "ParentNode: score='" + e
-          .attr("gravityScore") + "' nodeCount='" + e
-          .attr("gravityNodes") + "' id='" + e.id + "' class='" + e
-          .attr("class") + "' ")
+        logPrefix + "ParentNode: score='" + e.attr("gravityScore") +
+          "' nodeCount='" + e.attr("gravityNodes") + "' id='" + e.id +
+          "' class='" + e.attr("class") + "' ")
 
       val score: Int = getScore(e)
       if (score > topNodeScore) {
@@ -300,10 +299,9 @@ trait ContentExtractor {
     try {
       if (topNode != null) {
         trace(
-          logPrefix + "Our TOPNODE: score='" + topNode
-            .attr("gravityScore") + "' nodeCount='" + topNode
-            .attr("gravityNodes") + "' id='" + topNode
-            .id + "' class='" + topNode.attr("class") + "' ")
+          logPrefix + "Our TOPNODE: score='" + topNode.attr("gravityScore") +
+            "' nodeCount='" + topNode.attr("gravityNodes") + "' id='" +
+            topNode.id + "' class='" + topNode.attr("class") + "' ")
         val text =
           if (topNode.text.trim.length > 100)
             topNode.text.trim.substring(0, 100) + "..."
@@ -386,9 +384,8 @@ trait ContentExtractor {
     val score: Float = linkDivisor * numberOfLinks
 
     trace(
-      logPrefix + "Calulated link density score as: " + score + " for node: " + getShortText(
-        e.text,
-        50))
+      logPrefix + "Calulated link density score as: " + score + " for node: " +
+        getShortText(e.text, 50))
 
     if (score > 1) {
       return true
@@ -487,18 +484,15 @@ trait ContentExtractor {
       node.parent.getElementsByTag("object").foreach(candidates.add(_))
 
       trace(
-        logPrefix + "extractVideos: Starting to extract videos. Found: " + candidates
-          .size)
+        logPrefix + "extractVideos: Starting to extract videos. Found: " +
+          candidates.size)
 
       for (el <- candidates) {
         val attrs: Attributes = el.attributes()
         for (a <- attrs) {
           try {
-            if ((
-                  a.getValue.contains(youtubeStr) || a
-                    .getValue
-                    .contains(vimdeoStr)
-                ) && (a.getKey == "src")) {
+            if ((a.getValue.contains(youtubeStr) ||
+                a.getValue.contains(vimdeoStr)) && (a.getKey == "src")) {
               trace(logPrefix + "This page has a video!: " + a.getValue)
               goodMovies += el
             }
@@ -553,8 +547,8 @@ trait ContentExtractor {
       if (e.tagName != "p")
     } {
       trace(logPrefix + "CLEANUP  NODE: " + e.id + " class: " + e.attr("class"))
-      if (isHighLinkDensity(e) || isTableTagAndNoParagraphsExist(
-            e) || !isNodeScoreThreshholdMet(node, e)) {
+      if (isHighLinkDensity(e) || isTableTagAndNoParagraphsExist(e) ||
+          !isNodeScoreThreshholdMet(node, e)) {
         try {
           e.remove()
         } catch {
@@ -572,7 +566,8 @@ trait ContentExtractor {
     val thresholdScore: Float = (topNodeScore * .08).asInstanceOf[Float]
 
     trace(
-      logPrefix + "topNodeScore: " + topNodeScore + " currentNodeScore: " + currentNodeScore + " threshold: " + thresholdScore)
+      logPrefix + "topNodeScore: " + topNodeScore + " currentNodeScore: " +
+        currentNodeScore + " threshold: " + thresholdScore)
 
     if ((currentNodeScore < thresholdScore) && e.tagName != "td") {
       trace(logPrefix + "Removing node due to low threshold score")
@@ -691,7 +686,8 @@ trait ContentExtractor {
       base = scoreOfParagraphs / numberOfParagraphs
       if (logger.isDebugEnabled) {
         logger.debug(
-          "The base score for siblings to beat is: " + base + " NumOfParas: " + numberOfParagraphs + " scoreOfAll: " + scoreOfParagraphs)
+          "The base score for siblings to beat is: " + base + " NumOfParas: " +
+            numberOfParagraphs + " scoreOfAll: " + scoreOfParagraphs)
       }
     }
     base

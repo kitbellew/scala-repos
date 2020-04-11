@@ -113,17 +113,13 @@ trait BaseGenericInternalRow extends InternalRow {
               return false
             }
           case f1: Float if java.lang.Float.isNaN(f1) =>
-            if (!o2.isInstanceOf[Float] || !java
-                  .lang
-                  .Float
-                  .isNaN(o2.asInstanceOf[Float])) {
+            if (!o2.isInstanceOf[Float] ||
+                !java.lang.Float.isNaN(o2.asInstanceOf[Float])) {
               return false
             }
           case d1: Double if java.lang.Double.isNaN(d1) =>
-            if (!o2.isInstanceOf[Double] || !java
-                  .lang
-                  .Double
-                  .isNaN(o2.asInstanceOf[Double])) {
+            if (!o2.isInstanceOf[Double] ||
+                !java.lang.Double.isNaN(o2.asInstanceOf[Double])) {
               return false
             }
           case _ =>

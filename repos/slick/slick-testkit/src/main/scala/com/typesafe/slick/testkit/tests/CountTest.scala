@@ -44,12 +44,13 @@ class CountTest extends AsyncTest[RelationalTestDB] {
     for {
       _ <- (categories.schema ++ posts.schema).create
       _ <-
-        categories ++= Seq(
-          (1, "Scala"),
-          (2, "JVM"),
-          (3, "Java"),
-          (4, "Erlang"),
-          (5, "Haskell"))
+        categories ++=
+          Seq(
+            (1, "Scala"),
+            (2, "JVM"),
+            (3, "Java"),
+            (4, "Erlang"),
+            (5, "Haskell"))
       _ <- posts ++= Seq((1, "Shiny features", 1), (2, "HotSpot", 2))
       joinedQuery =
         for {

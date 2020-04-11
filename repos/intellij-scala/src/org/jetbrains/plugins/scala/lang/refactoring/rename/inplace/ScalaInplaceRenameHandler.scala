@@ -91,9 +91,8 @@ trait ScalaInplaceRenameHandler {
               list.getSelectedValue match {
                 case s: String if s == positive =>
                   val file = subst.getContainingFile.getVirtualFile
-                  if (FileDocumentManager
-                        .getInstance
-                        .getDocument(file) == editor.getDocument) {
+                  if (FileDocumentManager.getInstance.getDocument(file) ==
+                        editor.getDocument) {
                     editor.getCaretModel.moveToOffset(subst.getTextOffset)
                     inplaceRename(subst)
                   } else {
@@ -153,8 +152,8 @@ trait ScalaInplaceRenameHandler {
       }
     elementToRename match {
       case Both(`selected`, fun: ScFunction)
-          if Seq("apply", "unapply", "unapplySeq").contains(fun.name) || fun
-            .isConstructor =>
+          if Seq("apply", "unapply", "unapplySeq").contains(fun.name) ||
+            fun.isConstructor =>
         specialMethodPopup(fun)
         null
       case elem =>

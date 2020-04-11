@@ -305,15 +305,14 @@ class TestActorRefSpec
 
     "set receiveTimeout to None" in {
       val a = TestActorRef[WorkerActor]
-      a.underlyingActor
-        .context
-        .receiveTimeout should be theSameInstanceAs Duration.Undefined
+      a.underlyingActor.context.receiveTimeout should be theSameInstanceAs
+        Duration.Undefined
     }
 
     "set CallingThreadDispatcher" in {
       val a = TestActorRef[WorkerActor]
-      a.underlying.dispatcher.getClass should ===(
-        classOf[CallingThreadDispatcher])
+      a.underlying.dispatcher.getClass should
+        ===(classOf[CallingThreadDispatcher])
     }
 
     "allow override of dispatcher" in {
@@ -340,8 +339,8 @@ class TestActorRefSpec
 
     "allow creation of a TestActorRef with a default supervisor" in {
       val ref = TestActorRef[WorkerActor]
-      ref.underlyingActor.supervisor should be(
-        system.asInstanceOf[ActorSystemImpl].guardian)
+      ref.underlyingActor.supervisor should
+        be(system.asInstanceOf[ActorSystemImpl].guardian)
     }
 
     "allow creation of a TestActorRef with a default supervisor and specified name" in {
@@ -364,8 +363,8 @@ class TestActorRefSpec
 
     "allow creation of a TestActorRef with a default supervisor with Props" in {
       val ref = TestActorRef[WorkerActor](Props[WorkerActor])
-      ref.underlyingActor.supervisor should be(
-        system.asInstanceOf[ActorSystemImpl].guardian)
+      ref.underlyingActor.supervisor should
+        be(system.asInstanceOf[ActorSystemImpl].guardian)
     }
 
     "allow creation of a TestActorRef with a default supervisor and specified name with Props" in {

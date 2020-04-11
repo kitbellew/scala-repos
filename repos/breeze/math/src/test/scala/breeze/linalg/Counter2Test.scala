@@ -81,39 +81,33 @@ class Counter2Test extends FunSuite with Checkers {
 
   test("Subtraction") {
     assert(
-      Counter2(("a", "a", 1), ("b", "b", 2)) - Counter2(
-        ("a", "a", 3)) === Counter2(("a", "a", -2), ("b", "b", 2)))
+      Counter2(("a", "a", 1), ("b", "b", 2)) - Counter2(("a", "a", 3)) ===
+        Counter2(("a", "a", -2), ("b", "b", 2)))
     assert(
-      Counter2(("a", "a", 3)) - Counter2(
-        ("a", "a", 1),
-        ("b", "b", 2)) === Counter2(("a", "a", 2), ("b", "b", -2)))
+      Counter2(("a", "a", 3)) - Counter2(("a", "a", 1), ("b", "b", 2)) ===
+        Counter2(("a", "a", 2), ("b", "b", -2)))
   }
 
   test("Multiplication") {
     assert(
-      Counter2(("a", "a", 1), ("b", "b", 2)) :* Counter2(
-        ("a", "a", 3)) === Counter2(("a", "a", 3)))
+      Counter2(("a", "a", 1), ("b", "b", 2)) :* Counter2(("a", "a", 3)) ===
+        Counter2(("a", "a", 3)))
     assert(
-      Counter2(("a", "a", 3)) :* Counter2(
-        ("a", "a", 1),
-        ("b", "b", 2)) === Counter2(("a", "a", 3)))
+      Counter2(("a", "a", 3)) :* Counter2(("a", "a", 1), ("b", "b", 2)) ===
+        Counter2(("a", "a", 3)))
   }
 
   test("Shaped Multiplication: C2/C2") {
     assert(
-      Counter2((0, 'a', 1), (1, 'a', 2), (1, 'b', 3)) * Counter2(
-        ('a', 0, 1),
-        ('b', 0, 2)) ===
-        Counter2((0, 0, 1), (1, 0, 8)))
+      Counter2((0, 'a', 1), (1, 'a', 2), (1, 'b', 3)) *
+        Counter2(('a', 0, 1), ('b', 0, 2)) === Counter2((0, 0, 1), (1, 0, 8)))
 
   }
 
   test("Shaped Multiplication: C2/C1") {
     assert(
-      Counter2((0, 'a', 1), (1, 'a', 2), (1, 'b', 3)) * Counter(
-        ('a', 1),
-        ('b', 2)) ===
-        Counter((0, 1), (1, 8)))
+      Counter2((0, 'a', 1), (1, 'a', 2), (1, 'b', 3)) *
+        Counter(('a', 1), ('b', 2)) === Counter((0, 1), (1, 8)))
   }
 
   test("Shaped Transpose Multiplication C2/C2") {

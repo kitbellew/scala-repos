@@ -162,8 +162,8 @@ object CharEncoding {
               ""
           val bytes = out.toByteArray
           val bytesWithoutBom =
-            if (charset.name.startsWith("UTF-") && bytes.length >= 2 && bytes(
-                  0) == 0xfe.toByte && bytes(1) == 0xff.toByte) {
+            if (charset.name.startsWith("UTF-") && bytes.length >= 2 &&
+                bytes(0) == 0xfe.toByte && bytes(1) == 0xff.toByte) {
               bytes.drop(2)
             } else {
               bytes

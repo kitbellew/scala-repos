@@ -418,17 +418,17 @@ trait BasicBackend {
                     try {
                       if (debug)
                         streamLogger.debug(
-                          (
-                            if (state eq null)
-                              "Starting initial"
-                            else
-                              "Restarting "
-                          ) + " streaming action, realDemand = " + str(
-                            realDemand))
+                          (if (state eq null)
+                             "Starting initial"
+                           else
+                             "Restarting ") +
+                            " streaming action, realDemand = " +
+                            str(realDemand))
                       if (ctx.cancelled) {
                         if (ctx.deferredError ne null)
                           throw ctx.deferredError
-                        if (state ne null) { // streaming cancelled before finishing
+                        if (state ne
+                              null) { // streaming cancelled before finishing
                           val oldState = state
                           state = null
                           a.cancelStream(ctx, oldState)
@@ -456,12 +456,11 @@ trait BasicBackend {
                     if (debug) {
                       if (state eq null)
                         streamLogger.debug(
-                          s"Sent up to ${str(realDemand)} elements - Stream " + (
-                            if (ctx.cancelled)
-                              "cancelled"
-                            else
-                              "completely delivered"
-                          ))
+                          s"Sent up to ${str(realDemand)} elements - Stream " +
+                            (if (ctx.cancelled)
+                               "cancelled"
+                             else
+                               "completely delivered"))
                       else
                         streamLogger.debug(
                           s"Sent ${str(realDemand)} elements, more available - Performing atomic state transition")
@@ -516,8 +515,8 @@ trait BasicBackend {
               case o =>
                 o
             }).get(logA)
-        val msg = DumpInfo.highlight("#" + ctx.sequenceCounter) + ": " + dump
-          .substring(0, dump.length - 1)
+        val msg = DumpInfo.highlight("#" + ctx.sequenceCounter) + ": " +
+          dump.substring(0, dump.length - 1)
         actionLogger.debug(msg)
       }
     }

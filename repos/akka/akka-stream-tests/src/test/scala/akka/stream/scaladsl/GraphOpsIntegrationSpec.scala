@@ -80,8 +80,8 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
           })
         .run()
 
-      Await.result(resultFuture, 3.seconds).sorted should be(
-        List(1, 2, 3, 4, 5, 6))
+      Await.result(resultFuture, 3.seconds).sorted should
+        be(List(1, 2, 3, 4, 5, 6))
     }
 
     "support balance - merge (parallelization) layouts" in {
@@ -137,8 +137,8 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
 
               // Second layer
               m11.out ~> b11.in
-              b11.out(0).grouped(1000) ~> sink2
-                .in // Vertex 2 is omitted since it has only one in and out
+              b11.out(0).grouped(1000) ~>
+                sink2.in // Vertex 2 is omitted since it has only one in and out
               b11.out(1) ~> m9.in(0)
               b11.out(2) ~> m10.in(1)
 
@@ -174,8 +174,8 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
           })
         .run()
 
-      Await.result(resultFuture, 3.seconds) should contain theSameElementsAs (
-        Seq(2, 4, 6, 5, 7, 9))
+      Await.result(resultFuture, 3.seconds) should contain theSameElementsAs
+        (Seq(2, 4, 6, 5, 7, 9))
     }
 
     "be able to run plain flow" in {

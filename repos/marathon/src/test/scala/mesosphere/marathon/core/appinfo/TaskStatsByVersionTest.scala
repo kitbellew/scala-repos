@@ -23,12 +23,13 @@ class TaskStatsByVersionTest
       tasks = Seq.empty,
       statuses = Map.empty[Task.Id, Seq[Health]])
     Then("we get none")
-    stats should be(
-      TaskStatsByVersion(
-        maybeStartedAfterLastScaling = None,
-        maybeWithLatestConfig = None,
-        maybeWithOutdatedConfig = None,
-        maybeTotalSummary = None))
+    stats should
+      be(
+        TaskStatsByVersion(
+          maybeStartedAfterLastScaling = None,
+          maybeWithLatestConfig = None,
+          maybeWithOutdatedConfig = None,
+          maybeTotalSummary = None))
   }
 
   test("tasks are correctly split along categories") {
@@ -42,9 +43,8 @@ class TaskStatsByVersionTest
       runningTaskStartedAt(lastScalingAt, 2.seconds))
     val afterLastConfigChangeTasks = Vector(
       runningTaskStartedAt(lastConfigChangeAt, 1.seconds),
-      runningTaskStartedAt(
-        intermediaryScalingAt,
-        2.seconds)) ++ afterLastScalingTasks
+      runningTaskStartedAt(intermediaryScalingAt, 2.seconds)) ++
+      afterLastScalingTasks
 
     val tasks = outdatedTasks ++ afterLastConfigChangeTasks
     val statuses = Map.empty[Task.Id, Seq[Health]]
@@ -63,25 +63,26 @@ class TaskStatsByVersionTest
       stats.maybeStartedAfterLastScaling should not be empty
       stats.maybeTotalSummary should not be empty
 
-      stats.maybeWithOutdatedConfig should be(
-        TaskStats.forSomeTasks(now, outdatedTasks, statuses))
-      stats.maybeWithLatestConfig should be(
-        TaskStats.forSomeTasks(now, afterLastConfigChangeTasks, statuses))
-      stats.maybeStartedAfterLastScaling should be(
-        TaskStats.forSomeTasks(now, afterLastScalingTasks, statuses))
-      stats.maybeTotalSummary should be(
-        TaskStats.forSomeTasks(now, tasks, statuses))
+      stats.maybeWithOutdatedConfig should
+        be(TaskStats.forSomeTasks(now, outdatedTasks, statuses))
+      stats.maybeWithLatestConfig should
+        be(TaskStats.forSomeTasks(now, afterLastConfigChangeTasks, statuses))
+      stats.maybeStartedAfterLastScaling should
+        be(TaskStats.forSomeTasks(now, afterLastScalingTasks, statuses))
+      stats.maybeTotalSummary should
+        be(TaskStats.forSomeTasks(now, tasks, statuses))
 
-      stats should be(
-        TaskStatsByVersion(
-          maybeStartedAfterLastScaling = TaskStats
-            .forSomeTasks(now, afterLastScalingTasks, statuses),
-          maybeWithLatestConfig = TaskStats
-            .forSomeTasks(now, afterLastConfigChangeTasks, statuses),
-          maybeWithOutdatedConfig = TaskStats
-            .forSomeTasks(now, outdatedTasks, statuses),
-          maybeTotalSummary = TaskStats.forSomeTasks(now, tasks, statuses)
-        ))
+      stats should
+        be(
+          TaskStatsByVersion(
+            maybeStartedAfterLastScaling = TaskStats
+              .forSomeTasks(now, afterLastScalingTasks, statuses),
+            maybeWithLatestConfig = TaskStats
+              .forSomeTasks(now, afterLastConfigChangeTasks, statuses),
+            maybeWithOutdatedConfig = TaskStats
+              .forSomeTasks(now, outdatedTasks, statuses),
+            maybeTotalSummary = TaskStats.forSomeTasks(now, tasks, statuses)
+          ))
     }
 
   }

@@ -17,8 +17,7 @@ trait TimeoutTests extends JSEnvTest {
     setTimeout(function() { console.log("2"); }, 100);
     setTimeout(function() { console.log("3"); }, 300);
     setTimeout(function() { console.log("4"); },   0);
-    """ hasOutput
-      """|4
+    """ hasOutput """|4
        |2
        |1
        |3
@@ -41,8 +40,7 @@ trait TimeoutTests extends JSEnvTest {
     }, 100);
     setTimeout(function() { console.log("3"); }, 300);
     setTimeout(function() { console.log("4"); },   0);
-    """ hasOutput
-      """|4
+    """ hasOutput """|4
        |2
        |3
        |""".stripMargin
@@ -61,8 +59,7 @@ trait TimeoutTests extends JSEnvTest {
     setTimeout(function() { console.log("2"); }, 100);
     setTimeout(function(msg) { console.log(msg); }, 300, "Hello World");
     setTimeout(function() { console.log("4"); },   0);
-    """ hasOutput
-      """|4
+    """ hasOutput """|4
        |2
        |1foobar
        |Hello World
@@ -87,8 +84,7 @@ trait TimeoutTests extends JSEnvTest {
       clearInterval(i2);
       clearInterval(i3);
     }, 10000);
-    """ hasOutput
-      """|each 1300
+    """ hasOutput """|each 1300
        |each 2200
        |each 1300
        |each 3100

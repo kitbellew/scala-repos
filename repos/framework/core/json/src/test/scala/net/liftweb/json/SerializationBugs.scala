@@ -38,10 +38,11 @@ object SerializationBugs extends Specification {
 
     val g1 = Game(
       Map(
-        "a" -> Plan(
-          Some(Action("f1", "s", Array(), None)),
-          Some("A"),
-          Some(Action("f2", "s2", Array(0, 1, 2), None)))))
+        "a" ->
+          Plan(
+            Some(Action("f1", "s", Array(), None)),
+            Some("A"),
+            Some(Action("f2", "s2", Array(0, 1, 2), None)))))
     val ser = swrite(g1)
     val g2 = read[Game](ser)
     val plan = g2.buy("a")
@@ -138,8 +139,8 @@ object SerializationBugs extends Specification {
   }
 
   "Either can't be deserialized with type hints" in {
-    implicit val formats =
-      DefaultFormats + FullTypeHints(classOf[Either[_, _]] :: Nil)
+    implicit val formats = DefaultFormats +
+      FullTypeHints(classOf[Either[_, _]] :: Nil)
     val x = Eith(Left("hello"))
     val s = Serialization.write(x)
     read[Eith](s) mustEqual x
@@ -185,13 +186,10 @@ object SerializationBugs extends Specification {
     val jsonA = """ { "data": { "foo": "string" }, "success": true } """
     val jsonB = """ { "data": { "bar": "string" }, "success": true } """
 
-    (
-      read[SomeContainer[TypeA]](jsonA) mustEqual SomeContainer(TypeA("string"))
-    ) and
-      (
-        read[SomeContainer[TypeB]](jsonB) mustEqual SomeContainer(
-          TypeB("string"))
-      )
+    (read[SomeContainer[TypeA]](jsonA) mustEqual
+      SomeContainer(TypeA("string"))) and
+      (read[SomeContainer[TypeB]](jsonB) mustEqual
+        SomeContainer(TypeB("string")))
   }
 }
 

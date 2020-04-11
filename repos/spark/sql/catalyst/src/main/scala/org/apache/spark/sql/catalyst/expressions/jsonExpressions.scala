@@ -77,10 +77,7 @@ private[this] object JsonPathParser extends RegexParsers {
   def wildcard: Parser[List[PathInstruction]] =
     (".*" | "['*']") ^^^ List(Wildcard)
 
-  def node: Parser[List[PathInstruction]] =
-    wildcard |
-      named |
-      subscript
+  def node: Parser[List[PathInstruction]] = wildcard | named | subscript
 
   val expression: Parser[List[PathInstruction]] = {
     phrase(root ~> rep(node) ^^ (x => x.flatten))
@@ -281,12 +278,11 @@ case class GetJsonObject(json: Expression, path: Expression)
             while (p.nextToken() != END_ARRAY) {
               // track the number of array elements and only emit an outer array if
               // we've written more than one element, this matches Hive's behavior
-              dirty += (
-                if (evaluatePath(p, flattenGenerator, nextStyle, xs))
-                  1
-                else
-                  0
-              )
+              dirty +=
+                (if (evaluatePath(p, flattenGenerator, nextStyle, xs))
+                   1
+                 else
+                   0)
             }
             flattenGenerator.writeEndArray()
         }

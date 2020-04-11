@@ -222,7 +222,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
 
         val item2 = Item2(arrivalPos, mirrorC, plainC, beanC, outF)
 
-        q2 add item2 // at the very end of this method so that no Worker2 thread starts mutating before we're done.
+        q2 add
+          item2 // at the very end of this method so that no Worker2 thread starts mutating before we're done.
 
       } // end of method visit(Item1)
 
@@ -294,9 +295,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
               addToQ3(item)
             } catch {
               case e: java.lang.RuntimeException
-                  if e.getMessage != null && (
-                    e.getMessage contains "too large!"
-                  ) =>
+                  if e.getMessage != null &&
+                    (e.getMessage contains "too large!") =>
                 reporter.error(
                   NoPosition,
                   s"Could not write class ${item.plain.name} because it exceeds JVM code size limits. ${e.getMessage}")
@@ -331,9 +331,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
           else
             SubItem3(bean.name, getByteArray(bean))
 
-        if (AsmUtils.traceSerializedClassEnabled && plain
-              .name
-              .contains(AsmUtils.traceSerializedClassPattern)) {
+        if (AsmUtils.traceSerializedClassEnabled &&
+            plain.name.contains(AsmUtils.traceSerializedClassPattern)) {
           if (mirrorC != null)
             AsmUtils.traceClass(mirrorC.jclassBytes)
           AsmUtils.traceClass(plainC.jclassBytes)
@@ -506,9 +505,8 @@ object GenBCode {
   def mkFlags(args: Int*) = args.foldLeft(0)(_ | _)
 
   final val PublicStatic = asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_STATIC
-  final val PublicStaticFinal = asm.Opcodes.ACC_PUBLIC | asm
-    .Opcodes
-    .ACC_STATIC | asm.Opcodes.ACC_FINAL
+  final val PublicStaticFinal = asm.Opcodes.ACC_PUBLIC |
+    asm.Opcodes.ACC_STATIC | asm.Opcodes.ACC_FINAL
 
   val CLASS_CONSTRUCTOR_NAME = "<clinit>"
   val INSTANCE_CONSTRUCTOR_NAME = "<init>"

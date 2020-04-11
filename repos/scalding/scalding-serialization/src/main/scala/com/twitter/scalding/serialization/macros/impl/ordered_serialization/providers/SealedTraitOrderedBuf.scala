@@ -29,12 +29,9 @@ object SealedTraitOrderedBuf {
     val pf: PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
       case tpe
           if (
-            tpe.typeSymbol.isClass && (
-              tpe.typeSymbol.asClass.isAbstractClass || tpe
-                .typeSymbol
-                .asClass
-                .isTrait
-            )
+            tpe.typeSymbol.isClass &&
+              (tpe.typeSymbol.asClass.isAbstractClass ||
+                tpe.typeSymbol.asClass.isTrait)
           ) =>
         SealedTraitOrderedBuf(c)(buildDispatcher, tpe)
     }

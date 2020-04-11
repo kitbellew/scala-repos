@@ -53,8 +53,8 @@ object Operation {
     val op = values.find(op => op.name.equalsIgnoreCase(operation))
     op.getOrElse(
       throw new KafkaException(
-        operation + " not a valid operation name. The valid names are " + values
-          .mkString(",")))
+        operation + " not a valid operation name. The valid names are " +
+          values.mkString(",")))
   }
 
   def values: Seq[Operation] =

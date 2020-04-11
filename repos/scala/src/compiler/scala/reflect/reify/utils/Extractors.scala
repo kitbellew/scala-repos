@@ -74,9 +74,8 @@ trait Extractors {
                   ref.name
               }
               .toSet
-          val usedNames = extractNames(rtree) ++ symtab
-            .syms
-            .flatMap(sym => extractNames(symtab.symDef(sym)))
+          val usedNames = extractNames(rtree) ++
+            symtab.syms.flatMap(sym => extractNames(symtab.symDef(sym)))
           symtab filterAliases {
             case (_, name) =>
               usedNames(name)
@@ -277,8 +276,8 @@ trait Extractors {
                                   _,
                                   Block(_ :: _ :: symbolTable2, rtpe)))))),
                         _))))))
-            if udef.name == nme.UNIVERSE_SHORT && mdef.name == nme
-              .MIRROR_SHORT =>
+            if udef.name == nme.UNIVERSE_SHORT &&
+              mdef.name == nme.MIRROR_SHORT =>
           val tagFlavor =
             tagFactory match {
               case Select(Select(_, tagFlavor), _) =>
@@ -354,8 +353,8 @@ trait Extractors {
                               _,
                               Block(_ :: _ :: symtab, rtpe)))))),
                     _))))
-            if udef.name == nme.UNIVERSE_SHORT && mdef.name == nme
-              .MIRROR_SHORT =>
+            if udef.name == nme.UNIVERSE_SHORT &&
+              mdef.name == nme.MIRROR_SHORT =>
           val tagFlavor =
             tagFactory match {
               case Select(Select(_, tagFlavor), _) =>
@@ -427,12 +426,11 @@ trait Extractors {
                     flagsRepr),
                   List(Literal(Constant(flags: Long)))) :+
                 Literal(Constant(origin: String))))
-            if uref1.name == nme.UNIVERSE_SHORT && internal1 == nme
-              .internal && rs1 == nme
-              .reificationSupport && acceptFreeTermFactory(freeTermFactory) &&
-              uref2.name == nme.UNIVERSE_SHORT && internal2 == nme
-              .internal && rs2 == nme.reificationSupport && flagsRepr == nme
-              .FlagsRepr =>
+            if uref1.name == nme.UNIVERSE_SHORT && internal1 == nme.internal &&
+              rs1 == nme.reificationSupport &&
+              acceptFreeTermFactory(freeTermFactory) &&
+              uref2.name == nme.UNIVERSE_SHORT && internal2 == nme.internal &&
+              rs2 == nme.reificationSupport && flagsRepr == nme.FlagsRepr =>
           Some((uref1, name, reifyBinding(tree), flags, origin))
         case _ =>
           None
@@ -452,9 +450,9 @@ trait Extractors {
         case Apply(
               Select(Select(Select(uref @ Ident(_), internal), rs), mkIdent),
               List(Ident(name: TermName)))
-            if internal == nme.internal && rs == nme
-              .reificationSupport && mkIdent == nme.mkIdent && name
-              .startsWith(nme.REIFY_FREE_PREFIX) =>
+            if internal == nme.internal && rs == nme.reificationSupport &&
+              mkIdent == nme.mkIdent &&
+              name.startsWith(nme.REIFY_FREE_PREFIX) =>
           Some((uref, name))
         case _ =>
           None
@@ -482,12 +480,11 @@ trait Extractors {
                       flagsRepr),
                     List(Literal(Constant(flags: Long)))),
                   Literal(Constant(isClass: Boolean)))))
-            if uref1.name == nme
-              .UNIVERSE_SHORT && internal1 == nme.internal && rs1 == nme
-              .reificationSupport && newNestedSymbol == nme.newNestedSymbol &&
-              uref2.name == nme.UNIVERSE_SHORT && internal2 == nme
-              .internal && rs2 == nme.reificationSupport && flagsRepr == nme
-              .FlagsRepr =>
+            if uref1.name == nme.UNIVERSE_SHORT && internal1 == nme.internal &&
+              rs1 == nme.reificationSupport &&
+              newNestedSymbol == nme.newNestedSymbol &&
+              uref2.name == nme.UNIVERSE_SHORT && internal2 == nme.internal &&
+              rs2 == nme.reificationSupport && flagsRepr == nme.FlagsRepr =>
           Some((uref1, name, flags, isClass))
         case _ =>
           None
@@ -501,9 +498,9 @@ trait Extractors {
               Select(Select(uref @ Ident(_), typeRef), apply),
               List(Select(_, noSymbol), Ident(freeType: TermName), nil))
             if (
-              uref.name == nme.UNIVERSE_SHORT && typeRef == nme
-                .TypeRef && noSymbol == nme.NoSymbol && freeType
-                .startsWith(nme.REIFY_FREE_PREFIX)
+              uref.name == nme.UNIVERSE_SHORT && typeRef == nme.TypeRef &&
+                noSymbol == nme.NoSymbol &&
+                freeType.startsWith(nme.REIFY_FREE_PREFIX)
             ) =>
           Some(freeType)
         case _ =>

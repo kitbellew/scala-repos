@@ -223,12 +223,9 @@ private[spark] object Utils extends Logging {
     * @return true if the permissions were successfully changed, false otherwise.
     */
   def chmod700(file: File): Boolean = {
-    file.setReadable(false, false) &&
-    file.setReadable(true, true) &&
-    file.setWritable(false, false) &&
-    file.setWritable(true, true) &&
-    file.setExecutable(false, false) &&
-    file.setExecutable(true, true)
+    file.setReadable(false, false) && file.setReadable(true, true) &&
+    file.setWritable(false, false) && file.setWritable(true, true) &&
+    file.setExecutable(false, false) && file.setExecutable(true, true)
   }
 
   /**
@@ -283,8 +280,8 @@ private[spark] object Utils extends Logging {
       transferToEnabled: Boolean = false): Long = {
     var count = 0L
     tryWithSafeFinally {
-      if (in.isInstanceOf[FileInputStream] && out.isInstanceOf[FileOutputStream]
-          && transferToEnabled) {
+      if (in.isInstanceOf[FileInputStream] &&
+          out.isInstanceOf[FileOutputStream] && transferToEnabled) {
         // When both streams are File stream, use transferTo to improve copy performance.
         val inChannel = in.asInstanceOf[FileInputStream].getChannel()
         val outChannel = out.asInstanceOf[FileOutputStream].getChannel()
@@ -306,7 +303,8 @@ private[spark] object Utils extends Logging {
         assert(
           finalPos == initialPos + size,
           s"""
-             |Current position $finalPos do not equal to expected position ${initialPos + size}
+             |Current position $finalPos do not equal to expected position ${initialPos +
+               size}
              |after transferTo, please check your kernel version to see if it is 2.6.32,
              |this is a kernel bug which will lead to unexpected behavior when using transferTo.
              |You can set spark.file.transferTo = false to disable this NIO feature.
@@ -762,8 +760,8 @@ private[spark] object Utils extends Logging {
       conf.getenv("SPARK_EXECUTOR_DIRS").split(File.pathSeparator)
     } else if (conf.getenv("SPARK_LOCAL_DIRS") != null) {
       conf.getenv("SPARK_LOCAL_DIRS").split(",")
-    } else if (conf
-                 .getenv("MESOS_DIRECTORY") != null && !shuffleServiceEnabled) {
+    } else if (conf.getenv("MESOS_DIRECTORY") != null &&
+               !shuffleServiceEnabled) {
       // Mesos already creates a directory per Mesos task. Spark should use that directory
       // instead so all temporary files are automatically cleaned up when the Mesos task ends.
       // Note that we don't want this if the shuffle service is enabled because we want to
@@ -886,24 +884,20 @@ private[spark] object Utils extends Logging {
             val strippedAddress = InetAddress.getByAddress(addr.getAddress)
             // We've found an address that looks reasonable!
             logWarning(
-              "Your hostname, " + InetAddress
-                .getLocalHost
-                .getHostName + " resolves to" +
-                " a loopback address: " + address.getHostAddress + "; using " +
-                strippedAddress.getHostAddress + " instead (on interface " + ni
-                .getName + ")")
+              "Your hostname, " + InetAddress.getLocalHost.getHostName +
+                " resolves to" + " a loopback address: " +
+                address.getHostAddress + "; using " +
+                strippedAddress.getHostAddress + " instead (on interface " +
+                ni.getName + ")")
             logWarning(
               "Set SPARK_LOCAL_IP if you need to bind to another address")
             return strippedAddress
           }
         }
         logWarning(
-          "Your hostname, " + InetAddress
-            .getLocalHost
-            .getHostName + " resolves to" +
-            " a loopback address: " + address
-            .getHostAddress + ", but we couldn't find any" +
-            " external IP address!")
+          "Your hostname, " + InetAddress.getLocalHost.getHostName +
+            " resolves to" + " a loopback address: " + address.getHostAddress +
+            ", but we couldn't find any" + " external IP address!")
         logWarning("Set SPARK_LOCAL_IP if you need to bind to another address")
       }
       address
@@ -1434,8 +1428,7 @@ private[spark] object Utils extends Logging {
     val SCALA_CORE_CLASS_PREFIX = "scala"
     val isSparkClass = SPARK_CORE_CLASS_REGEX
       .findFirstIn(className)
-      .isDefined ||
-      SPARK_SQL_CLASS_REGEX.findFirstIn(className).isDefined
+      .isDefined || SPARK_SQL_CLASS_REGEX.findFirstIn(className).isDefined
     val isScalaClass = className.startsWith(SCALA_CORE_CLASS_PREFIX)
     // If the class is a Spark internal class or a Scala class, then exclude.
     isSparkClass || isScalaClass
@@ -1467,8 +1460,8 @@ private[spark] object Utils extends Logging {
         // When running under some profilers, the current stack trace might contain some bogus
         // frames. This is intended to ensure that we don't crash in these situations by
         // ignoring any frames that we can't examine.
-        if (ste != null && ste.getMethodName != null
-            && !ste.getMethodName.contains("getStackTrace")) {
+        if (ste != null && ste.getMethodName != null &&
+            !ste.getMethodName.contains("getStackTrace")) {
           if (insideSpark) {
             if (skipClass(ste.getClassName)) {
               lastSparkMethod =
@@ -1667,12 +1660,11 @@ private[spark] object Utils extends Logging {
    */
   def nonNegativeMod(x: Int, mod: Int): Int = {
     val rawMod = x % mod
-    rawMod + (
-      if (rawMod < 0)
-        mod
-      else
-        0
-    )
+    rawMod +
+      (if (rawMod < 0)
+         mod
+       else
+         0)
   }
 
   // Handles idiosyncrasies with hash (add more as required)
@@ -2403,14 +2395,10 @@ private[spark] object Utils extends Logging {
       val uri = new java.net.URI(sparkUrl)
       val host = uri.getHost
       val port = uri.getPort
-      if (uri.getScheme != "spark" ||
-          host == null ||
-          port < 0 ||
-          (
-            uri.getPath != null && !uri.getPath.isEmpty
-          ) || // uri.getPath returns "" instead of null
-          uri.getFragment != null ||
-          uri.getQuery != null ||
+      if (uri.getScheme != "spark" || host == null || port < 0 ||
+          (uri.getPath != null &&
+          !uri.getPath.isEmpty) || // uri.getPath returns "" instead of null
+          uri.getFragment != null || uri.getQuery != null ||
           uri.getUserInfo != null) {
         throw new SparkException("Invalid master URL: " + sparkUrl)
       }
@@ -2505,10 +2493,8 @@ private[spark] object Utils extends Logging {
         "Dynamic Allocation and num executors both set, thus dynamic allocation disabled.")
     }
     numExecutor == 0 && dynamicAllocationEnabled &&
-    (
-      !isLocalMaster(conf) || conf
-        .getBoolean("spark.dynamicAllocation.testing", false)
-    )
+    (!isLocalMaster(conf) ||
+    conf.getBoolean("spark.dynamicAllocation.testing", false))
   }
 
   def tryWithResource[R <: Closeable, T](createResource: => R)(f: R => T): T = {

@@ -202,8 +202,9 @@ class ScalaTool extends ScalaMatchingTask {
     if (stream == null)
       Stream.empty
     else
-      Stream continually stream
-        .read() takeWhile (_ != -1) map (_.asInstanceOf[Char])
+      Stream continually stream.read() takeWhile
+        (_ != -1) map
+        (_.asInstanceOf[Char])
   }
 
   // Converts a variable like @SCALA_HOME@ to ${SCALA_HOME} when pre = "${" and post = "}"

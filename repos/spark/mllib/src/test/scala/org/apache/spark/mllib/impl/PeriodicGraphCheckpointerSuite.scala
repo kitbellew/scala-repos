@@ -131,8 +131,7 @@ private object PeriodicGraphCheckpointerSuite {
       case _: AssertionError =>
         throw new Exception(
           s"PeriodicGraphCheckpointerSuite.checkPersistence failed with:\n" +
-            s"\t gIndex = $gIndex\n" +
-            s"\t iteration = $iteration\n" +
+            s"\t gIndex = $gIndex\n" + s"\t iteration = $iteration\n" +
             s"\t graph.vertices.getStorageLevel = ${graph.vertices.getStorageLevel}\n" +
             s"\t graph.edges.getStorageLevel = ${graph.edges.getStorageLevel}\n")
     }
@@ -178,7 +177,8 @@ private object PeriodicGraphCheckpointerSuite {
       if (gIndex % checkpointInterval == 0) {
         // We allow 2 checkpoint intervals since we perform an action (checkpointing a second graph)
         // only AFTER PeriodicGraphCheckpointer decides whether to remove the previous checkpoint.
-        if (iteration - 2 * checkpointInterval < gIndex && gIndex <= iteration) {
+        if (iteration - 2 * checkpointInterval < gIndex &&
+            gIndex <= iteration) {
           assert(graph.isCheckpointed, "Graph should be checkpointed")
           assert(
             graph.getCheckpointFiles.length == 2,
@@ -199,8 +199,7 @@ private object PeriodicGraphCheckpointerSuite {
       case e: AssertionError =>
         throw new Exception(
           s"PeriodicGraphCheckpointerSuite.checkCheckpoint failed with:\n" +
-            s"\t gIndex = $gIndex\n" +
-            s"\t iteration = $iteration\n" +
+            s"\t gIndex = $gIndex\n" + s"\t iteration = $iteration\n" +
             s"\t checkpointInterval = $checkpointInterval\n" +
             s"\t graph.isCheckpointed = ${graph.isCheckpointed}\n" +
             s"\t graph.getCheckpointFiles = ${graph.getCheckpointFiles.mkString(", ")}\n" +

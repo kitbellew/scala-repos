@@ -37,17 +37,18 @@ trait LilaSocket {
               case (readIn, writeOut) =>
                 (e, i) => {
                   writeOut |>> i
-                  e &> Enumeratee.mapInputM { in =>
-                    consumer(ip).map { credit =>
-                      if (credit >= 0)
-                        in
-                      else {
-                        logger
-                          .info(s"socket:$name socket close $ip $userInfo $in")
-                        Input.EOF
+                  e &>
+                    Enumeratee.mapInputM { in =>
+                      consumer(ip).map { credit =>
+                        if (credit >= 0)
+                          in
+                        else {
+                          logger.info(
+                            s"socket:$name socket close $ip $userInfo $in")
+                          Input.EOF
+                        }
                       }
-                    }
-                  } |>> readIn
+                    } |>> readIn
                 }
             }
         }

@@ -91,8 +91,8 @@ final class Env(
     new lila.common.Cli {
       def process = {
         case "i18n" :: "fetch" :: from :: Nil =>
-          upstreamFetch(from) flatMap gitWrite
-            .apply inject "Fetched translations from upstream"
+          upstreamFetch(from) flatMap gitWrite.apply inject
+            "Fetched translations from upstream"
         case "i18n" :: "js" :: "dump" :: Nil =>
           jsDump.apply inject "Dumped JavaScript translations"
         case "i18n" :: "file" :: "fix" :: Nil =>
@@ -105,11 +105,12 @@ object Env {
 
   import lila.common.PlayApp
 
-  lazy val current = "i18n" boot new Env(
-    config = lila.common.PlayApp loadConfig "i18n",
-    db = lila.db.Env.current,
-    system = PlayApp.system,
-    messages = PlayApp.messages,
-    captcher = lila.hub.Env.current.actor.captcher,
-    appPath = PlayApp withApp (_.path.getCanonicalPath))
+  lazy val current = "i18n" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "i18n",
+      db = lila.db.Env.current,
+      system = PlayApp.system,
+      messages = PlayApp.messages,
+      captcher = lila.hub.Env.current.actor.captcher,
+      appPath = PlayApp withApp (_.path.getCanonicalPath))
 }

@@ -73,10 +73,8 @@ class MultilabelMetrics @Since("1.2.0") (
     .map {
       case (predictions, labels) =>
         labels.intersect(predictions).length.toDouble /
-          (
-            labels.length + predictions
-              .length - labels.intersect(predictions).length
-          )
+          (labels.length + predictions.length -
+            labels.intersect(predictions).length)
     }
     .sum / numDocs
 
@@ -87,8 +85,8 @@ class MultilabelMetrics @Since("1.2.0") (
   lazy val hammingLoss: Double = predictionAndLabels
     .map {
       case (predictions, labels) =>
-        labels.length + predictions
-          .length - 2 * labels.intersect(predictions).length
+        labels.length + predictions.length -
+          2 * labels.intersect(predictions).length
     }
     .sum / (numDocs * numLabels)
 
@@ -125,9 +123,8 @@ class MultilabelMetrics @Since("1.2.0") (
   lazy val f1Measure: Double = predictionAndLabels
     .map {
       case (predictions, labels) =>
-        2.0 * predictions.intersect(labels).length / (
-          predictions.length + labels.length
-        )
+        2.0 * predictions.intersect(labels).length /
+          (predictions.length + labels.length)
     }
     .sum / numDocs
 
@@ -243,8 +240,8 @@ class MultilabelMetrics @Since("1.2.0") (
     * (equals to micro-averaged document-based f1-measure)
     */
   @Since("1.2.0")
-  lazy val microF1Measure: Double =
-    2.0 * sumTp / (2 * sumTp + sumFnClass + sumFpClass)
+  lazy val microF1Measure: Double = 2.0 * sumTp /
+    (2 * sumTp + sumFnClass + sumFpClass)
 
   /**
     * Returns the sequence of labels in ascending order

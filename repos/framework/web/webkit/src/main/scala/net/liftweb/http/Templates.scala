@@ -124,8 +124,7 @@ object Templates {
         case Null =>
           None
         case p: PrefixedAttribute
-            if (p.pre == "l" || p.pre == "lift") &&
-              (p.key == "content_id") =>
+            if (p.pre == "l" || p.pre == "lift") && (p.key == "content_id") =>
           Some(p)
         case n =>
           df(n.next)
@@ -244,12 +243,11 @@ object Templates {
               val le = sl.iterator
               while (!found && le.hasNext) {
                 val p = le.next
-                val name = pls + p + (
-                  if (suffix.length > 0)
-                    "." + suffix
-                  else
-                    ""
-                )
+                val name = pls + p +
+                  (if (suffix.length > 0)
+                     "." + suffix
+                   else
+                     "")
                 import scala.xml.dtd.ValidationException
                 val xmlb =
                   try {
@@ -426,8 +424,7 @@ abstract class SnippetFailureException(msg: String)
       .filter { e =>
         {
           val cn = e.getClassName
-          !cn.startsWith("java.lang") &&
-          !cn.startsWith("sun.")
+          !cn.startsWith("java.lang") && !cn.startsWith("sun.")
         }
       }
       .take(10)

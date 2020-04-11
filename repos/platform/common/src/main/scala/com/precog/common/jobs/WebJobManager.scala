@@ -112,16 +112,16 @@ trait WebJobManager
       data: Option[JValue],
       started: Option[DateTime]): Response[Job] = {
     val content: JValue = JObject(
-      jfield("name", name) ::
-        jfield("type", jobType) ::
+      jfield("name", name) :: jfield("type", jobType) ::
         (data map (jfield("data", _) :: Nil) getOrElse Nil))
 
     withJsonClient { client =>
       val job0: Response[Job] = eitherT(
         client.query("apiKey", apiKey).post("/jobs/")(content) map {
           case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
-            obj.validated[Job] map (right(_)) getOrElse left(
-              "Invalid job returned by server:\n" + obj)
+            obj.validated[Job] map
+              (right(_)) getOrElse
+              left("Invalid job returned by server:\n" + obj)
           case res =>
             left(unexpected(res))
         })
@@ -147,8 +147,9 @@ trait WebJobManager
       eitherT(
         client.query("apiKey", apiKey).get[JValue]("/jobs/") map {
           case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
-            obj.validated[Vector[Job]] map (right(_)) getOrElse left(
-              "Invalid list of jobs returned from server:\n" + obj)
+            obj.validated[Vector[Job]] map
+              (right(_)) getOrElse
+              left("Invalid list of jobs returned from server:\n" + obj)
           case res =>
             left(unexpected(res))
         })
@@ -180,8 +181,7 @@ trait WebJobManager
       info: Option[JValue]): Response[Either[String, Status]] = {
     withJsonClient { client0 =>
       val update = JObject(
-        JField("message", JString(msg)) ::
-          JField("progress", JNum(progress)) ::
+        JField("message", JString(msg)) :: JField("progress", JNum(progress)) ::
           JField("unit", JString(unit)) ::
           (info map (JField("info", _) :: Nil) getOrElse Nil))
 
@@ -236,8 +236,9 @@ trait WebJobManager
       eitherT(
         client.get[JValue]("/jobs/" + jobId + "/messages/") map {
           case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
-            obj.validated[Vector[String]] map (right(_)) getOrElse left(
-              "Invalid list of channels returned from server:\n" + obj)
+            obj.validated[Vector[String]] map
+              (right(_)) getOrElse
+              left("Invalid list of channels returned from server:\n" + obj)
           case res =>
             left(unexpected(res))
         })
@@ -252,8 +253,9 @@ trait WebJobManager
         client
           .post[JValue]("/jobs/" + jobId + "/messages/" + channel)(value) map {
           case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
-            obj.validated[Message] map (right(_)) getOrElse left(
-              "Invalid message returned from server:\n" + obj)
+            obj.validated[Message] map
+              (right(_)) getOrElse
+              left("Invalid message returned from server:\n" + obj)
           case res =>
             left(unexpected(res))
         })
@@ -270,8 +272,9 @@ trait WebJobManager
       eitherT(
         client.get[JValue]("/jobs/" + jobId + "/messages/" + channel) map {
           case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
-            obj.validated[Vector[Message]] map (right(_)) getOrElse left(
-              "Invalid list of messages returned from server:\n" + obj)
+            obj.validated[Vector[Message]] map
+              (right(_)) getOrElse
+              left("Invalid list of messages returned from server:\n" + obj)
           case res =>
             left(unexpected(res))
         })

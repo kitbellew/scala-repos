@@ -101,8 +101,8 @@ trait InlineParsers extends BaseParsers {
           val c = s.charAt(i)
 
           val xmlEscape = escapeFastForXml(c)
-          if (markdownEscapes && c == '\\' && i + 1 < end && escapableMarkdownChars(
-                s.charAt(i + 1)) != null) {
+          if (markdownEscapes && c == '\\' && i + 1 < end &&
+              escapableMarkdownChars(s.charAt(i + 1)) != null) {
             result.append(s.subSequence(start, i).toString)
             result.append(escapableMarkdownChars(s.charAt(i + 1)))
             i += 2
@@ -209,16 +209,12 @@ trait InlineParsers extends BaseParsers {
     * An inline code element is surrounded by single backticks ("`")
     * or double backticks ("``").
     */
-  val code: Parser[String] = (
-    (
-      ("``" ~> ((not("``") ~> aChar) +) <~ "``") ^^ {
-        _.mkString
-      }
-    ) |
-      ('`' ~> markdownText(Set('`'), false) <~ '`')
-  ) ^^ { c =>
-    deco.decorateCode(c.mkString)
-  }
+  val code: Parser[String] =
+    ((("``" ~> ((not("``") ~> aChar) +) <~ "``") ^^ {
+      _.mkString
+    }) | ('`' ~> markdownText(Set('`'), false) <~ '`')) ^^ { c =>
+      deco.decorateCode(c.mkString)
+    }
 
   /** Parses any xml tag and escapes attribute values.
     */
@@ -250,12 +246,12 @@ trait InlineParsers extends BaseParsers {
     if (ctx.tags.contains("a")) {
       failure("Cannot nest a link in a link.")
     } else {
-      '[' ~> linkInline(ctx.addTag("a")) ~ (
-        "](" ~ ows
-      ) ~ url ~ ows ~ title <~ (ows ~ ')') ^^ {
-        case txt ~ _ ~ u ~ _ ~ ttl =>
-          deco.decorateLink(txt, u, ttl)
-      }
+      '[' ~> linkInline(ctx.addTag("a")) ~
+        ("](" ~ ows) ~ url ~ ows ~ title <~
+        (ows ~ ')') ^^ {
+          case txt ~ _ ~ u ~ _ ~ ttl =>
+            deco.decorateLink(txt, u, ttl)
+        }
     }
 
   /** A markdown link which references an url by id.
@@ -276,13 +272,10 @@ trait InlineParsers extends BaseParsers {
       ctx: InlineContext): Parser[
     String
   ] = //( (not(']') ~> oneInline(ctx.addTag("a")))* ) ^^ {_.mkString}
-    (
-      (
-        markdownText(specialLinkInlineChars, true) | elementParsers(ctx) | (
-          (not(']') ~> aChar)
-        )
-      ) *
-    ) ^^ {
+    ((
+      markdownText(specialLinkInlineChars, true) | elementParsers(ctx) |
+        ((not(']') ~> aChar))
+    ) *) ^^ {
       _.mkString
     }
 
@@ -295,9 +288,9 @@ trait InlineParsers extends BaseParsers {
     * ends or not.
     */
   val title: Parser[Option[String]] = opt(
-    '"' ~> (
-      (markdownText(Set('"'), true) ~ opt(not('"' ~ ows ~ ')') ~> aChar)) *
-    ) <~ '"') ^^ {
+    '"' ~>
+      ((markdownText(Set('"'), true) ~ opt(not('"' ~ ows ~ ')') ~> aChar)) *) <~
+      '"') ^^ {
     case None =>
       None
     case Some(chunks) => {
@@ -333,19 +326,16 @@ trait InlineParsers extends BaseParsers {
     * Parser returns a tuple with the link definition first and the text to display second.
     */
   def ref(ctx: InlineContext): Parser[(LinkDefinition, String)] =
-    (
-      '[' ~> linkInline(ctx) ~ (']' ~ opt(' ') ~ '[') ~ idReference(
-        ctx) <~ ']' ^^ {
+    ('[' ~> linkInline(ctx) ~
+      (']' ~ opt(' ') ~ '[') ~ idReference(ctx) <~ ']' ^^ {
         case t ~ dummy ~ pair =>
           (pair._2, t)
-      }
-    ) |
-      (
-        '[' ~> idReference(ctx) <~ (']' ~ opt(opt(' ') ~ '[' ~ ows ~ ']')) ^^ {
+      }) |
+      ('[' ~> idReference(ctx) <~
+        (']' ~ opt(opt(' ') ~ '[' ~ ows ~ ']')) ^^ {
           case (t, ld) =>
             (ld, t)
-        }
-      )
+        })
 
   /**
     * Parses either a referenced or a directly defined image.
@@ -356,10 +346,12 @@ trait InlineParsers extends BaseParsers {
   /** An image with an explicit path.
     */
   val directImg: Parser[String] =
-    elem('[') ~> refText ~ ("](" ~ ows) ~ url ~ ows ~ title <~ (ows ~ ')') ^^ {
-      case altText ~ _ ~ path ~ _ ~ ttl =>
-        deco.decorateImg(altText, path, ttl)
-    }
+    elem('[') ~> refText ~
+      ("](" ~ ows) ~ url ~ ows ~ title <~
+      (ows ~ ')') ^^ {
+        case altText ~ _ ~ path ~ _ ~ ttl =>
+          deco.decorateImg(altText, path, ttl)
+      }
 
   /**
     * Parses a referenced image.
@@ -373,11 +365,8 @@ trait InlineParsers extends BaseParsers {
   /** Parses inline in a span element like bold or emphasis or link up until the given end marker
     */
   def spanInline(end: Parser[Any], ctx: InlineContext): Parser[String] =
-    (
-      markdownText(specialInlineChars, true) | elementParsers(ctx) | (
-        not(end) ~> aChar
-      )
-    ) ^^ {
+    (markdownText(specialInlineChars, true) | elementParsers(ctx) |
+      (not(end) ~> aChar)) ^^ {
       _.mkString
     }
 
@@ -387,8 +376,8 @@ trait InlineParsers extends BaseParsers {
     (limiter ~ not(ws)) ~>
       (spanInline((not(lookbehind(Set(' ', '\t', '\n'))) ~ limiter), ctx) +) <~
       limiter ^^ {
-      _.mkString
-    }
+        _.mkString
+      }
 
   /** Either an emphasis or a strong text wrapped in asterisks.
     */

@@ -24,13 +24,14 @@ class ServerSpec extends PlaySpecification {
         }
     }
 
-    "support starting an Akka HTTP server in a test" in new WithServer(
-      app = FakeApplication(withRoutes = httpServerTagRoutes)) {
+    "support starting an Akka HTTP server in a test" in
+      new WithServer(app = FakeApplication(withRoutes = httpServerTagRoutes)) {
 
-      val response = await(WS.url("http://localhost:19001/httpServerTag").get())
-      response.status must equalTo(OK)
-      response.body must_== "Some(akka-http)"
-    }
+        val response = await(
+          WS.url("http://localhost:19001/httpServerTag").get())
+        response.status must equalTo(OK)
+        response.body must_== "Some(akka-http)"
+      }
 
   }
 }

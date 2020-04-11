@@ -8,14 +8,17 @@ import org.scalacheck.Prop.forAll
 object StreamTTest extends SpecLite {
   type StreamTOpt[A] = StreamT[Option, A]
 
-  "fromStream / toStream" ! forAll { (ass: Stream[Stream[Int]]) =>
-    StreamT.fromStream(ass).toStream must_=== (ass)
-  }
+  "fromStream / toStream" !
+    forAll { (ass: Stream[Stream[Int]]) =>
+      StreamT.fromStream(ass).toStream must_=== (ass)
+    }
 
-  "fromStream / asStream" ! forAll {
-    import Id._
-    (as: Stream[Int]) => StreamT.fromStream[Id, Int](as).asStream must_=== (as)
-  }
+  "fromStream / asStream" !
+    forAll {
+      import Id._
+      (as: Stream[Int]) =>
+        StreamT.fromStream[Id, Int](as).asStream must_=== (as)
+    }
 
   "asStream" should {
     "be lazy" in {
@@ -39,42 +42,47 @@ object StreamTTest extends SpecLite {
     }
   }
 
-  "filter all" ! forAll { (ass: StreamT[Stream, Int]) =>
-    ass.filter(_ => true) must_=== (ass)
-  }
+  "filter all" !
+    forAll { (ass: StreamT[Stream, Int]) =>
+      ass.filter(_ => true) must_=== (ass)
+    }
 
-  "isEmpty" ! forAll { (s: Stream[Int]) =>
-    StreamT.fromStream(List(s)).isEmpty.forall(_ == s.isEmpty)
-  }
+  "isEmpty" !
+    forAll { (s: Stream[Int]) =>
+      StreamT.fromStream(List(s)).isEmpty.forall(_ == s.isEmpty)
+    }
 
-  "filter none" ! forAll { (ass: StreamT[Stream, Int]) =>
-    val filtered = ass.filter(_ => false)
-    val isEmpty = filtered.isEmpty
-    isEmpty.forall(_ == true)
-  }
+  "filter none" !
+    forAll { (ass: StreamT[Stream, Int]) =>
+      val filtered = ass.filter(_ => false)
+      val isEmpty = filtered.isEmpty
+      isEmpty.forall(_ == true)
+    }
 
-  "drop" ! forAll { (ass: Option[Stream[Int]], x: Int) =>
-    StreamT.fromStream(ass).drop(x).toStream must_=== (ass.map(_.drop(x)))
-  }
+  "drop" !
+    forAll { (ass: Option[Stream[Int]], x: Int) =>
+      StreamT.fromStream(ass).drop(x).toStream must_=== (ass.map(_.drop(x)))
+    }
 
-  "take" ! forAll { (ass: Option[Stream[Int]], x: Int) =>
-    StreamT.fromStream(ass).take(x).toStream must_=== (ass.map(_.take(x)))
-  }
+  "take" !
+    forAll { (ass: Option[Stream[Int]], x: Int) =>
+      StreamT.fromStream(ass).take(x).toStream must_=== (ass.map(_.take(x)))
+    }
 
-  "mapM" ! forAll { (s: Stream[Int], l: List[Int]) =>
-    val s0 = s map (_ + 1)
-    StreamT.fromStream(List(s, s0)).mapM(i => l.map(_ + i)).toStream must_== (
-      Traverse[Stream].traverse(s)(i => l.map(_ + i)) :::
-        Traverse[Stream].traverse(s0)(i => l.map(_ + i))
-    )
-  }
+  "mapM" !
+    forAll { (s: Stream[Int], l: List[Int]) =>
+      val s0 = s map (_ + 1)
+      StreamT.fromStream(List(s, s0)).mapM(i => l.map(_ + i)).toStream must_==
+        (Traverse[Stream].traverse(s)(i => l.map(_ + i)) :::
+          Traverse[Stream].traverse(s0)(i => l.map(_ + i)))
+    }
 
-  "foldMap" ! forAll { (s: Stream[Int]) =>
-    import scalaz.Scalaz._
-    StreamT.fromStream(s.some).foldMap(_.toString) must_== (
-      s.foldMap(_.toString)
-    )
-  }
+  "foldMap" !
+    forAll { (s: Stream[Int]) =>
+      import scalaz.Scalaz._
+      StreamT.fromStream(s.some).foldMap(_.toString) must_==
+        (s.foldMap(_.toString))
+    }
 
   checkAll(equal.laws[StreamTOpt[Int]])
   checkAll(monoid.laws[StreamTOpt[Int]])

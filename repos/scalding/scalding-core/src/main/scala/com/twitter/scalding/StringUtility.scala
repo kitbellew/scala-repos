@@ -16,12 +16,13 @@ object StringUtility {
       }
     } else {
       // the text till the separator should be kept in any case
-      text.substring(from, firstIndex) :: fastSplitHelper(
-        text,
-        key,
-        firstIndex + keyLength,
-        textLength,
-        keyLength)
+      text.substring(from, firstIndex) ::
+        fastSplitHelper(
+          text,
+          key,
+          firstIndex + keyLength,
+          textLength,
+          keyLength)
     }
   }
 

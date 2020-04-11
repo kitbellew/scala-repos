@@ -43,38 +43,41 @@ object MacroSupportInterpolationImpl {
               str.charAt(pos) match {
                 case c2 @ ('(' | ')') => // optional parentheses
                   flushSB
-                  exprs += If(
-                    Select(
-                      skipParens,
-                      TermName(NameTransformer.encode("unary_!"))),
-                    append(Literal(Constant(c2))),
-                    ctx.universe.EmptyTree)
+                  exprs +=
+                    If(
+                      Select(
+                        skipParens,
+                        TermName(NameTransformer.encode("unary_!"))),
+                      append(Literal(Constant(c2))),
+                      ctx.universe.EmptyTree)
                 case '{' => // optional open parentheses with indent
                   flushSB
-                  exprs += If(
-                    Select(
-                      skipParens,
-                      TermName(NameTransformer.encode("unary_!"))),
-                    Block(
-                      List(
-                        append(Literal(Constant('('))),
-                        Select(sqlBuilder, TermName("newLineIndent"))),
-                      Literal(Constant(()))),
-                    ctx.universe.EmptyTree
-                  )
+                  exprs +=
+                    If(
+                      Select(
+                        skipParens,
+                        TermName(NameTransformer.encode("unary_!"))),
+                      Block(
+                        List(
+                          append(Literal(Constant('('))),
+                          Select(sqlBuilder, TermName("newLineIndent"))),
+                        Literal(Constant(()))),
+                      ctx.universe.EmptyTree
+                    )
                 case '}' => // optional close parentheses with dedent
                   flushSB
-                  exprs += If(
-                    Select(
-                      skipParens,
-                      TermName(NameTransformer.encode("unary_!"))),
-                    Block(
-                      List(
-                        Select(sqlBuilder, TermName("newLineDedent")),
-                        append(Literal(Constant(')')))),
-                      Literal(Constant(()))),
-                    ctx.universe.EmptyTree
-                  )
+                  exprs +=
+                    If(
+                      Select(
+                        skipParens,
+                        TermName(NameTransformer.encode("unary_!"))),
+                      Block(
+                        List(
+                          Select(sqlBuilder, TermName("newLineDedent")),
+                          append(Literal(Constant(')')))),
+                        Literal(Constant(()))),
+                      ctx.universe.EmptyTree
+                    )
                 case '[' => // open parenthesis with indent
                   sb append '('
                   flushSB
@@ -89,7 +92,8 @@ object MacroSupportInterpolationImpl {
                 case c2 =>
                   ctx.abort(
                     ctx.enclosingPosition,
-                    "Invalid escaped character '" + c2 + "' in literal \"" + str + "\"")
+                    "Invalid escaped character '" + c2 + "' in literal \"" +
+                      str + "\"")
               }
             }
           case c =>
@@ -133,26 +137,24 @@ object MacroSupportInterpolationImpl {
             ctx.abort(ae.tree.pos, "Unknown type. Must be Node or Symbol.")
         case '!' =>
           exprs ++= appendString(s.substring(0, len - 1))
-          exprs += Apply(
-            Ident(TermName("expr")),
-            List(a, Literal(Constant(true))))
+          exprs +=
+            Apply(Ident(TermName("expr")), List(a, Literal(Constant(true))))
         case _ =>
           exprs ++= appendString(s)
           //println("### tpe: "+ae.actualType)
           //println("### is String: "+(ae.actualType <:< stringType))
           //println("### is Node: "+(ae.actualType <:< nodeType))
-          exprs += (
-            if (ae.actualType <:< stringType)
-              append(a)
-            else if (ae.actualType <:< definitions.AnyValTpe)
-              append(toStr(a))
-            else if (ae.actualType <:< nodeType)
-              Apply(Ident(TermName("expr")), List(a, Literal(Constant(false))))
-            else
-              ctx.abort(
-                ae.tree.pos,
-                "Unknown type. Must be Node, String or AnyVal.")
-          )
+          exprs +=
+            (if (ae.actualType <:< stringType)
+               append(a)
+             else if (ae.actualType <:< definitions.AnyValTpe)
+               append(toStr(a))
+             else if (ae.actualType <:< nodeType)
+               Apply(Ident(TermName("expr")), List(a, Literal(Constant(false))))
+             else
+               ctx.abort(
+                 ae.tree.pos,
+                 "Unknown type. Must be Node, String or AnyVal."))
       }
     }
     exprs ++= appendString(pit.next())

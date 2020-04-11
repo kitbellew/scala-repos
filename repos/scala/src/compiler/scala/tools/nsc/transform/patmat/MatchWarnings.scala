@@ -27,13 +27,11 @@ trait MatchWarnings {
       def declarationOfName(tpe: Type, name: Name): Symbol =
         tpe match {
           case PolyType(tparams, restpe) =>
-            tparams find (_.name == name) getOrElse declarationOfName(
-              restpe,
-              name)
+            tparams find
+              (_.name == name) getOrElse declarationOfName(restpe, name)
           case MethodType(params, restpe) =>
-            params find (_.name == name) getOrElse declarationOfName(
-              restpe,
-              name)
+            params find
+              (_.name == name) getOrElse declarationOfName(restpe, name)
           case ClassInfoType(_, _, clazz) =>
             clazz.rawInfo member name
           case _ =>
@@ -102,8 +100,8 @@ trait MatchWarnings {
           vpat = s"variable pattern$vpatName on line ${cdef.pat.pos.line}"
           reporter.warning(
             cdef.pos,
-            s"patterns after a variable pattern cannot match (SLS 8.1.1)" + addendum(
-              cdef.pat))
+            s"patterns after a variable pattern cannot match (SLS 8.1.1)" +
+              addendum(cdef.pat))
         }
       }
     }

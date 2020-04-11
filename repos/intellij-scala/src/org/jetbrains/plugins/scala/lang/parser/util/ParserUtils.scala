@@ -14,16 +14,15 @@ import scala.annotation.tailrec
 
 object ParserUtils extends ParserUtilsBase {
 
-  def lookAheadSeq(n: Int)(builder: PsiBuilder) =
-    (1 to n).map(i => {
-      val token =
-        if (!builder.eof)
-          builder.getTokenType
-        else
-          null
-      builder.advanceLexer()
-      token
-    })
+  def lookAheadSeq(n: Int)(builder: PsiBuilder) = (1 to n).map(i => {
+    val token =
+      if (!builder.eof)
+        builder.getTokenType
+      else
+        null
+    builder.advanceLexer()
+    token
+  })
 
   //Write element node
   def eatElement(builder: PsiBuilder, elem: IElementType) {
@@ -81,9 +80,8 @@ object ParserUtils extends ParserUtilsBase {
   def isAssignmentOperator(id: String) =
     id.charAt(id.length - 1) match {
       case '='
-          if id != "<=" && id != ">=" && id != "!=" && (
-            id.charAt(0) != '=' || id == "="
-          ) =>
+          if id != "<=" && id != ">=" && id != "!=" &&
+            (id.charAt(0) != '=' || id == "=") =>
         true
       case _ =>
         false

@@ -962,8 +962,8 @@ object SwankProtocolRequest {
               SexpString("+") :: SexpNumber(i) :: SexpString(text) :: Nil) =>
           PatchInsert(i.intValue, text)
         case SexpList(
-              SexpString("*") :: SexpNumber(i) :: SexpNumber(j) :: SexpString(
-                text) :: Nil) =>
+              SexpString("*") :: SexpNumber(i) :: SexpNumber(j) ::
+              SexpString(text) :: Nil) =>
           PatchReplace(i.intValue, j.intValue, text)
         case SexpList(
               SexpString("-") :: SexpNumber(i) :: SexpNumber(j) :: Nil) =>
@@ -1234,8 +1234,8 @@ object SwankProtocolRequest {
     def read(sexp: Sexp): RpcRequestEnvelope =
       sexp match {
         case SexpList(
-              SexpSymbol(":swank-rpc") :: form :: SexpNumber(
-                callIdBI) :: Nil) =>
+              SexpSymbol(":swank-rpc") :: form :: SexpNumber(callIdBI) ::
+              Nil) =>
           val callId = callIdBI.intValue()
           Try(form.convertTo[RpcRequest]) match {
             case Success(v) =>

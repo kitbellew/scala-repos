@@ -573,23 +573,25 @@ trait ScFunction
         if first.hasRepeatedParam
         if isJavaVarargs
       } {
-        buffer += new ScFunctionWrapper(
-          this,
-          isStatic,
-          isInterface,
-          cClass,
-          isJavaVarargs = true)
+        buffer +=
+          new ScFunctionWrapper(
+            this,
+            isStatic,
+            isInterface,
+            cClass,
+            isJavaVarargs = true)
       }
 
       val params = parameters
       for (i <- params.indices
            if params(i).baseDefaultParam) {
-        buffer += new ScFunctionWrapper(
-          this,
-          isStatic = isStatic || isConstructor,
-          isInterface,
-          cClass,
-          forDefault = Some(i + 1))
+        buffer +=
+          new ScFunctionWrapper(
+            this,
+            isStatic = isStatic || isConstructor,
+            isInterface,
+            cClass,
+            forDefault = Some(i + 1))
       }
     }
     buffer.toSeq
@@ -600,9 +602,8 @@ trait ScFunction
   override def getIcon(flags: Int) = Icons.FUNCTION
 
   def getReturnType: PsiType = {
-    if (DumbService.getInstance(getProject).isDumb || !SyntheticClasses
-          .get(getProject)
-          .isClassesRegistered) {
+    if (DumbService.getInstance(getProject).isDumb ||
+        !SyntheticClasses.get(getProject).isClassesRegistered) {
       return null //no resolve during dumb mode or while synthetic classes is not registered
     }
     getReturnTypeImpl
@@ -877,8 +878,8 @@ trait ScFunction
   }
 
   override def isDeprecated = {
-    hasAnnotation("scala.deprecated")
-      .isDefined || hasAnnotation("java.lang.Deprecated").isDefined
+    hasAnnotation("scala.deprecated").isDefined ||
+    hasAnnotation("java.lang.Deprecated").isDefined
   }
 
   override def getName = {
@@ -995,8 +996,8 @@ object ScFunction {
       FlatMap,
       Filter,
       WithFilter)
-    val Special: Set[String] =
-      Set(Apply, Update) ++ Unapplies ++ ForComprehensions
+    val Special: Set[String] = Set(Apply, Update) ++ Unapplies ++
+      ForComprehensions
   }
 
   /** Is this function sometimes invoked without it's name appearing at the call site? */

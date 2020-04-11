@@ -81,9 +81,9 @@ object PowerIterationClusteringModel
 
       val metadata = compact(
         render(
-          ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~ (
-            "k" -> model.k
-          )))
+          ("class" -> thisClassName) ~
+            ("version" -> thisFormatVersion) ~
+            ("k" -> model.k)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       val dataRDD = model.assignments.toDF()

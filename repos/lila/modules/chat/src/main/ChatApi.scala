@@ -31,9 +31,14 @@ final class ChatApi(
       makeLine(userId, text) flatMap {
         _ ?? { line =>
           pushLine(chatId, line) >>- {
-            shutup ! public.fold(
-              lila.hub.actorApi.shutup.RecordPublicChat(chatId, userId, text),
-              lila.hub.actorApi.shutup.RecordPrivateChat(chatId, userId, text))
+            shutup !
+              public.fold(
+                lila.hub.actorApi.shutup.RecordPublicChat(chatId, userId, text),
+                lila
+                  .hub
+                  .actorApi
+                  .shutup
+                  .RecordPrivateChat(chatId, userId, text))
           } inject line.some
         }
       }
@@ -86,10 +91,12 @@ final class ChatApi(
     coll.update(
       BSONDocument("_id" -> chatId),
       BSONDocument(
-        "$push" -> BSONDocument(
-          Chat.BSONFields.lines -> BSONDocument(
-            "$each" -> List(line),
-            "$slice" -> -maxLinesPerChat))),
+        "$push" ->
+          BSONDocument(
+            Chat.BSONFields.lines ->
+              BSONDocument(
+                "$each" -> List(line),
+                "$slice" -> -maxLinesPerChat))),
       upsert = true
     ) >>- lila.mon.chat.message()
 

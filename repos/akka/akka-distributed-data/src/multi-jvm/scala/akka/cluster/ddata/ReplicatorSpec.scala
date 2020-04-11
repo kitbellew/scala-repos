@@ -170,8 +170,9 @@ class ReplicatorSpec
       // in case user is not using the passed in existing value
       replicator ! Update(KeyJ, GSet(), WriteLocal)(_ + "a" + "b")
       expectMsg(UpdateSuccess(KeyJ, None))
-      replicator ! Update(KeyJ, GSet(), WriteLocal)(_ ⇒
-        GSet.empty[String] + "c") // normal usage would be `_ + "c"`
+      replicator !
+        Update(KeyJ, GSet(), WriteLocal)(_ ⇒
+          GSet.empty[String] + "c") // normal usage would be `_ + "c"`
       expectMsg(UpdateSuccess(KeyJ, None))
       replicator ! Get(KeyJ, ReadLocal)
       val s =
@@ -587,28 +588,29 @@ class ReplicatorSpec
     enterBarrierAfterTestStep()
   }
 
-  "converge after many concurrent updates" in within(10.seconds) {
-    runOn(first, second, third) {
-      var c = GCounter()
-      for (i ← 0 until 100) {
-        c += 1
-        replicator ! Update(KeyF, GCounter(), writeTwo)(_ + 1)
-      }
-      val results = receiveN(100)
-      results.map(_.getClass).toSet should be(Set(classOf[UpdateSuccess[_]]))
-    }
-    enterBarrier("100-updates-done")
-    runOn(first, second, third) {
-      replicator ! Get(KeyF, readTwo)
-      val c =
-        expectMsgPF() {
-          case g @ GetSuccess(KeyF, _) ⇒
-            g.get(KeyF)
+  "converge after many concurrent updates" in
+    within(10.seconds) {
+      runOn(first, second, third) {
+        var c = GCounter()
+        for (i ← 0 until 100) {
+          c += 1
+          replicator ! Update(KeyF, GCounter(), writeTwo)(_ + 1)
         }
-      c.value should be(3 * 100)
+        val results = receiveN(100)
+        results.map(_.getClass).toSet should be(Set(classOf[UpdateSuccess[_]]))
+      }
+      enterBarrier("100-updates-done")
+      runOn(first, second, third) {
+        replicator ! Get(KeyF, readTwo)
+        val c =
+          expectMsgPF() {
+            case g @ GetSuccess(KeyF, _) ⇒
+              g.get(KeyF)
+          }
+        c.value should be(3 * 100)
+      }
+      enterBarrierAfterTestStep()
     }
-    enterBarrierAfterTestStep()
-  }
 
   "read-repair happens before GetSuccess" in {
     runOn(first) {
@@ -636,8 +638,9 @@ class ReplicatorSpec
 
     runOn(second) {
       replicator ! Subscribe(KeyH, changedProbe.ref)
-      replicator ! Update(KeyH, ORMap.empty[Flag], writeTwo)(
-        _ + ("a" -> Flag(enabled = false)))
+      replicator !
+        Update(KeyH, ORMap.empty[Flag], writeTwo)(
+          _ + ("a" -> Flag(enabled = false)))
       changedProbe.expectMsgPF() {
         case c @ Changed(KeyH) ⇒
           c.get(KeyH).entries
@@ -647,8 +650,9 @@ class ReplicatorSpec
     enterBarrier("update-h1")
 
     runOn(first) {
-      replicator ! Update(KeyH, ORMap.empty[Flag], writeTwo)(
-        _ + ("a" -> Flag(enabled = true)))
+      replicator !
+        Update(KeyH, ORMap.empty[Flag], writeTwo)(
+          _ + ("a" -> Flag(enabled = true)))
     }
 
     runOn(second) {
@@ -657,8 +661,9 @@ class ReplicatorSpec
           c.get(KeyH).entries
       } should be(Map("a" -> Flag(enabled = true)))
 
-      replicator ! Update(KeyH, ORMap.empty[Flag], writeTwo)(
-        _ + ("b" -> Flag(enabled = true)))
+      replicator !
+        Update(KeyH, ORMap.empty[Flag], writeTwo)(
+          _ + ("b" -> Flag(enabled = true)))
       changedProbe.expectMsgPF() {
         case c @ Changed(KeyH) ⇒
           c.get(KeyH).entries

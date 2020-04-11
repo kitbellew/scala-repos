@@ -193,8 +193,8 @@ class ByteBoundedBlockingQueue[E](
           throw new IllegalStateException(
             "Iterator does not have a current element.")
         iter.remove()
-        if (currentByteSize
-              .addAndGet(-sizeFunction.get(curr)) < queueByteCapacity)
+        if (currentByteSize.addAndGet(-sizeFunction.get(curr)) <
+              queueByteCapacity)
           putLock.synchronized(putLock.notify())
       }
     }

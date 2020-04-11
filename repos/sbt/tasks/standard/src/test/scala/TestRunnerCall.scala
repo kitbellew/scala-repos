@@ -10,10 +10,12 @@ object TaskRunnerCallTest extends Properties("TaskRunner Call") {
     forAll(MaxTasksGen, MaxWorkersGen) { (i: Int, workers: Int) =>
       (i > 0) ==> {
         val f = fibDirect(i)
-        ("Workers: " + workers) |: ("i: " + i) |: ("fib(i): " + f) |: {
-          def result = tryRun(fibTask(i), false, workers)
-          checkResult(result, f)
-        }
+        ("Workers: " + workers) |:
+          ("i: " + i) |:
+          ("fib(i): " + f) |: {
+            def result = tryRun(fibTask(i), false, workers)
+            checkResult(result, f)
+          }
       }
     }
   final def fibTask(i: Int) = {

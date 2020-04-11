@@ -134,9 +134,8 @@ sealed class Fork(val commandName: String, val runnerClass: Option[String]) {
         None
       else
         Some(
-          "-Xbootclasspath/a:" + bootJars
-            .map(_.getAbsolutePath)
-            .mkString(File.pathSeparator))
+          "-Xbootclasspath/a:" +
+            bootJars.map(_.getAbsolutePath).mkString(File.pathSeparator))
     jvmOptions ++ boot.toList ++ runnerClass.toList ++ arguments
   }
 }
@@ -340,16 +339,15 @@ object Fork {
         outputStrategy: OutputStrategy): Process = {
       if (scalaJars.isEmpty)
         sys.error("Scala jars not specified")
-      val scalaClasspathString = "-Xbootclasspath/a:" + scalaJars
-        .map(_.getAbsolutePath)
-        .mkString(File.pathSeparator)
+      val scalaClasspathString = "-Xbootclasspath/a:" +
+        scalaJars.map(_.getAbsolutePath).mkString(File.pathSeparator)
       val mainClass =
         if (mainClassName.isEmpty)
           Nil
         else
           mainClassName :: Nil
-      val options =
-        jvmOptions ++ (scalaClasspathString :: mainClass ::: arguments.toList)
+      val options = jvmOptions ++
+        (scalaClasspathString :: mainClass ::: arguments.toList)
       Fork
         .java
         .fork(

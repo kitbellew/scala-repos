@@ -28,10 +28,10 @@ trait StrongTests[F[_, _]] extends ProfunctorTests[F] {
     new DefaultRuleSet(
       name = "strong",
       parent = Some(profunctor[A, B, C, D, E, G]),
-      "strong first distributivity" -> forAll(
-        laws.strongFirstDistributivity[A, B, C, D, E] _),
-      "strong second distributivity" -> forAll(
-        laws.strongSecondDistributivity[A, B, C, D, E] _))
+      "strong first distributivity" ->
+        forAll(laws.strongFirstDistributivity[A, B, C, D, E] _),
+      "strong second distributivity" ->
+        forAll(laws.strongSecondDistributivity[A, B, C, D, E] _))
 }
 
 object StrongTests {

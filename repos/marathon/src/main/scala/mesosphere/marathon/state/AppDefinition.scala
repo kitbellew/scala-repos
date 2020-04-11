@@ -76,8 +76,8 @@ case class AppDefinition(
   def portIndicesAreValid(): Boolean = {
     val validPortIndices = hostPorts.indices
     healthChecks.forall { hc =>
-      hc.protocol == Protocol
-        .COMMAND || hc.portIndex.forall(validPortIndices.contains(_))
+      hc.protocol == Protocol.COMMAND ||
+      hc.portIndex.forall(validPortIndices.contains(_))
     }
   }
 
@@ -198,8 +198,8 @@ case class AppDefinition(
 
     //Precondition: either args or command is defined
     val commandOption =
-      if (argsOption
-            .isEmpty && proto.getCmd.hasValue && proto.getCmd.getValue.nonEmpty)
+      if (argsOption.isEmpty && proto.getCmd.hasValue &&
+          proto.getCmd.getValue.nonEmpty)
         Some(proto.getCmd.getValue)
       else
         None
@@ -341,27 +341,16 @@ case class AppDefinition(
     */
   def isUpgrade(to: AppDefinition): Boolean = {
     id == to.id && {
-      cmd != to.cmd ||
-      args != to.args ||
-      user != to.user ||
-      env != to.env ||
-      cpus != to.cpus ||
-      mem != to.mem ||
-      disk != to.disk ||
-      executor != to.executor ||
-      constraints != to.constraints ||
-      fetch != to.fetch ||
-      storeUrls != to.storeUrls ||
+      cmd != to.cmd || args != to.args || user != to.user || env != to.env ||
+      cpus != to.cpus || mem != to.mem || disk != to.disk ||
+      executor != to.executor || constraints != to.constraints ||
+      fetch != to.fetch || storeUrls != to.storeUrls ||
       portDefinitions != to.portDefinitions ||
-      requirePorts != to.requirePorts ||
-      backoff != to.backoff ||
+      requirePorts != to.requirePorts || backoff != to.backoff ||
       backoffFactor != to.backoffFactor ||
-      maxLaunchDelay != to.maxLaunchDelay ||
-      container != to.container ||
-      healthChecks != to.healthChecks ||
-      dependencies != to.dependencies ||
-      upgradeStrategy != to.upgradeStrategy ||
-      labels != to.labels ||
+      maxLaunchDelay != to.maxLaunchDelay || container != to.container ||
+      healthChecks != to.healthChecks || dependencies != to.dependencies ||
+      upgradeStrategy != to.upgradeStrategy || labels != to.labels ||
       acceptedResourceRoles != to.acceptedResourceRoles ||
       ipAddress != to.ipAddress
     }
@@ -550,9 +539,8 @@ object AppDefinition {
     appDef.instances should be >= 0
     appDef.disk should be >= 0.0
     appDef must definesCorrectResidencyCombination
-    (appDef.isResident is false) or (
-      appDef.upgradeStrategy is UpgradeStrategy.validForResidentTasks
-    )
+    (appDef.isResident is false) or
+      (appDef.upgradeStrategy is UpgradeStrategy.validForResidentTasks)
   }
 
   /**
@@ -602,14 +590,13 @@ object AppDefinition {
     isTrue(
       "Health check port indices must address an element of the ports array or container port mappings.") {
       hc =>
-        hc.protocol == Protocol.COMMAND || (
-          hc.portIndex match {
-            case Some(idx) =>
-              hostPortsIndices contains idx
-            case None =>
-              hostPortsIndices.length == 1 && hostPortsIndices.head == 0
-          }
-        )
+        hc.protocol == Protocol.COMMAND ||
+        (hc.portIndex match {
+          case Some(idx) =>
+            hostPortsIndices contains idx
+          case None =>
+            hostPortsIndices.length == 1 && hostPortsIndices.head == 0
+        })
     }
 
   def residentUpdateIsValid(from: AppDefinition): Validator[AppDefinition] = {
@@ -632,9 +619,7 @@ object AppDefinition {
     val changeNoResources =
       isTrue[AppDefinition](
         "Resident Tasks may not change resource requirements!") { to =>
-        from.cpus == to.cpus &&
-        from.mem == to.mem &&
-        from.disk == to.disk &&
+        from.cpus == to.cpus && from.mem == to.mem && from.disk == to.disk &&
         from.portDefinitions == to.portDefinitions
       }
 

@@ -17,15 +17,18 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Post("/", FormData("color" -> "blue", "age" -> "68")) ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and the age ten years ago was 58"
-    }
+    Post("/", FormData("color" -> "blue", "age" -> "68")) ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "The color is 'blue' and the age ten years ago was 58"
+      }
 
-    Get("/") ~> Route.seal(route) ~> check {
-      status shouldEqual StatusCodes.BadRequest
-      responseAs[
-        String] shouldEqual "Request is missing required form field 'color'"
-    }
+    Get("/") ~> Route.seal(route) ~>
+      check {
+        status shouldEqual StatusCodes.BadRequest
+        responseAs[String] shouldEqual
+          "Request is missing required form field 'color'"
+      }
   }
   "formField" in {
     val route =
@@ -37,15 +40,17 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
         }
 
     // tests:
-    Post("/", FormData("color" -> "blue")) ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue'"
-    }
+    Post("/", FormData("color" -> "blue")) ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The color is 'blue'"
+      }
 
-    Get("/") ~> Route.seal(route) ~> check {
-      status shouldEqual StatusCodes.BadRequest
-      responseAs[
-        String] shouldEqual "Request is missing required form field 'color'"
-    }
+    Get("/") ~> Route.seal(route) ~>
+      check {
+        status shouldEqual StatusCodes.BadRequest
+        responseAs[String] shouldEqual
+          "Request is missing required form field 'color'"
+      }
   }
   "formFieldMap" in {
     val route = formFieldMap { fields =>
@@ -56,13 +61,15 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~> check {
-      responseAs[
-        String] shouldEqual "The form fields are color = 'blue', count = '42'"
-    }
-    Post("/", FormData("x" -> "1", "x" -> "5")) ~> route ~> check {
-      responseAs[String] shouldEqual "The form fields are x = '5'"
-    }
+    Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "The form fields are color = 'blue', count = '42'"
+      }
+    Post("/", FormData("x" -> "1", "x" -> "5")) ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The form fields are x = '5'"
+      }
   }
   "formFieldMultiMap" in {
     val route = formFieldMultiMap { fields =>
@@ -72,15 +79,15 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~> check {
-      responseAs[
-        String] shouldEqual "There are form fields color -> 1, count -> 1"
-    }
-    Post(
-      "/",
-      FormData("x" -> "23", "x" -> "4", "x" -> "89")) ~> route ~> check {
-      responseAs[String] shouldEqual "There are form fields x -> 3"
-    }
+    Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "There are form fields color -> 1, count -> 1"
+      }
+    Post("/", FormData("x" -> "23", "x" -> "4", "x" -> "89")) ~> route ~>
+      check {
+        responseAs[String] shouldEqual "There are form fields x -> 3"
+      }
   }
   "formFieldSeq" in {
     val route = formFieldSeq { fields =>
@@ -91,16 +98,16 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~> check {
-      responseAs[
-        String] shouldEqual "The form fields are color = 'blue', count = '42'"
-    }
-    Post(
-      "/",
-      FormData("x" -> "23", "x" -> "4", "x" -> "89")) ~> route ~> check {
-      responseAs[
-        String] shouldEqual "The form fields are x = '23', x = '4', x = '89'"
-    }
+    Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "The form fields are color = 'blue', count = '42'"
+      }
+    Post("/", FormData("x" -> "23", "x" -> "4", "x" -> "89")) ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "The form fields are x = '23', x = '4', x = '89'"
+      }
   }
 
 }

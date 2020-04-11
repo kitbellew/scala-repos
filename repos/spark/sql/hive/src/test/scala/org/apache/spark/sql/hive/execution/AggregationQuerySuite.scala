@@ -190,9 +190,8 @@ abstract class AggregationQuerySuite
     val emptyDF = sqlContext.createDataFrame(
       sparkContext.emptyRDD[Row],
       StructType(
-        StructField("key", StringType) :: StructField(
-          "value",
-          IntegerType) :: Nil))
+        StructField("key", StringType) :: StructField("value", IntegerType) ::
+          Nil))
     emptyDF.registerTempTable("emptyTable")
 
     // Register UDAFs
@@ -302,16 +301,9 @@ abstract class AggregationQuerySuite
           |SELECT DISTINCT value1, key
           |FROM agg2
         """.stripMargin),
-      Row(10, 1) ::
-        Row(-60, null) ::
-        Row(30, 1) ::
-        Row(1, 2) ::
-        Row(-10, null) ::
-        Row(-1, 2) ::
-        Row(null, 2) ::
-        Row(100, null) ::
-        Row(null, 3) ::
-        Row(null, null) :: Nil
+      Row(10, 1) :: Row(-60, null) :: Row(30, 1) :: Row(1, 2) ::
+        Row(-10, null) :: Row(-1, 2) :: Row(null, 2) :: Row(100, null) ::
+        Row(null, 3) :: Row(null, null) :: Nil
     )
 
     checkAnswer(
@@ -320,16 +312,9 @@ abstract class AggregationQuerySuite
           |FROM agg2
           |GROUP BY key, value1
         """.stripMargin),
-      Row(10, 1) ::
-        Row(-60, null) ::
-        Row(30, 1) ::
-        Row(1, 2) ::
-        Row(-10, null) ::
-        Row(-1, 2) ::
-        Row(null, 2) ::
-        Row(100, null) ::
-        Row(null, 3) ::
-        Row(null, null) :: Nil
+      Row(10, 1) :: Row(-60, null) :: Row(30, 1) :: Row(1, 2) ::
+        Row(-10, null) :: Row(-1, 2) :: Row(null, 2) :: Row(100, null) ::
+        Row(null, 3) :: Row(null, null) :: Nil
     )
 
     checkAnswer(
@@ -337,13 +322,9 @@ abstract class AggregationQuerySuite
           |SELECT DISTINCT key
           |FROM agg3
         """.stripMargin),
-      Row(Seq[Integer](1, 1)) ::
-        Row(Seq[Integer](null)) ::
-        Row(Seq[Integer](1)) ::
-        Row(Seq[Integer](2)) ::
-        Row(null) ::
-        Row(Seq[Integer](2, 3)) ::
-        Row(Seq[Integer](2, 3, 4)) ::
+      Row(Seq[Integer](1, 1)) :: Row(Seq[Integer](null)) ::
+        Row(Seq[Integer](1)) :: Row(Seq[Integer](2)) :: Row(null) ::
+        Row(Seq[Integer](2, 3)) :: Row(Seq[Integer](2, 3, 4)) ::
         Row(Seq[Integer](3)) :: Nil
     )
 
@@ -353,18 +334,12 @@ abstract class AggregationQuerySuite
           |FROM agg3
           |GROUP BY value1, key
         """.stripMargin),
-      Row(10, Seq[Integer](1, 1)) ::
-        Row(-60, Seq[Integer](null)) ::
-        Row(30, Seq[Integer](1, 1)) ::
-        Row(30, Seq[Integer](1)) ::
-        Row(1, Seq[Integer](2)) ::
-        Row(-10, null) ::
-        Row(-1, Seq[Integer](2, 3)) ::
-        Row(1, Seq[Integer](2, 3)) ::
-        Row(null, Seq[Integer](2, 3, 4)) ::
-        Row(100, Seq[Integer](null)) ::
-        Row(null, Seq[Integer](3)) ::
-        Row(null, null) :: Nil
+      Row(10, Seq[Integer](1, 1)) :: Row(-60, Seq[Integer](null)) ::
+        Row(30, Seq[Integer](1, 1)) :: Row(30, Seq[Integer](1)) ::
+        Row(1, Seq[Integer](2)) :: Row(-10, null) ::
+        Row(-1, Seq[Integer](2, 3)) :: Row(1, Seq[Integer](2, 3)) ::
+        Row(null, Seq[Integer](2, 3, 4)) :: Row(100, Seq[Integer](null)) ::
+        Row(null, Seq[Integer](3)) :: Row(null, null) :: Nil
     )
   }
 
@@ -375,9 +350,8 @@ abstract class AggregationQuerySuite
           |FROM agg1
           |GROUP BY Key - 100
         """.stripMargin),
-      Row(20.0, -99) :: Row(-0.5, -98) :: Row(null, -97) :: Row(
-        10.0,
-        null) :: Nil
+      Row(20.0, -99) :: Row(-0.5, -98) :: Row(null, -97) :: Row(10.0, null) ::
+        Nil
     )
 
     checkAnswer(
@@ -387,10 +361,8 @@ abstract class AggregationQuerySuite
           |FROM agg2
           |GROUP BY Key - 100
         """.stripMargin),
-      Row(40, -99, 2) :: Row(0, -98, 2) :: Row(null, -97, 0) :: Row(
-        30,
-        null,
-        3) :: Nil
+      Row(40, -99, 2) :: Row(0, -98, 2) :: Row(null, -97, 0) ::
+        Row(30, null, 3) :: Nil
     )
 
     checkAnswer(
@@ -399,12 +371,8 @@ abstract class AggregationQuerySuite
           |FROM agg1
           |GROUP BY vAlue * keY - 100
         """.stripMargin),
-      Row(-90) ::
-        Row(-80) ::
-        Row(-70) ::
-        Row(-100) ::
-        Row(-102) ::
-        Row(null) :: Nil
+      Row(-90) :: Row(-80) :: Row(-70) :: Row(-100) :: Row(-102) :: Row(null) ::
+        Nil
     )
   }
 
@@ -545,9 +513,7 @@ abstract class AggregationQuerySuite
           |FROM agg1
           |GROUP BY key
         """.stripMargin),
-      Row(60.0, 1, 20.0) ::
-        Row(-1.0, 2, -0.5) ::
-        Row(null, 3, null) ::
+      Row(60.0, 1, 20.0) :: Row(-1.0, 2, -0.5) :: Row(null, 3, null) ::
         Row(30.0, null, 10.0) :: Nil
     )
 
@@ -562,10 +528,9 @@ abstract class AggregationQuerySuite
           |FROM agg1
           |GROUP BY key
         """.stripMargin),
-      Row(64.5, 19.0, 1, 55.5, 20.0) ::
-        Row(5.0, -2.5, 2, -7.0, -0.5) ::
-        Row(null, null, 3, null, null) ::
-        Row(null, null, null, null, 10.0) :: Nil
+      Row(64.5, 19.0, 1, 55.5, 20.0) :: Row(5.0, -2.5, 2, -7.0, -0.5) ::
+        Row(null, null, 3, null, null) :: Row(null, null, null, null, 10.0) ::
+        Nil
     )
   }
 
@@ -632,9 +597,7 @@ abstract class AggregationQuerySuite
           |FROM agg2
           |GROUP BY key
         """.stripMargin),
-      Row(3, 3, 3, 2, 1) ::
-        Row(3, 4, 4, 2, 2) ::
-        Row(0, 2, 2, 0, 3) ::
+      Row(3, 3, 3, 2, 1) :: Row(3, 4, 4, 2, 2) :: Row(0, 2, 2, 0, 3) ::
         Row(3, 4, 4, 3, null) :: Nil
     )
   }
@@ -648,10 +611,7 @@ abstract class AggregationQuerySuite
           |FROM agg2
           |GROUP BY key
         """.stripMargin),
-      Row(null, 3) ::
-        Row(1, 3) ::
-        Row(2, 1) ::
-        Row(3, 0) :: Nil
+      Row(null, 3) :: Row(1, 3) :: Row(2, 1) :: Row(3, 0) :: Nil
     )
   }
 
@@ -695,16 +655,10 @@ abstract class AggregationQuerySuite
           |FROM agg2
           |GROUP BY key, value1
         """.stripMargin),
-      Row(1, 10, 1, 1, 1) ::
-        Row(1, -60, 1, 1, null) ::
-        Row(2, 30, 2, 2, 1) ::
-        Row(2, 1, 2, 2, 2) ::
-        Row(1, -10, 1, 1, null) ::
-        Row(0, -1, 1, 1, 2) ::
-        Row(1, null, 1, 1, 2) ::
-        Row(1, 100, 1, 1, null) ::
-        Row(1, null, 2, 2, 3) ::
-        Row(0, null, 1, 1, null) :: Nil
+      Row(1, 10, 1, 1, 1) :: Row(1, -60, 1, 1, null) :: Row(2, 30, 2, 2, 1) ::
+        Row(2, 1, 2, 2, 2) :: Row(1, -10, 1, 1, null) :: Row(0, -1, 1, 1, 2) ::
+        Row(1, null, 1, 1, 2) :: Row(1, 100, 1, 1, null) ::
+        Row(1, null, 2, 2, 3) :: Row(0, null, 1, 1, null) :: Nil
     )
 
     checkAnswer(
@@ -719,16 +673,11 @@ abstract class AggregationQuerySuite
           |FROM agg2
           |GROUP BY key, value1
         """.stripMargin),
-      Row(1, 10, 1, 1, 1, 1) ::
-        Row(1, -60, 1, 1, null, 1) ::
-        Row(2, 30, 2, 2, 1, 1) ::
-        Row(2, 1, 2, 2, 2, 1) ::
-        Row(1, -10, 1, 1, null, 1) ::
-        Row(0, -1, 1, 1, 2, 0) ::
-        Row(1, null, 1, 1, 2, 1) ::
-        Row(1, 100, 1, 1, null, 1) ::
-        Row(1, null, 2, 2, 3, 1) ::
-        Row(0, null, 1, 1, null, 0) :: Nil
+      Row(1, 10, 1, 1, 1, 1) :: Row(1, -60, 1, 1, null, 1) ::
+        Row(2, 30, 2, 2, 1, 1) :: Row(2, 1, 2, 2, 2, 1) ::
+        Row(1, -10, 1, 1, null, 1) :: Row(0, -1, 1, 1, 2, 0) ::
+        Row(1, null, 1, 1, 2, 1) :: Row(1, 100, 1, 1, null, 1) ::
+        Row(1, null, 2, 2, 3, 1) :: Row(0, null, 1, 1, null, 0) :: Nil
     )
   }
 
@@ -819,12 +768,8 @@ abstract class AggregationQuerySuite
       sqlContext.sql("""
           |SELECT a, corr(b, c) FROM covar_tab GROUP BY a ORDER BY a
         """.stripMargin),
-      Row(1, null) ::
-        Row(2, null) ::
-        Row(3, Double.NaN) ::
-        Row(4, Double.NaN) ::
-        Row(5, Double.NaN) ::
-        Row(6, Double.NaN) :: Nil
+      Row(1, null) :: Row(2, null) :: Row(3, Double.NaN) ::
+        Row(4, Double.NaN) :: Row(5, Double.NaN) :: Row(6, Double.NaN) :: Nil
     )
 
     val corr7 = sqlContext
@@ -981,8 +926,7 @@ abstract class AggregationQuerySuite
 
       val data =
         Row(1, Seq(Row(1), Row(2), Row(3))) ::
-          Row(1, Seq(Row(4), Row(5), Row(6))) ::
-          Row(2, Seq(Row(-10))) :: Nil
+          Row(1, Seq(Row(4), Row(5), Row(6))) :: Row(2, Seq(Row(-10))) :: Nil
       val schema = StructType(
         StructField("key", IntegerType) ::
           StructField(
@@ -1019,8 +963,8 @@ class TungstenAggregationQueryWithControlledFallbackSuite
       expectedAnswer: Seq[Row]): Unit = {
     (0 to 2).foreach { fallbackStartsAt =>
       withSQLConf(
-        "spark.sql.TungstenAggregate.testFallbackStartsAt" -> fallbackStartsAt
-          .toString) {
+        "spark.sql.TungstenAggregate.testFallbackStartsAt" ->
+          fallbackStartsAt.toString) {
         // Create a new df to make sure its physical operator picks up
         // spark.sql.TungstenAggregate.testFallbackStartsAt.
         // todo: remove it?

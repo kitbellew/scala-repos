@@ -134,8 +134,8 @@ private[yarn] class AMDelegationTokenRenewer(
     try {
       val remoteFs = FileSystem.get(freshHadoopConf)
       val credentialsPath = new Path(credentialsFile)
-      val thresholdTime = System.currentTimeMillis() - (daysToKeepFiles days)
-      .toMillis
+      val thresholdTime = System.currentTimeMillis() -
+        (daysToKeepFiles days).toMillis
       hadoopUtil
         .listFilesSorted(
           remoteFs,
@@ -185,8 +185,8 @@ private[yarn] class AMDelegationTokenRenewer(
       new PrivilegedExceptionAction[Void] {
         // Get a copy of the credentials
         override def run(): Void = {
-          val nns =
-            YarnSparkHadoopUtil.get.getNameNodesToAccess(sparkConf) + dst
+          val nns = YarnSparkHadoopUtil.get.getNameNodesToAccess(sparkConf) +
+            dst
           hadoopUtil.obtainTokensForNamenodes(nns, freshHadoopConf, tempCreds)
           hadoopUtil
             .obtainTokenForHiveMetastore(sparkConf, freshHadoopConf, tempCreds)
@@ -215,8 +215,8 @@ private[yarn] class AMDelegationTokenRenewer(
     }
     val nextSuffix = lastCredentialsFileSuffix + 1
     val tokenPathStr =
-      credentialsFile + SparkHadoopUtil
-        .SPARK_YARN_CREDS_COUNTER_DELIM + nextSuffix
+      credentialsFile + SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM +
+        nextSuffix
     val tokenPath = new Path(tokenPathStr)
     val tempTokenPath =
       new Path(tokenPathStr + SparkHadoopUtil.SPARK_YARN_CREDS_TEMP_EXTENSION)

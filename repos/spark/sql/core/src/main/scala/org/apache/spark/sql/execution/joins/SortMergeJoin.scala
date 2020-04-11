@@ -51,8 +51,8 @@ case class SortMergeJoin(
     with CodegenSupport {
 
   override private[sql] lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" ->
+      SQLMetrics.createLongMetric(sparkContext, "number of output rows"))
 
   override def output: Seq[Attribute] = {
     joinType match {
@@ -600,8 +600,8 @@ private[joins] class SortMergeJoinScanner(
       matchJoinKey = null
       bufferedMatches.clear()
       false
-    } else if (matchJoinKey != null && keyOrdering
-                 .compare(streamedRowKey, matchJoinKey) == 0) {
+    } else if (matchJoinKey != null &&
+               keyOrdering.compare(streamedRowKey, matchJoinKey) == 0) {
       // The new streamed row has the same join key as the previous row, so return the same matches.
       true
     } else if (bufferedRow == null) {
@@ -654,8 +654,8 @@ private[joins] class SortMergeJoinScanner(
       bufferedMatches.clear()
       false
     } else {
-      if (matchJoinKey != null && keyOrdering
-            .compare(streamedRowKey, matchJoinKey) == 0) {
+      if (matchJoinKey != null &&
+          keyOrdering.compare(streamedRowKey, matchJoinKey) == 0) {
         // Matches the current group, so do nothing.
       } else {
         // The streamed row does not match the current group.
@@ -732,12 +732,12 @@ private[joins] class SortMergeJoinScanner(
     matchJoinKey = streamedRowKey.copy()
     bufferedMatches.clear()
     do {
-      bufferedMatches += bufferedRow
-        .copy() // need to copy mutable rows before buffering them
+      bufferedMatches +=
+        bufferedRow.copy() // need to copy mutable rows before buffering them
       advancedBufferedToRowWithNullFreeJoinKey()
     } while (
-      bufferedRow != null && keyOrdering
-        .compare(streamedRowKey, bufferedRowKey) == 0
+      bufferedRow != null &&
+        keyOrdering.compare(streamedRowKey, bufferedRowKey) == 0
     )
   }
 }
@@ -942,13 +942,13 @@ private class SortMergeFullOuterJoinScanner(
     leftIndex = 0
     rightIndex = 0
 
-    while (leftRowKey != null && keyOrdering
-             .compare(leftRowKey, matchingKey) == 0) {
+    while (leftRowKey != null &&
+           keyOrdering.compare(leftRowKey, matchingKey) == 0) {
       leftMatches += leftRow.copy()
       advancedLeft()
     }
-    while (rightRowKey != null && keyOrdering
-             .compare(rightRowKey, matchingKey) == 0) {
+    while (rightRowKey != null &&
+           keyOrdering.compare(rightRowKey, matchingKey) == 0) {
       rightMatches += rightRow.copy()
       advancedRight()
     }

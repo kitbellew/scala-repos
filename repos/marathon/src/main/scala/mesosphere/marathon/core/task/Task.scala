@@ -267,9 +267,8 @@ object Task {
       current: MesosProtos.TaskStatus,
       update: MesosProtos.TaskStatus): Option[MesosProtos.TaskStatus] = {
 
-    val healthy = update.hasHealthy && (
-      !current.hasHealthy || current.getHealthy != update.getHealthy
-    )
+    val healthy = update.hasHealthy &&
+      (!current.hasHealthy || current.getHealthy != update.getHealthy)
     val changed = healthy || current.getState != update.getState
     if (changed) {
       Some(update)
@@ -378,8 +377,8 @@ object Task {
 
   case class LocalVolumeId(appId: PathId, containerPath: String, uuid: String) {
     import LocalVolumeId._
-    lazy val idString = appId
-      .safePath + delimiter + containerPath + delimiter + uuid
+    lazy val idString = appId.safePath + delimiter + containerPath + delimiter +
+      uuid
 
     override def toString: String = s"LocalVolume [$idString]"
   }

@@ -57,9 +57,10 @@ class LangSpec extends PlaySpecification {
       Lang("EN-us").code must_== "en-US"
       Lang("EN").code must_== "en"
 
-      "even with locales with different caseness" in trLocaleContext {
-        Lang.get("ii-ii") must_== Lang.get("ii-II")
-      }
+      "even with locales with different caseness" in
+        trLocaleContext {
+          Lang.get("ii-ii") must_== Lang.get("ii-II")
+        }
 
     }
 

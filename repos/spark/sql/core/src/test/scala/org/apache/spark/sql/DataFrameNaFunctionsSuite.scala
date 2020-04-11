@@ -40,8 +40,8 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       input.na.drop("name" :: Nil).select("name"),
-      Row("Bob") :: Row("Alice") :: Row("David") :: Row("Nina") :: Row(
-        "Amy") :: Nil)
+      Row("Bob") :: Row("Alice") :: Row("David") :: Row("Nina") :: Row("Amy") ::
+        Nil)
 
     checkAnswer(
       input.na.drop("age" :: Nil).select("name"),
@@ -65,8 +65,8 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       input.na.drop("all").select("name"),
-      Row("Bob") :: Row("Alice") :: Row("David") :: Row("Nina") :: Row(
-        "Amy") :: Nil)
+      Row("Bob") :: Row("Alice") :: Row("David") :: Row("Nina") :: Row("Amy") ::
+        Nil)
 
     checkAnswer(input.na.drop("any"), rows(0) :: Nil)
 
@@ -87,9 +87,8 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
 
     // Make sure the columns are properly named.
     assert(
-      input.na.drop(2, Seq("age", "height")).columns.toSeq === input
-        .columns
-        .toSeq)
+      input.na.drop(2, Seq("age", "height")).columns.toSeq ===
+        input.columns.toSeq)
   }
 
   test("fill") {
@@ -98,12 +97,9 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
     val fillNumeric = input.na.fill(50.6)
     checkAnswer(
       fillNumeric,
-      Row("Bob", 16, 176.5) ::
-        Row("Alice", 50, 164.3) ::
-        Row("David", 60, 50.6) ::
-        Row("Nina", 25, 50.6) ::
-        Row("Amy", 50, 50.6) ::
-        Row(null, 50, 50.6) :: Nil)
+      Row("Bob", 16, 176.5) :: Row("Alice", 50, 164.3) ::
+        Row("David", 60, 50.6) :: Row("Nina", 25, 50.6) ::
+        Row("Amy", 50, 50.6) :: Row(null, 50, 50.6) :: Nil)
 
     // Make sure the columns are properly named.
     assert(fillNumeric.columns.toSeq === input.columns.toSeq)
@@ -111,19 +107,15 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
     // string
     checkAnswer(
       input.na.fill("unknown").select("name"),
-      Row("Bob") :: Row("Alice") :: Row("David") ::
-        Row("Nina") :: Row("Amy") :: Row("unknown") :: Nil)
+      Row("Bob") :: Row("Alice") :: Row("David") :: Row("Nina") :: Row("Amy") ::
+        Row("unknown") :: Nil)
     assert(input.na.fill("unknown").columns.toSeq === input.columns.toSeq)
 
     // fill double with subset columns
     checkAnswer(
       input.na.fill(50.6, "age" :: Nil).select("name", "age"),
-      Row("Bob", 16) ::
-        Row("Alice", 50) ::
-        Row("David", 60) ::
-        Row("Nina", 25) ::
-        Row("Amy", 50) ::
-        Row(null, 50) :: Nil)
+      Row("Bob", 16) :: Row("Alice", 50) :: Row("David", 60) ::
+        Row("Nina", 25) :: Row("Amy", 50) :: Row(null, 50) :: Nil)
 
     // fill string with subset columns
     checkAnswer(

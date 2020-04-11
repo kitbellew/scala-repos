@@ -20,10 +20,9 @@ class ScalaLiteralSelectioner extends ExtendWordSelectionHandlerBase {
     e match {
       case l: ScLiteral =>
         val children = l.getNode.getChildren(null)
-        children.length == 1 && (
-          children(0).getElementType == ScalaTokenTypes.tSTRING ||
-          children(0).getElementType == ScalaTokenTypes.tMULTILINE_STRING
-        )
+        children.length == 1 &&
+        (children(0).getElementType == ScalaTokenTypes.tSTRING ||
+        children(0).getElementType == ScalaTokenTypes.tMULTILINE_STRING)
       case _ =>
         false
     }
@@ -36,11 +35,11 @@ class ScalaLiteralSelectioner extends ExtendWordSelectionHandlerBase {
     val list = super.select(e, editorText, cursorOffset, editor)
     val r = e.getTextRange
     val text = e.getText
-    if (text.startsWith("\"\"\"") && text.endsWith("\"\"\"") && text
-          .length > 6) {
+    if (text.startsWith("\"\"\"") && text.endsWith("\"\"\"") &&
+        text.length > 6) {
       list.add(new TextRange(r.getStartOffset + 3, r.getEndOffset - 3))
-    } else if (text.startsWith("\"") && text.endsWith("\"") && text
-                 .length > 2) {
+    } else if (text.startsWith("\"") && text.endsWith("\"") &&
+               text.length > 2) {
       list.add(new TextRange(r.getStartOffset + 1, r.getEndOffset - 1))
     }
     list

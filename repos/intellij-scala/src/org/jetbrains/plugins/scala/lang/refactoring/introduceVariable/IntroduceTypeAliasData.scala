@@ -31,7 +31,8 @@ class IntroduceTypeAliasData {
   }
 
   def isData: Boolean = {
-    currentScope != null || initialTypeElement != null || possibleScopes != null || typeAliasInfo != null
+    currentScope != null || initialTypeElement != null ||
+    possibleScopes != null || typeAliasInfo != null
   }
 
   def addScopeElement(item: ScopeItem): Unit = {

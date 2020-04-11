@@ -480,11 +480,9 @@ class RichPresentationCompiler(
             .info
             .members
             .filter { s =>
-              s.nameString == nm && (
-                (module && s.isModule) || (
-                  !module && (!s.isModule || s.hasPackageFlag)
-                )
-              )
+              s.nameString == nm &&
+              ((module && s.isModule) ||
+              (!module && (!s.isModule || s.hasPackageFlag)))
             }
           val exact = signatureString.flatMap { s =>
             candidates.find(_.signatureString == s)
@@ -505,19 +503,18 @@ class RichPresentationCompiler(
       val sym = m.sym
       val ns = sym.nameString
       (
-        (
-          (matchEntire && ns == prefix) ||
-          (!matchEntire && caseSens && ns.startsWith(prefix)) ||
-          (!matchEntire && !caseSens && ns.toUpperCase.startsWith(prefixUpper))
-        )
-        && !sym.nameString.contains("$")
+        ((matchEntire && ns == prefix) ||
+        (!matchEntire && caseSens && ns.startsWith(prefix)) ||
+        (!matchEntire && !caseSens &&
+        ns.toUpperCase.startsWith(prefixUpper))) &&
+        !sym.nameString.contains("$")
       )
     }
 
   private def noDefinitionFound(tree: Tree) = {
     logger.warn(
-      "No definition found. Please report to https://github.com/ensime/ensime-server/issues/492 with description of what did you expected. symbolAt for " + tree
-        .getClass + ": " + tree)
+      "No definition found. Please report to https://github.com/ensime/ensime-server/issues/492 with description of what did you expected. symbolAt for " +
+        tree.getClass + ": " + tree)
     Nil
   }
 

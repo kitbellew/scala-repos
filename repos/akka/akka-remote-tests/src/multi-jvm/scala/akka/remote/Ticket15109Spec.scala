@@ -75,45 +75,46 @@ abstract class Ticket15109Spec
 
   "Quarantining" must {
 
-    "not be introduced during normal errors (regression #15109)" taggedAs LongRunningTest in {
-      var subject: ActorRef = system.deadLetters
+    "not be introduced during normal errors (regression #15109)" taggedAs
+      LongRunningTest in {
+        var subject: ActorRef = system.deadLetters
 
-      runOn(second) {
-        system.actorOf(Props[Subject], "subject")
+        runOn(second) {
+          system.actorOf(Props[Subject], "subject")
+        }
+
+        enterBarrier("actors-started")
+
+        runOn(first) {
+          // Acquire ActorRef from first system
+          subject = identify(second, "subject")
+        }
+
+        enterBarrier("actor-identified")
+
+        runOn(second) {
+          // Force a disassociation. Using the message Shutdown, which is suboptimal here, but this is the only
+          // DisassociateInfo that triggers the code-path we want to test
+          Await.result(
+            RARP(system)
+              .provider
+              .transport
+              .managementCommand(
+                ForceDisassociateExplicitly(
+                  node(first).address,
+                  AssociationHandle.Shutdown)),
+            3.seconds)
+        }
+
+        enterBarrier("disassociated")
+
+        runOn(first) {
+          ping(subject)
+        }
+
+        enterBarrier("done")
+
       }
-
-      enterBarrier("actors-started")
-
-      runOn(first) {
-        // Acquire ActorRef from first system
-        subject = identify(second, "subject")
-      }
-
-      enterBarrier("actor-identified")
-
-      runOn(second) {
-        // Force a disassociation. Using the message Shutdown, which is suboptimal here, but this is the only
-        // DisassociateInfo that triggers the code-path we want to test
-        Await.result(
-          RARP(system)
-            .provider
-            .transport
-            .managementCommand(
-              ForceDisassociateExplicitly(
-                node(first).address,
-                AssociationHandle.Shutdown)),
-          3.seconds)
-      }
-
-      enterBarrier("disassociated")
-
-      runOn(first) {
-        ping(subject)
-      }
-
-      enterBarrier("done")
-
-    }
 
   }
 }

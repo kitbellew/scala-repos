@@ -120,14 +120,12 @@ class HListConstraintsTests {
       (author ->> "Benjamin Pierce") ::
         (title ->> "Types and Programming Languages") ::
         (id ->> 262162091) ::
-        (price ->> 44.11) ::
-        HNil
+        (price ->> 44.11) :: HNil
 
     val summary =
       (author ->> "Benjamin Pierce") ::
         (title ->> "Types and Programming Languages") ::
-        (id ->> 262162091) ::
-        HNil
+        (id ->> 262162091) :: HNil
 
     def acceptKeys[R <: HList: Keys[
       author.type :: title.type :: id.type :: HNil]#λ](r: R) = true

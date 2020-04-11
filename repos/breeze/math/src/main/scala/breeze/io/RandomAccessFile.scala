@@ -1068,9 +1068,10 @@ object ByteConverterBigEndian extends ByteConverter {
   }
 
   def bytesToUInt32(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Long = {
-    (b0.toLong & 0xFFL) << 24 | (b1.toLong & 0xFFL) << 16 | (
-      b2.toLong & 0xFFL
-    ) << 8 | (b3.toLong & 0xFFL)
+    (b0.toLong & 0xFFL) << 24 |
+      (b1.toLong & 0xFFL) << 16 |
+      (b2.toLong & 0xFFL) << 8 |
+      (b3.toLong & 0xFFL)
   }
 
 //  def bytesToUInt64(b0: Byte, b1: Byte, b2: Byte, b3: Byte, b4: Byte, b5: Byte, b6: Byte, b7: Byte): ULong = {
@@ -1091,12 +1092,14 @@ object ByteConverterBigEndian extends ByteConverter {
       b5: Byte,
       b6: Byte,
       b7: Byte): Long = {
-    b0.toLong << 56 | (
-      b1.toLong & 0xFFL
-    ) << 48 | (b2.toLong & 0xFFL) << 40 | (b3.toLong & 0xFFL) << 32 |
-      (b4.toLong & 0xFFL) << 24 | (b5.toLong & 0xFFL) << 16 | (
-      b6.toLong & 0xFFL
-    ) << 8 | (b7.toLong & 0xFFL)
+    b0.toLong << 56 |
+      (b1.toLong & 0xFFL) << 48 |
+      (b2.toLong & 0xFFL) << 40 |
+      (b3.toLong & 0xFFL) << 32 |
+      (b4.toLong & 0xFFL) << 24 |
+      (b5.toLong & 0xFFL) << 16 |
+      (b6.toLong & 0xFFL) << 8 |
+      (b7.toLong & 0xFFL)
   }
 
   def bytesToUInt64Shifted(
@@ -1108,12 +1111,14 @@ object ByteConverterBigEndian extends ByteConverter {
       b5: Byte,
       b6: Byte,
       b7: Byte): Long = {
-    (b0 ^ 0x80).toLong << 56 | (
-      b1.toLong & 0xFFL
-    ) << 48 | (b2.toLong & 0xFFL) << 40 | (b3.toLong & 0xFFL) << 32 |
-      (b4.toLong & 0xFFL) << 24 | (b5.toLong & 0xFFL) << 16 | (
-      b6.toLong & 0xFFL
-    ) << 8 | (b7.toLong & 0xFFL)
+    (b0 ^ 0x80).toLong << 56 |
+      (b1.toLong & 0xFFL) << 48 |
+      (b2.toLong & 0xFFL) << 40 |
+      (b3.toLong & 0xFFL) << 32 |
+      (b4.toLong & 0xFFL) << 24 |
+      (b5.toLong & 0xFFL) << 16 |
+      (b6.toLong & 0xFFL) << 8 |
+      (b7.toLong & 0xFFL)
   }
   ///// XXXToByte /////
   def int16ToBytes(value: Short): Array[Byte] = {

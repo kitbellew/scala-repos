@@ -34,10 +34,11 @@ final class Env(
 
 object Env {
 
-  lazy val current = "analyse" boot new Env(
-    config = lila.common.PlayApp loadConfig "analyse",
-    db = lila.db.Env.current,
-    system = lila.common.PlayApp.system,
-    roundSocket = lila.hub.Env.current.socket.round,
-    indexer = lila.hub.Env.current.actor.gameSearch)
+  lazy val current = "analyse" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "analyse",
+      db = lila.db.Env.current,
+      system = lila.common.PlayApp.system,
+      roundSocket = lila.hub.Env.current.socket.round,
+      indexer = lila.hub.Env.current.actor.gameSearch)
 }

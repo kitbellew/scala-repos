@@ -188,8 +188,8 @@ private[clustering] trait LDAParams
       this,
       "optimizer",
       "Optimizer or inference" +
-        " algorithm used to estimate the LDA model.  Supported: " + supportedOptimizers
-        .mkString(", "),
+        " algorithm used to estimate the LDA model.  Supported: " +
+        supportedOptimizers.mkString(", "),
       (o: String) =>
         ParamValidators.inArray(supportedOptimizers).apply(o.toLowerCase))
 

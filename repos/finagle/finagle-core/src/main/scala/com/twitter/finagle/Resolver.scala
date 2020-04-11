@@ -42,7 +42,8 @@ class MultipleResolversPerSchemeException(resolvers: Map[String, Seq[Resolver]])
     val msgs = resolvers map {
       case (scheme, rs) =>
         "%s=(%s)".format(scheme, rs.map(_.getClass.getName).mkString(", "))
-    } mkString (" ")
+    } mkString
+      (" ")
     "Multiple resolvers defined: %s".format(msgs)
   }
 }

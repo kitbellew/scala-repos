@@ -60,7 +60,8 @@ object ScalarTagTime extends ScalarTagAny[DateTime] {
   override def show(v: DateTime) =
     Option(v) map {
       fmtZ.print(_)
-    } getOrElse ("NA")
+    } getOrElse
+      ("NA")
 
   // forward 2.10 compatibility
   override def runtimeClass = classOf[DateTime]

@@ -639,8 +639,8 @@ object Replicator {
         if (otherData == DeletedData)
           DeletedEnvelope
         else
-          copy(data = data merge cleaned(otherData, pruning)
-            .asInstanceOf[data.T])
+          copy(data = data merge
+            cleaned(otherData, pruning).asInstanceOf[data.T])
 
       private def cleaned(
           c: ReplicatedData,
@@ -1122,8 +1122,8 @@ final class Replicator(settings: ReplicatorSettings)
     getData(key) match {
       case Some(DataEnvelope(DeletedData, _)) ⇒ // already deleted
       case Some(envelope @ DataEnvelope(existing, _)) ⇒
-        if (existing.getClass == writeEnvelope.data.getClass || writeEnvelope
-              .data == DeletedData) {
+        if (existing.getClass == writeEnvelope.data.getClass ||
+            writeEnvelope.data == DeletedData) {
           val merged = envelope
             .merge(pruningCleanupTombstoned(writeEnvelope))
             .addSeen(selfAddress)
@@ -1398,18 +1398,14 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def hasSubscriber(subscriber: ActorRef): Boolean =
-    (
-      subscribers.exists {
+    (subscribers.exists {
+      case (k, s) ⇒
+        s.contains(subscriber)
+    }) ||
+      (newSubscribers.exists {
         case (k, s) ⇒
           s.contains(subscriber)
-      }
-    ) ||
-      (
-        newSubscribers.exists {
-          case (k, s) ⇒
-            s.contains(subscriber)
-        }
-      )
+      })
 
   def receiveTerminated(ref: ActorRef): Unit = {
     val keys1 = subscribers.collect {
@@ -1523,8 +1519,8 @@ final class Replicator(settings: ReplicatorSettings)
             (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
         pruning.foreach {
           case (removed, PruningState(owner, PruningInitialized(seen)))
-              if owner == selfUniqueAddress
-                && (nodes.isEmpty || nodes.forall(seen)) ⇒
+              if owner == selfUniqueAddress &&
+                (nodes.isEmpty || nodes.forall(seen)) ⇒
             val newEnvelope = envelope.prune(removed)
             pruningPerformed = pruningPerformed
               .updated(removed, allReachableClockTime)
@@ -1560,10 +1556,8 @@ final class Replicator(settings: ReplicatorSettings)
 
     pruningPerformed.foreach {
       case (removed, timestamp)
-          if (
-            (allReachableClockTime - timestamp) > maxPruningDisseminationNanos
-          ) &&
-            allPruningPerformed(removed) ⇒
+          if ((allReachableClockTime - timestamp) >
+            maxPruningDisseminationNanos) && allPruningPerformed(removed) ⇒
         log.debug("All pruning performed for [{}], tombstoned", removed)
         pruningPerformed -= removed
         removedNodes -= removed
@@ -1587,9 +1581,8 @@ final class Replicator(settings: ReplicatorSettings)
       removed: UniqueAddress,
       envelope: DataEnvelope): DataEnvelope = {
     val pruningCleanuped = pruningCleanupTombstoned(removed, envelope.data)
-    if ((pruningCleanuped ne envelope.data) || envelope
-          .pruning
-          .contains(removed))
+    if ((pruningCleanuped ne envelope.data) ||
+        envelope.pruning.contains(removed))
       envelope
         .copy(data = pruningCleanuped, pruning = envelope.pruning - removed)
     else
@@ -1735,8 +1728,8 @@ private[akka] class WriteAggregator(
 
     if (remaining.size == doneWhenRemainingSize)
       reply(ok = true)
-    else if (doneWhenRemainingSize < 0 || remaining
-               .size < doneWhenRemainingSize)
+    else if (doneWhenRemainingSize < 0 ||
+             remaining.size < doneWhenRemainingSize)
       reply(ok = false)
   }
 
@@ -1827,8 +1820,8 @@ private[akka] class ReadAggregator(
 
     if (remaining.size == doneWhenRemainingSize)
       reply(ok = true)
-    else if (doneWhenRemainingSize < 0 || remaining
-               .size < doneWhenRemainingSize)
+    else if (doneWhenRemainingSize < 0 ||
+             remaining.size < doneWhenRemainingSize)
       reply(ok = false)
   }
 

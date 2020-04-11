@@ -147,22 +147,23 @@ class OfferTest extends WordSpec with MockitoSugar {
             }
       }
 
-      "shuffle winner" in Time.withTimeAt(Time.epoch) { tc =>
-        val h = new AllTxsReadyHelper
-        import h._
+      "shuffle winner" in
+        Time.withTimeAt(Time.epoch) { tc =>
+          val h = new AllTxsReadyHelper
+          import h._
 
-        val shuffledOffer = Offer
-          .choose(Some(new Random(Time.now.inNanoseconds)), offers)
-        val histo = new Array[Int](3)
-        for (_ <- 0 until 1000) {
-          for (tx <- shuffledOffer.prepare())
-            histo(txs.indexOf(tx)) += 1
+          val shuffledOffer = Offer
+            .choose(Some(new Random(Time.now.inNanoseconds)), offers)
+          val histo = new Array[Int](3)
+          for (_ <- 0 until 1000) {
+            for (tx <- shuffledOffer.prepare())
+              histo(txs.indexOf(tx)) += 1
+          }
+
+          assert(histo(0) == 311)
+          assert(histo(1) == 346)
+          assert(histo(2) == 343)
         }
-
-        assert(histo(0) == 311)
-        assert(histo(1) == 346)
-        assert(histo(2) == 343)
-      }
 
       "nack losers" in {
         val h = new AllTxsReadyHelper
@@ -206,8 +207,8 @@ class OfferTest extends WordSpec with MockitoSugar {
       }
 
       "retry when it aborts" in {
-        val txps = new Promise[Tx[Int]] #:: new Promise[Tx[Int]] #:: Stream
-          .empty
+        val txps = new Promise[Tx[Int]] #:: new Promise[Tx[Int]] #::
+          Stream.empty
         val offer = spy(new SimpleOffer(txps))
         val badTx = mock[Tx[Int]]
         val result = Future.value(Abort)
@@ -320,9 +321,8 @@ class OfferTest extends WordSpec with MockitoSugar {
         val tx2 = new Promise[Tx[Int]]
         val e0 = spy(
           new SimpleOffer(
-            Future
-              .value(Tx.aborted: Tx[Int]) #:: (tx2: Future[Tx[Int]]) #:: Stream
-              .empty))
+            Future.value(Tx.aborted: Tx[Int]) #::
+              (tx2: Future[Tx[Int]]) #:: Stream.empty))
         val offer = e0 orElse Offer.const(123)
       }
 
@@ -373,8 +373,8 @@ class OfferTest extends WordSpec with MockitoSugar {
   }
 
   "Offer.timeout" should {
-    "be available after timeout (prepare)" in Time.withTimeAt(Time.epoch) {
-      tc =>
+    "be available after timeout (prepare)" in
+      Time.withTimeAt(Time.epoch) { tc =>
         implicit val timer = new MockTimer
         val e = Offer.timeout(10.seconds)
         assert(e.prepare().isDefined == false)
@@ -384,29 +384,30 @@ class OfferTest extends WordSpec with MockitoSugar {
         tc.advance(1.second)
         timer.tick()
         assert(e.prepare().isDefined == true)
-    }
-
-    "cancel timer tasks when losing" in Time.withTimeAt(Time.epoch) { tc =>
-      implicit val timer = new MockTimer
-      val e10 = Offer.timeout(10.seconds) map { _ =>
-        10
-      }
-      val e5 = Offer.timeout(5.seconds) map { _ =>
-        5
       }
 
-      val item = Offer.select(e5, e10)
-      assert(item.poll == None)
-      assert(timer.tasks.size == 2)
-      assert(timer.nCancelled == 0)
+    "cancel timer tasks when losing" in
+      Time.withTimeAt(Time.epoch) { tc =>
+        implicit val timer = new MockTimer
+        val e10 = Offer.timeout(10.seconds) map { _ =>
+          10
+        }
+        val e5 = Offer.timeout(5.seconds) map { _ =>
+          5
+        }
 
-      tc.advance(6.seconds)
-      timer.tick()
+        val item = Offer.select(e5, e10)
+        assert(item.poll == None)
+        assert(timer.tasks.size == 2)
+        assert(timer.nCancelled == 0)
 
-      assert(item.poll == Some(Return(5)))
-      assert(timer.tasks.size == 0)
-      assert(timer.nCancelled == 1)
-    }
+        tc.advance(6.seconds)
+        timer.tick()
+
+        assert(item.poll == Some(Return(5)))
+        assert(timer.tasks.size == 0)
+        assert(timer.nCancelled == 1)
+      }
   }
 
   "Offer.prioritize" should {

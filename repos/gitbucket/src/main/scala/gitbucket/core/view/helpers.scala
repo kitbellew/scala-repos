@@ -242,8 +242,8 @@ object helpers
         .replaceAll(
           "\\[commit:([^\\s]+?)/([^\\s]+?)\\@([^\\s]+?)\\]",
           (m: Match) =>
-            s"""<a href="${context.path}/${m.group(1)}/${m.group(2)}/commit/${m
-              .group(3)}">${m
+            s"""<a href="${context
+              .path}/${m.group(1)}/${m.group(2)}/commit/${m.group(3)}">${m
               .group(1)}/${m.group(2)}@${m.group(3).substring(0, 7)}</a>"""
         ))
 
@@ -451,14 +451,13 @@ object helpers
           val url = m.group(0)
           val href = url.replace("\"", "&quot;")
           (
-            x ++ (
-              Seq(
+            x ++
+              (Seq(
                 if (pos < m.start)
                   Some(HtmlFormat.escape(text.substring(pos, m.start)))
                 else
                   None,
-                Some(Html(s"""<a href="${href}">${url}</a>"""))).flatten
-            ),
+                Some(Html(s"""<a href="${href}">${url}</a>"""))).flatten),
             m.end)
       }
     // append rest fragment

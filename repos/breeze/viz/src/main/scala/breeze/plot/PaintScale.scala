@@ -162,17 +162,18 @@ object PaintScale {
 
   /** The Category20 palette from Protovis http://vis.stanford.edu/protovis/docs/color.html */
   object Category20 {
-    val values: Array[Color] = Category10.values ++ Array(
-      "#aec7e8",
-      "#ffbb78",
-      "#98df8a",
-      "#ff9896",
-      "#c5b0d5",
-      "#c49c94",
-      "#f7b6d2",
-      "#c7c7c7",
-      "#dbdb8d",
-      "#9edae5").map(Color.decode)
+    val values: Array[Color] = Category10.values ++
+      Array(
+        "#aec7e8",
+        "#ffbb78",
+        "#98df8a",
+        "#ff9896",
+        "#c5b0d5",
+        "#c49c94",
+        "#f7b6d2",
+        "#c7c7c7",
+        "#dbdb8d",
+        "#9edae5").map(Color.decode)
 
     val lightblue = values(10)
     val lightorange = values(11)

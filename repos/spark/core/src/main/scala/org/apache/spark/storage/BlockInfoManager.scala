@@ -238,8 +238,8 @@ private[storage] class BlockInfoManager extends Logging {
             if (info.writerTask == currentTaskAttemptId) {
               throw new IllegalStateException(
                 s"Task $currentTaskAttemptId has already locked $blockId for writing")
-            } else if (info.writerTask == BlockInfo.NO_WRITER && info
-                         .readerCount == 0) {
+            } else if (info.writerTask == BlockInfo.NO_WRITER &&
+                       info.readerCount == 0) {
               info.writerTask = currentTaskAttemptId
               writeLocksByTask.addBinding(currentTaskAttemptId, blockId)
               logTrace(
@@ -416,11 +416,8 @@ private[storage] class BlockInfoManager extends Logging {
     */
   private[storage] def getNumberOfMapEntries: Long =
     synchronized {
-      size +
-        readLocksByTask.size +
-        readLocksByTask.map(_._2.size()).sum +
-        writeLocksByTask.size +
-        writeLocksByTask.map(_._2.size).sum
+      size + readLocksByTask.size + readLocksByTask.map(_._2.size()).sum +
+        writeLocksByTask.size + writeLocksByTask.map(_._2.size).sum
     }
 
   /**

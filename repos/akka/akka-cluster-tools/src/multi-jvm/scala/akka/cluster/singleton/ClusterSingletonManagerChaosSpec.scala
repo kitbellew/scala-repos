@@ -115,8 +115,8 @@ class ClusterSingletonManagerChaosSpec
 
   def awaitMemberUp(memberProbe: TestProbe, nodes: RoleName*): Unit = {
     runOn(nodes.filterNot(_ == nodes.head): _*) {
-      memberProbe.expectMsgType[MemberUp](15.seconds).member.address should ===(
-        node(nodes.head).address)
+      memberProbe.expectMsgType[MemberUp](15.seconds).member.address should
+        ===(node(nodes.head).address)
     }
     runOn(nodes.head) {
       memberProbe
@@ -132,63 +132,64 @@ class ClusterSingletonManagerChaosSpec
 
   "A ClusterSingletonManager in chaotic cluster" must {
 
-    "startup 6 node cluster" in within(60 seconds) {
-      val memberProbe = TestProbe()
-      Cluster(system).subscribe(memberProbe.ref, classOf[MemberUp])
-      memberProbe.expectMsgClass(classOf[CurrentClusterState])
+    "startup 6 node cluster" in
+      within(60 seconds) {
+        val memberProbe = TestProbe()
+        Cluster(system).subscribe(memberProbe.ref, classOf[MemberUp])
+        memberProbe.expectMsgClass(classOf[CurrentClusterState])
 
-      join(first, first)
-      awaitMemberUp(memberProbe, first)
-      runOn(first) {
-        expectMsg(EchoStarted)
+        join(first, first)
+        awaitMemberUp(memberProbe, first)
+        runOn(first) {
+          expectMsg(EchoStarted)
+        }
+        enterBarrier("first-started")
+
+        join(second, first)
+        awaitMemberUp(memberProbe, second, first)
+
+        join(third, first)
+        awaitMemberUp(memberProbe, third, second, first)
+
+        join(fourth, first)
+        awaitMemberUp(memberProbe, fourth, third, second, first)
+
+        join(fifth, first)
+        awaitMemberUp(memberProbe, fifth, fourth, third, second, first)
+
+        join(sixth, first)
+        awaitMemberUp(memberProbe, sixth, fifth, fourth, third, second, first)
+
+        runOn(controller) {
+          echo(first) ! "hello"
+          expectMsgType[ActorRef](3.seconds).path.address should
+            ===(node(first).address)
+        }
+        enterBarrier("first-verified")
+
       }
-      enterBarrier("first-started")
 
-      join(second, first)
-      awaitMemberUp(memberProbe, second, first)
+    "take over when three oldest nodes crash in 6 nodes cluster" in
+      within(90 seconds) {
+        // mute logging of deadLetters during shutdown of systems
+        if (!log.isDebugEnabled)
+          system.eventStream.publish(Mute(DeadLettersFilter[Any]))
+        enterBarrier("logs-muted")
 
-      join(third, first)
-      awaitMemberUp(memberProbe, third, second, first)
+        crash(first, second, third)
+        enterBarrier("after-crash")
+        runOn(fourth) {
+          expectMsg(EchoStarted)
+        }
+        enterBarrier("fourth-active")
 
-      join(fourth, first)
-      awaitMemberUp(memberProbe, fourth, third, second, first)
+        runOn(controller) {
+          echo(fourth) ! "hello"
+          expectMsgType[ActorRef](3.seconds).path.address should
+            ===(node(fourth).address)
+        }
+        enterBarrier("fourth-verified")
 
-      join(fifth, first)
-      awaitMemberUp(memberProbe, fifth, fourth, third, second, first)
-
-      join(sixth, first)
-      awaitMemberUp(memberProbe, sixth, fifth, fourth, third, second, first)
-
-      runOn(controller) {
-        echo(first) ! "hello"
-        expectMsgType[ActorRef](3.seconds).path.address should ===(
-          node(first).address)
       }
-      enterBarrier("first-verified")
-
-    }
-
-    "take over when three oldest nodes crash in 6 nodes cluster" in within(
-      90 seconds) {
-      // mute logging of deadLetters during shutdown of systems
-      if (!log.isDebugEnabled)
-        system.eventStream.publish(Mute(DeadLettersFilter[Any]))
-      enterBarrier("logs-muted")
-
-      crash(first, second, third)
-      enterBarrier("after-crash")
-      runOn(fourth) {
-        expectMsg(EchoStarted)
-      }
-      enterBarrier("fourth-active")
-
-      runOn(controller) {
-        echo(fourth) ! "hello"
-        expectMsgType[ActorRef](3.seconds).path.address should ===(
-          node(fourth).address)
-      }
-      enterBarrier("fourth-verified")
-
-    }
   }
 }

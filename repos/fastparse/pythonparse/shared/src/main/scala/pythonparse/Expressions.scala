@@ -25,8 +25,8 @@ object Expressions {
 
   val NAME: P[Ast.identifier] = Lexical.identifier
   val NUMBER: P[Ast.expr.Num] = P(
-    Lexical.floatnumber | Lexical.longinteger | Lexical.integer | Lexical
-      .imagnumber).map(Ast.expr.Num)
+    Lexical.floatnumber | Lexical.longinteger | Lexical.integer |
+      Lexical.imagnumber).map(Ast.expr.Num)
   val STRING: P[Ast.string] = Lexical.stringliteral
 
   val test: P[Ast.expr] = {
@@ -120,17 +120,16 @@ object Expressions {
       .map(_ => Ast.expr.List(Nil, Ast.expr_context.Load))
     val empty_dict = ("{" ~ "}").map(_ => Ast.expr.Dict(Nil, Nil))
     P(
-      empty_tuple |
-        empty_list |
-        empty_dict |
-        "(" ~ (yield_expr | generator | tuple) ~ ")" |
-        "[" ~ (list_comp | list) ~ "]" |
-        "{" ~ dictorsetmaker ~ "}" |
-        "`" ~ testlist1.map(x =>
+      empty_tuple | empty_list | empty_dict |
+        "(" ~
+        (yield_expr | generator | tuple) ~ ")" |
+        "[" ~
+        (list_comp | list) ~ "]" | "{" ~ dictorsetmaker ~ "}" |
+        "`" ~
+        testlist1.map(x =>
           Ast.expr.Repr(Ast.expr.Tuple(x, Ast.expr_context.Load))) ~ "`" |
         STRING.rep(1).map(_.mkString).map(Ast.expr.Str) |
-        NAME.map(Ast.expr.Name(_, Ast.expr_context.Load)) |
-        NUMBER)
+        NAME.map(Ast.expr.Name(_, Ast.expr_context.Load)) | NUMBER)
   }
   val list_contents = P(test.rep(1, ",") ~ ",".?)
   val list = P(list_contents).map(Ast.expr.List(_, Ast.expr_context.Load))
@@ -195,8 +194,8 @@ object Expressions {
   val arglist = {
     val inits = P((plain_argument ~ !"=").rep(0, ","))
     val later = P(
-      named_argument.rep(0, ",") ~ ",".? ~ ("*" ~ test).? ~ ","
-        .? ~ ("**" ~ test).?)
+      named_argument
+        .rep(0, ",") ~ ",".? ~ ("*" ~ test).? ~ ",".? ~ ("**" ~ test).?)
     P(inits ~ ",".? ~ later)
   }
 
@@ -226,12 +225,13 @@ object Expressions {
   val varargslist: P[Ast.arguments] = {
     val named_arg = P(fpdef ~ ("=" ~ test).?)
     val x = P(
-      named_arg.rep(sep = ",") ~ ","
-        .? ~ ("*" ~ NAME).? ~ ",".? ~ ("**" ~ NAME).?).map {
-      case (normal_args, starargs, kwargs) =>
-        val (args, defaults) = normal_args.unzip
-        Ast.arguments(args, starargs, kwargs, defaults.flatten)
-    }
+      named_arg
+        .rep(sep = ",") ~ ",".? ~ ("*" ~ NAME).? ~ ",".? ~ ("**" ~ NAME).?)
+      .map {
+        case (normal_args, starargs, kwargs) =>
+          val (args, defaults) = normal_args.unzip
+          Ast.arguments(args, starargs, kwargs, defaults.flatten)
+      }
     P(x)
   }
 

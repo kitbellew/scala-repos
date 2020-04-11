@@ -25,18 +25,18 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
   def exists(id: Challenge.ID) = coll.count(selectId(id).some).map(0 <)
 
   def insert(c: Challenge): Funit =
-    coll.insert(c) >> c
-      .challenger
-      .right
-      .toOption
-      .?? { challenger =>
-        createdByChallengerId(challenger.id).flatMap {
-          case challenges if challenges.size <= maxPerUser =>
-            funit
-          case challenges =>
-            challenges.drop(maxPerUser).map(_.id).map(remove).sequenceFu.void
+    coll.insert(c) >>
+      c.challenger
+        .right
+        .toOption
+        .?? { challenger =>
+          createdByChallengerId(challenger.id).flatMap {
+            case challenges if challenges.size <= maxPerUser =>
+              funit
+            case challenges =>
+              challenges.drop(maxPerUser).map(_.id).map(remove).sequenceFu.void
+          }
         }
-      }
 
   def createdByChallengerId(userId: String): Fu[List[Challenge]] =
     coll
@@ -56,9 +56,10 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
     coll
       .remove(
         BSONDocument(
-          "$or" -> BSONArray(
-            BSONDocument("challenger.id" -> userId),
-            BSONDocument("destUser.id" -> userId))))
+          "$or" ->
+            BSONArray(
+              BSONDocument("challenger.id" -> userId),
+              BSONDocument("destUser.id" -> userId))))
       .void
 
   def like(c: Challenge) =
@@ -69,9 +70,10 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
         if c.active
       } yield coll
         .find(
-          selectCreated ++ BSONDocument(
-            "challenger.id" -> challengerId,
-            "destUser.id" -> destUserId))
+          selectCreated ++
+            BSONDocument(
+              "challenger.id" -> challengerId,
+              "destUser.id" -> destUserId))
         .one[Challenge]
     )
 
@@ -83,26 +85,27 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
       max: Int): Fu[List[Challenge]] =
     coll
       .find(
-        selectCreated ++ selectClock ++ BSONDocument(
-          "seenAt" -> BSONDocument("$lt" -> date)))
+        selectCreated ++ selectClock ++
+          BSONDocument("seenAt" -> BSONDocument("$lt" -> date)))
       .cursor[Challenge]()
       .collect[List](max)
 
   private[challenge] def expiredIds(max: Int): Fu[List[Challenge.ID]] =
     coll.distinct(
       "_id",
-      BSONDocument("expiresAt" -> BSONDocument("$lt" -> DateTime.now))
-        .some) map lila.db.BSON.asStrings
+      BSONDocument("expiresAt" -> BSONDocument("$lt" -> DateTime.now)).some) map
+      lila.db.BSON.asStrings
 
   def setSeenAgain(id: Challenge.ID) =
     coll
       .update(
         selectId(id),
         BSONDocument(
-          "$set" -> BSONDocument(
-            "status" -> Status.Created.id,
-            "seenAt" -> DateTime.now,
-            "expiresAt" -> inTwoWeeks)))
+          "$set" ->
+            BSONDocument(
+              "status" -> Status.Created.id,
+              "seenAt" -> DateTime.now,
+              "expiresAt" -> inTwoWeeks)))
       .void
 
   def setSeen(id: Challenge.ID) =
@@ -137,11 +140,13 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
       .update(
         selectCreated ++ selectId(challenge.id),
         BSONDocument(
-          "$set" -> BSONDocument(
-            "status" -> status.id,
-            "expiresAt" -> expiresAt.fold(inTwoWeeks) {
-              _(DateTime.now)
-            }))
+          "$set" ->
+            BSONDocument(
+              "status" -> status.id,
+              "expiresAt" ->
+                expiresAt.fold(inTwoWeeks) {
+                  _(DateTime.now)
+                }))
       )
       .void
 

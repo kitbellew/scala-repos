@@ -69,28 +69,25 @@ class JavaCompilerSpec
           config.rootDir,
           "testing/simple/src/main/java/org/example/Test2.java"))
 
-      cc.askLinkPos(
-        JavaFqn("org.example", "Test2", None),
-        test2) should matchPattern {
-        case Some(OffsetSourcePosition(f, 22)) =>
-      }
-      cc.askLinkPos(
-        JavaFqn("org.example", "Foo", None),
-        test2) should matchPattern {
-        case None =>
-      }
-      cc.askLinkPos(
-        JavaFqn("org.example", "Test2.Bar", None),
-        test2) should matchPattern {
-        case Some(OffsetSourcePosition(f, 260)) =>
-      }
+      cc.askLinkPos(JavaFqn("org.example", "Test2", None), test2) should
+        matchPattern {
+          case Some(OffsetSourcePosition(f, 22)) =>
+        }
+      cc.askLinkPos(JavaFqn("org.example", "Foo", None), test2) should
+        matchPattern {
+          case None =>
+        }
+      cc.askLinkPos(JavaFqn("org.example", "Test2.Bar", None), test2) should
+        matchPattern {
+          case Some(OffsetSourcePosition(f, 260)) =>
+        }
     //    cc.askLinkPos(JavaFqn("org.example", "Test2", Some("compute()")), test2) should matchPattern { case Some(OffsetSourcePosition(f, 58)) => }
 
     }
   }
 
-  it should "find symbol at point" in withJavaCompiler {
-    (_, config, cc, store, search) =>
+  it should "find symbol at point" in
+    withJavaCompiler { (_, config, cc, store, search) =>
       implicit val searchService = search
       refresh()
       runForPositionInCompiledSource(
@@ -130,28 +127,31 @@ class JavaCompilerSpec
             info.localName shouldBe "foo"
             info.`type`.name shouldBe "int"
             info.isCallable shouldBe false
-            info.declPos should matchPattern {
-              case Some(OffsetSourcePosition(f, 174))
-                  if f.getName == "Test1.java" =>
-            }
+            info.declPos should
+              matchPattern {
+                case Some(OffsetSourcePosition(f, 174))
+                    if f.getName == "Test1.java" =>
+              }
           case "1" =>
             info.name shouldBe "args"
             info.localName shouldBe "args"
             info.`type`.name shouldBe "java.lang.String[]"
             info.isCallable shouldBe false
-            info.declPos should matchPattern {
-              case Some(OffsetSourcePosition(f, 153))
-                  if f.getName == "Test1.java" =>
-            }
+            info.declPos should
+              matchPattern {
+                case Some(OffsetSourcePosition(f, 153))
+                    if f.getName == "Test1.java" =>
+              }
           case "2" =>
             info.name shouldBe "org.example.Test1.Foo"
             info.localName shouldBe "Foo"
             info.`type`.name shouldBe "org.example.Test1.Foo"
             info.isCallable shouldBe false
-            info.declPos should matchPattern {
-              case Some(OffsetSourcePosition(f, 58))
-                  if f.getName == "Test1.java" =>
-            }
+            info.declPos should
+              matchPattern {
+                case Some(OffsetSourcePosition(f, 58))
+                    if f.getName == "Test1.java" =>
+              }
           case "3" =>
             info.name shouldBe "java.io.PrintStream.println(java.lang.Object)"
             info.localName shouldBe "println"
@@ -167,10 +167,11 @@ class JavaCompilerSpec
             info.localName shouldBe "Test2"
             info.`type`.name shouldBe "org.example.Test2"
             info.isCallable shouldBe false
-            info.declPos should matchPattern {
-              case Some(OffsetSourcePosition(f, 22))
-                  if f.getName == "Test2.java" =>
-            }
+            info.declPos should
+              matchPattern {
+                case Some(OffsetSourcePosition(f, 22))
+                    if f.getName == "Test2.java" =>
+              }
           case "6" =>
             info.name shouldBe "org.example.Test2.compute()"
             info.localName shouldBe "compute"
@@ -180,57 +181,62 @@ class JavaCompilerSpec
             // the compiler's working set in case "5" above.
             // TODO - However if the 'element' is not found, we'll fall through to indexer lookup.
             // look into more exhaustive ways of finding the element.
-            info.declPos should matchPattern {
-              case Some(LineSourcePosition(f, 8))
-                  if f.getName == "Test2.java" =>
-              case Some(OffsetSourcePosition(f, 48))
-                  if f.getName == "Test2.java" =>
-            }
+            info.declPos should
+              matchPattern {
+                case Some(LineSourcePosition(f, 8))
+                    if f.getName == "Test2.java" =>
+                case Some(OffsetSourcePosition(f, 48))
+                    if f.getName == "Test2.java" =>
+              }
           case "7" =>
             {}
             info.name shouldBe "org.example.Test1.compute(int,int)"
             info.localName shouldBe "compute"
             info.`type`.name shouldBe "(int,int)int"
             info.isCallable shouldBe true
-            info.declPos should matchPattern {
-              case Some(OffsetSourcePosition(f, 481))
-                  if f.getName == "Test1.java" =>
-            }
+            info.declPos should
+              matchPattern {
+                case Some(OffsetSourcePosition(f, 481))
+                    if f.getName == "Test1.java" =>
+              }
           case "8" =>
             info.name shouldBe "org.example.Test1.CONST"
             info.localName shouldBe "CONST"
             info.`type`.name shouldBe "int"
             info.isCallable shouldBe false
-            info.declPos should matchPattern {
-              case Some(OffsetSourcePosition(f, 98))
-                  if f.getName == "Test1.java" =>
-            }
+            info.declPos should
+              matchPattern {
+                case Some(OffsetSourcePosition(f, 98))
+                    if f.getName == "Test1.java" =>
+              }
           case "9" =>
             info.name shouldBe "org.example.Test1.Day"
             info.localName shouldBe "Day"
             info.`type`.name shouldBe "org.example.Test1.Day"
             info.isCallable shouldBe false
-            info.declPos should matchPattern {
-              case Some(OffsetSourcePosition(f, 653))
-                  if f.getName == "Test1.java" =>
-            }
+            info.declPos should
+              matchPattern {
+                case Some(OffsetSourcePosition(f, 653))
+                    if f.getName == "Test1.java" =>
+              }
           case "10" =>
             info.name shouldBe "org.example.Test1.Day.MON"
             info.localName shouldBe "MON"
             info.`type`.name shouldBe "org.example.Test1.Day"
             info.isCallable shouldBe false
             // Don't specify offset pos here as Java 6 seems to have a problem locating enums
-            info.declPos should matchPattern {
-              case Some(OffsetSourcePosition(f, i: Int))
-                  if f.getName == "Test1.java" =>
-            }
+            info.declPos should
+              matchPattern {
+                case Some(OffsetSourcePosition(f, i: Int))
+                    if f.getName == "Test1.java" =>
+              }
           case "13" | "14" =>
             info.name shouldBe "k"
             info.`type`.name shouldBe "int"
             info.isCallable shouldBe false
         }
       }
-  }
+    }
 
   it should "find completions at point" in {
     withJavaCompiler { (_, config, cc, store, search) =>
@@ -319,8 +325,8 @@ class JavaCompilerSpec
     }
   }
 
-  it should "find doc sig at point" in withJavaCompiler {
-    (_, config, cc, store, search) =>
+  it should "find doc sig at point" in
+    withJavaCompiler { (_, config, cc, store, search) =>
       runForPositionInCompiledSource(
         config,
         cc,
@@ -346,30 +352,33 @@ class JavaCompilerSpec
           case "2" =>
             sig shouldBe DocSig(DocFqn("java.io", "File"), Some("toString()"));
           case "3" =>
-            sig shouldBe DocSig(
-              DocFqn("java.io", "File"),
-              Some("createTempFile(java.lang.String,java.lang.String)"));
+            sig shouldBe
+              DocSig(
+                DocFqn("java.io", "File"),
+                Some("createTempFile(java.lang.String,java.lang.String)"));
           case "4" =>
-            sig shouldBe DocSig(
-              DocFqn("java.io", "File"),
-              Some(
-                "createTempFile(java.lang.String,java.lang.String,java.io.File)"));
+            sig shouldBe
+              DocSig(
+                DocFqn("java.io", "File"),
+                Some(
+                  "createTempFile(java.lang.String,java.lang.String,java.io.File)"));
           case "5" =>
             sig.fqn shouldBe DocFqn("java.io", "File")
           case "6" =>
-            sig shouldBe DocSig(
-              DocFqn("java.lang", "String"),
-              Some("indexOf(java.lang.String)"));
+            sig shouldBe
+              DocSig(
+                DocFqn("java.lang", "String"),
+                Some("indexOf(java.lang.String)"));
           case "7" =>
-            sig shouldBe DocSig(
-              DocFqn("java.lang", "String"),
-              Some("indexOf(java.lang.String,int)"));
+            sig shouldBe
+              DocSig(
+                DocFqn("java.lang", "String"),
+                Some("indexOf(java.lang.String,int)"));
           case "8" =>
-            sig shouldBe DocSig(
-              DocFqn("java.lang", "String"),
-              Some("indexOf(int)"));
+            sig shouldBe
+              DocSig(DocFqn("java.lang", "String"), Some("indexOf(int)"));
         }
       }
-  }
+    }
 
 }

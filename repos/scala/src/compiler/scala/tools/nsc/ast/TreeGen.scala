@@ -35,13 +35,9 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       selector: List[ImportSelector]): Import = {
     assert(qualSym ne null, this)
     val qual = gen.mkAttributedStableRef(qualSym)
-    val importSym = (NoSymbol
-      newImport NoPosition
-      setFlag SYNTHETIC
-      setInfo ImportType(qual))
-    val importTree = (Import(qual, selector)
-      setSymbol importSym
-      setType NoType)
+    val importSym =
+      (NoSymbol newImport NoPosition setFlag SYNTHETIC setInfo ImportType(qual))
+    val importTree = (Import(qual, selector) setSymbol importSym setType NoType)
     importTree
   }
 
@@ -197,8 +193,8 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     *  elem type elemtp to expected type pt.
     */
   def mkCastArray(tree: Tree, elemtp: Type, pt: Type) =
-    if (elemtp.typeSymbol == AnyClass && isPrimitiveValueType(
-          tree.tpe.typeArgs.head))
+    if (elemtp.typeSymbol == AnyClass &&
+        isPrimitiveValueType(tree.tpe.typeArgs.head))
       mkCast(mkRuntimeCall(nme.toObjectArray, List(tree)), pt)
     else
       mkCast(tree, pt)
@@ -234,10 +230,9 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       owner: Symbol,
       name: Name): (ValDef, () => Ident) = {
     val packedType = typer.packedType(expr, owner)
-    val sym = owner.newValue(
-      name.toTermName,
-      expr.pos.makeTransparent,
-      SYNTHETIC) setInfo packedType
+    val sym = owner
+      .newValue(name.toTermName, expr.pos.makeTransparent, SYNTHETIC) setInfo
+      packedType
 
     (ValDef(sym, expr), () => Ident(sym) setPos sym.pos.focus setType expr.tpe)
   }

@@ -368,10 +368,10 @@ case class Or(left: Expression, right: Expression)
 abstract class BinaryComparison extends BinaryOperator with Predicate {
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
-    if (ctx.isPrimitiveType(left.dataType)
-        && left.dataType != BooleanType // java boolean doesn't support > or < operator
-        && left.dataType != FloatType
-        && left.dataType != DoubleType) {
+    if (ctx.isPrimitiveType(left.dataType) &&
+        left.dataType !=
+          BooleanType // java boolean doesn't support > or < operator
+          && left.dataType != FloatType && left.dataType != DoubleType) {
       // faster version
       defineCodeGen(ctx, ev, (c1, c2) => s"$c1 $symbol $c2")
     } else {

@@ -214,9 +214,8 @@ class AggregatorSpec
     with Matchers {
 
   test("Test request 1 account type") {
-    system.actorOf(Props[AccountBalanceRetriever]) ! GetCustomerAccountBalances(
-      1,
-      Set(Savings))
+    system.actorOf(Props[AccountBalanceRetriever]) !
+      GetCustomerAccountBalances(1, Set(Savings))
     receiveOne(10.seconds) match {
       case result: List[_] ⇒
         result should have size 1

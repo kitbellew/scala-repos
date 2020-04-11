@@ -40,14 +40,10 @@ import slick.model.Model
 trait H2Profile extends JdbcProfile {
 
   override protected def computeCapabilities: Set[Capability] =
-    (super.computeCapabilities
-      - SqlCapabilities.sequenceMin
-      - SqlCapabilities.sequenceMax
-      - SqlCapabilities.sequenceCycle
-      - JdbcCapabilities.returnInsertOther
-      - RelationalCapabilities.joinFull
-      - JdbcCapabilities.insertOrUpdate
-      - RelationalCapabilities.reverse)
+    (super.computeCapabilities - SqlCapabilities.sequenceMin -
+      SqlCapabilities.sequenceMax - SqlCapabilities.sequenceCycle -
+      JdbcCapabilities.returnInsertOther - RelationalCapabilities.joinFull -
+      JdbcCapabilities.insertOrUpdate - RelationalCapabilities.reverse)
 
   class ModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       implicit ec: ExecutionContext)
@@ -97,8 +93,8 @@ trait H2Profile extends JdbcProfile {
 
   override val columnTypes = new JdbcTypes
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler.replace(Phase.resolveZipJoinsRownumStyle) - Phase
-      .fixRowNumberOrdering
+    super.computeQueryCompiler.replace(Phase.resolveZipJoinsRownumStyle) -
+      Phase.fixRowNumberOrdering
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
   override def createUpsertBuilder(node: Insert): InsertBuilder =

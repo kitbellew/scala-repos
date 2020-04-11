@@ -62,8 +62,8 @@ final class Env(
       import tube._
       def process = {
         case "forum" :: "denormalize" :: Nil =>
-          topicApi.denormalize >> categApi
-            .denormalize inject "Forum denormalized"
+          topicApi.denormalize >> categApi.denormalize inject
+            "Forum denormalized"
       }
     }
 
@@ -86,13 +86,14 @@ object Env {
 
   private def hub = lila.hub.Env.current
 
-  lazy val current = "forum" boot new Env(
-    config = lila.common.PlayApp loadConfig "forum",
-    db = lila.db.Env.current,
-    modLog = lila.mod.Env.current.logApi,
-    shutup = lila.hub.Env.current.actor.shutup,
-    hub = lila.hub.Env.current,
-    detectLanguage = DetectLanguage(
-      lila.common.PlayApp loadConfig "detectlanguage"),
-    system = lila.common.PlayApp.system)
+  lazy val current = "forum" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "forum",
+      db = lila.db.Env.current,
+      modLog = lila.mod.Env.current.logApi,
+      shutup = lila.hub.Env.current.actor.shutup,
+      hub = lila.hub.Env.current,
+      detectLanguage = DetectLanguage(
+        lila.common.PlayApp loadConfig "detectlanguage"),
+      system = lila.common.PlayApp.system)
 }

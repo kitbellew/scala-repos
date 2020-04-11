@@ -144,9 +144,8 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
       text: CharSequence,
       offset: Int): Boolean = {
     val child: PsiElement = file.findElementAt(offset)
-    child != null && child.getNode != null && ScalaTokenTypes
-      .IDENTIFIER_TOKEN_SET
-      .contains(child.getNode.getElementType)
+    child != null && child.getNode != null &&
+    ScalaTokenTypes.IDENTIFIER_TOKEN_SET.contains(child.getNode.getElementType)
   }
 
   private def addClassParameterForSyntheticApply(

@@ -27,52 +27,54 @@ class HttpServerExampleSpec
   // never actually called
   val log: LoggingAdapter = null
 
-  "binding-example" in compileOnlySpec {
-    import akka.http.scaladsl.Http
-    import akka.stream.ActorMaterializer
-    import akka.stream.scaladsl._
+  "binding-example" in
+    compileOnlySpec {
+      import akka.http.scaladsl.Http
+      import akka.stream.ActorMaterializer
+      import akka.stream.scaladsl._
 
-    implicit val system = ActorSystem()
-    implicit val materializer = ActorMaterializer()
-    implicit val executionContext = system.dispatcher
+      implicit val system = ActorSystem()
+      implicit val materializer = ActorMaterializer()
+      implicit val executionContext = system.dispatcher
 
-    val serverSource
-        : Source[Http.IncomingConnection, Future[Http.ServerBinding]] = Http()
-      .bind(interface = "localhost", port = 8080)
-    val bindingFuture: Future[Http.ServerBinding] = serverSource
-      .to(
-        Sink.foreach { connection => // foreach materializes the source
-          println("Accepted new connection from " + connection.remoteAddress)
-          // ... and then actually handle the connection
-        })
-      .run()
-  }
-
-  "binding-failure-high-level-example" in compileOnlySpec {
-    import akka.http.scaladsl.Http
-    import akka.http.scaladsl.server.Directives._
-    import akka.stream.ActorMaterializer
-
-    implicit val system = ActorSystem()
-    implicit val materializer = ActorMaterializer()
-    // needed for the future onFailure in the end
-    implicit val executionContext = system.dispatcher
-
-    val handler = get {
-      complete("Hello world!")
+      val serverSource
+          : Source[Http.IncomingConnection, Future[Http.ServerBinding]] = Http()
+        .bind(interface = "localhost", port = 8080)
+      val bindingFuture: Future[Http.ServerBinding] = serverSource
+        .to(
+          Sink.foreach { connection => // foreach materializes the source
+            println("Accepted new connection from " + connection.remoteAddress)
+            // ... and then actually handle the connection
+          })
+        .run()
     }
 
-    // let's say the OS won't allow us to bind to 80.
-    val (host, port) = ("localhost", 80)
-    val bindingFuture: Future[ServerBinding] = Http()
-      .bindAndHandle(handler, host, port)
+  "binding-failure-high-level-example" in
+    compileOnlySpec {
+      import akka.http.scaladsl.Http
+      import akka.http.scaladsl.server.Directives._
+      import akka.stream.ActorMaterializer
 
-    bindingFuture.onFailure {
-      case ex: Exception =>
-        log.error(ex, "Failed to bind to {}:{}!", host, port)
+      implicit val system = ActorSystem()
+      implicit val materializer = ActorMaterializer()
+      // needed for the future onFailure in the end
+      implicit val executionContext = system.dispatcher
+
+      val handler = get {
+        complete("Hello world!")
+      }
+
+      // let's say the OS won't allow us to bind to 80.
+      val (host, port) = ("localhost", 80)
+      val bindingFuture: Future[ServerBinding] = Http()
+        .bindAndHandle(handler, host, port)
+
+      bindingFuture.onFailure {
+        case ex: Exception =>
+          log.error(ex, "Failed to bind to {}:{}!", host, port)
+      }
+
     }
-
-  }
 
   // mock values:
   val handleConnections
@@ -80,167 +82,172 @@ class HttpServerExampleSpec
     .ignore
     .mapMaterializedValue(_ => Future.failed(new Exception("")))
 
-  "binding-failure-handling" in compileOnlySpec {
-    implicit val system = ActorSystem()
-    implicit val materializer = ActorMaterializer()
-    // needed for the future onFailure in the end
-    implicit val executionContext = system.dispatcher
+  "binding-failure-handling" in
+    compileOnlySpec {
+      implicit val system = ActorSystem()
+      implicit val materializer = ActorMaterializer()
+      // needed for the future onFailure in the end
+      implicit val executionContext = system.dispatcher
 
-    // let's say the OS won't allow us to bind to 80.
-    val (host, port) = ("localhost", 80)
-    val serverSource = Http().bind(host, port)
+      // let's say the OS won't allow us to bind to 80.
+      val (host, port) = ("localhost", 80)
+      val serverSource = Http().bind(host, port)
 
-    val bindingFuture: Future[ServerBinding] = serverSource
-      .to(handleConnections) // Sink[Http.IncomingConnection, _]
-      .run()
+      val bindingFuture: Future[ServerBinding] = serverSource
+        .to(handleConnections) // Sink[Http.IncomingConnection, _]
+        .run()
 
-    bindingFuture.onFailure {
-      case ex: Exception =>
-        log.error(ex, "Failed to bind to {}:{}!", host, port)
+      bindingFuture.onFailure {
+        case ex: Exception =>
+          log.error(ex, "Failed to bind to {}:{}!", host, port)
+      }
     }
-  }
 
   object MyExampleMonitoringActor {
     def props = TestActors.echoActorProps
   }
 
-  "incoming-connections-source-failure-handling" in compileOnlySpec {
-    implicit val system = ActorSystem()
-    implicit val materializer = ActorMaterializer()
-    implicit val executionContext = system.dispatcher
+  "incoming-connections-source-failure-handling" in
+    compileOnlySpec {
+      implicit val system = ActorSystem()
+      implicit val materializer = ActorMaterializer()
+      implicit val executionContext = system.dispatcher
 
-    import Http._
-    val (host, port) = ("localhost", 8080)
-    val serverSource = Http().bind(host, port)
+      import Http._
+      val (host, port) = ("localhost", 8080)
+      val serverSource = Http().bind(host, port)
 
-    val failureMonitor: ActorRef = system
-      .actorOf(MyExampleMonitoringActor.props)
+      val failureMonitor: ActorRef = system
+        .actorOf(MyExampleMonitoringActor.props)
 
-    val reactToTopLevelFailures =
-      Flow[IncomingConnection].watchTermination()((_, termination) =>
-        termination.onFailure {
-          case cause =>
-            failureMonitor ! cause
-        })
+      val reactToTopLevelFailures =
+        Flow[IncomingConnection].watchTermination()((_, termination) =>
+          termination.onFailure {
+            case cause =>
+              failureMonitor ! cause
+          })
 
-    serverSource
-      .via(reactToTopLevelFailures)
-      .to(handleConnections) // Sink[Http.IncomingConnection, _]
-      .run()
-  }
-
-  "connection-stream-failure-handling" in compileOnlySpec {
-    implicit val system = ActorSystem()
-    implicit val materializer = ActorMaterializer()
-    implicit val executionContext = system.dispatcher
-
-    val (host, port) = ("localhost", 8080)
-    val serverSource = Http().bind(host, port)
-
-    val reactToConnectionFailure = Flow[HttpRequest].recover[HttpRequest] {
-      case ex =>
-        // handle the failure somehow
-        throw ex
+      serverSource
+        .via(reactToTopLevelFailures)
+        .to(handleConnections) // Sink[Http.IncomingConnection, _]
+        .run()
     }
 
-    val httpEcho = Flow[HttpRequest]
-      .via(reactToConnectionFailure)
-      .map { request =>
-        // simple text "echo" response:
-        HttpResponse(entity = HttpEntity(
-          ContentTypes.`text/plain(UTF-8)`,
-          request.entity.dataBytes))
+  "connection-stream-failure-handling" in
+    compileOnlySpec {
+      implicit val system = ActorSystem()
+      implicit val materializer = ActorMaterializer()
+      implicit val executionContext = system.dispatcher
+
+      val (host, port) = ("localhost", 8080)
+      val serverSource = Http().bind(host, port)
+
+      val reactToConnectionFailure = Flow[HttpRequest].recover[HttpRequest] {
+        case ex =>
+          // handle the failure somehow
+          throw ex
       }
 
-    serverSource.runForeach { con =>
-      con.handleWith(httpEcho)
-    }
-  }
-
-  "full-server-example" in compileOnlySpec {
-    import akka.http.scaladsl.Http
-    import akka.http.scaladsl.model.HttpMethods._
-    import akka.http.scaladsl.model._
-    import akka.stream.ActorMaterializer
-    import akka.stream.scaladsl.Sink
-
-    implicit val system = ActorSystem()
-    implicit val materializer = ActorMaterializer()
-    implicit val executionContext = system.dispatcher
-
-    val serverSource = Http().bind(interface = "localhost", port = 8080)
-
-    val requestHandler: HttpRequest => HttpResponse = {
-      case HttpRequest(GET, Uri.Path("/"), _, _, _) =>
-        HttpResponse(entity = HttpEntity(
-          ContentTypes.`text/html(UTF-8)`,
-          "<html><body>Hello world!</body></html>"))
-
-      case HttpRequest(GET, Uri.Path("/ping"), _, _, _) =>
-        HttpResponse(entity = "PONG!")
-
-      case HttpRequest(GET, Uri.Path("/crash"), _, _, _) =>
-        sys.error("BOOM!")
-
-      case _: HttpRequest =>
-        HttpResponse(404, entity = "Unknown resource!")
-    }
-
-    val bindingFuture: Future[Http.ServerBinding] = serverSource
-      .to(
-        Sink.foreach { connection =>
-          println("Accepted new connection from " + connection.remoteAddress)
-
-          connection handleWithSyncHandler requestHandler
-        // this is equivalent to
-        // connection handleWith { Flow[HttpRequest] map requestHandler }
-        })
-      .run()
-  }
-
-  "low-level-server-example" in compileOnlySpec {
-    import akka.http.scaladsl.Http
-    import akka.http.scaladsl.model.HttpMethods._
-    import akka.http.scaladsl.model._
-    import akka.stream.ActorMaterializer
-    import scala.io.StdIn
-
-    object WebServer {
-
-      def main(args: Array[String]) {
-        implicit val system = ActorSystem()
-        implicit val materializer = ActorMaterializer()
-        // needed for the future map/flatmap in the end
-        implicit val executionContext = system.dispatcher
-
-        val requestHandler: HttpRequest => HttpResponse = {
-          case HttpRequest(GET, Uri.Path("/"), _, _, _) =>
-            HttpResponse(entity = HttpEntity(
-              ContentTypes.`text/html(UTF-8)`,
-              "<html><body>Hello world!</body></html>"))
-
-          case HttpRequest(GET, Uri.Path("/ping"), _, _, _) =>
-            HttpResponse(entity = "PONG!")
-
-          case HttpRequest(GET, Uri.Path("/crash"), _, _, _) =>
-            sys.error("BOOM!")
-
-          case _: HttpRequest =>
-            HttpResponse(404, entity = "Unknown resource!")
+      val httpEcho = Flow[HttpRequest]
+        .via(reactToConnectionFailure)
+        .map { request =>
+          // simple text "echo" response:
+          HttpResponse(entity = HttpEntity(
+            ContentTypes.`text/plain(UTF-8)`,
+            request.entity.dataBytes))
         }
 
-        val bindingFuture = Http()
-          .bindAndHandleSync(requestHandler, "localhost", 8080)
-        println(
-          s"Server online at http://localhost:8080/\nPress RETURN to stop...")
-        StdIn.readLine() // let it run until user presses return
-        bindingFuture
-          .flatMap(_.unbind()) // trigger unbinding from the port
-          .onComplete(_ ⇒ system.terminate()) // and shutdown when done
-
+      serverSource.runForeach { con =>
+        con.handleWith(httpEcho)
       }
     }
-  }
+
+  "full-server-example" in
+    compileOnlySpec {
+      import akka.http.scaladsl.Http
+      import akka.http.scaladsl.model.HttpMethods._
+      import akka.http.scaladsl.model._
+      import akka.stream.ActorMaterializer
+      import akka.stream.scaladsl.Sink
+
+      implicit val system = ActorSystem()
+      implicit val materializer = ActorMaterializer()
+      implicit val executionContext = system.dispatcher
+
+      val serverSource = Http().bind(interface = "localhost", port = 8080)
+
+      val requestHandler: HttpRequest => HttpResponse = {
+        case HttpRequest(GET, Uri.Path("/"), _, _, _) =>
+          HttpResponse(entity = HttpEntity(
+            ContentTypes.`text/html(UTF-8)`,
+            "<html><body>Hello world!</body></html>"))
+
+        case HttpRequest(GET, Uri.Path("/ping"), _, _, _) =>
+          HttpResponse(entity = "PONG!")
+
+        case HttpRequest(GET, Uri.Path("/crash"), _, _, _) =>
+          sys.error("BOOM!")
+
+        case _: HttpRequest =>
+          HttpResponse(404, entity = "Unknown resource!")
+      }
+
+      val bindingFuture: Future[Http.ServerBinding] = serverSource
+        .to(
+          Sink.foreach { connection =>
+            println("Accepted new connection from " + connection.remoteAddress)
+
+            connection handleWithSyncHandler requestHandler
+          // this is equivalent to
+          // connection handleWith { Flow[HttpRequest] map requestHandler }
+          })
+        .run()
+    }
+
+  "low-level-server-example" in
+    compileOnlySpec {
+      import akka.http.scaladsl.Http
+      import akka.http.scaladsl.model.HttpMethods._
+      import akka.http.scaladsl.model._
+      import akka.stream.ActorMaterializer
+      import scala.io.StdIn
+
+      object WebServer {
+
+        def main(args: Array[String]) {
+          implicit val system = ActorSystem()
+          implicit val materializer = ActorMaterializer()
+          // needed for the future map/flatmap in the end
+          implicit val executionContext = system.dispatcher
+
+          val requestHandler: HttpRequest => HttpResponse = {
+            case HttpRequest(GET, Uri.Path("/"), _, _, _) =>
+              HttpResponse(entity = HttpEntity(
+                ContentTypes.`text/html(UTF-8)`,
+                "<html><body>Hello world!</body></html>"))
+
+            case HttpRequest(GET, Uri.Path("/ping"), _, _, _) =>
+              HttpResponse(entity = "PONG!")
+
+            case HttpRequest(GET, Uri.Path("/crash"), _, _, _) =>
+              sys.error("BOOM!")
+
+            case _: HttpRequest =>
+              HttpResponse(404, entity = "Unknown resource!")
+          }
+
+          val bindingFuture = Http()
+            .bindAndHandleSync(requestHandler, "localhost", 8080)
+          println(
+            s"Server online at http://localhost:8080/\nPress RETURN to stop...")
+          StdIn.readLine() // let it run until user presses return
+          bindingFuture
+            .flatMap(_.unbind()) // trigger unbinding from the port
+            .onComplete(_ ⇒ system.terminate()) // and shutdown when done
+
+        }
+      }
+    }
 
   // format: OFF
 

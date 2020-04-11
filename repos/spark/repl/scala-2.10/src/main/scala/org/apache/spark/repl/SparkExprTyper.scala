@@ -80,8 +80,8 @@ private[repl] trait SparkExprTyper extends Logging {
         case IR.Success =>
           val sym0 = symbolOfTerm(name)
           // drop NullaryMethodType
-          val sym = sym0
-            .cloneSymbol setInfo afterTyper(sym0.info.finalResultType)
+          val sym = sym0.cloneSymbol setInfo
+            afterTyper(sym0.info.finalResultType)
           if (sym.info.typeSymbol eq UnitClass)
             NoSymbol
           else

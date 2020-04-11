@@ -87,8 +87,7 @@ object Cast {
 
       case (MapType(fromKey, fromValue, fn), MapType(toKey, toValue, tn)) =>
         canCast(fromKey, toKey) &&
-          (!forceNullable(fromKey, toKey)) &&
-          canCast(fromValue, toValue) &&
+          (!forceNullable(fromKey, toKey)) && canCast(fromValue, toValue) &&
           resolvableNullability(fn || forceNullable(fromValue, toValue), tn)
 
       case (StructType(fromFields), StructType(toFields)) =>
@@ -99,9 +98,8 @@ object Cast {
               case (fromField, toField) =>
                 canCast(fromField.dataType, toField.dataType) &&
                   resolvableNullability(
-                    fromField.nullable || forceNullable(
-                      fromField.dataType,
-                      toField.dataType),
+                    fromField.nullable ||
+                      forceNullable(fromField.dataType, toField.dataType),
                     toField.nullable)
             }
 

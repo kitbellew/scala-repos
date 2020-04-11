@@ -73,20 +73,21 @@ object TreeTableViewWithTwoColumns extends JFXApp {
     scene = new Scene(400, 400) {
       fill = Color.LightGray
       root = new TreeTableView[Employee](rootNode) {
-        columns ++= Seq(
-          new TreeTableColumn[Employee, String]("Employee") {
-            prefWidth = 150
-            cellValueFactory = { p =>
-              ReadOnlyStringWrapper(p.value.value.value.name())
+        columns ++=
+          Seq(
+            new TreeTableColumn[Employee, String]("Employee") {
+              prefWidth = 150
+              cellValueFactory = { p =>
+                ReadOnlyStringWrapper(p.value.value.value.name())
+              }
+            },
+            new TreeTableColumn[Employee, String]("Email") {
+              prefWidth = 190
+              cellValueFactory = { p =>
+                ReadOnlyStringWrapper(p.value.value.value.email())
+              }
             }
-          },
-          new TreeTableColumn[Employee, String]("Email") {
-            prefWidth = 190
-            cellValueFactory = { p =>
-              ReadOnlyStringWrapper(p.value.value.value.email())
-            }
-          }
-        )
+          )
         tableMenuButtonVisible = true
       }
     }

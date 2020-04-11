@@ -92,11 +92,12 @@ object Opening {
         BSONDocument(
           "first" -> o.first,
           "cp" -> o.cp,
-          "line" -> lila
-            .db
-            .ByteArray {
-              chess.format.pgn.Binary.writeMoves(o.line).get.toArray
-            })
+          "line" ->
+            lila
+              .db
+              .ByteArray {
+                chess.format.pgn.Binary.writeMoves(o.line).get.toArray
+              })
     }
 
   object BSONFields {

@@ -86,8 +86,8 @@ private[upgrade] object DeploymentPlanReverter {
         "re-adding group {} with dependencies {}",
         Seq(oldGroup.id, oldGroup.dependencies): _*)
       if ((oldGroup.dependencies -- existingGroup.dependencies).nonEmpty) {
-        existingGroup.copy(dependencies = existingGroup.dependencies ++ oldGroup
-          .dependencies)
+        existingGroup.copy(dependencies = existingGroup.dependencies ++
+          oldGroup.dependencies)
       } else {
         existingGroup
       }
@@ -105,8 +105,8 @@ private[upgrade] object DeploymentPlanReverter {
               s"readding removed {${removedDependencies.mkString(", ")}}, " +
               s"removing added {${addedDependencies.mkString(", ")}}")
 
-        group.copy(dependencies = group
-          .dependencies ++ removedDependencies -- addedDependencies)
+        group.copy(dependencies = group.dependencies ++ removedDependencies --
+          addedDependencies)
       } else {
         // common case, unchanged
         group
@@ -138,8 +138,8 @@ private[upgrade] object DeploymentPlanReverter {
           result.update(
             newGroup.id,
             group =>
-              group.copy(dependencies = group
-                .dependencies -- newGroup.dependencies),
+              group.copy(dependencies = group.dependencies --
+                newGroup.dependencies),
             version)
         case _ =>
           // still contains apps/groups, so we keep it

@@ -295,9 +295,8 @@ class DefaultClientTest
         control.advance(4.seconds)
         timer.tick()
         assert(
-          statsReceiver
-            .counters
-            .get(Seq("failure_accrual", "revivals")) == None)
+          statsReceiver.counters.get(Seq("failure_accrual", "revivals")) ==
+            None)
       }
     }
   }

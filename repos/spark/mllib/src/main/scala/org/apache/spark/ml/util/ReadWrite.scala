@@ -238,11 +238,12 @@ private[ml] object DefaultParamsWriter {
               p.name -> parse(p.jsonEncode(v))
           }
           .toList))
-    val basicMetadata = ("class" -> cls) ~
-      ("timestamp" -> System.currentTimeMillis()) ~
-      ("sparkVersion" -> sc.version) ~
-      ("uid" -> uid) ~
-      ("paramMap" -> jsonParams)
+    val basicMetadata =
+      ("class" -> cls) ~
+        ("timestamp" -> System.currentTimeMillis()) ~
+        ("sparkVersion" -> sc.version) ~
+        ("uid" -> uid) ~
+        ("paramMap" -> jsonParams)
     val metadata =
       extraMetadata match {
         case Some(jObject) =>
@@ -312,9 +313,8 @@ private[ml] object DefaultParamsReader {
           assert(
             values.length == 1,
             s"Expected one instance of Param '$paramName' but found" +
-              s" ${values.length} in JSON Params: " + pairs
-              .map(_.toString)
-              .mkString(", "))
+              s" ${values.length} in JSON Params: " +
+              pairs.map(_.toString).mkString(", "))
           values.head
         case _ =>
           throw new IllegalArgumentException(

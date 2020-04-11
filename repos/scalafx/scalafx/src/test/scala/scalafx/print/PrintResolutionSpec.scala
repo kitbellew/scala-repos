@@ -51,9 +51,9 @@ class PrintResolutionSpec
       classOf[PrintResolution]) {
 
   val skipingMessage: String =
-    if (jfxp.Printer.getDefaultPrinter == null
-        || jfxp.Printer.getDefaultPrinter.getPrinterAttributes == null
-        || jfxp
+    if (jfxp.Printer.getDefaultPrinter == null ||
+        jfxp.Printer.getDefaultPrinter.getPrinterAttributes == null ||
+        jfxp
           .Printer
           .getDefaultPrinter
           .getPrinterAttributes

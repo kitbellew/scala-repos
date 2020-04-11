@@ -61,37 +61,39 @@ class ServiceRegistrySpec
   }
 
   "Demo of a replicated service registry" must {
-    "join cluster" in within(20.seconds) {
-      join(node1, node1)
-      join(node2, node1)
-      join(node3, node1)
+    "join cluster" in
+      within(20.seconds) {
+        join(node1, node1)
+        join(node2, node1)
+        join(node3, node1)
 
-      awaitAssert {
-        DistributedData(system).replicator ! GetReplicaCount
-        expectMsg(ReplicaCount(roles.size))
-      }
-      enterBarrier("after-1")
-    }
-
-    "replicate service entry" in within(10.seconds) {
-      runOn(node1) {
-        val a1 = system.actorOf(Props[Service], name = "a1")
-        registry ! new Register("a", a1)
+        awaitAssert {
+          DistributedData(system).replicator ! GetReplicaCount
+          expectMsg(ReplicaCount(roles.size))
+        }
+        enterBarrier("after-1")
       }
 
-      awaitAssert {
-        val probe = TestProbe()
-        registry.tell(new Lookup("a"), probe.ref)
-        probe
-          .expectMsgType[Bindings]
-          .services
-          .asScala
-          .map(_.path.name)
-          .toSet should be(Set("a1"))
-      }
+    "replicate service entry" in
+      within(10.seconds) {
+        runOn(node1) {
+          val a1 = system.actorOf(Props[Service], name = "a1")
+          registry ! new Register("a", a1)
+        }
 
-      enterBarrier("after-2")
-    }
+        awaitAssert {
+          val probe = TestProbe()
+          registry.tell(new Lookup("a"), probe.ref)
+          probe
+            .expectMsgType[Bindings]
+            .services
+            .asScala
+            .map(_.path.name)
+            .toSet should be(Set("a1"))
+        }
+
+        enterBarrier("after-2")
+      }
 
     "replicate updated service entry, and publish to even bus" in {
       val probe = TestProbe()
@@ -156,28 +158,29 @@ class ServiceRegistrySpec
       enterBarrier("after-5")
     }
 
-    "replicate many service entries" in within(10.seconds) {
-      for (i ← 100 until 200) {
-        val service = system
-          .actorOf(Props[Service], name = myself.name + "_" + i)
-        registry ! new Register("a" + i, service)
-      }
-
-      awaitAssert {
-        val probe = TestProbe()
+    "replicate many service entries" in
+      within(10.seconds) {
         for (i ← 100 until 200) {
-          registry.tell(new Lookup("a" + i), probe.ref)
-          probe
-            .expectMsgType[Bindings]
-            .services
-            .asScala
-            .map(_.path.name)
-            .toSet should be(roles.map(_.name + "_" + i).toSet)
+          val service = system
+            .actorOf(Props[Service], name = myself.name + "_" + i)
+          registry ! new Register("a" + i, service)
         }
-      }
 
-      enterBarrier("after-6")
-    }
+        awaitAssert {
+          val probe = TestProbe()
+          for (i ← 100 until 200) {
+            registry.tell(new Lookup("a" + i), probe.ref)
+            probe
+              .expectMsgType[Bindings]
+              .services
+              .asScala
+              .map(_.path.name)
+              .toSet should be(roles.map(_.name + "_" + i).toSet)
+          }
+        }
+
+        enterBarrier("after-6")
+      }
 
   }
 

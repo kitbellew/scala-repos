@@ -219,8 +219,8 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
 
       val pathPrefix = EitherT(
         (
-          path.prefix \/> invalidState(
-            "Path %s cannot be relativized.".format(path.path))
+          path.prefix \/>
+            invalidState("Path %s cannot be relativized.".format(path.path))
         ).point[M])
 
       val cachePath = path / Path(".cached")
@@ -368,8 +368,8 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
                   EitherT.right(
                     jobManager.createJob(
                       ctx.apiKey,
-                      jobName getOrElse "Cache run for path %s"
-                        .format(path.path),
+                      jobName getOrElse
+                        "Cache run for path %s".format(path.path),
                       "Cached query run.",
                       None,
                       Some(clock.now())))

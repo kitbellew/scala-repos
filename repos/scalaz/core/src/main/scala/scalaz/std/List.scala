@@ -185,14 +185,13 @@ trait ListInstances extends ListInstances0 {
             case x :: xs =>
               commaSep(xs, (acc :+ ",") ++ Show[A].show(x))
           }
-        "[" +: (
-          as match {
+        "[" +:
+          (as match {
             case Nil =>
               Cord()
             case x :: xs =>
               commaSep(xs, Show[A].show(x))
-          }
-        ) :+ "]"
+          }) :+ "]"
       }
     }
 
@@ -454,8 +453,8 @@ private trait ListEqual[A] extends Equal[List[A]] {
 
   override def equalIsNatural: Boolean = A.equalIsNatural
 
-  override def equal(a1: List[A], a2: List[A]) =
-    (a1 corresponds a2)(Equal[A].equal)
+  override def equal(a1: List[A], a2: List[A]) = (a1 corresponds a2)(
+    Equal[A].equal)
 }
 
 private trait ListOrder[A] extends Order[List[A]] with ListEqual[A] {

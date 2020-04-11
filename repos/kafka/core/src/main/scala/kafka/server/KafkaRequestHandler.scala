@@ -36,8 +36,8 @@ class KafkaRequestHandler(
     apis: KafkaApis)
     extends Runnable
     with Logging {
-  this.logIdent =
-    "[Kafka Request Handler " + id + " on Broker " + brokerId + "], "
+  this.logIdent = "[Kafka Request Handler " + id + " on Broker " + brokerId +
+    "], "
 
   def run() {
     while (true) {

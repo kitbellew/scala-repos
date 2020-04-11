@@ -54,10 +54,8 @@ object Form extends DispatchSnippet {
     // we could do it reliably with pattern matching
     // dpp Oct 29, 2010
     val ret: Elem =
-      if (kids.length == 1 &&
-          kids(0).isInstanceOf[Elem] &&
-          (kids(0).prefix eq null) &&
-          kids(0).label == "form") {
+      if (kids.length == 1 && kids(0).isInstanceOf[Elem] &&
+          (kids(0).prefix eq null) && kids(0).label == "form") {
         val e = kids(0).asInstanceOf[Elem]
         val meta =
           new UnprefixedAttribute(
@@ -94,10 +92,8 @@ object Form extends DispatchSnippet {
     // yeah it's ugly, but I'm not sure
     // we could do it reliably with pattern matching
     // dpp Oct 29, 2010
-    if (kids.length == 1 &&
-        kids(0).isInstanceOf[Elem] &&
-        (kids(0).prefix eq null) &&
-        kids(0).label == "form") {
+    if (kids.length == 1 && kids(0).isInstanceOf[Elem] &&
+        (kids(0).prefix eq null) && kids(0).label == "form") {
       new Elem(null, "form", addAjaxForm, TopScope, true, kids(0).child: _*)
     } else {
       Elem(null, "form", addAjaxForm, TopScope, true, kids: _*)
@@ -114,9 +110,10 @@ object Form extends DispatchSnippet {
 
     val post = S.attr.~("postsubmit").map("function() { " + _.text + "; }")
 
-    val ajax: String = pre + SHtml
-      .makeAjaxCall(LiftRules.jsArtifacts.serialize(id), AjaxContext.js(post))
-      .toJsCmd + ";" + "return false;"
+    val ajax: String = pre +
+      SHtml
+        .makeAjaxCall(LiftRules.jsArtifacts.serialize(id), AjaxContext.js(post))
+        .toJsCmd + ";" + "return false;"
 
     new UnprefixedAttribute(
       "id",

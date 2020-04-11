@@ -29,21 +29,19 @@ class ForeignKeyTest extends AsyncTest[RelationalTestDB] {
       _ <- (posts.schema ++ categories.schema).create
       _ <- tdb.assertTablesExist("categories", "posts")
       _ <-
-        categories ++= Seq(
-          (1, "Scala"),
-          (2, "ScalaQuery"),
-          (3, "Windows"),
-          (4, "Software"))
+        categories ++=
+          Seq((1, "Scala"), (2, "ScalaQuery"), (3, "Windows"), (4, "Software"))
       _ <-
-        posts.map(p => (p.title, p.category)) ++= Seq(
-          ("Test Post", None),
-          ("Formal Language Processing in Scala, Part 5", Some(1)),
-          ("Efficient Parameterized Queries in ScalaQuery", Some(2)),
-          (
-            "Removing Libraries and HomeGroup icons from the Windows 7 desktop",
-            Some(3)),
-          ("A ScalaQuery Update", Some(2))
-        )
+        posts.map(p => (p.title, p.category)) ++=
+          Seq(
+            ("Test Post", None),
+            ("Formal Language Processing in Scala, Part 5", Some(1)),
+            ("Efficient Parameterized Queries in ScalaQuery", Some(2)),
+            (
+              "Removing Libraries and HomeGroup icons from the Windows 7 desktop",
+              Some(3)),
+            ("A ScalaQuery Update", Some(2))
+          )
       q1 = (
           for {
             p <- posts

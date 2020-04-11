@@ -156,8 +156,8 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
     }
 
     "evaluate a simple object concatenation" in {
-      "{a:1} with {b:2}" must evalTo(
-        JObject(Map("a" -> JNum(1), "b" -> JNum(2))))
+      "{a:1} with {b:2}" must
+        evalTo(JObject(Map("a" -> JNum(1), "b" -> JNum(2))))
     }
 
     "evaluate a simple object deref" in {
@@ -232,16 +232,17 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
         |   n + n2
         | """.stripMargin
 
-      input must evalTo(
-        JNum(2),
-        JNum(3),
-        JNum(4),
-        JNum(3),
-        JNum(4),
-        JNum(5),
-        JNum(4),
-        JNum(5),
-        JNum(6))
+      input must
+        evalTo(
+          JNum(2),
+          JNum(3),
+          JNum(4),
+          JNum(3),
+          JNum(4),
+          JNum(5),
+          JNum(4),
+          JNum(5),
+          JNum(6))
     }
 
     "evaluate a join between related resultants" in {
@@ -254,16 +255,17 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
         |   (n + n2) * (n3 + n)
         | """.stripMargin
 
-      input must evalTo(
-        JNum(4),
-        JNum(9),
-        JNum(16),
-        JNum(9),
-        JNum(16),
-        JNum(25),
-        JNum(16),
-        JNum(25),
-        JNum(36))
+      input must
+        evalTo(
+          JNum(4),
+          JNum(9),
+          JNum(16),
+          JNum(9),
+          JNum(16),
+          JNum(25),
+          JNum(16),
+          JNum(25),
+          JNum(36))
     }
 
     "restrict cartesians by filtered relation" in {
@@ -294,12 +296,11 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
     def inner(q: String): Boolean = {
       val actual = doEval(q)
 
-      expect.length == actual.length && (
-        expect zip actual forall {
-          case (a, b) =>
-            a == b
-        }
-      )
+      expect.length == actual.length &&
+      (expect zip actual forall {
+        case (a, b) =>
+          a == b
+      })
     }
 
     def message(q: String): String = {

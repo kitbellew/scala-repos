@@ -217,8 +217,8 @@ class ClusterSingletonManagerSpec
 
   def awaitMemberUp(memberProbe: TestProbe, nodes: RoleName*): Unit = {
     runOn(nodes.filterNot(_ == nodes.head): _*) {
-      memberProbe.expectMsgType[MemberUp](15.seconds).member.address should ===(
-        node(nodes.head).address)
+      memberProbe.expectMsgType[MemberUp](15.seconds).member.address should
+        ===(node(nodes.head).address)
     }
     runOn(nodes.head) {
       memberProbe
@@ -327,134 +327,146 @@ class ClusterSingletonManagerSpec
 
   "A ClusterSingletonManager" must {
 
-    "startup 6 node cluster" in within(60 seconds) {
+    "startup 6 node cluster" in
+      within(60 seconds) {
 
-      val memberProbe = TestProbe()
-      Cluster(system).subscribe(memberProbe.ref, classOf[MemberUp])
-      memberProbe.expectMsgClass(classOf[CurrentClusterState])
+        val memberProbe = TestProbe()
+        Cluster(system).subscribe(memberProbe.ref, classOf[MemberUp])
+        memberProbe.expectMsgClass(classOf[CurrentClusterState])
 
-      runOn(controller) {
-        // watch that it is not terminated, which would indicate misbehaviour
-        watch(system.actorOf(Props[PointToPointChannel], "queue"))
-      }
-      enterBarrier("queue-started")
-
-      join(first, first)
-      awaitMemberUp(memberProbe, first)
-      verifyRegistration(first)
-      verifyMsg(first, msg = msg())
-
-      // join the observer node as well, which should not influence since it doesn't have the "worker" role
-      join(observer, first)
-      awaitMemberUp(memberProbe, observer, first)
-      verifyProxyMsg(first, first, msg = msg())
-
-      join(second, first)
-      awaitMemberUp(memberProbe, second, observer, first)
-      verifyMsg(first, msg = msg())
-      verifyProxyMsg(first, second, msg = msg())
-
-      join(third, first)
-      awaitMemberUp(memberProbe, third, second, observer, first)
-      verifyMsg(first, msg = msg())
-      verifyProxyMsg(first, third, msg = msg())
-
-      join(fourth, first)
-      awaitMemberUp(memberProbe, fourth, third, second, observer, first)
-      verifyMsg(first, msg = msg())
-      verifyProxyMsg(first, fourth, msg = msg())
-
-      join(fifth, first)
-      awaitMemberUp(memberProbe, fifth, fourth, third, second, observer, first)
-      verifyMsg(first, msg = msg())
-      verifyProxyMsg(first, fifth, msg = msg())
-
-      join(sixth, first)
-      awaitMemberUp(
-        memberProbe,
-        sixth,
-        fifth,
-        fourth,
-        third,
-        second,
-        observer,
-        first)
-      verifyMsg(first, msg = msg())
-      verifyProxyMsg(first, sixth, msg = msg())
-
-      enterBarrier("after-1")
-    }
-
-    "let the proxy route messages to the singleton in a 6 node cluster" in within(
-      60 seconds) {
-      verifyProxyMsg(first, first, msg = msg())
-      verifyProxyMsg(first, second, msg = msg())
-      verifyProxyMsg(first, third, msg = msg())
-      verifyProxyMsg(first, fourth, msg = msg())
-      verifyProxyMsg(first, fifth, msg = msg())
-      verifyProxyMsg(first, sixth, msg = msg())
-    }
-
-    "hand over when oldest leaves in 6 nodes cluster " in within(30 seconds) {
-      val leaveRole = first
-      val newOldestRole = second
-
-      runOn(leaveRole) {
-        Cluster(system) leave node(leaveRole).address
-      }
-
-      verifyRegistration(second)
-      verifyMsg(second, msg = msg())
-      verifyProxyMsg(second, second, msg = msg())
-      verifyProxyMsg(second, third, msg = msg())
-      verifyProxyMsg(second, fourth, msg = msg())
-      verifyProxyMsg(second, fifth, msg = msg())
-      verifyProxyMsg(second, sixth, msg = msg())
-
-      runOn(leaveRole) {
-        system
-          .actorSelection("/user/consumer")
-          .tell(Identify("singleton"), identifyProbe.ref)
-        identifyProbe.expectMsgPF() {
-          case ActorIdentity("singleton", None) ⇒ // already terminated
-          case ActorIdentity("singleton", Some(singleton)) ⇒
-            watch(singleton)
-            expectTerminated(singleton)
+        runOn(controller) {
+          // watch that it is not terminated, which would indicate misbehaviour
+          watch(system.actorOf(Props[PointToPointChannel], "queue"))
         }
+        enterBarrier("queue-started")
+
+        join(first, first)
+        awaitMemberUp(memberProbe, first)
+        verifyRegistration(first)
+        verifyMsg(first, msg = msg())
+
+        // join the observer node as well, which should not influence since it doesn't have the "worker" role
+        join(observer, first)
+        awaitMemberUp(memberProbe, observer, first)
+        verifyProxyMsg(first, first, msg = msg())
+
+        join(second, first)
+        awaitMemberUp(memberProbe, second, observer, first)
+        verifyMsg(first, msg = msg())
+        verifyProxyMsg(first, second, msg = msg())
+
+        join(third, first)
+        awaitMemberUp(memberProbe, third, second, observer, first)
+        verifyMsg(first, msg = msg())
+        verifyProxyMsg(first, third, msg = msg())
+
+        join(fourth, first)
+        awaitMemberUp(memberProbe, fourth, third, second, observer, first)
+        verifyMsg(first, msg = msg())
+        verifyProxyMsg(first, fourth, msg = msg())
+
+        join(fifth, first)
+        awaitMemberUp(
+          memberProbe,
+          fifth,
+          fourth,
+          third,
+          second,
+          observer,
+          first)
+        verifyMsg(first, msg = msg())
+        verifyProxyMsg(first, fifth, msg = msg())
+
+        join(sixth, first)
+        awaitMemberUp(
+          memberProbe,
+          sixth,
+          fifth,
+          fourth,
+          third,
+          second,
+          observer,
+          first)
+        verifyMsg(first, msg = msg())
+        verifyProxyMsg(first, sixth, msg = msg())
+
+        enterBarrier("after-1")
       }
 
-      enterBarrier("after-leave")
-    }
+    "let the proxy route messages to the singleton in a 6 node cluster" in
+      within(60 seconds) {
+        verifyProxyMsg(first, first, msg = msg())
+        verifyProxyMsg(first, second, msg = msg())
+        verifyProxyMsg(first, third, msg = msg())
+        verifyProxyMsg(first, fourth, msg = msg())
+        verifyProxyMsg(first, fifth, msg = msg())
+        verifyProxyMsg(first, sixth, msg = msg())
+      }
 
-    "take over when oldest crashes in 5 nodes cluster" in within(60 seconds) {
-      // mute logging of deadLetters during shutdown of systems
-      if (!log.isDebugEnabled)
-        system.eventStream.publish(Mute(DeadLettersFilter[Any]))
-      enterBarrier("logs-muted")
+    "hand over when oldest leaves in 6 nodes cluster " in
+      within(30 seconds) {
+        val leaveRole = first
+        val newOldestRole = second
 
-      crash(second)
-      verifyRegistration(third)
-      verifyMsg(third, msg = msg())
-      verifyProxyMsg(third, third, msg = msg())
-      verifyProxyMsg(third, fourth, msg = msg())
-      verifyProxyMsg(third, fifth, msg = msg())
-      verifyProxyMsg(third, sixth, msg = msg())
-    }
+        runOn(leaveRole) {
+          Cluster(system) leave node(leaveRole).address
+        }
 
-    "take over when two oldest crash in 3 nodes cluster" in within(60 seconds) {
-      crash(third, fourth)
-      verifyRegistration(fifth)
-      verifyMsg(fifth, msg = msg())
-      verifyProxyMsg(fifth, fifth, msg = msg())
-      verifyProxyMsg(fifth, sixth, msg = msg())
-    }
+        verifyRegistration(second)
+        verifyMsg(second, msg = msg())
+        verifyProxyMsg(second, second, msg = msg())
+        verifyProxyMsg(second, third, msg = msg())
+        verifyProxyMsg(second, fourth, msg = msg())
+        verifyProxyMsg(second, fifth, msg = msg())
+        verifyProxyMsg(second, sixth, msg = msg())
 
-    "take over when oldest crashes in 2 nodes cluster" in within(60 seconds) {
-      crash(fifth)
-      verifyRegistration(sixth)
-      verifyMsg(sixth, msg = msg())
-      verifyProxyMsg(sixth, sixth, msg = msg())
-    }
+        runOn(leaveRole) {
+          system
+            .actorSelection("/user/consumer")
+            .tell(Identify("singleton"), identifyProbe.ref)
+          identifyProbe.expectMsgPF() {
+            case ActorIdentity("singleton", None) ⇒ // already terminated
+            case ActorIdentity("singleton", Some(singleton)) ⇒
+              watch(singleton)
+              expectTerminated(singleton)
+          }
+        }
+
+        enterBarrier("after-leave")
+      }
+
+    "take over when oldest crashes in 5 nodes cluster" in
+      within(60 seconds) {
+        // mute logging of deadLetters during shutdown of systems
+        if (!log.isDebugEnabled)
+          system.eventStream.publish(Mute(DeadLettersFilter[Any]))
+        enterBarrier("logs-muted")
+
+        crash(second)
+        verifyRegistration(third)
+        verifyMsg(third, msg = msg())
+        verifyProxyMsg(third, third, msg = msg())
+        verifyProxyMsg(third, fourth, msg = msg())
+        verifyProxyMsg(third, fifth, msg = msg())
+        verifyProxyMsg(third, sixth, msg = msg())
+      }
+
+    "take over when two oldest crash in 3 nodes cluster" in
+      within(60 seconds) {
+        crash(third, fourth)
+        verifyRegistration(fifth)
+        verifyMsg(fifth, msg = msg())
+        verifyProxyMsg(fifth, fifth, msg = msg())
+        verifyProxyMsg(fifth, sixth, msg = msg())
+      }
+
+    "take over when oldest crashes in 2 nodes cluster" in
+      within(60 seconds) {
+        crash(fifth)
+        verifyRegistration(sixth)
+        verifyMsg(sixth, msg = msg())
+        verifyProxyMsg(sixth, sixth, msg = msg())
+      }
 
   }
 }

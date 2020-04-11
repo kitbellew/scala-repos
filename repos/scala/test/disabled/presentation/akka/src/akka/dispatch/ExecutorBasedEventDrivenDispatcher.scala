@@ -190,7 +190,8 @@ class ExecutorBasedEventDrivenDispatcher(
   private[akka] def registerForExecution(
       mbox: MessageQueue with ExecutableMailbox): Unit = {
     if (mbox.dispatcherLock.tryLock()) {
-      if (active.isOn && !mbox
+      if (active.isOn &&
+          !mbox
             .suspended
             .locked) { //If the dispatcher is active and the actor not suspended
         try {
@@ -262,9 +263,8 @@ trait ExecutableMailbox extends Runnable {
           val isDeadlineEnabled = dispatcher.throughputDeadlineTime > 0
           val deadlineNs =
             if (isDeadlineEnabled)
-              System.nanoTime + TimeUnit
-                .MILLISECONDS
-                .toNanos(dispatcher.throughputDeadlineTime)
+              System.nanoTime +
+                TimeUnit.MILLISECONDS.toNanos(dispatcher.throughputDeadlineTime)
             else
               0
           do {
@@ -274,9 +274,10 @@ trait ExecutableMailbox extends Runnable {
                 null // If we are suspended, abort
               } else { // If we aren't suspended, we need to make sure we're not overstepping our boundaries
                 processedMessages += 1
-                if ((processedMessages >= dispatcher.throughput) || (
-                      isDeadlineEnabled && System.nanoTime >= deadlineNs
-                    )) // If we're throttled, break out
+                if ((processedMessages >= dispatcher.throughput) ||
+                    (isDeadlineEnabled &&
+                    System
+                      .nanoTime >= deadlineNs)) // If we're throttled, break out
                   null //We reached our boundaries, abort
                 else
                   self.dequeue //Dequeue the next message

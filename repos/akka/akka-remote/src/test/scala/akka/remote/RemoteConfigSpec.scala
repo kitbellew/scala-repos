@@ -44,27 +44,29 @@ class RemoteConfigSpec
       QuarantineDuration should ===(5 days)
       CommandAckTimeout.duration should ===(30 seconds)
       Transports.size should ===(1)
-      Transports.head._1 should ===(
-        classOf[akka.remote.transport.netty.NettyTransport].getName)
+      Transports.head._1 should
+        ===(classOf[akka.remote.transport.netty.NettyTransport].getName)
       Transports.head._2 should ===(Nil)
-      Adapters should ===(
-        Map(
-          "gremlin" -> classOf[akka.remote.transport.FailureInjectorProvider]
-            .getName,
-          "trttl" -> classOf[akka.remote.transport.ThrottlerProvider].getName))
+      Adapters should
+        ===(
+          Map(
+            "gremlin" ->
+              classOf[akka.remote.transport.FailureInjectorProvider].getName,
+            "trttl" ->
+              classOf[akka.remote.transport.ThrottlerProvider].getName))
 
-      WatchFailureDetectorImplementationClass should ===(
-        classOf[PhiAccrualFailureDetector].getName)
+      WatchFailureDetectorImplementationClass should
+        ===(classOf[PhiAccrualFailureDetector].getName)
       WatchHeartBeatInterval should ===(1 seconds)
       WatchHeartbeatExpectedResponseAfter should ===(1 seconds)
       WatchUnreachableReaperInterval should ===(1 second)
-      WatchFailureDetectorConfig
-        .getDouble("threshold") should ===(10.0 +- 0.0001)
+      WatchFailureDetectorConfig.getDouble("threshold") should
+        ===(10.0 +- 0.0001)
       WatchFailureDetectorConfig.getInt("max-sample-size") should ===(200)
       WatchFailureDetectorConfig
         .getMillisDuration("acceptable-heartbeat-pause") should ===(10 seconds)
-      WatchFailureDetectorConfig
-        .getMillisDuration("min-std-deviation") should ===(100 millis)
+      WatchFailureDetectorConfig.getMillisDuration("min-std-deviation") should
+        ===(100 millis)
 
       remoteSettings
         .config
@@ -79,8 +81,8 @@ class RemoteConfigSpec
       RequireCookie should ===(false)
       SecureCookie should ===(None)
 
-      TransportFailureDetectorImplementationClass should ===(
-        classOf[DeadlineFailureDetector].getName)
+      TransportFailureDetectorImplementationClass should
+        ===(classOf[DeadlineFailureDetector].getName)
       TransportHeartBeatInterval should ===(4.seconds)
       TransportFailureDetectorConfig
         .getMillisDuration("acceptable-heartbeat-pause") should ===(16.seconds)
@@ -97,9 +99,10 @@ class RemoteConfigSpec
       import s._
 
       ConnectionTimeout should ===(15.seconds)
-      ConnectionTimeout should ===(
-        new AkkaProtocolSettings(RARP(system).provider.remoteSettings.config)
-          .HandshakeTimeout)
+      ConnectionTimeout should
+        ===(
+          new AkkaProtocolSettings(RARP(system).provider.remoteSettings.config)
+            .HandshakeTimeout)
       WriteBufferHighWaterMark should ===(None)
       WriteBufferLowWaterMark should ===(None)
       SendBufferSize should ===(Some(256000))
@@ -152,8 +155,8 @@ class RemoteConfigSpec
       sslSettings.SSLTrustStore should ===(Some("truststore"))
       sslSettings.SSLTrustStorePassword should ===(Some("changeme"))
       sslSettings.SSLProtocol should ===(Some("TLSv1.2"))
-      sslSettings
-        .SSLEnabledAlgorithms should ===(Set("TLS_RSA_WITH_AES_128_CBC_SHA"))
+      sslSettings.SSLEnabledAlgorithms should
+        ===(Set("TLS_RSA_WITH_AES_128_CBC_SHA"))
       sslSettings.SSLRandomNumberGenerator should ===(None)
     }
 

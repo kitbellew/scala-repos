@@ -74,8 +74,8 @@ object SimplifyBooleanUtil {
             case _ =>
               false
           }
-        isBooleanOperation && isOfBooleanType(expr) && children
-          .exists(canBeSimplified(_, isTopLevel = false))
+        isBooleanOperation && isOfBooleanType(expr) &&
+        children.exists(canBeSimplified(_, isTopLevel = false))
     }
   }
 

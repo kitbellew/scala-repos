@@ -116,7 +116,8 @@ class WorksheetInProcessRunnerFactory {
             val compilerUrls = arguments.compilerData.compilerJars map {
               case CompilerJars(lib, compiler, extra) =>
                 Seq(lib, compiler) ++ extra
-            } map (a => a.map(_.getCanonicalPath)) getOrElse Seq.empty
+            } map
+              (a => a.map(_.getCanonicalPath)) getOrElse Seq.empty
 
             val worksheetUrls = arguments.worksheetFiles.tail.map(toUrlSpec)
             val compilerUrlSeq = compilerUrls.map(toUrlSpec)

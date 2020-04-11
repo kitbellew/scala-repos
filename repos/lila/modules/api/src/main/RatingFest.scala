@@ -36,12 +36,8 @@ object RatingFest {
         }
 
     def unrate(game: Game) =
-      (
-        game.whitePlayer.ratingDiff.isDefined || game
-          .blackPlayer
-          .ratingDiff
-          .isDefined
-      ) ?? GameRepo.unrate(game.id).void
+      (game.whitePlayer.ratingDiff.isDefined ||
+        game.blackPlayer.ratingDiff.isDefined) ?? GameRepo.unrate(game.id).void
 
     def log(x: Any) = lila.log("ratingFest") info x.toString
 
@@ -59,21 +55,22 @@ object RatingFest {
           .update(
             BSONDocument(),
             BSONDocument(
-              "$unset" -> BSONDocument(
-                List(
-                  "global",
-                  "white",
-                  "black",
-                  "standard",
-                  "chess960",
-                  "kingOfTheHill",
-                  "threeCheck",
-                  "bullet",
-                  "blitz",
-                  "classical",
-                  "correspondence").map { name =>
-                  s"perfs.$name" -> BSONBoolean(true)
-                })),
+              "$unset" ->
+                BSONDocument(
+                  List(
+                    "global",
+                    "white",
+                    "black",
+                    "standard",
+                    "chess960",
+                    "kingOfTheHill",
+                    "threeCheck",
+                    "bullet",
+                    "blitz",
+                    "classical",
+                    "correspondence").map { name =>
+                    s"perfs.$name" -> BSONBoolean(true)
+                  })),
             multi = true
           )
       _ = log("Gathering cheater IDs")

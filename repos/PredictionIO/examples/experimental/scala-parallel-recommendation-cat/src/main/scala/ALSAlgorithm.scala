@@ -36,8 +36,7 @@ class ALSModel(
   lazy val itemIntStringMap = itemStringIntMap.inverse
 
   override def toString = {
-    s" rank: ${rank}" +
-      s" userFeatures: [${userFeatures.size}]" +
+    s" rank: ${rank}" + s" userFeatures: [${userFeatures.size}]" +
       s"(${userFeatures.take(2).toList}...)" +
       s" productFeatures: [${productFeatures.size}]" +
       s"(${productFeatures.take(2).toList}...)" +
@@ -89,13 +88,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
         if (uindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent user ID ${r.user}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent user ID ${r.user}" +
+              " to Int index.")
 
         if (iindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent item ID ${r.item}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent item ID ${r.item}" +
+              " to Int index.")
 
         ((uindex, iindex), 1)
       }
@@ -267,8 +266,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       whiteList: Option[Set[Int]],
       blackList: Set[Int]): Boolean = {
     // can add other custom filtering here
-    whiteList.map(_.contains(i)).getOrElse(true) &&
-    !blackList.contains(i) &&
+    whiteList.map(_.contains(i)).getOrElse(true) && !blackList.contains(i) &&
     // filter categories
     categories
       .map { cat =>

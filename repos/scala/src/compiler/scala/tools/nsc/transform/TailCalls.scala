@@ -132,8 +132,8 @@ abstract class TailCalls extends Transform {
               method.ownerChain.mkString(" -> "),
               currentClass.ownerChain.mkString(" -> "))
         logResult(msg)(
-          method.newValue(nme.THIS, pos, SYNTHETIC) setInfo currentClass
-            .typeOfThis)
+          method.newValue(nme.THIS, pos, SYNTHETIC) setInfo
+            currentClass.typeOfThis)
       }
       override def toString =
         s"${method.name} tparams=$tparams tailPos=$tailPos label=$label label info=${label.info}"
@@ -177,9 +177,10 @@ abstract class TailCalls extends Transform {
       private def mkLabel() = {
         val label = method.newLabel(newTermName("_" + method.name), method.pos)
         val thisParam = method.newSyntheticValueParam(currentClass.typeOfThis)
-        label setInfo MethodType(
-          thisParam :: method.tpe.params,
-          method.tpe_*.finalResultType)
+        label setInfo
+          MethodType(
+            thisParam :: method.tpe.params,
+            method.tpe_*.finalResultType)
         if (isEligible)
           label substInfo (method.tpe.typeParams, tparams)
 
@@ -189,10 +190,9 @@ abstract class TailCalls extends Transform {
         val receiver = t.symbol
 
         (
-          (receiver != null)
-          && receiver.isMethod
-          && (method.name == receiver.name)
-          && (method.enclClass isSubClass receiver.enclClass)
+          (receiver != null) && receiver.isMethod &&
+          (method.name == receiver.name) &&
+          (method.enclClass isSubClass receiver.enclClass)
         )
       }
       def containsRecursiveCall(t: Tree) = t exists isRecursiveCall
@@ -268,8 +268,8 @@ abstract class TailCalls extends Transform {
          */
         def fail(reason: String) = {
           debuglog(
-            "Cannot rewrite recursive call at: " + fun
-              .pos + " because: " + reason)
+            "Cannot rewrite recursive call at: " + fun.pos + " because: " +
+              reason)
           if (ctx.isMandatory)
             failReasons(ctx) = reason
           treeCopy.Apply(tree, noTailTransform(target), transformArgs)
@@ -295,7 +295,8 @@ abstract class TailCalls extends Transform {
         if (!ctx.isEligible)
           fail("it is neither private nor final so can be overridden")
         else if (!isRecursiveCall) {
-          if (ctx.isMandatory && receiverIsSuper) // OPT expensive check, avoid unless we will actually report the error
+          if (ctx.isMandatory &&
+              receiverIsSuper) // OPT expensive check, avoid unless we will actually report the error
             failHere("it contains a recursive call targeting a supertype")
           else
             failHere(defaultReason)
@@ -374,9 +375,8 @@ abstract class TailCalls extends Transform {
           val transformedPrologue = noTailTransforms(prologue)
           val transformedCases = transformTrees(cases)
           val transformedStats =
-            if ((
-                  prologue eq transformedPrologue
-                ) && (cases eq transformedCases))
+            if ((prologue eq transformedPrologue) &&
+                (cases eq transformedCases))
               stats // allow reuse of `tree` if the subtransform was an identity
             else
               transformedPrologue ++ transformedCases

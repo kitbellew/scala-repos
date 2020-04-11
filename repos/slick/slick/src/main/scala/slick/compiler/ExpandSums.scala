@@ -31,16 +31,15 @@ class ExpandSums extends Phase {
     def tr(
         tree: Node,
         oldDiscCandidates: Set[(TypeSymbol, List[TermSymbol])]): Node = {
-      val discCandidates = oldDiscCandidates ++ (
-        tree match {
+      val discCandidates = oldDiscCandidates ++
+        (tree match {
           case Filter(_, _, p) =>
             collectDiscriminatorCandidates(p)
           case Bind(_, j: Join, _) =>
             collectDiscriminatorCandidates(j.on)
           case _ =>
             Set.empty
-        }
-      )
+        })
       val tree2 = tree.mapChildren(tr(_, discCandidates), keepType = true)
       val tree3 =
         tree2 match {
@@ -51,8 +50,8 @@ class ExpandSums extends Phase {
                   then1 :@ tpe,
                   LiteralNode(None) :@ OptionType(ScalaBaseType.nullType))) =>
             multi = true
-            IfThenElse(
-              ConstArray(pred, then1, buildMultiColumnNone(tpe))) :@ tpe
+            IfThenElse(ConstArray(pred, then1, buildMultiColumnNone(tpe))) :@
+              tpe
 
           // Identity OptionFold/OptionApply combination -> remove
           case OptionFold(
@@ -151,8 +150,8 @@ class ExpandSums extends Phase {
 
           // Option-extended left outer, right outer or full outer join
           case bind @ Bind(bsym, Join(_, _, _, _, jt, _), _)
-              if jt == JoinType.LeftOption || jt == JoinType
-                .RightOption || jt == JoinType.OuterOption =>
+              if jt == JoinType.LeftOption || jt == JoinType.RightOption ||
+                jt == JoinType.OuterOption =>
             multi = true
             translateJoin(bind, discCandidates)
 
@@ -177,15 +176,13 @@ class ExpandSums extends Phase {
     logger.debug("translateJoin", bind)
     val Bind(
       bsym,
-      (
-        join @ Join(
-          lsym,
-          rsym,
-          left :@ CollectionType(_, leftElemType),
-          right :@ CollectionType(_, rightElemType),
-          jt,
-          on)
-      ) :@ CollectionType(cons, elemType),
+      (join @ Join(
+        lsym,
+        rsym,
+        left :@ CollectionType(_, leftElemType),
+        right :@ CollectionType(_, rightElemType),
+        jt,
+        on)) :@ CollectionType(cons, elemType),
       pure) = bind
     val lComplex = !leftElemType.structural.isInstanceOf[AtomicType]
     val rComplex = !rightElemType.structural.isInstanceOf[AtomicType]
@@ -234,13 +231,11 @@ class ExpandSums extends Phase {
             Vector.empty
         }
       val local = find(t, Nil).sortBy { ss =>
-        (
-          if (global contains ss)
-            3
-          else
-            1
-        ) * (
-          ss.head match {
+        (if (global contains ss)
+           3
+         else
+           1) *
+          (ss.head match {
             case f: FieldSymbol =>
               if (f.options contains ColumnOption.PrimaryKey)
                 -2
@@ -248,8 +243,7 @@ class ExpandSums extends Phase {
                 -1
             case _ =>
               0
-          }
-        )
+          })
       }
       logger
         .debug("Local candidates: " + local.map(Path.toString).mkString(", "))
@@ -264,8 +258,8 @@ class ExpandSums extends Phase {
         findDisc(elemType) match {
           case Some(path) =>
             logger.debug(
-              "Using existing column " + Path(
-                path) + " as discriminator in " + elemType)
+              "Using existing column " + Path(path) + " as discriminator in " +
+                elemType)
             (FwdPath(extendGen :: path.reverse), true)
           case None =>
             logger
@@ -385,23 +379,21 @@ class ExpandSums extends Phase {
 
   /** Create a Node representing a structure of null values of the given Type */
   def buildMultiColumnNone(tpe: Type): Node =
-    (
-      tpe.structural match {
-        case ProductType(ch) =>
-          ProductNode(ch.map(buildMultiColumnNone))
-        case StructType(ch) =>
-          StructNode(
-            ch.map {
-              case (sym, t) =>
-                (sym, buildMultiColumnNone(t))
-            })
-        case OptionType(ch) =>
-          LiteralNode(tpe, None)
-        case t =>
-          throw new SlickException(
-            "Unexpected non-Option type in multi-column None")
-      }
-    ) :@ tpe
+    (tpe.structural match {
+      case ProductType(ch) =>
+        ProductNode(ch.map(buildMultiColumnNone))
+      case StructType(ch) =>
+        StructNode(
+          ch.map {
+            case (sym, t) =>
+              (sym, buildMultiColumnNone(t))
+          })
+      case OptionType(ch) =>
+        LiteralNode(tpe, None)
+      case t =>
+        throw new SlickException(
+          "Unexpected non-Option type in multi-column None")
+    }) :@ tpe
 
   /** Perform the sum expansion on a Type */
   def trType(tpe: Type): Type = {
@@ -484,19 +476,19 @@ class ExpandSums extends Phase {
   def expandConditionals(n: Node): Node = {
     val invalid = mutable.HashSet.empty[TypeSymbol]
     def invalidate(n: Node): Unit =
-      invalid ++= n
-        .nodeType
-        .collect {
-          case NominalType(ts, _) =>
-            ts
-        }
-        .toSeq
+      invalid ++=
+        n.nodeType
+          .collect {
+            case NominalType(ts, _) =>
+              ts
+          }
+          .toSeq
 
     def tr(n: Node): Node =
       n.mapChildren(tr, keepType = true) match {
         // Expand multi-column SilentCasts
-        case cast @ Library.SilentCast(ch) :@ Type
-              .Structural(ProductType(typeCh)) =>
+        case cast @ Library.SilentCast(ch) :@
+            Type.Structural(ProductType(typeCh)) =>
           invalidate(ch)
           val elems = typeCh
             .zipWithIndex
@@ -524,9 +516,8 @@ class ExpandSums extends Phase {
           v
         case Library.SilentCast(Library.SilentCast(ch)) :@ tpe =>
           tr(Library.SilentCast.typed(tpe, ch).infer())
-        case Library.SilentCast(LiteralNode(None)) :@ (
-              tpe @ OptionType.Primitive(_)
-            ) =>
+        case Library.SilentCast(LiteralNode(None)) :@
+            (tpe @ OptionType.Primitive(_)) =>
           LiteralNode(tpe, None).infer()
 
         // Expand multi-column IfThenElse

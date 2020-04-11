@@ -45,10 +45,8 @@ class BasicAuthenticationFilter
         override def setCharacterEncoding(encoding: String) = {}
       }
 
-    val isUpdating = request
-      .getRequestURI
-      .endsWith("/git-receive-pack") || "service=git-receive-pack"
-      .equals(request.getQueryString)
+    val isUpdating = request.getRequestURI.endsWith("/git-receive-pack") ||
+      "service=git-receive-pack".equals(request.getQueryString)
     val settings = loadSystemSettings()
 
     try {
@@ -127,8 +125,8 @@ class BasicAuthenticationFilter
           repositoryOwner,
           repositoryName.replaceFirst("\\.wiki\\.git$|\\.git$", "")) match {
           case Some(repository) => {
-            if (!isUpdating && !repository.repository.isPrivate && settings
-                  .allowAnonymousAccess) {
+            if (!isUpdating && !repository.repository.isPrivate &&
+                settings.allowAnonymousAccess) {
               chain.doFilter(request, response)
             } else {
               val passed =

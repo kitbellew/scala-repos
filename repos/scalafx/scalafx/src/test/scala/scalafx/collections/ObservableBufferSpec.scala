@@ -399,93 +399,97 @@ class ObservableBufferSpec[T]
     changeCount should equal(2)
   }
 
-  it should "notify on a sort order change with a reorder from the JavaFX collection sort" in {
-    val buffer = ObservableBuffer("f", "e", "d", "c", "b", "a")
-    var changeCount = 0
-    buffer onChange { (list, changes) =>
-      for (change <- changes)
-        change match {
-          case Reorder(start, end, permutation) =>
-            changeCount += 1
-            start should equal(0)
-            end should equal(6)
-            for (i <- 0 until 5) {
-              permutation(i) should equal(5 - i)
-            }
-          case _ @otherChange =>
-            fail(otherChange.toString)
-        }
+  it should
+    "notify on a sort order change with a reorder from the JavaFX collection sort" in {
+      val buffer = ObservableBuffer("f", "e", "d", "c", "b", "a")
+      var changeCount = 0
+      buffer onChange { (list, changes) =>
+        for (change <- changes)
+          change match {
+            case Reorder(start, end, permutation) =>
+              changeCount += 1
+              start should equal(0)
+              end should equal(6)
+              for (i <- 0 until 5) {
+                permutation(i) should equal(5 - i)
+              }
+            case _ @otherChange =>
+              fail(otherChange.toString)
+          }
+      }
+
+      // Execution
+      javafx.collections.FXCollections.sort(buffer)
+
+      // Verification
+      changeCount should equal(1)
     }
 
-    // Execution
-    javafx.collections.FXCollections.sort(buffer)
+  it should
+    "notify on a sort order change with a reorder from a member method" in {
+      // Preparation
+      val buffer = ObservableBuffer("f", "e", "d", "c", "b", "a")
+      var changeCount = 0
+      buffer onChange { (list, changes) =>
+        for (change <- changes)
+          change match {
+            case Reorder(start, end, permutation) =>
+              changeCount += 1
+              start should equal(0)
+              end should equal(6)
+              for (i <- 0 until 5) {
+                permutation(i) should equal(5 - i)
+              }
+            case _ @otherChange =>
+              fail(otherChange.toString)
+          }
+      }
 
-    // Verification
-    changeCount should equal(1)
-  }
-
-  it should "notify on a sort order change with a reorder from a member method" in {
-    // Preparation
-    val buffer = ObservableBuffer("f", "e", "d", "c", "b", "a")
-    var changeCount = 0
-    buffer onChange { (list, changes) =>
-      for (change <- changes)
-        change match {
-          case Reorder(start, end, permutation) =>
-            changeCount += 1
-            start should equal(0)
-            end should equal(6)
-            for (i <- 0 until 5) {
-              permutation(i) should equal(5 - i)
-            }
-          case _ @otherChange =>
-            fail(otherChange.toString)
-        }
-    }
-
-    // Execution
-    buffer.sort
-
-    // Verification
-    changeCount should equal(1)
-  }
-
-  it should "throws a exception when sort a buffer that is composed by non Comparable subtypes" in {
-    // Preparation
-    case class A(value: Int)
-    val buffer = ObservableBuffer(A(4), A(3), A(1), A(5), A(2))
-
-    // Execution
-    intercept[IllegalStateException] {
+      // Execution
       buffer.sort
-    }
-  }
 
-  it should "notify on a sort order change with a reorder from a member method with a comparison function" in {
-    // Preparation
-    val buffer = ObservableBuffer("f", "e", "d", "c", "b", "a")
-    var changeCount = 0
-    buffer onChange { (list, changes) =>
-      for (change <- changes)
-        change match {
-          case Reorder(start, end, permutation) =>
-            changeCount += 1
-            start should equal(0)
-            end should equal(6)
-            for (i <- 0 until 5) {
-              permutation(i) should equal(i)
-            }
-          case _ @otherChange =>
-            fail(otherChange.toString)
-        }
+      // Verification
+      changeCount should equal(1)
     }
 
-    // Execution
-    buffer.sort((a, b) => a > b)
+  it should
+    "throws a exception when sort a buffer that is composed by non Comparable subtypes" in {
+      // Preparation
+      case class A(value: Int)
+      val buffer = ObservableBuffer(A(4), A(3), A(1), A(5), A(2))
 
-    // Verification
-    changeCount should equal(1)
-  }
+      // Execution
+      intercept[IllegalStateException] {
+        buffer.sort
+      }
+    }
+
+  it should
+    "notify on a sort order change with a reorder from a member method with a comparison function" in {
+      // Preparation
+      val buffer = ObservableBuffer("f", "e", "d", "c", "b", "a")
+      var changeCount = 0
+      buffer onChange { (list, changes) =>
+        for (change <- changes)
+          change match {
+            case Reorder(start, end, permutation) =>
+              changeCount += 1
+              start should equal(0)
+              end should equal(6)
+              for (i <- 0 until 5) {
+                permutation(i) should equal(i)
+              }
+            case _ @otherChange =>
+              fail(otherChange.toString)
+          }
+      }
+
+      // Execution
+      buffer.sort((a, b) => a > b)
+
+      // Verification
+      changeCount should equal(1)
+    }
 
   it should "shufle with a only change" in {
     // Preparation
@@ -524,8 +528,8 @@ class ObservableBufferSpec[T]
     buffer onChange { (list, changes) =>
       {
         list.toList should equal(List("c", "d"))
-        changes.toList should equal(
-          List(Remove(0, Buffer("a", "b")), Remove(2, Buffer("e"))))
+        changes.toList should
+          equal(List(Remove(0, Buffer("a", "b")), Remove(2, Buffer("e"))))
       }
     }
 
@@ -542,11 +546,12 @@ class ObservableBufferSpec[T]
     buffer onChange { (list, changes) =>
       {
         list.toList should equal(List("b", "d"))
-        changes.toList should equal(
-          List(
-            Remove(0, Buffer("a")),
-            Remove(1, Buffer("c")),
-            Remove(2, Buffer("e"))))
+        changes.toList should
+          equal(
+            List(
+              Remove(0, Buffer("a")),
+              Remove(1, Buffer("c")),
+              Remove(2, Buffer("e"))))
       }
     }
 
@@ -575,8 +580,11 @@ class ObservableBufferSpec[T]
       {
         changesDetected += 1
         list.toList should equal(List(5, 4, 3, 2, 1))
-        changes.toList should equal(
-          List(Remove(0, Buffer(1, 2, 3, 4, 5)), Add(0, Buffer(5, 4, 3, 2, 1))))
+        changes.toList should
+          equal(
+            List(
+              Remove(0, Buffer(1, 2, 3, 4, 5)),
+              Add(0, Buffer(5, 4, 3, 2, 1))))
       }
     }
 
@@ -593,8 +601,11 @@ class ObservableBufferSpec[T]
       {
         changesDetected += 1
         list.toList should equal(List(0, 2, 3, 0, 5))
-        changes.toList should equal(
-          List(Remove(0, Buffer(1, 2, 3, 1, 5)), Add(0, Buffer(0, 2, 3, 0, 5))))
+        changes.toList should
+          equal(
+            List(
+              Remove(0, Buffer(1, 2, 3, 1, 5)),
+              Add(0, Buffer(0, 2, 3, 0, 5))))
       }
     }
 
@@ -611,10 +622,11 @@ class ObservableBufferSpec[T]
       {
         changesDetected += 1
         list.toList should equal(List(-1, -1, -1, -1, -1))
-        changes.toList should equal(
-          List(
-            Remove(0, Buffer(1, 2, 3, 4, 5)),
-            Add(0, Buffer(-1, -1, -1, -1, -1))))
+        changes.toList should
+          equal(
+            List(
+              Remove(0, Buffer(1, 2, 3, 4, 5)),
+              Add(0, Buffer(-1, -1, -1, -1, -1))))
       }
     }
 
@@ -623,49 +635,50 @@ class ObservableBufferSpec[T]
     changesDetected should be(1)
   }
 
-  it should "keep his behavior with other types of sets beyond default implementation" in {
-    // Preparation
-    val buffer = ObservableBuffer(new StringBuilder)
-    val addedValues = Buffer.empty[Any]
-    val removedValues = Buffer.empty[Any]
-    val permutations = Buffer.empty[Buffer[(Int, Int)]]
-    buffer onChange { (list, changes) =>
-      {
-        for (change <- changes)
-          change match {
-            case Add(pos, addedBuffer) =>
-              addedValues ++= addedBuffer.toBuffer
-            case Remove(pos, removedBuffer) =>
-              removedValues ++= removedBuffer.toBuffer
-            case Reorder(start, end, permutation) =>
-              val p = Buffer.empty[(Int, Int)]
-              (start until end).foreach(i => p += ((i, permutation(i))))
-              permutations += p
-            case Update(pas, updated) =>
-              println(s"  case Update: $change")
+  it should
+    "keep his behavior with other types of sets beyond default implementation" in {
+      // Preparation
+      val buffer = ObservableBuffer(new StringBuilder)
+      val addedValues = Buffer.empty[Any]
+      val removedValues = Buffer.empty[Any]
+      val permutations = Buffer.empty[Buffer[(Int, Int)]]
+      buffer onChange { (list, changes) =>
+        {
+          for (change <- changes)
+            change match {
+              case Add(pos, addedBuffer) =>
+                addedValues ++= addedBuffer.toBuffer
+              case Remove(pos, removedBuffer) =>
+                removedValues ++= removedBuffer.toBuffer
+              case Reorder(start, end, permutation) =>
+                val p = Buffer.empty[(Int, Int)]
+                (start until end).foreach(i => p += ((i, permutation(i))))
+                permutations += p
+              case Update(pas, updated) =>
+                println(s"  case Update: $change")
 
-          }
+            }
+        }
       }
+
+      // Execution
+      buffer += 'e'
+      buffer += 'a' += 't'
+      buffer.insert(0, 'r')
+      buffer.insertAll(1, List('j', 'd', 'z'))
+      buffer -= 'd'
+      buffer(4) = 'h'
+      buffer.sort(_ < _)
+
+      // Verification
+      buffer.toList should equal(List('e', 'h', 'j', 'r', 't', 'z'))
+      addedValues.toList should
+        equal(List('e', 'a', 't', 'r', 'j', 'd', 'z', 'h'))
+      removedValues.toList should equal(List('d', 'a'))
+      permutations should have size 1
+      permutations(0).toList should
+        equal(List((0, 3), (1, 2), (2, 5), (3, 0), (4, 1), (5, 4)))
     }
-
-    // Execution
-    buffer += 'e'
-    buffer += 'a' += 't'
-    buffer.insert(0, 'r')
-    buffer.insertAll(1, List('j', 'd', 'z'))
-    buffer -= 'd'
-    buffer(4) = 'h'
-    buffer.sort(_ < _)
-
-    // Verification
-    buffer.toList should equal(List('e', 'h', 'j', 'r', 't', 'z'))
-    addedValues
-      .toList should equal(List('e', 'a', 't', 'r', 'j', 'd', 'z', 'h'))
-    removedValues.toList should equal(List('d', 'a'))
-    permutations should have size 1
-    permutations(0)
-      .toList should equal(List((0, 3), (1, 2), (2, 5), (3, 0), (4, 1), (5, 4)))
-  }
 
   it should "not ignore updates (Issue #169)" in {
 
@@ -702,16 +715,17 @@ class ObservableBufferSpec[T]
     actualTo should be(1)
   }
 
-  it should "have change event with correct type parameter Change[T] (Issue :184)" in {
-    // Following code should compile
-    val b = new ObservableBuffer[Double]()
-    b.onChange {
-      (collection: ObservableBuffer[Double], changes: Seq[Change[Double]]) =>
-        changes.foreach {
-          case Add(_, elements) =>
-          case _                =>
-        }
+  it should
+    "have change event with correct type parameter Change[T] (Issue :184)" in {
+      // Following code should compile
+      val b = new ObservableBuffer[Double]()
+      b.onChange {
+        (collection: ObservableBuffer[Double], changes: Seq[Change[Double]]) =>
+          changes.foreach {
+            case Add(_, elements) =>
+            case _                =>
+          }
+      }
     }
-  }
 
 }

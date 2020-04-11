@@ -58,8 +58,8 @@ trait ScTypeAlias
   }
 
   override def isDeprecated =
-    hasAnnotation("scala.deprecated") != None || hasAnnotation(
-      "java.lang.Deprecated") != None
+    hasAnnotation("scala.deprecated") != None ||
+      hasAnnotation("java.lang.Deprecated") != None
 
   def getTypeToken: PsiElement = findFirstChildByType(ScalaTokenTypes.kTYPE)
 

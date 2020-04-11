@@ -37,12 +37,11 @@ final class TimeChart(game: Game, moves: List[String]) {
         Json.obj(
           "name" -> s"$turn$dots $san",
           "x" -> index,
-          "y" -> (
-            if (white)
-              mt
-            else
-              -mt
-          ))
+          "y" ->
+            (if (white)
+               mt
+             else
+               -mt))
     }
 
   def maxTime =

@@ -84,10 +84,11 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     val it = map.iterator
     assert(it.hasNext)
     assert(
-      it.toSet === Set[(Int, ArrayBuffer[Int])](
-        (1, ArrayBuffer[Int](10)),
-        (2, ArrayBuffer[Int](20)),
-        (3, ArrayBuffer[Int](30))))
+      it.toSet ===
+        Set[(Int, ArrayBuffer[Int])](
+          (1, ArrayBuffer[Int](10)),
+          (2, ArrayBuffer[Int](20)),
+          (3, ArrayBuffer[Int](30))))
     sc.stop()
   }
 
@@ -103,10 +104,11 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
       .toSet[(Int, ArrayBuffer[Int])]
       .map(kv => (kv._1, kv._2.toSet))
     assert(
-      result === Set[(Int, Set[Int])](
-        (1, Set[Int](10, 100, 1000)),
-        (2, Set[Int](20, 200)),
-        (3, Set[Int](30))))
+      result ===
+        Set[(Int, Set[Int])](
+          (1, Set[Int](10, 100, 1000)),
+          (2, Set[Int](20, 200)),
+          (3, Set[Int](30))))
     sc.stop()
   }
 
@@ -170,12 +172,13 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
       .toSet[(Int, ArrayBuffer[Int])]
       .map(kv => (kv._1, kv._2.sorted))
     assert(
-      result === Set[(Int, Seq[Int])](
-        (1, Seq[Int](5)),
-        (2, Seq[Int](6)),
-        (3, Seq[Int](7)),
-        (4, Seq[Int](nullInt)),
-        (nullInt, Seq[Int](nullInt, 8))))
+      result ===
+        Set[(Int, Seq[Int])](
+          (1, Seq[Int](5)),
+          (2, Seq[Int](6)),
+          (3, Seq[Int](7)),
+          (4, Seq[Int](nullInt)),
+          (nullInt, Seq[Int](nullInt, 8))))
 
     sc.stop()
   }
@@ -192,9 +195,10 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     // groupByKey
     val result2 = rdd.groupByKey().collect().map(x => (x._1, x._2.toList)).toSet
     assert(
-      result2.toSet === Set[(Int, Seq[Int])](
-        (0, List[Int](1, 1, 1, 1, 1)),
-        (1, List[Int](1, 1, 1, 1, 1))))
+      result2.toSet ===
+        Set[(Int, Seq[Int])](
+          (0, List[Int](1, 1, 1, 1, 1)),
+          (1, List[Int](1, 1, 1, 1, 1))))
     sc.stop()
   }
 

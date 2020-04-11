@@ -102,9 +102,8 @@ trait ClassConstruction {
 
   property("unquote type name into class parents") = forAll {
     (name: TypeName, parent: TypeName) =>
-      q"class $name extends $parent" ≈ classWith(
-        name,
-        parents = List(Ident(parent)))
+      q"class $name extends $parent" ≈
+        classWith(name, parents = List(Ident(parent)))
   }
 
   property("param flags are consistent with raw code") = test {
@@ -209,11 +208,8 @@ trait TypeDefConstruction {
   self: QuasiquoteProperties =>
   property("unquote type name into typedef") = forAll {
     (name1: TypeName, name2: TypeName) =>
-      q"type $name1 = $name2" ≈ TypeDef(
-        Modifiers(),
-        name1,
-        List(),
-        Ident(name2))
+      q"type $name1 = $name2" ≈
+        TypeDef(Modifiers(), name1, List(), Ident(name2))
   }
 
   property("unquote type names into type bounds") = forAll {
@@ -239,20 +235,14 @@ trait TypeDefConstruction {
 
   property("unquote tparams into typedef (2)") = forAll {
     (T: TypeName, targs1: List[TypeDef], targs2: List[TypeDef], t: Tree) =>
-      q"type $T[..$targs1, ..$targs2] = $t" ≈ TypeDef(
-        Modifiers(),
-        T,
-        targs1 ++ targs2,
-        t)
+      q"type $T[..$targs1, ..$targs2] = $t" ≈
+        TypeDef(Modifiers(), T, targs1 ++ targs2, t)
   }
 
   property("unquote tparams into typedef (3)") = forAll {
     (T: TypeName, targ: TypeDef, targs: List[TypeDef], t: Tree) =>
-      q"type $T[$targ, ..$targs] = $t" ≈ TypeDef(
-        Modifiers(),
-        T,
-        targ :: targs,
-        t)
+      q"type $T[$targ, ..$targs] = $t" ≈
+        TypeDef(Modifiers(), T, targ :: targs, t)
   }
 
   property("unquote typename into typedef with default bounds") = forAll {

@@ -149,10 +149,9 @@ trait ShardQueryExecutorPlatform[M[+_]]
 
             val resultVN: N[EvaluationError \/ Table] = {
               bytecode map { instrs =>
-                (
-                  (systemError _) <-: (StackException(_)) <-: decorate(instrs)
-                    .disjunction
-                ) traverse { dag =>
+                ((systemError _) <-:
+                  (StackException(_)) <-:
+                  decorate(instrs).disjunction) traverse { dag =>
                   applyQueryOptions(opts) {
                     logger.debug("[QID:%d] Evaluating query".format(qid))
 
@@ -190,12 +189,11 @@ trait ShardQueryExecutorPlatform[M[+_]]
                       false
                     }
                 } map { errors =>
-                  faults -> (
-                    if (errors.exists(_ == true))
-                      Table.empty
-                    else
-                      table
-                  )
+                  faults ->
+                    (if (errors.exists(_ == true))
+                       Table.empty
+                     else
+                       table)
                 }
               }
             }

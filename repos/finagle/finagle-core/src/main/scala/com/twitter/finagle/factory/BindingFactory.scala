@@ -390,8 +390,7 @@ object BindingFactory {
             // replace the possibly unbound Dest with the definitely bound
             // Dest because (1) it's needed by AddrMetadataExtraction and
             // (2) it seems disingenuous not to.
-            Dest(bound) +
-            LoadBalancerFactory.Dest(bound.addr) +
+            Dest(bound) + LoadBalancerFactory.Dest(bound.addr) +
             LoadBalancerFactory.ErrorLabel(errorLabel))
 
         boundPathFilter(bound.path) andThen client

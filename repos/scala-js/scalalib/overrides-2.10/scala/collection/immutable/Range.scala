@@ -52,21 +52,21 @@ class Range(val start: Int, val end: Int, val step: Int)
   private def isExact = gap % step == 0
   private def hasStub = isInclusive || !isExact
   private def longLength =
-    gap / step + (
-      if (hasStub)
-        1
-      else
-        0
-    )
+    gap / step +
+      (if (hasStub)
+         1
+       else
+         0)
 
   // Check cannot be evaluated eagerly because we have a pattern where
   // ranges are constructed like: "x to y by z" The "x to y" piece
   // should not trigger an exception. So the calculation is delayed,
   // which means it will not fail fast for those cases where failing was
   // correct.
-  override final val isEmpty = ((start > end && step > 0)
-    || (start < end && step < 0)
-    || (start == end && !isInclusive))
+  override final val isEmpty =
+    ((start > end && step > 0) ||
+      (start < end && step < 0) ||
+      (start == end && !isInclusive))
   final val numRangeElements: Int = {
     if (step == 0)
       throw new IllegalArgumentException("step cannot be 0.")
@@ -244,10 +244,9 @@ class Range(val start: Int, val end: Int, val step: Int)
   // Tests whether a number is within the endpoints, without testing
   // whether it is a member of the sequence (i.e. when step > 1.)
   private def isWithinBoundaries(elem: Int) =
-    !isEmpty && (
-      (step > 0 && start <= elem && elem <= last) ||
-        (step < 0 && last <= elem && elem <= start)
-    )
+    !isEmpty &&
+      ((step > 0 && start <= elem && elem <= last) ||
+        (step < 0 && last <= elem && elem <= start))
   // Methods like apply throw exceptions on invalid n, but methods like take/drop
   // are forgiving: therefore the checks are with the methods.
   private def locationAfterN(n: Int) = start + (step * n)
@@ -319,12 +318,12 @@ class Range(val start: Int, val end: Int, val step: Int)
   override def equals(other: Any) =
     other match {
       case x: Range =>
-        (x canEqual this) && (length == x.length) && (
-          isEmpty || // all empty sequences are equal
-            (
-              start == x.start && last == x.last
-            ) // same length and same endpoints implies equality
-        )
+        (x canEqual this) &&
+          (length == x.length) &&
+          (isEmpty || // all empty sequences are equal
+            (start == x.start &&
+              last == x.last) // same length and same endpoints implies equality
+          )
       case _ =>
         super.equals(other)
     }
@@ -353,12 +352,11 @@ object Range {
       end: Int,
       step: Int,
       isInclusive: Boolean) =
-    start + (
-      if (isInclusive)
-        " to "
-      else
-        " until "
-    ) + end + " by " + step
+    start +
+      (if (isInclusive)
+         " to "
+       else
+         " until ") + end + " by " + step
 
   private def fail(start: Int, end: Int, step: Int, isInclusive: Boolean) =
     throw new IllegalArgumentException(
@@ -389,12 +387,11 @@ object Range {
       // Whether the size of this range is one larger than the
       // number of full-sized jumps.
       val hasStub = isInclusive || (gap % step != 0)
-      val result: Long = jumps + (
-        if (hasStub)
-          1
-        else
-          0
-      )
+      val result: Long = jumps +
+        (if (hasStub)
+           1
+         else
+           0)
 
       if (result > scala.Int.MaxValue)
         -1
@@ -479,8 +476,8 @@ object Range {
       BigDecimal(toBD(start), toBD(end), toBD(step)) mapRange (_.doubleValue)
 
     def inclusive(start: Double, end: Double, step: Double) =
-      BigDecimal
-        .inclusive(toBD(start), toBD(end), toBD(step)) mapRange (_.doubleValue)
+      BigDecimal.inclusive(toBD(start), toBD(end), toBD(step)) mapRange
+        (_.doubleValue)
   }
 
   // As there is no appealing default step size for not-really-integral ranges,

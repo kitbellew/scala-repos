@@ -638,9 +638,10 @@ private[twitter] object Message {
   private def decodeTdiscarded(buf: ChannelBuffer) = {
     if (buf.readableBytes < 3)
       throw BadMessageException("short Tdiscarded message")
-    val which = ((buf.readByte() & 0xff) << 16) |
-      ((buf.readByte() & 0xff) << 8) |
-      (buf.readByte() & 0xff)
+    val which =
+      ((buf.readByte() & 0xff) << 16) |
+        ((buf.readByte() & 0xff) << 8) |
+        (buf.readByte() & 0xff)
     Tdiscarded(which, decodeUtf8(buf))
   }
 

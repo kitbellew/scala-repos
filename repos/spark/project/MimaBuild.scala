@@ -88,8 +88,8 @@ object MimaBuild {
       }
 
     defaultExcludes ++ ignoredClasses.flatMap(excludeClass) ++
-      ignoredMembers.flatMap(excludeMember) ++ MimaExcludes
-      .excludes(currentSparkVersion)
+      ignoredMembers.flatMap(excludeMember) ++
+      MimaExcludes.excludes(currentSparkVersion)
   }
 
   def mimaSettings(sparkHome: File, projectRef: ProjectRef) = {
@@ -103,8 +103,8 @@ object MimaBuild {
       Seq(
         previousArtifact := Some(organization % fullId % previousSparkVersion),
         binaryIssueFilters ++= ignoredABIProblems(sparkHome, version.value),
-        sbt.Keys.resolvers +=
-          "MQTT Repository" at "https://repo.eclipse.org/content/repositories/paho-releases"
+        sbt.Keys.resolvers += "MQTT Repository" at
+          "https://repo.eclipse.org/content/repositories/paho-releases"
       )
   }
 

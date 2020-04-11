@@ -17,17 +17,20 @@ class CookieDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/") ~> Cookie("userName" -> "paul") ~> route ~> check {
-      responseAs[String] shouldEqual "The logged in user is 'paul'"
-    }
+    Get("/") ~> Cookie("userName" -> "paul") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The logged in user is 'paul'"
+      }
     // missing cookie
-    Get("/") ~> route ~> check {
-      rejection shouldEqual MissingCookieRejection("userName")
-    }
-    Get("/") ~> Route.seal(route) ~> check {
-      responseAs[
-        String] shouldEqual "Request is missing required cookie 'userName'"
-    }
+    Get("/") ~> route ~>
+      check {
+        rejection shouldEqual MissingCookieRejection("userName")
+      }
+    Get("/") ~> Route.seal(route) ~>
+      check {
+        responseAs[String] shouldEqual
+          "Request is missing required cookie 'userName'"
+      }
   }
   "optionalCookie" in {
     val route =
@@ -39,12 +42,14 @@ class CookieDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/") ~> Cookie("userName" -> "paul") ~> route ~> check {
-      responseAs[String] shouldEqual "The logged in user is 'paul'"
-    }
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "No user logged in"
-    }
+    Get("/") ~> Cookie("userName" -> "paul") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The logged in user is 'paul'"
+      }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "No user logged in"
+      }
   }
   "deleteCookie" in {
     val route =
@@ -53,15 +58,17 @@ class CookieDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "The user was logged out"
-      header[`Set-Cookie`] shouldEqual Some(
-        `Set-Cookie`(
-          HttpCookie(
-            "userName",
-            value = "deleted",
-            expires = Some(DateTime.MinValue))))
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The user was logged out"
+        header[`Set-Cookie`] shouldEqual
+          Some(
+            `Set-Cookie`(
+              HttpCookie(
+                "userName",
+                value = "deleted",
+                expires = Some(DateTime.MinValue))))
+      }
   }
   "setCookie" in {
     val route =
@@ -70,10 +77,11 @@ class CookieDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "The user was logged in"
-      header[`Set-Cookie`] shouldEqual Some(
-        `Set-Cookie`(HttpCookie("userName", value = "paul")))
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The user was logged in"
+        header[`Set-Cookie`] shouldEqual
+          Some(`Set-Cookie`(HttpCookie("userName", value = "paul")))
+      }
   }
 }

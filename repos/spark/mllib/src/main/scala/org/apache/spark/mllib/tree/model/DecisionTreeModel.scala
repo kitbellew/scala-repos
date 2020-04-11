@@ -279,8 +279,10 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
       // Create JSON metadata.
       val metadata = compact(
         render(
-          ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-            ("algo" -> model.algo.toString) ~ ("numNodes" -> model.numNodes)))
+          ("class" -> thisClassName) ~
+            ("version" -> thisFormatVersion) ~
+            ("algo" -> model.algo.toString) ~
+            ("numNodes" -> model.numNodes)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // Create Parquet data.

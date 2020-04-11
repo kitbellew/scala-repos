@@ -74,14 +74,15 @@ class ScalaCollectionRendererTest
     }
 
     managed {
-      testVariableChildren map (_.getDescriptor) foreach {
-        case impl: NodeDescriptorImpl =>
-          impl.updateRepresentation(
-            evaluationContext(),
-            DescriptorLabelListener.DUMMY_LISTENER)
-        case a =>
-          println(a)
-      }
+      testVariableChildren map
+        (_.getDescriptor) foreach {
+          case impl: NodeDescriptorImpl =>
+            impl.updateRepresentation(
+              evaluationContext(),
+              DescriptorLabelListener.DUMMY_LISTENER)
+          case a =>
+            println(a)
+        }
     }
 
     //<magic>

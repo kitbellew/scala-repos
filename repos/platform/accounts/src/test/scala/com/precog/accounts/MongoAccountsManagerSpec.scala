@@ -51,154 +51,177 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
   val timeout = Duration(30, "seconds")
 
   "MongoAccountManager" should {
-    "find an Account by accountId" in new AccountManager {
-      accountManager.findAccountById(account.accountId).copoint must beLike {
-        case Some(Account(accountId, _, _, _, _, _, _, _, _, _, _)) =>
-          accountId must_== account.accountId
+    "find an Account by accountId" in
+      new AccountManager {
+        accountManager.findAccountById(account.accountId).copoint must
+          beLike {
+            case Some(Account(accountId, _, _, _, _, _, _, _, _, _, _)) =>
+              accountId must_== account.accountId
+          }
       }
-    }
 
-    "find an Account by email address" in new AccountManager {
-      accountManager.findAccountByEmail(account.email).copoint must beLike {
-        case Some(Account(accountId, _, _, _, _, _, _, _, _, _, _)) =>
-          accountId must_== account.accountId
+    "find an Account by email address" in
+      new AccountManager {
+        accountManager.findAccountByEmail(account.email).copoint must
+          beLike {
+            case Some(Account(accountId, _, _, _, _, _, _, _, _, _, _)) =>
+              accountId must_== account.accountId
+          }
       }
-    }
 
-    "not find a non-existent Account" in new AccountManager {
-      accountManager.findAccountById(notFoundAccountId).copoint must beLike {
-        case None =>
-          ok
+    "not find a non-existent Account" in
+      new AccountManager {
+        accountManager.findAccountById(notFoundAccountId).copoint must
+          beLike {
+            case None =>
+              ok
+          }
       }
-    }
 
-    "update an Account" in new AccountManager {
-      val updatedAccount = account.copy(apiKey = "new API key")
+    "update an Account" in
+      new AccountManager {
+        val updatedAccount = account.copy(apiKey = "new API key")
 
-      (
-        for {
-          _ <- accountManager.updateAccount(updatedAccount)
-          result2 <- accountManager.findAccountById(account.accountId)
-        } yield result2
-      ).copoint must beLike {
-        case Some(Account(accountId, _, _, _, _, apiKey, _, _, _, _, _)) =>
-          apiKey must_== updatedAccount.apiKey
-      }
-    }
-
-    "move an Account to the deleted collection" in new AccountManager {
-      type Results =
-        (Option[Account], Option[Account], Option[Account]) //, Option[Account])
-
-      (
-        for {
-          before <- accountManager.findAccountById(account.accountId)
-          deleted <- accountManager.deleteAccount(before.get.accountId)
-          after <- accountManager.findAccountById(account.accountId)
-          // deleteCol <- accountManager.findDeletedAccount(account.accountId)
-        } yield {
-          (before, deleted, after)
-        }
-      ).copoint must beLike {
-        case (Some(t1), Some(t2), None) =>
-          t1 must_== t2
-        //t1 must_== t3
-      }
-    }
-
-    "succeed in deleting a previously deleted Account" in new AccountManager {
-      type Results =
         (
-            Option[Account],
-            Option[Account],
-            Option[Account],
-            Option[Account]) //, Option[Account])
-
-      (
-        for {
-          before <- accountManager.findAccountById(account.accountId)
-          deleted1 <- accountManager.deleteAccount(before.get.accountId)
-          deleted2 <- accountManager.deleteAccount(before.get.accountId)
-          after <- accountManager.findAccountById(account.accountId)
-          //  deleteCol <- accountManager.findDeletedAccount(account.accountId)
-        } yield {
-          (before, deleted1, deleted2, after)
-        }
-      ).copoint must beLike {
-        case (Some(t1), Some(t2), None, None) =>
-          t1 must_== t2
-        //t1 must_== t4
+          for {
+            _ <- accountManager.updateAccount(updatedAccount)
+            result2 <- accountManager.findAccountById(account.accountId)
+          } yield result2
+        ).copoint must
+          beLike {
+            case Some(Account(accountId, _, _, _, _, apiKey, _, _, _, _, _)) =>
+              apiKey must_== updatedAccount.apiKey
+          }
       }
-    }
 
-    "properly generate and retrieve a reset token" in new AccountManager {
-      (
-        for {
-          tokenId <- accountManager.generateResetToken(account)
-          resolvedAccount <-
-            accountManager.findAccountByResetToken(account.accountId, tokenId)
-        } yield resolvedAccount
-      ).copoint must beLike {
-        case \/-(resolvedAccount) =>
-          resolvedAccount.accountId must_== account.accountId
+    "move an Account to the deleted collection" in
+      new AccountManager {
+        type Results =
+          (
+              Option[Account],
+              Option[Account],
+              Option[Account]) //, Option[Account])
+
+        (
+          for {
+            before <- accountManager.findAccountById(account.accountId)
+            deleted <- accountManager.deleteAccount(before.get.accountId)
+            after <- accountManager.findAccountById(account.accountId)
+            // deleteCol <- accountManager.findDeletedAccount(account.accountId)
+          } yield {
+            (before, deleted, after)
+          }
+        ).copoint must
+          beLike {
+            case (Some(t1), Some(t2), None) =>
+              t1 must_== t2
+            //t1 must_== t3
+          }
       }
-    }
 
-    "not locate expired password reset tokens" in new AccountManager {
-      (
-        for {
-          tokenId <-
-            accountManager
-              .generateResetToken(account, (new DateTime).minusMinutes(5))
-          resolvedAccount <-
-            accountManager.findAccountByResetToken(account.accountId, tokenId)
-        } yield resolvedAccount
-      ).copoint must beLike {
-        case -\/(_) =>
-          ok
+    "succeed in deleting a previously deleted Account" in
+      new AccountManager {
+        type Results =
+          (
+              Option[Account],
+              Option[Account],
+              Option[Account],
+              Option[Account]) //, Option[Account])
+
+        (
+          for {
+            before <- accountManager.findAccountById(account.accountId)
+            deleted1 <- accountManager.deleteAccount(before.get.accountId)
+            deleted2 <- accountManager.deleteAccount(before.get.accountId)
+            after <- accountManager.findAccountById(account.accountId)
+            //  deleteCol <- accountManager.findDeletedAccount(account.accountId)
+          } yield {
+            (before, deleted1, deleted2, after)
+          }
+        ).copoint must
+          beLike {
+            case (Some(t1), Some(t2), None, None) =>
+              t1 must_== t2
+            //t1 must_== t4
+          }
       }
-    }
 
-    "update an Account password with a reset token" in new AccountManager {
-      val newPassword = "bluemeanies"
-      (
-        for {
-          tokenId <- accountManager.generateResetToken(account)
-          _ <-
-            accountManager
-              .resetAccountPassword(account.accountId, tokenId, newPassword)
-          authResultBad <-
-            accountManager.authAccount(account.email, origPassword)
-          authResultGood <-
-            accountManager.authAccount(account.email, newPassword)
-        } yield (authResultBad, authResultGood)
-      ).copoint must beLike {
-        case (Failure("password mismatch"), Success(authenticated)) =>
-          authenticated.accountId must_== account.accountId
+    "properly generate and retrieve a reset token" in
+      new AccountManager {
+        (
+          for {
+            tokenId <- accountManager.generateResetToken(account)
+            resolvedAccount <-
+              accountManager.findAccountByResetToken(account.accountId, tokenId)
+          } yield resolvedAccount
+        ).copoint must
+          beLike {
+            case \/-(resolvedAccount) =>
+              resolvedAccount.accountId must_== account.accountId
+          }
       }
-    }
 
-    "not update an Account password with a previously used reset token" in new AccountManager {
-      val newPassword = "bluemeanies"
-      val newPassword2 = "notreally"
-
-      (
-        for {
-          tokenId <- accountManager.generateResetToken(account)
-          _ <-
-            accountManager
-              .resetAccountPassword(account.accountId, tokenId, newPassword)
-          _ <-
-            accountManager
-              .resetAccountPassword(account.accountId, tokenId, newPassword2)
-          // We should still be able to authenticate with the *first* changed password
-          authResult <- accountManager.authAccount(account.email, newPassword)
-        } yield authResult
-      ).copoint must beLike[Validation[String, Account]] {
-        case Success(authenticated) =>
-          authenticated.accountId must_== account.accountId
+    "not locate expired password reset tokens" in
+      new AccountManager {
+        (
+          for {
+            tokenId <-
+              accountManager
+                .generateResetToken(account, (new DateTime).minusMinutes(5))
+            resolvedAccount <-
+              accountManager.findAccountByResetToken(account.accountId, tokenId)
+          } yield resolvedAccount
+        ).copoint must
+          beLike {
+            case -\/(_) =>
+              ok
+          }
       }
-    }
+
+    "update an Account password with a reset token" in
+      new AccountManager {
+        val newPassword = "bluemeanies"
+        (
+          for {
+            tokenId <- accountManager.generateResetToken(account)
+            _ <-
+              accountManager
+                .resetAccountPassword(account.accountId, tokenId, newPassword)
+            authResultBad <-
+              accountManager.authAccount(account.email, origPassword)
+            authResultGood <-
+              accountManager.authAccount(account.email, newPassword)
+          } yield (authResultBad, authResultGood)
+        ).copoint must
+          beLike {
+            case (Failure("password mismatch"), Success(authenticated)) =>
+              authenticated.accountId must_== account.accountId
+          }
+      }
+
+    "not update an Account password with a previously used reset token" in
+      new AccountManager {
+        val newPassword = "bluemeanies"
+        val newPassword2 = "notreally"
+
+        (
+          for {
+            tokenId <- accountManager.generateResetToken(account)
+            _ <-
+              accountManager
+                .resetAccountPassword(account.accountId, tokenId, newPassword)
+            _ <-
+              accountManager
+                .resetAccountPassword(account.accountId, tokenId, newPassword2)
+            // We should still be able to authenticate with the *first* changed password
+            authResult <- accountManager.authAccount(account.email, newPassword)
+          } yield authResult
+        ).copoint must
+          beLike[Validation[String, Account]] {
+            case Success(authenticated) =>
+              authenticated.accountId must_== account.accountId
+          }
+      }
 
   }
 

@@ -80,10 +80,8 @@ object DuplicatesUtil {
       element: PsiElement,
       size: Int): Option[Seq[PsiElement]] = {
     val siblingIterator = element.nextSiblings
-    val siblings = element +: siblingIterator
-      .withFilter(isSignificant)
-      .take(size - 1)
-      .toSeq
+    val siblings = element +:
+      siblingIterator.withFilter(isSignificant).take(size - 1).toSeq
     if (siblings.size < size)
       None
     else

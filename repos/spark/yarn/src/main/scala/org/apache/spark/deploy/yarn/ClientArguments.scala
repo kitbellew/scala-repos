@@ -109,9 +109,8 @@ private[spark] class ClientArguments(
     * This is intended to be called only after the provided arguments have been parsed.
     */
   private def validateArgs(): Unit = {
-    if (numExecutors < 0 || (
-          !isDynamicAllocationEnabled && numExecutors == 0
-        )) {
+    if (numExecutors < 0 ||
+        (!isDynamicAllocationEnabled && numExecutors == 0)) {
       throw new IllegalArgumentException(s"""
            |Number of executors was $numExecutors, but must be at least 1
            |(or 0 if dynamic executor allocation is enabled).
@@ -176,8 +175,8 @@ private[spark] class ClientArguments(
           println(s"${args(0)} is deprecated and is not used anymore.")
           args = tail
 
-        case ("--master-memory" | "--driver-memory") :: MemoryParam(
-              value) :: tail =>
+        case ("--master-memory" | "--driver-memory") :: MemoryParam(value) ::
+            tail =>
           if (args(0) == "--master-memory") {
             println(
               "--master-memory is deprecated. Use --driver-memory instead.")
@@ -196,8 +195,8 @@ private[spark] class ClientArguments(
           numExecutors = value
           args = tail
 
-        case ("--worker-memory" | "--executor-memory") :: MemoryParam(
-              value) :: tail =>
+        case ("--worker-memory" | "--executor-memory") :: MemoryParam(value) ::
+            tail =>
           if (args(0) == "--worker-memory") {
             println(
               "--worker-memory is deprecated. Use --executor-memory instead.")
@@ -205,8 +204,8 @@ private[spark] class ClientArguments(
           executorMemory = value
           args = tail
 
-        case ("--worker-cores" | "--executor-cores") :: IntParam(
-              value) :: tail =>
+        case ("--worker-cores" | "--executor-cores") :: IntParam(value) ::
+            tail =>
           if (args(0) == "--worker-cores") {
             println(
               "--worker-cores is deprecated. Use --executor-cores instead.")
@@ -255,8 +254,7 @@ private[spark] class ClientArguments(
 
     if (primaryPyFile != null && primaryRFile != null) {
       throw new IllegalArgumentException(
-        "Cannot have primary-py-file and primary-r-file" +
-          " at the same time")
+        "Cannot have primary-py-file and primary-r-file" + " at the same time")
     }
   }
 
@@ -267,8 +265,7 @@ private[spark] class ClientArguments(
       else
         ""
     val mem_mb = Utils.DEFAULT_DRIVER_MEM_MB
-    message +
-      s"""
+    message + s"""
       |Usage: org.apache.spark.deploy.yarn.Client [options]
       |Options:
       |  --jar JAR_PATH           Path to your application's JAR file (required in yarn-cluster

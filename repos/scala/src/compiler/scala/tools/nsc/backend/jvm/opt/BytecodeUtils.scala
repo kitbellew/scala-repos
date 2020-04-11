@@ -26,8 +26,8 @@ object BytecodeUtils {
   final val maxJVMMethodSize = 65535
 
   // 5% margin, more than enough for the instructions added by the inliner (store / load args, null check for instance methods)
-  final val maxMethodSizeAfterInline =
-    maxJVMMethodSize - (maxJVMMethodSize / 20)
+  final val maxMethodSizeAfterInline = maxJVMMethodSize -
+    (maxJVMMethodSize / 20)
 
   object Goto {
     def unapply(instruction: AbstractInsnNode): Option[JumpInsnNode] = {
@@ -105,8 +105,8 @@ object BytecodeUtils {
     instruction.getOpcode >= 0
 
   def isConstructor(methodNode: MethodNode): Boolean = {
-    methodNode.name == INSTANCE_CONSTRUCTOR_NAME || methodNode
-      .name == CLASS_CONSTRUCTOR_NAME
+    methodNode.name == INSTANCE_CONSTRUCTOR_NAME ||
+    methodNode.name == CLASS_CONSTRUCTOR_NAME
   }
 
   def isStaticMethod(methodNode: MethodNode): Boolean =
@@ -122,10 +122,11 @@ object BytecodeUtils {
     (methodNode.access & ACC_NATIVE) != 0
 
   def hasCallerSensitiveAnnotation(methodNode: MethodNode) =
-    methodNode.visibleAnnotations != null && methodNode
-      .visibleAnnotations
-      .asScala
-      .exists(_.desc == "Lsun/reflect/CallerSensitive;")
+    methodNode.visibleAnnotations != null &&
+      methodNode
+        .visibleAnnotations
+        .asScala
+        .exists(_.desc == "Lsun/reflect/CallerSensitive;")
 
   def isFinalClass(classNode: ClassNode): Boolean =
     (classNode.access & ACC_FINAL) != 0
@@ -175,9 +176,8 @@ object BytecodeUtils {
     val op = jump.getOpcode
     if ((op >= IFEQ && op <= IFLE) || op == IFNULL || op == IFNONNULL) {
       instructions.insert(jump, getPop(1))
-    } else if ((
-                 op >= IF_ICMPEQ && op <= IF_ICMPLE
-               ) || op == IF_ACMPEQ || op == IF_ACMPNE) {
+    } else if ((op >= IF_ICMPEQ && op <= IF_ICMPLE) || op == IF_ACMPEQ ||
+               op == IF_ACMPNE) {
       instructions.insert(jump, getPop(1))
       instructions.insert(jump, getPop(1))
     } else {
@@ -284,12 +284,11 @@ object BytecodeUtils {
     * The number of local variable slots used for parameters and for the `this` reference.
     */
   def parametersSize(methodNode: MethodNode): Int = {
-    (Type.getArgumentsAndReturnSizes(methodNode.desc) >> 2) - (
-      if (isStaticMethod(methodNode))
-        1
-      else
-        0
-    )
+    (Type.getArgumentsAndReturnSizes(methodNode.desc) >> 2) -
+      (if (isStaticMethod(methodNode))
+         1
+       else
+         0)
   }
 
   def labelReferences(method: MethodNode): Map[LabelNode, Set[AnyRef]] = {
@@ -389,10 +388,8 @@ object BytecodeUtils {
       eval.getMaxSize
     }
 
-    (
-      roughUpperBound(caller) + roughUpperBound(
-        callee) > maxMethodSizeAfterInline
-    ) &&
+    (roughUpperBound(caller) + roughUpperBound(callee) >
+      maxMethodSizeAfterInline) &&
     (maxSize(caller) + maxSize(callee) > maxMethodSizeAfterInline)
   }
 

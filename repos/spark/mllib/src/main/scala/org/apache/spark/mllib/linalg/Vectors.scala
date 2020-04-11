@@ -526,14 +526,12 @@ object Vectors {
         while (kv1 < nnzv1 || kv2 < nnzv2) {
           var score = 0.0
 
-          if (kv2 >= nnzv2 || (
-                kv1 < nnzv1 && v1Indices(kv1) < v2Indices(kv2)
-              )) {
+          if (kv2 >= nnzv2 ||
+              (kv1 < nnzv1 && v1Indices(kv1) < v2Indices(kv2))) {
             score = v1Values(kv1)
             kv1 += 1
-          } else if (kv1 >= nnzv1 || (
-                       kv2 < nnzv2 && v2Indices(kv2) < v1Indices(kv1)
-                     )) {
+          } else if (kv1 >= nnzv1 ||
+                     (kv2 < nnzv2 && v2Indices(kv2) < v1Indices(kv1))) {
             score = v2Values(kv2)
             kv2 += 1
           } else {
@@ -560,8 +558,7 @@ object Vectors {
         }
       case _ =>
         throw new IllegalArgumentException(
-          "Do not support vector type " + v1.getClass +
-            " and " + v2.getClass)
+          "Do not support vector type " + v1.getClass + " and " + v2.getClass)
     }
     squaredDistance
   }
@@ -947,10 +944,11 @@ class SparseVector @Since("1.0.0") (
 
   @Since("1.6.0")
   override def toJson: String = {
-    val jValue = ("type" -> 0) ~
-      ("size" -> size) ~
-      ("indices" -> indices.toSeq) ~
-      ("values" -> values.toSeq)
+    val jValue =
+      ("type" -> 0) ~
+        ("size" -> size) ~
+        ("indices" -> indices.toSeq) ~
+        ("values" -> values.toSeq)
     compact(render(jValue))
   }
 }

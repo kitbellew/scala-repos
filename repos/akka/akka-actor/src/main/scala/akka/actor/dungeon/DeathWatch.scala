@@ -56,8 +56,8 @@ private[akka] trait DeathWatch {
 
   protected def receivedTerminated(t: Terminated): Unit =
     if (terminatedQueued(t.actor)) {
-      terminatedQueued -= t
-        .actor // here we know that it is the SAME ref which was put in
+      terminatedQueued -=
+        t.actor // here we know that it is the SAME ref which was put in
       receiveMessage(t)
     }
 
@@ -89,10 +89,9 @@ private[akka] trait DeathWatch {
   // TODO this should be removed and be replaced with `watching.contains(subject)`
   //   when all actor references have uid, i.e. actorFor is removed
   private def watchingContains(subject: ActorRef): Boolean =
-    watching.contains(subject) || (
-      subject.path.uid != ActorCell.undefinedUid &&
-        watching.contains(new UndefinedUidActorRef(subject))
-    )
+    watching.contains(subject) ||
+      (subject.path.uid != ActorCell.undefinedUid &&
+        watching.contains(new UndefinedUidActorRef(subject)))
 
   // TODO this should be removed and be replaced with `set - subject`
   //   when all actor references have uid, i.e. actorFor is removed
@@ -109,9 +108,8 @@ private[akka] trait DeathWatch {
       try {
         // Don't need to send to parent parent since it receives a DWN by default
         def sendTerminated(ifLocal: Boolean)(watcher: ActorRef): Unit =
-          if (watcher
-                .asInstanceOf[ActorRefScope]
-                .isLocal == ifLocal && watcher != parent)
+          if (watcher.asInstanceOf[ActorRefScope].isLocal == ifLocal &&
+              watcher != parent)
             watcher
               .asInstanceOf[InternalActorRef]
               .sendSystemMessage(

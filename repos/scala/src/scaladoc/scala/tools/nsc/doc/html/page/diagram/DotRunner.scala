@@ -121,12 +121,10 @@ class DotProcess(settings: doc.Settings) {
       case exc: Throwable =>
         errorBuffer.append(
           "  Main thread in " + templateName + ": " +
-            (
-              if (exc.isInstanceOf[NoSuchElementException])
-                "Timeout"
-              else
-                "Exception: " + exc
-            ))
+            (if (exc.isInstanceOf[NoSuchElementException])
+               "Timeout"
+             else
+               "Exception: " + exc))
         error = true
         return null
     }
@@ -162,8 +160,8 @@ class DotProcess(settings: doc.Settings) {
         settings.printMsg(errorBuffer.toString)
         settings.printMsg("  Cleanup: Last template: " + templateName)
         settings.printMsg(
-          "  Cleanup: Last dot input: \n    " + templateInput
-            .replaceAll("\n", "\n    ") + "\n")
+          "  Cleanup: Last dot input: \n    " +
+            templateInput.replaceAll("\n", "\n    ") + "\n")
         settings
           .printMsg("  Cleanup: Dot path: " + settings.docDiagramsDotPath.value)
         if (process != null)
@@ -178,9 +176,8 @@ class DotProcess(settings: doc.Settings) {
         settings.printMsg(
           "These are usually spurious errors, but if you notice a persistent error on")
         settings.printMsg(
-          "a diagram, please use the " + settings
-            .docDiagramsDebug
-            .name + " flag and report a bug with the output.")
+          "a diagram, please use the " + settings.docDiagramsDebug.name +
+            " flag and report a bug with the output.")
       }
     }
   }

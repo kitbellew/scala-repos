@@ -21,37 +21,40 @@ class FlowDropWhileSpec extends AkkaSpec {
 
   "A DropWhile" must {
 
-    "drop while predicate is true" in assertAllStagesStopped {
-      Source(1 to 4)
-        .dropWhile(_ < 3)
-        .runWith(TestSink.probe[Int])
-        .request(2)
-        .expectNext(3, 4)
-        .expectComplete()
-    }
+    "drop while predicate is true" in
+      assertAllStagesStopped {
+        Source(1 to 4)
+          .dropWhile(_ < 3)
+          .runWith(TestSink.probe[Int])
+          .request(2)
+          .expectNext(3, 4)
+          .expectComplete()
+      }
 
-    "complete the future for an empty stream" in assertAllStagesStopped {
-      Source
-        .empty[Int]
-        .dropWhile(_ < 2)
-        .runWith(TestSink.probe[Int])
-        .request(1)
-        .expectComplete()
-    }
+    "complete the future for an empty stream" in
+      assertAllStagesStopped {
+        Source
+          .empty[Int]
+          .dropWhile(_ < 2)
+          .runWith(TestSink.probe[Int])
+          .request(1)
+          .expectComplete()
+      }
 
-    "continue if error" in assertAllStagesStopped {
-      val testException = new Exception("test") with NoStackTrace
-      Source(1 to 4)
-        .dropWhile(a ⇒
-          if (a < 3)
-            true
-          else
-            throw testException)
-        .withAttributes(supervisionStrategy(resumingDecider))
-        .runWith(TestSink.probe[Int])
-        .request(1)
-        .expectComplete()
-    }
+    "continue if error" in
+      assertAllStagesStopped {
+        val testException = new Exception("test") with NoStackTrace
+        Source(1 to 4)
+          .dropWhile(a ⇒
+            if (a < 3)
+              true
+            else
+              throw testException)
+          .withAttributes(supervisionStrategy(resumingDecider))
+          .runWith(TestSink.probe[Int])
+          .request(1)
+          .expectComplete()
+      }
 
   }
 

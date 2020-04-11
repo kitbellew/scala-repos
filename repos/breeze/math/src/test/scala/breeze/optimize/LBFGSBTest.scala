@@ -64,8 +64,9 @@ class LBFGSBTest extends OptimizeTestBase {
       new DiffFunction[DenseVector[Double]] {
         override def calculate(
             x: DenseVector[Double]): (Double, DenseVector[Double]) = {
-          val cost =
-            pow(x(0) - x(1) * x(1), 2) / 2.0 + (x(1) - 2.0) * (x(1) - 2.0) / 2.0
+          val cost = pow(x(0) - x(1) * x(1), 2) / 2.0 +
+            (x(1) - 2.0) *
+            (x(1) - 2.0) / 2.0
           val grad = DenseVector(
             x(0) - x(1) * x(1),
             -2.0 * x(1) * (x(0) - x(1) * x(1)) + x(1) - 2.0)

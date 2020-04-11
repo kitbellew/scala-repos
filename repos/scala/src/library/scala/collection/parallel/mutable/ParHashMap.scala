@@ -170,11 +170,10 @@ class ParHashMap[K, V] private[collection] (
       else
         1 + count(e.next)
     val expected = sizemap(i)
-    val found =
-      ((i * sizeMapBucketSize) until ((i + 1) * sizeMapBucketSize))
-        .foldLeft(0) { (acc, c) =>
-          acc + count(table(c))
-        }
+    val found = ((i * sizeMapBucketSize) until ((i + 1) * sizeMapBucketSize))
+      .foldLeft(0) { (acc, c) =>
+        acc + count(table(c))
+      }
     if (found != expected)
       List("Found " + found + " elements, while sizemap showed " + expected)
     else
@@ -188,10 +187,8 @@ class ParHashMap[K, V] private[collection] (
       else if (index(elemHashCode(e.key)) == i)
         check(e.next)
       else
-        (
-          "Element " + e.key + " at " + i + " with " + elemHashCode(
-            e.key) + " maps to " + index(elemHashCode(e.key))
-        ) :: check(e.next)
+        ("Element " + e.key + " at " + i + " with " + elemHashCode(e.key) +
+          " maps to " + index(elemHashCode(e.key))) :: check(e.next)
     check(table(i))
   }
 }
@@ -373,12 +370,13 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
       this.result += that.result
     }
     def shouldSplitFurther =
-      howmany > scala
-        .collection
-        .parallel
-        .thresholdFromSize(
-          ParHashMapCombiner.numblocks,
-          combinerTaskSupport.parallelismLevel)
+      howmany >
+        scala
+          .collection
+          .parallel
+          .thresholdFromSize(
+            ParHashMapCombiner.numblocks,
+            combinerTaskSupport.parallelismLevel)
   }
 }
 

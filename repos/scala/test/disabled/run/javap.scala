@@ -10,9 +10,10 @@ object Test {
       |}
       |
       |:javap %s Bippy
-    """.stripMargin.format(args)).lines map (_.trim) filter { line =>
-      (line startsWith "private") || (line startsWith "public")
-    } foreach println
+    """.stripMargin.format(args)).lines map
+      (_.trim) filter { line =>
+        (line startsWith "private") || (line startsWith "public")
+      } foreach println
   }
 
   def main(args: Array[String]): Unit = {

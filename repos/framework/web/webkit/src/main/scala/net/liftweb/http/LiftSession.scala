@@ -211,11 +211,8 @@ object LiftSession {
             findClass(
               terminal,
               LiftRules.buildPackage("snippet").map(_ + packageSuffix) :::
-                (
-                  ("lift.app.snippet" + packageSuffix) :: (
-                  "net.liftweb.builtin.snippet" + packageSuffix
-                ) :: Nil
-              )
+                (("lift.app.snippet" + packageSuffix) ::
+                  ("net.liftweb.builtin.snippet" + packageSuffix) :: Nil)
             )
           }
         )
@@ -378,11 +375,8 @@ class LiftSession(
     with Loggable
     with HowStateful {
   def sessionHtmlProperties =
-    LiftRules.htmlProperties.session.is.make openOr LiftRules
-      .htmlProperties
-      .default
-      .is
-      .vend
+    LiftRules.htmlProperties.session.is.make openOr
+      LiftRules.htmlProperties.default.is.vend
 
   val requestHtmlProperties: TransientRequestVar[HtmlProperties] =
     new TransientRequestVar[HtmlProperties](
@@ -847,8 +841,7 @@ class LiftSession(
       }
 
       removeFunctionsIf { funcHolder =>
-        !funcHolder.sessionLife &&
-        funcHolder.owner.isDefined &&
+        !funcHolder.sessionLife && funcHolder.owner.isDefined &&
         (now - funcHolder.lastSeen) > LiftRules.unusedFunctionsLifeTime
       }
     }
@@ -977,8 +970,8 @@ class LiftSession(
 
     import scala.collection.JavaConversions._
     (0 /: nmessageCallback)((l, v) =>
-      l + (
-        v._2.owner match {
+      l +
+        (v._2.owner match {
           case Full(owner) if (owner == ownerName) =>
             v._2.lastSeen = time
             1
@@ -987,8 +980,7 @@ class LiftSession(
             1
           case _ =>
             0
-        }
-      ))
+        }))
   }
 
   /**
@@ -1169,8 +1161,8 @@ class LiftSession(
             val early = LiftRules.preAccessControlResponse_!!.firstFull(request)
 
             // Process but make sure we're okay, sitemap wise
-            val response: Box[LiftResponse] = early or (
-              request.testLocation match {
+            val response: Box[LiftResponse] = early or
+              (request.testLocation match {
                 case Left(true) =>
                   checkStatelessInSiteMap(request) {
                     cleanUpBeforeRender
@@ -1179,21 +1171,16 @@ class LiftSession(
                     LiftRules
                       .allowParallelSnippets
                       .doWith(() => !Props.inGAE) {
-                        (
-                          request.location.flatMap(_.earlyResponse) or LiftRules
-                            .earlyResponse
-                            .firstFull(request)
-                        ) or
-                          (
-                            processTemplate(
-                              locTemplate,
-                              request,
-                              request.path,
-                              200) or
-                              request.createNotFound {
-                                processTemplate(Empty, request, _, 404)
-                              }
-                          )
+                        (request.location.flatMap(_.earlyResponse) or
+                          LiftRules.earlyResponse.firstFull(request)) or
+                          (processTemplate(
+                            locTemplate,
+                            request,
+                            request.path,
+                            200) or
+                            request.createNotFound {
+                              processTemplate(Empty, request, _, 404)
+                            })
                       }
                   }
 
@@ -1212,8 +1199,7 @@ class LiftSession(
                   request.createNotFound {
                     processTemplate(Empty, request, _, 404)
                   }
-              }
-            )
+              })
 
             // Before returning the response check for redirect and set the appropriate state.
             response.map(checkRedirect)
@@ -1518,8 +1504,8 @@ class LiftSession(
       tpath
         .toList
         .filter { a =>
-          !a.startsWith("_") && !a
-            .startsWith(".") && a.toLowerCase.indexOf("-hidden") == -1
+          !a.startsWith("_") && !a.startsWith(".") &&
+          a.toLowerCase.indexOf("-hidden") == -1
         } match {
         case s @ _ if !s.isEmpty =>
           s
@@ -1582,11 +1568,8 @@ class LiftSession(
       first(LiftRules.snippetNamesToSearch.vend(cls)) { nameToTry =>
         LiftSession.findSnippetClass(nameToTry) flatMap { clz =>
           instantiateOrRedirect(clz) flatMap { inst =>
-            invokeMethod(clz, inst, method) or invokeMethod(
-              clz,
-              inst,
-              method,
-              params.toList.toArray) match {
+            invokeMethod(clz, inst, method) or
+              invokeMethod(clz, inst, method, params.toList.toArray) match {
               case Full(md: MetaData) =>
                 Full(md.copy(rest))
               case _ =>
@@ -1725,12 +1708,11 @@ class LiftSession(
    */
   private def findSnippetInstance(cls: String): Box[AnyRef] =
     S.snippetForClass(cls) or
-      (
-        LiftRules.snippet(cls) or
-          LiftSession
-            .findSnippetClass(cls)
-            .flatMap(c => instantiateOrRedirect(c) or findSnippetObject(cls))
-      ) match {
+      (LiftRules.snippet(cls) or
+        LiftSession
+          .findSnippetClass(cls)
+          .flatMap(c =>
+            instantiateOrRedirect(c) or findSnippetObject(cls))) match {
       case Full(inst: StatefulSnippet) =>
         inst.addName(cls);
         S.overrideSnippetForClass(cls, inst);
@@ -1752,16 +1734,14 @@ class LiftSession(
       why: LiftRules.SnippetFailures.Value,
       addlMsg: NodeSeq,
       whole: NodeSeq): NodeSeq = {
-    (
-      for {
-        nodeSeq <- S.currentSnippetNodeSeq
-        if S.ignoreFailedSnippets
-      } yield {
-        // don't keep nailing the same snippet name if we just failed it
-        (snippetName or S.currentSnippet).foreach(s => _lastFoundSnippet.set(s))
-        nodeSeq
-      }
-    ) openOr {
+    (for {
+      nodeSeq <- S.currentSnippetNodeSeq
+      if S.ignoreFailedSnippets
+    } yield {
+      // don't keep nailing the same snippet name if we just failed it
+      (snippetName or S.currentSnippet).foreach(s => _lastFoundSnippet.set(s))
+      nodeSeq
+    }) openOr {
 
       for {
         f <- LiftRules.snippetFailedFunc.toList
@@ -1917,11 +1897,9 @@ class LiftSession(
     val isForm = !attrs.get("form").toList.isEmpty
 
     val eagerEval: Boolean =
-      (
-        attrs.get("eager_eval").map(toBoolean) orElse
-          findNSAttr(attrs, "lift", "eager_eval").map(toBoolean) orElse
-          findNSAttr(attrs, "l", "eager_eval").map(toBoolean)
-      ) getOrElse false
+      (attrs.get("eager_eval").map(toBoolean) orElse
+        findNSAttr(attrs, "lift", "eager_eval").map(toBoolean) orElse
+        findNSAttr(attrs, "l", "eager_eval").map(toBoolean)) getOrElse false
 
     val kids =
       if (eagerEval)
@@ -1957,12 +1935,13 @@ class LiftSession(
       val pair = (cls, method)
       if (pf.isDefinedAt(pair)) {
         val func = pf(pair)
-        func.map(_.apply(kids)) openOr reportSnippetError(
-          page,
-          snippetName,
-          LiftRules.SnippetFailures.MethodNotFound,
-          NodeSeq.Empty,
-          wholeTag)
+        func.map(_.apply(kids)) openOr
+          reportSnippetError(
+            page,
+            snippetName,
+            LiftRules.SnippetFailures.MethodNotFound,
+            NodeSeq.Empty,
+            wholeTag)
       } else
         f
     }
@@ -2095,10 +2074,8 @@ class LiftSession(
                           }
 
                         def isFuncNodeSeq(meth: Method): Boolean = {
-                          (
-                            classOf[Function1[_, _]] isAssignableFrom meth
-                              .getReturnType
-                          ) &&
+                          (classOf[Function1[_, _]] isAssignableFrom
+                            meth.getReturnType) &&
                           testGeneric(meth.getGenericReturnType)
                         }
 
@@ -2115,14 +2092,12 @@ class LiftSession(
 
                           val ar: Array[AnyRef] = List(Group(kids)).toArray
                           (
-                            (
-                              Helpers.invokeMethod(
-                                inst.getClass,
-                                inst,
-                                method,
-                                ar,
-                                Array(classOf[NodeSeq]))
-                            ) or
+                            (Helpers.invokeMethod(
+                              inst.getClass,
+                              inst,
+                              method,
+                              ar,
+                              Array(classOf[NodeSeq]))) or
                               Helpers.invokeMethod(inst.getClass, inst, method)
                           ) match {
                             case CheckNodeSeq(md) =>
@@ -2241,11 +2216,12 @@ class LiftSession(
             net.liftweb.builtin.snippet.Form.post(ret)
           } match {
             case e: Elem =>
-              e % LiftRules
-                .formAttrs
-                .vend
-                .foldLeft[MetaData](Null)((base, name) =>
-                  checkAttr(name, attrs, base))
+              e %
+                LiftRules
+                  .formAttrs
+                  .vend
+                  .foldLeft[MetaData](Null)((base, name) =>
+                    checkAttr(name, attrs, base))
             case x =>
               x
           }
@@ -2253,11 +2229,12 @@ class LiftSession(
         case Some("ajax") =>
           net.liftweb.builtin.snippet.Form.render(ret) match {
             case e: Elem =>
-              e % LiftRules
-                .formAttrs
-                .vend
-                .foldLeft[MetaData](Null)((base, name) =>
-                  checkAttr(name, attrs, base))
+              e %
+                LiftRules
+                  .formAttrs
+                  .vend
+                  .foldLeft[MetaData](Null)((base, name) =>
+                    checkAttr(name, attrs, base))
             case x =>
               x
           }
@@ -2271,12 +2248,12 @@ class LiftSession(
             {
             ret
           }
-          </form> %
-            checkMultiPart(attrs) % LiftRules
-            .formAttrs
-            .vend
-            .foldLeft[MetaData](Null)((base, name) =>
-              checkAttr(name, attrs, base))
+          </form> % checkMultiPart(attrs) %
+            LiftRules
+              .formAttrs
+              .vend
+              .foldLeft[MetaData](Null)((base, name) =>
+                checkAttr(name, attrs, base))
 
         case _ =>
           ret
@@ -2368,8 +2345,8 @@ class LiftSession(
         processSnippet(page, Full(snippetInfo), metaData, elm, kids)
     }
 
-  liftTagProcessing =
-    LiftRules.liftTagProcessing.toList ::: List(_defaultLiftTagProcessing)
+  liftTagProcessing = LiftRules.liftTagProcessing.toList :::
+    List(_defaultLiftTagProcessing)
 
   private def asNodeSeq(in: Seq[Node]): NodeSeq = in
 
@@ -2422,27 +2399,28 @@ class LiftSession(
       val req = S.request.map(_.snapshot)
 
       // send the ProcessSnippet message to the Actor
-      actor ! ProcessSnippet(() => {
-        executeInScope(req, renderVersion) {
-          // process the message
-          val bns = tryo {
-            reqVarCallback(() => f)
-          }
-
-          // set the node
-          hash.synchronized {
-            hash(nodeId) = bns match {
-              case Empty =>
-                Failure("Weird Empty Node", Empty, Empty)
-              case x =>
-                x
+      actor !
+        ProcessSnippet(() => {
+          executeInScope(req, renderVersion) {
+            // process the message
+            val bns = tryo {
+              reqVarCallback(() => f)
             }
 
-            // and notify listeners
-            hash.notify()
+            // set the node
+            hash.synchronized {
+              hash(nodeId) = bns match {
+                case Empty =>
+                  Failure("Weird Empty Node", Empty, Empty)
+                case x =>
+                  x
+              }
+
+              // and notify listeners
+              hash.notify()
+            }
           }
-        }
-      })
+        })
 
       theNode
     } else
@@ -2574,7 +2552,8 @@ class LiftSession(
                     p
                   case Failure(msg, _, _) =>
                     logger.error(
-                      "Failed to deserialize JSON message " + p + ". Error " + msg);
+                      "Failed to deserialize JSON message " + p + ". Error " +
+                        msg);
                     p
                 })
               JsCmds.Noop
@@ -3071,8 +3050,8 @@ class LiftSession(
         .asInstanceOf[T]
     }
 
-    val attemptedComet =
-      tryo(buildWithNoArgConstructor) or tryo(buildWithCreateInfoConstructor)
+    val attemptedComet = tryo(buildWithNoArgConstructor) or
+      tryo(buildWithCreateInfoConstructor)
 
     attemptedComet match {
       case fail @ Failure(_, Full(e: java.lang.NoSuchMethodException), _) =>
@@ -3279,10 +3258,11 @@ class LiftSession(
                       logger.error(
                         "Failed to extract " + payload + " as " + func.manifest,
                         e)
-                      ca ! FailMsg(
-                        guid,
-                        "Failed to extract payload as " + func
-                          .manifest + " exception " + e.getMessage)
+                      ca !
+                        FailMsg(
+                          guid,
+                          "Failed to extract payload as " + func.manifest +
+                            " exception " + e.getMessage)
                       None
 
                   }
@@ -3549,17 +3529,15 @@ private object SnippetNode {
             newElm,
             newElm,
             par ||
-              (
-                lift
-                  .find {
-                    case up: UnprefixedAttribute if up.key == "parallel" =>
-                      true
-                    case _ =>
-                      false
-                  }
-                  .flatMap(up => AsBoolean.unapply(up.value.text)) getOrElse
-                  false
-              ),
+              (lift
+                .find {
+                  case up: UnprefixedAttribute if up.key == "parallel" =>
+                    true
+                  case _ =>
+                    false
+                }
+                .flatMap(up => AsBoolean.unapply(up.value.text)) getOrElse
+                false),
             lift,
             snippetName)
 

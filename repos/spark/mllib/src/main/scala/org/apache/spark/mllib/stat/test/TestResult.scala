@@ -72,8 +72,7 @@ trait TestResult[DF] {
       }
 
     s"degrees of freedom = ${degreesOfFreedom.toString} \n" +
-      s"statistic = $statistic \n" +
-      s"pValue = $pValue \n" + pValueExplain
+      s"statistic = $statistic \n" + s"pValue = $pValue \n" + pValueExplain
   }
 }
 
@@ -90,9 +89,7 @@ class ChiSqTestResult private[stat] (
     extends TestResult[Int] {
 
   override def toString: String = {
-    "Chi squared test summary:\n" +
-      s"method: $method\n" +
-      super.toString
+    "Chi squared test summary:\n" + s"method: $method\n" + super.toString
   }
 }
 
@@ -132,8 +129,6 @@ private[stat] class StreamingTestResult @Since("1.6.0") (
     with Serializable {
 
   override def toString: String = {
-    "Streaming test summary:\n" +
-      s"method: $method\n" +
-      super.toString
+    "Streaming test summary:\n" + s"method: $method\n" + super.toString
   }
 }

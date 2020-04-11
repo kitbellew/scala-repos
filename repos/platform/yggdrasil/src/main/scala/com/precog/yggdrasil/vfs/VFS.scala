@@ -166,11 +166,9 @@ trait VFSModule[M[+_], Block] extends Logging {
       // FIXME: We're dealing with MimeType in too many places here
       val acceptableMimeTypes =
         (
-          (
-            Seq(ApplicationJson, XJsonStream, TextCSV).map { mt =>
-              mt -> (mt, mt)
-            }
-          ) ++
+          (Seq(ApplicationJson, XJsonStream, TextCSV).map { mt =>
+            mt -> (mt, mt)
+          }) ++
             Seq(
               AnyMimeType -> (XJsonStream, XJsonStream),
               OctetStream -> (XJsonStream, OctetStream))

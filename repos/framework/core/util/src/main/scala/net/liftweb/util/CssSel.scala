@@ -171,11 +171,9 @@ private class SelectorMap(binds: List[CssBind])
 
       case i @ CssBind(AttrSelector(name, value, _)) => {
         val oldMap = attrMap.getOrElse(name, Map())
-        attrMap += (
-          name -> (
-            oldMap + (value -> sortBinds(i :: oldMap.getOrElse(value, Nil)))
-          )
-        )
+        attrMap +=
+          (name ->
+            (oldMap + (value -> sortBinds(i :: oldMap.getOrElse(value, Nil)))))
       }
     }
 
@@ -399,12 +397,11 @@ private class SelectorMap(binds: List[CssBind])
           other: MetaData,
           stripId: Boolean,
           skipClassMerge: Boolean): MetaData = {
-        var oldAttrs = attrs - (
-          if (stripId)
-            "id"
-          else
-            ""
-        )
+        var oldAttrs = attrs -
+          (if (stripId)
+             "id"
+           else
+             "")
 
         var builtMeta: MetaData = Null
         var pos = other
@@ -578,14 +575,16 @@ private class SelectorMap(binds: List[CssBind])
                       case Group(g) =>
                         (ids, g :: result)
                       case e: Elem => {
-                        val targetId = e
-                          .attribute("id")
-                          .map(_.toString) orElse (attrs.get("id"))
+                        val targetId = e.attribute("id").map(_.toString) orElse
+                          (attrs.get("id"))
                         val keepId = targetId map { id =>
                           ids.contains(id)
-                        } getOrElse (false)
-                        val newIds = targetId filter (_ => keepId) map (i =>
-                          ids - i) getOrElse (ids)
+                        } getOrElse
+                          (false)
+                        val newIds = targetId filter
+                          (_ => keepId) map
+                          (i => ids - i) getOrElse
+                          (ids)
                         val newElem =
                           new Elem(
                             e.prefix,
@@ -832,10 +831,11 @@ trait CssBindImplicits {
     def #>[T](replacement: => T)(implicit converter: CanBind[T]): CssSel = {
       cssSelector.collect {
         case EnclosedSelector(a, b) =>
-          new CssBindPromoter(stringSelector, Full(a)) #> nsFunc({ ns =>
-            new CssBindPromoter(stringSelector, Full(b))
-              .#>(replacement)(converter)(ns)
-          }) // (CanBind.nodeSeqFuncTransform)
+          new CssBindPromoter(stringSelector, Full(a)) #>
+            nsFunc({ ns =>
+              new CssBindPromoter(stringSelector, Full(b))
+                .#>(replacement)(converter)(ns)
+            }) // (CanBind.nodeSeqFuncTransform)
       } openOr {
         new CssBindImpl(stringSelector, cssSelector) {
           def calculate(in: NodeSeq): Seq[NodeSeq] = converter(replacement)(in)
@@ -873,8 +873,7 @@ trait CssBind extends CssSel {
   def css: Box[CssSelector]
 
   override def toString(): String =
-    "CssBind(" + stringSelector + ", " +
-      css + ")"
+    "CssBind(" + stringSelector + ", " + css + ")"
 
   def apply(in: NodeSeq): NodeSeq =
     css match {

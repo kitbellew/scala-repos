@@ -46,8 +46,7 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
   def render(request: HttpServletRequest): Seq[Node] = {
     val content = listener
       .synchronized { // make sure all parts in this page are consistent
-        generateBasicStats() ++
-          <br/> ++
+        generateBasicStats() ++ <br/> ++
           <h4>
         {
             listener.getOnlineSessionNum
@@ -55,9 +54,7 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
         running {
             listener.getTotalRunning
           } SQL statement(s)
-        </h4> ++
-          generateSessionStatsTable() ++
-          generateSQLStatsTable()
+        </h4> ++ generateSessionStatsTable() ++ generateSQLStatsTable()
       }
     UIUtils.headerSparkPage("JDBC/ODBC Server", content, parent, Some(5000))
   }

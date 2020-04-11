@@ -51,8 +51,8 @@ object ScalazProperties {
 
     def scalaOrdering[A: Order: SOrdering: Arbitrary] =
       forAll((a1: A, a2: A) =>
-        Order[A].order(a1, a2) == Ordering
-          .fromInt(SOrdering[A].compare(a1, a2)))
+        Order[A].order(a1, a2) ==
+          Ordering.fromInt(SOrdering[A].compare(a1, a2)))
 
     def laws[A](implicit A: Order[A], arb: Arbitrary[A]): Properties =
       newProperties("order") { p =>

@@ -806,47 +806,46 @@ object Engine {
       }
     }
 
-    val algoPredictsMap: Map[EX, RDD[(QX, Seq[P])]] =
-      (0 until evalCount)
-        .map { ex =>
-          {
-            val modelMap: Map[AX, Any] = algoModelsMap(ex)
+    val algoPredictsMap: Map[EX, RDD[(QX, Seq[P])]] = (0 until evalCount)
+      .map { ex =>
+        {
+          val modelMap: Map[AX, Any] = algoModelsMap(ex)
 
-            val qs: RDD[(QX, Q)] = suppQAsMap(ex).mapValues(_._1)
+          val qs: RDD[(QX, Q)] = suppQAsMap(ex).mapValues(_._1)
 
-            val algoPredicts: Seq[RDD[(QX, (AX, P))]] = (0 until algoCount)
-              .map { ax =>
-                {
-                  val algo = algoMap(ax)
-                  val model = modelMap(ax)
-                  val rawPredicts: RDD[(QX, P)] = algo
-                    .batchPredictBase(sc, model, qs)
-                  val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
-                    case (qx, p) => {
-                      (qx, (ax, p))
-                    }
+          val algoPredicts: Seq[RDD[(QX, (AX, P))]] = (0 until algoCount).map {
+            ax =>
+              {
+                val algo = algoMap(ax)
+                val model = modelMap(ax)
+                val rawPredicts: RDD[(QX, P)] = algo
+                  .batchPredictBase(sc, model, qs)
+                val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
+                  case (qx, p) => {
+                    (qx, (ax, p))
                   }
-                  predicts
                 }
+                predicts
               }
-
-            val unionAlgoPredicts: RDD[(QX, Seq[P])] = sc
-              .union(algoPredicts)
-              .groupByKey()
-              .mapValues { ps =>
-                {
-                  assert(
-                    ps.size == algoCount,
-                    "Must have same length as algoCount")
-                  // TODO. Check size == algoCount
-                  ps.toSeq.sortBy(_._1).map(_._2)
-                }
-              }
-
-            (ex, unionAlgoPredicts)
           }
+
+          val unionAlgoPredicts: RDD[(QX, Seq[P])] = sc
+            .union(algoPredicts)
+            .groupByKey()
+            .mapValues { ps =>
+              {
+                assert(
+                  ps.size == algoCount,
+                  "Must have same length as algoCount")
+                // TODO. Check size == algoCount
+                ps.toSeq.sortBy(_._1).map(_._2)
+              }
+            }
+
+          (ex, unionAlgoPredicts)
         }
-        .toMap
+      }
+      .toMap
 
     val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap.map {
       case (ex, psMap) => {

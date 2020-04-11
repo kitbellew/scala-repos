@@ -136,85 +136,88 @@ object ScalaTestingWithDatabases extends Specification {
         _.getConnection().getMetaData.getDatabaseProductName must_== "H2")
     }
 
-    "allow running evolutions" in play
-      .api
-      .db
-      .Databases
-      .withInMemory() { database =>
-        //#apply-evolutions
-        import play.api.db.evolutions._
+    "allow running evolutions" in
+      play
+        .api
+        .db
+        .Databases
+        .withInMemory() { database =>
+          //#apply-evolutions
+          import play.api.db.evolutions._
 
-        Evolutions.applyEvolutions(database)
-        //#apply-evolutions
+          Evolutions.applyEvolutions(database)
+          //#apply-evolutions
 
-        //#cleanup-evolutions
-        Evolutions.cleanupEvolutions(database)
-        //#cleanup-evolutions
-        ok
-      }
-
-    "allow running static evolutions" in play
-      .api
-      .db
-      .Databases
-      .withInMemory() { database =>
-        //#apply-evolutions-simple
-        import play.api.db.evolutions._
-
-        Evolutions.applyEvolutions(
-          database,
-          SimpleEvolutionsReader.forDefault(
-            Evolution(
-              1,
-              "create table test (id bigint not null, name varchar(255));",
-              "drop table test;")))
-        //#apply-evolutions-simple
-
-        val connection = database.getConnection()
-        connection
-          .prepareStatement("insert into test values (10, 'testing')")
-          .execute()
-
-        //#cleanup-evolutions-simple
-        Evolutions.cleanupEvolutions(database)
-        //#cleanup-evolutions-simple
-
-        connection
-          .prepareStatement("select * from test")
-          .executeQuery() must throwAn[SQLException]
-      }
-
-    "allow running evolutions from a custom path" in play
-      .api
-      .db
-      .Databases
-      .withInMemory() { database =>
-        //#apply-evolutions-custom-path
-        import play.api.db.evolutions._
-
-        Evolutions.applyEvolutions(
-          database,
-          ClassLoaderEvolutionsReader.forPrefix("testdatabase/"))
-        //#apply-evolutions-custom-path
-        ok
-      }
-
-    "allow play to manage evolutions for you" in play
-      .api
-      .db
-      .Databases
-      .withInMemory() { database =>
-        //#with-evolutions
-        import play.api.db.evolutions._
-
-        Evolutions.withEvolutions(database) {
-          val connection = database.getConnection()
-
-          // ...
+          //#cleanup-evolutions
+          Evolutions.cleanupEvolutions(database)
+          //#cleanup-evolutions
+          ok
         }
-        //#with-evolutions
-        ok
-      }
+
+    "allow running static evolutions" in
+      play
+        .api
+        .db
+        .Databases
+        .withInMemory() { database =>
+          //#apply-evolutions-simple
+          import play.api.db.evolutions._
+
+          Evolutions.applyEvolutions(
+            database,
+            SimpleEvolutionsReader.forDefault(
+              Evolution(
+                1,
+                "create table test (id bigint not null, name varchar(255));",
+                "drop table test;")))
+          //#apply-evolutions-simple
+
+          val connection = database.getConnection()
+          connection
+            .prepareStatement("insert into test values (10, 'testing')")
+            .execute()
+
+          //#cleanup-evolutions-simple
+          Evolutions.cleanupEvolutions(database)
+          //#cleanup-evolutions-simple
+
+          connection.prepareStatement("select * from test").executeQuery() must
+            throwAn[SQLException]
+        }
+
+    "allow running evolutions from a custom path" in
+      play
+        .api
+        .db
+        .Databases
+        .withInMemory() { database =>
+          //#apply-evolutions-custom-path
+          import play.api.db.evolutions._
+
+          Evolutions.applyEvolutions(
+            database,
+            ClassLoaderEvolutionsReader.forPrefix("testdatabase/"))
+          //#apply-evolutions-custom-path
+          ok
+        }
+
+    "allow play to manage evolutions for you" in
+      play
+        .api
+        .db
+        .Databases
+        .withInMemory() { database =>
+          //#with-evolutions
+          import play.api.db.evolutions._
+
+          Evolutions.withEvolutions(database) {
+            val connection = database.getConnection()
+
+            // ...
+          }
+          //#with-evolutions
+          ok
+        }
 
     "allow simple composition of with database and with evolutions" in {
       //#with-evolutions-custom

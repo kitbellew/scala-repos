@@ -100,8 +100,7 @@ abstract class Specs2PackageTest extends Specs2TestCase {
             "[root]",
             "Test2",
             "Two should",
-            "run") &&
-          checkResultTreeDoesNotHaveNodes(root, "Three should")
+            "run") && checkResultTreeDoesNotHaveNodes(root, "Three should")
     )
   }
 

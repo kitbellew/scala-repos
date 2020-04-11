@@ -42,8 +42,8 @@ trait TupleArity {
     if (f.size > 0 && arity >= 0) {
       assert(
         arity == f.size,
-        "Arity of (" + super.getClass + ") is "
-          + arity + ", which doesn't match: + (" + f.toString + ")")
+        "Arity of (" + super.getClass + ") is " + arity +
+          ", which doesn't match: + (" + f.toString + ")")
     }
   }
 }

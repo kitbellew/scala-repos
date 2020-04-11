@@ -111,18 +111,19 @@ object Test extends Properties("CommentFactory") {
   */
       """)
 
-    body == Body(
-      List(
-        Paragraph(
-          Chain(
-            List(
-              Summary(
-                Chain(
-                  List(
-                    HtmlTag("<strong><code>foo</code> has been deprecated and will be removed in a future version. Please call <code>bar</code> instead.</strong>"),
-                    Text("\n"),
-                    Text("")
-                  ))))))))
+    body ==
+      Body(
+        List(
+          Paragraph(
+            Chain(
+              List(
+                Summary(
+                  Chain(
+                    List(
+                      HtmlTag("<strong><code>foo</code> has been deprecated and will be removed in a future version. Please call <code>bar</code> instead.</strong>"),
+                      Text("\n"),
+                      Text("")
+                    ))))))))
   }
 
   property("Trac #4366 - summary") = {
@@ -132,14 +133,15 @@ object Test extends Properties("CommentFactory") {
   * <strong><code>foo</code> has been deprecated and will be removed in a future version. Please call <code>bar</code> instead.</strong>
   */
       """)
-    body.summary == Some(
-      Chain(
-        List(
-          HtmlTag(
-            "<strong><code>foo</code> has been deprecated and will be removed in a future version. Please call <code>bar</code> instead.</strong>"),
-          Text("\n"),
-          Text("")
-        )))
+    body.summary ==
+      Some(
+        Chain(
+          List(
+            HtmlTag(
+              "<strong><code>foo</code> has been deprecated and will be removed in a future version. Please call <code>bar</code> instead.</strong>"),
+            Text("\n"),
+            Text("")
+          )))
   }
 
   property("Trac #4358 - body") = {

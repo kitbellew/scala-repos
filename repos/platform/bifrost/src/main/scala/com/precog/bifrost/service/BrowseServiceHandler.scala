@@ -205,8 +205,8 @@ class BrowseServiceHandler[A](
                 InternalServerError,
                 content = Some(
                   JObject(
-                    "errors" -> JArray(
-                      "sorry, we're looking into it!".serialize))))
+                    "errors" ->
+                      JArray("sorry, we're looking into it!".serialize))))
             },
             {
               case ResourceError.NotFound(message) =>
@@ -214,10 +214,11 @@ class BrowseServiceHandler[A](
                   HttpStatusCodes.NotFound,
                   content = Some(
                     JObject(
-                      "errors" -> JArray(
-                        "Could not find any resource that corresponded to path %s: %s"
-                          .format(path.path, message)
-                          .serialize)))
+                      "errors" ->
+                        JArray(
+                          "Could not find any resource that corresponded to path %s: %s"
+                            .format(path.path, message)
+                            .serialize)))
                 )
 
               case PermissionsError(message) =>
@@ -225,10 +226,11 @@ class BrowseServiceHandler[A](
                   Forbidden,
                   content = Some(
                     JObject(
-                      "errors" -> JArray(
-                        "API key %s does not have the ability to browse path %s: %s"
-                          .format(apiKey, path.path, message)
-                          .serialize)))
+                      "errors" ->
+                        JArray(
+                          "API key %s does not have the ability to browse path %s: %s"
+                            .format(apiKey, path.path, message)
+                            .serialize)))
                 )
 
               case unexpected =>

@@ -37,8 +37,8 @@ object Sync {
 
       def outofdate(source: File, target: File): Boolean =
         !previousRelation.contains(source, target) ||
-          (previousInfo get source) != (currentInfo get source) ||
-          !target.exists ||
+          (previousInfo get source) !=
+          (currentInfo get source) || !target.exists ||
           target.isDirectory != source.isDirectory
 
       val updates = relation filter outofdate

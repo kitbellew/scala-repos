@@ -88,11 +88,12 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     assertTrue(startSize > log.size)
 
     // write some more stuff and validate again
-    val appends2 = appends ++ writeDups(
-      numKeys = 100,
-      numDups = 3,
-      log,
-      CompressionCodec.getCompressionCodec(compressionCodec))
+    val appends2 = appends ++
+      writeDups(
+        numKeys = 100,
+        numDups = 3,
+        log,
+        CompressionCodec.getCompressionCodec(compressionCodec))
     val firstDirty2 = log.activeSegment.baseOffset
     cleaner.awaitCleaned("log", 0, firstDirty2)
 

@@ -153,8 +153,8 @@ object Template extends Logging {
         case e: Throwable =>
           Map[String, GitHubCache]()
       }
-    val newReposCache = reposCache ++ (
-      try {
+    val newReposCache = reposCache ++
+      (try {
         repos
           .map { repo =>
             val url = s"https://api.github.com/repos/$repo/$apiType"
@@ -188,8 +188,7 @@ object Template extends Logging {
         case e: ConnectException =>
           githubConnectErrorMessage(e)
           Map()
-      }
-    )
+      })
     FileUtils.writeStringToFile(
       new File(repoFilename),
       write(newReposCache),
@@ -407,11 +406,8 @@ object Template extends Logging {
         val nameOnly = new File(destFilename).getName
 
         if (organization != "" &&
-            (
-              nameOnly.endsWith(".scala") ||
-              nameOnly == "build.sbt" ||
-              nameOnly == "engine.json"
-            )) {
+            (nameOnly.endsWith(".scala") || nameOnly == "build.sbt" ||
+            nameOnly == "engine.json")) {
           filesToModify += destFilename
         }
       }

@@ -72,7 +72,8 @@ trait RowFormat {
         case (Some((_, a)), Some((_, b))) =>
           CValue.compareValues(a, b)
       }
-    } find (_ != 0) getOrElse 0
+    } find
+      (_ != 0) getOrElse 0
 
     cmp
   }
@@ -299,9 +300,8 @@ trait RowFormatSupport {
 
       case (cType, col) =>
         sys.error(
-          "Cannot create column encoder, columns of wrong type (expected %s, found %s)." format (
-            cType, col.tpe
-          ))
+          "Cannot create column encoder, columns of wrong type (expected %s, found %s)." format
+            (cType, col.tpe))
     }
 
   protected trait ColumnValueDecoder {
@@ -459,11 +459,10 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
 
     //val decoders: Seq[(ColumnValueDecoder, Int)] = // Seq[((Int, ByteBuffer) => Unit, Int)] =
     //  (columnRefs zip cols map { case (ref, col) => getColumnDecoder(ref.ctype, col) }).zipWithIndex
-    val decoders: List[ColumnValueDecoder] =
-      (columnRefs zip cols).map {
-        case (ref, col) =>
-          getColumnDecoder(ref.ctype, col)
-      }(collection.breakOut)
+    val decoders: List[ColumnValueDecoder] = (columnRefs zip cols).map {
+      case (ref, col) =>
+        getColumnDecoder(ref.ctype, col)
+    }(collection.breakOut)
 
     new ColumnDecoder {
       def decodeToRow(row: Int, src: Array[Byte], offset: Int = 0) {
@@ -522,26 +521,24 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
 
     def encodedSize(xs: List[CValue]) =
       xs.foldLeft(rawBitSetCodec.encodedSize(undefineds(xs))) { (acc, x) =>
-        acc + (
-          x match {
+        acc +
+          (x match {
             case x: CWrappedValue[_] =>
               codecForCValueType(x.cType).encodedSize(x.value)
             case _ =>
               0
-          }
-        )
+          })
       }
 
     override def maxSize(xs: List[CValue]) =
       xs.foldLeft(rawBitSetCodec.maxSize(undefineds(xs))) { (acc, x) =>
-        acc + (
-          x match {
+        acc +
+          (x match {
             case x: CWrappedValue[_] =>
               codecForCValueType(x.cType).maxSize(x.value)
             case _ =>
               0
-          }
-        )
+          })
       }
 
     def writeUnsafe(xs: List[CValue], sink: ByteBuffer) {
@@ -601,8 +598,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     def writeMore(more: S, sink: ByteBuffer) =
       more match {
         case (Left(s), xs) =>
-          rawBitSetCodec.writeMore(s, sink) map (s =>
-            (Left(s), xs)) orElse writeCValues(xs, sink)
+          rawBitSetCodec.writeMore(s, sink) map
+            (s => (Left(s), xs)) orElse writeCValues(xs, sink)
         case (Right(s), xs) =>
           s.more(sink) map (s => (Right(s), xs)) orElse writeCValues(xs, sink)
       }
@@ -704,19 +701,19 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                 row: Int,
                 buffer: ByteBuffer,
                 pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-              (writers zip selCols) find (
-                _._2.isDefinedAt(row)
-              ) map (_._1.encode(row, buffer, pool)) getOrElse {
-                val flag = SortingRowFormat.flagForCType(CUndefined)
-                if (buffer.remaining() > 0) {
-                  buffer.put(flag)
-                  None
-                } else {
-                  val nextBuffer = pool.acquire
-                  nextBuffer.put(flag)
-                  Some(buffer :: nextBuffer :: Nil)
+              (writers zip selCols) find
+                (_._2.isDefinedAt(row)) map
+                (_._1.encode(row, buffer, pool)) getOrElse {
+                  val flag = SortingRowFormat.flagForCType(CUndefined)
+                  if (buffer.remaining() > 0) {
+                    buffer.put(flag)
+                    None
+                  } else {
+                    val nextBuffer = pool.acquire
+                    nextBuffer.put(flag)
+                    Some(buffer :: nextBuffer :: Nil)
+                  }
                 }
-              }
             }
           }
       })(collection.breakOut)
@@ -907,9 +904,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                     val b = Codec[Double].read(bbuf)
                     NumericComparisons.approxCompare(a, b) match {
                       case 0 =>
-                        super.BigDecimalCodec.read(abuf) compare super
-                          .BigDecimalCodec
-                          .read(bbuf)
+                        super.BigDecimalCodec.read(abuf) compare
+                          super.BigDecimalCodec.read(bbuf)
                       case cmp =>
                         super.BigDecimalCodec.skip(abuf)
                         super.BigDecimalCodec.skip(bbuf)

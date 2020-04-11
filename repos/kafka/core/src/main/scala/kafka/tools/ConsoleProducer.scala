@@ -355,8 +355,8 @@ object ConsoleProducer {
     val compressionCodecOptionValue = options.valueOf(compressionCodecOpt)
     val compressionCodec =
       if (options.has(compressionCodecOpt))
-        if (compressionCodecOptionValue == null || compressionCodecOptionValue
-              .isEmpty)
+        if (compressionCodecOptionValue == null ||
+            compressionCodecOptionValue.isEmpty)
           DefaultCompressionCodec.name
         else
           compressionCodecOptionValue

@@ -116,8 +116,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                 case ScParameterizedType(tpe, Seq(arg)) if !elementAdded =>
                   ScType.extractClass(tpe, Some(elem.getProject)) match {
                     case Some(clazz)
-                        if clazz.qualifiedName == "scala.Option" || clazz
-                          .qualifiedName == "scala.Some" =>
+                        if clazz.qualifiedName == "scala.Option" ||
+                          clazz.qualifiedName == "scala.Some" =>
                       if (!scType.equiv(Nothing) && scType.conforms(arg)) {
                         el.someSmartCompletion = true
                         if (etaExpanded)
@@ -162,15 +162,12 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           if (!el.isNamedParameterOrAssignment)
             elem match {
               case fun: ScSyntheticFunction =>
-                val second = checkForSecondCompletion && fun
-                  .paramClauses
-                  .flatten
-                  .isEmpty
+                val second = checkForSecondCompletion &&
+                  fun.paramClauses.flatten.isEmpty
                 checkType(fun.retType, ScSubstitutor.empty, second)
               case fun: ScFunction =>
-                if (fun.containingClass != null && fun
-                      .containingClass
-                      .qualifiedName == "scala.Predef") {
+                if (fun.containingClass != null &&
+                    fun.containingClass.qualifiedName == "scala.Predef") {
                   fun.name match {
                     case "implicitly" | "identity" | "locally" =>
                       return
@@ -204,9 +201,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   }
                 }
               case method: PsiMethod =>
-                val second = checkForSecondCompletion && method
-                  .getParameterList
-                  .getParametersCount == 0
+                val second = checkForSecondCompletion &&
+                  method.getParameterList.getParametersCount == 0
                 val infer =
                   if (chainVariant)
                     ScSubstitutor.empty
@@ -219,12 +215,11 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
               case typed: ScTypedDefinition =>
                 if (!PsiTreeUtil
                       .isContextAncestor(typed.nameContext, place, false) &&
-                    (
-                      originalPlace == null || !PsiTreeUtil.isContextAncestor(
-                        typed.nameContext,
-                        originalPlace,
-                        false)
-                    ))
+                    (originalPlace == null ||
+                    !PsiTreeUtil.isContextAncestor(
+                      typed.nameContext,
+                      originalPlace,
+                      false)))
                   for (tt <- typed.getType(TypingContext.empty))
                     checkType(tt, ScSubstitutor.empty, checkForSecondCompletion)
               case f: PsiField =>
@@ -312,11 +307,9 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                     _) =>
                 ScType.extractClass(proj) match {
                   case Some(o: ScObject)
-                      if ResolveUtils.isAccessible(
-                        o,
-                        place,
-                        forCompletion = true) && ScalaPsiUtil
-                        .hasStablePath(o) =>
+                      if ResolveUtils
+                        .isAccessible(o, place, forCompletion = true) &&
+                        ScalaPsiUtil.hasStablePath(o) =>
                     checkObject(o)
                   case _ =>
                 }
@@ -327,8 +320,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           def checkType(tp: ScType) {
             ScType.extractClass(tp) match {
               case Some(c: ScClass)
-                  if c.qualifiedName == "scala.Option" || c
-                    .qualifiedName == "scala.Some" =>
+                  if c.qualifiedName == "scala.Option" ||
+                    c.qualifiedName == "scala.Some" =>
                 tp match {
                   case ScParameterizedType(_, Seq(scType)) =>
                     checkType(scType)
@@ -339,11 +332,9 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                 checkTypeProjection(tp)
                 ScalaPsiUtil.getCompanionModule(clazz) match {
                   case Some(o: ScObject)
-                      if ResolveUtils.isAccessible(
-                        o,
-                        place,
-                        forCompletion = true) && ScalaPsiUtil
-                        .hasStablePath(o) =>
+                      if ResolveUtils
+                        .isAccessible(o, place, forCompletion = true) &&
+                        ScalaPsiUtil.hasStablePath(o) =>
                     checkObject(o)
                   case _ => //do nothing
                 }
@@ -352,7 +343,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                     .isAccessible(p, place, forCompletion = true) =>
                 p.getAllMethods
                   .foreach(method => {
-                    if (method.hasModifierProperty("static") && ResolveUtils
+                    if (method.hasModifierProperty("static") &&
+                        ResolveUtils
                           .isAccessible(method, place, forCompletion = true)) {
                       val lookup =
                         LookupElementManager
@@ -369,7 +361,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   })
                 p.getFields
                   .foreach(field => {
-                    if (field.hasModifierProperty("static") && ResolveUtils
+                    if (field.hasModifierProperty("static") &&
+                        ResolveUtils
                           .isAccessible(field, place, forCompletion = true)) {
                       val lookup =
                         LookupElementManager
@@ -410,15 +403,13 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   thisProjections = true) match {
                   case Success(scType, _) =>
                     import org.jetbrains.plugins.scala.lang.psi.types.Nothing
-                    val lookupString = (
-                      if (foundClazz)
-                        t.name + "."
-                      else
-                        ""
-                    ) + "this"
+                    val lookupString = (if (foundClazz)
+                                          t.name + "."
+                                        else
+                                          "") + "this"
                     val el = new ScalaLookupItem(t, lookupString)
-                    if (!scType.equiv(Nothing) && typez
-                          .exists(scType conforms _)) {
+                    if (!scType.equiv(Nothing) &&
+                        typez.exists(scType conforms _)) {
                       if (!foundClazz)
                         el.bold = true
                       result.addElement(el)
@@ -430,11 +421,10 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                           ScType
                             .extractClass(tp, Some(place.getProject)) match {
                             case Some(clazz)
-                                if clazz
-                                  .qualifiedName == "scala.Option" || clazz
-                                  .qualifiedName == "scala.Some" =>
-                              if (!scType.equiv(Nothing) && scType
-                                    .conforms(arg)) {
+                                if clazz.qualifiedName == "scala.Option" ||
+                                  clazz.qualifiedName == "scala.Some" =>
+                              if (!scType.equiv(Nothing) &&
+                                  scType.conforms(arg)) {
                                 el.someSmartCompletion = true
                                 result.addElement(el)
                                 elementAdded = true

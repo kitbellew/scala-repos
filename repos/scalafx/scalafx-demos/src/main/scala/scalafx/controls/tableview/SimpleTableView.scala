@@ -43,22 +43,23 @@ object SimpleTableView extends JFXApp {
     title = "Simple Table View"
     scene = new Scene {
       content = new TableView[Person](characters) {
-        columns ++= List(
-          new TableColumn[Person, String] {
-            text = "First Name"
-            cellValueFactory = {
-              _.value.firstName
+        columns ++=
+          List(
+            new TableColumn[Person, String] {
+              text = "First Name"
+              cellValueFactory = {
+                _.value.firstName
+              }
+              prefWidth = 180
+            },
+            new TableColumn[Person, String]() {
+              text = "Last Name"
+              cellValueFactory = {
+                _.value.lastName
+              }
+              prefWidth = 180
             }
-            prefWidth = 180
-          },
-          new TableColumn[Person, String]() {
-            text = "Last Name"
-            cellValueFactory = {
-              _.value.lastName
-            }
-            prefWidth = 180
-          }
-        )
+          )
       }
     }
   }

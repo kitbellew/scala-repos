@@ -91,8 +91,7 @@ trait UTestPackageTest extends UTestTestCase {
             "[root]",
             "Test2",
             "tests",
-            "test2") &&
-          checkResultTreeDoesNotHaveNodes(root, "[root]", "test")
+            "test2") && checkResultTreeDoesNotHaveNodes(root, "[root]", "test")
     )
   }
 

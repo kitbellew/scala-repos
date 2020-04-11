@@ -52,8 +52,8 @@ object MsgSpec extends Specification with XmlMatchers {
             secureXML.loadString(Msg.render(<div/>).toString)
           }
 
-        result must ==/(
-          <span id="foo">Error, <span class="funky">Notice</span></span>)
+        result must
+          ==/(<span id="foo">Error, <span class="funky">Notice</span></span>)
       }
     }
 
@@ -77,7 +77,8 @@ object MsgSpec extends Specification with XmlMatchers {
             LiftRules.noticesToJsCmd().toString.replace("\n", "")
           }
 
-        result must_== """JsCmd(jQuery('#'+"foo").html("Error, <span class=\"funky\">Notice</span>");jQuery('#'+"bar").html("Warning");)"""
+        result must_==
+          """JsCmd(jQuery('#'+"foo").html("Error, <span class=\"funky\">Notice</span>");jQuery('#'+"bar").html("Warning");)"""
       }
     }
   }

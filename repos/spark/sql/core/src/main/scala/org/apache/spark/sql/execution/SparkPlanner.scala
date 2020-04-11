@@ -35,20 +35,11 @@ class SparkPlanner(
   def numPartitions: Int = conf.numShufflePartitions
 
   def strategies: Seq[Strategy] =
-    experimentalMethods.extraStrategies ++ (
-      FileSourceStrategy ::
-        DataSourceStrategy ::
-        DDLStrategy ::
-        SpecialLimits ::
-        Aggregation ::
-        LeftSemiJoin ::
-        EquiJoinSelection ::
-        InMemoryScans ::
-        BasicOperators ::
-        BroadcastNestedLoop ::
-        CartesianProduct ::
-        DefaultJoin :: Nil
-    )
+    experimentalMethods.extraStrategies ++
+      (FileSourceStrategy :: DataSourceStrategy :: DDLStrategy ::
+        SpecialLimits :: Aggregation :: LeftSemiJoin :: EquiJoinSelection ::
+        InMemoryScans :: BasicOperators :: BroadcastNestedLoop ::
+        CartesianProduct :: DefaultJoin :: Nil)
 
   /**
     * Used to build table scan operators where complex projection and filtering are done using

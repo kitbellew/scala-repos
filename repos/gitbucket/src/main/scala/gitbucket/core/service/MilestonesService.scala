@@ -14,13 +14,14 @@ trait MilestonesService {
       title: String,
       description: Option[String],
       dueDate: Option[java.util.Date])(implicit s: Session): Unit =
-    Milestones insert Milestone(
-      userName = owner,
-      repositoryName = repository,
-      title = title,
-      description = description,
-      dueDate = dueDate,
-      closedDate = None)
+    Milestones insert
+      Milestone(
+        userName = owner,
+        repositoryName = repository,
+        title = title,
+        description = description,
+        dueDate = dueDate,
+        closedDate = None)
 
   def updateMilestone(milestone: Milestone)(implicit s: Session): Unit =
     Milestones

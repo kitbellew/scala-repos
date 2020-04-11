@@ -288,9 +288,8 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
 
   test("kryo with collect for specialized tuples") {
     assert(
-      sc.parallelize(Array((1, 11), (2, 22), (3, 33))).collect().head === (
-        1, 11
-      ))
+      sc.parallelize(Array((1, 11), (2, 22), (3, 33))).collect().head ===
+        (1, 11))
   }
 
   test("kryo with SerializableHyperLogLog") {
@@ -504,10 +503,8 @@ class KryoSerializerAutoResetDisabledSuite
   test("sort-shuffle with bypassMergeSort (SPARK-7873)") {
     val myObject = ("Hello", "World")
     assert(
-      sc.parallelize(Seq.fill(100)(myObject))
-        .repartition(2)
-        .collect()
-        .toSet === Set(myObject))
+      sc.parallelize(Seq.fill(100)(myObject)).repartition(2).collect().toSet ===
+        Set(myObject))
   }
 
   test("calling deserialize() after deserializeStream()") {

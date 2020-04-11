@@ -59,11 +59,10 @@ object LiterateExistentials {
 // Now to ask the compiler:
 
   implicitly[
-    Nothing <:< (
-      A forSome {
+    Nothing <:<
+      (A forSome {
         type A >: String <: Any
-      }
-    )]
+      })]
 
 //  Let's try another:
 //
@@ -94,11 +93,10 @@ object LiterateExistentials {
 //    Int :< (M forSome { type M >: String <: Any })
 
   implicitly[
-    Int <:< (
-      M forSome {
+    Int <:<
+      (M forSome {
         type M >: String <: Any
-      }
-    )]
+      })]
 
 //  Now, let's do a more complicated one:
 //
@@ -159,12 +157,11 @@ object LiterateExistentials {
 //  (Nothing, List[String]) <: ((A, B) forSome { type A >: String <: AnyRef; type B >: Null <: List[A] })
 
   implicitly[
-    (Nothing, List[String]) <:< (
-      (A, B) forSome {
+    (Nothing, List[String]) <:<
+      ((A, B) forSome {
         type A >: String <: AnyRef;
         type B >: Null <: List[A]
-      }
-    )]
+      })]
 
 //  Now let's try one that isn't true:
 //
@@ -191,11 +188,10 @@ object LiterateExistentials {
 //
 
   implicitly[
-    Int <:< (
-      M forSome {
+    Int <:<
+      (M forSome {
         type M >: Nothing <: String
-      }
-    )
+      })
   ] // fails
 // The preceding line causes the compiler to generate an error message.
 
@@ -228,10 +224,9 @@ object LiterateExistentials {
 //  String :< X forSome { type X >: Nothing <: String }
 
   implicitly[
-    String <:< (
-      X forSome {
+    String <:<
+      (X forSome {
         type X >: Nothing <: String
-      }
-    )]
+      })]
 
 }

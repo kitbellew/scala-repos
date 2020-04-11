@@ -25,8 +25,7 @@ class AddElementToMethodCallFix(
       project: Project,
       editor: Editor,
       file: PsiFile): Boolean =
-    call.isValid &&
-      call.getManager.isInProject(file) && elementToAdd != null
+    call.isValid && call.getManager.isInProject(file) && elementToAdd != null
 
   override def invoke(project: Project, editor: Editor, file: PsiFile): Unit = {
     call.addAfter(elementToAdd, call.getLastChild)

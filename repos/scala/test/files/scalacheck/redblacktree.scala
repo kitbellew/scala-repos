@@ -99,8 +99,8 @@ package scala.collection.immutable.redblacktree {
     def areRedNodeChildrenBlack[A](t: Tree[String, A]): Boolean =
       t match {
         case RedTree(_, _, left, right) =>
-          List(left, right) forall (t =>
-            isBlack(t) && areRedNodeChildrenBlack(t))
+          List(left, right) forall
+            (t => isBlack(t) && areRedNodeChildrenBlack(t))
         case BlackTree(_, _, left, right) =>
           List(left, right) forall areRedNodeChildrenBlack
         case null =>
@@ -123,9 +123,9 @@ package scala.collection.immutable.redblacktree {
           true
         case ne =>
           (
-            blackNodesToLeaves(ne).distinct.size == 1
-              && areBlackNodesToLeavesEqual(ne.left)
-              && areBlackNodesToLeavesEqual(ne.right)
+            blackNodesToLeaves(ne).distinct.size == 1 &&
+              areBlackNodesToLeavesEqual(ne.left) &&
+              areBlackNodesToLeavesEqual(ne.right)
           )
       }
 
@@ -265,16 +265,10 @@ package scala.collection.immutable.redblacktree {
         case (tree, parm, newTree) =>
           val from = parm._1 flatMap (nodeAt(tree, _) map (_._1))
           val to = parm._2 flatMap (nodeAt(tree, _) map (_._1))
-          (
-            "lower boundary" |: (
-              from forall (key => keysIterator(newTree) forall (key <=))
-            )
-          ) &&
-          (
-            "upper boundary" |: (
-              to forall (key => keysIterator(newTree) forall (key >))
-            )
-          )
+          ("lower boundary" |:
+            (from forall (key => keysIterator(newTree) forall (key <=)))) &&
+          ("upper boundary" |:
+            (to forall (key => keysIterator(newTree) forall (key >))))
       }
 
     property("range returns all elements") =
@@ -340,8 +334,8 @@ package scala.collection.immutable.redblacktree {
     property("slice") =
       forAll(genInput) {
         case (tree, parm, newTree) =>
-          iterator(tree).slice(parm._1, parm._2).toList == iterator(newTree)
-            .toList
+          iterator(tree).slice(parm._1, parm._2).toList ==
+            iterator(newTree).toList
       }
   }
 }

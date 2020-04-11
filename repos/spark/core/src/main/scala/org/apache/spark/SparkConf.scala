@@ -194,8 +194,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   private[spark] def setIfMissing[T](
       entry: OptionalConfigEntry[T],
       value: T): SparkConf = {
-    if (settings
-          .putIfAbsent(entry.key, entry.rawStringConverter(value)) == null) {
+    if (settings.putIfAbsent(entry.key, entry.rawStringConverter(value)) ==
+          null) {
       logDeprecationWarning(entry.key)
     }
     this
@@ -207,9 +207,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     */
   def registerKryoClasses(classes: Array[Class[_]]): SparkConf = {
     val allClassNames = new LinkedHashSet[String]()
-    allClassNames ++= get("spark.kryo.classesToRegister", "")
-      .split(',')
-      .filter(!_.isEmpty)
+    allClassNames ++=
+      get("spark.kryo.classesToRegister", "").split(',').filter(!_.isEmpty)
     allClassNames ++= classes.map(_.getName)
 
     set("spark.kryo.classesToRegister", allClassNames.mkString(","))
@@ -537,10 +536,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
       if (detected.nonEmpty) {
         logWarning(
           "Detected deprecated memory fraction settings: " +
-            detected.mkString(
-              "[",
-              ", ",
-              "]") + ". As of Spark 1.6, execution and storage " +
+            detected.mkString("[", ", ", "]") +
+            ". As of Spark 1.6, execution and storage " +
             "memory management are unified. All memory fractions used in the old model are " +
             "now deprecated and no longer read. If you wish to use the old memory management, " +
             s"you may explicitly enable `$legacyMemoryManagementKey` (not recommended).")
@@ -707,57 +704,59 @@ private[spark] object SparkConf extends Logging {
     * present in the user's configuration, a warning is logged.
     */
   private val configsWithAlternatives = Map[String, Seq[AlternateConfig]](
-    "spark.executor.userClassPathFirst" -> Seq(
-      AlternateConfig("spark.files.userClassPathFirst", "1.3")),
-    "spark.history.fs.update.interval" -> Seq(
-      AlternateConfig("spark.history.fs.update.interval.seconds", "1.4"),
-      AlternateConfig("spark.history.fs.updateInterval", "1.3"),
-      AlternateConfig("spark.history.updateInterval", "1.3")
-    ),
-    "spark.history.fs.cleaner.interval" -> Seq(
-      AlternateConfig("spark.history.fs.cleaner.interval.seconds", "1.4")),
-    "spark.history.fs.cleaner.maxAge" -> Seq(
-      AlternateConfig("spark.history.fs.cleaner.maxAge.seconds", "1.4")),
-    "spark.yarn.am.waitTime" -> Seq(
-      AlternateConfig(
-        "spark.yarn.applicationMaster.waitTries",
-        "1.3",
-        // Translate old value to a duration, with 10s wait time per try.
-        translation = s => s"${s.toLong * 10}s")),
-    "spark.reducer.maxSizeInFlight" -> Seq(
-      AlternateConfig("spark.reducer.maxMbInFlight", "1.4")),
+    "spark.executor.userClassPathFirst" ->
+      Seq(AlternateConfig("spark.files.userClassPathFirst", "1.3")),
+    "spark.history.fs.update.interval" ->
+      Seq(
+        AlternateConfig("spark.history.fs.update.interval.seconds", "1.4"),
+        AlternateConfig("spark.history.fs.updateInterval", "1.3"),
+        AlternateConfig("spark.history.updateInterval", "1.3")
+      ),
+    "spark.history.fs.cleaner.interval" ->
+      Seq(AlternateConfig("spark.history.fs.cleaner.interval.seconds", "1.4")),
+    "spark.history.fs.cleaner.maxAge" ->
+      Seq(AlternateConfig("spark.history.fs.cleaner.maxAge.seconds", "1.4")),
+    "spark.yarn.am.waitTime" ->
+      Seq(
+        AlternateConfig(
+          "spark.yarn.applicationMaster.waitTries",
+          "1.3",
+          // Translate old value to a duration, with 10s wait time per try.
+          translation = s => s"${s.toLong * 10}s")),
+    "spark.reducer.maxSizeInFlight" ->
+      Seq(AlternateConfig("spark.reducer.maxMbInFlight", "1.4")),
     "spark.kryoserializer.buffer" ->
       Seq(
         AlternateConfig(
           "spark.kryoserializer.buffer.mb",
           "1.4",
           translation = s => s"${(s.toDouble * 1000).toInt}k")),
-    "spark.kryoserializer.buffer.max" -> Seq(
-      AlternateConfig("spark.kryoserializer.buffer.max.mb", "1.4")),
-    "spark.shuffle.file.buffer" -> Seq(
-      AlternateConfig("spark.shuffle.file.buffer.kb", "1.4")),
-    "spark.executor.logs.rolling.maxSize" -> Seq(
-      AlternateConfig("spark.executor.logs.rolling.size.maxBytes", "1.4")),
-    "spark.io.compression.snappy.blockSize" -> Seq(
-      AlternateConfig("spark.io.compression.snappy.block.size", "1.4")),
-    "spark.io.compression.lz4.blockSize" -> Seq(
-      AlternateConfig("spark.io.compression.lz4.block.size", "1.4")),
-    "spark.rpc.numRetries" -> Seq(
-      AlternateConfig("spark.akka.num.retries", "1.4")),
-    "spark.rpc.retry.wait" -> Seq(
-      AlternateConfig("spark.akka.retry.wait", "1.4")),
-    "spark.rpc.askTimeout" -> Seq(
-      AlternateConfig("spark.akka.askTimeout", "1.4")),
-    "spark.rpc.lookupTimeout" -> Seq(
-      AlternateConfig("spark.akka.lookupTimeout", "1.4")),
-    "spark.streaming.fileStream.minRememberDuration" -> Seq(
-      AlternateConfig("spark.streaming.minRememberDuration", "1.5")),
-    "spark.yarn.max.executor.failures" -> Seq(
-      AlternateConfig("spark.yarn.max.worker.failures", "1.5")),
-    "spark.memory.offHeap.enabled" -> Seq(
-      AlternateConfig("spark.unsafe.offHeap", "1.6")),
-    "spark.rpc.message.maxSize" -> Seq(
-      AlternateConfig("spark.akka.frameSize", "1.6")),
+    "spark.kryoserializer.buffer.max" ->
+      Seq(AlternateConfig("spark.kryoserializer.buffer.max.mb", "1.4")),
+    "spark.shuffle.file.buffer" ->
+      Seq(AlternateConfig("spark.shuffle.file.buffer.kb", "1.4")),
+    "spark.executor.logs.rolling.maxSize" ->
+      Seq(AlternateConfig("spark.executor.logs.rolling.size.maxBytes", "1.4")),
+    "spark.io.compression.snappy.blockSize" ->
+      Seq(AlternateConfig("spark.io.compression.snappy.block.size", "1.4")),
+    "spark.io.compression.lz4.blockSize" ->
+      Seq(AlternateConfig("spark.io.compression.lz4.block.size", "1.4")),
+    "spark.rpc.numRetries" ->
+      Seq(AlternateConfig("spark.akka.num.retries", "1.4")),
+    "spark.rpc.retry.wait" ->
+      Seq(AlternateConfig("spark.akka.retry.wait", "1.4")),
+    "spark.rpc.askTimeout" ->
+      Seq(AlternateConfig("spark.akka.askTimeout", "1.4")),
+    "spark.rpc.lookupTimeout" ->
+      Seq(AlternateConfig("spark.akka.lookupTimeout", "1.4")),
+    "spark.streaming.fileStream.minRememberDuration" ->
+      Seq(AlternateConfig("spark.streaming.minRememberDuration", "1.5")),
+    "spark.yarn.max.executor.failures" ->
+      Seq(AlternateConfig("spark.yarn.max.worker.failures", "1.5")),
+    "spark.memory.offHeap.enabled" ->
+      Seq(AlternateConfig("spark.unsafe.offHeap", "1.6")),
+    "spark.rpc.message.maxSize" ->
+      Seq(AlternateConfig("spark.akka.frameSize", "1.6")),
     "spark.yarn.jars" -> Seq(AlternateConfig("spark.yarn.jar", "2.0"))
   )
 
@@ -785,12 +784,9 @@ private[spark] object SparkConf extends Logging {
     * the scheduler, while the rest of the spark configs can be inherited from the driver later.
     */
   def isExecutorStartupConf(name: String): Boolean = {
-    (
-      name.startsWith("spark.auth") && name != SecurityManager
-        .SPARK_AUTH_SECRET_CONF
-    ) ||
-    name.startsWith("spark.ssl") ||
-    name.startsWith("spark.rpc") ||
+    (name.startsWith("spark.auth") &&
+    name != SecurityManager.SPARK_AUTH_SECRET_CONF) ||
+    name.startsWith("spark.ssl") || name.startsWith("spark.rpc") ||
     isSparkPortConf(name)
   }
 
@@ -798,8 +794,8 @@ private[spark] object SparkConf extends Logging {
     * Return true if the given config matches either `spark.*.port` or `spark.port.*`.
     */
   def isSparkPortConf(name: String): Boolean = {
-    (name.startsWith("spark.") && name.endsWith(".port")) || name
-      .startsWith("spark.port.")
+    (name.startsWith("spark.") && name.endsWith(".port")) ||
+    name.startsWith("spark.port.")
   }
 
   /**

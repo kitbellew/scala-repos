@@ -287,8 +287,8 @@ class FileHandler(
         .listFiles(
           new FilenameFilter {
             def accept(f: File, fname: String): Boolean =
-              fname != name && fname.startsWith(prefixName) && fname
-                .endsWith(filenameSuffix)
+              fname != name && fname.startsWith(prefixName) &&
+                fname.endsWith(filenameSuffix)
           })
         .sortBy(_.getName)
 
@@ -300,8 +300,8 @@ class FileHandler(
   def roll() =
     synchronized {
       stream.close()
-      val newFilename =
-        filenamePrefix + "-" + timeSuffix(new Date(openTime)) + filenameSuffix
+      val newFilename = filenamePrefix + "-" + timeSuffix(new Date(openTime)) +
+        filenameSuffix
       new File(filename).renameTo(new File(newFilename))
       openLog()
       removeOldFiles()

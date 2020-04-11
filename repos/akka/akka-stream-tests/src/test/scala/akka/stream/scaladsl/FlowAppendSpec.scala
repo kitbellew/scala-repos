@@ -17,25 +17,32 @@ class FlowAppendSpec extends AkkaSpec with River {
   implicit val materializer = ActorMaterializer(settings)
 
   "Flow" should {
-    "append Flow" in riverOf[String] { subscriber ⇒
-      val flow = Flow[Int].via(otherFlow)
-      Source(elements).via(flow).to(Sink.fromSubscriber(subscriber)).run()
-    }
+    "append Flow" in
+      riverOf[String] { subscriber ⇒
+        val flow = Flow[Int].via(otherFlow)
+        Source(elements).via(flow).to(Sink.fromSubscriber(subscriber)).run()
+      }
 
-    "append Sink" in riverOf[String] { subscriber ⇒
-      val sink = Flow[Int].to(otherFlow.to(Sink.fromSubscriber(subscriber)))
-      Source(elements).to(sink).run()
-    }
+    "append Sink" in
+      riverOf[String] { subscriber ⇒
+        val sink = Flow[Int].to(otherFlow.to(Sink.fromSubscriber(subscriber)))
+        Source(elements).to(sink).run()
+      }
   }
 
   "Source" should {
-    "append Flow" in riverOf[String] { subscriber ⇒
-      Source(elements).via(otherFlow).to(Sink.fromSubscriber(subscriber)).run()
-    }
+    "append Flow" in
+      riverOf[String] { subscriber ⇒
+        Source(elements)
+          .via(otherFlow)
+          .to(Sink.fromSubscriber(subscriber))
+          .run()
+      }
 
-    "append Sink" in riverOf[String] { subscriber ⇒
-      Source(elements).to(otherFlow.to(Sink.fromSubscriber(subscriber))).run()
-    }
+    "append Sink" in
+      riverOf[String] { subscriber ⇒
+        Source(elements).to(otherFlow.to(Sink.fromSubscriber(subscriber))).run()
+      }
   }
 
 }

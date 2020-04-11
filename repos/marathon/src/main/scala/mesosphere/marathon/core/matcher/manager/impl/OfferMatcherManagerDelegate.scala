@@ -32,15 +32,15 @@ private[matcher] class OfferMatcherManagerDelegate(actorRef: ActorRef)
 
   override def addSubscription(offerMatcher: OfferMatcher)(implicit
       ec: ExecutionContext): Future[Unit] = {
-    val future = actorRef ? OfferMatcherManagerDelegate
-      .AddOrUpdateMatcher(offerMatcher)
+    val future = actorRef ?
+      OfferMatcherManagerDelegate.AddOrUpdateMatcher(offerMatcher)
     future.map(_ => ())
   }
 
   override def removeSubscription(offerMatcher: OfferMatcher)(implicit
       ec: ExecutionContext): Future[Unit] = {
-    val future = actorRef ? OfferMatcherManagerDelegate
-      .RemoveMatcher(offerMatcher)
+    val future = actorRef ?
+      OfferMatcherManagerDelegate.RemoveMatcher(offerMatcher)
     future.map(_ => ())
   }
 

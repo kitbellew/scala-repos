@@ -98,9 +98,8 @@ abstract class ClassfileParser {
   protected final def s1(): Int =
     in.nextByte.toInt // sign-extend the byte to int
   protected final def s2(): Int =
-    (
-      in.nextByte.toInt << 8
-    ) | u1 // sign-extend and shift the first byte, or with the unsigned second byte
+    (in.nextByte.toInt << 8) |
+      u1 // sign-extend and shift the first byte, or with the unsigned second byte
 
   private def readInnerClassFlags() = readClassFlags()
   private def readClassFlags() = JavaAccFlags classFlags u2
@@ -191,7 +190,8 @@ abstract class ClassfileParser {
         s"class file ${in.file} has wrong magic number 0x${toHexString(magic)}")
 
     val minor, major = u2
-    if (major < JAVA_MAJOR_VERSION || major == JAVA_MAJOR_VERSION && minor < JAVA_MINOR_VERSION)
+    if (major < JAVA_MAJOR_VERSION ||
+        major == JAVA_MAJOR_VERSION && minor < JAVA_MINOR_VERSION)
       abort(
         s"class file ${in.file} has unknown version $major.$minor, should be at least $JAVA_MAJOR_VERSION.$JAVA_MINOR_VERSION")
   }
@@ -601,9 +601,10 @@ abstract class ClassfileParser {
         0 until u2 foreach (_ => parseField())
         sawPrivateConstructor = false
         0 until u2 foreach (_ => parseMethod())
-        val needsConstructor = (!sawPrivateConstructor
-          && !(instanceScope containsName nme.CONSTRUCTOR)
-          && (sflags & INTERFACE) == 0)
+        val needsConstructor =
+          (!sawPrivateConstructor &&
+            !(instanceScope containsName nme.CONSTRUCTOR) &&
+            (sflags & INTERFACE) == 0)
         if (needsConstructor)
           instanceScope enter clazz.newClassConstructor(NoPosition)
       }
@@ -684,7 +685,8 @@ abstract class ClassfileParser {
       in.skip(2);
       skipAttributes()
     } else {
-      if ((sflags & PRIVATE) != 0L && optimized) { // TODO this should be !optimized, no? See c4181f656d.
+      if ((sflags & PRIVATE) != 0L &&
+          optimized) { // TODO this should be !optimized, no? See c4181f656d.
         in.skip(4);
         skipAttributes()
       } else {
@@ -707,8 +709,8 @@ abstract class ClassfileParser {
                      * ClassfileParser for 1 executes, and clazz.owner is the package.
                      */
                     assert(
-                      params.head.tpe.typeSymbol == clazz
-                        .owner || clazz.owner.hasPackageFlag,
+                      params.head.tpe.typeSymbol == clazz.owner ||
+                        clazz.owner.hasPackageFlag,
                       params.head.tpe.typeSymbol + ": " + clazz.owner)
                     params.tail
                   case _ =>
@@ -813,9 +815,9 @@ abstract class ClassfileParser {
                             case '*' =>
                               TypeBounds.empty
                           }
-                        val newtparam = sym.newExistential(
-                          newTypeName("?" + i),
-                          sym.pos) setInfo bounds
+                        val newtparam = sym
+                          .newExistential(newTypeName("?" + i), sym.pos) setInfo
+                          bounds
                         existentials += newtparam
                         xs += newtparam.tpeHK
                         i += 1
@@ -833,9 +835,8 @@ abstract class ClassfileParser {
                 // isMonomorphicType is false if the info is incomplete, as it usually is here
                 // so have to check unsafeTypeParams.isEmpty before worrying about raw type case below,
                 // or we'll create a boatload of needless existentials.
-                else if (classSym.isMonomorphicType || classSym
-                           .unsafeTypeParams
-                           .isEmpty)
+                else if (classSym.isMonomorphicType ||
+                         classSym.unsafeTypeParams.isEmpty)
                   tp
                 else
                   debuglogResult(s"raw type from $classSym") {
@@ -953,10 +954,11 @@ abstract class ClassfileParser {
         classTParams = tparams
         val parents = new ListBuffer[Type]()
         while (index < end) {
-          parents += sig2type(
-            tparams,
-            skiptvs = false
-          ) // here the variance doesn't matter
+          parents +=
+            sig2type(
+              tparams,
+              skiptvs = false
+            ) // here the variance doesn't matter
         }
         ClassInfoType(parents.toList, instanceScope, sym)
       }
@@ -1007,9 +1009,8 @@ abstract class ClassfileParser {
             while (i < paramCount) {
               val name = pool.getName(u2)
               val access = u2
-              if ((
-                    access & ACC_SYNTHETIC
-                  ) != ACC_SYNTHETIC) { // name not synthetic
+              if ((access & ACC_SYNTHETIC) !=
+                    ACC_SYNTHETIC) { // name not synthetic
                 val params =
                   sym.paramss.head // Java only has exactly one parameter list
                 params(i).name = name.encode
@@ -1180,9 +1181,8 @@ abstract class ClassfileParser {
               case None =>
                 hasError = true
             }
-          else if ((
-                     attrType == ScalaLongSignatureAnnotation.tpe
-                   ) && (name == nme.bytes))
+          else if ((attrType == ScalaLongSignatureAnnotation.tpe) &&
+                   (name == nme.bytes))
             parseScalaLongSigBytes match {
               case Some(c) =>
                 nvpairs += ((name, c))
@@ -1286,10 +1286,10 @@ abstract class ClassfileParser {
         if (file == NoAbstractFile) {
           (newStub(name.toTypeName), newStub(name.toTermName))
         } else {
-          val cls = owner
-            .newClass(name.toTypeName, NoPosition, sflags) setInfo completer
-          val mod = owner
-            .newModule(name.toTermName, NoPosition, sflags) setInfo completer
+          val cls = owner.newClass(name.toTypeName, NoPosition, sflags) setInfo
+            completer
+          val mod = owner.newModule(name.toTermName, NoPosition, sflags) setInfo
+            completer
           mod.moduleClass setInfo loaders.moduleClassLoader
           List(cls, mod.moduleClass) foreach (_.associatedFile = file)
           (cls, mod)
@@ -1339,7 +1339,8 @@ abstract class ClassfileParser {
           val pbuf = new PickleBuffer(in.buf, in.bp, in.bp + attrLen)
           pbuf.readNat();
           pbuf.readNat()
-          if (pbuf.readNat == 0) // a scala signature attribute with no entries means that the actual scala signature
+          if (pbuf.readNat ==
+                0) // a scala signature attribute with no entries means that the actual scala signature
             isScalaAnnot = true // is in a ScalaSignature annotation.
           in.skip(attrLen)
         case tpnme.ScalaATTR =>
@@ -1350,11 +1351,8 @@ abstract class ClassfileParser {
             val innerIndex, outerIndex, nameIndex = u2
             val jflags = readInnerClassFlags()
             if (innerIndex != 0 && outerIndex != 0 && nameIndex != 0)
-              innerClasses add InnerClassEntry(
-                innerIndex,
-                outerIndex,
-                nameIndex,
-                jflags)
+              innerClasses add
+                InnerClassEntry(innerIndex, outerIndex, nameIndex, jflags)
           }
         case _ =>
           in.skip(attrLen)
@@ -1408,8 +1406,10 @@ abstract class ClassfileParser {
     def entries = inners.values
 
     def add(entry: InnerClassEntry): Unit = {
-      inners get entry.externalName foreach (existing =>
-        devWarning(s"Overwriting inner class entry! Was $existing, now $entry"))
+      inners get entry.externalName foreach
+        (existing =>
+          devWarning(
+            s"Overwriting inner class entry! Was $existing, now $entry"))
       inners(entry.externalName) = entry
     }
     def innerSymbol(externalName: Name): Symbol =
@@ -1446,9 +1446,8 @@ abstract class ClassfileParser {
       extends LazyType
       with FlagAgnosticCompleter {
     override def complete(sym: Symbol) {
-      sym setInfo createFromClonedSymbols(
-        alias.initialize.typeParams,
-        alias.tpe)(typeFun)
+      sym setInfo
+        createFromClonedSymbols(alias.initialize.typeParams, alias.tpe)(typeFun)
     }
   }
 

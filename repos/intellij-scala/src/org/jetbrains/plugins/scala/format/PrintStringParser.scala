@@ -30,22 +30,19 @@ object PrintStringParser extends StringParser {
     Some(element) collect {
       // printf("%d", 1)
       case MethodInvocation(
-            PsiReferenceEx.resolve(
-              (f: ScFunction) &&
-              ContainingClass(owner: ScObject)),
+            PsiReferenceEx
+              .resolve((f: ScFunction) && ContainingClass(owner: ScObject)),
             Seq(literal: ScLiteral, args @ _*))
           if literal.isString && isPrintfMethod(owner.qualifiedName, f.name) =>
         (literal, args)
 
       // System.out.printf("%d", 1)
       case MethodInvocation(
-            PsiReferenceEx.resolve(
-              (f: PsiMethod) &&
-              ContainingClass(owner: PsiClass)),
+            PsiReferenceEx
+              .resolve((f: PsiMethod) && ContainingClass(owner: PsiClass)),
             Seq(literal: ScLiteral, args @ _*))
-          if literal.isString && isPrintStreamPrintfMethod(
-            owner.qualifiedName,
-            f.getName) =>
+          if literal.isString &&
+            isPrintStreamPrintfMethod(owner.qualifiedName, f.getName) =>
         (literal, args)
     }
 

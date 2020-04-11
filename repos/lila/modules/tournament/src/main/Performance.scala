@@ -22,8 +22,7 @@ private final class Performance {
             .toMap
         val performance = pairings.foldLeft(0) {
           case (acc, pairing) =>
-            acc +
-              ~(pairing.opponentOf(player.userId) flatMap ratingMap.get) + {
+            acc + ~(pairing.opponentOf(player.userId) flatMap ratingMap.get) + {
               if (pairing wonBy player.userId)
                 DIFF
               else if (pairing lostBy player.userId)

@@ -54,8 +54,8 @@ trait XLightWebHttpClientModule[M[+_]] extends HttpClientModule[M] {
           url0.getPath + path)
       }
 
-    private def buildRequest(
-        request: Request[String]): HttpClientError \/ IHttpRequest = {
+    private def buildRequest(request: Request[String]): HttpClientError \/
+      IHttpRequest = {
       buildUrl(request.path) map { url =>
         val req =
           request.method match {
@@ -85,8 +85,9 @@ trait XLightWebHttpClientModule[M[+_]] extends HttpClientModule[M] {
         response <- execute0(httpRequest)
         body <-
           EitherT(
-            M point fromTryCatch(Some(httpRequest))(
-              Option(response.getBody) map (_.readString("UTF-8"))))
+            M point
+              fromTryCatch(Some(httpRequest))(
+                Option(response.getBody) map (_.readString("UTF-8"))))
       } yield {
         Response(response.getStatus, response.getReason, body)
       }

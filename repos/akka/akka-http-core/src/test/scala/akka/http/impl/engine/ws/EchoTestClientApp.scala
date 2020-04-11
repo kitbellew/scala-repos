@@ -41,9 +41,8 @@ object EchoTestClientApp extends App {
       BinaryMessage(ByteString("def")))
 
   def source: Source[Message, NotUsed] =
-    Source(messages) ++ delayedCompletion(
-      1.second
-    ) // otherwise, we may start closing too soon
+    Source(messages) ++
+      delayedCompletion(1.second) // otherwise, we may start closing too soon
 
   def sink: Sink[Message, Future[Seq[String]]] =
     Flow[Message]

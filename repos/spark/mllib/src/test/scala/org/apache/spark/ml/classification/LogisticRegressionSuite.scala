@@ -955,17 +955,14 @@ class LogisticRegressionSuite
     assert(summary.roc.collect() === sameSummary.roc.collect())
     assert(summary.pr.collect === sameSummary.pr.collect())
     assert(
-      summary.fMeasureByThreshold.collect() === sameSummary
-        .fMeasureByThreshold
-        .collect())
+      summary.fMeasureByThreshold.collect() ===
+        sameSummary.fMeasureByThreshold.collect())
     assert(
-      summary.recallByThreshold.collect() === sameSummary
-        .recallByThreshold
-        .collect())
+      summary.recallByThreshold.collect() ===
+        sameSummary.recallByThreshold.collect())
     assert(
-      summary.precisionByThreshold.collect() === sameSummary
-        .precisionByThreshold
-        .collect())
+      summary.precisionByThreshold.collect() ===
+        sameSummary.precisionByThreshold.collect())
   }
 
   test("statistics on training data") {
@@ -1125,15 +1122,16 @@ object LogisticRegressionSuite {
     * This excludes input columns to simplify some tests.
     */
   val allParamSettings: Map[String, Any] = ProbabilisticClassifierSuite
-    .allParamSettings ++ Map(
-    "probabilityCol" -> "myProbability",
-    "thresholds" -> Array(0.4, 0.6),
-    "regParam" -> 0.01,
-    "elasticNetParam" -> 0.1,
-    "maxIter" -> 2, // intentionally small
-    "fitIntercept" -> true,
-    "tol" -> 0.8,
-    "standardization" -> false,
-    "threshold" -> 0.6
-  )
+    .allParamSettings ++
+    Map(
+      "probabilityCol" -> "myProbability",
+      "thresholds" -> Array(0.4, 0.6),
+      "regParam" -> 0.01,
+      "elasticNetParam" -> 0.1,
+      "maxIter" -> 2, // intentionally small
+      "fitIntercept" -> true,
+      "tol" -> 0.8,
+      "standardization" -> false,
+      "threshold" -> 0.6
+    )
 }

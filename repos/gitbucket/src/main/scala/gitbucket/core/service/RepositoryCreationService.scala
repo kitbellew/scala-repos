@@ -51,13 +51,9 @@ trait RepositoryCreationService {
         val headId = git.getRepository.resolve(Constants.HEAD + "^{commit}")
         val content =
           if (description.nonEmpty) {
-            name + "\n" +
-              "===============\n" +
-              "\n" +
-              description.get
+            name + "\n" + "===============\n" + "\n" + description.get
           } else {
-            name + "\n" +
-              "===============\n"
+            name + "\n" + "===============\n"
           }
 
         builder.add(

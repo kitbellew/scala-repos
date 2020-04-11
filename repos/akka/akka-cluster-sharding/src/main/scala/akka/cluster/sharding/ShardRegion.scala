@@ -494,9 +494,10 @@ class ShardRegion(
 
   def receiveClusterState(state: CurrentClusterState): Unit = {
     changeMembers(
-      immutable.SortedSet.empty(ageOrdering) union state
-        .members
-        .filter(m ⇒ m.status == MemberStatus.Up && matchingRole(m)))
+      immutable.SortedSet.empty(ageOrdering) union
+        state
+          .members
+          .filter(m ⇒ m.status == MemberStatus.Up && matchingRole(m)))
   }
 
   def receiveClusterEvent(evt: ClusterDomainEvent): Unit =
@@ -787,7 +788,8 @@ class ShardRegion(
           log.info(logMsg)
         else
           log.warning(
-            logMsg + " The coordinator might not be available. You might want to check cluster membership status.")
+            logMsg +
+              " The coordinator might not be available. You might want to check cluster membership status.")
       }
     }
   }

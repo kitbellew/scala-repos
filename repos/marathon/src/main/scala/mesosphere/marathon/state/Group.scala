@@ -157,11 +157,11 @@ case class Group(
     }
   }
 
-  lazy val transitiveApps: Set[AppDefinition] = this.apps ++ groups
-    .flatMap(_.transitiveApps)
+  lazy val transitiveApps: Set[AppDefinition] = this.apps ++
+    groups.flatMap(_.transitiveApps)
 
-  lazy val transitiveGroups: Set[Group] = groups
-    .flatMap(_.transitiveGroups) + this
+  lazy val transitiveGroups: Set[Group] = groups.flatMap(_.transitiveGroups) +
+    this
 
   lazy val transitiveAppGroups: Set[Group] = transitiveGroups
     .filter(_.apps.nonEmpty)
@@ -269,9 +269,8 @@ object Group {
       group.id is validPathWithBase(base)
       group.apps is every(AppDefinition.validNestedAppDefinition(base))
       group is noAppsAndGroupsWithSameName
-      (group.id.isRoot is false) or (
-        group.dependencies is noCyclicDependencies(group)
-      )
+      (group.id.isRoot is false) or
+        (group.dependencies is noCyclicDependencies(group))
       group is validPorts
 
       group.dependencies is every(validPathWithBase(base))
@@ -329,11 +328,12 @@ object Group {
               .flatMap { servicePorts =>
                 for {
                   existingApp <- group.transitiveApps.toList
-                  if existingApp.id != app
-                    .id // in case of an update, do not compare the app against itself
+                  if existingApp.id !=
+                    app.id // in case of an update, do not compare the app against itself
                   existingServicePort <-
                     existingApp.portMappings.toList.flatten.map(_.servicePort)
-                  if existingServicePort != 0 // ignore zero ports, which will be chosen at random
+                  if existingServicePort !=
+                    0 // ignore zero ports, which will be chosen at random
                   if servicePorts contains existingServicePort
                 } yield RuleViolation(
                   app.id,

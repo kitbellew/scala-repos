@@ -78,15 +78,16 @@ final class StreamerList(
     import play.api.data.validation._
     Form(
       single(
-        "text" -> text.verifying(
-          Constraint[String]("constraint.text_parsable") { t =>
-            validate(t) match {
-              case (_, Nil) =>
-                Valid
-              case (_, errs) =>
-                Invalid(ValidationError(errs.map(_.getMessage) mkString ","))
-            }
-          })))
+        "text" ->
+          text.verifying(
+            Constraint[String]("constraint.text_parsable") { t =>
+              validate(t) match {
+                case (_, Nil) =>
+                  Valid
+                case (_, errs) =>
+                  Invalid(ValidationError(errs.map(_.getMessage) mkString ","))
+              }
+            })))
   }
 }
 

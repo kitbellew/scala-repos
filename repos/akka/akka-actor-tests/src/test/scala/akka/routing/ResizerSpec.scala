@@ -230,48 +230,49 @@ class ResizerSpec
       routeeSize(router) should ===(resizer.upperBound)
     }
 
-    "backoff" in within(10 seconds) {
-      val resizer = DefaultResizer(
-        lowerBound = 2,
-        upperBound = 5,
-        rampupRate = 1.0,
-        backoffRate = 1.0,
-        backoffThreshold = 0.40,
-        pressureThreshold = 1,
-        messagesPerResize = 2)
+    "backoff" in
+      within(10 seconds) {
+        val resizer = DefaultResizer(
+          lowerBound = 2,
+          upperBound = 5,
+          rampupRate = 1.0,
+          backoffRate = 1.0,
+          backoffThreshold = 0.40,
+          pressureThreshold = 1,
+          messagesPerResize = 2)
 
-      val router = system.actorOf(
-        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(
-          Props(
-            new Actor {
-              def receive = {
-                case n: Int if n <= 0 ⇒ // done
-                case n: Int ⇒
-                  Thread.sleep((n millis).dilated.toMillis)
-              }
-            })))
+        val router = system.actorOf(
+          RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(
+            Props(
+              new Actor {
+                def receive = {
+                  case n: Int if n <= 0 ⇒ // done
+                  case n: Int ⇒
+                    Thread.sleep((n millis).dilated.toMillis)
+                }
+              })))
 
-      // put some pressure on the router
-      for (m ← 0 until 15) {
-        router ! 150
-        Thread.sleep((20 millis).dilated.toMillis)
-      }
-
-      val z = routeeSize(router)
-      z should be > (2)
-
-      Thread.sleep((300 millis).dilated.toMillis)
-
-      // let it cool down
-      awaitCond(
-        {
-          router ! 0 // trigger resize
+        // put some pressure on the router
+        for (m ← 0 until 15) {
+          router ! 150
           Thread.sleep((20 millis).dilated.toMillis)
-          routeeSize(router) < z
-        },
-        interval = 500.millis.dilated)
+        }
 
-    }
+        val z = routeeSize(router)
+        z should be > (2)
+
+        Thread.sleep((300 millis).dilated.toMillis)
+
+        // let it cool down
+        awaitCond(
+          {
+            router ! 0 // trigger resize
+            Thread.sleep((20 millis).dilated.toMillis)
+            routeeSize(router) < z
+          },
+          interval = 500.millis.dilated)
+
+      }
 
   }
 

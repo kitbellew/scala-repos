@@ -103,11 +103,10 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
       }
 
   def ~*~[B >: A, X2 >: X](join: => Rule[S, S, (B, B) => B, X2]) = {
-    this ~>* (
-      for (f <- join;
-           a <- rule)
-        yield f(_: B, a)
-    )
+    this ~>*
+      (for (f <- join;
+            a <- rule)
+        yield f(_: B, a))
   }
 
   /** Repeats this rule one or more times with a separator (which is discarded) */

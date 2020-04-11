@@ -39,8 +39,8 @@ trait PersistentStoreTest
   test("Multiple creates should create only the first time") {
     val entity = fetch("foo2")
     entity should be('empty)
-    persistentStore.create("foo", "Hello".getBytes).futureValue.bytes should be(
-      "Hello".getBytes)
+    persistentStore.create("foo", "Hello".getBytes).futureValue.bytes should
+      be("Hello".getBytes)
     whenReady(persistentStore.create("foo", "Hello again".getBytes).failed) {
       _ shouldBe a[StoreCommandFailedException]
     }

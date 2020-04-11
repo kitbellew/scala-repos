@@ -354,10 +354,11 @@ object JGitUtil {
           result
         } else if (!revIterator
                      .hasNext) { // maybe, revCommit has only 1 log. other case, restList be empty
-          result ++ restList.map {
-            case (tuple, map) =>
-              tupleAdd(tuple, map.values.headOption.getOrElse(revCommit))
-          }
+          result ++
+            restList.map {
+              case (tuple, map) =>
+                tupleAdd(tuple, map.values.headOption.getOrElse(revCommit))
+            }
         } else {
           val newCommit = revIterator.next
           val (thisTimeChecks, skips) = restList.partition {
@@ -419,10 +420,12 @@ object JGitUtil {
                 .map(_.url)
             } else
               None
-          fileList +:= (
-            treeWalk.getObjectId(0), treeWalk.getFileMode(0), treeWalk
-              .getNameString, linkUrl
-          )
+          fileList +:=
+            (
+              treeWalk.getObjectId(0),
+              treeWalk.getFileMode(0),
+              treeWalk.getNameString,
+              linkUrl)
         }
       }
       revWalk.markStart(revCommit)
@@ -835,7 +838,8 @@ object JGitUtil {
             .asScala
             .filter { e =>
               (
-                e.getKey.startsWith(Constants.R_HEADS) && revWalk.isMergedInto(
+                e.getKey.startsWith(Constants.R_HEADS) &&
+                revWalk.isMergedInto(
                   commit,
                   revWalk.parseCommit(e.getValue.getObjectId))
               )
@@ -865,7 +869,8 @@ object JGitUtil {
             .asScala
             .filter { e =>
               (
-                e.getKey.startsWith(Constants.R_TAGS) && revWalk.isMergedInto(
+                e.getKey.startsWith(Constants.R_TAGS) &&
+                revWalk.isMergedInto(
                   commit,
                   revWalk.parseCommit(e.getValue.getObjectId))
               )
@@ -1000,8 +1005,8 @@ object JGitUtil {
         } catch {
           case e: ConfigInvalidException => {
             logger.error(
-              "Failed to load .gitmodules file for " + repository
-                .getDirectory(),
+              "Failed to load .gitmodules file for " +
+                repository.getDirectory(),
               e)
             Nil
           }
@@ -1098,9 +1103,8 @@ object JGitUtil {
     try {
       using(git.getRepository.getObjectDatabase) { db =>
         val loader = db.open(id)
-        if (loader.isLarge || (
-              fetchLargeFile == false && FileUtil.isLarge(loader.getSize)
-            )) {
+        if (loader.isLarge ||
+            (fetchLargeFile == false && FileUtil.isLarge(loader.getSize))) {
           None
         } else {
           Some(loader.getBytes)
@@ -1174,9 +1178,8 @@ object JGitUtil {
       requestBranch: String): String =
     defining(getAllCommitIds(oldGit)) { existIds =>
       getCommitLogs(newGit, requestBranch, true) { commit =>
-        existIds
-          .contains(commit.name) && getBranchesOfCommit(oldGit, commit.getName)
-          .contains(branch)
+        existIds.contains(commit.name) &&
+        getBranchesOfCommit(oldGit, commit.getName).contains(branch)
       }.head.id
     }
 
@@ -1322,30 +1325,31 @@ object JGitUtil {
           .map { i =>
             val c = blame.getSourceCommit(i)
             if (!blameMap.contains(c.name)) {
-              blameMap += c.name -> JGitUtil.BlameInfo(
-                c.name,
-                c.getAuthorIdent.getName,
-                c.getAuthorIdent.getEmailAddress,
-                c.getAuthorIdent.getWhen,
-                Option(
-                  git
-                    .log
-                    .add(c)
-                    .addPath(blame.getSourcePath(i))
-                    .setSkip(1)
-                    .setMaxCount(2)
-                    .call
-                    .iterator
-                    .next).map(_.name),
-                if (blame.getSourcePath(i) == path) {
-                  None
-                } else {
-                  Some(blame.getSourcePath(i))
-                },
-                c.getCommitterIdent.getWhen,
-                c.getShortMessage,
-                Set.empty
-              )
+              blameMap += c.name ->
+                JGitUtil.BlameInfo(
+                  c.name,
+                  c.getAuthorIdent.getName,
+                  c.getAuthorIdent.getEmailAddress,
+                  c.getAuthorIdent.getWhen,
+                  Option(
+                    git
+                      .log
+                      .add(c)
+                      .addPath(blame.getSourcePath(i))
+                      .setSkip(1)
+                      .setMaxCount(2)
+                      .call
+                      .iterator
+                      .next).map(_.name),
+                  if (blame.getSourcePath(i) == path) {
+                    None
+                  } else {
+                    Some(blame.getSourcePath(i))
+                  },
+                  c.getCommitterIdent.getWhen,
+                  c.getShortMessage,
+                  Set.empty
+                )
             }
             idLine :+= (c.name, i)
           }

@@ -129,8 +129,7 @@ object ProducerPerformance extends Logging {
     val producerRequestRequiredAcksOpt = parser
       .accepts(
         "request-num-acks",
-        "Number of acks required for producer request " +
-          "to complete")
+        "Number of acks required for producer request " + "to complete")
       .withRequiredArg()
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(-1)
@@ -324,12 +323,8 @@ object ProducerPerformance extends Logging {
       leftPaddedSeqId = String
         .format("%0" + seqIdNumDigit + "d", long2Long(msgId))
 
-      val msgHeader = topicLabel + SEP +
-        topic + SEP +
-        threadIdLabel + SEP +
-        threadId + SEP +
-        messageIdLabel + SEP +
-        leftPaddedSeqId + SEP
+      val msgHeader = topicLabel + SEP + topic + SEP + threadIdLabel + SEP +
+        threadId + SEP + messageIdLabel + SEP + leftPaddedSeqId + SEP
 
       val seqMsgString = String
         .format("%1$-" + msgSize + "s", msgHeader)
@@ -347,8 +342,8 @@ object ProducerPerformance extends Logging {
         else
           1 + rand.nextInt(config.messageSize)
       if (config.seqIdMode) {
-        val seqId = config
-          .initialMessageId + (messagesPerThread * threadId) + messageId
+        val seqId = config.initialMessageId +
+          (messagesPerThread * threadId) + messageId
         generateMessageWithSeqId(topic, seqId, msgSize)
       } else {
         new Array[Byte](msgSize)

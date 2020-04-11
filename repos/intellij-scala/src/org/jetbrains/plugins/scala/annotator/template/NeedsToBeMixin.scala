@@ -46,8 +46,8 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
           val m = sign.method
           m match {
             case f: ScFunctionDefinition =>
-              if (f.hasModifierPropertyScala("abstract") && f
-                    .hasModifierPropertyScala("override")) {
+              if (f.hasModifierPropertyScala("abstract") &&
+                  f.hasModifierPropertyScala("override")) {
                 signature
                   .supers
                   .find {

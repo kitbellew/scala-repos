@@ -705,12 +705,11 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
         // Is lazy on initial application (with the exception of the first element)
         assert(
-          i == (
-            if (xs.isEmpty)
-              0
-            else
-              1
-          ))
+          i ==
+            (if (xs.isEmpty)
+               0
+             else
+               1))
 
         // Is lazy when consuming the stream
         await(s.take(n).force)

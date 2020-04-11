@@ -95,126 +95,132 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
     import play.libs.ws.WSSignatureCalculator
 
-    "make GET Requests" in withServer { ws =>
-      val req = ws.url("/get").get
-      val rep = req
-        .toCompletableFuture
-        .get(10, TimeUnit.SECONDS) // AWait result
+    "make GET Requests" in
+      withServer { ws =>
+        val req = ws.url("/get").get
+        val rep = req
+          .toCompletableFuture
+          .get(10, TimeUnit.SECONDS) // AWait result
 
-      rep.getStatus aka "status" must_== 200 and (
-        rep.asJson.path("origin").textValue must not beNull
-      )
-    }
+        rep.getStatus aka "status" must_== 200 and
+          (rep.asJson.path("origin").textValue must not beNull)
+      }
 
-    "use queryString in url" in withServer { ws =>
-      val rep = ws
-        .url("/get?foo=bar")
-        .get()
-        .toCompletableFuture
-        .get(10, TimeUnit.SECONDS)
-
-      rep.getStatus aka "status" must_== 200 and (
-        rep.asJson().path("args").path("foo").textValue() must_== "bar"
-      )
-    }
-
-    "use user:password in url" in Server.withApplication(app) { implicit port =>
-      withClient { ws =>
+    "use queryString in url" in
+      withServer { ws =>
         val rep = ws
-          .url(s"http://user:password@localhost:$port/basic-auth/user/password")
+          .url("/get?foo=bar")
           .get()
           .toCompletableFuture
           .get(10, TimeUnit.SECONDS)
 
-        rep.getStatus aka "status" must_== 200 and (
-          rep.asJson().path("authenticated").booleanValue() must beTrue
-        )
+        rep.getStatus aka "status" must_== 200 and
+          (rep.asJson().path("args").path("foo").textValue() must_== "bar")
       }
-    }
 
-    "reject invalid query string" in withServer { ws =>
-      import java.net.MalformedURLException
+    "use user:password in url" in
+      Server.withApplication(app) { implicit port =>
+        withClient { ws =>
+          val rep = ws
+            .url(
+              s"http://user:password@localhost:$port/basic-auth/user/password")
+            .get()
+            .toCompletableFuture
+            .get(10, TimeUnit.SECONDS)
 
-      ws.url("/get?=&foo").aka("invalid request") must throwA[RuntimeException]
-        .like {
-          case e: RuntimeException =>
-            e.getCause must beAnInstanceOf[MalformedURLException]
+          rep.getStatus aka "status" must_== 200 and
+            (rep.asJson().path("authenticated").booleanValue() must beTrue)
         }
-    }
-
-    "reject invalid user password string" in withServer { ws =>
-      import java.net.MalformedURLException
-
-      ws.url("http://@localhost/get").aka("invalid request") must throwA[
-        RuntimeException].like {
-        case e: RuntimeException =>
-          e.getCause must beAnInstanceOf[MalformedURLException]
       }
-    }
 
-    "consider query string in JSON conversion" in withServer { ws =>
-      val empty = ws
-        .url("/get?foo")
-        .get
-        .toCompletableFuture
-        .get(10, TimeUnit.SECONDS)
-      val bar = ws
-        .url("/get?foo=bar")
-        .get
-        .toCompletableFuture
-        .get(10, TimeUnit.SECONDS)
+    "reject invalid query string" in
+      withServer { ws =>
+        import java.net.MalformedURLException
 
-      empty.asJson.path("args").path("foo").textValue() must_== "" and (
-        bar.asJson.path("args").path("foo").textValue() must_== "bar"
-      )
-    }
+        ws.url("/get?=&foo").aka("invalid request") must
+          throwA[RuntimeException].like {
+            case e: RuntimeException =>
+              e.getCause must beAnInstanceOf[MalformedURLException]
+          }
+      }
 
-    "get a streamed response" in withResult(
-      Results.Ok.chunked(Source(List("a", "b", "c")))) { ws =>
-      val res = ws.url("/get").stream().toCompletableFuture.get()
+    "reject invalid user password string" in
+      withServer { ws =>
+        import java.net.MalformedURLException
 
-      await(res.getBody().runWith(foldingSink, app.materializer))
-        .decodeString("utf-8")
-        .aka("streamed response") must_== "abc"
-    }
+        ws.url("http://@localhost/get").aka("invalid request") must
+          throwA[RuntimeException].like {
+            case e: RuntimeException =>
+              e.getCause must beAnInstanceOf[MalformedURLException]
+          }
+      }
 
-    "streaming a request body" in withEchoServer { ws =>
-      val source = Source(List("a", "b", "c").map(ByteString.apply)).asJava
-      val res = ws.url("/post").setMethod("POST").setBody(source).execute()
-      val body = res.toCompletableFuture.get().getBody
+    "consider query string in JSON conversion" in
+      withServer { ws =>
+        val empty = ws
+          .url("/get?foo")
+          .get
+          .toCompletableFuture
+          .get(10, TimeUnit.SECONDS)
+        val bar = ws
+          .url("/get?foo=bar")
+          .get
+          .toCompletableFuture
+          .get(10, TimeUnit.SECONDS)
 
-      body must_== "abc"
-    }
+        empty.asJson.path("args").path("foo").textValue() must_== "" and
+          (bar.asJson.path("args").path("foo").textValue() must_== "bar")
+      }
 
-    "sending a simple multipart form body" in withServer { ws =>
-      val source =
-        Source
-          .single(new Http.MultipartFormData.DataPart("hello", "world"))
-          .asJava
-      val res = ws.url("/post").post(source)
-      val body = res.toCompletableFuture.get().asJson()
+    "get a streamed response" in
+      withResult(Results.Ok.chunked(Source(List("a", "b", "c")))) { ws =>
+        val res = ws.url("/get").stream().toCompletableFuture.get()
 
-      body.path("form").path("hello").textValue() must_== "world"
-    }
+        await(res.getBody().runWith(foldingSink, app.materializer))
+          .decodeString("utf-8")
+          .aka("streamed response") must_== "abc"
+      }
 
-    "sending a multipart form body" in withServer { ws =>
-      val file =
-        new File(this.getClass.getResource("/testassets/bar.txt").toURI)
-      val dp = new Http.MultipartFormData.DataPart("hello", "world")
-      val fp =
-        new Http.MultipartFormData.FilePart(
-          "upload",
-          "bar.txt",
-          "text/plain",
-          FileIO.fromFile(file).asJava)
-      val source = akka.stream.javadsl.Source.from(util.Arrays.asList(dp, fp))
+    "streaming a request body" in
+      withEchoServer { ws =>
+        val source = Source(List("a", "b", "c").map(ByteString.apply)).asJava
+        val res = ws.url("/post").setMethod("POST").setBody(source).execute()
+        val body = res.toCompletableFuture.get().getBody
 
-      val res = ws.url("/post").post(source)
-      val body = res.toCompletableFuture.get().asJson()
+        body must_== "abc"
+      }
 
-      body.path("form").path("hello").textValue() must_== "world"
-      body.path("file").textValue() must_== "This is a test asset."
-    }
+    "sending a simple multipart form body" in
+      withServer { ws =>
+        val source =
+          Source
+            .single(new Http.MultipartFormData.DataPart("hello", "world"))
+            .asJava
+        val res = ws.url("/post").post(source)
+        val body = res.toCompletableFuture.get().asJson()
+
+        body.path("form").path("hello").textValue() must_== "world"
+      }
+
+    "sending a multipart form body" in
+      withServer { ws =>
+        val file =
+          new File(this.getClass.getResource("/testassets/bar.txt").toURI)
+        val dp = new Http.MultipartFormData.DataPart("hello", "world")
+        val fp =
+          new Http.MultipartFormData.FilePart(
+            "upload",
+            "bar.txt",
+            "text/plain",
+            FileIO.fromFile(file).asJava)
+        val source = akka.stream.javadsl.Source.from(util.Arrays.asList(dp, fp))
+
+        val res = ws.url("/post").post(source)
+        val body = res.toCompletableFuture.get().asJson()
+
+        body.path("form").path("hello").textValue() must_== "world"
+        body.path("file").textValue() must_== "This is a test asset."
+      }
 
     class CustomSigner
         extends WSSignatureCalculator
@@ -226,17 +232,18 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       }
     }
 
-    "not throw an exception while signing requests" in withServer { ws =>
-      val key = "12234"
-      val secret = "asbcdef"
-      val token = "token"
-      val tokenSecret = "tokenSecret"
-      (ConsumerKey(key, secret), RequestToken(token, tokenSecret))
+    "not throw an exception while signing requests" in
+      withServer { ws =>
+        val key = "12234"
+        val secret = "asbcdef"
+        val token = "token"
+        val tokenSecret = "tokenSecret"
+        (ConsumerKey(key, secret), RequestToken(token, tokenSecret))
 
-      val calc: WSSignatureCalculator = new CustomSigner
+        val calc: WSSignatureCalculator = new CustomSigner
 
-      ws.url("/").sign(calc).aka("signed request") must not(throwA[Exception])
-    }
+        ws.url("/").sign(calc).aka("signed request") must not(throwA[Exception])
+      }
   }
 
   "WS@scala" should {
@@ -286,53 +293,57 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       }
     }
 
-    "make GET Requests" in withServer { ws =>
-      val req = ws.url("/get").get()
+    "make GET Requests" in
+      withServer { ws =>
+        val req = ws.url("/get").get()
 
-      Await.result(req, Duration(1, SECONDS)).status aka "status" must_== 200
-    }
+        Await.result(req, Duration(1, SECONDS)).status aka "status" must_== 200
+      }
 
-    "Get 404 errors" in withServer { ws =>
-      val req = ws.url("/post").get()
+    "Get 404 errors" in
+      withServer { ws =>
+        val req = ws.url("/post").get()
 
-      Await.result(req, Duration(1, SECONDS)).status aka "status" must_== 404
-    }
+        Await.result(req, Duration(1, SECONDS)).status aka "status" must_== 404
+      }
 
-    "get a streamed response" in withResult(
-      Results.Ok.chunked(Source(List("a", "b", "c")))) { ws =>
-      val res = ws.url("/get").stream()
-      val body = await(res).body
+    "get a streamed response" in
+      withResult(Results.Ok.chunked(Source(List("a", "b", "c")))) { ws =>
+        val res = ws.url("/get").stream()
+        val body = await(res).body
 
-      await(body.runWith(foldingSink))
-        .decodeString("utf-8")
-        .aka("streamed response") must_== "abc"
-    }
+        await(body.runWith(foldingSink))
+          .decodeString("utf-8")
+          .aka("streamed response") must_== "abc"
+      }
 
-    "streaming a request body" in withEchoServer { ws =>
-      val source = Source(List("a", "b", "c").map(ByteString.apply))
-      val res = ws
-        .url("/post")
-        .withMethod("POST")
-        .withBody(StreamedBody(source))
-        .execute()
-      val body = await(res).body
+    "streaming a request body" in
+      withEchoServer { ws =>
+        val source = Source(List("a", "b", "c").map(ByteString.apply))
+        val res = ws
+          .url("/post")
+          .withMethod("POST")
+          .withBody(StreamedBody(source))
+          .execute()
+        val body = await(res).body
 
-      body must_== "abc"
-    }
+        body must_== "abc"
+      }
 
-    "send a multipart request body" in withServer { ws =>
-      val file =
-        new File(this.getClass.getResource("/testassets/foo.txt").toURI)
-      val dp = MultipartFormData.DataPart("hello", "world")
-      val fp = MultipartFormData
-        .FilePart("upload", "foo.txt", None, FileIO.fromFile(file))
-      val source = Source(List(dp, fp))
-      val res = ws.url("/post").post(source)
-      val body = await(res).json
+    "send a multipart request body" in
+      withServer { ws =>
+        val file =
+          new File(this.getClass.getResource("/testassets/foo.txt").toURI)
+        val dp = MultipartFormData.DataPart("hello", "world")
+        val fp = MultipartFormData
+          .FilePart("upload", "foo.txt", None, FileIO.fromFile(file))
+        val source = Source(List(dp, fp))
+        val res = ws.url("/post").post(source)
+        val body = await(res).json
 
-      (body \ "form" \ "hello").toOption must beSome(JsString("world"))
-      (body \ "file").toOption must beSome(JsString("This is a test asset."))
-    }
+        (body \ "form" \ "hello").toOption must beSome(JsString("world"))
+        (body \ "file").toOption must beSome(JsString("This is a test asset."))
+      }
 
     class CustomSigner extends WSSignatureCalculator with SignatureCalculator {
       def calculateAndAddSignature(
@@ -345,16 +356,17 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     "not throw an exception while signing requests" >> {
       val calc = new CustomSigner
 
-      "without query string" in withServer { ws =>
-        ws.url("/").sign(calc).get().aka("signed request") must not(
-          throwA[NullPointerException])
-      }
+      "without query string" in
+        withServer { ws =>
+          ws.url("/").sign(calc).get().aka("signed request") must
+            not(throwA[NullPointerException])
+        }
 
-      "with query string" in withServer { ws =>
-        ws.url("/")
-          .withQueryString("lorem" -> "ipsum")
-          .sign(calc) aka "signed request" must not(throwA[Exception])
-      }
+      "with query string" in
+        withServer { ws =>
+          ws.url("/").withQueryString("lorem" -> "ipsum").sign(calc) aka
+            "signed request" must not(throwA[Exception])
+        }
     }
   }
 }

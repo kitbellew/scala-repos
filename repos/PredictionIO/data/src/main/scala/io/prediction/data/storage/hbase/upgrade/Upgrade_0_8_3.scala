@@ -244,11 +244,11 @@ object Upgrade_0_8_3 {
 
     } else {
       logger.info(
-        s"From appId: ${fromAppId} doesn't contain"
-          + s" obsolete entityTypes ${obsEntityTypes} or"
-          + s" obsolete properties ${obsProperties}."
-          + " No need data migration."
-          + s" You can continue to use appId ${fromAppId}.")
+        s"From appId: ${fromAppId} doesn't contain" +
+          s" obsolete entityTypes ${obsEntityTypes} or" +
+          s" obsolete properties ${obsProperties}." +
+          " No need data migration." +
+          s" You can continue to use appId ${fromAppId}.")
     }
 
     logger.info("Done.")

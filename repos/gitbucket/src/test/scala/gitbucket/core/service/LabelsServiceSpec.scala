@@ -36,9 +36,10 @@ class LabelsServiceSpec extends FunSpec with ServiceSpecBase {
 
         assert(getLabels.length == 2)
         assert(
-          getLabels == List(
-            Label("user1", "repo1", labelId1, "label1", "000000"),
-            Label("user1", "repo1", labelId2, "label2", "ffffff")))
+          getLabels ==
+            List(
+              Label("user1", "repo1", labelId1, "label1", "000000"),
+              Label("user1", "repo1", labelId2, "label2", "ffffff")))
       }
     }
   }
@@ -67,8 +68,8 @@ class LabelsServiceSpec extends FunSpec with ServiceSpecBase {
 
         def getLabel = dummyService.getLabel("user1", "repo1", labelId1)
         assert(
-          getLabel == Some(
-            Label("user1", "repo1", labelId1, "label1", "000000")))
+          getLabel ==
+            Some(Label("user1", "repo1", labelId1, "label1", "000000")))
       }
     }
     it("should return a label fetched by label name") {
@@ -103,8 +104,8 @@ class LabelsServiceSpec extends FunSpec with ServiceSpecBase {
         assert(labelId == 4)
         def getLabel = dummyService.getLabel("user1", "repo1", labelId)
         assert(
-          getLabel == Some(
-            Label("user1", "repo1", labelId, "label2", "000000")))
+          getLabel ==
+            Some(Label("user1", "repo1", labelId, "label2", "000000")))
       }
     }
   }
@@ -122,8 +123,8 @@ class LabelsServiceSpec extends FunSpec with ServiceSpecBase {
           .updateLabel("user1", "repo1", labelId, "updated-label", "ffffff")
         def getLabel = dummyService.getLabel("user1", "repo1", labelId)
         assert(
-          getLabel == Some(
-            Label("user1", "repo1", labelId, "updated-label", "ffffff")))
+          getLabel ==
+            Some(Label("user1", "repo1", labelId, "updated-label", "ffffff")))
       }
     }
   }

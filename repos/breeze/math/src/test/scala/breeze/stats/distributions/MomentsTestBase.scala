@@ -51,8 +51,8 @@ trait MomentsTestBase[T] extends FunSuite with Checkers {
             val sample = distr.sample(numSamples).map(asDouble _)
             val vari = variance(sample)
 
-            if ((vari - distr.variance)
-                  .abs / (vari max 1) > VARIANCE_TOLERANCE) {
+            if ((vari - distr.variance).abs /
+                  (vari max 1) > VARIANCE_TOLERANCE) {
               println("Expected " + distr.variance + " but got " + vari)
               false
             } else

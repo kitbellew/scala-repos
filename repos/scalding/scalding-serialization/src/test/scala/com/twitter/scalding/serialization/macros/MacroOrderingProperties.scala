@@ -754,8 +754,8 @@ class MacroOrderingProperties
     val oser = primitiveOrderedBufferSupplier[Either[Int, String]]
     assert(oser.staticSize === None, "can't get the size statically")
     assert(
-      Some(Serialization.toBytes[Either[Int, String]](Left(1)).length) === oser
-        .dynamicSize(Left(1)),
+      Some(Serialization.toBytes[Either[Int, String]](Left(1)).length) ===
+        oser.dynamicSize(Left(1)),
       "serialization size matches dynamic size")
     check[Either[Int, String]]
     checkCollisions[Either[Int, String]]

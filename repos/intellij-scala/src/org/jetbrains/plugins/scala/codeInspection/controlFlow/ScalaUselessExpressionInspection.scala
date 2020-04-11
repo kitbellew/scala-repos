@@ -38,8 +38,8 @@ class ScalaUselessExpressionInspection
       holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case expr: ScExpression
         if IntentionAvailabilityChecker.checkInspection(this, expr.getParent) =>
-      if (canResultInSideEffectsOnly(expr) && SideEffectsUtil
-            .hasNoSideEffects(expr)) {
+      if (canResultInSideEffectsOnly(expr) &&
+          SideEffectsUtil.hasNoSideEffects(expr)) {
         val message = "Useless expression"
         val removeElemFix = new RemoveElementQuickFix("Remove expression", expr)
         val addReturnKeywordFix =

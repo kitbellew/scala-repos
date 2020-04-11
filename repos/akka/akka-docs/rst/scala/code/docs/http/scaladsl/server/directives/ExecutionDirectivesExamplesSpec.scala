@@ -23,13 +23,15 @@ class ExecutionDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/divide/10/5") ~> route ~> check {
-      responseAs[String] shouldEqual "The result is 2"
-    }
-    Get("/divide/10/0") ~> route ~> check {
-      status shouldEqual StatusCodes.BadRequest
-      responseAs[String] shouldEqual "You've got your arithmetic wrong, fool!"
-    }
+    Get("/divide/10/5") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The result is 2"
+      }
+    Get("/divide/10/0") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.BadRequest
+        responseAs[String] shouldEqual "You've got your arithmetic wrong, fool!"
+      }
   }
   "handleRejections" in {
     val totallyMissingHandler = RejectionHandler
@@ -54,23 +56,26 @@ class ExecutionDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/handled/existing") ~> route ~> check {
-      responseAs[String] shouldEqual "This path exists"
-    }
-    Get("/missing") ~> Route
-      .seal(route) /* applies default handler */ ~> check {
-      status shouldEqual StatusCodes.NotFound
-      responseAs[
-        String] shouldEqual "The requested resource could not be found."
-    }
-    Get("/handled/missing") ~> route ~> check {
-      status shouldEqual StatusCodes.NotFound
-      responseAs[
-        String] shouldEqual "Oh man, what you are looking for is long gone."
-    }
-    Get("/handled/boom") ~> route ~> check {
-      status shouldEqual StatusCodes.InternalServerError
-      responseAs[String] shouldEqual "This didn't work."
-    }
+    Get("/handled/existing") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This path exists"
+      }
+    Get("/missing") ~> Route.seal(route) /* applies default handler */ ~>
+      check {
+        status shouldEqual StatusCodes.NotFound
+        responseAs[String] shouldEqual
+          "The requested resource could not be found."
+      }
+    Get("/handled/missing") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.NotFound
+        responseAs[String] shouldEqual
+          "Oh man, what you are looking for is long gone."
+      }
+    Get("/handled/boom") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.InternalServerError
+        responseAs[String] shouldEqual "This didn't work."
+      }
   }
 }

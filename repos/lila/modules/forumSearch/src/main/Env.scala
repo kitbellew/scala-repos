@@ -57,9 +57,10 @@ final class Env(
 
 object Env {
 
-  lazy val current = "forumSearch" boot new Env(
-    config = lila.common.PlayApp loadConfig "forumSearch",
-    postApi = lila.forum.Env.current.postApi,
-    makeClient = lila.search.Env.current.makeClient,
-    system = lila.common.PlayApp.system)
+  lazy val current = "forumSearch" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "forumSearch",
+      postApi = lila.forum.Env.current.postApi,
+      makeClient = lila.search.Env.current.makeClient,
+      system = lila.common.PlayApp.system)
 }

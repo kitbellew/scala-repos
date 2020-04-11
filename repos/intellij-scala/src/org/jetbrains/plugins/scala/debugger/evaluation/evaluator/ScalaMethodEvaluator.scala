@@ -62,13 +62,11 @@ case class ScalaMethodEvaluator(
     }
     val requiresSuperObject: Boolean = objectEvaluator
       .isInstanceOf[ScSuperEvaluator] ||
-      (
-        objectEvaluator.isInstanceOf[DisableGC] &&
-          objectEvaluator
-            .asInstanceOf[DisableGC]
-            .getDelegate
-            .isInstanceOf[ScSuperEvaluator]
-      )
+      (objectEvaluator.isInstanceOf[DisableGC] &&
+        objectEvaluator
+          .asInstanceOf[DisableGC]
+          .getDelegate
+          .isInstanceOf[ScSuperEvaluator])
     val obj: AnyRef = DebuggerUtil.unwrapScalaRuntimeObjectRef {
       objectEvaluator.evaluate(context)
     }
@@ -116,9 +114,8 @@ case class ScalaMethodEvaluator(
               case method if !localMethod && method.name() == methodName =>
                 (method, 1)
               case method
-                  if !localMethod && method
-                    .name()
-                    .endsWith("$$" + methodName) =>
+                  if !localMethod &&
+                    method.name().endsWith("$$" + methodName) =>
                 (method, 1) //private method, maybe from parent class
               case method if localMethod && method.name() == localMethodName =>
                 (method, 1)

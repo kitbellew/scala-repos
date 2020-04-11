@@ -5,12 +5,12 @@ class SCL6417_Performance {
 
   def testValidation(): Unit = {
     (
-      validateOptionalX(Some(0)) |@| validateOptionalY(Some(1))
-        |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
-        |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
-        |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
-        |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
-        |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
+      validateOptionalX(Some(0)) |@| validateOptionalY(Some(1)) |@|
+        validateOptionalY(Some(1)) |@| validateOptionalY(Some(1)) |@|
+        validateOptionalY(Some(1)) |@| validateOptionalY(Some(1)) |@|
+        validateOptionalY(Some(1)) |@| validateOptionalY(Some(1)) |@|
+        validateOptionalY(Some(1)) |@| validateOptionalY(Some(1)) |@|
+        validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
     ).tupled match {
       case Success(t) =>
         /*start*/

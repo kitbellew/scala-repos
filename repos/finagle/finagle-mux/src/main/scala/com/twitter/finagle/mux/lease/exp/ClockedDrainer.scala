@@ -174,9 +174,8 @@ private[finagle] class ClockedDrainer(
       { () =>
         if (verbose) {
           log.info(
-            "AWAIT-DISCOUNT: discount=" + space.discount() +
-              "; clock=" + coord.counter +
-              "; space=" + space)
+            "AWAIT-DISCOUNT: discount=" + space.discount() + "; clock=" +
+              coord.counter + "; space=" + space)
         }
 
         // discount (bytes) / rate (bytes / second) == expiry (seconds)
@@ -214,10 +213,8 @@ private[finagle] class ClockedDrainer(
 
     if (verbose) {
       log.info(
-        "AWAIT-DRAIN: n=" + npending() +
-          "; clock=" + coord.counter +
-          "; space=" + space +
-          "; maxWaitMs=" + maxWait.inMilliseconds +
+        "AWAIT-DRAIN: n=" + npending() + "; clock=" + coord.counter +
+          "; space=" + space + "; maxWaitMs=" + maxWait.inMilliseconds +
           "; minDiscount=" + space.minDiscount)
     }
 

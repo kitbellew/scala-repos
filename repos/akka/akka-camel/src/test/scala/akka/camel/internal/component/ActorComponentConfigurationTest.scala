@@ -25,13 +25,14 @@ class ActorComponentConfigurationTest
         s"akka://test/user/$$a?autoAck=false&replyTimeout=987000000+nanos")
       .asInstanceOf[ActorEndpointConfig]
 
-    actorEndpointConfig should have(
-      'endpointUri (
-        s"akka://test/user/$$a?autoAck=false&replyTimeout=987000000+nanos"),
-      'path (ActorEndpointPath.fromCamelPath(s"akka://test/user/$$a")),
-      'autoAck (false),
-      'replyTimeout (987000000 nanos)
-    )
+    actorEndpointConfig should
+      have(
+        'endpointUri (
+          s"akka://test/user/$$a?autoAck=false&replyTimeout=987000000+nanos"),
+        'path (ActorEndpointPath.fromCamelPath(s"akka://test/user/$$a")),
+        'autoAck (false),
+        'replyTimeout (987000000 nanos)
+      )
   }
 
 }

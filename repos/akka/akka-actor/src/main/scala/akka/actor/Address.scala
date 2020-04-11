@@ -151,9 +151,8 @@ object AddressFromURIString {
   def unapply(uri: URI): Option[Address] =
     if (uri eq null)
       None
-    else if (uri.getScheme == null || (
-               uri.getUserInfo == null && uri.getHost == null
-             ))
+    else if (uri.getScheme == null ||
+             (uri.getUserInfo == null && uri.getHost == null))
       None
     else if (uri.getUserInfo == null) { // case 1: “akka://system”
       if (uri.getPort != -1)

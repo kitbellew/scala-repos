@@ -41,10 +41,8 @@ object ApplicationBuild extends Build {
     task {
       if (!bufferLogger.messages.exists(_.contains(msg))) {
         sys.error(
-          "Did not find log message:\n    '" + msg + "'\nin output:\n" + bufferLogger
-            .messages
-            .reverse
-            .mkString("    ", "\n    ", ""))
+          "Did not find log message:\n    '" + msg + "'\nin output:\n" +
+            bufferLogger.messages.reverse.mkString("    ", "\n    ", ""))
       }
       true
     }
@@ -53,8 +51,8 @@ object ApplicationBuild extends Build {
     InputTask
       .separate[String, Boolean](simpleParser _)(state(s => checkLogContains))
 
-  val compileIgnoreErrorsTask = TaskKey[Unit]("compileIgnoreErrors") <<= state
-    .map { state =>
+  val compileIgnoreErrorsTask = TaskKey[Unit]("compileIgnoreErrors") <<=
+    state.map { state =>
       Project.runTask(compile in Compile, state)
     }
 

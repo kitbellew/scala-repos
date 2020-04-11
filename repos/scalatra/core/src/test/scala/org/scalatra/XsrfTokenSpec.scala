@@ -68,7 +68,8 @@ object XsrfTokenSpec extends MutableScalatraSpec {
         headers = Map(
           XsrfTokenSupport.HeaderNames.head -> "Hey I'm different")) {
         status must be_==(403)
-        body must not be_== ("SUCCESS")
+        body must not be_==
+          ("SUCCESS")
       }
     }
   }

@@ -86,8 +86,8 @@ class FscSettings(error: String => Unit) extends Settings(error) {
   def absolutize() {
     userSetSettings foreach {
       case p: OutputSetting =>
-        p.outputDirs setSingleOutput AbstractFile
-          .getDirectory(absolutizePath(p.value))
+        p.outputDirs setSingleOutput
+          AbstractFile.getDirectory(absolutizePath(p.value))
       case p: PathSetting =>
         p.value = ClassPath.map(p.value, absolutizePath)
       case p: StringSetting =>

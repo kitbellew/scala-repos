@@ -28,18 +28,19 @@ object Main extends LilaController {
             err => BadRequest,
             {
               case (enable, redirect) =>
-                Redirect(redirect) withCookies lila
-                  .common
-                  .LilaCookie
-                  .cookie(
-                    Env.api.Accessibility.blindCookieName,
-                    if (enable == "0")
-                      ""
-                    else
-                      Env.api.Accessibility.hash,
-                    maxAge = Env.api.Accessibility.blindCookieMaxAge.some,
-                    httpOnly = true.some
-                  )
+                Redirect(redirect) withCookies
+                  lila
+                    .common
+                    .LilaCookie
+                    .cookie(
+                      Env.api.Accessibility.blindCookieName,
+                      if (enable == "0")
+                        ""
+                      else
+                        Env.api.Accessibility.hash,
+                      maxAge = Env.api.Accessibility.blindCookieMaxAge.some,
+                      httpOnly = true.some
+                    )
             }
           )
       }
@@ -68,9 +69,8 @@ object Main extends LilaController {
           .Net
           .BaseUrl}?embed=" + document.domain + "' class='lichess-iframe' allowtransparency='true' frameBorder='0' style='width: ${getInt(
           "w",
-          req) | 820}px; height: ${getInt(
-          "h",
-          req) | 650}px;' title='Lichess free online chess'></iframe>");"""
+          req) | 820}px; height: ${getInt("h", req) |
+          650}px;' title='Lichess free online chess'></iframe>");"""
       } as JAVASCRIPT withHeaders (CACHE_CONTROL -> "max-age=86400")
     }
 

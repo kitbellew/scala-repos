@@ -81,8 +81,8 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     .conf
     .getTimeAsMs("spark.storage.blockManagerSlaveTimeoutMs", "120s")
   private val executorTimeoutMs =
-    sc.conf
-      .getTimeAsSeconds("spark.network.timeout", s"${slaveTimeoutMs}ms") * 1000
+    sc.conf.getTimeAsSeconds("spark.network.timeout", s"${slaveTimeoutMs}ms") *
+      1000
 
   // "spark.network.timeoutInterval" uses "seconds", while
   // "spark.storage.blockManagerTimeoutIntervalMs" uses "milliseconds"
@@ -229,8 +229,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
         scheduler.executorLost(
           executorId,
           SlaveLost(
-            "Executor heartbeat " +
-              s"timed out after ${now - lastSeenMs} ms"))
+            "Executor heartbeat " + s"timed out after ${now - lastSeenMs} ms"))
         // Asynchronously kill the executor to avoid blocking the current thread
         killExecutorThread.submit(
           new Runnable {

@@ -45,8 +45,8 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
       case Left(files) =>
         new compiler.Run() compile files
       case Right(sourceCode) =>
-        new compiler.Run() compileSources List(
-          new BatchSourceFile("newSource", sourceCode))
+        new compiler.Run() compileSources
+          List(new BatchSourceFile("newSource", sourceCode))
     }
 
     if (reporter.hasErrors)
@@ -78,16 +78,16 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
       override def templateShouldDocument(
           sym: compiler.Symbol,
           inTpl: DocTemplateImpl) =
-        extraTemplatesToDocument(sym) || super
-          .templateShouldDocument(sym, inTpl)
+        extraTemplatesToDocument(sym) ||
+          super.templateShouldDocument(sym, inTpl)
     })
 
     modelFactory.makeModel match {
       case Some(madeModel) =>
         if (!settings.scaladocQuietRun)
           println(
-            "model contains " + modelFactory
-              .templatesCount + " documentable templates")
+            "model contains " + modelFactory.templatesCount +
+              " documentable templates")
         Some(madeModel)
       case None =>
         if (!settings.scaladocQuietRun)

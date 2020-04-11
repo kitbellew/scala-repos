@@ -41,8 +41,8 @@ object ComparisonFailure {
         expected.length() - prefix.length(),
         actual.length() - prefix.length()) - 1
       while (suffixLength <= maxSuffixLength) {
-        if (expected.charAt(expected.length() - 1 - suffixLength)
-              != actual.charAt(actual.length() - 1 - suffixLength)) {
+        if (expected.charAt(expected.length() - 1 - suffixLength) !=
+              actual.charAt(actual.length() - 1 - suffixLength)) {
           maxSuffixLength = suffixLength - 1 // break
         }
         suffixLength += 1
@@ -63,8 +63,8 @@ object ComparisonFailure {
         if (_sharedPrefix.length() <= MAX_CONTEXT_LENGTH)
           _sharedPrefix
         else
-          ELLIPSIS + _sharedPrefix
-            .substring(_sharedPrefix.length() - MAX_CONTEXT_LENGTH)
+          ELLIPSIS +
+            _sharedPrefix.substring(_sharedPrefix.length() - MAX_CONTEXT_LENGTH)
       }
 
       def compactSuffix(): String = {

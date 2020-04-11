@@ -555,10 +555,8 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     catalog.createFunction("db2", newFunc("func2"))
     catalog.createFunction("db2", newFunc("not_me"))
     assert(
-      catalog.listFunctions("db2", "*").toSet == Set(
-        "func1",
-        "func2",
-        "not_me"))
+      catalog.listFunctions("db2", "*").toSet ==
+        Set("func1", "func2", "not_me"))
     assert(catalog.listFunctions("db2", "func*").toSet == Set("func1", "func2"))
   }
 
@@ -661,9 +659,8 @@ abstract class CatalogTestUtils {
       db: String,
       table: String,
       parts: Seq[CatalogTablePartition]): Boolean = {
-    catalog.listPartitions(db, table).map(_.spec).toSet == parts
-      .map(_.spec)
-      .toSet
+    catalog.listPartitions(db, table).map(_.spec).toSet ==
+      parts.map(_.spec).toSet
   }
 
 }

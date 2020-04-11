@@ -53,8 +53,8 @@ object RecordSpec extends Specification {
       ).toList
 
     "introspect only the expected fields" in {
-      rec.fields().map(_.name).sortWith(_ < _) must_== allExpectedFieldNames
-        .sortWith(_ < _)
+      rec.fields().map(_.name).sortWith(_ < _) must_==
+        allExpectedFieldNames.sortWith(_ < _)
     }
 
     "correctly look up fields by name" in {
@@ -287,59 +287,60 @@ object RecordSpec extends Specification {
       }*/
 
       "convert to JValue" in {
-        fttr.asJValue mustEqual JObject(
-          List(
-            JField("mandatoryBooleanField", JBool(false)),
-            JField("legacyOptionalBooleanField", JNothing),
-            JField("optionalBooleanField", JNothing),
-            JField("mandatoryCountryField", JInt(Countries.USA.id)),
-            JField("legacyOptionalCountryField", JNothing),
-            JField("optionalCountryField", JNothing),
-            JField(
-              "mandatoryDateTimeField",
-              JString(Helpers.toInternetDate(cal.getTime))),
-            JField("legacyOptionalDateTimeField", JNothing),
-            JField("optionalDateTimeField", JNothing),
-            JField("mandatoryDecimalField", JString("3.14")),
-            JField("legacyOptionalDecimalField", JNothing),
-            JField("optionalDecimalField", JNothing),
-            JField("mandatoryDoubleField", JDouble(1999.0)),
-            JField("legacyOptionalDoubleField", JNothing),
-            JField("optionalDoubleField", JNothing),
-            JField("mandatoryEmailField", JString("test@liftweb.net")),
-            JField("legacyOptionalEmailField", JNothing),
-            JField("optionalEmailField", JNothing),
-            JField("mandatoryEnumField", JInt(MyTestEnum.ONE.id)),
-            JField("legacyOptionalEnumField", JNothing),
-            JField("optionalEnumField", JNothing),
-            JField("mandatoryIntField", JInt(99)),
-            JField("legacyOptionalIntField", JNothing),
-            JField("optionalIntField", JNothing),
-            JField("mandatoryLocaleField", JString("en_US")),
-            JField("legacyOptionalLocaleField", JNothing),
-            JField("optionalLocaleField", JNothing),
-            JField("mandatoryLongField", JInt(100)),
-            JField("legacyOptionalLongField", JNothing),
-            JField("optionalLongField", JNothing),
-            JField("mandatoryPostalCodeField", JString("55401")),
-            JField("legacyOptionalPostalCodeField", JNothing),
-            JField("optionalPostalCodeField", JNothing),
-            JField("mandatoryStringField", JString("foobar")),
-            JField("legacyOptionalStringField", JNothing),
-            JField("optionalStringField", JNothing),
-            JField("mandatoryTextareaField", JString("foobar")),
-            JField("legacyOptionalTextareaField", JNothing),
-            JField("optionalTextareaField", JNothing),
-            JField("mandatoryTimeZoneField", JString("America/Chicago")),
-            JField("legacyOptionalTimeZoneField", JNothing),
-            JField("optionalTimeZoneField", JNothing),
-            JField("mandatoryBinaryField", JString("EhMU")),
-            JField("legacyOptionalBinaryField", JNothing),
-            JField("optionalBinaryField", JNothing),
-            JField("mandatoryJodaTimeField", JInt(dt.getMillis)),
-            JField("legacyOptionalJodaTimeField", JNothing),
-            JField("optionalJodaTimeField", JNothing)
-          ))
+        fttr.asJValue mustEqual
+          JObject(
+            List(
+              JField("mandatoryBooleanField", JBool(false)),
+              JField("legacyOptionalBooleanField", JNothing),
+              JField("optionalBooleanField", JNothing),
+              JField("mandatoryCountryField", JInt(Countries.USA.id)),
+              JField("legacyOptionalCountryField", JNothing),
+              JField("optionalCountryField", JNothing),
+              JField(
+                "mandatoryDateTimeField",
+                JString(Helpers.toInternetDate(cal.getTime))),
+              JField("legacyOptionalDateTimeField", JNothing),
+              JField("optionalDateTimeField", JNothing),
+              JField("mandatoryDecimalField", JString("3.14")),
+              JField("legacyOptionalDecimalField", JNothing),
+              JField("optionalDecimalField", JNothing),
+              JField("mandatoryDoubleField", JDouble(1999.0)),
+              JField("legacyOptionalDoubleField", JNothing),
+              JField("optionalDoubleField", JNothing),
+              JField("mandatoryEmailField", JString("test@liftweb.net")),
+              JField("legacyOptionalEmailField", JNothing),
+              JField("optionalEmailField", JNothing),
+              JField("mandatoryEnumField", JInt(MyTestEnum.ONE.id)),
+              JField("legacyOptionalEnumField", JNothing),
+              JField("optionalEnumField", JNothing),
+              JField("mandatoryIntField", JInt(99)),
+              JField("legacyOptionalIntField", JNothing),
+              JField("optionalIntField", JNothing),
+              JField("mandatoryLocaleField", JString("en_US")),
+              JField("legacyOptionalLocaleField", JNothing),
+              JField("optionalLocaleField", JNothing),
+              JField("mandatoryLongField", JInt(100)),
+              JField("legacyOptionalLongField", JNothing),
+              JField("optionalLongField", JNothing),
+              JField("mandatoryPostalCodeField", JString("55401")),
+              JField("legacyOptionalPostalCodeField", JNothing),
+              JField("optionalPostalCodeField", JNothing),
+              JField("mandatoryStringField", JString("foobar")),
+              JField("legacyOptionalStringField", JNothing),
+              JField("optionalStringField", JNothing),
+              JField("mandatoryTextareaField", JString("foobar")),
+              JField("legacyOptionalTextareaField", JNothing),
+              JField("optionalTextareaField", JNothing),
+              JField("mandatoryTimeZoneField", JString("America/Chicago")),
+              JField("legacyOptionalTimeZoneField", JNothing),
+              JField("optionalTimeZoneField", JNothing),
+              JField("mandatoryBinaryField", JString("EhMU")),
+              JField("legacyOptionalBinaryField", JNothing),
+              JField("optionalBinaryField", JNothing),
+              JField("mandatoryJodaTimeField", JInt(dt.getMillis)),
+              JField("legacyOptionalJodaTimeField", JNothing),
+              JField("optionalJodaTimeField", JNothing)
+            ))
       }
 
       "get set from json string using lift-json parser" in {
@@ -354,10 +355,11 @@ object RecordSpec extends Specification {
 
   "basic record" should {
     "order fields according to fieldOrder" in {
-      BasicTestRecord.metaFields must_== List(
-        BasicTestRecord.field2,
-        BasicTestRecord.field1,
-        BasicTestRecord.fieldThree)
+      BasicTestRecord.metaFields must_==
+        List(
+          BasicTestRecord.field2,
+          BasicTestRecord.field1,
+          BasicTestRecord.fieldThree)
     }
   }
 }

@@ -71,8 +71,8 @@ object BSONHandlers {
             color: Color,
             id: Player.Id,
             uid: Player.UserId): Player = {
-          val builder = r
-            .getO[Player.Builder](field)(playerBSONHandler) | emptyPlayerBuilder
+          val builder = r.getO[Player.Builder](field)(playerBSONHandler) |
+            emptyPlayerBuilder
           val win = winC map (_ == color)
           builder(color)(id)(uid)(win)
         }
@@ -106,8 +106,9 @@ object BSONHandlers {
           binaryMoveTimes = (r bytesO moveTimes) | ByteArray.empty,
           mode = Mode(r boolD rated),
           variant = realVariant,
-          crazyData = (realVariant == Crazyhouse) option r
-            .get[Crazyhouse.Data](crazyData),
+          crazyData =
+            (realVariant == Crazyhouse) option
+              r.get[Crazyhouse.Data](crazyData),
           next = r strO next,
           bookmarks = r intD bookmarks,
           createdAt = createdAtValue,
@@ -128,31 +129,35 @@ object BSONHandlers {
         BSONDocument(
           id -> o.id,
           playerIds -> (o.whitePlayer.id + o.blackPlayer.id),
-          playerUids -> w
-            .listO(List(~o.whitePlayer.userId, ~o.blackPlayer.userId)),
-          whitePlayer -> w.docO(
-            playerBSONHandler write ((_: Color) =>
-              (_: Player.Id) =>
-                (_: Player.UserId) => (_: Player.Win) => o.whitePlayer)),
-          blackPlayer -> w.docO(
-            playerBSONHandler write ((_: Color) =>
-              (_: Player.Id) =>
-                (_: Player.UserId) => (_: Player.Win) => o.blackPlayer)),
+          playerUids ->
+            w.listO(List(~o.whitePlayer.userId, ~o.blackPlayer.userId)),
+          whitePlayer ->
+            w.docO(
+              playerBSONHandler write
+                ((_: Color) =>
+                  (_: Player.Id) =>
+                    (_: Player.UserId) => (_: Player.Win) => o.whitePlayer)),
+          blackPlayer ->
+            w.docO(
+              playerBSONHandler write
+                ((_: Color) =>
+                  (_: Player.Id) =>
+                    (_: Player.UserId) => (_: Player.Win) => o.blackPlayer)),
           binaryPieces -> o.binaryPieces,
           binaryPgn -> w.byteArrayO(o.binaryPgn),
           status -> o.status,
           turns -> o.turns,
           startedAtTurn -> w.intO(o.startedAtTurn),
-          clock -> (
-            o.clock map { c =>
+          clock ->
+            (o.clock map { c =>
               clockBSONWrite(o.createdAt, c)
-            }
-          ),
+            }),
           positionHashes -> w.bytesO(o.positionHashes),
           checkCount -> o.checkCount.nonEmpty.option(o.checkCount),
-          castleLastMoveTime -> CastleLastMoveTime
-            .castleLastMoveTimeBSONHandler
-            .write(o.castleLastMoveTime),
+          castleLastMoveTime ->
+            CastleLastMoveTime
+              .castleLastMoveTimeBSONHandler
+              .write(o.castleLastMoveTime),
           daysPerTurn -> o.daysPerTurn,
           moveTimes -> (BinaryFormat.moveTime write o.moveTimes),
           rated -> w.boolO(o.mode.rated),

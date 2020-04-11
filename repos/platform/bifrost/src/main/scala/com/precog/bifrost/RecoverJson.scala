@@ -171,12 +171,11 @@ object RecoverJson {
     val lastChar = buffers.last.get(buffers.last.length - 1)
     val needsComma = lastChar != ',' || stringStack.size > 1
     val closerBuffer = CharBuffer.allocate(
-      stringStack.map(_.length).sum + 4 + (
-        if (needsComma)
-          1
-        else
-          0
-      ))
+      stringStack.map(_.length).sum + 4 +
+        (if (needsComma)
+           1
+         else
+           0))
 
     @tailrec
     def addToCloserBuffer(s: Stack[String]) {

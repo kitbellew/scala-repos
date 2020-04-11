@@ -93,8 +93,8 @@ private[spark] class PartitionerAwareUnionRDD[T: ClassTag](
         case (rdd, part) => {
           val parentLocations = currPrefLocs(rdd, part)
           logDebug(
-            "Location of " + rdd + " partition " + part
-              .index + " = " + parentLocations)
+            "Location of " + rdd + " partition " + part.index + " = " +
+              parentLocations)
           parentLocations
         }
       }
@@ -106,8 +106,8 @@ private[spark] class PartitionerAwareUnionRDD[T: ClassTag](
         Some(locations.groupBy(x => x).maxBy(_._2.length)._1)
       }
     logDebug(
-      "Selected location for " + this + ", partition " + s
-        .index + " = " + location)
+      "Selected location for " + this + ", partition " + s.index + " = " +
+        location)
     location.toSeq
   }
 

@@ -50,10 +50,10 @@ private[spark] object InternalAccumulator {
 
   // Names of shuffle read metrics
   object shuffleRead {
-    val REMOTE_BLOCKS_FETCHED =
-      SHUFFLE_READ_METRICS_PREFIX + "remoteBlocksFetched"
-    val LOCAL_BLOCKS_FETCHED =
-      SHUFFLE_READ_METRICS_PREFIX + "localBlocksFetched"
+    val REMOTE_BLOCKS_FETCHED = SHUFFLE_READ_METRICS_PREFIX +
+      "remoteBlocksFetched"
+    val LOCAL_BLOCKS_FETCHED = SHUFFLE_READ_METRICS_PREFIX +
+      "localBlocksFetched"
     val REMOTE_BYTES_READ = SHUFFLE_READ_METRICS_PREFIX + "remoteBytesRead"
     val LOCAL_BYTES_READ = SHUFFLE_READ_METRICS_PREFIX + "localBytesRead"
     val FETCH_WAIT_TIME = SHUFFLE_READ_METRICS_PREFIX + "fetchWaitTime"
@@ -143,11 +143,8 @@ private[spark] object InternalAccumulator {
       DISK_BYTES_SPILLED,
       PEAK_EXECUTION_MEMORY,
       UPDATED_BLOCK_STATUSES
-    ).map(create) ++
-      createShuffleReadAccums() ++
-      createShuffleWriteAccums() ++
-      createInputAccums() ++
-      createOutputAccums() ++
+    ).map(create) ++ createShuffleReadAccums() ++ createShuffleWriteAccums() ++
+      createInputAccums() ++ createOutputAccums() ++
       sys.props.get("spark.testing").map(_ => create(TEST_ACCUM)).toSeq
   }
 

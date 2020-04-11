@@ -109,14 +109,12 @@ private[akka] object Reflect {
             .iterator filter { c ⇒
             val parameterTypes = c.getParameterTypes
             parameterTypes.length == length &&
-            (
-              parameterTypes.iterator zip args.iterator forall {
-                case (found, required) ⇒
-                  found.isInstance(required) || BoxedType(found)
-                    .isInstance(required) ||
-                    (required == null && !found.isPrimitive)
-              }
-            )
+            (parameterTypes.iterator zip args.iterator forall {
+              case (found, required) ⇒
+                found.isInstance(required) ||
+                  BoxedType(found).isInstance(required) ||
+                  (required == null && !found.isPrimitive)
+            })
           }
         if (candidates.hasNext) {
           val cstrtr = candidates.next()
@@ -151,8 +149,8 @@ private[akka] object Reflect {
   def findMarker(root: Class[_], marker: Class[_]): Type = {
     @tailrec
     def rec(curr: Class[_]): Type = {
-      if (curr.getSuperclass != null && marker
-            .isAssignableFrom(curr.getSuperclass))
+      if (curr.getSuperclass != null &&
+          marker.isAssignableFrom(curr.getSuperclass))
         rec(curr.getSuperclass)
       else
         curr.getGenericInterfaces collectFirst {

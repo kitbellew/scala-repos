@@ -82,9 +82,8 @@ private[lobby] final class Socket(
       withMember(uid)(notifyPlayerStart(game, !creatorColor))
 
     case JoinSeek(userId, seek, game, creatorColor) =>
-      membersByUserId(seek.user.id) foreach notifyPlayerStart(
-        game,
-        creatorColor)
+      membersByUserId(seek.user.id) foreach
+        notifyPlayerStart(game, creatorColor)
       membersByUserId(userId) foreach notifyPlayerStart(game, !creatorColor)
 
     case HookIds(ids) =>

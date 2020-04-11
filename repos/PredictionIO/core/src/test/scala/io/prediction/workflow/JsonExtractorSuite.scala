@@ -287,8 +287,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
       ("algo2", new JavaParams("parameter2")))
     val json = JsonExtractor.paramsToJson(JsonExtractorOption.Both, params)
 
-    json should be(
-      """[{"algo":{"p":"parameter"}},{"algo2":{"p":"parameter2"}}]""")
+    json should
+      be("""[{"algo":{"p":"parameter"}},{"algo2":{"p":"parameter2"}}]""")
   }
 
   test("Java Params to Json using option Gson") {
@@ -297,8 +297,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
       ("algo2", new JavaParams("parameter2")))
     val json = JsonExtractor.paramsToJson(JsonExtractorOption.Gson, params)
 
-    json should be(
-      """[{"algo":{"p":"parameter"}},{"algo2":{"p":"parameter2"}}]""")
+    json should
+      be("""[{"algo":{"p":"parameter"}},{"algo2":{"p":"parameter2"}}]""")
   }
 
   test("Scala Params to Json using option Both") {
@@ -307,8 +307,13 @@ class JsonExtractorSuite extends FunSuite with Matchers {
       ("algo2", AlgorithmParams("parameter2")))
     val json = JsonExtractor.paramsToJson(JsonExtractorOption.Both, params)
 
-    json should be(
-      org.json4s.native.Serialization.write(params)(Utils.json4sDefaultFormats))
+    json should
+      be(
+        org
+          .json4s
+          .native
+          .Serialization
+          .write(params)(Utils.json4sDefaultFormats))
   }
 
   test("Scala Params to Json using option Json4sNative") {
@@ -318,8 +323,13 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val json = JsonExtractor
       .paramsToJson(JsonExtractorOption.Json4sNative, params)
 
-    json should be(
-      org.json4s.native.Serialization.write(params)(Utils.json4sDefaultFormats))
+    json should
+      be(
+        org
+          .json4s
+          .native
+          .Serialization
+          .write(params)(Utils.json4sDefaultFormats))
   }
 
   test("Mixed Java and Scala Params to Json using option Both") {
@@ -328,8 +338,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
       ("java", new JavaParams("parameter2")))
     val json = JsonExtractor.paramsToJson(JsonExtractorOption.Both, params)
 
-    json should be(
-      """[{"scala":{"a":"parameter"}},{"java":{"p":"parameter2"}}]""")
+    json should
+      be("""[{"scala":{"a":"parameter"}},{"java":{"p":"parameter2"}}]""")
   }
 
   test("Serializing Scala EngineParams works using option Json4sNative") {
@@ -341,9 +351,10 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val json = JsonExtractor
       .engineParamsToJson(JsonExtractorOption.Json4sNative, ep)
 
-    json should be(
-      """{"dataSourceParams":{"ds":{"a":"dsp"}},"preparatorParams":{"":{}},""" +
-        """"algorithmParamsList":[{"a0":{"a":"ap"}}],"servingParams":{"":{}}}""")
+    json should
+      be(
+        """{"dataSourceParams":{"ds":{"a":"dsp"}},"preparatorParams":{"":{}},""" +
+          """"algorithmParamsList":[{"a0":{"a":"ap"}}],"servingParams":{"":{}}}""")
   }
 
   test("Serializing Java EngineParams works using option Gson") {
@@ -356,9 +367,10 @@ class JsonExtractorSuite extends FunSuite with Matchers {
 
     val json = JsonExtractor.engineParamsToJson(JsonExtractorOption.Gson, ep)
 
-    json should be(
-      """{"dataSourceParams":{"ds":{"p":"dsp"}},"preparatorParams":{"":{}},""" +
-        """"algorithmParamsList":[{"a0":{"p":"ap"}},{"a1":{"p":"ap2"}}],"servingParams":{"":{}}}""")
+    json should
+      be(
+        """{"dataSourceParams":{"ds":{"p":"dsp"}},"preparatorParams":{"":{}},""" +
+          """"algorithmParamsList":[{"a0":{"p":"ap"}},{"a1":{"p":"ap2"}}],"servingParams":{"":{}}}""")
   }
 
   test("Serializing Java EngineParams works using option Both") {
@@ -371,9 +383,10 @@ class JsonExtractorSuite extends FunSuite with Matchers {
 
     val json = JsonExtractor.engineParamsToJson(JsonExtractorOption.Both, ep)
 
-    json should be(
-      """{"dataSourceParams":{"ds":{"p":"dsp"}},"preparatorParams":{"":{}},""" +
-        """"algorithmParamsList":[{"a0":{"p":"ap"}},{"a1":{"p":"ap2"}}],"servingParams":{"":{}}}""")
+    json should
+      be(
+        """{"dataSourceParams":{"ds":{"p":"dsp"}},"preparatorParams":{"":{}},""" +
+          """"algorithmParamsList":[{"a0":{"p":"ap"}},{"a1":{"p":"ap2"}}],"servingParams":{"":{}}}""")
   }
 }
 
@@ -393,8 +406,7 @@ private class UpperCaseFormat
           case JObject(
                 JField("string", JString(string)) ::
                 JField("optional", JString(optional)) ::
-                JField("default", JString(default)) ::
-                Nil) =>
+                JField("default", JString(default)) :: Nil) =>
             ScalaQuery(
               string.toUpperCase,
               Some(optional.toUpperCase),

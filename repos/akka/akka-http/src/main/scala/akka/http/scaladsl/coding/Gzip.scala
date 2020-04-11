@@ -125,9 +125,8 @@ class GzipDecompressor(maxBytesPerChunk: Int = Decoder.MaxBytesPerChunkDefault)
           import reader._
           if (readIntLE() != crc32.getValue.toInt)
             fail("Corrupt data (CRC32 checksum error)")
-          if (readIntLE() != inflater
-                .getBytesWritten
-                .toInt /* truncated to 32bit */ )
+          if (readIntLE() !=
+                inflater.getBytesWritten.toInt /* truncated to 32bit */ )
             fail("Corrupt GZIP trailer ISIZE")
           ParseResult(None, ReadHeaders, true)
         }

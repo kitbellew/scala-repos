@@ -69,12 +69,13 @@ class CommandUtilsSuite
         Seq("-D" + SecurityManager.SPARK_AUTH_SECRET_CONF + "=" + secret))
 
     // auth is not set
-    var cmd = CommandUtils invokePrivate buildLocalCommand(
-      command,
-      new SecurityManager(conf),
-      (t: String) => t,
-      Seq(),
-      Map())
+    var cmd = CommandUtils invokePrivate
+      buildLocalCommand(
+        command,
+        new SecurityManager(conf),
+        (t: String) => t,
+        Seq(),
+        Map())
     assert(
       !cmd
         .javaOpts
@@ -83,12 +84,13 @@ class CommandUtilsSuite
 
     // auth is set to false
     conf.set(SecurityManager.SPARK_AUTH_CONF, "false")
-    cmd = CommandUtils invokePrivate buildLocalCommand(
-      command,
-      new SecurityManager(conf),
-      (t: String) => t,
-      Seq(),
-      Map())
+    cmd = CommandUtils invokePrivate
+      buildLocalCommand(
+        command,
+        new SecurityManager(conf),
+        (t: String) => t,
+        Seq(),
+        Map())
     assert(
       !cmd
         .javaOpts
@@ -97,12 +99,13 @@ class CommandUtilsSuite
 
     // auth is set to true
     conf.set(SecurityManager.SPARK_AUTH_CONF, "true")
-    cmd = CommandUtils invokePrivate buildLocalCommand(
-      command,
-      new SecurityManager(conf),
-      (t: String) => t,
-      Seq(),
-      Map())
+    cmd = CommandUtils invokePrivate
+      buildLocalCommand(
+        command,
+        new SecurityManager(conf),
+        (t: String) => t,
+        Seq(),
+        Map())
     assert(
       !cmd
         .javaOpts

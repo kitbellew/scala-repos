@@ -482,7 +482,8 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
       case that: BigDecimal =>
         this equals that
       case that: BigInt =>
-        that.bitLength > (precision - scale - 2) * BigDecimal.deci2binary &&
+        that.bitLength >
+          (precision - scale - 2) * BigDecimal.deci2binary &&
           this.toBigIntExact.exists(that equals _)
       case that: Double =>
         !that.isInfinity && {
@@ -622,23 +623,21 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
 
   /** Returns the minimum of this and that, or this if the two are equal
     */
-  def min(that: BigDecimal): BigDecimal =
-    (this compare that) match {
-      case x if x <= 0 =>
-        this
-      case _ =>
-        that
-    }
+  def min(that: BigDecimal): BigDecimal = (this compare that) match {
+    case x if x <= 0 =>
+      this
+    case _ =>
+      that
+  }
 
   /** Returns the maximum of this and that, or this if the two are equal
     */
-  def max(that: BigDecimal): BigDecimal =
-    (this compare that) match {
-      case x if x >= 0 =>
-        this
-      case _ =>
-        that
-    }
+  def max(that: BigDecimal): BigDecimal = (this compare that) match {
+    case x if x >= 0 =>
+      this
+    case _ =>
+      that
+  }
 
   /** Remainder after dividing this by that.
     */

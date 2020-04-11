@@ -381,14 +381,14 @@ trait TableModule[M[+_]] extends TransSpecModule {
       alignment: GroupingSpec.Alignment)
       extends GroupingSpec {
     def sources: Vector[GroupingSource] = left.sources ++ right.sources
-    def sorted: M[GroupingAlignment] =
-      (left.sorted |@| right.sorted) { (t1, t2) =>
+    def sorted: M[GroupingAlignment] = (left.sorted |@| right.sorted) {
+      (t1, t2) =>
         GroupingAlignment(
           groupKeyLeftTrans,
           groupKeyRightTrans,
           t1,
           t2,
           alignment)
-      }
+    }
   }
 }

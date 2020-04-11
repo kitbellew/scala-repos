@@ -23,8 +23,9 @@ final class Env(
 
 object Env {
 
-  lazy val current = "history" boot new Env(
-    config = lila.common.PlayApp loadConfig "history",
-    mongoCache = lila.memo.Env.current.mongoCache,
-    db = lila.db.Env.current)
+  lazy val current = "history" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "history",
+      mongoCache = lila.memo.Env.current.mongoCache,
+      db = lila.db.Env.current)
 }

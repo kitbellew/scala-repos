@@ -65,10 +65,11 @@ object Commands {
       }
 
       val newStructure = Load.reapply(
-        filtered ++ Seq(
-          publishArtifact in GlobalScope in packageDoc := toggle,
-          publishArtifact in GlobalScope in packageSrc := toggle,
-          publishArtifact in GlobalScope := true),
+        filtered ++
+          Seq(
+            publishArtifact in GlobalScope in packageDoc := toggle,
+            publishArtifact in GlobalScope in packageSrc := toggle,
+            publishArtifact in GlobalScope := true),
         structure
       )
       Project.setProject(

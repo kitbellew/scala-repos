@@ -83,8 +83,8 @@ private[round] final class Round(
 
     case Resign(playerId) =>
       handle(playerId) { pov =>
-        pov.game.resignable ?? finisher
-          .other(pov.game, _.Resign, Some(!pov.color))
+        pov.game.resignable ??
+          finisher.other(pov.game, _.Resign, Some(!pov.color))
       }
 
     case GoBerserk(color) =>
@@ -93,8 +93,8 @@ private[round] final class Round(
           messenger.system(
             pov.game,
             (_.untranslated(s"${pov.color.name.capitalize} is going berserk!")))
-          GameRepo.save(progress) >> GameRepo.goBerserk(pov) inject progress
-            .events
+          GameRepo.save(progress) >> GameRepo.goBerserk(pov) inject
+            progress.events
         }
       }
 
@@ -138,13 +138,14 @@ private[round] final class Round(
     case Abandon =>
       fuccess {
         GameRepo game gameId foreach { gameOption =>
-          gameOption filter (_.abandoned) foreach { game =>
-            if (game.abortable)
-              finisher.other(game, _.Aborted)
-            else
-              finisher.other(game, _.Resign, Some(!game.player.color))
-            self ! PoisonPill
-          }
+          gameOption filter
+            (_.abandoned) foreach { game =>
+              if (game.abortable)
+                finisher.other(game, _.Aborted)
+              else
+                finisher.other(game, _.Resign, Some(!game.player.color))
+              self ! PoisonPill
+            }
         }
       }
 
@@ -178,9 +179,9 @@ private[round] final class Round(
           lila
             .log("cheat")
             .info(
-              s"hold alert $ip http://lichess.org/${pov.gameId}/${pov.color.name}#${pov
-                .game
-                .turns} ${pov.player.userId | "anon"} mean: $mean SD: $sd")
+              s"hold alert $ip http://lichess.org/${pov
+                .gameId}/${pov.color.name}#${pov.game.turns} ${pov.player.userId |
+                "anon"} mean: $mean SD: $sd")
           lila.mon.cheat.holdAlert()
           GameRepo.setHoldAlert(pov, mean, sd) inject List[Event]()
         }

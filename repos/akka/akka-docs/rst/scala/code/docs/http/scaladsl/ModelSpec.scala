@@ -86,14 +86,13 @@ class ModelSpec extends AkkaSpec {
       } yield User(user, pass)
     //#headers
 
-    credentialsOfRequest(HttpRequest(headers = List(auth))) should be(
-      Some(User("joe", "josepp")))
+    credentialsOfRequest(HttpRequest(headers = List(auth))) should
+      be(Some(User("joe", "josepp")))
     credentialsOfRequest(HttpRequest()) should be(None)
     credentialsOfRequest(
       HttpRequest(headers = List(
         Authorization(
-          GenericHttpCredentials(
-            "Other",
-            Map.empty[String, String]))))) should be(None)
+          GenericHttpCredentials("Other", Map.empty[String, String]))))) should
+      be(None)
   }
 }

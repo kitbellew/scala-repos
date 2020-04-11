@@ -129,12 +129,12 @@ trait SchemasSpec[M[+_]]
       JObjectFixedT(Map("a" -> JObjectFixedT(Map.empty))),
       JObjectFixedT(
         Map(
-          "a" -> JArrayFixedT(
-            Map(0 -> JNumberT, 1 -> JTextT, 2 -> JBooleanT)))),
+          "a" ->
+            JArrayFixedT(Map(0 -> JNumberT, 1 -> JTextT, 2 -> JBooleanT)))),
       JObjectFixedT(
         Map(
-          "a" -> JObjectFixedT(
-            Map("b" -> JObjectFixedT(Map("c" -> JNumberT))))))
+          "a" ->
+            JObjectFixedT(Map("b" -> JObjectFixedT(Map("c" -> JNumberT))))))
     )
     val data = Stream(
       "1",

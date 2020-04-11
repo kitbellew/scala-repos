@@ -49,9 +49,8 @@ object ScalatraAtmosphereHandler {
           ClientDisconnected
         else
           ServerDisconnected
-      client(event.getResource) foreach (
-        _.receive.lift(Disconnected(disconnector, Option(event.throwable)))
-      )
+      client(event.getResource) foreach
+        (_.receive.lift(Disconnected(disconnector, Option(event.throwable))))
       //      if (!event.getResource.isResumed) {
       //        event.getResource.session.invalidate()
       //      } else {
@@ -67,9 +66,8 @@ object ScalatraAtmosphereHandler {
     def onSuspend(event: AtmosphereResourceEvent) {}
 
     def onThrowable(event: AtmosphereResourceEvent) {
-      client(event.getResource) foreach (
-        _.receive.lift(Error(Option(event.throwable())))
-      )
+      client(event.getResource) foreach
+        (_.receive.lift(Error(Option(event.throwable()))))
     }
 
     def onClose(event: AtmosphereResourceEvent) {}

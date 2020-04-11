@@ -140,9 +140,8 @@ object EmitHtml {
 
     val name = section.title.replaceAll("\\p{Space}", "_").toLowerCase()
     out.println(
-      "\n<h" + depth + " id=\"" + name + "\">" +
-        section.title +
-        "</h" + depth + ">")
+      "\n<h" + depth + " id=\"" + name + "\">" + section.title + "</h" + depth +
+        ">")
     section.paragraphs foreach emitParagraph
   }
 

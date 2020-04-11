@@ -16,15 +16,16 @@ class SourcePositionSpec
 
   val original = EnsimeConfigFixture.SimpleTestProject.copy(javaLibs = Nil)
 
-  "SourcePosition" should "resolve FqnSymbols for local files with no line number" in {
-    withEnsimeConfig { implicit config =>
-      lookup(knownFile) match {
-        case Some(LineSourcePosition(name, 0)) if name.isFile =>
-        case o =>
-          fail(s"not resolved $o")
+  "SourcePosition" should
+    "resolve FqnSymbols for local files with no line number" in {
+      withEnsimeConfig { implicit config =>
+        lookup(knownFile) match {
+          case Some(LineSourcePosition(name, 0)) if name.isFile =>
+          case o =>
+            fail(s"not resolved $o")
+        }
       }
     }
-  }
 
   it should "resolve FqnSymbols for local with a line number" in {
     withEnsimeConfig { implicit config =>

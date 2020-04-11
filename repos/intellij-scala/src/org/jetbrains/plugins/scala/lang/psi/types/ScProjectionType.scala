@@ -102,7 +102,8 @@ class ScProjectionType private (
                   actualSubst.subst(tp) match {
                     case ScParameterizedType(des, typeArgs) =>
                       val taArgs = ta.typeParameters
-                      if (taArgs.length == typeArgs.length && taArgs
+                      if (taArgs.length == typeArgs.length &&
+                          taArgs
                             .zip(typeArgs)
                             .forall {
                               case (
@@ -132,11 +133,8 @@ class ScProjectionType private (
             ta.typeParameters
               .map(tp => {
                 val name = tp.name + "$$"
-                args += new ScExistentialArgument(
-                  name,
-                  Nil,
-                  types.Nothing,
-                  types.Any)
+                args +=
+                  new ScExistentialArgument(name, Nil, types.Nothing, types.Any)
                 ScTypeVariable(name)
               })
           )
@@ -160,12 +158,11 @@ class ScProjectionType private (
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = projected.hashCode() + element.hashCode() * 31 + (
-        if (superReference)
-          239
-        else
-          0
-      )
+      hash = projected.hashCode() + element.hashCode() * 31 +
+        (if (superReference)
+           239
+         else
+           0)
     }
     hash
   }
@@ -256,9 +253,8 @@ class ScProjectionType private (
       val proc = resolveProcessor(ValueSet(CLASS), name)
       proc.processType(projected, resolvePlace, ResolveState.initial)
       val candidates = proc.candidates
-      if (candidates.length == 1 && candidates(0)
-            .element
-            .isInstanceOf[PsiNamedElement]) {
+      if (candidates.length == 1 &&
+          candidates(0).element.isInstanceOf[PsiNamedElement]) {
         val defaultSubstitutor = emptySubst followed candidates(0).substitutor
         if (superReference) {
           ScalaPsiUtil
@@ -286,9 +282,8 @@ class ScProjectionType private (
         val proc = resolveProcessor(ValueSet(VAL, OBJECT), name)
         proc.processType(projected, resolvePlace, ResolveState.initial)
         val candidates = proc.candidates
-        if (candidates.length == 1 && candidates(0)
-              .element
-              .isInstanceOf[PsiNamedElement]) {
+        if (candidates.length == 1 &&
+            candidates(0).element.isInstanceOf[PsiNamedElement]) {
           //todo: superMemberSubstitutor? However I don't know working example for this case
           Some(
             candidates(0).element,
@@ -425,8 +420,8 @@ class ScProjectionType private (
             case o: ScObject =>
             case t: ScTypedDefinition =>
               val s: ScSubstitutor =
-                new ScSubstitutor(Map.empty, Map.empty, Some(p1)) followed proj2
-                  .actualSubst
+                new ScSubstitutor(Map.empty, Map.empty, Some(p1)) followed
+                  proj2.actualSubst
               t.getType(TypingContext.empty) match {
                 case Success(tp, _) if ScType.isSingletonType(tp) =>
                   return Equivalence
@@ -479,10 +474,8 @@ class ScProjectionType private (
   override def equals(other: Any): Boolean =
     other match {
       case that: ScProjectionType =>
-        (that canEqual this) &&
-          projected == that.projected &&
-          element == that.element &&
-          superReference == that.superReference
+        (that canEqual this) && projected == that.projected &&
+          element == that.element && superReference == that.superReference
       case _ =>
         false
     }
@@ -567,7 +560,8 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
                 tp match {
                   case ScParameterizedType(des, typeArgs) =>
                     val taArgs = ta.typeParameters
-                    if (taArgs.length == typeArgs.length && taArgs
+                    if (taArgs.length == typeArgs.length &&
+                        taArgs
                           .zip(typeArgs)
                           .forall {
                             case (
@@ -597,11 +591,8 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
           ta.typeParameters
             .map(tp => {
               val name = tp.name + "$$"
-              args += new ScExistentialArgument(
-                name,
-                Nil,
-                types.Nothing,
-                types.Any)
+              args +=
+                new ScExistentialArgument(name, Nil, types.Nothing, types.Any)
               ScTypeVariable(name)
             })
         )

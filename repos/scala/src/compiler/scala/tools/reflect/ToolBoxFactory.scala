@@ -67,12 +67,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         // we need to use UUIDs here, because our toolbox might be spawned by another toolbox
         // that already has, say, __wrapper$1 in its virtual directory, which will shadow our codegen
         newTermName(
-          "__wrapper$" + wrapCount + "$" + java
-            .util
-            .UUID
-            .randomUUID
-            .toString
-            .replace("-", ""))
+          "__wrapper$" + wrapCount + "$" +
+            java.util.UUID.randomUUID.toString.replace("-", ""))
       }
 
       // should be called after every use of ToolBoxGlobal in order to prevent leaks
@@ -94,15 +90,15 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         // current implementation typechecking is not always idempotent.
         // That's why we cannot allow inputs of toolboxes to be typechecked,
         // at least not until the aforementioned issue is closed.
-        val typed = expr filter (t =>
-          t.tpe != null && t.tpe != NoType && !t.isInstanceOf[TypeTree])
+        val typed = expr filter
+          (t => t.tpe != null && t.tpe != NoType && !t.isInstanceOf[TypeTree])
         if (!typed.isEmpty)
           throw ToolBoxError(
             "reflective toolbox has failed: cannot operate on trees that are already typed")
 
         if (expr.freeTypes.nonEmpty) {
-          val ft_s = expr
-            .freeTypes map (ft => s"  ${ft.name} ${ft.origin}") mkString "\n  "
+          val ft_s = expr.freeTypes map
+            (ft => s"  ${ft.name} ${ft.origin}") mkString "\n  "
           throw ToolBoxError(s"""
             |reflective toolbox failed due to unresolved free type variables:
             |$ft_s
@@ -122,16 +118,17 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
           .collection
           .mutable
           .LinkedHashMap[FreeTermSymbol, TermName]()
-        freeTerms foreach (ft => {
-          var name = ft.name.toString
-          val namesakes = freeTerms takeWhile (_ != ft) filter (ft2 =>
-            ft != ft2 && ft.name == ft2.name)
-          if (namesakes.length > 0)
-            name += ("$" + (namesakes.length + 1))
-          freeTermNames += (
-            ft -> newTermName(name + nme.REIFY_FREE_VALUE_SUFFIX)
-          )
-        })
+        freeTerms foreach
+          (ft => {
+            var name = ft.name.toString
+            val namesakes = freeTerms takeWhile
+              (_ != ft) filter
+              (ft2 => ft != ft2 && ft.name == ft2.name)
+            if (namesakes.length > 0)
+              name += ("$" + (namesakes.length + 1))
+            freeTermNames +=
+              (ft -> newTermName(name + nme.REIFY_FREE_VALUE_SUFFIX))
+          })
         val expr =
           new Transformer {
             override def transform(tree: Tree): Tree =
@@ -249,10 +246,12 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
             }.transform(result)
           new TreeTypeSubstituter(
             dummies1 map (_.symbol),
-            dummies1 map (dummy =>
-              SingleType(
-                NoPrefix,
-                invertedIndex(dummy.symbol.name.toTermName)))).traverse(result)
+            dummies1 map
+              (dummy =>
+                SingleType(
+                  NoPrefix,
+                  invertedIndex(dummy.symbol.name.toTermName))))
+            .traverse(result)
           result
         })
       }
@@ -356,9 +355,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         val freeTerms =
           expr
             .freeTerms // need to calculate them here, because later on they will be erased
-        val thunks = freeTerms map (fte =>
-          () =>
-            fte.value) // need to be lazy in order not to distort evaluation order
+        val thunks = freeTerms map
+          (fte =>
+            () =>
+              fte.value) // need to be lazy in order not to distort evaluation order
         verify(expr)
 
         def wrapInModule(expr0: Tree): ModuleDef = {
@@ -387,9 +387,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
                 if (fv.hasStableFlag)
                   STABLE
                 else
-                  0) setInfo appliedType(
-              definitions.FunctionClass(0).tpe,
-              List(fv.tpe.resultType))
+                  0) setInfo
+              appliedType(
+                definitions.FunctionClass(0).tpe,
+                List(fv.tpe.resultType))
           }
           meth setInfo MethodType(freeTerms.map(makeParam).toList, AnyTpe)
           minfo.decls enter meth
@@ -516,9 +517,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
       def throwIfErrors() = {
         if (frontEnd.hasErrors)
           throw ToolBoxError(
-            "reflective compilation has failed:" + EOL + EOL + (
-              frontEnd.infos map (_.msg) mkString EOL
-            ))
+            "reflective compilation has failed:" + EOL + EOL +
+              (frontEnd.infos map (_.msg) mkString EOL))
       }
     }
 
@@ -550,7 +550,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
                 frontEndToReporter(frontEnd, command.settings))
             if (frontEnd.hasErrors) {
               throw ToolBoxError(
-                "reflective compilation has failed: cannot initialize the compiler:" + EOL + EOL +
+                "reflective compilation has failed: cannot initialize the compiler:" +
+                  EOL + EOL +
                   (frontEnd.infos map (_.msg) mkString EOL))
             }
             instance

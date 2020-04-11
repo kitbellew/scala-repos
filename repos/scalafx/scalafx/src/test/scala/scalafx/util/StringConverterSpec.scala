@@ -115,12 +115,12 @@ class StringConverterSpec extends FlatSpec {
       value: T,
       converterName: String,
       typeName: String) {
-    converterName should "convert '%s' in a %s and vice-versa"
-      .format(string, typeName) in {
-      val numericValue = converter.fromString(string)
-      numericValue should equal(value)
-      converter.toString(numericValue) should equal(string)
-    }
+    converterName should
+      "convert '%s' in a %s and vice-versa".format(string, typeName) in {
+        val numericValue = converter.fromString(string)
+        numericValue should equal(value)
+        converter.toString(numericValue) should equal(string)
+      }
   }
 
   // HELPER METHODS - END
@@ -128,23 +128,25 @@ class StringConverterSpec extends FlatSpec {
   // TESTING METHODS - BEGIN
 
   private def testImplicitConversion() {
-    "A Scala StringConverter" should "be convertible to a JavaFX StringConverter" in {
-      val sc = StringConverter[Char](s => s.charAt(0), ch => ch.toString)
-      val jc: jfxu.StringConverter[Char] = sc
+    "A Scala StringConverter" should
+      "be convertible to a JavaFX StringConverter" in {
+        val sc = StringConverter[Char](s => s.charAt(0), ch => ch.toString)
+        val jc: jfxu.StringConverter[Char] = sc
 
-      jc.isInstanceOf[jfxu.StringConverter[_]] should be(true)
-    }
+        jc.isInstanceOf[jfxu.StringConverter[_]] should be(true)
+      }
 
-    "A JavaFX StringConverter" should "be convertible to a Scala StringConverter" in {
-      val jc =
-        new jfxu.StringConverter[Char] {
-          def toString(c: Char) = c.toString
-          def fromString(s: String) = s.charAt(0)
-        }
-      val sc: StringConverter[Char] = jc
+    "A JavaFX StringConverter" should
+      "be convertible to a Scala StringConverter" in {
+        val jc =
+          new jfxu.StringConverter[Char] {
+            def toString(c: Char) = c.toString
+            def fromString(s: String) = s.charAt(0)
+          }
+        val sc: StringConverter[Char] = jc
 
-      sc.isInstanceOf[StringConverter[_]] should be(true)
-    }
+        sc.isInstanceOf[StringConverter[_]] should be(true)
+      }
   }
 
   // TESTING METHODS - END

@@ -129,7 +129,8 @@ abstract class BaseScalaApplicationConfigurationProducer[
     if (location == null)
       return false
     //use fast psi location check to filter off obvious candidates
-    if (context.getPsiLocation == null || !hasClassAncestorWithName(
+    if (context.getPsiLocation == null ||
+        !hasClassAncestorWithName(
           context.getPsiLocation,
           configuration.MAIN_CLASS_NAME))
       return false
@@ -145,15 +146,10 @@ abstract class BaseScalaApplicationConfigurationProducer[
         .asInstanceOf[T]
         .getConfigurationModule
         .getModule
-    JavaExecutionUtil.getRuntimeQualifiedName(aClass) == configuration
-      .MAIN_CLASS_NAME &&
-    (
-      location.getModule == configuration
-        .getConfigurationModule
-        .getModule || predefinedModule == configuration
-        .getConfigurationModule
-        .getModule
-    )
+    JavaExecutionUtil
+      .getRuntimeQualifiedName(aClass) == configuration.MAIN_CLASS_NAME &&
+    (location.getModule == configuration.getConfigurationModule.getModule ||
+    predefinedModule == configuration.getConfigurationModule.getModule)
   }
 
   override def setupConfigurationFromContext(

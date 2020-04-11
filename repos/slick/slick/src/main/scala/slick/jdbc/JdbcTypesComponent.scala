@@ -423,8 +423,6 @@ trait JdbcTypesComponent extends RelationalTypesComponent {
 
 object JdbcTypesComponent {
   private[slick] lazy val typeNames = Map() ++
-    (
-      for (f <- classOf[java.sql.Types].getFields)
-        yield f.get(null).asInstanceOf[Int] -> f.getName
-    )
+    (for (f <- classOf[java.sql.Types].getFields)
+      yield f.get(null).asInstanceOf[Int] -> f.getName)
 }

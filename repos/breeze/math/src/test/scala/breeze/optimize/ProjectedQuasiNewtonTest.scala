@@ -43,9 +43,8 @@ class ProjectedQuasiNewtonTest
         }
 
       val result = optimizer.minimize(f, init)
-      result should beSimilarTo(
-        DenseVector.fill(result.size)(3.0),
-        allowedDeviation = 1e-5)
+      result should
+        beSimilarTo(DenseVector.fill(result.size)(3.0), allowedDeviation = 1e-5)
     }
   }
 
@@ -65,9 +64,10 @@ class ProjectedQuasiNewtonTest
         }
 
       val result = optimizer.minimize(f, init)
-      result should beSimilarTo(
-        DenseVector.fill(result.size)(2.0),
-        allowedDeviation = 1e-10)
+      result should
+        beSimilarTo(
+          DenseVector.fill(result.size)(2.0),
+          allowedDeviation = 1e-10)
     }
   }
 
@@ -85,9 +85,10 @@ class ProjectedQuasiNewtonTest
       val targetValue = 3 / (1.0 / 2 + 1)
       val result = optimizer
         .minimize(DiffFunction.withL2Regularization(f, 1.0), init)
-      result should beSimilarTo(
-        DenseVector.ones[Double](init.size) * targetValue,
-        allowedDeviation = 3e-3 * result.size)
+      result should
+        beSimilarTo(
+          DenseVector.ones[Double](init.size) * targetValue,
+          allowedDeviation = 3e-3 * result.size)
     }
   }
 

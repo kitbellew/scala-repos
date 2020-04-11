@@ -33,10 +33,10 @@ class ForwardedHeaderHandlerSpec extends Specification {
       results(0)._1 must_== ForwardedEntry(Some("_gazonk"), None)
       results(0)._2 must beLeft
       results(0)._3 must beNone
-      results(1)
-        ._1 must_== ForwardedEntry(Some("[2001:db8:cafe::17]:4711"), None)
-      results(1)
-        ._2 must beRight(ConnectionInfo(addr("2001:db8:cafe::17"), false))
+      results(1)._1 must_==
+        ForwardedEntry(Some("[2001:db8:cafe::17]:4711"), None)
+      results(1)._2 must
+        beRight(ConnectionInfo(addr("2001:db8:cafe::17"), false))
       results(1)._3 must beSome(false)
       results(2)._1 must_== ForwardedEntry(Some("192.0.2.60"), Some("http"))
       results(2)._2 must beRight(ConnectionInfo(addr("192.0.2.60"), false))
@@ -74,10 +74,10 @@ class ForwardedHeaderHandlerSpec extends Specification {
       results(1)._1 must_== ForwardedEntry(Some("::1"), Some("http"))
       results(1)._2 must beRight(ConnectionInfo(addr("::1"), false))
       results(1)._3 must beSome(false)
-      results(2)
-        ._1 must_== ForwardedEntry(Some("[2001:db8:cafe::17]"), Some("https"))
-      results(2)
-        ._2 must beRight(ConnectionInfo(addr("2001:db8:cafe::17"), true))
+      results(2)._1 must_==
+        ForwardedEntry(Some("[2001:db8:cafe::17]"), Some("https"))
+      results(2)._2 must
+        beRight(ConnectionInfo(addr("2001:db8:cafe::17"), true))
       results(2)._3 must beSome(true)
       results(3)._1 must_== ForwardedEntry(Some("127.0.0.1"), Some("http"))
       results(3)._2 must beRight(ConnectionInfo(addr("127.0.0.1"), false))
@@ -183,9 +183,8 @@ class ForwardedHeaderHandlerSpec extends Specification {
           false,
           headers("""
           |Forwarded: For=[2001:db8:cafe::17]:4711
-        """.stripMargin)) mustEqual ConnectionInfo(
-        addr("2001:db8:cafe::17"),
-        false)
+        """.stripMargin)) mustEqual
+        ConnectionInfo(addr("2001:db8:cafe::17"), false)
     }
 
     "handle quoted IPv6 addresses with rfc7239" in {
@@ -195,9 +194,8 @@ class ForwardedHeaderHandlerSpec extends Specification {
           false,
           headers("""
           |Forwarded: For="[2001:db8:cafe::17]:4711"
-        """.stripMargin)) mustEqual ConnectionInfo(
-        addr("2001:db8:cafe::17"),
-        false)
+        """.stripMargin)) mustEqual
+        ConnectionInfo(addr("2001:db8:cafe::17"), false)
     }
 
     "ignore obfuscated addresses with rfc7239" in {
@@ -431,9 +429,8 @@ class ForwardedHeaderHandlerSpec extends Specification {
     // example from RFC 7239 section 7.4
     "handle unquoted IPv6 addresses in x-forwarded-for headers" in {
       handler(
-        version("x-forwarded") ++ trustedProxies(
-          "127.0.0.1",
-          "2001:db8:cafe::17")).remoteConnection(
+        version("x-forwarded") ++
+          trustedProxies("127.0.0.1", "2001:db8:cafe::17")).remoteConnection(
         localhost,
         false,
         headers("""

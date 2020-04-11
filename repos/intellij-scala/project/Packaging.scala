@@ -83,8 +83,8 @@ object Packaging {
       case MergedArtifact(srcs, destination) =>
         mergeIntoTemporaryJar(srcs: _*) -> destination
       case Library(libraryId, destination) =>
-        val libKey = libraryId.organization % libraryId.name % libraryId
-          .revision
+        val libKey = libraryId.organization % libraryId.name %
+          libraryId.revision
         resolvedLibraries(libKey) -> destination
     }
 

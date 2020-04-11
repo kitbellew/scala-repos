@@ -82,31 +82,33 @@ class ServerSSLEngineSpec extends Specification with Mockito {
 
   "ServerSSLContext" should {
 
-    "default create a SSL engine suitable for development" in new ApplicationContext
-      with TempConfDir {
-      createEngine(None, Some(tempDir)) must beAnInstanceOf[SSLEngine]
-    }
+    "default create a SSL engine suitable for development" in
+      new ApplicationContext with TempConfDir {
+        createEngine(None, Some(tempDir)) must beAnInstanceOf[SSLEngine]
+      }
 
-    "fail to load a non existing SSLEngineProvider" in new ApplicationContext {
-      createEngine(Some("bla bla")) must throwA[ClassNotFoundException]
-    }
+    "fail to load a non existing SSLEngineProvider" in
+      new ApplicationContext {
+        createEngine(Some("bla bla")) must throwA[ClassNotFoundException]
+      }
 
-    "fail to load an existing SSLEngineProvider with the wrong type" in new ApplicationContext {
-      createEngine(Some(classOf[WrongSSLEngineProvider].getName)) must throwA[
-        ClassCastException]
-    }
+    "fail to load an existing SSLEngineProvider with the wrong type" in
+      new ApplicationContext {
+        createEngine(Some(classOf[WrongSSLEngineProvider].getName)) must
+          throwA[ClassCastException]
+      }
 
-    "load a custom SSLContext from a SSLEngineProvider" in new ApplicationContext {
-      createEngine(
-        Some(classOf[RightSSLEngineProvider].getName)) must beAnInstanceOf[
-        SSLEngine]
-    }
+    "load a custom SSLContext from a SSLEngineProvider" in
+      new ApplicationContext {
+        createEngine(Some(classOf[RightSSLEngineProvider].getName)) must
+          beAnInstanceOf[SSLEngine]
+      }
 
-    "load a custom SSLContext from a java SSLEngineProvider" in new ApplicationContext {
-      createEngine(
-        Some(classOf[JavaSSLEngineProvider].getName)) must beAnInstanceOf[
-        SSLEngine]
-    }
+    "load a custom SSLContext from a java SSLEngineProvider" in
+      new ApplicationContext {
+        createEngine(Some(classOf[JavaSSLEngineProvider].getName)) must
+          beAnInstanceOf[SSLEngine]
+      }
   }
 
 }

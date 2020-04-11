@@ -52,49 +52,51 @@ class ReplicatedMetricsSpec
   }
 
   "Demo of a replicated metrics" must {
-    "join cluster" in within(20.seconds) {
-      join(node1, node1)
-      join(node2, node1)
-      join(node3, node1)
+    "join cluster" in
+      within(20.seconds) {
+        join(node1, node1)
+        join(node2, node1)
+        join(node3, node1)
 
-      awaitAssert {
-        DistributedData(system).replicator ! GetReplicaCount
-        expectMsg(ReplicaCount(roles.size))
+        awaitAssert {
+          DistributedData(system).replicator ! GetReplicaCount
+          expectMsg(ReplicaCount(roles.size))
+        }
+        enterBarrier("after-1")
       }
-      enterBarrier("after-1")
-    }
 
-    "replicate metrics" in within(10.seconds) {
-      val probe = TestProbe()
-      system.eventStream.subscribe(probe.ref, classOf[UsedHeap])
-      awaitAssert {
-        probe.expectMsgType[UsedHeap](1.second).percentPerNode.size should be(3)
-      }
-      probe.expectMsgType[UsedHeap].percentPerNode.size should be(3)
-      probe.expectMsgType[UsedHeap].percentPerNode.size should be(3)
-      enterBarrier("after-2")
-    }
-
-    "cleanup removed node" in within(25.seconds) {
-      val node3Address = node(node3).address
-      runOn(node1) {
-        cluster.leave(node3Address)
-      }
-      runOn(node1, node2) {
+    "replicate metrics" in
+      within(10.seconds) {
         val probe = TestProbe()
         system.eventStream.subscribe(probe.ref, classOf[UsedHeap])
         awaitAssert {
-          probe.expectMsgType[UsedHeap](1.second).percentPerNode.size should be(
-            2)
+          probe.expectMsgType[UsedHeap](1.second).percentPerNode.size should
+            be(3)
         }
-        probe
-          .expectMsgType[UsedHeap]
-          .percentPerNode
-          .asScala
-          .toMap should not contain (nodeKey(node3Address))
+        probe.expectMsgType[UsedHeap].percentPerNode.size should be(3)
+        probe.expectMsgType[UsedHeap].percentPerNode.size should be(3)
+        enterBarrier("after-2")
       }
-      enterBarrier("after-3")
-    }
+
+    "cleanup removed node" in
+      within(25.seconds) {
+        val node3Address = node(node3).address
+        runOn(node1) {
+          cluster.leave(node3Address)
+        }
+        runOn(node1, node2) {
+          val probe = TestProbe()
+          system.eventStream.subscribe(probe.ref, classOf[UsedHeap])
+          awaitAssert {
+            probe.expectMsgType[UsedHeap](1.second).percentPerNode.size should
+              be(2)
+          }
+          probe.expectMsgType[UsedHeap].percentPerNode.asScala.toMap should
+            not contain
+            (nodeKey(node3Address))
+        }
+        enterBarrier("after-3")
+      }
 
   }
 

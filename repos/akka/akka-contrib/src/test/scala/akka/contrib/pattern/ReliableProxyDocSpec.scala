@@ -87,13 +87,14 @@ class ReliableProxyDocSpec extends AkkaSpec {
       probe.expectMsg("done")
     }
 
-    "show terminated after maxReconnects" in within(5.seconds) {
-      val target = system.deadLetters
-      val probe = TestProbe()
-      val a = system.actorOf(Props(classOf[WatchingProxyParent], target.path))
-      a.tell("hello", probe.ref)
-      probe.expectMsg("terminated")
-    }
+    "show terminated after maxReconnects" in
+      within(5.seconds) {
+        val target = system.deadLetters
+        val probe = TestProbe()
+        val a = system.actorOf(Props(classOf[WatchingProxyParent], target.path))
+        a.tell("hello", probe.ref)
+        probe.expectMsg("terminated")
+      }
 
   }
 

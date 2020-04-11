@@ -67,9 +67,10 @@ trait ArrayLibSpecs[M[+_]]
           d
       }
 
-      values mustEqual Set(
-        -9, -42, 42, 87, 4, 7, 6, 12, 0, 1024, 57, 77, 46.2, -100, 1, 19, 22,
-        11, 104, -27, 6, -2790111, 244, 13, 11)
+      values mustEqual
+        Set(
+          -9, -42, 42, 87, 4, 7, 6, 12, 0, 1024, 57, 77, 46.2, -100, 1, 19, 22,
+          11, 104, -27, 6, -2790111, 244, 13, 11)
     }
 
     "flatten a heterogeneous set" in {
@@ -88,40 +89,41 @@ trait ArrayLibSpecs[M[+_]]
           jv
       }
 
-      values mustEqual Set(
-        SDecimal(-9),
-        SDecimal(-42),
-        SDecimal(42),
-        SDecimal(87),
-        SDecimal(4),
-        SDecimal(7),
-        SDecimal(6),
-        SDecimal(12),
-        SDecimal(0),
-        SDecimal(1024),
-        SDecimal(57),
-        SDecimal(77),
-        SDecimal(46.2),
-        SDecimal(-100),
-        SDecimal(1),
-        SDecimal(19),
-        SDecimal(22),
-        SDecimal(11),
-        SDecimal(104),
-        SDecimal(-27),
-        SDecimal(6),
-        SDecimal(-2790111),
-        SDecimal(244),
-        SDecimal(13),
-        SDecimal(11),
-        SArray(
-          Vector(
-            SDecimal(-9),
-            SDecimal(-42),
-            SDecimal(42),
-            SDecimal(87),
-            SDecimal(4)))
-      )
+      values mustEqual
+        Set(
+          SDecimal(-9),
+          SDecimal(-42),
+          SDecimal(42),
+          SDecimal(87),
+          SDecimal(4),
+          SDecimal(7),
+          SDecimal(6),
+          SDecimal(12),
+          SDecimal(0),
+          SDecimal(1024),
+          SDecimal(57),
+          SDecimal(77),
+          SDecimal(46.2),
+          SDecimal(-100),
+          SDecimal(1),
+          SDecimal(19),
+          SDecimal(22),
+          SDecimal(11),
+          SDecimal(104),
+          SDecimal(-27),
+          SDecimal(6),
+          SDecimal(-2790111),
+          SDecimal(244),
+          SDecimal(13),
+          SDecimal(11),
+          SArray(
+            Vector(
+              SDecimal(-9),
+              SDecimal(-42),
+              SDecimal(42),
+              SDecimal(87),
+              SDecimal(4)))
+        )
     }
 
     "flattened set is related to original set" in {
@@ -153,14 +155,15 @@ trait ArrayLibSpecs[M[+_]]
         case (ids, jv) if ids.length == 2 =>
           jv
       }
-      values must haveAllElementsLike {
-        case SObject(obj) =>
-          obj.keySet mustEqual Set("arr", "val")
-          val SArray(elems) = obj("arr")
-          elems must contain(obj("val"))
-        case _ =>
-          ko
-      }
+      values must
+        haveAllElementsLike {
+          case SObject(obj) =>
+            obj.keySet mustEqual Set("arr", "val")
+            val SArray(elems) = obj("arr")
+            elems must contain(obj("val"))
+          case _ =>
+            ko
+        }
     }
 
     "flatten a non-array without exploding" in {

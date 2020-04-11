@@ -142,7 +142,8 @@ trait Parsers {
           owner: Name,
           implicitmod: Int,
           caseParam: Boolean): ValDef =
-        if (isHole && lookingAhead {
+        if (isHole &&
+            lookingAhead {
               in.token == COMMA || in.token == RPAREN
             }) {
           ParamPlaceholder(implicitmod, ident())
@@ -160,7 +161,8 @@ trait Parsers {
 
       // q"foo match { case $x }"
       override def caseClause(): CaseDef =
-        if (isHole && lookingAhead {
+        if (isHole &&
+            lookingAhead {
               in.token == CASE || in.token == RBRACE || in.token == SEMI
             }) {
           val c = CasePlaceholder(ident())
@@ -179,46 +181,46 @@ trait Parsers {
         }
 
       override def isAnnotation: Boolean =
-        super.isAnnotation || (
-          isHole && lookingAhead {
-            isAnnotation
-          }
-        )
+        super.isAnnotation ||
+          (isHole &&
+            lookingAhead {
+              isAnnotation
+            })
 
       override def isModifier: Boolean =
-        super.isModifier || (
-          isHole && lookingAhead {
-            isModifier
-          }
-        )
+        super.isModifier ||
+          (isHole &&
+            lookingAhead {
+              isModifier
+            })
 
       override def isLocalModifier: Boolean =
-        super.isLocalModifier || (
-          isHole && lookingAhead {
-            isLocalModifier
-          }
-        )
+        super.isLocalModifier ||
+          (isHole &&
+            lookingAhead {
+              isLocalModifier
+            })
 
       override def isTemplateIntro: Boolean =
-        super.isTemplateIntro || (
-          isHole && lookingAhead {
-            isTemplateIntro
-          }
-        )
+        super.isTemplateIntro ||
+          (isHole &&
+            lookingAhead {
+              isTemplateIntro
+            })
 
       override def isDefIntro: Boolean =
-        super.isDefIntro || (
-          isHole && lookingAhead {
-            isDefIntro
-          }
-        )
+        super.isDefIntro ||
+          (isHole &&
+            lookingAhead {
+              isDefIntro
+            })
 
       override def isDclIntro: Boolean =
-        super.isDclIntro || (
-          isHole && lookingAhead {
-            isDclIntro
-          }
-        )
+        super.isDclIntro ||
+          (isHole &&
+            lookingAhead {
+              isDclIntro
+            })
 
       override def isStatSep(token: Int) =
         token == EOF || super.isStatSep(token)
@@ -236,10 +238,12 @@ trait Parsers {
           case AT =>
             in.nextToken()
             annot :: readAnnots(annot)
-          case _ if isHole && lookingAhead {
-                isAnnotation || isModifier || isDefIntro || isIdent || isStatSep || in
-                  .token == LPAREN
-              } =>
+          case _
+              if isHole &&
+                lookingAhead {
+                  isAnnotation || isModifier || isDefIntro || isIdent ||
+                  isStatSep || in.token == LPAREN
+                } =>
             val ann = ModsPlaceholder(in.name)
             in.nextToken()
             ann :: readAnnots(annot)
@@ -264,14 +268,13 @@ trait Parsers {
         }
 
       override def isTypedParam(tree: Tree) =
-        super.isTypedParam(tree) || (
-          tree match {
+        super.isTypedParam(tree) ||
+          (tree match {
             case Ident(name) if isHole(name) =>
               true
             case _ =>
               false
-          }
-        )
+          })
 
       override def topStat =
         super
@@ -284,7 +287,8 @@ trait Parsers {
           }
 
       override def enumerator(isFirst: Boolean, allowNestedIf: Boolean = true) =
-        if (isHole && lookingAhead {
+        if (isHole &&
+            lookingAhead {
               in.token == EOF || in.token == RPAREN || isStatSep
             }) {
           val res = ForEnumPlaceholder(in.name) :: Nil

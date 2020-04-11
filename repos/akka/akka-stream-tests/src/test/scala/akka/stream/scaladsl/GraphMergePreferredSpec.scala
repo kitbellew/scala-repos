@@ -85,8 +85,8 @@ class GraphMergePreferredSpec extends TwoStreamsSetup {
               ClosedShape
             })
         }
-      ).getMessage should include(
-        "[MergePreferred.preferred] is already connected")
+      ).getMessage should
+        include("[MergePreferred.preferred] is already connected")
     }
 
   }

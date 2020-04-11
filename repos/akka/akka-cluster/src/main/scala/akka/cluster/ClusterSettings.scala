@@ -26,14 +26,12 @@ final class ClusterSettings(val config: Config, val systemName: String) {
     .getString("implementation-class")
   val HeartbeatInterval: FiniteDuration = {
     FailureDetectorConfig.getMillisDuration("heartbeat-interval")
-  } requiring (
-    _ > Duration.Zero, "failure-detector.heartbeat-interval must be > 0"
-  )
+  } requiring
+    (_ > Duration.Zero, "failure-detector.heartbeat-interval must be > 0")
   val HeartbeatExpectedResponseAfter: FiniteDuration = {
     FailureDetectorConfig.getMillisDuration("expected-response-after")
-  } requiring (
-    _ > Duration.Zero, "failure-detector.expected-response-after > 0"
-  )
+  } requiring
+    (_ > Duration.Zero, "failure-detector.expected-response-after > 0")
   val MonitoredByNrOfMembers: Int = {
     FailureDetectorConfig.getInt("monitored-by-nr-of-members")
   } requiring (_ > 0, "failure-detector.monitored-by-nr-of-members must be > 0")
@@ -53,9 +51,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
       case "off" ⇒
         Duration.Undefined
       case _ ⇒
-        cc.getMillisDuration(key) requiring (
-          _ > Duration.Zero, key + " > 0s, or off"
-        )
+        cc.getMillisDuration(key) requiring
+          (_ > Duration.Zero, key + " > 0s, or off")
     }
   }
   val PeriodicTasksInitialDelay: FiniteDuration = cc
@@ -74,9 +71,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
       case "off" ⇒
         Duration.Undefined
       case _ ⇒
-        cc.getMillisDuration(key) requiring (
-          _ >= Duration.Zero, key + " >= 0s, or off"
-        )
+        cc.getMillisDuration(key) requiring
+          (_ >= Duration.Zero, key + " >= 0s, or off")
     }
   }
 
@@ -86,9 +82,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
       case "off" ⇒
         Duration.Undefined
       case _ ⇒
-        cc.getMillisDuration(key) requiring (
-          _ >= Duration.Zero, key + " >= 0s, or off"
-        )
+        cc.getMillisDuration(key) requiring
+          (_ >= Duration.Zero, key + " >= 0s, or off")
     }
   }
 
@@ -98,9 +93,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
       case "off" ⇒
         Duration.Zero
       case _ ⇒
-        cc.getMillisDuration(key) requiring (
-          _ >= Duration.Zero, key + " >= 0s, or off"
-        )
+        cc.getMillisDuration(key) requiring
+          (_ >= Duration.Zero, key + " >= 0s, or off")
     }
   }
 
@@ -145,9 +139,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
     .getMillisDuration("metrics.gossip-interval")
   val MetricsMovingAverageHalfLife: FiniteDuration = {
     cc.getMillisDuration("metrics.moving-average-half-life")
-  } requiring (
-    _ > Duration.Zero, "metrics.moving-average-half-life must be > 0"
-  )
+  } requiring
+    (_ > Duration.Zero, "metrics.moving-average-half-life must be > 0")
 
   object Debug {
     val VerboseHeartbeatLogging = cc

@@ -161,13 +161,13 @@ class RingIntervalTest extends FunSuite {
   }
   test("(c, ∞) * (-c) =  (-∞, -c * c), c > 0") {
     assert(
-      Interval.fromBounds(Open(c), Unbound()) * (-c) ===
-        Interval.fromBounds(Unbound(), Open(-c * c)))
+      Interval.fromBounds(Open(c), Unbound()) *
+        (-c) === Interval.fromBounds(Unbound(), Open(-c * c)))
   }
   test("(-∞, c] * (-c) =  [-c * c, ∞), c > 0") {
     assert(
-      Interval.fromBounds(Unbound(), Closed(c)) * (-c) ===
-        Interval.fromBounds(Closed(-c * c), Unbound()))
+      Interval.fromBounds(Unbound(), Closed(c)) *
+        (-c) === Interval.fromBounds(Closed(-c * c), Unbound()))
   }
   test("Interval multiplication bug #372") {
     val a = Interval(-1, 1)
@@ -510,9 +510,8 @@ class IntervalCheck
             val ok = c.contains(g(x, y))
             if (!ok)
               println(
-                "(%s, %s) failed on (%s, %s)" format (
-                  a, b, x.toString, y.toString
-                ))
+                "(%s, %s) failed on (%s, %s)" format
+                  (a, b, x.toString, y.toString))
             ok shouldBe true
         }
     }
@@ -560,8 +559,8 @@ class IntervalCheck
     forAll { (x: Rational, y: Rational) =>
       val a = Interval.point(x)
       val b = Interval.point(y)
-      PartialOrder[Interval[Rational]].tryCompare(a, b).get shouldBe Order[
-        Rational].compare(x, y)
+      PartialOrder[Interval[Rational]].tryCompare(a, b).get shouldBe
+        Order[Rational].compare(x, y)
       val Some(Point(vmin)) = a.pmin(b)
       vmin shouldBe x.min(y)
       val Some(Point(vmax)) = a.pmax(b)

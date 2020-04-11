@@ -102,8 +102,9 @@ private[streaming] object MasterFailureTest extends Logging {
       numBatches: Int,
       batchDuration: Duration) {
     // Input: time=1 ==> [ a ] , time=2 ==> [ a, a ] , time=3 ==> [ a, a, a ] , ...
-    val input =
-      (1 to numBatches).map(i => (1 to i).map(_ => "a").mkString(" ")).toSeq
+    val input = (1 to numBatches)
+      .map(i => (1 to i).map(_ => "a").mkString(" "))
+      .toSeq
     // Expected output: time=1 ==> [ (a, 1) ] , time=2 ==> [ (a, 3) ] , time=3 ==> [ (a,6) ] , ...
     val expectedOutput = (1L to numBatches)
       .map(i => (1L to i).sum)
@@ -381,8 +382,8 @@ private[streaming] class KillingThread(
           5000
         else
           2000
-      val killWaitTime = minKillWaitTime + math
-        .abs(Random.nextLong % maxKillWaitTime)
+      val killWaitTime = minKillWaitTime +
+        math.abs(Random.nextLong % maxKillWaitTime)
       logInfo("Kill wait time = " + killWaitTime)
       Thread.sleep(killWaitTime)
       logInfo(
@@ -442,7 +443,8 @@ private[streaming] class FileGeneratingThread(
             case ioe: IOException => {
               fs = testDir.getFileSystem(new Configuration())
               logWarning(
-                "Attempt " + tries + " at generating file " + hadoopFile + " failed.",
+                "Attempt " + tries + " at generating file " + hadoopFile +
+                  " failed.",
                 ioe)
             }
           }

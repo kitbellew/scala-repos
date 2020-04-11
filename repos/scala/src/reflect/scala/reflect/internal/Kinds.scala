@@ -100,12 +100,10 @@ trait Kinds {
          xs map f.tupled mkString ("\n", ", ", ""))
 
     def errorMessage(targ: Type, tparam: Symbol): String =
-      ((
-        targ + "'s type parameters do not match " + tparam + "'s expected parameters:"
-      )
-        + buildMessage(arity, arityMessage)
-        + buildMessage(variance, varianceMessage)
-        + buildMessage(strictness, strictnessMessage))
+      ((targ + "'s type parameters do not match " + tparam +
+        "'s expected parameters:") + buildMessage(arity, arityMessage) +
+        buildMessage(variance, varianceMessage) +
+        buildMessage(strictness, strictnessMessage))
   }
   val NoKindErrors = KindErrors(Nil, Nil, Nil)
 
@@ -124,8 +122,7 @@ trait Kinds {
     *  If `sym2` is invariant, `sym1`'s variance is irrelevant. Otherwise they must be equal.
     */
   private def variancesMatch(sym1: Symbol, sym2: Symbol) =
-    (sym2.variance.isInvariant
-      || sym1.variance == sym2.variance)
+    (sym2.variance.isInvariant || sym1.variance == sym2.variance)
 
   /** Check well-kindedness of type application (assumes arities are already checked) -- @M
     *
@@ -175,11 +172,14 @@ trait Kinds {
 
       if (settings.debug) {
         log(
-          "checkKindBoundsHK expected: " + param + " with params " + hkparams + " by definition in " + paramowner)
+          "checkKindBoundsHK expected: " + param + " with params " + hkparams +
+            " by definition in " + paramowner)
         log(
-          "checkKindBoundsHK supplied: " + arg + " with params " + hkargs + " from " + owner)
+          "checkKindBoundsHK supplied: " + arg + " with params " + hkargs +
+            " from " + owner)
         log(
-          "checkKindBoundsHK under params: " + underHKParams + " with args " + withHKArgs)
+          "checkKindBoundsHK under params: " + underHKParams + " with args " +
+            withHKArgs)
       }
 
       if (!sameLength(hkargs, hkparams)) {
@@ -191,9 +191,8 @@ trait Kinds {
           return kindErrors.arityError(arg -> param)
       } else
         foreach2(hkargs, hkparams) { (hkarg, hkparam) =>
-          if (hkparam.typeParams.isEmpty && hkarg
-                .typeParams
-                .isEmpty) { // base-case: kind *
+          if (hkparam.typeParams.isEmpty &&
+              hkarg.typeParams.isEmpty) { // base-case: kind *
             kindCheck(
               variancesMatch(hkarg, hkparam),
               _ varianceError (hkarg -> hkparam))
@@ -219,23 +218,24 @@ trait Kinds {
               _ strictnessError (hkarg -> hkparam))
 
             debuglog(
-              "checkKindBoundsHK base case: " + hkparam +
-                " declared bounds: " + declaredBounds +
-                " after instantiating earlier hkparams: " + declaredBoundsInst + "\n" +
-                "checkKindBoundsHK base case: " + hkarg +
-                " has bounds: " + argumentBounds)
+              "checkKindBoundsHK base case: " + hkparam + " declared bounds: " +
+                declaredBounds + " after instantiating earlier hkparams: " +
+                declaredBoundsInst + "\n" + "checkKindBoundsHK base case: " +
+                hkarg + " has bounds: " + argumentBounds)
           } else {
             hkarg
               .initialize // SI-7902 otherwise hkarg.typeParams yields List(NoSymbol)!
             debuglog(
-              "checkKindBoundsHK recursing to compare params of " + hkparam + " with " + hkarg)
-            kindErrors ++= checkKindBoundsHK(
-              hkarg.typeParams,
-              hkarg,
-              hkparam,
-              paramowner,
-              underHKParams ++ hkparam.typeParams,
-              withHKArgs ++ hkarg.typeParams)
+              "checkKindBoundsHK recursing to compare params of " + hkparam +
+                " with " + hkarg)
+            kindErrors ++=
+              checkKindBoundsHK(
+                hkarg.typeParams,
+                hkarg,
+                hkparam,
+                paramowner,
+                underHKParams ++ hkparam.typeParams,
+                withHKArgs ++ hkarg.typeParams)
           }
           if (!explainErrors && !kindErrors.isEmpty)
             return kindErrors
@@ -248,8 +248,8 @@ trait Kinds {
 
     if (settings.debug && (tparams.nonEmpty || targs.nonEmpty))
       log(
-        "checkKindBounds0(" + tparams + ", " + targs + ", " + pre + ", "
-          + owner + ", " + explainErrors + ")")
+        "checkKindBounds0(" + tparams + ", " + targs + ", " + pre + ", " +
+          owner + ", " + explainErrors + ")")
 
     flatMap2(tparams, targs) { (tparam, targ) =>
       // Prevent WildcardType from causing kind errors, as typevars may be higher-order
@@ -472,18 +472,14 @@ trait Kinds {
       import Variance._
       (
         args map { arg =>
-          (
-            if (arg.kind.order == 0)
-              arg.kind.starNotation
-            else
-              "(" + arg.kind.starNotation + ")"
-          ) +
-            (
-              if (arg.variance == Invariant)
-                " -> "
-              else
-                " -(" + arg.variance.symbolicString + ")-> "
-            )
+          (if (arg.kind.order == 0)
+             arg.kind.starNotation
+           else
+             "(" + arg.kind.starNotation + ")") +
+            (if (arg.variance == Invariant)
+               " -> "
+             else
+               " -(" + arg.variance.symbolicString + ")-> ")
         }
       ).mkString + "*" + bounds.starNotation(_.toString)
     }

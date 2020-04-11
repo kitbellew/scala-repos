@@ -52,10 +52,8 @@ class EnsembleImageBarChart extends EnsembleExample {
   def getContent =
     new BarChart(new CategoryAxis(), new NumberAxis()) {
       legendVisible = false
-      stylesheets += this
-        .getClass
-        .getResource("ImageBarChart.css")
-        .toExternalForm
+      stylesheets +=
+        this.getClass.getResource("ImageBarChart.css").toExternalForm
       data = new XYChart.Series[String, Number]() {
         name = "Sales Per Product"
         data = Seq(

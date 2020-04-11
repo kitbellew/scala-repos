@@ -49,18 +49,18 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
     Set(File("foo-javadoc.jar"), File("bar-javadoc.jar"))
 
   "WebServer" should "respond to REST queries" in {
-    Post(
-      "/rpc",
-      """{"typehint":"ConnectionInfoReq"}""".parseJson) ~> route ~> check {
-      status shouldBe StatusCodes.OK
-      responseAs[JsValue] shouldBe expected
-    }
+    Post("/rpc", """{"typehint":"ConnectionInfoReq"}""".parseJson) ~> route ~>
+      check {
+        status shouldBe StatusCodes.OK
+        responseAs[JsValue] shouldBe expected
+      }
   }
 
   it should "error to bad REST queries" in {
-    Get("/rpc") ~> route ~> check {
-      status shouldBe StatusCodes.MethodNotAllowed
-    }
+    Get("/rpc") ~> route ~>
+      check {
+        status shouldBe StatusCodes.MethodNotAllowed
+      }
   }
 
   it should "respond to WebSocket queries" ignore {
@@ -69,28 +69,30 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
   }
 
   it should "serve contents of documentation archives" in {
-    Get("/docs/foo-1.0-javadoc.jar/bar/Baz.html#thingy()") ~> route ~> check {
-      status shouldBe StatusCodes.OK
-      mediaType shouldBe MediaTypes.`text/html`
-      responseAs[String] shouldBe "hello"
-    }
+    Get("/docs/foo-1.0-javadoc.jar/bar/Baz.html#thingy()") ~> route ~>
+      check {
+        status shouldBe StatusCodes.OK
+        mediaType shouldBe MediaTypes.`text/html`
+        responseAs[String] shouldBe "hello"
+      }
 
-    Get("/docs/foo-1.0-javadoc.jar/bar/Bag.html#thingy()") ~> route ~> check {
-      status shouldBe StatusCodes.NotFound
-    }
+    Get("/docs/foo-1.0-javadoc.jar/bar/Bag.html#thingy()") ~> route ~>
+      check {
+        status shouldBe StatusCodes.NotFound
+      }
   }
 
   it should "provide a list of available documentation" in {
-    Get("/docs") ~> route ~> check {
-      status shouldBe StatusCodes.OK
-      mediaType shouldBe MediaTypes.`text/xml` // hmm
+    Get("/docs") ~> route ~>
+      check {
+        status shouldBe StatusCodes.OK
+        mediaType shouldBe MediaTypes.`text/xml` // hmm
 
-      import ScalaXmlSupport._
-      import StreamlinedXmlEquality._
+        import ScalaXmlSupport._
+        import StreamlinedXmlEquality._
 
-      // err, the Equality[NodeSeq] doesn't seem to work... reformatting breaks it
-      responseAs[NodeSeq] shouldEqual
-        <html>
+        // err, the Equality[NodeSeq] doesn't seem to work... reformatting breaks it
+        responseAs[NodeSeq] shouldEqual <html>
           <head/>
           <body>
             <h1>ENSIME: Your Project's Documentation</h1>
@@ -104,7 +106,7 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
             </ul>
           </body>
         </html>
-    }
+      }
   }
 
 }

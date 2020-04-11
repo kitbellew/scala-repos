@@ -22,118 +22,119 @@ class TcpListenerSpec extends AkkaSpec("""
 
   "A TcpListener" must {
 
-    "register its ServerSocketChannel with its selector" in new TestSetup(
-      pullMode = false)
+    "register its ServerSocketChannel with its selector" in
+      new TestSetup(pullMode = false)
 
-    "let the Bind commander know when binding is completed" in new TestSetup(
-      pullMode = false) {
-      listener ! new ChannelRegistration {
-        def disableInterest(op: Int) = ()
-        def enableInterest(op: Int) = ()
+    "let the Bind commander know when binding is completed" in
+      new TestSetup(pullMode = false) {
+        listener !
+          new ChannelRegistration {
+            def disableInterest(op: Int) = ()
+            def enableInterest(op: Int) = ()
+          }
+        bindCommander.expectMsgType[Bound]
       }
-      bindCommander.expectMsgType[Bound]
-    }
 
-    "accept acceptable connections and register them with its parent" in new TestSetup(
-      pullMode = false) {
-      bindListener()
+    "accept acceptable connections and register them with its parent" in
+      new TestSetup(pullMode = false) {
+        bindListener()
 
-      attemptConnectionToEndpoint()
-      attemptConnectionToEndpoint()
-      attemptConnectionToEndpoint()
+        attemptConnectionToEndpoint()
+        attemptConnectionToEndpoint()
+        attemptConnectionToEndpoint()
 
-      // since the batch-accept-limit is 2 we must only receive 2 accepted connections
-      listener ! ChannelAcceptable
+        // since the batch-accept-limit is 2 we must only receive 2 accepted connections
+        listener ! ChannelAcceptable
 
-      expectWorkerForCommand
-      expectWorkerForCommand
-      selectorRouter.expectNoMsg(100.millis)
-      interestCallReceiver.expectMsg(OP_ACCEPT)
+        expectWorkerForCommand
+        expectWorkerForCommand
+        selectorRouter.expectNoMsg(100.millis)
+        interestCallReceiver.expectMsg(OP_ACCEPT)
 
-      // and pick up the last remaining connection on the next ChannelAcceptable
-      listener ! ChannelAcceptable
-      expectWorkerForCommand
-    }
-
-    "continue to accept connections after a previous accept" in new TestSetup(
-      pullMode = false) {
-      bindListener()
-
-      attemptConnectionToEndpoint()
-      listener ! ChannelAcceptable
-      expectWorkerForCommand
-      selectorRouter.expectNoMsg(100.millis)
-      interestCallReceiver.expectMsg(OP_ACCEPT)
-
-      attemptConnectionToEndpoint()
-      listener ! ChannelAcceptable
-      expectWorkerForCommand
-      selectorRouter.expectNoMsg(100.millis)
-      interestCallReceiver.expectMsg(OP_ACCEPT)
-    }
-
-    "not accept connections after a previous accept until read is reenabled" in new TestSetup(
-      pullMode = true) {
-      bindListener()
-
-      attemptConnectionToEndpoint()
-      expectNoMsg(100.millis)
-
-      listener ! ResumeAccepting(batchSize = 1)
-      listener ! ChannelAcceptable
-      expectWorkerForCommand
-      selectorRouter.expectNoMsg(100.millis)
-      interestCallReceiver.expectMsg(OP_ACCEPT)
-
-      // No more accepts are allowed now
-      interestCallReceiver.expectNoMsg(100.millis)
-
-      listener ! ResumeAccepting(batchSize = 2)
-      interestCallReceiver.expectMsg(OP_ACCEPT)
-
-      attemptConnectionToEndpoint()
-      listener ! ChannelAcceptable
-      expectWorkerForCommand
-      selectorRouter.expectNoMsg(100.millis)
-      // There is still one token remaining, accepting
-      interestCallReceiver.expectMsg(OP_ACCEPT)
-
-      attemptConnectionToEndpoint()
-      listener ! ChannelAcceptable
-      expectWorkerForCommand
-      selectorRouter.expectNoMsg(100.millis)
-
-      // Tokens are depleted now
-      interestCallReceiver.expectNoMsg(100.millis)
-    }
-
-    "react to Unbind commands by replying with Unbound and stopping itself" in new TestSetup(
-      pullMode = false) {
-      bindListener()
-
-      val unbindCommander = TestProbe()
-      unbindCommander.send(listener, Unbind)
-
-      unbindCommander.expectMsg(Unbound)
-      parent.expectTerminated(listener)
-    }
-
-    "drop an incoming connection if it cannot be registered with a selector" in new TestSetup(
-      pullMode = false) {
-      bindListener()
-
-      attemptConnectionToEndpoint()
-
-      listener ! ChannelAcceptable
-      val channel = expectWorkerForCommand
-
-      EventFilter.warning(
-        pattern = "selector capacity limit",
-        occurrences = 1) intercept {
-        listener ! FailedRegisterIncoming(channel)
-        awaitCond(!channel.isOpen)
+        // and pick up the last remaining connection on the next ChannelAcceptable
+        listener ! ChannelAcceptable
+        expectWorkerForCommand
       }
-    }
+
+    "continue to accept connections after a previous accept" in
+      new TestSetup(pullMode = false) {
+        bindListener()
+
+        attemptConnectionToEndpoint()
+        listener ! ChannelAcceptable
+        expectWorkerForCommand
+        selectorRouter.expectNoMsg(100.millis)
+        interestCallReceiver.expectMsg(OP_ACCEPT)
+
+        attemptConnectionToEndpoint()
+        listener ! ChannelAcceptable
+        expectWorkerForCommand
+        selectorRouter.expectNoMsg(100.millis)
+        interestCallReceiver.expectMsg(OP_ACCEPT)
+      }
+
+    "not accept connections after a previous accept until read is reenabled" in
+      new TestSetup(pullMode = true) {
+        bindListener()
+
+        attemptConnectionToEndpoint()
+        expectNoMsg(100.millis)
+
+        listener ! ResumeAccepting(batchSize = 1)
+        listener ! ChannelAcceptable
+        expectWorkerForCommand
+        selectorRouter.expectNoMsg(100.millis)
+        interestCallReceiver.expectMsg(OP_ACCEPT)
+
+        // No more accepts are allowed now
+        interestCallReceiver.expectNoMsg(100.millis)
+
+        listener ! ResumeAccepting(batchSize = 2)
+        interestCallReceiver.expectMsg(OP_ACCEPT)
+
+        attemptConnectionToEndpoint()
+        listener ! ChannelAcceptable
+        expectWorkerForCommand
+        selectorRouter.expectNoMsg(100.millis)
+        // There is still one token remaining, accepting
+        interestCallReceiver.expectMsg(OP_ACCEPT)
+
+        attemptConnectionToEndpoint()
+        listener ! ChannelAcceptable
+        expectWorkerForCommand
+        selectorRouter.expectNoMsg(100.millis)
+
+        // Tokens are depleted now
+        interestCallReceiver.expectNoMsg(100.millis)
+      }
+
+    "react to Unbind commands by replying with Unbound and stopping itself" in
+      new TestSetup(pullMode = false) {
+        bindListener()
+
+        val unbindCommander = TestProbe()
+        unbindCommander.send(listener, Unbind)
+
+        unbindCommander.expectMsg(Unbound)
+        parent.expectTerminated(listener)
+      }
+
+    "drop an incoming connection if it cannot be registered with a selector" in
+      new TestSetup(pullMode = false) {
+        bindListener()
+
+        attemptConnectionToEndpoint()
+
+        listener ! ChannelAcceptable
+        val channel = expectWorkerForCommand
+
+        EventFilter.warning(
+          pattern = "selector capacity limit",
+          occurrences = 1) intercept {
+          listener ! FailedRegisterIncoming(channel)
+          awaitCond(!channel.isOpen)
+        }
+      }
   }
 
   val counter = Iterator.from(0)
@@ -158,10 +159,11 @@ class TcpListenerSpec extends AkkaSpec("""
         OP_ACCEPT)
 
     def bindListener() {
-      listener ! new ChannelRegistration {
-        def enableInterest(op: Int): Unit = interestCallReceiver.ref ! op
-        def disableInterest(op: Int): Unit = interestCallReceiver.ref ! -op
-      }
+      listener !
+        new ChannelRegistration {
+          def enableInterest(op: Int): Unit = interestCallReceiver.ref ! op
+          def disableInterest(op: Int): Unit = interestCallReceiver.ref ! -op
+        }
       bindCommander.expectMsgType[Bound]
     }
 

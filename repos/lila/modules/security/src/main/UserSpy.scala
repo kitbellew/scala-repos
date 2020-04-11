@@ -26,11 +26,12 @@ case class UserSpy(
   lazy val otherUsers: List[OtherUser] = {
     usersSharingIp.map { u =>
       OtherUser(u, true, usersSharingFingerprint contains u)
-    } ::: usersSharingFingerprint
-      .filterNot(usersSharingIp.contains)
-      .map {
-        OtherUser(_, false, true)
-      }
+    } :::
+      usersSharingFingerprint
+        .filterNot(usersSharingIp.contains)
+        .map {
+          OtherUser(_, false, true)
+        }
   }.sortBy(-_.user.createdAt.getMillis)
 }
 

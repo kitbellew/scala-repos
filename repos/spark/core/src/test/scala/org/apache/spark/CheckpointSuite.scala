@@ -67,8 +67,8 @@ trait RDDCheckpointTester {
 
     // Find serialized sizes before and after the checkpoint
     logInfo(
-      "RDD before checkpoint: " + operatedRDD + "\n" + operatedRDD
-        .toDebugString)
+      "RDD before checkpoint: " + operatedRDD + "\n" +
+        operatedRDD.toDebugString)
     val (rddSizeBeforeCheckpoint, partitionSizeBeforeCheckpoint) =
       getSerializedSizes(operatedRDD)
     checkpoint(operatedRDD, reliableCheckpoint)
@@ -97,11 +97,8 @@ trait RDDCheckpointTester {
 
     // Test whether the partitions have been changed to the new Hadoop partitions
     assert(
-      operatedRDD.partitions.toList === operatedRDD
-        .checkpointData
-        .get
-        .getPartitions
-        .toList)
+      operatedRDD.partitions.toList ===
+        operatedRDD.checkpointData.get.getPartitions.toList)
 
     // Test whether the number of partitions is same as before
     assert(operatedRDD.partitions.length === numPartitions)
@@ -111,12 +108,12 @@ trait RDDCheckpointTester {
 
     // Test whether serialized size of the RDD has reduced.
     logInfo(
-      "Size of " + rddType +
-        " [" + rddSizeBeforeCheckpoint + " --> " + rddSizeAfterCheckpoint + "]")
+      "Size of " + rddType + " [" + rddSizeBeforeCheckpoint + " --> " +
+        rddSizeAfterCheckpoint + "]")
     assert(
       rddSizeAfterCheckpoint < rddSizeBeforeCheckpoint,
-      "Size of " + rddType + " did not reduce after checkpointing " +
-        " [" + rddSizeBeforeCheckpoint + " --> " + rddSizeAfterCheckpoint + "]"
+      "Size of " + rddType + " did not reduce after checkpointing " + " [" +
+        rddSizeBeforeCheckpoint + " --> " + rddSizeAfterCheckpoint + "]"
     )
   }
 
@@ -170,12 +167,15 @@ trait RDDCheckpointTester {
 
     // Test whether serialized size of the partitions has reduced
     logInfo(
-      "Size of partitions of " + rddType +
-        " [" + partitionSizeBeforeCheckpoint + " --> " + partitionSizeAfterCheckpoint + "]")
+      "Size of partitions of " + rddType + " [" +
+        partitionSizeBeforeCheckpoint + " --> " + partitionSizeAfterCheckpoint +
+        "]")
     assert(
       partitionSizeAfterCheckpoint < partitionSizeBeforeCheckpoint,
-      "Size of " + rddType + " partitions did not reduce after checkpointing parent RDDs" +
-        " [" + partitionSizeBeforeCheckpoint + " --> " + partitionSizeAfterCheckpoint + "]"
+      "Size of " + rddType +
+        " partitions did not reduce after checkpointing parent RDDs" + " [" +
+        partitionSizeBeforeCheckpoint + " --> " + partitionSizeAfterCheckpoint +
+        "]"
     )
   }
 
@@ -191,17 +191,16 @@ trait RDDCheckpointTester {
 
     // Print detailed size, helps in debugging
     logInfo(
-      "Serialized sizes of " + rdd +
-        ": RDD = " + rddSize +
-        ", RDD checkpoint data = " + rddCpDataSize +
-        ", RDD partitions = " + rddPartitionSize +
-        ", RDD dependencies = " + rddDependenciesSize)
+      "Serialized sizes of " + rdd + ": RDD = " + rddSize +
+        ", RDD checkpoint data = " + rddCpDataSize + ", RDD partitions = " +
+        rddPartitionSize + ", RDD dependencies = " + rddDependenciesSize)
     // this makes sure that serializing the RDD's checkpoint data does not
     // serialize the whole RDD as well
     assert(
       rddSize > rddCpDataSize,
-      "RDD's checkpoint data (" + rddCpDataSize + ") is equal or larger than the " +
-        "whole RDD with checkpoint data (" + rddSize + ")")
+      "RDD's checkpoint data (" + rddCpDataSize +
+        ") is equal or larger than the " + "whole RDD with checkpoint data (" +
+        rddSize + ")")
     (rddSize - rddCpDataSize, rddPartitionSize)
   }
 
@@ -398,17 +397,14 @@ class CheckpointSuite
     val result = blockRDD.collect()
     if (reliableCheckpoint) {
       assert(
-        sc.checkpointFile[String](blockRDD.getCheckpointFile.get)
-          .collect() === result)
+        sc.checkpointFile[String](blockRDD.getCheckpointFile.get).collect() ===
+          result)
     }
     assert(blockRDD.dependencies != Nil)
     assert(blockRDD.partitions.length === numPartitions)
     assert(
-      blockRDD.partitions.toList === blockRDD
-        .checkpointData
-        .get
-        .getPartitions
-        .toList)
+      blockRDD.partitions.toList ===
+        blockRDD.checkpointData.get.getPartitions.toList)
     assert(blockRDD.collect() === result)
   }
 
@@ -468,10 +464,8 @@ class CheckpointSuite
     val splitAfterCheckpoint = serializeDeserialize(
       coalesced.partitions.head.asInstanceOf[CoalescedRDDPartition])
     assert(
-      splitAfterCheckpoint.parents.head.getClass != splitBeforeCheckpoint
-        .parents
-        .head
-        .getClass,
+      splitAfterCheckpoint.parents.head.getClass !=
+        splitBeforeCheckpoint.parents.head.getClass,
       "CoalescedRDDPartition.parents not updated after parent RDD is checkpointed"
     )
   }
@@ -531,7 +525,7 @@ class CheckpointSuite
       partitionAfterCheckpoint.partitions(0).getClass !=
         partitionBeforeCheckpoint.partitions(0).getClass &&
         partitionAfterCheckpoint.partitions(1).getClass !=
-          partitionBeforeCheckpoint.partitions(1).getClass,
+        partitionBeforeCheckpoint.partitions(1).getClass,
       "ZippedPartitionsRDD partition 0 (or 1) not updated after parent RDDs are checkpointed"
     )
   }

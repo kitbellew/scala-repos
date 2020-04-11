@@ -57,30 +57,31 @@ object CheckBoxTableCellDemo extends JFXApp {
     title = "Example of a Table View with Check Boxes"
     scene = new Scene {
       root = new TableView[Item](data) {
-        columns ++= List(
-          new TableColumn[Item, java.lang.Boolean] {
-            text = "Selected"
-            // We need to explicitly cast `_.value.selected` to modify boolean type parameters.
-            // `scala.Boolean` type is different from `java.lang.Boolean`, but eventually represented the same way
-            // by the compiler.
-            cellValueFactory = _
-              .value
-              .selected
-              .asInstanceOf[ObservableValue[
-                java.lang.Boolean,
-                java.lang.Boolean]]
-            cellFactory = CheckBoxTableCell.forTableColumn(this)
-            editable = true
-            prefWidth = 180
-          },
-          new TableColumn[Item, String] {
-            text = "Name"
-            cellValueFactory = {
-              _.value.name
+        columns ++=
+          List(
+            new TableColumn[Item, java.lang.Boolean] {
+              text = "Selected"
+              // We need to explicitly cast `_.value.selected` to modify boolean type parameters.
+              // `scala.Boolean` type is different from `java.lang.Boolean`, but eventually represented the same way
+              // by the compiler.
+              cellValueFactory = _
+                .value
+                .selected
+                .asInstanceOf[ObservableValue[
+                  java.lang.Boolean,
+                  java.lang.Boolean]]
+              cellFactory = CheckBoxTableCell.forTableColumn(this)
+              editable = true
+              prefWidth = 180
+            },
+            new TableColumn[Item, String] {
+              text = "Name"
+              cellValueFactory = {
+                _.value.name
+              }
+              prefWidth = 180
             }
-            prefWidth = 180
-          }
-        )
+          )
         editable = true
       }
     }

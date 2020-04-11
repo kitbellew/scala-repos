@@ -87,10 +87,10 @@ private[api] final class RoundApiBalancer(
   import implementation._
 
   def player(pov: Pov, apiVersion: Int)(implicit ctx: Context): Fu[JsObject] = {
-    router ? Player(pov, apiVersion, ctx) mapTo manifest[
-      JsObject] addFailureEffect { e =>
-      logger.error(pov.toString, e)
-    }
+    router ? Player(pov, apiVersion, ctx) mapTo
+      manifest[JsObject] addFailureEffect { e =>
+        logger.error(pov.toString, e)
+      }
   }.chronometer
     .mon(_.round.api.player)
     .logIfSlow(500, logger) { _ =>
@@ -106,15 +106,16 @@ private[api] final class RoundApiBalancer(
       initialFenO: Option[Option[String]] = None,
       withMoveTimes: Boolean = false,
       withOpening: Boolean = false)(implicit ctx: Context): Fu[JsObject] = {
-    router ? Watcher(
-      pov,
-      apiVersion,
-      tv,
-      analysis,
-      initialFenO,
-      withMoveTimes,
-      withOpening,
-      ctx) mapTo manifest[JsObject]
+    router ?
+      Watcher(
+        pov,
+        apiVersion,
+        tv,
+        analysis,
+        initialFenO,
+        withMoveTimes,
+        withOpening,
+        ctx) mapTo manifest[JsObject]
   }.mon(_.round.api.watcher)
 
   def userAnalysisJson(
@@ -123,10 +124,6 @@ private[api] final class RoundApiBalancer(
       initialFen: Option[String],
       orientation: chess.Color,
       owner: Boolean): Fu[JsObject] =
-    router ? UserAnalysis(
-      pov,
-      pref,
-      initialFen,
-      orientation,
-      owner) mapTo manifest[JsObject]
+    router ? UserAnalysis(pov, pref, initialFen, orientation, owner) mapTo
+      manifest[JsObject]
 }

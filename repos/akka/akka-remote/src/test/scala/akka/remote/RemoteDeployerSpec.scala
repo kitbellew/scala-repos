@@ -47,21 +47,23 @@ class RemoteDeployerSpec extends AkkaSpec(RemoteDeployerSpec.deployerConf) {
         .deployer
         .lookup(service.split("/").drop(1))
 
-      deployment should ===(
-        Some(
-          Deploy(
-            service,
-            deployment.get.config,
-            RoundRobinPool(3),
-            RemoteScope(Address("akka", "sys", "wallace", 2552)),
-            "mydispatcher")))
+      deployment should
+        ===(
+          Some(
+            Deploy(
+              service,
+              deployment.get.config,
+              RoundRobinPool(3),
+              RemoteScope(Address("akka", "sys", "wallace", 2552)),
+              "mydispatcher")))
     }
 
     "reject remote deployment when the source requires LocalScope" in {
       intercept[ConfigurationException] {
         system.actorOf(Props.empty.withDeploy(Deploy.local), "service2")
-      }.getMessage should ===(
-        "configuration requested remote deployment for local-only Props at [akka://RemoteDeployerSpec/user/service2]")
+      }.getMessage should
+        ===(
+          "configuration requested remote deployment for local-only Props at [akka://RemoteDeployerSpec/user/service2]")
     }
 
   }

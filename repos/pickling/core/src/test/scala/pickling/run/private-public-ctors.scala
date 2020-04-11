@@ -10,9 +10,8 @@ class C private (private var x: Int, private var y: String) {
   def this() = this(5, "hello")
 
   override def equals(other: Any): Boolean =
-    other.isInstanceOf[C] && other.asInstanceOf[C].x == x && other
-      .asInstanceOf[C]
-      .y == y
+    other.isInstanceOf[C] && other.asInstanceOf[C].x == x &&
+      other.asInstanceOf[C].y == y
 }
 
 class PrivatePublicCtorsTest extends FunSuite {

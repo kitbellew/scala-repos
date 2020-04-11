@@ -177,8 +177,8 @@ abstract class RDD[T: ClassTag](
       newLevel: StorageLevel,
       allowOverride: Boolean): this.type = {
     // TODO: Handle changes of StorageLevel
-    if (storageLevel != StorageLevel
-          .NONE && newLevel != storageLevel && !allowOverride) {
+    if (storageLevel != StorageLevel.NONE && newLevel != storageLevel &&
+        !allowOverride) {
       throw new UnsupportedOperationException(
         "Cannot change storage level of an RDD after it was already assigned a level")
     }
@@ -1280,8 +1280,8 @@ abstract class RDD[T: ClassTag](
         // the wall-clock time, we stop tree aggregation.
 
         // Don't trigger TreeAggregation when it doesn't save wall-clock time
-        while (numPartitions > scale + math
-                 .ceil(numPartitions.toDouble / scale)) {
+        while (numPartitions >
+                 scale + math.ceil(numPartitions.toDouble / scale)) {
           numPartitions /= scale
           val curNumPartitions = numPartitions
           partiallyAggregated = partiallyAggregated
@@ -2017,14 +2017,14 @@ abstract class RDD[T: ClassTag](
       val partitionStr = "(" + rdd.partitions.length + ")"
       val leftOffset = (partitionStr.length - 1) / 2
       val thisPrefix = prefix.replaceAll("\\|\\s+$", "")
-      val nextPrefix = (thisPrefix
-        + (
-          if (isLastChild)
-            "  "
-          else
-            "| "
-        )
-        + (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset)))
+      val nextPrefix =
+        (thisPrefix +
+          (if (isLastChild)
+             "  "
+           else
+             "| ") +
+          (" " * leftOffset) + "|" +
+          (" " * (partitionStr.length - leftOffset)))
 
       debugSelf(rdd)
         .zipWithIndex

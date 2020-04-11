@@ -139,9 +139,8 @@ trait Reporting extends scala.reflect.internal.Reporting {
       reportedFeature += featureTrait
 
       val msg =
-        s"$featureDesc $req be enabled\nby making the implicit value $fqname visible.$explain" replace (
-          "#", construct
-      )
+        s"$featureDesc $req be enabled\nby making the implicit value $fqname visible.$explain" replace
+          ("#", construct)
       if (required)
         reporter.error(pos, msg)
       else

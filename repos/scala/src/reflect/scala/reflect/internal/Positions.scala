@@ -92,12 +92,11 @@ trait Positions extends api.Positions {
       children foreach (ensureNonOverlapping(_, others, focus))
       if (tree.pos.isOpaqueRange) {
         val wpos = wrappingPos(tree.pos, children, focus)
-        tree setPos (
-          if (isOverlapping(wpos))
-            tree.pos.makeTransparent
-          else
-            wpos
-        )
+        tree setPos
+          (if (isOverlapping(wpos))
+             tree.pos.makeTransparent
+           else
+             wpos)
       }
     }
   }
@@ -119,8 +118,8 @@ trait Positions extends api.Positions {
         else
           ""
       inform(
-        "== " + prefix + " tree [" + tree.id + "] of type " + tree
-          .productPrefix + " at " + tree.pos.show + source)
+        "== " + prefix + " tree [" + tree.id + "] of type " +
+          tree.productPrefix + " at " + tree.pos.show + source)
       inform("")
       inform(treeStatus(tree))
       inform("")
@@ -147,21 +146,22 @@ trait Positions extends api.Positions {
           positionError("Unpositioned tree #" + tree.id) {
             inform("%15s %s".format("unpositioned", treeStatus(tree, encltree)))
             inform("%15s %s".format("enclosing", treeStatus(encltree)))
-            encltree.children foreach (t =>
-              inform("%15s %s".format("sibling", treeStatus(t, encltree))))
+            encltree.children foreach
+              (t =>
+                inform("%15s %s".format("sibling", treeStatus(t, encltree))))
           }
         if (tree.pos.isRange) {
           if (!encltree.pos.isRange)
             positionError(
-              "Synthetic tree [" + encltree
-                .id + "] contains nonsynthetic tree [" + tree.id + "]") {
+              "Synthetic tree [" + encltree.id +
+                "] contains nonsynthetic tree [" + tree.id + "]") {
               reportTree("Enclosing", encltree)
               reportTree("Enclosed", tree)
             }
           if (!(encltree.pos includes tree.pos))
             positionError(
-              "Enclosing tree [" + encltree
-                .id + "] does not include tree [" + tree.id + "]") {
+              "Enclosing tree [" + encltree.id + "] does not include tree [" +
+                tree.id + "]") {
               reportTree("Enclosing", encltree)
               reportTree("Enclosed", tree)
             }
@@ -170,12 +170,12 @@ trait Positions extends api.Positions {
             case List() => ;
             case xs => {
               positionError(
-                "Overlapping trees " + xs
-                  .map {
-                    case (x, y) =>
-                      (x.id, y.id)
-                  }
-                  .mkString("", ", ", "")) {
+                "Overlapping trees " +
+                  xs.map {
+                      case (x, y) =>
+                        (x.id, y.id)
+                    }
+                    .mkString("", ", ", "")) {
                 reportTree("Ancestor", tree)
                 for ((x, y) <- xs) {
                   reportTree("First overlapping", x)
@@ -229,8 +229,8 @@ trait Positions extends api.Positions {
         assert(!t.pos.isTransparent)
         if (r.isFree && (r.pos includes t.pos)) {
 //      inform("subdividing "+r+"/"+t.pos)
-          maybeFree(t.pos.end, r.pos.end) ::: List(
-            Range(t.pos, t)) ::: maybeFree(r.pos.start, t.pos.start) ::: rs1
+          maybeFree(t.pos.end, r.pos.end) ::: List(Range(t.pos, t)) :::
+            maybeFree(r.pos.start, t.pos.start) ::: rs1
         } else {
           if (!r.isFree && (r.pos overlaps t.pos))
             conflicting += r.tree

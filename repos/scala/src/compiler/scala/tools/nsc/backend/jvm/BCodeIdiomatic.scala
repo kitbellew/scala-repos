@@ -378,15 +378,11 @@ abstract class BCodeIdiomatic extends SubComponent {
     final def iconst(cst: Int) {
       if (cst >= -1 && cst <= 5) {
         emit(Opcodes.ICONST_0 + cst)
-      } else if (cst >= java.lang.Byte.MIN_VALUE && cst <= java
-                   .lang
-                   .Byte
-                   .MAX_VALUE) {
+      } else if (cst >= java.lang.Byte.MIN_VALUE &&
+                 cst <= java.lang.Byte.MAX_VALUE) {
         jmethod.visitIntInsn(Opcodes.BIPUSH, cst)
-      } else if (cst >= java.lang.Short.MIN_VALUE && cst <= java
-                   .lang
-                   .Short
-                   .MAX_VALUE) {
+      } else if (cst >= java.lang.Short.MIN_VALUE &&
+                 cst <= java.lang.Short.MAX_VALUE) {
         jmethod.visitIntInsn(Opcodes.SIPUSH, cst)
       } else {
         jmethod.visitLdcInsn(new Integer(cst))

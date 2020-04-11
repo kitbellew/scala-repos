@@ -366,8 +366,8 @@ class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
     // Since not all the datasources will necessarily appear in the db map, because some will come from deprecated
     // configuration, we create a map of them to the default config, and then override any of them with the ones
     // from db.
-    val datasourceConfigMap = datasources.map(_ -> config).toMap ++ config
-      .getPrototypedMap("db", "")
+    val datasourceConfigMap = datasources.map(_ -> config).toMap ++
+      config.getPrototypedMap("db", "")
     val datasourceConfig =
       datasourceConfigMap
         .map {
@@ -386,13 +386,14 @@ class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
               s"play.evolutions.db.$datasource",
               "autoApplyDowns",
               s"applyDownEvolutions.$datasource")
-            datasource -> new DefaultEvolutionsDatasourceConfig(
-              enabled,
-              schema,
-              autocommit,
-              useLocks,
-              autoApply,
-              autoApplyDowns)
+            datasource ->
+              new DefaultEvolutionsDatasourceConfig(
+                enabled,
+                schema,
+                autocommit,
+                useLocks,
+                autoApply,
+                autoApplyDowns)
         }
         .toMap
 

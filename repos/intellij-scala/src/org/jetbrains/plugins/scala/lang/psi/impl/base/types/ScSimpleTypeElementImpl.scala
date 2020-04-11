@@ -306,14 +306,15 @@ class ScSimpleTypeElementImpl(node: ASTNode)
           val zipped = p.typeArgList.typeArgs.zip(typeParameters)
           val appSubst =
             new ScSubstitutor(
-              new HashMap[(String, PsiElement), ScType] ++ zipped.map {
-                case (arg, typeParam) =>
-                  (
+              new HashMap[(String, PsiElement), ScType] ++
+                zipped.map {
+                  case (arg, typeParam) =>
                     (
-                      typeParam.name,
-                      ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
-                    arg.getType(TypingContext.empty).getOrAny)
-              },
+                      (
+                        typeParam.name,
+                        ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
+                      arg.getType(TypingContext.empty).getOrAny)
+                },
               Map.empty,
               None)
           val newRes = appSubst.subst(res)
@@ -473,14 +474,15 @@ class ScSimpleTypeElementImpl(node: ASTNode)
           val zipped = p.typeArgList.typeArgs.zip(typeParameters)
           val appSubst =
             new ScSubstitutor(
-              new HashMap[(String, PsiElement), ScType] ++ zipped.map {
-                case (arg, typeParam) =>
-                  (
+              new HashMap[(String, PsiElement), ScType] ++
+                zipped.map {
+                  case (arg, typeParam) =>
                     (
-                      typeParam.name,
-                      ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
-                    arg.getType(TypingContext.empty).getOrAny)
-              },
+                      (
+                        typeParam.name,
+                        ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
+                      arg.getType(TypingContext.empty).getOrAny)
+                },
               Map.empty,
               None)
           (appSubst.subst(res), appSubst)
@@ -526,10 +528,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   to: ScTypeParametersOwner,
                   subst: ScSubstitutor))
               if constrRef && to.isInstanceOf[PsiNamedElement] &&
-                (
-                  to.typeParameters.isEmpty || getContext
-                    .isInstanceOf[ScParameterizedTypeElement]
-                ) =>
+                (to.typeParameters.isEmpty ||
+                  getContext.isInstanceOf[ScParameterizedTypeElement]) =>
             val (tp, ss) =
               getContext match {
                 case p: ScParameterizedTypeElement
@@ -551,10 +551,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   to: PsiTypeParameterListOwner,
                   subst: ScSubstitutor))
               if constrRef && to.isInstanceOf[PsiNamedElement] &&
-                (
-                  to.getTypeParameters.isEmpty || getContext
-                    .isInstanceOf[ScParameterizedTypeElement]
-                ) =>
+                (to.getTypeParameters.isEmpty ||
+                  getContext.isInstanceOf[ScParameterizedTypeElement]) =>
             val (result, ss) =
               getContext match {
                 case p: ScParameterizedTypeElement
@@ -642,22 +640,20 @@ object ScSimpleTypeElementImpl {
                       to: ScTypeParametersOwner,
                       subst: ScSubstitutor))
                   if to.isInstanceOf[PsiNamedElement] &&
-                    (
-                      to.typeParameters.isEmpty || ref
+                    (to.typeParameters.isEmpty ||
+                      ref
                         .getContext
-                        .isInstanceOf[ScParameterizedTypeElement]
-                    ) =>
+                        .isInstanceOf[ScParameterizedTypeElement]) =>
                 Some(r)
               case Array(
                     r @ ScalaResolveResult(
                       to: PsiTypeParameterListOwner,
                       subst: ScSubstitutor))
                   if to.isInstanceOf[PsiNamedElement] &&
-                    (
-                      to.getTypeParameters.isEmpty || ref
+                    (to.getTypeParameters.isEmpty ||
+                      ref
                         .getContext
-                        .isInstanceOf[ScParameterizedTypeElement]
-                    ) =>
+                        .isInstanceOf[ScParameterizedTypeElement]) =>
                 Some(r)
               case _ =>
                 ref.bind()

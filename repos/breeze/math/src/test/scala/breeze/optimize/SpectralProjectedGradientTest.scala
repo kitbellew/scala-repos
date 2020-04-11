@@ -63,9 +63,8 @@ class SpectralProjectedGradientTest
         }
 
       val result = optimizer.minimize(f, init)
-      result should beSimilarTo(
-        DenseVector.fill(result.size)(3.0),
-        allowedDeviation = 1e-5)
+      result should
+        beSimilarTo(DenseVector.fill(result.size)(3.0), allowedDeviation = 1e-5)
     }
   }
 
@@ -85,9 +84,10 @@ class SpectralProjectedGradientTest
         }
 
       val result = optimizer.minimize(f, init)
-      result should beSimilarTo(
-        DenseVector.fill(result.size)(2.0),
-        allowedDeviation = 1e-10)
+      result should
+        beSimilarTo(
+          DenseVector.fill(result.size)(2.0),
+          allowedDeviation = 1e-10)
     }
   }
 

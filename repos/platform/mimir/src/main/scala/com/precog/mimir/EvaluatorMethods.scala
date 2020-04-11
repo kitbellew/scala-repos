@@ -147,8 +147,8 @@ trait EvaluatorMethodsModule[M[+_]]
           yield trans
             .WrapArray(DerefArrayStatic(rightIdentitySpec, CPathIndex(i)))
 
-      val derefs: Seq[TransSpec2] =
-        sharedDerefs ++ unsharedLeft ++ unsharedRight
+      val derefs: Seq[TransSpec2] = sharedDerefs ++ unsharedLeft ++
+        unsharedRight
 
       val newIdentitySpec =
         if (derefs.isEmpty)

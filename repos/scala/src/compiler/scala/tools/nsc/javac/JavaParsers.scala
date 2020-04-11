@@ -616,11 +616,11 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           if (!isVoid)
             rtpt = optArrayBrackets(rtpt)
           optThrows()
-          val isConcreteInterfaceMethod = !inInterface || (
-            mods hasFlag Flags.JAVA_DEFAULTMETHOD
-          ) || (mods hasFlag Flags.STATIC)
-          val bodyOk =
-            !(mods1 hasFlag Flags.DEFERRED) && isConcreteInterfaceMethod
+          val isConcreteInterfaceMethod = !inInterface ||
+            (mods hasFlag Flags.JAVA_DEFAULTMETHOD) ||
+            (mods hasFlag Flags.STATIC)
+          val bodyOk = !(mods1 hasFlag Flags.DEFERRED) &&
+            isConcreteInterfaceMethod
           val body =
             if (bodyOk && in.token == LBRACE) {
               methodBody()
@@ -682,17 +682,15 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         in.nextToken()
         if (in.token == IDENTIFIER) { // if there's an ident after the comma ...
           val name = ident()
-          if (in.token == EQUALS || in
-                .token == SEMI) { // ... followed by a `=` or `;`, we know it's a real variable definition
+          if (in.token == EQUALS ||
+              in.token == SEMI) { // ... followed by a `=` or `;`, we know it's a real variable definition
             buf ++= maybe
             buf += varDecl(in.currentPos, mods, tpt.duplicate, name.toTermName)
             maybe.clear()
-          } else if (in.token == COMMA) { // ... if there's a comma after the ident, it could be a real vardef or not.
-            maybe += varDecl(
-              in.currentPos,
-              mods,
-              tpt.duplicate,
-              name.toTermName)
+          } else if (in.token ==
+                       COMMA) { // ... if there's a comma after the ident, it could be a real vardef or not.
+            maybe +=
+              varDecl(in.currentPos, mods, tpt.duplicate, name.toTermName)
           } else { // ... if there's something else we were still in the initializer of the
             // previous var def; skip to next comma or semicolon.
             skipTo(COMMA, SEMI)
@@ -705,7 +703,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         }
       }
       if (in.token == SEMI) {
-        buf ++= maybe // every potential vardef that survived until here is real.
+        buf ++=
+          maybe // every potential vardef that survived until here is real.
       }
       buf.toList
     }
@@ -904,14 +903,11 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           if (in.token == ENUM || definesInterface(in.token))
             mods |= Flags.STATIC
           val decls = memberDecl(mods, parentToken)
-          (
-            if (mods.hasStaticFlag || inInterface && !(
-                  decls exists (_.isInstanceOf[DefDef])
-                ))
-              statics
-            else
-              members
-          ) ++= decls
+          (if (mods.hasStaticFlag ||
+               inInterface && !(decls exists (_.isInstanceOf[DefDef])))
+             statics
+           else
+             members) ++= decls
         }
       }
       def forwarders(sdef: Tree): List[Tree] =

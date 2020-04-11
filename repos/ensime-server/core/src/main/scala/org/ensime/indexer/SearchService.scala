@@ -104,17 +104,16 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
                   List(vfs.vfile(d))
                 case d =>
                   scan(vfs.vfile(d))
-              } ::: m
-              .testTargetDirs
-              .flatMap {
-                case d if !d.exists() =>
-                  Nil
-                case d if d.isJar =>
-                  List(vfs.vfile(d))
-                case d =>
-                  scan(vfs.vfile(d))
               } :::
-              m.compileJars.map(vfs.vfile) ::: m.testJars.map(vfs.vfile)
+              m.testTargetDirs
+                .flatMap {
+                  case d if !d.exists() =>
+                    Nil
+                  case d if d.isJar =>
+                    List(vfs.vfile(d))
+                  case d =>
+                    scan(vfs.vfile(d))
+                } ::: m.compileJars.map(vfs.vfile) ::: m.testJars.map(vfs.vfile)
         }
     }.toSet ++ config.javaLibs.map(vfs.vfile)
 
@@ -258,36 +257,38 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
                   None,
                   sourceUri,
                   method.line)
-              } ::: clazz
-            .fields
-            .toList
-            .filter(_.access == Public)
-            .map { field =>
-              val internal = field.clazz.internalString
-              FqnSymbol(
-                None,
-                name,
-                path,
-                field.name.fqnString,
-                None,
-                Some(internal),
-                sourceUri,
-                clazz.source.line)
-            } ::: depickler
-            .getTypeAliases
-            .toList
-            .filter(_.access == Public)
-            .map { rawType =>
-              FqnSymbol(
-                None,
-                name,
-                path,
-                rawType.fqnString,
-                None,
-                None,
-                sourceUri,
-                None)
-            }
+              } :::
+            clazz
+              .fields
+              .toList
+              .filter(_.access == Public)
+              .map { field =>
+                val internal = field.clazz.internalString
+                FqnSymbol(
+                  None,
+                  name,
+                  path,
+                  field.name.fqnString,
+                  None,
+                  Some(internal),
+                  sourceUri,
+                  clazz.source.line)
+              } :::
+            depickler
+              .getTypeAliases
+              .toList
+              .filter(_.access == Public)
+              .map { rawType =>
+                FqnSymbol(
+                  None,
+                  name,
+                  path,
+                  rawType.fqnString,
+                  None,
+                  None,
+                  sourceUri,
+                  None)
+              }
 
     }
   }.filterNot(sym => ignore.exists(sym.fqn.contains))

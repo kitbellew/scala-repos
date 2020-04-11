@@ -61,21 +61,23 @@ class ScalaJsonSpec extends Specification {
       val json: JsValue = JsObject(
         Seq(
           "name" -> JsString("Watership Down"),
-          "location" -> JsObject(
-            Seq("lat" -> JsNumber(51.235685), "long" -> JsNumber(-1.309197))),
-          "residents" -> JsArray(
-            Seq(
-              JsObject(
-                Seq(
-                  "name" -> JsString("Fiver"),
-                  "age" -> JsNumber(4),
-                  "role" -> JsNull)),
-              JsObject(
-                Seq(
-                  "name" -> JsString("Bigwig"),
-                  "age" -> JsNumber(6),
-                  "role" -> JsString("Owsla")))
-            ))
+          "location" ->
+            JsObject(
+              Seq("lat" -> JsNumber(51.235685), "long" -> JsNumber(-1.309197))),
+          "residents" ->
+            JsArray(
+              Seq(
+                JsObject(
+                  Seq(
+                    "name" -> JsString("Fiver"),
+                    "age" -> JsNumber(4),
+                    "role" -> JsNull)),
+                JsObject(
+                  Seq(
+                    "name" -> JsString("Bigwig"),
+                    "age" -> JsNumber(6),
+                    "role" -> JsString("Owsla")))
+              ))
         ))
       //#convert-from-classes
       (json \ "name").get must_== JsString("Watership Down")
@@ -88,9 +90,10 @@ class ScalaJsonSpec extends Specification {
       val json: JsValue = Json.obj(
         "name" -> "Watership Down",
         "location" -> Json.obj("lat" -> 51.235685, "long" -> -1.309197),
-        "residents" -> Json.arr(
-          Json.obj("name" -> "Fiver", "age" -> 4, "role" -> JsNull),
-          Json.obj("name" -> "Bigwig", "age" -> 6, "role" -> "Owsla"))
+        "residents" ->
+          Json.arr(
+            Json.obj("name" -> "Fiver", "age" -> 4, "role" -> JsNull),
+            Json.obj("name" -> "Bigwig", "age" -> 6, "role" -> "Owsla"))
       )
       //#convert-from-factory
       (json \ "name").get must_== JsString("Watership Down")
@@ -169,10 +172,8 @@ class ScalaJsonSpec extends Specification {
       import play.api.libs.functional.syntax._
 
       implicit val locationWrites: Writes[Location] =
-        (
-          (JsPath \ "lat").write[Double] and
-            (JsPath \ "long").write[Double]
-        )(unlift(Location.unapply))
+        ((JsPath \ "lat").write[Double] and (JsPath \ "long").write[Double])(
+          unlift(Location.unapply))
 
       implicit val residentWrites: Writes[Resident] =
         (
@@ -216,10 +217,8 @@ class ScalaJsonSpec extends Specification {
       val names = json \\ "name"
       // returns Seq(JsString("Watership Down"), JsString("Fiver"), JsString("Bigwig"))
       //#traverse-recursive-path
-      names === Seq(
-        JsString("Watership Down"),
-        JsString("Fiver"),
-        JsString("Bigwig"))
+      names ===
+        Seq(JsString("Watership Down"), JsString("Fiver"), JsString("Bigwig"))
 
       //#traverse-array-index
       val bigwig = (json \ "residents")(1)
@@ -317,10 +316,11 @@ class ScalaJsonSpec extends Specification {
           Some(name)
         })
       //#convert-to-type-validate
-      nameResult must beLike {
-        case x: JsSuccess[String] =>
-          x.get === "Watership Down"
-      }
+      nameResult must
+        beLike {
+          case x: JsSuccess[String] =>
+            x.get === "Watership Down"
+        }
     }
 
     "allow converting JsValue to model" in {
@@ -332,10 +332,8 @@ class ScalaJsonSpec extends Specification {
       import play.api.libs.functional.syntax._
 
       implicit val locationReads: Reads[Location] =
-        (
-          (JsPath \ "lat").read[Double] and
-            (JsPath \ "long").read[Double]
-        )(Location.apply _)
+        ((JsPath \ "lat").read[Double] and (JsPath \ "long").read[Double])(
+          Location.apply _)
 
       implicit val residentReads: Reads[Resident] =
         (
@@ -362,14 +360,16 @@ class ScalaJsonSpec extends Specification {
       // JsSuccess(Resident(Bigwig,6,Some(Owsla)),)
       //#convert-to-model
 
-      placeResult must beLike {
-        case x: JsSuccess[Place] =>
-          x.get.name === "Watership Down"
-      }
-      residentResult must beLike {
-        case x: JsSuccess[Resident] =>
-          x.get.name === "Bigwig"
-      }
+      placeResult must
+        beLike {
+          case x: JsSuccess[Place] =>
+            x.get.name === "Watership Down"
+        }
+      residentResult must
+        beLike {
+          case x: JsSuccess[Resident] =>
+            x.get.name === "Bigwig"
+        }
     }
 
   }

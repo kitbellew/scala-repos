@@ -22,8 +22,8 @@ trait MemberLookupBase {
   import rootMirror.{RootPackage, EmptyPackage}
 
   private def isRoot(s: Symbol) =
-    (s eq NoSymbol) || s.isRootSymbol || s.isEmptyPackage || s
-      .isEmptyPackageClass
+    (s eq NoSymbol) || s.isRootSymbol || s.isEmptyPackage ||
+      s.isEmptyPackageClass
 
   def makeEntityLink(
       title: Inline,
@@ -62,9 +62,9 @@ trait MemberLookupBase {
     val fromRoot = lookupInRootPackage(pos, members)
 
     // (2) Or recursively go into each containing template.
-    val fromParents = Stream.iterate(site)(_.owner) takeWhile (!isRoot(_)) map (
-      lookupInTemplate(pos, members, _)
-    )
+    val fromParents = Stream.iterate(site)(_.owner) takeWhile
+      (!isRoot(_)) map
+      (lookupInTemplate(pos, members, _))
 
     val syms = (fromRoot +: fromParents) find (!_.isEmpty) getOrElse Nil
 
@@ -80,12 +80,11 @@ trait MemberLookupBase {
               // reconstruct the original link
               def linkName(sym: Symbol) = {
                 def nameString(s: Symbol) =
-                  s.nameString + (
-                    if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
-                      "$"
-                    else
-                      ""
-                  )
+                  s.nameString +
+                    (if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
+                       "$"
+                     else
+                       "")
                 val packageSuffix =
                   if (sym.hasPackageFlag)
                     ".package"
@@ -100,11 +99,11 @@ trait MemberLookupBase {
                   .mkString(".") + packageSuffix
               }
 
-              if (sym.isClass || sym.isModule || sym.isTrait || sym
-                    .hasPackageFlag)
+              if (sym.isClass || sym.isModule || sym.isTrait ||
+                  sym.hasPackageFlag)
                 findExternalLink(sym, linkName(sym))
-              else if (owner.isClass || owner.isModule || owner.isTrait || owner
-                         .hasPackageFlag)
+              else if (owner.isClass || owner.isModule || owner.isTrait ||
+                       owner.hasPackageFlag)
                 findExternalLink(
                   sym,
                   linkName(owner) + "@" + externalSignature(sym))
@@ -152,10 +151,8 @@ trait MemberLookupBase {
   private case object OnlyTerm extends SearchStrategy
 
   private def lookupInRootPackage(pos: Position, members: List[String]) =
-    lookupInTemplate(pos, members, EmptyPackage) ::: lookupInTemplate(
-      pos,
-      members,
-      RootPackage)
+    lookupInTemplate(pos, members, EmptyPackage) :::
+      lookupInTemplate(pos, members, RootPackage)
 
   private def lookupInTemplate(
       pos: Position,
@@ -173,15 +170,11 @@ trait MemberLookupBase {
         case Nil =>
           Nil
         case mbrName :: Nil =>
-          var syms = lookupInTemplate(pos, mbrName, container, OnlyType) map (
-            (
-              _,
-              container))
+          var syms = lookupInTemplate(pos, mbrName, container, OnlyType) map
+            ((_, container))
           if (syms.isEmpty)
-            syms = lookupInTemplate(pos, mbrName, container, OnlyTerm) map (
-              (
-                _,
-                container))
+            syms = lookupInTemplate(pos, mbrName, container, OnlyTerm) map
+              ((_, container))
           syms
 
         case tplName :: rest =>
@@ -228,8 +221,8 @@ trait MemberLookupBase {
       else if (member.endsWith("!"))
         typeSyms
       else if (member.endsWith("*"))
-        cleanupBogusClasses(
-          container.info.nonPrivateDecls) filter signatureMatch
+        cleanupBogusClasses(container.info.nonPrivateDecls) filter
+          signatureMatch
       else
         strategy match {
           case BothTypeAndTerm =>

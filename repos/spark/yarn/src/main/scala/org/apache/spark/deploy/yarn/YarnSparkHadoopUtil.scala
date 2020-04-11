@@ -150,8 +150,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       sparkConf: SparkConf,
       conf: Configuration,
       credentials: Credentials) {
-    if (shouldGetTokens(sparkConf, "hive") && UserGroupInformation
-          .isSecurityEnabled) {
+    if (shouldGetTokens(sparkConf, "hive") &&
+        UserGroupInformation.isSecurityEnabled) {
       YarnSparkHadoopUtil
         .get
         .obtainTokenForHiveMetastore(conf)
@@ -168,8 +168,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       sparkConf: SparkConf,
       conf: Configuration,
       credentials: Credentials): Unit = {
-    if (shouldGetTokens(sparkConf, "hbase") && UserGroupInformation
-          .isSecurityEnabled) {
+    if (shouldGetTokens(sparkConf, "hbase") &&
+        UserGroupInformation.isSecurityEnabled) {
       YarnSparkHadoopUtil
         .get
         .obtainTokenForHBase(conf)
@@ -565,7 +565,8 @@ object YarnSparkHadoopUtil {
       val initialNumExecutors = conf.get(DYN_ALLOCATION_INITIAL_EXECUTORS)
       val maxNumExecutors = conf.get(DYN_ALLOCATION_MAX_EXECUTORS)
       require(
-        initialNumExecutors >= minNumExecutors && initialNumExecutors <= maxNumExecutors,
+        initialNumExecutors >= minNumExecutors &&
+          initialNumExecutors <= maxNumExecutors,
         s"initial executor number $initialNumExecutors must between min executor number" +
           s"$minNumExecutors and max executor number $maxNumExecutors"
       )

@@ -66,10 +66,11 @@ trait APIKeyManagerSpec[M[+_]] extends Specification {
       val (grantParents, rootGrantId) = grantParentage.copoint
 
       grantParents must not be empty
-      grantParents must haveAllElementsLike({
-        case gid =>
-          gid must_== rootGrantId
-      })
+      grantParents must
+        haveAllElementsLike({
+          case gid =>
+            gid must_== rootGrantId
+        })
     }
   }
 }

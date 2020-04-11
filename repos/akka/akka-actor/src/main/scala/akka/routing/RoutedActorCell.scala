@@ -185,8 +185,8 @@ private[akka] class RouterActor extends Actor {
         x
       case _ ⇒
         throw ActorInitializationException(
-          "Router actor can only be used in RoutedActorRef, not in " + context
-            .getClass)
+          "Router actor can only be used in RoutedActorRef, not in " +
+            context.getClass)
     }
 
   val routingLogicController: Option[ActorRef] = cell
@@ -213,9 +213,8 @@ private[akka] class RouterActor extends Actor {
   }
 
   def stopIfAllRouteesRemoved(): Unit =
-    if (cell.router.routees.isEmpty && cell
-          .routerConfig
-          .stopRouterWhenAllRouteesRemoved)
+    if (cell.router.routees.isEmpty &&
+        cell.routerConfig.stopRouterWhenAllRouteesRemoved)
       context.stop(self)
 
   override def preRestart(cause: Throwable, msg: Option[Any]): Unit = {

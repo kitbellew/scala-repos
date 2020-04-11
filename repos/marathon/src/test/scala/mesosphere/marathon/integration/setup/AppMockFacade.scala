@@ -16,11 +16,12 @@ class AppMockFacade(https: Boolean = false, waitTime: Duration = 30.seconds)(
   private[this] def retry[T](
       retries: Int = 200,
       waitForNextTry: Duration = 50.milliseconds)(block: => T): T = {
-    val attempts = Iterator(Try(block)) ++ Iterator.continually(
-      Try {
-        Thread.sleep(waitForNextTry.toMillis)
-        block
-      })
+    val attempts = Iterator(Try(block)) ++
+      Iterator.continually(
+        Try {
+          Thread.sleep(waitForNextTry.toMillis)
+          block
+        })
     val firstSuccess = attempts
       .take(retries - 1)
       .find(_.isSuccess)

@@ -28,14 +28,15 @@ abstract class ClusterMetricsDisabledSpec
     extends MultiNodeSpec(ClusterMetricsDisabledMultiJvmSpec)
     with MultiNodeClusterSpec {
   "Cluster metrics" must {
-    "not collect metrics, not publish ClusterMetricsChanged, and not gossip metrics" taggedAs LongRunningTest in {
-      awaitClusterUp(roles: _*)
-      clusterView.clusterMetrics.size should ===(0)
-      cluster.subscribe(testActor, classOf[ClusterMetricsChanged])
-      expectMsgType[CurrentClusterState]
-      expectNoMsg
-      clusterView.clusterMetrics.size should ===(0)
-      enterBarrier("after")
-    }
+    "not collect metrics, not publish ClusterMetricsChanged, and not gossip metrics" taggedAs
+      LongRunningTest in {
+        awaitClusterUp(roles: _*)
+        clusterView.clusterMetrics.size should ===(0)
+        cluster.subscribe(testActor, classOf[ClusterMetricsChanged])
+        expectMsgType[CurrentClusterState]
+        expectNoMsg
+        clusterView.clusterMetrics.size should ===(0)
+        enterBarrier("after")
+      }
   }
 }

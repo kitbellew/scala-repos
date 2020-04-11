@@ -27,8 +27,8 @@ class MessageTest extends FunSuite with AssertionsForJUnit {
     val bytes = s.getBytes(Charsets.Utf8)
     ChannelBuffers.wrappedBuffer(bytes)
   }
-  val goodDentries =
-    Seq("/a=>/b", "/foo=>/$/inet/twitter.com/80") map (Dentry.read)
+  val goodDentries = Seq("/a=>/b", "/foo=>/$/inet/twitter.com/80") map
+    (Dentry.read)
   val goodDtabs = goodDentries.permutations map { ds =>
     Dtab(ds.toIndexedSeq)
   }
@@ -36,104 +36,93 @@ class MessageTest extends FunSuite with AssertionsForJUnit {
   val goodDurationLeases = Seq(Message.Tlease.MinLease, Message.Tlease.MaxLease)
   val goodTimeLeases = Seq(Time.epoch, Time.now, Time.now + 5.minutes)
   val goodContexts =
-    Seq() ++ (
-      for {
-        k <- goodKeys;
-        v <- goodBufs
-      } yield (k, v)
-    ).combinations(2).toSeq
+    Seq() ++
+      (
+        for {
+          k <- goodKeys;
+          v <- goodBufs
+        } yield (k, v)
+      ).combinations(2).toSeq
 
   test("d(e(m)) == m") {
     val ms = mutable.Buffer[Message]()
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         tag <- goodTags
         version <- goodVersions
         ctx <- goodContexts
-      } yield Tinit(tag, version, ctx)
-    )
+      } yield Tinit(tag, version, ctx))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         tag <- goodTags
         version <- goodVersions
         ctx <- goodContexts
-      } yield Rinit(tag, version, ctx)
-    )
+      } yield Rinit(tag, version, ctx))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         tag <- goodTags
         traceId <- goodTraceIds
         body <- goodBufs
-      } yield Treq(tag, traceId, body)
-    )
+      } yield Treq(tag, traceId, body))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         tag <- goodTags
         body <- goodBufs
-      } yield RreqOk(tag, body)
-    )
+      } yield RreqOk(tag, body))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         tag <- goodTags
-      } yield Tdrain(tag)
-    )
+      } yield Tdrain(tag))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         tag <- goodTags
         reason <- goodStrings
-      } yield Tdiscarded(tag, reason)
-    )
+      } yield Tdiscarded(tag, reason))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         tag <- goodTags
         ctx <- goodContexts
         dest <- goodDests
         dtab <- goodDtabs
         body <- goodBufs
-      } yield Tdispatch(tag, ctx, dest, dtab, body)
-    )
+      } yield Tdispatch(tag, ctx, dest, dtab, body))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         tag <- goodTags
         ctx <- goodContexts
         body <- goodBufs
-      } yield RdispatchOk(tag, ctx, body)
-    )
+      } yield RdispatchOk(tag, ctx, body))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         tag <- goodTags
         ctx <- goodContexts
         err <- goodStrings
-      } yield RdispatchError(tag, ctx, err)
-    )
+      } yield RdispatchError(tag, ctx, err))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         tag <- goodTags
         ctx <- goodContexts
-      } yield RdispatchNack(tag, ctx)
-    )
+      } yield RdispatchNack(tag, ctx))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         lease <- goodDurationLeases
-      } yield Tlease(lease)
-    )
+      } yield Tlease(lease))
 
-    ms ++= (
-      for {
+    ms ++=
+      (for {
         lease <- goodTimeLeases
-      } yield Tlease(lease)
-    )
+      } yield Tlease(lease))
 
     def assertEquiv(a: Message, b: Message) =
       (a, b) match {

@@ -33,10 +33,11 @@ trait LabelsControllerBase extends ControllerBase {
 
   val labelForm =
     mapping(
-      "labelName" -> trim(
-        label(
-          "Label name",
-          text(required, labelName, uniqueLabelName, maxlength(100)))),
+      "labelName" ->
+        trim(
+          label(
+            "Label name",
+            text(required, labelName, uniqueLabelName, maxlength(100)))),
       "labelColor" -> trim(label("Color", text(required, color)))
     )(LabelForm.apply)
 

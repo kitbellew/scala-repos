@@ -80,11 +80,12 @@ object Codec {
     def signals = flags
 
     override def toString = {
-      super.toString + flags
-        .map {
-          _.toString
-        }
-        .mkString(" with Signalling(", ", ", ")")
+      super.toString +
+        flags
+          .map {
+            _.toString
+          }
+          .mkString(" with Signalling(", ", ", ")")
     }
   }
 }

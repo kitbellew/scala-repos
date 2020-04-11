@@ -44,8 +44,8 @@ class ContinueOnErrorStepTest
 
     Given("a nested step that is always successful")
     val nested = mock[TaskStatusUpdateStep]
-    processUpdate(nested).asInstanceOf[Future[Unit]] returns Future
-      .successful(())
+    processUpdate(nested).asInstanceOf[Future[Unit]] returns
+      Future.successful(())
 
     When("executing the step")
     val logEvents = CaptureLogEvents.forBlock {
@@ -73,8 +73,8 @@ class ContinueOnErrorStepTest
     Given("a nested step that is always successful")
     val nested = mock[TaskStatusUpdateStep]
     nested.name returns "nested"
-    processUpdate(nested).asInstanceOf[Future[Unit]] returns Future
-      .failed(new RuntimeException("error!"))
+    processUpdate(nested).asInstanceOf[Future[Unit]] returns
+      Future.failed(new RuntimeException("error!"))
 
     When("executing the step")
     val logEvents = CaptureLogEvents.forBlock {
@@ -85,8 +85,9 @@ class ContinueOnErrorStepTest
     Then("it should execute the nested step")
     processUpdate(verify(nested, times(1)))
     And("produce an error message in the log")
-    logEvents.map(_.toString) should be(
-      Vector(
-        "[ERROR] while executing step nested for [task], continue with other steps"))
+    logEvents.map(_.toString) should
+      be(
+        Vector(
+          "[ERROR] while executing step nested for [task], continue with other steps"))
   }
 }

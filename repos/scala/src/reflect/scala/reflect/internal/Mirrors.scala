@@ -69,12 +69,10 @@ trait Mirrors extends api.Mirrors {
         } //debug
         thisMirror.missingHook(owner, name) orElse {
           MissingRequirementError.notFound(
-            (
-              if (path.isTermName)
-                "object "
-              else
-                "class "
-            ) + path + " in " + thisMirror)
+            (if (path.isTermName)
+               "object "
+             else
+               "class ") + path + " in " + thisMirror)
         }
       }
     }
@@ -329,16 +327,17 @@ trait Mirrors extends api.Mirrors {
         // synthetic core classes are only present in root mirrors
         // because Definitions.scala, which initializes and enters them, only affects rootMirror
         // therefore we need to enter them manually for non-root mirrors
-        definitions.syntheticCoreClasses foreach (theirSym => {
-          val theirOwner = theirSym.owner
-          assert(
-            theirOwner.isPackageClass,
-            s"theirSym = $theirSym, theirOwner = $theirOwner")
-          val ourOwner = staticPackage(theirOwner.fullName).moduleClass
-          val ourSym =
-            theirSym // just copy the symbol into our branch of the symbol table
-          ourOwner.info.decls enterIfNew ourSym
-        })
+        definitions.syntheticCoreClasses foreach
+          (theirSym => {
+            val theirOwner = theirSym.owner
+            assert(
+              theirOwner.isPackageClass,
+              s"theirSym = $theirSym, theirOwner = $theirOwner")
+            val ourOwner = staticPackage(theirOwner.fullName).moduleClass
+            val ourSym =
+              theirSym // just copy the symbol into our branch of the symbol table
+            ourOwner.info.decls enterIfNew ourSym
+          })
       }
 
       initialized = true

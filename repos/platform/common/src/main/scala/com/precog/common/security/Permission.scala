@@ -179,19 +179,17 @@ object Permission {
         permission: WrittenByPermission,
         candidate: WrittenByPermission): Boolean = {
       permission.path.isEqualOrParentOf(candidate.path) &&
-      (
-        permission.writtenBy match {
-          case WrittenByAny =>
-            true
-          case WrittenByAccount(accountId) =>
-            candidate.writtenBy match {
-              case WrittenByAny =>
-                false
-              case WrittenByAccount(cid) =>
-                cid == accountId
-            }
-        }
-      )
+      (permission.writtenBy match {
+        case WrittenByAny =>
+          true
+        case WrittenByAccount(accountId) =>
+          candidate.writtenBy match {
+            case WrittenByAny =>
+              false
+            case WrittenByAccount(cid) =>
+              cid == accountId
+          }
+      })
     }
   }
 
@@ -345,6 +343,6 @@ object Permission {
     }
 
   implicit val decomposer = decomposerV1Base.versioned(Some("1.0".v))
-  implicit val extractor = extractorV1Base
-    .versioned(Some("1.0".v)) <+> extractorV1Base
+  implicit val extractor = extractorV1Base.versioned(Some("1.0".v)) <+>
+    extractorV1Base
 }

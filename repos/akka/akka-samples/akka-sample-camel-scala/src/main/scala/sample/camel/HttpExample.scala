@@ -54,11 +54,10 @@ object HttpExample {
   class HttpTransformer extends Actor {
     def receive = {
       case msg: CamelMessage =>
-        sender() ! (
-          msg.mapBody { body: Array[Byte] =>
+        sender() !
+          (msg.mapBody { body: Array[Byte] =>
             new String(body).replaceAll("Akka ", "AKKA ")
-          }
-        )
+          })
       case msg: Failure =>
         sender() ! msg
     }

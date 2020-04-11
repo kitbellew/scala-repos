@@ -114,8 +114,7 @@ class ScalaImportTypeFix(
           case 1
               if ScalaApplicationSettings
                 .getInstance()
-                .ADD_UNAMBIGUOUS_IMPORTS_ON_THE_FLY &&
-                !caretNear(editor) =>
+                .ADD_UNAMBIGUOUS_IMPORTS_ON_THE_FLY && !caretNear(editor) =>
             CommandProcessor
               .getInstance()
               .runUndoTransparentAction(
@@ -172,8 +171,8 @@ class ScalaImportTypeFix(
               new ScalaAddImportAction(editor, classes, ref: ScReferenceElement)
 
             val offset = ref.getTextRange.getStartOffset
-            if (classes.nonEmpty && offset >= startOffset(
-                  editor) && offset <= endOffset(editor) && editor != null &&
+            if (classes.nonEmpty && offset >= startOffset(editor) &&
+                offset <= endOffset(editor) && editor != null &&
                 offset <= editor.getDocument.getTextLength) {
               HintManager
                 .getInstance()
@@ -182,8 +181,8 @@ class ScalaImportTypeFix(
                   if (classes.length == 1)
                     classes(0).qualifiedName + "? Alt+Enter"
                   else
-                    classes(0)
-                      .qualifiedName + "? (multiple choices...) Alt+Enter",
+                    classes(0).qualifiedName +
+                      "? (multiple choices...) Alt+Enter",
                   offset,
                   offset + ref.getTextLength,
                   action
@@ -207,7 +206,8 @@ class ScalaImportTypeFix(
         .invokeLater(
           new Runnable() {
             def run() {
-              if (!ref.isValid || !FileModificationService
+              if (!ref.isValid ||
+                  !FileModificationService
                     .getInstance
                     .prepareFileForWrite(ref.getContainingFile))
                 return
@@ -448,11 +448,10 @@ object ScalaImportTypeFix {
     val buffer = new ArrayBuffer[TypeToImport]
     for (clazz <- classes) {
       def addClazz(clazz: PsiClass) {
-        if (clazz != null && clazz
-              .qualifiedName != null && clazz.qualifiedName.indexOf(".") > 0 &&
-            ResolveUtils
-              .kindMatches(clazz, kinds) && notInner(clazz, ref) && ResolveUtils
-              .isAccessible(clazz, ref) &&
+        if (clazz != null && clazz.qualifiedName != null &&
+            clazz.qualifiedName.indexOf(".") > 0 &&
+            ResolveUtils.kindMatches(clazz, kinds) && notInner(clazz, ref) &&
+            ResolveUtils.isAccessible(clazz, ref) &&
             !JavaCompletionUtil.isInExcludedPackage(clazz, false)) {
           buffer += ClassTypeToImport(clazz)
         }
@@ -476,8 +475,8 @@ object ScalaImportTypeFix {
     for (alias <- typeAliases) {
       val containingClass = alias.containingClass
       if (containingClass != null && ScalaPsiUtil.hasStablePath(alias) &&
-          ResolveUtils.kindMatches(alias, kinds) && ResolveUtils
-            .isAccessible(alias, ref) &&
+          ResolveUtils.kindMatches(alias, kinds) &&
+          ResolveUtils.isAccessible(alias, ref) &&
           !JavaCompletionUtil.isInExcludedPackage(containingClass, false)) {
         buffer += TypeAliasToImport(alias)
       }
@@ -504,9 +503,8 @@ object ScalaImportTypeFix {
 
     for (packageQualifier <- packagesList) {
       val pack = ScPackageImpl.findPackage(myProject, packageQualifier)
-      if (pack != null && pack
-            .getQualifiedName
-            .indexOf('.') != -1 && ResolveUtils.kindMatches(pack, kinds) &&
+      if (pack != null && pack.getQualifiedName.indexOf('.') != -1 &&
+          ResolveUtils.kindMatches(pack, kinds) &&
           !JavaProjectCodeInsightSettings
             .getSettings(myProject)
             .isExcluded(pack.getQualifiedName)) {

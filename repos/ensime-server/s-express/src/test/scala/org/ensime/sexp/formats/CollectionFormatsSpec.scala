@@ -72,10 +72,11 @@ class CollectionFormatsSpec
       SexpList(SexpList(foo, foo)))
   }
 
-  "CollectionFormats immutable variants of the traits" should "support Traversable" in {
-    assertFormat(im.Traversable[String](), SexpNil)
-    assertFormat(im.Traversable(foos: _*), expect)
-  }
+  "CollectionFormats immutable variants of the traits" should
+    "support Traversable" in {
+      assertFormat(im.Traversable[String](), SexpNil)
+      assertFormat(im.Traversable(foos: _*), expect)
+    }
 
   it should "support Iterable" in {
     assertFormat(im.Iterable[String](), SexpNil)
@@ -125,10 +126,11 @@ class CollectionFormatsSpec
     assertFormat(im.SortedMap("foo" -> "foo"), SexpList(SexpList(foo, foo)))
   }
 
-  "CollectionFormats immutable specific implementations" should "support im.List" in {
-    assertFormat(im.List[String](), SexpNil)
-    assertFormat(im.List(foos: _*), expect)
-  }
+  "CollectionFormats immutable specific implementations" should
+    "support im.List" in {
+      assertFormat(im.List[String](), SexpNil)
+      assertFormat(im.List(foos: _*), expect)
+    }
 
   it should "support im.Vector" in {
     assertFormat(im.Vector[String](), SexpNil)

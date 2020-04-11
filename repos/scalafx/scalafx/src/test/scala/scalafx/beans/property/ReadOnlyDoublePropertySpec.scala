@@ -230,20 +230,22 @@ class ReadOnlyDoublePropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty() should be(true)
   }
 
-  it should "support bindable infix greater than or equal to with a property" in {
-    booleanProperty <== readOnlyDoubleProperty >= doubleProperty1
-    doubleProperty1() = 49
-    booleanProperty() should be(true)
-    doubleProperty1() = 51
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix greater than or equal to with a property" in {
+      booleanProperty <== readOnlyDoubleProperty >= doubleProperty1
+      doubleProperty1() = 49
+      booleanProperty() should be(true)
+      doubleProperty1() = 51
+      booleanProperty() should be(false)
+    }
 
-  it should "support bindable infix greater than or equal to with a constant" in {
-    booleanProperty <== readOnlyDoubleProperty >= 18349
-    booleanProperty() should be(false)
-    booleanProperty <== readOnlyDoubleProperty >= 13
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix greater than or equal to with a constant" in {
+      booleanProperty <== readOnlyDoubleProperty >= 18349
+      booleanProperty() should be(false)
+      booleanProperty <== readOnlyDoubleProperty >= 13
+      booleanProperty() should be(true)
+    }
 
   it should "support invalidate/change triggers on binding expressions" in {
     var invalidateCount = 0

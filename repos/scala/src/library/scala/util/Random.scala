@@ -131,7 +131,9 @@ class Random(val self: java.util.Random) extends AnyRef with Serializable {
     "Preserved for backwards binary compatibility. To remove in 2.12.x.",
     "2.11.6")
   final def `scala$util$Random$$isAlphaNum$1`(c: Char) =
-    (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
+    (c >= 'A' && c <= 'Z') ||
+      (c >= 'a' && c <= 'z') ||
+      (c >= '0' && c <= '9')
 
   /** Returns a Stream of pseudorandomly chosen alphanumeric characters,
     *  equally chosen from A-Z, a-z, and 0-9.

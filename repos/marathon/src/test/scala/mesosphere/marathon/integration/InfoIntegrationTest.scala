@@ -18,8 +18,8 @@ class InfoIntegrationTest
     val info = response.entityJson
 
     And("the http port should be correct")
-    (info \ "http_config" \ "http_port")
-      .as[Int] should be(config.marathonBasePort)
+    (info \ "http_config" \ "http_port").as[Int] should
+      be(config.marathonBasePort)
 
     And("the ZooKeeper info should be correct")
     (info \ "zookeeper_config" \ "zk").as[String] should be(config.zk)

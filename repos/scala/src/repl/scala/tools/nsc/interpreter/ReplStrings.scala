@@ -42,6 +42,6 @@ trait ReplStrings {
       case _ =>
         s
     }
-  def words(s: String) =
-    (s.trim split "\\s+" filterNot (_ == "") map unquoted).toList
+  def words(s: String) = (s.trim split "\\s+" filterNot (_ == "") map unquoted)
+    .toList
 }

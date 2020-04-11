@@ -12,96 +12,110 @@ import docs.http.scaladsl.server.RoutingSpec
 import docs.http.scaladsl.server.RoutingSpec
 
 class FileAndResourceDirectivesExamplesSpec extends RoutingSpec {
-  "getFromFile-examples" in compileOnlySpec {
-    import akka.http.scaladsl.server.directives._
-    import ContentTypeResolver.Default
+  "getFromFile-examples" in
+    compileOnlySpec {
+      import akka.http.scaladsl.server.directives._
+      import ContentTypeResolver.Default
 
-    val route =
-      path("logs" / Segment) { name =>
-        getFromFile(".log") // uses implicit ContentTypeResolver
-      }
-
-    // tests:
-    Get("/logs/example") ~> route ~> check {
-      responseAs[String] shouldEqual "example file contents"
-    }
-  }
-  "getFromResource-examples" in compileOnlySpec {
-    import akka.http.scaladsl.server.directives._
-    import ContentTypeResolver.Default
-
-    val route =
-      path("logs" / Segment) { name =>
-        getFromResource(".log") // uses implicit ContentTypeResolver
-      }
-
-    // tests:
-    Get("/logs/example") ~> route ~> check {
-      responseAs[String] shouldEqual "example file contents"
-    }
-  }
-  "listDirectoryContents-examples" in compileOnlySpec {
-    val route =
-      path("tmp") {
-        listDirectoryContents("/tmp")
-      } ~
-        path("custom") {
-          val renderer =
-            new DirectoryRenderer {
-              override def marshaller(renderVanityFooter: Boolean)
-                  : ToEntityMarshaller[DirectoryListing] = ???
-            }
-          listDirectoryContents("/tmp")(renderer)
+      val route =
+        path("logs" / Segment) { name =>
+          getFromFile(".log") // uses implicit ContentTypeResolver
         }
 
-    // tests:
-    Get("/logs/example") ~> route ~> check {
-      responseAs[String] shouldEqual "example file contents"
+      // tests:
+      Get("/logs/example") ~> route ~>
+        check {
+          responseAs[String] shouldEqual "example file contents"
+        }
     }
-  }
-  "getFromBrowseableDirectory-examples" in compileOnlySpec {
-    val route =
-      path("tmp") {
-        getFromBrowseableDirectory("/tmp")
-      }
+  "getFromResource-examples" in
+    compileOnlySpec {
+      import akka.http.scaladsl.server.directives._
+      import ContentTypeResolver.Default
 
-    // tests:
-    Get("/tmp") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-    }
-  }
-  "getFromBrowseableDirectories-examples" in compileOnlySpec {
-    val route =
-      path("tmp") {
-        getFromBrowseableDirectories("/main", "/backups")
-      }
+      val route =
+        path("logs" / Segment) { name =>
+          getFromResource(".log") // uses implicit ContentTypeResolver
+        }
 
-    // tests:
-    Get("/tmp") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
+      // tests:
+      Get("/logs/example") ~> route ~>
+        check {
+          responseAs[String] shouldEqual "example file contents"
+        }
     }
-  }
-  "getFromDirectory-examples" in compileOnlySpec {
-    val route =
-      path("tmp") {
-        getFromDirectory("/tmp")
-      }
+  "listDirectoryContents-examples" in
+    compileOnlySpec {
+      val route =
+        path("tmp") {
+          listDirectoryContents("/tmp")
+        } ~
+          path("custom") {
+            val renderer =
+              new DirectoryRenderer {
+                override def marshaller(renderVanityFooter: Boolean)
+                    : ToEntityMarshaller[DirectoryListing] = ???
+              }
+            listDirectoryContents("/tmp")(renderer)
+          }
 
-    // tests:
-    Get("/tmp/example") ~> route ~> check {
-      responseAs[String] shouldEqual "example file contents"
+      // tests:
+      Get("/logs/example") ~> route ~>
+        check {
+          responseAs[String] shouldEqual "example file contents"
+        }
     }
-  }
-  "getFromResourceDirectory-examples" in compileOnlySpec {
-    val route =
-      path("examples") {
-        getFromResourceDirectory("/examples")
-      }
+  "getFromBrowseableDirectory-examples" in
+    compileOnlySpec {
+      val route =
+        path("tmp") {
+          getFromBrowseableDirectory("/tmp")
+        }
 
-    // tests:
-    Get("/examples/example-1") ~> route ~> check {
-      responseAs[String] shouldEqual "example file contents"
+      // tests:
+      Get("/tmp") ~> route ~>
+        check {
+          status shouldEqual StatusCodes.OK
+        }
     }
-  }
+  "getFromBrowseableDirectories-examples" in
+    compileOnlySpec {
+      val route =
+        path("tmp") {
+          getFromBrowseableDirectories("/main", "/backups")
+        }
+
+      // tests:
+      Get("/tmp") ~> route ~>
+        check {
+          status shouldEqual StatusCodes.OK
+        }
+    }
+  "getFromDirectory-examples" in
+    compileOnlySpec {
+      val route =
+        path("tmp") {
+          getFromDirectory("/tmp")
+        }
+
+      // tests:
+      Get("/tmp/example") ~> route ~>
+        check {
+          responseAs[String] shouldEqual "example file contents"
+        }
+    }
+  "getFromResourceDirectory-examples" in
+    compileOnlySpec {
+      val route =
+        path("examples") {
+          getFromResourceDirectory("/examples")
+        }
+
+      // tests:
+      Get("/examples/example-1") ~> route ~>
+        check {
+          responseAs[String] shouldEqual "example file contents"
+        }
+    }
 
 }

@@ -61,8 +61,9 @@ class AskSpec extends AkkaSpec {
       f.isCompleted should ===(true)
       intercept[IllegalArgumentException] {
         Await.result(f, timeout.duration)
-      }.getMessage should ===(
-        "Unsupported recipient ActorRef type, question not sent to [null]. Sender[null] sent the message of type \"java.lang.Double\".")
+      }.getMessage should
+        ===(
+          "Unsupported recipient ActorRef type, question not sent to [null]. Sender[null] sent the message of type \"java.lang.Double\".")
     }
 
     "return broken promises on 0 timeout" in {
@@ -77,7 +78,8 @@ class AskSpec extends AkkaSpec {
           }))
       val f = echo ? "foo"
       val expectedMsg =
-        "Timeout length must not be negative, question not sent to [%s]. Sender[null] sent the message of type \"java.lang.String\"." format echo
+        "Timeout length must not be negative, question not sent to [%s]. Sender[null] sent the message of type \"java.lang.String\"." format
+          echo
       intercept[IllegalArgumentException] {
         Await.result(f, timeout.duration)
       }.getMessage should ===(expectedMsg)
@@ -95,7 +97,8 @@ class AskSpec extends AkkaSpec {
           }))
       val f = echo ? "foo"
       val expectedMsg =
-        "Timeout length must not be negative, question not sent to [%s]. Sender[null] sent the message of type \"java.lang.String\"." format echo
+        "Timeout length must not be negative, question not sent to [%s]. Sender[null] sent the message of type \"java.lang.String\"." format
+          echo
       intercept[IllegalArgumentException] {
         Await.result(f, timeout.duration)
       }.getMessage should ===(expectedMsg)
@@ -265,11 +268,12 @@ class AskSpec extends AkkaSpec {
       )
       val f = echo ? "hi"
       intercept[AskTimeoutException] {
-        Await.result(f, 1 seconds) should ===(
-          ActorSelectionMessage(
-            "hi",
-            Vector(SelectChildName("missing")),
-            false))
+        Await.result(f, 1 seconds) should
+          ===(
+            ActorSelectionMessage(
+              "hi",
+              Vector(SelectChildName("missing")),
+              false))
       }
       deadListener.expectMsgClass(200 milliseconds, classOf[DeadLetter])
     }

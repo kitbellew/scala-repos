@@ -277,14 +277,13 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
   }
 
   override def equals(p1: Any): Boolean =
-    (this eq p1.asInstanceOf[AnyRef]) || (
-      p1 match {
+    (this eq p1.asInstanceOf[AnyRef]) ||
+      (p1 match {
         case vb: VectorBuilder[_] =>
           this.length == vb.length && vb.toHashVector == this.toHashVector
         case _ =>
           false
-      }
-    )
+      })
 
   /**
     * Sets the underlying sparse array to use this data

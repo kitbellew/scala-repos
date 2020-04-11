@@ -51,10 +51,8 @@ class ScalaHighlightPrimaryConstructorExpressionsHandler(
         case _ =>
           None
       }
-    val constructorExprs = varAndValDefsExprs ++ eb
-      .templateBody
-      .toList
-      .flatMap(_.exprs) ++ Seq(keyword)
+    val constructorExprs = varAndValDefsExprs ++
+      eb.templateBody.toList.flatMap(_.exprs) ++ Seq(keyword)
     constructorExprs.toBuffer[PsiElement]
   }
 }

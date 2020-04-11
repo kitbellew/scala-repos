@@ -112,35 +112,27 @@ object RunWorkflow extends Logging {
           "io.prediction.workflow.CreateWorkflow",
           "--name",
           s"PredictionIO $workMode: ${em.id} ${em.version} (${ca.common.batch})") ++
-        (
-          if (!ca.build.uberJar) {
-            Seq("--jars", em.files.mkString(","))
-          } else
-            Seq()
-        ) ++
-        (
-          if (extraFiles.size > 0) {
-            Seq("--files", extraFiles.mkString(","))
-          } else {
-            Seq()
-          }
-        ) ++
-        (
-          if (extraClasspaths.size > 0) {
-            Seq("--driver-class-path", extraClasspaths.mkString(":"))
-          } else {
-            Seq()
-          }
-        ) ++
-        (
-          if (ca.common.sparkKryo) {
-            Seq(
-              "--conf",
-              "spark.serializer=org.apache.spark.serializer.KryoSerializer")
-          } else {
-            Seq()
-          }
-        ) ++
+        (if (!ca.build.uberJar) {
+           Seq("--jars", em.files.mkString(","))
+         } else
+           Seq()) ++
+        (if (extraFiles.size > 0) {
+           Seq("--files", extraFiles.mkString(","))
+         } else {
+           Seq()
+         }) ++
+        (if (extraClasspaths.size > 0) {
+           Seq("--driver-class-path", extraClasspaths.mkString(":"))
+         } else {
+           Seq()
+         }) ++
+        (if (ca.common.sparkKryo) {
+           Seq(
+             "--conf",
+             "spark.serializer=org.apache.spark.serializer.KryoSerializer")
+         } else {
+           Seq()
+         }) ++
         Seq(
           mainJar,
           "--env",
@@ -171,43 +163,31 @@ object RunWorkflow extends Logging {
           .engineParamsKey
           .map(x => Seq("--engine-params-key", x))
           .getOrElse(Seq()) ++
-        (
-          if (deployMode == "cluster")
-            Seq("--deploy-mode", "cluster")
-          else
-            Seq()
-        ) ++
-        (
-          if (ca.common.batch != "")
-            Seq("--batch", ca.common.batch)
-          else
-            Seq()
-        ) ++
-        (
-          if (ca.common.verbose)
-            Seq("--verbose")
-          else
-            Seq()
-        ) ++
-        (
-          if (ca.common.skipSanityCheck)
-            Seq("--skip-sanity-check")
-          else
-            Seq()
-        ) ++
-        (
-          if (ca.common.stopAfterRead)
-            Seq("--stop-after-read")
-          else
-            Seq()
-        ) ++
-        (
-          if (ca.common.stopAfterPrepare) {
-            Seq("--stop-after-prepare")
-          } else {
-            Seq()
-          }
-        ) ++
+        (if (deployMode == "cluster")
+           Seq("--deploy-mode", "cluster")
+         else
+           Seq()) ++
+        (if (ca.common.batch != "")
+           Seq("--batch", ca.common.batch)
+         else
+           Seq()) ++
+        (if (ca.common.verbose)
+           Seq("--verbose")
+         else
+           Seq()) ++
+        (if (ca.common.skipSanityCheck)
+           Seq("--skip-sanity-check")
+         else
+           Seq()) ++
+        (if (ca.common.stopAfterRead)
+           Seq("--stop-after-read")
+         else
+           Seq()) ++
+        (if (ca.common.stopAfterPrepare) {
+           Seq("--stop-after-prepare")
+         } else {
+           Seq()
+         }) ++
         ca.common
           .evaluation
           .map(x => Seq("--evaluation-class", x))
@@ -218,13 +198,10 @@ object RunWorkflow extends Logging {
           .orElse(ca.common.evaluation)
           .map(x => Seq("--engine-params-generator-class", x))
           .getOrElse(Seq()) ++
-        (
-          if (ca.common.batch != "")
-            Seq("--batch", ca.common.batch)
-          else
-            Seq()
-        ) ++
-        Seq("--json-extractor", ca.common.jsonExtractor.toString)
+        (if (ca.common.batch != "")
+           Seq("--batch", ca.common.batch)
+         else
+           Seq()) ++ Seq("--json-extractor", ca.common.jsonExtractor.toString)
 
     info(s"Submission command: ${sparkSubmit.mkString(" ")}")
     Process(
@@ -253,37 +230,27 @@ object RunWorkflow extends Logging {
         .engineParamsKey
         .map(x => Seq("--engine-params-key", x))
         .getOrElse(Seq()) ++
-      (
-        if (ca.common.batch != "")
-          Seq("--batch", ca.common.batch)
-        else
-          Seq()
-      ) ++
-      (
-        if (ca.common.verbose)
-          Seq("--verbose")
-        else
-          Seq()
-      ) ++
-      (
-        if (ca.common.skipSanityCheck)
-          Seq("--skip-sanity-check")
-        else
-          Seq()
-      ) ++
-      (
-        if (ca.common.stopAfterRead)
-          Seq("--stop-after-read")
-        else
-          Seq()
-      ) ++
-      (
-        if (ca.common.stopAfterPrepare) {
-          Seq("--stop-after-prepare")
-        } else {
-          Seq()
-        }
-      ) ++
+      (if (ca.common.batch != "")
+         Seq("--batch", ca.common.batch)
+       else
+         Seq()) ++
+      (if (ca.common.verbose)
+         Seq("--verbose")
+       else
+         Seq()) ++
+      (if (ca.common.skipSanityCheck)
+         Seq("--skip-sanity-check")
+       else
+         Seq()) ++
+      (if (ca.common.stopAfterRead)
+         Seq("--stop-after-read")
+       else
+         Seq()) ++
+      (if (ca.common.stopAfterPrepare) {
+         Seq("--stop-after-prepare")
+       } else {
+         Seq()
+       }) ++
       ca.common
         .evaluation
         .map(x => Seq("--evaluation-class", x))
@@ -294,13 +261,10 @@ object RunWorkflow extends Logging {
         .orElse(ca.common.evaluation)
         .map(x => Seq("--engine-params-generator-class", x))
         .getOrElse(Seq()) ++
-      (
-        if (ca.common.batch != "")
-          Seq("--batch", ca.common.batch)
-        else
-          Seq()
-      ) ++
-      Seq("--json-extractor", ca.common.jsonExtractor.toString)
+      (if (ca.common.batch != "")
+         Seq("--batch", ca.common.batch)
+       else
+         Seq()) ++ Seq("--json-extractor", ca.common.jsonExtractor.toString)
 
     Runner
       .runOnSpark("io.prediction.workflow.CreateWorkflow", args, ca, jarFiles)

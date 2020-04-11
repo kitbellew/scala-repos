@@ -42,26 +42,24 @@ case class Crosstable(
 
   def addWins(userId: Option[String], wins: Int) =
     copy(
-      user1 = user1.copy(score = user1.score + (
-        userId match {
+      user1 = user1.copy(score = user1.score +
+        (userId match {
           case None =>
             wins * 5
           case Some(u) if user1.id == u =>
             wins * 10
           case _ =>
             0
-        }
-      )),
-      user2 = user2.copy(score = user2.score + (
-        userId match {
+        })),
+      user2 = user2.copy(score = user2.score +
+        (userId match {
           case None =>
             wins * 5
           case Some(u) if user2.id == u =>
             wins * 10
           case _ =>
             0
-        }
-      ))
+        }))
     )
 
   def fromPov(userId: String) =
@@ -126,25 +124,24 @@ object Crosstable {
         }
 
       def writeResult(result: Result, u1: String): String =
-        result.gameId + (
-          result.winnerId ?? { w =>
+        result.gameId +
+          (result.winnerId ?? { w =>
             if (w == u1)
               "+"
             else
               "-"
-          }
-        )
+          })
 
       def writes(w: BSON.Writer, o: Crosstable) =
         BSONDocument(
           id -> makeKey(o.user1.id, o.user2.id),
           score1 -> o.user1.score,
           score2 -> o.user2.score,
-          results -> o
-            .results
-            .map {
-              writeResult(_, o.user1.id)
-            },
+          results ->
+            o.results
+              .map {
+                writeResult(_, o.user1.id)
+              },
           nbGames -> w.int(o.nbGames)
         )
     }

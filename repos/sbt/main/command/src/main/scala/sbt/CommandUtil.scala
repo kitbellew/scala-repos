@@ -50,20 +50,20 @@ object CommandUtil {
   def fill(s: String, size: Int) = s + " " * math.max(size - s.length, 0)
 
   def withAttribute[T](s: State, key: AttributeKey[T], ifMissing: String)(
-      f: T => State): State =
-    (s get key) match {
-      case None =>
-        s.log.error(ifMissing);
-        s.fail
-      case Some(nav) =>
-        f(nav)
-    }
+      f: T => State): State = (s get key) match {
+    case None =>
+      s.log.error(ifMissing);
+      s.fail
+    case Some(nav) =>
+      f(nav)
+  }
 
   def singleArgument(exampleStrings: Set[String]): Parser[String] = {
-    val arg = (NotSpaceClass ~ any.*) map {
-      case (ns, s) =>
-        (ns +: s).mkString
-    }
+    val arg =
+      (NotSpaceClass ~ any.*) map {
+        case (ns, s) =>
+          (ns +: s).mkString
+      }
     token(Space) ~> token(arg examples exampleStrings)
   }
   def detail(selected: String, detailMap: Map[String, String]): String =
@@ -80,8 +80,8 @@ object CommandUtil {
         } catch {
           case pse: PatternSyntaxException =>
             sys.error(
-              "Invalid regular expression (java.util.regex syntax).\n" + pse
-                .getMessage)
+              "Invalid regular expression (java.util.regex syntax).\n" +
+                pse.getMessage)
         }
     }
   def searchHelp(

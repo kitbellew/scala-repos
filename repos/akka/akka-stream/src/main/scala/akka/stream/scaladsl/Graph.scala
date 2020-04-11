@@ -619,7 +619,8 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
             if (idx < 0 || idx >= outputPorts)
               failStage(
                 PartitionOutOfBoundsException(
-                  s"partitioner must return an index in the range [0,${outputPorts - 1}]. returned: [$idx] for input [${elem.getClass.getName}]."))
+                  s"partitioner must return an index in the range [0,${outputPorts -
+                    1}]. returned: [$idx] for input [${elem.getClass.getName}]."))
             else if (!isClosed(out(idx))) {
               if (isAvailable(out(idx))) {
                 push(out(idx), elem)
@@ -934,8 +935,8 @@ final class Concat[T](inputPorts: Int)
                 if (idx == activeStream) {
                   activeStream += 1
                   // Skip closed inputs
-                  while (activeStream < inputPorts && isClosed(
-                           in(activeStream)))
+                  while (activeStream < inputPorts &&
+                         isClosed(in(activeStream)))
                     activeStream += 1
                   if (activeStream == inputPorts)
                     completeStage()

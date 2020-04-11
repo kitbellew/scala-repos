@@ -22,12 +22,14 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       def baseProjection = first ~ last
       def forUpdate =
         baseProjection.shaped <>
-          ({
-            case (f, l) =>
-              User(None, f, l)
-          }, { u: User =>
-            Some((u.first, u.last))
-          })
+          (
+            {
+              case (f, l) =>
+                User(None, f, l)
+            },
+            { u: User =>
+              Some((u.first, u.last))
+            })
       def asFoo =
         forUpdate <> ((u: User) => Foo(u), (f: Foo[User]) => Some(f.value))
     }
@@ -47,9 +49,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     seq(
       users.schema.create,
       users.map(_.baseProjection) += ("Homer", "Simpson"),
-      users ++= Seq(
-        User(None, "Marge", "Bouvier"),
-        User(None, "Carl", "Carlson")),
+      users ++=
+        Seq(User(None, "Marge", "Bouvier"), User(None, "Carl", "Carlson")),
       users.map(_.asFoo) += Foo(User(None, "Lenny", "Leonard")),
       users
         .filter(_.last inSet Set("Bouvier", "Ferdinand"))
@@ -63,18 +64,20 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
         .to[Set]
         .result
         .map(
-          _ shouldBe Set(
-            User(Some(1), "Homer", "Simpson"),
-            User(Some(2), "Marge", "Simpson"))),
+          _ shouldBe
+            Set(
+              User(Some(1), "Homer", "Simpson"),
+              User(Some(2), "Marge", "Simpson"))),
       users
         .filter(_.id between (1, 2))
         .map(_.asFoo)
         .to[Set]
         .result
         .map(
-          _ shouldBe Set(
-            Foo(User(None, "Homer", "Simpson")),
-            Foo(User(None, "Marge", "Simpson")))),
+          _ shouldBe
+            Set(
+              Foo(User(None, "Homer", "Simpson")),
+              Foo(User(None, "Marge", "Simpson")))),
       users
         .byID(3)
         .result
@@ -180,27 +183,28 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
           (p1i1, p1i2, p1i3, p1i4, p1i5, p1i6),
           (p2i1, p2i2, p2i3, p2i4, p2i5, p2i6),
           (p3i1, p3i2, p3i3, p3i4, p3i5, p3i6),
-          (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6)).shaped <> ({
-          case (id, p1, p2, p3, p4) =>
-            // We could do this without .shaped but then we'd have to write a type annotation for the parameters
-            Whole(
-              id,
-              Part.tupled.apply(p1),
-              Part.tupled.apply(p2),
-              Part.tupled.apply(p3),
-              Part.tupled.apply(p4))
-        }, { w: Whole =>
-          def f(p: Part) = Part.unapply(p).get
-          Some((w.id, f(w.p1), f(w.p2), f(w.p3), f(w.p4)))
-        })
+          (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6)).shaped <>
+          (
+            {
+              case (id, p1, p2, p3, p4) =>
+                // We could do this without .shaped but then we'd have to write a type annotation for the parameters
+                Whole(
+                  id,
+                  Part.tupled.apply(p1),
+                  Part.tupled.apply(p2),
+                  Part.tupled.apply(p3),
+                  Part.tupled.apply(p4))
+            },
+            { w: Whole =>
+              def f(p: Part) = Part.unapply(p).get
+              Some((w.id, f(w.p1), f(w.p2), f(w.p3), f(w.p4)))
+            })
       // HList-based wide case class mapping
       def m3 =
         (
-          id ::
-            p1i1 :: p1i2 :: p1i3 :: p1i4 :: p1i5 :: p1i6 ::
-            p2i1 :: p2i2 :: p2i3 :: p2i4 :: p2i5 :: p2i6 ::
-            p3i1 :: p3i2 :: p3i3 :: p3i4 :: p3i5 :: p3i6 ::
-            p4i1 :: p4i2 :: p4i3 :: p4i4 :: p4i5 :: p4i6 :: HNil
+          id :: p1i1 :: p1i2 :: p1i3 :: p1i4 :: p1i5 :: p1i6 :: p2i1 :: p2i2 ::
+            p2i3 :: p2i4 :: p2i5 :: p2i6 :: p3i1 :: p3i2 :: p3i3 :: p3i4 ::
+            p3i5 :: p3i6 :: p4i1 :: p4i2 :: p4i3 :: p4i4 :: p4i5 :: p4i6 :: HNil
         ).mapTo[BigCase]
       def * = m1
     }
@@ -222,9 +226,10 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
         .result
         .head
         .map(
-          _ shouldBe BigCase(
-            0, 11, 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 26, 31, 32, 33, 34,
-            35, 36, 41, 42, 43, 44, 45, 46))
+          _ shouldBe
+            BigCase(
+              0, 11, 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 26, 31, 32, 33, 34,
+              35, 36, 41, 42, 43, 44, 45, 46))
     )
   }
 
@@ -285,11 +290,12 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       _ = r1 shouldBe Set((A(2, 2), B(2, Some("b"))))
       r2: Set[(A, Option[B])] <- q2.to[Set].result
       _ =
-        r2 shouldBe Set(
-          (A(1, 1), Some(B(1, Some("a")))),
-          (A(1, 1), Some(B(2, Some("b")))),
-          (A(2, 2), Some(B(1, Some("a")))),
-          (A(2, 2), Some(B(2, Some("b")))))
+        r2 shouldBe
+          Set(
+            (A(1, 1), Some(B(1, Some("a")))),
+            (A(1, 1), Some(B(2, Some("b")))),
+            (A(2, 2), Some(B(1, Some("a")))),
+            (A(2, 2), Some(B(2, Some("b")))))
     } yield ()
   }
 
@@ -306,10 +312,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     val as = TableQuery[A]
     val data = Seq(C(1, "a"), C(2, "b"))
 
-    as.schema.create >> (as ++= data) >> as
-      .sortBy(_.id)
-      .result
-      .map(_ shouldBe data)
+    as.schema.create >>
+      (as ++= data) >> as.sortBy(_.id).result.map(_ shouldBe data)
   }
 
   def testProductClassShape = {
@@ -358,10 +362,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     val as = TableQuery[A]
     val data = Seq(new C(1, Some("a")), new C(2, Some("b")))
 
-    as.schema.create >> (as ++= data) >> as
-      .sortBy(_.id)
-      .result
-      .map(_ shouldBe data)
+    as.schema.create >>
+      (as ++= data) >> as.sortBy(_.id).result.map(_ shouldBe data)
   }
 
   def testCustomShape = {
@@ -477,21 +479,21 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       bs.map(_.mapped) += Data(3, false, "b"),
       q1.result
         .map(
-          _ shouldBe Vector(
-            3 :: "bb" :: (42 :: HNil) :: HNil,
-            2 :: "cc" :: (42 :: HNil) :: HNil)),
+          _ shouldBe
+            Vector(
+              3 :: "bb" :: (42 :: HNil) :: HNil,
+              2 :: "cc" :: (42 :: HNil) :: HNil)),
       q2.result
         .map(
-          _ shouldBe Vector(
-            3 :: "bb" :: (42 :: HNil) :: HNil,
-            2 :: "cc" :: (42 :: HNil) :: HNil)),
+          _ shouldBe
+            Vector(
+              3 :: "bb" :: (42 :: HNil) :: HNil,
+              2 :: "cc" :: (42 :: HNil) :: HNil)),
       bs.map(_.mapped)
         .result
         .map(
-          _.toSet shouldBe Set(
-            Data(1, true, "a"),
-            Data(2, false, "c"),
-            Data(3, false, "b")))
+          _.toSet shouldBe
+            Set(Data(1, true, "a"), Data(2, false, "c"), Data(3, false, "b")))
     )
   }
 

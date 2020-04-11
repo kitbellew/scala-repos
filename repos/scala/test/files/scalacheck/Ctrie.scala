@@ -74,12 +74,12 @@ object Test extends Properties("concurrent.TrieMap") {
     val idx = threadIdx
     val p = totalThreads
     val start = (sz / p) * idx + math.min(idx, sz % p)
-    val elems = (sz / p) + (
-      if (idx < sz % p)
-        1
-      else
-        0
-    )
+    val elems =
+      (sz / p) +
+        (if (idx < sz % p)
+           1
+         else
+           0)
     val end = start + elems
     (start until end)
   }
@@ -135,12 +135,11 @@ object Test extends Properties("concurrent.TrieMap") {
       // wait for checker to finish
       val growing = true //checker.get
 
-      val ok = growing && (
-        (0 until sz) forall {
+      val ok = growing &&
+        ((0 until sz) forall {
           case i =>
             ct.get(Wrap(i)) == Some(i)
-        }
-      )
+        })
 
       ok
     }
@@ -195,16 +194,15 @@ object Test extends Properties("concurrent.TrieMap") {
 
       val results =
         inParallel(p) { idx =>
-          elementRange(idx, p, sz) find (i =>
-            ct.putIfAbsent(Wrap(i), i) != None)
+          elementRange(idx, p, sz) find
+            (i => ct.putIfAbsent(Wrap(i), i) != None)
         }
 
-      (results forall (_ == None)) && (
-        (0 until sz) forall {
-          case i =>
-            ct.get(Wrap(i)) == Some(i)
-        }
-      )
+      (results forall (_ == None)) &&
+      ((0 until sz) forall {
+        case i =>
+          ct.get(Wrap(i)) == Some(i)
+      })
     }
 
   property("concurrent getOrElseUpdate") =
@@ -221,12 +219,11 @@ object Test extends Properties("concurrent.TrieMap") {
           }
         }
 
-      (totalInserts.get == sz) && (
-        (0 until sz) forall {
-          case i =>
-            ct(Wrap(i)).split(":")(1).toInt == i
-        }
-      )
+      (totalInserts.get == sz) &&
+      ((0 until sz) forall {
+        case i =>
+          ct(Wrap(i)).split(":")(1).toInt == i
+      })
     }
 
 }

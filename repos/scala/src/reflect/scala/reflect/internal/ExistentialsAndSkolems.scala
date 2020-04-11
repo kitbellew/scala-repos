@@ -108,8 +108,9 @@ trait ExistentialsAndSkolems {
             tpnme.singletonName(x)
         }
       def rawOwner0 =
-        rawOwner orElse abort(
-          s"no owner provided for existential transform over raw parameter: $sym")
+        rawOwner orElse
+          abort(
+            s"no owner provided for existential transform over raw parameter: $sym")
       val bound = allBounds(sym)
       val sowner =
         if (isRawParameter(sym))

@@ -140,9 +140,8 @@ object AclCommand {
     var resourceToAcls = Map.empty[Resource, Set[Acl]]
 
     //if none of the --producer or --consumer options are specified , just construct ACLs from CLI options.
-    if (!opts.options.has(opts.producerOpt) && !opts
-          .options
-          .has(opts.consumerOpt)) {
+    if (!opts.options.has(opts.producerOpt) &&
+        !opts.options.has(opts.consumerOpt)) {
       resourceToAcls ++= getCliResourceToAcls(opts)
     }
 
@@ -151,10 +150,11 @@ object AclCommand {
       resourceToAcls ++= getProducerResourceToAcls(opts)
 
     if (opts.options.has(opts.consumerOpt))
-      resourceToAcls ++= getConsumerResourceToAcls(opts).map {
-        case (k, v) =>
-          k -> (v ++ resourceToAcls.getOrElse(k, Set.empty[Acl]))
-      }
+      resourceToAcls ++=
+        getConsumerResourceToAcls(opts).map {
+          case (k, v) =>
+            k -> (v ++ resourceToAcls.getOrElse(k, Set.empty[Acl]))
+        }
 
     validateOperation(opts, resourceToAcls)
 
@@ -367,8 +367,8 @@ object AclCommand {
     val operationsOpt = parser
       .accepts(
         "operation",
-        "Operation that is being allowed or denied. Valid operation names are: " + Newline +
-          Operation.values.map("\t" + _).mkString(Newline) + Newline)
+        "Operation that is being allowed or denied. Valid operation names are: " +
+          Newline + Operation.values.map("\t" + _).mkString(Newline) + Newline)
       .withRequiredArg
       .ofType(classOf[String])
       .defaultsTo(All.name)
@@ -474,11 +474,9 @@ object AclCommand {
           parser,
           "With --producer you must specify a --topic")
 
-      if (options.has(consumerOpt) && (
-            !options.has(topicOpt) || !options.has(groupOpt) || (
-              !options.has(producerOpt) && options.has(clusterOpt)
-            )
-          ))
+      if (options.has(consumerOpt) &&
+          (!options.has(topicOpt) || !options.has(groupOpt) ||
+          (!options.has(producerOpt) && options.has(clusterOpt))))
         CommandLineUtils.printUsageAndDie(
           parser,
           "With --consumer you must specify a --topic and a --group and no --cluster option should be specified.")

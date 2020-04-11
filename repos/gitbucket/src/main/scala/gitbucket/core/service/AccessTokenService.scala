@@ -44,9 +44,9 @@ trait AccessTokenService {
       .innerJoin(AccessTokens)
       .filter {
         case (ac, t) =>
-          (ac.userName === t.userName) && (
-            t.tokenHash === tokenToHash(token).bind
-          ) && (ac.removed === false.bind)
+          (ac.userName === t.userName) &&
+            (t.tokenHash === tokenToHash(token).bind) &&
+            (ac.removed === false.bind)
       }
       .map {
         case (ac, t) =>
@@ -63,8 +63,10 @@ trait AccessTokenService {
 
   def deleteAccessToken(userName: String, accessTokenId: Int)(implicit
       s: Session): Unit =
-    AccessTokens filter (t =>
-      t.userName === userName.bind && t.accessTokenId === accessTokenId) delete
+    AccessTokens filter
+      (t =>
+        t.userName === userName.bind &&
+          t.accessTokenId === accessTokenId) delete
 
 }
 

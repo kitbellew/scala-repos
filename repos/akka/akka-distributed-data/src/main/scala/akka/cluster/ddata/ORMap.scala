@@ -199,7 +199,8 @@ final class ORMap[A <: ReplicatedData] private[akka] (
   }
 
   override def needPruningFrom(removedNode: UniqueAddress): Boolean = {
-    keys.needPruningFrom(removedNode) || values.exists {
+    keys.needPruningFrom(removedNode) ||
+    values.exists {
       case (_, data: RemovedNodePruning) ⇒
         data.needPruningFrom(removedNode)
       case _ ⇒

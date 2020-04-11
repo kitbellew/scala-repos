@@ -49,8 +49,7 @@ object PrefixSpanExample {
           freqSequence
             .sequence
             .map(_.mkString("[", ", ", "]"))
-            .mkString("[", ", ", "]") +
-            ", " + freqSequence.freq)
+            .mkString("[", ", ", "]") + ", " + freqSequence.freq)
       }
     // $example off$
   }

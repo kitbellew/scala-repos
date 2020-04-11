@@ -245,11 +245,12 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
               .foreach { por: PartitionOffsetsResponse =>
                 if (por.error == ErrorMapping.NoError) {
                   if (por.offsets.nonEmpty) {
-                    result += tp -> por
-                      .offsets
-                      .map { off =>
-                        LeaderOffset(consumer.host, consumer.port, off)
-                      }
+                    result += tp ->
+                      por
+                        .offsets
+                        .map { off =>
+                          LeaderOffset(consumer.host, consumer.port, off)
+                        }
                   } else {
                     errs.append(
                       new SparkException(

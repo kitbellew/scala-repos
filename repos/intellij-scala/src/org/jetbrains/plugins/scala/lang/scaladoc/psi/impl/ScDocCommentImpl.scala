@@ -60,8 +60,8 @@ class ScDocCommentImpl(text: CharSequence)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    super.processDeclarations(processor, state, lastParent, place) && !Option(
-      getOwner).exists {
+    super.processDeclarations(processor, state, lastParent, place) &&
+    !Option(getOwner).exists {
       case owner: ScClass =>
         owner
           .members
@@ -98,9 +98,9 @@ class ScDocCommentImpl(text: CharSequence)
     var currentChild = getFirstChild
     val answer = mutable.ArrayBuilder.make[PsiDocTag]()
 
-    while (currentChild != null && currentChild
-             .getNode
-             .getElementType != ScalaDocTokenType.DOC_COMMENT_END) {
+    while (currentChild != null &&
+           currentChild.getNode.getElementType !=
+             ScalaDocTokenType.DOC_COMMENT_END) {
       currentChild match {
         case docTag: ScDocTag
             if docTag.getNode.getElementType == ScalaDocElementTypes.DOC_TAG &&

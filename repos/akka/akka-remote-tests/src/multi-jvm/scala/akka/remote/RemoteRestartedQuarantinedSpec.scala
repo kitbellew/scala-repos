@@ -104,14 +104,15 @@ abstract class RemoteRestartedQuarantinedSpec
         within(30.seconds) {
           awaitAssert {
             system.actorSelection(
-              RootActorPath(secondAddress) / "user" / "subject") ! Identify(
-              "subject")
+              RootActorPath(secondAddress) / "user" / "subject") !
+              Identify("subject")
             expectMsgType[ActorIdentity](1.second).ref.get
           }
         }
 
-        system.actorSelection(
-          RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
+        system
+          .actorSelection(RootActorPath(secondAddress) / "user" / "subject") !
+          "shutdown"
       }
 
       runOn(second) {

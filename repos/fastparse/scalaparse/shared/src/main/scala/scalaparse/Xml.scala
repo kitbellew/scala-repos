@@ -240,9 +240,10 @@ trait Xml extends Core {
     val Attribute = P(Name ~ Eq ~ AttValue)
 
     val AttValue = P(
-      "\"" ~ (CharQ | Reference).rep ~ "\"" |
-        "'" ~ (CharA | Reference).rep ~ "'" |
-        ScalaExpr)
+      "\"" ~
+        (CharQ | Reference).rep ~ "\"" |
+        "'" ~
+        (CharA | Reference).rep ~ "'" | ScalaExpr)
 
     val Comment = P(
       "<!--" ~ ((!"-" ~ Char) | ("-" ~ (!"-" ~ Char))).rep ~ "-->")
@@ -280,17 +281,19 @@ trait Xml extends Core {
         '\u2C00' to '\u2FEF',
         '\u3001' to '\uD7FF',
         '\uF900' to '\uFDCF',
-        '\uFDF0' to '\uFFFD' // ++ [#x10000-#xEFFFF] ???? don't chars max out at \uffff ????
+        '\uFDF0' to
+          '\uFFFD' // ++ [#x10000-#xEFFFF] ???? don't chars max out at \uffff ????
       ))
 
     val NameChar = P(
-      NameStartChar | CharIn(
-        "-",
-        ".",
-        '0' to '9',
-        "\u00B7",
-        '\u0300' to '\u036F',
-        '\u203F' to '\u2040'))
+      NameStartChar |
+        CharIn(
+          "-",
+          ".",
+          '0' to '9',
+          "\u00B7",
+          '\u0300' to '\u036F',
+          '\u203F' to '\u2040'))
     val ElemPattern: P0 = P(
       TagPHeader ~ (EmptyElemTagPEnd | STagPEnd ~ ContentP ~ ETagP))
     val TagPHeader = P("<" ~ Name ~ WL.?)

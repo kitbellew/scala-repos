@@ -124,10 +124,8 @@ class ScalaFindUsagesHandlerFactory(project: Project)
   private def needToAsk(named: PsiNamedElement): Boolean = {
     named match {
       case fun: ScFunction
-          if fun
-            .containingClass
-            .qualifiedName
-            .startsWith("scala.Function") && fun.name == "apply" =>
+          if fun.containingClass.qualifiedName.startsWith("scala.Function") &&
+            fun.name == "apply" =>
         false
       case _ =>
         true

@@ -516,8 +516,8 @@ object Multipart {
       try {
         val currentPartEnd = boyerMoore.nextIndex(input, partStart)
         val needleEnd = currentPartEnd + needle.length
-        val newMemoryBufferSize =
-          memoryBufferSize + (currentPartEnd - partStart)
+        val newMemoryBufferSize = memoryBufferSize +
+          (currentPartEnd - partStart)
         if (newMemoryBufferSize > maxMemoryBufferSize) {
           bufferExceeded("Memory buffer full on part " + partName)
         } else if (crlf(input, needleEnd)) {
@@ -537,9 +537,9 @@ object Multipart {
         }
       } catch {
         case NotEnoughDataException =>
-          if (memoryBufferSize + (
-                input.length - partStart - needle.length
-              ) > maxMemoryBufferSize) {
+          if (memoryBufferSize +
+                (input.length - partStart - needle.length) >
+                maxMemoryBufferSize) {
             bufferExceeded("Memory buffer full on part " + partName)
           }
           continue(input, partStart)(
@@ -626,9 +626,9 @@ object Multipart {
 
     @tailrec
     def boundary(input: ByteString, offset: Int, ix: Int = 2): Boolean =
-      (ix == needle.length) || (
-        byteAt(input, offset + ix - 2) == needle(ix)
-      ) && boundary(input, offset, ix + 1)
+      (ix == needle.length) ||
+        (byteAt(input, offset + ix - 2) == needle(ix)) &&
+        boundary(input, offset, ix + 1)
 
     def crlf(input: ByteString, offset: Int): Boolean =
       byteChar(input, offset) == '\r' && byteChar(input, offset + 1) == '\n'

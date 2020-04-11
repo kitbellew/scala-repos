@@ -10,9 +10,8 @@ class Character(private val value: scala.Char) extends Comparable[Character] {
   def charValue(): scala.Char = value
 
   override def equals(that: Any): scala.Boolean =
-    that.isInstanceOf[Character] && (
-      value == that.asInstanceOf[Character].charValue
-    )
+    that.isInstanceOf[Character] &&
+      (value == that.asInstanceOf[Character].charValue)
 
   override def compareTo(that: Character): Int =
     Character.compare(charValue, that.charValue)
@@ -247,11 +246,9 @@ object Character {
       c - 'A' + 10
     else if (c >= 'a' && c <= 'z' && c - 'a' < radix - 10)
       c - 'a' + 10
-    else if (c >= '\uFF21' && c <= '\uFF3A' &&
-             c - '\uFF21' < radix - 10)
+    else if (c >= '\uFF21' && c <= '\uFF3A' && c - '\uFF21' < radix - 10)
       c - '\uFF21' + 10
-    else if (c >= '\uFF41' && c <= '\uFF5A' &&
-             c - '\uFF41' < radix - 10)
+    else if (c >= '\uFF41' && c <= '\uFF5A' && c - '\uFF41' < radix - 10)
       c - '\uFF21' + 10
     else
       -1
@@ -275,9 +272,8 @@ object Character {
   def isISOControl(c: scala.Char): scala.Boolean = isISOControl(c.toInt)
 
   def isISOControl(codePoint: Int): scala.Boolean = {
-    (0x00 <= codePoint && codePoint <= 0x1F) || (
-      0x7F <= codePoint && codePoint <= 0x9F
-    )
+    (0x00 <= codePoint && codePoint <= 0x1F) ||
+    (0x7F <= codePoint && codePoint <= 0x9F)
   }
 
   @deprecated("Replaced by isWhitespace(char)", "")
@@ -288,7 +284,8 @@ object Character {
 
   def isWhitespace(codePoint: scala.Int): scala.Boolean = {
     def isSeparator(tpe: Int): scala.Boolean =
-      tpe == SPACE_SEPARATOR || tpe == LINE_SEPARATOR || tpe == PARAGRAPH_SEPARATOR
+      tpe == SPACE_SEPARATOR || tpe == LINE_SEPARATOR ||
+        tpe == PARAGRAPH_SEPARATOR
     if (codePoint < 256) {
       codePoint == '\t' || codePoint == '\n' || codePoint == '\u000B' ||
       codePoint == '\f' || codePoint == '\r' ||
@@ -307,7 +304,8 @@ object Character {
 
   @inline
   private[this] def isSpaceCharImpl(tpe: Int): scala.Boolean =
-    tpe == SPACE_SEPARATOR || tpe == LINE_SEPARATOR || tpe == PARAGRAPH_SEPARATOR
+    tpe == SPACE_SEPARATOR || tpe == LINE_SEPARATOR ||
+      tpe == PARAGRAPH_SEPARATOR
 
   // --- UTF-16 surrogate pairs handling ---
   // See http://en.wikipedia.org/wiki/UTF-16
@@ -330,9 +328,8 @@ object Character {
 
   @inline
   def toCodePoint(high: scala.Char, low: scala.Char): Int =
-    ((high & SurrogateUsefulPartMask) << 10) + (
-      low & SurrogateUsefulPartMask
-    ) + 0x10000
+    ((high & SurrogateUsefulPartMask) << 10) +
+      (low & SurrogateUsefulPartMask) + 0x10000
 
   // --- End of UTF-16 surrogate pairs handling ---
 
@@ -346,21 +343,23 @@ object Character {
   }
 
   private[this] def isLowerCaseGE256(c: Int): scala.Boolean = {
-    ('\u02B0' <= c && c <= '\u02B8') || ('\u02C0' <= c && c <= '\u02C1') ||
+    ('\u02B0' <= c && c <= '\u02B8') ||
+    ('\u02C0' <= c && c <= '\u02C1') ||
     ('\u02E0' <= c && c <= '\u02E4') || c == '\u0345' || c == '\u037A' ||
     ('\u1D2C' <= c && c <= '\u1D6A') || c == '\u1D78' ||
     ('\u1D9B' <= c && c <= '\u1DBF') || c == '\u2071' || c == '\u207F' ||
-    ('\u2090' <= c && c <= '\u209C') || ('\u2170' <= c && c <= '\u217F') ||
-    ('\u24D0' <= c && c <= '\u24E9') || ('\u2C7C' <= c && c <= '\u2C7D') ||
-    c == '\uA770' || ('\uA7F8' <= c && c <= '\uA7F9') ||
-    getTypeGE256(c) == LOWERCASE_LETTER
+    ('\u2090' <= c && c <= '\u209C') ||
+    ('\u2170' <= c && c <= '\u217F') ||
+    ('\u24D0' <= c && c <= '\u24E9') ||
+    ('\u2C7C' <= c && c <= '\u2C7D') || c == '\uA770' ||
+    ('\uA7F8' <= c && c <= '\uA7F9') || getTypeGE256(c) == LOWERCASE_LETTER
   }
 
   def isUpperCase(c: scala.Char): scala.Boolean = isUpperCase(c.toInt)
 
   def isUpperCase(c: Int): scala.Boolean = {
-    ('\u2160' <= c && c <= '\u216F') || ('\u24B6' <= c && c <= '\u24CF') ||
-    getType(c) == UPPERCASE_LETTER
+    ('\u2160' <= c && c <= '\u216F') ||
+    ('\u24B6' <= c && c <= '\u24CF') || getType(c) == UPPERCASE_LETTER
   }
 
   @inline
@@ -451,16 +450,21 @@ object Character {
   def isAlphabetic(codePoint: Int): scala.Boolean = {
     val tpe = getType(codePoint)
     tpe == UPPERCASE_LETTER || tpe == LOWERCASE_LETTER ||
-    tpe == TITLECASE_LETTER || tpe == MODIFIER_LETTER ||
-    tpe == OTHER_LETTER || tpe == LETTER_NUMBER
+    tpe == TITLECASE_LETTER || tpe == MODIFIER_LETTER || tpe == OTHER_LETTER ||
+    tpe == LETTER_NUMBER
   }
 
   def isIdeographic(c: Int): scala.Boolean = {
-    (12294 <= c && c <= 12295) || (12321 <= c && c <= 12329) ||
-    (12344 <= c && c <= 12346) || (13312 <= c && c <= 19893) ||
-    (19968 <= c && c <= 40908) || (63744 <= c && c <= 64109) ||
-    (64112 <= c && c <= 64217) || (131072 <= c && c <= 173782) ||
-    (173824 <= c && c <= 177972) || (177984 <= c && c <= 178205) ||
+    (12294 <= c && c <= 12295) ||
+    (12321 <= c && c <= 12329) ||
+    (12344 <= c && c <= 12346) ||
+    (13312 <= c && c <= 19893) ||
+    (19968 <= c && c <= 40908) ||
+    (63744 <= c && c <= 64109) ||
+    (64112 <= c && c <= 64217) ||
+    (131072 <= c && c <= 173782) ||
+    (173824 <= c && c <= 177972) ||
+    (177984 <= c && c <= 178205) ||
     (194560 <= c && c <= 195101)
   }
 
@@ -527,8 +531,7 @@ object Character {
       tpe: Int): scala.Boolean = {
     ('\u0000' <= codePoint && codePoint <= '\u0008') ||
     ('\u000E' <= codePoint && codePoint <= '\u001B') ||
-    ('\u007F' <= codePoint && codePoint <= '\u009F') ||
-    tpe == FORMAT
+    ('\u007F' <= codePoint && codePoint <= '\u009F') || tpe == FORMAT
   }
 
   def isMirrored(c: scala.Char): scala.Boolean = isMirrored(c.toInt)

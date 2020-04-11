@@ -82,14 +82,11 @@ class Netty4ClientChannelInitializerTest
 
       // one server message produces two client transport messages
       assert(
-        Await.result(clientsideTransport.read(), timeout) == data
-          .take(frameSize)
-          .mkString)
+        Await.result(clientsideTransport.read(), timeout) ==
+          data.take(frameSize).mkString)
       assert(
-        Await.result(clientsideTransport.read(), timeout) == data
-          .drop(frameSize)
-          .take(frameSize)
-          .mkString)
+        Await.result(clientsideTransport.read(), timeout) ==
+          data.drop(frameSize).take(frameSize).mkString)
 
       server.close()
     }
@@ -126,8 +123,8 @@ class Netty4ClientChannelInitializerTest
       }
     new Ctx {
       override def params =
-        Params.empty + Transport
-          .Liveness(readTimeout = 1.millisecond, Duration.Top, None)
+        Params.empty +
+          Transport.Liveness(readTimeout = 1.millisecond, Duration.Top, None)
 
       initChannel()
       client.pipeline.addLast(exnSnooper)
@@ -162,8 +159,8 @@ class Netty4ClientChannelInitializerTest
 
     new Ctx {
       override def params =
-        Params.empty + Transport
-          .Liveness(Duration.Top, writeTimeout = 1.millisecond, None)
+        Params.empty +
+          Transport.Liveness(Duration.Top, writeTimeout = 1.millisecond, None)
 
       initChannel()
       client.pipeline.addLast(exnSnooper)

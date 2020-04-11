@@ -62,8 +62,8 @@ private[concurrent] object ExecutionContextImpl {
         case `maxThreads` | Int.`MaxValue` =>
           false
         case other =>
-          currentNumberOfThreads
-            .compareAndSet(other, other + 1) || reserveThread()
+          currentNumberOfThreads.compareAndSet(other, other + 1) ||
+            reserveThread()
       }
 
     @tailrec
@@ -72,8 +72,8 @@ private[concurrent] object ExecutionContextImpl {
         case 0 =>
           false
         case other =>
-          currentNumberOfThreads
-            .compareAndSet(other, other - 1) || deregisterThread()
+          currentNumberOfThreads.compareAndSet(other, other - 1) ||
+            deregisterThread()
       }
 
     def wire[T <: Thread](thread: T): T = {

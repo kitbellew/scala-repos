@@ -154,9 +154,10 @@ class ReceivePipelineSpec extends AkkaSpec with ImplicitSender {
             with ToStringInterceptor))
       replier ! 8L // unhandled by all interceptors but still replied
       expectMsg(8L)
-      replier ! Set(
-        8f
-      ) // unhandled by all but ToString Interceptor, so replied as String
+      replier !
+        Set(
+          8f
+        ) // unhandled by all but ToString Interceptor, so replied as String
       expectMsg("Set(8.0)")
     }
 
@@ -504,9 +505,11 @@ object MixinSample extends App {
   //#mixin-model
   val texts = Map(
     "that.rug_EN" -> "That rug really tied the room together.",
-    "your.opinion_EN" -> "Yeah, well, you know, that's just, like, your opinion, man.",
+    "your.opinion_EN" ->
+      "Yeah, well, you know, that's just, like, your opinion, man.",
     "that.rug_ES" -> "Esa alfombra realmente completaba la sala.",
-    "your.opinion_ES" -> "Sí, bueno, ya sabes, eso es solo, como, tu opinion, amigo."
+    "your.opinion_ES" ->
+      "Sí, bueno, ya sabes, eso es solo, como, tu opinion, amigo."
   )
 
   case class I18nText(locale: String, key: String)

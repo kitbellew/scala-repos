@@ -587,8 +587,8 @@ object ScalaPsiElementFactory {
     val child = dummyFile.getFirstChild
     child match {
       case expr: ScExpression =>
-        if (expr.getNextSibling == null && !PsiTreeUtil
-              .hasErrorElements(dummyFile))
+        if (expr.getNextSibling == null &&
+            !PsiTreeUtil.hasErrorElements(dummyFile))
           Some(expr)
         else
           None
@@ -598,12 +598,11 @@ object ScalaPsiElementFactory {
   }
 
   def createIdentifier(name: String, manager: PsiManager): ASTNode = {
-    val text = "package " + (
-      if (!ScalaNamesUtil.isKeyword(name))
-        name
-      else
-        "`" + name + "`"
-    )
+    val text = "package " +
+      (if (!ScalaNamesUtil.isKeyword(name))
+         name
+       else
+         "`" + name + "`")
     try {
       val dummyFile = PsiFileFactory
         .getInstance(manager.getProject)
@@ -697,8 +696,8 @@ object ScalaPsiElementFactory {
           packaging.getPackageName
         case _ =>
           var element: PsiElement = holder
-          while (element != null && !element.isInstanceOf[ScalaFile] && !element
-                   .isInstanceOf[ScPackaging])
+          while (element != null && !element.isInstanceOf[ScalaFile] &&
+                 !element.isInstanceOf[ScPackaging])
             element = element.getParent
           element match {
             case packaging: ScPackaging =>
@@ -708,12 +707,11 @@ object ScalaPsiElementFactory {
           }
       }
     val name = getShortName(qualifiedName, packageName)
-    val text = "import " + (
-      if (isResolved(name, clazz, packageName, manager))
-        name
-      else
-        "_root_." + qualifiedName
-    )
+    val text = "import " +
+      (if (isResolved(name, clazz, packageName, manager))
+         name
+       else
+         "_root_." + qualifiedName)
     val dummyFile = PsiFileFactory
       .getInstance(manager.getProject)
       .createFileFromText(
@@ -741,13 +739,10 @@ object ScalaPsiElementFactory {
     for (expr <- exprs)
       names ++= expr.getNames
     val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
-    if ((
-          names("_") ||
-          ScalaCodeStyleSettings
-            .getInstance(manager.getProject)
-            .getClassCountToUseImportOnDemand <=
-            names.size
-        ) &&
+    if ((names("_") ||
+        ScalaCodeStyleSettings
+          .getInstance(manager.getProject)
+          .getClassCountToUseImportOnDemand <= names.size) &&
         names.filter(_.indexOf(arrow) != -1).toSeq.size == 0)
       text = text + "._"
     else {
@@ -845,8 +840,8 @@ object ScalaPsiElementFactory {
           val paramText =
             if (parSeq.size == 1) {
               val par = parSeq.head
-              if (par.typeElement.isDefined && par
-                    .getPrevSiblingNotWhitespace == null)
+              if (par.typeElement.isDefined &&
+                  par.getPrevSiblingNotWhitespace == null)
                 s"(${par.getText})"
               else
                 fun.params.getText
@@ -903,8 +898,8 @@ object ScalaPsiElementFactory {
     val varKeyword = varDef.varKeyword
     val startOffset = varKeyword.getStartOffsetInParent
     val varText = varDef.getText
-    val text = "class a {" + varText.substring(0, startOffset) + "val" + varText
-      .substring(startOffset + 3) + " }"
+    val text = "class a {" + varText.substring(0, startOffset) + "val" +
+      varText.substring(startOffset + 3) + " }"
     val dummyFile = createScalaFile(text, manager)
     val classDef = dummyFile.typeDefinitions(0)
     classDef.members(0).asInstanceOf[ScValue]
@@ -916,8 +911,8 @@ object ScalaPsiElementFactory {
     val valKeyword = valDef.valKeyword
     val startOffset = valKeyword.getStartOffsetInParent
     val valText = valDef.getText
-    val text = "class a {" + valText.substring(0, startOffset) + "var" + valText
-      .substring(startOffset + 3) + " }"
+    val text = "class a {" + valText.substring(0, startOffset) + "var" +
+      valText.substring(startOffset + 3) + " }"
     val dummyFile = createScalaFile(text, manager)
     val classDef = dummyFile.typeDefinitions(0)
     classDef.members(0).asInstanceOf[ScVariable]
@@ -1053,10 +1048,8 @@ object ScalaPsiElementFactory {
       manager: PsiManager,
       needsInferType: Boolean,
       body: String): ScFunction = {
-    val text = "class a {\n  " + methodFromSignatureText(
-      sign,
-      body,
-      needsInferType) + "\n}"
+    val text = "class a {\n  " +
+      methodFromSignatureText(sign, body, needsInferType) + "\n}"
     val dummyFile = PsiFileFactory
       .getInstance(manager.getProject)
       .createFileFromText(
@@ -1084,11 +1077,12 @@ object ScalaPsiElementFactory {
       substitutor: ScSubstitutor,
       manager: PsiManager,
       needsOverrideModifier: Boolean): ScTypeAlias = {
-    val text = "class a {" + getOverrideImplementTypeSign(
-      alias,
-      substitutor,
-      "this.type",
-      needsOverrideModifier) + "}"
+    val text = "class a {" +
+      getOverrideImplementTypeSign(
+        alias,
+        substitutor,
+        "this.type",
+        needsOverrideModifier) + "}"
     val dummyFile = PsiFileFactory
       .getInstance(manager.getProject)
       .createFileFromText(
@@ -1108,13 +1102,14 @@ object ScalaPsiElementFactory {
       needsOverrideModifier: Boolean,
       isVal: Boolean,
       needsInferType: Boolean): ScMember = {
-    val text = "class a {" + getOverrideImplementVariableSign(
-      variable,
-      substitutor,
-      "_",
-      needsOverrideModifier,
-      isVal,
-      needsInferType) + "}"
+    val text = "class a {" +
+      getOverrideImplementVariableSign(
+        variable,
+        substitutor,
+        "_",
+        needsOverrideModifier,
+        isVal,
+        needsInferType) + "}"
     val dummyFile = PsiFileFactory
       .getInstance(manager.getProject)
       .createFileFromText(
@@ -1254,13 +1249,14 @@ object ScalaPsiElementFactory {
             }
             val contextBoundText = typeParam.contextBound collect {
               case tp: ScType =>
-                " : " + ScType.canonicalText(
-                  ScTypeUtil.stripTypeArgs(substitutor.subst(tp)))
+                " : " +
+                  ScType.canonicalText(
+                    ScTypeUtil.stripTypeArgs(substitutor.subst(tp)))
             }
             val boundsText =
               (
-                lowerBoundText.toSeq ++ upperBoundText
-                  .toSeq ++ viewBoundText ++ contextBoundText
+                lowerBoundText.toSeq ++ upperBoundText.toSeq ++ viewBoundText ++
+                  contextBoundText
               ).mkString
             s"$variance${typeParam.name}$clauseText$boundsText"
           }
@@ -1284,29 +1280,28 @@ object ScalaPsiElementFactory {
                   val typeText = ScType.canonicalText(
                     substitutor.subst(x.getType(TypingContext.empty).getOrAny))
                   val arrow = ScalaPsiUtil.functionArrow(param.getProject)
-                  name + colon + (
-                    if (param.isCallByNameParameter)
-                      arrow
-                    else
-                      ""
-                  ) + typeText + (
-                    if (param.isRepeatedParameter)
-                      "*"
-                    else
-                      ""
-                  )
+                  name + colon +
+                    (if (param.isCallByNameParameter)
+                       arrow
+                     else
+                       "") + typeText +
+                    (if (param.isRepeatedParameter)
+                       "*"
+                     else
+                       "")
                 case _ =>
                   name
               }
             }
             val params = for (t <- paramClause.parameters) yield buildText(t)
-            builder ++= params.mkString(
-              if (paramClause.isImplicit)
-                "(implicit "
-              else
-                "(",
-              ", ",
-              ")")
+            builder ++=
+              params.mkString(
+                if (paramClause.isImplicit)
+                  "(implicit "
+                else
+                  "(",
+                ", ",
+                ")")
           }
         }
 
@@ -1317,9 +1312,9 @@ object ScalaPsiElementFactory {
               var text = ScType.canonicalText(scType)
               if (text == "_root_.java.lang.Object")
                 text = "AnyRef"
-              val needWhitespace = method.paramClauses.clauses.isEmpty && method
-                .typeParameters
-                .isEmpty && ScalaNamesUtil.isIdentifier(method.name + ":")
+              val needWhitespace = method.paramClauses.clauses.isEmpty &&
+                method.typeParameters.isEmpty &&
+                ScalaNamesUtil.isIdentifier(method.name + ":")
               val colon =
                 if (needWhitespace)
                   " : "
@@ -1459,9 +1454,8 @@ object ScalaPsiElementFactory {
           null
       }
     val overrideText =
-      if (needsOverride && (
-            modOwner == null || !modOwner.hasModifierProperty("override")
-          ))
+      if (needsOverride &&
+          (modOwner == null || !modOwner.hasModifierProperty("override")))
         "override "
       else
         ""

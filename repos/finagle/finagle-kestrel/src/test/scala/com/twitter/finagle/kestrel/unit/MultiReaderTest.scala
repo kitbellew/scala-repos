@@ -55,9 +55,10 @@ class MultiReaderTest
     val queueName = "the_queue"
     val queueNameBuf = Buf.Utf8(queueName)
     val N = 3
-    val handles = (0 until N) map { _ =>
-      Mockito.spy(new MockHandle)
-    }
+    val handles =
+      (0 until N) map { _ =>
+        Mockito.spy(new MockHandle)
+      }
     val va: Var[Return[ISet[ReadHandle]]] = Var.value(Return(handles.toSet))
   }
 
@@ -324,8 +325,7 @@ class MultiReaderTest
           ISet(
             (handle.messages ??),
             (handle.messages ??),
-            (handle.messages ??)) ==
-            ISet(ms(0), ms(1), ms(2)))
+            (handle.messages ??)) == ISet(ms(0), ms(1), ms(2)))
       }
     }
   }
@@ -406,12 +406,13 @@ class MultiReaderTest
       // 0, 3, 6 ...
       eventually {
         assert(
-          messages == sentMessages
-            .grouped(N)
-            .map {
-              _.head
-            }
-            .toSet)
+          messages ==
+            sentMessages
+              .grouped(N)
+              .map {
+                _.head
+              }
+              .toSet)
       }
       messages.clear()
 
@@ -420,13 +421,14 @@ class MultiReaderTest
       // 1, 2, 4, 5, ...
       eventually {
         assert(
-          messages == sentMessages
-            .grouped(N)
-            .map {
-              _.tail
-            }
-            .flatten
-            .toSet)
+          messages ==
+            sentMessages
+              .grouped(N)
+              .map {
+                _.tail
+              }
+              .flatten
+              .toSet)
       }
     }
   }
@@ -477,13 +479,14 @@ class MultiReaderTest
             val expectFirstN = N - hostIndex - 1
             eventually {
               assert(
-                messages == sentMessages
-                  .grouped(N)
-                  .map {
-                    _.take(expectFirstN)
-                  }
-                  .flatten
-                  .toSet)
+                messages ==
+                  sentMessages
+                    .grouped(N)
+                    .map {
+                      _.take(expectFirstN)
+                    }
+                    .flatten
+                    .toSet)
             }
         }
     }
@@ -601,12 +604,13 @@ class MultiReaderTest
       // 0, 3, 6 ...
       eventually {
         assert(
-          messages == sentMessages
-            .grouped(N)
-            .map {
-              _.head
-            }
-            .toSet)
+          messages ==
+            sentMessages
+              .grouped(N)
+              .map {
+                _.head
+              }
+              .toSet)
       }
       messages.clear()
 
@@ -617,13 +621,14 @@ class MultiReaderTest
       // 1, 2, 4, 5, ...
       eventually {
         assert(
-          messages == sentMessages
-            .grouped(N)
-            .map {
-              _.tail
-            }
-            .flatten
-            .toSet)
+          messages ==
+            sentMessages
+              .grouped(N)
+              .map {
+                _.tail
+              }
+              .flatten
+              .toSet)
       }
     }
   }
@@ -674,13 +679,14 @@ class MultiReaderTest
             val expectFirstN = N - hostIndex - 1
             eventually {
               assert(
-                messages == sentMessages
-                  .grouped(N)
-                  .map {
-                    _.take(expectFirstN)
-                  }
-                  .flatten
-                  .toSet)
+                messages ==
+                  sentMessages
+                    .grouped(N)
+                    .map {
+                      _.take(expectFirstN)
+                    }
+                    .flatten
+                    .toSet)
             }
         }
     }

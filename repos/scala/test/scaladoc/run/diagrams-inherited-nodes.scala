@@ -68,12 +68,8 @@ object Test extends ScaladocModelTest {
         t + ": " + TDiag.nodes + ".length == " + nodes)
       assert(
         TDiag.edges.map(_._2.length).sum == edges,
-        t + ": " + TDiag
-          .edges
-          .mkString(
-            "List(\n",
-            ",\n",
-            "\n)") + ".map(_._2.length).sum == " + edges)
+        t + ": " + TDiag.edges.mkString("List(\n", ",\n", "\n)") +
+          ".map(_._2.length).sum == " + edges)
     }
 
     checkDiagram("T1", 3, 2)

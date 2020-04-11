@@ -46,9 +46,8 @@ class AccessControlSpec extends Specification {
       hasCapability(
         userAPIKey,
         Set(
-          ReadPermission(
-            Path("/user"),
-            WrittenByAccount(userAccountId)))) must beTrue
+          ReadPermission(Path("/user"), WrittenByAccount(userAccountId)))) must
+        beTrue
       hasCapability(
         userAPIKey,
         Set(
@@ -58,9 +57,8 @@ class AccessControlSpec extends Specification {
       hasCapability(
         userAPIKey,
         Set(
-          ReadPermission(
-            Path("/other"),
-            WrittenByAccount(userAccountId)))) must beTrue
+          ReadPermission(Path("/other"), WrittenByAccount(userAccountId)))) must
+        beTrue
       hasCapability(
         userAPIKey,
         Set(
@@ -69,16 +67,12 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(userAccountId)))) must beTrue
       hasCapability(
         userAPIKey,
-        Set(
-          ReadPermission(
-            Path("/"),
-            WrittenByAccount(userAccountId)))) must beTrue
+        Set(ReadPermission(Path("/"), WrittenByAccount(userAccountId)))) must
+        beTrue
       hasCapability(
         userAPIKey,
-        Set(
-          ReducePermission(
-            Path("/"),
-            WrittenByAccount(userAccountId)))) must beTrue
+        Set(ReducePermission(Path("/"), WrittenByAccount(userAccountId)))) must
+        beTrue
     }
 
     "prevent user accounts from reading/reducing others data" in {
@@ -92,9 +86,8 @@ class AccessControlSpec extends Specification {
       hasCapability(
         userAPIKey,
         Set(
-          ReadPermission(
-            Path("/user"),
-            WrittenByAccount(otherAccountId)))) must beFalse
+          ReadPermission(Path("/user"), WrittenByAccount(otherAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
         Set(
@@ -115,16 +108,12 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(otherAccountId)))) must beFalse
       hasCapability(
         userAPIKey,
-        Set(
-          ReadPermission(
-            Path("/"),
-            WrittenByAccount(otherAccountId)))) must beFalse
+        Set(ReadPermission(Path("/"), WrittenByAccount(otherAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
-        Set(
-          ReducePermission(
-            Path("/"),
-            WrittenByAccount(otherAccountId)))) must beFalse
+        Set(ReducePermission(Path("/"), WrittenByAccount(otherAccountId)))) must
+        beFalse
     }
 
     "allow user accounts to write/delete any data under their path" in {
@@ -146,8 +135,8 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(userAccountId)))) must beTrue
       hasCapability(
         userAPIKey,
-        Set(
-          WritePermission(Path("/user"), WriteAs(otherAccountId)))) must beTrue
+        Set(WritePermission(Path("/user"), WriteAs(otherAccountId)))) must
+        beTrue
       hasCapability(
         userAPIKey,
         Set(
@@ -166,8 +155,8 @@ class AccessControlSpec extends Specification {
 
       hasCapability(
         userAPIKey,
-        Set(
-          WritePermission(Path("/other"), WriteAs(userAccountId)))) must beFalse
+        Set(WritePermission(Path("/other"), WriteAs(userAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
         Set(
@@ -176,10 +165,8 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(userAccountId)))) must beFalse
       hasCapability(
         userAPIKey,
-        Set(
-          WritePermission(
-            Path("/other"),
-            WriteAs(otherAccountId)))) must beFalse
+        Set(WritePermission(Path("/other"), WriteAs(otherAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
         Set(
@@ -202,9 +189,8 @@ class AccessControlSpec extends Specification {
       hasCapability(
         userAPIKey,
         Set(
-          ReadPermission(
-            Path("/user"),
-            WrittenByAccount(otherAccountId)))) must beFalse
+          ReadPermission(Path("/user"), WrittenByAccount(otherAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
         Set(
@@ -225,16 +211,12 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(otherAccountId)))) must beFalse
       hasCapability(
         userAPIKey,
-        Set(
-          ReadPermission(
-            Path("/"),
-            WrittenByAccount(otherAccountId)))) must beFalse
+        Set(ReadPermission(Path("/"), WrittenByAccount(otherAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
-        Set(
-          ReducePermission(
-            Path("/"),
-            WrittenByAccount(otherAccountId)))) must beFalse
+        Set(ReducePermission(Path("/"), WrittenByAccount(otherAccountId)))) must
+        beFalse
 
       val readReduceOther = Set[Permission](
         ReadPermission(Path("/other"), WrittenByAccount(otherAccountId)),
@@ -247,9 +229,8 @@ class AccessControlSpec extends Specification {
       hasCapability(
         userAPIKey,
         Set(
-          ReadPermission(
-            Path("/user"),
-            WrittenByAccount(otherAccountId)))) must beFalse
+          ReadPermission(Path("/user"), WrittenByAccount(otherAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
         Set(
@@ -270,16 +251,12 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(otherAccountId)))) must beTrue
       hasCapability(
         userAPIKey,
-        Set(
-          ReadPermission(
-            Path("/"),
-            WrittenByAccount(otherAccountId)))) must beFalse
+        Set(ReadPermission(Path("/"), WrittenByAccount(otherAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
-        Set(
-          ReducePermission(
-            Path("/"),
-            WrittenByAccount(otherAccountId)))) must beFalse
+        Set(ReducePermission(Path("/"), WrittenByAccount(otherAccountId)))) must
+        beFalse
     }
 
     "allow user accounts to write/delete data under another accounts path via a grant" in {
@@ -295,8 +272,8 @@ class AccessControlSpec extends Specification {
 
       hasCapability(
         userAPIKey,
-        Set(
-          WritePermission(Path("/other"), WriteAs(userAccountId)))) must beFalse
+        Set(WritePermission(Path("/other"), WriteAs(userAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
         Set(
@@ -305,10 +282,8 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(userAccountId)))) must beFalse
       hasCapability(
         userAPIKey,
-        Set(
-          WritePermission(
-            Path("/other"),
-            WriteAs(otherAccountId)))) must beFalse
+        Set(WritePermission(Path("/other"), WriteAs(otherAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
         Set(
@@ -334,8 +309,8 @@ class AccessControlSpec extends Specification {
 
       hasCapability(
         userAPIKey,
-        Set(
-          WritePermission(Path("/other"), WriteAs(userAccountId)))) must beTrue
+        Set(WritePermission(Path("/other"), WriteAs(userAccountId)))) must
+        beTrue
       hasCapability(
         userAPIKey,
         Set(
@@ -344,8 +319,8 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(userAccountId)))) must beTrue
       hasCapability(
         userAPIKey,
-        Set(
-          WritePermission(Path("/other"), WriteAs(otherAccountId)))) must beTrue
+        Set(WritePermission(Path("/other"), WriteAs(otherAccountId)))) must
+        beTrue
       hasCapability(
         userAPIKey,
         Set(
@@ -378,9 +353,8 @@ class AccessControlSpec extends Specification {
       hasCapability(
         invalidAPIKey,
         Set(
-          ReadPermission(
-            Path("/user"),
-            WrittenByAccount(userAccountId)))) must beFalse
+          ReadPermission(Path("/user"), WrittenByAccount(userAccountId)))) must
+        beFalse
       hasCapability(
         invalidAPIKey,
         Set(
@@ -389,8 +363,8 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(userAccountId)))) must beFalse
       hasCapability(
         invalidAPIKey,
-        Set(
-          WritePermission(Path("/user"), WriteAs(userAccountId)))) must beFalse
+        Set(WritePermission(Path("/user"), WriteAs(userAccountId)))) must
+        beFalse
       hasCapability(
         invalidAPIKey,
         Set(
@@ -436,8 +410,8 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(otherAccountId)))) must beTrue
       hasCapability(
         userAPIKey,
-        Set(
-          WritePermission(Path("/other"), WriteAs(otherAccountId)))) must beTrue
+        Set(WritePermission(Path("/other"), WriteAs(otherAccountId)))) must
+        beTrue
       hasCapability(
         userAPIKey,
         Set(
@@ -461,10 +435,8 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(otherAccountId)))) must beFalse
       hasCapability(
         userAPIKey,
-        Set(
-          WritePermission(
-            Path("/other"),
-            WriteAs(otherAccountId)))) must beFalse
+        Set(WritePermission(Path("/other"), WriteAs(otherAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
         Set(
@@ -516,10 +488,8 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(otherAccountId)))) must beFalse
       hasCapability(
         userAPIKey,
-        Set(
-          WritePermission(
-            Path("/other"),
-            WriteAs(otherAccountId)))) must beFalse
+        Set(WritePermission(Path("/other"), WriteAs(otherAccountId)))) must
+        beFalse
       hasCapability(
         userAPIKey,
         Set(
@@ -574,8 +544,8 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(otherAccountId)))) must beTrue
       hasCapability(
         user2APIKey,
-        Set(
-          WritePermission(Path("/other"), WriteAs(otherAccountId)))) must beTrue
+        Set(WritePermission(Path("/other"), WriteAs(otherAccountId)))) must
+        beTrue
       hasCapability(
         user2APIKey,
         Set(
@@ -599,10 +569,8 @@ class AccessControlSpec extends Specification {
             WrittenByAccount(otherAccountId)))) must beFalse
       hasCapability(
         user2APIKey,
-        Set(
-          WritePermission(
-            Path("/other"),
-            WriteAs(otherAccountId)))) must beFalse
+        Set(WritePermission(Path("/other"), WriteAs(otherAccountId)))) must
+        beFalse
       hasCapability(
         user2APIKey,
         Set(

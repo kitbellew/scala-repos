@@ -373,8 +373,8 @@ class CleanerTest extends JUnitSuite {
     for (group <- groups)
       assertTrue(
         "Relative offset greater than Int.MaxValue",
-        group.last.index.lastOffset - group.head.index.baseOffset <= Int
-          .MaxValue)
+        group.last.index.lastOffset - group.head.index.baseOffset <=
+          Int.MaxValue)
     checkSegmentOrder(groups)
 
   }

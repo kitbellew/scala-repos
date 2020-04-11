@@ -47,9 +47,8 @@ class InputFormatInfo(
   validate()
 
   override def toString: String = {
-    "InputFormatInfo " + super
-      .toString + " .. inputFormatClazz " + inputFormatClazz + ", " +
-      "path : " + path
+    "InputFormatInfo " + super.toString + " .. inputFormatClazz " +
+      inputFormatClazz + ", " + "path : " + path
   }
 
   override def hashCode(): Int = {
@@ -64,8 +63,7 @@ class InputFormatInfo(
     other match {
       case that: InputFormatInfo => {
         // not checking config - that should be fine, right ?
-        this.inputFormatClazz == that.inputFormatClazz &&
-        this.path == that.path
+        this.inputFormatClazz == that.inputFormatClazz && this.path == that.path
       }
       case _ =>
         false
@@ -93,8 +91,7 @@ class InputFormatInfo(
     } catch {
       case e: ClassNotFoundException => {
         throw new IllegalArgumentException(
-          "Specified inputformat " + inputFormatClazz +
-            " cannot be found ?",
+          "Specified inputformat " + inputFormatClazz + " cannot be found ?",
           e)
       }
     }
@@ -142,8 +139,9 @@ class InputFormatInfo(
 
   private def findPreferredLocations(): Set[SplitInfo] = {
     logDebug(
-      "mapreduceInputFormat : " + mapreduceInputFormat + ", mapredInputFormat : " +
-        mapredInputFormat + ", inputFormatClazz : " + inputFormatClazz)
+      "mapreduceInputFormat : " + mapreduceInputFormat +
+        ", mapredInputFormat : " + mapredInputFormat + ", inputFormatClazz : " +
+        inputFormatClazz)
     if (mapreduceInputFormat) {
       prefLocsFromMapreduceInputFormat()
     } else {

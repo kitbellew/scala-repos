@@ -75,8 +75,8 @@ private[util] trait StackTracing extends Any {
         val trace = e.getStackTrace
         val frames = (if (share.nonEmpty) {
                         val spare = share.reverseIterator
-                        val trimmed = trace
-                          .reverse dropWhile (spare.hasNext && spare.next == _)
+                        val trimmed = trace.reverse dropWhile
+                          (spare.hasNext && spare.next == _)
                         trimmed.reverse
                       } else
                         trace)

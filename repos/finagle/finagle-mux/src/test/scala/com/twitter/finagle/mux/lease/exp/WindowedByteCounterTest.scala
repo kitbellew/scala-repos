@@ -101,9 +101,9 @@ class WindowedByteCounterTest
         }
 
         assert(
-          counter.rate() == (
-            WindowedByteCounter.N.kilobytes
-          ).inBytes / WindowedByteCounter.W.inMilliseconds)
+          counter.rate() ==
+            (WindowedByteCounter.N.kilobytes).inBytes /
+            WindowedByteCounter.W.inMilliseconds)
     }
   }
 
@@ -120,9 +120,9 @@ class WindowedByteCounterTest
         }
 
         assert(
-          counter.rate() == (
-            WindowedByteCounter.N.kilobytes
-          ).inBytes / WindowedByteCounter.W.inMilliseconds)
+          counter.rate() ==
+            (WindowedByteCounter.N.kilobytes).inBytes /
+            WindowedByteCounter.W.inMilliseconds)
 
         for (i <- 1 to WindowedByteCounter.N) {
           fakePool.setSnapshot(
@@ -132,11 +132,10 @@ class WindowedByteCounterTest
         }
 
         assert(
-          counter.rate() == (
-            2 * (WindowedByteCounter.N.kilobytes).inBytes / WindowedByteCounter
-              .W
-              .inMilliseconds
-          ))
+          counter.rate() ==
+            (2 *
+              (WindowedByteCounter.N.kilobytes).inBytes /
+              WindowedByteCounter.W.inMilliseconds))
     }
   }
 
@@ -189,10 +188,9 @@ class WindowedByteCounterTest
         }
 
         assert(
-          counter.rate() == WindowedByteCounter
-            .N
-            .kilobytes
-            .inBytes / WindowedByteCounter.W.inMilliseconds)
+          counter.rate() ==
+            WindowedByteCounter.N.kilobytes.inBytes /
+            WindowedByteCounter.W.inMilliseconds)
     }
   }
 

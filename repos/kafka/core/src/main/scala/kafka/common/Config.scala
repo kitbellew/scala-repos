@@ -30,10 +30,12 @@ trait Config extends Logging {
       case Some(t) =>
         if (!t.equals(value))
           throw new InvalidConfigException(
-            prop + " " + value + " is illegal, contains a character other than ASCII alphanumerics, '.', '_' and '-'")
+            prop + " " + value +
+              " is illegal, contains a character other than ASCII alphanumerics, '.', '_' and '-'")
       case None =>
         throw new InvalidConfigException(
-          prop + " " + value + " is illegal, contains a character other than ASCII alphanumerics, '.', '_' and '-'")
+          prop + " " + value +
+            " is illegal, contains a character other than ASCII alphanumerics, '.', '_' and '-'")
     }
   }
 }

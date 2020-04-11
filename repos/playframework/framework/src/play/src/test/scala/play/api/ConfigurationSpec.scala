@@ -31,36 +31,9 @@ object ConfigurationSpec extends Specification {
 
     "be accessible as an entry set" in {
       val map = Map(exampleConfig.entrySet.toList: _*)
-      map.keySet must contain(
-        allOf(
-          "foo.bar1",
-          "foo.bar2",
-          "blah.0",
-          "blah.1",
-          "blah.2",
-          "blah.3",
-          "blah.4",
-          "blah2.blah3.blah4"))
-    }
-
-    "make all paths accessible" in {
-      exampleConfig.keys must contain(
-        allOf(
-          "foo.bar1",
-          "foo.bar2",
-          "blah.0",
-          "blah.1",
-          "blah.2",
-          "blah.3",
-          "blah.4",
-          "blah2.blah3.blah4"))
-    }
-
-    "make all sub keys accessible" in {
-      exampleConfig.subKeys must contain(allOf("foo", "blah", "blah2"))
-      exampleConfig.subKeys must not(
+      map.keySet must
         contain(
-          anyOf(
+          allOf(
             "foo.bar1",
             "foo.bar2",
             "blah.0",
@@ -68,7 +41,37 @@ object ConfigurationSpec extends Specification {
             "blah.2",
             "blah.3",
             "blah.4",
-            "blah2.blah3.blah4")))
+            "blah2.blah3.blah4"))
+    }
+
+    "make all paths accessible" in {
+      exampleConfig.keys must
+        contain(
+          allOf(
+            "foo.bar1",
+            "foo.bar2",
+            "blah.0",
+            "blah.1",
+            "blah.2",
+            "blah.3",
+            "blah.4",
+            "blah2.blah3.blah4"))
+    }
+
+    "make all sub keys accessible" in {
+      exampleConfig.subKeys must contain(allOf("foo", "blah", "blah2"))
+      exampleConfig.subKeys must
+        not(
+          contain(
+            anyOf(
+              "foo.bar1",
+              "foo.bar2",
+              "blah.0",
+              "blah.1",
+              "blah.2",
+              "blah.3",
+              "blah.4",
+              "blah2.blah3.blah4")))
     }
 
     "make all get accessible using scala" in {
@@ -76,8 +79,8 @@ object ConfigurationSpec extends Specification {
       exampleConfig.getIntSeq("blah.1").get must ===(Seq(1, 2, 3))
       exampleConfig.getDoubleSeq("blah.2").get must ===(Seq(1.1, 2.2, 3.3))
       exampleConfig.getLongSeq("blah.3").get must ===(Seq(1L, 2L, 3L))
-      exampleConfig.getStringSeq("blah.4").get must contain(
-        exactly("one", "two", "three"))
+      exampleConfig.getStringSeq("blah.4").get must
+        contain(exactly("one", "two", "three"))
     }
 
     "handle invalid and null configuration values" in {
@@ -139,12 +142,12 @@ object PlayConfigSpec extends Specification {
         config("foo.bar" -> null).get[Option[String]]("foo.bar") must beNone
       }
       "when set" in {
-        config("foo.bar" -> "bar")
-          .get[Option[String]]("foo.bar") must beSome("bar")
+        config("foo.bar" -> "bar").get[Option[String]]("foo.bar") must
+          beSome("bar")
       }
       "when undefined" in {
-        config()
-          .get[Option[String]]("foo.bar") must throwA[ConfigException.Missing]
+        config().get[Option[String]]("foo.bar") must
+          throwA[ConfigException.Missing]
       }
     }
     "support getting prototyped seqs" in {

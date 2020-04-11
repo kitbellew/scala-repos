@@ -206,16 +206,16 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
         s"Table description of table ${model.name.table}. Objects of this class serve as prototypes for rows in queries." + {
           val collidingTerms = columns.map(_.rawName) intersect scalaKeywords
           if (collidingTerms.nonEmpty)
-            "\nNOTE: The following names collided with Scala keywords and were escaped: " + collidingTerms
-              .mkString(", ")
+            "\nNOTE: The following names collided with Scala keywords and were escaped: " +
+              collidingTerms.mkString(", ")
           else
             ""
         } + {
-          val collidingTerms = columns
-            .map(_.rawName) intersect slickTableTermMembersNoArgs
+          val collidingTerms = columns.map(_.rawName) intersect
+            slickTableTermMembersNoArgs
           if (collidingTerms.nonEmpty)
-            "\nNOTE: The following names collided with Scala method names and were disambiguated: " + collidingTerms
-              .mkString(", ")
+            "\nNOTE: The following names collided with Scala method names and were disambiguated: " +
+              collidingTerms.mkString(", ")
           else
             ""
         }
@@ -351,8 +351,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       def rawName: String = model.name.toCamelCase.uncapitalize
       def doc: String =
-        "Database column " + model
-          .name + " " + model.options.map(_.toString).mkString(", ")
+        "Database column " + model.name + " " +
+          model.options.map(_.toString).mkString(", ")
     }
 
     /** Primary key generator virtual class */
@@ -479,15 +479,11 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       val dbName = model.name.getOrElse(table.model.name.table + "_INDEX_" + id)
       def rawName = disambiguateTerm("index" + id)
       def doc: String =
-        (
-          if (model.unique)
-            "Uniqueness "
-          else
-            ""
-        ) +
-          "Index over " + columns
-          .map(_.name)
-          .mkString("(", ",", ")") + s" (database name ${dbName})"
+        (if (model.unique)
+           "Uniqueness "
+         else
+           "") + "Index over " + columns.map(_.name).mkString("(", ",", ")") +
+          s" (database name ${dbName})"
     }
 
     /** Common interface for any kind of definition within the generated code */
@@ -524,18 +520,14 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     trait TermDef extends Def {
       override def docWithCode: Code = {
         val newdoc = doc +
-          (
-            if (scalaKeywords.contains(rawName))
-              s"\nNOTE: The name was escaped because it collided with a Scala keyword."
-            else
-              ""
-          ) +
-          (
-            if (slickTableTermMembersNoArgs.contains(rawName))
-              s"\nNOTE: The name was disambiguated because it collided with Slick's method Table#$rawName."
-            else
-              ""
-          )
+          (if (scalaKeywords.contains(rawName))
+             s"\nNOTE: The name was escaped because it collided with a Scala keyword."
+           else
+             "") +
+          (if (slickTableTermMembersNoArgs.contains(rawName))
+             s"\nNOTE: The name was disambiguated because it collided with Slick's method Table#$rawName."
+           else
+             "")
         codegen.docWithCode(newdoc, code)
       }
 
@@ -578,12 +570,10 @@ trait GeneratorHelpers[Code, TermName, TypeName] {
       .tail
       .foldLeft(lines.head) { (out, line) =>
         out + '\n' +
-          (
-            if (line.isEmpty)
-              line
-            else
-              "  " + line
-          )
+          (if (line.isEmpty)
+             line
+           else
+             "  " + line)
       }
   }
 

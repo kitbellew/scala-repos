@@ -60,64 +60,68 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
 
   "an accumulator" should {
     "be flattenable from a future of itself" in {
-      "for a successful future" in withMaterializer { m =>
-        val completable = new CompletableFuture[Accumulator[Int, Int]]()
+      "for a successful future" in
+        withMaterializer { m =>
+          val completable = new CompletableFuture[Accumulator[Int, Int]]()
 
-        val fAcc = Accumulator.flatten[Int, Int](completable, m)
-        completable complete sum
+          val fAcc = Accumulator.flatten[Int, Int](completable, m)
+          completable complete sum
 
-        await(fAcc.run(source, m)) must_== 6
-      }
-
-      "for a failed future" in withMaterializer { implicit m =>
-        val completable = new CompletableFuture[Accumulator[Int, Int]]()
-
-        val fAcc = Accumulator.flatten[Int, Int](completable, m)
-        completable.completeExceptionally(new RuntimeException("failed"))
-
-        await(fAcc.run(source, m)) must throwA[ExecutionException].like {
-          case ex =>
-            val cause = ex.getCause
-            cause.isInstanceOf[RuntimeException] must beTrue and (
-              cause.getMessage must_== "failed"
-            )
+          await(fAcc.run(source, m)) must_== 6
         }
-      }
 
-      "for a failed stream" in withMaterializer { implicit m =>
-        val completable = new CompletableFuture[Accumulator[Int, Int]]()
+      "for a failed future" in
+        withMaterializer { implicit m =>
+          val completable = new CompletableFuture[Accumulator[Int, Int]]()
 
-        val fAcc = Accumulator.flatten[Int, Int](completable, m)
-        completable complete sum
+          val fAcc = Accumulator.flatten[Int, Int](completable, m)
+          completable.completeExceptionally(new RuntimeException("failed"))
 
-        await(fAcc.run(errorSource, m)) must throwA[ExecutionException].like {
-          case ex =>
-            val cause = ex.getCause
-            cause.isInstanceOf[RuntimeException] must beTrue and (
-              cause.getMessage must_== "error"
-            )
+          await(fAcc.run(source, m)) must
+            throwA[ExecutionException].like {
+              case ex =>
+                val cause = ex.getCause
+                cause.isInstanceOf[RuntimeException] must beTrue and
+                  (cause.getMessage must_== "failed")
+            }
         }
-      }
+
+      "for a failed stream" in
+        withMaterializer { implicit m =>
+          val completable = new CompletableFuture[Accumulator[Int, Int]]()
+
+          val fAcc = Accumulator.flatten[Int, Int](completable, m)
+          completable complete sum
+
+          await(fAcc.run(errorSource, m)) must
+            throwA[ExecutionException].like {
+              case ex =>
+                val cause = ex.getCause
+                cause.isInstanceOf[RuntimeException] must beTrue and
+                  (cause.getMessage must_== "error")
+            }
+        }
     }
 
     "be compatible with Java accumulator" in {
-      "Java asScala" in withMaterializer { implicit m =>
-        val sink = sum
-          .toSink
-          .mapMaterializedValue(
-            new JFn[CompletionStage[Int], Future[Int]] {
-              def apply(f: CompletionStage[Int]): Future[Int] =
-                FutureConverters.toScala(f)
-            })
+      "Java asScala" in
+        withMaterializer { implicit m =>
+          val sink = sum
+            .toSink
+            .mapMaterializedValue(
+              new JFn[CompletionStage[Int], Future[Int]] {
+                def apply(f: CompletionStage[Int]): Future[Int] =
+                  FutureConverters.toScala(f)
+              })
 
-        sawait(
-          play
-            .api
-            .libs
-            .streams
-            .Accumulator(sink.asScala)
-            .run(source.asScala)) must_== 6
-      }
+          sawait(
+            play
+              .api
+              .libs
+              .streams
+              .Accumulator(sink.asScala)
+              .run(source.asScala)) must_== 6
+        }
     }
   }
 }

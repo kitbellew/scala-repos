@@ -27,39 +27,37 @@ import WebKeys._
 object PlaySettings {
 
   lazy val defaultJavaSettings = Seq[Setting[_]](
-    TwirlKeys
-      .templateImports ++= TemplateImports.defaultJavaTemplateImports.asScala,
+    TwirlKeys.templateImports ++=
+      TemplateImports.defaultJavaTemplateImports.asScala,
     RoutesKeys.routesImport ++= Seq("play.libs.F"))
 
   lazy val defaultScalaSettings = Seq[Setting[_]](
-    TwirlKeys
-      .templateImports ++= TemplateImports.defaultScalaTemplateImports.asScala)
+    TwirlKeys.templateImports ++=
+      TemplateImports.defaultScalaTemplateImports.asScala)
 
   /** Ask SBT to manage the classpath for the given configuration. */
   def manageClasspath(config: Configuration) =
-    managedClasspath in config <<= (classpathTypes in config, update) map {
-      (ct, report) =>
+    managedClasspath in config <<=
+      (classpathTypes in config, update) map { (ct, report) =>
         Classpaths.managedJars(config, ct, report)
-    }
+      }
 
   lazy val defaultSettings = Seq[Setting[_]](
     playPlugin := false,
     externalizeResources := true,
     javacOptions in (Compile, doc) := List("-encoding", "utf8"),
-    libraryDependencies <+= (playPlugin) { isPlugin =>
-      if (isPlugin) {
-        "com.typesafe.play" %% "play" % play
-          .core
-          .PlayVersion
-          .current % "provided"
-      } else {
-        "com.typesafe.play" %% "play-server" % play.core.PlayVersion.current
-      }
-    },
-    libraryDependencies += "com.typesafe.play" %% "play-test" % play
-      .core
-      .PlayVersion
-      .current % "test",
+    libraryDependencies <+=
+      (playPlugin) { isPlugin =>
+        if (isPlugin) {
+          "com.typesafe.play" %% "play" % play.core.PlayVersion.current %
+            "provided"
+        } else {
+          "com.typesafe.play" %% "play-server" % play.core.PlayVersion.current
+        }
+      },
+    libraryDependencies +=
+      "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current %
+        "test",
     ivyConfigurations += DocsApplication,
     playOmnidoc := !play.core.PlayVersion.current.endsWith("-SNAPSHOT"),
     playDocsName := {
@@ -68,32 +66,36 @@ object PlaySettings {
       else
         "play-docs"
     },
-    playDocsModule := Some(
-      "com.typesafe.play" %% playDocsName
-        .value % play.core.PlayVersion.current % DocsApplication.name),
+    playDocsModule :=
+      Some(
+        "com.typesafe.play" %% playDocsName.value %
+          play.core.PlayVersion.current % DocsApplication.name),
     libraryDependencies ++= playDocsModule.value.toSeq,
     manageClasspath(DocsApplication),
-    playDocsJar := (managedClasspath in DocsApplication)
-      .value
-      .files
-      .find(_.getName.startsWith(playDocsName.value)),
+    playDocsJar :=
+      (managedClasspath in DocsApplication)
+        .value
+        .files
+        .find(_.getName.startsWith(playDocsName.value)),
     parallelExecution in Test := false,
     fork in Test := true,
-    testOptions in Test += Tests.Argument(
-      TestFrameworks.Specs2,
-      "sequential",
-      "true",
-      "junitxml",
-      "console"),
-    testOptions in Test += Tests.Argument(
-      TestFrameworks.JUnit,
-      "--ignore-runners=org.specs2.runner.JUnitRunner"),
+    testOptions in Test +=
+      Tests.Argument(
+        TestFrameworks.Specs2,
+        "sequential",
+        "true",
+        "junitxml",
+        "console"),
+    testOptions in Test +=
+      Tests.Argument(
+        TestFrameworks.JUnit,
+        "--ignore-runners=org.specs2.runner.JUnitRunner"),
     // Adds app directory's source files to continuous hot reloading
-    watchSources <++= (
-      sourceDirectory in Compile,
-      sourceDirectory in Assets) map { (sources, assets) =>
-      (sources ** "*" --- assets ** "*").get
-    },
+    watchSources <++=
+      (sourceDirectory in Compile, sourceDirectory in Assets) map {
+        (sources, assets) =>
+          (sources ** "*" --- assets ** "*").get
+      },
     commands ++= {
       import PlayCommands._
       import PlayRun._
@@ -120,9 +122,10 @@ object PlaySettings {
     // all dependencies from outside the project (all dependency jars)
     playDependencyClasspath <<= externalDependencyClasspath in Runtime,
     // all user classes, in this project and any other subprojects that it depends on
-    playReloaderClasspath <<= Classpaths.concatDistinct(
-      exportedProducts in Runtime,
-      internalDependencyClasspath in Runtime),
+    playReloaderClasspath <<=
+      Classpaths.concatDistinct(
+        exportedProducts in Runtime,
+        internalDependencyClasspath in Runtime),
     // filter out asset directories from the classpath (supports sbt-web 1.0 and 1.1)
     playReloaderClasspath ~= {
       _.filter(_.get(WebKeys.webModulesLib.key).isEmpty)
@@ -139,8 +142,9 @@ object PlaySettings {
       (dirs * "routes").get ++ (dirs * "*.routes").get
     },
     playMonitoredFiles <<= PlayCommands.playMonitoredFilesTask,
-    fileWatchService := FileWatchService
-      .defaultWatchService(target.value, pollInterval.value, sLog.value),
+    fileWatchService :=
+      FileWatchService
+        .defaultWatchService(target.value, pollInterval.value, sLog.value),
     playDefaultPort := 9000,
     playDefaultAddress := "0.0.0.0",
     // Default hooks
@@ -173,9 +177,10 @@ object PlaySettings {
       playPackageAssets.value -> ("lib/" + jarName)
     },
     // Assets for testing
-    public in TestAssets := (public in TestAssets).value / assetsPrefix.value,
-    fullClasspath in Test += Attributed
-      .blank((assets in TestAssets).value.getParentFile),
+    public in TestAssets :=
+      (public in TestAssets).value / assetsPrefix.value,
+    fullClasspath in Test +=
+      Attributed.blank((assets in TestAssets).value.getParentFile),
     // Settings
     devSettings := Nil,
     // Native packaging
@@ -198,40 +203,41 @@ object PlaySettings {
         scriptClasspath.value
     },
     // taskDyn ensures we only build the sans externalised jar if we need to
-    scriptClasspathOrdering <<= Def.taskDyn {
-      val oldValue = scriptClasspathOrdering.value
-      if (externalizeResources.value) {
-        Def.task {
-          // Filter out the regular jar
-          val jar = (packageBin in Runtime).value
-          val jarSansExternalized = (playJarSansExternalized in Runtime).value
-          oldValue.map {
-            case (packageBinJar, _) if jar == packageBinJar =>
-              val id = projectID.value
-              val art = (artifact in Compile in playJarSansExternalized).value
-              val jarName = JavaAppPackaging.makeJarName(
-                id.organization,
-                id.name,
-                id.revision,
-                art.name,
-                art.classifier)
-              jarSansExternalized -> ("lib/" + jarName)
-            case other =>
-              other
+    scriptClasspathOrdering <<=
+      Def.taskDyn {
+        val oldValue = scriptClasspathOrdering.value
+        if (externalizeResources.value) {
+          Def.task {
+            // Filter out the regular jar
+            val jar = (packageBin in Runtime).value
+            val jarSansExternalized = (playJarSansExternalized in Runtime).value
+            oldValue.map {
+              case (packageBinJar, _) if jar == packageBinJar =>
+                val id = projectID.value
+                val art = (artifact in Compile in playJarSansExternalized).value
+                val jarName = JavaAppPackaging.makeJarName(
+                  id.organization,
+                  id.name,
+                  id.revision,
+                  art.name,
+                  art.classifier)
+                jarSansExternalized -> ("lib/" + jarName)
+              case other =>
+                other
+            }
           }
+        } else {
+          Def.task(oldValue)
         }
-      } else {
-        Def.task(oldValue)
-      }
-    },
+      },
     mappings in Universal ++= {
       val docDirectory = (doc in Compile).value
       val docDirectoryLen = docDirectory.getCanonicalPath.length
       val pathFinder = docDirectory ** "*"
       pathFinder.get map { docFile: File =>
-        docFile -> (
-          "share/doc/api/" + docFile.getCanonicalPath.substring(docDirectoryLen)
-        )
+        docFile ->
+          ("share/doc/api/" +
+            docFile.getCanonicalPath.substring(docDirectoryLen))
       }
     },
     mappings in Universal ++= {
@@ -241,7 +247,8 @@ object PlaySettings {
       }
     },
     // Adds the Play application directory to the command line args passed to Play
-    bashScriptExtraDefines += "addJava \"-Duser.dir=$(realpath \"$(cd \"${app_home}/..\"; pwd -P)\"  $(is_cygwin && echo \"fix\"))\"\n",
+    bashScriptExtraDefines +=
+      "addJava \"-Duser.dir=$(realpath \"$(cd \"${app_home}/..\"; pwd -P)\"  $(is_cygwin && echo \"fix\"))\"\n",
     generateSecret <<= ApplicationSecretGenerator.generateSecretTask,
     updateSecret <<= ApplicationSecretGenerator.updateSecretTask
   ) ++ inConfig(Compile)(externalizedSettings)
@@ -252,32 +259,33 @@ object PlaySettings {
   private def externalizedSettings: Seq[Setting[_]] =
     Defaults.packageTaskSettings(
       playJarSansExternalized,
-      mappings in playJarSansExternalized) ++ Seq(
-      playExternalizedResources := {
-        val rdirs = unmanagedResourceDirectories.value
-        (unmanagedResources.value --- rdirs) pair (relativeTo(rdirs) | flat)
-      },
-      mappings in playJarSansExternalized := {
-        // packageBin mappings have all the copied resources from the classes directory
-        // so we need to get the copied resources, and map the source files to the destination files,
-        // so we can then exclude the destination files
-        val packageBinMappings = (mappings in packageBin).value
-        val externalized = playExternalizedResources.value.map(_._1).toSet
-        val copied = copyResources.value
-        val toExclude =
-          copied
-            .collect {
-              case (source, dest) if externalized(source) =>
-                dest
-            }
-            .toSet
-        packageBinMappings.filterNot {
-          case (file, _) =>
-            toExclude(file)
-        }
-      },
-      artifactClassifier in playJarSansExternalized := Option(
-        "sans-externalized")
-    )
+      mappings in playJarSansExternalized) ++
+      Seq(
+        playExternalizedResources := {
+          val rdirs = unmanagedResourceDirectories.value
+          (unmanagedResources.value --- rdirs) pair (relativeTo(rdirs) | flat)
+        },
+        mappings in playJarSansExternalized := {
+          // packageBin mappings have all the copied resources from the classes directory
+          // so we need to get the copied resources, and map the source files to the destination files,
+          // so we can then exclude the destination files
+          val packageBinMappings = (mappings in packageBin).value
+          val externalized = playExternalizedResources.value.map(_._1).toSet
+          val copied = copyResources.value
+          val toExclude =
+            copied
+              .collect {
+                case (source, dest) if externalized(source) =>
+                  dest
+              }
+              .toSet
+          packageBinMappings.filterNot {
+            case (file, _) =>
+              toExclude(file)
+          }
+        },
+        artifactClassifier in playJarSansExternalized :=
+          Option("sans-externalized")
+      )
 
 }

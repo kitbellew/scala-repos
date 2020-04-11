@@ -92,8 +92,8 @@ abstract class HiveComparisonTest
   /** The local directory with cached golden answer will be stored. */
   protected val answerCache =
     new File(
-      "src" + File.separator + "test" +
-        File.separator + "resources" + File.separator + "golden")
+      "src" + File.separator + "test" + File.separator + "resources" +
+        File.separator + "golden")
   if (!answerCache.exists) {
     answerCache.mkdir()
   }
@@ -409,12 +409,11 @@ abstract class HiveComparisonTest
                       // from Seq("").
                       stringToFile(
                         cachedAnswerFile,
-                        answer.mkString("\n") + (
-                          if (answer.nonEmpty)
-                            "\n"
-                          else
-                            ""
-                        ))
+                        answer.mkString("\n") +
+                          (if (answer.nonEmpty)
+                             "\n"
+                           else
+                             ""))
                       answer
                     } catch {
                       case e: Exception =>

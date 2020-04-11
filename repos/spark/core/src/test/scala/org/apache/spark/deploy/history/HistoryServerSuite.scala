@@ -107,26 +107,32 @@ class HistoryServerSuite
     "running app list json" -> "applications?status=running",
     "minDate app list json" -> "applications?minDate=2015-02-10",
     "maxDate app list json" -> "applications?maxDate=2015-02-10",
-    "maxDate2 app list json" -> "applications?maxDate=2015-02-03T16:42:40.000GMT",
+    "maxDate2 app list json" ->
+      "applications?maxDate=2015-02-03T16:42:40.000GMT",
     "one app json" -> "applications/local-1422981780767",
     "one app multi-attempt json" -> "applications/local-1426533911241",
     "job list json" -> "applications/local-1422981780767/jobs",
-    "job list from multi-attempt app json(1)" -> "applications/local-1426533911241/1/jobs",
-    "job list from multi-attempt app json(2)" -> "applications/local-1426533911241/2/jobs",
+    "job list from multi-attempt app json(1)" ->
+      "applications/local-1426533911241/1/jobs",
+    "job list from multi-attempt app json(2)" ->
+      "applications/local-1426533911241/2/jobs",
     "one job json" -> "applications/local-1422981780767/jobs/0",
-    "succeeded job list json" -> "applications/local-1422981780767/jobs?status=succeeded",
+    "succeeded job list json" ->
+      "applications/local-1422981780767/jobs?status=succeeded",
     "succeeded&failed job list json" ->
       "applications/local-1422981780767/jobs?status=succeeded&status=failed",
     "executor list json" -> "applications/local-1422981780767/executors",
     "stage list json" -> "applications/local-1422981780767/stages",
-    "complete stage list json" -> "applications/local-1422981780767/stages?status=complete",
-    "failed stage list json" -> "applications/local-1422981780767/stages?status=failed",
+    "complete stage list json" ->
+      "applications/local-1422981780767/stages?status=complete",
+    "failed stage list json" ->
+      "applications/local-1422981780767/stages?status=failed",
     "one stage json" -> "applications/local-1422981780767/stages/1",
     "one stage attempt json" -> "applications/local-1422981780767/stages/1/0",
-    "stage task summary w shuffle write"
-      -> "applications/local-1430917381534/stages/0/0/taskSummary",
-    "stage task summary w shuffle read"
-      -> "applications/local-1430917381534/stages/1/0/taskSummary",
+    "stage task summary w shuffle write" ->
+      "applications/local-1430917381534/stages/0/0/taskSummary",
+    "stage task summary w shuffle read" ->
+      "applications/local-1430917381534/stages/1/0/taskSummary",
     "stage task summary w/ custom quantiles" ->
       "applications/local-1430917381534/stages/0/0/taskSummary?quantiles=0.01,0.5,0.99",
     "stage task list" -> "applications/local-1430917381534/stages/0/0/taskList",
@@ -138,8 +144,10 @@ class HistoryServerSuite
       "applications/local-1430917381534/stages/0/0/taskList?sortBy=-runtime",
     "stage task list w/ sortBy short names: runtime" ->
       "applications/local-1430917381534/stages/0/0/taskList?sortBy=runtime",
-    "stage list with accumulable json" -> "applications/local-1426533911241/1/stages",
-    "stage with accumulable json" -> "applications/local-1426533911241/1/stages/0/0",
+    "stage list with accumulable json" ->
+      "applications/local-1426533911241/1/stages",
+    "stage with accumulable json" ->
+      "applications/local-1426533911241/1/stages/0/0",
     "stage task list from multi-attempt app json(1)" ->
       "applications/local-1426533911241/1/stages/0/0/taskList",
     "stage task list from multi-attempt app json(2)" ->
@@ -257,8 +265,8 @@ class HistoryServerSuite
     val badStageAttemptId = getContentAndCode(
       "applications/local-1422981780767/stages/1/1")
     badStageAttemptId._1 should be(HttpServletResponse.SC_NOT_FOUND)
-    badStageAttemptId
-      ._3 should be(Some("unknown attempt for stage 1.  Found attempts: [0]"))
+    badStageAttemptId._3 should
+      be(Some("unknown attempt for stage 1.  Found attempts: [0]"))
 
     val badStageId2 = getContentAndCode(
       "applications/local-1422981780767/stages/flimflam")
@@ -268,10 +276,11 @@ class HistoryServerSuite
     val badQuantiles = getContentAndCode(
       "applications/local-1430917381534/stages/0/0/taskSummary?quantiles=foo,0.1")
     badQuantiles._1 should be(HttpServletResponse.SC_BAD_REQUEST)
-    badQuantiles._3 should be(
-      Some(
-        "Bad value for parameter \"quantiles\".  Expected a double, " +
-          "got \"foo\""))
+    badQuantiles._3 should
+      be(
+        Some(
+          "Bad value for parameter \"quantiles\".  Expected a double, " +
+            "got \"foo\""))
 
     getContentAndCode("foobar")._1 should be(HttpServletResponse.SC_NOT_FOUND)
   }

@@ -99,44 +99,46 @@ abstract class StatsSampleSpec
   "The stats sample" must {
 
     //#startup-cluster
-    "illustrate how to startup cluster" in within(15 seconds) {
-      Cluster(system).subscribe(testActor, classOf[MemberUp])
-      expectMsgClass(classOf[CurrentClusterState])
+    "illustrate how to startup cluster" in
+      within(15 seconds) {
+        Cluster(system).subscribe(testActor, classOf[MemberUp])
+        expectMsgClass(classOf[CurrentClusterState])
 
-      //#addresses
-      val firstAddress = node(first).address
-      val secondAddress = node(second).address
-      val thirdAddress = node(third).address
-      //#addresses
+        //#addresses
+        val firstAddress = node(first).address
+        val secondAddress = node(second).address
+        val thirdAddress = node(third).address
+        //#addresses
 
-      //#join
-      Cluster(system) join firstAddress
-      //#join
+        //#join
+        Cluster(system) join firstAddress
+        //#join
 
-      system.actorOf(Props[StatsWorker], "statsWorker")
-      system.actorOf(Props[StatsService], "statsService")
+        system.actorOf(Props[StatsWorker], "statsWorker")
+        system.actorOf(Props[StatsService], "statsService")
 
-      receiveN(3)
-        .collect {
-          case MemberUp(m) =>
-            m.address
-        }
-        .toSet should be(Set(firstAddress, secondAddress, thirdAddress))
+        receiveN(3)
+          .collect {
+            case MemberUp(m) =>
+              m.address
+          }
+          .toSet should be(Set(firstAddress, secondAddress, thirdAddress))
 
-      Cluster(system).unsubscribe(testActor)
+        Cluster(system).unsubscribe(testActor)
 
-      testConductor.enter("all-up")
-    }
+        testConductor.enter("all-up")
+      }
     //#startup-cluster
 
     //#test-statsService
-    "show usage of the statsService from one node" in within(15 seconds) {
-      runOn(second) {
-        assertServiceOk()
-      }
+    "show usage of the statsService from one node" in
+      within(15 seconds) {
+        runOn(second) {
+          assertServiceOk()
+        }
 
-      testConductor.enter("done-2")
-    }
+        testConductor.enter("done-2")
+      }
 
     def assertServiceOk(): Unit = {
       val service = system.actorSelection(node(third) / "user" / "statsService")
@@ -144,17 +146,18 @@ abstract class StatsSampleSpec
       // first attempts might fail because worker actors not started yet
       awaitAssert {
         service ! StatsJob("this is the text that will be analyzed")
-        expectMsgType[StatsResult](1.second)
-          .meanWordLength should be(3.875 +- 0.001)
+        expectMsgType[StatsResult](1.second).meanWordLength should
+          be(3.875 +- 0.001)
       }
 
     }
     //#test-statsService
 
-    "show usage of the statsService from all nodes" in within(15 seconds) {
-      assertServiceOk()
-      testConductor.enter("done-3")
-    }
+    "show usage of the statsService from all nodes" in
+      within(15 seconds) {
+        assertServiceOk()
+        testConductor.enter("done-3")
+      }
 
   }
 

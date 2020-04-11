@@ -41,14 +41,12 @@ final class Api(
   private def authenticateUser(
       usernameOrEmail: String,
       password: String): Option[User] =
-    (
-      emailAddress.validate(usernameOrEmail) match {
-        case Some(email) =>
-          UserRepo.authenticateByEmail(email, password)
-        case None =>
-          UserRepo.authenticateById(User normalize usernameOrEmail, password)
-      }
-    ) awaitSeconds 2
+    (emailAddress.validate(usernameOrEmail) match {
+      case Some(email) =>
+        UserRepo.authenticateByEmail(email, password)
+      case None =>
+        UserRepo.authenticateById(User normalize usernameOrEmail, password)
+    }) awaitSeconds 2
 
   def restoreUser(req: RequestHeader): Fu[Option[FingerprintedUser]] =
     firewall accepts req flatMap {
@@ -110,8 +108,8 @@ final class Api(
               "user",
               BSONDocument(
                 field -> BSONDocument("$in" -> values),
-                "user" -> BSONDocument("$ne" -> userId))
-                .some) map lila.db.BSON.asStrings
+                "user" -> BSONDocument("$ne" -> userId)).some) map
+            lila.db.BSON.asStrings
       }
 
   def recentUserIdsByFingerprint = recentUserIdsByField("fp") _
@@ -126,8 +124,8 @@ final class Api(
         "user",
         BSONDocument(
           field -> value,
-          "date" -> BSONDocument("$gt" -> DateTime.now.minusYears(1)))
-          .some) map lila.db.BSON.asStrings
+          "date" -> BSONDocument("$gt" -> DateTime.now.minusYears(1))).some) map
+      lila.db.BSON.asStrings
 }
 
 object Api {

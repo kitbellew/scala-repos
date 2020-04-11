@@ -217,9 +217,10 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
 
     private var data: Map[(Path, Version), Record] = data0 map {
       case (p, (r, auth)) =>
-        (p, Version.Current) -> r.fold(
-          BinaryRecord(_, auth, newVersion),
-          JsonRecord(_, auth, newVersion))
+        (p, Version.Current) ->
+          r.fold(
+            BinaryRecord(_, auth, newVersion),
+            JsonRecord(_, auth, newVersion))
     }
 
     def toResource(record: Record): M[Resource] =
@@ -237,12 +238,10 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
         val path = key._1
         appendTo match {
           case Some(record @ BinaryRecord(resource, uuid)) =>
-            acc + ((path, Version.Archived(uuid)) -> record) + (
-              (path, Version.Current) -> JsonRecord(
-                Vector(values: _*),
-                writeAs,
-                newVersion)
-            )
+            acc +
+              ((path, Version.Archived(uuid)) -> record) +
+              ((path, Version.Current) ->
+                JsonRecord(Vector(values: _*), writeAs, newVersion))
 
           case Some(rec @ JsonRecord(resource, _)) =>
             //TODO: fix the ugly
@@ -328,33 +327,30 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
                           .resource
                           .append(NIHDB.Batch(0, records.map(_.value)))
                           .unsafePerformIO
-                        acc + (
-                          (
-                            if (acc.contains(currentKey))
+                        acc +
+                          ((if (acc.contains(currentKey))
                               currentKey
                             else
-                              archiveKey
-                          ) -> rec
-                        )
+                              archiveKey) -> rec)
 
                       case record =>
                         // replace when id is not recognized, or when record is binary
-                        acc + (
-                          (path, Version.Archived(record.versionId)) -> record
-                        ) + (
-                          currentKey -> JsonRecord(
-                            Vector(records.map(_.value): _*),
-                            writeAs,
-                            id)
-                        )
+                        acc +
+                          ((path, Version.Archived(record.versionId)) ->
+                            record) +
+                          (currentKey ->
+                            JsonRecord(
+                              Vector(records.map(_.value): _*),
+                              writeAs,
+                              id))
                     } getOrElse {
                       // start a new current version
-                      acc + (
-                        currentKey -> JsonRecord(
-                          Vector(records.map(_.value): _*),
-                          writeAs,
-                          id)
-                      )
+                      acc +
+                        (currentKey ->
+                          JsonRecord(
+                            Vector(records.map(_.value): _*),
+                            writeAs,
+                            id))
                     }
 
                   case (
@@ -384,10 +380,11 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
                     sys.error("todo")
 
                   case (acc, _: ArchiveMessage) =>
-                    acc ++ acc
-                      .get(currentKey)
-                      .map(record =>
-                        (path, Version.Archived(record.versionId)) -> record)
+                    acc ++
+                      acc
+                        .get(currentKey)
+                        .map(record =>
+                          (path, Version.Archived(record.versionId)) -> record)
                 }
           }
       }

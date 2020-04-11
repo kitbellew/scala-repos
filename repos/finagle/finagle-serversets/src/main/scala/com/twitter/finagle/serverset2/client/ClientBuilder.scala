@@ -44,7 +44,8 @@ private[client] case class ClientConfig(
           Some("%s=%s".format(k, v))
         case _ =>
           None
-      } mkString (", "))
+      } mkString
+        (", "))
   }
 }
 

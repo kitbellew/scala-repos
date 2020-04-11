@@ -83,9 +83,10 @@ private class LeadershipCoordinatorActor(var whenLeaderActors: Set[ActorRef])
         case WhenLeaderActor.Stop =>
           whenLeaderActors.foreach(_ ! Stop)
           ackStartRefs.foreach { ackStartRef =>
-            ackStartRef ! Status.Failure(
-              new IllegalStateException(
-                s"Stopped while still preparing to start ($self)"))
+            ackStartRef !
+              Status.Failure(
+                new IllegalStateException(
+                  s"Stopped while still preparing to start ($self)"))
           }
           context.become(suspended)
       }

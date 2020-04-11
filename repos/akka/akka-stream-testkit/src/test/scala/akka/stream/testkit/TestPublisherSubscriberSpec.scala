@@ -20,72 +20,76 @@ class TestPublisherSubscriberSpec extends AkkaSpec {
 
   "TestPublisher and TestSubscriber" must {
 
-    "have all events accessible from manual probes" in assertAllStagesStopped {
-      val upstream = TestPublisher.manualProbe[Int]()
-      val downstream = TestSubscriber.manualProbe[Int]()
-      Source
-        .fromPublisher(upstream)
-        .runWith(Sink.asPublisher(false))(materializer)
-        .subscribe(downstream)
+    "have all events accessible from manual probes" in
+      assertAllStagesStopped {
+        val upstream = TestPublisher.manualProbe[Int]()
+        val downstream = TestSubscriber.manualProbe[Int]()
+        Source
+          .fromPublisher(upstream)
+          .runWith(Sink.asPublisher(false))(materializer)
+          .subscribe(downstream)
 
-      val upstreamSubscription = upstream.expectSubscription()
-      val downstreamSubscription: Subscription = downstream.expectEventPF {
-        case OnSubscribe(sub) ⇒
-          sub
+        val upstreamSubscription = upstream.expectSubscription()
+        val downstreamSubscription: Subscription = downstream.expectEventPF {
+          case OnSubscribe(sub) ⇒
+            sub
+        }
+
+        upstreamSubscription.sendNext(1)
+        downstreamSubscription.request(1)
+        upstream.expectEventPF {
+          case RequestMore(_, e) ⇒
+            e
+        } should ===(1)
+        downstream.expectEventPF {
+          case OnNext(e) ⇒
+            e
+        } should ===(1)
+
+        upstreamSubscription.sendNext(1)
+        downstreamSubscription.request(1)
+        downstream.expectNextPF[Int] {
+          case e: Int ⇒
+            e
+        } should ===(1)
+
+        upstreamSubscription.sendComplete()
+        downstream.expectEventPF {
+          case OnComplete ⇒
+          case _ ⇒
+            fail()
+        }
       }
 
-      upstreamSubscription.sendNext(1)
-      downstreamSubscription.request(1)
-      upstream.expectEventPF {
-        case RequestMore(_, e) ⇒
-          e
-      } should ===(1)
-      downstream.expectEventPF {
-        case OnNext(e) ⇒
-          e
-      } should ===(1)
+    "handle gracefully partial function that is not suitable" in
+      assertAllStagesStopped {
+        val upstream = TestPublisher.manualProbe[Int]()
+        val downstream = TestSubscriber.manualProbe[Int]()
+        Source
+          .fromPublisher(upstream)
+          .runWith(Sink.asPublisher(false))(materializer)
+          .subscribe(downstream)
+        val upstreamSubscription = upstream.expectSubscription()
+        val downstreamSubscription: Subscription = downstream.expectEventPF {
+          case OnSubscribe(sub) ⇒
+            sub
+        }
 
-      upstreamSubscription.sendNext(1)
-      downstreamSubscription.request(1)
-      downstream.expectNextPF[Int] {
-        case e: Int ⇒
-          e
-      } should ===(1)
+        upstreamSubscription.sendNext(1)
+        downstreamSubscription.request(1)
+        an[AssertionError] should be thrownBy
+          upstream.expectEventPF {
+            case Subscribe(e) ⇒
+              e
+          }
+        an[AssertionError] should be thrownBy
+          downstream.expectNextPF[String] {
+            case e: String ⇒
+              e
+          }
 
-      upstreamSubscription.sendComplete()
-      downstream.expectEventPF {
-        case OnComplete ⇒
-        case _ ⇒
-          fail()
+        upstreamSubscription.sendComplete()
       }
-    }
-
-    "handle gracefully partial function that is not suitable" in assertAllStagesStopped {
-      val upstream = TestPublisher.manualProbe[Int]()
-      val downstream = TestSubscriber.manualProbe[Int]()
-      Source
-        .fromPublisher(upstream)
-        .runWith(Sink.asPublisher(false))(materializer)
-        .subscribe(downstream)
-      val upstreamSubscription = upstream.expectSubscription()
-      val downstreamSubscription: Subscription = downstream.expectEventPF {
-        case OnSubscribe(sub) ⇒
-          sub
-      }
-
-      upstreamSubscription.sendNext(1)
-      downstreamSubscription.request(1)
-      an[AssertionError] should be thrownBy upstream.expectEventPF {
-        case Subscribe(e) ⇒
-          e
-      }
-      an[AssertionError] should be thrownBy downstream.expectNextPF[String] {
-        case e: String ⇒
-          e
-      }
-
-      upstreamSubscription.sendComplete()
-    }
 
   }
 }

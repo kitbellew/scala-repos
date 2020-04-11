@@ -122,8 +122,8 @@ case class Filter(condition: Expression, child: SparkPlan)
   }
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" ->
+      SQLMetrics.createLongMetric(sparkContext, "number of output rows"))
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
     child.asInstanceOf[CodegenSupport].upstreams()
@@ -249,8 +249,8 @@ case class Range(
     with CodegenSupport {
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" ->
+      SQLMetrics.createLongMetric(sparkContext, "number of output rows"))
 
   // output attributes should not affect the results
   override lazy val cleanArgs: Seq[Any] = Seq(
@@ -368,8 +368,8 @@ case class Range(
           }
         val safePartitionStart = getSafeMargin(partitionStart)
         val safePartitionEnd = getSafeMargin(partitionEnd)
-        val rowSize = UnsafeRow.calculateBitSetWidthInBytes(1) + LongType
-          .defaultSize
+        val rowSize = UnsafeRow.calculateBitSetWidthInBytes(1) +
+          LongType.defaultSize
         val unsafeRow = UnsafeRow.createFromByteArray(rowSize, 1)
 
         new Iterator[InternalRow] {

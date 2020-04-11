@@ -94,12 +94,13 @@ class EventServiceSpec
           Some(testAccount.accountId),
           batch = false)(testValue)
 
-      result.copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(OK, _), _, Some(_), _),
-              Ingest(_, _, _, values, _, _, _) :: Nil) =>
-          values must contain(testValue).only
-      }
+      result.copoint must
+        beLike {
+          case (
+                HttpResponse(HttpStatus(OK, _), _, Some(_), _),
+                Ingest(_, _, _, values, _, _, _) :: Nil) =>
+            values must contain(testValue).only
+        }
     }
 
     "track event with valid API key at dot-prefixed path" in {
@@ -111,12 +112,13 @@ class EventServiceSpec
           Some(testAccount.accountId),
           batch = false)(testValue)
 
-      result.copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(OK, _), _, Some(_), _),
-              Ingest(_, _, _, values, _, _, _) :: Nil) =>
-          values must contain(testValue).only
-      }
+      result.copoint must
+        beLike {
+          case (
+                HttpResponse(HttpStatus(OK, _), _, Some(_), _),
+                Ingest(_, _, _, values, _, _, _) :: Nil) =>
+            values must contain(testValue).only
+        }
     }
 
     "expand top-level arrays" in {
@@ -134,12 +136,13 @@ class EventServiceSpec
           JArray(t1, t2, t3)
         }
 
-      result.copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(OK, _), _, Some(_), _),
-              Ingest(_, _, _, values, _, _, _) :: Nil) =>
-          values must containAllOf(t1 :: t2 :: t3 :: Nil).only
-      }
+      result.copoint must
+        beLike {
+          case (
+                HttpResponse(HttpStatus(OK, _), _, Some(_), _),
+                Ingest(_, _, _, values, _, _, _) :: Nil) =>
+            values must containAllOf(t1 :: t2 :: t3 :: Nil).only
+        }
     }
 
     "not expand top-level arrays with JSON_STREAM" in {
@@ -158,12 +161,13 @@ class EventServiceSpec
           arr
         }
 
-      result.copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(OK, _), _, Some(_), _),
-              Ingest(_, _, _, values, _, _, _) :: Nil) =>
-          values must contain(arr).only
-      }
+      result.copoint must
+        beLike {
+          case (
+                HttpResponse(HttpStatus(OK, _), _, Some(_), _),
+                Ingest(_, _, _, values, _, _, _) :: Nil) =>
+            values must contain(arr).only
+        }
     }
 
     // TODO: this test should be rewritten to address global durability
@@ -206,17 +210,19 @@ class EventServiceSpec
           chunk("a,b,c\n1,2,3\n4, ,a", "\n6,7,8")
         }
 
-      result.copoint must beLike {
-        case (HttpResponse(HttpStatus(OK, _), _, Some(_), _), events) =>
-          // render then parseUnsafe so that we get the same numeric representations
-          events flatMap {
-            _.data.map(v => JParser.parseUnsafe(v.renderCompact))
-          } must_== List(
-            JParser.parseUnsafe("""{ "a": 1, "b": 2, "c": "3" }"""),
-            JParser.parseUnsafe("""{ "a": 4, "b": null, "c": "a" }"""),
-            JParser.parseUnsafe("""{ "a": 6, "b": 7, "c": "8" }""")
-          )
-      }
+      result.copoint must
+        beLike {
+          case (HttpResponse(HttpStatus(OK, _), _, Some(_), _), events) =>
+            // render then parseUnsafe so that we get the same numeric representations
+            events flatMap {
+              _.data.map(v => JParser.parseUnsafe(v.renderCompact))
+            } must_==
+              List(
+                JParser.parseUnsafe("""{ "a": 1, "b": 2, "c": "3" }"""),
+                JParser.parseUnsafe("""{ "a": 4, "b": null, "c": "a" }"""),
+                JParser.parseUnsafe("""{ "a": 6, "b": 7, "c": "8" }""")
+              )
+        }
     }
 
     "handle CSVs with duplicate headers" in {
@@ -238,20 +244,22 @@ class EventServiceSpec
           chunk(data)
         }
 
-      result.copoint must beLike {
-        case (HttpResponse(HttpStatus(OK, _), _, Some(_), _), events) =>
-          events flatMap {
-            _.data.map(v => JParser.parseUnsafe(v.renderCompact))
-          } must contain(
-            JParser.parseUnsafe(
-              """{
+      result.copoint must
+        beLike {
+          case (HttpResponse(HttpStatus(OK, _), _, Some(_), _), events) =>
+            events flatMap {
+              _.data.map(v => JParser.parseUnsafe(v.renderCompact))
+            } must
+              contain(
+                JParser.parseUnsafe(
+                  """{
               "URL": "http://alexk2009.hubpages.com/hub/Big-Birds-that-carry-off-children",
               "Title": "Eagles carrying off children and babies", "Status": "Published",
               "24 Hours": [ 11, 0 ], "Total": [ 10856, 252 ],
               "HubScore": 91, "Comments": 21, "7 Days": 98, "30 Days": 2352,
               "Published Date": "11/05/11", "Edited Date": "12/19/12", "Featured": "yes"
             }"""))
-      }
+        }
     }
 
     "reject track request when API key not found" in {
@@ -262,18 +270,19 @@ class EventServiceSpec
           testAccount.rootPath,
           Some(testAccount.accountId))(testValue)
 
-      result.copoint must beLike {
-        case (
-              HttpResponse(
-                HttpStatus(Forbidden, _),
-                _,
-                Some(
-                  JString(
-                    "The specified API key does not exist: not gonna find it")),
-                _),
-              _) =>
-          ok
-      }
+      result.copoint must
+        beLike {
+          case (
+                HttpResponse(
+                  HttpStatus(Forbidden, _),
+                  _,
+                  Some(
+                    JString(
+                      "The specified API key does not exist: not gonna find it")),
+                  _),
+                _) =>
+            ok
+        }
     }
 
     "reject track request when no API key provided" in {
@@ -281,10 +290,11 @@ class EventServiceSpec
         track(JSON, None, testAccount.rootPath, Some(testAccount.accountId))(
           testValue)
 
-      result.copoint must beLike {
-        case (HttpResponse(HttpStatus(BadRequest, _), _, _, _), _) =>
-          ok
-      }
+      result.copoint must
+        beLike {
+          case (HttpResponse(HttpStatus(BadRequest, _), _, _, _), _) =>
+            ok
+        }
     }
 
     "reject track request when grant is expired" in {
@@ -295,12 +305,13 @@ class EventServiceSpec
           testAccount.rootPath,
           Some(testAccount.accountId))(testValue)
 
-      result.copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
-              _) =>
-          ok
-      }
+      result.copoint must
+        beLike {
+          case (
+                HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
+                _) =>
+            ok
+        }
     }
 
     "reject track request when path is not accessible by API key" in {
@@ -310,12 +321,13 @@ class EventServiceSpec
           Some(testAccount.apiKey),
           Path("/"),
           Some(testAccount.accountId))(testValue)
-      result.copoint must beLike {
-        case (
-              HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
-              _) =>
-          ok
-      }
+      result.copoint must
+        beLike {
+          case (
+                HttpResponse(HttpStatus(Forbidden, _), _, Some(JString(_)), _),
+                _) =>
+            ok
+        }
     }
 
     "reject track request for json values that flatten to more than 1024 (default) primitive values" in {
@@ -330,28 +342,32 @@ class EventServiceSpec
           genObject(1025).sample.get: JValue
         }
 
-      result.copoint must beLike {
-        case (
-              HttpResponse(
-                HttpStatus(BadRequest, _),
-                _,
-                Some(JObject(fields)),
-                _),
-              _) =>
-          fields("errors") must beLike {
-            case JArray(errors) =>
-              atLeastOnce(errors) {
-                case JObject(fields) =>
-                  fields("reason") must beLike {
-                    case JString(s) =>
-                      s must startWith(
-                        "Cannot ingest values with more than 1024 primitive fields.")
+      result.copoint must
+        beLike {
+          case (
+                HttpResponse(
+                  HttpStatus(BadRequest, _),
+                  _,
+                  Some(JObject(fields)),
+                  _),
+                _) =>
+            fields("errors") must
+              beLike {
+                case JArray(errors) =>
+                  atLeastOnce(errors) {
+                    case JObject(fields) =>
+                      fields("reason") must
+                        beLike {
+                          case JString(s) =>
+                            s must
+                              startWith(
+                                "Cannot ingest values with more than 1024 primitive fields.")
+                        }
+                    case _ =>
+                      ko
                   }
-                case _ =>
-                  ko
               }
-          }
-      }
+        }
     }
 
     // not sure if this restriction still makes sense
@@ -365,13 +381,14 @@ class EventServiceSpec
           Some(testAccount.accountId),
           batch = true,
           sync = true)(data)
-      result.copoint must beLike {
-        case (HttpResponse(HttpStatus(OK, _), _, Some(msg), _), _) =>
-          msg \ "total" must_== JNum(500)
-          msg \ "ingested" must_== JNum(0)
-          msg \ "failed" must_== JNum(100)
-          msg \ "skipped" must_== JNum(400)
-      }
+      result.copoint must
+        beLike {
+          case (HttpResponse(HttpStatus(OK, _), _, Some(msg), _), _) =>
+            msg \ "total" must_== JNum(500)
+            msg \ "ingested" must_== JNum(0)
+            msg \ "failed" must_== JNum(100)
+            msg \ "skipped" must_== JNum(400)
+        }
     }.pendingUntilFixed
   }
 }

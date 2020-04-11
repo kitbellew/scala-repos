@@ -281,9 +281,8 @@ private[parquet] class CatalystRowConverter(
 
       // For BINARY and FIXED_LEN_BYTE_ARRAY backed decimals
       case t: DecimalType
-          if parquetType
-            .asPrimitiveType()
-            .getPrimitiveTypeName == FIXED_LEN_BYTE_ARRAY ||
+          if parquetType.asPrimitiveType().getPrimitiveTypeName ==
+            FIXED_LEN_BYTE_ARRAY ||
             parquetType.asPrimitiveType().getPrimitiveTypeName == BINARY =>
         new CatalystBinaryDictionaryAwareDecimalConverter(
           t.precision,

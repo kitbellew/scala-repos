@@ -17,8 +17,8 @@ trait SchemeDirectives {
     * Rejects all requests whose Uri scheme does not match the given one.
     */
   def scheme(name: String): Directive0 =
-    extractScheme.require(_ == name, SchemeRejection(name)) & cancelRejections(
-      classOf[SchemeRejection])
+    extractScheme.require(_ == name, SchemeRejection(name)) &
+      cancelRejections(classOf[SchemeRejection])
 }
 
 object SchemeDirectives extends SchemeDirectives {

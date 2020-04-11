@@ -147,10 +147,8 @@ abstract class SuperAccessors
             reporter.error(
               sym.pos,
               "name clash: " + sym.owner + " defines " + sym +
-                "\nand its companion " + sym
-                .owner
-                .companionModule + " also defines " +
-                other)
+                "\nand its companion " + sym.owner.companionModule +
+                " also defines " + other)
         }
       }
 
@@ -165,8 +163,8 @@ abstract class SuperAccessors
             !(member.isAbstractOverride && member.isIncompleteIn(clazz)))
           reporter.error(
             sel.pos,
-            "" + sym
-              .fullLocationString + " is accessed from super. It may not be abstract " +
+            "" + sym.fullLocationString +
+              " is accessed from super. It may not be abstract " +
               "unless it is overridden by a member declared `abstract' and `override'"
           )
       } else if (mix == tpnme.EMPTY && !sym.owner.isTrait) {
@@ -193,15 +191,13 @@ abstract class SuperAccessors
         }
 
       val needAccessor = name.isTermName && {
-        mix.isEmpty && (
-          clazz.isTrait || clazz != currentClass || !validCurrentOwner
-        ) ||
+        mix.isEmpty &&
+        (clazz.isTrait || clazz != currentClass || !validCurrentOwner) ||
         // SI-8803. If we access super[A] from an inner class (!= currentClass) or closure (validCurrentOwner),
         // where A is the superclass we need an accessor. If A is a parent trait we don't: in this case mixin
         // will re-route the super call directly to the impl class (it's statically known).
-        !mix.isEmpty && (
-          clazz != currentClass || !validCurrentOwner
-        ) && !mixIsTrait
+        !mix.isEmpty &&
+        (clazz != currentClass || !validCurrentOwner) && !mixIsTrait
       }
 
       if (needAccessor)
@@ -250,9 +246,9 @@ abstract class SuperAccessors
             checkCompanionNameClashes(sym)
             val decls = sym.info.decls
             for (s <- decls) {
-              if (s.privateWithin.isClass && !s
-                    .isProtected && !s.privateWithin.isModuleClass &&
-                  !s.hasFlag(EXPANDEDNAME) && !s.isConstructor) {
+              if (s.privateWithin.isClass && !s.isProtected &&
+                  !s.privateWithin.isModuleClass && !s.hasFlag(EXPANDEDNAME) &&
+                  !s.isConstructor) {
                 val savedName = s.name
                 decls.unlink(s)
                 s.expandName(s.privateWithin)
@@ -296,7 +292,8 @@ abstract class SuperAccessors
               .deSkolemize
               .hasAnnotation(definitions.SpecializedClass) =>
           debuglog(
-            "setting SPECIALIZED flag on typeDef.symbol.deSkolemize where typeDef = " + typeDef)
+            "setting SPECIALIZED flag on typeDef.symbol.deSkolemize where typeDef = " +
+              typeDef)
           // we need to deSkolemize symbol so we get the same symbol as others would get when
           // inspecting type parameter from "outside"; see the discussion of skolems here:
           // https://groups.google.com/d/topic/scala-internals/0j8laVNTQsI/discussion
@@ -311,8 +308,8 @@ abstract class SuperAccessors
             //
             // [1] https://groups.google.com/forum/#!topic/scala-internals/iPkMCygzws4
             //
-            if (closestEnclMethod(currentOwner) hasAnnotation definitions
-                  .ScalaInlineClass)
+            if (closestEnclMethod(currentOwner) hasAnnotation
+                  definitions.ScalaInlineClass)
               sym.makeNotPrivate(sym.owner)
 
             qual match {
@@ -324,23 +321,21 @@ abstract class SuperAccessors
                 if (settings.warnPrivateShadow) {
                   if (sym.isPrivateLocal && sym.paramss.isEmpty) {
                     qual.symbol.ancestors foreach { parent =>
-                      parent.info.decls filterNot (x =>
-                        x.isPrivate || x.isLocalToThis) foreach { m2 =>
-                        if (sym.name == m2.name && m2
-                              .isGetter && m2.accessed.isMutable) {
-                          reporter.warning(
-                            sel.pos,
-                            sym.accessString + " " + sym
-                              .fullLocationString + " shadows mutable " + m2
-                              .name
-                              + " inherited from " + m2
-                              .owner + ".  Changes to " + m2
-                              .name + " will not be visible within "
-                              + sym
-                                .owner + " - you may want to give them distinct names."
-                          )
+                      parent.info.decls filterNot
+                        (x => x.isPrivate || x.isLocalToThis) foreach { m2 =>
+                          if (sym.name == m2.name && m2.isGetter &&
+                              m2.accessed.isMutable) {
+                            reporter.warning(
+                              sel.pos,
+                              sym.accessString + " " + sym.fullLocationString +
+                                " shadows mutable " + m2.name +
+                                " inherited from " + m2.owner +
+                                ".  Changes to " + m2.name +
+                                " will not be visible within " + sym.owner +
+                                " - you may want to give them distinct names."
+                            )
+                          }
                         }
-                      }
                     }
                   }
                 }
@@ -353,8 +348,8 @@ abstract class SuperAccessors
                 // Direct calls to aliases of param accessors to the superclass in order to avoid
                 // duplicating fields.
                 // ... but, only if accessible (SI-6793)
-                if (sym.isParamAccessor && sym
-                      .alias != NoSymbol && isAccessibleFromSuper(sym.alias)) {
+                if (sym.isParamAccessor && sym.alias != NoSymbol &&
+                    isAccessibleFromSuper(sym.alias)) {
                   val result =
                     (
                       localTyper.typedPos(tree.pos) {
@@ -384,21 +379,21 @@ abstract class SuperAccessors
                    */
                   // FIXME - this should be unified with needsProtectedAccessor, but some
                   // subtlety which presently eludes me is foiling my attempts.
-                  val shouldEnsureAccessor = (currentClass.isTrait
-                    && sym.isProtected
-                    && sym.enclClass != currentClass
-                    && !sym
-                      .owner
-                      .isPackageClass // SI-7091 no accessor needed package owned (ie, top level) symbols
-                    && !sym.owner.isTrait
-                    && sym.owner.enclosingPackageClass != currentClass
-                      .enclosingPackageClass
-                    && qual.symbol.info.member(sym.name).exists
-                    && !needsProtectedAccessor(sym, tree.pos))
+                  val shouldEnsureAccessor =
+                    (currentClass.isTrait && sym.isProtected &&
+                      sym.enclClass != currentClass &&
+                      !sym
+                        .owner
+                        .isPackageClass // SI-7091 no accessor needed package owned (ie, top level) symbols
+                      && !sym.owner.isTrait &&
+                      sym.owner.enclosingPackageClass !=
+                      currentClass.enclosingPackageClass &&
+                      qual.symbol.info.member(sym.name).exists &&
+                      !needsProtectedAccessor(sym, tree.pos))
                   if (shouldEnsureAccessor) {
                     log(
-                      "Ensuring accessor for call to protected " + sym
-                        .fullLocationString + " from " + currentClass)
+                      "Ensuring accessor for call to protected " +
+                        sym.fullLocationString + " from " + currentClass)
                     ensureAccessor(sel)
                   } else
                     mayNeedProtectedAccessor(
@@ -416,8 +411,8 @@ abstract class SuperAccessors
                 } else if (isDisallowed(sym)) {
                   reporter.error(
                     tree.pos,
-                    "super not allowed here: use this." + name
-                      .decode + " instead")
+                    "super not allowed here: use this." + name.decode +
+                      " instead")
                 }
                 transformSuperSelect(sel)
 
@@ -438,8 +433,7 @@ abstract class SuperAccessors
 
         case Assign(lhs @ Select(qual, name), rhs) =>
           def transformAssign = {
-            if (lhs.symbol.isVariable &&
-                lhs.symbol.isJavaDefined &&
+            if (lhs.symbol.isVariable && lhs.symbol.isJavaDefined &&
                 needsProtectedAccessor(lhs.symbol, tree.pos)) {
               debuglog("Adding protected setter for " + tree)
               val setter = makeSetter(lhs)
@@ -609,9 +603,8 @@ abstract class SuperAccessors
             NoSymbol
         }
       val result = gen.paramToArg(v)
-      if (clazz != NoSymbol && (
-            obj.tpe.typeSymbol isSubClass clazz
-          )) // path-dependent type
+      if (clazz != NoSymbol &&
+          (obj.tpe.typeSymbol isSubClass clazz)) // path-dependent type
         gen.mkAsInstanceOf(
           result,
           pt.asSeenFrom(singleType(NoPrefix, obj), clazz))
@@ -662,18 +655,15 @@ abstract class SuperAccessors
     private def needsProtectedAccessor(sym: Symbol, pos: Position): Boolean = {
       val clazz = currentClass
       def accessibleThroughSubclassing =
-        validCurrentOwner && clazz.thisSym.isSubClass(sym.owner) && !clazz
-          .isTrait
+        validCurrentOwner && clazz.thisSym.isSubClass(sym.owner) &&
+          !clazz.isTrait
 
-      val isCandidate = (sym.isProtected
-        && sym.isJavaDefined
-        && !sym.isDefinedInPackage
-        && !accessibleThroughSubclassing
-        && (sym.enclosingPackageClass != currentClass.enclosingPackageClass)
-        && (
-          sym.enclosingPackageClass == sym
-            .accessBoundary(sym.enclosingPackageClass)
-        ))
+      val isCandidate =
+        (sym.isProtected && sym.isJavaDefined && !sym.isDefinedInPackage &&
+          !accessibleThroughSubclassing &&
+          (sym.enclosingPackageClass != currentClass.enclosingPackageClass) &&
+          (sym.enclosingPackageClass ==
+            sym.accessBoundary(sym.enclosingPackageClass)))
       val host = hostForAccessorOf(sym, clazz)
       def isSelfType =
         !(host.tpe <:< host.typeOfThis) && {
@@ -707,9 +697,9 @@ abstract class SuperAccessors
     private def hostForAccessorOf(
         sym: Symbol,
         referencingClass: Symbol): Symbol = {
-      if (referencingClass.isSubClass(sym.owner.enclClass)
-          || referencingClass.thisSym.isSubClass(sym.owner.enclClass)
-          || referencingClass
+      if (referencingClass.isSubClass(sym.owner.enclClass) ||
+          referencingClass.thisSym.isSubClass(sym.owner.enclClass) ||
+          referencingClass
             .enclosingPackageClass == sym.owner.enclosingPackageClass) {
         assert(referencingClass.isClass, referencingClass)
         referencingClass

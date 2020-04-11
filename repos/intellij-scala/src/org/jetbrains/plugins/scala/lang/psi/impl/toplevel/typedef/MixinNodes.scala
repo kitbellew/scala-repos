@@ -573,10 +573,10 @@ abstract class MixinNodes {
       superClass: PsiClass) = {
     var res: ScSubstitutor = ScSubstitutor.empty
     for (tp <- superClass.getTypeParameters) {
-      res = res bindT (
-        (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
-        derived.subst(superSubst.subst(ScalaPsiManager.typeVariable(tp)))
-      )
+      res = res bindT
+        (
+          (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
+          derived.subst(superSubst.subst(ScalaPsiManager.typeVariable(tp))))
     }
     superClass match {
       case td: ScTypeDefinition =>
@@ -702,8 +702,8 @@ object MixinNodes {
     def add(tp: ScType) {
       ScType.extractClass(tp, project) match {
         case Some(clazz)
-            if clazz.qualifiedName != null && !set
-              .contains(classString(clazz)) =>
+            if clazz.qualifiedName != null &&
+              !set.contains(classString(clazz)) =>
           tp +=: buffer
           set += classString(clazz)
         case Some(clazz) if clazz.getTypeParameters.nonEmpty =>

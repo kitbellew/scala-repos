@@ -67,9 +67,10 @@ final class ShutupApi(
               else
                 BSONDocument()
             val push = BSONDocument(
-              textType.key -> BSONDocument(
-                "$each" -> List(BSONDouble(analysed.ratio)),
-                "$slice" -> -textType.rotation)) ++ pushPublicLine
+              textType.key ->
+                BSONDocument(
+                  "$each" -> List(BSONDouble(analysed.ratio)),
+                  "$slice" -> -textType.rotation)) ++ pushPublicLine
             coll
               .findAndUpdate(
                 selector = BSONDocument("_id" -> userId),
@@ -87,32 +88,35 @@ final class ShutupApi(
 
   private def legiferate(userRecord: UserRecord): Funit =
     userRecord.reports.exists(_.unacceptable) ?? {
-      reporter ! lila
-        .hub
-        .actorApi
-        .report
-        .Shutup(userRecord.userId, reportText(userRecord))
+      reporter !
+        lila
+          .hub
+          .actorApi
+          .report
+          .Shutup(userRecord.userId, reportText(userRecord))
       coll
         .update(
           BSONDocument("_id" -> userRecord.userId),
           BSONDocument(
-            "$unset" -> BSONDocument(
-              TextType.PublicForumMessage.key -> true,
-              TextType.TeamForumMessage.key -> true,
-              TextType.PrivateMessage.key -> true,
-              TextType.PrivateChat.key -> true,
-              TextType.PublicChat.key -> true
-            ))
+            "$unset" ->
+              BSONDocument(
+                TextType.PublicForumMessage.key -> true,
+                TextType.TeamForumMessage.key -> true,
+                TextType.PrivateMessage.key -> true,
+                TextType.PrivateChat.key -> true,
+                TextType.PublicChat.key -> true
+              ))
         )
         .void
     }
 
   private def reportText(userRecord: UserRecord) =
-    "[AUTOREPORT]\n" + userRecord
-      .reports
-      .collect {
-        case r if r.unacceptable =>
-          s"${r.textType.name}: ${r.nbBad} dubious (out of ${r.ratios.size})"
-      }
-      .mkString("\n")
+    "[AUTOREPORT]\n" +
+      userRecord
+        .reports
+        .collect {
+          case r if r.unacceptable =>
+            s"${r.textType.name}: ${r.nbBad} dubious (out of ${r.ratios.size})"
+        }
+        .mkString("\n")
 }

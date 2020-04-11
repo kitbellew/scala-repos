@@ -36,9 +36,8 @@ class ConnectionManager {
 
   def observeResponse(response: HttpResponse) =
     synchronized {
-      if (!response.isChunked && !response
-            .headers
-            .contains(HttpHeaders.Names.CONTENT_LENGTH))
+      if (!response.isChunked &&
+          !response.headers.contains(HttpHeaders.Names.CONTENT_LENGTH))
         isKeepAlive = false
       else if (!HttpHeaders.isKeepAlive(response))
         isKeepAlive = false

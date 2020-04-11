@@ -28,8 +28,8 @@ trait CodecSpecSupport extends Matchers with BeforeAndAfterAll {
   def printBytes(i: Int, id: String) = {
     def byte(i: Int) = (i & 0xFF).toHexString
     println(
-      id + ": " + byte(i) + ":" + byte(i >> 8) + ":" + byte(
-        i >> 16) + ":" + byte(i >> 24))
+      id + ": " + byte(i) + ":" + byte(i >> 8) + ":" + byte(i >> 16) + ":" +
+        byte(i >> 24))
     i
   }
 

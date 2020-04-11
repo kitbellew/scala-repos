@@ -131,7 +131,8 @@ class HDFSStateLaws extends WordSpec {
         t.succeed
       case Left(t) =>
         sys.error(
-          "PreparedState didn't accept its proposed Interval! failed state: " + t)
+          "PreparedState didn't accept its proposed Interval! failed state: " +
+            t)
     }
   }
 
@@ -148,9 +149,9 @@ class HDFSStateLaws extends WordSpec {
             batcher.batchOf(low.least.get),
             batcher.batchOf(high.greatest.get))
           .foreach { t =>
-            val totPath = (path + "/" + batcher
-              .earliestTimeOf(t)
-              .milliSinceEpoch + ".version")
+            val totPath =
+              (path + "/" + batcher.earliestTimeOf(t).milliSinceEpoch +
+                ".version")
             assert(new java.io.File(totPath).exists)
           }
       }

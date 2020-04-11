@@ -28,29 +28,31 @@ final class JsonView(getLightUser: String => Option[lila.common.LightUser]) {
       "status" -> c.status.name,
       "challenger" -> c.challengerUser,
       "destUser" -> c.destUser,
-      "variant" -> Json.obj(
-        "key" -> c.variant.key,
-        "short" -> c.variant.shortName,
-        "name" -> c.variant.name),
+      "variant" ->
+        Json.obj(
+          "key" -> c.variant.key,
+          "short" -> c.variant.shortName,
+          "name" -> c.variant.name),
       "initialFen" -> c.initialFen,
       "rated" -> c.mode.rated,
-      "timeControl" -> (
-        c.timeControl match {
-          case c @ TimeControl.Clock(l, i) =>
-            Json.obj(
-              "type" -> "clock",
-              "limit" -> l,
-              "increment" -> i,
-              "show" -> c.show)
-          case TimeControl.Correspondence(d) =>
-            Json.obj("type" -> "correspondence", "daysPerTurn" -> d)
-          case TimeControl.Unlimited =>
-            Json.obj("type" -> "unlimited")
-        }
-      ),
+      "timeControl" ->
+        (
+          c.timeControl match {
+            case c @ TimeControl.Clock(l, i) =>
+              Json.obj(
+                "type" -> "clock",
+                "limit" -> l,
+                "increment" -> i,
+                "show" -> c.show)
+            case TimeControl.Correspondence(d) =>
+              Json.obj("type" -> "correspondence", "daysPerTurn" -> d)
+            case TimeControl.Unlimited =>
+              Json.obj("type" -> "unlimited")
+          }
+        ),
       "color" -> c.colorChoice.toString.toLowerCase,
-      "perf" -> Json
-        .obj("icon" -> iconChar(c).toString, "name" -> c.perfType.name)
+      "perf" ->
+        Json.obj("icon" -> iconChar(c).toString, "name" -> c.perfType.name)
     )
 
   private def iconChar(c: Challenge) =

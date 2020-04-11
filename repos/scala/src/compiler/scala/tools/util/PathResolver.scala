@@ -144,8 +144,8 @@ object PathResolver {
     // and then again here.
     def scalaBootClassPath = ""
     def scalaExtDirs = Environment.scalaExtDirs
-    def scalaPluginPath =
-      (scalaHomeDir / "misc" / "scala-devel" / "plugins").path
+    def scalaPluginPath = (scalaHomeDir / "misc" / "scala-devel" / "plugins")
+      .path
 
     override def toString = s"""
       |object Defaults {
@@ -192,13 +192,13 @@ object PathResolver {
       }
       def deeply(dir: Directory) = dir.deepFiles find (_.name == jarName)
 
-      val home =
-        envOrSome("JDK_HOME", envOrNone("JAVA_HOME")) map (p => Path(p))
+      val home = envOrSome("JDK_HOME", envOrNone("JAVA_HOME")) map
+        (p => Path(p))
       val install = Some(Path(javaHome))
 
-      (home flatMap jarAt) orElse (install flatMap jarAt) orElse (
-        install map (_.parent) flatMap jarAt
-      ) orElse
+      (home flatMap jarAt) orElse
+        (install flatMap jarAt) orElse
+        (install map (_.parent) flatMap jarAt) orElse
         (jdkDir flatMap deeply)
     }
     override def toString = s"""
@@ -258,14 +258,12 @@ abstract class PathResolverBase[BaseClassPathType <: ClassFileLookup[
   import PathResolver.{AsLines, Defaults, ppcp}
 
   private def cmdLineOrElse(name: String, alt: String) = {
-    (
-      commandLineFor(name) match {
-        case Some("") =>
-          None
-        case x =>
-          x
-      }
-    ) getOrElse alt
+    (commandLineFor(name) match {
+      case Some("") =>
+        None
+      case x =>
+        x
+    }) getOrElse alt
   }
 
   private def commandLineFor(s: String): Option[String] =
@@ -371,12 +369,11 @@ abstract class PathResolverBase[BaseClassPathType <: ClassFileLookup[
       Console print s"Calculated: $Calculated"
 
       val xs = (Calculated.basis drop 2).flatten.distinct
-      Console print (
-        xs mkLines (
-          s"After java boot/extdirs classpath has ${xs.size} entries:", indented =
-            true
-        )
-      )
+      Console print
+        (xs mkLines
+          (
+            s"After java boot/extdirs classpath has ${xs.size} entries:",
+            indented = true))
     }
     cp
   }

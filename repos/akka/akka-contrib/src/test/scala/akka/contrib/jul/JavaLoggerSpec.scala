@@ -57,8 +57,8 @@ class JavaLoggerSpec extends AkkaSpec(JavaLoggerSpec.config) {
       record.getLevel should ===(logging.Level.SEVERE)
       record.getMessage should ===("Simulated error")
       record.getThrown.isInstanceOf[RuntimeException] should ===(true)
-      record.getSourceClassName should ===(
-        classOf[JavaLoggerSpec.LogProducer].getName)
+      record.getSourceClassName should
+        ===(classOf[JavaLoggerSpec.LogProducer].getName)
       record.getSourceMethodName should ===(null)
     }
 
@@ -73,8 +73,8 @@ class JavaLoggerSpec extends AkkaSpec(JavaLoggerSpec.config) {
       record.getLevel should ===(logging.Level.INFO)
       record.getMessage should ===("3 is the magic number")
       record.getThrown should ===(null)
-      record.getSourceClassName should ===(
-        classOf[JavaLoggerSpec.LogProducer].getName)
+      record.getSourceClassName should
+        ===(classOf[JavaLoggerSpec.LogProducer].getName)
       record.getSourceMethodName should ===(null)
     }
   }

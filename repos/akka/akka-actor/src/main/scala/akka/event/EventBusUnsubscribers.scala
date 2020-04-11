@@ -205,8 +205,8 @@ private[akka] object ActorClassificationUnsubscriber {
       .asInstanceOf[ExtendedActorSystem]
       .systemActorOf(
         props(bus, debug),
-        "actorClassificationUnsubscriber-" + unsubscribersCount
-          .incrementAndGet())
+        "actorClassificationUnsubscriber-" +
+          unsubscribersCount.incrementAndGet())
   }
 
   private def props(eventBus: ManagedActorClassification, debug: Boolean) =

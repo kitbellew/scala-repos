@@ -1644,8 +1644,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * Produce an indexed sequence of triples of values in the Frame
     * in row-major order.
     */
-  def toSeq: IndexedSeq[(RX, CX, T)] =
-    (Range(0, numRows) zip rowIx.toSeq).flatMap {
+  def toSeq: IndexedSeq[(RX, CX, T)] = (Range(0, numRows) zip rowIx.toSeq)
+    .flatMap {
       case (i, rx) =>
         rowAt(i)
           .toSeq
@@ -1729,9 +1729,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
 
           val fmt = "%" + clen(c) + "s "
           val res =
-            if (l == labs.length - 1 || currLab != prevColLabel || prevColMask
-                  .get(c)
-                  .getOrElse(false)) {
+            if (l == labs.length - 1 || currLab != prevColLabel ||
+                prevColMask.get(c).getOrElse(false)) {
               prevColMask = prevColMask.updated(c, true)
               currLab.formatted(fmt)
             } else {
@@ -1797,9 +1796,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       def createVals(r: Int) = {
         val elem =
           (col: Int) =>
-            "%" + clen(col) + "s " format values(col)
-              .scalarTag
-              .show(values(r, col))
+            "%" + clen(col) + "s " format
+              values(col).scalarTag.show(values(r, col))
         util.buildStr(ncols, numCols, elem) + "\n"
       }
 
@@ -1837,8 +1835,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   override def equals(other: Any): Boolean =
     other match {
       case f: Frame[_, _, _] =>
-        (this eq f) || rowIx == f.rowIx && colIx == f.colIx && values == f
-          .values
+        (this eq f) ||
+          rowIx == f.rowIx && colIx == f.colIx && values == f.values
       case _ =>
         false
     }

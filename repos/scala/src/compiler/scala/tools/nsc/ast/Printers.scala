@@ -20,8 +20,8 @@ trait Printers extends scala.reflect.internal.Printers {
         case tree: Tree =>
           printPosition(tree)
           printTree(
-            if (tree.isDef && tree
-                  .symbol != NoSymbol && tree.symbol.isInitialized) {
+            if (tree.isDef && tree.symbol != NoSymbol &&
+                tree.symbol.isInitialized) {
               tree match {
                 case ClassDef(_, _, _, impl @ Template(ps, noSelfType, body))
                     if (tree.symbol.thisSym != tree.symbol) =>

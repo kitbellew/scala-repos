@@ -53,31 +53,34 @@ object FunctionTest extends SpecLite {
   checkAll("Function1", zip.laws[Int => ?])
 
   // Likely could be made to cover all the FunctionN types.
-  "Function0 map eagerness" ! forAll { (number: Int) =>
-    var modifiableNumber: Int = number
-    val methodCall: () => Int = () => modifiableNumber
-    val mappedCall: () => Int = Monad[Function0].map(methodCall)(_ + 3)
-    modifiableNumber += 1
-    mappedCall() must_=== (number + 4)
-  }
+  "Function0 map eagerness" !
+    forAll { (number: Int) =>
+      var modifiableNumber: Int = number
+      val methodCall: () => Int = () => modifiableNumber
+      val mappedCall: () => Int = Monad[Function0].map(methodCall)(_ + 3)
+      modifiableNumber += 1
+      mappedCall() must_=== (number + 4)
+    }
 
   // Likely could be made to cover all the FunctionN types.
-  "Function0 bind eagerness" ! forAll { (number: Int) =>
-    var modifiableNumber: Int = number
-    val methodCall: () => Int = () => modifiableNumber
-    val mappedCall =
-      Monad[Function0].bind(methodCall)((value: Int) => () => value + 3)
-    modifiableNumber += 1
-    mappedCall() must_=== (number + 4)
-  }
+  "Function0 bind eagerness" !
+    forAll { (number: Int) =>
+      var modifiableNumber: Int = number
+      val methodCall: () => Int = () => modifiableNumber
+      val mappedCall =
+        Monad[Function0].bind(methodCall)((value: Int) => () => value + 3)
+      modifiableNumber += 1
+      mappedCall() must_=== (number + 4)
+    }
 
-  "fix" ! forAll { (n: Int) =>
-    fix[Int](_ => n) must_=== (n)
-    (
-      fix[Stream[Int]](ns => n #:: (2 * n) #:: ns).take(4).toList
-        must_=== (List(n, 2 * n, n, 2 * n))
-    )
-  }
+  "fix" !
+    forAll { (n: Int) =>
+      fix[Int](_ => n) must_=== (n)
+      (
+        fix[Stream[Int]](ns => n #:: (2 * n) #:: ns).take(4).toList must_===
+          (List(n, 2 * n, n, 2 * n))
+      )
+    }
 
   object instances {
     def equal[A, R: Equal] = Equal[() => R]

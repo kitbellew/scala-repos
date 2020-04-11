@@ -341,9 +341,9 @@ private[http] final class BodyPartParser(
 
   @tailrec
   def boundary(input: ByteString, offset: Int, ix: Int = 2): Boolean =
-    (ix == needle.length) || (
-      byteAt(input, offset + ix - 2) == needle(ix)
-    ) && boundary(input, offset, ix + 1)
+    (ix == needle.length) ||
+      (byteAt(input, offset + ix - 2) == needle(ix)) &&
+      boundary(input, offset, ix + 1)
 
   def crlf(input: ByteString, offset: Int): Boolean =
     byteChar(input, offset) == '\r' && byteChar(input, offset + 1) == '\n'
@@ -355,8 +355,8 @@ private[http] final class BodyPartParser(
 
 private[http] object BodyPartParser {
   // http://tools.ietf.org/html/rfc2046#section-5.1.1
-  val boundaryChar = CharPredicate.Digit ++ CharPredicate
-    .Alpha ++ "'()+_,-./:=? "
+  val boundaryChar = CharPredicate.Digit ++ CharPredicate.Alpha ++
+    "'()+_,-./:=? "
 
   private object BoundaryHeader extends HttpHeader {
     def renderInRequests = false

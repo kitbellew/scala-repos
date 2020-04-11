@@ -37,12 +37,13 @@ private[lobby] final class Lobby(
         val lobbyUser = userOption map {
           LobbyUser.make(_, blocks)
         }
-        replyTo ! HookRepo
-          .vector
-          .filter { hook =>
-            ~(hook.userId |@| lobbyUser.map(_.id)).apply(_ == _) || Biter
-              .canJoin(hook, lobbyUser)
-          }
+        replyTo !
+          HookRepo
+            .vector
+            .filter { hook =>
+              ~(hook.userId |@| lobbyUser.map(_.id)).apply(_ == _) ||
+              Biter.canJoin(hook, lobbyUser)
+            }
       }
 
     case msg @ AddHook(hook) => {
@@ -171,20 +172,23 @@ private[lobby] final class Lobby(
       case Vector() =>
         fuccess(none)
       case h +: rest =>
-        Biter.canJoin(h, hook.user) ?? ! {
-          (h.user |@| hook.user).tupled ?? {
-            case (u1, u2) =>
-              GameRepo
-                .lastGameBetween(u1.id, u2.id, DateTime.now minusHours 1) map {
-                _ ?? (_.aborted)
-              }
+        Biter.canJoin(h, hook.user) ??
+          ! {
+            (h.user |@| hook.user).tupled ?? {
+              case (u1, u2) =>
+                GameRepo.lastGameBetween(
+                  u1.id,
+                  u2.id,
+                  DateTime.now minusHours 1) map {
+                  _ ?? (_.aborted)
+                }
+            }
+          } flatMap {
+            case true =>
+              fuccess(h.some)
+            case false =>
+              findCompatibleIn(hook, rest)
           }
-        } flatMap {
-          case true =>
-            fuccess(h.some)
-          case false =>
-            findCompatibleIn(hook, rest)
-        }
     }
 
   private def findCompatible(seek: Seek): Fu[Option[Seek]] =

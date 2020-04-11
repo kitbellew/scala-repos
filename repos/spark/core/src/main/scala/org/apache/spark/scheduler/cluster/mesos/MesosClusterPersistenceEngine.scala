@@ -100,9 +100,8 @@ private[spark] class ZookeeperMesosClusterPersistenceEngine(
     extends MesosClusterPersistenceEngine
     with Logging {
   private val WORKING_DIR =
-    conf.get(
-      "spark.deploy.zookeeper.dir",
-      "/spark_mesos_dispatcher") + "/" + baseDir
+    conf.get("spark.deploy.zookeeper.dir", "/spark_mesos_dispatcher") + "/" +
+      baseDir
 
   SparkCuratorUtil.mkdir(zk, WORKING_DIR)
 

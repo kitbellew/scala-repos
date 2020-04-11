@@ -179,8 +179,8 @@ object TestPurgatoryPerformance {
           .format(gcCountHeader, gcTimeHeader))
     }
 
-    val targetRate = numRequests.toDouble * 1000d / (requestArrivalTime - start)
-      .toDouble
+    val targetRate = numRequests.toDouble * 1000d /
+      (requestArrivalTime - start).toDouble
     val actualRate = numRequests.toDouble * 1000d / (end - start).toDouble
 
     val cpuTime = getProcessCpuTimeNanos(osMXBean)
@@ -253,9 +253,9 @@ object TestPurgatoryPerformance {
     private[this] val rand = new Random
     private[this] val samples = {
       val normalMean = math.log(pct50)
-      val normalStDev = (
-        math.log(pct75) - normalMean
-      ) / 0.674490d // 0.674490 is 75th percentile point in N(0,1)
+      val normalStDev =
+        (math.log(pct75) - normalMean) /
+          0.674490d // 0.674490 is 75th percentile point in N(0,1)
       val dist = new LogNormalDistribution(normalMean, normalStDev)
       (0 until sampleSize)
         .map { _ =>

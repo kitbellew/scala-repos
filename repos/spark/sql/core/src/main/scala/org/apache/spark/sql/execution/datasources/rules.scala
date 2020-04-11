@@ -199,8 +199,8 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
         failAnalysis(s"$l does not allow insertion.")
 
       case logical.InsertIntoTable(t, _, _, _, _) =>
-        if (!t.isInstanceOf[LeafNode] || t == OneRowRelation || t
-              .isInstanceOf[LocalRelation]) {
+        if (!t.isInstanceOf[LeafNode] || t == OneRowRelation ||
+            t.isInstanceOf[LocalRelation]) {
           failAnalysis(s"Inserting into an RDD-based table is not allowed.")
         } else {
           // OK

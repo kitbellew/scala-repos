@@ -43,13 +43,14 @@ object ToHeadSpec extends Specification with XmlMatchers {
               .filter(_ ne null)
         } yield (act, exp)
 
-      susfiles must beLike {
-        case Full(sus) =>
-          val actual = secureXML.load(sus._1)
-          val expected = secureXML.load(sus._2)
-          mergeToHtmlHead(actual).toString.replaceAll("\\s", "") must_==
-            (expected.toString.replaceAll("\\s", ""))
-      }
+      susfiles must
+        beLike {
+          case Full(sus) =>
+            val actual = secureXML.load(sus._1)
+            val expected = secureXML.load(sus._2)
+            mergeToHtmlHead(actual).toString.replaceAll("\\s", "") must_==
+              (expected.toString.replaceAll("\\s", ""))
+        }
     }
 
     "merge <head> from real example" in {
@@ -63,12 +64,13 @@ object ToHeadSpec extends Specification with XmlMatchers {
               .filter(_ ne null)
         } yield (act, exp)
 
-      susfiles must beLike {
-        case Full(sus) =>
-          val actual = secureXML.load(sus._1)
-          val expected = secureXML.load(sus._2)
-          mergeToHtmlHead(actual) must ==/(expected)
-      }
+      susfiles must
+        beLike {
+          case Full(sus) =>
+            val actual = secureXML.load(sus._1)
+            val expected = secureXML.load(sus._2)
+            mergeToHtmlHead(actual) must ==/(expected)
+        }
     }
 
     "merge <lift:tohead> into a new head if not previously exist" in {
@@ -82,13 +84,14 @@ object ToHeadSpec extends Specification with XmlMatchers {
               .filter(_ ne null)
         } yield (act, exp)
 
-      susfiles must beLike {
-        case Full(sus) =>
-          val actual = secureXML.load(sus._1)
-          val expected = secureXML.load(sus._2)
-          mergeToHtmlHead(actual).toString.replaceAll("\\s", "") must_==
-            (expected.toString.replaceAll("\\s", ""))
-      }
+      susfiles must
+        beLike {
+          case Full(sus) =>
+            val actual = secureXML.load(sus._1)
+            val expected = secureXML.load(sus._2)
+            mergeToHtmlHead(actual).toString.replaceAll("\\s", "") must_==
+              (expected.toString.replaceAll("\\s", ""))
+        }
     }
   }
 

@@ -68,7 +68,8 @@ class BrokerMetadataCheckpoint(val file: File) extends Logging {
             return Some(BrokerMetadata(brokerId))
           case _ =>
             throw new IOException(
-              "Unrecognized version of the server meta.properties file: " + version)
+              "Unrecognized version of the server meta.properties file: " +
+                version)
         }
       } catch {
         case e: FileNotFoundException =>

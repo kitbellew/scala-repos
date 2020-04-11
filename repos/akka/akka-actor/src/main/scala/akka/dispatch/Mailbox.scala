@@ -276,7 +276,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       hasSystemMessageHint: Boolean): Boolean =
     currentStatus match {
       case Open | Scheduled ⇒
-        hasMessageHint || hasSystemMessageHint || hasSystemMessages || hasMessages
+        hasMessageHint || hasSystemMessageHint || hasSystemMessages ||
+          hasMessages
       case Closed ⇒
         false
       case _ ⇒
@@ -336,11 +337,9 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
           throw new InterruptedException(
             "Interrupted while processing actor messages")
         processAllSystemMessages()
-        if ((left > 1) && (
-              (
-                dispatcher.isThroughputDeadlineTimeDefined == false
-              ) || (System.nanoTime - deadlineNs) < 0
-            ))
+        if ((left > 1) &&
+            ((dispatcher.isThroughputDeadlineTimeDefined == false) ||
+            (System.nanoTime - deadlineNs) < 0))
           processMailbox(left - 1, deadlineNs)
       }
     }
@@ -361,8 +360,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       msg.unlink()
       if (debug)
         println(
-          actor.self + " processing system message " + msg + " with " + actor
-            .childrenRefs)
+          actor.self + " processing system message " + msg + " with " +
+            actor.childrenRefs)
       // we know here that systemInvoke ensures that only "fatal" exceptions get rethrown
       actor systemInvoke msg
       if (Thread.interrupted())
@@ -394,8 +393,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
                 e,
                 actor.self.path.toString,
                 this.getClass,
-                "error while enqueuing " + msg + " to deadLetters: " + e
-                  .getMessage))
+                "error while enqueuing " + msg + " to deadLetters: " +
+                  e.getMessage))
       }
     }
     // if we got an interrupted exception while handling system messages, then rethrow it
@@ -423,7 +422,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
         dlm.systemEnqueue(actor.self, msg)
       }
 
-      if (messageQueue ne null) // needed for CallingThreadDispatcher, which never calls Mailbox.run()
+      if (messageQueue ne
+            null) // needed for CallingThreadDispatcher, which never calls Mailbox.run()
         messageQueue.cleanUp(
           actor.self,
           actor.dispatcher.mailboxes.deadLetterMailbox.messageQueue)

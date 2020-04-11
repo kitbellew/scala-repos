@@ -26,13 +26,11 @@ final class ListClientIntegrationSuite extends RedisClientTest {
       assert(Await.result(client.lPush(foo, List(bar))) == 1)
       assert(Await.result(client.lPush(foo, List(baz))) == 2)
       assert(
-        Await
-          .result(client.lPop(foo))
-          .getOrElse(fail(PopFailureMessage)) == baz)
+        Await.result(client.lPop(foo)).getOrElse(fail(PopFailureMessage)) ==
+          baz)
       assert(
-        Await
-          .result(client.lPop(foo))
-          .getOrElse(fail(PopFailureMessage)) == bar)
+        Await.result(client.lPop(foo)).getOrElse(fail(PopFailureMessage)) ==
+          bar)
     }
   }
 
@@ -74,17 +72,15 @@ final class ListClientIntegrationSuite extends RedisClientTest {
           .result(client.lIndex(key, 0))
           .getOrElse(fail(IndexFailureMessage)) == baz)
       assert(
-        Await
-          .result(client.lPop(key))
-          .getOrElse(fail(PopFailureMessage)) == baz)
+        Await.result(client.lPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          baz)
       assert(
         Await
           .result(client.lIndex(key, 0))
           .getOrElse(fail(IndexFailureMessage)) == bar)
       assert(
-        Await
-          .result(client.lPop(key))
-          .getOrElse(fail(PopFailureMessage)) == bar)
+        Await.result(client.lPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          bar)
     }
   }
 
@@ -106,17 +102,14 @@ final class ListClientIntegrationSuite extends RedisClientTest {
           .result(client.lInsertBefore(key, moo, foo))
           .getOrElse(fail(PivotFailureMessage)) == 3)
       assert(
-        Await
-          .result(client.lPop(key))
-          .getOrElse(fail(PopFailureMessage)) == foo)
+        Await.result(client.lPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          foo)
       assert(
-        Await
-          .result(client.lPop(key))
-          .getOrElse(fail(PopFailureMessage)) == moo)
+        Await.result(client.lPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          moo)
       assert(
-        Await
-          .result(client.lPop(key))
-          .getOrElse(fail(PopFailureMessage)) == bar)
+        Await.result(client.lPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          bar)
     }
   }
 
@@ -131,9 +124,8 @@ final class ListClientIntegrationSuite extends RedisClientTest {
       assert(Await.result(client.lPush(key, List(baz))) == 2)
       assert(Await.result(client.lRem(key, 1, baz)) == 1)
       assert(
-        Await
-          .result(client.lPop(key))
-          .getOrElse(fail(PopFailureMessage)) == bar)
+        Await.result(client.lPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          bar)
     }
   }
 
@@ -154,13 +146,11 @@ final class ListClientIntegrationSuite extends RedisClientTest {
       Await.result(client.lSet(key, 0, moo))
 
       assert(
-        Await
-          .result(client.lPop(key))
-          .getOrElse(fail(PopFailureMessage)) == moo)
+        Await.result(client.lPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          moo)
       assert(
-        Await
-          .result(client.lPop(key))
-          .getOrElse(fail(PopFailureMessage)) == bar)
+        Await.result(client.lPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          bar)
     }
   }
 
@@ -175,13 +165,11 @@ final class ListClientIntegrationSuite extends RedisClientTest {
       assert(Await.result(client.lPush(key, List(baz))) == 2)
       assert(Await.result(client.lRange(key, 0, -1)) == List(baz, bar))
       assert(
-        Await
-          .result(client.lPop(key))
-          .getOrElse(fail(PopFailureMessage)) == baz)
+        Await.result(client.lPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          baz)
       assert(
-        Await
-          .result(client.lPop(key))
-          .getOrElse(fail(PopFailureMessage)) == bar)
+        Await.result(client.lPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          bar)
     }
   }
 
@@ -195,13 +183,11 @@ final class ListClientIntegrationSuite extends RedisClientTest {
       assert(Await.result(client.lPush(key, List(bar))) == 1)
       assert(Await.result(client.lPush(key, List(baz))) == 2)
       assert(
-        Await
-          .result(client.rPop(key))
-          .getOrElse(fail(PopFailureMessage)) == bar)
+        Await.result(client.rPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          bar)
       assert(
-        Await
-          .result(client.rPop(key))
-          .getOrElse(fail(PopFailureMessage)) == baz)
+        Await.result(client.rPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          baz)
     }
   }
 
@@ -215,13 +201,11 @@ final class ListClientIntegrationSuite extends RedisClientTest {
       assert(Await.result(client.rPush(key, List(bar))) == 1)
       assert(Await.result(client.rPush(key, List(baz))) == 2)
       assert(
-        Await
-          .result(client.rPop(key))
-          .getOrElse(fail(PopFailureMessage)) == baz)
+        Await.result(client.rPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          baz)
       assert(
-        Await
-          .result(client.rPop(key))
-          .getOrElse(fail(PopFailureMessage)) == bar)
+        Await.result(client.rPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          bar)
     }
   }
 
@@ -251,13 +235,11 @@ final class ListClientIntegrationSuite extends RedisClientTest {
       Await.result(client.lTrim(key, 0, 1))
 
       assert(
-        Await
-          .result(client.rPop(key))
-          .getOrElse(fail(PopFailureMessage)) == boo)
+        Await.result(client.rPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          boo)
       assert(
-        Await
-          .result(client.rPop(key))
-          .getOrElse(fail(PopFailureMessage)) == moo)
+        Await.result(client.rPop(key)).getOrElse(fail(PopFailureMessage)) ==
+          moo)
     }
   }
 }

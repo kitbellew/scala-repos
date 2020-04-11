@@ -70,12 +70,10 @@ private[spark] class WholeTextFileInputFormat
       Math
         .ceil(
           totalLen * 1.0 /
-            (
-              if (minPartitions == 0)
-                1
-              else
-                minPartitions
-            ))
+            (if (minPartitions == 0)
+               1
+             else
+               minPartitions))
         .toLong
     super.setMaxSplitSize(maxSplitSize)
   }

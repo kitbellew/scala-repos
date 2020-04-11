@@ -47,7 +47,8 @@ final class Env(config: Config, system: ActorSystem) {
 
 object Env {
 
-  lazy val current = "explorer" boot new Env(
-    config = lila.common.PlayApp loadConfig "explorer",
-    system = lila.common.PlayApp.system)
+  lazy val current = "explorer" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "explorer",
+      system = lila.common.PlayApp.system)
 }

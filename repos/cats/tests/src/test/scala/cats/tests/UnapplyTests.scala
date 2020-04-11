@@ -24,8 +24,8 @@ class UnapplyTests extends CatsSuite {
 
     val z: List[Option[(Int, Int)]] = (x |@| y).tupled.value
 
-    z should be(
-      List(Option((1, 3)), Option((1, 4)), Option((2, 3)), Option((2, 4))))
+    z should
+      be(List(Option((1, 3)), Option((1, 4)), Option((2, 3)), Option((2, 4))))
   }
 
   checkAll(

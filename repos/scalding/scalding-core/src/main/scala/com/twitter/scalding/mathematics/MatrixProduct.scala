@@ -106,8 +106,8 @@ object MatrixProduct extends java.io.Serializable {
       .total
       .map { tot =>
         // + 1L is to make sure there is at least once reducer
-        (tot / MatrixProduct.maxTinyJoin + 1L).toInt min MatrixProduct
-          .maxReducers
+        (tot / MatrixProduct.maxTinyJoin + 1L).toInt min
+          MatrixProduct.maxReducers
       }
       .getOrElse(-1)
   }
@@ -500,8 +500,10 @@ object MatrixProduct extends java.io.Serializable {
           left: RowVector[IdxT, ValT],
           right: ColVector[IdxT, ValT]): Scalar[ValT] = {
         // Normal matrix multiplication works here, but we need to convert to a Scalar
-        val prod =
-          (left.toMatrix(0) * right.toMatrix(0)): Matrix[Int, Int, ValT]
+        val prod = (left.toMatrix(0) * right.toMatrix(0)): Matrix[
+          Int,
+          Int,
+          ValT]
         new Scalar[ValT](prod.valSym, prod.pipe.project(prod.valSym))
       }
     }
@@ -603,8 +605,8 @@ object MatrixProduct extends java.io.Serializable {
                 newRightPipe)
               // Do the product:
               .map(
-                (left.valSym.append(getField(newRightFields, 2))) -> left
-                  .valSym) { pair: (ValT, ValT) =>
+                (left.valSym.append(getField(newRightFields, 2))) ->
+                  left.valSym) { pair: (ValT, ValT) =>
                 ring.times(pair._1, pair._2)
               }
               .groupBy(left.rowSym.append(getField(newRightFields, 1))) {
@@ -655,9 +657,8 @@ object MatrixProduct extends java.io.Serializable {
                 newRightPipe)
               // Do the product:
               .map(
-                (left.valSym.append(getField(newRightFields, 2))) -> getField(
-                  newRightFields,
-                  2)) { pair: (ValT, ValT) =>
+                (left.valSym.append(getField(newRightFields, 2))) ->
+                  getField(newRightFields, 2)) { pair: (ValT, ValT) =>
                 ring.times(pair._1, pair._2)
               }
               // Keep the names from the right:
@@ -717,8 +718,8 @@ object MatrixProduct extends java.io.Serializable {
                 newRightPipe)
               // Do the product:
               .map(
-                (left.valSym.append(getField(newRightFields, 1))) -> left
-                  .valSym) { pair: (ValT, ValT) =>
+                (left.valSym.append(getField(newRightFields, 1))) ->
+                  left.valSym) { pair: (ValT, ValT) =>
                 ring.times(pair._1, pair._2)
               }
           }

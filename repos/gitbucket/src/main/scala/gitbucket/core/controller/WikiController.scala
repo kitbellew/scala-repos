@@ -41,8 +41,9 @@ trait WikiControllerBase extends ControllerBase {
 
   val newForm =
     mapping(
-      "pageName" -> trim(
-        label("Page name", text(required, maxlength(40), pagename, unique))),
+      "pageName" ->
+        trim(
+          label("Page name", text(required, maxlength(40), pagename, unique))),
       "content" -> trim(label("Content", text(required, conflictForNew))),
       "message" -> trim(label("Message", optional(text()))),
       "currentPageName" -> trim(label("Current page name", text())),
@@ -51,8 +52,8 @@ trait WikiControllerBase extends ControllerBase {
 
   val editForm =
     mapping(
-      "pageName" -> trim(
-        label("Page name", text(required, maxlength(40), pagename))),
+      "pageName" ->
+        trim(label("Page name", text(required, maxlength(40), pagename))),
       "content" -> trim(label("Content", text(required, conflictForEdit))),
       "message" -> trim(label("Message", optional(text()))),
       "currentPageName" -> trim(label("Current page name", text(required))),
@@ -75,8 +76,8 @@ trait WikiControllerBase extends ControllerBase {
             getWikiPage(repository.owner, repository.name, "_Sidebar"),
             getWikiPage(repository.owner, repository.name, "_Footer")
           )
-      } getOrElse redirect(
-        s"/${repository.owner}/${repository.name}/wiki/Home/_edit")
+      } getOrElse
+        redirect(s"/${repository.owner}/${repository.name}/wiki/Home/_edit")
     })
 
   get("/:owner/:repository/wiki/:page")(
@@ -97,8 +98,9 @@ trait WikiControllerBase extends ControllerBase {
             getWikiPage(repository.owner, repository.name, "_Sidebar"),
             getWikiPage(repository.owner, repository.name, "_Footer")
           )
-      } getOrElse redirect(
-        s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(pageName)}/_edit")
+      } getOrElse
+        redirect(
+          s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(pageName)}/_edit")
     })
 
   get("/:owner/:repository/wiki/:page/_history")(
@@ -351,9 +353,8 @@ trait WikiControllerBase extends ControllerBase {
           messages: Messages): Option[String] =
         if (value.exists("\\/:*?\"<>|".contains(_))) {
           Some(s"${name} contains invalid character.")
-        } else if (notReservedPageName(value) && (
-                     value.startsWith("_") || value.startsWith("-")
-                   )) {
+        } else if (notReservedPageName(value) &&
+                   (value.startsWith("_") || value.startsWith("-"))) {
           Some(s"${name} starts with invalid character.")
         } else {
           None

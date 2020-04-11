@@ -53,11 +53,11 @@ class ScTemplateParentsStubImpl[ParentPsi <: PsiElement](
   def getTemplateParentsTypeElements: Seq[ScTypeElement] = {
     if (types != null) {
       val typeElements = types.get
-      if (typeElements != null && typeElements.forall { elem =>
+      if (typeElements != null &&
+          typeElements.forall { elem =>
             val context = elem.getContext
-            context.eq(getPsi) || (
-              context.getContext != null && context.getContext.eq(getPsi)
-            )
+            context.eq(getPsi) ||
+            (context.getContext != null && context.getContext.eq(getPsi))
           })
         return typeElements
     }

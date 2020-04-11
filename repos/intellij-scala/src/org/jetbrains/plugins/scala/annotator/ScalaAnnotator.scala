@@ -161,8 +161,8 @@ class ScalaAnnotator
                   val typeParametersLength = t.typeParameters.length
                   val argsLength = parameterized.typeArgList.typeArgs.length
                   if (typeParametersLength != argsLength) {
-                    val error =
-                      "Wrong number of type parameters. Expected: " + typeParametersLength + ", actual: " + argsLength
+                    val error = "Wrong number of type parameters. Expected: " +
+                      typeParametersLength + ", actual: " + argsLength
                     val leftBracket = parameterized
                       .typeArgList
                       .getNode
@@ -250,8 +250,8 @@ class ScalaAnnotator
                 if l.getFirstChild != null =>
               highlightWrongInterpolatedString(interpolated, holder)
             case _
-                if l.getFirstChild.getNode.getElementType == ScalaTokenTypes
-                  .tINTEGER => // the literal is a tINTEGER
+                if l.getFirstChild.getNode.getElementType ==
+                  ScalaTokenTypes.tINTEGER => // the literal is a tINTEGER
               checkIntegerLiteral(l, holder)
             case _ =>
           }
@@ -344,9 +344,8 @@ class ScalaAnnotator
         }
 
         override def visitFunction(fun: ScFunction) {
-          if (typeAware && !compiled && fun
-                .getParent
-                .isInstanceOf[ScTemplateBody]) {
+          if (typeAware && !compiled &&
+              fun.getParent.isInstanceOf[ScTemplateBody]) {
             checkOverrideMethods(fun, holder, isInSources)
           }
           if (!fun.isConstructor)
@@ -422,9 +421,8 @@ class ScalaAnnotator
         }
 
         override def visitTypeAlias(alias: ScTypeAlias) {
-          if (typeAware && !compiled && alias
-                .getParent
-                .isInstanceOf[ScTemplateBody]) {
+          if (typeAware && !compiled &&
+              alias.getParent.isInstanceOf[ScTemplateBody]) {
             checkOverrideTypes(alias, holder)
           }
           if (!compoundType(alias))
@@ -438,10 +436,9 @@ class ScalaAnnotator
         }
 
         override def visitVariable(varr: ScVariable) {
-          if (typeAware && !compiled && (
-                varr.getParent.isInstanceOf[ScTemplateBody] ||
-                varr.getParent.isInstanceOf[ScEarlyDefinitions]
-              )) {
+          if (typeAware && !compiled &&
+              (varr.getParent.isInstanceOf[ScTemplateBody] ||
+              varr.getParent.isInstanceOf[ScEarlyDefinitions])) {
             checkOverrideVars(varr, holder, isInSources)
           }
           varr.typeElement match {
@@ -478,10 +475,9 @@ class ScalaAnnotator
         }
 
         override def visitValue(v: ScValue) {
-          if (typeAware && !compiled && (
-                v.getParent.isInstanceOf[ScTemplateBody] ||
-                v.getParent.isInstanceOf[ScEarlyDefinitions]
-              )) {
+          if (typeAware && !compiled &&
+              (v.getParent.isInstanceOf[ScTemplateBody] ||
+              v.getParent.isInstanceOf[ScEarlyDefinitions])) {
             checkOverrideVals(v, holder, isInSources)
           }
           v.typeElement match {
@@ -570,7 +566,8 @@ class ScalaAnnotator
         if (file.isCompiled)
           return false
         val vFile = file.getVirtualFile
-        if (vFile != null && ProjectFileIndex
+        if (vFile != null &&
+            ProjectFileIndex
               .SERVICE
               .getInstance(element.getProject)
               .isInLibrarySource(vFile))
@@ -649,7 +646,8 @@ class ScalaAnnotator
             }
             candidates(0) match {
               case ScalaResolveResult(fun: ScFunction, subst) =>
-                if (fun.returnType.isEmpty || !Equivalence.equiv(
+                if (fun.returnType.isEmpty ||
+                    !Equivalence.equiv(
                       subst.subst(fun.returnType.get),
                       psi.types.Boolean)) {
                   error()
@@ -846,8 +844,8 @@ class ScalaAnnotator
     val resolve: Array[ResolveResult] = refElement.multiResolve(false)
     def processError(countError: Boolean, fixes: => Seq[IntentionAction]) {
       //todo remove when resolve of unqualified expression will be fully implemented
-      if (refElement.getManager.isInProject(refElement) && resolve
-            .length == 0 &&
+      if (refElement.getManager.isInProject(refElement) &&
+          resolve.length == 0 &&
           (fixes.nonEmpty || countError)) {
         val error = ScalaBundle.message("cannot.resolve", refElement.refName)
         val annotation = holder.createErrorAnnotation(refElement.nameId, error)
@@ -862,11 +860,11 @@ class ScalaAnnotator
       return
     }
 
-    val goodDoc = refElement
-      .isInstanceOf[ScDocResolvableCodeReference] && resolve.length > 1
+    val goodDoc = refElement.isInstanceOf[ScDocResolvableCodeReference] &&
+      resolve.length > 1
     if (resolve.length != 1 && !goodDoc) {
-      if (resolve
-            .length == 0) { //Let's try to hide dynamic named parameter usage
+      if (resolve.length ==
+            0) { //Let's try to hide dynamic named parameter usage
         refElement match {
           case e: ScReferenceExpression =>
             e.getContext match {
@@ -881,21 +879,18 @@ class ScalaAnnotator
       refElement match {
         case e: ScReferenceExpression
             if e.getParent.isInstanceOf[ScPrefixExpr] &&
-              e.getParent
-                .asInstanceOf[ScPrefixExpr]
-                .operation == e => //todo: this is hide !(Not Boolean)
+              e.getParent.asInstanceOf[ScPrefixExpr].operation ==
+              e => //todo: this is hide !(Not Boolean)
         case e: ScReferenceExpression
             if e.getParent.isInstanceOf[ScInfixExpr] &&
-              e.getParent
-                .asInstanceOf[ScInfixExpr]
-                .operation == e => //todo: this is hide A op B
+              e.getParent.asInstanceOf[ScInfixExpr].operation ==
+              e => //todo: this is hide A op B
         case e: ScReferenceExpression =>
           processError(countError = false, fixes = getFix)
         case e: ScStableCodeReferenceElement
             if e.getParent.isInstanceOf[ScInfixPattern] &&
-              e.getParent
-                .asInstanceOf[ScInfixPattern]
-                .reference == e => //todo: this is hide A op B in patterns
+              e.getParent.asInstanceOf[ScInfixPattern].reference ==
+              e => //todo: this is hide A op B in patterns
         case _ =>
           refElement.getParent match {
             case s: ScImportSelector if resolve.length > 0 =>
@@ -976,8 +971,8 @@ class ScalaAnnotator
       }
     }
 
-    if (isAdvancedHighlightingEnabled(refElement) && resolve
-          .length != 1 && !goodDoc) {
+    if (isAdvancedHighlightingEnabled(refElement) && resolve.length != 1 &&
+        !goodDoc) {
       val parent = refElement.getParent
       def addCreateApplyOrUnapplyFix(
           messageKey: String,
@@ -986,7 +981,8 @@ class ScalaAnnotator
           refElement.getText,
           parent.getContext,
           parent)
-        if (refWithoutArgs != null && refWithoutArgs
+        if (refWithoutArgs != null &&
+            refWithoutArgs
               .multiResolve(false)
               .exists(!_.getElement.isInstanceOf[PsiPackage])) {
           // We can't resolve the method call A(arg1, arg2), but we can resolve A. Highlight this differently.
@@ -1094,8 +1090,7 @@ class ScalaAnnotator
       registerUsedElement(refElement, scalaResult, checkWrite = true)
     }
     checkAccessForReference(resolve, refElement, holder)
-    if (refElement.isInstanceOf[ScExpression] &&
-        resolve.length == 1) {
+    if (refElement.isInstanceOf[ScExpression] && resolve.length == 1) {
       val resolveResult = resolve(0).asInstanceOf[ScalaResolveResult]
       resolveResult.implicitFunction match {
         case Some(fun) =>
@@ -1106,8 +1101,8 @@ class ScalaAnnotator
       }
     }
 
-    if (refElement.isInstanceOf[ScDocResolvableCodeReference] && resolve
-          .length > 0 || refElement.isSoft)
+    if (refElement.isInstanceOf[ScDocResolvableCodeReference] &&
+        resolve.length > 0 || refElement.isSoft)
       return
     if (isAdvancedHighlightingEnabled(refElement) && resolve.length != 1) {
       refElement.getParent match {
@@ -1134,8 +1129,8 @@ class ScalaAnnotator
       resolve: Array[ResolveResult],
       refElement: ScReferenceElement,
       holder: AnnotationHolder) {
-    if (resolve.length != 1 || refElement.isSoft || refElement
-          .isInstanceOf[ScDocResolvableCodeReferenceImpl])
+    if (resolve.length != 1 || refElement.isSoft ||
+        refElement.isInstanceOf[ScDocResolvableCodeReferenceImpl])
       return
     resolve(0) match {
       case r: ScalaResolveResult if !r.isAccessible =>
@@ -1274,8 +1269,8 @@ class ScalaAnnotator
         case _ =>
           expr.getParent match {
             case a: ScAssignStmt
-                if a.getRExpression.contains(expr) && a
-                  .isDynamicNamedAssignment =>
+                if a.getRExpression.contains(expr) &&
+                  a.isDynamicNamedAssignment =>
               return
             case args: ScArgumentExprList =>
               return
@@ -1283,10 +1278,8 @@ class ScalaAnnotator
               return
             case tuple: ScTuple
                 if tuple.getContext.isInstanceOf[ScInfixExpr] &&
-                  tuple
-                    .getContext
-                    .asInstanceOf[ScInfixExpr]
-                    .getArgExpr == tuple =>
+                  tuple.getContext.asInstanceOf[ScInfixExpr].getArgExpr ==
+                  tuple =>
               return
             case e: ScParenthesisedExpr
                 if e.getContext.isInstanceOf[ScInfixExpr] &&
@@ -1551,7 +1544,8 @@ class ScalaAnnotator
   private def checkFunctionForVariance(
       fun: ScFunction,
       holder: AnnotationHolder) {
-    if (!modifierIsThis(fun) && !compoundType(
+    if (!modifierIsThis(fun) &&
+        !compoundType(
           fun)) { //if modifier contains [this] or if it is a compound type we do not highlight it
       checkBoundsVariance(fun, holder, fun.nameId, fun.getParent)
       if (!childHasAnnotation(fun.returnTypeElement, "uncheckedVariance")) {
@@ -1636,8 +1630,8 @@ class ScalaAnnotator
         varianceOfElement: Int,
         varianceOfPosition: Int,
         name: String) = {
-      if (varianceOfPosition != varianceOfElement && varianceOfElement != ScTypeParam
-            .Invariant) {
+      if (varianceOfPosition != varianceOfElement &&
+          varianceOfElement != ScTypeParam.Invariant) {
         val pos =
           if (toHighlight.isInstanceOf[ScVariable])
             toHighlight.getText + "_="
@@ -1698,8 +1692,8 @@ class ScalaAnnotator
                         return scTypeParam.variance
                       else
                         return i * -1
-                    if (toHighlight
-                          .getParent == scTypeParam.getParent.getParent)
+                    if (toHighlight.getParent ==
+                          scTypeParam.getParent.getParent)
                       return i * -1
                     i
                   }
@@ -1756,9 +1750,8 @@ class ScalaAnnotator
       parent match {
         // only "-1234" is negative, "- 1234" should be considered as positive 1234
         case prefixExpr: ScPrefixExpr
-            if prefixExpr.getChildren.size == 2 && prefixExpr
-              .getFirstChild
-              .getText == "-" =>
+            if prefixExpr.getChildren.size == 2 &&
+              prefixExpr.getFirstChild.getText == "-" =>
           true
         case _ =>
           false
@@ -1794,18 +1787,26 @@ class ScalaAnnotator
       var i = 0
       for (d <- number.map(_.asDigit)) {
         if (value > intLimit ||
-            intLimit / (base / divider) < value ||
-            intLimit - (d / divider) < value * (base / divider) &&
-            // This checks for -2147483648, value is 214748364, base is 10, d is 8. This check returns false.
-            // base 8 and 16 won't have this check because the divider is 2        .
-            !(isNegative && intLimit == value * base - 1 + d)) {
+            intLimit /
+              (base / divider) < value ||
+              intLimit -
+              (d / divider) <
+              value *
+              (base / divider) &&
+              // This checks for -2147483648, value is 214748364, base is 10, d is 8. This check returns false.
+              // base 8 and 16 won't have this check because the divider is 2        .
+              !(isNegative && intLimit == value * base - 1 + d)) {
           statusCode = 1
         }
         if (value < 0 ||
-            limit / (base / divider) < value ||
-            limit - (d / divider) < value * (base / divider) &&
-            // This checks for Long.MinValue, same as the the previous Int.MinValue check.
-            !(isNegative && limit == value * base - 1 + d)) {
+            limit /
+              (base / divider) < value ||
+              limit -
+              (d / divider) <
+              value *
+              (base / divider) &&
+              // This checks for Long.MinValue, same as the the previous Int.MinValue check.
+              !(isNegative && limit == value * base - 1 + d)) {
           return (None, 2)
         }
         value = value * base + d

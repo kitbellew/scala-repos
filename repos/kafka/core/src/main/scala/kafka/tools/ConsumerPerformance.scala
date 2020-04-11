@@ -88,14 +88,15 @@ object ConsumerPerformance {
       var threadList = List[ConsumerPerfThread]()
       for ((topic, streamList) <- topicMessageStreams)
         for (i <- 0 until streamList.length)
-          threadList ::= new ConsumerPerfThread(
-            i,
-            "kafka-zk-consumer-" + i,
-            streamList(i),
-            config,
-            totalMessagesRead,
-            totalBytesRead,
-            consumerTimeout)
+          threadList ::=
+            new ConsumerPerfThread(
+              i,
+              "kafka-zk-consumer-" + i,
+              streamList(i),
+              config,
+              totalMessagesRead,
+              totalBytesRead,
+              consumerTimeout)
 
       logger.info("Sleeping for 1 second.")
       Thread.sleep(1000)
@@ -167,8 +168,8 @@ object ConsumerPerformance {
     var lastReportTime: Long = startMs
     var lastConsumedTime = System.currentTimeMillis
 
-    while (messagesRead < count && System
-             .currentTimeMillis() - lastConsumedTime <= timeout) {
+    while (messagesRead < count &&
+           System.currentTimeMillis() - lastConsumedTime <= timeout) {
       val records = consumer.poll(100)
       if (records.count() > 0)
         lastConsumedTime = System.currentTimeMillis

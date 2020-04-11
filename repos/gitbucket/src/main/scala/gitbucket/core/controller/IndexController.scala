@@ -157,10 +157,11 @@ trait IndexControllerBase extends ControllerBase {
         .Serialization
         .write(
           Map(
-            "options" -> getAllUsers(false)
-              .filter(!_.isGroupAccount)
-              .map(_.userName)
-              .toArray))
+            "options" ->
+              getAllUsers(false)
+                .filter(!_.isGroupAccount)
+                .map(_.userName)
+                .toArray))
     })
 
   /**

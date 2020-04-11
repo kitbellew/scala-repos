@@ -57,8 +57,8 @@ private[spark] class UnifiedMemoryManager private[memory] (
 
   // We always maintain this invariant:
   assert(
-    onHeapExecutionMemoryPool.poolSize + storageMemoryPool
-      .poolSize == maxMemory)
+    onHeapExecutionMemoryPool.poolSize + storageMemoryPool.poolSize ==
+      maxMemory)
 
   override def maxStorageMemory: Long =
     synchronized {
@@ -80,8 +80,8 @@ private[spark] class UnifiedMemoryManager private[memory] (
       memoryMode: MemoryMode): Long =
     synchronized {
       assert(
-        onHeapExecutionMemoryPool.poolSize + storageMemoryPool
-          .poolSize == maxMemory)
+        onHeapExecutionMemoryPool.poolSize + storageMemoryPool.poolSize ==
+          maxMemory)
       assert(numBytes >= 0)
       memoryMode match {
         case MemoryMode.ON_HEAP =>
@@ -143,8 +143,8 @@ private[spark] class UnifiedMemoryManager private[memory] (
   override def acquireStorageMemory(blockId: BlockId, numBytes: Long): Boolean =
     synchronized {
       assert(
-        onHeapExecutionMemoryPool.poolSize + storageMemoryPool
-          .poolSize == maxMemory)
+        onHeapExecutionMemoryPool.poolSize + storageMemoryPool.poolSize ==
+          maxMemory)
       assert(numBytes >= 0)
       if (numBytes > maxStorageMemory) {
         // Fail fast if the block simply won't fit

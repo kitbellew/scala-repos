@@ -30,12 +30,13 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
   }
 
   override def toString: String =
-    super.toString + " - " + aliases
-      .toList
-      .filter(s => s != null && s.size > 1)
-      .map(_.toString)
-      .distinct
-      .mkString(",")
+    super.toString + " - " +
+      aliases
+        .toList
+        .filter(s => s != null && s.size > 1)
+        .map(_.toString)
+        .distinct
+        .mkString(",")
 
   /**
     * For every value the set of values that are aliases of it.
@@ -715,9 +716,8 @@ object AliasSet {
     private def checkABCD(x: Int, num: Int): Boolean = {
       // assert(x == a && num == 1 || x == b && num == 2 || ...)
       x != -1 && {
-        val otherHasA = x == notA || x == notB || x == notC || x == notD || (
-          notXs != null && bsContains(notXs, x)
-        )
+        val otherHasA = x == notA || x == notB || x == notC || x == notD ||
+          (notXs != null && bsContains(notXs, x))
         if (otherHasA)
           setThisAndOther(x)
         else
@@ -744,18 +744,19 @@ object AliasSet {
         while (i < end && {
                  val index = i >> 6
                  if (xs(index) == 0L) { // boom. for nullness, this saves 35% of the overall analysis time.
-                   i = ((index + 1) << 6) - 1 // -1 required because i is incremented in the loop body
+                   i =
+                     ((index + 1) << 6) -
+                       1 // -1 required because i is incremented in the loop body
                    true
                  } else {
                    val mask = 1L << i
                    // if (mask > xs(index)) we could also advance i to the next value, but that didn't pay off in benchmarks
                    val thisHasI = (xs(index) & mask) != 0L
                    !thisHasI || {
-                     val otherHasI =
-                       i == notA || i == notB || i == notC || i == notD || (
-                         notXs != null && index < notXs
-                           .length && (notXs(index) & mask) != 0L
-                       )
+                     val otherHasI = i == notA || i == notB || i == notC ||
+                       i == notD ||
+                       (notXs != null && index < notXs.length &&
+                         (notXs(index) & mask) != 0L)
                      if (otherHasI)
                        setThisAndOther(i)
                      otherHasI
@@ -773,9 +774,8 @@ object AliasSet {
     // is spent here. within hasNext, almost the entire time is spent in `checkXs`.
     //
     def hasNext: Boolean =
-      iValid || abcdNext != -1 || checkABCD(a, 1) || checkABCD(
-        b,
-        2) || checkABCD(c, 3) || checkABCD(d, 4) || checkXs
+      iValid || abcdNext != -1 || checkABCD(a, 1) || checkABCD(b, 2) ||
+        checkABCD(c, 3) || checkABCD(d, 4) || checkXs
 
     def next(): Int = {
       if (hasNext) {

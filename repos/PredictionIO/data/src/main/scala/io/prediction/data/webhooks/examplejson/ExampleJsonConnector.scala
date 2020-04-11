@@ -106,13 +106,10 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
         ("entityType" -> "user") ~
         ("entityId" -> userAction.userId) ~
         ("eventTime" -> userAction.timestamp) ~
-        (
-          "properties" -> (
-            ("context" -> userAction.context) ~
-              ("anotherProperty1" -> userAction.anotherProperty1) ~
-              ("anotherProperty2" -> userAction.anotherProperty2)
-          )
-        )
+        ("properties" ->
+          (("context" -> userAction.context) ~
+            ("anotherProperty1" -> userAction.anotherProperty1) ~
+            ("anotherProperty2" -> userAction.anotherProperty2)))
     json
   }
 
@@ -127,13 +124,10 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
         ("targetEntityType" -> "item") ~
         ("targetEntityId" -> userActionItem.itemId) ~
         ("eventTime" -> userActionItem.timestamp) ~
-        (
-          "properties" -> (
-            ("context" -> userActionItem.context) ~
-              ("anotherPropertyA" -> userActionItem.anotherPropertyA) ~
-              ("anotherPropertyB" -> userActionItem.anotherPropertyB)
-          )
-        )
+        ("properties" ->
+          (("context" -> userActionItem.context) ~
+            ("anotherPropertyA" -> userActionItem.anotherPropertyA) ~
+            ("anotherPropertyB" -> userActionItem.anotherPropertyB)))
     json
   }
 

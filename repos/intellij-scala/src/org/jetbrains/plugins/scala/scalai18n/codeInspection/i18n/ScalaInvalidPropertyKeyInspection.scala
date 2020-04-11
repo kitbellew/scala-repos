@@ -107,8 +107,8 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
         new util.ArrayList[PropertiesFile](propertiesFiles.size)
       import scala.collection.JavaConversions._
       for (file <- propertiesFiles) {
-        if (!fileIndex.isInLibraryClasses(file.getVirtualFile) && !fileIndex
-              .isInLibrarySource(file.getVirtualFile)) {
+        if (!fileIndex.isInLibraryClasses(file.getVirtualFile) &&
+            !fileIndex.isInLibrarySource(file.getVirtualFile)) {
           result.add(file)
         }
       }
@@ -117,9 +117,8 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
 
     def isComputablePropertyExpression(myExpression: ScExpression): Boolean = {
       var expression = myExpression
-      while (expression != null && expression
-               .getParent
-               .isInstanceOf[ScParenthesisedExpr]) {
+      while (expression != null &&
+             expression.getParent.isInstanceOf[ScParenthesisedExpr]) {
         expression = expression.getParent.asInstanceOf[ScExpression]
       }
       expression != null && expression.getParent.isInstanceOf[ScExpression]
@@ -209,10 +208,8 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
                         val param: java.lang.Integer = args.length - i - 1
                         val parameters = method.getParameterList.getParameters
                         if (i + paramsCount >= args.length && method != null &&
-                            method
-                              .getParameterList
-                              .getParametersCount == i + 2 &&
-                            parameters(i + 1).isVarArgs) {
+                            method.getParameterList.getParametersCount ==
+                              i + 2 && parameters(i + 1).isVarArgs) {
                           myProblems.add(
                             myManager.createProblemDescriptor(
                               methodCall,

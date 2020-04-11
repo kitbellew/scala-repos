@@ -108,10 +108,11 @@ object Utility {
       nextch: () => Unit,
       reportSyntaxError: String => Unit,
       reportTruncatedError: String => Unit): String = {
-    val hex = (ch() == 'x') && {
-      nextch();
-      true
-    }
+    val hex =
+      (ch() == 'x') && {
+        nextch();
+        true
+      }
     val base =
       if (hex)
         16
@@ -162,15 +163,14 @@ object Utility {
     import java.lang.Character._
     // The constants represent groups Mc, Me, Mn, Lm, and Nd.
 
-    isNameStart(ch) || (
-      getType(ch).toByte match {
-        case COMBINING_SPACING_MARK | ENCLOSING_MARK | NON_SPACING_MARK |
-            MODIFIER_LETTER | DECIMAL_DIGIT_NUMBER =>
-          true
-        case _ =>
-          ".-:" contains ch
-      }
-    )
+    isNameStart(ch) ||
+    (getType(ch).toByte match {
+      case COMBINING_SPACING_MARK | ENCLOSING_MARK | NON_SPACING_MARK |
+          MODIFIER_LETTER | DECIMAL_DIGIT_NUMBER =>
+        true
+      case _ =>
+        ".-:" contains ch
+    })
   }
 
   /** {{{

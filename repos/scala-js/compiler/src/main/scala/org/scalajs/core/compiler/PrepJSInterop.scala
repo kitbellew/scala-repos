@@ -466,8 +466,7 @@ abstract class PrepJSInterop
           // Expose objects (modules) members of Scala.js-defined JS classes
           if (sym.isModule && (enclosingOwner is OwnerKind.JSNonNative)) {
             def shouldBeExposed: Boolean = {
-              !sym.isLocalToBlock &&
-              !sym.isSynthetic &&
+              !sym.isLocalToBlock && !sym.isSynthetic &&
               !isPrivateMaybeWithin(sym)
             }
             if (shouldBeExposed)
@@ -498,8 +497,8 @@ abstract class PrepJSInterop
          * and similar constructs. This causes the unsoundness filed as #1385.
          */
         !(
-          t <:< JSAnyClass.tpe || t =:= AnyRefClass.tpe || t =:= DynamicClass
-            .tpe
+          t <:< JSAnyClass.tpe || t =:= AnyRefClass.tpe ||
+            t =:= DynamicClass.tpe
         )
       }
 
@@ -692,8 +691,7 @@ abstract class PrepJSInterop
                 jsInterop.jsNameOf(membSym) + '\''
             }
             "A member of a JS class is overriding another member with a different JS name.\n\n" +
-              memberDefString(low) + "\n" +
-              "    is conflicting with\n" +
+              memberDefString(low) + "\n" + "    is conflicting with\n" +
               memberDefString(high) + "\n"
           }
 
@@ -746,10 +744,8 @@ abstract class PrepJSInterop
          */
         if (enclosingOwner is OwnerKind.JSNonNative) {
           def shouldBeExposed: Boolean = {
-            !sym.isConstructor &&
-            !sym.isValueParameter &&
-            !sym.isParamWithDefault &&
-            !sym.isSynthetic &&
+            !sym.isConstructor && !sym.isValueParameter &&
+            !sym.isParamWithDefault && !sym.isSynthetic &&
             !isPrivateMaybeWithin(sym)
           }
           if (shouldBeExposed) {
@@ -842,8 +838,9 @@ abstract class PrepJSInterop
         }
 
         // private[Scope] methods must be final
-        if (sym.isMethod && (sym.hasAccessBoundary && !sym.isProtected) &&
-            !sym.isFinal && !sym.isClassConstructor) {
+        if (sym.isMethod &&
+            (sym.hasAccessBoundary && !sym.isProtected) && !sym.isFinal &&
+            !sym.isClassConstructor) {
           reporter.error(
             tree.pos,
             "Qualified private members in Scala.js-defined JS classes " +
@@ -865,8 +862,8 @@ abstract class PrepJSInterop
       }
 
       if (sym.isPrimaryConstructor || sym.isValueParameter ||
-          sym.isParamWithDefault || sym.isAccessor ||
-          sym.isParamAccessor || sym.isDeferred || sym.isSynthetic ||
+          sym.isParamWithDefault || sym.isAccessor || sym.isParamAccessor ||
+          sym.isDeferred || sym.isSynthetic ||
           AllJSFunctionClasses.contains(sym.owner) ||
           (enclosingOwner is OwnerKind.JSNonNative)) {
         /* Ignore (i.e. allow) primary ctor, parameters, default parameter
@@ -1140,10 +1137,8 @@ abstract class PrepJSInterop
     val sym = ddef.symbol
     val needsFix = {
       sym.isPrivate &&
-      (
-        wasPublicBeforeTyper(sym) ||
-        (sym.isAccessor && wasPublicBeforeTyper(sym.accessed))
-      )
+      (wasPublicBeforeTyper(sym) ||
+      (sym.isAccessor && wasPublicBeforeTyper(sym.accessed)))
     }
     if (needsFix) {
       sym.resetFlag(Flag.PRIVATE)
@@ -1167,8 +1162,8 @@ object PrepJSInterop {
 
     @inline
     def isBaseKind: Boolean =
-      Integer.lowestOneBit(
-        baseKinds) == baseKinds && baseKinds != 0 // exactly 1 bit on
+      Integer.lowestOneBit(baseKinds) == baseKinds &&
+        baseKinds != 0 // exactly 1 bit on
 
     @inline
     def |(that: OwnerKind): OwnerKind =

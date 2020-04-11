@@ -80,9 +80,8 @@ class PersistentActorDeleteFailureSpec
       persistentActor ! DeleteTo(100)
       val message = expectMsgType[Warning].message.toString
       message should include("Failed to deleteMessages")
-      message should include(
-        "Boom! Unable to delete events!"
-      ) // the `cause` message
+      message should
+        include("Boom! Unable to delete events!") // the `cause` message
     }
 
     "be receive an DeleteMessagesFailure when deletion failed, and the default logging should not be triggered" in {

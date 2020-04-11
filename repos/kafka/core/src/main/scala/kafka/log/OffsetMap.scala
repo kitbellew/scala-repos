@@ -106,8 +106,8 @@ class SkimpyOffsetMap(val memory: Int, val hashAlgorithm: String = "MD5")
     * Check that there is no entry at the given position
     */
   private def isEmpty(position: Int): Boolean =
-    bytes.getLong(position) == 0 && bytes.getLong(position + 8) == 0 && bytes
-      .getLong(position + 16) == 0
+    bytes.getLong(position) == 0 && bytes.getLong(position + 8) == 0 &&
+      bytes.getLong(position + 16) == 0
 
   /**
     * Get the offset associated with this key.
@@ -165,8 +165,8 @@ class SkimpyOffsetMap(val memory: Int, val hashAlgorithm: String = "MD5")
     * @return The byte offset in the buffer at which the ith probing for the given hash would reside
     */
   private def positionOf(hash: Array[Byte], attempt: Int): Int = {
-    val probe = CoreUtils.readInt(hash, math.min(attempt, hashSize - 4)) + math
-      .max(0, attempt - hashSize + 4)
+    val probe = CoreUtils.readInt(hash, math.min(attempt, hashSize - 4)) +
+      math.max(0, attempt - hashSize + 4)
     val slot = Utils.abs(probe) % slots
     this.probes += 1
     slot * bytesPerEntry

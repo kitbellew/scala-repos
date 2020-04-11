@@ -89,7 +89,8 @@ class ThriftClientFinagleServerTest
       client.multiply(1, 0 /*div by zero*/ )
     }
     assert(
-      exc.getMessage() == "Internal error processing multiply: 'java.lang.ArithmeticException: / by zero'")
+      exc.getMessage() ==
+        "Internal error processing multiply: 'java.lang.ArithmeticException: / by zero'")
   }
 
   test("treat synchronous exceptions as transport exceptions") {
@@ -97,7 +98,8 @@ class ThriftClientFinagleServerTest
       client.complex_return("throwAnException")
     }
     assert(
-      exc.getMessage() == "Internal error processing complex_return: 'java.lang.Exception: msg'")
+      exc.getMessage() ==
+        "Internal error processing complex_return: 'java.lang.Exception: msg'")
   }
 
   test("handle one-way calls") {

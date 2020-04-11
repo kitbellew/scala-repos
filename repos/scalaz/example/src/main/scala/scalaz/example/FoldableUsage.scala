@@ -62,19 +62,19 @@ object FoldableUsage extends App {
   // with this you get a collapse function which is perhaps like the
   // flatten method in the standard library, however it is more versatile
   assert(
-    FoldListOfOptions.collapse[List, Int](listOfOptions) === listOfOptions
-      .flatten)
+    FoldListOfOptions.collapse[List, Int](listOfOptions) ===
+      listOfOptions.flatten)
 
   // we can accumulate into any type for which we have an
   // ApplicativePlus instance, so here we can collapse our List of
   // Options into a Vector
   assert(
-    FoldListOfOptions.collapse[Vector, Int](listOfOptions) === Vector(
-      listOfOptions.flatten: _*))
+    FoldListOfOptions.collapse[Vector, Int](listOfOptions) ===
+      Vector(listOfOptions.flatten: _*))
 
   // we can go deeeeep:
-  val deepFolder = Foldable[List] compose Foldable[Vector] compose Foldable[
-    Stream] compose Foldable[Option]
+  val deepFolder = Foldable[List] compose Foldable[Vector] compose
+    Foldable[Stream] compose Foldable[Option]
   val deep: List[Vector[Stream[Option[Int]]]] = List(
     Vector(Stream(1.some, none[Int]), Stream(2.some)),
     Vector(Stream(3.some)))

@@ -194,8 +194,8 @@ trait ConstraintReads {
         .reads(js)
         .flatMap { t =>
           (
-            scala.util.control.Exception.catching(classOf[MatchError]) opt cond(
-              t)
+            scala.util.control.Exception.catching(classOf[MatchError]) opt
+              cond(t)
           ).flatMap { b =>
               if (b)
                 Some(subreads.reads(js).map(_ => t))
@@ -249,11 +249,12 @@ trait PathWrites {
       wrs: OWrites[JsValue]): OWrites[JsValue] =
     OWrites[JsValue] { js =>
       JsPath.createObj(
-        path -> path(js)
-          .headOption
-          .flatMap(js =>
-            js.asOpt[JsObject].map(obj => obj.deepMerge(wrs.writes(obj))))
-          .getOrElse(JsNull))
+        path ->
+          path(js)
+            .headOption
+            .flatMap(js =>
+              js.asOpt[JsObject].map(obj => obj.deepMerge(wrs.writes(obj))))
+            .getOrElse(JsNull))
     }
 
   def pure[A](path: JsPath, fixed: => A)(implicit

@@ -180,9 +180,10 @@ class AkkaSupportSpec extends MutableScalatraSpec {
           }
         Future {
           blocking {
-            id.toString -> client.get(s"/async-attributes/$id") {
-              client.body
-            }
+            id.toString ->
+              client.get(s"/async-attributes/$id") {
+                client.body
+              }
           }
         }(multiClentEc)
       }

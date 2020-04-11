@@ -67,49 +67,50 @@ object RoutesCompiler extends AutoPlugin {
   val autoImport = RoutesKeys
 
   override def projectSettings =
-    defaultSettings ++
-      inConfig(Compile)(routesSettings) ++
+    defaultSettings ++ inConfig(Compile)(routesSettings) ++
       inConfig(Test)(routesSettings)
 
   def routesSettings =
     Seq(
       sources in routes := Nil,
-      routesCompilerTasks <<= Def.taskDyn {
+      routesCompilerTasks <<=
+        Def.taskDyn {
 
-        // Aggregate all the routes file tasks that we want to compile the reverse routers for.
-        aggregateReverseRoutes
-          .value
-          .map { agg =>
-            routesCompilerTasks in (agg.project, configuration.value)
-          }
-          .join
-          .map {
-            aggTasks: Seq[Seq[RoutesCompilerTask]] =>
-              // Aggregated tasks need to have forwards router compilation disabled and reverse router compilation enabled.
-              val reverseRouterTasks = aggTasks
-                .flatten
-                .map { task =>
-                  task.copy(forwardsRouter = false, reverseRouter = true)
-                }
+          // Aggregate all the routes file tasks that we want to compile the reverse routers for.
+          aggregateReverseRoutes
+            .value
+            .map { agg =>
+              routesCompilerTasks in (agg.project, configuration.value)
+            }
+            .join
+            .map {
+              aggTasks: Seq[Seq[RoutesCompilerTask]] =>
+                // Aggregated tasks need to have forwards router compilation disabled and reverse router compilation enabled.
+                val reverseRouterTasks = aggTasks
+                  .flatten
+                  .map { task =>
+                    task.copy(forwardsRouter = false, reverseRouter = true)
+                  }
 
-              // Find the routes compile tasks for this project
-              val thisProjectTasks = (sources in routes)
-                .value
-                .map { file =>
-                  RoutesCompilerTask(
-                    file,
-                    routesImport.value,
-                    forwardsRouter = true,
-                    reverseRouter = generateReverseRouter.value,
-                    namespaceReverseRouter = namespaceReverseRouter.value)
-                }
+                // Find the routes compile tasks for this project
+                val thisProjectTasks = (sources in routes)
+                  .value
+                  .map { file =>
+                    RoutesCompilerTask(
+                      file,
+                      routesImport.value,
+                      forwardsRouter = true,
+                      reverseRouter = generateReverseRouter.value,
+                      namespaceReverseRouter = namespaceReverseRouter.value)
+                  }
 
-              thisProjectTasks ++ reverseRouterTasks
-          }
-      },
+                thisProjectTasks ++ reverseRouterTasks
+            }
+        },
       watchSources in Defaults.ConfigGlobal <++= sources in routes,
-      target in routes := crossTarget.value / "routes" / Defaults
-        .nameForSrc(configuration.value.name),
+      target in routes :=
+        crossTarget.value / "routes" /
+          Defaults.nameForSrc(configuration.value.name),
       routes <<= compileRoutesFiles,
       sourceGenerators <+= routes,
       managedSourceDirectories <+= target in routes
@@ -122,29 +123,31 @@ object RoutesCompiler extends AutoPlugin {
       // Generate reverse router defaults to true if this project is not aggregated by any of the projects it depends on
       // aggregateReverseRoutes projects.  Otherwise, it will be false, since another project will be generating the
       // reverse router for it.
-      generateReverseRouter <<= Def.settingDyn {
-        val projectRef = thisProjectRef.value
-        val dependencies = buildDependencies
-          .value
-          .classpathTransitiveRefs(projectRef)
+      generateReverseRouter <<=
+        Def.settingDyn {
+          val projectRef = thisProjectRef.value
+          val dependencies = buildDependencies
+            .value
+            .classpathTransitiveRefs(projectRef)
 
-        // Go through each dependency of this project
-        dependencies
-          .map { dep =>
-            // Get the aggregated reverse routes projects for the dependency, if defined
-            Def.optional(aggregateReverseRoutes in dep)(
-              _.map(_.map(_.project)).getOrElse(Nil))
+          // Go through each dependency of this project
+          dependencies
+            .map { dep =>
+              // Get the aggregated reverse routes projects for the dependency, if defined
+              Def.optional(aggregateReverseRoutes in dep)(
+                _.map(_.map(_.project)).getOrElse(Nil))
 
-          }
-          .join
-          .apply { aggregated: Seq[Seq[ProjectReference]] =>
-            val localProject = LocalProject(projectRef.project)
-            // Return false if this project is aggregated by one of our dependencies
-            !aggregated.flatten.contains(localProject)
-          }
-      },
+            }
+            .join
+            .apply { aggregated: Seq[Seq[ProjectReference]] =>
+              val localProject = LocalProject(projectRef.project)
+              // Return false if this project is aggregated by one of our dependencies
+              !aggregated.flatten.contains(localProject)
+            }
+        },
       namespaceReverseRouter := false,
-      routesGenerator := InjectedRoutesGenerator, // changed from StaticRoutesGenerator in 2.5.0
+      routesGenerator :=
+        InjectedRoutesGenerator, // changed from StaticRoutesGenerator in 2.5.0
       sourcePositionMappers += routesPositionMapper
     )
 
@@ -168,11 +171,12 @@ object RoutesCompiler extends AutoPlugin {
     val (products, errors) =
       syncIncremental(cacheDirectory, ops) { opsToRun: Seq[RoutesCompilerOp] =>
         val results = opsToRun.map { op =>
-          op -> play
-            .routes
-            .compiler
-            .RoutesCompiler
-            .compile(op.task, generator, generatedDir)
+          op ->
+            play
+              .routes
+              .compiler
+              .RoutesCompiler
+              .compile(op.task, generator, generatedDir)
         }
         val opResults =
           results
@@ -215,9 +219,8 @@ object RoutesCompiler extends AutoPlugin {
       error: PlayException.ExceptionSource) = {
     // log the source file and line number with the error message
     log.error(
-      Option(error.sourceName).getOrElse("") + Option(error.line)
-        .map(":" + _)
-        .getOrElse("") + ": " + error.getMessage)
+      Option(error.sourceName).getOrElse("") +
+        Option(error.line).map(":" + _).getOrElse("") + ": " + error.getMessage)
     Option(error.interestingLines(0)).map(_.focus).flatMap(_.headOption) map {
       line =>
         // log the line

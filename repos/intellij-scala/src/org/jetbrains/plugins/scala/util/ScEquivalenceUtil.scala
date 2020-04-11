@@ -28,16 +28,10 @@ object ScEquivalenceUtil {
       return false
     val isSomeClassLocalOrAnonymous = clazz1
       .qualifiedName == null || clazz2.qualifiedName == null ||
-      (
-        PsiTreeUtil
-          .getContextOfType(clazz1, true, classOf[PsiClass]) != null && clazz1
-          .getContainingClass == null
-      ) ||
-      (
-        PsiTreeUtil
-          .getContextOfType(clazz2, true, classOf[PsiClass]) != null && clazz2
-          .getContainingClass == null
-      )
+      (PsiTreeUtil.getContextOfType(clazz1, true, classOf[PsiClass]) != null &&
+        clazz1.getContainingClass == null) ||
+      (PsiTreeUtil.getContextOfType(clazz2, true, classOf[PsiClass]) != null &&
+        clazz2.getContainingClass == null)
 
     if (isSomeClassLocalOrAnonymous)
       return false
@@ -51,8 +45,7 @@ object ScEquivalenceUtil {
   }
 
   def arePackagesEquivalent(p1: PsiPackage, p2: PsiPackage) = {
-    p1 != null && p2 != null &&
-    p1.getManager == p2.getManager &&
+    p1 != null && p2 != null && p1.getManager == p2.getManager &&
     p1.getQualifiedName == p2.getQualifiedName
   }
 

@@ -114,12 +114,11 @@ private[streaming] class DirectKafkaInputDStream[
           lagPerPartition.map {
             case (tp, lag) =>
               val backpressureRate = Math.round(lag / totalLag.toFloat * rate)
-              tp -> (
-                if (maxRateLimitPerPartition > 0) {
-                  Math.min(backpressureRate, maxRateLimitPerPartition)
-                } else
-                  backpressureRate
-              )
+              tp ->
+                (if (maxRateLimitPerPartition > 0) {
+                   Math.min(backpressureRate, maxRateLimitPerPartition)
+                 } else
+                   backpressureRate)
           }
         case None =>
           offsets.map {
@@ -129,11 +128,8 @@ private[streaming] class DirectKafkaInputDStream[
       }
 
     if (effectiveRateLimitPerPartition.values.sum > 0) {
-      val secsPerBatch = context
-        .graph
-        .batchDuration
-        .milliseconds
-        .toDouble / 1000
+      val secsPerBatch = context.graph.batchDuration.milliseconds.toDouble /
+        1000
       Some(
         effectiveRateLimitPerPartition.map {
           case (tp, limit) =>
@@ -175,8 +171,9 @@ private[streaming] class DirectKafkaInputDStream[
         mmp.map {
           case (tp, messages) =>
             val lo = leaderOffsets(tp)
-            tp -> lo
-              .copy(offset = Math.min(currentOffsets(tp) + messages, lo.offset))
+            tp ->
+              lo.copy(offset = Math
+                .min(currentOffsets(tp) + messages, lo.offset))
         }
       }
       .getOrElse(leaderOffsets)
@@ -257,12 +254,13 @@ private[streaming] class DirectKafkaInputDStream[
           case (t, b) =>
             logInfo(
               s"Restoring KafkaRDD for time $t ${b.mkString("[", ", ", "]")}")
-            generatedRDDs += t -> new KafkaRDD[K, V, U, T, R](
-              context.sparkContext,
-              kafkaParams,
-              b.map(OffsetRange(_)),
-              leaders,
-              messageHandler)
+            generatedRDDs += t ->
+              new KafkaRDD[K, V, U, T, R](
+                context.sparkContext,
+                kafkaParams,
+                b.map(OffsetRange(_)),
+                leaders,
+                messageHandler)
         }
     }
   }

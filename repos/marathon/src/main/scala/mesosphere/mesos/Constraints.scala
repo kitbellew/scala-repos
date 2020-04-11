@@ -143,8 +143,7 @@ object Constraints {
         _.agentInfo
           .attributes
           .filter { y =>
-            y.getName == field &&
-            y.getText.getValue == value
+            y.getName == field && y.getText.getValue == value
           }
           .nonEmpty
       }

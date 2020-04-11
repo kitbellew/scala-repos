@@ -138,8 +138,8 @@ case class GetStructField(
   override def toString: String =
     s"$child.${name.getOrElse(childSchema(ordinal).name)}"
   override def sql: String =
-    child
-      .sql + s".${quoteIdentifier(name.getOrElse(childSchema(ordinal).name))}"
+    child.sql +
+      s".${quoteIdentifier(name.getOrElse(childSchema(ordinal).name))}"
 
   protected override def nullSafeEval(input: Any): Any =
     input.asInstanceOf[InternalRow].get(ordinal, childSchema(ordinal).dataType)
@@ -269,8 +269,8 @@ case class GetArrayItem(child: Expression, ordinal: Expression)
   protected override def nullSafeEval(value: Any, ordinal: Any): Any = {
     val baseValue = value.asInstanceOf[ArrayData]
     val index = ordinal.asInstanceOf[Number].intValue()
-    if (index >= baseValue.numElements() || index < 0 || baseValue
-          .isNullAt(index)) {
+    if (index >= baseValue.numElements() || index < 0 ||
+        baseValue.isNullAt(index)) {
       null
     } else {
       baseValue.get(index, dataType)

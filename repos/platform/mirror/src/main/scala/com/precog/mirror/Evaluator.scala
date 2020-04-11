@@ -85,14 +85,13 @@ trait EvaluatorModule
       }
 
       // done in this order for eagerness reasons
-      raw zip (
-        Stream from init map {
+      raw zip
+        (Stream from init map {
           Vector(_)
+        }) map {
+          case (a, b) =>
+            (b, a)
         }
-      ) map {
-        case (a, b) =>
-          (b, a)
-      }
     }
 
     def loop(
@@ -144,14 +143,13 @@ trait EvaluatorModule
           }
 
           // done in this order for eagerness reasons
-          raw zip (
-            Stream from init map {
+          raw zip
+            (Stream from init map {
               Vector(_)
+            }) map {
+              case (a, b) =>
+                (b, a)
             }
-          ) map {
-            case (a, b) =>
-              (b, a)
-          }
         }
 
         case Relate(_, from, to, in) => {
@@ -304,8 +302,8 @@ trait EvaluatorModule
 
           expr.binding match {
             case LetBinding(b) => {
-              val env2 =
-                env ++ ((Stream continually b) zip b.params zip actualSets)
+              val env2 = env ++
+                ((Stream continually b) zip b.params zip actualSets)
               loop(env2, restrict)(b.left)
             }
 
@@ -350,8 +348,8 @@ trait EvaluatorModule
                   v
               }
 
-              val result = values collect red
-                .prepare reduceOption red orElse red.zero
+              val result = values collect red.prepare reduceOption red orElse
+                red.zero
 
               result.toSeq map { v =>
                 (Vector(), v)
@@ -756,9 +754,9 @@ trait EvaluatorModule
               CoproductProvenance(l, r)
           }
 
-          merged ++ (leftRec drop merged.length) ++ (
-            rightRec drop merged.length
-          )
+          merged ++
+            (leftRec drop merged.length) ++
+            (rightRec drop merged.length)
         }
 
         case prov =>
@@ -779,12 +777,13 @@ trait EvaluatorModule
   private def orderFromIndices(indices: Seq[Int]): Order[SEvent] = {
     new Order[SEvent] {
       def order(left: SEvent, right: SEvent) = {
-        (indices map left._1) zip (indices map right._1) map {
-          case (l, r) =>
-            Ordering.fromInt(l - r)
-        } reduce {
-          _ |+| _
-        }
+        (indices map left._1) zip
+          (indices map right._1) map {
+            case (l, r) =>
+              Ordering.fromInt(l - r)
+          } reduce {
+            _ |+| _
+          }
       }
     }
   }

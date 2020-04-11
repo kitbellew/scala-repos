@@ -173,8 +173,8 @@ object WorkflowUtils extends Logging {
       case _ =>
         false
     } map { jv =>
-      implicit lazy val formats = Utils
-        .json4sDefaultFormats + new NameParamsSerializer
+      implicit lazy val formats = Utils.json4sDefaultFormats +
+        new NameParamsSerializer
       val np: NameParams =
         try {
           jv._2.extract[NameParams]
@@ -208,7 +208,8 @@ object WorkflowUtils extends Logging {
         .getOrElse(EmptyParams())
 
       (np.name, extractedParams)
-    } getOrElse ("", EmptyParams())
+    } getOrElse
+      ("", EmptyParams())
   }
 
   /** Grab environmental variables that starts with 'PIO_'. */

@@ -216,14 +216,13 @@ object LDAPUtil {
       if (results.hasMore) {
         getEntries(
           results,
-          entries :+ (
-            try {
+          entries :+
+            (try {
               Option(results.next)
             } catch {
               case ex: LDAPReferralException =>
                 None // NOTE(tanacasino): Referral follow is off. so ignores it.(for AD)
-            }
-          )
+            })
         )
       } else {
         entries.flatten

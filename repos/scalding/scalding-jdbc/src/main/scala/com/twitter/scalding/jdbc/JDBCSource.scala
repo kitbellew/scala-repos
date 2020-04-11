@@ -116,8 +116,8 @@ abstract class JDBCSource extends Source with ColumnDefiner with JdbcDriver {
       }
       .mkString(",\n")
 
-    "CREATE TABLE " + addBackTicks(
-      tableName.get) + " (\n" + allCols + ",\n PRIMARY KEY HERE!!!!"
+    "CREATE TABLE " + addBackTicks(tableName.get) + " (\n" + allCols +
+      ",\n PRIMARY KEY HERE!!!!"
   }
 }
 

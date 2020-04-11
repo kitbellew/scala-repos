@@ -57,14 +57,15 @@ class ThrottledHandlerTest
         log.error("apple: %s", "done.")
 
         assert(
-          handler.get.split("\n").toList == List(
-            "apple: help!",
-            "apple: help 2!",
-            "orange: orange!",
-            "orange: orange!",
-            "apple: help 3!",
-            "(swallowed 2 repeating messages)",
-            "apple: done."))
+          handler.get.split("\n").toList ==
+            List(
+              "apple: help!",
+              "apple: help 2!",
+              "orange: orange!",
+              "orange: orange!",
+              "apple: help 3!",
+              "(swallowed 2 repeating messages)",
+              "apple: done."))
       }
     }
 
@@ -83,12 +84,13 @@ class ThrottledHandlerTest
         log.error("hello.")
 
         assert(
-          handler.get.split("\n").toList == List(
-            "apple: help!",
-            "apple: help!",
-            "apple: help!",
-            "(swallowed 2 repeating messages)",
-            "hello."))
+          handler.get.split("\n").toList ==
+            List(
+              "apple: help!",
+              "apple: help!",
+              "apple: help!",
+              "(swallowed 2 repeating messages)",
+              "hello."))
       }
     }
   }

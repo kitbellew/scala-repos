@@ -384,9 +384,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
               case tuple @ (arg1: TreeNode[_], arg2: TreeNode[_]) =>
                 val newChild1 = nextOperation(arg1.asInstanceOf[BaseType], rule)
                 val newChild2 = nextOperation(arg2.asInstanceOf[BaseType], rule)
-                if (!(
-                      newChild1 fastEquals arg1
-                    ) || !(newChild2 fastEquals arg2)) {
+                if (!(newChild1 fastEquals arg1) ||
+                    !(newChild2 fastEquals arg2)) {
                   changed = true
                   (newChild1, newChild2)
                 } else {
@@ -656,8 +655,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     val jsonValues = scala.collection.mutable.ArrayBuffer.empty[JValue]
 
     def collectJsonValue(tn: BaseType): Unit = {
-      val jsonFields = ("class" -> JString(tn.getClass.getName)) ::
-        ("num-children" -> JInt(tn.children.length)) :: tn.jsonFields
+      val jsonFields =
+        ("class" -> JString(tn.getClass.getName)) ::
+          ("num-children" -> JInt(tn.children.length)) :: tn.jsonFields
       jsonValues += JObject(jsonFields)
       tn.children.foreach(collectJsonValue)
     }
@@ -671,10 +671,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     val fieldValues = productIterator.toSeq ++ otherCopyArgs
     assert(
       fieldNames.length == fieldValues.length,
-      s"${getClass.getSimpleName} fields: " +
-        fieldNames.mkString(", ") + s", values: " + fieldValues
-        .map(_.toString)
-        .mkString(", ")
+      s"${getClass.getSimpleName} fields: " + fieldNames.mkString(", ") +
+        s", values: " + fieldValues.map(_.toString).mkString(", ")
     )
 
     fieldNames
@@ -686,10 +684,11 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           name -> JInt(children.indexOf(value))
         case (name, value: Seq[BaseType])
             if value.toSet.subsetOf(containsChild) =>
-          name -> JArray(
-            value
-              .map(v => JInt(children.indexOf(v.asInstanceOf[TreeNode[_]])))
-              .toList)
+          name ->
+            JArray(
+              value
+                .map(v => JInt(children.indexOf(v.asInstanceOf[TreeNode[_]])))
+                .toList)
         case (name, value) =>
           name -> parseToJson(value)
       }
@@ -725,10 +724,11 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       case m: Metadata =>
         m.jsonValue
       case s: StorageLevel =>
-        ("useDisk" -> s.useDisk) ~ ("useMemory" -> s.useMemory) ~ (
-          "useOffHeap" -> s.useOffHeap
-        ) ~
-          ("deserialized" -> s.deserialized) ~ ("replication" -> s.replication)
+        ("useDisk" -> s.useDisk) ~
+          ("useMemory" -> s.useMemory) ~
+          ("useOffHeap" -> s.useOffHeap) ~
+          ("deserialized" -> s.deserialized) ~
+          ("replication" -> s.replication)
       case n: TreeNode[_] =>
         n.jsonValue
       case o: Option[_] =>
@@ -756,13 +756,14 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           val fieldNames = getConstructorParameterNames(p.getClass)
           val fieldValues = p.productIterator.toSeq
           assert(fieldNames.length == fieldValues.length)
-          ("product-class" -> JString(p.getClass.getName)) :: fieldNames
-            .zip(fieldValues)
-            .map {
-              case (name, value) =>
-                name -> parseToJson(value)
-            }
-            .toList
+          ("product-class" -> JString(p.getClass.getName)) ::
+            fieldNames
+              .zip(fieldValues)
+              .map {
+                case (name, value) =>
+                  name -> parseToJson(value)
+              }
+              .toList
         } catch {
           case _: RuntimeException =>
             null
@@ -796,8 +797,10 @@ object TreeNode {
       } else if (cls.getName.endsWith("$")) {
         cls.getField("MODULE$").get(cls).asInstanceOf[TreeNode[_]]
       } else {
-        val numChildren =
-          (nextNode \ "num-children").asInstanceOf[JInt].num.toInt
+        val numChildren = (nextNode \ "num-children")
+          .asInstanceOf[JInt]
+          .num
+          .toInt
 
         val children: Seq[TreeNode[_]] = (1 to numChildren)
           .map(_ => parseNextNode())
@@ -815,7 +818,8 @@ object TreeNode {
           .getConstructors
           .find { p =>
             val expectedTypes = p.getParameterTypes
-            expectedTypes.length == fields.length && expectedTypes
+            expectedTypes.length == fields.length &&
+            expectedTypes
               .zip(fields.map(_._2))
               .forall {
                 case (cls, tpe) =>

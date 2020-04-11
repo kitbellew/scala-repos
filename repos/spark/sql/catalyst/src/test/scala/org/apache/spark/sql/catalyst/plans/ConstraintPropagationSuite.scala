@@ -131,9 +131,8 @@ class ConstraintPropagationSuite extends SparkFunSuite {
         Seq(
           resolveColumn(aliasedRelation.analyze, "x") > 10,
           IsNotNull(resolveColumn(aliasedRelation.analyze, "x")),
-          resolveColumn(aliasedRelation.analyze, "b") <=> resolveColumn(
-            aliasedRelation.analyze,
-            "y"),
+          resolveColumn(aliasedRelation.analyze, "b") <=>
+            resolveColumn(aliasedRelation.analyze, "y"),
           resolveColumn(aliasedRelation.analyze, "z") > 10,
           IsNotNull(resolveColumn(aliasedRelation.analyze, "z"))
         ))

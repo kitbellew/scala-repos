@@ -399,9 +399,10 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
         intercept[java.lang.IllegalStateException] {
           in.readObject
         }
-      ).getMessage should ===(
-        "Trying to deserialize a serialized ActorRef without an ActorSystem in scope." +
-          " Use 'akka.serialization.Serialization.currentSystem.withValue(system) { ... }'")
+      ).getMessage should
+        ===(
+          "Trying to deserialize a serialized ActorRef without an ActorSystem in scope." +
+            " Use 'akka.serialization.Serialization.currentSystem.withValue(system) { ... }'")
     }
 
     "return EmptyLocalActorRef on deserialize if not present in actor hierarchy (and remoting is not enabled)" in {
@@ -429,11 +430,12 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
         .withValue(sysImpl) {
           val in =
             new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
-          in.readObject should ===(
-            new EmptyLocalActorRef(
-              sysImpl.provider,
-              ref.path,
-              system.eventStream))
+          in.readObject should
+            ===(
+              new EmptyLocalActorRef(
+                sysImpl.provider,
+                ref.path,
+                system.eventStream))
         }
     }
 

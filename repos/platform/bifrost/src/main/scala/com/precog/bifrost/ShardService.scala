@@ -318,8 +318,8 @@ trait ShardService
               request { state =>
                 import CORSHeaderHandler.allowOrigin
                 allowOrigin("*", executionContext) {
-                  asyncHandler(state) ~ syncHandler(state) ~ analysisHandler(
-                    state) ~
+                  asyncHandler(state) ~ syncHandler(state) ~
+                    analysisHandler(state) ~
                     ifRequest { _: HttpRequest[ByteChunk] =>
                       state.scheduler.enabled
                     } {

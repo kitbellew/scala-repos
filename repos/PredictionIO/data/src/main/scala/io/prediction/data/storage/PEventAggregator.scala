@@ -52,7 +52,8 @@ private[prediction] case class SetProp(
         .toMap
 
     val combinedFields = common ++
-      (this.fields -- commonKeys) ++ (that.fields -- commonKeys)
+      (this.fields -- commonKeys) ++
+      (that.fields -- commonKeys)
 
     // keep the latest set time
     val combinedT =
@@ -86,7 +87,8 @@ private[prediction] case class UnsetProp(fields: Map[String, Long])
         .toMap
 
     val combinedFields = common ++
-      (this.fields -- commonKeys) ++ (that.fields -- commonKeys)
+      (this.fields -- commonKeys) ++
+      (that.fields -- commonKeys)
 
     UnsetProp(fields = combinedFields)
   }

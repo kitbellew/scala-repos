@@ -34,8 +34,8 @@ trait Watched {
 }
 
 object Watched {
-  val defaultWatchingMessage: WatchState => String = _
-    .count + ". Waiting for source changes... (press enter to interrupt)"
+  val defaultWatchingMessage: WatchState => String = _.count +
+    ". Waiting for source changes... (press enter to interrupt)"
   val defaultTriggeredMessage: WatchState => String = const("")
   val clearWhenTriggered: WatchState => String = const(clearScreen)
   def clearScreen: String = "\033[2J\033[0;0H"
@@ -44,8 +44,8 @@ object Watched {
 
   def multi(base: Watched, paths: Seq[Watched]): Watched =
     new AWatched {
-      override def watchPaths(s: State) =
-        (base.watchPaths(s) /: paths)(_ ++ _.watchPaths(s))
+      override def watchPaths(s: State) = (base.watchPaths(s) /: paths)(
+        _ ++ _.watchPaths(s))
       override def terminateWatch(key: Int): Boolean = base.terminateWatch(key)
       override val pollInterval = (base +: paths).map(_.pollInterval).min
       override def watchingMessage(s: WatchState) = base.watchingMessage(s)
@@ -66,9 +66,8 @@ object Watched {
       repeat: String): State = {
     @tailrec
     def shouldTerminate: Boolean =
-      (System.in.available > 0) && (
-        watched.terminateWatch(System.in.read()) || shouldTerminate
-      )
+      (System.in.available > 0) &&
+        (watched.terminateWatch(System.in.read()) || shouldTerminate)
     val sourcesFinder = PathFinder {
       watched watchPaths s
     }

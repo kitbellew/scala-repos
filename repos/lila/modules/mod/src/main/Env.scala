@@ -19,8 +19,8 @@ final class Env(
     emailAddress: lila.security.EmailAddress) {
 
   private object settings {
-    val CollectionPlayerAssessment =
-      config getString "collection.player_assessment"
+    val CollectionPlayerAssessment = config getString
+      "collection.player_assessment"
     val CollectionBoosting = config getString "collection.boosting"
     val CollectionModlog = config getString "collection.modlog"
     val CollectionGamingHistory = config getString "collection.gaming_history"
@@ -97,15 +97,16 @@ final class Env(
 
 object Env {
 
-  lazy val current = "mod" boot new Env(
-    config = lila.common.PlayApp loadConfig "mod",
-    db = lila.db.Env.current,
-    hub = lila.hub.Env.current,
-    system = lila.common.PlayApp.system,
-    firewall = lila.security.Env.current.firewall,
-    reportColl = lila.report.Env.current.reportColl,
-    userSpy = lila.security.Env.current.userSpy,
-    lightUserApi = lila.user.Env.current.lightUserApi,
-    securityApi = lila.security.Env.current.api,
-    emailAddress = lila.security.Env.current.emailAddress)
+  lazy val current = "mod" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "mod",
+      db = lila.db.Env.current,
+      hub = lila.hub.Env.current,
+      system = lila.common.PlayApp.system,
+      firewall = lila.security.Env.current.firewall,
+      reportColl = lila.report.Env.current.reportColl,
+      userSpy = lila.security.Env.current.userSpy,
+      lightUserApi = lila.user.Env.current.lightUserApi,
+      securityApi = lila.security.Env.current.api,
+      emailAddress = lila.security.Env.current.emailAddress)
 }

@@ -8,9 +8,8 @@ abstract class Specs2SpecialCharactersTest extends Specs2TestCase {
   private def addSpecialCharactersTest(testName: String) =
     addFileToProject(
       testName + ".scala",
-      "import org.specs2.mutable.Specification\n\n" +
-        "class " + testName + " extends Specification {" +
-        """
+      "import org.specs2.mutable.Specification\n\n" + "class " + testName +
+        " extends Specification {" + """
             | "Special characters test" should {
             |
             |   "Comma , test" in {
@@ -54,8 +53,7 @@ abstract class Specs2SpecialCharactersTest extends Specs2TestCase {
           "[root]",
           testName,
           "Special characters test should",
-          "Comma , " +
-            "test")
+          "Comma , " + "test")
     )
   }
 
@@ -95,8 +93,7 @@ abstract class Specs2SpecialCharactersTest extends Specs2TestCase {
           "[root]",
           testName,
           "Special characters test should",
-          "tick ' " +
-            "test")
+          "tick ' " + "test")
     )
   }
 
@@ -116,8 +113,7 @@ abstract class Specs2SpecialCharactersTest extends Specs2TestCase {
           "[root]",
           testName,
           "Special characters test should",
-          "backtick " +
-            "` test")
+          "backtick " + "` test")
     )
   }
 
@@ -137,8 +133,7 @@ abstract class Specs2SpecialCharactersTest extends Specs2TestCase {
           "[root]",
           testName,
           "Special characters test should",
-          "tilde ~ " +
-            "test")
+          "tilde ~ " + "test")
     )
   }
 }

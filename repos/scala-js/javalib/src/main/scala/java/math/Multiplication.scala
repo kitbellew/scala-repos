@@ -162,9 +162,10 @@ private[math] object Multiplication {
     *  @return value of expression
     */
   def unsignedMultAddAdd(a: Int, b: Int, c: Int, d: Int): Long =
-    (a & 0xFFFFFFFFL) * (b & 0xFFFFFFFFL) + (c & 0xFFFFFFFFL) + (
-      d & 0xFFFFFFFFL
-    )
+    (a & 0xFFFFFFFFL) *
+      (b & 0xFFFFFFFFL) +
+      (c & 0xFFFFFFFFL) +
+      (d & 0xFFFFFFFFL)
 
   /** Performs the multiplication with the Karatsuba's algorithm.
     *

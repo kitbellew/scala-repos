@@ -21,8 +21,8 @@ object Editor extends LilaController {
 
   def load(urlFen: String) =
     Open { implicit ctx =>
-      val fenStr = Some(urlFen.trim.replace("_", " "))
-        .filter(_.nonEmpty) orElse get("fen")
+      val fenStr = Some(urlFen.trim.replace("_", " ")).filter(_.nonEmpty) orElse
+        get("fen")
       fuccess {
         val decodedFen = fenStr
           .map {
@@ -30,8 +30,8 @@ object Editor extends LilaController {
           }
           .filter(_.nonEmpty)
         val situation =
-          (decodedFen flatMap Forsyth.<<< map (_.situation)) | Situation(
-            chess.variant.Standard)
+          (decodedFen flatMap Forsyth.<<< map (_.situation)) |
+            Situation(chess.variant.Standard)
         val fen = Forsyth >> situation
         Ok(
           html

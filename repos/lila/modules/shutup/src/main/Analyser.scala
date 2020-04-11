@@ -16,8 +16,6 @@ object Analyser {
       }
 
   private val bigRegex = {
-    """(?i)\b""" +
-      wordsRegexes.mkString("(", "|", ")") +
-      """\b"""
+    """(?i)\b""" + wordsRegexes.mkString("(", "|", ")") + """\b"""
   }.r
 }

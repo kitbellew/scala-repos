@@ -126,15 +126,16 @@ trait RankSpecs extends EvalStackSpecs {
 
       result must haveSize(size)
 
-      result must haveAllElementsLike {
-        case (ids, SObject(obj)) => {
-          ids.length must_== 1
-          obj must haveSize(3)
-          obj must haveKey("rank")
-          obj must haveKey("country")
-          obj must haveKey("athletesPerMillion")
+      result must
+        haveAllElementsLike {
+          case (ids, SObject(obj)) => {
+            ids.length must_== 1
+            obj must haveSize(3)
+            obj must haveKey("rank")
+            obj must haveKey("country")
+            obj must haveKey("athletesPerMillion")
+          }
         }
-      }
     }
 
     "perform filter on distinct set based on rank without a solve" >> {
@@ -251,15 +252,16 @@ trait RankSpecs extends EvalStackSpecs {
 
         results must haveSize(2)
 
-        results must haveAllElementsLike {
-          case (ids, SObject(obj)) => {
-            ids.length must_== 1
-            obj must haveSize(5)
-            obj must contain("cpm" -> SDecimal(6))
+        results must
+          haveAllElementsLike {
+            case (ids, SObject(obj)) => {
+              ids.length must_== 1
+              obj must haveSize(5)
+              obj must contain("cpm" -> SDecimal(6))
+            }
+            case r =>
+              failure("Result has wrong shape: " + r)
           }
-          case r =>
-            failure("Result has wrong shape: " + r)
-        }
       }
 
       "using where" >> {
@@ -271,15 +273,16 @@ trait RankSpecs extends EvalStackSpecs {
 
         results must haveSize(2)
 
-        results must haveAllElementsLike {
-          case (ids, SObject(obj)) => {
-            ids.length must_== 1
-            obj must haveSize(5)
-            obj must contain("cpm" -> SDecimal(6))
+        results must
+          haveAllElementsLike {
+            case (ids, SObject(obj)) => {
+              ids.length must_== 1
+              obj must haveSize(5)
+              obj must contain("cpm" -> SDecimal(6))
+            }
+            case r =>
+              failure("Result has wrong shape: " + r)
           }
-          case r =>
-            failure("Result has wrong shape: " + r)
-        }
       }
 
       "using where and with" >> {
@@ -360,15 +363,16 @@ trait RankSpecs extends EvalStackSpecs {
 
         results must haveSize(2)
 
-        results must haveAllElementsLike {
-          case (ids, SObject(obj)) => {
-            ids.length must_== 1
-            obj must haveSize(5)
-            obj must contain("cpm" -> SDecimal(6))
+        results must
+          haveAllElementsLike {
+            case (ids, SObject(obj)) => {
+              ids.length must_== 1
+              obj must haveSize(5)
+              obj must contain("cpm" -> SDecimal(6))
+            }
+            case r =>
+              failure("Result has wrong shape: " + r)
           }
-          case r =>
-            failure("Result has wrong shape: " + r)
-        }
       }
 
       "using where and with" >> {

@@ -59,8 +59,8 @@ object ConvertImplicitBoundsToImplicitParameter {
       .getParentOfType(element, classOf[ScTypeBoundsOwner], false)
     val scTypeParamOwner: ScTypeParametersOwner = PsiTreeUtil
       .getParentOfType(paramTypeElement, classOf[ScTypeParametersOwner], true)
-    paramTypeElement != null && paramTypeElement
-      .hasImplicitBound && !scTypeParamOwner.isInstanceOf[ScTrait]
+    paramTypeElement != null && paramTypeElement.hasImplicitBound &&
+    !scTypeParamOwner.isInstanceOf[ScTrait]
   }
 
   def doConversion(element: PsiElement): Seq[ScParameter] = {

@@ -145,8 +145,8 @@ class SparkSubmitSuite
       "--weird",
       "args")
     val appArgs = new SparkSubmitArguments(clArgs)
-    appArgs
-      .childArgs should be(Seq("--master", "local", "some", "--weird", "args"))
+    appArgs.childArgs should
+      be(Seq("--master", "local", "some", "--weird", "args"))
   }
 
   test("specify deploy mode through configuration") {
@@ -239,13 +239,11 @@ class SparkSubmitSuite
     childArgsStr should include("--arg arg1 --arg arg2")
     childArgsStr should include("--queue thequeue")
     childArgsStr should include regex ("--jar .*thejar.jar")
-    childArgsStr should include regex (
-      "--addJars .*one.jar,.*two.jar,.*three.jar"
-    )
+    childArgsStr should include regex
+      ("--addJars .*one.jar,.*two.jar,.*three.jar")
     childArgsStr should include regex ("--files .*file1.txt,.*file2.txt")
-    childArgsStr should include regex (
-      "--archives .*archive1.txt,.*archive2.txt"
-    )
+    childArgsStr should include regex
+      ("--archives .*archive1.txt,.*archive2.txt")
     mainClass should be("org.apache.spark.deploy.yarn.Client")
     classpath should have length (0)
     sysProps("spark.app.name") should be("beauty")
@@ -301,15 +299,12 @@ class SparkSubmitSuite
     sysProps("spark.executor.cores") should be("5")
     sysProps("spark.yarn.queue") should be("thequeue")
     sysProps("spark.executor.instances") should be("6")
-    sysProps("spark.yarn.dist.files") should include regex (
-      ".*file1.txt,.*file2.txt"
-    )
-    sysProps("spark.yarn.dist.archives") should include regex (
-      ".*archive1.txt,.*archive2.txt"
-    )
-    sysProps("spark.jars") should include regex (
-      ".*one.jar,.*two.jar,.*three.jar,.*thejar.jar"
-    )
+    sysProps("spark.yarn.dist.files") should include regex
+      (".*file1.txt,.*file2.txt")
+    sysProps("spark.yarn.dist.archives") should include regex
+      (".*archive1.txt,.*archive2.txt")
+    sysProps("spark.jars") should include regex
+      (".*one.jar,.*two.jar,.*three.jar,.*thejar.jar")
     sysProps("SPARK_SUBMIT") should be("true")
     sysProps("spark.ui.enabled") should be("false")
   }
@@ -355,7 +350,8 @@ class SparkSubmitSuite
       mainClass should be("org.apache.spark.deploy.rest.RestSubmissionClient")
     } else {
       childArgsStr should startWith("--supervise --memory 4g --cores 5")
-      childArgsStr should include regex "launch spark://h:p .*thejar.jar org.SomeClass arg1 arg2"
+      childArgsStr should include regex
+        "launch spark://h:p .*thejar.jar org.SomeClass arg1 arg2"
       mainClass should be("org.apache.spark.deploy.Client")
     }
     classpath should have size 0
@@ -614,8 +610,8 @@ class SparkSubmitSuite
     val appArgs3 = new SparkSubmitArguments(clArgs3)
     val sysProps3 = SparkSubmit.prepareSubmitEnvironment(appArgs3)._3
     appArgs3.pyFiles should be(Utils.resolveURIs(pyFiles))
-    sysProps3("spark.submit.pyFiles") should be(
-      PythonRunner.formatPaths(Utils.resolveURIs(pyFiles)).mkString(","))
+    sysProps3("spark.submit.pyFiles") should
+      be(PythonRunner.formatPaths(Utils.resolveURIs(pyFiles)).mkString(","))
   }
 
   test("resolves config paths correctly") {
@@ -677,8 +673,8 @@ class SparkSubmitSuite
       "mister.py")
     val appArgs3 = new SparkSubmitArguments(clArgs3)
     val sysProps3 = SparkSubmit.prepareSubmitEnvironment(appArgs3)._3
-    sysProps3("spark.submit.pyFiles") should be(
-      PythonRunner.formatPaths(Utils.resolveURIs(pyFiles)).mkString(","))
+    sysProps3("spark.submit.pyFiles") should
+      be(PythonRunner.formatPaths(Utils.resolveURIs(pyFiles)).mkString(","))
   }
 
   test("user classpath first in driver") {

@@ -54,7 +54,8 @@ object Test extends App {
       val u = a diff b
       require(
         hashCount == hashCount0,
-        s"key.hashCode should not be called, but has been called ${hashCount - hashCount0} times. Key type $keyType.")
+        s"key.hashCode should not be called, but has been called ${hashCount -
+          hashCount0} times. Key type $keyType.")
       require(
         u == (a diff scala.collection.mutable.HashSet(b.toSeq: _*)),
         s"Operation must still work for other sets!")
@@ -70,10 +71,12 @@ object Test extends App {
       val as_b = as diff b
       require(
         (b_as eq b) || (b_as eq as),
-        s"No structural sharing in b diff as. Key type $keyType, b=($j until ${i + j}) as=(0 until $j)")
+        s"No structural sharing in b diff as. Key type $keyType, b=($j until ${i +
+          j}) as=(0 until $j)")
       require(
         (as_b eq b) || (as_b eq as),
-        s"No structural sharing in as diff b. Key type $keyType, b=($j until ${i + j}) as=(0 until $j)")
+        s"No structural sharing in as diff b. Key type $keyType, b=($j until ${i +
+          j}) as=(0 until $j)")
     }
   }
 

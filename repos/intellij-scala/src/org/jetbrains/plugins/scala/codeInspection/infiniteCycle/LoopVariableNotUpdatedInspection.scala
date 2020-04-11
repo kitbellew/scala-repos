@@ -23,14 +23,13 @@ class LoopVariableNotUpdatedInspection
     case ScWhileStmt(
           Some(
             ScInfixExpr(
-              (
-                ref: ScReferenceExpression
-              ) &&(ResolvesTo(target @ Parent(Parent(entity: ScVariable)))),
+              (ref: ScReferenceExpression) &&(ResolvesTo(
+                target @ Parent(Parent(entity: ScVariable)))),
               ElementText(operator),
               _)),
           Some(body))
-        if !ref.isQualified && ComparisonOperators
-          .contains(operator) && !isMutatedWithing(body, target) =>
+        if !ref.isQualified && ComparisonOperators.contains(operator) &&
+          !isMutatedWithing(body, target) =>
       holder.registerProblem(
         ref.asInstanceOf[PsiReference],
         getDisplayName,

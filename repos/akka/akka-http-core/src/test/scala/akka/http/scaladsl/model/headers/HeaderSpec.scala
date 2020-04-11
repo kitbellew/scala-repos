@@ -30,9 +30,9 @@ class HeaderSpec extends FreeSpec with Matchers {
         val Left(List(ErrorInfo(summary, detail))) = headers
           .`Last-Modified`
           .parseFromValueString("abc")
-        summary shouldEqual "Illegal HTTP header 'Last-Modified': Invalid input 'a', expected IMF-fixdate, asctime-date or '0' (line 1, column 1)"
-        detail shouldEqual
-          """abc
+        summary shouldEqual
+          "Illegal HTTP header 'Last-Modified': Invalid input 'a', expected IMF-fixdate, asctime-date or '0' (line 1, column 1)"
+        detail shouldEqual """abc
             |^""".stripMarginWithNewline("\n")
 
       }
@@ -42,15 +42,15 @@ class HeaderSpec extends FreeSpec with Matchers {
   "MediaType should" - {
     "provide parse method" - {
       "successful parse run" in {
-        MediaType.parse("application/gnutar") shouldEqual Right(
-          MediaTypes.`application/gnutar`)
+        MediaType.parse("application/gnutar") shouldEqual
+          Right(MediaTypes.`application/gnutar`)
       }
       "failing parse run" in {
         val Left(List(ErrorInfo(summary, detail))) = MediaType
           .parse("application//gnutar")
-        summary shouldEqual "Illegal HTTP header 'Content-Type': Invalid input '/', expected subtype (line 1, column 13)"
-        detail shouldEqual
-          """application//gnutar
+        summary shouldEqual
+          "Illegal HTTP header 'Content-Type': Invalid input '/', expected subtype (line 1, column 13)"
+        detail shouldEqual """application//gnutar
             |            ^""".stripMarginWithNewline("\n")
       }
     }
@@ -59,15 +59,15 @@ class HeaderSpec extends FreeSpec with Matchers {
   "ContentType should" - {
     "provide parse method" - {
       "successful parse run" in {
-        ContentType.parse("text/plain; charset=UTF8") shouldEqual Right(
-          MediaTypes.`text/plain`.withCharset(HttpCharsets.`UTF-8`))
+        ContentType.parse("text/plain; charset=UTF8") shouldEqual
+          Right(MediaTypes.`text/plain`.withCharset(HttpCharsets.`UTF-8`))
       }
       "failing parse run" in {
         val Left(List(ErrorInfo(summary, detail))) = ContentType
           .parse("text/plain, charset=UTF8")
-        summary shouldEqual "Illegal HTTP header 'Content-Type': Invalid input ',', expected tchar, OWS, ws or 'EOI' (line 1, column 11)"
-        detail shouldEqual
-          """text/plain, charset=UTF8
+        summary shouldEqual
+          "Illegal HTTP header 'Content-Type': Invalid input ',', expected tchar, OWS, ws or 'EOI' (line 1, column 11)"
+        detail shouldEqual """text/plain, charset=UTF8
             |          ^""".stripMarginWithNewline("\n")
       }
     }

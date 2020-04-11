@@ -76,34 +76,37 @@ class NIHDBFileStoreSpec
       val testPath = Path("/store/this/somewhere")
 
       (
-        projectionsActor ? IngestData(
-          Seq(
-            (
-              0L,
-              StoreFileMessage(
-                testAPIKey,
-                testPath,
-                Authorities(testAccount),
-                None,
-                EventId.fromLong(42L),
-                FileContent(
-                  loremIpsum.getBytes("UTF-8"),
-                  MimeType("text", "plain"),
-                  RawUTF8Encoding),
-                Clock.System.instant,
-                StreamRef.Create(UUID.randomUUID, true)
-              ))))
-      ).copoint must beLike {
-        case UpdateSuccess(_) =>
-          ok
-      }
+        projectionsActor ?
+          IngestData(
+            Seq(
+              (
+                0L,
+                StoreFileMessage(
+                  testAPIKey,
+                  testPath,
+                  Authorities(testAccount),
+                  None,
+                  EventId.fromLong(42L),
+                  FileContent(
+                    loremIpsum.getBytes("UTF-8"),
+                    MimeType("text", "plain"),
+                    RawUTF8Encoding),
+                  Clock.System.instant,
+                  StreamRef.Create(UUID.randomUUID, true)
+                ))))
+      ).copoint must
+        beLike {
+          case UpdateSuccess(_) =>
+            ok
+        }
 
       (projectionsActor ? Read(testPath, Version.Current))
         .mapTo[ReadResult]
-        .copoint must beLike {
-        case ReadSuccess(_, blob: BlobResource) =>
-          blob.asString.run.copoint must beSome(loremIpsum)
-      }
+        .copoint must
+        beLike {
+          case ReadSuccess(_, blob: BlobResource) =>
+            blob.asString.run.copoint must beSome(loremIpsum)
+        }
     }
 
     "Properly handle atomic version updates" in {
@@ -113,64 +116,71 @@ class NIHDBFileStoreSpec
       val streamId = UUID.randomUUID
 
       (
-        projectionsActor ? IngestData(
-          Seq(
-            (
-              0L,
-              IngestMessage(
-                testAPIKey,
-                testPath,
-                Authorities(testAccount),
-                Seq(IngestRecord(EventId.fromLong(42L), JString("Foo!"))),
-                None,
-                Clock.System.instant,
-                StreamRef.Create(streamId, false)
-              ))))
-      ).copoint must beLike {
-        case UpdateSuccess(_) =>
-          ok
-      }
+        projectionsActor ?
+          IngestData(
+            Seq(
+              (
+                0L,
+                IngestMessage(
+                  testAPIKey,
+                  testPath,
+                  Authorities(testAccount),
+                  Seq(IngestRecord(EventId.fromLong(42L), JString("Foo!"))),
+                  None,
+                  Clock.System.instant,
+                  StreamRef.Create(streamId, false)
+                ))))
+      ).copoint must
+        beLike {
+          case UpdateSuccess(_) =>
+            ok
+        }
 
       // We haven't terminated the stream yet, so it shouldn't find anything
       (projectionsActor ? Read(testPath, Version.Current))
         .mapTo[ReadResult]
-        .copoint must beLike {
-        case PathOpFailure(_, NotFound(_)) =>
-          ok
-      }
+        .copoint must
+        beLike {
+          case PathOpFailure(_, NotFound(_)) =>
+            ok
+        }
 
       (
-        projectionsActor ? IngestData(
-          Seq(
-            (
-              1L,
-              IngestMessage(
-                testAPIKey,
-                testPath,
-                Authorities(testAccount),
-                Seq(IngestRecord(EventId.fromLong(42L), JString("Foo!"))),
-                None,
-                Clock.System.instant,
-                StreamRef.Create(streamId, true)
-              ))))
-      ).copoint must beLike {
-        case UpdateSuccess(_) =>
-          ok
-      }
+        projectionsActor ?
+          IngestData(
+            Seq(
+              (
+                1L,
+                IngestMessage(
+                  testAPIKey,
+                  testPath,
+                  Authorities(testAccount),
+                  Seq(IngestRecord(EventId.fromLong(42L), JString("Foo!"))),
+                  None,
+                  Clock.System.instant,
+                  StreamRef.Create(streamId, true)
+                ))))
+      ).copoint must
+        beLike {
+          case UpdateSuccess(_) =>
+            ok
+        }
 
       (projectionsActor ? Read(testPath, Version.Current))
         .mapTo[ReadResult]
-        .copoint must beLike {
-        case ReadSuccess(_, proj: NIHDBResource) =>
-          proj.db.length.copoint mustEqual 2
-      }
+        .copoint must
+        beLike {
+          case ReadSuccess(_, proj: NIHDBResource) =>
+            proj.db.length.copoint mustEqual 2
+        }
     }
   }
 
   override def map(fs: => Fragments): Fragments =
-    fs ^ step {
-      logger.info("Unlocking actor")
-      //projectionSystem.release
-      IOUtils.recursiveDelete(yggConfig.tmpDir).unsafePerformIO
-    }
+    fs ^
+      step {
+        logger.info("Unlocking actor")
+        //projectionSystem.release
+        IOUtils.recursiveDelete(yggConfig.tmpDir).unsafePerformIO
+      }
 }

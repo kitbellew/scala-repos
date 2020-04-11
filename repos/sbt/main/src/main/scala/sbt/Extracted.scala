@@ -128,8 +128,8 @@ final case class Extracted(
     value getOrElse sys.error(display(ScopedKey(scope, key)) + " is undefined.")
   private def getOrError[T](scope: Scope, key: AttributeKey[T])(implicit
       display: Show[ScopedKey[_]]): T =
-    structure.data.get(scope, key) getOrElse sys
-      .error(display(ScopedKey(scope, key)) + " is undefined.")
+    structure.data.get(scope, key) getOrElse
+      sys.error(display(ScopedKey(scope, key)) + " is undefined.")
 
   def append(settings: Seq[Setting[_]], state: State): State = {
     val appendSettings = Load.transformSettings(

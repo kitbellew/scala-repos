@@ -28,703 +28,709 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
   "The WebSocket implementation should" - {
     "collect messages from frames" - {
       "for binary messages" - {
-        "for an empty message" in new ClientTestSetup {
-          val input = frameHeader(Opcode.Binary, 0, fin = true)
+        "for an empty message" in
+          new ClientTestSetup {
+            val input = frameHeader(Opcode.Binary, 0, fin = true)
 
-          pushInput(input)
-          expectMessage(BinaryMessage.Strict(ByteString.empty))
-        }
-        "for one complete, strict, single frame message" in new ClientTestSetup {
-          val data = ByteString("abcdef", "ASCII")
-          val input = frameHeader(Opcode.Binary, 6, fin = true) ++ data
+            pushInput(input)
+            expectMessage(BinaryMessage.Strict(ByteString.empty))
+          }
+        "for one complete, strict, single frame message" in
+          new ClientTestSetup {
+            val data = ByteString("abcdef", "ASCII")
+            val input = frameHeader(Opcode.Binary, 6, fin = true) ++ data
 
-          pushInput(input)
-          expectMessage(BinaryMessage.Strict(data))
-        }
-        "for a partial frame" in new ClientTestSetup {
-          val data1 = ByteString("abc", "ASCII")
-          val header = frameHeader(Opcode.Binary, 6, fin = true)
+            pushInput(input)
+            expectMessage(BinaryMessage.Strict(data))
+          }
+        "for a partial frame" in
+          new ClientTestSetup {
+            val data1 = ByteString("abc", "ASCII")
+            val header = frameHeader(Opcode.Binary, 6, fin = true)
 
-          pushInput(header ++ data1)
-          val dataSource = expectBinaryMessage().dataStream
-          val sub = TestSubscriber.manualProbe[ByteString]()
-          dataSource.runWith(Sink.fromSubscriber(sub))
-          val s = sub.expectSubscription()
-          s.request(2)
-          sub.expectNext(data1)
-        }
-        "for a frame split up into parts" in new ClientTestSetup {
-          val data1 = ByteString("abc", "ASCII")
-          val header = frameHeader(Opcode.Binary, 6, fin = true)
+            pushInput(header ++ data1)
+            val dataSource = expectBinaryMessage().dataStream
+            val sub = TestSubscriber.manualProbe[ByteString]()
+            dataSource.runWith(Sink.fromSubscriber(sub))
+            val s = sub.expectSubscription()
+            s.request(2)
+            sub.expectNext(data1)
+          }
+        "for a frame split up into parts" in
+          new ClientTestSetup {
+            val data1 = ByteString("abc", "ASCII")
+            val header = frameHeader(Opcode.Binary, 6, fin = true)
 
-          pushInput(header)
-          val dataSource = expectBinaryMessage().dataStream
-          val sub = TestSubscriber.manualProbe[ByteString]()
-          dataSource.runWith(Sink.fromSubscriber(sub))
-          val s = sub.expectSubscription()
-          s.request(2)
-          pushInput(data1)
-          sub.expectNext(data1)
+            pushInput(header)
+            val dataSource = expectBinaryMessage().dataStream
+            val sub = TestSubscriber.manualProbe[ByteString]()
+            dataSource.runWith(Sink.fromSubscriber(sub))
+            val s = sub.expectSubscription()
+            s.request(2)
+            pushInput(data1)
+            sub.expectNext(data1)
 
-          val data2 = ByteString("def", "ASCII")
-          pushInput(data2)
-          sub.expectNext(data2)
-          s.request(1)
-          sub.expectComplete()
-        }
+            val data2 = ByteString("def", "ASCII")
+            pushInput(data2)
+            sub.expectNext(data2)
+            s.request(1)
+            sub.expectComplete()
+          }
 
-        "for a message split into several frames" in new ClientTestSetup {
-          val data1 = ByteString("abc", "ASCII")
-          val header1 = frameHeader(Opcode.Binary, 3, fin = false)
+        "for a message split into several frames" in
+          new ClientTestSetup {
+            val data1 = ByteString("abc", "ASCII")
+            val header1 = frameHeader(Opcode.Binary, 3, fin = false)
 
-          pushInput(header1 ++ data1)
-          val dataSource = expectBinaryMessage().dataStream
-          val sub = TestSubscriber.manualProbe[ByteString]()
-          dataSource.runWith(Sink.fromSubscriber(sub))
-          val s = sub.expectSubscription()
-          s.request(2)
-          sub.expectNext(data1)
+            pushInput(header1 ++ data1)
+            val dataSource = expectBinaryMessage().dataStream
+            val sub = TestSubscriber.manualProbe[ByteString]()
+            dataSource.runWith(Sink.fromSubscriber(sub))
+            val s = sub.expectSubscription()
+            s.request(2)
+            sub.expectNext(data1)
 
-          val header2 = frameHeader(Opcode.Continuation, 4, fin = true)
-          val data2 = ByteString("defg", "ASCII")
-          pushInput(header2 ++ data2)
-          sub.expectNext(data2)
-          s.request(1)
-          sub.expectComplete()
-        }
-        "for several messages" in new ClientTestSetup {
-          val data1 = ByteString("abc", "ASCII")
-          val header1 = frameHeader(Opcode.Binary, 3, fin = false)
+            val header2 = frameHeader(Opcode.Continuation, 4, fin = true)
+            val data2 = ByteString("defg", "ASCII")
+            pushInput(header2 ++ data2)
+            sub.expectNext(data2)
+            s.request(1)
+            sub.expectComplete()
+          }
+        "for several messages" in
+          new ClientTestSetup {
+            val data1 = ByteString("abc", "ASCII")
+            val header1 = frameHeader(Opcode.Binary, 3, fin = false)
 
-          pushInput(header1 ++ data1)
-          val dataSource = expectBinaryMessage().dataStream
-          val sub = TestSubscriber.manualProbe[ByteString]()
-          dataSource.runWith(Sink.fromSubscriber(sub))
-          val s = sub.expectSubscription()
-          s.request(2)
-          sub.expectNext(data1)
+            pushInput(header1 ++ data1)
+            val dataSource = expectBinaryMessage().dataStream
+            val sub = TestSubscriber.manualProbe[ByteString]()
+            dataSource.runWith(Sink.fromSubscriber(sub))
+            val s = sub.expectSubscription()
+            s.request(2)
+            sub.expectNext(data1)
 
-          val header2 = frameHeader(Opcode.Continuation, 4, fin = true)
-          val header3 = frameHeader(Opcode.Binary, 2, fin = true)
-          val data2 = ByteString("defg", "ASCII")
-          val data3 = ByteString("h")
-          pushInput(header2 ++ data2 ++ header3 ++ data3)
-          sub.expectNext(data2)
-          s.request(1)
-          sub.expectComplete()
+            val header2 = frameHeader(Opcode.Continuation, 4, fin = true)
+            val header3 = frameHeader(Opcode.Binary, 2, fin = true)
+            val data2 = ByteString("defg", "ASCII")
+            val data3 = ByteString("h")
+            pushInput(header2 ++ data2 ++ header3 ++ data3)
+            sub.expectNext(data2)
+            s.request(1)
+            sub.expectComplete()
 
-          val dataSource2 = expectBinaryMessage().dataStream
-          val sub2 = TestSubscriber.manualProbe[ByteString]()
-          dataSource2.runWith(Sink.fromSubscriber(sub2))
-          val s2 = sub2.expectSubscription()
-          s2.request(2)
-          sub2.expectNext(data3)
+            val dataSource2 = expectBinaryMessage().dataStream
+            val sub2 = TestSubscriber.manualProbe[ByteString]()
+            dataSource2.runWith(Sink.fromSubscriber(sub2))
+            val s2 = sub2.expectSubscription()
+            s2.request(2)
+            sub2.expectNext(data3)
 
-          val data4 = ByteString("i")
-          pushInput(data4)
-          sub2.expectNext(data4)
-          s2.request(1)
-          sub2.expectComplete()
-        }
-        "unmask masked input on the server side" in new ServerTestSetup {
-          val mask = Random.nextInt()
-          val (data, _) = maskedASCII("abcdef", mask)
-          val data1 = data.take(3)
-          val data2 = data.drop(3)
-          val header = frameHeader(
-            Opcode.Binary,
-            6,
-            fin = true,
-            mask = Some(mask))
+            val data4 = ByteString("i")
+            pushInput(data4)
+            sub2.expectNext(data4)
+            s2.request(1)
+            sub2.expectComplete()
+          }
+        "unmask masked input on the server side" in
+          new ServerTestSetup {
+            val mask = Random.nextInt()
+            val (data, _) = maskedASCII("abcdef", mask)
+            val data1 = data.take(3)
+            val data2 = data.drop(3)
+            val header = frameHeader(
+              Opcode.Binary,
+              6,
+              fin = true,
+              mask = Some(mask))
 
-          pushInput(header ++ data1)
-          val dataSource = expectBinaryMessage().dataStream
-          val sub = TestSubscriber.manualProbe[ByteString]()
-          dataSource.runWith(Sink.fromSubscriber(sub))
-          val s = sub.expectSubscription()
-          s.request(2)
-          sub.expectNext(ByteString("abc", "ASCII"))
+            pushInput(header ++ data1)
+            val dataSource = expectBinaryMessage().dataStream
+            val sub = TestSubscriber.manualProbe[ByteString]()
+            dataSource.runWith(Sink.fromSubscriber(sub))
+            val s = sub.expectSubscription()
+            s.request(2)
+            sub.expectNext(ByteString("abc", "ASCII"))
 
-          pushInput(data2)
-          sub.expectNext(ByteString("def", "ASCII"))
-          s.request(1)
-          sub.expectComplete()
-        }
-        "unmask masked input on the server side for empty frame" in new ServerTestSetup {
-          val mask = Random.nextInt()
-          val header = frameHeader(
-            Opcode.Binary,
-            0,
-            fin = true,
-            mask = Some(mask))
+            pushInput(data2)
+            sub.expectNext(ByteString("def", "ASCII"))
+            s.request(1)
+            sub.expectComplete()
+          }
+        "unmask masked input on the server side for empty frame" in
+          new ServerTestSetup {
+            val mask = Random.nextInt()
+            val header = frameHeader(
+              Opcode.Binary,
+              0,
+              fin = true,
+              mask = Some(mask))
 
-          pushInput(header)
-          expectBinaryMessage(BinaryMessage.Strict(ByteString.empty))
-        }
+            pushInput(header)
+            expectBinaryMessage(BinaryMessage.Strict(ByteString.empty))
+          }
       }
       "for text messages" - {
-        "empty message" in new ClientTestSetup {
-          val input = frameHeader(Opcode.Text, 0, fin = true)
+        "empty message" in
+          new ClientTestSetup {
+            val input = frameHeader(Opcode.Text, 0, fin = true)
 
-          pushInput(input)
-          expectMessage(TextMessage.Strict(""))
-        }
-        "decode complete, strict frame from utf8" in new ClientTestSetup {
-          val msg = "äbcdef€\uffff"
-          val data = ByteString(msg, "UTF-8")
-          val input = frameHeader(Opcode.Text, data.size, fin = true) ++ data
+            pushInput(input)
+            expectMessage(TextMessage.Strict(""))
+          }
+        "decode complete, strict frame from utf8" in
+          new ClientTestSetup {
+            val msg = "äbcdef€\uffff"
+            val data = ByteString(msg, "UTF-8")
+            val input = frameHeader(Opcode.Text, data.size, fin = true) ++ data
 
-          pushInput(input)
-          expectMessage(TextMessage.Strict(msg))
-        }
-        "decode utf8 as far as possible for partial frame" in new ClientTestSetup {
-          val msg = "bäcdef€"
-          val data = ByteString(msg, "UTF-8")
-          val data0 = data.slice(0, 2)
-          val data1 = data.slice(2, 5)
-          val data2 = data.slice(5, data.size)
-          val input = frameHeader(Opcode.Text, data.size, fin = true) ++ data0
+            pushInput(input)
+            expectMessage(TextMessage.Strict(msg))
+          }
+        "decode utf8 as far as possible for partial frame" in
+          new ClientTestSetup {
+            val msg = "bäcdef€"
+            val data = ByteString(msg, "UTF-8")
+            val data0 = data.slice(0, 2)
+            val data1 = data.slice(2, 5)
+            val data2 = data.slice(5, data.size)
+            val input = frameHeader(Opcode.Text, data.size, fin = true) ++ data0
 
-          pushInput(input)
-          val parts = expectTextMessage().textStream
-          val sub = TestSubscriber.manualProbe[String]()
-          parts.runWith(Sink.fromSubscriber(sub))
-          val s = sub.expectSubscription()
-          s.request(4)
-          sub.expectNext("b")
+            pushInput(input)
+            val parts = expectTextMessage().textStream
+            val sub = TestSubscriber.manualProbe[String]()
+            parts.runWith(Sink.fromSubscriber(sub))
+            val s = sub.expectSubscription()
+            s.request(4)
+            sub.expectNext("b")
 
-          pushInput(data1)
-          sub.expectNext("äcd")
-        }
-        "decode utf8 with code point split across frames" in new ClientTestSetup {
-          val msg = "äbcdef€"
-          val data = ByteString(msg, "UTF-8")
-          val data0 = data.slice(0, 1)
-          val data1 = data.slice(1, data.size)
-          val header0 = frameHeader(Opcode.Text, data0.size, fin = false)
+            pushInput(data1)
+            sub.expectNext("äcd")
+          }
+        "decode utf8 with code point split across frames" in
+          new ClientTestSetup {
+            val msg = "äbcdef€"
+            val data = ByteString(msg, "UTF-8")
+            val data0 = data.slice(0, 1)
+            val data1 = data.slice(1, data.size)
+            val header0 = frameHeader(Opcode.Text, data0.size, fin = false)
 
-          pushInput(header0 ++ data0)
-          val parts = expectTextMessage().textStream
-          val sub = TestSubscriber.manualProbe[String]()
-          parts.runWith(Sink.fromSubscriber(sub))
-          val s = sub.expectSubscription()
-          s.request(4)
-          sub.expectNoMsg(100.millis)
+            pushInput(header0 ++ data0)
+            val parts = expectTextMessage().textStream
+            val sub = TestSubscriber.manualProbe[String]()
+            parts.runWith(Sink.fromSubscriber(sub))
+            val s = sub.expectSubscription()
+            s.request(4)
+            sub.expectNoMsg(100.millis)
 
-          val header1 = frameHeader(Opcode.Continuation, data1.size, fin = true)
-          pushInput(header1 ++ data1)
-          sub.expectNext("äbcdef€")
-        }
-        "unmask masked input on the server side" in new ServerTestSetup {
-          val mask = Random.nextInt()
-          val (data, _) = maskedUTF8("äbcdef€", mask)
-          val data1 = data.take(3)
-          val data2 = data.drop(3)
-          val header = frameHeader(
-            Opcode.Binary,
-            data.size,
-            fin = true,
-            mask = Some(mask))
+            val header1 = frameHeader(
+              Opcode.Continuation,
+              data1.size,
+              fin = true)
+            pushInput(header1 ++ data1)
+            sub.expectNext("äbcdef€")
+          }
+        "unmask masked input on the server side" in
+          new ServerTestSetup {
+            val mask = Random.nextInt()
+            val (data, _) = maskedUTF8("äbcdef€", mask)
+            val data1 = data.take(3)
+            val data2 = data.drop(3)
+            val header = frameHeader(
+              Opcode.Binary,
+              data.size,
+              fin = true,
+              mask = Some(mask))
 
-          pushInput(header ++ data1)
-          val dataSource = expectBinaryMessage().dataStream
-          val sub = TestSubscriber.manualProbe[ByteString]()
-          dataSource.runWith(Sink.fromSubscriber(sub))
-          val s = sub.expectSubscription()
-          s.request(2)
-          sub.expectNext(ByteString("äb", "UTF-8"))
+            pushInput(header ++ data1)
+            val dataSource = expectBinaryMessage().dataStream
+            val sub = TestSubscriber.manualProbe[ByteString]()
+            dataSource.runWith(Sink.fromSubscriber(sub))
+            val s = sub.expectSubscription()
+            s.request(2)
+            sub.expectNext(ByteString("äb", "UTF-8"))
 
-          pushInput(data2)
-          sub.expectNext(ByteString("cdef€", "UTF-8"))
-          s.request(1)
-          sub.expectComplete()
-        }
-        "unmask masked input on the server side for empty frame" in new ServerTestSetup {
-          val mask = Random.nextInt()
-          val header = frameHeader(
-            Opcode.Text,
-            0,
-            fin = true,
-            mask = Some(mask))
+            pushInput(data2)
+            sub.expectNext(ByteString("cdef€", "UTF-8"))
+            s.request(1)
+            sub.expectComplete()
+          }
+        "unmask masked input on the server side for empty frame" in
+          new ServerTestSetup {
+            val mask = Random.nextInt()
+            val header = frameHeader(
+              Opcode.Text,
+              0,
+              fin = true,
+              mask = Some(mask))
 
-          pushInput(header)
-          expectTextMessage(TextMessage.Strict(""))
-        }
+            pushInput(header)
+            expectTextMessage(TextMessage.Strict(""))
+          }
       }
     }
     "render frames from messages" - {
       "for binary messages" - {
-        "for a short strict message" in new ServerTestSetup {
-          val data = ByteString("abcdef", "ASCII")
-          val msg = BinaryMessage.Strict(data)
-          pushMessage(msg)
+        "for a short strict message" in
+          new ServerTestSetup {
+            val data = ByteString("abcdef", "ASCII")
+            val msg = BinaryMessage.Strict(data)
+            pushMessage(msg)
 
-          expectFrameOnNetwork(Opcode.Binary, data, fin = true)
-        }
-        "for a strict message larger than configured maximum frame size" in pending
-        "for a streamed message" in new ServerTestSetup {
-          val data = ByteString("abcdefg", "ASCII")
-          val pub = TestPublisher.manualProbe[ByteString]()
-          val msg = BinaryMessage(Source.fromPublisher(pub))
-          pushMessage(msg)
-          val sub = pub.expectSubscription()
+            expectFrameOnNetwork(Opcode.Binary, data, fin = true)
+          }
+        "for a strict message larger than configured maximum frame size" in
+          pending
+        "for a streamed message" in
+          new ServerTestSetup {
+            val data = ByteString("abcdefg", "ASCII")
+            val pub = TestPublisher.manualProbe[ByteString]()
+            val msg = BinaryMessage(Source.fromPublisher(pub))
+            pushMessage(msg)
+            val sub = pub.expectSubscription()
 
-          expectFrameHeaderOnNetwork(Opcode.Binary, 0, fin = false)
+            expectFrameHeaderOnNetwork(Opcode.Binary, 0, fin = false)
 
-          val data1 = data.take(3)
-          val data2 = data.drop(3)
+            val data1 = data.take(3)
+            val data2 = data.drop(3)
 
-          sub.sendNext(data1)
-          expectFrameOnNetwork(Opcode.Continuation, data1, fin = false)
+            sub.sendNext(data1)
+            expectFrameOnNetwork(Opcode.Continuation, data1, fin = false)
 
-          sub.sendNext(data2)
-          expectFrameOnNetwork(Opcode.Continuation, data2, fin = false)
+            sub.sendNext(data2)
+            expectFrameOnNetwork(Opcode.Continuation, data2, fin = false)
 
-          sub.sendComplete()
-          expectFrameOnNetwork(
-            Opcode.Continuation,
-            ByteString.empty,
-            fin = true)
-        }
-        "for a streamed message with a chunk being larger than configured maximum frame size" in pending
-        "and mask input on the client side" in new ClientTestSetup {
-          val data = ByteString("abcdefg", "ASCII")
-          val pub = TestPublisher.manualProbe[ByteString]()
-          val msg = BinaryMessage(Source.fromPublisher(pub))
-          pushMessage(msg)
-          val sub = pub.expectSubscription()
+            sub.sendComplete()
+            expectFrameOnNetwork(
+              Opcode.Continuation,
+              ByteString.empty,
+              fin = true)
+          }
+        "for a streamed message with a chunk being larger than configured maximum frame size" in
+          pending
+        "and mask input on the client side" in
+          new ClientTestSetup {
+            val data = ByteString("abcdefg", "ASCII")
+            val pub = TestPublisher.manualProbe[ByteString]()
+            val msg = BinaryMessage(Source.fromPublisher(pub))
+            pushMessage(msg)
+            val sub = pub.expectSubscription()
 
-          expectFrameHeaderOnNetwork(Opcode.Binary, 0, fin = false)
+            expectFrameHeaderOnNetwork(Opcode.Binary, 0, fin = false)
 
-          val data1 = data.take(3)
-          val data2 = data.drop(3)
+            val data1 = data.take(3)
+            val data2 = data.drop(3)
 
-          sub.sendNext(data1)
-          expectMaskedFrameOnNetwork(Opcode.Continuation, data1, fin = false)
+            sub.sendNext(data1)
+            expectMaskedFrameOnNetwork(Opcode.Continuation, data1, fin = false)
 
-          sub.sendNext(data2)
-          expectMaskedFrameOnNetwork(Opcode.Continuation, data2, fin = false)
+            sub.sendNext(data2)
+            expectMaskedFrameOnNetwork(Opcode.Continuation, data2, fin = false)
 
-          sub.sendComplete()
-          expectFrameOnNetwork(
-            Opcode.Continuation,
-            ByteString.empty,
-            fin = true)
-        }
-        "and mask input on the client side for empty frame" in new ClientTestSetup {
-          pushMessage(BinaryMessage(ByteString.empty))
-          expectMaskedFrameOnNetwork(
-            Opcode.Binary,
-            ByteString.empty,
-            fin = true)
-        }
+            sub.sendComplete()
+            expectFrameOnNetwork(
+              Opcode.Continuation,
+              ByteString.empty,
+              fin = true)
+          }
+        "and mask input on the client side for empty frame" in
+          new ClientTestSetup {
+            pushMessage(BinaryMessage(ByteString.empty))
+            expectMaskedFrameOnNetwork(
+              Opcode.Binary,
+              ByteString.empty,
+              fin = true)
+          }
       }
       "for text messages" - {
-        "for a short strict message" in new ServerTestSetup {
-          val text = "äbcdef"
-          val msg = TextMessage.Strict(text)
-          pushMessage(msg)
+        "for a short strict message" in
+          new ServerTestSetup {
+            val text = "äbcdef"
+            val msg = TextMessage.Strict(text)
+            pushMessage(msg)
 
-          expectFrameOnNetwork(
-            Opcode.Text,
-            ByteString(text, "UTF-8"),
-            fin = true)
-        }
-        "for a strict message larger than configured maximum frame size" in pending
-        "for a streamed message" in new ServerTestSetup {
-          val text = "äbcd€fg"
-          val pub = TestPublisher.manualProbe[String]()
-          val msg = TextMessage(Source.fromPublisher(pub))
-          pushMessage(msg)
-          val sub = pub.expectSubscription()
+            expectFrameOnNetwork(
+              Opcode.Text,
+              ByteString(text, "UTF-8"),
+              fin = true)
+          }
+        "for a strict message larger than configured maximum frame size" in
+          pending
+        "for a streamed message" in
+          new ServerTestSetup {
+            val text = "äbcd€fg"
+            val pub = TestPublisher.manualProbe[String]()
+            val msg = TextMessage(Source.fromPublisher(pub))
+            pushMessage(msg)
+            val sub = pub.expectSubscription()
 
-          expectFrameHeaderOnNetwork(Opcode.Text, 0, fin = false)
+            expectFrameHeaderOnNetwork(Opcode.Text, 0, fin = false)
 
-          val text1 = text.take(3)
-          val text1Bytes = ByteString(text1, "UTF-8")
-          val text2 = text.drop(3)
-          val text2Bytes = ByteString(text2, "UTF-8")
+            val text1 = text.take(3)
+            val text1Bytes = ByteString(text1, "UTF-8")
+            val text2 = text.drop(3)
+            val text2Bytes = ByteString(text2, "UTF-8")
 
-          sub.sendNext(text1)
-          expectFrameOnNetwork(Opcode.Continuation, text1Bytes, fin = false)
+            sub.sendNext(text1)
+            expectFrameOnNetwork(Opcode.Continuation, text1Bytes, fin = false)
 
-          sub.sendNext(text2)
-          expectFrameOnNetwork(Opcode.Continuation, text2Bytes, fin = false)
+            sub.sendNext(text2)
+            expectFrameOnNetwork(Opcode.Continuation, text2Bytes, fin = false)
 
-          sub.sendComplete()
-          expectFrameOnNetwork(
-            Opcode.Continuation,
-            ByteString.empty,
-            fin = true)
-        }
-        "for a streamed message don't convert half surrogate pairs naively" in new ServerTestSetup {
-          val gclef = "𝄞"
-          gclef.length shouldEqual 2
+            sub.sendComplete()
+            expectFrameOnNetwork(
+              Opcode.Continuation,
+              ByteString.empty,
+              fin = true)
+          }
+        "for a streamed message don't convert half surrogate pairs naively" in
+          new ServerTestSetup {
+            val gclef = "𝄞"
+            gclef.length shouldEqual 2
 
-          // split up the code point
-          val half1 = gclef.take(1)
-          val half2 = gclef.drop(1)
+            // split up the code point
+            val half1 = gclef.take(1)
+            val half2 = gclef.drop(1)
 
-          val pub = TestPublisher.manualProbe[String]()
-          val msg = TextMessage(Source.fromPublisher(pub))
+            val pub = TestPublisher.manualProbe[String]()
+            val msg = TextMessage(Source.fromPublisher(pub))
 
-          pushMessage(msg)
-          val sub = pub.expectSubscription()
+            pushMessage(msg)
+            val sub = pub.expectSubscription()
 
-          expectFrameHeaderOnNetwork(Opcode.Text, 0, fin = false)
-          sub.sendNext(half1)
+            expectFrameHeaderOnNetwork(Opcode.Text, 0, fin = false)
+            sub.sendNext(half1)
 
-          expectNoNetworkData()
-          sub.sendNext(half2)
-          expectFrameOnNetwork(
-            Opcode.Continuation,
-            ByteString(gclef, "utf8"),
-            fin = false)
-        }
-        "for a streamed message with a chunk being larger than configured maximum frame size" in pending
-        "and mask input on the client side" in new ClientTestSetup {
-          val text = "abcdefg"
-          val pub = TestPublisher.manualProbe[String]()
-          val msg = TextMessage(Source.fromPublisher(pub))
-          pushMessage(msg)
-          val sub = pub.expectSubscription()
+            expectNoNetworkData()
+            sub.sendNext(half2)
+            expectFrameOnNetwork(
+              Opcode.Continuation,
+              ByteString(gclef, "utf8"),
+              fin = false)
+          }
+        "for a streamed message with a chunk being larger than configured maximum frame size" in
+          pending
+        "and mask input on the client side" in
+          new ClientTestSetup {
+            val text = "abcdefg"
+            val pub = TestPublisher.manualProbe[String]()
+            val msg = TextMessage(Source.fromPublisher(pub))
+            pushMessage(msg)
+            val sub = pub.expectSubscription()
 
-          expectFrameOnNetwork(Opcode.Text, ByteString.empty, fin = false)
+            expectFrameOnNetwork(Opcode.Text, ByteString.empty, fin = false)
 
-          val text1 = text.take(3)
-          val text1Bytes = ByteString(text1, "UTF-8")
-          val text2 = text.drop(3)
-          val text2Bytes = ByteString(text2, "UTF-8")
+            val text1 = text.take(3)
+            val text1Bytes = ByteString(text1, "UTF-8")
+            val text2 = text.drop(3)
+            val text2Bytes = ByteString(text2, "UTF-8")
 
-          sub.sendNext(text1)
-          expectMaskedFrameOnNetwork(
-            Opcode.Continuation,
-            text1Bytes,
-            fin = false)
+            sub.sendNext(text1)
+            expectMaskedFrameOnNetwork(
+              Opcode.Continuation,
+              text1Bytes,
+              fin = false)
 
-          sub.sendNext(text2)
-          expectMaskedFrameOnNetwork(
-            Opcode.Continuation,
-            text2Bytes,
-            fin = false)
+            sub.sendNext(text2)
+            expectMaskedFrameOnNetwork(
+              Opcode.Continuation,
+              text2Bytes,
+              fin = false)
 
-          sub.sendComplete()
-          expectFrameOnNetwork(
-            Opcode.Continuation,
-            ByteString.empty,
-            fin = true)
-        }
-        "and mask input on the client side for empty frame" in new ClientTestSetup {
-          pushMessage(TextMessage(""))
-          expectMaskedFrameOnNetwork(Opcode.Text, ByteString.empty, fin = true)
-        }
+            sub.sendComplete()
+            expectFrameOnNetwork(
+              Opcode.Continuation,
+              ByteString.empty,
+              fin = true)
+          }
+        "and mask input on the client side for empty frame" in
+          new ClientTestSetup {
+            pushMessage(TextMessage(""))
+            expectMaskedFrameOnNetwork(
+              Opcode.Text,
+              ByteString.empty,
+              fin = true)
+          }
       }
     }
     "supply automatic low-level websocket behavior" - {
-      "respond to ping frames unmasking them on the server side" in new ServerTestSetup {
-        val mask = Random.nextInt()
-        val input = frameHeader(
-          Opcode.Ping,
-          6,
-          fin = true,
-          mask = Some(mask)) ++ maskedASCII("abcdef", mask)._1
+      "respond to ping frames unmasking them on the server side" in
+        new ServerTestSetup {
+          val mask = Random.nextInt()
+          val input =
+            frameHeader(Opcode.Ping, 6, fin = true, mask = Some(mask)) ++
+              maskedASCII("abcdef", mask)._1
 
-        pushInput(input)
-        expectFrameOnNetwork(Opcode.Pong, ByteString("abcdef"), fin = true)
-      }
-      "respond to ping frames masking them on the client side" in new ClientTestSetup {
-        val input =
-          frameHeader(Opcode.Ping, 6, fin = true) ++ ByteString("abcdef")
+          pushInput(input)
+          expectFrameOnNetwork(Opcode.Pong, ByteString("abcdef"), fin = true)
+        }
+      "respond to ping frames masking them on the client side" in
+        new ClientTestSetup {
+          val input = frameHeader(Opcode.Ping, 6, fin = true) ++
+            ByteString("abcdef")
 
-        pushInput(input)
-        expectMaskedFrameOnNetwork(
-          Opcode.Pong,
-          ByteString("abcdef"),
-          fin = true)
-      }
-      "respond to ping frames interleaved with data frames (without mixing frame data)" in new ServerTestSetup {
-        // receive multi-frame message
-        // receive and handle interleaved ping frame
-        // concurrently send out messages from handler
-        val mask1 = Random.nextInt()
-        val input1 = frameHeader(
-          Opcode.Binary,
-          3,
-          fin = false,
-          mask = Some(mask1)) ++ maskedASCII("123", mask1)._1
-        pushInput(input1)
+          pushInput(input)
+          expectMaskedFrameOnNetwork(
+            Opcode.Pong,
+            ByteString("abcdef"),
+            fin = true)
+        }
+      "respond to ping frames interleaved with data frames (without mixing frame data)" in
+        new ServerTestSetup {
+          // receive multi-frame message
+          // receive and handle interleaved ping frame
+          // concurrently send out messages from handler
+          val mask1 = Random.nextInt()
+          val input1 =
+            frameHeader(Opcode.Binary, 3, fin = false, mask = Some(mask1)) ++
+              maskedASCII("123", mask1)._1
+          pushInput(input1)
 
-        val dataSource = expectBinaryMessage().dataStream
-        val sub = TestSubscriber.manualProbe[ByteString]()
-        dataSource.runWith(Sink.fromSubscriber(sub))
-        val s = sub.expectSubscription()
-        s.request(2)
-        sub.expectNext(ByteString("123", "ASCII"))
+          val dataSource = expectBinaryMessage().dataStream
+          val sub = TestSubscriber.manualProbe[ByteString]()
+          dataSource.runWith(Sink.fromSubscriber(sub))
+          val s = sub.expectSubscription()
+          s.request(2)
+          sub.expectNext(ByteString("123", "ASCII"))
 
-        val outPub = TestPublisher.manualProbe[ByteString]()
-        val msg = BinaryMessage(Source.fromPublisher(outPub))
-        pushMessage(msg)
+          val outPub = TestPublisher.manualProbe[ByteString]()
+          val msg = BinaryMessage(Source.fromPublisher(outPub))
+          pushMessage(msg)
 
-        expectFrameHeaderOnNetwork(Opcode.Binary, 0, fin = false)
+          expectFrameHeaderOnNetwork(Opcode.Binary, 0, fin = false)
 
-        val outSub = outPub.expectSubscription()
-        val outData1 = ByteString("abc", "ASCII")
-        outSub.sendNext(outData1)
-        expectFrameOnNetwork(Opcode.Continuation, outData1, fin = false)
+          val outSub = outPub.expectSubscription()
+          val outData1 = ByteString("abc", "ASCII")
+          outSub.sendNext(outData1)
+          expectFrameOnNetwork(Opcode.Continuation, outData1, fin = false)
 
-        val pingMask = Random.nextInt()
-        val pingData = maskedASCII("pling", pingMask)._1
-        val pingData0 = pingData.take(3)
-        val pingData1 = pingData.drop(3)
-        pushInput(
-          frameHeader(
-            Opcode.Ping,
-            5,
+          val pingMask = Random.nextInt()
+          val pingData = maskedASCII("pling", pingMask)._1
+          val pingData0 = pingData.take(3)
+          val pingData1 = pingData.drop(3)
+          pushInput(
+            frameHeader(Opcode.Ping, 5, fin = true, mask = Some(pingMask)) ++
+              pingData0)
+          expectNoNetworkData()
+          pushInput(pingData1)
+          expectFrameOnNetwork(
+            Opcode.Pong,
+            ByteString("pling", "ASCII"),
+            fin = true)
+
+          val outData2 = ByteString("def", "ASCII")
+          outSub.sendNext(outData2)
+          expectFrameOnNetwork(Opcode.Continuation, outData2, fin = false)
+
+          outSub.sendComplete()
+          expectFrameOnNetwork(
+            Opcode.Continuation,
+            ByteString.empty,
+            fin = true)
+
+          val mask2 = Random.nextInt()
+          val input2 = frameHeader(
+            Opcode.Continuation,
+            3,
             fin = true,
-            mask = Some(pingMask)) ++ pingData0)
-        expectNoNetworkData()
-        pushInput(pingData1)
-        expectFrameOnNetwork(
-          Opcode.Pong,
-          ByteString("pling", "ASCII"),
-          fin = true)
-
-        val outData2 = ByteString("def", "ASCII")
-        outSub.sendNext(outData2)
-        expectFrameOnNetwork(Opcode.Continuation, outData2, fin = false)
-
-        outSub.sendComplete()
-        expectFrameOnNetwork(Opcode.Continuation, ByteString.empty, fin = true)
-
-        val mask2 = Random.nextInt()
-        val input2 = frameHeader(
-          Opcode.Continuation,
-          3,
-          fin = true,
-          mask = Some(mask2)) ++ maskedASCII("456", mask2)._1
-        pushInput(input2)
-        sub.expectNext(ByteString("456", "ASCII"))
-        s.request(1)
-        sub.expectComplete()
-      }
-      "don't respond to unsolicited pong frames" in new ClientTestSetup {
-        val data =
-          frameHeader(Opcode.Pong, 6, fin = true) ++ ByteString("abcdef")
-        pushInput(data)
-        expectNoNetworkData()
-      }
+            mask = Some(mask2)) ++ maskedASCII("456", mask2)._1
+          pushInput(input2)
+          sub.expectNext(ByteString("456", "ASCII"))
+          s.request(1)
+          sub.expectComplete()
+        }
+      "don't respond to unsolicited pong frames" in
+        new ClientTestSetup {
+          val data = frameHeader(Opcode.Pong, 6, fin = true) ++
+            ByteString("abcdef")
+          pushInput(data)
+          expectNoNetworkData()
+        }
     }
     "provide close behavior" - {
-      "after receiving regular close frame when idle (user closes immediately)" in new ServerTestSetup {
-        pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
-        expectComplete(messageIn)
+      "after receiving regular close frame when idle (user closes immediately)" in
+        new ServerTestSetup {
+          pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
+          expectComplete(messageIn)
 
-        netIn.expectNoMsg(100.millis) // especially the cancellation not yet
-        expectNoNetworkData()
-        messageOut.sendComplete()
+          netIn.expectNoMsg(100.millis) // especially the cancellation not yet
+          expectNoNetworkData()
+          messageOut.sendComplete()
 
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
-        netOut.expectComplete()
-        netIn.expectCancellation()
-      }
-      "after receiving close frame without close code" in new ServerTestSetup {
-        pushInput(
-          frameHeader(
-            Opcode.Close,
-            0,
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
+          netOut.expectComplete()
+          netIn.expectCancellation()
+        }
+      "after receiving close frame without close code" in
+        new ServerTestSetup {
+          pushInput(
+            frameHeader(
+              Opcode.Close,
+              0,
+              fin = true,
+              mask = Some(Random.nextInt())))
+          expectComplete(messageIn)
+
+          messageOut.sendComplete()
+          // especially mustn't be Protocol.CloseCodes.NoCodePresent
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
+          netOut.expectComplete()
+          netIn.expectCancellation()
+        }
+      "after receiving regular close frame when idle (but some data was exchanged before)" in
+        new ServerTestSetup {
+          val msg = "äbcdef€\uffff"
+          val input = frame(
+            Opcode.Text,
+            ByteString(msg, "UTF-8"),
             fin = true,
-            mask = Some(Random.nextInt())))
-        expectComplete(messageIn)
+            mask = true)
 
-        messageOut.sendComplete()
-        // especially mustn't be Protocol.CloseCodes.NoCodePresent
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
-        netOut.expectComplete()
-        netIn.expectCancellation()
-      }
-      "after receiving regular close frame when idle (but some data was exchanged before)" in new ServerTestSetup {
-        val msg = "äbcdef€\uffff"
-        val input = frame(
-          Opcode.Text,
-          ByteString(msg, "UTF-8"),
-          fin = true,
-          mask = true)
+          // send at least one regular frame to trigger #19340 afterwards
+          pushInput(input)
+          expectMessage(TextMessage.Strict(msg))
 
-        // send at least one regular frame to trigger #19340 afterwards
-        pushInput(input)
-        expectMessage(TextMessage.Strict(msg))
+          pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
+          expectComplete(messageIn)
 
-        pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
-        expectComplete(messageIn)
+          netIn.expectNoMsg(100.millis) // especially the cancellation not yet
+          expectNoNetworkData()
+          messageOut.sendComplete()
 
-        netIn.expectNoMsg(100.millis) // especially the cancellation not yet
-        expectNoNetworkData()
-        messageOut.sendComplete()
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
+          netOut.expectComplete()
+          netIn.expectCancellation()
+        }
+      "after receiving regular close frame when idle (user still sends some data)" in
+        new ServerTestSetup {
+          pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
+          expectComplete(messageIn)
 
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
-        netOut.expectComplete()
-        netIn.expectCancellation()
-      }
-      "after receiving regular close frame when idle (user still sends some data)" in new ServerTestSetup {
-        pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
-        expectComplete(messageIn)
+          // sending another message is allowed before closing (inherently racy)
+          val pub = TestPublisher.manualProbe[ByteString]()
+          val msg = BinaryMessage(Source.fromPublisher(pub))
+          pushMessage(msg)
+          expectFrameOnNetwork(Opcode.Binary, ByteString.empty, fin = false)
 
-        // sending another message is allowed before closing (inherently racy)
-        val pub = TestPublisher.manualProbe[ByteString]()
-        val msg = BinaryMessage(Source.fromPublisher(pub))
-        pushMessage(msg)
-        expectFrameOnNetwork(Opcode.Binary, ByteString.empty, fin = false)
+          val data = ByteString("abc", "ASCII")
+          val dataSub = pub.expectSubscription()
+          dataSub.sendNext(data)
+          expectFrameOnNetwork(Opcode.Continuation, data, fin = false)
 
-        val data = ByteString("abc", "ASCII")
-        val dataSub = pub.expectSubscription()
-        dataSub.sendNext(data)
-        expectFrameOnNetwork(Opcode.Continuation, data, fin = false)
+          dataSub.sendComplete()
+          expectFrameOnNetwork(
+            Opcode.Continuation,
+            ByteString.empty,
+            fin = true)
 
-        dataSub.sendComplete()
-        expectFrameOnNetwork(Opcode.Continuation, ByteString.empty, fin = true)
+          messageOut.sendComplete()
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
+          netOut.expectComplete()
+        }
+      "after receiving regular close frame when fragmented message is still open" in
+        new ServerTestSetup {
+          pushInput(
+            frameHeader(
+              Protocol.Opcode.Binary,
+              0,
+              fin = false,
+              mask = Some(Random.nextInt())))
+          val dataSource = expectBinaryMessage().dataStream
+          val inSubscriber = TestSubscriber.manualProbe[ByteString]()
+          dataSource.runWith(Sink.fromSubscriber(inSubscriber))
+          val inSub = inSubscriber.expectSubscription()
 
-        messageOut.sendComplete()
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
-        netOut.expectComplete()
-      }
-      "after receiving regular close frame when fragmented message is still open" in new ServerTestSetup {
-        pushInput(
-          frameHeader(
-            Protocol.Opcode.Binary,
-            0,
-            fin = false,
-            mask = Some(Random.nextInt())))
-        val dataSource = expectBinaryMessage().dataStream
-        val inSubscriber = TestSubscriber.manualProbe[ByteString]()
-        dataSource.runWith(Sink.fromSubscriber(inSubscriber))
-        val inSub = inSubscriber.expectSubscription()
+          val outData = ByteString("def", "ASCII")
+          val mask = Random.nextInt()
+          pushInput(
+            frameHeader(
+              Protocol.Opcode.Continuation,
+              3,
+              fin = false,
+              mask = Some(mask)) ++ maskedBytes(outData, mask)._1)
+          inSub.request(5)
+          inSubscriber.expectNext(outData)
 
-        val outData = ByteString("def", "ASCII")
-        val mask = Random.nextInt()
-        pushInput(
-          frameHeader(
-            Protocol.Opcode.Continuation,
-            3,
-            fin = false,
-            mask = Some(mask)) ++ maskedBytes(outData, mask)._1)
-        inSub.request(5)
-        inSubscriber.expectNext(outData)
+          pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
 
-        pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
+          // This is arguable: we could also just fail the subStream but complete the main message stream regularly.
+          // However, truncating an ongoing message by closing without sending a `Continuation(fin = true)` first
+          // could be seen as something being amiss.
+          expectError(messageIn)
+          inSubscriber.expectError()
+          // truncation of open message
 
-        // This is arguable: we could also just fail the subStream but complete the main message stream regularly.
-        // However, truncating an ongoing message by closing without sending a `Continuation(fin = true)` first
-        // could be seen as something being amiss.
-        expectError(messageIn)
-        inSubscriber.expectError()
-        // truncation of open message
+          // sending another message is allowed before closing (inherently racy)
 
-        // sending another message is allowed before closing (inherently racy)
+          val pub = TestPublisher.manualProbe[ByteString]()
+          val msg = BinaryMessage(Source.fromPublisher(pub))
+          pushMessage(msg)
+          expectFrameOnNetwork(Opcode.Binary, ByteString.empty, fin = false)
 
-        val pub = TestPublisher.manualProbe[ByteString]()
-        val msg = BinaryMessage(Source.fromPublisher(pub))
-        pushMessage(msg)
-        expectFrameOnNetwork(Opcode.Binary, ByteString.empty, fin = false)
+          val data = ByteString("abc", "ASCII")
+          val dataSub = pub.expectSubscription()
+          dataSub.sendNext(data)
+          expectFrameOnNetwork(Opcode.Continuation, data, fin = false)
 
-        val data = ByteString("abc", "ASCII")
-        val dataSub = pub.expectSubscription()
-        dataSub.sendNext(data)
-        expectFrameOnNetwork(Opcode.Continuation, data, fin = false)
+          dataSub.sendComplete()
+          expectFrameOnNetwork(
+            Opcode.Continuation,
+            ByteString.empty,
+            fin = true)
 
-        dataSub.sendComplete()
-        expectFrameOnNetwork(Opcode.Continuation, ByteString.empty, fin = true)
+          messageOut.sendComplete()
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
+          netOut.expectComplete()
 
-        messageOut.sendComplete()
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
-        netOut.expectComplete()
+        }
+      "after receiving error close frame with close code and without reason" in
+        new ServerTestSetup {
+          pushInput(
+            closeFrame(Protocol.CloseCodes.UnexpectedCondition, mask = true))
+          val error = expectError(messageIn)
+            .asInstanceOf[PeerClosedConnectionException]
+          error.closeCode shouldEqual Protocol.CloseCodes.UnexpectedCondition
+          error.closeReason shouldEqual ""
 
-      }
-      "after receiving error close frame with close code and without reason" in new ServerTestSetup {
-        pushInput(
-          closeFrame(Protocol.CloseCodes.UnexpectedCondition, mask = true))
-        val error = expectError(messageIn)
-          .asInstanceOf[PeerClosedConnectionException]
-        error.closeCode shouldEqual Protocol.CloseCodes.UnexpectedCondition
-        error.closeReason shouldEqual ""
-
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.UnexpectedCondition)
-        messageOut.sendError(error)
-        netOut.expectComplete()
-        netIn.expectCancellation()
-      }
-      "after receiving error close frame with close code and with reason" in new ServerTestSetup {
-        pushInput(
-          closeFrame(
-            Protocol.CloseCodes.UnexpectedCondition,
-            mask = true,
-            msg =
-              "This alien landing came quite unexpected. Communication has been garbled."))
-        val error = expectError(messageIn)
-          .asInstanceOf[PeerClosedConnectionException]
-        error.closeCode shouldEqual Protocol.CloseCodes.UnexpectedCondition
-        error
-          .closeReason shouldEqual "This alien landing came quite unexpected. Communication has been garbled."
-
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.UnexpectedCondition)
-        messageOut.sendError(error)
-        netOut.expectComplete()
-        netIn.expectCancellation()
-      }
-      "after peer closes connection without sending a close frame" in new ServerTestSetup {
-        netIn.expectRequest()
-        netIn.sendComplete()
-
-        expectComplete(messageIn)
-        messageOut.sendComplete()
-
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
-        netOut.expectComplete()
-      }
-      "when user handler closes (simple)" in new ServerTestSetup {
-        messageOut.sendComplete()
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
-
-        expectNoNetworkData() // wait for peer to close regularly
-        pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
-
-        expectComplete(messageIn)
-        netOut.expectComplete()
-        netIn.expectCancellation()
-      }
-      "when user handler closes main stream and substream only afterwards" in new ServerTestSetup {
-        // send half a message
-        val pub = TestPublisher.manualProbe[ByteString]()
-        val msg = BinaryMessage(Source.fromPublisher(pub))
-        pushMessage(msg)
-        expectFrameOnNetwork(Opcode.Binary, ByteString.empty, fin = false)
-
-        val data = ByteString("abc", "ASCII")
-        val dataSub = pub.expectSubscription()
-        dataSub.sendNext(data)
-        expectFrameOnNetwork(Opcode.Continuation, data, fin = false)
-
-        messageOut.sendComplete()
-        expectNoNetworkData() // need to wait for substream to close
-
-        dataSub.sendComplete()
-        expectFrameOnNetwork(Opcode.Continuation, ByteString.empty, fin = true)
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
-        expectNoNetworkData() // wait for peer to close regularly
-
-        val mask = Random.nextInt()
-        pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
-
-        expectComplete(messageIn)
-        netOut.expectComplete()
-        netIn.expectCancellation()
-      }
-      "if user handler fails" in new ServerTestSetup {
-        EventFilter[RuntimeException](
-          message = "Oops, user handler failed!",
-          occurrences = 1).intercept {
-          messageOut
-            .sendError(new RuntimeException("Oops, user handler failed!"))
           expectCloseCodeOnNetwork(Protocol.CloseCodes.UnexpectedCondition)
+          messageOut.sendError(error)
+          netOut.expectComplete()
+          netIn.expectCancellation()
+        }
+      "after receiving error close frame with close code and with reason" in
+        new ServerTestSetup {
+          pushInput(
+            closeFrame(
+              Protocol.CloseCodes.UnexpectedCondition,
+              mask = true,
+              msg =
+                "This alien landing came quite unexpected. Communication has been garbled."))
+          val error = expectError(messageIn)
+            .asInstanceOf[PeerClosedConnectionException]
+          error.closeCode shouldEqual Protocol.CloseCodes.UnexpectedCondition
+          error.closeReason shouldEqual
+            "This alien landing came quite unexpected. Communication has been garbled."
+
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.UnexpectedCondition)
+          messageOut.sendError(error)
+          netOut.expectComplete()
+          netIn.expectCancellation()
+        }
+      "after peer closes connection without sending a close frame" in
+        new ServerTestSetup {
+          netIn.expectRequest()
+          netIn.sendComplete()
+
+          expectComplete(messageIn)
+          messageOut.sendComplete()
+
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
+          netOut.expectComplete()
+        }
+      "when user handler closes (simple)" in
+        new ServerTestSetup {
+          messageOut.sendComplete()
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
 
           expectNoNetworkData() // wait for peer to close regularly
           pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
@@ -733,108 +739,165 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           netOut.expectComplete()
           netIn.expectCancellation()
         }
-      }
+      "when user handler closes main stream and substream only afterwards" in
+        new ServerTestSetup {
+          // send half a message
+          val pub = TestPublisher.manualProbe[ByteString]()
+          val msg = BinaryMessage(Source.fromPublisher(pub))
+          pushMessage(msg)
+          expectFrameOnNetwork(Opcode.Binary, ByteString.empty, fin = false)
+
+          val data = ByteString("abc", "ASCII")
+          val dataSub = pub.expectSubscription()
+          dataSub.sendNext(data)
+          expectFrameOnNetwork(Opcode.Continuation, data, fin = false)
+
+          messageOut.sendComplete()
+          expectNoNetworkData() // need to wait for substream to close
+
+          dataSub.sendComplete()
+          expectFrameOnNetwork(
+            Opcode.Continuation,
+            ByteString.empty,
+            fin = true)
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
+          expectNoNetworkData() // wait for peer to close regularly
+
+          val mask = Random.nextInt()
+          pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
+
+          expectComplete(messageIn)
+          netOut.expectComplete()
+          netIn.expectCancellation()
+        }
+      "if user handler fails" in
+        new ServerTestSetup {
+          EventFilter[RuntimeException](
+            message = "Oops, user handler failed!",
+            occurrences = 1).intercept {
+            messageOut
+              .sendError(new RuntimeException("Oops, user handler failed!"))
+            expectCloseCodeOnNetwork(Protocol.CloseCodes.UnexpectedCondition)
+
+            expectNoNetworkData() // wait for peer to close regularly
+            pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
+
+            expectComplete(messageIn)
+            netOut.expectComplete()
+            netIn.expectCancellation()
+          }
+        }
       "if peer closes with invalid close frame" - {
-        "close code outside of the valid range" in new ServerTestSetup {
-          pushInput(closeFrame(5700, mask = true))
+        "close code outside of the valid range" in
+          new ServerTestSetup {
+            pushInput(closeFrame(5700, mask = true))
 
-          val error = expectError(messageIn)
-            .asInstanceOf[PeerClosedConnectionException]
-          error.closeCode shouldEqual Protocol.CloseCodes.ProtocolError
-          error
-            .closeReason shouldEqual "Peer sent illegal close frame (invalid close code '5700')."
+            val error = expectError(messageIn)
+              .asInstanceOf[PeerClosedConnectionException]
+            error.closeCode shouldEqual Protocol.CloseCodes.ProtocolError
+            error.closeReason shouldEqual
+              "Peer sent illegal close frame (invalid close code '5700')."
 
-          expectCloseCodeOnNetwork(Protocol.CloseCodes.ProtocolError)
+            expectCloseCodeOnNetwork(Protocol.CloseCodes.ProtocolError)
+            netOut.expectComplete()
+            netIn.expectCancellation()
+          }
+        "close data of size 1" in
+          new ServerTestSetup {
+            pushInput(
+              frameHeader(
+                Opcode.Close,
+                1,
+                mask = Some(Random.nextInt()),
+                fin = true) ++ ByteString("x"))
+
+            val error = expectError(messageIn)
+              .asInstanceOf[PeerClosedConnectionException]
+            error.closeCode shouldEqual Protocol.CloseCodes.ProtocolError
+            error.closeReason shouldEqual
+              "Peer sent illegal close frame (close code must be length 2 but was 1)."
+
+            expectCloseCodeOnNetwork(Protocol.CloseCodes.ProtocolError)
+            netOut.expectComplete()
+            netIn.expectCancellation()
+          }
+        "close message is invalid UTF8" in
+          new ServerTestSetup {
+            pushInput(
+              closeFrame(
+                Protocol.CloseCodes.UnexpectedCondition,
+                mask = true,
+                msgBytes = InvalidUtf8TwoByteSequence))
+
+            val error = expectError(messageIn)
+              .asInstanceOf[PeerClosedConnectionException]
+            error.closeCode shouldEqual Protocol.CloseCodes.ProtocolError
+            error.closeReason shouldEqual
+              "Peer sent illegal close frame (close reason message is invalid UTF8)."
+
+            expectCloseCodeOnNetwork(Protocol.CloseCodes.ProtocolError)
+            netOut.expectComplete()
+            netIn.expectCancellation()
+          }
+      }
+      "timeout if user handler closes and peer doesn't send a close frame" in
+        new ServerTestSetup {
+          override protected def closeTimeout: FiniteDuration = 100.millis
+
+          messageOut.sendComplete()
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
+
           netOut.expectComplete()
           netIn.expectCancellation()
         }
-        "close data of size 1" in new ServerTestSetup {
-          pushInput(
-            frameHeader(
-              Opcode.Close,
-              1,
-              mask = Some(Random.nextInt()),
-              fin = true) ++ ByteString("x"))
+      "timeout after we close after error and peer doesn't send a close frame" in
+        new ServerTestSetup {
+          override protected def closeTimeout: FiniteDuration = 100.millis
 
-          val error = expectError(messageIn)
-            .asInstanceOf[PeerClosedConnectionException]
-          error.closeCode shouldEqual Protocol.CloseCodes.ProtocolError
-          error
-            .closeReason shouldEqual "Peer sent illegal close frame (close code must be length 2 but was 1)."
+          pushInput(frameHeader(Opcode.Binary, 0, fin = true, rsv1 = true))
+          expectProtocolErrorOnNetwork()
+          messageOut.sendComplete()
 
-          expectCloseCodeOnNetwork(Protocol.CloseCodes.ProtocolError)
           netOut.expectComplete()
           netIn.expectCancellation()
         }
-        "close message is invalid UTF8" in new ServerTestSetup {
-          pushInput(
-            closeFrame(
-              Protocol.CloseCodes.UnexpectedCondition,
-              mask = true,
-              msgBytes = InvalidUtf8TwoByteSequence))
+      "ignore frames peer sends after close frame" in
+        new ServerTestSetup {
+          pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
 
-          val error = expectError(messageIn)
-            .asInstanceOf[PeerClosedConnectionException]
-          error.closeCode shouldEqual Protocol.CloseCodes.ProtocolError
-          error
-            .closeReason shouldEqual "Peer sent illegal close frame (close reason message is invalid UTF8)."
+          expectComplete(messageIn)
 
-          expectCloseCodeOnNetwork(Protocol.CloseCodes.ProtocolError)
+          pushInput(frameHeader(Opcode.Binary, 0, fin = true))
+          messageOut.sendComplete()
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
+
           netOut.expectComplete()
           netIn.expectCancellation()
         }
-      }
-      "timeout if user handler closes and peer doesn't send a close frame" in new ServerTestSetup {
-        override protected def closeTimeout: FiniteDuration = 100.millis
-
-        messageOut.sendComplete()
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
-
-        netOut.expectComplete()
-        netIn.expectCancellation()
-      }
-      "timeout after we close after error and peer doesn't send a close frame" in new ServerTestSetup {
-        override protected def closeTimeout: FiniteDuration = 100.millis
-
-        pushInput(frameHeader(Opcode.Binary, 0, fin = true, rsv1 = true))
-        expectProtocolErrorOnNetwork()
-        messageOut.sendComplete()
-
-        netOut.expectComplete()
-        netIn.expectCancellation()
-      }
-      "ignore frames peer sends after close frame" in new ServerTestSetup {
-        pushInput(closeFrame(Protocol.CloseCodes.Regular, mask = true))
-
-        expectComplete(messageIn)
-
-        pushInput(frameHeader(Opcode.Binary, 0, fin = true))
-        messageOut.sendComplete()
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.Regular)
-
-        netOut.expectComplete()
-        netIn.expectCancellation()
-      }
     }
     "reject unexpected frames" - {
       "reserved bits set" - {
-        "rsv1" in new ServerTestSetup {
-          pushInput(frameHeader(Opcode.Binary, 0, fin = true, rsv1 = true))
-          expectProtocolErrorOnNetwork()
-        }
-        "rsv2" in new ServerTestSetup {
-          pushInput(frameHeader(Opcode.Binary, 0, fin = true, rsv2 = true))
-          expectProtocolErrorOnNetwork()
-        }
-        "rsv3" in new ServerTestSetup {
-          pushInput(frameHeader(Opcode.Binary, 0, fin = true, rsv3 = true))
-          expectProtocolErrorOnNetwork()
-        }
+        "rsv1" in
+          new ServerTestSetup {
+            pushInput(frameHeader(Opcode.Binary, 0, fin = true, rsv1 = true))
+            expectProtocolErrorOnNetwork()
+          }
+        "rsv2" in
+          new ServerTestSetup {
+            pushInput(frameHeader(Opcode.Binary, 0, fin = true, rsv2 = true))
+            expectProtocolErrorOnNetwork()
+          }
+        "rsv3" in
+          new ServerTestSetup {
+            pushInput(frameHeader(Opcode.Binary, 0, fin = true, rsv3 = true))
+            expectProtocolErrorOnNetwork()
+          }
       }
-      "highest bit of 64-bit length is set" in new ServerTestSetup {
-        import BitBuilder._
+      "highest bit of 64-bit length is set" in
+        new ServerTestSetup {
+          import BitBuilder._
 
-        val header = b"""0000          # flags
+          val header = b"""0000          # flags
                   xxxx=1    # opcode
               1             # mask?
                xxxxxxx=7f   # length
@@ -852,118 +915,132 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
               00000000 # empty mask
           """
 
-        EventFilter[ProtocolException](occurrences = 1).intercept {
-          pushInput(header)
+          EventFilter[ProtocolException](occurrences = 1).intercept {
+            pushInput(header)
+            expectProtocolErrorOnNetwork()
+          }
+        }
+      "control frame bigger than 125 bytes" in
+        new ServerTestSetup {
+          pushInput(frameHeader(Opcode.Ping, 126, fin = true, mask = Some(0)))
           expectProtocolErrorOnNetwork()
         }
-      }
-      "control frame bigger than 125 bytes" in new ServerTestSetup {
-        pushInput(frameHeader(Opcode.Ping, 126, fin = true, mask = Some(0)))
-        expectProtocolErrorOnNetwork()
-      }
-      "fragmented control frame" in new ServerTestSetup {
-        pushInput(frameHeader(Opcode.Ping, 0, fin = false, mask = Some(0)))
-        expectProtocolErrorOnNetwork()
-      }
-      "unexpected continuation frame" in new ServerTestSetup {
-        pushInput(
-          frameHeader(Opcode.Continuation, 0, fin = false, mask = Some(0)))
-        expectProtocolErrorOnNetwork()
-      }
-      "unexpected data frame when waiting for continuation" in new ServerTestSetup {
-        pushInput(
-          frameHeader(Opcode.Binary, 0, fin = false) ++
-            frameHeader(Opcode.Binary, 0, fin = false))
-        expectProtocolErrorOnNetwork()
-      }
-      "invalid utf8 encoding for single frame message" in new ClientTestSetup {
-        val data = InvalidUtf8TwoByteSequence
-
-        pushInput(frameHeader(Opcode.Text, 2, fin = true) ++ data)
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
-      }
-      "invalid utf8 encoding for streamed frame" in new ClientTestSetup {
-        val data = InvalidUtf8TwoByteSequence
-
-        pushInput(
-          frameHeader(Opcode.Text, 0, fin = false) ++
-            frameHeader(Opcode.Continuation, 2, fin = true) ++
-            data)
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
-      }
-      "truncated utf8 encoding for single frame message" in new ClientTestSetup {
-        val data = ByteString("€", "UTF-8").take(1) // half a euro
-        pushInput(frameHeader(Opcode.Text, 1, fin = true) ++ data)
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
-      }
-      "truncated utf8 encoding for streamed frame" in new ClientTestSetup {
-        val data = ByteString("€", "UTF-8").take(1) // half a euro
-        pushInput(
-          frameHeader(Opcode.Text, 0, fin = false) ++
-            frameHeader(Opcode.Continuation, 1, fin = true) ++
-            data)
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
-      }
-      "half a surrogate pair in utf8 encoding for a strict frame" in new ClientTestSetup {
-        val data = ByteString(
-          0xed,
-          0xa0,
-          0x80
-        ) // not strictly supported by utf-8
-        pushInput(frameHeader(Opcode.Text, 3, fin = true) ++ data)
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
-      }
-      "half a surrogate pair in utf8 encoding for a streamed frame" in new ClientTestSetup {
-        val data = ByteString(
-          0xed,
-          0xa0,
-          0x80
-        ) // not strictly supported by utf-8
-        pushInput(frameHeader(Opcode.Text, 0, fin = false))
-        pushInput(frameHeader(Opcode.Continuation, 3, fin = true) ++ data)
-
-        // Kids, always drain your entities
-        messageIn.requestNext() match {
-          case b: TextMessage ⇒
-            b.textStream.runWith(Sink.ignore)
-          case _ ⇒
+      "fragmented control frame" in
+        new ServerTestSetup {
+          pushInput(frameHeader(Opcode.Ping, 0, fin = false, mask = Some(0)))
+          expectProtocolErrorOnNetwork()
         }
+      "unexpected continuation frame" in
+        new ServerTestSetup {
+          pushInput(
+            frameHeader(Opcode.Continuation, 0, fin = false, mask = Some(0)))
+          expectProtocolErrorOnNetwork()
+        }
+      "unexpected data frame when waiting for continuation" in
+        new ServerTestSetup {
+          pushInput(
+            frameHeader(Opcode.Binary, 0, fin = false) ++
+              frameHeader(Opcode.Binary, 0, fin = false))
+          expectProtocolErrorOnNetwork()
+        }
+      "invalid utf8 encoding for single frame message" in
+        new ClientTestSetup {
+          val data = InvalidUtf8TwoByteSequence
 
-        expectError(messageIn)
+          pushInput(frameHeader(Opcode.Text, 2, fin = true) ++ data)
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
+        }
+      "invalid utf8 encoding for streamed frame" in
+        new ClientTestSetup {
+          val data = InvalidUtf8TwoByteSequence
 
-        expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
-      }
-      "unmasked input on the server side" in new ServerTestSetup {
-        val data = ByteString("abcdef", "ASCII")
-        val input = frameHeader(Opcode.Binary, 6, fin = true) ++ data
+          pushInput(
+            frameHeader(Opcode.Text, 0, fin = false) ++
+              frameHeader(Opcode.Continuation, 2, fin = true) ++ data)
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
+        }
+      "truncated utf8 encoding for single frame message" in
+        new ClientTestSetup {
+          val data = ByteString("€", "UTF-8").take(1) // half a euro
+          pushInput(frameHeader(Opcode.Text, 1, fin = true) ++ data)
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
+        }
+      "truncated utf8 encoding for streamed frame" in
+        new ClientTestSetup {
+          val data = ByteString("€", "UTF-8").take(1) // half a euro
+          pushInput(
+            frameHeader(Opcode.Text, 0, fin = false) ++
+              frameHeader(Opcode.Continuation, 1, fin = true) ++ data)
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
+        }
+      "half a surrogate pair in utf8 encoding for a strict frame" in
+        new ClientTestSetup {
+          val data = ByteString(
+            0xed,
+            0xa0,
+            0x80
+          ) // not strictly supported by utf-8
+          pushInput(frameHeader(Opcode.Text, 3, fin = true) ++ data)
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
+        }
+      "half a surrogate pair in utf8 encoding for a streamed frame" in
+        new ClientTestSetup {
+          val data = ByteString(
+            0xed,
+            0xa0,
+            0x80
+          ) // not strictly supported by utf-8
+          pushInput(frameHeader(Opcode.Text, 0, fin = false))
+          pushInput(frameHeader(Opcode.Continuation, 3, fin = true) ++ data)
 
-        pushInput(input)
-        expectProtocolErrorOnNetwork()
-      }
-      "unmasked input on the server side for empty frame" in new ServerTestSetup {
-        val input = frameHeader(Opcode.Binary, 0, fin = true)
+          // Kids, always drain your entities
+          messageIn.requestNext() match {
+            case b: TextMessage ⇒
+              b.textStream.runWith(Sink.ignore)
+            case _ ⇒
+          }
 
-        pushInput(input)
-        expectProtocolErrorOnNetwork()
-      }
-      "masked input on the client side" in new ClientTestSetup {
-        val mask = Random.nextInt()
-        val input = frameHeader(
-          Opcode.Binary,
-          6,
-          fin = true,
-          mask = Some(mask)) ++ maskedASCII("abcdef", mask)._1
+          expectError(messageIn)
 
-        pushInput(input)
-        expectProtocolErrorOnNetwork()
-      }
-      "masked input on the client side for empty frame" in new ClientTestSetup {
-        val mask = Random.nextInt()
-        val input = frameHeader(Opcode.Binary, 0, fin = true, mask = Some(mask))
+          expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
+        }
+      "unmasked input on the server side" in
+        new ServerTestSetup {
+          val data = ByteString("abcdef", "ASCII")
+          val input = frameHeader(Opcode.Binary, 6, fin = true) ++ data
 
-        pushInput(input)
-        expectProtocolErrorOnNetwork()
-      }
+          pushInput(input)
+          expectProtocolErrorOnNetwork()
+        }
+      "unmasked input on the server side for empty frame" in
+        new ServerTestSetup {
+          val input = frameHeader(Opcode.Binary, 0, fin = true)
+
+          pushInput(input)
+          expectProtocolErrorOnNetwork()
+        }
+      "masked input on the client side" in
+        new ClientTestSetup {
+          val mask = Random.nextInt()
+          val input =
+            frameHeader(Opcode.Binary, 6, fin = true, mask = Some(mask)) ++
+              maskedASCII("abcdef", mask)._1
+
+          pushInput(input)
+          expectProtocolErrorOnNetwork()
+        }
+      "masked input on the client side for empty frame" in
+        new ClientTestSetup {
+          val mask = Random.nextInt()
+          val input = frameHeader(
+            Opcode.Binary,
+            0,
+            fin = true,
+            mask = Some(mask))
+
+          pushInput(input)
+          expectProtocolErrorOnNetwork()
+        }
     }
     "support per-message-compression extension" in pending
   }

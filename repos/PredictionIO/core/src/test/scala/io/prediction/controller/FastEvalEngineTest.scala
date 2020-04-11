@@ -66,10 +66,11 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
                 pQ shouldBe q
                 pModels shouldBe None
                 pPs should have size algoCount
-                pPs shouldBe Seq(
-                  Prediction(id = 20, q = q, models = Some(model0)),
-                  Prediction(id = 21, q = q, models = Some(model1)),
-                  Prediction(id = 22, q = q, models = Some(model2)))
+                pPs shouldBe
+                  Seq(
+                    Prediction(id = 20, q = q, models = Some(model0)),
+                    Prediction(id = 21, q = q, models = Some(model1)),
+                    Prediction(id = 22, q = q, models = Some(model2)))
               }
             }
         }

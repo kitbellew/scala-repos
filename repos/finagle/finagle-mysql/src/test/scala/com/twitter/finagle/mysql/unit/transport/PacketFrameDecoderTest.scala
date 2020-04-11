@@ -32,8 +32,8 @@ class PacketFrameDecoderTest extends FunSuite with MockitoSugar {
 
   test("16Mbyte packets") {
     val ff = -1.toByte
-    val frame: Array[Byte] = Array[Byte](ff, ff, ff, 0x01) ++ Array
-      .fill[Byte](0xffffff)(0x00)
+    val frame: Array[Byte] = Array[Byte](ff, ff, ff, 0x01) ++
+      Array.fill[Byte](0xffffff)(0x00)
     val result = frameDecoder
       .decode(ctx, c, ChannelBuffers.wrappedBuffer(frame))
     assert(result != null)

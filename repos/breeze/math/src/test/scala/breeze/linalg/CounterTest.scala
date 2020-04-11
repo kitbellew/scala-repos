@@ -37,24 +37,20 @@ class CounterTest extends FunSuite with Checkers {
 
   test("Addition") {
     assert(
-      Counter("a" -> 1, "b" -> 2) + Counter("a" -> 3) === Counter(
-        "a" -> 4,
-        "b" -> 2))
+      Counter("a" -> 1, "b" -> 2) + Counter("a" -> 3) ===
+        Counter("a" -> 4, "b" -> 2))
     assert(
-      Counter("a" -> 3) + Counter("a" -> 1, "b" -> 2) === Counter(
-        "a" -> 4,
-        "b" -> 2))
+      Counter("a" -> 3) + Counter("a" -> 1, "b" -> 2) ===
+        Counter("a" -> 4, "b" -> 2))
   }
 
   test("Subtraction") {
     assert(
-      Counter("a" -> 1, "b" -> 2) - Counter("a" -> 3) === Counter(
-        "a" -> -2,
-        "b" -> 2))
+      Counter("a" -> 1, "b" -> 2) - Counter("a" -> 3) ===
+        Counter("a" -> -2, "b" -> 2))
     assert(
-      Counter("a" -> 3) - Counter("a" -> 1, "b" -> 2) === Counter(
-        "a" -> 2,
-        "b" -> -2))
+      Counter("a" -> 3) - Counter("a" -> 1, "b" -> 2) ===
+        Counter("a" -> 2, "b" -> -2))
   }
 
   test("Multiplication") {

@@ -87,8 +87,8 @@ class RecipeByteStrings extends RecipeSpec {
       val chunks = Await.result(chunksFuture, 3.seconds)
 
       chunks.forall(_.size <= 2) should be(true)
-      chunks.fold(ByteString())(_ ++ _) should be(
-        ByteString(1, 2, 3, 4, 5, 6, 7, 8, 9))
+      chunks.fold(ByteString())(_ ++ _) should
+        be(ByteString(1, 2, 3, 4, 5, 6, 7, 8, 9))
     }
 
     "have a working bytes limiter" in {
@@ -147,8 +147,8 @@ class RecipeByteStrings extends RecipeSpec {
 
       Await
         .result(bytes1.via(limiter).limit(10).runWith(Sink.seq), 3.seconds)
-        .fold(ByteString())(_ ++ _) should be(
-        ByteString(1, 2, 3, 4, 5, 6, 7, 8, 9))
+        .fold(ByteString())(_ ++ _) should
+        be(ByteString(1, 2, 3, 4, 5, 6, 7, 8, 9))
 
       an[IllegalStateException] must be thrownBy {
         Await.result(bytes2.via(limiter).limit(10).runWith(Sink.seq), 3.seconds)

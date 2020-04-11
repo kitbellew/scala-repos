@@ -43,12 +43,10 @@ object ScopeFilter {
         scope => {
           val accept = d(scope)
           println(
-            (
-              if (accept)
-                "ACCEPT "
-              else
-                "reject "
-            ) + scope)
+            (if (accept)
+               "ACCEPT "
+             else
+               "reject ") + scope)
           accept
         }
       }
@@ -210,18 +208,14 @@ object ScopeFilter {
       aggregate: Boolean): ProjectRef => Seq[ProjectRef] =
     ref =>
       Project.getProject(ref, structure).toList flatMap { p =>
-        (
-          if (classpath)
-            p.dependencies.map(_.project)
-          else
-            Nil
-        ) ++
-          (
-            if (aggregate)
-              p.aggregate
-            else
-              Nil
-          )
+        (if (classpath)
+           p.dependencies.map(_.project)
+         else
+           Nil) ++
+          (if (aggregate)
+             p.aggregate
+           else
+             Nil)
       }
 
   private[this] def byDeps(

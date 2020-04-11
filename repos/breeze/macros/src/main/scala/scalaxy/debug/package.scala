@@ -69,8 +69,8 @@ package debug {
           reify(
             if (!condExpr.splice)
               throw new AssertionError(
-                "assertion failed: " + message.splice + ": " + messageExpr
-                  .splice))
+                "assertion failed: " + message.splice + ": " +
+                  messageExpr.splice))
         })
     }
 
@@ -98,8 +98,8 @@ package debug {
           reify(
             if (!condExpr.splice)
               throw new IllegalArgumentException(
-                "requirement failed: " + message.splice + ": " + messageExpr
-                  .splice))
+                "requirement failed: " + message.splice + ": " +
+                  messageExpr.splice))
         }
       )
     }
@@ -128,8 +128,8 @@ package debug {
           reify(
             if (!condExpr.splice)
               throw new AssertionError(
-                "assumption failed: " + message.splice + ": " + messageExpr
-                  .splice))
+                "assumption failed: " + message.splice + ": " +
+                  messageExpr.splice))
         })
     }
 

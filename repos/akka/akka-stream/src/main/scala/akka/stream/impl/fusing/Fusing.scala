@@ -818,8 +818,8 @@ private[stream] object Fusing {
           _oldShape
       if (Debug)
         println(
-          "  " * indent + s"adding copy ${hash(copy)} ${printShape(
-            copy.shape)} of ${printShape(oldShape)}")
+          "  " * indent +
+            s"adding copy ${hash(copy)} ${printShape(copy.shape)} of ${printShape(oldShape)}")
       group.add(copy)
       modules.add(copy)
       copy.shape.outlets.foreach(o ⇒ outGroup.put(o, group))
@@ -891,7 +891,8 @@ private[stream] object Fusing {
     def rewire(oldShape: Shape, newShape: Shape, indent: Int): Unit = {
       if (Debug)
         println(
-          "  " * indent + s"rewiring ${printShape(oldShape)} -> ${printShape(newShape)}")
+          "  " * indent +
+            s"rewiring ${printShape(oldShape)} -> ${printShape(newShape)}")
       oldShape
         .inlets
         .iterator
@@ -911,7 +912,8 @@ private[stream] object Fusing {
           case (oldOut, newOut) ⇒
             addMapping(
               newOut,
-              removeMapping(oldOut, newOuts) nonNull s"$oldOut (${hash(oldOut)})",
+              removeMapping(oldOut, newOuts) nonNull
+                s"$oldOut (${hash(oldOut)})",
               newOuts)
         }
     }

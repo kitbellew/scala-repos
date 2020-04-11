@@ -131,8 +131,8 @@ class ScClassImpl private (
 
     constructor match {
       case Some(constr)
-          if place != null && PsiTreeUtil
-            .isContextAncestor(constr, place, false) =>
+          if place != null &&
+            PsiTreeUtil.isContextAncestor(constr, place, false) =>
       //ignore, should be processed in ScParameters
       case _ =>
         for (p <- parameters) {
@@ -240,13 +240,14 @@ class ScClassImpl private (
 
   override def getConstructors: Array[PsiMethod] = {
     val buffer = new ArrayBuffer[PsiMethod]
-    buffer ++= functions
-      .filter(_.isConstructor)
-      .flatMap(
-        _.getFunctionWrappers(
-          isStatic = false,
-          isInterface = false,
-          Some(this)))
+    buffer ++=
+      functions
+        .filter(_.isConstructor)
+        .flatMap(
+          _.getFunctionWrappers(
+            isStatic = false,
+            isInterface = false,
+            Some(this)))
     constructor match {
       case Some(x) =>
         buffer ++= x.getFunctionWrappers
@@ -266,10 +267,8 @@ class ScClassImpl private (
               .forName("copy")
               ._1
               .isEmpty
-          val addCopy = !hasCopy && !x
-            .parameterList
-            .clauses
-            .exists(_.hasRepeatedParam)
+          val addCopy = !hasCopy &&
+            !x.parameterList.clauses.exists(_.hasRepeatedParam)
           if (addCopy) {
             try {
               val method = ScalaPsiElementFactory
@@ -289,45 +288,45 @@ class ScClassImpl private (
 
   private def copyMethodText: String = {
     val x = constructor.getOrElse(return "")
-    val paramString = (
-      if (x.parameterList.clauses.length == 1 &&
-          x.parameterList.clauses.head.isImplicit)
-        "()"
-      else
-        ""
-    ) + x
-      .parameterList
-      .clauses
-      .map { c =>
-        val start =
-          if (c.isImplicit)
-            "(implicit "
-          else
-            "("
-        c.parameters
-          .map { p =>
-            val paramType =
-              p.typeElement match {
-                case Some(te) =>
-                  te.getText
-                case None =>
-                  "Any"
-              }
-            p.name + " : " + paramType + " = this." + p.name
-          }
-          .mkString(start, ", ", ")")
-      }
-      .mkString("")
+    val paramString = (if (x.parameterList.clauses.length == 1 &&
+                           x.parameterList.clauses.head.isImplicit)
+                         "()"
+                       else
+                         "") +
+      x.parameterList
+        .clauses
+        .map { c =>
+          val start =
+            if (c.isImplicit)
+              "(implicit "
+            else
+              "("
+          c.parameters
+            .map { p =>
+              val paramType =
+                p.typeElement match {
+                  case Some(te) =>
+                    te.getText
+                  case None =>
+                    "Any"
+                }
+              p.name + " : " + paramType + " = this." + p.name
+            }
+            .mkString(start, ", ", ")")
+        }
+        .mkString("")
 
     val returnType = name + typeParameters.map(_.name).mkString("[", ",", "]")
-    "def copy" + typeParamString + paramString + " : " + returnType + " = throw new Error(\"\")"
+    "def copy" + typeParamString + paramString + " : " + returnType +
+      " = throw new Error(\"\")"
   }
 
   private def implicitMethodText: String = {
     val constr = constructor.getOrElse(return "")
-    val returnType = name + typeParametersClause
-      .map(clause => typeParameters.map(_.name).mkString("[", ",", "]"))
-      .getOrElse("")
+    val returnType = name +
+      typeParametersClause
+        .map(clause => typeParameters.map(_.name).mkString("[", ",", "]"))
+        .getOrElse("")
     val typeParametersText = typeParametersClause
       .map(tp => {
         tp.typeParameters
@@ -373,12 +372,9 @@ class ScClassImpl private (
                 ")")
         }
         .mkString
-    getModifierList
-      .accessModifier
-      .map(am => am.getText + " ")
-      .getOrElse("") + "implicit def " + name +
-      typeParametersText + parametersText + " : " + returnType +
-      " = throw new Error(\"\")"
+    getModifierList.accessModifier.map(am => am.getText + " ").getOrElse("") +
+      "implicit def " + name + typeParametersText + parametersText + " : " +
+      returnType + " = throw new Error(\"\")"
   }
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)

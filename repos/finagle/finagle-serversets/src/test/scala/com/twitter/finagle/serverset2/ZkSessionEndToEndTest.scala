@@ -101,11 +101,12 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
       Await.result(state.changes.filter(connected).toFuture())
 
       assert(
-        states == Seq(
-          SessionState.SyncConnected,
-          SessionState.Expired,
-          SessionState.Disconnected,
-          SessionState.SyncConnected))
+        states ==
+          Seq(
+            SessionState.SyncConnected,
+            SessionState.Expired,
+            SessionState.Disconnected,
+            SessionState.SyncConnected))
     }
 
   // COORD-339

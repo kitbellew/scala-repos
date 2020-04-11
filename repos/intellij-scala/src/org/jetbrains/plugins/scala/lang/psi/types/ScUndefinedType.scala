@@ -79,9 +79,8 @@ case class ScAbstractType(
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = (upper.hashCode() * 31 + lower.hashCode()) * 31 + tpt
-        .args
-        .hashCode()
+      hash =
+        (upper.hashCode() * 31 + lower.hashCode()) * 31 + tpt.args.hashCode()
     }
     hash
   }
@@ -89,8 +88,8 @@ case class ScAbstractType(
   override def equals(obj: scala.Any): Boolean = {
     obj match {
       case ScAbstractType(oTpt, oLower, oUpper) =>
-        lower.equals(oLower) && upper
-          .equals(oUpper) && tpt.args.equals(oTpt.args)
+        lower.equals(oLower) && upper.equals(oUpper) &&
+          tpt.args.equals(oTpt.args)
       case _ =>
         false
     }

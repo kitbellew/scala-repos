@@ -114,8 +114,7 @@ trait BaseInMemoryJobManager[M[+_]]
       extra: Option[JValue]): M[Either[String, Status]] = {
 
     val jval = JObject(
-      JField("message", JString(msg)) ::
-        JField("progress", JNum(progress)) ::
+      JField("message", JString(msg)) :: JField("progress", JNum(progress)) ::
         JField("unit", JString(unit)) ::
         (extra map (JField("info", _) :: Nil) getOrElse Nil))
 

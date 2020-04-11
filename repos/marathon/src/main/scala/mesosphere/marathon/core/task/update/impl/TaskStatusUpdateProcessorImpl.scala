@@ -46,8 +46,10 @@ class TaskStatusUpdateProcessorImpl @Inject() (
   private[this] val stepTimers: Map[String, Timer] =
     steps
       .map { step =>
-        step.name -> metrics.timer(
-          metrics.name(MetricPrefixes.SERVICE, getClass, s"step-${step.name}"))
+        step.name ->
+          metrics.timer(
+            metrics
+              .name(MetricPrefixes.SERVICE, getClass, s"step-${step.name}"))
       }
       .toMap
 

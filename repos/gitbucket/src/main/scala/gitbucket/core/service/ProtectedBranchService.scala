@@ -118,9 +118,10 @@ object ProtectedBranchService {
       with CommitStatusService {
 
     def isAdministrator(pusher: String)(implicit session: Session): Boolean =
-      pusher == owner || getGroupMembers(owner)
-        .filter(gm => gm.userName == pusher && gm.isManager)
-        .nonEmpty
+      pusher == owner ||
+        getGroupMembers(owner)
+          .filter(gm => gm.userName == pusher && gm.isManager)
+          .nonEmpty
 
     /**
       * Can't be force pushed
@@ -163,10 +164,11 @@ object ProtectedBranchService {
       if (contexts.isEmpty) {
         Set.empty
       } else {
-        contexts.toSet -- getCommitStatues(owner, repository, sha1)
-          .filter(_.state == CommitState.SUCCESS)
-          .map(_.context)
-          .toSet
+        contexts.toSet --
+          getCommitStatues(owner, repository, sha1)
+            .filter(_.state == CommitState.SUCCESS)
+            .map(_.context)
+            .toSet
       }
     def needStatusCheck(pusher: String)(implicit session: Session): Boolean =
       pusher match {

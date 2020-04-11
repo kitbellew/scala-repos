@@ -20,8 +20,8 @@ class WebSocketServerSpec
 
   "The server-side WebSocket integration should" - {
     "establish a websocket connection when the user requests it" - {
-      "when user handler instantly tries to send messages" in Utils
-        .assertAllStagesStopped {
+      "when user handler instantly tries to send messages" in
+        Utils.assertAllStagesStopped {
           new TestSetup {
             send("""GET /chat HTTP/1.1
               |Host: server.example.com
@@ -81,10 +81,11 @@ class WebSocketServerSpec
             expectNetworkClose()
           }
         }
-      "for echoing user handler" in Utils.assertAllStagesStopped {
-        new TestSetup {
+      "for echoing user handler" in
+        Utils.assertAllStagesStopped {
+          new TestSetup {
 
-          send("""GET /echo HTTP/1.1
+            send("""GET /echo HTTP/1.1
               |Host: server.example.com
               |Upgrade: websocket
               |Connection: Upgrade
@@ -94,17 +95,17 @@ class WebSocketServerSpec
               |
               |""")
 
-          val request = expectRequest()
-          val upgrade = request.header[UpgradeToWebSocket]
-          upgrade.isDefined shouldBe true
+            val request = expectRequest()
+            val upgrade = request.header[UpgradeToWebSocket]
+            upgrade.isDefined shouldBe true
 
-          val response = upgrade
-            .get
-            .handleMessages(Flow[Message]) // simple echoing
-          responses.sendNext(response)
+            val response = upgrade
+              .get
+              .handleMessages(Flow[Message]) // simple echoing
+            responses.sendNext(response)
 
-          expectResponseWithWipedDate(
-            """HTTP/1.1 101 Switching Protocols
+            expectResponseWithWipedDate(
+              """HTTP/1.1 101 Switching Protocols
               |Upgrade: websocket
               |Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
               |Server: akka-http/test
@@ -113,59 +114,59 @@ class WebSocketServerSpec
               |
               |""")
 
-          sendWSFrame(
-            Protocol.Opcode.Text,
-            ByteString("Message 1"),
-            fin = true,
-            mask = true)
-          expectWSFrame(
-            Protocol.Opcode.Text,
-            ByteString("Message 1"),
-            fin = true)
-          sendWSFrame(
-            Protocol.Opcode.Text,
-            ByteString("Message 2"),
-            fin = true,
-            mask = true)
-          expectWSFrame(
-            Protocol.Opcode.Text,
-            ByteString("Message 2"),
-            fin = true)
-          sendWSFrame(
-            Protocol.Opcode.Text,
-            ByteString("Message 3"),
-            fin = true,
-            mask = true)
-          expectWSFrame(
-            Protocol.Opcode.Text,
-            ByteString("Message 3"),
-            fin = true)
-          sendWSFrame(
-            Protocol.Opcode.Text,
-            ByteString("Message 4"),
-            fin = true,
-            mask = true)
-          expectWSFrame(
-            Protocol.Opcode.Text,
-            ByteString("Message 4"),
-            fin = true)
-          sendWSFrame(
-            Protocol.Opcode.Text,
-            ByteString("Message 5"),
-            fin = true,
-            mask = true)
-          expectWSFrame(
-            Protocol.Opcode.Text,
-            ByteString("Message 5"),
-            fin = true)
+            sendWSFrame(
+              Protocol.Opcode.Text,
+              ByteString("Message 1"),
+              fin = true,
+              mask = true)
+            expectWSFrame(
+              Protocol.Opcode.Text,
+              ByteString("Message 1"),
+              fin = true)
+            sendWSFrame(
+              Protocol.Opcode.Text,
+              ByteString("Message 2"),
+              fin = true,
+              mask = true)
+            expectWSFrame(
+              Protocol.Opcode.Text,
+              ByteString("Message 2"),
+              fin = true)
+            sendWSFrame(
+              Protocol.Opcode.Text,
+              ByteString("Message 3"),
+              fin = true,
+              mask = true)
+            expectWSFrame(
+              Protocol.Opcode.Text,
+              ByteString("Message 3"),
+              fin = true)
+            sendWSFrame(
+              Protocol.Opcode.Text,
+              ByteString("Message 4"),
+              fin = true,
+              mask = true)
+            expectWSFrame(
+              Protocol.Opcode.Text,
+              ByteString("Message 4"),
+              fin = true)
+            sendWSFrame(
+              Protocol.Opcode.Text,
+              ByteString("Message 5"),
+              fin = true,
+              mask = true)
+            expectWSFrame(
+              Protocol.Opcode.Text,
+              ByteString("Message 5"),
+              fin = true)
 
-          sendWSCloseFrame(Protocol.CloseCodes.Regular, mask = true)
-          expectWSCloseFrame(Protocol.CloseCodes.Regular)
+            sendWSCloseFrame(Protocol.CloseCodes.Regular, mask = true)
+            expectWSCloseFrame(Protocol.CloseCodes.Regular)
 
-          closeNetworkInput()
-          expectNetworkClose()
+            closeNetworkInput()
+            expectNetworkClose()
+          }
         }
-      }
     }
     "prevent the selection of an unavailable subprotocol" in pending
     "reject invalid WebSocket handshakes" - {

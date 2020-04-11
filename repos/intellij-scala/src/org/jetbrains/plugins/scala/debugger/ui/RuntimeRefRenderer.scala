@@ -38,9 +38,8 @@ class RuntimeRefRenderer extends NodeRendererImpl {
   override def getUniqueId: String = "ScalaRuntimeRefRenderer"
 
   override def isApplicable(t: Type): Boolean = {
-    t != null && t.name() != null && t.name().startsWith("scala.runtime.") && t
-      .name()
-      .endsWith("Ref")
+    t != null && t.name() != null && t.name().startsWith("scala.runtime.") &&
+    t.name().endsWith("Ref")
   }
 
   override def buildChildren(
@@ -143,9 +142,10 @@ class RuntimeRefRenderer extends NodeRendererImpl {
           def evaluationError(message: String) {
             val msg: String =
               if (value != null)
-                message + " " + DebuggerBundle.message(
-                  "evaluation.error.cannot.evaluate.tostring",
-                  value.`type`.name)
+                message + " " +
+                  DebuggerBundle.message(
+                    "evaluation.error.cannot.evaluate.tostring",
+                    value.`type`.name)
               else
                 message
             valueDescriptor

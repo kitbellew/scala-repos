@@ -134,11 +134,12 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     for (i <- 0 until items.size) {
       testOutputStream.write(items(i).getBytes(StandardCharsets.UTF_8))
       testOutputStream.flush()
-      allGeneratedFiles ++= RollingFileAppender
-        .getSortedRolledOverFiles(
-          testFile.getParentFile.toString,
-          testFile.getName)
-        .map(_.toString)
+      allGeneratedFiles ++=
+        RollingFileAppender
+          .getSortedRolledOverFiles(
+            testFile.getParentFile.toString,
+            testFile.getName)
+          .map(_.toString)
 
       Thread.sleep(10)
     }
@@ -320,8 +321,8 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
       .asScala
       .foreach { loggingEvent =>
         assert(
-          loggingEvent.getThrowableInformation === null
-            || !loggingEvent
+          loggingEvent.getThrowableInformation === null ||
+            !loggingEvent
               .getThrowableInformation
               .getThrowable
               .isInstanceOf[IOException])

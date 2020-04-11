@@ -198,8 +198,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
 
   // TODO: instead of floor should be round-toward-zero
 
-  def /~(rhs: T)(implicit f: Field[T], o: IsReal[T]): Complex[T] =
-    (this / rhs).floor
+  def /~(rhs: T)(implicit f: Field[T], o: IsReal[T]): Complex[T] = (this / rhs)
+    .floor
   def %(rhs: T)(implicit f: Field[T], o: IsReal[T]): Complex[T] =
     this - (this /~ rhs) * rhs
   def /%(
@@ -463,8 +463,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
       case that: Complex[_] =>
         this === that
       case that: Quaternion[_] =>
-        real == that.r && imag == that
-          .i && anyIsZero(that.j) && anyIsZero(that.k)
+        real == that.r && imag == that.i && anyIsZero(that.j) &&
+          anyIsZero(that.k)
       case that =>
         anyIsZero(imag) && real == that
     }

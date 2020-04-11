@@ -152,7 +152,8 @@ trait GroupSolver
               forestErrors
             }
 
-          childErrors ++ specErrors ++ forestErrors2 ++ constrErrors ++ finalErrors
+          childErrors ++ specErrors ++ forestErrors2 ++ constrErrors ++
+            finalErrors
         }
 
         case Assert(_, pred, child) =>
@@ -171,10 +172,9 @@ trait GroupSolver
           Set()
 
         case d @ Dispatch(_, _, actuals) => {
-          val actualErrors =
-            (actuals map loop(dispatches)).fold(Set[Error]()) {
-              _ ++ _
-            }
+          val actualErrors = (actuals map loop(dispatches)).fold(Set[Error]()) {
+            _ ++ _
+          }
 
           val originErrors =
             d.binding match {
@@ -254,7 +254,8 @@ trait GroupSolver
                 errors)
             else
               (None, errors) // TODO emit a new error
-          } getOrElse (None, errors)
+          } getOrElse
+            (None, errors)
         } else {
           (None, Set[Error]())
         }
@@ -427,7 +428,8 @@ trait GroupSolver
 
               (None, errors)
             }
-          } getOrElse (None, Set(Error(expr, UnableToSolveTicVariable(tv))))
+          } getOrElse
+            (None, Set(Error(expr, UnableToSolveTicVariable(tv))))
         }
       }
 
@@ -486,8 +488,8 @@ trait GroupSolver
       }
 
       case expr
-          if listTicVars(Some(b), expr, sigma)
-            .isEmpty && !listTicVars(None, expr, sigma).isEmpty =>
+          if listTicVars(Some(b), expr, sigma).isEmpty &&
+            !listTicVars(None, expr, sigma).isEmpty =>
         (None, Set(Error(expr, ConstraintsWithinInnerSolve)))
 
       case _ if listTicVars(Some(b), expr, sigma).isEmpty =>
@@ -527,8 +529,8 @@ trait GroupSolver
     }
 
     case t @ TicVar(_, `tv`) =>
-      !free && t.binding == SolveBinding(b) || free && t
-        .binding == FreeBinding(b)
+      !free && t.binding == SolveBinding(b) ||
+        free && t.binding == FreeBinding(b)
   }
 
   private def enterLet(sigma: Sigma, let: Let, actuals: Vector[Expr]): Sigma = {
@@ -553,7 +555,8 @@ trait GroupSolver
         }
       }
 
-    if (back.isDefined && !(
+    if (back.isDefined &&
+        !(
           errors collect {
             case Error(tpe) =>
               tpe
@@ -576,17 +579,17 @@ trait GroupSolver
         isTranspecable(in, from, sigma)
 
       case Cond(_, pred, left, right) =>
-        isTranspecable(pred, from, sigma) && isTranspecable(
-          left,
-          from,
-          sigma) && isTranspecable(right, from, sigma)
+        isTranspecable(pred, from, sigma) &&
+          isTranspecable(left, from, sigma) &&
+          isTranspecable(right, from, sigma)
 
       case to @ Dispatch(_, id, actuals) => {
         to.binding match {
           case FormalBinding(let) => {
-            val exactResult = sigma get ((id, let)) map {
-              isTranspecable(_, from, sigma)
-            }
+            val exactResult = sigma get
+              ((id, let)) map {
+                isTranspecable(_, from, sigma)
+              }
 
             exactResult getOrElse {
               // if we can't get the exact actual from our sigma, we have to over-
@@ -768,9 +771,10 @@ trait GroupSolver
       case expr @ Dispatch(_, id, actuals) => {
         expr.binding match {
           case FormalBinding(let) => {
-            val exactResult = sigma get ((id, let)) map {
-              isPrimitive(_, sigma)
-            }
+            val exactResult = sigma get
+              ((id, let)) map {
+                isPrimitive(_, sigma)
+              }
 
             exactResult getOrElse {
               // if we can't get the exact actual from our sigma, we have to over-
@@ -821,11 +825,12 @@ trait GroupSolver
         listTicVars(b, right, sigma)
 
       case b2 @ Solve(_, constraints, child) => {
-        val allVars = (constraints map {
-          listTicVars(b, _, sigma)
-        } reduce {
-          _ ++ _
-        })
+        val allVars =
+          (constraints map {
+            listTicVars(b, _, sigma)
+          } reduce {
+            _ ++ _
+          })
         allVars -- listTicVars(Some(b2), child, sigma)
       }
 
@@ -839,15 +844,13 @@ trait GroupSolver
         listTicVars(b, child, sigma)
 
       case Relate(_, from, to, in) =>
-        listTicVars(b, from, sigma) ++ listTicVars(b, to, sigma) ++ listTicVars(
-          b,
-          in,
-          sigma)
+        listTicVars(b, from, sigma) ++ listTicVars(b, to, sigma) ++
+          listTicVars(b, in, sigma)
 
       case t @ TicVar(_, name)
-          if b.isDefined && (
-            t.binding == SolveBinding(b.get) || t.binding == FreeBinding(b.get)
-          ) => {
+          if b.isDefined &&
+            (t.binding == SolveBinding(b.get) ||
+              t.binding == FreeBinding(b.get)) => {
         t.binding match {
           case SolveBinding(b2) =>
             Set((Some(b2), name))

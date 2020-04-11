@@ -160,12 +160,9 @@ class TypeParameter(
   override def equals(other: Any): Boolean =
     other match {
       case that: TypeParameter =>
-        (that canEqual this) &&
-          name == that.name &&
-          typeParams == that.typeParams &&
-          lowerType() == that.lowerType() &&
-          upperType() == that.upperType() &&
-          ptp == that.ptp
+        (that canEqual this) && name == that.name &&
+          typeParams == that.typeParams && lowerType() == that.lowerType() &&
+          upperType() == that.upperType() && ptp == that.ptp
       case _ =>
         false
     }
@@ -339,43 +336,44 @@ case class ScTypePolymorphicType(
 
   def polymorphicTypeSubstitutor(inferValueType: Boolean): ScSubstitutor =
     new ScSubstitutor(
-      new HashMap[(String, PsiElement), ScType] ++ typeParameters.map(tp => {
-        var contraVariant = 0
-        var coOrInVariant = 0
-        internalType.recursiveVarianceUpdate {
-          case (typez: ScType, i: Int) =>
-            val pair =
-              typez match {
-                case tp: ScTypeParameterType =>
-                  (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
-                case ScUndefinedType(tp) =>
-                  (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
-                case ScAbstractType(tp, _, _) =>
-                  (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
-                case _ =>
-                  null
+      new HashMap[(String, PsiElement), ScType] ++
+        typeParameters.map(tp => {
+          var contraVariant = 0
+          var coOrInVariant = 0
+          internalType.recursiveVarianceUpdate {
+            case (typez: ScType, i: Int) =>
+              val pair =
+                typez match {
+                  case tp: ScTypeParameterType =>
+                    (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
+                  case ScUndefinedType(tp) =>
+                    (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
+                  case ScAbstractType(tp, _, _) =>
+                    (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
+                  case _ =>
+                    null
+                }
+              if (pair != null) {
+                val (tpName, id) = pair
+                if (tp.name == tpName &&
+                    id == ScalaPsiUtil.getPsiElementId(tp.ptp)) {
+                  if (i == -1)
+                    contraVariant += 1
+                  else
+                    coOrInVariant += 1
+                }
               }
-            if (pair != null) {
-              val (tpName, id) = pair
-              if (tp.name == tpName && id == ScalaPsiUtil
-                    .getPsiElementId(tp.ptp)) {
-                if (i == -1)
-                  contraVariant += 1
-                else
-                  coOrInVariant += 1
-              }
-            }
-            (false, typez)
-        }
-        if (coOrInVariant == 0 && contraVariant != 0)
-          (
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-            tp.upperType().inferValueType)
-        else
-          (
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-            tp.lowerType().inferValueType)
-      }),
+              (false, typez)
+          }
+          if (coOrInVariant == 0 && contraVariant != 0)
+            (
+              (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+              tp.upperType().inferValueType)
+          else
+            (
+              (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+              tp.lowerType().inferValueType)
+        }),
       Map.empty,
       None)
 
@@ -385,9 +383,8 @@ case class ScTypePolymorphicType(
       typez.recursiveUpdate {
         case tpt: ScTypeParameterType =>
           typeParameters.find(tp =>
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
-              tpt.name, tpt.getId
-            )) match {
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+              (tpt.name, tpt.getId)) match {
             case None =>
               (true, tpt)
             case _ =>
@@ -400,24 +397,25 @@ case class ScTypePolymorphicType(
       hasRecursiveTypeParameters
     }
     new ScSubstitutor(
-      new HashMap[(String, PsiElement), ScType] ++ typeParameters.map(tp => {
-        val lowerType: ScType =
-          if (hasRecursiveTypeParameters(tp.lowerType()))
-            Nothing
-          else
-            tp.lowerType()
-        val upperType: ScType =
-          if (hasRecursiveTypeParameters(tp.upperType()))
-            Any
-          else
-            tp.upperType()
-        (
-          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-          new ScAbstractType(
-            new ScTypeParameterType(tp.ptp, ScSubstitutor.empty),
-            lowerType,
-            upperType))
-      }),
+      new HashMap[(String, PsiElement), ScType] ++
+        typeParameters.map(tp => {
+          val lowerType: ScType =
+            if (hasRecursiveTypeParameters(tp.lowerType()))
+              Nothing
+            else
+              tp.lowerType()
+          val upperType: ScType =
+            if (hasRecursiveTypeParameters(tp.upperType()))
+              Any
+            else
+              tp.upperType()
+          (
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+            new ScAbstractType(
+              new ScTypeParameterType(tp.ptp, ScSubstitutor.empty),
+              lowerType,
+              upperType))
+        }),
       Map.empty,
       None)
   }
@@ -428,9 +426,8 @@ case class ScTypePolymorphicType(
       typez.recursiveUpdate {
         case tpt: ScTypeParameterType =>
           typeParameters.find(tp =>
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
-              tpt.name, tpt.getId
-            )) match {
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+              (tpt.name, tpt.getId)) match {
             case None =>
               (true, tpt)
             case _ =>
@@ -443,38 +440,40 @@ case class ScTypePolymorphicType(
       hasRecursiveTypeParameters
     }
     new ScSubstitutor(
-      new HashMap[(String, PsiElement), ScType] ++ typeParameters.map(tp => {
-        val lowerType: ScType =
-          if (hasRecursiveTypeParameters(tp.lowerType()))
-            Nothing
-          else
-            tp.lowerType()
-        val upperType: ScType =
-          if (hasRecursiveTypeParameters(tp.upperType()))
-            Any
-          else
-            tp.upperType()
-        (
-          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-          if (lowerType.equiv(Nothing))
-            new ScAbstractType(
-              new ScTypeParameterType(tp.ptp, ScSubstitutor.empty),
-              lowerType,
-              upperType)
-          else
-            lowerType)
-      }),
+      new HashMap[(String, PsiElement), ScType] ++
+        typeParameters.map(tp => {
+          val lowerType: ScType =
+            if (hasRecursiveTypeParameters(tp.lowerType()))
+              Nothing
+            else
+              tp.lowerType()
+          val upperType: ScType =
+            if (hasRecursiveTypeParameters(tp.upperType()))
+              Any
+            else
+              tp.upperType()
+          (
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+            if (lowerType.equiv(Nothing))
+              new ScAbstractType(
+                new ScTypeParameterType(tp.ptp, ScSubstitutor.empty),
+                lowerType,
+                upperType)
+            else
+              lowerType)
+        }),
       Map.empty,
       None)
   }
 
   def typeParameterTypeSubstitutor: ScSubstitutor =
     new ScSubstitutor(
-      new HashMap[(String, PsiElement), ScType] ++ typeParameters.map { tp =>
-        (
-          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-          new ScTypeParameterType(tp.ptp, ScSubstitutor.empty))
-      },
+      new HashMap[(String, PsiElement), ScType] ++
+        typeParameters.map { tp =>
+          (
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+            new ScTypeParameterType(tp.ptp, ScSubstitutor.empty))
+        },
       Map.empty,
       None)
 

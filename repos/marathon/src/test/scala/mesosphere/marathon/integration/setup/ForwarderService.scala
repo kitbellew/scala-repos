@@ -97,10 +97,9 @@ object ForwarderService {
     ProcessKeeper.startJavaProcess(
       s"forwarder_${conf.httpPort()}",
       heapInMegs = 128,
-      arguments = List(
-        ForwarderService.className,
-        "forwarder",
-        forwardToPort.toString) ++ args,
+      arguments =
+        List(ForwarderService.className, "forwarder", forwardToPort.toString) ++
+          args,
       upWhen = _.contains("ServerConnector@")
     )
   }

@@ -48,14 +48,16 @@ class TaskStatsByVersionFormatTest
       .assertThatJsonOf(json)
       .correspondsToJsonOf(
         Json.obj(
-          "stats" -> Json.obj(
-            "counts" -> Json.obj(
-              "staged" -> 1,
-              "running" -> 2,
-              "healthy" -> 3,
-              "unhealthy" -> 4),
-            "lifeTime" -> Json
-              .obj("averageSeconds" -> 20.0, "medianSeconds" -> 10.0))))
+          "stats" ->
+            Json.obj(
+              "counts" ->
+                Json.obj(
+                  "staged" -> 1,
+                  "running" -> 2,
+                  "healthy" -> 3,
+                  "unhealthy" -> 4),
+              "lifeTime" ->
+                Json.obj("averageSeconds" -> 20.0, "medianSeconds" -> 10.0))))
   }
 
   test(
@@ -67,12 +69,14 @@ class TaskStatsByVersionFormatTest
       .assertThatJsonOf(json)
       .correspondsToJsonOf(
         Json.obj(
-          "stats" -> Json.obj(
-            "counts" -> Json.obj(
-              "staged" -> 1,
-              "running" -> 2,
-              "healthy" -> 3,
-              "unhealthy" -> 4))))
+          "stats" ->
+            Json.obj(
+              "counts" ->
+                Json.obj(
+                  "staged" -> 1,
+                  "running" -> 2,
+                  "healthy" -> 3,
+                  "unhealthy" -> 4))))
   }
 
   test("full task stats by version get rendered correctly") {
@@ -98,8 +102,8 @@ class TaskStatsByVersionFormatTest
         .as[Int] should be(200)
       (json \ "withOutdatedConfig" \ "stats" \ "counts" \ "running")
         .as[Int] should be(300)
-      (json \ "totalSummary" \ "stats" \ "counts" \ "running")
-        .as[Int] should be(500)
+      (json \ "totalSummary" \ "stats" \ "counts" \ "running").as[Int] should
+        be(500)
     }
   }
 }

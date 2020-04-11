@@ -37,10 +37,11 @@ class FlatClassPathResolverTest {
     "java.util.Date"
   )
 
-  private val classesToFind = classFilesToFind ++ List(
-    "TestSourceInRootPackage",
-    "scala.reflect.io.TestScalaSource",
-    "scala.reflect.io.TestJavaSource")
+  private val classesToFind = classFilesToFind ++
+    List(
+      "TestSourceInRootPackage",
+      "scala.reflect.io.TestScalaSource",
+      "scala.reflect.io.TestJavaSource")
 
   private val settings = new Settings
 
@@ -103,8 +104,8 @@ class FlatClassPathResolverTest {
         sourceFileNames,
         sourceFileNamesFromList)
 
-      val uniqueNamesOfClassAndSourceFiles =
-        (classFileNames ++ sourceFileNames).toSet
+      val uniqueNamesOfClassAndSourceFiles = (classFileNames ++ sourceFileNames)
+        .toSet
       assertEquals(
         s"Class and source entries with the same name obtained via list for package '$inPackage' should be merged into one containing both files",
         uniqueNamesOfClassAndSourceFiles.size,

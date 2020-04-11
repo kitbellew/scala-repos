@@ -288,8 +288,8 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
             assertEquals(baseTimestamp + timestampDiff, metadata.timestamp())
           else
             assertTrue(
-              metadata.timestamp() >= startTime && metadata
-                .timestamp() <= System.currentTimeMillis())
+              metadata.timestamp() >= startTime &&
+                metadata.timestamp() <= System.currentTimeMillis())
           assertEquals(partition, metadata.partition())
           offset += 1
           timestampDiff += 1
@@ -586,8 +586,9 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       val producer = createProducer(brokerList, lingerMs = Long.MaxValue)
       try {
         // send message to partition 0
-        val responses = ((0 until numRecords) map (i =>
-          producer.send(record, new CloseCallback(producer))))
+        val responses =
+          ((0 until numRecords) map
+            (i => producer.send(record, new CloseCallback(producer))))
         assertTrue("No request is complete.", responses.forall(!_.isDone()))
         // flush the messages.
         producer.flush()

@@ -27,28 +27,35 @@ object JsonPerformanceTest extends App {
   println("Deserialization run 3: " + testDeserialization() + "ms")
 
   println(
-    "Large Array Deserialization run 1: " + testLargeArrayDeserialization() + "ms")
+    "Large Array Deserialization run 1: " + testLargeArrayDeserialization() +
+      "ms")
   println(
-    "Large Array Deserialization run 2: " + testLargeArrayDeserialization() + "ms")
+    "Large Array Deserialization run 2: " + testLargeArrayDeserialization() +
+      "ms")
   println(
-    "Large Array Deserialization run 3: " + testLargeArrayDeserialization() + "ms")
+    "Large Array Deserialization run 3: " + testLargeArrayDeserialization() +
+      "ms")
 
   println(
-    "Large Object Deserialization run 1: " + testLargeObjectDeserialization() + "ms")
+    "Large Object Deserialization run 1: " + testLargeObjectDeserialization() +
+      "ms")
   println(
-    "Large Object Deserialization run 2: " + testLargeObjectDeserialization() + "ms")
+    "Large Object Deserialization run 2: " + testLargeObjectDeserialization() +
+      "ms")
   println(
-    "Large Object Deserialization run 3: " + testLargeObjectDeserialization() + "ms")
+    "Large Object Deserialization run 3: " + testLargeObjectDeserialization() +
+      "ms")
 
   lazy val jsvalue = Json.obj(
-    "f1" -> Json.obj(
-      "f1" -> "string",
-      "f2" -> "string",
-      "f3" -> "string",
-      "f4" -> 10,
-      "f5" -> Json.arr("string", "string", "string", "string", "string"),
-      "f6" -> Json.obj("f1" -> 10, "f2" -> 20, "f3" -> 30, "f4" -> "string")
-    ),
+    "f1" ->
+      Json.obj(
+        "f1" -> "string",
+        "f2" -> "string",
+        "f3" -> "string",
+        "f4" -> 10,
+        "f5" -> Json.arr("string", "string", "string", "string", "string"),
+        "f6" -> Json.obj("f1" -> 10, "f2" -> 20, "f3" -> 30, "f4" -> "string")
+      ),
     "f2" -> "string",
     "f3" -> "string",
     "f4" -> 10,

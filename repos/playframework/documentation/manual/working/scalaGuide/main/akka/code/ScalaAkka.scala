@@ -29,100 +29,106 @@ package scalaguide.akka {
 
     "The Akka support" should {
 
-      "allow injecting actors" in new WithApplication() {
-        import controllers._
-        val controller = app.injector.instanceOf[Application]
+      "allow injecting actors" in
+        new WithApplication() {
+          import controllers._
+          val controller = app.injector.instanceOf[Application]
 
-        val helloActor = controller.helloActor
-        import play.api.mvc._
-        import play.api.mvc.Results._
-        import actors.HelloActor.SayHello
+          val helloActor = controller.helloActor
+          import play.api.mvc._
+          import play.api.mvc.Results._
+          import actors.HelloActor.SayHello
 
-        //#ask
-        import play.api.libs.concurrent.Execution.Implicits.defaultContext
-        import scala.concurrent.duration._
-        import akka.pattern.ask
-        implicit val timeout = 5.seconds
+          //#ask
+          import play.api.libs.concurrent.Execution.Implicits.defaultContext
+          import scala.concurrent.duration._
+          import akka.pattern.ask
+          implicit val timeout = 5.seconds
 
-        def sayHello(name: String) =
-          Action.async {
-            (helloActor ? SayHello(name))
-              .mapTo[String]
-              .map { message =>
-                Ok(message)
-              }
-          }
-        //#ask
+          def sayHello(name: String) =
+            Action.async {
+              (helloActor ? SayHello(name))
+                .mapTo[String]
+                .map { message =>
+                  Ok(message)
+                }
+            }
+          //#ask
 
-        contentAsString(sayHello("world")(FakeRequest())) must_== "Hello, world"
-      }
+          contentAsString(sayHello("world")(FakeRequest())) must_==
+            "Hello, world"
+        }
 
-      "allow binding actors" in new WithApplication(
-        _.bindings(new modules.MyModule).configure("my.config" -> "foo")) {
-        _ =>
-        import injection._
-        val controller = app.injector.instanceOf[Application]
-        contentAsString(controller.getConfig(FakeRequest())) must_== "foo"
-      }
+      "allow binding actors" in
+        new WithApplication(
+          _.bindings(new modules.MyModule).configure("my.config" -> "foo")) {
+          _ =>
+          import injection._
+          val controller = app.injector.instanceOf[Application]
+          contentAsString(controller.getConfig(FakeRequest())) must_== "foo"
+        }
 
-      "allow binding actor factories" in new WithApplication(
-        _.bindings(new factorymodules.MyModule)
-          .configure("my.config" -> "foo")) {
-        _ =>
-        import play.api.inject.bind
-        import akka.actor._
-        import play.api.libs.concurrent.Execution.Implicits.defaultContext
-        import scala.concurrent.duration._
-        import akka.pattern.ask
-        implicit val timeout = 5.seconds
+      "allow binding actor factories" in
+        new WithApplication(
+          _.bindings(new factorymodules.MyModule)
+            .configure("my.config" -> "foo")) {
+          _ =>
+          import play.api.inject.bind
+          import akka.actor._
+          import play.api.libs.concurrent.Execution.Implicits.defaultContext
+          import scala.concurrent.duration._
+          import akka.pattern.ask
+          implicit val timeout = 5.seconds
 
-        val actor = app
-          .injector
-          .instanceOf(bind[ActorRef].qualifiedWith("parent-actor"))
-        val futureConfig =
-          for {
-            child <- (actor ? actors.ParentActor.GetChild("my.config"))
-              .mapTo[ActorRef]
-            config <- (child ? actors.ConfiguredChildActor.GetConfig)
-              .mapTo[String]
-          } yield config
-        await(futureConfig) must_== "foo"
-      }
+          val actor = app
+            .injector
+            .instanceOf(bind[ActorRef].qualifiedWith("parent-actor"))
+          val futureConfig =
+            for {
+              child <- (actor ? actors.ParentActor.GetChild("my.config"))
+                .mapTo[ActorRef]
+              config <- (child ? actors.ConfiguredChildActor.GetConfig)
+                .mapTo[String]
+            } yield config
+          await(futureConfig) must_== "foo"
+        }
 
-      "allow using the scheduler" in withActorSystem { system =>
-        import akka.actor._
-        val testActor = system.actorOf(
-          Props(
-            new Actor() {
-              def receive = {
-                case _: String =>
-              }
-            }),
-          name = "testActor")
-        //#schedule-actor
-        import scala.concurrent.duration._
+      "allow using the scheduler" in
+        withActorSystem { system =>
+          import akka.actor._
+          val testActor = system.actorOf(
+            Props(
+              new Actor() {
+                def receive = {
+                  case _: String =>
+                }
+              }),
+            name = "testActor")
+          //#schedule-actor
+          import scala.concurrent.duration._
 
-        val cancellable = system
-          .scheduler
-          .schedule(0.microseconds, 300.microseconds, testActor, "tick")
-        //#schedule-actor
-        ok
-      }
+          val cancellable = system
+            .scheduler
+            .schedule(0.microseconds, 300.microseconds, testActor, "tick")
+          //#schedule-actor
+          ok
+        }
 
-      "actor scheduler" in withActorSystem { system =>
-        val file = new File("/tmp/nofile")
-        file.mkdirs()
-        //#schedule-callback
-        import play.api.libs.concurrent.Execution.Implicits.defaultContext
-        system
-          .scheduler
-          .scheduleOnce(10.milliseconds) {
-            file.delete()
-          }
-        //#schedule-callback
-        Thread.sleep(200)
-        file.exists() must beFalse
-      }
+      "actor scheduler" in
+        withActorSystem { system =>
+          val file = new File("/tmp/nofile")
+          file.mkdirs()
+          //#schedule-callback
+          import play.api.libs.concurrent.Execution.Implicits.defaultContext
+          system
+            .scheduler
+            .scheduleOnce(10.milliseconds) {
+              file.delete()
+            }
+          //#schedule-callback
+          Thread.sleep(200)
+          file.exists() must beFalse
+        }
     }
   }
 

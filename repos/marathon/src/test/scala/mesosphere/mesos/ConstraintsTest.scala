@@ -82,16 +82,17 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
     Then("20 tasks got selected and evenly distributed")
     result should have size 20
     result.count(
-      _.agentInfo.attributes.exists(_.getText.getValue == "rack-1")) should be(
-      10)
+      _.agentInfo.attributes.exists(_.getText.getValue == "rack-1")) should
+      be(10)
     result.count(
-      _.agentInfo.attributes.exists(_.getText.getValue == "rack-2")) should be(
-      10)
+      _.agentInfo.attributes.exists(_.getText.getValue == "rack-2")) should
+      be(10)
+    result
+      .count(_.agentInfo.attributes.exists(_.getText.getValue == "blue")) should
+      be(10)
     result.count(
-      _.agentInfo.attributes.exists(_.getText.getValue == "blue")) should be(10)
-    result.count(
-      _.agentInfo.attributes.exists(_.getText.getValue == "green")) should be(
-      10)
+      _.agentInfo.attributes.exists(_.getText.getValue == "green")) should
+      be(10)
   }
 
   test("Does not select any task without constraint") {

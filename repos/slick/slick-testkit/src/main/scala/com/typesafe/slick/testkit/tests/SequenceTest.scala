@@ -40,12 +40,10 @@ class SequenceTest extends AsyncTest[JdbcTestDB] {
 
       def values(s: Sequence[Int], count: Int = 5, create: Boolean = true) = {
         val q = Query(s.next)
-        (
-          if (create)
-            s.schema.create
-          else
-            DBIO.successful(())
-        ) >>
+        (if (create)
+           s.schema.create
+         else
+           DBIO.successful(())) >>
           DBIO.sequence((1 to count).toList map (_ => q.result.map(_.head)))
       }
 

@@ -111,11 +111,12 @@ trait GenTrees {
 
         // see `Metalevels` for more info about metalevel breaches
         // and about how we deal with splices that contain them
-        val isMetalevelBreach = splicee exists (sub =>
-          sub.hasSymbolField && sub
-            .symbol != NoSymbol && sub.symbol.metalevel > 0)
-        val isRuntimeEval =
-          splicee exists (sub => sub.hasSymbolField && sub.symbol == ExprSplice)
+        val isMetalevelBreach = splicee exists
+          (sub =>
+            sub.hasSymbolField && sub.symbol != NoSymbol &&
+              sub.symbol.metalevel > 0)
+        val isRuntimeEval = splicee exists
+          (sub => sub.hasSymbolField && sub.symbol == ExprSplice)
         if (isMetalevelBreach || isRuntimeEval) {
           // we used to convert dynamic splices into runtime evals transparently, but we no longer do that
           // why? see comments in `Metalevels`
@@ -134,8 +135,8 @@ trait GenTrees {
               for (sym <- inlinedSymtab.syms
                    if sym.isLocalToReifee)
                 abort(
-                  "free var local to the reifee, should have already been inlined by Metalevels: " + inlinedSymtab
-                    .symDef(sym))
+                  "free var local to the reifee, should have already been inlined by Metalevels: " +
+                    inlinedSymtab.symDef(sym))
               state.symtab ++= inlinedSymtab
               rtree
             case tree =>
@@ -228,8 +229,8 @@ trait GenTrees {
       // then we can reify the scrutinee as a symless AST and that will definitely be hygienic
       // why? because then typechecking of a scrutinee doesn't depend on the environment external to the quasiquote
       // otherwise we need to reify the corresponding type
-      if (sym.isLocalToReifee || tpe
-            .isLocalToReifee || treeInfo.isWildcardStarType(tree))
+      if (sym.isLocalToReifee || tpe.isLocalToReifee ||
+          treeInfo.isWildcardStarType(tree))
         reifyProduct(tree)
       else {
         if (reifyDebug)

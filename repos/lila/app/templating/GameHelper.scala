@@ -203,10 +203,11 @@ trait GameHelper {
             else
               ""}"
           val content = playerUsername(player, withRating)
-          val diff =
-            (player.ratingDiff ifTrue withDiff).fold(Html(""))(showRatingDiff)
-          val mark = engine ?? s"""<span class="engine_mark" title="${trans
-            .thisPlayerUsesChessComputerAssistance()}"></span>"""
+          val diff = (player.ratingDiff ifTrue withDiff)
+            .fold(Html(""))(showRatingDiff)
+          val mark = engine ??
+            s"""<span class="engine_mark" title="${trans
+              .thisPlayerUsesChessComputerAssistance()}"></span>"""
           val dataIcon = withOnline ?? """data-icon="r""""
           val space =
             if (withOnline)
@@ -345,8 +346,8 @@ trait GameHelper {
     Html {
       val game = pov.game
       var isLive = withLive && game.isBeingPlayed
-      val href =
-        withLink ?? s"""href="${gameLink(game, pov.color, ownerLink, tv)}""""
+      val href = withLink ??
+        s"""href="${gameLink(game, pov.color, ownerLink, tv)}""""
       val title = withTitle ?? s"""title="${gameTitle(game, pov.color)}""""
       val cssClass = isLive ?? ("live live_" + game.id)
       val live = isLive ?? game.id

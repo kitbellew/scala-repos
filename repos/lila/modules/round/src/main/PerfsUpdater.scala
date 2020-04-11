@@ -21,10 +21,8 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
       black: User,
       resetGameRatings: Boolean = false): Funit =
     PerfPicker.main(game) ?? { mainPerf =>
-      (
-        game.rated && game.finished && game.accountable && !white.lame && !black
-          .lame
-      ) ?? {
+      (game.rated && game.finished && game.accountable && !white.lame &&
+      !black.lame) ?? {
         val ratingsW = mkRatings(white.perfs)
         val ratingsB = mkRatings(black.perfs)
         val result = resultOf(game)
@@ -92,19 +90,16 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
         resetGameRatings.fold(
           GameRepo.setRatingAndDiffs(
             game.id,
-            intRatingLens(white.perfs) -> (
-              intRatingLens(perfsW) - intRatingLens(white.perfs)
-            ),
-            intRatingLens(black.perfs) -> (
-              intRatingLens(perfsB) - intRatingLens(black.perfs)
-            )
+            intRatingLens(white.perfs) ->
+              (intRatingLens(perfsW) - intRatingLens(white.perfs)),
+            intRatingLens(black.perfs) ->
+              (intRatingLens(perfsB) - intRatingLens(black.perfs))
           ),
           GameRepo.setRatingDiffs(
             game.id,
             intRatingLens(perfsW) - intRatingLens(white.perfs),
             intRatingLens(perfsB) - intRatingLens(black.perfs))
-        ) zip
-          UserRepo.setPerfs(white, perfsW, white.perfs) zip
+        ) zip UserRepo.setPerfs(white, perfsW, white.perfs) zip
           UserRepo.setPerfs(black, perfsB, black.perfs) zip
           historyApi.add(white, game, perfsW) zip
           historyApi.add(black, game, perfsB) zip

@@ -74,8 +74,9 @@ abstract class LinkedHashMapTest extends HashMapTest {
 
     (0 until 100 by 3).foreach(key => lhm.remove(key))
 
-    val expectedKey =
-      ((100 - withSizeLimit.getOrElse(100)) to 100).filter(_ % 3 != 0).toArray
+    val expectedKey = ((100 - withSizeLimit.getOrElse(100)) to 100)
+      .filter(_ % 3 != 0)
+      .toArray
 
     def expectedValue(index: Int): String = s"elem ${expectedKey(index)}"
 
@@ -114,8 +115,10 @@ abstract class LinkedHashMapTest extends HashMapTest {
 
     val expectedKey = {
       if (factory.accessOrder) {
-        val keys = (2 until 42) ++ (43 until 52) ++ (53 until 98) ++
-          List(99, 0, 100, 42, 52, 1, 98)
+        val keys =
+          (2 until 42) ++
+            (43 until 52) ++
+            (53 until 98) ++ List(99, 0, 100, 42, 52, 1, 98)
         keys.takeRight(withSizeLimit.getOrElse(keys.length))
       } else {
         if (withSizeLimit.isDefined)

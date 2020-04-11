@@ -24,10 +24,8 @@ package object templates {
     * Generate a base identifier for the given route
     */
   def baseIdentifier(route: Route, index: Int): String =
-    route.call.packageName.replace(".", "_") + "_" + route
-      .call
-      .controller
-      .replace(".", "_") + "_" + route.call.method + index
+    route.call.packageName.replace(".", "_") + "_" +
+      route.call.controller.replace(".", "_") + "_" + route.call.method + index
 
   /**
     * Generate a route object identifier for the given route
@@ -128,19 +126,17 @@ package object templates {
           val paramName: String = paramNameOnQueryString(p.name)
           p.fixed
             .map { v =>
-              """Param[""" + p
-                .typeName + """]("""" + paramName + """", Right(""" + v + """))"""
+              """Param[""" + p.typeName + """]("""" + paramName +
+                """", Right(""" + v + """))"""
             }
             .getOrElse {
-              """params.""" + (
-                if (route.path.has(paramName))
-                  "fromPath"
-                else
-                  "fromQuery"
-              ) + """[""" + p.typeName + """]("""" + paramName + """", """ + p
-                .default
-                .map("Some(" + _ + ")")
-                .getOrElse("None") + """)"""
+              """params.""" +
+                (if (route.path.has(paramName))
+                   "fromPath"
+                 else
+                   "fromQuery") + """[""" + p.typeName + """]("""" + paramName +
+                """", """ + p.default.map("Some(" + _ + ")").getOrElse("None") +
+                """)"""
             }
         }
         if (ps.size < 22)
@@ -362,9 +358,8 @@ package object templates {
           val parameterConstraints = reverseParameterConstraints(
             route,
             localNames)
-          (
-            parameters -> parameterConstraints
-          ) -> block(route, parameters, parameterConstraints, localNames)
+          (parameters -> parameterConstraints) ->
+            block(route, parameters, parameterConstraints, localNames)
         }: _*).values.toSeq.reverse
   }
 
@@ -418,34 +413,39 @@ package object templates {
         ""
       else
         " + { _defaultPrefix } + "
-    val callPath = "_prefix" + df + route
-      .path
-      .parts
-      .map {
-        case StaticPart(part) =>
-          "\"" + part + "\""
-        case DynamicPart(name, _, encode) =>
-          route
-            .call
-            .parameters
-            .getOrElse(Nil)
-            .find(_.name == name)
-            .map { param =>
-              val paramName: String = paramNameOnQueryString(param.name)
-              if (encode && encodeable(param.typeName))
-                """implicitly[PathBindable[""" + param
-                  .typeName + """]].unbind("""" + paramName + """", dynamicString(""" + safeKeyword(
-                  localNames.get(param.name).getOrElse(param.name)) + """))"""
-              else
-                """implicitly[PathBindable[""" + param
-                  .typeName + """]].unbind("""" + paramName + """", """ + safeKeyword(
-                  localNames.get(param.name).getOrElse(param.name)) + """)"""
-            }
-            .getOrElse {
-              throw new Error("missing key " + name)
-            }
-      }
-      .mkString(" + ")
+    val callPath = "_prefix" + df +
+      route
+        .path
+        .parts
+        .map {
+          case StaticPart(part) =>
+            "\"" + part + "\""
+          case DynamicPart(name, _, encode) =>
+            route
+              .call
+              .parameters
+              .getOrElse(Nil)
+              .find(_.name == name)
+              .map { param =>
+                val paramName: String = paramNameOnQueryString(param.name)
+                if (encode && encodeable(param.typeName))
+                  """implicitly[PathBindable[""" + param.typeName +
+                    """]].unbind("""" + paramName + """", dynamicString(""" +
+                    safeKeyword(
+                      localNames.get(param.name).getOrElse(param.name)) +
+                    """))"""
+                else
+                  """implicitly[PathBindable[""" + param.typeName +
+                    """]].unbind("""" + paramName + """", """ +
+                    safeKeyword(
+                      localNames.get(param.name).getOrElse(param.name)) +
+                    """)"""
+              }
+              .getOrElse {
+                throw new Error("missing key " + name)
+              }
+        }
+        .mkString(" + ")
 
     val queryParams = route
       .call
@@ -470,19 +470,15 @@ package object templates {
         """ + queryString(List(%s))""".format(
           queryParams
             .map { p =>
-              (
-                """implicitly[QueryStringBindable[""" + p
-                  .typeName + """]].unbind("""" + paramNameOnQueryString(
-                  p.name) + """", """ + safeKeyword(
-                  localNames.get(p.name).getOrElse(p.name)) + """)"""
-              ) -> p
+              ("""implicitly[QueryStringBindable[""" + p.typeName +
+                """]].unbind("""" + paramNameOnQueryString(p.name) + """", """ +
+                safeKeyword(localNames.get(p.name).getOrElse(p.name)) +
+                """)""") -> p
             }
             .map {
               case (u, Parameter(name, typeName, None, Some(default))) =>
-                """if(""" + safeKeyword(
-                  localNames.getOrElse(
-                    name,
-                    name)) + """ == """ + default + """) None else Some(""" + u + """)"""
+                """if(""" + safeKeyword(localNames.getOrElse(name, name)) +
+                  """ == """ + default + """) None else Some(""" + u + """)"""
               case (u, Parameter(name, typeName, None, None)) =>
                 "Some(" + u + ")"
             }
@@ -511,8 +507,8 @@ package object templates {
           localNames.contains(p.name) && p.fixed.isDefined
         }
         .map { p =>
-          localNames(p.name) + " == \"\"\" + implicitly[JavascriptLiteral[" + p
-            .typeName + "]].to(" + p.fixed.get + ") + \"\"\""
+          localNames(p.name) + " == \"\"\" + implicitly[JavascriptLiteral[" +
+            p.typeName + "]].to(" + p.fixed.get + ") + \"\"\""
         }).filterNot(_.isEmpty).map(_.mkString(" && "))
   }
 
@@ -555,37 +551,38 @@ package object templates {
         ""
       else
         "{ _defaultPrefix } + "
-    } + "\"\"\"\"" + route
-      .path
-      .parts
-      .map {
-        case StaticPart(part) =>
-          " + \"" + part + "\""
-        case DynamicPart(name, _, encode) => {
-          route
-            .call
-            .parameters
-            .getOrElse(Nil)
-            .find(_.name == name)
-            .map { param =>
-              val paramName: String = paramNameOnQueryString(param.name)
-              if (encode && encodeable(param.typeName))
-                " + (\"\"\" + implicitly[PathBindable[" + param
-                  .typeName + "]].javascriptUnbind + \"\"\")" + """("""" + paramName + """", encodeURIComponent(""" + localNames
-                  .get(param.name)
-                  .getOrElse(param.name) + """))"""
-              else
-                " + (\"\"\" + implicitly[PathBindable[" + param
-                  .typeName + "]].javascriptUnbind + \"\"\")" + """("""" + paramName + """", """ + localNames
-                  .get(param.name)
-                  .getOrElse(param.name) + """)"""
-            }
-            .getOrElse {
-              throw new Error("missing key " + name)
-            }
+    } + "\"\"\"\"" +
+      route
+        .path
+        .parts
+        .map {
+          case StaticPart(part) =>
+            " + \"" + part + "\""
+          case DynamicPart(name, _, encode) => {
+            route
+              .call
+              .parameters
+              .getOrElse(Nil)
+              .find(_.name == name)
+              .map { param =>
+                val paramName: String = paramNameOnQueryString(param.name)
+                if (encode && encodeable(param.typeName))
+                  " + (\"\"\" + implicitly[PathBindable[" + param.typeName +
+                    "]].javascriptUnbind + \"\"\")" + """("""" + paramName +
+                    """", encodeURIComponent(""" +
+                    localNames.get(param.name).getOrElse(param.name) + """))"""
+                else
+                  " + (\"\"\" + implicitly[PathBindable[" + param.typeName +
+                    "]].javascriptUnbind + \"\"\")" + """("""" + paramName +
+                    """", """ +
+                    localNames.get(param.name).getOrElse(param.name) + """)"""
+              }
+              .getOrElse {
+                throw new Error("missing key " + name)
+              }
+          }
         }
-      }
-      .mkString
+        .mkString
 
     val queryParams = route
       .call
@@ -611,18 +608,15 @@ package object templates {
           queryParams
             .map { p =>
               val paramName: String = paramNameOnQueryString(p.name)
-              (
-                "(\"\"\" + implicitly[QueryStringBindable[" + p
-                  .typeName + "]].javascriptUnbind + \"\"\")" + """("""" + paramName + """", """ + localNames
-                  .get(p.name)
-                  .getOrElse(p.name) + """)"""
-              ) -> p
+              ("(\"\"\" + implicitly[QueryStringBindable[" + p.typeName +
+                "]].javascriptUnbind + \"\"\")" + """("""" + paramName +
+                """", """ + localNames.get(p.name).getOrElse(p.name) +
+                """)""") -> p
             }
             .map {
               case (u, Parameter(name, typeName, None, Some(default))) =>
-                """(""" + localNames
-                  .get(name)
-                  .getOrElse(name) + " == null ? null : " + u + ")"
+                """(""" + localNames.get(name).getOrElse(name) +
+                  " == null ? null : " + u + ")"
               case (u, Parameter(name, typeName, None, None)) =>
                 u
             }

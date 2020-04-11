@@ -68,22 +68,20 @@ object LiftJavaScript {
       "cometGetTimeout" -> LiftRules.cometGetTimeout,
       "cometFailureRetryTimeout" -> LiftRules.cometFailureRetryTimeout,
       "cometServer" -> jsCometServer,
-      "logError" -> LiftRules
-        .jsLogFunc
-        .map(fnc => AnonFunc("msg", fnc(JsVar("msg"))))
-        .openOr(AnonFunc("msg", Noop)),
-      "ajaxOnFailure" -> LiftRules
-        .ajaxDefaultFailure
-        .map(fnc => AnonFunc(fnc()))
-        .openOr(AnonFunc(Noop)),
-      "ajaxOnStart" -> LiftRules
-        .ajaxStart
-        .map(fnc => AnonFunc(fnc()))
-        .openOr(AnonFunc(Noop)),
-      "ajaxOnEnd" -> LiftRules
-        .ajaxEnd
-        .map(fnc => AnonFunc(fnc()))
-        .openOr(AnonFunc(Noop))
+      "logError" ->
+        LiftRules
+          .jsLogFunc
+          .map(fnc => AnonFunc("msg", fnc(JsVar("msg"))))
+          .openOr(AnonFunc("msg", Noop)),
+      "ajaxOnFailure" ->
+        LiftRules
+          .ajaxDefaultFailure
+          .map(fnc => AnonFunc(fnc()))
+          .openOr(AnonFunc(Noop)),
+      "ajaxOnStart" ->
+        LiftRules.ajaxStart.map(fnc => AnonFunc(fnc())).openOr(AnonFunc(Noop)),
+      "ajaxOnEnd" ->
+        LiftRules.ajaxEnd.map(fnc => AnonFunc(fnc())).openOr(AnonFunc(Noop))
     )
   }
 
@@ -102,8 +100,7 @@ object LiftJavaScript {
             JsVar("window", "liftVanilla"))
       }
 
-    JsCrVar("lift_settings", JsObj()) &
-      extendJsHelpersCmd &
+    JsCrVar("lift_settings", JsObj()) & extendJsHelpersCmd &
       Call("window.lift.extend", JsVar("lift_settings"), settings) &
       Call("window.lift.init", JsVar("lift_settings"))
   }

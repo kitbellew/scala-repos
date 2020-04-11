@@ -128,8 +128,7 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
           ldefs.map {
             case (f, _) =>
               (lmap(f) -> FwdPath(List(l2sym, ElementSymbol(1), f)))
-          } :+
-            (lisym -> FwdPath(List(l2sym, ElementSymbol(2))))))
+          } :+ (lisym -> FwdPath(List(l2sym, ElementSymbol(2))))))
     )
     val r2 = transformZipWithIndex(
       r2sym,
@@ -142,8 +141,7 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
           rdefs.map {
             case (f, _) =>
               (rmap(f) -> FwdPath(List(r2sym, ElementSymbol(1), f)))
-          } :+
-            (risym -> FwdPath(List(r2sym, ElementSymbol(2))))))
+          } :+ (risym -> FwdPath(List(r2sym, ElementSymbol(2))))))
     )
     val j2 = Join(
       jlsym,

@@ -109,8 +109,8 @@ class ThriftResponseClassifierTest extends FunSuite {
 
     val classifier = usingDeserializeCtx(ThriftExceptionsAsFailures)
     assert(
-      "Thrift.usingDeserializeCtx(ThriftExceptionsAsFailures)" == classifier
-        .toString())
+      "Thrift.usingDeserializeCtx(ThriftExceptionsAsFailures)" ==
+        classifier.toString())
 
     def testApply(in: String, expectedClass: ResponseClass): Unit = {
       val ctx = new DeserializeCtx(Echo.Echo.Args(in), deserializer)

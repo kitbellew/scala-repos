@@ -55,10 +55,10 @@ class MarshallingSpec
       marshal(None: Option[String]) shouldEqual HttpEntity.Empty
     }
     "eitherMarshaller should enable marshalling of Either[A, B]" in {
-      marshal[Either[Array[Char], String]](
-        Right("right")) shouldEqual HttpEntity("right")
-      marshal[Either[Array[Char], String]](
-        Left("left".toCharArray)) shouldEqual HttpEntity("left")
+      marshal[Either[Array[Char], String]](Right("right")) shouldEqual
+        HttpEntity("right")
+      marshal[Either[Array[Char], String]](Left("left".toCharArray)) shouldEqual
+        HttpEntity("left")
     }
   }
 
@@ -68,15 +68,16 @@ class MarshallingSpec
         marshal(
           Multipart.General(
             `multipart/mixed`,
-            Multipart.General.BodyPart.Strict(""))) shouldEqual HttpEntity(
-          contentType =
-            `multipart/mixed` withBoundary randomBoundary withCharset `UTF-8`,
-          string = s"""--$randomBoundary
+            Multipart.General.BodyPart.Strict(""))) shouldEqual
+          HttpEntity(
+            contentType = `multipart/mixed` withBoundary
+              randomBoundary withCharset `UTF-8`,
+            string = s"""--$randomBoundary
                       |Content-Type: text/plain; charset=UTF-8
                       |
                       |
                       |--$randomBoundary--""".stripMarginWithNewline("\r\n")
-        )
+          )
       }
       "one non-empty part" in {
         marshal(
@@ -95,8 +96,8 @@ class MarshallingSpec
               )
           )) shouldEqual
           HttpEntity(
-            contentType =
-              `multipart/alternative` withBoundary randomBoundary withCharset `UTF-8`,
+            contentType = `multipart/alternative` withBoundary
+              randomBoundary withCharset `UTF-8`,
             string = s"""--$randomBoundary
                         |Content-Type: text/plain; charset=UTF-8
                         |Content-Disposition: form-data; name=email
@@ -126,8 +127,8 @@ class MarshallingSpec
                 RawHeader("Content-Transfer-Encoding", "binary") :: Nil)
           )) shouldEqual
           HttpEntity(
-            contentType =
-              `multipart/related` withBoundary randomBoundary withCharset `UTF-8`,
+            contentType = `multipart/related` withBoundary
+              randomBoundary withCharset `UTF-8`,
             string = s"""--$randomBoundary
                       |Content-Type: text/plain; charset=US-ASCII
                       |
@@ -151,8 +152,8 @@ class MarshallingSpec
               "surname" -> HttpEntity("Mike"),
               "age" -> marshal(<int>42</int>)))) shouldEqual
           HttpEntity(
-            contentType =
-              `multipart/form-data` withBoundary randomBoundary withCharset `UTF-8`,
+            contentType = `multipart/form-data` withBoundary
+              randomBoundary withCharset `UTF-8`,
             string = s"""--$randomBoundary
                       |Content-Type: text/plain; charset=UTF-8
                       |Content-Disposition: form-data; name=surname
@@ -189,8 +190,8 @@ class MarshallingSpec
                     List(RawHeader("Content-Transfer-Encoding", "binary")))
               )))) shouldEqual
           HttpEntity(
-            contentType =
-              `multipart/form-data` withBoundary randomBoundary withCharset `UTF-8`,
+            contentType = `multipart/form-data` withBoundary
+              randomBoundary withCharset `UTF-8`,
             string = s"""--$randomBoundary
                         |Content-Type: text/csv; charset=UTF-8
                         |Content-Disposition: form-data; filename=attachment.csv; name="attachment[0]"

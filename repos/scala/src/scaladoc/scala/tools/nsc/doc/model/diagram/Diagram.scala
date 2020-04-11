@@ -35,7 +35,8 @@ case class InheritanceDiagram(
     outgoingImplicits: List[ImplicitNode])
     extends Diagram {
   def nodes =
-    thisNode :: superClasses ::: subClasses ::: incomingImplicits ::: outgoingImplicits
+    thisNode :: superClasses ::: subClasses ::: incomingImplicits :::
+      outgoingImplicits
   def edges =
     (thisNode -> (superClasses ::: outgoingImplicits)) ::
       (subClasses ::: incomingImplicits).map(_ -> List(thisNode))
@@ -219,8 +220,8 @@ class ContentDiagramDepth(pack: ContentDiagram) extends DepthInfo {
   while (!seedNodes.isEmpty) {
     var newSeedNodes = Set[Node]()
     for (node <- seedNodes) {
-      val depth = 1 + (-1 :: directEdges(node).map(_nodeDepth.getOrElse(_, -1)))
-        .max
+      val depth = 1 +
+        (-1 :: directEdges(node).map(_nodeDepth.getOrElse(_, -1))).max
       if (depth != _nodeDepth.getOrElse(node, -1)) {
         _nodeDepth += (node -> depth)
         newSeedNodes ++= invertedEdges(node)

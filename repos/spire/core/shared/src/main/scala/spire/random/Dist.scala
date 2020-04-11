@@ -162,12 +162,11 @@ trait Dist[@sp A] extends Any {
         num
       else
         loop(
-          num + (
-            if (pred(self(gen)))
-              1
-            else
-              0
-          ),
+          num +
+            (if (pred(self(gen)))
+               1
+             else
+               0),
           i - 1)
     loop(0, n)
   }

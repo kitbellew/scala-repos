@@ -50,8 +50,8 @@ class JavapClass(
   lazy val tool = JavapTool()
 
   def apply(args: Seq[String]): List[JpResult] = {
-    val (options0, targets) =
-      args partition (s => (s startsWith "-") && s.length > 1)
+    val (options0, targets) = args partition
+      (s => (s startsWith "-") && s.length > 1)
     val (options, filter) = {
       val (opts, flag) = toolArgs(options0)
       (
@@ -131,12 +131,10 @@ class JavapClass(
         val tran = intp translatePath name
         def loadableOrNone(strip: Boolean) = {
           def suffix(strip: Boolean)(x: String) =
-            (
-              if (strip && (x endsWith "$"))
-                x.init
-              else
-                x
-            ) + sufx
+            (if (strip && (x endsWith "$"))
+               x.init
+             else
+               x) + sufx
           val res = tran map (suffix(strip) _)
           if (res.isDefined && loadable(res.get))
             res
@@ -158,17 +156,21 @@ class JavapClass(
     // if repl, translate the name to something replish
     // (for translate, would be nicer to get the sym and ask .isClass,
     // instead of translatePath and then asking did I get a class back)
-    val q = (
-      // only simple names get the scope treatment
-      Some(p) filter (_ contains '.')
-      // take path as a Name in scope
-        orElse (intp translatePath p filter loadable)
-      // take path as a Name in scope and find its enclosing class
-        orElse (intp translateEnclosingClass p filter loadable)
-      // take path as a synthetic derived from some Name in scope
-        orElse desynthesize(p)
-      // just try it plain
-        getOrElse p)
+    val q =
+      (
+        // only simple names get the scope treatment
+        Some(p) filter
+          (_ contains '.')
+          // take path as a Name in scope
+          orElse
+          (intp translatePath p filter loadable)
+          // take path as a Name in scope and find its enclosing class
+          orElse
+          (intp translateEnclosingClass p filter loadable)
+          // take path as a synthetic derived from some Name in scope
+          orElse desynthesize(p)
+          // just try it plain
+          getOrElse p)
     load(q)
   }
 
@@ -302,11 +304,12 @@ class JavapClass(
         loader
           .tryToLoadClass[JavaFileManager](
             "com.sun.tools.javap.JavapFileManager")
-          .get getMethod (
-          "create",
-          classOf[DiagnosticListener[_]],
-          classOf[PrintWriter]
-        ) invoke (null, reporter, new PrintWriter(System.err, true))
+          .get getMethod
+          (
+            "create",
+            classOf[DiagnosticListener[_]],
+            classOf[PrintWriter]) invoke
+          (null, reporter, new PrintWriter(System.err, true))
       ).asInstanceOf[JavaFileManager] orFailed null
 
     // manages named arrays of bytes, which might have failed to load
@@ -327,8 +330,9 @@ class JavapClass(
             new URI("dummy")
         }
 
-      def inputNamed(name: String): Try[ByteAry] =
-        (managed find (_._1 == name)).get._2
+      def inputNamed(name: String): Try[ByteAry] = (managed find (_._1 == name))
+        .get
+        ._2
       def managedFile(name: String, kind: Kind) =
         kind match {
           case CLASS =>
@@ -606,23 +610,21 @@ object Javap {
     }
     // each optchar must decode to exactly one option
     def unpacked(s: String): Try[Seq[String]] = {
-      val ones = (s drop 1) map { c =>
-        val maybes = uniqueOf(candidates(s"-$c"))
-        if (maybes.length == 1)
-          Some(maybes.head)
-        else
-          None
-      }
+      val ones =
+        (s drop 1) map { c =>
+          val maybes = uniqueOf(candidates(s"-$c"))
+          if (maybes.length == 1)
+            Some(maybes.head)
+          else
+            None
+        }
       Try(ones) filter (_ forall (_.isDefined)) map (_.flatten)
     }
     val res = uniqueOf(candidates(arg))
     if (res.nonEmpty)
       res
     else
-      (
-        unpacked(arg)
-          getOrElse (Seq("-help"))
-      ) // or else someone needs help
+      (unpacked(arg) getOrElse (Seq("-help"))) // or else someone needs help
   }
 
   def helpText: String =

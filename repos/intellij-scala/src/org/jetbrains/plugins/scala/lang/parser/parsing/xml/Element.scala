@@ -19,9 +19,8 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserPatcher
 
 object Element {
   def parse(builder: ScalaPsiBuilder): Boolean = {
-    if (EmptyElemTag.parse(builder) || ParserPatcher
-          .getSuitablePatcher(builder)
-          .parse(builder))
+    if (EmptyElemTag.parse(builder) ||
+        ParserPatcher.getSuitablePatcher(builder).parse(builder))
       return true
 
     val elemMarker = builder.mark()

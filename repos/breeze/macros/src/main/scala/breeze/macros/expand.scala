@@ -114,14 +114,13 @@ object expand {
             if (typesLeftAbstract.nonEmpty)
               c.error(
                 tree.pos,
-                "Can't valify: Not all types were grounded: " + typesLeftAbstract
-                  .mkString(", "))
+                "Can't valify: Not all types were grounded: " +
+                  typesLeftAbstract.mkString(", "))
             if (newvargs.exists(_.nonEmpty))
               c.error(
                 tree.pos,
-                "Can't valify: Not all arguments were grounded: " + newvargs
-                  .map(_.mkString(", "))
-                  .mkString("(", ")(", ")"))
+                "Can't valify: Not all arguments were grounded: " +
+                  newvargs.map(_.mkString(", ")).mkString("(", ")(", ")"))
             ValDef(mods, newName, newtpt, grounded)
           } else {
             val newTargs = typesLeftAbstract
@@ -139,12 +138,13 @@ object expand {
 
   private def mkName(
       c: Context)(name: c.Name, typeMap: Map[c.Name, c.Type]): String = {
-    name.toString + "_" + typeMap
-      .map {
-        case (k, v) =>
-          v.toString.reverse.takeWhile(_ != '.').reverse
-      }
-      .mkString("_")
+    name.toString + "_" +
+      typeMap
+        .map {
+          case (k, v) =>
+            v.toString.reverse.takeWhile(_ != '.').reverse
+        }
+        .mkString("_")
   }
 
   // valExpansions is a [value identifier -> (
@@ -215,9 +215,10 @@ object expand {
           }
           val predef = context.mirror.staticModule("scala.Predef").asModule
           val missing = Select(Ident(predef), newTermName("???"))
-          nme2 -> (typeMappings(nme2) zip args.flatten)
-            .toMap
-            .withDefaultValue(missing)
+          nme2 ->
+            (typeMappings(nme2) zip args.flatten)
+              .toMap
+              .withDefaultValue(missing)
       }
     x.get
   }
@@ -280,9 +281,9 @@ object expand {
                 "arguments to @exclude does not have the same arity as the type symbols!")
           args.map(aa =>
             (
-              targs zip aa
-                .map(c.typeCheck(_))
-                .map(_.symbol.asModule.companionSymbol.asType.toType)
+              targs zip
+                aa.map(c.typeCheck(_))
+                  .map(_.symbol.asModule.companionSymbol.asType.toType)
             ).toMap)
       }
       .flatten

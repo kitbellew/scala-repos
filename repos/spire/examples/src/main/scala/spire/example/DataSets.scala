@@ -82,13 +82,12 @@ object DataSet {
       lines.foldLeft((Int.MaxValue, List.empty[(CC[F], K)])) {
         case ((dim, res), fields) =>
           val bldr = cbf()
-          val vd =
-            (maps zip fields).foldLeft(0) {
-              case (acc, (f, s)) =>
-                val vars = f(s)
-                bldr ++= vars
-                acc + vars.size
-            }
+          val vd = (maps zip fields).foldLeft(0) {
+            case (acc, (f, s)) =>
+              val vars = f(s)
+              bldr ++= vars
+              acc + vars.size
+          }
           (math.min(dim, vd), (bldr.result(), out._2(fields(out._1))) :: res)
       }
 
@@ -221,11 +220,12 @@ object Variable {
           val orderedCategories = categories.toList
 
           { s =>
-            orderedCategories map (cat =>
-              if (cat == s)
-                Ring[F].one
-              else
-                Ring[F].zero)
+            orderedCategories map
+              (cat =>
+                if (cat == s)
+                  Ring[F].one
+                else
+                  Ring[F].zero)
           }
         }
       }
@@ -316,12 +316,11 @@ object CrossValidation {
     def accuracy(results: List[Result[V, K]]): F = {
       results.foldLeft(field.zero) {
         case (acc, Result(_, output, predicted)) =>
-          acc + (
-            if (predicted == output)
-              field.one
-            else
-              field.zero
-          )
+          acc +
+            (if (predicted == output)
+               field.one
+             else
+               field.zero)
       } / results.size
     }
 

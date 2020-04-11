@@ -123,9 +123,8 @@ trait ConstructorAnnotator {
           case Some(c: ScPrimaryConstructor) => //it's ok
           case Some(fun: ScFunction)         =>
             //check order
-            if (fun.getTextRange.getStartOffset > constr
-                  .getTextRange
-                  .getStartOffset) {
+            if (fun.getTextRange.getStartOffset >
+                  constr.getTextRange.getStartOffset) {
               val annotation = holder.createErrorAnnotation(
                 self,
                 ScalaBundle

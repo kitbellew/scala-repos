@@ -61,24 +61,26 @@ object StreamLayout {
     if (inset.size != shape.inlets.size)
       problems ::= "shape has duplicate inlets: " + ins(shape.inlets)
     if (inset != inPorts)
-      problems ::= s"shape has extra ${ins(
-        inset -- inPorts)}, module has extra ${ins(inPorts -- inset)}"
+      problems ::=
+        s"shape has extra ${ins(inset -- inPorts)}, module has extra ${ins(inPorts -- inset)}"
     if (inset.intersect(upstreams.keySet).nonEmpty)
-      problems ::= s"found connected inlets ${inset.intersect(upstreams.keySet)}"
+      problems ::=
+        s"found connected inlets ${inset.intersect(upstreams.keySet)}"
     if (outset.size != shape.outlets.size)
       problems ::= "shape has duplicate outlets: " + outs(shape.outlets)
     if (outset != outPorts)
-      problems ::= s"shape has extra ${outs(
-        outset -- outPorts)}, module has extra ${outs(outPorts -- outset)}"
+      problems ::=
+        s"shape has extra ${outs(outset -- outPorts)}, module has extra ${outs(outPorts -- outset)}"
     if (outset.intersect(downstreams.keySet).nonEmpty)
-      problems ::= s"found connected outlets ${outset.intersect(downstreams.keySet)}"
+      problems ::=
+        s"found connected outlets ${outset.intersect(downstreams.keySet)}"
     val ups = upstreams.toSet
     val ups2 = ups.map(_.swap)
     val downs = downstreams.toSet
     val inter = ups2.intersect(downs)
     if (downs != ups2)
-      problems ::= s"inconsistent maps: ups ${pairs(
-        ups2 -- inter)} downs ${pairs(downs -- inter)}"
+      problems ::=
+        s"inconsistent maps: ups ${pairs(ups2 -- inter)} downs ${pairs(downs -- inter)}"
     val (allIn, dupIn, allOut, dupOut) =
       subModules.foldLeft(
         (
@@ -127,7 +129,8 @@ object StreamLayout {
         Nil
     }
     if ((atomic -- subModules -- graphValues - m).nonEmpty)
-      problems ::= s"computation refers to non-existent modules [${atomic -- subModules -- graphValues - m mkString ","}]"
+      problems ::=
+        s"computation refers to non-existent modules [${atomic -- subModules -- graphValues - m mkString ","}]"
 
     val print = doPrint || problems.nonEmpty
 
@@ -1028,9 +1031,8 @@ private[stream] abstract class MaterializerSession(
     new ju.HashMap[OutPort, Publisher[Any]] :: Nil
   private var matValSrcStack: List[
     ju.Map[MaterializedValueNode, List[MaterializedValueSource[Any]]]] =
-    new ju.HashMap[
-      MaterializedValueNode,
-      List[MaterializedValueSource[Any]]] :: Nil
+    new ju.HashMap[MaterializedValueNode, List[MaterializedValueSource[Any]]] ::
+      Nil
 
   /*
    * Please note that this stack keeps track of the scoped modules wrapped in CopiedModule but not the CopiedModule

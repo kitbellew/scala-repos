@@ -132,8 +132,9 @@ class MongoDirectSpec extends Specification with MongoTestKit {
       coll.getCount must_== 100
 
       // get the count using a query
-      coll.getCount(
-        new BasicDBObject("i", new BasicDBObject("$gt", 50))) must_== 50
+      coll
+        .getCount(new BasicDBObject("i", new BasicDBObject("$gt", 50))) must_==
+        50
 
       // use a cursor to get all docs
       val cur = coll.find
@@ -251,10 +252,11 @@ class MongoDirectSpec extends Specification with MongoTestKit {
       // save the docs to the db
       Helpers.tryo(coll.save(doc, WriteConcern.SAFE)).toOption must beSome
       coll.save(doc2, WriteConcern.SAFE) must throwA[MongoException]
-      Helpers.tryo(coll.save(doc2, WriteConcern.SAFE)) must beLike {
-        case Failure(msg, _, _) =>
-          msg must contain("E11000")
-      }
+      Helpers.tryo(coll.save(doc2, WriteConcern.SAFE)) must
+        beLike {
+          case Failure(msg, _, _) =>
+            msg must contain("E11000")
+        }
       Helpers.tryo(coll.save(doc3, WriteConcern.SAFE)).toOption must beSome
 
       // query for the docs by type

@@ -72,19 +72,21 @@ object JsError {
       flat: Boolean): JsObject = {
     val argsWrite = Writes.traversableWrites[Any](Writes.anyWrites)
     errors.foldLeft(Json.obj()) { (obj, error) =>
-      obj ++ Json.obj(
-        error._1.toJsonString -> error
-          ._2
-          .foldLeft(Json.arr()) { (arr, err) =>
-            arr :+ Json.obj(
-              "msg" -> (
-                if (flat)
-                  err.message
-                else
-                  Json.toJson(err.messages)
-              ),
-              "args" -> Json.toJson(err.args)(argsWrite))
-          })
+      obj ++
+        Json.obj(
+          error._1.toJsonString ->
+            error
+              ._2
+              .foldLeft(Json.arr()) { (arr, err) =>
+                arr :+
+                  Json.obj(
+                    "msg" ->
+                      (if (flat)
+                         err.message
+                       else
+                         Json.toJson(err.messages)),
+                    "args" -> Json.toJson(err.args)(argsWrite))
+              })
     }
   }
 }

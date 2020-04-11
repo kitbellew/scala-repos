@@ -48,8 +48,8 @@ trait DocFinding {
   self: RichPresentationCompiler =>
 
   private def isRoot(s: Symbol) =
-    (s eq NoSymbol) || s.isRootSymbol || s.isEmptyPackage || s
-      .isEmptyPackageClass
+    (s eq NoSymbol) || s.isRootSymbol || s.isEmptyPackage ||
+      s.isEmptyPackageClass
 
   private def fullPackage(sym: Symbol): String =
     sym
@@ -104,12 +104,11 @@ trait DocFinding {
 
   protected def scalaFqn(sym: Symbol): DocFqn = {
     def nameString(s: Symbol) =
-      s.nameString + (
-        if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
-          "$"
-        else
-          ""
-      )
+      s.nameString +
+        (if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
+           "$"
+         else
+           "")
     if (sym.isPackageObjectOrClass) {
       DocFqn(fullPackage(sym.owner), "package")
     } else if (sym.hasPackageFlag) {
@@ -127,21 +126,20 @@ trait DocFinding {
   }
 
   private def signatureString(sym: Symbol, java: Boolean): String = {
-    sym.nameString + (
-      if (java) {
-        if (sym.paramLists.isEmpty)
-          ""
-        else
-          sym
-            .paramLists
-            .flatMap(
-              _.map { sym =>
-                javaFqn(sym.tpe).mkString
-              })
-            .mkString("(", ", ", ")")
-      } else
-        sym.signatureString.replaceAll("[\\s]", "")
-    )
+    sym.nameString +
+      (if (java) {
+         if (sym.paramLists.isEmpty)
+           ""
+         else
+           sym
+             .paramLists
+             .flatMap(
+               _.map { sym =>
+                 javaFqn(sym.tpe).mkString
+               })
+             .mkString("(", ", ", ")")
+       } else
+         sym.signatureString.replaceAll("[\\s]", ""))
   }
 
   def docSignature(sym: Symbol, pos: Option[Position]): Option[DocSigPair] = {
@@ -149,11 +147,11 @@ trait DocFinding {
       val owner = sym.owner
       if (sym.isCaseApplyOrUnapply) {
         DocSig(linkName(owner.companionClass, java), None)
-      } else if (sym.isClass || sym.isModule || sym.isTrait || sym
-                   .hasPackageFlag)
+      } else if (sym.isClass || sym.isModule || sym.isTrait ||
+                 sym.hasPackageFlag)
         DocSig(linkName(sym, java), None)
-      else if (owner.isClass || owner.isModule || owner.isTrait || owner
-                 .hasPackageFlag) {
+      else if (owner.isClass || owner.isModule || owner.isTrait ||
+               owner.hasPackageFlag) {
         val ownerAtSite = pos.flatMap(specificOwnerOfSymbolAt).getOrElse(owner)
         DocSig(linkName(ownerAtSite, java), Some(signatureString(sym, java)))
       } else

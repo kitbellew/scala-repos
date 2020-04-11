@@ -60,18 +60,21 @@ case class ImportInfo(
 
   def split: Seq[ImportInfo] = {
     val result = new ArrayBuffer[ImportInfo]()
-    result ++= singleNames
-      .toSeq
-      .sorted
-      .map { name =>
-        template.copy(singleNames = Set(name))
+    result ++=
+      singleNames
+        .toSeq
+        .sorted
+        .map { name =>
+          template.copy(singleNames = Set(name))
+        }
+    result ++=
+      renames.map { rename =>
+        template.copy(renames = Map(rename))
       }
-    result ++= renames.map { rename =>
-      template.copy(renames = Map(rename))
-    }
-    result ++= hiddenNames.map { hidden =>
-      this.toHiddenNameInfo(hidden)
-    }
+    result ++=
+      hiddenNames.map { hidden =>
+        this.toHiddenNameInfo(hidden)
+      }
     if (hasWildcard) {
       result += this.toWildcardInfo
     }
@@ -370,8 +373,8 @@ object ImportInfo {
             case _: IllegalStateException =>
               return None
           }
-        val prefixQual = qualifiedDeepRef + withDot(
-          explicitQualifierString(qualifier, withDeepest = false))
+        val prefixQual = qualifiedDeepRef +
+          withDot(explicitQualifierString(qualifier, withDeepest = false))
         val relative = qualifiedDeepRef != deepRef.getText
         (prefixQual, relative)
       }

@@ -248,11 +248,12 @@ class XorTTests extends CatsSuite {
   test("orElse evaluates effect only once") {
     forAll { (xor: String Xor Int, fallback: XorT[Eval, String, Int]) =>
       var evals = 0
-      val xort = (XorT(
-        Eval.always {
-          evals += 1;
-          xor
-        }) orElse fallback)
+      val xort =
+        (XorT(
+          Eval.always {
+            evals += 1;
+            xor
+          }) orElse fallback)
       xort.value.value
       evals should ===(1)
     }

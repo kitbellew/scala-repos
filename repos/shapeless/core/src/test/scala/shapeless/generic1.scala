@@ -319,25 +319,24 @@ class Generic1Tests {
   @Test
   def testIsHCons1: Unit = {
     type L[t] =
-      Id[t] :: t :: String :: (t, t) :: List[Option[t]] :: Option[t] :: List[
-        t] :: HNil
+      Id[t] :: t :: String ::
+        (t, t) :: List[Option[t]] :: Option[t] :: List[t] :: HNil
 
     val ihc = the[IsHCons1[L, TC1, TC2]]
-    val l: L[Int] = 23 :: 13 :: "foo" :: (7, 13) :: List(Some(5)) :: Some(
-      11) :: List(1, 2, 3) :: HNil
+    val l: L[Int] = 23 :: 13 :: "foo" ::
+      (7, 13) :: List(Some(5)) :: Some(11) :: List(1, 2, 3) :: HNil
 
     val (hd, tl) = ihc.unpack(l)
 
     typed[Int](hd)
     assertEquals(23, hd)
 
-    typed[Id[Int] :: String :: (Int, Int) :: List[Option[Int]] :: Option[
-      Int] :: List[Int] :: HNil](tl)
+    typed[
+      Id[Int] :: String ::
+        (Int, Int) :: List[Option[Int]] :: Option[Int] :: List[Int] :: HNil](tl)
     assertEquals(
-      13 :: "foo" :: (7, 13) :: List(Some(5)) :: Some(11) :: List(
-        1,
-        2,
-        3) :: HNil,
+      13 :: "foo" ::
+        (7, 13) :: List(Some(5)) :: Some(11) :: List(1, 2, 3) :: HNil,
       tl)
 
     val cons = ihc.pack((hd, tl))

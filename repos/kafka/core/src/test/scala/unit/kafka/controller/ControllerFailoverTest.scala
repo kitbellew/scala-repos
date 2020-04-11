@@ -151,19 +151,18 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     var counter = 0
     while (!found && counter < 10) {
       for (server <- this.servers) {
-        val previousEpoch =
-          (epochMap get server.config.brokerId) match {
-            case Some(epoch) =>
-              epoch
-            case None =>
-              val msg = String.format(
-                "Missing element in epoch map %s",
-                epochMap.mkString(", "))
-              throw new IllegalStateException(msg)
-          }
+        val previousEpoch = (epochMap get server.config.brokerId) match {
+          case Some(epoch) =>
+            epoch
+          case None =>
+            val msg = String.format(
+              "Missing element in epoch map %s",
+              epochMap.mkString(", "))
+            throw new IllegalStateException(msg)
+        }
 
-        if (server.kafkaController.isActive
-            && (previousEpoch) < server.kafkaController.epoch) {
+        if (server.kafkaController.isActive &&
+            (previousEpoch) < server.kafkaController.epoch) {
           controller = server
           found = true
         }

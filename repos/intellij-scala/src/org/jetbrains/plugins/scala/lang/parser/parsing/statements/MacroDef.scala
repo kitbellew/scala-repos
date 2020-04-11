@@ -38,8 +38,8 @@ object MacroDef {
                     case ScalaTokenTypes.kMACRO =>
                       builder.advanceLexer() //Ate `macro`
                       if (Qual_Id.parse(builder)) {
-                        if (builder.getTokenType == ScalaTokenTypes
-                              .tLSQBRACKET) {
+                        if (builder.getTokenType ==
+                              ScalaTokenTypes.tLSQBRACKET) {
                           TypeArgs.parse(builder, isPattern = false)
                         }
                         marker.drop()

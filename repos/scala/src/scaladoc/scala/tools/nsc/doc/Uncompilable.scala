@@ -52,9 +52,10 @@ trait Uncompilable {
   def files = settings.uncompilableFiles
   def symbols = pairs map (_._1)
   def templates =
-    symbols filter (x =>
-      x.isClass || x
-        .isTrait || x == AnyRefClass /* which is now a type alias */ ) toSet
+    symbols filter
+      (x =>
+        x.isClass || x.isTrait ||
+          x == AnyRefClass /* which is now a type alias */ ) toSet
   def comments = {
     if (settings.debug || settings.verbose)
       inform(
@@ -67,8 +68,8 @@ trait Uncompilable {
     pairs
   }
   override def toString =
-    pairs.size + " uncompilable symbols:\n" + (
-      symbols filterNot (_ == NoSymbol) map (x =>
-        "  " + x.owner.fullName + " " + x.defString) mkString "\n"
-    )
+    pairs.size + " uncompilable symbols:\n" +
+      (symbols filterNot
+        (_ == NoSymbol) map
+        (x => "  " + x.owner.fullName + " " + x.defString) mkString "\n")
 }

@@ -122,9 +122,8 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
    * for all dependencies of p
    */
   private def allTransDepsMergeableWithSource(p: Prod[_]): Boolean =
-    mergableWithSource(p) && Producer
-      .dependenciesOf(p)
-      .forall(allTransDepsMergeableWithSource)
+    mergableWithSource(p) &&
+      Producer.dependenciesOf(p).forall(allTransDepsMergeableWithSource)
 
   /**
     * This is the main planning loop that goes bottom up planning into CNodes.
@@ -194,8 +193,8 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
              */
             case _
                 if (
-                  !noOpNode(activeBolt) && dependsOnSummerProducer(
-                    currentProducer)
+                  !noOpNode(activeBolt) &&
+                    dependsOnSummerProducer(currentProducer)
                 ) =>
               true
             /*
@@ -204,8 +203,8 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
              * this current node all the way up to the source.
              */
             case FlatMapNode(_)
-                if hasSummerAsDependantProducer(
-                  currentProducer) && allTransDepsMergeableWithSource(dep) =>
+                if hasSummerAsDependantProducer(currentProducer) &&
+                  allTransDepsMergeableWithSource(dep) =>
               true
             /*
              * if the current node can't be merged with a source, but the transitive deps can
@@ -213,9 +212,8 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
              */
             case _
                 if (
-                  (
-                    !mergableWithSource(currentProducer)
-                  ) && allTransDepsMergeableWithSource(dep)
+                  (!mergableWithSource(currentProducer)) &&
+                    allTransDepsMergeableWithSource(dep)
                 ) =>
               true
             case _ =>

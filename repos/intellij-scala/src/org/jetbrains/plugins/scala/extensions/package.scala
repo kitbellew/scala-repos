@@ -70,8 +70,8 @@ package object extensions {
 
     def hasQueryLikeName = {
       def startsWith(name: String, prefix: String) =
-        name.length > prefix.length && name
-          .startsWith(prefix) && name.charAt(prefix.length).isUpper
+        name.length > prefix.length && name.startsWith(prefix) &&
+          name.charAt(prefix.length).isUpper
 
       repr.getName match {
         case "getInstance" =>
@@ -338,9 +338,8 @@ package object extensions {
           wrappers.foreach(w => processName(w.name))
         case method: PsiMethod if !method.isConstructor =>
           if (isStatic) {
-            if (method.containingClass != null && method
-                  .containingClass
-                  .qualifiedName != "java.lang.Object") {
+            if (method.containingClass != null &&
+                method.containingClass.qualifiedName != "java.lang.Object") {
               processMethod(StaticPsiMethodWrapper.getWrapper(method, clazz))
               processName(method.getName)
             }
@@ -350,11 +349,8 @@ package object extensions {
           }
         case t: ScTypedDefinition
             if t.isVal || t.isVar ||
-              (
-                t.isInstanceOf[ScClassParameter] && t
-                  .asInstanceOf[ScClassParameter]
-                  .isCaseClassVal
-              ) =>
+              (t.isInstanceOf[ScClassParameter] &&
+                t.asInstanceOf[ScClassParameter].isCaseClassVal) =>
           PsiTypedDefinitionWrapper.processWrappersFor(
             t,
             concreteClassFor(t),

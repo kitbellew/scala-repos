@@ -58,8 +58,9 @@ class NRootTest extends FunSuite {
       roots foreach (checkNRoot(x, _))
     }
 
-    bases map (-_) foreach { x =>
-      roots filter (_ % 2 == 1) foreach (checkNRoot(x, _))
-    }
+    bases map
+      (-_) foreach { x =>
+        roots filter (_ % 2 == 1) foreach (checkNRoot(x, _))
+      }
   }
 }

@@ -131,8 +131,8 @@ class JDBCQueryExecutor(
                         // May need refinement to get meaningful results
                         val stmt = conn.createStatement
 
-                        val query = "SELECT count(*) as count FROM " + tableName
-                          .filterNot(_ == ';')
+                        val query = "SELECT count(*) as count FROM " +
+                          tableName.filterNot(_ == ';')
                         logger.debug("Querying with " + query)
 
                         val result = stmt.executeQuery(query)

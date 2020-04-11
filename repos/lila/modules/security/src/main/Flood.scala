@@ -24,7 +24,8 @@ final class Flood(duration: Duration) {
   def allowMessage(uid: String, text: String): Boolean = {
     val msg = Message(text, DateTime.now)
     val msgs = ~Option(messages getIfPresent uid)
-    !duplicateMessage(msg, msgs) && !quickPost(msg, msgs) ~ {
+    !duplicateMessage(msg, msgs) &&
+    !quickPost(msg, msgs) ~ {
       _ ?? messages.put(uid, msg :: msgs)
     }
   }

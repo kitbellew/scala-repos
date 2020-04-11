@@ -196,8 +196,8 @@ class ValidatedTests extends CatsSuite {
       else
         Validated.invalid(s"$i is not even")
 
-    (Validated.valid(3) andThen even) should ===(
-      Validated.invalid("3 is not even"))
+    (Validated.valid(3) andThen even) should
+      ===(Validated.invalid("3 is not even"))
     (Validated.valid(4) andThen even) should ===(Validated.valid(4))
     (Validated.invalid("foo") andThen even) should ===(Validated.invalid("foo"))
   }

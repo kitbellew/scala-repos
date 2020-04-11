@@ -71,8 +71,7 @@ private[ui] class GraphUIData(
       jsCollector.addStatement(
         "drawTimeline(" +
           s"'#$timelineDivId', $dataJavaScriptName, $minX, $maxX, $minY, $maxY, '$unitY'," +
-          s" ${batchInterval.get}" +
-          ");")
+          s" ${batchInterval.get}" + ");")
     } else {
       jsCollector.addStatement(
         s"drawTimeline('#$timelineDivId', $dataJavaScriptName, $minX, $maxX, $minY, $maxY," +
@@ -174,11 +173,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
   def render(request: HttpServletRequest): Seq[Node] = {
     val resources = generateLoadResources()
     val basicInfo = generateBasicInfo()
-    val content = resources ++
-      basicInfo ++
+    val content = resources ++ basicInfo ++
       listener.synchronized {
-        generateStatTable() ++
-          generateBatchListTables()
+        generateStatTable() ++ generateBatchListTables()
       }
     SparkUIUtils
       .headerSparkPage("Streaming Statistics", content, parent, Some(5000))
@@ -241,13 +238,14 @@ private[ui] class StreamingPage(parent: StreamingTab)
     * @param times all time values that will be used in the graphs.
     */
   private def generateTimeMap(times: Seq[Long]): Seq[Node] = {
-    val js = "var timeFormat = {};\n" + times
-      .map { time =>
-        val formattedTime = UIUtils
-          .formatBatchTime(time, listener.batchDuration, showYYYYMMSS = false)
-        s"timeFormat[$time] = '$formattedTime';"
-      }
-      .mkString("\n")
+    val js = "var timeFormat = {};\n" +
+      times
+        .map { time =>
+          val formattedTime = UIUtils
+            .formatBatchTime(time, listener.batchDuration, showYYYYMMSS = false)
+          s"timeFormat[$time] = '$formattedTime';"
+        }
+        .mkString("\n")
 
     <script>{
       Unparsed(js)
@@ -374,8 +372,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
 
     val numCompletedBatches = listener.retainedCompletedBatches.size
     val numActiveBatches = batchTimes.length - numCompletedBatches
-    val numReceivers = listener.numInactiveReceivers + listener
-      .numActiveReceivers
+    val numReceivers = listener.numInactiveReceivers +
+      listener.numActiveReceivers
     val table =
       // scalastyle:off
       <table id="stat-table" class="table table-bordered" style="width: auto">

@@ -275,13 +275,11 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
       block: BlockUIData): (String, Long) = {
     if (block.storageLevel.useDisk) {
       ("Disk", block.diskSize)
-    } else if (block.storageLevel.useMemory && block
-                 .storageLevel
-                 .deserialized) {
+    } else if (block.storageLevel.useMemory &&
+               block.storageLevel.deserialized) {
       ("Memory", block.memSize)
-    } else if (block.storageLevel.useMemory && !block
-                 .storageLevel
-                 .deserialized) {
+    } else if (block.storageLevel.useMemory &&
+               !block.storageLevel.deserialized) {
       ("Memory Serialized", block.memSize)
     } else {
       throw new IllegalStateException(

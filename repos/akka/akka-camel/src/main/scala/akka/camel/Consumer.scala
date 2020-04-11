@@ -37,15 +37,16 @@ trait Consumer extends Actor with CamelSupport {
   }
 
   private[this] def register() {
-    camel.supervisor ! Register(
-      self,
-      endpointUri,
-      Some(
-        ConsumerConfig(
-          activationTimeout,
-          replyTimeout,
-          autoAck,
-          onRouteDefinition)))
+    camel.supervisor !
+      Register(
+        self,
+        endpointUri,
+        Some(
+          ConsumerConfig(
+            activationTimeout,
+            replyTimeout,
+            autoAck,
+            onRouteDefinition)))
   }
 
   /**

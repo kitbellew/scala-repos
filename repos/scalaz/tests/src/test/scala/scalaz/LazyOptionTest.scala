@@ -16,10 +16,11 @@ object LazyOptionTest extends SpecLite {
   checkAll(isEmpty.laws[LazyOption])
   checkAll(monoid.laws[LazyOption[Int]])
 
-  "monoid" ! forAll { (a: LazyOption[Int], b: LazyOption[Int]) =>
-    Monoid[LazyOption[Int]].append(a, b).toOption must_=== Monoid[Option[Int]]
-      .append(a.toOption, b.toOption)
-  }
+  "monoid" !
+    forAll { (a: LazyOption[Int], b: LazyOption[Int]) =>
+      Monoid[LazyOption[Int]].append(a, b).toOption must_===
+        Monoid[Option[Int]].append(a.toOption, b.toOption)
+    }
 
   "tail recursive tailrecM" in {
     val times = 10000

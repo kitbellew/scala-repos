@@ -501,9 +501,9 @@ sealed abstract class ZipperInstances {
     new Equal[Zipper[A]] {
       import std.stream.streamEqual
       def equal(a1: Zipper[A], a2: Zipper[A]) =
-        streamEqual[A].equal(a1.lefts, a2.lefts) && Equal[A]
-          .equal(a1.focus, a2.focus) && streamEqual[A]
-          .equal(a1.rights, a2.rights)
+        streamEqual[A]
+          .equal(a1.lefts, a2.lefts) && Equal[A].equal(a1.focus, a2.focus) &&
+          streamEqual[A].equal(a1.rights, a2.rights)
     }
 
   implicit def zipperShow[A: Show]: Show[Zipper[A]] =

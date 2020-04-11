@@ -100,14 +100,15 @@ abstract class RemoteNodeRestartGateSpec
         within(10.seconds) {
           awaitAssert {
             system.actorSelection(
-              RootActorPath(secondAddress) / "user" / "subject") ! Identify(
-              "subject")
+              RootActorPath(secondAddress) / "user" / "subject") !
+              Identify("subject")
             expectMsgType[ActorIdentity].ref.get
           }
         }
 
-        system.actorSelection(
-          RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
+        system
+          .actorSelection(RootActorPath(secondAddress) / "user" / "subject") !
+          "shutdown"
       }
 
       runOn(second) {

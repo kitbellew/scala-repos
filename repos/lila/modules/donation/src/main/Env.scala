@@ -24,8 +24,9 @@ final class Env(config: Config, db: lila.db.Env, bus: lila.common.Bus) {
 
 object Env {
 
-  lazy val current = "donation" boot new Env(
-    config = lila.common.PlayApp loadConfig "donation",
-    db = lila.db.Env.current,
-    bus = lila.common.PlayApp.system.lilaBus)
+  lazy val current = "donation" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "donation",
+      db = lila.db.Env.current,
+      bus = lila.common.PlayApp.system.lilaBus)
 }

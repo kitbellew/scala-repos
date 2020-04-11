@@ -63,8 +63,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
         if (iindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent item ID ${r.item}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent item ID ${r.item}" +
+              " to Int index.")
 
         (uindex -> iindex) -> 1
       }

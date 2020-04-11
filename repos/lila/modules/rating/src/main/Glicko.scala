@@ -20,12 +20,8 @@ case class Glicko(rating: Double, deviation: Double, volatility: Double) {
   def establishedIntRating = established option intRating
 
   def sanityCheck =
-    rating > 0 &&
-      rating < 4000 &&
-      deviation > 0 &&
-      deviation < 1000 &&
-      volatility > 0 &&
-      volatility < 1
+    rating > 0 && rating < 4000 && deviation > 0 && deviation < 1000 &&
+      volatility > 0 && volatility < 1
 
   override def toString = s"$intRating $intDeviation"
 }

@@ -44,21 +44,21 @@ private final class Stream(geoIp: MaxMindIpGeo, geoIpCacheTtl: Duration)
     case Stream.Get =>
       sender ! {
         Enumerator.enumerate(games.values.map(game2json(makeMd5))) andThen
-          Enumerator.enumerate(List(loadCompleteJson)) andThen
-          producer
+          Enumerator.enumerate(List(loadCompleteJson)) andThen producer
       }
   }
 
   val (enumerator, channel) = Concurrent.broadcast[Stream.Event]
 
-  val producer = enumerator &> Enumeratee
-    .map[Stream.Event]
-    .apply[JsValue] {
-      case Stream.Event.Add(game) =>
-        game2json(makeMd5)(game)
-      case Stream.Event.Remove(id) =>
-        Json.obj("id" -> id)
-    }
+  val producer = enumerator &>
+    Enumeratee
+      .map[Stream.Event]
+      .apply[JsValue] {
+        case Stream.Event.Add(game) =>
+          game2json(makeMd5)(game)
+        case Stream.Event.Remove(id) =>
+          Json.obj("id" -> id)
+      }
 
   val ipCache = lila.memo.Builder.cache(geoIpCacheTtl, ipToPoint)
   def ipToPoint(ip: String): Option[Stream.Point] =
@@ -84,13 +84,14 @@ object Stream {
   private def game2json(md5: MessageDigest)(game: Game): JsValue =
     Json.obj(
       "id" -> bytes2base64(md5.digest(game.id getBytes "UTF-8") take 6),
-      "ps" -> Json.toJson {
-        game
-          .points
-          .map { p =>
-            List(p.lat, p.lon) map truncate
-          }
-      })
+      "ps" ->
+        Json.toJson {
+          game
+            .points
+            .map { p =>
+              List(p.lat, p.lon) map truncate
+            }
+        })
 
   case class Point(lat: Double, lon: Double)
   def toPoint(ipLoc: IpLocation): Option[Point] =

@@ -243,10 +243,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
       val regularAggProjection =
         if (regularAggExprs.nonEmpty) {
           Seq(
-            a.groupingExpressions ++
-              distinctAggChildren.map(nullify) ++
-              Seq(regularGroupId) ++
-              regularAggChildren)
+            a.groupingExpressions ++ distinctAggChildren.map(nullify) ++
+              Seq(regularGroupId) ++ regularAggChildren)
         } else {
           Seq.empty[Seq[Expression]]
         }
@@ -255,16 +253,14 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
       val regularAggNulls = regularAggChildren.map(nullify)
       val distinctAggProjections = distinctAggOperatorMap.map {
         case (projection, _) =>
-          a.groupingExpressions ++
-            projection ++
-            regularAggNulls
+          a.groupingExpressions ++ projection ++ regularAggNulls
       }
 
       // Construct the expand operator.
       val expand = Expand(
         regularAggProjection ++ distinctAggProjections,
-        groupByAttrs ++ distinctAggChildAttrs ++ Seq(
-          gid) ++ regularAggChildAttrMap.map(_._2),
+        groupByAttrs ++ distinctAggChildAttrs ++ Seq(gid) ++
+          regularAggChildAttrMap.map(_._2),
         a.child)
 
       // Construct the first aggregate operator. This de-duplicates the all the children of

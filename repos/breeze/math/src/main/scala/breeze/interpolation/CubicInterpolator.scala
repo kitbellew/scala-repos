@@ -68,9 +68,8 @@ class CubicInterpolator(x_coords: Vector[Double], y_coords: Vector[Double])
       Y(0)
     else {
       val dx = x - X(index)
-      A(index, 0) + A(index, 1) * dx + A(index, 2) * dx * dx + A(
-        index,
-        3) * dx * dx * dx
+      A(index, 0) + A(index, 1) * dx + A(index, 2) * dx * dx +
+        A(index, 3) * dx * dx * dx
     }
   }
 }

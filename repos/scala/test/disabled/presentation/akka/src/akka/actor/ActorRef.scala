@@ -335,15 +335,12 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
     !!(message, timeout)(Option(sender))
       .getOrElse(
         throw new ActorTimeoutException(
-          "Message [" + message +
-            "]\n\tsent to [" + actorClassName +
-            "]\n\tfrom [" + (
-            if (sender ne null)
-              sender.actorClassName
-            else
-              "nowhere"
-          ) +
-            "]\n\twith timeout [" + timeout +
+          "Message [" + message + "]\n\tsent to [" + actorClassName +
+            "]\n\tfrom [" +
+            (if (sender ne null)
+               sender.actorClassName
+             else
+               "nowhere") + "]\n\twith timeout [" + timeout +
             "]\n\ttimed out."))
       .asInstanceOf[AnyRef]
   }
@@ -636,8 +633,7 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
   override def hashCode: Int = HashCode.hash(HashCode.SEED, uuid)
 
   override def equals(that: Any): Boolean = {
-    that.isInstanceOf[ActorRef] &&
-    that.asInstanceOf[ActorRef].uuid == uuid
+    that.isInstanceOf[ActorRef] && that.asInstanceOf[ActorRef].uuid == uuid
   }
 
   override def toString = "Actor[" + id + ":" + uuid + "]"
@@ -738,7 +734,8 @@ class LocalActorRef private[akka] (
           _dispatcher = md
         else
           throw new ActorInitializationException(
-            "Can not swap dispatcher for " + toString + " after it has been started")
+            "Can not swap dispatcher for " + toString +
+              " after it has been started")
       }
     }
 
@@ -825,7 +822,8 @@ class LocalActorRef private[akka] (
         return // we already supervise this guy
       else if (hasSupervisorAlready)
         throw new IllegalActorStateException(
-          "Actor can only have one supervisor [" + actorRef + "], e.g. link(actor) fails")
+          "Actor can only have one supervisor [" + actorRef +
+            "], e.g. link(actor) fails")
       else {
         _linkedActors.put(actorRef.uuid, actorRef)
         actorRef.supervisor = Some(this)
@@ -948,11 +946,8 @@ class LocalActorRef private[akka] (
           ActorType.ScalaActor,
           None)
     } else
-      dispatcher dispatchMessage new MessageInvocation(
-        this,
-        message,
-        senderOption,
-        None)
+      dispatcher dispatchMessage
+        new MessageInvocation(this, message, senderOption, None)
 
   protected[akka] def postMessageToMailboxAndCreateFutureResultWithTimeout[T](
       message: Any,
@@ -984,11 +979,12 @@ class LocalActorRef private[akka] (
           senderFuture
         else
           Some(new DefaultCompletableFuture[T](timeout))
-      dispatcher dispatchMessage new MessageInvocation(
-        this,
-        message,
-        senderOption,
-        future.asInstanceOf[Some[CompletableFuture[Any]]])
+      dispatcher dispatchMessage
+        new MessageInvocation(
+          this,
+          message,
+          senderOption,
+          future.asInstanceOf[Some[CompletableFuture[Any]]])
       future.get
     }
   }
@@ -1067,13 +1063,15 @@ class LocalActorRef private[akka] (
             (now - windowStart) <= withinTimeRange.get
 
         //The actor is dead if it dies X times within the window of restart
-        val unrestartable = insideWindow && retries > maxNrOfRetries
-          .getOrElse(1)
+        val unrestartable = insideWindow &&
+          retries > maxNrOfRetries.getOrElse(1)
 
-        if (windowStart == 0 || !insideWindow) //(Re-)set the start of the window
+        if (windowStart == 0 ||
+            !insideWindow) //(Re-)set the start of the window
           restartsWithinTimeRangeTimestamp = now
 
-        if (windowStart != 0 && !insideWindow) //Reset number of restarts if window has expired
+        if (windowStart != 0 &&
+            !insideWindow) //Reset number of restarts if window has expired
           maxNrOfRetriesCount = 1
 
         unrestartable
@@ -1297,7 +1295,8 @@ class LocalActorRef private[akka] (
         val parent = clazz.getSuperclass
         if (parent eq null)
           throw new IllegalActorStateException(
-            toString + " is not an Actor since it have not mixed in the 'Actor' trait")
+            toString +
+              " is not an Actor since it have not mixed in the 'Actor' trait")
         lookupAndSetSelfFields(parent, actor, value)
       }
     }
@@ -1312,8 +1311,9 @@ class LocalActorRef private[akka] (
 
   protected[akka] def checkReceiveTimeout = {
     cancelReceiveTimeout
-    if (receiveTimeout.isDefined && dispatcher.mailboxSize(
-          this) <= 0) { //Only reschedule if desired and there are currently no more messages to be processed
+    if (receiveTimeout.isDefined &&
+        dispatcher.mailboxSize(this) <=
+          0) { //Only reschedule if desired and there are currently no more messages to be processed
       _futureTimeout = Some(
         Scheduler.scheduleOnce(
           this,
@@ -1672,8 +1672,7 @@ trait ScalaActorRef extends ActorRefShared {
   def reply(message: Any) =
     if (!reply_?(message))
       throw new IllegalActorStateException(
-        "\n\tNo sender in scope, can't reply. " +
-          "\n\tYou have probably: " +
+        "\n\tNo sender in scope, can't reply. " + "\n\tYou have probably: " +
           "\n\t\t1. Sent a message to an Actor from an instance that is NOT an Actor." +
           "\n\t\t2. Invoked a method on an TypedActor from an instance NOT an TypedActor." +
           "\n\tElse you might want to use 'reply_?' which returns Boolean(true) if success and Boolean(false) if no sender in scope")

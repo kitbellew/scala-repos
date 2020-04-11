@@ -211,8 +211,8 @@ class NewHadoopRDD[K, V](
           if (!finished) {
             inputMetrics.incRecordsReadInternal(1)
           }
-          if (inputMetrics.recordsRead % SparkHadoopUtil
-                .UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
+          if (inputMetrics.recordsRead %
+                SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
             updateBytesRead()
           }
           (reader.getCurrentKey, reader.getCurrentValue)

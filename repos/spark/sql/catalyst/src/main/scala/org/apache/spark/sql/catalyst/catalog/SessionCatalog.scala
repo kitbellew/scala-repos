@@ -461,8 +461,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
         "rename does not support moving functions across databases")
     }
     val db = oldName.database.getOrElse(currentDb)
-    if (oldName.database.isDefined || !tempFunctions
-          .containsKey(oldName.funcName)) {
+    if (oldName.database.isDefined ||
+        !tempFunctions.containsKey(oldName.funcName)) {
       externalCatalog.renameFunction(db, oldName.funcName, newName.funcName)
     } else {
       val func = tempFunctions.remove(oldName.funcName)

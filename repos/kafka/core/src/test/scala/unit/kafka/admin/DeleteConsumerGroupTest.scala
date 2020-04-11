@@ -276,8 +276,8 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
   }
 
   private def groupTopicOffsetAndOwnerDirsExist(dir: ZKGroupTopicDirs) = {
-    zkUtils.pathExists(dir.consumerOffsetDir) && zkUtils
-      .pathExists(dir.consumerOwnerDir)
+    zkUtils.pathExists(dir.consumerOffsetDir) &&
+    zkUtils.pathExists(dir.consumerOwnerDir)
   }
 
   private def produceEvents(

@@ -467,10 +467,9 @@ trait KMediansCoreSetClustering {
     val log2 = math.log(2d)
 
     def grid(center: Array[Double]): Array[Double] => GridPoint = {
-      val sideLengths: Array[Double] =
-        (0 to maxResolution).map({ j =>
-          epsilon * radiusGLB * math.pow(2d, j) / (10 * c * center.length)
-        })(collection.breakOut)
+      val sideLengths: Array[Double] = (0 to maxResolution).map({ j =>
+        epsilon * radiusGLB * math.pow(2d, j) / (10 * c * center.length)
+      })(collection.breakOut)
 
       { (point: Array[Double]) =>
         val minx = distMin(point, center)
@@ -479,9 +478,8 @@ trait KMediansCoreSetClustering {
 
         require(
           j < sideLengths.length,
-          "Point (%d) found outside of grid (%d). What to do..." format (
-            j, sideLengths.length
-          ))
+          "Point (%d) found outside of grid (%d). What to do..." format
+            (j, sideLengths.length))
 
         val sideLength = sideLengths(j)
         val scaledPoint = {
@@ -493,8 +491,8 @@ trait KMediansCoreSetClustering {
 
         var i = 0
         while (i < scaledPoint.length) {
-          scaledPoint(i) = center(i) + math
-            .floor(scaledPoint(i)) * sideLength + (sideLength / 2)
+          scaledPoint(i) = center(i) + math.floor(scaledPoint(i)) * sideLength +
+            (sideLength / 2)
           i += 1
         }
         new GridPoint(scaledPoint)

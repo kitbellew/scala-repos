@@ -56,8 +56,8 @@ object Play2Keys {
       } else if (children.forall(
                    _.child
                      .forall(node =>
-                       node.label == ENTRY_SEQ_NAME || node
-                         .isInstanceOf[Text]))) {
+                       node.label == ENTRY_SEQ_NAME ||
+                         node.isInstanceOf[Text]))) {
         val values =
           children
             .flatMap {

@@ -167,12 +167,11 @@ private object PartitionAssignorTest extends Logging {
         Map(
           "version" -> 1,
           "subscription" -> Map(regex -> streamCount),
-          "pattern" -> (
-            if (isWhitelist)
-              "white_list"
-            else
-              "black_list"
-          )))
+          "pattern" ->
+            (if (isWhitelist)
+               "white_list"
+             else
+               "black_list")))
 
     override def toString = {
       "\"%s\":%d (%s)".format(
@@ -191,8 +190,7 @@ private object PartitionAssignorTest extends Logging {
       /* consumerId -> SubscriptionInfo */
       subscriptions: Map[String, SubscriptionInfo]) {
     override def toString = {
-      "\n" +
-        "Group                  : %s\n".format(group) +
+      "\n" + "Group                  : %s\n".format(group) +
         "Topic partition counts : %s\n".format(topicPartitionCounts) +
         "Consumer assignment : %s\n".format(subscriptions)
     }

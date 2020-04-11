@@ -77,10 +77,8 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       case (found, _: ScClassParameter | _: ScPrimaryConstructor) =>
         found
       case (found, _)
-          if context == found.extendsBlock || found
-            .extendsBlock
-            .templateBody
-            .contains(context) ||
+          if context == found.extendsBlock ||
+            found.extendsBlock.templateBody.contains(context) ||
             found.extendsBlock.earlyDefinitions.contains(context) =>
         found
       case (found, _) =>

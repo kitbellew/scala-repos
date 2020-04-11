@@ -105,21 +105,18 @@ object ConsoleConsumer extends Logging {
       System.exit(1)
     }
 
-    if (!config.options.has(config.deleteConsumerOffsetsOpt) && config
-          .options
-          .has(config.resetBeginningOpt) &&
+    if (!config.options.has(config.deleteConsumerOffsetsOpt) &&
+        config.options.has(config.resetBeginningOpt) &&
         checkZkPathExists(
           config.options.valueOf(config.zkConnectOpt),
-          "/consumers/" + config
-            .consumerProps
-            .getProperty("group.id") + "/offsets")) {
+          "/consumers/" + config.consumerProps.getProperty("group.id") +
+            "/offsets")) {
       System
         .err
         .println(
-          "Found previous offset information for this group " + config
-            .consumerProps
-            .getProperty("group.id")
-            + ". Please use --delete-consumer-offsets to delete previous offsets metadata")
+          "Found previous offset information for this group " +
+            config.consumerProps.getProperty("group.id") +
+            ". Please use --delete-consumer-offsets to delete previous offsets metadata")
       System.exit(1)
     }
   }
@@ -215,18 +212,17 @@ object ConsoleConsumer extends Logging {
         "largest")
     props.put("zookeeper.connect", config.zkConnectionStr)
 
-    if (!config.options.has(config.deleteConsumerOffsetsOpt) && config
-          .options
-          .has(config.resetBeginningOpt) &&
+    if (!config.options.has(config.deleteConsumerOffsetsOpt) &&
+        config.options.has(config.resetBeginningOpt) &&
         checkZkPathExists(
           config.options.valueOf(config.zkConnectOpt),
           "/consumers/" + props.getProperty("group.id") + "/offsets")) {
       System
         .err
         .println(
-          "Found previous offset information for this group " + props
-            .getProperty("group.id")
-            + ". Please use --delete-consumer-offsets to delete previous offsets metadata")
+          "Found previous offset information for this group " +
+            props.getProperty("group.id") +
+            ". Please use --delete-consumer-offsets to delete previous offsets metadata")
       System.exit(1)
     }
 

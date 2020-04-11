@@ -124,13 +124,8 @@ class WebAccountFinder(
 
   def findAccountByAPIKey(apiKey: APIKey): Response[Option[AccountId]] = {
     logger.debug(
-      "Finding account for API key " + apiKey + " with " + (
-        protocol,
-        host,
-        port,
-        path,
-        user,
-        password).toString)
+      "Finding account for API key " + apiKey + " with " +
+        (protocol, host, port, path, user, password).toString)
     invoke { client =>
       logger.info("Querying accounts service for API key %s".format(apiKey))
       eitherT(
@@ -138,10 +133,10 @@ class WebAccountFinder(
           case HttpResponse(HttpStatus(OK, _), _, Some(jaccountId), _) =>
             logger.info("Got response for apiKey " + apiKey)
             (
-              ((_: Extractor.Error).message) <-: jaccountId
-                .validated[WrappedAccountId] :-> { wid =>
-                Some(wid.accountId)
-              }
+              ((_: Extractor.Error).message) <-:
+                jaccountId.validated[WrappedAccountId] :-> { wid =>
+                  Some(wid.accountId)
+                }
             ).disjunction
 
           case HttpResponse(HttpStatus(OK, _), _, None, _) =>
@@ -150,16 +145,18 @@ class WebAccountFinder(
 
           case res =>
             logger.error(
-              "Unexpected response from accounts service for findAccountByAPIKey: " + res)
+              "Unexpected response from accounts service for findAccountByAPIKey: " +
+                res)
             left(
-              "Unexpected response from accounts service; unable to proceed: " + res)
+              "Unexpected response from accounts service; unable to proceed: " +
+                res)
         } recoverWith {
           case ex =>
             logger.error("findAccountByAPIKey for " + apiKey + "failed.", ex)
             Promise.successful(
               left(
-                "Client error accessing accounts service; unable to proceed: " + ex
-                  .getMessage))
+                "Client error accessing accounts service; unable to proceed: " +
+                  ex.getMessage))
         })
     }
   }
@@ -173,31 +170,34 @@ class WebAccountFinder(
           case HttpResponse(HttpStatus(OK, _), _, Some(jaccount), _) =>
             logger.info("Got response for AccountId " + accountId)
             (
-              ((_: Extractor.Error).message) <-: jaccount
-                .validated[Option[AccountDetails]]
+              ((_: Extractor.Error).message) <-:
+                jaccount.validated[Option[AccountDetails]]
             ).disjunction
 
           case res =>
             logger.error(
-              "Unexpected response from accounts serviceon findAccountDetailsById: " + res)
+              "Unexpected response from accounts serviceon findAccountDetailsById: " +
+                res)
             left(
-              "Unexpected response from accounts service; unable to proceed: " + res)
+              "Unexpected response from accounts service; unable to proceed: " +
+                res)
         } recoverWith {
           case ex =>
             logger.error("findAccountById for " + accountId + "failed.", ex)
             Promise.successful(
               left(
-                "Client error accessing accounts service; unable to proceed: " + ex
-                  .getMessage))
+                "Client error accessing accounts service; unable to proceed: " +
+                  ex.getMessage))
         })
     }
   }
 
   def invoke[A](f: HttpClient[ByteChunk] => A): A = {
     val auth = HttpHeaders.Authorization(
-      "Basic " + new String(
-        Base64.encodeBase64((user + ":" + password).getBytes("UTF-8")),
-        "UTF-8"))
+      "Basic " +
+        new String(
+          Base64.encodeBase64((user + ":" + password).getBytes("UTF-8")),
+          "UTF-8"))
     withJsonClient { client =>
       f(client.header(auth))
     }

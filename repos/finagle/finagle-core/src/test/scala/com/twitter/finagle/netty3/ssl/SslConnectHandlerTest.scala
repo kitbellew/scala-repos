@@ -165,8 +165,7 @@ class SslConnectHandlerTest extends FunSuite with MockitoSugar {
     handshakeFuture.setFailure(exc)
     assert(connectFuture.isDone)
     assert(
-      connectFuture.getCause ==
-        new SslHandshakeException(exc, remoteAddress))
+      connectFuture.getCause == new SslHandshakeException(exc, remoteAddress))
   }
 
   test(

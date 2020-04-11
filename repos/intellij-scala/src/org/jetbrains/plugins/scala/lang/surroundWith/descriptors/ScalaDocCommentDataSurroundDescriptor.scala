@@ -40,12 +40,8 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
         element: PsiElement,
         isStart: Boolean): Boolean =
       element.getNode.getElementType.isInstanceOf[ScaladocSyntaxElementType] &&
-        (
-          isStart && startOffset == element
-            .getTextOffset || !isStart && endOffset == element
-            .getTextRange
-            .getEndOffset
-        )
+        (isStart && startOffset == element.getTextOffset ||
+          !isStart && endOffset == element.getTextRange.getEndOffset)
 
     val startElement = file.findElementAt(startOffset)
     val endElement = file.findElementAt(endOffset - 1)
@@ -87,7 +83,8 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
         case _ =>
           return PsiElement.EMPTY_ARRAY
       }
-    } else if (isFirstElementMarked && isLastElementMarked) { // in case <selection>__blah blah__</selection>
+    } else if (isFirstElementMarked &&
+               isLastElementMarked) { // in case <selection>__blah blah__</selection>
       return Array(startElement.getParent)
     }
 
@@ -122,25 +119,18 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
       if (nextElement == null)
         return PsiElement.EMPTY_ARRAY
 
-      if ((
-            !Set(
-              DOC_COMMENT_DATA,
-              DOC_COMMENT_LEADING_ASTERISKS,
-              DOC_WHITESPACE).contains(nextElement.getNode.getElementType) &&
-            !nextElement
-              .getNode
-              .getElementType
-              .isInstanceOf[ScaladocSyntaxElementType]
-          ) ||
-          (
-            nextElement.getNode.getElementType == DOC_WHITESPACE && nextElement
-              .getText
-              .indexOf("\n") != nextElement.getText.lastIndexOf("\n")
-          )) {
+      if ((!Set(DOC_COMMENT_DATA, DOC_COMMENT_LEADING_ASTERISKS, DOC_WHITESPACE)
+            .contains(nextElement.getNode.getElementType) &&
+          !nextElement
+            .getNode
+            .getElementType
+            .isInstanceOf[ScaladocSyntaxElementType]) ||
+          (nextElement.getNode.getElementType == DOC_WHITESPACE &&
+          nextElement.getText.indexOf("\n") !=
+            nextElement.getText.lastIndexOf("\n"))) {
         return PsiElement.EMPTY_ARRAY
-      } else if (nextElement
-                   .getNode
-                   .getElementType == DOC_COMMENT_LEADING_ASTERISKS) {
+      } else if (nextElement.getNode.getElementType ==
+                   DOC_COMMENT_LEADING_ASTERISKS) {
         if (hasAsterisk)
           return PsiElement.EMPTY_ARRAY
         hasAsterisk = true
@@ -150,9 +140,8 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
 
       elementsToSurround += nextElement
     } while (
-      nextElement != lastBoundElement && (
-        nextElement = nextElement.getNextSibling,
-        true)._2
+      nextElement != lastBoundElement &&
+        (nextElement = nextElement.getNextSibling, true)._2
     );
 
     elementsToSurround.toArray

@@ -149,8 +149,8 @@ private[sql] class SQLListener(conf: SparkConf)
           case JobFailed(_) =>
             executionUIData.jobs(jobId) = JobExecutionStatus.FAILED
         }
-        if (executionUIData.completionTime.nonEmpty && !executionUIData
-              .hasRunningJobs) {
+        if (executionUIData.completionTime.nonEmpty &&
+            !executionUIData.hasRunningJobs) {
           // We are the last job of this execution, so mark the execution as finished. Note that
           // `onExecutionEnd` also does this, but currently that can be called before `onJobEnd`
           // since these are called on different threads.

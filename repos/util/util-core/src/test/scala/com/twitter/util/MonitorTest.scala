@@ -129,23 +129,25 @@ class MonitorTest extends WordSpec with MockitoSugar {
   "Monitor.get, Monitor.set()" should {
     val m = spy(new MockMonitor)
 
-    "maintain current monitor" in Monitor.restoring {
-      when(m.handle(any[Throwable])).thenReturn(true)
-      Monitor.set(m)
-      assert(Monitor.get == m)
-    }
+    "maintain current monitor" in
+      Monitor.restoring {
+        when(m.handle(any[Throwable])).thenReturn(true)
+        Monitor.set(m)
+        assert(Monitor.get == m)
+      }
   }
 
   "Monitor.handle" should {
     val m = spy(new MockMonitor)
 
-    "dispatch to current monitor" in Monitor.restoring {
-      when(m.handle(any[Throwable])).thenReturn(true)
-      val exc = new Exception
-      Monitor.set(m)
-      Monitor.handle(exc)
-      verify(m).handle(exc)
-    }
+    "dispatch to current monitor" in
+      Monitor.restoring {
+        when(m.handle(any[Throwable])).thenReturn(true)
+        val exc = new Exception
+        Monitor.set(m)
+        Monitor.handle(exc)
+        verify(m).handle(exc)
+      }
   }
 
   "Monitor.restore" should {

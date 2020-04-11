@@ -51,8 +51,8 @@ class JobSettingsSpec
       classOf[JobSettings]) {
 
   val skipingMessage: String =
-    if (jfxp.PrinterJob.createPrinterJob == null
-        || jfxp.PrinterJob.createPrinterJob.getJobSettings == null) {
+    if (jfxp.PrinterJob.createPrinterJob == null ||
+        jfxp.PrinterJob.createPrinterJob.getJobSettings == null) {
       "Neither Default Printer Job nor Job Settings defined."
     } else {
       ""

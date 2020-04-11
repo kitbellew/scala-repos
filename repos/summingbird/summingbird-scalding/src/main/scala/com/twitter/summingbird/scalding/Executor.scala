@@ -84,9 +84,9 @@ object Executor {
     def shards: Int = args.getOrElse("shards", "0").toInt
 
     val options = Map(
-      "DEFAULT" -> Options()
-        .set(Reducers(reducers))
-        .set(FlatMapShards(shards))) ++ config.getNamedOptions
+      "DEFAULT" ->
+        Options().set(Reducers(reducers)).set(FlatMapShards(shards))) ++
+      config.getNamedOptions
 
     val scaldPlatform = Scalding(config.name, options)
       .withRegistrars(config.registrars)

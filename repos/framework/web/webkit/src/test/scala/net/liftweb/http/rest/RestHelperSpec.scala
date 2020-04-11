@@ -37,14 +37,15 @@ class RestHelperSpec extends WebSpec(RestHelperSpecBoot.boot _) {
     }
 
     "give the correct response" withReqFor testOptionsReq in { req =>
-      RestHelperSpecRest(req)() must beLike {
-        case Full(OkResponse()) =>
-          ok
-      }
+      RestHelperSpecRest(req)() must
+        beLike {
+          case Full(OkResponse()) =>
+            ok
+        }
     }
 
-    "respond async with something that CanResolveAsync" withReqFor testFutureReq in {
-      req =>
+    "respond async with something that CanResolveAsync" withReqFor
+      testFutureReq in { req =>
         val helper = FutureRestSpecHelper()
 
         try {
@@ -61,12 +62,13 @@ class RestHelperSpec extends WebSpec(RestHelperSpecBoot.boot _) {
 
             helper.future.satisfy(JObject(Nil))
 
-            result.get must beLike {
-              case JsonResponse(_, _, _, code) =>
-                code must_== 200
-            }
+            result.get must
+              beLike {
+                case JsonResponse(_, _, _, code) =>
+                  code must_== 200
+              }
         }
-    }
+      }
   }
 }
 

@@ -134,18 +134,16 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
 
   private def elem = {
     def elem0 =
-      SHtml.multiSelectObj[ListType](options, value, set(_)) % (
-        "tabindex" -> tabIndex.toString
-      )
+      SHtml.multiSelectObj[ListType](options, value, set(_)) %
+        ("tabindex" -> tabIndex.toString)
 
-    SHtml.hidden(() => set(Nil)) ++ (
-      uniqueFieldId match {
+    SHtml.hidden(() => set(Nil)) ++
+      (uniqueFieldId match {
         case Full(id) =>
           (elem0 % ("id" -> id))
         case _ =>
           elem0
-      }
-    )
+      })
   }
 
   def toForm: Box[NodeSeq] =

@@ -75,20 +75,23 @@ class CssHelpersSpec extends Specification {
     }
 
     "fail on mismatched quotes or parens and report where it failed" in {
-      CssUrlPrefixer("prefix").fixCss("#boom { url('ha) }") must beLike {
-        case Failure(message, _, _) =>
-          message must contain("'ha")
-      }
+      CssUrlPrefixer("prefix").fixCss("#boom { url('ha) }") must
+        beLike {
+          case Failure(message, _, _) =>
+            message must contain("'ha")
+        }
 
-      CssUrlPrefixer("prefix").fixCss("#boom { url(\"ha) }") must beLike {
-        case Failure(message, _, _) =>
-          message must contain("\"ha")
-      }
+      CssUrlPrefixer("prefix").fixCss("#boom { url(\"ha) }") must
+        beLike {
+          case Failure(message, _, _) =>
+            message must contain("\"ha")
+        }
 
-      CssUrlPrefixer("prefix").fixCss("#boom { url('ha' }") must beLike {
-        case Failure(message, _, _) =>
-          message must contain("ha' }")
-      }
+      CssUrlPrefixer("prefix").fixCss("#boom { url('ha' }") must
+        beLike {
+          case Failure(message, _, _) =>
+            message must contain("ha' }")
+        }
     }
 
     // Escaped quotes-in-quotes currently fail. Maybe we want to support these?

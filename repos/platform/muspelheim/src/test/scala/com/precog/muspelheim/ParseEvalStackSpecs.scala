@@ -147,8 +147,8 @@ trait TestStackLike[M[+_]]
     }
 
     assert(
-      forest.size == 1 || preForest
-        .forall(_.errors filterNot isWarning isEmpty))
+      forest.size == 1 ||
+        preForest.forall(_.errors filterNot isWarning isEmpty))
     val tree = forest.head
 
     val Right(dag) = decorate(emit(tree))

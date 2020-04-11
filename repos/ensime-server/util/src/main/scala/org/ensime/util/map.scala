@@ -30,9 +30,10 @@ package object map {
       import collection.mutable
       val builder =
         new mutable.HashMap[K, mutable.Set[V]] with mutable.MultiMap[K, V]
-      builder ++= map.mapValuesEagerly { v =>
-        v.to[mutable.Set]
-      }
+      builder ++=
+        map.mapValuesEagerly { v =>
+          v.to[mutable.Set]
+        }
 
       for {
         (k, vs) <- other

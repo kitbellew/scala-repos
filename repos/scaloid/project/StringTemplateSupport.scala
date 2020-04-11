@@ -74,10 +74,8 @@ class StringTemplateSupport(
       .flatMap { v =>
         def kv(prod: Boolean, keys: String*) =
           keys.map(k => (k + "_" + v) -> prod.asInstanceOf[Object])
-        kv(ver == v, "eq", "gte", "lte") ++ kv(ver > v, "gt", "gte") ++ kv(
-          ver < v,
-          "lt",
-          "lte")
+        kv(ver == v, "eq", "gte", "lte") ++ kv(ver > v, "gt", "gte") ++
+          kv(ver < v, "lt", "lte")
       }
       .toMap
 

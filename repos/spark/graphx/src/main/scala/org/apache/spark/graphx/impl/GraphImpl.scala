@@ -260,9 +260,8 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
         _.flatMap {
           case (pid, edgePartition) =>
             // Choose scan method
-            val activeFraction = edgePartition
-              .numActives
-              .getOrElse(0) / edgePartition.indexSize.toFloat
+            val activeFraction = edgePartition.numActives.getOrElse(0) /
+              edgePartition.indexSize.toFloat
             activeDirectionOpt match {
               case Some(EdgeDirection.Both) =>
                 if (activeFraction < 0.8) {

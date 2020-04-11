@@ -173,7 +173,8 @@ class ZkAsyncSemaphore(
       semaphoreNode.getChildren() map { zop =>
         zop.children filter { child =>
           child.path.startsWith(permitNodePathPrefix)
-        } sortBy (child => sequenceNumberOf(child.path))
+        } sortBy
+          (child => sequenceNumberOf(child.path))
       }
     }
   }
@@ -212,7 +213,8 @@ class ZkAsyncSemaphore(
     }
     val permits = nodes filter { child =>
       child.path.startsWith(permitNodePathPrefix)
-    } sortBy (child => sequenceNumberOf(child.path))
+    } sortBy
+      (child => sequenceNumberOf(child.path))
     val ids = permits map { child =>
       sequenceNumberOf(child.path)
     }

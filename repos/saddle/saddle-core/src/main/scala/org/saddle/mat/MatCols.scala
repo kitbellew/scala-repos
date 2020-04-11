@@ -78,12 +78,10 @@ class MatCols[A: ST](cols: IndexedSeq[Vec[A]])
       .zipWithIndex
       .filter {
         case (col, ix) =>
-          col.scalarTag.runtimeClass.isPrimitive && (
-            bSt.isAny || bSt.isAnyVal
-          ) ||
-            !bSt.isAnyVal && bSt
-              .runtimeClass
-              .isAssignableFrom(col.scalarTag.runtimeClass)
+          col.scalarTag.runtimeClass.isPrimitive &&
+            (bSt.isAny || bSt.isAnyVal) ||
+            !bSt.isAnyVal &&
+            bSt.runtimeClass.isAssignableFrom(col.scalarTag.runtimeClass)
       }
     val (vecs, locs) = filt.unzip
     (vecs.asInstanceOf[IndexedSeq[Vec[B]]], locs.toArray)
@@ -113,16 +111,18 @@ object MatCols {
     val maxf = (a: Int, b: String) => a.max(b.length)
 
     if (numCols <= len) {
-      Range(0, numCols) zip cols.map { v =>
-        val takeCol = v.head(half) concat v.tail(half)
-        takeCol.map(k => v.scalarTag.show(k)).foldLeft(2)(maxf)
-      }
+      Range(0, numCols) zip
+        cols.map { v =>
+          val takeCol = v.head(half) concat v.tail(half)
+          takeCol.map(k => v.scalarTag.show(k)).foldLeft(2)(maxf)
+        }
     } else {
       val colnums = Range(0, half) ++ Range(numCols - half, numCols)
-      colnums zip (cols.take(half) ++ cols.takeRight(half)).map { v =>
-        val takeCol = v.head(half) concat v.tail(half)
-        takeCol.map(k => v.scalarTag.show(k)).foldLeft(2)(maxf)
-      }
+      colnums zip
+        (cols.take(half) ++ cols.takeRight(half)).map { v =>
+          val takeCol = v.head(half) concat v.tail(half)
+          takeCol.map(k => v.scalarTag.show(k)).foldLeft(2)(maxf)
+        }
     }
   }.toMap
 }

@@ -31,10 +31,8 @@ import org.apache.kafka.common.utils.Utils
 object Defaults {
   val SegmentSize = kafka.server.Defaults.LogSegmentBytes
   val SegmentMs = kafka.server.Defaults.LogRollHours * 60 * 60 * 1000L
-  val SegmentJitterMs = kafka
-    .server
-    .Defaults
-    .LogRollJitterHours * 60 * 60 * 1000L
+  val SegmentJitterMs = kafka.server.Defaults.LogRollJitterHours * 60 * 60 *
+    1000L
   val FlushInterval = kafka.server.Defaults.LogFlushIntervalMessages
   val FlushMs = kafka.server.Defaults.LogFlushSchedulerIntervalMs
   val RetentionSize = kafka.server.Defaults.LogRetentionBytes
@@ -77,8 +75,8 @@ case class LogConfig(props: java.util.Map[_, _])
   val fileDeleteDelayMs = getLong(LogConfig.FileDeleteDelayMsProp)
   val deleteRetentionMs = getLong(LogConfig.DeleteRetentionMsProp)
   val minCleanableRatio = getDouble(LogConfig.MinCleanableDirtyRatioProp)
-  val compact = getString(LogConfig.CleanupPolicyProp).toLowerCase != LogConfig
-    .Delete
+  val compact = getString(LogConfig.CleanupPolicyProp).toLowerCase !=
+    LogConfig.Delete
   val uncleanLeaderElectionEnable = getBoolean(
     LogConfig.UncleanLeaderElectionEnableProp)
   val minInSyncReplicas = getInt(LogConfig.MinInSyncReplicasProp)
@@ -95,8 +93,8 @@ case class LogConfig(props: java.util.Map[_, _])
     if (segmentJitterMs == 0)
       0
     else
-      Utils.abs(scala.util.Random.nextInt()) % math
-        .min(segmentJitterMs, segmentMs)
+      Utils.abs(scala.util.Random.nextInt()) %
+        math.min(segmentJitterMs, segmentMs)
 }
 
 object LogConfig {

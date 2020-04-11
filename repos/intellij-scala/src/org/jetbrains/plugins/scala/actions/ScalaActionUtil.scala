@@ -73,8 +73,8 @@ object ScalaActionUtil {
       hint,
       editor,
       p,
-      HintManager.HIDE_BY_ANY_KEY | HintManager
-        .HIDE_BY_TEXT_CHANGE | HintManager.HIDE_BY_SCROLLING,
+      HintManager.HIDE_BY_ANY_KEY | HintManager.HIDE_BY_TEXT_CHANGE |
+        HintManager.HIDE_BY_SCROLLING,
       0,
       false)
   }

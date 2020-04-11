@@ -21,14 +21,15 @@ object TraverseTest extends SpecLite {
       s.run must_=== (("123", List(1, 2, 3)))
     }
 
-    "indexed" ! forAll { xs: List[Byte] =>
-      Traverse[List].indexed(xs) must_=== xs
-        .zipWithIndex
-        .map {
-          case (a, b) =>
-            (b, a)
-        }
-    }
+    "indexed" !
+      forAll { xs: List[Byte] =>
+        Traverse[List].indexed(xs) must_===
+          xs.zipWithIndex
+            .map {
+              case (a, b) =>
+                (b, a)
+            }
+      }
 
     "traverse through option effect" in {
       val s: Option[List[Int]] = List(1, 2, 3).traverseU((x: Int) =>
@@ -55,9 +56,8 @@ object TraverseTest extends SpecLite {
 
     "state traverse agrees with regular traverse" in {
       var N = 10
-      List.range(0, N).traverseS(x => modify((x: Int) => x + 1))(0) must_=== (
-        List.range(0, N).traverseU(x => modify((x: Int) => x + 1)).apply(0)
-      )
+      List.range(0, N).traverseS(x => modify((x: Int) => x + 1))(0) must_===
+        (List.range(0, N).traverseU(x => modify((x: Int) => x + 1)).apply(0))
     }
 
     "state traverse does not blow stack" in {
@@ -118,19 +118,21 @@ object TraverseTest extends SpecLite {
       Traverse[List].reverse(List(1, 2, 3)) must_=== (List(3, 2, 1))
     }
 
-    "mapAccumL/R" ! forAll {
-      val L = Traverse[List];
-      import L.traverseSyntax._
-      (l: List[Int]) => {
-        val (acc, l2) = l.mapAccumL(List[Int]())((acc, a) => (a :: acc, a))
-        val (acc2, l3) = l.mapAccumR(List[Int]())((acc, a) => (a :: acc, a))
-        acc == l.reverse && l2 == l && acc2 == l3 && l3 == l
+    "mapAccumL/R" !
+      forAll {
+        val L = Traverse[List];
+        import L.traverseSyntax._
+        (l: List[Int]) => {
+          val (acc, l2) = l.mapAccumL(List[Int]())((acc, a) => (a :: acc, a))
+          val (acc2, l3) = l.mapAccumR(List[Int]())((acc, a) => (a :: acc, a))
+          acc == l.reverse && l2 == l && acc2 == l3 && l3 == l
+        }
       }
-    }
 
-    "double reverse" ! forAll { (is: List[Int]) =>
-      import syntax.monoid._
-      Endo(Traverse[List].reverse[Int]).multiply(2).apply(is) must_=== (is)
-    }
+    "double reverse" !
+      forAll { (is: List[Int]) =>
+        import syntax.monoid._
+        Endo(Traverse[List].reverse[Int]).multiply(2).apply(is) must_=== (is)
+      }
   }
 }

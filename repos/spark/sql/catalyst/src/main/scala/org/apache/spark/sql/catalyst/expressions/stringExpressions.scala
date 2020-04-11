@@ -160,15 +160,13 @@ case class ConcatWs(children: Seq[Expression])
           }
           .unzip
 
-      evals.map(_.code).mkString("\n") +
-        s"""
+      evals.map(_.code).mkString("\n") + s"""
         int $varargNum = ${children.count(_.dataType == StringType) - 1};
         int $idxInVararg = 0;
         ${varargCount.mkString("\n")}
         UTF8String[] $array = new UTF8String[$varargNum];
         ${varargBuild.mkString("\n")}
-        UTF8String ${ev
-          .value} = UTF8String.concatWs(${evals.head.value}, $array);
+        UTF8String ${ev.value} = UTF8String.concatWs(${evals.head.value}, $array);
         boolean ${ev.isNull} = ${ev.value} == null;
       """
     }

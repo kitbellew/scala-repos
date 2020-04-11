@@ -76,19 +76,21 @@ object RoutesFileParser {
 
     routes.foreach { route =>
       if (route.call.packageName.isEmpty) {
-        errors += RoutesCompilationError(
-          file,
-          "Missing package name",
-          Some(route.call.pos.line),
-          Some(route.call.pos.column))
+        errors +=
+          RoutesCompilationError(
+            file,
+            "Missing package name",
+            Some(route.call.pos.line),
+            Some(route.call.pos.column))
       }
 
       if (route.call.controller.isEmpty) {
-        errors += RoutesCompilationError(
-          file,
-          "Missing Controller",
-          Some(route.call.pos.line),
-          Some(route.call.pos.column))
+        errors +=
+          RoutesCompilationError(
+            file,
+            "Missing Controller",
+            Some(route.call.pos.line),
+            Some(route.call.pos.column))
       }
 
       route
@@ -103,30 +105,34 @@ object RoutesFileParser {
               .find(_.name == name)
               .map { p =>
                 if (p.fixed.isDefined || p.default.isDefined) {
-                  errors += RoutesCompilationError(
-                    file,
-                    "It is not allowed to specify a fixed or default value for parameter: '" + name + "' extracted from the path",
-                    Some(p.pos.line),
-                    Some(p.pos.column))
+                  errors +=
+                    RoutesCompilationError(
+                      file,
+                      "It is not allowed to specify a fixed or default value for parameter: '" +
+                        name + "' extracted from the path",
+                      Some(p.pos.line),
+                      Some(p.pos.column))
                 }
                 try {
                   java.util.regex.Pattern.compile(regex)
                 } catch {
                   case e: Exception => {
-                    errors += RoutesCompilationError(
-                      file,
-                      e.getMessage,
-                      Some(part.pos.line),
-                      Some(part.pos.column))
+                    errors +=
+                      RoutesCompilationError(
+                        file,
+                        e.getMessage,
+                        Some(part.pos.line),
+                        Some(part.pos.column))
                   }
                 }
               }
               .getOrElse {
-                errors += RoutesCompilationError(
-                  file,
-                  "Missing parameter in call definition: " + name,
-                  Some(part.pos.line),
-                  Some(part.pos.column))
+                errors +=
+                  RoutesCompilationError(
+                    file,
+                    "Missing parameter in call definition: " + name,
+                    Some(part.pos.line),
+                    Some(part.pos.column))
               }
           }
         }
@@ -151,12 +157,13 @@ object RoutesFileParser {
       .find(g => g._1._2.size > 1)
       .foreach { overloadedRouteGroup =>
         val firstOverloadedRoute = overloadedRouteGroup._2.values.head.head
-        errors += RoutesCompilationError(
-          file,
-          "Using different overloaded methods is not allowed. If you are using a single method in combination with default parameters, make sure you declare them all explicitly.",
-          Some(firstOverloadedRoute.call.pos.line),
-          Some(firstOverloadedRoute.call.pos.column)
-        )
+        errors +=
+          RoutesCompilationError(
+            file,
+            "Using different overloaded methods is not allowed. If you are using a single method in combination with default parameters, make sure you declare them all explicitly.",
+            Some(firstOverloadedRoute.call.pos.line),
+            Some(firstOverloadedRoute.call.pos.column)
+          )
 
       }
 
@@ -241,32 +248,36 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def parentheses: Parser[String] = {
-    "(" ~ (several((parentheses | not(")") ~> """.""".r))) ~ commit(")") ^^ {
-      case p1 ~ charList ~ p2 =>
-        p1 + charList.mkString + p2
-    }
+    "(" ~
+      (several((parentheses | not(")") ~> """.""".r))) ~ commit(")") ^^ {
+        case p1 ~ charList ~ p2 =>
+          p1 + charList.mkString + p2
+      }
   }
 
   def brackets: Parser[String] = {
-    "[" ~ (several((parentheses | not("]") ~> """.""".r))) ~ commit("]") ^^ {
-      case p1 ~ charList ~ p2 =>
-        p1 + charList.mkString + p2
-    }
+    "[" ~
+      (several((parentheses | not("]") ~> """.""".r))) ~ commit("]") ^^ {
+        case p1 ~ charList ~ p2 =>
+          p1 + charList.mkString + p2
+      }
   }
 
   def string: Parser[String] = {
-    "\"" ~ (several((parentheses | not("\"") ~> """.""".r))) ~ commit("\"") ^^ {
-      case p1 ~ charList ~ p2 =>
-        p1 + charList.mkString + p2
-    }
+    "\"" ~
+      (several((parentheses | not("\"") ~> """.""".r))) ~ commit("\"") ^^ {
+        case p1 ~ charList ~ p2 =>
+          p1 + charList.mkString + p2
+      }
   }
 
   def multiString: Parser[String] = {
-    "\"\"\"" ~ (several((parentheses | not("\"\"\"") ~> """.""".r))) ~ commit(
-      "\"\"\"") ^^ {
-      case p1 ~ charList ~ p2 =>
-        p1 + charList.mkString + p2
-    }
+    "\"\"\"" ~
+      (several((parentheses | not("\"\"\"") ~> """.""".r))) ~
+      commit("\"\"\"") ^^ {
+        case p1 ~ charList ~ p2 =>
+          p1 + charList.mkString + p2
+      }
   }
 
   def httpVerb: Parser[HttpVerb] =
@@ -290,15 +301,15 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def regexComponentPathPart: Parser[DynamicPart] =
-    "$" ~> identifier ~ (
-      "<" ~> (not(">") ~> """[^\s]""".r +) <~ ">" ^^ {
-        case c =>
-          c.mkString
+    "$" ~> identifier ~
+      ("<" ~>
+        (not(">") ~> """[^\s]""".r +) <~ ">" ^^ {
+          case c =>
+            c.mkString
+        }) ^^ {
+        case name ~ regex =>
+          DynamicPart(name, regex, encode = false)
       }
-    ) ^^ {
-      case name ~ regex =>
-        DynamicPart(name, regex, encode = false)
-    }
 
   def staticPathPart: Parser[StaticPart] =
     (not(":") ~> not("*") ~> not("$") ~> """[^\s]""".r +) ^^ {
@@ -307,16 +318,15 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def path: Parser[PathPattern] =
-    "/" ~ (
-      (
-        positioned(singleComponentPathPart) | positioned(
-          multipleComponentsPathPart) | positioned(
-          regexComponentPathPart) | staticPathPart
-      ) *
-    ) ^^ {
-      case _ ~ parts =>
-        PathPattern(parts)
-    }
+    "/" ~
+      ((
+        positioned(singleComponentPathPart) |
+          positioned(multipleComponentsPathPart) |
+          positioned(regexComponentPathPart) | staticPathPart
+      ) *) ^^ {
+        case _ ~ parts =>
+          PathPattern(parts)
+      }
 
   def space(s: String): Parser[String] =
     (ignoreWhiteSpace ~> s <~ ignoreWhiteSpace)
@@ -370,22 +380,22 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def parameter: Parser[Parameter] =
-    ((identifier | tickedIdentifier) <~ ignoreWhiteSpace) ~ opt(
-      parameterType) ~ (
-      ignoreWhiteSpace ~> opt(parameterDefaultValue | parameterFixedValue)
-    ) ^^ {
-      case name ~ t ~ d =>
-        Parameter(
-          name,
-          t.getOrElse("String"),
-          d.filter(_.startsWith("=")).map(_.drop(1)),
-          d.filter(_.startsWith("?")).map(_.drop(2)))
-    }
+    ((identifier | tickedIdentifier) <~ ignoreWhiteSpace) ~ opt(parameterType) ~
+      (ignoreWhiteSpace ~>
+        opt(parameterDefaultValue | parameterFixedValue)) ^^ {
+        case name ~ t ~ d =>
+          Parameter(
+            name,
+            t.getOrElse("String"),
+            d.filter(_.startsWith("=")).map(_.drop(1)),
+            d.filter(_.startsWith("?")).map(_.drop(2)))
+      }
 
   def parameters: Parser[List[Parameter]] =
-    "(" ~> repsep(
-      ignoreWhiteSpace ~> positioned(parameter) <~ ignoreWhiteSpace,
-      ",") <~ ")"
+    "(" ~>
+      repsep(
+        ignoreWhiteSpace ~> positioned(parameter) <~ ignoreWhiteSpace,
+        ",") <~ ")"
 
   // Absolute method consists of a series of Java identifiers representing the package name, controller and method.
   // Since the Scala parser is greedy, we can't easily extract this out, so just parse at least 3
@@ -417,11 +427,11 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def route =
-    httpVerb ~! separator ~ path ~ separator ~ positioned(
-      call) ~ ignoreWhiteSpace ^^ {
-      case v ~ _ ~ p ~ _ ~ c ~ _ =>
-        Route(v, p, c)
-    }
+    httpVerb ~!
+      separator ~ path ~ separator ~ positioned(call) ~ ignoreWhiteSpace ^^ {
+        case v ~ _ ~ p ~ _ ~ c ~ _ =>
+          Route(v, p, c)
+      }
 
   def include =
     "->" ~! separator ~ path ~ separator ~ router ~ ignoreWhiteSpace ^^ {
@@ -432,9 +442,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def sentence: Parser[Product with Serializable] =
     namedError(
       (comment | positioned(include) | positioned(route)),
-      "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~ (
-      newLine | EOF
-    )
+      "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~
+      (newLine | EOF)
 
   def parser: Parser[List[Rule]] =
     phrase((blankLine | sentence *) <~ end) ^^ {

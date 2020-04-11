@@ -69,13 +69,14 @@ trait AtomicType extends Type {
 final case class StructType(elements: ConstArray[(TermSymbol, Type)])
     extends Type {
   override def toString =
-    "{" + elements
-      .iterator
-      .map {
-        case (s, t) =>
-          s + ": " + t
-      }
-      .mkString(", ") + "}"
+    "{" +
+      elements
+        .iterator
+        .map {
+          case (s, t) =>
+            s + ": " + t
+        }
+        .mkString(", ") + "}"
   lazy val symbolToIndex: Map[TermSymbol, Int] =
     elements
       .zipWithIndex
@@ -521,9 +522,8 @@ class ScalaBaseType[T](implicit
         1
     new scala.math.Ordering[T] {
       def compare(x: T, y: T): Int = {
-        if ((
-              x.asInstanceOf[AnyRef] eq null
-            ) && (y.asInstanceOf[AnyRef] eq null))
+        if ((x.asInstanceOf[AnyRef] eq null) &&
+            (y.asInstanceOf[AnyRef] eq null))
           0
         else if (x.asInstanceOf[AnyRef] eq null)
           nullsFirst

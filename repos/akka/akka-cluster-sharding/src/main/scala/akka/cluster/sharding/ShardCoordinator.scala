@@ -728,8 +728,8 @@ abstract class ShardCoordinator(
                   case (region, stats) ⇒
                     val regionAddress = region.path.address
                     val address: Address =
-                      if (regionAddress.hasLocalScope && regionAddress
-                            .system == cluster.selfAddress.system)
+                      if (regionAddress.hasLocalScope &&
+                          regionAddress.system == cluster.selfAddress.system)
                         cluster.selfAddress
                       else
                         regionAddress
@@ -772,8 +772,8 @@ abstract class ShardCoordinator(
   def receiveTerminated: Receive = {
     case t @ Terminated(ref) ⇒
       if (state.regions.contains(ref)) {
-        if (removalMargin != Duration.Zero && t
-              .addressTerminated && aliveRegions(ref)) {
+        if (removalMargin != Duration.Zero && t.addressTerminated &&
+            aliveRegions(ref)) {
           context
             .system
             .scheduler
@@ -895,8 +895,8 @@ abstract class ShardCoordinator(
         case Some(ref) ⇒
           getShardHomeSender ! ShardHome(shard, ref)
         case None ⇒
-          if (state.regions.contains(region) && !gracefulShutdownInProgress
-                .contains(region)) {
+          if (state.regions.contains(region) &&
+              !gracefulShutdownInProgress.contains(region)) {
             update(ShardHomeAllocated(shard, region)) { evt ⇒
               state = state.updated(evt)
               log.debug("Shard [{}] allocated at [{}]", evt.shard, evt.region)
@@ -1155,13 +1155,14 @@ class DDataShardCoordinator(
 
   def sendUpdate(evt: DomainEvent) = {
     val s = state.updated(evt)
-    replicator ! Update(
-      CoordinatorStateKey,
-      LWWRegister(initEmptyState),
-      WriteMajority(updatingStateTimeout),
-      Some(evt)) { reg ⇒
-      reg.withValue(s)
-    }
+    replicator !
+      Update(
+        CoordinatorStateKey,
+        LWWRegister(initEmptyState),
+        WriteMajority(updatingStateTimeout),
+        Some(evt)) { reg ⇒
+        reg.withValue(s)
+      }
   }
 
 }

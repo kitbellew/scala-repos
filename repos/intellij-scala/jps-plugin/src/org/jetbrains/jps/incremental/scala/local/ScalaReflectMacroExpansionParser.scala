@@ -57,13 +57,14 @@ object ScalaReflectMacroExpansionParser {
         if (!matcher.matches())
           reset()
         else {
-          expansions += MacroExpansion(
-            Place(
-              matcher.group(1),
-              matcher.group(2),
-              matcher.group(3).toInt,
-              matcher.group(4).toInt),
-            "")
+          expansions +=
+            MacroExpansion(
+              Place(
+                matcher.group(1),
+                matcher.group(2),
+                matcher.group(3).toInt,
+                matcher.group(4).toInt),
+              "")
           parsingState = PLACE
         }
       case PLACE =>
@@ -89,8 +90,8 @@ object ScalaReflectMacroExpansionParser {
   def serializeExpansions(context: CompileContext) = {
     val file =
       new File(
-        System
-          .getProperty("java.io.tmpdir") + s"/../../expansion-${context.getProjectDescriptor.getProject.getName}")
+        System.getProperty("java.io.tmpdir") +
+          s"/../../expansion-${context.getProjectDescriptor.getProject.getName}")
     val fo = new BufferedOutputStream(new FileOutputStream(file))
     val so = new ObjectOutputStream(fo)
     for (expansion <- expansions) {

@@ -58,131 +58,141 @@ class ActorRefBackpressureSinkSpec extends AkkaSpec {
 
   "An ActorRefBackpressureSink" must {
 
-    "send the elements to the ActorRef" in assertAllStagesStopped {
-      val fw = createActor(classOf[Fw])
-      Source(List(1, 2, 3)).runWith(
-        Sink.actorRefWithAck(fw, initMessage, ackMessage, completeMessage))
-      expectMsg("start")
-      expectMsg(1)
-      expectMsg(2)
-      expectMsg(3)
-      expectMsg(completeMessage)
-    }
-
-    "send the elements to the ActorRef2" in assertAllStagesStopped {
-      val fw = createActor(classOf[Fw])
-      val probe = TestSource
-        .probe[Int]
-        .to(Sink.actorRefWithAck(fw, initMessage, ackMessage, completeMessage))
-        .run()
-      probe.sendNext(1)
-      expectMsg("start")
-      expectMsg(1)
-      probe.sendNext(2)
-      expectMsg(2)
-      probe.sendNext(3)
-      expectMsg(3)
-      probe.sendComplete()
-      expectMsg(completeMessage)
-    }
-
-    "cancel stream when actor terminates" in assertAllStagesStopped {
-      val fw = createActor(classOf[Fw])
-      val publisher = TestSource
-        .probe[Int]
-        .to(Sink.actorRefWithAck(fw, initMessage, ackMessage, completeMessage))
-        .run()
-        .sendNext(1)
-      expectMsg(initMessage)
-      expectMsg(1)
-      system.stop(fw)
-      publisher.expectCancellation()
-    }
-
-    "send message only when backpressure received" in assertAllStagesStopped {
-      val fw = createActor(classOf[Fw2])
-      val publisher = TestSource
-        .probe[Int]
-        .to(Sink.actorRefWithAck(fw, initMessage, ackMessage, completeMessage))
-        .run()
-      expectMsg(initMessage)
-
-      publisher.sendNext(1)
-      expectNoMsg()
-      fw ! TriggerAckMessage
-      expectMsg(1)
-
-      publisher.sendNext(2)
-      publisher.sendNext(3)
-      publisher.sendComplete()
-      fw ! TriggerAckMessage
-      expectMsg(2)
-      fw ! TriggerAckMessage
-      expectMsg(3)
-
-      expectMsg(completeMessage)
-    }
-
-    "keep on sending even after the buffer has been full" in assertAllStagesStopped {
-      val bufferSize = 16
-      val streamElementCount = bufferSize + 4
-      val fw = createActor(classOf[Fw2])
-      val sink = Sink
-        .actorRefWithAck(fw, initMessage, ackMessage, completeMessage)
-        .withAttributes(inputBuffer(bufferSize, bufferSize))
-      val probe = Source(1 to streamElementCount)
-        .alsoToMat(
-          Flow[Int]
-            .take(bufferSize)
-            .watchTermination()(Keep.right)
-            .to(Sink.ignore))(Keep.right)
-        .to(sink)
-        .run()
-      probe.futureValue should ===(akka.Done)
-      expectMsg(initMessage)
-      fw ! TriggerAckMessage
-      for (i ← 1 to streamElementCount) {
-        expectMsg(i)
-        fw ! TriggerAckMessage
+    "send the elements to the ActorRef" in
+      assertAllStagesStopped {
+        val fw = createActor(classOf[Fw])
+        Source(List(1, 2, 3)).runWith(
+          Sink.actorRefWithAck(fw, initMessage, ackMessage, completeMessage))
+        expectMsg("start")
+        expectMsg(1)
+        expectMsg(2)
+        expectMsg(3)
+        expectMsg(completeMessage)
       }
-      expectMsg(completeMessage)
-    }
 
-    "work with one element buffer" in assertAllStagesStopped {
-      val fw = createActor(classOf[Fw2])
-      val publisher = TestSource
-        .probe[Int]
-        .to(
-          Sink
-            .actorRefWithAck(fw, initMessage, ackMessage, completeMessage)
-            .withAttributes(inputBuffer(1, 1)))
-        .run()
+    "send the elements to the ActorRef2" in
+      assertAllStagesStopped {
+        val fw = createActor(classOf[Fw])
+        val probe = TestSource
+          .probe[Int]
+          .to(
+            Sink.actorRefWithAck(fw, initMessage, ackMessage, completeMessage))
+          .run()
+        probe.sendNext(1)
+        expectMsg("start")
+        expectMsg(1)
+        probe.sendNext(2)
+        expectMsg(2)
+        probe.sendNext(3)
+        expectMsg(3)
+        probe.sendComplete()
+        expectMsg(completeMessage)
+      }
 
-      expectMsg(initMessage)
-      fw ! TriggerAckMessage
+    "cancel stream when actor terminates" in
+      assertAllStagesStopped {
+        val fw = createActor(classOf[Fw])
+        val publisher = TestSource
+          .probe[Int]
+          .to(
+            Sink.actorRefWithAck(fw, initMessage, ackMessage, completeMessage))
+          .run()
+          .sendNext(1)
+        expectMsg(initMessage)
+        expectMsg(1)
+        system.stop(fw)
+        publisher.expectCancellation()
+      }
 
-      publisher.sendNext(1)
-      expectMsg(1)
+    "send message only when backpressure received" in
+      assertAllStagesStopped {
+        val fw = createActor(classOf[Fw2])
+        val publisher = TestSource
+          .probe[Int]
+          .to(
+            Sink.actorRefWithAck(fw, initMessage, ackMessage, completeMessage))
+          .run()
+        expectMsg(initMessage)
 
-      fw ! TriggerAckMessage
-      expectNoMsg() // Ack received but buffer empty
+        publisher.sendNext(1)
+        expectNoMsg()
+        fw ! TriggerAckMessage
+        expectMsg(1)
 
-      publisher.sendNext(2) // Buffer this value
-      fw ! TriggerAckMessage
-      expectMsg(2)
+        publisher.sendNext(2)
+        publisher.sendNext(3)
+        publisher.sendComplete()
+        fw ! TriggerAckMessage
+        expectMsg(2)
+        fw ! TriggerAckMessage
+        expectMsg(3)
 
-      publisher.sendComplete()
-      expectMsg(completeMessage)
-    }
+        expectMsg(completeMessage)
+      }
+
+    "keep on sending even after the buffer has been full" in
+      assertAllStagesStopped {
+        val bufferSize = 16
+        val streamElementCount = bufferSize + 4
+        val fw = createActor(classOf[Fw2])
+        val sink = Sink
+          .actorRefWithAck(fw, initMessage, ackMessage, completeMessage)
+          .withAttributes(inputBuffer(bufferSize, bufferSize))
+        val probe = Source(1 to streamElementCount)
+          .alsoToMat(
+            Flow[Int]
+              .take(bufferSize)
+              .watchTermination()(Keep.right)
+              .to(Sink.ignore))(Keep.right)
+          .to(sink)
+          .run()
+        probe.futureValue should ===(akka.Done)
+        expectMsg(initMessage)
+        fw ! TriggerAckMessage
+        for (i ← 1 to streamElementCount) {
+          expectMsg(i)
+          fw ! TriggerAckMessage
+        }
+        expectMsg(completeMessage)
+      }
+
+    "work with one element buffer" in
+      assertAllStagesStopped {
+        val fw = createActor(classOf[Fw2])
+        val publisher = TestSource
+          .probe[Int]
+          .to(
+            Sink
+              .actorRefWithAck(fw, initMessage, ackMessage, completeMessage)
+              .withAttributes(inputBuffer(1, 1)))
+          .run()
+
+        expectMsg(initMessage)
+        fw ! TriggerAckMessage
+
+        publisher.sendNext(1)
+        expectMsg(1)
+
+        fw ! TriggerAckMessage
+        expectNoMsg() // Ack received but buffer empty
+
+        publisher.sendNext(2) // Buffer this value
+        fw ! TriggerAckMessage
+        expectMsg(2)
+
+        publisher.sendComplete()
+        expectMsg(completeMessage)
+      }
 
     "fail to materialize with zero sized input buffer" in {
       val fw = createActor(classOf[Fw])
-      an[IllegalArgumentException] shouldBe thrownBy {
-        val badSink = Sink
-          .actorRefWithAck(fw, initMessage, ackMessage, completeMessage)
-          .withAttributes(inputBuffer(0, 0))
-        Source.single(()).runWith(badSink)
-      }
+      an[IllegalArgumentException] shouldBe
+        thrownBy {
+          val badSink = Sink
+            .actorRefWithAck(fw, initMessage, ackMessage, completeMessage)
+            .withAttributes(inputBuffer(0, 0))
+          Source.single(()).runWith(badSink)
+        }
     }
 
   }

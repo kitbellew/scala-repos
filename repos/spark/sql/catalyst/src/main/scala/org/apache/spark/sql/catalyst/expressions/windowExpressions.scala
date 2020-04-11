@@ -69,10 +69,8 @@ case class WindowSpecDefinition(
                 // as the boundary of a Range Window Frame.
                 Some(
                   "This Range Window Frame only accepts at most one ORDER BY expression.")
-              } else if (orderSpec.nonEmpty && !orderSpec
-                           .head
-                           .dataType
-                           .isInstanceOf[NumericType]) {
+              } else if (orderSpec.nonEmpty &&
+                         !orderSpec.head.dataType.isInstanceOf[NumericType]) {
                 Some(
                   "The data type of the expression in the ORDER BY clause should be a numeric type.")
               } else {
@@ -742,8 +740,8 @@ abstract class RankLike extends AggregateWindowFunction {
     rank,
     rankSource)
 
-  override val aggBufferAttributes: Seq[AttributeReference] =
-    rank +: rowNumber +: orderAttrs
+  override val aggBufferAttributes: Seq[AttributeReference] = rank +:
+    rowNumber +: orderAttrs
   override val initialValues = zero +: one +: orderInit
   override val updateExpressions = increaseRank +: increaseRowNumber +: children
   override val evaluateExpression: Expression = rank

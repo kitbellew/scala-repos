@@ -68,8 +68,9 @@ class MesosSchedulerUtilsSuite
     val expectedMap = Map(
       "tachyon" -> Set("true"),
       "zone" -> Set("us-east-1a", "us-east-1b"))
-    utils.parseConstraintString(
-      "tachyon:true;zone:us-east-1a,us-east-1b") should be(expectedMap)
+    utils
+      .parseConstraintString("tachyon:true;zone:us-east-1a,us-east-1b") should
+      be(expectedMap)
   }
 
   test("parse an empty constraint string correctly") {
@@ -99,9 +100,9 @@ class MesosSchedulerUtilsSuite
     val tachyonFalseOffer = Map(
       "tachyon" -> Value.Text.newBuilder().setValue("false").build())
 
-    utils.matchesAttributeRequirements(
-      parsedConstraints,
-      noTachyonOffer) shouldBe false
+    utils
+      .matchesAttributeRequirements(parsedConstraints, noTachyonOffer) shouldBe
+      false
     utils.matchesAttributeRequirements(
       parsedConstraints,
       tachyonTrueOffer) shouldBe true
@@ -113,13 +114,14 @@ class MesosSchedulerUtilsSuite
   test("subset match is performed for set attributes") {
     val supersetConstraint = Map(
       "tachyon" -> Value.Text.newBuilder().setValue("true").build(),
-      "zone" -> Value
-        .Set
-        .newBuilder()
-        .addItem("us-east-1a")
-        .addItem("us-east-1b")
-        .addItem("us-east-1c")
-        .build()
+      "zone" ->
+        Value
+          .Set
+          .newBuilder()
+          .addItem("us-east-1a")
+          .addItem("us-east-1b")
+          .addItem("us-east-1c")
+          .build()
     )
 
     val zoneConstraintStr = "tachyon:;zone:us-east-1a,us-east-1c"
@@ -140,8 +142,8 @@ class MesosSchedulerUtilsSuite
 
     utils.matchesAttributeRequirements(ltConstraint, offerAttribs) shouldBe true
     utils.matchesAttributeRequirements(eqConstraint, offerAttribs) shouldBe true
-    utils
-      .matchesAttributeRequirements(gtConstraint, offerAttribs) shouldBe false
+    utils.matchesAttributeRequirements(gtConstraint, offerAttribs) shouldBe
+      false
   }
 
   test("contains match is performed for range attributes") {
@@ -152,13 +154,13 @@ class MesosSchedulerUtilsSuite
     val gtConstraint = utils.parseConstraintString("ports:8002")
     val multiConstraint = utils.parseConstraintString("ports:5000,7500,8300")
 
-    utils
-      .matchesAttributeRequirements(ltConstraint, offerAttribs) shouldBe false
+    utils.matchesAttributeRequirements(ltConstraint, offerAttribs) shouldBe
+      false
     utils.matchesAttributeRequirements(eqConstraint, offerAttribs) shouldBe true
-    utils
-      .matchesAttributeRequirements(gtConstraint, offerAttribs) shouldBe false
-    utils
-      .matchesAttributeRequirements(multiConstraint, offerAttribs) shouldBe true
+    utils.matchesAttributeRequirements(gtConstraint, offerAttribs) shouldBe
+      false
+    utils.matchesAttributeRequirements(multiConstraint, offerAttribs) shouldBe
+      true
   }
 
   test("equality match is performed for text attributes") {
@@ -168,11 +170,10 @@ class MesosSchedulerUtilsSuite
     val trueConstraint = utils.parseConstraintString("tachyon:true")
     val falseConstraint = utils.parseConstraintString("tachyon:false")
 
-    utils
-      .matchesAttributeRequirements(trueConstraint, offerAttribs) shouldBe true
-    utils.matchesAttributeRequirements(
-      falseConstraint,
-      offerAttribs) shouldBe false
+    utils.matchesAttributeRequirements(trueConstraint, offerAttribs) shouldBe
+      true
+    utils.matchesAttributeRequirements(falseConstraint, offerAttribs) shouldBe
+      false
   }
 
 }

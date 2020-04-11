@@ -55,8 +55,8 @@ private[puzzle] final class Daily(
     coll
       .find(
         BSONDocument(
-          "day" -> BSONDocument(
-            "$gt" -> DateTime.now.minusMinutes(24 * 60 - 15))))
+          "day" ->
+            BSONDocument("$gt" -> DateTime.now.minusMinutes(24 * 60 - 15))))
       .one[Puzzle]
 
   private def findNew =
@@ -67,8 +67,8 @@ private[puzzle] final class Daily(
       case Some(puzzle) =>
         coll.update(
           BSONDocument("_id" -> puzzle.id),
-          BSONDocument(
-            "$set" -> BSONDocument("day" -> DateTime.now))) inject puzzle.some
+          BSONDocument("$set" -> BSONDocument("day" -> DateTime.now))) inject
+          puzzle.some
       case None =>
         fuccess(none)
     }

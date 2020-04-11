@@ -58,30 +58,28 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
   val numOfGenInteger = 10
 
   def testFine() {
-    val intStrings =
-      (intValues ++ randomIntValues(numOfGenInteger))
-        .flatMap(expandIntegerLiteral)
-        .flatMap(prependSign)
-        .distinct
+    val intStrings = (intValues ++ randomIntValues(numOfGenInteger))
+      .flatMap(expandIntegerLiteral)
+      .flatMap(prependSign)
+      .distinct
     for (s <- intStrings) {
       assertNothing(messages(s"val a = $s"))
     }
-    val longStrings = (intStrings flatMap appendL) ++
-      (longValues ++ randomLongValues(numOfGenInteger))
-        .flatMap(expandIntegerLiteral)
-        .flatMap(prependSign)
-        .flatMap(appendL)
-        .distinct
+    val longStrings =
+      (intStrings flatMap appendL) ++
+        (longValues ++ randomLongValues(numOfGenInteger))
+          .flatMap(expandIntegerLiteral)
+          .flatMap(prependSign)
+          .flatMap(appendL)
+          .distinct
     for (s <- longStrings) {
       assertNothing(messages(s"val a = $s"))
     }
   }
 
   def testLiteralOverflowInt() {
-    val longStrings = longValues
-      .map(_.toString) ++ randomLongValues(numOfGenInteger)
-      .flatMap(expandIntegerLiteral)
-      .distinct
+    val longStrings = longValues.map(_.toString) ++
+      randomLongValues(numOfGenInteger).flatMap(expandIntegerLiteral).distinct
     for (s <- longStrings ++ Seq("2147483648", "-2147483649")) {
       assertMatches(messages(s"val a = $s")) {
         case Error(s, OverflowIntPattern()) :: Nil =>
@@ -98,9 +96,8 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
           "0" + x.toOctalString.padTo(23, '1')))
     val overflowLongStringsWithL = overflowLongStrings.flatMap(appendL)
     for (s <-
-           overflowLongStrings ++ overflowLongStringsWithL ++ Seq(
-             "9223372036854775808l",
-             "-9223372036854775809l")) {
+           overflowLongStrings ++ overflowLongStringsWithL ++
+             Seq("9223372036854775808l", "-9223372036854775809l")) {
       assertMatches(messages(s"val a = $s")) {
         case Error(s, OverflowLongPattern()) :: Nil =>
       }

@@ -80,8 +80,9 @@ private[io] class UdpListener(
 
   def receive: Receive = {
     case registration: ChannelRegistration ⇒
-      bindCommander ! Bound(
-        channel.socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress])
+      bindCommander !
+        Bound(
+          channel.socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress])
       context.become(
         readHandlers(registration) orElse sendHandlers(registration),
         discardOld = true)

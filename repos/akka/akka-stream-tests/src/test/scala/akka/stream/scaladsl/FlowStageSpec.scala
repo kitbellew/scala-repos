@@ -30,73 +30,75 @@ class FlowStageSpec
   implicit val materializer = ActorMaterializer(settings)
 
   "A Flow with transform operations" must {
-    "produce one-to-one transformation as expected" in assertAllStagesStopped {
-      val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
-      val p2 = Source
-        .fromPublisher(p)
-        .transform(() ⇒
-          new PushStage[Int, Int] {
-            var tot = 0
-            override def onPush(elem: Int, ctx: Context[Int]) = {
-              tot += elem
-              ctx.push(tot)
-            }
-          })
-        .runWith(Sink.asPublisher(false))
-      val subscriber = TestSubscriber.manualProbe[Int]()
-      p2.subscribe(subscriber)
-      val subscription = subscriber.expectSubscription()
-      subscription.request(1)
-      subscriber.expectNext(1)
-      subscriber.expectNoMsg(200.millis)
-      subscription.request(2)
-      subscriber.expectNext(3)
-      subscriber.expectNext(6)
-      subscriber.expectComplete()
-    }
+    "produce one-to-one transformation as expected" in
+      assertAllStagesStopped {
+        val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
+        val p2 = Source
+          .fromPublisher(p)
+          .transform(() ⇒
+            new PushStage[Int, Int] {
+              var tot = 0
+              override def onPush(elem: Int, ctx: Context[Int]) = {
+                tot += elem
+                ctx.push(tot)
+              }
+            })
+          .runWith(Sink.asPublisher(false))
+        val subscriber = TestSubscriber.manualProbe[Int]()
+        p2.subscribe(subscriber)
+        val subscription = subscriber.expectSubscription()
+        subscription.request(1)
+        subscriber.expectNext(1)
+        subscriber.expectNoMsg(200.millis)
+        subscription.request(2)
+        subscriber.expectNext(3)
+        subscriber.expectNext(6)
+        subscriber.expectComplete()
+      }
 
-    "produce one-to-several transformation as expected" in assertAllStagesStopped {
-      val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
-      val p2 = Source
-        .fromPublisher(p)
-        .transform(() ⇒
-          new StatefulStage[Int, Int] {
-            var tot = 0
+    "produce one-to-several transformation as expected" in
+      assertAllStagesStopped {
+        val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
+        val p2 = Source
+          .fromPublisher(p)
+          .transform(() ⇒
+            new StatefulStage[Int, Int] {
+              var tot = 0
 
-            lazy val waitForNext =
-              new State {
-                override def onPush(elem: Int, ctx: Context[Int]) = {
-                  tot += elem
-                  emit(Iterator.fill(elem)(tot), ctx)
+              lazy val waitForNext =
+                new State {
+                  override def onPush(elem: Int, ctx: Context[Int]) = {
+                    tot += elem
+                    emit(Iterator.fill(elem)(tot), ctx)
+                  }
                 }
+
+              override def initial = waitForNext
+
+              override def onUpstreamFinish(
+                  ctx: Context[Int]): TerminationDirective = {
+                if (current eq waitForNext)
+                  ctx.finish()
+                else
+                  ctx.absorbTermination()
               }
 
-            override def initial = waitForNext
-
-            override def onUpstreamFinish(
-                ctx: Context[Int]): TerminationDirective = {
-              if (current eq waitForNext)
-                ctx.finish()
-              else
-                ctx.absorbTermination()
-            }
-
-          })
-        .runWith(Sink.asPublisher(false))
-      val subscriber = TestSubscriber.manualProbe[Int]()
-      p2.subscribe(subscriber)
-      val subscription = subscriber.expectSubscription()
-      subscription.request(4)
-      subscriber.expectNext(1)
-      subscriber.expectNext(3)
-      subscriber.expectNext(3)
-      subscriber.expectNext(6)
-      subscriber.expectNoMsg(200.millis)
-      subscription.request(100)
-      subscriber.expectNext(6)
-      subscriber.expectNext(6)
-      subscriber.expectComplete()
-    }
+            })
+          .runWith(Sink.asPublisher(false))
+        val subscriber = TestSubscriber.manualProbe[Int]()
+        p2.subscribe(subscriber)
+        val subscription = subscriber.expectSubscription()
+        subscription.request(4)
+        subscriber.expectNext(1)
+        subscriber.expectNext(3)
+        subscriber.expectNext(3)
+        subscriber.expectNext(6)
+        subscriber.expectNoMsg(200.millis)
+        subscription.request(100)
+        subscriber.expectNext(6)
+        subscriber.expectNext(6)
+        subscriber.expectComplete()
+      }
 
     "produce one-to-several transformation with state change" in {
       val p = Source(List(3, 2, 1, 0, 1, 12))
@@ -218,165 +220,171 @@ class FlowStageSpec
       c2.expectComplete()
     }
 
-    "support emit onUpstreamFinish" in assertAllStagesStopped {
-      val p = Source(List("a")).runWith(Sink.asPublisher(false))
-      val p2 = Source
-        .fromPublisher(p)
-        .transform(() ⇒
-          new StatefulStage[String, String] {
-            var s = ""
-            override def initial =
-              new State {
-                override def onPush(element: String, ctx: Context[String]) = {
-                  s += element
-                  ctx.pull()
-                }
-              }
-            override def onUpstreamFinish(ctx: Context[String]) =
-              terminationEmit(Iterator.single(s + "B"), ctx)
-          })
-        .runWith(Sink.asPublisher(false))
-      val c = TestSubscriber.manualProbe[String]()
-      p2.subscribe(c)
-      val s = c.expectSubscription()
-      s.request(1)
-      c.expectNext("aB")
-      c.expectComplete()
-    }
-
-    "allow early finish" in assertAllStagesStopped {
-      val (p1, p2) =
-        TestSource
-          .probe[Int]
+    "support emit onUpstreamFinish" in
+      assertAllStagesStopped {
+        val p = Source(List("a")).runWith(Sink.asPublisher(false))
+        val p2 = Source
+          .fromPublisher(p)
           .transform(() ⇒
-            new PushStage[Int, Int] {
+            new StatefulStage[String, String] {
               var s = ""
-              override def onPush(element: Int, ctx: Context[Int]) = {
-                s += element
-                if (s == "1")
-                  ctx.pushAndFinish(element)
-                else
-                  ctx.push(element)
-              }
-            })
-          .toMat(TestSink.probe[Int])(Keep.both)
-          .run
-      p2.request(10)
-      p1.sendNext(1).sendNext(2)
-      p2.expectNext(1).expectComplete()
-      p1.expectCancellation()
-    }
-
-    "report error when exception is thrown" in assertAllStagesStopped {
-      val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
-      val p2 = Source
-        .fromPublisher(p)
-        .transform(() ⇒
-          new StatefulStage[Int, Int] {
-            override def initial =
-              new State {
-                override def onPush(elem: Int, ctx: Context[Int]) = {
-                  if (elem == 2) {
-                    throw new IllegalArgumentException("two not allowed")
-                  } else {
-                    emit(Iterator(elem, elem), ctx)
+              override def initial =
+                new State {
+                  override def onPush(element: String, ctx: Context[String]) = {
+                    s += element
+                    ctx.pull()
                   }
                 }
-              }
-          })
-        .runWith(TestSink.probe[Int])
-      EventFilter[IllegalArgumentException]("two not allowed") intercept {
-        p2.request(100)
-          .expectNext(1)
-          .expectNext(1)
-          .expectError()
-          .getMessage should be("two not allowed")
-        p2.expectNoMsg(200.millis)
+              override def onUpstreamFinish(ctx: Context[String]) =
+                terminationEmit(Iterator.single(s + "B"), ctx)
+            })
+          .runWith(Sink.asPublisher(false))
+        val c = TestSubscriber.manualProbe[String]()
+        p2.subscribe(c)
+        val s = c.expectSubscription()
+        s.request(1)
+        c.expectNext("aB")
+        c.expectComplete()
       }
-    }
 
-    "support emit of final elements when onUpstreamFailure" in assertAllStagesStopped {
-      val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
-      val p2 = Source
-        .fromPublisher(p)
-        .map(elem ⇒
-          if (elem == 2)
-            throw new IllegalArgumentException("two not allowed")
-          else
-            elem)
-        .transform(() ⇒
-          new StatefulStage[Int, Int] {
-            override def initial =
-              new State {
-                override def onPush(elem: Int, ctx: Context[Int]) =
-                  ctx.push(elem)
-              }
-
-            override def onUpstreamFailure(
-                cause: Throwable,
-                ctx: Context[Int]) = {
-              terminationEmit(Iterator(100, 101), ctx)
-            }
-          })
-        .filter(elem ⇒ elem != 1)
-        . // it's undefined if element 1 got through before the error or not
-        runWith(TestSink.probe[Int])
-      EventFilter[IllegalArgumentException]("two not allowed") intercept {
-        p2.request(100)
-          .expectNext(100)
-          .expectNext(101)
-          .expectComplete()
-          .expectNoMsg(200.millis)
+    "allow early finish" in
+      assertAllStagesStopped {
+        val (p1, p2) =
+          TestSource
+            .probe[Int]
+            .transform(() ⇒
+              new PushStage[Int, Int] {
+                var s = ""
+                override def onPush(element: Int, ctx: Context[Int]) = {
+                  s += element
+                  if (s == "1")
+                    ctx.pushAndFinish(element)
+                  else
+                    ctx.push(element)
+                }
+              })
+            .toMat(TestSink.probe[Int])(Keep.both)
+            .run
+        p2.request(10)
+        p1.sendNext(1).sendNext(2)
+        p2.expectNext(1).expectComplete()
+        p1.expectCancellation()
       }
-    }
 
-    "support cancel as expected" in assertAllStagesStopped {
-      val p = Source(1 to 100).runWith(Sink.asPublisher(false))
-      val received = Source
-        .fromPublisher(p)
-        .transform(() ⇒
-          new StatefulStage[Int, Int] {
-            override def initial =
-              new State {
-                override def onPush(elem: Int, ctx: Context[Int]) =
-                  emit(Iterator(elem, elem), ctx)
-              }
-          })
-        .runWith(TestSink.probe[Int])
-        .request(1000)
-        .expectNext(1)
-        .cancel()
-        .receiveWithin(1.second)
-      received.size should be < 200
-      received
-        .foldLeft((true, 1)) {
-          case ((flag, last), next) ⇒
-            (flag && (last == next || last == next - 1), next)
+    "report error when exception is thrown" in
+      assertAllStagesStopped {
+        val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
+        val p2 = Source
+          .fromPublisher(p)
+          .transform(() ⇒
+            new StatefulStage[Int, Int] {
+              override def initial =
+                new State {
+                  override def onPush(elem: Int, ctx: Context[Int]) = {
+                    if (elem == 2) {
+                      throw new IllegalArgumentException("two not allowed")
+                    } else {
+                      emit(Iterator(elem, elem), ctx)
+                    }
+                  }
+                }
+            })
+          .runWith(TestSink.probe[Int])
+        EventFilter[IllegalArgumentException]("two not allowed") intercept {
+          p2.request(100)
+            .expectNext(1)
+            .expectNext(1)
+            .expectError()
+            .getMessage should be("two not allowed")
+          p2.expectNoMsg(200.millis)
         }
-        ._1 should be(true)
-    }
+      }
 
-    "support producing elements from empty inputs" in assertAllStagesStopped {
-      val p = Source(List.empty[Int]).runWith(Sink.asPublisher(false))
-      Source
-        .fromPublisher(p)
-        .transform(() ⇒
-          new StatefulStage[Int, Int] {
-            override def initial =
-              new State {
-                override def onPush(elem: Int, ctx: Context[Int]) = ctx.pull()
+    "support emit of final elements when onUpstreamFailure" in
+      assertAllStagesStopped {
+        val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
+        val p2 = Source
+          .fromPublisher(p)
+          .map(elem ⇒
+            if (elem == 2)
+              throw new IllegalArgumentException("two not allowed")
+            else
+              elem)
+          .transform(() ⇒
+            new StatefulStage[Int, Int] {
+              override def initial =
+                new State {
+                  override def onPush(elem: Int, ctx: Context[Int]) =
+                    ctx.push(elem)
+                }
+
+              override def onUpstreamFailure(
+                  cause: Throwable,
+                  ctx: Context[Int]) = {
+                terminationEmit(Iterator(100, 101), ctx)
               }
-            override def onUpstreamFinish(ctx: Context[Int]) =
-              terminationEmit(Iterator(1, 2, 3), ctx)
-          })
-        .runWith(TestSink.probe[Int])
-        .request(4)
-        .expectNext(1)
-        .expectNext(2)
-        .expectNext(3)
-        .expectComplete()
+            })
+          .filter(elem ⇒ elem != 1)
+          . // it's undefined if element 1 got through before the error or not
+          runWith(TestSink.probe[Int])
+        EventFilter[IllegalArgumentException]("two not allowed") intercept {
+          p2.request(100)
+            .expectNext(100)
+            .expectNext(101)
+            .expectComplete()
+            .expectNoMsg(200.millis)
+        }
+      }
 
-    }
+    "support cancel as expected" in
+      assertAllStagesStopped {
+        val p = Source(1 to 100).runWith(Sink.asPublisher(false))
+        val received = Source
+          .fromPublisher(p)
+          .transform(() ⇒
+            new StatefulStage[Int, Int] {
+              override def initial =
+                new State {
+                  override def onPush(elem: Int, ctx: Context[Int]) =
+                    emit(Iterator(elem, elem), ctx)
+                }
+            })
+          .runWith(TestSink.probe[Int])
+          .request(1000)
+          .expectNext(1)
+          .cancel()
+          .receiveWithin(1.second)
+        received.size should be < 200
+        received
+          .foldLeft((true, 1)) {
+            case ((flag, last), next) ⇒
+              (flag && (last == next || last == next - 1), next)
+          }
+          ._1 should be(true)
+      }
+
+    "support producing elements from empty inputs" in
+      assertAllStagesStopped {
+        val p = Source(List.empty[Int]).runWith(Sink.asPublisher(false))
+        Source
+          .fromPublisher(p)
+          .transform(() ⇒
+            new StatefulStage[Int, Int] {
+              override def initial =
+                new State {
+                  override def onPush(elem: Int, ctx: Context[Int]) = ctx.pull()
+                }
+              override def onUpstreamFinish(ctx: Context[Int]) =
+                terminationEmit(Iterator(1, 2, 3), ctx)
+            })
+          .runWith(TestSink.probe[Int])
+          .request(4)
+          .expectNext(1)
+          .expectNext(2)
+          .expectNext(3)
+          .expectComplete()
+
+      }
 
     "support converting onComplete into onError" in {
       Source(List(5, 1, 2, 3))
@@ -435,90 +443,93 @@ class FlowStageSpec
         .expectComplete()
     }
 
-    "handle early cancelation" in assertAllStagesStopped {
-      val onDownstreamFinishProbe = TestProbe()
-      val down = TestSubscriber.manualProbe[Int]()
-      val s = Source
-        .asSubscriber[Int]
-        .transform(() ⇒
-          new PushStage[Int, Int] {
-            override def onPush(elem: Int, ctx: Context[Int]) = ctx.push(elem)
-            override def onDownstreamFinish(
-                ctx: Context[Int]): TerminationDirective = {
-              onDownstreamFinishProbe.ref ! "onDownstreamFinish"
-              ctx.finish()
-            }
-          })
-        .to(Sink.fromSubscriber(down))
-        .run()
-
-      val downstream = down.expectSubscription()
-      downstream.cancel()
-      onDownstreamFinishProbe.expectMsg("onDownstreamFinish")
-
-      val up = TestPublisher.manualProbe[Int]()
-      up.subscribe(s)
-      val upsub = up.expectSubscription()
-      upsub.expectCancellation()
-    }
-
-    "not trigger onUpstreamFinished after pushAndFinish" in assertAllStagesStopped {
-      val in = TestPublisher.manualProbe[Int]()
-      val flow = Source
-        .fromPublisher(in)
-        .transform(() ⇒
-          new StatefulStage[Int, Int] {
-
-            def initial: StageState[Int, Int] =
-              new State {
-                override def onPush(element: Int, ctx: Context[Int]) =
-                  ctx.pushAndFinish(element)
+    "handle early cancelation" in
+      assertAllStagesStopped {
+        val onDownstreamFinishProbe = TestProbe()
+        val down = TestSubscriber.manualProbe[Int]()
+        val s = Source
+          .asSubscriber[Int]
+          .transform(() ⇒
+            new PushStage[Int, Int] {
+              override def onPush(elem: Int, ctx: Context[Int]) = ctx.push(elem)
+              override def onDownstreamFinish(
+                  ctx: Context[Int]): TerminationDirective = {
+                onDownstreamFinishProbe.ref ! "onDownstreamFinish"
+                ctx.finish()
               }
-            override def onUpstreamFinish(
-                ctx: Context[Int]): TerminationDirective =
-              terminationEmit(Iterator(42), ctx)
-          })
-        .runWith(Sink.asPublisher(false))
+            })
+          .to(Sink.fromSubscriber(down))
+          .run()
 
-      val inSub = in.expectSubscription()
+        val downstream = down.expectSubscription()
+        downstream.cancel()
+        onDownstreamFinishProbe.expectMsg("onDownstreamFinish")
 
-      val out = TestSubscriber.manualProbe[Int]()
-      flow.subscribe(out)
-      val outSub = out.expectSubscription()
+        val up = TestPublisher.manualProbe[Int]()
+        up.subscribe(s)
+        val upsub = up.expectSubscription()
+        upsub.expectCancellation()
+      }
 
-      inSub.sendNext(23)
-      inSub.sendComplete()
+    "not trigger onUpstreamFinished after pushAndFinish" in
+      assertAllStagesStopped {
+        val in = TestPublisher.manualProbe[Int]()
+        val flow = Source
+          .fromPublisher(in)
+          .transform(() ⇒
+            new StatefulStage[Int, Int] {
 
-      outSub.request(
-        1
-      ) // it depends on this line, i.e. generating backpressure between buffer and stage execution
+              def initial: StageState[Int, Int] =
+                new State {
+                  override def onPush(element: Int, ctx: Context[Int]) =
+                    ctx.pushAndFinish(element)
+                }
+              override def onUpstreamFinish(
+                  ctx: Context[Int]): TerminationDirective =
+                terminationEmit(Iterator(42), ctx)
+            })
+          .runWith(Sink.asPublisher(false))
 
-      out.expectNext(23)
-      out.expectComplete()
-    }
+        val inSub = in.expectSubscription()
 
-    "chain elements to currently emitting on upstream finish" in assertAllStagesStopped {
-      Source
-        .single("hi")
-        .transform(() ⇒
-          new StatefulStage[String, String] {
-            override def initial =
-              new State {
-                override def onPush(elem: String, ctx: Context[String]) =
-                  emit(Iterator(elem + "1", elem + "2"), ctx)
+        val out = TestSubscriber.manualProbe[Int]()
+        flow.subscribe(out)
+        val outSub = out.expectSubscription()
+
+        inSub.sendNext(23)
+        inSub.sendComplete()
+
+        outSub.request(
+          1
+        ) // it depends on this line, i.e. generating backpressure between buffer and stage execution
+
+        out.expectNext(23)
+        out.expectComplete()
+      }
+
+    "chain elements to currently emitting on upstream finish" in
+      assertAllStagesStopped {
+        Source
+          .single("hi")
+          .transform(() ⇒
+            new StatefulStage[String, String] {
+              override def initial =
+                new State {
+                  override def onPush(elem: String, ctx: Context[String]) =
+                    emit(Iterator(elem + "1", elem + "2"), ctx)
+                }
+              override def onUpstreamFinish(ctx: Context[String]) = {
+                terminationEmit(Iterator("byebye"), ctx)
               }
-            override def onUpstreamFinish(ctx: Context[String]) = {
-              terminationEmit(Iterator("byebye"), ctx)
-            }
-          })
-        .runWith(TestSink.probe[String])
-        .request(1)
-        .expectNext("hi1")
-        .request(2)
-        .expectNext("hi2")
-        .expectNext("byebye")
-        .expectComplete()
-    }
+            })
+          .runWith(TestSink.probe[String])
+          .request(1)
+          .expectNext("hi1")
+          .request(2)
+          .expectNext("hi2")
+          .expectNext("byebye")
+          .expectComplete()
+      }
   }
 
 }

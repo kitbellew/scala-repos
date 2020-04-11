@@ -55,14 +55,11 @@ trait Paginator[T] extends Loggable {
   /**
     * Calculates the number of pages the items will be spread across
     */
-  def numPages =
-    (count / itemsPerPage).toInt +
-      (
-        if (count % itemsPerPage > 0)
-          1
-        else
-          0
-      )
+  def numPages = (count / itemsPerPage).toInt +
+    (if (count % itemsPerPage > 0)
+       1
+     else
+       0)
 
   /**
     * Calculates the current page number, based on the value of 'first.'
@@ -74,11 +71,9 @@ trait Paginator[T] extends Loggable {
     * as the page numbers get further from the current page, they are more sparse.
     */
   def zoomedPages =
-    (
-      List(curPage - 1020, curPage - 120, curPage - 20) ++
-        (curPage - 10 to curPage + 10) ++
-        List(curPage + 20, curPage + 120, curPage + 1020)
-    ) filter { n =>
+    (List(curPage - 1020, curPage - 120, curPage - 20) ++
+      (curPage - 10 to curPage + 10) ++
+      List(curPage + 20, curPage + 120, curPage + 1020)) filter { n =>
       n >= 0 && n < numPages
     }
 }
@@ -288,14 +283,13 @@ trait PaginatorSnippet[T] extends Paginator[T] {
       ".prev *" #> pageXml(max(first - itemsPerPage, 0), prevXml) &
       ".all-pages *" #> pagesXml(0 until numPages) _ &
       ".zoomed-pages *" #> pagesXml(zoomedPages) _ &
-      ".next *" #> pageXml(
+      ".next *" #>
+      pageXml(
         max(0, min(first + itemsPerPage, itemsPerPage * (numPages - 1))),
         nextXml) &
       ".last *" #> pageXml(itemsPerPage * (numPages - 1), lastXml) &
-      ".records *" #> currentXml &
-      ".records-start *" #> recordsFrom &
-      ".records-end *" #> recordsTo &
-      ".records-count *" #> count
+      ".records *" #> currentXml & ".records-start *" #> recordsFrom &
+      ".records-end *" #> recordsTo & ".records-count *" #> count
   }
 }
 

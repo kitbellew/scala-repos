@@ -165,7 +165,8 @@ object CsvParser {
         inQ = !inQ
       }
 
-      if (!inQ && chr == sep) { // we're not in quoted field & we hit a separator
+      if (!inQ &&
+          chr == sep) { // we're not in quoted field & we hit a separator
         if (curFld == locs(locIdx)) { // we want this field
           callback(
             String.valueOf(carr, curBeg, curEnd - curBeg - inQoff),
@@ -239,7 +240,8 @@ object CsvParser {
         inQ = !inQ
       }
 
-      if (!inQ && chr == sep) { // we're not in quoted field & we hit a separator
+      if (!inQ &&
+          chr == sep) { // we're not in quoted field & we hit a separator
         result += String.valueOf(carr, curBeg, curEnd - curBeg - inQoff)
         inQoff = 0
         curBeg = curEnd + 1 // start a new field

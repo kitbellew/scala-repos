@@ -218,10 +218,11 @@ private[pickling] class IrScalaSymbols[
       // TODO - We may need, additionally,  run some existentialAbstractoin fun on these signatures so the
       //        symbol/types are fully realized from what we had.
       // We always drop the first class, becasue it is ourself.
-      classSymbol.baseClasses.drop(1) filter (_.isClass) map { x =>
-        //new ScalaIrClass(fillParameters(x), quantified, rawType)
-        new ScalaIrClass(tpe.baseType(x), quantified, rawType)
-      }
+      classSymbol.baseClasses.drop(1) filter
+        (_.isClass) map { x =>
+          //new ScalaIrClass(fillParameters(x), quantified, rawType)
+          new ScalaIrClass(tpe.baseType(x), quantified, rawType)
+        }
     }
 
     /** Fill is the concrete types for a given symbol using the concrete types this class knows about. */
@@ -266,18 +267,13 @@ private[pickling] class IrScalaSymbols[
       val tr = scala
         .util
         .Try {
-          (
-            (field.accessed != NoSymbol) && field
-              .accessed
-              .annotations
-              .exists(_.tpe =:= typeOf[scala.transient])
-          ) ||
-          (
-            (field.getter != NoSymbol) && field
-              .getter
-              .annotations
-              .exists(_.tpe =:= typeOf[scala.transient])
-          ) ||
+          ((field.accessed != NoSymbol) &&
+          field
+            .accessed
+            .annotations
+            .exists(_.tpe =:= typeOf[scala.transient])) ||
+          ((field.getter != NoSymbol) &&
+          field.getter.annotations.exists(_.tpe =:= typeOf[scala.transient])) ||
           (field.annotations.exists(_.tpe =:= typeOf[scala.transient]))
         }
       // TODO - Here we wrokaround a scala symbol issue where the field is never annotated with transient.
@@ -341,18 +337,13 @@ private[pickling] class IrScalaSymbols[
       val tr = scala
         .util
         .Try {
-          (
-            (mthd.accessed != NoSymbol) && mthd
-              .accessed
-              .annotations
-              .exists(_.tpe =:= typeOf[scala.transient])
-          ) ||
-          (
-            (mthd.getter != NoSymbol) && mthd
-              .getter
-              .annotations
-              .exists(_.tpe =:= typeOf[scala.transient])
-          ) ||
+          ((mthd.accessed != NoSymbol) &&
+          mthd
+            .accessed
+            .annotations
+            .exists(_.tpe =:= typeOf[scala.transient])) ||
+          ((mthd.getter != NoSymbol) &&
+          mthd.getter.annotations.exists(_.tpe =:= typeOf[scala.transient])) ||
           (mthd.annotations.exists(_.tpe =:= typeOf[scala.transient]))
         }
       tr.getOrElse(false)
@@ -417,7 +408,8 @@ private[pickling] class IrScalaSymbols[
     override def isParamAccessor: Boolean = mthd.isParamAccessor
     override def isVal: Boolean = mthd.isVal
     override def isVar: Boolean =
-      (mthd.getter != NoSymbol) && (mthd.setter != NoSymbol) &&
+      (mthd.getter != NoSymbol) &&
+        (mthd.setter != NoSymbol) &&
         (
           mthd.setter != mthd
         ) // THis is  hack so the setter doesn't show up in our list of vars.

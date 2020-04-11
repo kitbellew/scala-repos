@@ -51,8 +51,7 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         val sessionStat = listener.getSession(parameterId).getOrElse(null)
         require(sessionStat != null, "Invalid sessionID[" + parameterId + "]")
 
-        generateBasicStats() ++
-          <br/> ++
+        generateBasicStats() ++ <br/> ++
           <h4>
         User {
             sessionStat.userName
@@ -66,8 +65,7 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         Total run {
             sessionStat.totalExecution
           } SQL
-        </h4> ++
-          generateSQLStatsTable(sessionStat.sessionId)
+        </h4> ++ generateSQLStatsTable(sessionStat.sessionId)
       }
     UIUtils.headerSparkPage("JDBC/ODBC Session", content, parent, Some(5000))
   }

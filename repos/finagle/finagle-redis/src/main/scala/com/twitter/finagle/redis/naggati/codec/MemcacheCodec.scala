@@ -25,28 +25,26 @@ case class MemcacheRequest(
     data: Option[ByteBuffer],
     bytesRead: Int) {
   override def toString = {
-    "<Request: " + line.mkString("[", " ", "]") + (
-      data match {
+    "<Request: " + line.mkString("[", " ", "]") +
+      (data match {
         case None =>
           ""
         case Some(x) =>
           " data=" + x.remaining
-      }
-    ) + " read=" + bytesRead + ">"
+      }) + " read=" + bytesRead + ">"
   }
 }
 
 case class MemcacheResponse(line: String, data: Option[ByteBuffer] = None)
     extends Codec.Signalling {
   override def toString = {
-    "<Response: " + line + (
-      data match {
+    "<Response: " + line +
+      (data match {
         case None =>
           ""
         case Some(x) =>
           " data=" + x.remaining
-      }
-    ) + ">"
+      }) + ">"
   }
 
   val lineData = line.getBytes("ISO-8859-1")

@@ -16,13 +16,15 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
       complete("ok")
     }
 
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "ok"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "ok"
+      }
 
-    Put("/") ~> route ~> check {
-      responseAs[String] shouldEqual "ok"
-    }
+    Put("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "ok"
+      }
   }
 
   "map-0" in {
@@ -31,10 +33,10 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
     val lengthDirective: Directive1[Int] = textParam.map(text => text.length)
 
     // tests:
-    Get("/?text=abcdefg") ~> lengthDirective(x =>
-      complete(x.toString)) ~> check {
-      responseAs[String] === "7"
-    }
+    Get("/?text=abcdefg") ~> lengthDirective(x => complete(x.toString)) ~>
+      check {
+        responseAs[String] === "7"
+      }
   }
 
   "tmap-1" in {
@@ -47,9 +49,10 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/?a=2&b=5") ~> myDirective(x => complete(x)) ~> check {
-      responseAs[String] === "7"
-    }
+    Get("/?a=2&b=5") ~> myDirective(x => complete(x)) ~>
+      check {
+        responseAs[String] === "7"
+      }
   }
 
   "flatMap-0" in {
@@ -63,12 +66,14 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/?a=21") ~> myDirective(i => complete(i.toString)) ~> check {
-      responseAs[String] === "42"
-    }
-    Get("/?a=-18") ~> myDirective(i => complete(i.toString)) ~> check {
-      handled === false
-    }
+    Get("/?a=21") ~> myDirective(i => complete(i.toString)) ~>
+      check {
+        responseAs[String] === "42"
+      }
+    Get("/?a=-18") ~> myDirective(i => complete(i.toString)) ~>
+      check {
+        handled === false
+      }
   }
 
 }

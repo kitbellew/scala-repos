@@ -58,8 +58,8 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     probe.send(whenLeader1Probe.ref, PoisonPill)
 
     assert(
-      coordinatorRef.underlyingActor.whenLeaderActors == Set(
-        whenLeader2Probe.ref))
+      coordinatorRef.underlyingActor.whenLeaderActors ==
+        Set(whenLeader2Probe.ref))
   }
 
   test("in prepareToStart, remove terminated whenLeaderActors") {
@@ -74,8 +74,8 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     probe.send(whenLeader1Probe.ref, PoisonPill)
 
     assert(
-      coordinatorRef.underlyingActor.whenLeaderActors == Set(
-        whenLeader2Probe.ref))
+      coordinatorRef.underlyingActor.whenLeaderActors ==
+        Set(whenLeader2Probe.ref))
     whenLeader2Probe
       .send(coordinatorRef, PreparationMessages.Prepared(whenLeader2Probe.ref))
 
@@ -89,8 +89,8 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     probe.send(whenLeader1Probe.ref, PoisonPill)
 
     assert(
-      coordinatorRef.underlyingActor.whenLeaderActors == Set(
-        whenLeader2Probe.ref))
+      coordinatorRef.underlyingActor.whenLeaderActors ==
+        Set(whenLeader2Probe.ref))
   }
 
   test(

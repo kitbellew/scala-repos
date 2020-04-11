@@ -11,12 +11,11 @@ object Test {
       x.toFloat,
       x.toDouble,
       BigInt(x),
-      BigDecimal(x)) ::: (
-      if (x < 0)
-        Nil
-      else
-        List(x.toChar)
-    )
+      BigDecimal(x)) :::
+      (if (x < 0)
+         Nil
+       else
+         List(x.toChar))
   def makeFromDouble(x: Double) =
     List(
       x.toShort,

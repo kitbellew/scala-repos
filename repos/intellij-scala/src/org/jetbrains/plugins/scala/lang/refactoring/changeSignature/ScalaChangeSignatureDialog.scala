@@ -265,9 +265,10 @@ class ScalaChangeSignatureDialog(
       if (myReturnTypeCodeFragment.getText.isEmpty)
         problems += RefactoringBundle.message("changeSignature.no.return.type")
       else if (returnTypeText.isEmpty)
-        problems += RefactoringBundle.message(
-          "changeSignature.wrong.return.type",
-          myReturnTypeCodeFragment.getText)
+        problems +=
+          RefactoringBundle.message(
+            "changeSignature.wrong.return.type",
+            myReturnTypeCodeFragment.getText)
     }
 
     val paramNames = paramItems.map(_.parameter.name)
@@ -276,10 +277,11 @@ class ScalaChangeSignatureDialog(
         getMethodName +: paramNames
       else
         paramNames
-    problems ++= names.collect {
-      case name if !ScalaNamesUtil.isIdentifier(name) =>
-        s"$name is not a valid scala identifier"
-    }
+    problems ++=
+      names.collect {
+        case name if !ScalaNamesUtil.isIdentifier(name) =>
+          s"$name is not a valid scala identifier"
+      }
 
     val namesWithIndices = paramNames.zipWithIndex
     for {
@@ -287,18 +289,18 @@ class ScalaChangeSignatureDialog(
       (name2, idx2) <- namesWithIndices
       if name == name2 && idx < idx2
     } {
-      problems += ScalaBundle
-        .message("change.signature.parameters.same.name.{0}", name)
+      problems +=
+        ScalaBundle.message("change.signature.parameters.same.name.{0}", name)
     }
     paramItems.foreach(_.updateType(problems))
 
     paramItems.foreach {
       case item
-          if item.parameter.isRepeatedParameter && !splittedItems
-            .flatMap(_.lastOption)
-            .contains(item) =>
-        problems += ScalaBundle
-          .message("change.signature.vararg.should.be.last.in.clause")
+          if item.parameter.isRepeatedParameter &&
+            !splittedItems.flatMap(_.lastOption).contains(item) =>
+        problems +=
+          ScalaBundle
+            .message("change.signature.vararg.should.be.last.in.clause")
       case _ =>
     }
 
@@ -312,8 +314,8 @@ class ScalaChangeSignatureDialog(
     if (!getTableComponent.isEditing) {
       for {
         item <- parameterItems
-        if item.parameter.oldIndex < 0 && StringUtil
-          .isEmpty(item.defaultValueCodeFragment.getText)
+        if item.parameter.oldIndex < 0 &&
+          StringUtil.isEmpty(item.defaultValueCodeFragment.getText)
       } {
         val stuff =
           if (isAddDefaultArgs)
@@ -430,9 +432,8 @@ class ScalaChangeSignatureDialog(
       new AnActionButtonUpdater {
         override def isEnabled(e: AnActionEvent): Boolean = {
           val selected = parametersTable.getSelectedRow
-          selected > 0 && !myParametersTableModel
-            .getItem(selected)
-            .startsNewClause
+          selected > 0 &&
+          !myParametersTableModel.getItem(selected).startsNewClause
         }
       })
     addClauseButton.setShortcut(CustomShortcutSet.fromString("alt EQUALS"))
@@ -459,9 +460,8 @@ class ScalaChangeSignatureDialog(
       new AnActionButtonUpdater {
         override def isEnabled(e: AnActionEvent): Boolean = {
           val selected = parametersTable.getSelectedRow
-          selected > 0 && myParametersTableModel
-            .getItem(selected)
-            .startsNewClause
+          selected > 0 &&
+          myParametersTableModel.getItem(selected).startsNewClause
         }
       })
     removeClauseButton.setShortcut(CustomShortcutSet.fromString("alt MINUS"))

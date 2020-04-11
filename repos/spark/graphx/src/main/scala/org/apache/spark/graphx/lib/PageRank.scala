@@ -107,8 +107,7 @@ object PageRank extends Logging {
       srcId: Option[VertexId] = None): Graph[Double, Double] = {
     require(
       numIter > 0,
-      s"Number of iterations must be greater than 0," +
-        s" but got ${numIter}")
+      s"Number of iterations must be greater than 0," + s" but got ${numIter}")
     require(
       resetProb >= 0 && resetProb <= 1,
       s"Random reset probability must belong" +

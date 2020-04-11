@@ -38,7 +38,8 @@ private[akka] case class ActorMaterializerImpl(
   private val _logger = Logging.getLogger(system, this)
   override def logger = _logger
 
-  if (settings.fuzzingMode && !system
+  if (settings.fuzzingMode &&
+      !system
         .settings
         .config
         .hasPath("akka.stream.secret-test-fuzzing-warning-disable")) {
@@ -63,8 +64,7 @@ private[akka] case class ActorMaterializerImpl(
       settings.initialInputBufferSize,
       settings.maxInputBufferSize) ::
       ActorAttributes.Dispatcher(settings.dispatcher) ::
-      ActorAttributes.SupervisionStrategy(settings.supervisionDecider) ::
-      Nil)
+      ActorAttributes.SupervisionStrategy(settings.supervisionDecider) :: Nil)
 
   override def effectiveSettings(
       opAttr: Attributes): ActorMaterializerSettings = {
@@ -227,8 +227,8 @@ private[akka] case class ActorMaterializerImpl(
               ActorMaterializerImpl.this)
 
           val impl =
-            if (subflowFuser != null && !effectiveAttributes
-                  .contains(Attributes.AsyncBoundary)) {
+            if (subflowFuser != null &&
+                !effectiveAttributes.contains(Attributes.AsyncBoundary)) {
               subflowFuser(shell)
             } else {
               val props = ActorGraphInterpreter.props(shell)
@@ -319,8 +319,9 @@ private[akka] case class ActorMaterializerImpl(
           implicit val timeout = ref.system.settings.CreationTimeout
           val f =
             (
-              supervisor ? StreamSupervisor
-                .Materialize(props.withDispatcher(dispatcher), name)
+              supervisor ?
+                StreamSupervisor
+                  .Materialize(props.withDispatcher(dispatcher), name)
             ).mapTo[ActorRef]
           Await.result(f, timeout.duration)
         }

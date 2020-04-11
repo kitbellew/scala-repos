@@ -86,12 +86,11 @@ class MessageTest extends FunSuite {
         request.headers.set("Content-Type", header)
         // shorthand for empty mediaTypes really being returned as None after being parsed.
         assert(
-          request.mediaType == (
-            if (expected.isEmpty)
-              None
-            else
-              Some(expected)
-          ))
+          request.mediaType ==
+            (if (expected.isEmpty)
+               None
+             else
+               Some(expected)))
     }
   }
 

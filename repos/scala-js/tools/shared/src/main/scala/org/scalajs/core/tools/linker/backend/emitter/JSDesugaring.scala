@@ -773,8 +773,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 CallHelper(helper, recs(args))(arg.tpe)
 
               case If(cond, thenp, elsep)
-                  if noExtractYet && isExpression(thenp) && isExpression(
-                    elsep) =>
+                  if noExtractYet && isExpression(thenp) &&
+                    isExpression(elsep) =>
                 If(rec(cond), thenp, elsep)(arg.tpe)
 
               case _ =>
@@ -894,7 +894,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case JSArrayConstr(items) =>
             allowUnpure && (items forall test)
           case tree @ JSObjectConstr(items) =>
-            allowUnpure && (items forall (item => test(item._2))) &&
+            allowUnpure &&
+              (items forall (item => test(item._2))) &&
               !doesObjectConstrRequireDesugaring(tree)
           case Closure(captureParams, params, body, captureValues) =>
             allowUnpure && (captureValues forall test)
@@ -917,11 +918,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
           // Casts
           case AsInstanceOf(expr, _) =>
-            (allowSideEffects || semantics.asInstanceOfs == Unchecked) && test(
-              expr)
+            (allowSideEffects || semantics.asInstanceOfs == Unchecked) &&
+              test(expr)
           case Unbox(expr, _) =>
-            (allowSideEffects || semantics.asInstanceOfs == Unchecked) && test(
-              expr)
+            (allowSideEffects || semantics.asInstanceOfs == Unchecked) &&
+              test(expr)
 
           // Because the linking info is a frozen object, linkingInfo["envInfo"] is pure
           case JSBracketSelect(JSLinkingInfo(), StringLiteral("envInfo")) =>
@@ -945,9 +946,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case JSDotMethodApply(receiver, method, args) =>
             allowSideEffects && test(receiver) && (args forall test)
           case JSBracketMethodApply(receiver, method, args) =>
-            allowSideEffects && test(receiver) && test(method) && (
-              args forall test
-            )
+            allowSideEffects && test(receiver) && test(method) &&
+              (args forall test)
           case JSSuperBracketSelect(_, qualifier, item) =>
             allowSideEffects && test(qualifier) && test(item)
           case LoadJSModule(_) =>
@@ -1222,8 +1222,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   else
                     transformStat(finalizer)
 
-                if (newHandler != js.EmptyTree && newFinalizer != js
-                      .EmptyTree) {
+                if (newHandler != js.EmptyTree &&
+                    newFinalizer != js.EmptyTree) {
                   /* The Google Closure Compiler wrongly eliminates finally blocks, if
                    * the catch block throws an exception.
                    * Issues: #563, google/closure-compiler#186
@@ -1274,9 +1274,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                       // add the break statement
                       newBody = js.Block(pushLhsInto(newLhs, body), js.Break())
                       // desugar alternatives into several cases falling through
-                      caze <- (
-                          newValues.init map (v => (v, js.Skip()))
-                      ) :+ (newValues.last, newBody)
+                      caze <-
+                        (newValues.init map (v => (v, js.Skip()))) :+
+                          (newValues.last, newBody)
                     } yield {
                       caze
                     }
@@ -1579,15 +1579,14 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                     transformStat(rhs)
                   case _ =>
                     sys.error(
-                      "Illegal tree in JSDesugar.pushLhsInto():\n" +
-                        "lhs = " + lhs + "\n" + "rhs = " + rhs +
-                        " of class " + rhs.getClass)
+                      "Illegal tree in JSDesugar.pushLhsInto():\n" + "lhs = " +
+                        lhs + "\n" + "rhs = " + rhs + " of class " +
+                        rhs.getClass)
                 }
               } else {
                 sys.error(
-                  "Illegal tree in JSDesugar.pushLhsInto():\n" +
-                    "lhs = " + lhs + "\n" + "rhs = " + rhs +
-                    " of class " + rhs.getClass)
+                  "Illegal tree in JSDesugar.pushLhsInto():\n" + "lhs = " +
+                    lhs + "\n" + "rhs = " + rhs + " of class " + rhs.getClass)
               }
           }
         )

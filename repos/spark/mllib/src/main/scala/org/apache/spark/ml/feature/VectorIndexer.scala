@@ -241,8 +241,8 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
           case (featureValues: OpenHashSet[Double], featureIndex: Int) =>
             var sortedFeatureValues =
               featureValues.iterator.filter(_ != 0.0).toArray.sorted
-            val zeroExists = sortedFeatureValues.length + 1 == featureValues
-              .size
+            val zeroExists = sortedFeatureValues.length + 1 ==
+              featureValues.size
             if (zeroExists) {
               sortedFeatureValues = 0.0 +: sortedFeatureValues
             }
@@ -388,8 +388,8 @@ class VectorIndexerModel private[ml] (
           val tmpv = sv.copy
           var catFeatureIdx = 0 // index into sortedCatFeatureIndices
           var k = 0 // index into non-zero elements of sparse vector
-          while (catFeatureIdx < sortedCatFeatureIndices
-                   .length && k < tmpv.indices.length) {
+          while (catFeatureIdx < sortedCatFeatureIndices.length &&
+                 k < tmpv.indices.length) {
             val featureIndex = sortedCatFeatureIndices(catFeatureIdx)
             if (featureIndex < tmpv.indices(k)) {
               catFeatureIdx += 1

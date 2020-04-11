@@ -730,16 +730,17 @@ object GroupSolverSpecs
 
       tree.errors must beEmpty
 
-      tree.buckets(Set()) must beLike {
-        case Group(
-              origin,
-              target,
-              UnfixedSolution("'a", sub @ Sub(_, fooa, n), _),
-              _) => {
-          sub.provenance mustEqual StaticProvenance("/foo")
-          // anything else?
+      tree.buckets(Set()) must
+        beLike {
+          case Group(
+                origin,
+                target,
+                UnfixedSolution("'a", sub @ Sub(_, fooa, n), _),
+                _) => {
+            sub.provenance mustEqual StaticProvenance("/foo")
+            // anything else?
+          }
         }
-      }
     }
 
     "reject a constraint which lacks an unambiguous common parent" in {
@@ -1480,24 +1481,26 @@ object GroupSolverSpecs
       solve.buckets must haveKey(Set(d2))
 
       val spec1 = solve.buckets(Set(d1))
-      spec1 must beLike {
-        case Group(
-              Some(`target`),
-              `data`,
-              UnfixedSolution("'price", _, `d1` :: Nil),
-              `d1` :: Nil) =>
-          ok
-      }
+      spec1 must
+        beLike {
+          case Group(
+                Some(`target`),
+                `data`,
+                UnfixedSolution("'price", _, `d1` :: Nil),
+                `d1` :: Nil) =>
+            ok
+        }
 
       val spec2 = solve.buckets(Set(d2))
-      spec2 must beLike {
-        case Group(
-              Some(`target`),
-              `data2`,
-              UnfixedSolution("'price", _, `d2` :: Nil),
-              `d2` :: Nil) =>
-          ok
-      }
+      spec2 must
+        beLike {
+          case Group(
+                Some(`target`),
+                `data2`,
+                UnfixedSolution("'price", _, `d2` :: Nil),
+                `d2` :: Nil) =>
+            ok
+        }
     }
   }
 }

@@ -62,26 +62,24 @@ object ToHeadUsages extends Specification {
       jetty.browse(
         "/htmlFragmentWithHead",
         html =>
-          html.getElementByXPath("/html/head/script[@id='fromFrag']") must not(
-            beNull when jetty.running))
+          html.getElementByXPath("/html/head/script[@id='fromFrag']") must
+            not(beNull when jetty.running))
     }
 
     "merge <head> from html fragment does not include head element in body" in {
       jetty.browse(
         "/htmlFragmentWithHead",
         html =>
-          html
-            .getElementsByXPath("/html/body/script[@id='fromFrag']")
-            .size must (be_==(0) when jetty.running))
+          html.getElementsByXPath("/html/body/script[@id='fromFrag']").size must
+            (be_==(0) when jetty.running))
     }
 
     "merge <head> from snippet" in {
       jetty.browse(
         "/htmlSnippetWithHead",
         html =>
-          html
-            .getElementByXPath("/html/head/script[@src='snippet.js']") must not(
-            beNull when jetty.running))
+          html.getElementByXPath("/html/head/script[@src='snippet.js']") must
+            not(beNull when jetty.running))
     }
 
     "not merge for bodyless html" in {
@@ -166,8 +164,8 @@ object ToHeadUsages extends Specification {
         "/deferred",
         html => {
           html.getElementByXPath(
-            "/html/body/span[@id='whack1']/span[@id='actor_false']") must not(
-            beNull when jetty.running)
+            "/html/body/span[@id='whack1']/span[@id='actor_false']") must
+            not(beNull when jetty.running)
         })
     }
 
@@ -176,8 +174,8 @@ object ToHeadUsages extends Specification {
         "/deferred",
         html => {
           html.getElementByXPath(
-            "/html/body/span[@id='whack2']/span[@id='actor_true']") must not(
-            beNull when jetty.running)
+            "/html/body/span[@id='whack2']/span[@id='actor_true']") must
+            not(beNull when jetty.running)
         })
     }
 

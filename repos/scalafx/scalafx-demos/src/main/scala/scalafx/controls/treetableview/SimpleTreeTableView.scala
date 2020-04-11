@@ -44,22 +44,23 @@ object SimpleTreeTableView extends JFXApp {
     title = "Simple Table View"
     scene = new Scene {
       content = new TreeTableView[Person](treeRoot) {
-        columns ++= List(
-          new TreeTableColumn[Person, String] {
-            text = "First Name"
-            cellValueFactory = {
-              _.value.getValue.firstName
+        columns ++=
+          List(
+            new TreeTableColumn[Person, String] {
+              text = "First Name"
+              cellValueFactory = {
+                _.value.getValue.firstName
+              }
+              prefWidth = 180
+            },
+            new TreeTableColumn[Person, String]() {
+              text = "Last Name"
+              cellValueFactory = {
+                _.value.getValue.lastName
+              }
+              prefWidth = 180
             }
-            prefWidth = 180
-          },
-          new TreeTableColumn[Person, String]() {
-            text = "Last Name"
-            cellValueFactory = {
-              _.value.getValue.lastName
-            }
-            prefWidth = 180
-          }
-        )
+          )
       }
     }
   }

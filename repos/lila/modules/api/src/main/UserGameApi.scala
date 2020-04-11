@@ -34,23 +34,25 @@ final class UserGameApi(bookmarkApi: lila.bookmark.BookmarkApi) {
         "turns" -> g.turns,
         "status" -> g.status,
         "clock" -> g.clock,
-        "correspondence" -> g
-          .daysPerTurn
-          .map { d =>
-            Json.obj("daysPerTurn" -> d)
-          },
+        "correspondence" ->
+          g.daysPerTurn
+            .map { d =>
+              Json.obj("daysPerTurn" -> d)
+            },
         "opening" -> g.opening,
-        "players" -> JsObject(
-          g.players map { p =>
-            p.color.name -> Json
-              .obj(
-                "userId" -> p.userId,
-                "name" -> p.name,
-                "aiLevel" -> p.aiLevel,
-                "rating" -> p.rating,
-                "ratingDiff" -> p.ratingDiff)
-              .noNull
-          }),
+        "players" ->
+          JsObject(
+            g.players map { p =>
+              p.color.name ->
+                Json
+                  .obj(
+                    "userId" -> p.userId,
+                    "name" -> p.name,
+                    "aiLevel" -> p.aiLevel,
+                    "rating" -> p.rating,
+                    "ratingDiff" -> p.ratingDiff)
+                  .noNull
+            }),
         "fen" -> Forsyth.exportBoard(g.toChess.board),
         "lastMove" -> g.castleLastMoveTime.lastMoveString,
         "opening" -> g.opening,

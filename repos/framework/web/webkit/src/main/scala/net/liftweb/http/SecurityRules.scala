@@ -274,8 +274,7 @@ final case class ContentSecurityPolicy(
     val restrictionString = allRestrictions
       .collect {
         case (category, restrictions) if restrictions.nonEmpty =>
-          category +
-            " " +
+          category + " " +
             restrictions.map(_.sourceRestrictionString).mkString(" ")
       }
       .mkString("; ")

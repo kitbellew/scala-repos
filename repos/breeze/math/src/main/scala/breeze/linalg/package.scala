@@ -195,8 +195,8 @@ package object linalg {
     while (i < as.length) {
       // count number of tied values at rank i
       var numTiedValuesAtI = 1
-      while (i + numTiedValuesAtI < as
-               .length && a(as(i + numTiedValuesAtI)) == a(as(i))) {
+      while (i + numTiedValuesAtI < as.length &&
+             a(as(i + numTiedValuesAtI)) == a(as(i))) {
         numTiedValuesAtI += 1
       }
 

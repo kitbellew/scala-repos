@@ -76,9 +76,10 @@ object ConsumerConfig extends Config {
       case OffsetRequest.LargestTimeString  =>
       case _ =>
         throw new InvalidConfigException(
-          "Wrong value " + autoOffsetReset + " of auto.offset.reset in ConsumerConfig; " +
-            "Valid values are " + OffsetRequest
-            .SmallestTimeString + " and " + OffsetRequest.LargestTimeString)
+          "Wrong value " + autoOffsetReset +
+            " of auto.offset.reset in ConsumerConfig; " + "Valid values are " +
+            OffsetRequest.SmallestTimeString + " and " +
+            OffsetRequest.LargestTimeString)
     }
   }
 
@@ -88,7 +89,8 @@ object ConsumerConfig extends Config {
       case "kafka"     =>
       case _ =>
         throw new InvalidConfigException(
-          "Wrong value " + storage + " of offsets.storage in consumer config; " +
+          "Wrong value " + storage +
+            " of offsets.storage in consumer config; " +
             "Valid values are 'zookeeper' and 'kafka'")
     }
   }
@@ -99,7 +101,8 @@ object ConsumerConfig extends Config {
       case "roundrobin" =>
       case _ =>
         throw new InvalidConfigException(
-          "Wrong value " + strategy + " of partition.assignment.strategy in consumer config; " +
+          "Wrong value " + strategy +
+            " of partition.assignment.strategy in consumer config; " +
             "Valid values are 'range' and 'roundrobin'")
     }
   }

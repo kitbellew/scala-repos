@@ -1036,12 +1036,12 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
       case Return(_) =>
         true
       case Throw(f: Failure)
-          if f.cause.exists(_.isInstanceOf[CancelledRequestException]) && f
-            .isFlagged(Failure.Interrupted) =>
+          if f.cause.exists(_.isInstanceOf[CancelledRequestException]) &&
+            f.isFlagged(Failure.Interrupted) =>
         true
       case Throw(f: Failure)
-          if f.cause.exists(_.isInstanceOf[CancelledConnectionException]) && f
-            .isFlagged(Failure.Interrupted) =>
+          if f.cause.exists(_.isInstanceOf[CancelledConnectionException]) &&
+            f.isFlagged(Failure.Interrupted) =>
         true
       // Failure.InterruptedBy(_) would subsume all these eventually after rb/334371
       case Throw(WriteException(_: CancelledRequestException)) =>
@@ -1213,19 +1213,21 @@ private[finagle] class KetamaPartitionedClient(
         ketamaNodeSnap = ketamaNodeGrp()
 
         // remove old nodes and release clients
-        nodes --= (old &~ ketamaNodeSnap) collect {
-          case (key, node) =>
-            node.handle.release()
-            nodeLeaveCount.incr()
-            key
-        }
+        nodes --=
+          (old &~ ketamaNodeSnap) collect {
+            case (key, node) =>
+              node.handle.release()
+              nodeLeaveCount.incr()
+              key
+          }
 
         // new joined node appears as Live state
-        nodes ++= (ketamaNodeSnap &~ old) collect {
-          case (key, node) =>
-            nodeJoinCount.incr()
-            key -> Node(node, NodeState.Live)
-        }
+        nodes ++=
+          (ketamaNodeSnap &~ old) collect {
+            case (key, node) =>
+              nodeJoinCount.incr()
+              key -> Node(node, NodeState.Live)
+          }
 
         rebuildDistributor()
       }
@@ -1276,8 +1278,8 @@ private[finagle] class KetamaPartitionedClient(
       expiry: Time,
       value: Buf,
       casUnique: Buf) =
-    ready.interruptible before super
-      .checkAndSet(key, flags, expiry, value, casUnique)
+    ready.interruptible before
+      super.checkAndSet(key, flags, expiry, value, casUnique)
 
   override def add(key: String, flags: Int, expiry: Time, value: Buf) =
     ready.interruptible before super.add(key, flags, expiry, value)
@@ -1421,9 +1423,8 @@ case class KetamaClientBuilder private[memcached] (
   def build(): Client = {
     val stackBasedClient =
       (
-        _clientBuilder getOrElse ClientBuilder()
-          .hostConnectionLimit(1)
-          .daemon(true)
+        _clientBuilder getOrElse
+          ClientBuilder().hostConnectionLimit(1).daemon(true)
       ).codec(text.Memcached()).underlying
 
     val keyHasher = KeyHasher.byName(_hashName.getOrElse("ketama"))
@@ -1520,9 +1521,8 @@ case class RubyMemCacheClientBuilder(
       : RubyMemCacheClientBuilder = copy(_clientBuilder = Some(clientBuilder))
 
   def build(): PartitionedClient = {
-    val builder = _clientBuilder getOrElse ClientBuilder()
-      .hostConnectionLimit(1)
-      .daemon(true)
+    val builder = _clientBuilder getOrElse
+      ClientBuilder().hostConnectionLimit(1).daemon(true)
     val clients = _nodes.map {
       case (hostname, port, weight) =>
         require(weight == 1, "Ruby memcache node weight must be 1")
@@ -1578,9 +1578,8 @@ case class PHPMemCacheClientBuilder(
       : PHPMemCacheClientBuilder = copy(_clientBuilder = Some(clientBuilder))
 
   def build(): PartitionedClient = {
-    val builder = _clientBuilder getOrElse ClientBuilder()
-      .hostConnectionLimit(1)
-      .daemon(true)
+    val builder = _clientBuilder getOrElse
+      ClientBuilder().hostConnectionLimit(1).daemon(true)
     val keyHasher = KeyHasher.byName(_hashName.getOrElse("crc32-itu"))
     val clients =
       _nodes

@@ -207,11 +207,12 @@ class DStreamScopeSuite
     val inputStream = new DummyInputDStream(ssc)
     val generatedRDDs = new ArrayBuffer[RDD[(Int, Int)]]
     inputStream.foreachRDD { rdd =>
-      generatedRDDs += rdd
-        .map {
-          _ -> 1
-        }
-        .reduceByKey(_ + _)
+      generatedRDDs +=
+        rdd
+          .map {
+            _ -> 1
+          }
+          .reduceByKey(_ + _)
     }
     val batchCounter = new BatchCounter(ssc)
     ssc.start()
@@ -266,9 +267,8 @@ class DStreamScopeSuite
       showYYYYMMSS = false)
     assert(rddScope.id === s"${baseScopeId}_$batchTime")
     assert(
-      rddScope
-        .name
-        .replaceAll("\\n", " ") === s"$baseScopeName @ $formattedBatchTime")
+      rddScope.name.replaceAll("\\n", " ") ===
+        s"$baseScopeName @ $formattedBatchTime")
     assert(rddScope.parent.isEmpty) // There should not be any higher scope
   }
 

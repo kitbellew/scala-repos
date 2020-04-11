@@ -44,9 +44,9 @@ abstract class Plugin {
   def options: List[String] = {
     // Process plugin options of form plugin:option
     def namec = name + ":"
-    global.settings.pluginOptions.value filter (_ startsWith namec) map (
-      _ stripPrefix namec
-    )
+    global.settings.pluginOptions.value filter
+      (_ startsWith namec) map
+      (_ stripPrefix namec)
   }
 
   /** Handle any plugin-specific options.
@@ -153,18 +153,21 @@ object Plugin {
       ignoring: List[String]): List[Try[AnyClass]] = {
     // List[(jar, Try(descriptor))] in dir
     def scan(d: Directory) =
-      d.files.toList sortBy (_.name) filter (Jar isJarOrZip _) map (j =>
-        (j, loadDescriptionFromJar(j)))
+      d.files.toList sortBy
+        (_.name) filter
+        (Jar isJarOrZip _) map
+        (j => (j, loadDescriptionFromJar(j)))
 
     type PDResults = List[Try[(PluginDescription, ScalaClassLoader)]]
 
     // scan plugin dirs for jars containing plugins, ignoring dirs with none and other jars
-    val fromDirs: PDResults = dirs filter (_.isDirectory) flatMap { d =>
-      scan(d.toDirectory) collect {
-        case (j, Success(pd)) =>
-          Success((pd, loaderFor(Seq(j))))
+    val fromDirs: PDResults = dirs filter
+      (_.isDirectory) flatMap { d =>
+        scan(d.toDirectory) collect {
+          case (j, Success(pd)) =>
+            Success((pd, loaderFor(Seq(j))))
+        }
       }
-    }
 
     // scan jar paths for plugins, taking the first plugin you find.
     // a path element can be either a plugin.jar or an exploded dir.
@@ -175,8 +178,8 @@ object Plugin {
             Failure(new MissingPluginException(ps))
           case p :: rest =>
             if (p.isDirectory)
-              loadDescriptionFromFile(p.toDirectory / PluginXML) orElse loop(
-                rest)
+              loadDescriptionFromFile(p.toDirectory / PluginXML) orElse
+                loop(rest)
             else if (p.isFile)
               loadDescriptionFromJar(p.toFile) orElse loop(rest)
             else
@@ -184,30 +187,32 @@ object Plugin {
         }
       loop(ps)
     }
-    val fromPaths: PDResults = paths map (p => (p, findDescriptor(p))) map {
-      case (p, Success(pd)) =>
-        Success((pd, loaderFor(p)))
-      case (_, Failure(e)) =>
-        Failure(e)
-    }
+    val fromPaths: PDResults = paths map
+      (p => (p, findDescriptor(p))) map {
+        case (p, Success(pd)) =>
+          Success((pd, loaderFor(p)))
+        case (_, Failure(e)) =>
+          Failure(e)
+      }
 
     val seen = mutable.HashSet[String]()
-    val enabled = (fromPaths ::: fromDirs) map {
-      case Success((pd, loader)) if seen(pd.classname) =>
-        // a nod to SI-7494, take the plugin classes distinctly
-        Failure(
-          new PluginLoadException(
-            pd.name,
-            s"Ignoring duplicate plugin ${pd.name} (${pd.classname})"))
-      case Success((pd, loader)) if ignoring contains pd.name =>
-        Failure(
-          new PluginLoadException(pd.name, s"Disabling plugin ${pd.name}"))
-      case Success((pd, loader)) =>
-        seen += pd.classname
-        Plugin.load(pd.classname, loader)
-      case Failure(e) =>
-        Failure(e)
-    }
+    val enabled =
+      (fromPaths ::: fromDirs) map {
+        case Success((pd, loader)) if seen(pd.classname) =>
+          // a nod to SI-7494, take the plugin classes distinctly
+          Failure(
+            new PluginLoadException(
+              pd.name,
+              s"Ignoring duplicate plugin ${pd.name} (${pd.classname})"))
+        case Success((pd, loader)) if ignoring contains pd.name =>
+          Failure(
+            new PluginLoadException(pd.name, s"Disabling plugin ${pd.name}"))
+        case Success((pd, loader)) =>
+          seen += pd.classname
+          Plugin.load(pd.classname, loader)
+        case Failure(e) =>
+          Failure(e)
+      }
     enabled // distinct and not disabled
   }
 

@@ -22,9 +22,8 @@ object ToSetAndBackToDistinct extends SimplificationType {
   override def getSimplification(expr: ScExpression): Option[Simplification] = {
     expr match {
       case (qual @ ExpressionType(qualType)) `.toSet` () `.toCollection` ()
-          if sameCollectionType(qualType, expr.getType().getOrAny) && (
-            isSeq(qual) || isArray(qual)
-          ) =>
+          if sameCollectionType(qualType, expr.getType().getOrAny) &&
+            (isSeq(qual) || isArray(qual)) =>
         Some(
           replace(expr)
             .withText(invocationText(qual, "distinct"))

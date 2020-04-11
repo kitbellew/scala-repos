@@ -26,11 +26,12 @@ trait LabelsService {
       repository: String,
       labelName: String,
       color: String)(implicit s: Session): Int =
-    Labels returning Labels.map(_.labelId) += Label(
-      userName = owner,
-      repositoryName = repository,
-      labelName = labelName,
-      color = color)
+    Labels returning Labels.map(_.labelId) +=
+      Label(
+        userName = owner,
+        repositoryName = repository,
+        labelName = labelName,
+        color = color)
 
   def updateLabel(
       owner: String,

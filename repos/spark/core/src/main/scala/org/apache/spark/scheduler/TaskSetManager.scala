@@ -199,8 +199,8 @@ private[spark] class TaskSetManager(
           exe match {
             case Some(set) => {
               for (e <- set) {
-                pendingTasksForExecutor
-                  .getOrElseUpdate(e, new ArrayBuffer) += index
+                pendingTasksForExecutor.getOrElseUpdate(e, new ArrayBuffer) +=
+                  index
               }
               logInfo(
                 s"Pending task $index has a cached location at ${e.host} " +
@@ -224,7 +224,8 @@ private[spark] class TaskSetManager(
       pendingTasksWithNoPrefs += index
     }
 
-    allPendingTasks += index // No point scanning this whole list to find the old task there
+    allPendingTasks +=
+      index // No point scanning this whole list to find the old task there
   }
 
   /**
@@ -290,9 +291,8 @@ private[spark] class TaskSetManager(
       val failed = failedExecutors.get(taskId).get
 
       return failed.contains(execId) &&
-        clock.getTimeMillis() - failed
-          .get(execId)
-          .get < EXECUTOR_TASK_BLACKLIST_TIMEOUT
+        clock.getTimeMillis() - failed.get(execId).get <
+        EXECUTOR_TASK_BLACKLIST_TIMEOUT
     }
 
     false
@@ -614,8 +614,8 @@ private[spark] class TaskSetManager(
           s"No tasks for locality level ${myLocalityLevels(currentLocalityIndex)}, " +
             s"so moving to locality level ${myLocalityLevels(currentLocalityIndex + 1)}")
         currentLocalityIndex += 1
-      } else if (curTime - lastLaunchTime >= localityWaits(
-                   currentLocalityIndex)) {
+      } else if (curTime - lastLaunchTime >=
+                   localityWaits(currentLocalityIndex)) {
         // Jump to the next locality level, and reset lastLaunchTime so that the next locality
         // wait timer doesn't immediately expire
         lastLaunchTime += localityWaits(currentLocalityIndex)
@@ -712,9 +712,9 @@ private[spark] class TaskSetManager(
       }
     } else {
       logInfo(
-        "Ignoring task-finished event for " + info.id + " in stage " + taskSet
-          .id +
-          " because task " + index + " has already completed successfully")
+        "Ignoring task-finished event for " + info.id + " in stage " +
+          taskSet.id + " because task " + index +
+          " has already completed successfully")
     }
     failedExecutors.remove(index)
     maybeFinishTaskSet()
@@ -810,9 +810,9 @@ private[spark] class TaskSetManager(
       .put(info.executorId, clock.getTimeMillis())
     sched.dagScheduler.taskEnded(tasks(index), reason, null, accumUpdates, info)
     addPendingTask(index)
-    if (!isZombie && state != TaskState.KILLED
-        && reason.isInstanceOf[TaskFailedReason]
-        && reason.asInstanceOf[TaskFailedReason].countTowardsTaskFailures) {
+    if (!isZombie && state != TaskState.KILLED &&
+        reason.isInstanceOf[TaskFailedReason] &&
+        reason.asInstanceOf[TaskFailedReason].countTowardsTaskFailures) {
       assert(null != failureReason)
       numFailures(index) += 1
       if (numFailures(index) >= maxTaskFailures) {
@@ -878,9 +878,8 @@ private[spark] class TaskSetManager(
     // and we are not using an external shuffle server which could serve the shuffle outputs.
     // The reason is the next stage wouldn't be able to fetch the data from this dead executor
     // so we would need to rerun these tasks on other executors.
-    if (tasks(0).isInstanceOf[ShuffleMapTask] && !env
-          .blockManager
-          .externalShuffleServiceEnabled) {
+    if (tasks(0).isInstanceOf[ShuffleMapTask] &&
+        !env.blockManager.externalShuffleServiceEnabled) {
       for ((tid, info) <- taskInfos
            if info.executorId == execId) {
         val index = taskInfos(tid).index
@@ -939,10 +938,12 @@ private[spark] class TaskSetManager(
       return false
     }
     var foundTasks = false
-    val minFinishedForSpeculation =
-      (SPECULATION_QUANTILE * numTasks).floor.toInt
+    val minFinishedForSpeculation = (SPECULATION_QUANTILE * numTasks)
+      .floor
+      .toInt
     logDebug(
-      "Checking for speculative tasks: minFinished = " + minFinishedForSpeculation)
+      "Checking for speculative tasks: minFinished = " +
+        minFinishedForSpeculation)
     if (tasksSuccessful >= minFinishedForSpeculation && tasksSuccessful > 0) {
       val time = clock.getTimeMillis()
       val durations =
@@ -956,8 +957,8 @@ private[spark] class TaskSetManager(
       logDebug("Task length threshold for speculation: " + threshold)
       for ((tid, info) <- taskInfos) {
         val index = info.index
-        if (!successful(index) && copiesRunning(index) == 1 && info
-              .timeRunning(time) > threshold &&
+        if (!successful(index) && copiesRunning(index) == 1 &&
+            info.timeRunning(time) > threshold &&
             !speculatableTasks.contains(index)) {
           logInfo(
             "Marking task %d in stage %s (on %s) as speculatable because it ran more than %.0f ms"
@@ -999,8 +1000,8 @@ private[spark] class TaskSetManager(
   private def computeValidLocalityLevels(): Array[TaskLocality.TaskLocality] = {
     import TaskLocality.{PROCESS_LOCAL, NODE_LOCAL, NO_PREF, RACK_LOCAL, ANY}
     val levels = new ArrayBuffer[TaskLocality.TaskLocality]
-    if (!pendingTasksForExecutor
-          .isEmpty && getLocalityWait(PROCESS_LOCAL) != 0 &&
+    if (!pendingTasksForExecutor.isEmpty &&
+        getLocalityWait(PROCESS_LOCAL) != 0 &&
         pendingTasksForExecutor.keySet.exists(sched.isExecutorAlive(_))) {
       levels += PROCESS_LOCAL
     }

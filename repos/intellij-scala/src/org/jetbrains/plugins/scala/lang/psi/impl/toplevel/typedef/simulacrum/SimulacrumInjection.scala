@@ -36,9 +36,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
   */
 class SimulacrumInjection extends SyntheticMembersInjector {
   override def needsCompanionObject(source: ScTypeDefinition): Boolean = {
-    source.findAnnotationNoAliases("simulacrum.typeclass") != null && source
-      .typeParameters
-      .length == 1
+    source.findAnnotationNoAliases("simulacrum.typeclass") != null &&
+    source.typeParameters.length == 1
   }
 
   override def injectFunctions(source: ScTypeDefinition): Seq[String] = {
@@ -46,10 +45,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
       case obj: ScObject =>
         obj.fakeCompanionClassOrCompanionClass match {
           case clazz: ScTypeDefinition
-              if clazz.findAnnotationNoAliases(
-                "simulacrum.typeclass") != null && clazz
-                .typeParameters
-                .length == 1 =>
+              if clazz.findAnnotationNoAliases("simulacrum.typeclass") !=
+                null && clazz.typeParameters.length == 1 =>
             val tpName = clazz.typeParameters.head.name
 
             val tpText = ScalaPsiUtil.typeParamString(clazz.typeParameters.head)
@@ -69,10 +66,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
       case obj: ScObject =>
         ScalaPsiUtil.getCompanionModule(obj) match {
           case Some(clazz)
-              if clazz.findAnnotationNoAliases(
-                "simulacrum.typeclass") != null && clazz
-                .typeParameters
-                .length == 1 =>
+              if clazz.findAnnotationNoAliases("simulacrum.typeclass") !=
+                null && clazz.typeParameters.length == 1 =>
             val clazzTypeParam = clazz.typeParameters.head
             val tpName = clazzTypeParam.name
             val tpText = ScalaPsiUtil.typeParamString(clazzTypeParam)
@@ -173,10 +168,11 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                           def paramText(p: ScParameter): String = {
                             substOpt match {
                               case Some(subst) =>
-                                p.name + " : " + subst
-                                  .subst(
-                                    p.getType(TypingContext.empty).getOrAny)
-                                  .canonicalText
+                                p.name + " : " +
+                                  subst
+                                    .subst(
+                                      p.getType(TypingContext.empty).getOrAny)
+                                    .canonicalText
                               case _ =>
                                 p.getText
                             }
@@ -185,12 +181,11 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                             p.parameters
                               .map(paramText)
                               .mkString(
-                                "(" + (
-                                  if (p.isImplicit)
-                                    "implicit "
-                                  else
-                                    ""
-                                ),
+                                "(" +
+                                  (if (p.isImplicit)
+                                     "implicit "
+                                   else
+                                     ""),
                                 ", ",
                                 ")")
                           }

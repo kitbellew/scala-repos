@@ -10,12 +10,10 @@ object StringUtils {
       .toUpperCase
   def managerToService(s: String) = {
     val jc = toJavaConst(s.replace("DropBox", "Dropbox"))
-    (
-      if (jc.endsWith("MANAGER"))
-        jc.split('_').init.mkString("_")
-      else
-        jc
-    ) + "_SERVICE"
+    (if (jc.endsWith("MANAGER"))
+       jc.split('_').init.mkString("_")
+     else
+       jc) + "_SERVICE"
   }
 
   def dotToSlash(s: String) = s.replace(".", "/")

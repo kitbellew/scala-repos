@@ -106,8 +106,8 @@ object Conformance {
 
     val args1Iterator = args1.iterator
     val args2Iterator = args2.iterator
-    while (parametersIterator.hasNext && args1Iterator.hasNext && args2Iterator
-             .hasNext) {
+    while (parametersIterator.hasNext && args1Iterator.hasNext &&
+           args2Iterator.hasNext) {
       val tp = parametersIterator.next()
       val argsPair = (args1Iterator.next(), args2Iterator.next())
       tp match {
@@ -161,11 +161,8 @@ object Conformance {
               if (!addAbstract(upper, lower, left, alternateLeft))
                 return (false, undefinedSubst)
             case (aliasType, _)
-                if aliasType.isAliasType != None && aliasType
-                  .isAliasType
-                  .get
-                  .ta
-                  .isExistentialTypeAlias =>
+                if aliasType.isAliasType != None &&
+                  aliasType.isAliasType.get.ta.isExistentialTypeAlias =>
               val y = Conformance.conformsInner(
                 argsPair._1,
                 argsPair._2,
@@ -814,17 +811,17 @@ object Conformance {
             val t = conformsInner(comp, r, HashSet.empty, undefinedSubst)
             undefinedSubst = t._2
             t._1
-          }) && c
-          .signatureMap
-          .forall {
-            case (s: Signature, retType) =>
-              workWithSignature(s, retType)
-          } && c
-          .typesMap
-          .forall {
-            case (s, sign) =>
-              workWithTypeAlias(sign)
-          },
+          }) &&
+          c.signatureMap
+            .forall {
+              case (s: Signature, retType) =>
+                workWithSignature(s, retType)
+            } &&
+          c.typesMap
+            .forall {
+              case (s, sign) =>
+                workWithTypeAlias(sign)
+            },
         undefinedSubst)
     }
 
@@ -1061,11 +1058,8 @@ object Conformance {
               undefinedSubst = undefinedSubst
                 .addUpper((u.tpt.name, u.tpt.getId), lt, variance = 0)
             case (tp, _)
-                if tp.isAliasType != None && tp
-                  .isAliasType
-                  .get
-                  .ta
-                  .isExistentialTypeAlias =>
+                if tp.isAliasType != None &&
+                  tp.isAliasType.get.ta.isExistentialTypeAlias =>
               val y = Conformance.conformsInner(
                 argsPair._1,
                 argsPair._2,
@@ -1093,21 +1087,20 @@ object Conformance {
         case p2: ScParameterizedType =>
           val args = p2.typeArgs
           val des = p2.designator
-          if (args.length == 1 && (
-                ScType.extractClass(des) match {
-                  case Some(q) =>
-                    q.qualifiedName == "scala.Array"
-                  case _ =>
-                    false
-                }
-              )) {
+          if (args.length == 1 &&
+              (ScType.extractClass(des) match {
+                case Some(q) =>
+                  q.qualifiedName == "scala.Array"
+                case _ =>
+                  false
+              })) {
             val arg = a1.arg
             val argsPair = (arg, args(0))
             argsPair match {
               case (ScAbstractType(tpt, lower, upper), r) =>
                 val right =
-                  if (tpt.args.length > 0 && !r
-                        .isInstanceOf[ScParameterizedType])
+                  if (tpt.args.length > 0 &&
+                      !r.isInstanceOf[ScParameterizedType])
                     ScParameterizedType(r, tpt.args)
                   else
                     r
@@ -1139,8 +1132,8 @@ object Conformance {
                 }
               case (l, ScAbstractType(tpt, lower, upper)) =>
                 val left =
-                  if (tpt.args.length > 0 && !l
-                        .isInstanceOf[ScParameterizedType])
+                  if (tpt.args.length > 0 &&
+                      !l.isInstanceOf[ScParameterizedType])
                     ScParameterizedType(l, tpt.args)
                   else
                     l
@@ -1181,11 +1174,8 @@ object Conformance {
                 undefinedSubst = undefinedSubst
                   .addUpper((u.tpt.name, u.tpt.getId), lt, variance = 0)
               case (tp, _)
-                  if tp.isAliasType != None && tp
-                    .isAliasType
-                    .get
-                    .ta
-                    .isExistentialTypeAlias =>
+                  if tp.isAliasType != None &&
+                    tp.isAliasType.get.ta.isExistentialTypeAlias =>
                 val y = Conformance.conformsInner(
                   argsPair._1,
                   argsPair._2,
@@ -1366,9 +1356,8 @@ object Conformance {
             if proj.actualElement.isInstanceOf[ScTypeAlias] =>
           r match {
             case ScParameterizedType(proj2: ScProjectionType, args2)
-                if proj.actualElement.isInstanceOf[ScTypeAliasDeclaration] && (
-                  proj equiv proj2
-                ) =>
+                if proj.actualElement.isInstanceOf[ScTypeAliasDeclaration] &&
+                  (proj equiv proj2) =>
               processEquivalentDesignators(args2)
               return
             case _ =>
@@ -1397,9 +1386,8 @@ object Conformance {
             case ScParameterizedType(
                   des2 @ ScDesignatorType(a2: ScTypeAlias),
                   args2)
-                if a.isInstanceOf[ScTypeAliasDeclaration] && (
-                  p.designator equiv des2
-                ) =>
+                if a.isInstanceOf[ScTypeAliasDeclaration] &&
+                  (p.designator equiv des2) =>
               processEquivalentDesignators(args2)
               return
             case _ =>
@@ -1437,21 +1425,20 @@ object Conformance {
         case _: JavaArrayType =>
           val args = p.typeArgs
           val des = p.designator
-          if (args.length == 1 && (
-                ScType.extractClass(des) match {
-                  case Some(q) =>
-                    q.qualifiedName == "scala.Array"
-                  case _ =>
-                    false
-                }
-              )) {
+          if (args.length == 1 &&
+              (ScType.extractClass(des) match {
+                case Some(q) =>
+                  q.qualifiedName == "scala.Array"
+                case _ =>
+                  false
+              })) {
             val arg = r.asInstanceOf[JavaArrayType].arg
             val argsPair = (arg, args(0))
             argsPair match {
               case (ScAbstractType(tpt, lower, upper), r) =>
                 val right =
-                  if (tpt.args.length > 0 && !r
-                        .isInstanceOf[ScParameterizedType])
+                  if (tpt.args.length > 0 &&
+                      !r.isInstanceOf[ScParameterizedType])
                     ScParameterizedType(r, tpt.args)
                   else
                     r
@@ -1483,8 +1470,8 @@ object Conformance {
                 }
               case (l, ScAbstractType(tpt, lower, upper)) =>
                 val left =
-                  if (tpt.args.length > 0 && !l
-                        .isInstanceOf[ScParameterizedType])
+                  if (tpt.args.length > 0 &&
+                      !l.isInstanceOf[ScParameterizedType])
                     ScParameterizedType(l, tpt.args)
                   else
                     l
@@ -1525,11 +1512,8 @@ object Conformance {
                 undefinedSubst = undefinedSubst
                   .addUpper((u.tpt.name, u.tpt.getId), lt, variance = 0)
               case (tp, _)
-                  if tp.isAliasType.isDefined && tp
-                    .isAliasType
-                    .get
-                    .ta
-                    .isExistentialTypeAlias =>
+                  if tp.isAliasType.isDefined &&
+                    tp.isAliasType.get.ta.isExistentialTypeAlias =>
                 val y = Conformance.conformsInner(
                   argsPair._1,
                   argsPair._2,
@@ -1972,9 +1956,8 @@ object Conformance {
                     .values
                     .exists {
                       case tpt: ScTypeParameterType =>
-                        id == (
-                          tpt.name, ScalaPsiUtil.getPsiElementId(tpt.param)
-                        )
+                        id ==
+                          (tpt.name, ScalaPsiUtil.getPsiElementId(tpt.param))
                     }
               }
               val newUndefSubst =
@@ -2449,29 +2432,30 @@ object Conformance {
           }
           val subst =
             new ScSubstitutor(
-              new collection.immutable.HashMap[
-                (String, PsiElement),
-                ScType] ++ typeParameters1
-                .zip(typeParameters2)
-                .map({ tuple =>
-                  (
-                    (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
-                    new ScTypeParameterType(
-                      tuple._2.name,
-                      tuple._2.ptp match {
-                        case p: ScTypeParam =>
-                          p.typeParameters
-                            .toList
-                            .map {
-                              new ScTypeParameterType(_, ScSubstitutor.empty)
-                            }
-                        case _ =>
-                          Nil
-                      },
-                      new Suspension(tuple._2.lowerType),
-                      new Suspension(tuple._2.upperType),
-                      tuple._2.ptp))
-                }),
+              new collection.immutable.HashMap[(String, PsiElement), ScType] ++
+                typeParameters1
+                  .zip(typeParameters2)
+                  .map({ tuple =>
+                    (
+                      (
+                        tuple._1.name,
+                        ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
+                      new ScTypeParameterType(
+                        tuple._2.name,
+                        tuple._2.ptp match {
+                          case p: ScTypeParam =>
+                            p.typeParameters
+                              .toList
+                              .map {
+                                new ScTypeParameterType(_, ScSubstitutor.empty)
+                              }
+                          case _ =>
+                            Nil
+                        },
+                        new Suspension(tuple._2.lowerType),
+                        new Suspension(tuple._2.upperType),
+                        tuple._2.ptp))
+                  }),
               Map.empty,
               None)
           val t = conformsInner(

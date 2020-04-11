@@ -171,9 +171,7 @@ object RobustClientExample extends App {
 
   //#robustclient
   val newClient =
-    retry andThen
-      timeout andThen
-      maskCancel andThen client
+    retry andThen timeout andThen maskCancel andThen client
 
   val result = newClient("hello")
   println(Await.result(result))

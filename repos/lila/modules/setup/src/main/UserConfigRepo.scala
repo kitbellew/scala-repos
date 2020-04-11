@@ -26,7 +26,8 @@ private[setup] object UserConfigRepo {
         logger.warn("Can't load config", e)
         none[UserConfig]
       }
-    } map (_ | UserConfig.default(user.id))
+    } map
+      (_ | UserConfig.default(user.id))
 
   def filter(user: User): Fu[FilterConfig] =
     userConfigTube

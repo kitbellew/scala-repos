@@ -170,17 +170,15 @@ private[yarn] class ExecutorRunnable(
     sparkConf
       .get(EXECUTOR_JAVA_OPTIONS)
       .foreach { opts =>
-        javaOpts ++= Utils
-          .splitCommandString(opts)
-          .map(YarnSparkHadoopUtil.escapeForShell)
+        javaOpts ++=
+          Utils.splitCommandString(opts).map(YarnSparkHadoopUtil.escapeForShell)
       }
     sys
       .env
       .get("SPARK_JAVA_OPTS")
       .foreach { opts =>
-        javaOpts ++= Utils
-          .splitCommandString(opts)
-          .map(YarnSparkHadoopUtil.escapeForShell)
+        javaOpts ++=
+          Utils.splitCommandString(opts).map(YarnSparkHadoopUtil.escapeForShell)
       }
     sparkConf
       .get(EXECUTOR_LIBRARY_PATH)
@@ -236,10 +234,9 @@ private[yarn] class ExecutorRunnable(
      */
 
     // For log4j configuration to reference
-    javaOpts += (
-      "-Dspark.yarn.app.container.log.dir=" + ApplicationConstants
-        .LOG_DIR_EXPANSION_VAR
-    )
+    javaOpts +=
+      ("-Dspark.yarn.app.container.log.dir=" +
+        ApplicationConstants.LOG_DIR_EXPANSION_VAR)
     YarnCommandBuilderUtils.addPermGenSizeOpt(javaOpts)
 
     val userClassPath =
@@ -256,18 +253,18 @@ private[yarn] class ExecutorRunnable(
         }
         .toSeq
 
-    val commands = prefixEnv ++ Seq(
-      YarnSparkHadoopUtil
-        .expandEnvironment(Environment.JAVA_HOME) + "/bin/java",
-      "-server",
-      // Kill if OOM is raised - leverage yarn's failure handling to cause rescheduling.
-      // Not killing the task leaves various aspects of the executor and (to some extent) the jvm in
-      // an inconsistent state.
-      // TODO: If the OOM is not recoverable by rescheduling it on different node, then do
-      // 'something' to fail job ... akin to blacklisting trackers in mapred ?
-      YarnSparkHadoopUtil.getOutOfMemoryErrorArgument
-    ) ++
-      javaOpts ++
+    val commands = prefixEnv ++
+      Seq(
+        YarnSparkHadoopUtil.expandEnvironment(Environment.JAVA_HOME) +
+          "/bin/java",
+        "-server",
+        // Kill if OOM is raised - leverage yarn's failure handling to cause rescheduling.
+        // Not killing the task leaves various aspects of the executor and (to some extent) the jvm in
+        // an inconsistent state.
+        // TODO: If the OOM is not recoverable by rescheduling it on different node, then do
+        // 'something' to fail job ... akin to blacklisting trackers in mapred ?
+        YarnSparkHadoopUtil.getOutOfMemoryErrorArgument
+      ) ++ javaOpts ++
       Seq(
         "org.apache.spark.executor.CoarseGrainedExecutorBackend",
         "--driver-url",
@@ -280,8 +277,7 @@ private[yarn] class ExecutorRunnable(
         executorCores.toString,
         "--app-id",
         appId
-      ) ++
-      userClassPath ++
+      ) ++ userClassPath ++
       Seq(
         "1>",
         ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout",

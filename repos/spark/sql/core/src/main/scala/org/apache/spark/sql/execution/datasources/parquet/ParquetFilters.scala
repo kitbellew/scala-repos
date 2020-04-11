@@ -261,9 +261,10 @@ private[sql] object ParquetFilters {
             !f.metadata.contains(StructType.metadataKeyForOptionalField) ||
             !f.metadata.getBoolean(StructType.metadataKeyForOptionalField)
           }
-          .map(f => f.name -> f.dataType) ++ fields.flatMap { f =>
-          getFieldMap(f.dataType)
-        }
+          .map(f => f.name -> f.dataType) ++
+          fields.flatMap { f =>
+            getFieldMap(f.dataType)
+          }
       case _ =>
         Array.empty[(String, DataType)]
     }

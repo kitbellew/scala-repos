@@ -50,11 +50,8 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
     }
 
   private def gameQuery(user: User) =
-    Query.user(user.id) ++
-      Query.rated ++
-      Query.finished ++
-      Query.turnsMoreThan(2) ++
-      Query.notFromPosition ++
+    Query.user(user.id) ++ Query.rated ++ Query.finished ++
+      Query.turnsMoreThan(2) ++ Query.notFromPosition ++
       Query.notHordeOrSincePawnsAreWhite
 
   // private val maxGames = 1 * 10
@@ -89,8 +86,8 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
           } map (_.toOption)
         }
       val query = $query(
-        gameQuery(user) ++ Json
-          .obj(Game.BSONFields.createdAt -> $gte($date(from))))
+        gameQuery(user) ++
+          Json.obj(Game.BSONFields.createdAt -> $gte($date(from))))
       pimpQB(query)
         .sort(Query.sortChronological)
         .cursor[Game]()
@@ -107,8 +104,7 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
                 println(e)
                 e.printStackTrace
               }
-          } &>
-        Enumeratee.grouped(Iteratee takeUpTo 50) |>>>
+          } &> Enumeratee.grouped(Iteratee takeUpTo 50) |>>>
         Iteratee.foldM[Seq[Seq[Entry]], Int](fromNumber) {
           case (number, xs) =>
             val entries = xs

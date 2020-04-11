@@ -15,29 +15,33 @@ class FramedStringProtocolSpec extends EnsimeSpec {
     override def encode(msg: RpcResponseEnvelope): ByteString = ???
   }
 
-  "FramedStringProtocol" should "write framed strings" in new Proto {
-    val buffer = writeString("foobar")
-    val written = buffer.utf8String
+  "FramedStringProtocol" should "write framed strings" in
+    new Proto {
+      val buffer = writeString("foobar")
+      val written = buffer.utf8String
 
-    written shouldBe "000006foobar"
-  }
+      written shouldBe "000006foobar"
+    }
 
-  it should "write multi-byte UTF-8 strings" in new Proto {
-    val buffer = writeString("€")
-    val written = buffer.utf8String
+  it should "write multi-byte UTF-8 strings" in
+    new Proto {
+      val buffer = writeString("€")
+      val written = buffer.utf8String
 
-    written shouldBe "000003€"
-  }
+      written shouldBe "000003€"
+    }
 
-  it should "read framed strings" in new Proto {
-    val read = tryReadString(ByteString("000006foobar", "UTF-8"))
+  it should "read framed strings" in
+    new Proto {
+      val read = tryReadString(ByteString("000006foobar", "UTF-8"))
 
-    read shouldBe ((Some("foobar"), ByteString()))
-  }
+      read shouldBe ((Some("foobar"), ByteString()))
+    }
 
-  it should "read multi-byte UTF-8 strings" in new Proto {
-    val read = tryReadString(ByteString("000003€000003€", "UTF-8"))
+  it should "read multi-byte UTF-8 strings" in
+    new Proto {
+      val read = tryReadString(ByteString("000003€000003€", "UTF-8"))
 
-    read shouldBe ((Some("€"), ByteString("000003€", "UTF-8")))
-  }
+      read shouldBe ((Some("€"), ByteString("000003€", "UTF-8")))
+    }
 }

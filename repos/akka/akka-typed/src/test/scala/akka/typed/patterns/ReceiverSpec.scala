@@ -107,20 +107,20 @@ class ReceiverSpec extends TypedSpec {
         ext.run(Msg(1))
         int.run(GetOne(Duration.Zero)(inbox.ref))
         int.getAllEffects() should be(Nil)
-        inbox
-          .receiveAll() should be(GetOneResult(int.self, Some(Msg(1))) :: Nil)
+        inbox.receiveAll() should
+          be(GetOneResult(int.self, Some(Msg(1))) :: Nil)
         // then with positive timeout
         ext.run(Msg(2))
         int.run(GetOne(1.second)(inbox.ref))
         int.getAllEffects() should be(Nil)
-        inbox
-          .receiveAll() should be(GetOneResult(int.self, Some(Msg(2))) :: Nil)
+        inbox.receiveAll() should
+          be(GetOneResult(int.self, Some(Msg(2))) :: Nil)
         // then with negative timeout
         ext.run(Msg(3))
         int.run(GetOne(-1.second)(inbox.ref))
         int.getAllEffects() should be(Nil)
-        inbox
-          .receiveAll() should be(GetOneResult(int.self, Some(Msg(3))) :: Nil)
+        inbox.receiveAll() should
+          be(GetOneResult(int.self, Some(Msg(3))) :: Nil)
       }
 
     def `must receive one message which arrives later`(): Unit =
@@ -138,8 +138,8 @@ class ReceiverSpec extends TypedSpec {
           case ReceiveTimeoutSet(d) :: Nil ⇒
             d should be theSameInstanceAs (Duration.Undefined)
         }
-        inbox
-          .receiveAll() should be(GetOneResult(int.self, Some(Msg(1))) :: Nil)
+        inbox.receiveAll() should
+          be(GetOneResult(int.self, Some(Msg(1))) :: Nil)
       }
 
     def `must reply with no message when asked for immediate value`(): Unit =
@@ -181,17 +181,17 @@ class ReceiverSpec extends TypedSpec {
         ext.run(Msg(3))
         ext.run(Msg(4))
         int.run(GetOne(Duration.Zero)(inbox.ref))
-        inbox
-          .receiveAll() should be(GetOneResult(int.self, Some(Msg(1))) :: Nil)
+        inbox.receiveAll() should
+          be(GetOneResult(int.self, Some(Msg(1))) :: Nil)
         int.run(GetOne(Duration.Zero)(inbox.ref))
-        inbox
-          .receiveAll() should be(GetOneResult(int.self, Some(Msg(2))) :: Nil)
+        inbox.receiveAll() should
+          be(GetOneResult(int.self, Some(Msg(2))) :: Nil)
         int.run(GetOne(Duration.Zero)(inbox.ref))
         int.run(GetOne(Duration.Zero)(inbox.ref))
-        inbox.receiveAll() should be(
-          GetOneResult(int.self, Some(Msg(3))) :: GetOneResult(
-            int.self,
-            Some(Msg(4))) :: Nil)
+        inbox.receiveAll() should
+          be(
+            GetOneResult(int.self, Some(Msg(3))) ::
+              GetOneResult(int.self, Some(Msg(4))) :: Nil)
         int.hasEffects should be(false)
       }
 
@@ -201,14 +201,14 @@ class ReceiverSpec extends TypedSpec {
         ext.run(Msg(1))
         ext.run(Msg(2))
         int.run(GetAll(Duration.Zero)(inbox.ref))
-        inbox.receiveAll() should be(
-          GetAllResult(int.self, List(Msg(1), Msg(2))) :: Nil)
+        inbox.receiveAll() should
+          be(GetAllResult(int.self, List(Msg(1), Msg(2))) :: Nil)
         // now with negative timeout
         ext.run(Msg(3))
         ext.run(Msg(4))
         int.run(GetAll(-1.second)(inbox.ref))
-        inbox.receiveAll() should be(
-          GetAllResult(int.self, List(Msg(3), Msg(4))) :: Nil)
+        inbox.receiveAll() should
+          be(GetAllResult(int.self, List(Msg(3), Msg(4))) :: Nil)
         int.hasEffects should be(false)
       }
 
@@ -231,8 +231,8 @@ class ReceiverSpec extends TypedSpec {
               assertScheduled(s, int.self)
           }
         int.run(msg)
-        inbox.receiveAll() should be(
-          GetAllResult(int.self, List(Msg(1), Msg(2))) :: Nil)
+        inbox.receiveAll() should
+          be(GetAllResult(int.self, List(Msg(1), Msg(2))) :: Nil)
         int.hasEffects should be(false)
       }
 
@@ -250,8 +250,8 @@ class ReceiverSpec extends TypedSpec {
         inbox.hasMessages should be(false)
         ext.run(Msg(3))
         int.run(msg)
-        inbox.receiveAll() should be(
-          GetAllResult(int.self, List(Msg(1), Msg(2), Msg(3))) :: Nil)
+        inbox.receiveAll() should
+          be(GetAllResult(int.self, List(Msg(1), Msg(2), Msg(3))) :: Nil)
         int.hasEffects should be(false)
       }
 
@@ -267,8 +267,8 @@ class ReceiverSpec extends TypedSpec {
         ext.run(Msg(2))
         inbox.hasMessages should be(false)
         int.run(msg)
-        inbox.receiveAll() should be(
-          GetAllResult(int.self, List(Msg(1), Msg(2))) :: Nil)
+        inbox.receiveAll() should
+          be(GetAllResult(int.self, List(Msg(1), Msg(2))) :: Nil)
         int.hasEffects should be(false)
       }
 

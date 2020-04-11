@@ -61,8 +61,8 @@ trait Mapper[A <: Mapper[A]]
   }
 
   def connectionIdentifier(id: ConnectionIdentifier): A = {
-    if (id != getSingleton
-          .dbDefaultConnectionIdentifier || dbConnectionIdentifier.isDefined)
+    if (id != getSingleton.dbDefaultConnectionIdentifier ||
+        dbConnectionIdentifier.isDefined)
       dbConnectionIdentifier = Full(id)
     thisToMappee(this)
   }
@@ -247,14 +247,12 @@ trait Mapper[A <: Mapper[A]]
           } value="n/a" />
         )
       } ++
-      (
-        button.map(b =>
-          getSingleton.formatFormElement(
-            <xml:group>&nbsp;</xml:group>,
-            <input type="submit" value={
-              b
-            }/>)) openOr scala.xml.Text("")
-      )
+      (button.map(b =>
+        getSingleton.formatFormElement(
+          <xml:group>&nbsp;</xml:group>,
+          <input type="submit" value={
+            b
+          }/>)) openOr scala.xml.Text(""))
 
   def toForm(
       button: Box[String],
@@ -276,14 +274,12 @@ trait Mapper[A <: Mapper[A]]
         <input type='hidden' name={
           name
         } value="n/a" />) ++
-      (
-        button.map(b =>
-          getSingleton.formatFormElement(
-            <xml:group>&nbsp;</xml:group>,
-            <input type="submit" value={
-              b
-            }/>)) openOr scala.xml.Text("")
-      )
+      (button.map(b =>
+        getSingleton.formatFormElement(
+          <xml:group>&nbsp;</xml:group>,
+          <input type="submit" value={
+            b
+          }/>)) openOr scala.xml.Text(""))
   }
 
   def saved_? : Boolean = getSingleton.saved_?(this)

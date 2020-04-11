@@ -79,16 +79,17 @@ class TaskReplaceActorTest
     watch(ref)
 
     for (i <- 0 until app.instances)
-      ref ! MesosStatusUpdateEvent(
-        "",
-        Task.Id(s"task_$i"),
-        "TASK_RUNNING",
-        "",
-        app.id,
-        "",
-        Nil,
-        Nil,
-        app.version.toString)
+      ref !
+        MesosStatusUpdateEvent(
+          "",
+          Task.Id(s"task_$i"),
+          "TASK_RUNNING",
+          "",
+          app.id,
+          "",
+          Nil,
+          Nil,
+          app.version.toString)
 
     Await.result(promise.future, 5.seconds)
     verify(queue).resetDelay(app)
@@ -146,11 +147,12 @@ class TaskReplaceActorTest
     watch(ref)
 
     for (i <- 0 until app.instances)
-      ref ! HealthStatusChanged(
-        app.id,
-        Task.Id(s"task_$i"),
-        app.version,
-        alive = true)
+      ref !
+        HealthStatusChanged(
+          app.id,
+          Task.Id(s"task_$i"),
+          app.version,
+          alive = true)
 
     Await.result(promise.future, 5.seconds)
     verify(queue).resetDelay(app)
@@ -213,26 +215,28 @@ class TaskReplaceActorTest
       verify(queue, times(2)).add(app)
     }
 
-    ref ! MesosStatusUpdateEvent(
-      "",
-      Task.Id("task_1"),
-      "TASK_RUNNING",
-      "",
-      app.id,
-      "",
-      Nil,
-      Nil,
-      app.version.toString)
-    ref ! MesosStatusUpdateEvent(
-      "",
-      Task.Id("task_2"),
-      "TASK_RUNNING",
-      "",
-      app.id,
-      "",
-      Nil,
-      Nil,
-      app.version.toString)
+    ref !
+      MesosStatusUpdateEvent(
+        "",
+        Task.Id("task_1"),
+        "TASK_RUNNING",
+        "",
+        app.id,
+        "",
+        Nil,
+        Nil,
+        app.version.toString)
+    ref !
+      MesosStatusUpdateEvent(
+        "",
+        Task.Id("task_2"),
+        "TASK_RUNNING",
+        "",
+        app.id,
+        "",
+        Nil,
+        Nil,
+        app.version.toString)
 
     Await.result(promise.future, 5.seconds)
 
@@ -305,31 +309,22 @@ class TaskReplaceActorTest
     assert(oldTaskCount == 2)
 
     // first new task becomes healthy and another old task is killed
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id(s"task_0"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id(s"task_0"), app.version, alive = true)
     eventually {
       oldTaskCount should be(1)
     }
 
     // second new task becomes healthy and the last old task is killed
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id(s"task_1"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id(s"task_1"), app.version, alive = true)
     eventually {
       oldTaskCount should be(0)
     }
 
     // third new task becomes healthy
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id(s"task_2"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id(s"task_2"), app.version, alive = true)
     oldTaskCount should be(0)
 
     Await.result(promise.future, 5.seconds)
@@ -405,11 +400,8 @@ class TaskReplaceActorTest
     assert(oldTaskCount == 2)
 
     // first new task becomes healthy and another old task is killed
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id("task_0"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id("task_0"), app.version, alive = true)
     eventually {
       oldTaskCount should be(1)
     }
@@ -418,11 +410,8 @@ class TaskReplaceActorTest
     }
 
     // second new task becomes healthy and the last old task is killed
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id("task_1"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id("task_1"), app.version, alive = true)
     eventually {
       oldTaskCount should be(0)
     }
@@ -431,11 +420,8 @@ class TaskReplaceActorTest
     }
 
     // third new task becomes healthy
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id("task_2"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id("task_2"), app.version, alive = true)
     oldTaskCount should be(0)
 
     Await.result(promise.future, 5.seconds)
@@ -511,11 +497,8 @@ class TaskReplaceActorTest
     assert(oldTaskCount == 3)
 
     // first new task becomes healthy and another old task is killed
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id("task_0"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id("task_0"), app.version, alive = true)
     eventually {
       oldTaskCount should be(2)
     }
@@ -524,11 +507,8 @@ class TaskReplaceActorTest
     }
 
     // second new task becomes healthy and another old task is killed
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id("task_1"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id("task_1"), app.version, alive = true)
     eventually {
       oldTaskCount should be(1)
     }
@@ -537,11 +517,8 @@ class TaskReplaceActorTest
     }
 
     // third new task becomes healthy and last old task is killed
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id("task_2"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id("task_2"), app.version, alive = true)
     eventually {
       oldTaskCount should be(0)
     }
@@ -618,11 +595,8 @@ class TaskReplaceActorTest
     assert(oldTaskCount == 3)
 
     // first new task becomes healthy and another old task is killed
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id("task_0"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id("task_0"), app.version, alive = true)
     eventually {
       oldTaskCount should be(2)
     }
@@ -631,22 +605,16 @@ class TaskReplaceActorTest
     }
 
     // second new task becomes healthy and another old task is killed
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id("task_1"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id("task_1"), app.version, alive = true)
     eventually {
       oldTaskCount should be(1)
     }
     queueOrder.verify(queue, never()).add(_: AppDefinition, 1)
 
     // third new task becomes healthy and last old task is killed
-    ref ! HealthStatusChanged(
-      app.id,
-      Task.Id("task_2"),
-      app.version,
-      alive = true)
+    ref !
+      HealthStatusChanged(app.id, Task.Id("task_2"), app.version, alive = true)
     eventually {
       oldTaskCount should be(0)
     }
@@ -752,16 +720,17 @@ class TaskReplaceActorTest
     ref ! RetryKills
 
     for (i <- 0 until app.instances)
-      ref ! MesosStatusUpdateEvent(
-        "",
-        Task.Id(s"task_$i"),
-        "TASK_RUNNING",
-        "",
-        app.id,
-        "",
-        Nil,
-        Nil,
-        app.version.toString)
+      ref !
+        MesosStatusUpdateEvent(
+          "",
+          Task.Id(s"task_$i"),
+          "TASK_RUNNING",
+          "",
+          app.id,
+          "",
+          Nil,
+          Nil,
+          app.version.toString)
 
     Await.result(promise.future, 5.seconds)
     verify(queue).resetDelay(app)

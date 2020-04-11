@@ -52,11 +52,12 @@ final class JsonView(
         "createdBy" -> tour.createdBy,
         "system" -> tour.system.toString.toLowerCase,
         "fullName" -> tour.fullName,
-        "greatPlayer" -> GreatPlayer
-          .wikiUrl(tour.name)
-          .map { url =>
-            Json.obj("name" -> tour.name, "url" -> url)
-          },
+        "greatPlayer" ->
+          GreatPlayer
+            .wikiUrl(tour.name)
+            .map { url =>
+              Json.obj("name" -> tour.name, "url" -> url)
+            },
         "nbPlayers" -> tour.nbPlayers,
         "minutes" -> tour.minutes,
         "clock" -> clockJson(tour.clock),
@@ -69,9 +70,10 @@ final class JsonView(
         "schedule" -> tour.schedule.map(scheduleJson),
         "secondsToFinish" -> tour.isStarted.option(tour.secondsToFinish),
         "secondsToStart" -> tour.isCreated.option(tour.secondsToStart),
-        "startsAt" -> tour
-          .isCreated
-          .option(ISODateTimeFormat.dateTime.print(tour.startsAt)),
+        "startsAt" ->
+          tour
+            .isCreated
+            .option(ISODateTimeFormat.dateTime.print(tour.startsAt)),
         "pairings" -> data.pairings,
         "standing" -> stand,
         "me" -> myInfo.map(myInfoJson),
@@ -104,34 +106,37 @@ final class JsonView(
     } yield info match {
       case PlayerInfoExt(tour, user, player, povs) =>
         Json.obj(
-          "player" -> Json
-            .obj(
-              "id" -> user.id,
-              "name" -> user.username,
-              "title" -> user.title,
-              "rank" -> ranking.get(user.id).map(1 +),
-              "rating" -> player.rating,
-              "provisional" -> player.provisional.option(true),
-              "withdraw" -> player.withdraw.option(true),
-              "score" -> player.score,
-              "ratingDiff" -> player.ratingDiff,
-              "fire" -> player.fire,
-              "nb" -> sheetNbs(user.id, sheet, pairings),
-              "performance" -> tpr
-            )
-            .noNull,
-          "pairings" -> povs.map { pov =>
+          "player" ->
             Json
               .obj(
-                "id" -> pov.gameId,
-                "color" -> pov.color.name,
-                "op" -> gameUserJson(pov.opponent.userId, pov.opponent.rating),
-                "win" -> pov.win,
-                "status" -> pov.game.status.id,
-                "berserk" -> pov.player.berserk.option(true)
+                "id" -> user.id,
+                "name" -> user.username,
+                "title" -> user.title,
+                "rank" -> ranking.get(user.id).map(1 +),
+                "rating" -> player.rating,
+                "provisional" -> player.provisional.option(true),
+                "withdraw" -> player.withdraw.option(true),
+                "score" -> player.score,
+                "ratingDiff" -> player.ratingDiff,
+                "fire" -> player.fire,
+                "nb" -> sheetNbs(user.id, sheet, pairings),
+                "performance" -> tpr
               )
-              .noNull
-          }
+              .noNull,
+          "pairings" ->
+            povs.map { pov =>
+              Json
+                .obj(
+                  "id" -> pov.gameId,
+                  "color" -> pov.color.name,
+                  "op" ->
+                    gameUserJson(pov.opponent.userId, pov.opponent.rating),
+                  "win" -> pov.win,
+                  "status" -> pov.game.status.id,
+                  "berserk" -> pov.player.berserk.option(true)
+                )
+                .noNull
+            }
         )
     }
 
@@ -163,10 +168,11 @@ final class JsonView(
       case s: arena.ScoringSystem.Sheet =>
         Json.obj(
           "game" -> s.scores.size,
-          "berserk" -> pairings.foldLeft(0) {
-            case (nb, p) =>
-              nb + p.berserkOf(userId)
-          },
+          "berserk" ->
+            pairings.foldLeft(0) {
+              case (nb, p) =>
+                nb + p.berserkOf(userId)
+            },
           "win" -> s.scores.count(_.isWin))
     }
 
@@ -180,10 +186,11 @@ final class JsonView(
             PairingRepo
               .finishedByPlayerChronological(tour.id, p.player.userId) map {
               pairings =>
-                p.player.userId -> tour
-                  .system
-                  .scoringSystem
-                  .sheet(tour, p.player.userId, pairings)
+                p.player.userId ->
+                  tour
+                    .system
+                    .scoringSystem
+                    .sheet(tour, p.player.userId, pairings)
             }
           }
           .sequenceFu
@@ -235,14 +242,15 @@ final class JsonView(
     Json.obj(
       "id" -> game.id,
       "fen" -> (chess.format.Forsyth exportBoard game.toChess.board),
-      "color" -> (
-        game.variant match {
-          case chess.variant.RacingKings =>
-            chess.White
-          case _ =>
-            game.firstColor
-        }
-      ).name,
+      "color" ->
+        (
+          game.variant match {
+            case chess.variant.RacingKings =>
+              chess.White
+            case _ =>
+              game.firstColor
+          }
+        ).name,
       "lastMove" -> ~game.castleLastMoveTime.lastMoveString,
       "white" -> playerJson(featured.white, game player chess.White),
       "black" -> playerJson(featured.black, game player chess.Black)
@@ -271,15 +279,15 @@ final class JsonView(
     sheet match {
       case s: arena.ScoringSystem.Sheet =>
         val o = Json.obj(
-          "scores" -> s
-            .scores
-            .reverse
-            .map { score =>
-              if (score.flag == arena.ScoringSystem.Normal)
-                JsNumber(score.value)
-              else
-                Json.arr(score.value, score.flag.id)
-            },
+          "scores" ->
+            s.scores
+              .reverse
+              .map { score =>
+                if (score.flag == arena.ScoringSystem.Normal)
+                  JsNumber(score.value)
+                else
+                  Json.arr(score.value, score.flag.id)
+              },
           "total" -> s.total
         )
         s.onFire.fold(o + ("fire" -> JsBoolean(true)), o)
@@ -328,9 +336,10 @@ final class JsonView(
                         .scoringSystem
                         .sheet(tour, player.userId, pairings)
                     tpr <- performance(tour, player, pairings)
-                  } yield playerJson(sheet.some, tour, rp) ++ Json.obj(
-                    "nb" -> sheetNbs(player.userId, sheet, pairings),
-                    "performance" -> tpr)
+                  } yield playerJson(sheet.some, tour, rp) ++
+                    Json.obj(
+                      "nb" -> sheetNbs(player.userId, sheet, pairings),
+                      "performance" -> tpr)
               }
               .sequenceFu
           } map { l =>
@@ -346,19 +355,20 @@ final class JsonView(
     Json.obj(
       "id" -> p.gameId,
       "u" -> Json.arr(pairingUserJson(p.user1), pairingUserJson(p.user2)),
-      "s" -> (
-        if (p.finished)
-          p.winner match {
-            case Some(w) if w == p.user1 =>
-              2
-            case Some(w) =>
-              3
-            case _ =>
-              1
-          }
-        else
-          0
-      )
+      "s" ->
+        (
+          if (p.finished)
+            p.winner match {
+              case Some(w) if w == p.user1 =>
+                2
+              case Some(w) =>
+                3
+              case _ =>
+                1
+            }
+          else
+            0
+        )
     )
 }
 

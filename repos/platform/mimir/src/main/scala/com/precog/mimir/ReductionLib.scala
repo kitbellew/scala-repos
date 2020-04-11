@@ -76,20 +76,21 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     val ReductionNamespace = Vector()
 
     override def _libReduction =
-      super._libReduction ++ Set(
-        Count,
-        Max,
-        Min,
-        MaxTime,
-        MinTime,
-        Sum,
-        Mean,
-        GeometricMean,
-        SumSq,
-        Variance,
-        StdDev,
-        Forall,
-        Exists)
+      super._libReduction ++
+        Set(
+          Count,
+          Max,
+          Min,
+          MaxTime,
+          MinTime,
+          Sum,
+          Mean,
+          GeometricMean,
+          SumSq,
+          Variance,
+          StdDev,
+          Forall,
+          Exists)
 
     val CountMonoid = implicitly[Monoid[Count.Result]]
     object Count extends Reduction(ReductionNamespace, "count") {
@@ -125,18 +126,16 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         new Monoid[Result] {
           def zero = None
           def append(left: Result, right: => Result): Result = {
-            (
-              for {
-                l <- left
-                r <- right
-              } yield {
-                val res = NumericComparisons.compare(l, r)
-                if (res > 0)
-                  l
-                else
-                  r
-              }
-            ) orElse left orElse right
+            (for {
+              l <- left
+              r <- right
+            } yield {
+              val res = NumericComparisons.compare(l, r)
+              if (res > 0)
+                l
+              else
+                r
+            }) orElse left orElse right
           }
         }
 
@@ -149,8 +148,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               case col: DateColumn =>
                 var zmax: DateTime = {
                   val init = new DateTime(0)
-                  val min =
-                    -292275054 - 1970 //the smallest Int value jodatime accepts
+                  val min = -292275054 -
+                    1970 //the smallest Int value jodatime accepts
 
                   init.plus(Period.years(min))
                 }
@@ -194,18 +193,16 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         new Monoid[Result] {
           def zero = None
           def append(left: Result, right: => Result): Result = {
-            (
-              for {
-                l <- left
-                r <- right
-              } yield {
-                val res = NumericComparisons.compare(l, r)
-                if (res < 0)
-                  l
-                else
-                  r
-              }
-            ) orElse left orElse right
+            (for {
+              l <- left
+              r <- right
+            } yield {
+              val res = NumericComparisons.compare(l, r)
+              if (res < 0)
+                l
+              else
+                r
+            }) orElse left orElse right
           }
         }
 
@@ -218,8 +215,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               case col: DateColumn =>
                 var zmax: DateTime = {
                   val init = new DateTime(0)
-                  val max =
-                    292278993 - 1970 //the largest Int value jodatime accepts
+                  val max = 292278993 -
+                    1970 //the largest Int value jodatime accepts
 
                   init.plus(Period.years(max))
                 }
@@ -264,11 +261,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         new Monoid[Result] {
           def zero = None
           def append(left: Result, right: => Result): Result = {
-            (
-              for (l <- left;
-                   r <- right)
-                yield l max r
-            ) orElse left orElse right
+            (for (l <- left;
+                  r <- right)
+              yield l max r) orElse left orElse right
           }
         }
 
@@ -353,11 +348,9 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         new Monoid[Result] {
           def zero = None
           def append(left: Result, right: => Result): Result = {
-            (
-              for (l <- left;
-                   r <- right)
-                yield l min r
-            ) orElse left orElse right
+            (for (l <- left;
+                  r <- right)
+              yield l min r) orElse left orElse right
           }
         }
 
@@ -656,7 +649,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         res map {
           case (prod, count) =>
             math.pow(prod.toDouble, 1 / count.toDouble)
-        } filter (StdLib.doubleIsDefined)
+        } filter
+          (StdLib.doubleIsDefined)
 
       def extract(res: Result): Table =
         perform(res) map { v =>

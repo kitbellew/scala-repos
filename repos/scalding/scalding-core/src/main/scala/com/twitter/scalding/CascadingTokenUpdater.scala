@@ -72,10 +72,10 @@ object CascadingTokenUpdater {
       _.getName
     } -- toks.values
 
-    config + (
-      Config.CascadingSerializationTokens -> toksToString(
-        toks ++ assignTokens(firstAvailableToken(toks), newClasses))
-    )
+    config +
+      (Config.CascadingSerializationTokens ->
+        toksToString(
+          toks ++ assignTokens(firstAvailableToken(toks), newClasses)))
   }
 
 }

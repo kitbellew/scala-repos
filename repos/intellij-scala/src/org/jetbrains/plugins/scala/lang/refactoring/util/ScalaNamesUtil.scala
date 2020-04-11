@@ -45,8 +45,8 @@ object ScalaNamesUtil {
           '?' | ':' | '=' | '&' | '|' | '/' | '\\' =>
         true
       case ch =>
-        Character.getType(ch) == Character.MATH_SYMBOL.toInt || Character
-          .getType(ch) == Character.OTHER_SYMBOL.toInt
+        Character.getType(ch) == Character.MATH_SYMBOL.toInt ||
+          Character.getType(ch) == Character.OTHER_SYMBOL.toInt
     }
   }
 
@@ -77,9 +77,8 @@ object ScalaNamesUtil {
         Some(clazz.qualifiedName)
       case memb: PsiMember =>
         val containingClass = memb.containingClass
-        if (containingClass != null && containingClass
-              .qualifiedName != null && memb
-              .hasModifierProperty(PsiModifier.STATIC)) {
+        if (containingClass != null && containingClass.qualifiedName != null &&
+            memb.hasModifierProperty(PsiModifier.STATIC)) {
           Some(
             Seq(containingClass.qualifiedName, named.name)
               .filter(_ != "")

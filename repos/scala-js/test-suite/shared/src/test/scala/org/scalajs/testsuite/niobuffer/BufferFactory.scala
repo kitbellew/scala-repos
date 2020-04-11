@@ -33,8 +33,9 @@ sealed abstract class BufferFactory {
     buf
   }
 
-  def elemRange(start: Int, end: Int): Array[ElementType] =
-    (start until end).map(elemFromInt).toArray
+  def elemRange(start: Int, end: Int): Array[ElementType] = (start until end)
+    .map(elemFromInt)
+    .toArray
 
   def withContent(capacity: Int, content: ElementType*): BufferType =
     withContent(0, capacity, capacity, content: _*)
@@ -182,8 +183,7 @@ object BufferFactory {
       val after = capacity - (pos + content.size)
       val fullContent =
         (
-          Seq.fill(pos)(elemFromInt(0)) ++
-            content ++
+          Seq.fill(pos)(elemFromInt(0)) ++ content ++
             Seq.fill(after)(elemFromInt(0))
         ).toArray
       baseWrap(fullContent, pos, limit - pos)

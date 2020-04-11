@@ -128,10 +128,10 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
         client.get[JValue]("apikeys/" + apiKey) map {
           case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
             (
-              ((_: Extractor.Error).message) <-: jvalue
-                .validated[v1.APIKeyDetails] :-> { details =>
-                Some(details)
-              }
+              ((_: Extractor.Error).message) <-:
+                jvalue.validated[v1.APIKeyDetails] :-> { details =>
+                  Some(details)
+                }
             ).disjunction
 
           case res @ HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
@@ -140,9 +140,11 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
 
           case res =>
             logger.error(
-              "Unexpected response from auth service for apiKey " + apiKey + ":\n" + res)
+              "Unexpected response from auth service for apiKey " + apiKey +
+                ":\n" + res)
             left(
-              "Unexpected response from security service; unable to proceed." + res)
+              "Unexpected response from security service; unable to proceed." +
+                res)
         })
     }
   }
@@ -153,14 +155,16 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
         client.query("apiKey", fromRoot).get[JValue]("apikeys/") map {
           case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
             (
-              ((_: Extractor.Error).message) <-: jvalue
-                .validated[Set[v1.APIKeyDetails]]
+              ((_: Extractor.Error).message) <-:
+                jvalue.validated[Set[v1.APIKeyDetails]]
             ).disjunction
           case res =>
             logger.error(
-              "Unexpected response from auth service for apiKey " + fromRoot + ":\n" + res)
+              "Unexpected response from auth service for apiKey " + fromRoot +
+                ":\n" + res)
             left(
-              "Unexpected response from security service; unable to proceed." + res)
+              "Unexpected response from security service; unable to proceed." +
+                res)
         })
     }
   }
@@ -172,22 +176,25 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
       path: Path,
       at: Option[DateTime]): Response[Set[Permission]] = {
     withJsonClient { client0 =>
-      val client =
-        at map (fmt.print(_)) map (client0.query("at", _)) getOrElse client0
+      val client = at map
+        (fmt.print(_)) map
+        (client0.query("at", _)) getOrElse client0
       eitherT(
         client
           .query("apiKey", apiKey)
           .get[JValue]("permissions/fs" + path.urlEncode.path) map {
           case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
             (
-              ((_: Extractor.Error).message) <-: jvalue
-                .validated[Set[Permission]]
+              ((_: Extractor.Error).message) <-:
+                jvalue.validated[Set[Permission]]
             ).disjunction
           case res =>
             logger.error(
-              "Unexpected response from auth service for apiKey " + apiKey + ":\n" + res)
+              "Unexpected response from auth service for apiKey " + apiKey +
+                ":\n" + res)
             left(
-              "Unexpected response from security service; unable to proceed." + res)
+              "Unexpected response from security service; unable to proceed." +
+                res)
         })
     }
   }
@@ -226,15 +233,16 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
           .post[JValue]("apikeys/")(keyRequest.serialize) map {
           case HttpResponse(HttpStatus(OK, _), _, Some(wrappedKey), _) =>
             (
-              ((_: Extractor.Error).message) <-: wrappedKey
-                .validated[v1.APIKeyDetails]
+              ((_: Extractor.Error).message) <-:
+                wrappedKey.validated[v1.APIKeyDetails]
             ).disjunction
 
           case res =>
             logger.error(
               "Unexpected response from api provisioning service: " + res)
             left(
-              "Unexpected response from api key provisioning service; unable to proceed." + res)
+              "Unexpected response from api key provisioning service; unable to proceed." +
+                res)
         })
     }
   }

@@ -21,8 +21,8 @@ class ScalaWithTryCatchFinallySurrounder extends ScalaExpressionSurrounder {
         "=>"
       else
         ScalaPsiUtil.functionArrow(elements(0).getProject)
-    "try {\n" + super.getTemplateAsString(
-      elements) + s"\n} catch {\n case _ $arrow \n} finally {}"
+    "try {\n" + super.getTemplateAsString(elements) +
+      s"\n} catch {\n case _ $arrow \n} finally {}"
   }
 
   override def getTemplateDescription = "try / catch / finally"

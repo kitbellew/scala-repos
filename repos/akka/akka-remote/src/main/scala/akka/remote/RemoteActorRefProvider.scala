@@ -348,8 +348,8 @@ private[akka] class RemoteActorRefProvider(
         }
       }
 
-      Iterator(props.deploy) ++ deployment
-        .iterator reduce ((a, b) ⇒ b withFallback a) match {
+      Iterator(props.deploy) ++ deployment.iterator reduce
+        ((a, b) ⇒ b withFallback a) match {
         case d @ Deploy(_, _, _, RemoteScope(addr), _, _) ⇒
           if (hasAddress(addr)) {
             local.actorOf(
@@ -382,8 +382,8 @@ private[akka] class RemoteActorRefProvider(
               val localAddress = transport.localAddressForRemote(addr)
               val rpath =
                 (
-                  RootActorPath(addr) / "remote" / localAddress
-                    .protocol / localAddress.hostPort / path.elements
+                  RootActorPath(addr) / "remote" / localAddress.protocol /
+                    localAddress.hostPort / path.elements
                 ).withUid(path.uid)
               new RemoteActorRef(
                 transport,
@@ -569,8 +569,8 @@ private[akka] class RemoteActorRefProvider(
     resolveActorRef(RootActorPath(ref.path.address) / "remote") !
       DaemonMsgCreate(props, deploy, ref.path.toSerializationFormat, supervisor)
 
-    remoteDeploymentWatcher ! RemoteDeploymentWatcher
-      .WatchRemote(ref, supervisor)
+    remoteDeploymentWatcher !
+      RemoteDeploymentWatcher.WatchRemote(ref, supervisor)
   }
 
   def getExternalAddressFor(addr: Address): Option[Address] = {
@@ -591,8 +591,8 @@ private[akka] class RemoteActorRefProvider(
   def getDefaultAddress: Address = transport.defaultAddress
 
   private def hasAddress(address: Address): Boolean =
-    address == local.rootPath.address || address == rootPath
-      .address || transport.addresses(address)
+    address == local.rootPath.address || address == rootPath.address ||
+      transport.addresses(address)
 
   /**
     * Marks a remote system as out of sync and prevents reconnects until the quarantine timeout elapses.

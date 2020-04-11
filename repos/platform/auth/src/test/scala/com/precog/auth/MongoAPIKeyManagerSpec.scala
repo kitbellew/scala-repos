@@ -63,125 +63,138 @@ class MongoAPIKeyManagerSpec
 
   "mongo API key manager" should {
 
-    "find API key present" in new TestAPIKeyManager {
-      val result = Await.result(apiKeyManager.findAPIKey(rootAPIKey), timeout)
+    "find API key present" in
+      new TestAPIKeyManager {
+        val result = Await.result(apiKeyManager.findAPIKey(rootAPIKey), timeout)
 
-      result must beLike {
-        case Some(APIKeyRecord(apiKey, _, _, _, _, _)) =>
-          apiKey must_== rootAPIKey
+        result must
+          beLike {
+            case Some(APIKeyRecord(apiKey, _, _, _, _, _)) =>
+              apiKey must_== rootAPIKey
+          }
       }
-    }
 
-    "return current root API key" in new TestAPIKeyManager {
-      val result = Await.result(
-        MongoAPIKeyManager
-          .findRootAPIKey(testDB, MongoAPIKeyManagerSettings.defaults.apiKeys),
-        timeout)
+    "return current root API key" in
+      new TestAPIKeyManager {
+        val result = Await.result(
+          MongoAPIKeyManager.findRootAPIKey(
+            testDB,
+            MongoAPIKeyManagerSettings.defaults.apiKeys),
+          timeout)
 
-      result.apiKey mustEqual rootAPIKey
-    }
-
-    "error if a root API key cannot be found and creation isn't requested" in new TestAPIKeyManager {
-      Await.result(
-        MongoAPIKeyManager.findRootAPIKey(
-          testDB,
-          MongoAPIKeyManagerSettings.defaults.apiKeys + "_empty"),
-        timeout) must throwAn[Exception]
-    }
-
-    "not find missing API key" in new TestAPIKeyManager {
-      val result = Await
-        .result(apiKeyManager.findAPIKey(notFoundAPIKeyID), timeout)
-      result must beNone
-    }
-
-    "issue new API key" in new TestAPIKeyManager {
-      val name = "newAPIKey"
-      val fResult = apiKeyManager
-        .createAPIKey(Some(name), None, rootAPIKey, Set.empty)
-
-      val result = Await.result(fResult, timeout)
-
-      result must beLike {
-        case APIKeyRecord(_, n, _, _, g, _) =>
-          n must beSome(name)
-          g must beEmpty
+        result.apiKey mustEqual rootAPIKey
       }
-    }
 
-    "list children API keys" in new TestAPIKeyManager {
-      val (result, expected) = Await.result(
-        for {
-          k1 <-
-            apiKeyManager
-              .createAPIKey(Some("blah1"), None, child2.apiKey, Set.empty)
-          k2 <-
-            apiKeyManager
-              .createAPIKey(Some("blah2"), None, child2.apiKey, Set.empty)
-          kids <- apiKeyManager.findAPIKeyChildren(child2.apiKey)
-        } yield (kids, List(k1, k2)),
-        timeout
-      )
-
-      result must haveTheSameElementsAs(expected)
-    }
-
-    "move API key to deleted pool on deletion" in new TestAPIKeyManager {
-
-      type Results =
-        (
-            Option[APIKeyRecord],
-            Option[APIKeyRecord],
-            Option[APIKeyRecord],
-            Option[APIKeyRecord])
-
-      val fut: Future[Results] =
-        for {
-          before <- apiKeyManager.findAPIKey(child2.apiKey)
-          deleted <- apiKeyManager.deleteAPIKey(before.get.apiKey)
-          after <- apiKeyManager.findAPIKey(child2.apiKey)
-          deleteCol <- apiKeyManager.findDeletedAPIKey(child2.apiKey)
-        } yield {
-          (before, deleted, after, deleteCol)
-        }
-
-      val result = Await.result(fut, timeout)
-
-      result must beLike {
-        case (Some(t1), Some(t2), None, Some(t3)) =>
-          t1 must_== t2
-          t1 must_== t3
+    "error if a root API key cannot be found and creation isn't requested" in
+      new TestAPIKeyManager {
+        Await.result(
+          MongoAPIKeyManager.findRootAPIKey(
+            testDB,
+            MongoAPIKeyManagerSettings.defaults.apiKeys + "_empty"),
+          timeout) must throwAn[Exception]
       }
-    }
 
-    "no failure on deleting API key that is already deleted" in new TestAPIKeyManager {
-      type Results =
-        (
-            Option[APIKeyRecord],
-            Option[APIKeyRecord],
-            Option[APIKeyRecord],
-            Option[APIKeyRecord],
-            Option[APIKeyRecord])
-
-      val fut: Future[Results] =
-        for {
-          before <- apiKeyManager.findAPIKey(child2.apiKey)
-          deleted1 <- apiKeyManager.deleteAPIKey(before.get.apiKey)
-          deleted2 <- apiKeyManager.deleteAPIKey(before.get.apiKey)
-          after <- apiKeyManager.findAPIKey(child2.apiKey)
-          deleteCol <- apiKeyManager.findDeletedAPIKey(child2.apiKey)
-        } yield {
-          (before, deleted1, deleted2, after, deleteCol)
-        }
-
-      val result = Await.result(fut, timeout)
-
-      result must beLike {
-        case (Some(t1), Some(t2), None, None, Some(t4)) =>
-          t1 must_== t2
-          t1 must_== t4
+    "not find missing API key" in
+      new TestAPIKeyManager {
+        val result = Await
+          .result(apiKeyManager.findAPIKey(notFoundAPIKeyID), timeout)
+        result must beNone
       }
-    }
+
+    "issue new API key" in
+      new TestAPIKeyManager {
+        val name = "newAPIKey"
+        val fResult = apiKeyManager
+          .createAPIKey(Some(name), None, rootAPIKey, Set.empty)
+
+        val result = Await.result(fResult, timeout)
+
+        result must
+          beLike {
+            case APIKeyRecord(_, n, _, _, g, _) =>
+              n must beSome(name)
+              g must beEmpty
+          }
+      }
+
+    "list children API keys" in
+      new TestAPIKeyManager {
+        val (result, expected) = Await.result(
+          for {
+            k1 <-
+              apiKeyManager
+                .createAPIKey(Some("blah1"), None, child2.apiKey, Set.empty)
+            k2 <-
+              apiKeyManager
+                .createAPIKey(Some("blah2"), None, child2.apiKey, Set.empty)
+            kids <- apiKeyManager.findAPIKeyChildren(child2.apiKey)
+          } yield (kids, List(k1, k2)),
+          timeout
+        )
+
+        result must haveTheSameElementsAs(expected)
+      }
+
+    "move API key to deleted pool on deletion" in
+      new TestAPIKeyManager {
+
+        type Results =
+          (
+              Option[APIKeyRecord],
+              Option[APIKeyRecord],
+              Option[APIKeyRecord],
+              Option[APIKeyRecord])
+
+        val fut: Future[Results] =
+          for {
+            before <- apiKeyManager.findAPIKey(child2.apiKey)
+            deleted <- apiKeyManager.deleteAPIKey(before.get.apiKey)
+            after <- apiKeyManager.findAPIKey(child2.apiKey)
+            deleteCol <- apiKeyManager.findDeletedAPIKey(child2.apiKey)
+          } yield {
+            (before, deleted, after, deleteCol)
+          }
+
+        val result = Await.result(fut, timeout)
+
+        result must
+          beLike {
+            case (Some(t1), Some(t2), None, Some(t3)) =>
+              t1 must_== t2
+              t1 must_== t3
+          }
+      }
+
+    "no failure on deleting API key that is already deleted" in
+      new TestAPIKeyManager {
+        type Results =
+          (
+              Option[APIKeyRecord],
+              Option[APIKeyRecord],
+              Option[APIKeyRecord],
+              Option[APIKeyRecord],
+              Option[APIKeyRecord])
+
+        val fut: Future[Results] =
+          for {
+            before <- apiKeyManager.findAPIKey(child2.apiKey)
+            deleted1 <- apiKeyManager.deleteAPIKey(before.get.apiKey)
+            deleted2 <- apiKeyManager.deleteAPIKey(before.get.apiKey)
+            after <- apiKeyManager.findAPIKey(child2.apiKey)
+            deleteCol <- apiKeyManager.findDeletedAPIKey(child2.apiKey)
+          } yield {
+            (before, deleted1, deleted2, after, deleteCol)
+          }
+
+        val result = Await.result(fut, timeout)
+
+        result must
+          beLike {
+            case (Some(t1), Some(t2), None, None, Some(t4)) =>
+              t1 must_== t2
+              t1 must_== t4
+          }
+      }
   }
 
   trait TestAPIKeyManager extends After {

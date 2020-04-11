@@ -20,16 +20,17 @@ final class SlackApi(
         text = s"$username donated ${amount(event.gross)} (${amount(
           event.net)})! Weekly progress: ${event.progress}%",
         channel = "general"
-      )) >> event
-      .message
-      .?? { msg =>
-        client(
-          SlackMessage(
-            username = username,
-            icon = "kissing_heart",
-            text = msg,
-            channel = "general"))
-      }
+      )) >>
+      event
+        .message
+        .?? { msg =>
+          client(
+            SlackMessage(
+              username = username,
+              icon = "kissing_heart",
+              text = msg,
+              channel = "general"))
+        }
   }
 
   def publishEvent(event: Event): Funit =

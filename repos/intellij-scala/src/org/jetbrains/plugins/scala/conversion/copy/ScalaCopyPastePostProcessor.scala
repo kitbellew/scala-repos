@@ -76,10 +76,8 @@ class ScalaCopyPastePostProcessor
                           file.getText.substring(startOffset, endOffset)))
                     break()
                   }
-                  associations ::= Association(
-                    dependency.kind,
-                    range,
-                    dependency.path)
+                  associations ::=
+                    Association(dependency.kind, range, dependency.path)
                 }
               }
             }
@@ -130,9 +128,8 @@ class ScalaCopyPastePostProcessor
     if (DumbService.getInstance(project).isDumb)
       return
 
-    if (ScalaApplicationSettings
-          .getInstance()
-          .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.NO)
+    if (ScalaApplicationSettings.getInstance().ADD_IMPORTS_ON_PASTE ==
+          CodeInsightSettings.NO)
       return
 
     val file = PsiDocumentManager
@@ -147,9 +144,8 @@ class ScalaCopyPastePostProcessor
     val offset = bounds.getStartOffset
 
     doRestoreAssociations(value, file, offset, project) { bindingsToRestore =>
-      if (ScalaApplicationSettings
-            .getInstance()
-            .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.ASK) {
+      if (ScalaApplicationSettings.getInstance().ADD_IMPORTS_ON_PASTE ==
+            CodeInsightSettings.ASK) {
         val dialog =
           new RestoreReferencesDialog(
             project,
@@ -196,7 +192,8 @@ class ScalaCopyPastePostProcessor
       ).filter {
         case Binding(_, path) =>
           val index = path.lastIndexOf('.')
-          index != -1 && !Set("scala", "java.lang", "scala.Predef")
+          index != -1 &&
+          !Set("scala", "java.lang", "scala.Predef")
             .contains(path.substring(0, index))
       }
 

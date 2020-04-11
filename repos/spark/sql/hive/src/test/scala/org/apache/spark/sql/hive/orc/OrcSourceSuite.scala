@@ -113,9 +113,10 @@ abstract class OrcSuite
 
     checkAnswer(
       sql("SELECT * FROM normal_orc_source"),
-      (1 to 5).map(i => Row(i, s"part-$i")) ++ (6 to 10).flatMap { i =>
-        Seq.fill(2)(Row(i, s"part-$i"))
-      })
+      (1 to 5).map(i => Row(i, s"part-$i")) ++
+        (6 to 10).flatMap { i =>
+          Seq.fill(2)(Row(i, s"part-$i"))
+        })
   }
 
   test("overwrite insert") {

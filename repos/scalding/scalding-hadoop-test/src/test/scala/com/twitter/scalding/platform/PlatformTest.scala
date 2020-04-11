@@ -553,13 +553,12 @@ class PlatformTest
           _.map { f: Float =>
               (f * 10).toInt
             }
-            .toList shouldBe (
-            outputData
+            .toList shouldBe
+            (outputData
               .map { f: Float =>
                 (f * 10).toInt
               }
-              .toList
-            )
+              .toList)
         }
         .run
     }

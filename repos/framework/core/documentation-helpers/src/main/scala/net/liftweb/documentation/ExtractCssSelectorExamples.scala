@@ -27,13 +27,14 @@ object ExtractCssSelectorExamples extends App {
     val docsFile = new File(s"$basePath")
 
     for {
-      docsDir <- (
+      docsDir <-
+        (
           (
-            Full(docsFile).filter(
-              _.exists) ?~ s"'$docsFile' should be a directory, but does not exist."
-          ).filter(
-            _.isDirectory) ?~ s"'$docsFile' should be a directory, not a file."
-      )
+            Full(docsFile).filter(_.exists) ?~
+              s"'$docsFile' should be a directory, but does not exist."
+          ).filter(_.isDirectory) ?~
+            s"'$docsFile' should be a directory, not a file."
+        )
     } yield {
       for {
         file <- docsDir.listFiles.toList
@@ -137,11 +138,12 @@ object ExtractCssSelectorExamples extends App {
 
             (labelExtractor & partExtractor)(exampleNodes)
 
-            exampleContents ::= ExampleContents(
-              fileContents.filename,
-              exampleLabel,
-              setupCode,
-              parts.reverse)
+            exampleContents ::=
+              ExampleContents(
+                fileContents.filename,
+                exampleLabel,
+                setupCode,
+                parts.reverse)
 
             exampleNodes
           }

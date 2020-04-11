@@ -57,9 +57,8 @@ abstract class SymbolTable
   def log(msg: => AnyRef): Unit
 
   protected def elapsedMessage(msg: String, start: Long) =
-    msg + " in " + (
-      TimeUnit.NANOSECONDS.toMillis(System.nanoTime()) - start
-    ) + "ms"
+    msg + " in " +
+      (TimeUnit.NANOSECONDS.toMillis(System.nanoTime()) - start) + "ms"
 
   def informProgress(msg: String) =
     if (settings.verbose)
@@ -366,8 +365,8 @@ abstract class SymbolTable
           formals.last.typeArgs.head match {
             case RefinedType(List(t1, t2), _)
                 if (
-                  t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions
-                    .ObjectClass
+                  t1.typeSymbol.isAbstractType &&
+                    t2.typeSymbol == definitions.ObjectClass
                 ) =>
               t1 // drop intersection with Object for abstract types in varargs. UnCurry can handle them.
             case t =>

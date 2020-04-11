@@ -1277,16 +1277,11 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     nums.registerTempTable("nums")
 
     val expected =
-      Row(1, 1, 1, 55, 1, 57) ::
-        Row(0, 2, 3, 55, 2, 60) ::
-        Row(1, 3, 6, 55, 4, 65) ::
-        Row(0, 4, 10, 55, 6, 71) ::
-        Row(1, 5, 15, 55, 9, 79) ::
-        Row(0, 6, 21, 55, 12, 88) ::
-        Row(1, 7, 28, 55, 16, 99) ::
-        Row(0, 8, 36, 55, 20, 111) ::
-        Row(1, 9, 45, 55, 25, 125) ::
-        Row(0, 10, 55, 55, 30, 140) :: Nil
+      Row(1, 1, 1, 55, 1, 57) :: Row(0, 2, 3, 55, 2, 60) ::
+        Row(1, 3, 6, 55, 4, 65) :: Row(0, 4, 10, 55, 6, 71) ::
+        Row(1, 5, 15, 55, 9, 79) :: Row(0, 6, 21, 55, 12, 88) ::
+        Row(1, 7, 28, 55, 16, 99) :: Row(0, 8, 36, 55, 20, 111) ::
+        Row(1, 9, 45, 55, 25, 125) :: Row(0, 10, 55, 55, 30, 140) :: Nil
 
     val actual = sql(
       """
@@ -1312,9 +1307,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     (1 to 5).map(i => (i, i.toString)).toDF("k", "v").registerTempTable("t")
     checkAnswer(
       sql("SELECT CASE k WHEN 2 THEN 22 WHEN 4 THEN 44 ELSE 0 END, v FROM t"),
-      Row(0, "1") :: Row(22, "2") :: Row(0, "3") :: Row(44, "4") :: Row(
-        0,
-        "5") :: Nil)
+      Row(0, "1") :: Row(22, "2") :: Row(0, "3") :: Row(44, "4") ::
+        Row(0, "5") :: Nil)
   }
 
   test("SPARK-7595: Window will cause resolve failed with self join") {
@@ -1496,7 +1490,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     read
       .json(
         sparkContext.makeRDD(
-          """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" :: Nil))
+          """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" ::
+            Nil))
       .registerTempTable("t")
 
     checkAnswer(
@@ -1709,12 +1704,10 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   Seq(true, false).foreach { enabled =>
-    val prefix = (
-      if (enabled)
-        "With"
-      else
-        "Without"
-    ) + " canonical native view: "
+    val prefix = (if (enabled)
+                    "With"
+                  else
+                    "Without") + " canonical native view: "
     test(s"$prefix correctly handle CREATE OR REPLACE VIEW") {
       withSQLConf(
         SQLConf.NATIVE_VIEW.key -> "true",
@@ -2040,9 +2033,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         .saveAsTable("tbl11453")
       checkAnswer(
         sqlContext.read.table("tbl11453").select("i", "j").orderBy("i"),
-        Row("1", "10") :: Row("2", "20") :: Row("3", "30") :: Row(
-          "4",
-          "40") :: Nil)
+        Row("1", "10") :: Row("2", "20") :: Row("3", "30") :: Row("4", "40") ::
+          Nil)
     }
   }
 

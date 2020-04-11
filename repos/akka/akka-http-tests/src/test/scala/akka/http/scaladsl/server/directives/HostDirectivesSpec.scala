@@ -16,9 +16,10 @@ class HostDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           host("spray.com") {
             completeOk
           }
-        } ~> check {
-          handled shouldEqual false
-        }
+        } ~>
+          check {
+            handled shouldEqual false
+          }
       }
 
       "let requests to matching hosts pass" in {
@@ -26,9 +27,10 @@ class HostDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           host("spray.com", "spray.io") {
             completeOk
           }
-        } ~> check {
-          response shouldEqual Ok
-        }
+        } ~>
+          check {
+            response shouldEqual Ok
+          }
       }
     }
 
@@ -38,9 +40,10 @@ class HostDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           host("hairspray.*".r) {
             echoComplete
           }
-        } ~> check {
-          handled shouldEqual false
-        }
+        } ~>
+          check {
+            handled shouldEqual false
+          }
       }
 
       "let requests to matching hosts pass and extract the full host" in {
@@ -48,9 +51,10 @@ class HostDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           host("spra.*".r) {
             echoComplete
           }
-        } ~> check {
-          responseAs[String] shouldEqual "spray.io"
-        }
+        } ~>
+          check {
+            responseAs[String] shouldEqual "spray.io"
+          }
       }
     }
 
@@ -60,9 +64,10 @@ class HostDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           host("hairspray(.*)".r) {
             echoComplete
           }
-        } ~> check {
-          handled shouldEqual false
-        }
+        } ~>
+          check {
+            handled shouldEqual false
+          }
       }
 
       "let requests to matching hosts pass and extract the full host" in {
@@ -70,9 +75,10 @@ class HostDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           host("spra(.*)".r) {
             echoComplete
           }
-        } ~> check {
-          responseAs[String] shouldEqual "y.io"
-        }
+        } ~>
+          check {
+            responseAs[String] shouldEqual "y.io"
+          }
       }
     }
   }

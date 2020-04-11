@@ -32,42 +32,44 @@ object ApplicationBuild extends Build {
         // shorter prod classpath
         scriptClasspath := Seq("*"),
         // offline := true,
-        libraryDependencies ++= Seq(
-          scalaz,
-          scalalib,
-          hasher,
-          config,
-          apache,
-          jgit,
-          findbugs,
-          RM,
-          PRM,
-          akka.actor,
-          akka.slf4j,
-          spray.caching,
-          maxmind,
-          prismic,
-          kamon.core,
-          kamon.statsd,
-          pushy,
-          java8compat,
-          semver
-        ),
-        TwirlKeys.templateImports ++= Seq(
-          "lila.game.{ Game, Player, Pov }",
-          "lila.tournament.Tournament",
-          "lila.user.{ User, UserContext }",
-          "lila.security.Permission",
-          "lila.app.templating.Environment._",
-          "lila.api.Context",
-          "lila.common.paginator.Paginator"
-        ),
+        libraryDependencies ++=
+          Seq(
+            scalaz,
+            scalalib,
+            hasher,
+            config,
+            apache,
+            jgit,
+            findbugs,
+            RM,
+            PRM,
+            akka.actor,
+            akka.slf4j,
+            spray.caching,
+            maxmind,
+            prismic,
+            kamon.core,
+            kamon.statsd,
+            pushy,
+            java8compat,
+            semver
+          ),
+        TwirlKeys.templateImports ++=
+          Seq(
+            "lila.game.{ Game, Player, Pov }",
+            "lila.tournament.Tournament",
+            "lila.user.{ User, UserContext }",
+            "lila.security.Permission",
+            "lila.app.templating.Environment._",
+            "lila.api.Context",
+            "lila.common.paginator.Paginator"
+          ),
         watchSources <<= sourceDirectory in Compile map { sources =>
           (sources ** "*").get
         },
         // trump sbt-web into not looking at public/
-        resourceDirectory in Assets := (sourceDirectory in Compile)
-          .value / "assets"
+        resourceDirectory in Assets :=
+          (sourceDirectory in Compile).value / "assets"
       ))
 
   lazy val modules = Seq(
@@ -134,16 +136,17 @@ object ApplicationBuild extends Build {
   }
 
   lazy val api = project("api", moduleCPDeps).settings(
-    libraryDependencies ++= provided(
-      play.api,
-      hasher,
-      config,
-      apache,
-      jgit,
-      findbugs,
-      RM,
-      kamon.core,
-      kamon.statsd)) aggregate (moduleRefs: _*)
+    libraryDependencies ++=
+      provided(
+        play.api,
+        hasher,
+        config,
+        apache,
+        jgit,
+        findbugs,
+        RM,
+        kamon.core,
+        kamon.statsd)) aggregate (moduleRefs: _*)
 
   lazy val puzzle = project("puzzle", Seq(common, memo, hub, db, user, rating))
     .settings(libraryDependencies ++= provided(play.api, RM, PRM))
@@ -199,9 +202,8 @@ object ApplicationBuild extends Build {
     .settings(libraryDependencies ++= provided(play.test, play.api, RM, PRM))
 
   lazy val memo = project("memo", Seq(common, db)).settings(
-    libraryDependencies ++= Seq(guava, findbugs, spray.caching) ++ provided(
-      play.api,
-      RM))
+    libraryDependencies ++= Seq(guava, findbugs, spray.caching) ++
+      provided(play.api, RM))
 
   lazy val search = project("search", Seq(common, hub))
     .settings(libraryDependencies ++= provided(play.api))

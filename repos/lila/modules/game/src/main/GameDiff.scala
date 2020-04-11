@@ -109,9 +109,7 @@ private[game] object GameDiff {
       case Nil =>
         Nil
       case sets =>
-        (
-          Game.BSONFields.updatedAt -> BSONJodaDateTimeHandler
-            .write(DateTime.now)
-        ) :: sets
+        (Game.BSONFields.updatedAt ->
+          BSONJodaDateTimeHandler.write(DateTime.now)) :: sets
     }
 }

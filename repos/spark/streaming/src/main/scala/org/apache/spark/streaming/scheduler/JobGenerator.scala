@@ -74,8 +74,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
 
   // This is marked lazy so that this is initialized after checkpoint duration has been set
   // in the context and the generator has been started.
-  private lazy val shouldCheckpoint = ssc.checkpointDuration != null && ssc
-    .checkpointDir != null
+  private lazy val shouldCheckpoint = ssc.checkpointDuration != null &&
+    ssc.checkpointDir != null
 
   private lazy val checkpointWriter =
     if (shouldCheckpoint) {
@@ -146,7 +146,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
             (System.currentTimeMillis() - timeWhenStopStarted) > stopTimeoutMs
           if (timedOut) {
             logWarning(
-              "Timed out while stopping the job generator (timeout = " + stopTimeoutMs + ")")
+              "Timed out while stopping the job generator (timeout = " +
+                stopTimeoutMs + ")")
           }
           timedOut
         }
@@ -155,9 +156,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
         // been consumed by network input DStreams, and jobs have been generated with them
         logInfo(
           "Waiting for all received blocks to be consumed for job generation")
-        while (!hasTimedOut && jobScheduler
-                 .receiverTracker
-                 .hasUnallocatedBlocks) {
+        while (!hasTimedOut &&
+               jobScheduler.receiverTracker.hasUnallocatedBlocks) {
           Thread.sleep(pollTime)
         }
         logInfo(
@@ -170,8 +170,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
 
         // Wait for the jobs to complete and checkpoints to be written
         def haveAllBatchesBeenProcessed: Boolean = {
-          lastProcessedBatch != null && lastProcessedBatch
-            .milliseconds == stopTime
+          lastProcessedBatch != null &&
+          lastProcessedBatch.milliseconds == stopTime
         }
         logInfo(
           "Waiting for jobs to be processed and checkpoints to be written")
@@ -252,8 +252,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       new Time(timer.getRestartTime(graph.zeroTime.milliseconds))
     val downTimes = checkpointTime.until(restartTime, batchDuration)
     logInfo(
-      "Batches during down time (" + downTimes.size + " batches): "
-        + downTimes.mkString(", "))
+      "Batches during down time (" + downTimes.size + " batches): " +
+        downTimes.mkString(", "))
 
     // Batches that were unprocessed before failure
     val pendingTimes = ssc.initialCheckpoint.pendingTimes.sorted(Time.ordering)
@@ -349,8 +349,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
 
   /** Perform checkpoint for the give `time`. */
   private def doCheckpoint(time: Time, clearCheckpointDataLater: Boolean) {
-    if (shouldCheckpoint && (time - graph.zeroTime)
-          .isMultipleOf(ssc.checkpointDuration)) {
+    if (shouldCheckpoint &&
+        (time - graph.zeroTime).isMultipleOf(ssc.checkpointDuration)) {
       logInfo("Checkpointing graph for time " + time)
       ssc.graph.updateCheckpointData(time)
       checkpointWriter

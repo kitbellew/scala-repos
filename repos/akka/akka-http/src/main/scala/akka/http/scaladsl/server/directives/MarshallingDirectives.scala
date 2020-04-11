@@ -40,9 +40,10 @@ trait MarshallingDirectives {
               x.getMessage.nullAsEmpty,
               Option(x.getCause)))
       }
-    } & cancelRejections(
-      RequestEntityExpectedRejection.getClass,
-      classOf[UnsupportedRequestContentTypeRejection])
+    } &
+      cancelRejections(
+        RequestEntityExpectedRejection.getClass,
+        classOf[UnsupportedRequestContentTypeRejection])
 
   /**
     * Returns the in-scope [[FromRequestUnmarshaller]] for the given type.

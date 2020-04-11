@@ -239,15 +239,13 @@ trait SliceTransforms[M[+_]]
                       true
                   }
 
-                  val groupedNonNum = (
-                    leftNonNum mapValues {
+                  val groupedNonNum =
+                    (leftNonNum mapValues {
                       _ :: Nil
-                    }
-                  ) cogroup (
-                    rightNonNum mapValues {
-                      _ :: Nil
-                    }
-                  )
+                    }) cogroup
+                      (rightNonNum mapValues {
+                        _ :: Nil
+                      })
 
                   val simplifiedGroupNonNum = groupedNonNum map {
                     case (_, Left3(column)) =>
@@ -339,13 +337,13 @@ trait SliceTransforms[M[+_]]
                   val unified =
                     new BoolColumn {
                       def isDefinedAt(row: Int): Boolean =
-                        unifiedNonNum.isDefinedAt(row) || unifiedNum
-                          .isDefinedAt(row)
+                        unifiedNonNum.isDefinedAt(row) ||
+                          unifiedNum.isDefinedAt(row)
                       def apply(row: Int): Boolean = {
-                        val left = !unifiedNonNum
-                          .isDefinedAt(row) || unifiedNonNum(row)
-                        val right = !unifiedNum
-                          .isDefinedAt(row) || unifiedNum(row)
+                        val left = !unifiedNonNum.isDefinedAt(row) ||
+                          unifiedNonNum(row)
+                        val right = !unifiedNum.isDefinedAt(row) ||
+                          unifiedNum(row)
                         left && right
                       }
                     }
@@ -418,12 +416,11 @@ trait SliceTransforms[M[+_]]
                     }
 
                   Map(
-                    ColumnRef(CPath.Identity, CBoolean) -> (
-                      if (invert)
-                        complement(aggregate)
-                      else
-                        aggregate
-                    ))
+                    ColumnRef(CPath.Identity, CBoolean) ->
+                      (if (invert)
+                         complement(aggregate)
+                       else
+                         aggregate))
                 }
               }
             }
@@ -837,15 +834,13 @@ trait SliceTransforms[M[+_]]
                           .asBitSet(true, size)
                         rightMask.flip(0, size)
 
-                        val grouped = (
-                          leftS.columns mapValues {
+                        val grouped =
+                          (leftS.columns mapValues {
                             _ :: Nil
-                          }
-                        ) cogroup (
-                          rightS.columns mapValues {
-                            _ :: Nil
-                          }
-                        )
+                          }) cogroup
+                            (rightS.columns mapValues {
+                              _ :: Nil
+                            })
 
                         val joined: Map[ColumnRef, Column] =
                           grouped.map({
@@ -863,10 +858,10 @@ trait SliceTransforms[M[+_]]
                               val right2 =
                                 cf.util.filter(0, size, rightMask)(right).get
 
-                              ref -> cf
-                                .util
-                                .MaskedUnion(leftMask)(left2, right2)
-                                .get // safe because types are grouped
+                              ref ->
+                                cf.util
+                                  .MaskedUnion(leftMask)(left2, right2)
+                                  .get // safe because types are grouped
                             }
                           })(collection.breakOut)
 
@@ -1211,9 +1206,10 @@ trait SliceTransforms[M[+_]]
           M point f0(a, s)
       }
       def advance(s: Slice): M[(SliceTransform1[A], Slice)] =
-        M point ({ (a: A) =>
-          SliceTransform1S[A](a, f0)
-        } <-: f0(initial, s))
+        M point
+          ({ (a: A) =>
+            SliceTransform1S[A](a, f0)
+          } <-: f0(initial, s))
     }
 
     private[table] case class SliceTransform1M[A](
@@ -1555,9 +1551,10 @@ trait SliceTransforms[M[+_]]
           M point f0(a, sl, sr)
       }
       def advance(sl: Slice, sr: Slice): M[(SliceTransform2[A], Slice)] =
-        M point ({ (a: A) =>
-          SliceTransform2S[A](a, f0)
-        } <-: f0(initial, sl, sr))
+        M point
+          ({ (a: A) =>
+            SliceTransform2S[A](a, f0)
+          } <-: f0(initial, sl, sr))
     }
 
     private case class SliceTransform2M[A](
@@ -1712,20 +1709,17 @@ trait ArrayConcatHelpers extends ConcatHelpers {
         -1
       else
         leftIndices.map(_._1).max
-    val newCols = (
-      leftIndices map {
+    val newCols =
+      (leftIndices map {
         case (_, _, ref, col) =>
           ref -> col
-      }
-    ) ++
-      (
-        rightIndices map {
+      }) ++
+        (rightIndices map {
           case (i, xs, ref, col) =>
             ColumnRef(
               CPath(CPathIndex(i + maxId + 1) :: xs.toList),
               ref.ctype) -> col
-        }
-      )
+        })
 
     newCols.toMap
   }

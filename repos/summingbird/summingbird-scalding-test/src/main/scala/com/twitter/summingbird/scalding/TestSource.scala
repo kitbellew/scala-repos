@@ -51,11 +51,12 @@ object TestSource {
     }
     (
       Map(
-        src -> iter
-          .map {
-            tset(_)
-          }
-          .toBuffer),
+        src ->
+          iter
+            .map {
+              tset(_)
+            }
+            .toBuffer),
       prod)
   }
 }

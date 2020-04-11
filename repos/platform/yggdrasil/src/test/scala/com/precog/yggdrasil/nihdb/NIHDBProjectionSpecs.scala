@@ -125,21 +125,23 @@ class NIHDBProjectionSpecs
   }
 
   "NIHDBProjections" should {
-    "Properly initialize and close" in check { (discard: Int) =>
-      val ctxt = new TempContext {}
-      import ctxt._
+    "Properly initialize and close" in
+      check { (discard: Int) =>
+        val ctxt = new TempContext {}
+        import ctxt._
 
-      val results = projection.getBlockAfter(None, None)
+        val results = projection.getBlockAfter(None, None)
 
-      results.onComplete { _ =>
-        ctxt.stop
-      } must awaited(maxDuration) {
-        beNone
+        results.onComplete { _ =>
+          ctxt.stop
+        } must
+          awaited(maxDuration) {
+            beNone
+          }
       }
-    }
 
-    "Insert and retrieve values below the cook threshold" in check {
-      (discard: Int) =>
+    "Insert and retrieve values below the cook threshold" in
+      check { (discard: Int) =>
         val ctxt = new TempContext {}
         import ctxt._
 
@@ -159,20 +161,20 @@ class NIHDBProjectionSpecs
 
         results.onComplete { _ =>
           ctxt.stop
-        } must awaited(maxDuration)(
-          beLike {
-            case Some(BlockProjectionData(min, max, data)) =>
-              min mustEqual 0L
-              max mustEqual 0L
-              data.size mustEqual 3
-              data.toJsonElements.map(_("value")) must containAllOf(expected)
-                .only
-                .inOrder
-          })
-    }
+        } must
+          awaited(maxDuration)(
+            beLike {
+              case Some(BlockProjectionData(min, max, data)) =>
+                min mustEqual 0L
+                max mustEqual 0L
+                data.size mustEqual 3
+                data.toJsonElements.map(_("value")) must
+                  containAllOf(expected).only.inOrder
+            })
+      }
 
-    "Insert, close and re-read values below the cook threshold" in check {
-      (discard: Int) =>
+    "Insert, close and re-read values below the cook threshold" in
+      check { (discard: Int) =>
         val ctxt = new TempContext {}
         import ctxt._
 
@@ -215,72 +217,74 @@ class NIHDBProjectionSpecs
 
         result.onComplete { _ =>
           ctxt.stop
-        } must awaited(maxDuration) {
-          beLike {
-            case Some(BlockProjectionData(min, max, data)) =>
-              min mustEqual 0L
-              max mustEqual 0L
-              data.size mustEqual 5
-              data.toJsonElements.map(_("value")) must containAllOf(expected)
-                .only
-                .inOrder
+        } must
+          awaited(maxDuration) {
+            beLike {
+              case Some(BlockProjectionData(min, max, data)) =>
+                min mustEqual 0L
+                max mustEqual 0L
+                data.size mustEqual 5
+                data.toJsonElements.map(_("value")) must
+                  containAllOf(expected).only.inOrder
+            }
           }
-        }
-    }
+      }
 
     "Properly filter on constrainted columns" in todo
 
-    "Properly convert raw blocks to cooked" in check { (discard: Int) =>
-      val ctxt = new TempContext {}
-      import ctxt._
+    "Properly convert raw blocks to cooked" in
+      check { (discard: Int) =>
+        val ctxt = new TempContext {}
+        import ctxt._
 
-      val expected: Seq[JValue] = (0L to 1950L).map(JNum(_)).toSeq
+        val expected: Seq[JValue] = (0L to 1950L).map(JNum(_)).toSeq
 
-      (0L to 1950L).map(JNum(_)).grouped(400).zipWithIndex foreach {
-        case (values, id) =>
-          nihdb.insert(Seq(NIHDB.Batch(id.toLong, values))).unsafePerformIO
-      }
-
-      var waits = 10
-
-      while (waits > 0 && fromFuture(nihdb.status).pending > 0) {
-        Thread.sleep(200)
-        waits -= 1
-      }
-
-      val status = fromFuture(nihdb.status)
-
-      status.cooked mustEqual 1
-      status.pending mustEqual 0
-      status.rawSize mustEqual 751
-
-      val result =
-        for {
-          firstBlock <- projection.getBlockAfter(None, None)
-          secondBlock <- projection.getBlockAfter(Some(0), None)
-        } yield {
-          ctxt.stop
-          (firstBlock, secondBlock)
+        (0L to 1950L).map(JNum(_)).grouped(400).zipWithIndex foreach {
+          case (values, id) =>
+            nihdb.insert(Seq(NIHDB.Batch(id.toLong, values))).unsafePerformIO
         }
 
-      result must awaited(maxDuration)(
-        beLike {
-          case (
-                Some(BlockProjectionData(min1, max1, data1)),
-                Some(BlockProjectionData(min2, max2, data2))) =>
-            min1 mustEqual 0L
-            max1 mustEqual 0L
-            data1.size mustEqual 1200
-            data1.toJsonElements.map(_("value")) must containAllOf(
-              expected.take(1200)).only.inOrder
+        var waits = 10
 
-            min2 mustEqual 1L
-            max2 mustEqual 1L
-            data2.size mustEqual 751
-            data2.toJsonElements.map(_("value")) must containAllOf(
-              expected.drop(1200)).only.inOrder
-        })
-    }
+        while (waits > 0 && fromFuture(nihdb.status).pending > 0) {
+          Thread.sleep(200)
+          waits -= 1
+        }
+
+        val status = fromFuture(nihdb.status)
+
+        status.cooked mustEqual 1
+        status.pending mustEqual 0
+        status.rawSize mustEqual 751
+
+        val result =
+          for {
+            firstBlock <- projection.getBlockAfter(None, None)
+            secondBlock <- projection.getBlockAfter(Some(0), None)
+          } yield {
+            ctxt.stop
+            (firstBlock, secondBlock)
+          }
+
+        result must
+          awaited(maxDuration)(
+            beLike {
+              case (
+                    Some(BlockProjectionData(min1, max1, data1)),
+                    Some(BlockProjectionData(min2, max2, data2))) =>
+                min1 mustEqual 0L
+                max1 mustEqual 0L
+                data1.size mustEqual 1200
+                data1.toJsonElements.map(_("value")) must
+                  containAllOf(expected.take(1200)).only.inOrder
+
+                min2 mustEqual 1L
+                max2 mustEqual 1L
+                data2.size mustEqual 751
+                data2.toJsonElements.map(_("value")) must
+                  containAllOf(expected.drop(1200)).only.inOrder
+            })
+      }
 
   }
 

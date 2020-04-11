@@ -73,8 +73,7 @@ object PluginDiscovery {
     val files =
       writeDescriptor(names.plugins, dir, Plugins) ::
         writeDescriptor(names.autoPlugins, dir, AutoPlugins) ::
-        writeDescriptor(names.builds, dir, Builds) ::
-        Nil
+        writeDescriptor(names.builds, dir, Builds) :: Nil
     files.flatMap(_.toList)
   }
 
@@ -104,10 +103,8 @@ object PluginDiscovery {
       subclasses: String*): Seq[String] =
     (
       binaryModuleNames(data(classpath), loader, resourceName) ++
-        (
-          analyzed(classpath) flatMap (a =>
-            sourceModuleNames(a, subclasses: _*))
-        )
+        (analyzed(classpath) flatMap
+          (a => sourceModuleNames(a, subclasses: _*)))
     ).distinct
 
   /** Discovers top-level modules in `analysis` that inherit from any of `subclasses`. */
@@ -205,8 +202,8 @@ object PluginDiscovery {
       if (evictedStrings.isEmpty)
         ""
       else
-        "\nNote that conflicts were resolved for some dependencies:\n\t" + evictedStrings
-          .mkString("\n\t")
+        "\nNote that conflicts were resolved for some dependencies:\n\t" +
+          evictedStrings.mkString("\n\t")
     throw new IncompatiblePluginsException(msgBase + msgExtra, t)
   }
 }

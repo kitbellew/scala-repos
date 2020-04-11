@@ -642,9 +642,8 @@ private[ml] object RandomForest extends Logging {
 
           // Extract info for this node.  Create children if not leaf.
           val isLeaf =
-            (stats.gain <= 0) || (
-              LearningNode.indexToLevel(nodeIndex) == metadata.maxDepth
-            )
+            (stats.gain <= 0) ||
+              (LearningNode.indexToLevel(nodeIndex) == metadata.maxDepth)
           node.isLeaf = isLeaf
           node.stats = stats
           logDebug("Node = " + node)
@@ -684,11 +683,11 @@ private[ml] object RandomForest extends Logging {
             }
 
             logDebug(
-              "leftChildIndex = " + node.leftChild.get.id +
-                ", impurity = " + stats.leftImpurity)
+              "leftChildIndex = " + node.leftChild.get.id + ", impurity = " +
+                stats.leftImpurity)
             logDebug(
-              "rightChildIndex = " + node.rightChild.get.id +
-                ", impurity = " + stats.rightImpurity)
+              "rightChildIndex = " + node.rightChild.get.id + ", impurity = " +
+                stats.rightImpurity)
           }
         }
     }
@@ -747,8 +746,8 @@ private[ml] object RandomForest extends Logging {
     val leftWeight = leftCount / totalCount.toDouble
     val rightWeight = rightCount / totalCount.toDouble
 
-    val gain =
-      impurity - leftWeight * leftImpurity - rightWeight * rightImpurity
+    val gain = impurity - leftWeight * leftImpurity -
+      rightWeight * rightImpurity
 
     // if information gain doesn't satisfy minimum information gain,
     // then this split is invalid, return invalid information gain stats.
@@ -890,8 +889,8 @@ private[ml] object RandomForest extends Logging {
           }
 
           logDebug(
-            "Centroids for categorical variable: " + centroidForCategories
-              .mkString(","))
+            "Centroids for categorical variable: " +
+              centroidForCategories.mkString(","))
 
           // bins sorted by centroids
           val categoriesSortedByCentroid = centroidForCategories
@@ -1235,8 +1234,7 @@ private[ml] object RandomForest extends Logging {
         nodeQueue.dequeue()
         mutableNodesForGroup.getOrElseUpdate(
           treeIndex,
-          new mutable.ArrayBuffer[LearningNode]()) +=
-          node
+          new mutable.ArrayBuffer[LearningNode]()) += node
         mutableTreeToNodeToIndexInfo.getOrElseUpdate(
           treeIndex,
           new mutable.HashMap[Int, NodeIndexInfo]())(node.id) =

@@ -447,8 +447,8 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
         ", ",
         "(",
         ")",
-        arrayDimension != null && arrayDimension
-          .nonEmpty && !arrayDimension.head.isInstanceOf[ExpressionList])
+        arrayDimension != null && arrayDimension.nonEmpty &&
+          !arrayDimension.head.isInstanceOf[ExpressionList])
     }
   }
 

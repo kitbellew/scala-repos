@@ -153,17 +153,14 @@ object ClientConfig {
 
   // historical defaults for ClientBuilder
   private[builder] val DefaultParams = Stack.Params.empty +
-    param.Stats(NullStatsReceiver) +
-    param.Label(DefaultName) +
+    param.Stats(NullStatsReceiver) + param.Label(DefaultName) +
     DefaultPool.Param(
       low = 1,
       high = Int.MaxValue,
       bufferSize = 0,
       idleTime = 5.seconds,
-      maxWaiters = Int.MaxValue) +
-    param.Tracer(NullTracer) +
-    param.Monitor(NullMonitor) +
-    param.Reporter(NullReporterFactory) +
+      maxWaiters = Int.MaxValue) + param.Tracer(NullTracer) +
+    param.Monitor(NullMonitor) + param.Reporter(NullReporterFactory) +
     Daemonize(false)
 }
 
@@ -1001,8 +998,8 @@ class ClientBuilder[
 
   @deprecated("Used for ABI compat", "5.0.1")
   def buildFactory(
-      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig)
-      : ServiceFactory[Req, Rep] =
+      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION: ThisConfig =:=
+        FullySpecifiedConfig): ServiceFactory[Req, Rep] =
     buildFactory()(
       new ClientConfigEvidence[HasCluster, HasCodec, HasHostConnectionLimit] {})
 
@@ -1021,8 +1018,8 @@ class ClientBuilder[
 
   @deprecated("Used for ABI compat", "5.0.1")
   def build(
-      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig)
-      : Service[Req, Rep] =
+      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ClientBuilder_DOCUMENTATION: ThisConfig =:=
+        FullySpecifiedConfig): Service[Req, Rep] =
     build()(
       new ClientConfigEvidence[HasCluster, HasCodec, HasHostConnectionLimit] {})
 

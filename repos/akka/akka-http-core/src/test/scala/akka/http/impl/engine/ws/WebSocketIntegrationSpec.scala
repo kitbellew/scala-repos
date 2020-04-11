@@ -31,8 +31,8 @@ class WebSocketIntegrationSpec
 
   "A WebSocket server" must {
 
-    "not reset the connection when no data are flowing" in Utils
-      .assertAllStagesStopped {
+    "not reset the connection when no data are flowing" in
+      Utils.assertAllStagesStopped {
         val source = TestPublisher.probe[Message]()
         val bindingFuture = Http().bindAndHandleSync(
           {
@@ -69,8 +69,8 @@ class WebSocketIntegrationSpec
         binding.unbind()
       }
 
-    "not reset the connection when no data are flowing and the connection is closed from the client" in Utils
-      .assertAllStagesStopped {
+    "not reset the connection when no data are flowing and the connection is closed from the client" in
+      Utils.assertAllStagesStopped {
         val source = TestPublisher.probe[Message]()
         val bindingFuture = Http().bindAndHandleSync(
           {
@@ -122,8 +122,8 @@ class WebSocketIntegrationSpec
         binding.unbind()
       }
 
-    "echo 100 elements and then shut down without error" in Utils
-      .assertAllStagesStopped {
+    "echo 100 elements and then shut down without error" in
+      Utils.assertAllStagesStopped {
 
         val bindingFuture = Http().bindAndHandleSync(
           {
@@ -160,8 +160,8 @@ class WebSocketIntegrationSpec
         binding.unbind()
       }
 
-    "send back 100 elements and then terminate without error even when not ordinarily closed" in Utils
-      .assertAllStagesStopped {
+    "send back 100 elements and then terminate without error even when not ordinarily closed" in
+      Utils.assertAllStagesStopped {
         val N = 100
 
         val handler = Flow.fromGraph(
@@ -176,7 +176,8 @@ class WebSocketIntegrationSpec
             // source we want to use to send message to the connected websocket sink
             val rangeSource = b.add(Source(1 to N))
 
-            mapMsgToInt ~> merge // this part of the merge will never provide msgs
+            mapMsgToInt ~>
+              merge // this part of the merge will never provide msgs
             rangeSource ~> merge ~> mapIntToMsg
 
             FlowShape(mapMsgToInt.in, mapIntToMsg.out)

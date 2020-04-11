@@ -97,8 +97,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
           .triplets
           .map(et => (et.srcId, et.dstId, et.srcAttr, et.dstAttr))
           .collect()
-          .toSet
-          === (1 to n).map(x => (0: VertexId, x: VertexId, "v", "v")).toSet)
+          .toSet ===
+          (1 to n).map(x => (0: VertexId, x: VertexId, "v", "v")).toSet)
     }
   }
 
@@ -222,15 +222,13 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       // mapVertices preserving type
       val mappedVAttrs = star.mapVertices((vid, attr) => attr + "2")
       assert(
-        mappedVAttrs.vertices.collect().toSet === (0 to n)
-          .map(x => (x: VertexId, "v2"))
-          .toSet)
+        mappedVAttrs.vertices.collect().toSet ===
+          (0 to n).map(x => (x: VertexId, "v2")).toSet)
       // mapVertices changing type
       val mappedVAttrs2 = star.mapVertices((vid, attr) => attr.length)
       assert(
-        mappedVAttrs2.vertices.collect().toSet === (0 to n)
-          .map(x => (x: VertexId, 1))
-          .toSet)
+        mappedVAttrs2.vertices.collect().toSet ===
+          (0 to n).map(x => (x: VertexId, 1)).toSet)
     }
   }
 
@@ -254,10 +252,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       // Access replicated vertices, exposing the erased type
       val graph2 = graph1.mapTriplets(t => t.srcAttr.get)
       assert(
-        graph2.edges.map(_.attr).collect().toSet === Set[java.lang.Double](
-          1.0,
-          2.0,
-          3.0))
+        graph2.edges.map(_.attr).collect().toSet ===
+          Set[java.lang.Double](1.0, 2.0, 3.0))
     }
   }
 
@@ -282,8 +278,7 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
           .mapTriplets(et => et.srcAttr + et.dstAttr)
           .edges
           .collect()
-          .toSet ===
-          (1L to n).map(x => Edge(0, x, "vv")).toSet)
+          .toSet === (1L to n).map(x => Edge(0, x, "vv")).toSet)
     }
   }
 
@@ -292,9 +287,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       val n = 5
       val star = starGraph(sc, n)
       assert(
-        star.reverse.outDegrees.collect().toSet === (1 to n)
-          .map(x => (x: VertexId, 1))
-          .toSet)
+        star.reverse.outDegrees.collect().toSet ===
+          (1 to n).map(x => (x: VertexId, 1)).toSet)
     }
   }
 
@@ -322,9 +316,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
 
       // We should have 5 vertices.
       assert(
-        subgraph.vertices.collect().toSet === (0 to n by 2)
-          .map(x => (x, "v"))
-          .toSet)
+        subgraph.vertices.collect().toSet ===
+          (0 to n by 2).map(x => (x, "v")).toSet)
 
       // And 4 edges.
       assert(
@@ -393,8 +386,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
         ctx => {
           if (ctx.dstAttr != null) {
             throw new Exception(
-              "expected ctx.dstAttr to be null due to TripletFields, but it was " + ctx
-                .dstAttr)
+              "expected ctx.dstAttr to be null due to TripletFields, but it was " +
+                ctx.dstAttr)
           }
           ctx.sendToDst(ctx.srcAttr)
         },
@@ -425,8 +418,9 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
           .collect()
           .toSet
       assert(
-        neighborDegreeSums === Set((0: VertexId, n)) ++ (1 to n)
-          .map(x => (x: VertexId, 0)))
+        neighborDegreeSums ===
+          Set((0: VertexId, n)) ++
+          (1 to n).map(x => (x: VertexId, 0)))
       // outerJoinVertices preserving type
       val messages = reverseStar
         .vertices

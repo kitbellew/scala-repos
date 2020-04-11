@@ -112,8 +112,8 @@ abstract class CreateEntityQuickFix(
       else
         ""
     val params = (genericParams ++: parameters).mkString
-    val text = placeholder
-      .format(keyword, ref.nameId.getText, params) + unimplementedBody
+    val text = placeholder.format(keyword, ref.nameId.getText, params) +
+      unimplementedBody
 
     val block =
       ref match {
@@ -160,8 +160,8 @@ abstract class CreateEntityQuickFix(
 
       val template = builder.buildTemplate()
 
-      val isScalaConsole = file.getName == ScalaLanguageConsoleView
-        .SCALA_CONSOLE
+      val isScalaConsole = file.getName ==
+        ScalaLanguageConsoleView.SCALA_CONSOLE
       if (!isScalaConsole) {
         val newEditor = positionCursor(entity.getLastChild)
         val range = entity.getTextRange
@@ -193,8 +193,8 @@ object CreateEntityQuickFix {
       case InstanceOfClass(td: ScTemplateDefinition) =>
         Success(td.extendsBlock)
       case th: ScThisReference
-          if PsiTreeUtil
-            .getParentOfType(th, classOf[ScExtendsBlock], true) != null =>
+          if PsiTreeUtil.getParentOfType(th, classOf[ScExtendsBlock], true) !=
+            null =>
         th.refTemplate match {
           case Some(ScTemplateDefinition.ExtendsBlock(block)) =>
             Success(block)

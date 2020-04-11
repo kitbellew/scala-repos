@@ -35,8 +35,7 @@ object EvalTest extends Properties("eval") {
         i.toString,
         tpeName = Some(BooleanType),
         line = line,
-        srcName = src)) &&
-    hasErrors(line + 1, src)
+        srcName = src)) && hasErrors(line + 1, src)
   }
 
   property("backed local class") = forAll { (i: Int) =>

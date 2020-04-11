@@ -34,34 +34,41 @@ class ZookeeperSystemCoordinationSpec extends Specification {
   sequential
 
   "zookeeper system coordination " should {
-    "register relay agent" in TestZookeeperClient() { factory: ClientFactory =>
-      val client = factory()
-      val sc = newSystemCoordination(client)
+    "register relay agent" in
+      TestZookeeperClient() { factory: ClientFactory =>
+        val client = factory()
+        val sc = newSystemCoordination(client)
 
-      val result = sc.registerRelayAgent("test_agent", 10000)
+        val result = sc.registerRelayAgent("test_agent", 10000)
 
-      result must beLike {
-        case Success(EventRelayState(0, 1, IdSequenceBlock(0, 1, 10000))) =>
-          ok
+        result must
+          beLike {
+            case Success(EventRelayState(0, 1, IdSequenceBlock(0, 1, 10000))) =>
+              ok
+          }
       }
-    }
 
-    "renew relay agent" in TestZookeeperClient() { factory: ClientFactory =>
-      val client = factory()
-      val sc = newSystemCoordination(client)
+    "renew relay agent" in
+      TestZookeeperClient() { factory: ClientFactory =>
+        val client = factory()
+        val sc = newSystemCoordination(client)
 
-      sc.registerRelayAgent("test_agent", 10000)
-      val result = sc.renewEventRelayState("test_agent", 0L, 0, 10000)
+        sc.registerRelayAgent("test_agent", 10000)
+        val result = sc.renewEventRelayState("test_agent", 0L, 0, 10000)
 
-      result must beLike {
-        case Success(
-              EventRelayState(0, 10001, IdSequenceBlock(0, 10001, 20000))) =>
-          ok
+        result must
+          beLike {
+            case Success(
+                  EventRelayState(
+                    0,
+                    10001,
+                    IdSequenceBlock(0, 10001, 20000))) =>
+              ok
+          }
       }
-    }
 
-    "save and restore relay agent state" in TestZookeeperClient() {
-      factory: ClientFactory =>
+    "save and restore relay agent state" in
+      TestZookeeperClient() { factory: ClientFactory =>
         val client1 = factory()
         val sc1 = newSystemCoordination(client1)
 
@@ -69,11 +76,12 @@ class ZookeeperSystemCoordinationSpec extends Specification {
         val lastState = EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))
         val result1 = sc1.saveEventRelayState("test_agent", lastState)
 
-        result1 must beLike {
-          case Success(
-                EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) =>
-            ok
-        }
+        result1 must
+          beLike {
+            case Success(
+                  EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) =>
+              ok
+          }
 
         sc1.close
 
@@ -84,15 +92,16 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         sc2.close
 
-        result2 must beLike {
-          case Success(
-                EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) =>
-            ok
-        }
-    }
+        result2 must
+          beLike {
+            case Success(
+                  EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) =>
+              ok
+          }
+      }
 
-    "restore relay agent state" in TestZookeeperClient() {
-      factory: ClientFactory =>
+    "restore relay agent state" in
+      TestZookeeperClient() { factory: ClientFactory =>
         val client1 = factory()
         val sc1 = newSystemCoordination(client1)
 
@@ -107,24 +116,26 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         val result = sc2.registerRelayAgent("test_agent", 10000)
 
-        result must beLike {
-          case Success(
-                EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) =>
-            ok
-        }
-    }
+        result must
+          beLike {
+            case Success(
+                  EventRelayState(123, 456, IdSequenceBlock(0, 1, 10000))) =>
+              ok
+          }
+      }
 
-    "relay agent registration retries in case of stale registration" in TestZookeeperClient() {
-      factory: ClientFactory =>
+    "relay agent registration retries in case of stale registration" in
+      TestZookeeperClient() { factory: ClientFactory =>
         val client1 = factory()
         val sc1 = newSystemCoordination(client1)
 
         val result1 = sc1.registerRelayAgent("test_agent", 10000)
 
-        result1 must beLike {
-          case Success(EventRelayState(0, 1, IdSequenceBlock(0, 1, 10000))) =>
-            ok
-        }
+        result1 must
+          beLike {
+            case Success(EventRelayState(0, 1, IdSequenceBlock(0, 1, 10000))) =>
+              ok
+          }
 
         sc1.close()
 
@@ -133,32 +144,35 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         val result2 = sc2.registerRelayAgent("test_agent", 10000)
 
-        result2 must beLike {
-          case Success(EventRelayState(0, 1, IdSequenceBlock(0, 1, 10000))) =>
-            ok
-        }
-    }
+        result2 must
+          beLike {
+            case Success(EventRelayState(0, 1, IdSequenceBlock(0, 1, 10000))) =>
+              ok
+          }
+      }
 
-    "relay agent registration fails after reasonable attempt to detect stale registration" in TestZookeeperClient() {
-      factory: ClientFactory =>
+    "relay agent registration fails after reasonable attempt to detect stale registration" in
+      TestZookeeperClient() { factory: ClientFactory =>
         val client1 = factory()
         val sc1 = newSystemCoordination(client1)
 
         val result1 = sc1.registerRelayAgent("test_agent", 10000)
-        result1 must beLike {
-          case Success(_) =>
-            ok
-        }
+        result1 must
+          beLike {
+            case Success(_) =>
+              ok
+          }
 
         val client2 = factory()
         val sc2 = newSystemCoordination(client2)
 
         val result2 = sc2.registerRelayAgent("test_agent", 10000)
-        result2 must beLike {
-          case Failure(_) =>
-            ok
-        }
-    }
+        result2 must
+          beLike {
+            case Failure(_) =>
+              ok
+          }
+      }
 
     "distinguish between normal and abnormal relay agent shutdown" in {
       todo
@@ -168,23 +182,24 @@ class ZookeeperSystemCoordinationSpec extends Specification {
       todo
     }
 
-    "not load a missing checkpoint (checkpoints for new shards should be inserted manually via YggUtils)" in TestZookeeperClient() {
-      factory: ClientFactory =>
+    "not load a missing checkpoint (checkpoints for new shards should be inserted manually via YggUtils)" in
+      TestZookeeperClient() { factory: ClientFactory =>
         val client = factory()
         val sc = newSystemCoordination(client)
 
         val checkpoints = sc.loadYggCheckpoint("bifrost")
 
-        checkpoints must beLike {
-          case Some(
-                Failure(
-                  blueeyes.json.serialization.Extractor.Invalid(_, None))) =>
-            ok
-        }
-    }
+        checkpoints must
+          beLike {
+            case Some(
+                  Failure(
+                    blueeyes.json.serialization.Extractor.Invalid(_, None))) =>
+              ok
+          }
+      }
 
-    "persist checkpoints between sessions" in TestZookeeperClient() {
-      factory: ClientFactory =>
+    "persist checkpoints between sessions" in
+      TestZookeeperClient() { factory: ClientFactory =>
         val client1 = factory()
         val sc1 = newSystemCoordination(client1)
 
@@ -202,11 +217,12 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         val result = sc2.loadYggCheckpoint("bifrost")
 
-        result must beLike {
-          case Some(Success(out)) =>
-            in must_== out
-        }
-    }
+        result must
+          beLike {
+            case Some(Success(out)) =>
+              in must_== out
+          }
+      }
 
     "distinguish between normal and abnormal bifrost/checkpoints shutdown" in {
       todo

@@ -169,7 +169,8 @@ private[cluster] class Reachability private (
       case Some(oldObserverRows) ⇒
         oldObserverRows.get(subject) match {
           case None ⇒
-            if (status == Reachable && oldObserverRows.forall {
+            if (status == Reachable &&
+                oldObserverRows.forall {
                   case (_, r) ⇒
                     r.status == Reachable
                 }) {
@@ -183,7 +184,8 @@ private[cluster] class Reachability private (
             if (oldRecord.status == Terminated || oldRecord.status == status)
               this
             else {
-              if (status == Reachable && oldObserverRows.forall {
+              if (status == Reachable &&
+                  oldObserverRows.forall {
                     case (_, r) ⇒
                       r.status == Reachable || r.subject == subject
                   }) {
@@ -219,22 +221,25 @@ private[cluster] class Reachability private (
               rows1
             else
               rows2
-          recordBuilder ++= rows.collect {
-            case (_, r) if allowed(r.subject) ⇒
-              r
-          }
+          recordBuilder ++=
+            rows.collect {
+              case (_, r) if allowed(r.subject) ⇒
+                r
+            }
         case (Some(rows1), None) ⇒
           if (observerVersion1 > observerVersion2)
-            recordBuilder ++= rows1.collect {
-              case (_, r) if allowed(r.subject) ⇒
-                r
-            }
+            recordBuilder ++=
+              rows1.collect {
+                case (_, r) if allowed(r.subject) ⇒
+                  r
+              }
         case (None, Some(rows2)) ⇒
           if (observerVersion2 > observerVersion1)
-            recordBuilder ++= rows2.collect {
-              case (_, r) if allowed(r.subject) ⇒
-                r
-            }
+            recordBuilder ++=
+              rows2.collect {
+                case (_, r) if allowed(r.subject) ⇒
+                  r
+              }
       }
 
       if (observerVersion2 > observerVersion1)

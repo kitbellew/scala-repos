@@ -117,10 +117,8 @@ class LogManager(
       val lock = new FileLock(new File(dir, LockFile))
       if (!lock.tryLock())
         throw new KafkaException(
-          "Failed to acquire lock on file .lock in " + lock
-            .file
-            .getParentFile
-            .getAbsolutePath +
+          "Failed to acquire lock on file .lock in " +
+            lock.file.getParentFile.getAbsolutePath +
             ". A Kafka instance in another process or thread is using this directory.")
       lock
     }
@@ -157,7 +155,8 @@ class LogManager(
       } catch {
         case e: Exception => {
           warn(
-            "Error occured while reading recovery-point-offset-checkpoint file of directory " + dir,
+            "Error occured while reading recovery-point-offset-checkpoint file of directory " +
+              dir,
             e)
           warn("Resetting the recovery checkpoint to 0")
         }
@@ -201,8 +200,8 @@ class LogManager(
     } catch {
       case e: ExecutionException => {
         error(
-          "There was an error in one of the threads during logs loading: " + e
-            .getCause)
+          "There was an error in one of the threads during logs loading: " +
+            e.getCause)
         throw e.getCause
       }
     } finally {
@@ -295,8 +294,8 @@ class LogManager(
     } catch {
       case e: ExecutionException => {
         error(
-          "There was an error in one of the threads during LogManager shutdown: " + e
-            .getCause)
+          "There was an error in one of the threads during LogManager shutdown: " +
+            e.getCause)
         throw e.getCause
       }
     } finally {
@@ -548,10 +547,9 @@ class LogManager(
       try {
         val timeSinceLastFlush = time.milliseconds - log.lastFlushTime
         debug(
-          "Checking if flush is needed on " + topicAndPartition
-            .topic + " flush interval  " + log.config.flushMs +
-            " last flushed " + log
-            .lastFlushTime + " time since last flush: " + timeSinceLastFlush)
+          "Checking if flush is needed on " + topicAndPartition.topic +
+            " flush interval  " + log.config.flushMs + " last flushed " +
+            log.lastFlushTime + " time since last flush: " + timeSinceLastFlush)
         if (timeSinceLastFlush >= log.config.flushMs)
           log.flush
       } catch {

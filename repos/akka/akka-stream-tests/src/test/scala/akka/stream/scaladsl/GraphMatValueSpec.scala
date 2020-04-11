@@ -32,8 +32,8 @@ class GraphMatValueSpec extends AkkaSpec {
             .fromGraph(
               GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
                 Source(1 to 10) ~> fold
-                b.materializedValue.mapAsync(4)(identity) ~> Sink
-                  .fromSubscriber(sub)
+                b.materializedValue.mapAsync(4)(identity) ~>
+                  Sink.fromSubscriber(sub)
                 ClosedShape
               })
             .run()
@@ -91,8 +91,8 @@ class GraphMatValueSpec extends AkkaSpec {
             .mapAsync(4)(identity)
             .map(_ + 100)
             .mapMaterializedValue((_) ⇒ ())
-          Await
-            .result(noMatSource.runWith(Sink.head), 3.seconds) should ===(155)
+          Await.result(noMatSource.runWith(Sink.head), 3.seconds) should
+            ===(155)
         }
 
         "work properly with nesting and reusing" in {

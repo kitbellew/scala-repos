@@ -24,20 +24,22 @@ class FailureDetectorTest extends FunSuite {
   test("flag settings with flag set to none") {
     sessionFailureDetector.let("none") {
       assert(
-        NullFailureDetector == FailureDetector(
-          FailureDetector.GlobalFlagConfig,
-          ping,
-          statsReceiver))
+        NullFailureDetector ==
+          FailureDetector(
+            FailureDetector.GlobalFlagConfig,
+            ping,
+            statsReceiver))
     }
   }
 
   test("flag settings with invalid string") {
     sessionFailureDetector.let("tacos") {
       assert(
-        NullFailureDetector == FailureDetector(
-          FailureDetector.GlobalFlagConfig,
-          ping,
-          statsReceiver))
+        NullFailureDetector ==
+          FailureDetector(
+            FailureDetector.GlobalFlagConfig,
+            ping,
+            statsReceiver))
     }
   }
 
@@ -51,10 +53,8 @@ class FailureDetectorTest extends FunSuite {
 
   test("request null gets null") {
     assert(
-      NullFailureDetector == FailureDetector(
-        FailureDetector.NullConfig,
-        ping,
-        statsReceiver))
+      NullFailureDetector ==
+        FailureDetector(FailureDetector.NullConfig, ping, statsReceiver))
   }
 
   test("explicit threshold used") {

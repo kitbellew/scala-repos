@@ -38,10 +38,11 @@ class PerfTestSuiteSpec extends Specification {
 
   object ex extends PerfTestSuite {
     "a" := {
-      "b" := concurrently {
-        query("1")
-        query("2")
-      }
+      "b" :=
+        concurrently {
+          query("1")
+          query("2")
+        }
       query("3")
     }
   }
@@ -76,10 +77,11 @@ class PerfTestSuiteSpec extends Specification {
         query("2")
       }
 
-      weird.test must beLike {
-        case Tree.Node(Group(name), _) =>
-          name must contain("weird")
-      }
+      weird.test must
+        beLike {
+          case Tree.Node(Group(name), _) =>
+            name must contain("weird")
+        }
     }
 
     "faithfully reprsent the test suite" in {
@@ -93,22 +95,24 @@ class PerfTestSuiteSpec extends Specification {
         include(ex)
       }
 
-      ex2.test must beLike {
-        case Tree.Node(
-              Group(_),
-              Stream(Tree.Node(RunSequential, Stream(inner)))) =>
-          treeEq[PerfTest].equal(ex.test, inner) must beTrue
-      }
+      ex2.test must
+        beLike {
+          case Tree.Node(
+                Group(_),
+                Stream(Tree.Node(RunSequential, Stream(inner)))) =>
+            treeEq[PerfTest].equal(ex.test, inner) must beTrue
+        }
     }
   }
 
   "the test selector" should {
     "select whole tree if root is true" in {
       val t = ex select ((_, _) => true)
-      t must beLike {
-        case Some(t) =>
-          treeEq[PerfTest].equal(t, ex.test) must beTrue
-      }
+      t must
+        beLike {
+          case Some(t) =>
+            treeEq[PerfTest].equal(t, ex.test) must beTrue
+        }
     }
 
     "selecting multiple disjoint tests gives list" in {
@@ -119,16 +123,17 @@ class PerfTestSuiteSpec extends Specification {
           false
       }
 
-      ts must beLike {
-        case Some(Tree.Node(Group(_), ts)) =>
-          ts must haveTheSameElementsAs(
-            List(
-              Tree.leaf[PerfTest](RunQuery("1")),
-              Tree.leaf[PerfTest](RunQuery("2")),
-              Tree.leaf[PerfTest](RunQuery("3")))) ^^ (
-            treeEq[PerfTest].equal(_, _)
-          )
-      }
+      ts must
+        beLike {
+          case Some(Tree.Node(Group(_), ts)) =>
+            ts must
+              haveTheSameElementsAs(
+                List(
+                  Tree.leaf[PerfTest](RunQuery("1")),
+                  Tree.leaf[PerfTest](RunQuery("2")),
+                  Tree.leaf[PerfTest](RunQuery("3")))) ^^
+              (treeEq[PerfTest].equal(_, _))
+        }
     }
   }
 }

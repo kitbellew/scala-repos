@@ -247,13 +247,14 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
         .makeGroup("/some/nested/path".toPath)
         .makeGroup("/some/nested/path2".toPath)
 
-      current.transitiveGroups.map(_.id.toString) should be(
-        Set(
-          "/",
-          "/some",
-          "/some/nested",
-          "/some/nested/path",
-          "/some/nested/path2"))
+      current.transitiveGroups.map(_.id.toString) should
+        be(
+          Set(
+            "/",
+            "/some",
+            "/some/nested",
+            "/some/nested/path",
+            "/some/nested/path2"))
 
       When("requesting to put an app definition")
       val changed = current.updateApp(
@@ -283,13 +284,14 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
             AppDefinition("/some/nested/path2/app".toPath, cmd = Some("true")),
           Timestamp.now())
 
-      current.transitiveGroups.map(_.id.toString) should be(
-        Set(
-          "/",
-          "/some",
-          "/some/nested",
-          "/some/nested/path",
-          "/some/nested/path2"))
+      current.transitiveGroups.map(_.id.toString) should
+        be(
+          Set(
+            "/",
+            "/some",
+            "/some/nested",
+            "/some/nested/path",
+            "/some/nested/path2"))
 
       When("requesting to put an app definition")
       val changed = current.updateApp(
@@ -299,21 +301,22 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
 
       Then(
         "the group with same path has NOT been replaced by the new app definition")
-      current.transitiveGroups.map(_.id.toString) should be(
-        Set(
-          "/",
-          "/some",
-          "/some/nested",
-          "/some/nested/path",
-          "/some/nested/path2"))
-      changed.transitiveApps.map(_.id.toString) should be(
-        Set("/some/nested", "/some/nested/path2/app"))
+      current.transitiveGroups.map(_.id.toString) should
+        be(
+          Set(
+            "/",
+            "/some",
+            "/some/nested",
+            "/some/nested/path",
+            "/some/nested/path2"))
+      changed.transitiveApps.map(_.id.toString) should
+        be(Set("/some/nested", "/some/nested/path2/app"))
 
       Then("the conflict will be detected by our V2 API model validation")
       val result = validate(changed)
       result.isFailure should be(true)
-      ValidationHelper.getAllRuleConstrains(result).head.message should be(
-        "Groups and Applications may not have the same identifier.")
+      ValidationHelper.getAllRuleConstrains(result).head.message should
+        be("Groups and Applications may not have the same identifier.")
     }
 
     it("can marshal and unmarshal from to protos") {

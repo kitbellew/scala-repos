@@ -220,12 +220,13 @@ private[akka] class DistributedPubSubMessageSerializer(
             b.getContentList
               .asScala
               .map { entry ⇒
-                entry.getKey -> ValueHolder(
-                  entry.getVersion,
-                  if (entry.hasRef)
-                    Some(resolveActorRef(entry.getRef))
-                  else
-                    None)
+                entry.getKey ->
+                  ValueHolder(
+                    entry.getVersion,
+                    if (entry.hasRef)
+                      Some(resolveActorRef(entry.getRef))
+                    else
+                      None)
               }(breakOut)
           Bucket(addressFromProto(b.getOwner), b.getVersion, content)
         })

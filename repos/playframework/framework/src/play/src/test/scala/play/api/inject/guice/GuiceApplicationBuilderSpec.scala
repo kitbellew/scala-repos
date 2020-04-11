@@ -45,10 +45,10 @@ object GuiceApplicationBuilderSpec extends Specification {
           .disable(classOf[AModule])
           .injector
 
-      injector.instanceOf[play.api.i18n.Langs] must throwA[
-        com.google.inject.ConfigurationException]
-      injector
-        .instanceOf[A] must throwA[com.google.inject.ConfigurationException]
+      injector.instanceOf[play.api.i18n.Langs] must
+        throwA[com.google.inject.ConfigurationException]
+      injector.instanceOf[A] must
+        throwA[com.google.inject.ConfigurationException]
     }
 
     "set initial configuration loader" in {

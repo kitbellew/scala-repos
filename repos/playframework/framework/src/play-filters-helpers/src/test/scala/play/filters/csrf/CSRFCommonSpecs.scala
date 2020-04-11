@@ -124,10 +124,11 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
         val token = response.body
         token must not be empty
         val rspToken = getToken(response)
-        rspToken must beSome.like {
-          case s =>
-            compareTokens(token, s)
-        }
+        rspToken must
+          beSome.like {
+            case s =>
+              compareTokens(token, s)
+          }
       }
     }
     "not set the token if already set" in {
@@ -181,12 +182,11 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
           addToken(req, "foo")
             .post(Map("foo" -> "bar", TokenName -> generate))) { response =>
           response.status must_== FORBIDDEN
-          response
-            .cookies
-            .find(_.name.exists(_ == Session.COOKIE_NAME)) must beSome.like {
-            case cookie =>
-              cookie.value must beNone
-          }
+          response.cookies.find(_.name.exists(_ == Session.COOKIE_NAME)) must
+            beSome.like {
+              case cookie =>
+                cookie.value must beNone
+            }
         }
       }
       "return a different token on each request" in {

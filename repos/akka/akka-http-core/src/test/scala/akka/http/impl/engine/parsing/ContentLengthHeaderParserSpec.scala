@@ -20,19 +20,20 @@ class ContentLengthHeaderParserSpec extends WordSpec with Matchers {
     }
     "accept positive value > Int.MaxValue <= Long.MaxValue" in {
       parse("274877906944") shouldEqual 274877906944L
-      parse(
-        "9223372036854775807") shouldEqual 9223372036854775807L // Long.MaxValue
+      parse("9223372036854775807") shouldEqual
+        9223372036854775807L // Long.MaxValue
     }
     "don't accept positive value > Long.MaxValue" in {
-      a[ParsingException] should be thrownBy parse(
-        "9223372036854775808"
-      ) // Long.MaxValue + 1
-      a[ParsingException] should be thrownBy parse(
-        "92233720368547758070"
-      ) // Long.MaxValue * 10 which is 0 taken overflow into account
-      a[ParsingException] should be thrownBy parse(
-        "92233720368547758080"
-      ) // (Long.MaxValue + 1) * 10 which is 0 taken overflow into account
+      a[ParsingException] should be thrownBy
+        parse("9223372036854775808") // Long.MaxValue + 1
+      a[ParsingException] should be thrownBy
+        parse(
+          "92233720368547758070"
+        ) // Long.MaxValue * 10 which is 0 taken overflow into account
+      a[ParsingException] should be thrownBy
+        parse(
+          "92233720368547758080"
+        ) // (Long.MaxValue + 1) * 10 which is 0 taken overflow into account
     }
   }
 

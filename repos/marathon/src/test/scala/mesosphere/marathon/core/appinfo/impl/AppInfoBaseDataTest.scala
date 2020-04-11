@@ -92,11 +92,12 @@ class AppInfoBaseDataTest
     val alive = Health(running2.taskId, lastSuccess = Some(Timestamp(1)))
     val unhealthy = Health(running3.taskId, lastFailure = Some(Timestamp(1)))
 
-    f.healthCheckManager.statuses(app.id) returns Future.successful(
-      Map(
-        running1.taskId -> Seq.empty,
-        running2.taskId -> Seq(alive),
-        running3.taskId -> Seq(unhealthy)))
+    f.healthCheckManager.statuses(app.id) returns
+      Future.successful(
+        Map(
+          running1.taskId -> Seq.empty,
+          running2.taskId -> Seq(alive),
+          running3.taskId -> Seq(unhealthy)))
 
     When("requesting AppInfos with tasks")
     val appInfo =
@@ -105,18 +106,19 @@ class AppInfoBaseDataTest
     Then("we get a tasks object in the appInfo")
     appInfo.maybeTasks should not be empty
     appInfo.maybeTasks.get.map(_.appId.toString) should have size 3
-    appInfo.maybeTasks.get.map(_.task.taskId.idString).toSet should be(
-      Set("task1", "task2", "task3"))
+    appInfo.maybeTasks.get.map(_.task.taskId.idString).toSet should
+      be(Set("task1", "task2", "task3"))
 
-    appInfo should be(
-      AppInfo(
-        app,
-        maybeTasks = Some(
-          Seq(
-            EnrichedTask(app.id, running1, Seq.empty),
-            EnrichedTask(app.id, running2, Seq(alive)),
-            EnrichedTask(app.id, running3, Seq(unhealthy))))
-      ))
+    appInfo should
+      be(
+        AppInfo(
+          app,
+          maybeTasks = Some(
+            Seq(
+              EnrichedTask(app.id, running1, Seq.empty),
+              EnrichedTask(app.id, running2, Seq(alive)),
+              EnrichedTask(app.id, running3, Seq(unhealthy))))
+        ))
 
     And("the taskTracker should have been called")
     verify(f.taskTracker, times(1)).tasksByApp()(global)
@@ -144,29 +146,31 @@ class AppInfoBaseDataTest
           .of(
             TaskTracker.AppTasks(app.id, Iterable(staged, running, running2))))
 
-    f.healthCheckManager.statuses(app.id) returns Future.successful(
-      Map(
-        Task.Id("task1") -> Seq(),
-        Task.Id("task2") -> Seq(
-          Health(Task.Id("task2"), lastFailure = Some(Timestamp(1)))),
-        Task.Id("task3") -> Seq(
-          Health(Task.Id("task3"), lastSuccess = Some(Timestamp(2))))
-      ))
+    f.healthCheckManager.statuses(app.id) returns
+      Future.successful(
+        Map(
+          Task.Id("task1") -> Seq(),
+          Task.Id("task2") ->
+            Seq(Health(Task.Id("task2"), lastFailure = Some(Timestamp(1)))),
+          Task.Id("task3") ->
+            Seq(Health(Task.Id("task3"), lastSuccess = Some(Timestamp(2))))
+        ))
 
     When("requesting AppInfos with counts")
     val appInfo =
       f.baseData.appInfoFuture(app, Set(AppInfo.Embed.Counts)).futureValue
 
     Then("we get counts object in the appInfo")
-    appInfo should be(
-      AppInfo(
-        app,
-        maybeCounts = Some(
-          TaskCounts(
-            tasksStaged = 1,
-            tasksRunning = 2,
-            tasksHealthy = 1,
-            tasksUnhealthy = 1))))
+    appInfo should
+      be(
+        AppInfo(
+          app,
+          maybeCounts = Some(
+            TaskCounts(
+              tasksStaged = 1,
+              tasksRunning = 2,
+              tasksHealthy = 1,
+              tasksUnhealthy = 1))))
 
     And("the taskTracker should have been called")
     verify(f.taskTracker, times(1)).tasksByApp()(global)
@@ -188,8 +192,8 @@ class AppInfoBaseDataTest
     val unrelatedDeployment = DeploymentPlan(
       emptyGroup,
       emptyGroup.copy(apps = Set(other)))
-    f.marathonSchedulerService.listRunningDeployments() returns Future
-      .successful(
+    f.marathonSchedulerService.listRunningDeployments() returns
+      Future.successful(
         Seq[DeploymentStepInfo](
           DeploymentStepInfo(relatedDeployment, DeploymentStep(Seq.empty), 1),
           DeploymentStepInfo(
@@ -202,10 +206,11 @@ class AppInfoBaseDataTest
       f.baseData.appInfoFuture(app, Set(AppInfo.Embed.Deployments)).futureValue
 
     Then("we get an counts in the appInfo")
-    appInfo should be(
-      AppInfo(
-        app,
-        maybeDeployments = Some(Seq(Identifiable(relatedDeployment.id)))))
+    appInfo should
+      be(
+        AppInfo(
+          app,
+          maybeDeployments = Some(Seq(Identifiable(relatedDeployment.id)))))
 
     And(
       "the marathonSchedulerService should have been called to retrieve the deployments")
@@ -218,8 +223,8 @@ class AppInfoBaseDataTest
   test("requesting deployments does work if no deployments are running") {
     val f = new Fixture
     Given("No deployments")
-    f.marathonSchedulerService.listRunningDeployments() returns Future
-      .successful(Seq.empty[DeploymentStepInfo])
+    f.marathonSchedulerService.listRunningDeployments() returns
+      Future.successful(Seq.empty[DeploymentStepInfo])
 
     When("Getting AppInfos with deployments")
     val appInfo =
@@ -239,8 +244,8 @@ class AppInfoBaseDataTest
   test("requesting lastTaskFailure when one exists") {
     val f = new Fixture
     Given("One last taskFailure")
-    f.taskFailureRepository.current(app.id) returns Future
-      .successful(Some(TaskFailureTestHelper.taskFailure))
+    f.taskFailureRepository.current(app.id) returns
+      Future.successful(Some(TaskFailureTestHelper.taskFailure))
 
     When("Getting AppInfos with last task failures")
     val appInfo =
@@ -249,10 +254,11 @@ class AppInfoBaseDataTest
         .futureValue
 
     Then("we get the failure in the app info")
-    appInfo should be(
-      AppInfo(
-        app,
-        maybeLastTaskFailure = Some(TaskFailureTestHelper.taskFailure)))
+    appInfo should
+      be(
+        AppInfo(
+          app,
+          maybeLastTaskFailure = Some(TaskFailureTestHelper.taskFailure)))
 
     And(
       "the taskFailureRepository should have been called to retrieve the failure")
@@ -305,10 +311,10 @@ class AppInfoBaseDataTest
 
     val statuses: Map[Task.Id, Seq[Health]] = Map(
       staged.taskId -> Seq(),
-      running.taskId -> Seq(
-        Health(running.taskId, lastFailure = Some(Timestamp(1)))),
-      running2.taskId -> Seq(
-        Health(running2.taskId, lastSuccess = Some(Timestamp(2))))
+      running.taskId ->
+        Seq(Health(running.taskId, lastFailure = Some(Timestamp(1)))),
+      running2.taskId ->
+        Seq(Health(running2.taskId, lastSuccess = Some(Timestamp(2))))
     )
     f.healthCheckManager.statuses(app.id) returns Future.successful(statuses)
 
@@ -323,13 +329,8 @@ class AppInfoBaseDataTest
     withClue(Json.prettyPrint(Json.toJson(appInfo))) {
       appInfo.maybeTaskStats should not be empty
       appInfo.maybeTaskStats.get.maybeTotalSummary should not be empty
-      appInfo
-        .maybeTaskStats
-        .get
-        .maybeTotalSummary
-        .get
-        .counts
-        .tasksStaged should be(1)
+      appInfo.maybeTaskStats.get.maybeTotalSummary.get.counts.tasksStaged should
+        be(1)
       appInfo
         .maybeTaskStats
         .get
@@ -338,15 +339,16 @@ class AppInfoBaseDataTest
         .counts
         .tasksRunning should be(2)
 
-      appInfo should be(
-        AppInfo(
-          app,
-          maybeTaskStats = Some(
-            TaskStatsByVersion(
-              f.clock.now(),
-              app.versionInfo,
-              tasks,
-              statuses))))
+      appInfo should
+        be(
+          AppInfo(
+            app,
+            maybeTaskStats = Some(
+              TaskStatsByVersion(
+                f.clock.now(),
+                app.versionInfo,
+                tasks,
+                statuses))))
     }
 
     And("the taskTracker should have been called")
@@ -362,10 +364,10 @@ class AppInfoBaseDataTest
   test("Combining embed options work") {
     val f = new Fixture
     Given("One last taskFailure and no deployments")
-    f.taskFailureRepository.current(app.id) returns Future
-      .successful(Some(TaskFailureTestHelper.taskFailure))
-    f.marathonSchedulerService.listRunningDeployments() returns Future
-      .successful(Seq.empty[DeploymentStepInfo])
+    f.taskFailureRepository.current(app.id) returns
+      Future.successful(Some(TaskFailureTestHelper.taskFailure))
+    f.marathonSchedulerService.listRunningDeployments() returns
+      Future.successful(Seq.empty[DeploymentStepInfo])
 
     When("Getting AppInfos with last task failures and deployments")
     val appInfo =
@@ -376,11 +378,12 @@ class AppInfoBaseDataTest
         .futureValue
 
     Then("we get the failure in the app info")
-    appInfo should be(
-      AppInfo(
-        app,
-        maybeLastTaskFailure = Some(TaskFailureTestHelper.taskFailure),
-        maybeDeployments = Some(Seq.empty)))
+    appInfo should
+      be(
+        AppInfo(
+          app,
+          maybeLastTaskFailure = Some(TaskFailureTestHelper.taskFailure),
+          maybeDeployments = Some(Seq.empty)))
 
     And(
       "the taskFailureRepository should have been called to retrieve the failure")

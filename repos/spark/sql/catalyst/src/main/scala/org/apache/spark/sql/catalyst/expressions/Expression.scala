@@ -136,8 +136,8 @@ abstract class Expression extends TreeNode[Expression] {
     * Implementations of expressions should override this if the resolution of this type of
     * expression involves more than just the resolution of its children and type checking.
     */
-  lazy val resolved: Boolean = childrenResolved && checkInputDataTypes()
-    .isSuccess
+  lazy val resolved: Boolean = childrenResolved &&
+    checkInputDataTypes().isSuccess
 
   /**
     * Returns the [[DataType]] of the result of evaluating this expression.  It is
@@ -450,14 +450,16 @@ abstract class BinaryExpression extends Expression {
 
     if (nullable) {
       val nullSafeEval =
-        leftGen.code + ctx.nullSafeExec(left.nullable, leftGen.isNull) {
-          rightGen.code + ctx.nullSafeExec(right.nullable, rightGen.isNull) {
-            s"""
+        leftGen.code +
+          ctx.nullSafeExec(left.nullable, leftGen.isNull) {
+            rightGen.code +
+              ctx.nullSafeExec(right.nullable, rightGen.isNull) {
+                s"""
               ${ev.isNull} = false; // resultCode could change nullability.
               $resultCode
             """
+              }
           }
-        }
 
       s"""
         boolean ${ev.isNull} = true;
@@ -597,17 +599,19 @@ abstract class TernaryExpression extends Expression {
 
     if (nullable) {
       val nullSafeEval =
-        leftGen.code + ctx.nullSafeExec(children(0).nullable, leftGen.isNull) {
-          midGen.code + ctx.nullSafeExec(children(1).nullable, midGen.isNull) {
-            rightGen.code + ctx
-              .nullSafeExec(children(2).nullable, rightGen.isNull) {
-                s"""
+        leftGen.code +
+          ctx.nullSafeExec(children(0).nullable, leftGen.isNull) {
+            midGen.code +
+              ctx.nullSafeExec(children(1).nullable, midGen.isNull) {
+                rightGen.code +
+                  ctx.nullSafeExec(children(2).nullable, rightGen.isNull) {
+                    s"""
                 ${ev.isNull} = false; // resultCode could change nullability.
                 $resultCode
               """
+                  }
               }
           }
-        }
 
       s"""
         boolean ${ev.isNull} = true;

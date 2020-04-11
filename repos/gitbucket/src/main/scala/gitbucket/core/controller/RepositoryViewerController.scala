@@ -181,9 +181,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                 branchName,
                 repository,
                 logs.splitWith { (commit1, commit2) =>
-                  view.helpers.date(commit1.commitTime) == view
-                    .helpers
-                    .date(commit2.commitTime)
+                  view.helpers.date(commit1.commitTime) ==
+                    view.helpers.date(commit2.commitTime)
                 },
                 page,
                 hasNext,
@@ -417,38 +416,40 @@ trait RepositoryViewerControllerBase extends ControllerBase {
               .next
               .name
           Map(
-            "root" -> s"${context.baseUrl}/${repository.owner}/${repository.name}",
+            "root" ->
+              s"${context.baseUrl}/${repository.owner}/${repository.name}",
             "id" -> id,
             "path" -> path,
             "last" -> last,
-            "blame" -> JGitUtil
-              .getBlame(git, id, path)
-              .map {
-                blame =>
-                  Map(
-                    "id" -> blame.id,
-                    "author" -> view
-                      .helpers
-                      .user(blame.authorName, blame.authorEmailAddress)
-                      .toString,
-                    "avatar" -> view
-                      .helpers
-                      .avatarLink(
-                        blame.authorName,
-                        32,
-                        blame.authorEmailAddress)
-                      .toString,
-                    "authed" -> helper
-                      .html
-                      .datetimeago(blame.authorTime)
-                      .toString,
-                    "prev" -> blame.prev,
-                    "prevPath" -> blame.prevPath,
-                    "commited" -> blame.commitTime.getTime,
-                    "message" -> blame.message,
-                    "lines" -> blame.lines
-                  )
-              }
+            "blame" ->
+              JGitUtil
+                .getBlame(git, id, path)
+                .map {
+                  blame =>
+                    Map(
+                      "id" -> blame.id,
+                      "author" ->
+                        view
+                          .helpers
+                          .user(blame.authorName, blame.authorEmailAddress)
+                          .toString,
+                      "avatar" ->
+                        view
+                          .helpers
+                          .avatarLink(
+                            blame.authorName,
+                            32,
+                            blame.authorEmailAddress)
+                          .toString,
+                      "authed" ->
+                        helper.html.datetimeago(blame.authorTime).toString,
+                      "prev" -> blame.prev,
+                      "prevPath" -> blame.prevPath,
+                      "commited" -> blame.commitTime.getTime,
+                      "message" -> blame.message,
+                      "lines" -> blame.lines
+                    )
+                }
           )
       }
     })
@@ -618,20 +619,21 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                 .Serialization
                 .write(
                   Map(
-                    "content" -> view
-                      .Markdown
-                      .toHtml(
-                        markdown = x.content,
-                        repository = repository,
-                        enableWikiLink = false,
-                        enableRefsLink = true,
-                        enableAnchor = true,
-                        enableLineBreaks = true,
-                        hasWritePermission = isEditable(
-                          x.userName,
-                          x.repositoryName,
-                          x.commentedUserName)
-                      )))
+                    "content" ->
+                      view
+                        .Markdown
+                        .toHtml(
+                          markdown = x.content,
+                          repository = repository,
+                          enableWikiLink = false,
+                          enableRefsLink = true,
+                          enableAnchor = true,
+                          enableLineBreaks = true,
+                          hasWritePermission = isEditable(
+                            x.userName,
+                            x.repositoryName,
+                            x.commentedUserName)
+                        )))
             }
           } else
             Unauthorized
@@ -831,12 +833,13 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       .collectFirst {
         case branch if (path == branch || path.startsWith(branch + "/")) =>
           branch
-      } orElse repository
-      .tags
-      .collectFirst {
-        case tag if (path == tag.name || path.startsWith(tag.name + "/")) =>
-          tag.name
-      } getOrElse path.split("/")(0)
+      } orElse
+      repository
+        .tags
+        .collectFirst {
+          case tag if (path == tag.name || path.startsWith(tag.name + "/")) =>
+            tag.name
+        } getOrElse path.split("/")(0)
 
     (id, path.substring(id.length).stripPrefix("/"))
   }
@@ -891,21 +894,22 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                     // process README.md or README.markdown
                     val readme = files
                       .find { file =>
-                        !file.isDirectory && readmeFiles
-                          .contains(file.name.toLowerCase)
+                        !file.isDirectory &&
+                        readmeFiles.contains(file.name.toLowerCase)
                       }
                       .map { file =>
                         val path = (file.name :: parentPath.reverse).reverse
-                        path -> StringUtil.convertFromByteArray(
-                          JGitUtil
-                            .getContentFromId(
-                              Git.open(
-                                getRepositoryDir(
-                                  repository.owner,
-                                  repository.name)),
-                              file.id,
-                              true)
-                            .get)
+                        path ->
+                          StringUtil.convertFromByteArray(
+                            JGitUtil
+                              .getContentFromId(
+                                Git.open(
+                                  getRepositoryDir(
+                                    repository.owner,
+                                    repository.name)),
+                                file.id,
+                                true)
+                              .get)
                       }
 
                     html.files(
@@ -1120,10 +1124,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
   private def isEditable(owner: String, repository: String, author: String)(
       implicit context: Context): Boolean =
-    hasWritePermission(
-      owner,
-      repository,
-      context.loginAccount) || author == context.loginAccount.get.userName
+    hasWritePermission(owner, repository, context.loginAccount) ||
+      author == context.loginAccount.get.userName
 
   override protected def renderUncaughtException(e: Throwable)(implicit
       request: HttpServletRequest,

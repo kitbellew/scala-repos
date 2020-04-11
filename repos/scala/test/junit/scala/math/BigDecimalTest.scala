@@ -44,8 +44,7 @@ class BigDecimalTest {
       BigDecimal("10e1000000"),
       BigDecimal("10e-1000000"))
     assert(
-      valids.forall(_.isDecimalDouble) &&
-        invalids.forall(!_.isDecimalDouble))
+      valids.forall(_.isDecimalDouble) && invalids.forall(!_.isDecimalDouble))
   }
 
   // Motivated by SI-6173: BigDecimal#isWhole implementation is very heap intensive
@@ -56,11 +55,9 @@ class BigDecimalTest {
     val reasonableInt = reasonable.toBigInt
     assert(
       reasonable.hashCode == reasonableInt.hashCode &&
-        reasonable == reasonableInt &&
-        reasonableInt == reasonable &&
+        reasonable == reasonableInt && reasonableInt == reasonable &&
         troublemaker.hashCode != reasonable.hashCode &&
-        !(troublemaker == reasonableInt) &&
-        !(reasonableInt == troublemaker))
+        !(troublemaker == reasonableInt) && !(reasonableInt == troublemaker))
   }
 
   // Motivated by SI-6456: scala.math.BigDecimal should not accept a null value
@@ -85,8 +82,7 @@ class BigDecimalTest {
     assert(
       isIAE(new BigDecimal(null: BD, new MC(2))) &&
         isIAE(new BigDecimal(new BD("5.7"), null: MC)) &&
-        isNPE(BigDecimal(null: BigInt)) &&
-        isNPE(BigDecimal(null: String)) &&
+        isNPE(BigDecimal(null: BigInt)) && isNPE(BigDecimal(null: String)) &&
         isNPE(BigDecimal(null: Array[Char])))
   }
 
@@ -98,10 +94,9 @@ class BigDecimalTest {
     val l: Long = 100000
     val d: Double = 100000
     assert(
-      d.## == l.## &&
-        l.## == bd.## &&
-        bd.## == bi.## &&
-        (bd pow 4).hashCode == (bi pow 4).hashCode &&
+      d.## == l.## && l.## == bd.## && bd.## == bi.## &&
+        (bd pow 4).hashCode ==
+        (bi pow 4).hashCode &&
         BigDecimal("1e150000")
           .hashCode != BigDecimal("1e150000").toBigInt.hashCode)
   }
@@ -219,8 +214,7 @@ class BigDecimalTest {
       assert(
         {
           BigDecimal.decimal(f).isDecimalFloat &&
-          BigDecimal.binary(f).isBinaryFloat &&
-          BigDecimal.exact(f).isExactFloat
+          BigDecimal.binary(f).isBinaryFloat && BigDecimal.exact(f).isExactFloat
         },
         s"At least one wrong BigDecimal representation for $f"
       )
@@ -275,9 +269,9 @@ class BigDecimalTest {
 
       // BigDecimal(x: Float, mc: MC), which may not do what you want, is deprecated
       assert(
-        BigDecimal(1.1f, MC.UNLIMITED).pow(p) == BigDecimal(
-          java.lang.Double.toString(1.1f.toDouble),
-          MC.UNLIMITED).pow(p))
+        BigDecimal(1.1f, MC.UNLIMITED).pow(p) ==
+          BigDecimal(java.lang.Double.toString(1.1f.toDouble), MC.UNLIMITED)
+            .pow(p))
       assert(BigDecimal(1.1d, MC.UNLIMITED).pow(p) == n)
       assert(BigDecimal(new BD("1.1"), MC.UNLIMITED).pow(p) == n)
 
@@ -292,18 +286,18 @@ class BigDecimalTest {
     def testRounded() {
       // the default rounding mode is HALF_UP
       assert(
-        (BigDecimal(1.23f, new MC(3)) + BigDecimal("0.005"))
-          .rounded == BigDecimal("1.24")
+        (BigDecimal(1.23f, new MC(3)) + BigDecimal("0.005")).rounded ==
+          BigDecimal("1.24")
       ) // deprecated api
       assert(
-        (BigDecimal(1.23d, new MC(3)) + BigDecimal("0.005"))
-          .rounded == BigDecimal("1.24"))
+        (BigDecimal(1.23d, new MC(3)) + BigDecimal("0.005")).rounded ==
+          BigDecimal("1.24"))
       assert(
-        (BigDecimal.decimal(1.23f, new MC(3)) + BigDecimal("0.005"))
-          .rounded == BigDecimal("1.24"))
+        (BigDecimal.decimal(1.23f, new MC(3)) + BigDecimal("0.005")).rounded ==
+          BigDecimal("1.24"))
       assert(
-        (BigDecimal.decimal(1.23d, new MC(3)) + BigDecimal("0.005"))
-          .rounded == BigDecimal("1.24"))
+        (BigDecimal.decimal(1.23d, new MC(3)) + BigDecimal("0.005")).rounded ==
+          BigDecimal("1.24"))
     }
 
     testPrecision()

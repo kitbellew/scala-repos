@@ -63,8 +63,8 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
         // batches temporarily, so here we use "10" to handle such case. This is not a perfect
         // solution, but at least it can handle most of cases.
         size() >
-          waitingBatchUIData.size + runningBatchUIData
-            .size + completedBatchUIData.size + 10
+          waitingBatchUIData
+            .size + runningBatchUIData.size + completedBatchUIData.size + 10
       }
     }
 
@@ -293,8 +293,8 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
   def retainedBatches: Seq[BatchUIData] =
     synchronized {
       (
-        waitingBatchUIData.values.toSeq ++
-          runningBatchUIData.values.toSeq ++ completedBatchUIData
+        waitingBatchUIData.values.toSeq ++ runningBatchUIData.values.toSeq ++
+          completedBatchUIData
       ).sortBy(_.batchTime)(Time.ordering)
     }
 

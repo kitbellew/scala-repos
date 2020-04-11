@@ -69,8 +69,8 @@ private[http] object CharacterClasses {
   val `cookie-separator` = CharPredicate(akka.parboiled2.EOI, ';')
   val `cookie-octet-raw` =
     CharPredicate('\u0020' to '\u007e') ++
-      CharPredicate((x: Char) ⇒
-        x > 0x7f && java.lang.Character.isDefined(x)) -- `cookie-separator`
+      CharPredicate((x: Char) ⇒ x > 0x7f && java.lang.Character.isDefined(x)) --
+      `cookie-separator`
   val `av-octet` = CharPredicate(
     '\u0020' to '\u003a',
     '\u003c' to '\u007e'

@@ -114,8 +114,8 @@ class BrokerPartitionInfo(
       tmd
         .partitionsMetadata
         .foreach(pmd => {
-          if (pmd.errorCode != Errors.NONE.code && pmd
-                .errorCode == Errors.LEADER_NOT_AVAILABLE.code) {
+          if (pmd.errorCode != Errors.NONE.code &&
+              pmd.errorCode == Errors.LEADER_NOT_AVAILABLE.code) {
             warn(
               "Error while fetching metadata %s for topic partition [%s,%d]: [%s]"
                 .format(

@@ -46,8 +46,8 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
     FilenameIndex
       .getFilesByName(project, "build.sbt", GlobalSearchScope.allScope(project))
       .find { file =>
-        val relativeToProjectPath = project.getBasePath + File
-          .separator + subprojectPath
+        val relativeToProjectPath = project.getBasePath + File.separator +
+          subprojectPath
         val absolutePath = FileUtil.toSystemIndependentName(
           FileUtil.toCanonicalPath(relativeToProjectPath))
         Option(file.getParent)

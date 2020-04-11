@@ -15,43 +15,45 @@ object Sensible {
   lazy val settings = Seq(
     ivyLoggingLevel := UpdateLogging.Quiet,
     conflictManager := ConflictManager.strict,
-    scalacOptions in Compile ++= Seq(
-      "-encoding",
-      "UTF-8",
-      "-target:jvm-1.6",
-      "-feature",
-      "-deprecation",
-      "-language:postfixOps",
-      "-language:implicitConversions",
-      "-Xlint",
-      "-Yinline-warnings",
-      "-Yno-adapted-args",
-      "-Ywarn-dead-code",
-      //"-Ywarn-numeric-widen", // noisy
-      //"-Ywarn-value-discard", // will require a lot of work
-      "-Xfuture"
-    ) ++ {
-      if (scalaVersion.value.startsWith("2.11"))
-        Seq("-Ywarn-unused-import")
-      else
-        Nil
-    } ++ {
-      // fatal warnings can get in the way during the DEV cycle
-      if (sys.env.contains("CI"))
-        Seq("-Xfatal-warnings")
-      else
-        Nil
-    },
-    javacOptions in (Compile, compile) ++= Seq(
-      "-source",
-      "1.6",
-      "-target",
-      "1.6",
-      "-Xlint:all",
-      "-Werror",
-      "-Xlint:-options",
-      "-Xlint:-path",
-      "-Xlint:-processing"),
+    scalacOptions in Compile ++=
+      Seq(
+        "-encoding",
+        "UTF-8",
+        "-target:jvm-1.6",
+        "-feature",
+        "-deprecation",
+        "-language:postfixOps",
+        "-language:implicitConversions",
+        "-Xlint",
+        "-Yinline-warnings",
+        "-Yno-adapted-args",
+        "-Ywarn-dead-code",
+        //"-Ywarn-numeric-widen", // noisy
+        //"-Ywarn-value-discard", // will require a lot of work
+        "-Xfuture"
+      ) ++ {
+        if (scalaVersion.value.startsWith("2.11"))
+          Seq("-Ywarn-unused-import")
+        else
+          Nil
+      } ++ {
+        // fatal warnings can get in the way during the DEV cycle
+        if (sys.env.contains("CI"))
+          Seq("-Xfatal-warnings")
+        else
+          Nil
+      },
+    javacOptions in (Compile, compile) ++=
+      Seq(
+        "-source",
+        "1.6",
+        "-target",
+        "1.6",
+        "-Xlint:all",
+        "-Werror",
+        "-Xlint:-options",
+        "-Xlint:-path",
+        "-Xlint:-processing"),
     javacOptions in doc ++= Seq("-source", "1.6"),
     javaOptions := Seq("-Xss2m", "-XX:MaxPermSize=256m", "-Xms1g", "-Xmx1g"),
     javaOptions += "-Dfile.encoding=UTF8",
@@ -61,16 +63,18 @@ object Sensible {
     fork := true,
     // 4 x 1GB = 4GB
     concurrentRestrictions in Global := Seq(Tags.limitAll(4)),
-    dependencyOverrides ++= Set(
-      "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-      "org.scala-lang" % "scala-library" % scalaVersion.value,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-      "org.scala-lang" % "scalap" % scalaVersion.value,
-      "org.scala-lang.modules" %% "scala-xml" % scalaModulesVersion,
-      "org.scala-lang.modules" %% "scala-parser-combinators" % scalaModulesVersion,
-      "org.scalamacros" %% "quasiquotes" % quasiquotesVersion,
-      "org.scalatest" %% "scalatest" % scalatestVersion
-    ) ++ logback ++ guava ++ shapeless(scalaVersion.value)
+    dependencyOverrides ++=
+      Set(
+        "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+        "org.scala-lang" % "scala-library" % scalaVersion.value,
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+        "org.scala-lang" % "scalap" % scalaVersion.value,
+        "org.scala-lang.modules" %% "scala-xml" % scalaModulesVersion,
+        "org.scala-lang.modules" %% "scala-parser-combinators" %
+          scalaModulesVersion,
+        "org.scalamacros" %% "quasiquotes" % quasiquotesVersion,
+        "org.scalatest" %% "scalatest" % scalatestVersion
+      ) ++ logback ++ guava ++ shapeless(scalaVersion.value)
   ) ++ inConfig(Test)(testSettings) ++ scalariformSettings
 
   // TODO: scalariformSettingsWithIt generalised
@@ -80,27 +84,28 @@ object Sensible {
       // one JVM per test suite
       fork := true,
       testForkedParallel := true,
-      testGrouping <<= (
-        definedTests,
-        baseDirectory,
-        javaOptions,
-        outputStrategy,
-        envVars,
-        javaHome,
-        connectInput).map {
-        (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
-          val opts = ForkOptions(
-            bootJars = Nil,
-            javaHome = javaHomeDir,
-            connectInput = connectIn,
-            outputStrategy = strategy,
-            runJVMOptions = options,
-            workingDirectory = Some(base),
-            envVars = env)
-          tests.map { test =>
-            Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
-          }
-      },
+      testGrouping <<=
+        (
+          definedTests,
+          baseDirectory,
+          javaOptions,
+          outputStrategy,
+          envVars,
+          javaHome,
+          connectInput).map {
+          (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
+            val opts = ForkOptions(
+              bootJars = Nil,
+              javaHome = javaHomeDir,
+              connectInput = connectIn,
+              outputStrategy = strategy,
+              runJVMOptions = options,
+              workingDirectory = Some(base),
+              envVars = env)
+            tests.map { test =>
+              Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
+            }
+        },
       testOptions ++= noColorIfEmacs,
       testFrameworks := Seq(TestFrameworks.ScalaTest, TestFrameworks.JUnit)
     )

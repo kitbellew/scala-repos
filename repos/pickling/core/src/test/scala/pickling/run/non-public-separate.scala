@@ -26,8 +26,8 @@ class NonPublicSeparateTest extends FunSuite {
         new Hobby("hacking", "mostly Scala", "loving it"))
     val anyPickle = (person: Any).pickle
     assert(
-      anyPickle
-        .toString === """
+      anyPickle.toString ===
+        """
       |JSONPickle({
       |  "$type": "scala.pickling.non.public.separate.Person",
       |  "name": "Eugene",

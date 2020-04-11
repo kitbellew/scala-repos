@@ -72,9 +72,9 @@ object CodeGenTools {
       extraArgs: String = ""): Global = {
     def showError(s: String) = throw new Exception(s)
     val settings = new Settings(showError)
-    val args = (CommandLineParser tokenize defaultArgs) ++ (
-      CommandLineParser tokenize extraArgs
-    )
+    val args =
+      (CommandLineParser tokenize defaultArgs) ++
+        (CommandLineParser tokenize extraArgs)
     val (_, nonSettingsArgs) = settings
       .processArguments(args, processAll = true)
     if (nonSettingsArgs.nonEmpty)
@@ -132,8 +132,8 @@ object CodeGenTools {
       : List[(String, Array[Byte])] = {
     val run = newRun(compiler)
     run.compileSources(
-      makeSourceFile(scalaCode, "unitTestSource.scala") :: javaCode.map(p =>
-        makeSourceFile(p._1, p._2)))
+      makeSourceFile(scalaCode, "unitTestSource.scala") ::
+        javaCode.map(p => makeSourceFile(p._1, p._2)))
     checkReport(compiler, allowMessage)
     getGeneratedClassfiles(compiler.settings.outputDirs.getSingleOutput.get)
   }
@@ -355,8 +355,8 @@ object CodeGenTools {
       handlerIndex: Int): Unit = {
     val insVec = instructions.toVector
     assertTrue(
-      h.start == insVec(startIndex) && h.end == insVec(endIndex) && h
-        .handler == insVec(handlerIndex))
+      h.start == insVec(startIndex) && h.end == insVec(endIndex) &&
+        h.handler == insVec(handlerIndex))
   }
 
   import scala.language.implicitConversions

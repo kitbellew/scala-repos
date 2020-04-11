@@ -104,8 +104,12 @@ trait StatsLibModule[M[+_]]
               ) //todo make function for this
               Mean(transformedTable, ctx)
             } else {
-              val middleValue = M
-                .point(sortedTable.takeRange((count.toLong / 2), 1))
+              val middleValue = M.point(
+                sortedTable.takeRange(
+                  (
+                    count.toLong / 2
+                  ),
+                  1))
               middleValue map {
                 _.transform(trans.DerefObjectStatic(Leaf(Source), paths.Value))
               }
@@ -1586,9 +1590,8 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (
-                              math.log(v1.toDouble) * math.log(v1.toDouble)
-                            ),
+                            sumsq1 + (math.log(v1.toDouble) * math
+                              .log(v1.toDouble)),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1621,9 +1624,8 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (
-                              math.log(v1.toDouble) * math.log(v1.toDouble)
-                            ),
+                            sumsq1 + (math.log(v1.toDouble) * math
+                              .log(v1.toDouble)),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1656,9 +1658,8 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (
-                              math.log(v1.toDouble) * math.log(v1.toDouble)
-                            ),
+                            sumsq1 + (math.log(v1.toDouble) * math
+                              .log(v1.toDouble)),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1691,9 +1692,8 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (
-                              math.log(v1.toDouble) * math.log(v1.toDouble)
-                            ),
+                            sumsq1 + (math.log(v1.toDouble) * math
+                              .log(v1.toDouble)),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1726,9 +1726,8 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (
-                              math.log(v1.toDouble) * math.log(v1.toDouble)
-                            ),
+                            sumsq1 + (math.log(v1.toDouble) * math
+                              .log(v1.toDouble)),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1761,9 +1760,8 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (
-                              math.log(v1.toDouble) * math.log(v1.toDouble)
-                            ),
+                            sumsq1 + (math.log(v1.toDouble) * math
+                              .log(v1.toDouble)),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1796,9 +1794,8 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (
-                              math.log(v1.toDouble) * math.log(v1.toDouble)
-                            ),
+                            sumsq1 + (math.log(v1.toDouble) * math
+                              .log(v1.toDouble)),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1831,9 +1828,8 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (
-                              math.log(v1.toDouble) * math.log(v1.toDouble)
-                            ),
+                            sumsq1 + (math.log(v1.toDouble) * math
+                              .log(v1.toDouble)),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -1866,9 +1862,8 @@ trait StatsLibModule[M[+_]]
                             count + 1,
                             sum1 + math.log(v1.toDouble),
                             sum2 + v2,
-                            sumsq1 + (
-                              math.log(v1.toDouble) * math.log(v1.toDouble)
-                            ),
+                            sumsq1 + (math.log(v1.toDouble) * math
+                              .log(v1.toDouble)),
                             productSum + (math.log(v1.toDouble) * v2))
                         } else {
                           (count, sum1, sum2, sumsq1, productSum)
@@ -2079,7 +2074,9 @@ trait StatsLibModule[M[+_]]
         if (start == 0)
           col
         else
-          (col |> cf.util.Shift(start)).get
+          (
+            col |> cf.util.Shift(start)
+          ).get
     }
 
     /**
@@ -2439,7 +2436,9 @@ trait StatsLibModule[M[+_]]
           }
 
         val cols0: Map[ColumnRef, Column] =
-          (0 until length.toInt).map({ idx =>
+          (
+            0 until length.toInt
+          ).map({ idx =>
             ColumnRef(CPath(CPathIndex(idx)), CLong) -> makeColumn(idx)
           })(collection.breakOut)
 

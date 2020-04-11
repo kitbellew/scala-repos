@@ -58,11 +58,12 @@ trait RandomLibSpecs[M[+_]]
 
     result must haveSize(1)
 
-    result must haveAllElementsLike {
-      case (ids, SDecimal(d)) =>
-        ids must haveSize(0)
-        d mustEqual (0.2182148468113263)
-    }
+    result must
+      haveAllElementsLike {
+        case (ids, SDecimal(d)) =>
+          ids must haveSize(0)
+          d mustEqual (0.2182148468113263)
+      }
   }
 
   "fail to observe if seed for distribution is not a long" in {
@@ -134,16 +135,18 @@ trait RandomLibSpecs[M[+_]]
       0.438254062387199, 0.9800628279464199, 0.6104706956474781,
       0.8637112992116962)
 
-    result must haveAllElementsLike {
-      case (ids, SObject(obj)) =>
-        ids must haveSize(1)
+    result must
+      haveAllElementsLike {
+        case (ids, SObject(obj)) =>
+          ids must haveSize(1)
 
-        obj.keys mustEqual (Set("rand", "data"))
-        obj("rand") must beLike {
-          case SDecimal(d) =>
-            expected must contain(d)
-        }
-    }
+          obj.keys mustEqual (Set("rand", "data"))
+          obj("rand") must
+            beLike {
+              case SDecimal(d) =>
+                expected must contain(d)
+            }
+      }
   }
 }
 

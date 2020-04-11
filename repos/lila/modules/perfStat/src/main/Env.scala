@@ -32,7 +32,8 @@ final class Env(
   def get(user: lila.user.User, perfType: lila.rating.PerfType) =
     storage.find(user.id, perfType) orElse {
       indexer.userPerf(user, perfType) >> storage.find(user.id, perfType)
-    } map (_ | PerfStat.init(user.id, perfType))
+    } map
+      (_ | PerfStat.init(user.id, perfType))
 
   system.actorOf(
     Props(
@@ -47,9 +48,10 @@ final class Env(
 
 object Env {
 
-  lazy val current: Env = "perfStat" boot new Env(
-    config = lila.common.PlayApp loadConfig "perfStat",
-    system = lila.common.PlayApp.system,
-    lightUser = lila.user.Env.current.lightUser,
-    db = lila.db.Env.current)
+  lazy val current: Env = "perfStat" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "perfStat",
+      system = lila.common.PlayApp.system,
+      lightUser = lila.user.Env.current.lightUser,
+      db = lila.db.Env.current)
 }

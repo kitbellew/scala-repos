@@ -66,78 +66,80 @@ abstract class LeaderDowningNodeThatIsUnreachableSpec(
 
   "The Leader in a 4 node cluster" must {
 
-    "be able to DOWN a 'last' node that is UNREACHABLE" taggedAs LongRunningTest in {
-      awaitClusterUp(first, second, third, fourth)
+    "be able to DOWN a 'last' node that is UNREACHABLE" taggedAs
+      LongRunningTest in {
+        awaitClusterUp(first, second, third, fourth)
 
-      val fourthAddress = address(fourth)
+        val fourthAddress = address(fourth)
 
-      enterBarrier("before-exit-fourth-node")
-      runOn(first) {
-        // kill 'fourth' node
-        testConductor.exit(fourth, 0).await
-        enterBarrier("down-fourth-node")
+        enterBarrier("before-exit-fourth-node")
+        runOn(first) {
+          // kill 'fourth' node
+          testConductor.exit(fourth, 0).await
+          enterBarrier("down-fourth-node")
 
-        // mark the node as unreachable in the failure detector
-        markNodeAsUnavailable(fourthAddress)
+          // mark the node as unreachable in the failure detector
+          markNodeAsUnavailable(fourthAddress)
 
-        // --- HERE THE LEADER SHOULD DETECT FAILURE AND AUTO-DOWN THE UNREACHABLE NODE ---
+          // --- HERE THE LEADER SHOULD DETECT FAILURE AND AUTO-DOWN THE UNREACHABLE NODE ---
 
-        awaitMembersUp(
-          numberOfMembers = 3,
-          canNotBePartOfMemberRing = Set(fourthAddress),
-          30.seconds)
+          awaitMembersUp(
+            numberOfMembers = 3,
+            canNotBePartOfMemberRing = Set(fourthAddress),
+            30.seconds)
+        }
+
+        runOn(fourth) {
+          enterBarrier("down-fourth-node")
+        }
+
+        runOn(second, third) {
+          enterBarrier("down-fourth-node")
+
+          awaitMembersUp(
+            numberOfMembers = 3,
+            canNotBePartOfMemberRing = Set(fourthAddress),
+            30.seconds)
+        }
+
+        enterBarrier("await-completion-1")
       }
 
-      runOn(fourth) {
-        enterBarrier("down-fourth-node")
+    "be able to DOWN a 'middle' node that is UNREACHABLE" taggedAs
+      LongRunningTest in {
+        val secondAddress = address(second)
+
+        enterBarrier("before-down-second-node")
+        runOn(first) {
+          // kill 'second' node
+          testConductor.exit(second, 0).await
+          enterBarrier("down-second-node")
+
+          // mark the node as unreachable in the failure detector
+          markNodeAsUnavailable(secondAddress)
+
+          // --- HERE THE LEADER SHOULD DETECT FAILURE AND AUTO-DOWN THE UNREACHABLE NODE ---
+
+          awaitMembersUp(
+            numberOfMembers = 2,
+            canNotBePartOfMemberRing = Set(secondAddress),
+            30.seconds)
+        }
+
+        runOn(second) {
+          enterBarrier("down-second-node")
+        }
+
+        runOn(third) {
+          enterBarrier("down-second-node")
+
+          awaitMembersUp(
+            numberOfMembers = 2,
+            canNotBePartOfMemberRing = Set(secondAddress),
+            30 seconds)
+        }
+
+        enterBarrier("await-completion-2")
       }
-
-      runOn(second, third) {
-        enterBarrier("down-fourth-node")
-
-        awaitMembersUp(
-          numberOfMembers = 3,
-          canNotBePartOfMemberRing = Set(fourthAddress),
-          30.seconds)
-      }
-
-      enterBarrier("await-completion-1")
-    }
-
-    "be able to DOWN a 'middle' node that is UNREACHABLE" taggedAs LongRunningTest in {
-      val secondAddress = address(second)
-
-      enterBarrier("before-down-second-node")
-      runOn(first) {
-        // kill 'second' node
-        testConductor.exit(second, 0).await
-        enterBarrier("down-second-node")
-
-        // mark the node as unreachable in the failure detector
-        markNodeAsUnavailable(secondAddress)
-
-        // --- HERE THE LEADER SHOULD DETECT FAILURE AND AUTO-DOWN THE UNREACHABLE NODE ---
-
-        awaitMembersUp(
-          numberOfMembers = 2,
-          canNotBePartOfMemberRing = Set(secondAddress),
-          30.seconds)
-      }
-
-      runOn(second) {
-        enterBarrier("down-second-node")
-      }
-
-      runOn(third) {
-        enterBarrier("down-second-node")
-
-        awaitMembersUp(
-          numberOfMembers = 2,
-          canNotBePartOfMemberRing = Set(secondAddress),
-          30 seconds)
-      }
-
-      enterBarrier("await-completion-2")
-    }
   }
 }

@@ -75,9 +75,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     val topicAndPartition = TopicAndPartition("foo", 0)
     val request = OffsetRequest(
       Map(
-        topicAndPartition -> PartitionOffsetRequestInfo(
-          OffsetRequest.LatestTime,
-          10)))
+        topicAndPartition ->
+          PartitionOffsetRequestInfo(OffsetRequest.LatestTime, 10)))
     val offsetResponse = simpleConsumer.getOffsetsBefore(request)
     assertEquals(
       Errors.UNKNOWN_TOPIC_OR_PARTITION.code,
@@ -119,9 +118,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     val topicAndPartition = TopicAndPartition(topic, part)
     val offsetRequest = OffsetRequest(
       Map(
-        topicAndPartition -> PartitionOffsetRequestInfo(
-          OffsetRequest.LatestTime,
-          15)),
+        topicAndPartition ->
+          PartitionOffsetRequestInfo(OffsetRequest.LatestTime, 15)),
       replicaId = 0)
     val consumerOffsets =
       simpleConsumer
@@ -162,9 +160,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
       val topicAndPartition = TopicAndPartition(topic, 0)
       val offsetRequest = OffsetRequest(
         Map(
-          topicAndPartition -> PartitionOffsetRequestInfo(
-            OffsetRequest.EarliestTime,
-            1)))
+          topicAndPartition ->
+            PartitionOffsetRequestInfo(OffsetRequest.EarliestTime, 1)))
       val consumerOffsets =
         simpleConsumer
           .getOffsetsBefore(offsetRequest)
@@ -195,8 +192,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
       log.append(new ByteBufferMessageSet(NoCompressionCodec, message))
     log.flush()
 
-    val now = time
-      .milliseconds + 30000 // pretend it is the future to avoid race conditions with the fs
+    val now = time.milliseconds +
+      30000 // pretend it is the future to avoid race conditions with the fs
 
     val offsets = server
       .apis
@@ -253,9 +250,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     val topicAndPartition = TopicAndPartition(topic, part)
     val offsetRequest = OffsetRequest(
       Map(
-        topicAndPartition -> PartitionOffsetRequestInfo(
-          OffsetRequest.EarliestTime,
-          10)))
+        topicAndPartition ->
+          PartitionOffsetRequestInfo(OffsetRequest.EarliestTime, 10)))
     val consumerOffsets =
       simpleConsumer
         .getOffsetsBefore(offsetRequest)

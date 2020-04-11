@@ -82,8 +82,8 @@ trait JSEncoding extends SubComponent {
   private lazy val allRefClasses: Set[Symbol] = {
     import definitions._
     (
-      Set(ObjectRefClass, VolatileObjectRefClass) ++
-        refClass.values ++ volatileRefClass.values
+      Set(ObjectRefClass, VolatileObjectRefClass) ++ refClass.values ++
+        volatileRefClass.values
     )
   }
 
@@ -228,12 +228,11 @@ trait JSEncoding extends SubComponent {
   def encodeClassFullName(sym: Symbol): String = {
     ir.Definitions
       .encodeClassName(
-        sym.fullName + (
-          if (needsModuleClassSuffix(sym))
-            "$"
-          else
-            ""
-        ))
+        sym.fullName +
+          (if (needsModuleClassSuffix(sym))
+             "$"
+           else
+             ""))
   }
 
   def needsModuleClassSuffix(sym: Symbol): Boolean =

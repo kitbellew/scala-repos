@@ -320,24 +320,26 @@ object DeploymentPlan {
     steps += DeploymentStep(resolveArtifacts)
 
     // 1. Destroy apps that do not exist in the target.
-    steps += DeploymentStep(
-      (originalApps -- targetApps.keys)
-        .valuesIterator
-        .map { oldApp =>
-          StopApplication(oldApp)
-        }
-        .to[Seq])
+    steps +=
+      DeploymentStep(
+        (originalApps -- targetApps.keys)
+          .valuesIterator
+          .map { oldApp =>
+            StopApplication(oldApp)
+          }
+          .to[Seq])
 
     // 2. Start apps that do not exist in the original, requiring only 0
     //    instances.  These are scaled as needed in the dependency-ordered
     //    steps that follow.
-    steps += DeploymentStep(
-      (targetApps -- originalApps.keys)
-        .valuesIterator
-        .map { newApp =>
-          StartApplication(newApp, 0)
-        }
-        .to[Seq])
+    steps +=
+      DeploymentStep(
+        (targetApps -- originalApps.keys)
+          .valuesIterator
+          .map { newApp =>
+            StartApplication(newApp, 0)
+          }
+          .to[Seq])
 
     // 3. For each app in each dependency class,
     //
@@ -366,7 +368,7 @@ object DeploymentPlan {
 
   implicit lazy val deploymentPlanIsValid: Validator[DeploymentPlan] =
     validator[DeploymentPlan] { plan =>
-      plan.createdOrUpdatedApps as "app" is every(
-        valid(AppDefinition.updateIsValid(plan.original)))
+      plan.createdOrUpdatedApps as "app" is
+        every(valid(AppDefinition.updateIsValid(plan.original)))
     }
 }

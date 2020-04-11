@@ -46,9 +46,8 @@ private[reconcile] class OffersWantedForReconciliationActor(
   /** Make certain that the normal number of revives that the user specified will be executed. */
   private[this] val interestDuration =
     (
-      reviveOffersConfig.minReviveOffersInterval() * (
-        reviveOffersConfig.reviveOffersRepetitions() + 0.5
-      )
+      reviveOffersConfig.minReviveOffersInterval() *
+        (reviveOffersConfig.reviveOffersRepetitions() + 0.5)
     ).millis
 
   override def preStart(): Unit = {
@@ -84,8 +83,9 @@ private[reconcile] class OffersWantedForReconciliationActor(
         val terminatedResidentAppsString = terminatedResidentApps
           .map(_.id)
           .mkString(", ")
-        self ! OffersWantedForReconciliationActor.RequestOffers(
-          s"terminated resident app(s) $terminatedResidentAppsString")
+        self !
+          OffersWantedForReconciliationActor.RequestOffers(
+            s"terminated resident app(s) $terminatedResidentAppsString")
       }
   }
 

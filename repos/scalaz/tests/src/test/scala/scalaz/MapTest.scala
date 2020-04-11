@@ -22,7 +22,10 @@ object MapTest extends SpecLite {
   }
 
   "findLeft/findRight" in {
-    val a = ==>>.fromFoldable((1 to 5).map(n => n -> n).toList)
+    val a = ==>>.fromFoldable(
+      (
+        1 to 5
+      ).map(n => n -> n).toList)
     Foldable[Int ==>> ?].findLeft(a)(_ % 2 == 0) must_=== Some(2)
     Foldable[Int ==>> ?].findRight(a)(_ % 2 == 0) must_=== Some(4)
   }
@@ -131,15 +134,12 @@ object MapTest extends SpecLite {
 
   "==>> fromList" ! {
     fromList(List.empty[(Int, String)]) must_=== (empty[Int, String])
-    fromList(List(5 -> "a", 3 -> "b")) must_=== (
-      fromList(List(3 -> "b", 5 -> "a"))
-    )
-    fromList(List(5 -> "a", 3 -> "b", 5 -> "c")) must_=== (
-      fromList(List(5 -> "c", 3 -> "b"))
-    )
-    fromList(List(5 -> "c", 3 -> "b", 5 -> "a")) must_=== (
-      fromList(List(5 -> "a", 3 -> "b"))
-    )
+    fromList(List(5 -> "a", 3 -> "b")) must_=== (fromList(
+      List(3 -> "b", 5 -> "a")))
+    fromList(List(5 -> "a", 3 -> "b", 5 -> "c")) must_=== (fromList(
+      List(5 -> "c", 3 -> "b")))
+    fromList(List(5 -> "c", 3 -> "b", 5 -> "a")) must_=== (fromList(
+      List(5 -> "a", 3 -> "b")))
   }
 
   "Testing empty map" should {
@@ -195,9 +195,8 @@ object MapTest extends SpecLite {
 
       fromList(List(5 -> "a", 3 -> "b"))
         .toAscList must_=== (fromList(List(3 -> "b", 5 -> "a")).toAscList)
-      fromList(List(5 -> "a", 7 -> "c", 3 -> "b")) must_=== (
-        fromList(List(3 -> "b", 5 -> "a", 7 -> "c"))
-      )
+      fromList(List(5 -> "a", 7 -> "c", 3 -> "b")) must_=== (fromList(
+        List(3 -> "b", 5 -> "a", 7 -> "c")))
     }
   }
 
@@ -228,12 +227,10 @@ object MapTest extends SpecLite {
 
     "lookupIndex" ! forAll { (a: Byte ==>> Int, n: Byte) =>
       val x = a.keys.indexOf(n)
-      a.lookupIndex(n) must_=== (
-        if (x < 0)
-          None
-        else
-          Some(x)
-      )
+      a.lookupIndex(n) must_=== (if (x < 0)
+                                   None
+                                 else
+                                   Some(x))
       a.lookupIndex(n)
         .foreach { b =>
           a.elemAt(b).map(_._1) must_=== Some(n)
@@ -255,12 +252,10 @@ object MapTest extends SpecLite {
       //-- > updateAt (\_ _  -> Nothing)  (-1) (fromList [(5,"a"), (3,"b")])    Error: index out of range
       val d = fromList(List(5 -> "a", 3 -> "b"))
 
-      d.updateAt(0, (_, _) => "x".some) must_=== (
-        fromList(List(3 -> "x", 5 -> "a"))
-      )
-      d.updateAt(1, (_, _) => "x".some) must_=== (
-        fromList(List(3 -> "b", 5 -> "x"))
-      )
+      d.updateAt(0, (_, _) => "x".some) must_=== (fromList(
+        List(3 -> "x", 5 -> "a")))
+      d.updateAt(1, (_, _) => "x".some) must_=== (fromList(
+        List(3 -> "b", 5 -> "x")))
       //d.updateAt(2, (_, _) => "x".some) must_===(empty[Int, String])
 
       d.updateAt(0, (_, _) => None) must_=== (singleton(5, "a"))
@@ -292,12 +287,12 @@ object MapTest extends SpecLite {
 
   "==>> insertion" should {
     "insert" in {
-      fromList(List(5 -> "a", 3 -> "b")).insert(5, "x") must_=== (
-        fromList(List(3 -> "b", 5 -> "x"))
-      ) // Replacement
-      fromList(List((5, "a"), (3, "b"))).insert(7, "x") must_=== (
-        fromList(List((3, "b"), (5, "a"), (7, "x")))
-      ) // Addition of new key
+      fromList(List(5 -> "a", 3 -> "b")).insert(5, "x") must_=== (fromList(
+        List(3 -> "b", 5 -> "x")
+      )) // Replacement
+      fromList(List((5, "a"), (3, "b"))).insert(7, "x") must_=== (fromList(
+        List((3, "b"), (5, "a"), (7, "x"))
+      )) // Addition of new key
       empty.insert(5, "x") must_=== (singleton(5, "x"))
     }
 
@@ -315,21 +310,21 @@ object MapTest extends SpecLite {
       val r = fromList(List(5 -> "a", 3 -> "b")).insertWith(_ + _, 5, "xxx")
       r must_=== (fromList(List(3 -> "b", 5 -> "xxxa")))
 
-      fromList(List(5 -> "a", 3 -> "b")).insertWith(_ + _, 7, "xxx") must_=== (
-        fromList(List(3 -> "b", 5 -> "a", 7 -> "xxx"))
-      )
+      fromList(List(5 -> "a", 3 -> "b"))
+        .insertWith(_ + _, 7, "xxx") must_=== (fromList(
+        List(3 -> "b", 5 -> "a", 7 -> "xxx")))
       empty[Int, String]
         .insertWith(_ + _, 5, "xxx") must_=== (singleton(5, "xxx"))
     }
 
     "insertWithKey" in {
       val f = (k: Int, a: String, b: String) => k.toString + ":" + a + "|" + b
-      fromList(List(5 -> "a", 3 -> "b")).insertWithKey(f, 5, "xxx") must_=== (
-        fromList(List(3 -> "b", 5 -> "5:xxx|a"))
-      )
-      fromList(List(5 -> "a", 3 -> "b")).insertWithKey(f, 7, "xxx") must_=== (
-        fromList(List(3 -> "b", 5 -> "a", 7 -> "xxx"))
-      )
+      fromList(List(5 -> "a", 3 -> "b"))
+        .insertWithKey(f, 5, "xxx") must_=== (fromList(
+        List(3 -> "b", 5 -> "5:xxx|a")))
+      fromList(List(5 -> "a", 3 -> "b"))
+        .insertWithKey(f, 7, "xxx") must_=== (fromList(
+        List(3 -> "b", 5 -> "a", 7 -> "xxx")))
       empty.insertWithKey(f, 5, "xxx") must_=== (singleton(5, "xxx"))
     }
 
@@ -367,7 +362,11 @@ object MapTest extends SpecLite {
     }
 
     "commute" ! forAll { (a: Int ==>> Int, b: Int ==>> Int) =>
-      (a unionWith b)(_ + _) must_=== ((b unionWith a)(_ + _))
+      (
+        a unionWith b
+      )(_ + _) must_=== ((
+        b unionWith a
+      )(_ + _))
     }
 
     "be idempotent" ! forAll { (a: Int ==>> Int, b: Int ==>> Int) =>
@@ -436,7 +435,9 @@ object MapTest extends SpecLite {
     }
 
     "produce right keyset" ! forAll { (a: Int ==>> Int, b: Int ==>> Int) =>
-      (a \\ b).keySet must_== (a.keySet \\ b.keySet)
+      (
+        a \\ b
+      ).keySet must_== (a.keySet \\ b.keySet)
     }
 
     "be an inverse" ! forAll { (a: Int ==>> Int) =>
@@ -488,7 +489,11 @@ object MapTest extends SpecLite {
     }
 
     "commute" ! forAll { (a: Int ==>> Int, b: Int ==>> Int) =>
-      (a intersectionWith b)(_ + _) must_=== ((b intersectionWith a)(_ + _))
+      (
+        a intersectionWith b
+      )(_ + _) must_=== ((
+        b intersectionWith a
+      )(_ + _))
     }
 
     "commute (in one case)" in {
@@ -502,7 +507,11 @@ object MapTest extends SpecLite {
         -2147483648,
         Bin(-1587083834, -729342404, Tip(), Tip()),
         Bin(-1, 0, Tip(), Tip()))
-      (a intersectionWith b)(_ + _) must_=== ((b intersectionWith a)(_ + _))
+      (
+        a intersectionWith b
+      )(_ + _) must_=== ((
+        b intersectionWith a
+      )(_ + _))
     }
 
     "intersectionWith" in {
@@ -846,12 +855,10 @@ object MapTest extends SpecLite {
 
     "fromList" in {
       fromList(List.empty[(Int, String)]) must_=== (empty[Int, String])
-      fromList(List(5 -> "a", 3 -> "b", 5 -> "c")) must_=== (
-        fromList(List(5 -> "c", 3 -> "b"))
-      )
-      fromList(List(5 -> "c", 3 -> "b", 5 -> "a")) must_=== (
-        fromList(List(5 -> "a", 3 -> "b"))
-      )
+      fromList(List(5 -> "a", 3 -> "b", 5 -> "c")) must_=== (fromList(
+        List(5 -> "c", 3 -> "b")))
+      fromList(List(5 -> "c", 3 -> "b", 5 -> "a")) must_=== (fromList(
+        List(5 -> "a", 3 -> "b")))
     }
 
     "fromListWith" in {

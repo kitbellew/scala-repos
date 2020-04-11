@@ -146,13 +146,14 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
         job map { job =>
           val mgr = JobQueryStateManager(
             job.id,
-            yggConfig.clock.now() plus timeout
-              .getOrElse(defaultTimeout)
-              .toMillis)
+            yggConfig.clock.now() plus
+              timeout.getOrElse(defaultTimeout).toMillis)
           mgr.start()
           mgr
-        } getOrElse FakeJobQueryStateManager(
-          yggConfig.clock.now() plus timeout.getOrElse(defaultTimeout).toMillis)
+        } getOrElse
+          FakeJobQueryStateManager(
+            yggConfig.clock.now() plus
+              timeout.getOrElse(defaultTimeout).toMillis)
     } yield {
       new JobQueryTFMonad {
         val jobId = job map (_.id)
@@ -188,9 +189,9 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
           case Running(_, value) =>
             value
           case Cancelled =>
-            M.jobId map (
-              jobManager.abort(_, "Query was cancelled.", yggConfig.clock.now())
-            )
+            M.jobId map
+              (jobManager
+                .abort(_, "Query was cancelled.", yggConfig.clock.now()))
             throw QueryCancelledException(
               "Query was cancelled before it was completed.")
           case Expired =>

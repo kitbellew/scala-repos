@@ -28,22 +28,23 @@ object Twitch {
   case class Stream(channel: Channel)
   case class Result(streams: List[Stream]) {
     def streamsOnAir(streamers: List[Streamer]) =
-      streams map (_.channel) flatMap { c =>
-        (
-          c.url,
-          c.status,
-          StreamerList.findTwitch(streamers)(c.display_name)) match {
-          case (Some(url), Some(status), Some(streamer)) =>
-            Some(
-              StreamOnAir(
-                name = status,
-                streamer = streamer,
-                url = url,
-                streamId = c.name))
-          case _ =>
-            None
+      streams map
+        (_.channel) flatMap { c =>
+          (
+            c.url,
+            c.status,
+            StreamerList.findTwitch(streamers)(c.display_name)) match {
+            case (Some(url), Some(status), Some(streamer)) =>
+              Some(
+                StreamOnAir(
+                  name = status,
+                  streamer = streamer,
+                  url = url,
+                  streamId = c.name))
+            case _ =>
+              None
+          }
         }
-      }
   }
   object Reads {
     implicit val twitchChannelReads = Json.reads[Channel]

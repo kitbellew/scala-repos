@@ -52,49 +52,53 @@ abstract class SingletonClusterSpec(
 
   "A cluster of 2 nodes" must {
 
-    "become singleton cluster when started with seed-nodes" taggedAs LongRunningTest in {
-      runOn(first) {
-        val nodes: immutable.IndexedSeq[Address] = Vector(first) //
-        cluster.joinSeedNodes(nodes)
-        awaitMembersUp(1)
-        clusterView.isSingletonCluster should ===(true)
+    "become singleton cluster when started with seed-nodes" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          val nodes: immutable.IndexedSeq[Address] = Vector(first) //
+          cluster.joinSeedNodes(nodes)
+          awaitMembersUp(1)
+          clusterView.isSingletonCluster should ===(true)
+        }
+
+        enterBarrier("after-1")
       }
 
-      enterBarrier("after-1")
-    }
+    "not be singleton cluster when joined with other node" taggedAs
+      LongRunningTest in {
+        awaitClusterUp(first, second)
+        clusterView.isSingletonCluster should ===(false)
+        assertLeader(first, second)
 
-    "not be singleton cluster when joined with other node" taggedAs LongRunningTest in {
-      awaitClusterUp(first, second)
-      clusterView.isSingletonCluster should ===(false)
-      assertLeader(first, second)
-
-      enterBarrier("after-2")
-    }
-
-    "become singleton cluster when one node is shutdown" taggedAs LongRunningTest in {
-      runOn(first) {
-        val secondAddress = address(second)
-        testConductor.exit(second, 0).await
-
-        markNodeAsUnavailable(secondAddress)
-
-        awaitMembersUp(
-          numberOfMembers = 1,
-          canNotBePartOfMemberRing = Set(secondAddress),
-          30.seconds)
-        clusterView.isSingletonCluster should ===(true)
-        awaitCond(clusterView.isLeader)
+        enterBarrier("after-2")
       }
 
-      enterBarrier("after-3")
-    }
+    "become singleton cluster when one node is shutdown" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          val secondAddress = address(second)
+          testConductor.exit(second, 0).await
 
-    "leave and shutdown itself when singleton cluster" taggedAs LongRunningTest in {
-      runOn(first) {
-        cluster.leave(first)
-        awaitCond(cluster.isTerminated, 5.seconds)
+          markNodeAsUnavailable(secondAddress)
+
+          awaitMembersUp(
+            numberOfMembers = 1,
+            canNotBePartOfMemberRing = Set(secondAddress),
+            30.seconds)
+          clusterView.isSingletonCluster should ===(true)
+          awaitCond(clusterView.isLeader)
+        }
+
+        enterBarrier("after-3")
       }
-      enterBarrier("after-4")
-    }
+
+    "leave and shutdown itself when singleton cluster" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          cluster.leave(first)
+          awaitCond(cluster.isTerminated, 5.seconds)
+        }
+        enterBarrier("after-4")
+      }
   }
 }

@@ -77,17 +77,16 @@ class BaseUniformHaltonGenerator(val dimension: Int)
         new UnboxedIntVector(16)
       })
       .toArray
-  val permutations: Array[Array[Long]] =
-    (0 to dimension)
-      .map(i => {
-        val vv = new Array[Long](Halton.PRIMES(i))
-        cfor(0)(j => j < Halton.PRIMES(i), j => j + 1)(j => {
-          vv(j) = j
-        })
-        shuffle(vv)
-        vv
+  val permutations: Array[Array[Long]] = (0 to dimension)
+    .map(i => {
+      val vv = new Array[Long](Halton.PRIMES(i))
+      cfor(0)(j => j < Halton.PRIMES(i), j => j + 1)(j => {
+        vv(j) = j
       })
-      .toArray
+      shuffle(vv)
+      vv
+    })
+    .toArray
 
   private val currentValue = new Array[Double](dimension)
 
@@ -97,9 +96,8 @@ class BaseUniformHaltonGenerator(val dimension: Int)
   def getNextUnsafe = {
     cfor(0)(j => j < dimension, j => j + 1)(j => {
       var lIndex: Int = 0
-      while ((
-               lIndex < counters(j).size()
-             ) && (counters(j).get(lIndex) == (bases(j) - 1))) {
+      while ((lIndex < counters(j).size()) &&
+             (counters(j).get(lIndex) == (bases(j) - 1))) {
         counters(j).set(lIndex, 0)
         lIndex += 1
       }

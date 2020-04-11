@@ -724,8 +724,7 @@ object Test extends Properties("HtmlFactory") {
     oneAuthor match {
       case node: scala.xml.Node => {
         val s = node.toString
-        s.contains("<h6>Author:</h6>") &&
-        s.contains("<p>The Only Author</p>")
+        s.contains("<h6>Author:</h6>") && s.contains("<p>The Only Author</p>")
       }
       case _ =>
         false
@@ -760,8 +759,8 @@ object Test extends Properties("HtmlFactory") {
           node.toString contains "title=\"gt4s: $colon$colon\""
 
         property("gt4s of a deprecated method") =
-          node
-            .toString contains "title=\"gt4s: $colon$colon$colon$colon. Deprecated: "
+          node.toString contains
+            "title=\"gt4s: $colon$colon$colon$colon. Deprecated: "
         true
       }
       case _ =>
@@ -818,25 +817,26 @@ object Test extends Properties("HtmlFactory") {
     implicit class AssertionAwareNode(node: scala.xml.NodeSeq) {
 
       def assertTypeLink(expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq = node \\ "div" \@ (
-          "id", "definition"
-        ) \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq = node \\ "div" \@
+          ("id", "definition") \\ "span" \@
+          ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
       def assertMemberLink(
           group: String)(memberName: String, expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq = node \\ "div" \@ ("id", group) \\ "li" \@ (
-          "name", memberName
-        ) \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq = node \\ "div" \@
+          ("id", group) \\ "li" \@
+          ("name", memberName) \\ "span" \@
+          ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
       def assertValuesLink(memberName: String, expectedUrl: String): Boolean = {
-        val linkElement: NodeSeq =
-          node \\ "div" \@ ("class", "values members") \\ "li" \@ (
-            "name", memberName
-          ) \\ "span" \@ ("class", "permalink") \ "a"
+        val linkElement: NodeSeq = node \\ "div" \@
+          ("class", "values members") \\ "li" \@
+          ("name", memberName) \\ "span" \@
+          ("class", "permalink") \ "a"
         linkElement \@ "href" == expectedUrl
       }
 
@@ -856,53 +856,45 @@ object Test extends Properties("HtmlFactory") {
     property("SI-8144: Members' permalink - inner package") =
       check("some/pack/index.html") { node =>
         ("type link" |: node.assertTypeLink("../../some/pack/index.html")) &&
-        (
-          "member: SomeType (object)" |: node.assertValuesLink(
+        ("member: SomeType (object)" |:
+          node.assertValuesLink(
             "some.pack.SomeType",
-            "../../some/pack/index.html#SomeType")
-        ) &&
-        (
-          "member: SomeType (class)" |: node.assertMemberLink("types")(
+            "../../some/pack/index.html#SomeType")) &&
+        ("member: SomeType (class)" |:
+          node.assertMemberLink("types")(
             "some.pack.SomeType",
-            "../../some/pack/index.html#SomeTypeextendsAnyRef")
-        )
+            "../../some/pack/index.html#SomeTypeextendsAnyRef"))
       }
 
     property("SI-8144: Members' permalink - companion object") =
       check("some/pack/SomeType$.html") { node =>
-        (
-          "type link" |: node.assertTypeLink("../../some/pack/SomeType$.html")
-        ) &&
-        (
-          "member: someVal" |: node.assertMemberLink("allMembers")(
+        ("type link" |:
+          node.assertTypeLink("../../some/pack/SomeType$.html")) &&
+        ("member: someVal" |:
+          node.assertMemberLink("allMembers")(
             "some.pack.SomeType#someVal",
-            "../../some/pack/SomeType$.html#someVal:String")
-        )
+            "../../some/pack/SomeType$.html#someVal:String"))
       }
 
     property("SI-8144: Members' permalink - class") =
       check("some/pack/SomeType.html") { node =>
         ("type link" |: node.assertTypeLink("../../some/pack/SomeType.html")) &&
-        (
-          "constructor " |: node.assertMemberLink("constructors")(
+        ("constructor " |:
+          node.assertMemberLink("constructors")(
             "some.pack.SomeType#<init>",
-            "../../some/pack/SomeType.html#<init>(arg:String):some.pack.SomeType")
-        ) &&
-        (
-          "member: type TypeAlias" |: node.assertMemberLink("types")(
+            "../../some/pack/SomeType.html#<init>(arg:String):some.pack.SomeType")) &&
+        ("member: type TypeAlias" |:
+          node.assertMemberLink("types")(
             "some.pack.SomeType.TypeAlias",
-            "../../some/pack/SomeType.html#TypeAlias=String")
-        ) &&
-        (
-          "member: def >#<():Int " |: node.assertValuesLink(
+            "../../some/pack/SomeType.html#TypeAlias=String")) &&
+        ("member: def >#<():Int " |:
+          node.assertValuesLink(
             "some.pack.SomeType#>#<",
-            "../../some/pack/SomeType.html#>#<():Int")
-        ) &&
-        (
-          "member: def >@<():TypeAlias " |: node.assertValuesLink(
+            "../../some/pack/SomeType.html#>#<():Int")) &&
+        ("member: def >@<():TypeAlias " |:
+          node.assertValuesLink(
             "some.pack.SomeType#>@<",
-            "../../some/pack/SomeType.html#>@<():SomeType.this.TypeAlias")
-        )
+            "../../some/pack/SomeType.html#>@<():SomeType.this.TypeAlias"))
       }
 
   }

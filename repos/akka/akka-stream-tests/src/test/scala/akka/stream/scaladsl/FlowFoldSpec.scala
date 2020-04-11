@@ -32,53 +32,62 @@ class FlowFoldSpec extends AkkaSpec {
       .map(identity)
     val foldSink = Sink.fold[Int, Int](0)(_ + _)
 
-    "work when using Source.runFold" in assertAllStagesStopped {
-      Await.result(inputSource.runFold(0)(_ + _), 3.seconds) should be(expected)
-    }
+    "work when using Source.runFold" in
+      assertAllStagesStopped {
+        Await.result(inputSource.runFold(0)(_ + _), 3.seconds) should
+          be(expected)
+      }
 
-    "work when using Source.fold" in assertAllStagesStopped {
-      Await.result(foldSource runWith Sink.head, 3.seconds) should be(expected)
-    }
+    "work when using Source.fold" in
+      assertAllStagesStopped {
+        Await.result(foldSource runWith Sink.head, 3.seconds) should
+          be(expected)
+      }
 
-    "work when using Sink.fold" in assertAllStagesStopped {
-      Await.result(inputSource runWith foldSink, 3.seconds) should be(expected)
-    }
+    "work when using Sink.fold" in
+      assertAllStagesStopped {
+        Await.result(inputSource runWith foldSink, 3.seconds) should
+          be(expected)
+      }
 
-    "work when using Flow.fold" in assertAllStagesStopped {
-      Await.result(
-        inputSource via foldFlow runWith Sink.head,
-        3.seconds) should be(expected)
-    }
+    "work when using Flow.fold" in
+      assertAllStagesStopped {
+        Await
+          .result(inputSource via foldFlow runWith Sink.head, 3.seconds) should
+          be(expected)
+      }
 
-    "work when using Source.fold + Flow.fold + Sink.fold" in assertAllStagesStopped {
-      Await
-        .result(foldSource via foldFlow runWith foldSink, 3.seconds) should be(
-        expected)
-    }
+    "work when using Source.fold + Flow.fold + Sink.fold" in
+      assertAllStagesStopped {
+        Await.result(foldSource via foldFlow runWith foldSink, 3.seconds) should
+          be(expected)
+      }
 
-    "propagate an error" in assertAllStagesStopped {
-      val error = new Exception with NoStackTrace
-      val future =
-        inputSource
-          .map(x ⇒
+    "propagate an error" in
+      assertAllStagesStopped {
+        val error = new Exception with NoStackTrace
+        val future =
+          inputSource
+            .map(x ⇒
+              if (x > 50)
+                throw error
+              else
+                x)
+            .runFold[NotUsed](NotUsed)(Keep.none)
+        the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
+      }
+
+    "complete future with failure when folding function throws" in
+      assertAllStagesStopped {
+        val error = new Exception with NoStackTrace
+        val future =
+          inputSource.runFold(0)((x, y) ⇒
             if (x > 50)
               throw error
             else
-              x)
-          .runFold[NotUsed](NotUsed)(Keep.none)
-      the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
-    }
-
-    "complete future with failure when folding function throws" in assertAllStagesStopped {
-      val error = new Exception with NoStackTrace
-      val future =
-        inputSource.runFold(0)((x, y) ⇒
-          if (x > 50)
-            throw error
-          else
-            x + y)
-      the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
-    }
+              x + y)
+        the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
+      }
 
   }
 

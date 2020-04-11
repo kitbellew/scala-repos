@@ -19,31 +19,32 @@ class SinkForeachParallelSpec extends AkkaSpec {
   implicit val materializer = ActorMaterializer()
 
   "A ForeachParallel" must {
-    "produce elements in the order they are ready" in assertAllStagesStopped {
-      implicit val ec = system.dispatcher
+    "produce elements in the order they are ready" in
+      assertAllStagesStopped {
+        implicit val ec = system.dispatcher
 
-      val probe = TestProbe()
-      val latch = (1 to 4).map(_ -> TestLatch(1)).toMap
-      val p = Source(1 to 4).runWith(
-        Sink.foreachParallel(4)((n: Int) ⇒ {
-          Await.ready(latch(n), 5.seconds)
-          probe.ref ! n
-        }))
-      latch(2).countDown()
-      probe.expectMsg(2)
-      latch(4).countDown()
-      probe.expectMsg(4)
-      latch(3).countDown()
-      probe.expectMsg(3)
+        val probe = TestProbe()
+        val latch = (1 to 4).map(_ -> TestLatch(1)).toMap
+        val p = Source(1 to 4).runWith(
+          Sink.foreachParallel(4)((n: Int) ⇒ {
+            Await.ready(latch(n), 5.seconds)
+            probe.ref ! n
+          }))
+        latch(2).countDown()
+        probe.expectMsg(2)
+        latch(4).countDown()
+        probe.expectMsg(4)
+        latch(3).countDown()
+        probe.expectMsg(3)
 
-      assert(!p.isCompleted)
+        assert(!p.isCompleted)
 
-      latch(1).countDown()
-      probe.expectMsg(1)
+        latch(1).countDown()
+        probe.expectMsg(1)
 
-      Await.result(p, 4.seconds)
-      assert(p.isCompleted)
-    }
+        Await.result(p, 4.seconds)
+        assert(p.isCompleted)
+      }
 
     "not run more functions in parallel then specified" in {
       implicit val ec = system.dispatcher
@@ -72,71 +73,74 @@ class SinkForeachParallelSpec extends AkkaSpec {
 
     }
 
-    "resume after function failure" in assertAllStagesStopped {
-      implicit val ec = system.dispatcher
+    "resume after function failure" in
+      assertAllStagesStopped {
+        implicit val ec = system.dispatcher
 
-      val probe = TestProbe()
-      val latch = TestLatch(1)
+        val probe = TestProbe()
+        val latch = TestLatch(1)
 
-      val p = Source(1 to 5).runWith(
-        Sink
-          .foreachParallel(4)((n: Int) ⇒ {
-            if (n == 3)
-              throw new RuntimeException("err1") with NoStackTrace
-            else {
-              probe.ref ! n
-              Await.ready(latch, 10.seconds)
-            }
-          })
-          .withAttributes(supervisionStrategy(resumingDecider)))
+        val p = Source(1 to 5).runWith(
+          Sink
+            .foreachParallel(4)((n: Int) ⇒ {
+              if (n == 3)
+                throw new RuntimeException("err1") with NoStackTrace
+              else {
+                probe.ref ! n
+                Await.ready(latch, 10.seconds)
+              }
+            })
+            .withAttributes(supervisionStrategy(resumingDecider)))
 
-      latch.countDown()
-      probe.expectMsgAllOf(1, 2, 4, 5)
+        latch.countDown()
+        probe.expectMsgAllOf(1, 2, 4, 5)
 
-      Await.result(p, 5.seconds)
-    }
-
-    "finish after function thrown exception" in assertAllStagesStopped {
-      val probe = TestProbe()
-      val latch = TestLatch(1)
-
-      implicit val ec = system.dispatcher
-      val p = Source(1 to 5).runWith(
-        Sink
-          .foreachParallel(3)((n: Int) ⇒ {
-            if (n == 3)
-              throw new RuntimeException("err2") with NoStackTrace
-            else {
-              probe.ref ! n
-              Await.ready(latch, 10.seconds)
-            }
-          })
-          .withAttributes(supervisionStrategy(stoppingDecider)))
-      p.onFailure {
-        case e ⇒
-          assert(e.getMessage.equals("err2"));
-          Unit
-      }
-      p.onSuccess {
-        case _ ⇒
-          fail()
+        Await.result(p, 5.seconds)
       }
 
-      latch.countDown()
-      probe.expectMsgAllOf(1, 2)
+    "finish after function thrown exception" in
+      assertAllStagesStopped {
+        val probe = TestProbe()
+        val latch = TestLatch(1)
 
-      Await.ready(p, 1.seconds)
+        implicit val ec = system.dispatcher
+        val p = Source(1 to 5).runWith(
+          Sink
+            .foreachParallel(3)((n: Int) ⇒ {
+              if (n == 3)
+                throw new RuntimeException("err2") with NoStackTrace
+              else {
+                probe.ref ! n
+                Await.ready(latch, 10.seconds)
+              }
+            })
+            .withAttributes(supervisionStrategy(stoppingDecider)))
+        p.onFailure {
+          case e ⇒
+            assert(e.getMessage.equals("err2"));
+            Unit
+        }
+        p.onSuccess {
+          case _ ⇒
+            fail()
+        }
 
-      assert(p.isCompleted)
-    }
+        latch.countDown()
+        probe.expectMsgAllOf(1, 2)
 
-    "handle empty source" in assertAllStagesStopped {
-      implicit val ec = system.dispatcher
+        Await.ready(p, 1.seconds)
 
-      val p = Source(List.empty[Int]).runWith(Sink.foreachParallel(3)(a ⇒ ()))
+        assert(p.isCompleted)
+      }
 
-      Await.result(p, 200.seconds)
-    }
+    "handle empty source" in
+      assertAllStagesStopped {
+        implicit val ec = system.dispatcher
+
+        val p = Source(List.empty[Int]).runWith(Sink.foreachParallel(3)(a ⇒ ()))
+
+        Await.result(p, 200.seconds)
+      }
 
   }
 

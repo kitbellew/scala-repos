@@ -166,10 +166,9 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
           ScalaPsiUtil.adjustTypes(newT)
         }
 
-        if ((
-              clazz.isInterface || clazz.isInstanceOf[ScTrait] ||
-              clazz.hasModifierPropertyScala("abstract")
-            ) && !item.typeParametersProblem) {
+        if ((clazz.isInterface || clazz.isInstanceOf[ScTrait] ||
+            clazz.hasModifierPropertyScala("abstract")) &&
+            !item.typeParametersProblem) {
           context.setLaterRunnable(
             new Runnable {
               def run() {
@@ -179,11 +178,9 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
                   return
 
                 element.getParent match {
-                  case (_: ScTemplateBody) childOf (
-                        (
-                          _: ScExtendsBlock
-                        ) childOf (newTemplateDef: ScNewTemplateDefinition)
-                      ) =>
+                  case (_: ScTemplateBody) childOf
+                      ((_: ScExtendsBlock) childOf
+                      (newTemplateDef: ScNewTemplateDefinition)) =>
                     val members = ScalaOIUtil
                       .getMembersToImplement(newTemplateDef)
                     ScalaOIUtil.runAction(

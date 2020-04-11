@@ -255,9 +255,8 @@ case class Configuration(underlying: Config) {
         case Some(values) =>
           throw reportError(
             path,
-            "Incorrect value, one of " + (
-              values.reduceLeft(_ + ", " + _)
-            ) + " was expected.")
+            "Incorrect value, one of " +
+              (values.reduceLeft(_ + ", " + _)) + " was expected.")
         case None =>
           value
       }

@@ -368,20 +368,19 @@ with ContextTrees with RichCompilationUnits with Picklers {
     *  @param  result   The transformed node
     */
   override def signalDone(context: Context, old: Tree, result: Tree) {
-    val canObserveTree = (interruptsEnabled
-      && analyzer.lockedCount == 0
-      && !context
-        .bufferErrors // SI-7558 look away during exploratory typing in "silent mode"
-    )
+    val canObserveTree =
+      (interruptsEnabled && analyzer.lockedCount == 0 &&
+        !context
+          .bufferErrors // SI-7558 look away during exploratory typing in "silent mode"
+      )
     if (canObserveTree) {
-      if (context.unit.exists &&
-          result.pos.isOpaqueRange &&
+      if (context.unit.exists && result.pos.isOpaqueRange &&
           (result.pos includes context.unit.targetPos)) {
         var located = new TypedLocator(context.unit.targetPos) locateIn result
         if (located == EmptyTree) {
           println(
-            "something's wrong: no " + context.unit + " in " + result + result
-              .pos)
+            "something's wrong: no " + context.unit + " in " + result +
+              result.pos)
           located = result
         }
         throw new TyperResult(located)
@@ -660,8 +659,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
           throw ex
         case ex: Throwable =>
           println(
-            "[%s]: exception during background compile: "
-              .format(unit.source) + ex)
+            "[%s]: exception during background compile: ".format(unit.source) +
+              ex)
           ex.printStackTrace()
           for (r <- waitLoadedTypeResponses(unit.source)) {
             r.raise(ex)
@@ -688,8 +687,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     cleanAllResponses()
 
     // wind down
-    if (waitLoadedTypeResponses.nonEmpty || getParsedEnteredResponses
-          .nonEmpty) {
+    if (waitLoadedTypeResponses.nonEmpty ||
+        getParsedEnteredResponses.nonEmpty) {
       // need another cycle to treat those
       newTyperRun()
       backgroundCompile()
@@ -759,8 +758,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
         *  that survive the new parsing
         *  round to NoPeriod.
         */
-      sym.sourceFile == unit.source.file &&
-      sym.validTo != NoPeriod &&
+      sym.sourceFile == unit.source.file && sym.validTo != NoPeriod &&
       runId(sym.validTo) < currentRunId
     }
     for (d <- deleted) {
@@ -892,17 +890,16 @@ with ContextTrees with RichCompilationUnits with Picklers {
         parseAndEnter(unit)
         val tree = locateTree(pos)
         debugLog(
-          "at pos " + pos + " was found: " + tree
-            .getClass + " " + tree.pos.show)
+          "at pos " + pos + " was found: " + tree.getClass + " " +
+            tree.pos.show)
         tree match {
           case Import(expr, _) =>
             debugLog(
-              "import found" + expr.tpe + (
-                if (expr.tpe == null)
-                  ""
-                else
-                  " " + expr.tpe.members
-              ))
+              "import found" + expr.tpe +
+                (if (expr.tpe == null)
+                   ""
+                 else
+                   " " + expr.tpe.members))
           case _ =>
         }
         if (stabilizedType(tree) ne null) {
@@ -988,14 +985,12 @@ with ContextTrees with RichCompilationUnits with Picklers {
       sym.isType || {
         try {
           val tp1 = pre.memberType(alt) onTypeError NoType
-          val tp2 = adaptToNewRunMap(sym.tpe) substSym (
-            originalTypeParams, sym.owner.typeParams
-          )
+          val tp2 = adaptToNewRunMap(sym.tpe) substSym
+            (originalTypeParams, sym.owner.typeParams)
           matchesType(tp1, tp2, alwaysMatchSimple = false) || {
             debugLog(s"findMirrorSymbol matchesType($tp1, $tp2) failed")
-            val tp3 = adaptToNewRunMap(sym.tpe) substSym (
-              originalTypeParams, alt.owner.typeParams
-            )
+            val tp3 = adaptToNewRunMap(sym.tpe) substSym
+              (originalTypeParams, alt.owner.typeParams)
             matchesType(tp1, tp3, alwaysMatchSimple = false) || {
               debugLog(
                 s"findMirrorSymbol fallback matchesType($tp1, $tp3) failed")
@@ -1022,8 +1017,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     } else if (newsym.isOverloaded) {
       settings.uniqid.value = true
       debugLog(
-        "mirror ambiguous " + sym + " " + unit.source + " " + pre + " " + newsym
-          .alternatives)
+        "mirror ambiguous " + sym + " " + unit.source + " " + pre + " " +
+          newsym.alternatives)
       NoSymbol
     } else {
       debugLog("mirror found for " + newsym + ": " + newsym.pos)
@@ -1146,8 +1141,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
         toMember: (Symbol, Type) => M) {
       if ((sym.isGetter || sym.isSetter) && sym.accessed != NoSymbol) {
         add(sym.accessed, pre, implicitlyAdded)(toMember)
-      } else if (!sym.name.decodedName.containsName("$") && !sym.isError && !sym
-                   .isArtifact && sym.hasRawInfo) {
+      } else if (!sym.name.decodedName.containsName("$") && !sym.isError &&
+                 !sym.isArtifact && sym.hasRawInfo) {
         val symtpe = pre.memberType(sym) onTypeError ErrorType
         matching(sym, symtpe, this(sym.name)) match {
           case Some(m) =>
@@ -1373,20 +1368,16 @@ with ContextTrees with RichCompilationUnits with Picklers {
       results filter { (member: Member) =>
         val symbol = member.sym
         def isStable =
-          member.tpe.isStable || member.sym.isStable || member
-            .sym
-            .getterIn(member.sym.owner)
-            .isStable
+          member.tpe.isStable || member.sym.isStable ||
+            member.sym.getterIn(member.sym.owner).isStable
         def isJunk =
-          symbol.name.isEmpty || !isIdentifierStart(
-            member.sym.name.charAt(0)
-          ) // e.g. <byname>
-        !isJunk && member.accessible && !symbol.isConstructor && (
-          name.isEmpty || matcher(member.sym.name) && (
-            symbol.name.isTermName == name.isTermName || name
-              .isTypeName && isStable
-          )
-        )
+          symbol.name.isEmpty ||
+            !isIdentifierStart(member.sym.name.charAt(0)) // e.g. <byname>
+        !isJunk && member.accessible && !symbol.isConstructor &&
+        (name.isEmpty ||
+        matcher(member.sym.name) &&
+        (symbol.name.isTermName == name.isTermName ||
+        name.isTypeName && isStable))
       }
     }
   }
@@ -1447,12 +1438,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
                     lenientMatch(
                       entered.stripPrefix(init),
                       tail,
-                      matchCount + (
-                        if (init.isEmpty)
-                          0
-                        else
-                          1
-                      ))))
+                      matchCount +
+                        (if (init.isEmpty)
+                           0
+                         else
+                           1))))
           }
         }
         val containsAllEnteredChars = {

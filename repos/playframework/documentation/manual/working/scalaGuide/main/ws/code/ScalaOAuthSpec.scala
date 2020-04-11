@@ -30,9 +30,10 @@ object routes {
 object ScalaOAuthSpec extends PlaySpecification {
 
   "Scala OAuth" should {
-    "be injectable" in new WithApplication() {
-      app.injector.instanceOf[Application] must beAnInstanceOf[Application]
-    }
+    "be injectable" in
+      new WithApplication() {
+        app.injector.instanceOf[Application] must beAnInstanceOf[Application]
+      }
   }
 
   def wsClient: WSClient = null

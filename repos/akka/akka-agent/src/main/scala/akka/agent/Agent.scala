@@ -71,9 +71,10 @@ object Agent {
         new Runnable {
           def run = {
             updater.suspend()
-            result completeWith Future(
-              try ref.single.transformAndGet(f)
-              finally updater.resume())
+            result completeWith
+              Future(
+                try ref.single.transformAndGet(f)
+                finally updater.resume())
           }
         })
       result.future

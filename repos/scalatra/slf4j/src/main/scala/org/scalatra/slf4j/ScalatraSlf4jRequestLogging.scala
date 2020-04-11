@@ -55,9 +55,8 @@ trait ScalatraSlf4jRequestLogging extends ScalatraBase with Handler {
       matchedRoute: Option[MatchedRoute])(thunk: ⇒ S)(implicit
       request: HttpServletRequest): S = {
     val originalParams = multiParams
-    request(MultiParamsKey) = originalParams ++ matchedRoute
-      .map(_.multiParams)
-      .getOrElse(Map.empty)
+    request(MultiParamsKey) = originalParams ++
+      matchedRoute.map(_.multiParams).getOrElse(Map.empty)
     fillMdc()
     try {
       thunk
@@ -96,17 +95,16 @@ trait ScalatraSlf4jRequestLogging extends ScalatraBase with Handler {
   }
 
   private[this] def cgiParams =
-    request get CgiParamsKey map (
-      _.asInstanceOf[Map[String, String]]
-    ) getOrElse Map.empty
+    request get CgiParamsKey map
+      (_.asInstanceOf[Map[String, String]]) getOrElse Map.empty
 
   private[this] def readCgiParams(req: HttpServletRequest) =
     Map(
       "AUTH_TYPE" -> req.getAuthType,
       "CONTENT_LENGTH" -> req.getContentLength.toString,
       "CONTENT_TYPE" -> req.getContentType,
-      "DOCUMENT_ROOT" -> servletContext
-        .getRealPath(servletContext.getContextPath),
+      "DOCUMENT_ROOT" ->
+        servletContext.getRealPath(servletContext.getContextPath),
       "PATH_INFO" -> req.getPathInfo,
       "PATH_TRANSLATED" -> req.getPathTranslated,
       "QUERY_STRING" -> req.getQueryString,

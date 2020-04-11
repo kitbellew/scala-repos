@@ -481,8 +481,8 @@ private[akka] class ClusterShardingGuardian extends Actor {
 
   private def coordinatorPath(encName: String): String =
     (
-      self.path / coordinatorSingletonManagerName(
-        encName) / "singleton" / "coordinator"
+      self.path / coordinatorSingletonManagerName(encName) / "singleton" /
+        "coordinator"
     ).toStringWithoutAddress
 
   def receive = {

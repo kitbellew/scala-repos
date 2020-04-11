@@ -66,10 +66,11 @@ class ContainerPlacementStrategySuite
         Seq.empty)
 
     assert(
-      localities.map(_.nodes) === Array(
-        Array("host3", "host4", "host5"),
-        Array("host3", "host4", "host5"),
-        Array("host3", "host4")))
+      localities.map(_.nodes) ===
+        Array(
+          Array("host3", "host4", "host5"),
+          Array("host3", "host4", "host5"),
+          Array("host3", "host4")))
   }
 
   test(

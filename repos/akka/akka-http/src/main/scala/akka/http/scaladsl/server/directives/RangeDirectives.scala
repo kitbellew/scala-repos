@@ -105,28 +105,33 @@ trait RangeDirectives {
                   HttpEntity(entity.contentType, range.length, bytes))
               Source.single(part)
             case n ⇒
-              Source fromGraph GraphDSL.create() { implicit b ⇒
-                import GraphDSL.Implicits._
-                val bcast = b.add(Broadcast[ByteString](n))
-                val merge = b.add(Concat[Multipart.ByteRanges.BodyPart](n))
-                for (range ← coalescedRanges) {
-                  val flow = StreamUtils
-                    .sliceBytesTransformer(range.start, range.length)
-                  bcast ~> flow
-                    .buffer(16, OverflowStrategy.backpressure)
-                    .prefixAndTail(0)
-                    .map {
-                      case (_, bytes) ⇒
-                        Multipart
-                          .ByteRanges
-                          .BodyPart(
-                            range.contentRange(length),
-                            HttpEntity(entity.contentType, range.length, bytes))
-                    } ~> merge
+              Source fromGraph
+                GraphDSL.create() { implicit b ⇒
+                  import GraphDSL.Implicits._
+                  val bcast = b.add(Broadcast[ByteString](n))
+                  val merge = b.add(Concat[Multipart.ByteRanges.BodyPart](n))
+                  for (range ← coalescedRanges) {
+                    val flow = StreamUtils
+                      .sliceBytesTransformer(range.start, range.length)
+                    bcast ~>
+                      flow
+                        .buffer(16, OverflowStrategy.backpressure)
+                        .prefixAndTail(0)
+                        .map {
+                          case (_, bytes) ⇒
+                            Multipart
+                              .ByteRanges
+                              .BodyPart(
+                                range.contentRange(length),
+                                HttpEntity(
+                                  entity.contentType,
+                                  range.length,
+                                  bytes))
+                        } ~> merge
+                  }
+                  entity.dataBytes ~> bcast
+                  SourceShape(merge.out)
                 }
-                entity.dataBytes ~> bcast
-                SourceShape(merge.out)
-              }
           }
         Multipart.ByteRanges(source)
       }
@@ -202,13 +207,13 @@ trait RangeDirectives {
       extract(rangeHeaderOfGetRequests).flatMap {
         case Some(Range(RangeUnits.Bytes, ranges)) ⇒
           if (ranges.size <= rangeCountLimit)
-            applyRanges(ranges) & RangeDirectives
-              .respondWithAcceptByteRangesHeader
+            applyRanges(ranges) &
+              RangeDirectives.respondWithAcceptByteRangesHeader
           else
             reject(TooManyRangesRejection(rangeCountLimit))
         case _ ⇒
-          MethodDirectives.get & RangeDirectives
-            .respondWithAcceptByteRangesHeader | pass
+          MethodDirectives
+            .get & RangeDirectives.respondWithAcceptByteRangesHeader | pass
       }
     }
 }

@@ -144,8 +144,8 @@ object Extraction {
                       case (mangledName, _) =>
                         val n = Meta.unmangleName(mangledName)
                         val fieldVal = Reflection.getField(x, mangledName)
-                        val s = serializer.serializer orElse Map(
-                          (n, fieldVal) -> Some(n, fieldVal))
+                        val s = serializer.serializer orElse
+                          Map((n, fieldVal) -> Some(n, fieldVal))
                         s((n, fieldVal))
                           .map {
                             case (name, value) =>
@@ -154,8 +154,8 @@ object Extraction {
                           .getOrElse(JField(n, JNothing))
                     }
                 } getOrElse Nil
-              val uniqueFields =
-                fields filterNot (f => args.find(_.name == f.name).isDefined)
+              val uniqueFields = fields filterNot
+                (f => args.find(_.name == f.name).isDefined)
               mkObject(x.getClass, uniqueFields ++ args)
           }
       }
@@ -235,9 +235,8 @@ object Extraction {
       Map(
         map
           .filter(t =>
-            t._1 == prefix || t._1.startsWith(prefix + ".") || t
-              ._1
-              .startsWith(prefix + "["))
+            t._1 == prefix || t._1.startsWith(prefix + ".") ||
+              t._1.startsWith(prefix + "["))
           .map(t => (t._1.substring(prefix.length), t._2))
           .toList
           .toArray: _*)
@@ -282,8 +281,8 @@ object Extraction {
       implicit formats: Formats): Any = {
     def mkMapping(clazz: Class[_], typeArgs: Seq[Class[_]])(implicit
         formats: Formats): Meta.Mapping = {
-      if (clazz == classOf[Option[_]] || clazz == classOf[
-            List[_]] || clazz == classOf[Set[_]] || clazz.isArray) {
+      if (clazz == classOf[Option[_]] || clazz == classOf[List[_]] ||
+          clazz == classOf[Set[_]] || clazz.isArray) {
         Col(TypeInfo(clazz, None), mkMapping(typeArgs.head, typeArgs.tail))
       } else if (clazz == classOf[Map[_, _]]) {
         Dict(mkMapping(typeArgs.tail.head, typeArgs.tail.tail))
@@ -316,9 +315,8 @@ object Extraction {
             .bestMatching(argNames)
             .getOrElse(
               fail(
-                "No constructor for type " + constructor
-                  .targetType
-                  .clazz + ", " + json))
+                "No constructor for type " + constructor.targetType.clazz +
+                  ", " + json))
         }
       }
 
@@ -399,14 +397,14 @@ object Extraction {
           case e @ (_: IllegalArgumentException | _: InstantiationException) =>
             fail(
               "Parsed JSON values do not match with class constructor\nargs=" +
-                args.mkString(",") + "\narg types=" + args
-                .map(a =>
-                  if (a != null)
-                    a.asInstanceOf[AnyRef].getClass.getName
-                  else
-                    "null")
-                .mkString(",") +
-                "\nconstructor=" + jconstructor)
+                args.mkString(",") + "\narg types=" +
+                args
+                  .map(a =>
+                    if (a != null)
+                      a.asInstanceOf[AnyRef].getClass.getName
+                    else
+                      "null")
+                  .mkString(",") + "\nconstructor=" + jconstructor)
         }
       }
 
@@ -418,10 +416,8 @@ object Extraction {
           fields filterNot (_.name == formats.typeHintFieldName))
         val deserializer = formats.typeHints.deserialize
         if (!deserializer.isDefinedAt(typeHint, obj)) {
-          val concreteClass = formats
-            .typeHints
-            .classFor(typeHint) getOrElse fail(
-            "Do not know how to deserialize '" + typeHint + "'")
+          val concreteClass = formats.typeHints.classFor(typeHint) getOrElse
+            fail("Do not know how to deserialize '" + typeHint + "'")
           val typeArgs = typeInfo
             .parameterizedType
             .map(_.getActualTypeArguments.toList.map(Meta.rawClassOf))
@@ -477,7 +473,8 @@ object Extraction {
             Array[AnyRef]()
           case x =>
             fail(
-              "Expected collection but got " + x + " for root " + root + " and mapping " + m)
+              "Expected collection but got " + x + " for root " + root +
+                " and mapping " + m)
         }
 
       constructor(array)
@@ -656,8 +653,8 @@ object Extraction {
         null
       case JNothing =>
         fail(
-          "Did not find value which can be converted into " + targetType
-            .getName)
+          "Did not find value which can be converted into " +
+            targetType.getName)
       case _ =>
         val custom = formats.customDeserializer(formats)
         val typeInfo = TypeInfo(targetType, None)

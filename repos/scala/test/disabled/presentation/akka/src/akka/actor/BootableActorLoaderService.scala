@@ -40,10 +40,11 @@ trait BootableActorLoaderService extends Bootable {
           while (en.hasMoreElements) {
             val name = en.nextElement.getName
             if (name.endsWith(".jar"))
-              dependencyJars ::= new File(
-                String.format("jar:file:%s!/%s", jarFile.getName, name))
-                .toURI
-                .toURL
+              dependencyJars ::=
+                new File(
+                  String.format("jar:file:%s!/%s", jarFile.getName, name))
+                  .toURI
+                  .toURL
           }
         }
         val toDeploy = filesToDeploy.map(_.toURI.toURL)

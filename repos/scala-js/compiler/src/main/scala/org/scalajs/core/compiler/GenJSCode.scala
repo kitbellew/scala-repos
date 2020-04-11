@@ -1313,9 +1313,13 @@ abstract class GenJSCode
 
             val methodDefWithoutUselessVars = {
               val unmutatedMutableLocalVars =
-                (mutableLocalVars -- mutatedLocalVars).toList
+                (
+                  mutableLocalVars -- mutatedLocalVars
+                ).toList
               val mutatedImmutableLocalVals =
-                (mutatedLocalVars -- mutableLocalVars).toList
+                (
+                  mutatedLocalVars -- mutableLocalVars
+                ).toList
               if (unmutatedMutableLocalVars.isEmpty &&
                   mutatedImmutableLocalVals.isEmpty) {
                 // OK, we're good (common case)
@@ -1467,12 +1471,10 @@ abstract class GenJSCode
             // To be called from within withScopedVars
             def genInnerBody() = {
               js.Block(
-                otherStats.map(genStat) :+ (
-                  if (bodyIsStat)
-                    genStat(rhs)
-                  else
-                    genExpr(rhs)
-                ))
+                otherStats.map(genStat) :+ (if (bodyIsStat)
+                                              genStat(rhs)
+                                            else
+                                              genExpr(rhs)))
             }
 
             initialThis match {
@@ -1838,7 +1840,10 @@ abstract class GenJSCode
               If(
                 cond,
                 Block(bodyStats, Apply(target @ Ident(lname2), Nil)),
-                Literal(_))) if (target.symbol == sym) =>
+                Literal(_)))
+            if (
+              target.symbol == sym
+            ) =>
           js.While(genExpr(cond), js.Block(bodyStats map genStat))
 
         // while (cond) { body }; result
@@ -1851,7 +1856,10 @@ abstract class GenJSCode
                     cond,
                     Block(bodyStats, Apply(target @ Ident(lname2), Nil)),
                     Literal(_))),
-                result)) if (target.symbol == sym) =>
+                result))
+            if (
+              target.symbol == sym
+            ) =>
           js.Block(
             js.While(genExpr(cond), js.Block(bodyStats map genStat)),
             genExpr(result))
@@ -1861,7 +1869,9 @@ abstract class GenJSCode
               lname,
               Nil,
               Block(bodyStats, Apply(target @ Ident(lname2), Nil)))
-            if (target.symbol == sym) =>
+            if (
+              target.symbol == sym
+            ) =>
           js.While(js.BooleanLiteral(true), js.Block(bodyStats map genStat))
 
         // while (false) { body }
@@ -1875,7 +1885,9 @@ abstract class GenJSCode
               Block(
                 bodyStats,
                 If(cond, Apply(target @ Ident(lname2), Nil), Literal(_))))
-            if (target.symbol == sym) =>
+            if (
+              target.symbol == sym
+            ) =>
           js.DoWhile(js.Block(bodyStats map genStat), genExpr(cond))
 
         // do { body } while (cond); result
@@ -1885,7 +1897,10 @@ abstract class GenJSCode
               Block(
                 bodyStats :+
                 If(cond, Apply(target @ Ident(lname2), Nil), Literal(_)),
-                result)) if (target.symbol == sym) =>
+                result))
+            if (
+              target.symbol == sym
+            ) =>
           js.Block(
             js.DoWhile(js.Block(bodyStats map genStat), genExpr(cond)),
             genExpr(result))
@@ -3541,7 +3556,9 @@ abstract class GenJSCode
             val sParams = s.tpe.params
             !s.isBridge &&
             params.size == sParams.size &&
-            (params zip sParams).forall {
+            (
+              params zip sParams
+            ).forall {
               case (s1, s2) =>
                 s1.tpe =:= s2.tpe
             }
@@ -4035,7 +4052,9 @@ abstract class GenJSCode
                     arity - 1
                   else
                     arity
-                val jsParams = (1 to jsArity).toList map { x =>
+                val jsParams = (
+                  1 to jsArity
+                ).toList map { x =>
                   js.ParamDef(
                     js.Ident("arg" + x),
                     jstpe.AnyType,
@@ -4843,9 +4862,8 @@ abstract class GenJSCode
                 fail(s"Non-primary constructor $ddsym in anon function $cd")
             } else {
               val name = dd.name.toString
-              if (name == "apply" || (
-                    ddsym.isSpecialized && name.startsWith("apply$")
-                  )) {
+              if (name == "apply" || (ddsym
+                    .isSpecialized && name.startsWith("apply$"))) {
                 if ((applyDef eq null) || ddsym.isSpecialized)
                   applyDef = dd
               } else {
@@ -4898,7 +4916,9 @@ abstract class GenJSCode
 
         val applyMethod =
           withScopedVars(
-            paramAccessorLocals := (paramAccessors zip ctorParamDefs).toMap,
+            paramAccessorLocals := (
+              paramAccessors zip ctorParamDefs
+            ).toMap,
             tryingToGenMethodAsJSFunction := true) {
             try {
               genMethodWithCurrentLocalNameScope(applyDef)

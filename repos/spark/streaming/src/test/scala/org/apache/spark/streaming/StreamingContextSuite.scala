@@ -116,9 +116,8 @@ class StreamingContextSuite
     val cp = new Checkpoint(ssc1, Time(1000))
     assert(
       Utils.timeStringAsSeconds(
-        cp.sparkConfPairs
-          .toMap
-          .getOrElse("spark.dummyTimeConfig", "-1")) === 10)
+        cp.sparkConfPairs.toMap.getOrElse("spark.dummyTimeConfig", "-1")) ===
+        10)
     ssc1.stop()
     val newCp = Utils.deserialize[Checkpoint](Utils.serialize(cp))
     assert(
@@ -234,11 +233,11 @@ class StreamingContextSuite
     assert(
       sc.getLocalProperty(SparkContext.SPARK_JOB_GROUP_ID) === "non-streaming")
     assert(
-      sc.getLocalProperty(
-        SparkContext.SPARK_JOB_DESCRIPTION) === "non-streaming")
+      sc.getLocalProperty(SparkContext.SPARK_JOB_DESCRIPTION) ===
+        "non-streaming")
     assert(
-      sc.getLocalProperty(
-        SparkContext.SPARK_JOB_INTERRUPT_ON_CANCEL) === "true")
+      sc.getLocalProperty(SparkContext.SPARK_JOB_INTERRUPT_ON_CANCEL) ===
+        "true")
   }
 
   test("start multiple times") {

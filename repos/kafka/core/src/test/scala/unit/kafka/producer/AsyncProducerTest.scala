@@ -260,12 +260,14 @@ class AsyncProducerTest {
         new Message("msg2".getBytes)))
     val expectedResult = Some(
       Map(
-        0 -> Map(
-          TopicAndPartition("topic1", 0) -> topic1Broker1Data,
-          TopicAndPartition("topic2", 0) -> topic2Broker1Data),
-        1 -> Map(
-          TopicAndPartition("topic1", 1) -> topic1Broker2Data,
-          TopicAndPartition("topic2", 1) -> topic2Broker2Data)
+        0 ->
+          Map(
+            TopicAndPartition("topic1", 0) -> topic1Broker1Data,
+            TopicAndPartition("topic2", 0) -> topic2Broker1Data),
+        1 ->
+          Map(
+            TopicAndPartition("topic1", 1) -> topic1Broker2Data,
+            TopicAndPartition("topic2", 1) -> topic2Broker2Data)
       ))
 
     val actualResult = handler.partitionAndCollate(producerDataList)
@@ -558,9 +560,8 @@ class AsyncProducerTest {
         producerPool = producerPool,
         topicPartitionInfos = topicPartitionInfos,
         time = time)
-    val data = msgs
-      .map(m => new KeyedMessage[Int, String](topic1, 0, m)) ++ msgs
-      .map(m => new KeyedMessage[Int, String](topic1, 1, m))
+    val data = msgs.map(m => new KeyedMessage[Int, String](topic1, 0, m)) ++
+      msgs.map(m => new KeyedMessage[Int, String](topic1, 1, m))
     handler.handle(data)
     handler.close()
 

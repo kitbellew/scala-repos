@@ -20,8 +20,8 @@ private[parser] trait WebSocketHeaders {
 
   def `sec-websocket-extensions` =
     rule {
-      oneOrMore(extension)
-        .separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Extensions`(_))
+      oneOrMore(extension).separatedBy(listSep) ~ EOI ~>
+        (`Sec-WebSocket-Extensions`(_))
     }
 
   def `sec-websocket-key` =
@@ -31,21 +31,21 @@ private[parser] trait WebSocketHeaders {
 
   def `sec-websocket-protocol` =
     rule {
-      oneOrMore(token)
-        .separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Protocol`(_))
+      oneOrMore(token).separatedBy(listSep) ~ EOI ~>
+        (`Sec-WebSocket-Protocol`(_))
     }
 
   def `sec-websocket-version` =
     rule {
-      oneOrMore(version)
-        .separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Version`(_))
+      oneOrMore(version).separatedBy(listSep) ~ EOI ~>
+        (`Sec-WebSocket-Version`(_))
     }
 
   private def `base64-value-non-empty` =
     rule {
       capture(
-        oneOrMore(`base64-data`) ~ optional(
-          `base64-padding`) | `base64-padding`)
+        oneOrMore(`base64-data`) ~ optional(`base64-padding`) |
+          `base64-padding`)
     }
   private def `base64-data` =
     rule {
@@ -53,8 +53,7 @@ private[parser] trait WebSocketHeaders {
     }
   private def `base64-padding` =
     rule {
-      2.times(`base64-character`) ~ "==" |
-        3.times(`base64-character`) ~ "="
+      2.times(`base64-character`) ~ "==" | 3.times(`base64-character`) ~ "="
     }
   private def `base64-character` = rfc2045Alphabet
 
@@ -66,15 +65,13 @@ private[parser] trait WebSocketHeaders {
   private def `extension-token`: Rule1[String] = token
   private def `extension-param`: Rule1[(String, String)] =
     rule {
-      token ~ optional(ws("=") ~ word) ~> (
-        (name: String, value: Option[String]) ⇒ (name, value.getOrElse("")))
+      token ~ optional(ws("=") ~ word) ~>
+        ((name: String, value: Option[String]) ⇒ (name, value.getOrElse("")))
     }
 
   private def version =
     rule {
-      capture(
-        NZDIGIT ~ optional(DIGIT ~ optional(DIGIT)) |
-          DIGIT) ~> (_.toInt)
+      capture(NZDIGIT ~ optional(DIGIT ~ optional(DIGIT)) | DIGIT) ~> (_.toInt)
     }
   private def NZDIGIT = DIGIT19
 }

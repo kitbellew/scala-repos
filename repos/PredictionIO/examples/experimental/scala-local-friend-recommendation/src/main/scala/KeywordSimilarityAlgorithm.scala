@@ -58,13 +58,13 @@ class KeywordSimilarityAlgorithm(val ap: FriendRecommendationAlgoParams)
       val confidence = findKeywordSimilarity(
         model.userKeyword(model.userIdMap(query.user)),
         model.itemKeyword(model.itemIdMap(query.item)))
-      val acceptance = ((confidence * model.keywordSimWeight)
-        >= model.keywordSimThreshold)
+      val acceptance =
+        ((confidence * model.keywordSimWeight) >= model.keywordSimThreshold)
       new FriendRecommendationPrediction(confidence, acceptance)
     } else {
       val confidence = 0
-      val acceptance = ((confidence * model.keywordSimWeight)
-        >= model.keywordSimThreshold)
+      val acceptance =
+        ((confidence * model.keywordSimWeight) >= model.keywordSimThreshold)
       new FriendRecommendationPrediction(confidence, acceptance)
     }
   }

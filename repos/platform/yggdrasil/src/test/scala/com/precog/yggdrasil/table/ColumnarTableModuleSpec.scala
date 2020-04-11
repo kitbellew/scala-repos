@@ -252,42 +252,29 @@ trait ColumnarTableModuleSpec[M[+_]]
 
     "handle special cases of renderJson" >> {
       "undefined at beginning of array" >> {
-        testRenderJson(
-          JArray(
-            JUndefined ::
-              JNum(1) ::
-              JNum(2) :: Nil) :: Nil)
+        testRenderJson(JArray(JUndefined :: JNum(1) :: JNum(2) :: Nil) :: Nil)
       }
 
       "undefined in middle of array" >> {
-        testRenderJson(
-          JArray(
-            JNum(1) ::
-              JUndefined ::
-              JNum(2) :: Nil) :: Nil)
+        testRenderJson(JArray(JNum(1) :: JUndefined :: JNum(2) :: Nil) :: Nil)
       }
 
       "fully undefined array" >> {
         testRenderJson(
-          JArray(
-            JUndefined ::
-              JUndefined ::
-              JUndefined :: Nil) :: Nil)
+          JArray(JUndefined :: JUndefined :: JUndefined :: Nil) :: Nil)
       }
 
       "undefined at beginning of object" >> {
         testRenderJson(
           JObject(
-            JField("foo", JUndefined) ::
-              JField("bar", JNum(1)) ::
+            JField("foo", JUndefined) :: JField("bar", JNum(1)) ::
               JField("baz", JNum(2)) :: Nil) :: Nil)
       }
 
       "undefined in middle of object" >> {
         testRenderJson(
           JObject(
-            JField("foo", JNum(1)) ::
-              JField("bar", JUndefined) ::
+            JField("foo", JNum(1)) :: JField("bar", JUndefined) ::
               JField("baz", JNum(2)) :: Nil) :: Nil)
       }
 
@@ -296,31 +283,31 @@ trait ColumnarTableModuleSpec[M[+_]]
       }
 
       "undefined row" >> {
-        testRenderJson(
-          JObject(Nil) ::
-            JNum(42) :: Nil)
+        testRenderJson(JObject(Nil) :: JNum(42) :: Nil)
       }
 
-      "check utf-8 encoding" in check { str: String =>
-        val s =
-          str
-            .toList
-            .map((c: Char) =>
-              if (c < ' ')
-                ' '
-              else
-                c)
-            .mkString
-        testRenderJson(JString(s) :: Nil)
-      }.set(
-        minTestsOk -> 20000,
-        workers -> Runtime.getRuntime.availableProcessors)
+      "check utf-8 encoding" in
+        check { str: String =>
+          val s =
+            str
+              .toList
+              .map((c: Char) =>
+                if (c < ' ')
+                  ' '
+                else
+                  c)
+              .mkString
+          testRenderJson(JString(s) :: Nil)
+        }.set(
+          minTestsOk -> 20000,
+          workers -> Runtime.getRuntime.availableProcessors)
 
-      "check long encoding" in check { ln: Long =>
-        testRenderJson(JNum(ln) :: Nil)
-      }.set(
-        minTestsOk -> 20000,
-        workers -> Runtime.getRuntime.availableProcessors)
+      "check long encoding" in
+        check { ln: Long =>
+          testRenderJson(JNum(ln) :: Nil)
+        }.set(
+          minTestsOk -> 20000,
+          workers -> Runtime.getRuntime.availableProcessors)
     }
 
     "in cogroup" >> {
@@ -337,10 +324,14 @@ trait ColumnarTableModuleSpec[M[+_]]
       "survive pathology 2" in testCogroupPathology2
       "survive pathology 3" in testCogroupPathology3
 
-      "not truncate cogroup when right side has long equal spans" in testLongEqualSpansOnRight
-      "not truncate cogroup when left side has long equal spans" in testLongEqualSpansOnLeft
-      "not truncate cogroup when both sides have long equal spans" in testLongEqualSpansOnBoth
-      "not truncate cogroup when left side is long span and right is increasing" in testLongLeftSpanWithIncreasingRight
+      "not truncate cogroup when right side has long equal spans" in
+        testLongEqualSpansOnRight
+      "not truncate cogroup when left side has long equal spans" in
+        testLongEqualSpansOnLeft
+      "not truncate cogroup when both sides have long equal spans" in
+        testLongEqualSpansOnBoth
+      "not truncate cogroup when left side is long span and right is increasing" in
+        testLongLeftSpanWithIncreasingRight
 
       "survive scalacheck" in {
         check { cogroupData: (SampleData, SampleData) =>
@@ -361,8 +352,8 @@ trait ColumnarTableModuleSpec[M[+_]]
             JField(
               "key",
               JArray(
-                JNum(-3090012080927607325L) :: JNum(
-                  2875286661755661474L) :: Nil)) ::
+                JNum(-3090012080927607325L) :: JNum(2875286661755661474L) ::
+                  Nil)) ::
               JField(
                 "value",
                 JObject(
@@ -406,10 +397,11 @@ trait ColumnarTableModuleSpec[M[+_]]
             InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
           .slices
           .uncons
-          .copoint must beLike {
-          case Some((head, _)) =>
-            head.size must beLessThanOrEqualTo(yggConfig.maxSliceSize)
-        }
+          .copoint must
+          beLike {
+            case Some((head, _)) =>
+              head.size must beLessThanOrEqualTo(yggConfig.maxSliceSize)
+          }
       }
 
       "cross across slice boundaries on one side" in testCrossSingles
@@ -430,7 +422,8 @@ trait ColumnarTableModuleSpec[M[+_]]
       "perform a less trvial map1" in checkMap1
 
       //"give the identity transform for the trivial filter" in checkTrivialFilter
-      "give the identity transform for the trivial 'true' filter" in checkTrueFilter
+      "give the identity transform for the trivial 'true' filter" in
+        checkTrueFilter
       "give the identity transform for a nontrivial filter" in checkFilter
       "give a transformation for a big decimal and a long" in testMod2Filter
 
@@ -440,7 +433,8 @@ trait ColumnarTableModuleSpec[M[+_]]
 
       "perform a trivial map2 add" in checkMap2Add
       "perform a trivial map2 eq" in checkMap2Eq
-      "perform a map2 add over but not into arrays and objects" in testMap2ArrayObject
+      "perform a map2 add over but not into arrays and objects" in
+        testMap2ArrayObject
 
       "perform a trivial equality check" in checkEqualSelf
       "perform a trivial equality check on an array" in checkEqualSelfArray
@@ -454,27 +448,43 @@ trait ColumnarTableModuleSpec[M[+_]]
       "perform a equal-literal check" in checkEqualLiteral
       "perform a not-equal-literal check" in checkNotEqualLiteral
 
-      "wrap the results of a transform in an object as the specified field" in checkWrapObject
-      "give the identity transform for self-object concatenation" in checkObjectConcatSelf
-      "use a right-biased overwrite strategy in object concat conflicts" in checkObjectConcatOverwrite
-      "test inner object concat with a single boolean" in testObjectConcatSingletonNonObject
-      "test inner object concat with a boolean and an empty object" in testObjectConcatTrivial
+      "wrap the results of a transform in an object as the specified field" in
+        checkWrapObject
+      "give the identity transform for self-object concatenation" in
+        checkObjectConcatSelf
+      "use a right-biased overwrite strategy in object concat conflicts" in
+        checkObjectConcatOverwrite
+      "test inner object concat with a single boolean" in
+        testObjectConcatSingletonNonObject
+      "test inner object concat with a boolean and an empty object" in
+        testObjectConcatTrivial
       "concatenate dissimilar objects" in checkObjectConcat
-      "test inner object concat join semantics" in testInnerObjectConcatJoinSemantics
-      "test inner object concat with empty objects" in testInnerObjectConcatEmptyObject
-      "test outer object concat with empty objects" in testOuterObjectConcatEmptyObject
-      "test inner object concat with undefined" in testInnerObjectConcatUndefined
-      "test outer object concat with undefined" in testOuterObjectConcatUndefined
+      "test inner object concat join semantics" in
+        testInnerObjectConcatJoinSemantics
+      "test inner object concat with empty objects" in
+        testInnerObjectConcatEmptyObject
+      "test outer object concat with empty objects" in
+        testOuterObjectConcatEmptyObject
+      "test inner object concat with undefined" in
+        testInnerObjectConcatUndefined
+      "test outer object concat with undefined" in
+        testOuterObjectConcatUndefined
       "test inner object concat with empty" in testInnerObjectConcatLeftEmpty
       "test outer object concat with empty" in testOuterObjectConcatLeftEmpty
 
       "concatenate dissimilar arrays" in checkArrayConcat
-      "inner concatenate arrays with undefineds" in testInnerArrayConcatUndefined
-      "outer concatenate arrays with undefineds" in testOuterArrayConcatUndefined
-      "inner concatenate arrays with empty arrays" in testInnerArrayConcatEmptyArray
-      "outer concatenate arrays with empty arrays" in testOuterArrayConcatEmptyArray
-      "inner array concatenate when one side is not an array" in testInnerArrayConcatLeftEmpty
-      "outer array concatenate when one side is not an array" in testOuterArrayConcatLeftEmpty
+      "inner concatenate arrays with undefineds" in
+        testInnerArrayConcatUndefined
+      "outer concatenate arrays with undefineds" in
+        testOuterArrayConcatUndefined
+      "inner concatenate arrays with empty arrays" in
+        testInnerArrayConcatEmptyArray
+      "outer concatenate arrays with empty arrays" in
+        testOuterArrayConcatEmptyArray
+      "inner array concatenate when one side is not an array" in
+        testInnerArrayConcatLeftEmpty
+      "outer array concatenate when one side is not an array" in
+        testOuterArrayConcatLeftEmpty
 
       "delete elements according to a JType" in checkObjectDelete
       "delete only field in object without removing from array" in {
@@ -505,22 +515,30 @@ trait ColumnarTableModuleSpec[M[+_]]
 
       "perform a basic IsType transformation" in testIsTypeTrivial
       "perform an IsType transformation on numerics" in testIsTypeNumeric
-      "perform an IsType transformation on trivial union" in testIsTypeUnionTrivial
+      "perform an IsType transformation on trivial union" in
+        testIsTypeUnionTrivial
       "perform an IsType transformation on union" in testIsTypeUnion
-      "perform an IsType transformation on nested unfixed types" in testIsTypeUnfixed
+      "perform an IsType transformation on nested unfixed types" in
+        testIsTypeUnfixed
       "perform an IsType transformation on objects" in testIsTypeObject
-      "perform an IsType transformation on unfixed objects" in testIsTypeObjectUnfixed
-      "perform an IsType transformation on unfixed arrays" in testIsTypeArrayUnfixed
-      "perform an IsType transformation on empty objects" in testIsTypeObjectEmpty
+      "perform an IsType transformation on unfixed objects" in
+        testIsTypeObjectUnfixed
+      "perform an IsType transformation on unfixed arrays" in
+        testIsTypeArrayUnfixed
+      "perform an IsType transformation on empty objects" in
+        testIsTypeObjectEmpty
       "perform an IsType transformation on empty arrays" in testIsTypeArrayEmpty
       "perform a check on IsType" in checkIsType
 
       "perform a trivial type-based filter" in checkTypedTrivial
       "perform a less trivial type-based filter" in checkTyped
-      "perform a type-based filter across slice boundaries" in testTypedAtSliceBoundary
-      "perform a trivial heterogeneous type-based filter" in testTypedHeterogeneous
+      "perform a type-based filter across slice boundaries" in
+        testTypedAtSliceBoundary
+      "perform a trivial heterogeneous type-based filter" in
+        testTypedHeterogeneous
       "perform a trivial object type-based filter" in testTypedObject
-      "retain all object members when typed to unfixed object" in testTypedObjectUnfixed
+      "retain all object members when typed to unfixed object" in
+        testTypedObjectUnfixed
       "perform another trivial object type-based filter" in testTypedObject2
       "perform a trivial array type-based filter" in testTypedArray
       "perform another trivial array type-based filter" in testTypedArray2
@@ -552,16 +570,21 @@ trait ColumnarTableModuleSpec[M[+_]]
 
     "in distinct" >> {
       "be the identity on tables with no duplicate rows" in testDistinctIdentity
-      "peform properly when the same row appears in two different slices" in testDistinctAcrossSlices
-      "peform properly again when the same row appears in two different slices" in testDistinctAcrossSlices2
+      "peform properly when the same row appears in two different slices" in
+        testDistinctAcrossSlices
+      "peform properly again when the same row appears in two different slices" in
+        testDistinctAcrossSlices2
       "have no duplicate rows" in testDistinct
     }
 
     "in takeRange" >> {
       "select the correct rows in a trivial case" in testTakeRange
-      "select the correct rows when we take past the end of the table" in testTakeRangeLarger
-      "select the correct rows when we start at an index larger than the size of the table" in testTakeRangeEmpty
-      "select the correct rows across slice boundary" in testTakeRangeAcrossSlices
+      "select the correct rows when we take past the end of the table" in
+        testTakeRangeLarger
+      "select the correct rows when we start at an index larger than the size of the table" in
+        testTakeRangeEmpty
+      "select the correct rows across slice boundary" in
+        testTakeRangeAcrossSlices
       "select the correct rows only in second slice" in testTakeRangeSecondSlice
       "select the first slice" in testTakeRangeFirstSliceOnly
       "select nothing with a negative starting index" in testTakeRangeNegStart
@@ -570,8 +593,10 @@ trait ColumnarTableModuleSpec[M[+_]]
     }
 
     "in toArray" >> {
-      "create a single column given two single columns" in testToArrayHomogeneous
-      "create a single column given heterogeneous data" in testToArrayHeterogeneous
+      "create a single column given two single columns" in
+        testToArrayHomogeneous
+      "create a single column given heterogeneous data" in
+        testToArrayHeterogeneous
     }
 
     "in concat" >> {
@@ -580,11 +605,14 @@ trait ColumnarTableModuleSpec[M[+_]]
 
     "in canonicalize" >> {
       "return the correct slice sizes using scalacheck" in checkCanonicalize
-      "return the slice size in correct bound using scalacheck with range" in checkBoundedCanonicalize
+      "return the slice size in correct bound using scalacheck with range" in
+        checkBoundedCanonicalize
       "return the correct slice sizes in a trivial case" in testCanonicalize
       "return the correct slice sizes given length zero" in testCanonicalizeZero
-      "return the correct slice sizes along slice boundaries" in testCanonicalizeBoundary
-      "return the correct slice sizes greater than slice boundaries" in testCanonicalizeOverBoundary
+      "return the correct slice sizes along slice boundaries" in
+        testCanonicalizeBoundary
+      "return the correct slice sizes greater than slice boundaries" in
+        testCanonicalizeOverBoundary
       "return empty table when given empty table" in testCanonicalizeEmpty
       "remove slices of size zero" in testCanonicalizeEmptySlices
     }
@@ -601,8 +629,10 @@ trait ColumnarTableModuleSpec[M[+_]]
     "in sample" >> {
       "sample from a dataset" in testSample
       "return no samples given empty sequence of transspecs" in testSampleEmpty
-      "sample from a dataset given non-identity transspecs" in testSampleTransSpecs
-      "return full set when sample size larger than dataset" in testLargeSampleSize
+      "sample from a dataset given non-identity transspecs" in
+        testSampleTransSpecs
+      "return full set when sample size larger than dataset" in
+        testLargeSampleSize
       "resurn empty table when sample size is 0" in test0SampleSize
     }
   }
@@ -686,8 +716,7 @@ trait ColumnarTableModuleSpec[M[+_]]
 {"a": 4, "b": {"bc": 996, "bd": "fooo", "be": true, "bf": null, "bg": false}, "c": [4.999], "d": "dogggg"}
 """.trim
 
-      val expected = "" +
-        ".a,.b.bc,.b.bd,.b.be,.b.bf,.b.bg,.c[0],.d\r\n" +
+      val expected = "" + ".a,.b.bc,.b.bd,.b.be,.b.bf,.b.bg,.c[0],.d\r\n" +
         "1,999,foooooo,true,null,false,1.999,dog\r\n" +
         "2,998,fooooo,null,false,true,2.999,dogg\r\n" +
         "3,997,foooo,false,true,null,3.999,doggg\r\n" +
@@ -707,11 +736,8 @@ trait ColumnarTableModuleSpec[M[+_]]
       val csv = testRenderCsv(
         "{\"s\":\"a\\\"b\",\"t\":\",\",\"u\":\"aa\\nbb\",\"v\":\"a,b\\\"c\\r\\nd\"}")
 
-      val expected = "" +
-        ".s,.t,.u,.v\r\n" +
-        "\"a\"\"b\",\",\",\"aa\n" +
-        "bb\",\"a,b\"\"c\r\n" +
-        "d\"\r\n"
+      val expected = "" + ".s,.t,.u,.v\r\n" + "\"a\"\"b\",\",\",\"aa\n" +
+        "bb\",\"a,b\"\"c\r\n" + "d\"\r\n"
 
       csv must_== expected
     }
@@ -729,21 +755,14 @@ trait ColumnarTableModuleSpec[M[+_]]
 {"c": 100, "g": 934}
 """.trim
 
-      val expected = "" +
-        ".a,.b,.c,.d,.e,.f.aaa,.g\r\n" +
-        "1,,,,,,\r\n" +
-        ",99.1,,,,,\r\n" +
-        "true,,,,,,\r\n" +
-        ",,jgeiwgjewigjewige,,,,\r\n" +
-        ",foo,,999,,,\r\n" +
-        ",,,,null,,\r\n" +
-        ",,,,,9,\r\n" +
+      val expected = "" + ".a,.b,.c,.d,.e,.f.aaa,.g\r\n" + "1,,,,,,\r\n" +
+        ",99.1,,,,,\r\n" + "true,,,,,,\r\n" + ",,jgeiwgjewigjewige,,,,\r\n" +
+        ",foo,,999,,,\r\n" + ",,,,null,,\r\n" + ",,,,,9,\r\n" +
         ",,100,,,,934\r\n"
 
       testRenderCsv(input) must_== expected
 
-      val expected2 = "" +
-        ".a,.b\r\n1,\r\n,99.1\r\n\r\n" +
+      val expected2 = "" + ".a,.b\r\n1,\r\n,99.1\r\n\r\n" +
         ".a,.c\r\ntrue,\r\n,jgeiwgjewigjewige\r\n\r\n" +
         ".b,.d,.e\r\nfoo,999,\r\n,,null\r\n\r\n" +
         ".c,.f.aaa,.g\r\n,9,\r\n100,,934\r\n"

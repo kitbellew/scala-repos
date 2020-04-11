@@ -74,10 +74,10 @@ class FlowParallelismDocSpec extends AkkaSpec {
 
         // Using two pipelines, having two frying pans each, in total using
         // four frying pans
-        dispatchBatter.out(0) ~> fryingPan1
-          .async ~> fryingPan2.async ~> mergePancakes.in(0)
-        dispatchBatter.out(1) ~> fryingPan1
-          .async ~> fryingPan2.async ~> mergePancakes.in(1)
+        dispatchBatter.out(0) ~> fryingPan1.async ~> fryingPan2.async ~>
+          mergePancakes.in(0)
+        dispatchBatter.out(1) ~> fryingPan1.async ~> fryingPan2.async ~>
+          mergePancakes.in(1)
 
         FlowShape(dispatchBatter.in, mergePancakes.out)
       })

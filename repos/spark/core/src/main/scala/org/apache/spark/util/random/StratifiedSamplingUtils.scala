@@ -118,8 +118,8 @@ private[spark] object StratifiedSamplingUtils extends Logging {
         }
         val copiesWaitlisted = rng.nextPoisson(acceptResult.waitListBound)
         if (copiesWaitlisted > 0) {
-          acceptResult.waitList ++= ArrayBuffer
-            .fill(copiesWaitlisted)(rng.nextUniform())
+          acceptResult.waitList ++=
+            ArrayBuffer.fill(copiesWaitlisted)(rng.nextUniform())
         }
       } else {
         // We use the streaming version of the algorithm for sampling without replacement to avoid
@@ -199,9 +199,8 @@ private[spark] object StratifiedSamplingUtils extends Logging {
           logWarning("WaitList too short")
           thresholdByKey += (key -> acceptResult.waitListBound)
         } else {
-          thresholdByKey += (
-            key -> acceptResult.waitList.sorted.apply(numWaitListAccepted)
-          )
+          thresholdByKey +=
+            (key -> acceptResult.waitList.sorted.apply(numWaitListAccepted))
         }
       }
     }

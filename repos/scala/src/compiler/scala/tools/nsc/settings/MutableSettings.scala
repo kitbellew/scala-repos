@@ -348,8 +348,8 @@ class MutableSettings(val errorFn: String => Unit)
         allowJar: Boolean = false): AbstractFile =
       (if (dir != null && dir.isDirectory)
          dir
-       else if (allowJar && dir == null && Jar
-                  .isJarOrZip(name, examineFile = false))
+       else if (allowJar && dir == null &&
+                Jar.isJarOrZip(name, examineFile = false))
          new PlainFile(Path(name))
        else
          throw new FatalError(name + " does not exist or is not a directory"))
@@ -394,8 +394,8 @@ class MutableSettings(val errorFn: String => Unit)
               d
             case _ =>
               throw new FatalError(
-                "Could not find an output directory for "
-                  + src.path + " in " + outputs)
+                "Could not find an output directory for " + src.path + " in " +
+                  outputs)
           }
       }
     }
@@ -1061,12 +1061,11 @@ class MutableSettings(val errorFn: String => Unit)
   }
 
   private def mkPhasesHelp(descr: String, default: String) = {
-    descr + " <phases>" + (
-      if (default == "")
-        ""
-      else
-        " (default: " + default + ")"
-    )
+    descr + " <phases>" +
+      (if (default == "")
+         ""
+       else
+         " (default: " + default + ")")
   }
 
   /** A setting represented by a list of strings which should be prefixes of
@@ -1090,20 +1089,19 @@ class MutableSettings(val errorFn: String => Unit)
     protected def v: T = _v
     protected def v_=(t: T): Unit = {
       // throws NumberFormat on bad range (like -5-6)
-      def asRange(s: String): (Int, Int) =
-        (s indexOf '-') match {
-          case -1 =>
-            (s.toInt, s.toInt)
-          case 0 =>
-            (-1, s.tail.toInt)
-          case i if s.last == '-' =>
-            (s.init.toInt, Int.MaxValue)
-          case i =>
-            (s.take(i).toInt, s.drop(i + 1).toInt)
-        }
-      val numsAndStrs = t filter (_.nonEmpty) partition (
-        _ forall (ch => ch.isDigit || ch == '-')
-      )
+      def asRange(s: String): (Int, Int) = (s indexOf '-') match {
+        case -1 =>
+          (s.toInt, s.toInt)
+        case 0 =>
+          (-1, s.tail.toInt)
+        case i if s.last == '-' =>
+          (s.init.toInt, Int.MaxValue)
+        case i =>
+          (s.take(i).toInt, s.drop(i + 1).toInt)
+      }
+      val numsAndStrs = t filter
+        (_.nonEmpty) partition
+        (_ forall (ch => ch.isDigit || ch == '-'))
       _numbs = numsAndStrs._1 map asRange
       _names = numsAndStrs._2
       _v = t
@@ -1116,12 +1114,11 @@ class MutableSettings(val errorFn: String => Unit)
     private def numericValues = _numbs
     private def stringValues = _names
     private def phaseIdTest(i: Int): Boolean =
-      numericValues exists (
-        _ match {
+      numericValues exists
+        (_ match {
           case (min, max) =>
             min <= i && i <= max
-        }
-      )
+        })
 
     def tryToSet(args: List[String]) =
       if (default == "")
@@ -1168,10 +1165,12 @@ class MutableSettings(val errorFn: String => Unit)
   /** Internal use - syntax enhancements. */
   protected class EnableSettings[T <: BooleanSetting](val s: T) {
     def enablingIfNotSetByUser(toEnable: List[BooleanSetting]): s.type =
-      s withPostSetHook (_ =>
-        toEnable foreach (sett =>
-          if (!sett.isSetByUser)
-            sett.value = s.value))
+      s withPostSetHook
+        (_ =>
+          toEnable foreach
+            (sett =>
+              if (!sett.isSetByUser)
+                sett.value = s.value))
     def enabling(toEnable: List[BooleanSetting]): s.type =
       s withPostSetHook (_ => toEnable foreach (_.value = s.value))
     def disabling(toDisable: List[BooleanSetting]): s.type =

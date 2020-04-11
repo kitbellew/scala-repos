@@ -22,17 +22,15 @@ class ArgumentToBlockExpressionIntention extends PsiElementBaseIntentionAction {
   override def getText: String = getFamilyName
 
   def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
-    IntentionAvailabilityChecker.checkIntention(this, element) && (
-      element match {
-        case Parent(list: ScArgumentExprList)
-            if list.exprs.size == 1 && !list
-              .exprs(0)
-              .isInstanceOf[ScUnderscoreSection] =>
-          true
-        case _ =>
-          false
-      }
-    )
+    IntentionAvailabilityChecker.checkIntention(this, element) &&
+    (element match {
+      case Parent(list: ScArgumentExprList)
+          if list.exprs.size == 1 &&
+            !list.exprs(0).isInstanceOf[ScUnderscoreSection] =>
+        true
+      case _ =>
+        false
+    })
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {

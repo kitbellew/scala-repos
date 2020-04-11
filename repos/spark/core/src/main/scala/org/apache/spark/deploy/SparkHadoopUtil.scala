@@ -348,8 +348,8 @@ class SparkHadoopUtil extends Logging {
     val fileName = credentialsPath.getName
     fileName
       .substring(
-        fileName
-          .lastIndexOf(SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1)
+        fileName.lastIndexOf(SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) +
+          1)
       .toInt
   }
 

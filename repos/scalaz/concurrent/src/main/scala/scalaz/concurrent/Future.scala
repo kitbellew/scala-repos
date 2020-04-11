@@ -119,8 +119,8 @@ sealed abstract class Future[+A] {
       case BindAsync(onFinish, g) if !cancel.get =>
         onFinish(x =>
           if (!cancel.get)
-            Trampoline
-              .delay(g(x)) map (_ unsafePerformListenInterruptibly (cb, cancel))
+            Trampoline.delay(g(x)) map
+              (_ unsafePerformListenInterruptibly (cb, cancel))
           else
             Trampoline.done(()))
       case _ if cancel.get =>
@@ -378,28 +378,26 @@ object Future {
           // then revert back to running the original Future.
           val won = new AtomicBoolean(false) // threads race to set this
 
-          val fs =
-            (h +: t)
-              .view
-              .zipWithIndex
-              .map {
-                case (f, ind) =>
-                  val used = new AtomicBoolean(false)
-                  val ref = new AtomicReference[A]
-                  val listener =
-                    new AtomicReference[A => Trampoline[Unit]](null)
-                  val residual = Async { (cb: A => Trampoline[Unit]) =>
-                    if (used.compareAndSet(false, true)) { // get residual value from already running Future
-                      if (listener.compareAndSet(null, cb)) {} // we've successfully registered ourself with running task
-                      else
-                        cb(ref.get)
-                          .run // the running task has completed, use its result
-                    } else // residual value used up, revert to original Future
-                      f.unsafePerformListen(cb)
-                  }
-                  (ind, f, residual, listener, ref)
-              }
-              .toIndexedSeq
+          val fs = (h +: t)
+            .view
+            .zipWithIndex
+            .map {
+              case (f, ind) =>
+                val used = new AtomicBoolean(false)
+                val ref = new AtomicReference[A]
+                val listener = new AtomicReference[A => Trampoline[Unit]](null)
+                val residual = Async { (cb: A => Trampoline[Unit]) =>
+                  if (used.compareAndSet(false, true)) { // get residual value from already running Future
+                    if (listener.compareAndSet(null, cb)) {} // we've successfully registered ourself with running task
+                    else
+                      cb(ref.get)
+                        .run // the running task has completed, use its result
+                  } else // residual value used up, revert to original Future
+                    f.unsafePerformListen(cb)
+                }
+                (ind, f, residual, listener, ref)
+            }
+            .toIndexedSeq
 
           fs.foreach {
             case (ind, f, residual, listener, ref) =>

@@ -53,8 +53,8 @@ abstract class RemoteDeliverySpec
 
   def identify(role: RoleName, actorName: String): ActorRef =
     within(10 seconds) {
-      system
-        .actorSelection(node(role) / "user" / actorName) ! Identify(actorName)
+      system.actorSelection(node(role) / "user" / actorName) !
+        Identify(actorName)
       expectMsgType[ActorIdentity].ref.get
     }
 

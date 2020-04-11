@@ -456,8 +456,8 @@ private final class TrapExit(delegateManager: SecurityManager)
 
   /** This ensures that only actual calls to exit are trapped and not just calls to check if exit is allowed.*/
   private def isRealExit(element: StackTraceElement): Boolean =
-    element.getClassName == "java.lang.Runtime" && element
-      .getMethodName == "exit"
+    element.getClassName == "java.lang.Runtime" &&
+      element.getMethodName == "exit"
 
   // These are overridden to do nothing because there is a substantial filesystem performance penalty
   // when there is a SecurityManager defined.  The default implementations of these construct a

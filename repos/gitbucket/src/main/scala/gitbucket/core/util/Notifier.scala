@@ -44,9 +44,10 @@ trait Notifier
         _ != context.loginAccount.get.userName
       ) // the operation in person is excluded
       .foreach(
-        getAccountByUserName(_) filterNot (_.isGroupAccount) filterNot (
-          LDAPUtil.isDummyMailAddress(_)
-        ) foreach (x => notify(x.mailAddress)))
+        getAccountByUserName(_) filterNot
+          (_.isGroupAccount) filterNot
+          (LDAPUtil.isDummyMailAddress(_)) foreach
+          (x => notify(x.mailAddress)))
 
 }
 
@@ -123,15 +124,12 @@ class Mailer(private val smtp: Smtp) extends Notifier {
               smtp
                 .fromAddress
                 .map(
-                  _ -> smtp
-                    .fromName
-                    .getOrElse(context.loginAccount.get.userName))
+                  _ ->
+                    smtp.fromName.getOrElse(context.loginAccount.get.userName))
                 .orElse(
                   Some(
-                    "notifications@gitbucket.com" -> context
-                      .loginAccount
-                      .get
-                      .userName))
+                    "notifications@gitbucket.com" ->
+                      context.loginAccount.get.userName))
                 .foreach {
                   case (address, name) =>
                     email.setFrom(address, name)

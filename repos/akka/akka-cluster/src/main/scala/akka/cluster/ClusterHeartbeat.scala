@@ -152,8 +152,8 @@ private[cluster] final class ClusterHeartbeatSender
   }
 
   def addMember(m: Member): Unit =
-    if (m.uniqueAddress != selfUniqueAddress && !state
-          .contains(m.uniqueAddress))
+    if (m.uniqueAddress != selfUniqueAddress &&
+        !state.contains(m.uniqueAddress))
       state = state.addMember(m.uniqueAddress)
 
   def removeMember(m: Member): Unit =
@@ -207,8 +207,8 @@ private[cluster] final class ClusterHeartbeatSender
   }
 
   def triggerFirstHeartbeat(from: UniqueAddress): Unit =
-    if (state.activeReceivers(from) && !failureDetector
-          .isMonitoring(from.address)) {
+    if (state.activeReceivers(from) &&
+        !failureDetector.isMonitoring(from.address)) {
       if (verboseHeartbeat)
         log.debug(
           "Cluster Node [{}] - Trigger extra expected heartbeat from [{}]",
@@ -229,8 +229,8 @@ private[cluster] final case class ClusterHeartbeatSenderState(
     oldReceiversNowUnreachable: Set[UniqueAddress],
     failureDetector: FailureDetectorRegistry[Address]) {
 
-  val activeReceivers: Set[UniqueAddress] = ring
-    .myReceivers union oldReceiversNowUnreachable
+  val activeReceivers: Set[UniqueAddress] = ring.myReceivers union
+    oldReceiversNowUnreachable
 
   def selfAddress = ring.selfAddress
 
@@ -315,9 +315,8 @@ private[cluster] final case class HeartbeatNodeRing(
       .fromLessThan[UniqueAddress] { (a, b) ⇒
         val ha = a.##
         val hb = b.##
-        ha < hb || (
-          ha == hb && Member.addressOrdering.compare(a.address, b.address) < 0
-        )
+        ha < hb ||
+        (ha == hb && Member.addressOrdering.compare(a.address, b.address) < 0)
       }
 
     immutable.SortedSet() union nodes

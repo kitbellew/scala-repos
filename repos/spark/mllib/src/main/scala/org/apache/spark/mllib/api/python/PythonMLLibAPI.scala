@@ -136,8 +136,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       new SimpleUpdater
     } else {
       throw new IllegalArgumentException(
-        "Invalid value for 'regType' parameter."
-          + " Can only be initialized using the following string values: ['l1', 'l2', None].")
+        "Invalid value for 'regType' parameter." +
+          " Can only be initialized using the following string values: ['l1', 'l2', None].")
     }
   }
 
@@ -413,7 +413,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       .setConvergenceTol(convergenceTol)
       .setMaxIterations(maxIterations)
 
-    if (initialModelWeights != null && initialModelMu != null && initialModelSigma != null) {
+    if (initialModelWeights != null && initialModelMu != null &&
+        initialModelSigma != null) {
       val gaussians = initialModelMu
         .asScala
         .toSeq

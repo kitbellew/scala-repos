@@ -58,10 +58,8 @@ class RetriesTest extends FunSuite {
         true
     }
 
-    val params = Stack.Params.empty +
-      param.Stats(stats) +
-      Retries.Policy(RetryPolicy.tries(10, retryAll)) +
-      Retries.Budget(budget)
+    val params = Stack.Params.empty + param.Stats(stats) +
+      Retries.Policy(RetryPolicy.tries(10, retryAll)) + Retries.Budget(budget)
 
     val svcFactory: ServiceFactory[Exception, Int] = Retries
       .moduleRequeueable
@@ -103,10 +101,9 @@ class RetriesTest extends FunSuite {
     val stats = new InMemoryStatsReceiver()
     val budget = newBudget()
 
-    val params = Stack.Params.empty +
-      param.Stats(stats) +
+    val params = Stack.Params.empty + param.Stats(stats) +
       Retries.Policy(RetryPolicy.Never) + // explicitly turn it off
-      Retries.Budget(budget)
+        Retries.Budget(budget)
 
     val svcFactory: ServiceFactory[Exception, Int] = Retries
       .moduleWithRetryPolicy
@@ -155,10 +152,9 @@ class RetriesTest extends FunSuite {
       nowMillis = Stopwatch.systemMillis
     )
 
-    val params = Stack.Params.empty +
-      param.Stats(stats) +
+    val params = Stack.Params.empty + param.Stats(stats) +
       Retries.Policy(newRetryPolicy(100)) + // way higher than the budget
-      Retries.Budget(budget)
+        Retries.Budget(budget)
 
     val svcFactory: ServiceFactory[Exception, Int] = Retries
       .moduleWithRetryPolicy
@@ -183,10 +179,9 @@ class RetriesTest extends FunSuite {
   test("moduleWithRetryPolicy neither requeued nor netried") {
     val stats = new InMemoryStatsReceiver()
 
-    val params = Stack.Params.empty +
-      param.Stats(stats) +
+    val params = Stack.Params.empty + param.Stats(stats) +
       Retries.Policy(newRetryPolicy(10)) + // this count doesn't come into play
-      Retries.Budget(newBudget())
+        Retries.Budget(newBudget())
 
     val svcFactory: ServiceFactory[Exception, Int] = Retries
       .moduleWithRetryPolicy
@@ -210,15 +205,11 @@ class RetriesTest extends FunSuite {
       stats: InMemoryStatsReceiver,
       backReqs: AtomicInteger,
       mkBudget: () => RetryBudget): Service[Exception, Int] = {
-    val midParams = Stack.Params.empty +
-      param.Stats(stats.scope("mid")) +
-      Retries.Budget(mkBudget()) +
-      Retries.Policy(newRetryPolicy(retries = 4))
+    val midParams = Stack.Params.empty + param.Stats(stats.scope("mid")) +
+      Retries.Budget(mkBudget()) + Retries.Policy(newRetryPolicy(retries = 4))
 
-    val frontParams = Stack.Params.empty +
-      param.Stats(stats.scope("front")) +
-      Retries.Budget(mkBudget()) +
-      Retries.Policy(newRetryPolicy(retries = 4))
+    val frontParams = Stack.Params.empty + param.Stats(stats.scope("front")) +
+      Retries.Budget(mkBudget()) + Retries.Policy(newRetryPolicy(retries = 4))
 
     val backSvc = ServiceFactory.const(
       Service.mk[Exception, Int] { req =>
@@ -273,8 +264,7 @@ class RetriesTest extends FunSuite {
 
       // verify each layer only sees 20% more
       assert(
-        (numReqs * 0.2).toInt ==
-          nRetries(stats.stats(Seq("front", "retries"))))
+        (numReqs * 0.2).toInt == nRetries(stats.stats(Seq("front", "retries"))))
       assert(
         (numReqs * (0.2 * 1.2)).toInt ==
           nRetries(stats.stats(Seq("mid", "retries"))))
@@ -302,10 +292,10 @@ class RetriesTest extends FunSuite {
         }
 
       assert(
-        numReqs * retries ==
-          nRetries(stats.stats(Seq("front", "retries"))))
+        numReqs * retries == nRetries(stats.stats(Seq("front", "retries"))))
       assert(
-        (numReqs * retries) + (numReqs * retries * retries) ==
+        (numReqs * retries) +
+          (numReqs * retries * retries) ==
           nRetries(stats.stats(Seq("mid", "retries"))))
       // there is a 25x multiplier. each initial front attempt triggers
       // 1 attempt + 4 retries = 5 reqs from the mid to the backend,
@@ -322,8 +312,7 @@ class RetriesTest extends FunSuite {
     assert(budgetGauge.isEmpty)
 
     // creating the service factory creates the gauge
-    val params = Stack.Params.empty +
-      param.Stats(stats) +
+    val params = Stack.Params.empty + param.Stats(stats) +
       Retries.Budget(RetryBudget.Empty)
     val svcFactory: ServiceFactory[Exception, Int] = Retries
       .moduleRequeueable

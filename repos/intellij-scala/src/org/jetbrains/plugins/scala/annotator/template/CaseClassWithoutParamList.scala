@@ -58,8 +58,8 @@ class ConvertToObjectFix(c: ScClass) extends IntentionAction {
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     val classKeywordTextRange = c.getClassToken.getTextRange
     val classTextRange = c.getTextRange
-    val start = classKeywordTextRange.getStartOffset - classTextRange
-      .getStartOffset
+    val start = classKeywordTextRange.getStartOffset -
+      classTextRange.getStartOffset
     val charsToReplace = classKeywordTextRange.getLength
     val classText = c.getText
     val objectText = classText.patch(start, "object", charsToReplace)

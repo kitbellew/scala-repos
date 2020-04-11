@@ -314,8 +314,8 @@ object Scalding {
       .getOrElse(
         Left(
           List(
-            "only finite time ranges are supported by scalding: " + timeSpan
-              .toString)))
+            "only finite time ranges are supported by scalding: " +
+              timeSpan.toString)))
 
   /**
     * This makes sure that the output FlowToPipe[T] produces a TypedPipe[T] with only

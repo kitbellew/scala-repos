@@ -288,8 +288,8 @@ case class JsPath(path: List[PathNode] = List()) {
               Right(
                 JsError(
                   Seq(
-                    this -> Seq(
-                      ValidationError("error.path.result.multiple")))))
+                    this ->
+                      Seq(ValidationError("error.path.result.multiple")))))
           }
         case head :: tail =>
           head(json) match {
@@ -303,8 +303,8 @@ case class JsPath(path: List[PathNode] = List()) {
               Left(
                 JsError(
                   Seq(
-                    this -> Seq(
-                      ValidationError("error.path.result.multiple")))))
+                    this ->
+                      Seq(ValidationError("error.path.result.multiple")))))
           }
       }
 
@@ -337,8 +337,8 @@ case class JsPath(path: List[PathNode] = List()) {
       node match {
         case KeyPathNode(key) =>
           JsSuccess(
-            JsObject(json.fields.filterNot(_._1 == key)) ++ Json
-              .obj(key -> value))
+            JsObject(json.fields.filterNot(_._1 == key)) ++
+              Json.obj(key -> value))
         case _ =>
           JsError(JsPath(), ValidationError("error.expected.keypathnode"))
       }

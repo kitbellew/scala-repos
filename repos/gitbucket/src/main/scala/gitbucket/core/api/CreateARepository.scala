@@ -10,9 +10,7 @@ case class CreateARepository(
     `private`: Boolean = false,
     auto_init: Boolean = false) {
   def isValid: Boolean = {
-    name.length <= 40 &&
-    name.matches("[a-zA-Z0-9\\-\\+_.]+") &&
-    !name.startsWith("_") &&
-    !name.startsWith("-")
+    name.length <= 40 && name.matches("[a-zA-Z0-9\\-\\+_.]+") &&
+    !name.startsWith("_") && !name.startsWith("-")
   }
 }

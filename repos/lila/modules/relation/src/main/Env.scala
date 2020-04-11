@@ -60,13 +60,14 @@ final class Env(
 
 object Env {
 
-  lazy val current = "relation" boot new Env(
-    config = lila.common.PlayApp loadConfig "relation",
-    db = lila.db.Env.current,
-    hub = lila.hub.Env.current,
-    getOnlineUserIds = () => lila.user.Env.current.onlineUserIdMemo.keySet,
-    lightUser = lila.user.Env.current.lightUser,
-    followable = lila.pref.Env.current.api.followable _,
-    system = lila.common.PlayApp.system,
-    scheduler = lila.common.PlayApp.scheduler)
+  lazy val current = "relation" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "relation",
+      db = lila.db.Env.current,
+      hub = lila.hub.Env.current,
+      getOnlineUserIds = () => lila.user.Env.current.onlineUserIdMemo.keySet,
+      lightUser = lila.user.Env.current.lightUser,
+      followable = lila.pref.Env.current.api.followable _,
+      system = lila.common.PlayApp.system,
+      scheduler = lila.common.PlayApp.scheduler)
 }

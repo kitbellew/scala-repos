@@ -26,8 +26,9 @@ class MultipleFilterFileUploadSupportTest extends ScalatraFunSuite {
       "/multipart",
       params = Map(),
       files = Map(
-        "file" -> new File(
-          "fileupload/src/test/resources/org/scalatra/fileupload/one.txt"))) {
+        "file" ->
+          new File(
+            "fileupload/src/test/resources/org/scalatra/fileupload/one.txt"))) {
       header("file") should equal("one")
     }
   }

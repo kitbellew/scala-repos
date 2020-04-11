@@ -131,7 +131,8 @@ private class PoolInterfaceActor(
         hcps.host,
         hcps.port)
       shutdownCompletedPromise.success(Done)
-      self ! PoisonPill // give potentially queued requests another chance to be forwarded back to the gateway
+      self !
+        PoisonPill // give potentially queued requests another chance to be forwarded back to the gateway
 
     case OnError(e) ⇒ // the pool shut down
       log.debug(
@@ -140,7 +141,8 @@ private class PoolInterfaceActor(
         hcps.port,
         e)
       shutdownCompletedPromise.failure(e)
-      self ! PoisonPill // give potentially queued requests another chance to be forwarded back to the gateway
+      self !
+        PoisonPill // give potentially queued requests another chance to be forwarded back to the gateway
 
     /////////////// FROM CLIENT //////////////
 

@@ -419,10 +419,11 @@ class SyntheticClasses(project: Project)
         .instance(project)
         .getCachedClass(GlobalSearchScope.allScope(project), "java.lang.String")
       stringClass.map { stringClass =>
-        scriptSyntheticValues += new ScSyntheticValue(
-          manager,
-          "args",
-          JavaArrayType(ScDesignatorType(stringClass)))
+        scriptSyntheticValues +=
+          new ScSyntheticValue(
+            manager,
+            "args",
+            JavaArrayType(ScDesignatorType(stringClass)))
       }
     } catch {
       case _: ProcessCanceledException =>

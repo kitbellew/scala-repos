@@ -166,82 +166,86 @@ trait PrecogLibModule[M[+_]]
               val chunkValues = values.redefineWith(members)
               val (stream, _) = chunkValues.renderJson[M](",")
 
-              concatenate(stream) map ("[" + _ + "]") flatMap { data =>
-                val fields = opts.mapValues(_.renderCompact) + ("data" -> data)
-                val requestBody = fields map {
-                  case (field, value) =>
-                    JString(field).renderCompact + ":" + value
-                } mkString ("{", ",", "}")
+              concatenate(stream) map
+                ("[" + _ + "]") flatMap { data =>
+                  val fields = opts.mapValues(_.renderCompact) +
+                    ("data" -> data)
+                  val requestBody = fields map {
+                    case (field, value) =>
+                      JString(field).renderCompact + ":" + value
+                  } mkString
+                    ("{", ",", "}")
 
-                def populate(data: List[JValue]): Validation[Error, Slice] = {
-                  if (data.size != members.cardinality) {
-                    Failure(
-                      Error.invalid(
-                        "Number of items returned does not match number sent."))
-                  } else {
-                    def sparseStream(
-                        row: Int,
-                        xs: List[RValue]): Stream[RValue] =
-                      if (row < slice.size) {
-                        if (members(row))
-                          Stream.cons(xs.head, sparseStream(row + 1, xs.tail))
-                        else
-                          Stream.cons(CUndefined, sparseStream(row + 1, xs))
-                      } else
-                        Stream.empty
+                  def populate(data: List[JValue]): Validation[Error, Slice] = {
+                    if (data.size != members.cardinality) {
+                      Failure(
+                        Error.invalid(
+                          "Number of items returned does not match number sent."))
+                    } else {
+                      def sparseStream(
+                          row: Int,
+                          xs: List[RValue]): Stream[RValue] =
+                        if (row < slice.size) {
+                          if (members(row))
+                            Stream.cons(xs.head, sparseStream(row + 1, xs.tail))
+                          else
+                            Stream.cons(CUndefined, sparseStream(row + 1, xs))
+                        } else
+                          Stream.empty
 
-                    val sparseData = sparseStream(
-                      0,
-                      data map (RValue.fromJValue(_)))
-                    Success(Slice.fromRValues(sparseData))
+                      val sparseData = sparseStream(
+                        0,
+                        data map (RValue.fromJValue(_)))
+                      Success(Slice.fromRValues(sparseData))
+                    }
+                  }
+
+                  val client = HttpClient(url)
+                  val request = Request(
+                    HttpMethod.POST,
+                    body = Some(Request.Body("application/json", requestBody)))
+
+                  client.execute(request).run map { responseE =>
+                    val validation =
+                      for {
+                        response <- httpError <-: responseE.validation
+                        body <- httpError <-: response.ok.validation
+                        json <-
+                          jsonError <-:
+                            (Error.thrown(_)) <-: JParser.parseFromString(body)
+                        data <-
+                          jsonError <-: (json \ "data").validated[List[JValue]]
+                        result <- jsonError <-: populate(data)
+                      } yield result
+                    validation leftMap (NonEmptyList(_))
                   }
                 }
-
-                val client = HttpClient(url)
-                val request = Request(
-                  HttpMethod.POST,
-                  body = Some(Request.Body("application/json", requestBody)))
-
-                client.execute(request).run map { responseE =>
-                  val validation =
-                    for {
-                      response <- httpError <-: responseE.validation
-                      body <- httpError <-: response.ok.validation
-                      json <-
-                        jsonError <-: (Error.thrown(_)) <-: JParser
-                          .parseFromString(body)
-                      data <-
-                        jsonError <-: (json \ "data").validated[List[JValue]]
-                      result <- jsonError <-: populate(data)
-                    } yield result
-                  validation leftMap (NonEmptyList(_))
-                }
-              }
           }
 
-          resultsM map (_.sequence: Result[List[Slice]]) flatMap {
-            case Success(slices) =>
-              val resultSlice =
-                slices.foldLeft(Slice(Map.empty, slice.size))(_ zip _).columns
-              M point resultSlice
+          resultsM map
+            (_.sequence: Result[List[Slice]]) flatMap {
+              case Success(slices) =>
+                val resultSlice =
+                  slices.foldLeft(Slice(Map.empty, slice.size))(_ zip _).columns
+                M point resultSlice
 
-            case Failure(errors) =>
-              val messages = errors.toList map (
-                _.fold(
-                  { httpError =>
-                    "Error making HTTP request: " + httpError.userMessage
-                  },
-                  { jsonError =>
-                    "Error parsing JSON: " + jsonError.message
-                  })
-              )
-              val units: M[List[Unit]] = messages traverse (ctx.logger.error(_))
-              units flatMap { _ =>
-                ctx.logger.die() map { _ =>
-                  Map.empty
+              case Failure(errors) =>
+                val messages = errors.toList map
+                  (_.fold(
+                    { httpError =>
+                      "Error making HTTP request: " + httpError.userMessage
+                    },
+                    { jsonError =>
+                      "Error parsing JSON: " + jsonError.message
+                    }))
+                val units: M[List[Unit]] = messages traverse
+                  (ctx.logger.error(_))
+                units flatMap { _ =>
+                  ctx.logger.die() map { _ =>
+                    Map.empty
+                  }
                 }
-              }
-          }
+            }
         }
       }
     }

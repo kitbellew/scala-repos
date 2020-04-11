@@ -475,8 +475,9 @@ trait CommentFactoryBase {
                 None
             }
 
-          def allTags(key: SimpleTagKey): List[Body] =
-            (bodyTags remove key).getOrElse(Nil).filterNot(_.blocks.isEmpty)
+          def allTags(key: SimpleTagKey): List[Body] = (bodyTags remove key)
+            .getOrElse(Nil)
+            .filterNot(_.blocks.isEmpty)
 
           def allSymsOneTag(
               key: TagKey,
@@ -503,12 +504,11 @@ trait CommentFactoryBase {
                       s"Only one '@${key.name}' tag for symbol ${key.symbol} is allowed")
                   (key.symbol, bs.head)
                 }
-            Map.empty[String, Body] ++ (
-              if (filterEmpty)
-                pairs.filterNot(_._2.blocks.isEmpty)
-              else
-                pairs
-            )
+            Map.empty[String, Body] ++
+              (if (filterEmpty)
+                 pairs.filterNot(_._2.blocks.isEmpty)
+               else
+                 pairs)
           }
 
           def linkedExceptions: Map[String, Body] = {
@@ -638,11 +638,10 @@ trait CommentFactoryBase {
 
     /** Checks if the current line is formed with more than one space and one the listStyles */
     def checkList =
-      (countWhitespace > 0) && (
-        listStyles.keys exists {
+      (countWhitespace > 0) &&
+        (listStyles.keys exists {
           checkSkipInitWhitespace(_)
-        }
-      )
+        })
 
     /** {{{
       * nListBlock ::= nLine { mListBlock }
@@ -804,9 +803,9 @@ trait CommentFactoryBase {
           link()
         else {
           val str = readUntil {
-            char == safeTagMarker || check("''") || char == '`' || check(
-              "__") || char == '^' || check(",,") || check(
-              "[[") || isInlineEnd || checkParaEnded || char == endOfLine
+            char == safeTagMarker || check("''") || char == '`' ||
+            check("__") || char == '^' || check(",,") || check("[[") ||
+            isInlineEnd || checkParaEnded || char == endOfLine
           }
           Text(str)
         }
@@ -988,21 +987,17 @@ trait CommentFactoryBase {
 
     def checkParaEnded(): Boolean = {
       (char == endOfText) ||
-      (
-        (char == endOfLine) && {
-          val poff = offset
-          nextChar() // read EOL
-          val ok = {
-            checkSkipInitWhitespace(endOfLine) ||
-            checkSkipInitWhitespace('=') ||
-            checkSkipInitWhitespace("{{{") ||
-            checkList ||
-            checkSkipInitWhitespace('\u003D')
-          }
-          offset = poff
-          ok
+      ((char == endOfLine) && {
+        val poff = offset
+        nextChar() // read EOL
+        val ok = {
+          checkSkipInitWhitespace(endOfLine) || checkSkipInitWhitespace('=') ||
+          checkSkipInitWhitespace("{{{") || checkList ||
+          checkSkipInitWhitespace('\u003D')
         }
-      )
+        offset = poff
+        ok
+      })
     }
 
     def checkSentenceEnded(): Boolean = {
@@ -1089,8 +1084,8 @@ trait CommentFactoryBase {
       * @return true only if the correct characters have been jumped */
     final def jump(chars: String): Boolean = {
       var index = 0
-      while (index < chars
-               .length && char == chars.charAt(index) && char != endOfText) {
+      while (index < chars.length && char == chars.charAt(index) &&
+             char != endOfText) {
         nextChar()
         index += 1
       }

@@ -97,12 +97,10 @@ class HoconFormatter(settings: CodeStyleSettings) {
     val isLineBreakBetween = parent
       .getText
       .subSequence(
-        leftChild.getTextRange.getEndOffset - parent
-          .getTextRange
-          .getStartOffset,
-        rightChild.getTextRange.getStartOffset - parent
-          .getTextRange
-          .getStartOffset)
+        leftChild.getTextRange.getEndOffset -
+          parent.getTextRange.getStartOffset,
+        rightChild.getTextRange.getStartOffset -
+          parent.getTextRange.getStartOffset)
       .charIterator
       .contains('\n')
 

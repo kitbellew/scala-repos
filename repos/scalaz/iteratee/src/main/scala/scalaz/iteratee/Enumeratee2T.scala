@@ -57,9 +57,8 @@ trait Enumeratee2TFunctions {
                       _ <- lift[J, K, F, Option[K]](head[K, F])
                       a <-
                         iterateeT[J, IterateeM, StepM[A]](
-                          contf(elInput(Right3(right))) >>== (
-                            step(_, Nil).value
-                          ))
+                          contf(elInput(Right3(right))) >>==
+                            (step(_, Nil).value))
                     } yield a
 
                   case (Some(left), right)
@@ -68,9 +67,8 @@ trait Enumeratee2TFunctions {
                       _ <- head[J, IterateeM]
                       a <-
                         iterateeT[J, IterateeM, StepM[A]](
-                          advance(left, rbuf, scont(contf)) >>== (
-                            step(_, rbuf).value
-                          ))
+                          advance(left, rbuf, scont(contf)) >>==
+                            (step(_, rbuf).value))
                     } yield a
 
                   case (Some(left), Some(right)) =>

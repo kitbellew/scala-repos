@@ -89,9 +89,8 @@ private[ui] abstract class ExecutionTable(
       currentTime: Long,
       executionUIData: SQLExecutionUIData): Seq[Node] = {
     val submissionTime = executionUIData.submissionTime
-    val duration = executionUIData
-      .completionTime
-      .getOrElse(currentTime) - submissionTime
+    val duration = executionUIData.completionTime.getOrElse(currentTime) -
+      submissionTime
 
     val runningJobs = executionUIData
       .runningJobs

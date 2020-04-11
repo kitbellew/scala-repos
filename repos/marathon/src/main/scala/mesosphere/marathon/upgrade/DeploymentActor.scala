@@ -61,10 +61,11 @@ private class DeploymentActor(
       val step = steps.next()
       currentStepNr += 1
       currentStep = Some(step)
-      parent ! DeploymentStepInfo(
-        plan,
-        currentStep.getOrElse(DeploymentStep(Nil)),
-        currentStepNr)
+      parent !
+        DeploymentStepInfo(
+          plan,
+          currentStep.getOrElse(DeploymentStep(Nil)),
+          currentStepNr)
 
       performStep(step) onComplete {
         case Success(_) =>

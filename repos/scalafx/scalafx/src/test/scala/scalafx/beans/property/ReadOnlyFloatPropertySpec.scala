@@ -230,20 +230,22 @@ class ReadOnlyFloatPropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty() should be(true)
   }
 
-  it should "support bindable infix greater than or equal to with a property" in {
-    booleanProperty <== readOnlyFloatProperty >= floatProperty1
-    floatProperty1() = 49
-    booleanProperty() should be(true)
-    floatProperty1() = 51
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix greater than or equal to with a property" in {
+      booleanProperty <== readOnlyFloatProperty >= floatProperty1
+      floatProperty1() = 49
+      booleanProperty() should be(true)
+      floatProperty1() = 51
+      booleanProperty() should be(false)
+    }
 
-  it should "support bindable infix greater than or equal to with a constant" in {
-    booleanProperty <== readOnlyFloatProperty >= 18349
-    booleanProperty() should be(false)
-    booleanProperty <== readOnlyFloatProperty >= 13
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix greater than or equal to with a constant" in {
+      booleanProperty <== readOnlyFloatProperty >= 18349
+      booleanProperty() should be(false)
+      booleanProperty <== readOnlyFloatProperty >= 13
+      booleanProperty() should be(true)
+    }
 
   it should "support invalidate/change triggers on binding expressions" in {
     var invalidateCount = 0

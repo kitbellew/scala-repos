@@ -80,17 +80,15 @@ class ScalaChangeSignatureUsageProcessor
           .search(method)
           .findAll
           .asScala
-          .toSeq ++
-          ScalaOverridingMemberSearcher.search(method).toSeq
-        val methods =
-          (method +: overriders ++: synthetics)
-            .map {
-              case isWrapper(m) =>
-                m
-              case other =>
-                other
-            }
-            .distinct
+          .toSeq ++ ScalaOverridingMemberSearcher.search(method).toSeq
+        val methods = (method +: overriders ++: synthetics)
+          .map {
+            case isWrapper(m) =>
+              m
+            case other =>
+              other
+          }
+          .distinct
 
         if (info.isParameterSetOrOrderChanged || info.isParameterNamesChanged) {
           methods.foreach {
@@ -194,9 +192,8 @@ class ScalaChangeSignatureUsageProcessor
         if defaultArg.getText.contains("$default$")
       } {
         val exprsToAdd = exprs.take(numberOfParamsToAdd(idx))
-        val text = defaultArg.getMethodExpression.getText + exprsToAdd
-          .map(_.getText)
-          .mkString("(", ", ", ")")
+        val text = defaultArg.getMethodExpression.getText +
+          exprsToAdd.map(_.getText).mkString("(", ", ", ")")
         val newDefaultArg = JavaPsiFacade
           .getElementFactory(call.getProject)
           .createExpressionFromText(text, defaultArg.getContext)
@@ -298,9 +295,8 @@ class ScalaChangeSignatureUsageProcessor
       refElem match {
         case isAnonFunUsage(anonFunUsageInfo) =>
           results += anonFunUsageInfo
-        case (scRef: ScReferenceElement) childOf (
-              _: ScImportSelector | _: ScImportExpr
-            ) =>
+        case (scRef: ScReferenceElement) childOf
+            (_: ScImportSelector | _: ScImportExpr) =>
           results += ImportUsageInfo(scRef)
         case (refExpr: ScReferenceExpression) childOf (mc: ScMethodCall) =>
           results += MethodCallUsageInfo(refExpr, fullCall(mc))
@@ -349,8 +345,8 @@ class ScalaChangeSignatureUsageProcessor
       if parameters.length > oldIdx
       param = parameters(oldIdx)
       newName = paramInfo.getName
-      if oldName == param
-        .name /*skip overriders with other param name*/ && newName != param.name
+      if oldName == param.name /*skip overriders with other param name*/ &&
+        newName != param.name
     } {
       addParameterUsages(param, oldIdx, newName, results)
     }
@@ -368,10 +364,11 @@ class ScalaChangeSignatureUsageProcessor
           case refElem: ScReferenceElement =>
             results += ParameterUsageInfo(oldIndex, newName, refElem)
           case refElem: PsiReferenceExpression =>
-            results += new ChangeSignatureParameterUsageInfo(
-              refElem,
-              param.name,
-              newName)
+            results +=
+              new ChangeSignatureParameterUsageInfo(
+                refElem,
+                param.name,
+                newName)
           case _ =>
         }
         true

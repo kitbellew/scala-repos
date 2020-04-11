@@ -255,9 +255,10 @@ private[io] abstract class TcpConnection(
     }
     options.foreach(_.afterConnect(channel.socket))
 
-    commander ! Connected(
-      channel.socket.getRemoteSocketAddress.asInstanceOf[InetSocketAddress],
-      channel.socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress])
+    commander !
+      Connected(
+        channel.socket.getRemoteSocketAddress.asInstanceOf[InetSocketAddress],
+        channel.socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress])
 
     context.setReceiveTimeout(RegisterTimeout)
 
@@ -615,9 +616,8 @@ private[io] abstract class TcpConnection(
             if (!ack.isInstanceOf[NoAck])() ⇒ commander ! ack
             else
               doNothing
-          self ! UpdatePendingWriteAndThen(
-            PendingWrite(commander, tail),
-            andThen)
+          self !
+            UpdatePendingWriteAndThen(PendingWrite(commander, tail), andThen)
         }
       } catch {
         case e: IOException ⇒

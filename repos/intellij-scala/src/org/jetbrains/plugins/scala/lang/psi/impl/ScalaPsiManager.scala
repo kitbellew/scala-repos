@@ -174,8 +174,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         scope: GlobalSearchScope,
         fqn: String): Option[PsiClass] = {
       val clazz = JavaPsiFacade.getInstance(project).findClass(fqn, scope)
-      if (clazz == null || clazz.isInstanceOf[ScTemplateDefinition] || clazz
-            .isInstanceOf[PsiClassWrapper])
+      if (clazz == null || clazz.isInstanceOf[ScTemplateDefinition] ||
+          clazz.isInstanceOf[PsiClassWrapper])
         None
       else
         Option(clazz)
@@ -211,8 +211,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         .getInstance(project)
         .getClassesByName(name, scope)
         .filterNot(p =>
-          p.isInstanceOf[ScTemplateDefinition] || p
-            .isInstanceOf[PsiClassWrapper])
+          p.isInstanceOf[ScTemplateDefinition] ||
+            p.isInstanceOf[PsiClassWrapper])
         .toBuffer
     val classesIterator = scalaClasses.iterator
     while (classesIterator.hasNext) {
@@ -290,8 +290,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         .getInstance(project)
         .findClasses(fqn, scope)
         .filterNot { p =>
-          p.isInstanceOf[ScTemplateDefinition] || p
-            .isInstanceOf[PsiClassWrapper]
+          p.isInstanceOf[ScTemplateDefinition] ||
+          p.isInstanceOf[PsiClassWrapper]
         }
 
       ArrayUtil
@@ -563,10 +563,11 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   private[this] val myRawModificationCount = new AtomicLong(0)
 
   def getModificationCount: Long = {
-    myRawModificationCount.get() + PsiManager
-      .getInstance(project)
-      .getModificationTracker
-      .getOutOfCodeBlockModificationCount
+    myRawModificationCount.get() +
+      PsiManager
+        .getInstance(project)
+        .getModificationTracker
+        .getOutOfCodeBlockModificationCount
   }
 
   def incModificationCount(): Long = myRawModificationCount.incrementAndGet()

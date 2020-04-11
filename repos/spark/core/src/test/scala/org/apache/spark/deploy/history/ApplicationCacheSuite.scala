@@ -132,14 +132,13 @@ class ApplicationCacheSuite
         ui: SparkUI,
         completed: Boolean,
         timestamp: Long): Unit = {
-      instances += (
-        CacheKey(appId, attemptId) ->
+      instances +=
+        (CacheKey(appId, attemptId) ->
           new CacheEntry(
             ui,
             completed,
             updateProbe(appId, attemptId, timestamp),
-            timestamp)
-      )
+            timestamp))
     }
 
     /**

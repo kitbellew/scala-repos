@@ -83,8 +83,8 @@ object FilterConfig {
           speed = r intsD "s" flatMap {
             Speed(_)
           },
-          ratingRange = r strO "e" flatMap RatingRange
-            .apply getOrElse RatingRange.default
+          ratingRange = r strO "e" flatMap RatingRange.apply getOrElse
+            RatingRange.default
         )
 
       def writes(w: BSON.Writer, o: FilterConfig) =

@@ -36,12 +36,11 @@ trait LoopCommands {
       extends (String => Result) {
     def usage: String = ""
     def usageMsg: String =
-      ":" + name + (
-        if (usage == "")
-          ""
-        else
-          " " + usage
-      )
+      ":" + name +
+        (if (usage == "")
+           ""
+         else
+           " " + usage)
     def apply(line: String): Result
 
     // called if no args are given

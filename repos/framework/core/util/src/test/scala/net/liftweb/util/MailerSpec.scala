@@ -136,15 +136,17 @@ object MailerSpec extends Specification {
         )
       }
 
-      msg.getContent must beLike {
-        case mp: MimeMultipart =>
-          mp.getContentType.substring(0, 21) must_== "multipart/alternative"
+      msg.getContent must
+        beLike {
+          case mp: MimeMultipart =>
+            mp.getContentType.substring(0, 21) must_== "multipart/alternative"
 
-          mp.getBodyPart(0).getContent must beLike {
-            case mp2: MimeMultipart =>
-              mp2.getContentType.substring(0, 15) must_== "multipart/mixed"
-          }
-      }
+            mp.getBodyPart(0).getContent must
+              beLike {
+                case mp2: MimeMultipart =>
+                  mp2.getContentType.substring(0, 15) must_== "multipart/mixed"
+              }
+        }
     }
   }
 }

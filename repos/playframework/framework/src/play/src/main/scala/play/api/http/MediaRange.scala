@@ -21,25 +21,28 @@ case class MediaType(
     mediaSubType: String,
     parameters: Seq[(String, Option[String])]) {
   override def toString = {
-    mediaType + "/" + mediaSubType + parameters
-      .map { param =>
-        "; " + param._1 + param
-          ._2
-          .map { value =>
-            if (MediaRangeParser
-                  .token(new CharSequenceReader(value))
-                  .next
-                  .atEnd) {
-              "=" + value
-            } else {
-              "=\"" + value
-                .replaceAll("\\\\", "\\\\\\\\")
-                .replaceAll("\"", "\\\\\"") + "\""
-            }
-          }
-          .getOrElse("")
-      }
-      .mkString("")
+    mediaType + "/" + mediaSubType +
+      parameters
+        .map { param =>
+          "; " + param._1 +
+            param
+              ._2
+              .map { value =>
+                if (MediaRangeParser
+                      .token(new CharSequenceReader(value))
+                      .next
+                      .atEnd) {
+                  "=" + value
+                } else {
+                  "=\"" +
+                    value
+                      .replaceAll("\\\\", "\\\\\\\\")
+                      .replaceAll("\"", "\\\\\"") + "\""
+                }
+              }
+              .getOrElse("")
+        }
+        .mkString("")
   }
 }
 
@@ -63,21 +66,18 @@ class MediaRange(
   /**
     * @return true if `mimeType` matches this media type, otherwise false
     */
-  def accepts(mimeType: String): Boolean =
-    (mediaType + "/" + mediaSubType).equalsIgnoreCase(mimeType) ||
-      (
-        mediaSubType == "*" && mediaType
-          .equalsIgnoreCase(mimeType.takeWhile(_ != '/'))
-      ) ||
-      (mediaType == "*" && mediaSubType == "*")
+  def accepts(mimeType: String): Boolean = (mediaType + "/" + mediaSubType)
+    .equalsIgnoreCase(mimeType) ||
+    (mediaSubType == "*" &&
+      mediaType.equalsIgnoreCase(mimeType.takeWhile(_ != '/'))) ||
+    (mediaType == "*" && mediaSubType == "*")
 
   override def toString = {
     new MediaType(
       mediaType,
       mediaSubType,
-      parameters ++ qValue
-        .map(q => ("q", Some(q.toString())))
-        .toSeq ++ acceptExtensions).toString
+      parameters ++ qValue.map(q => ("q", Some(q.toString()))).toSeq ++
+        acceptExtensions).toString
   }
 }
 
@@ -125,8 +125,8 @@ object MediaRange {
         case MediaRangeParser.Success(mrs: List[MediaRange], next) =>
           if (next.atEnd) {
             logger.debug(
-              "Unable to parse part of media range header '" + next
-                .source + "'")
+              "Unable to parse part of media range header '" + next.source +
+                "'")
           }
           mrs.sorted
         case MediaRangeParser.NoSuccess(err, _) =>
@@ -260,10 +260,11 @@ object MediaRange {
 
     val parameters = rep(';' ~> rep(' ') ~> tolerantParameter <~ rep(' '))
     val mediaType: Parser[MediaType] =
-      (token <~ '/') ~ (token <~ rep(' ')) ~ parameters ^^ {
-        case mainType ~ subType ~ ps =>
-          MediaType(mainType, subType, ps.flatten)
-      }
+      (token <~ '/') ~
+        (token <~ rep(' ')) ~ parameters ^^ {
+          case mainType ~ subType ~ ps =>
+            MediaType(mainType, subType, ps.flatten)
+        }
 
     /*
      * RFC 2616 section 14.1
@@ -273,39 +274,40 @@ object MediaRange {
 
     // Some clients think that '*' is a valid media range.  Spec says it isn't, but it's used widely enough that we
     // need to support it.
-    val mediaRange = (
-      mediaType | ('*' ~> parameters.map(ps => MediaType("*", "*", ps.flatten)))
-    ) ^^ { mediaType =>
-      val (params, rest) = mediaType.parameters.span(_._1 != "q")
-      val (qValueStr, acceptParams) =
-        rest match {
-          case q :: ps =>
-            (q._2, ps)
-          case _ =>
-            (None, Nil)
-        }
-      val qValue = qValueStr.flatMap { q =>
-        try {
-          val qbd = BigDecimal(q)
-          if (qbd > 1) {
-            logger.debug("Invalid q value: " + q)
-            None
-          } else {
-            Some(BigDecimal(q))
+    val mediaRange =
+      (mediaType |
+        ('*' ~> parameters.map(ps => MediaType("*", "*", ps.flatten)))) ^^ {
+        mediaType =>
+          val (params, rest) = mediaType.parameters.span(_._1 != "q")
+          val (qValueStr, acceptParams) =
+            rest match {
+              case q :: ps =>
+                (q._2, ps)
+              case _ =>
+                (None, Nil)
+            }
+          val qValue = qValueStr.flatMap { q =>
+            try {
+              val qbd = BigDecimal(q)
+              if (qbd > 1) {
+                logger.debug("Invalid q value: " + q)
+                None
+              } else {
+                Some(BigDecimal(q))
+              }
+            } catch {
+              case _: NumberFormatException =>
+                logger.debug("Invalid q value: " + q)
+                None
+            }
           }
-        } catch {
-          case _: NumberFormatException =>
-            logger.debug("Invalid q value: " + q)
-            None
-        }
+          new MediaRange(
+            mediaType.mediaType,
+            mediaType.mediaSubType,
+            params,
+            qValue,
+            acceptParams)
       }
-      new MediaRange(
-        mediaType.mediaType,
-        mediaType.mediaSubType,
-        params,
-        qValue,
-        acceptParams)
-    }
 
     // Either it's a valid media range followed immediately by the end or a comma, or it's a bad media type
     val tolerantMediaRange = tolerant(

@@ -69,8 +69,8 @@ trait CookedBlockFormatSpecs
           999L,
           1,
           Array(
-            SegmentId(1234L, CPath("a.b.c"), CLong) -> new File(
-              "/hello/there/abc.cooked"))))
+            SegmentId(1234L, CPath("a.b.c"), CLong) ->
+              new File("/hello/there/abc.cooked"))))
     }
 
     "roundtrip arbitrary blocks" in {
@@ -85,13 +85,15 @@ trait CookedBlockFormatSpecs
   def surviveRoundTrip(format: CookedBlockFormat)(
       segments0: CookedBlockMetadata) = {
     val out = new InMemoryWritableByteChannel
-    format.writeCookedBlock(out, segments0) must beLike {
-      case Success(_) =>
-        val in = new InMemoryReadableByteChannel(out.toArray)
-        format.readCookedBlock(in) must beLike {
-          case Success(segments1) =>
-            segments1 must_== segments0
-        }
-    }
+    format.writeCookedBlock(out, segments0) must
+      beLike {
+        case Success(_) =>
+          val in = new InMemoryReadableByteChannel(out.toArray)
+          format.readCookedBlock(in) must
+            beLike {
+              case Success(segments1) =>
+                segments1 must_== segments0
+            }
+      }
   }
 }

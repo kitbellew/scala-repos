@@ -87,10 +87,11 @@ object Boilerplate {
   class TemplateVals(val arity: Int) {
     val synTypes = (0 until arity) map (n => (n + 'A').toChar)
     val synVals = (0 until arity) map (n => (n + 'a').toChar)
-    val synTypedVals = (synVals zip synTypes) map {
-      case (v, t) =>
-        v + ":" + t
-    }
+    val synTypedVals =
+      (synVals zip synTypes) map {
+        case (v, t) =>
+          v + ":" + t
+      }
 
     val `A..N` = synTypes.mkString(", ")
     val `A..N,Res` = (synTypes :+ "Res") mkString ", "
@@ -129,9 +130,10 @@ object Boilerplate {
       val instances = rawContents flatMap {
         _ filter (_ startsWith "-") map (_.tail)
       }
-      val postBody = rawContents.head dropWhile (_ startsWith "|") dropWhile (
-        _ startsWith "-"
-      ) map (_.tail)
+      val postBody = rawContents.head dropWhile
+        (_ startsWith "|") dropWhile
+        (_ startsWith "-") map
+        (_.tail)
       (headerLines ++ preBody ++ instances ++ postBody) mkString "\n"
     }
   }

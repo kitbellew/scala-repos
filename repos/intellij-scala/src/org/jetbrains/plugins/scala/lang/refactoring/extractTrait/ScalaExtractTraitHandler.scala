@@ -287,10 +287,10 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     }
 
     private def addToClassesForSelfType(cl: PsiClass) {
-      if (!classesForSelfType.contains(cl) && !classesForSelfType
-            .exists(_.isInheritor(cl, true))) {
-        classesForSelfType --= classesForSelfType
-          .filter(cl.isInheritor(_, true))
+      if (!classesForSelfType.contains(cl) &&
+          !classesForSelfType.exists(_.isInheritor(cl, true))) {
+        classesForSelfType --=
+          classesForSelfType.filter(cl.isInheritor(_, true))
         classesForSelfType += cl
       }
     }
@@ -316,18 +316,17 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
                 currentMemberName)
               conflicts.putValue(m, message)
             case m: ScMember
-                if clazz.isInstanceOf[ScNewTemplateDefinition] && m
-                  .containingClass == clazz && !selected.contains(m) =>
+                if clazz.isInstanceOf[ScNewTemplateDefinition] &&
+                  m.containingClass == clazz && !selected.contains(m) =>
               val message = ScalaBundle.message(
                 "member.of.anonymous.class.cannot.be.used.in.extracted.member",
                 named.name,
                 currentMemberName)
               conflicts.putValue(m, message)
             case m: PsiMember
-                if m.containingClass != null && ref
-                  .qualifier
-                  .exists(_.isInstanceOf[ScSuperReference]) && clazz
-                  .isInheritor(m.containingClass, deep = true) =>
+                if m.containingClass != null &&
+                  ref.qualifier.exists(_.isInstanceOf[ScSuperReference]) &&
+                  clazz.isInheritor(m.containingClass, deep = true) =>
               val message = ScalaBundle.message(
                 "super.reference.used.in.extracted.member",
                 currentMemberName)

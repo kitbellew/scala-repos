@@ -37,9 +37,8 @@ class FDistribution(
       numeratorDegreesOfFreedom,
       denominatorDegreesOfFreedom)
   def mode =
-    ((numeratorDegreesOfFreedom - 2) / numeratorDegreesOfFreedom) * (
-      denominatorDegreesOfFreedom / (denominatorDegreesOfFreedom + 2)
-    )
+    ((numeratorDegreesOfFreedom - 2) / numeratorDegreesOfFreedom) *
+      (denominatorDegreesOfFreedom / (denominatorDegreesOfFreedom + 2))
 }
 
 object FDistribution

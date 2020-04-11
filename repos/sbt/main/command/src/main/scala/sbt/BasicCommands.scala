@@ -67,13 +67,11 @@ object BasicCommands {
   def helpParser(s: State) = {
     val h = (Help.empty /: s.definedCommands) { (a, b) =>
       a ++
-        (
-          try b.help(s)
-          catch {
-            case NonFatal(ex) =>
-              Help.empty
-          }
-        )
+        (try b.help(s)
+        catch {
+          case NonFatal(ex) =>
+            Help.empty
+        })
     }
     val helpCommands = h.detail.keySet
     val spacedArg = singleArgument(helpCommands).?
@@ -97,12 +95,13 @@ object BasicCommands {
     Command.make(CompletionsCommand, CompletionsBrief, CompletionsDetailed)(
       completionsParser)
   def completionsParser(state: State) = {
-    val notQuoted = (NotQuoted ~ any.*) map {
-      case (nq, s) =>
-        (nq +: s).mkString
-    }
-    val quotedOrUnquotedSingleArgument =
-      Space ~> (StringVerbatim | StringEscapable | notQuoted)
+    val notQuoted =
+      (NotQuoted ~ any.*) map {
+        case (nq, s) =>
+          (nq +: s).mkString
+      }
+    val quotedOrUnquotedSingleArgument = Space ~>
+      (StringVerbatim | StringEscapable | notQuoted)
 
     applyEffect(token(quotedOrUnquotedSingleArgument ?? "" examples ("", " ")))(
       runCompletions(state))
@@ -124,7 +123,8 @@ object BasicCommands {
     (
       token(';' ~> OptSpace) flatMap { _ =>
         matched((s.combinedParser & nonSemi) | nonSemi) <~ token(OptSpace)
-      } map (_.trim)
+      } map
+        (_.trim)
     ).+
   }
 
@@ -207,12 +207,11 @@ object BasicCommands {
         state
           .log
           .info(
-            "Applying State transformations " + args.mkString(", ") + (
-              if (cp.isEmpty)
-                ""
-              else
-                " from " + cp.mkString(File.pathSeparator)
-            ))
+            "Applying State transformations " + args.mkString(", ") +
+              (if (cp.isEmpty)
+                 ""
+               else
+                 " from " + cp.mkString(File.pathSeparator)))
         val loader =
           if (cp.isEmpty)
             parentLoader
@@ -223,12 +222,11 @@ object BasicCommands {
         (state /: loaded)((s, obj) => obj(s))
     }
   def callParser: Parser[(Seq[String], Seq[String])] =
-    token(Space) ~> (
-      (classpathOptionParser ?? Nil) ~ rep1sep(className, token(Space))
-    )
+    token(Space) ~>
+      ((classpathOptionParser ?? Nil) ~ rep1sep(className, token(Space)))
   private[this] def className: Parser[String] = {
-    val base =
-      StringBasic & not('-' ~> any.*, "Class name cannot start with '-'.")
+    val base = StringBasic &
+      not('-' ~> any.*, "Class name cannot start with '-'.")
     def single(s: String) = Completions.single(Completion.displayOnly(s))
     val compl = TokenCompletions.fixed((seen, level) =>
       if (seen.startsWith("-"))
@@ -251,12 +249,11 @@ object BasicCommands {
         s,
         Watched.Configuration,
         "Continuous execution not configured.") { w =>
-        val repeat = ContinuousExecutePrefix + (
-          if (arg.startsWith(" "))
-            arg
-          else
-            " " + arg
-        )
+        val repeat = ContinuousExecutePrefix +
+          (if (arg.startsWith(" "))
+             arg
+           else
+             " " + arg)
         Watched.executeContinuously(w, s, arg, repeat)
       }
     }
@@ -280,13 +277,12 @@ object BasicCommands {
     Command.command(Shell, Help.more(Shell, ShellDetailed)) { s =>
       val history =
         (s get historyPath) getOrElse Some(new File(s.baseDir, ".history"))
-      val prompt =
-        (s get shellPrompt) match {
-          case Some(pf) =>
-            pf(s);
-          case None =>
-            "> "
-        }
+      val prompt = (s get shellPrompt) match {
+        case Some(pf) =>
+          pf(s);
+        case None =>
+          "> "
+      }
       val reader = new FullReader(history, s.combinedParser)
       val line = reader.readLine(prompt)
       line match {
@@ -329,8 +325,8 @@ object BasicCommands {
       case Right(from) =>
         val notFound = notReadable(from)
         if (notFound.isEmpty)
-          readLines(
-            from) ::: s // this means that all commands from all files are loaded, parsed, and inserted before any are executed
+          readLines(from) :::
+            s // this means that all commands from all files are loaded, parsed, and inserted before any are executed
         else {
           s.log
             .error(
@@ -364,8 +360,8 @@ object BasicCommands {
       val name = token(OpOrID.examples(aliasNames(s): _*))
       val assign = token(OptSpace ~ '=' ~ OptSpace)
       val sfree = removeAliases(s)
-      val to = matched(sfree.combinedParser, partial = true)
-        .failOnException | any.+.string
+      val to = matched(sfree.combinedParser, partial = true).failOnException |
+        any.+.string
       val base = (OptSpace ~> (name ~ (assign ~> to.?).?).?)
       applyEffect(base)(t => runAlias(s, t))
     }

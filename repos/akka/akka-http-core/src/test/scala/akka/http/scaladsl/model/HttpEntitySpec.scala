@@ -42,35 +42,20 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
         Strict(tpe, abc) must collectBytesTo(abc)
       }
       "Default" in {
-        Default(tpe, 11, source(abc, de, fgh, ijk)) must collectBytesTo(
-          abc,
-          de,
-          fgh,
-          ijk)
+        Default(tpe, 11, source(abc, de, fgh, ijk)) must
+          collectBytesTo(abc, de, fgh, ijk)
       }
       "CloseDelimited" in {
-        CloseDelimited(tpe, source(abc, de, fgh, ijk)) must collectBytesTo(
-          abc,
-          de,
-          fgh,
-          ijk)
+        CloseDelimited(tpe, source(abc, de, fgh, ijk)) must
+          collectBytesTo(abc, de, fgh, ijk)
       }
       "Chunked w/o LastChunk" in {
-        Chunked(
-          tpe,
-          source(Chunk(abc), Chunk(fgh), Chunk(ijk))) must collectBytesTo(
-          abc,
-          fgh,
-          ijk)
+        Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk))) must
+          collectBytesTo(abc, fgh, ijk)
       }
       "Chunked with LastChunk" in {
-        Chunked(
-          tpe,
-          source(
-            Chunk(abc),
-            Chunk(fgh),
-            Chunk(ijk),
-            LastChunk)) must collectBytesTo(abc, fgh, ijk)
+        Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk)) must
+          collectBytesTo(abc, fgh, ijk)
       }
     }
     "support contentLength" - {
@@ -117,14 +102,14 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
             Default(tpe, 42, Source.fromFuture(neverCompleted.future))
               .toStrict(100.millis),
             150.millis)
-        }.getMessage must be(
-          "HttpEntity.toStrict timed out after 100 milliseconds while still waiting for outstanding data")
+        }.getMessage must
+          be("HttpEntity.toStrict timed out after 100 milliseconds while still waiting for outstanding data")
       }
     }
     "support transformDataBytes" - {
       "Strict" in {
-        Strict(tpe, abc) must transformTo(
-          Strict(tpe, doubleChars("abc") ++ trailer))
+        Strict(tpe, abc) must
+          transformTo(Strict(tpe, doubleChars("abc") ++ trailer))
       }
       "Default" in {
         Default(tpe, 11, source(abc, de, fgh, ijk)) must
@@ -158,8 +143,9 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
       "Strict with non-binary MediaType and less than 4096 bytes" in {
         val nonBinaryType = ContentTypes.`application/json`
         val entity = Strict(nonBinaryType, abc)
-        entity must renderStrictDataAs(
-          entity.data.decodeString(nonBinaryType.charset.value))
+        entity must
+          renderStrictDataAs(
+            entity.data.decodeString(nonBinaryType.charset.value))
       }
       "Strict with non-binary MediaType and over 4096 bytes" in {
         val utf8Type = ContentTypes.`text/plain(UTF-8)`
@@ -167,8 +153,9 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
         val entity = Strict(
           utf8Type,
           ByteString.apply(longString, utf8Type.charset.value))
-        entity must renderStrictDataAs(
-          s"${longString.take(4095)} ... (10000 bytes total)")
+        entity must
+          renderStrictDataAs(
+            s"${longString.take(4095)} ... (10000 bytes total)")
       }
       "Default" in {
         val entity = Default(tpe, 11, source(abc, de, fgh, ijk))

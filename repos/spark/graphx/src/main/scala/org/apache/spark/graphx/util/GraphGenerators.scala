@@ -267,8 +267,8 @@ object GraphGenerators extends Logging {
   private def pickQuadrant(a: Double, b: Double, c: Double, d: Double): Int = {
     if (a + b + c + d != 1.0) {
       throw new IllegalArgumentException(
-        "R-MAT probability parameters sum to " + (a + b + c + d)
-          + ", should sum to 1.0")
+        "R-MAT probability parameters sum to " +
+          (a + b + c + d) + ", should sum to 1.0")
     }
     val rand = new Random()
     val result = rand.nextDouble()
@@ -311,20 +311,16 @@ object GraphGenerators extends Logging {
     val edges: RDD[Edge[Double]] = vertices
       .flatMap {
         case (vid, (r, c)) =>
-          (
-            if (r + 1 < rows) {
-              Seq((sub2ind(r, c), sub2ind(r + 1, c)))
-            } else {
-              Seq.empty
-            }
-          ) ++
-            (
-              if (c + 1 < cols) {
-                Seq((sub2ind(r, c), sub2ind(r, c + 1)))
-              } else {
-                Seq.empty
-              }
-            )
+          (if (r + 1 < rows) {
+             Seq((sub2ind(r, c), sub2ind(r + 1, c)))
+           } else {
+             Seq.empty
+           }) ++
+            (if (c + 1 < cols) {
+               Seq((sub2ind(r, c), sub2ind(r, c + 1)))
+             } else {
+               Seq.empty
+             })
       }
       .map {
         case (src, dst) =>

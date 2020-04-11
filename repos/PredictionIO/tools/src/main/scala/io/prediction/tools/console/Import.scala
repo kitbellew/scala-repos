@@ -31,11 +31,8 @@ object Import {
       .getOrElse(Nil)
     Runner.runOnSpark(
       "io.prediction.tools.imprt.FileToEvents",
-      Seq(
-        "--appid",
-        ca.imprt.appId.toString,
-        "--input",
-        ca.imprt.inputPath) ++ channelArg,
+      Seq("--appid", ca.imprt.appId.toString, "--input", ca.imprt.inputPath) ++
+        channelArg,
       ca,
       Nil)
   }

@@ -122,8 +122,8 @@ class WholeTextFileRecordReaderSuite
         WholeTextFileRecordReaderSuite.fileNames.contains(shortName),
         s"Missing file name $filename.")
       assert(
-        contents === new Text(WholeTextFileRecordReaderSuite.files(shortName))
-          .toString,
+        contents ===
+          new Text(WholeTextFileRecordReaderSuite.files(shortName)).toString,
         s"file $filename contents can not match.")
     }
 
@@ -154,8 +154,8 @@ class WholeTextFileRecordReaderSuite
         WholeTextFileRecordReaderSuite.fileNames.contains(shortName),
         s"Missing file name $filename.")
       assert(
-        contents === new Text(WholeTextFileRecordReaderSuite.files(shortName))
-          .toString,
+        contents ===
+          new Text(WholeTextFileRecordReaderSuite.files(shortName)).toString,
         s"file $filename contents can not match.")
     }
 
@@ -178,11 +178,12 @@ object WholeTextFileRecordReaderSuite {
       .zip(fileNames)
       .map {
         case (upperBound, filename) =>
-          filename -> Stream
-            .continually(testWords.toList.toStream)
-            .flatten
-            .take(upperBound)
-            .toArray
+          filename ->
+            Stream
+              .continually(testWords.toList.toStream)
+              .flatten
+              .take(upperBound)
+              .toArray
       }
       .toMap
 }

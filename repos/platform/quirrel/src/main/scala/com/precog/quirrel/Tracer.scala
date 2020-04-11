@@ -104,8 +104,8 @@ trait Tracer extends parser.AST with typer.Binder {
               val ids = let.params map {
                 Identifier(Vector(), _)
               }
-              val sigma2 =
-                sigma ++ (ids zip Stream.continually(let) zip actuals)
+              val sigma2 = sigma ++
+                (ids zip Stream.continually(let) zip actuals)
 
               if (actuals.length > 0) {
                 val updated = addNode(trace, sigma, expr, parentIdx)

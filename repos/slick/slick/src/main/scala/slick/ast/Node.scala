@@ -258,12 +258,11 @@ class LiteralNode(
   protected[this] def rebuild = new LiteralNode(buildType, value, volatileHint)
 
   override def hashCode =
-    buildType.hashCode() + (
-      if (value == null)
-        0
-      else
-        value.asInstanceOf[AnyRef].hashCode
-    )
+    buildType.hashCode() +
+      (if (value == null)
+         0
+       else
+         value.asInstanceOf[AnyRef].hashCode)
   override def equals(o: Any) =
     o match {
       case l: LiteralNode =>
@@ -430,8 +429,8 @@ abstract class ComplexFilteredQuery extends FilteredQuery with DefNode {
   def generators = ConstArray((generator, from))
   def withInferredType(scope: Type.Scope, typeChildren: Boolean): Self = {
     val from2 = from.infer(scope, typeChildren)
-    val genScope =
-      scope + (generator -> from2.nodeType.asCollectionType.elementType)
+    val genScope = scope +
+      (generator -> from2.nodeType.asCollectionType.elementType)
     val this2 = mapChildren { ch =>
       if (ch eq from)
         from2
@@ -439,12 +438,11 @@ abstract class ComplexFilteredQuery extends FilteredQuery with DefNode {
         ch.infer(genScope, typeChildren)
     }
     (
-      this2 :@ (
-        if (!hasType)
-          this2.from.nodeType
-        else
-          nodeType
-      )
+      this2 :@
+        (if (!hasType)
+           this2.from.nodeType
+         else
+           nodeType)
     ).asInstanceOf[Self]
   }
 }
@@ -555,19 +553,18 @@ final case class GroupBy(
         this
       else
         copy(from = from2, by = by2)
-    this2 :@ (
-      if (!hasType)
-        CollectionType(
-          from2Type.cons,
-          ProductType(
-            ConstArray(
-              NominalType(identity, by2.nodeType),
-              CollectionType(
-                TypedCollectionTypeConstructor.seq,
-                from2Type.elementType))))
-      else
-        nodeType
-    )
+    this2 :@
+      (if (!hasType)
+         CollectionType(
+           from2Type.cons,
+           ProductType(
+             ConstArray(
+               NominalType(identity, by2.nodeType),
+               CollectionType(
+                 TypedCollectionTypeConstructor.seq,
+                 from2Type.elementType))))
+       else
+         nodeType)
   }
 }
 
@@ -640,9 +637,9 @@ final case class Join(
     val left2Type = left2.nodeType.asCollectionType
     val right2Type = right2.nodeType.asCollectionType
     val on2 = on.infer(
-      scope + (
-        leftGen -> left2Type.elementType
-      ) + (rightGen -> right2Type.elementType),
+      scope +
+        (leftGen -> left2Type.elementType) +
+        (rightGen -> right2Type.elementType),
       typeChildren)
     val (joinedLeftType, joinedRightType) =
       jt match {
@@ -657,14 +654,13 @@ final case class Join(
         case _ =>
           (left2Type.elementType, right2Type.elementType)
       }
-    withChildren(ConstArray[Node](left2, right2, on2)) :@ (
-      if (!hasType)
-        CollectionType(
-          left2Type.cons,
-          ProductType(ConstArray(joinedLeftType, joinedRightType)))
-      else
-        nodeType
-    )
+    withChildren(ConstArray[Node](left2, right2, on2)) :@
+      (if (!hasType)
+         CollectionType(
+           left2Type.cons,
+           ProductType(ConstArray(joinedLeftType, joinedRightType)))
+       else
+         nodeType)
   }
 }
 
@@ -713,14 +709,13 @@ final case class Bind(generator: TermSymbol, from: Node, select: Node)
         this
       else
         rebuild(from2, select2)
-    withCh :@ (
-      if (!hasType)
-        CollectionType(
-          from2Type.cons,
-          select2.nodeType.asCollectionType.elementType)
-      else
-        nodeType
-    )
+    withCh :@
+      (if (!hasType)
+         CollectionType(
+           from2Type.cons,
+           select2.nodeType.asCollectionType.elementType)
+       else
+         nodeType)
   }
 }
 
@@ -748,12 +743,11 @@ final case class Aggregate(sym: TermSymbol, from: Node, select: Node)
         this
       else
         copy(from = from2, select = select2)
-    this2 :@ (
-      if (!hasType)
-        select2.nodeType
-      else
-        nodeType
-    )
+    this2 :@
+      (if (!hasType)
+         select2.nodeType
+       else
+         nodeType)
   }
 }
 
@@ -784,12 +778,11 @@ final case class TableExpansion(
         this
       else
         copy(table = table2, columns = columns2)
-    this2 :@ (
-      if (!hasType)
-        table2.nodeType
-      else
-        nodeType
-    )
+    this2 :@
+      (if (!hasType)
+         table2.nodeType
+       else
+         nodeType)
   }
 }
 
@@ -977,13 +970,12 @@ final case class RangeFrom(start: Long = 1L)
 final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
   type Self = IfThenElse
   def children = clauses
-  override def childNames =
-    (0 until clauses.length - 1).map { i =>
-      if (i % 2 == 0)
-        "if"
-      else
-        "then"
-    } :+ "else"
+  override def childNames = (0 until clauses.length - 1).map { i =>
+    if (i % 2 == 0)
+      "if"
+    else
+      "then"
+  } :+ "else"
   protected[this] def rebuild(ch: ConstArray[Node]): Self = copy(clauses = ch)
   protected def buildType = clauses(1).nodeType
   override def getDumpInfo = super.getDumpInfo.copy(mainInfo = "")
@@ -1082,15 +1074,14 @@ final case class OptionFold(
       typeChildren: Boolean) = {
     val from2 = from.infer(scope, typeChildren)
     val ifEmpty2 = ifEmpty.infer(scope, typeChildren)
-    val genScope =
-      scope + (gen -> from2.nodeType.structural.asOptionType.elementType)
+    val genScope = scope +
+      (gen -> from2.nodeType.structural.asOptionType.elementType)
     val map2 = map.infer(genScope, typeChildren)
-    withChildren(ConstArray[Node](from2, ifEmpty2, map2)) :@ (
-      if (!hasType)
-        map2.nodeType
-      else
-        nodeType
-    )
+    withChildren(ConstArray[Node](from2, ifEmpty2, map2)) :@
+      (if (!hasType)
+         map2.nodeType
+       else
+         nodeType)
   }
   override def getDumpInfo = super.getDumpInfo.copy(mainInfo = "")
 }

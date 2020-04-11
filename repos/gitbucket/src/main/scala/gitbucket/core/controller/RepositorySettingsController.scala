@@ -49,10 +49,11 @@ trait RepositorySettingsControllerBase extends ControllerBase {
 
   val optionsForm =
     mapping(
-      "repositoryName" -> trim(
-        label(
-          "Repository Name",
-          text(required, maxlength(40), identifier, renameRepositoryName))),
+      "repositoryName" ->
+        trim(
+          label(
+            "Repository Name",
+            text(required, maxlength(40), identifier, renameRepositoryName))),
       "description" -> trim(label("Description", optional(text()))),
       "isPrivate" -> trim(label("Repository Type", boolean()))
     )(OptionsForm.apply)
@@ -62,8 +63,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
 
   val defaultBranchForm =
     mapping(
-      "defaultBranch" -> trim(
-        label("Default Branch", text(required, maxlength(100)))))(
+      "defaultBranch" ->
+        trim(label("Default Branch", text(required, maxlength(100)))))(
       DefaultBranchForm.apply)
 
   // for collaborator addition
@@ -384,24 +385,26 @@ trait RepositorySettingsControllerBase extends ControllerBase {
             .write(
               Map(
                 "url" -> url,
-                "request" -> Await.result(
-                  reqFuture
-                    .map(req =>
-                      Map(
-                        "headers" -> _headers(req.getAllHeaders),
-                        "payload" -> json))
-                    .recover(toErrorMap),
-                  20 seconds),
-                "responce" -> Await.result(
-                  resFuture
-                    .map(res =>
-                      Map(
-                        "status" -> res.getStatusLine(),
-                        "body" -> EntityUtils.toString(res.getEntity()),
-                        "headers" -> _headers(res.getAllHeaders())))
-                    .recover(toErrorMap),
-                  20 seconds
-                )
+                "request" ->
+                  Await.result(
+                    reqFuture
+                      .map(req =>
+                        Map(
+                          "headers" -> _headers(req.getAllHeaders),
+                          "payload" -> json))
+                      .recover(toErrorMap),
+                    20 seconds),
+                "responce" ->
+                  Await.result(
+                    resFuture
+                      .map(res =>
+                        Map(
+                          "status" -> res.getStatusLine(),
+                          "body" -> EntityUtils.toString(res.getEntity()),
+                          "headers" -> _headers(res.getAllHeaders())))
+                      .recover(toErrorMap),
+                    20 seconds
+                  )
               ))
       }
     })
@@ -553,9 +556,9 @@ trait RepositorySettingsControllerBase extends ControllerBase {
             Some("User does not exist.")
           case Some(x)
               if (
-                x.userName == params("owner") || getCollaborators(
-                  params("owner"),
-                  params("repository")).contains(x.userName)
+                x.userName == params("owner") ||
+                  getCollaborators(params("owner"), params("repository"))
+                    .contains(x.userName)
               ) =>
             Some("User can access this repository already.")
           case _ =>

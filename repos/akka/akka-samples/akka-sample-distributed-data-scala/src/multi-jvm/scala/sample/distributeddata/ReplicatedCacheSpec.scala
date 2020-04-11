@@ -50,88 +50,93 @@ class ReplicatedCacheSpec
   }
 
   "Demo of a replicated cache" must {
-    "join cluster" in within(20.seconds) {
-      join(node1, node1)
-      join(node2, node1)
-      join(node3, node1)
+    "join cluster" in
+      within(20.seconds) {
+        join(node1, node1)
+        join(node2, node1)
+        join(node3, node1)
 
-      awaitAssert {
-        DistributedData(system).replicator ! GetReplicaCount
-        expectMsg(ReplicaCount(roles.size))
-      }
-      enterBarrier("after-1")
-    }
-
-    "replicate cached entry" in within(10.seconds) {
-      runOn(node1) {
-        replicatedCache ! PutInCache("key1", "A")
-      }
-
-      awaitAssert {
-        val probe = TestProbe()
-        replicatedCache.tell(GetFromCache("key1"), probe.ref)
-        probe.expectMsg(Cached("key1", Some("A")))
-      }
-
-      enterBarrier("after-2")
-    }
-
-    "replicate many cached entries" in within(10.seconds) {
-      runOn(node1) {
-        for (i ← 100 to 200)
-          replicatedCache ! PutInCache("key" + i, i)
-      }
-
-      awaitAssert {
-        val probe = TestProbe()
-        for (i ← 100 to 200) {
-          replicatedCache.tell(GetFromCache("key" + i), probe.ref)
-          probe.expectMsg(Cached("key" + i, Some(i)))
+        awaitAssert {
+          DistributedData(system).replicator ! GetReplicaCount
+          expectMsg(ReplicaCount(roles.size))
         }
+        enterBarrier("after-1")
       }
 
-      enterBarrier("after-3")
-    }
+    "replicate cached entry" in
+      within(10.seconds) {
+        runOn(node1) {
+          replicatedCache ! PutInCache("key1", "A")
+        }
 
-    "replicate evicted entry" in within(15.seconds) {
-      runOn(node1) {
-        replicatedCache ! PutInCache("key2", "B")
+        awaitAssert {
+          val probe = TestProbe()
+          replicatedCache.tell(GetFromCache("key1"), probe.ref)
+          probe.expectMsg(Cached("key1", Some("A")))
+        }
+
+        enterBarrier("after-2")
       }
 
-      awaitAssert {
-        val probe = TestProbe()
-        replicatedCache.tell(GetFromCache("key2"), probe.ref)
-        probe.expectMsg(Cached("key2", Some("B")))
-      }
-      enterBarrier("key2-replicated")
+    "replicate many cached entries" in
+      within(10.seconds) {
+        runOn(node1) {
+          for (i ← 100 to 200)
+            replicatedCache ! PutInCache("key" + i, i)
+        }
 
-      runOn(node3) {
-        replicatedCache ! Evict("key2")
-      }
+        awaitAssert {
+          val probe = TestProbe()
+          for (i ← 100 to 200) {
+            replicatedCache.tell(GetFromCache("key" + i), probe.ref)
+            probe.expectMsg(Cached("key" + i, Some(i)))
+          }
+        }
 
-      awaitAssert {
-        val probe = TestProbe()
-        replicatedCache.tell(GetFromCache("key2"), probe.ref)
-        probe.expectMsg(Cached("key2", None))
-      }
-
-      enterBarrier("after-4")
-    }
-
-    "replicate updated cached entry" in within(10.seconds) {
-      runOn(node2) {
-        replicatedCache ! PutInCache("key1", "A2")
-        replicatedCache ! PutInCache("key1", "A3")
+        enterBarrier("after-3")
       }
 
-      awaitAssert {
-        val probe = TestProbe()
-        replicatedCache.tell(GetFromCache("key1"), probe.ref)
-        probe.expectMsg(Cached("key1", Some("A3")))
+    "replicate evicted entry" in
+      within(15.seconds) {
+        runOn(node1) {
+          replicatedCache ! PutInCache("key2", "B")
+        }
+
+        awaitAssert {
+          val probe = TestProbe()
+          replicatedCache.tell(GetFromCache("key2"), probe.ref)
+          probe.expectMsg(Cached("key2", Some("B")))
+        }
+        enterBarrier("key2-replicated")
+
+        runOn(node3) {
+          replicatedCache ! Evict("key2")
+        }
+
+        awaitAssert {
+          val probe = TestProbe()
+          replicatedCache.tell(GetFromCache("key2"), probe.ref)
+          probe.expectMsg(Cached("key2", None))
+        }
+
+        enterBarrier("after-4")
       }
 
-      enterBarrier("after-5")
-    }
+    "replicate updated cached entry" in
+      within(10.seconds) {
+        runOn(node2) {
+          replicatedCache ! PutInCache("key1", "A2")
+          replicatedCache ! PutInCache("key1", "A3")
+        }
+
+        awaitAssert {
+          val probe = TestProbe()
+          replicatedCache.tell(GetFromCache("key1"), probe.ref)
+          probe.expectMsg(Cached("key1", Some("A3")))
+        }
+
+        enterBarrier("after-5")
+      }
 
   }
 

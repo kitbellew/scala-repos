@@ -47,9 +47,8 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     val minSize = 2.0
     assert(bkm.getMinDivisibleClusterSize !== minSize)
     assert(
-      bkm
-        .setMinDivisibleClusterSize(minSize)
-        .getMinDivisibleClusterSize === minSize)
+      bkm.setMinDivisibleClusterSize(minSize).getMinDivisibleClusterSize ===
+        minSize)
     val seed = 10L
     assert(bkm.getSeed !== seed)
     assert(bkm.setSeed(seed).getSeed === seed)
@@ -112,8 +111,8 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("min divisible cluster") {
     val data = sc.parallelize(
-      Seq.tabulate(16)(i => Vectors.dense(i)) ++ Seq
-        .tabulate(4)(i => Vectors.dense(-100.0 - i)),
+      Seq.tabulate(16)(i => Vectors.dense(i)) ++
+        Seq.tabulate(4)(i => Vectors.dense(-100.0 - i)),
       2)
     val bkm = new BisectingKMeans()
       .setK(4)
@@ -133,8 +132,8 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("larger clusters get selected first") {
     val data = sc.parallelize(
-      Seq.tabulate(16)(i => Vectors.dense(i)) ++ Seq
-        .tabulate(4)(i => Vectors.dense(-100.0 - i)),
+      Seq.tabulate(16)(i => Vectors.dense(i)) ++
+        Seq.tabulate(4)(i => Vectors.dense(-100.0 - i)),
       2)
     val bkm = new BisectingKMeans().setK(3).setMaxIterations(1).setSeed(1L)
     val model = bkm.run(data)

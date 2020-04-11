@@ -361,7 +361,8 @@ abstract class MapKeyValueConverter[K, V](parent: CollectionConverter[(K, V)])
           valueConverter
         else
           throw new IllegalArgumentException(
-            "key_value has only the key (0) and value (1) fields expected: " + i)
+            "key_value has only the key (0) and value (1) fields expected: " +
+              i)
       }
 
       override def end(): Unit = ()

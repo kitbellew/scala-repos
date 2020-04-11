@@ -58,8 +58,8 @@ private[stream] class ConnectionSourceStage(
 
         override def preStart(): Unit = {
           getStageActor(receive)
-          tcpManager ! Tcp
-            .Bind(self, endpoint, backlog, options, pullMode = true)
+          tcpManager !
+            Tcp.Bind(self, endpoint, backlog, options, pullMode = true)
         }
 
         private def receive(evt: (ActorRef, Any)): Unit = {
@@ -225,10 +225,11 @@ private[stream] object TcpConnectionStage {
           setHandler(bytesOut, readHandler)
           connection = conn
           getStageActor(connected).watch(connection)
-          connection ! Register(
-            self,
-            keepOpenOnPeerClosed = true,
-            useResumeWriting = false)
+          connection !
+            Register(
+              self,
+              keepOpenOnPeerClosed = true,
+              useResumeWriting = false)
           pull(bytesIn)
         case ob @ Outbound(manager, cmd, _, _) ⇒
           getStageActor(connecting(ob)).watch(manager)
@@ -256,10 +257,11 @@ private[stream] object TcpConnectionStage {
           stageActor.unwatch(ob.manager)
           stageActor.become(connected)
           stageActor.watch(connection)
-          connection ! Register(
-            self,
-            keepOpenOnPeerClosed = true,
-            useResumeWriting = false)
+          connection !
+            Register(
+              self,
+              keepOpenOnPeerClosed = true,
+              useResumeWriting = false)
           if (isAvailable(bytesOut))
             connection ! ResumeReading
           pull(bytesIn)

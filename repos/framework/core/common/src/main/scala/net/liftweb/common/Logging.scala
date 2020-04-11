@@ -197,10 +197,7 @@ trait Logger {
     if (logger.isTraceEnabled) {
       box match {
         case Failure(fmsg, Full(e), _) =>
-          trace(
-            String.valueOf(msg) + ": " +
-              fmsg: AnyRef,
-            e: Throwable)
+          trace(String.valueOf(msg) + ": " + fmsg: AnyRef, e: Throwable)
         case Failure(fmsg, _, _) =>
           trace(String.valueOf(msg) + ": " + fmsg)
         case _ =>
@@ -231,10 +228,7 @@ trait Logger {
     if (logger.isDebugEnabled) {
       box match {
         case Failure(fmsg, Full(e), _) =>
-          debug(
-            String.valueOf(msg) + ": " +
-              fmsg,
-            e)
+          debug(String.valueOf(msg) + ": " + fmsg, e)
         case Failure(fmsg, _, _) =>
           debug(String.valueOf(msg) + ": " + fmsg)
         case _ =>
@@ -265,10 +259,7 @@ trait Logger {
     if (logger.isInfoEnabled) {
       box match {
         case Failure(fmsg, Full(e), _) =>
-          info(
-            String.valueOf(msg) + ": " +
-              fmsg,
-            e)
+          info(String.valueOf(msg) + ": " + fmsg, e)
         case Failure(fmsg, _, _) =>
           info(String.valueOf(msg) + ": " + fmsg)
         case _ =>
@@ -298,10 +289,7 @@ trait Logger {
     if (logger.isWarnEnabled) {
       box match {
         case Failure(fmsg, Full(e), _) =>
-          warn(
-            String.valueOf(msg) + ": " +
-              fmsg,
-            e)
+          warn(String.valueOf(msg) + ": " + fmsg, e)
         case Failure(fmsg, _, _) =>
           warn(String.valueOf(msg) + ": " + fmsg)
         case _ =>
@@ -331,10 +319,7 @@ trait Logger {
     if (logger.isErrorEnabled) {
       box match {
         case Failure(fmsg, Full(e), _) =>
-          error(
-            String.valueOf(msg) + ": " +
-              fmsg,
-            e)
+          error(String.valueOf(msg) + ": " + fmsg, e)
         case Failure(fmsg, _, _) =>
           error(String.valueOf(msg) + ": " + fmsg)
         case _ =>

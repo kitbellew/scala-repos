@@ -92,8 +92,8 @@ trait PrecedenceHelper[T] {
   def isUpdateHistory: Boolean = false
 
   protected def addChangedLevelToHistory(): Unit = {
-    if (isUpdateHistory && !fromHistory && history
-          .lastOption != Some(ChangedLevel))
+    if (isUpdateHistory && !fromHistory &&
+        history.lastOption != Some(ChangedLevel))
       history += ChangedLevel
   }
 
@@ -110,8 +110,8 @@ trait PrecedenceHelper[T] {
           collectPackages(p, res + p.fullPackageName)
       }
     }
-    Set("scala", "java.lang", "scala", "scala.Predef") ++ collectPackages(
-      getPlace)
+    Set("scala", "java.lang", "scala", "scala.Predef") ++
+      collectPackages(getPlace)
   }
   protected def isSpecialResult(result: ScalaResolveResult): Boolean = {
     val importsUsed = result.importsUsed.toSeq
@@ -186,13 +186,11 @@ trait PrecedenceHelper[T] {
       return false
     else if (currentPrecedence == topPrecedence) {
       if (isCheckForEqualPrecedence && qualifiedName != null &&
-          (
-            levelQualifiedNamesSet.contains(qualifiedName) ||
-            qualifiedNamesSet.contains(qualifiedName)
-          )) {
+          (levelQualifiedNamesSet.contains(qualifiedName) ||
+          qualifiedNamesSet.contains(qualifiedName))) {
         return false
-      } else if (qualifiedName != null && qualifiedNamesSet
-                   .contains(qualifiedName))
+      } else if (qualifiedName != null &&
+                 qualifiedNamesSet.contains(qualifiedName))
         return false
       if (!fromHistory && isUpdateHistory && isSpecialResult(result)) {
         results.foreach(ignoredSet.add)

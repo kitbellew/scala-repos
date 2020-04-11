@@ -62,11 +62,11 @@ class ScalaAttachSourcesNotificationProvider(
         getFQN(psiFile)
     if (fqn == null)
       return null
-    if (isScala && ScalaEditorFileSwapper
-          .findSourceFile(myProject, file) != null)
+    if (isScala &&
+        ScalaEditorFileSwapper.findSourceFile(myProject, file) != null)
       return null
-    if (!isScala && JavaEditorFileSwapper
-          .findSourceFile(myProject, file) != null)
+    if (!isScala &&
+        JavaEditorFileSwapper.findSourceFile(myProject, file) != null)
       return null
     val panel: EditorNotificationPanel = new EditorNotificationPanel
     val sourceFile: VirtualFile = findSourceFile(file)

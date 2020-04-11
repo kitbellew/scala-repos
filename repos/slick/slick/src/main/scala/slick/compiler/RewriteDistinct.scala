@@ -60,9 +60,8 @@ class RewriteDistinct extends Phase {
         }
         .toMap
     logger.debug(
-      "Fields used directly in 'on' clause: " + onFieldPos
-        .keySet
-        .mkString(", "))
+      "Fields used directly in 'on' clause: " +
+        onFieldPos.keySet.mkString(", "))
     if ((refFields -- onFieldPos.keys).isEmpty) {
       // Only distinct fields referenced -> Create subquery and remove 'on' clause
       val onDefs = ConstArray.from(onNodes).map((new AnonSymbol, _))

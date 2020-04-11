@@ -29,9 +29,8 @@ class TCPServer(
 
   var activeConnections = 0
 
-  IO(Tcp) ! Bind(
-    self,
-    new InetSocketAddress("127.0.0.1", preferredPort.getOrElse(0)))
+  IO(Tcp) !
+    Bind(self, new InetSocketAddress("127.0.0.1", preferredPort.getOrElse(0)))
 
   def receive = {
     case b @ Bound(localAddress) =>
@@ -39,17 +38,19 @@ class TCPServer(
       log.info(s"Bound server on port $boundPort")
       PortUtil.writePort(cacheDir, boundPort, "port")
     case CommandFailed(_: Bind) =>
-      context.parent ! ShutdownRequest(
-        s"TCP protocol failed to bind ($preferredPort)",
-        isError = true)
+      context.parent !
+        ShutdownRequest(
+          s"TCP protocol failed to bind ($preferredPort)",
+          isError = true)
 
     case ClientConnectionClosed =>
       activeConnections -= 1
       log.info("Client disconnected - active clients now: " + activeConnections)
       if (activeConnections == 0 && shutdownOnLastDisconnect) {
         log.info("Shutdown on last disconnect set - requesting server shutdown")
-        context.parent ! ShutdownRequest(
-          "Last client disconnected and shtudownOnLastDisconnect set")
+        context.parent !
+          ShutdownRequest(
+            "Last client disconnected and shtudownOnLastDisconnect set")
       }
 
     case c @ Connected(remote, local) =>

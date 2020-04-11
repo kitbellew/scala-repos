@@ -94,9 +94,9 @@ class PhiAccrualFailureDetector(
     // bootstrap with 2 entries with rather high standard deviation
     val mean = firstHeartbeatEstimate.toMillis
     val stdDeviation = mean / 4
-    HeartbeatHistory(maxSampleSize) :+ (mean - stdDeviation) :+ (
-      mean + stdDeviation
-    )
+    HeartbeatHistory(maxSampleSize) :+
+      (mean - stdDeviation) :+
+      (mean + stdDeviation)
   }
 
   private val acceptableHeartbeatPauseMillis = acceptableHeartbeatPause.toMillis

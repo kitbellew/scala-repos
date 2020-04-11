@@ -297,7 +297,8 @@ object Plugins extends PluginsFunctions {
         l;
       case Negated(Atom(l)) =>
         l
-    } mkString (", ")
+    } mkString
+      (", ")
 
   private[this] def duplicateProvidesError(
       byAtom: Seq[(Atom, AutoPlugin)]): Unit = {
@@ -322,34 +323,30 @@ object Plugins extends PluginsFunctions {
     def listConflicts(ns: Seq[AutoPlugin]) =
       (
         ns map { c =>
-          val reasons = (
-            if (flatten(requested) contains c)
-              List("requested")
-            else
-              Nil
-          ) ++
-            (
-              if (c.requires != empty && c.trigger == allRequirements)
-                List(s"enabled by ${c.requires.toString}")
+          val reasons = (if (flatten(requested) contains c)
+                           List("requested")
+                         else
+                           Nil) ++
+            (if (c.requires != empty && c.trigger == allRequirements)
+               List(s"enabled by ${c.requires.toString}")
+             else
+               Nil) ++ {
+              val reqs = selected filter { x =>
+                asRequirements(x) contains c
+              }
+              if (reqs.nonEmpty)
+                List(s"""required by ${reqs.mkString(", ")}""")
               else
                 Nil
-            ) ++ {
-            val reqs = selected filter { x =>
-              asRequirements(x) contains c
+            } ++ {
+              val exs = selected filter { x =>
+                asExclusions(x) contains c
+              }
+              if (exs.nonEmpty)
+                List(s"""excluded by ${exs.mkString(", ")}""")
+              else
+                Nil
             }
-            if (reqs.nonEmpty)
-              List(s"""required by ${reqs.mkString(", ")}""")
-            else
-              Nil
-          } ++ {
-            val exs = selected filter { x =>
-              asExclusions(x) contains c
-            }
-            if (exs.nonEmpty)
-              List(s"""excluded by ${exs.mkString(", ")}""")
-            else
-              Nil
-          }
           s"""  - conflict: ${c.label} is ${reasons.mkString("; ")}"""
         }
       ).mkString("\n")

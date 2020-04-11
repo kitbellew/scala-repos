@@ -610,12 +610,11 @@ private[akka] class ActorCell(
     }
 
   def become(behavior: Actor.Receive, discardOld: Boolean = true): Unit =
-    behaviorStack = behavior :: (
-      if (discardOld && behaviorStack.nonEmpty)
-        behaviorStack.tail
-      else
-        behaviorStack
-    )
+    behaviorStack = behavior ::
+      (if (discardOld && behaviorStack.nonEmpty)
+         behaviorStack.tail
+       else
+         behaviorStack)
 
   def become(behavior: Procedure[Any]): Unit =
     become(behavior, discardOld = true)
@@ -741,7 +740,8 @@ private[akka] class ActorCell(
             Error(
               self.path.toString,
               clazz(actor),
-              "received Supervise from unregistered child " + child + ", this will not end well"))
+              "received Supervise from unregistered child " + child +
+                ", this will not end well"))
       }
     }
 
@@ -787,15 +787,15 @@ private[akka] class ActorCell(
             actorInstance.getClass,
             actorInstance,
             "context",
-            context)
-          || !Reflect.lookupAndSetField(
+            context) ||
+          !Reflect.lookupAndSetField(
             actorInstance.getClass,
             actorInstance,
             "self",
             self))
         throw new IllegalActorStateException(
-          actorInstance
-            .getClass + " is not an Actor since it have not mixed in the 'Actor' trait")
+          actorInstance.getClass +
+            " is not an Actor since it have not mixed in the 'Actor' trait")
     }
 
   // logging is not the main purpose, and if it fails there’s nothing we can do

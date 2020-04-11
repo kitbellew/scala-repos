@@ -31,10 +31,11 @@ final class ScheduleJsonView(getLightUser: String => Option[LightUser]) {
       "fullName" -> tour.fullName,
       "nbPlayers" -> tour.nbPlayers,
       "private" -> tour.`private`,
-      "variant" -> Json.obj(
-        "key" -> tour.variant.key,
-        "short" -> tour.variant.shortName,
-        "name" -> tour.variant.name),
+      "variant" ->
+        Json.obj(
+          "key" -> tour.variant.key,
+          "short" -> tour.variant.shortName,
+          "name" -> tour.variant.name),
       "secondsToStart" -> tour.secondsToStart,
       "startsAt" -> tour.startsAt,
       "finishesAt" -> tour.finishesAt,

@@ -33,9 +33,8 @@ class ScalaDocUnclosedTagWithoutParserInspection extends LocalInspectionTool {
         if (!ScaladocSyntaxElementType.canClose(
               firstElementType,
               s.getLastChild.getNode.getElementType) &&
-            firstElementType != ScalaDocTokenType
-              .DOC_HEADER && firstElementType != ScalaDocTokenType
-              .VALID_DOC_HEADER) {
+            firstElementType != ScalaDocTokenType.DOC_HEADER &&
+            firstElementType != ScalaDocTokenType.VALID_DOC_HEADER) {
 
           holder.registerProblem(
             holder

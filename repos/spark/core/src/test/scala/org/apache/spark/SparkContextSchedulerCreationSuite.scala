@@ -57,10 +57,8 @@ class SparkContextSchedulerCreationSuite
     val createTaskSchedulerMethod =
       PrivateMethod[Tuple2[SchedulerBackend, TaskScheduler]](
         'createTaskScheduler)
-    val (_, sched) = SparkContext invokePrivate createTaskSchedulerMethod(
-      sc,
-      master,
-      deployMode)
+    val (_, sched) = SparkContext invokePrivate
+      createTaskSchedulerMethod(sc, master, deployMode)
     sched.asInstanceOf[TaskSchedulerImpl]
   }
 

@@ -32,9 +32,8 @@ class JavaAccessorMethodCalledAsEmptyParenInspection
                 e.resolve() match {
                   case _: ScalaPsiElement => // do nothing
                   case (m: PsiMethod)
-                      if m.isAccessor && !isOverloadedMethod(e) && hasSameType(
-                        call,
-                        e) =>
+                      if m.isAccessor && !isOverloadedMethod(e) &&
+                        hasSameType(call, e) =>
                     holder.registerProblem(
                       e.nameId,
                       getDisplayName,

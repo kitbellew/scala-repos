@@ -150,10 +150,11 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
     plensFamily(c =>
       (that run c).flatMap(x => {
         val (ac, a) = x.run
-        run(a) map (y => {
-          val (ba, b) = y.run
-          IndexedStore(ac compose ba, b)
-        })
+        run(a) map
+          (y => {
+            val (ba, b) = y.run
+            IndexedStore(ac compose ba, b)
+          })
       }))
 
   /** alias for `compose` */
@@ -503,8 +504,8 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
 
   def vectorLastPLens[A]: Vector[A] @?> A =
     plens(v =>
-      v.lastOption map (a =>
-        Store(x => v patch (v.length - 1, Vector(x), 1), a)))
+      v.lastOption map
+        (a => Store(x => v patch (v.length - 1, Vector(x), 1), a)))
 
   import Stream._
 
@@ -607,9 +608,8 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
         })
   }
 
-  def ephemeralStreamLookupPLens[K: Equal, V](
-      k: K): EphemeralStream[(K, V)] @?> V =
-    ephemeralStreamLookupByPLens(Equal[K].equal(k, _))
+  def ephemeralStreamLookupPLens[K: Equal, V](k: K): EphemeralStream[(K, V)] @?>
+    V = ephemeralStreamLookupByPLens(Equal[K].equal(k, _))
 
   import LensFamily.mapVLens
 
@@ -638,15 +638,17 @@ abstract class PLensInstances {
       def unzip[A, B](a: PLensFamily[S, R, (A, B), (A, B)]) =
         (
           plensFamily(x =>
-            a run x map (c => {
-              val (p, q) = c.pos
-              IndexedStore(a => c.put((a, q)): R, p)
-            })),
+            a run x map
+              (c => {
+                val (p, q) = c.pos
+                IndexedStore(a => c.put((a, q)): R, p)
+              })),
           plensFamily(x =>
-            a run x map (c => {
-              val (p, q) = c.pos
-              IndexedStore(a => c.put((p, a)): R, q)
-            })))
+            a run x map
+              (c => {
+                val (p, q) = c.pos
+                IndexedStore(a => c.put((p, a)): R, q)
+              })))
     }
 
   /** Allow the illusion of imperative updates to potential numbers viewed through a partial lens */

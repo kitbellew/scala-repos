@@ -162,27 +162,33 @@ class SparkListenerSuite
 
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
 
-    listener.stageInfos.size should be {
-      1
-    }
+    listener.stageInfos.size should
+      be {
+        1
+      }
     val (stageInfo, taskInfoMetrics) = listener.stageInfos.head
-    stageInfo.rddInfos.size should be {
-      2
-    }
-    stageInfo.rddInfos.forall(_.numPartitions == 4) should be {
-      true
-    }
-    stageInfo.rddInfos.exists(_.name == "Target RDD") should be {
-      true
-    }
-    stageInfo.numTasks should be {
-      4
-    }
+    stageInfo.rddInfos.size should
+      be {
+        2
+      }
+    stageInfo.rddInfos.forall(_.numPartitions == 4) should
+      be {
+        true
+      }
+    stageInfo.rddInfos.exists(_.name == "Target RDD") should
+      be {
+        true
+      }
+    stageInfo.numTasks should
+      be {
+        4
+      }
     stageInfo.submissionTime should be('defined)
     stageInfo.completionTime should be('defined)
-    taskInfoMetrics.length should be {
-      4
-    }
+    taskInfoMetrics.length should
+      be {
+        4
+      }
   }
 
   test("basic creation of StageInfo with shuffle") {
@@ -198,53 +204,65 @@ class SparkListenerSuite
 
     rdd1.count()
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
-    listener.stageInfos.size should be {
-      1
-    }
+    listener.stageInfos.size should
+      be {
+        1
+      }
     val stageInfo1 = listener.stageInfos.keys.find(_.stageId == 0).get
-    stageInfo1.rddInfos.size should be {
-      1
-    } // ParallelCollectionRDD
-    stageInfo1.rddInfos.forall(_.numPartitions == 4) should be {
-      true
-    }
-    stageInfo1.rddInfos.exists(_.name == "Un") should be {
-      true
-    }
+    stageInfo1.rddInfos.size should
+      be {
+        1
+      } // ParallelCollectionRDD
+    stageInfo1.rddInfos.forall(_.numPartitions == 4) should
+      be {
+        true
+      }
+    stageInfo1.rddInfos.exists(_.name == "Un") should
+      be {
+        true
+      }
     listener.stageInfos.clear()
 
     rdd2.count()
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
-    listener.stageInfos.size should be {
-      1
-    }
+    listener.stageInfos.size should
+      be {
+        1
+      }
     val stageInfo2 = listener.stageInfos.keys.find(_.stageId == 1).get
-    stageInfo2.rddInfos.size should be {
-      3
-    } // ParallelCollectionRDD, FilteredRDD, MappedRDD
-    stageInfo2.rddInfos.forall(_.numPartitions == 4) should be {
-      true
-    }
-    stageInfo2.rddInfos.exists(_.name == "Deux") should be {
-      true
-    }
+    stageInfo2.rddInfos.size should
+      be {
+        3
+      } // ParallelCollectionRDD, FilteredRDD, MappedRDD
+    stageInfo2.rddInfos.forall(_.numPartitions == 4) should
+      be {
+        true
+      }
+    stageInfo2.rddInfos.exists(_.name == "Deux") should
+      be {
+        true
+      }
     listener.stageInfos.clear()
 
     rdd3.count()
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
-    listener.stageInfos.size should be {
-      2
-    } // Shuffle map stage + result stage
+    listener.stageInfos.size should
+      be {
+        2
+      } // Shuffle map stage + result stage
     val stageInfo3 = listener.stageInfos.keys.find(_.stageId == 3).get
-    stageInfo3.rddInfos.size should be {
-      1
-    } // ShuffledRDD
-    stageInfo3.rddInfos.forall(_.numPartitions == 4) should be {
-      true
-    }
-    stageInfo3.rddInfos.exists(_.name == "Trois") should be {
-      true
-    }
+    stageInfo3.rddInfos.size should
+      be {
+        1
+      } // ShuffledRDD
+    stageInfo3.rddInfos.forall(_.numPartitions == 4) should
+      be {
+        true
+      }
+    stageInfo3.rddInfos.exists(_.name == "Trois") should
+      be {
+        true
+      }
   }
 
   test("StageInfo with fewer tasks than partitions") {
@@ -257,19 +275,23 @@ class SparkListenerSuite
 
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
 
-    listener.stageInfos.size should be {
-      1
-    }
+    listener.stageInfos.size should
+      be {
+        1
+      }
     val (stageInfo, _) = listener.stageInfos.head
-    stageInfo.numTasks should be {
-      2
-    }
-    stageInfo.rddInfos.size should be {
-      2
-    }
-    stageInfo.rddInfos.forall(_.numPartitions == 4) should be {
-      true
-    }
+    stageInfo.numTasks should
+      be {
+        2
+      }
+    stageInfo.rddInfos.size should
+      be {
+        2
+      }
+    stageInfo.rddInfos.forall(_.numPartitions == 4) should
+      be {
+        true
+      }
   }
 
   test("local metrics") {
@@ -345,9 +367,9 @@ class SparkListenerSuite
                 taskMetrics.inputMetrics should not be ('defined)
                 taskMetrics.outputMetrics should not be ('defined)
                 taskMetrics.shuffleWriteMetrics should be('defined)
-                taskMetrics.shuffleWriteMetrics.get.bytesWritten should be > (
-                  0L
-                )
+                taskMetrics.shuffleWriteMetrics.get.bytesWritten should
+                  be >
+                  (0L)
               }
               if (stageInfo.rddInfos.exists(_.name == d4.name)) {
                 taskMetrics.shuffleReadMetrics should be('defined)
@@ -443,9 +465,8 @@ class SparkListenerSuite
     finishTime = System.currentTimeMillis + WAIT_TIMEOUT_MILLIS
     listener.synchronized {
       var remainingWait = finishTime - System.currentTimeMillis
-      while (listener.endedTasks.size < listener
-               .startedTasks
-               .size && remainingWait > 0) {
+      while (listener.endedTasks.size < listener.startedTasks.size &&
+             remainingWait > 0) {
         listener.wait(finishTime - System.currentTimeMillis)
         remainingWait = finishTime - System.currentTimeMillis
       }

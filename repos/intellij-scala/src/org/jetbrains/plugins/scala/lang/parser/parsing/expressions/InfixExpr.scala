@@ -36,8 +36,8 @@ object InfixExpr {
       return false
     }
     var exitOf = true
-    while (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && !builder
-             .newlineBeforeCurrentToken && exitOf) {
+    while (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER &&
+           !builder.newlineBeforeCurrentToken && exitOf) {
       //need to know associativity
       val s = builder.getTokenText
 
@@ -104,9 +104,8 @@ object InfixExpr {
   private def compar(id1: String, id2: String, builder: PsiBuilder): Boolean = {
     if (priority(id1, assignments = true) < priority(id2, assignments = true))
       true //  a * b + c  =((a * b) + c)
-    else if (priority(id1, assignments = true) > priority(
-               id2,
-               assignments = true))
+    else if (priority(id1, assignments = true) >
+               priority(id2, assignments = true))
       false //  a + b * c = (a + (b * c))
     else if (associate(id1) == associate(id2))
       if (associate(id1) == -1)

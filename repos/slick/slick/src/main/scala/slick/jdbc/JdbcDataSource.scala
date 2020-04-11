@@ -214,7 +214,8 @@ class DriverJdbcDataSource(
                   val conn = driver.connect(url, connectionProps)
                   if (conn eq null)
                     throw new SQLException(
-                      "Driver " + driver + " does not know how to handle URL " + url,
+                      "Driver " + driver + " does not know how to handle URL " +
+                        url,
                       "08001")
                   conn
                 })

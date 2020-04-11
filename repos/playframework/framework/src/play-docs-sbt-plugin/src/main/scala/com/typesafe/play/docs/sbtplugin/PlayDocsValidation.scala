@@ -138,40 +138,36 @@ object PlayDocsValidation {
                 val parts = link.split('|')
                 val desc = parts.head
                 val page = stripFragment(parts.tail.head.trim)
-                wikiLinks += LinkRef(
-                  page,
-                  markdownFile,
-                  node.getStartIndex + desc.length + 3)
+                wikiLinks +=
+                  LinkRef(
+                    page,
+                    markdownFile,
+                    node.getStartIndex + desc.length + 3)
 
               case image if image.endsWith(".png") =>
                 image match {
                   case full if full.startsWith("http://") =>
-                    externalLinks += LinkRef(
-                      full,
-                      markdownFile,
-                      node.getStartIndex + 2)
+                    externalLinks +=
+                      LinkRef(full, markdownFile, node.getStartIndex + 2)
                   case absolute if absolute.startsWith("/") =>
-                    resourceLinks += LinkRef(
-                      "manual" + absolute,
-                      markdownFile,
-                      node.getStartIndex + 2)
+                    resourceLinks +=
+                      LinkRef(
+                        "manual" + absolute,
+                        markdownFile,
+                        node.getStartIndex + 2)
                   case relative =>
                     val link = markdownFile
                       .getParentFile
                       .getCanonicalPath
                       .stripPrefix(base.getCanonicalPath)
                       .stripPrefix("/") + "/" + relative
-                    resourceLinks += LinkRef(
-                      link,
-                      markdownFile,
-                      node.getStartIndex + 2)
+                    resourceLinks +=
+                      LinkRef(link, markdownFile, node.getStartIndex + 2)
                 }
 
               case link =>
-                wikiLinks += LinkRef(
-                  link.trim,
-                  markdownFile,
-                  node.getStartIndex + 2)
+                wikiLinks +=
+                  LinkRef(link.trim, markdownFile, node.getStartIndex + 2)
 
             }
             new LinkRenderer.Rendering("foo", "bar")
@@ -185,21 +181,17 @@ object PlayDocsValidation {
           private def addLink(url: String, node: Node, offset: Int) = {
             url match {
               case full
-                  if full.startsWith("http://") || full
-                    .startsWith("https://") =>
-                externalLinks += LinkRef(
-                  full,
-                  markdownFile,
-                  node.getStartIndex + offset)
+                  if full.startsWith("http://") ||
+                    full.startsWith("https://") =>
+                externalLinks +=
+                  LinkRef(full, markdownFile, node.getStartIndex + offset)
               case fragment
                   if fragment.startsWith(
                     "#"
                   ) => // ignore fragments, no validation of them for now
               case relative =>
-                relativeLinks += LinkRef(
-                  relative,
-                  markdownFile,
-                  node.getStartIndex + offset)
+                relativeLinks +=
+                  LinkRef(relative, markdownFile, node.getStartIndex + offset)
             }
             new LinkRenderer.Rendering("foo", "bar")
           }
@@ -240,12 +232,13 @@ object PlayDocsValidation {
                     code.getStartIndex + 2
                   }
 
-                codeSamples += CodeSampleRef(
-                  sourceFile,
-                  label,
-                  markdownFile,
-                  sourcePos,
-                  labelPos)
+                codeSamples +=
+                  CodeSampleRef(
+                    sourceFile,
+                    label,
+                    markdownFile,
+                    sourcePos,
+                    labelPos)
                 true
               }
               case _ =>
@@ -345,9 +338,8 @@ object PlayDocsValidation {
             .toIterator
             .collect {
               case entry
-                  if entry.getName.endsWith(".md") && entry
-                    .getName
-                    .startsWith("play/docs/content/manual") =>
+                  if entry.getName.endsWith(".md") &&
+                    entry.getName.startsWith("play/docs/content/manual") =>
                 val fileName = entry.getName.stripPrefix("play/docs/content")
                 val contents = IO.readStream(jar.getInputStream(entry))
                 extractCodeSamples(fileName, contents)
@@ -385,10 +377,12 @@ object PlayDocsValidation {
     def hasCodeSample(samples: Seq[CodeSample])(sample: CodeSample) =
       samples.exists(sameCodeSample(sample))
 
-    val untranslatedFiles =
-      (upstream.byFile.keySet -- report.byFile.keySet).toList.sorted
-    val introducedFiles =
-      (report.byFile.keySet -- upstream.byFile.keySet).toList.sorted
+    val untranslatedFiles = (upstream.byFile.keySet -- report.byFile.keySet)
+      .toList
+      .sorted
+    val introducedFiles = (report.byFile.keySet -- upstream.byFile.keySet)
+      .toList
+      .sorted
     val matchingFilesByName = (report.byName.keySet & upstream.byName.keySet)
       .map { name =>
         report.byName(name) -> upstream.byName(name)
@@ -476,8 +470,8 @@ object PlayDocsValidation {
         failed = true
         onFail
         log.info(
-          "[" + Colors.red("fail") + "] " + desc + " (" + errors
-            .size + " errors)")
+          "[" + Colors.red("fail") + "] " + desc + " (" + errors.size +
+            " errors)")
       }
     }
 
@@ -517,10 +511,9 @@ object PlayDocsValidation {
       report
         .wikiLinks
         .filterNot { link =>
-          pages.contains(link.link) || validationConfig
-            .downstreamWikiPages(link.link) || combinedRepo
-            .findFileWithName(link.link + ".md")
-            .nonEmpty
+          pages.contains(link.link) ||
+          validationConfig.downstreamWikiPages(link.link) ||
+          combinedRepo.findFileWithName(link.link + ".md").nonEmpty
         },
       "Could not find link"
     )
@@ -585,8 +578,10 @@ object PlayDocsValidation {
               IO.readLines(new BufferedReader(new InputStreamReader(is))))
             .get
         val notLabel = (s: String) => !s.contains("#" + sample.segment)
-        val segment =
-          sourceCode dropWhile (notLabel) drop (1) takeWhile (notLabel)
+        val segment = sourceCode dropWhile
+          (notLabel) drop
+          (1) takeWhile
+          (notLabel)
         !segment.isEmpty
       } else {
         true
@@ -636,9 +631,8 @@ object PlayDocsValidation {
         _.link
       }
       .filterNot { e =>
-        e._1.startsWith("http://localhost:") || e
-          ._1
-          .contains("example.com") || e._1.startsWith("http://127.0.0.1")
+        e._1.startsWith("http://localhost:") || e._1.contains("example.com") ||
+        e._1.startsWith("http://127.0.0.1")
       }
       .toSeq
       .sortBy {
@@ -670,9 +664,8 @@ object PlayDocsValidation {
                   log,
                   link.file,
                   link.position,
-                  connection
-                    .getResponseCode + " response for external link " + link
-                    .link)
+                  connection.getResponseCode + " response for external link " +
+                    link.link)
               }
               refs
             }
@@ -686,8 +679,8 @@ object PlayDocsValidation {
                 log,
                 link.file,
                 link.position,
-                e.getClass.getName + ": " + e
-                  .getMessage + " for external link " + link.link)
+                e.getClass.getName + ": " + e.getMessage +
+                  " for external link " + link.link)
             }
             refs
         } finally {
@@ -705,8 +698,8 @@ object PlayDocsValidation {
       log.info("[" + Colors.green("pass") + "] External links test")
     } else {
       log.info(
-        "[" + Colors.red("fail") + "] External links test (" + invalidRefs
-          .size + " errors)")
+        "[" + Colors.red("fail") + "] External links test (" +
+          invalidRefs.size + " errors)")
       throw new RuntimeException("External links validation failed")
     }
 

@@ -190,9 +190,10 @@ object AtLeastOnceDeliveryFailureSpec {
         // snd will be stopped if recovery or persist fails
         log.debug(s"sender stopped, starting it again")
         snd = createSender()
-        1 to numMessages foreach (i ⇒
-          if (!acks(i))
-            snd ! i)
+        1 to numMessages foreach
+          (i ⇒
+            if (!acks(i))
+              snd ! i)
     }
   }
 }

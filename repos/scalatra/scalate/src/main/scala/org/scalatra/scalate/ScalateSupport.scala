@@ -129,11 +129,12 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
 
     ScalateSupport.setLayoutStrategy(this)
     templateDirectories = defaultTemplatePath
-    bindings ::= Binding(
-      "context",
-      "_root_." + classOf[ScalatraRenderContext].getName,
-      importMembers = true,
-      isImplicit = true)
+    bindings ::=
+      Binding(
+        "context",
+        "_root_." + classOf[ScalatraRenderContext].getName,
+        importMembers = true,
+        isImplicit = true)
     importStatements ::= "import org.scalatra.servlet.ServletApiImplicits._"
   }
 
@@ -291,10 +292,10 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     val buffer = new StringWriter()
     val out = new PrintWriter(buffer)
     val context = createRenderContext(out)
-    val attrs = templateAttributes ++ (
-      defaultLayoutPath map (p =>
-        Map("layout" -> p) ++ Map(attributes: _*)) getOrElse Map(attributes: _*)
-    )
+    val attrs = templateAttributes ++
+      (defaultLayoutPath map
+        (p => Map("layout" -> p) ++ Map(attributes: _*)) getOrElse
+        Map(attributes: _*))
 
     attrs foreach {
       case (k, v) =>

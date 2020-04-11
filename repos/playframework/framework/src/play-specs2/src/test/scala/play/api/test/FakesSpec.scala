@@ -32,13 +32,15 @@ object FakesSpec extends PlaySpecification {
               Results.Ok("inline route")
             }
         }) { app =>
-        route(app, FakeRequest("GET", "/inline")) must beSome.which { result =>
-          status(result) must equalTo(OK)
-          contentAsString(result) must equalTo("inline route")
-        }
-        route(app, FakeRequest("GET", "/foo")) must beSome.which { result =>
-          status(result) must equalTo(NOT_FOUND)
-        }
+        route(app, FakeRequest("GET", "/inline")) must
+          beSome.which { result =>
+            status(result) must equalTo(OK)
+            contentAsString(result) must equalTo("inline route")
+          }
+        route(app, FakeRequest("GET", "/foo")) must
+          beSome.which { result =>
+            status(result) must equalTo(NOT_FOUND)
+          }
       }
     }
   }
@@ -54,47 +56,55 @@ object FakesSpec extends PlaySpecification {
         }
         .build()
 
-    "Define Content-Type header based on body" in new WithApplication(app) {
-      val xml = <foo>
+    "Define Content-Type header based on body" in
+      new WithApplication(app) {
+        val xml = <foo>
           <bar>
             baz
           </bar>
         </foo>
-      val bytes = ByteString(xml.toString, "utf-16le")
-      val req = FakeRequest(PUT, "/process").withRawBody(bytes)
-      route(req) aka "response" must beSome.which { resp =>
-        contentAsString(resp) aka "content" must_== "application/octet-stream"
+        val bytes = ByteString(xml.toString, "utf-16le")
+        val req = FakeRequest(PUT, "/process").withRawBody(bytes)
+        route(req) aka "response" must
+          beSome.which { resp =>
+            contentAsString(resp) aka "content" must_==
+              "application/octet-stream"
+          }
       }
-    }
 
-    "Not override explicit Content-Type header" in new WithApplication(app) {
-      val xml = <foo>
+    "Not override explicit Content-Type header" in
+      new WithApplication(app) {
+        val xml = <foo>
           <bar>
             baz
           </bar>
         </foo>
-      val bytes = ByteString(xml.toString, "utf-16le")
-      val req = FakeRequest(PUT, "/process")
-        .withRawBody(bytes)
-        .withHeaders(CONTENT_TYPE -> "text/xml;charset=utf-16le")
-      route(req) aka "response" must beSome.which { resp =>
-        contentAsString(resp) aka "content" must_== "text/xml;charset=utf-16le"
+        val bytes = ByteString(xml.toString, "utf-16le")
+        val req = FakeRequest(PUT, "/process")
+          .withRawBody(bytes)
+          .withHeaders(CONTENT_TYPE -> "text/xml;charset=utf-16le")
+        route(req) aka "response" must
+          beSome.which { resp =>
+            contentAsString(resp) aka "content" must_==
+              "text/xml;charset=utf-16le"
+          }
       }
-    }
 
-    "set a Content-Type header when one is unspecified and required" in new WithApplication() {
-      val request = FakeRequest(GET, "/testCall")
-        .withJsonBody(Json.obj("foo" -> "bar"))
+    "set a Content-Type header when one is unspecified and required" in
+      new WithApplication() {
+        val request = FakeRequest(GET, "/testCall")
+          .withJsonBody(Json.obj("foo" -> "bar"))
 
-      contentTypeForFakeRequest(request) must contain("application/json")
-    }
-    "not overwrite the Content-Type header when specified" in new WithApplication() {
-      val request = FakeRequest(GET, "/testCall")
-        .withJsonBody(Json.obj("foo" -> "bar"))
-        .withHeaders(CONTENT_TYPE -> "application/test+json")
+        contentTypeForFakeRequest(request) must contain("application/json")
+      }
+    "not overwrite the Content-Type header when specified" in
+      new WithApplication() {
+        val request = FakeRequest(GET, "/testCall")
+          .withJsonBody(Json.obj("foo" -> "bar"))
+          .withHeaders(CONTENT_TYPE -> "application/test+json")
 
-      contentTypeForFakeRequest(request) must contain("application/test+json")
-    }
+        contentTypeForFakeRequest(request) must contain("application/test+json")
+      }
   }
 
   def contentTypeForFakeRequest[T](request: FakeRequest[AnyContentAsJson])(

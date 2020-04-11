@@ -74,8 +74,8 @@ object DotGraph {
     for ((key, values) <- relation.forwardMap;
          keyString = keyToString(key);
          value <- values)
-      mappedGraph
-        .getOrElseUpdate(keyString, new HashSet[String]) += valueToString(value)
+      mappedGraph.getOrElseUpdate(keyString, new HashSet[String]) +=
+        valueToString(value)
 
     val mappings =
       for {
@@ -84,10 +84,7 @@ object DotGraph {
         if dependant != dependsOn && !dependsOn.isEmpty && !dependant.isEmpty
       } yield "\"" + dependant + "\" -> \"" + dependsOn + "\""
 
-    val lines =
-      ("digraph " + graphName + " {") +:
-        mappings :+
-        "}"
+    val lines = ("digraph " + graphName + " {") +: mappings :+ "}"
 
     IO.writeLines(file, lines)
   }

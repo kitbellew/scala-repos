@@ -45,8 +45,7 @@ abstract class ExplicitOuter
     val parentSym = parent.typeSymbol
 
     parentSym.isClass && owner.isClass &&
-    (owner isSubClass parentSym.owner) &&
-    owner.thisType =:= parent.prefix
+    (owner isSubClass parentSym.owner) && owner.thisType =:= parent.prefix
   }
 
   /** Does given clazz define an outer field? */
@@ -89,12 +88,11 @@ abstract class ExplicitOuter
       findOrElse(clazz.info.decls)(_.outerSource == clazz)(NoSymbol)
   }
   def newOuterAccessor(clazz: Symbol) = {
-    val accFlags = SYNTHETIC | ARTIFACT | STABLE | (
-      if (clazz.isTrait)
-        DEFERRED
-      else
-        0
-    )
+    val accFlags = SYNTHETIC | ARTIFACT | STABLE |
+      (if (clazz.isTrait)
+         DEFERRED
+       else
+         0)
     val sym = clazz.newMethod(nme.OUTER, clazz.pos, accFlags)
     val restpe =
       if (clazz.isTrait)
@@ -107,12 +105,11 @@ abstract class ExplicitOuter
     sym setInfo MethodType(Nil, restpe)
   }
   def newOuterField(clazz: Symbol) = {
-    val accFlags = SYNTHETIC | ARTIFACT | PARAMACCESSOR | (
-      if (clazz.isEffectivelyFinal)
-        PrivateLocal
-      else
-        PROTECTED
-    )
+    val accFlags = SYNTHETIC | ARTIFACT | PARAMACCESSOR |
+      (if (clazz.isEffectivelyFinal)
+         PrivateLocal
+       else
+         PROTECTED)
     val sym = clazz.newValue(nme.OUTER_LOCAL, clazz.pos, accFlags)
 
     sym setInfo clazz.outerClass.thisType
@@ -306,8 +303,7 @@ abstract class ExplicitOuter
         // use it (i.e. reference is allowed to be of the form this.$outer),
         // otherwise it is NoSymbol
         val outerFld =
-          if (outerAcc.owner == currentClass &&
-              !outerAcc.owner.isTrait &&
+          if (outerAcc.owner == currentClass && !outerAcc.owner.isTrait &&
               base.tpe =:= currentClass.thisType &&
               outerAcc.owner.isEffectivelyFinal)
             outerField(currentClass) suchThat (_.owner == currentClass)
@@ -441,7 +437,8 @@ abstract class ExplicitOuter
       def mixinPrefix = (currentClass.thisType baseType mixinClass).prefix
       assert(
         outerAcc != NoSymbol,
-        "No outer accessor for inner mixin " + mixinClass + " in " + currentClass)
+        "No outer accessor for inner mixin " + mixinClass + " in " +
+          currentClass)
       assert(
         outerAcc.alternatives.size == 1,
         s"Multiple outer accessors match inner mixin $mixinClass in $currentClass : ${outerAcc.alternatives.map(_.defString)}")
@@ -454,9 +451,10 @@ abstract class ExplicitOuter
                   else
                     gen.mkAttributedQualifier(mixinPrefix))
       // Need to cast for nested outer refs in presence of self-types. See ticket #3274.
-      localTyper typed DefDef(
-        outerAcc,
-        gen.mkCast(transformer.transform(path), outerAcc.info.resultType))
+      localTyper typed
+        DefDef(
+          outerAcc,
+          gen.mkCast(transformer.transform(path), outerAcc.info.resultType))
     }
 
     /** The main transformation method */
@@ -480,9 +478,8 @@ abstract class ExplicitOuter
               }
               if (!currentClass.isTrait)
                 for (mc <- currentClass.mixinClasses)
-                  if (outerAccessor(mc) != NoSymbol && !skipMixinOuterAccessor(
-                        currentClass,
-                        mc))
+                  if (outerAccessor(mc) != NoSymbol &&
+                      !skipMixinOuterAccessor(currentClass, mc))
                     newDefs += mixinOuterAccessorDef(mc)
             }
           }
@@ -507,12 +504,10 @@ abstract class ExplicitOuter
                         s"Implementation restriction: ${clazz.fullLocationString} requires premature access to ${clazz.outerClass}.")
                     }
                     val outerParam =
-                      sym.newValueParameter(nme.OUTER, sym.pos) setInfo clazz
-                        .outerClass
-                        .thisType
-                    (
-                      (ValDef(outerParam) setType NoType) :: vparamss.head
-                    ) :: vparamss.tail
+                      sym.newValueParameter(nme.OUTER, sym.pos) setInfo
+                        clazz.outerClass.thisType
+                    ((ValDef(outerParam) setType NoType) :: vparamss.head) ::
+                      vparamss.tail
                   } else
                     vparamss
                 super.transform(copyDefDef(tree)(vparamss = vparamss1))
@@ -538,17 +533,14 @@ abstract class ExplicitOuter
             closestEnclMethod(currentOwner) hasAnnotation ScalaInlineClass
           // SI-8710 The extension method condition reflects our knowledge that a call to `new Meter(12).privateMethod`
           //         with later be rewritten (in erasure) to `Meter.privateMethod$extension(12)`.
-          if ((currentClass != sym.owner || enclMethodIsInline) && !sym
-                .isMethodWithExtension)
+          if ((currentClass != sym.owner || enclMethodIsInline) &&
+              !sym.isMethodWithExtension)
             sym.makeNotPrivate(sym.owner)
 
           val qsym = qual.tpe.widen.typeSymbol
           if (sym.isProtected && //(4)
-              (
-                qsym.isTrait || !(
-                  qual.isInstanceOf[Super] || (qsym isSubClass currentClass)
-                )
-              ))
+              (qsym.isTrait ||
+              !(qual.isInstanceOf[Super] || (qsym isSubClass currentClass))))
             sym setFlag notPROTECTED
           super.transform(tree)
 

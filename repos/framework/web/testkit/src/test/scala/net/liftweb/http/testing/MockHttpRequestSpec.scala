@@ -57,9 +57,8 @@ object MockHttpRequestSpec extends Specification {
       testRequest.getServerName must_== "foo.com"
       testRequest.getContextPath must_== "/test"
       testRequest.getRequestURI must_== "/test/this/page"
-      testRequest
-        .getRequestURL
-        .toString must_== TEST_URL_BLANK_PARAMETER_SERIALIZED
+      testRequest.getRequestURL.toString must_==
+        TEST_URL_BLANK_PARAMETER_SERIALIZED
       testRequest.getQueryString must_== "a=b&b=a&c=&d="
       testRequest.getParameter("c") must_== ""
       testRequest.getParameter("d") must_== ""
@@ -78,28 +77,25 @@ object MockHttpRequestSpec extends Specification {
     "throw an IllegalArgumentException for an invalid date header" in {
       val testRequest = new MockHttpServletRequest(TEST_URL, "/test")
 
-      testRequest
-        .headers += IF_MODIFIED_HEADER -> List("this is not a valid date")
+      testRequest.headers += IF_MODIFIED_HEADER ->
+        List("this is not a valid date")
 
-      testRequest
-        .getDateHeader(IF_MODIFIED_HEADER) must throwA[IllegalArgumentException]
+      testRequest.getDateHeader(IF_MODIFIED_HEADER) must
+        throwA[IllegalArgumentException]
     }
 
     "throw an IllegalArgumentException for an invalid context path" in {
-      (
-        new MockHttpServletRequest(TEST_URL, "foo")
-      ) must throwA[IllegalArgumentException]
-      (
-        new MockHttpServletRequest(TEST_URL, "/foo/")
-      ) must throwA[IllegalArgumentException]
+      (new MockHttpServletRequest(TEST_URL, "foo")) must
+        throwA[IllegalArgumentException]
+      (new MockHttpServletRequest(TEST_URL, "/foo/")) must
+        throwA[IllegalArgumentException]
     }
 
     "throw an IllegalArgumentException for an invalid query string" in {
       val testRequest = new MockHttpServletRequest(TEST_URL, "/test")
 
-      (
-        testRequest.queryString = "this=a&&that=b"
-      ) must throwA[IllegalArgumentException]
+      (testRequest.queryString = "this=a&&that=b") must
+        throwA[IllegalArgumentException]
     }
 
     "properly set a default content type for JSON" in {

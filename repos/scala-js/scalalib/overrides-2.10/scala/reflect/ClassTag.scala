@@ -118,8 +118,8 @@ trait ClassTag[T]
   // case class accessories
   override def canEqual(x: Any) = x.isInstanceOf[ClassTag[_]]
   override def equals(x: Any) =
-    x.isInstanceOf[ClassTag[_]] && this
-      .runtimeClass == x.asInstanceOf[ClassTag[_]].runtimeClass
+    x.isInstanceOf[ClassTag[_]] &&
+      this.runtimeClass == x.asInstanceOf[ClassTag[_]].runtimeClass
   override def hashCode = scala.runtime.ScalaRunTime.hash(runtimeClass)
   override def toString = {
     def prettyprint(clazz: jClass[_]): String =

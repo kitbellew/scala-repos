@@ -38,16 +38,17 @@ final class DfaEngine[E](
           ).map(after(_))))
       if (!l.eq(newAfter, after(v))) {
         after(v) = newAfter
-        workList addAll java
-          .util
-          .Arrays
-          .asList(
-            (
-              if (forward)
-                v.succ().toArray
-              else
-                v.pred().toArray
-            ): _*)
+        workList addAll
+          java
+            .util
+            .Arrays
+            .asList(
+              (
+                if (forward)
+                  v.succ().toArray
+                else
+                  v.pred().toArray
+              ): _*)
       }
     }
     after

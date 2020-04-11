@@ -39,9 +39,8 @@ class FlowDropWithinSpec extends AkkaSpec {
       (1 to demand3.toInt) foreach { _ ⇒
         pSub.sendNext(input.next())
       }
-      (
-        (demand1 + demand2 + 1).toInt to (demand1 + demand2 + demand3).toInt
-      ) foreach { n ⇒
+      ((demand1 + demand2 + 1).toInt to
+        (demand1 + demand2 + demand3).toInt) foreach { n ⇒
         c.expectNext(n)
       }
       pSub.sendComplete()

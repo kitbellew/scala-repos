@@ -61,9 +61,10 @@ trait Manifest[T] extends ClassManifest[T] with Equals {
   override def equals(that: Any): Boolean =
     that match {
       case m: Manifest[_] =>
-        (m canEqual this) && (this.erasure == m.erasure) && (this <:< m) && (
-          m <:< this
-        )
+        (m canEqual this) &&
+          (this.erasure == m.erasure) &&
+          (this <:< m) &&
+          (m <:< this)
       case _ =>
         false
     }
@@ -315,19 +316,14 @@ object ManifestFactory {
       extends Manifest[T] {
     def runtimeClass: Predef.Class[_] = runtimeClass1
     override def toString =
-      (
-        if (prefix.isEmpty)
-          ""
-        else
-          prefix.get.toString + "#"
-      ) +
-        (
-          if (erasure.isArray)
-            "Array"
-          else
-            erasure.getName
-        ) +
-        argString
+      (if (prefix.isEmpty)
+         ""
+       else
+         prefix.get.toString + "#") +
+        (if (erasure.isArray)
+           "Array"
+         else
+           erasure.getName) + argString
   }
 
   def arrayType[T](arg: Manifest[_]): Manifest[Array[T]] =
@@ -356,18 +352,14 @@ object ManifestFactory {
       def runtimeClass = upperBound.erasure
       override def toString =
         "_" +
-          (
-            if (lowerBound eq Nothing)
-              ""
-            else
-              " >: " + lowerBound
-          ) +
-          (
-            if (upperBound eq Nothing)
-              ""
-            else
-              " <: " + upperBound
-          )
+          (if (lowerBound eq Nothing)
+             ""
+           else
+             " >: " + lowerBound) +
+          (if (upperBound eq Nothing)
+             ""
+           else
+             " <: " + upperBound)
     }
 
   /** Manifest for the intersection type `parents_0 with ... with parents_n'. */

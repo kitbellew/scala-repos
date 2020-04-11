@@ -89,11 +89,12 @@ object Setup extends LilaController with TheftPrevention {
                         initialFen = config.fen,
                         timeControl = config.makeClock map { c =>
                           TimeControl.Clock(c.limit, c.increment)
-                        } orElse config
-                          .makeDaysPerTurn
-                          .map {
-                            TimeControl.Correspondence.apply
-                          } getOrElse TimeControl.Unlimited,
+                        } orElse
+                          config
+                            .makeDaysPerTurn
+                            .map {
+                              TimeControl.Correspondence.apply
+                            } getOrElse TimeControl.Unlimited,
                         mode = config.mode,
                         color = config.color.name,
                         challenger = (ctx.me, HTTPRequest sid req) match {
@@ -108,10 +109,12 @@ object Setup extends LilaController with TheftPrevention {
                         rematchOf = none
                       )
                     env.processor.saveFriendConfig(config) >>
-                      (Env.challenge.api create challenge) >> negotiate(
-                      html = fuccess(
-                        Redirect(routes.Round.watcher(challenge.id, "white"))),
-                      api = _ => Challenge showChallenge challenge)
+                      (Env.challenge.api create challenge) >>
+                      negotiate(
+                        html = fuccess(
+                          Redirect(
+                            routes.Round.watcher(challenge.id, "white"))),
+                        api = _ => Challenge showChallenge challenge)
                 }
             }
           )
@@ -154,14 +157,11 @@ object Setup extends LilaController with TheftPrevention {
                   blocking =>
                     env
                       .processor
-                      .hook(
-                        config,
-                        uid,
-                        HTTPRequest sid req,
-                        blocking) map hookResponse recover {
-                      case e: IllegalArgumentException =>
-                        BadRequest(jsonError(e.getMessage)) as JSON
-                    }
+                      .hook(config, uid, HTTPRequest sid req, blocking) map
+                      hookResponse recover {
+                        case e: IllegalArgumentException =>
+                          BadRequest(jsonError(e.getMessage)) as JSON
+                      }
                 }
             )
         }
@@ -180,14 +180,11 @@ object Setup extends LilaController with TheftPrevention {
                 blocking =>
                   env
                     .processor
-                    .hook(
-                      config,
-                      uid,
-                      HTTPRequest sid ctx.req,
-                      blocking) map hookResponse recover {
-                    case e: IllegalArgumentException =>
-                      BadRequest(jsonError(e.getMessage)) as JSON
-                  }
+                    .hook(config, uid, HTTPRequest sid ctx.req, blocking) map
+                    hookResponse recover {
+                      case e: IllegalArgumentException =>
+                        BadRequest(jsonError(e.getMessage)) as JSON
+                    }
               }
             }
           }
@@ -259,10 +256,11 @@ object Setup extends LilaController with TheftPrevention {
     if (ctx.isAuth)
       redir
     else
-      redir withCookies LilaCookie.cookie(
-        AnonCookie.name,
-        pov.playerId,
-        maxAge = AnonCookie.maxAge.some,
-        httpOnly = false.some)
+      redir withCookies
+        LilaCookie.cookie(
+          AnonCookie.name,
+          pov.playerId,
+          maxAge = AnonCookie.maxAge.some,
+          httpOnly = false.some)
   }
 }

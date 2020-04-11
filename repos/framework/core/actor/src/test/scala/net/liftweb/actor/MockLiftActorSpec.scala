@@ -63,10 +63,11 @@ class MockLiftActorSpec extends Specification {
       mockActor ! MockSpecActorMessage2
       mockActor ! MockSpecActorMessage3
 
-      mockActor.messages must_== List(
-        MockSpecActorMessage3,
-        MockSpecActorMessage2,
-        MockSpecActorMessage1)
+      mockActor.messages must_==
+        List(
+          MockSpecActorMessage3,
+          MockSpecActorMessage2,
+          MockSpecActorMessage1)
     }
   }
 
@@ -106,10 +107,11 @@ class MockLiftActorSpec extends Specification {
       mockActor ! MockSpecActorMessage2
       mockActor ! MockSpecActorMessage3
 
-      mockActor.messages must_== List(
-        MockSpecActorMessage3,
-        MockSpecActorMessage2,
-        MockSpecActorMessage1)
+      mockActor.messages must_==
+        List(
+          MockSpecActorMessage3,
+          MockSpecActorMessage2,
+          MockSpecActorMessage1)
     }
   }
 }

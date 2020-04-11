@@ -15,18 +15,17 @@ object Docs {
   def siteInclude(f: File) = !siteExcludes.contains(f.getName)
 
   def settings: Seq[Setting[_]] =
-    site.settings ++
-      site.includeScaladoc("api") ++
-      siteIncludeSxr("sxr") ++
+    site.settings ++ site.includeScaladoc("api") ++ siteIncludeSxr("sxr") ++
       ghPagesSettings
 
   def ghPagesSettings =
-    ghpages.settings ++ Seq(
-      git.remoteRepo := "git@github.com:sbt/sbt.github.com.git",
-      localRepoDirectory,
-      ghkeys.synchLocal <<= synchLocalImpl,
-      GitKeys.gitBranch in ghkeys.updatedRepository := Some("master")
-    )
+    ghpages.settings ++
+      Seq(
+        git.remoteRepo := "git@github.com:sbt/sbt.github.com.git",
+        localRepoDirectory,
+        ghkeys.synchLocal <<= synchLocalImpl,
+        GitKeys.gitBranch in ghkeys.updatedRepository := Some("master")
+      )
 
   def localRepoDirectory =
     ghkeys.repository := {
@@ -37,13 +36,13 @@ object Docs {
           "snapshot"
         else
           "public"
-      Path.userHome / ".sbt" / "ghpages" / status / organization.value / name
-        .value
+      Path.userHome / ".sbt" / "ghpages" / status / organization.value /
+        name.value
     }
 
   def siteIncludeSxr(prefix: String) =
-    Seq(mappings in sxr <<= sxr.map(dir => Path.allSubpaths(dir).toSeq)) ++ site
-      .addMappingsToSiteDir(mappings in sxr, prefix)
+    Seq(mappings in sxr <<= sxr.map(dir => Path.allSubpaths(dir).toSeq)) ++
+      site.addMappingsToSiteDir(mappings in sxr, prefix)
 
   def synchLocalImpl =
     (ghkeys.privateMappings, ghkeys.updatedRepository, version, streams) map {

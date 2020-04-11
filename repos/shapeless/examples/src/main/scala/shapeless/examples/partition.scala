@@ -80,11 +80,12 @@ object ADTPartitionExample extends App {
             c.collect {
               case Inl(h) =>
                 h: H
-            }) :: cp(
-            c.collect {
-              case Inr(t) =>
-                t
-            })
+            }) ::
+            cp(
+              c.collect {
+                case Inr(t) =>
+                  t
+              })
       }
   }
 

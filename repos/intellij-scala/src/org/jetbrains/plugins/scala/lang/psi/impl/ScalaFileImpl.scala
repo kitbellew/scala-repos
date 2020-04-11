@@ -114,16 +114,15 @@ class ScalaFileImpl(
       this
     else {
       val inner: String = getPackageNameInner
-      val pName = inner + typeDefinitions
-        .find(_.isPackageObject)
-        .map(
-          (
-            if (inner.length > 0)
-              "."
-            else
-              ""
-          ) + _.name)
-        .getOrElse("")
+      val pName = inner +
+        typeDefinitions
+          .find(_.isPackageObject)
+          .map(
+            (if (inner.length > 0)
+               "."
+             else
+               "") + _.name)
+          .getOrElse("")
       val sourceFile = sourceName
       val relPath =
         if (pName.length == 0)
@@ -256,16 +255,13 @@ class ScalaFileImpl(
   def isWorksheetFile: Boolean = {
     val vFile = getVirtualFile
 
-    vFile != null && (
-      vFile.getExtension == ScalaFileType.WORKSHEET_EXTENSION ||
-      ScratchFileService
-        .getInstance()
-        .getRootType(vFile)
-        .isInstanceOf[ScratchRootType] &&
-      ScalaProjectSettings
-        .getInstance(getProject)
-        .isTreatScratchFilesAsWorksheet
-    )
+    vFile != null &&
+    (vFile.getExtension == ScalaFileType.WORKSHEET_EXTENSION ||
+    ScratchFileService
+      .getInstance()
+      .getRootType(vFile)
+      .isInstanceOf[ScratchRootType] &&
+    ScalaProjectSettings.getInstance(getProject).isTreatScratchFilesAsWorksheet)
   }
 
   def setPackageName(name: String) {
@@ -316,8 +312,8 @@ class ScalaFileImpl(
         if (vector.nonEmpty) {
           val packagingsText = {
             val path = {
-              val splits = ScalaFileImpl.toVector(base) :: ScalaFileImpl
-                .splitsIn(ScalaFileImpl.pathIn(this))
+              val splits = ScalaFileImpl.toVector(base) ::
+                ScalaFileImpl.splitsIn(ScalaFileImpl.pathIn(this))
               splits.foldLeft(List(vector))(ScalaFileImpl.splitAt)
             }
             path.map(_.mkString("package ", ".", "")).mkString("", "\n", "\n\n")
@@ -488,8 +484,8 @@ class ScalaFileImpl(
     this,
     ScalaPsiManager.instance(getProject).modificationTracker)
   protected def isScalaPredefinedClass: Boolean = {
-    typeDefinitions.length == 1 && Set("scala", "scala.Predef")
-      .contains(typeDefinitions.head.qualifiedName)
+    typeDefinitions.length == 1 &&
+    Set("scala", "scala.Predef").contains(typeDefinitions.head.qualifiedName)
   }
 
   def isScalaPredefinedClassInner =
@@ -636,8 +632,8 @@ object ScalaFileImpl {
         val index =
           ProjectRootManager.getInstance(place.getProject).getFileIndex
         !(
-          index.isInSourceContent(file) || index
-            .isInLibraryClasses(file) || index.isInLibrarySource(file)
+          index.isInSourceContent(file) || index.isInLibraryClasses(file) ||
+            index.isInLibrarySource(file)
         )
       case _ =>
         false

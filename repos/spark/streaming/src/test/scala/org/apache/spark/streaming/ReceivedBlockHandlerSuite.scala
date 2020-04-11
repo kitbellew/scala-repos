@@ -386,7 +386,8 @@ class ReceivedBlockHandlerSuite
             blockStoreResult.numRecords === expectedNumRecords,
             "Message count not matches for a " +
               receivedBlock.getClass.getName +
-              " being inserted using BlockManagerBasedBlockHandler with " + sLevel
+              " being inserted using BlockManagerBasedBlockHandler with " +
+              sLevel
           )
         }
       } else {
@@ -400,7 +401,8 @@ class ReceivedBlockHandlerSuite
             blockStoreResult.numRecords === expectedNumRecords,
             "Message count not matches for a " +
               receivedBlock.getClass.getName +
-              " being inserted using WriteAheadLogBasedBlockHandler with " + sLevel
+              " being inserted using WriteAheadLogBasedBlockHandler with " +
+              sLevel
           )
         }
       }
@@ -429,11 +431,9 @@ class ReceivedBlockHandlerSuite
       val (blockIds, storeResults) = storeBlocks(receivedBlockHandler, blocks)
       withClue(s"Testing with ${blocks.head.getClass.getSimpleName}s:") {
         // Verify returns store results have correct block ids
-        (
-          storeResults.map {
-            _.blockId
-          }
-        ) shouldEqual blockIds
+        (storeResults.map {
+          _.blockId
+        }) shouldEqual blockIds
 
         // Call handler-specific verification function
         verifyFunc(data, blockIds, storeResults)

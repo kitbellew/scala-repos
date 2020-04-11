@@ -136,8 +136,8 @@ object ScalaClassNameCompletionContributor {
         case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
           val position = dummyPosition
           //It's ok here to use parameters.getPosition
-          val offsetInString = parameters
-            .getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
+          val offsetInString = parameters.getOffset -
+            parameters.getPosition.getTextRange.getStartOffset + 1
           val interpolated = ScalaPsiElementFactory.createExpressionFromText(
             "s" + position.getText,
             position.getContext.getContext)
@@ -146,9 +146,8 @@ object ScalaClassNameCompletionContributor {
           (dummyPosition, false)
       }
     val invocationCount = parameters.getInvocationCount
-    if (!inString && !ScalaPsiUtil
-          .fileContext(position)
-          .isInstanceOf[ScalaFile])
+    if (!inString &&
+        !ScalaPsiUtil.fileContext(position).isInstanceOf[ScalaFile])
       return true
     val lookingForAnnotations: Boolean = psiElement
       .afterLeaf("@")
@@ -159,9 +158,8 @@ object ScalaClassNameCompletionContributor {
       .getContextOfType(position, false, classOf[ScStableCodeReferenceElement])
     val refElement = ScalaPsiUtil
       .getContextOfType(position, false, classOf[ScReferenceElement])
-    val onlyClasses = stableRefElement != null && !stableRefElement
-      .getContext
-      .isInstanceOf[ScConstructorPattern]
+    val onlyClasses = stableRefElement != null &&
+      !stableRefElement.getContext.isInstanceOf[ScConstructorPattern]
 
     val renamesMap = new mutable.HashMap[String, (String, PsiNamedElement)]()
     val reverseRenamesMap = new mutable.HashMap[String, PsiNamedElement]()
@@ -208,14 +206,13 @@ object ScalaClassNameCompletionContributor {
         return
 
       val isAccessible =
-        invocationCount >= 2 || (
-          typeToImport.element match {
+        invocationCount >= 2 ||
+          (typeToImport.element match {
             case member: PsiMember =>
               ResolveUtils.isAccessible(member, position, forCompletion = true)
             case _ =>
               true
-          }
-        )
+          })
       if (!isAccessible)
         return
 
@@ -269,9 +266,8 @@ object ScalaClassNameCompletionContributor {
 
     for {
       clazz <- SyntheticClasses.get(project).all.valuesIterator
-      if checkSynthetic || !ScType
-        .baseTypesQualMap
-        .contains(clazz.qualifiedName)
+      if checkSynthetic ||
+        !ScType.baseTypesQualMap.contains(clazz.qualifiedName)
     } addTypeForCompletion(ClassTypeToImport(clazz))
 
     val prefixMatcher = result.getPrefixMatcher

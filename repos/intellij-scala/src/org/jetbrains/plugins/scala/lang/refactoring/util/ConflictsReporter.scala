@@ -50,23 +50,24 @@ class BalloonConflictsReporter(editor: Editor) extends ConflictsReporter {
   }
 
   private def createWarningBalloon(message: String): Unit = {
-    SwingUtilities invokeLater new Runnable {
-      def run(): Unit = {
-        val popupFactory = JBPopupFactory.getInstance
-        val bestLocation = popupFactory.guessBestPopupLocation(editor)
-        val screenPoint: Point = bestLocation.getScreenPoint
-        val y: Int = screenPoint.y - editor.getLineHeight * 2
-        val builder = popupFactory.createHtmlTextBalloonBuilder(
-          message,
-          null,
-          MessageType.WARNING.getPopupBackground,
-          null)
-        val balloon: Balloon =
-          builder.setFadeoutTime(-1).setShowCallout(false).createBalloon
-        balloon.show(
-          new RelativePoint(new Point(screenPoint.x, y)),
-          Balloon.Position.above)
+    SwingUtilities invokeLater
+      new Runnable {
+        def run(): Unit = {
+          val popupFactory = JBPopupFactory.getInstance
+          val bestLocation = popupFactory.guessBestPopupLocation(editor)
+          val screenPoint: Point = bestLocation.getScreenPoint
+          val y: Int = screenPoint.y - editor.getLineHeight * 2
+          val builder = popupFactory.createHtmlTextBalloonBuilder(
+            message,
+            null,
+            MessageType.WARNING.getPopupBackground,
+            null)
+          val balloon: Balloon =
+            builder.setFadeoutTime(-1).setShowCallout(false).createBalloon
+          balloon.show(
+            new RelativePoint(new Point(screenPoint.x, y)),
+            Balloon.Position.above)
+        }
       }
-    }
   }
 }

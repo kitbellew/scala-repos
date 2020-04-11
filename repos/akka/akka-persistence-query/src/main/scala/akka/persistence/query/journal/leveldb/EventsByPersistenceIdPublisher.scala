@@ -110,22 +110,19 @@ private[akka] abstract class AbstractEventsByPersistenceIdPublisher(
       currSeqNo,
       toSequenceNr,
       limit)
-    journal ! ReplayMessages(
-      currSeqNo,
-      toSequenceNr,
-      limit,
-      persistenceId,
-      self)
+    journal !
+      ReplayMessages(currSeqNo, toSequenceNr, limit, persistenceId, self)
     context.become(replaying(limit))
   }
 
   def replaying(limit: Int): Receive = {
     case ReplayedMessage(p) ⇒
-      buf :+= EventEnvelope(
-        offset = p.sequenceNr,
-        persistenceId = persistenceId,
-        sequenceNr = p.sequenceNr,
-        event = p.payload)
+      buf :+=
+        EventEnvelope(
+          offset = p.sequenceNr,
+          persistenceId = persistenceId,
+          sequenceNr = p.sequenceNr,
+          event = p.payload)
       currSeqNo = p.sequenceNr + 1
       deliverBuf()
 
@@ -234,8 +231,8 @@ private[akka] class CurrentEventsByPersistenceIdPublisher(
     deliverBuf()
     if (highestSeqNr < toSequenceNr)
       toSeqNr = highestSeqNr
-    if (buf
-          .isEmpty && (currSeqNo > toSequenceNr || currSeqNo == fromSequenceNr))
+    if (buf.isEmpty &&
+        (currSeqNo > toSequenceNr || currSeqNo == fromSequenceNr))
       onCompleteThenStop()
     else
       self ! Continue // more to fetch

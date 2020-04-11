@@ -87,8 +87,7 @@ private[http] object Handshake {
       // FIXME See #18709
       // val extensions = find[`Sec-WebSocket-Extensions`]
 
-      if (upgrade.exists(_.hasWebSocket) &&
-          connection.exists(_.hasUpgrade) &&
+      if (upgrade.exists(_.hasWebSocket) && connection.exists(_.hasUpgrade) &&
           version.exists(_.hasVersion(CurrentWebSocketVersion)) &&
           key.exists(k ⇒ k.isValid)) {
 
@@ -271,9 +270,8 @@ private[http] object Handshake {
         case Some(`candidate`) if !caseInsensitive ⇒
           true
         case Some(header)
-            if caseInsensitive && candidate.value.toRootLowerCase == header
-              .value
-              .toRootLowerCase ⇒
+            if caseInsensitive &&
+              candidate.value.toRootLowerCase == header.value.toRootLowerCase ⇒
           true
         case _ ⇒
           false

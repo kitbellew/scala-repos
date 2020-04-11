@@ -44,9 +44,8 @@ class ReplaceTypeCheckWithMatchIntention extends PsiElementBaseIntentionAction {
       if findIsInstanceOfCalls(condition, onlyFirst = false) contains iioCall
     } {
       val offset = editor.getCaretModel.getOffset
-      if (offset >= iioCall.getTextRange.getStartOffset && offset <= iioCall
-            .getTextRange
-            .getEndOffset)
+      if (offset >= iioCall.getTextRange.getStartOffset &&
+          offset <= iioCall.getTextRange.getEndOffset)
         return true
     }
     false

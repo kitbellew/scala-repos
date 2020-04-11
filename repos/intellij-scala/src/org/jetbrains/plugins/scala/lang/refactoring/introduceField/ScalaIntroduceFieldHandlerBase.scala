@@ -170,8 +170,9 @@ object ScalaIntroduceFieldHandlerBase {
     if (parExpr == null)
       return None
     val container: PsiElement = ScalaRefactoringUtil.container(parExpr, file)
-    val needBraces = !parExpr.isInstanceOf[ScBlock] && ScalaRefactoringUtil
-      .needBraces(parExpr, ScalaRefactoringUtil.nextParent(parExpr, file))
+    val needBraces = !parExpr.isInstanceOf[ScBlock] &&
+      ScalaRefactoringUtil
+        .needBraces(parExpr, ScalaRefactoringUtil.nextParent(parExpr, file))
     val parent =
       if (needBraces) {
         firstRange = firstRange.shiftRight(1)

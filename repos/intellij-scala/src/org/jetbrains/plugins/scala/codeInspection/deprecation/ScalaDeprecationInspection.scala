@@ -73,8 +73,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
               if (!doc.isDeprecated)
                 return
           }
-          if (!doc.isDeprecated && !Option(doc.containingClass)
-                .exists(_.isDeprecated))
+          if (!doc.isDeprecated &&
+              !Option(doc.containingClass).exists(_.isDeprecated))
             return
         case _ =>
           return

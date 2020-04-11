@@ -34,8 +34,8 @@ object RoutesCompilerSpec extends Specification with FileMatchers {
       }
     }
 
-    "generate routes classes for route definitions that pass the checks" in withTempDir {
-      tmp =>
+    "generate routes classes for route definitions that pass the checks" in
+      withTempDir { tmp =>
         val file =
           new File(
             this.getClass.getClassLoader.getResource("generating.routes").toURI)
@@ -51,10 +51,10 @@ object RoutesCompilerSpec extends Specification with FileMatchers {
           tmp,
           "controllers/javascript/JavaScriptReverseRoutes.scala") must exist
         new File(tmp, "controllers/routes.java") must exist
-    }
+      }
 
-    "check if there are no routes using overloaded handler methods" in withTempDir {
-      tmp =>
+    "check if there are no routes using overloaded handler methods" in
+      withTempDir { tmp =>
         val file =
           new File(
             this
@@ -66,26 +66,36 @@ object RoutesCompilerSpec extends Specification with FileMatchers {
           RoutesCompilerTask(file, Seq.empty, true, true, false),
           StaticRoutesGenerator,
           tmp) must beLeft
-    }
+      }
 
-    "check if routes with type projection are compiled" in withTempDir { tmp =>
-      val file =
-        new File(
-          this.getClass.getClassLoader.getResource("complexTypes.routes").toURI)
-      RoutesCompiler.compile(
-        RoutesCompilerTask(file, Seq.empty, true, true, false),
-        StaticRoutesGenerator,
-        tmp) must beRight
-    }
+    "check if routes with type projection are compiled" in
+      withTempDir { tmp =>
+        val file =
+          new File(
+            this
+              .getClass
+              .getClassLoader
+              .getResource("complexTypes.routes")
+              .toURI)
+        RoutesCompiler.compile(
+          RoutesCompilerTask(file, Seq.empty, true, true, false),
+          StaticRoutesGenerator,
+          tmp) must beRight
+      }
 
-    "check if routes with complex names are compiled" in withTempDir { tmp =>
-      val file =
-        new File(
-          this.getClass.getClassLoader.getResource("complexNames.routes").toURI)
-      RoutesCompiler.compile(
-        RoutesCompilerTask(file, Seq.empty, true, true, false),
-        StaticRoutesGenerator,
-        tmp) must beRight
-    }
+    "check if routes with complex names are compiled" in
+      withTempDir { tmp =>
+        val file =
+          new File(
+            this
+              .getClass
+              .getClassLoader
+              .getResource("complexNames.routes")
+              .toURI)
+        RoutesCompiler.compile(
+          RoutesCompilerTask(file, Seq.empty, true, true, false),
+          StaticRoutesGenerator,
+          tmp) must beRight
+      }
   }
 }

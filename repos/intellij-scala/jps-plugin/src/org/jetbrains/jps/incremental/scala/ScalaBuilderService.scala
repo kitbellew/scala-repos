@@ -23,8 +23,8 @@ class ScalaBuilderService extends BuilderService {
     new StandardResourceBuilderEnabler {
       def isResourceProcessingEnabled(module: JpsModule): Boolean = {
         val moduleType = module.getModuleType
-        moduleType != SbtModuleType
-          .INSTANCE && moduleType != SharedSourcesModuleType.INSTANCE
+        moduleType != SbtModuleType.INSTANCE &&
+        moduleType != SharedSourcesModuleType.INSTANCE
       }
     })
 

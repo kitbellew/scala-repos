@@ -44,8 +44,8 @@ class ScalaIterableComponentTypeMacro extends Macro {
     MacroUtil.scalaIdPrefix + "iterableComponentType"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
-      .message("macro.iterable.component.type")
+    MacroUtil.scalaPresentablePrefix +
+      CodeInsightBundle.message("macro.iterable.component.type")
 
   override def calculateQuickResult(
       params: Array[Expression],

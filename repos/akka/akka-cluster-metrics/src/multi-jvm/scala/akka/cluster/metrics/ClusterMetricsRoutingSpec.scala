@@ -68,8 +68,8 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
   nodeList foreach { role ⇒
     nodeConfig(role) {
       ConfigFactory.parseString(
-        "akka.cluster.metrics.native-library-extract-folder=${user.dir}/target/native/" + role
-          .name)
+        "akka.cluster.metrics.native-library-extract-folder=${user.dir}/target/native/" +
+          role.name)
     }
   }
 
@@ -205,31 +205,32 @@ abstract class AdaptiveLoadBalancingRouterSpec
       enterBarrier("after-1")
     }
 
-    "use all nodes in the cluster when not overloaded" taggedAs LongRunningTest in {
-      runOn(node1) {
-        val router1 = startRouter("router1")
+    "use all nodes in the cluster when not overloaded" taggedAs
+      LongRunningTest in {
+        runOn(node1) {
+          val router1 = startRouter("router1")
 
-        // collect some metrics before we start
-        metricsAwait()
+          // collect some metrics before we start
+          metricsAwait()
 
-        val iterationCount = 100
-        1 to iterationCount foreach { _ ⇒
-          router1 ! "hit"
-          // wait a while between each message, since metrics is collected periodically
-          Thread.sleep(10)
+          val iterationCount = 100
+          1 to iterationCount foreach { _ ⇒
+            router1 ! "hit"
+            // wait a while between each message, since metrics is collected periodically
+            Thread.sleep(10)
+          }
+
+          val replies = receiveReplies(iterationCount)
+
+          replies(node1) should be > (0)
+          replies(node2) should be > (0)
+          replies(node3) should be > (0)
+          replies.values.sum should ===(iterationCount)
+
         }
 
-        val replies = receiveReplies(iterationCount)
-
-        replies(node1) should be > (0)
-        replies(node2) should be > (0)
-        replies(node3) should be > (0)
-        replies.values.sum should ===(iterationCount)
-
+        enterBarrier("after-2")
       }
-
-      enterBarrier("after-2")
-    }
 
     "prefer node with more free heap capacity" taggedAs LongRunningTest in {
       System.gc()
@@ -282,22 +283,25 @@ abstract class AdaptiveLoadBalancingRouterSpec
       enterBarrier("after-4")
     }
 
-    "create routees from cluster.enabled configuration" taggedAs LongRunningTest in {
-      runOn(node1) {
-        val router4 = system.actorOf(FromConfig.props(Props[Memory]), "router4")
-        // it may take some time until router receives cluster member events
-        awaitAssert {
-          currentRoutees(router4).size should ===(6)
-        }
-        val routees = currentRoutees(router4)
-        routees
-          .map {
-            case ActorRefRoutee(ref) ⇒
-              fullAddress(ref)
+    "create routees from cluster.enabled configuration" taggedAs
+      LongRunningTest in {
+        runOn(node1) {
+          val router4 = system
+            .actorOf(FromConfig.props(Props[Memory]), "router4")
+          // it may take some time until router receives cluster member events
+          awaitAssert {
+            currentRoutees(router4).size should ===(6)
           }
-          .toSet should ===(Set(address(node1), address(node2), address(node3)))
+          val routees = currentRoutees(router4)
+          routees
+            .map {
+              case ActorRefRoutee(ref) ⇒
+                fullAddress(ref)
+            }
+            .toSet should
+            ===(Set(address(node1), address(node2), address(node3)))
+        }
+        enterBarrier("after-5")
       }
-      enterBarrier("after-5")
-    }
   }
 }

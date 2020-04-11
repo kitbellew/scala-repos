@@ -150,9 +150,10 @@ final class CircuitBreakerProxy(
       log.debug(
         "Received call succeeded notification in state {} resetting counter",
         state)
-      goto(Closed) using CircuitBreakerStateData(
-        failureCount = 0,
-        firstHalfOpenMessageSent = false)
+      goto(Closed) using
+        CircuitBreakerStateData(
+          failureCount = 0,
+          firstHalfOpenMessageSent = false)
   }
 
   def passthroughHandling: StateFunction = {
@@ -174,7 +175,8 @@ final class CircuitBreakerProxy(
   }
 
   def commonStateHandling: StateFunction = {
-    callSucceededHandling orElse passthroughHandling orElse targetTerminationHandling
+    callSucceededHandling orElse passthroughHandling orElse
+      targetTerminationHandling
   }
 
   when(Closed) {

@@ -45,8 +45,9 @@ final class Env(
 
 object Env {
 
-  lazy val current: Env = "blog" boot new Env(
-    config = lila.common.PlayApp loadConfig "blog",
-    scheduler = lila.common.PlayApp.scheduler,
-    messageApi = lila.message.Env.current.api)
+  lazy val current: Env = "blog" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "blog",
+      scheduler = lila.common.PlayApp.scheduler,
+      messageApi = lila.message.Env.current.api)
 }

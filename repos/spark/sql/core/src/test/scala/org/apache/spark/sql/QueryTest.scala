@@ -429,9 +429,8 @@ object QueryTest {
       expectedAnswer: Seq[Row],
       sparkAnswer: Seq[Row],
       isSorted: Boolean = false): Option[String] = {
-    if (prepareAnswer(expectedAnswer, isSorted) != prepareAnswer(
-          sparkAnswer,
-          isSorted)) {
+    if (prepareAnswer(expectedAnswer, isSorted) !=
+          prepareAnswer(sparkAnswer, isSorted)) {
       val errorMessage =
         s"""
          |== Results ==

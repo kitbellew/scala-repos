@@ -185,8 +185,8 @@ class InlinerTest extends ClearAfterClass {
         false)
     )
 
-    val gBeforeLocalOpt =
-      VarOp(ALOAD, 0) :: VarOp(ASTORE, 1) :: invokeQQQ ::: List(
+    val gBeforeLocalOpt = VarOp(ALOAD, 0) :: VarOp(ASTORE, 1) :: invokeQQQ :::
+      List(
         VarOp(ASTORE, 2),
         Jump(GOTO, Label(11)),
         Label(11),
@@ -379,9 +379,8 @@ class InlinerTest extends ClearAfterClass {
       """.stripMargin
     val List(c) = compile(code)
     assert(
-      callGraph.callsites.valuesIterator.flatMap(_.valuesIterator) exists (
-        _.callsiteInstruction.name == "clone"
-      ))
+      callGraph.callsites.valuesIterator.flatMap(_.valuesIterator) exists
+        (_.callsiteInstruction.name == "clone"))
   }
 
   @Test
@@ -914,8 +913,8 @@ class InlinerTest extends ClearAfterClass {
 
     val List(c, t, u) = compile(
       code,
-      allowMessage = _
-        .msg contains "i()I is annotated @inline but cannot be inlined")
+      allowMessage = _.msg contains
+        "i()I is annotated @inline but cannot be inlined")
     val m1 = getSingleMethod(c, "m1")
     assertInvoke(m1, "T", "a")
     assertInvoke(m1, "T", "b")
@@ -1048,8 +1047,8 @@ class InlinerTest extends ClearAfterClass {
       """.stripMargin
     val List(c) =
       compileClasses(
-        newCompiler(extraArgs = InlinerTest
-          .args + " -Yopt-inline-heuristics:everything"))(code)
+        newCompiler(extraArgs = InlinerTest.args +
+          " -Yopt-inline-heuristics:everything"))(code)
     assertInvoke(getSingleMethod(c, "t"), "java/lang/System", "arraycopy")
   }
 
@@ -1080,18 +1079,18 @@ class InlinerTest extends ClearAfterClass {
     val t = getSingleMethod(c, "t").instructions
     assertNoInvoke(t)
     assert(
-      1 == t
-        .collect({
-          case Ldc(_, "hai!") =>
-        })
-        .size
+      1 ==
+        t.collect({
+            case Ldc(_, "hai!") =>
+          })
+          .size
     ) // push-pop eliminates the first LDC("hai!")
     assert(
-      1 == t
-        .collect({
-          case Jump(IFNONNULL, _) =>
-        })
-        .size
+      1 ==
+        t.collect({
+            case Jump(IFNONNULL, _) =>
+          })
+          .size
     ) // one single null check
   }
 

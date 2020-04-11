@@ -517,13 +517,13 @@ class HiveContext private[hive] (
       ConfVars.METASTORE_EVENT_CLEAN_FREQ -> TimeUnit.SECONDS,
       ConfVars.METASTORE_EVENT_EXPIRY_DURATION -> TimeUnit.SECONDS,
       ConfVars.METASTORE_AGGREGATE_STATS_CACHE_TTL -> TimeUnit.SECONDS,
-      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_WRITER_WAIT -> TimeUnit
-        .MILLISECONDS,
-      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_READER_WAIT -> TimeUnit
-        .MILLISECONDS,
+      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_WRITER_WAIT ->
+        TimeUnit.MILLISECONDS,
+      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_READER_WAIT ->
+        TimeUnit.MILLISECONDS,
       ConfVars.HIVES_AUTO_PROGRESS_TIMEOUT -> TimeUnit.SECONDS,
-      ConfVars.HIVE_LOG_INCREMENTAL_PLAN_PROGRESS_INTERVAL -> TimeUnit
-        .MILLISECONDS,
+      ConfVars.HIVE_LOG_INCREMENTAL_PLAN_PROGRESS_INTERVAL ->
+        TimeUnit.MILLISECONDS,
       ConfVars.HIVE_STATS_JDBC_TIMEOUT -> TimeUnit.SECONDS,
       ConfVars.HIVE_STATS_RETRIES_WAIT -> TimeUnit.MILLISECONDS,
       ConfVars.HIVE_LOCK_SLEEP_BETWEEN_RETRIES -> TimeUnit.SECONDS,
@@ -534,11 +534,11 @@ class HiveContext private[hive] (
       ConfVars.HIVE_COMPACTOR_CHECK_INTERVAL -> TimeUnit.SECONDS,
       ConfVars.HIVE_COMPACTOR_CLEANER_RUN_INTERVAL -> TimeUnit.MILLISECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_HTTP_MAX_IDLE_TIME -> TimeUnit.MILLISECONDS,
-      ConfVars.HIVE_SERVER2_THRIFT_HTTP_WORKER_KEEPALIVE_TIME -> TimeUnit
-        .SECONDS,
+      ConfVars.HIVE_SERVER2_THRIFT_HTTP_WORKER_KEEPALIVE_TIME ->
+        TimeUnit.SECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_HTTP_COOKIE_MAX_AGE -> TimeUnit.SECONDS,
-      ConfVars.HIVE_SERVER2_THRIFT_LOGIN_BEBACKOFF_SLOT_LENGTH -> TimeUnit
-        .MILLISECONDS,
+      ConfVars.HIVE_SERVER2_THRIFT_LOGIN_BEBACKOFF_SLOT_LENGTH ->
+        TimeUnit.MILLISECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_LOGIN_TIMEOUT -> TimeUnit.SECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_WORKER_KEEPALIVE_TIME -> TimeUnit.SECONDS,
       ConfVars.HIVE_SERVER2_ASYNC_EXEC_SHUTDOWN_TIMEOUT -> TimeUnit.SECONDS,
@@ -774,10 +774,9 @@ private[hive] object HiveContext {
       .ConfVars
       .values()
       .foreach { confvar =>
-        if (confvar.varname.contains("datanucleus") || confvar
-              .varname
-              .contains("jdo")
-            || confvar.varname.contains("hive.metastore.rawstore.impl")) {
+        if (confvar.varname.contains("datanucleus") ||
+            confvar.varname.contains("jdo") ||
+            confvar.varname.contains("hive.metastore.rawstore.impl")) {
           propMap.put(confvar.varname, confvar.getDefaultExpr())
         }
       }
@@ -838,8 +837,8 @@ private[hive] object HiveContext {
         map
           .map {
             case (key, value) =>
-              toHiveStructString((key, kType)) + ":" + toHiveStructString(
-                (value, vType))
+              toHiveStructString((key, kType)) + ":" +
+                toHiveStructString((value, vType))
           }
           .toSeq
           .sorted
@@ -877,8 +876,8 @@ private[hive] object HiveContext {
         map
           .map {
             case (key, value) =>
-              toHiveStructString((key, kType)) + ":" + toHiveStructString(
-                (value, vType))
+              toHiveStructString((key, kType)) + ":" +
+                toHiveStructString((value, vType))
           }
           .toSeq
           .sorted

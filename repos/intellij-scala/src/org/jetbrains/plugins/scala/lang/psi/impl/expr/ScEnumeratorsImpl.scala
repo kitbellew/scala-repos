@@ -46,14 +46,13 @@ class ScEnumeratorsImpl(node: ASTNode)
     val children =
       if (reverseChildren.contains(lastParent))
         reverseChildren.drop(
-          reverseChildren.indexOf(lastParent) + (
-            lastParent match {
+          reverseChildren.indexOf(lastParent) +
+            (lastParent match {
               case g: ScGenerator =>
                 1
               case _ =>
                 0
-            }
-          ))
+            }))
       else
         reverseChildren
     for (c <- children) {

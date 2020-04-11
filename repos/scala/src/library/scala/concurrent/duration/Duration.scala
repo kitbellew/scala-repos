@@ -109,13 +109,11 @@ object Duration {
     * The extractor will not match for malformed strings or non-finite durations.
     */
   def unapply(s: String): Option[(Long, TimeUnit)] =
-    (
-      try Some(apply(s))
-      catch {
-        case _: RuntimeException =>
-          None
-      }
-    ) flatMap unapply
+    (try Some(apply(s))
+    catch {
+      case _: RuntimeException =>
+        None
+    }) flatMap unapply
 
   /**
     * Extract length and time unit out of a duration, if it is finite.
@@ -261,12 +259,11 @@ object Duration {
         case _: Infinite =>
           Double.NaN
         case x =>
-          Double.PositiveInfinity * (
-            if ((this > Zero) ^ (divisor >= Zero))
-              -1
-            else
-              1
-          )
+          Double.PositiveInfinity *
+            (if ((this > Zero) ^ (divisor >= Zero))
+               -1
+             else
+               1)
       }
 
     final def isFinite() = false
@@ -719,12 +716,11 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
   def fromNow: Deadline = Deadline.now + this
 
   private[this] def unitString =
-    timeUnitName(unit) + (
-      if (length == 1)
-        ""
-      else
-        "s"
-    )
+    timeUnitName(unit) +
+      (if (length == 1)
+         ""
+       else
+         "s")
   override def toString = "" + length + " " + unitString
 
   def compare(other: Duration) =
@@ -737,8 +733,10 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
 
   // see https://www.securecoding.cert.org/confluence/display/java/NUM00-J.+Detect+or+prevent+integer+overflow
   private[this] def safeAdd(a: Long, b: Long): Long = {
-    if ((b > 0) && (a > Long.MaxValue - b) ||
-        (b < 0) && (a < Long.MinValue - b))
+    if ((b > 0) &&
+        (a > Long.MaxValue - b) ||
+        (b < 0) &&
+        (a < Long.MinValue - b))
       throw new IllegalArgumentException("integer overflow")
     a + b
   }

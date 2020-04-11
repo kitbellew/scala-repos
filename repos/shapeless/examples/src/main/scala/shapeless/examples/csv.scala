@@ -163,9 +163,8 @@ object CSVConverter {
         }
 
       def to(ft: Option[V] :: T): String = {
-        ft.head.map(scv.value.to(_) ++ ",").getOrElse("") ++ sct
-          .value
-          .to(ft.tail)
+        ft.head.map(scv.value.to(_) ++ ",").getOrElse("") ++
+          sct.value.to(ft.tail)
       }
     }
 

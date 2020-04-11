@@ -97,8 +97,9 @@ class ConversionTests {
         ffp: FnFromProduct.Aux[A => Any, F]): HListSyntax[A, F] =
       new HListSyntax[A, F](a)
 
-    val res = (2 :: "a" :: 1.3 :: HNil) applied ((i, s, d) =>
-      (s * i, d * i)) // Function argument types inferred
+    val res =
+      (2 :: "a" :: 1.3 :: HNil) applied
+        ((i, s, d) => (s * i, d * i)) // Function argument types inferred
 
     assert((res: (String, Double)) == ("aa", 2.6))
 

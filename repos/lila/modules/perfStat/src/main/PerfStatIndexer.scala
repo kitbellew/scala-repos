@@ -25,9 +25,7 @@ final class PerfStatIndexer(storage: PerfStatStorage, sequencer: ActorRef) {
     import lila.game.BSONHandlers.gameBSONHandler
     pimpQB(
       $query {
-        Query.user(user.id) ++
-          Query.finished ++
-          Query.turnsMoreThan(2) ++
+        Query.user(user.id) ++ Query.finished ++ Query.turnsMoreThan(2) ++
           Query.variant(PerfType variantOf perfType)
 
       })

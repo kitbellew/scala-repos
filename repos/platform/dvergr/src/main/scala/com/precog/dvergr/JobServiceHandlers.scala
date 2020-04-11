@@ -137,9 +137,8 @@ class CreateJobHandler(
                     BadRequest,
                     content = Some(
                       JString(
-                        "Expected `name` and `type` to be strings, but found '%s' and '%s'." format (
-                          name, tpe
-                        )))))
+                        "Expected `name` and `type` to be strings, but found '%s' and '%s'." format
+                          (name, tpe)))))
             }
           })
       } getOrElse {
@@ -185,8 +184,8 @@ class GetJobStatusHandler(jobs: JobManager[Future])(implicit
     (request: HttpRequest[Future[JValue]]) => {
       request.parameters.get('jobId) map { jobId =>
         Success(
-          jobs.getStatus(jobId) map (
-            _ map { status =>
+          jobs.getStatus(jobId) map
+            (_ map { status =>
               HttpResponse[JValue](
                 OK,
                 content = Some(Status.toMessage(status).serialize))
@@ -195,8 +194,7 @@ class GetJobStatusHandler(jobs: JobManager[Future])(implicit
                 NotFound,
                 content = Some(
                   JString("No status has been created for this job yet.")))
-            }
-          ))
+            }))
       } getOrElse {
         Failure(DispatchError(BadRequest, "Missing 'jobId paramter."))
       }
@@ -214,64 +212,62 @@ class UpdateJobStatusHandler(jobs: JobManager[Future])(implicit
   val service: HttpRequest[Future[JValue]] => Validation[NotServed, Future[
     HttpResponse[JValue]]] =
     (request: HttpRequest[Future[JValue]]) => {
-      (
-        for {
-          contentM <- request.content
-          jobId <- request.parameters get 'jobId
-        } yield {
-          Success(
-            contentM flatMap { content =>
-              (
-                content \ "message",
-                content \ "progress",
-                content \ "unit") match {
-                case (JString(msg), JNum(progress), JString(unit)) =>
-                  val prevId =
-                    request.parameters.get('prevStatusId) match {
-                      case Some(StatusId(id)) =>
-                        Right(Some(id))
-                      case Some(badId) =>
-                        Left("Invalid status ID '%s'." format badId)
-                      case None =>
-                        Right(None)
-                    }
-                  val result =
-                    prevId.right map { prevId =>
-                      jobs.updateStatus(
-                        jobId,
-                        prevId,
-                        msg,
-                        progress,
-                        unit,
-                        content \? "info")
-                    } match {
-                      case Right(resultM) =>
-                        resultM
-                      case Left(error) =>
-                        Future(Left(error))
-                    }
-
-                  result map {
-                    case Right(status) =>
-                      val msg = Status.toMessage(status)
-                      HttpResponse[JValue](OK, content = Some(msg.serialize))
+      (for {
+        contentM <- request.content
+        jobId <- request.parameters get 'jobId
+      } yield {
+        Success(
+          contentM flatMap { content =>
+            (
+              content \ "message",
+              content \ "progress",
+              content \ "unit") match {
+              case (JString(msg), JNum(progress), JString(unit)) =>
+                val prevId =
+                  request.parameters.get('prevStatusId) match {
+                    case Some(StatusId(id)) =>
+                      Right(Some(id))
+                    case Some(badId) =>
+                      Left("Invalid status ID '%s'." format badId)
+                    case None =>
+                      Right(None)
+                  }
+                val result =
+                  prevId.right map { prevId =>
+                    jobs.updateStatus(
+                      jobId,
+                      prevId,
+                      msg,
+                      progress,
+                      unit,
+                      content \? "info")
+                  } match {
+                    case Right(resultM) =>
+                      resultM
                     case Left(error) =>
-                      HttpResponse[JValue](
-                        Conflict,
-                        content = Some(JString(error)))
+                      Future(Left(error))
                   }
 
-                case (_, _, _) =>
-                  Future(
+                result map {
+                  case Right(status) =>
+                    val msg = Status.toMessage(status)
+                    HttpResponse[JValue](OK, content = Some(msg.serialize))
+                  case Left(error) =>
                     HttpResponse[JValue](
-                      BadRequest,
-                      content = Some(
-                        JString(
-                          "Status update requires fields 'message', 'progress', 'unit'."))))
-              }
-            })
-        }
-      ) getOrElse {
+                      Conflict,
+                      content = Some(JString(error)))
+                }
+
+              case (_, _, _) =>
+                Future(
+                  HttpResponse[JValue](
+                    BadRequest,
+                    content = Some(
+                      JString(
+                        "Status update requires fields 'message', 'progress', 'unit'."))))
+            }
+          })
+      }) getOrElse {
         Failure(
           DispatchError(
             BadRequest,
@@ -318,20 +314,18 @@ class AddMessageHandler(jobs: JobManager[Future])(implicit
   val service: HttpRequest[Future[JValue]] => Validation[NotServed, Future[
     HttpResponse[JValue]]] =
     (request: HttpRequest[Future[JValue]]) => {
-      (
-        for {
-          jobId <- request.parameters get 'jobId
-          channel <- request.parameters get 'channel
-          contentM <- request.content
-        } yield {
-          Success(
-            contentM flatMap { message =>
-              jobs.addMessage(jobId, channel, message) map { message =>
-                HttpResponse[JValue](Created, content = Some(message.serialize))
-              }
-            })
-        }
-      ) getOrElse {
+      (for {
+        jobId <- request.parameters get 'jobId
+        channel <- request.parameters get 'channel
+        contentM <- request.content
+      } yield {
+        Success(
+          contentM flatMap { message =>
+            jobs.addMessage(jobId, channel, message) map { message =>
+              HttpResponse[JValue](Created, content = Some(message.serialize))
+            }
+          })
+      }) getOrElse {
         Failure(
           DispatchError(
             BadRequest,
@@ -353,37 +347,35 @@ class ListMessagesHandler(jobs: JobManager[Future])(implicit
   val service: HttpRequest[Future[JValue]] => Validation[NotServed, Future[
     HttpResponse[JValue]]] =
     (request: HttpRequest[Future[JValue]]) => {
-      (
-        for {
-          jobId <- request.parameters get 'jobId
-          channel <- request.parameters get 'channel
-        } yield {
-          val prevId =
-            request.parameters get 'after match {
-              case Some(MessageId(id)) =>
-                Right(Some(id))
-              case Some(badId) =>
-                Left("Invalid message ID in 'after '%s'." format badId)
-              case None =>
-                Right(None)
-            }
+      (for {
+        jobId <- request.parameters get 'jobId
+        channel <- request.parameters get 'channel
+      } yield {
+        val prevId =
+          request.parameters get 'after match {
+            case Some(MessageId(id)) =>
+              Right(Some(id))
+            case Some(badId) =>
+              Left("Invalid message ID in 'after '%s'." format badId)
+            case None =>
+              Right(None)
+          }
 
-          Success(
-            prevId match {
-              case Right(prevId) =>
-                jobs.listMessages(jobId, channel, prevId) map { messages =>
-                  HttpResponse[JValue](
-                    OK,
-                    content = Some(messages.toList.serialize))
-                }
-              case Left(error) =>
-                Future(
-                  HttpResponse[JValue](
-                    BadRequest,
-                    content = Some(JString(error))))
-            })
-        }
-      ) getOrElse {
+        Success(
+          prevId match {
+            case Right(prevId) =>
+              jobs.listMessages(jobId, channel, prevId) map { messages =>
+                HttpResponse[JValue](
+                  OK,
+                  content = Some(messages.toList.serialize))
+              }
+            case Left(error) =>
+              Future(
+                HttpResponse[JValue](
+                  BadRequest,
+                  content = Some(JString(error))))
+          })
+      }) getOrElse {
         Failure(
           DispatchError(
             BadRequest,
@@ -486,17 +478,17 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
                 (obj \ "state") match {
                   case JString("started") =>
                     transition(obj) { (timestamp, _) =>
-                      jobs.start(jobId, timestamp) map (
-                        Validation.fromEither(_)
-                      ) map (_ map (_.state))
+                      jobs.start(jobId, timestamp) map
+                        (Validation.fromEither(_)) map
+                        (_ map (_.state))
                     }
 
                   case JString("cancelled") =>
                     transition(obj) {
                       case (timestamp, Some(reason)) =>
-                        jobs.cancel(jobId, reason, timestamp) map (
-                          Validation.fromEither(_)
-                        ) map (_ map (_.state))
+                        jobs.cancel(jobId, reason, timestamp) map
+                          (Validation.fromEither(_)) map
+                          (_ map (_.state))
                       case (_, _) =>
                         Future(
                           Failure(
@@ -505,17 +497,17 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
 
                   case JString("finished") =>
                     transition(obj) { (timestamp, _) =>
-                      jobs.finish(jobId, timestamp) map (
-                        Validation.fromEither(_)
-                      ) map (_ map (_.state))
+                      jobs.finish(jobId, timestamp) map
+                        (Validation.fromEither(_)) map
+                        (_ map (_.state))
                     }
 
                   case JString("aborted") =>
                     transition(obj) {
                       case (timestamp, Some(reason)) =>
-                        jobs.abort(jobId, reason, timestamp) map (
-                          Validation.fromEither(_)
-                        ) map (_ map (_.state))
+                        jobs.abort(jobId, reason, timestamp) map
+                          (Validation.fromEither(_)) map
+                          (_ map (_.state))
                       case (_, _) =>
                         Future(
                           Failure(
@@ -524,9 +516,9 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
 
                   case JString("expired") =>
                     transition(obj) { (timestamp, _) =>
-                      jobs.expire(jobId, timestamp) map (
-                        Validation.fromEither(_)
-                      ) map (_ map (_.state))
+                      jobs.expire(jobId, timestamp) map
+                        (Validation.fromEither(_)) map
+                        (_ map (_.state))
                     }
 
                   case JString(state) =>
@@ -535,7 +527,8 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
                         BadRequest,
                         content = Some(
                           JString(
-                            "Invalid 'state '%s'. Expected one of 'started', 'cancelled', 'finished', 'aborted' or 'expired'." format state))))
+                            "Invalid 'state '%s'. Expected one of 'started', 'cancelled', 'finished', 'aborted' or 'expired'." format
+                              state))))
 
                   case JUndefined =>
                     Future(
@@ -578,25 +571,23 @@ class CreateResultHandler(jobs: JobManager[Future])(implicit
     HttpResponse[ByteChunk]]] =
     (request: HttpRequest[ByteChunk]) => {
       Success(
-        (
-          for {
-            jobId <- request.parameters get 'jobId
-            chunks <- request.content
-          } yield {
-            val mimeType = request.mimeTypes.headOption
-            val data = chunks
-              .fold(_ :: StreamT.empty[Future, Array[Byte]], identity)
+        (for {
+          jobId <- request.parameters get 'jobId
+          chunks <- request.content
+        } yield {
+          val mimeType = request.mimeTypes.headOption
+          val data = chunks
+            .fold(_ :: StreamT.empty[Future, Array[Byte]], identity)
 
-            jobs.setResult(jobId, mimeType, data) map {
-              case Right(_) =>
-                HttpResponse[ByteChunk](OK)
-              case Left(error) =>
-                HttpResponse[ByteChunk](
-                  NotFound,
-                  content = Some(ByteChunk(error.getBytes("UTF-8"))))
-            }
+          jobs.setResult(jobId, mimeType, data) map {
+            case Right(_) =>
+              HttpResponse[ByteChunk](OK)
+            case Left(error) =>
+              HttpResponse[ByteChunk](
+                NotFound,
+                content = Some(ByteChunk(error.getBytes("UTF-8"))))
           }
-        ) getOrElse {
+        }) getOrElse {
           Future(
             HttpResponse[ByteChunk](
               BadRequest,

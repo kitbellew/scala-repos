@@ -27,8 +27,8 @@ class TaskTrackerActorTest
     val f = new Fixture
 
     Given("a failing task loader")
-    f.taskLoader.loadTasks() returns Future
-      .failed(new RuntimeException("severe simulated loading failure"))
+    f.taskLoader.loadTasks() returns
+      Future.failed(new RuntimeException("severe simulated loading failure"))
 
     When("the task tracker starts")
     f.taskTrackerActor
@@ -48,13 +48,14 @@ class TaskTrackerActorTest
         override def updaterProps(trackerRef: ActorRef): Props = failProps
       }
     And("an empty task loader result")
-    f.taskLoader.loadTasks() returns Future
-      .successful(TaskTracker.TasksByApp.empty)
+    f.taskLoader.loadTasks() returns
+      Future.successful(TaskTracker.TasksByApp.empty)
 
     When("the task tracker actor gets a ForwardTaskOp")
     val deadline = Timestamp.zero // ignored
-    f.taskTrackerActor ! TaskTrackerActor
-      .ForwardTaskOp(deadline, Task.Id("task1"), TaskOpProcessor.Action.Noop)
+    f.taskTrackerActor !
+      TaskTrackerActor
+        .ForwardTaskOp(deadline, Task.Id("task1"), TaskOpProcessor.Action.Noop)
 
     Then("it will eventuall die")
     watch(f.taskTrackerActor)

@@ -106,24 +106,21 @@ object Reloader {
     // http port can be defined as the first non-property argument, or a -Dhttp.port argument or system property
     // the http port can be disabled (set to None) by setting any of the input methods to "disabled"
     // Or it can be defined in devSettings as "play.server.http.port"
-    val httpPortString: Option[String] = otherArgs
-      .headOption orElse prop("http.port") orElse devSettings
-      .toMap
-      .get("play.server.http.port")
+    val httpPortString: Option[String] = otherArgs.headOption orElse
+      prop("http.port") orElse devSettings.toMap.get("play.server.http.port")
     val httpPort: Option[Int] = parsePortValue(
       httpPortString,
       Option(defaultHttpPort))
 
     // https port can be defined as a -Dhttps.port argument or system property
-    val httpsPortString: Option[String] = prop("https.port") orElse devSettings
-      .toMap
-      .get("play.server.https.port")
+    val httpsPortString: Option[String] = prop("https.port") orElse
+      devSettings.toMap.get("play.server.https.port")
     val httpsPort = parsePortValue(httpsPortString)
 
     // http address can be defined as a -Dhttp.address argument or system property
-    val httpAddress = prop("http.address") orElse devSettings
-      .toMap
-      .get("play.server.http.address") getOrElse defaultHttpAddress
+    val httpAddress = prop("http.address") orElse
+      devSettings.toMap.get("play.server.http.address") getOrElse
+      defaultHttpAddress
 
     (properties, httpPort, httpsPort, httpAddress)
   }
@@ -382,9 +379,8 @@ object Reloader {
             t
           else
             getRootCause(t.getCause)
-        if (getRootCause(e)
-              .getClass
-              .getName == "play.core.server.ServerListenException") {
+        if (getRootCause(e).getClass.getName ==
+              "play.core.server.ServerListenException") {
           throw new ServerStartException(e)
         }
         throw e
@@ -449,8 +445,8 @@ class Reloader(
     */
   def reload: AnyRef = {
     Reloader.synchronized {
-      if (changed || forceReloadNextTime || currentSourceMap
-            .isEmpty || currentApplicationClassLoader.isEmpty) {
+      if (changed || forceReloadNextTime || currentSourceMap.isEmpty ||
+          currentApplicationClassLoader.isEmpty) {
 
         val shouldReload = forceReloadNextTime
 
@@ -479,8 +475,8 @@ class Reloader(
               val triggered = newState.awaitingQuietPeriod
               watchState = newState
 
-              if (triggered || shouldReload || currentApplicationClassLoader
-                    .isEmpty) {
+              if (triggered || shouldReload ||
+                  currentApplicationClassLoader.isEmpty) {
                 // Create a new classloader
                 val version = classLoaderVersion.incrementAndGet
                 val name = "ReloadableClassLoader(v" + version + ")"

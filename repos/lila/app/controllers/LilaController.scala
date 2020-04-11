@@ -165,13 +165,13 @@ private[controllers] trait LilaController
   protected def Firewall[A <: Result](a: => Fu[A])(implicit
       ctx: Context): Fu[Result] =
     Env.security.firewall.accepts(ctx.req) flatMap {
-      _ fold (
-        a, {
-          fuccess {
-            Redirect(routes.Lobby.home())
-          }
-        }
-      )
+      _ fold
+        (
+          a, {
+            fuccess {
+              Redirect(routes.Lobby.home())
+            }
+          })
     }
 
   protected def NoEngine[A <: Result](a: => Fu[A])(implicit
@@ -194,7 +194,8 @@ private[controllers] trait LilaController
             fuccess {
               Forbidden(
                 jsonError(
-                  s"Banned from playing for ${ban.remainingMinutes} minutes. Reason: Too many aborts or unplayed games")) as JSON
+                  s"Banned from playing for ${ban.remainingMinutes} minutes. Reason: Too many aborts or unplayed games")) as
+                JSON
             }
         )
       }
@@ -209,8 +210,8 @@ private[controllers] trait LilaController
           api = _ =>
             fuccess {
               Forbidden(
-                jsonError(
-                  s"You are already playing ${current.opponent}")) as JSON
+                jsonError(s"You are already playing ${current.opponent}")) as
+                JSON
             })
       }
     }
@@ -344,8 +345,8 @@ private[controllers] trait LilaController
     negotiate(
       html = fuccess {
         implicit val req = ctx.req
-        Redirect(routes.Auth.signup) withCookies LilaCookie
-          .session(Env.security.api.AccessUri, req.uri)
+        Redirect(routes.Auth.signup) withCookies
+          LilaCookie.session(Env.security.api.AccessUri, req.uri)
       },
       api = _ => unauthorizedApiResult.fuccess
     )
@@ -365,14 +366,12 @@ private[controllers] trait LilaController
 
   protected def negotiate(html: => Fu[Result], api: Int => Fu[Result])(implicit
       ctx: Context): Fu[Result] =
-    (
-      lila.api.Mobile.Api.requestVersion(ctx.req) match {
-        case Some(1) =>
-          api(1) map (_ as JSON)
-        case _ =>
-          html
-      }
-    ) map (_.withHeaders("Vary" -> "Accept"))
+    (lila.api.Mobile.Api.requestVersion(ctx.req) match {
+      case Some(1) =>
+        api(1) map (_ as JSON)
+      case _ =>
+        html
+    }) map (_.withHeaders("Vary" -> "Accept"))
 
   protected def reqToCtx(req: RequestHeader): Fu[HeaderContext] =
     restoreUser(req) flatMap { d =>
@@ -402,16 +401,13 @@ private[controllers] trait LilaController
             import lila.hub.actorApi.relation._
             import akka.pattern.ask
             import makeTimeout.short
-            (
-              Env.hub.actor.relation ? GetOnlineFriends(me.id) map {
-                case OnlineFriends(users) =>
-                  users
-              } recover {
-                case _ =>
-                  Nil
-              }
-            ) zip
-              Env.team.api.nbRequests(me.id) zip
+            (Env.hub.actor.relation ? GetOnlineFriends(me.id) map {
+              case OnlineFriends(users) =>
+                users
+            } recover {
+              case _ =>
+                Nil
+            }) zip Env.team.api.nbRequests(me.id) zip
               Env.message.api.unreadIds(me.id) zip
               Env.challenge.api.countInFor(me.id)
           }
@@ -437,9 +433,10 @@ private[controllers] trait LilaController
 
   private def restoreUser(req: RequestHeader): Fu[Option[FingerprintedUser]] =
     Env.security.api restoreUser req addEffect {
-      _ ifTrue (HTTPRequest isSynchronousHttp req) foreach { d =>
-        Env.current.bus.publish(lila.user.User.Active(d.user), 'userActive)
-      }
+      _ ifTrue
+        (HTTPRequest isSynchronousHttp req) foreach { d =>
+          Env.current.bus.publish(lila.user.User.Active(d.user), 'userActive)
+        }
     }
 
   protected def XhrOnly(res: => Fu[Result])(implicit ctx: Context) =
@@ -449,8 +446,8 @@ private[controllers] trait LilaController
       notFound
 
   protected def Reasonable(page: Int, max: Int = 40)(
-      result: => Fu[Result]): Fu[Result] =
-    (page < max).fold(result, BadRequest("resource too old").fuccess)
+      result: => Fu[Result]): Fu[Result] = (page < max)
+    .fold(result, BadRequest("resource too old").fuccess)
 
   protected def NotForKids(f: => Fu[Result])(implicit ctx: Context) =
     if (ctx.kid)

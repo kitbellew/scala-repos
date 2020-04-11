@@ -35,22 +35,27 @@ object ScaldingPoC extends App {
 
   // map, flatMap etc.
   val birds = List(
-    "name" ->> "Swallow (European, unladen)" :: "speed" ->> 23 :: "weightLb" ->> 0.2 :: "heightFt" ->> 0.65 :: HNil,
-    "name" ->> "African (European, unladen)" :: "speed" ->> 24 :: "weightLb" ->> 0.21 :: "heightFt" ->> 0.6 :: HNil
+    "name" ->> "Swallow (European, unladen)" :: "speed" ->> 23 ::
+      "weightLb" ->> 0.2 :: "heightFt" ->> 0.65 :: HNil,
+    "name" ->> "African (European, unladen)" :: "speed" ->> 24 ::
+      "weightLb" ->> 0.21 :: "heightFt" ->> 0.6 :: HNil
   )
 
   val fasterBirds = birds.map(b => b + ("doubleSpeed" ->> b("speed") * 2))
   fasterBirds foreach println
 
   val britishBirds = birds.map(b =>
-    b + ("weightKg" ->> b("weightLb") * 0.454) + (
-      "heightM" ->> b("heightFt") * 0.305
-    ))
+    b +
+      ("weightKg" ->> b("weightLb") * 0.454) +
+      ("heightM" ->> b("heightFt") * 0.305))
   britishBirds foreach println
 
   val items = List(
-    "author" ->> "Benjamin Pierce" :: "title" ->> "Types and Programming Languages" :: "price" ->> 49.35 :: HNil,
-    "author" ->> "Roger Hindley" :: "title" ->> "Basic Simple Type Theory" :: "price" ->> 23.14 :: HNil
+    "author" ->> "Benjamin Pierce" ::
+      "title" ->> "Types and Programming Languages" :: "price" ->> 49.35 ::
+      HNil,
+    "author" ->> "Roger Hindley" :: "title" ->> "Basic Simple Type Theory" ::
+      "price" ->> 23.14 :: HNil
   )
 
   val pricierItems = items.map(i => i + ("price" ->> i("price") * 1.1))

@@ -105,10 +105,11 @@ private class MyTaskResultGetter(env: SparkEnv, scheduler: TaskSchedulerImpl)
       data: ByteBuffer): Unit = {
     // work on a copy since the super class still needs to use the buffer
     val newBuffer = data.duplicate()
-    _taskResults += env
-      .closureSerializer
-      .newInstance()
-      .deserialize[DirectTaskResult[_]](newBuffer)
+    _taskResults +=
+      env
+        .closureSerializer
+        .newInstance()
+        .deserialize[DirectTaskResult[_]](newBuffer)
     super.enqueueSuccessfulTask(tsm, tid, data)
   }
 }

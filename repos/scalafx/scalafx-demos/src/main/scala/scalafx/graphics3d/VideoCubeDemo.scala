@@ -88,8 +88,8 @@ object VideoCubeDemo extends JFXApp {
           file
         else
           throw new IllegalArgumentException(
-            "System property `" + folderSysProperty + " = " + folderName + "` " +
-              "has to point to an existing directory.")
+            "System property `" + folderSysProperty + " = " + folderName +
+              "` " + "has to point to an existing directory.")
       }
       case None =>
         throw new IllegalArgumentException(

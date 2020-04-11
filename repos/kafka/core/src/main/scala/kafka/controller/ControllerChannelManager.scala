@@ -415,14 +415,16 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
           .getOrElseUpdate(brokerId, Seq.empty[StopReplicaRequestInfo])
         val v = stopReplicaRequestMap(brokerId)
         if (callback != null)
-          stopReplicaRequestMap(brokerId) = v :+ StopReplicaRequestInfo(
-            PartitionAndReplica(topic, partition, brokerId),
-            deletePartition,
-            (r: AbstractRequestResponse) => callback(r, brokerId))
+          stopReplicaRequestMap(brokerId) = v :+
+            StopReplicaRequestInfo(
+              PartitionAndReplica(topic, partition, brokerId),
+              deletePartition,
+              (r: AbstractRequestResponse) => callback(r, brokerId))
         else
-          stopReplicaRequestMap(brokerId) = v :+ StopReplicaRequestInfo(
-            PartitionAndReplica(topic, partition, brokerId),
-            deletePartition)
+          stopReplicaRequestMap(brokerId) = v :+
+            StopReplicaRequestInfo(
+              PartitionAndReplica(topic, partition, brokerId),
+              deletePartition)
       }
   }
 
@@ -510,10 +512,8 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
           partitionStateInfos.foreach {
             case (topicPartition, state) =>
               val typeOfRequest =
-                if (broker == state
-                      .leaderIsrAndControllerEpoch
-                      .leaderAndIsr
-                      .leader)
+                if (broker ==
+                      state.leaderIsrAndControllerEpoch.leaderAndIsr.leader)
                   "become-leader"
                 else
                   "become-follower"
@@ -602,13 +602,11 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
           }
 
           val version =
-            if (controller
-                  .config
-                  .interBrokerProtocolVersion >= KAFKA_0_10_0_IV0)
+            if (controller.config.interBrokerProtocolVersion >=
+                  KAFKA_0_10_0_IV0)
               2: Short
-            else if (controller
-                       .config
-                       .interBrokerProtocolVersion >= KAFKA_0_9_0)
+            else if (controller.config.interBrokerProtocolVersion >=
+                       KAFKA_0_9_0)
               1: Short
             else
               0: Short
@@ -638,9 +636,10 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
                     .endPoints
                     .map {
                       case (securityProtocol, endPoint) =>
-                        securityProtocol -> new UpdateMetadataRequest.EndPoint(
-                          endPoint.host,
-                          endPoint.port)
+                        securityProtocol ->
+                          new UpdateMetadataRequest.EndPoint(
+                            endPoint.host,
+                            endPoint.port)
                     }
                   new UpdateMetadataRequest.Broker(
                     broker.id,

@@ -85,7 +85,8 @@ private[reflect] object ScalaSigReader {
                 t.symbol.children collect {
                   case c: ClassSymbol =>
                     c
-                } find (_.symbolInfo.name == clazz.getSimpleName)
+                } find
+                  (_.symbolInfo.name == clazz.getSimpleName)
               }
               .head
           }

@@ -48,8 +48,8 @@ object Def {
       if (isMod) {
         while (Modifier.parse(builder)) {}
       } else {
-        while (builder.getTokenType == ScalaTokenTypes
-                 .kIMPLICIT || builder.getTokenType == ScalaTokenTypes.kLAZY) {
+        while (builder.getTokenType == ScalaTokenTypes.kIMPLICIT ||
+               builder.getTokenType == ScalaTokenTypes.kLAZY) {
           builder.advanceLexer()
         }
       }

@@ -72,9 +72,8 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
               return false
           }
         }
-        if (bp.kinds.contains(CLASS) || bp.kinds.contains(OBJECT) || bp
-              .kinds
-              .contains(METHOD)) {
+        if (bp.kinds.contains(CLASS) || bp.kinds.contains(OBJECT) ||
+            bp.kinds.contains(METHOD)) {
           for (clazz <- getClasses) {
             if (!processor.execute(clazz, state))
               return false

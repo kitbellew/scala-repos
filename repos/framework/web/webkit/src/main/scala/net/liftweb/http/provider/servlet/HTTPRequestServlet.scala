@@ -57,16 +57,18 @@ class HTTPRequestServlet(
 
   def headers(name: String): List[String] =
     for {
-      h <-
-        (Box !! req.getHeaders(name)).asA[java.util.Enumeration[String]].toList
+      h <- (Box !! req.getHeaders(name))
+        .asA[java.util.Enumeration[String]]
+        .toList
       li <- enumToList[String](h)
       if null != li
     } yield li
 
   lazy val headers: List[HTTPParam] =
     for {
-      hne <-
-        (Box !! req.getHeaderNames).asA[java.util.Enumeration[String]].toList
+      hne <- (Box !! req.getHeaderNames)
+        .asA[java.util.Enumeration[String]]
+        .toList
       n <- enumToList[String](hne)
       if null != n
       hl <- Full(headers(n))
@@ -108,9 +110,9 @@ class HTTPRequestServlet(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] = headers find (
-    _.name equalsIgnoreCase "user-agent"
-  ) flatMap (_.values.headOption)
+  lazy val userAgent: Box[String] = headers find
+    (_.name equalsIgnoreCase "user-agent") flatMap
+    (_.values.headOption)
 
   def remotePort: Int = req.getRemotePort
 
@@ -155,9 +157,9 @@ class HTTPRequestServlet(
         val mimeUpload = (new ServletFileUpload)
         mimeUpload.setProgressListener(
           new ProgressListener {
-            lazy val progList: (Long, Long, Int) => Unit = S
-              .session
-              .flatMap(_.progressListener) openOr LiftRules.progressListener
+            lazy val progList: (Long, Long, Int) => Unit =
+              S.session.flatMap(_.progressListener) openOr
+                LiftRules.progressListener
 
             def update(a: Long, b: Long, c: Int) {
               progList(a, b, c)
@@ -190,10 +192,11 @@ class HTTPRequestServlet(
                     .toList
               val map: Map[String, List[String]] = Map(
                 names.map(n =>
-                  n -> headers
-                    .getHeaders(n)
-                    .asInstanceOf[java.util.Iterator[String]]
-                    .toList): _*)
+                  n ->
+                    headers
+                      .getHeaders(n)
+                      .asInstanceOf[java.util.Iterator[String]]
+                      .toList): _*)
               LiftRules.withMimeHeaders(map) {
                 LiftRules.handleMimeFile(
                   f.getFieldName,
@@ -235,10 +238,8 @@ class HTTPRequestServlet(
       .asyncProviderMeta
       .map(
         _.suspendResumeSupport_? &&
-          (
-            asyncProvider.map(_.suspendResumeSupport_?) openOr
-              false
-          )) openOr false
+          (asyncProvider.map(_.suspendResumeSupport_?) openOr false)) openOr
+      false
   }
 }
 
@@ -345,8 +346,8 @@ private class OfflineRequestSnapshot(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] = headers find (
-    _.name equalsIgnoreCase "user-agent"
-  ) flatMap (_.values.headOption)
+  lazy val userAgent: Box[String] = headers find
+    (_.name equalsIgnoreCase "user-agent") flatMap
+    (_.values.headOption)
 
 }

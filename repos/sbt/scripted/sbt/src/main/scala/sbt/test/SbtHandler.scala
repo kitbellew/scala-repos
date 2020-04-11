@@ -90,13 +90,11 @@ final class SbtHandler(
     }
   def newRemote(server: IPC.Server): Process = {
     val launcherJar = launcher.getAbsolutePath
-    val globalBase = "-Dsbt.global.base=" + (new File(directory, "global"))
-      .getAbsolutePath
-    val args = "java" :: (
-      launchOpts.toList ++ (
-        globalBase :: "-jar" :: launcherJar :: ("<" + server.port) :: Nil
-      )
-    )
+    val globalBase = "-Dsbt.global.base=" +
+      (new File(directory, "global")).getAbsolutePath
+    val args = "java" ::
+      (launchOpts.toList ++
+        (globalBase :: "-jar" :: launcherJar :: ("<" + server.port) :: Nil))
     val io = BasicIO(false, log).withInput(_.close())
     val p = Process(args, directory) run (io)
     val thread =
@@ -119,9 +117,9 @@ final class SbtHandler(
   // if the argument contains spaces, enclose it in quotes, quoting backslashes and quotes
   def escape(argument: String) =
     if (argument.contains(" "))
-      "\"" + argument
-        .replaceAll(q("""\"""), """\\""")
-        .replaceAll(q("\""), "\\\"") + "\""
+      "\"" +
+        argument.replaceAll(q("""\"""), """\\""").replaceAll(q("\""), "\\\"") +
+        "\""
     else
       argument
 }

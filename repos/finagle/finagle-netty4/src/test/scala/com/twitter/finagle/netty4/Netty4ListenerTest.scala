@@ -88,8 +88,8 @@ class Netty4ListenerTest
       }
     }
 
-    val p = Params
-      .empty + Label("test") + Stats(sr) + PipelineInit(StringServerInit)
+    val p = Params.empty + Label("test") + Stats(sr) +
+      PipelineInit(StringServerInit)
     val listener = Netty4Listener[String, String](p)
 
     @volatile

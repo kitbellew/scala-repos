@@ -200,8 +200,8 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
         // The schema consists of the leading columns of the first part-file
         // in the lexicographic order.
         assert(
-          sqlContext.read.parquet(dir.getCanonicalPath).schema.map(_.name)
-            === Seq("a", "b", "c", "d", "part"))
+          sqlContext.read.parquet(dir.getCanonicalPath).schema.map(_.name) ===
+            Seq("a", "b", "c", "d", "part"))
       }
     }
   }

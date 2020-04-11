@@ -12,53 +12,56 @@ class BroadcasterSpec extends EnsimeSpec with SharedTestKitFixture {
 
   val ping = "ping"
 
-  "Broadcaster" should "send messages to subscribers" in withTestKit { fix =>
-    import fix._
-    val broadcaster = TestActorRef[Broadcaster]
-    val sub1 = TestProbe()
-    val sub2 = TestProbe()
+  "Broadcaster" should "send messages to subscribers" in
+    withTestKit { fix =>
+      import fix._
+      val broadcaster = TestActorRef[Broadcaster]
+      val sub1 = TestProbe()
+      val sub2 = TestProbe()
 
-    sub1.send(broadcaster, Register)
-    sub2.send(broadcaster, Register)
+      sub1.send(broadcaster, Register)
+      sub2.send(broadcaster, Register)
 
-    broadcaster ! ping
+      broadcaster ! ping
 
-    sub1.expectMsg(ping)
-    sub1.lastSender shouldBe self
-    sub2.expectMsg(ping)
-    sub2.lastSender shouldBe self
-  }
+      sub1.expectMsg(ping)
+      sub1.lastSender shouldBe self
+      sub2.expectMsg(ping)
+      sub2.lastSender shouldBe self
+    }
 
-  it should "not send messages after unregister" in withTestKit { fix =>
-    import fix._
-    val broadcaster = TestActorRef[Broadcaster]
-    val sub1 = TestProbe()
-    val sub2 = TestProbe()
+  it should "not send messages after unregister" in
+    withTestKit { fix =>
+      import fix._
+      val broadcaster = TestActorRef[Broadcaster]
+      val sub1 = TestProbe()
+      val sub2 = TestProbe()
 
-    sub1.send(broadcaster, Register)
-    sub1.send(broadcaster, Unregister)
+      sub1.send(broadcaster, Register)
+      sub1.send(broadcaster, Unregister)
 
-    broadcaster ! ping
+      broadcaster ! ping
 
-    sub1.expectNoMsg(3 seconds)
-  }
+      sub1.expectNoMsg(3 seconds)
+    }
 
-  it should "send persistent messages on registration" in withTestKit { fix =>
-    import fix._
-    val broadcaster = TestActorRef[Broadcaster]
-    val sub1 = TestProbe()
+  it should "send persistent messages on registration" in
+    withTestKit { fix =>
+      import fix._
+      val broadcaster = TestActorRef[Broadcaster]
+      val sub1 = TestProbe()
 
-    broadcaster ! Persist(ping)
+      broadcaster ! Persist(ping)
 
-    sub1.expectNoMsg(3 seconds)
-    sub1.send(broadcaster, Register)
-    sub1.expectMsg(ping)
-    sub1.lastSender shouldBe self
+      sub1.expectNoMsg(3 seconds)
+      sub1.send(broadcaster, Register)
+      sub1.expectMsg(ping)
+      sub1.lastSender shouldBe self
 
-    // and on reregistration
-    sub1.send(broadcaster, Register)
-    sub1.expectMsg(ping)
-    sub1.lastSender shouldBe self
-  }
+      // and on reregistration
+      sub1.send(broadcaster, Register)
+      sub1.expectMsg(ping)
+      sub1.lastSender shouldBe self
+    }
 
 }

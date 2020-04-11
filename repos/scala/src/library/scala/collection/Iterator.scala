@@ -741,14 +741,15 @@ trait Iterator[+A] extends TraversableOnce[A] {
       private var tail: Iterator[A] = self
 
       def hasNext =
-        hdDefined || tail.hasNext && {
-          hd = tail.next()
-          if (p(hd))
-            hdDefined = true
-          else
-            tail = Iterator.empty
-          hdDefined
-        }
+        hdDefined ||
+          tail.hasNext && {
+            hd = tail.next()
+            if (p(hd))
+              hdDefined = true
+            else
+              tail = Iterator.empty
+            hdDefined
+          }
       def next() =
         if (hasNext) {
           hdDefined = false;
@@ -1603,12 +1604,10 @@ trait Iterator[+A] extends TraversableOnce[A] {
     *  @note    Reuse: $preservesIterator
     */
   override def toString =
-    (
-      if (hasNext)
-        "non-empty"
-      else
-        "empty"
-    ) + " iterator"
+    (if (hasNext)
+       "non-empty"
+     else
+       "empty") + " iterator"
 }
 
 /** Explicit instantiation of the `Iterator` trait to reduce class file size in subclasses. */

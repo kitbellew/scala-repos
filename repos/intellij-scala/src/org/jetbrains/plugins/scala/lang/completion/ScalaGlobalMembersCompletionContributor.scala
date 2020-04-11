@@ -121,8 +121,8 @@ class ScalaGlobalMembersCompletionContributor
           return false
         val qualifiedName = containingClass.qualifiedName + "." + member.name
         for (excluded <- CodeInsightSettings.getInstance.EXCLUDED_PACKAGES) {
-          if (qualifiedName == excluded || qualifiedName
-                .startsWith(excluded + ".")) {
+          if (qualifiedName == excluded ||
+              qualifiedName.startsWith(excluded + ".")) {
             return false
           }
         }
@@ -273,9 +273,8 @@ class ScalaGlobalMembersCompletionContributor
 
     var hintShown: Boolean = false
     def showHint(shouldImport: Boolean) {
-      if (!hintShown && !shouldImport && CompletionService
-            .getCompletionService
-            .getAdvertisementText == null) {
+      if (!hintShown && !shouldImport &&
+          CompletionService.getCompletionService.getAdvertisementText == null) {
         val actionId = IdeActions.ACTION_SHOW_INTENTION_ACTIONS
         val shortcut: String = KeymapUtil.getFirstKeyboardShortcutText(
           ActionManager.getInstance.getAction(actionId))
@@ -341,16 +340,13 @@ class ScalaGlobalMembersCompletionContributor
 
     val namesCache = ScalaShortNamesCacheManager.getInstance(ref.getProject)
 
-    val methodNamesIterator = namesCache
-      .getAllMethodNames
-      .iterator ++ namesCache.getAllJavaMethodNames.iterator
+    val methodNamesIterator = namesCache.getAllMethodNames.iterator ++
+      namesCache.getAllJavaMethodNames.iterator
 
     def isAccessible(member: PsiMember, containingClass: PsiClass): Boolean = {
-      invocationCount >= 3 || (
-        ResolveUtils
-          .isAccessible(member, ref, forCompletion = true) && ResolveUtils
-          .isAccessible(containingClass, ref, forCompletion = true)
-      )
+      invocationCount >= 3 ||
+      (ResolveUtils.isAccessible(member, ref, forCompletion = true) &&
+      ResolveUtils.isAccessible(containingClass, ref, forCompletion = true))
     }
 
     while (methodNamesIterator.hasNext) {
@@ -377,9 +373,8 @@ class ScalaGlobalMembersCompletionContributor
               if isStatic(method, containingClass)
             } {
               assert(containingClass != null)
-              if (classes.add(containingClass) && isAccessible(
-                    method,
-                    containingClass)) {
+              if (classes.add(containingClass) &&
+                  isAccessible(method, containingClass)) {
                 val shouldImport = !elemsSetContains(method)
                 showHint(shouldImport)
 
@@ -465,8 +460,8 @@ class ScalaGlobalMembersCompletionContributor
             val inheritors = ClassInheritorsSearch
               .search(field.containingClass, scope, true)
               .toArray(PsiClass.EMPTY_ARRAY)
-            val currentAndInheritors =
-              Iterator(field.containingClass) ++ inheritors.iterator
+            val currentAndInheritors = Iterator(field.containingClass) ++
+              inheritors.iterator
             for {
               containingClass <- currentAndInheritors
               if namedElement != null && isStatic(namedElement, containingClass)

@@ -112,14 +112,15 @@ class TaskCountsTest
         Task.Id("task3") -> aliveHealth,
         Task.Id("task4") -> notAliveHealth))
     Then("all counts are 0 except staged")
-    counts should be(
-      TaskCounts
-        .zero
-        .copy(
-          tasksStaged = 1,
-          tasksRunning = 3,
-          tasksHealthy = 1,
-          tasksUnhealthy = 1))
+    counts should
+      be(
+        TaskCounts
+          .zero
+          .copy(
+            tasksStaged = 1,
+            tasksRunning = 3,
+            tasksHealthy = 1,
+            tasksUnhealthy = 1))
   }
 
   test("task count difference") {
@@ -134,12 +135,13 @@ class TaskCountsTest
       tasksHealthy = 33,
       tasksUnhealthy = 44)
 
-    (counts2 - counts1) should equal(
-      TaskCounts(
-        tasksStaged = 1,
-        tasksRunning = 2,
-        tasksHealthy = 3,
-        tasksUnhealthy = 4))
+    (counts2 - counts1) should
+      equal(
+        TaskCounts(
+          tasksStaged = 1,
+          tasksRunning = 2,
+          tasksHealthy = 3,
+          tasksUnhealthy = 4))
   }
 
   test("task count addition") {
@@ -154,12 +156,13 @@ class TaskCountsTest
       tasksHealthy = 3,
       tasksUnhealthy = 4)
 
-    (counts2 + counts1) should equal(
-      TaskCounts(
-        tasksStaged = 11,
-        tasksRunning = 22,
-        tasksHealthy = 33,
-        tasksUnhealthy = 44))
+    (counts2 + counts1) should
+      equal(
+        TaskCounts(
+          tasksStaged = 11,
+          tasksRunning = 22,
+          tasksHealthy = 33,
+          tasksUnhealthy = 44))
   }
 
   private[this] val noHealths = Seq.empty[Health]

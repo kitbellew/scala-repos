@@ -157,29 +157,31 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
 
     "provide level name and value maps" in {
       assert(
-        Logger.levels == Map(
-          Level.ALL.value -> Level.ALL,
-          Level.TRACE.value -> Level.TRACE,
-          Level.DEBUG.value -> Level.DEBUG,
-          Level.INFO.value -> Level.INFO,
-          Level.WARNING.value -> Level.WARNING,
-          Level.ERROR.value -> Level.ERROR,
-          Level.CRITICAL.value -> Level.CRITICAL,
-          Level.FATAL.value -> Level.FATAL,
-          Level.OFF.value -> Level.OFF
-        ))
+        Logger.levels ==
+          Map(
+            Level.ALL.value -> Level.ALL,
+            Level.TRACE.value -> Level.TRACE,
+            Level.DEBUG.value -> Level.DEBUG,
+            Level.INFO.value -> Level.INFO,
+            Level.WARNING.value -> Level.WARNING,
+            Level.ERROR.value -> Level.ERROR,
+            Level.CRITICAL.value -> Level.CRITICAL,
+            Level.FATAL.value -> Level.FATAL,
+            Level.OFF.value -> Level.OFF
+          ))
       assert(
-        Logger.levelNames == Map(
-          "ALL" -> Level.ALL,
-          "TRACE" -> Level.TRACE,
-          "DEBUG" -> Level.DEBUG,
-          "INFO" -> Level.INFO,
-          "WARNING" -> Level.WARNING,
-          "ERROR" -> Level.ERROR,
-          "CRITICAL" -> Level.CRITICAL,
-          "FATAL" -> Level.FATAL,
-          "OFF" -> Level.OFF
-        ))
+        Logger.levelNames ==
+          Map(
+            "ALL" -> Level.ALL,
+            "TRACE" -> Level.TRACE,
+            "DEBUG" -> Level.DEBUG,
+            "INFO" -> Level.INFO,
+            "WARNING" -> Level.WARNING,
+            "ERROR" -> Level.ERROR,
+            "CRITICAL" -> Level.CRITICAL,
+            "FATAL" -> Level.FATAL,
+            "OFF" -> Level.OFF
+          ))
     }
 
     "figure out package names" in {
@@ -291,10 +293,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
           assert(handler.getLevel == Level.INFO)
           val formatter = handler.formatter
           assert(
-            formatter.formatPrefix(
-              javalog.Level.WARNING,
-              "10:55",
-              "hello") == "WARNING 10:55 hello")
+            formatter.formatPrefix(javalog.Level.WARNING, "10:55", "hello") ==
+              "WARNING 10:55 hello")
           assert(log.name == "com.twitter")
           assert(formatter.truncateAt == 1024)
           assert(formatter.useFullPackageNames == true)
@@ -317,9 +317,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
             assert(log.getHandlers.length == 1)
             val h = log.getHandlers()(0).asInstanceOf[SyslogHandler]
             assert(
-              h.dest
-                .asInstanceOf[InetSocketAddress]
-                .getHostName == "example.com")
+              h.dest.asInstanceOf[InetSocketAddress].getHostName ==
+                "example.com")
             assert(h.dest.asInstanceOf[InetSocketAddress].getPort == 212)
             val formatter = h.formatter.asInstanceOf[SyslogFormatter]
             assert(formatter.serverName == Some("elmo"))
@@ -340,24 +339,27 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
                 rollPolicy = Policy.SigHup,
                 formatter = new Formatter(truncateStackTracesAt = 100))
             ) :: Nil
-          ) :: LoggerFactory(
-            node = "w3c",
-            level = Some(Level.OFF),
-            useParents = false) :: LoggerFactory(
-            node = "stats",
-            level = Some(Level.INFO),
-            useParents = false,
-            handlers = ScribeHandler(
-              formatter = BareFormatter,
-              maxMessagesToBuffer = 100,
-              category = "cuckoo_json") :: Nil
-          ) :: LoggerFactory(
-            node = "bad_jobs",
-            level = Some(Level.INFO),
-            useParents = false,
-            handlers = FileHandler(
-              filename = folderName + "/bad_jobs.log",
-              rollPolicy = Policy.Never) :: Nil) :: Nil
+          ) ::
+            LoggerFactory(
+              node = "w3c",
+              level = Some(Level.OFF),
+              useParents = false) ::
+            LoggerFactory(
+              node = "stats",
+              level = Some(Level.INFO),
+              useParents = false,
+              handlers = ScribeHandler(
+                formatter = BareFormatter,
+                maxMessagesToBuffer = 100,
+                category = "cuckoo_json") :: Nil
+            ) ::
+            LoggerFactory(
+              node = "bad_jobs",
+              level = Some(Level.INFO),
+              useParents = false,
+              handlers = FileHandler(
+                filename = folderName + "/bad_jobs.log",
+                rollPolicy = Policy.Never) :: Nil) :: Nil
 
           Logger.configure(factories)
           assert(Logger.get("").getLevel == Level.INFO)

@@ -199,12 +199,13 @@ object Formats {
 
       def unbind(key: String, value: BigDecimal) =
         Map(
-          key -> precision
-            .map({ p =>
-              value.setScale(p._2)
-            })
-            .getOrElse(value)
-            .toString)
+          key ->
+            precision
+              .map({ p =>
+                value.setScale(p._2)
+              })
+              .getOrElse(value)
+              .toString)
     }
 
   /**
@@ -266,8 +267,9 @@ object Formats {
 
       def unbind(key: String, value: Date) =
         Map(
-          key -> formatter
-            .print(new org.joda.time.DateTime(value).withZone(jodaTimeZone)))
+          key ->
+            formatter
+              .print(new org.joda.time.DateTime(value).withZone(jodaTimeZone)))
     }
 
   /**

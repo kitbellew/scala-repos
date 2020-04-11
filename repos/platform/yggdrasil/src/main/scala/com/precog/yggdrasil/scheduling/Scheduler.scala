@@ -69,14 +69,15 @@ class ActorScheduler(scheduler: ActorRef, timeout: Timeout)
       timeoutMillis: Option[Long]): EitherT[Future, String, UUID] =
     EitherT {
       (
-        scheduler ? AddTask(
-          repeat,
-          apiKey,
-          authorities,
-          context,
-          source,
-          sink,
-          timeoutMillis)
+        scheduler ?
+          AddTask(
+            repeat,
+            apiKey,
+            authorities,
+            context,
+            source,
+            sink,
+            timeoutMillis)
       ).mapTo[String \/ UUID]
     }
 

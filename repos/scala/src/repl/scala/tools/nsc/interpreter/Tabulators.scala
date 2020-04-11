@@ -26,9 +26,8 @@ trait Tabulator {
     val maxcols = (if (columnWidth >= width)
                      1
                    else
-                     1 max (
-                       width / columnWidth
-                     ) // make sure it doesn't divide to 0
+                     1 max
+                       (width / columnWidth) // make sure it doesn't divide to 0
                    )
     val nrows = items.size /% maxcols
     val ncols = items.size /% nrows
@@ -119,11 +118,12 @@ trait VariColumnTabulator extends Tabulator {
       val (_, columnWidths, sss) = (possibles find (_._1 == minrows)).get
 
       // format to column width
-      sss map (ss =>
-        ss.zipWithIndex map {
-          case (s, i) =>
-            s"%-${columnWidths(i)}s" format s
-        })
+      sss map
+        (ss =>
+          ss.zipWithIndex map {
+            case (s, i) =>
+              s"%-${columnWidths(i)}s" format s
+          })
     }
   }
 }

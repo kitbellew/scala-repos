@@ -40,8 +40,8 @@ trait Unapplies extends ast.TreeDSL {
     *  as they cannot be used as extractors
     */
   def unapplyMember(tp: Type): Symbol =
-    directUnapplyMember(tp) filter (sym =>
-      !hasMultipleNonImplicitParamLists(sym))
+    directUnapplyMember(tp) filter
+      (sym => !hasMultipleNonImplicitParamLists(sym))
 
   object HasUnapply {
     def unapply(tp: Type): Option[Symbol] = unapplyMember(tp).toOption
@@ -110,14 +110,13 @@ trait Unapplies extends ast.TreeDSL {
   def caseModuleDef(cdef: ClassDef): ModuleDef = {
     val params = constrParamss(cdef)
     def inheritFromFun =
-      !cdef.mods.hasAbstractFlag && cdef.tparams.isEmpty && (
-        params match {
+      !cdef.mods.hasAbstractFlag && cdef.tparams.isEmpty &&
+        (params match {
           case List(ps) if ps.length <= MaxFunctionArity =>
             true
           case _ =>
             false
-        }
-      )
+        })
     def createFun = {
       def primaries = params.head map (_.tpt)
       gen.scalaFunctionConstr(primaries, toIdent(cdef), abstractFun = true)
@@ -279,12 +278,12 @@ trait Unapplies extends ast.TreeDSL {
             toIdent(vd)
           else
             EmptyTree
-        val flags = PARAM | (vd.mods.flags & IMPLICIT) | (
-          if (putDefault)
-            DEFAULTPARAM
-          else
-            0
-        )
+        val flags = PARAM |
+          (vd.mods.flags & IMPLICIT) |
+          (if (putDefault)
+             DEFAULTPARAM
+           else
+             0)
         // empty tpt: see comment above
         val tpt = atPos(vd.pos.focus)(TypeTree() setOriginal vd.tpt)
         treeCopy.ValDef(vd, Modifiers(flags), vd.name, tpt, rhs)
@@ -296,8 +295,8 @@ trait Unapplies extends ast.TreeDSL {
           case Nil =>
             Nil
           case ps :: pss =>
-            ps.map(makeCopyParam(_, putDefault = true)) :: mmap(pss)(
-              makeCopyParam(_, putDefault = false))
+            ps.map(makeCopyParam(_, putDefault = true)) ::
+              mmap(pss)(makeCopyParam(_, putDefault = false))
         }
 
       val classTpe = classType(cdef, tparams)

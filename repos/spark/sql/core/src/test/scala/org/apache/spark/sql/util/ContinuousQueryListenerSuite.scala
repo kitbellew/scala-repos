@@ -86,8 +86,8 @@ class ContinuousQueryListenerSuite
             assert(status.active == true)
             assert(status.sourceStatuses(0).offset === Some(LongOffset(0)))
             assert(
-              status.sinkStatus.offset === Some(
-                CompositeOffset.fill(LongOffset(0))))
+              status.sinkStatus.offset ===
+                Some(CompositeOffset.fill(LongOffset(0))))
 
             // No termination events
             assert(listener.terminationStatus === null)
@@ -104,8 +104,8 @@ class ContinuousQueryListenerSuite
             ) // must be inactive by the time onQueryTerm is called
             assert(status.sourceStatuses(0).offset === Some(LongOffset(0)))
             assert(
-              status.sinkStatus.offset === Some(
-                CompositeOffset.fill(LongOffset(0))))
+              status.sinkStatus.offset ===
+                Some(CompositeOffset.fill(LongOffset(0))))
           }
           listener.checkAsyncErrors()
         }

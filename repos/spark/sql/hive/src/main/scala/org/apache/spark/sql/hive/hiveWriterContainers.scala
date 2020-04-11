@@ -328,8 +328,8 @@ private[spark] class SparkHiveDynamicPartitionWriterContainer(
             Seq(Cast(c, StringType)),
             Seq(StringType))
           val str = If(IsNull(c), Literal(defaultPartName), escaped)
-          val partitionName =
-            Literal(dynamicPartColNames(i) + "=") :: str :: Nil
+          val partitionName = Literal(dynamicPartColNames(i) + "=") :: str ::
+            Nil
           if (i == 0)
             partitionName
           else

@@ -153,10 +153,8 @@ trait Reifiers {
                 EmptyTree
               }
             // cq"$tree if $guard => $succ" :: cq"_ => $fail" :: Nil
-            CaseDef(tree, guard, succ) :: CaseDef(
-              Ident(nme.WILDCARD),
-              EmptyTree,
-              fail) :: Nil
+            CaseDef(tree, guard, succ) ::
+              CaseDef(Ident(nme.WILDCARD), EmptyTree, fail) :: Nil
           }
         // q"new { def unapply(tree: $AnyClass) = { ..${unlifters.preamble()}; tree match { case ..$cases } } }.unapply(..$args)"
         Apply(
@@ -199,8 +197,7 @@ trait Reifiers {
     }
 
     override def reifyTree(tree: Tree): Tree =
-      reifyTreePlaceholder(tree) orElse
-        reifyTreeSyntactically(tree)
+      reifyTreePlaceholder(tree) orElse reifyTreeSyntactically(tree)
 
     def reifyTreePlaceholder(tree: Tree): Tree =
       tree match {

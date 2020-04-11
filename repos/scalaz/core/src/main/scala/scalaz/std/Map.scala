@@ -58,8 +58,8 @@ trait MapSubInstances0 extends MapSub {
           }
         }
     }
-    override val equalIsNatural: Boolean = Equal[K].equalIsNatural && Equal[V]
-      .equalIsNatural
+    override val equalIsNatural: Boolean = Equal[K].equalIsNatural &&
+      Equal[V].equalIsNatural
   }
 
   private[std] trait MapFoldable[K] extends Foldable.FromFoldr[XMap[K, ?]] {
@@ -281,10 +281,9 @@ trait MapSubFunctions extends MapSub {
     */
   final def getOrAdd[F[_], K, A](m: XMap[K, A], k: K)(fa: => F[A])(implicit
       F: Applicative[F],
-      K: BuildKeyConstraint[K]): F[(XMap[K, A], A)] =
-    (m get k)
-      .map(a => F.point(m, a))
-      .getOrElse(F.map(fa)(a => (ab_+(m, k, a), a)))
+      K: BuildKeyConstraint[K]): F[(XMap[K, A], A)] = (m get k)
+    .map(a => F.point(m, a))
+    .getOrElse(F.map(fa)(a => (ab_+(m, k, a), a)))
 }
 
 trait MapInstances extends MapSubInstances with MapSubMap

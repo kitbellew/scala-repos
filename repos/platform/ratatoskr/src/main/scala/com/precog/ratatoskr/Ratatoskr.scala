@@ -95,11 +95,12 @@ import scala.io.Source
 
 object Ratatoskr {
   def usage(message: String*): String = {
-    val initial = message ++ List(
-      "Usage: yggutils {command} {flags/args}",
-      "",
-      " For details on a particular command enter yggutils {command} -help",
-      "")
+    val initial = message ++
+      List(
+        "Usage: yggutils {command} {flags/args}",
+        "",
+        " For details on a particular command enter yggutils {command} -help",
+        "")
 
     commands
       .foldLeft(initial) {
@@ -402,9 +403,8 @@ object KafkaTools extends Command {
           // see if we can deduce from the data (assuming Nathan's twitter feed or SE postings)
           val timestamps =
             (
-              msg.data.map(_.value \ "timeStamp") ++ msg
-                .data
-                .map(_.value \ "timestamp")
+              msg.data.map(_.value \ "timeStamp") ++
+                msg.data.map(_.value \ "timestamp")
             ).flatMap {
                 case JString(date) =>
                   // Dirty hack for trying variations of ISO8601 in use by customers
@@ -444,14 +444,15 @@ object KafkaTools extends Command {
         if (newTimestamp.time <= System.currentTimeMillis) {
           if (pendingTimes.nonEmpty) {
             //println("Updating pending times: " + pendingTimes)
-            interpolationMap ++= pendingTimes.map { interp =>
-              val interpFraction = (interp.index - lastTimestamp.index)
-                .toDouble / (newTimestamp.index - lastTimestamp.index)
-              val timeSpanSize = newTimestamp.time - lastTimestamp.time
-              val interpTS =
-                (interpFraction * timeSpanSize + lastTimestamp.time).toLong
-              (interp, interpTS)
-            }
+            interpolationMap ++=
+              pendingTimes.map { interp =>
+                val interpFraction = (interp.index - lastTimestamp.index)
+                  .toDouble / (newTimestamp.index - lastTimestamp.index)
+                val timeSpanSize = newTimestamp.time - lastTimestamp.time
+                val interpTS =
+                  (interpFraction * timeSpanSize + lastTimestamp.time).toLong
+                (interp, interpTS)
+              }
 
             //println("InterpolationMap now = " + interpolationMap)
 
@@ -472,8 +473,8 @@ object KafkaTools extends Command {
 
         ReportState(
           state.index + 1,
-          state
-            .pathSize + (path -> (state.pathSize.getOrElse(path, 0L) + size)))
+          state.pathSize +
+            (path -> (state.pathSize.getOrElse(path, 0L) + size)))
       } else {
         state.inc
       }
@@ -556,12 +557,13 @@ object KafkaTools extends Command {
 
       if (config.reportFormat == "csv") {
         println(
-          "index,total," + trackedAccounts
-            .sorted
-            .map { acct =>
-              "\"%s\"".format(accountLookup.getOrElse(acct, acct))
-            }
-            .mkString(","))
+          "index,total," +
+            trackedAccounts
+              .sorted
+              .map { acct =>
+                "\"%s\"".format(accountLookup.getOrElse(acct, acct))
+              }
+              .mkString(","))
         slices.foreach {
           case (index, byAccount) =>
             val accountTotals = trackedAccounts
@@ -605,8 +607,8 @@ object KafkaTools extends Command {
                   println(
                     JObject(
                       "index" -> JNum(timestamp),
-                      "account" -> JString(
-                        accountLookup.getOrElse(account, account)),
+                      "account" ->
+                        JString(accountLookup.getOrElse(account, account)),
                       "size" -> JNum(byAccount.getOrElse(account, 0L)))
                       .renderCompact)
                 }
@@ -1043,8 +1045,8 @@ object IngestTools extends Command {
       "PID: %d Shard SID: %s Ingest (relay) SID: %s"
         .format(pid, shardSID, relaySID))
 
-    val syncDelta = relayState
-      .nextSequenceId - 1 - shardValues.get(pid).getOrElse(0)
+    val syncDelta = relayState.nextSequenceId - 1 -
+      shardValues.get(pid).getOrElse(0)
 
     if (syncDelta > config.limit) {
       println(
@@ -1304,9 +1306,8 @@ object ImportTools extends Command with Logging {
 
             if (!errors.isEmpty) {
               sys.error(
-                "found %d parse errors.\nfirst 5 were: %s" format (
-                  errors.length, errors.take(5)
-                ))
+                "found %d parse errors.\nfirst 5 were: %s" format
+                  (errors.length, errors.take(5)))
             } else if (results.size > 0) {
               val eventidobj = EventId(pid, sid.getAndIncrement)
               logger.info("Sending %d events".format(results.size))
@@ -1349,8 +1350,7 @@ object ImportTools extends Command with Logging {
       }
 
     val complete =
-      grantWrite(config.apiKey) >>
-        logGrants(config.apiKey) >>
+      grantWrite(config.apiKey) >> logGrants(config.apiKey) >>
         runIngest(config.apiKey) >>
         Future(logger.info("Finalizing chef work-in-progress")) >>
         chefs.toList.traverse(gracefulStop(_, stopTimeout)) >>

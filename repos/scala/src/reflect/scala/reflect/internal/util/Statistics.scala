@@ -357,8 +357,8 @@ object Statistics {
       }
       val total2 = System.nanoTime() - start
       println(
-        "Enabling statistics, measuring overhead = " +
-          total / 10000.0 + "ns to " + total2 / 10000.0 + "ns per timer")
+        "Enabling statistics, measuring overhead = " + total / 10000.0 +
+          "ns to " + total2 / 10000.0 + "ns per timer")
       _enabled = true
     }
   }

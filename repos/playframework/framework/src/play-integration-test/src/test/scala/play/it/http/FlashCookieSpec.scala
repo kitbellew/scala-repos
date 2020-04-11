@@ -55,30 +55,34 @@ trait FlashCookieSpec
     response.cookies.find(_.name.exists(_ == Flash.COOKIE_NAME))
 
   "the flash cookie" should {
-    "can be set for one request" in withClientAndServer { ws =>
-      val response = await(
-        ws.url("/flash").withFollowRedirects(follow = false).get())
-      response.status must equalTo(SEE_OTHER)
-      val flashCookie = readFlashCookie(response)
-      flashCookie must beSome.like {
-        case cookie =>
-          cookie.maxAge must beNone
+    "can be set for one request" in
+      withClientAndServer { ws =>
+        val response = await(
+          ws.url("/flash").withFollowRedirects(follow = false).get())
+        response.status must equalTo(SEE_OTHER)
+        val flashCookie = readFlashCookie(response)
+        flashCookie must
+          beSome.like {
+            case cookie =>
+              cookie.maxAge must beNone
+          }
       }
-    }
 
-    "be removed after a redirect" in withClientAndServer { ws =>
-      val response = await(ws.url("/flash").get())
-      response.status must equalTo(OK)
-      val flashCookie = readFlashCookie(response)
-      flashCookie must beSome.like {
-        case cookie =>
-          cookie.value must beNone
-          cookie.maxAge must beSome(0L)
+    "be removed after a redirect" in
+      withClientAndServer { ws =>
+        val response = await(ws.url("/flash").get())
+        response.status must equalTo(OK)
+        val flashCookie = readFlashCookie(response)
+        flashCookie must
+          beSome.like {
+            case cookie =>
+              cookie.value must beNone
+              cookie.maxAge must beSome(0L)
+          }
       }
-    }
 
-    "allow the setting of additional cookies when cleaned up" in withClientAndServer {
-      ws =>
+    "allow the setting of additional cookies when cleaned up" in
+      withClientAndServer { ws =>
         val response = await(ws.url("/flash").withFollowRedirects(false).get())
         val Some(flashCookie) = readFlashCookie(response)
         val response2 = await(
@@ -87,19 +91,21 @@ trait FlashCookieSpec
               "Cookie" -> s"${flashCookie.name.get}=${flashCookie.value.get}")
             .get())
 
-        readFlashCookie(response2) must beSome.like {
-          case cookie =>
-            cookie.value must beNone
-        }
-        response2.cookie("some-cookie") must beSome.like {
-          case cookie =>
-            cookie.value must beSome("some-value")
-        }
+        readFlashCookie(response2) must
+          beSome.like {
+            case cookie =>
+              cookie.value must beNone
+          }
+        response2.cookie("some-cookie") must
+          beSome.like {
+            case cookie =>
+              cookie.value must beSome("some-value")
+          }
 
-    }
+      }
 
-    "honor configuration for flash.secure" in Helpers
-      .running(_.configure("play.http.flash.secure" -> true)) { _ =>
+    "honor configuration for flash.secure" in
+      Helpers.running(_.configure("play.http.flash.secure" -> true)) { _ =>
         Flash.encodeAsCookie(Flash()).secure must beTrue
       }
   }

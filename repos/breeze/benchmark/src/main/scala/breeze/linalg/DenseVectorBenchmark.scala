@@ -91,9 +91,10 @@ class DenseVectorBenchmark extends BreezeBenchmark with BuildsRandomVectors {
       var i = 0
       var t: Double = 0
       while (i < arr.size) {
-        t += arr.valueAt(
-          i
-        ) //This is not strictly part of the benchmark, but done so that the JIT doensn't eliminate everything
+        t +=
+          arr.valueAt(
+            i
+          ) //This is not strictly part of the benchmark, but done so that the JIT doensn't eliminate everything
         i += 1
       }
       t
@@ -110,9 +111,10 @@ class DenseVectorBenchmark extends BreezeBenchmark with BuildsRandomVectors {
       var i = 0
       var t: Double = 0
       while (i < arr.size) {
-        t += arr.unsafeValueAt(
-          i
-        ) //This is not strictly part of the benchmark, but done so that the JIT doensn't eliminate everything
+        t +=
+          arr.unsafeValueAt(
+            i
+          ) //This is not strictly part of the benchmark, but done so that the JIT doensn't eliminate everything
         i += 1
       }
       t

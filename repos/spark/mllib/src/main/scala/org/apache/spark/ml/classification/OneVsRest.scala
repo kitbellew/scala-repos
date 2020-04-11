@@ -117,8 +117,8 @@ final class OneVsRestModel private[ml] (
         .foldLeft[DataFrame](newDataset) {
           case (df, (model, index)) =>
             val rawPredictionCol = model.getRawPredictionCol
-            val columns =
-              origCols ++ List(col(rawPredictionCol), col(accColName))
+            val columns = origCols ++
+              List(col(rawPredictionCol), col(accColName))
 
             // add temporary column to store intermediate scores and update
             val tmpColName = "mbc$tmp" + UUID.randomUUID().toString

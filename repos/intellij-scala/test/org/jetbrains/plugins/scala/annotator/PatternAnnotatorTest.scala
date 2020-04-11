@@ -137,8 +137,8 @@ class PatternAnnotatorTest
     checkWarning(
       code,
       "seq: Seq[Int]",
-      fruitless("List[String]", "Seq[Int]") + ScalaBundle
-        .message("erasure.warning"))
+      fruitless("List[String]", "Seq[Int]") +
+        ScalaBundle.message("erasure.warning"))
     assertNoErrors(code)
   }
 

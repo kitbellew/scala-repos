@@ -86,11 +86,12 @@ class WebJarServletTest
   def resp(): (HttpServletResponse, ByteArrayOutputStream) = {
     val response = mock[HttpServletResponse]
     val outStream = new ByteArrayOutputStream()
-    response.getOutputStream returns new ServletOutputStream {
-      override def isReady: Boolean = ???
-      override def setWriteListener(writeListener: WriteListener): Unit = ???
-      override def write(b: Int): Unit = outStream.write(b)
-    }
+    response.getOutputStream returns
+      new ServletOutputStream {
+        override def isReady: Boolean = ???
+        override def setWriteListener(writeListener: WriteListener): Unit = ???
+        override def write(b: Int): Unit = outStream.write(b)
+      }
     response -> outStream
   }
 

@@ -104,9 +104,8 @@ class PersistenceQuery(system: ExtendedActorSystem) extends Extension {
         .createInstanceFor[ReadJournalProvider](pluginClass, args)
 
     instantiate(
-      (classOf[ExtendedActorSystem], system) :: (
-        classOf[Config],
-        pluginConfig) :: Nil)
+      (classOf[ExtendedActorSystem], system) ::
+        (classOf[Config], pluginConfig) :: Nil)
       .recoverWith {
         case x: NoSuchMethodException ⇒
           instantiate((classOf[ExtendedActorSystem], system) :: Nil)

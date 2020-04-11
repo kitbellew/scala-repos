@@ -43,8 +43,9 @@ object InetSocketAddressUtil {
     *
     */
   def parseHostPorts(hosts: String): Seq[HostPort] =
-    hosts split Array(' ', ',') filter (_.nonEmpty) map (_.split(":")) map {
-      hp =>
+    hosts split Array(' ', ',') filter
+      (_.nonEmpty) map
+      (_.split(":")) map { hp =>
         require(hp.length == 2, "You must specify host and port")
         hp match {
           case Array(host, "*") =>
@@ -55,7 +56,7 @@ object InetSocketAddressUtil {
             throw new IllegalArgumentException(
               "Malformed host/port specification: " + hosts)
         }
-    }
+      }
 
   /**
     * Resolves a sequence of host port pairs into a set of socket addresses. For example,

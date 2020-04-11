@@ -15,12 +15,13 @@ package bippy {
     def main(args: Array[String]): Unit = {
       echo(new dingus.Printable)
       val namer = new com.thoughtworks.paranamer.BytecodeReadingParanamer
-      getClass.getMethods filter (_.getName startsWith "bippy") foreach { m =>
-        echo(
-          m.getName,
-          "has parameters:",
-          namer.lookupParameterNames(m).mkString(", "))
-      }
+      getClass.getMethods filter
+        (_.getName startsWith "bippy") foreach { m =>
+          echo(
+            m.getName,
+            "has parameters:",
+            namer.lookupParameterNames(m).mkString(", "))
+        }
       echo("")
       echo("Urls exposed through the classloader:")
       getClass.getClassLoader match {

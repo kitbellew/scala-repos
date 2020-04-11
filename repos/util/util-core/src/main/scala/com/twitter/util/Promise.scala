@@ -611,13 +611,12 @@ class Promise[A]
             rest
           else
             first :: rest
-        val next =
-          (waitq filterNot (_ eq k)) match {
-            case Nil =>
-              initState[A]
-            case head :: tail =>
-              Waiting(head, tail)
-          }
+        val next = (waitq filterNot (_ eq k)) match {
+          case Nil =>
+            initState[A]
+          case head :: tail =>
+            Waiting(head, tail)
+        }
         if (!cas(s, next))
           detach(k)
         else

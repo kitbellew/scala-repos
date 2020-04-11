@@ -16,8 +16,8 @@ class HttpEventModuleTest extends MarathonSpec {
       "http://127.0.0.1:8000,http://127.0.0.1:8001")
 
     assert(
-      conf.httpEventEndpoints.get == Some(
-        List("http://127.0.0.1:8000", "http://127.0.0.1:8001")))
+      conf.httpEventEndpoints.get ==
+        Some(List("http://127.0.0.1:8000", "http://127.0.0.1:8001")))
   }
 
   test("--http_endpoints trims endpoints") {
@@ -26,8 +26,8 @@ class HttpEventModuleTest extends MarathonSpec {
       "http://127.0.0.1:8000 , http://127.0.0.1:8001   ")
 
     assert(
-      conf.httpEventEndpoints.get == Some(
-        List("http://127.0.0.1:8000", "http://127.0.0.1:8001")))
+      conf.httpEventEndpoints.get ==
+        Some(List("http://127.0.0.1:8000", "http://127.0.0.1:8001")))
   }
 
   def makeHttpEventConfig(args: String*): HttpEventConfiguration = {

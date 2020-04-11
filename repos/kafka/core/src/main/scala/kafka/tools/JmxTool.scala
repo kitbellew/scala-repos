@@ -135,10 +135,8 @@ object JmxTool extends Logging {
       }
 
     // print csv header
-    val keys = List("time") ++ queryAttributes(mbsc, names, attributesWhitelist)
-      .keys
-      .toArray
-      .sorted
+    val keys = List("time") ++
+      queryAttributes(mbsc, names, attributesWhitelist).keys.toArray.sorted
     if (keys.size == numExpectedAttributes.map(_._2).sum + 1)
       println(keys.map("\"" + _ + "\"").mkString(","))
 

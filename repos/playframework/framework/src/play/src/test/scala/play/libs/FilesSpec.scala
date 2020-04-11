@@ -55,8 +55,8 @@ object FilesSpec extends Specification with After {
         writeFile(destination, "already exists")
 
         val to = TemporaryFile(file).moveTo(destination, replace = false)
-        new String(java.nio.file.Files.readAllBytes(to.toPath)) must contain(
-          "already exists")
+        new String(java.nio.file.Files.readAllBytes(to.toPath)) must
+          contain("already exists")
       }
 
       "works when using compile time dependency injection" in {

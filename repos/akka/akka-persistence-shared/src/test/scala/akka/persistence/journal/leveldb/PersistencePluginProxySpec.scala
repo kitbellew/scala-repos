@@ -95,8 +95,8 @@ object PersistencePluginProxySpec {
 
 class PersistencePluginProxySpec
     extends AkkaSpec(
-      PersistencePluginProxySpec
-        .startTargetConfig withFallback PersistencePluginProxySpec.config)
+      PersistencePluginProxySpec.startTargetConfig withFallback
+        PersistencePluginProxySpec.config)
     with Cleanup {
   import PersistencePluginProxySpec._
 

@@ -78,8 +78,8 @@ trait IssuesControllerBase extends ControllerBase {
       val q = request.getParameter("q")
       if (Option(q).exists(_.contains("is:pr"))) {
         redirect(
-          s"/${repository.owner}/${repository.name}/pulls?q=" + StringUtil
-            .urlEncode(q))
+          s"/${repository.owner}/${repository.name}/pulls?q=" +
+            StringUtil.urlEncode(q))
       } else {
         searchIssues(repository)
       }
@@ -95,12 +95,11 @@ trait IssuesControllerBase extends ControllerBase {
               getComments(owner, name, issueId.toInt),
               getIssueLabels(owner, name, issueId.toInt),
               (
-                getCollaborators(owner, name) ::: (
-                  if (getAccountByUserName(owner).get.isGroupAccount)
-                    Nil
-                  else
-                    List(owner)
-                )
+                getCollaborators(owner, name) :::
+                  (if (getAccountByUserName(owner).get.isGroupAccount)
+                     Nil
+                   else
+                     List(owner))
               ).sorted,
               getMilestonesWithIssueCount(owner, name),
               getLabels(owner, name),
@@ -117,12 +116,11 @@ trait IssuesControllerBase extends ControllerBase {
         case (owner, name) =>
           html.create(
             (
-              getCollaborators(owner, name) ::: (
-                if (getAccountByUserName(owner).get.isGroupAccount)
-                  Nil
-                else
-                  List(owner)
-              )
+              getCollaborators(owner, name) :::
+                (if (getAccountByUserName(owner).get.isGroupAccount)
+                   Nil
+                 else
+                   List(owner))
             ).sorted,
             getMilestones(owner, name),
             getLabels(owner, name),
@@ -350,19 +348,20 @@ trait IssuesControllerBase extends ControllerBase {
                 .write(
                   Map(
                     "title" -> x.title,
-                    "content" -> Markdown.toHtml(
-                      markdown = x.content getOrElse "No description given.",
-                      repository = repository,
-                      enableWikiLink = false,
-                      enableRefsLink = true,
-                      enableAnchor = true,
-                      enableLineBreaks = true,
-                      enableTaskList = true,
-                      hasWritePermission = isEditable(
-                        x.userName,
-                        x.repositoryName,
-                        x.openedUserName)
-                    )
+                    "content" ->
+                      Markdown.toHtml(
+                        markdown = x.content getOrElse "No description given.",
+                        repository = repository,
+                        enableWikiLink = false,
+                        enableRefsLink = true,
+                        enableAnchor = true,
+                        enableLineBreaks = true,
+                        enableTaskList = true,
+                        hasWritePermission = isEditable(
+                          x.userName,
+                          x.repositoryName,
+                          x.openedUserName)
+                      )
                   ))
             }
           } else
@@ -390,21 +389,22 @@ trait IssuesControllerBase extends ControllerBase {
                 .Serialization
                 .write(
                   Map(
-                    "content" -> view
-                      .Markdown
-                      .toHtml(
-                        markdown = x.content,
-                        repository = repository,
-                        enableWikiLink = false,
-                        enableRefsLink = true,
-                        enableAnchor = true,
-                        enableLineBreaks = true,
-                        enableTaskList = true,
-                        hasWritePermission = isEditable(
-                          x.userName,
-                          x.repositoryName,
-                          x.commentedUserName)
-                      )))
+                    "content" ->
+                      view
+                        .Markdown
+                        .toHtml(
+                          markdown = x.content,
+                          repository = repository,
+                          enableWikiLink = false,
+                          enableRefsLink = true,
+                          enableAnchor = true,
+                          enableLineBreaks = true,
+                          enableTaskList = true,
+                          hasWritePermission = isEditable(
+                            x.userName,
+                            x.repositoryName,
+                            x.commentedUserName)
+                        )))
             }
           } else
             Unauthorized
@@ -543,22 +543,20 @@ trait IssuesControllerBase extends ControllerBase {
 
   get("/:owner/:repository/_attached/:file")(
     referrersOnly { repository =>
-      (
-        Directory.getAttachedDir(repository.owner, repository.name) match {
-          case dir if (dir.exists && dir.isDirectory) =>
-            dir
-              .listFiles
-              .find(_.getName.startsWith(params("file") + "."))
-              .map { file =>
-                response.setHeader(
-                  "Content-Disposition",
-                  f"""inline; filename=${file.getName}""")
-                RawData(FileUtil.getMimeType(file.getName), file)
-              }
-          case _ =>
-            None
-        }
-      ) getOrElse NotFound
+      (Directory.getAttachedDir(repository.owner, repository.name) match {
+        case dir if (dir.exists && dir.isDirectory) =>
+          dir
+            .listFiles
+            .find(_.getName.startsWith(params("file") + "."))
+            .map { file =>
+              response.setHeader(
+                "Content-Disposition",
+                f"""inline; filename=${file.getName}""")
+              RawData(FileUtil.getMimeType(file.getName), file)
+            }
+        case _ =>
+          None
+      }) getOrElse NotFound
     })
 
   val assignedUserName = (key: String) => params.get(key) filter (_.trim != "")
@@ -567,10 +565,8 @@ trait IssuesControllerBase extends ControllerBase {
 
   private def isEditable(owner: String, repository: String, author: String)(
       implicit context: Context): Boolean =
-    hasWritePermission(
-      owner,
-      repository,
-      context.loginAccount) || author == context.loginAccount.get.userName
+    hasWritePermission(owner, repository, context.loginAccount) ||
+      author == context.loginAccount.get.userName
 
   private def executeBatch(repository: RepositoryService.RepositoryInfo)(
       execute: Int => Unit) = {

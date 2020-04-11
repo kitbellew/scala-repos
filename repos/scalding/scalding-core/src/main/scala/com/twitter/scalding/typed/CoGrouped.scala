@@ -234,8 +234,8 @@ trait CoGrouped[K, +R]
      * we have (key1, value1), but they are then discarded:
      */
     def outFields(inCount: Int): Fields =
-      List("key", "value") ++ (0 until (2 * (inCount - 1)))
-        .map("null%d".format(_))
+      List("key", "value") ++
+        (0 until (2 * (inCount - 1))).map("null%d".format(_))
 
     // Make this stable so the compiler does not make a closure
     val ord = keyOrdering
@@ -295,8 +295,9 @@ trait CoGrouped[K, +R]
                 f
               }
 
-              val groupFields: Array[Fields] =
-                (0 until dsize).map(makeFields).toArray
+              val groupFields: Array[Fields] = (0 until dsize)
+                .map(makeFields)
+                .toArray
 
               val pipes: Array[Pipe] =
                 distincts

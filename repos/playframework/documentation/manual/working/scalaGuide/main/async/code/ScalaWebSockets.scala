@@ -32,8 +32,8 @@ object ScalaWebSockets extends PlaySpecification {
           val promise = Promise[List[Message]]()
           if (expectOut == 0)
             promise.success(Nil)
-          val flowResult = in via flow runWith Sink
-            .fold[(List[Message], Int), Message]((Nil, expectOut)) {
+          val flowResult = in via flow runWith
+            Sink.fold[(List[Message], Int), Message]((Nil, expectOut)) {
               (state, out) =>
                 val (result, remaining) = state
                 if (remaining == 1) {
@@ -51,116 +51,130 @@ object ScalaWebSockets extends PlaySpecification {
 
       import akka.actor._
 
-      "allow creating a simple echoing actor" in new WithApplication() {
-        runWebSocket(
-          Samples.Controller1.socket,
-          Source.single(TextMessage("foo")),
-          1) must beRight.like {
-          case list =>
-            list must_== List(TextMessage("I received your message: foo"))
+      "allow creating a simple echoing actor" in
+        new WithApplication() {
+          runWebSocket(
+            Samples.Controller1.socket,
+            Source.single(TextMessage("foo")),
+            1) must
+            beRight.like {
+              case list =>
+                list must_== List(TextMessage("I received your message: foo"))
+            }
         }
-      }
 
-      "allow cleaning up" in new WithApplication() {
-        val closed = Promise[Unit]()
-        val someResource =
-          new Closeable() {
-            def close() = closed.success(())
+      "allow cleaning up" in
+        new WithApplication() {
+          val closed = Promise[Unit]()
+          val someResource =
+            new Closeable() {
+              def close() = closed.success(())
+            }
+          class MyActor extends Actor {
+            def receive = PartialFunction.empty
+
+            //#actor-post-stop
+            override def postStop() = {
+              someResource.close()
+            }
+            //#actor-post-stop
           }
-        class MyActor extends Actor {
-          def receive = PartialFunction.empty
 
-          //#actor-post-stop
-          override def postStop() = {
-            someResource.close()
+          runWebSocket(
+            WebSocket.acceptWithActor[String, String](req =>
+              out => Props(new MyActor)),
+            Source.empty,
+            0) must beRight[List[Message]]
+          await(closed.future) must_== ()
+        }
+
+      "allow closing the WebSocket" in
+        new WithApplication() {
+          class MyActor extends Actor {
+            def receive = PartialFunction.empty
+
+            //#actor-stop
+            import akka.actor.PoisonPill
+
+            self ! PoisonPill
+            //#actor-stop
           }
-          //#actor-post-stop
+
+          runWebSocket(
+            WebSocket.acceptWithActor[String, String](req =>
+              out => Props(new MyActor)),
+            Source.maybe,
+            0) must beRight[List[Message]]
         }
 
-        runWebSocket(
-          WebSocket
-            .acceptWithActor[String, String](req => out => Props(new MyActor)),
-          Source.empty,
-          0) must beRight[List[Message]]
-        await(closed.future) must_== ()
-      }
-
-      "allow closing the WebSocket" in new WithApplication() {
-        class MyActor extends Actor {
-          def receive = PartialFunction.empty
-
-          //#actor-stop
-          import akka.actor.PoisonPill
-
-          self ! PoisonPill
-          //#actor-stop
+      "allow rejecting the WebSocket" in
+        new WithApplication() {
+          runWebSocket(Samples.Controller2.socket, Source.empty, 0) must
+            beLeft.which { result =>
+              result.header.status must_== FORBIDDEN
+            }
         }
 
-        runWebSocket(
-          WebSocket
-            .acceptWithActor[String, String](req => out => Props(new MyActor)),
-          Source.maybe,
-          0) must beRight[List[Message]]
-      }
-
-      "allow rejecting the WebSocket" in new WithApplication() {
-        runWebSocket(Samples.Controller2.socket, Source.empty, 0) must beLeft
-          .which { result =>
-            result.header.status must_== FORBIDDEN
-          }
-      }
-
-      "allow creating a json actor" in new WithApplication() {
-        val json = Json.obj("foo" -> "bar")
-        runWebSocket(
-          Samples.Controller4.socket,
-          Source.single(TextMessage(Json.stringify(json))),
-          1) must beRight.which { out =>
-          out must_== List(TextMessage(Json.stringify(json)))
+      "allow creating a json actor" in
+        new WithApplication() {
+          val json = Json.obj("foo" -> "bar")
+          runWebSocket(
+            Samples.Controller4.socket,
+            Source.single(TextMessage(Json.stringify(json))),
+            1) must
+            beRight.which { out =>
+              out must_== List(TextMessage(Json.stringify(json)))
+            }
         }
-      }
 
-      "allow creating a higher level object actor" in new WithApplication() {
-        runWebSocket(
-          Samples.Controller5.socket,
-          Source.single(
-            TextMessage(
-              Json
-                .stringify(Json.toJson(Samples.Controller5.InEvent("blah"))))),
-          1) must beRight.which { out =>
-          out must_== List(
-            TextMessage(
-              Json
-                .stringify(Json.toJson(Samples.Controller5.OutEvent("blah")))))
+      "allow creating a higher level object actor" in
+        new WithApplication() {
+          runWebSocket(
+            Samples.Controller5.socket,
+            Source.single(
+              TextMessage(
+                Json.stringify(
+                  Json.toJson(Samples.Controller5.InEvent("blah"))))),
+            1) must
+            beRight.which { out =>
+              out must_==
+                List(
+                  TextMessage(
+                    Json.stringify(
+                      Json.toJson(Samples.Controller5.OutEvent("blah")))))
+            }
         }
-      }
 
     }
 
     "support iteratees" in {
 
-      "iteratee1" in new WithApplication() {
-        runWebSocket(Samples.Controller6.socket, Source.empty, 1) must beRight
-          .which { out =>
-            out must_== List(TextMessage("Hello!"))
-          }
-      }
-
-      "iteratee2" in new WithApplication() {
-        runWebSocket(Samples.Controller7.socket, Source.maybe, 1) must beRight
-          .which { out =>
-            out must_== List(TextMessage("Hello!"))
-          }
-      }
-
-      "iteratee3" in new WithApplication() {
-        runWebSocket(
-          Samples.Controller8.socket,
-          Source.single(TextMessage("foo")),
-          1) must beRight.which { out =>
-          out must_== List(TextMessage("I received your message: foo"))
+      "iteratee1" in
+        new WithApplication() {
+          runWebSocket(Samples.Controller6.socket, Source.empty, 1) must
+            beRight.which { out =>
+              out must_== List(TextMessage("Hello!"))
+            }
         }
-      }
+
+      "iteratee2" in
+        new WithApplication() {
+          runWebSocket(Samples.Controller7.socket, Source.maybe, 1) must
+            beRight.which { out =>
+              out must_== List(TextMessage("Hello!"))
+            }
+        }
+
+      "iteratee3" in
+        new WithApplication() {
+          runWebSocket(
+            Samples.Controller8.socket,
+            Source.single(TextMessage("foo")),
+            1) must
+            beRight.which { out =>
+              out must_== List(TextMessage("I received your message: foo"))
+            }
+        }
 
     }
   }

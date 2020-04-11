@@ -34,41 +34,46 @@ class FormBodyParserSpec extends PlaySpecification {
       mapping("name" -> nonEmptyText, "age" -> number)(User.apply)(
         User.unapply))
 
-    "bind JSON requests" in new WithApplication() {
-      parse(
-        Json.obj("name" -> "Alice", "age" -> 42),
-        BodyParsers.parse.form(userForm)) must beRight(User("Alice", 42))
-    }
-
-    "bind form-urlencoded requests" in new WithApplication() {
-      parse(
-        Map("name" -> Seq("Alice"), "age" -> Seq("42")),
-        BodyParsers.parse.form(userForm)) must beRight(User("Alice", 42))
-    }
-
-    "not bind erroneous body" in new WithApplication() {
-      parse(
-        Json.obj("age" -> "Alice"),
-        BodyParsers.parse.form(userForm)) must beLeft(Results.BadRequest)
-    }
-
-    "allow users to override the error reporting behaviour" in new WithApplication() {
-      import play.api.i18n.Messages.Implicits.applicationMessages
-      parse(
-        Json.obj("age" -> "Alice"),
-        BodyParsers
-          .parse
-          .form(
-            userForm,
-            onErrors = (form: Form[User]) =>
-              Results.BadRequest(form.errorsAsJson))) must beLeft.which {
-        result =>
-          result.header.status must equalTo(BAD_REQUEST)
-          val json = contentAsJson(Future.successful(result))
-          (json \ "age")(0).asOpt[String] must beSome("Numeric value expected")
-          (json \ "name")(0).asOpt[String] must beSome("This field is required")
+    "bind JSON requests" in
+      new WithApplication() {
+        parse(
+          Json.obj("name" -> "Alice", "age" -> 42),
+          BodyParsers.parse.form(userForm)) must beRight(User("Alice", 42))
       }
-    }
+
+    "bind form-urlencoded requests" in
+      new WithApplication() {
+        parse(
+          Map("name" -> Seq("Alice"), "age" -> Seq("42")),
+          BodyParsers.parse.form(userForm)) must beRight(User("Alice", 42))
+      }
+
+    "not bind erroneous body" in
+      new WithApplication() {
+        parse(Json.obj("age" -> "Alice"), BodyParsers.parse.form(userForm)) must
+          beLeft(Results.BadRequest)
+      }
+
+    "allow users to override the error reporting behaviour" in
+      new WithApplication() {
+        import play.api.i18n.Messages.Implicits.applicationMessages
+        parse(
+          Json.obj("age" -> "Alice"),
+          BodyParsers
+            .parse
+            .form(
+              userForm,
+              onErrors = (form: Form[User]) =>
+                Results.BadRequest(form.errorsAsJson))) must
+          beLeft.which { result =>
+            result.header.status must equalTo(BAD_REQUEST)
+            val json = contentAsJson(Future.successful(result))
+            (json \ "age")(0).asOpt[String] must
+              beSome("Numeric value expected")
+            (json \ "name")(0).asOpt[String] must
+              beSome("This field is required")
+          }
+      }
 
   }
 

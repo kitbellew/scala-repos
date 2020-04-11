@@ -282,8 +282,8 @@ object CanPadLeft {
             v.copy
           case num: Int if num < optDim.n1 =>
             DenseVector(
-              reverse(reverse(padDV).apply(0 until optDim.n1 - num))
-                .toArray ++ v.toArray)
+              reverse(reverse(padDV).apply(0 until optDim.n1 - num)).toArray ++
+                v.toArray)
           case num: Int if optDim.n1 < num =>
             v(0 until optDim.n1).copy //function should return a copy
           case _ =>

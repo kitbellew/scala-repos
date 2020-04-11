@@ -21,10 +21,8 @@ object PullReadingExample {
 
     override def preStart: Unit =
       //#pull-mode-bind
-      IO(Tcp) ! Bind(
-        self,
-        new InetSocketAddress("localhost", 0),
-        pullMode = true)
+      IO(Tcp) !
+        Bind(self, new InetSocketAddress("localhost", 0), pullMode = true)
     //#pull-mode-bind
 
     def receive = {

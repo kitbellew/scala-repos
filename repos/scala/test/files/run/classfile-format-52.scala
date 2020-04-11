@@ -21,8 +21,8 @@ import Opcodes._
 // interface won't verify.
 object Test extends DirectTest {
   override def extraSettings: String =
-    "-Yopt:l:classpath -usejavacp -d " + testOutput.path + " -cp " + testOutput
-      .path
+    "-Yopt:l:classpath -usejavacp -d " + testOutput.path + " -cp " +
+      testOutput.path
 
   def generateInterface() {
     val interfaceName = "HasDefaultMethod"

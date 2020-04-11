@@ -104,8 +104,8 @@ class CircuitBreakerSpec extends AkkaSpec with BeforeAndAfter {
         breaker().withSyncCircuitBreaker(sayHi)
       }
       (e.remainingDuration > Duration.Zero) should ===(true)
-      (e.remainingDuration <= CircuitBreakerSpec.longResetTimeout) should ===(
-        true)
+      (e.remainingDuration <= CircuitBreakerSpec.longResetTimeout) should
+        ===(true)
     }
 
     "transition to half-open on reset timeout" in {

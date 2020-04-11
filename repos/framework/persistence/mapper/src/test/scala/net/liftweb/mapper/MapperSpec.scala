@@ -107,15 +107,13 @@ class MapperSpec extends Specification with BeforeExample {
 
         "should use displayNameCalculator for displayName" in {
           val localeCalculator = LiftRules.localeCalculator
-          SampleModel
-            .firstName
-            .displayName must_== "DEFAULT:SampleModel.firstName"
+          SampleModel.firstName.displayName must_==
+            "DEFAULT:SampleModel.firstName"
 
           LiftRules.localeCalculator = (request: Box[HTTPRequest]) =>
             request.flatMap(_.locale).openOr(new Locale("xx", "YY"))
-          SampleModel
-            .firstName
-            .displayName must_== "xx_YY:SampleModel.firstName"
+          SampleModel.firstName.displayName must_==
+            "xx_YY:SampleModel.firstName"
 
           LiftRules.localeCalculator = localeCalculator
           success
@@ -207,11 +205,8 @@ class MapperSpec extends Specification with BeforeExample {
 
         "enforce NOT NULL" in {
           val nullString: String = null
-          SampleModel
-            .create
-            .firstName("Not Null")
-            .notNull(nullString)
-            .save must throwA[java.sql.SQLException]
+          SampleModel.create.firstName("Not Null").notNull(nullString).save must
+            throwA[java.sql.SQLException]
         }
 
         "enforce FK constraint on DefaultConnection" in {
@@ -241,8 +236,8 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "Precache works with OrderBy" in {
-          if ((provider ne DbProviders.DerbyProvider)
-              && (provider ne DbProviders.MySqlProvider)) {
+          if ((provider ne DbProviders.DerbyProvider) &&
+              (provider ne DbProviders.MySqlProvider)) {
             // this doesn't work for Derby, but it's a derby bug
             // nor does it work in MySQL, but it's a MySQL limitation
             //  try { provider.setupDB } catch { case e => skip(e.getMessage) }
@@ -374,8 +369,8 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "Precache works with OrderBy with Mixed Case" in {
-          if ((provider ne DbProviders.DerbyProvider)
-              && (provider ne DbProviders.MySqlProvider)) {
+          if ((provider ne DbProviders.DerbyProvider) &&
+              (provider ne DbProviders.MySqlProvider)) {
             // this doesn't work for Derby, but it's a derby bug
             // nor does it work in MySQL, but it's a MySQL limitation
             //  try { provider.setupDB } catch { case e => skip(e.getMessage) }
@@ -458,9 +453,8 @@ class MapperSpec extends Specification with BeforeExample {
           frog.firstName.get must_== "Frog"
 
           SampleModel.findAll().length must_== 4
-          SampleModel
-            .find(By(SampleModel.firstName, "Elwood"))
-            .isEmpty must_== true
+          SampleModel.find(By(SampleModel.firstName, "Elwood")).isEmpty must_==
+            true
         }
 
         "accept a Seq[T] as argument to ByList query parameter" in {

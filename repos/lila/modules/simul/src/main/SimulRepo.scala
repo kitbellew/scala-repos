@@ -40,8 +40,8 @@ private[simul] final class SimulRepo(simulColl: Coll) {
           gameId = r str "gameId",
           status = r.get[Status]("status"),
           wins = r boolO "wins",
-          hostColor = r.strO("hostColor").flatMap(chess.Color.apply) | chess
-            .White
+          hostColor = r.strO("hostColor").flatMap(chess.Color.apply) |
+            chess.White
         )
       def writes(w: BSON.Writer, o: SimulPairing) =
         BSONDocument(
@@ -87,9 +87,11 @@ private[simul] final class SimulRepo(simulColl: Coll) {
   def allCreatedFeaturable: Fu[List[Simul]] =
     simulColl
       .find(
-        createdSelect ++ BSONDocument(
-          "createdAt" -> BSONDocument("$gte" -> DateTime.now.minusMinutes(15)),
-          "hostRating" -> BSONDocument("$gte" -> 1700)))
+        createdSelect ++
+          BSONDocument(
+            "createdAt" ->
+              BSONDocument("$gte" -> DateTime.now.minusMinutes(15)),
+            "hostRating" -> BSONDocument("$gte" -> 1700)))
       .sort(createdSort)
       .cursor[Simul]()
       .collect[List]()
@@ -140,6 +142,7 @@ private[simul] final class SimulRepo(simulColl: Coll) {
 
   def cleanup =
     simulColl.remove(
-      createdSelect ++ BSONDocument(
-        "createdAt" -> BSONDocument("$lt" -> (DateTime.now minusMinutes 60))))
+      createdSelect ++
+        BSONDocument(
+          "createdAt" -> BSONDocument("$lt" -> (DateTime.now minusMinutes 60))))
 }

@@ -52,14 +52,13 @@ object LispCaseClasses extends Lisp {
   case class CONS(car: Data, cdr: Data) extends Data {
     override def toString() = "(" + elemsToString() + ")";
     override def elemsToString() =
-      car.toString() + (
-        cdr match {
+      car.toString() +
+        (cdr match {
           case NIL() =>
             ""
           case _ =>
             " " + cdr.elemsToString();
-        }
-      )
+        })
   }
   case class NIL() extends Data { // !!! use case object
     override def toString() = "()";
@@ -350,8 +349,8 @@ object LispCaseClasses extends Lisp {
         sys.error("unbalanced parentheses")
       else if ('0' <= token.charAt(0) && token.charAt(0) <= '9')
         NUM(token.toInt)
-      else if (token.charAt(0) == '\"' && token
-                 .charAt(token.length() - 1) == '\"')
+      else if (token.charAt(0) == '\"' &&
+               token.charAt(token.length() - 1) == '\"')
         STR(token.substring(1, token.length() - 1))
       else
         SYM(token)
@@ -631,8 +630,8 @@ object LispAny extends Lisp {
       //else if (Character.isDigit(token.charAt(0)))
       else if (token.charAt(0).isDigit)
         token.toInt
-      else if (token.charAt(0) == '\"' && token
-                 .charAt(token.length() - 1) == '\"')
+      else if (token.charAt(0) == '\"' &&
+               token.charAt(token.length() - 1) == '\"')
         token.substring(1, token.length() - 1)
       else
         Symbol(token)
@@ -672,42 +671,26 @@ class LispUser(lisp: Lisp) {
     Console.println;
 
     Console.println(
-      "faculty(10) = " + evaluate(
-        "(def (faculty n) " +
-          "(if (= n 0) " +
-          "1 " +
-          "(* n (faculty (- n 1)))) " +
-          "(faculty 10))"));
+      "faculty(10) = " +
+        evaluate(
+          "(def (faculty n) " + "(if (= n 0) " + "1 " +
+            "(* n (faculty (- n 1)))) " + "(faculty 10))"));
     Console.println(
-      "faculty(10) = " + evaluate(
-        "(def (faculty n) " +
-          "(cond " +
-          "((= n 0) 1) " +
-          "(else (* n (faculty (- n 1))))) " +
-          "(faculty 10))"));
+      "faculty(10) = " +
+        evaluate(
+          "(def (faculty n) " + "(cond " + "((= n 0) 1) " +
+            "(else (* n (faculty (- n 1))))) " + "(faculty 10))"));
     Console.println(
-      "foobar = " + evaluate(
-        "(def (foo n) " +
-          "(cond " +
-          "((= n 0) \"a\")" +
-          "((= n 1) \"b\")" +
-          "((= (/ n 2) 1) " +
-          "(cond " +
-          "((= n 2) \"c\")" +
-          "(else    \"d\")))" +
-          "(else " +
-          "(def (bar m) " +
-          "(cond " +
-          "((= m 0) \"e\")" +
-          "((= m 1) \"f\")" +
-          "(else    \"z\"))" +
-          "(bar (- n 4)))))" +
-          "(val nil (quote ())" +
-          "(val v1 (foo 0) " +
-          "(val v2 (+ (foo 1) (foo 2)) " +
-          "(val v3 (+ (+ (foo 3) (foo 4)) (foo 5)) " +
-          "(val v4 (foo 6) " +
-          "(cons v1 (cons v2 (cons v3 (cons v4 nil))))))))))"));
+      "foobar = " +
+        evaluate(
+          "(def (foo n) " + "(cond " + "((= n 0) \"a\")" + "((= n 1) \"b\")" +
+            "((= (/ n 2) 1) " + "(cond " + "((= n 2) \"c\")" +
+            "(else    \"d\")))" + "(else " + "(def (bar m) " + "(cond " +
+            "((= m 0) \"e\")" + "((= m 1) \"f\")" + "(else    \"z\"))" +
+            "(bar (- n 4)))))" + "(val nil (quote ())" + "(val v1 (foo 0) " +
+            "(val v2 (+ (foo 1) (foo 2)) " +
+            "(val v3 (+ (+ (foo 3) (foo 4)) (foo 5)) " + "(val v4 (foo 6) " +
+            "(cons v1 (cons v2 (cons v3 (cons v4 nil))))))))))"));
     Console.println;
   }
 }

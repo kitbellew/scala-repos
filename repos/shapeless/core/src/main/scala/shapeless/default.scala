@@ -283,24 +283,24 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
       tpe
         .members
         .count { m =>
-          m.isMethod && m.name.toString == "apply" && methodHasDefaults(
-            m.asMethod)
+          m.isMethod && m.name.toString == "apply" &&
+          methodHasDefaults(m.asMethod)
         }
 
     val mainOverloadsWithDefaultCount = overloadsWithDefaultCount(tpe.companion)
     val secondOverloadsWithDefaultCount = overloadsWithDefaultCount(
       companion.symbol.info)
 
-    val oneOverloadWithDefaults = mainOverloadsWithDefaultCount == 1 || (
-      mainOverloadsWithDefaultCount == 0 && secondOverloadsWithDefaultCount == 1
-    )
+    val oneOverloadWithDefaults = mainOverloadsWithDefaultCount == 1 ||
+      (mainOverloadsWithDefaultCount == 0 &&
+        secondOverloadsWithDefaultCount == 1)
 
     // Checking if the primary constructor has default parameters, and returning
     // a Default instance with non-empty types / values only if that holds.
     // The apply$default$... methods below may still exist without these, if an additional
     // apply method has default parameters. We want to ignore them in this case.
-    val hasDefaults =
-      oneOverloadWithDefaults && methodHasDefaults(primaryConstructor)
+    val hasDefaults = oneOverloadWithDefaults &&
+      methodHasDefaults(primaryConstructor)
 
     def wrapTpeTree(idx: Int, argTpe: Type) = {
       if (hasDefaults) {

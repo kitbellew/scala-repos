@@ -52,11 +52,10 @@ case class TopicMetadata(
     errorCode: Short = Errors.NONE.code)
     extends Logging {
   def sizeInBytes: Int = {
-    2 /* error code */ +
-      shortStringLength(topic) +
-      4 + partitionsMetadata
-      .map(_.sizeInBytes)
-      .sum /* size and partition data array */
+    2 /* error code */ + shortStringLength(topic) + 4 +
+      partitionsMetadata
+        .map(_.sizeInBytes)
+        .sum /* size and partition data array */
   }
 
   def writeTo(buffer: ByteBuffer) {
@@ -151,11 +150,8 @@ case class PartitionMetadata(
     errorCode: Short = Errors.NONE.code)
     extends Logging {
   def sizeInBytes: Int = {
-    2 /* error code */ +
-      4 /* partition id */ +
-      4 /* leader */ +
-      4 + 4 * replicas.size /* replica array */ +
-      4 + 4 * isr.size /* isr array */
+    2 /* error code */ + 4 /* partition id */ + 4 /* leader */ + 4 +
+      4 * replicas.size /* replica array */ + 4 + 4 * isr.size /* isr array */
   }
 
   def writeTo(buffer: ByteBuffer) {
@@ -183,12 +179,11 @@ case class PartitionMetadata(
     val partitionMetadataString = new StringBuilder
     partitionMetadataString.append("\tpartition " + partitionId)
     partitionMetadataString.append(
-      "\tleader: " + (
-        if (leader.isDefined)
-          leader.get.toString
-        else
-          "none"
-      ))
+      "\tleader: " +
+        (if (leader.isDefined)
+           leader.get.toString
+         else
+           "none"))
     partitionMetadataString.append("\treplicas: " + replicas.mkString(","))
     partitionMetadataString.append("\tisr: " + isr.mkString(","))
     partitionMetadataString.append(

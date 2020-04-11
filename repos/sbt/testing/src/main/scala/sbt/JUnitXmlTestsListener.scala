@@ -45,11 +45,12 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
       val props: ListBuffer[XNode] = new ListBuffer()
       while (iter.hasNext) {
         val next = iter.next
-        props += <property name={
-          next.getKey.toString
-        } value={
-          next.getValue.toString
-        }/>
+        props +=
+          <property name={
+            next.getKey.toString
+          } value={
+            next.getValue.toString
+          }/>
       }
       props
     }

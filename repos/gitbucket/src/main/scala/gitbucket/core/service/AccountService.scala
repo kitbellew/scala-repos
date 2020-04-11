@@ -96,10 +96,10 @@ trait AccountService {
 
   def getAccountByUserName(userName: String, includeRemoved: Boolean = false)(
       implicit s: Session): Option[Account] =
-    Accounts filter (t =>
-      (t.userName === userName.bind) && (
-        t.removed === false.bind, !includeRemoved
-      )) firstOption
+    Accounts filter
+      (t =>
+        (t.userName === userName.bind) &&
+          (t.removed === false.bind, !includeRemoved)) firstOption
 
   def getAccountsByUserNames(
       userNames: Set[String],
@@ -111,24 +111,24 @@ trait AccountService {
     if (needs.isEmpty) {
       map
     } else {
-      map ++ Accounts
-        .filter(t =>
-          (
-            t.userName inSetBind needs
-          ) && (t.removed === false.bind, !includeRemoved))
-        .list
-        .map(a => a.userName -> a)
-        .toMap
+      map ++
+        Accounts
+          .filter(t =>
+            (t.userName inSetBind needs) &&
+              (t.removed === false.bind, !includeRemoved))
+          .list
+          .map(a => a.userName -> a)
+          .toMap
     }
   }
 
   def getAccountByMailAddress(
       mailAddress: String,
       includeRemoved: Boolean = false)(implicit s: Session): Option[Account] =
-    Accounts filter (t =>
-      (t.mailAddress.toLowerCase === mailAddress.toLowerCase.bind) && (
-        t.removed === false.bind, !includeRemoved
-      )) firstOption
+    Accounts filter
+      (t =>
+        (t.mailAddress.toLowerCase === mailAddress.toLowerCase.bind) &&
+          (t.removed === false.bind, !includeRemoved)) firstOption
 
   def getAllUsers(includeRemoved: Boolean = true)(implicit
       s: Session): List[Account] =
@@ -145,20 +145,21 @@ trait AccountService {
       mailAddress: String,
       isAdmin: Boolean,
       url: Option[String])(implicit s: Session): Unit =
-    Accounts insert Account(
-      userName = userName,
-      password = password,
-      fullName = fullName,
-      mailAddress = mailAddress,
-      isAdmin = isAdmin,
-      url = url,
-      registeredDate = currentDate,
-      updatedDate = currentDate,
-      lastLoginDate = None,
-      image = None,
-      isGroupAccount = false,
-      isRemoved = false
-    )
+    Accounts insert
+      Account(
+        userName = userName,
+        password = password,
+        fullName = fullName,
+        mailAddress = mailAddress,
+        isAdmin = isAdmin,
+        url = url,
+        registeredDate = currentDate,
+        updatedDate = currentDate,
+        lastLoginDate = None,
+        image = None,
+        isGroupAccount = false,
+        isRemoved = false
+      )
 
   def updateAccount(account: Account)(implicit s: Session): Unit =
     Accounts
@@ -201,20 +202,21 @@ trait AccountService {
 
   def createGroup(groupName: String, url: Option[String])(implicit
       s: Session): Unit =
-    Accounts insert Account(
-      userName = groupName,
-      password = "",
-      fullName = groupName,
-      mailAddress = groupName + "@devnull",
-      isAdmin = false,
-      url = url,
-      registeredDate = currentDate,
-      updatedDate = currentDate,
-      lastLoginDate = None,
-      image = None,
-      isGroupAccount = true,
-      isRemoved = false
-    )
+    Accounts insert
+      Account(
+        userName = groupName,
+        password = "",
+        fullName = groupName,
+        mailAddress = groupName + "@devnull",
+        isAdmin = false,
+        url = url,
+        registeredDate = currentDate,
+        updatedDate = currentDate,
+        lastLoginDate = None,
+        image = None,
+        isGroupAccount = true,
+        isRemoved = false
+      )
 
   def updateGroup(groupName: String, url: Option[String], removed: Boolean)(
       implicit s: Session): Unit =

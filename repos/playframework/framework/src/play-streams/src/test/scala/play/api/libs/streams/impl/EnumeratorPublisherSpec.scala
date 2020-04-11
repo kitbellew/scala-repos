@@ -160,8 +160,8 @@ class EnumeratorPublisherSpec extends Specification {
     }
     "by default, enumerate nothing for empty" in {
       val testEnv = new TestEnv[Int]
-      val enum: Enumerator[Int] = Enumerator
-        .enumInput(Input.Empty) >>> Enumerator.eof
+      val enum: Enumerator[Int] = Enumerator.enumInput(Input.Empty) >>>
+        Enumerator.eof
       val pubr = new EnumeratorPublisher(enum)
       pubr.subscribe(testEnv.subscriber)
       testEnv.next must_== OnSubscribe
@@ -172,8 +172,8 @@ class EnumeratorPublisherSpec extends Specification {
     }
     "be able to enumerate something for empty" in {
       val testEnv = new TestEnv[Int]
-      val enum: Enumerator[Int] = Enumerator
-        .enumInput(Input.Empty) >>> Enumerator.eof
+      val enum: Enumerator[Int] = Enumerator.enumInput(Input.Empty) >>>
+        Enumerator.eof
       val pubr = new EnumeratorPublisher(enum, emptyElement = Some(-1))
       pubr.subscribe(testEnv.subscriber)
       testEnv.next must_== OnSubscribe
@@ -195,10 +195,11 @@ class EnumeratorPublisherSpec extends Specification {
       testEnv.next must_== OnSubscribe
       testEnv.request(1)
       testEnv.next must_== RequestMore(1)
-      testEnv.next must beLike {
-        case OnError(e) =>
-          e.getMessage must_== exception.getMessage
-      }
+      testEnv.next must
+        beLike {
+          case OnError(e) =>
+            e.getMessage must_== exception.getMessage
+        }
       testEnv.isEmptyAfterDelay() must beTrue
     }
     "enumerate 25 items" in {

@@ -111,8 +111,8 @@ object ScalaWrapManager {
       case psi: ScPatternArgumentList =>
         return Wrap.createWrap(settings.CALL_PARAMETERS_WRAP, false)
       case _
-          if node.getElementType == ScalaTokenTypes.kEXTENDS && block
-            .myLastNode != null =>
+          if node.getElementType == ScalaTokenTypes.kEXTENDS &&
+            block.myLastNode != null =>
         return Wrap.createChildWrap(
           block.getWrap,
           WrapType.byLegacyRepresentation(settings.EXTENDS_LIST_WRAP),
@@ -157,10 +157,9 @@ object ScalaWrapManager {
     val parentPsi = parentNode.getPsi
     val childPsi = child.getPsi
     if (childPsi.isInstanceOf[ScExtendsBlock] &&
-        childPsi.getFirstChild != null && childPsi
-          .getFirstChild
-          .getNode
-          .getElementType == ScalaTokenTypes.kEXTENDS)
+        childPsi.getFirstChild != null &&
+        childPsi.getFirstChild.getNode.getElementType ==
+          ScalaTokenTypes.kEXTENDS)
       return Wrap.createWrap(settings.EXTENDS_KEYWORD_WRAP, true)
 
     def arrageBinary(
@@ -241,9 +240,8 @@ object ScalaWrapManager {
         else
           return null
       case params: ScParameters =>
-        if (childPsi.isInstanceOf[ScParameterClause] && params
-              .clauses
-              .head != childPsi)
+        if (childPsi.isInstanceOf[ScParameterClause] &&
+            params.clauses.head != childPsi)
           return suggestedWrap
         else
           return null
@@ -253,8 +251,8 @@ object ScalaWrapManager {
         else
           return null
       case _
-          if parentNode.getElementType == ScalaTokenTypes.kEXTENDS && parent
-            .myLastNode != null =>
+          if parentNode.getElementType == ScalaTokenTypes.kEXTENDS &&
+            parent.myLastNode != null =>
         val e: ScExtendsBlock = PsiTreeUtil
           .getParentOfType(parentPsi, classOf[ScExtendsBlock])
         val first: PsiElement =

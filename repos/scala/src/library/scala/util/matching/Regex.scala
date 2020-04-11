@@ -701,8 +701,8 @@ object Regex {
       else
         null
 
-    private lazy val nameToIndex: Map[String, Int] =
-      Map[String, Int]() ++ ("" :: groupNames.toList).zipWithIndex
+    private lazy val nameToIndex: Map[String, Int] = Map[String, Int]() ++
+      ("" :: groupNames.toList).zipWithIndex
 
     /** Returns the group with given name.
       *
@@ -738,10 +738,10 @@ object Regex {
     /** The number of subgroups. */
     def groupCount = matcher.groupCount
 
-    private lazy val starts: Array[Int] =
-      ((0 to groupCount) map matcher.start).toArray
-    private lazy val ends: Array[Int] =
-      ((0 to groupCount) map matcher.end).toArray
+    private lazy val starts: Array[Int] = ((0 to groupCount) map matcher.start)
+      .toArray
+    private lazy val ends: Array[Int] = ((0 to groupCount) map matcher.end)
+      .toArray
 
     /** The index of the first matched character in group `i`. */
     def start(i: Int) = starts(i)

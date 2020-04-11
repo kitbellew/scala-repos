@@ -91,11 +91,8 @@ object Test extends ScaladocModelTest {
     assert(conv._member("convToManifestA").resultType.name == "T")
     assert(conv._member("convToTraversableOps").resultType.name == "T")
     assert(
-      conv
-        ._member("convToTraversableOps")
-        .flags
-        .toString
-        .indexOf("abstract") == -1)
+      conv._member("convToTraversableOps").flags.toString.indexOf("abstract") ==
+        -1)
 
 //// class B ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -147,11 +144,8 @@ object Test extends ScaladocModelTest {
     assert(conv._member("convToManifestA").resultType.name == "Double")
     assert(conv._member("convToTraversableOps").resultType.name == "Double")
     assert(
-      conv
-        ._member("convToTraversableOps")
-        .flags
-        .toString
-        .indexOf("abstract") == -1)
+      conv._member("convToTraversableOps").flags.toString.indexOf("abstract") ==
+        -1)
 
 //// class C ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 

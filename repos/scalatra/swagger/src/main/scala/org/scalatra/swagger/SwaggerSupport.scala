@@ -491,8 +491,8 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
           }
 
         case _: Servlet =>
-          val registration = ScalatraBase
-            .getServletRegistration(this) getOrElse throwAFit
+          val registration = ScalatraBase.getServletRegistration(this) getOrElse
+            throwAFit
           //          println("Registering for mappings: " + registration.getMappings().asScala.mkString("[", ", ", "]"))
           registration.getMappings.asScala foreach registerInSwagger
 
@@ -605,7 +605,8 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
       sys.error("Parameter [" + name + "] does not allow optional values.")
     if (st.isCollection && st.typeArgs.isEmpty)
       sys.error(
-        "A collection needs to have a type for swagger parameter [" + name + "].")
+        "A collection needs to have a type for swagger parameter [" + name +
+          "].")
     if (st.isOption && st.typeArgs.isEmpty)
       sys.error(
         "An Option needs to have a type for swagger parameter [" + name + "].")
@@ -697,9 +698,8 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
       route ← routes
       if (route.metadata.keySet & Symbols.AllSymbols).nonEmpty
       endpoint =
-        route.metadata.get(Symbols.Endpoint) map (
-          _.asInstanceOf[String]
-        ) getOrElse inferSwaggerEndpoint(route)
+        route.metadata.get(Symbols.Endpoint) map
+          (_.asInstanceOf[String]) getOrElse inferSwaggerEndpoint(route)
       operation = extract(route, method)
     } yield Entry(endpoint, operation)
 }
@@ -719,19 +719,13 @@ trait SwaggerSupport
   protected def apiOperation[T: Manifest: NotNothing](
       nickname: String): OperationBuilder = {
     registerModel[T]()
-    (
-      new OperationBuilder(DataType[T])
-        nickname nickname
-    )
+    (new OperationBuilder(DataType[T]) nickname nickname)
   }
   protected def apiOperation(
       nickname: String,
       model: Model): OperationBuilder = {
     registerModel(model)
-    (
-      new OperationBuilder(ValueDataType(model.id))
-        nickname nickname
-    )
+    (new OperationBuilder(ValueDataType(model.id)) nickname nickname)
   }
 
   /**
@@ -752,7 +746,8 @@ trait SwaggerSupport
           else
             name
         new Endpoint(pth + nm, desc.blankOption, entries.toList map (_.value))
-    } sortBy (_.path)
+    } sortBy
+      (_.path)
 
   }
 
@@ -763,44 +758,42 @@ trait SwaggerSupport
   protected def extractOperation(
       route: Route,
       method: HttpMethod): Operation = {
-    val op =
-      route.metadata.get(Symbols.Operation) map (_.asInstanceOf[Operation])
-    op map (_.copy(method = method)) getOrElse {
-      val theParams = route.metadata.get(Symbols.Parameters) map (
-        _.asInstanceOf[List[Parameter]]
-      ) getOrElse Nil
-      val errors = route.metadata.get(Symbols.Errors) map (
-        _.asInstanceOf[List[ResponseMessage[_]]]
-      ) getOrElse Nil
-      val responseClass = route.metadata.get(Symbols.ResponseClass) map (
-        _.asInstanceOf[DataType]
-      ) getOrElse DataType.Void
-      val summary =
-        (route.metadata.get(Symbols.Summary) map (_.asInstanceOf[String]))
-          .orNull
-      val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])
-      val nick =
-        route.metadata.get(Symbols.Nickname) map (_.asInstanceOf[String])
-      val produces = route.metadata.get(Symbols.Produces) map (
-        _.asInstanceOf[List[String]]
-      ) getOrElse Nil
-      val consumes = route.metadata.get(Symbols.Consumes) map (
-        _.asInstanceOf[List[String]]
-      ) getOrElse Nil
-      Operation(
-        method = method,
-        responseClass = responseClass,
-        summary = summary,
-        position = 0,
-        notes = notes,
-        nickname = nick,
-        parameters = theParams,
-        responseMessages =
-          (errors ::: swaggerDefaultMessages ::: swaggerDefaultErrors).distinct,
-        produces = produces,
-        consumes = consumes
-      )
-    }
+    val op = route.metadata.get(Symbols.Operation) map
+      (_.asInstanceOf[Operation])
+    op map
+      (_.copy(method = method)) getOrElse {
+        val theParams = route.metadata.get(Symbols.Parameters) map
+          (_.asInstanceOf[List[Parameter]]) getOrElse Nil
+        val errors = route.metadata.get(Symbols.Errors) map
+          (_.asInstanceOf[List[ResponseMessage[_]]]) getOrElse Nil
+        val responseClass = route.metadata.get(Symbols.ResponseClass) map
+          (_.asInstanceOf[DataType]) getOrElse DataType.Void
+        val summary =
+          (route.metadata.get(Symbols.Summary) map (_.asInstanceOf[String]))
+            .orNull
+        val notes = route.metadata.get(Symbols.Notes) map
+          (_.asInstanceOf[String])
+        val nick = route.metadata.get(Symbols.Nickname) map
+          (_.asInstanceOf[String])
+        val produces = route.metadata.get(Symbols.Produces) map
+          (_.asInstanceOf[List[String]]) getOrElse Nil
+        val consumes = route.metadata.get(Symbols.Consumes) map
+          (_.asInstanceOf[List[String]]) getOrElse Nil
+        Operation(
+          method = method,
+          responseClass = responseClass,
+          summary = summary,
+          position = 0,
+          notes = notes,
+          nickname = nick,
+          parameters = theParams,
+          responseMessages =
+            (errors ::: swaggerDefaultMessages ::: swaggerDefaultErrors)
+              .distinct,
+          produces = produces,
+          consumes = consumes
+        )
+      }
   }
 
 }

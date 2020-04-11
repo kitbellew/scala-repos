@@ -72,13 +72,11 @@ trait ScTypePresentation {
           ""
         case e: PsiClass =>
           "<a href=\"psi_element://" + e.qualifiedName + "\"><code>" +
-            StringEscapeUtils.escapeHtml(e.name) +
-            "</code></a>" + (
-            if (withPoint)
-              "."
-            else
-              ""
-          )
+            StringEscapeUtils.escapeHtml(e.name) + "</code></a>" +
+            (if (withPoint)
+               "."
+             else
+               "")
         case pack: PsiPackage if withPoint =>
           ""
         case _ =>
@@ -121,12 +119,11 @@ trait ScTypePresentation {
               case _ =>
                 e.name
             }
-        }) + (
-        if (withPoint)
-          "."
-        else
-          ""
-      )
+        }) +
+        (if (withPoint)
+           "."
+         else
+           "")
     }
     typeText(t, nameFun(_, withPoint = false), nameFun(_, withPoint = true))
   }
@@ -307,21 +304,17 @@ trait ScTypePresentation {
               case bp: ScBindingPattern =>
                 val b = ScBindingPattern.getCompoundCopy(rt, bp)
                 Seq(
-                  (
-                    if (b.isVar)
-                      "var "
-                    else
-                      "val "
-                  ) + b.name + " : " + typeText0(rt))
+                  (if (b.isVar)
+                     "var "
+                   else
+                     "val ") + b.name + " : " + typeText0(rt))
               case fi: ScFieldId =>
                 val f = ScFieldId.getCompoundCopy(rt, fi)
                 Seq(
-                  (
-                    if (f.isVar)
-                      "var "
-                    else
-                      "val "
-                  ) + f.name + " : " + typeText0(rt))
+                  (if (f.isVar)
+                     "var "
+                   else
+                     "val ") + f.name + " : " + typeText0(rt))
               case _ =>
                 Seq.empty
             }
@@ -466,12 +459,8 @@ trait ScTypePresentation {
         case proj: ScProjectionType if proj != null =>
           projectionTypeText(proj, needDotType)
         case ScParameterizedType(des, typeArgs) =>
-          innerTypeText(des) + typeSeqText(
-            typeArgs,
-            "[",
-            ", ",
-            "]",
-            checkWildcard = true)
+          innerTypeText(des) +
+            typeSeqText(typeArgs, "[", ", ", "]", checkWildcard = true)
         case j @ JavaArrayType(arg) =>
           s"Array[${innerTypeText(arg)}]"
         case ScSkolemizedType(name, _, _, _) =>

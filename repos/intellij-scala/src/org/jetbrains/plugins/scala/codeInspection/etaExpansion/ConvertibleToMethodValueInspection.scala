@@ -78,9 +78,10 @@ class ConvertibleToMethodValueInspection
   }
 
   private def allArgsUnderscores(args: Seq[ScExpression]): Boolean = {
-    args.nonEmpty && args.forall(arg =>
-      arg.isInstanceOf[ScUnderscoreSection] && ScUnderScoreSectionUtil
-        .isUnderscore(arg))
+    args.nonEmpty &&
+    args.forall(arg =>
+      arg.isInstanceOf[ScUnderscoreSection] &&
+        ScUnderScoreSectionUtil.isUnderscore(arg))
   }
 
   private def onlyStableValuesUsed(qual: ScExpression): Boolean = {
@@ -153,10 +154,8 @@ class ConvertibleToMethodValueInspection
       case Some(expectedType) if ScFunctionType.isFunctionType(expectedType) =>
         def conformsExpected(expr: ScExpression): Boolean =
           expr.getType().getOrAny conforms expectedType
-        conformsExpected(oldExpr) && conformsExpected(newExpr) && oldExpr
-          .getType()
-          .getOrAny
-          .conforms(newExpr.getType().getOrNothing)
+        conformsExpected(oldExpr) && conformsExpected(newExpr) &&
+        oldExpr.getType().getOrAny.conforms(newExpr.getType().getOrNothing)
       case None if newExprText endsWith "_" =>
         (oldExpr.getType(), newExpr.getType()) match {
           case (Success(oldType, _), Success(newType, _)) =>

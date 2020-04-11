@@ -190,7 +190,8 @@ class CompoundTypeCheckSignatureProcessor(
               Array.empty,
               rt))
           return false
-        if (isVar && !checkSignature(
+        if (isVar &&
+            !checkSignature(
               new Signature(dcl.name + "_=", Seq(() => rt), 1, subst, dcl),
               Array.empty,
               Unit))

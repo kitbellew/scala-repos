@@ -22,25 +22,31 @@ object FutureTest extends SpecLite {
       }
     }
     "have a run method that returns" in {
-      "when constructed from Future.now" in prop { (n: Int) =>
-        Future.now(n).unsafePerformSync must_== n
-      }
-      "when constructed from Future.delay" in prop { (n: Int) =>
-        Future.delay(n).unsafePerformSync must_== n
-      }
-      "when constructed from Future.fork" in prop { (n: Int) =>
-        Future.fork(Future.now(n)).unsafePerformSync must_== n
-      }
-      "when constructed from Future.suspend" ! prop { (n: Int) =>
-        Future.suspend(Future.now(n)).unsafePerformSync must_== n
-      }
-      "when constructed from Future.async" ! prop { (n: Int) =>
-        def callback(call: Int => Unit): Unit = call(n)
-        Future.async(callback).unsafePerformSync must_== n
-      }
-      "when constructed from Future.apply" ! prop { (n: Int) =>
-        Future.apply(n).unsafePerformSync must_== n
-      }
+      "when constructed from Future.now" in
+        prop { (n: Int) =>
+          Future.now(n).unsafePerformSync must_== n
+        }
+      "when constructed from Future.delay" in
+        prop { (n: Int) =>
+          Future.delay(n).unsafePerformSync must_== n
+        }
+      "when constructed from Future.fork" in
+        prop { (n: Int) =>
+          Future.fork(Future.now(n)).unsafePerformSync must_== n
+        }
+      "when constructed from Future.suspend" !
+        prop { (n: Int) =>
+          Future.suspend(Future.now(n)).unsafePerformSync must_== n
+        }
+      "when constructed from Future.async" !
+        prop { (n: Int) =>
+          def callback(call: Int => Unit): Unit = call(n)
+          Future.async(callback).unsafePerformSync must_== n
+        }
+      "when constructed from Future.apply" !
+        prop { (n: Int) =>
+          Future.apply(n).unsafePerformSync must_== n
+        }
     }
   }
 
@@ -92,8 +98,8 @@ object FutureTest extends SpecLite {
           .unsafePerformSync
       val duration = System.currentTimeMillis() - start
 
-      result.length must_== times.size and duration.toInt mustBe_< times
-        .fold(0)(_ + _)
+      result.length must_== times.size and duration.toInt mustBe_<
+        times.fold(0)(_ + _)
     }
   }
 
@@ -116,8 +122,9 @@ object FutureTest extends SpecLite {
         }))
     else
       Future.fork(
-        non.both(deadlocks(depth - 1), deadlocks(depth - 1)) map ({
-          case (l, r) =>
-            l ++ r
-        }))
+        non.both(deadlocks(depth - 1), deadlocks(depth - 1)) map
+          ({
+            case (l, r) =>
+              l ++ r
+          }))
 }

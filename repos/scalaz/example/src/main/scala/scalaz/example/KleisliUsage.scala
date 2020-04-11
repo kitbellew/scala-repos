@@ -48,8 +48,8 @@ object KleisliUsage extends App {
   // the same applies to function composition with
   // <==<, <=<, composeK and compose
   val allCities = kleisli(continents) >==> countries >==> cities
-  val allCities2 =
-    kleisli(continents) >=> kleisli(countries) >=> kleisli(cities)
+  val allCities2 = kleisli(continents) >=> kleisli(countries) >=>
+    kleisli(cities)
 
   (allCities("America")).map(println)
 

@@ -14,7 +14,8 @@ class NestedNonPrimitiveSubclassTest extends FunSuite {
       Fork(Node(4), Node(5)))
     val pckl = treeStructure.pickle
     assert(
-      pckl.value.toString === """
+      pckl.value.toString ===
+        """
       |{
       |  "$type": "scala.pickling.nested.non.primitive.subclass.Fork",
       |  "left": {

@@ -238,8 +238,8 @@ trait MongoPlatformSpecs
           case orig: StrColumn =>
             new StrColumn {
               def apply(row: Int): String = {
-                val newPath =
-                  "/test/" + orig(row).replaceAll("^/|/$", "").replace('/', '_')
+                val newPath = "/test/" +
+                  orig(row).replaceAll("^/|/$", "").replace('/', '_')
                 logger.debug("Fixed %s to %s".format(orig(row), newPath))
                 newPath
               }
@@ -263,15 +263,12 @@ trait MongoPlatformSpecs
   }
 
   override def map(fs: => Fragments): Fragments =
-    (
-      Step {
-        startup()
-      }
-    ) ^ fs ^ (
-      Step {
+    (Step {
+      startup()
+    }) ^ fs ^
+      (Step {
         shutdown()
-      }
-    )
+      })
 
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =

@@ -73,8 +73,7 @@ object UdpConnected
     */
   final case class Send(payload: ByteString, ack: Any) extends Command {
     require(
-      ack
-        != null,
+      ack != null,
       "ack must be non-null. Use NoAck if you don't want acks.")
 
     def wantsAck: Boolean = !ack.isInstanceOf[NoAck]

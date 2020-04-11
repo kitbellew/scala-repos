@@ -34,54 +34,56 @@ class InputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       Await.result(f.takeWithin(5.seconds).runForeach(it ⇒ ()), 10.seconds)
     }
 
-    "read bytes from InputStream" in assertAllStagesStopped {
-      val f = StreamConverters
-        .fromInputStream(() ⇒
-          new InputStream {
-            @volatile
-            var buf = List("a", "b", "c").map(_.charAt(0).toInt)
-            override def read(): Int = {
-              buf match {
-                case head :: tail ⇒
-                  buf = tail
-                  head
-                case Nil ⇒
-                  -1
-              }
-
-            }
-          })
-        .runWith(Sink.head)
-
-      f.futureValue should ===(ByteString("abc"))
-    }
-
-    "emit as soon as read" in assertAllStagesStopped {
-      val latch = new CountDownLatch(1)
-      val probe = StreamConverters
-        .fromInputStream(
-          () ⇒
+    "read bytes from InputStream" in
+      assertAllStagesStopped {
+        val f = StreamConverters
+          .fromInputStream(() ⇒
             new InputStream {
               @volatile
-              var emitted = false
+              var buf = List("a", "b", "c").map(_.charAt(0).toInt)
               override def read(): Int = {
-                if (!emitted) {
-                  emitted = true
-                  'M'.toInt
-                } else {
-                  latch.await()
-                  -1
+                buf match {
+                  case head :: tail ⇒
+                    buf = tail
+                    head
+                  case Nil ⇒
+                    -1
                 }
-              }
-            },
-          chunkSize = 1)
-        .runWith(TestSink.probe)
 
-      probe.request(4)
-      probe.expectNext(ByteString("M"))
-      latch.countDown()
-      probe.expectComplete()
-    }
+              }
+            })
+          .runWith(Sink.head)
+
+        f.futureValue should ===(ByteString("abc"))
+      }
+
+    "emit as soon as read" in
+      assertAllStagesStopped {
+        val latch = new CountDownLatch(1)
+        val probe = StreamConverters
+          .fromInputStream(
+            () ⇒
+              new InputStream {
+                @volatile
+                var emitted = false
+                override def read(): Int = {
+                  if (!emitted) {
+                    emitted = true
+                    'M'.toInt
+                  } else {
+                    latch.await()
+                    -1
+                  }
+                }
+              },
+            chunkSize = 1)
+          .runWith(TestSink.probe)
+
+        probe.request(4)
+        probe.expectNext(ByteString("M"))
+        latch.countDown()
+        probe.expectComplete()
+      }
   }
 
 }

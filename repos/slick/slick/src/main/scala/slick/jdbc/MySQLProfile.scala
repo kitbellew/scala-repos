@@ -61,11 +61,9 @@ trait MySQLProfile extends JdbcProfile {
   import MySQLProfile.{RowNum, RowNumGen}
 
   override protected def computeCapabilities: Set[Capability] =
-    (super.computeCapabilities
-      - JdbcCapabilities.returnInsertOther
-      - SqlCapabilities.sequenceLimited
-      - RelationalCapabilities.joinFull
-      - JdbcCapabilities.nullableNoDefault)
+    (super.computeCapabilities - JdbcCapabilities.returnInsertOther -
+      SqlCapabilities.sequenceLimited - RelationalCapabilities.joinFull -
+      JdbcCapabilities.nullableNoDefault)
 
   override protected[this] def loadProfileConfig: Config = {
     if (!GlobalConfig.profileConfig("slick.driver.MySQL").entrySet().isEmpty)
@@ -125,8 +123,8 @@ trait MySQLProfile extends JdbcProfile {
 
   override val columnTypes = new JdbcTypes
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler.replace(new MySQLResolveZipJoins) - Phase
-      .fixRowNumberOrdering
+    super.computeQueryCompiler.replace(new MySQLResolveZipJoins) -
+      Phase.fixRowNumberOrdering
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
   override def createUpsertBuilder(node: Insert): InsertBuilder =
@@ -319,18 +317,16 @@ trait MySQLProfile extends JdbcProfile {
       val t = sqlType + " not null"
       val increment = seq._increment.getOrElse(one)
       val desc = increment < zero
-      val minValue = seq._minValue getOrElse (
-        if (desc)
-          fromInt(java.lang.Integer.MIN_VALUE)
-        else
-          one
-      )
-      val maxValue = seq._maxValue getOrElse (
-        if (desc)
-          fromInt(-1)
-        else
-          fromInt(java.lang.Integer.MAX_VALUE)
-      )
+      val minValue = seq._minValue getOrElse
+        (if (desc)
+           fromInt(java.lang.Integer.MIN_VALUE)
+         else
+           one)
+      val maxValue = seq._maxValue getOrElse
+        (if (desc)
+           fromInt(-1)
+         else
+           fromInt(java.lang.Integer.MAX_VALUE))
       val start = seq
         ._start
         .getOrElse(
@@ -339,37 +335,36 @@ trait MySQLProfile extends JdbcProfile {
           else
             minValue)
       val beforeStart = start - increment
-      if (!seq._cycle && (
-            seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc
-          ))
+      if (!seq._cycle &&
+          (seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc))
         throw new SlickException(
           "Sequences with limited size and without CYCLE are not supported by MySQLProfile's sequence emulation")
       val incExpr =
         if (seq._cycle) {
           if (desc)
-            "if(id-" + (
-              -increment
-            ) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
+            "if(id-" +
+              (-increment) + "<" + minValue + "," + maxValue + ",id-" +
+              (-increment) + ")"
           else
-            "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" + increment + ")"
+            "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" +
+              increment + ")"
         } else {
           "id+(" + increment + ")"
         }
       DDL(
         Iterable(
-          "create table " + quoteIdentifier(
-            seq.name + "_seq") + " (id " + t + ")",
-          "insert into " + quoteIdentifier(
-            seq.name + "_seq") + " values (" + beforeStart + ")",
-          "create function " + quoteIdentifier(
-            seq
-              .name + "_nextval") + "() returns " + sqlType + " begin update " +
-            quoteIdentifier(
-              seq.name + "_seq") + " set id=last_insert_id(" + incExpr + "); return last_insert_id(); end",
-          "create function " + quoteIdentifier(
-            seq.name + "_currval") + "() returns " + sqlType + " begin " +
-            "select max(id) into @v from " + quoteIdentifier(
-            seq.name + "_seq") + "; return @v; end"
+          "create table " + quoteIdentifier(seq.name + "_seq") + " (id " + t +
+            ")",
+          "insert into " + quoteIdentifier(seq.name + "_seq") + " values (" +
+            beforeStart + ")",
+          "create function " + quoteIdentifier(seq.name + "_nextval") +
+            "() returns " + sqlType + " begin update " +
+            quoteIdentifier(seq.name + "_seq") + " set id=last_insert_id(" +
+            incExpr + "); return last_insert_id(); end",
+          "create function " + quoteIdentifier(seq.name + "_currval") +
+            "() returns " + sqlType + " begin " +
+            "select max(id) into @v from " +
+            quoteIdentifier(seq.name + "_seq") + "; return @v; end"
         ),
         Iterable(
           "drop function " + quoteIdentifier(seq.name + "_currval"),

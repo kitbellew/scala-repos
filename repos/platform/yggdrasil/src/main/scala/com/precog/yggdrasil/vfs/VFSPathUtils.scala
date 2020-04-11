@@ -65,8 +65,8 @@ object VFSPathUtils extends Logging {
         .elements
         .map {
           case needsEscape
-              if toEscape.contains(needsEscape) || needsEscape
-                .endsWith(escapeSuffix) =>
+              if toEscape.contains(needsEscape) ||
+                needsEscape.endsWith(escapeSuffix) =>
             needsEscape + escapeSuffix
           case fine =>
             fine

@@ -123,8 +123,9 @@ class EventLoggingListenerSuite
   test("Event log name") {
     // without compression
     assert(
-      s"file:/base-dir/app1" === EventLoggingListener
-        .getLogPath(Utils.resolveURI("/base-dir"), "app1", None))
+      s"file:/base-dir/app1" ===
+        EventLoggingListener
+          .getLogPath(Utils.resolveURI("/base-dir"), "app1", None))
     // with compression
     assert(
       s"file:/base-dir/app1.lzf" ===
@@ -223,11 +224,12 @@ class EventLoggingListenerSuite
     val eventLogPath = eventLogger.logPath
     val expectedLogDir = testDir.toURI()
     assert(
-      eventLogPath === EventLoggingListener.getLogPath(
-        expectedLogDir,
-        sc.applicationId,
-        None,
-        compressionCodec.map(CompressionCodec.getShortName)))
+      eventLogPath ===
+        EventLoggingListener.getLogPath(
+          expectedLogDir,
+          sc.applicationId,
+          None,
+          compressionCodec.map(CompressionCodec.getShortName)))
 
     // Begin listening for events that trigger asserts
     val eventExistenceListener = new EventExistenceListener(eventLogger)

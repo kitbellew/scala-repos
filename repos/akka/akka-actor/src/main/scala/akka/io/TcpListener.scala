@@ -99,8 +99,9 @@ private[io] class TcpListener(
 
   def receive: Receive = {
     case registration: ChannelRegistration ⇒
-      bindCommander ! Bound(
-        channel.socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress])
+      bindCommander !
+        Bound(
+          channel.socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress])
       context.become(bound(registration))
   }
 
@@ -158,10 +159,8 @@ private[io] class TcpListener(
           bind.handler,
           bind.options,
           bind.pullMode)
-      selectorRouter ! WorkerForCommand(
-        RegisterIncoming(socketChannel),
-        self,
-        props)
+      selectorRouter !
+        WorkerForCommand(RegisterIncoming(socketChannel), self, props)
       acceptAllPending(registration, limit - 1)
     } else if (bind.pullMode)
       limit

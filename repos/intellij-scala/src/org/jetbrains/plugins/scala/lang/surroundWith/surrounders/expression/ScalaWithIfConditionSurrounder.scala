@@ -28,9 +28,8 @@ class ScalaWithIfConditionSurrounder extends ScalaExpressionSurrounder {
       return false
     elements(0) match {
       case x: ScExpression
-          if x.getTypeIgnoreBaseType(TypingContext.empty).getOrAny == psi
-            .types
-            .Boolean =>
+          if x.getTypeIgnoreBaseType(TypingContext.empty).getOrAny ==
+            psi.types.Boolean =>
         return true
       case _ =>
         return false

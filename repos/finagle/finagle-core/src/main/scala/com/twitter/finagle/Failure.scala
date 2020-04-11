@@ -121,20 +121,15 @@ final class Failure private[finagle] (
   override def equals(a: Any) = {
     a match {
       case that: Failure =>
-        this.why.equals(that.why) &&
-          this.cause.equals(that.cause) &&
-          this.flags.equals(that.flags) &&
-          this.sources.equals(that.sources)
+        this.why.equals(that.why) && this.cause.equals(that.cause) &&
+          this.flags.equals(that.flags) && this.sources.equals(that.sources)
       case _ =>
         false
     }
   }
 
   override def hashCode: Int =
-    why.hashCode ^
-      cause.hashCode ^
-      flags.hashCode ^
-      sources.hashCode
+    why.hashCode ^ cause.hashCode ^ flags.hashCode ^ sources.hashCode
 
   private[this] def copy(
       why: String = why,

@@ -37,17 +37,19 @@ class CookStateLogSpecs extends Specification {
   }
 
   "CookStateLog" should {
-    "Properly initialize" in new LogState {
-      val txLog = new CookStateLog(workDir, txLogScheduler)
+    "Properly initialize" in
+      new LogState {
+        val txLog = new CookStateLog(workDir, txLogScheduler)
 
-      txLog.currentBlockId mustEqual 0L
-      txLog.pendingCookIds must beEmpty
-    }
+        txLog.currentBlockId mustEqual 0L
+        txLog.pendingCookIds must beEmpty
+      }
 
-    "Lock its directory during operation" in new LogState {
-      val txLog = new CookStateLog(workDir, txLogScheduler)
+    "Lock its directory during operation" in
+      new LogState {
+        val txLog = new CookStateLog(workDir, txLogScheduler)
 
-      (new CookStateLog(workDir, txLogScheduler)) must throwAn[Exception]
-    }
+        (new CookStateLog(workDir, txLogScheduler)) must throwAn[Exception]
+      }
   }
 }

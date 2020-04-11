@@ -146,7 +146,8 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
     // we can remove this attempt to deserialize SnapshotHeader with JavaSerializer.
     // Then the class SnapshotHeader can be removed. See issue #16009
     val oldHeader =
-      if (readShort(in) == 0xedac) { // Java Serialization magic value with swapped bytes
+      if (readShort(in) ==
+            0xedac) { // Java Serialization magic value with swapped bytes
         val b =
           if (SnapshotSerializer.doPatch)
             patch(headerBytes)
@@ -234,9 +235,9 @@ object SnapshotSerializer {
       if (uid == replacement.toSeq) {
         // running on 2.11
         true
-      } else if (uid == (
-                   key.slice(offset, offset + replacement.length): Seq[Byte]
-                 )) {
+      } else if (uid ==
+                   (key
+                     .slice(offset, offset + replacement.length): Seq[Byte])) {
         // running on 2.10, need to switch out UID between key and replacement
         val len = replacement.length
         val tmp = new Array[Byte](len)

@@ -40,30 +40,30 @@ object Osgi {
           "-eclipse" -> "false"
         )
       },
-      bundle <<= Def.task {
-        val res = (products in Compile in packageBin).value
-        bundleTask(
-          headers.value.toMap,
-          (products in Compile in packageBin).value,
-          (artifactPath in (Compile, packageBin)).value,
-          res,
-          streams.value)
-      },
-      packagedArtifact in (Compile, packageBin) <<= (
-        artifact in (Compile, packageBin),
-        bundle).identityMap,
+      bundle <<=
+        Def.task {
+          val res = (products in Compile in packageBin).value
+          bundleTask(
+            headers.value.toMap,
+            (products in Compile in packageBin).value,
+            (artifactPath in (Compile, packageBin)).value,
+            res,
+            streams.value)
+        },
+      packagedArtifact in (Compile, packageBin) <<=
+        (artifact in (Compile, packageBin), bundle).identityMap,
       // Also create OSGi source bundles:
-      artifact in (Compile, packageBin) ~= (_.copy(`type` = "bundle")),
-      packageOptions in (Compile, packageSrc) += Package.ManifestAttributes(
-        "Bundle-Name" -> (description.value + " Sources"),
-        "Bundle-SymbolicName" -> (bundleSymbolicName.value + ".source"),
-        "Bundle-Version" -> versionProperties.value.osgiVersion,
-        "Eclipse-SourceBundle" -> (
-          bundleSymbolicName.value + ";version=\"" + versionProperties
-            .value
-            .osgiVersion + "\";roots:=\".\""
+      artifact in (Compile, packageBin) ~=
+        (_.copy(`type` = "bundle")),
+      packageOptions in (Compile, packageSrc) +=
+        Package.ManifestAttributes(
+          "Bundle-Name" -> (description.value + " Sources"),
+          "Bundle-SymbolicName" -> (bundleSymbolicName.value + ".source"),
+          "Bundle-Version" -> versionProperties.value.osgiVersion,
+          "Eclipse-SourceBundle" ->
+            (bundleSymbolicName.value + ";version=\"" +
+              versionProperties.value.osgiVersion + "\";roots:=\".\"")
         )
-      )
     )
 
   def bundleTask(

@@ -57,10 +57,11 @@ class CommandLine(val spec: Reference, val originalArgs: List[String])
 
       /* Assumes known options have all been ruled out already. */
       def isUnknown(opt: String) =
-        onlyKnownOptions && (opt startsWith "-") && {
-          errorFn("Option '%s' not recognized.".format(opt))
-          true
-        }
+        onlyKnownOptions &&
+          (opt startsWith "-") && {
+            errorFn("Option '%s' not recognized.".format(opt))
+            true
+          }
 
       args match {
         case Nil =>

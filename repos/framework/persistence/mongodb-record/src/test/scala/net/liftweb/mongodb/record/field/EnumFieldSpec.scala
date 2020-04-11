@@ -52,8 +52,7 @@ package enumfieldspecs {
     override def equals(other: Any): Boolean =
       other match {
         case that: EnumRec =>
-          this.id.get == that.id.get &&
-            this.dow.value == that.dow.value &&
+          this.id.get == that.id.get && this.dow.value == that.dow.value &&
             this.dowOptional.valueBox == that.dowOptional.valueBox &&
             this.jsonobj.value == that.jsonobj.value
         case _ =>
@@ -82,13 +81,14 @@ class EnumFieldSpec extends Specification with MongoTestKit {
       val er = EnumRec.createRecord.save()
 
       val erFromDb = EnumRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dow.value mustEqual WeekDay.Mon
-          er2.dowOptional.valueBox mustEqual Empty
-          er2.jsonobj.value mustEqual JsonObj(WeekDay.Mon)
-      }
+      erFromDb must
+        beLike {
+          case Full(er2) =>
+            er2 mustEqual er
+            er2.dow.value mustEqual WeekDay.Mon
+            er2.dowOptional.valueBox mustEqual Empty
+            er2.jsonobj.value mustEqual JsonObj(WeekDay.Mon)
+        }
     }
 
     "work with set values" in {
@@ -101,12 +101,13 @@ class EnumFieldSpec extends Specification with MongoTestKit {
         .save()
 
       val erFromDb = EnumRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dow.value mustEqual WeekDay.Tue
-          er2.jsonobj.value mustEqual JsonObj(WeekDay.Sun)
-      }
+      erFromDb must
+        beLike {
+          case Full(er2) =>
+            er2 mustEqual er
+            er2.dow.value mustEqual WeekDay.Tue
+            er2.jsonobj.value mustEqual JsonObj(WeekDay.Sun)
+        }
     }
 
     "work with Empty optional values" in {
@@ -117,11 +118,12 @@ class EnumFieldSpec extends Specification with MongoTestKit {
       er.save()
 
       val erFromDb = EnumRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dowOptional.valueBox mustEqual Empty
-      }
+      erFromDb must
+        beLike {
+          case Full(er2) =>
+            er2 mustEqual er
+            er2.dowOptional.valueBox mustEqual Empty
+        }
     }
 
     "work with Full optional values" in {
@@ -132,11 +134,12 @@ class EnumFieldSpec extends Specification with MongoTestKit {
       er.save()
 
       val erFromDb = EnumRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dowOptional.valueBox mustEqual Full(WeekDay.Sat)
-      }
+      erFromDb must
+        beLike {
+          case Full(er2) =>
+            er2 mustEqual er
+            er2.dowOptional.valueBox mustEqual Full(WeekDay.Sat)
+        }
     }
   }
 }

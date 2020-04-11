@@ -105,8 +105,7 @@ abstract class Optimizer extends RuleExecutor[LogicalPlan] {
         SimplifyCasts,
         SimplifyCaseConversionExpressions,
         EliminateSerialization
-      ) ::
-      Batch("Decimal Optimizations", FixedPoint(100), DecimalAggregates) ::
+      ) :: Batch("Decimal Optimizations", FixedPoint(100), DecimalAggregates) ::
       Batch("LocalRelation", FixedPoint(100), ConvertToLocalRelation) ::
       Batch("Subquery", Once, OptimizeSubqueries) :: Nil
   }
@@ -218,9 +217,8 @@ object LimitPushDown extends Rule[LogicalPlan] {
             case FullOuter =>
               (left.maxRows, right.maxRows) match {
                 case (None, None) =>
-                  if (left.statistics.sizeInBytes >= right
-                        .statistics
-                        .sizeInBytes) {
+                  if (left.statistics.sizeInBytes >=
+                        right.statistics.sizeInBytes) {
                     join.copy(left = maybePushLimit(exp, left))
                   } else {
                     join.copy(right = maybePushLimit(exp, right))
@@ -761,18 +759,17 @@ object InferFiltersFromConstraints
         val constraints = join
           .constraints
           .filter { c =>
-            c.references.subsetOf(left.outputSet) || c
-              .references
-              .subsetOf(right.outputSet)
+            c.references.subsetOf(left.outputSet) ||
+            c.references.subsetOf(right.outputSet)
           }
         // Remove those constraints that are already enforced by either the left or the right child
-        val additionalConstraints =
-          constraints -- (left.constraints ++ right.constraints)
+        val additionalConstraints = constraints --
+          (left.constraints ++ right.constraints)
         val newConditionOpt =
           conditionOpt match {
             case Some(condition) =>
-              val newFilters =
-                additionalConstraints -- splitConjunctivePredicates(condition)
+              val newFilters = additionalConstraints --
+                splitConjunctivePredicates(condition)
               if (newFilters.nonEmpty)
                 Option(And(newFilters.reduce(And), condition))
               else
@@ -1201,8 +1198,8 @@ object PushPredicateThroughAggregate
         val (pushDown, stayUp) = splitConjunctivePredicates(condition)
           .partition { cond =>
             val replaced = replaceAlias(cond, aliasMap)
-            replaced.references.subsetOf(aggregate.child.outputSet) && replaced
-              .deterministic
+            replaced.references.subsetOf(aggregate.child.outputSet) &&
+            replaced.deterministic
           }
 
         if (pushDown.nonEmpty) {

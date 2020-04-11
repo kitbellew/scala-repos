@@ -26,8 +26,8 @@ abstract class IdempotencyTest {
     override def checkForMoreWork(pos: Position) {}
     override def signalDone(context: Context, old: Tree, result: Tree) {
       // println("signalDone: " + old.toString.take(50).replaceAll("\n", "\\n"))
-      if (!interrupted && analyzer
-            .lockedCount == 0 && interruptsEnabled && shouldInterrupt(result)) {
+      if (!interrupted && analyzer.lockedCount == 0 && interruptsEnabled &&
+          shouldInterrupt(result)) {
         interrupted = true
         val typed = typedTreeAt(markerPosition)
         checkTypedTree(typed)
@@ -47,8 +47,8 @@ abstract class IdempotencyTest {
   // Extension points
   protected def code: String
   protected def shouldInterrupt(tree: Tree): Boolean = {
-    tree
-      .symbol != null && tree.symbol.name.toString == "MagicInterruptionMarker"
+    tree.symbol != null &&
+    tree.symbol.name.toString == "MagicInterruptionMarker"
   }
   protected def checkTypedTree(tree: Tree): Unit = {}
 

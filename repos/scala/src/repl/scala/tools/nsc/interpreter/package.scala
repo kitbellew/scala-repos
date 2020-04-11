@@ -105,8 +105,8 @@ package object interpreter extends ReplConfig with ReplStrings {
       filtered foreach {
         case (source, syms) =>
           p(
-            "/* " + syms.size + " implicit members imported from " + source
-              .fullName + " */")
+            "/* " + syms.size + " implicit members imported from " +
+              source.fullName + " */")
 
           // This groups the members by where the symbol is defined
           val byOwner = syms groupBy (_.owner)
@@ -124,8 +124,9 @@ package object interpreter extends ReplConfig with ReplStrings {
               val memberGroups: List[List[Symbol]] = {
                 val groups = members groupBy (_.tpe.finalResultType) toList
                 val (big, small) = groups partition (_._2.size > 3)
-                val xss = ((big sortBy (_._1.toString) map (_._2)) :+
-                  (small flatMap (_._2)))
+                val xss =
+                  ((big sortBy (_._1.toString) map (_._2)) :+
+                    (small flatMap (_._2)))
 
                 xss map (xs => xs sortBy (_.name.toString))
               }
@@ -171,9 +172,8 @@ package object interpreter extends ReplConfig with ReplStrings {
           case _ =>
             None
         }
-      (
-        typeFromTypeString orElse typeFromNameTreatedAsTerm orElse typeFromFullName orElse typeOfTerm
-      ) foreach { sym =>
+      (typeFromTypeString orElse typeFromNameTreatedAsTerm orElse
+        typeFromFullName orElse typeOfTerm) foreach { sym =>
         val (kind, tpe) = exitingTyper {
           val tpe = sym.tpeHK
           (intp.global.inferKind(NoPrefix)(tpe, sym.owner), tpe)

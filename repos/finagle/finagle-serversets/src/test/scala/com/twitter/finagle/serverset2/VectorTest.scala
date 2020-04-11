@@ -70,8 +70,9 @@ class VectorTest extends FunSuite {
       """{"vector":[{"select":"member=1","weight":1.2,"priority":1},{"select":"inet=10.0.0.3:%d","weight":1.3,"priority":2}]}"""
         .format(port))
     assert(
-      vec == Seq(
-        Descriptor(Selector.Member("1"), 1.2, 1),
-        Descriptor(Selector.Host("10.0.0.3", port), 1.3, 2)))
+      vec ==
+        Seq(
+          Descriptor(Selector.Member("1"), 1.2, 1),
+          Descriptor(Selector.Host("10.0.0.3", port), 1.3, 2)))
   }
 }

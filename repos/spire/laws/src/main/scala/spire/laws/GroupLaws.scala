@@ -28,11 +28,11 @@ trait GroupLaws[A] extends Laws {
     new GroupProperties(
       name = "semigroup",
       parent = None,
-      "associative" → forAll((x: A, y: A, z: A) =>
-        ((x |+| y) |+| z) === (x |+| (y |+| z))),
+      "associative" →
+        forAll((x: A, y: A, z: A) => ((x |+| y) |+| z) === (x |+| (y |+| z))),
       "combinen(a, 1) === a" → forAll((a: A) => A.combinen(a, 1) === a),
-      "combinen(a, 2) === a |+| a" → forAll((a: A) =>
-        A.combinen(a, 2) === (a |+| a)))
+      "combinen(a, 2) === a |+| a" →
+        forAll((a: A) => A.combinen(a, 2) === (a |+| a)))
 
   def monoid(implicit A: Monoid[A]) =
     new GroupProperties(
@@ -65,11 +65,12 @@ trait GroupLaws[A] extends Laws {
       parent = None,
       "sumn(a, 1) === a" → forAll((a: A) => A.sumn(a, 1) === a),
       "combinen(a, 2) === a + a" → forAll((a: A) => A.sumn(a, 2) === (a + a)),
-      "sumOption" → forAll((a: A) =>
-        (A.sumOption(Seq.empty[A]) === Option.empty[A]) &&
-          (A.sumOption(Seq(a)) === Option(a)) &&
-          (A.sumOption(Seq(a, a)) === Option(a + a)) &&
-          (A.sumOption(Seq(a, a, a)) === Option(a + a + a))))
+      "sumOption" →
+        forAll((a: A) =>
+          (A.sumOption(Seq.empty[A]) === Option.empty[A]) &&
+            (A.sumOption(Seq(a)) === Option(a)) &&
+            (A.sumOption(Seq(a, a)) === Option(a + a)) &&
+            (A.sumOption(Seq(a, a, a)) === Option(a + a + a))))
 
   def additiveMonoid(implicit A: AdditiveMonoid[A]) =
     new AdditiveProperties(

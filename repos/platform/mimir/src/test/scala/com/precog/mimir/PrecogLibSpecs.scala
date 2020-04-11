@@ -132,15 +132,16 @@ trait PrecogLibSpecs[M[+_]]
         case (_, x) =>
           x
       }
-      data must contain(
-        SDecimal(-10),
-        SArray(Vector(9, 10, 11) map (SDecimal(_))),
-        SString("alissa"),
-        SNull,
-        SFalse,
-        STrue,
-        SDecimal(5),
-        SObject(Map.empty))
+      data must
+        contain(
+          SDecimal(-10),
+          SArray(Vector(9, 10, 11) map (SDecimal(_))),
+          SString("alissa"),
+          SNull,
+          SFalse,
+          STrue,
+          SDecimal(5),
+          SObject(Map.empty))
     }
 
     "misbehaving enricher fails" in {

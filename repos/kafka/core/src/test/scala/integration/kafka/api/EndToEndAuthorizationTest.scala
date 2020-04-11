@@ -364,7 +364,8 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
       }
       if (iters > maxIters)
         throw new IllegalStateException(
-          "Failed to consume the expected records after " + iters + " iterations.")
+          "Failed to consume the expected records after " + iters +
+            " iterations.")
       iters += 1
     }
     for (i <- 0 until numRecords) {

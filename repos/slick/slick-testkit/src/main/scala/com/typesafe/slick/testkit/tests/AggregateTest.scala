@@ -70,10 +70,11 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           ).sortBy(_._1)
         db.run(mark("q", q.result))
           .map { rt: Seq[(Int, Int, Option[Int], Option[Int])] =>
-            rt shouldBe Vector(
-              (1, 3, Some(3), Some(6)),
-              (2, 3, Some(6), Some(8)),
-              (3, 2, Some(6), Some(10)))
+            rt shouldBe
+              Vector(
+                (1, 3, Some(3), Some(6)),
+                (2, 3, Some(6), Some(8)),
+                (3, 2, Some(6), Some(10)))
           }
       }
       .flatMap { _ =>
@@ -94,10 +95,11 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
             }
         db.run(mark("q2", q2.result))
           .map { r2t: Seq[(Int, Int, Option[Int], Option[Int])] =>
-            r2t.toSet shouldBe Set(
-              (1, 3, Some(3), Some(6)),
-              (2, 3, Some(6), Some(8)),
-              (3, 2, Some(6), Some(10)))
+            r2t.toSet shouldBe
+              Set(
+                (1, 3, Some(3), Some(6)),
+                (2, 3, Some(6), Some(8)),
+                (3, 2, Some(6), Some(10)))
           }
       }
       .flatMap { _ =>
@@ -121,15 +123,16 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           ).sortBy(_._1)
         db.run(mark("q4", q4.result))
           .map { r4t: Seq[((Int, Option[Int]), Int)] =>
-            r4t shouldBe Vector(
-              ((1, Some(1)), 1),
-              ((1, Some(2)), 1),
-              ((1, Some(3)), 1),
-              ((2, Some(1)), 1),
-              ((2, Some(2)), 1),
-              ((2, Some(5)), 1),
-              ((3, Some(1)), 1),
-              ((3, Some(9)), 1))
+            r4t shouldBe
+              Vector(
+                ((1, Some(1)), 1),
+                ((1, Some(2)), 1),
+                ((1, Some(3)), 1),
+                ((2, Some(1)), 1),
+                ((2, Some(2)), 1),
+                ((2, Some(5)), 1),
+                ((3, Some(1)), 1),
+                ((3, Some(9)), 1))
           }
       }
       .flatMap { _ =>
@@ -170,11 +173,12 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
             ).to[Set]
         db.run(mark("q6", q6.result))
           .map(
-            _ shouldBe Set(
-              (1, 3, 3, 3, 3, 3),
-              (2, 3, 3, 3, 3, 3),
-              (3, 2, 2, 2, 2, 2),
-              (4, 1, 1, 1, 1, 0)))
+            _ shouldBe
+              Set(
+                (1, 3, 3, 3, 3, 3),
+                (2, 3, 3, 3, 3, 3),
+                (3, 2, 2, 2, 2, 2),
+                (4, 1, 1, 1, 1, 0)))
       }
       .flatMap { _ =>
         val q7 = ts
@@ -191,10 +195,11 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           .to[Set]
         db.run(mark("q7", q7.result))
           .map(
-            _ shouldBe Set(
-              (1, Some(6), Some(1), Some(3), Some(2)),
-              (2, Some(8), Some(1), Some(5), Some(2)),
-              (3, Some(10), Some(1), Some(9), Some(5))))
+            _ shouldBe
+              Set(
+                (1, Some(6), Some(1), Some(3), Some(2)),
+                (2, Some(8), Some(1), Some(5), Some(2)),
+                (3, Some(10), Some(1), Some(9), Some(5))))
       }
       .flatMap { _ =>
         val q8 = us.map(_ => "test").groupBy(x => x).map(_._2.max)
@@ -216,11 +221,12 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           for {
             _ <-
               mark("q8a", q8a.result).map(
-                _.toSet shouldBe Set(
-                  Some("1test"),
-                  Some("2test"),
-                  Some("3test"),
-                  Some("4test")))
+                _.toSet shouldBe
+                  Set(
+                    Some("1test"),
+                    Some("2test"),
+                    Some("3test"),
+                    Some("4test")))
             _ <- mark("q8d", q8d.result).map(_ shouldBe Seq(Some("test")))
             _ <- mark("q8", q8.result).map(_ shouldBe Seq(Some("test")))
             _ <- mark("q8b", q8b.result).map(_ shouldBe Seq(("x", Some("x"))))
@@ -250,14 +256,13 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       .flatMap { _ =>
         val q10 =
           (
-            (
-              for {
-                m <- ts
-              } yield m
-            ) groupBy (_.a) map {
-              case (id, data) =>
-                (id, data.map(_.b.asColumnOf[Option[Double]]).max)
-            }
+            (for {
+              m <- ts
+            } yield m) groupBy
+              (_.a) map {
+                case (id, data) =>
+                  (id, data.map(_.b.asColumnOf[Option[Double]]).max)
+              }
           ).to[Set]
         db.run(mark("q10", q10.result))
           .map(_ shouldBe Set((2, Some(5.0)), (1, Some(3.0)), (3, Some(9.0))))
@@ -336,11 +341,12 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
     for {
       _ <- Tabs.schema.create
       _ <-
-        Tabs ++= Seq(
-          Tab("foo", "bar", "bat", 1, 5),
-          Tab("foo", "bar", "bat", 2, 6),
-          Tab("foo", "quux", "bat", 3, 7),
-          Tab("baz", "quux", "bat", 4, 8))
+        Tabs ++=
+          Seq(
+            Tab("foo", "bar", "bat", 1, 5),
+            Tab("foo", "bar", "bat", 2, 6),
+            Tab("foo", "quux", "bat", 3, 7),
+            Tab("baz", "quux", "bat", 4, 8))
       q1 =
         Tabs
           .groupBy(t => (t.col1, t.col2, t.col3))
@@ -352,10 +358,11 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       _ <-
         q1.result
           .map(
-            _ shouldBe Set(
-              ("baz", "quux", Some(4)),
-              ("foo", "quux", Some(3)),
-              ("foo", "bar", Some(3))))
+            _ shouldBe
+              Set(
+                ("baz", "quux", Some(4)),
+                ("foo", "quux", Some(3)),
+                ("foo", "bar", Some(3))))
       q2 =
         Tabs
           .groupBy(t => ((t.col1, t.col2), t.col3))
@@ -367,10 +374,11 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       _ <-
         q2.result
           .map(
-            _ shouldBe Set(
-              ("baz", "quux", Some(4)),
-              ("foo", "quux", Some(3)),
-              ("foo", "bar", Some(3))))
+            _ shouldBe
+              Set(
+                ("baz", "quux", Some(4)),
+                ("foo", "quux", Some(3)),
+                ("foo", "bar", Some(3))))
       q3 =
         Tabs
           .groupBy(_.col1)
@@ -498,10 +506,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
     val q1a = as.map(_.a).distinct
     val q1b = as.distinct.map(_.a)
     val q2 = as.distinct.map(a => (a.a, 5))
-    val q3a = as.distinct.map(_.id).filter(_ === 1) unionAll as
-      .distinct
-      .map(_.id)
-      .filter(_ === 2)
+    val q3a = as.distinct.map(_.id).filter(_ === 1) unionAll
+      as.distinct.map(_.id).filter(_ === 2)
     val q4 = as.map(a => (a.a, a.b)).distinct.map(_._1)
     val q5a = as.groupBy(_.a).map(_._2.map(_.id).min.get)
     val q5b = as.distinct.map(_.id)
@@ -539,8 +545,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       mark("q5b", q5b.result)
         .map(_.sortBy(identity) should (r => r == Seq(1, 3) || r == Seq(2, 3))),
       mark("q5c", q5c.result).map(
-        _.sortBy(identity) should (r =>
-          r == Seq((1, "a"), (3, "c")) || r == Seq((2, "a"), (3, "c")))),
+        _.sortBy(identity) should
+          (r => r == Seq((1, "a"), (3, "c")) || r == Seq((2, "a"), (3, "c")))),
       mark("q6", q6.result).map(_ shouldBe 2)
     )
   }

@@ -116,10 +116,11 @@ private[sql] object InferSchema {
       case START_OBJECT =>
         val builder = Seq.newBuilder[StructField]
         while (nextUntil(parser, END_OBJECT)) {
-          builder += StructField(
-            parser.getCurrentName,
-            inferField(parser, configOptions),
-            nullable = true)
+          builder +=
+            StructField(
+              parser.getCurrentName,
+              inferField(parser, configOptions),
+              nullable = true)
         }
 
         StructType(builder.result().sortBy(_.name))

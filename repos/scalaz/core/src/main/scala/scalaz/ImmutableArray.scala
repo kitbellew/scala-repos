@@ -33,8 +33,8 @@ sealed abstract class ImmutableArrayInstances {
   implicit def immutableArrayEqual[A](implicit
       A: Equal[A]): Equal[ImmutableArray[A]] =
     Equal.equal { (a, b) =>
-      (a.length == b.length) && (0 until a.length)
-        .forall(i => A.equal(a(i), b(i)))
+      (a.length == b.length) &&
+      (0 until a.length).forall(i => A.equal(a(i), b(i)))
     }
 
   implicit val immutableArrayInstance

@@ -131,9 +131,8 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
   override def getElementText(element: PsiNamedElement) = {
     element match {
       case method: ScFunction =>
-        method.name + PresentationUtil
-          .presentationString(method.paramClauses) + ": " +
-          PresentationUtil.presentationString(method.returnType.getOrAny)
+        method.name + PresentationUtil.presentationString(method.paramClauses) +
+          ": " + PresentationUtil.presentationString(method.returnType.getOrAny)
       case b: ScBindingPattern =>
         b.name + ": " +
           PresentationUtil

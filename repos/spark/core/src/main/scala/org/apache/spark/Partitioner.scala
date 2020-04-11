@@ -184,8 +184,8 @@ class RangePartitioner[K: Ordering: ClassTag, V](
     var partition = 0
     if (rangeBounds.length <= 128) {
       // If we have less than 128 partitions naive search
-      while (partition < rangeBounds.length && ordering
-               .gt(k, rangeBounds(partition))) {
+      while (partition < rangeBounds.length &&
+             ordering.gt(k, rangeBounds(partition))) {
         partition += 1
       }
     } else {

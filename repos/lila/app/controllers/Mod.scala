@@ -75,9 +75,8 @@ object Mod extends LilaController {
           .fold(
             err => fuccess(redirect(username, mod = true)),
             title =>
-              modApi.setTitle(me.id, username, title) inject redirect(
-                username,
-                mod = false))
+              modApi.setTitle(me.id, username, title) inject
+                redirect(username, mod = false))
       else
         fuccess(authorizationFailed(ctx.req))
     }
@@ -95,9 +94,8 @@ object Mod extends LilaController {
             .fold(
               err => BadRequest(err.toString).fuccess,
               email =>
-                modApi.setEmail(me.id, user.id, email) inject redirect(
-                  user.username,
-                  mod = true))
+                modApi.setEmail(me.id, user.id, email) inject
+                  redirect(user.username, mod = true))
         else
           fuccess(authorizationFailed(ctx.req))
       }
@@ -106,8 +104,8 @@ object Mod extends LilaController {
   def notifySlack(username: String) =
     Auth { implicit ctx => me =>
       OptionFuResult(UserRepo named username) { user =>
-        Env.slack.api.userMod(user = user, mod = me) inject redirect(
-          user.username)
+        Env.slack.api.userMod(user = user, mod = me) inject
+          redirect(user.username)
       }
     }
 
@@ -127,10 +125,11 @@ object Mod extends LilaController {
             povs
               .map(p => Env.chat.api.playerChat findNonEmpty p.gameId)
               .sequence
-          povWithChats = (povs zip chats) collect {
-            case (p, Some(c)) =>
-              p -> c
-          } take 9
+          povWithChats =
+            (povs zip chats) collect {
+              case (p, Some(c)) =>
+                p -> c
+            } take 9
           threads <- {
             lila.message.ThreadRepo.visibleByUser(user.id, 50) map {
               _ filter (_ hasPostsWrittenBy user.id) take 9
@@ -192,9 +191,9 @@ object Mod extends LilaController {
     Secure(_.SeeReport) { implicit ctx => me =>
       Env.mod.gamify.leaderboards zip
         Env.mod.gamify.history(orCompute = true) map {
-        case (leaderboards, history) =>
-          Ok(html.mod.gamify.index(leaderboards, history))
-      }
+          case (leaderboards, history) =>
+            Ok(html.mod.gamify.index(leaderboards, history))
+        }
     }
   def gamifyPeriod(periodStr: String) =
     Secure(_.SeeReport) { implicit ctx => me =>

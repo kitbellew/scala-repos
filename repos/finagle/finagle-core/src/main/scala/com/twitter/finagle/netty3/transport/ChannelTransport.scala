@@ -63,8 +63,8 @@ class ChannelTransport[In, Out](ch: Channel)
         need(-1)
 
       case e: ChannelStateEvent
-          if e.getState == ChannelState.OPEN && e
-            .getValue != java.lang.Boolean.TRUE =>
+          if e.getState == ChannelState.OPEN &&
+            e.getValue != java.lang.Boolean.TRUE =>
         fail(new ChannelClosedException(ch.getRemoteAddress))
 
       case e: ChannelStateEvent if e.getState == ChannelState.INTEREST_OPS =>
@@ -83,8 +83,8 @@ class ChannelTransport[In, Out](ch: Channel)
         need(0)
 
       case e: ChannelStateEvent
-          if e.getState == ChannelState.CONNECTED
-            && e.getValue == java.lang.Boolean.TRUE =>
+          if e.getState == ChannelState.CONNECTED &&
+            e.getValue == java.lang.Boolean.TRUE =>
         need(0)
 
       case e: ExceptionEvent =>

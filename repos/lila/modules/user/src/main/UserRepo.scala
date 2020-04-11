@@ -53,8 +53,7 @@ object UserRepo {
 
   def pair(x: Option[ID], y: Option[ID]): Fu[(Option[User], Option[User])] =
     $find byIds List(x, y).flatten map { users =>
-      x.??(xx => users.find(_.id == xx)) ->
-        y.??(yy => users.find(_.id == yy))
+      x.??(xx => users.find(_.id == xx)) -> y.??(yy => users.find(_.id == yy))
     }
 
   def byOrderedIds(ids: Seq[ID]): Fu[List[User]] = $find byOrderedIds ids
@@ -102,8 +101,8 @@ object UserRepo {
   def usernamesByIds(ids: List[ID]) =
     coll.distinct(
       F.username,
-      BSONDocument("_id" -> BSONDocument("$in" -> ids))
-        .some) map lila.db.BSON.asStrings
+      BSONDocument("_id" -> BSONDocument("$in" -> ids)).some) map
+      lila.db.BSON.asStrings
 
   def orderByGameCount(u1: String, u2: String): Fu[Option[(String, String)]] = {
     coll
@@ -161,9 +160,8 @@ object UserRepo {
         s"perfs.${pt.key}" -> Perf.perfBSONHandler.write(perfs(pt))
       }
     }
-    diff.nonEmpty ?? $update(
-      $select(user.id),
-      BSONDocument("$set" -> BSONDocument(diff)))
+    diff.nonEmpty ??
+      $update($select(user.id), BSONDocument("$set" -> BSONDocument(diff)))
   }
 
   def setPerf(userId: String, perfName: String, perf: Perf) =
@@ -200,8 +198,8 @@ object UserRepo {
     Json.obj(
       s"perfs.$perf.nb" -> $gte(30),
       s"perfs.$perf.gl.d" -> $lt(lila.rating.Glicko.provisionalDeviation))
-  val goodLadSelect =
-    enabledSelect ++ engineSelect(false) ++ boosterSelect(false)
+  val goodLadSelect = enabledSelect ++ engineSelect(false) ++
+    boosterSelect(false)
   val goodLadSelectBson = BSONDocument(
     F.enabled -> true,
     F.engine -> BSONDocument("$ne" -> true),
@@ -235,21 +233,20 @@ object UserRepo {
             none
         }
       ),
-      (
-        result match {
-          case -1 =>
-            "count.lossH".some
-          case 1 =>
-            "count.winH".some
-          case 0 =>
-            "count.drawH".some
-          case _ =>
-            none
-        }
-      ) ifFalse ai
-    ).flatten.map(_ -> 1) ::: List(
-      totalTime map (s"${F.playTime}.total" -> _),
-      tvTime map (s"${F.playTime}.tv" -> _)).flatten
+      (result match {
+        case -1 =>
+          "count.lossH".some
+        case 1 =>
+          "count.winH".some
+        case 0 =>
+          "count.drawH".some
+        case _ =>
+          none
+      }) ifFalse ai
+    ).flatten.map(_ -> 1) :::
+      List(
+        totalTime map (s"${F.playTime}.total" -> _),
+        tvTime map (s"${F.playTime}.tv" -> _)).flatten
 
     $update($select(id), $incBson(incs: _*))
   }
@@ -284,8 +281,8 @@ object UserRepo {
 
     private def defaults = Json.obj("sha512" -> false)
 
-    lazy val reader = (__.json update merge(defaults)) andThen Json
-      .reads[AuthData]
+    lazy val reader =
+      (__.json update merge(defaults)) andThen Json.reads[AuthData]
   }
 
   def checkPasswordById(id: ID, password: String): Fu[Boolean] =
@@ -314,9 +311,9 @@ object UserRepo {
       mobileApiVersion: Option[Int]): Fu[Option[User]] =
     !nameExists(username) flatMap {
       _ ?? {
-        $insert.bson(
-          newUser(username, password, email, blind, mobileApiVersion)) >> named(
-          normalize(username))
+        $insert
+          .bson(newUser(username, password, email, blind, mobileApiVersion)) >>
+          named(normalize(username))
       }
     }
 
@@ -324,10 +321,8 @@ object UserRepo {
   def idExists(id: String): Fu[Boolean] = $count exists id
 
   def engineIds: Fu[Set[String]] =
-    coll.distinct("_id", BSONDocument("engine" -> true).some) map lila
-      .db
-      .BSON
-      .asStringSet
+    coll.distinct("_id", BSONDocument("engine" -> true).some) map
+      lila.db.BSON.asStringSet
 
   def usernamesLike(username: String, max: Int = 10): Fu[List[String]] = {
     import java.util.regex.Matcher.quoteReplacement
@@ -424,15 +419,16 @@ object UserRepo {
   def setLang(id: ID, lang: String) = $update.field(id, "lang", lang)
 
   def idsSumToints(ids: Iterable[String]): Fu[Int] =
-    ids.nonEmpty ?? coll
-      .aggregate(
-        Match(BSONDocument("_id" -> BSONDocument("$in" -> ids))),
-        List(Group(BSONNull)(F.toints -> SumField(F.toints))))
-      .map(
-        _.documents.headOption flatMap {
-          _.getAs[Int](F.toints)
-        })
-      .map(~_)
+    ids.nonEmpty ??
+      coll
+        .aggregate(
+          Match(BSONDocument("_id" -> BSONDocument("$in" -> ids))),
+          List(Group(BSONNull)(F.toints -> SumField(F.toints))))
+        .map(
+          _.documents.headOption flatMap {
+            _.getAs[Int](F.toints)
+          })
+        .map(~_)
 
   def filterByEngine(userIds: List[String]): Fu[List[String]] =
     $primitive(
@@ -468,8 +464,8 @@ object UserRepo {
       F.id -> normalize(username),
       F.username -> username,
       F.email -> email,
-      F.mustConfirmEmail -> (email.isDefined && mobileApiVersion.isEmpty)
-        .option(DateTime.now),
+      F.mustConfirmEmail ->
+        (email.isDefined && mobileApiVersion.isEmpty).option(DateTime.now),
       "password" -> hash(password, salt),
       "salt" -> salt,
       F.perfs -> Json.obj(),

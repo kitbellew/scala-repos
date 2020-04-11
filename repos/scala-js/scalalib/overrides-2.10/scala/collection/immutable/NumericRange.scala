@@ -101,10 +101,9 @@ abstract class NumericRange[T](
   // Tests whether a number is within the endpoints, without testing
   // whether it is a member of the sequence (i.e. when step > 1.)
   private def isWithinBoundaries(elem: T) =
-    !isEmpty && (
-      (step > zero && start <= elem && elem <= last) ||
-        (step < zero && last <= elem && elem <= start)
-    )
+    !isEmpty &&
+      ((step > zero && start <= elem && elem <= last) ||
+        (step < zero && last <= elem && elem <= start))
   // Methods like apply throw exceptions on invalid n, but methods like take/drop
   // are forgiving: therefore the checks are with the methods.
   private def locationAfterN(n: Int): T = start + (step * fromInt(n))
@@ -222,9 +221,9 @@ abstract class NumericRange[T](
       head
     else
       (
-        (this.num fromInt numRangeElements) * (head + last) / (
-          this.num fromInt 2
-        )
+        (this.num fromInt numRangeElements) *
+          (head + last) /
+          (this.num fromInt 2)
       )
   }
 
@@ -232,12 +231,12 @@ abstract class NumericRange[T](
   override def equals(other: Any) =
     other match {
       case x: NumericRange[_] =>
-        (x canEqual this) && (length == x.length) && (
-          (length == 0) || // all empty sequences are equal
-            (
-              start == x.start && last == x.last
-            ) // same length and same endpoints implies equality
-        )
+        (x canEqual this) &&
+          (length == x.length) &&
+          ((length == 0) || // all empty sequences are equal
+            (start == x.start &&
+              last == x.last) // same length and same endpoints implies equality
+          )
       case _ =>
         super.equals(other)
     }
@@ -279,12 +278,11 @@ object NumericRange {
       val diff = num.minus(end, start)
       val jumps = num.toLong(num.quot(diff, step))
       val remainder = num.rem(diff, step)
-      val longCount = jumps + (
-        if (!isInclusive && zero == remainder)
-          0
-        else
-          1
-      )
+      val longCount = jumps +
+        (if (!isInclusive && zero == remainder)
+           0
+         else
+           1)
 
       /** The edge cases keep coming.  Since e.g.
         *    Long.MaxValue + 1 == Long.MinValue
@@ -292,8 +290,8 @@ object NumericRange {
         *  overflow turn up as an empty range.
         */
       // The second condition contradicts an empty result.
-      val isOverflow = longCount == 0 && num
-        .lt(num.plus(start, step), end) == upward
+      val isOverflow = longCount == 0 &&
+        num.lt(num.plus(start, step), end) == upward
 
       if (longCount > scala.Int.MaxValue || longCount < 0L || isOverflow) {
         val word =

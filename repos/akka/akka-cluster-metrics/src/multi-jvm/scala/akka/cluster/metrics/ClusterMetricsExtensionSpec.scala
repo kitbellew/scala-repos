@@ -29,8 +29,8 @@ trait ClusterMetricsCommonConfig extends MultiNodeConfig {
   nodeList foreach { role ⇒
     nodeConfig(role) {
       parseString(
-        "akka.cluster.metrics.native-library-extract-folder=${user.dir}/target/native/" + role
-          .name)
+        "akka.cluster.metrics.native-library-extract-folder=${user.dir}/target/native/" +
+          role.name)
     }
   }
 
@@ -118,33 +118,35 @@ abstract class ClusterMetricsEnabledSpec
 
   "Cluster metrics" must {
     "periodically collect metrics on each node, publish to the event stream, " +
-      "and gossip metrics around the node ring" in within(60 seconds) {
-      awaitClusterUp(roles: _*)
-      enterBarrier("cluster-started")
-      awaitAssert(
-        clusterView.members.count(_.status == MemberStatus.Up) should ===(
-          roles.size))
-      // TODO ensure same contract
-      //awaitAssert(clusterView.clusterMetrics.size should ===(roles.size))
-      awaitAssert(metricsView.clusterMetrics.size should ===(roles.size))
-      val collector = MetricsCollector(cluster.system)
-      collector.sample.metrics.size should be > (3)
-      enterBarrier("after")
-    }
-    "reflect the correct number of node metrics in cluster view" in within(
-      30 seconds) {
-      runOn(node2) {
-        cluster.leave(node1)
-      }
-      enterBarrier("first-left")
-      runOn(node2, node3, node4, node5) {
-        markNodeAsUnavailable(node1)
+      "and gossip metrics around the node ring" in
+      within(60 seconds) {
+        awaitClusterUp(roles: _*)
+        enterBarrier("cluster-started")
+        awaitAssert(
+          clusterView.members.count(_.status == MemberStatus.Up) should
+            ===(roles.size))
         // TODO ensure same contract
-        //awaitAssert(clusterView.clusterMetrics.size should ===(roles.size - 1))
-        awaitAssert(metricsView.clusterMetrics.size should ===(roles.size - 1))
+        //awaitAssert(clusterView.clusterMetrics.size should ===(roles.size))
+        awaitAssert(metricsView.clusterMetrics.size should ===(roles.size))
+        val collector = MetricsCollector(cluster.system)
+        collector.sample.metrics.size should be > (3)
+        enterBarrier("after")
       }
-      enterBarrier("finished")
-    }
+    "reflect the correct number of node metrics in cluster view" in
+      within(30 seconds) {
+        runOn(node2) {
+          cluster.leave(node1)
+        }
+        enterBarrier("first-left")
+        runOn(node2, node3, node4, node5) {
+          markNodeAsUnavailable(node1)
+          // TODO ensure same contract
+          //awaitAssert(clusterView.clusterMetrics.size should ===(roles.size - 1))
+          awaitAssert(
+            metricsView.clusterMetrics.size should ===(roles.size - 1))
+        }
+        enterBarrier("finished")
+      }
   }
 }
 

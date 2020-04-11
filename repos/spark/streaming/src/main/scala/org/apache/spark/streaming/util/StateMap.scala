@@ -250,9 +250,8 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
         ("    " * (deltaChainLength - 1)) + "+--- "
       } else
         ""
-    parentStateMap.toDebugString() + "\n" + deltaMap
-      .iterator
-      .mkString(tabs, "\n" + tabs, "")
+    parentStateMap.toDebugString() + "\n" +
+      deltaMap.iterator.mkString(tabs, "\n" + tabs, "")
   }
 
   override def toString(): String = {

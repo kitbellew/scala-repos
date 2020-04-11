@@ -149,8 +149,8 @@ private object PoolSlot {
 
     def waitingForSubscribePending: Receive = {
       case SubscribePending ⇒
-        exposedPublisher.takePendingSubscribers() foreach (s ⇒
-          self ! ActorPublisher.Internal.Subscribe(s))
+        exposedPublisher.takePendingSubscribers() foreach
+          (s ⇒ self ! ActorPublisher.Internal.Subscribe(s))
         log.debug("become unconnected, from subscriber pending")
         context.become(unconnected)
     }
@@ -253,25 +253,23 @@ private object PoolSlot {
 
       val results: List[ProcessorOut] = {
         if (inflightRequests.isEmpty && firstContext.isDefined) {
-          (
-            error match {
-              case Some(err) ⇒
-                ResponseDelivery(
-                  ResponseContext(
-                    firstContext.get,
-                    Failure(
-                      new UnexpectedDisconnectException(
-                        "Unexpected (early) disconnect",
-                        err))))
-              case _ ⇒
-                ResponseDelivery(
-                  ResponseContext(
-                    firstContext.get,
-                    Failure(
-                      new UnexpectedDisconnectException(
-                        "Unexpected (early) disconnect"))))
-            }
-          ) :: Nil
+          (error match {
+            case Some(err) ⇒
+              ResponseDelivery(
+                ResponseContext(
+                  firstContext.get,
+                  Failure(
+                    new UnexpectedDisconnectException(
+                      "Unexpected (early) disconnect",
+                      err))))
+            case _ ⇒
+              ResponseDelivery(
+                ResponseContext(
+                  firstContext.get,
+                  Failure(
+                    new UnexpectedDisconnectException(
+                      "Unexpected (early) disconnect"))))
+          }) :: Nil
         } else {
           inflightRequests.map { rc ⇒
             if (rc.retriesLeft == 0) {

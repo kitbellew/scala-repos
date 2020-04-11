@@ -206,8 +206,8 @@ class AccountServiceHandlers(
             }
 
           logger.debug(
-            "Looking up account ids with account: " + auth
-              .accountId + " for API key: " + keyToFind)
+            "Looking up account ids with account: " + auth.accountId +
+              " for API key: " + keyToFind)
 
           def followIssuers(
               currentKey: APIKey,
@@ -220,7 +220,8 @@ class AccountServiceHandlers(
               .flatMap {
                 case Some(accountId) =>
                   logger.debug(
-                    "Found account for API key: " + keyToFind + " = " + accountId)
+                    "Found account for API key: " + keyToFind + " = " +
+                      accountId)
                   Promise.successful(Some(accountId))
 
                 case None if remaining.nonEmpty =>
@@ -228,7 +229,8 @@ class AccountServiceHandlers(
 
                 case None =>
                   logger.warn(
-                    "Exhausted parent chain trying to find account for " + keyToFind)
+                    "Exhausted parent chain trying to find account for " +
+                      keyToFind)
                   Promise.successful(None)
               }
           }
@@ -249,7 +251,8 @@ class AccountServiceHandlers(
                     case Some(APIKeyDetails(_, _, _, _, Nil)) =>
                       // We must be looking at the root key
                       logger.warn(
-                        "Empty parent chain trying to find account for " + keyToFind)
+                        "Empty parent chain trying to find account for " +
+                          keyToFind)
                       Promise.successful(None)
 
                     case Some(APIKeyDetails(_, _, _, _, issuers)) =>
@@ -321,8 +324,8 @@ class AccountServiceHandlers(
                           profile.minimize) {
                           accountId =>
                             logger.info(
-                              "Created new account for " + email + " with id " + accountId + " by " + remoteIpFrom(
-                                request))
+                              "Created new account for " + email + " with id " +
+                                accountId + " by " + remoteIpFrom(request))
                             apiKeyFinder.createAPIKey(
                               accountId,
                               Some("Root key for account " + accountId),
@@ -333,8 +336,8 @@ class AccountServiceHandlers(
                             }
                         } map { account =>
                           logger.debug(
-                            "Account successfully created: " + account
-                              .accountId)
+                            "Account successfully created: " +
+                              account.accountId)
                           HttpResponse[JValue](
                             OK,
                             content = Some(
@@ -400,8 +403,9 @@ class AccountServiceHandlers(
                         }
 
                       case Failure(error) =>
-                        Promise successful badRequest(
-                          "Could not determine a valid grant ID from request body.")
+                        Promise successful
+                          badRequest(
+                            "Could not determine a valid grant ID from request body.")
                     }
                   }
                 } getOrElse {
@@ -481,8 +485,10 @@ class AccountServiceHandlers(
                                         Seq(account.email),
                                         "reset.subj.mustache",
                                         Seq(
-                                          "reset.eml.txt.mustache" -> "text/plain",
-                                          "reset.eml.html.mustache" -> "text/html"),
+                                          "reset.eml.txt.mustache" ->
+                                            "text/plain",
+                                          "reset.eml.html.mustache" ->
+                                            "text/html"),
                                         params)
                                       HttpResponse[JValue](
                                         HttpStatus(OK),
@@ -498,7 +504,8 @@ class AccountServiceHandlers(
                                           HttpStatus(InternalServerError),
                                           content = Some(
                                             JString(
-                                              "Provided email does not match account for " + accountId)))
+                                              "Provided email does not match account for " +
+                                                accountId)))
                                     }
                                   }
                               } else {
@@ -510,12 +517,14 @@ class AccountServiceHandlers(
                                     HttpStatus(Forbidden),
                                     content = Some(
                                       JString(
-                                        "Provided email does not match account for " + accountId))))
+                                        "Provided email does not match account for " +
+                                          accountId))))
                               }
 
                             case None =>
                               logger.warn(
-                                "Password reset request on non-existent account " + accountId)
+                                "Password reset request on non-existent account " +
+                                  accountId)
                               Future(
                                 HttpResponse[JValue](
                                   HttpStatus(NotFound),

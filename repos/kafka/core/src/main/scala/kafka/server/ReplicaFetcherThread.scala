@@ -319,8 +319,8 @@ class ReplicaFetcherThread(
       .asScala
       .map {
         case (key, value) =>
-          TopicAndPartition(key.topic, key.partition) -> new PartitionData(
-            value)
+          TopicAndPartition(key.topic, key.partition) ->
+            new PartitionData(value)
       }
   }
 
@@ -363,9 +363,8 @@ class ReplicaFetcherThread(
     val topicPartition =
       new TopicPartition(topicAndPartition.topic, topicAndPartition.partition)
     val partitions = Map(
-      topicPartition -> new ListOffsetRequest.PartitionData(
-        earliestOrLatest,
-        1))
+      topicPartition ->
+        new ListOffsetRequest.PartitionData(earliestOrLatest, 1))
     val request = new ListOffsetRequest(consumerId, partitions.asJava)
     val clientResponse = sendRequest(ApiKeys.LIST_OFFSETS, None, request)
     val response = new ListOffsetResponse(clientResponse.responseBody)

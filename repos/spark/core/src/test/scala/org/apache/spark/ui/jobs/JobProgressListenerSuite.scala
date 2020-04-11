@@ -115,8 +115,8 @@ class JobProgressListenerSuite
     assertActiveJobsStateIsEmpty(listener)
 
     listener.completedStages.size should be(5)
-    listener.completedStages.map(_.stageId).toSet should be(
-      Set(50, 49, 48, 47, 46))
+    listener.completedStages.map(_.stageId).toSet should
+      be(Set(50, 49, 48, 47, 46))
   }
 
   test("test clearing of stageIdToActiveJobs") {

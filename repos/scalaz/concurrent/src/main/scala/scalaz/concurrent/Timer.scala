@@ -102,18 +102,18 @@ case class Timer(
           callback =>
             withWrite {
               val waitTime = alignTimeResolution(
-                lastNow + (
-                  if (waitMs < 0)
-                    0
-                  else
-                    waitMs
-                ))
+                lastNow +
+                  (if (waitMs < 0)
+                     0
+                   else
+                     waitMs))
               val timedCallback = () => callback(value)
               // Lazy implementation for now.
-              futures = futures + futures
-                .get(waitTime)
-                .map(current => (waitTime, timedCallback :: current))
-                .getOrElse((waitTime, List(timedCallback)))
+              futures = futures +
+                futures
+                  .get(waitTime)
+                  .map(current => (waitTime, timedCallback :: current))
+                  .getOrElse((waitTime, List(timedCallback)))
             }
         Future.async(listen)
       } else {

@@ -109,8 +109,8 @@ object ScalaCollectionRenderer {
     value.`type`() match {
       case ct: ClassType
           if ct.name.startsWith("scala.collection") &&
-            !DebuggerUtils.instanceOf(ct, streamClassName) && !DebuggerUtils
-            .instanceOf(ct, iteratorClassName) =>
+            !DebuggerUtils.instanceOf(ct, streamClassName) &&
+            !DebuggerUtils.instanceOf(ct, iteratorClassName) =>
         true
       case _ =>
         evaluateBoolean(value, evaluationContext, hasDefiniteSizeEval)
@@ -308,8 +308,8 @@ object ScalaCollectionRenderer {
             new util.ArrayList[DebuggerTreeNode]
           errorChildren.add(
             nodeManager.createMessageNode(
-              DebuggerBundle.message(
-                "error.unable.to.evaluate.expression") + " " + e.getMessage))
+              DebuggerBundle.message("error.unable.to.evaluate.expression") +
+                " " + e.getMessage))
           builder.setChildren(errorChildren)
       }
     }
@@ -319,8 +319,8 @@ object ScalaCollectionRenderer {
         parentDescriptor: ValueDescriptor): NodeRenderer = {
       var renderer: NodeRenderer = ExpressionChildrenRenderer
         .getLastChildrenRenderer(parentDescriptor)
-      if (renderer == null || childrenValue == null || !renderer
-            .isApplicable(childrenValue.`type`)) {
+      if (renderer == null || childrenValue == null ||
+          !renderer.isApplicable(childrenValue.`type`)) {
         renderer = DebugProcessImpl.getDefaultRenderer(
           if (childrenValue != null)
             childrenValue.`type`

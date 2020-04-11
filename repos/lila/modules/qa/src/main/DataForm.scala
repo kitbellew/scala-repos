@@ -11,10 +11,12 @@ private[qa] final class DataForm(
 
   lazy val question = Form(
     mapping(
-      "title" -> nonEmptyText(minLength = 10, maxLength = 150)
-        .verifying(languageMessage, validateLanguage _),
-      "body" -> nonEmptyText(minLength = 10, maxLength = 10000)
-        .verifying(languageMessage, validateLanguage _),
+      "title" ->
+        nonEmptyText(minLength = 10, maxLength = 150)
+          .verifying(languageMessage, validateLanguage _),
+      "body" ->
+        nonEmptyText(minLength = 10, maxLength = 10000)
+          .verifying(languageMessage, validateLanguage _),
       "hidden-tags" -> text,
       "gameId" -> text,
       "move" -> text
@@ -22,32 +24,36 @@ private[qa] final class DataForm(
       .verifying(captchaFailMessage, validateCaptcha _))
 
   def editQuestion(q: Question) =
-    question fill QuestionData(
-      title = q.title,
-      body = q.body,
-      `hidden-tags` = q.tags mkString ",",
-      gameId = "",
-      move = "")
+    question fill
+      QuestionData(
+        title = q.title,
+        body = q.body,
+        `hidden-tags` = q.tags mkString ",",
+        gameId = "",
+        move = "")
 
   lazy val answer = Form(
     mapping(
-      "body" -> nonEmptyText(minLength = 30)
-        .verifying(languageMessage, validateLanguage _),
+      "body" ->
+        nonEmptyText(minLength = 30)
+          .verifying(languageMessage, validateLanguage _),
       "gameId" -> text,
       "move" -> text)(AnswerData.apply)(AnswerData.unapply)
       .verifying(captchaFailMessage, validateCaptcha _))
 
   lazy val editAnswer = Form(
     single(
-      "body" -> nonEmptyText(minLength = 30)
-        .verifying(languageMessage, validateLanguage _)))
+      "body" ->
+        nonEmptyText(minLength = 30)
+          .verifying(languageMessage, validateLanguage _)))
 
   lazy val moveAnswer = Form(single("to" -> nonEmptyText))
 
   lazy val comment = Form(
     mapping(
-      "body" -> nonEmptyText(minLength = 20)
-        .verifying(languageMessage, validateLanguage _))(CommentData.apply)(
+      "body" ->
+        nonEmptyText(minLength = 20)
+          .verifying(languageMessage, validateLanguage _))(CommentData.apply)(
       CommentData.unapply))
 
   val vote = Form(single("vote" -> number))

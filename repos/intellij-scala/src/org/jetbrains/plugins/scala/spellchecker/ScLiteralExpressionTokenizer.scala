@@ -36,7 +36,8 @@ class ScLiteralExpressionTokenizer extends Tokenizer[ScLiteral] {
   def tokenize(element: ScLiteral, consumer: TokenConsumer) {
     val listOwner: PsiModifierListOwner = PsiTreeUtil
       .getParentOfType(element, classOf[PsiModifierListOwner])
-    if (listOwner != null && AnnotationUtil.isAnnotated(
+    if (listOwner != null &&
+        AnnotationUtil.isAnnotated(
           listOwner,
           Collections.singleton(AnnotationUtil.NON_NLS),
           false,

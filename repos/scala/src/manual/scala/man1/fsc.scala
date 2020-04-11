@@ -21,9 +21,7 @@ object fsc extends Command {
 
   val synopsis = Section(
     "SYNOPSIS",
-    CmdLine(
-      " [ " & Argument("options") & " ] " &
-        Argument("source files")))
+    CmdLine(" [ " & Argument("options") & " ] " & Argument("source files")))
 
   val parameters = scalac.parameters
 
@@ -66,9 +64,8 @@ object fsc extends Command {
       ),
       Definition(
         CmdOptionBound("J", Argument("flag")),
-        "Pass " & Mono(
-          Argument(
-            "flag")) & " directly to the Java VM for the compilation daemon.")
+        "Pass " & Mono(Argument("flag")) &
+          " directly to the Java VM for the compilation daemon.")
     )
   )
 
@@ -119,8 +116,8 @@ object fsc extends Command {
       Definition(
         MBold("JAVA_HOME"),
         "Specify JDK/JRE home directory. This directory is used to locate " &
-          "the " & MBold("java") & " command unless " & MBold(
-          "JAVACMD") & " variable set."
+          "the " & MBold("java") & " command unless " & MBold("JAVACMD") &
+          " variable set."
       ),
       Definition(
         MBold("JAVA_OPTS"),

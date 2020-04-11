@@ -27,9 +27,7 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
   private case class Blame(player: Player, outcome: Outcome)
 
   private def blameable(game: Game) =
-    game.source.contains(Source.Lobby) &&
-      game.hasClock &&
-      !isRematch(game.id)
+    game.source.contains(Source.Lobby) && game.hasClock && !isRematch(game.id)
 
   def abort(pov: Pov): Funit =
     blameable(pov.game) ?? {
@@ -103,10 +101,10 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
           .findAndUpdate(
             selector = BSONDocument("_id" -> userId),
             update = BSONDocument(
-              "$push" -> BSONDocument(
-                "o" -> BSONDocument(
-                  "$each" -> List(outcome),
-                  "$slice" -> -20))),
+              "$push" ->
+                BSONDocument(
+                  "o" ->
+                    BSONDocument("$each" -> List(outcome), "$slice" -> -20))),
             fetchNewObject = true,
             upsert = true
           )
@@ -125,8 +123,9 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
           BSONDocument("_id" -> record.userId),
           BSONDocument(
             "$unset" -> BSONDocument("o" -> true),
-            "$push" -> BSONDocument(
-              "b" -> BSONDocument("$each" -> List(ban), "$slice" -> -30)))
+            "$push" ->
+              BSONDocument(
+                "b" -> BSONDocument("$each" -> List(ban), "$slice" -> -30)))
         )
         .void
     }

@@ -77,11 +77,8 @@ object HttpSpec extends Specification {
     }
 
     "add headers" in {
-      headers.add("a" -> "a3", "a" -> "a4").getAll("a") must_== Seq(
-        "a1",
-        "a2",
-        "a3",
-        "a4")
+      headers.add("a" -> "a3", "a" -> "a4").getAll("a") must_==
+        Seq("a1", "a2", "a3", "a4")
     }
 
     "remove headers by case insensitive" in {
@@ -90,9 +87,8 @@ object HttpSpec extends Specification {
     }
 
     "replace headers by case insensitive" in {
-      headers.replace("a" -> "a3", "A" -> "a4").getAll("a") must_== Seq(
-        "a3",
-        "a4")
+      headers.replace("a" -> "a3", "A" -> "a4").getAll("a") must_==
+        Seq("a3", "a4")
     }
 
     "equal other Headers by case insensitive" in {
@@ -103,8 +99,7 @@ object HttpSpec extends Specification {
         "b" -> "b2",
         "B" -> "b3",
         "C" -> "c1")
-      (headers must_== other) and
-        (headers.## must_== other.##)
+      (headers must_== other) and (headers.## must_== other.##)
     }
 
     "equal other Headers with same relative order" in {
@@ -115,45 +110,50 @@ object HttpSpec extends Specification {
         "b" -> "b2",
         "B" -> "b3",
         "c" -> "c1")
-      (headers must_== other) and
-        (headers.## must_== other.##)
+      (headers must_== other) and (headers.## must_== other.##)
     }
 
     "not equal other Headers with different relative order" in {
-      headers must_!= Headers(
-        "a" -> "a2",
-        "A" -> "a1",
-        "b" -> "b1",
-        "b" -> "b2",
-        "B" -> "b3",
-        "c" -> "C1")
+      headers must_!=
+        Headers(
+          "a" -> "a2",
+          "A" -> "a1",
+          "b" -> "b1",
+          "b" -> "b2",
+          "B" -> "b3",
+          "c" -> "C1")
     }
   }
 
   "Cookies" should {
-    "merge two cookies" in withApplication {
-      val cookies = Seq(Cookie("foo", "bar"), Cookie("bar", "qux"))
+    "merge two cookies" in
+      withApplication {
+        val cookies = Seq(Cookie("foo", "bar"), Cookie("bar", "qux"))
 
-      Cookies.mergeSetCookieHeader("", cookies) must ===(
-        "foo=bar; Path=/; HTTPOnly;;bar=qux; Path=/; HTTPOnly")
-    }
-    "merge and remove duplicates" in withApplication {
-      val cookies = Seq(
-        Cookie("foo", "bar"),
-        Cookie("foo", "baz"),
-        Cookie("foo", "bar", domain = Some("Foo")),
-        Cookie("foo", "baz", domain = Some("FoO")),
-        Cookie("foo", "baz", secure = true),
-        Cookie("foo", "baz", httpOnly = false),
-        Cookie("foo", "bar", path = "/blah"),
-        Cookie("foo", "baz", path = "/blah")
-      )
+        Cookies.mergeSetCookieHeader("", cookies) must
+          ===("foo=bar; Path=/; HTTPOnly;;bar=qux; Path=/; HTTPOnly")
+      }
+    "merge and remove duplicates" in
+      withApplication {
+        val cookies = Seq(
+          Cookie("foo", "bar"),
+          Cookie("foo", "baz"),
+          Cookie("foo", "bar", domain = Some("Foo")),
+          Cookie("foo", "baz", domain = Some("FoO")),
+          Cookie("foo", "baz", secure = true),
+          Cookie("foo", "baz", httpOnly = false),
+          Cookie("foo", "bar", path = "/blah"),
+          Cookie("foo", "baz", path = "/blah")
+        )
 
-      Cookies.mergeSetCookieHeader("", cookies) must ===(
-        "foo=baz; Path=/; Domain=FoO; HTTPOnly" + ";;" + // Cookie("foo", "baz", domain=Some("FoO"))
-          "foo=baz; Path=/" + ";;" + // Cookie("foo", "baz", httpOnly=false)
-          "foo=baz; Path=/blah; HTTPOnly" // Cookie("foo", "baz", path="/blah")
-      )
-    }
+        Cookies.mergeSetCookieHeader("", cookies) must
+          ===(
+            "foo=baz; Path=/; Domain=FoO; HTTPOnly" +
+              ";;" + // Cookie("foo", "baz", domain=Some("FoO"))
+                "foo=baz; Path=/" +
+                ";;" + // Cookie("foo", "baz", httpOnly=false)
+                  "foo=baz; Path=/blah; HTTPOnly" // Cookie("foo", "baz", path="/blah")
+          )
+      }
   }
 }

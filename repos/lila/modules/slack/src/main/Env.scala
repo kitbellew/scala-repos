@@ -18,8 +18,8 @@ final class Env(
     system: ActorSystem) {
 
   private val IncomingUrl = config getString "incoming.url"
-  private val IncomingDefaultChannel =
-    config getString "incoming.default_channel"
+  private val IncomingDefaultChannel = config getString
+    "incoming.default_channel"
 
   lazy val api = new SlackApi(client, getLightUser)
 
@@ -47,8 +47,9 @@ final class Env(
 
 object Env {
 
-  lazy val current: Env = "slack" boot new Env(
-    system = lila.common.PlayApp.system,
-    getLightUser = lila.user.Env.current.lightUser,
-    config = lila.common.PlayApp loadConfig "slack")
+  lazy val current: Env = "slack" boot
+    new Env(
+      system = lila.common.PlayApp.system,
+      getLightUser = lila.user.Env.current.lightUser,
+      config = lila.common.PlayApp loadConfig "slack")
 }

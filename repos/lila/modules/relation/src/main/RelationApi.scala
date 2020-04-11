@@ -50,16 +50,17 @@ final class RelationApi(
       .aggregate(
         Match(
           BSONDocument(
-            "$or" -> BSONArray(
-              BSONDocument("u1" -> userId),
-              BSONDocument("u2" -> userId)),
+            "$or" ->
+              BSONArray(
+                BSONDocument("u1" -> userId),
+                BSONDocument("u2" -> userId)),
             "r" -> Follow)),
         List(
           Group(BSONNull)("u1" -> AddToSet("u1"), "u2" -> AddToSet("u2")),
           Project(
             BSONDocument(
-              "_id" -> BSONDocument(
-                "$setIntersection" -> BSONArray("$u1", "$u2")))))
+              "_id" ->
+                BSONDocument("$setIntersection" -> BSONArray("$u1", "$u2")))))
       )
       .map {
         ~_.documents.headOption.flatMap(_.getAs[Set[String]]("_id")) - userId
@@ -137,9 +138,10 @@ final class RelationApi(
                 countFollowersCache remove u2
                 countFollowingCache remove u1
                 reloadOnlineFriends(u1, u2)
-                timeline ! Propagate(FollowUser(u1, u2))
-                  .toFriendsOf(u1)
-                  .toUsers(List(u2))
+                timeline !
+                  Propagate(FollowUser(u1, u2))
+                    .toFriendsOf(u1)
+                    .toUsers(List(u2))
                 lila.mon.relation.follow()
               }
           }

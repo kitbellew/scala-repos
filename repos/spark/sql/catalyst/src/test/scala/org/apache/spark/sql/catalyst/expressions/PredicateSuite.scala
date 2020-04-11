@@ -67,9 +67,7 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
 
   test("3VL Not") {
     val notTrueTable =
-      (true, false) ::
-        (false, true) ::
-        (null, null) :: Nil
+      (true, false) :: (false, true) :: (null, null) :: Nil
     notTrueTable.foreach {
       case (v, answer) =>
         checkEvaluation(Not(Literal.create(v, BooleanType)), answer)

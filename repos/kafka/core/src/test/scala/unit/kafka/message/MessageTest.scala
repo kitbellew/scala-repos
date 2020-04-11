@@ -57,13 +57,14 @@ class MessageTest extends JUnitSuite {
          t <- timestamps;
          mv <- magicValues) {
       val timestamp = ensureValid(mv, t)
-      messages += new MessageTestVal(
-        k,
-        v,
-        codec,
-        timestamp,
-        mv,
-        new Message(v, k, timestamp, codec, mv))
+      messages +=
+        new MessageTestVal(
+          k,
+          v,
+          codec,
+          timestamp,
+          mv,
+          new Message(v, k, timestamp, codec, mv))
     }
 
     def ensureValid(magicValue: Byte, timestamp: Long): Long =

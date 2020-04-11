@@ -38,8 +38,8 @@ class MakeNonPrivateQuickFix(member: ScModifierListOwner, toProtected: Boolean)
   def getFamilyName: String = "Make field non-private"
 
   def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean =
-    member.isValid && member
-      .getContainingFile == file && member.getManager.isInProject(file)
+    member.isValid && member.getContainingFile == file &&
+      member.getManager.isInProject(file)
 
   def startInWriteAction(): Boolean = true
 

@@ -139,8 +139,8 @@ class AnalysisErrorSuite extends AnalysisTest {
     "single invalid type, single arg",
     testRelation
       .select(TestFunction(dateLit :: Nil, IntegerType :: Nil).as('a)),
-    "cannot resolve" :: "testfunction(CAST(NULL AS DATE))" :: "argument 1" :: "requires int type" ::
-      "'CAST(NULL AS DATE)' is of date type" :: Nil
+    "cannot resolve" :: "testfunction(CAST(NULL AS DATE))" :: "argument 1" ::
+      "requires int type" :: "'CAST(NULL AS DATE)' is of date type" :: Nil
   )
 
   errorTest(
@@ -148,9 +148,9 @@ class AnalysisErrorSuite extends AnalysisTest {
     testRelation.select(
       TestFunction(dateLit :: dateLit :: Nil, DateType :: IntegerType :: Nil)
         .as('a)),
-    "cannot resolve" :: "testfunction(CAST(NULL AS DATE), CAST(NULL AS DATE))" ::
-      "argument 2" :: "requires int type" ::
-      "'CAST(NULL AS DATE)' is of date type" :: Nil
+    "cannot resolve" ::
+      "testfunction(CAST(NULL AS DATE), CAST(NULL AS DATE))" :: "argument 2" ::
+      "requires int type" :: "'CAST(NULL AS DATE)' is of date type" :: Nil
   )
 
   errorTest(
@@ -158,8 +158,9 @@ class AnalysisErrorSuite extends AnalysisTest {
     testRelation.select(
       TestFunction(dateLit :: dateLit :: Nil, IntegerType :: IntegerType :: Nil)
         .as('a)),
-    "cannot resolve" :: "testfunction(CAST(NULL AS DATE), CAST(NULL AS DATE))" ::
-      "argument 1" :: "argument 2" :: "requires int type" ::
+    "cannot resolve" ::
+      "testfunction(CAST(NULL AS DATE), CAST(NULL AS DATE))" :: "argument 1" ::
+      "argument 2" :: "requires int type" ::
       "'CAST(NULL AS DATE)' is of date type" :: Nil
   )
 
@@ -229,8 +230,8 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "bad casts",
     testRelation.select(Literal(1).cast(BinaryType).as('badCast)),
-    "cannot cast" :: Literal(1).dataType.simpleString :: BinaryType
-      .simpleString :: Nil
+    "cannot cast" :: Literal(1).dataType.simpleString ::
+      BinaryType.simpleString :: Nil
   )
 
   errorTest(
@@ -247,16 +248,14 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "non-boolean filters",
     testRelation.where(Literal(1)),
-    "filter" :: "'1'" :: "not a boolean" :: Literal(1)
-      .dataType
-      .simpleString :: Nil)
+    "filter" :: "'1'" :: "not a boolean" :: Literal(1).dataType.simpleString ::
+      Nil)
 
   errorTest(
     "non-boolean join conditions",
     testRelation.join(testRelation, condition = Some(Literal(1))),
-    "condition" :: "'1'" :: "not a boolean" :: Literal(1)
-      .dataType
-      .simpleString :: Nil
+    "condition" :: "'1'" :: "not a boolean" ::
+      Literal(1).dataType.simpleString :: Nil
   )
 
   errorTest(
@@ -273,7 +272,8 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "ambiguous field due to case insensitivity",
     nestedRelation.select($"top.differentCase"),
-    "Ambiguous reference to fields" :: "differentCase" :: "differentcase" :: Nil,
+    "Ambiguous reference to fields" :: "differentCase" :: "differentcase" ::
+      Nil,
     caseSensitive = false
   )
 
@@ -298,10 +298,8 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "intersect with unequal number of columns",
     testRelation.intersect(testRelation2),
-    "intersect" :: "number of columns" :: testRelation2
-      .output
-      .length
-      .toString ::
+    "intersect" :: "number of columns" ::
+      testRelation2.output.length.toString ::
       testRelation.output.length.toString :: Nil
   )
 

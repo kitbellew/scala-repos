@@ -62,9 +62,8 @@ object Security {
     */
   lazy val username: String = Play
     .privateMaybeApplication
-    .flatMap(_.configuration.getString("session.username")) getOrElse (
-    "username"
-  )
+    .flatMap(_.configuration.getString("session.username")) getOrElse
+    ("username")
 
   /**
     * Wraps another action, allowing only authenticated HTTP requests.

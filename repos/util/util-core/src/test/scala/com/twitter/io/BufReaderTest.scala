@@ -25,8 +25,7 @@ class BufReaderTest extends FunSuite with Checkers {
       forAll { (bytes: String, n: Int) =>
         val r = BufReader(Buf.Utf8(bytes))
         r.discard()
-        n < 0 ||
-        bytes.length == 0 ||
+        n < 0 || bytes.length == 0 ||
         throws(classOf[Reader.ReaderDiscarded])({
           Await.result(r.read(n))
         })

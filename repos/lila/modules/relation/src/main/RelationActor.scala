@@ -56,11 +56,11 @@ private[relation] final class RelationActor(
 
   private def notifyFollowers(users: List[LightUser], message: String) {
     users foreach { user =>
-      api fetchFollowers user.id map (_ filter onlines.contains) foreach {
-        ids =>
+      api fetchFollowers user.id map
+        (_ filter onlines.contains) foreach { ids =>
           if (ids.nonEmpty)
             bus.publish(SendTos(ids.toSet, message, user.titleName), 'users)
-      }
+        }
     }
   }
 }

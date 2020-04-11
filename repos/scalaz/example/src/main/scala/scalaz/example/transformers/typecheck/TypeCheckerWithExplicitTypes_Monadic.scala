@@ -16,11 +16,8 @@ object TypeCheckerWithExplicitTypes_Monadic {
       .map(p => success(p._2))
       .getOrElse(typeError("not found: " + s))
 
-  def compare(
-      t1: Type,
-      t2: Type,
-      resultType: Type,
-      errorMsg: String): String \/ Type =
+  def compare(t1: Type, t2: Type, resultType: Type, errorMsg: String): String \/
+    Type =
     if (t1 == t2)
       success(resultType)
     else
@@ -70,10 +67,12 @@ object TypeCheckerWithExplicitTypes_Monadic {
                   argType,
                   operandType,
                   resultType,
-                  "function expected arg of type: " + argType + ", but got: " + operandType)
+                  "function expected arg of type: " + argType + ", but got: " +
+                    operandType)
               case _ =>
                 typeError(
-                  "function application expected function, but got: " + operatorType)
+                  "function application expected function, but got: " +
+                    operatorType)
             }
         } yield res
     }

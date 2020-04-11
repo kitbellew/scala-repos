@@ -97,8 +97,7 @@ class ScalaVersionTest {
 
     assertThrows[NumberFormatException](
       ScalaVersion("2.11-ok"),
-      _ ==
-        "Bad version (2.11-ok) not major[.minor[.revision[-suffix]]]")
+      _ == "Bad version (2.11-ok) not major[.minor[.revision[-suffix]]]")
 
   }
 

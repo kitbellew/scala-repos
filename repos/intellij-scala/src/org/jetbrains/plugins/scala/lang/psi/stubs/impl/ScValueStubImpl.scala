@@ -98,9 +98,8 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
       return None
     if (myPatterns != null) {
       val patterns = myPatterns.get
-      if (patterns != null && (
-            patterns.isEmpty || (patterns.get.getContext eq getPsi)
-          ))
+      if (patterns != null &&
+          (patterns.isEmpty || (patterns.get.getContext eq getPsi)))
         return patterns
     }
     val res: Option[ScPatternList] =
@@ -136,9 +135,8 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
   def getTypeElement: Option[ScTypeElement] = {
     if (myTypeElement != null) {
       val typeElement = myTypeElement.get
-      if (typeElement != null && (
-            typeElement.isEmpty || (typeElement.get.getContext eq getPsi)
-          ))
+      if (typeElement != null &&
+          (typeElement.isEmpty || (typeElement.get.getContext eq getPsi)))
         return typeElement
     }
     val res: Option[ScTypeElement] =

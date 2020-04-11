@@ -339,8 +339,8 @@ object CrossValidator extends MLReadable[CrossValidator] {
       val estimator = DefaultParamsReader
         .loadParamsInstance[Estimator[M]](estimatorPath, sc)
 
-      val uidToParams = Map(evaluator.uid -> evaluator) ++ CrossValidatorReader
-        .getUidMap(estimator)
+      val uidToParams = Map(evaluator.uid -> evaluator) ++
+        CrossValidatorReader.getUidMap(estimator)
 
       val numFolds = (metadata.params \ "numFolds").extract[Int]
       val estimatorParamMaps: Array[ParamMap] =
@@ -447,8 +447,9 @@ object CrossValidatorModel extends MLReadable[CrossValidatorModel] {
       val bestModelPath = new Path(path, "bestModel").toString
       val bestModel = DefaultParamsReader
         .loadParamsInstance[Model[_]](bestModelPath, sc)
-      val avgMetrics =
-        (metadata.metadata \ "avgMetrics").extract[Seq[Double]].toArray
+      val avgMetrics = (metadata.metadata \ "avgMetrics")
+        .extract[Seq[Double]]
+        .toArray
       val cv = new CrossValidatorModel(metadata.uid, bestModel, avgMetrics)
       cv.set(cv.estimator, estimator)
         .set(cv.evaluator, evaluator)

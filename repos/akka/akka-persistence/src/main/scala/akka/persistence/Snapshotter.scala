@@ -42,9 +42,10 @@ trait Snapshotter extends Actor {
     * via an [[SaveSnapshotSuccess]] or [[SaveSnapshotFailure]] message.
     */
   def saveSnapshot(snapshot: Any): Unit = {
-    snapshotStore ! SaveSnapshot(
-      SnapshotMetadata(snapshotterId, snapshotSequenceNr),
-      snapshot)
+    snapshotStore !
+      SaveSnapshot(
+        SnapshotMetadata(snapshotterId, snapshotSequenceNr),
+        snapshot)
   }
 
   /**

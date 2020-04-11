@@ -62,12 +62,13 @@ private[sbt] object SettingCompletions {
       val global = ScopedKey(Global, akey)
       val globalSetting = resolve(
         Def.setting(global, setting.init, setting.pos))
-      globalSetting ++ allDefs.flatMap { d =>
-        if (d.key == akey)
-          Seq(SettingKey(akey) in d.scope <<= global)
-        else
-          Nil
-      }
+      globalSetting ++
+        allDefs.flatMap { d =>
+          if (d.key == akey)
+            Seq(SettingKey(akey) in d.scope <<= global)
+          else
+            Nil
+        }
     }
     val redefined = settings.flatMap(x => rescope(x))
     val session = extracted.session.appendRaw(redefined)
@@ -293,9 +294,8 @@ private[sbt] object SettingCompletions {
           .toSet
       }
       Act.optionalAxis(
-        inParser ~> token(Space) ~> token(
-          scalaID(fullChoices, label),
-          completions),
+        inParser ~> token(Space) ~>
+          token(scalaID(fullChoices, label), completions),
         This)
     }
     val configurations: Map[String, Configuration] =
@@ -310,10 +310,11 @@ private[sbt] object SettingCompletions {
       k => keyScalaID(k.label),
       _.description,
       "task")
-    val nonGlobal = (configParser ~ taskParser) map {
-      case (c, t) =>
-        Scope(This, c, t, Global)
-    }
+    val nonGlobal =
+      (configParser ~ taskParser) map {
+        case (c, t) =>
+          Scope(This, c, t, Global)
+      }
     val global = inParser ~> token((Space ~ GlobalID) ^^^ GlobalScope)
     global | nonGlobal
   }
@@ -323,10 +324,9 @@ private[sbt] object SettingCompletions {
     val completions = fixedCompletions { (seen, level) =>
       completeAssign(seen, level, key).toSet
     }
-    val identifier = Act.filterStrings(
-      Op,
-      Assign.values.map(_.toString),
-      "assignment method") map Assign.withName
+    val identifier = Act
+      .filterStrings(Op, Assign.values.map(_.toString), "assignment method") map
+      Assign.withName
     token(Space) ~> token(optionallyQuoted(identifier), completions)
   }
 
@@ -415,9 +415,10 @@ private[sbt] object SettingCompletions {
         prominent(k, v)
     }
 
-    val showAll = (level >= 3) || (
-      level == 2 && prominentOnly.size <= detailLimit
-    ) || prominentOnly.isEmpty
+    val showAll =
+      (level >= 3) ||
+        (level == 2 && prominentOnly.size <= detailLimit) ||
+        prominentOnly.isEmpty
     val showKeys =
       if (showAll)
         applicable

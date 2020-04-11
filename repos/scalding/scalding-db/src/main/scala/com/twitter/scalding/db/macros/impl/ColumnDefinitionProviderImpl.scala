@@ -216,8 +216,9 @@ object ColumnDefinitionProviderImpl {
                   c.enclosingPosition,
                   "Hit a size macro where we couldn't parse the value. Probably not a literal constant. Only literal constants are supported.")
               case (tpe, _)
-                  if tpe <:< typeOf[
-                    com.twitter.scalding.db.macros.ScaldingDBAnnotation] =>
+                  if tpe <:<
+                    typeOf[
+                      com.twitter.scalding.db.macros.ScaldingDBAnnotation] =>
                 (tpe, None)
             }
           (m, fieldName, defaultVal, annotationInfo)
@@ -341,11 +342,9 @@ object ColumnDefinitionProviderImpl {
         }
         """
           val nullableTerm = newTermName(c.fresh(s"isNullable_$pos"))
-          val nullableValidation =
-            q"""
+          val nullableValidation = q"""
         val $nullableTerm = $rsmdTerm.isNullable(${pos + 1})
-        if ($nullableTerm == _root_.java.sql.ResultSetMetaData.columnNoNulls && ${cf
-              .nullable}) {
+        if ($nullableTerm == _root_.java.sql.ResultSetMetaData.columnNoNulls && ${cf.nullable}) {
           throw new _root_.com.twitter.scalding.db.JdbcValidationException(
             "Column '" + $fieldName + "' is not nullable in DB.")
         }

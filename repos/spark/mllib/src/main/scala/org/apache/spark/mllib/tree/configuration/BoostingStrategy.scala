@@ -85,7 +85,8 @@ case class BoostingStrategy @Since("1.4.0") (
     }
     require(
       learningRate > 0 && learningRate <= 1,
-      "Learning rate should be in range (0, 1]. Provided learning rate is " + s"$learningRate.")
+      "Learning rate should be in range (0, 1]. Provided learning rate is " +
+        s"$learningRate.")
   }
 }
 

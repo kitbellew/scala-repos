@@ -62,8 +62,8 @@ class ExternalShuffleServiceSuite extends ShuffleSuite with BeforeAndAfterAll {
   test("using external shuffle service") {
     sc = new SparkContext("local-cluster[2,1,1024]", "test", conf)
     sc.env.blockManager.externalShuffleServiceEnabled should equal(true)
-    sc.env.blockManager.shuffleClient.getClass should equal(
-      classOf[ExternalShuffleClient])
+    sc.env.blockManager.shuffleClient.getClass should
+      equal(classOf[ExternalShuffleClient])
 
     // In a slow machine, one slave may register hundreds of milliseconds ahead of the other one.
     // If we don't wait for all slaves, it's possible that only one executor runs all jobs. Then
@@ -91,7 +91,7 @@ class ExternalShuffleServiceSuite extends ShuffleSuite with BeforeAndAfterAll {
     val e = intercept[SparkException] {
       rdd.count()
     }
-    e.getMessage should include(
-      "Fetch failure will not retry stage due to testing config")
+    e.getMessage should
+      include("Fetch failure will not retry stage due to testing config")
   }
 }

@@ -14,10 +14,10 @@ trait BifoldableTests[F[_, _]] extends Laws {
     new DefaultRuleSet(
       name = "bifoldable",
       parent = None,
-      "bifoldLeft consistent with bifoldMap" -> forAll(
-        laws.bifoldLeftConsistentWithBifoldMap[A, B, C] _),
-      "bifoldRight consistent with bifoldMap" -> forAll(
-        laws.bifoldRightConsistentWithBifoldMap[A, B, C] _))
+      "bifoldLeft consistent with bifoldMap" ->
+        forAll(laws.bifoldLeftConsistentWithBifoldMap[A, B, C] _),
+      "bifoldRight consistent with bifoldMap" ->
+        forAll(laws.bifoldRightConsistentWithBifoldMap[A, B, C] _))
 }
 
 object BifoldableTests {

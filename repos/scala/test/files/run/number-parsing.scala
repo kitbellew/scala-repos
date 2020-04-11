@@ -20,8 +20,8 @@ object Test {
     assert((MinusZero: scala.Float) == (PlusZero: scala.Float))
     assert(!(MinusZero equals PlusZero))
 
-    List(-5f.max(2), -5f max 2, -5.max(2), -5 max 2) foreach (num =>
-      assert(num == 2))
+    List(-5f.max(2), -5f max 2, -5.max(2), -5 max 2) foreach
+      (num => assert(num == 2))
   }
 
   case class Foo(val x: Double) {

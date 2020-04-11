@@ -103,9 +103,9 @@ object GetOffsetShell {
         .err
         .println(
           (
-            "Error: no valid topic metadata for topic: %s, " + " probably the topic does not exist, run "
-          ).format(topic) +
-            "kafka-list-topic.sh to verify")
+            "Error: no valid topic metadata for topic: %s, " +
+              " probably the topic does not exist, run "
+          ).format(topic) + "kafka-list-topic.sh to verify")
       System.exit(1)
     }
     val partitions =
@@ -133,9 +133,8 @@ object GetOffsetShell {
               val topicAndPartition = TopicAndPartition(topic, partitionId)
               val request = OffsetRequest(
                 Map(
-                  topicAndPartition -> PartitionOffsetRequestInfo(
-                    time,
-                    nOffsets)))
+                  topicAndPartition ->
+                    PartitionOffsetRequestInfo(time, nOffsets)))
               val offsets =
                 consumer
                   .getOffsetsBefore(request)

@@ -164,18 +164,16 @@ class ScalaRearranger
       token: ArrangementSettingsToken,
       current: ArrangementMatchCondition) =
     (scalaTypesValues.contains(token) || supportedOrders.contains(token)) ||
-      (
-        if (current != null) {
-          val tokenType = ArrangementUtil.parseType(current)
-          if (tokenType != null) {
-            tokensForType(tokenType).contains(token)
-          } else {
-            commonModifiers.contains(token)
-          }
-        } else {
-          commonModifiers.contains(token)
-        }
-      )
+      (if (current != null) {
+         val tokenType = ArrangementUtil.parseType(current)
+         if (tokenType != null) {
+           tokensForType(tokenType).contains(token)
+         } else {
+           commonModifiers.contains(token)
+         }
+       } else {
+         commonModifiers.contains(token)
+       })
 
   override def buildMatcher(condition: ArrangementMatchCondition) =
     throw new IllegalArgumentException(
@@ -233,8 +231,8 @@ class ScalaRearranger
 
   private def setupGettersAndSetters(properties: Iterable[ScalaPropertyInfo]) {
     for (propertyInfo <- properties) {
-      if (propertyInfo
-            .isComplete && propertyInfo.setter.getDependencies == null) {
+      if (propertyInfo.isComplete &&
+          propertyInfo.setter.getDependencies == null) {
         propertyInfo.setter.addDependency(propertyInfo.getter)
       }
     }

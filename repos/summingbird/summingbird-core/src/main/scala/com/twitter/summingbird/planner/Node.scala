@@ -57,13 +57,15 @@ sealed trait Node[P <: Platform[P]] {
   def reverse: Node[P]
 
   def toStringWithPrefix(prefix: String): String = {
-    prefix + getNameFallback + "\n" + members.foldLeft("") {
-      case (str, producer) =>
-        str + prefix + "\t" + producer
-          .getClass
-          .getName
-          .replaceFirst("com.twitter.summingbird.", "") + "\n"
-    }
+    prefix + getNameFallback + "\n" +
+      members.foldLeft("") {
+        case (str, producer) =>
+          str + prefix + "\t" +
+            producer
+              .getClass
+              .getName
+              .replaceFirst("com.twitter.summingbird.", "") + "\n"
+      }
   }
 
   override def toString = toStringWithPrefix("\t")
@@ -182,10 +184,11 @@ case class Dag[P <: Platform[P]](
     Producer.transitiveDependenciesOf(p)
 
   def toStringWithPrefix(prefix: String): String = {
-    prefix + "Dag\n" + nodes.foldLeft("") {
-      case (str, node) =>
-        str + node.toStringWithPrefix(prefix + "\t") + "\n"
-    }
+    prefix + "Dag\n" +
+      nodes.foldLeft("") {
+        case (str, node) =>
+          str + node.toStringWithPrefix(prefix + "\t") + "\n"
+      }
   }
 
   override def toString = toStringWithPrefix("\t")
@@ -311,21 +314,20 @@ object Dag {
     }
 
     //start with the true tail
-    val (nodeToName, _) =
-      (dag.tailN :: allTails(dag))
-        .foldLeft((Map[Node[P], String](), Set[String]())) {
-          case ((nodeToName, usedNames), curTail) =>
-            if (!nodeToName.contains(curTail)) {
-              val tailN = tryGetName("Tail", usedNames)
-              genNames(
-                curTail,
-                dag,
-                nodeToName + (curTail -> tailN),
-                usedNames + tailN)
-            } else {
-              (nodeToName, usedNames)
-            }
-        }
+    val (nodeToName, _) = (dag.tailN :: allTails(dag))
+      .foldLeft((Map[Node[P], String](), Set[String]())) {
+        case ((nodeToName, usedNames), curTail) =>
+          if (!nodeToName.contains(curTail)) {
+            val tailN = tryGetName("Tail", usedNames)
+            genNames(
+              curTail,
+              dag,
+              nodeToName + (curTail -> tailN),
+              usedNames + tailN)
+          } else {
+            (nodeToName, usedNames)
+          }
+      }
 
     val nameToNode = nodeToName.map((t) => (t._2, t._1))
     dag.copy(nodeToName = nodeToName, nameToNode = nameToNode)

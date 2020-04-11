@@ -119,10 +119,10 @@ object Dependency {
             withEntity(e.getQualifiedName)
           case (_: ScPrimaryConstructor) && Parent(e: ScClass) =>
             withEntity(e.qualifiedName)
-          case (function: ScFunctionDefinition) && ContainingClass(
-                obj: ScObject)
-              if function.isSynthetic || function.name == "apply" || function
-                .name == "unapply" =>
+          case (function: ScFunctionDefinition) &&
+              ContainingClass(obj: ScObject)
+              if function.isSynthetic || function.name == "apply" ||
+                function.name == "unapply" =>
             withEntity(obj.qualifiedName)
           case (member: ScMember) && ContainingClass(obj: ScObject) =>
             val memberName =
@@ -133,8 +133,8 @@ object Dependency {
                   member.getName
               }
             withMember(obj.qualifiedName, memberName)
-          case (pattern: ScReferencePattern) && Parent(
-                Parent(ContainingClass(obj: ScObject))) =>
+          case (pattern: ScReferencePattern) &&
+              Parent(Parent(ContainingClass(obj: ScObject))) =>
             withMember(obj.qualifiedName, pattern.name)
           case (function: ScFunctionDefinition) && ContainingClass(obj: ScClass)
               if function.isConstructor =>

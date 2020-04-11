@@ -91,7 +91,8 @@ class RidgeRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
     // Ridge validation error should be lower than linear regression.
     assert(
       ridgeErr < linearErr,
-      "ridgeError (" + ridgeErr + ") was not less than linearError(" + linearErr + ")")
+      "ridgeError (" + ridgeErr + ") was not less than linearError(" +
+        linearErr + ")")
   }
 
   test("model save/load") {

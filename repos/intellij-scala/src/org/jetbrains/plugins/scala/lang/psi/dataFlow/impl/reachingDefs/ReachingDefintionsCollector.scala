@@ -47,9 +47,8 @@ object ReachingDefintionsCollector {
       classOf[ScControlFlowOwner],
       false)
     if (cfowner == null) {
-      val message = "cfowner == null: " + fragment
-        .map(_.getText)
-        .mkString("(", ", ", ")") + "\n" + "files: " +
+      val message = "cfowner == null: " +
+        fragment.map(_.getText).mkString("(", ", ", ")") + "\n" + "files: " +
         fragment.map(_.getContainingFile.getName).mkString("(", ", ", ")")
       throw new RuntimeException(message)
     }

@@ -161,12 +161,9 @@ private[twitter] object ThriftUtil {
       }
 
     val iface =
-      tryThriftFinagleClient orElse
-        tryScrooge3FinagleClient orElse
+      tryThriftFinagleClient orElse tryScrooge3FinagleClient orElse
         tryScrooge3FinagledClientRepClassifier orElse
-        tryScrooge3FinagledClient orElse
-        tryScrooge2Client orElse
-        trySwiftClient
+        tryScrooge3FinagledClient orElse tryScrooge2Client orElse trySwiftClient
 
     iface getOrElse {
       throw new IllegalArgumentException(
@@ -247,10 +244,8 @@ private[twitter] object ThriftUtil {
       } yield const.newInstance(impl).asInstanceOf[BinaryService]
 
     def tryClass(cls: Class[_]): Option[BinaryService] =
-      tryThriftFinagleService(cls) orElse
-        tryScroogeFinagleService(cls) orElse
-        tryLegacyScroogeFinagleService(cls) orElse
-        trySwiftService(cls) orElse
+      tryThriftFinagleService(cls) orElse tryScroogeFinagleService(cls) orElse
+        tryLegacyScroogeFinagleService(cls) orElse trySwiftService(cls) orElse
         (Option(cls.getSuperclass) ++ cls.getInterfaces)
           .view
           .flatMap(tryClass)

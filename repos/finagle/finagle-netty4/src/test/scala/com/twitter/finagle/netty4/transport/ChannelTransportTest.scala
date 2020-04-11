@@ -97,8 +97,8 @@ class ChannelTransportTest
 
     forAll { s: String =>
       assert(
-        transport.write(s).poll == Some(
-          Throw(ChannelException(e, transport.remoteAddress))))
+        transport.write(s).poll ==
+          Some(Throw(ChannelException(e, transport.remoteAddress))))
     }
   }
 
@@ -194,9 +194,8 @@ class ChannelTransportTest
     channel.pipeline.fireExceptionCaught(e)
 
     assert(
-      Await.result(transport.onClose, timeout) == ChannelException(
-        e,
-        transport.remoteAddress))
+      Await.result(transport.onClose, timeout) ==
+        ChannelException(e, transport.remoteAddress))
     assert(transport.status == Status.Closed)
   }
 

@@ -685,8 +685,8 @@ private[spark] object UIUtils extends Logging {
             !_.startsWith("/")
           }) {
         throw new IllegalArgumentException(
-          "Links in job descriptions must be root-relative:\n" + allLinks
-            .mkString("\n\t"))
+          "Links in job descriptions must be root-relative:\n" +
+            allLinks.mkString("\n\t"))
       }
 
       // Prepend the relative links with basePathUri

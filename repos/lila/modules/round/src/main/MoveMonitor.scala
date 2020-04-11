@@ -26,19 +26,22 @@ private final class MoveMonitor(system: ActorSystem, channel: ActorRef) {
                   .collectFirst {
                     case (entity, snapshot) if entity.category == "histogram" =>
                       snapshot
-                  } flatMap (_ histogram "histogram") foreach { h =>
-                  if (!h.isEmpty)
-                    channel ! lila
-                      .socket
-                      .Channel
-                      .Publish(
+                  } flatMap
+                  (_ histogram "histogram") foreach { h =>
+                    if (!h.isEmpty)
+                      channel !
                         lila
                           .socket
-                          .Socket
-                          .makeMessage(
-                            "mlat",
-                            (h.sum / h.numberOfMeasurements / 1000000).toInt))
-                }
+                          .Channel
+                          .Publish(
+                            lila
+                              .socket
+                              .Socket
+                              .makeMessage(
+                                "mlat",
+                                (h.sum / h.numberOfMeasurements / 1000000)
+                                  .toInt))
+                  }
             }
           }))
     )

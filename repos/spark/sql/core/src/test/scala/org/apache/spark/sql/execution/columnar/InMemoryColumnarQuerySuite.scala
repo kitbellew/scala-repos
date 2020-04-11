@@ -57,8 +57,7 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
         .queryExecution
         .analyzed
         .statistics
-        .sizeInBytes >
-        sqlContext.conf.autoBroadcastJoinThreshold)
+        .sizeInBytes > sqlContext.conf.autoBroadcastJoinThreshold)
   }
 
   test("projection") {

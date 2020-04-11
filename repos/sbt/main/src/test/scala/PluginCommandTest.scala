@@ -42,8 +42,8 @@ object PluginCommandTest extends Specification {
         "plugin sbt.subpackage.PluginCommandTestPlugin1",
         PluginCommandTestPlugin0,
         PluginCommandTestPlugin1)
-      output must contain(
-        "sbt.subpackage.PluginCommandTestPlugin1 is activated.")
+      output must
+        contain("sbt.subpackage.PluginCommandTestPlugin1 is activated.")
     }
 
     "suggest a plugin when given an incorrect plugin with a similar name" in {
@@ -51,8 +51,9 @@ object PluginCommandTest extends Specification {
         "plugin PluginCommandTestPlugin0",
         PluginCommandTestPlugin0,
         PluginCommandTestPlugin1)
-      output must contain(
-        "Not a valid plugin: PluginCommandTestPlugin0 (similar: sbt.PluginCommandTestPlugin0, sbt.subpackage.PluginCommandTestPlugin1)")
+      output must
+        contain(
+          "Not a valid plugin: PluginCommandTestPlugin0 (similar: sbt.PluginCommandTestPlugin0, sbt.subpackage.PluginCommandTestPlugin1)")
     }
 
   }
@@ -144,9 +145,10 @@ object FakeState {
         delegates,
         scopeLocal)
 
-    val attributes = AttributeMap.empty ++ AttributeMap(
-      AttributeEntry(Keys.sessionSettings, sessionSettings),
-      AttributeEntry(Keys.stateBuildStructure, buildStructure))
+    val attributes = AttributeMap.empty ++
+      AttributeMap(
+        AttributeEntry(Keys.sessionSettings, sessionSettings),
+        AttributeEntry(Keys.stateBuildStructure, buildStructure))
 
     State(
       null,

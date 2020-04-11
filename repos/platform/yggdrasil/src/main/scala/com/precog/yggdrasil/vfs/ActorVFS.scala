@@ -403,15 +403,16 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         for {
           // it's necessary to group by path then traverse since each path will respond to ingest independently.
           // -- a bit of a leak of implementation detail, but that's the actor model for you.
-          allResults <- (
+          allResults <-
+            (
               data groupBy {
                 case (offset, msg) =>
                   msg.path
               }
-          ).toStream traverse {
-            case (path, subset) =>
-              (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
-          }
+            ).toStream traverse {
+              case (path, subset) =>
+                (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
+            }
         } yield {
           val errors: List[ResourceError] = allResults.toList collect {
             case PathOpFailure(_, error) =>
@@ -684,7 +685,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         permissions: Set[WritePermission],
         authorities: Authorities): Boolean = {
       logger.trace(
-        "Checking write permission for " + path + " as " + authorities + " among " + permissions)
+        "Checking write permission for " + path + " as " + authorities +
+          " among " + permissions)
       PermissionsFinder.canWriteAs(
         permissions filter {
           _.path.isEqualOrParentOf(path)
@@ -780,8 +782,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 }
               _ <-
                 complete.whenM(
-                  versionLog.completeVersion(version) >> versionLog
-                    .setHead(version) >> maybeExpireCache(apiKey, resource))
+                  versionLog
+                    .completeVersion(version) >> versionLog.setHead(version) >>
+                    maybeExpireCache(apiKey, resource))
             } yield PrecogUnit
           }
       } yield {
@@ -799,15 +802,16 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           IO {
             if (blobr.mimeType == FileContent.XQuirrelScript) {
               // invalidate the cache
-              val cachePath =
-                path / Path(".cached") //TODO: factor out this logic
+              val cachePath = path /
+                Path(".cached") //TODO: factor out this logic
               //FIXME: remove eventId from archive messages?
-              routingActor ! ArchiveMessage(
-                apiKey,
-                cachePath,
-                None,
-                EventId.fromLong(0L),
-                clock.instant())
+              routingActor !
+                ArchiveMessage(
+                  apiKey,
+                  cachePath,
+                  None,
+                  EventId.fromLong(0L),
+                  clock.instant())
             }
           },
         nihdbr => IO(PrecogUnit)
@@ -844,8 +848,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               left(
                 IO(
                   NotFound(
-                    "Located resource on %s is a BLOB, not a projection" format path
-                      .path))),
+                    "Located resource on %s is a BLOB, not a projection" format
+                      path.path))),
             db => right(IO(db)))
         }
       }
@@ -869,8 +873,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                   // FIXME: completeVersion and setHead should be one op
                   _ <-
                     terminal.whenM(
-                      versionLog.completeVersion(streamId) >> versionLog
-                        .setHead(streamId))
+                      versionLog.completeVersion(streamId) >>
+                        versionLog.setHead(streamId))
                 } yield {
                   logger.trace("Sent insert message for " + msg + " to nihdb")
                   // FIXME: We aren't actually guaranteed success here because NIHDB might do something screwy.
@@ -897,11 +901,12 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           //TODO: update job
           logger.warn("Cannot create new database for " + streamId)
           IO(
-            requestor ! PathOpFailure(
-              path,
-              IllegalWriteRequestError(
-                "Cannot create new resource. %s not applied."
-                  .format(msg.toString))))
+            requestor !
+              PathOpFailure(
+                path,
+                IllegalWriteRequestError(
+                  "Cannot create new resource. %s not applied."
+                    .format(msg.toString))))
         }
       }
 
@@ -928,11 +933,12 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         } else {
           //TODO: update job
           IO(
-            requestor ! PathOpFailure(
-              path,
-              IllegalWriteRequestError(
-                "Cannot overwrite existing resource. %s not applied."
-                  .format(msg.toString))))
+            requestor !
+              PathOpFailure(
+                path,
+                IllegalWriteRequestError(
+                  "Cannot overwrite existing resource. %s not applied."
+                    .format(msg.toString))))
         }
       }
 
@@ -984,8 +990,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                     streamId,
                     false)
                 _ <-
-                  versionLog.completeVersion(streamId) >> versionLog
-                    .setHead(streamId)
+                  versionLog.completeVersion(streamId) >>
+                    versionLog.setHead(streamId)
               } yield PrecogUnit
           }
 
@@ -1021,10 +1027,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
             case StreamRef.Append =>
               IO(
-                requestor ! PathOpFailure(
-                  path,
-                  IllegalWriteRequestError(
-                    "Append is not yet supported for binary files.")))
+                requestor !
+                  PathOpFailure(
+                    path,
+                    IllegalWriteRequestError(
+                      "Append is not yet supported for binary files.")))
           }
 
         case (offset, ArchiveMessage(apiKey, path, jobId, _, timestamp)) =>
@@ -1049,7 +1056,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         val quiesce = versions.values.toStream collect {
           case NIHDBResource(db) =>
             db
-        } traverse (_.quiesce)
+        } traverse
+          (_.quiesce)
         quiesce.unsafePerformIO
 
       case IngestBundle(messages, permissions) =>

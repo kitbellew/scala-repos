@@ -17,9 +17,9 @@ class ClassNameSpec extends EnsimeSpec {
   }
 
   it should "preserve the FQN of package objects" in {
-    ClassName(PackageName(List("org.example")), "package")
-      .fqnString shouldBe "org.example.package$"
-    ClassName(PackageName(List("org.example")), "package$")
-      .fqnString shouldBe "org.example.package$"
+    ClassName(PackageName(List("org.example")), "package").fqnString shouldBe
+      "org.example.package$"
+    ClassName(PackageName(List("org.example")), "package$").fqnString shouldBe
+      "org.example.package$"
   }
 }

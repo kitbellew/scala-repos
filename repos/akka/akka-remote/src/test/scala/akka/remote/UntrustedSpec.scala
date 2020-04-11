@@ -150,9 +150,10 @@ akka.loglevel = DEBUG
     }
 
     "discard harmful messages to testActor" in {
-      target2 ! Terminated(remoteDaemon)(
-        existenceConfirmed = true,
-        addressTerminated = false)
+      target2 !
+        Terminated(remoteDaemon)(
+          existenceConfirmed = true,
+          addressTerminated = false)
       target2 ! PoisonPill
       client.stop(target2)
       target2 ! "blech"

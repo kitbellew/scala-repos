@@ -83,17 +83,14 @@ abstract class Page {
 
   def templateToPath(tpl: TemplateEntity): List[String] = {
     def doName(tpl: TemplateEntity): String =
-      (
-        if (tpl.inPackageObject)
-          "package$$"
-        else
-          ""
-      ) + NameTransformer.encode(tpl.name) + (
-        if (tpl.isObject)
-          "$"
-        else
-          ""
-      )
+      (if (tpl.inPackageObject)
+         "package$$"
+       else
+         "") + NameTransformer.encode(tpl.name) +
+        (if (tpl.isObject)
+           "$"
+         else
+           "")
     def downPacks(pack: Package): List[String] =
       if (pack.isRootPackage)
         Nil

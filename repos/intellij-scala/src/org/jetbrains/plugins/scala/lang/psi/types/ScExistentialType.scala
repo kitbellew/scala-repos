@@ -631,8 +631,8 @@ case class ScExistentialType(
         case tp @ ScDesignatorType(element) =>
           element match {
             case a: ScTypeAlias
-                if a.getContext.isInstanceOf[ScExistentialClause]
-                  && wildcards.exists(_.name == a.name) =>
+                if a.getContext.isInstanceOf[ScExistentialClause] &&
+                  wildcards.exists(_.name == a.name) =>
               res = true
               (res, tp)
             case _ =>
@@ -766,10 +766,9 @@ case class ScExistentialArgument(
       uSubst: ScUndefinedSubstitutor,
       falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
     var undefinedSubst = uSubst
-    val s =
-      (exist.args zip args).foldLeft(ScSubstitutor.empty) { (s, p) =>
-        s bindT ((p._1.name, null), p._2)
-      }
+    val s = (exist.args zip args).foldLeft(ScSubstitutor.empty) { (s, p) =>
+      s bindT ((p._1.name, null), p._2)
+    }
     val t = Equivalence.equivInner(
       lowerBound,
       s.subst(exist.lowerBound),

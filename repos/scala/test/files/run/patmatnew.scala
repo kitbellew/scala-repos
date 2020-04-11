@@ -323,10 +323,11 @@ object Test {
             Nil
         }
       assertEquals(
-        "res instance" + res.isInstanceOf[
-          Seq[Con] forSome {
-            type Con
-          }] + " res(0)=" + res(0),
+        "res instance" +
+          res.isInstanceOf[
+            Seq[Con] forSome {
+              type Con
+            }] + " res(0)=" + res(0),
         true,
         res.isInstanceOf[
           Seq[Foo] forSome {

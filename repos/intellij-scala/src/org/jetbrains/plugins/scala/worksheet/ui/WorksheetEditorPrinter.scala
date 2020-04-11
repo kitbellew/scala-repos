@@ -127,15 +127,14 @@ class WorksheetEditorPrinter(
           } else if (0 > differ) {
             insertedToOriginal -= differ
 
-            foldingOffsets += (
+            foldingOffsets +=
               (
-                start + insertedToOriginal + differ,
-                outputBuffer.length - outputBuffer
-                  .reverseIterator
-                  .takeWhile(_ == '\n')
-                  .length,
-                end - start + 1,
-                end))
+                (
+                  start + insertedToOriginal + differ,
+                  outputBuffer.length -
+                    outputBuffer.reverseIterator.takeWhile(_ == '\n').length,
+                  end - start + 1,
+                  end))
           }
 
           buffed += linesCount
@@ -162,8 +161,8 @@ class WorksheetEditorPrinter(
   private def init(): Option[Int] = {
     inited = true
 
-    val oldSync = originalEditor getUserData WorksheetEditorPrinter
-      .DIFF_SYNC_SUPPORT
+    val oldSync = originalEditor getUserData
+      WorksheetEditorPrinter.DIFF_SYNC_SUPPORT
     if (oldSync != null)
       oldSync.dispose()
 
@@ -175,11 +174,12 @@ class WorksheetEditorPrinter(
       Some(group))
 
     extensions.invokeLater {
-      viewerFolding runBatchFoldingOperation new Runnable {
-        override def run() {
-          viewerFolding.clearFoldRegions()
+      viewerFolding runBatchFoldingOperation
+        new Runnable {
+          override def run() {
+            viewerFolding.clearFoldRegions()
+          }
         }
-      }
       getViewerEditor
         .getCaretModel
         .moveToVisualPosition(new VisualPosition(0, 0))
@@ -188,8 +188,9 @@ class WorksheetEditorPrinter(
     if (file != null) {
       @inline
       def checkFlag(psi: PsiElement) =
-        psi != null && psi.getCopyableUserData(
-          WorksheetSourceProcessor.WORKSHEET_PRE_CLASS_KEY) != null
+        psi != null &&
+          psi.getCopyableUserData(
+            WorksheetSourceProcessor.WORKSHEET_PRE_CLASS_KEY) != null
 
       var s = file.getFirstChild
       var f = checkFlag(s)
@@ -302,34 +303,36 @@ class WorksheetEditorPrinter(
             project,
             new Runnable {
               override def run() {
-                viewerFolding runBatchFoldingOperation (
-                  new Runnable {
-                    override def run() {
-                      foldingOffsetsCopy map {
-                        case (start, end, limit, originalEnd) =>
-                          val offset = originalDocument getLineEndOffset Math
-                            .min(originalEnd, originalDocument.getLineCount)
-                          val linesCount = viewerDocument
-                            .getLineNumber(end) - start - limit + 1
+                viewerFolding runBatchFoldingOperation
+                  (
+                    new Runnable {
+                      override def run() {
+                        foldingOffsetsCopy map {
+                          case (start, end, limit, originalEnd) =>
+                            val offset = originalDocument getLineEndOffset
+                              Math
+                                .min(originalEnd, originalDocument.getLineCount)
+                            val linesCount = viewerDocument.getLineNumber(end) -
+                              start - limit + 1
 
-                          new WorksheetFoldRegionDelegate(
-                            ed,
-                            viewerDocument
-                              .getLineStartOffset(start + limit - 1),
-                            end,
-                            offset,
-                            linesCount,
-                            group,
-                            limit)
-                      } foreach {
-                        case region =>
-                          viewerFolding addFoldRegion region
+                            new WorksheetFoldRegionDelegate(
+                              ed,
+                              viewerDocument
+                                .getLineStartOffset(start + limit - 1),
+                              end,
+                              offset,
+                              linesCount,
+                              group,
+                              limit)
+                        } foreach {
+                          case region =>
+                            viewerFolding addFoldRegion region
+                        }
+
+                        WorksheetFoldGroup.save(file, group)
                       }
-
-                      WorksheetFoldGroup.save(file, group)
-                    }
-                  }, false
-                )
+                    },
+                    false)
               }
             },
             null,
@@ -448,26 +451,25 @@ object WorksheetEditorPrinter {
                 .moveToVisualPosition(
                   new VisualPosition(
                     Math.min(
-                      group left2rightOffset don
-                        .getCaretModel
-                        .getVisualPosition
-                        .getLine,
+                      group left2rightOffset
+                        don.getCaretModel.getVisualPosition.getLine,
                       recipient.getDocument.getLineCount),
                     0))
             }
           }
-      } getOrElse new CaretAdapter {
-        override def caretPositionChanged(e: CaretEvent) {
-          if (!e.getEditor
-                .asInstanceOf[EditorImpl]
-                .getContentComponent
-                .hasFocus)
-            return
-          recipient
-            .getCaretModel
-            .moveToVisualPosition(don.getCaretModel.getVisualPosition)
+      } getOrElse
+        new CaretAdapter {
+          override def caretPositionChanged(e: CaretEvent) {
+            if (!e.getEditor
+                  .asInstanceOf[EditorImpl]
+                  .getContentComponent
+                  .hasFocus)
+              return
+            recipient
+              .getCaretModel
+              .moveToVisualPosition(don.getCaretModel.getVisualPosition)
+          }
         }
-      }
 
     def checkAndAdd(don: Editor, recipient: Editor) {
       patched get don match {
@@ -487,42 +489,43 @@ object WorksheetEditorPrinter {
 
     (originalEditor, worksheetViewer) match {
       case (originalImpl: EditorImpl, viewerImpl: EditorImpl) =>
-        ApplicationManager.getApplication invokeLater new Runnable {
-          override def run() {
-            checkAndAdd(originalImpl, viewerImpl)
+        ApplicationManager.getApplication invokeLater
+          new Runnable {
+            override def run() {
+              checkAndAdd(originalImpl, viewerImpl)
 //            checkAndAdd(viewerImpl, originalImpl)
 
-            viewerImpl
-              .getCaretModel
-              .moveToVisualPosition(
-                new VisualPosition(
-                  Math.min(
-                    originalImpl.getCaretModel.getVisualPosition.line,
-                    viewerImpl.getDocument.getLineCount),
-                  0))
+              viewerImpl
+                .getCaretModel
+                .moveToVisualPosition(
+                  new VisualPosition(
+                    Math.min(
+                      originalImpl.getCaretModel.getVisualPosition.line,
+                      viewerImpl.getDocument.getLineCount),
+                    0))
 
-            val syncSupport = new SyncScrollSupport
-            syncSupport.install(
-              Array[EditingSides](
-                new WorksheetDiffSplitters.WorksheetEditingSides(
-                  originalEditor,
-                  worksheetViewer)))
+              val syncSupport = new SyncScrollSupport
+              syncSupport.install(
+                Array[EditingSides](
+                  new WorksheetDiffSplitters.WorksheetEditingSides(
+                    originalEditor,
+                    worksheetViewer)))
 
-            originalEditor.putUserData(DIFF_SYNC_SUPPORT, syncSupport)
+              originalEditor.putUserData(DIFF_SYNC_SUPPORT, syncSupport)
 
-            diffSplitter foreach {
-              case splitter =>
-                viewerImpl
-                  .getScrollPane
-                  .getVerticalScrollBar
-                  .addAdjustmentListener(
-                    new AdjustmentListener {
-                      override def adjustmentValueChanged(
-                          e: AdjustmentEvent): Unit = splitter.redrawDiffs()
-                    })
+              diffSplitter foreach {
+                case splitter =>
+                  viewerImpl
+                    .getScrollPane
+                    .getVerticalScrollBar
+                    .addAdjustmentListener(
+                      new AdjustmentListener {
+                        override def adjustmentValueChanged(
+                            e: AdjustmentEvent): Unit = splitter.redrawDiffs()
+                      })
+              }
             }
           }
-        }
       case _ =>
     }
   }

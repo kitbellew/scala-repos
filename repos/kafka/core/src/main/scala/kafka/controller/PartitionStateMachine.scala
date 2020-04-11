@@ -62,8 +62,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       : mutable.Map[String, PartitionModificationsListener] = mutable.Map.empty
   private val stateChangeLogger = KafkaController.stateChangeLogger
 
-  this.logIdent =
-    "[Partition state machine on Controller " + controllerId + "]: "
+  this.logIdent = "[Partition state machine on Controller " + controllerId +
+    "]: "
 
   /**
     * Invoked on successful controller election. First registers a topic change listener since that triggers all
@@ -79,8 +79,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     triggerOnlinePartitionStateChange()
 
     info(
-      "Started partition state machine with initial state -> " + partitionState
-        .toString())
+      "Started partition state machine with initial state -> " +
+        partitionState.toString())
   }
 
   // register topic and partition change listeners
@@ -131,8 +131,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
                .deleteTopicManager
                .isTopicQueuedUpForDeletion(topicAndPartition.topic)
            )) {
-        if (partitionState.equals(OfflinePartition) || partitionState
-              .equals(NewPartition))
+        if (partitionState.equals(OfflinePartition) ||
+            partitionState.equals(NewPartition))
           handleStateChange(
             topicAndPartition.topic,
             topicAndPartition.partition,
@@ -361,11 +361,9 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     if (!fromStates.contains(partitionState(topicAndPartition)))
       throw new IllegalStateException(
         "Partition %s should be in the %s states before moving to %s state"
-          .format(
-            topicAndPartition,
-            fromStates.mkString(","),
-            targetState) + ". Instead it is in %s state"
-          .format(partitionState(topicAndPartition)))
+          .format(topicAndPartition, fromStates.mkString(","), targetState) +
+          ". Instead it is in %s state"
+            .format(partitionState(topicAndPartition)))
   }
 
   /**
@@ -392,8 +390,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
             replicaAssignment.mkString(","),
             controllerContext.liveBrokerIds)
         stateChangeLogger.error(
-          "Controller %d epoch %d "
-            .format(controllerId, controller.epoch) + failMsg)
+          "Controller %d epoch %d ".format(controllerId, controller.epoch) +
+            failMsg)
         throw new StateChangeFailedException(failMsg)
       case _ =>
         debug(
@@ -448,8 +446,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
                 leaderIsrAndEpoch.leaderAndIsr.toString(),
                 leaderIsrAndEpoch.controllerEpoch)
             stateChangeLogger.error(
-              "Controller %d epoch %d "
-                .format(controllerId, controller.epoch) + failMsg)
+              "Controller %d epoch %d ".format(controllerId, controller.epoch) +
+                failMsg)
             throw new StateChangeFailedException(failMsg)
         }
     }
@@ -489,8 +487,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
                 "a soft failure and another controller was elected with epoch %d."
             ).format(topic, partition, controllerId, controllerEpoch)
           stateChangeLogger.error(
-            "Controller %d epoch %d "
-              .format(controllerId, controller.epoch) + failMsg)
+            "Controller %d epoch %d ".format(controllerId, controller.epoch) +
+              failMsg)
           throw new StateChangeFailedException(failMsg)
         }
         // elect new leader or throw exception
@@ -541,8 +539,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
           "encountered error while electing leader for partition %s due to: %s."
             .format(topicAndPartition, sce.getMessage)
         stateChangeLogger.error(
-          "Controller %d epoch %d "
-            .format(controllerId, controller.epoch) + failMsg)
+          "Controller %d epoch %d ".format(controllerId, controller.epoch) +
+            failMsg)
         throw new StateChangeFailedException(failMsg, sce)
     }
     debug(
@@ -613,9 +611,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     * This is the zookeeper listener that triggers all the state transitions for a partition
     */
   class TopicChangeListener extends IZkChildListener with Logging {
-    this.logIdent = "[TopicChangeListener on Controller " + controller
-      .config
-      .brokerId + "]: "
+    this.logIdent = "[TopicChangeListener on Controller " +
+      controller.config.brokerId + "]: "
 
     @throws(classOf[Exception])
     def handleChildChange(
@@ -668,9 +665,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     * 2. If there are topics to be deleted, it signals the delete topic thread
     */
   class DeleteTopicsListener() extends IZkChildListener with Logging {
-    this.logIdent = "[DeleteTopicsListener on " + controller
-      .config
-      .brokerId + "]: "
+    this.logIdent = "[DeleteTopicsListener on " + controller.config.brokerId +
+      "]: "
     val zkUtils = controllerContext.zkUtils
 
     /**
@@ -693,16 +689,16 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
           .filter(t => !controllerContext.allTopics.contains(t))
         if (nonExistentTopics.size > 0) {
           warn(
-            "Ignoring request to delete non-existing topics " + nonExistentTopics
-              .mkString(","))
+            "Ignoring request to delete non-existing topics " +
+              nonExistentTopics.mkString(","))
           nonExistentTopics.foreach(topic =>
             zkUtils.deletePathRecursive(getDeleteTopicPath(topic)))
         }
         topicsToBeDeleted --= nonExistentTopics
         if (topicsToBeDeleted.size > 0) {
           info(
-            "Starting topic deletion for topics " + topicsToBeDeleted
-              .mkString(","))
+            "Starting topic deletion for topics " +
+              topicsToBeDeleted.mkString(","))
           // mark topic ineligible for deletion if other state changes are in progress
           topicsToBeDeleted.foreach { topic =>
             val preferredReplicaElectionInProgress = controllerContext
@@ -714,7 +710,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
               .keySet
               .map(_.topic)
               .contains(topic)
-            if (preferredReplicaElectionInProgress || partitionReassignmentInProgress)
+            if (preferredReplicaElectionInProgress ||
+                partitionReassignmentInProgress)
               controller
                 .deleteTopicManager
                 .markTopicIneligibleForDeletion(Set(topic))
@@ -740,9 +737,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       extends IZkDataListener
       with Logging {
 
-    this.logIdent = "[AddPartitionsListener on " + controller
-      .config
-      .brokerId + "]: "
+    this.logIdent = "[AddPartitionsListener on " + controller.config.brokerId +
+      "]: "
 
     @throws(classOf[Exception])
     def handleDataChange(dataPath: String, data: Object) {

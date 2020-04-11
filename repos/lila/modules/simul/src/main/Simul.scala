@@ -42,8 +42,8 @@ case class Simul(
 
   def addApplicant(applicant: SimulApplicant) =
     Created {
-      if (!hasApplicant(applicant.player.user) && variants
-            .contains(applicant.player.variant))
+      if (!hasApplicant(applicant.player.user) &&
+          variants.contains(applicant.player.variant))
         copy(applicants = applicants :+ applicant)
       else
         this
@@ -70,16 +70,17 @@ case class Simul(
   def startable = isCreated && applicants.count(_.accepted) > 1
 
   def start =
-    startable option copy(
-      status = SimulStatus.Started,
-      startedAt = DateTime.now.some,
-      applicants = Nil,
-      pairings = applicants collect {
-        case a if a.accepted =>
-          SimulPairing(a.player)
-      },
-      hostSeenAt = none
-    )
+    startable option
+      copy(
+        status = SimulStatus.Started,
+        startedAt = DateTime.now.some,
+        applicants = Nil,
+        pairings = applicants collect {
+          case a if a.accepted =>
+            SimulPairing(a.player)
+        },
+        hostSeenAt = none
+      )
 
   def updatePairing(gameId: String, f: SimulPairing => SimulPairing) =
     copy(pairings = pairings collect {
@@ -123,8 +124,8 @@ case class Simul(
   def playingPairings = pairings filterNot (_.finished)
 
   def hostColor =
-    (color flatMap chess.Color.apply) | chess
-      .Color(scala.util.Random.nextBoolean)
+    (color flatMap chess.Color.apply) |
+      chess.Color(scala.util.Random.nextBoolean)
 
   def setPairingHostColor(gameId: String, hostColor: chess.Color) =
     updatePairing(gameId, _.copy(hostColor = hostColor))

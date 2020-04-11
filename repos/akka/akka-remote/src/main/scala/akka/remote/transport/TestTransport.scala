@@ -165,8 +165,8 @@ class TestTransport(
     registry
       .deregisterAssociation(handle.key)
       .foreach {
-        registry.remoteListenerRelativeTo(handle, _) notify Disassociated(
-          AssociationHandle.Unknown)
+        registry.remoteListenerRelativeTo(handle, _) notify
+          Disassociated(AssociationHandle.Unknown)
       }
     Future.successful(())
   }

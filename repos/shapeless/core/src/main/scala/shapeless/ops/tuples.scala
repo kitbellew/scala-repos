@@ -996,8 +996,8 @@ object tuple {
         tp: hl.Tupler[RL]): Aux[FT, AT, tp.Out] =
       new ZipApply[FT, AT] {
         type Out = tp.Out
-        def apply(ft: FT, at: AT): Out =
-          (genf.to(ft) zipApply gena.to(at)).tupled
+        def apply(ft: FT, at: AT): Out = (genf.to(ft) zipApply gena.to(at))
+          .tupled
       }
   }
 

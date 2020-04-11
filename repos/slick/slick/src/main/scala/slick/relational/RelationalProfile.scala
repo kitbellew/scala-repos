@@ -213,14 +213,12 @@ trait RelationalTableComponent {
             ),
             FieldSymbol(n)(options, tt)) :@ tt
         override def toString =
-          (
-            tableTag match {
-              case r: RefTag =>
-                "(" + _tableName + " " + r.path + ")"
-              case _ =>
-                _tableName
-            }
-          ) + "." + n
+          (tableTag match {
+            case r: RefTag =>
+              "(" + _tableName + " " + r.path + ")"
+            case _ =>
+              _tableName
+          }) + "." + n
       }
     }
   }

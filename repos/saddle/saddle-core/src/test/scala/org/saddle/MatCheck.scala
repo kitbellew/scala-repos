@@ -67,22 +67,24 @@ class MatCheck extends Specification with ScalaCheck {
       forAll { (m: Mat[Double]) =>
         val data = m.contents
         m.map(_ + 1.0) must_== Mat(m.numRows, m.numCols, data.map(_ + 1.0))
-        m.map(d => 5.0) must_== Mat(
-          m.numRows,
-          m.numCols,
-          (data.map(d =>
-            if (d.isNaN)
-              na.to[Double]
-            else
-              5.0)))
-        m.map(d => 5) must_== Mat[Int](
-          m.numRows,
-          m.numCols,
-          data.map(d =>
-            if (d.isNaN)
-              na.to[Int]
-            else
-              5))
+        m.map(d => 5.0) must_==
+          Mat(
+            m.numRows,
+            m.numCols,
+            (data.map(d =>
+              if (d.isNaN)
+                na.to[Double]
+              else
+                5.0)))
+        m.map(d => 5) must_==
+          Mat[Int](
+            m.numRows,
+            m.numCols,
+            data.map(d =>
+              if (d.isNaN)
+                na.to[Int]
+              else
+                5))
       }
     }
 
@@ -260,9 +262,8 @@ class MatCheck extends Specification with ScalaCheck {
 
     "roundTo works" in {
       forAll { (ma: Mat[Double]) =>
-        ma.contents.map((v: Double) => math.round(v * 100) / 100d) must_== ma
-          .roundTo(2)
-          .contents
+        ma.contents.map((v: Double) => math.round(v * 100) / 100d) must_==
+          ma.roundTo(2).contents
       }
     }
 

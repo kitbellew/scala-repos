@@ -33,8 +33,8 @@ private[timeline] final class EntryRepo(coll: Coll, userMax: Int) {
       BSONDocument(
         "users" -> userId,
         "chan" -> channel,
-        "date" -> BSONDocument("$gt" -> DateTime.now.minusDays(7)))
-        .some) map (0 !=)
+        "date" -> BSONDocument("$gt" -> DateTime.now.minusDays(7))).some) map
+      (0 !=)
 
   def insert(entry: Entry) = coll insert entry void
 }

@@ -42,8 +42,8 @@ trait LowPriorityFieldConversions {
           flds.get(0)
         } else {
           throw new Exception(
-            "Cannot convert Fields(" + flds
-              .toString + ") to a single fields arg")
+            "Cannot convert Fields(" + flds.toString +
+              ") to a single fields arg")
         }
       }
       case w =>
@@ -303,8 +303,8 @@ trait FieldConversions extends LowPriorityFieldConversions {
                 StringField(y)(Ordering.comparatorToOrdering(comparator), None)
               case z =>
                 sys.error(
-                  "not expecting object of type " + z
-                    .getClass + " as field name")
+                  "not expecting object of type " + z.getClass +
+                    " as field name")
             }
         })
   }

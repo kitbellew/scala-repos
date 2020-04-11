@@ -47,24 +47,30 @@ object OperationOnCollectionInspectionBase {
   private val likeCollectionKey = "operation.on.collection.like.collection"
 
   private val inputMessages = Map(
-    likeCollectionKey -> InspectionBundle
-      .message("operation.on.collection.like.collection.input.message"),
-    likeOptionKey -> InspectionBundle
-      .message("operation.on.collection.like.option.input.message")
+    likeCollectionKey ->
+      InspectionBundle
+        .message("operation.on.collection.like.collection.input.message"),
+    likeOptionKey ->
+      InspectionBundle
+        .message("operation.on.collection.like.option.input.message")
   )
 
   private val inputTitles = Map(
-    likeCollectionKey -> InspectionBundle
-      .message("operation.on.collection.like.collection.input.title"),
-    likeOptionKey -> InspectionBundle
-      .message("operation.on.collection.like.option.input.title")
+    likeCollectionKey ->
+      InspectionBundle
+        .message("operation.on.collection.like.collection.input.title"),
+    likeOptionKey ->
+      InspectionBundle
+        .message("operation.on.collection.like.option.input.title")
   )
 
   private val panelTitles = Map(
-    likeCollectionKey -> InspectionBundle
-      .message("operation.on.collection.like.collection.panel.title"),
-    likeOptionKey -> InspectionBundle
-      .message("operation.on.collection.like.option.panel.title")
+    likeCollectionKey ->
+      InspectionBundle
+        .message("operation.on.collection.like.collection.panel.title"),
+    likeOptionKey ->
+      InspectionBundle
+        .message("operation.on.collection.like.option.panel.title")
   )
 }
 

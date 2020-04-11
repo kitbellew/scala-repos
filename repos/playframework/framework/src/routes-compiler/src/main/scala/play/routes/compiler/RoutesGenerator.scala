@@ -68,11 +68,12 @@ object StaticRoutesGenerator extends RoutesGenerator {
     val forwardsRoutesFiles =
       if (task.forwardsRouter) {
         Seq(
-          folder + ForwardsRoutesFile -> generateRouter(
-            sourceInfo,
-            namespace,
-            task.additionalImports,
-            rules))
+          folder + ForwardsRoutesFile ->
+            generateRouter(
+              sourceInfo,
+              namespace,
+              task.additionalImports,
+              rules))
       } else {
         Nil
       }
@@ -80,9 +81,8 @@ object StaticRoutesGenerator extends RoutesGenerator {
     val reverseRoutesFiles =
       if (task.reverseRouter) {
         Seq(
-          folder + RoutesPrefixFile -> generateRoutesPrefix(
-            sourceInfo,
-            namespace)) ++
+          folder + RoutesPrefixFile ->
+            generateRoutesPrefix(sourceInfo, namespace)) ++
           generateReverseRouters(
             sourceInfo,
             namespace,
@@ -165,10 +165,8 @@ object StaticRoutesGenerator extends RoutesGenerator {
             .filter(_ => namespaceReverseRouter)
             .map(_ + "." + pn)
             .getOrElse(pn)
-          (
-            packageName
-              .replace(".", "/") + "/javascript/" + JavaScriptReverseRoutesFile
-          ) ->
+          (packageName.replace(".", "/") + "/javascript/" +
+            JavaScriptReverseRoutesFile) ->
             static
               .twirl
               .javascriptReverseRouter(
@@ -240,11 +238,12 @@ object InjectedRoutesGenerator extends RoutesGenerator {
     val forwardsRoutesFiles =
       if (task.forwardsRouter) {
         Seq(
-          folder + ForwardsRoutesFile -> generateRouter(
-            sourceInfo,
-            namespace,
-            task.additionalImports,
-            rules))
+          folder + ForwardsRoutesFile ->
+            generateRouter(
+              sourceInfo,
+              namespace,
+              task.additionalImports,
+              rules))
       } else {
         Nil
       }
@@ -252,9 +251,8 @@ object InjectedRoutesGenerator extends RoutesGenerator {
     val reverseRoutesFiles =
       if (task.reverseRouter) {
         Seq(
-          folder + RoutesPrefixFile -> generateRoutesPrefix(
-            sourceInfo,
-            namespace)) ++
+          folder + RoutesPrefixFile ->
+            generateRoutesPrefix(sourceInfo, namespace)) ++
           generateReverseRouters(
             sourceInfo,
             namespace,
@@ -296,10 +294,11 @@ object InjectedRoutesGenerator extends RoutesGenerator {
         .zipWithIndex
         .map {
           case ((router, includes), index) =>
-            router -> Dependency(
-              router.replace('.', '_') + "_" + index,
-              router,
-              includes.head)
+            router ->
+              Dependency(
+                router.replace('.', '_') + "_" + index,
+                router,
+                includes.head)
         }
         .toMap
 
@@ -416,10 +415,8 @@ object InjectedRoutesGenerator extends RoutesGenerator {
             .filter(_ => namespaceReverseRouter)
             .map(_ + "." + pn)
             .getOrElse(pn)
-          (
-            packageName
-              .replace(".", "/") + "/javascript/" + JavaScriptReverseRoutesFile
-          ) ->
+          (packageName.replace(".", "/") + "/javascript/" +
+            JavaScriptReverseRoutesFile) ->
             static
               .twirl
               .javascriptReverseRouter(

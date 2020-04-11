@@ -61,13 +61,14 @@ class RunLengthEncodingSuite extends SparkFunSuite {
       val headerSize = CompressionScheme.columnHeaderSize(buffer)
 
       // Compression scheme ID + compressed contents
-      val compressedSize = 4 + inputRuns
-        .map {
-          case (index, _) =>
-            // 4 extra bytes each run for run length
-            columnType.actualSize(rows(index), 0) + 4
-        }
-        .sum
+      val compressedSize = 4 +
+        inputRuns
+          .map {
+            case (index, _) =>
+              // 4 extra bytes each run for run length
+              columnType.actualSize(rows(index), 0) + 4
+          }
+          .sum
 
       // 4 extra bytes for compression scheme type ID
       assertResult(headerSize + compressedSize, "Wrong buffer capacity")(

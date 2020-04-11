@@ -89,9 +89,8 @@ object EventService {
   object ServiceConfig {
     def fromConfiguration(config: Configuration) = {
       (
-        ServiceLocation
-          .fromConfig(config.detach("eventService")) |@| ServiceLocation
-          .fromConfig(config.detach("bifrost"))
+        ServiceLocation.fromConfig(config.detach("eventService")) |@|
+          ServiceLocation.fromConfig(config.detach("bifrost"))
       ) { (serviceLoc, shardLoc) =>
         ServiceConfig(
           serviceLocation = serviceLoc,
@@ -213,12 +212,10 @@ trait EventService
                     HttpResponse[ByteChunk]]] {
                     produce(application / json) {
                       //jsonp {
-                      fsService(state) ~
-                        dataService(state)
+                      fsService(state) ~ dataService(state)
                       //}
                     }
-                  } ~
-                    shardProxy(state.shardClient)
+                  } ~ shardProxy(state.shardClient)
                 }
               } ->
               stop { state =>
@@ -232,13 +229,11 @@ trait EventService
   def fsService(state: State): AsyncHttpService[ByteChunk, JValue] = {
     jsonAPIKey(state.accessControl) {
       dataPath("/fs") {
-        post(state.ingestHandler) ~
-          delete(state.archiveHandler)
+        post(state.ingestHandler) ~ delete(state.archiveHandler)
       } ~ //legacy handler
         path("/(?<sync>a?sync)") {
           dataPath("/fs") {
-            post(state.ingestHandler) ~
-              delete(state.archiveHandler)
+            post(state.ingestHandler) ~ delete(state.archiveHandler)
           }
         }
     }

@@ -27,9 +27,8 @@ class ScalatraListener extends ServletContextListener {
     } catch {
       case e: Throwable =>
         logger.error(
-          "Failed to initialize scalatra application at " + sce
-            .getServletContext
-            .getContextPath,
+          "Failed to initialize scalatra application at " +
+            sce.getServletContext.getContextPath,
           e)
         throw e
     }
@@ -50,14 +49,12 @@ class ScalatraListener extends ServletContextListener {
     val cycleClassName =
       Option(servletContext.getInitParameter(LifeCycleKey))
         .flatMap(_.blankOption) getOrElse DefaultLifeCycle
-    logger info (
-      "The cycle class name from the config: " + (
-        if (cycleClassName == null)
-          "null"
-        else
-          cycleClassName
-      )
-    )
+    logger info
+      ("The cycle class name from the config: " +
+        (if (cycleClassName == null)
+           "null"
+         else
+           cycleClassName))
 
     val lifeCycleClass: Class[_] =
       try {

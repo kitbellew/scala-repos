@@ -60,18 +60,13 @@ private[hive] class HiveSessionState(ctx: HiveContext)
   override lazy val analyzer: Analyzer = {
     new Analyzer(catalog, functionRegistry, conf) {
       override val extendedResolutionRules =
-        catalog.ParquetConversions ::
-          catalog.CreateTables ::
-          catalog.PreInsertionCasts ::
-          python.ExtractPythonUDFs ::
-          PreInsertCastAndRename ::
-          DataSourceAnalysis ::
-          (
-            if (conf.runSQLOnFile)
-              new ResolveDataSource(ctx) :: Nil
-            else
-              Nil
-          )
+        catalog.ParquetConversions :: catalog.CreateTables ::
+          catalog.PreInsertionCasts :: python.ExtractPythonUDFs ::
+          PreInsertCastAndRename :: DataSourceAnalysis ::
+          (if (conf.runSQLOnFile)
+             new ResolveDataSource(ctx) :: Nil
+           else
+             Nil)
 
       override val extendedCheckRules = Seq(PreWriteCheck(catalog))
     }
@@ -91,25 +86,26 @@ private[hive] class HiveSessionState(ctx: HiveContext)
       override val hiveContext = ctx
 
       override def strategies: Seq[Strategy] = {
-        experimentalMethods.extraStrategies ++ Seq(
-          FileSourceStrategy,
-          DataSourceStrategy,
-          HiveCommandStrategy(ctx),
-          HiveDDLStrategy,
-          DDLStrategy,
-          SpecialLimits,
-          InMemoryScans,
-          HiveTableScans,
-          DataSinks,
-          Scripts,
-          Aggregation,
-          LeftSemiJoin,
-          EquiJoinSelection,
-          BasicOperators,
-          BroadcastNestedLoop,
-          CartesianProduct,
-          DefaultJoin
-        )
+        experimentalMethods.extraStrategies ++
+          Seq(
+            FileSourceStrategy,
+            DataSourceStrategy,
+            HiveCommandStrategy(ctx),
+            HiveDDLStrategy,
+            DDLStrategy,
+            SpecialLimits,
+            InMemoryScans,
+            HiveTableScans,
+            DataSinks,
+            Scripts,
+            Aggregation,
+            LeftSemiJoin,
+            EquiJoinSelection,
+            BasicOperators,
+            BroadcastNestedLoop,
+            CartesianProduct,
+            DefaultJoin
+          )
       }
     }
   }

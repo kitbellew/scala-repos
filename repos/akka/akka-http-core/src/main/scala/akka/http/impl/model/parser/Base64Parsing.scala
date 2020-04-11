@@ -60,14 +60,15 @@ private[parser] trait Base64Parsing {
       decoder: Decoder): Rule1[Array[Byte]] = {
     val start = cursor
     rule {
-      oneOrMore(alphabet) ~ run {
-        decoder(input.sliceCharArray(start, cursor)) match {
-          case null ⇒
-            MISMATCH
-          case bytes ⇒
-            push(bytes)
+      oneOrMore(alphabet) ~
+        run {
+          decoder(input.sliceCharArray(start, cursor)) match {
+            case null ⇒
+              MISMATCH
+            case bytes ⇒
+              push(bytes)
+          }
         }
-      }
     }
   }
 }

@@ -214,7 +214,8 @@ private[streaming] class CheckpointWriter(
       clearCheckpointDataLater: Boolean)
       extends Runnable {
     def run() {
-      if (latestCheckpointTime == null || latestCheckpointTime < checkpointTime) {
+      if (latestCheckpointTime == null ||
+          latestCheckpointTime < checkpointTime) {
         latestCheckpointTime = checkpointTime
       }
       var attempts = 0
@@ -238,8 +239,8 @@ private[streaming] class CheckpointWriter(
         attempts += 1
         try {
           logInfo(
-            "Saving checkpoint for time " + checkpointTime + " to file '" + checkpointFile
-              + "'")
+            "Saving checkpoint for time " + checkpointTime + " to file '" +
+              checkpointFile + "'")
 
           // Write checkpoint to temp file
           if (fs.exists(tempFile)) {
@@ -284,24 +285,24 @@ private[streaming] class CheckpointWriter(
           // All done, print success
           val finishTime = System.currentTimeMillis()
           logInfo(
-            "Checkpoint for time " + checkpointTime + " saved to file '" + checkpointFile +
-              "', took " + bytes
-              .length + " bytes and " + (finishTime - startTime) + " ms")
+            "Checkpoint for time " + checkpointTime + " saved to file '" +
+              checkpointFile + "', took " + bytes.length + " bytes and " +
+              (finishTime - startTime) + " ms")
           jobGenerator
             .onCheckpointCompletion(checkpointTime, clearCheckpointDataLater)
           return
         } catch {
           case ioe: IOException =>
             logWarning(
-              "Error in attempt " + attempts + " of writing checkpoint to "
-                + checkpointFile,
+              "Error in attempt " + attempts + " of writing checkpoint to " +
+                checkpointFile,
               ioe)
             reset()
         }
       }
       logWarning(
-        "Could not write checkpoint for time " + checkpointTime + " to file "
-          + checkpointFile + "'")
+        "Could not write checkpoint for time " + checkpointTime + " to file " +
+          checkpointFile + "'")
     }
   }
 
@@ -314,8 +315,8 @@ private[streaming] class CheckpointWriter(
           bytes,
           clearCheckpointDataLater))
       logInfo(
-        "Submitted checkpoint of time " + checkpoint
-          .checkpointTime + " writer queue")
+        "Submitted checkpoint of time " + checkpoint.checkpointTime +
+          " writer queue")
     } catch {
       case rej: RejectedExecutionException =>
         logError(
@@ -339,7 +340,8 @@ private[streaming] class CheckpointWriter(
       val endTime = System.currentTimeMillis()
       logInfo(
         "CheckpointWriter executor terminated ? " + terminated +
-          ", waited for " + (endTime - startTime) + " ms.")
+          ", waited for " +
+          (endTime - startTime) + " ms.")
       stopped = true
     }
 

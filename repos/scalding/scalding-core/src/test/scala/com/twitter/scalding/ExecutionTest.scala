@@ -102,14 +102,12 @@ class ExecutionTest extends WordSpec with Matchers {
         .toMap shouldBe Map("a" -> 1L, "b" -> 2L, "c" -> 3L, "d" -> 4L)
     }
     "run with zip" in {
-      (
-        ExecutionTestJobs
-          .zipped(TypedPipe.from(0 until 100), TypedPipe.from(100 until 200))
-          .shouldSucceed() match {
-          case (it1, it2) =>
-            (it1.head, it2.head)
-        }
-      ) shouldBe ((0 until 100).sum, (100 until 200).sum)
+      (ExecutionTestJobs
+        .zipped(TypedPipe.from(0 until 100), TypedPipe.from(100 until 200))
+        .shouldSucceed() match {
+        case (it1, it2) =>
+          (it1.head, it2.head)
+      }) shouldBe ((0 until 100).sum, (100 until 200).sum)
     }
     "lift to try" in {
       val res = ExecutionTestJobs
@@ -162,9 +160,8 @@ class ExecutionTest extends WordSpec with Matchers {
           })
         .shouldFail()
       // If both are good, we succeed:
-      Execution.from(1).zip(Execution.from("1")).shouldSucceed() shouldBe (
-        1, "1"
-      )
+      Execution.from(1).zip(Execution.from("1")).shouldSucceed() shouldBe
+        (1, "1")
     }
 
     "Config transformer will isolate Configs" in {
@@ -301,8 +298,8 @@ class ExecutionTest extends WordSpec with Matchers {
         .arg("output", "out")
         .source(TextLine("in"), List((0, "hello world"), (1, "goodbye world")))
         .typedSink(TypedTsv[(String, Long)]("out")) { outBuf =>
-          outBuf
-            .toMap shouldBe Map("hello" -> 1L, "world" -> 2L, "goodbye" -> 1L)
+          outBuf.toMap shouldBe
+            Map("hello" -> 1L, "world" -> 2L, "goodbye" -> 1L)
         }
         .run
         .runHadoop
@@ -522,10 +519,8 @@ class ExecutionTest extends WordSpec with Matchers {
     }
 
     "handle an error running in parallel" in {
-      val executions = Execution.failed(new Exception("failed")) :: 0
-        .to(10)
-        .map(i => Execution.from[Int](i))
-        .toList
+      val executions = Execution.failed(new Exception("failed")) ::
+        0.to(10).map(i => Execution.from[Int](i)).toList
 
       val result = Execution.withParallelism(executions, 3)
 

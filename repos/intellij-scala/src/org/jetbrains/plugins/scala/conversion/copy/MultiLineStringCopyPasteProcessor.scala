@@ -24,9 +24,9 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
       endOffsets: Array[Int],
       text: String): String = {
     val settings = ScalaCodeStyleSettings.getInstance(file.getProject)
-    if (!file.isInstanceOf[ScalaFile] || !settings
-          .PROCESS_MARGIN_ON_COPY_PASTE || startOffsets
-          .length != 1 || endOffsets.length != 1)
+    if (!file.isInstanceOf[ScalaFile] ||
+        !settings.PROCESS_MARGIN_ON_COPY_PASTE || startOffsets.length != 1 ||
+        endOffsets.length != 1)
       return null
     findOuterString(file.findElementAt(startOffsets(0))) match {
       case Some(element)
@@ -52,8 +52,7 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
     val document = editor.getDocument
     val element = file.findElementAt(offset)
 
-    if (checkElement(element) ||
-        offset < element.getTextOffset + 3)
+    if (checkElement(element) || offset < element.getTextOffset + 3)
       return text
 
     val marginChar = getMarginChar(element)
@@ -62,14 +61,11 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
         document.getLineStartOffset(document.getLineNumber(offset)),
         offset)
 
-    (
-      if (document.getText(textRange).trim.length == 0 && (
-            text.trim().length == 0 || text.trim.charAt(0) != marginChar
-          ))
-        marginChar
-      else
-        ""
-    ) + text.replace("\n", "\n " + marginChar)
+    (if (document.getText(textRange).trim.length == 0 &&
+         (text.trim().length == 0 || text.trim.charAt(0) != marginChar))
+       marginChar
+     else
+       "") + text.replace("\n", "\n " + marginChar)
   }
 
   private def getMarginChar(element: PsiElement): Char =
@@ -78,8 +74,8 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
   private def findOuterString(element: PsiElement): Option[PsiElement] =
     element match {
       case interpLiteral
-          if interpLiteral.getNode.getElementType == ScalaElementTypes
-            .INTERPOLATED_STRING_LITERAL =>
+          if interpLiteral.getNode.getElementType ==
+            ScalaElementTypes.INTERPOLATED_STRING_LITERAL =>
         Some(interpLiteral)
       case string
           if MultiLineStringCopyPasteProcessor
@@ -91,9 +87,10 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
     }
 
   private def checkElement(element: PsiElement): Boolean =
-    element == null || !MultiLineStringCopyPasteProcessor
-      .SAFE_ELEMENTS
-      .contains(element.getNode.getElementType)
+    element == null ||
+      !MultiLineStringCopyPasteProcessor
+        .SAFE_ELEMENTS
+        .contains(element.getNode.getElementType)
 }
 
 object MultiLineStringCopyPasteProcessor {

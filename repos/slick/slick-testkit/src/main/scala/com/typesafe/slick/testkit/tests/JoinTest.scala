@@ -26,21 +26,19 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
     for {
       _ <- (categories.schema ++ posts.schema).create
       _ <-
-        categories ++= Seq(
-          (1, "Scala"),
-          (2, "ScalaQuery"),
-          (3, "Windows"),
-          (4, "Software"))
+        categories ++=
+          Seq((1, "Scala"), (2, "ScalaQuery"), (3, "Windows"), (4, "Software"))
       _ <-
-        posts.map(p => (p.title, p.category)) ++= Seq(
-          ("Test Post", -1),
-          ("Formal Language Processing in Scala, Part 5", 1),
-          ("Efficient Parameterized Queries in ScalaQuery", 2),
-          (
-            "Removing Libraries and HomeGroup icons from the Windows 7 desktop",
-            3),
-          ("A ScalaQuery Update", 2)
-        )
+        posts.map(p => (p.title, p.category)) ++=
+          Seq(
+            ("Test Post", -1),
+            ("Formal Language Processing in Scala, Part 5", 1),
+            ("Efficient Parameterized Queries in ScalaQuery", 2),
+            (
+              "Removing Libraries and HomeGroup icons from the Windows 7 desktop",
+              3),
+            ("A ScalaQuery Update", 2)
+          )
       // Implicit join
       q1 = (
           for {
@@ -104,30 +102,34 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       r1t: Set[(String, Option[String])] = r1
       _ = r1 shouldBe Set(("a", Some("a")), ("b", Some("b")), ("c", None))
       // Nested left outer, lift primitive value
-      q2 = (
-          (xs.map(_.b) joinLeft ys.map(_.b) on (_ === _)) joinLeft ys
-            .map(_.b) on (_._1 === _)
-      ).to[Set]
+      q2 =
+        (
+          (xs.map(_.b) joinLeft ys.map(_.b) on (_ === _)) joinLeft
+            ys.map(_.b) on
+            (_._1 === _)
+        ).to[Set]
       r2 <- mark("q2", q2.result)
       r2t: Set[((String, Option[String]), Option[String])] = r2
       _ =
-        r2 shouldBe Set(
-          (("a", Some("a")), Some("a")),
-          (("b", Some("b")), Some("b")),
-          (("c", None), None))
+        r2 shouldBe
+          Set(
+            (("a", Some("a")), Some("a")),
+            (("b", Some("b")), Some("b")),
+            (("c", None), None))
       // Left outer, lift non-primitive value
       q3 = (xs joinLeft ys on (_.b === _.b)).to[Set]
       r3 <- mark("q3", q3.result)
       r3t: Set[((Int, String), Option[(Int, String)])] = r3
       _ =
-        r3 shouldBe Set(
-          ((3, "b"), Some((3, "b"))),
-          ((3, "b"), Some((2, "b"))),
-          ((5, "c"), None),
-          ((1, "a"), Some((1, "a"))),
-          ((4, "c"), None),
-          ((2, "b"), Some((3, "b"))),
-          ((2, "b"), Some((2, "b"))))
+        r3 shouldBe
+          Set(
+            ((3, "b"), Some((3, "b"))),
+            ((3, "b"), Some((2, "b"))),
+            ((5, "c"), None),
+            ((1, "a"), Some((1, "a"))),
+            ((4, "c"), None),
+            ((2, "b"), Some((3, "b"))),
+            ((2, "b"), Some((2, "b"))))
       // Left outer, lift non-primitive value, then map to primitive
       q4 = (xs joinLeft ys on (_.b === _.b))
         .map {
@@ -138,14 +140,15 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       r4 <- mark("q4", q4.result)
       r4t: Set[(Int, Option[Int])] = r4
       _ =
-        r4 shouldBe Set(
-          (4, None),
-          (3, Some(2)),
-          (2, Some(3)),
-          (2, Some(2)),
-          (3, Some(3)),
-          (1, Some(1)),
-          (5, None))
+        r4 shouldBe
+          Set(
+            (4, None),
+            (3, Some(2)),
+            (2, Some(3)),
+            (2, Some(2)),
+            (3, Some(3)),
+            (1, Some(1)),
+            (5, None))
       // Nested left outer, lift non-primitive value
       q5 = ((xs joinLeft ys on (_.b === _.b)) joinLeft ys on (_._1.b === _.b))
         .to[Set]
@@ -153,19 +156,20 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       r5t: Set[
         (((Int, String), Option[(Int, String)]), Option[(Int, String)])] = r5
       _ =
-        r5 shouldBe Set(
-          (((1, "a"), Some((1, "a"))), Some((1, "a"))),
-          (((2, "b"), Some((2, "b"))), Some((2, "b"))),
-          (((2, "b"), Some((2, "b"))), Some((3, "b"))),
-          (((2, "b"), Some((3, "b"))), Some((2, "b"))),
-          (((2, "b"), Some((3, "b"))), Some((3, "b"))),
-          (((3, "b"), Some((2, "b"))), Some((2, "b"))),
-          (((3, "b"), Some((2, "b"))), Some((3, "b"))),
-          (((3, "b"), Some((3, "b"))), Some((2, "b"))),
-          (((3, "b"), Some((3, "b"))), Some((3, "b"))),
-          (((4, "c"), None), None),
-          (((5, "c"), None), None)
-        )
+        r5 shouldBe
+          Set(
+            (((1, "a"), Some((1, "a"))), Some((1, "a"))),
+            (((2, "b"), Some((2, "b"))), Some((2, "b"))),
+            (((2, "b"), Some((2, "b"))), Some((3, "b"))),
+            (((2, "b"), Some((3, "b"))), Some((2, "b"))),
+            (((2, "b"), Some((3, "b"))), Some((3, "b"))),
+            (((3, "b"), Some((2, "b"))), Some((2, "b"))),
+            (((3, "b"), Some((2, "b"))), Some((3, "b"))),
+            (((3, "b"), Some((3, "b"))), Some((2, "b"))),
+            (((3, "b"), Some((3, "b"))), Some((3, "b"))),
+            (((4, "c"), None), None),
+            (((5, "c"), None), None)
+          )
       // Right outer, lift primitive value
       q6 = (ys.map(_.b) joinRight xs.map(_.b) on (_ === _)).to[Set]
       r6 <- mark("q6", q6.result)
@@ -173,30 +177,34 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       _ = r6 shouldBe Set((Some("a"), "a"), (Some("b"), "b"), (None, "c"))
       // Nested right outer, lift primitive value
       // (left-associative; not symmetrical to the nested left outer case)
-      q7 = (
-          (ys.map(_.b) joinRight xs.map(_.b) on (_ === _)) joinRight xs
-            .map(_.b) on (_._2 === _)
-      ).to[Set]
+      q7 =
+        (
+          (ys.map(_.b) joinRight xs.map(_.b) on (_ === _)) joinRight
+            xs.map(_.b) on
+            (_._2 === _)
+        ).to[Set]
       r7 <- mark("q7", q7.result)
       rt: Set[(Option[(Option[String], String)], String)] = r7
       _ =
-        r7 shouldBe Set(
-          (Some((Some("a"), "a")), "a"),
-          (Some((Some("b"), "b")), "b"),
-          (Some((None, "c")), "c"))
+        r7 shouldBe
+          Set(
+            (Some((Some("a"), "a")), "a"),
+            (Some((Some("b"), "b")), "b"),
+            (Some((None, "c")), "c"))
       // Right outer, lift non-primitive value
       q8 = (ys joinRight xs on (_.b === _.b)).to[Set]
       r8 <- mark("q8", q8.result)
       r8t: Set[(Option[(Int, String)], (Int, String))] = r8
       _ =
-        r8 shouldBe Set(
-          (Some((1, "a")), (1, "a")),
-          (Some((2, "b")), (2, "b")),
-          (Some((3, "b")), (2, "b")),
-          (Some((2, "b")), (3, "b")),
-          (Some((3, "b")), (3, "b")),
-          (None, (4, "c")),
-          (None, (5, "c")))
+        r8 shouldBe
+          Set(
+            (Some((1, "a")), (1, "a")),
+            (Some((2, "b")), (2, "b")),
+            (Some((3, "b")), (2, "b")),
+            (Some((2, "b")), (3, "b")),
+            (Some((3, "b")), (3, "b")),
+            (None, (4, "c")),
+            (None, (5, "c")))
       // Right outer, lift non-primitive value, then map to primitive
       q9 = (ys joinRight xs on (_.b === _.b))
         .map {
@@ -207,64 +215,68 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       r9 <- mark("q9", q9.result)
       r9t: Set[(Option[Int], Int)] = r9
       _ =
-        r9 shouldBe Set(
-          (None, 4),
-          (Some(2), 3),
-          (Some(3), 2),
-          (Some(2), 2),
-          (Some(3), 3),
-          (Some(1), 1),
-          (None, 5))
+        r9 shouldBe
+          Set(
+            (None, 4),
+            (Some(2), 3),
+            (Some(3), 2),
+            (Some(2), 2),
+            (Some(3), 3),
+            (Some(1), 1),
+            (None, 5))
       // Nested right outer, lift non-primitive value
       // (left-associative; not symmetrical to the nested left outer case)
-      q10 = (
-          (ys joinRight xs on (_.b === _.b)) joinRight xs on (
-            _._1.map(_.b) === _.b
-          )
-      ).to[Set]
+      q10 =
+        (
+          (ys joinRight xs on (_.b === _.b)) joinRight xs on
+            (_._1.map(_.b) === _.b)
+        ).to[Set]
       r10 <- mark("q10", q10.result)
       r10t: Set[
         (Option[(Option[(Int, String)], (Int, String))], (Int, String))] = r10
       _ =
-        r10 shouldBe Set(
-          (Some((Some((1, "a")), (1, "a"))), (1, "a")),
-          (Some((Some((2, "b")), (2, "b"))), (2, "b")),
-          (Some((Some((2, "b")), (2, "b"))), (3, "b")),
-          (Some((Some((2, "b")), (3, "b"))), (2, "b")),
-          (Some((Some((2, "b")), (3, "b"))), (3, "b")),
-          (Some((Some((3, "b")), (2, "b"))), (2, "b")),
-          (Some((Some((3, "b")), (2, "b"))), (3, "b")),
-          (Some((Some((3, "b")), (3, "b"))), (2, "b")),
-          (Some((Some((3, "b")), (3, "b"))), (3, "b")),
-          (None, (4, "c")),
-          (None, (5, "c"))
-        )
+        r10 shouldBe
+          Set(
+            (Some((Some((1, "a")), (1, "a"))), (1, "a")),
+            (Some((Some((2, "b")), (2, "b"))), (2, "b")),
+            (Some((Some((2, "b")), (2, "b"))), (3, "b")),
+            (Some((Some((2, "b")), (3, "b"))), (2, "b")),
+            (Some((Some((2, "b")), (3, "b"))), (3, "b")),
+            (Some((Some((3, "b")), (2, "b"))), (2, "b")),
+            (Some((Some((3, "b")), (2, "b"))), (3, "b")),
+            (Some((Some((3, "b")), (3, "b"))), (2, "b")),
+            (Some((Some((3, "b")), (3, "b"))), (3, "b")),
+            (None, (4, "c")),
+            (None, (5, "c"))
+          )
       // Full outer, lift primitive values
       q11 = (xs.map(_.b) joinFull ys.map(_.b) on (_ === _)).to[Set]
       r11 <- mark("q11", q11.result)
       r11t: Set[(Option[String], Option[String])] = r11
       _ =
-        r11 shouldBe Set(
-          (Some("a"), Some("a")),
-          (Some("b"), Some("b")),
-          (Some("c"), None),
-          (None, Some("d")))
+        r11 shouldBe
+          Set(
+            (Some("a"), Some("a")),
+            (Some("b"), Some("b")),
+            (Some("c"), None),
+            (None, Some("d")))
       // Full outer, lift non-primitive values
       q12 = (xs joinFull ys on (_.b === _.b)).to[Set]
       r12 <- mark("q12", q12.result)
       r12t: Set[(Option[(Int, String)], Option[(Int, String)])] = r12
       _ =
-        r12 shouldBe Set(
-          (Some((1, "a")), Some((1, "a"))),
-          (Some((2, "b")), Some((2, "b"))),
-          (Some((2, "b")), Some((3, "b"))),
-          (Some((3, "b")), Some((2, "b"))),
-          (Some((3, "b")), Some((3, "b"))),
-          (Some((4, "c")), None),
-          (Some((5, "c")), None),
-          (None, Some((4, "d"))),
-          (None, Some((5, "d")))
-        )
+        r12 shouldBe
+          Set(
+            (Some((1, "a")), Some((1, "a"))),
+            (Some((2, "b")), Some((2, "b"))),
+            (Some((2, "b")), Some((3, "b"))),
+            (Some((3, "b")), Some((2, "b"))),
+            (Some((3, "b")), Some((3, "b"))),
+            (Some((4, "c")), None),
+            (Some((5, "c")), None),
+            (None, Some((4, "d"))),
+            (None, Some((5, "d")))
+          )
     } yield ()
   }
 
@@ -303,21 +315,23 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       for {
         _ <- (categories.schema ++ posts.schema).create
         _ <-
-          categories ++= Seq(
-            (1, "Scala"),
-            (3, "Windows"),
-            (2, "ScalaQuery"),
-            (4, "Software"))
+          categories ++=
+            Seq(
+              (1, "Scala"),
+              (3, "Windows"),
+              (2, "ScalaQuery"),
+              (4, "Software"))
         _ <-
-          posts.map(p => (p.title, p.category)) ++= Seq(
-            ("Test Post", -1),
-            ("Formal Language Processing in Scala, Part 5", 1),
-            ("Efficient Parameterized Queries in ScalaQuery", 2),
-            (
-              "Removing Libraries and HomeGroup icons from the Windows 7 desktop",
-              3),
-            ("A ScalaQuery Update", 2)
-          )
+          posts.map(p => (p.title, p.category)) ++=
+            Seq(
+              ("Test Post", -1),
+              ("Formal Language Processing in Scala, Part 5", 1),
+              ("Efficient Parameterized Queries in ScalaQuery", 2),
+              (
+                "Removing Libraries and HomeGroup icons from the Windows 7 desktop",
+                3),
+              ("A ScalaQuery Update", 2)
+            )
         q1 =
           for {
             (c, i) <- categories.sortBy(_.id).zipWithIndex

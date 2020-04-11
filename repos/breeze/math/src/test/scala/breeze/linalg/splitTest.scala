@@ -61,8 +61,7 @@ class splitTest extends FunSuite {
 
   test("#459") {
     assert(
-      split(DenseVector(0.0, 1.0), 2) === IndexedSeq(
-        DenseVector(0.0),
-        DenseVector(1.0)))
+      split(DenseVector(0.0, 1.0), 2) ===
+        IndexedSeq(DenseVector(0.0), DenseVector(1.0)))
   }
 }

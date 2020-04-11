@@ -102,11 +102,9 @@ object ShardServiceCombinators extends Logging {
         mimeType <- accept.mimeTypes.headOption
       } yield mimeType
 
-    val requested = (request
-      .headers
-      .header[Accept]
-      .toSeq
-      .flatMap(_.mimeTypes) ++ requestParamType)
+    val requested =
+      (request.headers.header[Accept].toSeq.flatMap(_.mimeTypes) ++
+        requestParamType)
 
     val allowed = Set(JSON, CSV, anymaintype / anysubtype)
 
@@ -158,7 +156,8 @@ object ShardServiceCombinators extends Logging {
           case badJVal =>
             Validation.failure(
               Invalid(
-                "The sortOn query parameter was expected to be JSON string or array, but found " + badJVal))
+                "The sortOn query parameter was expected to be JSON string or array, but found " +
+                  badJVal))
         }
 
       onError <-: parsed
@@ -169,16 +168,16 @@ object ShardServiceCombinators extends Logging {
 
   private def getSortOrder(
       request: HttpRequest[_]): Validation[String, DesiredSortOrder] = {
-    request.parameters.get('sortOrder) filter (
-      _ != null
-    ) map (_.toLowerCase) map {
-      case "asc" | "\"asc\"" | "ascending" | "\"ascending\"" =>
-        success(TableModule.SortAscending)
-      case "desc" | "\"desc\"" | "descending" | "\"descending\"" =>
-        success(TableModule.SortDescending)
-      case badOrder =>
-        failure("Unknown sort ordering: %s." format badOrder)
-    } getOrElse success(TableModule.SortAscending)
+    request.parameters.get('sortOrder) filter
+      (_ != null) map
+      (_.toLowerCase) map {
+        case "asc" | "\"asc\"" | "ascending" | "\"ascending\"" =>
+          success(TableModule.SortAscending)
+        case "desc" | "\"desc\"" | "descending" | "\"descending\"" =>
+          success(TableModule.SortDescending)
+        case badOrder =>
+          failure("Unknown sort ordering: %s." format badOrder)
+      } getOrElse success(TableModule.SortAscending)
   }
 
   private def getOffsetAndLimit(
@@ -289,9 +288,8 @@ trait ShardServiceCombinators
               for {
                 header <- request.headers.header[`Content-Type`]
                 if header.mimeTypes exists { t =>
-                  t == text / plain || (
-                    t.maintype == "text" && t.subtype == "x-quirrel-script"
-                  )
+                  t == text / plain ||
+                  (t.maintype == "text" && t.subtype == "x-quirrel-script")
                 }
                 content <- request.content
               } yield content

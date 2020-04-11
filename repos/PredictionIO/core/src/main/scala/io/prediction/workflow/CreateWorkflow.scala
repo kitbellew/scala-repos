@@ -76,34 +76,44 @@ object CreateWorkflow extends Logging {
       override def errorOnUnknownArgument: Boolean = false
       opt[String]("batch") action { (x, c) =>
         c.copy(batch = x)
-      } text ("Batch label of the workflow run.")
-      opt[String]("engine-id") required () action { (x, c) =>
-        c.copy(engineId = x)
-      } text ("Engine's ID.")
-      opt[String]("engine-version") required () action { (x, c) =>
-        c.copy(engineVersion = x)
-      } text ("Engine's version.")
-      opt[String]("engine-variant") required () action { (x, c) =>
-        c.copy(engineVariant = x)
-      } text ("Engine variant JSON.")
+      } text
+        ("Batch label of the workflow run.")
+      opt[String]("engine-id") required
+        () action { (x, c) =>
+          c.copy(engineId = x)
+        } text
+        ("Engine's ID.")
+      opt[String]("engine-version") required
+        () action { (x, c) =>
+          c.copy(engineVersion = x)
+        } text
+        ("Engine's version.")
+      opt[String]("engine-variant") required
+        () action { (x, c) =>
+          c.copy(engineVariant = x)
+        } text
+        ("Engine variant JSON.")
       opt[String]("evaluation-class") action { (x, c) =>
         c.copy(evaluationClass = Some(x))
-      } text ("Class name of the run's evaluator.")
+      } text
+        ("Class name of the run's evaluator.")
       opt[String]("engine-params-generator-class") action { (x, c) =>
         c.copy(engineParamsGeneratorClass = Some(x))
-      } text ("Path to evaluator parameters")
+      } text
+        ("Path to evaluator parameters")
       opt[String]("env") action { (x, c) =>
         c.copy(env = Some(x))
-      } text (
-        "Comma-separated list of environmental variables (in 'FOO=BAR' " +
-          "format) to pass to the Spark execution environment."
-      )
+      } text
+        ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
+          "format) to pass to the Spark execution environment.")
       opt[Unit]("verbose") action { (x, c) =>
         c.copy(verbose = true)
-      } text ("Enable verbose output.")
+      } text
+        ("Enable verbose output.")
       opt[Unit]("debug") action { (x, c) =>
         c.copy(debug = true)
-      } text ("Enable debug output.")
+      } text
+        ("Enable debug output.")
       opt[Unit]("skip-sanity-check") action { (x, c) =>
         c.copy(skipSanityCheck = true)
       }

@@ -110,8 +110,8 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     f.taskTrackerProbe.reply(Status.Failure(cause))
     Then("The reply is the value of task")
     terminated.failed.futureValue.getMessage should include(appId.toString)
-    terminated.failed.futureValue.getMessage should include(
-      task.taskId.idString)
+    terminated.failed.futureValue.getMessage should
+      include(task.taskId.idString)
     terminated.failed.futureValue.getMessage should include("Expunge")
     terminated.failed.futureValue.getCause should be(cause)
   }

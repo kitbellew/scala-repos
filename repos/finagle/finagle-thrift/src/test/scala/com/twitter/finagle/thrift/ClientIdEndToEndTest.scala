@@ -26,7 +26,8 @@ class ClientIdEndToEndTest extends FunSuite with ThriftTest {
         Future {
           val clientIdStr = ClientId.current map {
             _.name
-          } getOrElse ("")
+          } getOrElse
+            ("")
           new SomeStruct(123, clientIdStr)
         }
       def someway() = Future.Void

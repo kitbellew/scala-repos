@@ -47,16 +47,12 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
       return false
 
     if (!(
-          thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch
-            .getTextRange
-            .getStartOffset
+          thenBranch.getTextRange.getEndOffset <= offset &&
+            offset <= elseBranch.getTextRange.getStartOffset
         ) &&
         !(
-          ifStmt.getTextRange.getStartOffset <= offset && offset <= ifStmt
-            .condition
-            .get
-            .getTextRange
-            .getStartOffset
+          ifStmt.getTextRange.getStartOffset <= offset &&
+            offset <= ifStmt.condition.get.getTextRange.getStartOffset
         ))
       return false
 

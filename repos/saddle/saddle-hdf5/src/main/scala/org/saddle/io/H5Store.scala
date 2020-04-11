@@ -322,13 +322,14 @@ object H5Store {
       ab.sizeHint(gcount)
 
       for (i <- Range(0, gcount)) {
-        ab += H5.H5Lget_name_by_idx(
-          fileid,
-          node,
-          HDF5Constants.H5_INDEX_NAME,
-          HDF5Constants.H5_ITER_INC,
-          i,
-          HDF5Constants.H5P_DEFAULT)
+        ab +=
+          H5.H5Lget_name_by_idx(
+            fileid,
+            node,
+            HDF5Constants.H5_INDEX_NAME,
+            HDF5Constants.H5_ITER_INC,
+            i,
+            HDF5Constants.H5P_DEFAULT)
       }
 
       ab.result()
@@ -1602,10 +1603,10 @@ object H5Store {
 
     val cx = didx concat iidx concat sidx concat lidx concat fidx concat tidx
 
-    val cols = toGeneric(mxDouble.cols) ++ toGeneric(mxInt.cols) ++ toGeneric(
-      mxString.cols) ++
-      toGeneric(mxLong.cols) ++ toGeneric(mxFloat.cols) ++ toGeneric(
-      mxDates.cols.map(v => new VecTime(v / 1000000)))
+    val cols = toGeneric(mxDouble.cols) ++ toGeneric(mxInt.cols) ++
+      toGeneric(mxString.cols) ++ toGeneric(mxLong.cols) ++
+      toGeneric(mxFloat.cols) ++
+      toGeneric(mxDates.cols.map(v => new VecTime(v / 1000000)))
 
     val result = Frame(cols, ix0, cx)
 

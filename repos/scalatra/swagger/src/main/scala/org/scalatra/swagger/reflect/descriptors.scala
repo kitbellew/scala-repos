@@ -8,35 +8,35 @@ object ManifestScalaType {
 
   def apply[T](mf: Manifest[T]): ScalaType = {
     /* optimization */
-    if (mf.runtimeClass == classOf[Int] || mf
-          .runtimeClass == classOf[java.lang.Integer])
+    if (mf.runtimeClass == classOf[Int] ||
+        mf.runtimeClass == classOf[java.lang.Integer])
       ManifestScalaType.IntType
-    else if (mf.runtimeClass == classOf[Long] || mf
-               .runtimeClass == classOf[java.lang.Long])
+    else if (mf.runtimeClass == classOf[Long] ||
+             mf.runtimeClass == classOf[java.lang.Long])
       ManifestScalaType.LongType
-    else if (mf.runtimeClass == classOf[Byte] || mf
-               .runtimeClass == classOf[java.lang.Byte])
+    else if (mf.runtimeClass == classOf[Byte] ||
+             mf.runtimeClass == classOf[java.lang.Byte])
       ManifestScalaType.ByteType
-    else if (mf.runtimeClass == classOf[Short] || mf
-               .runtimeClass == classOf[java.lang.Short])
+    else if (mf.runtimeClass == classOf[Short] ||
+             mf.runtimeClass == classOf[java.lang.Short])
       ManifestScalaType.ShortType
-    else if (mf.runtimeClass == classOf[Float] || mf
-               .runtimeClass == classOf[java.lang.Float])
+    else if (mf.runtimeClass == classOf[Float] ||
+             mf.runtimeClass == classOf[java.lang.Float])
       ManifestScalaType.FloatType
-    else if (mf.runtimeClass == classOf[Double] || mf
-               .runtimeClass == classOf[java.lang.Double])
+    else if (mf.runtimeClass == classOf[Double] ||
+             mf.runtimeClass == classOf[java.lang.Double])
       ManifestScalaType.DoubleType
-    else if (mf.runtimeClass == classOf[BigInt] || mf
-               .runtimeClass == classOf[java.math.BigInteger])
+    else if (mf.runtimeClass == classOf[BigInt] ||
+             mf.runtimeClass == classOf[java.math.BigInteger])
       ManifestScalaType.BigIntType
-    else if (mf.runtimeClass == classOf[BigDecimal] || mf
-               .runtimeClass == classOf[java.math.BigDecimal])
+    else if (mf.runtimeClass == classOf[BigDecimal] ||
+             mf.runtimeClass == classOf[java.math.BigDecimal])
       ManifestScalaType.BigDecimalType
-    else if (mf.runtimeClass == classOf[Boolean] || mf
-               .runtimeClass == classOf[java.lang.Boolean])
+    else if (mf.runtimeClass == classOf[Boolean] ||
+             mf.runtimeClass == classOf[java.lang.Boolean])
       ManifestScalaType.BooleanType
-    else if (mf.runtimeClass == classOf[String] || mf
-               .runtimeClass == classOf[java.lang.String])
+    else if (mf.runtimeClass == classOf[String] ||
+             mf.runtimeClass == classOf[java.lang.String])
       ManifestScalaType.StringType
     else if (mf.runtimeClass == classOf[java.util.Date])
       ManifestScalaType.DateType
@@ -158,14 +158,11 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
   //    _typeArgs
   //  }
 
-  val typeArgs = manifest
-    .typeArguments
-    .map(ta => Reflector.scalaTypeOf(ta)) ++ (
-    if (erasure.isArray)
-      List(Reflector.scalaTypeOf(erasure.getComponentType))
-    else
-      Nil
-  )
+  val typeArgs = manifest.typeArguments.map(ta => Reflector.scalaTypeOf(ta)) ++
+    (if (erasure.isArray)
+       List(Reflector.scalaTypeOf(erasure.getComponentType))
+     else
+       Nil)
 
   private[this] var _typeVars: Map[TypeVariable[_], ScalaType] = null
   def typeVars = {
@@ -196,24 +193,22 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
   }
 
   lazy val simpleName: String =
-    rawSimpleName + (
-      if (typeArgs.nonEmpty)
-        typeArgs.map(_.simpleName).mkString("[", ", ", "]")
-      else (
-        if (typeVars.nonEmpty)
-          typeVars.map(_._2.simpleName).mkString("[", ", ", "]")
-        else
-          ""
-      )
-    )
+    rawSimpleName +
+      (if (typeArgs.nonEmpty)
+         typeArgs.map(_.simpleName).mkString("[", ", ", "]")
+       else (
+         if (typeVars.nonEmpty)
+           typeVars.map(_._2.simpleName).mkString("[", ", ", "]")
+         else
+           ""
+       ))
 
   lazy val fullName: String =
-    rawFullName + (
-      if (typeArgs.nonEmpty)
-        typeArgs.map(_.fullName).mkString("[", ", ", "]")
-      else
-        ""
-    )
+    rawFullName +
+      (if (typeArgs.nonEmpty)
+         typeArgs.map(_.fullName).mkString("[", ", ", "]")
+       else
+         "")
 
   val isPrimitive = false
 
@@ -271,14 +266,14 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
       ManifestScalaType.FloatType
     else if (erasure == classOf[Double] || erasure == classOf[java.lang.Double])
       ManifestScalaType.DoubleType
-    else if (erasure == classOf[BigInt] || erasure == classOf[
-               java.math.BigInteger])
+    else if (erasure == classOf[BigInt] ||
+             erasure == classOf[java.math.BigInteger])
       ManifestScalaType.BigIntType
-    else if (erasure == classOf[BigDecimal] || erasure == classOf[
-               java.math.BigDecimal])
+    else if (erasure == classOf[BigDecimal] ||
+             erasure == classOf[java.math.BigDecimal])
       ManifestScalaType.BigDecimalType
-    else if (erasure == classOf[Boolean] || erasure == classOf[
-               java.lang.Boolean])
+    else if (erasure == classOf[Boolean] ||
+             erasure == classOf[java.lang.Boolean])
       ManifestScalaType.BooleanType
     else if (erasure == classOf[String] || erasure == classOf[java.lang.String])
       ManifestScalaType.StringType

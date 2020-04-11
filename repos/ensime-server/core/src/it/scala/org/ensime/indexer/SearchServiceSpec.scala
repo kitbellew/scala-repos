@@ -53,11 +53,8 @@ class SearchServiceSpec
   it should "remove classfiles that have been deleted" in {
     withSearchService { (config, service) =>
       implicit val s = service
-      val classfile = config
-        .subprojects
-        .head
-        .targetDirs
-        .head / "org/example/Foo.class"
+      val classfile = config.subprojects.head.targetDirs.head /
+        "org/example/Foo.class"
 
       classfile shouldBe 'exists
 
@@ -66,28 +63,28 @@ class SearchServiceSpec
     }
   }
 
-  "class searching" should "return results from J2SE" in withSearchService {
-    implicit service =>
+  "class searching" should "return results from J2SE" in
+    withSearchService { implicit service =>
       searchesClasses(
         "java.lang.String",
         "String",
         "string",
         "j.l.str",
         "j l str")
-  }
+    }
 
-  it should "return results from dependencies" in withSearchService {
-    implicit service =>
+  it should "return results from dependencies" in
+    withSearchService { implicit service =>
       searchesClasses(
         "org.scalatest.FunSuite",
         "FunSuite",
         "funsuite",
         "funsu",
         "o s Fun")
-  }
+    }
 
-  it should "return results from the project" in withSearchService {
-    implicit service =>
+  it should "return results from the project" in
+    withSearchService { implicit service =>
       searchesClasses("org.example.Bloo", "o e bloo")
 
       searchesClasses("org.example.Blue$", "o e blue")
@@ -100,14 +97,14 @@ class SearchServiceSpec
         "o.e.caseclasswith",
         "CCWC" // <= CamelCaseAwesomeNess
       )
-  }
+    }
 
-  it should "return results from package objects" in withSearchService {
-    implicit service =>
+  it should "return results from package objects" in
+    withSearchService { implicit service =>
       searchClasses("org.example.Blip$", "Blip")
 
       searchClasses("org.example.Blop", "Blop")
-  }
+    }
 
   "class and method searching" should "return results from classes" in {
     withSearchService { implicit service =>
@@ -120,52 +117,53 @@ class SearchServiceSpec
     }
   }
 
-  it should "return results from static fields" in withSearchService {
-    implicit service =>
+  it should "return results from static fields" in
+    withSearchService { implicit service =>
       searchesEmpty("CASE_INSENSITIVE", "case_insensitive", "case_")
-  }
+    }
 
-  it should "not return results from instance fields" in withSearchService {
-    implicit service =>
+  it should "not return results from instance fields" in
+    withSearchService { implicit service =>
       searchesEmpty("java.awt.Point.x")
-  }
+    }
 
-  it should "return results from static methods" in withSearchService {
-    implicit service =>
+  it should "return results from static methods" in
+    withSearchService { implicit service =>
       searchesClassesAndMethods(
         "java.lang.Runtime.addShutdownHook",
         "addShutdownHook")
-  }
+    }
 
-  it should "return results from instance methods" in withSearchService {
-    implicit service =>
+  it should "return results from instance methods" in
+    withSearchService { implicit service =>
       searchesClassesAndMethods(
         "java.lang.Runtime.availableProcessors",
         "availableProcessors",
         "availableP")
-  }
+    }
 
-  it should "not prioritise noisy inner classes" in withSearchService {
-    implicit service =>
+  it should "not prioritise noisy inner classes" in
+    withSearchService { implicit service =>
       val hits = service.searchClasses("Baz", 10).map(_.fqn)
-      hits should contain theSameElementsAs (
-        Seq(
-          "org.example2.Baz",
-          "org.example2.Baz$Wibble$baz",
-          "org.example2.Baz$Wibble$baz$",
-          "org.example2.Baz$Wibble$",
-          "org.example2.Baz$",
-          "org.example2.Baz$Wibble"
+      hits should contain theSameElementsAs
+        (
+          Seq(
+            "org.example2.Baz",
+            "org.example2.Baz$Wibble$baz",
+            "org.example2.Baz$Wibble$baz$",
+            "org.example2.Baz$Wibble$",
+            "org.example2.Baz$",
+            "org.example2.Baz$Wibble"
+          )
         )
-      )
       hits.head shouldBe "org.example2.Baz"
-  }
+    }
 
-  "exact searches" should "find type aliases" in withSearchService {
-    implicit service =>
+  "exact searches" should "find type aliases" in
+    withSearchService { implicit service =>
       service.findUnique(
         "org.scalatest.fixture.ConfigMapFixture$FixtureParam") shouldBe defined
-  }
+    }
 }
 
 trait SearchServiceTestUtils {
@@ -190,8 +188,8 @@ trait SearchServiceTestUtils {
   }
 
   def searchesClasses(expect: String, queries: String*)(implicit
-      service: SearchService) =
-    (expect :: queries.toList).foreach(searchClasses(expect, _))
+      service: SearchService) = (expect :: queries.toList)
+    .foreach(searchClasses(expect, _))
 
   def searchClassesAndMethods(expect: String, query: String)(implicit
       service: SearchService) = {
@@ -219,7 +217,7 @@ trait SearchServiceTestUtils {
     queries.toList.foreach(searchExpectEmpty)
 
   def searchesClassesAndMethods(expect: String, queries: String*)(implicit
-      service: SearchService) =
-    (expect :: queries.toList).foreach(searchClassesAndMethods(expect, _))
+      service: SearchService) = (expect :: queries.toList)
+    .foreach(searchClassesAndMethods(expect, _))
 
 }

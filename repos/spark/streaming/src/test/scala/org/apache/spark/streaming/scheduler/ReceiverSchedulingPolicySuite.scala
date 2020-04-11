@@ -52,11 +52,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
       .map(i => ExecutorCacheTaskLocation(s"host$i", s"$i"))
     // executor 1 is busy, others are idle.
     val receiverTrackingInfoMap = Map(
-      0 -> ReceiverTrackingInfo(
-        0,
-        ReceiverState.ACTIVE,
-        None,
-        Some(executors(0))))
+      0 ->
+        ReceiverTrackingInfo(0, ReceiverState.ACTIVE, None, Some(executors(0))))
     val scheduledLocations = receiverSchedulingPolicy
       .rescheduleReceiver(1, None, receiverTrackingInfoMap, executors)
     assert(scheduledLocations.toSet === executors.tail.toSet)
@@ -73,35 +70,39 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
     )
     // Weights: host1 = 1.5, host2 = 0.5, host3 = 1.0, host4 = 0.5, host5 = 0.5
     val receiverTrackingInfoMap = Map(
-      0 -> ReceiverTrackingInfo(
-        0,
-        ReceiverState.ACTIVE,
-        None,
-        Some(ExecutorCacheTaskLocation("host1", "1"))),
-      1 -> ReceiverTrackingInfo(
-        1,
-        ReceiverState.SCHEDULED,
-        Some(
-          Seq(
-            ExecutorCacheTaskLocation("host2", "2"),
-            ExecutorCacheTaskLocation("host3", "3"))),
-        None),
-      2 -> ReceiverTrackingInfo(
-        2,
-        ReceiverState.SCHEDULED,
-        Some(
-          Seq(
-            ExecutorCacheTaskLocation("host1", "1"),
-            ExecutorCacheTaskLocation("host3", "3"))),
-        None),
-      3 -> ReceiverTrackingInfo(
-        4,
-        ReceiverState.SCHEDULED,
-        Some(
-          Seq(
-            ExecutorCacheTaskLocation("host4", "4"),
-            ExecutorCacheTaskLocation("host5", "5"))),
-        None)
+      0 ->
+        ReceiverTrackingInfo(
+          0,
+          ReceiverState.ACTIVE,
+          None,
+          Some(ExecutorCacheTaskLocation("host1", "1"))),
+      1 ->
+        ReceiverTrackingInfo(
+          1,
+          ReceiverState.SCHEDULED,
+          Some(
+            Seq(
+              ExecutorCacheTaskLocation("host2", "2"),
+              ExecutorCacheTaskLocation("host3", "3"))),
+          None),
+      2 ->
+        ReceiverTrackingInfo(
+          2,
+          ReceiverState.SCHEDULED,
+          Some(
+            Seq(
+              ExecutorCacheTaskLocation("host1", "1"),
+              ExecutorCacheTaskLocation("host3", "3"))),
+          None),
+      3 ->
+        ReceiverTrackingInfo(
+          4,
+          ReceiverState.SCHEDULED,
+          Some(
+            Seq(
+              ExecutorCacheTaskLocation("host4", "4"),
+              ExecutorCacheTaskLocation("host5", "5"))),
+          None)
     )
     val scheduledLocations = receiverSchedulingPolicy
       .rescheduleReceiver(4, None, receiverTrackingInfoMap, executors)

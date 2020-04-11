@@ -112,8 +112,8 @@ class ScalaMavenImporter
         .find(_.scalaVersion == Some(compilerVersion))
         .getOrElse(
           throw new ExternalSystemException(
-            "Cannot find project Scala library " +
-              compilerVersion.number + " for module " + module.getName))
+            "Cannot find project Scala library " + compilerVersion.number +
+              " for module " + module.getName))
 
       if (!scalaLibrary.isScalaSdk) {
         val languageLevel = compilerVersion
@@ -171,8 +171,8 @@ private object ScalaMavenImporter {
   implicit class RichMavenProject(val project: MavenProject) extends AnyVal {
     def localPathTo(id: MavenId) =
       project.getLocalRepository / id.getGroupId.replaceAll("\\.", "/") /
-        id.getArtifactId / id.getVersion / "%s-%s.jar"
-        .format(id.getArtifactId, id.getVersion)
+        id.getArtifactId / id.getVersion /
+        "%s-%s.jar".format(id.getArtifactId, id.getVersion)
   }
 
   implicit class RichFile(val file: File) extends AnyVal {

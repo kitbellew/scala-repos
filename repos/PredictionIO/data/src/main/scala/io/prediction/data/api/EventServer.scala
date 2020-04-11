@@ -58,8 +58,7 @@ class EventServiceActor(
 
   object Json4sProtocol extends Json4sSupport {
     implicit def json4sFormats: Formats =
-      DefaultFormats +
-        new EventJson4sSupport.APISerializer +
+      DefaultFormats + new EventJson4sSupport.APISerializer +
         new BatchEventsJson4sSupport.APISerializer +
         // NOTE: don't use Json4s JodaTimeSerializers since it has issues,
         // some format not converted, or timezone not correct
@@ -177,26 +176,31 @@ class EventServiceActor(
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
               Map(
-                "plugins" -> Map(
-                  "inputblockers" -> pluginContext
-                    .inputBlockers
-                    .map {
-                      case (n, p) =>
-                        n -> Map(
-                          "name" -> p.pluginName,
-                          "description" -> p.pluginDescription,
-                          "class" -> p.getClass.getName)
-                    },
-                  "inputsniffers" -> pluginContext
-                    .inputSniffers
-                    .map {
-                      case (n, p) =>
-                        n -> Map(
-                          "name" -> p.pluginName,
-                          "description" -> p.pluginDescription,
-                          "class" -> p.getClass.getName)
-                    }
-                ))
+                "plugins" ->
+                  Map(
+                    "inputblockers" ->
+                      pluginContext
+                        .inputBlockers
+                        .map {
+                          case (n, p) =>
+                            n ->
+                              Map(
+                                "name" -> p.pluginName,
+                                "description" -> p.pluginDescription,
+                                "class" -> p.getClass.getName)
+                        },
+                    "inputsniffers" ->
+                      pluginContext
+                        .inputSniffers
+                        .map {
+                          case (n, p) =>
+                            n ->
+                              Map(
+                                "name" -> p.pluginName,
+                                "description" -> p.pluginDescription,
+                                "class" -> p.getClass.getName)
+                        }
+                  ))
             }
           }
         }
@@ -219,13 +223,14 @@ class EventServiceActor(
                           authData.channelId,
                           pluginArgs)
                     case EventServerPlugin.inputSniffer =>
-                      pluginsActorRef ? PluginsActor.HandleREST(
-                        appId = authData.appId,
-                        channelId = authData.channelId,
-                        pluginName = pluginName,
-                        pluginArgs = pluginArgs) map {
-                        _.asInstanceOf[String]
-                      }
+                      pluginsActorRef ?
+                        PluginsActor.HandleREST(
+                          appId = authData.appId,
+                          channelId = authData.channelId,
+                          pluginName = pluginName,
+                          pluginArgs = pluginArgs) map {
+                          _.asInstanceOf[String]
+                        }
                   }
                 }
               }
@@ -302,8 +307,8 @@ class EventServiceActor(
                 val events = authData.events
                 entity(as[Event]) { event =>
                   complete {
-                    if (events
-                          .isEmpty || authData.events.contains(event.event)) {
+                    if (events.isEmpty ||
+                        authData.events.contains(event.event)) {
                       pluginContext
                         .inputBlockers
                         .values
@@ -317,10 +322,11 @@ class EventServiceActor(
                       val data = eventClient
                         .futureInsert(event, appId, channelId)
                         .map { id =>
-                          pluginsActorRef ! EventInfo(
-                            appId = appId,
-                            channelId = channelId,
-                            event = event)
+                          pluginsActorRef !
+                            EventInfo(
+                              appId = appId,
+                              channelId = channelId,
+                              event = event)
                           val result =
                             (StatusCodes.Created, Map("eventId" -> s"${id}"))
                           if (config.stats) {
@@ -333,7 +339,8 @@ class EventServiceActor(
                       (
                         StatusCodes.Forbidden,
                         Map(
-                          "message" -> s"${event.event} events are not allowed"))
+                          "message" ->
+                            s"${event.event} events are not allowed"))
                     }
                   }
                 }
@@ -378,8 +385,8 @@ class EventServiceActor(
 
                           require(
                             !(
-                              (reversed == Some(true))
-                                && (entityType.isEmpty || entityId.isEmpty)
+                              (reversed == Some(true)) &&
+                                (entityType.isEmpty || entityId.isEmpty)
                             ),
                             "the parameter reversed can only be used with" +
                               " both entityType and entityId specified."
@@ -451,8 +458,8 @@ class EventServiceActor(
                 val handleEvent
                     : PartialFunction[Try[Event], Future[Map[String, Any]]] = {
                   case Success(event) => {
-                    if (allowedEvents
-                          .isEmpty || allowedEvents.contains(event.event)) {
+                    if (allowedEvents.isEmpty ||
+                        allowedEvents.contains(event.event)) {
                       pluginContext
                         .inputBlockers
                         .values
@@ -466,10 +473,11 @@ class EventServiceActor(
                       val data = eventClient
                         .futureInsert(event, appId, channelId)
                         .map { id =>
-                          pluginsActorRef ! EventInfo(
-                            appId = appId,
-                            channelId = channelId,
-                            event = event)
+                          pluginsActorRef !
+                            EventInfo(
+                              appId = appId,
+                              channelId = channelId,
+                              event = event)
                           val status = StatusCodes.Created
                           val result = Map(
                             "status" -> status.intValue,
@@ -482,9 +490,8 @@ class EventServiceActor(
                         .recover {
                           case exception =>
                             Map(
-                              "status" -> StatusCodes
-                                .InternalServerError
-                                .intValue,
+                              "status" ->
+                                StatusCodes.InternalServerError.intValue,
                               "message" -> s"${exception.getMessage()}")
                         }
                       data
@@ -492,7 +499,8 @@ class EventServiceActor(
                       Future.successful(
                         Map(
                           "status" -> StatusCodes.Forbidden.intValue,
-                          "message" -> s"${event.event} events are not allowed"))
+                          "message" ->
+                            s"${event.event} events are not allowed"))
                     }
                   }
                   case Failure(exception) => {
@@ -511,10 +519,9 @@ class EventServiceActor(
                       (
                         StatusCodes.BadRequest,
                         Map(
-                          "message" -> (
-                            s"Batch request must have less than or equal to " +
-                              s"${MaxNumberOfEventsPerBatchRequest} events"
-                          )))
+                          "message" ->
+                            (s"Batch request must have less than or equal to " +
+                              s"${MaxNumberOfEventsPerBatchRequest} events")))
                     }
                   }
                 }

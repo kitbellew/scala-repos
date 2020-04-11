@@ -124,33 +124,33 @@ abstract class Task(settings: Settings) extends Specification {
       path: String,
       file: File,
       contentType: String) {
-    val req = ((ingest / "sync" / "fs" / path).POST
-      <:< List("Content-Type" -> contentType)
-      <<? List("apiKey" -> account.apiKey /*,
-                        "ownerAccountId" -> account.accountId*/ )
-      <<< file)
+    val req =
+      ((ingest / "sync" / "fs" / path)
+        .POST <:< List("Content-Type" -> contentType) <<?
+        List("apiKey" -> account.apiKey /*,
+                        "ownerAccountId" -> account.accountId*/ ) <<< file)
     Http(req OK as.String)()
   }
 
   def ingestString(account: Account, data: String, contentType: String)(
       f: Req => Req) {
-    val req = (f(ingest / "sync" / "fs").POST
-      <:< List("Content-Type" -> contentType)
-      <<? List(
-        "apiKey" -> account.apiKey,
-        "ownerAccountId" -> account.accountId)
-      << data)
+    val req =
+      (f(ingest / "sync" / "fs")
+        .POST <:< List("Content-Type" -> contentType) <<?
+        List(
+          "apiKey" -> account.apiKey,
+          "ownerAccountId" -> account.accountId) << data)
     Http(req OK as.String)()
   }
 
   def asyncIngestString(account: Account, data: String, contentType: String)(
       f: Req => Req) {
-    val req = (f(ingest / "async" / "fs").POST
-      <:< List("Content-Type" -> contentType)
-      <<? List(
-        "apiKey" -> account.apiKey,
-        "ownerAccountId" -> account.accountId)
-      << data)
+    val req =
+      (f(ingest / "async" / "fs")
+        .POST <:< List("Content-Type" -> contentType) <<?
+        List(
+          "apiKey" -> account.apiKey,
+          "ownerAccountId" -> account.accountId) << data)
     Http(req OK as.String)()
   }
 
@@ -159,12 +159,12 @@ abstract class Task(settings: Settings) extends Specification {
       ownerAccount: Account,
       data: String,
       contentType: String)(f: Req => Req) = {
-    val req = (f(ingest / "sync" / "fs").POST
-      <:< List("Content-Type" -> contentType)
-      <<? List(
-        "apiKey" -> authAPIKey,
-        "ownerAccountId" -> ownerAccount.accountId)
-      << data)
+    val req =
+      (f(ingest / "sync" / "fs")
+        .POST <:< List("Content-Type" -> contentType) <<?
+        List(
+          "apiKey" -> authAPIKey,
+          "ownerAccountId" -> ownerAccount.accountId) << data)
 
     Http(req OK as.String).either()
   }
@@ -199,22 +199,23 @@ abstract class Task(settings: Settings) extends Specification {
 
   def grantBody(perms: List[(String, String, List[String])]): String =
     JObject(
-      "permissions" -> JArray(
-        perms.map {
-          case (accessType, path, owners) =>
-            val ids = JArray(owners.map(JString(_)))
-            JObject(
-              "accessType" -> JString(accessType),
-              "path" -> JString(path),
-              "ownerAccountIds" -> ids)
-        })).renderCompact
+      "permissions" ->
+        JArray(
+          perms.map {
+            case (accessType, path, owners) =>
+              val ids = JArray(owners.map(JString(_)))
+              JObject(
+                "accessType" -> JString(accessType),
+                "path" -> JString(path),
+                "ownerAccountIds" -> ids)
+          })).renderCompact
 
   def createGrant(
       apiKey: String,
       perms: List[(String, String, List[String])]): ApiResult =
     http(
-      (grants / "").POST.addQueryParameter("apiKey", apiKey) << grantBody(
-        perms))()
+      (grants / "").POST.addQueryParameter("apiKey", apiKey) <<
+        grantBody(perms))()
 
   def createChildGrant(
       apiKey: String,

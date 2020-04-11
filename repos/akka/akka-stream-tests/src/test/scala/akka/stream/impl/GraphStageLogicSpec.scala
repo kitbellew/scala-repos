@@ -137,149 +137,158 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
   "A GraphStageLogic" must {
 
-    "read N and emit N before completing" in assertAllStagesStopped {
-      Source(1 to 10)
-        .via(ReadNEmitN(2))
-        .runWith(TestSink.probe)
-        .request(10)
-        .expectNext(1, 2)
-        .expectComplete()
-    }
+    "read N and emit N before completing" in
+      assertAllStagesStopped {
+        Source(1 to 10)
+          .via(ReadNEmitN(2))
+          .runWith(TestSink.probe)
+          .request(10)
+          .expectNext(1, 2)
+          .expectComplete()
+      }
 
-    "read N should not emit if upstream completes before N is sent" in assertAllStagesStopped {
-      Source(1 to 5)
-        .via(ReadNEmitN(6))
-        .runWith(TestSink.probe)
-        .request(10)
-        .expectComplete()
-    }
+    "read N should not emit if upstream completes before N is sent" in
+      assertAllStagesStopped {
+        Source(1 to 5)
+          .via(ReadNEmitN(6))
+          .runWith(TestSink.probe)
+          .request(10)
+          .expectComplete()
+      }
 
-    "read N should not emit if upstream fails before N is sent" in assertAllStagesStopped {
-      val error = new IllegalArgumentException("Don't argue like that!")
-      Source(1 to 5)
-        .map(x ⇒
-          if (x > 3)
-            throw error
-          else
-            x)
-        .via(ReadNEmitN(6))
-        .runWith(TestSink.probe)
-        .request(10)
-        .expectError(error)
-    }
+    "read N should not emit if upstream fails before N is sent" in
+      assertAllStagesStopped {
+        val error = new IllegalArgumentException("Don't argue like that!")
+        Source(1 to 5)
+          .map(x ⇒
+            if (x > 3)
+              throw error
+            else
+              x)
+          .via(ReadNEmitN(6))
+          .runWith(TestSink.probe)
+          .request(10)
+          .expectError(error)
+      }
 
-    "read N should provide elements read if onComplete happens before N elements have been seen" in assertAllStagesStopped {
-      Source(1 to 5)
-        .via(ReadNEmitRestOnComplete(6))
-        .runWith(TestSink.probe)
-        .request(10)
-        .expectNext(1, 2, 3, 4, 5)
-        .expectComplete()
-    }
+    "read N should provide elements read if onComplete happens before N elements have been seen" in
+      assertAllStagesStopped {
+        Source(1 to 5)
+          .via(ReadNEmitRestOnComplete(6))
+          .runWith(TestSink.probe)
+          .request(10)
+          .expectNext(1, 2, 3, 4, 5)
+          .expectComplete()
+      }
 
-    "emit all things before completing" in assertAllStagesStopped {
+    "emit all things before completing" in
+      assertAllStagesStopped {
 
-      Source
-        .empty
-        .via(emit1234.named("testStage"))
-        .runWith(TestSink.probe)
-        .request(5)
-        .expectNext(1, 2, 3, 4)
-        .expectComplete()
+        Source
+          .empty
+          .via(emit1234.named("testStage"))
+          .runWith(TestSink.probe)
+          .request(5)
+          .expectNext(1, 2, 3, 4)
+          .expectComplete()
 
-    }
+      }
 
-    "emit all things before completing with two fused stages" in assertAllStagesStopped {
-      val g = aggressive(Flow[Int].via(emit1234).via(emit5678))
+    "emit all things before completing with two fused stages" in
+      assertAllStagesStopped {
+        val g = aggressive(Flow[Int].via(emit1234).via(emit5678))
 
-      Source
-        .empty
-        .via(g)
-        .runWith(TestSink.probe)
-        .request(9)
-        .expectNextN(1 to 8)
-        .expectComplete()
-    }
+        Source
+          .empty
+          .via(g)
+          .runWith(TestSink.probe)
+          .request(9)
+          .expectNextN(1 to 8)
+          .expectComplete()
+      }
 
-    "emit all things before completing with three fused stages" in assertAllStagesStopped {
-      val g = aggressive(Flow[Int].via(emit1234).via(passThrough).via(emit5678))
+    "emit all things before completing with three fused stages" in
+      assertAllStagesStopped {
+        val g = aggressive(
+          Flow[Int].via(emit1234).via(passThrough).via(emit5678))
 
-      Source
-        .empty
-        .via(g)
-        .runWith(TestSink.probe)
-        .request(9)
-        .expectNextN(1 to 8)
-        .expectComplete()
-    }
+        Source
+          .empty
+          .via(g)
+          .runWith(TestSink.probe)
+          .request(9)
+          .expectNextN(1 to 8)
+          .expectComplete()
+      }
 
-    "emit properly after empty iterable" in assertAllStagesStopped {
+    "emit properly after empty iterable" in
+      assertAllStagesStopped {
 
-      Source
-        .fromGraph(emitEmptyIterable)
-        .runWith(Sink.seq)
-        .futureValue should ===(List(42))
+        Source.fromGraph(emitEmptyIterable).runWith(Sink.seq).futureValue should
+          ===(List(42))
 
-    }
+      }
 
-    "invoke lifecycle hooks in the right order" in assertAllStagesStopped {
-      val g =
-        new GraphStage[FlowShape[Int, Int]] {
+    "invoke lifecycle hooks in the right order" in
+      assertAllStagesStopped {
+        val g =
+          new GraphStage[FlowShape[Int, Int]] {
+            val in = Inlet[Int]("in")
+            val out = Outlet[Int]("out")
+            override val shape = FlowShape(in, out)
+            override def createLogic(attr: Attributes) =
+              new GraphStageLogic(shape) {
+                setHandler(in, eagerTerminateInput)
+                setHandler(
+                  out,
+                  new OutHandler {
+                    override def onPull(): Unit = {
+                      completeStage()
+                      testActor ! "pulled"
+                    }
+                  })
+                override def preStart(): Unit = testActor ! "preStart"
+                override def postStop(): Unit = testActor ! "postStop"
+              }
+          }
+        Source.single(1).via(g).runWith(Sink.ignore)
+        expectMsg("preStart")
+        expectMsg("pulled")
+        expectMsg("postStop")
+      }
+
+    "not double-terminate a single stage" in
+      new Builder {
+        object g extends GraphStage[FlowShape[Int, Int]] {
           val in = Inlet[Int]("in")
           val out = Outlet[Int]("out")
           override val shape = FlowShape(in, out)
           override def createLogic(attr: Attributes) =
             new GraphStageLogic(shape) {
               setHandler(in, eagerTerminateInput)
-              setHandler(
-                out,
-                new OutHandler {
-                  override def onPull(): Unit = {
-                    completeStage()
-                    testActor ! "pulled"
-                  }
-                })
-              override def preStart(): Unit = testActor ! "preStart"
-              override def postStop(): Unit = testActor ! "postStop"
+              setHandler(out, eagerTerminateOutput)
+              override def postStop(): Unit = testActor ! "postStop2"
             }
         }
-      Source.single(1).via(g).runWith(Sink.ignore)
-      expectMsg("preStart")
-      expectMsg("pulled")
-      expectMsg("postStop")
-    }
 
-    "not double-terminate a single stage" in new Builder {
-      object g extends GraphStage[FlowShape[Int, Int]] {
-        val in = Inlet[Int]("in")
-        val out = Outlet[Int]("out")
-        override val shape = FlowShape(in, out)
-        override def createLogic(attr: Attributes) =
-          new GraphStageLogic(shape) {
-            setHandler(in, eagerTerminateInput)
-            setHandler(out, eagerTerminateOutput)
-            override def postStop(): Unit = testActor ! "postStop2"
-          }
+        builder(g, passThrough)
+          .connect(Upstream, g.in)
+          .connect(g.out, passThrough.in)
+          .connect(passThrough.out, Downstream)
+          .init()
+
+        interpreter.complete(0)
+        interpreter.cancel(1)
+        interpreter.execute(2)
+
+        expectMsg("postStop2")
+        expectNoMsg(Duration.Zero)
+
+        interpreter.isCompleted should ===(false)
+        interpreter.isSuspended should ===(false)
+        interpreter.isStageCompleted(interpreter.logics(0)) should ===(true)
+        interpreter.isStageCompleted(interpreter.logics(1)) should ===(false)
       }
-
-      builder(g, passThrough)
-        .connect(Upstream, g.in)
-        .connect(g.out, passThrough.in)
-        .connect(passThrough.out, Downstream)
-        .init()
-
-      interpreter.complete(0)
-      interpreter.cancel(1)
-      interpreter.execute(2)
-
-      expectMsg("postStop2")
-      expectNoMsg(Duration.Zero)
-
-      interpreter.isCompleted should ===(false)
-      interpreter.isSuspended should ===(false)
-      interpreter.isStageCompleted(interpreter.logics(0)) should ===(true)
-      interpreter.isStageCompleted(interpreter.logics(1)) should ===(false)
-    }
 
   }
 

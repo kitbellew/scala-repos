@@ -13,29 +13,32 @@ import play.api.test.FakeApplication
 object SecuritySpec extends PlaySpecification {
 
   "AuthenticatedBuilder" should {
-    "block unauthenticated requests" in withApplication {
-      status(
-        TestAction { req =>
-          Results.Ok(req.user)
-        }(FakeRequest())) must_== UNAUTHORIZED
-    }
-    "allow authenticated requests" in withApplication {
-      val result =
-        TestAction { req =>
-          Results.Ok(req.user)
-        }(FakeRequest().withSession("username" -> "john"))
-      status(result) must_== OK
-      contentAsString(result) must_== "john"
-    }
+    "block unauthenticated requests" in
+      withApplication {
+        status(
+          TestAction { req =>
+            Results.Ok(req.user)
+          }(FakeRequest())) must_== UNAUTHORIZED
+      }
+    "allow authenticated requests" in
+      withApplication {
+        val result =
+          TestAction { req =>
+            Results.Ok(req.user)
+          }(FakeRequest().withSession("username" -> "john"))
+        status(result) must_== OK
+        contentAsString(result) must_== "john"
+      }
 
-    "allow use as an ActionBuilder" in withApplication {
-      val result =
-        Authenticated { req =>
-          Results.Ok(s"${req.conn.name}:${req.user.name}")
-        }(FakeRequest().withSession("user" -> "Phil"))
-      status(result) must_== OK
-      contentAsString(result) must_== "fake:Phil"
-    }
+    "allow use as an ActionBuilder" in
+      withApplication {
+        val result =
+          Authenticated { req =>
+            Results.Ok(s"${req.conn.name}:${req.user.name}")
+          }(FakeRequest().withSession("user" -> "Phil"))
+        status(result) must_== OK
+        contentAsString(result) must_== "fake:Phil"
+      }
   }
 
   val TestAction = AuthenticatedBuilder()

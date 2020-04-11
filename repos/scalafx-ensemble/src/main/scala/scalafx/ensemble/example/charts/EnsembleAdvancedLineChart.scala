@@ -56,10 +56,11 @@ class EnsembleAdvancedLineChart extends EnsembleExample {
     val series =
       new XYChart.Series[Number, Number] {
         name = "Data Series 1"
-        data() ++= xyData.map {
-          case (x, y) =>
-            XYChart.Data[Number, Number](x, y)
-        }
+        data() ++=
+          xyData.map {
+            case (x, y) =>
+              XYChart.Data[Number, Number](x, y)
+          }
       }
 
     // setup Line chart

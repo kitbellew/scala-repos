@@ -110,9 +110,8 @@ object ColumnarTableModule extends Logging {
       else if (prefix == "")
         stream ++ (CharBuffer.wrap(suffix) :: StreamT.empty[M, CharBuffer])
       else
-        CharBuffer.wrap(prefix) :: (
-          stream ++ (CharBuffer.wrap(suffix) :: StreamT.empty[M, CharBuffer])
-        )
+        CharBuffer.wrap(prefix) ::
+          (stream ++ (CharBuffer.wrap(suffix) :: StreamT.empty[M, CharBuffer]))
     }
 
     def foldFlatMap(
@@ -502,53 +501,48 @@ trait ColumnarTableModule[M[+_]]
     def constBoolean(v: collection.Set[Boolean]): Table = {
       val column = ArrayBoolColumn(v.toArray)
       Table(
-        Slice(
-          Map(ColumnRef(CPath.Identity, CBoolean) -> column),
-          v.size) :: StreamT.empty[M, Slice],
+        Slice(Map(ColumnRef(CPath.Identity, CBoolean) -> column), v.size) ::
+          StreamT.empty[M, Slice],
         ExactSize(v.size))
     }
 
     def constLong(v: collection.Set[Long]): Table = {
       val column = ArrayLongColumn(v.toArray)
       Table(
-        Slice(
-          Map(ColumnRef(CPath.Identity, CLong) -> column),
-          v.size) :: StreamT.empty[M, Slice],
+        Slice(Map(ColumnRef(CPath.Identity, CLong) -> column), v.size) ::
+          StreamT.empty[M, Slice],
         ExactSize(v.size))
     }
 
     def constDouble(v: collection.Set[Double]): Table = {
       val column = ArrayDoubleColumn(v.toArray)
       Table(
-        Slice(
-          Map(ColumnRef(CPath.Identity, CDouble) -> column),
-          v.size) :: StreamT.empty[M, Slice],
+        Slice(Map(ColumnRef(CPath.Identity, CDouble) -> column), v.size) ::
+          StreamT.empty[M, Slice],
         ExactSize(v.size))
     }
 
     def constDecimal(v: collection.Set[BigDecimal]): Table = {
       val column = ArrayNumColumn(v.toArray)
       Table(
-        Slice(Map(ColumnRef(CPath.Identity, CNum) -> column), v.size) :: StreamT
-          .empty[M, Slice],
+        Slice(Map(ColumnRef(CPath.Identity, CNum) -> column), v.size) ::
+          StreamT.empty[M, Slice],
         ExactSize(v.size))
     }
 
     def constString(v: collection.Set[String]): Table = {
       val column = ArrayStrColumn(v.toArray)
       Table(
-        Slice(
-          Map(ColumnRef(CPath.Identity, CString) -> column),
-          v.size) :: StreamT.empty[M, Slice],
+        Slice(Map(ColumnRef(CPath.Identity, CString) -> column), v.size) ::
+          StreamT.empty[M, Slice],
         ExactSize(v.size))
     }
 
     def constDate(v: collection.Set[DateTime]): Table = {
       val column = ArrayDateColumn(v.toArray)
       Table(
-        Slice(
-          Map(ColumnRef(CPath.Identity, CDate) -> column),
-          v.size) :: StreamT.empty[M, Slice],
+        Slice(Map(ColumnRef(CPath.Identity, CDate) -> column), v.size) ::
+          StreamT.empty[M, Slice],
         ExactSize(v.size))
     }
 
@@ -556,8 +550,8 @@ trait ColumnarTableModule[M[+_]]
       Table(
         Slice(
           Map(
-            ColumnRef(CPath.Identity, CNull) -> new InfiniteColumn
-              with NullColumn),
+            ColumnRef(CPath.Identity, CNull) ->
+              new InfiniteColumn with NullColumn),
           1) :: StreamT.empty[M, Slice],
         ExactSize(1))
 
@@ -565,8 +559,8 @@ trait ColumnarTableModule[M[+_]]
       Table(
         Slice(
           Map(
-            ColumnRef(CPath.Identity, CEmptyObject) -> new InfiniteColumn
-              with EmptyObjectColumn),
+            ColumnRef(CPath.Identity, CEmptyObject) ->
+              new InfiniteColumn with EmptyObjectColumn),
           1) :: StreamT.empty[M, Slice],
         ExactSize(1))
 
@@ -574,8 +568,8 @@ trait ColumnarTableModule[M[+_]]
       Table(
         Slice(
           Map(
-            ColumnRef(CPath.Identity, CEmptyArray) -> new InfiniteColumn
-              with EmptyArrayColumn),
+            ColumnRef(CPath.Identity, CEmptyArray) ->
+              new InfiniteColumn with EmptyArrayColumn),
           1) :: StreamT.empty[M, Slice],
         ExactSize(1))
 
@@ -701,19 +695,18 @@ trait ColumnarTableModule[M[+_]]
             def intersect(
                 keys0: collection.Set[Key],
                 keys1: collection.Set[Key]): collection.Set[Key] = {
-              def consistent(key0: Key, key1: Key): Boolean =
-                (key0 zip key1).forall {
+              def consistent(key0: Key, key1: Key): Boolean = (key0 zip key1)
+                .forall {
                   case (k0, k1) =>
                     k0 == k1 || k0 == CUndefined || k1 == CUndefined
                 }
 
-              def merge(key0: Key, key1: Key): Key =
-                (key0 zip key1).map {
-                  case (k0, CUndefined) =>
-                    k0
-                  case (_, k1) =>
-                    k1
-                }
+              def merge(key0: Key, key1: Key): Key = (key0 zip key1).map {
+                case (k0, CUndefined) =>
+                  k0
+                case (_, k1) =>
+                  k1
+              }
 
               // TODO: This "mini-cross" is much better than the
               // previous mega-cross. However in many situations we
@@ -737,13 +730,14 @@ trait ColumnarTableModule[M[+_]]
                 val hd = normalizedKeys(
                   intersection.head._1,
                   intersection.head._2)
-                acc | intersection
-                  .tail
-                  .foldLeft(hd) {
-                    case (keys0, (index1, schema1)) =>
-                      val keys1 = normalizedKeys(index1, schema1)
-                      intersect(keys0, keys1)
-                  }
+                acc |
+                  intersection
+                    .tail
+                    .foldLeft(hd) {
+                      case (keys0, (index1, schema1)) =>
+                        val keys1 = normalizedKeys(index1, schema1)
+                        intersect(keys0, keys1)
+                    }
             }
           }
 
@@ -856,8 +850,9 @@ trait ColumnarTableModule[M[+_]]
             emptySpec,
             trans.WrapArray(joinSpec))
       } yield {
-        JoinOrder.KeyOrder -> cogrouped
-          .transform(trans.DerefArrayStatic(Leaf(Source), CPathIndex(0)))
+        JoinOrder.KeyOrder ->
+          cogrouped
+            .transform(trans.DerefArrayStatic(Leaf(Source), CPathIndex(0)))
       }
     }
 
@@ -1173,10 +1168,9 @@ trait ColumnarTableModule[M[+_]]
         }
 
         override def toString = {
-          "left: " + lbuf.toArray.mkString("[", ",", "]") + "\n" +
-            "right: " + rbuf.toArray.mkString("[", ",", "]") + "\n" +
-            "both: " + (leqbuf.toArray zip reqbuf.toArray)
-            .mkString("[", ",", "]")
+          "left: " + lbuf.toArray.mkString("[", ",", "]") + "\n" + "right: " +
+            rbuf.toArray.mkString("[", ",", "]") + "\n" + "both: " +
+            (leqbuf.toArray zip reqbuf.toArray).mkString("[", ",", "]")
         }
       }
 
@@ -1655,12 +1649,11 @@ trait ColumnarTableModule[M[+_]]
                 case (lr0, leftResult) => {
                   tail.uncons map { unconsed =>
                     Some(
-                      leftResult -> (
-                        unconsed map {
+                      leftResult ->
+                        (unconsed map {
                           case (nhead, ntail) =>
                             EndLeft(lr0, nhead, ntail)
-                        } getOrElse CogroupDone
-                      ))
+                        } getOrElse CogroupDone))
                   }
                 }
               }
@@ -1673,12 +1666,11 @@ trait ColumnarTableModule[M[+_]]
                 case (rr0, rightResult) => {
                   tail.uncons map { unconsed =>
                     Some(
-                      rightResult -> (
-                        unconsed map {
+                      rightResult ->
+                        (unconsed map {
                           case (nhead, ntail) =>
                             EndRight(rr0, nhead, ntail)
-                        } getOrElse CogroupDone
-                      ))
+                        } getOrElse CogroupDone))
                   }
                 }
               }
@@ -1796,44 +1788,43 @@ trait ColumnarTableModule[M[+_]]
           // Note that this is still memory efficient, as the columns are re-used
           // between all slices.
 
-          val results =
-            (0 until lhead.size by lrowsPerSlice)
-              .foldLeft(M.point((a0, List.empty[Slice]))) {
-                case (accM, offset) =>
-                  accM flatMap {
-                    case (a, acc) =>
-                      val rows = math
-                        .min(sliceSize, (lhead.size - offset) * rhead.size)
+          val results = (0 until lhead.size by lrowsPerSlice)
+            .foldLeft(M.point((a0, List.empty[Slice]))) {
+              case (accM, offset) =>
+                accM flatMap {
+                  case (a, acc) =>
+                    val rows = math
+                      .min(sliceSize, (lhead.size - offset) * rhead.size)
 
-                      val lslice =
-                        new Slice {
-                          val size = rows
-                          val columns = lhead
-                            .columns
-                            .lazyMapValues(
-                              Remap({ i =>
-                                offset + (i / rhead.size)
-                              })(_).get)
-                        }
-
-                      val rslice =
-                        new Slice {
-                          val size = rows
-                          val columns =
-                            if (rhead.size == 0)
-                              rhead.columns.lazyMapValues(Empty(_).get)
-                            else
-                              rhead
-                                .columns
-                                .lazyMapValues(Remap(_ % rhead.size)(_).get)
-                        }
-
-                      transform.f(a, lslice, rslice) map {
-                        case (b, resultSlice) =>
-                          (b, resultSlice :: acc)
+                    val lslice =
+                      new Slice {
+                        val size = rows
+                        val columns = lhead
+                          .columns
+                          .lazyMapValues(
+                            Remap({ i =>
+                              offset + (i / rhead.size)
+                            })(_).get)
                       }
-                  }
-              }
+
+                    val rslice =
+                      new Slice {
+                        val size = rows
+                        val columns =
+                          if (rhead.size == 0)
+                            rhead.columns.lazyMapValues(Empty(_).get)
+                          else
+                            rhead
+                              .columns
+                              .lazyMapValues(Remap(_ % rhead.size)(_).get)
+                      }
+
+                    transform.f(a, lslice, rslice) map {
+                      case (b, resultSlice) =>
+                        (b, resultSlice :: acc)
+                    }
+                }
+            }
 
           results map {
             case (a1, slices) =>
@@ -2140,9 +2131,8 @@ trait ColumnarTableModule[M[+_]]
               if (spanEnd < head.size) {
                 M.point(
                   Table(
-                    subSlices ++ (
-                      head.take(spanEnd) :: StreamT.empty[M, Slice]
-                    ),
+                    subSlices ++
+                      (head.take(spanEnd) :: StreamT.empty[M, Slice]),
                     ExactSize(size + spanEnd)))
               } else {
                 subTable0(

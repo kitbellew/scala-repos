@@ -106,9 +106,8 @@ class OfferMatcherManagerModuleTest
     val matchedTasks: MatchedTaskOps = Await
       .result(matchedTasksFuture, 3.seconds)
     assert(
-      matchedTasks.launchedTaskInfos.toSet == Set(
-        makeOneCPUTask("task1_1"),
-        makeOneCPUTask("task2_1")))
+      matchedTasks.launchedTaskInfos.toSet ==
+        Set(makeOneCPUTask("task1_1"), makeOneCPUTask("task2_1")))
   }
 
   for (launchTokens <- Seq(0, 1, 5)) {
@@ -151,11 +150,12 @@ class OfferMatcherManagerModuleTest
     val matchedTasks: MatchedTaskOps = Await
       .result(matchedTasksFuture, 3.seconds)
     assert(
-      matchedTasks.launchedTaskInfos.toSet == Set(
-        makeOneCPUTask("task1_1"),
-        makeOneCPUTask("task1_2"),
-        makeOneCPUTask("task2_1"),
-        makeOneCPUTask("task2_2")))
+      matchedTasks.launchedTaskInfos.toSet ==
+        Set(
+          makeOneCPUTask("task1_1"),
+          makeOneCPUTask("task1_2"),
+          makeOneCPUTask("task2_1"),
+          makeOneCPUTask("task2_2")))
   }
 
   test(
@@ -167,8 +167,9 @@ class OfferMatcherManagerModuleTest
     //scalastyle:on magic.number
     val resources = ResourceUtil
       .displayResources(offer.getResourcesList.asScala, 10)
-    resources should include(
-      "ports(*) 1->2,3->4,5->6,7->8,9->10,11->12,13->14,15->16,17->18,19->20 ... (90 more)")
+    resources should
+      include(
+        "ports(*) 1->2,3->4,5->6,7->8,9->10,11->12,13->14,15->16,17->18,19->20 ... (90 more)")
   }
 
   def makeOneCPUTask(idBase: String) = {

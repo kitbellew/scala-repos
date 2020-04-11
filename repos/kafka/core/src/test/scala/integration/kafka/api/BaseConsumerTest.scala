@@ -440,7 +440,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
         records.add(record)
       if (iters > maxIters)
         throw new IllegalStateException(
-          "Failed to consume the expected records after " + iters + " iterations.")
+          "Failed to consume the expected records after " + iters +
+            " iterations.")
       iters += 1
     }
     records
@@ -451,8 +452,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       commitCallback: CountConsumerCommitCallback): Unit = {
     val startCount = commitCallback.count
     val started = System.currentTimeMillis()
-    while (commitCallback.count == startCount && System
-             .currentTimeMillis() - started < 10000)
+    while (commitCallback.count == startCount &&
+           System.currentTimeMillis() - started < 10000)
       consumer.poll(50)
     assertEquals(startCount + 1, commitCallback.count)
   }
@@ -542,8 +543,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
   def isPartitionAssignmentValid(
       assignments: Buffer[Set[TopicPartition]],
       partitions: Set[TopicPartition]): Boolean = {
-    val allNonEmptyAssignments =
-      assignments forall (assignment => assignment.size > 0)
+    val allNonEmptyAssignments = assignments forall
+      (assignment => assignment.size > 0)
     if (!allNonEmptyAssignments) {
       // at least one consumer got empty assignment
       return false

@@ -21,101 +21,104 @@ object ListTest extends SpecLite {
   import std.list.listSyntax._
   import syntax.foldable._
 
-  "intercalate empty list is flatten" ! forAll((a: List[List[Int]]) =>
-    a.intercalate(List[Int]()) must_=== (a.flatten))
+  "intercalate empty list is flatten" !
+    forAll((a: List[List[Int]]) =>
+      a.intercalate(List[Int]()) must_=== (a.flatten))
 
-  "intersperse then remove odd items is identity" ! forAll {
-    (a: List[Int], b: Int) =>
+  "intersperse then remove odd items is identity" !
+    forAll { (a: List[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a.intersperse(b)
-        .zipWithIndex
-        .filter(p => isEven(p._2))
-        .map(_._1) must_=== (a)
-  }
+      a.intersperse(b).zipWithIndex.filter(p => isEven(p._2)).map(_._1) must_===
+        (a)
+    }
 
-  "intercalate is same as a.intersperse(b).flatten" ! forAll {
-    (a: List[List[Int]], b: List[Int]) =>
+  "intercalate is same as a.intersperse(b).flatten" !
+    forAll { (a: List[List[Int]], b: List[Int]) =>
       a.intercalate(b) must_=== (a.intersperse(b).flatten)
-  }
+    }
 
-  "intersperse vs benchmark" ! forAll {
-    def intersperse[A](value: List[A], a: A): List[A] =
-      value match {
-        case Nil =>
-          Nil
-        case x :: Nil =>
-          x :: Nil
-        case h :: t =>
-          h :: a :: intersperse(t, a)
-      }
-    (a: List[Int], b: Int) => (a.intersperse(b) must_=== (intersperse(a, b)))
-  }
+  "intersperse vs benchmark" !
+    forAll {
+      def intersperse[A](value: List[A], a: A): List[A] =
+        value match {
+          case Nil =>
+            Nil
+          case x :: Nil =>
+            x :: Nil
+          case h :: t =>
+            h :: a :: intersperse(t, a)
+        }
+      (a: List[Int], b: Int) => (a.intersperse(b) must_=== (intersperse(a, b)))
+    }
 
-  "groupWhenM[Id].flatten is identity" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupWhenM[Id].flatten is identity" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       a.groupWhenM[Id](p).map(_.list.toList).flatten must_=== (a)
-  }
+    }
 
-  "groupByWhenM[Id] ∀(i,j) | 0<i<resut.len & 0<j<result(i).len: p(result(i)(j), p(result(i)(j+1)) yields true" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupByWhenM[Id] ∀(i,j) | 0<i<resut.len & 0<j<result(i).len: p(result(i)(j), p(result(i)(j+1)) yields true" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       a.groupWhenM[Id](p)
         .forall { group: NonEmptyList[Int] =>
           list.adjacentPairs(group.list.toList).forall(p.tupled)
         }
-  }
+    }
 
-  "groupByWhenM[Id] ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupByWhenM[Id] ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       val pairs = list.adjacentPairs(a.groupWhen(p))
       pairs.forall {
         case (l, r) =>
           !p(l.last, r.head)
       }
-  }
+    }
 
-  "groupBy1" ! forAll { (a: List[String]) =>
-    val strlen = (_: String).length
-    (a groupBy strlen) must_=== ((a groupBy1 strlen) mapValues (_.list.toList))
-  }
+  "groupBy1" !
+    forAll { (a: List[String]) =>
+      val strlen = (_: String).length
+      (a groupBy strlen) must_===
+        ((a groupBy1 strlen) mapValues (_.list.toList))
+    }
 
-  "groupWhen.flatten is identity" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupWhen.flatten is identity" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       a.groupWhen(p).map(_.list.toList).flatten must_=== (a)
-  }
+    }
 
-  "filterM" ! forAll { (xs: List[Int]) =>
-    xs.filterM[Id](_ % 2 == 0) == xs.filter(_ % 2 == 0)
-  }
+  "filterM" !
+    forAll { (xs: List[Int]) =>
+      xs.filterM[Id](_ % 2 == 0) == xs.filter(_ % 2 == 0)
+    }
 
-  "filter consistent with fiterM[Id]" ! forAll {
-    (xs: List[Int], p: Int => Boolean) =>
+  "filter consistent with fiterM[Id]" !
+    forAll { (xs: List[Int], p: Int => Boolean) =>
       MonadPlus[List].filter(xs)(p) must_=== xs.filterM[Id](p)
-  }
+    }
 
-  "groupWhen.flatten is identity" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupWhen.flatten is identity" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       a.groupWhen(p).map(_.list.toList).flatten must_=== (a)
-  }
+    }
 
-  "groupByWhen ∀(i,j) | 0<i<resut.len & 0<j<result(i).len: p(result(i)(j), p(result(i)(j+1)) yields true" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupByWhen ∀(i,j) | 0<i<resut.len & 0<j<result(i).len: p(result(i)(j), p(result(i)(j+1)) yields true" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       a.groupWhen(p)
         .forall { group: NonEmptyList[Int] =>
           list.adjacentPairs(group.list.toList).forall(p.tupled)
         }
-  }
+    }
 
-  "groupByWhen ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" ! forAll {
-    (a: List[Int], p: (Int, Int) => Boolean) =>
+  "groupByWhen ∀ i | 0<i<result.len: p(result(i).last, result(i+1).head) yields false" !
+    forAll { (a: List[Int], p: (Int, Int) => Boolean) =>
       val pairs = list.adjacentPairs(a.groupWhen(p))
       pairs.forall {
         case (l, r) =>
           !p(l.last, r.head)
       }
-  }
+    }
 
-  "lookups in assoc lists sometime return a value" ! forAll {
-    (a: List[(Int, Int)]) =>
+  "lookups in assoc lists sometime return a value" !
+    forAll { (a: List[(Int, Int)]) =>
       {
         a.headOption match {
           case None =>
@@ -124,18 +127,17 @@ object ListTest extends SpecLite {
             a.lookup[Int, Int](x._1) must_=== (Some(x._2))
         }
       }
-  }
+    }
 
   "takeWhileM example" in {
     def takeWhileN[A](as: List[A], n: Int)(f: A => Boolean): List[A] =
       as.takeWhileM[State[Int, ?]](a =>
           State { i =>
-            val j = i + (
-              if (f(a))
-                0
-              else
-                1
-            )
+            val j = i +
+              (if (f(a))
+                 0
+               else
+                 1)
             val done = j >= n
             (j, !done)
           })
@@ -145,49 +147,53 @@ object ListTest extends SpecLite {
     actual must_=== ("/abc/def/hij")
   }
 
-  "foldl is foldLeft" ! forAll { (rnge: List[List[Int]]) =>
-    val F = Foldable[List]
-    (
-      rnge.foldLeft(List[Int]())(_ ++ _)
-        must_=== (F.foldLeft(rnge, List[Int]())(_ ++ _))
-    )
-  }
+  "foldl is foldLeft" !
+    forAll { (rnge: List[List[Int]]) =>
+      val F = Foldable[List]
+      (
+        rnge.foldLeft(List[Int]())(_ ++ _) must_===
+          (F.foldLeft(rnge, List[Int]())(_ ++ _))
+      )
+    }
 
-  "foldr is foldRight" ! forAll { (rnge: List[List[Int]]) =>
-    val F = Foldable[List]
-    (
-      rnge.foldRight(List[Int]())(_ ++ _)
-        must_=== (F.foldRight(rnge, List[Int]())(_ ++ _))
-    )
-  }
+  "foldr is foldRight" !
+    forAll { (rnge: List[List[Int]]) =>
+      val F = Foldable[List]
+      (
+        rnge.foldRight(List[Int]())(_ ++ _) must_===
+          (F.foldRight(rnge, List[Int]())(_ ++ _))
+      )
+    }
 
-  "index" ! forAll { (xs: List[Int], n: Int) =>
-    (xs index n) must_=== (
-      if (n >= 0 && xs.size > n)
-        Some(xs(n))
-      else
-        None
-    )
-  }
+  "index" !
+    forAll { (xs: List[Int], n: Int) =>
+      (xs index n) must_===
+        (if (n >= 0 && xs.size > n)
+           Some(xs(n))
+         else
+           None)
+    }
 
-  "groupWhen is groupWhenM[Id]" ! forAll { xs: List[Int] =>
-    val f: (Int, Int) => Boolean = _ > _
-    xs.groupWhen(f) must_=== xs.groupWhenM[Id.Id](f)
-  }
+  "groupWhen is groupWhenM[Id]" !
+    forAll { xs: List[Int] =>
+      val f: (Int, Int) => Boolean = _ > _
+      xs.groupWhen(f) must_=== xs.groupWhenM[Id.Id](f)
+    }
 
-  "mapAccumLeft" ! forAll { (xs: List[Int]) =>
-    val f = (_: Int) + 1
-    xs.mapAccumLeft(List[Int](), (c: List[Int], a) => (c :+ a, f(a))) must_=== (
-      xs, xs.map(f)
-    )
-  }
+  "mapAccumLeft" !
+    forAll { (xs: List[Int]) =>
+      val f = (_: Int) + 1
+      xs.mapAccumLeft(List[Int](), (c: List[Int], a) => (c :+ a, f(a))) must_===
+        (xs, xs.map(f))
+    }
 
-  "mapAccumRight" ! forAll { (xs: List[Int]) =>
-    val f = (_: Int) + 1
-    xs.mapAccumRight(
-      List[Int](),
-      (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs.reverse, xs.map(f))
-  }
+  "mapAccumRight" !
+    forAll { (xs: List[Int]) =>
+      val f = (_: Int) + 1
+      xs.mapAccumRight(
+        List[Int](),
+        (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs.reverse, xs.map(f))
+    }
 
   checkAll(FoldableTests.anyAndAllLazy[List])
 

@@ -112,8 +112,8 @@ sealed abstract class DefinedPosition extends Position {
   override def equals(that: Any) =
     that match {
       case that: DefinedPosition =>
-        source.file == that.source.file && start == that.start && point == that
-          .point && end == that.end
+        source.file == that.source.file && start == that.start &&
+          point == that.point && end == that.end
       case _ =>
         false
     }
@@ -269,13 +269,13 @@ private[util] trait InternalPositionImpl {
       def uable(c: Int) = (c < 0x20 && c != '\t') || c == 0x7F
       if (s exists (c => uable(c))) {
         val sb = new StringBuilder
-        s foreach (c =>
-          sb append (
-            if (uable(c))
-              u(c)
-            else
-              c
-          ))
+        s foreach
+          (c =>
+            sb append
+              (if (uable(c))
+                 u(c)
+               else
+                 c))
         sb.toString
       } else
         s
@@ -317,12 +317,11 @@ private[util] trait InternalPositionImpl {
     var idx = source.lineToOffset(source.offsetToLine(point))
     var col = 0
     while (idx != point) {
-      col += (
-        if (source.content(idx) == '\t')
-          Position.tabInc - col % Position.tabInc
-        else
-          1
-      )
+      col +=
+        (if (source.content(idx) == '\t')
+           Position.tabInc - col % Position.tabInc
+         else
+           1)
       idx += 1
     }
     col + 1

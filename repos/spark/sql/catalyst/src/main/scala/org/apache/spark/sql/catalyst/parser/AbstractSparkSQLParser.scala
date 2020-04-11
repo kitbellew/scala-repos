@@ -97,10 +97,36 @@ class SqlLexical extends StdLexical {
   /* Normal the keyword string */
   def normalizeKeyword(str: String): String = str.toLowerCase
 
-  delimiters += (
-    "@", "*", "+", "-", "<", "=", "<>", "!=", "<=", ">=", ">", "/", "(", ")",
-    ",", ";", "%", "{", "}", ":", "[", "]", ".", "&", "|", "^", "~", "<=>"
-  )
+  delimiters +=
+    (
+      "@",
+      "*",
+      "+",
+      "-",
+      "<",
+      "=",
+      "<>",
+      "!=",
+      "<=",
+      ">=",
+      ">",
+      "/",
+      "(",
+      ")",
+      ",",
+      ";",
+      "%",
+      "{",
+      "}",
+      ":",
+      "[",
+      "]",
+      ".",
+      "&",
+      "|",
+      "^",
+      "~",
+      "<=>")
 
   protected override def processIdent(name: String) = {
     val token = normalizeKeyword(name)
@@ -114,58 +140,58 @@ class SqlLexical extends StdLexical {
     (rep1(digit) ~ scientificNotation ^^ {
       case i ~ s =>
         DecimalLit(i.mkString + s)
-    }
-      | '.' ~> (rep1(digit) ~ scientificNotation) ^^ {
+    } |
+      '.' ~>
+      (rep1(digit) ~ scientificNotation) ^^ {
         case i ~ s =>
           DecimalLit("0." + i.mkString + s)
-      }
-      | rep1(digit) ~ ('.' ~> digit.*) ~ scientificNotation ^^ {
+      } |
+      rep1(digit) ~
+      ('.' ~> digit.*) ~ scientificNotation ^^ {
         case i1 ~ i2 ~ s =>
           DecimalLit(i1.mkString + "." + i2.mkString + s)
-      }
-      | digit.* ~ identChar ~ (identChar | digit).* ^^ {
+      } |
+      digit.* ~ identChar ~
+      (identChar | digit).* ^^ {
         case first ~ middle ~ rest =>
           processIdent((first ++ (middle :: rest)).mkString)
-      }
-      | rep1(digit) ~ ('.' ~> digit.*).? ^^ {
+      } |
+      rep1(digit) ~
+      ('.' ~> digit.*).? ^^ {
         case i ~ None =>
           NumericLit(i.mkString)
         case i ~ Some(d) =>
           DecimalLit(i.mkString + "." + d.mkString)
-      }
-      | '\'' ~> chrExcept('\'', '\n', EofCh).* <~ '\'' ^^ {
+      } |
+      '\'' ~> chrExcept('\'', '\n', EofCh).* <~ '\'' ^^ {
         case chars =>
           StringLit(chars mkString "")
-      }
-      | '"' ~> chrExcept('"', '\n', EofCh).* <~ '"' ^^ {
+      } |
+      '"' ~> chrExcept('"', '\n', EofCh).* <~ '"' ^^ {
         case chars =>
           StringLit(chars mkString "")
-      }
-      | '`' ~> chrExcept('`', '\n', EofCh).* <~ '`' ^^ {
+      } |
+      '`' ~> chrExcept('`', '\n', EofCh).* <~ '`' ^^ {
         case chars =>
           Identifier(chars mkString "")
-      }
-      | EofCh ^^^ EOF
-      | '\'' ~> failure("unclosed string literal")
-      | '"' ~> failure("unclosed string literal")
-      | delim
-      | failure("illegal character"))
+      } | EofCh ^^^ EOF | '\'' ~> failure("unclosed string literal") |
+      '"' ~> failure("unclosed string literal") | delim |
+      failure("illegal character"))
 
   override def identChar: Parser[Elem] = letter | elem('_')
 
   private lazy val scientificNotation: Parser[String] =
-    (elem('e') | elem('E')) ~> (elem('+') | elem('-')).? ~ rep1(digit) ^^ {
-      case s ~ rest =>
-        "e" + s.mkString + rest.mkString
-    }
+    (elem('e') | elem('E')) ~>
+      (elem('+') | elem('-')).? ~ rep1(digit) ^^ {
+        case s ~ rest =>
+          "e" + s.mkString + rest.mkString
+      }
 
   override def whitespace: Parser[Any] =
     (
-      whitespaceChar
-        | '/' ~ '*' ~ comment
-        | '/' ~ '/' ~ chrExcept(EofCh, '\n').*
-        | '#' ~ chrExcept(EofCh, '\n').*
-        | '-' ~ '-' ~ chrExcept(EofCh, '\n').*
-        | '/' ~ '*' ~ failure("unclosed comment")
+      whitespaceChar | '/' ~ '*' ~ comment |
+        '/' ~ '/' ~ chrExcept(EofCh, '\n').* | '#' ~ chrExcept(EofCh, '\n').* |
+        '-' ~ '-' ~ chrExcept(EofCh, '\n').* |
+        '/' ~ '*' ~ failure("unclosed comment")
     ).*
 }

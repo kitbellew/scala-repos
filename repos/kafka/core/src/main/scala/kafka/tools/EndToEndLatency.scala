@@ -45,8 +45,8 @@ object EndToEndLatency {
       System
         .err
         .println(
-          "USAGE: java " + getClass
-            .getName + " broker_list topic num_messages producer_acks message_size_bytes [optional] ssl_properties_file")
+          "USAGE: java " + getClass.getName +
+            " broker_list topic num_messages producer_acks message_size_bytes [optional] ssl_properties_file")
       System.exit(1)
     }
 

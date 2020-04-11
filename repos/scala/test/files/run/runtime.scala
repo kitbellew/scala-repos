@@ -178,9 +178,8 @@ object Test3Test {
       if ((actual1 == expected) && (actual2 == !expected))
         "Ok"
       else
-        "KO: "
-          + "expected: " + expected + " - " + (!expected) + ", "
-          + "found: " + actual1 + " - " + actual1);
+        "KO: " + "expected: " + expected + " - " +
+          (!expected) + ", " + "found: " + actual1 + " - " + actual1);
 
   def test(args: Array[String]): Unit = {
     val foo1: AnyRef = null;
@@ -241,12 +240,11 @@ object Test {
     if (errors > 0) {
       Console.println;
       Console.println(
-        errors + " error" + (
-          if (errors > 1)
-            "s"
-          else
-            ""
-        ));
+        errors + " error" +
+          (if (errors > 1)
+             "s"
+           else
+             ""));
     }
   }
 }

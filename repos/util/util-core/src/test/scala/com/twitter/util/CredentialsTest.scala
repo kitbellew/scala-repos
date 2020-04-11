@@ -27,9 +27,8 @@ class CredentialsTest extends FunSuite with Checkers {
   test("parse a simple auth file") {
     val content = "username: root\npassword: hellokitty\n"
     assert(
-      Credentials(content) == Map(
-        "username" -> "root",
-        "password" -> "hellokitty"))
+      Credentials(content) ==
+        Map("username" -> "root", "password" -> "hellokitty"))
   }
 
   test("parse a more complex auth file") {
@@ -42,10 +41,11 @@ password  : last_0f-the/international:playboys
 
         """
     assert(
-      Credentials(content) == Map(
-        "username" -> "root",
-        "password" -> "last_0f-the/international:playboys",
-        "moar" -> "ok"))
+      Credentials(content) ==
+        Map(
+          "username" -> "root",
+          "password" -> "last_0f-the/international:playboys",
+          "moar" -> "ok"))
   }
 
   test("work for java peeps too") {
@@ -59,14 +59,15 @@ password  : last_0f-the/international:playboys
   test("handle \r\n line breaks") {
     val content = "username: root\r\npassword: hellokitty\r\n"
     assert(
-      Credentials(content) == Map(
-        "username" -> "root",
-        "password" -> "hellokitty"))
+      Credentials(content) ==
+        Map("username" -> "root", "password" -> "hellokitty"))
   }
 
   test("handle special chars") {
-    val pass =
-      (0 to 127).map(_.toChar).filter(c => c != '\r' && c != '\n').mkString
+    val pass = (0 to 127)
+      .map(_.toChar)
+      .filter(c => c != '\r' && c != '\n')
+      .mkString
     val content = s"username: root\npassword: $pass\n"
     assert(
       Credentials(content) == Map("username" -> "root", "password" -> pass))

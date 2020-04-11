@@ -94,8 +94,8 @@ class JvmTest extends WordSpec with TestLogging {
         assert(b(3) == gc1.copy(count = 1))
       }
 
-      "Complain when sampling rate is too low, every 30 minutes" in Time
-        .withCurrentTimeFrozen { tc =>
+      "Complain when sampling rate is too low, every 30 minutes" in
+        Time.withCurrentTimeFrozen { tc =>
           val h = new JvmHelper
           import h._
 
@@ -126,15 +126,16 @@ class JvmTest extends WordSpec with TestLogging {
           jvm.pushGc(gc.copy(count = 12))
           r.run()
           assert(
-            logLines() == Seq(
-              "Missed 1 collections for pcopy due to sampling",
-              "Missed 8 collections for pcopy due to sampling"))
+            logLines() ==
+              Seq(
+                "Missed 1 collections for pcopy due to sampling",
+                "Missed 8 collections for pcopy due to sampling"))
         }
     }
 
     "monitorsGcs" should {
-      "queries gcs in range, in reverse chronological order" in Time
-        .withCurrentTimeFrozen { tc =>
+      "queries gcs in range, in reverse chronological order" in
+        Time.withCurrentTimeFrozen { tc =>
           val h = new JvmHelper
           import h._
 

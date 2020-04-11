@@ -42,15 +42,16 @@ private final class PushApi(
                   body = s"Your game with ${opponentName(pov)} is over.",
                   payload = Json.obj(
                     "userId" -> userId,
-                    "userData" -> Json.obj(
-                      "type" -> "gameFinish",
-                      "gameId" -> game.id,
-                      "fullId" -> pov.fullId,
-                      "color" -> pov.color.name,
-                      "fen" -> Forsyth.exportBoard(game.toChess.board),
-                      "lastMove" -> game.castleLastMoveTime.lastMoveString,
-                      "win" -> pov.win
-                    )
+                    "userData" ->
+                      Json.obj(
+                        "type" -> "gameFinish",
+                        "gameId" -> game.id,
+                        "fullId" -> pov.fullId,
+                        "color" -> pov.color.name,
+                        "fen" -> Forsyth.exportBoard(game.toChess.board),
+                        "lastMove" -> game.castleLastMoveTime.lastMoveString,
+                        "win" -> pov.win
+                      )
                   )
                 )
               )
@@ -76,15 +77,16 @@ private final class PushApi(
                     body = s"${opponentName(pov)} played $sanMove",
                     payload = Json.obj(
                       "userId" -> userId,
-                      "userData" -> Json.obj(
-                        "type" -> "gameMove",
-                        "gameId" -> game.id,
-                        "fullId" -> pov.fullId,
-                        "color" -> pov.color.name,
-                        "fen" -> Forsyth.exportBoard(game.toChess.board),
-                        "lastMove" -> game.castleLastMoveTime.lastMoveString,
-                        "secondsLeft" -> pov.remainingSeconds
-                      )
+                      "userData" ->
+                        Json.obj(
+                          "type" -> "gameMove",
+                          "gameId" -> game.id,
+                          "fullId" -> pov.fullId,
+                          "color" -> pov.color.name,
+                          "fen" -> Forsyth.exportBoard(game.toChess.board),
+                          "lastMove" -> game.castleLastMoveTime.lastMoveString,
+                          "secondsLeft" -> pov.remainingSeconds
+                        )
                     )
                   )
                 )
@@ -108,8 +110,8 @@ private final class PushApi(
               body = describeChallenge(c),
               payload = Json.obj(
                 "userId" -> dest.id,
-                "userData" -> Json
-                  .obj("type" -> "challengeCreate", "challengeId" -> c.id))
+                "userData" ->
+                  Json.obj("type" -> "challengeCreate", "challengeId" -> c.id))
             )
           )
         }
@@ -129,10 +131,11 @@ private final class PushApi(
             body = describeChallenge(c),
             payload = Json.obj(
               "userId" -> challenger.id,
-              "userData" -> Json.obj(
-                "type" -> "challengeAccept",
-                "challengeId" -> c.id,
-                "joiner" -> lightJoiner))
+              "userData" ->
+                Json.obj(
+                  "type" -> "challengeAccept",
+                  "challengeId" -> c.id,
+                  "joiner" -> lightJoiner))
           )
         )
     }
@@ -170,13 +173,13 @@ private final class PushApi(
 
   private def IfAway(pov: Pov)(f: => Funit): Funit = {
     import makeTimeout.short
-    roundSocketHub ? Ask(pov.gameId, IsOnGame(pov.color)) mapTo manifest[
-      Boolean] flatMap {
-      case true =>
-        funit
-      case false =>
-        f
-    }
+    roundSocketHub ? Ask(pov.gameId, IsOnGame(pov.color)) mapTo
+      manifest[Boolean] flatMap {
+        case true =>
+          funit
+        case false =>
+          f
+      }
   }
 
   private def opponentName(pov: Pov) = Namer playerString pov.opponent

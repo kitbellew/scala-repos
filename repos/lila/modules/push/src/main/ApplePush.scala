@@ -20,10 +20,11 @@ private final class ApplePush(
     getDevice(userId) map {
       _ foreach { device =>
         if (enabled)
-          actor ! ApplePush.Notification(
-            token = device.deviceId,
-            alert = Json.obj("title" -> data.title, "body" -> data.body),
-            payload = data.payload)
+          actor !
+            ApplePush.Notification(
+              token = device.deviceId,
+              alert = Json.obj("title" -> data.title, "body" -> data.body),
+              payload = data.payload)
         else
           logger.warn(s"Sorry $userId, apple push is disabled by config!")
       }

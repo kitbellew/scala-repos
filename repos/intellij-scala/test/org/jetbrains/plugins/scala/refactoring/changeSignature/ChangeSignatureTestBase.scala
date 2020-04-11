@@ -93,7 +93,8 @@ abstract class ChangeSignatureTestBase
       VfsUtil.saveText(vFile, text)
       val psiFile = LightPlatformTestCase.getPsiManager.findFile(vFile)
       assertNotNull(
-        "Can't create PsiFile for '" + fileName + "'. Unknown file type most probably.",
+        "Can't create PsiFile for '" + fileName +
+          "'. Unknown file type most probably.",
         vFile)
       assertTrue(psiFile.isPhysical)
       vFile.setCharset(CharsetToolkit.UTF8_CHARSET)

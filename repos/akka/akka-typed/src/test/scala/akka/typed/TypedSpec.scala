@@ -54,13 +54,14 @@ class TypedSpec(config: Config)
     Await.result(f, 60.seconds.dilated(system.untyped))
 
   val blackhole = await(
-    system ? Create(
-      Props(
-        ScalaDSL.Full[Any] {
-          case _ ⇒
-            ScalaDSL.Same
-        }),
-      "blackhole"))
+    system ?
+      Create(
+        Props(
+          ScalaDSL.Full[Any] {
+            case _ ⇒
+              ScalaDSL.Same
+          }),
+        "blackhole"))
 
   /**
     * Run an Actor-based test. The test procedure is most conveniently
@@ -105,8 +106,8 @@ class TypedSpec(config: Config)
     * Group assertion that ensures that the given inboxes are empty.
     */
   def assertEmpty(inboxes: Inbox.SyncInbox[_]*): Unit = {
-    inboxes foreach (i ⇒
-      withClue(s"inbox $i had messages")(i.hasMessages should be(false)))
+    inboxes foreach
+      (i ⇒ withClue(s"inbox $i had messages")(i.hasMessages should be(false)))
   }
 
   // for ScalaTest === compare of Class objects

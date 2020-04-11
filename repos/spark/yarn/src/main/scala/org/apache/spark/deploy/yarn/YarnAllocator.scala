@@ -758,8 +758,8 @@ private object YarnAllocator {
       else
         ""
     (
-      "Container killed by YARN for exceeding memory limits." + diag
-        + " Consider boosting spark.yarn.executor.memoryOverhead."
+      "Container killed by YARN for exceeding memory limits." + diag +
+        " Consider boosting spark.yarn.executor.memoryOverhead."
     )
   }
 }

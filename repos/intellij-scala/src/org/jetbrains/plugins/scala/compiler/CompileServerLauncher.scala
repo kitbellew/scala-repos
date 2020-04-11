@@ -100,11 +100,12 @@ class CompileServerLauncher extends ApplicationComponent {
               ConfigureLinkListener))
         false
       case Right(_) =>
-        ApplicationManager.getApplication invokeLater new Runnable {
-          override def run() {
-            CompileServerManager.instance(project).configureWidget()
+        ApplicationManager.getApplication invokeLater
+          new Runnable {
+            override def run() {
+              CompileServerManager.instance(project).configureWidget()
+            }
           }
-        }
 
         true
     }
@@ -125,8 +126,8 @@ class CompileServerLauncher extends ApplicationComponent {
             Nil
           else
             Seq(
-              "-Xbootclasspath/a:" + bootClassPathLibs
-                .mkString(File.pathSeparator))
+              "-Xbootclasspath/a:" +
+                bootClassPathLibs.mkString(File.pathSeparator))
         val classpath = (jdk.tools +: presentFiles)
           .map(_.canonicalPath)
           .mkString(File.pathSeparator)
@@ -149,9 +150,8 @@ class CompileServerLauncher extends ApplicationComponent {
           } else
             Nil
 
-        val commands = jdk
-          .executable
-          .canonicalPath +: bootclasspathArg ++: "-cp" +: classpath +: jvmParameters ++: shutdownDelayArg ++:
+        val commands = jdk.executable.canonicalPath +: bootclasspathArg ++:
+          "-cp" +: classpath +: jvmParameters ++: shutdownDelayArg ++:
           ngRunnerFqn +: freePort.toString +: id.toString +: Nil
 
         val builder = new ProcessBuilder(commands.asJava)
@@ -192,11 +192,12 @@ class CompileServerLauncher extends ApplicationComponent {
   def stop(project: Project) {
     stop()
 
-    ApplicationManager.getApplication invokeLater new Runnable {
-      override def run() {
-        CompileServerManager.instance(project).configureWidget()
+    ApplicationManager.getApplication invokeLater
+      new Runnable {
+        override def run() {
+          CompileServerManager.instance(project).configureWidget()
+        }
       }
-    }
   }
 
   def running: Boolean = serverInstance.exists(_.running)
@@ -306,11 +307,10 @@ object CompileServerLauncher {
           ScalaCompileServerSettings
             .getInstance()
             .USE_PROJECT_HOME_AS_WORKING_DIR
-        val workingDirChanged =
-          useProjectHome && projectHome(project) != serverInstance
-            .map(_.workingDir)
-        workingDirChanged || instance
-          .bootClasspath != withTimestamps(bootClasspath(project))
+        val workingDirChanged = useProjectHome &&
+          projectHome(project) != serverInstance.map(_.workingDir)
+        workingDirChanged ||
+        instance.bootClasspath != withTimestamps(bootClasspath(project))
     }
   }
 

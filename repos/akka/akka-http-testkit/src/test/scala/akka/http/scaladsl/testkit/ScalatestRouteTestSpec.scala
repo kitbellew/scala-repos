@@ -37,13 +37,13 @@ class ScalatestRouteTestSpec
         respondWithHeader(pinkHeader) {
           complete("abc")
         }
-      } ~> check {
-        status shouldEqual OK
-        responseEntity shouldEqual HttpEntity(
-          ContentTypes.`text/plain(UTF-8)`,
-          "abc")
-        header("Fancy") shouldEqual Some(pinkHeader)
-      }
+      } ~>
+        check {
+          status shouldEqual OK
+          responseEntity shouldEqual
+            HttpEntity(ContentTypes.`text/plain(UTF-8)`, "abc")
+          header("Fancy") shouldEqual Some(pinkHeader)
+        }
     }
 
     "proper rejection collection" in {
@@ -51,9 +51,11 @@ class ScalatestRouteTestSpec
         (get | put) {
           complete("naah")
         }
-      } ~> check {
-        rejections shouldEqual List(MethodRejection(GET), MethodRejection(PUT))
-      }
+      } ~>
+        check {
+          rejections shouldEqual
+            List(MethodRejection(GET), MethodRejection(PUT))
+        }
     }
 
     "separation of route execution from checking" in {
@@ -77,9 +79,8 @@ class ScalatestRouteTestSpec
 
       check {
         status shouldEqual OK
-        responseEntity shouldEqual HttpEntity(
-          ContentTypes.`text/plain(UTF-8)`,
-          "abc")
+        responseEntity shouldEqual
+          HttpEntity(ContentTypes.`text/plain(UTF-8)`, "abc")
         header("Fancy") shouldEqual Some(pinkHeader)
       }(result)
     }

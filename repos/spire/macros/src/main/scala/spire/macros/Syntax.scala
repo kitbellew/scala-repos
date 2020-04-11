@@ -16,34 +16,35 @@ object Ops extends machinist.Ops {
   def uesc(c: Char): String = "$u%04X".format(c.toInt)
 
   val operatorNames: Map[String, String] =
-    machinist.DefaultOps.operatorNames ++ Map(
-      // partial operations |+|? |+|?? |-|? |-|??
-      ("$bar$plus$bar$qmark$qmark", "opIsDefined"),
-      ("$bar$minus$bar$qmark$qmark", "opInverseIsDefined"),
-      ("$bar$plus$bar$qmark", "partialOp"),
-      ("$bar$minus$bar$qmark", "partialOpInverse"),
-      // partial actions ?|+|> ??|+|> <|+|? <|+|??
-      ("$qmark$bar$plus$bar$greater", "partialActl"),
-      ("$qmark$qmark$bar$plus$bar$greater", "actlIsDefined"),
-      ("$less$bar$plus$bar$qmark", "partialActr"),
-      ("$less$bar$plus$bar$qmark$qmark", "actrIsDefined"),
-      // square root
-      (uesc('√'), "sqrt"),
-      // equality, comparisons
-      (uesc('≡'), "eqv"),
-      (uesc('≠'), "neqv"),
-      (uesc('≤'), "lteqv"),
-      (uesc('≥'), "gteqv"),
-      // lattices/heyting
-      (uesc('∧'), "meet"),
-      (uesc('∨'), "join"),
-      (uesc('⊃'), "imp"),
-      (uesc('¬'), "complement"),
-      // bool
-      (uesc('⊻'), "xor"),
-      (uesc('⊼'), "nand"),
-      (uesc('⊽'), "nor")
-    )
+    machinist.DefaultOps.operatorNames ++
+      Map(
+        // partial operations |+|? |+|?? |-|? |-|??
+        ("$bar$plus$bar$qmark$qmark", "opIsDefined"),
+        ("$bar$minus$bar$qmark$qmark", "opInverseIsDefined"),
+        ("$bar$plus$bar$qmark", "partialOp"),
+        ("$bar$minus$bar$qmark", "partialOpInverse"),
+        // partial actions ?|+|> ??|+|> <|+|? <|+|??
+        ("$qmark$bar$plus$bar$greater", "partialActl"),
+        ("$qmark$qmark$bar$plus$bar$greater", "actlIsDefined"),
+        ("$less$bar$plus$bar$qmark", "partialActr"),
+        ("$less$bar$plus$bar$qmark$qmark", "actrIsDefined"),
+        // square root
+        (uesc('√'), "sqrt"),
+        // equality, comparisons
+        (uesc('≡'), "eqv"),
+        (uesc('≠'), "neqv"),
+        (uesc('≤'), "lteqv"),
+        (uesc('≥'), "gteqv"),
+        // lattices/heyting
+        (uesc('∧'), "meet"),
+        (uesc('∨'), "join"),
+        (uesc('⊃'), "imp"),
+        (uesc('¬'), "complement"),
+        // bool
+        (uesc('⊻'), "xor"),
+        (uesc('⊼'), "nand"),
+        (uesc('⊽'), "nor")
+      )
 
   def eqv[A, B](c: Context)(rhs: c.Expr[B])(
       ev: c.Expr[A =:= B]): c.Expr[Boolean] = {

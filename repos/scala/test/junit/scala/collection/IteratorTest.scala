@@ -230,8 +230,8 @@ class IteratorTest {
   @Test
   def toStreamIsSufficientlyLazy(): Unit = {
     val results = collection.mutable.ListBuffer.empty[Int]
-    def mkIterator =
-      (1 to 5).iterator map (x => {
+    def mkIterator = (1 to 5).iterator map
+      (x => {
         results += x;
         x
       })
@@ -245,13 +245,8 @@ class IteratorTest {
     val s1 = mkIterator.toStream
     val s2 = mkInfinite.toStream
     // back and forth without slipping into nontermination.
-    results += (Stream from 1)
-      .toIterator
-      .drop(10)
-      .toStream
-      .drop(10)
-      .toIterator
-      .next()
+    results +=
+      (Stream from 1).toIterator.drop(10).toStream.drop(10).toIterator.next()
     assertSameElements(List(1, 1, 21), results)
   }
   // SI-8552

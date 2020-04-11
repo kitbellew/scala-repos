@@ -16,11 +16,10 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
 
   def this(contents: Map[String, Array[Byte]]) =
     this(
-      mutable.Map[String, Buf]() ++ (
-        contents mapValues { v =>
+      mutable.Map[String, Buf]() ++
+        (contents mapValues { v =>
           Buf.ByteArray.Owned(v)
-        }
-      ))
+        }))
 
   def this(contents: Map[String, String])(implicit m: Manifest[String]) =
     this(
@@ -36,12 +35,9 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
       keys foreach { key =>
         map.get(key) match {
           case Some(v: Buf) =>
-            hits += (
-              key -> Value(
-                Buf.Utf8(key),
-                v,
-                Some(Interpreter.generateCasUnique(v)))
-            )
+            hits +=
+              (key ->
+                Value(Buf.Utf8(key), v, Some(Interpreter.generateCasUnique(v))))
           case _ =>
             misses += key
         }

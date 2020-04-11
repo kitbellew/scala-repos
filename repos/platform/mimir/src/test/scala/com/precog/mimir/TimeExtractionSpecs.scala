@@ -563,21 +563,22 @@ trait TimeExtractionSpecs[M[+_]]
           d.toString
       }
 
-      result2 must contain(
-        "-09:00",
-        "-11:00",
-        "-10:00",
-        "+04:00",
-        "-01:00",
-        "+11:00",
-        "-03:00",
-        "+05:00",
-        "-02:00",
-        "-05:00",
-        "+00:00",
-        "+06:00",
-        "-04:00",
-        "+07:00")
+      result2 must
+        contain(
+          "-09:00",
+          "-11:00",
+          "-10:00",
+          "+04:00",
+          "-01:00",
+          "+11:00",
+          "-03:00",
+          "+05:00",
+          "-02:00",
+          "-05:00",
+          "+00:00",
+          "+06:00",
+          "-04:00",
+          "+07:00")
     }
 
     "compute season" in {
@@ -672,8 +673,9 @@ trait TimeExtractionSpecs[M[+_]]
           d.toInt
       }
 
-      result2 must contain(
-        5, 10, 52, 29, 6, 21, 33, 9, 41, 2, 32, 44, 12, 7, 18, 31, 11, 43)
+      result2 must
+        contain(
+          5, 10, 52, 29, 6, 21, 33, 9, 41, 2, 32, 44, 12, 7, 18, 31, 11, 43)
     }
     "compute week of month" in {
       val input =
@@ -709,9 +711,10 @@ trait TimeExtractionSpecs[M[+_]]
           d.toInt
       }
 
-      result2 must contain(
-        138, 10, 46, 228, 216, 74, 302, 65, 285, 212, 41, 64, 144, 66, 198, 223,
-        35, 363, 40, 300, 122, 83)
+      result2 must
+        contain(
+          138, 10, 46, 228, 216, 74, 302, 65, 285, 212, 41, 64, 144, 66, 198,
+          223, 35, 363, 40, 300, 122, 83)
     }
     "compute day of month" in {
       val input =
@@ -729,8 +732,8 @@ trait TimeExtractionSpecs[M[+_]]
           d.toInt
       }
 
-      result2 must contain(
-        10, 24, 14, 29, 6, 28, 9, 2, 17, 27, 18, 11, 23, 30, 4, 15)
+      result2 must
+        contain(10, 24, 14, 29, 6, 28, 9, 2, 17, 27, 18, 11, 23, 30, 4, 15)
     }
     "compute day of week" in {
       val input =
@@ -766,8 +769,8 @@ trait TimeExtractionSpecs[M[+_]]
           d.toInt
       }
 
-      result2 must contain(
-        0, 10, 14, 1, 21, 13, 2, 17, 22, 12, 3, 18, 11, 19, 4)
+      result2 must
+        contain(0, 10, 14, 1, 21, 13, 2, 17, 22, 12, 3, 18, 11, 19, 4)
     }
     "compute minute of hour" in {
       val input =
@@ -785,9 +788,10 @@ trait TimeExtractionSpecs[M[+_]]
           d.toInt
       }
 
-      result2 must contain(
-        5, 56, 52, 14, 20, 29, 38, 33, 53, 2, 49, 48, 18, 31, 11, 43, 58, 36,
-        30, 19)
+      result2 must
+        contain(
+          5, 56, 52, 14, 20, 29, 38, 33, 53, 2, 49, 48, 18, 31, 11, 43, 58, 36,
+          30, 19)
     }
     "compute second of minute" in {
       val input =
@@ -805,9 +809,10 @@ trait TimeExtractionSpecs[M[+_]]
           d.toInt
       }
 
-      result2 must contain(
-        0, 56, 37, 14, 28, 38, 21, 53, 41, 34, 17, 22, 48, 16, 31, 40, 55, 19,
-        4)
+      result2 must
+        contain(
+          0, 56, 37, 14, 28, 38, 21, 53, 41, 34, 17, 22, 48, 16, 31, 40, 55, 19,
+          4)
     }
     "compute millis of second" in {
       val input =
@@ -825,9 +830,10 @@ trait TimeExtractionSpecs[M[+_]]
           d.toInt
       }
 
-      result2 must contain(
-        555, 115, 443, 937, 877, 692, 910, 252, 874, 488, 41, 657, 430, 745,
-        423, 259, 278, 40, 119, 684, 358)
+      result2 must
+        contain(
+          555, 115, 443, 937, 877, 692, 910, 252, 874, 488, 41, 657, 430, 745,
+          423, 259, 278, 40, 119, 684, 358)
     }
   }
 
@@ -848,17 +854,18 @@ trait TimeExtractionSpecs[M[+_]]
           d.toString
       }
 
-      result2 must contain(
-        "+08:00",
-        "-07:00",
-        "-11:00",
-        "+04:00",
-        "+10:00",
-        "+03:00",
-        "+02:00",
-        "+00:00",
-        "+06:00",
-        "-04:00")
+      result2 must
+        contain(
+          "+08:00",
+          "-07:00",
+          "-11:00",
+          "+04:00",
+          "+10:00",
+          "+03:00",
+          "+02:00",
+          "+00:00",
+          "+06:00",
+          "-04:00")
     }
 
     "compute season" in {

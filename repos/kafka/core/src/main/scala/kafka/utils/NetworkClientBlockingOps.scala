@@ -57,7 +57,8 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
     */
   def blockingReady(node: Node, timeout: Long)(implicit
       time: JTime): Boolean = {
-    client.ready(node, time.milliseconds()) || pollUntil(timeout) { (_, now) =>
+    client.ready(node, time.milliseconds()) ||
+    pollUntil(timeout) { (_, now) =>
       if (client.isReady(node, now))
         true
       else if (client.connectionFailed(node))
@@ -84,10 +85,8 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
     pollUntilFound(timeout) {
       case (responses, _) =>
         val response = responses.find { response =>
-          response.request.request.header.correlationId == request
-            .request
-            .header
-            .correlationId
+          response.request.request.header.correlationId ==
+            request.request.header.correlationId
         }
         response.foreach { r =>
           if (r.wasDisconnected) {

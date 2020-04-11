@@ -206,7 +206,8 @@ object IsotonicRegressionModel extends Loader[IsotonicRegressionModel] {
 
       val metadata = compact(
         render(
-          ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
+          ("class" -> thisClassName) ~
+            ("version" -> thisFormatVersion) ~
             ("isotonic" -> isotonic)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
 

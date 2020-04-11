@@ -192,9 +192,8 @@ abstract class ParallelIterableCheck[T](collName: String)
             yield {
               val ft = t.find(pred)
               val fcoll = coll.find(pred)
-              ("op index: " + ind) |: (
-                (ft == None && fcoll == None) || (ft != None && fcoll != None)
-              )
+              ("op index: " + ind) |:
+                ((ft == None && fcoll == None) || (ft != None && fcoll != None))
             }
         results.reduceLeft(_ && _)
     }
@@ -249,9 +248,8 @@ abstract class ParallelIterableCheck[T](collName: String)
       case (t, coll) =>
         (
           for ((f, ind) <- flatMapFunctions.zipWithIndex)
-            yield ("op index: " + ind) |: areEqual(
-              t.flatMap(f),
-              coll.flatMap(f))
+            yield ("op index: " + ind) |:
+              areEqual(t.flatMap(f), coll.flatMap(f))
         ).reduceLeft(_ && _)
     }
 
@@ -484,10 +482,8 @@ abstract class ParallelIterableCheck[T](collName: String)
             for ((trav, ind) <- (addAllTraversables).zipWithIndex)
               yield {
                 val tadded = t ++ trav
-                val cadded = coll ++ collection
-                  .parallel
-                  .mutable
-                  .ParArray(trav.toSeq: _*)
+                val cadded = coll ++
+                  collection.parallel.mutable.ParArray(trav.toSeq: _*)
                 if (!areEqual(tadded, cadded)) {
                   println("----------------------")
                   println("from: " + t)

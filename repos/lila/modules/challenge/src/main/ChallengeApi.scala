@@ -21,17 +21,17 @@ final class ChallengeApi(
   import Challenge._
 
   def allFor(userId: User.ID): Fu[AllChallenges] =
-    createdByDestId(userId) zip createdByChallengerId(userId) map (
-      AllChallenges.apply _
-    ).tupled
+    createdByDestId(userId) zip createdByChallengerId(userId) map
+      (AllChallenges.apply _).tupled
 
   def create(c: Challenge): Funit = {
     repo like c flatMap {
       _ ?? repo.cancel
     }
-  } >> (repo insert c) >> uncacheAndNotify(c) >>- {
-    lilaBus.publish(Event.Create(c), 'challenge)
-  }
+  } >>
+    (repo insert c) >> uncacheAndNotify(c) >>- {
+      lilaBus.publish(Event.Create(c), 'challenge)
+    }
 
   def byId = repo byId _
 
@@ -50,9 +50,10 @@ final class ChallengeApi(
       case Some(Status.Created) =>
         repo setSeen id
       case Some(Status.Offline) =>
-        (repo setSeenAgain id) >> byId(id).flatMap {
-          _ ?? uncacheAndNotify
-        }
+        (repo setSeenAgain id) >>
+          byId(id).flatMap {
+            _ ?? uncacheAndNotify
+          }
       case _ =>
         fuccess(socketReload(id))
     }
@@ -119,8 +120,7 @@ final class ChallengeApi(
   private def uncacheAndNotify(c: Challenge) = {
     (c.destUserId ?? countInFor.remove) >>-
       (c.destUserId ?? notify) >>-
-      (c.challengerUserId ?? notify) >>-
-      socketReload(c.id)
+      (c.challengerUserId ?? notify) >>- socketReload(c.id)
   }
 
   private def socketReload(id: Challenge.ID) {
@@ -129,9 +129,10 @@ final class ChallengeApi(
 
   private def notify(userId: User.ID) {
     allFor(userId) foreach { all =>
-      userRegister ! SendTo(
-        userId,
-        lila.socket.Socket.makeMessage("challenges", jsonView(all)))
+      userRegister !
+        SendTo(
+          userId,
+          lila.socket.Socket.makeMessage("challenges", jsonView(all)))
     }
   }
 }

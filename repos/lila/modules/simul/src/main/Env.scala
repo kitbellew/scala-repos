@@ -99,15 +99,16 @@ final class Env(
           case move: lila.hub.actorApi.round.MoveEvent =>
             move.simulId foreach { simulId =>
               move.opponentUserId foreach { opId =>
-                hub.actor.userRegister ! lila
-                  .hub
-                  .actorApi
-                  .SendTo(
-                    opId,
-                    lila
-                      .socket
-                      .Socket
-                      .makeMessage("simulPlayerMove", move.gameId))
+                hub.actor.userRegister !
+                  lila
+                    .hub
+                    .actorApi
+                    .SendTo(
+                      opId,
+                      lila
+                        .socket
+                        .Socket
+                        .makeMessage("simulPlayerMove", move.gameId))
               }
             }
         }
@@ -150,15 +151,16 @@ object Env {
 
   private def hub = lila.hub.Env.current
 
-  lazy val current = "simul" boot new Env(
-    config = lila.common.PlayApp loadConfig "simul",
-    system = lila.common.PlayApp.system,
-    scheduler = lila.common.PlayApp.scheduler,
-    db = lila.db.Env.current,
-    mongoCache = lila.memo.Env.current.mongoCache,
-    flood = lila.security.Env.current.flood,
-    hub = lila.hub.Env.current,
-    lightUser = lila.user.Env.current.lightUser,
-    onGameStart = lila.game.Env.current.onStart,
-    isOnline = lila.user.Env.current.isOnline)
+  lazy val current = "simul" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "simul",
+      system = lila.common.PlayApp.system,
+      scheduler = lila.common.PlayApp.scheduler,
+      db = lila.db.Env.current,
+      mongoCache = lila.memo.Env.current.mongoCache,
+      flood = lila.security.Env.current.flood,
+      hub = lila.hub.Env.current,
+      lightUser = lila.user.Env.current.lightUser,
+      onGameStart = lila.game.Env.current.onStart,
+      isOnline = lila.user.Env.current.isOnline)
 }

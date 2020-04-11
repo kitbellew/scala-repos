@@ -83,56 +83,60 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
   }
 
   "BackoffOnRestartSupervisor" must {
-    "terminate when child terminates" in new Setup {
-      filterException[TestActor.TestException] {
-        probe.watch(supervisor)
-        supervisor ! "DIE"
-        probe.expectTerminated(supervisor)
-      }
-    }
-
-    "restart the child with an exponential back off" in new Setup {
-      filterException[TestActor.TestException] {
-        // Exponential back off restart test
-        probe.within(1.4 seconds, 2 seconds) {
-          supervisor ! "THROW"
-          // numRestart = 0 ~ 200 millis
-          probe.expectMsg(300 millis, "STARTED")
-
-          supervisor ! "THROW"
-          // numRestart = 1 ~ 400 millis
-          probe.expectMsg(500 millis, "STARTED")
-
-          supervisor ! "THROW"
-          // numRestart = 2 ~ 800 millis
-          probe.expectMsg(900 millis, "STARTED")
+    "terminate when child terminates" in
+      new Setup {
+        filterException[TestActor.TestException] {
+          probe.watch(supervisor)
+          supervisor ! "DIE"
+          probe.expectTerminated(supervisor)
         }
-
-        // Verify that we only have one child at this point by selecting all the children
-        // under the supervisor and broadcasting to them.
-        // If there exists more than one child, we will get more than one reply.
-        val supervisorChildSelection = system
-          .actorSelection(supervisor.path / "*")
-        supervisorChildSelection.tell("testmsg", probe.ref)
-        probe.expectMsg("testmsg")
-        probe.expectNoMsg
       }
-    }
 
-    "stop on exceptions as dictated by the supervisor strategy" in new Setup {
-      filterException[TestActor.TestException] {
-        probe.watch(supervisor)
-        // This should cause the supervisor to stop the child actor and then
-        // subsequently stop itself.
-        supervisor ! "THROW_STOPPING_EXCEPTION"
-        probe.expectTerminated(supervisor)
+    "restart the child with an exponential back off" in
+      new Setup {
+        filterException[TestActor.TestException] {
+          // Exponential back off restart test
+          probe.within(1.4 seconds, 2 seconds) {
+            supervisor ! "THROW"
+            // numRestart = 0 ~ 200 millis
+            probe.expectMsg(300 millis, "STARTED")
+
+            supervisor ! "THROW"
+            // numRestart = 1 ~ 400 millis
+            probe.expectMsg(500 millis, "STARTED")
+
+            supervisor ! "THROW"
+            // numRestart = 2 ~ 800 millis
+            probe.expectMsg(900 millis, "STARTED")
+          }
+
+          // Verify that we only have one child at this point by selecting all the children
+          // under the supervisor and broadcasting to them.
+          // If there exists more than one child, we will get more than one reply.
+          val supervisorChildSelection = system
+            .actorSelection(supervisor.path / "*")
+          supervisorChildSelection.tell("testmsg", probe.ref)
+          probe.expectMsg("testmsg")
+          probe.expectNoMsg
+        }
       }
-    }
 
-    "forward messages from the child to the parent of the supervisor" in new Setup2 {
-      child ! (("TO_PARENT", "TEST_MESSAGE"))
-      probe.expectMsg("TEST_MESSAGE")
-    }
+    "stop on exceptions as dictated by the supervisor strategy" in
+      new Setup {
+        filterException[TestActor.TestException] {
+          probe.watch(supervisor)
+          // This should cause the supervisor to stop the child actor and then
+          // subsequently stop itself.
+          supervisor ! "THROW_STOPPING_EXCEPTION"
+          probe.expectTerminated(supervisor)
+        }
+      }
+
+    "forward messages from the child to the parent of the supervisor" in
+      new Setup2 {
+        child ! (("TO_PARENT", "TEST_MESSAGE"))
+        probe.expectMsg("TEST_MESSAGE")
+      }
 
     class SlowlyFailingActor(latch: CountDownLatch) extends Actor {
       def receive = {

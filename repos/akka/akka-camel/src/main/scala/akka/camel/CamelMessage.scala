@@ -215,8 +215,7 @@ class CamelMessage(
   override def equals(that: Any): Boolean =
     that match {
       case that: CamelMessage if canEqual(that) ⇒
-        this.body == that.body &&
-          this.headers == that.headers &&
+        this.body == that.body && this.headers == that.headers &&
           this.attachments == that.attachments
       case _ ⇒
         false

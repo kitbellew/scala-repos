@@ -58,7 +58,8 @@ object Test extends Properties("concurrent.TrieMap") {
       val largerThanOne = resultSets.zipWithIndex.find(_._1.size != 1)
       val allThreadsAgreeOnWhoInserted = {
         largerThanOne == None
-      } :| s"$p threads agree on who inserted [disagreement (differentResults, position) = $largerThanOne]"
+      } :|
+        s"$p threads agree on who inserted [disagreement (differentResults, position) = $largerThanOne]"
 
       allThreadsAgreeOnWhoInserted
     }

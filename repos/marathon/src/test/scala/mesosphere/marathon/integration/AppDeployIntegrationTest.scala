@@ -174,9 +174,8 @@ class AppDeployIntegrationTest
 
     var appCount =
       (
-        marathon
-          .metrics()
-          .entityJson \ "gauges" \ "service.mesosphere.marathon.app.count" \ "value"
+        marathon.metrics().entityJson \ "gauges" \
+          "service.mesosphere.marathon.app.count" \ "value"
       ).as[Int]
     appCount should be(0)
 
@@ -187,9 +186,8 @@ class AppDeployIntegrationTest
     result.code should be(201) // Created
     appCount =
       (
-        marathon
-          .metrics()
-          .entityJson \ "gauges" \ "service.mesosphere.marathon.app.count" \ "value"
+        marathon.metrics().entityJson \ "gauges" \
+          "service.mesosphere.marathon.app.count" \ "value"
       ).as[Int]
     appCount should be(1)
   }
@@ -230,9 +228,8 @@ class AppDeployIntegrationTest
     result.code should be(201) //Created
     extractDeploymentIds(result) should have size 1
     waitForEvent("deployment_success")
-    check.pingSince(5.seconds) should be(
-      true
-    ) //make sure, the app has really started
+    check.pingSince(5.seconds) should
+      be(true) //make sure, the app has really started
   }
 
   test(
@@ -255,9 +252,8 @@ class AppDeployIntegrationTest
     result.code should be(201) //Created
     extractDeploymentIds(result) should have size 1
     waitForEvent("deployment_success")
-    check.pingSince(5.seconds) should be(
-      true
-    ) //make sure, the app has really started
+    check.pingSince(5.seconds) should
+      be(true) //make sure, the app has really started
   }
 
   test("create a simple app with tcp health checks") {
@@ -364,9 +360,8 @@ class AppDeployIntegrationTest
     update.code should be(200)
     waitForEvent("deployment_success")
     waitForTasks(appId, before.value.size)
-    check.pingSince(5.seconds) should be(
-      true
-    ) //make sure, the new version is alive
+    check.pingSince(5.seconds) should
+      be(true) //make sure, the new version is alive
   }
 
   test("scale an app up and down") {
@@ -610,12 +605,11 @@ class AppDeployIntegrationTest
     apiPostEvent
       .info("appDefinition")
       .asInstanceOf[Map[String, Any]]("id")
-      .asInstanceOf[String] should
-      be(appId)
+      .asInstanceOf[String] should be(appId)
 
     val Seq(groupChangeSuccess) = events("group_change_success")
-    groupChangeSuccess.info("groupId").asInstanceOf[String] should be(
-      appIdPath.parent.toString)
+    groupChangeSuccess.info("groupId").asInstanceOf[String] should
+      be(appIdPath.parent.toString)
 
     val Seq(taskUpdate1, taskUpdate2) = events("status_update_event")
     taskUpdate1.info("appId").asInstanceOf[String] should be(appId)
@@ -746,8 +740,8 @@ class AppDeployIntegrationTest
 
     Then("The container should still be of type MESOS")
     maybeContainer1 should not be empty
-    maybeContainer1.get.`type` should equal(
-      MesosProtos.ContainerInfo.Type.MESOS)
+    maybeContainer1.get.`type` should
+      equal(MesosProtos.ContainerInfo.Type.MESOS)
 
     And("container.docker should not be set")
     maybeContainer1.get.docker shouldBe (empty)
@@ -765,8 +759,8 @@ class AppDeployIntegrationTest
 
     Then("The container should still be of type MESOS")
     maybeContainer2 should not be empty
-    maybeContainer2.get.`type` should equal(
-      MesosProtos.ContainerInfo.Type.MESOS)
+    maybeContainer2.get.`type` should
+      equal(MesosProtos.ContainerInfo.Type.MESOS)
 
     And("container.docker should not be set")
     maybeContainer1.get.docker shouldBe (empty)

@@ -132,10 +132,7 @@ trait CombParserHelpers {
     * @return a parser discarding end of lines
     */
   def EOL: Parser[Unit] =
-    (
-      accept("\n\r") | accept("\r\n") | '\r' |
-        '\n' | EOF
-    ) ^^^ ()
+    (accept("\n\r") | accept("\r\n") | '\r' | '\n' | EOF) ^^^ ()
 
   def notEOL: Parser[Elem] = (not(EOL) ~> anyChar)
 

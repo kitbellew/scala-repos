@@ -95,8 +95,9 @@ private[tracker] class TaskOpProcessorImpl(
         repo
           .store(marathonTask)
           .map { _ =>
-            taskTrackerRef ! TaskTrackerActor
-              .TaskUpdated(task, TaskTrackerActor.Ack(op.sender))
+            taskTrackerRef !
+              TaskTrackerActor
+                .TaskUpdated(task, TaskTrackerActor.Ack(op.sender))
           }
           .recoverWith(tryToRecover(op)(expectedTaskState = Some(task)))
 
@@ -106,8 +107,9 @@ private[tracker] class TaskOpProcessorImpl(
         repo
           .expunge(op.taskId.idString)
           .map { _ =>
-            taskTrackerRef ! TaskTrackerActor
-              .TaskRemoved(op.taskId, TaskTrackerActor.Ack(op.sender))
+            taskTrackerRef !
+              TaskTrackerActor
+                .TaskRemoved(op.taskId, TaskTrackerActor.Ack(op.sender))
           }
           .recoverWith(tryToRecover(op)(expectedTaskState = None))
 
@@ -167,8 +169,8 @@ private[tracker] class TaskOpProcessorImpl(
         .map {
           case Some(task) =>
             val taskState = TaskSerializer.fromProto(task)
-            taskTrackerRef ! TaskTrackerActor
-              .TaskUpdated(taskState, ack(Some(task)))
+            taskTrackerRef !
+              TaskTrackerActor.TaskUpdated(taskState, ack(Some(task)))
           case None =>
             taskTrackerRef ! TaskTrackerActor.TaskRemoved(op.taskId, ack(None))
         }

@@ -75,12 +75,10 @@ final class RingDeque[
   }
 
   def length: Int =
-    (
-      if (back > front)
-        back - front
-      else
-        (back + bound) - front
-    ) - 1
+    (if (back > front)
+       back - front
+     else
+       (back + bound) - front) - 1
 
   def toList: List[A] = {
     @inline

@@ -178,39 +178,42 @@ class PerformanceSpec
       enterBarrier("after-2")
     }
 
-    "be good for ORSet Update WriteLocal and gossip replication" taggedAs PerformanceTest in {
-      val keys = (1 to repeatCount).map(n ⇒ ORSetKey[Int]("B" + n))
-      val n = 200 * factor
-      val expected = Some((0 until n).toSet)
-      repeat("ORSet Update WriteLocal + gossip", keys, n, expected) {
-        (key, i, replyTo) ⇒
-          replicator.tell(Update(key, ORSet(), WriteLocal)(_ + i), replyTo)
+    "be good for ORSet Update WriteLocal and gossip replication" taggedAs
+      PerformanceTest in {
+        val keys = (1 to repeatCount).map(n ⇒ ORSetKey[Int]("B" + n))
+        val n = 200 * factor
+        val expected = Some((0 until n).toSet)
+        repeat("ORSet Update WriteLocal + gossip", keys, n, expected) {
+          (key, i, replyTo) ⇒
+            replicator.tell(Update(key, ORSet(), WriteLocal)(_ + i), replyTo)
+        }
+        enterBarrier("after-3")
       }
-      enterBarrier("after-3")
-    }
 
-    "be good for ORSet Update WriteLocal and gossip of existing keys" taggedAs PerformanceTest in {
-      val keys = (1 to repeatCount).map(n ⇒ ORSetKey[Int]("B" + n))
-      val n = 200 * factor
-      val expected = Some((0 until n).toSet ++ (0 until n).map(-_).toSet)
-      repeat("ORSet Update WriteLocal existing + gossip", keys, n, expected) {
-        (key, i, replyTo) ⇒
-          replicator.tell(Update(key, ORSet(), WriteLocal)(_ + (-i)), replyTo)
+    "be good for ORSet Update WriteLocal and gossip of existing keys" taggedAs
+      PerformanceTest in {
+        val keys = (1 to repeatCount).map(n ⇒ ORSetKey[Int]("B" + n))
+        val n = 200 * factor
+        val expected = Some((0 until n).toSet ++ (0 until n).map(-_).toSet)
+        repeat("ORSet Update WriteLocal existing + gossip", keys, n, expected) {
+          (key, i, replyTo) ⇒
+            replicator.tell(Update(key, ORSet(), WriteLocal)(_ + (-i)), replyTo)
+        }
+        enterBarrier("after-4")
       }
-      enterBarrier("after-4")
-    }
 
-    "be good for ORSet Update WriteTwo and gossip replication" taggedAs PerformanceTest in {
-      val keys = (1 to repeatCount).map(n ⇒ ORSetKey[Int]("C" + n))
-      val n = 200 * factor
-      val expected = Some((0 until n).toSet)
-      val writeTwo = WriteTo(2, timeout)
-      repeat("ORSet Update WriteTwo + gossip", keys, n, expected) {
-        (key, i, replyTo) ⇒
-          replicator.tell(Update(key, ORSet(), writeTwo)(_ + i), replyTo)
+    "be good for ORSet Update WriteTwo and gossip replication" taggedAs
+      PerformanceTest in {
+        val keys = (1 to repeatCount).map(n ⇒ ORSetKey[Int]("C" + n))
+        val n = 200 * factor
+        val expected = Some((0 until n).toSet)
+        val writeTwo = WriteTo(2, timeout)
+        repeat("ORSet Update WriteTwo + gossip", keys, n, expected) {
+          (key, i, replyTo) ⇒
+            replicator.tell(Update(key, ORSet(), writeTwo)(_ + i), replyTo)
+        }
+        enterBarrier("after-5")
       }
-      enterBarrier("after-5")
-    }
 
     "be awesome for GCounter Update WriteLocal" taggedAs PerformanceTest in {
       val startTime = System.nanoTime()

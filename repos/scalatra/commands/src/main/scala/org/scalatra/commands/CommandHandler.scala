@@ -20,9 +20,10 @@ trait CommandHandler {
       .debug("Executing [%s].\n%s" format (cmd.getClass.getName, cmd))
     if (cmd.isValid) {
       val res = (allCatch withApply (serverError(cmd.getClass.getName, _))) {
-        handle.lift(cmd).map(_.map(_.asInstanceOf[S])) | ValidationError(
-          "Don't know how to handle: " + cmd.getClass.getName,
-          UnknownError).failureNel
+        handle.lift(cmd).map(_.map(_.asInstanceOf[S])) |
+          ValidationError(
+            "Don't know how to handle: " + cmd.getClass.getName,
+            UnknownError).failureNel
       }
 
       val resultLog = res.fold(
@@ -41,9 +42,8 @@ trait CommandHandler {
           e
       }
       commandLogger.debug(
-        "Command [%s] executed with %d failures.\n%s" format (
-          cmd.getClass.getName, f.size, f.toList
-        ))
+        "Command [%s] executed with %d failures.\n%s" format
+          (cmd.getClass.getName, f.size, f.toList))
       NonEmptyList(f.head, f.tail: _*).failure
     }
   }

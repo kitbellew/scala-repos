@@ -144,12 +144,13 @@ object Expectations {
       "version := \"SNAPSHOT\"",
       SbtBundle("sbt.annotation.blankLineRequired", "0.13.1"))
 
-  val sbt012 = sbt0137 ++ Seq(
-    Error(
-      "version := \"SNAPSHOT\"",
-      SbtBundle("sbt.annotation.blankLineRequired", "0.12.4")),
-    Error(
-      "lazy val foo = project.in(file(\"foo\")).enablePlugins(sbt.plugins.JvmPlugin)",
-      SbtBundle("sbt.annotation.sbtFileMustContainOnlyExpressions"))
-  )
+  val sbt012 = sbt0137 ++
+    Seq(
+      Error(
+        "version := \"SNAPSHOT\"",
+        SbtBundle("sbt.annotation.blankLineRequired", "0.12.4")),
+      Error(
+        "lazy val foo = project.in(file(\"foo\")).enablePlugins(sbt.plugins.JvmPlugin)",
+        SbtBundle("sbt.annotation.sbtFileMustContainOnlyExpressions"))
+    )
 }

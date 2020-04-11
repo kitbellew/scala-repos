@@ -184,9 +184,7 @@ class UnreachableCodeTest extends ClearAfterClass {
 
   @Test
   def bytecodeEquivalence: Unit = {
-    assertTrue(
-      List(VarOp(ILOAD, 1)) ===
-        List(VarOp(ILOAD, 2)))
+    assertTrue(List(VarOp(ILOAD, 1)) === List(VarOp(ILOAD, 2)))
     assertTrue(
       List(VarOp(ILOAD, 1), VarOp(ISTORE, 1)) ===
         List(VarOp(ILOAD, 2), VarOp(ISTORE, 2)))
@@ -202,8 +200,7 @@ class UnreachableCodeTest extends ClearAfterClass {
         List(VarOp(ILOAD, 2), VarOp(ISTORE, 1)))
 
     assertTrue(
-      List(Label(1), Label(2), Label(1)) ===
-        List(Label(2), Label(4), Label(2)))
+      List(Label(1), Label(2), Label(1)) === List(Label(2), Label(4), Label(2)))
     assertTrue(
       List(LineNumber(1, Label(1)), Label(1)) ===
         List(LineNumber(1, Label(3)), Label(3)))

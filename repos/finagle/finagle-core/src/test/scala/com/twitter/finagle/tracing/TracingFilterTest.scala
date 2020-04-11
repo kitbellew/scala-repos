@@ -138,10 +138,11 @@ class TracingFilterTest
         a
     }
     assert(
-      annotations == Seq(
-        Annotation.ClientSend(),
-        Annotation.ClientRecvError("java.lang.Exception: bummer"),
-        Annotation.ClientRecv()))
+      annotations ==
+        Seq(
+          Annotation.ClientSend(),
+          Annotation.ClientRecvError("java.lang.Exception: bummer"),
+          Annotation.ClientRecv()))
   }
 
   /*

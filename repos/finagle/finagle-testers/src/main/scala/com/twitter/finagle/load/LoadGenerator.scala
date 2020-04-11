@@ -18,14 +18,14 @@ class LoadGenerator[Req, Rep](
     recorder: (Duration, Future[Rep]) => Unit,
     filter: SimpleFilter[Event[Req, Rep], Rep],
     timer: MockTimer = new MockTimer()) {
-  val svc = filter andThen Service.mk[Event[Req, Rep], Rep] {
-    evt: Event[Req, Rep] =>
+  val svc = filter andThen
+    Service.mk[Event[Req, Rep], Rep] { evt: Event[Req, Rep] =>
       val p = Promise[Rep]()
       timer.schedule(evt.finish) {
         p.updateIfEmpty(evt())
       }
       p
-  }
+    }
 
   def forward(dur: Duration, ctl: TimeControl) {
     ctl.advance(dur - 1.nanosecond)

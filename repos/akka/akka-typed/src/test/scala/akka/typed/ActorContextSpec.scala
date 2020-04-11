@@ -253,11 +253,11 @@ class ActorContextSpec
             .expectMultipleMessages(500.millis, 2) { (msgs, subj) ⇒
               val child =
                 msgs match {
-                  case Created(child) :: ChildEvent(
-                        GotSignal(PreStart)) :: Nil ⇒
+                  case Created(child) :: ChildEvent(GotSignal(PreStart)) ::
+                      Nil ⇒
                     child
-                  case ChildEvent(GotSignal(PreStart)) :: Created(
-                        child) :: Nil ⇒
+                  case ChildEvent(GotSignal(PreStart)) :: Created(child) ::
+                      Nil ⇒
                     child
                 }
               (subj, child)
@@ -377,14 +377,16 @@ class ActorContextSpec
             }
             .expectMultipleMessages(500.millis, 3) {
               case (msgs, (subj, child, log)) ⇒
-                msgs should ===(
-                  GotSignal(Failed(`ex`, `child`)) ::
-                    ChildEvent(GotSignal(PreRestart(`ex`))) ::
-                    ChildEvent(GotSignal(PostRestart(`ex`))) :: Nil)
+                msgs should
+                  ===(
+                    GotSignal(Failed(`ex`, `child`)) ::
+                      ChildEvent(GotSignal(PreRestart(`ex`))) ::
+                      ChildEvent(GotSignal(PostRestart(`ex`))) :: Nil)
                 log.assertDone(500.millis)
-                child ! BecomeInert(
-                  self
-                ) // necessary to avoid PostStop/Terminated interference
+                child !
+                  BecomeInert(
+                    self
+                  ) // necessary to avoid PostStop/Terminated interference
                 (subj, child)
             }
             .expectMessageKeep(500.millis) {

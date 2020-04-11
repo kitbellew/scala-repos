@@ -76,34 +76,35 @@ class TableViewSpec[S]
     tableView.sortOrder.size should (equal(0))
   }
 
-  it should "not alter the delegate state during implicit conversion - Issue 154" in {
-    val rocky = "Rocky"
-    val characters = ObservableBuffer[String](
-      "Peggy",
-      "Sue",
-      "555-6798",
-      rocky,
-      "Raccoon",
-      "555-6798")
+  it should
+    "not alter the delegate state during implicit conversion - Issue 154" in {
+      val rocky = "Rocky"
+      val characters = ObservableBuffer[String](
+        "Peggy",
+        "Sue",
+        "555-6798",
+        rocky,
+        "Raccoon",
+        "555-6798")
 
-    val tableView =
-      new TableView[String](characters) {
-        columns += new TableColumn[String, String]("Name")
-      }
+      val tableView =
+        new TableView[String](characters) {
+          columns += new TableColumn[String, String]("Name")
+        }
 
-    tableView.getSelectionModel.select(rocky)
-    tableView.getSelectionModel.selectedItem.value should equal(rocky)
+      tableView.getSelectionModel.select(rocky)
+      tableView.getSelectionModel.selectedItem.value should equal(rocky)
 
-    // Clear selection
-    tableView.selectionModel.value.clearSelection()
-    tableView.getSelectionModel.selectedItem.value should equal(null)
+      // Clear selection
+      tableView.selectionModel.value.clearSelection()
+      tableView.getSelectionModel.selectedItem.value should equal(null)
 
-    tableView.selectionModel().select(rocky)
-    tableView.selectionModel().selectedItem() should equal(rocky)
+      tableView.selectionModel().select(rocky)
+      tableView.selectionModel().selectedItem() should equal(rocky)
 
-    // Clear selection
-    tableView.selectionModel().clearSelection()
-    tableView.selectionModel().selectedItem() should equal(null)
+      // Clear selection
+      tableView.selectionModel().clearSelection()
+      tableView.selectionModel().selectedItem() should equal(null)
 
-  }
+    }
 }

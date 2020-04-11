@@ -199,11 +199,12 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
     else
       Json.obj(
         "nb" -> total,
-        "users" -> userIds
-          .flatMap {
-            lightUser(_)
-          }
-          .map(_.titleName),
+        "users" ->
+          userIds
+            .flatMap {
+              lightUser(_)
+            }
+            .map(_.titleName),
         "anons" -> anons)
   }
 

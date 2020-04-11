@@ -93,11 +93,12 @@ object Long {
       }
       val radixPowLengthLong = radixPowLength.toLong
       val overflowBarrier = Long.divideUnsigned(-1L, radixPowLengthLong)
-      r += new StringRadixInfo(
-        chunkLength,
-        radixPowLengthLong,
-        paddingZeros,
-        overflowBarrier)
+      r +=
+        new StringRadixInfo(
+          chunkLength,
+          radixPowLengthLong,
+          paddingZeros,
+          overflowBarrier)
     }
 
     r
@@ -105,8 +106,8 @@ object Long {
 
   @inline // because radix is almost certainly constant at call site
   def toString(i: scala.Long, radix: Int): String = {
-    if (radix == 10 || radix < Character.MIN_RADIX || radix > Character
-          .MAX_RADIX)
+    if (radix == 10 || radix < Character.MIN_RADIX ||
+        radix > Character.MAX_RADIX)
       toString(i)
     else
       toStringImpl(i, radix)

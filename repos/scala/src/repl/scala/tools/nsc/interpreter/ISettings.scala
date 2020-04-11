@@ -48,10 +48,11 @@ class ISettings(intp: IMain) {
       "deprecation" -> deprecation)
 
   private def allSettingsString =
-    allSettings.toList sortBy (_._1) map {
-      case (k, v) =>
-        "  " + k + " = " + v + "\n"
-    } mkString
+    allSettings.toList sortBy
+      (_._1) map {
+        case (k, v) =>
+          "  " + k + " = " + v + "\n"
+      } mkString
 
   override def toString = """
     | ISettings {

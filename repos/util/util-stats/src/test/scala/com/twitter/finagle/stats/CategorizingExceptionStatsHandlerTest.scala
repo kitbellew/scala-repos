@@ -44,10 +44,8 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
     assert(receiver.counters(Seq("sourcedfailures", "service")) == 1)
     assert(
       receiver.counters(
-        Seq(
-          "sourcedfailures",
-          "service",
-          classOf[RuntimeException].getName)) == 1)
+        Seq("sourcedfailures", "service", classOf[RuntimeException].getName)) ==
+        1)
     assert(
       receiver.counters(
         Seq(
@@ -57,14 +55,15 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
           classOf[Exception].getName)) == 1)
 
     assert(
-      keys == Seq(
-        "clienterrors",
-        "clienterrors/java.lang.RuntimeException",
-        "clienterrors/java.lang.RuntimeException/java.lang.Exception",
-        "sourcedfailures/service",
-        "sourcedfailures/service/java.lang.RuntimeException",
-        "sourcedfailures/service/java.lang.RuntimeException/java.lang.Exception"
-      ))
+      keys ==
+        Seq(
+          "clienterrors",
+          "clienterrors/java.lang.RuntimeException",
+          "clienterrors/java.lang.RuntimeException/java.lang.Exception",
+          "sourcedfailures/service",
+          "sourcedfailures/service/java.lang.RuntimeException",
+          "sourcedfailures/service/java.lang.RuntimeException/java.lang.Exception"
+        ))
   }
 
   test("skips unknown source and defaults to failures") {
@@ -81,10 +80,11 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
       receiver.counters.filterKeys(_.contains("sourcedfailures")).size == 0)
 
     assert(
-      keys == Seq(
-        "failures",
-        "failures/java.lang.RuntimeException",
-        "failures/java.lang.RuntimeException/java.lang.Exception"))
+      keys ==
+        Seq(
+          "failures",
+          "failures/java.lang.RuntimeException",
+          "failures/java.lang.RuntimeException/java.lang.Exception"))
   }
 
   test("supports no rollup") {
@@ -124,11 +124,12 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
           classOf[Exception].getName)) == 1)
 
     assert(
-      keys == Seq(
-        "clienterrors",
-        "clienterrors/java.lang.RuntimeException/java.lang.Exception",
-        "sourcedfailures/service",
-        "sourcedfailures/service/java.lang.RuntimeException/java.lang.Exception"
-      ))
+      keys ==
+        Seq(
+          "clienterrors",
+          "clienterrors/java.lang.RuntimeException/java.lang.Exception",
+          "sourcedfailures/service",
+          "sourcedfailures/service/java.lang.RuntimeException/java.lang.Exception"
+        ))
   }
 }

@@ -117,13 +117,12 @@ class SingleAppScalingTest
         Thread.sleep(waitTime)
       }
       //      val currentApp = marathon.app(appIdPath)
-      val appJson =
-        (marathon.listAppsInBaseGroup.entityJson \ "apps")
-          .as[Seq[JsObject]]
-          .filter { appJson =>
-            (appJson \ "id").as[String] == appIdPath.toString
-          }
-          .head
+      val appJson = (marathon.listAppsInBaseGroup.entityJson \ "apps")
+        .as[Seq[JsObject]]
+        .filter { appJson =>
+          (appJson \ "id").as[String] == appIdPath.toString
+        }
+        .head
 
       val instances = (appJson \ "instances").as[Int]
       val tasksRunning = (appJson \ "tasksRunning").as[Int]
@@ -133,8 +132,9 @@ class SingleAppScalingTest
         s"XXX (starting) Current instance count: staged $tasksStaged, running $tasksRunning / $instances")
 
       appInfos += ScalingTestResultFiles.addTimestamp(startTime)(appJson)
-      metrics += ScalingTestResultFiles
-        .addTimestamp(startTime)(marathon.metrics().entityJson)
+      metrics +=
+        ScalingTestResultFiles
+          .addTimestamp(startTime)(marathon.metrics().entityJson)
     }
 
     ScalingTestResultFiles

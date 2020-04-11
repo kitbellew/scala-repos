@@ -72,10 +72,11 @@ trait Group[T] {
       var last = Set[T]()
       protected[finagle] val set = outer.set map { set =>
         synchronized {
-          mapped ++= (set &~ last) collect {
-            case el if f.isDefinedAt(el) =>
-              el -> f(el)
-          }
+          mapped ++=
+            (set &~ last) collect {
+              case el if f.isDefinedAt(el) =>
+                el -> f(el)
+            }
           mapped --= last &~ set
           last = set
         }

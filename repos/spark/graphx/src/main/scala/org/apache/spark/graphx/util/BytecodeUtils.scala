@@ -134,7 +134,8 @@ private[graphx] object BytecodeUtils {
               name: String,
               desc: String,
               itf: Boolean) {
-            if (op == INVOKEVIRTUAL || op == INVOKESPECIAL || op == INVOKESTATIC) {
+            if (op == INVOKEVIRTUAL || op == INVOKESPECIAL ||
+                op == INVOKESTATIC) {
               if (!skipClass(owner)) {
                 methodsInvoked
                   .add((Utils.classForName(owner.replace("/", ".")), name))

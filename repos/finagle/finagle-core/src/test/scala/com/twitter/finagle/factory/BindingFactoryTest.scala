@@ -457,8 +457,8 @@ class BindingFactoryTest
       }
 
     val params =
-      Stack.Params.empty + BindingFactory.Dest(unbound) + BindingFactory
-        .BaseDtab(baseDtab)
+      Stack.Params.empty + BindingFactory.Dest(unbound) +
+        BindingFactory.BaseDtab(baseDtab)
 
     val factory =
       new StackBuilder[ServiceFactory[String, String]](nilStack[String, String])

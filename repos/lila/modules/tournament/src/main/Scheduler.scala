@@ -69,12 +69,10 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
       val isHalloween = today.getMonthOfYear == 10 && today.getDayOfMonth == 31
 
       val std = StartingPosition.initial
-      val opening1 = isHalloween ? StartingPosition
-        .presets
-        .halloween | StartingPosition.randomFeaturable
-      val opening2 = isHalloween ? StartingPosition
-        .presets
-        .frankenstein | StartingPosition.randomFeaturable
+      val opening1 = isHalloween ? StartingPosition.presets.halloween |
+        StartingPosition.randomFeaturable
+      val opening2 = isHalloween ? StartingPosition.presets.frankenstein |
+        StartingPosition.randomFeaturable
 
       val nextSchedules: List[Schedule] =
         List(
@@ -262,12 +260,8 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
                 Schedule(Hourly, SuperBlitz, Standard, std, at(date, hour))
                   .some,
                 Schedule(Hourly, Blitz, Standard, std, at(date, hour)).some,
-                (hour % 2 == 0) option Schedule(
-                  Hourly,
-                  Classical,
-                  Standard,
-                  std,
-                  at(date, hour))
+                (hour % 2 == 0) option
+                  Schedule(Hourly, Classical, Standard, std, at(date, hour))
               ).flatten
             },
           // hourly crazyhouse tournaments!
@@ -287,12 +281,9 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
                 }
               List(
                 Schedule(Hourly, speed, Crazyhouse, std, at(date, hour)).some,
-                (speed == Bullet) option Schedule(
-                  Hourly,
-                  speed,
-                  Crazyhouse,
-                  std,
-                  at(date, hour, 30))).flatten
+                (speed == Bullet) option
+                  Schedule(Hourly, speed, Crazyhouse, std, at(date, hour, 30)))
+                .flatten
             }
         ).flatten
 
@@ -328,5 +319,6 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
     new DateTime(year, month, day, 0, 0)
 
   private def at(day: DateTime, hour: Int, minute: Int = 0) =
-    day withHourOfDay hour withMinuteOfHour minute withSecondOfMinute 0 withMillisOfSecond 0
+    day withHourOfDay hour withMinuteOfHour minute withSecondOfMinute
+      0 withMillisOfSecond 0
 }

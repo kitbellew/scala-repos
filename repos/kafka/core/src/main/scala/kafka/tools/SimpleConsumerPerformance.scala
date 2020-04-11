@@ -61,12 +61,13 @@ object SimpleConsumerPerformance {
     val topicAndPartition = TopicAndPartition(config.topic, config.partition)
     val request = OffsetRequest(
       Map(
-        topicAndPartition -> PartitionOffsetRequestInfo(
-          if (config.fromLatest)
-            OffsetRequest.LatestTime
-          else
-            OffsetRequest.EarliestTime,
-          1)))
+        topicAndPartition ->
+          PartitionOffsetRequestInfo(
+            if (config.fromLatest)
+              OffsetRequest.LatestTime
+            else
+              OffsetRequest.EarliestTime,
+            1)))
     var offset: Long =
       consumer
         .getOffsetsBefore(request)

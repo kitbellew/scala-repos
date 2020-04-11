@@ -81,9 +81,10 @@ private[repl] trait SparkImports {
     */
   def importedSymbolsBySource: List[(Symbol, List[Symbol])] = {
     val lang = languageWildcardSyms map (sym => (sym, membersAtPickler(sym)))
-    val session = importHandlers filter (_.targetType != NoType) map { mh =>
-      (mh.targetType.typeSymbol, mh.importedSymbols)
-    }
+    val session = importHandlers filter
+      (_.targetType != NoType) map { mh =>
+        (mh.targetType.typeSymbol, mh.importedSymbols)
+      }
 
     lang ++ session
   }
@@ -91,7 +92,8 @@ private[repl] trait SparkImports {
     importedSymbolsBySource map {
       case (k, vs) =>
         (k, vs filter (_.isImplicit))
-    } filterNot (_._2.isEmpty)
+    } filterNot
+      (_._2.isEmpty)
   }
 
   /** Compute imports that allow definitions from previous
@@ -164,8 +166,8 @@ private[repl] trait SparkImports {
             select(rest, wanted)
           case rh :: rest =>
             import rh.handler._
-            val newWanted =
-              wanted ++ referencedNames -- definedNames -- importedNames
+            val newWanted = wanted ++ referencedNames -- definedNames --
+              importedNames
             rh :: select(rest, newWanted)
         }
       }
@@ -205,8 +207,8 @@ private[repl] trait SparkImports {
         // If the user entered an import, then just use it; add an import wrapping
         // level if the import might conflict with some other import
         case x: ImportHandler =>
-          if (x.importsWildcard || currentImps
-                .exists(x.importedNames contains _))
+          if (x.importsWildcard ||
+              currentImps.exists(x.importedNames contains _))
             addWrapper()
 
           code append (x.member + "\n")
@@ -231,8 +233,8 @@ private[repl] trait SparkImports {
           for (imv <- x.definedNames) {
             val objName = req.lineRep.readPath
             code.append(
-              "import " + objName + ".INSTANCE" + req
-                .accessPath + ".`" + imv + "`\n")
+              "import " + objName + ".INSTANCE" + req.accessPath + ".`" + imv +
+                "`\n")
           }
 
         case x =>

@@ -354,10 +354,13 @@ class Matrix[RowT, ColT, ValT](
 
   override def hashCode = inPipe.hashCode
   override def equals(that: Any): Boolean = {
-    (that != null) && (that.isInstanceOf[Matrix[_, _, _]]) && {
+    (that != null) &&
+    (that.isInstanceOf[Matrix[_, _, _]]) && {
       val thatM = that.asInstanceOf[Matrix[RowT, ColT, ValT]]
-      (this.rowSym == thatM.rowSym) && (this.colSym == thatM.colSym) &&
-      (this.valSym == thatM.valSym) && (this.pipe == thatM.pipe)
+      (this.rowSym == thatM.rowSym) &&
+      (this.colSym == thatM.colSym) &&
+      (this.valSym == thatM.valSym) &&
+      (this.pipe == thatM.pipe)
     }
   }
 
@@ -535,15 +538,13 @@ class Matrix[RowT, ColT, ValT](
 
   protected lazy val rowL0Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
-    (
-      matD
-        .mapValues { x =>
-          1.0
-        }
-        .sumColVectors
-        .diag
-        .inverse
-      ) * matD
+    (matD
+      .mapValues { x =>
+        1.0
+      }
+      .sumColVectors
+      .diag
+      .inverse) * matD
   }
 
   def rowL0Normalize(implicit
@@ -551,15 +552,13 @@ class Matrix[RowT, ColT, ValT](
 
   protected lazy val rowL1Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
-    (
-      matD
-        .mapValues { x =>
-          x.abs
-        }
-        .sumColVectors
-        .diag
-        .inverse
-      ) * matD
+    (matD
+      .mapValues { x =>
+        x.abs
+      }
+      .sumColVectors
+      .diag
+      .inverse) * matD
   }
 
   // Row L1 normalization, only makes sense for Doubles
@@ -569,19 +568,17 @@ class Matrix[RowT, ColT, ValT](
 
   protected lazy val rowL2Norm = {
     val matD = this.asInstanceOf[Matrix[RowT, ColT, Double]]
-    (
-      matD
-        .mapValues { x =>
-          x * x
-        }
-        .sumColVectors
-        .diag
-        .mapValues { x =>
-          scala.math.sqrt(x)
-        }
-        .diagonal
-        .inverse
-      ) * matD
+    (matD
+      .mapValues { x =>
+        x * x
+      }
+      .sumColVectors
+      .diag
+      .mapValues { x =>
+        scala.math.sqrt(x)
+      }
+      .diagonal
+      .inverse) * matD
   }
   // Row L2 normalization (can only be called for Double)
   // After this operation, the sum(|x|^2) along each row will be 1.
@@ -989,9 +986,8 @@ class Matrix[RowT, ColT, ValT](
       that
         .pipe
         .rename(
-          (that.rowSym, that.colSym, that.valSym) -> (
-            filterR, filterC, filterV
-          )),
+          (that.rowSym, that.colSym, that.valSym) ->
+            (filterR, filterC, filterV)),
       new LeftJoin)
     val filtered =
       joined.filter(filterV) { x: ValU =>

@@ -98,11 +98,10 @@ trait PredictionLibModule[M[+_]]
                               new Array[Double](range.end),
                               new Array[Double](range.end))) {
                             case (Intervals(arrConf, arrPred), i) =>
-                              val includedDoubles = 1.0 +: (
-                                scannerPrelims.cpaths map {
+                              val includedDoubles = 1.0 +:
+                                (scannerPrelims.cpaths map {
                                   scannerPrelims.includedCols(_).apply(i)
-                                }
-                              )
+                                })
                               val includedMatrix =
                                 new Matrix(Array(includedDoubles.toArray))
 
@@ -166,29 +165,16 @@ trait PredictionLibModule[M[+_]]
                       val pathPredictionUpper = makeCPath(predIntvStr, 1)
 
                       Map(
-                        ColumnRef(pathFit, CDouble) -> ArrayDoubleColumn(
-                          definedModel,
-                          resultArray),
-                        ColumnRef(
-                          pathConfidenceUpper,
-                          CDouble) -> ArrayDoubleColumn(
-                          definedModel,
-                          confidenceUpper),
-                        ColumnRef(
-                          pathConfidenceLower,
-                          CDouble) -> ArrayDoubleColumn(
-                          definedModel,
-                          confidenceLower),
-                        ColumnRef(
-                          pathPredictionUpper,
-                          CDouble) -> ArrayDoubleColumn(
-                          definedModel,
-                          predictionUpper),
-                        ColumnRef(
-                          pathPredictionLower,
-                          CDouble) -> ArrayDoubleColumn(
-                          definedModel,
-                          predictionLower)
+                        ColumnRef(pathFit, CDouble) ->
+                          ArrayDoubleColumn(definedModel, resultArray),
+                        ColumnRef(pathConfidenceUpper, CDouble) ->
+                          ArrayDoubleColumn(definedModel, confidenceUpper),
+                        ColumnRef(pathConfidenceLower, CDouble) ->
+                          ArrayDoubleColumn(definedModel, confidenceLower),
+                        ColumnRef(pathPredictionUpper, CDouble) ->
+                          ArrayDoubleColumn(definedModel, predictionUpper),
+                        ColumnRef(pathPredictionLower, CDouble) ->
+                          ArrayDoubleColumn(definedModel, predictionLower)
                       )
                   }
 
@@ -257,9 +243,10 @@ trait PredictionLibModule[M[+_]]
                         CPathField(fitStr))
 
                       Map(
-                        ColumnRef(pathFit, CDouble) -> ArrayDoubleColumn(
-                          scannerPrelims.definedModel,
-                          scannerPrelims.resultArray))
+                        ColumnRef(pathFit, CDouble) ->
+                          ArrayDoubleColumn(
+                            scannerPrelims.definedModel,
+                            scannerPrelims.resultArray))
                   }
 
                   val identitiesResult = Model.idRes(cols, modelSet)

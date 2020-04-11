@@ -102,9 +102,8 @@ object Source {
       inputStream,
       bufferSize,
       () => fromFile(file, bufferSize)(codec),
-      () =>
-        inputStream
-          .close())(codec) withDescription ("file:" + file.getAbsolutePath)
+      () => inputStream.close())(codec) withDescription
+      ("file:" + file.getAbsolutePath)
   }
 
   /** Create a `Source` from array of bytes, decoding
@@ -169,8 +168,8 @@ object Source {
       else
         reset
 
-    new BufferedSource(inputStream, bufferSize)(
-      codec) withReset resetFn withClose close
+    new BufferedSource(inputStream, bufferSize)(codec) withReset
+      resetFn withClose close
   }
 
   def fromInputStream(is: InputStream, enc: String): BufferedSource =
@@ -225,8 +224,8 @@ abstract class Source extends Iterator[Char] with Closeable {
   var nerrors = 0
   var nwarnings = 0
 
-  private def lineNum(line: Int): String =
-    (getLines() drop (line - 1) take 1).mkString
+  private def lineNum(line: Int): String = (getLines() drop (line - 1) take 1)
+    .mkString
 
   class LineIterator extends AbstractIterator[String] with Iterator[String] {
     private[this] val sb = new StringBuilder
@@ -337,8 +336,9 @@ abstract class Source extends Iterator[Char] with Closeable {
     val line = Position line pos
     val col = Position column pos
 
-    out println "%s:%d:%d: %s%s%s^"
-      .format(descr, line, col, msg, lineNum(line), spaces(col - 1))
+    out println
+      "%s:%d:%d: %s%s%s^"
+        .format(descr, line, col, msg, lineNum(line), spaces(col - 1))
   }
 
   /**

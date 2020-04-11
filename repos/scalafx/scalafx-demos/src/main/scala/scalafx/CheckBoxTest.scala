@@ -66,8 +66,8 @@ object CheckBoxTest extends JFXApp {
 
   val lblAllowIndeterminate =
     new Label {
-      text <== when(
-        check.allowIndeterminate) choose "Can be Indeterminate" otherwise "Can not be Indeterminate"
+      text <== when(check.allowIndeterminate) choose
+        "Can be Indeterminate" otherwise "Can not be Indeterminate"
     }
 
   val btnFire =

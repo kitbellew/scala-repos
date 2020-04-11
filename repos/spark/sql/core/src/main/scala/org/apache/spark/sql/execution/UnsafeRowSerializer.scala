@@ -134,7 +134,8 @@ private class UnsafeRowSerializerInstance(numFields: Int)
             ByteStreams.readFully(dIn, rowBuffer, 0, rowSize)
             row.pointTo(rowBuffer, Platform.BYTE_ARRAY_OFFSET, rowSize)
             rowSize = readSize()
-            if (rowSize == EOF) { // We are returning the last row in this stream
+            if (rowSize ==
+                  EOF) { // We are returning the last row in this stream
               dIn.close()
               val _rowTuple = rowTuple
               // Null these out so that the byte array can be garbage collected once the entire

@@ -297,8 +297,8 @@ class TypedActorSpec
           intercept[IllegalStateException] {
             TypedActor.self[Foo]
           }
-        ).getMessage should ===(
-          "Calling TypedActor.self outside of a TypedActor implementation method!")
+        ).getMessage should
+          ===("Calling TypedActor.self outside of a TypedActor implementation method!")
       }
     }
 
@@ -359,15 +359,15 @@ class TypedActorSpec
       mustStop(t)
     }
 
-    "be able to call multiple Future-returning methods non-blockingly" in within(
-      timeout.duration) {
-      val t = newFooBar
-      val futures = for (i ← 1 to 20) yield (i, t.futurePigdog(20 millis, i))
-      for ((i, f) ← futures) {
-        Await.result(f, remaining) should ===("Pigdog" + i)
+    "be able to call multiple Future-returning methods non-blockingly" in
+      within(timeout.duration) {
+        val t = newFooBar
+        val futures = for (i ← 1 to 20) yield (i, t.futurePigdog(20 millis, i))
+        for ((i, f) ← futures) {
+          Await.result(f, remaining) should ===("Pigdog" + i)
+        }
+        mustStop(t)
       }
-      mustStop(t)
-    }
 
     "be able to call methods returning Java Options" taggedAs TimingTest in {
       val t = newFooBar(1 second)
@@ -389,14 +389,15 @@ class TypedActorSpec
       mustStop(t)
     }
 
-    "be able to compose futures without blocking" in within(timeout.duration) {
-      val t, t2 = newFooBar(remaining)
-      val f = t.futureComposePigdogFrom(t2)
-      f.isCompleted should ===(false)
-      Await.result(f, remaining) should ===("PIGDOG")
-      mustStop(t)
-      mustStop(t2)
-    }
+    "be able to compose futures without blocking" in
+      within(timeout.duration) {
+        val t, t2 = newFooBar(remaining)
+        val f = t.futureComposePigdogFrom(t2)
+        f.isCompleted should ===(false)
+        Await.result(f, remaining) should ===("PIGDOG")
+        mustStop(t)
+        mustStop(t2)
+      }
 
     "be able to handle exceptions when calling methods" in {
       filterEvents(EventFilter[IllegalStateException]("expected")) {
@@ -415,8 +416,8 @@ class TypedActorSpec
             }))
         val t = Await.result(
           (
-            boss ? TypedProps[Bar](classOf[Foo], classOf[Bar])
-              .withTimeout(2 seconds)
+            boss ?
+              TypedProps[Bar](classOf[Foo], classOf[Bar]).withTimeout(2 seconds)
           ).mapTo[Foo],
           timeout.duration)
 
@@ -474,16 +475,16 @@ class TypedActorSpec
       mustStop(t)
     }
 
-    "be able to support implementation only typed actors" in within(
-      timeout.duration) {
-      val t: Foo = TypedActor(system).typedActorOf(TypedProps[Bar]())
-      val f = t.futurePigdog(200 millis)
-      val f2 = t.futurePigdog(Duration.Zero)
-      f2.isCompleted should ===(false)
-      f.isCompleted should ===(false)
-      Await.result(f, remaining) should ===(Await.result(f2, remaining))
-      mustStop(t)
-    }
+    "be able to support implementation only typed actors" in
+      within(timeout.duration) {
+        val t: Foo = TypedActor(system).typedActorOf(TypedProps[Bar]())
+        val f = t.futurePigdog(200 millis)
+        val f2 = t.futurePigdog(Duration.Zero)
+        f2.isCompleted should ===(false)
+        f.isCompleted should ===(false)
+        Await.result(f, remaining) should ===(Await.result(f2, remaining))
+        mustStop(t)
+      }
 
     "be able to support implementation only typed actors with complex interfaces" in {
       val t: Stackable1 with Stackable2 = TypedActor(system)
@@ -493,22 +494,23 @@ class TypedActorSpec
       mustStop(t)
     }
 
-    "be able to use balancing dispatcher" in within(timeout.duration) {
-      val thais =
-        for (i ← 1 to 60)
-          yield newFooBar("pooled-dispatcher", 6 seconds)
-      val iterator = new CyclicIterator(thais)
+    "be able to use balancing dispatcher" in
+      within(timeout.duration) {
+        val thais =
+          for (i ← 1 to 60)
+            yield newFooBar("pooled-dispatcher", 6 seconds)
+        val iterator = new CyclicIterator(thais)
 
-      val results =
-        for (i ← 1 to 120)
-          yield (i, iterator.next.futurePigdog(200 millis, i))
+        val results =
+          for (i ← 1 to 120)
+            yield (i, iterator.next.futurePigdog(200 millis, i))
 
-      for ((i, r) ← results)
-        Await.result(r, remaining) should ===("Pigdog" + i)
+        for ((i, r) ← results)
+          Await.result(r, remaining) should ===("Pigdog" + i)
 
-      for (t ← thais)
-        mustStop(t)
-    }
+        for (t ← thais)
+          mustStop(t)
+      }
 
     "be able to serialize and deserialize invocations" in {
       import java.io._

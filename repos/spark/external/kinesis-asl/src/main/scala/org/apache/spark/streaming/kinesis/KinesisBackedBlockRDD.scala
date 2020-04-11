@@ -284,7 +284,8 @@ private[kinesis] class KinesisSequenceRangeIterator(
     while (result.isEmpty && !isTimedOut && !isMaxRetryDone) {
       if (retryCount > 0) { // wait only if this is a retry
         Thread.sleep(waitTimeMs)
-        waitTimeMs *= 2 // if you have waited, then double wait time for next round
+        waitTimeMs *=
+          2 // if you have waited, then double wait time for next round
       }
       try {
         result = Some(body)

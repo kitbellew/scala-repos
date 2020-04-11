@@ -44,8 +44,8 @@ object WithResourceId extends DispatchSnippet {
   import Helpers._
 
   def render(xhtml: NodeSeq): NodeSeq = {
-    xhtml flatMap (
-      _ match {
+    xhtml flatMap
+      (_ match {
         case e: Elem if e.label == "link" =>
           attrStr(e.attributes, "href").map { href =>
             e.copy(attributes = MetaData.update(
@@ -68,28 +68,24 @@ object WithResourceId extends DispatchSnippet {
           } openOr e
         case e =>
           e
-      }
-    )
+      })
   }
 
   private def attrStr(attrs: MetaData, attr: String): Box[String] =
-    (
-      attrs.get(attr) match {
+    (attrs.get(attr) match {
+      case None =>
+        Empty
+      case Some(Nil) =>
+        Empty
+      case Some(x) =>
+        Full(x.toString)
+    }) or
+      (attrs.get(attr.toLowerCase) match {
         case None =>
           Empty
         case Some(Nil) =>
           Empty
         case Some(x) =>
           Full(x.toString)
-      }
-    ) or (
-      attrs.get(attr.toLowerCase) match {
-        case None =>
-          Empty
-        case Some(Nil) =>
-          Empty
-        case Some(x) =>
-          Full(x.toString)
-      }
-    )
+      })
 }

@@ -25,9 +25,8 @@ trait Erasure {
          * owners (e.g. when computing lubs, <root> is used). All packageClass symbols have `isJavaDefined == true`.
          */
         case TypeRef(_, sym, _)
-            if sym.isAbstractType && (
-              !sym.owner.isJavaDefined || sym.hasFlag(Flags.EXISTENTIAL)
-            ) =>
+            if sym.isAbstractType &&
+              (!sym.owner.isJavaDefined || sym.hasFlag(Flags.EXISTENTIAL)) =>
           tp
         case ExistentialType(tparams, restp) =>
           genericCore(restp)
@@ -145,7 +144,8 @@ trait Erasure {
               arrayType(ObjectTpe)
             else
               typeRef(apply(pre), sym, args map applyInArray)
-          else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
+          else if (sym == AnyClass || sym == AnyValClass ||
+                   sym == SingletonClass)
             ObjectTpe
           else if (sym == UnitClass)
             BoxedUnitTpe
@@ -324,7 +324,8 @@ trait Erasure {
       val old = scalaErasure(tp)
       if (!(res =:= old))
         log(
-          "Identified divergence between java/scala erasure:\n  scala: " + old + "\n   java: " + res)
+          "Identified divergence between java/scala erasure:\n  scala: " + old +
+            "\n   java: " + res)
       res
     }
   }
@@ -374,8 +375,8 @@ trait Erasure {
         // implement new spec for erasure of refined types.
         def isUnshadowed(psym: Symbol) =
           !(
-            psyms exists (qsym =>
-              (psym ne qsym) && (qsym isNonBottomSubClass psym))
+            psyms exists
+              (qsym => (psym ne qsym) && (qsym isNonBottomSubClass psym))
           )
         val cs = parents
           .iterator
@@ -431,8 +432,7 @@ trait Erasure {
         }
       else
         specialErasure(sym)(tp)
-    } else if (sym.owner != NoSymbol &&
-               sym.owner.owner == ArrayClass &&
+    } else if (sym.owner != NoSymbol && sym.owner.owner == ArrayClass &&
                sym == Array_update.paramss.head(1)) {
       // special case for Array.update: the non-erased type remains, i.e. (Int,A)Unit
       // since the erasure type map gets applied to every symbol, we have to catch the

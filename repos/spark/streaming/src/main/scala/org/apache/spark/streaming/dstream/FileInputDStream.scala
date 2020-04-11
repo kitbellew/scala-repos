@@ -214,8 +214,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
       // Calculate ignore threshold
       val modTimeIgnoreThreshold = math.max(
         initialModTimeIgnoreThreshold, // initial threshold based on newFilesOnly setting
-        currentTime - durationToRemember
-          .milliseconds // trailing end of the remember window
+        currentTime -
+          durationToRemember.milliseconds // trailing end of the remember window
       )
       logDebug(
         s"Getting new files for time $currentTime, " +
@@ -316,7 +316,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
         }
       if (rdd.partitions.isEmpty) {
         logError(
-          "File " + file + " has no data in it. Spark Streaming can only ingest " +
+          "File " + file +
+            " has no data in it. Spark Streaming can only ingest " +
             "files that have been \"moved\" to the directory assigned to the file stream. " +
             "Refer to the streaming programming guide for more details.")
       }

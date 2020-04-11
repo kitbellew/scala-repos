@@ -84,10 +84,11 @@ object AndroidFacetDataService {
 
       val base = AndroidRootUtil.getModuleDirPath(module)
       def getRelativePath(f: File) =
-        "/" + FileUtil.getRelativePath(
-          base,
-          FileUtil.toSystemIndependentName(f.getAbsolutePath),
-          '/')
+        "/" +
+          FileUtil.getRelativePath(
+            base,
+            FileUtil.toSystemIndependentName(f.getAbsolutePath),
+            '/')
 
       configuration.GEN_FOLDER_RELATIVE_PATH_APT = getRelativePath(data.gen)
       configuration.GEN_FOLDER_RELATIVE_PATH_AIDL = getRelativePath(data.gen)
@@ -100,8 +101,8 @@ object AndroidFacetDataService {
       configuration.myProGuardCfgFiles = new util.ArrayList[String]()
 
       if (data.proguardConfig.nonEmpty) {
-        val proguardFile =
-          new File(module.getProject.getBasePath) / "proguard-sbt.txt"
+        val proguardFile = new File(module.getProject.getBasePath) /
+          "proguard-sbt.txt"
         FileUtil.writeToFile(
           proguardFile,
           data.proguardConfig.mkString(SystemProperties.getLineSeparator))

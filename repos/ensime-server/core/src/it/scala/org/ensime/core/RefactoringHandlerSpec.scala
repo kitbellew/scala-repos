@@ -55,56 +55,68 @@ class RefactoringHandlerSpec
     }
   }
 
-  it should "format files from ContentsSourceFileInfo with handleFormatFile" in {
-    withAnalyzer { (dir, analyzerRef) =>
-      val content = contents("package blah", "   class  Something   {}")
-      val analyzer = analyzerRef.underlyingActor
+  it should
+    "format files from ContentsSourceFileInfo with handleFormatFile" in {
+      withAnalyzer { (dir, analyzerRef) =>
+        val content = contents("package blah", "   class  Something   {}")
+        val analyzer = analyzerRef.underlyingActor
 
-      val formatted = analyzer.handleFormatFile(
-        ContentsSourceFileInfo(new File("abc.scala"), content))
-      val expectedContents = contents("package blah", "class Something {}", "")
-      formatted should ===(expectedContents)
+        val formatted = analyzer.handleFormatFile(
+          ContentsSourceFileInfo(new File("abc.scala"), content))
+        val expectedContents = contents(
+          "package blah",
+          "class Something {}",
+          "")
+        formatted should ===(expectedContents)
+      }
     }
-  }
 
-  it should "format files from ContentsInSourceFileInfo with handleFormatFile and handle encoding" in {
-    withAnalyzer { (dir, analyzerRef) =>
-      val file = srcFile(
-        dir,
-        "tmp-contents",
-        contents("package blah", "   class  Something   {}"),
-        write = true,
-        encoding = encoding)
+  it should
+    "format files from ContentsInSourceFileInfo with handleFormatFile and handle encoding" in {
+      withAnalyzer { (dir, analyzerRef) =>
+        val file = srcFile(
+          dir,
+          "tmp-contents",
+          contents("package blah", "   class  Something   {}"),
+          write = true,
+          encoding = encoding)
 
-      val analyzer = analyzerRef.underlyingActor
+        val analyzer = analyzerRef.underlyingActor
 
-      val formatted = analyzer.handleFormatFile(
-        ContentsInSourceFileInfo(new File("abc.scala"), new File(file.path)))
-      val expectedContents = contents("package blah", "class Something {}", "")
-      formatted should ===(expectedContents)
+        val formatted = analyzer.handleFormatFile(
+          ContentsInSourceFileInfo(new File("abc.scala"), new File(file.path)))
+        val expectedContents = contents(
+          "package blah",
+          "class Something {}",
+          "")
+        formatted should ===(expectedContents)
+      }
     }
-  }
 
-  it should "format files from FileSourceFileInfo with handleFormatFile and handle encoding" in {
-    withAnalyzer { (dir, analyzerRef) =>
-      val file = srcFile(
-        dir,
-        "abc.scala",
-        contents("package blah", "   class  Something   {}"),
-        write = true,
-        encoding = encoding)
+  it should
+    "format files from FileSourceFileInfo with handleFormatFile and handle encoding" in {
+      withAnalyzer { (dir, analyzerRef) =>
+        val file = srcFile(
+          dir,
+          "abc.scala",
+          contents("package blah", "   class  Something   {}"),
+          write = true,
+          encoding = encoding)
 
-      val analyzer = analyzerRef.underlyingActor
+        val analyzer = analyzerRef.underlyingActor
 
-      val formatted = analyzer
-        .handleFormatFile(SourceFileInfo(new File(file.path)))
-      val expectedContents = contents("package blah", "class Something {}", "")
-      formatted === (expectedContents)
+        val formatted = analyzer
+          .handleFormatFile(SourceFileInfo(new File(file.path)))
+        val expectedContents = contents(
+          "package blah",
+          "class Something {}",
+          "")
+        formatted === (expectedContents)
+      }
     }
-  }
 
-  it should "not format invalid files" in withAnalyzer {
-    (config, analyzerRef) =>
+  it should "not format invalid files" in
+    withAnalyzer { (config, analyzerRef) =>
       val file = srcFile(
         config,
         "abc.scala",
@@ -119,13 +131,13 @@ class RefactoringHandlerSpec
 
       val expectedContents = contents("package blah", "invalid scala syntax")
       fileContents should ===(expectedContents)
-  }
+    }
 
   //
   // core/src/main/scala/org/ensime/core/Refactoring.scala#L.239
   //
-  it should "organize imports when 3 imports exist" in withAnalyzer {
-    (dir, analyzerRef) =>
+  it should "organize imports when 3 imports exist" in
+    withAnalyzer { (dir, analyzerRef) =>
       // Please refer Scala IDE
       // scala-refactoring/src/test/scala/scala/tools/refactoring/tests/implementations/imports/
       // --> OrganizeImportsWildcardsTest.scala
@@ -173,10 +185,10 @@ class RefactoringHandlerSpec
         "}"
       )
       formatted should ===(expectedContents)
-  }
+    }
 
-  it should "add imports on the first line" in withAnalyzer {
-    (dir, analyzerRef) =>
+  it should "add imports on the first line" in
+    withAnalyzer { (dir, analyzerRef) =>
       val file = srcFile(
         dir,
         "tmp-contents",
@@ -222,7 +234,7 @@ class RefactoringHandlerSpec
       )
 
       formatted should ===(expectedContents)
-  }
+    }
 
   it should "add imports on the first line when other examples come" in {
     withAnalyzer { (dir, analyzerRef) =>
@@ -269,8 +281,9 @@ class RefactoringHandlerSpec
     }
   }
 
-  it should "rename a function id with params' opening/closing parenthesis on different lines" in withAnalyzer {
-    (dir, analyzerRef) =>
+  it should
+    "rename a function id with params' opening/closing parenthesis on different lines" in
+    withAnalyzer { (dir, analyzerRef) =>
       val file = srcFile(
         dir,
         "tmp-contents",
@@ -304,7 +317,7 @@ class RefactoringHandlerSpec
         "}",
         "")
       formatted should ===(expectedContents)
-  }
+    }
 
   it should "organize imports" in {
     withAnalyzer { (dir, analyzerRef) =>

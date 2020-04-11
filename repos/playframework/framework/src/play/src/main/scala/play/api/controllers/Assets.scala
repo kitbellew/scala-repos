@@ -227,7 +227,8 @@ private[controllers] class AssetInfo(
   val etag: Option[String] =
     digest orElse {
       lastModified map (m => Codecs.sha1(m + " -> " + url.toExternalForm))
-    } map ("\"" + _ + "\"")
+    } map
+      ("\"" + _ + "\"")
 
   val mimeType: String =
     MimeTypes.forFileName(name).fold(ContentTypes.BINARY)(addCharsetIfNeeded)
@@ -401,8 +402,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
             digest(minPath)
               .fold(minPath) { dgst =>
                 val lastSep = minPath.lastIndexOf("/")
-                minPath.take(lastSep + 1) + dgst + "-" + minPath
-                  .drop(lastSep + 1)
+                minPath.take(lastSep + 1) + dgst + "-" +
+                  minPath.drop(lastSep + 1)
               }
               .drop(base.size + 1)
           }

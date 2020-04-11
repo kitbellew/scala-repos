@@ -89,9 +89,8 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
       //println(s"Got $errorPercentage% ordering errors on run size of $runSize")
 
       // Now show that this run length works fine with the RunQueueTester
-      percentageOfRunsWithOrderingErrors(
-        runSize,
-        new RunQueueTester()) must_== 0
+      percentageOfRunsWithOrderingErrors(runSize, new RunQueueTester()) must_==
+        0
     }
 
     "use the ExecutionContext exactly once per scheduled item" in {

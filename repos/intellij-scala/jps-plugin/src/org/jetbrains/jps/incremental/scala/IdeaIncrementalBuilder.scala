@@ -82,9 +82,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
         .NOTHING_DONE // *.scala files in SBT "build" modules are rightly excluded from compilation
 
     if (!hasScalaModules(chunk)) {
-      val message =
-        "skipping Scala files without a Scala SDK in module(s) " + chunk
-          .getPresentableShortName
+      val message = "skipping Scala files without a Scala SDK in module(s) " +
+        chunk.getPresentableShortName
       context.processMessage(
         new CompilerMessage("scala", BuildMessage.Kind.WARNING, message))
       return ExitCode.NOTHING_DONE
@@ -141,7 +140,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
       case _ if client.hasReportedErrors || client.isCanceled =>
         ExitCode.ABORT
       case Right(code) =>
-        if (delta != null && JavaBuilderUtil.updateMappings(
+        if (delta != null &&
+            JavaBuilderUtil.updateMappings(
               context,
               delta,
               dirtyFilesHolder,

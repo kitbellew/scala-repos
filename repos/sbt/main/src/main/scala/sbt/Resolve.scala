@@ -11,11 +11,8 @@ object Resolve {
       key: AttributeKey[_],
       mask: ScopeMask): Scope => Scope = {
     val rs =
-      resolveProject(current, mask) _ ::
-        resolveExtra(mask) _ ::
-        resolveTask(mask) _ ::
-        resolveConfig(index, key, mask) _ ::
-        Nil
+      resolveProject(current, mask) _ :: resolveExtra(mask) _ ::
+        resolveTask(mask) _ :: resolveConfig(index, key, mask) _ :: Nil
     scope =>
       (scope /: rs) { (s, f) =>
         f(s)
@@ -59,8 +56,8 @@ object Resolve {
       val keyIndex = index.keyIndex
       val definesKey =
         (c: ScopeAxis[ConfigKey]) =>
-          keyIndex.keys(resolvedRef, c.toOption.map(_.name), task) contains key
-            .label
+          keyIndex.keys(resolvedRef, c.toOption.map(_.name), task) contains
+            key.label
       val projectConfigs = index.configurations(proj).map(ck => Select(ck))
       val config: ScopeAxis[ConfigKey] =
         (Global +: projectConfigs) find definesKey getOrElse Global

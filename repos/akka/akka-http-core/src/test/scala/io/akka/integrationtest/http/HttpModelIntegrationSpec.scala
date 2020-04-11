@@ -85,13 +85,14 @@ class HttpModelIntegrationSpec
           case _ ⇒
             ???
         }
-      val textHeaders: Seq[(String, String)] =
-        entityTextHeaders ++ partialTextHeaders
-      textHeaders shouldEqual Seq(
-        "Content-Type" -> "application/json",
-        "Content-Length" -> "5",
-        "Host" -> "localhost",
-        "Origin" -> "null")
+      val textHeaders: Seq[(String, String)] = entityTextHeaders ++
+        partialTextHeaders
+      textHeaders shouldEqual
+        Seq(
+          "Content-Type" -> "application/json",
+          "Content-Length" -> "5",
+          "Host" -> "localhost",
+          "Origin" -> "null")
 
       // Finally convert the body into an Array[Byte].
 

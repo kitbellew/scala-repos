@@ -19,19 +19,20 @@ object Release {
     Seq(
       // Disable cross building because we're using sbt-doge cross building
       releaseCrossBuild := false,
-      releaseProcess := Seq[ReleaseStep](
-        checkSnapshotDependencies,
-        inquireVersions,
-        setReleaseVersion,
-        commitReleaseVersion,
-        tagRelease,
-        releaseStepCommandAndRemaining("+publishSigned"),
-        releaseStepTask(bintrayRelease in thisProjectRef.value),
-        releaseStepCommand("sonatypeRelease"),
-        setNextVersion,
-        commitNextVersion,
-        pushChanges
-      )
+      releaseProcess :=
+        Seq[ReleaseStep](
+          checkSnapshotDependencies,
+          inquireVersions,
+          setReleaseVersion,
+          commitReleaseVersion,
+          tagRelease,
+          releaseStepCommandAndRemaining("+publishSigned"),
+          releaseStepTask(bintrayRelease in thisProjectRef.value),
+          releaseStepCommand("sonatypeRelease"),
+          setNextVersion,
+          commitNextVersion,
+          pushChanges
+        )
     )
 
   /**

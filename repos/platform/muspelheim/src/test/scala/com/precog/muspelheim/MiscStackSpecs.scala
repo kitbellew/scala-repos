@@ -745,11 +745,9 @@ trait MiscStackSpecs extends EvalStackSpecs {
           obj
       }
 
-      results2 mustEqual (
-        Set(
-          SObject(Map("num" -> SDecimal(1018), "winner" -> SString("YES"))),
-          SObject(Map("num" -> SDecimal(1), "winner" -> SString("YEs"))))
-      )
+      results2 mustEqual (Set(
+        SObject(Map("num" -> SDecimal(1018), "winner" -> SString("YES"))),
+        SObject(Map("num" -> SDecimal(1), "winner" -> SString("YEs")))))
     }
 
     "solve with a generic where inside a function" in {
@@ -775,11 +773,9 @@ trait MiscStackSpecs extends EvalStackSpecs {
           obj
       }
 
-      results2 mustEqual (
-        Set(
-          SObject(Map("num" -> SDecimal(1018), "winner" -> SString("YES"))),
-          SObject(Map("num" -> SDecimal(1), "winner" -> SString("YEs"))))
-      )
+      results2 mustEqual (Set(
+        SObject(Map("num" -> SDecimal(1018), "winner" -> SString("YES"))),
+        SObject(Map("num" -> SDecimal(1), "winner" -> SString("YEs")))))
     }
 
     "solve the results of a set and a stdlib op1 function" in {
@@ -4260,5 +4256,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
 case class Precision(p: Double)
 class AlmostEqual(d: Double) {
-  def ~=(d2: Double)(implicit p: Precision) = (d - d2).abs <= p.p
+  def ~=(d2: Double)(implicit p: Precision) =
+    (
+      d - d2
+    ).abs <= p.p
 }

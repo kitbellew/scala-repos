@@ -4,27 +4,29 @@ import Keys._
 import complete.DefaultParsers._
 
 object PomRepoTest extends Build {
-  lazy val root = Project("root", file(".")) settings (
-    resolvers ++= Seq(
-      local,
-      Resolver.sonatypeRepo("releases"),
-      Resolver.sonatypeRepo("snapshots")),
-    InputKey[Unit]("check-pom") <<= InputTask(_ => spaceDelimited("<args>")) {
-      result =>
-        (makePom, result, streams) map checkPomRepositories
-    },
-    makePomConfiguration <<= (makePomConfiguration, baseDirectory) {
-      (conf, base) =>
-        conf.copy(filterRepositories = pomIncludeRepository(
-          base,
-          conf.filterRepositories))
-    },
-    ivyPaths <<= baseDirectory(dir => new IvyPaths(dir, Some(dir / "ivy-home")))
-  )
+  lazy val root = Project("root", file(".")) settings
+    (
+      resolvers ++=
+        Seq(
+          local,
+          Resolver.sonatypeRepo("releases"),
+          Resolver.sonatypeRepo("snapshots")),
+      InputKey[Unit]("check-pom") <<=
+        InputTask(_ => spaceDelimited("<args>")) { result =>
+          (makePom, result, streams) map checkPomRepositories
+        },
+      makePomConfiguration <<=
+        (makePomConfiguration, baseDirectory) { (conf, base) =>
+          conf.copy(filterRepositories = pomIncludeRepository(
+            base,
+            conf.filterRepositories))
+        },
+      ivyPaths <<=
+        baseDirectory(dir => new IvyPaths(dir, Some(dir / "ivy-home"))))
 
-  val local =
-    "local-maven-repo" at "file://" + (Path.userHome / ".m2" / "repository")
-      .absolutePath
+  val local = "local-maven-repo" at
+    "file://" +
+    (Path.userHome / ".m2" / "repository").absolutePath
 
   def pomIncludeRepository(base: File, prev: MavenRepository => Boolean) =
     (r: MavenRepository) =>
@@ -56,12 +58,10 @@ object PomRepoTest extends Build {
     } map {
       "Repository should not be exported: " + _
     } orElse
-      (
-        expected.find { e =>
-          !extracted.exists(r => e.accept(r.root))
-        } map {
-          "Repository should be exported: " + _
-        }
-      ) foreach error
+      (expected.find { e =>
+        !extracted.exists(r => e.accept(r.root))
+      } map {
+        "Repository should be exported: " + _
+      }) foreach error
   }
 }

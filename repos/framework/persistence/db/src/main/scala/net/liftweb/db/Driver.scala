@@ -150,7 +150,8 @@ abstract class DriverType(val name: String) {
     */
   def primaryKeySetup(tableName: String, columnName: String): List[String] = {
     List(
-      "ALTER TABLE " + tableName + " ADD CONSTRAINT " + tableName + "_PK PRIMARY KEY(" + columnName + ")")
+      "ALTER TABLE " + tableName + " ADD CONSTRAINT " + tableName +
+        "_PK PRIMARY KEY(" + columnName + ")")
   }
 
   /** This defines the syntax for adding a column in an alter. This is
@@ -497,13 +498,13 @@ object OracleDriver extends DriverType("Oracle") {
      */
     super.primaryKeySetup(tableName, columnName) :::
       List(
-        "CREATE SEQUENCE " + tableName + "_sequence START WITH 1 INCREMENT BY 1",
-        "CREATE OR REPLACE TRIGGER " + tableName + "_trigger BEFORE INSERT ON " + tableName + " " +
-          "FOR EACH ROW " +
-          "WHEN (new." + columnName + " is null) " +
-          "BEGIN " +
-          "SELECT " + tableName + "_sequence.nextval INTO :new." + columnName + " FROM DUAL; " +
-          "END;"
+        "CREATE SEQUENCE " + tableName +
+          "_sequence START WITH 1 INCREMENT BY 1",
+        "CREATE OR REPLACE TRIGGER " + tableName +
+          "_trigger BEFORE INSERT ON " + tableName + " " + "FOR EACH ROW " +
+          "WHEN (new." + columnName + " is null) " + "BEGIN " + "SELECT " +
+          tableName + "_sequence.nextval INTO :new." + columnName +
+          " FROM DUAL; " + "END;"
       )
   }
 

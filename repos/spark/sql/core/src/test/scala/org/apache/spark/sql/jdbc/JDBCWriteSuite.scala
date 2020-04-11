@@ -86,15 +86,13 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
     Row.apply("mary", 222))
   private lazy val arr1x2 = Array[Row](Row.apply("fred", 3))
   private lazy val schema2 = StructType(
-    StructField("name", StringType) ::
-      StructField("id", IntegerType) :: Nil)
+    StructField("name", StringType) :: StructField("id", IntegerType) :: Nil)
 
   private lazy val arr2x3 = Array[Row](
     Row.apply("dave", 42, 1),
     Row.apply("mary", 222, 2))
   private lazy val schema3 = StructType(
-    StructField("name", StringType) ::
-      StructField("id", IntegerType) ::
+    StructField("name", StringType) :: StructField("id", IntegerType) ::
       StructField("seq", IntegerType) :: Nil)
 
   test("Basic CREATE") {
@@ -103,16 +101,15 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
 
     df.write.jdbc(url, "TEST.BASICCREATETEST", new Properties)
     assert(
-      2 === sqlContext
-        .read
-        .jdbc(url, "TEST.BASICCREATETEST", new Properties)
-        .count)
+      2 ===
+        sqlContext.read.jdbc(url, "TEST.BASICCREATETEST", new Properties).count)
     assert(
-      2 === sqlContext
-        .read
-        .jdbc(url, "TEST.BASICCREATETEST", new Properties)
-        .collect()(0)
-        .length)
+      2 ===
+        sqlContext
+          .read
+          .jdbc(url, "TEST.BASICCREATETEST", new Properties)
+          .collect()(0)
+          .length)
   }
 
   test("CREATE with overwrite") {
@@ -124,20 +121,22 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
     df.write.jdbc(url1, "TEST.DROPTEST", properties)
     assert(2 === sqlContext.read.jdbc(url1, "TEST.DROPTEST", properties).count)
     assert(
-      3 === sqlContext
-        .read
-        .jdbc(url1, "TEST.DROPTEST", properties)
-        .collect()(0)
-        .length)
+      3 ===
+        sqlContext
+          .read
+          .jdbc(url1, "TEST.DROPTEST", properties)
+          .collect()(0)
+          .length)
 
     df2.write.mode(SaveMode.Overwrite).jdbc(url1, "TEST.DROPTEST", properties)
     assert(1 === sqlContext.read.jdbc(url1, "TEST.DROPTEST", properties).count)
     assert(
-      2 === sqlContext
-        .read
-        .jdbc(url1, "TEST.DROPTEST", properties)
-        .collect()(0)
-        .length)
+      2 ===
+        sqlContext
+          .read
+          .jdbc(url1, "TEST.DROPTEST", properties)
+          .collect()(0)
+          .length)
   }
 
   test("CREATE then INSERT to append") {
@@ -151,11 +150,12 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
     assert(
       3 === sqlContext.read.jdbc(url, "TEST.APPENDTEST", new Properties).count)
     assert(
-      2 === sqlContext
-        .read
-        .jdbc(url, "TEST.APPENDTEST", new Properties)
-        .collect()(0)
-        .length)
+      2 ===
+        sqlContext
+          .read
+          .jdbc(url, "TEST.APPENDTEST", new Properties)
+          .collect()(0)
+          .length)
   }
 
   test("CREATE then INSERT to truncate") {
@@ -172,11 +172,12 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
     assert(
       1 === sqlContext.read.jdbc(url1, "TEST.TRUNCATETEST", properties).count)
     assert(
-      2 === sqlContext
-        .read
-        .jdbc(url1, "TEST.TRUNCATETEST", properties)
-        .collect()(0)
-        .length)
+      2 ===
+        sqlContext
+          .read
+          .jdbc(url1, "TEST.TRUNCATETEST", properties)
+          .collect()(0)
+          .length)
   }
 
   test("Incompatible INSERT to append") {
@@ -198,11 +199,12 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
     sql("INSERT INTO TABLE PEOPLE1 SELECT * FROM PEOPLE")
     assert(2 === sqlContext.read.jdbc(url1, "TEST.PEOPLE1", properties).count)
     assert(
-      2 === sqlContext
-        .read
-        .jdbc(url1, "TEST.PEOPLE1", properties)
-        .collect()(0)
-        .length)
+      2 ===
+        sqlContext
+          .read
+          .jdbc(url1, "TEST.PEOPLE1", properties)
+          .collect()(0)
+          .length)
   }
 
   test("INSERT to JDBC Datasource with overwrite") {
@@ -210,10 +212,11 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
     sql("INSERT OVERWRITE TABLE PEOPLE1 SELECT * FROM PEOPLE")
     assert(2 === sqlContext.read.jdbc(url1, "TEST.PEOPLE1", properties).count)
     assert(
-      2 === sqlContext
-        .read
-        .jdbc(url1, "TEST.PEOPLE1", properties)
-        .collect()(0)
-        .length)
+      2 ===
+        sqlContext
+          .read
+          .jdbc(url1, "TEST.PEOPLE1", properties)
+          .collect()(0)
+          .length)
   }
 }

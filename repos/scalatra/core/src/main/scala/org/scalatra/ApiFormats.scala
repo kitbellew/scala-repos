@@ -125,8 +125,8 @@ trait ApiFormats extends ScalatraBase {
 
   private[this] def getFromResponseHeader(implicit
       response: HttpServletResponse): Option[String] = {
-    response.contentType flatMap (ctt =>
-      ctt.split(";").headOption flatMap mimeTypes.get)
+    response.contentType flatMap
+      (ctt => ctt.split(";").headOption flatMap mimeTypes.get)
   }
 
   private def parseAcceptHeader(implicit
@@ -164,9 +164,8 @@ trait ApiFormats extends ScalatraBase {
   protected def formatForMimeTypes(mimeTypes: String*): Option[String] = {
     val defaultMimeType = formats(defaultFormat.name)
     def matchMimeType(tm: String, f: String) = {
-      tm.toLowerCase(ENGLISH).startsWith(f) || (
-        defaultMimeType == f && tm.contains(defaultMimeType)
-      )
+      tm.toLowerCase(ENGLISH).startsWith(f) ||
+      (defaultMimeType == f && tm.contains(defaultMimeType))
     }
     mimeTypes find { hdr =>
       formats exists {
@@ -205,18 +204,17 @@ trait ApiFormats extends ScalatraBase {
       else
         accepted.map(_.name).toList
     }
-    conditions.isEmpty || (
-      conditions filter { s =>
-        formats.get(s).isDefined
-      } contains contentType
-    )
+    conditions.isEmpty ||
+    (conditions filter { s =>
+      formats.get(s).isDefined
+    } contains contentType)
   }
 
   private def getFormat(implicit
       request: HttpServletRequest,
       response: HttpServletResponse): String = {
-    getFromResponseHeader orElse getFromParams orElse getFromAcceptHeader getOrElse defaultFormat
-      .name
+    getFromResponseHeader orElse getFromParams orElse
+      getFromAcceptHeader getOrElse defaultFormat.name
   }
 
   protected[scalatra] override def withRouteMultiParams[S](
@@ -229,11 +227,12 @@ trait ApiFormats extends ScalatraBase {
         .getOrElse(Map.empty)
         .map {
           case (key, values) =>
-            key -> values.map(s =>
-              if (s.nonBlank)
-                UriDecoder.secondStep(s)
-              else
-                s)
+            key ->
+              values.map(s =>
+                if (s.nonBlank)
+                  UriDecoder.secondStep(s)
+                else
+                  s)
         }
     }
     if (routeParams.contains("format")) {

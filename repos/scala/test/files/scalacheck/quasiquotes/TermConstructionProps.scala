@@ -65,20 +65,16 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
 
   property("unquote list and non-list fun arguments") = forAll {
     (fun: Tree, arg1: Tree, arg2: Tree, args: List[Tree]) =>
-      q"$fun(..$args, $arg1, $arg2)" ≈ Apply(
-        fun,
-        args ++ List(arg1) ++ List(arg2)) &&
-      q"$fun($arg1, ..$args, $arg2)" ≈ Apply(
-        fun,
-        List(arg1) ++ args ++ List(arg2)) &&
-      q"$fun($arg1, $arg2, ..$args)" ≈ Apply(
-        fun,
-        List(arg1) ++ List(arg2) ++ args)
+      q"$fun(..$args, $arg1, $arg2)" ≈
+        Apply(fun, args ++ List(arg1) ++ List(arg2)) &&
+        q"$fun($arg1, ..$args, $arg2)" ≈
+        Apply(fun, List(arg1) ++ args ++ List(arg2)) &&
+        q"$fun($arg1, $arg2, ..$args)" ≈
+        Apply(fun, List(arg1) ++ List(arg2) ++ args)
   }
 
   property("unquote into new") = forAll { (name: TypeName, body: List[Tree]) =>
-    q"new $name { ..$body }" ≈
-      q"""{
+    q"new $name { ..$body }" ≈ q"""{
         final class $$anon extends $name {
           ..$body
         }
@@ -96,12 +92,11 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
 
   property("unquote trees into type apply") = forAll {
     (fun: TreeIsTerm, types: List[Tree]) =>
-      q"$fun[..$types]" ≈ (
-        if (types.nonEmpty)
-          TypeApply(fun, types)
-        else
-          fun
-      )
+      q"$fun[..$types]" ≈
+        (if (types.nonEmpty)
+           TypeApply(fun, types)
+         else
+           fun)
   }
 
   property("unquote trees into while loop") = forAll {
@@ -129,8 +124,8 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
   }
 
   def blockInvariant(quote: Tree, trees: List[Tree]) =
-    quote ≈ (
-      trees match {
+    quote ≈
+      (trees match {
         case Nil =>
           q"{}"
         case _ :+ last if !last.isTerm =>
@@ -139,8 +134,7 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
           head
         case init :+ last =>
           Block(init, last)
-      }
-    )
+      })
 
   property("unquote list of trees into block (1)") = forAll {
     (trees: List[Tree]) =>
@@ -347,7 +341,8 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
     val q"$a = $b = $c = $d = $e = $f = $g = $h = $k = $l" =
       q"a = b = c = d = e = f = g = h = k = l"
     assert(
-      a ≈ q"a" && b ≈ q"b" && c ≈ q"c" && d ≈ q"d" && e ≈ q"e" && g ≈ q"g" && h ≈ q"h" && k ≈ q"k" && l ≈ q"l")
+      a ≈ q"a" && b ≈ q"b" && c ≈ q"c" && d ≈ q"d" && e ≈ q"e" && g ≈ q"g" &&
+        h ≈ q"h" && k ≈ q"k" && l ≈ q"l")
   }
 
   property("SI-8385 a") = test {

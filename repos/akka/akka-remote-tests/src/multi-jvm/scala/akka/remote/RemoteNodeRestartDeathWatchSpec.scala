@@ -74,58 +74,59 @@ abstract class RemoteNodeRestartDeathWatchSpec
 
   "RemoteNodeRestartDeathWatch" must {
 
-    "receive Terminated when remote actor system is restarted" taggedAs LongRunningTest in {
-      runOn(first) {
-        val secondAddress = node(second).address
-        enterBarrier("actors-started")
+    "receive Terminated when remote actor system is restarted" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          val secondAddress = node(second).address
+          enterBarrier("actors-started")
 
-        val subject = identify(second, "subject")
-        watch(subject)
-        subject ! "hello"
-        expectMsg("hello")
-        enterBarrier("watch-established")
+          val subject = identify(second, "subject")
+          watch(subject)
+          subject ! "hello"
+          expectMsg("hello")
+          enterBarrier("watch-established")
 
-        // simulate a hard shutdown, nothing sent from the shutdown node
-        testConductor.blackhole(second, first, Direction.Send).await
-        testConductor.shutdown(second).await
+          // simulate a hard shutdown, nothing sent from the shutdown node
+          testConductor.blackhole(second, first, Direction.Send).await
+          testConductor.shutdown(second).await
 
-        expectTerminated(subject, 15.seconds)
+          expectTerminated(subject, 15.seconds)
 
-        within(5.seconds) {
-          // retry because the Subject actor might not be started yet
-          awaitAssert {
-            system.actorSelection(
-              RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
-            expectMsg(1.second, "shutdown-ack")
+          within(5.seconds) {
+            // retry because the Subject actor might not be started yet
+            awaitAssert {
+              system.actorSelection(
+                RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
+              expectMsg(1.second, "shutdown-ack")
+            }
           }
         }
-      }
 
-      runOn(second) {
-        val addr =
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
-        system.actorOf(Props[Subject], "subject")
-        enterBarrier("actors-started")
+        runOn(second) {
+          val addr =
+            system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+          system.actorOf(Props[Subject], "subject")
+          enterBarrier("actors-started")
 
-        enterBarrier("watch-established")
+          enterBarrier("watch-established")
 
-        Await.ready(system.whenTerminated, 30.seconds)
+          Await.ready(system.whenTerminated, 30.seconds)
 
-        val freshSystem = ActorSystem(
-          system.name,
-          ConfigFactory.parseString(s"""
+          val freshSystem = ActorSystem(
+            system.name,
+            ConfigFactory.parseString(s"""
                     akka.remote.netty.tcp {
                       hostname = ${addr.host.get}
                       port = ${addr.port.get}
                     }
                     """).withFallback(system.settings.config)
-        )
-        freshSystem.actorOf(Props[Subject], "subject")
+          )
+          freshSystem.actorOf(Props[Subject], "subject")
 
-        Await.ready(freshSystem.whenTerminated, 30.seconds)
+          Await.ready(freshSystem.whenTerminated, 30.seconds)
+        }
+
       }
-
-    }
 
   }
 }

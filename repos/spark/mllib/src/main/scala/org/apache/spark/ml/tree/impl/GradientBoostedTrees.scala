@@ -118,10 +118,8 @@ private[ml] object GradientBoostedTrees extends Logging {
       initTree: DecisionTreeRegressionModel,
       loss: OldLoss): RDD[(Double, Double)] = {
     data.map { lp =>
-      val pred = initTreeWeight * initTree
-        .rootNode
-        .predictImpl(lp.features)
-        .prediction
+      val pred = initTreeWeight *
+        initTree.rootNode.predictImpl(lp.features).prediction
       val error = loss.computeError(pred, lp.label)
       (pred, error)
     }
@@ -150,10 +148,8 @@ private[ml] object GradientBoostedTrees extends Logging {
       .mapPartitions { iter =>
         iter.map {
           case (lp, (pred, error)) =>
-            val newPred = pred + tree
-              .rootNode
-              .predictImpl(lp.features)
-              .prediction * treeWeight
+            val newPred = pred +
+              tree.rootNode.predictImpl(lp.features).prediction * treeWeight
             val newError = loss.computeError(newPred, lp.label)
             (newPred, newError)
         }
@@ -302,8 +298,8 @@ private[ml] object GradientBoostedTrees extends Logging {
           loss)
         validatePredErrorCheckpointer.update(validatePredError)
         val currentValidateError = validatePredError.values.mean()
-        if (bestValidateError - currentValidateError < validationTol * Math
-              .max(currentValidateError, 0.01)) {
+        if (bestValidateError - currentValidateError <
+              validationTol * Math.max(currentValidateError, 0.01)) {
           doneLearning = true
         } else if (currentValidateError < bestValidateError) {
           bestValidateError = currentValidateError

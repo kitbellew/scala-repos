@@ -35,21 +35,25 @@ class FlowScanSpec extends AkkaSpec {
         s.scan(0)(_ + _).runFold(immutable.Seq.empty[Int])(_ :+ _),
         duration)
 
-    "Scan" in assertAllStagesStopped {
-      val v = Vector.fill(random.nextInt(100, 1000))(random.nextInt())
-      scan(Source(v)) should be(v.scan(0)(_ + _))
-    }
+    "Scan" in
+      assertAllStagesStopped {
+        val v = Vector.fill(random.nextInt(100, 1000))(random.nextInt())
+        scan(Source(v)) should be(v.scan(0)(_ + _))
+      }
 
-    "Scan empty failed" in assertAllStagesStopped {
-      val e = new Exception("fail!")
-      intercept[Exception](
-        scan(Source.failed[Int](e))) should be theSameInstanceAs (e)
-    }
+    "Scan empty failed" in
+      assertAllStagesStopped {
+        val e = new Exception("fail!")
+        intercept[Exception](scan(Source.failed[Int](e))) should
+          be theSameInstanceAs
+          (e)
+      }
 
-    "Scan empty" in assertAllStagesStopped {
-      val v = Vector.empty[Int]
-      scan(Source(v)) should be(v.scan(0)(_ + _))
-    }
+    "Scan empty" in
+      assertAllStagesStopped {
+        val v = Vector.empty[Int]
+        scan(Source(v)) should be(v.scan(0)(_ + _))
+      }
 
     "emit values promptly" in {
       val f = Source

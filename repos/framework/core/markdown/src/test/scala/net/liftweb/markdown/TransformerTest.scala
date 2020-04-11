@@ -34,24 +34,25 @@ class TransformerTest extends FlatSpec with ShouldMatchers with Transformer {
     apply("") should equal("")
     apply("\n") should equal("")
     apply("Paragraph1\n") should equal("<p>Paragraph1</p>\n")
-    apply("Paragraph1\n\nParagraph2\n") should equal(
-      "<p>Paragraph1</p>\n<p>Paragraph2</p>\n")
-    apply("Paragraph1 *italic*\n") should equal(
-      "<p>Paragraph1 <em>italic</em></p>\n")
+    apply("Paragraph1\n\nParagraph2\n") should
+      equal("<p>Paragraph1</p>\n<p>Paragraph2</p>\n")
+    apply("Paragraph1 *italic*\n") should
+      equal("<p>Paragraph1 <em>italic</em></p>\n")
     apply("\n\nParagraph1\n") should equal("<p>Paragraph1</p>\n")
   }
 
   it should "parse code blocks" in {
     apply("    foo\n") should equal("<pre><code>foo\n</code></pre>\n")
     apply("\tfoo\n") should equal("<pre><code>foo\n</code></pre>\n")
-    apply("    foo\n    bar\n") should equal(
-      "<pre><code>foo\nbar\n</code></pre>\n")
-    apply("    foo\n  \n    bar\n") should equal(
-      "<pre><code>foo\n  \nbar\n</code></pre>\n")
-    apply("    foo\n\tbaz\n  \n    bar\n") should equal(
-      "<pre><code>foo\nbaz\n  \nbar\n</code></pre>\n")
-    apply("    public static void main(String[] args)\n") should equal(
-      "<pre><code>public static void main(String[] args)\n</code></pre>\n")
+    apply("    foo\n    bar\n") should
+      equal("<pre><code>foo\nbar\n</code></pre>\n")
+    apply("    foo\n  \n    bar\n") should
+      equal("<pre><code>foo\n  \nbar\n</code></pre>\n")
+    apply("    foo\n\tbaz\n  \n    bar\n") should
+      equal("<pre><code>foo\nbaz\n  \nbar\n</code></pre>\n")
+    apply("    public static void main(String[] args)\n") should
+      equal(
+        "<pre><code>public static void main(String[] args)\n</code></pre>\n")
   }
 
   it should "parse paragraphs" in {
@@ -77,8 +78,8 @@ test""") should equal("""<p>test</p>
   }
 
   it should "parse block quotes" in {
-    apply("> quote\n> quote2\n") should equal(
-      "<blockquote><p>quote\nquote2</p>\n</blockquote>\n")
+    apply("> quote\n> quote2\n") should
+      equal("<blockquote><p>quote\nquote2</p>\n</blockquote>\n")
   }
 
   it should "parse ordered and unordered lists" in {
@@ -199,8 +200,9 @@ paragraph""") should equal("""<ol>
 else in the doc, define the link:
 
   [id]: http://example.com/  "Title"
-""") should equal(
-      """<p>An <a href="http://example.com/" title="Title">example</a>. Then, anywhere
+""") should
+      equal(
+        """<p>An <a href="http://example.com/" title="Title">example</a>. Then, anywhere
 else in the doc, define the link:</p>
 """)
   }
@@ -212,8 +214,8 @@ else in the doc, define the link:</p>
     apply("### A Header##\n") should equal("<h3>A Header</h3>\n")
     apply("### A Header##  \n") should equal("<h3>A Header</h3>\n")
     apply("### A Header  ##  \n") should equal("<h3>A Header</h3>\n")
-    apply("### A Header ## foo ## \n") should equal(
-      "<h3>A Header ## foo</h3>\n")
+    apply("### A Header ## foo ## \n") should
+      equal("<h3>A Header ## foo</h3>\n")
   }
 
   it should "parse setext style level 1 headings" in {
@@ -234,8 +236,8 @@ else in the doc, define the link:</p>
   }
 
   it should "parse xml-like blocks as is" in {
-    apply("<foo> bla\nblub <bar>hallo</bar>\n</foo>\n") should equal(
-      "<foo> bla\nblub <bar>hallo</bar>\n</foo>\n")
+    apply("<foo> bla\nblub <bar>hallo</bar>\n</foo>\n") should
+      equal("<foo> bla\nblub <bar>hallo</bar>\n</foo>\n")
   }
 
   it should "parse fenced code blocks" in {

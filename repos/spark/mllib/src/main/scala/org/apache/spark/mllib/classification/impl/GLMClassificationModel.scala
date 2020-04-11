@@ -60,8 +60,10 @@ private[classification] object GLMClassificationModel {
       // Create JSON metadata.
       val metadata = compact(
         render(
-          ("class" -> modelClass) ~ ("version" -> thisFormatVersion) ~
-            ("numFeatures" -> numFeatures) ~ ("numClasses" -> numClasses)))
+          ("class" -> modelClass) ~
+            ("version" -> thisFormatVersion) ~
+            ("numFeatures" -> numFeatures) ~
+            ("numClasses" -> numClasses)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // Create Parquet data.

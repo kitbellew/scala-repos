@@ -435,9 +435,7 @@ final class Algebraic private (val expr: Algebraic.Expr)
     */
   override def isValidInt: Boolean = {
     val n = toBigInt
-    (n <= MaxIntValue) &&
-    (n >= MinIntValue) &&
-    (this == Algebraic(n))
+    (n <= MaxIntValue) && (n >= MinIntValue) && (this == Algebraic(n))
   }
 
   /**
@@ -447,9 +445,7 @@ final class Algebraic private (val expr: Algebraic.Expr)
     */
   def isValidLong: Boolean = {
     val n = toBigInt
-    (n <= MaxLongValue) &&
-    (n >= MinLongValue) &&
-    (this == Algebraic(n))
+    (n <= MaxLongValue) && (n >= MinLongValue) && (this == Algebraic(n))
   }
 
   /**
@@ -1054,9 +1050,8 @@ object Algebraic extends AlgebraicInstances {
           val lDigits = digits + 2 - rhs.lowerBound.decimalDigits
           val rDigits = max(
             1 - rhs.lowerBound.decimalDigits,
-            digits + 4 - 2 * rhs.lowerBound.decimalDigits + lhs
-              .upperBound
-              .decimalDigits)
+            digits + 4 - 2 * rhs.lowerBound.decimalDigits +
+              lhs.upperBound.decimalDigits)
           if (lDigits >= Int.MaxValue || rDigits >= Int.MaxValue) {
             throw new IllegalArgumentException("required precision is too high")
           } else {
@@ -1127,10 +1122,8 @@ object Algebraic extends AlgebraicInstances {
       }
       def toBigDecimal(digits: Int): JBigDecimal = {
         // We could possibly do better here. Investigate.
-        val height = 32 - java
-          .lang
-          .Integer
-          .numberOfLeadingZeros(k - 1) // ceil(lg2(k))
+        val height = 32 -
+          java.lang.Integer.numberOfLeadingZeros(k - 1) // ceil(lg2(k))
         val maxDigits = checked(
           digits + height * (1 + sub.upperBound.decimalDigits))
         if (maxDigits >= Int.MaxValue) {
@@ -1281,8 +1274,8 @@ object Algebraic extends AlgebraicInstances {
   final def nroot(value: JBigDecimal, n: Int, mc: MathContext): JBigDecimal = {
     val result =
       nroot(value, n) { x =>
-        x.scale - ceil(x.unscaledValue.bitLength * bits2dec).toInt + mc
-          .getPrecision + 1
+        x.scale - ceil(x.unscaledValue.bitLength * bits2dec).toInt +
+          mc.getPrecision + 1
       }
     result.round(mc)
   }
@@ -1544,8 +1537,8 @@ object Algebraic extends AlgebraicInstances {
             val lhs = lhsExpr.getBound(this)
             val rhs = rhsExpr.getBound(this)
             val lc = lhs.lc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
-            val tc = lhs.measure * rhsExpr.degreeBound + rhs.measure * lhsExpr
-              .degreeBound + 2 * degreeBound
+            val tc = lhs.measure * rhsExpr.degreeBound +
+              rhs.measure * lhsExpr.degreeBound + 2 * degreeBound
             val measure = tc
             val ub = max(lhs.ub, rhs.ub) + 1
             val lb = max(-measure, -(ub * (degreeBound - 1) + lc))
@@ -1556,8 +1549,8 @@ object Algebraic extends AlgebraicInstances {
             val rhs = rhsExpr.getBound(this)
             val lc = lhs.lc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
             val tc = lhs.tc * rhsExpr.degreeBound + rhs.tc * lhsExpr.degreeBound
-            val measure = lhs.measure * rhsExpr.degreeBound + rhs
-              .measure * lhsExpr.degreeBound
+            val measure = lhs.measure * rhsExpr.degreeBound +
+              rhs.measure * lhsExpr.degreeBound
             val lb = lhs.lb + rhs.lb
             val ub = lhs.ub + rhs.ub
             Bound(lc, tc, measure, lb, ub)
@@ -1567,8 +1560,8 @@ object Algebraic extends AlgebraicInstances {
             val rhs = rhsExpr.getBound(this)
             val lc = lhs.lc * rhsExpr.degreeBound + rhs.tc * lhsExpr.degreeBound
             val tc = lhs.tc * rhsExpr.degreeBound + rhs.lc * lhsExpr.degreeBound
-            val measure = lhs.measure * rhsExpr.degreeBound + rhs
-              .measure * lhsExpr.degreeBound
+            val measure = lhs.measure * rhsExpr.degreeBound +
+              rhs.measure * lhsExpr.degreeBound
             val lb = lhs.lb - rhs.ub
             val ub = lhs.ub - rhs.lb
             Bound(lc, tc, measure, lb, ub)

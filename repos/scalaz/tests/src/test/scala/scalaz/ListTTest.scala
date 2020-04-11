@@ -8,45 +8,52 @@ import org.scalacheck.Prop.forAll
 object ListTTest extends SpecLite {
   type ListTOpt[A] = ListT[Option, A]
 
-  "fromList / toList" ! forAll { (ass: List[List[Int]]) =>
-    ListT.fromList(ass).toList must_=== (ass)
-  }
+  "fromList / toList" !
+    forAll { (ass: List[List[Int]]) =>
+      ListT.fromList(ass).toList must_=== (ass)
+    }
 
-  "filter all" ! forAll { (ass: ListT[List, Int]) =>
-    ass.filter(_ => true) must_=== (ass)
-  }
+  "filter all" !
+    forAll { (ass: ListT[List, Int]) =>
+      ass.filter(_ => true) must_=== (ass)
+    }
 
-  "filter none" ! forAll { (ass: ListT[List, Int]) =>
-    val filtered = ass.filter(_ => false)
-    val isEmpty = filtered.isEmpty
-    isEmpty.toList.forall(identity)
-  }
+  "filter none" !
+    forAll { (ass: ListT[List, Int]) =>
+      val filtered = ass.filter(_ => false)
+      val isEmpty = filtered.isEmpty
+      isEmpty.toList.forall(identity)
+    }
 
-  "find" ! forAll { (ass: ListTOpt[Int]) =>
-    ass.find(_ > 0) must_=== (OptionT.optionT(ass.run.map(_.find(_ > 0))))
-  }
+  "find" !
+    forAll { (ass: ListTOpt[Int]) =>
+      ass.find(_ > 0) must_=== (OptionT.optionT(ass.run.map(_.find(_ > 0))))
+    }
 
-  "drop" ! forAll { (ass: Option[List[Int]], x: Int) =>
-    ListT.fromList(ass).drop(x).toList must_=== (ass.map(_.drop(x)))
-  }
+  "drop" !
+    forAll { (ass: Option[List[Int]], x: Int) =>
+      ListT.fromList(ass).drop(x).toList must_=== (ass.map(_.drop(x)))
+    }
 
-  "take" ! forAll { (ass: Option[List[Int]], x: Int) =>
-    ListT.fromList(ass).take(x).toList must_=== (ass.map(_.take(x)))
-  }
+  "take" !
+    forAll { (ass: Option[List[Int]], x: Int) =>
+      ListT.fromList(ass).take(x).toList must_=== (ass.map(_.take(x)))
+    }
 
-  "map" ! forAll { (ass: List[List[Int]]) =>
-    ListT.fromList(ass).map(_ * 2).toList must_=== (ass.map(_.map(_ * 2)))
-  }
+  "map" !
+    forAll { (ass: List[List[Int]]) =>
+      ListT.fromList(ass).map(_ * 2).toList must_=== (ass.map(_.map(_ * 2)))
+    }
 
-  "flatMap" ! forAll { (ass: List[List[Int]]) =>
-    (
-      ListT
-        .fromList(ass)
-        .flatMap(number => ListT.fromList(List(List(number.toFloat))))
-        .toList
-        must_=== (ass.map(_.flatMap(number => List(number.toFloat))))
-    )
-  }
+  "flatMap" !
+    forAll { (ass: List[List[Int]]) =>
+      (
+        ListT
+          .fromList(ass)
+          .flatMap(number => ListT.fromList(List(List(number.toFloat))))
+          .toList must_=== (ass.map(_.flatMap(number => List(number.toFloat))))
+      )
+    }
 
   // Exists to ensure that fromList and map don't stack overflow.
   "large map" ! {
@@ -55,9 +62,10 @@ object ListTTest extends SpecLite {
     ()
   }
 
-  "listT" ! forAll { (ass: Option[List[Int]]) =>
-    ListT.listT(ass).run == ass
-  }
+  "listT" !
+    forAll { (ass: Option[List[Int]]) =>
+      ListT.listT(ass).run == ass
+    }
 
   checkAll(equal.laws[ListTOpt[Int]])
   checkAll(monoid.laws[ListTOpt[Int]])

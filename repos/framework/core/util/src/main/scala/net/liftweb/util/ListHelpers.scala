@@ -77,13 +77,14 @@ trait ListHelpers {
           o.foreach(t => ret += f(RemoveDelta(t)))
         case (Nil, n) => {
           n.foreach { t =>
-            ret += f(
-              insertAfter match {
-                case Full(x) =>
-                  InsertAfterDelta(t, x)
-                case _ =>
-                  AppendDelta(t)
-              })
+            ret +=
+              f(
+                insertAfter match {
+                  case Full(x) =>
+                    InsertAfterDelta(t, x)
+                  case _ =>
+                    AppendDelta(t)
+                })
             insertAfter = Full(t)
           }
         }
@@ -268,13 +269,14 @@ trait ListHelpers {
               case x :: xs =>
                 permuteList(xs).map(x :: _)
             })
-          ret ::: rot
-            .map(z =>
-              (z: @unchecked) match {
-                case x :: xs =>
-                  xs
-              })
-            .flatMap(internal(_))
+          ret :::
+            rot
+              .map(z =>
+                (z: @unchecked) match {
+                  case x :: xs =>
+                    xs
+                })
+              .flatMap(internal(_))
       }
     internal(in.toList).distinct.sortWith(_.length > _.length)
   }

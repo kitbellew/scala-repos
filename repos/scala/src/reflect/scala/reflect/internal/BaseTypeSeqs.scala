@@ -74,9 +74,8 @@ trait BaseTypeSeqs {
                 lubDepth(variants)) match {
                 case NoType =>
                   typeError(
-                    "no common type instance of base types " + (
-                      variants mkString ", and "
-                    ) + " exists.")
+                    "no common type instance of base types " +
+                      (variants mkString ", and ") + " exists.")
                 case tp0 =>
                   pending(i) = false
                   elems(i) = tp0
@@ -85,9 +84,8 @@ trait BaseTypeSeqs {
             } catch {
               case CyclicInheritance =>
                 typeError(
-                  "computing the common type instance of base types " + (
-                    variants mkString ", and "
-                  ) + " leads to a cycle.")
+                  "computing the common type instance of base types " +
+                    (variants mkString ", and ") + " leads to a cycle.")
             }
           case tp =>
             tp
@@ -153,9 +151,8 @@ trait BaseTypeSeqs {
 
     private def typeError(msg: String): Nothing =
       throw new TypeError(
-        "the type intersection " + (
-          parents mkString " with "
-        ) + " is malformed" +
+        "the type intersection " +
+          (parents mkString " with ") + " is malformed" +
           "\n --- because ---\n" + msg)
   }
 

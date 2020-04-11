@@ -77,9 +77,8 @@ abstract class NodePrinters {
         ""
       else {
         try {
-          List(showSymbol(tree), showType(tree)) filterNot (
-            _ == ""
-          ) mkString ", " trim
+          List(showSymbol(tree), showType(tree)) filterNot
+            (_ == "") mkString ", " trim
         } catch {
           case ex: Throwable =>
             "sym= <error> " + ex.getMessage

@@ -36,8 +36,9 @@ class FlowDispatcherSpec
   "Flow with dispatcher setting" must {
     "use the default dispatcher" in testDispatcher()
 
-    "use custom dispatcher" in testDispatcher(
-      defaultSettings.withDispatcher("my-dispatcher"),
-      "my-dispatcher")
+    "use custom dispatcher" in
+      testDispatcher(
+        defaultSettings.withDispatcher("my-dispatcher"),
+        "my-dispatcher")
   }
 }

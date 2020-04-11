@@ -99,8 +99,8 @@ trait NormalizationHelperModule[M[+_]]
             def collectReduction(reduction: Reduction): Set[CPath] = {
               refs collect {
                 case ColumnRef(selector, ctype)
-                    if selector.hasSuffix(CPathField(reduction.name)) && ctype
-                      .isNumeric =>
+                    if selector.hasSuffix(CPathField(reduction.name)) &&
+                      ctype.isNumeric =>
                   selector.take(selector.length - 1) getOrElse CPath.Identity
               }
             }

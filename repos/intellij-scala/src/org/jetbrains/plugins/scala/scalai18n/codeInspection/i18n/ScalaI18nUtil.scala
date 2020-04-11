@@ -167,7 +167,8 @@ object ScalaI18nUtil {
             val method = refExpr.resolve()
             method match {
               case psiMethod: PsiMethod =>
-                if (method != null && isMethodParameterAnnotatedWith(
+                if (method != null &&
+                    isMethodParameterAnnotatedWith(
                       psiMethod,
                       idx,
                       null,
@@ -191,9 +192,8 @@ object ScalaI18nUtil {
       project: Project,
       @NotNull
       expression: ScExpression): ScExpression = {
-    if (expression.isInstanceOf[PsiBinaryExpression] || expression
-          .getParent
-          .isInstanceOf[PsiBinaryExpression]) {
+    if (expression.isInstanceOf[PsiBinaryExpression] ||
+        expression.getParent.isInstanceOf[PsiBinaryExpression]) {
       return CachedValuesManager
         .getManager(project)
         .getParameterizedCachedValue(
@@ -318,8 +318,8 @@ object ScalaI18nUtil {
       var containedInPropertiesFile: Boolean = false
       import scala.collection.JavaConversions._
       for (propertiesFile <- propertiesFiles) {
-        containedInPropertiesFile |= propertiesFile
-          .findPropertyByKey(key) != null
+        containedInPropertiesFile |=
+          propertiesFile.findPropertyByKey(key) != null
       }
       containedInPropertiesFile
     }
@@ -427,8 +427,8 @@ object ScalaI18nUtil {
         case polyVarRef: PsiPolyVariantReference =>
           for (result <- polyVarRef.multiResolve(false)) {
             var flag = true
-            if (result
-                  .isValidResult && result.getElement.isInstanceOf[IProperty]) {
+            if (result.isValidResult &&
+                result.getElement.isInstanceOf[IProperty]) {
               val value: String =
                 result.getElement.asInstanceOf[IProperty].getValue
               var format: MessageFormat = null
@@ -513,23 +513,23 @@ object ScalaI18nUtil {
     annotationAttributeValues
       .put(AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER, null)
     if (mustBePropertyKey(project, expression, annotationAttributeValues)) {
-      annotationAttributeValues get AnnotationUtil
-        .PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER exists {
-        case bundleName: PsiElement =>
-          val result = JavaPsiFacade
-            .getInstance(bundleName.getProject)
-            .getConstantEvaluationHelper
-            .computeConstantExpression(bundleName)
-          if (result == null)
+      annotationAttributeValues get
+        AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER exists {
+          case bundleName: PsiElement =>
+            val result = JavaPsiFacade
+              .getInstance(bundleName.getProject)
+              .getConstantEvaluationHelper
+              .computeConstantExpression(bundleName)
+            if (result == null)
+              false
+            else {
+              val bundleName = result.toString
+              outResourceBundle.set(bundleName)
+              isPropertyRef(expression, key, bundleName)
+            }
+          case _ =>
             false
-          else {
-            val bundleName = result.toString
-            outResourceBundle.set(bundleName)
-            isPropertyRef(expression, key, bundleName)
-          }
-        case _ =>
-          false
-      }
+        }
     } else
       true
   }

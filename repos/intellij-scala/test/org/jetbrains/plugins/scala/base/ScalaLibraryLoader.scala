@@ -103,12 +103,11 @@ class ScalaLibraryLoader(
     val libraryPath = TestUtils.getScalaLibraryPath(sdkVersion)
     val reflectPath = TestUtils.getScalaReflectPath(sdkVersion)
 
-    val scalaSdkJars = Seq(libraryPath, compilerPath) ++ (
-      if (loadReflect)
-        Seq(reflectPath)
-      else
-        Seq.empty
-    )
+    val scalaSdkJars = Seq(libraryPath, compilerPath) ++
+      (if (loadReflect)
+         Seq(reflectPath)
+       else
+         Seq.empty)
     val classRoots =
       scalaSdkJars
         .map(path =>

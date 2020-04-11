@@ -68,36 +68,38 @@ class WebSocketDirectivesSpec extends RoutingSpec {
         }
     }
     "reject websocket requests if no subprotocol matches" in {
-      WS(
-        "http://localhost/",
-        Flow[Message],
-        List("other")) ~> websocketMultipleProtocolRoute ~> check {
-        rejections
-          .collect {
-            case UnsupportedWebSocketSubprotocolRejection(p) ⇒
-              p
-          }
-          .toSet shouldEqual Set("greeter", "echo")
-      }
+      WS("http://localhost/", Flow[Message], List("other")) ~>
+        websocketMultipleProtocolRoute ~>
+        check {
+          rejections
+            .collect {
+              case UnsupportedWebSocketSubprotocolRejection(p) ⇒
+                p
+            }
+            .toSet shouldEqual Set("greeter", "echo")
+        }
 
-      WS("http://localhost/", Flow[Message], List("other")) ~> Route
-        .seal(websocketMultipleProtocolRoute) ~> check {
-        status shouldEqual StatusCodes.BadRequest
-        responseAs[String] shouldEqual "None of the websocket subprotocols offered in the request are supported. Supported are 'echo','greeter'."
-        header[`Sec-WebSocket-Protocol`].get.protocols.toSet shouldEqual Set(
-          "greeter",
-          "echo")
-      }
+      WS("http://localhost/", Flow[Message], List("other")) ~>
+        Route.seal(websocketMultipleProtocolRoute) ~>
+        check {
+          status shouldEqual StatusCodes.BadRequest
+          responseAs[String] shouldEqual
+            "None of the websocket subprotocols offered in the request are supported. Supported are 'echo','greeter'."
+          header[`Sec-WebSocket-Protocol`].get.protocols.toSet shouldEqual
+            Set("greeter", "echo")
+        }
     }
     "reject non-websocket requests" in {
-      Get("http://localhost/") ~> websocketRoute ~> check {
-        rejection shouldEqual ExpectedWebSocketRequestRejection
-      }
+      Get("http://localhost/") ~> websocketRoute ~>
+        check {
+          rejection shouldEqual ExpectedWebSocketRequestRejection
+        }
 
-      Get("http://localhost/") ~> Route.seal(websocketRoute) ~> check {
-        status shouldEqual StatusCodes.BadRequest
-        responseAs[String] shouldEqual "Expected WebSocket Upgrade request"
-      }
+      Get("http://localhost/") ~> Route.seal(websocketRoute) ~>
+        check {
+          status shouldEqual StatusCodes.BadRequest
+          responseAs[String] shouldEqual "Expected WebSocket Upgrade request"
+        }
     }
   }
 

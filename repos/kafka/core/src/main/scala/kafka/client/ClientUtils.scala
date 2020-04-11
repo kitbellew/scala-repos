@@ -233,8 +233,8 @@ object ClientUtils extends Logging {
       }
 
       val coordinator = coordinatorOpt.get
-      if (coordinator.host == queryChannel
-            .host && coordinator.port == queryChannel.port) {
+      if (coordinator.host == queryChannel.host &&
+          coordinator.port == queryChannel.port) {
         offsetManagerChannelOpt = Some(queryChannel)
       } else {
         val connectString = "%s:%d".format(coordinator.host, coordinator.port)

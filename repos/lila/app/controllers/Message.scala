@@ -76,8 +76,8 @@ object Message extends LilaController {
                         !Env.message.LichessSenders.contains(thread.creatorId)))
               },
             text =>
-              api.makePost(thread, text, me) inject Redirect(
-                routes.Message.thread(thread.id) + "#bottom")
+              api.makePost(thread, text, me) inject
+                Redirect(routes.Message.thread(thread.id) + "#bottom")
           )
       }
     }

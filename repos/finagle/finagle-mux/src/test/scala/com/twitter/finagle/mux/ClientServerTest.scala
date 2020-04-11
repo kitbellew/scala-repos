@@ -111,9 +111,10 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     import ctx._
 
     val p1, p2, p3 = new Promise[Response]
-    val reqs = (1 to 3) map { i =>
-      Request(Path.empty, buf(i.toByte))
-    }
+    val reqs =
+      (1 to 3) map { i =>
+        Request(Path.empty, buf(i.toByte))
+      }
     when(service(reqs(0))).thenReturn(p1)
     when(service(reqs(1))).thenReturn(p2)
     when(service(reqs(2))).thenReturn(p3)
@@ -208,8 +209,8 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     val req = Request(Path.empty, buf(1))
     when(service(req)).thenReturn(Future.exception(new Exception("sad panda")))
     assert(
-      client(req).poll == Some(
-        Throw(ServerApplicationError("java.lang.Exception: sad panda"))))
+      client(req).poll ==
+        Some(Throw(ServerApplicationError("java.lang.Exception: sad panda"))))
   }
 
   test("propagate interrupts") {
@@ -227,8 +228,8 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     val exc = new Exception("sad panda")
     f.raise(exc)
     assert(
-      p.isInterrupted == Some(
-        ClientDiscardedRequestException("java.lang.Exception: sad panda")))
+      p.isInterrupted ==
+        Some(ClientDiscardedRequestException("java.lang.Exception: sad panda")))
 
     assert(f.poll == Some(Throw(exc)))
   }

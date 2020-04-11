@@ -32,9 +32,8 @@ class DecodingToCommandTest extends FunSuite {
       val expireTimeTableData = Table(
         "expectedTime" -> "allowedDelta",
         ExpectedTimeTable(0, Time.epoch) -> 0.seconds,
-        ExpectedTimeTable(
-          200.seconds.fromNow.inSeconds,
-          200.seconds.fromNow) -> 1.seconds,
+        ExpectedTimeTable(200.seconds.fromNow.inSeconds, 200.seconds.fromNow) ->
+          1.seconds,
         ExpectedTimeTable(200, 200.seconds.fromNow) -> 1.seconds
       )
 

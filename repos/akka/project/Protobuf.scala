@@ -29,12 +29,12 @@ object Protobuf {
     "Compile the protobuf sources and do all processing.")
 
   lazy val settings: Seq[Setting[_]] = Seq(
-    paths := Seq(
-      (sourceDirectory in Compile).value,
-      (sourceDirectory in Test).value).map(_ / "protobuf"),
-    outputPaths := Seq(
-      (sourceDirectory in Compile).value,
-      (sourceDirectory in Test).value).map(_ / "java"),
+    paths :=
+      Seq((sourceDirectory in Compile).value, (sourceDirectory in Test).value)
+        .map(_ / "protobuf"),
+    outputPaths :=
+      Seq((sourceDirectory in Compile).value, (sourceDirectory in Test).value)
+        .map(_ / "java"),
     protoc := "protoc",
     protocVersion := "2.5.0",
     generate := {
@@ -90,9 +90,8 @@ object Protobuf {
     } catch {
       case e: Exception =>
         throw new RuntimeException(
-          "error while executing '%s' with args: %s" format (
-            protoc, args.mkString(" ")
-          ),
+          "error while executing '%s' with args: %s" format
+            (protoc, args.mkString(" ")),
           e)
     }
 
@@ -110,9 +109,8 @@ object Protobuf {
     val version = res.split(" ").last.trim
     if (version != protocVersion) {
       sys.error(
-        "Wrong protoc version! Expected %s but got %s" format (
-          protocVersion, version
-        ))
+        "Wrong protoc version! Expected %s but got %s" format
+          (protocVersion, version))
     }
   }
 

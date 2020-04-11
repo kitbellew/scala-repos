@@ -87,10 +87,8 @@ case class Like(left: Expression, right: Expression)
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val patternClass = classOf[Pattern].getName
-    val escapeFunc = StringUtils
-      .getClass
-      .getName
-      .stripSuffix("$") + ".escapeLikeRegex"
+    val escapeFunc = StringUtils.getClass.getName.stripSuffix("$") +
+      ".escapeLikeRegex"
     val pattern = ctx.freshName("pattern")
 
     if (right.foldable) {

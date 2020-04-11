@@ -64,8 +64,7 @@ object GenerateMIMAIgnore {
         val moduleSymbol = mirror.staticModule(className)
         val directlyPrivateSpark =
           isPackagePrivate(classSymbol) ||
-            isPackagePrivateModule(moduleSymbol) ||
-            classSymbol.isPrivate
+            isPackagePrivateModule(moduleSymbol) || classSymbol.isPrivate
         /* Inner classes defined within a private[spark] class or object are effectively
          invisible, so we account for them as package private. */
         lazy val indirectlyPrivateSpark = {
@@ -113,8 +112,8 @@ object GenerateMIMAIgnore {
       case t: Throwable =>
         // scalastyle:off println
         println(
-          "[WARN] Unable to detect inner functions for class:" + classSymbol
-            .fullName)
+          "[WARN] Unable to detect inner functions for class:" +
+            classSymbol.fullName)
         // scalastyle:on println
         Seq.empty[String]
     }
@@ -145,20 +144,16 @@ object GenerateMIMAIgnore {
       File(".generated-mima-member-excludes").lines)
       .getOrElse(Iterator.empty)
       .mkString("\n")
-    File(".generated-mima-member-excludes").writeAll(
-      previousMembersContents +
-        privateMembers.mkString("\n"))
+    File(".generated-mima-member-excludes")
+      .writeAll(previousMembersContents + privateMembers.mkString("\n"))
     println("Created : .generated-mima-member-excludes in current directory.")
     // scalastyle:on println
   }
 
   private def shouldExclude(name: String) = {
     // Heuristic to remove JVM classes that do not correspond to user-facing classes in Scala
-    name.contains("anon") ||
-    name.endsWith("$class") ||
-    name.contains("$sp") ||
-    name.contains("hive") ||
-    name.contains("Hive")
+    name.contains("anon") || name.endsWith("$class") || name.contains("$sp") ||
+    name.contains("hive") || name.contains("Hive")
   }
 
   /**

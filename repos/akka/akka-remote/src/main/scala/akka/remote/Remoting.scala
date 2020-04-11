@@ -123,10 +123,11 @@ private[remote] object Remoting {
 
     def receive = {
       case RegisterTransportActor(props, name) ⇒
-        sender() ! context.actorOf(
-          RARP(context.system)
-            .configureDispatcher(props.withDeploy(Deploy.local)),
-          name)
+        sender() !
+          context.actorOf(
+            RARP(context.system)
+              .configureDispatcher(props.withDeploy(Deploy.local)),
+            name)
     }
   }
 
@@ -246,8 +247,8 @@ private[remote] class Remoting(
             .toSet
 
           log.info(
-            "Remoting started; listening on addresses :" + addresses
-              .mkString("[", ", ", "]"))
+            "Remoting started; listening on addresses :" +
+              addresses.mkString("[", ", ", "]"))
 
           manager ! StartupFinished
           eventPublisher.notifyListeners(RemotingListenEvent(addresses))
@@ -315,11 +316,12 @@ private[remote] class Remoting(
   private[akka] def boundAddresses: Map[String, Set[Address]] = {
     transportMapping.map {
       case (scheme, transports) ⇒
-        scheme -> transports.flatMap {
-          // Need to do like this for binary compatibility reasons
-          case (t, _) ⇒
-            Option(t.boundAddress)
-        }
+        scheme ->
+          transports.flatMap {
+            // Need to do like this for binary compatibility reasons
+            case (t, _) ⇒
+              Option(t.boundAddress)
+          }
     }
   }
 }
@@ -725,8 +727,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       val allStatuses = transportMapping.values map { transport ⇒
         transport.managementCommand(cmd)
       }
-      Future.fold(allStatuses)(true)(
-        _ && _) map ManagementCommandAck pipeTo sender()
+      Future.fold(allStatuses)(true)(_ && _) map ManagementCommandAck pipeTo
+        sender()
 
     case Quarantine(address, uidToQuarantineOption) ⇒
       // Stop writers
@@ -782,13 +784,14 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       // Stop all matching stashed connections
       stashedInbound = stashedInbound.map {
         case (writer, associations) ⇒
-          writer -> associations.filter { assoc ⇒
-            val handle = assoc.association.asInstanceOf[AkkaProtocolHandle]
-            val drop = matchesQuarantine(handle)
-            if (drop)
-              handle.disassociate()
-            !drop
-          }
+          writer ->
+            associations.filter { assoc ⇒
+              val handle = assoc.association.asInstanceOf[AkkaProtocolHandle]
+              val drop = matchesQuarantine(handle)
+              if (drop)
+                handle.disassociate()
+              !drop
+            }
       }
 
       uidToQuarantineOption foreach { uid ⇒
@@ -864,19 +867,17 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         }
       }
 
-      (
-        for {
-          // The construction of the future for shutdownStatus has to happen after the flushStatus future has been finished
-          // so that endpoints are shut down before transports.
-          flushStatus ←
-            shutdownAll(endpoints.allEndpoints)(
-              gracefulStop(_, settings.FlushWait, EndpointWriter.FlushAndStop))
-          shutdownStatus ← shutdownAll(transportMapping.values)(_.shutdown())
-        } yield flushStatus && shutdownStatus
-      ) pipeTo sender()
+      (for {
+        // The construction of the future for shutdownStatus has to happen after the flushStatus future has been finished
+        // so that endpoints are shut down before transports.
+        flushStatus ←
+          shutdownAll(endpoints.allEndpoints)(
+            gracefulStop(_, settings.FlushWait, EndpointWriter.FlushAndStop))
+        shutdownStatus ← shutdownAll(transportMapping.values)(_.shutdown())
+      } yield flushStatus && shutdownStatus) pipeTo sender()
 
-      pendingReadHandoffs
-        .valuesIterator foreach (_.disassociate(AssociationHandle.Shutdown))
+      pendingReadHandoffs.valuesIterator foreach
+        (_.disassociate(AssociationHandle.Shutdown))
 
       // Ignore all other writes
       normalShutdown = true
@@ -920,9 +921,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                   // to get an unstash event
                   if (!writerIsIdle) {
                     ep ! ReliableDeliverySupervisor.IsIdle
-                    stashedInbound += ep -> (
-                      stashedInbound.getOrElse(ep, Vector.empty) :+ ia
-                    )
+                    stashedInbound += ep ->
+                      (stashedInbound.getOrElse(ep, Vector.empty) :+ ia)
                   } else
                     createAndRegisterEndpoint(
                       handle,
@@ -950,8 +950,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   private def createAndRegisterEndpoint(
       handle: AkkaProtocolHandle,
       refuseUid: Option[Int]): Unit = {
-    val writing = settings.UsePassiveConnections && !endpoints
-      .hasWritableEndpointFor(handle.remoteAddress)
+    val writing = settings.UsePassiveConnections &&
+      !endpoints.hasWritableEndpointFor(handle.remoteAddress)
     eventPublisher.notifyListeners(
       AssociatedEvent(
         handle.localAddress,
@@ -1116,8 +1116,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                 AkkaPduProtobufCodec,
                 receiveBuffers))
             .withDeploy(Deploy.local),
-          "reliableEndpointWriter-" + AddressUrlEncoder(
-            remoteAddress) + "-" + endpointId.next()
+          "reliableEndpointWriter-" + AddressUrlEncoder(remoteAddress) + "-" +
+            endpointId.next()
         ))
     else
       context.watch(
@@ -1135,8 +1135,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                 receiveBuffers,
                 reliableDeliverySupervisor = None))
             .withDeploy(Deploy.local),
-          "endpointWriter-" + AddressUrlEncoder(
-            remoteAddress) + "-" + endpointId.next()
+          "endpointWriter-" + AddressUrlEncoder(remoteAddress) + "-" +
+            endpointId.next()
         ))
   }
 
@@ -1144,8 +1144,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
   override def postStop(): Unit = {
     pruneTimerCancellable.cancel()
-    pendingReadHandoffs
-      .valuesIterator foreach (_.disassociate(AssociationHandle.Shutdown))
+    pendingReadHandoffs.valuesIterator foreach
+      (_.disassociate(AssociationHandle.Shutdown))
 
     if (!normalShutdown) {
       // Remaining running endpoints are children, so they will clean up themselves.

@@ -54,23 +54,18 @@ object MenuDslSpec extends Specification {
 
     "handle submenus" in {
       val menu =
-        Menu("Foo") / "test" submenus (
-          Menu("Bar") / "bar",
-          Menu("Bat") / "bat"
-      )
+        Menu("Foo") / "test" submenus (Menu("Bar") / "bar", Menu("Bat") / "bat")
 
       menu.toMenu.kids.size mustEqual 2
     }
 
     "handle sub-submenus" in {
       val menu =
-        Menu("Foo") / "test" submenus (
-          Menu("Bar") / "bar" submenus (
-            Menu("BarOne") / "bar" / "one",
-            Menu("BarTwo") / "bar" / "two"
-          ),
-          Menu("Bat") / "bat"
-      )
+        Menu("Foo") / "test" submenus
+          (
+            Menu("Bar") / "bar" submenus
+              (Menu("BarOne") / "bar" / "one", Menu("BarTwo") / "bar" / "two"),
+            Menu("Bat") / "bat")
 
       menu.toMenu.kids(0).kids.size mustEqual 2
     }
@@ -85,14 +80,14 @@ object MenuDslSpec extends Specification {
   "MenuItems" should {
     "support nesting deeper than two levels" in {
       val menu =
-        Menu("Foo") / "test" submenus (
-          Menu("Bar") / "bar" submenus (
-            Menu("BarOne") / "bar" / "one",
-            Menu("BarTwo") / "bar" / "two",
-            Menu("BarThree") / "bar" / "three"
-          ),
-          Menu("Bat") / "bat"
-      )
+        Menu("Foo") / "test" submenus
+          (
+            Menu("Bar") / "bar" submenus
+              (
+                Menu("BarOne") / "bar" / "one",
+                Menu("BarTwo") / "bar" / "two",
+                Menu("BarThree") / "bar" / "three"),
+            Menu("Bat") / "bat")
 
       val complete = SiteMap(menu)
         .kids(0)

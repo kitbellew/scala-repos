@@ -93,13 +93,8 @@ object Swagger {
       alreadyKnown: Set[Model],
       known: Set[ScalaType] = Set.empty): Set[Model] = {
     if (tpe.isMap)
-      collectModels(
-        tpe.typeArgs.head,
-        alreadyKnown,
-        tpe.typeArgs.toSet) ++ collectModels(
-        tpe.typeArgs.last,
-        alreadyKnown,
-        tpe.typeArgs.toSet)
+      collectModels(tpe.typeArgs.head, alreadyKnown, tpe.typeArgs.toSet) ++
+        collectModels(tpe.typeArgs.last, alreadyKnown, tpe.typeArgs.toSet)
     else if (tpe.isCollection || tpe.isOption) {
       val ntpe = tpe.typeArgs.head
       if (!known.contains(ntpe))
@@ -177,8 +172,8 @@ object Swagger {
     prop.name -> mp
   }
   def modelToSwagger(klass: ScalaType): Option[Model] = {
-    if (Reflector.isPrimitive(klass.erasure) || Reflector
-          .isExcluded(klass.erasure, excludes.toSeq))
+    if (Reflector.isPrimitive(klass.erasure) ||
+        Reflector.isExcluded(klass.erasure, excludes.toSeq))
       None
     else {
       val name = klass.simpleName
@@ -212,12 +207,13 @@ object Swagger {
           properties = fields.flatten,
           baseModel = am.parent.getName.blankOption,
           discriminator = am.discriminator.blankOption)
-      } orElse Some(
-        Model(
-          name,
-          name,
-          klass.fullName.blankOption,
-          properties = fields.flatten))
+      } orElse
+        Some(
+          Model(
+            name,
+            name,
+            klass.fullName.blankOption,
+            properties = fields.flatten))
       //      if (descr.simpleName == "Pet") println("The collected fields:\n" + result)
       result
     }
@@ -312,25 +308,26 @@ class Swagger(
       case m: Endpoint =>
         m
     }
-    _docs += listingPath -> Api(
-      apiVersion,
-      swaggerVersion,
-      resourcePath,
-      description,
-      (produces ::: endpoints.flatMap(_.operations.flatMap(_.produces)))
-        .distinct,
-      (consumes ::: endpoints.flatMap(_.operations.flatMap(_.consumes)))
-        .distinct,
-      (protocols ::: endpoints.flatMap(_.operations.flatMap(_.protocols)))
-        .distinct,
-      endpoints,
-      s.models.toMap,
-      (
-        authorizations ::: endpoints
-          .flatMap(_.operations.flatMap(_.authorizations))
-      ).distinct,
-      0
-    )
+    _docs += listingPath ->
+      Api(
+        apiVersion,
+        swaggerVersion,
+        resourcePath,
+        description,
+        (produces ::: endpoints.flatMap(_.operations.flatMap(_.produces)))
+          .distinct,
+        (consumes ::: endpoints.flatMap(_.operations.flatMap(_.consumes)))
+          .distinct,
+        (protocols ::: endpoints.flatMap(_.operations.flatMap(_.protocols)))
+          .distinct,
+        endpoints,
+        s.models.toMap,
+        (
+          authorizations :::
+            endpoints.flatMap(_.operations.flatMap(_.authorizations))
+        ).distinct,
+        0
+      )
   }
 }
 
@@ -481,21 +478,21 @@ object DataType {
         st.typeArgs.head.erasure
       else
         st.erasure
-    if (classOf[Unit].isAssignableFrom(klass) || classOf[Void]
-          .isAssignableFrom(klass))
+    if (classOf[Unit].isAssignableFrom(klass) ||
+        classOf[Void].isAssignableFrom(klass))
       this.Void
     else if (isString(klass))
       this.String
-    else if (classOf[Byte].isAssignableFrom(klass) || classOf[java.lang.Byte]
-               .isAssignableFrom(klass))
+    else if (classOf[Byte].isAssignableFrom(klass) ||
+             classOf[java.lang.Byte].isAssignableFrom(klass))
       this.Byte
-    else if (classOf[Long].isAssignableFrom(klass) || classOf[java.lang.Long]
-               .isAssignableFrom(klass))
+    else if (classOf[Long].isAssignableFrom(klass) ||
+             classOf[java.lang.Long].isAssignableFrom(klass))
       this.Long
     else if (isInt(klass))
       this.Int
-    else if (classOf[Float].isAssignableFrom(klass) || classOf[java.lang.Float]
-               .isAssignableFrom(klass))
+    else if (classOf[Float].isAssignableFrom(klass) ||
+             classOf[java.lang.Float].isAssignableFrom(klass))
       this.Float
     else if (isDecimal(klass))
       this.Double
@@ -512,15 +509,14 @@ object DataType {
     //        GenMap(fromScalaType(k), fromScalaType(v))
     //      } else GenMap()
     //    }
-    else if (classOf[scala.collection.Set[_]].isAssignableFrom(
-               klass) || classOf[java.util.Set[_]].isAssignableFrom(klass)) {
+    else if (classOf[scala.collection.Set[_]].isAssignableFrom(klass) ||
+             classOf[java.util.Set[_]].isAssignableFrom(klass)) {
       if (st.typeArgs.nonEmpty)
         GenSet(fromScalaType(st.typeArgs.head))
       else
         GenSet()
-    } else if (classOf[collection.Seq[_]]
-                 .isAssignableFrom(klass) || classOf[java.util.List[_]]
-                 .isAssignableFrom(klass)) {
+    } else if (classOf[collection.Seq[_]].isAssignableFrom(klass) ||
+               classOf[java.util.List[_]].isAssignableFrom(klass)) {
       if (st.typeArgs.nonEmpty)
         GenList(fromScalaType(st.typeArgs.head))
       else

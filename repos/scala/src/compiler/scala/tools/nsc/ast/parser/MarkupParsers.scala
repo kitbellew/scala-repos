@@ -66,8 +66,9 @@ trait MarkupParsers {
         reportSyntaxError(msg)
 
     var input: CharArrayReader = _
-    def lookahead(): BufferedIterator[Char] =
-      (input.buf drop input.charOffset).iterator.buffered
+    def lookahead(): BufferedIterator[Char] = (input.buf drop input.charOffset)
+      .iterator
+      .buffered
 
     import parser.{symbXMLBuilder => handle, o2p, r2p}
 
@@ -112,10 +113,11 @@ trait MarkupParsers {
       */
     def xCheckEmbeddedBlock: Boolean = {
       // attentions, side-effect, used in xText
-      xEmbeddedBlock = (ch == '{') && {
-        nextch();
-        (ch != '{')
-      }
+      xEmbeddedBlock =
+        (ch == '{') && {
+          nextch();
+          (ch != '{')
+        }
       xEmbeddedBlock
     }
 
@@ -508,10 +510,11 @@ trait MarkupParsers {
       xSpaceOpt()
 
       val ts = new ArrayBuffer[Tree]
-      val isEmptyTag = (ch == '/') && {
-        nextch();
-        true
-      }
+      val isEmptyTag =
+        (ch == '/') && {
+          nextch();
+          true
+        }
       xToken('>')
 
       if (!isEmptyTag) {

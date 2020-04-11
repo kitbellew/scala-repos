@@ -174,9 +174,8 @@ object DatabaseService {
     def line = column[Option[Int]]("line in source")
     def offset = column[Option[Int]]("offset in source")
     def * =
-      (id.?, file, path, fqn, descriptor, internal, source, line, offset) <> (
-        FqnSymbol.tupled, FqnSymbol.unapply
-      )
+      (id.?, file, path, fqn, descriptor, internal, source, line, offset) <>
+        (FqnSymbol.tupled, FqnSymbol.unapply)
     def fqnIdx =
       index("idx_fqn", fqn, unique = false) // fqns are unique by type and sig
     def uniq = index("idx_uniq", (fqn, descriptor, internal), unique = true)

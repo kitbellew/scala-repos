@@ -207,8 +207,7 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
 trait BaseSyntaxTest {
   def testEqSyntax[A: Eq](a: A, b: A) = {
     import spire.syntax.eq._
-    ((a === b) == Eq[A].eqv(a, b)) &&
-    ((a =!= b) == Eq[A].neqv(a, b))
+    ((a === b) == Eq[A].eqv(a, b)) && ((a =!= b) == Eq[A].neqv(a, b))
   }
 
   def testPartialOrderSyntax[A: PartialOrder](a: A, b: A) = {
@@ -567,9 +566,8 @@ class PartialOrderSyntaxTest extends SpireProperties {
     forAll { (posSeq: Seq[PosInt]) =>
       val seq = posSeq.map(_.x)
       val result = seq.pmax(IntDivisibility).toSet
-      result shouldBe Searching
-        .minimalElements(seq)(IntDivisibility.reverse)
-        .toSet
+      result shouldBe
+        Searching.minimalElements(seq)(IntDivisibility.reverse).toSet
       result shouldBe seq.filter(i => isMaximal(seq, i)).toSet
     }
   }

@@ -38,14 +38,16 @@ class PagedDataSourceSuite extends SparkFunSuite {
       dataSource4.pageData(4)
     }
     assert(
-      e1.getMessage === "Page 4 is out of range. Please select a page number between 1 and 3.")
+      e1.getMessage ===
+        "Page 4 is out of range. Please select a page number between 1 and 3.")
 
     val dataSource5 = new SeqPagedDataSource[Int](1 to 5, pageSize = 2)
     val e2 = intercept[IndexOutOfBoundsException] {
       dataSource5.pageData(0)
     }
     assert(
-      e2.getMessage === "Page 0 is out of range. Please select a page number between 1 and 3.")
+      e2.getMessage ===
+        "Page 0 is out of range. Please select a page number between 1 and 3.")
 
   }
 }
@@ -78,33 +80,36 @@ class PagedTableSuite extends SparkFunSuite {
 
     assert(pagedTable.pageNavigation(1, 10, 1) === Nil)
     assert(
-      (pagedTable.pageNavigation(1, 10, 2).head \\ "li")
-        .map(_.text.trim) === Seq("1", "2", ">"))
+      (pagedTable.pageNavigation(1, 10, 2).head \\ "li").map(_.text.trim) ===
+        Seq("1", "2", ">"))
     assert(
-      (pagedTable.pageNavigation(2, 10, 2).head \\ "li")
-        .map(_.text.trim) === Seq("<", "1", "2"))
+      (pagedTable.pageNavigation(2, 10, 2).head \\ "li").map(_.text.trim) ===
+        Seq("<", "1", "2"))
 
     assert(
       (pagedTable.pageNavigation(1, 10, 100).head \\ "li").map(_.text.trim) ===
         (1 to 10).map(_.toString) ++ Seq(">", ">>"))
     assert(
       (pagedTable.pageNavigation(2, 10, 100).head \\ "li").map(_.text.trim) ===
-        Seq("<") ++ (1 to 10).map(_.toString) ++ Seq(">", ">>"))
+        Seq("<") ++
+        (1 to 10).map(_.toString) ++ Seq(">", ">>"))
 
     assert(
       (pagedTable.pageNavigation(100, 10, 100).head \\ "li")
-        .map(_.text.trim) ===
-        Seq("<<", "<") ++ (91 to 100).map(_.toString))
+        .map(_.text.trim) === Seq("<<", "<") ++ (91 to 100).map(_.toString))
     assert(
       (pagedTable.pageNavigation(99, 10, 100).head \\ "li").map(_.text.trim) ===
-        Seq("<<", "<") ++ (91 to 100).map(_.toString) ++ Seq(">"))
+        Seq("<<", "<") ++
+        (91 to 100).map(_.toString) ++ Seq(">"))
 
     assert(
       (pagedTable.pageNavigation(11, 10, 100).head \\ "li").map(_.text.trim) ===
-        Seq("<<", "<") ++ (11 to 20).map(_.toString) ++ Seq(">", ">>"))
+        Seq("<<", "<") ++
+        (11 to 20).map(_.toString) ++ Seq(">", ">>"))
     assert(
       (pagedTable.pageNavigation(93, 10, 97).head \\ "li").map(_.text.trim) ===
-        Seq("<<", "<") ++ (91 to 97).map(_.toString) ++ Seq(">"))
+        Seq("<<", "<") ++
+        (91 to 97).map(_.toString) ++ Seq(">"))
   }
 }
 

@@ -120,11 +120,12 @@ private[ui] object RDDOperationGraph extends Logging {
     stage
       .rddInfos
       .foreach { rdd =>
-        edges ++= rdd
-          .parentIds
-          .map { parentId =>
-            RDDOperationEdge(parentId, rdd.id)
-          }
+        edges ++=
+          rdd
+            .parentIds
+            .map { parentId =>
+              RDDOperationEdge(parentId, rdd.id)
+            }
 
         // TODO: differentiate between the intention to cache an RDD and whether it's actually cached
         val node = nodes.getOrElseUpdate(

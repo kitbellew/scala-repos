@@ -75,8 +75,8 @@ abstract class DeterministicOldestWhenJoiningSpec
           expectMsgType[MemberUp],
           expectMsgType[MemberUp],
           expectMsgType[MemberUp])
-        ups.map(_.member).sorted(Member.ageOrdering).head.address should ===(
-          seedNodes.head)
+        ups.map(_.member).sorted(Member.ageOrdering).head.address should
+          ===(seedNodes.head)
       }
 
       enterBarrier("after-1")

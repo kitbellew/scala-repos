@@ -333,8 +333,9 @@ class CachedTableSuite
       .withCachedData
       .collect {
         case cached: InMemoryRelation =>
-          val actualSizeInBytes =
-            (1 to 100).map(i => 4 + i.toString.length + 4).sum
+          val actualSizeInBytes = (1 to 100)
+            .map(i => 4 + i.toString.length + 4)
+            .sum
           assert(cached.statistics.sizeInBytes === actualSizeInBytes)
       }
   }
@@ -498,11 +499,8 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
-        query
-          .queryExecution
-          .executedPlan
-          .outputPartitioning
-          .numPartitions === 6)
+        query.queryExecution.executedPlan.outputPartitioning.numPartitions ===
+          6)
       checkAnswer(
         query,
         testData
@@ -523,11 +521,8 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
-        query
-          .queryExecution
-          .executedPlan
-          .outputPartitioning
-          .numPartitions === 6)
+        query.queryExecution.executedPlan.outputPartitioning.numPartitions ===
+          6)
       checkAnswer(
         query,
         testData
@@ -547,11 +542,8 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
-        query
-          .queryExecution
-          .executedPlan
-          .outputPartitioning
-          .numPartitions === 12)
+        query.queryExecution.executedPlan.outputPartitioning.numPartitions ===
+          12)
       checkAnswer(
         query,
         testData
@@ -610,11 +602,8 @@ class CachedTableSuite
         "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a and t1.value = t2.b")
       verifyNumExchanges(query, 1)
       assert(
-        query
-          .queryExecution
-          .executedPlan
-          .outputPartitioning
-          .numPartitions === 6)
+        query.queryExecution.executedPlan.outputPartitioning.numPartitions ===
+          6)
       checkAnswer(
         query,
         df1

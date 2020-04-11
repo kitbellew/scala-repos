@@ -83,10 +83,8 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
           return
       }
     val start = methodCallExpr.getTextRange.getStartOffset
-    val diff = editor.getCaretModel.getOffset - referenceExpr
-      .nameId
-      .getTextRange
-      .getStartOffset
+    val diff = editor.getCaretModel.getOffset -
+      referenceExpr.nameId.getTextRange.getStartOffset
 
     var putArgsFirst = false
     val argsBuilder = new StringBuilder
@@ -160,8 +158,7 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
           .operation
           .nameId
           .getTextRange
-          .getStartOffset -
-          infixExpr.getTextRange.getStartOffset
+          .getStartOffset - infixExpr.getTextRange.getStartOffset
 
         inWriteAction {
           methodCallExpr.replaceExpression(infixExpr, removeParenthesis = true)

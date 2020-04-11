@@ -137,8 +137,8 @@ object Reflector {
             val f = ls.next()
             val mod = f.getModifiers
             if (!(
-                  Modifier.isStatic(mod) || Modifier.isTransient(
-                    mod) || Modifier.isVolatile(mod) || f.isSynthetic
+                  Modifier.isStatic(mod) || Modifier.isTransient(mod) ||
+                    Modifier.isVolatile(mod) || f.isSynthetic
                 )) {
               val st = ManifestScalaType(
                 f.getType,
@@ -222,9 +222,8 @@ object Reflector {
       def constructors: Seq[ConstructorDescriptor] = {
         tpe.erasure.getConstructors.toSeq map { ctor =>
           val ctorParameterNames =
-            if (Modifier.isPublic(ctor.getModifiers) && ctor
-                  .getParameterTypes
-                  .length > 0)
+            if (Modifier.isPublic(ctor.getModifiers) &&
+                ctor.getParameterTypes.length > 0)
               allCatch opt {
                 paramNameReader.lookupParameterNames(ctor)
               } getOrElse Nil

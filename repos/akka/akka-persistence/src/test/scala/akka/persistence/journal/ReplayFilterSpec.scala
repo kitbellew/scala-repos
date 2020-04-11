@@ -177,8 +177,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
         filter ! m3b // same seqNo as m3, but from writerB
         filter ! successMsg
 
-        expectMsgType[ReplayMessagesFailure].cause.getClass should be(
-          classOf[IllegalStateException])
+        expectMsgType[ReplayMessagesFailure].cause.getClass should
+          be(classOf[IllegalStateException])
       }
     }
 
@@ -201,8 +201,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
         filter ! m4
         filter ! successMsg
 
-        expectMsgType[ReplayMessagesFailure].cause.getClass should be(
-          classOf[IllegalStateException])
+        expectMsgType[ReplayMessagesFailure].cause.getClass should
+          be(classOf[IllegalStateException])
       }
     }
   }

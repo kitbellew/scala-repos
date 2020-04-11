@@ -412,11 +412,12 @@ trait UserHelper {
       cssClass: Option[String],
       withOnline: Boolean,
       withPowerTip: Boolean = true) = {
-    "user_link" :: List(
-      cssClass,
-      withPowerTip option "ulpt",
-      withOnline option isOnline(userId).fold("online is-green", "offline"))
-      .flatten
+    "user_link" ::
+      List(
+        cssClass,
+        withPowerTip option "ulpt",
+        withOnline option isOnline(userId).fold("online is-green", "offline"))
+        .flatten
   }.mkString("class=\"", " ", "\"")
 
   def userGameFilterTitle(info: UserInfo, filter: GameFilter)(implicit
@@ -453,8 +454,8 @@ trait UserHelper {
   def describeUser(user: User) = {
     val name = user.titleUsername
     val nbGames = user.count.game
-    val createdAt = org.joda.time.format.DateTimeFormat forStyle "M-" print user
-      .createdAt
+    val createdAt = org.joda.time.format.DateTimeFormat forStyle "M-" print
+      user.createdAt
     val currentRating = user.perfs.bestPerf ?? {
       case (pt, perf) =>
         s" Current ${pt.name} rating: ${perf.intRating}."

@@ -21,10 +21,9 @@ class MatchFilter extends ElementFilter {
     val leaf = getLeafByOffset(context.getTextRange.getStartOffset, context)
     if (leaf != null) {
       val parent = leaf.getParent
-      if (parent.isInstanceOf[ScExpression] && (
-            parent.getParent.isInstanceOf[ScInfixExpr] ||
-            parent.getParent.isInstanceOf[ScPostfixExpr]
-          )) {
+      if (parent.isInstanceOf[ScExpression] &&
+          (parent.getParent.isInstanceOf[ScInfixExpr] ||
+          parent.getParent.isInstanceOf[ScPostfixExpr])) {
         return true
       }
     }

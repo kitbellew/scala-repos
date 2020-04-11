@@ -293,24 +293,26 @@ class FloatPropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty.unbind()
   }
 
-  it should "support bindable infix greater than or equal to with a property" in {
-    booleanProperty <== floatProperty >= floatProperty2
-    floatProperty() = 18349
-    floatProperty2() = 4985
-    booleanProperty() should be(true)
-    floatProperty2() = 234564
-    booleanProperty() should be(false)
-    booleanProperty.unbind()
-  }
+  it should
+    "support bindable infix greater than or equal to with a property" in {
+      booleanProperty <== floatProperty >= floatProperty2
+      floatProperty() = 18349
+      floatProperty2() = 4985
+      booleanProperty() should be(true)
+      floatProperty2() = 234564
+      booleanProperty() should be(false)
+      booleanProperty.unbind()
+    }
 
-  it should "support bindable infix greater than or equal to with a constant" in {
-    booleanProperty <== floatProperty >= 18349
-    floatProperty() = 4985
-    booleanProperty() should be(false)
-    floatProperty() = 234564
-    booleanProperty() should be(true)
-    booleanProperty.unbind()
-  }
+  it should
+    "support bindable infix greater than or equal to with a constant" in {
+      booleanProperty <== floatProperty >= 18349
+      floatProperty() = 4985
+      booleanProperty() should be(false)
+      floatProperty() = 234564
+      booleanProperty() should be(true)
+      booleanProperty.unbind()
+    }
 
   it should "support invalidate/change triggers on binding expressions" in {
     var invalidateCount = 0

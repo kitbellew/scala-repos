@@ -184,8 +184,8 @@ trait ClassHelpers {
     * @return true if the method is public and has no parameters
     */
   def callableMethod_?(meth: Method) = {
-    meth != null && meth.getParameterTypes.length == 0 && isPublic(
-      meth.getModifiers)
+    meth != null && meth.getParameterTypes.length == 0 &&
+    isPublic(meth.getModifiers)
   }
 
   /**
@@ -349,8 +349,7 @@ trait ClassHelpers {
           .getDeclaredMethods
           .toList
           .filter(m =>
-            m.getName.equals(meth) &&
-              isPublic(m.getModifiers) &&
+            m.getName.equals(meth) && isPublic(m.getModifiers) &&
               m.getParameterTypes.length == params.length)
       methCacheLock.read {
         def key = (clz.getName, meth, params.length)
@@ -360,8 +359,8 @@ trait ClassHelpers {
 
           val ret =
             try {
-              val classes: Array[Class[_]] = ptypes openOr params
-                .map(_.getClass)
+              val classes: Array[Class[_]] = ptypes openOr
+                params.map(_.getClass)
               List(clz.getMethod(meth, classes: _*))
             } catch {
               case e: NullPointerException =>
@@ -446,9 +445,8 @@ trait ClassHelpers {
         .getClass
         .getDeclaredMethods
         .filter { m =>
-          m.getName == name && isPublic(m.getModifiers) && m
-            .getParameterTypes
-            .isEmpty
+          m.getName == name && isPublic(m.getModifiers) &&
+          m.getParameterTypes.isEmpty
         }
     on match {
       case null =>

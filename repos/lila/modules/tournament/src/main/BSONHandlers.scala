@@ -12,8 +12,8 @@ object BSONHandlers {
   private implicit val startingPositionBSONHandler =
     new BSONHandler[BSONString, StartingPosition] {
       def read(bsonStr: BSONString): StartingPosition =
-        StartingPosition.byEco(
-          bsonStr.value) err s"No such starting position: ${bsonStr.value}"
+        StartingPosition.byEco(bsonStr.value) err
+          s"No such starting position: ${bsonStr.value}"
       def write(x: StartingPosition) = BSONString(x.eco)
     }
 
@@ -40,9 +40,8 @@ object BSONHandlers {
       def reads(r: BSON.Reader) = {
         val variant =
           r.intO("variant").fold[Variant](Variant.default)(Variant.orDefault)
-        val position = r
-          .strO("eco")
-          .flatMap(StartingPosition.byEco) | StartingPosition.initial
+        val position = r.strO("eco").flatMap(StartingPosition.byEco) |
+          StartingPosition.initial
         val startsAt = r date "startsAt"
         Tournament(
           id = r str "_id",
@@ -83,11 +82,11 @@ object BSONHandlers {
           "eco" -> o.position.some.filterNot(_.initial).map(_.eco),
           "mode" -> o.mode.some.filterNot(_.rated).map(_.id),
           "private" -> w.boolO(o.`private`),
-          "schedule" -> o
-            .schedule
-            .map { s =>
-              BSONDocument("freq" -> s.freq.name, "speed" -> s.speed.name)
-            },
+          "schedule" ->
+            o.schedule
+              .map { s =>
+                BSONDocument("freq" -> s.freq.name, "speed" -> s.speed.name)
+              },
           "nbPlayers" -> o.nbPlayers,
           "createdAt" -> w.date(o.createdAt),
           "createdBy" -> w.str(o.createdBy),

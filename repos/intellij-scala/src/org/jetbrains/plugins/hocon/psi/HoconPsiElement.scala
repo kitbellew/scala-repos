@@ -180,21 +180,22 @@ sealed trait HKeyedField
     * @return stream of all encountered keyed fields (in bottom-up order, i.e. starting with itself)
     */
   def fieldsInAllPathsBackward: Stream[HKeyedField] =
-    this #:: forParent(
-      keyedField => keyedField.fieldsInAllPathsBackward,
-      objectField =>
-        objectField
-          .parent
-          .map(
-            _.forParent(
-              file => Stream.empty,
-              obj =>
-                obj
-                  .prefixingField
-                  .map(_.fieldsInAllPathsBackward)
-                  .getOrElse(Stream.empty)))
-          .get
-    )
+    this #::
+      forParent(
+        keyedField => keyedField.fieldsInAllPathsBackward,
+        objectField =>
+          objectField
+            .parent
+            .map(
+              _.forParent(
+                file => Stream.empty,
+                obj =>
+                  obj
+                    .prefixingField
+                    .map(_.fieldsInAllPathsBackward)
+                    .getOrElse(Stream.empty)))
+            .get
+      )
 
   /**
     * Like [[fieldsInAllPathsBackward]] but returns [[HKey]]s instead of [[HKeyedField]]s, in reverse order (i.e. key
@@ -322,8 +323,8 @@ final class HIncluded(ast: ASTNode)
               (true, true, true)
             case None if !isValidUrl(strVal) =>
               val pfi = ProjectRootManager.getInstance(getProject).getFileIndex
-              val fromClasspath = pfi.isInSource(vf) || pfi
-                .isInLibraryClasses(vf)
+              val fromClasspath = pfi.isInSource(vf) ||
+                pfi.isInLibraryClasses(vf)
               (strVal.trim.startsWith("/"), false, fromClasspath)
             case _ =>
               (true, true, false)
@@ -527,21 +528,19 @@ sealed trait HString
       case HoconTokenType.QuotedString =>
         getText.substring(
           1,
-          getText.length - (
-            if (isClosed)
-              1
-            else
-              0
-          ))
+          getText.length -
+            (if (isClosed)
+               1
+             else
+               0))
       case HoconTokenType.MultilineString =>
         getText.substring(
           3,
-          getText.length - (
-            if (isClosed)
-              3
-            else
-              0
-          ))
+          getText.length -
+            (if (isClosed)
+               3
+             else
+               0))
       case HoconElementType.UnquotedString =>
         getText
     }

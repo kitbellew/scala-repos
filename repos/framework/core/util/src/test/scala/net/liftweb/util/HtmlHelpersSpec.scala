@@ -89,10 +89,11 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
       </whoa>
 
     "find the element with a requested id in a NodeSeq" in {
-      findId(xml, "boom") must beLike {
-        case Some(element) =>
-          element must ==/(<thing id="boom">Boom</thing>)
-      }
+      findId(xml, "boom") must
+        beLike {
+          case Some(element) =>
+            element must ==/(<thing id="boom">Boom</thing>)
+        }
     }
 
     "provide a None if a requested id is not found in the NodeSeq" in {
@@ -114,13 +115,13 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
     }
 
     "ignore non-head" in {
-      Helpers.stripHead(<head3><i>hello</i></head3>) must ==/(
-        <head3><i>hello</i></head3>)
+      Helpers.stripHead(<head3><i>hello</i></head3>) must
+        ==/(<head3><i>hello</i></head3>)
     }
 
     "String subhead" in {
-      Helpers.stripHead(<head3><i><head>hello</head></i></head3>) must ==/(
-        <head3><i>hello</i></head3>)
+      Helpers.stripHead(<head3><i><head>hello</head></i></head3>) must
+        ==/(<head3><i>hello</i></head3>)
     }
   }
 

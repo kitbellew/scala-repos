@@ -82,12 +82,13 @@ final class SeekApi(
     coll.find(BSONDocument("_id" -> id)).one[Seek]
 
   def insert(seek: Seek) =
-    coll.insert(seek) >> findByUser(seek.user.id).flatMap {
-      case seeks if seeks.size <= maxPerUser =>
-        funit
-      case seeks =>
-        seeks.drop(maxPerUser).map(remove).sequenceFu
-    } >> cache.clear
+    coll.insert(seek) >>
+      findByUser(seek.user.id).flatMap {
+        case seeks if seeks.size <= maxPerUser =>
+          funit
+        case seeks =>
+          seeks.drop(maxPerUser).map(remove).sequenceFu
+      } >> cache.clear
 
   def findByUser(userId: String): Fu[List[Seek]] =
     coll
@@ -100,11 +101,9 @@ final class SeekApi(
     coll.remove(BSONDocument("_id" -> seek.id)).void >> cache.clear
 
   def archive(seek: Seek, gameId: String) = {
-    val archiveDoc = Seek.seekBSONHandler.write(seek) ++ BSONDocument(
-      "gameId" -> gameId,
-      "archivedAt" -> DateTime.now)
-    coll.remove(BSONDocument("_id" -> seek.id)).void >>
-      cache.clear >>
+    val archiveDoc = Seek.seekBSONHandler.write(seek) ++
+      BSONDocument("gameId" -> gameId, "archivedAt" -> DateTime.now)
+    coll.remove(BSONDocument("_id" -> seek.id)).void >> cache.clear >>
       archiveColl.insert(archiveDoc)
   }
 
@@ -112,7 +111,6 @@ final class SeekApi(
     archiveColl.find(BSONDocument("gameId" -> gameId)).one[Seek]
 
   def removeBy(seekId: String, userId: String) =
-    coll
-      .remove(BSONDocument("_id" -> seekId, "user.id" -> userId))
-      .void >> cache.clear
+    coll.remove(BSONDocument("_id" -> seekId, "user.id" -> userId)).void >>
+      cache.clear
 }

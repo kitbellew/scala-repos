@@ -114,12 +114,12 @@ class GroupMetadataManager(
     Utils.abs(groupId.hashCode) % groupMetadataTopicPartitionCount
 
   def isGroupLocal(groupId: String): Boolean =
-    loadingPartitions synchronized ownedPartitions
-      .contains(partitionFor(groupId))
+    loadingPartitions synchronized
+      ownedPartitions.contains(partitionFor(groupId))
 
   def isGroupLoading(groupId: String): Boolean =
-    loadingPartitions synchronized loadingPartitions
-      .contains(partitionFor(groupId))
+    loadingPartitions synchronized
+      loadingPartitions.contains(partitionFor(groupId))
 
   def isLoading(): Boolean =
     loadingPartitions synchronized !loadingPartitions.isEmpty
@@ -221,8 +221,8 @@ class GroupMetadataManager(
     def putCacheCallback(
         responseStatus: Map[TopicPartition, PartitionResponse]) {
       // the append response should only contain the topics partition
-      if (responseStatus.size != 1 || !responseStatus
-            .contains(groupMetadataPartition))
+      if (responseStatus.size != 1 ||
+          !responseStatus.contains(groupMetadataPartition))
         throw new IllegalStateException(
           "Append status %s should only have one partition %s"
             .format(responseStatus, groupMetadataPartition))
@@ -248,9 +248,9 @@ class GroupMetadataManager(
             Errors.NOT_COORDINATOR_FOR_GROUP.code
           } else if (status.errorCode == Errors.REQUEST_TIMED_OUT.code) {
             Errors.REBALANCE_IN_PROGRESS.code
-          } else if (status.errorCode == Errors.MESSAGE_TOO_LARGE.code
-                     || status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code
-                     || status.errorCode == Errors.INVALID_FETCH_SIZE.code) {
+          } else if (status.errorCode == Errors.MESSAGE_TOO_LARGE.code ||
+                     status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code ||
+                     status.errorCode == Errors.INVALID_FETCH_SIZE.code) {
 
             error(
               "Appending metadata message for group %s generation %d failed due to %s, returning UNKNOWN error code to the client"
@@ -335,8 +335,8 @@ class GroupMetadataManager(
     def putCacheCallback(
         responseStatus: Map[TopicPartition, PartitionResponse]) {
       // the append response should only contain the topics partition
-      if (responseStatus.size != 1 || !responseStatus
-            .contains(offsetTopicPartition))
+      if (responseStatus.size != 1 ||
+          !responseStatus.contains(offsetTopicPartition))
         throw new IllegalStateException(
           "Append status %s should only have one partition %s"
             .format(responseStatus, offsetTopicPartition))
@@ -369,9 +369,9 @@ class GroupMetadataManager(
             Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code
           else if (status.errorCode == Errors.NOT_LEADER_FOR_PARTITION.code)
             Errors.NOT_COORDINATOR_FOR_GROUP.code
-          else if (status.errorCode == Errors.MESSAGE_TOO_LARGE.code
-                   || status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code
-                   || status.errorCode == Errors.INVALID_FETCH_SIZE.code)
+          else if (status.errorCode == Errors.MESSAGE_TOO_LARGE.code ||
+                   status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code ||
+                   status.errorCode == Errors.INVALID_FETCH_SIZE.code)
             Errors.INVALID_COMMIT_OFFSET_SIZE.code
           else
             status.errorCode
@@ -477,8 +477,8 @@ class GroupMetadataManager(
               val loadedGroups = mutable.Map[String, GroupMetadata]()
               val removedGroups = mutable.Set[String]()
 
-              while (currOffset < getHighWatermark(
-                       offsetsPartition) && !shuttingDown.get()) {
+              while (currOffset < getHighWatermark(offsetsPartition) &&
+                     !shuttingDown.get()) {
                 buffer.clear()
                 val messages = log
                   .read(currOffset, config.loadBufferSize)
@@ -512,13 +512,14 @@ class GroupMetadataManager(
                       putOffset(
                         key,
                         value.copy(expireTimestamp = {
-                          if (value.expireTimestamp == org
-                                .apache
-                                .kafka
-                                .common
-                                .requests
-                                .OffsetCommitRequest
-                                .DEFAULT_TIMESTAMP)
+                          if (value.expireTimestamp ==
+                                org
+                                  .apache
+                                  .kafka
+                                  .common
+                                  .requests
+                                  .OffsetCommitRequest
+                                  .DEFAULT_TIMESTAMP)
                             value.commitTimestamp + config.offsetsRetentionMs
                           else
                             value.expireTimestamp

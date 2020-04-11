@@ -92,8 +92,8 @@ class ConsumerFetcherManager(
             .partitionsMetadata
             .foreach { pmd =>
               val topicAndPartition = TopicAndPartition(topic, pmd.partitionId)
-              if (pmd.leader.isDefined && noLeaderPartitionSet
-                    .contains(topicAndPartition)) {
+              if (pmd.leader.isDefined &&
+                  noLeaderPartitionSet.contains(topicAndPartition)) {
                 val leaderBroker = pmd.leader.get
                 leaderForPartitionsMap.put(topicAndPartition, leaderBroker)
                 noLeaderPartitionSet -= topicAndPartition
@@ -115,9 +115,10 @@ class ConsumerFetcherManager(
         addFetcherForPartitions(
           leaderForPartitionsMap.map {
             case (topicAndPartition, broker) =>
-              topicAndPartition -> BrokerAndInitialOffset(
-                broker,
-                partitionMap(topicAndPartition).getFetchOffset())
+              topicAndPartition ->
+                BrokerAndInitialOffset(
+                  broker,
+                  partitionMap(topicAndPartition).getFetchOffset())
           })
       } catch {
         case t: Throwable => {
@@ -164,8 +165,8 @@ class ConsumerFetcherManager(
         .map(tpi => (TopicAndPartition(tpi.topic, tpi.partitionId), tpi))
         .toMap
       this.cluster = cluster
-      noLeaderPartitionSet ++= topicInfos
-        .map(tpi => TopicAndPartition(tpi.topic, tpi.partitionId))
+      noLeaderPartitionSet ++=
+        topicInfos.map(tpi => TopicAndPartition(tpi.topic, tpi.partitionId))
       cond.signalAll()
     }
   }

@@ -282,8 +282,9 @@ object Pipeline extends MLReadable[Pipeline] {
 
       implicit val format = DefaultFormats
       val stagesDir = new Path(path, "stages").toString
-      val stageUids: Array[String] =
-        (metadata.params \ "stageUids").extract[Seq[String]].toArray
+      val stageUids: Array[String] = (metadata.params \ "stageUids")
+        .extract[Seq[String]]
+        .toArray
       val stages: Array[PipelineStage] = stageUids
         .zipWithIndex
         .map {

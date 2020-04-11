@@ -127,7 +127,8 @@ object SourceCodeGenerator {
         run(new URI(uri), Some(outputDir))
       case profile :: jdbcDriver :: url :: outputDir :: pkg :: Nil =>
         run(profile, jdbcDriver, url, outputDir, pkg, None, None, true)
-      case profile :: jdbcDriver :: url :: outputDir :: pkg :: user :: password :: Nil =>
+      case profile :: jdbcDriver :: url :: outputDir :: pkg :: user ::
+          password :: Nil =>
         run(
           profile,
           jdbcDriver,
@@ -137,7 +138,8 @@ object SourceCodeGenerator {
           Some(user),
           Some(password),
           true)
-      case profile :: jdbcDriver :: url :: outputDir :: pkg :: user :: password :: ignoreInvalidDefaults :: Nil =>
+      case profile :: jdbcDriver :: url :: outputDir :: pkg :: user ::
+          password :: ignoreInvalidDefaults :: Nil =>
         run(
           profile,
           jdbcDriver,

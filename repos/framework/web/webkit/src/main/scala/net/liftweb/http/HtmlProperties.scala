@@ -305,29 +305,27 @@ final case class OldHtmlProperties(userAgent: Box[String])
       w.flush()
     }
 
-  def htmlOutputHeader: Box[String] =
-    (docType -> encoding) match {
-      case (Full(dt), Full(enc)) if dt.length > 0 && enc.length > 0 =>
-        if (LiftRules.calcIE6ForResponse() && LiftRules.flipDocTypeForIE6) {
-          Full(dt.trim + "\n" + enc.trim + "\n")
-        } else {
-          Full(enc.trim + "\n" + dt.trim + "\n")
-        }
+  def htmlOutputHeader: Box[String] = (docType -> encoding) match {
+    case (Full(dt), Full(enc)) if dt.length > 0 && enc.length > 0 =>
+      if (LiftRules.calcIE6ForResponse() && LiftRules.flipDocTypeForIE6) {
+        Full(dt.trim + "\n" + enc.trim + "\n")
+      } else {
+        Full(enc.trim + "\n" + dt.trim + "\n")
+      }
 
-      case (Full(dt), _) if dt.length > 0 =>
-        Full(dt.trim + "\n")
+    case (Full(dt), _) if dt.length > 0 =>
+      Full(dt.trim + "\n")
 
-      case (_, Full(enc)) if enc.length > 0 =>
-        Full(enc.trim + "\n")
+    case (_, Full(enc)) if enc.length > 0 =>
+      Full(enc.trim + "\n")
 
-      case _ =>
-        Empty
-    }
+    case _ =>
+      Empty
+  }
 
   val html5FormsSupport: Boolean = {
     val r = S.request openOr Req.nil
-    r.isSafari5 || r.isFirefox36 || r.isFirefox40 ||
-    r.isChrome5 || r.isChrome6
+    r.isSafari5 || r.isFirefox36 || r.isFirefox40 || r.isChrome5 || r.isChrome6
   }
 
   val maxOpenRequests: Int = LiftRules
@@ -357,8 +355,7 @@ final case class Html5Properties(userAgent: Box[String])
 
   val html5FormsSupport: Boolean = {
     val r = S.request openOr Req.nil
-    r.isSafari5 || r.isFirefox36 || r.isFirefox40 ||
-    r.isChrome5 || r.isChrome6
+    r.isSafari5 || r.isFirefox36 || r.isFirefox40 || r.isChrome5 || r.isChrome6
   }
 
   val maxOpenRequests: Int = LiftRules
@@ -391,8 +388,7 @@ final case class XHtmlInHtml5OutProperties(userAgent: Box[String])
 
   val html5FormsSupport: Boolean = {
     val r = S.request openOr Req.nil
-    r.isSafari5 || r.isFirefox36 || r.isFirefox40 ||
-    r.isChrome5 || r.isChrome6
+    r.isSafari5 || r.isFirefox36 || r.isFirefox40 || r.isChrome5 || r.isChrome6
   }
 
   val maxOpenRequests: Int = LiftRules

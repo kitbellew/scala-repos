@@ -28,8 +28,8 @@ object CombinatorTesting extends App {
     lazy val a = "a"
     lazy val b = "b"
     lazy val c = "c"
-    lazy val content =
-      a ~ b ~ c // ^^ {case a~b => a::b::c::Nil work but I want something more general that work for any ~ length.
+    lazy val content = a ~ b ~
+      c // ^^ {case a~b => a::b::c::Nil work but I want something more general that work for any ~ length.
   }
 
   import CombinatorParser._

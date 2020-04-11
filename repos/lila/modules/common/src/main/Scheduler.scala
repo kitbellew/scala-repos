@@ -29,9 +29,10 @@ final class Scheduler(
   }
 
   def messageToSelection(freq: FiniteDuration)(to: => (ActorSelection, Any)) {
-    enabled ! scheduler.schedule(freq, randomize(freq)) {
-      to._1 ! to._2
-    }
+    enabled !
+      scheduler.schedule(freq, randomize(freq)) {
+        to._1 ! to._2
+      }
   }
 
   def effect(freq: FiniteDuration, name: String)(op: => Unit) {
@@ -47,11 +48,12 @@ final class Scheduler(
         val tagged = "(%s) %s".format(nextString(3), name)
         doDebug ! logger.info(tagged)
         val start = nowMillis
-        op effectFold (
-          e => logger.error("(%s) %s".format(tagged, e.getMessage), e),
-          _ =>
-            doDebug ! logger.info(tagged + " - %d ms".format(nowMillis - start))
-        )
+        op effectFold
+          (
+            e => logger.error("(%s) %s".format(tagged, e.getMessage), e),
+            _ =>
+              doDebug !
+                logger.info(tagged + " - %d ms".format(nowMillis - start)))
       }
     }
   }

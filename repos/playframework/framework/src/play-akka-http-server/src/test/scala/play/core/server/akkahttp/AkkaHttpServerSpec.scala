@@ -197,13 +197,14 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
       }
     }
 
-    "support WithServer form" in new WithServer(
-      app = GuiceApplicationBuilder().routes(httpServerTagRoutes).build(),
-      serverProvider = Some(AkkaHttpServer.provider)) {
-      val response = await(wsUrl("/httpServerTag").get())
-      response.status must equalTo(OK)
-      response.body must_== "Some(akka-http)"
-    }
+    "support WithServer form" in
+      new WithServer(
+        app = GuiceApplicationBuilder().routes(httpServerTagRoutes).build(),
+        serverProvider = Some(AkkaHttpServer.provider)) {
+        val response = await(wsUrl("/httpServerTag").get())
+        response.status must equalTo(OK)
+        response.body must_== "Some(akka-http)"
+      }
 
     "start and stop cleanly" in {
       PlayRunners
@@ -230,9 +231,10 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
             }
           }
           // Start and stop the server 20 times
-          (0 until 20) must contain { (i: Int) =>
-            testStartAndStop(i)
-          }
+          (0 until 20) must
+            contain { (i: Int) =>
+              testStartAndStop(i)
+            }
         }
     }
 

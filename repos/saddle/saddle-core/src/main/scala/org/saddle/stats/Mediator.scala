@@ -37,8 +37,8 @@ class Mediator(winSz: Int) {
   //   (a) size(minheap) <= size(maxheap)
   //   (b) size(minheap) >= size(maxheap) - 1
 
-  private val hMid =
-    winSz / 2 // heap(hMid) = x s.t. data(x) holds mid (between max/min heaps)
+  private val hMid = winSz /
+    2 // heap(hMid) = x s.t. data(x) holds mid (between max/min heaps)
 
   // loc array is a reverse lookup for data into the heap, eg:
   //   loc(n) = -2  ==>  data(n) is maxheap child1
@@ -352,9 +352,8 @@ class Mediator(winSz: Int) {
         else
           "  "
       println(
-        "%s%3d|%12.6f|%12d|%12d |%5s%s|" format (
-          star1, i, data(i), heap(i), loc(i), sawNa(i), star2
-        ))
+        "%s%3d|%12.6f|%12d|%12d |%5s%s|" format
+          (star1, i, data(i), heap(i), loc(i), sawNa(i), star2))
     }
     println("-----------------------------------------------------")
   }

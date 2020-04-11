@@ -255,9 +255,8 @@ trait Importers {
                 assert(
                   !result.isOverloaded,
                   "import failure: cannot determine unique overloaded method alternative from\n " +
-                    (
-                      result.alternatives map (_.defString) mkString "\n"
-                    ) + "\n that matches " + their + ":" + their.tpe
+                    (result.alternatives map (_.defString) mkString "\n") +
+                    "\n that matches " + their + ":" + their.tpe
                 )
                 result
               }
@@ -339,10 +338,11 @@ trait Importers {
             parents map importType,
             myscope,
             myclazz)
-          myclazz setInfo GenPolyType(
-            myclazz.typeParams,
-            myclazzTpe
-          ) // needed so that newly created symbols find their scope
+          myclazz setInfo
+            GenPolyType(
+              myclazz.typeParams,
+              myclazzTpe
+            ) // needed so that newly created symbols find their scope
           decls foreach importSymbol // will enter itself into myclazz
           myclazzTpe
         case from.RefinedType(parents, decls) =>

@@ -104,17 +104,16 @@ abstract class LeaderElectionSpec(
           // detect failure
           markNodeAsUnavailable(leaderAddress)
           awaitAssert(
-            clusterView.unreachableMembers.map(_.address) should contain(
-              leaderAddress))
+            clusterView.unreachableMembers.map(_.address) should
+              contain(leaderAddress))
           enterBarrier("after-unavailable" + n)
 
           // user marks the shutdown leader as DOWN
           cluster.down(leaderAddress)
           // removed
           awaitAssert(
-            clusterView.unreachableMembers.map(_.address) should not contain (
-              leaderAddress
-            ))
+            clusterView.unreachableMembers.map(_.address) should not contain
+              (leaderAddress))
           enterBarrier("after-down" + n, "completed" + n)
 
         case _ if remainingRoles.contains(myself) ⇒
@@ -123,8 +122,8 @@ abstract class LeaderElectionSpec(
           enterBarrier("before-shutdown" + n, "after-shutdown" + n)
 
           awaitAssert(
-            clusterView.unreachableMembers.map(_.address) should contain(
-              leaderAddress))
+            clusterView.unreachableMembers.map(_.address) should
+              contain(leaderAddress))
           enterBarrier("after-unavailable" + n)
 
           enterBarrier("after-down" + n)
@@ -138,16 +137,18 @@ abstract class LeaderElectionSpec(
       }
     }
 
-    "be able to 're-elect' a single leader after leader has left" taggedAs LongRunningTest in within(
-      30 seconds) {
-      shutdownLeaderAndVerifyNewLeader(alreadyShutdown = 0)
-      enterBarrier("after-2")
-    }
+    "be able to 're-elect' a single leader after leader has left" taggedAs
+      LongRunningTest in
+      within(30 seconds) {
+        shutdownLeaderAndVerifyNewLeader(alreadyShutdown = 0)
+        enterBarrier("after-2")
+      }
 
-    "be able to 're-elect' a single leader after leader has left (again)" taggedAs LongRunningTest in within(
-      30 seconds) {
-      shutdownLeaderAndVerifyNewLeader(alreadyShutdown = 1)
-      enterBarrier("after-3")
-    }
+    "be able to 're-elect' a single leader after leader has left (again)" taggedAs
+      LongRunningTest in
+      within(30 seconds) {
+        shutdownLeaderAndVerifyNewLeader(alreadyShutdown = 1)
+        enterBarrier("after-3")
+      }
   }
 }

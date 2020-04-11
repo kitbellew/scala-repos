@@ -32,11 +32,14 @@ object LensTest extends SpecLite {
     lens.laws(Lens.firstLens[Int, String].sum(Lens.firstLens[Int, String])))
 
   "NumericLens" should {
-    "+=" ! forAll((i: Int) =>
-      (Lens.lensId[Int] += i).run(1) must_=== ((i + 1) -> (i + 1)))
-    "-=" ! forAll((i: Int) =>
-      (Lens.lensId[Int] -= i).run(1) must_=== ((1 - i) -> (1 - i)))
-    "*=" ! forAll((i: Int) =>
-      (Lens.lensId[Int] *= i).run(2) must_=== ((i * 2) -> (i * 2)))
+    "+=" !
+      forAll((i: Int) =>
+        (Lens.lensId[Int] += i).run(1) must_=== ((i + 1) -> (i + 1)))
+    "-=" !
+      forAll((i: Int) =>
+        (Lens.lensId[Int] -= i).run(1) must_=== ((1 - i) -> (1 - i)))
+    "*=" !
+      forAll((i: Int) =>
+        (Lens.lensId[Int] *= i).run(2) must_=== ((i * 2) -> (i * 2)))
   }
 }

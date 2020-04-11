@@ -24,8 +24,8 @@ class RecipeReduceByKey extends RecipeSpec {
 
       def words =
         Source(
-          List("hello", "world", "and", "hello", "universe", "akka") ++ List
-            .fill(1000)("rocks!"))
+          List("hello", "world", "and", "hello", "universe", "akka") ++
+            List.fill(1000)("rocks!"))
 
       //#word-count
       val counts: Source[(String, Int), NotUsed] =
@@ -40,24 +40,23 @@ class RecipeReduceByKey extends RecipeSpec {
           .mergeSubstreams
       //#word-count
 
-      Await
-        .result(counts.limit(10).runWith(Sink.seq), 3.seconds)
-        .toSet should be(
-        Set(
-          ("hello", 2),
-          ("world", 1),
-          ("and", 1),
-          ("universe", 1),
-          ("akka", 1),
-          ("rocks!", 1000)))
+      Await.result(counts.limit(10).runWith(Sink.seq), 3.seconds).toSet should
+        be(
+          Set(
+            ("hello", 2),
+            ("world", 1),
+            ("and", 1),
+            ("universe", 1),
+            ("akka", 1),
+            ("rocks!", 1000)))
     }
 
     "work generalized" in {
 
       def words =
         Source(
-          List("hello", "world", "and", "hello", "universe", "akka") ++ List
-            .fill(1000)("rocks!"))
+          List("hello", "world", "and", "hello", "universe", "akka") ++
+            List.fill(1000)("rocks!"))
 
       //#reduce-by-key-general
       def reduceByKey[In, K, Out](
@@ -82,14 +81,15 @@ class RecipeReduceByKey extends RecipeSpec {
 
       Await
         .result(wordCounts.limit(10).runWith(Sink.seq), 3.seconds)
-        .toSet should be(
-        Set(
-          ("hello", 2),
-          ("world", 1),
-          ("and", 1),
-          ("universe", 1),
-          ("akka", 1),
-          ("rocks!", 1000)))
+        .toSet should
+        be(
+          Set(
+            ("hello", 2),
+            ("world", 1),
+            ("and", 1),
+            ("universe", 1),
+            ("akka", 1),
+            ("rocks!", 1000)))
 
     }
   }

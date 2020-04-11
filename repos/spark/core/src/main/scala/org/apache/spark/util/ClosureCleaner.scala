@@ -256,8 +256,8 @@ private[spark] object ClosureCleaner extends Logging {
 
     // List of outer (class, object) pairs, ordered from outermost to innermost
     // Note that all outer objects but the outermost one (first one in this list) must be closures
-    var outerPairs: List[(Class[_], AnyRef)] =
-      (outerClasses zip outerObjects).reverse
+    var outerPairs: List[(Class[_], AnyRef)] = (outerClasses zip outerObjects)
+      .reverse
     var parent: AnyRef = null
     if (outerPairs.size > 0 && !isClosure(outerPairs.head._1)) {
       // The closure is ultimately nested inside a class; keep the object of that
@@ -444,8 +444,8 @@ private[util] class FieldAccessFinder(
              if cl.getName == owner.replace('/', '.')) {
           // Check for calls a getter method for a variable in an interpreter wrapper object.
           // This means that the corresponding field will be accessed, so we should save it.
-          if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name
-                .endsWith("$outer")) {
+          if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") &&
+              !name.endsWith("$outer")) {
             fields(cl) += name
           }
           // Optionally visit other methods to find fields that are transitively referenced
@@ -504,14 +504,15 @@ private class InnerClosureFinder(output: Set[Class[_]])
           desc: String,
           itf: Boolean) {
         val argTypes = Type.getArgumentTypes(desc)
-        if (op == INVOKESPECIAL && name == "<init>" && argTypes.length > 0
-            && argTypes(0).toString.startsWith("L") // is it an object?
+        if (op == INVOKESPECIAL && name == "<init>" && argTypes.length > 0 &&
+            argTypes(0).toString.startsWith("L") // is it an object?
             && argTypes(0).getInternalName == myName) {
           // scalastyle:off classforname
-          output += Class.forName(
-            owner.replace('/', '.'),
-            false,
-            Thread.currentThread.getContextClassLoader)
+          output +=
+            Class.forName(
+              owner.replace('/', '.'),
+              false,
+              Thread.currentThread.getContextClassLoader)
           // scalastyle:on classforname
         }
       }

@@ -43,15 +43,16 @@ class BasicWorkflow
 
           //-----------------------------------------------------------------------------------------------
           // semantic highlighting
-          project ! SymbolDesignationsReq(
-            Left(fooFile),
-            -1,
-            299,
-            SourceSymbol.allSymbols)
+          project !
+            SymbolDesignationsReq(
+              Left(fooFile),
+              -1,
+              299,
+              SourceSymbol.allSymbols)
           val designations = expectMsgType[SymbolDesignations]
           designations.file shouldBe fooFile
-          designations
-            .syms should contain(SymbolDesignation(12, 19, PackageSymbol))
+          designations.syms should
+            contain(SymbolDesignation(12, 19, PackageSymbol))
           // expected Symbols
           // ((package 12 19) (package 8 11) (trait 40 43) (valField 69 70) (class 100 103) (param 125 126) (class 128 131) (param 133 134) (class 136 142) (operator 156 157) (param 154 155) (functionCall 160 166) (param 158 159) (valField 183 186) (class 193 199) (class 201 204) (valField 214 217) (class 224 227) (functionCall 232 239) (operator 250 251) (valField 256 257) (valField 252 255) (functionCall 261 268) (functionCall 273 283) (valField 269 272)))
 
@@ -129,8 +130,8 @@ class BasicWorkflow
           expectMsg(Some(intDocSig))
 
           project ! intDocSig
-          expectMsgType[StringResponse]
-            .text should endWith("/index.html#scala.Int")
+          expectMsgType[StringResponse].text should
+            endWith("/index.html#scala.Int")
 
           //-----------------------------------------------------------------------------------------------
           // uses of symbol at point
@@ -143,10 +144,8 @@ class BasicWorkflow
 
           asyncHelper.expectMsg(FullTypeCheckCompleteEvent)
 
-          project ! UsesOfSymbolAtPointReq(
-            Left(fooFile),
-            119
-          ) // point on testMethod
+          project !
+            UsesOfSymbolAtPointReq(Left(fooFile), 119) // point on testMethod
           expectMsgPF() {
             case ERangePositions(
                   List(
@@ -458,11 +457,12 @@ class BasicWorkflow
 
           // TODO get the before content of the file
 
-          project ! PrepareRefactorReq(
-            1234,
-            null,
-            RenameRefactorDesc("bar", fooFile, 215, 215),
-            false)
+          project !
+            PrepareRefactorReq(
+              1234,
+              null,
+              RenameRefactorDesc("bar", fooFile, 215, 215),
+              false)
           expectMsgPF() {
             case RefactorEffect(
                   1234,

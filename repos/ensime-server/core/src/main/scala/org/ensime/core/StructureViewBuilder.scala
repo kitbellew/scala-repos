@@ -33,8 +33,8 @@ trait StructureViewBuilder {
 
     def shouldShow(x: DefDef): Boolean =
       !(
-        x.name == nme.CONSTRUCTOR || x.name == nme
-          .MIXIN_CONSTRUCTOR || x.symbol.isAccessor
+        x.name == nme.CONSTRUCTOR || x.name == nme.MIXIN_CONSTRUCTOR ||
+          x.symbol.isAccessor
       )
 
     def pos(x: Symbol) =

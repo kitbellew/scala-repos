@@ -98,9 +98,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
       .plugins
       .collectFirst {
         case pl
-            if pl
-              .getClass
-              .getName == "org.scalajs.core.compiler.ScalaJSPlugin" =>
+            if pl.getClass.getName ==
+              "org.scalajs.core.compiler.ScalaJSPlugin" =>
           pl.asInstanceOf[ScalaJSPlugin]
       }
       .getOrElse {
@@ -412,9 +411,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
           // Find and report unsupported JUnit annotations
           annotations.foreach {
             case ann
-                if ann.atp.typeSymbol == TestClass && ann
-                  .original
-                  .isInstanceOf[Block] =>
+                if ann.atp.typeSymbol == TestClass &&
+                  ann.original.isInstanceOf[Block] =>
               reporter.error(
                 ann.pos,
                 "@Test(timeout = ...) is not " +

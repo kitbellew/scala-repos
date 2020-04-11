@@ -16,23 +16,23 @@ object DListTest extends SpecLite {
   checkAll(bindRec.laws[DList])
   checkAll(monadPlus.strongLaws[DList])
 
-  "DList append" ! (
-    (0 to 100000).foldLeft(DList[Int]())(_ :+ _).toList must_== (0 to 100000)
-      .toList
-  )
+  "DList append" !
+    ((0 to 100000).foldLeft(DList[Int]())(_ :+ _).toList must_==
+      (0 to 100000).toList)
 
-  "headOption, tailOption" ! forAll { (n: Int, d: DList[Int]) =>
-    // Defined when appropriate?
-    val nonempty = d.uncons(false, (_, _) => true)
-    d.headOption.isDefined must_=== nonempty
-    d.tailOption.isDefined must_=== nonempty
+  "headOption, tailOption" !
+    forAll { (n: Int, d: DList[Int]) =>
+      // Defined when appropriate?
+      val nonempty = d.uncons(false, (_, _) => true)
+      d.headOption.isDefined must_=== nonempty
+      d.tailOption.isDefined must_=== nonempty
 
-    // If defined, are values correct?
-    val d0 = n +: d
-    check(d0.headOption === Some(n)) // no Show instance, can't use must_===
-    check(d0.tailOption === Some(d))
+      // If defined, are values correct?
+      val d0 = n +: d
+      check(d0.headOption === Some(n)) // no Show instance, can't use must_===
+      check(d0.tailOption === Some(d))
 
-  }
+    }
 
   object instances {
     def equal[A: Equal] = Equal[DList[A]]

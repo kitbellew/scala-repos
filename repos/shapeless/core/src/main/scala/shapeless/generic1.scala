@@ -385,8 +385,9 @@ class Generic1Macros(val c: whitebox.Context) extends CaseClassMacros {
     val rnme = TypeName(c.freshName)
 
     val to = {
-      val toCases = ctorsOf1(tpe) zip (Stream from 0) map (mkCoproductCases _)
-        .tupled
+      val toCases = ctorsOf1(tpe) zip
+        (Stream from 0) map
+        (mkCoproductCases _).tupled
       q"""_root_.shapeless.Coproduct.unsafeMkCoproduct((ft: Any) match { case ..$toCases }, ft).asInstanceOf[R[$nme]]"""
     }
 

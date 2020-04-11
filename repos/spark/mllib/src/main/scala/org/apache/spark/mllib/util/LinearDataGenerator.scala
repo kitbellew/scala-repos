@@ -159,8 +159,8 @@ object LinearDataGenerator {
               rndElement(_)
             }
             .toArray)
-        val label = BLAS.dot(Vectors.dense(weights), features) +
-          intercept + eps * rnd.nextGaussian()
+        val label = BLAS.dot(Vectors.dense(weights), features) + intercept +
+          eps * rnd.nextGaussian()
         // Return LabeledPoints with DenseVector
         LabeledPoint(label, features)
       }
@@ -176,8 +176,8 @@ object LinearDataGenerator {
         }
         val features = Vectors
           .sparse(weights.length, indices.toArray, values.toArray)
-        val label = BLAS.dot(Vectors.dense(weights), features) +
-          intercept + eps * rnd.nextGaussian()
+        val label = BLAS.dot(Vectors.dense(weights), features) + intercept +
+          eps * rnd.nextGaussian()
         // Return LabeledPoints with SparseVector
         LabeledPoint(label, features)
       }

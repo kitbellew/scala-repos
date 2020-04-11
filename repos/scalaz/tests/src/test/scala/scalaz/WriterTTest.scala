@@ -32,10 +32,10 @@ object WriterTTest extends SpecLite {
 
   checkAll(comonad.laws[Writer[Int, ?]])
 
-  "flatMapF consistent with flatMap" ! forAll {
-    (fa: WriterTOptInt[Int], f: Int => Option[(Int, Int)]) =>
+  "flatMapF consistent with flatMap" !
+    forAll { (fa: WriterTOptInt[Int], f: Int => Option[(Int, Int)]) =>
       fa.flatMapF(f) must_=== fa.flatMap(f andThen WriterT.writerT)
-  }
+    }
 
   private def writerTUcompilationTest: Unit = {
     import syntax.either._

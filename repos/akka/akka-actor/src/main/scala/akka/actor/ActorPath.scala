@@ -107,8 +107,7 @@ object ActorPath {
         throw new InvalidActorNameException(
           s"""Invalid actor path element [$element]$fullPathMsg, illegal character [${element(
             invalidAt)}] at position: $invalidAt. """ +
-            """Actor paths MUST: """ +
-            """not start with `$`, """ +
+            """Actor paths MUST: """ + """not start with `$`, """ +
             s"""include only ASCII letters and can only contain these special characters: ${ActorPath
               .ValidSymbols}.""")
     }
@@ -129,14 +128,15 @@ object ActorPath {
       EmptyPathCode
     else {
       def isValidChar(c: Char): Boolean =
-        (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (
-          c >= '0' && c <= '9'
-        ) || (ValidSymbols.indexOf(c) != -1)
+        (c >= 'a' && c <= 'z') ||
+          (c >= 'A' && c <= 'Z') ||
+          (c >= '0' && c <= '9') ||
+          (ValidSymbols.indexOf(c) != -1)
 
       def isHexChar(c: Char): Boolean =
-        (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F') || (
-          c >= '0' && c <= '9'
-        )
+        (c >= 'a' && c <= 'f') ||
+          (c >= 'A' && c <= 'F') ||
+          (c >= '0' && c <= '9')
 
       val len = s.length
       def validate(pos: Int): Int =
@@ -145,8 +145,8 @@ object ActorPath {
             case c if isValidChar(c) ⇒
               validate(pos + 1)
             case '%'
-                if pos + 2 < len && isHexChar(s.charAt(pos + 1)) && isHexChar(
-                  s.charAt(pos + 2)) ⇒
+                if pos + 2 < len && isHexChar(s.charAt(pos + 1)) &&
+                  isHexChar(s.charAt(pos + 2)) ⇒
               validate(pos + 3)
             case _ ⇒
               pos
@@ -212,12 +212,11 @@ sealed trait ActorPath extends Comparable[ActorPath] with Serializable {
   /**
     * Recursively create a descendant’s path by appending all child names.
     */
-  def /(child: Iterable[String]): ActorPath =
-    (this /: child)((path, elem) ⇒
-      if (elem.isEmpty)
-        path
-      else
-        path / elem)
+  def /(child: Iterable[String]): ActorPath = (this /: child)((path, elem) ⇒
+    if (elem.isEmpty)
+      path
+    else
+      path / elem)
 
   /**
     * Java API: Recursively create a descendant’s path by appending all child names.
@@ -297,11 +296,13 @@ final case class RootActorPath(address: Address, name: String = "/")
   require(
     name.length == 1 || name.indexOf('/', 1) == -1,
     "/ may only exist at the beginning of the root actors name, " +
-      "it is a path separator and is not legal in ActorPath names: [%s]" format name
+      "it is a path separator and is not legal in ActorPath names: [%s]" format
+      name
   )
   require(
     name.indexOf('#') == -1,
-    "# is a fragment separator and is not legal in ActorPath names: [%s]" format name)
+    "# is a fragment separator and is not legal in ActorPath names: [%s]" format
+      name)
 
   override def parent: ActorPath = this
 
@@ -330,8 +331,8 @@ final case class RootActorPath(address: Address, name: String = "/")
   override def compareTo(other: ActorPath): Int =
     other match {
       case r: RootActorPath ⇒
-        toString compareTo r
-          .toString // FIXME make this cheaper by comparing address and name in isolation
+        toString compareTo
+          r.toString // FIXME make this cheaper by comparing address and name in isolation
       case c: ChildActorPath ⇒
         1
     }
@@ -361,10 +362,12 @@ final class ChildActorPath private[akka] (
     extends ActorPath {
   if (name.indexOf('/') != -1)
     throw new IllegalArgumentException(
-      "/ is a path separator and is not legal in ActorPath names: [%s]" format name)
+      "/ is a path separator and is not legal in ActorPath names: [%s]" format
+        name)
   if (name.indexOf('#') != -1)
     throw new IllegalArgumentException(
-      "# is a fragment separator and is not legal in ActorPath names: [%s]" format name)
+      "# is a fragment separator and is not legal in ActorPath names: [%s]" format
+        name)
 
   def this(parent: ActorPath, name: String) =
     this(parent, name, ActorCell.undefinedUid)

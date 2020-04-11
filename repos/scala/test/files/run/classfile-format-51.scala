@@ -24,8 +24,8 @@ import Opcodes._
 // on JDK 6
 object Test extends DirectTest {
   override def extraSettings: String =
-    "-Yopt:l:classpath -usejavacp -d " + testOutput.path + " -cp " + testOutput
-      .path
+    "-Yopt:l:classpath -usejavacp -d " + testOutput.path + " -cp " +
+      testOutput.path
 
   def generateClass() {
     val invokerClassName = "DynamicInvoker"

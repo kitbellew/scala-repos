@@ -43,9 +43,8 @@ class DatabaseUrlDataSource extends DriverDataSource(null) {
           .findFirstMatchIn(url)
           .map(_ => "")
           .getOrElse(defaultProperties)
-        Some(
-          s"jdbc:mysql://$host/${dbname + addDefaultPropertiesIfNeeded}") -> Some(
-          username -> password)
+        Some(s"jdbc:mysql://$host/${dbname + addDefaultPropertiesIfNeeded}") ->
+          Some(username -> password)
 
       case Some(url) =>
         Some(url) -> None

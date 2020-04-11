@@ -98,129 +98,133 @@ class KeepGoingStageSpec extends AkkaSpec {
 
   "A stage with keep-going" must {
 
-    "still be alive after all ports have been closed until explicitly closed" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source
-        .maybe[Int]
-        .toMat(new PingableSink(keepAlive = true))(Keep.both)
-        .run()
-      val pinger = Await.result(pingerFuture, 3.seconds)
+    "still be alive after all ports have been closed until explicitly closed" in
+      assertAllStagesStopped {
+        val (maybePromise, pingerFuture) = Source
+          .maybe[Int]
+          .toMat(new PingableSink(keepAlive = true))(Keep.both)
+          .run()
+        val pinger = Await.result(pingerFuture, 3.seconds)
 
-      pinger.register(testActor)
+        pinger.register(testActor)
 
-      // Before completion
-      pinger.ping()
-      expectMsg(Pong)
+        // Before completion
+        pinger.ping()
+        expectMsg(Pong)
 
-      pinger.ping()
-      expectMsg(Pong)
+        pinger.ping()
+        expectMsg(Pong)
 
-      maybePromise.trySuccess(None)
-      expectMsg(UpstreamCompleted)
+        maybePromise.trySuccess(None)
+        expectMsg(UpstreamCompleted)
 
-      expectNoMsg(200.millis)
+        expectNoMsg(200.millis)
 
-      pinger.ping()
-      expectMsg(Pong)
+        pinger.ping()
+        expectMsg(Pong)
 
-      pinger.ping()
-      expectMsg(Pong)
+        pinger.ping()
+        expectMsg(Pong)
 
-      pinger.stop()
-      // PostStop should not be concurrent with the event handler. This event here tests this.
-      expectMsg(EndOfEventHandler)
-      expectMsg(PostStop)
+        pinger.stop()
+        // PostStop should not be concurrent with the event handler. This event here tests this.
+        expectMsg(EndOfEventHandler)
+        expectMsg(PostStop)
 
-    }
+      }
 
-    "still be alive after all ports have been closed until explicitly failed" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source
-        .maybe[Int]
-        .toMat(new PingableSink(keepAlive = true))(Keep.both)
-        .run()
-      val pinger = Await.result(pingerFuture, 3.seconds)
+    "still be alive after all ports have been closed until explicitly failed" in
+      assertAllStagesStopped {
+        val (maybePromise, pingerFuture) = Source
+          .maybe[Int]
+          .toMat(new PingableSink(keepAlive = true))(Keep.both)
+          .run()
+        val pinger = Await.result(pingerFuture, 3.seconds)
 
-      pinger.register(testActor)
+        pinger.register(testActor)
 
-      // Before completion
-      pinger.ping()
-      expectMsg(Pong)
+        // Before completion
+        pinger.ping()
+        expectMsg(Pong)
 
-      pinger.ping()
-      expectMsg(Pong)
+        pinger.ping()
+        expectMsg(Pong)
 
-      maybePromise.trySuccess(None)
-      expectMsg(UpstreamCompleted)
+        maybePromise.trySuccess(None)
+        expectMsg(UpstreamCompleted)
 
-      expectNoMsg(200.millis)
+        expectNoMsg(200.millis)
 
-      pinger.ping()
-      expectMsg(Pong)
+        pinger.ping()
+        expectMsg(Pong)
 
-      pinger.ping()
-      expectMsg(Pong)
+        pinger.ping()
+        expectMsg(Pong)
 
-      pinger.fail()
-      // PostStop should not be concurrent with the event handler. This event here tests this.
-      expectMsg(EndOfEventHandler)
-      expectMsg(PostStop)
+        pinger.fail()
+        // PostStop should not be concurrent with the event handler. This event here tests this.
+        expectMsg(EndOfEventHandler)
+        expectMsg(PostStop)
 
-    }
+      }
 
-    "still be alive after all ports have been closed until implicitly failed (via exception)" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source
-        .maybe[Int]
-        .toMat(new PingableSink(keepAlive = true))(Keep.both)
-        .run()
-      val pinger = Await.result(pingerFuture, 3.seconds)
+    "still be alive after all ports have been closed until implicitly failed (via exception)" in
+      assertAllStagesStopped {
+        val (maybePromise, pingerFuture) = Source
+          .maybe[Int]
+          .toMat(new PingableSink(keepAlive = true))(Keep.both)
+          .run()
+        val pinger = Await.result(pingerFuture, 3.seconds)
 
-      pinger.register(testActor)
+        pinger.register(testActor)
 
-      // Before completion
-      pinger.ping()
-      expectMsg(Pong)
+        // Before completion
+        pinger.ping()
+        expectMsg(Pong)
 
-      pinger.ping()
-      expectMsg(Pong)
+        pinger.ping()
+        expectMsg(Pong)
 
-      maybePromise.trySuccess(None)
-      expectMsg(UpstreamCompleted)
+        maybePromise.trySuccess(None)
+        expectMsg(UpstreamCompleted)
 
-      expectNoMsg(200.millis)
+        expectNoMsg(200.millis)
 
-      pinger.ping()
-      expectMsg(Pong)
+        pinger.ping()
+        expectMsg(Pong)
 
-      pinger.ping()
-      expectMsg(Pong)
+        pinger.ping()
+        expectMsg(Pong)
 
-      pinger.throwEx()
-      // PostStop should not be concurrent with the event handler. This event here tests this.
-      expectMsg(EndOfEventHandler)
-      expectMsg(PostStop)
+        pinger.throwEx()
+        // PostStop should not be concurrent with the event handler. This event here tests this.
+        expectMsg(EndOfEventHandler)
+        expectMsg(PostStop)
 
-    }
+      }
 
-    "close down early if keepAlive is not requested" in assertAllStagesStopped {
-      val (maybePromise, pingerFuture) = Source
-        .maybe[Int]
-        .toMat(new PingableSink(keepAlive = false))(Keep.both)
-        .run()
-      val pinger = Await.result(pingerFuture, 3.seconds)
+    "close down early if keepAlive is not requested" in
+      assertAllStagesStopped {
+        val (maybePromise, pingerFuture) = Source
+          .maybe[Int]
+          .toMat(new PingableSink(keepAlive = false))(Keep.both)
+          .run()
+        val pinger = Await.result(pingerFuture, 3.seconds)
 
-      pinger.register(testActor)
+        pinger.register(testActor)
 
-      // Before completion
-      pinger.ping()
-      expectMsg(Pong)
+        // Before completion
+        pinger.ping()
+        expectMsg(Pong)
 
-      pinger.ping()
-      expectMsg(Pong)
+        pinger.ping()
+        expectMsg(Pong)
 
-      maybePromise.trySuccess(None)
-      expectMsg(UpstreamCompleted)
-      expectMsg(PostStop)
+        maybePromise.trySuccess(None)
+        expectMsg(UpstreamCompleted)
+        expectMsg(PostStop)
 
-    }
+      }
 
   }
 

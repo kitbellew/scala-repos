@@ -23,8 +23,8 @@ private[round] final class Takebacker(
           val progress = Progress(game) map { g =>
             g.updatePlayer(color, _ proposeTakeback g.turns)
           }
-          GameRepo save progress inject List(
-            Event.TakebackOffers(color.white, color.black))
+          GameRepo save progress inject
+            List(Event.TakebackOffers(color.white, color.black))
         case _ =>
           fufail(ClientError("[takebacker] invalid yes " + pov))
       }
@@ -63,9 +63,8 @@ private[round] final class Takebacker(
         }
         .sequenceFu map {
         _.forall { p =>
-          p == Pref.Takeback.ALWAYS || (
-            p == Pref.Takeback.CASUAL && game.casual
-          )
+          p == Pref.Takeback.ALWAYS ||
+          (p == Pref.Takeback.CASUAL && game.casual)
         }
       }
 

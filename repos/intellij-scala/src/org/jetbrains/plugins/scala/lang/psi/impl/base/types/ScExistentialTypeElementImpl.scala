@@ -46,16 +46,17 @@ class ScExistentialTypeElementImpl(node: ASTNode)
             val ub = alias.upperBound
             problems += lb;
             problems += ub
-            buff += new ScExistentialArgument(
-              alias.name,
-              alias
-                .typeParameters
-                .map { tp =>
-                  ScalaPsiManager.typeVariable(tp)
-                }
-                .toList,
-              lb.getOrNothing,
-              ub.getOrAny)
+            buff +=
+              new ScExistentialArgument(
+                alias.name,
+                alias
+                  .typeParameters
+                  .map { tp =>
+                    ScalaPsiManager.typeVariable(tp)
+                  }
+                  .toList,
+                lb.getOrNothing,
+                ub.getOrAny)
           case value: ScValueDeclaration =>
             value.typeElement match {
               case Some(te) =>
@@ -89,12 +90,10 @@ class ScExistentialTypeElementImpl(node: ASTNode)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    if (lastParent == quantified || (
-          lastParent.isInstanceOf[ScalaPsiElement] &&
-          lastParent
-            .asInstanceOf[ScalaPsiElement]
-            .getDeepSameElementInContext == quantified
-        )) {
+    if (lastParent == quantified ||
+        (lastParent.isInstanceOf[ScalaPsiElement] &&
+        lastParent.asInstanceOf[ScalaPsiElement].getDeepSameElementInContext ==
+          quantified)) {
       for (decl <- clause.declarations) {
         decl match {
           case alias: ScTypeAliasDeclaration =>

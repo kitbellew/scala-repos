@@ -37,13 +37,13 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
         _ = r1 shouldBe Set((1, "123"), (2, "45"))
       } yield ()
     if (implicitly[ColumnType[Array[Byte]]].hasLiteralForm) {
-      as1 >> ts
-        .filter(_.data === Array[Byte](4, 5))
-        .map(_.data)
-        .to[Set]
-        .result
-        .map(_.map(_.mkString))
-        .map(_ shouldBe Set("45"))
+      as1 >>
+        ts.filter(_.data === Array[Byte](4, 5))
+          .map(_.data)
+          .to[Set]
+          .result
+          .map(_.map(_.mkString))
+          .map(_ shouldBe Set("45"))
     } else
       as1
   }
@@ -86,8 +86,7 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
         (
           ts.schema.create >>
             (ts += (1, new SerialBlob(Array[Byte](1, 2, 3)))) >>
-            (ts += (2, new SerialBlob(Array[Byte](4, 5)))) >>
-            ts.result
+            (ts += (2, new SerialBlob(Array[Byte](4, 5)))) >> ts.result
         ).transactionally
       val p1 = db
         .stream(a1)
@@ -139,9 +138,8 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
         ts.to[Set]
           .result
           .map(
-            _ shouldBe Set(
-              (1, Serialized(List(1, 2, 3))),
-              (2, Serialized(List(4, 5)))))
+            _ shouldBe
+              Set((1, Serialized(List(1, 2, 3))), (2, Serialized(List(4, 5)))))
       ).transactionally
     }
 

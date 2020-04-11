@@ -82,8 +82,8 @@ object SbtRepositoryLayout extends RepositoryLayout {
           .append(artifact.getVersion)
     }
 
-    if (artifact
-          .getClassifier != null && !artifact.getClassifier.trim.isEmpty) {
+    if (artifact.getClassifier != null &&
+        !artifact.getClassifier.trim.isEmpty) {
       path.append("-").append(artifact.getClassifier)
     }
     if (artifact.getExtension.length > 0) {

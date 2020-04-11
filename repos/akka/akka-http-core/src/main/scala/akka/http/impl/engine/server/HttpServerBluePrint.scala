@@ -66,11 +66,9 @@ private[http] object HttpServerBluePrint {
     val theStack =
       userHandlerGuard(settings.pipeliningLimit) atop
         requestTimeoutSupport(settings.timeouts.requestTimeout) atop
-        requestPreparation(settings) atop
-        controller(settings, log) atop
+        requestPreparation(settings) atop controller(settings, log) atop
         parsingRendering(settings, log) atop
-        websocketSupport(settings, log) atop
-        tlsSupport
+        websocketSupport(settings, log) atop tlsSupport
 
     theStack.withAttributes(HttpAttributes.remoteAddress(remoteAddress))
   }
@@ -178,21 +176,20 @@ private[http] object HttpServerBluePrint {
                   _,
                   _) ⇒
               val effectiveMethod =
-                if (method == HttpMethods.HEAD && settings
-                      .transparentHeadRequests)
+                if (method == HttpMethods.HEAD &&
+                    settings.transparentHeadRequests)
                   HttpMethods.GET
                 else
                   method
               val effectiveHeaders =
                 if (settings.remoteAddressHeader && remoteAddress.isDefined)
-                  headers
-                    .`Remote-Address`(RemoteAddress(remoteAddress.get)) +: hdrs
+                  headers.`Remote-Address`(RemoteAddress(remoteAddress.get)) +:
+                    hdrs
                 else
                   hdrs
 
-              val entity = createEntity(entityCreator) withSizeLimit settings
-                .parserSettings
-                .maxContentLength
+              val entity = createEntity(entityCreator) withSizeLimit
+                settings.parserSettings.maxContentLength
               push(
                 out,
                 HttpRequest(
@@ -696,7 +693,8 @@ private[http] object HttpServerBluePrint {
             status: StatusCode,
             info: ErrorInfo): Unit = {
           logParsingError(
-            info withSummaryPrepended s"Illegal request, responding with status '$status'",
+            info withSummaryPrepended
+              s"Illegal request, responding with status '$status'",
             log,
             settings.parserSettings.errorLoggingVerbosity)
           val msg =

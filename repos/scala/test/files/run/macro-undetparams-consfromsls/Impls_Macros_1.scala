@@ -7,10 +7,10 @@ object Macros {
     import c.universe._
     reify {
       println(
-        "A = " + c
-          .Expr[String](
-            Literal(Constant(implicitly[c.WeakTypeTag[A]].toString)))
-          .splice)
+        "A = " +
+          c.Expr[String](
+              Literal(Constant(implicitly[c.WeakTypeTag[A]].toString)))
+            .splice)
       x.splice :: xs.splice
     }
   }
@@ -19,10 +19,10 @@ object Macros {
     import c.universe._
     reify {
       println(
-        "B = " + c
-          .Expr[String](
-            Literal(Constant(implicitly[c.WeakTypeTag[B]].toString)))
-          .splice)
+        "B = " +
+          c.Expr[String](
+              Literal(Constant(implicitly[c.WeakTypeTag[B]].toString)))
+            .splice)
       Nil
     }
   }

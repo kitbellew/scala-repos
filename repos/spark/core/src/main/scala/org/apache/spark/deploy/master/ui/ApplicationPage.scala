@@ -60,12 +60,13 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
       "Memory",
       "State",
       "Logs")
-    val allExecutors =
-      (app.executors.values ++ app.removedExecutors).toSet.toSeq
+    val allExecutors = (app.executors.values ++ app.removedExecutors)
+      .toSet
+      .toSeq
     // This includes executors that are either still running or have exited cleanly
     val executors = allExecutors.filter { exec =>
-      !ExecutorState.isFinished(exec.state) || exec.state == ExecutorState
-        .EXITED
+      !ExecutorState.isFinished(exec.state) ||
+      exec.state == ExecutorState.EXITED
     }
     val removedExecutors = allExecutors.diff(executors)
     val executorsTable = UIUtils
@@ -123,8 +124,7 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
       }
           {
         if (removedExecutors.nonEmpty) {
-          <h4> Removed Executors </h4> ++
-            removedExecutorsTable
+          <h4> Removed Executors </h4> ++ removedExecutorsTable
         }
       }
         </div>

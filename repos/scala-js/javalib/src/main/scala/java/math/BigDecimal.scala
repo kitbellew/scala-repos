@@ -526,7 +526,9 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
 
     val bits = java.lang.Double.doubleToLongBits(dVal)
     // Extracting the exponent, note that the bias is 1023
-    _scale = 1075 - ((bits >> 52) & 2047).toInt
+    _scale = 1075 - (
+      (bits >> 52) & 2047
+    ).toInt
     // Extracting the 52 bits of the mantissa.
     val mantissa =
       if (_scale == 1075)
@@ -987,9 +989,8 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
     val newScale: Long = this._scale.toLong - divisor._scale
     val lastPow = BigTenPows.length - 1
     val (integralValue, varScale) = {
-      if ((
-            divisor.approxPrecision() + newScale > this.approxPrecision() + 1L
-          ) || this.isZero) {
+      if ((divisor.approxPrecision() + newScale > this
+            .approxPrecision() + 1L) || this.isZero) {
         // If the divisor's integer part is greater than this's integer part,
         // the result must be zero with the appropriate scale
         (BigInteger.ZERO, 0L)
@@ -1271,7 +1272,9 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
         } else if (_bitLength < 64) {
           decimalDigitsInLong(_smallValue)
         } else {
-          val decimalDigits = 1 + ((_bitLength - 1) * Log2).toInt
+          val decimalDigits = 1 + (
+            (_bitLength - 1) * Log2
+          ).toInt
           // If after division the number isn't zero, there exists an additional digit
           if (getUnscaledValue.divide(powerOf10(decimalDigits)).signum() != 0)
             decimalDigits + 1
@@ -1425,12 +1428,10 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
   override def equals(x: Any): Boolean =
     x match {
       case that: BigDecimal =>
-        that._scale == this._scale && (
-          if (_bitLength < 64)
-            that._smallValue == this._smallValue
-          else
-            this._intVal == that._intVal
-        )
+        that._scale == this._scale && (if (_bitLength < 64)
+                                         that._smallValue == this._smallValue
+                                       else
+                                         this._intVal == that._intVal)
       case _ =>
         false
     }
@@ -1452,7 +1453,9 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
       _hashCode
     } else if (_bitLength < 64) {
       _hashCode = _smallValue.toInt
-      _hashCode = 33 * _hashCode + (_smallValue >> 32).toInt
+      _hashCode = 33 * _hashCode + (
+        _smallValue >> 32
+      ).toInt
       _hashCode = 17 * _hashCode + _scale
       _hashCode
     } else {
@@ -1532,7 +1535,10 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
           }
         } else {
           val delta = end - begin
-          val rem = (exponent0 % 3).toInt
+          val rem =
+            (
+              exponent0 % 3
+            ).toInt
           var res = intString
           val (e, b) = {
             if (rem != 0) {
@@ -1691,7 +1697,9 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
   override def floatValue(): Float = {
     /* A similar code like in doubleValue() could be repeated here,
      * but this simple implementation is quite efficient. */
-    val powerOfTwo = this._bitLength - (_scale / Log2).toLong
+    val powerOfTwo = this._bitLength - (
+      _scale / Log2
+    ).toLong
     val floatResult0: Float = signum()
     val floatResult: Float = {
       if (powerOfTwo < -149 || floatResult0 == 0.0f) // 'this' is very small
@@ -1706,7 +1714,9 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
 
   override def doubleValue(): Double = {
     val sign = signum()
-    val powerOfTwo = this._bitLength - (_scale / Log2).toLong
+    val powerOfTwo = this._bitLength - (
+      _scale / Log2
+    ).toLong
 
     if (powerOfTwo < -1074 || sign == 0) {
       // Cases which 'this' is very small
@@ -1786,11 +1796,9 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
           bits >>= (-exponent)
           // To test if after discard bits, a new carry is generated
           if (((bits & 3) == 3) ||
-              (
-                ((bits & 1) == 1) && (tempBits != 0) && (
-                  lowestSetBit < discardedSize
-                )
-              )) {
+              (((bits & 1) == 1) && (tempBits != 0) && (
+                lowestSetBit < discardedSize
+              ))) {
             bits += 1
           }
           exponent = 0
@@ -1999,7 +2007,9 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
     if (_precision > 0)
       _precision
     else
-      ((this._bitLength - 1) * Log2).toInt + 1
+      (
+        (this._bitLength - 1) * Log2
+      ).toInt + 1
   }
 
   private def getUnscaledValue(): BigInteger = {

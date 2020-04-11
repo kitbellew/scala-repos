@@ -22,8 +22,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
     for {
       _ <-
         db.run {
-          ts.schema.create >>
-            (ts ++= Seq(2, 3, 1, 5, 4))
+          ts.schema.create >> (ts ++= Seq(2, 3, 1, 5, 4))
         }
       q1 = ts.sortBy(_.a).map(_.a)
       f1 = db.run(q1.result)
@@ -89,9 +88,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
     val q1 = ts.sortBy(_.a).map(_.a)
 
     val p1 = db.stream {
-      ts.schema.create >>
-        (ts ++= Seq(2, 3, 1, 5, 4)) >>
-        q1.result
+      ts.schema.create >> (ts ++= Seq(2, 3, 1, 5, 4)) >> q1.result
     }
 
     for {
@@ -148,8 +145,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
     for {
       _ <-
         db.run {
-          ts.schema.create >>
-            (ts ++= Seq(2, 3, 1, 5, 4))
+          ts.schema.create >> (ts ++= Seq(2, 3, 1, 5, 4))
         }
       needFlatten =
         for (_ <- ts.result)
@@ -169,8 +165,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
     for {
       _ <-
         db.run {
-          ts.schema.create >>
-            (ts ++= Seq(2, 3, 1, 5, 4))
+          ts.schema.create >> (ts ++= Seq(2, 3, 1, 5, 4))
         }
       q1 = ts.sortBy(_.a).map(_.a).take(1)
       result <-
@@ -195,8 +190,7 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
     for {
       _ <-
         db.run {
-          ts.schema.create >>
-            (ts ++= Seq(2, 3, 1, 5, 4))
+          ts.schema.create >> (ts ++= Seq(2, 3, 1, 5, 4))
         }
       q1 = ts.sortBy(_.a).map(_.a).take(1)
       result <-

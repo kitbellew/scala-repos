@@ -13,13 +13,14 @@ private[gameSearch] final class DataForm {
 
   val search = Form(
     mapping(
-      "players" -> mapping(
-        "a" -> optional(nonEmptyText),
-        "b" -> optional(nonEmptyText),
-        "winner" -> optional(nonEmptyText),
-        "white" -> optional(nonEmptyText),
-        "black" -> optional(nonEmptyText)
-      )(SearchPlayer.apply)(SearchPlayer.unapply),
+      "players" ->
+        mapping(
+          "a" -> optional(nonEmptyText),
+          "b" -> optional(nonEmptyText),
+          "winner" -> optional(nonEmptyText),
+          "white" -> optional(nonEmptyText),
+          "black" -> optional(nonEmptyText)
+        )(SearchPlayer.apply)(SearchPlayer.unapply),
       "winnerColor" -> optional(numberIn(Query.winnerColors)),
       "perf" -> optional(numberIn(Query.perfs)),
       "source" -> optional(numberIn(Query.sources)),
@@ -33,21 +34,23 @@ private[gameSearch] final class DataForm {
       "aiLevelMax" -> optional(numberIn(Query.aiLevels)),
       "durationMin" -> optional(numberIn(Query.durations)),
       "durationMax" -> optional(numberIn(Query.durations)),
-      "clock" -> mapping(
-        "initMin" -> optional(numberIn(Query.clockInits)),
-        "initMax" -> optional(numberIn(Query.clockInits)),
-        "incMin" -> optional(numberIn(Query.clockIncs)),
-        "incMax" -> optional(numberIn(Query.clockIncs))
-      )(SearchClock.apply)(SearchClock.unapply),
+      "clock" ->
+        mapping(
+          "initMin" -> optional(numberIn(Query.clockInits)),
+          "initMax" -> optional(numberIn(Query.clockInits)),
+          "incMin" -> optional(numberIn(Query.clockIncs)),
+          "incMax" -> optional(numberIn(Query.clockIncs))
+        )(SearchClock.apply)(SearchClock.unapply),
       "dateMin" -> DataForm.dateField,
       "dateMax" -> DataForm.dateField,
       "status" -> optional(numberIn(Query.statuses)),
       "analysed" -> optional(number),
-      "sort" -> optional(
-        mapping(
-          "field" -> stringIn(Sorting.fields),
-          "order" -> stringIn(Sorting.orders))(SearchSort.apply)(
-          SearchSort.unapply))
+      "sort" ->
+        optional(
+          mapping(
+            "field" -> stringIn(Sorting.fields),
+            "order" -> stringIn(Sorting.orders))(SearchSort.apply)(
+            SearchSort.unapply))
     )(SearchData.apply)(SearchData.unapply)) fill SearchData()
 }
 

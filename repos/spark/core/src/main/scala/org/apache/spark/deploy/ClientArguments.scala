@@ -131,8 +131,8 @@ private[deploy] object ClientArguments {
   def isValidJarUrl(s: String): Boolean = {
     try {
       val uri = new URI(s)
-      uri.getScheme != null && uri
-        .getPath != null && uri.getPath.endsWith(".jar")
+      uri.getScheme != null && uri.getPath != null &&
+      uri.getPath.endsWith(".jar")
     } catch {
       case _: URISyntaxException =>
         false

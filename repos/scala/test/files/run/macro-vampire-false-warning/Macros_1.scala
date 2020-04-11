@@ -75,8 +75,7 @@ object Macros {
                         termNames.CONSTRUCTOR),
                       List())),
                   Literal(Constant(())))
-              )
-                +: fields
+              ) +: fields
             )
           ),
           ClassDef(

@@ -474,7 +474,8 @@ class ThreadPoolExecutorConfigurator(
                 ThreadPoolConfig.linkedBlockingQueue(size)
               case x ⇒
                 throw new IllegalArgumentException(
-                  "[%s] is not a valid task-queue-type [array|linked]!" format x)
+                  "[%s] is not a valid task-queue-type [array|linked]!" format
+                    x)
             } map { qf ⇒ (q: ThreadPoolConfigBuilder) ⇒
               q.setQueueFactory(qf)
             }

@@ -14,22 +14,20 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("exponential") {
     val backoffs = Backoff.exponential(1.seconds, 2) take 10
     assert(
-      backoffs.force.toSeq == (
-        0 until 10 map { i =>
+      backoffs.force.toSeq ==
+        (0 until 10 map { i =>
           (1 << i).seconds
-        }
-      ))
+        }))
   }
 
   test("exponential with upper limit") {
-    val backoffs = (Backoff.exponential(1.seconds, 2) take 5) ++ Backoff
-      .const(32.seconds)
+    val backoffs =
+      (Backoff.exponential(1.seconds, 2) take 5) ++ Backoff.const(32.seconds)
     assert(
-      (backoffs take 10).force.toSeq == (
-        0 until 10 map { i =>
+      (backoffs take 10).force.toSeq ==
+        (0 until 10 map { i =>
           math.min(1 << i, 32).seconds
-        }
-      ))
+        }))
   }
 
   test("exponential with maximum") {
@@ -142,11 +140,10 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val backoffs = Backoff.linear(2.seconds, 10.seconds) take 10
     assert(backoffs.head == 2.seconds)
     assert(
-      backoffs.tail.force.toSeq == (
-        1 until 10 map { i =>
+      backoffs.tail.force.toSeq ==
+        (1 until 10 map { i =>
           2.seconds + 10.seconds * i
-        }
-      ))
+        }))
   }
 
   test("linear with maximum") {
@@ -157,11 +154,10 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("const") {
     val backoffs = Backoff.const(10.seconds) take 10
     assert(
-      backoffs.force.toSeq == (
-        0 until 10 map { _ =>
+      backoffs.force.toSeq ==
+        (0 until 10 map { _ =>
           10.seconds
-        }
-      ))
+        }))
   }
 
   test("from function") {

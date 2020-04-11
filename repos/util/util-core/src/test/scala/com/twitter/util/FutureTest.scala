@@ -1912,7 +1912,10 @@ class FutureTest
 
     "return the first result" which {
       forAll(genLen, arbitrary[Boolean]) { (n, fail) =>
-        val ps = ((0 until n) map (_ => new Promise[Int])).toList
+        val ps =
+          (
+            (0 until n) map (_ => new Promise[Int])
+          ).toList
         assert(ps.map(_.waitqLength).sum == 0)
         val f = Future.select(ps)
         val i = Random.nextInt(ps.length)
@@ -1950,7 +1953,10 @@ class FutureTest
 
     "not accumulate listeners if not selected" in {
       forAll(genLen, arbitrary[Boolean]) { (n, fail) =>
-        val ps = ((0 until n) map (_ => new Promise[Int])).toList
+        val ps =
+          (
+            (0 until n) map (_ => new Promise[Int])
+          ).toList
         assert(ps.map(_.waitqLength).sum == 0)
         val f = Future.select(ps)
         assert(ps.map(_.waitqLength).sum == n)
@@ -1981,7 +1987,10 @@ class FutureTest
     }
 
     "propagate interrupts" in {
-      val fs = (0 until 10).map(_ => new HandledPromise[Int])
+      val fs =
+        (
+          0 until 10
+        ).map(_ => new HandledPromise[Int])
       Future.select(fs).raise(new Exception)
       assert(fs.forall(_.handled.isDefined))
     }
@@ -1995,7 +2004,10 @@ class FutureTest
 
     "return the first result" which {
       forAll(genLen, arbitrary[Boolean]) { (n, fail) =>
-        val ps = ((0 until n) map (_ => new Promise[Int])).toIndexedSeq
+        val ps =
+          (
+            (0 until n) map (_ => new Promise[Int])
+          ).toIndexedSeq
         assert(ps.map(_.waitqLength).sum == 0)
         val f = Future.selectIndex(ps)
         val i = Random.nextInt(ps.length)
@@ -2022,7 +2034,10 @@ class FutureTest
 
     "not accumulate listeners if not selected" in {
       forAll(genLen, arbitrary[Boolean]) { (n, fail) =>
-        val ps = ((0 until n) map (_ => new Promise[Int])).toIndexedSeq
+        val ps =
+          (
+            (0 until n) map (_ => new Promise[Int])
+          ).toIndexedSeq
         assert(ps.map(_.waitqLength).sum == 0)
         val f = Future.selectIndex(ps)
         assert(ps.map(_.waitqLength).sum == n)
@@ -2053,7 +2068,10 @@ class FutureTest
     }
 
     "propagate interrupts" in {
-      val fs = (0 until 10).map(_ => new HandledPromise[Int])
+      val fs =
+        (
+          0 until 10
+        ).map(_ => new HandledPromise[Int])
       Future.selectIndex(fs).raise(new Exception)
       assert(fs.forall(_.handled.isDefined))
     }

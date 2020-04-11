@@ -36,22 +36,24 @@ abstract class FormatInterpolator {
       case Applied(Select(Apply(_, parts), _), _, argss) =>
         val args = argss.flatten
         def badlyInvoked =
-          (parts.length != args.length + 1) && truly {
-            def because(s: String) = s"too $s arguments for interpolated string"
-            val (p, msg) =
-              if (parts.length == 0)
-                (c.prefix.tree.pos, "there are no parts")
-              else if (args.length + 1 < parts.length)
-                (
-                  if (args.isEmpty)
-                    c.enclosingPosition
-                  else
-                    args.last.pos,
-                  because("few"))
-              else
-                (args(parts.length - 1).pos, because("many"))
-            c.abort(p, msg)
-          }
+          (parts.length != args.length + 1) &&
+            truly {
+              def because(s: String) =
+                s"too $s arguments for interpolated string"
+              val (p, msg) =
+                if (parts.length == 0)
+                  (c.prefix.tree.pos, "there are no parts")
+                else if (args.length + 1 < parts.length)
+                  (
+                    if (args.isEmpty)
+                      c.enclosingPosition
+                    else
+                      args.last.pos,
+                    because("few"))
+                else
+                  (args(parts.length - 1).pos, because("many"))
+              c.abort(p, msg)
+            }
         if (badlyInvoked)
           c.macroApplication
         else
@@ -90,11 +92,12 @@ abstract class FormatInterpolator {
     // create a tmp val and add it to the ids passed to format
     def defval(value: Tree, tpe: Type): Unit = {
       val freshName = TermName(c.freshName("arg$"))
-      evals += ValDef(
-        Modifiers(),
-        freshName,
-        TypeTree(tpe) setPos value.pos.focus,
-        value) setPos value.pos
+      evals +=
+        ValDef(
+          Modifiers(),
+          freshName,
+          TypeTree(tpe) setPos value.pos.focus,
+          value) setPos value.pos
       ids += Ident(freshName)
     }
     // Append the nth part to the string builder, possibly prepending an omitted %s first.
@@ -327,25 +330,30 @@ abstract class FormatInterpolator {
       c.error(groupPosAt(g, i), msg)
 
     def noFlags =
-      flags.isEmpty || falsely {
-        errorAt(Flags, "flags not allowed")
-      }
+      flags.isEmpty ||
+        falsely {
+          errorAt(Flags, "flags not allowed")
+        }
     def noWidth =
-      width.isEmpty || falsely {
-        errorAt(Width, "width not allowed")
-      }
+      width.isEmpty ||
+        falsely {
+          errorAt(Width, "width not allowed")
+        }
     def noPrecision =
-      precision.isEmpty || falsely {
-        errorAt(Precision, "precision not allowed")
-      }
+      precision.isEmpty ||
+        falsely {
+          errorAt(Precision, "precision not allowed")
+        }
     def only_-(msg: String) = {
-      val badFlags = (flags getOrElse "") filterNot {
-        case '-' | '<' =>
-          true
-        case _ =>
-          false
-      }
-      badFlags.isEmpty || falsely {
+      val badFlags =
+        (flags getOrElse "") filterNot {
+          case '-' | '<' =>
+            true
+          case _ =>
+            false
+        }
+      badFlags.isEmpty ||
+      falsely {
         badFlag(badFlags(0), s"Only '-' allowed for $msg")
       }
     }
@@ -363,7 +371,8 @@ abstract class FormatInterpolator {
           groupPos(Index),
           "Argument index ignored if '<' flag is present")
       val okRange = index map (i => i > 0 && i <= argc) getOrElse true
-      okRange || hasFlag('<') || falsely {
+      okRange || hasFlag('<') ||
+      falsely {
         errorAt(Index, "Argument index out of range")
       }
     }
@@ -374,9 +383,11 @@ abstract class FormatInterpolator {
       *  A more complete message would be nice.
       */
     def pickAcceptable(arg: Tree, variants: Type*): Option[Type] =
-      variants find (arg.tpe <:< _) orElse (
-        variants find (c.inferImplicitView(arg, arg.tpe, _) != EmptyTree)
-      ) orElse Some(variants(0))
+      variants find
+        (arg.tpe <:< _) orElse
+        (variants find
+          (c.inferImplicitView(arg, arg.tpe, _) != EmptyTree)) orElse
+        Some(variants(0))
   }
   object Conversion {
     import SpecifierGroups.{Spec, CC}
@@ -447,9 +458,10 @@ abstract class FormatInterpolator {
     override def verify =
       op match {
         case "%" =>
-          super.verify && noPrecision && truly(
-            width foreach (_ =>
-              c.warning(groupPos(Width), "width ignored on literal")))
+          super.verify && noPrecision &&
+            truly(
+              width foreach
+                (_ => c.warning(groupPos(Width), "width ignored on literal")))
         case "n" =>
           noFlags && noWidth && noPrecision
       }
@@ -483,10 +495,11 @@ abstract class FormatInterpolator {
       def bad_+ =
         cond(cc) {
           case 'o' | 'x' | 'X' if hasAnyFlag(maybeOK) && !isBigInt =>
-            maybeOK filter hasFlag foreach (badf =>
-              badFlag(
-                badf,
-                s"only use '$badf' for BigInt conversions to o, x, X"))
+            maybeOK filter hasFlag foreach
+              (badf =>
+                badFlag(
+                  badf,
+                  s"only use '$badf' for BigInt conversions to o, x, X"))
             true
         }
       if (bad_+)
@@ -498,18 +511,18 @@ abstract class FormatInterpolator {
   class FloatingPointXn(val m: Match, val pos: Position, val argc: Int)
       extends Conversion {
     override def verify =
-      super.verify && (
-        cc match {
+      super.verify &&
+        (cc match {
           case 'a' | 'A' =>
             val badFlags = ",(" filter hasFlag
-            noPrecision && badFlags.isEmpty || falsely {
-              badFlags foreach (badf =>
-                badFlag(badf, s"'$badf' not allowed for a, A"))
+            noPrecision && badFlags.isEmpty ||
+            falsely {
+              badFlags foreach
+                (badf => badFlag(badf, s"'$badf' not allowed for a, A"))
             }
           case _ =>
             true
-        }
-      )
+        })
     def accepts(arg: Tree) =
       pickAcceptable(arg, DoubleTpe, FloatTpe, tagOfBigDecimal.tpe)
   }
@@ -530,8 +543,8 @@ abstract class FormatInterpolator {
             s"'$cc' doesn't seem to be a date or time conversion")
         }
     override def verify =
-      super.verify && hasCC && goodCC && noPrecision && only_-(
-        "date/time conversions")
+      super.verify && hasCC && goodCC && noPrecision &&
+        only_-("date/time conversions")
     def accepts(arg: Tree) =
       pickAcceptable(arg, LongTpe, tagOfCalendar.tpe, tagOfDate.tpe)
   }

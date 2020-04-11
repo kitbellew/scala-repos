@@ -41,12 +41,13 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       }
     }
     assert(
-      e.remoteInfo == RemoteInfo.Available(
-        None,
-        None,
-        Some(server.boundAddress),
-        Some(ClientId("B")),
-        traceId))
+      e.remoteInfo ==
+        RemoteInfo.Available(
+          None,
+          None,
+          Some(server.boundAddress),
+          Some(ClientId("B")),
+          traceId))
     Await.ready(server.close(), 1.second)
   }
 
@@ -84,12 +85,13 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
 
           // Make sure the remote info upstream addr is pulled from the local context
           assert(
-            e.remoteInfo == RemoteInfo.Available(
-              RemoteInfo.Upstream.addr,
-              Some(ClientId("A")),
-              Some(serverC.boundAddress),
-              Some(ClientId("C")),
-              traceId))
+            e.remoteInfo ==
+              RemoteInfo.Available(
+                RemoteInfo.Upstream.addr,
+                Some(ClientId("A")),
+                Some(serverC.boundAddress),
+                Some(ClientId("C")),
+                traceId))
 
           // The upstream addr isn't available for us to check, but we'll do a sanity check that it's not
           // Server C's address and is actually filled in.
@@ -154,12 +156,13 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       }
     }
     assert(
-      e.remoteInfo == RemoteInfo.Available(
-        None,
-        None,
-        Some(serverB.boundAddress),
-        Some(ClientId("B")),
-        traceId))
+      e.remoteInfo ==
+        RemoteInfo.Available(
+          None,
+          None,
+          Some(serverB.boundAddress),
+          Some(ClientId("B")),
+          traceId))
     Await.ready(serverC.close(), 1.second)
     Await.ready(serverB.close(), 1.second)
 

@@ -55,8 +55,8 @@ class MigrationTo0_11Test
 
     Then("only an empty root Group is created")
     val maybeGroup: Option[Group] = f.groupRepo.rootGroup().futureValue
-    maybeGroup
-      .map(_.copy(version = emptyGroup.version)) should be(Some(emptyGroup))
+    maybeGroup.map(_.copy(version = emptyGroup.version)) should
+      be(Some(emptyGroup))
     f.appRepo.allPathIds().futureValue should be('empty)
   }
 
@@ -71,8 +71,8 @@ class MigrationTo0_11Test
     Then("only an empty root Group is created")
     val maybeGroup: Option[Group] = Await
       .result(f.groupRepo.rootGroup(), 3.seconds)
-    maybeGroup
-      .map(_.copy(version = emptyGroup.version)) should be(Some(emptyGroup))
+    maybeGroup.map(_.copy(version = emptyGroup.version)) should
+      be(Some(emptyGroup))
     f.appRepo.allPathIds().futureValue should be('empty)
   }
 
@@ -95,13 +95,13 @@ class MigrationTo0_11Test
       .result(f.groupRepo.rootGroup(), 3.seconds)
     val appWithFullVersion = app
       .copy(versionInfo = app.versionInfo.withConfigChange(app.version))
-    maybeGroup should be(
-      Some(groupWithApp.copy(apps = Set(appWithFullVersion))))
+    maybeGroup should
+      be(Some(groupWithApp.copy(apps = Set(appWithFullVersion))))
 
     And("the same app has been stored in the appRepo")
     f.appRepo.allPathIds().futureValue should be(Seq(PathId("/test")))
-    f.appRepo.currentVersion(PathId("/test")).futureValue should be(
-      Some(appWithFullVersion))
+    f.appRepo.currentVersion(PathId("/test")).futureValue should
+      be(Some(appWithFullVersion))
     f.appRepo.listVersions(PathId("/test")).futureValue should have size (1)
   }
 
@@ -154,18 +154,15 @@ class MigrationTo0_11Test
 
     And("the same app has been stored in the appRepo")
     f.appRepo.allPathIds().futureValue should be(Seq(PathId("/test")))
-    f.appRepo.currentVersion(PathId("/test")).futureValue should be(
-      Some(correctedAppV3))
+    f.appRepo.currentVersion(PathId("/test")).futureValue should
+      be(Some(correctedAppV3))
     f.appRepo.listVersions(PathId("/test")).futureValue should have size (3)
-    f.appRepo
-      .app(PathId("/test"), correctedAppV1.version)
-      .futureValue should be(Some(correctedAppV1))
-    f.appRepo
-      .app(PathId("/test"), correctedAppV2.version)
-      .futureValue should be(Some(correctedAppV2))
-    f.appRepo
-      .app(PathId("/test"), correctedAppV3.version)
-      .futureValue should be(Some(correctedAppV3))
+    f.appRepo.app(PathId("/test"), correctedAppV1.version).futureValue should
+      be(Some(correctedAppV1))
+    f.appRepo.app(PathId("/test"), correctedAppV2.version).futureValue should
+      be(Some(correctedAppV2))
+    f.appRepo.app(PathId("/test"), correctedAppV3.version).futureValue should
+      be(Some(correctedAppV3))
   }
 
   test(
@@ -216,17 +213,14 @@ class MigrationTo0_11Test
 
     And("the same app has been stored in the appRepo")
     f.appRepo.allPathIds().futureValue should be(Seq(PathId("/test")))
-    f.appRepo.currentVersion(PathId("/test")).futureValue should be(
-      Some(correctedAppV3))
+    f.appRepo.currentVersion(PathId("/test")).futureValue should
+      be(Some(correctedAppV3))
     f.appRepo.listVersions(PathId("/test")).futureValue should have size (3)
-    f.appRepo
-      .app(PathId("/test"), correctedAppV1.version)
-      .futureValue should be(Some(correctedAppV1))
-    f.appRepo
-      .app(PathId("/test"), correctedAppV2.version)
-      .futureValue should be(Some(correctedAppV2))
-    f.appRepo
-      .app(PathId("/test"), correctedAppV3.version)
-      .futureValue should be(Some(correctedAppV3))
+    f.appRepo.app(PathId("/test"), correctedAppV1.version).futureValue should
+      be(Some(correctedAppV1))
+    f.appRepo.app(PathId("/test"), correctedAppV2.version).futureValue should
+      be(Some(correctedAppV2))
+    f.appRepo.app(PathId("/test"), correctedAppV3.version).futureValue should
+      be(Some(correctedAppV3))
   }
 }

@@ -60,7 +60,8 @@ class MongoPasswordField[OwnerType <: BsonRecord[OwnerType]](
   override def set_!(in: Box[Password]): Box[Password] = {
     validatorValue = in
     in.map(p =>
-      if (p.salt.length == 0) // only encrypt the password if it hasn't already been encrypted
+      if (p.salt.length ==
+            0) // only encrypt the password if it hasn't already been encrypted
         Password(MongoPasswordField.encrypt(p.pwd, salt_i.get), salt_i.get)
       else
         p)

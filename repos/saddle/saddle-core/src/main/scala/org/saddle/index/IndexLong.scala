@@ -117,15 +117,16 @@ class IndexLong(keys: Vec[Long]) extends Index[Long] {
   override def equals(o: Any): Boolean = {
     o match {
       case rv: IndexInt =>
-        (this eq rv) || (this.length == rv.length) && {
-          var i = 0
-          var eq = true
-          while (eq && i < this.length) {
-            eq &&= raw(i) == rv.raw(i)
-            i += 1
+        (this eq rv) ||
+          (this.length == rv.length) && {
+            var i = 0
+            var eq = true
+            while (eq && i < this.length) {
+              eq &&= raw(i) == rv.raw(i)
+              i += 1
+            }
+            eq
           }
-          eq
-        }
       case _ =>
         super.equals(o)
     }

@@ -39,9 +39,8 @@ abstract class TestAllResolveTestBase
           val resolve = ref.resolve()
           assertNotNull(
             "Failed on reference: " + ref.getText + ". Reference Range: (" +
-              ref.getTextRange.getStartOffset + ", " + ref
-              .getTextRange
-              .getEndOffset + ")",
+              ref.getTextRange.getStartOffset + ", " +
+              ref.getTextRange.getEndOffset + ")",
             resolve)
           super.visitReference(ref)
         }

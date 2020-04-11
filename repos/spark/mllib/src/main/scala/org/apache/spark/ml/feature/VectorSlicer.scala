@@ -151,8 +151,7 @@ final class VectorSlicer(override val uid: String)
     val numDistinctFeatures = (nameFeatures ++ indFeatures).distinct.length
     lazy val errMsg = "VectorSlicer requires indices and names to be disjoint" +
       s" sets of features, but they overlap." +
-      s" indices: ${indFeatures.mkString("[", ",", "]")}." +
-      s" names: " +
+      s" indices: ${indFeatures.mkString("[", ",", "]")}." + s" names: " +
       nameFeatures
         .zip($(names))
         .map {

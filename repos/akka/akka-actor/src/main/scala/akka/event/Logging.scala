@@ -84,8 +84,9 @@ trait LoggingBus extends ActorEventBus {
           "unknown akka.stdout-loglevel " + config.StdoutLogLevel))
       ErrorLevel
     }
-    AllLogLevels filter (level >= _) foreach (l ⇒
-      subscribe(StandardOutLogger, classFor(l)))
+    AllLogLevels filter
+      (level >= _) foreach
+      (l ⇒ subscribe(StandardOutLogger, classFor(l)))
     guard.withGuard {
       loggers :+= StandardOutLogger
       _logLevel = level
@@ -232,12 +233,14 @@ trait LoggingBus extends ActorEventBus {
             Warning(
               logName,
               this.getClass,
-              "Logger " + name + " did not respond within " + timeout + " to InitializeLogger(bus)"))
+              "Logger " + name + " did not respond within " + timeout +
+                " to InitializeLogger(bus)"))
           "[TIMEOUT]"
       }
     if (response != LoggerInitialized)
       throw new LoggerInitializationException(
-        "Logger " + name + " did not respond with LoggerInitialized, sent instead " + response)
+        "Logger " + name +
+          " did not respond with LoggerInitialized, sent instead " + response)
     AllLogLevels filter (level >= _) foreach (l ⇒ subscribe(actor, classFor(l)))
     publish(Debug(logName, this.getClass, "logger " + name + " started"))
     actor

@@ -96,10 +96,11 @@ trait VFSColumnarTableModule
               }
 
             logger.debug("Appending from projection: " + proj)
-            acc ++ StreamT.wrapEffect(
-              constraints map { c =>
-                proj.getBlockStream(c)
-              })
+            acc ++
+              StreamT.wrapEffect(
+                constraints map { c =>
+                  proj.getBlockStream(c)
+                })
           }
 
         Table(stream, ExactSize(length))

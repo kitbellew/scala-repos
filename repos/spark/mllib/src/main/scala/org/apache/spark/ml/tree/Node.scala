@@ -199,8 +199,8 @@ final class InternalNode private[ml] (
   override private[tree] def subtreeToString(indentFactor: Int = 0): String = {
     val prefix: String = " " * indentFactor
     prefix + s"If (${InternalNode.splitToString(split, left = true)})\n" +
-      leftChild.subtreeToString(indentFactor + 1) +
-      prefix + s"Else (${InternalNode.splitToString(split, left = false)})\n" +
+      leftChild.subtreeToString(indentFactor + 1) + prefix +
+      s"Else (${InternalNode.splitToString(split, left = false)})\n" +
       rightChild.subtreeToString(indentFactor + 1)
   }
 
@@ -211,8 +211,8 @@ final class InternalNode private[ml] (
   override private[ml] def toOld(id: Int): OldNode = {
     assert(
       id.toLong * 2 < Int.MaxValue,
-      "Decision Tree could not be converted from new to old API"
-        + " since the old API does not support deep trees.")
+      "Decision Tree could not be converted from new to old API" +
+        " since the old API does not support deep trees.")
     new OldNode(
       id,
       new OldPredict(prediction, prob = impurityStats.prob(prediction)),

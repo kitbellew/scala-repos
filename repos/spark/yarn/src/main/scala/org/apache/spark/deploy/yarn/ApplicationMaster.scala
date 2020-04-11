@@ -178,9 +178,8 @@ private[spark] class ApplicationMaster(
       val priority = ShutdownHookManager.SPARK_CONTEXT_SHUTDOWN_PRIORITY - 1
       ShutdownHookManager.addShutdownHook(priority) { () =>
         val maxAppAttempts = client.getMaxRegAttempts(sparkConf, yarnConf)
-        val isLastAttempt = client
-          .getAttemptId()
-          .getAttemptId() >= maxAppAttempts
+        val isLastAttempt = client.getAttemptId().getAttemptId() >=
+          maxAppAttempts
 
         if (!finished) {
           // The default state of ApplicationMaster is failed if it is invoked by shut down hook.
@@ -196,8 +195,8 @@ private[spark] class ApplicationMaster(
 
         if (!unregistered) {
           // we only want to unregister if we don't want the RM to retry
-          if (finalStatus == FinalApplicationStatus
-                .SUCCEEDED || isLastAttempt) {
+          if (finalStatus == FinalApplicationStatus.SUCCEEDED ||
+              isLastAttempt) {
             unregister(finalStatus, finalMsg)
             cleanupStagingDir(fs)
           }
@@ -285,13 +284,13 @@ private[spark] class ApplicationMaster(
         finalStatus = status
         finalMsg = msg
         finished = true
-        if (!inShutdown && Thread
-              .currentThread() != reporterThread && reporterThread != null) {
+        if (!inShutdown && Thread.currentThread() != reporterThread &&
+            reporterThread != null) {
           logDebug("shutting down reporter thread")
           reporterThread.interrupt()
         }
-        if (!inShutdown && Thread
-              .currentThread() != userClassThread && userClassThread != null) {
+        if (!inShutdown && Thread.currentThread() != userClassThread &&
+            userClassThread != null) {
           logDebug("shutting down user thread")
           userClassThread.interrupt()
         }
@@ -458,8 +457,8 @@ private[spark] class ApplicationMaster(
                     FinalApplicationStatus.FAILED,
                     ApplicationMaster.EXIT_REPORTER_FAILURE,
                     e.getMessage)
-                } else if (!NonFatal(
-                             e) || failureCount >= reporterMaxFailures) {
+                } else if (!NonFatal(e) ||
+                           failureCount >= reporterMaxFailures) {
                   finish(
                     FinalApplicationStatus.FAILED,
                     ApplicationMaster.EXIT_REPORTER_FAILURE,
@@ -476,12 +475,12 @@ private[spark] class ApplicationMaster(
               val numPendingAllocate = allocator.getPendingAllocate.size
               allocatorLock.synchronized {
                 val sleepInterval =
-                  if (numPendingAllocate > 0 || allocator
-                        .getNumPendingLossReasonRequests > 0) {
+                  if (numPendingAllocate > 0 ||
+                      allocator.getNumPendingLossReasonRequests > 0) {
                     val currentAllocationInterval = math
                       .min(heartbeatInterval, nextAllocationInterval)
-                    nextAllocationInterval =
-                      currentAllocationInterval * 2 // avoid overflow
+                    nextAllocationInterval = currentAllocationInterval *
+                      2 // avoid overflow
                     currentAllocationInterval
                   } else {
                     nextAllocationInterval = initialAllocationInterval
@@ -536,8 +535,8 @@ private[spark] class ApplicationMaster(
       val totalWaitTime = sparkConf.get(AM_MAX_WAIT_TIME)
       val deadline = System.currentTimeMillis() + totalWaitTime
 
-      while (sparkContextRef.get() == null && System
-               .currentTimeMillis < deadline && !finished) {
+      while (sparkContextRef.get() == null &&
+             System.currentTimeMillis < deadline && !finished) {
         logInfo("Waiting for spark context initialization ... ")
         sparkContextRef.wait(10000L)
       }
@@ -546,8 +545,8 @@ private[spark] class ApplicationMaster(
       if (sparkContext == null) {
         logError(
           (
-            "SparkContext did not initialize after waiting for %d ms. Please check earlier"
-              + " log output for errors. Failing the application."
+            "SparkContext did not initialize after waiting for %d ms. Please check earlier" +
+              " log output for errors. Failing the application."
           ).format(totalWaitTime))
       }
       sparkContext

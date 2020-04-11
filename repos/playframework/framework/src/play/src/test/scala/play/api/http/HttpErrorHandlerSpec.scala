@@ -42,12 +42,10 @@ object HttpErrorHandlerSpec extends Specification {
           .status must_== 418
       }
       "refuse to render something that isn't a client error" in {
-        await(errorHandler.onClientError(FakeRequest(), 500))
-          .header
-          .status must throwAn[IllegalArgumentException]
-        await(errorHandler.onClientError(FakeRequest(), 399))
-          .header
-          .status must throwAn[IllegalArgumentException]
+        await(errorHandler.onClientError(FakeRequest(), 500)).header.status must
+          throwAn[IllegalArgumentException]
+        await(errorHandler.onClientError(FakeRequest(), 399)).header.status must
+          throwAn[IllegalArgumentException]
       }
       "render a server error" in {
         await(errorHandler.onServerError(FakeRequest(), new RuntimeException()))
@@ -57,17 +55,22 @@ object HttpErrorHandlerSpec extends Specification {
     }
 
     "work if a scala handler is defined" in {
-      "in dev mode" in sharedSpecs(
-        handler(classOf[DefaultHttpErrorHandler].getName, Mode.Dev))
-      "in prod mode" in sharedSpecs(
-        handler(classOf[DefaultHttpErrorHandler].getName, Mode.Prod))
+      "in dev mode" in
+        sharedSpecs(handler(classOf[DefaultHttpErrorHandler].getName, Mode.Dev))
+      "in prod mode" in
+        sharedSpecs(
+          handler(classOf[DefaultHttpErrorHandler].getName, Mode.Prod))
     }
 
     "work if a java handler is defined" in {
-      "in dev mode" in sharedSpecs(
-        handler(classOf[play.http.DefaultHttpErrorHandler].getName, Mode.Dev))
-      "in prod mode" in sharedSpecs(
-        handler(classOf[play.http.DefaultHttpErrorHandler].getName, Mode.Prod))
+      "in dev mode" in
+        sharedSpecs(
+          handler(classOf[play.http.DefaultHttpErrorHandler].getName, Mode.Dev))
+      "in prod mode" in
+        sharedSpecs(
+          handler(
+            classOf[play.http.DefaultHttpErrorHandler].getName,
+            Mode.Prod))
     }
 
     "work with a custom scala handler" in {
@@ -90,8 +93,8 @@ object HttpErrorHandlerSpec extends Specification {
     val env = Environment.simple(mode = mode)
     Fakes
       .injectorFromBindings(
-        HttpErrorHandler.bindingsFromConfiguration(env, config)
-          ++ Seq(
+        HttpErrorHandler.bindingsFromConfiguration(env, config) ++
+          Seq(
             BindingKey(classOf[Router]).to(Router.empty),
             BindingKey(classOf[OptionalSourceMapper])
               .to(new OptionalSourceMapper(None)),

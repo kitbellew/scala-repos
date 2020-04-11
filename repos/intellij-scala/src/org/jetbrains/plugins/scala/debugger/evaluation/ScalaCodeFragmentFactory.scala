@@ -108,8 +108,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
     if (contextElement.isInstanceOf[PsiCodeBlock]) {
       return contextElement
         .getContext != null && contextElement.getContext.getContext != null &&
-        contextElement.getContext.getContext.getLanguage == ScalaFileType
-          .SCALA_LANGUAGE
+        contextElement.getContext.getContext.getLanguage ==
+        ScalaFileType.SCALA_LANGUAGE
     }
     if (contextElement == null)
       return false
@@ -176,8 +176,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
     val names = markupMap.collect {
       case (obj: ObjectReference, markup: ValueMarkup)
           if StringUtil.isJavaIdentifier(markup.getText) =>
-        val labelName = markup.getText + CodeFragmentFactoryContextWrapper
-          .DEBUG_LABEL_SUFFIX
+        val labelName = markup.getText +
+          CodeFragmentFactoryContextWrapper.DEBUG_LABEL_SUFFIX
         reverseMap.put(labelName, obj)
         labelName
     }

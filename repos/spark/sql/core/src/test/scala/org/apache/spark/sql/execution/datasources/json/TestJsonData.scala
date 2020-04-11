@@ -44,7 +44,8 @@ private[json] trait TestJsonData {
           """{"num_num_1":21474836470, "num_num_2":92233720368547758070, "num_num_3": 100,
           "num_bool":false, "num_str":"str1", "str_bool":false}""" ::
           """{"num_num_1":21474836570, "num_num_2":1.1, "num_num_3": 21474836470,
-          "num_bool":null, "num_str":92233720368547758070, "str_bool":null}""" :: Nil)
+          "num_bool":null, "num_str":92233720368547758070, "str_bool":null}""" ::
+          Nil)
 
   def jsonNullStruct: RDD[String] =
     sqlContext
@@ -66,7 +67,8 @@ private[json] trait TestJsonData {
           """{"num_struct":null, "str_array":"str",
           "array":[4, 5, 6], "struct_array":[7, 8, 9], "struct": {"field":null}}""" ::
           """{"num_struct":{}, "str_array":["str1", "str2", 33],
-          "array":[7], "struct_array":{"field": true}, "struct": {"field": "str"}}""" :: Nil)
+          "array":[7], "struct_array":{"field": true}, "struct": {"field": "str"}}""" ::
+          Nil)
 
   def arrayElementTypeConflict: RDD[String] =
     sqlContext
@@ -81,11 +83,8 @@ private[json] trait TestJsonData {
     sqlContext
       .sparkContext
       .parallelize(
-        """{"a":true}""" ::
-          """{"b":21474836470}""" ::
-          """{"c":[33, 44]}""" ::
-          """{"d":{"field":true}}""" ::
-          """{"e":"str"}""" :: Nil)
+        """{"a":true}""" :: """{"b":21474836470}""" :: """{"c":[33, 44]}""" ::
+          """{"d":{"field":true}}""" :: """{"e":"str"}""" :: Nil)
 
   def complexFieldAndType1: RDD[String] =
     sqlContext
@@ -165,10 +164,8 @@ private[json] trait TestJsonData {
     sqlContext
       .sparkContext
       .parallelize(
-        """{"map": {"a": 1}}""" ::
-          """{"map": {"b": 2}}""" ::
-          """{"map": {"c": 3}}""" ::
-          """{"map": {"c": 1, "d": 4}}""" ::
+        """{"map": {"a": 1}}""" :: """{"map": {"b": 2}}""" ::
+          """{"map": {"c": 3}}""" :: """{"map": {"c": 1, "d": 4}}""" ::
           """{"map": {"e": null}}""" :: Nil)
 
   def mapType2: RDD[String] =
@@ -195,42 +192,30 @@ private[json] trait TestJsonData {
     sqlContext
       .sparkContext
       .parallelize(
-        """[{"a":"str_a_1"}]""" ::
-          """[{"a":"str_a_2"}, {"b":"str_b_3"}]""" ::
-          """{"b":"str_b_4", "a":"str_a_4", "c":"str_c_4"}""" ::
-          """[]""" :: Nil)
+        """[{"a":"str_a_1"}]""" :: """[{"a":"str_a_2"}, {"b":"str_b_3"}]""" ::
+          """{"b":"str_b_4", "a":"str_a_4", "c":"str_c_4"}""" :: """[]""" ::
+          Nil)
 
   def corruptRecords: RDD[String] =
     sqlContext
       .sparkContext
       .parallelize(
-        """{""" ::
-          """""" ::
-          """{"a":1, b:2}""" ::
-          """{"a":{, b:3}""" ::
-          """{"b":"str_b_4", "a":"str_a_4", "c":"str_c_4"}""" ::
-          """]""" :: Nil)
+        """{""" :: """""" :: """{"a":1, b:2}""" :: """{"a":{, b:3}""" ::
+          """{"b":"str_b_4", "a":"str_a_4", "c":"str_c_4"}""" :: """]""" :: Nil)
 
   def additionalCorruptRecords: RDD[String] =
     sqlContext
       .sparkContext
       .parallelize(
-        """{"dummy":"test"}""" ::
-          """[1,2,3]""" ::
-          """":"test", "a":1}""" ::
-          """42""" ::
-          """     ","ian":"test"}""" :: Nil)
+        """{"dummy":"test"}""" :: """[1,2,3]""" :: """":"test", "a":1}""" ::
+          """42""" :: """     ","ian":"test"}""" :: Nil)
 
   def emptyRecords: RDD[String] =
     sqlContext
       .sparkContext
       .parallelize(
-        """{""" ::
-          """""" ::
-          """{"a": {}}""" ::
-          """{"a": {"b": {}}}""" ::
-          """{"b": [{"c": {}}]}""" ::
-          """]""" :: Nil)
+        """{""" :: """""" :: """{"a": {}}""" :: """{"a": {"b": {}}}""" ::
+          """{"b": [{"c": {}}]}""" :: """]""" :: Nil)
 
   def timestampAsLong: RDD[String] =
     sqlContext.sparkContext.parallelize("""{"ts":1451732645}""" :: Nil)
@@ -238,9 +223,7 @@ private[json] trait TestJsonData {
   def arrayAndStructRecords: RDD[String] =
     sqlContext
       .sparkContext
-      .parallelize(
-        """{"a": {"b": 1}}""" ::
-          """{"a": []}""" :: Nil)
+      .parallelize("""{"a": {"b": 1}}""" :: """{"a": []}""" :: Nil)
 
   lazy val singleRow: RDD[String] = sqlContext
     .sparkContext

@@ -40,7 +40,8 @@ class Plugin(val global: Global) extends NscPlugin {
           Literal(Constant("macroEngine")),
           Literal(
             Constant(
-              "vxxx (implemented in the incompatibleMacroEngine plugin)"))) :: others)
+              "vxxx (implemented in the incompatibleMacroEngine plugin)"))) ::
+          others)
       ddef
         .symbol
         .setAnnotations(

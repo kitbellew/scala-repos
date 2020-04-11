@@ -10,34 +10,34 @@ class WSRequestSpec extends Specification {
 
   "WSRequestHolder" should {
 
-    "give the full URL with the query string" in new WithApplication() {
+    "give the full URL with the query string" in
+      new WithApplication() {
 
-      val ws = app.injector.instanceOf[WSClient]
+        val ws = app.injector.instanceOf[WSClient]
 
-      ws.url("http://foo.com").uri.toString must equalTo("http://foo.com")
+        ws.url("http://foo.com").uri.toString must equalTo("http://foo.com")
 
-      ws.url("http://foo.com")
-        .withQueryString("bar" -> "baz")
-        .uri
-        .toString must equalTo("http://foo.com?bar=baz")
+        ws.url("http://foo.com")
+          .withQueryString("bar" -> "baz")
+          .uri
+          .toString must equalTo("http://foo.com?bar=baz")
 
-      ws.url("http://foo.com")
-        .withQueryString("bar" -> "baz", "bar" -> "bah")
-        .uri
-        .toString must equalTo("http://foo.com?bar=bah&bar=baz")
+        ws.url("http://foo.com")
+          .withQueryString("bar" -> "baz", "bar" -> "bah")
+          .uri
+          .toString must equalTo("http://foo.com?bar=bah&bar=baz")
 
-    }
+      }
 
-    "correctly URL-encode the query string part" in new WithApplication() {
+    "correctly URL-encode the query string part" in
+      new WithApplication() {
 
-      val ws = app.injector.instanceOf[WSClient]
+        val ws = app.injector.instanceOf[WSClient]
 
-      ws.url("http://foo.com")
-        .withQueryString("&" -> "=")
-        .uri
-        .toString must equalTo("http://foo.com?%26=%3D")
+        ws.url("http://foo.com").withQueryString("&" -> "=").uri.toString must
+          equalTo("http://foo.com?%26=%3D")
 
-    }
+      }
 
   }
 

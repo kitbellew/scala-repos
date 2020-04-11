@@ -255,7 +255,8 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
         case false =>
           list.size == 1
       }
-    isListSizeCorrect && list
+    isListSizeCorrect &&
+    list
       .asScala
       .forall(
         secure match {

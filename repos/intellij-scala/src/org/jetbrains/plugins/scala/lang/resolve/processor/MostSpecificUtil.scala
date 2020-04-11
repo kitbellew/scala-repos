@@ -123,10 +123,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       applicable.map(r => {
         var callByName = false
         def checkCallByName(clauses: Seq[ScParameterClause]): Unit = {
-          if (clauses
-                .length > 0 && clauses(0).parameters.length == 1 && clauses(0)
-                .parameters(0)
-                .isCallByNameParameter) {
+          if (clauses.length > 0 && clauses(0).parameters.length == 1 &&
+              clauses(0).parameters(0).isCallByNameParameter) {
             callByName = true
           }
         }
@@ -254,23 +252,16 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
             calcParams(t2, existential = false)) match {
             case (Left(p1), Left(p2)) =>
               var (params1, params2) = (p1, p2)
-              if ((
-                    t1.isInstanceOf[ScTypePolymorphicType] && t2
-                      .isInstanceOf[ScTypePolymorphicType] ||
-                    (
-                      !(
-                        m1.isInstanceOf[ScFunction] || m1
-                          .isInstanceOf[ScFun] || m1
-                          .isInstanceOf[ScPrimaryConstructor]
-                      ) ||
-                      !(
-                        m2.isInstanceOf[ScFunction] || m2
-                          .isInstanceOf[ScFun] || m2
-                          .isInstanceOf[ScPrimaryConstructor]
-                      )
-                    )
-                  ) &&
-                  (lastRepeated(params1) ^ lastRepeated(params2)))
+              if ((t1.isInstanceOf[ScTypePolymorphicType] &&
+                  t2.isInstanceOf[ScTypePolymorphicType] ||
+                  (!(
+                    m1.isInstanceOf[ScFunction] || m1.isInstanceOf[ScFun] ||
+                      m1.isInstanceOf[ScPrimaryConstructor]
+                  ) ||
+                  !(
+                    m2.isInstanceOf[ScFunction] || m2.isInstanceOf[ScFun] ||
+                      m2.isInstanceOf[ScPrimaryConstructor]
+                  ))) && (lastRepeated(params1) ^ lastRepeated(params2)))
                 return lastRepeated(
                   params2
                 ) //todo: this is hack!!! see SCL-3846, SCL-4048
@@ -359,9 +350,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
                       typeParams.find(tp =>
-                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
-                          tpt.name, tpt.getId
-                        )) match {
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) ==
+                          (tpt.name, tpt.getId)) match {
                         case None =>
                           (true, tpt)
                         case _ =>

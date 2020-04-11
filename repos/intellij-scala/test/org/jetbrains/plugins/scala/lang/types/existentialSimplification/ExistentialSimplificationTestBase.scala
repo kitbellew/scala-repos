@@ -90,14 +90,13 @@ abstract class ExistentialSimplificationTestBase
       case Failure(msg, elem) =>
         assert(
           assertion = false,
-          message = msg + " :: " + (
-            elem match {
+          message = msg + " :: " +
+            (elem match {
               case Some(x) =>
                 x.getText
               case None =>
                 "empty element"
-            }
-          ))
+            }))
     }
   }
 }

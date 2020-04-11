@@ -63,9 +63,8 @@ case class VersionedSegmentFormat(formats: Map[Int, SegmentFormat])
         } getOrElse {
           Failure(
             new IOException(
-              "Invalid version found. Expected one of %s, found %d." format (
-                formats.keys mkString ",", version
-              )))
+              "Invalid version found. Expected one of %s, found %d." format
+                (formats.keys mkString ",", version)))
         }
       }
     }
@@ -78,9 +77,8 @@ case class VersionedSegmentFormat(formats: Map[Int, SegmentFormat])
         } getOrElse {
           Failure(
             new IOException(
-              "Invalid version found. Expected one of %s, found %d." format (
-                formats.keys mkString ",", version
-              )))
+              "Invalid version found. Expected one of %s, found %d." format
+                (formats.keys mkString ",", version)))
         }
       }
     }

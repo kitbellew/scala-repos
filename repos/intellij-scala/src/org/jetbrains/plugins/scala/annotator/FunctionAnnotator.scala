@@ -106,10 +106,8 @@ trait FunctionAnnotator {
       val unitFunction = !hasAssign || unitType
 
       val explicitReturn = usage.isInstanceOf[ScReturnStmt]
-      val emptyReturn = explicitReturn && usage
-        .asInstanceOf[ScReturnStmt]
-        .expr
-        .isEmpty
+      val emptyReturn = explicitReturn &&
+        usage.asInstanceOf[ScReturnStmt].expr.isEmpty
       val anyReturn = usageType == AnyType
       val underCatchBlock = usage.getContext.isInstanceOf[ScCatchBlock]
 
@@ -117,8 +115,8 @@ trait FunctionAnnotator {
         needsTypeAnnotation()
       } else if (unitFunction && explicitReturn && !emptyReturn) {
         redundantReturnExpression()
-      } else if (!unitFunction && !anyReturn && !underCatchBlock && !usageType
-                   .conforms(functionType)) {
+      } else if (!unitFunction && !anyReturn && !underCatchBlock &&
+                 !usageType.conforms(functionType)) {
         typeMismatch()
       }
 

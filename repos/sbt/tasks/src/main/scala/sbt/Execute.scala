@@ -84,8 +84,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   import State.{Pending, Running, Calling, Done}
 
   def dump: String =
-    "State: " + state
-      .toString + "\n\nResults: " + results + "\n\nCalls: " + callers + "\n\n"
+    "State: " + state.toString + "\n\nResults: " + results + "\n\nCalls: " +
+      callers + "\n\n"
 
   def run[T](root: A[T])(implicit strategy: Strategy): Result[T] =
     try {
@@ -114,7 +114,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
           snapshotCycleCheck()
           assert(
             false,
-            "Internal task engine error: nothing running.  This usually indicates a cycle in tasks.\n  Calling tasks (internal task engine state):\n" + dumpCalling
+            "Internal task engine error: nothing running.  This usually indicates a cycle in tasks.\n  Calling tasks (internal task engine state):\n" +
+              dumpCalling
           )
         }
       }
@@ -401,12 +402,12 @@ private[sbt] final class Execute[A[_] <: AnyRef](
 
   def topologicalSort(node: A[_]): Seq[A[_]] = {
     val seen = IDSet.create[A[_]]
-    def visit(n: A[_]): List[A[_]] =
-      (seen process n)(List[A[_]]()) {
-        node :: (List[A[_]]() /: dependencies(n)) { (ss, dep) =>
+    def visit(n: A[_]): List[A[_]] = (seen process n)(List[A[_]]()) {
+      node ::
+        (List[A[_]]() /: dependencies(n)) { (ss, dep) =>
           visit(dep) ::: ss
         }
-      }
+    }
 
     visit(node).reverse
   }
@@ -427,10 +428,9 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     if (node eq target)
       cyclic(node, target, "Cannot call self")
     val all = IDSet.create[A[T]]
-    def allCallers(n: A[T]): Unit =
-      (all process n)(()) {
-        callers.get(n).toList.flatten.foreach(allCallers)
-      }
+    def allCallers(n: A[T]): Unit = (all process n)(()) {
+      callers.get(n).toList.flatten.foreach(allCallers)
+    }
     allCallers(node)
     if (all contains target)
       cyclic(node, target, "Cyclic reference")

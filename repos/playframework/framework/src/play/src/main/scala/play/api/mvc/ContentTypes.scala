@@ -296,9 +296,8 @@ case class RawBuffer(
   }
 
   override def toString = {
-    "RawBuffer(inMemory=" + Option(inMemory)
-      .map(_.size)
-      .orNull + ", backedByTemporaryFile=" + backedByTemporaryFile + ")"
+    "RawBuffer(inMemory=" + Option(inMemory).map(_.size).orNull +
+      ", backedByTemporaryFile=" + backedByTemporaryFile + ")"
   }
 
 }
@@ -453,8 +452,8 @@ trait BodyParsers {
       when(
         _.contentType
           .exists(m =>
-            m.equalsIgnoreCase("text/json") || m
-              .equalsIgnoreCase("application/json")),
+            m.equalsIgnoreCase("text/json") ||
+              m.equalsIgnoreCase("application/json")),
         tolerantJson(maxLength),
         createBadResult(
           "Expecting text/json or application/json body",
@@ -591,11 +590,8 @@ trait BodyParsers {
         _.contentType
           .exists { t =>
             val tl = t.toLowerCase(Locale.ENGLISH)
-            tl.startsWith("text/xml") || tl
-              .startsWith("application/xml") || ApplicationXmlMatcher
-              .pattern
-              .matcher(tl)
-              .matches()
+            tl.startsWith("text/xml") || tl.startsWith("application/xml") ||
+            ApplicationXmlMatcher.pattern.matcher(tl).matches()
           },
         tolerantXml(maxLength),
         createBadResult("Expecting xml body", UNSUPPORTED_MEDIA_TYPE)
@@ -689,8 +685,9 @@ trait BodyParsers {
       */
     def default(maxLength: Option[Long]): BodyParser[AnyContent] =
       using { request =>
-        if (request.method == HttpVerbs.PATCH || request
-              .method == HttpVerbs.POST || request.method == HttpVerbs.PUT) {
+        if (request.method == HttpVerbs.PATCH ||
+            request.method == HttpVerbs.POST ||
+            request.method == HttpVerbs.PUT) {
           anyContent(maxLength)
         } else {
           ignore(AnyContentAsEmpty)

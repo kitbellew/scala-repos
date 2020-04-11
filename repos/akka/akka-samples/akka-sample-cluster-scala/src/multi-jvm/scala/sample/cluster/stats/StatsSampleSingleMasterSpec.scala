@@ -96,58 +96,60 @@ abstract class StatsSampleSingleMasterSpec
   override def afterAll() = multiNodeSpecAfterAll()
 
   "The stats sample with single master" must {
-    "illustrate how to startup cluster" in within(15 seconds) {
-      Cluster(system).subscribe(testActor, classOf[MemberUp])
-      expectMsgClass(classOf[CurrentClusterState])
+    "illustrate how to startup cluster" in
+      within(15 seconds) {
+        Cluster(system).subscribe(testActor, classOf[MemberUp])
+        expectMsgClass(classOf[CurrentClusterState])
 
-      val firstAddress = node(first).address
-      val secondAddress = node(second).address
-      val thirdAddress = node(third).address
+        val firstAddress = node(first).address
+        val secondAddress = node(second).address
+        val thirdAddress = node(third).address
 
-      Cluster(system) join firstAddress
+        Cluster(system) join firstAddress
 
-      receiveN(3)
-        .collect {
-          case MemberUp(m) =>
-            m.address
-        }
-        .toSet should be(Set(firstAddress, secondAddress, thirdAddress))
+        receiveN(3)
+          .collect {
+            case MemberUp(m) =>
+              m.address
+          }
+          .toSet should be(Set(firstAddress, secondAddress, thirdAddress))
 
-      Cluster(system).unsubscribe(testActor)
+        Cluster(system).unsubscribe(testActor)
 
-      system.actorOf(
-        ClusterSingletonManager.props(
-          singletonProps = Props[StatsService],
-          terminationMessage = PoisonPill,
-          settings = ClusterSingletonManagerSettings(system)
-            .withRole("compute")),
-        name = "statsService"
-      )
+        system.actorOf(
+          ClusterSingletonManager.props(
+            singletonProps = Props[StatsService],
+            terminationMessage = PoisonPill,
+            settings = ClusterSingletonManagerSettings(system)
+              .withRole("compute")),
+          name = "statsService"
+        )
 
-      system.actorOf(
-        ClusterSingletonProxy.props(
-          singletonManagerPath = "/user/statsService",
-          ClusterSingletonProxySettings(system).withRole("compute")),
-        name = "statsServiceProxy"
-      )
+        system.actorOf(
+          ClusterSingletonProxy.props(
+            singletonManagerPath = "/user/statsService",
+            ClusterSingletonProxySettings(system).withRole("compute")),
+          name = "statsServiceProxy"
+        )
 
-      testConductor.enter("all-up")
-    }
-
-    "show usage of the statsServiceProxy" in within(40 seconds) {
-      val proxy = system.actorSelection(
-        RootActorPath(node(third).address) / "user" / "statsServiceProxy")
-
-      // eventually the service should be ok,
-      // service and worker nodes might not be up yet
-      awaitAssert {
-        proxy ! StatsJob("this is the text that will be analyzed")
-        expectMsgType[StatsResult](1.second)
-          .meanWordLength should be(3.875 +- 0.001)
+        testConductor.enter("all-up")
       }
 
-      testConductor.enter("done")
-    }
+    "show usage of the statsServiceProxy" in
+      within(40 seconds) {
+        val proxy = system.actorSelection(
+          RootActorPath(node(third).address) / "user" / "statsServiceProxy")
+
+        // eventually the service should be ok,
+        // service and worker nodes might not be up yet
+        awaitAssert {
+          proxy ! StatsJob("this is the text that will be analyzed")
+          expectMsgType[StatsResult](1.second).meanWordLength should
+            be(3.875 +- 0.001)
+        }
+
+        testConductor.enter("done")
+      }
   }
 
 }

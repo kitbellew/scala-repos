@@ -134,24 +134,29 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
     val res = resOpt.get
 
     res.scalarMatches should have size (3)
-    res.scalarMatch(Resource.CPUS).get.consumed.toSet should be(
-      Set(
-        ScalarMatch
-          .Consumption(1.0, "marathon", reservation = Some(cpuReservation)),
-        ScalarMatch
-          .Consumption(1.0, "marathon", reservation = Some(cpuReservation2))))
+    res.scalarMatch(Resource.CPUS).get.consumed.toSet should
+      be(
+        Set(
+          ScalarMatch
+            .Consumption(1.0, "marathon", reservation = Some(cpuReservation)),
+          ScalarMatch
+            .Consumption(1.0, "marathon", reservation = Some(cpuReservation2))))
 
-    res.scalarMatch(Resource.MEM).get.consumed.toSet should be(
-      Set(
-        ScalarMatch
-          .Consumption(128.0, "*", reservation = Some(memReservation))))
-    res.scalarMatch(Resource.DISK).get.consumed.toSet should be(
-      Set(ScalarMatch.Consumption(2, "*", reservation = Some(diskReservation))))
+    res.scalarMatch(Resource.MEM).get.consumed.toSet should
+      be(
+        Set(
+          ScalarMatch
+            .Consumption(128.0, "*", reservation = Some(memReservation))))
+    res.scalarMatch(Resource.DISK).get.consumed.toSet should
+      be(
+        Set(
+          ScalarMatch.Consumption(2, "*", reservation = Some(diskReservation))))
 
-    res.portsMatch.hostPortsWithRole.toSet should be(
-      Set(
-        PortsMatcher
-          .PortWithRole("*", 80, reservation = Some(portsReservation))))
+    res.portsMatch.hostPortsWithRole.toSet should
+      be(
+        Set(
+          PortsMatcher
+            .PortWithRole("*", 80, reservation = Some(portsReservation))))
 
     // reserved resources should not be matched by selector with reserved = false
     ResourceMatcher.matchResources(

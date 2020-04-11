@@ -50,8 +50,8 @@ abstract class UnPickler {
         /*if (settings.debug.value)*/
         ex.printStackTrace()
         throw new RuntimeException(
-          "error reading Scala signature of " + filename + ": " + ex
-            .getMessage())
+          "error reading Scala signature of " + filename + ": " +
+            ex.getMessage())
     }
   }
 
@@ -124,10 +124,9 @@ abstract class UnPickler {
       if (major != MajorVersion || minor > MinorVersion)
         throw new IOException(
           "Scala signature " + classRoot.decodedName +
-            " has wrong version\n expected: " +
-            MajorVersion + "." + MinorVersion +
-            "\n found: " + major + "." + minor +
-            " in " + filename)
+            " has wrong version\n expected: " + MajorVersion + "." +
+            MinorVersion + "\n found: " + major + "." + minor + " in " +
+            filename)
     }
 
     /** The `decls` scope associated with given symbol */
@@ -370,13 +369,9 @@ abstract class UnPickler {
           * (2) Similarly, we ignore local dummy symbols, as seen in SI-8868
           */
         def shouldEnterInOwnerScope = {
-          sym.owner.isClass &&
-          sym != classRoot &&
-          sym != moduleRoot &&
-          !sym.isModuleClass &&
-          !sym.isRefinementClass &&
-          !sym.isTypeParameter &&
-          !sym.isExistentiallyBound &&
+          sym.owner.isClass && sym != classRoot && sym != moduleRoot &&
+          !sym.isModuleClass && !sym.isRefinementClass &&
+          !sym.isTypeParameter && !sym.isExistentiallyBound &&
           sym.rawname != tpnme.LOCAL_CHILD && // (1)
           !nme.isLocalDummyName(sym.rawname) // (2)
         }
@@ -897,8 +892,8 @@ abstract class UnPickler {
 
     protected def errorBadSignature(msg: String) =
       throw new RuntimeException(
-        "malformed Scala signature of " + classRoot
-          .name + " at " + readIndex + "; " + msg)
+        "malformed Scala signature of " + classRoot.name + " at " + readIndex +
+          "; " + msg)
 
     def inferMethodAlternative(
         fun: Tree,
@@ -984,8 +979,8 @@ abstract class UnPickler {
             alias =
               slowButSafeEnteringPhase(picklerPhase)(
                 (
-                  alias suchThat (alt =>
-                    sym.tpe =:= sym.owner.thisType.memberType(alt))
+                  alias suchThat
+                    (alt => sym.tpe =:= sym.owner.thisType.memberType(alt))
                 ))
 
           sym.asInstanceOf[TermSymbol].setAlias(alias)

@@ -20,10 +20,11 @@ trait DateHelper {
   private val dateTimeFormatters = mutable.Map[String, DateTimeFormatter]()
   private val dateFormatters = mutable.Map[String, DateTimeFormatter]()
   private val periodFormatters = mutable.Map[String, PeriodFormatter]()
-  private val periodType = PeriodType forFields Array(
-    DurationFieldType.days,
-    DurationFieldType.hours,
-    DurationFieldType.minutes)
+  private val periodType = PeriodType forFields
+    Array(
+      DurationFieldType.days,
+      DurationFieldType.hours,
+      DurationFieldType.minutes)
 
   private val isoFormatter = ISODateTimeFormat.dateTime
 
@@ -32,14 +33,14 @@ trait DateHelper {
   private def dateTimeFormatter(ctx: Context): DateTimeFormatter =
     dateTimeFormatters.getOrElseUpdate(
       lang(ctx).language,
-      DateTimeFormat forStyle dateTimeStyle withLocale new Locale(
-        lang(ctx).language))
+      DateTimeFormat forStyle dateTimeStyle withLocale
+        new Locale(lang(ctx).language))
 
   private def dateFormatter(ctx: Context): DateTimeFormatter =
     dateFormatters.getOrElseUpdate(
       lang(ctx).language,
-      DateTimeFormat forStyle dateStyle withLocale new Locale(
-        lang(ctx).language))
+      DateTimeFormat forStyle dateStyle withLocale
+        new Locale(lang(ctx).language))
 
   private def periodFormatter(ctx: Context): PeriodFormatter =
     periodFormatters.getOrElseUpdate(

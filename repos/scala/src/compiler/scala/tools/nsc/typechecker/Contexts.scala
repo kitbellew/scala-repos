@@ -63,8 +63,8 @@ trait Contexts {
       s"it is both defined in $owner and imported subsequently by \n$imp")
 
   private lazy val startContext = NoContext.make(
-    Template(List(), noSelfType, List()) setSymbol global
-      .NoSymbol setType global.NoType,
+    Template(List(), noSelfType, List()) setSymbol global.NoSymbol setType
+      global.NoType,
     rootMirror.RootClass,
     rootMirror.RootClass.info.decls)
 
@@ -80,10 +80,10 @@ trait Contexts {
         def isMask(s: ImportSelector) =
           s.name != nme.WILDCARD && s.rename == nme.WILDCARD
 
-        imp.tree.selectors filterNot (s => isMask(s) || used(s)) foreach {
-          sel =>
+        imp.tree.selectors filterNot
+          (s => isMask(s) || used(s)) foreach { sel =>
             reporter.warning(imp posOf sel, "Unused import")
-        }
+          }
       }
       allUsedSelectors --= imps
     }
@@ -269,14 +269,12 @@ trait Contexts {
         outer.depth
 
     val depth: Int = {
-      val increasesDepth =
-        isRootImport || outerIsNoContext || (outer.scope != scope)
-      (
-        if (increasesDepth)
-          1
-        else
-          0
-      ) + outerDepth
+      val increasesDepth = isRootImport || outerIsNoContext ||
+        (outer.scope != scope)
+      (if (increasesDepth)
+         1
+       else
+         0) + outerDepth
     }
 
     /** The currently visible imports */
@@ -879,10 +877,9 @@ trait Contexts {
           // stops at first package, since further owners can only be surrounding packages
           @tailrec
           def abEnclosesStopAtPkg(o: Symbol): Boolean =
-            (o eq ab) || (
-              !o.isPackageClass && (o ne NoSymbol) && abEnclosesStopAtPkg(
-                o.owner)
-            )
+            (o eq ab) ||
+              (!o.isPackageClass &&
+                (o ne NoSymbol) && abEnclosesStopAtPkg(o.owner))
           abEnclosesStopAtPkg(owner)
         } else
           (owner hasTransOwner ab)
@@ -904,24 +901,23 @@ trait Contexts {
             "\n Access to protected " + target + " not permitted because" +
               "\n " + "enclosing " + this.enclClass.owner +
               this.enclClass.owner.locationString + " is not a subclass of " +
-              "\n " + sym
-              .owner + sym.owner.locationString + " where target is defined"
+              "\n " + sym.owner + sym.owner.locationString +
+              " where target is defined"
         c != NoContext && {
           target
             .isType || { // allow accesses to types from arbitrary subclasses fixes #4737
             val res =
               isSubClassOrCompanion(pre.widen.typeSymbol, c.owner) ||
                 c.owner.isModuleClass &&
-                  isSubClassOrCompanion(
-                    pre.widen.typeSymbol,
-                    c.owner.linkedClassOfClass)
+                isSubClassOrCompanion(
+                  pre.widen.typeSymbol,
+                  c.owner.linkedClassOfClass)
             if (!res)
               lastAccessCheckDetails =
                 "\n Access to protected " + target + " not permitted because" +
                   "\n prefix type " + pre.widen + " does not conform to" +
-                  "\n " + c.owner + c
-                  .owner
-                  .locationString + " where the access take place"
+                  "\n " + c.owner + c.owner.locationString +
+                  " where the access take place"
             res
           }
         }
@@ -931,20 +927,15 @@ trait Contexts {
         val ab = sym.accessBoundary(sym.owner)
 
         (
-          (ab.isTerm || ab == rootMirror.RootClass)
-          || (accessWithin(ab) || accessWithinLinked(ab)) &&
-          (
-            !sym.isLocalToThis
-            || sym.isProtected && isSubThisType(pre, sym.owner)
-            || pre =:= sym.owner.thisType
-          )
-          || sym.isProtected &&
-          (
-            superAccess
-            || pre.isInstanceOf[ThisType]
-            || phase.erasedTypes
-            || (sym.overrideChain exists isProtectedAccessOK)
-            // that last condition makes protected access via self types work.
+          (ab.isTerm || ab == rootMirror.RootClass) ||
+          (accessWithin(ab) || accessWithinLinked(ab)) &&
+          (!sym.isLocalToThis ||
+          sym.isProtected && isSubThisType(pre, sym.owner) ||
+          pre =:= sym.owner.thisType) ||
+          sym.isProtected &&
+          (superAccess || pre.isInstanceOf[ThisType] || phase.erasedTypes ||
+          (sym.overrideChain exists isProtectedAccessOK)
+          // that last condition makes protected access via self types work.
           )
         )
         // note: phase.erasedTypes disables last test, because after addinterfaces
@@ -1001,9 +992,10 @@ trait Contexts {
       try restore()
       finally {
         for ((sym, savedInfo) <- savedTypeBounds)
-          sym setInfo debuglogResult(
-            s"Discarding inferred $sym=${sym.info}, restoring saved info")(
-            savedInfo)
+          sym setInfo
+            debuglogResult(
+              s"Discarding inferred $sym=${sym.info}, restoring saved info")(
+              savedInfo)
 
         savedTypeBounds = Nil
       }
@@ -1032,14 +1024,13 @@ trait Contexts {
         sym: Symbol,
         pre: Type,
         imported: Boolean) =
-      sym.isImplicit &&
-        isAccessible(sym, pre) &&
+      sym.isImplicit && isAccessible(sym, pre) &&
         !(
           imported && {
             val e = scope.lookupEntry(name)
-            (e ne null) && (e.owner == scope) && (
-              !settings.isScala212 || e.sym.exists
-            )
+            (e ne null) &&
+            (e.owner == scope) &&
+            (!settings.isScala212 || e.sym.exists)
           }
         )
 
@@ -1136,8 +1127,8 @@ trait Contexts {
     /** @return None if a cycle is detected, or Some(infos) containing the in-scope implicits at this context */
     private def implicits(nextOuter: Context): Option[List[ImplicitInfo]] = {
       val imports = this.imports
-      if (owner != nextOuter.owner && owner.isClass && !owner
-            .isPackageClass && !inSelfSuperCall) {
+      if (owner != nextOuter.owner && owner.isClass && !owner.isPackageClass &&
+          !inSelfSuperCall) {
         if (!owner.isInitialized)
           None
         else
@@ -1185,10 +1176,10 @@ trait Contexts {
           imp1Explicit == imp2Explicit
         else
           !imp1Explicit && imp2Explicit
-      val imp1Symbol = (imp1 importedSymbol name).initialize filter (s =>
-        isAccessible(s, imp1.qual.tpe, superAccess = false))
-      val imp2Symbol = (imp2 importedSymbol name).initialize filter (s =>
-        isAccessible(s, imp2.qual.tpe, superAccess = false))
+      val imp1Symbol = (imp1 importedSymbol name).initialize filter
+        (s => isAccessible(s, imp1.qual.tpe, superAccess = false))
+      val imp2Symbol = (imp2 importedSymbol name).initialize filter
+        (s => isAccessible(s, imp2.qual.tpe, superAccess = false))
 
       // The types of the qualifiers from which the ambiguous imports come.
       // If the ambiguous name is a value, these must be the same.
@@ -1222,8 +1213,8 @@ trait Contexts {
         // Monomorphism restriction on types is in part because type aliases could have the
         // same target type but attach different variance to the parameters. Maybe it can be
         // relaxed, but doesn't seem worth it at present.
-        else if (mt1 =:= mt2 && name.isTypeName && imp1Symbol
-                   .isMonomorphicType && imp2Symbol.isMonomorphicType) {
+        else if (mt1 =:= mt2 && name.isTypeName &&
+                 imp1Symbol.isMonomorphicType && imp2Symbol.isMonomorphicType) {
           log(
             s"Suppressing ambiguous import: $mt1 =:= $mt2 && $imp1Symbol and $imp2Symbol are equivalent")
           Some(imp1)
@@ -1241,14 +1232,12 @@ trait Contexts {
         name: Name,
         requireExplicit: Boolean,
         record: Boolean): Symbol =
-      imp.importedSymbol(name, requireExplicit, record) filter (s =>
-        isAccessible(s, imp.qual.tpe, superAccess = false))
+      imp.importedSymbol(name, requireExplicit, record) filter
+        (s => isAccessible(s, imp.qual.tpe, superAccess = false))
 
     private def requiresQualifier(s: Symbol): Boolean =
-      (s.owner.isClass
-        && !s.owner.isPackageClass
-        && !s.isTypeParameterOrSkolem
-        && !s.isExistentiallyBound)
+      (s.owner.isClass && !s.owner.isPackageClass &&
+        !s.isTypeParameterOrSkolem && !s.isExistentiallyBound)
 
     /** Must `sym` defined in package object of package `pkg`, if
       *  it selected from a prefix with `pkg` as its type symbol?
@@ -1295,10 +1284,9 @@ trait Contexts {
           finish(EmptyTree, sym)
 
       def isPackageOwnedInDifferentUnit(s: Symbol) =
-        (s.isDefinedInPackage && (
-          !currentRun.compiles(s)
-            || unit.exists && s.sourceFile != unit.source.file
-        ))
+        (s.isDefinedInPackage &&
+          (!currentRun.compiles(s) ||
+            unit.exists && s.sourceFile != unit.source.file))
       def lookupInPrefix(name: Name) = pre member name filter qualifies
       def accessibleInPrefix(s: Symbol) =
         isAccessible(s, pre, superAccess = false)
@@ -1390,11 +1378,9 @@ trait Contexts {
       //     highest precedence.
       //  2) Explicit imports have next highest precedence.
       def depthOk(imp: ImportInfo) =
-        (imp.depth > symbolDepth
-          || (
-            unit.isJava && imp.isExplicitImport(name) && imp
-              .depth == symbolDepth
-          ))
+        (imp.depth > symbolDepth ||
+          (unit.isJava && imp.isExplicitImport(name) &&
+            imp.depth == symbolDepth))
 
       while (!impSym.exists && imports.nonEmpty && depthOk(imports.head)) {
         impSym = lookupImport(imp1, requireExplicit = false)
@@ -1424,9 +1410,8 @@ trait Contexts {
         //   - imp1 and imp2 are at the same depth
         //   - imp1 is a wildcard import, so all explicit imports from outer scopes must be checked
         def keepLooking =
-          (lookupError == null
-            && imports.tail.nonEmpty
-            && (sameDepth || !imp1Explicit))
+          (lookupError == null && imports.tail.nonEmpty &&
+            (sameDepth || !imp1Explicit))
         // If we find a competitor imp2 which imports the same name, possible outcomes are:
         //
         //  - same depth, imp1 wild, imp2 explicit:        imp2 wins, drop imp1
@@ -1455,7 +1440,8 @@ trait Contexts {
 
           if (!other.exists) // imp1 wins; drop imp2 and continue.
             imp1wins()
-          else if (sameDepth && !imp1Explicit && imp2Explicit) // imp2 wins; drop imp1 and continue.
+          else if (sameDepth && !imp1Explicit &&
+                   imp2Explicit) // imp2 wins; drop imp1 and continue.
             imp2wins()
           else
             resolveAmbiguousImport(name, imp1, imp2) match {
@@ -1501,7 +1487,8 @@ trait Contexts {
   trait ImportContext extends Context {
     private val impInfo: ImportInfo = {
       val info = new ImportInfo(tree.asInstanceOf[Import], outerDepth)
-      if (settings.warnUnusedImport && !isRootImport) // excludes java.lang/scala/Predef imports
+      if (settings.warnUnusedImport &&
+          !isRootImport) // excludes java.lang/scala/Predef imports
         allImportInfos(unit) ::= info
       info
     }
@@ -1509,8 +1496,8 @@ trait Contexts {
     override final def firstImport = Some(impInfo)
     override final def isRootImport = !tree.pos.isDefined
     override final def toString =
-      super
-        .toString + " with " + s"ImportContext { $impInfo; outer.owner = ${outer.owner} }"
+      super.toString + " with " +
+        s"ImportContext { $impInfo; outer.owner = ${outer.owner} }"
   }
 
   /** A reporter for use during type checking. It has multiple modes for handling errors.
@@ -1576,7 +1563,8 @@ trait Contexts {
     final def propagatingErrorsTo[T](target: ContextReporter)(expr: => T): T = {
       val res =
         expr // TODO: make sure we're okay skipping the try/finally overhead
-      if ((this ne target) && hasErrors) { // `this eq target` in e.g., test/files/neg/divergent-implicit.scala
+      if ((this ne target) &&
+          hasErrors) { // `this eq target` in e.g., test/files/neg/divergent-implicit.scala
         // assert(target.errorBuffer ne _errorBuffer)
         target ++= errors
         // TODO: is clearAllErrors necessary? (no tests failed when dropping it)
@@ -1815,8 +1803,8 @@ trait Contexts {
         if (result == NoSymbol)
           selectors = selectors.tail
       }
-      if (record && settings.warnUnusedImport && selectors
-            .nonEmpty && result != NoSymbol && pos != NoPosition)
+      if (record && settings.warnUnusedImport && selectors.nonEmpty &&
+          result != NoSymbol && pos != NoPosition)
         recordUsage(current, result)
 
       // Harden against the fallout from bugs like SI-6745
@@ -1934,9 +1922,9 @@ object ContextMode {
     *  context modes which were once mode bits; those being so far the
     *  ones listed here.
     */
-  final val FormerNonStickyModes: ContextMode = (
-    PatternAlternative | StarPatterns | SuperInit | SecondTry | ReturnExpr | TypeConstructorAllowed
-  )
+  final val FormerNonStickyModes: ContextMode =
+    (PatternAlternative | StarPatterns | SuperInit | SecondTry | ReturnExpr |
+      TypeConstructorAllowed)
 
   final val DefaultMode: ContextMode = MacrosEnabled
 

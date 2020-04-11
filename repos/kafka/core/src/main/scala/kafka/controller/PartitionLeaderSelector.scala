@@ -86,12 +86,10 @@ class OfflinePartitionLeaderSelector(
                         topicAndPartition.topic))
                     .uncleanLeaderElectionEnable) {
                 throw new NoReplicaOnlineException(
-                  (
-                    "No broker in ISR for partition " +
-                      "%s is alive. Live brokers are: [%s],".format(
-                        topicAndPartition,
-                        controllerContext.liveBrokerIds)
-                  ) +
+                  ("No broker in ISR for partition " +
+                    "%s is alive. Live brokers are: [%s],".format(
+                      topicAndPartition,
+                      controllerContext.liveBrokerIds)) +
                     " ISR brokers are: [%s]"
                       .format(currentLeaderAndIsr.isr.mkString(",")))
               }
@@ -104,12 +102,10 @@ class OfflinePartitionLeaderSelector(
               liveAssignedReplicas.isEmpty match {
                 case true =>
                   throw new NoReplicaOnlineException(
-                    (
-                      "No replica for partition " +
-                        "%s is alive. Live brokers are: [%s],".format(
-                          topicAndPartition,
-                          controllerContext.liveBrokerIds)
-                    ) +
+                    ("No replica for partition " +
+                      "%s is alive. Live brokers are: [%s],".format(
+                        topicAndPartition,
+                        controllerContext.liveBrokerIds)) +
                       " Assigned replicas are: [%s]".format(assignedReplicas))
                 case false =>
                   ControllerStats.uncleanLeaderElectionRate.mark()
@@ -237,11 +233,8 @@ class PreferredReplicaPartitionLeaderSelector(
           .format(currentLeader, topicAndPartition) +
           " Trigerring preferred replica leader election")
       // check if preferred replica is not the current leader and is alive and in the isr
-      if (controllerContext
-            .liveBrokerIds
-            .contains(preferredReplica) && currentLeaderAndIsr
-            .isr
-            .contains(preferredReplica)) {
+      if (controllerContext.liveBrokerIds.contains(preferredReplica) &&
+          currentLeaderAndIsr.isr.contains(preferredReplica)) {
         (
           new LeaderAndIsr(
             preferredReplica,

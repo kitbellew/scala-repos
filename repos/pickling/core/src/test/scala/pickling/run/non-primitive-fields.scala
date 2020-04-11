@@ -16,8 +16,8 @@ class NonPrimitiveFieldsTest extends FunSuite {
     // Note: Previously case classes would be considered elided, even though they are non-terminal.
     //       We now only elide the type if the case class is final.
     assert(
-      ppickle
-        .value === """
+      ppickle.value ===
+        """
       |{
       |  "$type": "scala.pickling.non.primitive.fields.Philipp",
       |  "nationality": "German",

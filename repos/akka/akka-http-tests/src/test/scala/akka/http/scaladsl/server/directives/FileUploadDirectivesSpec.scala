@@ -36,14 +36,14 @@ class FileUploadDirectivesSpec extends RoutingSpec {
               file = Some(tmpFile)
               complete(info.toString)
           }
-        } ~> check {
-          file.isDefined === true
-          responseAs[String] === FileInfo(
-            "fieldName",
-            "age.xml",
-            ContentTypes.`text/xml(UTF-8)`).toString
-          read(file.get) === xml
-        }
+        } ~>
+          check {
+            file.isDefined === true
+            responseAs[String] ===
+              FileInfo("fieldName", "age.xml", ContentTypes.`text/xml(UTF-8)`)
+                .toString
+            read(file.get) === xml
+          }
       } finally {
         file.foreach(_.delete())
       }
@@ -86,10 +86,11 @@ class FileUploadDirectivesSpec extends RoutingSpec {
             HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
             Map("filename" -> "data1.txt")))
 
-      Post("/", multipartForm) ~> route ~> check {
-        status shouldEqual StatusCodes.OK
-        responseAs[String] shouldEqual str1
-      }
+      Post("/", multipartForm) ~> route ~>
+        check {
+          status shouldEqual StatusCodes.OK
+          responseAs[String] shouldEqual str1
+        }
 
     }
 
@@ -117,10 +118,11 @@ class FileUploadDirectivesSpec extends RoutingSpec {
             Map("filename" -> "data2.txt"))
       )
 
-      Post("/", multipartForm) ~> route ~> check {
-        status shouldEqual StatusCodes.OK
-        responseAs[String] shouldEqual str1
-      }
+      Post("/", multipartForm) ~> route ~>
+        check {
+          status shouldEqual StatusCodes.OK
+          responseAs[String] shouldEqual str1
+        }
 
     }
 
@@ -155,9 +157,10 @@ class FileUploadDirectivesSpec extends RoutingSpec {
             HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
             Map("filename" -> "data1.txt")))
 
-      Post("/", multipartForm) ~> route ~> check {
-        rejection === MissingFormFieldRejection("missing")
-      }
+      Post("/", multipartForm) ~> route ~>
+        check {
+          rejection === MissingFormFieldRejection("missing")
+        }
 
     }
 

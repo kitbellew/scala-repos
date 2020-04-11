@@ -112,10 +112,11 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      Person.find(jack._id) must beLike {
-        case Some(j) =>
-          j._id mustEqual jack._id
-      }
+      Person.find(jack._id) must
+        beLike {
+          case Some(j) =>
+            j._id mustEqual jack._id
+        }
     }
 
     "handle ObjectId as ObjectId value using ObjectIdSerializer" in {
@@ -128,10 +129,11 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      PersonWithObjectId.find(jack._id) must beLike {
-        case Some(j) =>
-          j._id mustEqual jack._id
-      }
+      PersonWithObjectId.find(jack._id) must
+        beLike {
+          case Some(j) =>
+            j._id mustEqual jack._id
+        }
     }
 
     "handle Pattern as Pattern value using PatternSerializer" in {
@@ -146,11 +148,12 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      PersonWithPattern.find(jack._id) must beLike {
-        case Some(j) =>
-          j.pattern.pattern mustEqual jack.pattern.pattern
-          j.pattern.flags mustEqual jack.pattern.flags
-      }
+      PersonWithPattern.find(jack._id) must
+        beLike {
+          case Some(j) =>
+            j.pattern.pattern mustEqual jack.pattern.pattern
+            j.pattern.flags mustEqual jack.pattern.flags
+        }
     }
 
     "handle DateTime as DateTime value using DateTimeSerializer" in {
@@ -164,10 +167,11 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      PersonWithDateTime.find(jack._id) must beLike {
-        case Some(j) =>
-          j.birthDate mustEqual jack.birthDate
-      }
+      PersonWithDateTime.find(jack._id) must
+        beLike {
+          case Some(j) =>
+            j.birthDate mustEqual jack.birthDate
+        }
     }
 
     "handle Date as Date value using DateSerializer" in {
@@ -183,10 +187,11 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      PersonWithDate.find(jack._id) must beLike {
-        case Some(j) =>
-          j.birthDate mustEqual jack.birthDate
-      }
+      PersonWithDate.find(jack._id) must
+        beLike {
+          case Some(j) =>
+            j.birthDate mustEqual jack.birthDate
+        }
     }
 
     "handle UUID as UUID value using UUIDSerializer" in {
@@ -200,10 +205,11 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      PersonWithUUID.find(jack._id) must beLike {
-        case Some(j) =>
-          j._id mustEqual jack._id
-      }
+      PersonWithUUID.find(jack._id) must
+        beLike {
+          case Some(j) =>
+            j._id mustEqual jack._id
+        }
     }
   }
 }

@@ -56,8 +56,8 @@ object WriterUsage extends App {
   mValue.written.map(println)
 
   // with :++> you can append to the log side of things
-  val resultAppend: Logger[Person] =
-    sherlockHolmes :++> List("Finished", "--- new Person ready ---")
+  val resultAppend: Logger[Person] = sherlockHolmes :++>
+    List("Finished", "--- new Person ready ---")
   resultAppend.written.map(println)
 
   // with :++>> you can append using a function

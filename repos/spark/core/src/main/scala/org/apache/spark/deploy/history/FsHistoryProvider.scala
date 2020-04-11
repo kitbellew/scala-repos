@@ -206,7 +206,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
     if (!fs.exists(path)) {
       var msg = s"Log directory specified does not exist: $logDir."
       if (logDir == DEFAULT_LOG_DIR) {
-        msg += " Did you configure the correct one through spark.history.fs.logDirectory?"
+        msg +=
+          " Did you configure the correct one through spark.history.fs.logDirectory?"
       }
       throw new IllegalArgumentException(msg)
     }
@@ -433,8 +434,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
           appInfo
             .attempts
             .filter { attempt =>
-              attempt.attemptId.isEmpty || attemptId
-                .isEmpty || attempt.attemptId.get == attemptId.get
+              attempt.attemptId.isEmpty || attemptId.isEmpty ||
+              attempt.attemptId.get == attemptId.get
             }
             .foreach { attempt =>
               val logPath = new Path(logDir, attempt.logPath)
@@ -491,10 +492,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
         .orElse(applications.get(attempt.appId))
         .map { app =>
           val attempts =
-            app
-              .attempts
-              .filter(_.attemptId != attempt.attemptId)
-              .toList ++ List(attempt)
+            app.attempts.filter(_.attemptId != attempt.attemptId).toList ++
+              List(attempt)
           new FsApplicationHistoryInfo(
             attempt.appId,
             attempt.name,
@@ -564,10 +563,9 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
           if (toClean.isEmpty) {
             appsToRetain += (app.id -> app)
           } else if (toRetain.nonEmpty) {
-            appsToRetain += (
-              app.id ->
-                new FsApplicationHistoryInfo(app.id, app.name, toRetain.toList)
-            )
+            appsToRetain +=
+              (app.id ->
+                new FsApplicationHistoryInfo(app.id, app.name, toRetain.toList))
           }
         }
 

@@ -32,7 +32,8 @@ private[setup] object AnonConfigRepo {
         logger.warn("Can't load config", e)
         none[UserConfig]
       }
-    } map (_ | UserConfig.default(sid))
+    } map
+      (_ | UserConfig.default(sid))
 
   private def configOption(req: RequestHeader): Fu[Option[UserConfig]] =
     sessionId(req).??(s => config(s) map (_.some))
@@ -45,7 +46,8 @@ private[setup] object AnonConfigRepo {
         .one[BSONDocument] map {
         _ flatMap (_.getAs[FilterConfig]("filter"))
       }
-    } map (_ | FilterConfig.default)
+    } map
+      (_ | FilterConfig.default)
 
   private def sessionId(req: RequestHeader): Option[String] =
     lila.common.HTTPRequest sid req

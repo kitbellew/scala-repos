@@ -191,14 +191,12 @@ class ScalaVariableOfTypeMacro extends Macro {
       case _ =>
         exprs
           .find(expr =>
-            (
-              ScType.extractClassType(scType, Some(project)) match {
-                case Some((x, _)) =>
-                  x.qualifiedName
-                case None =>
-                  ""
-              }
-            ) == expr.calculateResult(context).toString)
+            (ScType.extractClassType(scType, Some(project)) match {
+              case Some((x, _)) =>
+                x.qualifiedName
+              case None =>
+                ""
+            }) == expr.calculateResult(context).toString)
           .map(_ => new TextResult(variant.getElement.name))
     }
   }
@@ -218,28 +216,29 @@ class ScalaVariableOfTypeMacro extends Macro {
         array += item
       case ScalaVariableOfTypeMacro.iterableId
           if scType.canonicalText.startsWith("_root_.scala.Array") =>
-        array += LookupElementBuilder
-          .create(variant.getElement, variant.getElement.name)
+        array +=
+          LookupElementBuilder
+            .create(variant.getElement, variant.getElement.name)
       case ScalaVariableOfTypeMacro.iterableId =>
         ScType.extractClass(scType) match {
           case Some(x: ScTypeDefinition)
               if x.functionsByName("foreach").nonEmpty =>
-            array += LookupElementBuilder
-              .create(variant.getElement, variant.getElement.name)
+            array +=
+              LookupElementBuilder
+                .create(variant.getElement, variant.getElement.name)
           case _ =>
         }
       case _ =>
         for (expr <- exprs) {
-          if ((
-                ScType.extractClass(scType) match {
-                  case Some(x) =>
-                    x.qualifiedName
-                  case None =>
-                    ""
-                }
-              ) == expr)
-            array += LookupElementBuilder
-              .create(variant.getElement, variant.getElement.name)
+          if ((ScType.extractClass(scType) match {
+                case Some(x) =>
+                  x.qualifiedName
+                case None =>
+                  ""
+              }) == expr)
+            array +=
+              LookupElementBuilder
+                .create(variant.getElement, variant.getElement.name)
         }
     }
   }

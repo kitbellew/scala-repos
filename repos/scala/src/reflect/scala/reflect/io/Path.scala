@@ -182,8 +182,8 @@ class Path private[io] (val jfile: JFile) {
     Path(createRelativePath(segments, other.segments))
   }
 
-  def segments: List[String] =
-    (path split separator).toList filterNot (_.length == 0)
+  def segments: List[String] = (path split separator).toList filterNot
+    (_.length == 0)
 
   /**
     * @return The path of the parent directory, or root if path is already root

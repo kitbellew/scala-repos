@@ -24,12 +24,13 @@ class SbtModuleDataServiceTest extends ProjectDataServiceTestCase {
       name := getProject.getName
       ideDirectoryPath := getProject.getBasePath
       linkedProjectPath := getProject.getBasePath
-      modules += new javaModule {
-        name := "Module 1"
-        moduleFileDirectoryPath := getProject.getBasePath + "/module1"
-        externalConfigPath := getProject.getBasePath + "/module1"
-        arbitraryNodes += new SbtModuleNode(imports, resolvers)
-      }
+      modules +=
+        new javaModule {
+          name := "Module 1"
+          moduleFileDirectoryPath := getProject.getBasePath + "/module1"
+          externalConfigPath := getProject.getBasePath + "/module1"
+          arbitraryNodes += new SbtModuleNode(imports, resolvers)
+        }
     }.build.toDataNode
 
   def doTest(imports: Seq[String], resolvers: Set[SbtResolver]): Unit = {

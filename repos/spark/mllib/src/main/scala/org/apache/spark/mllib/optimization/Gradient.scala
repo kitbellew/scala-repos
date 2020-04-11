@@ -259,12 +259,13 @@ class LogisticGradient(numClasses: Int) extends Gradient {
         }
 
         for (i <- 0 until numClasses - 1) {
-          val multiplier = math.exp(margins(i)) / (sum + 1.0) - {
-            if (label != 0.0 && label == i + 1)
-              1.0
-            else
-              0.0
-          }
+          val multiplier = math.exp(margins(i)) /
+            (sum + 1.0) - {
+              if (label != 0.0 && label == i + 1)
+                1.0
+              else
+                0.0
+            }
           data.foreachActive { (index, value) =>
             if (value != 0.0)
               cumGradientArray(i * dataSize + index) += multiplier * value

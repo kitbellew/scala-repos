@@ -45,8 +45,8 @@ final case class FutureInvocation[T](
     cleanup: () => Unit)
     extends Runnable {
   def run = {
-    future complete (
-      try {
+    future complete
+      (try {
         Right(function())
       } catch {
         case e =>
@@ -54,8 +54,7 @@ final case class FutureInvocation[T](
           Left(e)
       } finally {
         cleanup()
-      }
-    )
+      })
   }
 }
 

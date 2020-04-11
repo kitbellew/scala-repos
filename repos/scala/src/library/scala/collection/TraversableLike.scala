@@ -327,12 +327,10 @@ trait TraversableLike[+A, +Repr]
   def partition(p: A => Boolean): (Repr, Repr) = {
     val l, r = newBuilder
     for (x <- this)
-      (
-        if (p(x))
-          l
-        else
-          r
-      ) += x
+      (if (p(x))
+         l
+       else
+         r) += x
     (l.result, r.result)
   }
 
@@ -595,12 +593,10 @@ trait TraversableLike[+A, +Repr]
     var toLeft = true
     for (x <- this) {
       toLeft = toLeft && p(x)
-      (
-        if (toLeft)
-          l
-        else
-          r
-      ) += x
+      (if (toLeft)
+         l
+       else
+         r) += x
     }
     (l.result, r.result)
   }
@@ -612,12 +608,10 @@ trait TraversableLike[+A, +Repr]
       r.sizeHint(this, -n)
     var i = 0
     for (x <- this) {
-      (
-        if (i < n)
-          l
-        else
-          r
-      ) += x
+      (if (i < n)
+         l
+       else
+         r) += x
       i += 1
     }
     (l.result, r.result)

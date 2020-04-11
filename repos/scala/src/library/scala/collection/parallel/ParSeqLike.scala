@@ -125,8 +125,8 @@ trait ParSeqLike[
           new SegmentLength(
             p,
             0,
-            splitter
-              .psplitWithSignalling(realfrom, length - realfrom)(1) assign ctx))
+            splitter.psplitWithSignalling(realfrom, length - realfrom)(1) assign
+              ctx))
         ._1
     }
 
@@ -156,8 +156,8 @@ trait ParSeqLike[
         new IndexWhere(
           p,
           realfrom,
-          splitter
-            .psplitWithSignalling(realfrom, length - realfrom)(1) assign ctx))
+          splitter.psplitWithSignalling(realfrom, length - realfrom)(1) assign
+            ctx))
     }
 
   /** Finds the last element satisfying some predicate.
@@ -241,7 +241,8 @@ trait ParSeqLike[
   override def sameElements[U >: T](that: GenIterable[U]): Boolean =
     that ifParSeq { pthat =>
       val ctx = new DefaultSignalling with VolatileAbort
-      length == pthat.length && tasksupport.executeAndWaitResult(
+      length == pthat.length &&
+      tasksupport.executeAndWaitResult(
         new SameElements(splitter assign ctx, pthat.splitter))
     } otherwise seq.sameElements(that)
 
@@ -272,8 +273,8 @@ trait ParSeqLike[
   def patch[U >: T, That](from: Int, patch: GenSeq[U], replaced: Int)(implicit
       bf: CanBuildFrom[Repr, U, That]): That = {
     val realreplaced = replaced min (length - from)
-    if (patch.isParSeq && bf(repr)
-          .isCombiner && (size - realreplaced + patch.size) > MIN_FOR_COPY) {
+    if (patch.isParSeq && bf(repr).isCombiner &&
+        (size - realreplaced + patch.size) > MIN_FOR_COPY) {
       val that = patch.asParSeq
       val pits = splitter
         .psplitWithSignalling(from, replaced, length - from - realreplaced)
@@ -376,7 +377,8 @@ trait ParSeqLike[
   def corresponds[S](that: GenSeq[S])(p: (T, S) => Boolean): Boolean =
     that ifParSeq { pthat =>
       val ctx = new DefaultSignalling with VolatileAbort
-      length == pthat.length && tasksupport.executeAndWaitResult(
+      length == pthat.length &&
+      tasksupport.executeAndWaitResult(
         new Corresponds(p, splitter assign ctx, pthat.splitter))
     } otherwise seq.corresponds(that)(p)
 
@@ -587,8 +589,8 @@ trait ParSeqLike[
       val fp = pit.remaining / 2
       val sp = pit.remaining - fp
       for ((p, op) <-
-             pit.psplitWithSignalling(fp, sp) zip otherpit
-               .psplitWithSignalling(fp, sp))
+             pit.psplitWithSignalling(fp, sp) zip
+               otherpit.psplitWithSignalling(fp, sp))
         yield new SameElements(p, op)
     }
     override def merge(that: SameElements[U]) = result = result && that.result
@@ -661,8 +663,8 @@ trait ParSeqLike[
       val fp = pit.remaining / 2
       val sp = pit.remaining - fp
       for ((p, op) <-
-             pit.psplitWithSignalling(fp, sp) zip otherpit
-               .psplitWithSignalling(fp, sp))
+             pit.psplitWithSignalling(fp, sp) zip
+               otherpit.psplitWithSignalling(fp, sp))
         yield new Corresponds(corr, p, op)
     }
     override def merge(that: Corresponds[S]) = result = result && that.result

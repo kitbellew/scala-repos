@@ -48,8 +48,8 @@ object RuntimeReducerEstimator {
     history.map { h =>
       h.tasks
         .filter { t =>
-          t.taskType == "REDUCE" && t.status == "SUCCEEDED" && t.finishTime > t
-            .startTime
+          t.taskType == "REDUCE" && t.status == "SUCCEEDED" &&
+          t.finishTime > t.startTime
         }
         .map { t =>
           (t.finishTime - t.startTime).toDouble

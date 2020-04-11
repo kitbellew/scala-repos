@@ -111,8 +111,8 @@ class UISeleniumSuite
           findAll(cssSelector("#stat-table th")).map(_.text).toSeq
         statTableHeaders.exists(
           _.matches(
-            "Timelines \\(Last \\d+ batches, \\d+ active, \\d+ completed\\)")) should be(
-          true)
+            "Timelines \\(Last \\d+ batches, \\d+ active, \\d+ completed\\)")) should
+          be(true)
         statTableHeaders should contain("Histograms")
 
         val statTableCells =
@@ -126,31 +126,33 @@ class UISeleniumSuite
         val h4Text = findAll(cssSelector("h4")).map(_.text).toSeq
         h4Text.exists(_.matches("Active Batches \\(\\d+\\)")) should be(true)
         h4Text.exists(
-          _.matches("Completed Batches \\(last \\d+ out of \\d+\\)")) should be(
-          true)
+          _.matches("Completed Batches \\(last \\d+ out of \\d+\\)")) should
+          be(true)
 
         findAll(cssSelector("""#active-batches-table th"""))
           .map(_.text)
-          .toSeq should be {
-          List(
-            "Batch Time",
-            "Input Size",
-            "Scheduling Delay (?)",
-            "Processing Time (?)",
-            "Output Ops: Succeeded/Total",
-            "Status")
-        }
+          .toSeq should
+          be {
+            List(
+              "Batch Time",
+              "Input Size",
+              "Scheduling Delay (?)",
+              "Processing Time (?)",
+              "Output Ops: Succeeded/Total",
+              "Status")
+          }
         findAll(cssSelector("""#completed-batches-table th"""))
           .map(_.text)
-          .toSeq should be {
-          List(
-            "Batch Time",
-            "Input Size",
-            "Scheduling Delay (?)",
-            "Processing Time (?)",
-            "Total Delay (?)",
-            "Output Ops: Succeeded/Total")
-        }
+          .toSeq should
+          be {
+            List(
+              "Batch Time",
+              "Input Size",
+              "Scheduling Delay (?)",
+              "Processing Time (?)",
+              "Total Delay (?)",
+              "Output Ops: Succeeded/Total")
+          }
 
         val batchLinks =
           findAll(cssSelector("""#completed-batches-table a"""))
@@ -159,9 +161,9 @@ class UISeleniumSuite
         batchLinks.size should be >= 1
 
         // Check a normal batch page
-        go to (
-          batchLinks.last
-        ) // Last should be the first batch, so it will have some jobs
+        go to
+          (batchLinks
+            .last) // Last should be the first batch, so it will have some jobs
         val summaryText = findAll(cssSelector("li strong")).map(_.text).toSeq
         summaryText should contain("Batch Duration:")
         summaryText should contain("Input data size:")
@@ -169,26 +171,25 @@ class UISeleniumSuite
         summaryText should contain("Processing time:")
         summaryText should contain("Total delay:")
 
-        findAll(cssSelector("""#batch-job-table th"""))
-          .map(_.text)
-          .toSeq should be {
-          List(
-            "Output Op Id",
-            "Description",
-            "Output Op Duration",
-            "Status",
-            "Job Id",
-            "Job Duration",
-            "Stages: Succeeded/Total",
-            "Tasks (for all stages): Succeeded/Total",
-            "Error"
-          )
-        }
+        findAll(cssSelector("""#batch-job-table th""")).map(_.text).toSeq should
+          be {
+            List(
+              "Output Op Id",
+              "Description",
+              "Output Op Duration",
+              "Status",
+              "Job Id",
+              "Job Duration",
+              "Stages: Succeeded/Total",
+              "Tasks (for all stages): Succeeded/Total",
+              "Error"
+            )
+          }
 
         // Check we have 2 output op ids
         val outputOpIds = findAll(cssSelector(".output-op-id-cell")).toSeq
-        outputOpIds
-          .map(_.attribute("rowspan")) should be(List(Some("2"), Some("2")))
+        outputOpIds.map(_.attribute("rowspan")) should
+          be(List(Some("2"), Some("2")))
         outputOpIds.map(_.text) should be(List("0", "1"))
 
         // Check job ids
@@ -204,8 +205,8 @@ class UISeleniumSuite
           .toList should be(List("1/1", "1/1", "1/1", "0/1 (1 failed)"))
 
         // Check job progress
-        findAll(cssSelector(""".progress-cell""")).map(_.text).toList should be(
-          List("4/4", "4/4", "4/4", "0/4 (1 failed)"))
+        findAll(cssSelector(""".progress-cell""")).map(_.text).toList should
+          be(List("4/4", "4/4", "4/4", "0/4 (1 failed)"))
 
         // Check stacktrace
         val errorCells =
@@ -224,9 +225,8 @@ class UISeleniumSuite
         webDriver.getPageSource should include("Missing id parameter")
 
         // Check a non-exist batch
-        go to (
-          sparkUI.appUIAddress.stripSuffix("/") + "/streaming/batch/?id=12345"
-        )
+        go to
+          (sparkUI.appUIAddress.stripSuffix("/") + "/streaming/batch/?id=12345")
         webDriver.getPageSource should include("does not exist")
       }
 

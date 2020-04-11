@@ -65,8 +65,8 @@ class BidiFlowSpec extends AkkaSpec {
     "work as a Flow that is open on the left" in {
       val f = bidi.join(Flow[Long].map(x ⇒ ByteString(s"Hello $x")))
       val result = Source(List(1, 2, 3)).via(f).limit(10).runWith(Sink.seq)
-      Await.result(result, 1.second) should ===(
-        Seq("Hello 3", "Hello 4", "Hello 5"))
+      Await.result(result, 1.second) should
+        ===(Seq("Hello 3", "Hello 4", "Hello 5"))
     }
 
     "work as a Flow that is open on the right" in {
@@ -98,39 +98,40 @@ class BidiFlowSpec extends AkkaSpec {
       val f = RunnableGraph
         .fromGraph(
           GraphDSL.create(bidiMat) { implicit b ⇒ bidi ⇒
-            Flow[String].map(Integer.valueOf(_).toInt) <~> bidi <~> Flow[Long]
-              .map(x ⇒ ByteString(s"Hello $x"))
+            Flow[String].map(Integer.valueOf(_).toInt) <~> bidi <~>
+              Flow[Long].map(x ⇒ ByteString(s"Hello $x"))
             ClosedShape
           })
         .run()
       Await.result(f, 1.second) should ===(42)
     }
 
-    "combine materialization values" in assertAllStagesStopped {
-      val left = Flow.fromGraph(
-        GraphDSL.create(Sink.head[Int]) { implicit b ⇒ sink ⇒
-          val bcast = b.add(Broadcast[Int](2))
-          val merge = b.add(Merge[Int](2))
-          val flow = b.add(Flow[String].map(Integer.valueOf(_).toInt))
-          bcast ~> sink
-          Source.single(1) ~> bcast ~> merge
-          flow ~> merge
-          FlowShape(flow.in, merge.out)
-        })
-      val right = Flow.fromGraph(
-        GraphDSL.create(Sink.head[immutable.Seq[Long]]) { implicit b ⇒ sink ⇒
-          val flow = b.add(Flow[Long].grouped(10))
-          flow ~> sink
-          FlowShape(flow.in, b.add(Source.single(ByteString("10"))).out)
-        })
-      val ((l, m), r) = left
-        .joinMat(bidiMat)(Keep.both)
-        .joinMat(right)(Keep.both)
-        .run()
-      Await.result(l, 1.second) should ===(1)
-      Await.result(m, 1.second) should ===(42)
-      Await.result(r, 1.second).toSet should ===(Set(3L, 12L))
-    }
+    "combine materialization values" in
+      assertAllStagesStopped {
+        val left = Flow.fromGraph(
+          GraphDSL.create(Sink.head[Int]) { implicit b ⇒ sink ⇒
+            val bcast = b.add(Broadcast[Int](2))
+            val merge = b.add(Merge[Int](2))
+            val flow = b.add(Flow[String].map(Integer.valueOf(_).toInt))
+            bcast ~> sink
+            Source.single(1) ~> bcast ~> merge
+            flow ~> merge
+            FlowShape(flow.in, merge.out)
+          })
+        val right = Flow.fromGraph(
+          GraphDSL.create(Sink.head[immutable.Seq[Long]]) { implicit b ⇒ sink ⇒
+            val flow = b.add(Flow[Long].grouped(10))
+            flow ~> sink
+            FlowShape(flow.in, b.add(Source.single(ByteString("10"))).out)
+          })
+        val ((l, m), r) = left
+          .joinMat(bidiMat)(Keep.both)
+          .joinMat(right)(Keep.both)
+          .run()
+        Await.result(l, 1.second) should ===(1)
+        Await.result(m, 1.second) should ===(42)
+        Await.result(r, 1.second).toSet should ===(Set(3L, 12L))
+      }
 
     "suitably override attribute handling methods" in {
       import Attributes._

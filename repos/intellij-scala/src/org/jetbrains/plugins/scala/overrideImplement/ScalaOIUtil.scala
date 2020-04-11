@@ -129,14 +129,15 @@ object ScalaOIUtil {
       if (selectedMembers.size == 0)
         return
     } else {
-      selectedMembers ++= classMembers
-        .find {
-          case named: ScalaNamedMember if named.name == methodName =>
-            true
-          case _ =>
-            false
-        }
-        .toSeq
+      selectedMembers ++=
+        classMembers
+          .find {
+            case named: ScalaNamedMember if named.name == methodName =>
+              true
+            case _ =>
+              false
+          }
+          .toSeq
     }
 
     runAction(selectedMembers, isImplement, clazz, editor)
@@ -199,14 +200,12 @@ object ScalaOIUtil {
           return true
         val clazz = m.containingClass
         clazz != null && clazz.qualifiedName == "scala.Product" &&
-        (
-          m.name match {
-            case "productArity" | "productElement" =>
-              true
-            case _ =>
-              false
-          }
-        )
+        (m.name match {
+          case "productArity" | "productElement" =>
+            true
+          case _ =>
+            false
+        })
       case x: ScTemplateDefinition =>
         x.superTypes
           .map(t => ScType.extractClass(t))
@@ -245,8 +244,8 @@ object ScalaOIUtil {
       clazz: ScTemplateDefinition,
       withSelfType: Boolean): Iterable[Object] = {
     if (withSelfType)
-      clazz.allMethodsIncludingSelfType ++ clazz
-        .allTypeAliasesIncludingSelfType ++ clazz.allValsIncludingSelfType
+      clazz.allMethodsIncludingSelfType ++
+        clazz.allTypeAliasesIncludingSelfType ++ clazz.allValsIncludingSelfType
     else
       clazz.allMethods ++ clazz.allTypeAliases ++ clazz.allVals
   }
@@ -267,11 +266,9 @@ object ScalaOIUtil {
       case x if x.containingClass == clazz =>
         false
       case x: PsiModifierListOwner
-          if (
-            x.hasModifierPropertyScala("abstract") &&
-              !x.isInstanceOf[ScFunctionDefinition]
-          )
-            || x.hasModifierPropertyScala("final") =>
+          if (x.hasModifierPropertyScala("abstract") &&
+            !x.isInstanceOf[ScFunctionDefinition]) ||
+            x.hasModifierPropertyScala("final") =>
         false
       case x if x.isConstructor =>
         false
@@ -326,14 +323,14 @@ object ScalaOIUtil {
         false
       case x
           if x.containingClass != null && x.containingClass.isInterface &&
-            !x.containingClass.isInstanceOf[ScTrait] && x
-            .hasModifierProperty("abstract") =>
+            !x.containingClass.isInstanceOf[ScTrait] &&
+            x.hasModifierProperty("abstract") =>
         true
       case x
-          if x.hasModifierPropertyScala("abstract") && !x
-            .isInstanceOf[ScFunctionDefinition] &&
-            !x.isInstanceOf[ScPatternDefinition] && !x
-            .isInstanceOf[ScVariableDefinition] =>
+          if x.hasModifierPropertyScala("abstract") &&
+            !x.isInstanceOf[ScFunctionDefinition] &&
+            !x.isInstanceOf[ScPatternDefinition] &&
+            !x.isInstanceOf[ScVariableDefinition] =>
         true
       case x: ScFunctionDeclaration
           if x.hasAnnotation("scala.native") == None =>
@@ -368,8 +365,8 @@ object ScalaOIUtil {
           //containingClass == clazz so we sure that this is ScFunction (it is safe cast)
           signe.method match {
             case fun: ScFunction =>
-              if (fun.parameters.length == 0 && declaredElements
-                    .exists(_.name == fun.name))
+              if (fun.parameters.length == 0 &&
+                  declaredElements.exists(_.name == fun.name))
                 flag = true
             case _ => //todo: ScPrimaryConstructor?
           }

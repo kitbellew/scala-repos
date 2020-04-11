@@ -72,11 +72,8 @@ private[sql] case class InsertIntoHadoopFsRelation(
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
     // Most formats don't do well with duplicate columns, so lets not allow that
-    if (query.schema.fieldNames.length != query
-          .schema
-          .fieldNames
-          .distinct
-          .length) {
+    if (query.schema.fieldNames.length !=
+          query.schema.fieldNames.distinct.length) {
       val duplicateColumns = query
         .schema
         .fieldNames

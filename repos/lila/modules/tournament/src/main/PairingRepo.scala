@@ -41,8 +41,8 @@ object PairingRepo {
       nb: Int): Fu[Pairing.LastOpponents] =
     coll
       .find(
-        selectTour(tourId) ++ BSONDocument(
-          "u" -> BSONDocument("$in" -> userIds)),
+        selectTour(tourId) ++
+          BSONDocument("u" -> BSONDocument("$in" -> userIds)),
         BSONDocument("_id" -> false, "u" -> true))
       .sort(recentSort)
       .cursor[BSONDocument]()
@@ -87,11 +87,12 @@ object PairingRepo {
       tourId: String,
       userId: String,
       nb: Int): Fu[Option[Pairing]] =
-    (nb > 0) ?? coll
-      .find(selectTourUser(tourId, userId))
-      .sort(chronoSort)
-      .skip(nb - 1)
-      .one[Pairing]
+    (nb > 0) ??
+      coll
+        .find(selectTourUser(tourId, userId))
+        .sort(chronoSort)
+        .skip(nb - 1)
+        .one[Pairing]
 
   def removeByTour(tourId: String) = coll.remove(selectTour(tourId)).void
 
@@ -155,23 +156,22 @@ object PairingRepo {
       .update(
         selectId(g.id),
         BSONDocument(
-          "$set" -> BSONDocument(
-            "s" -> g.status.id,
-            "w" -> g.winnerColor.map(_.white),
-            "t" -> g.turns)))
+          "$set" ->
+            BSONDocument(
+              "s" -> g.status.id,
+              "w" -> g.winnerColor.map(_.white),
+              "t" -> g.turns)))
       .void
 
   def setBerserk(pairing: Pairing, userId: String, value: Int) =
-    (
-      userId match {
-        case uid if pairing.user1 == uid =>
-          "b1".some
-        case uid if pairing.user2 == uid =>
-          "b2".some
-        case _ =>
-          none
-      }
-    ) ?? { field =>
+    (userId match {
+      case uid if pairing.user1 == uid =>
+        "b1".some
+      case uid if pairing.user2 == uid =>
+        "b2".some
+      case _ =>
+        none
+    }) ?? { field =>
       coll
         .update(
           selectId(pairing.id),

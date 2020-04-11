@@ -118,15 +118,14 @@ class HighlightingAdvisor(project: Project)
       title: String,
       message: String,
       notificationType: NotificationType) {
-    NotificationUtil.builder(
-      project,
-      message) setNotificationType notificationType setTitle title setHandler {
-      case "enable" =>
-        enabled = true
-      case "disable" =>
-        enabled = false
-      case _ =>
-    }
+    NotificationUtil.builder(project, message) setNotificationType
+      notificationType setTitle title setHandler {
+        case "enable" =>
+          enabled = true
+        case "disable" =>
+          enabled = false
+        case _ =>
+      }
   }
 
   def toggle() {

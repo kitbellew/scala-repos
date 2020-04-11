@@ -154,8 +154,8 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
     val positionFile: PsiFile = position.getContainingFile
     if (!positionFile.isInstanceOf[ScalaFile])
       return 0
-    if (positionFile != null && elementFile != null && positionFile
-          .getOriginalFile == elementFile.getOriginalFile) {
+    if (positionFile != null && elementFile != null &&
+        positionFile.getOriginalFile == elementFile.getOriginalFile) {
       return 3
     }
     element match {

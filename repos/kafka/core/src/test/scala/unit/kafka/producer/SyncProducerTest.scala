@@ -168,8 +168,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
       response1.status(TopicAndPartition("test", 0)).error)
     assertEquals(-1L, response1.status(TopicAndPartition("test", 0)).offset)
 
-    val safeSize = configs(0).messageMaxBytes - Message
-      .MinMessageOverhead - Message.TimestampLength - MessageSet.LogOverhead - 1
+    val safeSize = configs(0).messageMaxBytes - Message.MinMessageOverhead -
+      Message.TimestampLength - MessageSet.LogOverhead - 1
     val message2 = new Message(new Array[Byte](safeSize))
     val messageSet2 =
       new ByteBufferMessageSet(

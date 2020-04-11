@@ -61,9 +61,8 @@ class ReplTest extends WordSpec {
         // actually running a new flow to check the contents (just check that
         // it's a TypedPipe from a MemorySink or SequenceFile)
         assert(
-          s.toString.contains("IterablePipe") || s
-            .toString
-            .contains("TypedPipeFactory"))
+          s.toString.contains("IterablePipe") ||
+            s.toString.contains("TypedPipeFactory"))
 
         val pipeName =
           mode match {
@@ -99,9 +98,10 @@ class ReplTest extends WordSpec {
 
         val output = s.toList
         assert(
-          output === helloRef
-            .flatMap(_.split("\\s+"))
-            .map(w => (w.toLowerCase, w.length)))
+          output ===
+            helloRef
+              .flatMap(_.split("\\s+"))
+              .map(w => (w.toLowerCase, w.length)))
       }
 
       "grouped -- Grouped[String,String]" which {
@@ -203,8 +203,8 @@ class ReplTest extends WordSpec {
       }
       "tuple" in {
         assert(
-          hello.map(l => (l, l.length)).toList === helloRef
-            .map(l => (l, l.length)))
+          hello.map(l => (l, l.length)).toList ===
+            helloRef.map(l => (l, l.length)))
       }
     }
   }

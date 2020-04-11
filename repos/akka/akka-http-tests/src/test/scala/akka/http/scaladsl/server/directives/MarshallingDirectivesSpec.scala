@@ -52,42 +52,48 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
         entity(as[NodeSeq]) {
           echoComplete
         }
-      } ~> check {
-        responseAs[String] shouldEqual "<p>cool</p>"
-      }
+      } ~>
+        check {
+          responseAs[String] shouldEqual "<p>cool</p>"
+        }
     }
     "return a RequestEntityExpectedRejection rejection if the request has no entity" in {
       Put() ~> {
         entity(as[Int]) {
           echoComplete
         }
-      } ~> check {
-        rejection shouldEqual RequestEntityExpectedRejection
-      }
+      } ~>
+        check {
+          rejection shouldEqual RequestEntityExpectedRejection
+        }
     }
     "return an UnsupportedRequestContentTypeRejection if no matching unmarshaller is in scope" in {
       Put("/", HttpEntity(`text/css` withCharset `UTF-8`, "<p>cool</p>")) ~> {
         entity(as[NodeSeq]) {
           echoComplete
         }
-      } ~> check {
-        rejection shouldEqual UnsupportedRequestContentTypeRejection(
-          Set(
-            `text/xml`,
-            `application/xml`,
-            `text/html`,
-            `application/xhtml+xml`))
-      }
+      } ~>
+        check {
+          rejection shouldEqual
+            UnsupportedRequestContentTypeRejection(
+              Set(
+                `text/xml`,
+                `application/xml`,
+                `text/html`,
+                `application/xhtml+xml`))
+        }
       Put(
         "/",
         HttpEntity(ContentType(`text/xml`, `UTF-16`), "<int>26</int>")) ~> {
         entity(as[Int]) {
           echoComplete
         }
-      } ~> check {
-        rejection shouldEqual UnsupportedRequestContentTypeRejection(
-          Set(ContentTypeRange(`text/xml`, iso88592), `text/html`))
-      }
+      } ~>
+        check {
+          rejection shouldEqual
+            UnsupportedRequestContentTypeRejection(
+              Set(ContentTypeRange(`text/xml`, iso88592), `text/html`))
+        }
     }
     "cancel UnsupportedRequestContentTypeRejections if a subsequent `entity` directive succeeds" in {
       Put("/", HttpEntity(ContentTypes.`text/plain(UTF-8)`, "yeah")) ~> {
@@ -99,9 +105,10 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
               completeOk
             }
           }
-      } ~> check {
-        rejection shouldEqual ValidationRejection("Problem")
-      }
+      } ~>
+        check {
+          rejection shouldEqual ValidationRejection("Problem")
+        }
     }
     "return a ValidationRejection if the request entity is semantically invalid (IllegalArgumentException)" in {
       Put(
@@ -110,13 +117,14 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
         entity(as[Int]) { _ ⇒
           completeOk
         }
-      } ~> check {
-        inside(rejection) {
-          case ValidationRejection(
-                "requirement failed",
-                Some(_: IllegalArgumentException)) ⇒
+      } ~>
+        check {
+          inside(rejection) {
+            case ValidationRejection(
+                  "requirement failed",
+                  Some(_: IllegalArgumentException)) ⇒
+          }
         }
-      }
     }
     "return a MalformedRequestContentRejection if unmarshalling failed due to a not further classified error" in {
       Put(
@@ -127,43 +135,49 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
         entity(as[NodeSeq]) { _ ⇒
           completeOk
         }
-      } ~> check {
-        rejection shouldEqual MalformedRequestContentRejection(
-          "XML document structures must start and end within the same entity.",
-          None)
-      }
+      } ~>
+        check {
+          rejection shouldEqual
+            MalformedRequestContentRejection(
+              "XML document structures must start and end within the same entity.",
+              None)
+        }
     }
     "extract an Option[T] from the requests entity using the in-scope Unmarshaller" in {
       Put("/", <p>cool</p>) ~> {
         entity(as[Option[NodeSeq]]) {
           echoComplete
         }
-      } ~> check {
-        responseAs[String] shouldEqual "Some(<p>cool</p>)"
-      }
+      } ~>
+        check {
+          responseAs[String] shouldEqual "Some(<p>cool</p>)"
+        }
     }
     "extract an Option[T] as None if the request has no entity" in {
       Put() ~> {
         entity(as[Option[Int]]) {
           echoComplete
         }
-      } ~> check {
-        responseAs[String] shouldEqual "None"
-      }
+      } ~>
+        check {
+          responseAs[String] shouldEqual "None"
+        }
     }
     "return an UnsupportedRequestContentTypeRejection if no matching unmarshaller is in scope (for Option[T]s)" in {
       Put("/", HttpEntity(`text/css` withCharset `UTF-8`, "<p>cool</p>")) ~> {
         entity(as[Option[NodeSeq]]) {
           echoComplete
         }
-      } ~> check {
-        rejection shouldEqual UnsupportedRequestContentTypeRejection(
-          Set(
-            `text/xml`,
-            `application/xml`,
-            `text/html`,
-            `application/xhtml+xml`))
-      }
+      } ~>
+        check {
+          rejection shouldEqual
+            UnsupportedRequestContentTypeRejection(
+              Set(
+                `text/xml`,
+                `application/xml`,
+                `text/html`,
+                `application/xhtml+xml`))
+        }
     }
     "properly extract with a super-unmarshaller" in {
       case class Person(name: String)
@@ -182,96 +196,93 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
 
       Put(
         "/",
-        HttpEntity(
-          ContentTypes.`text/xml(UTF-8)`,
-          "<name>Peter Xml</name>")) ~> route ~> check {
-        responseAs[String] shouldEqual "Person(Peter Xml)"
-      }
-      Put(
-        "/",
-        HttpEntity(
-          `application/json`,
-          """{ "name": "Paul Json" }""")) ~> route ~> check {
-        responseAs[String] shouldEqual "Person(Paul Json)"
-      }
+        HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<name>Peter Xml</name>")) ~>
+        route ~>
+        check {
+          responseAs[String] shouldEqual "Person(Peter Xml)"
+        }
+      Put("/", HttpEntity(`application/json`, """{ "name": "Paul Json" }""")) ~>
+        route ~>
+        check {
+          responseAs[String] shouldEqual "Person(Paul Json)"
+        }
       Put(
         "/",
         HttpEntity(
           ContentTypes.`text/plain(UTF-8)`,
-          """name = Sir Text }""")) ~> route ~> check {
-        rejection shouldEqual UnsupportedRequestContentTypeRejection(
-          Set(`application/json`, `text/xml`))
-      }
+          """name = Sir Text }""")) ~> route ~>
+        check {
+          rejection shouldEqual
+            UnsupportedRequestContentTypeRejection(
+              Set(`application/json`, `text/xml`))
+        }
     }
   }
 
   "The 'completeWith' directive" should {
     "provide a completion function converting custom objects to an HttpEntity using the in-scope marshaller" in {
-      Get() ~> completeWith(instanceOf[Int]) { prod ⇒
-        prod(42)
-      } ~> check {
-        responseEntity shouldEqual HttpEntity(
-          ContentType(`application/xhtml+xml`, `UTF-8`),
-          "<int>42</int>")
-      }
+      Get() ~>
+        completeWith(instanceOf[Int]) { prod ⇒
+          prod(42)
+        } ~>
+        check {
+          responseEntity shouldEqual
+            HttpEntity(
+              ContentType(`application/xhtml+xml`, `UTF-8`),
+              "<int>42</int>")
+        }
     }
     "return a UnacceptedResponseContentTypeRejection rejection if no acceptable marshaller is in scope" in {
-      Get() ~> Accept(`text/css`) ~> completeWith(instanceOf[Int]) { prod ⇒
-        prod(42)
-      } ~> check {
-        rejection shouldEqual UnacceptedResponseContentTypeRejection(
-          Set(`application/xhtml+xml`, `text/xxml`))
-      }
+      Get() ~> Accept(`text/css`) ~>
+        completeWith(instanceOf[Int]) { prod ⇒
+          prod(42)
+        } ~>
+        check {
+          rejection shouldEqual
+            UnacceptedResponseContentTypeRejection(
+              Set(`application/xhtml+xml`, `text/xxml`))
+        }
     }
     "convert the response content to an accepted charset" in {
-      Get() ~> `Accept-Charset`(`UTF-8`) ~> completeWith(instanceOf[String]) {
-        prod ⇒
+      Get() ~> `Accept-Charset`(`UTF-8`) ~>
+        completeWith(instanceOf[String]) { prod ⇒
           prod("Hällö")
-      } ~> check {
-        responseEntity shouldEqual HttpEntity(
-          ContentType(`text/plain`, `UTF-8`),
-          "Hällö")
-      }
+        } ~>
+        check {
+          responseEntity shouldEqual
+            HttpEntity(ContentType(`text/plain`, `UTF-8`), "Hällö")
+        }
     }
   }
 
   "The 'handleWith' directive" should {
     def times2(x: Int) = x * 2
 
-    "support proper round-trip content unmarshalling/marshalling to and from a function" in (
-      Put(
-        "/",
-        HttpEntity(ContentTypes.`text/html(UTF-8)`, "<int>42</int>")) ~> Accept(
-        `text/xxml`) ~> handleWith(times2)
-        ~> check {
+    "support proper round-trip content unmarshalling/marshalling to and from a function" in
+      (Put("/", HttpEntity(ContentTypes.`text/html(UTF-8)`, "<int>42</int>")) ~>
+        Accept(`text/xxml`) ~> handleWith(times2) ~>
+        check {
           responseEntity shouldEqual HttpEntity(`text/xxml`, "<int>84</int>")
-        }
-    )
+        })
 
-    "result in UnsupportedRequestContentTypeRejection rejection if there is no unmarshaller supporting the requests charset" in (
-      Put(
-        "/",
-        HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<int>42</int>")) ~> Accept(
-        `text/xml`) ~> handleWith(times2)
-        ~> check {
-          rejection shouldEqual UnsupportedRequestContentTypeRejection(
-            Set(ContentTypeRange(`text/xml`, iso88592), `text/html`))
-        }
-    )
+    "result in UnsupportedRequestContentTypeRejection rejection if there is no unmarshaller supporting the requests charset" in
+      (Put("/", HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<int>42</int>")) ~>
+        Accept(`text/xml`) ~> handleWith(times2) ~>
+        check {
+          rejection shouldEqual
+            UnsupportedRequestContentTypeRejection(
+              Set(ContentTypeRange(`text/xml`, iso88592), `text/html`))
+        })
 
-    "result in an UnacceptedResponseContentTypeRejection rejection if there is no marshaller supporting the requests Accept-Charset header" in (
-      Put(
-        "/",
-        HttpEntity(
-          ContentTypes.`text/html(UTF-8)`,
-          "<int>42</int>")) ~> addHeaders(
-        Accept(`text/xxml`),
-        `Accept-Charset`(`UTF-16`)) ~>
-        handleWith(times2) ~> check {
-        rejection shouldEqual UnacceptedResponseContentTypeRejection(
-          Set(`application/xhtml+xml`, `text/xxml`))
-      }
-    )
+    "result in an UnacceptedResponseContentTypeRejection rejection if there is no marshaller supporting the requests Accept-Charset header" in
+      (Put("/", HttpEntity(ContentTypes.`text/html(UTF-8)`, "<int>42</int>")) ~>
+        addHeaders(Accept(`text/xxml`), `Accept-Charset`(`UTF-16`)) ~>
+        handleWith(times2) ~>
+        check {
+          rejection shouldEqual
+            UnacceptedResponseContentTypeRejection(
+              Set(`application/xhtml+xml`, `text/xxml`))
+        })
   }
 
   "The marshalling infrastructure for JSON" should {
@@ -281,17 +292,19 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     val foo = Foo("Hällö")
 
     "render JSON with UTF-8 encoding if no `Accept-Charset` request header is present" in {
-      Get() ~> complete(foo) ~> check {
-        responseEntity shouldEqual HttpEntity(
-          `application/json`,
-          foo.toJson.prettyPrint)
-      }
+      Get() ~> complete(foo) ~>
+        check {
+          responseEntity shouldEqual
+            HttpEntity(`application/json`, foo.toJson.prettyPrint)
+        }
     }
     "reject JSON rendering if an `Accept-Charset` request header requests a non-UTF-8 encoding" in {
-      Get() ~> `Accept-Charset`(`ISO-8859-1`) ~> complete(foo) ~> check {
-        rejection shouldEqual UnacceptedResponseContentTypeRejection(
-          Set(ContentType(`application/json`)))
-      }
+      Get() ~> `Accept-Charset`(`ISO-8859-1`) ~> complete(foo) ~>
+        check {
+          rejection shouldEqual
+            UnacceptedResponseContentTypeRejection(
+              Set(ContentType(`application/json`)))
+        }
     }
   }
 }

@@ -80,13 +80,12 @@ object Decode {
   /** private[scala] so nobody gets the idea this is a supported interface.
     */
   private[scala] def caseParamNames(path: String): Option[List[String]] = {
-    val (outer, inner) =
-      (path indexOf '$') match {
-        case -1 =>
-          (path, "")
-        case x =>
-          (path take x, path drop (x + 1))
-      }
+    val (outer, inner) = (path indexOf '$') match {
+      case -1 =>
+        (path, "")
+      case x =>
+        (path take x, path drop (x + 1))
+    }
 
     for {
       clazz <- appLoader.tryToLoadClass[AnyRef](outer)
@@ -99,8 +98,8 @@ object Decode {
         }
         else {
           case x: ClassSymbol if x.name == inner =>
-            val xs = x.children filter (child =>
-              child.isCaseAccessor && (child.name endsWith " "))
+            val xs = x.children filter
+              (child => child.isCaseAccessor && (child.name endsWith " "))
             xs.toList map (_.name dropRight 1)
         }
 

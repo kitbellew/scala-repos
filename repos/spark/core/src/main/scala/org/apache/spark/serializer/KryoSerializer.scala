@@ -618,18 +618,23 @@ private[serializer] object KryoSerializer {
   )
 
   private val toRegisterSerializer = Map[Class[_], KryoClassSerializer[_]](
-    classOf[RoaringBitmap] -> new KryoClassSerializer[RoaringBitmap]() {
-      override def write(kryo: Kryo, output: KryoOutput, bitmap: RoaringBitmap)
-          : Unit = {
-        bitmap.serialize(new KryoOutputObjectOutputBridge(kryo, output))
-      }
-      override def read(kryo: Kryo, input: KryoInput, cls: Class[RoaringBitmap])
-          : RoaringBitmap = {
-        val ret = new RoaringBitmap
-        ret.deserialize(new KryoInputObjectInputBridge(kryo, input))
-        ret
-      }
-    })
+    classOf[RoaringBitmap] ->
+      new KryoClassSerializer[RoaringBitmap]() {
+        override def write(
+            kryo: Kryo,
+            output: KryoOutput,
+            bitmap: RoaringBitmap): Unit = {
+          bitmap.serialize(new KryoOutputObjectOutputBridge(kryo, output))
+        }
+        override def read(
+            kryo: Kryo,
+            input: KryoInput,
+            cls: Class[RoaringBitmap]): RoaringBitmap = {
+          val ret = new RoaringBitmap
+          ret.deserialize(new KryoInputObjectInputBridge(kryo, input))
+          ret
+        }
+      })
 }
 
 /**

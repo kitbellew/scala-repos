@@ -75,8 +75,8 @@ class GroupVersioningUtilTest
       maybeApp
         .map(_.copy(versionInfo = VersionInfo.forNewConfig(Timestamp(10))))
         .get
-    updated should be(
-      nestedApp.updateApp(PathId("/nested/app"), update, Timestamp(10)))
+    updated should
+      be(nestedApp.updateApp(PathId("/nested/app"), update, Timestamp(10)))
   }
 
   test("A scaled app should get proper versionInfo") {
@@ -93,10 +93,11 @@ class GroupVersioningUtilTest
             .forNewConfig(Timestamp(0))
             .withScaleOrRestartChange(Timestamp(10))))
         .get
-    updated.toString should be(
-      nestedAppScaled
-        .updateApp(PathId("/nested/app"), update, Timestamp(10))
-        .toString)
+    updated.toString should
+      be(
+        nestedAppScaled
+          .updateApp(PathId("/nested/app"), update, Timestamp(10))
+          .toString)
   }
 
   test("A updated app should get proper versionInfo") {
@@ -110,9 +111,10 @@ class GroupVersioningUtilTest
       maybeApp
         .map(_.copy(versionInfo = VersionInfo.forNewConfig(Timestamp(10))))
         .get
-    updated.toString should be(
-      nestedAppUpdated
-        .updateApp(PathId("/nested/app"), update, Timestamp(10))
-        .toString)
+    updated.toString should
+      be(
+        nestedAppUpdated
+          .updateApp(PathId("/nested/app"), update, Timestamp(10))
+          .toString)
   }
 }

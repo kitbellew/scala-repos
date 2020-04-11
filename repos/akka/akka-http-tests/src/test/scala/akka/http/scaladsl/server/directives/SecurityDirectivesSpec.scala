@@ -43,64 +43,72 @@ class SecurityDirectivesSpec extends RoutingSpec {
         dontBasicAuth {
           echoComplete
         }
-      } ~> check {
-        rejection shouldEqual AuthenticationFailedRejection(
-          CredentialsMissing,
-          challenge)
-      }
+      } ~>
+        check {
+          rejection shouldEqual
+            AuthenticationFailedRejection(CredentialsMissing, challenge)
+        }
     }
     "reject unauthenticated requests with Authorization header with an AuthenticationFailedRejection" in {
       Get() ~> Authorization(BasicHttpCredentials("Bob", "")) ~> {
         dontBasicAuth {
           echoComplete
         }
-      } ~> check {
-        rejection shouldEqual AuthenticationFailedRejection(
-          CredentialsRejected,
-          challenge)
-      }
+      } ~>
+        check {
+          rejection shouldEqual
+            AuthenticationFailedRejection(CredentialsRejected, challenge)
+        }
     }
     "reject requests with an OAuth2 Bearer Token Authorization header with 401" in {
-      Get() ~> Authorization(OAuth2BearerToken("myToken")) ~> Route.seal {
-        dontOAuth2Auth {
-          echoComplete
+      Get() ~> Authorization(OAuth2BearerToken("myToken")) ~>
+        Route.seal {
+          dontOAuth2Auth {
+            echoComplete
+          }
+        } ~>
+        check {
+          status shouldEqual StatusCodes.Unauthorized
+          responseAs[String] shouldEqual
+            "The supplied authentication is invalid"
+          header[`WWW-Authenticate`] shouldEqual
+            Some(`WWW-Authenticate`(challenge))
         }
-      } ~> check {
-        status shouldEqual StatusCodes.Unauthorized
-        responseAs[String] shouldEqual "The supplied authentication is invalid"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
-      }
     }
     "reject requests with illegal Authorization header with 401" in {
-      Get() ~> RawHeader("Authorization", "bob alice") ~> Route.seal {
-        dontBasicAuth {
-          echoComplete
+      Get() ~> RawHeader("Authorization", "bob alice") ~>
+        Route.seal {
+          dontBasicAuth {
+            echoComplete
+          }
+        } ~>
+        check {
+          status shouldEqual StatusCodes.Unauthorized
+          responseAs[String] shouldEqual
+            "The resource requires authentication, which was not supplied with the request"
+          header[`WWW-Authenticate`] shouldEqual
+            Some(`WWW-Authenticate`(challenge))
         }
-      } ~> check {
-        status shouldEqual StatusCodes.Unauthorized
-        responseAs[String] shouldEqual "The resource requires authentication, which was not supplied with the request"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
-      }
     }
     "extract the object representing the user identity created by successful authentication" in {
       Get() ~> Authorization(BasicHttpCredentials("Alice", "")) ~> {
         doBasicAuth {
           echoComplete
         }
-      } ~> check {
-        responseAs[String] shouldEqual "Alice"
-      }
+      } ~>
+        check {
+          responseAs[String] shouldEqual "Alice"
+        }
     }
     "extract the object representing the user identity created for the anonymous user" in {
       Get() ~> {
         authWithAnonymous {
           echoComplete
         }
-      } ~> check {
-        responseAs[String] shouldEqual "We are Legion"
-      }
+      } ~>
+        check {
+          responseAs[String] shouldEqual "We are Legion"
+        }
     }
     "properly handle exceptions thrown in its inner route" in {
       object TestException extends RuntimeException
@@ -111,9 +119,10 @@ class SecurityDirectivesSpec extends RoutingSpec {
               throw TestException
             }
           }
-        } ~> check {
-          status shouldEqual StatusCodes.InternalServerError
-        }
+        } ~>
+          check {
+            status shouldEqual StatusCodes.InternalServerError
+          }
       }
     }
   }
@@ -123,64 +132,72 @@ class SecurityDirectivesSpec extends RoutingSpec {
         dontOAuth2Auth {
           echoComplete
         }
-      } ~> check {
-        rejection shouldEqual AuthenticationFailedRejection(
-          CredentialsMissing,
-          challenge)
-      }
+      } ~>
+        check {
+          rejection shouldEqual
+            AuthenticationFailedRejection(CredentialsMissing, challenge)
+        }
     }
     "reject unauthenticated requests with Authorization header with an AuthenticationFailedRejection" in {
       Get() ~> Authorization(OAuth2BearerToken("myToken")) ~> {
         dontOAuth2Auth {
           echoComplete
         }
-      } ~> check {
-        rejection shouldEqual AuthenticationFailedRejection(
-          CredentialsRejected,
-          challenge)
-      }
+      } ~>
+        check {
+          rejection shouldEqual
+            AuthenticationFailedRejection(CredentialsRejected, challenge)
+        }
     }
     "reject requests with a Basic Authorization header with 401" in {
-      Get() ~> Authorization(BasicHttpCredentials("Alice", "")) ~> Route.seal {
-        dontBasicAuth {
-          echoComplete
+      Get() ~> Authorization(BasicHttpCredentials("Alice", "")) ~>
+        Route.seal {
+          dontBasicAuth {
+            echoComplete
+          }
+        } ~>
+        check {
+          status shouldEqual StatusCodes.Unauthorized
+          responseAs[String] shouldEqual
+            "The supplied authentication is invalid"
+          header[`WWW-Authenticate`] shouldEqual
+            Some(`WWW-Authenticate`(challenge))
         }
-      } ~> check {
-        status shouldEqual StatusCodes.Unauthorized
-        responseAs[String] shouldEqual "The supplied authentication is invalid"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
-      }
     }
     "reject requests with illegal Authorization header with 401" in {
-      Get() ~> RawHeader("Authorization", "bob alice") ~> Route.seal {
-        dontOAuth2Auth {
-          echoComplete
+      Get() ~> RawHeader("Authorization", "bob alice") ~>
+        Route.seal {
+          dontOAuth2Auth {
+            echoComplete
+          }
+        } ~>
+        check {
+          status shouldEqual StatusCodes.Unauthorized
+          responseAs[String] shouldEqual
+            "The resource requires authentication, which was not supplied with the request"
+          header[`WWW-Authenticate`] shouldEqual
+            Some(`WWW-Authenticate`(challenge))
         }
-      } ~> check {
-        status shouldEqual StatusCodes.Unauthorized
-        responseAs[String] shouldEqual "The resource requires authentication, which was not supplied with the request"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
-      }
     }
     "extract the object representing the user identity created by successful authentication" in {
       Get() ~> Authorization(OAuth2BearerToken("myToken")) ~> {
         doOAuth2Auth {
           echoComplete
         }
-      } ~> check {
-        responseAs[String] shouldEqual "myToken"
-      }
+      } ~>
+        check {
+          responseAs[String] shouldEqual "myToken"
+        }
     }
     "extract the object representing the user identity created for the anonymous user" in {
       Get() ~> {
         authWithAnonymous {
           echoComplete
         }
-      } ~> check {
-        responseAs[String] shouldEqual "We are Legion"
-      }
+      } ~>
+        check {
+          responseAs[String] shouldEqual "We are Legion"
+        }
     }
     "properly handle exceptions thrown in its inner route" in {
       object TestException extends RuntimeException
@@ -191,9 +208,10 @@ class SecurityDirectivesSpec extends RoutingSpec {
               throw TestException
             }
           }
-        } ~> check {
-          status shouldEqual StatusCodes.InternalServerError
-        }
+        } ~>
+          check {
+            status shouldEqual StatusCodes.InternalServerError
+          }
       }
     }
   }
@@ -206,16 +224,18 @@ class SecurityDirectivesSpec extends RoutingSpec {
       }
       val bothAuth = dontBasicAuth | otherAuth
 
-      Get() ~> Route.seal(
-        bothAuth {
-          echoComplete
-        }) ~> check {
-        status shouldEqual StatusCodes.Unauthorized
-        headers.collect {
-          case `WWW-Authenticate`(challenge +: Nil) ⇒
-            challenge
-        } shouldEqual Seq(challenge, otherChallenge)
-      }
+      Get() ~>
+        Route.seal(
+          bothAuth {
+            echoComplete
+          }) ~>
+        check {
+          status shouldEqual StatusCodes.Unauthorized
+          headers.collect {
+            case `WWW-Authenticate`(challenge +: Nil) ⇒
+              challenge
+          } shouldEqual Seq(challenge, otherChallenge)
+        }
     }
   }
 
@@ -225,18 +245,20 @@ class SecurityDirectivesSpec extends RoutingSpec {
         authorize(_ ⇒ true) {
           complete("OK")
         }
-      } ~> check {
-        responseAs[String] shouldEqual "OK"
-      }
+      } ~>
+        check {
+          responseAs[String] shouldEqual "OK"
+        }
     }
     "not authorize" in {
       Get() ~> {
         authorize(_ ⇒ false) {
           complete("OK")
         }
-      } ~> check {
-        rejection shouldEqual AuthorizationFailedRejection
-      }
+      } ~>
+        check {
+          rejection shouldEqual AuthorizationFailedRejection
+        }
     }
 
     "authorizeAsync" in {
@@ -244,27 +266,30 @@ class SecurityDirectivesSpec extends RoutingSpec {
         authorizeAsync(_ ⇒ Future.successful(true)) {
           complete("OK")
         }
-      } ~> check {
-        responseAs[String] shouldEqual "OK"
-      }
+      } ~>
+        check {
+          responseAs[String] shouldEqual "OK"
+        }
     }
     "not authorizeAsync" in {
       Get() ~> {
         authorizeAsync(_ ⇒ Future.successful(false)) {
           complete("OK")
         }
-      } ~> check {
-        rejection shouldEqual AuthorizationFailedRejection
-      }
+      } ~>
+        check {
+          rejection shouldEqual AuthorizationFailedRejection
+        }
     }
     "not authorizeAsync when future fails" in {
       Get() ~> {
         authorizeAsync(_ ⇒ Future.failed(new Exception("Boom!"))) {
           complete("OK")
         }
-      } ~> check {
-        rejection shouldEqual AuthorizationFailedRejection
-      }
+      } ~>
+        check {
+          rejection shouldEqual AuthorizationFailedRejection
+        }
     }
   }
 

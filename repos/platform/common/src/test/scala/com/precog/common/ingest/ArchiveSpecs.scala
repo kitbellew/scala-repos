@@ -42,12 +42,14 @@ class ArchiveSpecs
     with ScalaCheck {
   implicit val arbArchive = Arbitrary(genRandomArchive)
   "serialization of an archive" should {
-    "read back the data that was written" in check { in: Archive =>
-      in.serialize.validated[Archive] must beLike {
-        case Success(out) =>
-          in must_== out
+    "read back the data that was written" in
+      check { in: Archive =>
+        in.serialize.validated[Archive] must
+          beLike {
+            case Success(out) =>
+              in must_== out
+          }
       }
-    }
 
     "read legacy archives" in {
       val Success(JArray(input)) = JParser.parseFromString(
@@ -71,11 +73,8 @@ class ArchiveSpecs
         }
 
       results.size mustEqual 9
-      results.map(_.apiKey).toSet mustEqual Set(
-        "test1",
-        "test2",
-        "test3",
-        "test4")
+      results.map(_.apiKey).toSet mustEqual
+        Set("test1", "test2", "test3", "test4")
     }
 
     "read new archives" in {

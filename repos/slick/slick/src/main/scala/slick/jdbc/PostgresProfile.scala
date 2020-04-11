@@ -53,10 +53,8 @@ import slick.util.MacroSupport.macroSupportInterpolation
 trait PostgresProfile extends JdbcProfile {
 
   override protected def computeCapabilities: Set[Capability] =
-    (super.computeCapabilities
-      - JdbcCapabilities.insertOrUpdate
-      - JdbcCapabilities.nullableNoDefault
-      - JdbcCapabilities.supportsByte)
+    (super.computeCapabilities - JdbcCapabilities.insertOrUpdate -
+      JdbcCapabilities.nullableNoDefault - JdbcCapabilities.supportsByte)
 
   class ModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       implicit ec: ExecutionContext)
@@ -259,9 +257,9 @@ trait PostgresProfile extends JdbcProfile {
 
   class UpsertBuilder(ins: Insert) extends super.UpsertBuilder(ins) {
     override def buildInsert: InsertBuilderResult = {
-      val update = "update " + tableName + " set " + softNames
-        .map(n => s"$n=?")
-        .mkString(",") + " where " + pkNames.map(n => s"$n=?").mkString(" and ")
+      val update = "update " + tableName + " set " +
+        softNames.map(n => s"$n=?").mkString(",") + " where " +
+        pkNames.map(n => s"$n=?").mkString(" and ")
       val nonAutoIncNames = nonAutoIncSyms
         .map(fs => quoteIdentifier(fs.name))
         .mkString(",")
@@ -281,10 +279,11 @@ trait PostgresProfile extends JdbcProfile {
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {
     override def createPhase1 =
-      super.createPhase1 ++ columns.flatMap {
-        case cb: ColumnDDLBuilder =>
-          cb.createLobTrigger(table.tableName)
-      }
+      super.createPhase1 ++
+        columns.flatMap {
+          case cb: ColumnDDLBuilder =>
+            cb.createLobTrigger(table.tableName)
+        }
     override def dropPhase1 = {
       val dropLobs = columns.flatMap {
         case cb: ColumnDDLBuilder =>
@@ -293,9 +292,8 @@ trait PostgresProfile extends JdbcProfile {
       if (dropLobs.isEmpty)
         super.dropPhase1
       else
-        Seq(
-          "delete from " + quoteIdentifier(
-            table.tableName)) ++ dropLobs ++ super.dropPhase1
+        Seq("delete from " + quoteIdentifier(table.tableName)) ++ dropLobs ++
+          super.dropPhase1
     }
   }
 
@@ -304,12 +302,11 @@ trait PostgresProfile extends JdbcProfile {
     override def appendColumn(sb: StringBuilder) {
       sb append quoteIdentifier(column.name) append ' '
       if (autoIncrement && !customSqlType) {
-        sb append (
-          if (sqlType.toUpperCase == "BIGINT")
-            "BIGSERIAL"
-          else
-            "SERIAL"
-        )
+        sb append
+          (if (sqlType.toUpperCase == "BIGINT")
+             "BIGSERIAL"
+           else
+             "SERIAL")
       } else
         appendType(sb)
       autoIncrement = false
@@ -322,11 +319,10 @@ trait PostgresProfile extends JdbcProfile {
     def createLobTrigger(tname: String): Option[String] =
       if (sqlType == "lo")
         Some(
-          "create trigger " + lobTrigger(
-            tname) + " before update or delete on " +
-            quoteIdentifier(
-              tname) + " for each row execute procedure lo_manage(" + quoteIdentifier(
-            column.name) + ")")
+          "create trigger " + lobTrigger(tname) +
+            " before update or delete on " + quoteIdentifier(tname) +
+            " for each row execute procedure lo_manage(" +
+            quoteIdentifier(column.name) + ")")
       else
         None
 

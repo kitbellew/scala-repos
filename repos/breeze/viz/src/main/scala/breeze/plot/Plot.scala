@@ -176,10 +176,11 @@ class Plot() {
   }
 
   // set integer tick units by default
-  Array(xaxis, yaxis) foreach (axis => {
-    axis.setAutoRangeIncludesZero(false)
-    axis.setStandardTickUnits(Plot.integerTickUnits)
-  })
+  Array(xaxis, yaxis) foreach
+    (axis => {
+      axis.setAutoRangeIncludesZero(false)
+      axis.setStandardTickUnits(Plot.integerTickUnits)
+    })
 
   /** The JFreeChart plot object. */
   lazy val plot = {

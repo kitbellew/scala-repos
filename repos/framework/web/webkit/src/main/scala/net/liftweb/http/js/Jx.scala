@@ -64,14 +64,12 @@ trait JxBase {
 
                 JsRaw(varName + ".className = " + x.text.encJs).cmd &
                   JsRaw(
-                    varName + ".setAttribute(" + m.key.encJs + "," + x
-                      .text
-                      .encJs + ");").cmd
+                    varName + ".setAttribute(" + m.key.encJs + "," +
+                      x.text.encJs + ");").cmd
               } else {
                 JsRaw(
-                  varName + ".setAttribute(" + m.key.encJs + "," + x
-                    .text
-                    .encJs + ");").cmd
+                  varName + ".setAttribute(" + m.key.encJs + "," +
+                    x.text.encJs + ");").cmd
               }
           }
           .foldLeft(Noop)(_ & _)
@@ -103,13 +101,12 @@ trait JxBase {
           addToDocFrag(parent, nodes.toList)
         case Text(txt) =>
           JsRaw(
-            parent + ".appendChild(document.createTextNode(" + fixText(txt)
-              .encJs + "));").cmd
+            parent + ".appendChild(document.createTextNode(" +
+              fixText(txt).encJs + "));").cmd
         case a: Atom[_] =>
           JsRaw(
-            parent + ".appendChild(document.createTextNode(" + a
-              .text
-              .encJs + "));").cmd
+            parent + ".appendChild(document.createTextNode(" + a.text.encJs +
+              "));").cmd
         case e: scala.xml.Elem =>
           val varName = "v" + Helpers.nextFuncName
           JsCrVar(
@@ -123,9 +120,8 @@ trait JxBase {
             Noop
           else if (ns.length == 1) {
             logger.error(
-              "In addToDocFrag, got a " + ns + " of type " + ns
-                .getClass
-                .getName)
+              "In addToDocFrag, got a " + ns + " of type " +
+                ns.getClass.getName)
             Noop
           } else
             addToDocFrag(parent, ns.toList)
@@ -159,12 +155,11 @@ case class JxMap(in: JsExp, what: JxYieldFunc) extends Node with JxBase {
     val ran = "v" + Helpers.nextFuncName
     val fr = "f" + Helpers.nextFuncName
     val cr = "c" + Helpers.nextFuncName
-    JsCrVar(ran, in) &
-      JsCrVar(fr, what.yieldFunction) &
+    JsCrVar(ran, in) & JsCrVar(fr, what.yieldFunction) &
       JsRaw(
-        "for (" + cr + " = 0; " + cr + " < " + ran + ".length; " + cr + "++) {" +
-          parentName + ".appendChild(" + fr + "(" + ran + "[" + cr + "]));" +
-          "}")
+        "for (" + cr + " = 0; " + cr + " < " + ran + ".length; " + cr +
+          "++) {" + parentName + ".appendChild(" + fr + "(" + ran + "[" + cr +
+          "]));" + "}")
   }
 }
 
@@ -185,11 +180,10 @@ case class JxMatch(exp: JsExp, cases: JxCase*) extends Node with JxBase {
           cases
             .map { c =>
               " else if (" + vn + " == " + c.toMatch.toJsCmd + ") {" +
-                addToDocFrag(parentName, c.toDo.toList).toJsCmd +
-                "\n}"
+                addToDocFrag(parentName, c.toDo.toList).toJsCmd + "\n}"
             }
-            .mkString("") +
-          " else {throw new Exception('Unmatched: '+" + vn + ");}")
+            .mkString("") + " else {throw new Exception('Unmatched: '+" + vn +
+          ");}")
   }
 }
 
@@ -201,8 +195,7 @@ case class JxIf(toTest: JsExp, ifTrue: NodeSeq) extends Node with JxBase {
   def appendToParent(parentName: String): JsCmd = {
     JsRaw(
       "if (" + toTest.toJsCmd + ") {\n" +
-        addToDocFrag(parentName, ifTrue.toList).toJsCmd +
-        "}\n")
+        addToDocFrag(parentName, ifTrue.toList).toJsCmd + "}\n")
   }
 }
 
@@ -214,10 +207,8 @@ case class JxIfElse(toTest: JsExp, ifTrue: NodeSeq, ifFalse: NodeSeq)
   def appendToParent(parentName: String): JsCmd = {
     JsRaw(
       "if (" + toTest.toJsCmd + ") {\n" +
-        addToDocFrag(parentName, ifTrue.toList).toJsCmd +
-        "} else {\n" +
-        addToDocFrag(parentName, ifFalse.toList).toJsCmd +
-        "}\n")
+        addToDocFrag(parentName, ifTrue.toList).toJsCmd + "} else {\n" +
+        addToDocFrag(parentName, ifFalse.toList).toJsCmd + "}\n")
   }
 }
 
@@ -231,7 +222,6 @@ case class Jx(child: NodeSeq) extends Node with JxBase with JxYieldFunc {
     AnonFunc(
       "it",
       JsCrVar("df", JsRaw("document.createDocumentFragment()")) &
-        addToDocFrag("df", child.toList) &
-        JsRaw("return df"))
+        addToDocFrag("df", child.toList) & JsRaw("return df"))
 
 }

@@ -107,16 +107,17 @@ private[v1] object AllStagesResource {
             .executorSummary
             .map {
               case (k, summary) =>
-                k -> new ExecutorStageSummary(
-                  taskTime = summary.taskTime,
-                  failedTasks = summary.failedTasks,
-                  succeededTasks = summary.succeededTasks,
-                  inputBytes = summary.inputBytes,
-                  outputBytes = summary.outputBytes,
-                  shuffleRead = summary.shuffleRead,
-                  shuffleWrite = summary.shuffleWrite,
-                  memoryBytesSpilled = summary.memoryBytesSpilled,
-                  diskBytesSpilled = summary.diskBytesSpilled)
+                k ->
+                  new ExecutorStageSummary(
+                    taskTime = summary.taskTime,
+                    failedTasks = summary.failedTasks,
+                    succeededTasks = summary.succeededTasks,
+                    inputBytes = summary.inputBytes,
+                    outputBytes = summary.outputBytes,
+                    shuffleRead = summary.shuffleRead,
+                    shuffleWrite = summary.shuffleWrite,
+                    memoryBytesSpilled = summary.memoryBytesSpilled,
+                    diskBytesSpilled = summary.diskBytesSpilled)
             })
       } else {
         None

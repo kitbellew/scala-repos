@@ -40,9 +40,8 @@ private[spark] object SerializationDebugger extends Logging {
     if (enableDebugging && reflect != null) {
       try {
         new NotSerializableException(
-          e.getMessage + "\nSerialization stack:\n" + find(obj)
-            .map("\t- " + _)
-            .mkString("\n"))
+          e.getMessage + "\nSerialization stack:\n" +
+            find(obj).map("\t- " + _).mkString("\n"))
       } catch {
         case NonFatal(t) =>
           // Fall back to old exception
@@ -102,18 +101,14 @@ private[spark] object SerializationDebugger extends Logging {
           case _: String =>
             List.empty
           case _
-              if o.getClass.isArray && o
-                .getClass
-                .getComponentType
-                .isPrimitive =>
+              if o.getClass.isArray &&
+                o.getClass.getComponentType.isPrimitive =>
             List.empty
 
           // Traverse non primitive array.
           case a: Array[_]
-              if o.getClass.isArray && !o
-                .getClass
-                .getComponentType
-                .isPrimitive =>
+              if o.getClass.isArray &&
+                !o.getClass.getComponentType.isPrimitive =>
             val elem = s"array (class ${a.getClass.getName}, size ${a.length})"
             visitArray(o.asInstanceOf[Array[_]], elem :: stack)
 
@@ -128,7 +123,8 @@ private[spark] object SerializationDebugger extends Logging {
 
           case _ =>
             // Found an object that is not serializable!
-            s"object not serializable (class: ${o.getClass.getName}, value: $o)" :: stack
+            s"object not serializable (class: ${o.getClass.getName}, value: $o)" ::
+              stack
         }
       }
     }
@@ -228,8 +224,7 @@ private[spark] object SerializationDebugger extends Logging {
           while (j < objFieldValues.length) {
             val fieldDesc = fields(numPrims + j)
             val elem = s"field (class: ${slotDesc.getName}" +
-              s", name: ${fieldDesc.getName}" +
-              s", type: ${fieldDesc.getType})"
+              s", name: ${fieldDesc.getName}" + s", type: ${fieldDesc.getType})"
             val childStack = visit(objFieldValues(j), elem :: stack)
             if (childStack.nonEmpty) {
               return childStack

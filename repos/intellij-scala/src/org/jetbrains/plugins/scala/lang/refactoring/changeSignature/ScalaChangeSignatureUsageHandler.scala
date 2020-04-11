@@ -236,8 +236,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
   protected def handleChangedParameters(
       change: ChangeInfo,
       usage: ScalaNamedElementUsageInfo): Unit = {
-    if (!change.isParameterNamesChanged && !change
-          .isParameterSetOrOrderChanged && !change.isParameterTypesChanged)
+    if (!change.isParameterNamesChanged &&
+        !change.isParameterSetOrOrderChanged && !change.isParameterTypesChanged)
       return
 
     val named = usage.namedElement
@@ -619,8 +619,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       else
         change match {
           case sc: ScalaChangeInfo
-              if !sc.function.isConstructor && sc.function != usage
-                .namedElement =>
+              if !sc.function.isConstructor &&
+                sc.function != usage.namedElement =>
             None
           case sc: ScalaChangeInfo if sc.isAddDefaultArgs =>
             paramInfo.getDefaultValue match {

@@ -25,8 +25,8 @@ final class MultiHandler[S, T](
       case (None, xs @ (_, nr) :: ignored) =>
         if (ignored.nonEmpty)
           warn(
-            "Using first of multiple matching non-root build resolvers for " + getURI(
-              info),
+            "Using first of multiple matching non-root build resolvers for " +
+              getURI(info),
             log(info),
             xs)
         Some(nr)

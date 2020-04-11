@@ -124,8 +124,8 @@ private[serverset2] object Stabilizer {
       // The updates to this stabilized address are then batched and
       // triggered at most once per batchEpoch.
 
-      val states: Event[State] =
-        (va.changes select removalEpoch.event).foldLeft(initState) {
+      val states: Event[State] = (va.changes select removalEpoch.event)
+        .foldLeft(initState) {
           // Addr update
           case (st @ State(limbo, active, last), Left(addr)) =>
             addr match {

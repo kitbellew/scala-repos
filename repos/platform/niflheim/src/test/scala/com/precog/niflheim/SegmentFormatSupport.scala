@@ -127,9 +127,8 @@ trait SegmentFormatSupport {
   def genArraySegment(length: Int): Gen[ArraySegment[_]] =
     for {
       ctype <-
-        genCValueType(2) filter (
-          _ != CBoolean
-        ) // Note: CArrayType(CBoolean) is OK!
+        genCValueType(2) filter
+          (_ != CBoolean) // Note: CArrayType(CBoolean) is OK!
       segment <- genArraySegmentForCType(ctype, length)
     } yield segment
 
@@ -171,31 +170,33 @@ trait SegmentFormatMatchers {
     x0.length must_== y0.length
 
     val definedAt = (0 until x0.length) map x0.defined.apply
-    (x0, y0) must beLike {
-      case (x: ArraySegment[_], y: ArraySegment[_]) =>
-        val xs = x.values.deep zip definedAt filter (_._2) map (_._1)
-        val ys = y.values.deep zip definedAt filter (_._2) map (_._1)
-        xs must_== ys
-      case (x: BooleanSegment, y: BooleanSegment) =>
-        (x.values & x0.defined) must_== (y.values & x0.defined)
-      case (x: NullSegment, y: NullSegment) =>
-        ok
-    }
+    (x0, y0) must
+      beLike {
+        case (x: ArraySegment[_], y: ArraySegment[_]) =>
+          val xs = x.values.deep zip definedAt filter (_._2) map (_._1)
+          val ys = y.values.deep zip definedAt filter (_._2) map (_._1)
+          xs must_== ys
+        case (x: BooleanSegment, y: BooleanSegment) =>
+          (x.values & x0.defined) must_== (y.values & x0.defined)
+        case (x: NullSegment, y: NullSegment) =>
+          ok
+      }
   }
 
   def surviveRoundTripWithFormat(format: SegmentFormat)(segment0: Segment) = {
     val out = new InMemoryWritableByteChannel
-    format.writer.writeSegment(out, segment0) must beLike {
-      case Success(_) =>
-        format
-          .reader
-          .readSegment(
-            new InMemoryReadableByteChannel(out.toArray)) must beLike {
-          case Success(segment1) =>
-            //
-            areEqual(segment0, segment1)
-        }
-    }
+    format.writer.writeSegment(out, segment0) must
+      beLike {
+        case Success(_) =>
+          format
+            .reader
+            .readSegment(new InMemoryReadableByteChannel(out.toArray)) must
+            beLike {
+              case Success(segment1) =>
+                //
+                areEqual(segment0, segment1)
+            }
+      }
   }
 }
 

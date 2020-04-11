@@ -289,8 +289,8 @@ trait JobStateManager[M[+_]] {
         Right(Aborted(reason, abortedAt, prev))
       case badState =>
         Left(
-          "Job already in terminal state. %s" format JobState
-            .describe(badState))
+          "Job already in terminal state. %s" format
+            JobState.describe(badState))
     }
 
   def finish(
@@ -301,8 +301,8 @@ trait JobStateManager[M[+_]] {
         Right(Finished(finishedAt, prev))
       case badState =>
         Left(
-          "Job already in terminal state. %s" format JobState
-            .describe(badState))
+          "Job already in terminal state. %s" format
+            JobState.describe(badState))
     }
 
   def expire(
@@ -313,8 +313,8 @@ trait JobStateManager[M[+_]] {
         Right(Expired(expiredAt, prev))
       case badState =>
         Left(
-          "Job already in terminal state. %s" format JobState
-            .describe(badState))
+          "Job already in terminal state. %s" format
+            JobState.describe(badState))
     }
 }
 
@@ -329,22 +329,20 @@ trait JobResultManager[M[+_]] {
       id: JobId,
       mimeType: Option[MimeType],
       data: StreamT[M, Array[Byte]]): M[Either[String, Unit]] = {
-    findJob(id) flatMap (
-      _ map { job =>
+    findJob(id) flatMap
+      (_ map { job =>
         fs.save(job.id, FileData(mimeType, data)) map (Right(_))
-      } getOrElse M.point(Left("Invalid job id: " + id))
-    )
+      } getOrElse M.point(Left("Invalid job id: " + id)))
   }
 
   def getResult(job: JobId)
       : M[Either[String, (Option[MimeType], StreamT[M, Array[Byte]])]] = {
-    fs.load(job) map (
-      _ map {
+    fs.load(job) map
+      (_ map {
         case FileData(mimeType, data) =>
           Right((mimeType, data))
       } getOrElse {
         Left("No results exist for job " + job)
-      }
-    )
+      })
   }
 }

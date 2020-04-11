@@ -55,9 +55,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
   private val hasStarted = new AtomicBoolean(false)
   private val stateChangeLogger = KafkaController.stateChangeLogger
 
-  this.logIdent = "[Replica state machine on controller " + controller
-    .config
-    .brokerId + "]: "
+  this.logIdent = "[Replica state machine on controller " +
+    controller.config.brokerId + "]: "
 
   /**
     * Invoked on successful controller election. First registers a broker change listener since that triggers all
@@ -73,8 +72,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     handleStateChanges(controllerContext.allLiveReplicas(), OnlineReplica)
 
     info(
-      "Started replica state machine with initial state -> " + replicaState
-        .toString())
+      "Started replica state machine with initial state -> " +
+        replicaState.toString())
   }
 
   // register ZK listeners of the replica state machine
@@ -203,9 +202,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
               if (leaderIsrAndControllerEpoch.leaderAndIsr.leader == replicaId)
                 throw new StateChangeFailedException(
                   "Replica %d for partition %s cannot be moved to NewReplica"
-                    .format(
-                      replicaId,
-                      topicAndPartition) + "state as it is being requested to become leader")
+                    .format(replicaId, topicAndPartition) +
+                    "state as it is being requested to become leader")
               brokerRequestBatch.addLeaderAndIsrRequestForBrokers(
                 List(replicaId),
                 topic,
@@ -407,7 +405,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
               case None =>
                 true
             }
-          if (leaderAndIsrIsEmpty && !controller
+          if (leaderAndIsrIsEmpty &&
+              !controller
                 .deleteTopicManager
                 .isPartitionToBeDeleted(topicAndPartition))
             throw new StateChangeFailedException(
@@ -534,9 +533,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     * This is the zookeeper listener that triggers all the state transitions for a replica
     */
   class BrokerChangeListener() extends IZkChildListener with Logging {
-    this.logIdent = "[BrokerChangeListener on Controller " + controller
-      .config
-      .brokerId + "]: "
+    this.logIdent = "[BrokerChangeListener on Controller " +
+      controller.config.brokerId + "]: "
     def handleChildChange(
         parentPath: String,
         currentBrokerList: java.util.List[String]) {

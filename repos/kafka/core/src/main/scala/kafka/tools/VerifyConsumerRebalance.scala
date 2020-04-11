@@ -113,8 +113,8 @@ object VerifyConsumerRebalance extends Logging {
           rebalanceSucceeded = false
         }
         debug(
-          "Children of " + topicDirs
-            .consumerOwnerDir + " = " + partitionsWithOwners.toString)
+          "Children of " + topicDirs.consumerOwnerDir + " = " +
+            partitionsWithOwners.toString)
         val consumerIdsForTopic = consumersPerTopicMap.get(topic)
 
         // for each available partition for topic, check if an owner exists

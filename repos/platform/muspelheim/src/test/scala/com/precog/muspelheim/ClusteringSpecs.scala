@@ -37,14 +37,16 @@ trait ClusteringSpecs extends EvalStackSpecs {
   def testmodel(model: Map[String, SValue], validClusters: Set[String]) = {
     model.keys mustEqual Set("clusterId", "clusterCenter")
 
-    model("clusterId") must beLike {
-      case SString(c1) =>
-        validClusters must contain(c1)
-    }
-    model("clusterCenter") must beLike {
-      case SObject(v) =>
-        v.keys mustEqual Set("HeightIncm", "Weight")
-    }
+    model("clusterId") must
+      beLike {
+        case SString(c1) =>
+          validClusters must contain(c1)
+      }
+    model("clusterCenter") must
+      beLike {
+        case SObject(v) =>
+          v.keys mustEqual Set("HeightIncm", "Weight")
+      }
   }
 
   "clustering" should {
@@ -61,17 +63,20 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       results must haveSize(1)
 
-      results must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          ids must haveSize(0)
-          elems.keys mustEqual Set("model1")
-          elems("model1") must beLike {
-            case SObject(clusters) =>
-              clusters must haveSize(3)
-              clusters.keys mustEqual Set("cluster1", "cluster2", "cluster3")
-              clusterSchema(clusters) must_== List("height", "weight")
-          }
-      }
+      results must
+        haveAllElementsLike {
+          case (ids, SObject(elems)) =>
+            ids must haveSize(0)
+            elems.keys mustEqual Set("model1")
+            elems("model1") must
+              beLike {
+                case SObject(clusters) =>
+                  clusters must haveSize(3)
+                  clusters.keys mustEqual
+                    Set("cluster1", "cluster2", "cluster3")
+                  clusterSchema(clusters) must_== List("height", "weight")
+              }
+        }
     }
 
     "assign values to a cluster" in {
@@ -111,16 +116,18 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       val validClusters = (1 to 4).map("cluster" + _).toSet
 
-      results must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          ids must haveSize(1)
-          elems.keys mustEqual Set("model1")
+      results must
+        haveAllElementsLike {
+          case (ids, SObject(elems)) =>
+            ids must haveSize(1)
+            elems.keys mustEqual Set("model1")
 
-          elems("model1") must beLike {
-            case SObject(model) =>
-              testmodel(model, validClusters)
-          }
-      }
+            elems("model1") must
+              beLike {
+                case SObject(model) =>
+                  testmodel(model, validClusters)
+              }
+        }
     }
 
     def testJoinCluster(input: String, input2: String, idJoin: Boolean) = {
@@ -140,24 +147,27 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       val validClusters = (1 to 3).map("cluster" + _).toSet
 
-      results must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          if (idJoin)
-            ids must haveSize(2)
-          else
-            ids must haveSize(1)
+      results must
+        haveAllElementsLike {
+          case (ids, SObject(elems)) =>
+            if (idJoin)
+              ids must haveSize(2)
+            else
+              ids must haveSize(1)
 
-          elems.keys must contain("cluster")
-          elems("cluster") must beLike {
-            case SObject(obj) =>
-              obj.keys mustEqual Set("model1")
+            elems.keys must contain("cluster")
+            elems("cluster") must
+              beLike {
+                case SObject(obj) =>
+                  obj.keys mustEqual Set("model1")
 
-              obj("model1") must beLike {
-                case SObject(model) =>
-                  testmodel(model, validClusters)
+                  obj("model1") must
+                    beLike {
+                      case SObject(model) =>
+                        testmodel(model, validClusters)
+                    }
               }
-          }
-      }
+        }
     }
 
     "join cluster information to original data" in {
@@ -259,27 +269,31 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       val validClusters = (1 to 3).map("cluster" + _).toSet
 
-      results must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          ids must haveSize(2)
+      results must
+        haveAllElementsLike {
+          case (ids, SObject(elems)) =>
+            ids must haveSize(2)
 
-          elems.keys mustEqual Set("cluster", "model1")
+            elems.keys mustEqual Set("cluster", "model1")
 
-          elems("model1") must beLike {
-            case SObject(obj) =>
-              obj.keys mustEqual (validClusters)
-          }
-
-          elems("cluster") must beLike {
-            case SObject(obj) =>
-              obj.keys mustEqual Set("model1")
-
-              obj("model1") must beLike {
-                case SObject(model) =>
-                  testmodel(model, validClusters)
+            elems("model1") must
+              beLike {
+                case SObject(obj) =>
+                  obj.keys mustEqual (validClusters)
               }
-          }
-      }
+
+            elems("cluster") must
+              beLike {
+                case SObject(obj) =>
+                  obj.keys mustEqual Set("model1")
+
+                  obj("model1") must
+                    beLike {
+                      case SObject(model) =>
+                        testmodel(model, validClusters)
+                    }
+              }
+        }
     }
 
     "make a histogram of clusters" in {
@@ -306,18 +320,21 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       val validClusters = (1 to 5).map("cluster" + _).toSet
 
-      results must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          elems.keys mustEqual Set("numPtsInCluster", "clusterId")
-          elems("numPtsInCluster") must beLike {
-            case SDecimal(d) =>
-              d must be_>=(BigDecimal(1))
-          }
-          elems("clusterId") must beLike {
-            case SObject(model) =>
-              testmodel(model, validClusters)
-          }
-      }
+      results must
+        haveAllElementsLike {
+          case (ids, SObject(elems)) =>
+            elems.keys mustEqual Set("numPtsInCluster", "clusterId")
+            elems("numPtsInCluster") must
+              beLike {
+                case SDecimal(d) =>
+                  d must be_>=(BigDecimal(1))
+              }
+            elems("clusterId") must
+              beLike {
+                case SObject(model) =>
+                  testmodel(model, validClusters)
+              }
+        }
     }
 
     "assign values to a cluster when field names of cluster aren't present in data" in {
@@ -345,11 +362,12 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       results must haveSize(1)
 
-      results must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          ids must haveSize(0)
-          elems.keys mustEqual Set("model1", "model2", "model3", "model4")
-      }
+      results must
+        haveAllElementsLike {
+          case (ids, SObject(elems)) =>
+            ids must haveSize(0)
+            elems.keys mustEqual Set("model1", "model2", "model3", "model4")
+        }
     }
 
     "return nothing when fed empty set" in {
@@ -421,15 +439,17 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       results must haveSize(1)
 
-      results must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          ids must haveSize(0)
-          elems.keys mustEqual Set("model1")
-          elems("model1") must beLike {
-            case SObject(obj) =>
-              obj.keySet mustEqual (1 to 6).map("cluster" + _).toSet
-          }
-      }
+      results must
+        haveAllElementsLike {
+          case (ids, SObject(elems)) =>
+            ids must haveSize(0)
+            elems.keys mustEqual Set("model1")
+            elems("model1") must
+              beLike {
+                case SObject(obj) =>
+                  obj.keySet mustEqual (1 to 6).map("cluster" + _).toSet
+              }
+        }
     }
 
     "evaluate an invalid clustering query without exploding" in {

@@ -63,8 +63,8 @@ trait HeaderDirectives {
     * If no header with a matching name is found the request is rejected with a [[akka.http.scaladsl.server.MissingHeaderRejection]].
     */
   def headerValueByName(headerName: String): Directive1[String] =
-    headerValue(optionalValue(headerName.toLowerCase)) | reject(
-      MissingHeaderRejection(headerName))
+    headerValue(optionalValue(headerName.toLowerCase)) |
+      reject(MissingHeaderRejection(headerName))
 
   /**
     * Extracts the first HTTP request header of the given type.
@@ -72,8 +72,8 @@ trait HeaderDirectives {
     */
   def headerValueByType[T <: HttpHeader](
       magnet: ClassMagnet[T]): Directive1[T] =
-    headerValuePF(magnet.extractPF) | reject(
-      MissingHeaderRejection(magnet.runtimeClass.getSimpleName))
+    headerValuePF(magnet.extractPF) |
+      reject(MissingHeaderRejection(magnet.runtimeClass.getSimpleName))
 
   //#optional-header
   /**

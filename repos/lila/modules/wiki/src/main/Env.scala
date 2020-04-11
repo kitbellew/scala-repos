@@ -29,7 +29,8 @@ final class Env(config: Config, db: lila.db.Env) {
 
 object Env {
 
-  lazy val current = "wiki" boot new Env(
-    config = lila.common.PlayApp loadConfig "wiki",
-    db = lila.db.Env.current)
+  lazy val current = "wiki" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "wiki",
+      db = lila.db.Env.current)
 }

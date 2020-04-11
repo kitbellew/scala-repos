@@ -119,9 +119,8 @@ class DefaultGitUploadPack(owner: String, repoName: String)
       session: Session): Unit = {
     getRepository(owner, repoName.replaceFirst("\\.wiki\\Z", "")).foreach {
       repositoryInfo =>
-        if (!repositoryInfo.repository.isPrivate || isWritableUser(
-              user,
-              repositoryInfo)) {
+        if (!repositoryInfo.repository.isPrivate ||
+            isWritableUser(user, repositoryInfo)) {
           using(Git.open(getRepositoryDir(owner, repoName))) { git =>
             val repository = git.getRepository
             val upload = new UploadPack(repository)

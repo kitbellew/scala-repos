@@ -85,8 +85,8 @@ trait ModelLibModule[M[+_]] {
           val idCols = modelCols ++ keyCols
           if (idCols.isEmpty) {
             Map(
-              ColumnRef(CPath(paths.Key), CEmptyArray) -> Column
-                .const(CEmptyArray))
+              ColumnRef(CPath(paths.Key), CEmptyArray) ->
+                Column.const(CEmptyArray))
           } else {
             idCols
           }
@@ -404,8 +404,8 @@ trait ModelLibModule[M[+_]] {
             val featuresCols = alignWithModels(schema, featuresPaths)
 
             //error prone; ideally determine common keys earlier
-            val commonKeys = interceptCols.keySet & stdErrCols.keySet & dofCols
-              .keySet & covarCols.keySet & featuresCols.keySet
+            val commonKeys = interceptCols.keySet & stdErrCols.keySet &
+              dofCols.keySet & covarCols.keySet & featuresCols.keySet
 
             val joined0 =
               commonKeys map {

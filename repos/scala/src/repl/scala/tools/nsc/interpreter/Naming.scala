@@ -20,8 +20,8 @@ trait Naming {
     // Looking to exclude binary data which hoses the terminal, but
     // let through the subset of it we need, like whitespace and also
     // <ESC> for ansi codes.
-    val binaryChars =
-      cleaned count (ch => ch < 32 && !ch.isWhitespace && ch != ESC)
+    val binaryChars = cleaned count
+      (ch => ch < 32 && !ch.isWhitespace && ch != ESC)
     // Lots of binary chars - translate all supposed whitespace into spaces
     // except supposed line endings, otherwise scrubbed lines run together
     if (binaryChars > 5) // more than one can count while holding a hamburger
@@ -37,13 +37,14 @@ trait Naming {
       }
     // Not lots - preserve whitespace and ESC
     else
-      cleaned map (ch =>
-        if (ch.isWhitespace || ch == ESC)
-          ch
-        else if (ch < 32)
-          '?'
-        else
-          ch)
+      cleaned map
+        (ch =>
+          if (ch.isWhitespace || ch == ESC)
+            ch
+          else if (ch < 32)
+            '?'
+          else
+            ch)
   }
 
   // The two name forms this is catching are the two sides of this assignment:
@@ -52,8 +53,8 @@ trait Naming {
   //   $line3.$read$$iw$$iw$Bippy@4a6a00ca
   lazy val lineRegex = {
     val sn = sessionNames
-    val members = List(sn.read, sn.eval, sn.print) map Regex
-      .quote mkString ("(?:", "|", ")")
+    val members = List(sn.read, sn.eval, sn.print) map Regex.quote mkString
+      ("(?:", "|", ")")
     debugging("lineRegex")(
       Regex.quote(sn.line) + """\d+[./]""" + members + """[$.]""")
   }

@@ -87,8 +87,7 @@ class StateMetricsTest
       .getHistograms
       .get(tested.durationHistogramName)
       .getSnapshot
-      .getMax should
-      be(1.second.toMillis)
+      .getMax should be(1.second.toMillis)
 
     And("the original failure is preserved")
     attempt.failed.get should be(failure)
@@ -214,8 +213,7 @@ class StateMetricsTest
       .getHistograms
       .get(tested.durationHistogramName)
       .getSnapshot
-      .getMax should
-      be(1.second.toMillis)
+      .getMax should be(1.second.toMillis)
 
     And("the original result is preserved")
     result.futureValue should be(())
@@ -342,8 +340,7 @@ class StateMetricsTest
       .getHistograms
       .get(tested.durationHistogramName)
       .getSnapshot
-      .getMax should
-      be(1.second.toMillis)
+      .getMax should be(1.second.toMillis)
 
     And("the failure should be preserved")
     result.failed.futureValue should be(failure)

@@ -68,8 +68,8 @@ private[streaming] object MapWithStateRDDRecord {
           wrappedState)
         if (wrappedState.isRemoved) {
           newStateMap.remove(key)
-        } else if (wrappedState.isUpdated
-                   || (wrappedState.exists && timeoutThresholdTime.isDefined)) {
+        } else if (wrappedState.isUpdated ||
+                   (wrappedState.exists && timeoutThresholdTime.isDefined)) {
           newStateMap.put(key, wrappedState.get(), batchTime.milliseconds)
         }
         mappedData ++= returned

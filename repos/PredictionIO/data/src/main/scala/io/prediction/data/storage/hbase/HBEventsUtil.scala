@@ -105,8 +105,8 @@ object HBEventsUtil {
       // add UUID least significant bits for multiple actions at the same time
       // (UUID's most significant bits are actually timestamp,
       // use eventTime instead).
-      val b = hash(entityType, entityId) ++
-        Bytes.toBytes(millis) ++ Bytes.toBytes(uuidLow)
+      val b = hash(entityType, entityId) ++ Bytes.toBytes(millis) ++
+        Bytes.toBytes(uuidLow)
       new RowKey(b)
     }
 

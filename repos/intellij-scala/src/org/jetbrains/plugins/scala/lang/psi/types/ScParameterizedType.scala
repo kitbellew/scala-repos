@@ -395,8 +395,8 @@ class ScParameterizedType private (
   private def getStandardType(
       prefix: String): Option[(ScTypeDefinition, Seq[ScType])] = {
     def startsWith(clazz: PsiClass, qualNamePrefix: String) =
-      clazz
-        .qualifiedName != null && clazz.qualifiedName.startsWith(qualNamePrefix)
+      clazz.qualifiedName != null &&
+        clazz.qualifiedName.startsWith(qualNamePrefix)
 
     ScType.extractClassType(designator) match {
       case Some((clazz: ScTypeDefinition, sub)) if startsWith(clazz, prefix) =>
@@ -431,20 +431,20 @@ class ScParameterizedType private (
   }
 
   override def isFinalType: Boolean =
-    designator.isFinalType && !typeArgs.exists {
-      case tp: ScTypeParameterType =>
-        tp.isContravariant || tp.isCovariant
-      case _ =>
-        false
-    }
+    designator.isFinalType &&
+      !typeArgs.exists {
+        case tp: ScTypeParameterType =>
+          tp.isContravariant || tp.isCovariant
+        case _ =>
+          false
+      }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[ScParameterizedType]
 
   override def equals(other: Any): Boolean =
     other match {
       case that: ScParameterizedType =>
-        (that canEqual this) &&
-          designator == that.designator &&
+        (that canEqual this) && designator == that.designator &&
           typeArgs == that.typeArgs
       case _ =>
         false
@@ -492,11 +492,9 @@ case class ScTypeParameterType(
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = (
-        (
-          (param.hashCode() * 31 + upper.hashCode) * 31 + lower.hashCode()
-        ) * 31 + args.hashCode()
-      ) * 31 + name.hashCode
+      hash =
+        (((param.hashCode() * 31 + upper.hashCode) * 31 + lower.hashCode()) *
+          31 + args.hashCode()) * 31 + name.hashCode
     }
     hash
   }

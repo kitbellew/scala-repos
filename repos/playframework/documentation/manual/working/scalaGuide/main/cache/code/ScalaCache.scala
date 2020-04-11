@@ -33,44 +33,47 @@ package scalaguide.cache {
         }
       }
 
-      "a cache" in withCache { cache =>
-        val connectedUser = User("xf")
-        //#set-value
-        cache.set("item.key", connectedUser)
-        //#set-value
+      "a cache" in
+        withCache { cache =>
+          val connectedUser = User("xf")
+          //#set-value
+          cache.set("item.key", connectedUser)
+          //#set-value
 
-        //#get-value
-        val maybeUser: Option[User] = cache.get[User]("item.key")
-        //#get-value
+          //#get-value
+          val maybeUser: Option[User] = cache.get[User]("item.key")
+          //#get-value
 
-        maybeUser must beSome(connectedUser)
+          maybeUser must beSome(connectedUser)
 
-        //#remove-value
-        cache.remove("item.key")
-        //#remove-value
-        cache.get[User]("item.key") must beNone
-      }
+          //#remove-value
+          cache.remove("item.key")
+          //#remove-value
+          cache.get[User]("item.key") must beNone
+        }
 
-      "a cache or get user" in withCache { cache =>
-        val connectedUser = "xf"
-        //#retrieve-missing
-        val user: User =
-          cache.getOrElse[User]("item.key") {
-            User.findById(connectedUser)
-          }
-        //#retrieve-missing
-        user must beEqualTo(User(connectedUser))
-      }
+      "a cache or get user" in
+        withCache { cache =>
+          val connectedUser = "xf"
+          //#retrieve-missing
+          val user: User =
+            cache.getOrElse[User]("item.key") {
+              User.findById(connectedUser)
+            }
+          //#retrieve-missing
+          user must beEqualTo(User(connectedUser))
+        }
 
-      "cache with expiry" in withCache { cache =>
-        val connectedUser = "xf"
-        //#set-value-expiration
-        import scala.concurrent.duration._
+      "cache with expiry" in
+        withCache { cache =>
+          val connectedUser = "xf"
+          //#set-value-expiration
+          import scala.concurrent.duration._
 
-        cache.set("item.key", connectedUser, 5.minutes)
-        //#set-value-expiration
-        ok
-      }
+          cache.set("item.key", connectedUser, 5.minutes)
+          //#set-value-expiration
+          ok
+        }
 
       "bind multiple" in {
         running(_.configure("play.cache.bindCaches" -> Seq("session-cache"))) {

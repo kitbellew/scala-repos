@@ -27,8 +27,7 @@ class SourceTrackingMonitorTest extends FunSuite with MockitoSugar {
     monitor.handle(exc)
     verify(logger).log(
       Level.SEVERE,
-      "The 'qux' service " +
-        Seq("user", "tweet").mkString(" on behalf of ") +
+      "The 'qux' service " + Seq("user", "tweet").mkString(" on behalf of ") +
         " threw an exception",
       exc)
   }

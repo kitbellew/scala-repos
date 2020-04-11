@@ -35,9 +35,10 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
       })
 
     assert(
-      exc == intercept[Exception] {
-        Await.result(trans.read())
-      })
+      exc ==
+        intercept[Exception] {
+          Await.result(trans.read())
+        })
   }
 
   def fromList[A](seq: => List[A]) =

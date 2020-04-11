@@ -227,12 +227,10 @@ class ReplicaManager(
     val now = System.currentTimeMillis()
     isrChangeSet synchronized {
       if (isrChangeSet.nonEmpty &&
-          (
-            lastIsrChangeMs.get() + ReplicaManager
-              .IsrChangePropagationBlackOut < now ||
-            lastIsrPropagationMs.get() + ReplicaManager
-              .IsrChangePropagationInterval < now
-          )) {
+          (lastIsrChangeMs
+            .get() + ReplicaManager.IsrChangePropagationBlackOut < now ||
+          lastIsrPropagationMs
+            .get() + ReplicaManager.IsrChangePropagationInterval < now)) {
         ReplicationUtils.propagateIsrChanges(zkUtils, isrChangeSet)
         isrChangeSet.clear()
         lastIsrPropagationMs.set(now)
@@ -472,10 +470,11 @@ class ReplicaManager(
       val responseStatus = messagesPerPartition.map {
         case (topicAndPartition, messageSet) =>
           (
-            topicAndPartition -> new PartitionResponse(
-              Errors.INVALID_REQUIRED_ACKS.code,
-              LogAppendInfo.UnknownLogAppendInfo.firstOffset,
-              Message.NoTimestamp)
+            topicAndPartition ->
+              new PartitionResponse(
+                Errors.INVALID_REQUIRED_ACKS.code,
+                LogAppendInfo.UnknownLogAppendInfo.firstOffset,
+                Message.NoTimestamp)
           )
       }
       responseCallback(responseStatus)
@@ -491,10 +490,9 @@ class ReplicaManager(
       requiredAcks: Short,
       messagesPerPartition: Map[TopicPartition, MessageSet],
       localProduceResults: Map[TopicPartition, LogAppendResult]): Boolean = {
-    requiredAcks == -1 &&
-    messagesPerPartition.size > 0 &&
-    localProduceResults.values.count(_.error.isDefined) < messagesPerPartition
-      .size
+    requiredAcks == -1 && messagesPerPartition.size > 0 &&
+    localProduceResults.values.count(_.error.isDefined) <
+      messagesPerPartition.size
   }
 
   private def isValidRequiredAcks(requiredAcks: Short): Boolean = {
@@ -521,9 +519,8 @@ class ReplicaManager(
           .mark()
 
         // reject appending to internal topics if it is not allowed
-        if (TopicConstants
-              .INTERNAL_TOPICS
-              .contains(topicPartition.topic) && !internalTopicsAllowed) {
+        if (TopicConstants.INTERNAL_TOPICS.contains(topicPartition.topic) &&
+            !internalTopicsAllowed) {
           (
             topicPartition,
             LogAppendResult(
@@ -662,8 +659,8 @@ class ReplicaManager(
     //                        2) fetch request does not require any data
     //                        3) has enough data to respond
     //                        4) some error happens while reading data
-    if (timeout <= 0 || fetchInfo
-          .size <= 0 || bytesReadable >= fetchMinBytes || errorReadingData) {
+    if (timeout <= 0 || fetchInfo.size <= 0 || bytesReadable >= fetchMinBytes ||
+        errorReadingData) {
       val fetchPartitionData = logReadResults.mapValues(result =>
         FetchResponsePartitionData(
           result.errorCode,
@@ -756,9 +753,9 @@ class ReplicaManager(
                     MessageSet.Empty)
               }
 
-            val readToEndOfLog = initialLogEndOffset.messageOffset - logReadInfo
-              .fetchOffsetMetadata
-              .messageOffset <= 0
+            val readToEndOfLog = initialLogEndOffset
+              .messageOffset - logReadInfo.fetchOffsetMetadata.messageOffset <=
+              0
 
             LogReadResult(
               logReadInfo,
@@ -1272,14 +1269,15 @@ class ReplicaManager(
         val partitionsToMakeFollowerWithLeaderAndOffset =
           partitionsToMakeFollower
             .map(partition =>
-              new TopicAndPartition(partition) -> BrokerAndInitialOffset(
-                metadataCache
-                  .getAliveBrokers
-                  .find(_.id == partition.leaderReplicaIdOpt.get)
-                  .get
-                  .getBrokerEndPoint(config.interBrokerSecurityProtocol),
-                partition.getReplica().get.logEndOffset.messageOffset
-              ))
+              new TopicAndPartition(partition) ->
+                BrokerAndInitialOffset(
+                  metadataCache
+                    .getAliveBrokers
+                    .find(_.id == partition.leaderReplicaIdOpt.get)
+                    .get
+                    .getBrokerEndPoint(config.interBrokerSecurityProtocol),
+                  partition.getReplica().get.logEndOffset.messageOffset
+                ))
             .toMap
         replicaFetcherManager
           .addFetcherForPartitions(partitionsToMakeFollowerWithLeaderAndOffset)

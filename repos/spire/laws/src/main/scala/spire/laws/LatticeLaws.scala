@@ -27,8 +27,9 @@ trait LatticeLaws[A] extends Laws {
     new LatticeProperties(
       name = "joinSemilattice",
       parents = Nil,
-      "join.associative" → forAll((x: A, y: A, z: A) =>
-        ((x join y) join z) === (x join (y join z))),
+      "join.associative" →
+        forAll((x: A, y: A, z: A) =>
+          ((x join y) join z) === (x join (y join z))),
       "join.commutative" → forAll((x: A, y: A) => (x join y) === (y join x)),
       "join.idempotent" → forAll((x: A) => (x join x) === x))
 
@@ -36,8 +37,9 @@ trait LatticeLaws[A] extends Laws {
     new LatticeProperties(
       name = "meetSemilattice",
       parents = Nil,
-      "meet.associative" → forAll((x: A, y: A, z: A) =>
-        ((x meet y) meet z) === (x meet (y meet z))),
+      "meet.associative" →
+        forAll((x: A, y: A, z: A) =>
+          ((x meet y) meet z) === (x meet (y meet z))),
       "meet.commutative" → forAll((x: A, y: A) => (x meet y) === (y meet x)),
       "meet.idempotent" → forAll((x: A) => (x meet x) === x))
 
@@ -45,23 +47,23 @@ trait LatticeLaws[A] extends Laws {
     new LatticeProperties(
       name = "lattice",
       parents = Seq(joinSemilattice, meetSemilattice),
-      "absorption" → forAll((x: A, y: A) =>
-        ((x join (x meet y)) === x) &&
-          ((x meet (x join y)) === x)))
+      "absorption" →
+        forAll((x: A, y: A) =>
+          ((x join (x meet y)) === x) && ((x meet (x join y)) === x)))
 
   def boundedJoinSemilattice(implicit A: BoundedJoinSemilattice[A]) =
     new LatticeProperties(
       name = "boundedJoinSemilattice",
       parents = Seq(joinSemilattice),
-      "join.identity" → forAll((x: A) =>
-        (x join A.zero) === x && (A.zero join x) === x))
+      "join.identity" →
+        forAll((x: A) => (x join A.zero) === x && (A.zero join x) === x))
 
   def boundedMeetSemilattice(implicit A: BoundedMeetSemilattice[A]) =
     new LatticeProperties(
       name = "boundedMeetSemilattice",
       parents = Seq(meetSemilattice),
-      "meet.identity" → forAll((x: A) =>
-        (x meet A.one) === x && (A.one meet x) === x))
+      "meet.identity" →
+        forAll((x: A) => (x meet A.one) === x && (A.one meet x) === x))
 
   def boundedBelowLattice(implicit
       A: Lattice[A] with BoundedJoinSemilattice[A]) =

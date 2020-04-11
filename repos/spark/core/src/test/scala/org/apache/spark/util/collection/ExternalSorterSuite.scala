@@ -272,8 +272,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         None,
         None)
     sorter.insertAll(
-      (1 to size).iterator.map(i => (i, i)) ++ Iterator(
-        (Int.MaxValue, Int.MaxValue)))
+      (1 to size).iterator.map(i => (i, i)) ++
+        Iterator((Int.MaxValue, Int.MaxValue)))
     assert(sorter.numSpills > 0, "sorter did not spill")
     val it = sorter.iterator
     while (it.hasNext) {
@@ -313,10 +313,11 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         None)
 
     sorter.insertAll(
-      (1 to size).iterator.map(i => (i.toString, i.toString)) ++ Iterator(
-        (null.asInstanceOf[String], "1"),
-        ("1", null.asInstanceOf[String]),
-        (null.asInstanceOf[String], null.asInstanceOf[String])))
+      (1 to size).iterator.map(i => (i.toString, i.toString)) ++
+        Iterator(
+          (null.asInstanceOf[String], "1"),
+          ("1", null.asInstanceOf[String]),
+          (null.asInstanceOf[String], null.asInstanceOf[String])))
     assert(sorter.numSpills > 0, "sorter did not spill")
     val it = sorter.iterator
     while (it.hasNext) {
@@ -442,10 +443,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         Some(ord))
     sorter.insertAll(elements.iterator)
     assert(
-      sorter
-        .partitionedIterator
-        .map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+      sorter.partitionedIterator.map(p => (p._1, p._2.toSet)).toSet ===
+        expected)
     sorter.stop()
 
     // Only aggregator
@@ -457,10 +456,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         None)
     sorter2.insertAll(elements.iterator)
     assert(
-      sorter2
-        .partitionedIterator
-        .map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+      sorter2.partitionedIterator.map(p => (p._1, p._2.toSet)).toSet ===
+        expected)
     sorter2.stop()
 
     // Only ordering
@@ -472,10 +469,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         Some(ord))
     sorter3.insertAll(elements.iterator)
     assert(
-      sorter3
-        .partitionedIterator
-        .map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+      sorter3.partitionedIterator.map(p => (p._1, p._2.toSet)).toSet ===
+        expected)
     sorter3.stop()
 
     // Neither aggregator nor ordering
@@ -487,10 +482,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         None)
     sorter4.insertAll(elements.iterator)
     assert(
-      sorter4
-        .partitionedIterator
-        .map(p => (p._1, p._2.toSet))
-        .toSet === expected)
+      sorter4.partitionedIterator.map(p => (p._1, p._2.toSet)).toSet ===
+        expected)
     sorter4.stop()
   }
 
@@ -504,8 +497,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
 
     val ord = implicitly[Ordering[Int]]
-    val elements =
-      Iterator((1, 1), (5, 5)) ++ (0 until size).iterator.map(x => (2, 2))
+    val elements = Iterator((1, 1), (5, 5)) ++
+      (0 until size).iterator.map(x => (2, 2))
 
     val sorter =
       new ExternalSorter[Int, Int, Int](
@@ -606,12 +599,11 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         }
         .sortByKey(numPartitions = numReduceTasks)
         .collect()
-      val expected =
-        (0 until size)
-          .map { i =>
-            (i / 2, i)
-          }
-          .toArray
+      val expected = (0 until size)
+        .map { i =>
+          (i / 2, i)
+        }
+        .toArray
       assert(result.length === size)
       result
         .zipWithIndex
@@ -762,30 +754,28 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
             (p, vs.toSet)
         }
         .toSet
-    val expected =
-      (0 until 3)
-        .map { p =>
-          var v =
-            (0 until size)
-              .map { i =>
-                (i / 4, i)
-              }
-              .filter {
-                case (k, _) =>
-                  k % 3 == p
-              }
-              .toSet
-          if (withPartialAgg) {
-            v = v
-              .groupBy(_._1)
-              .mapValues { s =>
-                s.map(_._2).sum
-              }
-              .toSet
+    val expected = (0 until 3)
+      .map { p =>
+        var v = (0 until size)
+          .map { i =>
+            (i / 4, i)
           }
-          (p, v.toSet)
+          .filter {
+            case (k, _) =>
+              k % 3 == p
+          }
+          .toSet
+        if (withPartialAgg) {
+          v = v
+            .groupBy(_._1)
+            .mapValues { s =>
+              s.map(_._2).sum
+            }
+            .toSet
         }
-        .toSet
+        (p, v.toSet)
+      }
+      .toSet
     assert(results === expected)
   }
 

@@ -97,9 +97,8 @@ object WorksheetDiffSplitters {
           val f = getProportion
 
           Option(
-            PsiDocumentManager
-              .getInstance(editor1.getProject) getCachedPsiFile editor1
-              .getDocument) foreach {
+            PsiDocumentManager.getInstance(editor1.getProject) getCachedPsiFile
+              editor1.getDocument) foreach {
             case file: ScalaFile =>
               WorksheetEditorPrinter.saveOnlyRatio(file, f)
             case _ =>
@@ -153,8 +152,11 @@ object WorksheetDiffSplitters {
 
           val plainPolygons = intervals zip changes collect {
             case ((from, to), (offset, spaces))
-                if spaces != 0 && firstVisible1 <= from && lastVisible1 >= to && firstVisible2 <=
-                  (offset - to + from) && lastVisible2 >= (offset + spaces) =>
+                if spaces != 0 && firstVisible1 <= from && lastVisible1 >= to &&
+                  firstVisible2 <=
+                  (offset - to + from) &&
+                  lastVisible2 >=
+                  (offset + spaces) =>
               flag = !flag
               new DividerPolygon(
                 (from + 1) * lineHeight1,

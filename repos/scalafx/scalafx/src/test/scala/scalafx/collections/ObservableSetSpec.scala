@@ -103,10 +103,12 @@ class ObservableSetSpec[T]
     }
 
     // Execution
-    set += 1 // 1 is in set yet. How set is not modified, invalidate is not activated
+    set +=
+      1 // 1 is in set yet. How set is not modified, invalidate is not activated
     set -= 1
     set -= 2
-    set -= 3 // 3 is not in set yet. How set is not modified, invalidate is not activated
+    set -=
+      3 // 3 is not in set yet. How set is not modified, invalidate is not activated
     set += 3
 
     // Verification
@@ -209,15 +211,15 @@ class ObservableSetSpec[T]
     removedValues.clear()
     // Retain even values
     set retain (_ % 2 == 0)
-    removedValues.toList.sortWith(_ < _) should equal(
-      (8 to 15).filter(_ % 2 != 0).toList)
+    removedValues.toList.sortWith(_ < _) should
+      equal((8 to 15).filter(_ % 2 != 0).toList)
 
     removedValues.clear()
     // Clear Set
     set.clear()
     set should be('empty)
-    removedValues.toList.sortWith(_ < _) should equal(
-      (8 to 15).filter(_ % 2 == 0).toList)
+    removedValues.toList.sortWith(_ < _) should
+      equal((8 to 15).filter(_ % 2 == 0).toList)
   }
 
   it should "keep his behavior with other types of sets beyond HashSet" in {

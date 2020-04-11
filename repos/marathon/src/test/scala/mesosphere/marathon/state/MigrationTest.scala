@@ -99,8 +99,9 @@ class MigrationTest
     }
 
     Then("Migration exits with a readable error message")
-    ex.getMessage should equal(
-      s"Migration from versions < $minVersion is not supported. Your version: $unsupportedVersion")
+    ex.getMessage should
+      equal(
+        s"Migration from versions < $minVersion is not supported. Your version: $unsupportedVersion")
   }
 
   test("migrate() from unsupported version exits with a readable error") {
@@ -110,22 +111,24 @@ class MigrationTest
     f.groupRepo.rootGroup() returns Future.successful(None)
     f.groupRepo.store(any, any) returns Future.successful(Group.empty)
 
-    f.store.load("internal:storage:version") returns Future.successful(
-      Some(
-        InMemoryEntity(
-          id = "internal:storage:version",
-          version = 0,
-          bytes = minVersion.toByteArray)))
+    f.store.load("internal:storage:version") returns
+      Future.successful(
+        Some(
+          InMemoryEntity(
+            id = "internal:storage:version",
+            version = 0,
+            bytes = minVersion.toByteArray)))
     f.store.initialize() returns Future.successful(())
 
     Given("An unsupported storage version")
     val unsupportedVersion = StorageVersions(0, 2, 0)
-    f.store.load("internal:storage:version") returns Future.successful(
-      Some(
-        InMemoryEntity(
-          id = "internal:storage:version",
-          version = 0,
-          bytes = unsupportedVersion.toByteArray)))
+    f.store.load("internal:storage:version") returns
+      Future.successful(
+        Some(
+          InMemoryEntity(
+            id = "internal:storage:version",
+            version = 0,
+            bytes = unsupportedVersion.toByteArray)))
 
     When("A migration is approached for that version")
     val ex = intercept[RuntimeException] {
@@ -133,8 +136,9 @@ class MigrationTest
     }
 
     Then("Migration exits with a readable error message")
-    ex.getMessage should equal(
-      s"Migration from versions < $minVersion is not supported. Your version: $unsupportedVersion")
+    ex.getMessage should
+      equal(
+        s"Migration from versions < $minVersion is not supported. Your version: $unsupportedVersion")
   }
 
   class Fixture {

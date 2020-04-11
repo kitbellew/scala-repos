@@ -99,8 +99,8 @@ trait PullRequestsControllerBase extends ControllerBase {
       val q = request.getParameter("q")
       if (Option(q).exists(_.contains("is:issue"))) {
         redirect(
-          s"/${repository.owner}/${repository.name}/issues?q=" + StringUtil
-            .urlEncode(q))
+          s"/${repository.owner}/${repository.name}/issues?q=" +
+            StringUtil.urlEncode(q))
       } else {
         searchPullRequests(None, repository)
       }
@@ -139,12 +139,11 @@ trait PullRequestsControllerBase extends ControllerBase {
                         a.registeredDate before b.registeredDate),
                       getIssueLabels(owner, name, issueId),
                       (
-                        getCollaborators(owner, name) ::: (
-                          if (getAccountByUserName(owner).get.isGroupAccount)
-                            Nil
-                          else
-                            List(owner)
-                        )
+                        getCollaborators(owner, name) :::
+                          (if (getAccountByUserName(owner).get.isGroupAccount)
+                             Nil
+                           else
+                             List(owner))
                       ).sorted,
                       getMilestonesWithIssueCount(owner, name),
                       getLabels(owner, name),
@@ -188,9 +187,9 @@ trait PullRequestsControllerBase extends ControllerBase {
                     name,
                     pullreq.commitIdTo),
                   branchProtection = branchProtection,
-                  branchIsOutOfDate = JGitUtil
-                    .getShaByRef(owner, name, pullreq.branch) != Some(
-                    pullreq.commitIdFrom),
+                  branchIsOutOfDate =
+                    JGitUtil.getShaByRef(owner, name, pullreq.branch) !=
+                      Some(pullreq.commitIdFrom),
                   needStatusCheck = context
                     .loginAccount
                     .map { u =>
@@ -277,14 +276,14 @@ trait PullRequestsControllerBase extends ControllerBase {
             name,
             pullreq.requestBranch)
           if (branchProtection.needStatusCheck(loginAccount.userName)) {
-            flash += "error" -> s"branch ${pullreq.requestBranch} is protected need status check."
+            flash += "error" ->
+              s"branch ${pullreq.requestBranch} is protected need status check."
           } else {
             val repository = getRepository(owner, name).get
             LockUtil.lock(s"${owner}/${name}") {
               val alias =
-                if (pullreq.repositoryName == pullreq
-                      .requestRepositoryName && pullreq
-                      .userName == pullreq.requestUserName) {
+                if (pullreq.repositoryName == pullreq.requestRepositoryName &&
+                    pullreq.userName == pullreq.requestUserName) {
                   pullreq.branch
                 } else {
                   s"${pullreq.userName}:${pullreq.branch}"
@@ -305,7 +304,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                 "Merge branch '${alias}' into ${pullreq.requestBranch}"
               ) match {
                 case None => // conflict
-                  flash += "error" -> s"Can't automatic merging branch '${alias}' into ${pullreq.requestBranch}."
+                  flash += "error" ->
+                    s"Can't automatic merging branch '${alias}' into ${pullreq.requestBranch}."
                 case Some(oldId) =>
                   // update pull request
                   updatePullRequests(owner, name, pullreq.requestBranch)
@@ -342,9 +342,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                         commits)
 
                       // close issue by commit message
-                      if (pullreq.requestBranch == repository
-                            .repository
-                            .defaultBranch) {
+                      if (pullreq.requestBranch ==
+                            repository.repository.defaultBranch) {
                         commits.map { commit =>
                           closeIssuesFromMessage(
                             commit.fullMessage,
@@ -377,7 +376,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                         }
                       }
                   }
-                  flash += "info" -> s"Merge branch '${alias}' into ${pullreq.requestBranch}"
+                  flash += "info" ->
+                    s"Merge branch '${alias}' into ${pullreq.requestBranch}"
               }
             }
             redirect(s"/${repository.owner}/${repository.name}/pull/${issueId}")
@@ -431,8 +431,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                         pullreq.branch,
                         issueId,
                         s"Merge pull request #${issueId} from ${pullreq
-                          .requestUserName}/${pullreq.requestBranch}\n\n" + form
-                          .message,
+                          .requestUserName}/${pullreq.requestBranch}\n\n" +
+                          form.message,
                         new PersonIdent(
                           loginAccount.fullName,
                           loginAccount.mailAddress)
@@ -564,151 +564,136 @@ trait PullRequestsControllerBase extends ControllerBase {
         forked,
         forkedRepository.owner)
 
-      (
-        for (originRepositoryName <-
-               if (originOwner == forkedOwner) {
-                 // Self repository
-                 Some(forkedRepository.name)
-               } else if (forkedRepository.repository.originUserName.isEmpty) {
-                 // when ForkedRepository is the original repository
-                 getForkedRepositories(
-                   forkedRepository.owner,
-                   forkedRepository.name).find(_._1 == originOwner).map(_._2)
-               } else if (Some(originOwner) == forkedRepository
-                            .repository
-                            .originUserName) {
-                 // Original repository
-                 forkedRepository.repository.originRepositoryName
-               } else {
-                 // Sibling repository
-                 getUserRepositories(originOwner)
-                   .find { x =>
-                     x.repository.originUserName == forkedRepository
-                       .repository
-                       .originUserName &&
-                     x.repository.originRepositoryName == forkedRepository
-                       .repository
-                       .originRepositoryName
-                   }
-                   .map(_.repository.repositoryName)
-               };
-             originRepository <-
-               getRepository(originOwner, originRepositoryName))
-          yield {
-            using(
-              Git.open(
-                getRepositoryDir(
-                  originRepository.owner,
-                  originRepository.name)),
-              Git.open(
-                getRepositoryDir(
+      (for (originRepositoryName <-
+              if (originOwner == forkedOwner) {
+                // Self repository
+                Some(forkedRepository.name)
+              } else if (forkedRepository.repository.originUserName.isEmpty) {
+                // when ForkedRepository is the original repository
+                getForkedRepositories(
                   forkedRepository.owner,
-                  forkedRepository.name))) {
-              case (oldGit, newGit) =>
-                val (oldId, newId) =
-                  if (originRepository
-                        .branchList
-                        .contains(originId) && forkedRepository
-                        .branchList
-                        .contains(forkedId)) {
-                    // Branch name
-                    val rootId = JGitUtil.getForkedCommitId(
-                      oldGit,
-                      newGit,
-                      originRepository.owner,
-                      originRepository.name,
-                      originId,
-                      forkedRepository.owner,
-                      forkedRepository.name,
-                      forkedId)
-
-                    (
-                      Option(oldGit.getRepository.resolve(rootId)),
-                      Option(newGit.getRepository.resolve(forkedId)))
-                  } else {
-                    // Commit id
-                    (
-                      Option(oldGit.getRepository.resolve(originId)),
-                      Option(newGit.getRepository.resolve(forkedId)))
+                  forkedRepository.name).find(_._1 == originOwner).map(_._2)
+              } else if (Some(originOwner) ==
+                           forkedRepository.repository.originUserName) {
+                // Original repository
+                forkedRepository.repository.originRepositoryName
+              } else {
+                // Sibling repository
+                getUserRepositories(originOwner)
+                  .find { x =>
+                    x.repository.originUserName ==
+                      forkedRepository.repository.originUserName &&
+                      x.repository.originRepositoryName ==
+                      forkedRepository.repository.originRepositoryName
                   }
+                  .map(_.repository.repositoryName)
+              };
+            originRepository <-
+              getRepository(originOwner, originRepositoryName))
+        yield {
+          using(
+            Git.open(
+              getRepositoryDir(originRepository.owner, originRepository.name)),
+            Git.open(
+              getRepositoryDir(
+                forkedRepository.owner,
+                forkedRepository.name))) {
+            case (oldGit, newGit) =>
+              val (oldId, newId) =
+                if (originRepository.branchList.contains(originId) &&
+                    forkedRepository.branchList.contains(forkedId)) {
+                  // Branch name
+                  val rootId = JGitUtil.getForkedCommitId(
+                    oldGit,
+                    newGit,
+                    originRepository.owner,
+                    originRepository.name,
+                    originId,
+                    forkedRepository.owner,
+                    forkedRepository.name,
+                    forkedId)
 
-                (oldId, newId) match {
-                  case (Some(oldId), Some(newId)) => {
-                    val (commits, diffs) = getRequestCompareInfo(
-                      originRepository.owner,
-                      originRepository.name,
-                      oldId.getName,
-                      forkedRepository.owner,
-                      forkedRepository.name,
-                      newId.getName)
+                  (
+                    Option(oldGit.getRepository.resolve(rootId)),
+                    Option(newGit.getRepository.resolve(forkedId)))
+                } else {
+                  // Commit id
+                  (
+                    Option(oldGit.getRepository.resolve(originId)),
+                    Option(newGit.getRepository.resolve(forkedId)))
+                }
 
-                    html.compare(
-                      commits,
-                      diffs,
-                      (
-                        forkedRepository.repository.originUserName,
-                        forkedRepository
-                          .repository
-                          .originRepositoryName) match {
-                        case (Some(userName), Some(repositoryName)) =>
-                          (userName, repositoryName) :: getForkedRepositories(
-                            userName,
-                            repositoryName)
-                        case _ =>
-                          (
-                            forkedRepository.owner,
-                            forkedRepository.name) :: getForkedRepositories(
+              (oldId, newId) match {
+                case (Some(oldId), Some(newId)) => {
+                  val (commits, diffs) = getRequestCompareInfo(
+                    originRepository.owner,
+                    originRepository.name,
+                    oldId.getName,
+                    forkedRepository.owner,
+                    forkedRepository.name,
+                    newId.getName)
+
+                  html.compare(
+                    commits,
+                    diffs,
+                    (
+                      forkedRepository.repository.originUserName,
+                      forkedRepository.repository.originRepositoryName) match {
+                      case (Some(userName), Some(repositoryName)) =>
+                        (userName, repositoryName) ::
+                          getForkedRepositories(userName, repositoryName)
+                      case _ =>
+                        (forkedRepository.owner, forkedRepository.name) ::
+                          getForkedRepositories(
                             forkedRepository.owner,
                             forkedRepository.name)
-                      },
-                      commits
-                        .flatten
-                        .map(commit =>
-                          getCommitComments(
-                            forkedRepository.owner,
-                            forkedRepository.name,
-                            commit.id,
-                            false))
-                        .flatten
-                        .toList,
-                      originId,
-                      forkedId,
-                      oldId.getName,
-                      newId.getName,
-                      forkedRepository,
-                      originRepository,
-                      forkedRepository,
-                      hasWritePermission(
+                    },
+                    commits
+                      .flatten
+                      .map(commit =>
+                        getCommitComments(
+                          forkedRepository.owner,
+                          forkedRepository.name,
+                          commit.id,
+                          false))
+                      .flatten
+                      .toList,
+                    originId,
+                    forkedId,
+                    oldId.getName,
+                    newId.getName,
+                    forkedRepository,
+                    originRepository,
+                    forkedRepository,
+                    hasWritePermission(
+                      originRepository.owner,
+                      originRepository.name,
+                      context.loginAccount),
+                    (
+                      getCollaborators(
                         originRepository.owner,
-                        originRepository.name,
-                        context.loginAccount),
-                      (
-                        getCollaborators(
-                          originRepository.owner,
-                          originRepository.name) ::: (
-                          if (getAccountByUserName(originRepository.owner)
-                                .get
-                                .isGroupAccount)
-                            Nil
-                          else
-                            List(originRepository.owner)
-                        )
-                      ).sorted,
-                      getMilestones(
-                        originRepository.owner,
-                        originRepository.name),
-                      getLabels(originRepository.owner, originRepository.name)
-                    )
-                  }
-                  case (oldId, newId) =>
-                    redirect(
-                      s"/${forkedRepository.owner}/${forkedRepository.name}/compare/" +
-                        s"${originOwner}:${oldId.map(_ => originId).getOrElse(originRepository.repository.defaultBranch)}..." +
-                        s"${forkedOwner}:${newId.map(_ => forkedId).getOrElse(forkedRepository.repository.defaultBranch)}")
+                        originRepository.name) :::
+                        (if (getAccountByUserName(originRepository.owner)
+                               .get
+                               .isGroupAccount)
+                           Nil
+                         else
+                           List(originRepository.owner))
+                    ).sorted,
+                    getMilestones(
+                      originRepository.owner,
+                      originRepository.name),
+                    getLabels(originRepository.owner, originRepository.name)
+                  )
                 }
-            }
+                case (oldId, newId) =>
+                  redirect(
+                    s"/${forkedRepository.owner}/${forkedRepository.name}/compare/" +
+                      s"${originOwner}:${oldId.map(_ => originId).getOrElse(originRepository.repository.defaultBranch)}..." +
+                      s"${forkedOwner}:${newId.map(_ => forkedId).getOrElse(forkedRepository.repository.defaultBranch)}")
+              }
           }
-      ) getOrElse NotFound
+        }) getOrElse NotFound
     })
 
   ajaxGet("/:owner/:repository/compare/*...*/mergecheck")(
@@ -721,47 +706,43 @@ trait PullRequestsControllerBase extends ControllerBase {
         forked,
         forkedRepository.owner)
 
-      (
-        for (originRepositoryName <-
-               if (originOwner == forkedOwner) {
-                 Some(forkedRepository.name)
-               } else {
-                 forkedRepository
-                   .repository
-                   .originRepositoryName
-                   .orElse {
-                     getForkedRepositories(
-                       forkedRepository.owner,
-                       forkedRepository
-                         .name).find(_._1 == originOwner).map(_._2)
-                   }
-               };
-             originRepository <-
-               getRepository(originOwner, originRepositoryName))
-          yield {
-            using(
-              Git.open(
-                getRepositoryDir(
-                  originRepository.owner,
-                  originRepository.name)),
-              Git.open(
-                getRepositoryDir(
-                  forkedRepository.owner,
-                  forkedRepository.name))) {
-              case (oldGit, newGit) =>
-                val originBranch =
-                  JGitUtil
-                    .getDefaultBranch(oldGit, originRepository, tmpOriginBranch)
-                    .get
-                    ._2
-                val forkedBranch =
-                  JGitUtil
-                    .getDefaultBranch(newGit, forkedRepository, tmpForkedBranch)
-                    .get
-                    ._2
-                val conflict =
-                  LockUtil.lock(
-                    s"${originRepository.owner}/${originRepository.name}") {
+      (for (originRepositoryName <-
+              if (originOwner == forkedOwner) {
+                Some(forkedRepository.name)
+              } else {
+                forkedRepository
+                  .repository
+                  .originRepositoryName
+                  .orElse {
+                    getForkedRepositories(
+                      forkedRepository.owner,
+                      forkedRepository.name).find(_._1 == originOwner).map(_._2)
+                  }
+              };
+            originRepository <-
+              getRepository(originOwner, originRepositoryName))
+        yield {
+          using(
+            Git.open(
+              getRepositoryDir(originRepository.owner, originRepository.name)),
+            Git.open(
+              getRepositoryDir(
+                forkedRepository.owner,
+                forkedRepository.name))) {
+            case (oldGit, newGit) =>
+              val originBranch =
+                JGitUtil
+                  .getDefaultBranch(oldGit, originRepository, tmpOriginBranch)
+                  .get
+                  ._2
+              val forkedBranch =
+                JGitUtil
+                  .getDefaultBranch(newGit, forkedRepository, tmpForkedBranch)
+                  .get
+                  ._2
+              val conflict =
+                LockUtil
+                  .lock(s"${originRepository.owner}/${originRepository.name}") {
                     checkConflict(
                       originRepository.owner,
                       originRepository.name,
@@ -770,10 +751,9 @@ trait PullRequestsControllerBase extends ControllerBase {
                       forkedRepository.name,
                       forkedBranch)
                   }
-                html.mergecheck(conflict)
-            }
+              html.mergecheck(conflict)
           }
-      ) getOrElse NotFound
+        }) getOrElse NotFound
     })
 
   post("/:owner/:repository/pulls/new", pullRequestForm)(
@@ -924,8 +904,8 @@ trait PullRequestsControllerBase extends ControllerBase {
           }
           .toList
           .splitWith { (commit1, commit2) =>
-            helpers
-              .date(commit1.commitTime) == view.helpers.date(commit2.commitTime)
+            helpers.date(commit1.commitTime) ==
+              view.helpers.date(commit2.commitTime)
           }
 
         val diffs = JGitUtil

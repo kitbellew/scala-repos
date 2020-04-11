@@ -177,16 +177,15 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
         case c: ScClass =>
           c.constructor match {
             case Some(constr)
-                if PsiTreeUtil
-                  .isAncestor(c.nameId, element, false) || PsiTreeUtil
-                  .isAncestor(constr, element, false) =>
+                if PsiTreeUtil.isAncestor(c.nameId, element, false) ||
+                  PsiTreeUtil.isAncestor(constr, element, false) =>
               constr
             case _ =>
               null
           }
       }
-    Option(resolvedMethod) orElse Option(
-      currentFunction) getOrElse primaryConstr
+    Option(resolvedMethod) orElse Option(currentFunction) getOrElse
+      primaryConstr
   }
 
   override def findTargetMember(file: PsiFile, editor: Editor): PsiElement = {

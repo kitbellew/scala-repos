@@ -104,14 +104,12 @@ class JsonProtocolSuite extends SparkFunSuite {
     val jobEnd = SparkListenerJobEnd(20, jobCompletionTime, JobSucceeded)
     val environmentUpdate = SparkListenerEnvironmentUpdate(
       Map[String, Seq[(String, String)]](
-        "JVM Information" -> Seq(
-          ("GC speed", "9999 objects/s"),
-          ("Java home", "Land of coffee")),
-        "Spark Properties" -> Seq(
-          ("Job throughput", "80000 jobs/s, regardless of job type")),
-        "System Properties" -> Seq(
-          ("Username", "guest"),
-          ("Password", "guest")),
+        "JVM Information" ->
+          Seq(("GC speed", "9999 objects/s"), ("Java home", "Land of coffee")),
+        "Spark Properties" ->
+          Seq(("Job throughput", "80000 jobs/s, regardless of job type")),
+        "System Properties" ->
+          Seq(("Username", "guest"), ("Password", "guest")),
         "Classpath Entries" -> Seq(("Super library", "/tmp/super_library"))
       ))
     val blockManagerAdded = SparkListenerBlockManagerAdded(
@@ -434,8 +432,7 @@ class JsonProtocolSuite extends SparkFunSuite {
     assert(
       SparkListenerBlockManagerRemoved(
         -1L,
-        blockManagerRemoved.blockManagerId) ===
-        deserializedBmRemoved)
+        blockManagerRemoved.blockManagerId) === deserializedBmRemoved)
   }
 
   test("FetchFailed backwards compatibility") {
@@ -523,8 +520,8 @@ class JsonProtocolSuite extends SparkFunSuite {
       true,
       Some("Induced failure"))
     assert(
-      expectedExecutorLostFailure === JsonProtocol
-        .taskEndReasonFromJson(oldEvent))
+      expectedExecutorLostFailure ===
+        JsonProtocol.taskEndReasonFromJson(oldEvent))
   }
 
   test("SparkListenerJobStart backward compatibility") {

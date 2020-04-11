@@ -75,8 +75,8 @@ object CreatedResponse {
   def apply(
       json: JsonAST.JValue,
       addlHeaders: List[(String, String)]): LiftResponse = {
-    val headers: List[(String, String)] = S
-      .getResponseHeaders(Nil) ++ addlHeaders
+    val headers: List[(String, String)] = S.getResponseHeaders(Nil) ++
+      addlHeaders
 
     new JsonResponse(
       new JsExp {
@@ -175,12 +175,9 @@ class UnauthorizedDigestResponse(
     InMemoryResponse(
       Array(),
       List(
-        "WWW-Authenticate" -> (
-          "Digest realm=\"" + realm + "\", " +
-            "qop=\"" + qop + "\", " +
-            "nonce=\"" + nonce + "\", " +
-            "opaque=\"" + opaque + "\""
-        )),
+        "WWW-Authenticate" ->
+          ("Digest realm=\"" + realm + "\", " + "qop=\"" + qop + "\", " +
+            "nonce=\"" + nonce + "\", " + "opaque=\"" + opaque + "\"")),
       Nil,
       401)
 }
@@ -342,9 +339,8 @@ case class JavaScriptResponse(
     val bytes = js.toJsCmd.getBytes("UTF-8")
     InMemoryResponse(
       bytes,
-      ("Content-Length", bytes.length.toString) :: (
-        "Content-Type",
-        "application/javascript; charset=utf-8") :: headers,
+      ("Content-Length", bytes.length.toString) ::
+        ("Content-Type", "application/javascript; charset=utf-8") :: headers,
       cookies,
       code)
   }
@@ -395,9 +391,8 @@ case class JsonResponse(
     val bytes = json.toJsCmd.getBytes("UTF-8")
     InMemoryResponse(
       bytes,
-      ("Content-Length", bytes.length.toString) :: (
-        "Content-Type",
-        "application/json; charset=utf-8") :: headers,
+      ("Content-Length", bytes.length.toString) ::
+        ("Content-Type", "application/json; charset=utf-8") :: headers,
       cookies,
       code)
   }
@@ -450,9 +445,9 @@ final case class InMemoryResponse(
   def size = data.length
 
   override def toString =
-    "InMemoryResponse(" + (
-      new String(data, "UTF-8")
-    ) + ", " + headers + ", " + cookies + ", " + code + ")"
+    "InMemoryResponse(" +
+      (new String(data, "UTF-8")) + ", " + headers + ", " + cookies + ", " +
+      code + ")"
 }
 
 final case class StreamingResponse(
@@ -468,7 +463,8 @@ final case class StreamingResponse(
   def toResponse = this
 
   override def toString =
-    "StreamingResponse( steaming_data , " + headers + ", " + cookies + ", " + code + ")"
+    "StreamingResponse( steaming_data , " + headers + ", " + cookies + ", " +
+      code + ")"
 }
 
 object OutputStreamResponse {
@@ -682,9 +678,8 @@ case class PlainTextResponse(
     val bytes = text.getBytes("UTF-8")
     InMemoryResponse(
       bytes,
-      ("Content-Length", bytes.length.toString) :: (
-        "Content-Type",
-        "text/plain; charset=utf-8") :: headers,
+      ("Content-Length", bytes.length.toString) ::
+        ("Content-Type", "text/plain; charset=utf-8") :: headers,
       Nil,
       code)
   }
@@ -702,9 +697,8 @@ case class CSSResponse(text: String, headers: List[(String, String)], code: Int)
     val bytes = text.getBytes("UTF-8")
     InMemoryResponse(
       bytes,
-      ("Content-Length", bytes.length.toString) :: (
-        "Content-Type",
-        "text/css; charset=utf-8") :: headers,
+      ("Content-Length", bytes.length.toString) ::
+        ("Content-Type", "text/css; charset=utf-8") :: headers,
       Nil,
       code)
   }
@@ -848,8 +842,8 @@ case class XhtmlResponse(
       }
   }
 
-  override protected lazy val _encoding: String = htmlProperties
-    .encoding openOr ""
+  override protected lazy val _encoding: String = htmlProperties.encoding openOr
+    ""
 
   val headers: List[(String, String)] =
     _headers.find(_._1 equalsIgnoreCase "content-type") match {
@@ -1006,10 +1000,8 @@ case class OpenSearchResponse(
   def code = 200
 
   val headers: List[(String, String)] = S.getResponseHeaders(
-    (
-      "Content-Type" -> "application/opensearchdescription+xml; charset=utf-8"
-    ) ::
-      addlHeaders)
+    ("Content-Type" ->
+      "application/opensearchdescription+xml; charset=utf-8") :: addlHeaders)
 
   def cookies: List[HTTPCookie] = Nil
 

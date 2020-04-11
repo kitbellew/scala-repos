@@ -15,9 +15,10 @@ class Server(address: SocketAddress) {
   val concurrencyLevel = 16
   val slots = 500000
   val slotsPerLru = slots / concurrencyLevel
-  val maps = (0 until concurrencyLevel) map { i =>
-    new SynchronizedLruMap[Buf, Entry](slotsPerLru)
-  }
+  val maps =
+    (0 until concurrencyLevel) map { i =>
+      new SynchronizedLruMap[Buf, Entry](slotsPerLru)
+    }
 
   private[this] val service = {
     val interpreter = new Interpreter(new AtomicMap(maps))

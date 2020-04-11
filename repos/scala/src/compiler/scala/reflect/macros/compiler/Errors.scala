@@ -62,8 +62,8 @@ trait Errors extends Traces {
         else
           "has too many arguments"
       implRefError(
-        s"macro implementation reference $diagnostic for " + treeSymTypeMsg(
-          macroImplRef))
+        s"macro implementation reference $diagnostic for " +
+          treeSymTypeMsg(macroImplRef))
     }
 
     private def macroImplementationWording =
@@ -92,8 +92,8 @@ trait Errors extends Traces {
           "parameter"
         else
           "type parameter"
-      val message =
-        noun + " lists have different length, " + violation + " extra " + noun
+      val message = noun + " lists have different length, " + violation +
+        " extra " + noun
       val suffix =
         if (extra ne NoSymbol)
           " " + extra.defString
@@ -120,10 +120,11 @@ trait Errors extends Traces {
           tpe
       var pssPart =
         (
-          pss map (ps =>
-            ps map (p => p.defStringSeenAs(preprocess(p.info))) mkString (
-              "(", ", ", ")"
-            ))
+          pss map
+            (ps =>
+              ps map
+                (p => p.defStringSeenAs(preprocess(p.info))) mkString
+                ("(", ", ", ")"))
         ).mkString
       if (abbreviate)
         pssPart = abbreviateCoreAliases(pssPart)
@@ -179,22 +180,13 @@ trait Errors extends Traces {
     private def compatibilityError(message: String) =
       implRefError(
         s"${macroImplementationWording} has incompatible shape:" +
-          "\n required: " + showMeth(
-          rparamss,
-          rret,
-          abbreviate = true,
-          untype = false) +
-          "\n or      : " + showMeth(
-          rparamss,
-          rret,
-          abbreviate = true,
-          untype = true) +
-          "\n found   : " + showMeth(
-          aparamss,
-          aret,
-          abbreviate = false,
-          untype = false) +
-          "\n" + message)
+          "\n required: " +
+          showMeth(rparamss, rret, abbreviate = true, untype = false) +
+          "\n or      : " +
+          showMeth(rparamss, rret, abbreviate = true, untype = true) +
+          "\n found   : " +
+          showMeth(aparamss, aret, abbreviate = false, untype = false) + "\n" +
+          message)
 
     def MacroImplParamssMismatchError() =
       compatibilityError("number of parameter sections differ")
@@ -224,7 +216,8 @@ trait Errors extends Traces {
     def MacroImplVarargMismatchError(aparam: Symbol, rparam: Symbol) = {
       def fail(paramName: Name) =
         compatibilityError(
-          "types incompatible for parameter " + paramName + ": corresponding is not a vararg parameter")
+          "types incompatible for parameter " + paramName +
+            ": corresponding is not a vararg parameter")
       if (isRepeated(rparam) && !isRepeated(aparam))
         fail(rparam.name)
       if (!isRepeated(rparam) && isRepeated(aparam))

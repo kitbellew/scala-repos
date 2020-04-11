@@ -495,8 +495,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             case TaskUIData(_, metrics, _) =>
               metrics.get.executorRunTime.toDouble
           }
-          val serviceQuantiles =
-            <td>Duration</td> +: getFormattedTimeQuantiles(serviceTimes)
+          val serviceQuantiles = <td>Duration</td> +:
+            getFormattedTimeQuantiles(serviceTimes)
 
           val gcTimes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
@@ -537,8 +537,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             } data-placement="right">
                 Getting Result Time
               </span>
-            </td> +:
-              getFormattedTimeQuantiles(gettingResultTimes)
+            </td> +: getFormattedTimeQuantiles(gettingResultTimes)
 
           val peakExecutionMemory = validTasks.map {
             case TaskUIData(_, metrics, _) =>
@@ -632,8 +631,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             } data-placement="right">
                 Shuffle Read Blocked Time
               </span>
-            </td> +:
-              getFormattedTimeQuantiles(shuffleReadBlockedTimes)
+            </td> +: getFormattedTimeQuantiles(shuffleReadBlockedTimes)
 
           val shuffleReadTotalSizes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
@@ -683,8 +681,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             } data-placement="right">
                 Shuffle Remote Reads
               </span>
-            </td> +:
-              getFormattedSizeQuantiles(shuffleReadRemoteSizes)
+            </td> +: getFormattedSizeQuantiles(shuffleReadRemoteSizes)
 
           val shuffleWriteSizes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
@@ -848,9 +845,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           Seq()
 
       val content =
-        summary ++
-          dagViz ++
-          showAdditionalMetrics ++
+        summary ++ dagViz ++ showAdditionalMetrics ++
           makeTimeline(
             // Only show the tasks in the table
             stageData
@@ -864,10 +859,10 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           } Completed Tasks</h4> ++
           <div>{
             summaryTable.getOrElse("No tasks have reported metrics yet.")
-          }</div> ++
-          <h4>Aggregated Metrics by Executor</h4> ++ executorTable.toNodeSeq ++
-          maybeAccumulableTable ++
-          <h4 id="tasks-section">Tasks</h4> ++ taskTableHTML ++ jsForScrollingDownToTaskTable
+          }</div> ++ <h4>Aggregated Metrics by Executor</h4> ++
+          executorTable.toNodeSeq ++ maybeAccumulableTable ++
+          <h4 id="tasks-section">Tasks</h4> ++ taskTableHTML ++
+          jsForScrollingDownToTaskTable
       UIUtils
         .headerSparkPage(stageHeader, content, parent, showVisualization = true)
     }
@@ -939,8 +934,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               .getOrElse(
                 totalExecutionTime - executorOverhead - gettingResultTime)
           }
-        val executorComputingTime =
-          executorRunTime - shuffleReadTime - shuffleWriteTime
+        val executorComputingTime = executorRunTime - shuffleReadTime -
+          shuffleWriteTime
         val executorComputingTimeProportion =
           (100 - schedulerDelayProportion - shuffleReadTimeProportion -
             shuffleWriteTimeProportion - serializationTimeProportion -
@@ -1106,8 +1101,8 @@ private[ui] object StagePage {
       currentTime: Long): Long = {
     if (info.finished) {
       val totalExecutionTime = info.finishTime - info.launchTime
-      val executorOverhead = (metrics.executorDeserializeTime +
-        metrics.resultSerializationTime)
+      val executorOverhead =
+        (metrics.executorDeserializeTime + metrics.resultSerializationTime)
       math.max(
         0,
         totalExecutionTime - metrics.executorRunTime - executorOverhead -
@@ -1740,10 +1735,8 @@ private[ui] class TaskPagedTable(
 
   override def pageLink(page: Int): String = {
     val encodedSortColumn = URLEncoder.encode(sortColumn, "UTF-8")
-    basePath +
-      s"&$pageNumberFormField=$page" +
-      s"&task.sort=$encodedSortColumn" +
-      s"&task.desc=$desc" +
+    basePath + s"&$pageNumberFormField=$page" +
+      s"&task.sort=$encodedSortColumn" + s"&task.desc=$desc" +
       s"&$pageSizeFormField=$pageSize"
   }
 
@@ -1822,8 +1815,7 @@ private[ui] class TaskPagedTable(
         } else {
           Nil
         }
-      } ++
-        Seq(("Errors", ""))
+      } ++ Seq(("Errors", ""))
 
     if (!taskHeadersAndCssClasses.map(_._1).contains(sortColumn)) {
       throw new IllegalArgumentException(s"Unknown column: $sortColumn")
@@ -1834,10 +1826,8 @@ private[ui] class TaskPagedTable(
         case (header, cssClass) =>
           if (header == sortColumn) {
             val headerLink = Unparsed(
-              basePath +
-                s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
-                s"&task.desc=${!desc}" +
-                s"&task.pageSize=$pageSize")
+              basePath + s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
+                s"&task.desc=${!desc}" + s"&task.pageSize=$pageSize")
             val arrow =
               if (desc)
                 "&#x25BE;"
@@ -1859,8 +1849,7 @@ private[ui] class TaskPagedTable(
           </th>
           } else {
             val headerLink = Unparsed(
-              basePath +
-                s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
+              basePath + s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
                 s"&task.pageSize=$pageSize")
             <th class={
               cssClass

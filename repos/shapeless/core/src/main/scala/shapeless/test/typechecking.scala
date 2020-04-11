@@ -64,7 +64,8 @@ class IllTypedMacros(val c: whitebox.Context) {
         if ((expected ne null) && !(expPat.matcher(msg)).matches)
           c.abort(
             c.enclosingPosition,
-            "Type-checking failed in an unexpected way.\n" + expMsg + "\nActual error: " + msg)
+            "Type-checking failed in an unexpected way.\n" + expMsg +
+              "\nActual error: " + msg)
     }
 
     q"()"

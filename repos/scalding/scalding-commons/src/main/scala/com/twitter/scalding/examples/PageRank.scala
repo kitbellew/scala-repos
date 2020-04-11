@@ -59,7 +59,8 @@ class PageRank(args: Args) extends Job(args) {
          * goal to land up at output.  So, each next input is this output, but the temp
          * and output should be swapping.
          */
-        val nextArgs = args + ("input", Some(args("output"))) +
+        val nextArgs = args +
+          ("input", Some(args("output"))) +
           ("temp", Some(args("output"))) +
           ("output", Some(args("temp"))) +
           ("jobCount", Some((JOB_COUNT + 1).toString))
@@ -140,14 +141,14 @@ class PageRank(args: Args) extends Job(args) {
           //Here we make a false row that we use to tell dst how much incoming
           //Page rank it needs to add to itself:
           .map(
-            ('src, 'd_src, 'dst, 'rank, 'rowtype) -> (
-              'src, 'd_src, 'dst, 'rank, 'rowtype
-            )) { intup: (Long, Long, Long, Double, Int) =>
-            val (src: Long, d_src: Long, dst: Long, rank: Double, row: Int) =
-              intup
-            //The d_src, and dst are ignored in the merge below
-            //We swap destination into the source position
-            (dst, -1L, "", rank * (1.0 - ALPHA) / d_src, EDGE)
+            ('src, 'd_src, 'dst, 'rank, 'rowtype) ->
+              ('src, 'd_src, 'dst, 'rank, 'rowtype)) {
+            intup: (Long, Long, Long, Double, Int) =>
+              val (src: Long, d_src: Long, dst: Long, rank: Double, row: Int) =
+                intup
+              //The d_src, and dst are ignored in the merge below
+              //We swap destination into the source position
+              (dst, -1L, "", rank * (1.0 - ALPHA) / d_src, EDGE)
           }
 
       /**
@@ -156,20 +157,19 @@ class PageRank(args: Args) extends Job(args) {
         * N pr(N_i) = (\sum_{j points to i} N pr(N_j) * (1-ALPHA)/d_j) + ALPHA
         * N pr(N_i) is the page rank of node i.
         */
-      val nextPr =
-        (edges ++ randomJump).groupBy('src) {
-          /*
-           * Note that NODESET < EDGE, so if we take the min(rowtype, ...)
-           * using dictionary ordering, we only keep NODESET rows UNLESS
-           * there are rows that had no outdegrees, so they had no NODESET row
-           * to begin with.  To fix the later case, we have to additionally
-           * filter the result to keep only NODESET rows.
-           */
-          _.min('rowtype, 'dst, 'd_src)
-            .sum[Double](
-              'rank
-            ) //Sum the page-rank from both the nodeset and edge rows
-        }
+      val nextPr = (edges ++ randomJump).groupBy('src) {
+        /*
+         * Note that NODESET < EDGE, so if we take the min(rowtype, ...)
+         * using dictionary ordering, we only keep NODESET rows UNLESS
+         * there are rows that had no outdegrees, so they had no NODESET row
+         * to begin with.  To fix the later case, we have to additionally
+         * filter the result to keep only NODESET rows.
+         */
+        _.min('rowtype, 'dst, 'd_src)
+          .sum[Double](
+            'rank
+          ) //Sum the page-rank from both the nodeset and edge rows
+      }
       //Must call ourselves in the tail position:
       doPageRank(steps - 1)(nextPr)
     }

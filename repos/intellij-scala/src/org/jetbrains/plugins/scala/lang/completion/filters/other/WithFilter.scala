@@ -27,13 +27,11 @@ class WithFilter extends ElementFilter {
         i = i - 1
       if (i >= 0) {
         var leaf1 = getLeafByOffset(i, context)
-        while (leaf1 != null &&
-               !leaf1.isInstanceOf[ScTypeDefinition]) {
+        while (leaf1 != null && !leaf1.isInstanceOf[ScTypeDefinition]) {
           leaf1 = leaf1.getParent
         }
-        if (leaf1 != null && leaf1.getTextRange.getEndOffset != i + 1 && leaf1
-              .getTextRange
-              .getEndOffset != leaf.getTextRange.getEndOffset &&
+        if (leaf1 != null && leaf1.getTextRange.getEndOffset != i + 1 &&
+            leaf1.getTextRange.getEndOffset != leaf.getTextRange.getEndOffset &&
             leaf1.getTextRange.getEndOffset != leaf.getTextRange.getStartOffset)
           leaf1 = null
         leaf1 match {
@@ -46,9 +44,8 @@ class WithFilter extends ElementFilter {
                !leaf1.isInstanceOf[ScNewTemplateDefinition]) {
           leaf1 = leaf1.getParent
         }
-        if (leaf1 != null && leaf1.getTextRange.getEndOffset != i + 1 && leaf1
-              .getTextRange
-              .getEndOffset != leaf.getTextRange.getEndOffset &&
+        if (leaf1 != null && leaf1.getTextRange.getEndOffset != i + 1 &&
+            leaf1.getTextRange.getEndOffset != leaf.getTextRange.getEndOffset &&
             leaf1.getTextRange.getEndOffset != leaf.getTextRange.getStartOffset)
           leaf1 = null
         leaf1 match {

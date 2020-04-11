@@ -95,12 +95,13 @@ final class Env(
 
 object Env {
 
-  lazy val current = "tv" boot new Env(
-    config = lila.common.PlayApp loadConfig "tv",
-    db = lila.db.Env.current,
-    hub = lila.hub.Env.current,
-    lightUser = lila.user.Env.current.lightUser,
-    system = lila.common.PlayApp.system,
-    scheduler = lila.common.PlayApp.scheduler,
-    isProd = lila.common.PlayApp.isProd)
+  lazy val current = "tv" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "tv",
+      db = lila.db.Env.current,
+      hub = lila.hub.Env.current,
+      lightUser = lila.user.Env.current.lightUser,
+      system = lila.common.PlayApp.system,
+      scheduler = lila.common.PlayApp.scheduler,
+      isProd = lila.common.PlayApp.isProd)
 }

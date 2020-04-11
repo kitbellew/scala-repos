@@ -39,41 +39,40 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
   private def buildHistoryAfter(
       afterYear: Int,
       afterMonth: Int,
-      until: DateTime): Funit =
-    (afterYear to until.getYear)
-      .flatMap { year =>
-        (
-          (year == afterYear).fold(afterMonth + 1, 1) to
-            (year == until.getYear).fold(until.getMonthOfYear, 12)
-        ).map { month =>
-            mixedLeaderboard(
-              after = new DateTime(year, month, 1, 0, 0)
-                .pp("compute mod history"),
-              before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some)
-              .map {
-                _.headOption
-                  .map { champ =>
-                    HistoryMonth(
-                      HistoryMonth.makeId(year, month),
-                      year,
-                      month,
-                      champ)
-                  }
-              }
-          }
-          .toList
-      }
-      .toList
-      .sequenceFu
-      .map(_.flatten)
-      .flatMap {
-        _.map { month =>
-            historyColl
-              .update(BSONDocument("_id" -> month._id), month, upsert = true)
-          }
-          .sequenceFu
-      }
-      .void
+      until: DateTime): Funit = (afterYear to until.getYear)
+    .flatMap { year =>
+      (
+        (year == afterYear).fold(afterMonth + 1, 1) to
+          (year == until.getYear).fold(until.getMonthOfYear, 12)
+      ).map { month =>
+          mixedLeaderboard(
+            after = new DateTime(year, month, 1, 0, 0)
+              .pp("compute mod history"),
+            before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some)
+            .map {
+              _.headOption
+                .map { champ =>
+                  HistoryMonth(
+                    HistoryMonth.makeId(year, month),
+                    year,
+                    month,
+                    champ)
+                }
+            }
+        }
+        .toList
+    }
+    .toList
+    .sequenceFu
+    .map(_.flatten)
+    .flatMap {
+      _.map { month =>
+          historyColl
+            .update(BSONDocument("_id" -> month._id), month, upsert = true)
+        }
+        .sequenceFu
+    }
+    .void
 
   def leaderboards = leaderboardsCache(true)
 
@@ -81,9 +80,9 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
     f = mixedLeaderboard(DateTime.now minusDays 1, none) zip
       mixedLeaderboard(DateTime.now minusWeeks 1, none) zip
       mixedLeaderboard(DateTime.now minusMonths 1, none) map {
-      case ((daily, weekly), monthly) =>
-        Leaderboards(daily, weekly, monthly)
-    },
+        case ((daily, weekly), monthly) =>
+          Leaderboards(daily, weekly, monthly)
+      },
     timeToLive = 10 seconds
   )
 
@@ -97,13 +96,15 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
             modId,
             action = actions.find(_.modId == modId) ?? (_.count),
             report = reports.find(_.modId == modId) ?? (_.count))
-        } sortBy (-_.score)
+        } sortBy
+          (-_.score)
     }
 
   private def dateRange(from: DateTime, toOption: Option[DateTime]) =
-    BSONDocument("$gte" -> from) ++ toOption.?? { to =>
-      BSONDocument("$lt" -> to)
-    }
+    BSONDocument("$gte" -> from) ++
+      toOption.?? { to =>
+        BSONDocument("$lt" -> to)
+      }
 
   private val notLichess = BSONDocument("$ne" -> "lichess")
 
@@ -120,8 +121,8 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
       .map {
         _.documents
           .flatMap { obj =>
-            obj.getAs[String]("_id") |@| obj.getAs[Int]("nb") apply ModCount
-              .apply
+            obj.getAs[String]("_id") |@| obj.getAs[Int]("nb") apply
+              ModCount.apply
           }
       }
 
@@ -141,8 +142,8 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
       .map {
         _.documents
           .flatMap { obj =>
-            obj.getAs[String]("_id") |@| obj.getAs[Int]("nb") apply ModCount
-              .apply
+            obj.getAs[String]("_id") |@| obj.getAs[Int]("nb") apply
+              ModCount.apply
           }
       }
 }

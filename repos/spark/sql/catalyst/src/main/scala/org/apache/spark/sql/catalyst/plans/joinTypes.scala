@@ -45,9 +45,8 @@ object JoinType {
           "leftsemi")
 
         throw new IllegalArgumentException(
-          s"Unsupported join type '$typ'. " +
-            "Supported join types include: " + supported
-            .mkString("'", "', '", "'") + ".")
+          s"Unsupported join type '$typ'. " + "Supported join types include: " +
+            supported.mkString("'", "', '", "'") + ".")
     }
 }
 

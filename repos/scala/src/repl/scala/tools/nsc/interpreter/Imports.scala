@@ -61,9 +61,10 @@ trait Imports {
     */
   def importedSymbolsBySource: List[(Symbol, List[Symbol])] = {
     val lang = languageWildcardSyms map (sym => (sym, membersAtPickler(sym)))
-    val session = importHandlers filter (_.targetType != NoType) map { mh =>
-      (mh.targetType.typeSymbol, mh.importedSymbols)
-    }
+    val session = importHandlers filter
+      (_.targetType != NoType) map { mh =>
+        (mh.targetType.typeSymbol, mh.importedSymbols)
+      }
 
     lang ++ session
   }
@@ -71,7 +72,8 @@ trait Imports {
     importedSymbolsBySource map {
       case (k, vs) =>
         (k, vs filter (_.isImplicit))
-    } filterNot (_._2.isEmpty)
+    } filterNot
+      (_._2.isEmpty)
   }
 
   /** Compute imports that allow definitions from previous
@@ -140,9 +142,9 @@ trait Imports {
             case _: ImportHandler =>
               true
             case x if generousImports =>
-              x.definesImplicit || (
-                x.definedNames exists (d => wanted.exists(w => d.startsWith(w)))
-              )
+              x.definesImplicit ||
+                (x.definedNames exists
+                  (d => wanted.exists(w => d.startsWith(w))))
             case x =>
               x.definesImplicit || (x.definedNames exists wanted)
           }
@@ -155,8 +157,8 @@ trait Imports {
             select(rest, wanted)
           case rh :: rest =>
             import rh.handler._
-            val newWanted =
-              wanted ++ referencedNames -- definedNames -- importedNames
+            val newWanted = wanted ++ referencedNames -- definedNames --
+              importedNames
             rh :: select(rest, newWanted)
         }
       }

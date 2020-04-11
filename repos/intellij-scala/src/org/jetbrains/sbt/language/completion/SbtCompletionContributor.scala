@@ -93,8 +93,8 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                     "scala.collection.immutable.Set")
                   seqFullType match {
                     case ScParameterizedType(seqType, Seq(valType))
-                        if collectionTypeNames contains qualifiedName(
-                          seqType) =>
+                        if collectionTypeNames contains
+                          qualifiedName(seqType) =>
                       Some(valType)
                     case _ =>
                       None
@@ -193,11 +193,8 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                 if typed.getType().getOrAny.conforms(expectedType) =>
               variant.isLocalVariable =
                 (typed.isVar || typed.isVal) &&
-                  (
-                    typed.containingFile exists (
-                      _.getName == parameters.getOriginalFile.getName
-                    )
-                  )
+                  (typed.containingFile exists
+                    (_.getName == parameters.getOriginalFile.getName))
               apply(variant)
             case _ => // do nothing
           }
@@ -214,13 +211,13 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                 ScType.extractClass(proj) foreach collectAndApplyVariants
               case _ => // do nothing
             }
-            ScalaPsiUtil
-              .getCompanionModule(clazz) foreach collectAndApplyVariants
+            ScalaPsiUtil.getCompanionModule(clazz) foreach
+              collectAndApplyVariants
           case Some(p: PsiClass) if isAccessible(p) =>
             p.getFields
               .foreach(field => {
-                if (field
-                      .hasModifierProperty("static") && isAccessible(field)) {
+                if (field.hasModifierProperty("static") &&
+                    isAccessible(field)) {
                   val lookup =
                     LookupElementManager
                       .getLookupElement(

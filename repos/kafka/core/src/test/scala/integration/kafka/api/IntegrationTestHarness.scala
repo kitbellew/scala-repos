@@ -76,17 +76,19 @@ trait IntegrationTestHarness extends KafkaServerTestHarness {
       classOf[org.apache.kafka.common.serialization.ByteArrayDeserializer])
     consumerConfig.putAll(consumerSecurityProps)
     for (i <- 0 until producerCount)
-      producers += TestUtils.createNewProducer(
-        brokerList,
-        securityProtocol = this.securityProtocol,
-        trustStoreFile = this.trustStoreFile,
-        props = Some(producerConfig))
+      producers +=
+        TestUtils.createNewProducer(
+          brokerList,
+          securityProtocol = this.securityProtocol,
+          trustStoreFile = this.trustStoreFile,
+          props = Some(producerConfig))
     for (i <- 0 until consumerCount) {
-      consumers += TestUtils.createNewConsumer(
-        brokerList,
-        securityProtocol = this.securityProtocol,
-        trustStoreFile = this.trustStoreFile,
-        props = Some(consumerConfig))
+      consumers +=
+        TestUtils.createNewConsumer(
+          brokerList,
+          securityProtocol = this.securityProtocol,
+          trustStoreFile = this.trustStoreFile,
+          props = Some(consumerConfig))
     }
 
     // create the consumer offset topic

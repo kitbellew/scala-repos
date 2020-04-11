@@ -35,8 +35,8 @@ case class FetchPartitionStatus(
     fetchInfo: PartitionFetchInfo) {
 
   override def toString =
-    "[startOffsetMetadata: " + startOffsetMetadata + ", " +
-      "fetchInfo: " + fetchInfo + "]"
+    "[startOffsetMetadata: " + startOffsetMetadata + ", " + "fetchInfo: " +
+      fetchInfo + "]"
 }
 
 /**
@@ -50,8 +50,8 @@ case class FetchMetadata(
     fetchPartitionStatus: Map[TopicAndPartition, FetchPartitionStatus]) {
 
   override def toString =
-    "[minBytes: " + fetchMinBytes + ", " +
-      "onlyLeader:" + fetchOnlyLeader + ", "
+    "[minBytes: " + fetchMinBytes + ", " + "onlyLeader:" + fetchOnlyLeader +
+      ", "
   "onlyCommitted: " + fetchOnlyCommitted + ", "
   "partitionStatus: " + fetchPartitionStatus + "]"
 }
@@ -114,12 +114,13 @@ class DelayedFetch(
                     "Satisfying fetch %s immediately since it is fetching older segments."
                       .format(fetchMetadata))
                   return forceComplete()
-                } else if (fetchOffset.messageOffset < endOffset
-                             .messageOffset) {
+                } else if (fetchOffset.messageOffset <
+                             endOffset.messageOffset) {
                   // we need take the partition fetch size as upper bound when accumulating the bytes
-                  accumulatedSize += math.min(
-                    endOffset.positionDiff(fetchOffset),
-                    fetchStatus.fetchInfo.fetchSize)
+                  accumulatedSize +=
+                    math.min(
+                      endOffset.positionDiff(fetchOffset),
+                      fetchStatus.fetchInfo.fetchSize)
                 }
               }
             }

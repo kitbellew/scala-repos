@@ -236,10 +236,8 @@ private[streaming] class FileBasedWriteAheadLog(
       if (currentLogWriter == null || currentTime > currentLogWriterStopTime) {
         resetWriter()
         currentLogPath.foreach {
-          pastLogs += LogInfo(
-            currentLogWriterStartTime,
-            currentLogWriterStopTime,
-            _)
+          pastLogs +=
+            LogInfo(currentLogWriterStartTime, currentLogWriterStopTime, _)
         }
         currentLogWriterStartTime = currentTime
         currentLogWriterStopTime = currentTime + (rollingIntervalSecs * 1000)

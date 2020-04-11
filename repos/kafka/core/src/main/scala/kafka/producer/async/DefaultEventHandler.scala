@@ -83,8 +83,8 @@ class DefaultEventHandler[K, V](
     while (remainingRetries > 0 && outstandingProduceRequests.size > 0) {
       topicMetadataToRefresh ++= outstandingProduceRequests.map(_.topic)
       if (topicMetadataRefreshInterval >= 0 &&
-          SystemTime
-            .milliseconds - lastTopicMetadataRefreshTime > topicMetadataRefreshInterval) {
+          SystemTime.milliseconds - lastTopicMetadataRefreshTime >
+            topicMetadataRefreshInterval) {
         CoreUtils.swallowError(
           brokerPartitionInfo.updateInfo(
             topicMetadataToRefresh.toSet,
@@ -121,8 +121,8 @@ class DefaultEventHandler[K, V](
             correlationIdStart,
             correlationIdEnd - 1))
       throw new FailedToSendMessageException(
-        "Failed to send messages after " + config
-          .messageSendMaxRetries + " tries.",
+        "Failed to send messages after " + config.messageSendMaxRetries +
+          " tries.",
         null)
     }
   }
@@ -173,24 +173,26 @@ class DefaultEventHandler[K, V](
     events.foreach { e =>
       try {
         if (e.hasKey)
-          serializedMessages += new KeyedMessage[K, Message](
-            topic = e.topic,
-            key = e.key,
-            partKey = e.partKey,
-            message = new Message(
-              key = keyEncoder.toBytes(e.key),
-              bytes = encoder.toBytes(e.message),
-              timestamp = time.milliseconds,
-              magicValue = Message.MagicValue_V1))
+          serializedMessages +=
+            new KeyedMessage[K, Message](
+              topic = e.topic,
+              key = e.key,
+              partKey = e.partKey,
+              message = new Message(
+                key = keyEncoder.toBytes(e.key),
+                bytes = encoder.toBytes(e.message),
+                timestamp = time.milliseconds,
+                magicValue = Message.MagicValue_V1))
         else
-          serializedMessages += new KeyedMessage[K, Message](
-            topic = e.topic,
-            key = e.key,
-            partKey = e.partKey,
-            message = new Message(
-              bytes = encoder.toBytes(e.message),
-              timestamp = time.milliseconds,
-              magicValue = Message.MagicValue_V1))
+          serializedMessages +=
+            new KeyedMessage[K, Message](
+              topic = e.topic,
+              key = e.key,
+              partKey = e.partKey,
+              message = new Message(
+                bytes = encoder.toBytes(e.message),
+                timestamp = time.milliseconds,
+                magicValue = Message.MagicValue_V1))
       } catch {
         case t: Throwable =>
           producerStats.serializationErrorRate.mark()
@@ -254,18 +256,18 @@ class DefaultEventHandler[K, V](
     } catch { // Swallow recoverable exceptions and return None so that they can be retried.
       case ute: UnknownTopicOrPartitionException =>
         warn(
-          "Failed to collate messages by topic,partition due to: " + ute
-            .getMessage);
+          "Failed to collate messages by topic,partition due to: " +
+            ute.getMessage);
         None
       case lnae: LeaderNotAvailableException =>
         warn(
-          "Failed to collate messages by topic,partition due to: " + lnae
-            .getMessage);
+          "Failed to collate messages by topic,partition due to: " +
+            lnae.getMessage);
         None
       case oe: Throwable =>
         error(
-          "Failed to collate messages by topic, partition due to: " + oe
-            .getMessage);
+          "Failed to collate messages by topic, partition due to: " +
+            oe.getMessage);
         None
     }
   }
@@ -326,9 +328,8 @@ class DefaultEventHandler[K, V](
     if (partition < 0 || partition >= numPartitions)
       throw new UnknownTopicOrPartitionException(
         "Invalid partition id: " + partition + " for topic " + topic +
-          "; Valid values are in the inclusive range of [0, " + (
-          numPartitions - 1
-        ) + "]")
+          "; Valid values are in the inclusive range of [0, " +
+          (numPartitions - 1) + "]")
     trace(
       "Assigning message of topic %s and key %s to a selected partition %d"
         .format(
@@ -413,16 +414,12 @@ class DefaultEventHandler[K, V](
             val errorString = failedPartitionsAndStatus
               .sortWith((p1, p2) =>
                 p1._1.topic.compareTo(p2._1.topic) < 0 ||
-                  (
-                    p1._1.topic.compareTo(p2._1.topic) == 0 && p1
-                      ._1
-                      .partition < p2._1.partition
-                  ))
+                  (p1._1.topic.compareTo(p2._1.topic) == 0 &&
+                    p1._1.partition < p2._1.partition))
               .map {
                 case (topicAndPartition, status) =>
-                  topicAndPartition.toString + ": " + Errors
-                    .forCode(status.error)
-                    .exceptionName
+                  topicAndPartition.toString + ": " +
+                    Errors.forCode(status.error).exceptionName
               }
               .mkString(",")
             warn(

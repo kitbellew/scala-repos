@@ -157,8 +157,8 @@ object DecisionTreeRunner {
             if (params.algo == Classification &&
                 (params.impurity == Gini || params.impurity == Entropy)) {
               success
-            } else if (params.algo == Regression && params
-                         .impurity == Variance) {
+            } else if (params.algo == Regression &&
+                       params.impurity == Variance) {
               success
             } else {
               failure(

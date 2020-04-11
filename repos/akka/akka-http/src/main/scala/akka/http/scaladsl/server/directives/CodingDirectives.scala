@@ -86,11 +86,9 @@ trait CodingDirectives {
           }
         }
 
-    requestEntityEmpty | (
-      requestEncodedWith(decoder.encoding) &
-        applyDecoder &
-        cancelRejections(classOf[UnsupportedRequestEncodingRejection])
-    )
+    requestEntityEmpty |
+      (requestEncodedWith(decoder.encoding) & applyDecoder &
+        cancelRejections(classOf[UnsupportedRequestEncodingRejection]))
   }
 
   /**
@@ -164,8 +162,8 @@ object CodingDirectives extends CodingDirectives {
           case Some(encoder) ⇒
             mapResponse(encoder.encode(_))
           case _ ⇒
-            if (encoders.contains(NoCoding) && !negotiator
-                  .hasMatchingFor(HttpEncodings.identity))
+            if (encoders.contains(NoCoding) &&
+                !negotiator.hasMatchingFor(HttpEncodings.identity))
               pass
             else
               reject(UnacceptedResponseEncodingRejection(encodings.toSet))

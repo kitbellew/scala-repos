@@ -126,8 +126,8 @@ private[hive] case class CreateMetastoreDataSource(
         s"Table name ${tableIdent.table} is not a valid name for " +
           s"metastore. Metastore only accepts table name containing characters, numbers and _.")
     }
-    if (tableIdent.database.isDefined && !MetaStoreUtils
-          .validateName(tableIdent.database.get)) {
+    if (tableIdent.database.isDefined &&
+        !MetaStoreUtils.validateName(tableIdent.database.get)) {
       throw new AnalysisException(
         s"Database name ${tableIdent.database.get} is not a valid name " +
           s"for metastore. Metastore only accepts database name containing " +
@@ -149,12 +149,12 @@ private[hive] case class CreateMetastoreDataSource(
     val optionsWithPath =
       if (!options.contains("path") && managedIfNoPath) {
         isExternal = false
-        options + (
-          "path" -> hiveContext
-            .sessionState
-            .catalog
-            .hiveDefaultTableFilePath(tableIdent)
-        )
+        options +
+          ("path" ->
+            hiveContext
+              .sessionState
+              .catalog
+              .hiveDefaultTableFilePath(tableIdent))
       } else {
         options
       }
@@ -203,8 +203,8 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
         s"Table name ${tableIdent.table} is not a valid name for " +
           s"metastore. Metastore only accepts table name containing characters, numbers and _.")
     }
-    if (tableIdent.database.isDefined && !MetaStoreUtils
-          .validateName(tableIdent.database.get)) {
+    if (tableIdent.database.isDefined &&
+        !MetaStoreUtils.validateName(tableIdent.database.get)) {
       throw new AnalysisException(
         s"Database name ${tableIdent.database.get} is not a valid name " +
           s"for metastore. Metastore only accepts database name containing " +
@@ -218,12 +218,12 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
     val optionsWithPath =
       if (!options.contains("path")) {
         isExternal = false
-        options + (
-          "path" -> hiveContext
-            .sessionState
-            .catalog
-            .hiveDefaultTableFilePath(tableIdent)
-        )
+        options +
+          ("path" ->
+            hiveContext
+              .sessionState
+              .catalog
+              .hiveDefaultTableFilePath(tableIdent))
       } else {
         options
       }

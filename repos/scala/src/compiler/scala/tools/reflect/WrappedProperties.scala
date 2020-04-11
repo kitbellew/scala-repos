@@ -37,8 +37,9 @@ trait WrappedProperties extends PropertiesTrait {
     wrap {
       // SI-7269,7775 Avoid `ConcurrentModificationException` and nulls if another thread modifies properties
       val props = System.getProperties
-      val it = props.stringPropertyNames().asScala.iterator map (k =>
-        (k, props getProperty k)) filter (_._2 ne null)
+      val it = props.stringPropertyNames().asScala.iterator map
+        (k => (k, props getProperty k)) filter
+        (_._2 ne null)
       it.toList
     } getOrElse Nil
   }

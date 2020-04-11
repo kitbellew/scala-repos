@@ -179,9 +179,8 @@ trait BytecodeWriters {
 
       val pathName = jclassName
       val dumpFile =
-        pathName
-          .split("[./]")
-          .foldLeft(baseDir: Path)(_ / _) changeExtension "class" toFile;
+        pathName.split("[./]").foldLeft(baseDir: Path)(_ / _) changeExtension
+          "class" toFile;
       dumpFile.parent.createDirectory()
       val outstream = new DataOutputStream(new FileOutputStream(dumpFile.path))
 

@@ -107,11 +107,8 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
 
         writeResult.onComplete {
           case Success(results) ⇒
-            resequencer ! Desequenced(
-              WriteMessagesSuccessful,
-              cctr,
-              persistentActor,
-              self)
+            resequencer !
+              Desequenced(WriteMessagesSuccessful, cctr, persistentActor, self)
 
             val resultsIter =
               if (results.isEmpty)
@@ -125,58 +122,60 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
                   case Success(_) ⇒
                     a.payload
                       .foreach { p ⇒
-                        resequencer ! Desequenced(
-                          WriteMessageSuccess(p, actorInstanceId),
-                          n,
-                          persistentActor,
-                          p.sender)
+                        resequencer !
+                          Desequenced(
+                            WriteMessageSuccess(p, actorInstanceId),
+                            n,
+                            persistentActor,
+                            p.sender)
                         n += 1
                       }
                   case Failure(e) ⇒
                     a.payload
                       .foreach { p ⇒
-                        resequencer ! Desequenced(
-                          WriteMessageRejected(p, e, actorInstanceId),
-                          n,
-                          persistentActor,
-                          p.sender)
+                        resequencer !
+                          Desequenced(
+                            WriteMessageRejected(p, e, actorInstanceId),
+                            n,
+                            persistentActor,
+                            p.sender)
                         n += 1
                       }
                 }
 
               case r: NonPersistentRepr ⇒
-                resequencer ! Desequenced(
-                  LoopMessageSuccess(r.payload, actorInstanceId),
-                  n,
-                  persistentActor,
-                  r.sender)
+                resequencer !
+                  Desequenced(
+                    LoopMessageSuccess(r.payload, actorInstanceId),
+                    n,
+                    persistentActor,
+                    r.sender)
                 n += 1
             }
 
           case Failure(e) ⇒
-            resequencer ! Desequenced(
-              WriteMessagesFailed(e),
-              cctr,
-              persistentActor,
-              self)
+            resequencer !
+              Desequenced(WriteMessagesFailed(e), cctr, persistentActor, self)
             var n = cctr + 1
             messages.foreach {
               case a: AtomicWrite ⇒
                 a.payload
                   .foreach { p ⇒
-                    resequencer ! Desequenced(
-                      WriteMessageFailure(p, e, actorInstanceId),
-                      n,
-                      persistentActor,
-                      p.sender)
+                    resequencer !
+                      Desequenced(
+                        WriteMessageFailure(p, e, actorInstanceId),
+                        n,
+                        persistentActor,
+                        p.sender)
                     n += 1
                   }
               case r: NonPersistentRepr ⇒
-                resequencer ! Desequenced(
-                  LoopMessageSuccess(r.payload, actorInstanceId),
-                  n,
-                  persistentActor,
-                  r.sender)
+                resequencer !
+                  Desequenced(
+                    LoopMessageSuccess(r.payload, actorInstanceId),
+                    n,
+                    persistentActor,
+                    r.sender)
                 n += 1
             }
         }

@@ -23,9 +23,9 @@ trait MemberLookup extends base.MemberLookupBase {
         Some(LinkToTpl(tpl))
       case None =>
         findTemplateMaybe(site) flatMap { inTpl =>
-          inTpl.members find (_.asInstanceOf[EntityImpl].sym == sym) map (
-            LinkToMember(_, inTpl)
-          )
+          inTpl.members find
+            (_.asInstanceOf[EntityImpl].sym == sym) map
+            (LinkToMember(_, inTpl))
         }
     }
 
@@ -54,19 +54,21 @@ trait MemberLookup extends base.MemberLookupBase {
       sym: Symbol,
       name: String): Option[LinkToExternal] = {
     val sym1 =
-      if (sym == AnyClass || sym == AnyRefClass || sym == AnyValClass || sym == NothingClass)
+      if (sym == AnyClass || sym == AnyRefClass || sym == AnyValClass ||
+          sym == NothingClass)
         ListClass
       else if (sym.hasPackageFlag)
         /* Get package object which has associatedFile ne null */
         sym.info.member(newTermName("package"))
       else
         sym
-    Option(sym1.associatedFile) flatMap (_.underlyingSource) flatMap { src =>
-      val path = src.canonicalPath
-      settings.extUrlMapping get path map { url =>
-        LinkToExternal(name, url + "#" + name)
+    Option(sym1.associatedFile) flatMap
+      (_.underlyingSource) flatMap { src =>
+        val path = src.canonicalPath
+        settings.extUrlMapping get path map { url =>
+          LinkToExternal(name, url + "#" + name)
+        }
       }
-    }
   }
 
   override def warnNoLink = !settings.docNoLinkWarnings.value

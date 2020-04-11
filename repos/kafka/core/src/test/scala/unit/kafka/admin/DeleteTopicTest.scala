@@ -83,8 +83,8 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
     val follower =
       servers
         .filter(s =>
-          s.config.brokerId != leaderIdOpt
-            .get && s.config.brokerId != controllerId)
+          s.config.brokerId != leaderIdOpt.get &&
+            s.config.brokerId != controllerId)
         .last
     follower.shutdown()
 

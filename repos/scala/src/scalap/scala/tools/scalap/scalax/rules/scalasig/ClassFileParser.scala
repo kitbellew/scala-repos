@@ -123,48 +123,60 @@ object ClassFileParser extends ByteCodeReader {
 
   // NOTE currently most constants just evaluate to a string description
   // TODO evaluate to useful values
-  val utf8String = (u2 >> bytes) ^^ add1 { raw => pool =>
-    raw.fromUTF8StringAndBytes
-  }
-  val intConstant = u4 ^^ add1 { x => pool =>
-    x
-  }
-  val floatConstant = bytes(4) ^^ add1 { raw => pool =>
-    "Float: TODO"
-  }
-  val longConstant = bytes(8) ^^ add2 { raw => pool =>
-    raw.toLong
-  }
-  val doubleConstant = bytes(8) ^^ add2 { raw => pool =>
-    "Double: TODO"
-  }
-  val classRef = u2 ^^ add1 { x => pool =>
-    "Class: " + pool(x)
-  }
-  val stringRef = u2 ^^ add1 { x => pool =>
-    "String: " + pool(x)
-  }
+  val utf8String =
+    (u2 >> bytes) ^^
+      add1 { raw => pool =>
+        raw.fromUTF8StringAndBytes
+      }
+  val intConstant = u4 ^^
+    add1 { x => pool =>
+      x
+    }
+  val floatConstant = bytes(4) ^^
+    add1 { raw => pool =>
+      "Float: TODO"
+    }
+  val longConstant = bytes(8) ^^
+    add2 { raw => pool =>
+      raw.toLong
+    }
+  val doubleConstant = bytes(8) ^^
+    add2 { raw => pool =>
+      "Double: TODO"
+    }
+  val classRef = u2 ^^
+    add1 { x => pool =>
+      "Class: " + pool(x)
+    }
+  val stringRef = u2 ^^
+    add1 { x => pool =>
+      "String: " + pool(x)
+    }
   val fieldRef = memberRef("Field")
   val methodRef = memberRef("Method")
   val interfaceMethodRef = memberRef("InterfaceMethod")
-  val nameAndType = u2 ~ u2 ^^ add1 {
-    case name ~ descriptor =>
-      pool => "NameAndType: " + pool(name) + ", " + pool(descriptor)
-  }
-  val methodHandle = u1 ~ u2 ^^ add1 {
-    case referenceKind ~ referenceIndex =>
-      pool => "MethodHandle: " + referenceKind + ", " + pool(referenceIndex)
-  }
-  val methodType = u2 ^^ add1 {
-    case descriptorIndex =>
-      pool => "MethodType: " + pool(descriptorIndex)
-  }
-  val invokeDynamic = u2 ~ u2 ^^ add1 {
-    case bootstrapMethodAttrIndex ~ nameAndTypeIndex =>
-      pool =>
-        "InvokeDynamic: " + "bootstrapMethodAttrIndex = " + bootstrapMethodAttrIndex + ", " + pool(
-          nameAndTypeIndex)
-  }
+  val nameAndType = u2 ~ u2 ^^
+    add1 {
+      case name ~ descriptor =>
+        pool => "NameAndType: " + pool(name) + ", " + pool(descriptor)
+    }
+  val methodHandle = u1 ~ u2 ^^
+    add1 {
+      case referenceKind ~ referenceIndex =>
+        pool => "MethodHandle: " + referenceKind + ", " + pool(referenceIndex)
+    }
+  val methodType = u2 ^^
+    add1 {
+      case descriptorIndex =>
+        pool => "MethodType: " + pool(descriptorIndex)
+    }
+  val invokeDynamic = u2 ~ u2 ^^
+    add1 {
+      case bootstrapMethodAttrIndex ~ nameAndTypeIndex =>
+        pool =>
+          "InvokeDynamic: " + "bootstrapMethodAttrIndex = " +
+            bootstrapMethodAttrIndex + ", " + pool(nameAndTypeIndex)
+    }
 
   val constantPoolEntry = u1 >> {
     case 1 =>
@@ -234,8 +246,8 @@ object ClassFileParser extends ByteCodeReader {
     }
 
   val element_value_pair = u2 ~ element_value ^~^ AnnotationElement
-  val annotation: Parser[Annotation] =
-    u2 ~ (u2 >> element_value_pair.times) ^~^ Annotation
+  val annotation: Parser[Annotation] = u2 ~
+    (u2 >> element_value_pair.times) ^~^ Annotation
   val annotations = u2 >> annotation.times
 
   val field = u2 ~ u2 ~ u2 ~ attributes ^~~~^ Field
@@ -245,16 +257,18 @@ object ClassFileParser extends ByteCodeReader {
   val methods = u2 >> method.times
 
   val header =
-    magicNumber -~ u2 ~ u2 ~ constantPool ~ u2 ~ u2 ~ u2 ~ interfaces ^~~~~~~^ ClassFileHeader
+    magicNumber -~ u2 ~ u2 ~ constantPool ~ u2 ~ u2 ~ u2 ~ interfaces ^~~~~~~^
+      ClassFileHeader
   val classFile = header ~ fields ~ methods ~ attributes ~- !u1 ^~~~^ ClassFile
 
   // TODO create a useful object, not just a string
   def memberRef(description: String) =
-    u2 ~ u2 ^^ add1 {
-      case classRef ~ nameAndTypeRef =>
-        pool =>
-          description + ": " + pool(classRef) + ", " + pool(nameAndTypeRef)
-    }
+    u2 ~ u2 ^^
+      add1 {
+        case classRef ~ nameAndTypeRef =>
+          pool =>
+            description + ": " + pool(classRef) + ", " + pool(nameAndTypeRef)
+      }
 
   def add1[T](f: T => ConstantPool => Any)(raw: T)(pool: ConstantPool) =
     pool add f(raw)

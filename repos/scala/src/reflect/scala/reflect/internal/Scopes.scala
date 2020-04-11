@@ -310,8 +310,8 @@ trait Scopes extends api.Scopes {
         case null =>
           Iterator.empty
         case e =>
-          lookupAllEntries(name) filter (e1 =>
-            (e eq e1) || (e.depth == e1.depth && e.sym != e1.sym))
+          lookupAllEntries(name) filter
+            (e1 => (e eq e1) || (e.depth == e1.depth && e.sym != e1.sym))
       }
     }
 
@@ -360,8 +360,7 @@ trait Scopes extends api.Scopes {
       */
     def isSameScope(other: Scope) =
       ((size == other.size) // optimization - size is cached
-        && (this isSubScope other)
-        && (other isSubScope this))
+      && (this isSubScope other) && (other isSubScope this))
 
     def isSubScope(other: Scope) = {
       def scopeContainsSym(sym: Symbol): Boolean = {
@@ -372,8 +371,8 @@ trait Scopes extends api.Scopes {
               false
             case _ =>
               val comparableInfo = sym.info.substThis(sym.owner, e.sym.owner)
-              (e.sym.info =:= comparableInfo) || entryContainsSym(
-                lookupNextEntry(e))
+              (e.sym.info =:= comparableInfo) ||
+              entryContainsSym(lookupNextEntry(e))
           }
         entryContainsSym(this lookupEntry sym.name)
       }

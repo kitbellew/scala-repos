@@ -51,9 +51,8 @@ class ScalaMissingIfBranchesFixer extends ScalaFixer {
 
     val rParenthOffset = rParenth.getTextRange.getEndOffset
 
-    if (ifStatement.elseBranch.isEmpty && !transformingOneLiner || ifStatement
-          .thenBranch
-          .isEmpty) {
+    if (ifStatement.elseBranch.isEmpty && !transformingOneLiner ||
+        ifStatement.thenBranch.isEmpty) {
       doc.insertString(rParenthOffset, " {}")
     } else {
       doc.insertString(rParenthOffset, " {")

@@ -97,13 +97,14 @@ class Scentry[UserType <: AnyRef](
         runCallbacks() {
           _.beforeFetch(key)
         }
-        val o = fromSession lift key flatMap (Option(_)) map { res =>
-          runCallbacks() {
-            _.afterFetch(res)
+        val o = fromSession lift key flatMap
+          (Option(_)) map { res =>
+            runCallbacks() {
+              _.afterFetch(res)
+            }
+            request(scentryAuthKey) = res
+            res
           }
-          request(scentryAuthKey) = res
-          res
-        }
         if (o.isEmpty)
           request(scentryAuthKey) = null
         o
@@ -186,19 +187,20 @@ class Scentry[UserType <: AnyRef](
       else
         strategies.filterKeys(names.contains).values
     (
-      subset filter (_.isValid) map { strat =>
-        logger.debug("Authenticating with: %s" format strat.name)
-        runCallbacks(_.isValid) {
-          _.beforeAuthenticate
+      subset filter
+        (_.isValid) map { strat =>
+          logger.debug("Authenticating with: %s" format strat.name)
+          runCallbacks(_.isValid) {
+            _.beforeAuthenticate
+          }
+          strat.authenticate() match {
+            case Some(usr) ⇒
+              Some(strat.name -> usr)
+            case _ ⇒
+              strat.unauthenticated()
+              None
+          }
         }
-        strat.authenticate() match {
-          case Some(usr) ⇒
-            Some(strat.name -> usr)
-          case _ ⇒
-            strat.unauthenticated()
-            None
-        }
-      }
     ).find(_.isDefined) getOrElse None
   }
 

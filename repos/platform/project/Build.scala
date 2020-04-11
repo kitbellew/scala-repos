@@ -55,13 +55,16 @@ object PlatformBuild extends Build {
     "The primary test class for the project (just used for surtr)")
 
   val nexusSettings: Seq[Project.Setting[_]] = Seq(
-    resolvers ++= Seq(
-      "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
-      "Maven Repo 1" at "http://repo1.maven.org/maven2/",
-      "Guiceyfruit" at "http://guiceyfruit.googlecode.com/svn/repo/releases/",
-      "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases/",
-      "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
-    ),
+    resolvers ++=
+      Seq(
+        "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+        "Maven Repo 1" at "http://repo1.maven.org/maven2/",
+        "Guiceyfruit" at "http://guiceyfruit.googlecode.com/svn/repo/releases/",
+        "Sonatype Releases" at
+          "http://oss.sonatype.org/content/repositories/releases/",
+        "Sonatype Snapshots" at
+          "http://oss.sonatype.org/content/repositories/snapshots/"
+      ),
     credentials += Credentials(Path.userHome / ".ivy2" / ".rgcredentials")
   )
 
@@ -86,47 +89,48 @@ object PlatformBuild extends Build {
     },
     javacOptions ++= Seq("-source", "1.6", "-target", "1.6"),
     scalaVersion := "2.9.2",
-    jarName in assembly <<= (name) map { name =>
-      name + "-assembly-" + ("git describe".!!.trim) + ".jar"
-    },
+    jarName in assembly <<=
+      (name) map { name =>
+        name + "-assembly-" + ("git describe".!!.trim) + ".jar"
+      },
     target in assembly <<= target,
-    EclipseKeys.createSrc := EclipseCreateSrc
-      .Default + EclipseCreateSrc.Resource,
+    EclipseKeys.createSrc :=
+      EclipseCreateSrc.Default + EclipseCreateSrc.Resource,
     EclipseKeys.withSource := true,
-    (unmanagedSourceDirectories in Compile) <<= (
-      scalaSource in Compile,
-      javaSource in Compile)(Seq(_) ++ Set(_)),
+    (unmanagedSourceDirectories in Compile) <<=
+      (scalaSource in Compile, javaSource in Compile)(Seq(_) ++ Set(_)),
     (unmanagedSourceDirectories in Test) <<= (scalaSource in Test)(Seq(_)),
-    libraryDependencies ++= Seq(
-      "com.weiglewilczek.slf4s" % "slf4s_2.9.1" % "1.0.7",
-      "com.google.guava" % "guava" % "13.0",
-      "com.google.code.findbugs" % "jsr305" % "1.3.+",
-      "org.scalaz" %% "scalaz-core" % scalazVersion,
-      "org.scalaz" %% "scalaz-effect" % scalazVersion,
-      "joda-time" % "joda-time" % "1.6.2",
-      "com.reportgrid" %% "blueeyes-json" % blueeyesVersion,
-      "com.reportgrid" %% "blueeyes-util" % blueeyesVersion,
-      "com.reportgrid" %% "blueeyes-core" % blueeyesVersion,
-      "com.reportgrid" %% "blueeyes-mongo" % blueeyesVersion,
-      "com.reportgrid" %% "bkka" % blueeyesVersion,
-      "com.reportgrid" %% "akka_testing" % blueeyesVersion,
-      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-      "org.specs2" %% "specs2" % "1.12.3" % "test",
-      "org.mockito" % "mockito-core" % "1.9.0" % "test",
-      "javolution" % "javolution" % "5.5.1",
-      "com.chuusai" %% "shapeless" % "1.2.3",
-      "org.spire-math" % "spire_2.9.1" % "0.3.0-RC2",
-      "com.rubiconproject.oss" % "jchronic" % "0.2.6",
-      "javax.servlet" % "servlet-api" % "2.4" % "provided"
-    )
+    libraryDependencies ++=
+      Seq(
+        "com.weiglewilczek.slf4s" % "slf4s_2.9.1" % "1.0.7",
+        "com.google.guava" % "guava" % "13.0",
+        "com.google.code.findbugs" % "jsr305" % "1.3.+",
+        "org.scalaz" %% "scalaz-core" % scalazVersion,
+        "org.scalaz" %% "scalaz-effect" % scalazVersion,
+        "joda-time" % "joda-time" % "1.6.2",
+        "com.reportgrid" %% "blueeyes-json" % blueeyesVersion,
+        "com.reportgrid" %% "blueeyes-util" % blueeyesVersion,
+        "com.reportgrid" %% "blueeyes-core" % blueeyesVersion,
+        "com.reportgrid" %% "blueeyes-mongo" % blueeyesVersion,
+        "com.reportgrid" %% "bkka" % blueeyesVersion,
+        "com.reportgrid" %% "akka_testing" % blueeyesVersion,
+        "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
+        "org.specs2" %% "specs2" % "1.12.3" % "test",
+        "org.mockito" % "mockito-core" % "1.9.0" % "test",
+        "javolution" % "javolution" % "5.5.1",
+        "com.chuusai" %% "shapeless" % "1.2.3",
+        "org.spire-math" % "spire_2.9.1" % "0.3.0-RC2",
+        "com.rubiconproject.oss" % "jchronic" % "0.2.6",
+        "javax.servlet" % "servlet-api" % "2.4" % "provided"
+      )
   )
 
   val jettySettings = Seq(
-    libraryDependencies ++= Seq(
-      "org.eclipse.jetty" % "jetty-server" % "8.1.3.v20120416",
-      "javax.servlet" % "javax.servlet-api" % "3.0.1"),
-    ivyXML :=
-      <dependencies>
+    libraryDependencies ++=
+      Seq(
+        "org.eclipse.jetty" % "jetty-server" % "8.1.3.v20120416",
+        "javax.servlet" % "javax.servlet-api" % "3.0.1"),
+    ivyXML := <dependencies>
       <dependency org="org.eclipse.jetty" name="jetty-server" rev="8.1.3.v20120416">
         <exclude org="org.eclipse.jetty.orbit" />
       </dependency>
@@ -139,35 +143,45 @@ object PlatformBuild extends Build {
     jprofilerLib := "/Applications/jprofiler7/bin/macos/libjprofilerti.jnilib",
     jprofilerConf := "src/main/resources/jprofile.xml",
     jprofilerId := "116",
-    javaOptions in profileTask <<= (
-      javaOptions,
-      jprofilerLib,
-      jprofilerConf,
-      jprofilerId,
-      baseDirectory) map { (opts, lib, conf, id, d) =>
-      // download jnilib if necessary. a bit sketchy, but convenient
-      Process("./jprofiler/setup-jnilib.py").!!
-      opts ++ Seq(
-        "-agentpath:%s/jprofiler.jnilib=offline,config=%s/%s,id=%s" format (
-          d, d, conf, id
-        ))
-    }
+    javaOptions in profileTask <<=
+      (
+        javaOptions,
+        jprofilerLib,
+        jprofilerConf,
+        jprofilerId,
+        baseDirectory) map { (opts, lib, conf, id, d) =>
+        // download jnilib if necessary. a bit sketchy, but convenient
+        Process("./jprofiler/setup-jnilib.py").!!
+        opts ++
+          Seq(
+            "-agentpath:%s/jprofiler.jnilib=offline,config=%s/%s,id=%s" format
+              (d, d, conf, id))
+      }
   )
 
-  val commonPluginsSettings = ScctPlugin
-    .instrumentSettings ++ cpdSettings ++ graphSettings ++ commonSettings
+  val commonPluginsSettings = ScctPlugin.instrumentSettings ++ cpdSettings ++
+    graphSettings ++ commonSettings
   val commonNexusSettings = nexusSettings ++ commonPluginsSettings
-  val commonAssemblySettings = sbtassembly.Plugin.assemblySettings ++ Seq(
-    test in assembly := {}) ++ commonNexusSettings
+  val commonAssemblySettings = sbtassembly.Plugin.assemblySettings ++
+    Seq(test in assembly := {}) ++ commonNexusSettings
 
   // Logging is simply a common project for the test log configuration files
   lazy val logging = Project(id = "logging", base = file("logging"))
     .settings(commonNexusSettings: _*)
 
   lazy val standalone = Project(id = "standalone", base = file("standalone"))
-    .settings((commonAssemblySettings ++ jettySettings): _*) dependsOn (
-    common % "compile->compile;test->test", yggdrasil % "compile->compile;test->test", util, bifrost, muspelheim % "compile->compile;test->test", logging % "test->test", auth, accounts, ingest, dvergr
-  )
+    .settings((commonAssemblySettings ++ jettySettings): _*) dependsOn
+    (
+      common % "compile->compile;test->test",
+      yggdrasil % "compile->compile;test->test",
+      util,
+      bifrost,
+      muspelheim % "compile->compile;test->test",
+      logging % "test->test",
+      auth,
+      accounts,
+      ingest,
+      dvergr)
 
   lazy val platform = Project(id = "platform", base = file("."))
     .settings(
@@ -200,9 +214,8 @@ object PlatformBuild extends Build {
     .settings(commonNexusSettings: _*) dependsOn (logging % "test->test")
 
   lazy val quirrel = Project(id = "quirrel", base = file("quirrel"))
-    .settings(commonNexusSettings: _*) dependsOn (
-    bytecode % "compile->compile;test->test", util, logging % "test->test"
-  )
+    .settings(commonNexusSettings: _*) dependsOn
+    (bytecode % "compile->compile;test->test", util, logging % "test->test")
 
   lazy val mirror = Project(id = "mirror", base = file("mirror"))
     .settings(commonNexusSettings: _*) dependsOn (quirrel)
@@ -227,11 +240,12 @@ object PlatformBuild extends Build {
     id = "yggdrasilProf",
     base = file("yggdrasilProf"))
     .settings(
-      commonNexusSettings ++ jprofilerSettings ++ Seq(
-        fullRunInputTask(
-          profileTask,
-          Test,
-          "com.precog.yggdrasil.test.Run")): _*)
+      commonNexusSettings ++ jprofilerSettings ++
+        Seq(
+          fullRunInputTask(
+            profileTask,
+            Test,
+            "com.precog.yggdrasil.test.Run")): _*)
     .dependsOn(
       yggdrasil % "compile->compile;compile->test",
       logging % "test->test")
@@ -260,14 +274,24 @@ object PlatformBuild extends Build {
   /// Testing ///
 
   lazy val muspelheim = Project(id = "muspelheim", base = file("muspelheim"))
-    .settings(commonNexusSettings: _*) dependsOn (
-    util % "compile->compile;test->test", common, quirrel, mimir, yggdrasil % "compile->compile;test->test", logging % "test->test"
-  )
+    .settings(commonNexusSettings: _*) dependsOn
+    (
+      util % "compile->compile;test->test",
+      common,
+      quirrel,
+      mimir,
+      yggdrasil % "compile->compile;test->test",
+      logging % "test->test")
 
   lazy val surtr = Project(id = "surtr", base = file("surtr"))
-    .settings(commonAssemblySettings: _*) dependsOn (
-    quirrel, mimir, yggdrasil, ingest, muspelheim % "compile->compile;test->test", logging % "test->test"
-  )
+    .settings(commonAssemblySettings: _*) dependsOn
+    (
+      quirrel,
+      mimir,
+      yggdrasil,
+      ingest,
+      muspelheim % "compile->compile;test->test",
+      logging % "test->test")
 
   lazy val ragnarok = Project(id = "ragnarok", base = file("ragnarok"))
     .settings(commonAssemblySettings: _*)
@@ -302,8 +326,9 @@ object PlatformBuild extends Build {
 
   lazy val jprofiler = Project(id = "jprofiler", base = file("jprofiler"))
     .settings(
-      jprofilerSettings ++ commonNexusSettings ++ Seq(
-        fullRunInputTask(profileTask, Test, "com.precog.jprofiler.Run")): _*)
+      jprofilerSettings ++ commonNexusSettings ++
+        Seq(
+          fullRunInputTask(profileTask, Test, "com.precog.jprofiler.Run")): _*)
     .dependsOn(ragnarok, logging % "test->test")
 
   /// Services ///
@@ -313,9 +338,8 @@ object PlatformBuild extends Build {
     .dependsOn(common % "compile->compile;test->test", logging % "test->test")
 
   lazy val accounts = Project(id = "accounts", base = file("accounts"))
-    .settings(commonAssemblySettings: _*) dependsOn (
-    common % "compile->compile;test->test", auth, logging % "test->test"
-  )
+    .settings(commonAssemblySettings: _*) dependsOn
+    (common % "compile->compile;test->test", auth, logging % "test->test")
 
   lazy val ingest = Project(id = "ingest", base = file("ingest"))
     .settings(commonAssemblySettings: _*)

@@ -623,12 +623,10 @@ class Scaladoc extends ScalaMatchingTask {
           if (list.length > 0)
             log(
               "Documenting " + list.length + " source file" +
-                (
-                  if (list.length > 1)
-                    "s"
-                  else
-                    ""
-                ) +
+                (if (list.length > 1)
+                   "s"
+                 else
+                   "") +
                 (" to " + getDestination.toString))
           else
             log("No files selected for documentation", Project.MSG_VERBOSE)
@@ -719,32 +717,24 @@ class Scaladoc extends ScalaMatchingTask {
       docProcessor.document(sourceFiles.map(_.toString))
       if (reporter.ERROR.count > 0)
         safeBuildError(
-          "Document failed with " +
-            reporter.ERROR.count + " error" +
-            (
-              if (reporter.ERROR.count > 1)
-                "s"
-              else
-                ""
-            ) +
-            "; see the documenter error output for details.")
+          "Document failed with " + reporter.ERROR.count + " error" +
+            (if (reporter.ERROR.count > 1)
+               "s"
+             else
+               "") + "; see the documenter error output for details.")
       else if (reporter.WARNING.count > 0)
         log(
-          "Document succeeded with " +
-            reporter.WARNING.count + " warning" +
-            (
-              if (reporter.WARNING.count > 1)
-                "s"
-              else
-                ""
-            ) +
-            "; see the documenter output for details.")
+          "Document succeeded with " + reporter.WARNING.count + " warning" +
+            (if (reporter.WARNING.count > 1)
+               "s"
+             else
+               "") + "; see the documenter output for details.")
       reporter.printSummary()
     } catch {
       case exception: Throwable =>
         exception.printStackTrace()
-        val msg =
-          Option(exception.getMessage) getOrElse "no error message provided"
+        val msg = Option(exception.getMessage) getOrElse
+          "no error message provided"
         safeBuildError(
           s"Document failed because of an internal documenter error ($msg); see the error output for details.")
     }

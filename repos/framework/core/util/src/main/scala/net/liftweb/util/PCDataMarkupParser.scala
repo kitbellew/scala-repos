@@ -291,10 +291,11 @@ object HtmlEntities {
     ("piv", 982)
   )
 
-  val entMap: Map[String, Char] = Map.empty ++ entList.map {
-    case (name, value) =>
-      (name, value.toChar)
-  }
+  val entMap: Map[String, Char] = Map.empty ++
+    entList.map {
+      case (name, value) =>
+        (name, value.toChar)
+    }
 
   val revMap: Map[Char, String] = Map(
     entList.map {
@@ -650,14 +651,12 @@ object AltXML {
                 sb.append(str)
                 sb.append(';')
               case _ =>
-                if (c >= ' ' && c != '\u0085' && !(
-                      c >= '\u007f' && c <= '\u0095'
-                    ))
+                if (c >= ' ' && c != '\u0085' &&
+                    !(c >= '\u007f' && c <= '\u0095'))
                   sb.append(c)
             }
-          } else if (c >= ' ' && c != '\u0085' && !(
-                       c >= '\u007f' && c <= '\u0095'
-                     ))
+          } else if (c >= ' ' && c != '\u0085' &&
+                     !(c >= '\u007f' && c <= '\u0095'))
             sb.append(c)
       }
 
@@ -721,10 +720,9 @@ object AltXML {
             legacyIeCompatibilityMode)
 
       case e: Elem
-          if !legacyIeCompatibilityMode && (
-            (e.child eq null) || e.child.isEmpty
-          )
-            && inlineTags.contains(e.label) =>
+          if !legacyIeCompatibilityMode &&
+            ((e.child eq null) || e.child.isEmpty) &&
+            inlineTags.contains(e.label) =>
         sb.append('<')
         e.nameToString(sb)
         if (e.attributes ne null)
@@ -733,9 +731,8 @@ object AltXML {
         sb.append(" />")
 
       case e: Elem
-          if legacyIeCompatibilityMode && (
-            (e.child eq null) || e.child.isEmpty
-          ) &&
+          if legacyIeCompatibilityMode &&
+            ((e.child eq null) || e.child.isEmpty) &&
             ieBadTags.contains(e.label) =>
         sb.append('<')
         e.nameToString(sb)

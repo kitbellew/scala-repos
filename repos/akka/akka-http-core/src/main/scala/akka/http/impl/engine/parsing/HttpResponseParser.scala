@@ -96,9 +96,8 @@ private[http] class HttpResponseParser(
             "Response reason phrase exceeds the configured limit of " +
               maxResponseReasonLength + " characters")
       skipReason(startIdx)
-    } else if (byteChar(input, cursor + 3) == '\r' && byteChar(
-                 input,
-                 cursor + 4) == '\n') {
+    } else if (byteChar(input, cursor + 3) == '\r' &&
+               byteChar(input, cursor + 4) == '\n') {
       throw new ParsingException("Status code misses trailing space")
     } else
       badStatusCode
@@ -157,9 +156,8 @@ private[http] class HttpResponseParser(
           startNewMessage(input, bodyStart)
       }
 
-    if (statusCode.allowsEntity && (
-          contextForCurrentResponse.get.requestMethod != HttpMethods.HEAD
-        )) {
+    if (statusCode.allowsEntity &&
+        (contextForCurrentResponse.get.requestMethod != HttpMethods.HEAD)) {
       teh match {
         case None ⇒
           clh match {

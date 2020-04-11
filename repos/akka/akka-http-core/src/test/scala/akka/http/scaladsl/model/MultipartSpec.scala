@@ -38,12 +38,13 @@ class MultipartSpec
             .BodyPart(defaultEntity("data"), List(ETag("xzy"))) :: Nil))
       val strict = Await.result(streamed.toStrict(1.second), 1.second)
 
-      strict shouldEqual Multipart.General(
-        MediaTypes.`multipart/mixed`,
-        Multipart
-          .General
-          .BodyPart
-          .Strict(HttpEntity("data"), List(ETag("xzy"))))
+      strict shouldEqual
+        Multipart.General(
+          MediaTypes.`multipart/mixed`,
+          Multipart
+            .General
+            .BodyPart
+            .Strict(HttpEntity("data"), List(ETag("xzy"))))
     }
   }
 
@@ -55,8 +56,9 @@ class MultipartSpec
             Multipart.FormData.BodyPart("bar", defaultEntity("BAR")) :: Nil))
       val strict = Await.result(streamed.toStrict(1.second), 1.second)
 
-      strict shouldEqual Multipart
-        .FormData(Map("foo" -> HttpEntity("FOO"), "bar" -> HttpEntity("BAR")))
+      strict shouldEqual
+        Multipart
+          .FormData(Map("foo" -> HttpEntity("FOO"), "bar" -> HttpEntity("BAR")))
     }
   }
 
@@ -78,22 +80,23 @@ class MultipartSpec
                 _additionalHeaders = List(ETag("xzy"))) :: Nil))
       val strict = Await.result(streamed.toStrict(1.second), 1.second)
 
-      strict shouldEqual Multipart.ByteRanges(
-        Multipart
-          .ByteRanges
-          .BodyPart
-          .Strict(
-            ContentRange(0, 6),
-            HttpEntity("snippet"),
-            additionalHeaders = List(ETag("abc"))),
-        Multipart
-          .ByteRanges
-          .BodyPart
-          .Strict(
-            ContentRange(8, 9),
-            HttpEntity("PR"),
-            additionalHeaders = List(ETag("xzy")))
-      )
+      strict shouldEqual
+        Multipart.ByteRanges(
+          Multipart
+            .ByteRanges
+            .BodyPart
+            .Strict(
+              ContentRange(0, 6),
+              HttpEntity("snippet"),
+              additionalHeaders = List(ETag("abc"))),
+          Multipart
+            .ByteRanges
+            .BodyPart
+            .Strict(
+              ContentRange(8, 9),
+              HttpEntity("PR"),
+              additionalHeaders = List(ETag("xzy")))
+        )
     }
   }
 

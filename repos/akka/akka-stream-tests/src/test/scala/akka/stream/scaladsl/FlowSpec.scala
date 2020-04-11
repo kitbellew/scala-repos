@@ -324,38 +324,39 @@ class FlowSpec
       c1.expectComplete()
     }
 
-    "be materializable several times with fanout publisher" in assertAllStagesStopped {
-      val flow = Source(List(1, 2, 3)).map(_.toString)
-      val p1 = flow.runWith(Sink.asPublisher(true))
-      val p2 = flow.runWith(Sink.asPublisher(true))
-      val s1 = TestSubscriber.manualProbe[String]()
-      val s2 = TestSubscriber.manualProbe[String]()
-      val s3 = TestSubscriber.manualProbe[String]()
-      p1.subscribe(s1)
-      p2.subscribe(s2)
-      p2.subscribe(s3)
+    "be materializable several times with fanout publisher" in
+      assertAllStagesStopped {
+        val flow = Source(List(1, 2, 3)).map(_.toString)
+        val p1 = flow.runWith(Sink.asPublisher(true))
+        val p2 = flow.runWith(Sink.asPublisher(true))
+        val s1 = TestSubscriber.manualProbe[String]()
+        val s2 = TestSubscriber.manualProbe[String]()
+        val s3 = TestSubscriber.manualProbe[String]()
+        p1.subscribe(s1)
+        p2.subscribe(s2)
+        p2.subscribe(s3)
 
-      val sub1 = s1.expectSubscription()
-      val sub2 = s2.expectSubscription()
-      val sub3 = s3.expectSubscription()
+        val sub1 = s1.expectSubscription()
+        val sub2 = s2.expectSubscription()
+        val sub3 = s3.expectSubscription()
 
-      sub1.request(3)
-      s1.expectNext("1")
-      s1.expectNext("2")
-      s1.expectNext("3")
-      s1.expectComplete()
+        sub1.request(3)
+        s1.expectNext("1")
+        s1.expectNext("2")
+        s1.expectNext("3")
+        s1.expectComplete()
 
-      sub2.request(3)
-      sub3.request(3)
-      s2.expectNext("1")
-      s2.expectNext("2")
-      s2.expectNext("3")
-      s2.expectComplete()
-      s3.expectNext("1")
-      s3.expectNext("2")
-      s3.expectNext("3")
-      s3.expectComplete()
-    }
+        sub2.request(3)
+        sub3.request(3)
+        s2.expectNext("1")
+        s2.expectNext("2")
+        s2.expectNext("3")
+        s2.expectComplete()
+        s3.expectNext("1")
+        s3.expectNext("2")
+        s3.expectNext("3")
+        s3.expectComplete()
+      }
 
     "be covariant" in {
       val f1: Source[Fruit, _] = Source.fromIterator[Fruit](apples)
@@ -592,8 +593,8 @@ class FlowSpec
         val downstream3 = TestSubscriber.manualProbe[Any]()
         publisher.subscribe(downstream3)
         downstream3.expectSubscription()
-        downstream3
-          .expectError() should ===(ActorPublisher.NormalShutdownReason)
+        downstream3.expectError() should
+          ===(ActorPublisher.NormalShutdownReason)
       }
     }
 

@@ -135,8 +135,9 @@ class ActivatorProjectBuilder
       override def validate(): Boolean = {
         val context = settingsStep.getContext
 
-        if (context.isCreatingNewProject && !ScalaNamesUtil.isIdentifier(
-              context.getProjectName) && context.getProjectName != null)
+        if (context.isCreatingNewProject &&
+            !ScalaNamesUtil.isIdentifier(context.getProjectName) &&
+            context.getProjectName != null)
           error("SBT Project name must be valid Scala identifier")
 
         val text = settingsStep.getModuleNameField.getText

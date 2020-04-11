@@ -331,11 +331,10 @@ trait TypedPipe[+T] extends Serializable {
       ev: T <:< (K, V)): TypedPipe[(K, Either[V, R])] =
     mapValues { (v: V) =>
       Left(v)
-    } ++ (
-      that.mapValues { (r: R) =>
+    } ++
+      (that.mapValues { (r: R) =>
         Right(r)
-      }
-    )
+      })
 
   /**
     * If you are going to create two branches or forks,

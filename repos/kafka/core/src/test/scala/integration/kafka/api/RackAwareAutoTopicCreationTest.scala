@@ -45,7 +45,8 @@ class RackAwareAutoTopicCreationTest
         zkConnect,
         enableControlledShutdown = false,
         rack = Some((node / 2).toString))
-    } map (KafkaConfig.fromProps(_, overridingProps))
+    } map
+      (KafkaConfig.fromProps(_, overridingProps))
 
   private val topic = "topic"
 

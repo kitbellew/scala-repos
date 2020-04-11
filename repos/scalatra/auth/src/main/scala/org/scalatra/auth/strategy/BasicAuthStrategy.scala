@@ -73,10 +73,9 @@ object BasicAuthStrategy {
     private def authorizationKey =
       AUTHORIZATION_KEYS.find(r.getHeader(_) != null)
 
-    def isBasicAuth =
-      (false /: scheme) { (_, sch) =>
-        sch == "basic"
-      }
+    def isBasicAuth = (false /: scheme) { (_, sch) =>
+      sch == "basic"
+    }
     def providesAuth = authorizationKey.isDefined
 
     private[this] var _credentials: Option[(String, String)] = None
@@ -84,9 +83,8 @@ object BasicAuthStrategy {
       if (_credentials.isEmpty)
         _credentials = params map { p =>
           (
-            null.asInstanceOf[(String, String)] /: new String(
-              Base64.decode(p),
-              Codec.UTF8.charSet).split(":", 2)
+            null.asInstanceOf[(String, String)] /:
+              new String(Base64.decode(p), Codec.UTF8.charSet).split(":", 2)
           ) { (t, l) =>
             if (t == null)
               (l, null)

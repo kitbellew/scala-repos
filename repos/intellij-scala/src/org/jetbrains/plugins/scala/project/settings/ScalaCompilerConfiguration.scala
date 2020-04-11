@@ -41,9 +41,8 @@ class ScalaCompilerConfiguration(project: Project)
       options: Seq[String]) {
     customProfiles.foreach { profile =>
       profile.removeModuleName(module.getName)
-      if (profile.getName.startsWith(source) && profile
-            .getModuleNames
-            .isEmpty) {
+      if (profile.getName.startsWith(source) &&
+          profile.getModuleNames.isEmpty) {
         customProfiles = customProfiles.filterNot(_ == profile)
       }
     }

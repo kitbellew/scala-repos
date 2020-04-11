@@ -61,11 +61,12 @@ final class Env(
 
 object Env {
 
-  lazy val current: Env = "insight" boot new Env(
-    config = lila.common.PlayApp loadConfig "insight",
-    getPref = lila.pref.Env.current.api.getPrefById,
-    areFriends = lila.relation.Env.current.api.fetchAreFriends,
-    lightUser = lila.user.Env.current.lightUser,
-    system = lila.common.PlayApp.system,
-    lifecycle = lila.common.PlayApp.lifecycle)
+  lazy val current: Env = "insight" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "insight",
+      getPref = lila.pref.Env.current.api.getPrefById,
+      areFriends = lila.relation.Env.current.api.fetchAreFriends,
+      lightUser = lila.user.Env.current.lightUser,
+      system = lila.common.PlayApp.system,
+      lifecycle = lila.common.PlayApp.lifecycle)
 }

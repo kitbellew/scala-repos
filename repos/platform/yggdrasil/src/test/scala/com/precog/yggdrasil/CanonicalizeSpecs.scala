@@ -68,10 +68,11 @@ trait CanonicalizeSpec[M[+_]]
       val canonicalizedTable = table.canonicalize(minLength, Some(maxLength))
       val slices = canonicalizedTable.slices.toStream.copoint map (_.size)
       if (size > 0) {
-        slices.init must haveAllElementsLike {
-          case (sliceSize: Int) =>
-            sliceSize must beBetween(minLength, maxLength)
-        }
+        slices.init must
+          haveAllElementsLike {
+            case (sliceSize: Int) =>
+              sliceSize must beBetween(minLength, maxLength)
+          }
         slices.last must be_<=(maxLength)
       } else {
         slices must haveSize(0)
@@ -141,10 +142,9 @@ trait CanonicalizeSpec[M[+_]]
 
     val emptySlice = Slice(Map(), 0)
     val slices =
-      Stream(emptySlice) ++ tableTakeRange(table, 0, 5) ++
-        Stream(emptySlice) ++ tableTakeRange(table, 5, 4) ++
-        Stream(emptySlice) ++ tableTakeRange(table, 9, 5) ++
-        Stream(emptySlice)
+      Stream(emptySlice) ++ tableTakeRange(table, 0, 5) ++ Stream(emptySlice) ++
+        tableTakeRange(table, 5, 4) ++ Stream(emptySlice) ++
+        tableTakeRange(table, 9, 5) ++ Stream(emptySlice)
 
     val toPrint = slices.map(_.size)
 

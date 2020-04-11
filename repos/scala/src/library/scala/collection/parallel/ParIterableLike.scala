@@ -1125,8 +1125,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
       pit.splitWithSignalling.map(newSubtask(_)) // default split procedure
     private[parallel] override def signalAbort = pit.abort()
     override def toString =
-      this.getClass.getSimpleName + "(" + pit
-        .toString + ")(" + result + ")(supername: " + super.toString + ")"
+      this.getClass.getSimpleName + "(" + pit.toString + ")(" + result +
+        ")(supername: " + super.toString + ")"
   }
 
   protected[this] trait NonDivisibleTask[R, Tp]

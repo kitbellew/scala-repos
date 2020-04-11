@@ -235,7 +235,8 @@ object Flaggable {
       out.toSeq map {
         case (k, v) =>
           k.toString + "=" + v.toString
-      } mkString (",")
+      } mkString
+        (",")
     }
   }
 
@@ -884,16 +885,13 @@ class Flags(
         else
           "usage: "
 
-      cmd + argv0 + " [<flag>...]\n" +
-        "flags:\n" +
-        (lines mkString "\n") + (
-        if (globalLines.isEmpty)
-          ""
-        else {
-          "\nglobal flags:\n" +
-            (globalLines mkString "\n")
-        }
-      )
+      cmd + argv0 + " [<flag>...]\n" + "flags:\n" +
+        (lines mkString "\n") +
+        (if (globalLines.isEmpty)
+           ""
+         else {
+           "\nglobal flags:\n" + (globalLines mkString "\n")
+         })
     }
 
   /**
@@ -912,9 +910,8 @@ class Flags(
       classLoader: ClassLoader = this.getClass.getClassLoader)
       : Iterable[Flag[_]] =
     synchronized {
-      var flags = TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this
-        .flags
-        .valuesIterator
+      var flags = TreeSet[Flag[_]]()(Ordering.by(_.name)) ++
+        this.flags.valuesIterator
 
       if (includeGlobal) {
         flags ++= GlobalFlag.getAll(classLoader).iterator
@@ -960,10 +957,7 @@ class Flags(
       includeGlobal: Boolean = this.includeGlobal,
       classLoader: ClassLoader = this.getClass.getClassLoader): String = {
     val (set, unset) = formattedFlagValues(includeGlobal, classLoader)
-    val lines = Seq("Set flags:") ++
-      set ++
-      Seq("Unset flags:") ++
-      unset
+    val lines = Seq("Set flags:") ++ set ++ Seq("Unset flags:") ++ unset
 
     lines.mkString("\n")
   }

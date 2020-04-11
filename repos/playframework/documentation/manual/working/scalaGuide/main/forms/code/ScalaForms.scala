@@ -74,9 +74,8 @@ package scalaguide.forms.scalaforms {
 
         controllers.Application.userFormNestedCity === "Shanghai"
 
-        controllers.Application.userFormRepeatedEmails === List(
-          "benewu@gmail.com",
-          "bob@gmail.com")
+        controllers.Application.userFormRepeatedEmails ===
+          List("benewu@gmail.com", "bob@gmail.com")
 
         controllers.Application.userFormOptionalEmail === None
 
@@ -301,8 +300,8 @@ package scalaguide.forms.scalaforms {
       val userFormConstraints = Form(
         mapping(
           "name" -> text.verifying(nonEmpty),
-          "age" -> number
-            .verifying(min(0), max(100)))(UserData.apply)(UserData.unapply))
+          "age" -> number.verifying(min(0), max(100)))(UserData.apply)(
+          UserData.unapply))
       //#userForm-constraints
 
       val userFormConstraintsName = {
@@ -337,13 +336,14 @@ package scalaguide.forms.scalaforms {
 
       val userFormConstraintsAdHoc = Form(
         mapping("name" -> text, "age" -> number)(UserData.apply)(
-          UserData.unapply) verifying (
-          "Failed form constraints!", fields =>
-            fields match {
-              case userData =>
-                validate(userData.name, userData.age).isDefined
-            }
-        ))
+          UserData.unapply) verifying
+          (
+            "Failed form constraints!",
+            fields =>
+              fields match {
+                case userData =>
+                  validate(userData.name, userData.age).isDefined
+              }))
       //#userForm-constraints-ad-hoc
 
       val userFormConstraintsAdhocName = {
@@ -356,9 +356,10 @@ package scalaguide.forms.scalaforms {
       val userFormNested: Form[UserAddressData] = Form(
         mapping(
           "name" -> text,
-          "address" -> mapping("street" -> text, "city" -> text)(
-            AddressData.apply)(AddressData.unapply))(UserAddressData.apply)(
-          UserAddressData.unapply))
+          "address" ->
+            mapping("street" -> text, "city" -> text)(AddressData.apply)(
+              AddressData
+                .unapply))(UserAddressData.apply)(UserAddressData.unapply))
       //#userForm-nested
 
       val userFormNestedCity = {
@@ -442,15 +443,18 @@ package scalaguide.forms.scalaforms {
           "lastname" -> nonEmptyText,
           "company" -> optional(text),
           // Defines a repeated mapping
-          "informations" -> seq(
-            mapping(
-              "label" -> nonEmptyText,
-              "email" -> optional(email),
-              "phones" -> list(
-                text verifying pattern(
-                  """[0-9.+]+""".r,
-                  error = "A valid phone number is required")))(
-              ContactInformation.apply)(ContactInformation.unapply))
+          "informations" ->
+            seq(
+              mapping(
+                "label" -> nonEmptyText,
+                "email" -> optional(email),
+                "phones" ->
+                  list(
+                    text verifying
+                      pattern(
+                        """[0-9.+]+""".r,
+                        error = "A valid phone number is required")))(
+                ContactInformation.apply)(ContactInformation.unapply))
         )(Contact.apply)(Contact.unapply))
       // #contact-form
 

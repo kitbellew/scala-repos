@@ -16,8 +16,8 @@ class AccessorLikeMethodIsUnitInspection
 
   def actionFor(holder: ProblemsHolder) = {
     case f: ScFunction
-        if f.isValid && f.hasQueryLikeName && f
-          .hasUnitResultType && f.superMethods.isEmpty =>
+        if f.isValid && f.hasQueryLikeName && f.hasUnitResultType &&
+          f.superMethods.isEmpty =>
       holder.registerProblem(f.nameId, getDisplayName)
   }
 }

@@ -65,7 +65,8 @@ case class NativeConnector(
         }
         connection = Some(c)
         c
-      } apply ()
+      } apply
+        ()
     }.flatten
       .rescue {
         case e: NativeConnector.ConnectTimeoutException =>
@@ -142,11 +143,13 @@ object NativeConnector {
 
     /** A ZooKeeper handle that will error if connectTimeout is specified and exceeded. */
     lazy val connected: Future[ZooKeeper] = connectTimeout map { timeout =>
-      connectPromise within (timer, timeout) rescue {
-        case _: TimeoutException =>
-          Future.exception(ConnectTimeoutException(connectString, timeout))
-      }
-    } getOrElse (connectPromise)
+      connectPromise within
+        (timer, timeout) rescue {
+          case _: TimeoutException =>
+            Future.exception(ConnectTimeoutException(connectString, timeout))
+        }
+    } getOrElse
+      (connectPromise)
 
     protected[this] val releasePromise = new Promise[Unit]
     val released: Future[Unit] = releasePromise
@@ -160,23 +163,24 @@ object NativeConnector {
     val sessionEvents: Offer[StateEvent] = {
       val broker = new Broker[StateEvent]
       def loop() {
-        sessionBroker.recv sync () map {
-          StateEvent(_)
-        } onSuccess {
-          case StateEvent.Connected =>
-            zookeeper foreach { zk =>
-              connectPromise.updateIfEmpty(Return(zk))
-              authenticate foreach { auth =>
-                log.info(
-                  "Authenticating to zk as %s"
-                    .format(new String(auth.data, "UTF-8")))
-                zk.addAuthInfo(auth.mode, auth.data)
+        sessionBroker.recv sync
+          () map {
+            StateEvent(_)
+          } onSuccess {
+            case StateEvent.Connected =>
+              zookeeper foreach { zk =>
+                connectPromise.updateIfEmpty(Return(zk))
+                authenticate foreach { auth =>
+                  log.info(
+                    "Authenticating to zk as %s"
+                      .format(new String(auth.data, "UTF-8")))
+                  zk.addAuthInfo(auth.mode, auth.data)
+                }
               }
-            }
-          case _ =>
-        } flatMap {
-          broker.send(_).sync()
-        } ensure loop()
+            case _ =>
+          } flatMap {
+            broker.send(_).sync()
+          } ensure loop()
       }
       loop()
       broker.recv
@@ -190,9 +194,10 @@ object NativeConnector {
       */
     def apply(): Future[ZooKeeper] = {
       assert(!releasePromise.isDefined)
-      zookeeper = zookeeper orElse Some {
-        mkZooKeeper
-      }
+      zookeeper = zookeeper orElse
+        Some {
+          mkZooKeeper
+        }
       connected
     }
 

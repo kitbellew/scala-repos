@@ -55,12 +55,11 @@ object HashCode {
         result
     }
   def hash(seed: Int, value: Boolean): Int =
-    firstTerm(seed) + (
-      if (value)
-        1
-      else
-        0
-    )
+    firstTerm(seed) +
+      (if (value)
+         1
+       else
+         0)
   def hash(seed: Int, value: Char): Int =
     firstTerm(seed) + value.asInstanceOf[Int]
   def hash(seed: Int, value: Int): Int = firstTerm(seed) + value

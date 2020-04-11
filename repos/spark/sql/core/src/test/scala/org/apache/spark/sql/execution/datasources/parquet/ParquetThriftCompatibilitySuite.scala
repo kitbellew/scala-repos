@@ -70,15 +70,17 @@ class ParquetThriftCompatibilitySuite
           Seq.tabulate(3)(n => (i + n: Integer) -> s"val_${i + n}").toMap,
           Seq
             .tabulate(3) { n =>
-              (i + n) -> Seq.tabulate(3) { m =>
-                Row(Seq.tabulate(3)(j => i + j + m), s"val_${i + m}")
-              }
+              (i + n) ->
+                Seq.tabulate(3) { m =>
+                  Row(Seq.tabulate(3)(j => i + j + m), s"val_${i + m}")
+                }
             }
             .toMap
         )
 
         Row(
-          nonNullablePrimitiveValues ++ nullablePrimitiveValues ++ complexValues: _*)
+          nonNullablePrimitiveValues ++ nullablePrimitiveValues ++
+            complexValues: _*)
       }
     )
   }

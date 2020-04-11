@@ -370,8 +370,8 @@ class SingletonTypeMacros(val c: whitebox.Context)
         mkResult(SingletonSymbolType(s), mkSingletonSymbol(s))
 
       case (tpe, tree)
-          if tree.symbol.isTerm && tree.symbol.asTerm.isStable && !isValueClass(
-            tree.symbol) =>
+          if tree.symbol.isTerm && tree.symbol.asTerm.isStable &&
+            !isValueClass(tree.symbol) =>
         val sym = tree.symbol.asTerm
         val pre =
           if (sym.owner.isClass)

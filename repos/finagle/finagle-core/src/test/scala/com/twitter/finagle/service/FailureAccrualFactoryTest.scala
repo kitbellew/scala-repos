@@ -38,8 +38,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val underlyingService = mock[Service[Int, Int]]
     when(underlyingService.close(any[Time])) thenReturn Future.Done
     when(underlyingService.status) thenReturn Status.Open
-    when(underlyingService(Matchers.anyInt)) thenReturn Future
-      .exception(new Exception)
+    when(underlyingService(Matchers.anyInt)) thenReturn
+      Future.exception(new Exception)
 
     val underlying = mock[ServiceFactory[Int, Int]]
     when(underlying.close(any[Time])) thenReturn Future.Done
@@ -215,8 +215,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val underlyingService = mock[Service[Int, Int]]
     when(underlyingService.close(any[Time])) thenReturn Future.Done
     when(underlyingService.status) thenReturn Status.Open
-    when(underlyingService(Matchers.anyInt)) thenReturn Future
-      .exception(new Exception)
+    when(underlyingService(Matchers.anyInt)) thenReturn
+      Future.exception(new Exception)
 
     val underlying = mock[ServiceFactory[Int, Int]]
     when(underlying.close(any[Time])) thenReturn Future.Done
@@ -733,24 +733,20 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val p3: Param = Disabled
 
     assert(
-      (
-        p1 match {
-          case Param.Configured(x) =>
-            x()
-          case x =>
-            throw new MatchError(x)
-        }
-      ) == failureAccrualPolicy)
+      (p1 match {
+        case Param.Configured(x) =>
+          x()
+        case x =>
+          throw new MatchError(x)
+      }) == failureAccrualPolicy)
 
     assert(
-      (
-        p2 match {
-          case Param.Replaced(f) =>
-            f(null)
-          case x =>
-            throw new MatchError(x)
-        }
-      ) == ServiceFactoryWrapper.identity)
+      (p2 match {
+        case Param.Replaced(f) =>
+          f(null)
+        case x =>
+          throw new MatchError(x)
+      }) == ServiceFactoryWrapper.identity)
 
     assert(
       p3 match {
@@ -763,26 +759,22 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val ps1: Stack.Params = Stack.Params.empty + p1
     assert(ps1.contains[Param])
     assert(
-      (
-        ps1[Param] match {
-          case Param.Configured(x) =>
-            x()
-          case x =>
-            throw new MatchError(x)
-        }
-      ) == failureAccrualPolicy)
+      (ps1[Param] match {
+        case Param.Configured(x) =>
+          x()
+        case x =>
+          throw new MatchError(x)
+      }) == failureAccrualPolicy)
 
     val ps2: Stack.Params = Stack.Params.empty + p2 + p1
     assert(ps2.contains[Param])
     assert(
-      (
-        ps2[Param] match {
-          case Param.Configured(x) =>
-            x()
-          case x =>
-            throw new MatchError(x)
-        }
-      ) == failureAccrualPolicy)
+      (ps2[Param] match {
+        case Param.Configured(x) =>
+          x()
+        case x =>
+          throw new MatchError(x)
+      }) == failureAccrualPolicy)
 
     val ps3: Stack.Params = Stack.Params.empty + p1 + p2 + p3
     assert(ps3.contains[Param])

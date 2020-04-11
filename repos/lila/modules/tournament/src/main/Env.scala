@@ -161,18 +161,19 @@ object Env {
 
   private def hub = lila.hub.Env.current
 
-  lazy val current = "tournament" boot new Env(
-    config = lila.common.PlayApp loadConfig "tournament",
-    system = lila.common.PlayApp.system,
-    db = lila.db.Env.current,
-    mongoCache = lila.memo.Env.current.mongoCache,
-    flood = lila.security.Env.current.flood,
-    hub = lila.hub.Env.current,
-    roundMap = lila.round.Env.current.roundMap,
-    roundSocketHub = lila.hub.Env.current.socket.round,
-    lightUser = lila.user.Env.current.lightUser,
-    isOnline = lila.user.Env.current.isOnline,
-    onStart = lila.game.Env.current.onStart,
-    trophyApi = lila.user.Env.current.trophyApi,
-    scheduler = lila.common.PlayApp.scheduler)
+  lazy val current = "tournament" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "tournament",
+      system = lila.common.PlayApp.system,
+      db = lila.db.Env.current,
+      mongoCache = lila.memo.Env.current.mongoCache,
+      flood = lila.security.Env.current.flood,
+      hub = lila.hub.Env.current,
+      roundMap = lila.round.Env.current.roundMap,
+      roundSocketHub = lila.hub.Env.current.socket.round,
+      lightUser = lila.user.Env.current.lightUser,
+      isOnline = lila.user.Env.current.isOnline,
+      onStart = lila.game.Env.current.onStart,
+      trophyApi = lila.user.Env.current.trophyApi,
+      scheduler = lila.common.PlayApp.scheduler)
 }

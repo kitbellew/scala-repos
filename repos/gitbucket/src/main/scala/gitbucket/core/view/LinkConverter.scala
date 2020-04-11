@@ -62,7 +62,8 @@ trait LinkConverter {
       // convert username/project#Num to link
       .replaceBy(
         (
-          "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)" + issueIdPrefix + "([0-9]+)(?=(\\W|$))"
+          "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)" +
+            issueIdPrefix + "([0-9]+)(?=(\\W|$))"
         ).r) { m =>
         getIssue(m.group(2), m.group(3), m.group(4)) match {
           case Some(issue) if (issue.isPullRequest) =>
@@ -90,7 +91,8 @@ trait LinkConverter {
       // convert username#Num to link
       .replaceBy(
         (
-          "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)" + issueIdPrefix + "([0-9]+)(?=(\\W|$))"
+          "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)" + issueIdPrefix +
+            "([0-9]+)(?=(\\W|$))"
         ).r) { m =>
         getIssue(m.group(2), repository.name, m.group(3)) match {
           case Some(issue) if (issue.isPullRequest) =>

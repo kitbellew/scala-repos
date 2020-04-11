@@ -16,27 +16,32 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
       new project("simple") {
         lazy val scalaLibrary =
           new library("SBT: org.scala-lang:scala-library:2.11.6:jar") {
-            classes += (
-              IvyCacheDir / "org.scala-lang" / "scala-library" / "jars" / "scala-library-2.11.6.jar"
-            ).getAbsolutePath
+            classes +=
+              (
+                IvyCacheDir / "org.scala-lang" / "scala-library" / "jars" /
+                  "scala-library-2.11.6.jar"
+              ).getAbsolutePath
           }
 
         libraries += scalaLibrary
 
-        modules += new module("simple") {
-          contentRoots += getProjectPath
-          ProjectStructureDsl.sources := Seq("src/main/scala", "src/main/java")
-          testSources := Seq("src/test/scala", "src/test/java")
-          resources := Seq("src/main/resources")
-          testResources := Seq("src/test/resources")
-          excluded := Seq("target")
-          libraryDependencies += scalaLibrary
-        }
+        modules +=
+          new module("simple") {
+            contentRoots += getProjectPath
+            ProjectStructureDsl.sources :=
+              Seq("src/main/scala", "src/main/java")
+            testSources := Seq("src/test/scala", "src/test/java")
+            resources := Seq("src/main/resources")
+            testResources := Seq("src/test/resources")
+            excluded := Seq("target")
+            libraryDependencies += scalaLibrary
+          }
 
-        modules += new module("simple-build") {
-          ProjectStructureDsl.sources := Seq("")
-          excluded := Seq("project/target", "target")
-        }
+        modules +=
+          new module("simple-build") {
+            ProjectStructureDsl.sources := Seq("")
+            excluded := Seq("project/target", "target")
+          }
       })
 
   def testMultiModule() =
@@ -44,9 +49,10 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
       new project("multiModule") {
         lazy val foo =
           new module("foo") {
-            moduleDependencies += new dependency(bar) {
-              isExported := true
-            }
+            moduleDependencies +=
+              new dependency(bar) {
+                isExported := true
+              }
           }
 
         lazy val bar = new module("bar")
@@ -58,15 +64,16 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
   def testUnmanagedDependency() =
     runTest(
       new project("unmanagedDependency") {
-        modules += new module("unmanagedDependency") {
-          lazy val unmanagedLibrary =
-            new library("SBT: unmanaged-jars") {
-              classes += (testProjectDir / "lib" / "unmanaged.jar")
-                .getAbsolutePath
-            }
-          libraries += unmanagedLibrary
-          libraryDependencies += unmanagedLibrary
-        }
+        modules +=
+          new module("unmanagedDependency") {
+            lazy val unmanagedLibrary =
+              new library("SBT: unmanaged-jars") {
+                classes +=
+                  (testProjectDir / "lib" / "unmanaged.jar").getAbsolutePath
+              }
+            libraries += unmanagedLibrary
+            libraryDependencies += unmanagedLibrary
+          }
       })
 
   def testSharedSources() =
@@ -94,8 +101,9 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
   def testExcludedDirectories() =
     runTest(
       new project("root") {
-        modules += new module("root") {
-          excluded := Seq("directory-to-exclude-1", "directory/to/exclude/2")
-        }
+        modules +=
+          new module("root") {
+            excluded := Seq("directory-to-exclude-1", "directory/to/exclude/2")
+          }
       })
 }

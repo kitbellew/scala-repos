@@ -121,12 +121,12 @@ class GossipSpec extends WordSpec with Matchers {
         overview = GossipOverview(reachability = r2))
 
       val merged1 = g1 merge g2
-      merged1.overview.reachability.allUnreachable should ===(
-        Set(a1.uniqueAddress, c1.uniqueAddress, d1.uniqueAddress))
+      merged1.overview.reachability.allUnreachable should
+        ===(Set(a1.uniqueAddress, c1.uniqueAddress, d1.uniqueAddress))
 
       val merged2 = g2 merge g1
-      merged2.overview.reachability.allUnreachable should ===(
-        merged1.overview.reachability.allUnreachable)
+      merged2.overview.reachability.allUnreachable should
+        ===(merged1.overview.reachability.allUnreachable)
     }
 
     "merge members by removing removed members" in {
@@ -144,22 +144,22 @@ class GossipSpec extends WordSpec with Matchers {
 
       val merged1 = g1 merge g2
       merged1.members should ===(SortedSet(a1, b1))
-      merged1.overview.reachability.allUnreachable should ===(
-        Set(a1.uniqueAddress))
+      merged1.overview.reachability.allUnreachable should
+        ===(Set(a1.uniqueAddress))
 
       val merged2 = g2 merge g1
-      merged2.overview.reachability.allUnreachable should ===(
-        merged1.overview.reachability.allUnreachable)
+      merged2.overview.reachability.allUnreachable should
+        ===(merged1.overview.reachability.allUnreachable)
       merged2.members should ===(merged1.members)
     }
 
     "have leader as first member based on ordering, except Exiting status" in {
-      Gossip(members = SortedSet(c2, e2))
-        .leader(c2.uniqueAddress) should ===(Some(c2.uniqueAddress))
-      Gossip(members = SortedSet(c3, e2))
-        .leader(c3.uniqueAddress) should ===(Some(e2.uniqueAddress))
-      Gossip(members = SortedSet(c3))
-        .leader(c3.uniqueAddress) should ===(Some(c3.uniqueAddress))
+      Gossip(members = SortedSet(c2, e2)).leader(c2.uniqueAddress) should
+        ===(Some(c2.uniqueAddress))
+      Gossip(members = SortedSet(c3, e2)).leader(c3.uniqueAddress) should
+        ===(Some(e2.uniqueAddress))
+      Gossip(members = SortedSet(c3)).leader(c3.uniqueAddress) should
+        ===(Some(c3.uniqueAddress))
     }
 
     "have leader as first reachable member based on ordering" in {

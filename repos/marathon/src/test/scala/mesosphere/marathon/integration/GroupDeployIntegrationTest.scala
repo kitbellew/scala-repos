@@ -429,10 +429,8 @@ class GroupDeployIntegrationTest
     ping(key(serviceV1)) should be < ping(key(frontendV1))
     WaitTestSupport
       .validFor("all v1 apps are available as well as db v2", 15.seconds) {
-        dbV1.pingSince(2.seconds) &&
-        serviceV1.pingSince(2.seconds) &&
-        frontendV1.pingSince(2.seconds) &&
-        dbV2.pingSince(2.seconds)
+        dbV1.pingSince(2.seconds) && serviceV1.pingSince(2.seconds) &&
+        frontendV1.pingSince(2.seconds) && dbV2.pingSince(2.seconds)
       }
 
     When("The v2 db becomes healthy")
@@ -446,10 +444,8 @@ class GroupDeployIntegrationTest
     WaitTestSupport.validFor(
       "service and frontend v1 are available as well as db and service v2",
       15.seconds) {
-      serviceV1.pingSince(2.seconds) &&
-      frontendV1.pingSince(2.seconds) &&
-      dbV2.pingSince(2.seconds) &&
-      serviceV2.pingSince(2.seconds)
+      serviceV1.pingSince(2.seconds) && frontendV1.pingSince(2.seconds) &&
+      dbV2.pingSince(2.seconds) && serviceV2.pingSince(2.seconds)
     }
 
     When("The v2 service becomes healthy")
@@ -462,10 +458,8 @@ class GroupDeployIntegrationTest
     ping(key(serviceV2)) should be < ping(key(frontendV2))
     WaitTestSupport
       .validFor("frontend v1 is available as well as all v2", 15.seconds) {
-        frontendV1.pingSince(2.seconds) &&
-        dbV2.pingSince(2.seconds) &&
-        serviceV2.pingSince(2.seconds) &&
-        frontendV2.pingSince(2.seconds)
+        frontendV1.pingSince(2.seconds) && dbV2.pingSince(2.seconds) &&
+        serviceV2.pingSince(2.seconds) && frontendV2.pingSince(2.seconds)
       }
 
     When("The v2 frontend becomes healthy")
@@ -477,8 +471,8 @@ class GroupDeployIntegrationTest
     List(dbV1, serviceV1, frontendV1).foreach(_.pinged = false)
     WaitTestSupport.validFor("all v2 apps are alive", 15.seconds) {
       !dbV1.pinged && !serviceV1.pinged && !frontendV1.pinged &&
-      dbV2.pingSince(2.seconds) && serviceV2.pingSince(2.seconds) && frontendV2
-        .pingSince(2.seconds)
+      dbV2.pingSince(2.seconds) && serviceV2.pingSince(2.seconds) &&
+      frontendV2.pingSince(2.seconds)
     }
   }
 }

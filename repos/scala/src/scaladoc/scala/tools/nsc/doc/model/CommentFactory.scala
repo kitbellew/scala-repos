@@ -48,8 +48,7 @@ trait CommentFactory extends base.CommentFactoryBase {
 
     //param accessor case
     // We just need the @param argument, we put it into the body
-    if (sym.isParamAccessor &&
-        inTpl.comment.isDefined &&
+    if (sym.isParamAccessor && inTpl.comment.isDefined &&
         inTpl.comment.get.valueParams.isDefinedAt(sym.encodedName)) {
       val comContent = Some(inTpl.comment.get.valueParams(sym.encodedName))
       Some(createComment(body0 = comContent))
@@ -61,11 +60,9 @@ trait CommentFactory extends base.CommentFactoryBase {
     else if (sym.isPrimaryConstructor && inTpl.comment.isDefined) {
       val tplComment = inTpl.comment.get
       // If there is nothing to put into the comment there is no need to create it
-      if (tplComment.constructor.isDefined ||
-          tplComment.throws != Map.empty ||
+      if (tplComment.constructor.isDefined || tplComment.throws != Map.empty ||
           tplComment.valueParams != Map.empty ||
-          tplComment.typeParams != Map.empty ||
-          tplComment.deprecated.isDefined)
+          tplComment.typeParams != Map.empty || tplComment.deprecated.isDefined)
         Some(
           createComment(
             body0 = tplComment.constructor,

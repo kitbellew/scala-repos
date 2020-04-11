@@ -94,9 +94,9 @@ object ConnectionTestApp {
 
     readLine()
     println(
-      "===================== \n\n" + system
-        .asInstanceOf[ActorSystemImpl]
-        .printTree + "\n\n========================")
+      "===================== \n\n" +
+        system.asInstanceOf[ActorSystemImpl].printTree +
+        "\n\n========================")
     readLine()
     system.terminate()
   }

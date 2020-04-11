@@ -132,12 +132,10 @@ object DatabaseConfig {
         .backend
         .createDatabase(
           root,
-          (
-            if (path.isEmpty)
-              ""
-            else
-              path + "."
-          ) + "db")
+          (if (path.isEmpty)
+             ""
+           else
+             path + ".") + "db")
       val profile: P = untypedP.asInstanceOf[P]
       val driver: P = untypedP.asInstanceOf[P]
       lazy val config: Config =

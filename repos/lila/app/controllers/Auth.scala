@@ -21,8 +21,10 @@ object Auth extends LilaController {
   private def mobileUserOk(u: UserModel): Fu[Result] =
     lila.game.GameRepo urgentGames u map { povs =>
       Ok {
-        Env.user.jsonView(u) ++ Json.obj(
-          "nowPlaying" -> JsArray(povs take 20 map Env.api.lobbyApi.nowPlaying))
+        Env.user.jsonView(u) ++
+          Json.obj(
+            "nowPlaying" ->
+              JsArray(povs take 20 map Env.api.lobbyApi.nowPlaying))
       }
     }
 
@@ -30,20 +32,20 @@ object Auth extends LilaController {
     implicit val req = ctx.req
     u.ipBan
       .fold(
-        Env.security.firewall.blockIp(req.remoteAddress) inject BadRequest(
-          "blocked by firewall"),
+        Env.security.firewall.blockIp(req.remoteAddress) inject
+          BadRequest("blocked by firewall"),
         api.saveAuthentication(u.id, ctx.mobileApiVersion) flatMap {
           sessionId =>
             negotiate(
               html = Redirect {
-                get("referrer").filter(_.nonEmpty) orElse req
-                  .session
-                  .get(api.AccessUri) getOrElse routes.Lobby.home.url
+                get("referrer").filter(_.nonEmpty) orElse
+                  req.session.get(api.AccessUri) getOrElse routes.Lobby.home.url
               }.fuccess,
               api = _ => mobileUserOk(u)) map {
-              _ withCookies LilaCookie.withSession { session =>
-                session + ("sessionId" -> sessionId) - api.AccessUri
-              }
+              _ withCookies
+                LilaCookie.withSession { session =>
+                  session + ("sessionId" -> sessionId) - api.AccessUri
+                }
             }
         } recoverWith authRecovery
       )
@@ -97,9 +99,8 @@ object Auth extends LilaController {
       req.session get "sessionId" foreach lila.security.Store.delete
       negotiate(
         html = fuccess(Redirect(routes.Main.mobile)),
-        api = apiVersion => Ok(Json.obj("ok" -> true)).fuccess) map (
-        _ withCookies LilaCookie.newSession
-      )
+        api = apiVersion => Ok(Json.obj("ok" -> true)).fuccess) map
+        (_ withCookies LilaCookie.newSession)
     }
 
   def signup =
@@ -160,9 +161,8 @@ object Auth extends LilaController {
                       }
                     case true =>
                       lila.mon.user.register.website()
-                      val email = env
-                        .emailAddress
-                        .validate(data.email) err s"Invalid email ${data.email}"
+                      val email = env.emailAddress.validate(data.email) err
+                        s"Invalid email ${data.email}"
                       UserRepo
                         .create(
                           data.username,
@@ -204,7 +204,8 @@ object Auth extends LilaController {
                       false,
                       apiVersion.some)
                     .flatten(
-                      s"No user could be created for ${data.username}") flatMap mobileUserOk
+                      s"No user could be created for ${data.username}") flatMap
+                    mobileUserOk
                 }
               )
         )
@@ -228,8 +229,8 @@ object Auth extends LilaController {
   private def saveAuthAndRedirect(user: UserModel)(implicit ctx: Context) = {
     implicit val req = ctx.req
     api.saveAuthentication(user.id, ctx.mobileApiVersion) map { sessionId =>
-      Redirect(routes.User.show(user.username)) withCookies LilaCookie
-        .session("sessionId", sessionId)
+      Redirect(routes.User.show(user.username)) withCookies
+        LilaCookie.session("sessionId", sessionId)
     } recoverWith authRecovery
   }
 
@@ -285,8 +286,8 @@ object Auth extends LilaController {
             val email = env.emailAddress.validate(data.email) | data.email
             UserRepo enabledByEmail email flatMap {
               case Some(user) =>
-                Env.security.passwordReset.send(user, email) inject Redirect(
-                  routes.Auth.passwordResetSent(data.email))
+                Env.security.passwordReset.send(user, email) inject
+                  Redirect(routes.Auth.passwordResetSent(data.email))
               case _ =>
                 forms.passwordResetWithCaptcha map {
                   case (form, captcha) =>

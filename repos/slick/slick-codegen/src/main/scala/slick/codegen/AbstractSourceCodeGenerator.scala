@@ -16,42 +16,31 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
       @group Basic customization overrides */
   def code = {
     "import slick.model.ForeignKeyAction\n" +
-      (
-        if (tables.exists(_.hlistEnabled)) {
-          "import slick.collection.heterogeneous._\n" +
-            "import slick.collection.heterogeneous.syntax._\n"
-        } else
-          ""
-      ) +
-      (
-        if (tables.exists(_.PlainSqlMapper.enabled)) {
-          "// NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.\n" +
-            "import slick.jdbc.{GetResult => GR}\n"
-        } else
-          ""
-      ) +
-      (
-        if (ddlEnabled) {
-          "\n/** DDL for all tables. Call .create to execute. */" +
-            (
-              if (tables.length > 5)
-                "\nlazy val schema: profile.SchemaDescription = Array(" + tables
-                  .map(_.TableValue.name + ".schema")
-                  .mkString(", ") + ").reduceLeft(_ ++ _)"
-              else if (tables.nonEmpty)
-                "\nlazy val schema: profile.SchemaDescription = " + tables
-                  .map(_.TableValue.name + ".schema")
-                  .mkString(" ++ ")
-              else
-                "\nlazy val schema: profile.SchemaDescription = profile.DDL(Nil, Nil)"
-            ) +
-            "\n@deprecated(\"Use .schema instead of .ddl\", \"3.0\")" +
-            "\ndef ddl = schema" +
-            "\n\n"
-        } else
-          ""
-      ) +
-      tables.map(_.code.mkString("\n")).mkString("\n\n")
+      (if (tables.exists(_.hlistEnabled)) {
+         "import slick.collection.heterogeneous._\n" +
+           "import slick.collection.heterogeneous.syntax._\n"
+       } else
+         "") +
+      (if (tables.exists(_.PlainSqlMapper.enabled)) {
+         "// NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.\n" +
+           "import slick.jdbc.{GetResult => GR}\n"
+       } else
+         "") +
+      (if (ddlEnabled) {
+         "\n/** DDL for all tables. Call .create to execute. */" +
+           (if (tables.length > 5)
+              "\nlazy val schema: profile.SchemaDescription = Array(" +
+                tables.map(_.TableValue.name + ".schema").mkString(", ") +
+                ").reduceLeft(_ ++ _)"
+            else if (tables.nonEmpty)
+              "\nlazy val schema: profile.SchemaDescription = " +
+                tables.map(_.TableValue.name + ".schema").mkString(" ++ ")
+            else
+              "\nlazy val schema: profile.SchemaDescription = profile.DDL(Nil, Nil)") +
+           "\n@deprecated(\"Use .schema instead of .ddl\", \"3.0\")" +
+           "\ndef ddl = schema" + "\n\n"
+       } else
+         "") + tables.map(_.code.mkString("\n")).mkString("\n\n")
   }
 
   protected def tuple(i: Int) = termName(s"_${i + 1}")
@@ -102,9 +91,8 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
         if (classEnabled) {
           val prns =
             (
-              parents.take(1).map(" extends " + _) ++ parents
-                .drop(1)
-                .map(" with " + _)
+              parents.take(1).map(" extends " + _) ++
+                parents.drop(1).map(" with " + _)
             ).mkString("")
           s"""case class $name($args)$prns"""
         } else {
@@ -234,8 +222,8 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass
       }
       def code = {
         val prns = parents.map(" with " + _).mkString("")
-        val args = model.name.schema.map(n => s"""Some("$n")""") ++ Seq(
-          "\"" + model.name.table + "\"")
+        val args = model.name.schema.map(n => s"""Some("$n")""") ++
+          Seq("\"" + model.name.table + "\"")
         s"""
 class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
           .mkString(", ")})$prns {
@@ -368,12 +356,10 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
 trait StringGeneratorHelpers
     extends slick.codegen.GeneratorHelpers[String, String, String] {
   def docWithCode(doc: String, code: String): String =
-    (
-      if (doc != "")
-        "/** " + doc.split("\n").mkString("\n *  ") + " */\n"
-      else
-        ""
-    ) + code
+    (if (doc != "")
+       "/** " + doc.split("\n").mkString("\n *  ") + " */\n"
+     else
+       "") + code
   final def optionType(t: String) = s"Option[$t]"
   def parseType(tpe: String): String = tpe
   def shouldQuoteIdentifier(s: String) = {
@@ -381,9 +367,8 @@ trait StringGeneratorHelpers
       if (s.isEmpty)
         false
       else
-        Character.isJavaIdentifierStart(s.head) && s
-          .tail
-          .forall(Character.isJavaIdentifierPart)
+        Character.isJavaIdentifierStart(s.head) &&
+        s.tail.forall(Character.isJavaIdentifierPart)
     scalaKeywords.contains(s) || !isIdent
   }
   def termName(name: String) =

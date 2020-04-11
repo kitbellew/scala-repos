@@ -171,9 +171,10 @@ class BrokerChannelHandler extends SimpleChannelHandler {
     // This makes sure that exceptions always get propagated, even if
     // the channel handler process has died (eg. it threw an unhandled
     // exception).
-    val of = upstreamBroker.send(Exception(e, ctx)) orElse Offer.const {
-      super.exceptionCaught(ctx, e)
-    }
+    val of = upstreamBroker.send(Exception(e, ctx)) orElse
+      Offer.const {
+        super.exceptionCaught(ctx, e)
+      }
     of.sync()
   }
 

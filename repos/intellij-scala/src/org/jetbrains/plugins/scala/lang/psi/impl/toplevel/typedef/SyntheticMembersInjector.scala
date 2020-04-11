@@ -98,8 +98,8 @@ object SyntheticMembersInjector {
     val buffer = new ArrayBuffer[ScFunction]()
     for {
       injector <-
-        EP_NAME.getExtensions.toSet ++ injectedExtensions(source.getProject)
-          .toSet
+        EP_NAME.getExtensions.toSet ++
+          injectedExtensions(source.getProject).toSet
       template <- injector.injectFunctions(source)
     } try {
       val context =
@@ -128,8 +128,8 @@ object SyntheticMembersInjector {
     val buffer = new ArrayBuffer[ScTypeDefinition]()
     for {
       injector <-
-        EP_NAME.getExtensions.toSet ++ injectedExtensions(source.getProject)
-          .toSet
+        EP_NAME.getExtensions.toSet ++
+          injectedExtensions(source.getProject).toSet
       template <- injector.injectInners(source)
     } try {
       val context =
@@ -186,8 +186,9 @@ object SyntheticMembersInjector {
           case _ =>
             source
         }
-      buffer += ScalaPsiElementFactory
-        .createTypeElementFromText(supers, context, source)
+      buffer +=
+        ScalaPsiElementFactory
+          .createTypeElementFromText(supers, context, source)
     } catch {
       case p: ProcessCanceledException =>
         throw p

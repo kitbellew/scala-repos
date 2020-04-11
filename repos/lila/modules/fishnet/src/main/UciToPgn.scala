@@ -37,23 +37,20 @@ private object UciToPgn {
           if (ply == replay.setup.startedAtTurn + 1)
             success(replay.setup.situation)
           else
-            replay moveAtPly ply map (
-              _.fold(_.situationBefore, _.situationBefore)
-            ) toValid "No move found"
+            replay moveAtPly ply map
+              (_.fold(_.situationBefore, _.situationBefore)) toValid
+              "No move found"
         ucis ←
-          variation
-            .map(Uci.Move.apply)
-            .sequence toValid "Invalid UCI moves " + variation
+          variation.map(Uci.Move.apply).sequence toValid
+            "Invalid UCI moves " + variation
         moves ←
           ucis.foldLeft[Valid[(Situation, List[Move])]](
             success(situation -> Nil)) {
             case (scalaz.Success((sit, moves)), uci) =>
-              sit.move(
-                uci.orig,
-                uci.dest,
-                uci.promotion) prefixFailuresWith s"ply $ply " map { move =>
-                move.situationAfter -> (move :: moves)
-              }
+              sit.move(uci.orig, uci.dest, uci.promotion) prefixFailuresWith
+                s"ply $ply " map { move =>
+                  move.situationAfter -> (move :: moves)
+                }
             case (failure, _) =>
               failure
           }

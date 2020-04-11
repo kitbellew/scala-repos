@@ -166,9 +166,8 @@ private[math] object Division {
           guessDigit -= 1
           var carry: Long = 0
           for (k <- 0 until normBLength) {
-            carry += (normA(j - normBLength + k) & UINT_MAX) + (
-              normB(k) & UINT_MAX
-            )
+            carry +=
+              (normA(j - normBLength + k) & UINT_MAX) + (normB(k) & UINT_MAX)
             normA(j - normBLength + k) = carry.toInt
             carry >>>= 32
           }
@@ -386,9 +385,8 @@ private[math] object Division {
       while (i >= 0) {
         if (res(i) != modulusDigits(i)) {
           doSub =
-            (res(i) != 0) && (
-              (res(i) & UINT_MAX) > (modulusDigits(i) & UINT_MAX)
-            )
+            (res(i) != 0) &&
+              ((res(i) & UINT_MAX) > (modulusDigits(i) & UINT_MAX))
           //force break
           i = 0
         }

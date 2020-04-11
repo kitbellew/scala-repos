@@ -158,17 +158,20 @@ abstract class HtmlPage extends Page {
         case OrderedList(_, _) | UnorderedList(
               _
             ) => // html requires sub ULs to be put into the last LI
-          xmlList.init ++ <li>{
-            xmlList.last.child ++ blockToHtml(item)
-          }</li>
+          xmlList.init ++
+            <li>{
+              xmlList.last.child ++ blockToHtml(item)
+            }</li>
         case Paragraph(inline) =>
-          xmlList :+ <li>{
-            inlineToHtml(inline)
-          }</li> // LIs are blocks, no need to use Ps
+          xmlList :+
+            <li>{
+              inlineToHtml(inline)
+            }</li> // LIs are blocks, no need to use Ps
         case block =>
-          xmlList :+ <li>{
-            blockToHtml(block)
-          }</li>
+          xmlList :+
+            <li>{
+              blockToHtml(block)
+            }</li>
       }
     }
 
@@ -271,9 +274,8 @@ abstract class HtmlPage extends Page {
       case List(tpe) =>
         typeToHtml(tpe, hasLinks)
       case tpe :: rest =>
-        typeToHtml(tpe, hasLinks) ++ scala.xml.Text(" with ") ++ typeToHtml(
-          rest,
-          hasLinks)
+        typeToHtml(tpe, hasLinks) ++ scala.xml.Text(" with ") ++
+          typeToHtml(rest, hasLinks)
     }
 
   def typeToHtml(tpe: model.TypeEntity, hasLinks: Boolean): NodeSeq = {
@@ -286,9 +288,8 @@ abstract class HtmlPage extends Page {
       else if (inPos == starts.head)
         toLinksIn(inPos, starts)
       else {
-        scala.xml.Text(string.slice(inPos, starts.head)) ++ toLinksIn(
-          starts.head,
-          starts)
+        scala.xml.Text(string.slice(inPos, starts.head)) ++
+          toLinksIn(starts.head, starts)
       }
     }
     def toLinksIn(inPos: Int, starts: List[Int]): NodeSeq = {
@@ -468,9 +469,8 @@ abstract class HtmlPage extends Page {
       }
 
     val templatePath = templateToPath(containingTemplate)
-    val url = "../" * (templatePath.size - 1) + templatePath
-      .reverse
-      .mkString("/")
+    val url = "../" *
+      (templatePath.size - 1) + templatePath.reverse.mkString("/")
     url + signature.map("#" + _).getOrElse("")
   }
 }

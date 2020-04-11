@@ -25,8 +25,8 @@ class TaskOpFactoryHelperTest
     }
 
     Then("An exception is thrown")
-    error
-      .getMessage shouldEqual "assumption failed: marathon task id and mesos task id must be equal"
+    error.getMessage shouldEqual
+      "assumption failed: marathon task id and mesos task id must be equal"
   }
 
   test("Create a launch TaskOp") {
@@ -46,11 +46,8 @@ class TaskOpFactoryHelperTest
     launch.taskInfo shouldEqual taskInfo
     launch.oldTask shouldBe empty
     launch.offerOperations should have size 1
-    launch.offerOperations.head.getType shouldEqual Mesos
-      .Offer
-      .Operation
-      .Type
-      .LAUNCH
+    launch.offerOperations.head.getType shouldEqual
+      Mesos.Offer.Operation.Type.LAUNCH
   }
 
   class Fixture {

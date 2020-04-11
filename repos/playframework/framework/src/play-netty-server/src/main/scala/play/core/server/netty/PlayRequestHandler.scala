@@ -87,8 +87,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
           else
             message)
       // If there's a problem in parsing the request, then we should close the connection, once done with it
-      requestHeader -> Left(
-        result.map(_.withHeaders(HeaderNames.CONNECTION -> "close")))
+      requestHeader ->
+        Left(result.map(_.withHeaders(HeaderNames.CONNECTION -> "close")))
     }
 
     val (requestHeader, resultOrHandler) =

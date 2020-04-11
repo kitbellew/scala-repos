@@ -26,8 +26,9 @@ object WSConfigParserSpec extends Specification {
       parser.parse()
     }
 
-    "parse ws base section" in new WithApplication {
-      val actual = parseThis("""
+    "parse ws base section" in
+      new WithApplication {
+        val actual = parseThis("""
                                 |play.ws.timeout.connection = 9999 ms
                                 |play.ws.timeout.idle = 666 ms
                                 |play.ws.timeout.request = 1234 ms
@@ -36,17 +37,17 @@ object WSConfigParserSpec extends Specification {
                                 |play.ws.useragent = "FakeUserAgent"
                               """.stripMargin)
 
-      actual.connectionTimeout must_== 9999.millis
-      actual.idleTimeout must_== 666.millis
-      actual.requestTimeout must_== 1234.millis
+        actual.connectionTimeout must_== 9999.millis
+        actual.idleTimeout must_== 666.millis
+        actual.requestTimeout must_== 1234.millis
 
-      // default: true
-      actual.followRedirects must beFalse
+        // default: true
+        actual.followRedirects must beFalse
 
-      // default: true
-      actual.useProxyProperties must beFalse
+        // default: true
+        actual.useProxyProperties must beFalse
 
-      actual.userAgent must beSome.which(_ must_== "FakeUserAgent")
-    }
+        actual.userAgent must beSome.which(_ must_== "FakeUserAgent")
+      }
   }
 }

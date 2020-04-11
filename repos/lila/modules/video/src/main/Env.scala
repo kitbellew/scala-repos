@@ -52,9 +52,10 @@ final class Env(
 
 object Env {
 
-  lazy val current: Env = "video" boot new Env(
-    config = lila.common.PlayApp loadConfig "video",
-    scheduler = lila.common.PlayApp.scheduler,
-    isDev = lila.common.PlayApp.isDev,
-    db = lila.db.Env.current)
+  lazy val current: Env = "video" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "video",
+      scheduler = lila.common.PlayApp.scheduler,
+      isDev = lila.common.PlayApp.isDev,
+      db = lila.db.Env.current)
 }

@@ -50,10 +50,11 @@ class QueueResource @Inject() (
             Json.obj(
               "app" -> taskCount.app,
               "count" -> taskCount.tasksLeftToLaunch,
-              "delay" -> Json.obj(
-                "timeLeftSeconds" -> math
-                  .max(0, timeLeft.toSeconds), //deadlines can be negative
-                "overdue" -> (timeLeft < 0.seconds))
+              "delay" ->
+                Json.obj(
+                  "timeLeftSeconds" ->
+                    math.max(0, timeLeft.toSeconds), //deadlines can be negative
+                  "overdue" -> (timeLeft < 0.seconds))
             )
         }
       ok(Json.obj("queue" -> queuedWithDelay).toString())

@@ -112,36 +112,35 @@ case class AllDataTypesScan(
 class TableScanSuite extends DataSourceTest with SharedSQLContext {
   protected override lazy val sql = caseInsensitiveContext.sql _
 
-  private lazy val tableWithSchemaExpected =
-    (1 to 10)
-      .map { i =>
+  private lazy val tableWithSchemaExpected = (1 to 10)
+    .map { i =>
+      Row(
+        s"str_$i",
+        s"str_$i",
+        i % 2 == 0,
+        i.toByte,
+        i.toShort,
+        i,
+        i.toLong,
+        i.toFloat,
+        i.toDouble,
+        new java.math.BigDecimal(i),
+        new java.math.BigDecimal(i),
+        Date.valueOf("1970-01-01"),
+        new Timestamp(20000 + i),
+        s"varchar_$i",
+        s"char_$i",
+        Seq(i, i + 1),
+        Seq(Map(s"str_$i" -> Row(i.toLong))),
+        Map(i -> i.toString),
+        Map(Map(s"str_$i" -> i.toFloat) -> Row(i.toLong)),
+        Row(i, i.toString),
         Row(
-          s"str_$i",
-          s"str_$i",
-          i % 2 == 0,
-          i.toByte,
-          i.toShort,
-          i,
-          i.toLong,
-          i.toFloat,
-          i.toDouble,
-          new java.math.BigDecimal(i),
-          new java.math.BigDecimal(i),
-          Date.valueOf("1970-01-01"),
-          new Timestamp(20000 + i),
-          s"varchar_$i",
-          s"char_$i",
-          Seq(i, i + 1),
-          Seq(Map(s"str_$i" -> Row(i.toLong))),
-          Map(i -> i.toString),
-          Map(Map(s"str_$i" -> i.toFloat) -> Row(i.toLong)),
-          Row(i, i.toString),
-          Row(
-            Seq(s"str_$i", s"str_${i + 1}"),
-            Row(Seq(Date.valueOf(s"1970-01-${i + 1}"))))
-        )
-      }
-      .toSeq
+          Seq(s"str_$i", s"str_${i + 1}"),
+          Row(Seq(Date.valueOf(s"1970-01-${i + 1}"))))
+      )
+    }
+    .toSeq
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -251,8 +250,7 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
                   StructField("value_(2)", ArrayType(DateType), true) :: Nil),
                 true) :: Nil),
           true
-        ) ::
-        Nil)
+        ) :: Nil)
 
     assert(
       expectedSchema == caseInsensitiveContext.table("tableWithSchema").schema)

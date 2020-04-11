@@ -32,9 +32,8 @@ class WeightedPageRankSpec extends WordSpec with Matchers {
       .source(Tsv("./pagerank_0"), List((1, 0.086), (2, 0.192), (3, 0.722)))
       .typedSink(TypedTsv[Double]("./totaldiff")) { ob =>
         (idx + ": have low error") in {
-          ob.head shouldBe (
-            0.722 - 0.461 + 0.2964 - 0.192 + 0.2426 - 0.086
-          ) +- 0.001
+          ob.head shouldBe
+            (0.722 - 0.461 + 0.2964 - 0.192 + 0.2426 - 0.086) +- 0.001
         }
         idx += 1
       }
@@ -53,9 +52,10 @@ class WeightedPageRankSpec extends WordSpec with Matchers {
           val massNext = List(0, 0.086 / 3, (0.086 * 2 / 3 + 0.192)).map {
             _ * 0.9
           }
-          val expected = (userMass zip massNext) map { a: (Double, Double) =>
-            a._1 + a._2 + deadMass
-          }
+          val expected =
+            (userMass zip massNext) map { a: (Double, Double) =>
+              a._1 + a._2 + deadMass
+            }
 
           println(pageRank)
           (pageRank(1) + pageRank(2) + pageRank(3)) shouldBe 1.0 +- 0.001

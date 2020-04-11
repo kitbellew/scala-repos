@@ -261,8 +261,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     Json.obj(
       "__VAL__" -> knownValue,
       "__ERR__" -> key,
-      "__ARGS__" -> args
-        .foldLeft(JsArray())((acc: JsArray, arg: JsValue) => acc :+ arg))
+      "__ARGS__" ->
+        args.foldLeft(JsArray())((acc: JsArray, arg: JsValue) => acc :+ arg))
   }
 
   /**
@@ -421,9 +421,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
             }
           case _ =>
             JsError(
-              Seq(
-                JsPath() ->
-                  Seq(ValidationError("error.expected.date"))))
+              Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
         }
     }
 
@@ -596,9 +594,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
             }
           case _ =>
             JsError(
-              Seq(
-                JsPath() ->
-                  Seq(ValidationError("error.expected.date"))))
+              Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
         }
 
       @inline
@@ -656,9 +652,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
             }
           case _ =>
             JsError(
-              Seq(
-                JsPath() ->
-                  Seq(ValidationError("error.expected.date"))))
+              Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
         }
     }
 
@@ -708,9 +702,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
             }
           case _ =>
             JsError(
-              Seq(
-                JsPath() ->
-                  Seq(ValidationError("error.expected.date"))))
+              Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
         }
 
       @inline
@@ -763,9 +755,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
             }
           case _ =>
             JsError(
-              Seq(
-                JsPath() ->
-                  Seq(ValidationError("error.expected.date"))))
+              Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
         }
 
       @inline
@@ -818,9 +808,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
             }
           case _ =>
             JsError(
-              Seq(
-                JsPath() ->
-                  Seq(ValidationError("error.expected.date"))))
+              Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
         }
     }
 
@@ -909,10 +897,11 @@ trait DefaultReads extends LowPriorityDefaultReads {
               case None =>
                 JsError(
                   Seq(
-                    JsPath() -> Seq(
-                      ValidationError(
-                        "error.expected.jodadate.format",
-                        pattern))))
+                    JsPath() ->
+                      Seq(
+                        ValidationError(
+                          "error.expected.jodadate.format",
+                          pattern))))
             }
           case _ =>
             JsError(
@@ -920,9 +909,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         }
 
       private def parseDate(input: String): Option[DateTime] =
-        scala.util.control.Exception.allCatch[DateTime] opt (
-          DateTime.parse(input, df)
-        )
+        scala.util.control.Exception.allCatch[DateTime] opt
+          (DateTime.parse(input, df))
 
     }
 
@@ -960,10 +948,11 @@ trait DefaultReads extends LowPriorityDefaultReads {
               case None =>
                 JsError(
                   Seq(
-                    JsPath() -> Seq(
-                      ValidationError(
-                        "error.expected.jodadate.format",
-                        pattern))))
+                    JsPath() ->
+                      Seq(
+                        ValidationError(
+                          "error.expected.jodadate.format",
+                          pattern))))
             }
           case _ =>
             JsError(
@@ -971,9 +960,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         }
 
       private def parseDate(input: String): Option[LocalDate] =
-        scala.util.control.Exception.allCatch[LocalDate] opt (
-          LocalDate.parse(input, df)
-        )
+        scala.util.control.Exception.allCatch[LocalDate] opt
+          (LocalDate.parse(input, df))
     }
 
   /**
@@ -1012,10 +1000,11 @@ trait DefaultReads extends LowPriorityDefaultReads {
               case None =>
                 JsError(
                   Seq(
-                    JsPath() -> Seq(
-                      ValidationError(
-                        "error.expected.jodatime.format",
-                        pattern))))
+                    JsPath() ->
+                      Seq(
+                        ValidationError(
+                          "error.expected.jodatime.format",
+                          pattern))))
             }
           case _ =>
             JsError(
@@ -1023,9 +1012,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         }
 
       private def parseTime(input: String): Option[LocalTime] =
-        scala.util.control.Exception.allCatch[LocalTime] opt (
-          LocalTime.parse(input, df)
-        )
+        scala.util.control.Exception.allCatch[LocalTime] opt
+          (LocalTime.parse(input, df))
     }
 
   /**
@@ -1066,8 +1054,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
               .getOrElse(
                 JsError(
                   Seq(
-                    JsPath() -> Seq(
-                      ValidationError("error.expected.validenumvalue")))))
+                    JsPath() ->
+                      Seq(ValidationError("error.expected.validenumvalue")))))
           case _ =>
             JsError(
               Seq(
@@ -1193,8 +1181,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     */
   implicit object ObjectNodeReads extends Reads[ObjectNode] {
     def reads(json: JsValue): JsResult[ObjectNode] = {
-      json.validate[JsObject] map (jo =>
-        JacksonJson.jsValueToJsonNode(jo).asInstanceOf[ObjectNode])
+      json.validate[JsObject] map
+        (jo => JacksonJson.jsValueToJsonNode(jo).asInstanceOf[ObjectNode])
     }
   }
 
@@ -1203,8 +1191,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     */
   implicit object ArrayNodeReads extends Reads[ArrayNode] {
     def reads(json: JsValue): JsResult[ArrayNode] = {
-      json.validate[JsArray] map (ja =>
-        JacksonJson.jsValueToJsonNode(ja).asInstanceOf[ArrayNode])
+      json.validate[JsArray] map
+        (ja => JacksonJson.jsValueToJsonNode(ja).asInstanceOf[ArrayNode])
     }
   }
 

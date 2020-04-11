@@ -73,15 +73,18 @@ object gen {
     }
 
     Gen.frequency(
-      10 → rationalFromLongs, // we keep this to make long/long rationals more frequent
+      10 →
+        rationalFromLongs, // we keep this to make long/long rationals more frequent
       10 → arbitrary[Double].map(n => Rational(n)),
       1 → rationalFromSafeLongs,
-      1 → bigRational, // a rational that is guaranteed to have a big denominator
-      1 → bigRational.map(x ⇒
-        if (x.isZero)
-          Rational.one
-        else
-          x.inverse)
+      1 →
+        bigRational, // a rational that is guaranteed to have a big denominator
+      1 →
+        bigRational.map(x ⇒
+          if (x.isZero)
+            Rational.one
+          else
+            x.inverse)
     )
   }
 

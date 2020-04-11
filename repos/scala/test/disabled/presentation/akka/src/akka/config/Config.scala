@@ -75,25 +75,28 @@ object Config {
         } else if (HOME.isDefined) {
           val configFile = HOME.get + "/config/" + confName
           println(
-            "AKKA_HOME is defined as [" + HOME
-              .get + "], loading config from [" + configFile + "].")
+            "AKKA_HOME is defined as [" + HOME.get +
+              "], loading config from [" + configFile + "].")
           Configuration.fromFile(configFile)
         } else {
           println(
             "\nCan't load '" + confName + "'." +
-              "\nOne of the three ways of locating the '" + confName + "' file needs to be defined:" +
+              "\nOne of the three ways of locating the '" + confName +
+              "' file needs to be defined:" +
               "\n\t1. Define the '-Dakka.config=...' system property option." +
               "\n\t2. Put the '" + confName + "' file on the classpath." +
               "\n\t3. Define 'AKKA_HOME' environment variable pointing to the root of the Akka distribution." +
-              "\nI have no way of finding the '" + confName + "' configuration file." +
-              "\nUsing default values everywhere.")
+              "\nI have no way of finding the '" + confName +
+              "' configuration file." + "\nUsing default values everywhere.")
           Configuration.fromString("akka {}") // default empty config
         }
 
       val configVersion = newInstance.getString("akka.version", VERSION)
       if (configVersion != VERSION)
         throw new ConfigurationException(
-          "Akka JAR version [" + VERSION + "] is different than the provided config version [" + configVersion + "]")
+          "Akka JAR version [" + VERSION +
+            "] is different than the provided config version [" +
+            configVersion + "]")
 
       newInstance
     } catch {

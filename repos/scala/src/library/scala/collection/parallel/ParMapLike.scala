@@ -103,12 +103,10 @@ trait ParMapLike[K, +V, +Repr <: ParMapLike[K, V, Repr, Sequential] with ParMap[
   protected class DefaultKeySet extends ParSet[K] {
     def contains(key: K) = self.contains(key)
     def splitter = keysIterator(self.splitter)
-    def +(elem: K): ParSet[K] =
-      (ParSet[K]() ++ this + elem)
-        .asInstanceOf[ParSet[K]] // !!! concrete overrides abstract problem
-    def -(elem: K): ParSet[K] =
-      (ParSet[K]() ++ this - elem)
-        .asInstanceOf[ParSet[K]] // !!! concrete overrides abstract problem
+    def +(elem: K): ParSet[K] = (ParSet[K]() ++ this + elem)
+      .asInstanceOf[ParSet[K]] // !!! concrete overrides abstract problem
+    def -(elem: K): ParSet[K] = (ParSet[K]() ++ this - elem)
+      .asInstanceOf[ParSet[K]] // !!! concrete overrides abstract problem
     override def size = self.size
     override def foreach[U](f: K => U) =
       for ((k, v) <- self)

@@ -27,33 +27,19 @@ class ValueDefinitionFilter extends ElementFilter {
 
       parent.getParent match {
         case _: ScGenerator | _: ScEnumerator | _: ScExistentialClause =>
-          if ((
-                leaf.getPrevSibling == null || leaf
+          if ((leaf.getPrevSibling == null ||
+              leaf.getPrevSibling.getPrevSibling == null ||
+              leaf.getPrevSibling.getPrevSibling.getNode.getElementType !=
+                ScalaTokenTypes.kDEF) &&
+              (parent.getPrevSibling == null ||
+              parent.getPrevSibling.getPrevSibling == null ||
+              (parent.getPrevSibling.getPrevSibling.getNode.getElementType !=
+                ScalaElementTypes.MATCH_STMT ||
+                !parent
                   .getPrevSibling
-                  .getPrevSibling == null ||
-                leaf
                   .getPrevSibling
-                  .getPrevSibling
-                  .getNode
-                  .getElementType != ScalaTokenTypes.kDEF
-              ) &&
-              (
-                parent.getPrevSibling == null || parent
-                  .getPrevSibling
-                  .getPrevSibling == null ||
-                (
-                  parent
-                    .getPrevSibling
-                    .getPrevSibling
-                    .getNode
-                    .getElementType != ScalaElementTypes.MATCH_STMT ||
-                  !parent
-                    .getPrevSibling
-                    .getPrevSibling
-                    .getLastChild
-                    .isInstanceOf[PsiErrorElement]
-                )
-              ))
+                  .getLastChild
+                  .isInstanceOf[PsiErrorElement])))
             return true
         case _ =>
       }

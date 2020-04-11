@@ -142,12 +142,11 @@ trait PatternExpander[Pattern, Type] {
     def isErroneous = allTypes contains NoType
 
     private def typeStrings =
-      fixed.map("" + _) ::: (
-        if (hasSeq)
-          List("" + repeated)
-        else
-          Nil
-      )
+      fixed.map("" + _) :::
+        (if (hasSeq)
+           List("" + repeated)
+         else
+           Nil)
 
     def offeringString =
       if (isErroneous)

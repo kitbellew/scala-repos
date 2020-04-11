@@ -276,8 +276,8 @@ class ORSetSpec extends WordSpec with Matchers {
         "K1" -> VersionVector(nodeA, 3L),
         "K2" -> VersionVector(TreeMap(nodeB -> 6L, nodeC -> 2L)))
 
-      ORSet
-        .mergeCommonKeys(commonKeys, thisSet, thatSet) should be(expectedDots)
+      ORSet.mergeCommonKeys(commonKeys, thisSet, thatSet) should
+        be(expectedDots)
     }
 
     "verify mergeDisjointKeys" in {
@@ -288,13 +288,14 @@ class ORSetSpec extends WordSpec with Matchers {
         "K5" -> VersionVector(nodeA, 2L))
       val vvector = VersionVector(TreeMap(nodeA -> 3L, nodeD -> 7L))
       val acc: Map[Any, VersionVector] = Map("K1" -> VersionVector(nodeA, 3L))
-      val expectedDots = acc ++ Map(
-        "K3" -> VersionVector(nodeA, 4L),
-        "K4" -> VersionVector(nodeD, 8L)
-      ) // "a" -> 3 removed, optimized to include only those unseen
+      val expectedDots = acc ++
+        Map(
+          "K3" -> VersionVector(nodeA, 4L),
+          "K4" -> VersionVector(nodeD, 8L)
+        ) // "a" -> 3 removed, optimized to include only those unseen
 
-      ORSet
-        .mergeDisjointKeys(keys, elements, vvector, acc) should be(expectedDots)
+      ORSet.mergeDisjointKeys(keys, elements, vvector, acc) should
+        be(expectedDots)
     }
 
     "verify disjoint merge" in {

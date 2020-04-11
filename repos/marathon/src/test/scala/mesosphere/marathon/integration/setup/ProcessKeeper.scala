@@ -49,9 +49,9 @@ object ProcessKeeper {
   }
 
   def startZooKeeper(port: Int, workDir: String, wipeWorkDir: Boolean = true) {
-    val args =
-      "-Dzookeeper.jmx.log4j.disable=true" :: "org.apache.zookeeper.server.ZooKeeperServerMain" :: port
-        .toString :: workDir :: Nil
+    val args = "-Dzookeeper.jmx.log4j.disable=true" ::
+      "org.apache.zookeeper.server.ZooKeeperServerMain" :: port.toString ::
+      workDir :: Nil
     val workDirFile = new File(workDir)
     if (wipeWorkDir) {
       FileUtils.deleteDirectory(workDirFile)
@@ -185,8 +185,8 @@ object ProcessKeeper {
     log.info(
       s"Start java process $name with command: ${(javaExecutable :: memSettings :: arguments)
         .mkString(" ")}")
-    val command: List[String] =
-      javaExecutable :: memSettings :: "-classpath" :: classPath :: arguments
+    val command: List[String] = javaExecutable :: memSettings :: "-classpath" ::
+      classPath :: arguments
     val builder = Process(command, cwd, env.toList: _*)
     val process = startProcess(name, builder, upWhen)
     log.info(s"Java process $name up and running!")
@@ -255,13 +255,14 @@ object ProcessKeeper {
   }
 
   def onStopServices(block: => Unit): Unit = {
-    services ::= new AbstractIdleService {
-      override def shutDown(): Unit = {
-        block
-      }
+    services ::=
+      new AbstractIdleService {
+        override def shutDown(): Unit = {
+          block
+        }
 
-      override def startUp(): Unit = {}
-    }
+        override def startUp(): Unit = {}
+      }
   }
 
   val PIDRE = """^\s*(\d+)\s+(\S*)$""".r

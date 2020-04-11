@@ -67,8 +67,7 @@ object Test extends Properties("reflection extractors") {
 
   property("extract modifiers") = forAll { (mods: Modifiers) =>
     val Modifiers(flags, priv, annots) = mods
-    flags == mods.flags &&
-    priv == mods.privateWithin &&
+    flags == mods.flags && priv == mods.privateWithin &&
     annots == mods.annotations
   }
 }

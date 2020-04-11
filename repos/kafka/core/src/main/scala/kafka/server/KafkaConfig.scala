@@ -284,12 +284,12 @@ object KafkaConfig {
   val LogFlushOffsetCheckpointIntervalMsProp =
     "log.flush.offset.checkpoint.interval.ms"
   val LogPreAllocateProp = "log.preallocate"
-  val LogMessageFormatVersionProp = LogConfigPrefix + LogConfig
-    .MessageFormatVersionProp
-  val LogMessageTimestampTypeProp = LogConfigPrefix + LogConfig
-    .MessageTimestampTypeProp
-  val LogMessageTimestampDifferenceMaxMsProp = LogConfigPrefix + LogConfig
-    .MessageTimestampDifferenceMaxMsProp
+  val LogMessageFormatVersionProp = LogConfigPrefix +
+    LogConfig.MessageFormatVersionProp
+  val LogMessageTimestampTypeProp = LogConfigPrefix +
+    LogConfig.MessageTimestampTypeProp
+  val LogMessageTimestampDifferenceMaxMsProp = LogConfigPrefix +
+    LogConfig.MessageTimestampDifferenceMaxMsProp
   val NumRecoveryThreadsPerDataDirProp = "num.recovery.threads.per.data.dir"
   val AutoCreateTopicsEnableProp = "auto.create.topics.enable"
   val MinInSyncReplicasProp = "min.insync.replicas"
@@ -398,7 +398,8 @@ object KafkaConfig {
   val ZkConnectDoc = "Zookeeper host string"
   val ZkSessionTimeoutMsDoc = "Zookeeper session timeout"
   val ZkConnectionTimeoutMsDoc =
-    "The max time that the client waits to establish a connection to zookeeper. If not set, the value in " + ZkSessionTimeoutMsProp + " is used"
+    "The max time that the client waits to establish a connection to zookeeper. If not set, the value in " +
+      ZkSessionTimeoutMsProp + " is used"
   val ZkSyncTimeMsDoc = "How far a ZK follower can be behind a ZK leader"
   val ZkEnableSecureAclsDoc = "Set client to use secure ACLs"
 
@@ -470,26 +471,36 @@ object KafkaConfig {
   /** ********* Log Configuration ***********/
   val NumPartitionsDoc = "The default number of log partitions per topic"
   val LogDirDoc =
-    "The directory in which the log data is kept (supplemental for " + LogDirsProp + " property)"
+    "The directory in which the log data is kept (supplemental for " +
+      LogDirsProp + " property)"
   val LogDirsDoc =
-    "The directories in which the log data is kept. If not set, the value in " + LogDirProp + " is used"
+    "The directories in which the log data is kept. If not set, the value in " +
+      LogDirProp + " is used"
   val LogSegmentBytesDoc = "The maximum size of a single log file"
   val LogRollTimeMillisDoc =
-    "The maximum time before a new log segment is rolled out (in milliseconds). If not set, the value in " + LogRollTimeHoursProp + " is used"
+    "The maximum time before a new log segment is rolled out (in milliseconds). If not set, the value in " +
+      LogRollTimeHoursProp + " is used"
   val LogRollTimeHoursDoc =
-    "The maximum time before a new log segment is rolled out (in hours), secondary to " + LogRollTimeMillisProp + " property"
+    "The maximum time before a new log segment is rolled out (in hours), secondary to " +
+      LogRollTimeMillisProp + " property"
 
   val LogRollTimeJitterMillisDoc =
-    "The maximum jitter to subtract from logRollTimeMillis (in milliseconds). If not set, the value in " + LogRollTimeJitterHoursProp + " is used"
+    "The maximum jitter to subtract from logRollTimeMillis (in milliseconds). If not set, the value in " +
+      LogRollTimeJitterHoursProp + " is used"
   val LogRollTimeJitterHoursDoc =
-    "The maximum jitter to subtract from logRollTimeMillis (in hours), secondary to " + LogRollTimeJitterMillisProp + " property"
+    "The maximum jitter to subtract from logRollTimeMillis (in hours), secondary to " +
+      LogRollTimeJitterMillisProp + " property"
 
   val LogRetentionTimeMillisDoc =
-    "The number of milliseconds to keep a log file before deleting it (in milliseconds), If not set, the value in " + LogRetentionTimeMinutesProp + " is used"
+    "The number of milliseconds to keep a log file before deleting it (in milliseconds), If not set, the value in " +
+      LogRetentionTimeMinutesProp + " is used"
   val LogRetentionTimeMinsDoc =
-    "The number of minutes to keep a log file before deleting it (in minutes), secondary to " + LogRetentionTimeMillisProp + " property. If not set, the value in " + LogRetentionTimeHoursProp + " is used"
+    "The number of minutes to keep a log file before deleting it (in minutes), secondary to " +
+      LogRetentionTimeMillisProp + " property. If not set, the value in " +
+      LogRetentionTimeHoursProp + " is used"
   val LogRetentionTimeHoursDoc =
-    "The number of hours to keep a log file before deleting it (in hours), tertiary to " + LogRetentionTimeMillisProp + " property"
+    "The number of hours to keep a log file before deleting it (in hours), tertiary to " +
+      LogRetentionTimeMillisProp + " property"
 
   val LogRetentionBytesDoc = "The maximum size of the log before deleting it"
   val LogCleanupIntervalMsDoc =
@@ -524,7 +535,8 @@ object KafkaConfig {
   val LogFlushSchedulerIntervalMsDoc =
     "The frequency in ms that the log flusher checks whether any log needs to be flushed to disk"
   val LogFlushIntervalMsDoc =
-    "The maximum time in ms that a message in any topic is kept in memory before flushed to disk. If not set, the value in " + LogFlushSchedulerIntervalMsProp + " is used"
+    "The maximum time in ms that a message in any topic is kept in memory before flushed to disk. If not set, the value in " +
+      LogFlushSchedulerIntervalMsProp + " is used"
   val LogFlushOffsetCheckpointIntervalMsDoc =
     "The frequency with which we update the persistent record of the last flush which acts as the log recovery point"
   val LogPreAllocateEnableDoc =
@@ -1812,8 +1824,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
         getString(KafkaConfig.AdvertisedListenersProp))
       CoreUtils
         .listenerListToEndPoints(getString(KafkaConfig.AdvertisedListenersProp))
-    } else if (getString(KafkaConfig.AdvertisedHostNameProp) != null || getInt(
-                 KafkaConfig.AdvertisedPortProp) != null) {
+    } else if (getString(KafkaConfig.AdvertisedHostNameProp) != null ||
+               getInt(KafkaConfig.AdvertisedPortProp) != null) {
       CoreUtils.listenerListToEndPoints(
         "PLAINTEXT://" + advertisedHostName + ":" + advertisedPort)
     } else {
@@ -1858,15 +1870,15 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
         " to prevent frequent changes in ISR"
     )
     require(
-      offsetCommitRequiredAcks >= -1 && offsetCommitRequiredAcks <= offsetsTopicReplicationFactor,
+      offsetCommitRequiredAcks >= -1 &&
+        offsetCommitRequiredAcks <= offsetsTopicReplicationFactor,
       "offsets.commit.required.acks must be greater or equal -1 and less or equal to offsets.topic.replication.factor"
     )
     require(
       BrokerCompressionCodec.isValid(compressionType),
       "compression.type : " + compressionType + " is not valid." +
-        " Valid options are " + BrokerCompressionCodec
-        .brokerCompressionOptions
-        .mkString(",")
+        " Valid options are " +
+        BrokerCompressionCodec.brokerCompressionOptions.mkString(",")
     )
     require(
       advertisedListeners.keySet.contains(interBrokerSecurityProtocol),

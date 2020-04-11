@@ -209,8 +209,9 @@ abstract class RefChecks
 
       // Check for doomed attempt to overload applyDynamic
       if (clazz isSubClass DynamicClass) {
-        for ((_, m1 :: m2 :: _) <- (clazz.info member nme.applyDynamic)
-               .alternatives groupBy (_.typeParams.length)) {
+        for ((_, m1 :: m2 :: _) <- (
+                 clazz.info member nme.applyDynamic
+             ).alternatives groupBy (_.typeParams.length)) {
           reporter.error(
             m1.pos,
             "implementation restriction: applyDynamic cannot be overloaded except by methods with different numbers of type parameters, e.g. applyDynamic[T1](method: String)(arg: T1) and applyDynamic[T1, T2](method: String)(arg1: T1, arg2: T2)"
@@ -288,7 +289,9 @@ abstract class RefChecks
               // if we find a bridge everything is OK. If we find another member,
               // we need to create a bridge
               val inherited1 = inherited filter (sym =>
-                !(sym hasFlag VBRIDGE) && (self memberType sym matches jtpe))
+                !(
+                  sym hasFlag VBRIDGE
+                ) && (self memberType sym matches jtpe))
               if (inherited1.exists)
                 bridges += varargBridge(member, jtpe)
             }
@@ -353,14 +356,12 @@ abstract class RefChecks
                 .distinct
             reporter.error(
               clazz.pos,
-              msg + (
-                if (others1.isEmpty)
-                  ""
-                else
-                  ";\n other members with override errors are: " + (
-                    others1 mkString ", "
-                  )
-              ))
+              msg + (if (others1.isEmpty)
+                       ""
+                     else
+                       ";\n other members with override errors are: " + (
+                         others1 mkString ", "
+                       )))
         }
       }
 
@@ -370,24 +371,20 @@ abstract class RefChecks
       def infoString0(sym: Symbol, showLocation: Boolean) = {
         val sym1 = analyzer.underlyingSymbol(sym)
         sym1.toString() +
-          (
-            if (showLocation)
-              sym1.locationString +
-                (
-                  if (sym1.isAliasType)
-                    ", which equals " + self.memberInfo(sym1)
-                  else if (sym1.isAbstractType)
-                    " with bounds" + self.memberInfo(sym1)
-                  else if (sym1.isModule)
-                    ""
-                  else if (sym1.isTerm)
-                    " of type " + self.memberInfo(sym1)
-                  else
-                    ""
-                )
-            else
-              ""
-          )
+          (if (showLocation)
+             sym1.locationString +
+               (if (sym1.isAliasType)
+                  ", which equals " + self.memberInfo(sym1)
+                else if (sym1.isAbstractType)
+                  " with bounds" + self.memberInfo(sym1)
+                else if (sym1.isModule)
+                  ""
+                else if (sym1.isTerm)
+                  " of type " + self.memberInfo(sym1)
+                else
+                  "")
+           else
+             "")
       }
 
       /* Check that all conditions for overriding `other` by `member`
@@ -495,7 +492,9 @@ abstract class RefChecks
 
         /* Is the intersection between given two lists of overridden symbols empty? */
         def intersectionIsEmpty(syms1: List[Symbol], syms2: List[Symbol]) =
-          !(syms1 exists (syms2 contains _))
+          !(
+            syms1 exists (syms2 contains _)
+          )
 
         if (typesOnly)
           checkOverrideTypes()
@@ -514,15 +513,12 @@ abstract class RefChecks
           def isOverrideAccessOK =
             member
               .isPublic || { // member is public, definitely same or relaxed access
-              (
-                !other.isProtected || member.isProtected
-              ) && // if o is protected, so is m
-              (
-                (
-                  !isRootOrNone(ob) && ob.hasTransOwner(mb)
-                ) || // m relaxes o's access boundary
-                other.isJavaDefined
-              ) // overriding a protected java member, see #3946
+              (!other.isProtected || member
+                .isProtected) && // if o is protected, so is m
+              ((!isRootOrNone(ob) && ob
+                .hasTransOwner(mb)) || // m relaxes o's access boundary
+              other
+                .isJavaDefined) // overriding a protected java member, see #3946
             }
           if (!isOverrideAccessOK) {
             overrideAccessError()
@@ -539,7 +535,9 @@ abstract class RefChecks
                        .isAnyOverride && !member.isSynthetic) { // (*)
             // (*) Synthetic exclusion for (at least) default getters, fixes SI-5178. We cannot assign the OVERRIDE flag to
             // the default getter: one default getter might sometimes override, sometimes not. Example in comment on ticket.
-            if (isNeitherInClass && !(other.owner isSubClass member.owner))
+            if (isNeitherInClass && !(
+                  other.owner isSubClass member.owner
+                ))
               emitOverrideError(
                 clazz + " inherits conflicting members:\n  "
                   + infoStringWithLocation(
@@ -622,7 +620,9 @@ abstract class RefChecks
         //if (!member.typeParams.isEmpty) // (1.7)  @MAT
         //  overrideError("may not be parameterized");
         def checkOverrideAbstract() {
-          if (!(highInfo.bounds containsType lowType)) { // (1.7.1)
+          if (!(
+                highInfo.bounds containsType lowType
+              )) { // (1.7.1)
             overrideTypeError(); // todo: do an explaintypes with bounds here
             explainTypes(_.bounds containsType _, highInfo, lowType)
           }
@@ -691,7 +691,9 @@ abstract class RefChecks
                 case rt: RefinedType
                     if !(
                       rt =:= highType
-                    ) && !(checkedCombinations contains rt.parents) =>
+                    ) && !(
+                      checkedCombinations contains rt.parents
+                    ) =>
                   // might mask some inconsistencies -- check overrides
                   checkedCombinations += rt.parents
                   val tsym = rt.typeSymbol
@@ -745,14 +747,12 @@ abstract class RefChecks
 
         def abstractClassError(mustBeMixin: Boolean, msg: String) {
           def prelude =
-            (
-              if (clazz.isAnonymousClass || clazz.isModuleClass)
-                "object creation impossible"
-              else if (mustBeMixin)
-                clazz + " needs to be a mixin"
-              else
-                clazz + " needs to be abstract"
-            ) + ", since"
+            (if (clazz.isAnonymousClass || clazz.isModuleClass)
+               "object creation impossible"
+             else if (mustBeMixin)
+               clazz + " needs to be a mixin"
+             else
+               clazz + " needs to be abstract") + ", since"
 
           if (abstractErrors.isEmpty)
             abstractErrors ++= List(prelude, msg)
@@ -783,10 +783,8 @@ abstract class RefChecks
             // the test requires exitingErasure so shouldn't be
             // done if the compiler has no erasure phase available
             member.isJavaDefined
-              && (
-                currentRun.erasurePhase == NoPhase || javaErasedOverridingSym(
-                  member) != NoSymbol
-              )))
+              && (currentRun.erasurePhase == NoPhase || javaErasedOverridingSym(
+                member) != NoSymbol)))
 
         // 2. Check that only abstract classes have deferred members
         def checkNoAbstractMembers(): Unit = {
@@ -821,9 +819,8 @@ abstract class RefChecks
               (
                 regrouped.sortBy("" + _._1.name) flatMap {
                   case (owner, members) =>
-                    (
-                      "// Members declared in " + owner.fullName
-                    ) +: membersStrings(members) :+ ""
+                    ("// Members declared in " + owner
+                      .fullName) +: membersStrings(members) :+ ""
                 }
               ).init
           }
@@ -935,7 +932,9 @@ abstract class RefChecks
 
           // Check the remainder for invalid absoverride.
           for (member <- rest;
-               if (member.isAbstractOverride && member.isIncompleteIn(clazz))) {
+               if (
+                 member.isAbstractOverride && member.isIncompleteIn(clazz)
+               )) {
             val other = member.superSymbolIn(clazz)
             val explanation =
               if (other != NoSymbol)
@@ -982,7 +981,9 @@ abstract class RefChecks
 
         if (abstractErrors.nonEmpty)
           reporter.error(clazz.pos, abstractErrorMessage)
-      } else if (clazz.isTrait && !(clazz isSubClass AnyValClass)) {
+      } else if (clazz.isTrait && !(
+                   clazz isSubClass AnyValClass
+                 )) {
         // For non-AnyVal classes, prevent abstract methods in interfaces that override
         // final members in Object; see #4431
         for (decl <- clazz.info.decls) {
@@ -1100,9 +1101,15 @@ abstract class RefChecks
         if (baseClass.isClass) {
           val index = clazz.info.baseTypeIndex(baseClass)
           if (index >= 0) {
-            if (seenTypes(index) forall (tp1 => !(tp1 <:< tp)))
+            if (seenTypes(index) forall (tp1 =>
+                  !(
+                    tp1 <:< tp
+                  )))
               seenTypes(index) =
-                tp :: (seenTypes(index) filter (tp1 => !(tp <:< tp1)))
+                tp :: (seenTypes(index) filter (tp1 =>
+                  !(
+                    tp <:< tp1
+                  )))
           }
         }
         val remaining = tp.parents filterNot seenParents
@@ -1287,7 +1294,9 @@ abstract class RefChecks
       // equals.
       def isUsingWarnableEquals = {
         val m = receiver.info.member(nme.equals_)
-        ((m == Object_equals) || (m == Any_equals) || isMethodCaseEquals(m))
+        (
+          (m == Object_equals) || (m == Any_equals) || isMethodCaseEquals(m)
+        )
       }
       def isMethodCaseEquals(m: Symbol) = m.isSynthetic && m.owner.isCase
       def isCaseEquals = isMethodCaseEquals(receiver.info.member(nme.equals_))
@@ -1386,9 +1395,8 @@ abstract class RefChecks
       } else if (isWarnable && !isCaseEquals) {
         if (isNew(qual)) // new X == y
           nonSensiblyNew()
-        else if (isNew(other) && (
-                   receiver.isEffectivelyFinal || isReferenceOp
-                 )) // object X ; X == new Y
+        else if (isNew(other) && (receiver
+                   .isEffectivelyFinal || isReferenceOp)) // object X ; X == new Y
           nonSensiblyNew()
         else if (receiver.isEffectivelyFinal && !(
                    receiver isSubClass actual
@@ -1429,7 +1437,9 @@ abstract class RefChecks
               //if (receiver.isCase && receiver.isEffectivelyFinal && !(receiver isSubClass actual)) nonSensiblyNeq()
               //else
               // if a class, it must be super to thisCase (and receiver) since not <: thisCase
-              if (!actual.isTrait && !(receiver isSubClass actual))
+              if (!actual.isTrait && !(
+                    receiver isSubClass actual
+                  ))
                 nonSensiblyNeq()
               else if (!haveSubclassRelationship)
                 warnIfLubless()
@@ -1531,16 +1541,14 @@ abstract class RefChecks
 
           DefDef(accessor, Select(This(site), module)) :: Nil
         }
-        val newTrees = cdef :: (
-          if (module.isStatic)
-            // trait T { def f: Object }; object O extends T { object f }. Need to generate method f in O.
-            if (module.isOverridingSymbol)
-              matchingInnerObject()
-            else
-              Nil
-          else
-            newInnerObject(site, module)
-        )
+        val newTrees = cdef :: (if (module.isStatic)
+                                  // trait T { def f: Object }; object O extends T { object f }. Need to generate method f in O.
+                                  if (module.isOverridingSymbol)
+                                    matchingInnerObject()
+                                  else
+                                    Nil
+                                else
+                                  newInnerObject(site, module))
         transformTrees(newTrees map localTyper.typedPos(moduleDef.pos))
       }
     def newInnerObject(site: Symbol, module: Symbol): List[Tree] = {
@@ -2031,7 +2039,9 @@ abstract class RefChecks
       def checkSuper(mix: Name) =
         // term should have been eliminated by super accessors
         assert(
-          !(qual.symbol.isTrait && sym.isTerm && mix == tpnme.EMPTY),
+          !(
+            qual.symbol.isTrait && sym.isTerm && mix == tpnme.EMPTY
+          ),
           (qual.symbol, sym, mix))
 
       // Rewrite eligible calls to monomorphic case companion apply methods to the equivalent constructor call.
@@ -2085,7 +2095,10 @@ abstract class RefChecks
             || (sym.name containsName nme.DEFAULT_GETTER_STRING)
             || sym
               .allOverriddenSymbols
-              .exists(over => !(over.tpe.resultType =:= sym.tpe.resultType)))
+              .exists(over =>
+                !(
+                  over.tpe.resultType =:= sym.tpe.resultType
+                )))
           if (!isOk)
             reporter.warning(
               sym.pos,

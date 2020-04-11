@@ -43,9 +43,8 @@ class GeneratedProjectionSuite extends SparkFunSuite {
     val joinedSchema = StructType(schema1 ++ schema2)
     val nested = new JoinedRow(InternalRow(joined, joined), joined)
     val nestedSchema = StructType(
-      Seq(
-        StructField("", joinedSchema),
-        StructField("", joinedSchema)) ++ joinedSchema)
+      Seq(StructField("", joinedSchema), StructField("", joinedSchema)) ++
+        joinedSchema)
 
     // test generated UnsafeProjection
     val unsafeProj = UnsafeProjection.create(nestedSchema)

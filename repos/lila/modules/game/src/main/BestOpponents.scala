@@ -8,10 +8,12 @@ object BestOpponents {
     GameRepo.bestOpponents(userId, limit) flatMap { opponents =>
       UserRepo enabledByIds opponents.map(_._1) map {
         _ flatMap { user =>
-          opponents find (_._1 == user.id) map { opponent =>
-            user -> opponent._2
-          }
-        } sortBy (-_._2)
+          opponents find
+            (_._1 == user.id) map { opponent =>
+              user -> opponent._2
+            }
+        } sortBy
+          (-_._2)
       }
     }
 }

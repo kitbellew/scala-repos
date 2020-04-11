@@ -48,11 +48,12 @@ class AkkaGraphiteReporter(
     val hdrHistograms = registry.getHdrHistograms
     val averagingGauges = registry.getAveragingGauges
 
-    val metricsCount = List(gauges, counters, histograms, meters, timers)
-      .map(_.size)
-      .sum + List(knownOpsInTimespanCounters, hdrHistograms).map(_.size).sum
+    val metricsCount =
+      List(gauges, counters, histograms, meters, timers).map(_.size).sum +
+        List(knownOpsInTimespanCounters, hdrHistograms).map(_.size).sum
     sendWithBanner(
-      "== AkkaGraphiteReporter @ " + dateTime + " == (" + metricsCount + " metrics)",
+      "== AkkaGraphiteReporter @ " + dateTime + " == (" + metricsCount +
+        " metrics)",
       '=')
 
     try {

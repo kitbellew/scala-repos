@@ -55,8 +55,8 @@ class DeadlineFailureDetector(
     heartbeatInterval > Duration.Zero,
     "failure-detector.heartbeat-interval must be > 0 s")
 
-  private val deadlineMillis = acceptableHeartbeatPause
-    .toMillis + heartbeatInterval.toMillis
+  private val deadlineMillis = acceptableHeartbeatPause.toMillis +
+    heartbeatInterval.toMillis
   @volatile
   private var heartbeatTimestamp = 0L //not used until active (first heartbeat)
   @volatile

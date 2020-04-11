@@ -70,14 +70,13 @@ trait FileUploadSupport extends ServletBase {
   private def isMultipartContent(req: HttpServletRequest) = {
     val isPostOrPut = Set("POST", "PUT").contains(req.getMethod)
 
-    isPostOrPut && (
-      req.contentType match {
-        case Some(contentType) =>
-          contentType.startsWith(FileUploadBase.MULTIPART)
-        case _ =>
-          false
-      }
-    )
+    isPostOrPut &&
+    (req.contentType match {
+      case Some(contentType) =>
+        contentType.startsWith(FileUploadBase.MULTIPART)
+      case _ =>
+        false
+    })
   }
 
   private def extractMultipartParams(req: HttpServletRequest): BodyParams =
@@ -94,20 +93,24 @@ trait FileUploadSupport extends ServletBase {
               if (item.isFormField)
                 BodyParams(
                   params.fileParams,
-                  params.formParams + (
+                  params.formParams +
                     (
-                      item.getFieldName,
-                      fileItemToString(req, item) :: params
-                        .formParams
-                        .getOrElse(item.getFieldName, List[String]()))))
+                      (
+                        item.getFieldName,
+                        fileItemToString(req, item) ::
+                          params
+                            .formParams
+                            .getOrElse(item.getFieldName, List[String]()))))
               else
                 BodyParams(
-                  params.fileParams + (
+                  params.fileParams +
                     (
-                      item.getFieldName,
-                      item +: params
-                        .fileParams
-                        .getOrElse(item.getFieldName, List[FileItem]()))),
+                      (
+                        item.getFieldName,
+                        item +:
+                          params
+                            .fileParams
+                            .getOrElse(item.getFieldName, List[FileItem]()))),
                   params.formParams)
           }
         req(BodyParamsKey) = bodyParams
@@ -154,11 +157,10 @@ trait FileUploadSupport extends ServletBase {
             _.toArray
           } getOrElse null
         override def getParameterMap =
-          new JHashMap[String, Array[String]] ++ (
-            formMap transform { (k, v) =>
+          new JHashMap[String, Array[String]] ++
+            (formMap transform { (k, v) =>
               v.toArray
-            }
-          )
+            })
       }
     wrapped
   }

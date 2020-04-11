@@ -180,8 +180,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                         safeOp("Database " + dbName + " does not exist")(
                           mongo.getDB(dbName)).flatMap {
                           d =>
-                            if (!d.isAuthenticated && dbAuthParams
-                                  .contains(dbName)) {
+                            if (!d.isAuthenticated &&
+                                dbAuthParams.contains(dbName)) {
                               logger.trace("Running auth setup for " + dbName)
                               dbAuthParams
                                 .get(dbName)
@@ -193,7 +193,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                                     Some(d)
                                   } else {
                                     logger.error(
-                                      "Authentication failed for database " + dbName);
+                                      "Authentication failed for database " +
+                                        dbName);
                                     None
                                   }
 
@@ -240,8 +241,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
                 case err =>
                   sys.error(
-                    "MongoDB path " + path
-                      .path + " does not have the form /dbName/collectionName; rollups not yet supported.")
+                    "MongoDB path " + path.path +
+                      " does not have the form /dbName/collectionName; rollups not yet supported.")
               }
 
             case InitialLoad(Nil) =>
@@ -273,9 +274,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           val columns =
             if (includeIdField) {
               columns0 get ColumnRef(Key \ 0, CString) map { idCol =>
-                columns0 + (
-                  ColumnRef(Value \ CPathField("_id"), CString) -> idCol
-                )
+                columns0 +
+                  (ColumnRef(Value \ CPathField("_id"), CString) -> idCol)
               } getOrElse columns0
             } else
               columns0
@@ -314,8 +314,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
           case objId: ObjectId =>
             // TODO: We should ensure this matches up w/ BlueEyes exactly.
-            val value = "ObjectId(\"" + Hex
-              .encodeHexString(objId.toByteArray) + "\")"
+            val value = "ObjectId(\"" + Hex.encodeHexString(objId.toByteArray) +
+              "\")"
             val col = acc
               .getOrElseUpdate(
                 (rprefix, CString), {

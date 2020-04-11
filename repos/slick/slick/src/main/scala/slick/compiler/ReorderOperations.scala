@@ -97,10 +97,8 @@ class ReorderOperations extends Phase {
             s,
             Subquery(from :@ CollectionType(_, tpe), Subquery.AboveDistinct),
             Pure(StructNode(defs), ts1))
-          if isAliasingOrLiteral(s, defs) && isDistinctnessPreserving(
-            s,
-            defs,
-            tpe) =>
+          if isAliasingOrLiteral(s, defs) &&
+            isDistinctnessPreserving(s, defs, tpe) =>
         Subquery(n.copy(from = from), Subquery.AboveDistinct).infer()
 
       // Push any aliasing / literal projection into other Subquery
@@ -115,14 +113,15 @@ class ReorderOperations extends Phase {
               bind @ Bind(bs1, from1, Pure(StructNode(defs1), ts1)),
               Subquery.AboveRownum),
             Apply(Library.<= | Library.<, ConstArray(Select(Ref(rs), f1), v1)))
-          if rs == s1 && defs1
-            .find {
-              case (f, n) if f == f1 =>
-                isRownumCalculation(n)
-              case _ =>
-                false
-            }
-            .isDefined =>
+          if rs == s1 &&
+            defs1
+              .find {
+                case (f, n) if f == f1 =>
+                  isRownumCalculation(n)
+                case _ =>
+                  false
+              }
+              .isDefined =>
         sq.copy(child = filter.copy(from = bind)).infer()
 
       // Push a BelowRowNumber boundary into SortBy

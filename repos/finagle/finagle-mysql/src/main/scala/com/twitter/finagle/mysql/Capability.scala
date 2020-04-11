@@ -77,7 +77,8 @@ case class Capability(mask: Int) {
       has(t._2)
     } map {
       _._1
-    } mkString (", ")
+    } mkString
+      (", ")
     "Capability(" + mask + ": " + cs + ")"
   }
 }

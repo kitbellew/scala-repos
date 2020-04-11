@@ -7,7 +7,8 @@ object MyBuild extends Build {
   lazy val root = project
     .in(file("."))
     .settings(
-      ideExcludedDirectories := Seq(
-        file("directory-to-exclude-1"),
-        file("directory") / "to" / "exclude" / "2"))
+      ideExcludedDirectories :=
+        Seq(
+          file("directory-to-exclude-1"),
+          file("directory") / "to" / "exclude" / "2"))
 }

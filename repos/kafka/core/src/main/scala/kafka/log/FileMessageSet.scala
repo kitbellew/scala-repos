@@ -202,9 +202,9 @@ class FileMessageSet private[kafka] (
         }
       ).toInt
     trace(
-      "FileMessageSet " + file
-        .getAbsolutePath + " : bytes transferred : " + bytesTransferred
-        + " bytes requested for transfer : " + math.min(size, sizeInBytes))
+      "FileMessageSet " + file.getAbsolutePath + " : bytes transferred : " +
+        bytesTransferred + " bytes requested for transfer : " +
+        math.min(size, sizeInBytes))
     bytesTransferred
   }
 
@@ -255,9 +255,8 @@ class FileMessageSet private[kafka] (
         // File message set only has shallow iterator. We need to do deep iteration here if needed.
         val deepIter = ByteBufferMessageSet.deepIterator(messageAndOffset)
         for (innerMessageAndOffset <- deepIter) {
-          newMessages += innerMessageAndOffset
-            .message
-            .toFormatVersion(toMagicValue)
+          newMessages +=
+            innerMessageAndOffset.message.toFormatVersion(toMagicValue)
           offsets += innerMessageAndOffset.offset
         }
       }

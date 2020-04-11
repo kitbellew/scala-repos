@@ -110,72 +110,74 @@ package scalaguide.http.scalabodyparsers {
         }
       }
 
-      "forward the body" in new WithApplication() {
+      "forward the body" in
+        new WithApplication() {
 
-        //#forward-body
-        import javax.inject._
-        import play.api.mvc._
-        import play.api.libs.streams._
-        import play.api.libs.ws._
-        import scala.concurrent.ExecutionContext
-        import akka.util.ByteString
+          //#forward-body
+          import javax.inject._
+          import play.api.mvc._
+          import play.api.libs.streams._
+          import play.api.libs.ws._
+          import scala.concurrent.ExecutionContext
+          import akka.util.ByteString
 
-        class MyController @Inject() (ws: WSClient)(implicit
-            ec: ExecutionContext) {
+          class MyController @Inject() (ws: WSClient)(implicit
+              ec: ExecutionContext) {
 
-          def forward(request: WSRequest): BodyParser[WSResponse] =
-            BodyParser { req =>
-              Accumulator
-                .source[ByteString]
-                .mapFuture { source =>
-                  request
-                  // TODO: stream body when support is implemented
-                  // .withBody(source)
-                    .execute().map(Right.apply)
-                }
-            }
+            def forward(request: WSRequest): BodyParser[WSResponse] =
+              BodyParser { req =>
+                Accumulator
+                  .source[ByteString]
+                  .mapFuture { source =>
+                    request
+                    // TODO: stream body when support is implemented
+                    // .withBody(source)
+                      .execute().map(Right.apply)
+                  }
+              }
 
-          def myAction =
-            Action(forward(ws.url("https://example.com"))) { req =>
-              Ok("Uploaded")
-            }
+            def myAction =
+              Action(forward(ws.url("https://example.com"))) { req =>
+                Ok("Uploaded")
+              }
+          }
+          //#forward-body
+
+          ok
         }
-        //#forward-body
 
-        ok
-      }
+      "parse the body as csv" in
+        new WithApplication() {
 
-      "parse the body as csv" in new WithApplication() {
+          //#csv
+          import play.api.mvc._
+          import play.api.libs.streams._
+          import play.api.libs.concurrent.Execution.Implicits.defaultContext
+          import akka.util.ByteString
+          import akka.stream.scaladsl._
 
-        //#csv
-        import play.api.mvc._
-        import play.api.libs.streams._
-        import play.api.libs.concurrent.Execution.Implicits.defaultContext
-        import akka.util.ByteString
-        import akka.stream.scaladsl._
+          val csv: BodyParser[Seq[Seq[String]]] = BodyParser { req =>
+            // A flow that splits the stream into CSV lines
+            val sink: Sink[ByteString, Future[Seq[Seq[String]]]] =
+              Flow[ByteString]
+              // We split by the new line character, allowing a maximum of 1000 characters per line
+                .via(
+                  Framing
+                    .delimiter(ByteString("\n"), 1000, allowTruncation = true))
+                // Turn each line to a String and split it by commas
+                .map(_.utf8String.trim.split(",").toSeq)
+                // Now we fold it into a list
+                .toMat(Sink.fold(Seq.empty[Seq[String]])(_ :+ _))(Keep.right)
 
-        val csv: BodyParser[Seq[Seq[String]]] = BodyParser { req =>
-          // A flow that splits the stream into CSV lines
-          val sink: Sink[ByteString, Future[Seq[Seq[String]]]] =
-            Flow[ByteString]
-            // We split by the new line character, allowing a maximum of 1000 characters per line
-              .via(
-                Framing
-                  .delimiter(ByteString("\n"), 1000, allowTruncation = true))
-              // Turn each line to a String and split it by commas
-              .map(_.utf8String.trim.split(",").toSeq)
-              // Now we fold it into a list
-              .toMat(Sink.fold(Seq.empty[Seq[String]])(_ :+ _))(Keep.right)
+            // Convert the body to a Right either
+            Accumulator(sink).map(Right.apply)
+          }
+          //#csv
 
-          // Convert the body to a Right either
-          Accumulator(sink).map(Right.apply)
+          testAction(
+            Action(csv)(req => Ok(req.body(1)(2))),
+            FakeRequest("POST", "/").withTextBody("1,2\n3,4,foo\n5,6"))
         }
-        //#csv
-
-        testAction(
-          Action(csv)(req => Ok(req.body(1)(2))),
-          FakeRequest("POST", "/").withTextBody("1,2\n3,4,foo\n5,6"))
-      }
 
     }
 

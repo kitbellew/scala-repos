@@ -49,8 +49,8 @@ object Versions {
     try {
       if (currentVersion == headVersion) {
         logger.debug("No update")
-      } else if (currentVersion.versionString != "0.0" && !versions
-                   .contains(currentVersion)) {
+      } else if (currentVersion.versionString != "0.0" &&
+                 !versions.contains(currentVersion)) {
         logger.warn(
           s"Skip migration because ${currentVersion.versionString} is illegal version.")
       } else {

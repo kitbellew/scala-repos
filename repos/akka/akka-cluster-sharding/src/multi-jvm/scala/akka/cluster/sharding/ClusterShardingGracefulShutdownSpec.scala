@@ -196,71 +196,73 @@ abstract class ClusterShardingGracefulShutdownSpec(
       enterBarrier("after-1")
     }
 
-    "start some shards in both regions" in within(30.seconds) {
-      join(first, first)
-      join(second, first)
+    "start some shards in both regions" in
+      within(30.seconds) {
+        join(first, first)
+        join(second, first)
 
-      awaitAssert {
-        val p = TestProbe()
-        val regionAddresses =
-          (1 to 100)
+        awaitAssert {
+          val p = TestProbe()
+          val regionAddresses = (1 to 100)
             .map { n ⇒
               region.tell(n, p.ref)
               p.expectMsg(1.second, n)
               p.lastSender.path.address
             }
             .toSet
-        regionAddresses.size should be(2)
-      }
-      enterBarrier("after-2")
-    }
-
-    "gracefully shutdown a region" in within(30.seconds) {
-      runOn(second) {
-        region ! ShardRegion.GracefulShutdown
+          regionAddresses.size should be(2)
+        }
+        enterBarrier("after-2")
       }
 
-      runOn(first) {
-        awaitAssert {
-          val p = TestProbe()
-          for (n ← 1 to 200) {
-            region.tell(n, p.ref)
-            p.expectMsg(1.second, n)
-            p.lastSender.path should be(region.path / n.toString / n.toString)
+    "gracefully shutdown a region" in
+      within(30.seconds) {
+        runOn(second) {
+          region ! ShardRegion.GracefulShutdown
+        }
+
+        runOn(first) {
+          awaitAssert {
+            val p = TestProbe()
+            for (n ← 1 to 200) {
+              region.tell(n, p.ref)
+              p.expectMsg(1.second, n)
+              p.lastSender.path should be(region.path / n.toString / n.toString)
+            }
           }
         }
+        enterBarrier("handoff-completed")
+
+        runOn(second) {
+          watch(region)
+          expectTerminated(region)
+        }
+
+        enterBarrier("after-3")
       }
-      enterBarrier("handoff-completed")
 
-      runOn(second) {
-        watch(region)
-        expectTerminated(region)
+    "gracefully shutdown empty region" in
+      within(30.seconds) {
+        runOn(first) {
+          val allocationStrategy =
+            new ShardCoordinator.LeastShardAllocationStrategy(
+              rebalanceThreshold = 2,
+              maxSimultaneousRebalance = 1)
+          val regionEmpty = ClusterSharding(system).start(
+            typeName = "EntityEmpty",
+            entityProps = Props[Entity],
+            settings = ClusterShardingSettings(system),
+            extractEntityId = extractEntityId,
+            extractShardId = extractShardId,
+            allocationStrategy,
+            handOffStopMessage = StopEntity
+          )
+
+          watch(regionEmpty)
+          regionEmpty ! GracefulShutdown
+          expectTerminated(regionEmpty, 5.seconds)
+        }
       }
-
-      enterBarrier("after-3")
-    }
-
-    "gracefully shutdown empty region" in within(30.seconds) {
-      runOn(first) {
-        val allocationStrategy =
-          new ShardCoordinator.LeastShardAllocationStrategy(
-            rebalanceThreshold = 2,
-            maxSimultaneousRebalance = 1)
-        val regionEmpty = ClusterSharding(system).start(
-          typeName = "EntityEmpty",
-          entityProps = Props[Entity],
-          settings = ClusterShardingSettings(system),
-          extractEntityId = extractEntityId,
-          extractShardId = extractShardId,
-          allocationStrategy,
-          handOffStopMessage = StopEntity
-        )
-
-        watch(regionEmpty)
-        regionEmpty ! GracefulShutdown
-        expectTerminated(regionEmpty, 5.seconds)
-      }
-    }
 
   }
 }

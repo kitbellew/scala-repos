@@ -113,8 +113,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     * [[org.apache.spark.sql.catalyst.analysis.UnresolvedRelation UnresolvedRelation]]
     * should return `false`).
     */
-  lazy val resolved: Boolean = expressions
-    .forall(_.resolved) && childrenResolved
+  lazy val resolved: Boolean = expressions.forall(_.resolved) &&
+    childrenResolved
 
   override protected def statePrefix =
     if (!resolved)

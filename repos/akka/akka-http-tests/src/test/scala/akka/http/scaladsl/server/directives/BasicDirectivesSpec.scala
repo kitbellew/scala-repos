@@ -15,9 +15,10 @@ class BasicDirectivesSpec extends RoutingSpec {
             completeOk
           }
         }
-      } ~> check {
-        response shouldEqual Ok
-      }
+      } ~>
+        check {
+          response shouldEqual Ok
+        }
     }
   }
 
@@ -27,9 +28,10 @@ class BasicDirectivesSpec extends RoutingSpec {
         extract(_.request.method.value) {
           echoComplete
         }
-      } ~> check {
-        responseAs[String] shouldEqual "GET"
-      }
+      } ~>
+        check {
+          responseAs[String] shouldEqual "GET"
+        }
     }
   }
 }

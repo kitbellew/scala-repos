@@ -29,12 +29,13 @@ object AtomSpecs extends Specification with ScalaCheck {
   import Prop._
 
   "reference atoms" should {
-    "store and return value after update" in check { i: Int =>
-      val a = atom[Int]
-      a() = i
-      a() mustEqual i
-      a() mustEqual i
-    }
+    "store and return value after update" in
+      check { i: Int =>
+        val a = atom[Int]
+        a() = i
+        a() mustEqual i
+        a() mustEqual i
+      }
 
     "throw exception for unset value" in {
       val a = atom[Int]
@@ -57,18 +58,19 @@ object AtomSpecs extends Specification with ScalaCheck {
       a() mustEqual 42
     }
 
-    "self-populate once on access" in check { i: Int =>
-      var count = 0
-      lazy val a: Atom[Int] = atom[Int] {
-        count += 1
-        a() = i
+    "self-populate once on access" in
+      check { i: Int =>
+        var count = 0
+        lazy val a: Atom[Int] = atom[Int] {
+          count += 1
+          a() = i
+        }
+
+        a() mustEqual i
+        a() mustEqual i
+
+        count mustEqual 1
       }
-
-      a() mustEqual i
-      a() mustEqual i
-
-      count mustEqual 1
-    }
 
     "detect recursive self-population" in {
       lazy val a: Atom[Int] = atom[Int] {
@@ -106,67 +108,71 @@ object AtomSpecs extends Specification with ScalaCheck {
       a1() mustEqual 42
     }
 
-    "disregard link when overridden by value" in ({
-      {
-        val a1 = atom[Int]
-        val a2 = atom[Int]
-        a1.from(a2)
-        a1() = 24
+    "disregard link when overridden by value" in
+      ({
+        {
+          val a1 = atom[Int]
+          val a2 = atom[Int]
+          a1.from(a2)
+          a1() = 24
 
-        a2() = 42
+          a2() = 42
 
-        // ordering might matter here
-        a2() mustEqual 42
-        a1() mustEqual 24
-      }
+          // ordering might matter here
+          a2() mustEqual 42
+          a1() mustEqual 24
+        }
 
-      {
-        val a1 = atom[Int]
-        val a2 = atom[Int]
-        a1.from(a2)
-        a1() = 24
+        {
+          val a1 = atom[Int]
+          val a2 = atom[Int]
+          a1.from(a2)
+          a1() = 24
 
-        a2() = 42
+          a2() = 42
 
-        // ordering might matter here
-        a1() mustEqual 24
-        a2() mustEqual 42
-      }
-    } pendingUntilFixed)
+          // ordering might matter here
+          a1() mustEqual 24
+          a2() mustEqual 42
+        }
+      } pendingUntilFixed)
 
     // TODO spec multi-thread behavior
   }
 
   "aggregate atoms" should {
-    "self-populate once on access using =" in check { xs: Set[Int] =>
-      lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-        a() = xs
-      }
-
-      a() mustEqual xs
-    }
-
-    "self-populate once on access using +=" in check { xs: Set[Int] =>
-      lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-        a ++= Set[Int]()
-        xs foreach { x =>
-          a += x
+    "self-populate once on access using =" in
+      check { xs: Set[Int] =>
+        lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
+          a() = xs
         }
+
+        a() mustEqual xs
       }
 
-      a() mustEqual xs
-    }
+    "self-populate once on access using +=" in
+      check { xs: Set[Int] =>
+        lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
+          a ++= Set[Int]()
+          xs foreach { x =>
+            a += x
+          }
+        }
 
-    "self-populate once on access using ++=" in check { xs: Set[Int] =>
-      lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-        a ++= xs
+        a() mustEqual xs
       }
 
-      a() mustEqual xs
-    }
+    "self-populate once on access using ++=" in
+      check { xs: Set[Int] =>
+        lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
+          a ++= xs
+        }
 
-    "never self-populate on access when pre-populated by =" in check {
-      xs: Set[Int] =>
+        a() mustEqual xs
+      }
+
+    "never self-populate on access when pre-populated by =" in
+      check { xs: Set[Int] =>
         val marker = Stream from 0 dropWhile xs head
 
         lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
@@ -175,10 +181,10 @@ object AtomSpecs extends Specification with ScalaCheck {
 
         a() = xs
         a() mustEqual xs
-    }
+      }
 
-    "self-populate once on access when pre-populated by +=" in check {
-      xs: Set[Int] =>
+    "self-populate once on access when pre-populated by +=" in
+      check { xs: Set[Int] =>
         val marker = Stream from 0 dropWhile xs head
 
         lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
@@ -189,10 +195,10 @@ object AtomSpecs extends Specification with ScalaCheck {
           a += x
         }
         a() mustEqual (xs + marker)
-    }
+      }
 
-    "self-populate once on access when pre-populated by ++=" in check {
-      xs: Set[Int] =>
+    "self-populate once on access when pre-populated by ++=" in
+      check { xs: Set[Int] =>
         val marker = Stream from 0 dropWhile xs head
 
         lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
@@ -201,32 +207,34 @@ object AtomSpecs extends Specification with ScalaCheck {
 
         a ++= xs
         a() mustEqual (xs + marker)
-    }
-
-    "store all values and return" in check { xs: Set[Int] =>
-      lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-        a ++= Set[Int]()
       }
 
-      xs foreach { x =>
-        a += x
+    "store all values and return" in
+      check { xs: Set[Int] =>
+        lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
+          a ++= Set[Int]()
+        }
+
+        xs foreach { x =>
+          a += x
+        }
+
+        a() mustEqual xs
+        a() mustEqual xs
       }
 
-      a() mustEqual xs
-      a() mustEqual xs
-    }
+    "concatenate values and return" in
+      check { (i: Int, xs: Set[Int]) =>
+        lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
+          a ++= Set[Int]()
+        }
 
-    "concatenate values and return" in check { (i: Int, xs: Set[Int]) =>
-      lazy val a: Atom[Set[Int]] = atom[Set[Int]] {
-        a ++= Set[Int]()
+        a += i
+        a ++= xs
+
+        a() mustEqual (xs + i)
+        a() mustEqual (xs + i)
       }
-
-      a += i
-      a ++= xs
-
-      a() mustEqual (xs + i)
-      a() mustEqual (xs + i)
-    }
 
     "silently fail for mutation following force" in {
       lazy val a: Atom[Set[Int]] = atom[Set[Int]] {

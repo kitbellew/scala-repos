@@ -15,19 +15,22 @@ class MethodDirectivesSpec extends RoutingSpec {
     }
 
     "block POST requests" in {
-      Post() ~> getOrPut ~> check {
-        handled shouldEqual false
-      }
+      Post() ~> getOrPut ~>
+        check {
+          handled shouldEqual false
+        }
     }
     "let GET requests pass" in {
-      Get() ~> getOrPut ~> check {
-        response shouldEqual Ok
-      }
+      Get() ~> getOrPut ~>
+        check {
+          response shouldEqual Ok
+        }
     }
     "let PUT requests pass" in {
-      Put() ~> getOrPut ~> check {
-        response shouldEqual Ok
-      }
+      Put() ~> getOrPut ~>
+        check {
+          response shouldEqual Ok
+        }
     }
   }
 
@@ -40,48 +43,55 @@ class MethodDirectivesSpec extends RoutingSpec {
           get {
             completeOk
           }
-      } ~> check {
-        rejections shouldEqual List(MethodRejection(HttpMethods.GET))
-      }
+      } ~>
+        check {
+          rejections shouldEqual List(MethodRejection(HttpMethods.GET))
+        }
     }
   }
 
   "overrideMethodWithParameter" should {
     "change the request method" in {
-      Get("/?_method=put") ~> overrideMethodWithParameter("_method") {
-        get {
-          complete("GET")
-        } ~
-          put {
-            complete("PUT")
-          }
-      } ~> check {
-        responseAs[String] shouldEqual "PUT"
-      }
+      Get("/?_method=put") ~>
+        overrideMethodWithParameter("_method") {
+          get {
+            complete("GET")
+          } ~
+            put {
+              complete("PUT")
+            }
+        } ~>
+        check {
+          responseAs[String] shouldEqual "PUT"
+        }
     }
     "not affect the request when not specified" in {
-      Get() ~> overrideMethodWithParameter("_method") {
-        get {
-          complete("GET")
-        } ~
-          put {
-            complete("PUT")
-          }
-      } ~> check {
-        responseAs[String] shouldEqual "GET"
-      }
+      Get() ~>
+        overrideMethodWithParameter("_method") {
+          get {
+            complete("GET")
+          } ~
+            put {
+              complete("PUT")
+            }
+        } ~>
+        check {
+          responseAs[String] shouldEqual "GET"
+        }
     }
     "complete with 501 Not Implemented when not a valid method" in {
-      Get("/?_method=hallo") ~> overrideMethodWithParameter("_method") {
-        get {
-          complete("GET")
-        } ~
-          put {
-            complete("PUT")
-          }
-      } ~> check {
-        status shouldEqual StatusCodes.NotImplemented
-      }
+      Get("/?_method=hallo") ~>
+        overrideMethodWithParameter("_method") {
+          get {
+            complete("GET")
+          } ~
+            put {
+              complete("PUT")
+            }
+        } ~>
+        check {
+          status shouldEqual StatusCodes.NotImplemented
+        }
     }
   }
 
@@ -94,34 +104,39 @@ class MethodDirectivesSpec extends RoutingSpec {
           put {
             reject(RequestEntityExpectedRejection)
           }
-      } ~> check {
-        rejections shouldEqual List(RequestEntityExpectedRejection)
-      }
+      } ~>
+        check {
+          rejections shouldEqual List(RequestEntityExpectedRejection)
+        }
     }
     "be cancelled if the match happens after the rejection (example 2)" in {
       Put() ~> {
         (get & complete(Ok)) ~ (put & reject(RequestEntityExpectedRejection))
-      } ~> check {
-        rejections shouldEqual List(RequestEntityExpectedRejection)
-      }
+      } ~>
+        check {
+          rejections shouldEqual List(RequestEntityExpectedRejection)
+        }
     }
     "be cancelled if the match happens before the rejection" in {
       Put() ~> {
         put {
           reject(RequestEntityExpectedRejection)
-        } ~ get {
-          completeOk
+        } ~
+          get {
+            completeOk
+          }
+      } ~>
+        check {
+          rejections shouldEqual List(RequestEntityExpectedRejection)
         }
-      } ~> check {
-        rejections shouldEqual List(RequestEntityExpectedRejection)
-      }
     }
     "be cancelled if the match happens before the rejection (example 2)" in {
       Put() ~> {
         (put & reject(RequestEntityExpectedRejection)) ~ (get & complete(Ok))
-      } ~> check {
-        rejections shouldEqual List(RequestEntityExpectedRejection)
-      }
+      } ~>
+        check {
+          rejections shouldEqual List(RequestEntityExpectedRejection)
+        }
     }
   }
 }

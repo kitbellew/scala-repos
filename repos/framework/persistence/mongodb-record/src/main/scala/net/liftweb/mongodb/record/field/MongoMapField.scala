@@ -79,8 +79,9 @@ class MongoMapField[OwnerType <: BsonRecord[OwnerType], MapValueType](
       case JObject(obj) =>
         setBox(
           Full(
-            Map() ++ obj.map(jf =>
-              (jf.name, jf.value.values.asInstanceOf[MapValueType]))))
+            Map() ++
+              obj.map(jf =>
+                (jf.name, jf.value.values.asInstanceOf[MapValueType]))))
       case other =>
         setBox(FieldHelpers.expectedA("JObject", other))
     }
@@ -137,10 +138,11 @@ class MongoMapField[OwnerType <: BsonRecord[OwnerType], MapValueType](
 
     setBox(
       Full(
-        Map() ++ dbo
-          .keySet
-          .map { k =>
-            (k.toString, dbo.get(k).asInstanceOf[MapValueType])
-          }))
+        Map() ++
+          dbo
+            .keySet
+            .map { k =>
+              (k.toString, dbo.get(k).asInstanceOf[MapValueType])
+            }))
   }
 }

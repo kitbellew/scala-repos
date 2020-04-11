@@ -27,8 +27,8 @@ class JsonExporterTest
     def assertParam(r: Request, expected: Boolean, default: Boolean): Unit =
       withClue(s"params=${r.params}") {
         assert(
-          expected == exporter
-            .readBooleanParam(new RequestParamMap(r), "hi", default))
+          expected ==
+            exporter.readBooleanParam(new RequestParamMap(r), "hi", default))
       }
 
     // param doesn't exist so uses default
@@ -66,8 +66,8 @@ class JsonExporterTest
     val filteredSample = exporter.filterSample(sample)
     assert(
       filteredSample.size == 1,
-      "Expected 1 metric to pass through the filter. Found: " + filteredSample
-        .size)
+      "Expected 1 metric to pass through the filter. Found: " +
+        filteredSample.size)
     assert(
       filteredSample.contains("jvm_uptime"),
       "Expected to find jvm_uptime metric in unfiltered samples")

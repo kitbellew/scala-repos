@@ -58,8 +58,9 @@ final class Env(
 
 object Env {
 
-  lazy val current = "gameSearch" boot new Env(
-    config = lila.common.PlayApp loadConfig "gameSearch",
-    system = lila.common.PlayApp.system,
-    makeClient = lila.search.Env.current.makeClient)
+  lazy val current = "gameSearch" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "gameSearch",
+      system = lila.common.PlayApp.system,
+      makeClient = lila.search.Env.current.makeClient)
 }

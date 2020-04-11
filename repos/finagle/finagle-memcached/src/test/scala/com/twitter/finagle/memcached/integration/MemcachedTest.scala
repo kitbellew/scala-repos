@@ -87,12 +87,13 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
             (key, (value, casUnique))
         }
       val expected = Map(
-        "foos" -> (
+        "foos" ->
           (
-            "xyz",
-            "1"
-          )
-        ), // the "cas unique" values are predictable from a fresh memcached
+            (
+              "xyz",
+              "1"
+            )
+          ), // the "cas unique" values are predictable from a fresh memcached
         "bazs" -> (("zyx", "3")))
       assert(result == expected)
     }
@@ -255,12 +256,11 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     }
 
     // one memcache host alive
-    val clientSet =
-      (0 to 20).foldLeft(Set[Client]()) {
-        case (s, i) =>
-          val c = partitionedClient.clientOf(s"foo$i")
-          s + c
-      }
+    val clientSet = (0 to 20).foldLeft(Set[Client]()) {
+      case (s, i) =>
+        val c = partitionedClient.clientOf(s"foo$i")
+        s + c
+    }
     assert(clientSet.size == 1)
 
     // previously set values have cache misses

@@ -13,8 +13,8 @@ object Test extends BytecodeTest {
   }
 
   val publicStatic = Flags.ACC_PUBLIC | Flags.ACC_STATIC
-  val publicAbstractInterface = Flags.ACC_PUBLIC | Flags.ACC_ABSTRACT | Flags
-    .ACC_INTERFACE
+  val publicAbstractInterface = Flags.ACC_PUBLIC | Flags.ACC_ABSTRACT |
+    Flags.ACC_INTERFACE
 
   def innerClassNodes(className: String): List[InnerClassNode] = {
     loadClassNode(className).innerClasses.asScala.toList.sortBy(_.name)

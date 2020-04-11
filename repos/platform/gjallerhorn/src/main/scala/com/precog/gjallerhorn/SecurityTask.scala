@@ -32,8 +32,8 @@ class SecurityTask(settings: Settings)
     "create derivative apikeys" in {
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
 
-      val req = (security / "")
-        .addQueryParameter("apiKey", apiKey) << ("""
+      val req = (security / "").addQueryParameter("apiKey", apiKey) <<
+        ("""
 {"name":"MH Test Write",
  "description":"Foo",
  "grants":[
@@ -98,23 +98,27 @@ class SecurityTask(settings: Settings)
 
     "list grants" in {
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
-      listGrantsFor(apiKey, authApiKey = apiKey).jvalue must beLike {
-        case JArray(List(obj)) =>
-          val perms =
-            (obj \ "permissions")
+      listGrantsFor(apiKey, authApiKey = apiKey).jvalue must
+        beLike {
+          case JArray(List(obj)) =>
+            val perms = (obj \ "permissions")
               .children
               .map { o =>
                 (o \ "path", o \ "ownerAccountIds", o \ "accessType")
               }
               .toSet
 
-          perms must_== Set(
-            (JString("/"), JArray(List(JString(accountId))), JString("read")),
-            //(JString("/"),JArray(List(JString(accountId))),JString("reduce")),
-            (JString(rootPath), JArray(Nil), JString("write")),
-            (JString(rootPath), JArray(Nil), JString("delete"))
-          )
-      }
+            perms must_==
+              Set(
+                (
+                  JString("/"),
+                  JArray(List(JString(accountId))),
+                  JString("read")),
+                //(JString("/"),JArray(List(JString(accountId))),JString("reduce")),
+                (JString(rootPath), JArray(Nil), JString("write")),
+                (JString(rootPath), JArray(Nil), JString("delete"))
+              )
+        }
     }
 
     "create a new grant" in {
@@ -153,11 +157,11 @@ class SecurityTask(settings: Settings)
       val g = createGrant(apiKey1, ("read", p, accountId1 :: Nil) :: Nil).jvalue
       val grantId = (g \ "grantId").deserialize[String]
 
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must not(
-        contain(g))
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        not(contain(g))
       addToGrant(apiKey2, apiKey1, grantId).complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(
-        g)
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        contain(g)
     }
 
     "remove a grant from an api key" in {
@@ -168,14 +172,14 @@ class SecurityTask(settings: Settings)
       val g = createGrant(apiKey1, ("read", p, accountId1 :: Nil) :: Nil).jvalue
       val grantId = (g \ "grantId").deserialize[String]
 
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must not(
-        contain(g))
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        not(contain(g))
       addToGrant(apiKey2, apiKey1, grantId).complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(
-        g)
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        contain(g)
       removeGrant(apiKey2, apiKey1, grantId).complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must not(
-        contain(g))
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must
+        not(contain(g))
     }
 
     "describe a grant" in {
@@ -188,10 +192,11 @@ class SecurityTask(settings: Settings)
 
     "not describe invalid grants" in {
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
-      describeGrant(apiKey, "does not exist") must beLike {
-        case ApiFailure(404, "\"Unable to find grant does not exist\"") =>
-          ok
-      }
+      describeGrant(apiKey, "does not exist") must
+        beLike {
+          case ApiFailure(404, "\"Unable to find grant does not exist\"") =>
+            ok
+        }
     }
 
     "create child grants" in {
@@ -226,12 +231,13 @@ class SecurityTask(settings: Settings)
       createChildGrant(
         apiKey2,
         grantId,
-        ("read", p2, accountId1 :: Nil) :: Nil) must beLike {
-        case ApiFailure(
-              400,
-              "{\"error\":\"Requestor lacks permissions to create grant.\"}") =>
-          ok
-      }
+        ("read", p2, accountId1 :: Nil) :: Nil) must
+        beLike {
+          case ApiFailure(
+                400,
+                "{\"error\":\"Requestor lacks permissions to create grant.\"}") =>
+            ok
+        }
     }
 
     "prevent illegal child grants #2" in {
@@ -247,12 +253,13 @@ class SecurityTask(settings: Settings)
       createChildGrant(
         apiKey2,
         grantId,
-        ("read", p2, accountId2 :: Nil) :: Nil) must beLike {
-        case ApiFailure(
-              400,
-              "{\"error\":\"Requestor lacks permissions to create grant.\"}") =>
-          ok
-      }
+        ("read", p2, accountId2 :: Nil) :: Nil) must
+        beLike {
+          case ApiFailure(
+                400,
+                "{\"error\":\"Requestor lacks permissions to create grant.\"}") =>
+            ok
+        }
     }
   }
 }

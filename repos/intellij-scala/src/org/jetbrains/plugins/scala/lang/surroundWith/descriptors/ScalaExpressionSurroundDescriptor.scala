@@ -107,14 +107,14 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
             file,
             startOffset,
             element2.getTextRange.getStartOffset)
-        if (ScalaTokenTypes
-              .COMMENTS_TOKEN_SET contains element1.getNode.getElementType)
+        if (ScalaTokenTypes.COMMENTS_TOKEN_SET contains
+              element1.getNode.getElementType)
           return findExpressionInRange(
             file,
             element1.getTextRange.getEndOffset,
             endOffset)
-        if (ScalaTokenTypes
-              .COMMENTS_TOKEN_SET contains element2.getNode.getElementType)
+        if (ScalaTokenTypes.COMMENTS_TOKEN_SET contains
+              element2.getNode.getElementType)
           return findExpressionInRange(
             file,
             startOffset,
@@ -127,31 +127,26 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
         startOffset: Int,
         endOffset: Int): Array[PsiElement] = {
       var element = file.findElementAt(startOffset)
-      while (element != null && !element.isInstanceOf[ScExpression] && !element
-               .isInstanceOf[ScValue] &&
-             !element.isInstanceOf[ScFunction] && !element
-               .isInstanceOf[ScTypeAlias] &&
-             !element.isInstanceOf[ScVariable] && !element
-               .isInstanceOf[PsiWhiteSpace] &&
+      while (element != null && !element.isInstanceOf[ScExpression] &&
+             !element.isInstanceOf[ScValue] &&
+             !element.isInstanceOf[ScFunction] &&
+             !element.isInstanceOf[ScTypeAlias] &&
+             !element.isInstanceOf[ScVariable] &&
+             !element.isInstanceOf[PsiWhiteSpace] &&
              element.getNode.getElementType != ScalaTokenTypes.tSEMICOLON &&
              !ScalaTokenTypes
                .COMMENTS_TOKEN_SET
                .contains(element.getNode.getElementType) ||
-             (
-               element.getParent.getTextRange.getStartOffset == startOffset &&
-               (
-                 element.getParent.isInstanceOf[ScExpression] ||
-                 element.getParent.isInstanceOf[ScValue] ||
-                 element.getParent.isInstanceOf[ScVariable] ||
-                 element.getParent.isInstanceOf[ScFunction] ||
-                 element.getParent.isInstanceOf[ScTypeAlias]
-               ) &&
-               element.getParent.getTextRange.getEndOffset <= endOffset
-             )) {
+             (element.getParent.getTextRange.getStartOffset == startOffset &&
+             (element.getParent.isInstanceOf[ScExpression] ||
+             element.getParent.isInstanceOf[ScValue] ||
+             element.getParent.isInstanceOf[ScVariable] ||
+             element.getParent.isInstanceOf[ScFunction] ||
+             element.getParent.isInstanceOf[ScTypeAlias]) &&
+             element.getParent.getTextRange.getEndOffset <= endOffset)) {
         element = element.getParent
-        if (element == null || element.getTextRange == null || element
-              .getTextRange
-              .getStartOffset != startOffset)
+        if (element == null || element.getTextRange == null ||
+            element.getTextRange.getStartOffset != startOffset)
           return null
       }
       if (element == null)

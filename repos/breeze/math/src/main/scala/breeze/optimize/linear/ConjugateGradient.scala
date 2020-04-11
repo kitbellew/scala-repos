@@ -58,8 +58,8 @@ class ConjugateGradient[T, M](
         var rtr = state.rtr
         val Bd = mult(B, d)
         val dtd = d dot d
-        val alpha = math
-          .pow(norm(r), 2.0) / ((d dot Bd) + normSquaredPenalty * dtd)
+        val alpha = math.pow(norm(r), 2.0) /
+          ((d dot Bd) + normSquaredPenalty * dtd)
         val nextX = x + d * alpha
 
         val xnorm: Double = norm(nextX)
@@ -81,7 +81,8 @@ class ConjugateGradient[T, M](
 
           assert(
             !alphaNext.isNaN,
-            xtd + " " + normSquare + " " + xtx + "  " + xtd + " " + radius + " " + dtd)
+            xtd + " " + normSquare + " " + xtx + "  " + xtd + " " + radius +
+              " " + dtd)
           axpy(alphaNext, d, x)
           axpy(-alphaNext, Bd + (d :* normSquaredPenalty), r)
 
@@ -95,8 +96,8 @@ class ConjugateGradient[T, M](
           d += r
           rtr = newrtr
           val normr = norm(r)
-          val converged =
-            normr <= tolerance || (iter > maxIterations && maxIterations > 0)
+          val converged = normr <= tolerance ||
+            (iter > maxIterations && maxIterations > 0)
           if (converged) {
             val done = iter > maxIterations && maxIterations > 0
             if (done)

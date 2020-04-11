@@ -364,8 +364,8 @@ object ScroogeGenerators {
               _.toMap
                 .map {
                   case (k, v) =>
-                    k.asInstanceOf[collection.Map[Int, Int]] -> v
-                      .asInstanceOf[collection.Map[Int, Int]]
+                    k.asInstanceOf[collection.Map[Int, Int]] ->
+                      v.asInstanceOf[collection.Map[Int, Int]]
                 }
                 .asInstanceOf[collection.Map[
                   collection.Map[Int, Int],

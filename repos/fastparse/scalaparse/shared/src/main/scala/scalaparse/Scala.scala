@@ -16,8 +16,8 @@ object Scala extends Core with Types with Exprs with Xml {
     val TmplStat = P(Import | Prelude ~ BlockDef | StatCtx.Expr)
 
     P(
-      "{" ~/ BlockLambda.? ~ Semis.? ~ TmplStat.repX(sep = Semis) ~ Semis
-        .? ~ `}`)
+      "{" ~/ BlockLambda.? ~ Semis.? ~ TmplStat.repX(sep = Semis) ~ Semis.? ~
+        `}`)
   }
 
   val ValVarDef = P(
@@ -41,8 +41,8 @@ object Scala extends Core with Types with Exprs with Xml {
     val ClsArgs = P(
       OneNLMax ~ "(" ~/ `implicit`.? ~ ClsArg.rep(sep = ",".~/) ~ ")")
     P(
-      `case`.? ~ `class` ~/ Id ~ TypeArgList.? ~~ Prelude.? ~~ ClsArgs
-        .repX ~ DefTmpl.?)
+      `case`.? ~ `class` ~/ Id ~ TypeArgList.? ~~ Prelude.? ~~ ClsArgs.repX ~
+        DefTmpl.?)
   }
 
   val Constrs = P((WL ~ Constr).rep(1, `with`.~/))

@@ -74,8 +74,8 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
             else
               "logback-play-default.xml"))
 
-    val configUrl =
-      explicitResourceUrl orElse explicitFileUrl orElse resourceUrl
+    val configUrl = explicitResourceUrl orElse explicitFileUrl orElse
+      resourceUrl
 
     configure(properties, configUrl)
   }

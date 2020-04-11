@@ -72,78 +72,74 @@ object ResolveUtils {
       element: PsiElement,
       kinds: Set[ResolveTargets.Value]): Boolean =
     kinds == null ||
-      (
-        element match {
-          case _: PsiPackage | _: ScPackaging =>
-            kinds contains PACKAGE
-          case obj: ScObject if obj.isPackageObject =>
-            kinds contains PACKAGE
-          case obj: ScObject =>
-            (kinds contains OBJECT) || (kinds contains METHOD)
-          case _: ScTypeVariableTypeElement =>
-            kinds contains CLASS
-          case _: ScTypeParam =>
-            kinds contains CLASS
-          case _: ScTypeAlias =>
-            kinds contains CLASS
-          case _: ScTypeDefinition =>
-            kinds contains CLASS
-          case _: ScSyntheticClass =>
-            kinds contains CLASS
-          case c: PsiClass =>
-            if (kinds contains CLASS)
-              true
-            else {
-              def isStaticCorrect(clazz: PsiClass): Boolean = {
-                val cclazz = clazz.getContainingClass
-                cclazz == null || (
-                  clazz
-                    .hasModifierProperty(PsiModifier.STATIC) && isStaticCorrect(
-                    cclazz)
-                )
-              }
-              (kinds contains OBJECT) && isStaticCorrect(c)
+      (element match {
+        case _: PsiPackage | _: ScPackaging =>
+          kinds contains PACKAGE
+        case obj: ScObject if obj.isPackageObject =>
+          kinds contains PACKAGE
+        case obj: ScObject =>
+          (kinds contains OBJECT) || (kinds contains METHOD)
+        case _: ScTypeVariableTypeElement =>
+          kinds contains CLASS
+        case _: ScTypeParam =>
+          kinds contains CLASS
+        case _: ScTypeAlias =>
+          kinds contains CLASS
+        case _: ScTypeDefinition =>
+          kinds contains CLASS
+        case _: ScSyntheticClass =>
+          kinds contains CLASS
+        case c: PsiClass =>
+          if (kinds contains CLASS)
+            true
+          else {
+            def isStaticCorrect(clazz: PsiClass): Boolean = {
+              val cclazz = clazz.getContainingClass
+              cclazz == null ||
+              (clazz.hasModifierProperty(PsiModifier.STATIC) &&
+              isStaticCorrect(cclazz))
             }
-          case patt: ScBindingPattern =>
-            val parent = ScalaPsiUtil
-              .getParentOfType(patt, classOf[ScVariable], classOf[ScValue])
-            parent match {
-              case x: ScVariable =>
-                kinds contains VAR
-              case _ =>
-                kinds contains VAL
-            }
-          case patt: ScFieldId =>
-            if (patt.getParent /*list of ids*/ .getParent.isInstanceOf[ScVariable])
+            (kinds contains OBJECT) && isStaticCorrect(c)
+          }
+        case patt: ScBindingPattern =>
+          val parent = ScalaPsiUtil
+            .getParentOfType(patt, classOf[ScVariable], classOf[ScValue])
+          parent match {
+            case x: ScVariable =>
               kinds contains VAR
-            else
+            case _ =>
               kinds contains VAL
-          case classParam: ScClassParameter =>
-            if (classParam.isVar)
-              kinds.contains(VAR)
-            else
-              kinds.contains(VAL)
-          case param: ScParameter =>
+          }
+        case patt: ScFieldId =>
+          if (patt.getParent /*list of ids*/ .getParent.isInstanceOf[ScVariable])
+            kinds contains VAR
+          else
             kinds contains VAL
-          case _: ScSelfTypeElement =>
-            kinds contains VAL
-          case _: PsiMethod =>
-            kinds contains METHOD
-          case _: ScFun =>
-            kinds contains METHOD
-          case _: ScSyntheticValue =>
-            kinds contains VAL
-          case f: PsiField =>
-            (kinds contains VAR) || (
-              f.hasModifierPropertyScala(PsiModifier.FINAL) && kinds
-                .contains(VAL)
-            )
-          case _: PsiParameter =>
-            kinds contains VAL //to enable named Parameters resolve in Play 2.0 routing file for java methods
-          case _ =>
-            false
-        }
-      )
+        case classParam: ScClassParameter =>
+          if (classParam.isVar)
+            kinds.contains(VAR)
+          else
+            kinds.contains(VAL)
+        case param: ScParameter =>
+          kinds contains VAL
+        case _: ScSelfTypeElement =>
+          kinds contains VAL
+        case _: PsiMethod =>
+          kinds contains METHOD
+        case _: ScFun =>
+          kinds contains METHOD
+        case _: ScSyntheticValue =>
+          kinds contains VAL
+        case f: PsiField =>
+          (kinds contains VAR) ||
+            (f.hasModifierPropertyScala(PsiModifier.FINAL) &&
+              kinds.contains(VAL))
+        case _: PsiParameter =>
+          kinds contains
+            VAL //to enable named Parameters resolve in Play 2.0 routing file for java methods
+        case _ =>
+          false
+      })
 
   def methodType(m: PsiMethod, s: ScSubstitutor, scope: GlobalSearchScope) =
     ScFunctionType(
@@ -284,10 +280,8 @@ object ResolveUtils {
         }
       var placeTd: ScTemplateDefinition = getPlaceTd(place, isConstr)
       if (isConstr) {
-        if (placeTd != null && !placeTd
-              .isInstanceOf[ScTypeDefinition] && placeTd
-              .extendsBlock
-              .templateBody == None) {
+        if (placeTd != null && !placeTd.isInstanceOf[ScTypeDefinition] &&
+            placeTd.extendsBlock.templateBody == None) {
           placeTd = getPlaceTd(placeTd)
         } else if (placeTd != null) {
           if (td != null && isInheritorOrSelfOrSame(placeTd, td))
@@ -366,8 +360,8 @@ object ResolveUtils {
                         if (enclosing == null)
                           return false
                         val resolve = ref.resolve()
-                        if (enclosing.extendsBlock.selfTypeElement == Some(
-                              resolve))
+                        if (enclosing.extendsBlock.selfTypeElement ==
+                              Some(resolve))
                           return true
                         else
                           return false
@@ -399,8 +393,8 @@ object ResolveUtils {
                       classOf[ScObject],
                       classOf[ScalaFile])
                   var placeEnclosing: PsiElement = context(place)
-                  while (placeEnclosing != null && placeEnclosing
-                           .isInstanceOf[ScObject] &&
+                  while (placeEnclosing != null &&
+                         placeEnclosing.isInstanceOf[ScObject] &&
                          !placeEnclosing.asInstanceOf[ScObject].isPackageObject)
                     placeEnclosing = context(placeEnclosing)
                   if (placeEnclosing == null)
@@ -424,11 +418,10 @@ object ResolveUtils {
                           .getCompanionModule(td)
                           .getOrElse(null: PsiElement),
                         place,
-                        false) || (
-                      td.isInstanceOf[ScObject] &&
-                        td.asInstanceOf[ScObject]
-                          .isPackageObject && processPackage(td.qualifiedName)
-                    )
+                        false) ||
+                      (td.isInstanceOf[ScObject] &&
+                        td.asInstanceOf[ScObject].isPackageObject &&
+                        processPackage(td.qualifiedName))
                   case pack: PsiPackage =>
                     val packageName = pack.getQualifiedName
                     processPackage(packageName)
@@ -449,9 +442,8 @@ object ResolveUtils {
                   classOf[ScTemplateDefinition])
                 enclosing match {
                   case td: ScTemplateDefinition =>
-                    PsiTreeUtil
-                      .isContextAncestor(td, place, false) || PsiTreeUtil
-                      .isContextAncestor(
+                    PsiTreeUtil.isContextAncestor(td, place, false) ||
+                      PsiTreeUtil.isContextAncestor(
                         ScalaPsiUtil
                           .getCompanionModule(td)
                           .getOrElse(null: PsiElement),
@@ -488,8 +480,8 @@ object ResolveUtils {
                 }
               }
             } else if (am.isProtected) { //todo: it's wrong if reference after not appropriate class type
-              val withCompanion = am
-                .access != ScAccessModifier.Type.THIS_PROTECTED
+              val withCompanion = am.access !=
+                ScAccessModifier.Type.THIS_PROTECTED
               val ref = am.getReference
               if (ref != null) {
                 val bind = ref.resolve
@@ -504,8 +496,8 @@ object ResolveUtils {
                       classOf[ScObject],
                       classOf[ScalaFile])
                   var placeEnclosing: PsiElement = context(place)
-                  while (placeEnclosing != null && placeEnclosing
-                           .isInstanceOf[ScObject] &&
+                  while (placeEnclosing != null &&
+                         placeEnclosing.isInstanceOf[ScObject] &&
                          !placeEnclosing.asInstanceOf[ScObject].isPackageObject)
                     placeEnclosing = context(placeEnclosing)
                   if (placeEnclosing == null)
@@ -525,14 +517,13 @@ object ResolveUtils {
                 }
                 bind match {
                   case td: ScTemplateDefinition =>
-                    if (PsiTreeUtil
-                          .isContextAncestor(td, place, false) || PsiTreeUtil
-                          .isContextAncestor(
-                            ScalaPsiUtil
-                              .getCompanionModule(td)
-                              .getOrElse(null: PsiElement),
-                            place,
-                            false))
+                    if (PsiTreeUtil.isContextAncestor(td, place, false) ||
+                        PsiTreeUtil.isContextAncestor(
+                          ScalaPsiUtil
+                            .getCompanionModule(td)
+                            .getOrElse(null: PsiElement),
+                          place,
+                          false))
                       return true
                     td match {
                       case o: ScObject if o.isPackageObject =>
@@ -578,8 +569,8 @@ object ResolveUtils {
                         if (enclosing == null)
                           return false
                         val resolve = ref.resolve()
-                        if (enclosing.extendsBlock.selfTypeElement != Some(
-                              resolve))
+                        if (enclosing.extendsBlock.selfTypeElement !=
+                              Some(resolve))
                           return false
                       case _ =>
                         return false
@@ -590,14 +581,13 @@ object ResolveUtils {
               enclosing match {
                 case td: ScTypeDefinition =>
                   if (PsiTreeUtil.isContextAncestor(td, place, false) ||
-                      (
-                        withCompanion && PsiTreeUtil.isContextAncestor(
-                          ScalaPsiUtil
-                            .getCompanionModule(td)
-                            .getOrElse(null: PsiElement),
-                          place,
-                          false)
-                      ))
+                      (withCompanion &&
+                      PsiTreeUtil.isContextAncestor(
+                        ScalaPsiUtil
+                          .getCompanionModule(td)
+                          .getOrElse(null: PsiElement),
+                        place,
+                        false)))
                     return true
                   checkProtected(td, withCompanion)
                 case td: ScTemplateDefinition =>
@@ -752,8 +742,8 @@ object ResolveUtils {
   }
 
   def packageContains(packageName: String, potentialChild: String): Boolean = {
-    potentialChild == packageName || potentialChild
-      .startsWith(packageName + ".")
+    potentialChild == packageName ||
+    potentialChild.startsWith(packageName + ".")
   }
 
   def packageProcessDeclarations(
@@ -891,8 +881,8 @@ object ResolveUtils {
               val iterator = manager.getClasses(pack, scope).iterator
               while (iterator.hasNext) {
                 val clazz = iterator.next()
-                if (clazz.containingClass == null && !processor
-                      .execute(clazz, state))
+                if (clazz.containingClass == null &&
+                    !processor.execute(clazz, state))
                   return false
               }
             }

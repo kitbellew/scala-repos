@@ -77,15 +77,24 @@ class MultilabelMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
       (1.0 / 2 + 1.0 / 2 + 0 + 1.0 / 1 + 2.0 / 2 + 2.0 / 3 + 1.0 / 1.0)
     val macroRecallDoc = 1.0 / 7 *
       (1.0 / 2 + 1.0 / 2 + 0 / 1 + 1.0 / 1 + 2.0 / 2 + 2.0 / 2 + 1.0 / 2)
-    val macroF1MeasureDoc = (1.0 / 7) *
-      2 * (
-      1.0 / (2 + 2) + 1.0 / (2 + 2) + 0 + 1.0 / (1 + 1) +
-        2.0 / (2 + 2) + 2.0 / (3 + 2) + 1.0 / (1 + 2)
-    )
+    val macroF1MeasureDoc =
+      (1.0 / 7) * 2 *
+        (1.0 /
+          (2 + 2) +
+          1.0 /
+          (2 + 2) + 0 +
+          1.0 /
+          (1 + 1) +
+          2.0 /
+          (2 + 2) +
+          2.0 /
+          (3 + 2) +
+          1.0 /
+          (1 + 2))
     val hammingLoss = (1.0 / (7 * 3)) * (2 + 2 + 1 + 0 + 0 + 1 + 1)
     val strictAccuracy = 2.0 / 7
-    val accuracy =
-      1.0 / 7 * (1.0 / 3 + 1.0 / 3 + 0 + 1.0 / 1 + 2.0 / 2 + 2.0 / 3 + 1.0 / 2)
+    val accuracy = 1.0 / 7 *
+      (1.0 / 3 + 1.0 / 3 + 0 + 1.0 / 1 + 2.0 / 2 + 2.0 / 3 + 1.0 / 2)
     assert(math.abs(metrics.precision(0.0) - precision0) < delta)
     assert(math.abs(metrics.precision(1.0) - precision1) < delta)
     assert(math.abs(metrics.precision(2.0) - precision2) < delta)

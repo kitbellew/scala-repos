@@ -35,8 +35,8 @@ class ScalaLibraryProperties
   override def equals(obj: scala.Any) =
     obj match {
       case that: ScalaLibraryProperties =>
-        languageLevel == that.languageLevel && compilerClasspath == that
-          .compilerClasspath
+        languageLevel == that.languageLevel &&
+          compilerClasspath == that.compilerClasspath
       case _ =>
         false
     }

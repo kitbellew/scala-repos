@@ -196,11 +196,10 @@ final object HListMacros {
     val _Zero = reify(Zero).tree
     n.tree match {
       case t @ Literal(Constant(v: Int)) =>
-        val tt =
-          (1 to v).foldLeft[Tree](SingletonTypeTree(_Zero)) {
-            case (z, _) =>
-              AppliedTypeTree(Ident(_Succ), List(z))
-          }
+        val tt = (1 to v).foldLeft[Tree](SingletonTypeTree(_Zero)) {
+          case (z, _) =>
+            AppliedTypeTree(Ident(_Succ), List(z))
+        }
         ctx.Expr(
           Apply(
             TypeApply(

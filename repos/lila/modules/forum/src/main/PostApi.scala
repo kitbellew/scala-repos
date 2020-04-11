@@ -26,62 +26,64 @@ final class PostApi(
 
   def makePost(categ: Categ, topic: Topic, data: DataForm.PostData)(implicit
       ctx: UserContext): Fu[Post] =
-    lastNumberOf(topic) zip detectLanguage(data.text) zip userIds(
-      topic) flatMap {
-      case ((number, lang), topicUserIds) =>
-        val post = Post.make(
-          topicId = topic.id,
-          author = data.author,
-          userId = ctx.me map (_.id),
-          ip = ctx.req.remoteAddress.some,
-          text = lila.security.Spam.replace(data.text),
-          number = number + 1,
-          lang = lang map (_.language),
-          troll = ctx.troll,
-          hidden = topic.hidden,
-          categId = categ.id
-        )
-        PostRepo findDuplicate post flatMap {
-          case Some(dup) =>
-            fuccess(dup)
-          case _ =>
-            $insert(post) >>
-              $update(topic withPost post) >> {
-              shouldHideOnPost(topic) ?? TopicRepo.hide(topic.id, true)
-            } >>
-              $update(categ withTopic post) >>-
-              (indexer ! InsertPost(post)) >>
-              (env.recent.invalidate inject post) >>-
-              ctx
-                .userId
-                .?? { userId =>
-                  shutup ! post
-                    .isTeam
-                    .fold(
-                      lila
-                        .hub
-                        .actorApi
-                        .shutup
-                        .RecordTeamForumMessage(userId, post.text),
-                      lila
-                        .hub
-                        .actorApi
-                        .shutup
-                        .RecordPublicForumMessage(userId, post.text))
-                } >>- {
-              (ctx.userId ifFalse post.troll) ?? { userId =>
-                timeline ! Propagate(
-                  ForumPost(userId, topic.id.some, topic.name, post.id)).|>(prop =>
-                  post
-                    .isStaff
-                    .fold(
-                      prop toStaffFriendsOf userId,
-                      prop toFollowersOf userId toUsers topicUserIds exceptUser userId))
-              }
-              lila.mon.forum.post.create()
-            } inject post
-        }
-    }
+    lastNumberOf(topic) zip detectLanguage(data.text) zip
+      userIds(topic) flatMap {
+        case ((number, lang), topicUserIds) =>
+          val post = Post.make(
+            topicId = topic.id,
+            author = data.author,
+            userId = ctx.me map (_.id),
+            ip = ctx.req.remoteAddress.some,
+            text = lila.security.Spam.replace(data.text),
+            number = number + 1,
+            lang = lang map (_.language),
+            troll = ctx.troll,
+            hidden = topic.hidden,
+            categId = categ.id
+          )
+          PostRepo findDuplicate post flatMap {
+            case Some(dup) =>
+              fuccess(dup)
+            case _ =>
+              $insert(post) >> $update(topic withPost post) >> {
+                shouldHideOnPost(topic) ?? TopicRepo.hide(topic.id, true)
+              } >> $update(categ withTopic post) >>-
+                (indexer ! InsertPost(post)) >>
+                (env.recent.invalidate inject post) >>-
+                ctx
+                  .userId
+                  .?? { userId =>
+                    shutup !
+                      post
+                        .isTeam
+                        .fold(
+                          lila
+                            .hub
+                            .actorApi
+                            .shutup
+                            .RecordTeamForumMessage(userId, post.text),
+                          lila
+                            .hub
+                            .actorApi
+                            .shutup
+                            .RecordPublicForumMessage(userId, post.text))
+                  } >>- {
+                  (ctx.userId ifFalse post.troll) ?? { userId =>
+                    timeline !
+                      Propagate(
+                        ForumPost(userId, topic.id.some, topic.name, post.id))
+                        .|>(prop =>
+                          post
+                            .isStaff
+                            .fold(
+                              prop toStaffFriendsOf userId,
+                              prop toFollowersOf userId toUsers
+                                topicUserIds exceptUser userId))
+                  }
+                  lila.mon.forum.post.create()
+                } inject post
+          }
+      }
 
   private val quickHideCategs = Set("lichess-feedback", "off-topic-discussion")
 
@@ -133,9 +135,10 @@ final class PostApi(
     for {
       topics ← $find.byIds[Topic](posts.map(_.topicId).distinct)
     } yield posts flatMap { post =>
-      topics find (_.id == post.topicId) map { topic =>
-        PostLiteView(post, topic)
-      }
+      topics find
+        (_.id == post.topicId) map { topic =>
+          PostLiteView(post, topic)
+        }
     }
 
   def liteView(post: Post): Fu[Option[PostLiteView]] =
@@ -145,15 +148,16 @@ final class PostApi(
     for {
       topics ← $find.byIds[Topic](posts.map(_.topicId).distinct)
     } yield posts flatMap { post =>
-      topics find (_.id == post.topicId) map { topic =>
-        MiniForumPost(
-          isTeam = post.isTeam,
-          postId = post.id,
-          topicName = topic.name,
-          userId = post.userId,
-          text = post.text take 200,
-          createdAt = post.createdAt)
-      }
+      topics find
+        (_.id == post.topicId) map { topic =>
+          MiniForumPost(
+            isTeam = post.isTeam,
+            postId = post.id,
+            topicName = topic.name,
+            userId = post.userId,
+            text = post.text take 200,
+            createdAt = post.createdAt)
+        }
     }
 
   def lastNumberOf(topic: Topic): Fu[Int] =
@@ -191,13 +195,14 @@ final class PostApi(
                     (indexer ! RemovePost(post))
                 )
               _ ←
-                MasterGranter(_.ModerateForum)(mod) ?? modLog.deletePost(
-                  mod,
-                  post.userId,
-                  post.author,
-                  post.ip,
-                  text = "%s / %s / %s"
-                    .format(view.categ.name, view.topic.name, post.text))
+                MasterGranter(_.ModerateForum)(mod) ??
+                  modLog.deletePost(
+                    mod,
+                    post.userId,
+                    post.author,
+                    post.ip,
+                    text = "%s / %s / %s"
+                      .format(view.categ.name, view.topic.name, post.text))
             } yield true.some)
       } yield ()
     ).run.void

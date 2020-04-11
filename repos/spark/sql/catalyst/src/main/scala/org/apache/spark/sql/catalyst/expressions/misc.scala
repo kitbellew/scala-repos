@@ -387,9 +387,10 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
     val childrenHash = children
       .map { child =>
         val childGen = child.gen(ctx)
-        childGen.code + ctx.nullSafeExec(child.nullable, childGen.isNull) {
-          computeHash(childGen.value, child.dataType, ev.value, ctx)
-        }
+        childGen.code +
+          ctx.nullSafeExec(child.nullable, childGen.isNull) {
+            computeHash(childGen.value, child.dataType, ev.value, ctx)
+          }
       }
       .mkString("\n")
 

@@ -105,22 +105,26 @@ case class OffsetRequest(
   }
 
   def sizeInBytes =
-    2 + /* versionId */
-    4 + /* correlationId */
-    shortStringLength(clientId) +
-      4 + /* replicaId */
-    4 + /* topic count */
-    requestInfoGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
-      val (topic, partitionInfos) = currTopic
-      foldedTopics +
-        shortStringLength(topic) +
-        4 + /* partition count */
-      partitionInfos.size * (
-        4 + /* partition */
-        8 + /* time */
-        4 /* maxNumOffsets */
-      )
-    })
+    2 +
+      /* versionId */
+      4 +
+      /* correlationId */
+      shortStringLength(clientId) + 4 +
+      /* replicaId */
+      4 +
+      /* topic count */
+      requestInfoGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
+        val (topic, partitionInfos) = currTopic
+        foldedTopics + shortStringLength(topic) + 4 +
+          /* partition count */
+          partitionInfos.size *
+          (4 +
+            /* partition */
+            8 +
+            /* time */
+            4 /* maxNumOffsets */
+          )
+      })
 
   def isFromOrdinaryClient = replicaId == Request.OrdinaryConsumerId
   def isFromDebuggingClient = replicaId == Request.DebuggingConsumerId

@@ -124,9 +124,8 @@ class ContainerTest extends MarathonSpec with Matchers {
     assert(f.container.volumes == proto.getVolumesList.asScala.map(Volume(_)))
     assert(proto.getDocker.hasForcePullImage)
     assert(
-      f.container.docker.get.forcePullImage == proto
-        .getDocker
-        .getForcePullImage)
+      f.container.docker.get.forcePullImage ==
+        proto.getDocker.getForcePullImage)
 
     val proto2: mesosphere.marathon.Protos.ExtendedContainerInfo =
       ContainerSerializer.toProto(f.container2)
@@ -135,13 +134,12 @@ class ContainerTest extends MarathonSpec with Matchers {
     assert(f.container2.docker.get.network == Some(proto2.getDocker.getNetwork))
     val portMappings = proto2.getDocker.getPortMappingsList.asScala
     assert(
-      f.container2.docker.get.portMappings == Some(
-        portMappings.map(PortMappingSerializer.fromProto)))
+      f.container2.docker.get.portMappings ==
+        Some(portMappings.map(PortMappingSerializer.fromProto)))
     assert(proto2.getDocker.hasForcePullImage)
     assert(
-      f.container2.docker.get.forcePullImage == proto2
-        .getDocker
-        .getForcePullImage)
+      f.container2.docker.get.forcePullImage ==
+        proto2.getDocker.getForcePullImage)
 
     val proto3 = ContainerSerializer.toProto(f.container3)
     assert(mesos.ContainerInfo.Type.DOCKER == proto3.getType)
@@ -149,22 +147,15 @@ class ContainerTest extends MarathonSpec with Matchers {
     assert(f.container3.docker.get.network == Some(proto3.getDocker.getNetwork))
     assert(f.container3.docker.get.privileged == proto3.getDocker.getPrivileged)
     assert(
-      f.container3.docker.get.parameters.map(_.key) == proto3
-        .getDocker
-        .getParametersList
-        .asScala
-        .map(_.getKey))
+      f.container3.docker.get.parameters.map(_.key) ==
+        proto3.getDocker.getParametersList.asScala.map(_.getKey))
     assert(
-      f.container3.docker.get.parameters.map(_.value) == proto3
-        .getDocker
-        .getParametersList
-        .asScala
-        .map(_.getValue))
+      f.container3.docker.get.parameters.map(_.value) ==
+        proto3.getDocker.getParametersList.asScala.map(_.getValue))
     assert(proto3.getDocker.hasForcePullImage)
     assert(
-      f.container3.docker.get.forcePullImage == proto3
-        .getDocker
-        .getForcePullImage)
+      f.container3.docker.get.forcePullImage ==
+        proto3.getDocker.getForcePullImage)
 
   }
 
@@ -176,9 +167,8 @@ class ContainerTest extends MarathonSpec with Matchers {
     assert(f.container.volumes == proto.getVolumesList.asScala.map(Volume(_)))
     assert(proto.getDocker.hasForcePullImage)
     assert(
-      f.container.docker.get.forcePullImage == proto
-        .getDocker
-        .getForcePullImage)
+      f.container.docker.get.forcePullImage ==
+        proto.getDocker.getForcePullImage)
 
     val proto2 = ContainerSerializer.toMesos(f.container2)
     assert(mesos.ContainerInfo.Type.DOCKER == proto2.getType)
@@ -209,9 +199,8 @@ class ContainerTest extends MarathonSpec with Matchers {
     assert(expectedPortMappings == proto2.getDocker.getPortMappingsList.asScala)
     assert(proto2.getDocker.hasForcePullImage)
     assert(
-      f.container2.docker.get.forcePullImage == proto2
-        .getDocker
-        .getForcePullImage)
+      f.container2.docker.get.forcePullImage ==
+        proto2.getDocker.getForcePullImage)
 
     val proto3 = ContainerSerializer.toMesos(f.container3)
     assert(mesos.ContainerInfo.Type.DOCKER == proto3.getType)
@@ -219,22 +208,15 @@ class ContainerTest extends MarathonSpec with Matchers {
     assert(f.container3.docker.get.network == Some(proto3.getDocker.getNetwork))
     assert(f.container3.docker.get.privileged == proto3.getDocker.getPrivileged)
     assert(
-      f.container3.docker.get.parameters.map(_.key) == proto3
-        .getDocker
-        .getParametersList
-        .asScala
-        .map(_.getKey))
+      f.container3.docker.get.parameters.map(_.key) ==
+        proto3.getDocker.getParametersList.asScala.map(_.getKey))
     assert(
-      f.container3.docker.get.parameters.map(_.value) == proto3
-        .getDocker
-        .getParametersList
-        .asScala
-        .map(_.getValue))
+      f.container3.docker.get.parameters.map(_.value) ==
+        proto3.getDocker.getParametersList.asScala.map(_.getValue))
     assert(proto3.getDocker.hasForcePullImage)
     assert(
-      f.container3.docker.get.forcePullImage == proto3
-        .getDocker
-        .getForcePullImage)
+      f.container3.docker.get.forcePullImage ==
+        proto3.getDocker.getForcePullImage)
   }
 
   test("ConstructFromProto") {

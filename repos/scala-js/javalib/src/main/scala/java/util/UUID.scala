@@ -71,9 +71,8 @@ final class UUID private (
   def timestamp(): Long = {
     if (version() != TimeBased)
       throw new UnsupportedOperationException("Not a time-based UUID")
-    (((i2 >>> 16) | ((i2 & 0x0fff) << 16)).toLong << 32) | (
-      i1.toLong & 0xFFFFFFFFL
-    )
+    (((i2 >>> 16) | ((i2 & 0x0fff) << 16)).toLong << 32) |
+      (i1.toLong & 0xFFFFFFFFL)
   }
 
   def clockSequence(): Int = {
@@ -101,9 +100,9 @@ final class UUID private (
       "0000".substring(s.length) + s
     }
 
-    paddedHex8(i1) + "-" + paddedHex4(i2 >>> 16) + "-" + paddedHex4(
-      i2 & 0xffff) + "-" +
-      paddedHex4(i3 >>> 16) + "-" + paddedHex4(i3 & 0xffff) + paddedHex8(i4)
+    paddedHex8(i1) + "-" + paddedHex4(i2 >>> 16) + "-" +
+      paddedHex4(i2 & 0xffff) + "-" + paddedHex4(i3 >>> 16) + "-" +
+      paddedHex4(i3 & 0xffff) + paddedHex8(i4)
   }
 
   override def hashCode(): Int = i1 ^ i2 ^ i3 ^ i4
@@ -172,9 +171,8 @@ object UUID {
     def parseHex8(his: String, los: String): Int =
       (parseInt(his, 16) << 16) | parseInt(los, 16)
 
-    if (name.length != 36 || name.charAt(8) != '-' ||
-        name.charAt(13) != '-' || name.charAt(18) != '-' || name
-          .charAt(23) != '-')
+    if (name.length != 36 || name.charAt(8) != '-' || name.charAt(13) != '-' ||
+        name.charAt(18) != '-' || name.charAt(23) != '-')
       fail()
 
     try {

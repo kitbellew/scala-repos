@@ -38,15 +38,17 @@ class MetadataSpec
   val sampleSize = 100
 
   "simple metadata" should {
-    "surivive round trip serialization" in check { in: Metadata =>
-      in.serialize.validated[Metadata] must beLike {
-        case Success(out) =>
-          in mustEqual out
+    "surivive round trip serialization" in
+      check { in: Metadata =>
+        in.serialize.validated[Metadata] must
+          beLike {
+            case Success(out) =>
+              in mustEqual out
+          }
       }
-    }
 
-    "merge with like metadata" in check {
-      (sample1: List[Metadata], sample2: List[Metadata]) =>
+    "merge with like metadata" in
+      check { (sample1: List[Metadata], sample2: List[Metadata]) =>
         val prepared = sample1 zip sample2 map {
           case (e1, e2) =>
             (e1, e2, e1 merge e2)
@@ -95,47 +97,51 @@ class MetadataSpec
           case (e1, e2, r) =>
             r must beNone
         }
-    }
+      }
   }
 
   "metadata maps" should {
-    "survive round trip serialization" in check {
-      in: Map[MetadataType, Metadata] =>
-        in.map(_._2).toList.serialize.validated[List[Metadata]] must beLike {
-          case Success(out) =>
-            in must_== Map[MetadataType, Metadata](
-              out.map { m =>
-                (m.metadataType, m)
-              }: _*)
-        }
-    }
+    "survive round trip serialization" in
+      check { in: Map[MetadataType, Metadata] =>
+        in.map(_._2).toList.serialize.validated[List[Metadata]] must
+          beLike {
+            case Success(out) =>
+              in must_==
+                Map[MetadataType, Metadata](
+                  out.map { m =>
+                    (m.metadataType, m)
+                  }: _*)
+          }
+      }
 
-    "merge as expected" in check {
-      (
-          sample1: List[Map[MetadataType, Metadata]],
-          sample2: List[Map[MetadataType, Metadata]]) =>
-        val prepared = sample1 zip sample2 map {
-          case (s1, s2) =>
-            (s1, s2, s1 |+| s2)
-        }
+    "merge as expected" in
+      check {
+        (
+            sample1: List[Map[MetadataType, Metadata]],
+            sample2: List[Map[MetadataType, Metadata]]) =>
+          val prepared = sample1 zip sample2 map {
+            case (s1, s2) =>
+              (s1, s2, s1 |+| s2)
+          }
 
-        forall(prepared) {
-          case (s1, s2, r) => {
-            val keys = s1.keys ++ s2.keys
+          forall(prepared) {
+            case (s1, s2, r) => {
+              val keys = s1.keys ++ s2.keys
 
-            forall(keys) { k =>
-              (s1.get(k), s2.get(k)) must beLike {
-                case (Some(a), Some(b)) =>
-                  r(k) must_== a.merge(b).get
-                case (Some(a), _) =>
-                  r(k) must_== a
-                case (_, Some(b)) =>
-                  r(k) must_== b
+              forall(keys) { k =>
+                (s1.get(k), s2.get(k)) must
+                  beLike {
+                    case (Some(a), Some(b)) =>
+                      r(k) must_== a.merge(b).get
+                    case (Some(a), _) =>
+                      r(k) must_== a
+                    case (_, Some(b)) =>
+                      r(k) must_== b
+                  }
               }
             }
           }
-        }
-    }
+      }
   }
 }
 

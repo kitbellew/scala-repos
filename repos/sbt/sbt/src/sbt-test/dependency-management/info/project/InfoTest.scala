@@ -4,19 +4,22 @@ import Keys._
 import scala.xml._
 
 object InfoTest extends Build {
-  lazy val root = Project("root", file(".")) settings (
-    ivyPaths <<= (baseDirectory, target)((dir, t) =>
-      new IvyPaths(dir, Some(t / "ivy-cache"))),
-    ivyXML <<= (customInfo, organization, moduleName, version) apply inlineXML,
-    scalaVersion := "2.9.1",
-    projectID ~= (_ cross false),
-    customInfo <<= baseDirectory {
-      _ / "info" exists
-    },
-    TaskKey[Unit]("check-download") <<= checkDownload,
-    delivered <<= deliverLocal map XML.loadFile,
-    TaskKey[Unit]("check-info") <<= checkInfo
-  )
+  lazy val root = Project("root", file(".")) settings
+    (
+      ivyPaths <<=
+        (baseDirectory, target)((dir, t) =>
+          new IvyPaths(dir, Some(t / "ivy-cache"))),
+      ivyXML <<=
+        (customInfo, organization, moduleName, version) apply inlineXML,
+      scalaVersion := "2.9.1",
+      projectID ~= (_ cross false),
+      customInfo <<=
+        baseDirectory {
+          _ / "info" exists
+        },
+      TaskKey[Unit]("check-download") <<= checkDownload,
+      delivered <<= deliverLocal map XML.loadFile,
+      TaskKey[Unit]("check-info") <<= checkInfo)
   lazy val delivered = TaskKey[NodeSeq]("delivered")
   lazy val customInfo = SettingKey[Boolean]("custom-info")
 
@@ -57,9 +60,8 @@ object InfoTest extends Build {
       else if (addInfo) {
         if (!deliveredWithCustom(d))
           sys.error(
-            "Expected 'license' and 'description' tags in info tag, got: \n" + (
-              d \ "info"
-            ))
+            "Expected 'license' and 'description' tags in info tag, got: \n" +
+              (d \ "info"))
         else
           ()
       } else if (deliveredWithCustom(d))
@@ -67,6 +69,6 @@ object InfoTest extends Build {
       else
         ()
     }
-  def deliveredWithCustom(d: NodeSeq) =
-    (d \ "info" \ "license").nonEmpty && (d \ "info" \ "description").nonEmpty
+  def deliveredWithCustom(d: NodeSeq) = (d \ "info" \ "license").nonEmpty &&
+    (d \ "info" \ "description").nonEmpty
 }

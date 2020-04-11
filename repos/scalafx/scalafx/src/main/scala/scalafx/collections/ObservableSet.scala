@@ -226,9 +226,8 @@ trait ObservableSet[T]
                 ObservableSet.Remove(change.getElementRemoved)
               case _ =>
                 throw new IllegalStateException(
-                  "Irregular Change. Added: " +
-                    change.getElementAdded + ", Removed: " + change
-                    .getElementRemoved)
+                  "Irregular Change. Added: " + change.getElementAdded +
+                    ", Removed: " + change.getElementRemoved)
             }
 
           op(ObservableSet.this, changeEvent)

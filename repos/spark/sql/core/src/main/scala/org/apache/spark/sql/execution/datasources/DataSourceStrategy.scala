@@ -142,10 +142,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           l,
           projects,
           filters,
-          (
-              a,
-              _) =>
-            toCatalystRDD(l, a, t.buildScan(a.map(_.name).toArray))) :: Nil
+          (a, _) => toCatalystRDD(l, a, t.buildScan(a.map(_.name).toArray))) ::
+          Nil
 
       // Scanning partitioned HadoopFsRelation
       case PhysicalOperation(
@@ -373,12 +371,13 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                           options)
 
                       // Merges data values with partition values.
-                      bucketFiles._1 -> mergeWithPartitionValues(
-                        requiredColumns,
-                        requiredDataColumns,
-                        partitionColumns,
-                        partitionValues,
-                        dataRows)
+                      bucketFiles._1 ->
+                        mergeWithPartitionValues(
+                          requiredColumns,
+                          requiredDataColumns,
+                          partitionColumns,
+                          partitionValues,
+                          dataRows)
                     }
                 }
 
@@ -463,8 +462,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
     while (resultIdx < requiredColumns.length) {
       val attr = requiredColumns(resultIdx)
-      if (inputIdx < dataColumns
-            .length && requiredColumns(resultIdx) == dataColumns(inputIdx)) {
+      if (inputIdx < dataColumns.length &&
+          requiredColumns(resultIdx) == dataColumns(inputIdx)) {
         result.setColumn(resultIdx, input.column(inputIdx))
         inputIdx += 1
       } else {
@@ -577,8 +576,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     val mutableRow = new SpecificMutableRow(Seq(bucketColumn.dataType))
     mutableRow(0) = Cast(Literal(value), bucketColumn.dataType).eval(null)
     val bucketIdGeneration = UnsafeProjection.create(
-      HashPartitioning(bucketColumn :: Nil, numBuckets)
-        .partitionIdExpression :: Nil,
+      HashPartitioning(bucketColumn :: Nil, numBuckets).partitionIdExpression ::
+        Nil,
       bucketColumn :: Nil)
 
     bucketIdGeneration(mutableRow).getInt(0)
@@ -591,8 +590,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       filters: Seq[Expression],
       bucketSpec: Option[BucketSpec]): Option[BitSet] = {
 
-    if (bucketSpec.isEmpty ||
-        bucketSpec.get.numBuckets == 1 ||
+    if (bucketSpec.isEmpty || bucketSpec.get.numBuckets == 1 ||
         bucketSpec.get.bucketColumnNames.length != 1) {
       // None means all the buckets need to be scanned
       return None
@@ -621,8 +619,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       // items. So it is possible we still get an In expression here that needs to be pushed
       // down.
       case expressions.In(a: Attribute, list)
-          if list.forall(_.isInstanceOf[Literal]) && a
-            .name == bucketColumnName =>
+          if list.forall(_.isInstanceOf[Literal]) &&
+            a.name == bucketColumnName =>
         val hSet = list.map(e => e.eval(EmptyRow))
         hSet.foreach(e => matchedBuckets.set(getBucketId(a, numBuckets, e)))
       case expressions.IsNull(a: Attribute) if a.name == bucketColumnName =>
@@ -726,8 +724,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     }
 
     if (projects.map(_.toAttribute) == projects &&
-        projectSet.size == projects.size &&
-        filterSet.subsetOf(projectSet)) {
+        projectSet.size == projects.size && filterSet.subsetOf(projectSet)) {
       // When it is possible to just use column pruning to get the right projection and
       // when the columns of this projection are enough to evaluate all filter conditions,
       // just do a scan followed by a filter, with no extra project.
@@ -747,8 +744,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       filterCondition.map(execution.Filter(_, scan)).getOrElse(scan)
     } else {
       // Don't request columns that are only referenced by pushed filters.
-      val requestedColumns =
-        (projectSet ++ filterSet -- handledSet).map(relation.attributeMap).toSeq
+      val requestedColumns = (projectSet ++ filterSet -- handledSet)
+        .map(relation.attributeMap)
+        .toSeq
 
       val scan = execution.DataSourceScan(
         requestedColumns,

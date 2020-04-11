@@ -145,12 +145,11 @@ class ScSubstitutor(
     if (level > ScSubstitutor.followLimit)
       throw new RuntimeException(
         "Too much followers for substitutor: " + this.toString)
-    if (follower == null && tvMap.size + aliasesMap.size == 0 && updateThisType
-          .isEmpty && !myDependentMethodTypesFunDefined)
+    if (follower == null && tvMap.size + aliasesMap.size == 0 &&
+        updateThisType.isEmpty && !myDependentMethodTypesFunDefined)
       s
-    else if (s.getFollower == null && s.tvMap.size + s.aliasesMap.size == 0 && s
-               .updateThisType
-               .isEmpty && !s.myDependentMethodTypesFunDefined)
+    else if (s.getFollower == null && s.tvMap.size + s.aliasesMap.size == 0 &&
+             s.updateThisType.isEmpty && !s.myDependentMethodTypesFunDefined)
       this
     else {
       val res =
@@ -639,8 +638,8 @@ class ScUndefinedSubstitutor(
   type Name = (String, PsiElement)
 
   def isEmpty: Boolean =
-    upperMap.isEmpty && lowerMap.isEmpty && upperAdditionalMap
-      .isEmpty && lowerAdditionalMap.isEmpty
+    upperMap.isEmpty && lowerMap.isEmpty && upperAdditionalMap.isEmpty &&
+      lowerAdditionalMap.isEmpty
 
   //todo: this is can be rewritten in more fast way
   def addSubst(subst: ScUndefinedSubstitutor): ScUndefinedSubstitutor = {
@@ -835,16 +834,14 @@ class ScUndefinedSubstitutor(
 
   val additionalNames: Set[Name] = {
     //We need to exclude Nothing names from this set, see SCL-5736
-    lowerAdditionalMap
-      .filter(_._2.exists(!_.equiv(Nothing)))
-      .keySet ++ upperAdditionalMap.keySet
+    lowerAdditionalMap.filter(_._2.exists(!_.equiv(Nothing))).keySet ++
+      upperAdditionalMap.keySet
   }
 
   val names: Set[Name] = {
     //We need to exclude Nothing names from this set, see SCL-5736
-    upperMap.keySet ++ lowerMap
-      .filter(_._2.exists(!_.equiv(Nothing)))
-      .keySet ++ additionalNames
+    upperMap.keySet ++ lowerMap.filter(_._2.exists(!_.equiv(Nothing))).keySet ++
+      additionalNames
   }
 
   import scala.collection.immutable.{HashMap => IHashMap}

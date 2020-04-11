@@ -63,41 +63,43 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     val StringNamespace = Vector("std", "string")
 
     override def _lib1 =
-      super._lib1 ++ Set(
-        length,
-        trim,
-        toUpperCase,
-        toLowerCase,
-        isEmpty,
-        intern,
-        parseNum,
-        numToString)
+      super._lib1 ++
+        Set(
+          length,
+          trim,
+          toUpperCase,
+          toLowerCase,
+          isEmpty,
+          intern,
+          parseNum,
+          numToString)
 
     override def _lib2 =
-      super._lib2 ++ Set(
-        equalsIgnoreCase,
-        codePointAt,
-        startsWith,
-        lastIndexOf,
-        concat,
-        endsWith,
-        codePointBefore,
-        takeLeft,
-        takeRight,
-        dropLeft,
-        dropRight,
-        matches,
-        regexMatch,
-        compareTo,
-        compareToIgnoreCase,
-        compare,
-        compareIgnoreCase,
-        equals,
-        indexOf,
-        split,
-        splitRegex,
-        editDistance
-      )
+      super._lib2 ++
+        Set(
+          equalsIgnoreCase,
+          codePointAt,
+          startsWith,
+          lastIndexOf,
+          concat,
+          endsWith,
+          codePointBefore,
+          takeLeft,
+          takeRight,
+          dropLeft,
+          dropRight,
+          matches,
+          regexMatch,
+          compareTo,
+          compareToIgnoreCase,
+          compare,
+          compareIgnoreCase,
+          equals,
+          indexOf,
+          split,
+          splitRegex,
+          editDistance
+        )
 
     private def isValidInt(num: BigDecimal): Boolean = {
       try {

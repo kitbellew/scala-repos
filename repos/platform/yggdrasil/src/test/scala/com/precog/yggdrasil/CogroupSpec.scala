@@ -105,10 +105,11 @@ trait CogroupSpec[M[+_]]
             computeCogroup(
               leftRemain,
               r,
-              acc ++ leftRun.map {
-                case v =>
-                  left3(v)
-              })
+              acc ++
+                leftRun.map {
+                  case v =>
+                    left3(v)
+                })
           }
           case GT => {
             val (rightRun, rightRemain) = r.partition(ord.order(lh, _) == GT)
@@ -116,22 +117,25 @@ trait CogroupSpec[M[+_]]
             computeCogroup(
               l,
               rightRemain,
-              acc ++ rightRun.map {
-                case v =>
-                  right3(v)
-              })
+              acc ++
+                rightRun.map {
+                  case v =>
+                    right3(v)
+                })
           }
         }
       case (Stream.Empty, _) =>
-        acc ++ r.map {
-          case v =>
-            right3(v)
-        }
+        acc ++
+          r.map {
+            case v =>
+              right3(v)
+          }
       case (_, Stream.Empty) =>
-        acc ++ l.map {
-          case v =>
-            left3(v)
-        }
+        acc ++
+          l.map {
+            case v =>
+              left3(v)
+          }
     }
   }
 

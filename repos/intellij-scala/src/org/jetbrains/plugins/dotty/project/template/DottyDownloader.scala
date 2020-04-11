@@ -57,8 +57,8 @@ object DottyDownloader extends Downloader {
   override protected def sbtCommandsFor(version: String) =
     Seq(
       s"""set resolvers := Seq("JFrog OSS Snapshots" at "$RepositoryUrl")""",
-      s"""set libraryDependencies := Seq("$GroupId" % "$ArtifactId" % "$version")""") ++ super
-      .sbtCommandsFor(version)
+      s"""set libraryDependencies := Seq("$GroupId" % "$ArtifactId" % "$version")""") ++
+      super.sbtCommandsFor(version)
 }
 
 private case class Dependency(

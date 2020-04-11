@@ -90,9 +90,8 @@ case class ASTNode(
     }
     if (other == null) {
       false
-    } else if (!check(_.token.getType)
-               || !check(_.token.getText)
-               || !check(_.numChildren)) {
+    } else if (!check(_.token.getType) || !check(_.token.getText) ||
+               !check(_.numChildren)) {
       false
     } else {
       children

@@ -45,9 +45,10 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
     Path("/foo/bar2/baz/quux1") -> Map(ColumnRef(CPath(), CString) -> 20L),
     Path("/foo/bar2/baz/quux2") -> Map(ColumnRef(CPath(), CString) -> 30L),
     Path("/foo2/bar1/baz/quux1") -> Map(ColumnRef(CPath(), CString) -> 40L),
-    Path("/foo/bar/") -> Map(
-      ColumnRef(CPath(".bar"), CLong) -> 50,
-      ColumnRef(CPath(".baz"), CLong) -> 60L)
+    Path("/foo/bar/") ->
+      Map(
+        ColumnRef(CPath(".bar"), CLong) -> 50,
+        ColumnRef(CPath(".baz"), CLong) -> 60L)
   )
 
   val metadata = new StubVFSMetadata[M](projectionMetadata)
@@ -58,11 +59,13 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
       client
         .browse("", Path("/foo/"))
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case JArray(results) =>
-          results.map(_ \ "name") must haveTheSameElementsAs(
-            JString("bar/") :: JString("bar1/") :: JString("bar2/") :: Nil)
-      }
+        .copoint must
+        beLike {
+          case JArray(results) =>
+            results.map(_ \ "name") must
+              haveTheSameElementsAs(
+                JString("bar/") :: JString("bar1/") :: JString("bar2/") :: Nil)
+        }
     }
   }
 
@@ -71,30 +74,33 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
       client
         .size("", Path("/foo/bar1/baz/quux1"))
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case JNum(result) =>
-          result mustEqual 10
-      }
+        .copoint must
+        beLike {
+          case JNum(result) =>
+            result mustEqual 10
+        }
     }
 
     "find correct size for multi-column path" in {
       client
         .size("", Path("/foo/bar"))
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case JNum(result) =>
-          result mustEqual 60
-      }
+        .copoint must
+        beLike {
+          case JNum(result) =>
+            result mustEqual 60
+        }
     }
 
     "find default (0) size for non-existent path" in {
       client
         .size("", Path("/not/really"))
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case JNum(result) =>
-          result mustEqual 0
-      }
+        .copoint must
+        beLike {
+          case JNum(result) =>
+            result mustEqual 0
+        }
     }
   }
 
@@ -103,34 +109,39 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
       client
         .structure("", Path("/foo/bar"), CPath.Identity)
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case result =>
-          result must_== JObject(
-            "children" -> JArray(JString(".bar") :: JString(".baz") :: Nil),
-            "types" -> JObject())
-      }
+        .copoint must
+        beLike {
+          case result =>
+            result must_==
+              JObject(
+                "children" -> JArray(JString(".bar") :: JString(".baz") :: Nil),
+                "types" -> JObject())
+        }
     }
 
     "find correct leaf types" in {
       client
         .structure("", Path("/foo/bar"), CPath("bar"))
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case result =>
-          result must_== JObject(
-            "children" -> JArray(),
-            "types" -> JObject("Number" -> JNum(50)))
-      }
+        .copoint must
+        beLike {
+          case result =>
+            result must_==
+              JObject(
+                "children" -> JArray(),
+                "types" -> JObject("Number" -> JNum(50)))
+        }
     }
 
     "find default empty result for non-existent path" in {
       client
         .structure("", Path("/bar/foo"), CPath.Identity)
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case result =>
-          result must_== JUndefined
-      }
+        .copoint must
+        beLike {
+          case result =>
+            result must_== JUndefined
+        }
     }
   }
 }

@@ -125,9 +125,9 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
     fold(identity, ev.apply, (a, b) => AA.combine(a, b))
 
   // scalastyle:off cyclomatic.complexity
-  final def append[AA >: A, BB >: B](that: AA Ior BB)(implicit
-      AA: Semigroup[AA],
-      BB: Semigroup[BB]): AA Ior BB =
+  final def append[AA >: A, BB >: B](
+      that: AA Ior BB)(implicit AA: Semigroup[AA], BB: Semigroup[BB]): AA Ior
+    BB =
     this match {
       case Ior.Left(a1) =>
         that match {
@@ -205,8 +205,8 @@ private[data] sealed abstract class IorInstances extends IorInstances0 {
 
   implicit def iorBifunctor: Bifunctor[Ior] =
     new Bifunctor[Ior] {
-      override def bimap[A, B, C, D](
-          fab: A Ior B)(f: A => C, g: B => D): C Ior D = fab.bimap(f, g)
+      override def bimap[A, B, C, D](fab: A Ior B)(f: A => C, g: B => D): C Ior
+        D = fab.bimap(f, g)
     }
 }
 

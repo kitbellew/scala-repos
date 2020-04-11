@@ -97,11 +97,12 @@ final class Env(
 
 object Env {
 
-  lazy val current: Env = "user" boot new Env(
-    config = lila.common.PlayApp loadConfig "user",
-    db = lila.db.Env.current,
-    mongoCache = lila.memo.Env.current.mongoCache,
-    scheduler = lila.common.PlayApp.scheduler,
-    timeline = lila.hub.Env.current.actor.timeline,
-    system = lila.common.PlayApp.system)
+  lazy val current: Env = "user" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "user",
+      db = lila.db.Env.current,
+      mongoCache = lila.memo.Env.current.mongoCache,
+      scheduler = lila.common.PlayApp.scheduler,
+      timeline = lila.hub.Env.current.actor.timeline,
+      system = lila.common.PlayApp.system)
 }

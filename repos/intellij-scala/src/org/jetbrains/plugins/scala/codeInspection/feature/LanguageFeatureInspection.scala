@@ -71,8 +71,8 @@ class LanguageFeatureInspection
       "dynamics",
       _.dynamics,
       _.dynamics = true) {
-      case e @ ReferenceTarget(ClassQualifiedName("scala.Dynamic")) && Parent(
-            Parent(Parent(_: ScClassParents))) =>
+      case e @ ReferenceTarget(ClassQualifiedName("scala.Dynamic")) &&
+          Parent(Parent(Parent(_: ScClassParents))) =>
         e
     },
     Feature(
@@ -124,9 +124,8 @@ class LanguageFeatureInspection
     PartialFunction.apply { e: PsiElement =>
       val module = ModuleUtilCore.findModuleForPsiElement(e)
 
-      if (module != null && module
-            .scalaSdk
-            .exists(_.languageLevel >= Scala_2_10)) {
+      if (module != null &&
+          module.scalaSdk.exists(_.languageLevel >= Scala_2_10)) {
         Features.foreach(_.process(e, holder))
       }
     }

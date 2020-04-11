@@ -133,8 +133,7 @@ object ParseKey extends Properties("Key parser test") {
     val showParsed = parsed.right.map(displayFull)
     ("Key string: '" + s + "'") |:
       ("Parsed: " + showParsed) |:
-      ("Structure: " + structure) |:
-      f(parsed)
+      ("Structure: " + structure) |: f(parsed)
   }
 
   // Here we're shadowing the in-scope implicit called `mkEnv` for this method

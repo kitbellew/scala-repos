@@ -245,8 +245,8 @@ private[spark] class PythonWorkerFactory(
     override def run() {
       while (true) {
         synchronized {
-          if (lastActivity + IDLE_WORKER_TIMEOUT_MS < System
-                .currentTimeMillis()) {
+          if (lastActivity + IDLE_WORKER_TIMEOUT_MS <
+                System.currentTimeMillis()) {
             cleanupIdleWorkers()
             lastActivity = System.currentTimeMillis()
           }

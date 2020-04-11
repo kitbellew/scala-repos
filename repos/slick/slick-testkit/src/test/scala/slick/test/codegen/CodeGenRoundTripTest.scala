@@ -29,10 +29,11 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
         .seq(
           schema.create,
           Categories += CategoriesRow(1, "cat"),
-          Posts ++= Seq(
-            PostsRow(1, "post 1", Some(1)),
-            PostsRow(2, "post 2", Some(1)),
-            PostsRow(3, "post 3", Some(1))),
+          Posts ++=
+            Seq(
+              PostsRow(1, "post 1", Some(1)),
+              PostsRow(2, "post 2", Some(1)),
+              PostsRow(3, "post 3", Some(1))),
           Categories += CategoriesRow(2, "cat"),
           Posts
             .length
@@ -49,8 +50,10 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
           SelfRef.forceInsert(SelfRefRow(2, Some(1))),
           SelfRef.result, {
             // Testing table larger 22 columns
-            val oData =
-              0L :: 11 :: 12 :: 13 :: 14 :: 15 :: 16 :: 21 :: 22 :: 23 :: 24 :: 25 :: 26 :: 31 :: 32 :: 33 :: 34 :: 35 :: 36 :: 41 :: 42 :: 43 :: 44 :: 45 :: 46 :: 51 :: 52 :: 53 :: 54 :: 55 :: 56 :: 61 :: 62 :: 63 :: 64 :: 65 :: 66 :: HNil
+            val oData = 0L :: 11 :: 12 :: 13 :: 14 :: 15 :: 16 :: 21 :: 22 ::
+              23 :: 24 :: 25 :: 26 :: 31 :: 32 :: 33 :: 34 :: 35 :: 36 :: 41 ::
+              42 :: 43 :: 44 :: 45 :: 46 :: 51 :: 52 :: 53 :: 54 :: 55 :: 56 ::
+              61 :: 62 :: 63 :: 64 :: 65 :: 66 :: HNil
             val oData2 = LargeRow(1L, p6i4 = 123, p1i5 = 456)
             DBIO.seq(
               Large += oData,
@@ -64,9 +67,8 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
           },
           (
             X.map(r =>
-              (r.pk, r.pk2, r.column, r.schemaNameXX, r.schemaNameX)) += (
-              1, 1, 1, 1.1, "test"
-            )
+              (r.pk, r.pk2, r.column, r.schemaNameXX, r.schemaNameX)) +=
+              (1, 1, 1, 1.1, "test")
           ).map { _ =>
             // testing name and types especially in case of collisions
             import slick.lifted._
@@ -101,14 +103,12 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
               (r.postsFk: ForeignKeyQuery[Posts, PostsRow]) == null
             })
             X.map(r => {
-              (
-                r.categoriesFk2: ForeignKeyQuery[Categories, CategoriesRow]
-              ) == null
+              (r.categoriesFk2: ForeignKeyQuery[Categories, CategoriesRow]) ==
+                null
             })
             X.map(r => {
-              (
-                r.categoriesFk3: ForeignKeyQuery[Categories, CategoriesRow]
-              ) == null
+              (r.categoriesFk3: ForeignKeyQuery[Categories, CategoriesRow]) ==
+                null
             })
             X.map(r => {
               (r.index1X: Index) == null

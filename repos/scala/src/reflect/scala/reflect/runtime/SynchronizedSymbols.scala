@@ -108,9 +108,8 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
       else if (_initialized)
         true
       else
-        purpose.isFlagRelated && (
-          _initializationMask & purpose.mask & TopLevelPickledFlags
-        ) == 0
+        purpose.isFlagRelated &&
+        (_initializationMask & purpose.mask & TopLevelPickledFlags) == 0
     }
 
     /** Communicates with completers declared in scala.reflect.runtime.SymbolLoaders
@@ -222,8 +221,8 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
         name: TypeName,
         pos: Position,
         newFlags: Long): AliasTypeSymbol =
-      new AliasTypeSymbol(this, pos, name)
-        with SynchronizedTypeSymbol initFlags newFlags
+      new AliasTypeSymbol(this, pos, name) with SynchronizedTypeSymbol initFlags
+        newFlags
 
     override protected def createTypeSkolemSymbol(
         name: TypeName,
@@ -237,8 +236,8 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
         name: TypeName,
         pos: Position,
         newFlags: Long): ClassSymbol =
-      new ClassSymbol(this, pos, name)
-        with SynchronizedClassSymbol initFlags newFlags
+      new ClassSymbol(this, pos, name) with SynchronizedClassSymbol initFlags
+        newFlags
 
     override protected def createModuleClassSymbol(
         name: TypeName,
@@ -270,15 +269,15 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
         name: TermName,
         pos: Position,
         newFlags: Long): MethodSymbol =
-      new MethodSymbol(this, pos, name)
-        with SynchronizedMethodSymbol initFlags newFlags
+      new MethodSymbol(this, pos, name) with SynchronizedMethodSymbol initFlags
+        newFlags
 
     override protected def createModuleSymbol(
         name: TermName,
         pos: Position,
         newFlags: Long): ModuleSymbol =
-      new ModuleSymbol(this, pos, name)
-        with SynchronizedTermSymbol initFlags newFlags
+      new ModuleSymbol(this, pos, name) with SynchronizedTermSymbol initFlags
+        newFlags
 
     override protected def createPackageSymbol(
         name: TermName,
@@ -289,15 +288,15 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
         name: TermName,
         pos: Position,
         newFlags: Long) =
-      new TermSymbol(this, pos, name)
-        with SynchronizedTermSymbol initFlags newFlags
+      new TermSymbol(this, pos, name) with SynchronizedTermSymbol initFlags
+        newFlags
 
     override protected def createValueMemberSymbol(
         name: TermName,
         pos: Position,
         newFlags: Long) =
-      new TermSymbol(this, pos, name)
-        with SynchronizedTermSymbol initFlags newFlags
+      new TermSymbol(this, pos, name) with SynchronizedTermSymbol initFlags
+        newFlags
   }
 
 // ------- subclasses ---------------------------------------------------------------------

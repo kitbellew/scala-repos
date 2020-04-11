@@ -4,13 +4,14 @@ import std.AllInstances._
 import org.scalacheck.Prop.forAll
 
 object MonoidTest extends SpecLite {
-  "multiply" ! forAll { (a: Int, b: Int) =>
-    if (b <= 0) {
-      Monoid[Int].multiply(a, b) must_=== 0
-    } else {
-      Monoid[Int].multiply(a, b) must_=== (a * b)
+  "multiply" !
+    forAll { (a: Int, b: Int) =>
+      if (b <= 0) {
+        Monoid[Int].multiply(a, b) must_=== 0
+      } else {
+        Monoid[Int].multiply(a, b) must_=== (a * b)
+      }
     }
-  }
 
   "endo multiply" in {
     import syntax.monoid._
@@ -48,10 +49,8 @@ object MonoidTest extends SpecLite {
     ss.toList must_=== (List("1", "2", "4", "8"))
   }
 
-  "intercalate empty" in (
-    Foldable[List].intercalate(List[String](), "oops")
-      must_=== ("")
-  )
+  "intercalate empty" in
+    (Foldable[List].intercalate(List[String](), "oops") must_=== (""))
 
   "intercalate" in {
     val xs = List(
@@ -63,8 +62,7 @@ object MonoidTest extends SpecLite {
     (
       (Foldable[List] compose Foldable[Vector])
         .intercalate(xs, Cord("!!"))
-        .toString
-        must_=== (Cord("this!!has!!elements!!beneath").toString)
+        .toString must_=== (Cord("this!!has!!elements!!beneath").toString)
     )
   }
 

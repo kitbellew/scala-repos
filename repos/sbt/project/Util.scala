@@ -12,14 +12,13 @@ object Util {
 
   def crossBuild: Seq[Setting[_]] =
     Seq(
-      crossPaths := (
-        scalaBinaryVersion.value match {
+      crossPaths :=
+        (scalaBinaryVersion.value match {
           case "2.11" =>
             true
           case _ =>
             false
-        }
-      ))
+        }))
 
   lazy val javaOnlySettings = Seq[Setting[_]](
     /*crossPaths := false, */ compileOrder := CompileOrder.JavaThenScala,
@@ -46,14 +45,15 @@ object Util {
   )
 
   def projectComponent =
-    projectID <<= (projectID, componentID) { (pid, cid) =>
-      cid match {
-        case Some(id) =>
-          pid extra ("e:component" -> id);
-        case None =>
-          pid
+    projectID <<=
+      (projectID, componentID) { (pid, cid) =>
+        cid match {
+          case Some(id) =>
+            pid extra ("e:component" -> id);
+          case None =>
+            pid
+        }
       }
-    }
 
   lazy val apiDefinitions = TaskKey[Seq[File]]("api-definitions")
 
@@ -80,10 +80,10 @@ object Util {
       s: TaskStreams): Seq[File] = {
     IO.delete(out)
     IO.createDirectory(out)
-    val args = "xsbti.api" :: out
-      .getAbsolutePath :: defs.map(_.getAbsolutePath).toList
-    val mainClass =
-      main getOrElse "No main class defined for datatype generator"
+    val args = "xsbti.api" :: out.getAbsolutePath ::
+      defs.map(_.getAbsolutePath).toList
+    val mainClass = main getOrElse
+      "No main class defined for datatype generator"
     toError(run.run(mainClass, cp.files, args, s.log))
     (out ** "*.java").get
   }
@@ -102,8 +102,8 @@ object Util {
     val timestamp = formatter.format(new Date)
     val content = versionLine(version) + "\ntimestamp=" + timestamp
     val f = dir / "xsbt.version.properties"
-    if (!f.exists || f.lastModified < lastCompilationTime(
-          analysis) || !containsVersion(f, version)) {
+    if (!f.exists || f.lastModified < lastCompilationTime(analysis) ||
+        !containsVersion(f, version)) {
       s.log.info("Writing version information to " + f + " :\n" + content)
       IO.write(f, content)
     }
@@ -149,11 +149,11 @@ object Util {
     }
 
   def excludePomArtifact(artifactId: String) =
-    (artifactId == "compiler-interface") || (
-      artifactId startsWith "precompiled"
-    )
+    (artifactId == "compiler-interface") ||
+      (artifactId startsWith "precompiled")
 
-  val testExclusive = tags in test += ((ExclusiveTest, 1))
+  val testExclusive = tags in test +=
+    ((ExclusiveTest, 1))
 
   // TODO: replace with Tags.exclusive after 0.12.0
   val testExclusiveRestriction = Tags.customLimit {
@@ -183,9 +183,8 @@ object %s {
     inConfig(Compile)(
       Seq(
         scalaKeywords := getScalaKeywords,
-        generateKeywords <<= (
-          sourceManaged,
-          scalaKeywords) map writeScalaKeywords,
+        generateKeywords <<=
+          (sourceManaged, scalaKeywords) map writeScalaKeywords,
         sourceGenerators <+= generateKeywords map (x => Seq(x))
       ))
 }
@@ -212,13 +211,12 @@ object Licensed {
   def settings: Seq[Setting[_]] =
     Seq(
       notice <<= baseDirectory(_ / "NOTICE"),
-      unmanagedResources in Compile <++= (notice, extractLicenses) map {
-        _ +: _
-      },
-      extractLicenses <<= (
-        baseDirectory in ThisBuild,
-        notice,
-        streams) map extractLicenses0
+      unmanagedResources in Compile <++=
+        (notice, extractLicenses) map {
+          _ +: _
+        },
+      extractLicenses <<=
+        (baseDirectory in ThisBuild, notice, streams) map extractLicenses0
     )
   def extractLicenses0(base: File, note: File, s: TaskStreams): Seq[File] =
     if (!note.exists)

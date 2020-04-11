@@ -496,15 +496,16 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
   override def equals(o: Any): Boolean = {
     o match {
       case rv: Index[_] =>
-        (this eq rv) || (this.length == rv.length) && {
-          var i = 0
-          var eq = true
-          while (eq && i < this.length) {
-            eq &&= raw(i) == rv.raw(i)
-            i += 1
+        (this eq rv) ||
+          (this.length == rv.length) && {
+            var i = 0
+            var eq = true
+            while (eq && i < this.length) {
+              eq &&= raw(i) == rv.raw(i)
+              i += 1
+            }
+            eq
           }
-          eq
-        }
       case _ =>
         false
     }

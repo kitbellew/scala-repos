@@ -27,9 +27,10 @@ object SaddleBuild extends sbt.Build {
       id = "saddle",
       settings = Seq(
         /* 'console' in root acts as if in core. */
-        console <<= (console in core in Compile) {
-          identity
-        },
+        console <<=
+          (console in core in Compile) {
+            identity
+          },
         assembleArtifact in packageScala := false,
         publishArtifact := false,
         mergeStrategy in assembly := {
@@ -52,19 +53,19 @@ object SaddleBuild extends sbt.Build {
                 |import org.saddle._
                 |import org.saddle.time._
                 |import org.saddle.io._""".stripMargin('|'),
-      unmanagedClasspath in (
-        LocalProject("saddle-core"), Test
-      ) <++= (fullClasspath in (LocalProject("saddle-test-framework"), Test)),
-      libraryDependencies <++= scalaVersion(v =>
-        Seq(
-          "joda-time" % "joda-time" % "2.1",
-          "org.joda" % "joda-convert" % "1.2",
-          "org.scala-saddle" % "google-rfc-2445" % "20110304",
-          "com.googlecode.efficient-java-matrix-library" % "ejml" % "0.19",
-          "org.apache.commons" % "commons-math" % "2.2",
-          "it.unimi.dsi" % "fastutil" % "6.5.4",
-          "it.unimi.dsi" % "dsiutils" % "2.0.15"
-        ) ++ Shared.testDeps(v)),
+      unmanagedClasspath in (LocalProject("saddle-core"), Test) <++=
+        (fullClasspath in (LocalProject("saddle-test-framework"), Test)),
+      libraryDependencies <++=
+        scalaVersion(v =>
+          Seq(
+            "joda-time" % "joda-time" % "2.1",
+            "org.joda" % "joda-convert" % "1.2",
+            "org.scala-saddle" % "google-rfc-2445" % "20110304",
+            "com.googlecode.efficient-java-matrix-library" % "ejml" % "0.19",
+            "org.apache.commons" % "commons-math" % "2.2",
+            "it.unimi.dsi" % "fastutil" % "6.5.4",
+            "it.unimi.dsi" % "dsiutils" % "2.0.15"
+          ) ++ Shared.testDeps(v)),
       testOptions in Test += Tests.Argument("console", "junitxml")
     )
   )
@@ -79,8 +80,9 @@ object SaddleBuild extends sbt.Build {
                 |import org.saddle._
                 |import org.saddle.time._
                 |import org.saddle.io._""".stripMargin('|'),
-        libraryDependencies <++= scalaVersion(v =>
-          Seq("org.scala-saddle" % "jhdf5" % "2.9") ++ Shared.testDeps(v)),
+        libraryDependencies <++=
+          scalaVersion(v =>
+            Seq("org.scala-saddle" % "jhdf5" % "2.9") ++ Shared.testDeps(v)),
         testOptions in Test += Tests.Argument("console", "junitxml")
       )
     ) dependsOn (core)
@@ -90,15 +92,15 @@ object SaddleBuild extends sbt.Build {
       id = "saddle-test-framework",
       base = file("saddle-test-framework"),
       settings = Seq(
-        libraryDependencies <++= scalaVersion(v =>
-          Shared.testDeps(v, "compile")))) dependsOn (core)
+        libraryDependencies <++=
+          scalaVersion(v => Shared.testDeps(v, "compile")))) dependsOn (core)
 
   def project(id: String, base: File, settings: Seq[Project.Setting[_]] = Nil) =
     Project(
       id = id,
       base = base,
-      settings = assemblySettings ++ Project.defaultSettings ++ Shared
-        .settings ++ releaseSettings ++ settings)
+      settings = assemblySettings ++ Project.defaultSettings ++
+        Shared.settings ++ releaseSettings ++ settings)
 }
 
 object Shared {
@@ -161,17 +163,21 @@ object Shared {
     shellPrompt := { (state: State) =>
       "[%s]$ " format (Project.extract(state).currentProject.id)
     },
-    resolvers ++= Seq(
-      "Sonatype OSS Releases" at "http://oss.sonatype.org/content/repositories/releases/",
-      "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
-    ),
-    publishTo <<= (version) { version: String =>
-      val nexus = "https://oss.sonatype.org/"
-      if (version.trim.endsWith("SNAPSHOT"))
-        Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
-    },
+    resolvers ++=
+      Seq(
+        "Sonatype OSS Releases" at
+          "http://oss.sonatype.org/content/repositories/releases/",
+        "Sonatype OSS Snapshots" at
+          "http://oss.sonatype.org/content/repositories/snapshots/"
+      ),
+    publishTo <<=
+      (version) { version: String =>
+        val nexus = "https://oss.sonatype.org/"
+        if (version.trim.endsWith("SNAPSHOT"))
+          Some("snapshots" at nexus + "content/repositories/snapshots")
+        else
+          Some("releases" at nexus + "service/local/staging/deploy/maven2")
+      },
     credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
     compile <<= (compile in Compile) dependsOn (compile in Test)
   )

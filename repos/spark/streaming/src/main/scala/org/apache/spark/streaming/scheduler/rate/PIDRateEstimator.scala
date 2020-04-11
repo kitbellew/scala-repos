@@ -111,16 +111,15 @@ private[streaming] class PIDRateEstimator(
         // there wouldn't have been any overflowing elements, and the scheduling delay would have
         // been zero.
         // (in elements/second)
-        val historicalError = schedulingDelay
-          .toDouble * processingRate / batchIntervalMillis
+        val historicalError = schedulingDelay.toDouble * processingRate /
+          batchIntervalMillis
 
         // in elements/(second ^ 2)
         val dError = (error - latestError) / delaySinceUpdate
 
         val newRate =
           (
-            latestRate - proportional * error -
-              integral * historicalError -
+            latestRate - proportional * error - integral * historicalError -
               derivative * dError
           ).max(minRate)
         logTrace(s"""

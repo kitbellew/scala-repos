@@ -9,14 +9,14 @@ class ValidationsSpec extends FunSpec with Validations {
     it("should validate id string ") {
       assert(identifier.validate("id", "aa_ZZ-00.01", null) == None)
       assert(
-        identifier.validate("id", "_aaaa", null) == Some(
-          "id starts with invalid character."))
+        identifier.validate("id", "_aaaa", null) ==
+          Some("id starts with invalid character."))
       assert(
-        identifier.validate("id", "-aaaa", null) == Some(
-          "id starts with invalid character."))
+        identifier.validate("id", "-aaaa", null) ==
+          Some("id starts with invalid character."))
       assert(
-        identifier.validate("id", "aa_ZZ#01", null) == Some(
-          "id contains invalid character."))
+        identifier.validate("id", "aa_ZZ#01", null) ==
+          Some("id contains invalid character."))
     }
   }
 
@@ -25,8 +25,8 @@ class ValidationsSpec extends FunSpec with Validations {
       val messages = Messages()
       assert(color.validate("color", "#88aaff", messages) == None)
       assert(
-        color.validate("color", "#gghhii", messages) == Some(
-          "color must be '#[0-9a-fA-F]{6}'."))
+        color.validate("color", "#gghhii", messages) ==
+          Some("color must be '#[0-9a-fA-F]{6}'."))
     }
   }
 
@@ -38,8 +38,8 @@ class ValidationsSpec extends FunSpec with Validations {
     it("should convert date string ") {
       val result = date().convert("2013-10-05", null)
       assert(
-        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-          .format(result) == "2013-10-05 00:00:00")
+        new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(result) ==
+          "2013-10-05 00:00:00")
     }
   }
 

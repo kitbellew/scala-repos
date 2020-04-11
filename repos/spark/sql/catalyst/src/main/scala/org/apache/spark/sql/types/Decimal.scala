@@ -44,8 +44,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     * Set this Decimal to the given Long. Will have precision 20 and scale 0.
     */
   def set(longVal: Long): Decimal = {
-    if (longVal <= -POW_10(MAX_LONG_DIGITS) || longVal >= POW_10(
-          MAX_LONG_DIGITS)) {
+    if (longVal <= -POW_10(MAX_LONG_DIGITS) ||
+        longVal >= POW_10(MAX_LONG_DIGITS)) {
       // We can't represent this compactly as a long without risking overflow
       this.decimalVal = BigDecimal(longVal)
       this.longVal = 0L
@@ -85,8 +85,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     * and return it, or return null if it cannot be set due to overflow.
     */
   def setOrNull(unscaled: Long, precision: Int, scale: Int): Decimal = {
-    if (unscaled <= -POW_10(MAX_LONG_DIGITS) || unscaled >= POW_10(
-          MAX_LONG_DIGITS)) {
+    if (unscaled <= -POW_10(MAX_LONG_DIGITS) ||
+        unscaled >= POW_10(MAX_LONG_DIGITS)) {
       // We can't represent this compactly as a long without risking overflow
       if (precision < 19) {
         return null // Requested precision is too low to represent this value
@@ -225,12 +225,11 @@ final class Decimal extends Ordered[Decimal] with Serializable {
         val droppedDigits = longVal % POW_10(diff)
         longVal /= POW_10(diff)
         if (math.abs(droppedDigits) * 2 >= POW_10(diff)) {
-          longVal += (
-            if (longVal < 0)
-              -1L
-            else
-              1L
-          )
+          longVal +=
+            (if (longVal < 0)
+               -1L
+             else
+               1L)
         }
       } else if (scale > _scale) {
         // We might be able to multiply longVal by a power of 10 and not overflow, but if not,
@@ -273,8 +272,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
   override def clone(): Decimal = new Decimal().set(this)
 
   override def compare(other: Decimal): Int = {
-    if (decimalVal.eq(null) && other.decimalVal.eq(null) && _scale == other
-          ._scale) {
+    if (decimalVal.eq(null) && other.decimalVal.eq(null) &&
+        _scale == other._scale) {
       if (longVal < other.longVal)
         -1
       else if (longVal == other.longVal)
@@ -303,8 +302,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
       longVal == 0
 
   def +(that: Decimal): Decimal = {
-    if (decimalVal.eq(null) && that.decimalVal.eq(null) && scale == that
-          .scale) {
+    if (decimalVal.eq(null) && that.decimalVal.eq(null) &&
+        scale == that.scale) {
       Decimal(
         longVal + that.longVal,
         Math.max(precision, that.precision),
@@ -315,8 +314,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
   }
 
   def -(that: Decimal): Decimal = {
-    if (decimalVal.eq(null) && that.decimalVal.eq(null) && scale == that
-          .scale) {
+    if (decimalVal.eq(null) && that.decimalVal.eq(null) &&
+        scale == that.scale) {
       Decimal(
         longVal - that.longVal,
         Math.max(precision, that.precision),

@@ -41,7 +41,8 @@ object Sample {
 
   private def libraryToProjectDeps(projects: Seq[Project]) =
     projects.map(
-      addProjectDependencies andThen excludeLibraryDependencies andThen enableAutoPlugins)
+      addProjectDependencies andThen excludeLibraryDependencies andThen
+        enableAutoPlugins)
 
   private val addProjectDependencies =
     (project: Project) =>
@@ -61,8 +62,9 @@ object Sample {
                 // add project dependency for every akka library dependency
                 (
                   proj,
-                  deps ++ projectDependencies
-                    .map(ResolvedClasspathDependency(_, None)))
+                  deps ++
+                    projectDependencies
+                      .map(ResolvedClasspathDependency(_, None)))
               case (project, deps) =>
                 (project, deps)
             }
@@ -74,21 +76,22 @@ object Sample {
   private val excludeLibraryDependencies =
     (project: Project) =>
       project.settings(
-        libraryDependencies := libraryDependencies
-          .value
-          .map {
-            case module if module.organization == akkaOrganization =>
-              /**
-                * Exclude self, so it is still possible to know what project dependencies to add.
-                * This leaves all transitive dependencies (such as typesafe-config library).
-                * However it means that if a sample uses typesafe-config library it must have a
-                * library dependency which has a direct transitive dependency to typesafe-config.
-                */
-              module
-                .excludeAll(ExclusionRule(organization = module.organization))
-            case module =>
-              module
-          })
+        libraryDependencies :=
+          libraryDependencies
+            .value
+            .map {
+              case module if module.organization == akkaOrganization =>
+                /**
+                  * Exclude self, so it is still possible to know what project dependencies to add.
+                  * This leaves all transitive dependencies (such as typesafe-config library).
+                  * However it means that if a sample uses typesafe-config library it must have a
+                  * library dependency which has a direct transitive dependency to typesafe-config.
+                  */
+                module
+                  .excludeAll(ExclusionRule(organization = module.organization))
+              case module =>
+                module
+            })
 
   /**
     * AutoPlugins are not enabled for externally loaded projects.
@@ -101,10 +104,7 @@ object Sample {
     (project: Project) =>
       project
         .settings(
-          (
-            Publish.projectSettings ++
-              ValidatePullRequest.projectSettings
-          ): _*)
+          (Publish.projectSettings ++ ValidatePullRequest.projectSettings): _*)
         .configs(ValidatePullRequest.ValidatePR)
 
   private implicit class RichLoadedDefinitions(ld: LoadedDefinitions) {

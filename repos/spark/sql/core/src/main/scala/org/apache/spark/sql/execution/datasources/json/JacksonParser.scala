@@ -134,11 +134,9 @@ object JacksonParser extends Logging {
         // Special case handling for NaN and Infinity.
         val value = parser.getText
         val lowerCaseValue = value.toLowerCase()
-        if (lowerCaseValue.equals("nan") ||
-            lowerCaseValue.equals("infinity") ||
+        if (lowerCaseValue.equals("nan") || lowerCaseValue.equals("infinity") ||
             lowerCaseValue.equals("-infinity") ||
-            lowerCaseValue.equals("inf") ||
-            lowerCaseValue.equals("-inf")) {
+            lowerCaseValue.equals("inf") || lowerCaseValue.equals("-inf")) {
           value.toFloat
         } else {
           throw new SparkSQLJsonProcessingException(
@@ -152,11 +150,9 @@ object JacksonParser extends Logging {
         // Special case handling for NaN and Infinity.
         val value = parser.getText
         val lowerCaseValue = value.toLowerCase()
-        if (lowerCaseValue.equals("nan") ||
-            lowerCaseValue.equals("infinity") ||
+        if (lowerCaseValue.equals("nan") || lowerCaseValue.equals("infinity") ||
             lowerCaseValue.equals("-infinity") ||
-            lowerCaseValue.equals("inf") ||
-            lowerCaseValue.equals("-inf")) {
+            lowerCaseValue.equals("inf") || lowerCaseValue.equals("-inf")) {
           value.toDouble
         } else {
           throw new SparkSQLJsonProcessingException(

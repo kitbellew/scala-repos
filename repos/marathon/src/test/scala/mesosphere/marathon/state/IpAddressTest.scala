@@ -59,8 +59,8 @@ class IpAddressTest extends MarathonSpec with Matchers {
   test("ToProto with groups and labels") {
     val f = fixture()
     val proto = f.ipAddressWithGroupsAndLabels.toProto
-    proto.getGroupsList.asScala should equal(
-      f.ipAddressWithGroupsAndLabels.groups)
+    proto.getGroupsList.asScala should
+      equal(f.ipAddressWithGroupsAndLabels.groups)
     proto.getLabelsList.asScala.map(kv => kv.getKey -> kv.getValue).toMap should
       equal(f.ipAddressWithGroupsAndLabels.labels)
   }
@@ -80,8 +80,8 @@ class IpAddressTest extends MarathonSpec with Matchers {
     val discoveryInfoProto =
       Protos.DiscoveryInfo.newBuilder.addPorts(portProto).build
 
-    proto.getGroupsList.asScala should equal(
-      f.ipAddressWithGroupsAndLabels.groups)
+    proto.getGroupsList.asScala should
+      equal(f.ipAddressWithGroupsAndLabels.groups)
     proto.getLabelsList.asScala.map(kv => kv.getKey -> kv.getValue).toMap should
       equal(f.ipAddressWithGroupsAndLabels.labels)
     proto.getDiscoveryInfo should equal(discoveryInfoProto)

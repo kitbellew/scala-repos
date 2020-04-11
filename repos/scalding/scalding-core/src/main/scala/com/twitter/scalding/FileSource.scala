@@ -185,12 +185,13 @@ object FileSource {
         // HiddenFileFilter should better be called non-hidden but it borrows its name from the
         // private field name in hadoop FileInputFormat
         //
-        dir -> (
-          dir,
-          OrVal(
-            SuccessFileFilter.accept(fileStatus.getPath) && fileStatus.isFile),
-          OrVal(HiddenFileFilter.accept(fileStatus.getPath))
-        )
+        dir ->
+          (
+            dir,
+            OrVal(
+              SuccessFileFilter.accept(fileStatus.getPath) &&
+                fileStatus.isFile),
+            OrVal(HiddenFileFilter.accept(fileStatus.getPath)))
     }
 
     // OR by key
@@ -203,7 +204,8 @@ object FileSource {
 
     // there is at least one valid path, and all paths have success
     //
-    uniqueUsedDirs.nonEmpty && uniqueUsedDirs.forall {
+    uniqueUsedDirs.nonEmpty &&
+    uniqueUsedDirs.forall {
       case (_, (_, hasSuccess, _)) =>
         hasSuccess.get
     }
@@ -300,8 +302,8 @@ abstract class FileSource
       case Hdfs(strict, conf) => {
         if (strict && (!hdfsReadPathsAreGood(conf))) {
           throw new InvalidSourceException(
-            "[" + this
-              .toString + "] Data is missing from one or more paths in: " +
+            "[" + this.toString +
+              "] Data is missing from one or more paths in: " +
               hdfsPaths.toString)
         } else if (!hdfsPaths.exists {
                      pathIsGood(_, conf)
@@ -318,10 +320,10 @@ abstract class FileSource
         }
         if (strict && !files.forall(_.exists)) {
           throw new InvalidSourceException(
-            "[" + this
-              .toString + s"] Data is missing from: ${localPaths.filterNot { p =>
-              new java.io.File(p).exists
-            }}")
+            "[" + this.toString +
+              s"] Data is missing from: ${localPaths.filterNot { p =>
+                new java.io.File(p).exists
+              }}")
         } else if (!files.exists(_.exists)) {
           throw new InvalidSourceException(
             "[" + this.toString + "] No good paths in: " + hdfsPaths.toString)
@@ -439,8 +441,8 @@ trait DelimitedScheme extends SchemedSource {
   override def hdfsScheme = {
     assert(
       types == null || fields.size == types.size,
-      "Fields [" + fields + "] of different size than types array [" + types
-        .mkString(",") + "]")
+      "Fields [" + fields + "] of different size than types array [" +
+        types.mkString(",") + "]")
     HadoopSchemeInstance(
       new CHTextDelimited(
         fields,

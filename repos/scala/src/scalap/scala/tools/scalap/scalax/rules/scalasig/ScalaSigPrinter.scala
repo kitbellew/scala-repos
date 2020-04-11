@@ -45,8 +45,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     }
 
   def printSymbol(level: Int, symbol: Symbol) {
-    if (!symbol.isLocal &&
-        !(symbol.isPrivate && !printPrivates)) {
+    if (!symbol.isLocal && !(symbol.isPrivate && !printPrivates)) {
       def indent() {
         for (i <- 1 to level)
           print("  ")
@@ -82,16 +81,15 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
 
   def isCaseClassObject(o: ObjectSymbol): Boolean = {
     val TypeRefType(_, classSymbol: ClassSymbol, _) = o.infoType
-    o.isFinal && (
-      classSymbol
-        .children
-        .find(x => x.isCase && x.isInstanceOf[MethodSymbol]) match {
-        case Some(_) =>
-          true
-        case None =>
-          false
-      }
-    )
+    o.isFinal &&
+    (classSymbol
+      .children
+      .find(x => x.isCase && x.isInstanceOf[MethodSymbol]) match {
+      case Some(_) =>
+        true
+      case None =>
+        false
+    })
   }
 
   private def underCaseClass(m: MethodSymbol) =
@@ -155,7 +153,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   private def refinementClass(c: ClassSymbol) = c.name == "<refinement>"
 
   def printClass(level: Int, c: ClassSymbol) {
-    if (c.name == "<local child>" /*scala.tools.nsc.symtab.StdNames.LOCAL_CHILD.toString()*/ ) {
+    if (c.name ==
+          "<local child>" /*scala.tools.nsc.symtab.StdNames.LOCAL_CHILD.toString()*/ ) {
       print("\n")
     } else {
       printModifiers(c)
@@ -366,10 +365,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       if (stringVal)
         buffer.append("\"")
       val stringValue = valueToString(value)
-      val isMultiline = stringVal && (
-        stringValue.contains("\n")
-          || stringValue.contains("\r")
-      )
+      val isMultiline = stringVal &&
+        (stringValue.contains("\n") || stringValue.contains("\r"))
       if (isMultiline)
         buffer.append("\"\"")
       buffer.append(valueToString(value))
@@ -424,8 +421,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       case SingleType(typeRef, symbol) =>
         sep + processName(symbol.path) + ".type"
       case ConstantType(constant) =>
-        sep + (
-          constant match {
+        sep +
+          (constant match {
             case null =>
               "scala.Null"
             case _: Unit =>
@@ -449,15 +446,12 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
             case _: String =>
               "java.lang.String"
             case c: Class[_] =>
-              "java.lang.Class[" + c
-                .getComponentType
-                .getCanonicalName
-                .replace("$", ".") + "]"
-          }
-        )
+              "java.lang.Class[" +
+                c.getComponentType.getCanonicalName.replace("$", ".") + "]"
+          })
       case TypeRefType(prefix, symbol, typeArgs) =>
-        sep + (
-          symbol.path match {
+        sep +
+          (symbol.path match {
             case "scala.<repeated>" =>
               flags match {
                 case TypeFlags(true) =>
@@ -476,8 +470,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
                 processName(path) + typeArgString(typeArgs),
                 "<empty>.")
             }
-          }
-        )
+          })
       case TypeBoundsType(lower, upper) => {
         val lb = toString(lower)
         val ub = toString(upper)
@@ -519,12 +512,11 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
           .map(toString)
           .filter(!_.startsWith("_"))
           .map("type " + _)
-        toString(typeRef, sep) + (
-          if (refs.size > 0)
-            refs.mkString(" forSome {", "; ", "}")
-          else
-            ""
-        )
+        toString(typeRef, sep) +
+          (if (refs.size > 0)
+             refs.mkString(" forSome {", "; ", "}")
+           else
+             "")
       }
       case _ =>
         sep + t.toString
@@ -552,8 +544,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
             attrs.trim + " "
           else
             ""
-        atrs + getVariance(symbol) + processName(symbol.name) + toString(
-          symbol.infoType)
+        atrs + getVariance(symbol) + processName(symbol.name) +
+          toString(symbol.infoType)
       }
       case s =>
         symbol.toString

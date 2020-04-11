@@ -23,10 +23,11 @@ final class PgnDump(
         Parser.full(pgni.pgn).toOption
       }
     val ts = tags(game, initialFen, imported)
-    val fenSituation = ts find (_.name == Tag.FEN) flatMap {
-      case Tag(_, fen) =>
-        Forsyth <<< fen
-    }
+    val fenSituation = ts find
+      (_.name == Tag.FEN) flatMap {
+        case Tag(_, fen) =>
+          Forsyth <<< fen
+      }
     val moves2 = fenSituation
       .??(_.situation.color.black)
       .fold(".." :: game.pgnMoves, game.pgnMoves)
@@ -51,9 +52,8 @@ final class PgnDump(
 
   private def gameLightUsers(
       game: Game): (Option[LightUser], Option[LightUser]) =
-    (game.whitePlayer.userId ?? getLightUser) -> (
-      game.blackPlayer.userId ?? getLightUser
-    )
+    (game.whitePlayer.userId ?? getLightUser) ->
+      (game.blackPlayer.userId ?? getLightUser)
 
   private val dateFormat = DateTimeFormat forPattern "yyyy.MM.dd";
 
@@ -124,8 +124,9 @@ final class PgnDump(
               }
             }
           )
-        ) ::: customStartPosition(game.variant)
-          .??(List(Tag(_.FEN, initialFen | "?"), Tag("SetUp", "1")))
+        ) :::
+          customStartPosition(game.variant)
+            .??(List(Tag(_.FEN, initialFen | "?"), Tag("SetUp", "1")))
     }
 
   private def turns(moves: List[String], from: Int): List[chessPgn.Turn] =
@@ -133,13 +134,15 @@ final class PgnDump(
       case (moves, index) =>
         chessPgn.Turn(
           number = index + from,
-          white = moves.headOption filter (".." !=) map {
-            chessPgn.Move(_)
-          },
+          white = moves.headOption filter
+            (".." !=) map {
+              chessPgn.Move(_)
+            },
           black = moves lift 1 map {
             chessPgn.Move(_)
           })
-    } filterNot (_.isEmpty)
+    } filterNot
+      (_.isEmpty)
 }
 
 object PgnDump {

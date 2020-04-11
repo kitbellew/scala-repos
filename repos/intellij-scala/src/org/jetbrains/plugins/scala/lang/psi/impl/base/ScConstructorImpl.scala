@@ -205,14 +205,15 @@ class ScConstructorImpl(node: ASTNode)
           val zipped = p.typeArgList.typeArgs.zip(typeParameters)
           val appSubst =
             new ScSubstitutor(
-              new HashMap[(String, PsiElement), ScType] ++ zipped.map {
-                case (arg, typeParam) =>
-                  (
+              new HashMap[(String, PsiElement), ScType] ++
+                zipped.map {
+                  case (arg, typeParam) =>
                     (
-                      typeParam.name,
-                      ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
-                    arg.getType(TypingContext.empty).getOrAny)
-              },
+                      (
+                        typeParam.name,
+                        ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
+                      arg.getType(TypingContext.empty).getOrAny)
+                },
               Map.empty,
               None)
           Success(appSubst.subst(res), Some(this))
@@ -256,8 +257,8 @@ class ScConstructorImpl(node: ASTNode)
             case r @ ScalaResolveResult(constr: PsiMethod, subst) =>
               buffer += workWithResolveResult(constr, r, subst, s, ref)
             case ScalaResolveResult(clazz: PsiClass, subst)
-                if !clazz.isInstanceOf[ScTemplateDefinition] && clazz
-                  .isAnnotationType =>
+                if !clazz.isInstanceOf[ScTemplateDefinition] &&
+                  clazz.isAnnotationType =>
               val params = clazz
                 .getMethods
                 .flatMap {
@@ -277,12 +278,13 @@ class ScConstructorImpl(node: ASTNode)
                   case _ =>
                     Seq.empty
                 }
-              buffer += Success(
-                ScMethodType(
-                  ScDesignatorType(clazz),
-                  params,
-                  isImplicit = false)(getProject, getResolveScope),
-                Some(this))
+              buffer +=
+                Success(
+                  ScMethodType(
+                    ScDesignatorType(clazz),
+                    params,
+                    isImplicit = false)(getProject, getResolveScope),
+                  Some(this))
             case _ =>
           }
           buffer.toSeq

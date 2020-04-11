@@ -293,11 +293,11 @@ class FutureTests extends MinimalScalaTest {
           fail("transformWith should not have been called"))(ec) eq test)
       ECNotUsed(ec => test.map(identity)(ec) eq test)
       ECNotUsed(ec =>
-        test.flatMap(_ => fail("flatMap should not have been called"))(
-          ec) eq test)
+        test.flatMap(_ => fail("flatMap should not have been called"))(ec) eq
+          test)
       ECNotUsed(ec =>
-        test
-          .filter(_ => fail("filter should not have been called"))(ec) eq test)
+        test.filter(_ => fail("filter should not have been called"))(ec) eq
+          test)
       ECNotUsed(ec =>
         test.collect({
           case _ =>
@@ -421,17 +421,20 @@ class FutureTests extends MinimalScalaTest {
       val future4 = future1 recover {
         case e: ArithmeticException =>
           0
-      } map (_.toString)
+      } map
+        (_.toString)
 
       val future5 = future2 recover {
         case e: ArithmeticException =>
           0
-      } map (_.toString)
+      } map
+        (_.toString)
 
       val future6 = future2 recover {
         case e: MatchError =>
           0
-      } map (_.toString)
+      } map
+        (_.toString)
 
       val future7 = future3 recover {
         case e: ArithmeticException =>
@@ -829,15 +832,17 @@ class FutureTests extends MinimalScalaTest {
           add
         }
 
-      val futures = (0 to 9) map { idx =>
-        async(idx, idx * 20)
-      }
+      val futures =
+        (0 to 9) map { idx =>
+          async(idx, idx * 20)
+        }
       val folded = Future.fold(futures)(0)(_ + _)
       Await.result(folded, timeout) mustBe (45)
 
-      val futuresit = (0 to 9) map { idx =>
-        async(idx, idx * 20)
-      }
+      val futuresit =
+        (0 to 9) map { idx =>
+          async(idx, idx * 20)
+        }
       val foldedit = Future.fold(futures)(0)(_ + _)
       Await.result(foldedit, timeout) mustBe (45)
     }
@@ -915,15 +920,17 @@ class FutureTests extends MinimalScalaTest {
         }
       val timeout = 10000 millis
 
-      val futures = (0 to 9) map {
-        async
-      }
+      val futures =
+        (0 to 9) map {
+          async
+        }
       val reduced = Future.reduce(futures)(_ + _)
       Await.result(reduced, timeout) mustBe (45)
 
-      val futuresit = (0 to 9) map {
-        async
-      }
+      val futuresit =
+        (0 to 9) map {
+          async
+        }
       val reducedit = Future.reduce(futuresit)(_ + _)
       Await.result(reducedit, timeout) mustBe (45)
     }

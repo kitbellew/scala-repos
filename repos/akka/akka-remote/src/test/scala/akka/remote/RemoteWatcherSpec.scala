@@ -108,9 +108,8 @@ class RemoteWatcherSpec
 
   def createRemoteActor(props: Props, name: String): InternalActorRef = {
     remoteSystem.actorOf(props, name)
-    system
-      .actorSelection(RootActorPath(remoteAddress) / "user" / name) ! Identify(
-      name)
+    system.actorSelection(RootActorPath(remoteAddress) / "user" / name) !
+      Identify(name)
     expectMsgType[ActorIdentity].ref.get.asInstanceOf[InternalActorRef]
   }
 

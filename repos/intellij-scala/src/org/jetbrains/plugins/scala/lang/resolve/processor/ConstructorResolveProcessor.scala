@@ -137,8 +137,8 @@ class ConstructorResolveProcessor(
                         parentElement = Some(ta),
                         boundClass = getBoundClass(state),
                         fromType = fromType,
-                        isAccessible =
-                          isAccessible(constr, ref) && accessible)))
+                        isAccessible = isAccessible(constr, ref) &&
+                          accessible)))
               }
             case _ =>
               addResult(r)

@@ -330,9 +330,8 @@ trait WebHookPullRequestService extends WebHookService {
         wh <- WebHooks
         if wh.byRepository(is.userName, is.repositoryName)
         wht <- WebHookEvents
-        if wht
-          .event === WebHook.PullRequest.asInstanceOf[WebHook.Event].bind && wht
-          .byWebHook(wh)
+        if wht.event === WebHook.PullRequest.asInstanceOf[WebHook.Event].bind &&
+          wht.byWebHook(wh)
       } yield {
         ((is, iu, pr, bu, ru), wh)
       }

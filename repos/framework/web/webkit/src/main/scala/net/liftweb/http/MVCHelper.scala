@@ -62,8 +62,7 @@ trait MVCHelper extends LiftRules.DispatchPF {
 
   private object curSession
       extends RequestVar[LiftSession](
-        S.session openOr
-          LiftRules.statelessSession.vend.apply(curRequest.is)) {
+        S.session openOr LiftRules.statelessSession.vend.apply(curRequest.is)) {
     override def __nameSalt = Helpers.nextFuncName
   }
 
@@ -220,11 +219,7 @@ trait MVCHelper extends LiftRules.DispatchPF {
         Full(
           InMemoryResponse(
             msg.getBytes("UTF-8"),
-            (
-              "Content-Type" ->
-                "text/plain; charset=utf-8"
-            ) ::
-              Nil,
+            ("Content-Type" -> "text/plain; charset=utf-8") :: Nil,
             Nil,
             code))
 

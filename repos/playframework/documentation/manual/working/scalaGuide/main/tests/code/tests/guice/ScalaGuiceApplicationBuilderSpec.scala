@@ -132,8 +132,8 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
           .disable[ComponentModule].injector
       // #disable-modules
 
-      injector.instanceOf[Component] must throwA[
-        com.google.inject.ConfigurationException]
+      injector.instanceOf[Component] must
+        throwA[com.google.inject.ConfigurationException]
     }
 
     "injector builder" in {

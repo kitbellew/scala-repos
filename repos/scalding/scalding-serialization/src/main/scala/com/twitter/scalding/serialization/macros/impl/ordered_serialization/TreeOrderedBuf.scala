@@ -42,12 +42,9 @@ object CommonCompareBinary {
       lenA: Int,
       inputStreamB: InputStream,
       lenB: Int): Boolean =
-    (
-      lenA > minSizeForFulBinaryCompare &&
-        (lenA == lenB) &&
-        inputStreamA.markSupported &&
-        inputStreamB.markSupported
-    ) && {
+    (lenA > minSizeForFulBinaryCompare &&
+      (lenA == lenB) && inputStreamA.markSupported &&
+      inputStreamB.markSupported) && {
       inputStreamA.mark(lenA)
       inputStreamB.mark(lenB)
 

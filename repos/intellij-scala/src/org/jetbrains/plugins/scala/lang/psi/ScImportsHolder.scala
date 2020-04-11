@@ -196,9 +196,8 @@ trait ScImportsHolder extends ScalaPsiElement {
 
     getFirstChild match {
       case pack: ScPackaging
-          if !pack.isExplicit && children
-            .filterByType(classOf[ScImportStmt])
-            .isEmpty =>
+          if !pack.isExplicit &&
+            children.filterByType(classOf[ScImportStmt]).isEmpty =>
         pack.addImportsForPaths(paths, refsContainer)
         return
       case _ =>
@@ -276,7 +275,8 @@ trait ScImportsHolder extends ScalaPsiElement {
     } else {
       val sortedRanges = importRanges.toSeq.sortBy(_._1.getStartOffset)
       val selectedRange =
-        if (refsContainer != null && ScalaCodeStyleSettings
+        if (refsContainer != null &&
+            ScalaCodeStyleSettings
               .getInstance(getProject)
               .isAddImportMostCloseToReference)
           sortedRanges
@@ -326,9 +326,9 @@ trait ScImportsHolder extends ScalaPsiElement {
       first: PsiElement): PsiElement = {
     childBeforeFirstImport match {
       case Some(elem)
-          if first != null && elem.getTextRange.getEndOffset > first
-            .getTextRange
-            .getStartOffset =>
+          if first != null &&
+            elem.getTextRange.getEndOffset >
+            first.getTextRange.getStartOffset =>
         addImportAfter(importSt, elem)
       case _ =>
         addBefore(importSt, first)

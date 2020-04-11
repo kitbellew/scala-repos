@@ -76,25 +76,27 @@ object MergeOperations {
       .withValue(m)
       .map {
         case (k, it) =>
-          k -> collect(it.toSeq).map {
-            _.map {
-              case (batchID, optV) =>
-                optV.map(batchID -> _)
+          k ->
+            collect(it.toSeq).map {
+              _.map {
+                case (batchID, optV) =>
+                  optV.map(batchID -> _)
+              }
             }
-          }
       }
 
   def decrementOfflineBatch[K, V](m: Map[K, FOpt[(BatchID, V)]])
       : Map[K, Future[Seq[Option[(BatchID, V)]]]] =
     m.map {
       case (k, futureOptV) =>
-        k -> futureOptV.map { optV =>
-          Seq(
-            optV.map {
-              case (batchID, v) =>
-                (batchID.prev, v)
-            })
-        }
+        k ->
+          futureOptV.map { optV =>
+            Seq(
+              optV.map {
+                case (batchID, v) =>
+                  (batchID.prev, v)
+              })
+          }
     }
 
   /**

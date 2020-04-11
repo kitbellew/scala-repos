@@ -251,9 +251,8 @@ object SparseVector
   def horzcat[V: Zero: ClassTag](vectors: SparseVector[V]*): CSCMatrix[V] = {
     if (!vectors.forall(_.size == vectors(0).size))
       throw new IllegalArgumentException(
-        "vector lengths must be equal, but got: " + vectors
-          .map(_.length)
-          .mkString(", "))
+        "vector lengths must be equal, but got: " +
+          vectors.map(_.length).mkString(", "))
     val rows = vectors(0).length
     val cols = vectors.length
     val data = new Array[V](vectors.map(_.data.length).sum)

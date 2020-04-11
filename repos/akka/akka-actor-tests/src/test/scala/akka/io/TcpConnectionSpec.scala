@@ -82,51 +82,57 @@ class TcpConnectionSpec extends AkkaSpec("""
 
   "An outgoing connection" must {
     info(
-      "Connection reset by peer message expected is " + ConnectionResetByPeerMessage)
+      "Connection reset by peer message expected is " +
+        ConnectionResetByPeerMessage)
     info(
-      "Connection refused message prefix expected is " + ConnectionRefusedMessagePrefix)
+      "Connection refused message prefix expected is " +
+        ConnectionRefusedMessagePrefix)
     // common behavior
 
-    "set socket options before connecting" in new LocalServerTest() {
-      run {
-        val connectionActor = createConnectionActor(options = Vector(
-          Inet.SO.ReuseAddress(true)))
-        val clientChannel = connectionActor.underlyingActor.channel
-        clientChannel.socket.getReuseAddress should ===(true)
-      }
-    }
-
-    "set socket options after connecting" ignore new LocalServerTest() {
-      run {
-        // Workaround for systems where SO_KEEPALIVE is true by default
-        val connectionActor = createConnectionActor(options = Vector(
-          SO.KeepAlive(false)))
-        val clientChannel = connectionActor.underlyingActor.channel
-        clientChannel.socket.getKeepAlive should ===(
-          true
-        ) // only set after connection is established
-        EventFilter.warning(
-          pattern = "registration timeout",
-          occurrences = 1) intercept {
-          selector.send(connectionActor, ChannelConnectable)
-          clientChannel.socket.getKeepAlive should ===(false)
+    "set socket options before connecting" in
+      new LocalServerTest() {
+        run {
+          val connectionActor = createConnectionActor(options = Vector(
+            Inet.SO.ReuseAddress(true)))
+          val clientChannel = connectionActor.underlyingActor.channel
+          clientChannel.socket.getReuseAddress should ===(true)
         }
       }
-    }
 
-    "send incoming data to the connection handler" in new EstablishedConnectionTest() {
-      run {
-        serverSideChannel.write(ByteBuffer.wrap("testdata".getBytes("ASCII")))
-
-        expectReceivedString("testdata")
-
-        // have two packets in flight before the selector notices
-        serverSideChannel.write(ByteBuffer.wrap("testdata2".getBytes("ASCII")))
-        serverSideChannel.write(ByteBuffer.wrap("testdata3".getBytes("ASCII")))
-
-        expectReceivedString("testdata2testdata3")
+    "set socket options after connecting" ignore
+      new LocalServerTest() {
+        run {
+          // Workaround for systems where SO_KEEPALIVE is true by default
+          val connectionActor = createConnectionActor(options = Vector(
+            SO.KeepAlive(false)))
+          val clientChannel = connectionActor.underlyingActor.channel
+          clientChannel.socket.getKeepAlive should
+            ===(true) // only set after connection is established
+          EventFilter.warning(
+            pattern = "registration timeout",
+            occurrences = 1) intercept {
+            selector.send(connectionActor, ChannelConnectable)
+            clientChannel.socket.getKeepAlive should ===(false)
+          }
+        }
       }
-    }
+
+    "send incoming data to the connection handler" in
+      new EstablishedConnectionTest() {
+        run {
+          serverSideChannel.write(ByteBuffer.wrap("testdata".getBytes("ASCII")))
+
+          expectReceivedString("testdata")
+
+          // have two packets in flight before the selector notices
+          serverSideChannel
+            .write(ByteBuffer.wrap("testdata2".getBytes("ASCII")))
+          serverSideChannel
+            .write(ByteBuffer.wrap("testdata3".getBytes("ASCII")))
+
+          expectReceivedString("testdata2testdata3")
+        }
+      }
 
     "forward incoming data as Received messages instantly as long as more data is available" in
       new EstablishedConnectionTest() { // to make sure enough data gets through
@@ -148,162 +154,167 @@ class TcpConnectionSpec extends AkkaSpec("""
 
           selector.send(connectionActor, ChannelReadable)
 
-          connectionHandler.expectMsgType[Received].data.length should ===(
-            bufferSize)
+          connectionHandler.expectMsgType[Received].data.length should
+            ===(bufferSize)
           connectionHandler.expectMsgType[Received].data.length should ===(1500)
         }
       }
 
-    "receive data directly when the connection is established" in new UnacceptedConnectionTest() {
-      run {
-        val serverSideChannel = acceptServerSideConnection(localServerChannel)
+    "receive data directly when the connection is established" in
+      new UnacceptedConnectionTest() {
+        run {
+          val serverSideChannel = acceptServerSideConnection(localServerChannel)
 
-        serverSideChannel
-          .write(ByteBuffer.wrap("immediatedata".getBytes("ASCII")))
-        serverSideChannel.configureBlocking(false)
-        interestCallReceiver.expectMsg(OP_CONNECT)
+          serverSideChannel
+            .write(ByteBuffer.wrap("immediatedata".getBytes("ASCII")))
+          serverSideChannel.configureBlocking(false)
+          interestCallReceiver.expectMsg(OP_CONNECT)
 
-        selector.send(connectionActor, ChannelConnectable)
-        userHandler.expectMsg(
-          Connected(
-            serverAddress,
-            clientSideChannel
-              .socket
-              .getLocalSocketAddress
-              .asInstanceOf[InetSocketAddress]))
+          selector.send(connectionActor, ChannelConnectable)
+          userHandler.expectMsg(
+            Connected(
+              serverAddress,
+              clientSideChannel
+                .socket
+                .getLocalSocketAddress
+                .asInstanceOf[InetSocketAddress]))
 
-        userHandler.send(connectionActor, Register(userHandler.ref))
-        userHandler
-          .expectMsgType[Received]
-          .data
-          .decodeString("ASCII") should ===("immediatedata")
-        ignoreWindowsWorkaroundForTicket15766()
-        interestCallReceiver.expectMsg(OP_READ)
+          userHandler.send(connectionActor, Register(userHandler.ref))
+          userHandler.expectMsgType[Received].data.decodeString("ASCII") should
+            ===("immediatedata")
+          ignoreWindowsWorkaroundForTicket15766()
+          interestCallReceiver.expectMsg(OP_READ)
+        }
       }
-    }
 
-    "write data to network (and acknowledge)" in new EstablishedConnectionTest() {
-      run {
-        val writer = TestProbe()
+    "write data to network (and acknowledge)" in
+      new EstablishedConnectionTest() {
+        run {
+          val writer = TestProbe()
 
-        // reply to write commander with Ack
-        val ackedWrite = Write(ByteString("testdata"), Ack)
-        val buffer = ByteBuffer.allocate(100)
-        serverSideChannel.read(buffer) should ===(0)
-        writer.send(connectionActor, ackedWrite)
-        writer.expectMsg(Ack)
-        pullFromServerSide(remaining = 8, into = buffer)
-        buffer.flip()
-        buffer.limit should ===(8)
+          // reply to write commander with Ack
+          val ackedWrite = Write(ByteString("testdata"), Ack)
+          val buffer = ByteBuffer.allocate(100)
+          serverSideChannel.read(buffer) should ===(0)
+          writer.send(connectionActor, ackedWrite)
+          writer.expectMsg(Ack)
+          pullFromServerSide(remaining = 8, into = buffer)
+          buffer.flip()
+          buffer.limit should ===(8)
 
-        // not reply to write commander for writes without Ack
-        val unackedWrite = Write(ByteString("morestuff!"))
-        buffer.clear()
-        serverSideChannel.read(buffer) should ===(0)
-        writer.send(connectionActor, unackedWrite)
-        writer.expectNoMsg(500.millis)
-        pullFromServerSide(remaining = 10, into = buffer)
-        buffer.flip()
-        ByteString(buffer).utf8String should ===("morestuff!")
+          // not reply to write commander for writes without Ack
+          val unackedWrite = Write(ByteString("morestuff!"))
+          buffer.clear()
+          serverSideChannel.read(buffer) should ===(0)
+          writer.send(connectionActor, unackedWrite)
+          writer.expectNoMsg(500.millis)
+          pullFromServerSide(remaining = 10, into = buffer)
+          buffer.flip()
+          ByteString(buffer).utf8String should ===("morestuff!")
+        }
       }
-    }
 
-    "send big buffers to network correctly" in new EstablishedConnectionTest() {
-      run {
-        val bufferSize = 512 * 1024 // 256kB are too few
-        val random = new Random(0)
-        val testBytes = new Array[Byte](bufferSize)
-        random.nextBytes(testBytes)
-        val testData = ByteString(testBytes)
+    "send big buffers to network correctly" in
+      new EstablishedConnectionTest() {
+        run {
+          val bufferSize = 512 * 1024 // 256kB are too few
+          val random = new Random(0)
+          val testBytes = new Array[Byte](bufferSize)
+          random.nextBytes(testBytes)
+          val testData = ByteString(testBytes)
 
-        val writer = TestProbe()
+          val writer = TestProbe()
 
-        val write = Write(testData, Ack)
-        val buffer = ByteBuffer.allocate(bufferSize)
-        serverSideChannel.read(buffer) should ===(0)
-        writer.send(connectionActor, write)
-        pullFromServerSide(remaining = bufferSize, into = buffer)
-        buffer.flip()
-        buffer.limit should ===(bufferSize)
+          val write = Write(testData, Ack)
+          val buffer = ByteBuffer.allocate(bufferSize)
+          serverSideChannel.read(buffer) should ===(0)
+          writer.send(connectionActor, write)
+          pullFromServerSide(remaining = bufferSize, into = buffer)
+          buffer.flip()
+          buffer.limit should ===(bufferSize)
 
-        ByteString(buffer) should ===(testData)
+          ByteString(buffer) should ===(testData)
+        }
       }
-    }
 
-    "write data after not acknowledged data" in new EstablishedConnectionTest() {
-      run {
-        val writer = TestProbe()
-        writer.send(connectionActor, Write(ByteString(42.toByte)))
-        writer.expectNoMsg(500.millis)
+    "write data after not acknowledged data" in
+      new EstablishedConnectionTest() {
+        run {
+          val writer = TestProbe()
+          writer.send(connectionActor, Write(ByteString(42.toByte)))
+          writer.expectNoMsg(500.millis)
+        }
       }
-    }
 
-    "acknowledge the completion of an ACKed empty write" in new EstablishedConnectionTest() {
-      run {
-        val writer = TestProbe()
-        writer.send(connectionActor, Write(ByteString.empty, Ack))
-        writer.expectMsg(Ack)
+    "acknowledge the completion of an ACKed empty write" in
+      new EstablishedConnectionTest() {
+        run {
+          val writer = TestProbe()
+          writer.send(connectionActor, Write(ByteString.empty, Ack))
+          writer.expectMsg(Ack)
+        }
       }
-    }
 
-    "not acknowledge the completion of a NACKed empty write" in new EstablishedConnectionTest() {
-      run {
-        val writer = TestProbe()
-        writer.send(connectionActor, Write(ByteString.empty, NoAck))
-        writer.expectNoMsg(250.millis)
-        writer.send(connectionActor, Write(ByteString.empty, NoAck(42)))
-        writer.expectNoMsg(250.millis)
+    "not acknowledge the completion of a NACKed empty write" in
+      new EstablishedConnectionTest() {
+        run {
+          val writer = TestProbe()
+          writer.send(connectionActor, Write(ByteString.empty, NoAck))
+          writer.expectNoMsg(250.millis)
+          writer.send(connectionActor, Write(ByteString.empty, NoAck(42)))
+          writer.expectNoMsg(250.millis)
+        }
       }
-    }
 
-    "write file to network" in new EstablishedConnectionTest() {
-      run {
-        // hacky: we need a file for testing purposes, so try to get the biggest one from our own classpath
-        val testFile =
-          classOf[TcpConnectionSpec]
-            .getClassLoader
-            .asInstanceOf[URLClassLoader]
-            .getURLs
-            .filter(_.getProtocol == "file")
-            .map(url ⇒ new File(url.toURI))
-            .filter(_.exists)
-            .sortBy(-_.length)
-            .head
+    "write file to network" in
+      new EstablishedConnectionTest() {
+        run {
+          // hacky: we need a file for testing purposes, so try to get the biggest one from our own classpath
+          val testFile =
+            classOf[TcpConnectionSpec]
+              .getClassLoader
+              .asInstanceOf[URLClassLoader]
+              .getURLs
+              .filter(_.getProtocol == "file")
+              .map(url ⇒ new File(url.toURI))
+              .filter(_.exists)
+              .sortBy(-_.length)
+              .head
 
-        // maximum of 100 MB
-        val size = math.min(testFile.length(), 100000000).toInt
+          // maximum of 100 MB
+          val size = math.min(testFile.length(), 100000000).toInt
 
-        val writer = TestProbe()
-        writer.send(
-          connectionActor,
-          WriteFile(testFile.getAbsolutePath, 0, size, Ack))
-        pullFromServerSide(size, 1000000)
-        writer.expectMsg(Ack)
+          val writer = TestProbe()
+          writer.send(
+            connectionActor,
+            WriteFile(testFile.getAbsolutePath, 0, size, Ack))
+          pullFromServerSide(size, 1000000)
+          writer.expectMsg(Ack)
+        }
       }
-    }
 
-    "write a CompoundWrite to the network and produce correct ACKs" in new EstablishedConnectionTest() {
-      run {
-        val writer = TestProbe()
-        val compoundWrite =
-          Write(ByteString("test1"), Ack(1)) +:
-            Write(ByteString("test2")) +:
-            Write(ByteString.empty, Ack(3)) +:
-            Write(ByteString("test4"), Ack(4))
+    "write a CompoundWrite to the network and produce correct ACKs" in
+      new EstablishedConnectionTest() {
+        run {
+          val writer = TestProbe()
+          val compoundWrite =
+            Write(ByteString("test1"), Ack(1)) +: Write(ByteString("test2")) +:
+              Write(ByteString.empty, Ack(3)) +:
+              Write(ByteString("test4"), Ack(4))
 
-        // reply to write commander with Ack
-        val buffer = ByteBuffer.allocate(100)
-        serverSideChannel.read(buffer) should ===(0)
-        writer.send(connectionActor, compoundWrite)
+          // reply to write commander with Ack
+          val buffer = ByteBuffer.allocate(100)
+          serverSideChannel.read(buffer) should ===(0)
+          writer.send(connectionActor, compoundWrite)
 
-        pullFromServerSide(remaining = 15, into = buffer)
-        buffer.flip()
-        ByteString(buffer).utf8String should ===("test1test2test4")
-        writer.expectMsg(Ack(1))
-        writer.expectMsg(Ack(3))
-        writer.expectMsg(Ack(4))
+          pullFromServerSide(remaining = 15, into = buffer)
+          buffer.flip()
+          ByteString(buffer).utf8String should ===("test1test2test4")
+          writer.expectMsg(Ack(1))
+          writer.expectMsg(Ack(3))
+          writer.expectMsg(Ack(4))
+        }
       }
-    }
 
     /*
      * Disabled on Windows: http://support.microsoft.com/kb/214397
@@ -368,85 +379,87 @@ class TcpConnectionSpec extends AkkaSpec("""
         }
       }
 
-    "respect StopReading and ResumeReading" in new EstablishedConnectionTest() {
-      run {
-        serverSideChannel.write(ByteBuffer.wrap("testdata".getBytes("ASCII")))
-        connectionHandler.send(connectionActor, SuspendReading)
+    "respect StopReading and ResumeReading" in
+      new EstablishedConnectionTest() {
+        run {
+          serverSideChannel.write(ByteBuffer.wrap("testdata".getBytes("ASCII")))
+          connectionHandler.send(connectionActor, SuspendReading)
 
-        // the selector interprets SuspendReading to deregister interest for reading
-        interestCallReceiver.expectMsg(-OP_READ)
+          // the selector interprets SuspendReading to deregister interest for reading
+          interestCallReceiver.expectMsg(-OP_READ)
 
-        // this simulates a race condition where ChannelReadable was already underway while
-        // processing SuspendReading
-        selector.send(connectionActor, ChannelReadable)
+          // this simulates a race condition where ChannelReadable was already underway while
+          // processing SuspendReading
+          selector.send(connectionActor, ChannelReadable)
 
-        // this ChannelReadable should be properly ignored, even if data is already pending
-        interestCallReceiver.expectNoMsg(100.millis)
-        connectionHandler.expectNoMsg(100.millis)
+          // this ChannelReadable should be properly ignored, even if data is already pending
+          interestCallReceiver.expectNoMsg(100.millis)
+          connectionHandler.expectNoMsg(100.millis)
 
-        connectionHandler.send(connectionActor, ResumeReading)
-        interestCallReceiver.expectMsg(OP_READ)
+          connectionHandler.send(connectionActor, ResumeReading)
+          interestCallReceiver.expectMsg(OP_READ)
 
-        // data should be received only after ResumeReading
-        expectReceivedString("testdata")
+          // data should be received only after ResumeReading
+          expectReceivedString("testdata")
+        }
       }
-    }
 
-    "respect pull mode" in new EstablishedConnectionTest(pullMode = true) {
-      // override config to decrease default buffer size
-      val config = ConfigFactory.load(
-        ConfigFactory
-          .parseString("akka.io.tcp.direct-buffer-size = 1k")
-          .withFallback(AkkaSpec.testConf))
-      override implicit def system: ActorSystem =
-        ActorSystem("respectPullModeTest", config)
+    "respect pull mode" in
+      new EstablishedConnectionTest(pullMode = true) {
+        // override config to decrease default buffer size
+        val config = ConfigFactory.load(
+          ConfigFactory
+            .parseString("akka.io.tcp.direct-buffer-size = 1k")
+            .withFallback(AkkaSpec.testConf))
+        override implicit def system: ActorSystem =
+          ActorSystem("respectPullModeTest", config)
 
-      try run {
-        val maxBufferSize = 1 * 1024
-        val ts = "t" * maxBufferSize
-        val us = "u" * (maxBufferSize / 2)
+        try run {
+          val maxBufferSize = 1 * 1024
+          val ts = "t" * maxBufferSize
+          val us = "u" * (maxBufferSize / 2)
 
-        // send a batch that is bigger than the default buffer to make sure we don't recurse and
-        // send more than one Received messages
-        serverSideChannel.write(ByteBuffer.wrap((ts ++ us).getBytes("ASCII")))
-        connectionHandler.expectNoMsg(100.millis)
+          // send a batch that is bigger than the default buffer to make sure we don't recurse and
+          // send more than one Received messages
+          serverSideChannel.write(ByteBuffer.wrap((ts ++ us).getBytes("ASCII")))
+          connectionHandler.expectNoMsg(100.millis)
 
-        connectionActor ! ResumeReading
-        interestCallReceiver.expectMsg(OP_READ)
-        selector.send(connectionActor, ChannelReadable)
-        connectionHandler
-          .expectMsgType[Received]
-          .data
-          .decodeString("ASCII") should ===(ts)
+          connectionActor ! ResumeReading
+          interestCallReceiver.expectMsg(OP_READ)
+          selector.send(connectionActor, ChannelReadable)
+          connectionHandler
+            .expectMsgType[Received]
+            .data
+            .decodeString("ASCII") should ===(ts)
 
-        interestCallReceiver.expectNoMsg(100.millis)
-        connectionHandler.expectNoMsg(100.millis)
+          interestCallReceiver.expectNoMsg(100.millis)
+          connectionHandler.expectNoMsg(100.millis)
 
-        connectionActor ! ResumeReading
-        interestCallReceiver.expectMsg(OP_READ)
-        selector.send(connectionActor, ChannelReadable)
-        connectionHandler
-          .expectMsgType[Received]
-          .data
-          .decodeString("ASCII") should ===(us)
+          connectionActor ! ResumeReading
+          interestCallReceiver.expectMsg(OP_READ)
+          selector.send(connectionActor, ChannelReadable)
+          connectionHandler
+            .expectMsgType[Received]
+            .data
+            .decodeString("ASCII") should ===(us)
 
-        // make sure that after reading all pending data we don't yet register for reading more data
-        interestCallReceiver.expectNoMsg(100.millis)
-        connectionHandler.expectNoMsg(100.millis)
+          // make sure that after reading all pending data we don't yet register for reading more data
+          interestCallReceiver.expectNoMsg(100.millis)
+          connectionHandler.expectNoMsg(100.millis)
 
-        val vs = "v" * (maxBufferSize / 2)
-        serverSideChannel.write(ByteBuffer.wrap(vs.getBytes("ASCII")))
+          val vs = "v" * (maxBufferSize / 2)
+          serverSideChannel.write(ByteBuffer.wrap(vs.getBytes("ASCII")))
 
-        connectionActor ! ResumeReading
-        interestCallReceiver.expectMsg(OP_READ)
-        selector.send(connectionActor, ChannelReadable)
+          connectionActor ! ResumeReading
+          interestCallReceiver.expectMsg(OP_READ)
+          selector.send(connectionActor, ChannelReadable)
 
-        connectionHandler
-          .expectMsgType[Received]
-          .data
-          .decodeString("ASCII") should ===(vs)
-      } finally system.terminate()
-    }
+          connectionHandler
+            .expectMsgType[Received]
+            .data
+            .decodeString("ASCII") should ===(vs)
+        } finally system.terminate()
+      }
 
     "close the connection and reply with `Closed` upon reception of a `Close` command" in
       new EstablishedConnectionTest() with SmallRcvBuffer {
@@ -567,8 +580,8 @@ class TcpConnectionSpec extends AkkaSpec("""
           connectionHandler.expectNoMsg(100.millis) // not yet
 
           val buffer = ByteBuffer.allocate(1)
-          serverSelectionKey should be(
-            selectedAs(SelectionKey.OP_READ, 2.seconds))
+          serverSelectionKey should
+            be(selectedAs(SelectionKey.OP_READ, 2.seconds))
           serverSideChannel.read(buffer) should ===(-1)
 
           closeServerSideAndWaitForClientReadable()
@@ -580,16 +593,17 @@ class TcpConnectionSpec extends AkkaSpec("""
         }
       }
 
-    "report when peer closed the connection" in new EstablishedConnectionTest() {
-      run {
-        closeServerSideAndWaitForClientReadable()
+    "report when peer closed the connection" in
+      new EstablishedConnectionTest() {
+        run {
+          closeServerSideAndWaitForClientReadable()
 
-        selector.send(connectionActor, ChannelReadable)
-        connectionHandler.expectMsg(PeerClosed)
+          selector.send(connectionActor, ChannelReadable)
+          connectionHandler.expectMsg(PeerClosed)
 
-        assertThisConnectionActorTerminated()
+          assertThisConnectionActorTerminated()
+        }
       }
-    }
 
     "report when peer closed the connection but allow further writes and acknowledge normal close" in
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
@@ -631,33 +645,35 @@ class TcpConnectionSpec extends AkkaSpec("""
         }
       }
 
-    "report when peer aborted the connection" in new EstablishedConnectionTest() {
-      run {
-        abortClose(serverSideChannel)
-        selector.send(connectionActor, ChannelReadable)
-        val err = connectionHandler.expectMsgType[ErrorClosed]
-        err.cause should ===(ConnectionResetByPeerMessage)
+    "report when peer aborted the connection" in
+      new EstablishedConnectionTest() {
+        run {
+          abortClose(serverSideChannel)
+          selector.send(connectionActor, ChannelReadable)
+          val err = connectionHandler.expectMsgType[ErrorClosed]
+          err.cause should ===(ConnectionResetByPeerMessage)
 
-        // wait a while
-        connectionHandler.expectNoMsg(200.millis)
+          // wait a while
+          connectionHandler.expectNoMsg(200.millis)
 
-        assertThisConnectionActorTerminated()
+          assertThisConnectionActorTerminated()
+        }
       }
-    }
 
-    "report when peer closed the connection when trying to write" in new EstablishedConnectionTest() {
-      run {
-        val writer = TestProbe()
+    "report when peer closed the connection when trying to write" in
+      new EstablishedConnectionTest() {
+        run {
+          val writer = TestProbe()
 
-        abortClose(serverSideChannel)
-        writer.send(connectionActor, Write(ByteString("testdata")))
-        // both writer and handler should get the message
-        writer.expectMsgType[ErrorClosed]
-        connectionHandler.expectMsgType[ErrorClosed]
+          abortClose(serverSideChannel)
+          writer.send(connectionActor, Write(ByteString("testdata")))
+          // both writer and handler should get the message
+          writer.expectMsgType[ErrorClosed]
+          connectionHandler.expectMsgType[ErrorClosed]
 
-        assertThisConnectionActorTerminated()
+          assertThisConnectionActorTerminated()
+        }
       }
-    }
 
     val UnboundAddress = temporaryServerAddress()
 
@@ -711,188 +727,193 @@ class TcpConnectionSpec extends AkkaSpec("""
         }
       }
 
-    "time out when Connected isn't answered with Register" in new UnacceptedConnectionTest {
-      run {
-        localServerChannel.accept()
+    "time out when Connected isn't answered with Register" in
+      new UnacceptedConnectionTest {
+        run {
+          localServerChannel.accept()
 
-        selector.send(connectionActor, ChannelConnectable)
-        userHandler.expectMsg(
-          Connected(
-            serverAddress,
-            clientSideChannel
-              .socket
-              .getLocalSocketAddress
-              .asInstanceOf[InetSocketAddress]))
-
-        watch(connectionActor)
-        expectTerminated(connectionActor)
-      }
-    }
-
-    "close the connection when user handler dies while connecting" in new UnacceptedConnectionTest {
-      run {
-        EventFilter[DeathPactException](occurrences = 1) intercept {
-          userHandler.ref ! PoisonPill
+          selector.send(connectionActor, ChannelConnectable)
+          userHandler.expectMsg(
+            Connected(
+              serverAddress,
+              clientSideChannel
+                .socket
+                .getLocalSocketAddress
+                .asInstanceOf[InetSocketAddress]))
 
           watch(connectionActor)
           expectTerminated(connectionActor)
         }
       }
-    }
 
-    "close the connection when connection handler dies while connected" in new EstablishedConnectionTest() {
-      run {
-        watch(connectionHandler.ref)
-        watch(connectionActor)
-        EventFilter[DeathPactException](occurrences = 1) intercept {
-          system.stop(connectionHandler.ref)
-          val deaths = Set(
-            expectMsgType[Terminated].actor,
-            expectMsgType[Terminated].actor)
-          deaths should ===(Set(connectionHandler.ref, connectionActor))
+    "close the connection when user handler dies while connecting" in
+      new UnacceptedConnectionTest {
+        run {
+          EventFilter[DeathPactException](occurrences = 1) intercept {
+            userHandler.ref ! PoisonPill
+
+            watch(connectionActor)
+            expectTerminated(connectionActor)
+          }
         }
       }
-    }
 
-    "support ResumeWriting (backed up)" in new EstablishedConnectionTest() {
-      run {
-        val writer = TestProbe()
-        val write = writeCmd(NoAck)
+    "close the connection when connection handler dies while connected" in
+      new EstablishedConnectionTest() {
+        run {
+          watch(connectionHandler.ref)
+          watch(connectionActor)
+          EventFilter[DeathPactException](occurrences = 1) intercept {
+            system.stop(connectionHandler.ref)
+            val deaths = Set(
+              expectMsgType[Terminated].actor,
+              expectMsgType[Terminated].actor)
+            deaths should ===(Set(connectionHandler.ref, connectionActor))
+          }
+        }
+      }
 
-        // fill up the write buffer until NACK
-        var written = 0
-        while (!writer.msgAvailable) {
+    "support ResumeWriting (backed up)" in
+      new EstablishedConnectionTest() {
+        run {
+          val writer = TestProbe()
+          val write = writeCmd(NoAck)
+
+          // fill up the write buffer until NACK
+          var written = 0
+          while (!writer.msgAvailable) {
+            writer.send(connectionActor, write)
+            written += 1
+          }
+          // dump the NACKs
+          writer.receiveWhile(1.second) {
+            case CommandFailed(write) ⇒
+              written -= 1
+          }
+          writer.msgAvailable should ===(false)
+
+          // writes must fail now
           writer.send(connectionActor, write)
-          written += 1
+          writer.expectMsg(CommandFailed(write))
+          writer.send(connectionActor, Write.empty)
+          writer.expectMsg(CommandFailed(Write.empty))
+
+          // resuming must not immediately work (queue still full)
+          writer.send(connectionActor, ResumeWriting)
+          writer.expectNoMsg(1.second)
+
+          // so drain the queue until it works again
+          while (!writer.msgAvailable)
+            pullFromServerSide(TestSize)
+          writer.expectMsg(Duration.Zero, WritingResumed)
+
+          // now write should work again
+          object works extends Event
+          writer.send(connectionActor, writeCmd(works))
+          writer.expectMsg(works)
         }
-        // dump the NACKs
-        writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒
-            written -= 1
-        }
-        writer.msgAvailable should ===(false)
-
-        // writes must fail now
-        writer.send(connectionActor, write)
-        writer.expectMsg(CommandFailed(write))
-        writer.send(connectionActor, Write.empty)
-        writer.expectMsg(CommandFailed(Write.empty))
-
-        // resuming must not immediately work (queue still full)
-        writer.send(connectionActor, ResumeWriting)
-        writer.expectNoMsg(1.second)
-
-        // so drain the queue until it works again
-        while (!writer.msgAvailable)
-          pullFromServerSide(TestSize)
-        writer.expectMsg(Duration.Zero, WritingResumed)
-
-        // now write should work again
-        object works extends Event
-        writer.send(connectionActor, writeCmd(works))
-        writer.expectMsg(works)
       }
-    }
 
-    "support ResumeWriting (queue flushed)" in new EstablishedConnectionTest() {
-      run {
-        val writer = TestProbe()
-        val write = writeCmd(NoAck)
+    "support ResumeWriting (queue flushed)" in
+      new EstablishedConnectionTest() {
+        run {
+          val writer = TestProbe()
+          val write = writeCmd(NoAck)
 
-        // fill up the write buffer until NACK
-        var written = 0
-        while (!writer.msgAvailable) {
+          // fill up the write buffer until NACK
+          var written = 0
+          while (!writer.msgAvailable) {
+            writer.send(connectionActor, write)
+            written += 1
+          }
+          // dump the NACKs
+          writer.receiveWhile(1.second) {
+            case CommandFailed(write) ⇒
+              written -= 1
+          }
+
+          // drain the queue until it works again
+          pullFromServerSide(TestSize * written)
+
+          // writes must still fail
           writer.send(connectionActor, write)
-          written += 1
+          writer.expectMsg(CommandFailed(write))
+          writer.send(connectionActor, Write.empty)
+          writer.expectMsg(CommandFailed(Write.empty))
+
+          // resuming must work immediately
+          writer.send(connectionActor, ResumeWriting)
+          writer.expectMsg(1.second, WritingResumed)
+
+          // now write should work again
+          object works extends Event
+          writer.send(connectionActor, writeCmd(works))
+          writer.expectMsg(works)
         }
-        // dump the NACKs
-        writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒
-            written -= 1
-        }
-
-        // drain the queue until it works again
-        pullFromServerSide(TestSize * written)
-
-        // writes must still fail
-        writer.send(connectionActor, write)
-        writer.expectMsg(CommandFailed(write))
-        writer.send(connectionActor, Write.empty)
-        writer.expectMsg(CommandFailed(Write.empty))
-
-        // resuming must work immediately
-        writer.send(connectionActor, ResumeWriting)
-        writer.expectMsg(1.second, WritingResumed)
-
-        // now write should work again
-        object works extends Event
-        writer.send(connectionActor, writeCmd(works))
-        writer.expectMsg(works)
       }
-    }
 
-    "support useResumeWriting==false (backed up)" in new EstablishedConnectionTest(
-      useResumeWriting = false) {
-      run {
-        val writer = TestProbe()
-        val write = writeCmd(NoAck)
+    "support useResumeWriting==false (backed up)" in
+      new EstablishedConnectionTest(useResumeWriting = false) {
+        run {
+          val writer = TestProbe()
+          val write = writeCmd(NoAck)
 
-        // fill up the write buffer until NACK
-        var written = 0
-        while (!writer.msgAvailable) {
+          // fill up the write buffer until NACK
+          var written = 0
+          while (!writer.msgAvailable) {
+            writer.send(connectionActor, write)
+            written += 1
+          }
+          // dump the NACKs
+          writer.receiveWhile(1.second) {
+            case CommandFailed(write) ⇒
+              written -= 1
+          }
+          writer.msgAvailable should ===(false)
+
+          // writes must fail now
           writer.send(connectionActor, write)
-          written += 1
+          writer.expectMsg(CommandFailed(write))
+          writer.send(connectionActor, Write.empty)
+          writer.expectMsg(CommandFailed(Write.empty))
+
+          // so drain the queue until it works again
+          pullFromServerSide(TestSize * written)
+
+          // now write should work again
+          object works extends Event
+          writer.send(connectionActor, writeCmd(works))
+          writer.expectMsg(works)
         }
-        // dump the NACKs
-        writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒
-            written -= 1
-        }
-        writer.msgAvailable should ===(false)
-
-        // writes must fail now
-        writer.send(connectionActor, write)
-        writer.expectMsg(CommandFailed(write))
-        writer.send(connectionActor, Write.empty)
-        writer.expectMsg(CommandFailed(Write.empty))
-
-        // so drain the queue until it works again
-        pullFromServerSide(TestSize * written)
-
-        // now write should work again
-        object works extends Event
-        writer.send(connectionActor, writeCmd(works))
-        writer.expectMsg(works)
       }
-    }
 
-    "support useResumeWriting==false (queue flushed)" in new EstablishedConnectionTest(
-      useResumeWriting = false) {
-      run {
-        val writer = TestProbe()
-        val write = writeCmd(NoAck)
+    "support useResumeWriting==false (queue flushed)" in
+      new EstablishedConnectionTest(useResumeWriting = false) {
+        run {
+          val writer = TestProbe()
+          val write = writeCmd(NoAck)
 
-        // fill up the write buffer until NACK
-        var written = 0
-        while (!writer.msgAvailable) {
-          writer.send(connectionActor, write)
-          written += 1
+          // fill up the write buffer until NACK
+          var written = 0
+          while (!writer.msgAvailable) {
+            writer.send(connectionActor, write)
+            written += 1
+          }
+          // dump the NACKs
+          writer.receiveWhile(1.second) {
+            case CommandFailed(write) ⇒
+              written -= 1
+          }
+
+          // drain the queue until it works again
+          pullFromServerSide(TestSize * written)
+
+          // now write should work again
+          object works extends Event
+          writer.send(connectionActor, writeCmd(works))
+          writer.expectMsg(works)
         }
-        // dump the NACKs
-        writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒
-            written -= 1
-        }
-
-        // drain the queue until it works again
-        pullFromServerSide(TestSize * written)
-
-        // now write should work again
-        object works extends Event
-        writer.send(connectionActor, writeCmd(works))
-        writer.expectMsg(works)
       }
-    }
 
     "report abort before handler is registered (reproducer from #15033)" in {
       // This test needs the OP_CONNECT workaround on Windows, see original report #15033 and parent ticket #15766
@@ -1104,10 +1125,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         serverSideChannel.close()
       else
         serverSideChannel.socket.shutdownOutput()
-      checkFor(
-        clientSelectionKey,
-        OP_READ,
-        3.seconds.toMillis.toInt) should ===(true)
+      checkFor(clientSelectionKey, OP_READ, 3.seconds.toMillis.toInt) should
+        ===(true)
     }
 
     def registerChannel(channel: SocketChannel, name: String): SelectionKey = {
@@ -1167,7 +1186,8 @@ class TcpConnectionSpec extends AkkaSpec("""
             serverSideChannel.read(into) match {
               case -1 ⇒
                 throw new IllegalStateException(
-                  "Connection was closed unexpectedly with remaining bytes " + remaining)
+                  "Connection was closed unexpectedly with remaining bytes " +
+                    remaining)
               case 0 ⇒
                 throw new IllegalStateException("Made no progress")
               case other ⇒
@@ -1205,12 +1225,10 @@ class TcpConnectionSpec extends AkkaSpec("""
         def apply(key: SelectionKey) =
           MatchResult(
             checkFor(key, interest, duration.toMillis.toInt),
-            "%s key was not selected for %s after %s" format (
-              key.attachment(), interestsDesc(interest), duration
-            ),
-            "%s key was selected for %s after %s" format (
-              key.attachment(), interestsDesc(interest), duration
-            )
+            "%s key was not selected for %s after %s" format
+              (key.attachment(), interestsDesc(interest), duration),
+            "%s key was selected for %s after %s" format
+              (key.attachment(), interestsDesc(interest), duration)
           )
       }
 

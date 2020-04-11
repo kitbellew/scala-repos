@@ -199,8 +199,8 @@ object CoGroup {
       left: LogicalPlan,
       right: LogicalPlan): CoGroup = {
     require(
-      StructType.fromAttributes(leftGroup) == StructType
-        .fromAttributes(rightGroup))
+      StructType.fromAttributes(leftGroup) ==
+        StructType.fromAttributes(rightGroup))
 
     CoGroup(
       func.asInstanceOf[(Any, Iterator[Any], Iterator[Any]) => TraversableOnce[

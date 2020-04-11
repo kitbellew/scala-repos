@@ -3399,7 +3399,11 @@ class RuntimeLongOldTest {
     assertEquals("2147483647", maxInt.toString)
     assertEquals("-50", fromInt(-50).toString)
     assertEquals("-1000000000", fromInt(-1000000000).toString)
-    assertEquals("2147483648", (maxInt + one).toString)
+    assertEquals(
+      "2147483648",
+      (
+        maxInt + one
+      ).toString)
     assertEquals("-2147483648", minInt.toString)
   }
 
@@ -3412,7 +3416,11 @@ class RuntimeLongOldTest {
   @Test
   def should_correctly_implement_toDouble(): Unit = {
     assertEquals(5.0, fromInt(5).toDouble)
-    assertEquals(2147483648.0, (maxInt + one).toDouble)
+    assertEquals(
+      2147483648.0,
+      (
+        maxInt + one
+      ).toDouble)
   }
 
   @Test

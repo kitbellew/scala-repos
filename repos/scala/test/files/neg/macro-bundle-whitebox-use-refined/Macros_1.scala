@@ -65,8 +65,11 @@ class FundepMaterializationBundle(
       else
         Apply(
           Ident(newTermName("Tuple" + fields.length)),
-          fields map (f =>
-            Select(Ident(newTermName("f")), newTermName(f.name.toString.trim))))
+          fields map
+            (f =>
+              Select(
+                Ident(newTermName("f")),
+                newTermName(f.name.toString.trim))))
     }
 
     val evidenceClass = ClassDef(

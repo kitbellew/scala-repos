@@ -22,11 +22,12 @@ object ThreadPoolsSpec extends PlaySpecification {
 
   "Play's thread pools" should {
 
-    "make a global thread pool available" in new WithApplication() {
-      val controller = app.injector.instanceOf[Samples]
-      contentAsString(controller.someAsyncAction(FakeRequest())) must startWith(
-        "The response code was")
-    }
+    "make a global thread pool available" in
+      new WithApplication() {
+        val controller = app.injector.instanceOf[Samples]
+        contentAsString(controller.someAsyncAction(FakeRequest())) must
+          startWith("The response code was")
+      }
 
     "have a global configuration" in {
       val config =
@@ -91,8 +92,8 @@ object ThreadPoolsSpec extends PlaySpecification {
       success
     }
 
-    "allow configuring a custom thread pool" in runningWithConfig(
-      """#my-context-config
+    "allow configuring a custom thread pool" in
+      runningWithConfig("""#my-context-config
         my-context {
           fork-join-executor {
             parallelism-factor = 20.0
@@ -100,40 +101,40 @@ object ThreadPoolsSpec extends PlaySpecification {
           }
         }
       #my-context-config """) { implicit app =>
-      val akkaSystem = app.actorSystem
-      //#my-context-usage
-      val myExecutionContext: ExecutionContext = akkaSystem
-        .dispatchers
-        .lookup("my-context")
-      //#my-context-usage
-      await(
-        Future(Thread.currentThread().getName)(
-          myExecutionContext)) must startWith("application-my-context")
+        val akkaSystem = app.actorSystem
+        //#my-context-usage
+        val myExecutionContext: ExecutionContext = akkaSystem
+          .dispatchers
+          .lookup("my-context")
+        //#my-context-usage
+        await(Future(Thread.currentThread().getName)(myExecutionContext)) must
+          startWith("application-my-context")
 
-      //#my-context-explicit
-      Future {
-        // Some blocking or expensive code here
-      }(myExecutionContext)
-      //#my-context-explicit
-
-      {
-        //#my-context-implicit
-        implicit val ec = myExecutionContext
-
+        //#my-context-explicit
         Future {
           // Some blocking or expensive code here
-        }
-        //#my-context-implicit
-      }
-      success
-    }
+        }(myExecutionContext)
+        //#my-context-explicit
 
-    "allow access to the application classloader" in new WithApplication() {
-      val myClassName = "java.lang.String"
-      //#using-app-classloader
-      val myClass = app.classloader.loadClass(myClassName)
-      //#using-app-classloader
-    }
+        {
+          //#my-context-implicit
+          implicit val ec = myExecutionContext
+
+          Future {
+            // Some blocking or expensive code here
+          }
+          //#my-context-implicit
+        }
+        success
+      }
+
+    "allow access to the application classloader" in
+      new WithApplication() {
+        val myClassName = "java.lang.String"
+        //#using-app-classloader
+        val myClass = app.classloader.loadClass(myClassName)
+        //#using-app-classloader
+      }
 
     "allow a synchronous thread pool" in {
       val config = ConfigFactory.parseString(
@@ -156,8 +157,8 @@ object ThreadPoolsSpec extends PlaySpecification {
       success
     }
 
-    "allow configuring many custom thread pools" in runningWithConfig(
-      """ #many-specific-config
+    "allow configuring many custom thread pools" in
+      runningWithConfig(""" #many-specific-config
       contexts {
         simple-db-lookups {
           executor = "thread-pool-executor"
@@ -187,32 +188,32 @@ object ThreadPoolsSpec extends PlaySpecification {
         }
       }
     #many-specific-config """) { implicit app =>
-      val akkaSystem = app.actorSystem
-      //#many-specific-contexts
-      object Contexts {
-        implicit val simpleDbLookups: ExecutionContext = akkaSystem
-          .dispatchers
-          .lookup("contexts.simple-db-lookups")
-        implicit val expensiveDbLookups: ExecutionContext = akkaSystem
-          .dispatchers
-          .lookup("contexts.expensive-db-lookups")
-        implicit val dbWriteOperations: ExecutionContext = akkaSystem
-          .dispatchers
-          .lookup("contexts.db-write-operations")
-        implicit val expensiveCpuOperations: ExecutionContext = akkaSystem
-          .dispatchers
-          .lookup("contexts.expensive-cpu-operations")
+        val akkaSystem = app.actorSystem
+        //#many-specific-contexts
+        object Contexts {
+          implicit val simpleDbLookups: ExecutionContext = akkaSystem
+            .dispatchers
+            .lookup("contexts.simple-db-lookups")
+          implicit val expensiveDbLookups: ExecutionContext = akkaSystem
+            .dispatchers
+            .lookup("contexts.expensive-db-lookups")
+          implicit val dbWriteOperations: ExecutionContext = akkaSystem
+            .dispatchers
+            .lookup("contexts.db-write-operations")
+          implicit val expensiveCpuOperations: ExecutionContext = akkaSystem
+            .dispatchers
+            .lookup("contexts.expensive-cpu-operations")
+        }
+        //#many-specific-contexts
+        def test(context: ExecutionContext, name: String) = {
+          await(Future(Thread.currentThread().getName)(context)) must
+            startWith("application-contexts." + name)
+        }
+        test(Contexts.simpleDbLookups, "simple-db-lookups")
+        test(Contexts.expensiveDbLookups, "expensive-db-lookups")
+        test(Contexts.dbWriteOperations, "db-write-operations")
+        test(Contexts.expensiveCpuOperations, "expensive-cpu-operations")
       }
-      //#many-specific-contexts
-      def test(context: ExecutionContext, name: String) = {
-        await(Future(Thread.currentThread().getName)(context)) must startWith(
-          "application-contexts." + name)
-      }
-      test(Contexts.simpleDbLookups, "simple-db-lookups")
-      test(Contexts.expensiveDbLookups, "expensive-db-lookups")
-      test(Contexts.dbWriteOperations, "db-write-operations")
-      test(Contexts.expensiveCpuOperations, "expensive-cpu-operations")
-    }
 
   }
 

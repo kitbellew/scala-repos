@@ -22,8 +22,8 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
 
   "The connection-level client implementation" should {
 
-    "be able to handle 100 pipelined requests across one connection" in Utils
-      .assertAllStagesStopped {
+    "be able to handle 100 pipelined requests across one connection" in
+      Utils.assertAllStagesStopped {
         val (_, serverHostName, serverPort) = TestUtils
           .temporaryServerHostnameAndPort()
 
@@ -49,13 +49,14 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
             }
             .runFold(0)(_ + _)
 
-        result
-          .futureValue(PatienceConfig(10.seconds)) shouldEqual N * (N + 1) / 2
+        result.futureValue(PatienceConfig(10.seconds)) shouldEqual
+          N *
+          (N + 1) / 2
         binding.futureValue.unbind()
       }
 
-    "be able to handle 100 pipelined requests across 4 connections (client-flow is reusable)" in Utils
-      .assertAllStagesStopped {
+    "be able to handle 100 pipelined requests across 4 connections (client-flow is reusable)" in
+      Utils.assertAllStagesStopped {
         val (_, serverHostName, serverPort) = TestUtils
           .temporaryServerHostnameAndPort()
 
@@ -96,36 +97,37 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
             }
             .runFold(0)(_ + _)
 
-        result.futureValue(PatienceConfig(10.seconds)) shouldEqual C * N * (
-          N + 1
-        ) / 2
+        result.futureValue(PatienceConfig(10.seconds)) shouldEqual
+          C * N *
+          (N + 1) / 2
         binding.futureValue.unbind()
       }
 
-    "catch response stream truncation" in Utils.assertAllStagesStopped {
-      val (_, serverHostName, serverPort) = TestUtils
-        .temporaryServerHostnameAndPort()
+    "catch response stream truncation" in
+      Utils.assertAllStagesStopped {
+        val (_, serverHostName, serverPort) = TestUtils
+          .temporaryServerHostnameAndPort()
 
-      val binding = Http().bindAndHandleSync(
-        {
-          case HttpRequest(_, Uri.Path("/b"), _, _, _) ⇒
-            HttpResponse(headers = List(headers.Connection("close")))
-          case _ ⇒
-            HttpResponse()
-        },
-        serverHostName,
-        serverPort)
+        val binding = Http().bindAndHandleSync(
+          {
+            case HttpRequest(_, Uri.Path("/b"), _, _, _) ⇒
+              HttpResponse(headers = List(headers.Connection("close")))
+            case _ ⇒
+              HttpResponse()
+          },
+          serverHostName,
+          serverPort)
 
-      val x = Source(List("/a", "/b", "/c"))
-        .map(path ⇒ HttpRequest(uri = path))
-        .via(Http().outgoingConnection(serverHostName, serverPort))
-        .grouped(10)
-        .runWith(Sink.head)
+        val x = Source(List("/a", "/b", "/c"))
+          .map(path ⇒ HttpRequest(uri = path))
+          .via(Http().outgoingConnection(serverHostName, serverPort))
+          .grouped(10)
+          .runWith(Sink.head)
 
-      a[One2OneBidiFlow.OutputTruncationException.type] should be thrownBy Await
-        .result(x, 3.second)
-      binding.futureValue.unbind()
-    }
+        a[One2OneBidiFlow.OutputTruncationException.type] should be thrownBy
+          Await.result(x, 3.second)
+        binding.futureValue.unbind()
+      }
 
   }
 }

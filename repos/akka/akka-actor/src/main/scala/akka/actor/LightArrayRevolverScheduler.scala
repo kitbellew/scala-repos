@@ -255,9 +255,8 @@ class LightArrayRevolverScheduler(
               collect(q, acc :+ x)
           }
         }
-        (
-          (0 until WheelSize) flatMap (i ⇒ collect(wheel(i), Vector.empty))
-        ) ++ collect(queue, Vector.empty)
+        ((0 until WheelSize) flatMap (i ⇒ collect(wheel(i), Vector.empty))) ++
+          collect(queue, Vector.empty)
       }
 
       @tailrec
@@ -272,9 +271,8 @@ class LightArrayRevolverScheduler(
               case ticks ⇒
                 val futureTick =
                   (
-                    (
-                      time - start + // calculate the nanos since timer start
-                        (ticks * tickNanos) + // adding the desired delay
+                    (time - start + // calculate the nanos since timer start
+                      (ticks * tickNanos) + // adding the desired delay
                         tickNanos - 1 // rounding up
                     ) / tickNanos
                   ).toInt // and converting to slot number

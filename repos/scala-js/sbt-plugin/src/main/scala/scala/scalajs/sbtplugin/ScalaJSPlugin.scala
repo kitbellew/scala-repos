@@ -306,13 +306,13 @@ object ScalaJSPlugin extends AutoPlugin {
   import ScalaJSPluginInternal._
 
   override def globalSettings: Seq[Setting[_]] = {
-    super.globalSettings ++ Seq(
-      scalaJSStage := Stage.FastOpt,
-      scalaJSUseRhino := true,
-      scalaJSClearCacheStats := globalIRCache.clearStats())
+    super.globalSettings ++
+      Seq(
+        scalaJSStage := Stage.FastOpt,
+        scalaJSUseRhino := true,
+        scalaJSClearCacheStats := globalIRCache.clearStats())
   }
 
   override def projectSettings: Seq[Setting[_]] =
-    (scalaJSAbstractSettings ++
-      scalaJSEcosystemSettings)
+    (scalaJSAbstractSettings ++ scalaJSEcosystemSettings)
 }

@@ -194,8 +194,8 @@ class GradientBoostedTreesModel @Since("1.2.0") (
           val currentTreeWeight = localTreeWeights(nTree)
           iter.map {
             case (point, (pred, error)) =>
-              val newPred = pred + currentTree
-                .predict(point.features) * currentTreeWeight
+              val newPred = pred +
+                currentTree.predict(point.features) * currentTreeWeight
               val newError = loss.computeError(newPred, point.label)
               (newPred, newError)
           }
@@ -426,13 +426,14 @@ private[tree] sealed class TreeEnsembleModel(
     */
   def toDebugString: String = {
     val header = toString + "\n"
-    header + trees
-      .zipWithIndex
-      .map {
-        case (tree, treeIndex) =>
-          s"  Tree $treeIndex:\n" + tree.topNode.subtreeToString(4)
-      }
-      .fold("")(_ + _)
+    header +
+      trees
+        .zipWithIndex
+        .map {
+          case (tree, treeIndex) =>
+            s"  Tree $treeIndex:\n" + tree.topNode.subtreeToString(4)
+        }
+        .fold("")(_ + _)
   }
 
   /**
@@ -515,7 +516,8 @@ private[tree] object TreeEnsembleModel extends Logging {
         model.treeWeights)
       val metadata = compact(
         render(
-          ("class" -> className) ~ ("version" -> thisFormatVersion) ~
+          ("class" -> className) ~
+            ("version" -> thisFormatVersion) ~
             ("metadata" -> Extraction.decompose(ensembleMetadata))))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 

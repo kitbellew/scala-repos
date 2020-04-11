@@ -31,9 +31,9 @@ trait MetropolisHastings[T] extends Rand[T] {
   def likelihood(x: T): Double = math.exp(logLikelihood(x))
   def likelihoodRatio(start: T, end: T): Double =
     math.exp(
-      logLikelihood(start) - logLikelihood(end) + logTransitionProbability(
-        start,
-        end) - logTransitionProbability(end, start))
+      logLikelihood(start) - logLikelihood(end) +
+        logTransitionProbability(start, end) -
+        logTransitionProbability(end, start))
   def rand: RandBasis
 
   protected def nextDouble: Double =
@@ -86,7 +86,8 @@ abstract class BaseMetropolisHastings[T](
     totalCount += 1
     val maybeNext = proposalDraw(last)
     val acceptanceRatio = likelihoodRatio(maybeNext, last)
-    if (acceptanceRatio > 1.0) { //This is logically unnecessary, but allows us to skip a call to nextDouble
+    if (acceptanceRatio >
+          1.0) { //This is logically unnecessary, but allows us to skip a call to nextDouble
       last = maybeNext
       acceptanceAboveOne += 1
       maybeNext

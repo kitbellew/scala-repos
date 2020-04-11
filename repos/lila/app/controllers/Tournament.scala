@@ -38,20 +38,18 @@ object Tournament extends LilaController {
                 Ok(html.tournament.finishedPaginator(pag))
               }
             else
-              env.api.fetchVisibleTournaments zip
-                repo.scheduledDedup zip
-                finishedPaginator zip
-                UserRepo.allSortToints(10) map {
-                case (((visible, scheduled), finished), leaderboard) =>
-                  Ok(
-                    html
-                      .tournament
-                      .home(
-                        scheduled,
-                        finished,
-                        leaderboard,
-                        env scheduleJsonView visible))
-              } map NoCache
+              env.api.fetchVisibleTournaments zip repo.scheduledDedup zip
+                finishedPaginator zip UserRepo.allSortToints(10) map {
+                  case (((visible, scheduled), finished), leaderboard) =>
+                    Ok(
+                      html
+                        .tournament
+                        .home(
+                          scheduled,
+                          finished,
+                          leaderboard,
+                          env scheduleJsonView visible))
+                } map NoCache
           },
         api = _ =>
           env.api.fetchVisibleTournaments map { tours =>
@@ -103,18 +101,19 @@ object Tournament extends LilaController {
                 } zip
                   getBool("socketVersion")
                     .??(env version tour.id map some) flatMap {
-                  case (playerInfoExt, socketVersion) =>
-                    env.jsonView(
-                      tour,
-                      page,
-                      ctx.userId,
-                      playerInfoExt,
-                      socketVersion)
-                } map {
-                  Ok(_)
-                }
+                    case (playerInfoExt, socketVersion) =>
+                      env.jsonView(
+                        tour,
+                        page,
+                        ctx.userId,
+                        playerInfoExt,
+                        socketVersion)
+                  } map {
+                    Ok(_)
+                  }
               }.mon(_.http.response.tournament.show.mobile)
-          } map (_ as JSON)
+          } map
+            (_ as JSON)
       ) map NoCache
     }
 

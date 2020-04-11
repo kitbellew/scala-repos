@@ -75,21 +75,15 @@ import slick.util.MacroSupport.macroSupportInterpolation
 trait DerbyProfile extends JdbcProfile {
 
   override protected def computeCapabilities: Set[Capability] =
-    (super.computeCapabilities
-      - RelationalCapabilities.functionDatabase
-      - RelationalCapabilities.pagingNested
-      - JdbcCapabilities.returnInsertOther
-      - SqlCapabilities.sequenceCurr
-    // Cycling is broken in Derby. It cycles to the start value instead of min or max
-      - SqlCapabilities.sequenceCycle
-      - RelationalCapabilities.zip
-      - RelationalCapabilities.joinFull
-      - JdbcCapabilities.insertOrUpdate
-      - RelationalCapabilities.replace
-      - RelationalCapabilities.reverse
-      - JdbcCapabilities.booleanMetaData
-      - JdbcCapabilities.supportsByte
-      - RelationalCapabilities.repeat)
+    (super.computeCapabilities - RelationalCapabilities.functionDatabase -
+      RelationalCapabilities.pagingNested - JdbcCapabilities.returnInsertOther -
+      SqlCapabilities.sequenceCurr
+      // Cycling is broken in Derby. It cycles to the start value instead of min or max
+      - SqlCapabilities.sequenceCycle - RelationalCapabilities.zip -
+      RelationalCapabilities.joinFull - JdbcCapabilities.insertOrUpdate -
+      RelationalCapabilities.replace - RelationalCapabilities.reverse -
+      JdbcCapabilities.booleanMetaData - JdbcCapabilities.supportsByte -
+      RelationalCapabilities.repeat)
 
   class ModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       implicit ec: ExecutionContext)
@@ -111,8 +105,8 @@ trait DerbyProfile extends JdbcProfile {
     MTable.getTables(None, None, None, Some(Seq("TABLE")))
 
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler + Phase.rewriteBooleans + Phase
-      .specializeParameters
+    super.computeQueryCompiler + Phase.rewriteBooleans +
+      Phase.specializeParameters
   override val columnTypes = new JdbcTypes
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
@@ -166,8 +160,8 @@ trait DerbyProfile extends JdbcProfile {
             else
               (false, tn)
           }
-          if (toVarchar && jdbcTypeFor(ch(0).nodeType)
-                .isInstanceOf[NumericTypedType])
+          if (toVarchar &&
+              jdbcTypeFor(ch(0).nodeType).isInstanceOf[NumericTypedType])
             b"trim(cast(cast(${ch(0)} as char(30)) as $tn))"
           else
             b"cast(${ch(0)} as $tn)"
@@ -216,10 +210,10 @@ trait DerbyProfile extends JdbcProfile {
          * index) because Derby does not allow a FOREIGN KEY CONSTRAINT to
          * reference columns which have a UNIQUE INDEX but not a nominal UNIQUE
          * CONSTRAINT. */
-        val sb = new StringBuilder append "ALTER TABLE " append quoteIdentifier(
-          table.tableName) append " ADD "
-        sb append "CONSTRAINT " append quoteIdentifier(
-          idx.name) append " UNIQUE("
+        val sb = new StringBuilder append "ALTER TABLE " append
+          quoteIdentifier(table.tableName) append " ADD "
+        sb append "CONSTRAINT " append quoteIdentifier(idx.name) append
+          " UNIQUE("
         addIndexColumnList(idx.on, sb, idx.table.tableName)
         sb append ")"
         sb.toString
@@ -248,18 +242,18 @@ trait DerbyProfile extends JdbcProfile {
       import seq.integral._
       val increment = seq._increment.getOrElse(one)
       val desc = increment < zero
-      val b =
-        new StringBuilder append "CREATE SEQUENCE " append quoteIdentifier(
-          seq.name)
+      val b = new StringBuilder append "CREATE SEQUENCE " append
+        quoteIdentifier(seq.name)
       /* Set the START value explicitly because it defaults to the data type's
        * min/max value instead of the more conventional 1/-1. */
-      b append " START WITH " append seq
-        ._start
-        .getOrElse(
-          if (desc)
-            -1
-          else
-            1)
+      b append " START WITH " append
+        seq
+          ._start
+          .getOrElse(
+            if (desc)
+              -1
+            else
+              1)
       seq
         ._increment
         .foreach {

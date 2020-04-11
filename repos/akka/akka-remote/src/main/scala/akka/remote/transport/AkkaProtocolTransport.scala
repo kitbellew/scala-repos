@@ -42,10 +42,10 @@ private[remote] class AkkaProtocolSettings(config: Config) {
     TransportFailureDetectorConfig.getString("implementation-class")
   val TransportHeartBeatInterval: FiniteDuration = {
     TransportFailureDetectorConfig.getMillisDuration("heartbeat-interval")
-  } requiring (
-    _ > Duration
-      .Zero, "transport-failure-detector.heartbeat-interval must be > 0"
-  )
+  } requiring
+    (
+      _ > Duration.Zero,
+      "transport-failure-detector.heartbeat-interval must be > 0")
 
   val RequireCookie: Boolean = getBoolean("akka.remote.require-cookie")
 
@@ -127,10 +127,11 @@ private[remote] class AkkaProtocolTransport(
     // Prepare a future, and pass its promise to the manager
     val statusPromise: Promise[AssociationHandle] = Promise()
 
-    manager ! AssociateUnderlyingRefuseUid(
-      removeScheme(remoteAddress),
-      statusPromise,
-      refuseUid)
+    manager !
+      AssociateUnderlyingRefuseUid(
+        removeScheme(remoteAddress),
+        statusPromise,
+        refuseUid)
 
     statusPromise.future.mapTo[AkkaProtocolHandle]
   }
@@ -440,9 +441,8 @@ private[transport] class ProtocolStateActor(
       if (sendAssociate(wrappedHandle, localHandshakeInfo)) {
         failureDetector.heartbeat()
         initHeartbeatTimer()
-        goto(WaitHandshake) using OutboundUnderlyingAssociated(
-          statusPromise,
-          wrappedHandle)
+        goto(WaitHandshake) using
+          OutboundUnderlyingAssociated(statusPromise, wrappedHandle)
 
       } else {
         // Underlying transport was busy -- Associate could not be sent
@@ -486,10 +486,14 @@ private[transport] class ProtocolStateActor(
         case Associate(handshakeInfo) ⇒
           failureDetector.heartbeat()
           cancelTimer(handshakeTimerKey)
-          goto(Open) using AssociatedWaitHandler(
-            notifyOutboundHandler(wrappedHandle, handshakeInfo, statusPromise),
-            wrappedHandle,
-            immutable.Queue.empty)
+          goto(Open) using
+            AssociatedWaitHandler(
+              notifyOutboundHandler(
+                wrappedHandle,
+                handshakeInfo,
+                statusPromise),
+              wrappedHandle,
+              immutable.Queue.empty)
 
         case Disassociate(info) ⇒
           // After receiving Disassociate we MUST NOT send back a Disassociate (loop)
@@ -521,10 +525,11 @@ private[transport] class ProtocolStateActor(
             failureDetector.heartbeat()
             initHeartbeatTimer()
             cancelTimer(handshakeTimerKey)
-            goto(Open) using AssociatedWaitHandler(
-              notifyInboundHandler(wrappedHandle, info, associationHandler),
-              wrappedHandle,
-              immutable.Queue.empty)
+            goto(Open) using
+              AssociatedWaitHandler(
+                notifyInboundHandler(wrappedHandle, info, associationHandler),
+                wrappedHandle,
+                immutable.Queue.empty)
           } else {
             if (log.isDebugEnabled)
               log.warning(
@@ -584,10 +589,11 @@ private[transport] class ProtocolStateActor(
           stateData match {
             case AssociatedWaitHandler(handlerFuture, wrappedHandle, queue) ⇒
               // Queue message until handler is registered
-              stay() using AssociatedWaitHandler(
-                handlerFuture,
-                wrappedHandle,
-                queue :+ payload)
+              stay() using
+                AssociatedWaitHandler(
+                  handlerFuture,
+                  wrappedHandle,
+                  queue :+ payload)
             case ListenerReady(listener, _) ⇒
               listener notify InboundPayload(payload)
               stay()
@@ -799,15 +805,16 @@ private[transport] class ProtocolStateActor(
     val readHandlerPromise = Promise[HandleEventListener]()
     listenForListenerRegistration(readHandlerPromise)
 
-    associationListener notify InboundAssociation(
-      new AkkaProtocolHandle(
-        localAddress,
-        handshakeInfo.origin,
-        readHandlerPromise,
-        wrappedHandle,
-        handshakeInfo,
-        self,
-        codec))
+    associationListener notify
+      InboundAssociation(
+        new AkkaProtocolHandle(
+          localAddress,
+          handshakeInfo.origin,
+          readHandlerPromise,
+          wrappedHandle,
+          handshakeInfo,
+          self,
+          codec))
     readHandlerPromise.future
   }
 

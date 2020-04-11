@@ -61,8 +61,8 @@ object MainLoop {
         System
           .err
           .println(
-            "sbt appears to be exiting abnormally.\n  The log file for this session is at " + logBacking
-              .file)
+            "sbt appears to be exiting abnormally.\n  The log file for this session is at " +
+              logBacking.file)
         deleteLastLog(logBacking)
         throw e
     }

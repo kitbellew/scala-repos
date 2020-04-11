@@ -117,7 +117,8 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
     zk(path).getChildren() map { zop =>
       zop.children filter { child =>
         child.path.startsWith(shardPathPrefix)
-      } sortBy (child => shardIdOf(child.path))
+      } sortBy
+        (child => shardIdOf(child.path))
     }
   }
 

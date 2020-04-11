@@ -63,8 +63,8 @@ class ScalaMethodFilter(
 
     if (locationTypeName.endsWith("$class"))
       className == locationTypeName.stripSuffix("$class")
-    else if (myTargetMethodSignature != null && method
-               .signature() != myTargetMethodSignature.getName(process))
+    else if (myTargetMethodSignature != null &&
+             method.signature() != myTargetMethodSignature.getName(process))
       false
     else {
       DebuggerUtilsEx

@@ -88,12 +88,10 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     */
   def multiParameters: MultiParams = {
     val bodyParams: Map[String, Seq[String]] = {
-      if (r.getParameterMap.isEmpty
-          && r.getMethod != null
-          && !HttpMethod(r.getMethod).isSafe
-          && r.getHeader("Content-Type") != null
-          && r
-            .getHeader("Content-Type")
+      if (r.getParameterMap.isEmpty && r.getMethod != null &&
+          !HttpMethod(r.getMethod).isSafe &&
+          r.getHeader("Content-Type") != null &&
+          r.getHeader("Content-Type")
             .split(";")(0)
             .equalsIgnoreCase("APPLICATION/X-WWW-FORM-URLENCODED")) {
         rl.MapQueryString.parseString(body)

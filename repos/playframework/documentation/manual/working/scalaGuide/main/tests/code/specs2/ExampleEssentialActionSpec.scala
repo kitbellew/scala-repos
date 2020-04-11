@@ -12,20 +12,21 @@ import play.api.libs.json.Json
 object ExampleEssentialActionSpec extends PlaySpecification {
 
   "An essential action" should {
-    "can parse a JSON body" in new WithApplication() {
-      val action: EssentialAction = Action { request =>
-        val value = (request.body.asJson.get \ "field").as[String]
-        Ok(value)
+    "can parse a JSON body" in
+      new WithApplication() {
+        val action: EssentialAction = Action { request =>
+          val value = (request.body.asJson.get \ "field").as[String]
+          Ok(value)
+        }
+
+        val request = FakeRequest(POST, "/")
+          .withJsonBody(Json.parse("""{ "field": "value" }"""))
+
+        val result = call(action, request)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual "value"
       }
-
-      val request = FakeRequest(POST, "/")
-        .withJsonBody(Json.parse("""{ "field": "value" }"""))
-
-      val result = call(action, request)
-
-      status(result) mustEqual OK
-      contentAsString(result) mustEqual "value"
-    }
   }
 }
 // #scalatest-exampleessentialactionspec

@@ -124,6 +124,5 @@ class EngineManifestSerializer
                   JArray(enginemanifest.files.map(x => JString(x)).toList)) ::
                 JField(
                   "engineFactory",
-                  JString(enginemanifest.engineFactory)) ::
-                Nil)
+                  JString(enginemanifest.engineFactory)) :: Nil)
         }))

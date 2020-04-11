@@ -98,8 +98,8 @@ private[classification] trait LogisticRegressionParams
       require(
         ts.length == 2,
         "Logistic Regression getThreshold only applies to" +
-          " binary classification, but thresholds has length != 2.  thresholds: " + ts
-          .mkString(",")
+          " binary classification, but thresholds has length != 2.  thresholds: " +
+          ts.mkString(",")
       )
       1.0 / (1.0 + ts(0) / ts(1))
     } else {
@@ -436,19 +436,15 @@ class LogisticRegression @Since("1.2.0") (
           else
             numFeatures)
 
-        if (optInitialModel.isDefined && optInitialModel
-              .get
-              .coefficients
-              .size != numFeatures) {
+        if (optInitialModel.isDefined &&
+            optInitialModel.get.coefficients.size != numFeatures) {
           val vec = optInitialModel.get.coefficients
           logWarning(
             s"Initial coefficients provided ${vec} did not match the expected size ${numFeatures}")
         }
 
-        if (optInitialModel.isDefined && optInitialModel
-              .get
-              .coefficients
-              .size == numFeatures) {
+        if (optInitialModel.isDefined &&
+            optInitialModel.get.coefficients.size == numFeatures) {
           val initialCoefficientsWithInterceptArray =
             initialCoefficientsWithIntercept.toArray
           optInitialModel
@@ -459,8 +455,8 @@ class LogisticRegression @Since("1.2.0") (
                 initialCoefficientsWithInterceptArray(index) = value
             }
           if ($(fitIntercept)) {
-            initialCoefficientsWithInterceptArray(
-              numFeatures) == optInitialModel.get.intercept
+            initialCoefficientsWithInterceptArray(numFeatures) ==
+              optInitialModel.get.intercept
           }
         } else if ($(fitIntercept)) {
           /*
@@ -634,11 +630,8 @@ class LogisticRegressionModel private[spark] (
       : (LogisticRegressionModel, String) = {
     $(probabilityCol) match {
       case "" =>
-        val probabilityColName = "probability_" + java
-          .util
-          .UUID
-          .randomUUID
-          .toString()
+        val probabilityColName = "probability_" +
+          java.util.UUID.randomUUID.toString()
         (
           copy(ParamMap.empty).setProbabilityCol(probabilityColName),
           probabilityColName)
@@ -1160,9 +1153,9 @@ private class LogisticAggregator(
                 var sum = 0.0
                 features.foreachActive { (index, value) =>
                   if (featuresStd(index) != 0.0 && value != 0.0) {
-                    sum += localCoefficientsArray(index) * (
-                      value / featuresStd(index)
-                    )
+                    sum +=
+                      localCoefficientsArray(index) *
+                        (value / featuresStd(index))
                   }
                 }
                 sum + {
@@ -1177,9 +1170,8 @@ private class LogisticAggregator(
 
             features.foreachActive { (index, value) =>
               if (featuresStd(index) != 0.0 && value != 0.0) {
-                localGradientSumArray(index) += multiplier * (
-                  value / featuresStd(index)
-                )
+                localGradientSumArray(index) +=
+                  multiplier * (value / featuresStd(index))
               }
             }
 

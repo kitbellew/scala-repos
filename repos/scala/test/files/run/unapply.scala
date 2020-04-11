@@ -77,12 +77,11 @@ object Foo {
     assert(doMatch5(b) == "medium")
     implicit val bc: Int = 3
     assert(
-      7 == (
-        4 match {
+      7 ==
+        (4 match {
           case VarFoo(x) =>
             x
-        }
-      ))
+        }))
   }
 }
 
@@ -104,31 +103,28 @@ object Mas {
   def run() {
     val b = new Baz
     assert(
-      (60, "too large") == (
-        b match {
+      (60, "too large") ==
+        (b match {
           case Gaz(s: Int, n: String) =>
             (s, n)
-        }
-      ))
+        }))
   }
 }
 
 object LisSeqArr {
   def run() {
     assert(
-      (1, 2) == (
-        (List(1, 2, 3): Any) match {
+      (1, 2) ==
+        ((List(1, 2, 3): Any) match {
           case List(x, y, _*) =>
             (x, y)
-        }
-      ))
+        }))
     assert(
-      (1, 2) == (
-        (List(1, 2, 3): Any) match {
+      (1, 2) ==
+        ((List(1, 2, 3): Any) match {
           case Seq(x, y, _*) =>
             (x, y)
-        }
-      ))
+        }))
   }
 }
 

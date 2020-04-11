@@ -92,8 +92,8 @@ object Test {
   // creates a test dir in a temporary dir containing compiled files of this test
   // root dir will be automatically deleted after the end of test
   private val rootDir = new JFile(sys.props("partest.output"))
-  private val testDir =
-    rootDir createDir s"cp-tests-${System.currentTimeMillis()}"
+  private val testDir = rootDir createDir
+    s"cp-tests-${System.currentTimeMillis()}"
 
   private val jarsDir = testDir createDir "jars"
   private val zipsDir = testDir createDir "zips"

@@ -76,8 +76,8 @@ private[metrics] object MetricsCollector {
       else if (useInternal)
         create(collectorSigar) orElse create(collectorJMX)
       else // Use complete fall back chain.
-        create(collectorCustom) orElse create(collectorSigar) orElse create(
-          collectorJMX)
+        create(collectorCustom) orElse create(collectorSigar) orElse
+          create(collectorJMX)
 
     collector
       .recover {

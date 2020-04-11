@@ -158,7 +158,8 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
                       pickleInto(fir.tpe, fldValue, b, fldPickler)
                     } else {
                       val subPicklee = fldValue
-                      if (subPicklee == null || subPicklee
+                      if (subPicklee == null ||
+                          subPicklee
                             .getClass == mirror.runtimeClass(fir.tpe.erasure))
                         b.hintElidedType(fldTag)
                       else

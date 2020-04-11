@@ -158,12 +158,11 @@ trait ScopeAnnotator {
       .zip(types)
       .map {
         case (p, t) =>
-          eraseType(t.canonicalText) + (
-            if (p.isRepeatedParameter)
-              "*"
-            else
-              ""
-          )
+          eraseType(t.canonicalText) +
+            (if (p.isRepeatedParameter)
+               "*"
+             else
+               "")
       }
     "(%s)".format(parts.mkString(", "))
   }

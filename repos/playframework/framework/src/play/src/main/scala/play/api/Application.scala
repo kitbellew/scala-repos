@@ -263,8 +263,9 @@ trait BuiltInComponents {
 
   def router: Router
 
-  lazy val injector: Injector = new SimpleInjector(
-    NewInstanceInjector) + router + cookieSigner + csrfTokenSigner + httpConfiguration + tempFileCreator + global + crypto
+  lazy val injector: Injector = new SimpleInjector(NewInstanceInjector) +
+    router + cookieSigner + csrfTokenSigner + httpConfiguration +
+    tempFileCreator + global + crypto
 
   lazy val httpConfiguration: HttpConfiguration = HttpConfiguration
     .fromConfiguration(configuration)

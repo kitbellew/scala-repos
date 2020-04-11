@@ -63,9 +63,8 @@ class TaskStartActorTest
   for ((counts, description) <-
          Seq(
            None -> "with no item in queue",
-           Some(
-             LaunchQueueTestHelper
-               .zeroCounts) -> "with zero count queue item")) {
+           Some(LaunchQueueTestHelper.zeroCounts) ->
+             "with zero count queue item")) {
     test(s"Start success $description") {
       val promise = Promise[Unit]()
       val app = AppDefinition("/myApp".toPath, instances = 5)
@@ -110,18 +109,13 @@ class TaskStartActorTest
 
   for ((counts, description) <-
          Seq(
+           Some(LaunchQueueTestHelper.zeroCounts.copy(tasksLeftToLaunch = 1)) ->
+             "with one task left to launch",
            Some(
-             LaunchQueueTestHelper
-               .zeroCounts
-               .copy(tasksLeftToLaunch = 1)) -> "with one task left to launch",
-           Some(
-             LaunchQueueTestHelper
-               .zeroCounts
-               .copy(taskLaunchesInFlight = 1)) -> "with one task in flight",
-           Some(
-             LaunchQueueTestHelper
-               .zeroCounts
-               .copy(tasksLaunched = 1)) -> "with one task already running"
+             LaunchQueueTestHelper.zeroCounts.copy(taskLaunchesInFlight = 1)) ->
+             "with one task in flight",
+           Some(LaunchQueueTestHelper.zeroCounts.copy(tasksLaunched = 1)) ->
+             "with one task already running"
          )) {
     test(s"Start success $description") {
       val promise = Promise[Unit]()

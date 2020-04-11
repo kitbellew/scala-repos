@@ -135,8 +135,8 @@ class FileStoreHandler(
       }
 
       (
-        pathf0.toValidationNel |@| contentType0.toValidationNel |@| storeMode0
-          .toValidationNel
+        pathf0.toValidationNel |@| contentType0.toValidationNel |@|
+          storeMode0.toValidationNel
       ) { (pathf, contentType, storeMode) => (apiKey: APIKey, path: Path) =>
         {
           val timestamp = clock.now()
@@ -161,7 +161,8 @@ class FileStoreHandler(
                       .map(_.id)
                       .leftMap { errors =>
                         logger.error(
-                          "File creation failed due to errors in job service: " + errors)
+                          "File creation failed due to errors in job service: " +
+                            errors)
                         serverError(errors)
                       }
                   bytes <-
@@ -204,10 +205,11 @@ class FileStoreHandler(
                 }
               ).fold(e => e, x => x)
             } getOrElse {
-              Promise successful HttpResponse[JValue](
-                HttpStatus(
-                  BadRequest,
-                  "Attempt to create a file without body content."))
+              Promise successful
+                HttpResponse[JValue](
+                  HttpStatus(
+                    BadRequest,
+                    "Attempt to create a file without body content."))
             }
           }
         }

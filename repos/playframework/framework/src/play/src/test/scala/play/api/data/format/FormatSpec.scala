@@ -58,8 +58,8 @@ object FormatSpec extends Specification {
         .bind(Map("value" -> "10.23"))
         .fold(
           formWithErrors => {
-            formWithErrors.errors.head.message must equalTo(
-              "error.real.precision")
+            formWithErrors.errors.head.message must
+              equalTo("error.real.precision")
           },
           { number =>
             "The mapping should fail." must equalTo("Error")
@@ -71,8 +71,8 @@ object FormatSpec extends Specification {
         .bind(Map("value" -> "12111.23"))
         .fold(
           formWithErrors => {
-            formWithErrors.errors.head.message must equalTo(
-              "error.real.precision")
+            formWithErrors.errors.head.message must
+              equalTo("error.real.precision")
           },
           { number =>
             "The mapping should fail." must equalTo("Error")

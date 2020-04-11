@@ -149,8 +149,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       resource: Resource): Boolean = {
     val principal = session.principal
     val host = session.clientAddress.getHostAddress
-    val acls = getAcls(resource) ++ getAcls(
-      new Resource(resource.resourceType, Resource.WildCardResource))
+    val acls = getAcls(resource) ++
+      getAcls(new Resource(resource.resourceType, Resource.WildCardResource))
 
     //check if there is any Deny acl match that would disallow this operation.
     val denyMatch = aclMatch(
@@ -220,12 +220,11 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       acls: Set[Acl]): Boolean = {
     acls
       .find(acl =>
-        acl.permissionType == permissionType
-          && (
-            acl.principal == principal || acl.principal == Acl.WildCardPrincipal
-          )
-          && (operations == acl.operation || acl.operation == All)
-          && (acl.host == host || acl.host == Acl.WildCardHost))
+        acl.permissionType == permissionType &&
+          (acl.principal == principal ||
+            acl.principal == Acl.WildCardPrincipal) &&
+          (operations == acl.operation || acl.operation == All) &&
+          (acl.host == host || acl.host == Acl.WildCardHost))
       .map { acl: Acl =>
         authorizerLogger.debug(
           s"operation = $operations on resource = $resource from host = $host is $permissionType based on acl = $acl")
@@ -301,8 +300,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       val resourceTypes = zkUtils.getChildren(SimpleAclAuthorizer.AclZkPath)
       for (rType <- resourceTypes) {
         val resourceType = ResourceType.fromString(rType)
-        val resourceTypePath = SimpleAclAuthorizer
-          .AclZkPath + "/" + resourceType.name
+        val resourceTypePath = SimpleAclAuthorizer.AclZkPath + "/" +
+          resourceType.name
         val resourceNames = zkUtils.getChildren(resourceTypePath)
         for (resourceName <- resourceNames) {
           val versionedAcls = getAclsFromZk(
@@ -314,8 +313,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
   }
 
   def toResourcePath(resource: Resource): String = {
-    SimpleAclAuthorizer.AclZkPath + "/" + resource.resourceType + "/" + resource
-      .name
+    SimpleAclAuthorizer.AclZkPath + "/" + resource.resourceType + "/" +
+      resource.name
   }
 
   private def logAuditMessage(
@@ -447,8 +446,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
 
   private def updateAclChangedFlag(resource: Resource) {
     zkUtils.createSequentialPersistentPath(
-      SimpleAclAuthorizer
-        .AclChangedZkPath + "/" + SimpleAclAuthorizer.AclChangedPrefix,
+      SimpleAclAuthorizer.AclChangedZkPath + "/" +
+        SimpleAclAuthorizer.AclChangedPrefix,
       resource.toString)
   }
 

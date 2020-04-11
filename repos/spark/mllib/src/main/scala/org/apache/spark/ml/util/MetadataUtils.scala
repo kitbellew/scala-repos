@@ -99,8 +99,8 @@ private[spark] object MetadataUtils {
       names: Array[String]): Array[Int] = {
     require(
       col.dataType.isInstanceOf[VectorUDT],
-      s"getFeatureIndicesFromNames expected column $col"
-        + s" to be Vector type, but it was type ${col.dataType} instead."
+      s"getFeatureIndicesFromNames expected column $col" +
+        s" to be Vector type, but it was type ${col.dataType} instead."
     )
     val inputAttr = AttributeGroup.fromStructField(col)
     names.map { name =>

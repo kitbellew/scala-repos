@@ -139,9 +139,8 @@ trait SmallestMailboxSelector {
         selectionCount
 
     while (take > 0) {
-      set = delegates
-        .sortWith(_.mailboxSize < _.mailboxSize)
-        .take(take) ++ set //Question, doesn't this risk selecting the same actor multiple times?
+      set = delegates.sortWith(_.mailboxSize < _.mailboxSize).take(take) ++
+        set //Question, doesn't this risk selecting the same actor multiple times?
       take -= set.size
     }
 
@@ -321,8 +320,10 @@ trait RunningMeanBackoff {
     _pressure += pressure
     _capacity += capacity
 
-    if (capacity > 0 && pressure / capacity < backoffThreshold
-        && _capacity > 0 && _pressure / _capacity < backoffThreshold) //Why does the entire clause need to be true?
+    if (capacity > 0 && pressure / capacity < backoffThreshold &&
+        _capacity > 0 &&
+        _pressure / _capacity <
+          backoffThreshold) //Why does the entire clause need to be true?
       math.floor(-1.0 * backoffRate * (capacity - pressure)).toInt
     else
       0

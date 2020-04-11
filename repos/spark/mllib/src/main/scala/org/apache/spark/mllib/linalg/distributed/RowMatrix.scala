@@ -300,8 +300,8 @@ class RowMatrix @Since("1.0.0") (
         case SVDMode.DistARPACK =>
           if (rows.getStorageLevel == StorageLevel.NONE) {
             logWarning(
-              "The input data is not directly cached, which may hurt performance if its"
-                + " parent RDDs are also uncached.")
+              "The input data is not directly cached, which may hurt performance if its" +
+                " parent RDDs are also uncached.")
           }
           require(
             k < n,
@@ -333,11 +333,11 @@ class RowMatrix @Since("1.0.0") (
     }
 
     // Warn at the end of the run as well, for increased visibility.
-    if (computeMode == SVDMode.DistARPACK && rows
-          .getStorageLevel == StorageLevel.NONE) {
+    if (computeMode == SVDMode.DistARPACK &&
+        rows.getStorageLevel == StorageLevel.NONE) {
       logWarning(
-        "The input data was not directly cached, which may hurt performance if its"
-          + " parent RDDs are also uncached.")
+        "The input data was not directly cached, which may hurt performance if its" +
+          " parent RDDs are also uncached.")
     }
 
     val s = Vectors.dense(Arrays.copyOfRange(sigmas.data, 0, sk))

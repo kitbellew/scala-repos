@@ -791,19 +791,18 @@ class MethodLevelOptsTest extends ClearAfterClass {
       locals(c, "t1"),
       List(("this", 0), ("kept1", 1), ("result", 2)))
     assert(
-      stores("t1") == List(
-        VarOp(ASTORE, 1),
-        VarOp(ASTORE, 2),
-        VarOp(ASTORE, 1),
-        VarOp(ASTORE, 1)),
+      stores("t1") ==
+        List(
+          VarOp(ASTORE, 1),
+          VarOp(ASTORE, 2),
+          VarOp(ASTORE, 1),
+          VarOp(ASTORE, 1)),
       textify(findAsmMethod(c, "t1")))
 
     assertEquals(locals(c, "t2"), List(("this", 0), ("kept2", 1), ("kept3", 2)))
     assert(
-      stores("t2") == List(
-        VarOp(ASTORE, 1),
-        VarOp(ASTORE, 2),
-        VarOp(ASTORE, 1)),
+      stores("t2") ==
+        List(VarOp(ASTORE, 1), VarOp(ASTORE, 2), VarOp(ASTORE, 1)),
       textify(findAsmMethod(c, "t2")))
 
     assertEquals(locals(c, "t3"), List(("this", 0), ("kept4", 1)))

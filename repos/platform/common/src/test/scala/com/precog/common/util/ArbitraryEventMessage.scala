@@ -100,9 +100,10 @@ trait ArbitraryEventMessage extends ArbitraryJValue {
       streamRef <- genStreamRef
     } yield {
       //TODO: Replace with IngestMessage.fromIngest when it's usable
-      val data = (eventIds zip ingest.data) map {
-        Function.tupled(IngestRecord.apply)
-      }
+      val data =
+        (eventIds zip ingest.data) map {
+          Function.tupled(IngestRecord.apply)
+        }
       IngestMessage(
         ingest.apiKey,
         ingest.path,

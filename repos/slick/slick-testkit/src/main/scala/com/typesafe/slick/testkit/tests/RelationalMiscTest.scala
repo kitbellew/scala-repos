@@ -235,9 +235,8 @@ class RelationalMiscTest extends AsyncTest[RelationalTestDB] {
       ???
     } catch {
       case t: NullPointerException
-          if (t.getMessage ne null) && (
-            t.getMessage contains "initialization order"
-          ) =>
+          if (t.getMessage ne null) &&
+            (t.getMessage contains "initialization order") =>
       // This is the expected error message from RelationalTableComponent.Table.column
     }
 
@@ -248,9 +247,8 @@ class RelationalMiscTest extends AsyncTest[RelationalTestDB] {
       ???
     } catch {
       case t: NullPointerException
-          if (t.getMessage ne null) && (
-            t.getMessage contains "initialization order"
-          ) =>
+          if (t.getMessage ne null) &&
+            (t.getMessage contains "initialization order") =>
       // This is the expected error message from RelationalTypesComponent.MappedColumnTypeFactory.assertNonNullType
     }
 

@@ -429,7 +429,8 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       numExpectedOutput > 0,
       "Number of expected outputs after " + numBatches + " is zero")
     logInfo(
-      "numBatches = " + numBatches + ", numExpectedOutput = " + numExpectedOutput)
+      "numBatches = " + numBatches + ", numExpectedOutput = " +
+        numExpectedOutput)
 
     // Get the output buffer
     val outputStream = ssc
@@ -463,8 +464,8 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       while (output.size < numExpectedOutput &&
              System.currentTimeMillis() - startTime < maxWaitTimeMillis) {
         logInfo(
-          "output.size = " + output
-            .size + ", numExpectedOutput = " + numExpectedOutput)
+          "output.size = " + output.size + ", numExpectedOutput = " +
+            numExpectedOutput)
         ssc.awaitTerminationOrTimeout(50)
       }
       val timeTaken = System.currentTimeMillis() - startTime

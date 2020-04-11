@@ -48,8 +48,8 @@ object ComparingUnrelatedTypesInspection {
     if (isNumericType(unboxed1) && isNumericType(unboxed2))
       return false
 
-    ComparingUtil.isNeverSubType(unboxed1, unboxed2) && ComparingUtil
-      .isNeverSubType(unboxed2, unboxed1)
+    ComparingUtil.isNeverSubType(unboxed1, unboxed2) &&
+    ComparingUtil.isNeverSubType(unboxed2, unboxed1)
   }
 
   def isNumericType(tp: ScType) = {
@@ -164,9 +164,9 @@ class ComparingUnrelatedTypesInspection
     if (!seqFunctions.contains(fun.name))
       return false
     val className = fun.containingClass.qualifiedName
-    className.startsWith("scala.collection") && className
-      .contains("Seq") && seqFunctions.contains(fun.name) ||
-    Seq("scala.Option", "scala.Some").contains(className) && fun
-      .name == "contains"
+    className.startsWith("scala.collection") &&
+    className.contains("Seq") && seqFunctions.contains(fun.name) ||
+    Seq("scala.Option", "scala.Some")
+      .contains(className) && fun.name == "contains"
   }
 }

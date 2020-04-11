@@ -29,9 +29,10 @@ object GlobalPlugin {
         _ ++ gp.descriptors
       },
       projectDependencies ++= gp.projectID +: gp.dependencies,
-      resolvers <<= resolvers { rs =>
-        (rs ++ gp.resolvers).distinct
-      },
+      resolvers <<=
+        resolvers { rs =>
+          (rs ++ gp.resolvers).distinct
+        },
       globalPluginUpdate := gp.updateReport,
       // TODO: these shouldn't be required (but are): the project* settings above should take care of this
       injectInternalClasspath(Runtime, gp.internalClasspath),
@@ -76,8 +77,8 @@ object GlobalPlugin {
     val taskInit = Def.task {
       val intcp = (internalDependencyClasspath in Runtime).value
       val prods = (exportedProducts in Runtime).value
-      val depMap = projectDescriptors
-        .value + ivyModule.value.dependencyMapping(state.log)
+      val depMap = projectDescriptors.value +
+        ivyModule.value.dependencyMapping(state.log)
       // If we reference it directly (if it's an executionRoot) then it forces an update, which is not what we want.
       val updateReport =
         Def
@@ -96,8 +97,8 @@ object GlobalPlugin {
         (fullClasspath in Runtime).value,
         (prods ++ intcp).distinct)(updateReport)
     }
-    val resolvedTaskInit = taskInit mapReferenced Project
-      .mapScope(Scope replaceThis p)
+    val resolvedTaskInit = taskInit mapReferenced
+      Project.mapScope(Scope replaceThis p)
     val task = resolvedTaskInit evaluate data
     val roots = resolvedTaskInit.dependencies
     evaluate(state, structure, task, roots)
@@ -121,8 +122,8 @@ object GlobalPlugin {
     Project.inScope(Scope.GlobalScope in LocalRootProject)(
       Seq(
         organization := SbtArtifacts.Organization,
-        onLoadMessage <<= Keys
-          .baseDirectory("Loading global plugins from " + _),
+        onLoadMessage <<=
+          Keys.baseDirectory("Loading global plugins from " + _),
         name := "global-plugin",
         sbtPlugin := true,
         version := "0.0"

@@ -186,9 +186,10 @@ trait StreamInstances {
   implicit def streamShow[A](implicit A0: Show[A]) =
     new Show[Stream[A]] {
       override def show(as: Stream[A]) =
-        "Stream(" +: stream
-          .intersperse(as.map(A0.show), Cord(","))
-          .foldLeft(Cord())(_ ++ _) :+ ")"
+        "Stream(" +:
+          stream
+            .intersperse(as.map(A0.show), Cord(","))
+            .foldLeft(Cord())(_ ++ _) :+ ")"
     }
 
 }
@@ -315,6 +316,6 @@ object stream extends StreamInstances with StreamFunctions {
 
 private trait StreamEqual[A] extends Equal[Stream[A]] {
   def A: Equal[A]
-  override final def equal(a1: Stream[A], a2: Stream[A]) =
-    (a1 corresponds a2)(A.equal)
+  override final def equal(a1: Stream[A], a2: Stream[A]) = (a1 corresponds a2)(
+    A.equal)
 }

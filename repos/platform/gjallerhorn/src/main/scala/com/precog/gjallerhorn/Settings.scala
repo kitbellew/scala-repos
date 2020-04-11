@@ -85,9 +85,8 @@ object Settings {
           q(authPort, "authPort") ++ q(authPath, "authPath") ++
           q(ingestPort, "ingestPort") ++ q(ingestPath, "ingestPath") ++
           q(jobsPort, "jobsPort") ++ q(jobsPath, "jobsPath") ++
-          q(shardPort, "shardPort") ++ q(shardPath, "shardPath") ++ q(
-          secure,
-          "secure")
+          q(shardPort, "shardPort") ++ q(shardPath, "shardPath") ++
+          q(secure, "secure")
       }
 
       def settings: Option[Settings] =
@@ -168,9 +167,8 @@ object Settings {
     ps.settings
       .getOrElse {
         sys.error(
-          "missing settings in %s:\n  %s" format (
-            f, ps.missing.mkString("\n  ")
-          ))
+          "missing settings in %s:\n  %s" format
+            (f, ps.missing.mkString("\n  ")))
       }
   }
 }

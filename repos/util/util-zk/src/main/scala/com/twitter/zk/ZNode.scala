@@ -277,29 +277,33 @@ trait ZNode {
             added = children -- knownChildren,
             removed = knownChildren -- children)
           log.debug("updating %s with %d children", path, treeUpdate.added.size)
-          broker send (treeUpdate) sync () onSuccess { _ =>
-            log
-              .debug("updated %s with %d children", path, treeUpdate.added.size)
-            treeUpdate.added foreach { z =>
-              pipeSubTreeUpdates(z.monitorTree())
+          broker send
+            (treeUpdate) sync
+            () onSuccess { _ =>
+              log.debug(
+                "updated %s with %d children",
+                path,
+                treeUpdate.added.size)
+              treeUpdate.added foreach { z =>
+                pipeSubTreeUpdates(z.monitorTree())
+              }
+              eventUpdate onSuccess { event =>
+                log.debug("event received on %s: %s", path, event)
+              } onSuccess {
+                case MonitorableEvent() =>
+                  monitorWatch(zparent.getChildren.watch(), children)
+                case event =>
+                  log.debug("Unmonitorable event: %s: %s", path, event)
+              }
             }
-            eventUpdate onSuccess { event =>
-              log.debug("event received on %s: %s", path, event)
-            } onSuccess {
-              case MonitorableEvent() =>
-                monitorWatch(zparent.getChildren.watch(), children)
-              case event =>
-                log.debug("Unmonitorable event: %s: %s", path, event)
-            }
-          }
         }
         case ZNode.Watch(Throw(ZNode.Error(_path)), eventUpdate) => {
           // Tell the broker about the children we lost; otherwise, if there were no children,
           // this deletion should be reflected in a watch on the parent node, if one exists.
           if (knownChildren.size > 0) {
-            broker send (
-              ZNode.TreeUpdate(this, removed = knownChildren)
-            ) sync ()
+            broker send
+              (ZNode.TreeUpdate(this, removed = knownChildren)) sync
+              ()
           } else {
             Future.Done
           } onSuccess { _ =>

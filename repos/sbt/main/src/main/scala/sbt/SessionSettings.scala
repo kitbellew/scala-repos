@@ -41,7 +41,8 @@ final case class SessionSettings(
     currentEval: () => Eval) {
   assert(
     currentProject contains currentBuild,
-    "Current build (" + currentBuild + ") not associated with a current project.")
+    "Current build (" + currentBuild +
+      ") not associated with a current project.")
 
   /**
     * Modifiy the current state.
@@ -150,12 +151,11 @@ object SessionSettings {
 
   /** Adds `s` to a strings when needed.    Maybe one day we'll care about non-english languages. */
   def pluralize(size: Int, of: String) =
-    size.toString + (
-      if (size == 1)
-        of
-      else
-        (of + "s")
-    )
+    size.toString +
+      (if (size == 1)
+         of
+       else
+         (of + "s"))
 
   /** Checks to see if any session settings are being discarded and issues a warning. */
   def checkSession(newSession: SessionSettings, oldState: State): Unit = {
@@ -167,9 +167,8 @@ object SessionSettings {
       oldState
         .log
         .warn(
-          "Discarding " + pluralize(
-            oldSettings.size,
-            " session setting") + ".  Use 'session save' to persist session settings.")
+          "Discarding " + pluralize(oldSettings.size, " session setting") +
+            ".  Use 'session save' to persist session settings.")
   }
 
   @deprecated("This method will no longer be public", "0.13.7")
@@ -260,10 +259,8 @@ object SessionSettings {
     val path = writeTo.getAbsolutePath
     val (inFile, other, _) =
       (
-        (
-          List[Setting[_]](),
-          List[Setting[_]](),
-          Set.empty[ScopedKey[_]]) /: original.reverse
+        (List[Setting[_]](), List[Setting[_]](), Set.empty[ScopedKey[_]]) /:
+          original.reverse
       ) {
         case ((in, oth, keys), s) =>
           s.pos match {
@@ -281,9 +278,10 @@ object SessionSettings {
           settings find (_._1.key == s.key) match {
             case Some(ss @ (ns, newLines))
                 if !ns.init.dependencies.contains(ns.key) =>
-              val shifted = ns withPos RangePosition(
-                path,
-                LineRange(start - offs, start - offs + newLines.size))
+              val shifted = ns withPos
+                RangePosition(
+                  path,
+                  LineRange(start - offs, start - offs + newLines.size))
               (offs + end - start - newLines.size, shifted :: olds, ss +: repl)
             case _ =>
               val shifted = s withPos RangePosition(path, r shift -offs)
@@ -392,24 +390,22 @@ save, save-all
   /** Parser for the session command. */
   lazy val parser =
     token(Space) ~>
-      (
-        token("list-all" ^^^ new Print(true)) | token(
-          "list" ^^^ new Print(false)) | token("clear" ^^^ new Clear(false)) |
-          token("save-all" ^^^ new Save(true)) | token(
-          "save" ^^^ new Save(false)) | token("clear-all" ^^^ new Clear(true)) |
-          remove
-      )
+      (token("list-all" ^^^ new Print(true)) |
+        token("list" ^^^ new Print(false)) |
+        token("clear" ^^^ new Clear(false)) |
+        token("save-all" ^^^ new Save(true)) |
+        token("save" ^^^ new Save(false)) |
+        token("clear-all" ^^^ new Clear(true)) | remove)
 
-  lazy val remove = token("remove") ~> token(Space) ~> natSelect
-    .map(ranges => new Remove(ranges))
+  lazy val remove = token("remove") ~> token(Space) ~>
+    natSelect.map(ranges => new Remove(ranges))
 
   def natSelect = rep1sep(token(range, "<range>"), ',')
 
-  def range: Parser[(Int, Int)] =
-    (NatBasic ~ ('-' ~> NatBasic).?).map {
-      case lo ~ hi =>
-        (lo, hi getOrElse lo)
-    }
+  def range: Parser[(Int, Int)] = (NatBasic ~ ('-' ~> NatBasic).?).map {
+    case lo ~ hi =>
+      (lo, hi getOrElse lo)
+  }
 
   /** The raw implementation of the session command. */
   def command(s: State) =

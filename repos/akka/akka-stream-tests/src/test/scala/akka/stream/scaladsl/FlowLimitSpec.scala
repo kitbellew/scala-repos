@@ -63,9 +63,10 @@ class FlowLimitSpec extends AkkaSpec {
         .grouped(Integer.MAX_VALUE)
         .runWith(Sink.head)
 
-      a[StreamLimitReachedException] shouldBe thrownBy {
-        Await.result(future, 300.millis)
-      }
+      a[StreamLimitReachedException] shouldBe
+        thrownBy {
+          Await.result(future, 300.millis)
+        }
     }
 
     "throw a StreamLimitReachedException when n < 0" in {
@@ -76,9 +77,10 @@ class FlowLimitSpec extends AkkaSpec {
         .limit(n)
         .grouped(Integer.MAX_VALUE)
         .runWith(Sink.head)
-      a[StreamLimitReachedException] shouldBe thrownBy {
-        Await.result(future, 300.millis)
-      }
+      a[StreamLimitReachedException] shouldBe
+        thrownBy {
+          Await.result(future, 300.millis)
+        }
     }
   }
 }

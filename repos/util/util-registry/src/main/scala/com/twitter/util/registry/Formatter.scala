@@ -15,13 +15,13 @@ object Formatter {
       old: Map[String, Object],
       keys: Seq[String],
       value: String): Map[String, Object] =
-    old + (
-      keys match {
+    old +
+      (keys match {
         case Nil =>
           (Eponymous -> value)
         case head +: tail => {
-          head -> (
-            old.get(head) match {
+          head ->
+            (old.get(head) match {
               case None =>
                 if (tail.isEmpty)
                   value
@@ -38,11 +38,9 @@ object Formatter {
                   makeMap(tail, value) + (Eponymous -> string)
               case Some(_) =>
                 throw InvalidType
-            }
-          )
+            })
         }
-      }
-    )
+      })
 
   /**
     * @param seq is not permitted to be empty

@@ -68,28 +68,30 @@ class PEventsSpec extends Specification with TestEvents {
   """
 
   def jdbcPEvents =
-    sequential ^ s2"""
+    sequential ^
+      s2"""
 
     JDBCPEvents should
     - behave like any PEvents implementation ${events(jdbcLocal, jdbcPar)}
     - (table cleanup) ${Step(
-      StorageTestUtils.dropJDBCTable(s"${dbName}_$appId"))}
+        StorageTestUtils.dropJDBCTable(s"${dbName}_$appId"))}
     - (table cleanup) ${Step(
-      StorageTestUtils.dropJDBCTable(s"${dbName}_${appId}_$channelId"))}
+        StorageTestUtils.dropJDBCTable(s"${dbName}_${appId}_$channelId"))}
 
   """
 
   def events(localEventClient: LEvents, parEventClient: PEvents) =
-    sequential ^ s2"""
+    sequential ^
+      s2"""
 
     - (init test) ${initTest(localEventClient)}
     - (insert test events) ${insertTestEvents(localEventClient)}
     find in default ${find(parEventClient)}
     find in channel ${findChannel(parEventClient)}
     aggregate user properties in default ${aggregateUserProperties(
-      parEventClient)}
+        parEventClient)}
     aggregate user properties in channel ${aggregateUserPropertiesChannel(
-      parEventClient)}
+        parEventClient)}
     write to default ${write(parEventClient)}
     write to channel ${writeChannel(parEventClient)}
 

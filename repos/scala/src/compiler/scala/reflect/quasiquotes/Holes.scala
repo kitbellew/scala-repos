@@ -52,8 +52,11 @@ trait Holes {
     inferParamImplicit(unliftableType, tpe)
   private def isLiftableType(tpe: Type) = inferLiftable(tpe) != EmptyTree
   private def isNativeType(tpe: Type) =
-    (tpe <:< treeType) || (tpe <:< nameType) || (tpe <:< modsType) ||
-      (tpe <:< flagsType) || (tpe <:< symbolType)
+    (tpe <:< treeType) ||
+      (tpe <:< nameType) ||
+      (tpe <:< modsType) ||
+      (tpe <:< flagsType) ||
+      (tpe <:< symbolType)
   private def isBottomType(tpe: Type) =
     tpe <:< NothingClass.tpe || tpe <:< NullClass.tpe
   private def extractIterableTParam(tpe: Type) =
@@ -104,9 +107,8 @@ trait Holes {
       if (isBottomType(strippedTpe))
         cantSplice()
       else if (isNativeType(strippedTpe)) {
-        if (strippedRank != NoDot && !(
-              strippedTpe <:< treeType
-            ) && !isLiftableType(strippedTpe))
+        if (strippedRank != NoDot && !(strippedTpe <:< treeType) &&
+            !isLiftableType(strippedTpe))
           cantSplice()
         else
           (strippedTpe, iterableTypeFromRank(annotatedRank, strippedTpe))
@@ -153,9 +155,9 @@ trait Holes {
           unquoteeRankMsg
         else
           ""
-      val suggestLifting = (
-        annotatedRank == NoDot || iterableRank != NoDot
-      ) && !(iterableType <:< treeType) && !isLiftableType(iterableType)
+      val suggestLifting =
+        (annotatedRank == NoDot || iterableRank != NoDot) &&
+          !(iterableType <:< treeType) && !isLiftableType(iterableType)
       val liftedTpe =
         if (annotatedRank != NoDot)
           iterableType
@@ -170,9 +172,10 @@ trait Holes {
         if (isBottomType(iterableType))
           "bottom type values often indicate programmer mistake"
         else
-          "consider " + List(rankSuggestion, liftSuggestion)
-            .filter(_ != "")
-            .mkString(" or ")
+          "consider " +
+            List(rankSuggestion, liftSuggestion)
+              .filter(_ != "")
+              .mkString(" or ")
       c.abort(unquotee.pos, s"Can't $action, $advice")
     }
 

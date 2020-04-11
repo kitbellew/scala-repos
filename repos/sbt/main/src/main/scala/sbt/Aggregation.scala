@@ -187,9 +187,8 @@ final object Aggregation {
       else
         s + " "
     val nowString = format.format(new java.util.Date(endTime))
-    "Total " + ss + "time: " + (
-      endTime - startTime + 500
-    ) / 1000 + " s, completed " + nowString
+    "Total " + ss + "time: " +
+      (endTime - startTime + 500) / 1000 + " s, completed " + nowString
   }
   def defaultFormat = {
     import java.text.DateFormat
@@ -342,8 +341,8 @@ final object Aggregation {
     }
 
   def aggregationEnabled(key: ScopedKey[_], data: Settings[Scope]): Boolean =
-    Keys.aggregate in Scope
-      .fillTaskAxis(key.scope, key.key) get data getOrElse true
+    Keys.aggregate in Scope.fillTaskAxis(key.scope, key.key) get data getOrElse
+      true
 
   @deprecated("Use BuildUtil.aggregationRelation", "0.13.0")
   def relation(

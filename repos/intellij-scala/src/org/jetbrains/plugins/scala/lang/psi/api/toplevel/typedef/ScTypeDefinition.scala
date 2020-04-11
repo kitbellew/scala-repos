@@ -115,11 +115,8 @@ trait ScTypeDefinition
 
           val extendsText = {
             try {
-              if (typeParameters.isEmpty && clazz
-                    .constructor
-                    .get
-                    .effectiveParameterClauses
-                    .length == 1) {
+              if (typeParameters.isEmpty &&
+                  clazz.constructor.get.effectiveParameterClauses.length == 1) {
                 val typeElementText = clazz
                   .constructor
                   .get

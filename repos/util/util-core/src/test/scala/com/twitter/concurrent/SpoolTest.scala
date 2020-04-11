@@ -26,11 +26,9 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
     "map" in {
       assert(
-        (
-          s map {
-            _ * 2
-          }
-        ) == Spool.empty[Int])
+        (s map {
+          _ * 2
+        }) == Spool.empty[Int])
     }
 
     "mapFuture" in {
@@ -62,8 +60,8 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       assert(Await.result(s ++ Future(Spool.empty[Int])) == Spool.empty[Int])
       assert(Await.result(Spool.empty[Int] ++ Future(s)) == Spool.empty[Int])
 
-      val s2 =
-        s ++ Future(3 *:: Future.value(4 *:: Future.value(Spool.empty[Int])))
+      val s2 = s ++
+        Future(3 *:: Future.value(4 *:: Future.value(Spool.empty[Int])))
       assert(Await.result(s2 flatMap (_.toSeq)) == Seq(3, 4))
     }
 
@@ -71,8 +69,9 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       val f =
         (x: Int) =>
           Future(
-            x.toString *:: Future
-              .value((x * 2).toString *:: Future.value(Spool.empty[String])))
+            x.toString *::
+              Future
+                .value((x * 2).toString *:: Future.value(Spool.empty[String])))
       assert(Await.result(s flatMap f) == Spool.empty[Int])
     }
 
@@ -166,14 +165,14 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
     "append via ++ with Future rhs" in {
       assert(
-        Await.result(
-          s ++ Future.value(Spool.empty[Int]) flatMap (_.toSeq)) == Seq(1, 2))
+        Await.result(s ++ Future.value(Spool.empty[Int]) flatMap (_.toSeq)) ==
+          Seq(1, 2))
       assert(
-        Await.result(
-          Spool.empty[Int] ++ Future.value(s) flatMap (_.toSeq)) == Seq(1, 2))
+        Await.result(Spool.empty[Int] ++ Future.value(s) flatMap (_.toSeq)) ==
+          Seq(1, 2))
 
-      val s2 = s ++ Future
-        .value(3 *:: Future.value(4 *:: Future.value(Spool.empty[Int])))
+      val s2 = s ++
+        Future.value(3 *:: Future.value(4 *:: Future.value(Spool.empty[Int])))
       assert(Await.result(s2 flatMap (_.toSeq)) == Seq(1, 2, 3, 4))
     }
 
@@ -595,13 +594,16 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
   "Spool.merge should merge round robin" in {
     val spools: Seq[Future[Spool[String]]] = Seq(
-      "a" *:: Future
-        .value("b" *:: Future.value("c" *:: Future.value(Spool.empty[String]))),
-      "1" *:: Future
-        .value("2" *:: Future.value("3" *:: Future.value(Spool.empty[String]))),
+      "a" *::
+        Future.value(
+          "b" *:: Future.value("c" *:: Future.value(Spool.empty[String]))),
+      "1" *::
+        Future.value(
+          "2" *:: Future.value("3" *:: Future.value(Spool.empty[String]))),
       Spool.empty,
-      "foo" *:: Future.value(
-        "bar" *:: Future.value("baz" *:: Future.value(Spool.empty[String])))
+      "foo" *::
+        Future.value(
+          "bar" *:: Future.value("baz" *:: Future.value(Spool.empty[String])))
     ).map(Future.value)
     assert(
       Await.result(Spool.merge(spools).flatMap(_.toSeq), 5.seconds) ==
@@ -617,11 +619,11 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
   "Spool.distinctBy should distinct by in order" in {
     val spool: Spool[String] =
-      "ac" *:: Future.value(
-        "bbe" *:: Future.value("ab" *:: Future.value(Spool.empty[String])))
+      "ac" *::
+        Future.value(
+          "bbe" *:: Future.value("ab" *:: Future.value(Spool.empty[String])))
     assert(
-      Await.result(spool.distinctBy(_.length).toSeq, 5.seconds) == Seq(
-        "ac",
-        "bbe"))
+      Await.result(spool.distinctBy(_.length).toSeq, 5.seconds) ==
+        Seq("ac", "bbe"))
   }
 }

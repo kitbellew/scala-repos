@@ -59,10 +59,11 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
     import h._
 
     assert(filter.openConnections == 0)
-    val closeFutures = (1 to threshold.highWaterMark) map { _ =>
-      val (_, closeFuture) = open(filter)
-      closeFuture
-    }
+    val closeFutures =
+      (1 to threshold.highWaterMark) map { _ =>
+        val (_, closeFuture) = open(filter)
+        closeFuture
+      }
     assert(filter.openConnections == threshold.highWaterMark)
     open(filter)
     assert(filter.openConnections == threshold.highWaterMark)

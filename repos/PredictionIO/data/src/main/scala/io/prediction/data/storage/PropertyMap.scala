@@ -40,8 +40,9 @@ class PropertyMap(
     s"PropertyMap(${fields}, ${firstUpdated}, ${lastUpdated})"
 
   override def hashCode: Int =
-    41 * (41 * (41 + fields.hashCode) + firstUpdated.hashCode) + lastUpdated
-      .hashCode
+    41 *
+      (41 * (41 + fields.hashCode) + firstUpdated.hashCode) +
+      lastUpdated.hashCode
 
   override def equals(other: Any): Boolean =
     other match {

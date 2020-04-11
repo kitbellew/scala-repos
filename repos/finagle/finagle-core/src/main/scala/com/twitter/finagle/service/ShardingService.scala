@@ -37,7 +37,8 @@ class ShardingService[Req, Rep](
         shard(request)
       else
         Future.exception(ShardingService.ShardNotAvailableException)
-    } getOrElse (Future.exception(ShardingService.NotShardableException))
+    } getOrElse
+      (Future.exception(ShardingService.NotShardableException))
   }
 
   override def status: Status =
@@ -58,16 +59,18 @@ case class KetamaShardingServiceBuilder[Req, Rep](
 
   def nodesAndWeights(nodes: Seq[(String, Int, Service[Req, Rep])]) = {
     copy(_nodes = Some(
-      nodes map Function.tupled {
-        KetamaNode(_, _, _)
-      }))
+      nodes map
+        Function.tupled {
+          KetamaNode(_, _, _)
+        }))
   }
 
   def nodes(services: Seq[(String, Service[Req, Rep])]) = {
     nodesAndWeights(
-      services map Function.tupled {
-        (_, 1, _)
-      })
+      services map
+        Function.tupled {
+          (_, 1, _)
+        })
   }
 
   def numReps(numReps: Int) = {

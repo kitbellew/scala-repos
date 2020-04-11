@@ -23,23 +23,23 @@ class GzipSpec extends CoderSpec {
   override def extraTests(): Unit = {
     "decode concatenated compressions" in {
       ourDecode(
-        Seq(encode("Hello, "), encode("dear "), encode("User!"))
-          .join) should readAs("Hello, dear User!")
+        Seq(encode("Hello, "), encode("dear "), encode("User!")).join) should
+        readAs("Hello, dear User!")
     }
     "provide a better compression ratio than the standard Gzip/Gunzip streams" in {
-      ourEncode(largeTextBytes).length should be < streamEncode(largeTextBytes)
-        .length
+      ourEncode(largeTextBytes).length should
+        be < streamEncode(largeTextBytes).length
     }
     "throw an error on truncated input" in {
-      val ex = the[RuntimeException] thrownBy ourDecode(
-        streamEncode(smallTextBytes).dropRight(5))
+      val ex = the[RuntimeException] thrownBy
+        ourDecode(streamEncode(smallTextBytes).dropRight(5))
       ex.getCause.getMessage should equal("Truncated GZIP stream")
     }
     "throw an error if compressed data is just missing the trailer at the end" in {
       def brokenCompress(payload: String) =
         Gzip.newCompressor.compress(ByteString(payload, "UTF-8"))
-      val ex =
-        the[RuntimeException] thrownBy ourDecode(brokenCompress("abcdefghijkl"))
+      val ex = the[RuntimeException] thrownBy
+        ourDecode(brokenCompress("abcdefghijkl"))
       ex.getCause.getMessage should equal("Truncated GZIP stream")
     }
     "throw early if header is corrupt" in {

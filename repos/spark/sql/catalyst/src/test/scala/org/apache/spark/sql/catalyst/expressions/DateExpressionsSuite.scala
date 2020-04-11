@@ -586,8 +586,9 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       UnixTimestamp(
         Literal(sdf3.format(Date.valueOf("2015-07-24"))),
         Literal(fmt3)),
-      DateTimeUtils.daysToMillis(
-        DateTimeUtils.fromJavaDate(Date.valueOf("2015-07-24"))) / 1000L
+      DateTimeUtils
+        .daysToMillis(DateTimeUtils.fromJavaDate(Date.valueOf("2015-07-24"))) /
+        1000L
     )
     val t1 = UnixTimestamp(CurrentTimestamp(), Literal("yyyy-MM-dd HH:mm:ss"))
       .eval()
@@ -648,8 +649,9 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       ToUnixTimestamp(
         Literal(sdf3.format(Date.valueOf("2015-07-24"))),
         Literal(fmt3)),
-      DateTimeUtils.daysToMillis(
-        DateTimeUtils.fromJavaDate(Date.valueOf("2015-07-24"))) / 1000L
+      DateTimeUtils
+        .daysToMillis(DateTimeUtils.fromJavaDate(Date.valueOf("2015-07-24"))) /
+        1000L
     )
     val t1 = ToUnixTimestamp(CurrentTimestamp(), Literal("yyyy-MM-dd HH:mm:ss"))
       .eval()

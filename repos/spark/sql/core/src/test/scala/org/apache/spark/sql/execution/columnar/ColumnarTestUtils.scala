@@ -77,8 +77,8 @@ object ColumnarTestUtils {
         case MAP(_) =>
           ArrayBasedMapData(
             Map(
-              Random.nextInt() -> UTF8String
-                .fromString(Random.nextString(Random.nextInt(32)))))
+              Random.nextInt() ->
+                UTF8String.fromString(Random.nextString(Random.nextInt(32)))))
         case _ =>
           throw new IllegalArgumentException(s"Unknown column type $columnType")
       }
@@ -98,10 +98,11 @@ object ColumnarTestUtils {
 
     Iterator
       .iterate(HashSet.empty[JvmType]) { set =>
-        set + Iterator
-          .continually(makeRandomValue(columnType))
-          .filterNot(set.contains)
-          .next()
+        set +
+          Iterator
+            .continually(makeRandomValue(columnType))
+            .filterNot(set.contains)
+            .next()
       }
       .drop(count)
       .next()

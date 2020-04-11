@@ -61,12 +61,8 @@ private[sql] trait SQLTestData {
     val df = sqlContext
       .sparkContext
       .parallelize(
-        TestData2(1, 1) ::
-          TestData2(1, 2) ::
-          TestData2(2, 1) ::
-          TestData2(2, 2) ::
-          TestData2(3, 1) ::
-          TestData2(3, 2) :: Nil,
+        TestData2(1, 1) :: TestData2(1, 2) :: TestData2(2, 1) ::
+          TestData2(2, 2) :: TestData2(3, 1) :: TestData2(3, 2) :: Nil,
         2)
       .toDF()
     df.registerTempTable("testData2")
@@ -76,9 +72,7 @@ private[sql] trait SQLTestData {
   protected lazy val testData3: DataFrame = {
     val df = sqlContext
       .sparkContext
-      .parallelize(
-        TestData3(1, None) ::
-          TestData3(2, Some(2)) :: Nil)
+      .parallelize(TestData3(1, None) :: TestData3(2, Some(2)) :: Nil)
       .toDF()
     df.registerTempTable("testData3")
     df
@@ -97,12 +91,9 @@ private[sql] trait SQLTestData {
     val df = sqlContext
       .sparkContext
       .parallelize(
-        LargeAndSmallInts(2147483644, 1) ::
-          LargeAndSmallInts(1, 2) ::
-          LargeAndSmallInts(2147483645, 1) ::
-          LargeAndSmallInts(2, 2) ::
-          LargeAndSmallInts(2147483646, 1) ::
-          LargeAndSmallInts(3, 2) :: Nil)
+        LargeAndSmallInts(2147483644, 1) :: LargeAndSmallInts(1, 2) ::
+          LargeAndSmallInts(2147483645, 1) :: LargeAndSmallInts(2, 2) ::
+          LargeAndSmallInts(2147483646, 1) :: LargeAndSmallInts(3, 2) :: Nil)
       .toDF()
     df.registerTempTable("largeAndSmallInts")
     df
@@ -112,12 +103,8 @@ private[sql] trait SQLTestData {
     val df = sqlContext
       .sparkContext
       .parallelize(
-        DecimalData(1, 1) ::
-          DecimalData(1, 2) ::
-          DecimalData(2, 1) ::
-          DecimalData(2, 2) ::
-          DecimalData(3, 1) ::
-          DecimalData(3, 2) :: Nil)
+        DecimalData(1, 1) :: DecimalData(1, 2) :: DecimalData(2, 1) ::
+          DecimalData(2, 2) :: DecimalData(3, 1) :: DecimalData(3, 2) :: Nil)
       .toDF()
     df.registerTempTable("decimalData")
     df
@@ -141,12 +128,9 @@ private[sql] trait SQLTestData {
     val df = sqlContext
       .sparkContext
       .parallelize(
-        UpperCaseData(1, "A") ::
-          UpperCaseData(2, "B") ::
-          UpperCaseData(3, "C") ::
-          UpperCaseData(4, "D") ::
-          UpperCaseData(5, "E") ::
-          UpperCaseData(6, "F") :: Nil)
+        UpperCaseData(1, "A") :: UpperCaseData(2, "B") ::
+          UpperCaseData(3, "C") :: UpperCaseData(4, "D") ::
+          UpperCaseData(5, "E") :: UpperCaseData(6, "F") :: Nil)
       .toDF()
     df.registerTempTable("upperCaseData")
     df
@@ -156,10 +140,8 @@ private[sql] trait SQLTestData {
     val df = sqlContext
       .sparkContext
       .parallelize(
-        LowerCaseData(1, "a") ::
-          LowerCaseData(2, "b") ::
-          LowerCaseData(3, "c") ::
-          LowerCaseData(4, "d") :: Nil)
+        LowerCaseData(1, "a") :: LowerCaseData(2, "b") ::
+          LowerCaseData(3, "c") :: LowerCaseData(4, "d") :: Nil)
       .toDF()
     df.registerTempTable("lowerCaseData")
     df
@@ -182,8 +164,7 @@ private[sql] trait SQLTestData {
         MapData(Map(1 -> "a1", 2 -> "b1", 3 -> "c1", 4 -> "d1", 5 -> "e1")) ::
           MapData(Map(1 -> "a2", 2 -> "b2", 3 -> "c2", 4 -> "d2")) ::
           MapData(Map(1 -> "a3", 2 -> "b3", 3 -> "c3")) ::
-          MapData(Map(1 -> "a4", 2 -> "b4")) ::
-          MapData(Map(1 -> "a5")) :: Nil)
+          MapData(Map(1 -> "a4", 2 -> "b4")) :: MapData(Map(1 -> "a5")) :: Nil)
     rdd.toDF().registerTempTable("mapData")
     rdd
   }
@@ -200,8 +181,7 @@ private[sql] trait SQLTestData {
     val rdd = sqlContext
       .sparkContext
       .parallelize(
-        List.fill(2)(StringData(null)) ++
-          List.fill(2)(StringData("test")))
+        List.fill(2)(StringData(null)) ++ List.fill(2)(StringData("test")))
     rdd.toDF().registerTempTable("nullableRepeatedData")
     rdd
   }
@@ -210,10 +190,7 @@ private[sql] trait SQLTestData {
     val df = sqlContext
       .sparkContext
       .parallelize(
-        NullInts(1) ::
-          NullInts(2) ::
-          NullInts(3) ::
-          NullInts(null) :: Nil)
+        NullInts(1) :: NullInts(2) :: NullInts(3) :: NullInts(null) :: Nil)
       .toDF()
     df.registerTempTable("nullInts")
     df
@@ -223,10 +200,8 @@ private[sql] trait SQLTestData {
     val df = sqlContext
       .sparkContext
       .parallelize(
-        NullInts(null) ::
-          NullInts(null) ::
-          NullInts(null) ::
-          NullInts(null) :: Nil)
+        NullInts(null) :: NullInts(null) :: NullInts(null) :: NullInts(null) ::
+          Nil)
       .toDF()
     df.registerTempTable("allNulls")
     df
@@ -236,8 +211,7 @@ private[sql] trait SQLTestData {
     val df = sqlContext
       .sparkContext
       .parallelize(
-        NullStrings(1, "abc") ::
-          NullStrings(2, "ABC") ::
+        NullStrings(1, "abc") :: NullStrings(2, "ABC") ::
           NullStrings(3, null) :: Nil)
       .toDF()
     df.registerTempTable("nullStrings")
@@ -257,9 +231,7 @@ private[sql] trait SQLTestData {
     sqlContext
       .sparkContext
       .parallelize(
-        "1, A1, true, null" ::
-          "2, B2, false, null" ::
-          "3, C3, true, null" ::
+        "1, A1, true, null" :: "2, B2, false, null" :: "3, C3, true, null" ::
           "4, D4, true, 2147483644" :: Nil)
   }
 
@@ -273,9 +245,7 @@ private[sql] trait SQLTestData {
   protected lazy val person: DataFrame = {
     val df = sqlContext
       .sparkContext
-      .parallelize(
-        Person(0, "mike", 30) ::
-          Person(1, "jim", 20) :: Nil)
+      .parallelize(Person(0, "mike", 30) :: Person(1, "jim", 20) :: Nil)
       .toDF()
     df.registerTempTable("person")
     df
@@ -284,9 +254,7 @@ private[sql] trait SQLTestData {
   protected lazy val salary: DataFrame = {
     val df = sqlContext
       .sparkContext
-      .parallelize(
-        Salary(0, 2000.0) ::
-          Salary(1, 1000.0) :: Nil)
+      .parallelize(Salary(0, 2000.0) :: Salary(1, 1000.0) :: Nil)
       .toDF()
     df.registerTempTable("salary")
     df

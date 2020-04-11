@@ -120,43 +120,53 @@ object CreateServer extends Logging {
       new scopt.OptionParser[ServerConfig]("CreateServer") {
         opt[String]("batch") action { (x, c) =>
           c.copy(batch = x)
-        } text ("Batch label of the deployment.")
+        } text
+          ("Batch label of the deployment.")
         opt[String]("engineId") action { (x, c) =>
           c.copy(engineId = Some(x))
-        } text ("Engine ID.")
+        } text
+          ("Engine ID.")
         opt[String]("engineVersion") action { (x, c) =>
           c.copy(engineVersion = Some(x))
-        } text ("Engine version.")
-        opt[String]("engine-variant") required () action { (x, c) =>
-          c.copy(engineVariant = x)
-        } text ("Engine variant JSON.")
+        } text
+          ("Engine version.")
+        opt[String]("engine-variant") required
+          () action { (x, c) =>
+            c.copy(engineVariant = x)
+          } text
+          ("Engine variant JSON.")
         opt[String]("ip") action { (x, c) =>
           c.copy(ip = x)
         }
         opt[String]("env") action { (x, c) =>
           c.copy(env = Some(x))
-        } text (
-          "Comma-separated list of environmental variables (in 'FOO=BAR' " +
-            "format) to pass to the Spark execution environment."
-        )
+        } text
+          ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
+            "format) to pass to the Spark execution environment.")
         opt[Int]("port") action { (x, c) =>
           c.copy(port = x)
-        } text ("Port to bind to (default: 8000).")
-        opt[String]("engineInstanceId") required () action { (x, c) =>
-          c.copy(engineInstanceId = x)
-        } text ("Engine instance ID.")
+        } text
+          ("Port to bind to (default: 8000).")
+        opt[String]("engineInstanceId") required
+          () action { (x, c) =>
+            c.copy(engineInstanceId = x)
+          } text
+          ("Engine instance ID.")
         opt[Unit]("feedback") action { (_, c) =>
           c.copy(feedback = true)
-        } text ("Enable feedback loop to event server.")
+        } text
+          ("Enable feedback loop to event server.")
         opt[String]("event-server-ip") action { (x, c) =>
           c.copy(eventServerIp = x)
         }
         opt[Int]("event-server-port") action { (x, c) =>
           c.copy(eventServerPort = x)
-        } text ("Event server port. Default: 7070")
+        } text
+          ("Event server port. Default: 7070")
         opt[String]("accesskey") action { (x, c) =>
           c.copy(accessKey = Some(x))
-        } text ("Event server access key.")
+        } text
+          ("Event server access key.")
         opt[String]("log-url") action { (x, c) =>
           c.copy(logUrl = Some(x))
         }
@@ -168,10 +178,12 @@ object CreateServer extends Logging {
         }
         opt[Unit]("verbose") action { (x, c) =>
           c.copy(verbose = true)
-        } text ("Enable verbose output.")
+        } text
+          ("Enable verbose output.")
         opt[Unit]("debug") action { (x, c) =>
           c.copy(debug = true)
-        } text ("Enable debug output.")
+        } text
+          ("Enable debug output.")
         opt[String]("json-extractor") action { (x, c) =>
           c.copy(jsonExtractor = JsonExtractorOption.withName(x))
         }
@@ -350,11 +362,12 @@ class MasterActor(
     case x: BindServer =>
       currentServerActor map { actor =>
         val settings = ServerSettings(system)
-        IO(Http) ! Http.Bind(
-          actor,
-          interface = sc.ip,
-          port = sc.port,
-          settings = Some(settings.copy(sslEncryption = true)))
+        IO(Http) !
+          Http.Bind(
+            actor,
+            interface = sc.ip,
+            port = sc.port,
+            settings = Some(settings.copy(sslEncryption = true)))
       } getOrElse {
         log.error("Cannot bind a non-existing server backend.")
       }
@@ -380,11 +393,12 @@ class MasterActor(
         sprayHttpListener.map { l =>
           l ! Http.Unbind(5.seconds)
           val settings = ServerSettings(system)
-          IO(Http) ! Http.Bind(
-            actor,
-            interface = sc.ip,
-            port = sc.port,
-            settings = Some(settings.copy(sslEncryption = true)))
+          IO(Http) !
+            Http.Bind(
+              actor,
+              interface = sc.ip,
+              port = sc.port,
+              settings = Some(settings.copy(sslEncryption = true)))
           currentServerActor.get ! Kill
           currentServerActor = Some(actor)
         } getOrElse {
@@ -493,8 +507,9 @@ class ServerActor[Q, P](
         .http
         .Http(logUrl)
         .postData(
-          logPrefix + write(
-            Map("engineInstance" -> engineInstance, "message" -> message)))
+          logPrefix +
+            write(
+              Map("engineInstance" -> engineInstance, "message" -> message)))
         .asString
     } catch {
       case e: Throwable =>
@@ -623,10 +638,11 @@ class ServerActor[Q, P](
                       "eventTime" -> queryTime.toString(),
                       "entityType" -> "pio_pr", // prediction result
                       "entityId" -> newPrId,
-                      "properties" -> Map(
-                        "engineInstanceId" -> engineInstance.id,
-                        "query" -> query,
-                        "prediction" -> prediction)
+                      "properties" ->
+                        Map(
+                          "engineInstanceId" -> engineInstance.id,
+                          "query" -> query,
+                          "prediction" -> prediction)
                     ) ++ queryPrId
                     // At this point args.accessKey should be Some(String).
                     val accessKey = args.accessKey.getOrElse("")
@@ -645,8 +661,8 @@ class ServerActor[Q, P](
                       case Success(code) => {
                         if (code != 201) {
                           log.error(
-                            s"Feedback event failed. Status code: $code."
-                              + s"Data: ${write(data)}.")
+                            s"Feedback event failed. Status code: $code." +
+                              s"Data: ${write(data)}.")
                         }
                       }
                       case Failure(t) => {
@@ -677,9 +693,8 @@ class ServerActor[Q, P](
                 // Bookkeeping
                 val servingEndTime = DateTime.now
                 lastServingSec =
-                  (
-                    servingEndTime.getMillis - servingStartTime.getMillis
-                  ) / 1000.0
+                  (servingEndTime.getMillis - servingStartTime.getMillis) /
+                    1000.0
                 avgServingSec =
                   ((avgServingSec * requestCount) + lastServingSec) /
                     (requestCount + 1)
@@ -747,28 +762,35 @@ class ServerActor[Q, P](
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
               Map(
-                "plugins" -> Map(
-                  "outputblockers" -> pluginContext
-                    .outputBlockers
-                    .map {
-                      case (n, p) =>
-                        n -> Map(
-                          "name" -> p.pluginName,
-                          "description" -> p.pluginDescription,
-                          "class" -> p.getClass.getName,
-                          "params" -> pluginContext.pluginParams(p.pluginName))
-                    },
-                  "outputsniffers" -> pluginContext
-                    .outputSniffers
-                    .map {
-                      case (n, p) =>
-                        n -> Map(
-                          "name" -> p.pluginName,
-                          "description" -> p.pluginDescription,
-                          "class" -> p.getClass.getName,
-                          "params" -> pluginContext.pluginParams(p.pluginName))
-                    }
-                ))
+                "plugins" ->
+                  Map(
+                    "outputblockers" ->
+                      pluginContext
+                        .outputBlockers
+                        .map {
+                          case (n, p) =>
+                            n ->
+                              Map(
+                                "name" -> p.pluginName,
+                                "description" -> p.pluginDescription,
+                                "class" -> p.getClass.getName,
+                                "params" ->
+                                  pluginContext.pluginParams(p.pluginName))
+                        },
+                    "outputsniffers" ->
+                      pluginContext
+                        .outputSniffers
+                        .map {
+                          case (n, p) =>
+                            n ->
+                              Map(
+                                "name" -> p.pluginName,
+                                "description" -> p.pluginDescription,
+                                "class" -> p.getClass.getName,
+                                "params" ->
+                                  pluginContext.pluginParams(p.pluginName))
+                        }
+                  ))
             }
           }
         }
@@ -783,11 +805,12 @@ class ServerActor[Q, P](
               val pluginName = segments(1)
               pluginType match {
                 case EngineServerPlugin.outputSniffer =>
-                  pluginsActorRef ? PluginsActor.HandleREST(
-                    pluginName = pluginName,
-                    pluginArgs = pluginArgs) map {
-                    _.asInstanceOf[String]
-                  }
+                  pluginsActorRef ?
+                    PluginsActor.HandleREST(
+                      pluginName = pluginName,
+                      pluginArgs = pluginArgs) map {
+                      _.asInstanceOf[String]
+                    }
               }
             }
           }

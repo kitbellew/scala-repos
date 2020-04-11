@@ -88,7 +88,8 @@ class ScCaseClauseImpl(node: ASTNode)
                     ScalaElementTypes.TRAIT_DEF,
                     ScalaElementTypes.OBJECT_DEF
                   ))
-                if (last != null && lastParent != null && last
+                if (last != null && lastParent != null &&
+                    last
                       .startOffsetInParent == lastParent.startOffsetInParent) {
                   if (!process)
                     return false

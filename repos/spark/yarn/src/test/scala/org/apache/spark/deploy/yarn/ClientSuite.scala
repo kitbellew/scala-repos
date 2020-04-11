@@ -70,8 +70,8 @@ class ClientSuite
   }
 
   test("default Yarn application classpath") {
-    getDefaultYarnApplicationClasspath should be(
-      Some(Fixtures.knownDefYarnAppCP))
+    getDefaultYarnApplicationClasspath should
+      be(Some(Fixtures.knownDefYarnAppCP))
   }
 
   test("default MR application classpath") {
@@ -83,8 +83,8 @@ class ClientSuite
     withAppConf(Fixtures.mapYARNAppConf) { conf =>
       val env = newEnv
       populateHadoopClasspath(conf, env)
-      classpath(env) should be(
-        flatten(Fixtures.knownYARNAppCP, getDefaultMRApplicationClasspath))
+      classpath(env) should
+        be(flatten(Fixtures.knownYARNAppCP, getDefaultMRApplicationClasspath))
     }
   }
 
@@ -93,8 +93,8 @@ class ClientSuite
     withAppConf(Fixtures.mapMRAppConf) { conf =>
       val env = newEnv
       populateHadoopClasspath(conf, env)
-      classpath(env) should be(
-        flatten(getDefaultYarnApplicationClasspath, Fixtures.knownMRAppCP))
+      classpath(env) should
+        be(flatten(getDefaultYarnApplicationClasspath, Fixtures.knownMRAppCP))
     }
   }
 
@@ -103,8 +103,8 @@ class ClientSuite
     withAppConf(Fixtures.mapAppConf) { conf =>
       val env = newEnv
       populateHadoopClasspath(conf, env)
-      classpath(env) should be(
-        flatten(Fixtures.knownYARNAppCP, Fixtures.knownMRAppCP))
+      classpath(env) should
+        be(flatten(Fixtures.knownYARNAppCP, Fixtures.knownMRAppCP))
     }
   }
 
@@ -187,8 +187,8 @@ class ClientSuite
       .set(REPLACEMENT_ROOT_PATH, "/remotePath")
 
     getClusterPath(sparkConf, "/localPath") should be("/remotePath")
-    getClusterPath(sparkConf, "/localPath/1:/localPath/2") should be(
-      "/remotePath/1:/remotePath/2")
+    getClusterPath(sparkConf, "/localPath/1:/localPath/2") should
+      be("/remotePath/1:/remotePath/2")
 
     val env = new MutableHashMap[String, String]()
     populateClasspath(
@@ -347,13 +347,12 @@ class ClientSuite
     val knownMRAppCP = Some(Seq("/known/mr/path"))
 
     val mapMRAppConf = Map(
-      "mapreduce.application.classpath" -> knownMRAppCP
-        .map(_.mkString(":"))
-        .get)
+      "mapreduce.application.classpath" ->
+        knownMRAppCP.map(_.mkString(":")).get)
 
     val mapYARNAppConf = Map(
-      YarnConfiguration
-        .YARN_APPLICATION_CLASSPATH -> knownYARNAppCP.map(_.mkString(":")).get)
+      YarnConfiguration.YARN_APPLICATION_CLASSPATH ->
+        knownYARNAppCP.map(_.mkString(":")).get)
 
     val mapAppConf = mapYARNAppConf ++ mapMRAppConf
   }

@@ -70,9 +70,10 @@ object ValidationSpec extends Specification {
     "throw an IllegalArgumentException if regex is null" in {
       {
         Form(
-          "value" -> Forms
-            .text
-            .verifying(Constraints.pattern(null, "nullRegex", "error")))
+          "value" ->
+            Forms
+              .text
+              .verifying(Constraints.pattern(null, "nullRegex", "error")))
           .bind(Map("value" -> "hello"))
       }.must(throwAn[IllegalArgumentException])
     }
@@ -80,9 +81,8 @@ object ValidationSpec extends Specification {
     "throw an IllegalArgumentException if name is null" in {
       {
         Form(
-          "value" -> Forms
-            .text
-            .verifying(Constraints.pattern(".*".r, null, "error")))
+          "value" ->
+            Forms.text.verifying(Constraints.pattern(".*".r, null, "error")))
           .bind(Map("value" -> "hello"))
       }.must(throwAn[IllegalArgumentException])
     }
@@ -303,8 +303,8 @@ object ValidationSpec extends Specification {
 
     "refuse a value out of range" in {
       val result = Invalid(List(ValidationError("error.max", 10)))
-      ParameterValidator(List(Constraints.max(10)), Some(11)) must equalTo(
-        result)
+      ParameterValidator(List(Constraints.max(10)), Some(11)) must
+        equalTo(result)
     }
 
     "validate multiple values" in {

@@ -339,11 +339,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   def logError(msg: String, t: Throwable): Unit = ()
 
   override def shouldLogAtThisPhase =
-    settings.log.isSetByUser && (
-      (settings.log containsPhase globalPhase) || (
-        settings.log containsPhase phase
-      )
-    )
+    settings.log.isSetByUser &&
+      ((settings.log containsPhase globalPhase) ||
+        (settings.log containsPhase phase))
   // Over 200 closure objects are eliminated by inlining this.
   @inline
   final def log(msg: => AnyRef) {
@@ -378,12 +376,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           None
       }
 
-    val charset = settings
-      .encoding
-      .valueSetByUser flatMap loadCharset getOrElse {
-      settings.encoding.value = defaultEncoding // A mandatory charset
-      Charset.forName(defaultEncoding)
-    }
+    val charset = settings.encoding.valueSetByUser flatMap
+      loadCharset getOrElse {
+        settings.encoding.value = defaultEncoding // A mandatory charset
+        Charset.forName(defaultEncoding)
+      }
 
     def loadReader(name: String): Option[SourceReader] = {
       def ccon =
@@ -398,7 +395,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       catch {
         case ex: Throwable =>
           globalError(
-            "exception while trying to instantiate source reader '" + name + "'")
+            "exception while trying to instantiate source reader '" + name +
+              "'")
           None
       }
     }
@@ -743,9 +741,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           phases filter (_.enabled)
       def isEnabled(q: String) = enabled exists (_.phaseName == q)
       val (satisfied, unhappy) = enabled partition (_.requires forall isEnabled)
-      unhappy foreach (u =>
-        globalError(
-          s"Phase '${u.phaseName}' requires: ${u.requires filterNot isEnabled}"))
+      unhappy foreach
+        (u =>
+          globalError(
+            s"Phase '${u.phaseName}' requires: ${u.requires filterNot isEnabled}"))
       satisfied // they're happy now, but they may need an unhappy phase that was booted
     }
     computeInternalPhases() // Global.scala
@@ -916,10 +915,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   /** Is given package class a system package class that cannot be invalidated?
     */
   private def isSystemPackageClass(pkg: Symbol) =
-    pkg == RootClass || (
-      pkg.hasTransOwner(definitions.ScalaPackageClass) && !pkg.hasTransOwner(
-        this.rootMirror.staticPackage("scala.tools").moduleClass.asClass)
-    )
+    pkg == RootClass ||
+      (pkg.hasTransOwner(definitions.ScalaPackageClass) &&
+        !pkg.hasTransOwner(
+          this.rootMirror.staticPackage("scala.tools").moduleClass.asClass))
 
   /** Invalidates packages that contain classes defined in a classpath entry, and
     *  rescans that entry.
@@ -1063,14 +1062,15 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       else
         for (pstr <- newEntries.packages.map(getName)) {
           val pname = newTermName(pstr)
-          val pkg = (root.info decl pname) orElse {
-            // package does not exist in symbol table, create symbol to track it
-            assert(!subPackage(oldEntries.get, pstr).isDefined)
-            loaders.enterPackage(
-              root,
-              pstr,
-              new loaders.PackageLoader(allEntries.get))
-          }
+          val pkg =
+            (root.info decl pname) orElse {
+              // package does not exist in symbol table, create symbol to track it
+              assert(!subPackage(oldEntries.get, pstr).isDefined)
+              loaders.enterPackage(
+                root,
+                pstr,
+                new loaders.PackageLoader(allEntries.get))
+            }
           mergeNewEntries(
             subPackage(newEntries, pstr).get,
             pkg.moduleClass.asClass,
@@ -1119,12 +1119,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   def currentFreshNameCreator = currentUnit.fresh
 
   def isGlobalInitialized =
-    (definitions.isDefinitionsInitialized
-      && rootMirror.isMirrorInitialized)
+    (definitions.isDefinitionsInitialized && rootMirror.isMirrorInitialized)
   override def isPastTyper =
-    ((curRun ne null)
-      && isGlobalInitialized // defense against init order issues
-      && (globalPhase.id > currentRun.typerPhase.id))
+    ((curRun ne null) &&
+      isGlobalInitialized // defense against init order issues
+      &&
+      (globalPhase.id > currentRun.typerPhase.id))
 
   // TODO - trim these to the absolute minimum.
   @inline
@@ -1221,11 +1221,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         try {
           // Taking 3 before, 3 after the fingered line.
           val start = 0 max (tree.pos.line - 3)
-          val xs = scala
-            .reflect
-            .io
-            .File(tree.pos.source.file.file)
-            .lines drop start take 7
+          val xs = scala.reflect.io.File(tree.pos.source.file.file).lines drop
+            start take 7
           val strs = xs.zipWithIndex map {
             case (line, idx) =>
               f"${start + idx}%6d $line"
@@ -1242,12 +1239,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
       val info1 = formatExplain(
         "while compiling" -> currentSource.path,
-        "during phase" -> (
-          if (globalPhase eq phase)
-            phase
-          else
-            "globalPhase=%s, enteringPhase=%s".format(globalPhase, phase)
-        ),
+        "during phase" ->
+          (if (globalPhase eq phase)
+             phase
+           else
+             "globalPhase=%s, enteringPhase=%s".format(globalPhase, phase)),
         "library version" -> scala.util.Properties.versionString,
         "compiler version" -> Properties.versionString,
         "reconstructed args" -> settings.recreateArgs.mkString(" ")
@@ -1257,17 +1253,16 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         "tree position" -> pos_s,
         "tree tpe" -> tpe,
         "symbol" -> Option(sym).fold("null")(_.debugLocationString),
-        "symbol definition" -> Option(sym)
-          .fold("null")(s => s.defString + s" (a ${s.shortSymbolClass})"),
+        "symbol definition" ->
+          Option(sym)
+            .fold("null")(s => s.defString + s" (a ${s.shortSymbolClass})"),
         "symbol package" -> sym.enclosingPackage.fullName,
         "symbol owners" -> ownerChainString(sym),
-        "call site" -> (
-          site.fullLocationString + " in " + site.enclosingPackage
-        )
+        "call site" ->
+          (site.fullLocationString + " in " + site.enclosingPackage)
       )
-      (
-        "\n  " + errorMessage + "\n" + info1
-      ) :: info2 :: context_s :: Nil mkString "\n\n"
+      ("\n  " + errorMessage + "\n" + info1) ::
+        info2 :: context_s :: Nil mkString "\n\n"
     } catch {
       case _: Exception | _: TypeError =>
         errorMessage
@@ -1281,8 +1276,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     /* Only output a summary message under debug if we aren't echoing each file. */
     if (settings.debug && !(settings.verbose || currentRun.size < 5))
       inform(
-        "[running phase " + ph.name + " on " + currentRun
-          .size + " compilation units]")
+        "[running phase " + ph.name + " on " + currentRun.size +
+          " compilation units]")
   }
 
   def newSourceFile(code: String, filename: String = "<console>") =
@@ -1575,22 +1570,22 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     }
     private def warnDeprecatedAndConflictingSettings(unit: CompilationUnit) {
       // issue warnings for any usage of deprecated settings
-      settings.userSetSettings filter (_.isDeprecated) foreach { s =>
-        currentRun
-          .reporting
-          .deprecationWarning(
-            NoPosition,
-            s.name + " is deprecated: " + s.deprecationMessage.get)
-      }
+      settings.userSetSettings filter
+        (_.isDeprecated) foreach { s =>
+          currentRun
+            .reporting
+            .deprecationWarning(
+              NoPosition,
+              s.name + " is deprecated: " + s.deprecationMessage.get)
+        }
       val supportedTarget = "jvm-1.8"
       if (settings.target.value != supportedTarget) {
         currentRun
           .reporting
           .deprecationWarning(
             NoPosition,
-            settings.target.name + ":" + settings
-              .target
-              .value + " is deprecated and has no effect, setting to " + supportedTarget)
+            settings.target.name + ":" + settings.target.value +
+              " is deprecated and has no effect, setting to " + supportedTarget)
         settings.target.value = supportedTarget
       }
       settings.conflictWarning.foreach(reporter.warning(NoPosition, _))
@@ -1743,11 +1738,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
         // progress update
         informTime(globalPhase.description, startTime)
-        if ((settings.Xprint containsPhase globalPhase) || settings
-              .printLate && runIsAt(cleanupPhase)) {
+        if ((settings.Xprint containsPhase globalPhase) ||
+            settings.printLate && runIsAt(cleanupPhase)) {
           // print trees
-          if (settings.Xshowtrees || settings.XshowtreesCompact || settings
-                .XshowtreesStringified)
+          if (settings.Xshowtrees || settings.XshowtreesCompact ||
+              settings.XshowtreesStringified)
             nodePrinters.printAll()
           else
             printAllUnits()
@@ -1852,10 +1847,13 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     def compileLate(unit: CompilationUnit) {
       addUnit(unit)
 
-      if (firstPhase ne null) { // we might get here during initialization, is a source is newer than the binary
+      if (firstPhase ne
+            null) { // we might get here during initialization, is a source is newer than the binary
         val maxId = math.max(globalPhase.id, typerPhase.id)
-        firstPhase.iterator takeWhile (_.id < maxId) foreach (ph =>
-          enteringPhase(ph)(ph.asInstanceOf[GlobalPhase] applyPhase unit))
+        firstPhase.iterator takeWhile
+          (_.id < maxId) foreach
+          (ph =>
+            enteringPhase(ph)(ph.asInstanceOf[GlobalPhase] applyPhase unit))
         refreshProgress()
       }
     }
@@ -1908,8 +1906,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         // the run looking for plausible matches.
         case NoSymbol =>
           phased(
-            currentRun.symSource.keys map (sym =>
-              findNamedMember(fullName, sym)) filterNot (_ == NoSymbol) toList)
+            currentRun.symSource.keys map
+              (sym => findNamedMember(fullName, sym)) filterNot
+              (_ == NoSymbol) toList)
         // The name as given matched, so show only that.
         case sym =>
           List(sym)

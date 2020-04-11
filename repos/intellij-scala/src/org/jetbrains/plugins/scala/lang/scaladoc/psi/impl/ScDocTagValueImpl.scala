@@ -70,8 +70,9 @@ class ScDocTagValueImpl(node: ASTNode)
   def multiResolve(incompleteCode: Boolean): Array[ResolveResult] =
     getParametersVariants
       .filter(a =>
-        a.name == refName || ScalaPsiUtil
-          .convertMemberName(a.name) == ScalaPsiUtil.convertMemberName(refName))
+        a.name == refName ||
+          ScalaPsiUtil.convertMemberName(a.name) ==
+          ScalaPsiUtil.convertMemberName(refName))
       .map(new ScalaResolveResult(_))
 
   override def toString = "ScalaDocTagValue: " + getText
@@ -151,9 +152,8 @@ class ScDocTagValueImpl(node: ASTNode)
       parent = parent.getParent
     }
 
-    if (parent == null || (
-          parentTagType != PARAM_TAG && parentTagType != TYPE_PARAM_TAG
-        ))
+    if (parent == null ||
+        (parentTagType != PARAM_TAG && parentTagType != TYPE_PARAM_TAG))
       return Array.empty[ScNamedElement]
 
     def filterParamsByName(
@@ -162,8 +162,7 @@ class ScDocTagValueImpl(node: ASTNode)
       val paramsSet =
         (
           for (tag <- parent.asInstanceOf[ScDocComment].findTagsByName(tagName)
-               if tag.getValueElement != null &&
-                 tag != getParent)
+               if tag.getValueElement != null && tag != getParent)
             yield tag.getValueElement.getText
         ).toSet
 

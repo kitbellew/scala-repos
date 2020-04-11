@@ -208,13 +208,14 @@ class ObjectPropertySpec
 
   it should "support implicit conversion to a String Binding" is (pending)
 
-  it should "support implicit conversion from a ScalaFX ObjectProperty with a SFXDelegate of a type T to a JavaFX ObjectProperty of type T" in {
-    val scalaObjProperty: ObjectProperty[Button] = ObjectProperty[Button](
-      new Button("Test"))
-    val javaObjProperty: jfxbp.ObjectProperty[jfxsc.Button] = scalaObjProperty
+  it should
+    "support implicit conversion from a ScalaFX ObjectProperty with a SFXDelegate of a type T to a JavaFX ObjectProperty of type T" in {
+      val scalaObjProperty: ObjectProperty[Button] = ObjectProperty[Button](
+        new Button("Test"))
+      val javaObjProperty: jfxbp.ObjectProperty[jfxsc.Button] = scalaObjProperty
 
-    javaObjProperty.get should be(scalaObjProperty.get.delegate)
-  }
+      javaObjProperty.get should be(scalaObjProperty.get.delegate)
+    }
 
   it should "be able to hold a value type like Double" in {
 
@@ -281,11 +282,12 @@ class ObjectPropertySpec
     evaluateFillProperty(ObjectProperty[ju.Date](new ju.Date), null)
   }
 
-  "fillProperty" should "fill property with not null value if receives a not null" in {
-    evaluateFillProperty(
-      ObjectProperty[ju.Date](new ju.Date),
-      new ju.Date(123456L))
-  }
+  "fillProperty" should
+    "fill property with not null value if receives a not null" in {
+      evaluateFillProperty(
+        ObjectProperty[ju.Date](new ju.Date),
+        new ju.Date(123456L))
+    }
 
   "fillProperty" should "supports variance" in {
     evaluateFillProperty(

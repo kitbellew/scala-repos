@@ -302,25 +302,28 @@ trait CounterOps {
           sum
         } else if (n == 2) {
           var sum = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = norm(v);
-            sum += nn * nn
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = norm(v);
+              sum += nn * nn
+            })
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = norm(v);
-            if (nn > max)
-              max = nn
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = norm(v);
+              if (nn > max)
+                max = nn
+            })
           max
         } else {
           var sum = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = norm(v);
-            sum += math.pow(nn, n)
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = norm(v);
+              sum += math.pow(nn, n)
+            })
           math.pow(sum, 1.0 / n)
         }
       }

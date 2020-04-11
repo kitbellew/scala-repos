@@ -152,33 +152,36 @@ class FsHistoryProviderSuite
             ApplicationAttemptInfo(None, start, end, lastMod, user, completed)))
       }
 
-      list(0) should be(
-        makeAppInfo(
-          "new-app-complete",
-          newAppComplete.getName(),
-          1L,
-          5L,
-          newAppComplete.lastModified(),
-          "test",
-          true))
-      list(1) should be(
-        makeAppInfo(
-          "new-complete-lzf",
-          newAppCompressedComplete.getName(),
-          1L,
-          4L,
-          newAppCompressedComplete.lastModified(),
-          "test",
-          true))
-      list(2) should be(
-        makeAppInfo(
-          "new-incomplete",
-          newAppIncomplete.getName(),
-          1L,
-          -1L,
-          newAppIncomplete.lastModified(),
-          "test",
-          false))
+      list(0) should
+        be(
+          makeAppInfo(
+            "new-app-complete",
+            newAppComplete.getName(),
+            1L,
+            5L,
+            newAppComplete.lastModified(),
+            "test",
+            true))
+      list(1) should
+        be(
+          makeAppInfo(
+            "new-complete-lzf",
+            newAppCompressedComplete.getName(),
+            1L,
+            4L,
+            newAppCompressedComplete.lastModified(),
+            "test",
+            true))
+      list(2) should
+        be(
+          makeAppInfo(
+            "new-incomplete",
+            newAppIncomplete.getName(),
+            1L,
+            -1L,
+            newAppIncomplete.lastModified(),
+            "test",
+            false))
 
       // Make sure the UI can be rendered.
       list.foreach {
@@ -230,8 +233,7 @@ class FsHistoryProviderSuite
         .attempts
         .head
         .asInstanceOf[FsApplicationAttemptInfo]
-        .logPath should
-        endWith(EventLoggingListener.IN_PROGRESS)
+        .logPath should endWith(EventLoggingListener.IN_PROGRESS)
     }
 
     logFile1.renameTo(newLogFile("app1", None, inProgress = false))

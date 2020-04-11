@@ -226,9 +226,7 @@ class ChannelTransportTest
       e
     })
 
-    assert(
-      Await.result(trans.onClose) ==
-        ChannelException(exc, remoteAddress))
+    assert(Await.result(trans.onClose) == ChannelException(exc, remoteAddress))
   }
 
   test("satisfy pending reads") {

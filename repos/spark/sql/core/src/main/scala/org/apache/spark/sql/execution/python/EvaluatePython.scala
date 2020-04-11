@@ -182,10 +182,8 @@ object EvaluatePython {
       case (c: String, BinaryType) =>
         c.getBytes(StandardCharsets.UTF_8)
       case (c, BinaryType)
-          if c.getClass.isArray && c
-            .getClass
-            .getComponentType
-            .getName == "byte" =>
+          if c.getClass.isArray &&
+            c.getClass.getComponentType.getName == "byte" =>
         c
 
       case (c: java.util.List[_], ArrayType(elementType, _)) =>

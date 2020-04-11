@@ -20,8 +20,8 @@ object IterateesSpec
 
   def checkFoldTryResult[A, E](i: Iteratee[A, E], expected: Try[Step[A, E]]) = {
     mustExecute(0) { foldEC =>
-      Try(await(i.fold(s => Future.successful(s))(foldEC))) must equalTo(
-        expected)
+      Try(await(i.fold(s => Future.successful(s))(foldEC))) must
+        equalTo(expected)
     }
   }
 
@@ -263,14 +263,13 @@ object IterateesSpec
 
       import ExecutionContext.Implicits.global
       val unitDone: Iteratee[Unit, Unit] = Done(())
-      val flatMapped: Iteratee[Unit, Unit] =
-        (0 until overflowDepth)
-          .foldLeft[Iteratee[Unit, Unit]](Cont(_ => unitDone)) {
-            case (it, _) =>
-              it.flatMap(_ => unitDone)
-          }
-      await(await(flatMapped.feed(Input.EOF)).unflatten) must equalTo(
-        Step.Done((), Input.Empty))
+      val flatMapped: Iteratee[Unit, Unit] = (0 until overflowDepth)
+        .foldLeft[Iteratee[Unit, Unit]](Cont(_ => unitDone)) {
+          case (it, _) =>
+            it.flatMap(_ => unitDone)
+        }
+      await(await(flatMapped.feed(Input.EOF)).unflatten) must
+        equalTo(Step.Done((), Input.Empty))
     }
 
   }
@@ -311,18 +310,19 @@ object IterateesSpec
     "map the final iteratee's result (with map)" in {
       mustExecute(4, 1) { (foldEC, mapEC) =>
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee
-            .fold[Int, Int](0)(_ + _)(foldEC)
-            .map(_ * 2)(mapEC)) must equalTo(20)
+          Enumerator(1, 2, 3, 4) |>>>
+            Iteratee.fold[Int, Int](0)(_ + _)(foldEC).map(_ * 2)(mapEC)) must
+          equalTo(20)
       }
     }
 
     "map the final iteratee's result (with mapM)" in {
       mustExecute(4, 1) { (foldEC, mapEC) =>
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee
-            .fold[Int, Int](0)(_ + _)(foldEC)
-            .mapM(x => Future.successful(x * 2))(mapEC)) must equalTo(20)
+          Enumerator(1, 2, 3, 4) |>>>
+            Iteratee
+              .fold[Int, Int](0)(_ + _)(foldEC)
+              .mapM(x => Future.successful(x * 2))(mapEC)) must equalTo(20)
       }
     }
 
@@ -333,8 +333,8 @@ object IterateesSpec
     "fold input" in {
       mustExecute(4) { foldEC =>
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee
-            .fold[Int, Int](0)(_ + _)(foldEC)) must equalTo(10)
+          Enumerator(1, 2, 3, 4) |>>>
+            Iteratee.fold[Int, Int](0)(_ + _)(foldEC)) must equalTo(10)
       }
     }
 
@@ -345,8 +345,9 @@ object IterateesSpec
     "fold input" in {
       mustExecute(4) { foldEC =>
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee.foldM[Int, Int](0)((x, y) =>
-            Future.successful(x + y))(foldEC)) must equalTo(10)
+          Enumerator(1, 2, 3, 4) |>>>
+            Iteratee.foldM[Int, Int](0)((x, y) => Future.successful(x + y))(
+              foldEC)) must equalTo(10)
       }
     }
 
@@ -358,8 +359,8 @@ object IterateesSpec
       mustExecute(4) { foldEC =>
         val folder = (x: Int, y: Int) => Future.successful((x + y, false))
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee
-            .fold2[Int, Int](0)(folder)(foldEC)) must equalTo(10)
+          Enumerator(1, 2, 3, 4) |>>>
+            Iteratee.fold2[Int, Int](0)(folder)(foldEC)) must equalTo(10)
       }
     }
 
@@ -367,8 +368,8 @@ object IterateesSpec
       mustExecute(3) { foldEC =>
         val folder = (x: Int, y: Int) => Future.successful((x + y, y > 2))
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee
-            .fold2[Int, Int](0)(folder)(foldEC)) must equalTo(6)
+          Enumerator(1, 2, 3, 4) |>>>
+            Iteratee.fold2[Int, Int](0)(folder)(foldEC)) must equalTo(6)
       }
     }
 
@@ -379,8 +380,8 @@ object IterateesSpec
     "fold input" in {
       mustExecute(4) { foldEC =>
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee
-            .fold1[Int, Int](Future.successful(0))((x, y) =>
+          Enumerator(1, 2, 3, 4) |>>>
+            Iteratee.fold1[Int, Int](Future.successful(0))((x, y) =>
               Future.successful(x + y))(foldEC)) must equalTo(10)
       }
     }
@@ -659,9 +660,8 @@ object IterateesSpec
     "return its concatenated input" in {
       val s = List(List(1, 2), List(3), List(4, 5))
       val r = List(1, 2, 3, 4, 5)
-      await(
-        Enumerator.enumerateSeq1(s) |>>> Iteratee
-          .consume[List[Int]]()) must equalTo(r)
+      await(Enumerator.enumerateSeq1(s) |>>> Iteratee.consume[List[Int]]()) must
+        equalTo(r)
     }
 
   }
@@ -670,9 +670,8 @@ object IterateesSpec
 
     "return its input as a list" in {
       val s = List(1, 2, 3, 4, 5)
-      await(
-        Enumerator.enumerateSeq1(s) |>>> Iteratee.getChunks[Int]) must equalTo(
-        s)
+      await(Enumerator.enumerateSeq1(s) |>>> Iteratee.getChunks[Int]) must
+        equalTo(s)
     }
 
   }
@@ -696,23 +695,23 @@ object IterateesSpec
     }
 
     "take 1 element from 2" in {
-      await(Enumerator(1, 2) |>>> takenAndNotTaken(1)) must equalTo(
-        (Seq(1), Seq(2)))
+      await(Enumerator(1, 2) |>>> takenAndNotTaken(1)) must
+        equalTo((Seq(1), Seq(2)))
     }
 
     "take 2 elements from 2" in {
-      await(Enumerator(1, 2) |>>> takenAndNotTaken(2)) must equalTo(
-        (Seq(1, 2), Seq()))
+      await(Enumerator(1, 2) |>>> takenAndNotTaken(2)) must
+        equalTo((Seq(1, 2), Seq()))
     }
 
     "take 2 elements from 2 when asked for 3" in {
-      await(Enumerator(1, 2) |>>> takenAndNotTaken(3)) must equalTo(
-        (Seq(1, 2), Seq()))
+      await(Enumerator(1, 2) |>>> takenAndNotTaken(3)) must
+        equalTo((Seq(1, 2), Seq()))
     }
 
     "skip Input.Empty when taking elements" in {
-      val enum = Enumerator(1, 2) >>> Enumerator
-        .enumInput(Input.Empty) >>> Enumerator(3, 4)
+      val enum = Enumerator(1, 2) >>> Enumerator.enumInput(Input.Empty) >>>
+        Enumerator(3, 4)
       await(enum |>>> takenAndNotTaken(3)) must equalTo((Seq(1, 2, 3), Seq(4)))
     }
 
@@ -742,8 +741,8 @@ object IterateesSpec
     }
 
     "be false for a stream with two elements" in {
-      await(Enumerator(1, 2) |>>> isEmptyThenRest) must equalTo(
-        (false, Seq(1, 2)))
+      await(Enumerator(1, 2) |>>> isEmptyThenRest) must
+        equalTo((false, Seq(1, 2)))
     }
 
     "be false for a stream with empty and element inputs" in {
@@ -773,23 +772,23 @@ object IterateesSpec
     }
 
     "take 1 element and not be empty from 2" in {
-      await(Enumerator(1, 2) |>>> process(1)) must equalTo(
-        (Seq(1), false, Seq(2)))
+      await(Enumerator(1, 2) |>>> process(1)) must
+        equalTo((Seq(1), false, Seq(2)))
     }
 
     "take 2 elements and be empty from 2" in {
-      await(Enumerator(1, 2) |>>> process(2)) must equalTo(
-        (Seq(1, 2), true, Seq()))
+      await(Enumerator(1, 2) |>>> process(2)) must
+        equalTo((Seq(1, 2), true, Seq()))
     }
 
     "take 2 elements and be empty from 2 when asked for 3" in {
-      await(Enumerator(1, 2) |>>> process(3)) must equalTo(
-        (Seq(1, 2), true, Seq()))
+      await(Enumerator(1, 2) |>>> process(3)) must
+        equalTo((Seq(1, 2), true, Seq()))
     }
 
     "skip Input.Empty when taking elements" in {
-      val enum = Enumerator(1, 2) >>> Enumerator
-        .enumInput(Input.Empty) >>> Enumerator(3, 4)
+      val enum = Enumerator(1, 2) >>> Enumerator.enumInput(Input.Empty) >>>
+        Enumerator(3, 4)
       await(enum |>>> process(3)) must equalTo((Seq(1, 2, 3), false, Seq(4)))
     }
 
@@ -806,8 +805,8 @@ object IterateesSpec
         .map(_ => new Array[Byte](arraySize))
       import play.api.libs.iteratee.Execution.Implicits.defaultExecutionContext
       await(
-        Enumerator.enumerate(iterator) |>>> Iteratee
-          .ignore[Array[Byte]]) must_== (())
+        Enumerator.enumerate(iterator) |>>>
+          Iteratee.ignore[Array[Byte]]) must_== (())
     }
 
   }

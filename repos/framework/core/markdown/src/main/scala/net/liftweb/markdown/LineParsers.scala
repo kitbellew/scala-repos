@@ -180,34 +180,29 @@ trait LineParsers extends InlineParsers {
   /** The Start of a link definition: the id in square brackets, optionally indented by three spaces
     */
   def linkDefinitionId: Parser[String] =
-    """ {0,3}\[""".r ~> markdownText(Set(']'), true) <~ ("]:" ~ ows) ^^ {
-      _.trim.toLowerCase
-    }
+    """ {0,3}\[""".r ~> markdownText(Set(']'), true) <~
+      ("]:" ~ ows) ^^ {
+        _.trim.toLowerCase
+      }
 
   /** The link url in a link definition.
     */
   def linkDefinitionUrl: Parser[String] =
-    (
-      elem('<') ~> markdownText(Set('>'), true) <~ '>' ^^ {
-        _.mkString.trim
-      }
-    ) |
-      (
-        markdownText(Set(' ', '\t'), true) ^^ {
-          _.mkString
-        }
-      )
+    (elem('<') ~> markdownText(Set('>'), true) <~ '>' ^^ {
+      _.mkString.trim
+    }) |
+      (markdownText(Set(' ', '\t'), true) ^^ {
+        _.mkString
+      })
 
   /** The title in a link definition.
     */
   def linkDefinitionTitle: Parser[String] =
-    ows ~> (
-      """\"[^\n]*["]""".r |
-        """\'[^\n]*\'""".r |
-        """\([^\n]*\)""".r
-    ) <~ ows ^^ { s =>
-      s.substring(1, s.length - 1)
-    }
+    ows ~>
+      ("""\"[^\n]*["]"""
+        .r | """\'[^\n]*\'""".r | """\([^\n]*\)""".r) <~ ows ^^ { s =>
+        s.substring(1, s.length - 1)
+      }
 
   /** A link definition that later gets stripped from the output.
     * Either a link definition on one line or the first line of a two line link definition.
@@ -298,10 +293,11 @@ trait LineParsers extends InlineParsers {
 
   /** Matches a code example line: any line starting with four spaces or a tab.
     */
-  val codeLine: Parser[CodeLine] = ("    " | "\t") ~ rest ^^ {
-    case prefix ~ payload =>
-      new CodeLine(prefix, payload)
-  }
+  val codeLine: Parser[CodeLine] =
+    ("    " | "\t") ~ rest ^^ {
+      case prefix ~ payload =>
+        new CodeLine(prefix, payload)
+    }
 
   /**
     * A fenced code line. Can be the start or the end of a fenced code block
@@ -333,8 +329,8 @@ trait LineParsers extends InlineParsers {
   ///////////////////////////////////////////////////////////////
   /** First tries for a setext header level 2, then for a ruler.
     */
-  val setext2OrRulerOrUItem: Parser[MarkdownLine] =
-    setextHeader2 | ruler | uItemStartLine
+  val setext2OrRulerOrUItem: Parser[MarkdownLine] = setextHeader2 | ruler |
+    uItemStartLine
 
   /** First tries for a ruler, then for an unordered list item start.
     */
@@ -346,6 +342,6 @@ trait LineParsers extends InlineParsers {
 
   /** Parses one of the fenced code lines
     */
-  val fencedCodeStartOrEnd: Parser[MarkdownLine] =
-    extendedFencedCodeLine | fencedCodeLine
+  val fencedCodeStartOrEnd: Parser[MarkdownLine] = extendedFencedCodeLine |
+    fencedCodeLine
 }

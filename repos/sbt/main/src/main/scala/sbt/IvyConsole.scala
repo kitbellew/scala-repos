@@ -83,11 +83,8 @@ object IvyConsole {
             CrossVersion.Disabled
           else
             CrossVersion.binary
-        ModuleID(
-          group.trim,
-          name.trim,
-          version.trim,
-          crossVersion = crossV) :: Nil
+        ModuleID(group.trim, name.trim, version.trim, crossVersion = crossV) ::
+          Nil
       case _ =>
         log.warn("Ignoring invalid argument '" + arg + "'");
         Nil

@@ -298,8 +298,8 @@ object TestFramework {
     val interfaceJar = IO.classLocationFile(classOf[testing.Framework])
     val interfaceFilter =
       (name: String) =>
-        name.startsWith("org.scalatools.testing.") || name
-          .startsWith("sbt.testing.")
+        name.startsWith("org.scalatools.testing.") ||
+          name.startsWith("sbt.testing.")
     val notInterfaceFilter = (name: String) => !interfaceFilter(name)
     val dual =
       new DualLoader(

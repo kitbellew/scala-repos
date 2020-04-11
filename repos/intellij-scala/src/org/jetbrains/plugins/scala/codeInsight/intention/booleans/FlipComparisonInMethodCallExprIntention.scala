@@ -47,8 +47,9 @@ class FlipComparisonInMethodCallExprIntention
         .nameId
         .getText
 
-    if (oper != "equals" && oper != "==" && oper != "!=" && oper != "eq" && oper != "ne" &&
-        oper != ">" && oper != "<" && oper != ">=" && oper != "<=")
+    if (oper != "equals" && oper != "==" && oper != "!=" && oper != "eq" &&
+        oper != "ne" && oper != ">" && oper != "<" && oper != ">=" &&
+        oper != "<=")
       return false
 
     val range: TextRange =
@@ -85,12 +86,13 @@ class FlipComparisonInMethodCallExprIntention
       return
 
     val start = methodCallExpr.getTextRange.getStartOffset
-    val diff = editor.getCaretModel.getOffset - methodCallExpr
-      .getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getTextRange
-      .getStartOffset
+    val diff = editor.getCaretModel.getOffset -
+      methodCallExpr
+        .getInvokedExpr
+        .asInstanceOf[ScReferenceExpression]
+        .nameId
+        .getTextRange
+        .getStartOffset
     val expr = new StringBuilder
     val qualBuilder = new StringBuilder
     val argsBuilder = new StringBuilder

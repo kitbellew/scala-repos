@@ -21,15 +21,16 @@ private[qa] final class Notifier(
     val msg = Propagate(QaAnswer(u.id, q.id, q.title, a.id))
     timeline ! (msg toFollowersOf u.id toUser q.userId exceptUser u.id)
     if (u.id != q.userId)
-      messenger ! LichessThread(
-        from = sender,
-        to = q.userId,
-        subject = s"""${u.username} replied to your question""",
-        message = s"""Your question "${q.title}" got a new answer from ${u
-          .username}!
+      messenger !
+        LichessThread(
+          from = sender,
+          to = q.userId,
+          subject = s"""${u.username} replied to your question""",
+          message = s"""Your question "${q.title}" got a new answer from ${u
+            .username}!
 
 Check it out on ${questionUrl(q)}#answer-${a.id}"""
-      )
+        )
   }
 
   private[qa] def createQuestionComment(q: Question, c: Comment, u: User) {

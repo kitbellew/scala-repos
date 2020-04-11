@@ -130,21 +130,23 @@ class QuotasTest extends KafkaServerTestHarness {
     consumerProps.put(ConsumerConfig.CLIENT_ID_CONFIG, consumerId1)
     consumers += new KafkaConsumer(consumerProps)
     // Create replica consumers with the same clientId as the high level consumer. These requests should never be throttled
-    replicaConsumers += new SimpleConsumer(
-      "localhost",
-      leaderNode.boundPort(),
-      1000000,
-      64 * 1024,
-      consumerId1)
+    replicaConsumers +=
+      new SimpleConsumer(
+        "localhost",
+        leaderNode.boundPort(),
+        1000000,
+        64 * 1024,
+        consumerId1)
 
     consumerProps.put(ConsumerConfig.CLIENT_ID_CONFIG, consumerId2)
     consumers += new KafkaConsumer(consumerProps)
-    replicaConsumers += new SimpleConsumer(
-      "localhost",
-      leaderNode.boundPort(),
-      1000000,
-      64 * 1024,
-      consumerId2)
+    replicaConsumers +=
+      new SimpleConsumer(
+        "localhost",
+        leaderNode.boundPort(),
+        1000000,
+        64 * 1024,
+        consumerId2)
   }
 
   @After

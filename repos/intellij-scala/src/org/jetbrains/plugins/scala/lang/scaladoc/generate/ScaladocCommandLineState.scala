@@ -111,8 +111,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
           visitInner(c, scope, acc)
         }
       } else {
-        if (file.getExtension == "scala" && file.isValid && scope
-              .contains(file)) {
+        if (file.getExtension == "scala" && file.isValid &&
+            scope.contains(file)) {
           PsiManager.getInstance(project).findFile(file) match {
             case f: ScalaFile if !f.isScriptFile() =>
               acc += file
@@ -217,8 +217,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     val modulesNeeded = MutableHashSet.apply[Module]()
 
     def filterModulesList(files: VirtualFile*) {
-      modulesNeeded ++= allModules
-        .filter(m => files.exists(f => m.getModuleScope.contains(f)))
+      modulesNeeded ++=
+        allModules.filter(m => files.exists(f => m.getModuleScope.contains(f)))
       allModules --= modulesNeeded
     }
 
@@ -229,17 +229,18 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
       Set(
         classesCollector -> target.classes(),
         sourcesCollector -> target.sources()).foreach { entry =>
-        entry._1 ++= entry
-          ._2
-          .withoutSelfModuleOutput()
-          .getRoots
-          .map { virtualFile =>
-            virtualFile
-              .getPath
-              .replaceAll(
-                Pattern.quote(".") + "(\\S{2,6})" + Pattern.quote("!/"),
-                ".$1/")
-          }
+        entry._1 ++=
+          entry
+            ._2
+            .withoutSelfModuleOutput()
+            .getRoots
+            .map { virtualFile =>
+              virtualFile
+                .getPath
+                .replaceAll(
+                  Pattern.quote(".") + "(\\S{2,6})" + Pattern.quote("!/"),
+                  ".$1/")
+            }
       }
     }
 
@@ -333,9 +334,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
         for (param <- paramListSimple) {
           var paramEsc = param
-          if (param.contains(" ") && !(
-                param.startsWith("\"") && param.endsWith("\"")
-              )) {
+          if (param.contains(" ") &&
+              !(param.startsWith("\"") && param.endsWith("\""))) {
             paramEsc = "\"" + param + "\""
           }
 

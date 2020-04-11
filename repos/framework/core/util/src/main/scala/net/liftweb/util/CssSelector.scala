@@ -207,10 +207,9 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   private lazy val topParser: Parser[CssSelector] =
     phrase(
       rep1(
-        (
-          _idMatch | _dataNameMatch | _nameMatch | _classMatch | _attrMatch | _elemMatch |
-            _colonMatch | _starMatch
-        ) <~ (rep1(' ') | atEnd)) ~ opt(subNode)) ^^ {
+        (_idMatch | _dataNameMatch | _nameMatch | _classMatch | _attrMatch |
+          _elemMatch | _colonMatch | _starMatch) <~ (rep1(' ') | atEnd)) ~
+        opt(subNode)) ^^ {
       case (one :: Nil) ~ sn =>
         fixAll(List(one), sn)
       case all ~ None if all.takeRight(1).head == StarSelector(Empty, false) =>
@@ -254,17 +253,15 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
       ElemSelector(elem, Empty)
   }
 
-  private lazy val _starMatch: Parser[CssSelector] = (
-    '*' ^^ {
+  private lazy val _starMatch: Parser[CssSelector] =
+    ('*' ^^ {
       case sn =>
         StarSelector(Empty, false)
-    }
-  ) | (
-    '^' ^^ {
-      case sn =>
-        StarSelector(Empty, true)
-    }
-  )
+    }) |
+      ('^' ^^ {
+        case sn =>
+          StarSelector(Empty, true)
+      })
 
   private lazy val _dataNameMatch: Parser[CssSelector] = ';' ~> id ^^ {
     case name =>
@@ -287,11 +284,11 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
         AttrSelector(n, v, Empty)
     }
 
-  private lazy val id: Parser[String] = letter ~
-    rep(letter | number | '-' | '_' | ':' | '.') ^^ {
-    case first ~ rest =>
-      (first :: rest).mkString
-  }
+  private lazy val id: Parser[String] =
+    letter ~ rep(letter | number | '-' | '_' | ':' | '.') ^^ {
+      case first ~ rest =>
+        (first :: rest).mkString
+    }
 
   private def isLetter(c: Char): Boolean = c.isLetter
 
@@ -301,77 +298,65 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   private lazy val number: Parser[Char] = elem("number", isNumber)
 
   private lazy val subNode: Parser[SubNode] = rep(' ') ~>
-    (
-      (
-        opt('*') ~ '[' ~> attrName <~ '+' ~ ']' ^^ { name =>
-          AttrAppendSubNode(name)
-        }
-      ) |
-        (
-          opt('*') ~ '[' ~> attrName <~ '!' ~ ']' ^^ { name =>
-            AttrRemoveSubNode(name)
-          }
-        ) | (
-        opt('*') ~ '[' ~> attrName <~ ']' ^^ { name =>
-          AttrSubNode(name)
-        }
-      ) |
+    ((opt('*') ~ '[' ~> attrName <~ '+' ~ ']' ^^ { name =>
+      AttrAppendSubNode(name)
+    }) |
+      (opt('*') ~ '[' ~> attrName <~ '!' ~ ']' ^^ { name =>
+        AttrRemoveSubNode(name)
+      }) |
+      (opt('*') ~ '[' ~> attrName <~ ']' ^^ { name =>
+        AttrSubNode(name)
+      }) |
+      ('!' ~ '!' ^^ (a => DontMergeAttributes)) |
+      ('<' ~ '*' ~ '>') ^^
+      (a => SurroundKids()) |
+      ('-' ~ '*' ^^ (a => PrependKidsSubNode())) |
+      ('>' ~ '*' ^^ (a => PrependKidsSubNode())) |
+      ('*' ~ '+' ^^ (a => AppendKidsSubNode())) |
+      ('*' ~ '<' ^^ (a => AppendKidsSubNode())) |
+      '*' ^^
+      (a => KidsSubNode()) |
+      '^' ~ '*' ^^
+      (a => SelectThisNode(true)) |
+      '^' ~ '^' ^^
+      (a => SelectThisNode(false)))
 
-        ('!' ~ '!' ^^ (a => DontMergeAttributes)) |
-        ('<' ~ '*' ~ '>') ^^ (a => SurroundKids()) |
-        ('-' ~ '*' ^^ (a => PrependKidsSubNode())) |
-        ('>' ~ '*' ^^ (a => PrependKidsSubNode())) |
-        ('*' ~ '+' ^^ (a => AppendKidsSubNode())) |
-        ('*' ~ '<' ^^ (a => AppendKidsSubNode())) |
-        '*' ^^ (a => KidsSubNode()) |
-        '^' ~ '*' ^^ (a => SelectThisNode(true)) |
-        '^' ~ '^' ^^ (a => SelectThisNode(false))
-    )
-
-  private lazy val attrName: Parser[String] = (letter | '_' | ':') ~
-    rep(letter | number | '-' | '_' | ':' | '.') ^^ {
-    case first ~ rest =>
-      (first :: rest).mkString
-  }
+  private lazy val attrName: Parser[String] =
+    (letter | '_' | ':') ~ rep(letter | number | '-' | '_' | ':' | '.') ^^ {
+      case first ~ rest =>
+        (first :: rest).mkString
+    }
 
   private lazy val attrConst: Parser[String] = {
-    (
-      (
-        '\'' ~> rep(
+    (('\'' ~>
+      rep(
+        elem(
+          "isValid",
+          (c: Char) => {
+            c != '\'' && c >= ' '
+          })) <~ '\'') ^^ {
+      case s =>
+        s.mkString
+    }) |
+      (('"' ~>
+        rep(
           elem(
             "isValid",
             (c: Char) => {
-              c != '\'' && c >= ' '
-            })) <~ '\''
-      ) ^^ {
+              c != '"' && c >= ' '
+            })) <~ '"') ^^ {
         case s =>
           s.mkString
-      }
-    ) |
-      (
-        (
-          '"' ~> rep(
-            elem(
-              "isValid",
-              (c: Char) => {
-                c != '"' && c >= ' '
-              })) <~ '"'
-        ) ^^ {
-          case s =>
-            s.mkString
-        }
-      ) |
-      (
-        rep1(
-          elem(
-            "isValid",
-            (c: Char) => {
-              c != '\'' && c != '"' && c > ' '
-            })) ^^ {
-          case s =>
-            s.mkString
-        }
-      )
+      }) |
+      (rep1(
+        elem(
+          "isValid",
+          (c: Char) => {
+            c != '\'' && c != '"' && c > ' '
+          })) ^^ {
+        case s =>
+          s.mkString
+      })
 
   }
 

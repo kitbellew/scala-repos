@@ -492,9 +492,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
           s"reached minRegisteredResourcesRatio: $minRegisteredRatio")
       return true
     }
-    if ((
-          System.currentTimeMillis() - createTime
-        ) >= maxRegisteredWaitingTimeMs) {
+    if ((System.currentTimeMillis() - createTime) >=
+          maxRegisteredWaitingTimeMs) {
       logInfo(
         "SchedulerBackend is ready for scheduling beginning after waiting " +
           s"maxRegisteredResourcesWaitingTime: $maxRegisteredWaitingTimeMs(ms)")
@@ -525,9 +524,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
 
       numPendingExecutors += numAdditionalExecutors
       // Account for executors pending to be added or removed
-      val newTotal =
-        numExistingExecutors + numPendingExecutors - executorsPendingToRemove
-          .size
+      val newTotal = numExistingExecutors + numPendingExecutors -
+        executorsPendingToRemove.size
       doRequestTotalExecutors(newTotal)
     }
 
@@ -632,8 +630,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
       // take into account executors that are pending to be added or removed.
       if (!replace) {
         doRequestTotalExecutors(
-          numExistingExecutors + numPendingExecutors - executorsPendingToRemove
-            .size)
+          numExistingExecutors + numPendingExecutors -
+            executorsPendingToRemove.size)
       } else {
         numPendingExecutors += knownExecutors.size
       }

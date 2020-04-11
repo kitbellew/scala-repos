@@ -82,58 +82,61 @@ abstract class TransformationSampleSpec
   override def afterAll() = multiNodeSpecAfterAll()
 
   "The japi transformation sample" must {
-    "illustrate how to start first frontend" in within(15 seconds) {
-      runOn(frontend1) {
-        // this will only run on the 'first' node
-        Cluster(system) join node(frontend1).address
-        val transformationFrontend = system
-          .actorOf(Props[TransformationFrontend], name = "frontend")
-        transformationFrontend ! new TransformationJob("hello")
-        expectMsgPF() {
-          // no backends yet, service unavailable
-          case f: JobFailed =>
+    "illustrate how to start first frontend" in
+      within(15 seconds) {
+        runOn(frontend1) {
+          // this will only run on the 'first' node
+          Cluster(system) join node(frontend1).address
+          val transformationFrontend = system
+            .actorOf(Props[TransformationFrontend], name = "frontend")
+          transformationFrontend ! new TransformationJob("hello")
+          expectMsgPF() {
+            // no backends yet, service unavailable
+            case f: JobFailed =>
+          }
         }
+
+        // this will run on all nodes
+        // use barrier to coordinate test steps
+        testConductor.enter("frontend1-started")
       }
 
-      // this will run on all nodes
-      // use barrier to coordinate test steps
-      testConductor.enter("frontend1-started")
-    }
+    "illustrate how a backend automatically registers" in
+      within(15 seconds) {
+        runOn(backend1) {
+          Cluster(system) join node(frontend1).address
+          system.actorOf(Props[TransformationBackend], name = "backend")
+        }
+        testConductor.enter("backend1-started")
 
-    "illustrate how a backend automatically registers" in within(15 seconds) {
-      runOn(backend1) {
-        Cluster(system) join node(frontend1).address
-        system.actorOf(Props[TransformationBackend], name = "backend")
-      }
-      testConductor.enter("backend1-started")
+        runOn(frontend1) {
+          assertServiceOk()
+        }
 
-      runOn(frontend1) {
-        assertServiceOk()
-      }
-
-      testConductor.enter("frontend1-backend1-ok")
-    }
-
-    "illustrate how more nodes registers" in within(20 seconds) {
-      runOn(frontend2) {
-        Cluster(system) join node(frontend1).address
-        system.actorOf(Props[TransformationFrontend], name = "frontend")
-      }
-      testConductor.enter("frontend2-started")
-      runOn(backend2, backend3) {
-        Cluster(system) join node(backend1).address
-        system.actorOf(Props[TransformationBackend], name = "backend")
+        testConductor.enter("frontend1-backend1-ok")
       }
 
-      testConductor.enter("all-started")
+    "illustrate how more nodes registers" in
+      within(20 seconds) {
+        runOn(frontend2) {
+          Cluster(system) join node(frontend1).address
+          system.actorOf(Props[TransformationFrontend], name = "frontend")
+        }
+        testConductor.enter("frontend2-started")
+        runOn(backend2, backend3) {
+          Cluster(system) join node(backend1).address
+          system.actorOf(Props[TransformationBackend], name = "backend")
+        }
 
-      runOn(frontend1, frontend2) {
-        assertServiceOk()
+        testConductor.enter("all-started")
+
+        runOn(frontend1, frontend2) {
+          assertServiceOk()
+        }
+
+        testConductor.enter("all-ok")
+
       }
-
-      testConductor.enter("all-ok")
-
-    }
 
   }
 

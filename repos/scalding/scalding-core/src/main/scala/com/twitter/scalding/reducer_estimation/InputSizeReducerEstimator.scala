@@ -59,11 +59,9 @@ class InputSizeReducerEstimator extends ReducerEstimator {
           .mkString("\n")
 
         LOG.info(
-          "\nInputSizeReducerEstimator" +
-            "\n - input size (bytes): " + totalBytes +
-            "\n - reducer estimate:   " + nReducers +
-            "\n - Breakdown:\n" +
-            logStr)
+          "\nInputSizeReducerEstimator" + "\n - input size (bytes): " +
+            totalBytes + "\n - reducer estimate:   " + nReducers +
+            "\n - Breakdown:\n" + logStr)
 
         Some(nReducers)
     }

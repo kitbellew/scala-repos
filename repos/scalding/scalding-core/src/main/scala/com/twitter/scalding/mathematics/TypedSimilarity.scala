@@ -208,8 +208,8 @@ object TypedSimilarity extends Serializable {
                   .iterator
                   .flatMap {
                     case (node2, deg2) =>
-                      val weight =
-                        1.0 / scala.math.sqrt(deg1.toDouble * deg2.toDouble)
+                      val weight = 1.0 /
+                        scala.math.sqrt(deg1.toDouble * deg2.toDouble)
                       val prob = oversample * weight
                       if (prob >= 1.0) {
                         // Small degree case, just output all of them:

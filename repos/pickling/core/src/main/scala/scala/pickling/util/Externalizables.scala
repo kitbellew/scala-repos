@@ -267,25 +267,24 @@ object Externalizables {
     // create array-valued fields
     // val byteArr: Array[Int] = Array.ofDim[Int](3)
     // ...
-    val fields = (
-      for (targ <- storage.keys)
-        yield {
-          val TypeRef(_, classSym, _) = targ
-          val tpestr = classSym.name.toString.toLowerCase
-          val name = newTermName(tpestr + "Arr")
-          val storageTpe = storage(targ)
-          val size = perType.getOrElse(targ, List[Int]()).size
-          q"val $name: Array[$storageTpe] = Array.ofDim[$storageTpe]($size)"
+    val fields = (for (targ <- storage.keys)
+      yield {
+        val TypeRef(_, classSym, _) = targ
+        val tpestr = classSym.name.toString.toLowerCase
+        val name = newTermName(tpestr + "Arr")
+        val storageTpe = storage(targ)
+        val size = perType.getOrElse(targ, List[Int]()).size
+        q"val $name: Array[$storageTpe] = Array.ofDim[$storageTpe]($size)"
+      }) ++
+      Seq(
+        // implementation restriction: only store a single array
+        q"val arrByteArr: Array[Array[Byte]] = Array.ofDim[Array[Byte]](1)", {
+          val storageTpe = storage(typeOf[AnyRef])
+          q"val anyRefArr: Array[$storageTpe] = Array.ofDim[$storageTpe](${perType
+            .getOrElse(typeOf[AnyRef], List[Int]())
+            .size})"
         }
-    ) ++ Seq(
-      // implementation restriction: only store a single array
-      q"val arrByteArr: Array[Array[Byte]] = Array.ofDim[Array[Byte]](1)", {
-        val storageTpe = storage(typeOf[AnyRef])
-        q"val anyRefArr: Array[$storageTpe] = Array.ofDim[$storageTpe](${perType
-          .getOrElse(typeOf[AnyRef], List[Int]())
-          .size})"
-      }
-    )
+      )
 
     def finalTree(tpe: Type, tpeName: String): Tree =
       writeTree(perType.getOrElse(tpe, List[Int]()), tpeName)

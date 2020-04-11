@@ -234,8 +234,7 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
             "6c697a6174696f6e2e4f6c645061796c6f6164100d1a0" +
             "2703120015a45616b6b613a2f2f4d6573736167655365" +
             "7269616c697a657250657273697374656e63655370656" +
-            "32f73797374656d2f746573744163746f722d31233133" +
-            "3137373931343033"
+            "32f73797374656d2f746573744163746f722d31233133" + "3137373931343033"
 
         // now the system is updated, OldPayload is replaced by MyPayload, and the
         // OldPayloadSerializer is adjusted to migrate OldPayload

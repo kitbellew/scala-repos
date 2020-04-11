@@ -253,8 +253,8 @@ class IsrExpirationTest {
     val leaderReplica =
       new Replica(leaderId, partition, time, 0, Some(localLog))
 
-    val allReplicas =
-      getFollowerReplicas(partition, leaderId, time) :+ leaderReplica
+    val allReplicas = getFollowerReplicas(partition, leaderId, time) :+
+      leaderReplica
     allReplicas.foreach(r => partition.addReplicaIfNotExists(r))
     // set in sync replicas for this partition to all the assigned replicas
     partition.inSyncReplicas = allReplicas.toSet

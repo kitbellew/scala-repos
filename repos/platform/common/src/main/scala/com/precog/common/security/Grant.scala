@@ -73,13 +73,15 @@ case class Grant(
   }
 
   def implies(perms: Set[Permission], at: Option[DateTime]): Boolean = {
-    !isExpired(at) && perms.forall { perm =>
+    !isExpired(at) &&
+    perms.forall { perm =>
       permissions.exists(_.implies(perm))
     }
   }
 
   def implies(other: Grant): Boolean = {
-    !isExpired(other.expirationDate) && other
+    !isExpired(other.expirationDate) &&
+    other
       .permissions
       .forall { perm =>
         permissions.exists(_.implies(perm))
@@ -90,11 +92,9 @@ case class Grant(
 object Grant extends Logging {
   implicit val grantIso = Iso.hlist(Grant.apply _, Grant.unapply _)
 
-  val schemaV1 = "grantId" :: "name" :: "description" :: (
-    "issuerKey" ||| "(undefined)"
-  ) :: "parentIds" :: "permissions" :: (
-    "createdAt" ||| new Instant(0L)
-  ) :: "expirationDate" :: HNil
+  val schemaV1 = "grantId" :: "name" :: "description" ::
+    ("issuerKey" ||| "(undefined)") :: "parentIds" :: "permissions" ::
+    ("createdAt" ||| new Instant(0L)) :: "expirationDate" :: HNil
 
   val decomposerV1: Decomposer[Grant] = decomposerV[Grant](
     schemaV1,
@@ -131,8 +131,8 @@ object Grant extends Logging {
     }
 
   implicit val decomposer: Decomposer[Grant] = decomposerV1
-  implicit val extractor: Extractor[Grant] =
-    extractorV2 <+> extractorV1 <+> extractorV0
+  implicit val extractor: Extractor[Grant] = extractorV2 <+> extractorV1 <+>
+    extractorV0
 
   def implies(
       grants: Set[Grant],

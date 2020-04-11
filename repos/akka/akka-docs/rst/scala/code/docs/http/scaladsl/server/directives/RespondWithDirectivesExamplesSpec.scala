@@ -18,11 +18,12 @@ class RespondWithDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/foo") ~> route ~> check {
-      header("Funky-Muppet") shouldEqual Some(
-        RawHeader("Funky-Muppet", "gonzo"))
-      responseAs[String] shouldEqual "beep"
-    }
+    Get("/foo") ~> route ~>
+      check {
+        header("Funky-Muppet") shouldEqual
+          Some(RawHeader("Funky-Muppet", "gonzo"))
+        responseAs[String] shouldEqual "beep"
+      }
   }
 
   "respondWithDefaultHeader-0" in {
@@ -48,22 +49,26 @@ class RespondWithDirectivesExamplesSpec extends RoutingSpec {
     // format: ON
 
     // tests:
-    Get("/") ~> route ~> check {
-      header("X-Fish-Name") shouldEqual Some(RawHeader("X-Fish-Name", "Blippy"))
-      responseAs[String] shouldEqual "Blip!"
-    }
+    Get("/") ~> route ~>
+      check {
+        header("X-Fish-Name") shouldEqual
+          Some(RawHeader("X-Fish-Name", "Blippy"))
+        responseAs[String] shouldEqual "Blip!"
+      }
 
-    Get("/el-tonno") ~> route ~> check {
-      header("X-Fish-Name") shouldEqual Some(
-        RawHeader("X-Fish-Name", "El Tonno"))
-      responseAs[String] shouldEqual "¡Ay blippy!"
-    }
+    Get("/el-tonno") ~> route ~>
+      check {
+        header("X-Fish-Name") shouldEqual
+          Some(RawHeader("X-Fish-Name", "El Tonno"))
+        responseAs[String] shouldEqual "¡Ay blippy!"
+      }
 
-    Get("/los-tonnos") ~> route ~> check {
-      header("X-Fish-Name") shouldEqual Some(
-        RawHeader("X-Fish-Name", "El Tonno"))
-      responseAs[String] shouldEqual "¡Ay ay blippy!"
-    }
+    Get("/los-tonnos") ~> route ~>
+      check {
+        header("X-Fish-Name") shouldEqual
+          Some(RawHeader("X-Fish-Name", "El Tonno"))
+        responseAs[String] shouldEqual "¡Ay ay blippy!"
+      }
   }
   // format: ON
 
@@ -78,12 +83,13 @@ class RespondWithDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/foo") ~> route ~> check {
-      header("Funky-Muppet") shouldEqual Some(
-        RawHeader("Funky-Muppet", "gonzo"))
-      header[Origin] shouldEqual Some(Origin(HttpOrigin("http://akka.io")))
-      responseAs[String] shouldEqual "beep"
-    }
+    Get("/foo") ~> route ~>
+      check {
+        header("Funky-Muppet") shouldEqual
+          Some(RawHeader("Funky-Muppet", "gonzo"))
+        header[Origin] shouldEqual Some(Origin(HttpOrigin("http://akka.io")))
+        responseAs[String] shouldEqual "beep"
+      }
   }
 
 }

@@ -201,8 +201,10 @@ private[spark] object TestUtils {
     val sourceFile =
       new JavaSourceFromString(
         className,
-        "public class " + className + extendsText + " implements java.io.Serializable {" +
-          "  @Override public String toString() { return \"" + toStringValue + "\"; }}")
+        "public class " + className + extendsText +
+          " implements java.io.Serializable {" +
+          "  @Override public String toString() { return \"" + toStringValue +
+          "\"; }}")
     createCompiledClass(className, destDir, sourceFile, classpathUrls)
   }
 
@@ -247,8 +249,8 @@ private class SpillListener extends SparkListener {
 
   override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = {
     stageIdToTaskMetrics
-      .getOrElseUpdate(taskEnd.stageId, new ArrayBuffer[TaskMetrics]) += taskEnd
-      .taskMetrics
+      .getOrElseUpdate(taskEnd.stageId, new ArrayBuffer[TaskMetrics]) +=
+      taskEnd.taskMetrics
   }
 
   override def onStageCompleted(

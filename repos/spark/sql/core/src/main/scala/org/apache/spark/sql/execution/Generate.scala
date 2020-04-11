@@ -57,8 +57,8 @@ case class Generate(
     extends UnaryNode {
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" ->
+      SQLMetrics.createLongMetric(sparkContext, "number of output rows"))
 
   override def producedAttributes: AttributeSet = AttributeSet(output)
 
@@ -84,18 +84,19 @@ case class Generate(
               } else {
                 outputRows.map(joinedRow.withRight)
               }
-            } ++ LazyIterator(boundGenerator.terminate).map { row =>
-              // we leave the left side as the last element of its child output
-              // keep it the same as Hive does
-              joinedRow.withRight(row)
-            }
+            } ++
+              LazyIterator(boundGenerator.terminate).map { row =>
+                // we leave the left side as the last element of its child output
+                // keep it the same as Hive does
+                joinedRow.withRight(row)
+              }
           }
       } else {
         child
           .execute()
           .mapPartitionsInternal { iter =>
-            iter.flatMap(boundGenerator.eval) ++ LazyIterator(
-              boundGenerator.terminate)
+            iter.flatMap(boundGenerator.eval) ++
+              LazyIterator(boundGenerator.terminate)
           }
       }
 

@@ -61,8 +61,9 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     // this part is interesting to unpicklers
     def hasSetter = setter.isDefined
     def isErasedParam =
-      isParam && accessor
-        .isEmpty // TODO: this should somehow communicate with the constructors phase!
+      isParam &&
+        accessor
+          .isEmpty // TODO: this should somehow communicate with the constructors phase!
     def isNonParam = !isParam
   }
 
@@ -131,8 +132,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
           .flatMap {
             case sym: MethodSymbol if sym.name.toString.startsWith("set") =>
               val shortName = sym.name.toString.substring(3)
-              if (candidates.find(_ == shortName).nonEmpty && shortName
-                    .length > 0) {
+              if (candidates.find(_ == shortName).nonEmpty &&
+                  shortName.length > 0) {
                 val rawSymTpe =
                   sym.typeSignatureIn(rawTpeOfOwner) match {
                     case MethodType(List(param), _) =>
@@ -166,8 +167,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
         .declarations
         .collect {
           case sym: MethodSymbol
-              if !sym.isParamAccessor && sym.isSetter && sym
-                .accessed != NoSymbol =>
+              if !sym.isParamAccessor && sym.isSetter &&
+                sym.accessed != NoSymbol =>
             val rawSymTpe =
               sym.getter.typeSignatureIn(rawTpeOfOwner) match {
                 case NullaryMethodType(ntpe) =>
@@ -225,35 +226,34 @@ class IRs[U <: Universe with Singleton](val uni: U) {
         None
 
     val canCallCtor =
-      primaryCtor != NoSymbol &&
-        primaryCtorParamsOpt.nonEmpty &&
+      primaryCtor != NoSymbol && primaryCtorParamsOpt.nonEmpty &&
         (
           primaryCtorParamsOpt
             .get
-            .forall { preSym =>
-              // println(s"!!! tpe ${tpe.toString}, ctor param $preSym:")
-              val notTransient =
-                !transientAccessors.exists(_.name == preSym.name)
-              // println(s"$notTransient")
-              if (notTransient) {
-                val symOpt = //tpe.declaration(preSym.name)
-                  filteredAccessors.find(_.name == preSym.name)
-                symOpt match {
-                  case None =>
-                    false
-                  case Some(sym) =>
-                    val isVal = sym.asTerm.isVal
-                    val getterExists = sym.asTerm.getter != NoSymbol
-                    // println(s"$isVal (public: ${sym.asTerm.isPublic}, isParamAcc: ${sym.asTerm.isParamAccessor}), $getterExists (${sym.asTerm.getter}, public: ${sym.asTerm.getter.isPublic})")
-                    (isVal && sym.asTerm.isPublic) || (
-                      getterExists && sym.asTerm.getter.isPublic
-                    )
-                }
-              } else
-                false
+            .forall {
+              preSym =>
+                // println(s"!!! tpe ${tpe.toString}, ctor param $preSym:")
+                val notTransient =
+                  !transientAccessors.exists(_.name == preSym.name)
+                // println(s"$notTransient")
+                if (notTransient) {
+                  val symOpt = //tpe.declaration(preSym.name)
+                    filteredAccessors.find(_.name == preSym.name)
+                  symOpt match {
+                    case None =>
+                      false
+                    case Some(sym) =>
+                      val isVal = sym.asTerm.isVal
+                      val getterExists = sym.asTerm.getter != NoSymbol
+                      // println(s"$isVal (public: ${sym.asTerm.isPublic}, isParamAcc: ${sym.asTerm.isParamAccessor}), $getterExists (${sym.asTerm.getter}, public: ${sym.asTerm.getter.isPublic})")
+                      (isVal && sym.asTerm.isPublic) ||
+                      (getterExists && sym.asTerm.getter.isPublic)
+                  }
+                } else
+                  false
 
-              // println(s"$notTransient, $isMethod, $getterExists, $getterIsMetod")
-              // notTransient && isMethod && getterExists && getterIsMetod
+                // println(s"$notTransient, $isMethod, $getterExists, $getterIsMetod")
+                // notTransient && isMethod && getterExists && getterIsMetod
             }
           )
 
@@ -429,9 +429,7 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     val tr = scala
       .util
       .Try {
-        (
-          sym.accessed == NoSymbol
-        ) || // if there is no backing field, then it cannot be marked transient
+        (sym.accessed == NoSymbol) || // if there is no backing field, then it cannot be marked transient
         !sym.accessed.annotations.exists(_.tpe =:= typeOf[scala.transient])
       }
     tr.isFailure || tr.get
@@ -508,8 +506,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       mkFieldIR(sym, Some(sym), paramAccessors.find(_.name == sym.name)))
     val varGetters = otherAccessors.collect {
       case meth
-          if meth.isGetter && meth
-            .accessed != NoSymbol && meth.accessed.asTerm.isVar =>
+          if meth.isGetter && meth.accessed != NoSymbol &&
+            meth.accessed.asTerm.isVar =>
         meth
     }
     val varFields = varGetters.map(sym => mkFieldIR(sym, None, Some(sym)))

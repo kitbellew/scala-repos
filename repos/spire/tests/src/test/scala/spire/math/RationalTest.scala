@@ -271,10 +271,12 @@ class RationalTest extends FunSuite {
     * that was closest to `a`.
     */
   def bruteForceLimitDen(a: Rational, limit: Int): Rational =
-    (1 to limit) map (BigInt(_)) flatMap { d =>
-      val ln = (a * d).toBigInt
-      List(Rational(ln - 1, d), Rational(ln, d), Rational(ln + 1, d))
-    } minBy (b => (b - a).abs)
+    (1 to limit) map
+      (BigInt(_)) flatMap { d =>
+        val ln = (a * d).toBigInt
+        List(Rational(ln - 1, d), Rational(ln, d), Rational(ln + 1, d))
+      } minBy
+      (b => (b - a).abs)
 
   // FIXME: for some reason the commented files seem to throw SBT/scalac into
   // some kind of continuous compilcation loop... YMMV :/

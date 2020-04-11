@@ -102,13 +102,14 @@ class TypedPipeDiffTest extends FunSuite {
     val diff = TypedPipeDiff.diffByHashCode(pipe1, pipe2)
 
     assert(
-      expectedSortedDiff === diff
-        .inMemoryToList
-        .map {
-          case (nord, counts) =>
-            (nord.x, counts)
-        }
-        .sorted)
+      expectedSortedDiff ===
+        diff
+          .inMemoryToList
+          .map {
+            case (nord, counts) =>
+              (nord.x, counts)
+          }
+          .sorted)
   }
 
   test("diffWithoutOrdering works even with hash collisions") {
@@ -116,13 +117,14 @@ class TypedPipeDiffTest extends FunSuite {
     val pipe2 = TypedPipe.from(right.map(new NoOrderingHashCollisions(_)))
     val diff = TypedPipeDiff.diffByHashCode(pipe1, pipe2)
     assert(
-      expectedSortedDiff === diff
-        .inMemoryToList
-        .map {
-          case (nord, counts) =>
-            (nord.x, counts)
-        }
-        .sorted)
+      expectedSortedDiff ===
+        diff
+          .inMemoryToList
+          .map {
+            case (nord, counts) =>
+              (nord.x, counts)
+          }
+          .sorted)
   }
 
   test(
@@ -142,13 +144,14 @@ class TypedPipeDiffTest extends FunSuite {
     val diff = TypedPipeDiff.diffArrayPipes(pipe1, pipe2)
 
     assert(
-      expectedSortedArrDiff === sort(
-        diff
-          .inMemoryToList
-          .map {
-            case (arr, counts) =>
-              (arr.map(_.x.toByte).toSeq, counts)
-          }))
+      expectedSortedArrDiff ===
+        sort(
+          diff
+            .inMemoryToList
+            .map {
+              case (arr, counts) =>
+                (arr.map(_.x.toByte).toSeq, counts)
+            }))
   }
 
 }

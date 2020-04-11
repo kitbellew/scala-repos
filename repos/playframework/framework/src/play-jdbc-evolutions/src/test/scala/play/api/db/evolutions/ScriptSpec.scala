@@ -72,9 +72,10 @@ object ScriptSpec extends Specification {
         .reverse
         .map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i"))
       val upRest =
-        Evolution(9, "DifferentDummySQLUP", "DifferentDummySQLDOWN") +: (1 to 8)
-          .reverse
-          .map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i"))
+        Evolution(9, "DifferentDummySQLUP", "DifferentDummySQLDOWN") +:
+          (1 to 8)
+            .reverse
+            .map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i"))
 
       val (conflictingDowns, conflictingUps) = Evolutions
         .conflictings(downRest, upRest)
@@ -92,13 +93,11 @@ object ScriptSpec extends Specification {
         .map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i"))
       val upRest = (6 to 9)
         .reverse
-        .map(i =>
-          Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i")) ++: Evolution(
-        5,
-        "DifferentDummySQLUP",
-        "DifferentDummySQLDOWN") +: (1 to 4)
-        .reverse
-        .map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i"))
+        .map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i")) ++:
+        Evolution(5, "DifferentDummySQLUP", "DifferentDummySQLDOWN") +:
+        (1 to 4)
+          .reverse
+          .map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i"))
 
       val (conflictingDowns, conflictingUps) = Evolutions
         .conflictings(downRest, upRest)
@@ -118,8 +117,8 @@ object ScriptSpec extends Specification {
         .map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i"))
       val upRest = (2 to 9)
         .reverse
-        .map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i")) ++: List(
-        Evolution(1, "DifferentDummySQLUP", "DifferentDummySQLDOWN"))
+        .map(i => Evolution(i, s"DummySQLUP$i", s"DummySQLDOWN$i")) ++:
+        List(Evolution(1, "DifferentDummySQLUP", "DifferentDummySQLDOWN"))
 
       val (conflictingDowns, conflictingUps) = Evolutions
         .conflictings(downRest, upRest)

@@ -81,8 +81,8 @@ class DottyCompiler(scalaInstance: ScalaInstance, compilerJars: CompilerJars)
       return Seq(arg)
 
     val colonIdx = arg.indexOf(':')
-    if (colonIdx > 0 && colonIdx < arg
-          .length - 1 && !arg.charAt(colonIdx + 1).isWhitespace)
+    if (colonIdx > 0 && colonIdx < arg.length - 1 &&
+        !arg.charAt(colonIdx + 1).isWhitespace)
       Seq(arg.substring(0, colonIdx + 1).trim, arg.substring(colonIdx + 1).trim)
     else
       Seq(arg)

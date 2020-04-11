@@ -99,8 +99,8 @@ object Erf {
 
     // A&S formula 7.1.26, rational approximation of error function
     val t = 1.0 / (1.0 + p * absx);
-    val y =
-      1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * exp(-x * x);
+    val y = 1.0 -
+      (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * exp(-x * x);
     sign * y
   }
 }

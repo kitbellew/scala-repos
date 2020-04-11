@@ -57,11 +57,11 @@ object FunctorUsage extends App {
   // two additional derived functions which allow us to turn the
   // contained values into tuples:
   assert(
-    Functor[List]
-      .strengthL("a", List(1, 2, 3)) === List("a" -> 1, "a" -> 2, "a" -> 3))
+    Functor[List].strengthL("a", List(1, 2, 3)) ===
+      List("a" -> 1, "a" -> 2, "a" -> 3))
   assert(
-    Functor[List]
-      .strengthR(List(1, 2, 3), "a") === List(1 -> "a", 2 -> "a", 3 -> "a"))
+    Functor[List].strengthR(List(1, 2, 3), "a") ===
+      List(1 -> "a", 2 -> "a", 3 -> "a"))
 
   // there is syntax for the strength functions
   assert(List(1, 2, 3).strengthL("a") === List("a" -> 1, "a" -> 2, "a" -> 3))
@@ -135,8 +135,6 @@ object FunctorUsage extends App {
   // can compose the two Functors to create a new Functor on F[G[_]]:
   val listOpt = Functor[List] compose Functor[Option]
   assert(
-    listOpt.map(List(Some(1), None, Some(3)))(_ + 1) === List(
-      Some(2),
-      None,
-      Some(4)))
+    listOpt.map(List(Some(1), None, Some(3)))(_ + 1) ===
+      List(Some(2), None, Some(4)))
 }

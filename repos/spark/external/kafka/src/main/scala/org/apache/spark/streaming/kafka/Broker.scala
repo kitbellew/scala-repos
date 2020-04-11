@@ -32,8 +32,7 @@ final class Broker private (
   override def equals(obj: Any): Boolean =
     obj match {
       case that: Broker =>
-        this.host == that.host &&
-          this.port == that.port
+        this.host == that.host && this.port == that.port
       case _ =>
         false
     }

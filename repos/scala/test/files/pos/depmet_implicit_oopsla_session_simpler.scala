@@ -17,9 +17,10 @@ object Sessions {
   // would be nice if we could introduce a universal quantification over BDual that is not part of the
   // type parameter list
   sealed case class In[A, B <: Session, BDual <: Session](recv: A => B)(implicit
-      dual: B <:< Session {
-        type Dual = BDual
-      })
+      dual: B <:<
+        Session {
+          type Dual = BDual
+        })
       extends Session {
     type Dual = Out[A, BDual]
 

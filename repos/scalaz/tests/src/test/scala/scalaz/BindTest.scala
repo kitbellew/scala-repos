@@ -14,7 +14,8 @@ object BindTest extends SpecLite {
   }
 
   ">>" in {
-    List(1, 2, 3) >> (List(2, 3)) must_=== (List(2, 3, 2, 3, 2, 3))
+    List(1, 2, 3) >> (List(2, 3)) must_===
+      (List(2, 3, 2, 3, 2, 3))
   }
 
   "join" in {

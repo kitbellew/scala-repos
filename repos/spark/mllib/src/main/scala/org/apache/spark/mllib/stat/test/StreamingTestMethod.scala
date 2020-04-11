@@ -161,7 +161,7 @@ private[stat] object StreamingTestMethod {
         test
       case None =>
         throw new IllegalArgumentException(
-          "Unrecognized method name. Supported streaming test methods: "
-            + TEST_NAME_TO_OBJECT.keys.mkString(", "))
+          "Unrecognized method name. Supported streaming test methods: " +
+            TEST_NAME_TO_OBJECT.keys.mkString(", "))
     }
 }

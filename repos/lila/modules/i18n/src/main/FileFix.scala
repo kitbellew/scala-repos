@@ -20,7 +20,8 @@ private[i18n] final class FileFix(
     keys.keys map { key =>
       messages get key.key filter { message =>
         hasVariable(key.to(pool.default)()).fold(hasVariable(message), true)
-      } map (key.key -> _)
+      } map
+        (key.key -> _)
     } flatten
 
   private def hasVariable(message: String) = message contains "%s"

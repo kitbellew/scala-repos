@@ -52,9 +52,9 @@ object TcpLeakApp extends App {
         println(s"Error: $error")
         Thread.sleep(10000)
         println(
-          "===================== \n\n" + system
-            .asInstanceOf[ActorSystemImpl]
-            .printTree + "\n\n========================")
+          "===================== \n\n" +
+            system.asInstanceOf[ActorSystemImpl].printTree +
+            "\n\n========================")
     }
 
   readLine()

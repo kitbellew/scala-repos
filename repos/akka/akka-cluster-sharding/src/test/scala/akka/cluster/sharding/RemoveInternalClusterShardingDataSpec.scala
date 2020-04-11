@@ -149,56 +149,59 @@ class RemoveInternalClusterShardingDataSpec
         extractShardId)
     }
 
-    "work when no data" in within(10.seconds) {
-      hasSnapshots("type1") should ===(false)
-      hasEvents("type1") should ===(false)
-      val rm = system.actorOf(
-        RemoveInternalClusterShardingData
-          .RemoveOnePersistenceId
-          .props(journalPluginId = "", persistenceId("type1"), testActor))
-      watch(rm)
-      expectMsg(Result(Success(Removals(false, false))))
-      expectTerminated(rm)
-    }
-
-    "remove all events when no snapshot" in within(10.seconds) {
-      val region = ClusterSharding(system).shardRegion("type1")
-      (1 to 3).foreach(region ! _)
-      receiveN(3).toSet should be((1 to 3).toSet)
-      hasSnapshots("type1") should ===(false)
-      hasEvents("type1") should ===(true)
-
-      val rm = system.actorOf(
-        RemoveInternalClusterShardingData
-          .RemoveOnePersistenceId
-          .props(journalPluginId = "", persistenceId("type1"), testActor))
-      watch(rm)
-      expectMsg(Result(Success(Removals(true, false))))
-      expectTerminated(rm)
-      hasSnapshots("type1") should ===(false)
-      hasEvents("type1") should ===(false)
-    }
-
-    "remove all events and snapshots" in within(10.seconds) {
-      val region = ClusterSharding(system).shardRegion("type2")
-      (1 to 10).foreach(region ! _)
-      receiveN(10).toSet should be((1 to 10).toSet)
-      awaitAssert {
-        // theoretically it might take a while until snapshot is visible
-        hasSnapshots("type2") should ===(true)
+    "work when no data" in
+      within(10.seconds) {
+        hasSnapshots("type1") should ===(false)
+        hasEvents("type1") should ===(false)
+        val rm = system.actorOf(
+          RemoveInternalClusterShardingData
+            .RemoveOnePersistenceId
+            .props(journalPluginId = "", persistenceId("type1"), testActor))
+        watch(rm)
+        expectMsg(Result(Success(Removals(false, false))))
+        expectTerminated(rm)
       }
-      hasEvents("type2") should ===(true)
 
-      val rm = system.actorOf(
-        RemoveInternalClusterShardingData
-          .RemoveOnePersistenceId
-          .props(journalPluginId = "", persistenceId("type2"), testActor))
-      watch(rm)
-      expectMsg(Result(Success(Removals(true, true))))
-      expectTerminated(rm)
-      hasSnapshots("type2") should ===(false)
-      hasEvents("type2") should ===(false)
-    }
+    "remove all events when no snapshot" in
+      within(10.seconds) {
+        val region = ClusterSharding(system).shardRegion("type1")
+        (1 to 3).foreach(region ! _)
+        receiveN(3).toSet should be((1 to 3).toSet)
+        hasSnapshots("type1") should ===(false)
+        hasEvents("type1") should ===(true)
+
+        val rm = system.actorOf(
+          RemoveInternalClusterShardingData
+            .RemoveOnePersistenceId
+            .props(journalPluginId = "", persistenceId("type1"), testActor))
+        watch(rm)
+        expectMsg(Result(Success(Removals(true, false))))
+        expectTerminated(rm)
+        hasSnapshots("type1") should ===(false)
+        hasEvents("type1") should ===(false)
+      }
+
+    "remove all events and snapshots" in
+      within(10.seconds) {
+        val region = ClusterSharding(system).shardRegion("type2")
+        (1 to 10).foreach(region ! _)
+        receiveN(10).toSet should be((1 to 10).toSet)
+        awaitAssert {
+          // theoretically it might take a while until snapshot is visible
+          hasSnapshots("type2") should ===(true)
+        }
+        hasEvents("type2") should ===(true)
+
+        val rm = system.actorOf(
+          RemoveInternalClusterShardingData
+            .RemoveOnePersistenceId
+            .props(journalPluginId = "", persistenceId("type2"), testActor))
+        watch(rm)
+        expectMsg(Result(Success(Removals(true, true))))
+        expectTerminated(rm)
+        hasSnapshots("type2") should ===(false)
+        hasEvents("type2") should ===(false)
+      }
   }
 
   "RemoveInternalClusterShardingData" must {
@@ -217,30 +220,31 @@ class RemoveInternalClusterShardingDataSpec
       }
     }
 
-    "remove all events and snapshots" in within(10.seconds) {
-      typeNames.foreach { typeName ⇒
-        val region = ClusterSharding(system).shardRegion(typeName)
-        (1 to 10).foreach(region ! _)
-        receiveN(10).toSet should be((1 to 10).toSet)
-        awaitAssert {
-          // theoretically it might take a while until snapshot is visible
-          hasSnapshots(typeName) should ===(true)
+    "remove all events and snapshots" in
+      within(10.seconds) {
+        typeNames.foreach { typeName ⇒
+          val region = ClusterSharding(system).shardRegion(typeName)
+          (1 to 10).foreach(region ! _)
+          receiveN(10).toSet should be((1 to 10).toSet)
+          awaitAssert {
+            // theoretically it might take a while until snapshot is visible
+            hasSnapshots(typeName) should ===(true)
+          }
+          hasEvents(typeName) should ===(true)
         }
-        hasEvents(typeName) should ===(true)
-      }
 
-      val result = RemoveInternalClusterShardingData.remove(
-        system,
-        journalPluginId = "",
-        typeNames.toSet,
-        terminateSystem = false,
-        remove2dot3Data = true)
-      Await.ready(result, remaining)
+        val result = RemoveInternalClusterShardingData.remove(
+          system,
+          journalPluginId = "",
+          typeNames.toSet,
+          terminateSystem = false,
+          remove2dot3Data = true)
+        Await.ready(result, remaining)
 
-      typeNames.foreach { typeName ⇒
-        hasSnapshots(typeName) should ===(false)
-        hasEvents(typeName) should ===(false)
+        typeNames.foreach { typeName ⇒
+          hasSnapshots(typeName) should ===(false)
+          hasEvents(typeName) should ===(false)
+        }
       }
-    }
   }
 }

@@ -277,14 +277,13 @@ object FastEvalEngineWorkflow {
         }
       }
 
-      val servingResult =
-        (0 until evalQAsMap.size)
-          .map { ex =>
-            {
-              (evalInfoMap(ex), servingQPAMap(ex))
-            }
+      val servingResult = (0 until evalQAsMap.size)
+        .map { ex =>
+          {
+            (evalInfoMap(ex), servingQPAMap(ex))
           }
-          .toSeq
+        }
+        .toSeq
 
       cache += Tuple2(prefix, servingResult)
     }

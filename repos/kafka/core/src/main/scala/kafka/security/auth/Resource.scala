@@ -28,7 +28,8 @@ object Resource {
         new Resource(ResourceType.fromString(resourceType), name)
       case s =>
         throw new IllegalArgumentException(
-          "expected a string in format ResourceType:ResourceName but got " + str)
+          "expected a string in format ResourceType:ResourceName but got " +
+            str)
     }
   }
 }

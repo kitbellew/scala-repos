@@ -107,10 +107,11 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @return the new result.
     */
   def withDateHeaders(headers: (String, DateTime)*): Result = {
-    copy(header = header.copy(headers = header.headers ++ headers.map {
-      case (name, dateTime) =>
-        (name, ResponseHeader.httpDateFormat.print(dateTime.getMillis))
-    }))
+    copy(header = header.copy(headers = header.headers ++
+      headers.map {
+        case (name, dateTime) =>
+          (name, ResponseHeader.httpDateFormat.print(dateTime.getMillis))
+      }))
   }
 
   /**
@@ -130,9 +131,10 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
       this
     else {
       withHeaders(
-        SET_COOKIE -> Cookies.mergeSetCookieHeader(
-          header.headers.getOrElse(SET_COOKIE, ""),
-          cookies))
+        SET_COOKIE ->
+          Cookies.mergeSetCookieHeader(
+            header.headers.getOrElse(SET_COOKIE, ""),
+            cookies))
     }
   }
 
@@ -149,9 +151,10 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     */
   def discardingCookies(cookies: DiscardingCookie*): Result = {
     withHeaders(
-      SET_COOKIE -> Cookies.mergeSetCookieHeader(
-        header.headers.getOrElse(SET_COOKIE, ""),
-        cookies.map(_.toCookie)))
+      SET_COOKIE ->
+        Cookies.mergeSetCookieHeader(
+          header.headers.getOrElse(SET_COOKIE, ""),
+          cookies.map(_.toCookie)))
   }
 
   /**
@@ -296,9 +299,9 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
       .Play
       .privateMaybeApplication
       .exists(app =>
-        (app.mode == play.api.Mode.Dev) && (!flash.isEmpty) && (
-          header.status < 300 || header.status > 399
-        ))
+        (app.mode == play.api.Mode.Dev) &&
+          (!flash.isEmpty) &&
+          (header.status < 300 || header.status > 399))
   }
 
   /**
@@ -756,24 +759,25 @@ trait Results {
       queryString: Map[String, Seq[String]] = Map.empty,
       status: Int = SEE_OTHER) = {
     import java.net.URLEncoder
-    val fullUrl = url + Option(queryString)
-      .filterNot(_.isEmpty)
-      .map { params =>
-        (
-          if (url.contains("?"))
-            "&"
-          else
-            "?"
-        ) + params
-          .toSeq
-          .flatMap { pair =>
-            pair
-              ._2
-              .map(value => (pair._1 + "=" + URLEncoder.encode(value, "utf-8")))
-          }
-          .mkString("&")
-      }
-      .getOrElse("")
+    val fullUrl = url +
+      Option(queryString)
+        .filterNot(_.isEmpty)
+        .map { params =>
+          (if (url.contains("?"))
+             "&"
+           else
+             "?") +
+            params
+              .toSeq
+              .flatMap { pair =>
+                pair
+                  ._2
+                  .map(value =>
+                    (pair._1 + "=" + URLEncoder.encode(value, "utf-8")))
+              }
+              .mkString("&")
+        }
+        .getOrElse("")
     Status(status).withHeaders(LOCATION -> fullUrl)
   }
 

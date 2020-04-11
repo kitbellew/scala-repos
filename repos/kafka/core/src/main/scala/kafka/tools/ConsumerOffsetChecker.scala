@@ -92,9 +92,8 @@ object ConsumerOffsetChecker extends Logging {
             val topicAndPartition = TopicAndPartition(topic, pid)
             val request = OffsetRequest(
               immutable.Map(
-                topicAndPartition -> PartitionOffsetRequestInfo(
-                  OffsetRequest.LatestTime,
-                  1)))
+                topicAndPartition ->
+                  PartitionOffsetRequestInfo(OffsetRequest.LatestTime, 1)))
             val logSize =
               consumer
                 .getOffsetsBefore(request)
@@ -273,8 +272,8 @@ object ConsumerOffsetChecker extends Logging {
                 val offset =
                   zkUtils
                     .readData(
-                      topicDirs.consumerOffsetDir + "/%d"
-                        .format(topicAndPartition.partition))
+                      topicDirs.consumerOffsetDir +
+                        "/%d".format(topicAndPartition.partition))
                     ._1
                     .toLong
                 offsetMap.put(topicAndPartition, offset)

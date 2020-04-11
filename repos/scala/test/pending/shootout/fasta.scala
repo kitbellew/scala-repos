@@ -62,12 +62,13 @@ object fasta {
 
   def makeCumulative(a: Array[Tuple2[Char, Double]]) = {
     var cp = 0.0
-    a map (frequency =>
-      frequency match {
-        case (code, percent) =>
-          cp = cp + percent;
-          new Frequency(code.toByte, cp)
-      })
+    a map
+      (frequency =>
+        frequency match {
+          case (code, percent) =>
+            cp = cp + percent;
+            new Frequency(code.toByte, cp)
+        })
   }
 
 }

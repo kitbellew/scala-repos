@@ -150,8 +150,7 @@ trait JoinAlgorithms {
         new LeftJoin
       case other =>
         throw new InvalidJoinModeException(
-          "cannot use joiner " + other +
-            " since it cannot be flipped safely")
+          "cannot use joiner " + other + " since it cannot be flipped safely")
     }
   }
 
@@ -454,7 +453,8 @@ trait JoinAlgorithms {
         ()
       case (j, l, r) =>
         throw new InvalidJoinModeException(
-          "you cannot use joiner " + j + " with left replication " + l + " and right replication " + r)
+          "you cannot use joiner " + j + " with left replication " + l +
+            " and right replication " + r)
     }
   }
 

@@ -275,12 +275,12 @@ sealed abstract class TreeLocInstances {
       override def cojoin[A](a: TreeLoc[A]): TreeLoc[TreeLoc[A]] = a.cojoin
 
       override def all[A](fa: TreeLoc[A])(f: A => Boolean) =
-        Foldable[Tree].all(fa.tree)(f) && ForestT.all(fa.lefts)(f) && ForestT
-          .all(fa.rights)(f) && ParentsT.all(fa.parents)(f)
+        Foldable[Tree].all(fa.tree)(f) && ForestT.all(fa.lefts)(f) &&
+          ForestT.all(fa.rights)(f) && ParentsT.all(fa.parents)(f)
 
       override def any[A](fa: TreeLoc[A])(f: A => Boolean) =
-        Foldable[Tree].any(fa.tree)(f) || ForestT.any(fa.lefts)(f) || ForestT
-          .any(fa.rights)(f) || ParentsT.any(fa.parents)(f)
+        Foldable[Tree].any(fa.tree)(f) || ForestT.any(fa.lefts)(f) ||
+          ForestT.any(fa.rights)(f) || ParentsT.any(fa.parents)(f)
 
       override def foldMap1[A, B](fa: TreeLoc[A])(f: A => B)(implicit
           B: Semigroup[B]) = foldMapLeft1(fa)(f)((b, a) => B.append(b, f(a)))

@@ -236,12 +236,10 @@ class RemoveInternalClusterShardingData(
   var currentPid: String = _
   var currentRef: ActorRef = _
   var remainingPids = typeNames.map(persistenceId) ++
-    (
-      if (remove2dot3Data)
-        typeNames.map(persistenceId2dot3)
-      else
-        Set.empty
-    )
+    (if (remove2dot3Data)
+       typeNames.map(persistenceId2dot3)
+     else
+       Set.empty)
 
   def persistenceId(typeName: String): String =
     s"/sharding/${typeName}Coordinator"

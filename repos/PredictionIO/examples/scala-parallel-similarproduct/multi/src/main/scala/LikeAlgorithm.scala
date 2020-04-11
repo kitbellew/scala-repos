@@ -61,13 +61,13 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
 
         if (uindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent user ID ${r.user}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent user ID ${r.user}" +
+              " to Int index.")
 
         if (iindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent item ID ${r.item}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent item ID ${r.item}" +
+              " to Int index.")
 
         // key is (uindex, iindex) tuple, value is (like, t) tuple
         ((uindex, iindex), (r.like, r.t))

@@ -12,37 +12,45 @@ object TryTest extends SpecLite {
   implicit val showThrowable: Show[Throwable] = Show.showA
   implicit val equalThrowable: Equal[Throwable] = Equal.equalA
 
-  "toDisjunction Failure" ! forAll { t: Throwable =>
-    `try`.toDisjunction(Failure[Int](t)).isLeft
-  }
+  "toDisjunction Failure" !
+    forAll { t: Throwable =>
+      `try`.toDisjunction(Failure[Int](t)).isLeft
+    }
 
-  "toDisjunction Success" ! forAll { i: Int =>
-    `try`.toDisjunction(Success(i)).isRight
-  }
+  "toDisjunction Success" !
+    forAll { i: Int =>
+      `try`.toDisjunction(Success(i)).isRight
+    }
 
-  "disjunction round trip" ! forAll { d: Throwable \/ Int =>
-    val iso = `try`.tryDisjunctionIso
-    iso.to(iso.from(d)) must_=== d
-  }
+  "disjunction round trip" !
+    forAll { d: Throwable \/ Int =>
+      val iso = `try`.tryDisjunctionIso
+      iso.to(iso.from(d)) must_=== d
+    }
 
-  "toValidation Failure" ! forAll { t: Throwable =>
-    `try`.toValidation(Failure[Int](t)).isFailure
-  }
+  "toValidation Failure" !
+    forAll { t: Throwable =>
+      `try`.toValidation(Failure[Int](t)).isFailure
+    }
 
-  "toValidation Success" ! forAll { i: Int =>
-    `try`.toValidation(Success[Int](i)).isSuccess
-  }
+  "toValidation Success" !
+    forAll { i: Int =>
+      `try`.toValidation(Success[Int](i)).isSuccess
+    }
 
-  "toValidationNel Failure" ! forAll { t: Throwable =>
-    `try`.toValidationNel(Failure[Int](t)).isFailure
-  }
+  "toValidationNel Failure" !
+    forAll { t: Throwable =>
+      `try`.toValidationNel(Failure[Int](t)).isFailure
+    }
 
-  "toValidationNel Success" ! forAll { i: Int =>
-    `try`.toValidationNel(Success[Int](i)).isSuccess
-  }
+  "toValidationNel Success" !
+    forAll { i: Int =>
+      `try`.toValidationNel(Success[Int](i)).isSuccess
+    }
 
-  "validation round trip" ! forAll { v: Validation[Throwable, Int] =>
-    val iso = `try`.tryValidationIso
-    iso.to(iso.from(v)) must_=== v
-  }
+  "validation round trip" !
+    forAll { v: Validation[Throwable, Int] =>
+      val iso = `try`.tryValidationIso
+      iso.to(iso.from(v)) must_=== v
+    }
 }

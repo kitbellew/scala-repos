@@ -79,9 +79,8 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
 
     // if the user has turned off auto force right, we fall back to the old behavior and
     //just return the mapped pipe
-    if (!getHashJoinAutoForceRight(mode) || isSafeToSkipForceToDisk(
-          mappedPipe,
-          mode))
+    if (!getHashJoinAutoForceRight(mode) ||
+        isSafeToSkipForceToDisk(mappedPipe, mode))
       mappedPipe
     else
       mappedPipe.forceToDisk

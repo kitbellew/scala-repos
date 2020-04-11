@@ -44,9 +44,11 @@ object FetchResponsePartitionData {
   }
 
   val headerSize =
-    2 + /* error code */
-    8 + /* high watermark */
-    4 /* messageSetSize */
+    2 +
+      /* error code */
+      8 +
+      /* high watermark */
+      4 /* messageSetSize */
 }
 
 case class FetchResponsePartitionData(
@@ -116,17 +118,15 @@ object TopicData {
   }
 
   def headerSize(topic: String) =
-    shortStringLength(topic) +
-      4 /* partition count */
+    shortStringLength(topic) + 4 /* partition count */
 }
 
 case class TopicData(
     topic: String,
     partitionData: Map[Int, FetchResponsePartitionData]) {
   val sizeInBytes =
-    TopicData.headerSize(topic) + partitionData
-      .values
-      .foldLeft(0)(_ + _.sizeInBytes + 4)
+    TopicData.headerSize(topic) +
+      partitionData.values.foldLeft(0)(_ + _.sizeInBytes + 4)
 
   val headerSize = TopicData.headerSize(topic)
 }
@@ -211,9 +211,11 @@ object FetchResponse {
         4
       else
         0
-    4 + /* correlationId */
-    4 + /* topic count */
-    throttleTimeSize
+    4 +
+      /* correlationId */
+      4 +
+      /* topic count */
+      throttleTimeSize
   }
 
   // Returns the size of entire fetch response in bytes (including the header size)

@@ -97,8 +97,8 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
           collection = videoColl,
           selector = BSONDocument(),
           projection = BSONDocument(),
-          sort = BSONDocument("metadata.likes" -> -1)) mapFutureList videoViews(
-          user),
+          sort = BSONDocument("metadata.likes" -> -1)) mapFutureList
+          videoViews(user),
         currentPage = page,
         maxPerPage = maxPerPage
       )
@@ -115,8 +115,8 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
             collection = videoColl,
             selector = BSONDocument("tags" -> BSONDocument("$all" -> tags)),
             projection = BSONDocument(),
-            sort = BSONDocument(
-              "metadata.likes" -> -1)) mapFutureList videoViews(user),
+            sort = BSONDocument("metadata.likes" -> -1)) mapFutureList
+            videoViews(user),
           currentPage = page,
           maxPerPage = maxPerPage
         )
@@ -130,8 +130,8 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
           collection = videoColl,
           selector = BSONDocument("author" -> author),
           projection = BSONDocument(),
-          sort = BSONDocument("metadata.likes" -> -1)) mapFutureList videoViews(
-          user),
+          sort = BSONDocument("metadata.likes" -> -1)) mapFutureList
+          videoViews(user),
         currentPage = page,
         maxPerPage = maxPerPage
       )
@@ -172,9 +172,8 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
         .find(BSONDocument(View.BSONFields.id -> View.makeId(videoId, userId)))
         .one[View]
 
-    def add(a: View) =
-      (viewColl insert a).void recover
-        lila.db.recoverDuplicateKey(_ => ())
+    def add(a: View) = (viewColl insert a).void recover
+      lila.db.recoverDuplicateKey(_ => ())
 
     def hasSeen(user: User, video: Video): Fu[Boolean] =
       viewColl.count(
@@ -185,10 +184,12 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
       viewColl.distinct(
         View.BSONFields.videoId,
         BSONDocument(
-          "_id" -> BSONDocument(
-            "$in" -> videos.map { v =>
-              View.makeId(v.id, user.id)
-            })).some) map lila.db.BSON.asStringSet
+          "_id" ->
+            BSONDocument(
+              "$in" ->
+                videos.map { v =>
+                  View.makeId(v.id, user.id)
+                })).some) map lila.db.BSON.asStringSet
   }
 
   object tag {
@@ -235,13 +236,15 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
           case (all, paths) =>
             val tags = all map { t =>
               paths find (_._id == t._id) getOrElse TagNb(t._id, 0)
-            } filterNot (_.empty) take max
+            } filterNot
+              (_.empty) take max
             val missing = filterTags filterNot { t =>
               tags exists (_.tag == t)
             }
-            val list = tags.take(max - missing.size) ::: missing.flatMap { t =>
-              all find (_.tag == t)
-            }
+            val list = tags.take(max - missing.size) :::
+              missing.flatMap { t =>
+                all find (_.tag == t)
+              }
             list.sortBy { t =>
               if (filterTags contains t.tag)
                 Int.MinValue

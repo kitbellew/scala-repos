@@ -38,32 +38,33 @@ import scalafx.testutil.RunOnApplicationThread
 @RunWith(classOf[JUnitRunner])
 class EventHandlerSpec extends FlatSpec with RunOnApplicationThread {
 
-  "`handleEvent`" should "create subscription and cancel for Event Handlers" in {
+  "`handleEvent`" should
+    "create subscription and cancel for Event Handlers" in {
 
-    val group = new Group()
+      val group = new Group()
 
-    var counter = 0
-    val subscription =
-      group.handleEvent(Event.ANY) { () =>
-        // Counter is incremented twice to make sure that both instructions are executed, similar to Issue 102
-        counter += 1
-        counter += 1
-      }
+      var counter = 0
+      val subscription =
+        group.handleEvent(Event.ANY) { () =>
+          // Counter is incremented twice to make sure that both instructions are executed, similar to Issue 102
+          counter += 1
+          counter += 1
+        }
 
-    assert(counter === 0)
+      assert(counter === 0)
 
-    val actionEvent = new ActionEvent(this, group)
+      val actionEvent = new ActionEvent(this, group)
 
-    group.fireEvent(actionEvent)
-    assert(counter === 2)
+      group.fireEvent(actionEvent)
+      assert(counter === 2)
 
-    group.fireEvent(actionEvent)
-    assert(counter === 4)
+      group.fireEvent(actionEvent)
+      assert(counter === 4)
 
-    subscription.cancel()
-    group.fireEvent(actionEvent)
-    assert(counter === 4)
-  }
+      subscription.cancel()
+      group.fireEvent(actionEvent)
+      assert(counter === 4)
+    }
 
   "`filterEvent`" should "create subscription and cancel for Event Filters" in {
 

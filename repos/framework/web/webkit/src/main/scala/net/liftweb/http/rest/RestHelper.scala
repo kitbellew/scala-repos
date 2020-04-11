@@ -42,17 +42,9 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected def jsonResponse_?(in: Req): Boolean = {
     (in.acceptsJson_? && !in.acceptsStarStar) ||
-    (
-      (
-        in.weightedAccept.isEmpty ||
-        in.acceptsStarStar
-      ) &&
-      (
-        in.path.suffix.equalsIgnoreCase("json") ||
-        in.json_? ||
-        (in.path.suffix.length == 0 && defaultGetAsJson)
-      )
-    ) ||
+    ((in.weightedAccept.isEmpty || in.acceptsStarStar) &&
+    (in.path.suffix.equalsIgnoreCase("json") || in.json_? ||
+    (in.path.suffix.length == 0 && defaultGetAsJson))) ||
     suplimentalJsonResponse_?(in)
   }
 
@@ -98,17 +90,9 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected def xmlResponse_?(in: Req): Boolean = {
     (in.acceptsXml_? && !in.acceptsStarStar) ||
-    (
-      (
-        in.weightedAccept.isEmpty ||
-        in.acceptsStarStar
-      ) &&
-      (
-        in.path.suffix.equalsIgnoreCase("xml") ||
-        in.xml_? ||
-        (in.path.suffix.length == 0 && defaultGetAsXml)
-      )
-    ) ||
+    ((in.weightedAccept.isEmpty || in.acceptsStarStar) &&
+    (in.path.suffix.equalsIgnoreCase("xml") || in.xml_? ||
+    (in.path.suffix.length == 0 && defaultGetAsXml))) ||
     suplimentalXmlResponse_?(in)
   }
 
@@ -654,11 +638,7 @@ trait RestHelper extends LiftRules.DispatchPF {
         Full(
           InMemoryResponse(
             msg.getBytes("UTF-8"),
-            (
-              "Content-Type" ->
-                "text/plain; charset=utf-8"
-            ) ::
-              Nil,
+            ("Content-Type" -> "text/plain; charset=utf-8") :: Nil,
             Nil,
             code))
 
@@ -696,11 +676,7 @@ trait RestHelper extends LiftRules.DispatchPF {
           Full(
             InMemoryResponse(
               msg.getBytes("UTF-8"),
-              (
-                "Content-Type" ->
-                  "text/plain; charset=utf-8"
-              ) ::
-                Nil,
+              ("Content-Type" -> "text/plain; charset=utf-8") :: Nil,
               Nil,
               code))
 

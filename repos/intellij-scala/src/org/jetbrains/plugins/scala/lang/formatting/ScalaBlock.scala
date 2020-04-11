@@ -73,20 +73,18 @@ class ScalaBlock(
       .getCustomSettings(classOf[ScalaCodeStyleSettings])
     val indentSize = mySettings.getIndentSize(ScalaFileType.SCALA_FILE_TYPE)
     val parent = getNode.getPsi
-    val braceShifted = mySettings.BRACE_STYLE == CommonCodeStyleSettings
-      .NEXT_LINE_SHIFTED
+    val braceShifted = mySettings.BRACE_STYLE ==
+      CommonCodeStyleSettings.NEXT_LINE_SHIFTED
     def isBlockOnlyScope(scope: PsiElement) =
       !isLeaf &&
         Set(ScalaTokenTypes.tLBRACE, ScalaTokenTypes.tLPARENTHESIS)
           .contains(scope.getNode.getElementType) &&
-        (
-          scope.getParent match {
-            case _: ScTryBlock | _: ScForStatement | _: ScPackaging =>
-              true
-            case _ =>
-              false
-          }
-        )
+        (scope.getParent match {
+          case _: ScTryBlock | _: ScForStatement | _: ScPackaging =>
+            true
+          case _ =>
+            false
+        })
     parent match {
       case m: ScMatchStmt =>
         if (m.caseClauses.length == 0) {
@@ -107,23 +105,22 @@ class ScalaBlock(
       case c: ScCaseClauses =>
         new ChildAttributes(Indent.getNormalIndent, null)
       case l: ScLiteral
-          if l.isMultiLineString && scalaSettings
-            .MULTILINE_STRING_SUPORT != ScalaCodeStyleSettings
-            .MULTILINE_STRING_NONE =>
+          if l.isMultiLineString &&
+            scalaSettings.MULTILINE_STRING_SUPORT !=
+            ScalaCodeStyleSettings.MULTILINE_STRING_NONE =>
         new ChildAttributes(Indent.getSpaceIndent(3, true), null)
       case b: ScBlockExpr
           if b.lastExpr.exists(_.isInstanceOf[ScFunctionExpr]) =>
         var i = getSubBlocks().size() - newChildIndex
         val elem = b.lastExpr.get.getNode.getTreePrev
-        if (elem.getElementType != TokenType
-              .WHITE_SPACE || !elem.getText.contains("\n"))
+        if (elem.getElementType != TokenType.WHITE_SPACE ||
+            !elem.getText.contains("\n"))
           i = 0
-        val indent = i + (
-          if (!braceShifted)
-            1
-          else
-            0
-        )
+        val indent = i +
+          (if (!braceShifted)
+             1
+           else
+             0)
         new ChildAttributes(Indent.getSpaceIndent(indent * indentSize), null)
       case _: ScBlockExpr | _: ScEarlyDefinitions | _: ScTemplateBody |
           _: ScForStatement | _: ScWhileStmt | _: ScTryBlock |
@@ -146,8 +143,8 @@ class ScalaBlock(
           null)
       case scope if isBlockOnlyScope(scope) =>
         new ChildAttributes(
-          if (scope.getNode.getElementType == ScalaTokenTypes
-                .tLBRACE && braceShifted)
+          if (scope.getNode.getElementType == ScalaTokenTypes.tLBRACE &&
+              braceShifted)
             Indent.getNoneIndent
           else
             Indent.getNormalIndent,
@@ -157,10 +154,9 @@ class ScalaBlock(
       case _: ScBlock =>
         val grandParent = parent.getParent
         new ChildAttributes(
-          if (grandParent != null && (
-                grandParent.isInstanceOf[ScCaseClause] || grandParent
-                  .isInstanceOf[ScFunctionExpr]
-              ))
+          if (grandParent != null &&
+              (grandParent.isInstanceOf[ScCaseClause] ||
+              grandParent.isInstanceOf[ScFunctionExpr]))
             Indent.getNormalIndent
           else
             Indent.getNoneIndent,
@@ -174,8 +170,8 @@ class ScalaBlock(
           new ChildAttributes(Indent.getNoneIndent, null)
         else
           new ChildAttributes(
-            if (mySettings.BRACE_STYLE == CommonCodeStyleSettings
-                  .NEXT_LINE_SHIFTED)
+            if (mySettings.BRACE_STYLE ==
+                  CommonCodeStyleSettings.NEXT_LINE_SHIFTED)
               Indent.getNoneIndent
             else
               Indent.getNormalIndent,
@@ -201,9 +197,8 @@ class ScalaBlock(
       case _ if parent.getNode.getElementType == ScalaTokenTypes.kIF =>
         new ChildAttributes(Indent.getNormalIndent, null)
       case p: ScParameterClause
-          if scalaSettings
-            .USE_ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS && isConstructorArgOrMemberFunctionParameter(
-            p) =>
+          if scalaSettings.USE_ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS &&
+            isConstructorArgOrMemberFunctionParameter(p) =>
         new ChildAttributes(
           Indent.getSpaceIndent(
             scalaSettings.ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS,
@@ -231,9 +226,8 @@ class ScalaBlock(
   private def isConstructorArgOrMemberFunctionParameter(
       paramClause: ScParameterClause): Boolean = {
     val owner = paramClause.owner
-    owner != null && (
-      owner.isInstanceOf[ScPrimaryConstructor] || owner.isInstanceOf[ScFunction]
-    )
+    owner != null &&
+    (owner.isInstanceOf[ScPrimaryConstructor] || owner.isInstanceOf[ScFunction])
   }
 
   def getSpacing(child1: Block, child2: Block) = {
@@ -246,8 +240,8 @@ class ScalaBlock(
     import scala.collection.JavaConversions._
     if (mySubBlocks == null) {
       mySubBlocks = getDummyBlocks(myNode, myLastNode, this).filterNot {
-        _.asInstanceOf[ScalaBlock].getNode.getElementType == ScalaTokenTypes
-          .tWHITE_SPACE_IN_LINE
+        _.asInstanceOf[ScalaBlock].getNode.getElementType ==
+          ScalaTokenTypes.tWHITE_SPACE_IN_LINE
       }
     }
     mySubBlocks
@@ -265,11 +259,8 @@ class ScalaBlock(
       return true
     var lastChild = node.getLastChildNode
     while (lastChild != null &&
-           (
-             lastChild.getPsi.isInstanceOf[PsiWhiteSpace] || lastChild
-               .getPsi
-               .isInstanceOf[PsiComment]
-           )) {
+           (lastChild.getPsi.isInstanceOf[PsiWhiteSpace] ||
+           lastChild.getPsi.isInstanceOf[PsiComment])) {
       lastChild = lastChild.getTreePrev
     }
     if (lastChild == null) {
@@ -318,11 +309,11 @@ class SubBlocksContext(
           context.getLastNode
       }
       .filter(_.isDefined)
-      .map(_.get) ++
-      additionalNodes ++ childrenAdditionalContexts.map {
-      case (child, _) =>
-        child
-    } match {
+      .map(_.get) ++ additionalNodes ++
+      childrenAdditionalContexts.map {
+        case (child, _) =>
+          child
+      } match {
       case empty if empty.isEmpty =>
         None
       case nonEmpty =>

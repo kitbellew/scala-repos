@@ -34,8 +34,8 @@ object ArrayEquality extends SimplificationType {
     }
 
   private def arraysOrSeqAndArray(left: ScExpression, right: ScExpression) = {
-    isArray(left) && (isArray(right) || isSeq(right)) ||
-    isArray(right) && isSeq(left)
+    isArray(left) &&
+    (isArray(right) || isSeq(right)) || isArray(right) && isSeq(left)
   }
 }
 

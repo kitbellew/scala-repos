@@ -64,9 +64,10 @@ class ScalaJSRunner(
 
   override def newCompiler = new DirectCompiler(this) with ScalaJSDirectCompiler
   override def extraJavaOptions = {
-    super.extraJavaOptions ++ Seq(
-      s"-Dscalajs.partest.optMode=${options.optMode.id}",
-      s"-Dscalajs.partest.compliantSems=${compliantSems.mkString(",")}")
+    super.extraJavaOptions ++
+      Seq(
+        s"-Dscalajs.partest.optMode=${options.optMode.id}",
+        s"-Dscalajs.partest.compliantSems=${compliantSems.mkString(",")}")
   }
 }
 

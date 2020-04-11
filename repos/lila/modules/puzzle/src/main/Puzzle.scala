@@ -44,9 +44,8 @@ case class Puzzle(
       sit1 <- Forsyth << fen
       uci <- Uci.Move(initialMove)
       sit2 <-
-        sit1.move(uci.orig, uci.dest, uci.promotion).toOption map (
-          _.situationAfter
-        )
+        sit1.move(uci.orig, uci.dest, uci.promotion).toOption map
+          (_.situationAfter)
     } yield Forsyth >> sit2
   }
 }

@@ -80,22 +80,16 @@ private[r] object SparkRWrappers {
         val coefficientStandardErrorsR =
           Array(m.summary.coefficientStandardErrors.last) ++
             m.summary.coefficientStandardErrors.dropRight(1)
-        val tValuesR = Array(m.summary.tValues.last) ++ m
-          .summary
-          .tValues
-          .dropRight(1)
-        val pValuesR = Array(m.summary.pValues.last) ++ m
-          .summary
-          .pValues
-          .dropRight(1)
+        val tValuesR = Array(m.summary.tValues.last) ++
+          m.summary.tValues.dropRight(1)
+        val pValuesR = Array(m.summary.pValues.last) ++
+          m.summary.pValues.dropRight(1)
         if (m.getFitIntercept) {
-          Array(m.intercept) ++ m
-            .coefficients
-            .toArray ++ coefficientStandardErrorsR ++
-            tValuesR ++ pValuesR
+          Array(m.intercept) ++ m.coefficients.toArray ++
+            coefficientStandardErrorsR ++ tValuesR ++ pValuesR
         } else {
-          m.coefficients
-            .toArray ++ coefficientStandardErrorsR ++ tValuesR ++ pValuesR
+          m.coefficients.toArray ++ coefficientStandardErrorsR ++ tValuesR ++
+            pValuesR
         }
       }
       case m: LogisticRegressionModel => {

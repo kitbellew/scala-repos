@@ -4,17 +4,17 @@ import Keys._
 import scala.xml._
 
 object MakePomTest extends Build {
-  lazy val root = Project("root", file(".")) settings (
-    readPom <<= makePom map XML.loadFile,
-    TaskKey[Unit]("check-pom") <<= checkPom,
-    TaskKey[Unit]("check-extra") <<= checkExtra,
-    TaskKey[Unit]("check-version-plus-mapping") <<= checkVersionPlusMapping,
-    resolvers += Resolver.sonatypeRepo("snapshots"),
-    makePomConfiguration ~= {
-      _.copy(extra = <extra-tag/>)
-    },
-    libraryDependencies += "com.google.code.findbugs" % "jsr305" % "1.3.+"
-  )
+  lazy val root = Project("root", file(".")) settings
+    (
+      readPom <<= makePom map XML.loadFile,
+      TaskKey[Unit]("check-pom") <<= checkPom,
+      TaskKey[Unit]("check-extra") <<= checkExtra,
+      TaskKey[Unit]("check-version-plus-mapping") <<= checkVersionPlusMapping,
+      resolvers += Resolver.sonatypeRepo("snapshots"),
+      makePomConfiguration ~= {
+        _.copy(extra = <extra-tag/>)
+      },
+      libraryDependencies += "com.google.code.findbugs" % "jsr305" % "1.3.+")
 
   val readPom = TaskKey[Elem]("read-pom")
 
@@ -71,21 +71,21 @@ object MakePomTest extends Build {
 
         lazy val explain =
           (
-            ("Written:" +: writtenRepositories) ++ (
-              "Declared:" +: mavenStyleRepositories
-            )
+            ("Written:" +: writtenRepositories) ++
+              ("Declared:" +: mavenStyleRepositories)
           ).mkString("\n\t")
 
         if (writtenRepositories != mavenStyleRepositories)
           sys.error(
-            "Written repositories did not match declared repositories.\n\t" + explain)
+            "Written repositories did not match declared repositories.\n\t" +
+              explain)
         else
           ()
       }
   }
 
-  def read(repository: Node): MavenRepository =
-    (repository \ "name").text at normalize((repository \ "url").text)
+  def read(repository: Node): MavenRepository = (repository \ "name").text at
+    normalize((repository \ "url").text)
 
   def normalize(url: String): String = {
     val base = uri(url).normalize.toString

@@ -55,8 +55,8 @@ class ConsumerIntegrationTest
           }
         },
         name = "direct-a1")
-      camel.sendTo("direct:a1", msg = "some message") should ===(
-        "received some message")
+      camel.sendTo("direct:a1", msg = "some message") should
+        ===("received some message")
     }
 
     "Consumer must time-out if consumer is slow" taggedAs TimingTest in {
@@ -152,8 +152,8 @@ class ConsumerIntegrationTest
         name = "direct-error-handler-test"
       )
       filterEvents(EventFilter[TestException](occurrences = 1)) {
-        camel.sendTo("direct:error-handler-test", msg = "hello") should ===(
-          "error: hello")
+        camel.sendTo("direct:error-handler-test", msg = "hello") should
+          ===("error: hello")
       }
       stop(ref)
     }
@@ -169,8 +169,8 @@ class ConsumerIntegrationTest
         name = "direct-failing-once-consumer"
       )
       filterEvents(EventFilter[TestException](occurrences = 1)) {
-        camel.sendTo("direct:failing-once-concumer", msg = "hello") should ===(
-          "accepted: hello")
+        camel.sendTo("direct:failing-once-concumer", msg = "hello") should
+          ===("accepted: hello")
       }
       stop(ref)
     }
@@ -188,9 +188,8 @@ class ConsumerIntegrationTest
       camel
         .template
         .asyncSendBody("direct:manual-ack", "some message")
-        .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS) should ===(
-        null
-      ) //should not timeout
+        .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS) should
+        ===(null) //should not timeout
       stop(ref)
     }
 

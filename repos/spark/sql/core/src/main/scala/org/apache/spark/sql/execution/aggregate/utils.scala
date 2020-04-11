@@ -201,8 +201,8 @@ object Utils {
         groupingExpressions = groupingAttributes ++ distinctAttributes,
         aggregateExpressions = aggregateExpressions,
         aggregateAttributes = aggregateAttributes,
-        initialInputBufferOffset =
-          (groupingAttributes ++ distinctAttributes).length,
+        initialInputBufferOffset = (groupingAttributes ++ distinctAttributes)
+          .length,
         resultExpressions = groupingAttributes ++ distinctAttributes ++
           aggregateExpressions
             .flatMap(_.aggregateFunction.inputAggBufferAttributes),
@@ -257,12 +257,12 @@ object Utils {
           .flatMap(_.aggregateFunction.inputAggBufferAttributes)
       createAggregate(
         groupingExpressions = groupingAttributes,
-        aggregateExpressions =
-          mergeAggregateExpressions ++ distinctAggregateExpressions,
-        aggregateAttributes =
-          mergeAggregateAttributes ++ distinctAggregateAttributes,
-        initialInputBufferOffset =
-          (groupingAttributes ++ distinctAttributes).length,
+        aggregateExpressions = mergeAggregateExpressions ++
+          distinctAggregateExpressions,
+        aggregateAttributes = mergeAggregateAttributes ++
+          distinctAggregateAttributes,
+        initialInputBufferOffset = (groupingAttributes ++ distinctAttributes)
+          .length,
         resultExpressions = partialAggregateResult,
         child = partialMergeAggregate
       )
@@ -300,10 +300,10 @@ object Utils {
       createAggregate(
         requiredChildDistributionExpressions = Some(groupingAttributes),
         groupingExpressions = groupingAttributes,
-        aggregateExpressions =
-          finalAggregateExpressions ++ distinctAggregateExpressions,
-        aggregateAttributes =
-          finalAggregateAttributes ++ distinctAggregateAttributes,
+        aggregateExpressions = finalAggregateExpressions ++
+          distinctAggregateExpressions,
+        aggregateAttributes = finalAggregateAttributes ++
+          distinctAggregateAttributes,
         initialInputBufferOffset = groupingAttributes.length,
         resultExpressions = resultExpressions,
         child = partialDistinctAggregate

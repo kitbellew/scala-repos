@@ -59,7 +59,8 @@ class StatsSampleClient(servicePath: String) extends Actor {
         elements
       case _ =>
         throw new IllegalArgumentException(
-          "servicePath [%s] is not a valid relative actor path" format servicePath)
+          "servicePath [%s] is not a valid relative actor path" format
+            servicePath)
     }
   import context.dispatcher
   val tickTask = context

@@ -96,8 +96,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     (context.isInstanceOf[ScInfixExpr] || context.isInstanceOf[ScMethodCall]) &&
     refName.endsWith("=") &&
     !(
-      refName.startsWith("=") || Seq("!=", "<=", ">=")
-        .contains(refName) || refName.exists(_.isLetterOrDigit)
+      refName.startsWith("=") || Seq("!=", "<=", ">=").contains(refName) ||
+        refName.exists(_.isLetterOrDigit)
     )
   }
 
@@ -272,10 +272,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             }
           case ScalaResolveResult(named, subst)
               if call.applyOrUpdateElement.exists(_.isDynamic) &&
-                call
-                  .applyOrUpdateElement
-                  .get
-                  .name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
+                call.applyOrUpdateElement.get.name ==
+                ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
             //add synthetic parameter
             if (!processor.isInstanceOf[CompletionProcessor]) {
               val state: ResolveState = ResolveState
@@ -363,8 +361,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
         secondaryConstructors: (ScClass) => Seq[ScFunction]) {
       ScType.extractClassType(tp) match {
         case Some((clazz, subst))
-            if !clazz.isInstanceOf[ScTemplateDefinition] && clazz
-              .isAnnotationType =>
+            if !clazz.isInstanceOf[ScTemplateDefinition] &&
+              clazz.isAnnotationType =>
           if (!baseProcessor.isInstanceOf[CompletionProcessor]) {
             for (method <- clazz.getMethods) {
               method match {
@@ -528,9 +526,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
               c.secondaryConstructors
                 .filter(f =>
                   !PsiTreeUtil.isContextAncestor(f, s, true) &&
-                    f.getTextRange.getStartOffset < s
-                      .getTextRange
-                      .getStartOffset)
+                    f.getTextRange.getStartOffset <
+                    s.getTextRange.getStartOffset)
             }
           }
         processConstructor(s, tp, typeArgs, arguments, secondaryConstructors)
@@ -612,9 +609,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     val nonValueType = e.getNonValueType(TypingContext.empty)
     nonValueType match {
       case Success(ScTypePolymorphicType(internal, tp), _)
-          if tp.nonEmpty &&
-            !internal.isInstanceOf[ScMethodType] && !internal
-            .isInstanceOf[ScUndefinedType] /* optimization */ =>
+          if tp.nonEmpty && !internal.isInstanceOf[ScMethodType] &&
+            !internal.isInstanceOf[ScUndefinedType] /* optimization */ =>
         processType(internal, reference, e, processor)
         if (processor.candidates.nonEmpty)
           return processor
@@ -681,12 +677,10 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       case _ =>
     }
 
-    if (candidates
-          .isEmpty || (!shape && candidates.forall(!_.isApplicable())) ||
-        (
-          processor.isInstanceOf[CompletionProcessor] &&
-          processor.asInstanceOf[CompletionProcessor].collectImplicits
-        )) {
+    if (candidates.isEmpty ||
+        (!shape && candidates.forall(!_.isApplicable())) ||
+        (processor.isInstanceOf[CompletionProcessor] &&
+        processor.asInstanceOf[CompletionProcessor].collectImplicits)) {
       processor match {
         case rp: ResolveProcessor =>
           rp.resetPrecedence() //do not clear candidate set, we want wrong resolve, if don't found anything

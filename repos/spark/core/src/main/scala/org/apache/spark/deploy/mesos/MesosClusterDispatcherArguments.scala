@@ -99,9 +99,7 @@ private[mesos] class MesosClusterDispatcherArguments(
     System
       .err
       .println(
-        "Usage: MesosClusterDispatcher [options]\n" +
-          "\n" +
-          "Options:\n" +
+        "Usage: MesosClusterDispatcher [options]\n" + "\n" + "Options:\n" +
           "  -h HOST, --host HOST    Hostname to listen on\n" +
           "  -p PORT, --port PORT    Port to listen on (default: 7077)\n" +
           "  --webui-port WEBUI_PORT WebUI Port to listen on (default: 8081)\n" +

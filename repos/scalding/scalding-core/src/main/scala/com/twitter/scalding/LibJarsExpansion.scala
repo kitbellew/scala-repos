@@ -22,8 +22,8 @@ object ExpandLibJarsGlobs {
   def apply(inputArgs: Array[String]): Array[String] = {
     // First we are going to expand out the libjars if we find it
     val libJarsIdx = inputArgs.indexOf("-libjars") + 1
-    if (libJarsIdx > 0 && libJarsIdx < inputArgs
-          .length) { // 0 would mean we never found -libjars
+    if (libJarsIdx > 0 &&
+        libJarsIdx < inputArgs.length) { // 0 would mean we never found -libjars
       val newArgs = new Array[String](inputArgs.length)
       System.arraycopy(inputArgs, 0, newArgs, 0, inputArgs.length)
 
@@ -48,14 +48,13 @@ object ExpandLibJarsGlobs {
     if (!root.exists || (skipHidden && root.isHidden))
       Stream.empty
     else
-      root #:: (
-        root.listFiles match {
+      root #::
+        (root.listFiles match {
           case null =>
             Stream.empty
           case files =>
             files.toStream.flatMap(tree(_, skipHidden))
-        }
-      )
+        })
 
   def fromGlob(glob: String, filesOnly: Boolean = true): Stream[Path] = {
     import java.nio._

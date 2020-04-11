@@ -211,9 +211,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     sendRecords(1000, new TopicPartition(topic4, 0))
     sendRecords(1000, new TopicPartition(topic4, 1))
 
-    subscriptions ++= Set(
-      new TopicPartition(topic4, 0),
-      new TopicPartition(topic4, 1))
+    subscriptions ++=
+      Set(new TopicPartition(topic4, 0), new TopicPartition(topic4, 1))
 
     TestUtils.waitUntilTrue(
       () => {
@@ -292,9 +291,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     val subscriptions = Set(
       new TopicPartition(topic, 0),
       new TopicPartition(topic, 1))
-    val expandedSubscriptions = subscriptions ++ Set(
-      new TopicPartition(otherTopic, 0),
-      new TopicPartition(otherTopic, 1))
+    val expandedSubscriptions = subscriptions ++
+      Set(new TopicPartition(otherTopic, 0), new TopicPartition(otherTopic, 1))
     this.consumers(0).subscribe(List(topic).asJava)
     TestUtils.waitUntilTrue(
       () => {
@@ -608,10 +606,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     // create two new topics, each having 2 partitions
     val topic1 = "topic1"
     val topic2 = "topic2"
-    val expectedAssignment = createTopicAndSendRecords(
-      topic1,
-      2,
-      100) ++ createTopicAndSendRecords(topic2, 2, 100)
+    val expectedAssignment = createTopicAndSendRecords(topic1, 2, 100) ++
+      createTopicAndSendRecords(topic2, 2, 100)
 
     assertEquals(0, consumer0.assignment().size)
 
@@ -629,9 +625,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     val topic3 = "topic3"
     createTopicAndSendRecords(topic3, 2, 100)
 
-    val newExpectedAssignment = expectedAssignment ++ Set(
-      new TopicPartition(topic3, 0),
-      new TopicPartition(topic3, 1))
+    val newExpectedAssignment = expectedAssignment ++
+      Set(new TopicPartition(topic3, 0), new TopicPartition(topic3, 1))
     consumer0.subscribe(List(topic1, topic2, topic3).asJava)
     TestUtils.waitUntilTrue(
       () => {
@@ -669,10 +664,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     // create two new topics, total number of partitions must be greater than number of consumers
     val topic1 = "topic1"
     val topic2 = "topic2"
-    val subscriptions = createTopicAndSendRecords(
-      topic1,
-      5,
-      100) ++ createTopicAndSendRecords(topic2, 8, 100)
+    val subscriptions = createTopicAndSendRecords(topic1, 5, 100) ++
+      createTopicAndSendRecords(topic2, 8, 100)
 
     // create a group of consumers, subscribe the consumers to all the topics and start polling
     // for the topic partition assignment
@@ -708,8 +701,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     sendRecords(100, tp)
     sendRecords(100, tp2)
     val topic1 = "topic1"
-    val subscriptions =
-      Set(tp, tp2) ++ createTopicAndSendRecords(topic1, 5, 100)
+    val subscriptions = Set(tp, tp2) ++
+      createTopicAndSendRecords(topic1, 5, 100)
 
     // subscribe all consumers to all topics and validate the assignment
     val consumerPollers = subscribeConsumersAndWaitForAssignment(
@@ -727,8 +720,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
     // add one more topic and validate partition re-assignment
     val topic2 = "topic2"
-    val expandedSubscriptions =
-      subscriptions ++ createTopicAndSendRecords(topic2, 3, 100)
+    val expandedSubscriptions = subscriptions ++
+      createTopicAndSendRecords(topic2, 3, 100)
     changeConsumerGroupSubscriptionAndValidateAssignment(
       consumerPollers,
       List(topic, topic1, topic2),
@@ -935,9 +928,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     assertEquals(10, testConsumer.committed(tp).offset)
     assertEquals(20, testConsumer.committed(tp2).offset)
     assertTrue(
-      MockConsumerInterceptor
-        .ON_COMMIT_COUNT
-        .intValue() > commitCountBeforeRebalance)
+      MockConsumerInterceptor.ON_COMMIT_COUNT.intValue() >
+        commitCountBeforeRebalance)
 
     // verify commits are intercepted on close
     val commitCountBeforeClose = MockConsumerInterceptor
@@ -945,9 +937,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       .intValue()
     testConsumer.close()
     assertTrue(
-      MockConsumerInterceptor
-        .ON_COMMIT_COUNT
-        .intValue() > commitCountBeforeClose)
+      MockConsumerInterceptor.ON_COMMIT_COUNT.intValue() >
+        commitCountBeforeClose)
     testProducer.close()
 
     // cleanup
@@ -1070,27 +1061,25 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     sendRecords(100, tp)
     sendRecords(100, tp2)
     val topic1 = "topic1"
-    val subscriptions =
-      Set(tp, tp2) ++ createTopicAndSendRecords(topic1, 6, 100)
+    val subscriptions = Set(tp, tp2) ++
+      createTopicAndSendRecords(topic1, 6, 100)
 
     // first subscribe consumers that are defined in this class
     val consumerPollers = Buffer[ConsumerAssignmentPoller]()
     for (consumer <- consumers)
-      consumerPollers += subscribeConsumerAndStartPolling(
-        consumer,
-        List(topic, topic1))
+      consumerPollers +=
+        subscribeConsumerAndStartPolling(consumer, List(topic, topic1))
 
     // create one more consumer and add it to the group; we will timeout this consumer
     val timeoutConsumer =
       new KafkaConsumer[Array[Byte], Array[Byte]](this.consumerConfig)
-    val expandedConsumers =
-      consumers ++ Buffer[KafkaConsumer[Array[Byte], Array[Byte]]](
-        timeoutConsumer)
+    val expandedConsumers = consumers ++
+      Buffer[KafkaConsumer[Array[Byte], Array[Byte]]](timeoutConsumer)
     val timeoutPoller = subscribeConsumerAndStartPolling(
       timeoutConsumer,
       List(topic, topic1))
-    val expandedPollers =
-      consumerPollers ++ Buffer[ConsumerAssignmentPoller](timeoutPoller)
+    val expandedPollers = consumerPollers ++
+      Buffer[ConsumerAssignmentPoller](timeoutPoller)
 
     // validate the initial assignment
     validateGroupAssignment(
@@ -1180,9 +1169,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       subscriptions: Set[TopicPartition]): Buffer[ConsumerAssignmentPoller] = {
     val consumerPollers = Buffer[ConsumerAssignmentPoller]()
     for (consumer <- consumerGroup)
-      consumerPollers += subscribeConsumerAndStartPolling(
-        consumer,
-        topicsToSubscribe)
+      consumerPollers +=
+        subscribeConsumerAndStartPolling(consumer, topicsToSubscribe)
     validateGroupAssignment(
       consumerPollers,
       subscriptions,
@@ -1213,8 +1201,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     assertTrue(consumerCount <= subscriptions.size)
     val consumerGroup = Buffer[KafkaConsumer[Array[Byte], Array[Byte]]]()
     for (i <- 0 until consumerCount)
-      consumerGroup += new KafkaConsumer[Array[Byte], Array[Byte]](
-        this.consumerConfig)
+      consumerGroup +=
+        new KafkaConsumer[Array[Byte], Array[Byte]](this.consumerConfig)
 
     // create consumer pollers, wait for assignment and validate it
     val consumerPollers = subscribeConsumersAndWaitForAssignment(
@@ -1249,9 +1237,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       val newConsumer =
         new KafkaConsumer[Array[Byte], Array[Byte]](this.consumerConfig)
       consumerGroup += newConsumer
-      consumerPollers += subscribeConsumerAndStartPolling(
-        newConsumer,
-        topicsToSubscribe)
+      consumerPollers +=
+        subscribeConsumerAndStartPolling(newConsumer, topicsToSubscribe)
     }
 
     // wait until topics get re-assigned and validate assignment

@@ -93,10 +93,8 @@ final class LoadedBuildUnit(
     * It includes build definition and plugin classes and classes for .sbt file statements and expressions.
     */
   def classpath: Seq[File] =
-    unit.definitions.target ++ unit.plugins.classpath ++ unit
-      .definitions
-      .dslDefinitions
-      .classpath
+    unit.definitions.target ++ unit.plugins.classpath ++
+      unit.definitions.dslDefinitions.classpath
 
   /**
     * The class loader to use for this build unit's publicly visible code.
@@ -337,10 +335,11 @@ object BuildStreams {
       root: URI,
       data: Settings[Scope]): State => Streams =
     s =>
-      s get Keys.stateStreams getOrElse std.Streams(
-        path(units, root, data),
-        displayFull,
-        LogManager.construct(data, s))
+      s get Keys.stateStreams getOrElse
+        std.Streams(
+          path(units, root, data),
+          displayFull,
+          LogManager.construct(data, s))
 
   def path(units: Map[URI, LoadedBuildUnit], root: URI, data: Settings[Scope])(
       scoped: ScopedKey[_]): File =
@@ -356,8 +355,8 @@ object BuildStreams {
         GlobalPath
       case This =>
         sys.error(
-          "Unresolved This reference for " + label + " in " + displayFull(
-            scoped))
+          "Unresolved This reference for " + label + " in " +
+            displayFull(scoped))
       case Select(t) =>
         show(t)
     }
@@ -366,8 +365,7 @@ object BuildStreams {
     pathComponent(scope.config, scoped, "config")(_.name) ::
       pathComponent(scope.task, scoped, "task")(_.label) ::
       pathComponent(scope.extra, scoped, "extra")(showAMap) ::
-      scoped.key.label ::
-      Nil
+      scoped.key.label :: Nil
   }
   def showAMap(a: AttributeMap): String =
     a.entries
@@ -403,8 +401,6 @@ object BuildStreams {
       data: Settings[Scope]): File =
     refTarget(GlobalScope.copy(project = Select(ref)), fallbackBase, data)
   def refTarget(scope: Scope, fallbackBase: File, data: Settings[Scope]): File =
-    (
-      Keys.target in scope get data getOrElse outputDirectory(fallbackBase)
-        .asFile
-    ) / StreamsDirectory
+    (Keys.target in scope get data getOrElse
+      outputDirectory(fallbackBase).asFile) / StreamsDirectory
 }

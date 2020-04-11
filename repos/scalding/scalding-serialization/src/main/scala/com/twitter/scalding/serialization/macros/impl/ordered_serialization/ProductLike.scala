@@ -109,18 +109,16 @@ object ProductLike {
           tBuf.length(q"$element.$accessorSymbol") match {
             case const: ConstantLengthCalculation[_] =>
               (
-                constantLength + const
-                  .asInstanceOf[ConstantLengthCalculation[c.type]]
-                  .toInt,
+                constantLength +
+                  const.asInstanceOf[ConstantLengthCalculation[c.type]].toInt,
                 dynamicLength,
                 maybeLength,
                 noLength)
             case f: FastLengthCalculation[_] =>
               (
                 constantLength,
-                dynamicLength :+ f
-                  .asInstanceOf[FastLengthCalculation[c.type]]
-                  .t,
+                dynamicLength :+
+                  f.asInstanceOf[FastLengthCalculation[c.type]].t,
                 maybeLength,
                 noLength)
             case m: MaybeLengthCalculation[_] =>

@@ -599,12 +599,13 @@ class ObservableBuffer[T](
           var changes = ArrayBuffer.empty[Change[T1]]
           while (c.next()) {
             if (c.wasPermutated()) {
-              changes += Reorder(
-                c.getFrom,
-                c.getTo,
-                { x =>
-                  c.getPermutation(x)
-                })
+              changes +=
+                Reorder(
+                  c.getFrom,
+                  c.getTo,
+                  { x =>
+                    c.getPermutation(x)
+                  })
             } else if (c.wasUpdated()) {
               changes += Update(c.getFrom, c.getTo)
             } else {

@@ -223,10 +223,8 @@ final class PersistencePluginProxy(config: Config)
             case a: AtomicWrite ⇒
               a.payload
                 .foreach { p ⇒
-                  persistentActor ! WriteMessageFailure(
-                    p,
-                    timeoutException,
-                    actorInstanceId)
+                  persistentActor !
+                    WriteMessageFailure(p, timeoutException, actorInstanceId)
                 }
             case r: NonPersistentRepr ⇒
               persistentActor ! LoopMessageSuccess(r.payload, actorInstanceId)
@@ -239,9 +237,8 @@ final class PersistencePluginProxy(config: Config)
               persistentActor) ⇒
           persistentActor ! ReplayMessagesFailure(timeoutException)
         case DeleteMessagesTo(persistenceId, toSequenceNr, persistentActor) ⇒
-          persistentActor ! DeleteMessagesFailure(
-            timeoutException,
-            toSequenceNr)
+          persistentActor !
+            DeleteMessagesFailure(timeoutException, toSequenceNr)
       }
 
     case req: SnapshotProtocol.Request ⇒

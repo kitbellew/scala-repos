@@ -542,8 +542,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
 
   test("SPARK-11043 check operation log root directory") {
     val expectedLine =
-      "Operation log root directory is created: " + operationLogPath
-        .getAbsoluteFile
+      "Operation log root directory is created: " +
+        operationLogPath.getAbsoluteFile
     assert(Source.fromFile(logPath).getLines().exists(_.contains(expectedLine)))
   }
 }
@@ -777,8 +777,7 @@ abstract class HiveThriftServer2Test
 
     val command = serverStartCommand(port)
 
-    diagnosisBuffer ++=
-      s"""
+    diagnosisBuffer ++= s"""
          |### Attempt $attempt ###
          |HiveThriftServer2 command line: $command
          |Listening port: $port

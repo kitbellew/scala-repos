@@ -25,16 +25,16 @@ trait ApplicativeTests[F[_]] extends ApplyTests[F] {
       name = "applicative",
       parent = Some(apply[A, B, C]),
       "applicative identity" -> forAll(laws.applicativeIdentity[A] _),
-      "applicative homomorphism" -> forAll(
-        laws.applicativeHomomorphism[A, B] _),
+      "applicative homomorphism" ->
+        forAll(laws.applicativeHomomorphism[A, B] _),
       "applicative interchange" -> forAll(laws.applicativeInterchange[A, B] _),
       "applicative map" -> forAll(laws.applicativeMap[A, B] _),
-      "ap consistent with product + map" -> forAll(
-        laws.apProductConsistent[A, B] _),
-      "monoidal left identity" -> forAll((fa: F[A]) =>
-        iso.leftIdentity(laws.monoidalLeftIdentity(fa))),
-      "monoidal right identity" -> forAll((fa: F[A]) =>
-        iso.rightIdentity(laws.monoidalRightIdentity(fa))))
+      "ap consistent with product + map" ->
+        forAll(laws.apProductConsistent[A, B] _),
+      "monoidal left identity" ->
+        forAll((fa: F[A]) => iso.leftIdentity(laws.monoidalLeftIdentity(fa))),
+      "monoidal right identity" ->
+        forAll((fa: F[A]) => iso.rightIdentity(laws.monoidalRightIdentity(fa))))
   }
 }
 

@@ -47,16 +47,15 @@ object APIKeyRecord {
   implicit val apiKeyRecordIso = Iso
     .hlist(APIKeyRecord.apply _, APIKeyRecord.unapply _)
 
-  val schemaV1 = "apiKey" :: "name" :: "description" :: (
-    "issuerKey" ||| "(undefined)"
-  ) :: "grants" :: "isRoot" :: HNil
+  val schemaV1 = "apiKey" :: "name" :: "description" ::
+    ("issuerKey" ||| "(undefined)") :: "grants" :: "isRoot" :: HNil
 
   @deprecated(
     "V0 serialization schemas should be removed when legacy data is no longer needed",
     "2.1.5")
-  val schemaV0 = "tid" :: "name" :: "description" :: (
-    "cid" ||| "(undefined)"
-  ) :: "gids" :: ("isRoot" ||| false) :: HNil
+  val schemaV0 = "tid" :: "name" :: "description" ::
+    ("cid" ||| "(undefined)") :: "gids" ::
+    ("isRoot" ||| false) :: HNil
 
   val decomposerV1: Decomposer[APIKeyRecord] = decomposerV[APIKeyRecord](
     schemaV1,
@@ -72,7 +71,7 @@ object APIKeyRecord {
     None)
 
   implicit val decomposer: Decomposer[APIKeyRecord] = decomposerV1
-  implicit val extractor: Extractor[APIKeyRecord] =
-    extractorV2 <+> extractorV1 <+> extractorV0
+  implicit val extractor: Extractor[APIKeyRecord] = extractorV2 <+>
+    extractorV1 <+> extractorV0
 }
 // vim: set ts=4 sw=4 et:

@@ -45,24 +45,26 @@ object RawBodyParserSpec extends Specification with AfterAll {
   "Raw Body Parser" should {
     "parse a simple body" in {
       val body = ByteString("lorem ipsum")
-      parse(body) must beRight.like {
-        case rawBuffer =>
-          rawBuffer.asBytes() must beSome.like {
-            case outBytes =>
-              outBytes mustEqual body
-          }
-      }
+      parse(body) must
+        beRight.like {
+          case rawBuffer =>
+            rawBuffer.asBytes() must
+              beSome.like {
+                case outBytes =>
+                  outBytes mustEqual body
+              }
+        }
     }
 
     "close the raw buffer after parsing the body" in {
       val body = ByteString("lorem ipsum")
-      parse(body, memoryThreshold = 1) must beRight.like {
-        case rawBuffer =>
-          rawBuffer.push(
-            ByteString(
-              "This fails because the stream was closed!")) must throwA[
-            IOException]
-      }
+      parse(body, memoryThreshold = 1) must
+        beRight.like {
+          case rawBuffer =>
+            rawBuffer.push(
+              ByteString("This fails because the stream was closed!")) must
+              throwA[IOException]
+        }
     }
 
     "fail to parse longer than allowed body" in {

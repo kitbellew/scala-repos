@@ -135,28 +135,24 @@ object BackendReporting {
           val (javaDef, others) = missingClasses
             .partition(_.definedInJavaSource)
           s"The method $name$descriptor could not be found in the class $ownerInternalName or any of its parents." +
-            (
-              if (others.isEmpty)
-                ""
-              else
-                others
-                  .map(_.internalName)
-                  .mkString(
-                    "\nNote that the following parent classes could not be found on the classpath: ",
-                    ", ",
-                    "")
-            ) +
-            (
-              if (javaDef.isEmpty)
-                ""
-              else
-                javaDef
-                  .map(_.internalName)
-                  .mkString(
-                    "\nNote that the following parent classes are defined in Java sources (mixed compilation), no bytecode is available: ",
-                    ",",
-                    "")
-            )
+            (if (others.isEmpty)
+               ""
+             else
+               others
+                 .map(_.internalName)
+                 .mkString(
+                   "\nNote that the following parent classes could not be found on the classpath: ",
+                   ", ",
+                   "")) +
+            (if (javaDef.isEmpty)
+               ""
+             else
+               javaDef
+                 .map(_.internalName)
+                 .mkString(
+                   "\nNote that the following parent classes are defined in Java sources (mixed compilation), no bytecode is available: ",
+                   ",",
+                   ""))
 
         case FieldNotFound(name, descriptor, ownerInternalName, missingClass) =>
           s"The field node $name$descriptor could not be found because the classfile $ownerInternalName cannot be found on the classpath." +
@@ -175,12 +171,12 @@ object BackendReporting {
           if (m.isArrayMethod)
             false
           else
-            settings.YoptWarningNoInlineMissingBytecode || missing
-              .exists(_.emitWarning(settings))
+            settings.YoptWarningNoInlineMissingBytecode ||
+            missing.exists(_.emitWarning(settings))
 
         case FieldNotFound(_, _, _, missing) =>
-          settings.YoptWarningNoInlineMissingBytecode || missing
-            .exists(_.emitWarning(settings))
+          settings.YoptWarningNoInlineMissingBytecode ||
+            missing.exists(_.emitWarning(settings))
       }
   }
 
@@ -241,14 +237,16 @@ object BackendReporting {
     override def toString =
       this match {
         case MethodInlineInfoIncomplete(_, _, _, cause) =>
-          s"The inline information for $warningMessageSignature may be incomplete:\n" + cause
+          s"The inline information for $warningMessageSignature may be incomplete:\n" +
+            cause
 
         case MethodInlineInfoMissing(_, _, _, cause) =>
           s"No inline information for method $warningMessageSignature could be found." +
             cause.map(" Possible reason:\n" + _).getOrElse("")
 
         case MethodInlineInfoError(_, _, _, cause) =>
-          s"Error while computing the inline information for method $warningMessageSignature:\n" + cause
+          s"Error while computing the inline information for method $warningMessageSignature:\n" +
+            cause
 
         case RewriteTraitCallToStaticImplMethodFailed(_, _, _, cause) =>
           cause.toString
@@ -454,7 +452,8 @@ object BackendReporting {
     override def toString: String =
       this match {
         case RewriteClosureAccessCheckFailed(_, cause) =>
-          s"Failed to rewrite the closure invocation to its implementation method:\n" + cause
+          s"Failed to rewrite the closure invocation to its implementation method:\n" +
+            cause
         case RewriteClosureIllegalAccess(_, callsiteClass) =>
           s"The closure body invocation cannot be rewritten because the target method is not accessible in class $callsiteClass."
       }

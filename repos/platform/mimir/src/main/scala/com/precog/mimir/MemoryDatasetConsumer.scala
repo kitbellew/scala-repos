@@ -112,8 +112,8 @@ trait MemoryDatasetConsumer[M[+_]] extends EvaluatorModule[M] {
 
 trait LongIdMemoryDatasetConsumer[M[+_]] extends MemoryDatasetConsumer[M] {
   type IdType = SValue
-  def extractIds(jv: JValue): Seq[SValue] =
-    (jv --> classOf[JArray]).elements map jvalueToSValue
+  def extractIds(jv: JValue): Seq[SValue] = (jv --> classOf[JArray])
+    .elements map jvalueToSValue
 }
 
 /**
@@ -124,13 +124,13 @@ trait LongIdMemoryDatasetConsumer[M[+_]] extends MemoryDatasetConsumer[M] {
 trait StringIdMemoryDatasetConsumer[M[+_]] extends MemoryDatasetConsumer[M] {
   type IdType = String
   //
-  def extractIds(jv: JValue): Seq[String] =
-    (jv --> classOf[JArray]).elements collect {
-      case JString(s) =>
-        s
-      case JNum(i) =>
-        i.toString
-    }
+  def extractIds(jv: JValue): Seq[String] = (jv --> classOf[JArray])
+    .elements collect {
+    case JString(s) =>
+      s
+    case JNum(i) =>
+      i.toString
+  }
 }
 
 // vim: set ts=4 sw=4 et:

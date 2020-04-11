@@ -127,8 +127,8 @@ trait DAG extends Instructions {
             continue {
               case Right(right) :: Right(left) :: tl =>
                 Right(
-                  Right(
-                    IUI(instr == instructions.IUnion, left, right)(loc)) :: tl)
+                  Right(IUI(instr == instructions.IUnion, left, right)(loc)) ::
+                    tl)
               case Left(_) :: _ | _ :: Left(_) :: _ =>
                 Left(OperationOnBucket(instr))
               case _ =>
@@ -428,8 +428,8 @@ trait DAG extends Instructions {
               Right(SplitParam(id, open.id)(loc)) :: roots,
               splits,
               stream.tail)
-          } getOrElse Left(UnableToLocateSplitDescribingId(id))
-            .point[Trampoline]
+          } getOrElse
+            Left(UnableToLocateSplitDescribingId(id)).point[Trampoline]
         }
 
         case PushGroup(id) => {
@@ -443,8 +443,8 @@ trait DAG extends Instructions {
               Right(SplitGroup(id, graph.identities, open.id)(loc)) :: roots,
               splits,
               stream.tail)
-          } getOrElse Left(UnableToLocateSplitDescribingId(id))
-            .point[Trampoline]
+          } getOrElse
+            Left(UnableToLocateSplitDescribingId(id)).point[Trampoline]
         }
 
         case instr: RootInstr => {
@@ -1412,8 +1412,8 @@ trait DAG extends Instructions {
 
       lazy val isSingleton = false
 
-      lazy val containsSplitArg = left.containsSplitArg || right
-        .containsSplitArg
+      lazy val containsSplitArg = left.containsSplitArg ||
+        right.containsSplitArg
     }
 
     case class Distinct(parent: DepGraph)(val loc: Line)
@@ -1564,8 +1564,8 @@ trait DAG extends Instructions {
 
       lazy val isSingleton = child.isSingleton
 
-      lazy val containsSplitArg = pred.containsSplitArg || child
-        .containsSplitArg
+      lazy val containsSplitArg = pred.containsSplitArg ||
+        child.containsSplitArg
     }
 
     // note: this is not a StagingPoint, though it *could* be; this is an optimization for the common case (transpecability)
@@ -1603,8 +1603,8 @@ trait DAG extends Instructions {
 
       lazy val isSingleton = data.isSingleton
 
-      lazy val containsSplitArg = data.containsSplitArg || samples
-        .containsSplitArg
+      lazy val containsSplitArg = data.containsSplitArg ||
+        samples.containsSplitArg
     }
 
     case class IUI(union: Boolean, left: DepGraph, right: DepGraph)(
@@ -1625,8 +1625,8 @@ trait DAG extends Instructions {
 
       lazy val isSingleton = left.isSingleton && right.isSingleton
 
-      lazy val containsSplitArg = left.containsSplitArg || right
-        .containsSplitArg
+      lazy val containsSplitArg = left.containsSplitArg ||
+        right.containsSplitArg
     }
 
     case class Diff(left: DepGraph, right: DepGraph)(val loc: Line)
@@ -1640,8 +1640,8 @@ trait DAG extends Instructions {
 
       lazy val isSingleton = left.isSingleton
 
-      lazy val containsSplitArg = left.containsSplitArg || right
-        .containsSplitArg
+      lazy val containsSplitArg = left.containsSplitArg ||
+        right.containsSplitArg
     }
 
     // TODO propagate AOT value computation
@@ -1672,8 +1672,8 @@ trait DAG extends Instructions {
 
       lazy val isSingleton = left.isSingleton && right.isSingleton
 
-      lazy val containsSplitArg = left.containsSplitArg || right
-        .containsSplitArg
+      lazy val containsSplitArg = left.containsSplitArg ||
+        right.containsSplitArg
 
     }
 
@@ -1700,8 +1700,8 @@ trait DAG extends Instructions {
 
       lazy val isSingleton = target.isSingleton
 
-      lazy val containsSplitArg = target.containsSplitArg || boolean
-        .containsSplitArg
+      lazy val containsSplitArg = target.containsSplitArg ||
+        boolean.containsSplitArg
     }
 
     /**
@@ -1820,13 +1820,11 @@ trait DAG extends Instructions {
       def identities: Identities =
         (left.identities, right.identities) match {
           case (Identities.Specs(lSpecs), Identities.Specs(rSpecs)) =>
-            val specs = (
-              sharedIndices map {
+            val specs =
+              (sharedIndices map {
                 case (lIdx, _) =>
                   lSpecs(lIdx)
-              }
-            ) ++
-              (leftIndices map lSpecs) ++ (rightIndices map rSpecs)
+              }) ++ (leftIndices map lSpecs) ++ (rightIndices map rSpecs)
             Identities.Specs(specs map (_.canonicalize))
           case (_, _) =>
             Identities.Undefined

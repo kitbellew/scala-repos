@@ -24,8 +24,7 @@ object JavaScriptRouterGenerator extends App {
       .body
 
   // Add module exports for node
-  val jsModule = jsFile +
-    """
+  val jsModule = jsFile + """
       |module.exports = jsRoutes
     """.stripMargin
 

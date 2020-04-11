@@ -120,8 +120,8 @@ class Replica(
     if (!(that.isInstanceOf[Replica]))
       return false
     val other = that.asInstanceOf[Replica]
-    if (topic.equals(other.topic) && brokerId == other.brokerId && partition
-          .equals(other.partition))
+    if (topic.equals(other.topic) && brokerId == other.brokerId &&
+        partition.equals(other.partition))
       return true
     false
   }

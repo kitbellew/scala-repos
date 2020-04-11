@@ -40,8 +40,8 @@ object ResolveProcessor {
       result: ScalaResolveResult,
       place: PsiElement): String = {
     def defaultForTypeAlias(t: ScTypeAlias): String = {
-      if (t.getParent.isInstanceOf[ScTemplateBody] && t
-            .containingClass != null) {
+      if (t.getParent.isInstanceOf[ScTemplateBody] &&
+          t.containingClass != null) {
         "TypeAlias:" + t.containingClass.qualifiedName + "#" + t.name
       } else
         null
@@ -61,8 +61,8 @@ object ResolveProcessor {
               case Some(c: ScObject) =>
                 defaultForTypeAlias(t)
               case Some(td: ScTypeDefinition)
-                  if td.typeParameters.length == 0 && ScalaPsiUtil
-                    .hasStablePath(td) =>
+                  if td.typeParameters.length == 0 &&
+                    ScalaPsiUtil.hasStablePath(td) =>
                 "Class:" + td.qualifiedName
               case Some(c: PsiClass) if c.getTypeParameters.length == 0 =>
                 "Class:" + c.qualifiedName
@@ -187,9 +187,10 @@ class ResolveProcessor(
         return true
       named match {
         case o: ScObject
-            if o.isPackageObject && JavaPsiFacade
-              .getInstance(element.getProject)
-              .findPackage(o.qualifiedName) != null =>
+            if o.isPackageObject &&
+              JavaPsiFacade
+                .getInstance(element.getProject)
+                .findPackage(o.qualifiedName) != null =>
         case pack: PsiPackage =>
           val resolveResult: ScalaResolveResult =
             new ScalaResolveResult(
@@ -200,8 +201,8 @@ class ResolveProcessor(
               isAccessible = accessible)
           addResult(resolveResult)
         case clazz: PsiClass
-            if !isThisOrSuperResolve || PsiTreeUtil
-              .isContextAncestor(clazz, ref, true) =>
+            if !isThisOrSuperResolve ||
+              PsiTreeUtil.isContextAncestor(clazz, ref, true) =>
           addResult(
             new ScalaResolveResult(
               named,
@@ -297,9 +298,8 @@ class ResolveProcessor(
                   _: ScTypeAlias | _: ScClass | _: ScTrait,
                   _)) =>
             rr.element.name != r.element.name ||
-              ScalaPsiUtil
-                .superTypeMembers(rr.element)
-                .find(_ == r.element) == None
+              ScalaPsiUtil.superTypeMembers(rr.element).find(_ == r.element) ==
+              None
           case (true, _) =>
             true
         }
@@ -316,8 +316,8 @@ class ResolveProcessor(
           name
         else
           stateName
-      if (result != null && result.startsWith("`") && result
-            .endsWith("`") && result.length > 1)
+      if (result != null && result.startsWith("`") && result.endsWith("`") &&
+          result.length > 1)
         result.substring(1, result.length - 1)
       else
         result

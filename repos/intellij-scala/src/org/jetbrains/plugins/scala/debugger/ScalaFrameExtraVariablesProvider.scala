@@ -76,8 +76,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
 
     val method =
       Try(evaluationContext.getFrameProxy.location().method()).toOption
-    if (method.isEmpty || DebuggerUtils.isSynthetic(
-          method.get) || ScalaSyntheticProvider.isMacroDefined(method.get))
+    if (method.isEmpty || DebuggerUtils.isSynthetic(method.get) ||
+        ScalaSyntheticProvider.isMacroDefined(method.get))
       return Collections.emptySet()
 
     val element = inReadAction(sourcePosition.getElementAt)
@@ -132,8 +132,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         false
       case cp: ScClassParameter if !cp.isEffectiveVal =>
         def notInThisClass(elem: PsiElement) = {
-          elem != null && !PsiTreeUtil
-            .isAncestor(cp.containingClass, elem, true)
+          elem != null &&
+          !PsiTreeUtil.isAncestor(cp.containingClass, elem, true)
         }
         val funDef = PsiTreeUtil
           .getParentOfType(place, classOf[ScFunctionDefinition])
@@ -270,9 +270,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
           case _ =>
             None
         }
-      forStmt.flatMap(_.enumerators).exists(_.isAncestorOf(named)) && forStmt
-        .flatMap(_.body)
-        .exists(!_.isAncestorOf(place))
+      forStmt.flatMap(_.enumerators).exists(_.isAncestorOf(named)) &&
+      forStmt.flatMap(_.body).exists(!_.isAncestorOf(place))
     }
   }
 }
@@ -318,8 +317,8 @@ private class CollectingProcessor(element: PsiElement)
           other
       }
     def usedInContainingBlock = usedNames.contains(candElem.name)
-    candElem.getContainingFile == containingFile && candElemContext
-      .getTextRange
-      .getEndOffset < startOffset && usedInContainingBlock
+    candElem.getContainingFile == containingFile &&
+    candElemContext.getTextRange.getEndOffset < startOffset &&
+    usedInContainingBlock
   }
 }

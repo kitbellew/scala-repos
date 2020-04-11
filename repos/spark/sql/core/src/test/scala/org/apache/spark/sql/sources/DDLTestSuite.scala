@@ -68,9 +68,8 @@ case class SimpleDDLScan(from: Int, to: Int, table: String)(
         StructField(
           "structType",
           StructType(
-            StructField("f1", StringType) :: StructField(
-              "f2",
-              IntegerType) :: Nil))
+            StructField("f1", StringType) :: StructField("f2", IntegerType) ::
+              Nil))
       ))
 
   override def needConversion: Boolean = false

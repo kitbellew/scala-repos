@@ -103,8 +103,8 @@ object Lexer {
         if (' ' <= ch && ch < 128)
           buf += ch
         else
-          buf ++= "\\u" += toUDigit(ch >>> 12) += toUDigit(
-            ch >>> 8) += toUDigit(ch >>> 4) += toUDigit(ch.toInt)
+          buf ++= "\\u" += toUDigit(ch >>> 12) += toUDigit(ch >>> 8) +=
+            toUDigit(ch >>> 4) += toUDigit(ch.toInt)
     }
   }
 
@@ -294,8 +294,8 @@ class Lexer(rd: Reader) {
           case 't' =>
             sb += '\t'
           case 'u' =>
-            sb += (udigit() << 12 | udigit() << 8 | udigit() << 4 | udigit())
-              .toChar
+            sb +=
+              (udigit() << 12 | udigit() << 8 | udigit() << 4 | udigit()).toChar
           case _ =>
             error("illegal escape character: '" + ch + "'")
         }

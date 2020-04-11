@@ -64,8 +64,8 @@ class SbtAnnotator extends Annotator {
       expression
         .getType(TypingContext.empty)
         .foreach { expressionType =>
-          if (expressionType.equiv(types.Nothing) || expressionType
-                .equiv(types.Null)) {
+          if (expressionType.equiv(types.Nothing) ||
+              expressionType.equiv(types.Null)) {
             holder.createErrorAnnotation(
               expression,
               SbtBundle("sbt.annotation.expectedExpressionType"))
@@ -91,8 +91,8 @@ class SbtAnnotator extends Annotator {
       SbtAnnotator
         .AllowedTypes
         .exists(typeStr =>
-          findTypeByText(expression, typeStr) exists (t =>
-            expressionType conforms t))
+          findTypeByText(expression, typeStr) exists
+            (t => expressionType conforms t))
 
     private def annotateMissingBlankLines(): Unit =
       sbtFileElements

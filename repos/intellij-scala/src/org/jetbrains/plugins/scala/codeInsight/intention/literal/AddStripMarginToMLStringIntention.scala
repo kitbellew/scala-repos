@@ -20,9 +20,8 @@ class AddStripMarginToMLStringIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    if (element == null || element
-          .getNode == null || element.getNode.getElementType != ScalaTokenTypes
-          .tMULTILINE_STRING ||
+    if (element == null || element.getNode == null ||
+        element.getNode.getElementType != ScalaTokenTypes.tMULTILINE_STRING ||
         !element.getText.contains("\n"))
       return false
 

@@ -37,9 +37,10 @@ class CommandEncodingTest extends FunSuite {
     assert(
       timeout.map {
         _.inSeconds
-      } == expiry.map {
-        _.inSeconds
-      })
+      } ==
+        expiry.map {
+          _.inSeconds
+        })
   }
 
   private def testCommandEncodeDecode(

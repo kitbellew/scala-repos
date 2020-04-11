@@ -19,9 +19,10 @@ trait AnyValReps {
     case class Op(op: String, doc: String)
 
     private def companionCoercions(tos: AnyValRep*) = {
-      tos.toList map (to =>
-        s"implicit def @javaequiv@2${to.javaEquiv}(x: @name@): ${to
-          .name} = x.to${to.name}")
+      tos.toList map
+        (to =>
+          s"implicit def @javaequiv@2${to.javaEquiv}(x: @name@): ${to
+            .name} = x.to${to.name}")
     }
     def coercionComment =
       """/** Language mandated coercions from @name@ to "wider" types. */
@@ -58,14 +59,10 @@ import scala.language.implicitConversions"""
       if (isCardinal)
         Op(
           "~",
-          "/**\n" +
-            " * Returns the bitwise negation of this value.\n" +
-            " * @example {{{\n" +
-            " * ~5 == -6\n" +
-            " * // in binary: ~00000101 ==\n" +
-            " * //             11111010\n" +
-            " * }}}\n" +
-            " */"
+          "/**\n" + " * Returns the bitwise negation of this value.\n" +
+            " * @example {{{\n" + " * ~5 == -6\n" +
+            " * // in binary: ~00000101 ==\n" + " * //             11111010\n" +
+            " * }}}\n" + " */"
         ) :: ops
       else
         ops
@@ -76,42 +73,30 @@ import scala.language.implicitConversions"""
         List(
           Op(
             "|",
-            "/**\n" +
-              "  * Returns the bitwise OR of this value and `x`.\n" +
-              "  * @example {{{\n" +
-              "  * (0xf0 | 0xaa) == 0xfa\n" +
+            "/**\n" + "  * Returns the bitwise OR of this value and `x`.\n" +
+              "  * @example {{{\n" + "  * (0xf0 | 0xaa) == 0xfa\n" +
               "  * // in binary:   11110000\n" +
               "  * //            | 10101010\n" +
               "  * //              --------\n" +
-              "  * //              11111010\n" +
-              "  * }}}\n" +
-              "  */"
+              "  * //              11111010\n" + "  * }}}\n" + "  */"
           ),
           Op(
             "&",
-            "/**\n" +
-              "  * Returns the bitwise AND of this value and `x`.\n" +
-              "  * @example {{{\n" +
-              "  * (0xf0 & 0xaa) == 0xa0\n" +
+            "/**\n" + "  * Returns the bitwise AND of this value and `x`.\n" +
+              "  * @example {{{\n" + "  * (0xf0 & 0xaa) == 0xa0\n" +
               "  * // in binary:   11110000\n" +
               "  * //            & 10101010\n" +
               "  * //              --------\n" +
-              "  * //              10100000\n" +
-              "  * }}}\n" +
-              "  */"
+              "  * //              10100000\n" + "  * }}}\n" + "  */"
           ),
           Op(
             "^",
-            "/**\n" +
-              "  * Returns the bitwise XOR of this value and `x`.\n" +
-              "  * @example {{{\n" +
-              "  * (0xf0 ^ 0xaa) == 0x5a\n" +
+            "/**\n" + "  * Returns the bitwise XOR of this value and `x`.\n" +
+              "  * @example {{{\n" + "  * (0xf0 ^ 0xaa) == 0x5a\n" +
               "  * // in binary:   11110000\n" +
               "  * //            ^ 10101010\n" +
               "  * //              --------\n" +
-              "  * //              01011010\n" +
-              "  * }}}\n" +
-              "  */"
+              "  * //              01011010\n" + "  * }}}\n" + "  */"
           )
         )
       else
@@ -134,12 +119,10 @@ import scala.language.implicitConversions"""
               "  * Returns this value bit-shifted right by the specified number of bits,\n" +
               "  *         filling the new left bits with zeroes.\n" +
               "  * @example {{{ 21 >>> 3 == 2 // in binary: 010101 >>> 3 == 010 }}}\n" +
-              "  * @example {{{\n" +
-              "  * -21 >>> 3 == 536870909\n" +
+              "  * @example {{{\n" + "  * -21 >>> 3 == 536870909\n" +
               "  * // in binary: 11111111 11111111 11111111 11101011 >>> 3 ==\n" +
               "  * //            00011111 11111111 11111111 11111101\n" +
-              "  * }}}\n" +
-              "  */"
+              "  * }}}\n" + "  */"
           ),
           Op(
             ">>",
@@ -147,12 +130,10 @@ import scala.language.implicitConversions"""
               "  * Returns this value bit-shifted right by the specified number of bits,\n" +
               "  *         filling in the left bits with the same value as the left-most bit of this.\n" +
               "  *         The effect of this is to retain the sign of the value.\n" +
-              "  * @example {{{\n" +
-              "  * -21 >> 3 == -3\n" +
+              "  * @example {{{\n" + "  * -21 >> 3 == -3\n" +
               "  * // in binary: 11111111 11111111 11111111 11101011 >> 3 ==\n" +
               "  * //            11111111 11111111 11111111 11111101\n" +
-              "  * }}}\n" +
-              "  */"
+              "  * }}}\n" + "  */"
           )
         )
       else
@@ -208,8 +189,8 @@ import scala.language.implicitConversions"""
 
     def mkCoercions = numeric map (x => "def to%s: %s".format(x, x))
     def mkUnaryOps =
-      unaryOps map (x =>
-        "%s\n  def unary_%s : %s".format(x.doc, x.op, this opType I))
+      unaryOps map
+        (x => "%s\n  def unary_%s : %s".format(x.doc, x.op, this opType I))
     def mkStringOps = List("def +(x: String): String")
     def mkShiftOps =
       (for (op <- shiftOps;
@@ -218,8 +199,8 @@ import scala.language.implicitConversions"""
           .format(op.doc, op.op, arg, this opType I))
 
     def clumps: List[List[String]] = {
-      val xs1 =
-        List(mkCoercions, mkUnaryOps, mkStringOps, mkShiftOps) map (xs =>
+      val xs1 = List(mkCoercions, mkUnaryOps, mkStringOps, mkShiftOps) map
+        (xs =>
           if (xs.isEmpty)
             xs
           else
@@ -230,19 +211,18 @@ import scala.language.implicitConversions"""
         mkBinOpsGroup(otherOps, numeric, this opType _))
       xs1 ++ xs2
     }
-    def classLines =
-      (clumps :+ commonClassLines).foldLeft(List[String]()) {
-        case (res, Nil) =>
-          res
-        case (res, lines) =>
-          val xs = lines map {
-            case "" =>
-              ""
-            case s =>
-              interpolate(s)
-          }
-          res ++ xs
-      }
+    def classLines = (clumps :+ commonClassLines).foldLeft(List[String]()) {
+      case (res, Nil) =>
+        res
+      case (res, lines) =>
+        val xs = lines map {
+          case "" =>
+            ""
+          case s =>
+            interpolate(s)
+        }
+        res ++ xs
+    }
     def objectLines = {
       val comp =
         if (isCardinal)
@@ -267,10 +247,11 @@ import scala.language.implicitConversions"""
         args: List[AnyValNum],
         resultFn: AnyValNum => AnyValRep): List[String] =
       (
-        ops flatMap (op =>
-          args.map(arg =>
-            "%s\n  def %s(x: %s): %s"
-              .format(op.doc, op.op, arg, resultFn(arg))) :+ "")
+        ops flatMap
+          (op =>
+            args.map(arg =>
+              "%s\n  def %s(x: %s): %s"
+                .format(op.doc, op.op, arg, resultFn(arg))) :+ "")
       ).toList
   }
 
@@ -322,17 +303,19 @@ import scala.language.implicitConversions"""
 
     def boxUnboxImpls =
       Map(
-        "@boxRunTimeDoc@" -> """
+        "@boxRunTimeDoc@" ->
+          """
  *  Runtime implementation determined by `scala.runtime.BoxesRunTime.boxTo%s`. See [[https://github.com/scala/scala src/library/scala/runtime/BoxesRunTime.java]].
  *""".format(boxedSimpleName),
         "@boxImpl@" -> "%s.valueOf(x)".format(boxedName),
-        "@unboxRunTimeDoc@" -> """
+        "@unboxRunTimeDoc@" ->
+          """
  *  Runtime implementation determined by `scala.runtime.BoxesRunTime.unboxTo%s`. See [[https://github.com/scala/scala src/library/scala/runtime/BoxesRunTime.java]].
  *""".format(name),
-        "@unboxImpl@" -> "x.asInstanceOf[%s].%sValue()"
-          .format(boxedName, lcname),
-        "@unboxDoc@" -> "the %s resulting from calling %sValue() on `x`"
-          .format(name, lcname)
+        "@unboxImpl@" ->
+          "x.asInstanceOf[%s].%sValue()".format(boxedName, lcname),
+        "@unboxDoc@" ->
+          "the %s resulting from calling %sValue() on `x`".format(name, lcname)
       )
     def interpolations =
       Map(

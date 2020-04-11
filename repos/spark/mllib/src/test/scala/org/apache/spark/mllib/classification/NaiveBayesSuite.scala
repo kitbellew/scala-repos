@@ -74,13 +74,14 @@ object NaiveBayesSuite {
             case Multinomial =>
               val mult = BrzMultinomial(BDV(_theta(y)))
               val emptyMap = (0 until D).map(x => (x, 0.0)).toMap
-              val counts = emptyMap ++ mult
-                .sample(sample)
-                .groupBy(x => x)
-                .map {
-                  case (index, reps) =>
-                    (index, reps.size.toDouble)
-                }
+              val counts = emptyMap ++
+                mult
+                  .sample(sample)
+                  .groupBy(x => x)
+                  .map {
+                    case (index, reps) =>
+                      (index, reps.size.toDouble)
+                  }
               counts.toArray.sortBy(_._1).map(_._2)
             case _ =>
               // This should never happen.

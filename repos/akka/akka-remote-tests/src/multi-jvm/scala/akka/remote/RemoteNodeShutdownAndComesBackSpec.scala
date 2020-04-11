@@ -71,106 +71,108 @@ abstract class RemoteNodeShutdownAndComesBackSpec
 
   "RemoteNodeShutdownAndComesBack" must {
 
-    "properly reset system message buffer state when new system with same Address comes up" taggedAs LongRunningTest in {
-      runOn(first) {
-        val secondAddress = node(second).address
-        system.actorOf(Props[Subject], "subject1")
-        enterBarrier("actors-started")
+    "properly reset system message buffer state when new system with same Address comes up" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          val secondAddress = node(second).address
+          system.actorOf(Props[Subject], "subject1")
+          enterBarrier("actors-started")
 
-        val subject = identify(second, "subject")
-        val sysmsgBarrier = identify(second, "sysmsgBarrier")
+          val subject = identify(second, "subject")
+          val sysmsgBarrier = identify(second, "sysmsgBarrier")
 
-        // Prime up the system message buffer
-        watch(subject)
-        enterBarrier("watch-established")
+          // Prime up the system message buffer
+          watch(subject)
+          enterBarrier("watch-established")
 
-        // Wait for proper system message propagation
-        // (Using a helper actor to ensure that all previous system messages arrived)
-        watch(sysmsgBarrier)
-        system.stop(sysmsgBarrier)
-        expectTerminated(sysmsgBarrier)
+          // Wait for proper system message propagation
+          // (Using a helper actor to ensure that all previous system messages arrived)
+          watch(sysmsgBarrier)
+          system.stop(sysmsgBarrier)
+          expectTerminated(sysmsgBarrier)
 
-        // Drop all messages from this point so no SHUTDOWN is ever received
-        testConductor.blackhole(second, first, Direction.Send).await
-        // Shut down all existing connections so that the system can enter recovery mode (association attempts)
-        Await.result(
-          RARP(system)
-            .provider
-            .transport
-            .managementCommand(ForceDisassociate(node(second).address)),
-          3.seconds)
+          // Drop all messages from this point so no SHUTDOWN is ever received
+          testConductor.blackhole(second, first, Direction.Send).await
+          // Shut down all existing connections so that the system can enter recovery mode (association attempts)
+          Await.result(
+            RARP(system)
+              .provider
+              .transport
+              .managementCommand(ForceDisassociate(node(second).address)),
+            3.seconds)
 
-        // Trigger reconnect attempt and also queue up a system message to be in limbo state (UID of remote system
-        // is unknown, and system message is pending)
-        system.stop(subject)
+          // Trigger reconnect attempt and also queue up a system message to be in limbo state (UID of remote system
+          // is unknown, and system message is pending)
+          system.stop(subject)
 
-        // Get rid of old system -- now SHUTDOWN is lost
-        testConductor.shutdown(second).await
+          // Get rid of old system -- now SHUTDOWN is lost
+          testConductor.shutdown(second).await
 
-        // At this point the second node is restarting, while the first node is trying to reconnect without resetting
-        // the system message send state
+          // At this point the second node is restarting, while the first node is trying to reconnect without resetting
+          // the system message send state
 
-        // Now wait until second system becomes alive again
-        within(30.seconds) {
-          // retry because the Subject actor might not be started yet
-          awaitAssert {
-            val p = TestProbe()
-            system
-              .actorSelection(RootActorPath(secondAddress) / "user" / "subject")
-              .tell(Identify("subject"), p.ref)
-            p.expectMsgPF(1 second) {
-              case ActorIdentity("subject", Some(ref)) ⇒
-                true
+          // Now wait until second system becomes alive again
+          within(30.seconds) {
+            // retry because the Subject actor might not be started yet
+            awaitAssert {
+              val p = TestProbe()
+              system
+                .actorSelection(
+                  RootActorPath(secondAddress) / "user" / "subject")
+                .tell(Identify("subject"), p.ref)
+              p.expectMsgPF(1 second) {
+                case ActorIdentity("subject", Some(ref)) ⇒
+                  true
+              }
             }
+          }
+
+          expectTerminated(subject)
+
+          // Establish watch with the new system. This triggers additional system message traffic. If buffers are out
+          // of sync the remote system will be quarantined and the rest of the test will fail (or even in earlier
+          // stages depending on circumstances).
+          system
+            .actorSelection(RootActorPath(secondAddress) / "user" / "subject") !
+            Identify("subject")
+          val subjectNew = expectMsgType[ActorIdentity].ref.get
+          watch(subjectNew)
+
+          subjectNew ! "shutdown"
+          // we are waiting for a Terminated here, but it is ok if it does not arrive
+          receiveWhile(5.seconds) {
+            case _: ActorIdentity ⇒
+              true
           }
         }
 
-        expectTerminated(subject)
+        runOn(second) {
+          val addr =
+            system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+          system.actorOf(Props[Subject], "subject")
+          system.actorOf(Props[Subject], "sysmsgBarrier")
+          val path = node(first)
+          enterBarrier("actors-started")
 
-        // Establish watch with the new system. This triggers additional system message traffic. If buffers are out
-        // of sync the remote system will be quarantined and the rest of the test will fail (or even in earlier
-        // stages depending on circumstances).
-        system.actorSelection(
-          RootActorPath(secondAddress) / "user" / "subject") ! Identify(
-          "subject")
-        val subjectNew = expectMsgType[ActorIdentity].ref.get
-        watch(subjectNew)
+          enterBarrier("watch-established")
 
-        subjectNew ! "shutdown"
-        // we are waiting for a Terminated here, but it is ok if it does not arrive
-        receiveWhile(5.seconds) {
-          case _: ActorIdentity ⇒
-            true
-        }
-      }
+          Await.ready(system.whenTerminated, 30.seconds)
 
-      runOn(second) {
-        val addr =
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
-        system.actorOf(Props[Subject], "subject")
-        system.actorOf(Props[Subject], "sysmsgBarrier")
-        val path = node(first)
-        enterBarrier("actors-started")
-
-        enterBarrier("watch-established")
-
-        Await.ready(system.whenTerminated, 30.seconds)
-
-        val freshSystem = ActorSystem(
-          system.name,
-          ConfigFactory.parseString(s"""
+          val freshSystem = ActorSystem(
+            system.name,
+            ConfigFactory.parseString(s"""
                     akka.remote.netty.tcp {
                       hostname = ${addr.host.get}
                       port = ${addr.port.get}
                     }
                     """).withFallback(system.settings.config)
-        )
-        freshSystem.actorOf(Props[Subject], "subject")
+          )
+          freshSystem.actorOf(Props[Subject], "subject")
 
-        Await.ready(freshSystem.whenTerminated, 30.seconds)
+          Await.ready(freshSystem.whenTerminated, 30.seconds)
+        }
+
       }
-
-    }
 
   }
 }

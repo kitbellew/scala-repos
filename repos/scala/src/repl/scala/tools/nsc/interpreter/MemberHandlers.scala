@@ -298,8 +298,8 @@ trait MemberHandlers {
     lazy val individualNames: List[Name] = individualSymbols map (_.name)
 
     /** The names imported by this statement */
-    override lazy val importedNames: List[Name] =
-      wildcardNames ++ individualNames
+    override lazy val importedNames: List[Name] = wildcardNames ++
+      individualNames
     lazy val importsSymbolNamed: Set[String] =
       importedNames map (_.toString) toSet
 

@@ -203,9 +203,10 @@ case class ZRemRangeByRank(key: ChannelBuffer, start: Long, stop: Long)
   def command = Commands.ZREMRANGEBYRANK
   def toChannelBuffer =
     RedisCodec.toUnifiedFormat(
-      Seq(CommandBytes.ZREMRANGEBYRANK, key) ++ Seq(
-        StringToChannelBuffer(start.toString),
-        StringToChannelBuffer(stop.toString)))
+      Seq(CommandBytes.ZREMRANGEBYRANK, key) ++
+        Seq(
+          StringToChannelBuffer(start.toString),
+          StringToChannelBuffer(stop.toString)))
 }
 object ZRemRangeByRank {
   def apply(args: Seq[Array[Byte]]) = {
@@ -227,9 +228,10 @@ case class ZRemRangeByScore(key: ChannelBuffer, min: ZInterval, max: ZInterval)
   def command = Commands.ZREMRANGEBYSCORE
   def toChannelBuffer =
     RedisCodec.toUnifiedFormat(
-      Seq(CommandBytes.ZREMRANGEBYSCORE, key) ++ Seq(
-        StringToChannelBuffer(min.toString),
-        StringToChannelBuffer(max.toString)))
+      Seq(CommandBytes.ZREMRANGEBYSCORE, key) ++
+        Seq(
+          StringToChannelBuffer(min.toString),
+          StringToChannelBuffer(max.toString)))
 }
 object ZRemRangeByScore {
   def apply(args: Seq[Array[Byte]]) = {

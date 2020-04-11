@@ -161,9 +161,8 @@ trait QuirrelCache extends AST {
               ("b", 5)
             else {
               sys.error(
-                "error recovering boolean literal from %s (%s at %s)" format (
-                  s, original, i
-                ))
+                "error recovering boolean literal from %s (%s at %s)" format
+                  (s, original, i))
             }
           case _: NumLit =>
             parser
@@ -172,9 +171,8 @@ trait QuirrelCache extends AST {
               .map(x => ("n", x.length))
               .getOrElse {
                 sys.error(
-                  "error recovering number literal from %s (%s at %s)" format (
-                    s, original, i
-                  ))
+                  "error recovering number literal from %s (%s at %s)" format
+                    (s, original, i))
               }
           case _: StrLit =>
             parser
@@ -195,9 +193,8 @@ trait QuirrelCache extends AST {
               }
               .getOrElse {
                 sys.error(
-                  "error recovering string literal from %s (%s at %s)" format (
-                    s, original, i
-                  ))
+                  "error recovering string literal from %s (%s at %s)" format
+                    (s, original, i))
               }
         }
       }
@@ -307,7 +304,8 @@ trait QuirrelCache extends AST {
     { (loc: LineStream) =>
       val colNum = deltas get loc.lineNum map { ds =>
         ds.takeWhile(_._1 < loc.colNum).map(_._2).sum
-      } map (_ + loc.colNum) getOrElse loc.colNum
+      } map
+        (_ + loc.colNum) getOrElse loc.colNum
 
       loc match {
         case ln: LazyLineCons =>

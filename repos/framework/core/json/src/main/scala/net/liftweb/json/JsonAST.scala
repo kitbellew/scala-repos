@@ -958,9 +958,8 @@ object JsonAST {
           case '\t' =>
             "\\t"
           case c
-              if ((c >= '\u0000' && c < '\u0020')) || settings
-                .escapeChars
-                .contains(c) =>
+              if ((c >= '\u0000' && c < '\u0020')) ||
+                settings.escapeChars.contains(c) =>
             "\\u%04x".format(c: Int)
 
           case _ =>

@@ -78,8 +78,8 @@ class IdeClientIdea(
         } catch {
           case e: Throwable =>
             val message: String =
-              "Class dependency information may be incomplete! Error parsing generated class " + outputFile
-                .getPath
+              "Class dependency information may be incomplete! Error parsing generated class " +
+                outputFile.getPath
             context.processMessage(
               new CompilerMessage(
                 compilerName,
@@ -111,9 +111,8 @@ class IdeClientIdea(
       outputFile: File,
       reader: ClassReader): Any = {
     if (outputFile.getName == s"$packageObjectClassName.class") {
-      packageObjectsBaseClasses ++= collectPackageObjectBaseClasses(
-        source,
-        reader)
+      packageObjectsBaseClasses ++=
+        collectPackageObjectBaseClasses(source, reader)
     }
   }
 

@@ -36,7 +36,8 @@ private[finagle] object ChannelBufferUtils {
           return false
 
         val control = buffer.getByte(guessedIndex)
-        control == '\u0000' || control == '\n' || control == '\r' || control == ' '
+        control == '\u0000' || control == '\n' || control == '\r' ||
+        control == ' '
       }
     }
 

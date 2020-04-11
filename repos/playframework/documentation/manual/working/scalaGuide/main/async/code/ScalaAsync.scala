@@ -11,26 +11,29 @@ import play.api.test._
 object ScalaAsyncSpec extends PlaySpecification {
 
   "scala async" should {
-    "allow returning a future" in new WithApplication() {
-      contentAsString(ScalaAsyncSamples.futureResult) must startWith(
-        "PI value computed: 3.14")
-    }
+    "allow returning a future" in
+      new WithApplication() {
+        contentAsString(ScalaAsyncSamples.futureResult) must
+          startWith("PI value computed: 3.14")
+      }
 
-    "allow dispatching an intensive computation" in new WithApplication() {
-      await(ScalaAsyncSamples.intensiveComp) must_== 10
-    }
+    "allow dispatching an intensive computation" in
+      new WithApplication() {
+        await(ScalaAsyncSamples.intensiveComp) must_== 10
+      }
 
-    "allow returning an async result" in new WithApplication() {
-      contentAsString(
-        ScalaAsyncSamples.asyncResult()(FakeRequest())) must_== "Got result: 10"
-    }
+    "allow returning an async result" in
+      new WithApplication() {
+        contentAsString(ScalaAsyncSamples.asyncResult()(FakeRequest())) must_==
+          "Got result: 10"
+      }
 
-    "allow timing out a future" in new WithApplication() {
-      status(
-        ScalaAsyncSamples
-          .timeout(1200)(FakeRequest())) must_== INTERNAL_SERVER_ERROR
-      status(ScalaAsyncSamples.timeout(10)(FakeRequest())) must_== OK
-    }
+    "allow timing out a future" in
+      new WithApplication() {
+        status(ScalaAsyncSamples.timeout(1200)(FakeRequest())) must_==
+          INTERNAL_SERVER_ERROR
+        status(ScalaAsyncSamples.timeout(10)(FakeRequest())) must_== OK
+      }
   }
 }
 

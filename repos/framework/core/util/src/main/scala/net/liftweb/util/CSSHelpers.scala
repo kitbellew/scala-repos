@@ -119,14 +119,9 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
     elem(
       "path",
       c =>
-        c.isLetterOrDigit ||
-          c == '?' || c == '/' ||
-          c == '&' || c == '@' ||
-          c == ';' || c == '.' ||
-          c == '+' || c == '-' ||
-          c == '=' || c == ':' ||
-          c == ' ' || c == '_' ||
-          c == '#' || c == ',' ||
+        c.isLetterOrDigit || c == '?' || c == '/' || c == '&' || c == '@' ||
+          c == ';' || c == '.' || c == '+' || c == '-' || c == '=' ||
+          c == ':' || c == ' ' || c == '_' || c == '#' || c == ',' ||
           c == '%' || additionalCharacters.contains(c)
     ).+ ^^ {
       case l =>
@@ -146,20 +141,21 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
       }
 
     // do the parsing per CSS spec http://www.w3.org/TR/REC-CSS2/syndata.html#uri section 4.3.4
-    spaces ~> innerUrl <~ (spaces <~ elem(')')) ^^ {
-      case urlPath => {
-        val trimmedPath = urlPath.trim
+    spaces ~> innerUrl <~
+      (spaces <~ elem(')')) ^^ {
+        case urlPath => {
+          val trimmedPath = urlPath.trim
 
-        val updatedPath =
-          if (trimmedPath.charAt(0) == '/') {
-            escapedPrefix + trimmedPath
-          } else {
-            trimmedPath
-          }
+          val updatedPath =
+            if (trimmedPath.charAt(0) == '/') {
+              escapedPrefix + trimmedPath
+            } else {
+              trimmedPath
+            }
 
-        quoteString + updatedPath + quoteString + ")"
+          quoteString + updatedPath + quoteString + ")"
+        }
       }
-    }
   }
 
   // the URL might be wrapped in simple quotes
@@ -174,16 +170,14 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
   lazy val quotelessPath = fullUrl(path, "")
 
   lazy val phrase =
-    (
-      (
-        (contentParser ~ singleQuotedPath) |||
-          (contentParser ~ doubleQuotedPath) |||
-          (contentParser ~ quotelessPath)
-      ).* ^^ {
-        case l =>
-          l.flatMap(f => f._1 + f._2).mkString("")
-      }
-    ) ~ contentParser ^^ {
+    ((
+      (contentParser ~ singleQuotedPath) |||
+        (contentParser ~ doubleQuotedPath) |||
+        (contentParser ~ quotelessPath)
+    ).* ^^ {
+      case l =>
+        l.flatMap(f => f._1 + f._2).mkString("")
+    }) ~ contentParser ^^ {
       case a ~ b =>
         a + b
     }

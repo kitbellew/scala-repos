@@ -73,8 +73,8 @@ object ScalaMacroDebuggingUtil {
     val canonicalPath = file.getVirtualFile.getCanonicalPath
 
     def createFile(): PsiFile = {
-      val dataStream = SYNTHETIC_SOURCE_ATTRIBUTE readAttribute file
-        .getVirtualFile
+      val dataStream = SYNTHETIC_SOURCE_ATTRIBUTE readAttribute
+        file.getVirtualFile
       if (dataStream == null)
         return null
 
@@ -82,13 +82,13 @@ object ScalaMacroDebuggingUtil {
       val linesRed = StringBuilder.newBuilder
 
       while (line != null && dataStream.available() > 0) {
-        linesRed ++= (
-          line map (c =>
-            if (c == 0)
-              ' '
-            else
-              c)
-        ) ++= "\n"
+        linesRed ++=
+          (line map
+            (c =>
+              if (c == 0)
+                ' '
+              else
+                c)) ++= "\n"
         line = dataStream readUTF ()
       }
 
@@ -132,9 +132,8 @@ object ScalaMacroDebuggingUtil {
   }
 
   def readPreimageName(file: PsiFile): Option[String] =
-    Option(SOURCE_FILE_NAME readAttributeBytes file.getVirtualFile) map (
-      new String(_)
-    )
+    Option(SOURCE_FILE_NAME readAttributeBytes file.getVirtualFile) map
+      (new String(_))
 
   def getPreimageFile(file: PsiFile) = PREIMAGE_CACHE get file
 
@@ -224,8 +223,8 @@ object ScalaMacroDebuggingUtil {
              .toList
              .sortWith((a, b) => a.getTextOffset > b.getTextOffset)) {
       var macroCall = macrosheetFile.findElementAt(elt.getTextOffset)
-      while (macroCall != null && !ScalaMacroDebuggingUtil
-               .isMacroCall(macroCall)) {
+      while (macroCall != null &&
+             !ScalaMacroDebuggingUtil.isMacroCall(macroCall)) {
         macroCall = macroCall.getParent
       }
       if (macroCall != null) {

@@ -37,9 +37,10 @@ class ServerActor(
     OneForOneStrategy() {
       case ex: Exception =>
         log.error(s"Error with monitor actor ${ex.getMessage}", ex)
-        self ! ShutdownRequest(
-          s"Monitor actor failed with ${ex.getClass} - ${ex.toString}",
-          isError = true)
+        self !
+          ShutdownRequest(
+            s"Monitor actor failed with ${ex.getClass} - ${ex.toString}",
+            isError = true)
         Stop
     }
 
@@ -83,9 +84,10 @@ class ServerActor(
       .onComplete {
         case Failure(ex) =>
           log.error(s"Error binding http endpoint ${ex.getMessage}", ex)
-          selfRef ! ShutdownRequest(
-            s"http endpoint failed to bind ($preferredHttpPort)",
-            isError = true)
+          selfRef !
+            ShutdownRequest(
+              s"http endpoint failed to bind ($preferredHttpPort)",
+              isError = true)
 
         case Success(ServerBinding(addr)) =>
           log.info(s"ENSIME HTTP on ${addr.getAddress}")
@@ -95,9 +97,10 @@ class ServerActor(
             case ex: Throwable =>
               log
                 .error(s"Error initializing http endpoint ${ex.getMessage}", ex)
-              selfRef ! ShutdownRequest(
-                s"http endpoint failed to initialise: ${ex.getMessage}",
-                isError = true)
+              selfRef !
+                ShutdownRequest(
+                  s"http endpoint failed to initialise: ${ex.getMessage}",
+                  isError = true)
           }
       }(context.system.dispatcher)
 

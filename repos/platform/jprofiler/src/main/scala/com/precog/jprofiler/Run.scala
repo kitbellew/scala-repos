@@ -38,8 +38,8 @@ object Run {
       }
 
     val args2 = args.toList ++ List("--root-dir", db)
-    val config = RunConfig.fromCommandLine(args2) | sys
-      .error("invalid arguments!")
+    val config = RunConfig.fromCommandLine(args2) |
+      sys.error("invalid arguments!")
 
     val queries = List(
       """

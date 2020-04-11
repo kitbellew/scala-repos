@@ -703,8 +703,8 @@ class SparkIMain(
     // be what people want so I'm waiting until I can do it better.
     for {
       name <-
-        req.definedNames filterNot (x =>
-          req.definedNames contains x.companionName)
+        req.definedNames filterNot
+          (x => req.definedNames contains x.companionName)
       oldReq <- definedNameMap get name.companionName
       newSym <- req.definedSymbols get name
       oldSym <- oldReq.definedSymbols get name.companionName
@@ -794,13 +794,14 @@ class SparkIMain(
   // enclosing in braces it is constructed like "val x =\n5 // foo".
   private def removeComments(line: String): String = {
     showCodeIfDebugging(line) // as we're about to lose our // show
-    line.lines map (s =>
-      s indexOf "//" match {
-        case -1 =>
-          s
-        case idx =>
-          s take idx
-      }) mkString "\n"
+    line.lines map
+      (s =>
+        s indexOf "//" match {
+          case -1 =>
+            s
+          case idx =>
+            s take idx
+        }) mkString "\n"
   }
 
   private def safePos(t: Tree, alt: Int): Int =
@@ -834,19 +835,21 @@ class SparkIMain(
           trees
       }
     logDebug(
-      trees map (t => {
-        // [Eugene to Paul] previously it just said `t map ...`
-        // because there was an implicit conversion from Tree to a list of Trees
-        // however Martin and I have removed the conversion
-        // (it was conflicting with the new reflection API),
-        // so I had to rewrite this a bit
-        val subs = t collect {
-          case sub =>
-            sub
-        }
-        subs map (t0 =>
-          "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
-      }) mkString "\n")
+      trees map
+        (t => {
+          // [Eugene to Paul] previously it just said `t map ...`
+          // because there was an implicit conversion from Tree to a list of Trees
+          // however Martin and I have removed the conversion
+          // (it was conflicting with the new reflection API),
+          // so I had to rewrite this a bit
+          val subs = t collect {
+            case sub =>
+              sub
+          }
+          subs map
+            (t0 =>
+              "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
+        }) mkString "\n")
     // If the last tree is a bare expression, pinpoint where it begins using the
     // AST node position and snap the line off there.  Rewrite the code embodied
     // by the last tree as a ValDef instead, so we can access the value.
@@ -1289,15 +1292,14 @@ class SparkIMain(
           case ((pos, msg)) :: rest =>
             val filtered = rest filter {
               case (pos0, msg0) =>
-                (
-                  msg != msg0
-                ) || (pos.lineContent.trim != pos0.lineContent.trim) || {
-                  // same messages and same line content after whitespace removal
-                  // but we want to let through multiple warnings on the same line
-                  // from the same run.  The untrimmed line will be the same since
-                  // there's no whitespace indenting blowing it.
-                  (pos.lineContent == pos0.lineContent)
-                }
+                (msg != msg0) ||
+                  (pos.lineContent.trim != pos0.lineContent.trim) || {
+                    // same messages and same line content after whitespace removal
+                    // but we want to let through multiple warnings on the same line
+                    // from the same run.  The untrimmed line will be the same since
+                    // there's no whitespace indenting blowing it.
+                    (pos.lineContent == pos0.lineContent)
+                  }
             }
             ((pos, msg)) :: loop(filtered)
         }
@@ -1312,8 +1314,8 @@ class SparkIMain(
           method
         case xs =>
           sys.error(
-            "Internal error: eval object " + evalClass + ", " + xs
-              .mkString("\n", "\n", ""))
+            "Internal error: eval object " + evalClass + ", " +
+              xs.mkString("\n", "\n", ""))
       }
     private def compileAndSaveRun(label: String, code: String) = {
       showCodeIfDebugging(code)
@@ -1343,8 +1345,8 @@ class SparkIMain(
         _originalLine
 
     /** handlers for each tree in this request */
-    val handlers: List[MemberHandler] =
-      trees map (memberHandlers chooseHandler _)
+    val handlers: List[MemberHandler] = trees map
+      (memberHandlers chooseHandler _)
     def defHandlers =
       handlers collect {
         case x: MemberDefHandler =>
@@ -1391,8 +1393,8 @@ class SparkIMain(
       */
     def fullFlatName(name: String) =
       // lineRep.readPath + accessPath.replace('.', '$') + nme.NAME_JOIN_STRING + name
-      lineRep.readPath + ".INSTANCE" + accessPath.replace('.', '$') + nme
-        .NAME_JOIN_STRING + name
+      lineRep.readPath + ".INSTANCE" + accessPath.replace('.', '$') +
+        nme.NAME_JOIN_STRING + name
 
     /** The unmangled symbol name, but supplemented with line info. */
     def disambiguated(name: Name): String = name + " (in " + lineRep + ")"
@@ -1431,10 +1433,9 @@ class SparkIMain(
         |  org.apache.spark.sql.catalyst.encoders.OuterScopes.addOuterScope(this)
         |  ${indentCode(toCompute)}
       """.stripMargin
-      val postamble = importsTrailer + "\n}" + "\n" +
-        "object " + lineRep.readName + " {\n" +
-        "  val INSTANCE = new " + lineRep.readName + "();\n" +
-        "}\n"
+      val postamble = importsTrailer + "\n}" + "\n" + "object " +
+        lineRep.readName + " {\n" + "  val INSTANCE = new " + lineRep.readName +
+        "();\n" + "}\n"
       val generate = (m: MemberHandler) => m extraCodeToEvaluate Request.this
 
       /*
@@ -1547,10 +1548,11 @@ class SparkIMain(
     // lazy val definedTypes: Map[Name, Type] = {
     //   typeNames map (x => x -> afterTyper(resultSymbol.info.nonPrivateDecl(x).tpe)) toMap
     // }
-    lazy val definedSymbols = (
-      termNames.map(x => x -> applyToResultMember(x, x => x)) ++
-        typeNames.map(x => x -> compilerTypeOf(x).typeSymbolDirect)
-    ).toMap[Name, Symbol] withDefaultValue NoSymbol
+    lazy val definedSymbols =
+      (
+        termNames.map(x => x -> applyToResultMember(x, x => x)) ++
+          typeNames.map(x => x -> compilerTypeOf(x).typeSymbolDirect)
+      ).toMap[Name, Symbol] withDefaultValue NoSymbol
 
     lazy val typesOfDefinedTerms =
       mapFrom[Name, Name, Type](termNames)(x => applyToResultMember(x, _.tpe))
@@ -1580,8 +1582,8 @@ class SparkIMain(
     if (mostRecentlyHandledTree.isEmpty)
       ""
     else
-      "" + (
-        mostRecentlyHandledTree.get match {
+      "" +
+        (mostRecentlyHandledTree.get match {
           case x: ValOrDefDef =>
             x.name
           case Assign(Ident(name), _) =>
@@ -1590,8 +1592,7 @@ class SparkIMain(
             name
           case _ =>
             naming.mostRecentVar
-        }
-      )
+        })
 
   private var mostRecentWarnings: List[(global.Position, String)] = Nil
 
@@ -1703,11 +1704,10 @@ class SparkIMain(
   @DeveloperApi
   def runtimeClassAndTypeOfTerm(id: String): Option[(JClass, Type)] = {
     classOfTerm(id) flatMap { clazz =>
-      new RichClass(clazz)
-        .supers find (c => !(new RichClass(c).isScalaAnonymous)) map {
-        nonAnon =>
+      new RichClass(clazz).supers find
+        (c => !(new RichClass(c).isScalaAnonymous)) map { nonAnon =>
           (nonAnon, runtimeTypeOfTerm(id))
-      }
+        }
     }
   }
 
@@ -1729,9 +1729,9 @@ class SparkIMain(
       val staticSym = tpe.typeSymbol
       val runtimeSym = getClassIfDefined(clazz.getName)
 
-      if ((runtimeSym != NoSymbol) && (runtimeSym != staticSym) && (
-            runtimeSym isSubClass staticSym
-          ))
+      if ((runtimeSym != NoSymbol) &&
+          (runtimeSym != staticSym) &&
+          (runtimeSym isSubClass staticSym))
         runtimeSym.info
       else
         NoType
@@ -1832,8 +1832,9 @@ class SparkIMain(
     */
   @DeveloperApi
   def definedSymbolList =
-    prevRequestList flatMap (_.definedSymbolList) filterNot (s =>
-      isInternalTermName(s.name))
+    prevRequestList flatMap
+      (_.definedSymbolList) filterNot
+      (s => isInternalTermName(s.name))
 
   // Terms with user-given names (i.e. not res0 and not synthetic)
 
@@ -2027,9 +2028,8 @@ object SparkIMain {
     def maxStringLength: Int
     def isTruncating: Boolean
     def truncate(str: String): String = {
-      if (isTruncating && (
-            maxStringLength != 0 && str.length > maxStringLength
-          ))
+      if (isTruncating &&
+          (maxStringLength != 0 && str.length > maxStringLength))
         (str take maxStringLength - 3) + "..."
       else
         str
@@ -2121,10 +2121,11 @@ class SparkISettings(intp: SparkIMain) extends Logging {
       "deprecation" -> deprecation)
 
   private def allSettingsString =
-    allSettings.toList sortBy (_._1) map {
-      case (k, v) =>
-        "  " + k + " = " + v + "\n"
-    } mkString
+    allSettings.toList sortBy
+      (_._1) map {
+        case (k, v) =>
+          "  " + k + " = " + v + "\n"
+      } mkString
 
   override def toString = """
     | SparkISettings {

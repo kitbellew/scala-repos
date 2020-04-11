@@ -285,9 +285,8 @@ class TraceTest
                     _,
                     Some(_sampled),
                     Flags(0))
-                  if (
-                    _traceId == parentId.traceId
-                  ) && (_parentId == parentId.spanId) &&
+                  if (_traceId == parentId.traceId) &&
+                    (_parentId == parentId.spanId) &&
                     (_sampled == parentId.sampled.get) =>
                 true
               case _ =>

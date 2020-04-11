@@ -56,7 +56,8 @@ private[spark] class MapOutputTrackerMasterEndpoint(
     case GetMapOutputStatuses(shuffleId: Int) =>
       val hostPort = context.senderAddress.hostPort
       logInfo(
-        "Asked to send map output locations for shuffle " + shuffleId + " to " + hostPort)
+        "Asked to send map output locations for shuffle " + shuffleId + " to " +
+          hostPort)
       val mapOutputStatuses = tracker.getSerializedMapOutputStatuses(shuffleId)
       val serializedSize = mapOutputStatuses.length
       if (serializedSize > maxRpcMessageSize) {
@@ -132,8 +133,8 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
     val response = askTracker[Boolean](message)
     if (response != true) {
       throw new SparkException(
-        "Error reply received from MapOutputTracker. Expecting true, got " + response
-          .toString)
+        "Error reply received from MapOutputTracker. Expecting true, got " +
+          response.toString)
     }
   }
 
@@ -375,8 +376,8 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
 
   /** Check if the given shuffle is being tracked */
   def containsShuffle(shuffleId: Int): Boolean = {
-    cachedSerializedStatuses.contains(shuffleId) || mapStatuses
-      .contains(shuffleId)
+    cachedSerializedStatuses.contains(shuffleId) ||
+    mapStatuses.contains(shuffleId)
   }
 
   /**
@@ -390,10 +391,8 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
   def getPreferredLocationsForShuffle(
       dep: ShuffleDependency[_, _, _],
       partitionId: Int): Seq[String] = {
-    if (shuffleLocalityEnabled && dep
-          .rdd
-          .partitions
-          .length < SHUFFLE_PREF_MAP_THRESHOLD &&
+    if (shuffleLocalityEnabled &&
+        dep.rdd.partitions.length < SHUFFLE_PREF_MAP_THRESHOLD &&
         dep.partitioner.numPartitions < SHUFFLE_PREF_REDUCE_THRESHOLD) {
       val blockManagerIds = getLocationsWithLargestOutputs(
         dep.shuffleId,
@@ -443,8 +442,8 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
             if (status != null) {
               val blockSize = status.getSizeForBlock(reducerId)
               if (blockSize > 0) {
-                locs(status.location) = locs
-                  .getOrElse(status.location, 0L) + blockSize
+                locs(status.location) = locs.getOrElse(status.location, 0L) +
+                  blockSize
                 totalOutputSize += blockSize
               }
             }

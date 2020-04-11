@@ -38,14 +38,14 @@ class InterpreterTest extends FunSuite {
     val hashValue1 =
       interpreter(Gets(Seq(key))).asInstanceOf[Values].values.last.casUnique
     assert(
-      interpreter(Gets(Seq(key))) == Values(
-        Seq(Value(key, value1, hashValue1))))
+      interpreter(Gets(Seq(key))) ==
+        Values(Seq(Value(key, value1, hashValue1))))
 
     assert(
       interpreter(Cas(key, 0, Time.epoch, value2, hashValue1.get)) == Stored())
     assert(
-      interpreter(
-        Cas(key, 0, Time.epoch, value3, hashValue1.get)) == NotStored())
+      interpreter(Cas(key, 0, Time.epoch, value3, hashValue1.get)) ==
+        NotStored())
   }
 
   test("correctly perform the QUIT command") {

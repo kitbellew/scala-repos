@@ -54,21 +54,22 @@ trait FormFieldOrderSpec
       }
       .build()
 
-    "preserve form field order" in new WithServer(fakeApp) {
+    "preserve form field order" in
+      new WithServer(fakeApp) {
 
-      import scala.concurrent.Future
+        import scala.concurrent.Future
 
-      val future: Future[WSResponse] = WS
-        .url("http://localhost:" + port + "/")
-        .withHeaders("Content-Type" -> contentType)
-        .withRequestTimeout(10000.millis)
-        .post(urlEncoded)
+        val future: Future[WSResponse] = WS
+          .url("http://localhost:" + port + "/")
+          .withHeaders("Content-Type" -> contentType)
+          .withRequestTimeout(10000.millis)
+          .post(urlEncoded)
 
-      val response = await(future)
-      response.status must equalTo(OK)
-      // Above the response to the request caused the body to be reconstituted as the url_encoded string.
-      // Validate that this is in fact the case, which is the point of this test.
-      response.body must equalTo(urlEncoded)
-    }
+        val response = await(future)
+        response.status must equalTo(OK)
+        // Above the response to the request caused the body to be reconstituted as the url_encoded string.
+        // Validate that this is in fact the case, which is the point of this test.
+        response.body must equalTo(urlEncoded)
+      }
   }
 }

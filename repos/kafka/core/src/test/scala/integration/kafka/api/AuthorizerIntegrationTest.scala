@@ -56,24 +56,25 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
   val groupResource = new Resource(Group, group)
 
   val GroupReadAcl = Map(
-    groupResource -> Set(
-      new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Read)))
+    groupResource ->
+      Set(new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Read)))
   val ClusterAcl = Map(
-    Resource.ClusterResource -> Set(
-      new Acl(
-        KafkaPrincipal.ANONYMOUS,
-        Allow,
-        Acl.WildCardHost,
-        ClusterAction)))
+    Resource.ClusterResource ->
+      Set(
+        new Acl(
+          KafkaPrincipal.ANONYMOUS,
+          Allow,
+          Acl.WildCardHost,
+          ClusterAction)))
   val TopicReadAcl = Map(
-    topicResource -> Set(
-      new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Read)))
+    topicResource ->
+      Set(new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Read)))
   val TopicWriteAcl = Map(
-    topicResource -> Set(
-      new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Write)))
+    topicResource ->
+      Set(new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Write)))
   val TopicDescribeAcl = Map(
-    topicResource -> Set(
-      new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Describe)))
+    topicResource ->
+      Set(new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Describe)))
 
   val consumers = Buffer[KafkaConsumer[Array[Byte], Array[Byte]]]()
   val producers = Buffer[KafkaProducer[Array[Byte], Array[Byte]]]()
@@ -108,43 +109,51 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     ApiKeys.LEAVE_GROUP.id -> classOf[LeaveGroupResponse],
     ApiKeys.LEADER_AND_ISR.id -> classOf[requests.LeaderAndIsrResponse],
     ApiKeys.STOP_REPLICA.id -> classOf[requests.StopReplicaResponse],
-    ApiKeys.CONTROLLED_SHUTDOWN_KEY.id -> classOf[
-      requests.ControlledShutdownResponse]
+    ApiKeys.CONTROLLED_SHUTDOWN_KEY.id ->
+      classOf[requests.ControlledShutdownResponse]
   )
 
   val RequestKeyToErrorCode = Map[Short, (Nothing) => Short](
-    ApiKeys.METADATA.id -> ((resp: requests.MetadataResponse) =>
-      resp
-        .errors()
-        .asScala
-        .find(_._1 == topic)
-        .getOrElse(("test", Errors.NONE))
-        ._2
-        .code()),
-    ApiKeys.PRODUCE.id -> ((resp: requests.ProduceResponse) =>
-      resp.responses().asScala.find(_._1 == tp).get._2.errorCode),
-    ApiKeys.FETCH.id -> ((resp: requests.FetchResponse) =>
-      resp.responseData().asScala.find(_._1 == tp).get._2.errorCode),
-    ApiKeys.LIST_OFFSETS.id -> ((resp: requests.ListOffsetResponse) =>
-      resp.responseData().asScala.find(_._1 == tp).get._2.errorCode),
-    ApiKeys.OFFSET_COMMIT.id -> ((resp: requests.OffsetCommitResponse) =>
-      resp.responseData().asScala.find(_._1 == tp).get._2),
-    ApiKeys.OFFSET_FETCH.id -> ((resp: requests.OffsetFetchResponse) =>
-      resp.responseData().asScala.find(_._1 == tp).get._2.errorCode),
-    ApiKeys.GROUP_COORDINATOR.id -> (
-      (resp: requests.GroupCoordinatorResponse) => resp.errorCode()),
-    ApiKeys.UPDATE_METADATA_KEY.id -> (
-      (resp: requests.UpdateMetadataResponse) => resp.errorCode()),
+    ApiKeys.METADATA.id ->
+      ((resp: requests.MetadataResponse) =>
+        resp
+          .errors()
+          .asScala
+          .find(_._1 == topic)
+          .getOrElse(("test", Errors.NONE))
+          ._2
+          .code()),
+    ApiKeys.PRODUCE.id ->
+      ((resp: requests.ProduceResponse) =>
+        resp.responses().asScala.find(_._1 == tp).get._2.errorCode),
+    ApiKeys.FETCH.id ->
+      ((resp: requests.FetchResponse) =>
+        resp.responseData().asScala.find(_._1 == tp).get._2.errorCode),
+    ApiKeys.LIST_OFFSETS.id ->
+      ((resp: requests.ListOffsetResponse) =>
+        resp.responseData().asScala.find(_._1 == tp).get._2.errorCode),
+    ApiKeys.OFFSET_COMMIT.id ->
+      ((resp: requests.OffsetCommitResponse) =>
+        resp.responseData().asScala.find(_._1 == tp).get._2),
+    ApiKeys.OFFSET_FETCH.id ->
+      ((resp: requests.OffsetFetchResponse) =>
+        resp.responseData().asScala.find(_._1 == tp).get._2.errorCode),
+    ApiKeys.GROUP_COORDINATOR.id ->
+      ((resp: requests.GroupCoordinatorResponse) => resp.errorCode()),
+    ApiKeys.UPDATE_METADATA_KEY.id ->
+      ((resp: requests.UpdateMetadataResponse) => resp.errorCode()),
     ApiKeys.JOIN_GROUP.id -> ((resp: JoinGroupResponse) => resp.errorCode()),
     ApiKeys.SYNC_GROUP.id -> ((resp: SyncGroupResponse) => resp.errorCode()),
     ApiKeys.HEARTBEAT.id -> ((resp: HeartbeatResponse) => resp.errorCode()),
     ApiKeys.LEAVE_GROUP.id -> ((resp: LeaveGroupResponse) => resp.errorCode()),
-    ApiKeys.LEADER_AND_ISR.id -> ((resp: requests.LeaderAndIsrResponse) =>
-      resp.responses().asScala.find(_._1 == tp).get._2),
-    ApiKeys.STOP_REPLICA.id -> ((resp: requests.StopReplicaResponse) =>
-      resp.responses().asScala.find(_._1 == tp).get._2),
-    ApiKeys.CONTROLLED_SHUTDOWN_KEY.id -> (
-      (resp: requests.ControlledShutdownResponse) => resp.errorCode())
+    ApiKeys.LEADER_AND_ISR.id ->
+      ((resp: requests.LeaderAndIsrResponse) =>
+        resp.responses().asScala.find(_._1 == tp).get._2),
+    ApiKeys.STOP_REPLICA.id ->
+      ((resp: requests.StopReplicaResponse) =>
+        resp.responses().asScala.find(_._1 == tp).get._2),
+    ApiKeys.CONTROLLED_SHUTDOWN_KEY.id ->
+      ((resp: requests.ControlledShutdownResponse) => resp.errorCode())
   )
 
   val RequestKeysToAcls = Map[Short, Map[Resource, Set[Acl]]](
@@ -185,14 +194,16 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
       Resource.ClusterResource)
 
     for (i <- 0 until producerCount)
-      producers += TestUtils.createNewProducer(
-        TestUtils.getBrokerListStrFromServers(servers),
-        acks = 1)
+      producers +=
+        TestUtils.createNewProducer(
+          TestUtils.getBrokerListStrFromServers(servers),
+          acks = 1)
     for (i <- 0 until consumerCount)
-      consumers += TestUtils.createNewConsumer(
-        TestUtils.getBrokerListStrFromServers(servers),
-        groupId = group,
-        securityProtocol = SecurityProtocol.PLAINTEXT)
+      consumers +=
+        TestUtils.createNewConsumer(
+          TestUtils.getBrokerListStrFromServers(servers),
+          groupId = group,
+          securityProtocol = SecurityProtocol.PLAINTEXT)
 
     // create the consumer offset topic
     TestUtils.createTopic(
@@ -248,22 +259,22 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
   private def createUpdateMetadataRequest = {
     val partitionState =
       Map(
-        tp -> new requests.UpdateMetadataRequest.PartitionState(
-          Int.MaxValue,
-          brokerId,
-          Int.MaxValue,
-          List(brokerId).asJava,
-          2,
-          Set(brokerId).asJava)).asJava
+        tp ->
+          new requests.UpdateMetadataRequest.PartitionState(
+            Int.MaxValue,
+            brokerId,
+            Int.MaxValue,
+            List(brokerId).asJava,
+            2,
+            Set(brokerId).asJava)).asJava
     val brokers =
       Set(
         new requests.UpdateMetadataRequest.Broker(
           brokerId,
           Map(
-            SecurityProtocol
-              .PLAINTEXT -> new requests.UpdateMetadataRequest.EndPoint(
-              "localhost",
-              0)).asJava,
+            SecurityProtocol.PLAINTEXT ->
+              new requests.UpdateMetadataRequest.EndPoint("localhost", 0))
+            .asJava,
           null)).asJava
     new requests.UpdateMetadataRequest(
       brokerId,
@@ -311,13 +322,14 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
       brokerId,
       Int.MaxValue,
       Map(
-        tp -> new requests.LeaderAndIsrRequest.PartitionState(
-          Int.MaxValue,
-          brokerId,
-          Int.MaxValue,
-          List(brokerId).asJava,
-          2,
-          Set(brokerId).asJava)).asJava,
+        tp ->
+          new requests.LeaderAndIsrRequest.PartitionState(
+            Int.MaxValue,
+            brokerId,
+            Int.MaxValue,
+            List(brokerId).asJava,
+            2,
+            Set(brokerId).asJava)).asJava,
       Set(new BrokerEndPoint(brokerId, "localhost", 0)).asJava)
   }
 
@@ -834,7 +846,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
       }
       if (iters > maxIters)
         throw new IllegalStateException(
-          "Failed to consume the expected records after " + iters + " iterations.")
+          "Failed to consume the expected records after " + iters +
+            " iterations.")
       iters += 1
     }
     for (i <- 0 until numRecords) {

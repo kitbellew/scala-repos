@@ -16,9 +16,10 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Delete("/") ~> route ~> check {
-      responseAs[String] shouldEqual "This is a DELETE request."
-    }
+    Delete("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This is a DELETE request."
+      }
   }
 
   "get-method" in {
@@ -27,9 +28,10 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "This is a GET request."
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This is a GET request."
+      }
   }
 
   "head-method" in {
@@ -38,9 +40,10 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Head("/") ~> route ~> check {
-      responseAs[String] shouldEqual "This is a HEAD request."
-    }
+    Head("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This is a HEAD request."
+      }
   }
 
   "options-method" in {
@@ -49,9 +52,10 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Options("/") ~> route ~> check {
-      responseAs[String] shouldEqual "This is an OPTIONS request."
-    }
+    Options("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This is an OPTIONS request."
+      }
   }
 
   "patch-method" in {
@@ -60,9 +64,10 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Patch("/", "patch content") ~> route ~> check {
-      responseAs[String] shouldEqual "This is a PATCH request."
-    }
+    Patch("/", "patch content") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This is a PATCH request."
+      }
   }
 
   "post-method" in {
@@ -71,9 +76,10 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Post("/", "post content") ~> route ~> check {
-      responseAs[String] shouldEqual "This is a POST request."
-    }
+    Post("/", "post content") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This is a POST request."
+      }
   }
 
   "put-method" in {
@@ -82,9 +88,10 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Put("/", "put content") ~> route ~> check {
-      responseAs[String] shouldEqual "This is a PUT request."
-    }
+    Put("/", "put content") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This is a PUT request."
+      }
   }
 
   "method-example" in {
@@ -94,15 +101,17 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Put("/", "put content") ~> route ~> check {
-      responseAs[String] shouldEqual "This is a PUT request."
-    }
+    Put("/", "put content") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This is a PUT request."
+      }
 
-    Get("/") ~> Route.seal(route) ~> check {
-      status shouldEqual StatusCodes.MethodNotAllowed
-      responseAs[
-        String] shouldEqual "HTTP method not allowed, supported methods: PUT"
-    }
+    Get("/") ~> Route.seal(route) ~>
+      check {
+        status shouldEqual StatusCodes.MethodNotAllowed
+        responseAs[String] shouldEqual
+          "HTTP method not allowed, supported methods: PUT"
+      }
   }
 
   "extractMethod-example" in {
@@ -115,16 +124,20 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
         }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "This is a GET request."
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This is a GET request."
+      }
 
-    Put("/") ~> route ~> check {
-      responseAs[String] shouldEqual "This PUT request, clearly is not a GET!"
-    }
-    Head("/") ~> route ~> check {
-      responseAs[String] shouldEqual "This HEAD request, clearly is not a GET!"
-    }
+    Put("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This PUT request, clearly is not a GET!"
+      }
+    Head("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "This HEAD request, clearly is not a GET!"
+      }
   }
 
   "overrideMethodWithParameter-0" in {
@@ -139,16 +152,19 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/?method=POST") ~> route ~> check {
-      responseAs[String] shouldEqual "This looks like a POST request."
-    }
-    Post("/?method=get") ~> route ~> check {
-      responseAs[String] shouldEqual "This looks like a GET request."
-    }
+    Get("/?method=POST") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This looks like a POST request."
+      }
+    Post("/?method=get") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "This looks like a GET request."
+      }
 
-    Get("/?method=hallo") ~> route ~> check {
-      status shouldEqual StatusCodes.NotImplemented
-    }
+    Get("/?method=hallo") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.NotImplemented
+      }
   }
 
 }

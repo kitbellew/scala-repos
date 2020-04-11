@@ -17,9 +17,8 @@ object Example extends Specification {
 
   "Parse address in an Applicative style" in {
     val json = parse(""" {"street": "Manhattan 2", "zip": "00223" } """)
-    val a1 = field[String]("zip")(json) <*> (
-      field[String]("street")(json) map Address.curried
-    )
+    val a1 = field[String]("zip")(json) <*>
+      (field[String]("street")(json) map Address.curried)
     val a2 = (field[String]("street")(json) |@| field[String]("zip")(json)) {
       Address
     }
@@ -60,9 +59,8 @@ object Example extends Specification {
       new JSONW[Address] {
         def write(a: Address) =
           makeObj(
-            ("street" -> toJSON(a.street)) :: (
-              "zip" -> toJSON(a.zipCode)
-            ) :: Nil)
+            ("street" -> toJSON(a.street)) ::
+              ("zip" -> toJSON(a.zipCode)) :: Nil)
       }
 
     val p = Person("joe", 34, Address("Manhattan 2", "00223"))
@@ -76,8 +74,8 @@ object Example extends Specification {
 
   "Parse Map" in {
     val json = parse(""" {"street": "Manhattan 2", "zip": "00223" } """)
-    fromJSON[Map[String, String]](json) mustEqual Success(
-      Map("street" -> "Manhattan 2", "zip" -> "00223"))
+    fromJSON[Map[String, String]](json) mustEqual
+      Success(Map("street" -> "Manhattan 2", "zip" -> "00223"))
   }
 
   "Format Map" in {

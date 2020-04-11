@@ -142,8 +142,8 @@ abstract class CurrencyZone {
     override def equals(that: Any) =
       that match {
         case that: AbstractCurrency =>
-          this.designation + this.format("", scale) == that.designation + that
-            .format("", scale)
+          this.designation + this.format("", scale) ==
+            that.designation + that.format("", scale)
         case _ =>
           false
       }

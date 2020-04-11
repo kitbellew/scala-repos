@@ -162,8 +162,9 @@ final class HListOps[L <: HList](l: L) extends Serializable {
       partition: Partition[L, U]): (partition.Prefix, partition.Suffix) =
     partition(l)
 
-  def partitionP[U](implicit partition: Partition[L, U])
-      : partition.Prefix :: partition.Suffix :: HNil = partition.product(l)
+  def partitionP[U](implicit
+      partition: Partition[L, U]): partition.Prefix :: partition.Suffix ::
+    HNil = partition.product(l)
 
   /**
     * Returns the first element of type `U` of this `HList` plus the remainder of the `HList`. An explicit type argument

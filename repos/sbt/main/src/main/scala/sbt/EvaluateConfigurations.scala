@@ -101,8 +101,8 @@ object EvaluateConfigurations {
     val (importStatements, settingsAndDefinitions) = splitExpressions(
       file,
       lines)
-    val allImports = builtinImports
-      .map(s => (s, -1)) ++ addOffset(offset, importStatements)
+    val allImports = builtinImports.map(s => (s, -1)) ++
+      addOffset(offset, importStatements)
     val (definitions, settings) = splitSettingsDefinitions(
       addOffsetToRange(offset, settingsAndDefinitions))
     new ParsedFile(allImports, definitions, settings)
@@ -184,12 +184,13 @@ object EvaluateConfigurations {
             resolveBase(file.getParentFile, p)
         }
       val (settingsRaw, manipulationsRaw) =
-        dslEntries map (_.result apply loader) partition {
-          case internals.ProjectSettings(_) =>
-            true
-          case _ =>
-            false
-        }
+        dslEntries map
+          (_.result apply loader) partition {
+            case internals.ProjectSettings(_) =>
+              true
+            case _ =>
+              false
+          }
       val settings = settingsRaw flatMap {
         case internals.ProjectSettings(settings) =>
           settings
@@ -471,9 +472,11 @@ object Index {
         duplicates map {
           case (k, tps) =>
             "'" + k + "' (" + tps.mkString(", ") + ")"
-        } mkString (
-          "Some keys were defined with the same name but different types: ", ", ", ""
-        ))
+        } mkString
+          (
+            "Some keys were defined with the same name but different types: ",
+            ", ",
+            ""))
   }
   private[this] type TriggerMap = collection.mutable.HashMap[Task[_], Seq[
     Task[_]]]

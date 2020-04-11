@@ -47,10 +47,11 @@ object TreeShakerSpecs
       val results = shakeTree(tree.child)
       tree.root mustEqual tree
 
-      results must beLike {
-        case New(LineStream(), StrLit(LineStream(), "testing")) =>
-          ok
-      }
+      results must
+        beLike {
+          case New(LineStream(), StrLit(LineStream(), "testing")) =>
+            ok
+        }
     }
 
     "leave non-bindings unchanged" in {
@@ -58,10 +59,11 @@ object TreeShakerSpecs
         val tree = New(LineStream(), NumLit(LineStream(), "42"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case New(LineStream(), NumLit(LineStream(), "42")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case New(LineStream(), NumLit(LineStream(), "42")) =>
+              ok
+          }
       }
 
       "import" >> {
@@ -71,13 +73,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "12"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Import(
-                LineStream(),
-                SpecificImport(Vector("std")),
-                NumLit(LineStream(), "12")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Import(
+                  LineStream(),
+                  SpecificImport(Vector("std")),
+                  NumLit(LineStream(), "12")) =>
+              ok
+          }
       }
 
       "assert" >> {
@@ -87,13 +90,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "12"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Assert(
-                LineStream(),
-                NumLit(LineStream(), "42"),
-                NumLit(LineStream(), "12")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Assert(
+                  LineStream(),
+                  NumLit(LineStream(), "42"),
+                  NumLit(LineStream(), "12")) =>
+              ok
+          }
       }
 
       "relate" >> {
@@ -104,64 +108,70 @@ object TreeShakerSpecs
           NumLit(LineStream(), "3"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Relate(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2"),
-                NumLit(LineStream(), "3")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Relate(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2"),
+                  NumLit(LineStream(), "3")) =>
+              ok
+          }
       }
 
       "tic variable" >> {
         val tree = TicVar(LineStream(), "'a")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case TicVar(LineStream(), "'a") =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case TicVar(LineStream(), "'a") =>
+              ok
+          }
       }
 
       "string literal" >> {
         val tree = StrLit(LineStream(), "foo")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case StrLit(LineStream(), "foo") =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case StrLit(LineStream(), "foo") =>
+              ok
+          }
       }
 
       "num literal" >> {
         val tree = NumLit(LineStream(), "42")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case NumLit(LineStream(), "42") =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case NumLit(LineStream(), "42") =>
+              ok
+          }
       }
 
       "bool literal" >> {
         val tree = BoolLit(LineStream(), true)
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case BoolLit(LineStream(), true) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case BoolLit(LineStream(), true) =>
+              ok
+          }
       }
 
       "null literal" >> {
         val tree = NullLit(LineStream())
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case NullLit(LineStream()) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case NullLit(LineStream()) =>
+              ok
+          }
       }
 
       "object with numeric fields" >> {
@@ -172,14 +182,15 @@ object TreeShakerSpecs
             ("b", NumLit(LineStream(), "2"))))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case ObjectDef(
-                LineStream(),
-                Vector(
-                  ("a", NumLit(LineStream(), "1")),
-                  ("b", NumLit(LineStream(), "2")))) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case ObjectDef(
+                  LineStream(),
+                  Vector(
+                    ("a", NumLit(LineStream(), "1")),
+                    ("b", NumLit(LineStream(), "2")))) =>
+              ok
+          }
       }
 
       "object with string and null fields" >> {
@@ -190,14 +201,15 @@ object TreeShakerSpecs
             ("b", StrLit(LineStream(), "foo"))))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case ObjectDef(
-                LineStream(),
-                Vector(
-                  ("a", NullLit(LineStream())),
-                  ("b", StrLit(LineStream(), "foo")))) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case ObjectDef(
+                  LineStream(),
+                  Vector(
+                    ("a", NullLit(LineStream())),
+                    ("b", StrLit(LineStream(), "foo")))) =>
+              ok
+          }
       }
 
       "array with numeric fields" >> {
@@ -206,12 +218,15 @@ object TreeShakerSpecs
           Vector(NumLit(LineStream(), "1"), NumLit(LineStream(), "2")))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case ArrayDef(
-                LineStream(),
-                Vector(NumLit(LineStream(), "1"), NumLit(LineStream(), "2"))) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case ArrayDef(
+                  LineStream(),
+                  Vector(
+                    NumLit(LineStream(), "1"),
+                    NumLit(LineStream(), "2"))) =>
+              ok
+          }
       }
 
       "array with string and null fields" >> {
@@ -220,32 +235,35 @@ object TreeShakerSpecs
           Vector(NullLit(LineStream()), StrLit(LineStream(), "foo")))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case ArrayDef(
-                LineStream(),
-                Vector(NullLit(LineStream()), StrLit(LineStream(), "foo"))) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case ArrayDef(
+                  LineStream(),
+                  Vector(NullLit(LineStream()), StrLit(LineStream(), "foo"))) =>
+              ok
+          }
       }
 
       "descent" >> {
         val tree = Descent(LineStream(), NumLit(LineStream(), "1"), "a")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Descent(LineStream(), NumLit(LineStream(), "1"), "a") =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Descent(LineStream(), NumLit(LineStream(), "1"), "a") =>
+              ok
+          }
       }
 
       "metadescent" >> {
         val tree = MetaDescent(LineStream(), NumLit(LineStream(), "1"), "a")
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case MetaDescent(LineStream(), NumLit(LineStream(), "1"), "a") =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case MetaDescent(LineStream(), NumLit(LineStream(), "1"), "a") =>
+              ok
+          }
       }
 
       "deref" >> {
@@ -255,13 +273,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Deref(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Deref(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "dispatch" >> {
@@ -271,13 +290,16 @@ object TreeShakerSpecs
           Vector(NumLit(LineStream(), "1"), NumLit(LineStream(), "2")))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Dispatch(
-                LineStream(),
-                Identifier(Vector(), "foo"),
-                Vector(NumLit(LineStream(), "1"), NumLit(LineStream(), "2"))) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Dispatch(
+                  LineStream(),
+                  Identifier(Vector(), "foo"),
+                  Vector(
+                    NumLit(LineStream(), "1"),
+                    NumLit(LineStream(), "2"))) =>
+              ok
+          }
       }
 
       "where" >> {
@@ -287,13 +309,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Where(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Where(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
       "with" >> {
         val tree = With(
@@ -302,13 +325,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case With(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case With(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
       "union" >> {
         val tree = Union(
@@ -317,13 +341,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Union(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Union(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
       "intersect" >> {
         val tree = Intersect(
@@ -332,13 +357,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Intersect(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Intersect(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
       "difference" >> {
         val tree = Difference(
@@ -347,13 +373,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Difference(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Difference(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "addition" >> {
@@ -363,13 +390,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Add(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Add(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "subtraction" >> {
@@ -379,13 +407,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Sub(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Sub(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "multiplication" >> {
@@ -395,13 +424,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Mul(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Mul(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "division" >> {
@@ -411,13 +441,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Div(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Div(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "less-than" >> {
@@ -427,13 +458,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Lt(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Lt(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "less-than-or-equal" >> {
@@ -443,13 +475,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case LtEq(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case LtEq(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "greater-than" >> {
@@ -459,13 +492,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Gt(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Gt(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "greater-than-equal" >> {
@@ -475,13 +509,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case GtEq(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case GtEq(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "equality" >> {
@@ -491,13 +526,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Eq(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Eq(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "not-equality" >> {
@@ -507,13 +543,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case NotEq(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case NotEq(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "boolean and" >> {
@@ -523,13 +560,14 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case And(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case And(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "boolean or" >> {
@@ -539,33 +577,36 @@ object TreeShakerSpecs
           NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Or(
-                LineStream(),
-                NumLit(LineStream(), "1"),
-                NumLit(LineStream(), "2")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Or(
+                  LineStream(),
+                  NumLit(LineStream(), "1"),
+                  NumLit(LineStream(), "2")) =>
+              ok
+          }
       }
 
       "complementation" >> {
         val tree = Comp(LineStream(), NumLit(LineStream(), "1"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Comp(LineStream(), NumLit(LineStream(), "1")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Comp(LineStream(), NumLit(LineStream(), "1")) =>
+              ok
+          }
       }
 
       "negation" >> {
         val tree = Neg(LineStream(), NumLit(LineStream(), "1"))
         bindRoot(tree, tree)
 
-        shakeTree(tree) must beLike {
-          case Neg(LineStream(), NumLit(LineStream(), "1")) =>
-            ok
-        }
+        shakeTree(tree) must
+          beLike {
+            case Neg(LineStream(), NumLit(LineStream(), "1")) =>
+              ok
+          }
       }
     }
 
@@ -573,10 +614,11 @@ object TreeShakerSpecs
       val tree = Paren(LineStream(), NumLit(LineStream(), "1"))
       bindRoot(tree, tree)
 
-      shakeTree(tree) must beLike {
-        case NumLit(LineStream(), "1") =>
-          ok
-      }
+      shakeTree(tree) must
+        beLike {
+          case NumLit(LineStream(), "1") =>
+            ok
+        }
     }
 
     "eliminate let when not found in scope" in {
@@ -589,10 +631,11 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case NumLit(LineStream(), "24") =>
-          ok
-      }
+      result must
+        beLike {
+          case NumLit(LineStream(), "24") =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -607,15 +650,16 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector())) =>
-          ok
-      }
+      result must
+        beLike {
+          case Let(
+                LineStream(),
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector())) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -633,16 +677,17 @@ object TreeShakerSpecs
       val results = shakeTree(tree)
       results.errors must beEmpty
 
-      results must beLike {
-        case Solve(
-              LineStream(),
-              Vector(TicVar(LineStream(), "'a")),
-              Add(
+      results must
+        beLike {
+          case Solve(
                 LineStream(),
-                TicVar(LineStream(), "'a"),
-                NumLit(LineStream(), "42"))) =>
-          ok
-      }
+                Vector(TicVar(LineStream(), "'a")),
+                Add(
+                  LineStream(),
+                  TicVar(LineStream(), "'a"),
+                  NumLit(LineStream(), "42"))) =>
+            ok
+        }
     }
 
     "detect unused tic variable in solve" in {
@@ -676,8 +721,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "avoid false negatives with used formal" in {
@@ -715,13 +760,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Import(
-              LineStream(),
-              SpecificImport(Vector()),
-              NumLit(LineStream(), "24")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Import(
+                LineStream(),
+                SpecificImport(Vector()),
+                NumLit(LineStream(), "24")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -740,18 +786,22 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Import(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
-                SpecificImport(Vector()),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
-          ok
-      }
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Import(
+                  LineStream(),
+                  SpecificImport(Vector()),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -776,8 +826,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in import" in {
@@ -811,13 +861,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Assert(
-              LineStream(),
-              BoolLit(LineStream(), true),
-              NumLit(LineStream(), "24")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Assert(
+                LineStream(),
+                BoolLit(LineStream(), true),
+                NumLit(LineStream(), "24")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -836,18 +887,22 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Assert(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
-                BoolLit(LineStream(), true),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
-          ok
-      }
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Assert(
+                  LineStream(),
+                  BoolLit(LineStream(), true),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -872,8 +927,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in assert" in {
@@ -904,10 +959,11 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case New(LineStream(), NumLit(LineStream(), "24")) =>
-          ok
-      }
+      result must
+        beLike {
+          case New(LineStream(), NumLit(LineStream(), "24")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -924,17 +980,21 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              New(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
-          ok
-      }
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                New(
+                  LineStream(),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -958,8 +1018,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in new" in {
@@ -994,14 +1054,15 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Relate(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25"),
-              NumLit(LineStream(), "26")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Relate(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25"),
+                NumLit(LineStream(), "26")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -1022,19 +1083,20 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Relate(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"),
-                  NumLit(LineStream(), "25"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Relate(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"),
+                    NumLit(LineStream(), "25"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -1054,19 +1116,20 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Relate(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "25"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Relate(
+                    LineStream(),
+                    NumLit(LineStream(), "24"),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "25"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -1086,22 +1149,23 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Relate(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  NumLit(LineStream(), "25"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Relate(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    NumLit(LineStream(), "25"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -1130,8 +1194,8 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result
-          .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+        result.errors mustEqual
+          Set(UnusedFormalBinding(Identifier(Vector(), "b")))
       }
 
       {
@@ -1156,8 +1220,8 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result
-          .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+        result.errors mustEqual
+          Set(UnusedFormalBinding(Identifier(Vector(), "b")))
       }
 
       {
@@ -1182,8 +1246,8 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result
-          .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+        result.errors mustEqual
+          Set(UnusedFormalBinding(Identifier(Vector(), "b")))
       }
     }
 
@@ -1256,12 +1320,13 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case ObjectDef(
-              LineStream(),
-              Vector(("foo", NumLit(LineStream(), "24")))) =>
-          ok
-      }
+      result must
+        beLike {
+          case ObjectDef(
+                LineStream(),
+                Vector(("foo", NumLit(LineStream(), "24")))) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -1275,31 +1340,30 @@ object TreeShakerSpecs
         ObjectDef(
           LineStream(),
           Vector(
-            "foo" -> Dispatch(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector())))
+            "foo" ->
+              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector())))
       )
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              ObjectDef(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
-                Vector(
-                  (
-                    "foo",
-                    Dispatch(
-                      LineStream(),
-                      Identifier(Vector(), "a"),
-                      Vector()))))) =>
-          ok
-      }
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                ObjectDef(
+                  LineStream(),
+                  Vector(
+                    (
+                      "foo",
+                      Dispatch(
+                        LineStream(),
+                        Identifier(Vector(), "a"),
+                        Vector()))))) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -1312,10 +1376,11 @@ object TreeShakerSpecs
         ObjectDef(
           LineStream(),
           Vector(
-            "foo" -> Add(
-              LineStream(),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-              NumLit(LineStream(), "42")))),
+            "foo" ->
+              Add(
+                LineStream(),
+                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                NumLit(LineStream(), "42")))),
         Dispatch(
           LineStream(),
           Identifier(Vector(), "a"),
@@ -1324,8 +1389,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in object definition" in {
@@ -1335,10 +1400,11 @@ object TreeShakerSpecs
         ObjectDef(
           LineStream(),
           Vector(
-            "foo" -> Add(
-              LineStream(),
-              TicVar(LineStream(), "'a"),
-              NumLit(LineStream(), "42"))))
+            "foo" ->
+              Add(
+                LineStream(),
+                TicVar(LineStream(), "'a"),
+                NumLit(LineStream(), "42"))))
       )
       bindRoot(tree, tree)
 
@@ -1356,10 +1422,11 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case ArrayDef(LineStream(), Vector(NumLit(LineStream(), "24"))) =>
-          ok
-      }
+      result must
+        beLike {
+          case ArrayDef(LineStream(), Vector(NumLit(LineStream(), "24"))) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -1377,21 +1444,22 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              ArrayDef(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
-                Vector(
-                  Dispatch(
-                    LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector())))) =>
-          ok
-      }
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                ArrayDef(
+                  LineStream(),
+                  Vector(
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector())))) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -1416,8 +1484,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in array definition" in {
@@ -1448,10 +1516,11 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Descent(LineStream(), NumLit(LineStream(), "24"), "foo") =>
-          ok
-      }
+      result must
+        beLike {
+          case Descent(LineStream(), NumLit(LineStream(), "24"), "foo") =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -1470,18 +1539,19 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Descent(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                "foo")) =>
-          ok
-      }
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Descent(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  "foo")) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -1506,8 +1576,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in descent" in {
@@ -1538,10 +1608,11 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case MetaDescent(LineStream(), NumLit(LineStream(), "24"), "foo") =>
-          ok
-      }
+      result must
+        beLike {
+          case MetaDescent(LineStream(), NumLit(LineStream(), "24"), "foo") =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -1560,18 +1631,19 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              MetaDescent(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                "foo")) =>
-          ok
-      }
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                MetaDescent(
+                  LineStream(),
+                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                  "foo")) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -1596,8 +1668,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in metadescent" in {
@@ -1634,13 +1706,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Deref(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Deref(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -1660,18 +1733,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Deref(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Deref(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -1690,21 +1764,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Deref(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Deref(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -1730,8 +1805,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in deref" in {
@@ -1766,13 +1841,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Dispatch(
-              LineStream(),
-              Identifier(Vector(), "count"),
-              Vector(NumLit(LineStream(), "24"))) =>
-          ok
-      }
+      result must
+        beLike {
+          case Dispatch(
+                LineStream(),
+                Identifier(Vector(), "count"),
+                Vector(NumLit(LineStream(), "24"))) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -1791,22 +1867,23 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Dispatch(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
-                Identifier(Vector(), "count"),
-                Vector(
-                  Dispatch(
-                    LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector())))) =>
-          ok
-      }
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Dispatch(
+                  LineStream(),
+                  Identifier(Vector(), "count"),
+                  Vector(
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector())))) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -1833,8 +1910,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in dispatch" in {
@@ -1869,13 +1946,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Where(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Where(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -1895,18 +1973,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Where(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Where(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -1925,21 +2004,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Where(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Where(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -1965,8 +2045,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in where" in {
@@ -2000,13 +2080,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Add(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Add(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -2026,18 +2107,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Add(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Add(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2056,21 +2138,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Add(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Add(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2096,8 +2179,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in addition" in {
@@ -2131,13 +2214,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Sub(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Sub(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -2157,18 +2241,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Sub(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Sub(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2187,21 +2272,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Sub(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Sub(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2227,8 +2313,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in subtraction" in {
@@ -2262,13 +2348,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Mul(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Mul(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -2288,18 +2375,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Mul(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Mul(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2318,21 +2406,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Mul(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Mul(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2358,8 +2447,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in multiplication" in {
@@ -2393,13 +2482,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Div(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Div(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -2419,18 +2509,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Div(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Div(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2449,21 +2540,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Div(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Div(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2489,8 +2581,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in division" in {
@@ -2524,13 +2616,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Mod(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Mod(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -2550,18 +2643,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Mod(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Mod(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2580,21 +2674,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Mod(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Mod(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2620,8 +2715,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in mod" in {
@@ -2655,13 +2750,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Pow(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Pow(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -2681,18 +2777,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Pow(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Pow(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2711,21 +2808,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Pow(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Pow(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2751,8 +2849,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in pow" in {
@@ -2786,13 +2884,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Lt(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Lt(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -2812,18 +2911,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Lt(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Lt(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2842,21 +2942,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Lt(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Lt(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2882,8 +2983,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in less-than" in {
@@ -2917,13 +3018,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case LtEq(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case LtEq(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -2943,18 +3045,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                LtEq(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  LtEq(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -2973,21 +3076,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                LtEq(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  LtEq(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3013,8 +3117,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in less-than-equal" in {
@@ -3048,13 +3152,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Gt(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Gt(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -3074,18 +3179,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Gt(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Gt(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3104,21 +3210,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Gt(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Gt(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3144,8 +3251,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in greater-than" in {
@@ -3179,13 +3286,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case GtEq(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case GtEq(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -3205,18 +3313,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                GtEq(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  GtEq(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3235,21 +3344,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                GtEq(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  GtEq(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3275,8 +3385,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in greater-than-equal" in {
@@ -3310,13 +3420,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Eq(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Eq(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -3336,18 +3447,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Eq(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Eq(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3366,21 +3478,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Eq(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Eq(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3406,8 +3519,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in equality" in {
@@ -3441,13 +3554,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case NotEq(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case NotEq(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -3467,18 +3581,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                NotEq(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  NotEq(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3497,21 +3612,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                NotEq(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  NotEq(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3537,8 +3653,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in not equality" in {
@@ -3572,13 +3688,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case And(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case And(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -3598,18 +3715,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                And(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  And(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3628,21 +3746,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                And(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  And(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3668,8 +3787,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in boolean and" in {
@@ -3703,13 +3822,14 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Or(
-              LineStream(),
-              NumLit(LineStream(), "24"),
-              NumLit(LineStream(), "25")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Or(
+                LineStream(),
+                NumLit(LineStream(), "24"),
+                NumLit(LineStream(), "25")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -3729,18 +3849,19 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Or(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-                  NumLit(LineStream(), "24"))) =>
-            ok
-        }
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Or(
+                    LineStream(),
+                    Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                    NumLit(LineStream(), "24"))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3759,21 +3880,22 @@ object TreeShakerSpecs
         bindRoot(tree, tree)
 
         val result = shakeTree(tree)
-        result must beLike {
-          case Let(
-                LineStream(),
-                Identifier(Vector(), "a"),
-                Vector(),
-                NumLit(LineStream(), "42"),
-                Or(
+        result must
+          beLike {
+            case Let(
                   LineStream(),
-                  NumLit(LineStream(), "24"),
-                  Dispatch(
+                  Identifier(Vector(), "a"),
+                  Vector(),
+                  NumLit(LineStream(), "42"),
+                  Or(
                     LineStream(),
-                    Identifier(Vector(), "a"),
-                    Vector()))) =>
-            ok
-        }
+                    NumLit(LineStream(), "24"),
+                    Dispatch(
+                      LineStream(),
+                      Identifier(Vector(), "a"),
+                      Vector()))) =>
+              ok
+          }
 
         result.errors must beEmpty
       }
@@ -3799,8 +3921,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in boolean or" in {
@@ -3831,10 +3953,11 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Comp(LineStream(), NumLit(LineStream(), "24")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Comp(LineStream(), NumLit(LineStream(), "24")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -3851,17 +3974,21 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Comp(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
-          ok
-      }
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Comp(
+                  LineStream(),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -3885,8 +4012,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in complement" in {
@@ -3916,10 +4043,11 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Neg(LineStream(), NumLit(LineStream(), "24")) =>
-          ok
-      }
+      result must
+        beLike {
+          case Neg(LineStream(), NumLit(LineStream(), "24")) =>
+            ok
+        }
 
       result.errors mustEqual Set(UnusedLetBinding(Identifier(Vector(), "a")))
     }
@@ -3936,17 +4064,21 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector(),
-              NumLit(LineStream(), "42"),
-              Neg(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
-                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()))) =>
-          ok
-      }
+                Identifier(Vector(), "a"),
+                Vector(),
+                NumLit(LineStream(), "42"),
+                Neg(
+                  LineStream(),
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))) =>
+            ok
+        }
 
       result.errors must beEmpty
     }
@@ -3970,8 +4102,8 @@ object TreeShakerSpecs
       bindRoot(tree, tree)
 
       val result = shakeTree(tree)
-      result
-        .errors mustEqual Set(UnusedFormalBinding(Identifier(Vector(), "b")))
+      result.errors mustEqual
+        Set(UnusedFormalBinding(Identifier(Vector(), "b")))
     }
 
     "detect unused tic-variable from solve in negation" in {
@@ -4011,21 +4143,23 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result.errors must beEmpty
 
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector("b"),
-              t @ Dispatch(LineStream(), Identifier(Vector(), "b"), Vector()),
-              Dispatch(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
                 Identifier(Vector(), "a"),
-                Vector(NullLit(LineStream())))) =>
-          t.binding must beLike {
-            case FormalBinding(`result`) =>
-              ok
-          }
-      }
+                Vector("b"),
+                t @ Dispatch(LineStream(), Identifier(Vector(), "b"), Vector()),
+                Dispatch(
+                  LineStream(),
+                  Identifier(Vector(), "a"),
+                  Vector(NullLit(LineStream())))) =>
+            t.binding must
+              beLike {
+                case FormalBinding(`result`) =>
+                  ok
+              }
+        }
     }
 
     "re-bind tic variables" in {
@@ -4038,16 +4172,18 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result.errors must beEmpty
 
-      result must beLike {
-        case Solve(
-              LineStream(),
-              Vector(TicVar(LineStream(), "'a")),
-              t @ TicVar(LineStream(), "'a")) =>
-          t.binding must beLike {
-            case SolveBinding(`result`) =>
-              ok
-          }
-      }
+      result must
+        beLike {
+          case Solve(
+                LineStream(),
+                Vector(TicVar(LineStream(), "'a")),
+                t @ TicVar(LineStream(), "'a")) =>
+            t.binding must
+              beLike {
+                case SolveBinding(`result`) =>
+                  ok
+              }
+        }
     }
 
     "re-bind dispatch" in {
@@ -4068,21 +4204,23 @@ object TreeShakerSpecs
       val result = shakeTree(tree)
       result.errors must beEmpty
 
-      result must beLike {
-        case Let(
-              LineStream(),
-              Identifier(Vector(), "a"),
-              Vector("a"),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-              d @ Dispatch(
+      result must
+        beLike {
+          case Let(
                 LineStream(),
                 Identifier(Vector(), "a"),
-                Vector(NullLit(LineStream())))) =>
-          d.binding must beLike {
-            case LetBinding(`result`) =>
-              ok
-          }
-      }
+                Vector("a"),
+                Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+                d @ Dispatch(
+                  LineStream(),
+                  Identifier(Vector(), "a"),
+                  Vector(NullLit(LineStream())))) =>
+            d.binding must
+              beLike {
+                case LetBinding(`result`) =>
+                  ok
+              }
+        }
     }
   }
 }

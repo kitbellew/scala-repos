@@ -21,11 +21,10 @@ class RollupStatsReceiver(val self: StatsReceiver)
         Seq(s)
 
       case Seq(hd, tl @ _*) =>
-        Seq(Seq(hd)) ++ (
-          tails(tl) map { t =>
+        Seq(Seq(hd)) ++
+          (tails(tl) map { t =>
             Seq(hd) ++ t
-          }
-        )
+          })
     }
   }
 

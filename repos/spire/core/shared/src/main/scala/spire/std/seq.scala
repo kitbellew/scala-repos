@@ -124,12 +124,11 @@ class SeqCoordinateSpace[A: Field, SA <: SeqLike[A, SA]](val dimensions: Int)(
     @tailrec
     def loop(j: Int): SA =
       if (i < dimensions) {
-        b += (
-          if (i == j)
-            scalar.one
-          else
-            scalar.zero
-        )
+        b +=
+          (if (i == j)
+             scalar.one
+           else
+             scalar.zero)
         loop(j + 1)
       } else
         b.result

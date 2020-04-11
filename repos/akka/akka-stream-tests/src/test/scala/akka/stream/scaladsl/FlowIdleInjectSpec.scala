@@ -15,8 +15,8 @@ class FlowIdleInjectSpec extends AkkaSpec {
 
   "keepAlive" must {
 
-    "not emit additional elements if upstream is fast enough" in Utils
-      .assertAllStagesStopped {
+    "not emit additional elements if upstream is fast enough" in
+      Utils.assertAllStagesStopped {
         Await.result(
           Source(1 to 10)
             .keepAlive(1.second, () ⇒ 0)
@@ -25,10 +25,10 @@ class FlowIdleInjectSpec extends AkkaSpec {
           3.seconds) should ===(1 to 10)
       }
 
-    "emit elements periodically after silent periods" in Utils
-      .assertAllStagesStopped {
-        val sourceWithIdleGap = Source(1 to 5) ++ Source(6 to 10)
-          .initialDelay(2.second)
+    "emit elements periodically after silent periods" in
+      Utils.assertAllStagesStopped {
+        val sourceWithIdleGap = Source(1 to 5) ++
+          Source(6 to 10).initialDelay(2.second)
 
         val result = Await.result(
           sourceWithIdleGap

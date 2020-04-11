@@ -87,14 +87,13 @@ trait BaseScaldingShell extends MainGenericRunner {
     val repl = scaldingREPLProvider.apply()
     scaldingREPL = Some(repl)
     replState.mode = mode
-    replState.customConfig = replState.customConfig ++ (
-      mode match {
+    replState.customConfig = replState.customConfig ++
+      (mode match {
         case _: HadoopMode =>
           cfg
         case _ =>
           Config.empty
-      }
-    )
+      })
 
     // if in Hdfs mode, store the mode to enable switching between Local and Hdfs
     mode match {

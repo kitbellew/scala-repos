@@ -339,12 +339,11 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val lo = alo + blo
     (
       lo,
-      ahi + bhi + (
-        if (inlineUnsignedInt_<(lo, alo))
-          1
-        else
-          0
-      ))
+      ahi + bhi +
+        (if (inlineUnsignedInt_<(lo, alo))
+           1
+         else
+           0))
   }
 
   def -(b: RuntimeLong): RuntimeLong = {
@@ -357,12 +356,11 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val lo = alo - blo
     (
       lo,
-      ahi - bhi + (
-        if (inlineUnsignedInt_>(lo, alo))
-          -1
-        else
-          0
-      ))
+      ahi - bhi +
+        (if (inlineUnsignedInt_>(lo, alo))
+           -1
+         else
+           0))
   }
 
   def *(b: RuntimeLong): RuntimeLong = {
@@ -580,9 +578,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
       ask: Int): RuntimeLong | js.Tuple4[Int, Int, Int, Int] = {
 
     var shift =
-      inlineNumberOfLeadingZeros(blo, bhi) - inlineNumberOfLeadingZeros(
-        alo,
-        ahi)
+      inlineNumberOfLeadingZeros(blo, bhi) -
+        inlineNumberOfLeadingZeros(alo, ahi)
     val initialBShift = inline_<<(blo, bhi, shift)
     var bShiftLo = initialBShift._1
     var bShiftHi = initialBShift._2

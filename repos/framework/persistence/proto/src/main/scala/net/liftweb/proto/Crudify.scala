@@ -165,10 +165,9 @@ trait Crudify {
           "List " + Prefix,
           listPath,
           showAllMenuName,
-          addlMenuLocParams ::: (
-            locSnippets :: Loc.Template(showAllTemplate) ::
-              showAllMenuLocParams
-          ))))
+          addlMenuLocParams :::
+            (locSnippets :: Loc.Template(showAllTemplate) ::
+              showAllMenuLocParams))))
 
   /**
     * Override to include new Params for the show all menu
@@ -186,10 +185,9 @@ trait Crudify {
           createPath,
           createMenuName,
           (
-            addlMenuLocParams ::: (
-              locSnippets :: Loc.Template(createTemplate) ::
-                createMenuLocParams
-            )
+            addlMenuLocParams :::
+              (locSnippets :: Loc.Template(createTemplate) ::
+                createMenuLocParams)
           ))))
 
   /**
@@ -214,8 +212,7 @@ trait Crudify {
         field <- computeFieldFromPointer(entry, pointer).toList
         if field.shouldDisplay_?
       } yield {
-        ".name *" #> field.displayHtml &
-          ".value *" #> field.asHtml
+        ".name *" #> field.displayHtml & ".value *" #> field.asHtml
       }
     }
   }
@@ -381,8 +378,7 @@ trait Crudify {
         field <- computeFieldFromPointer(item, pointer).toList
         if field.shouldDisplay_?
       } yield {
-        ".name *" #> field.displayHtml &
-          ".value *" #> field.asHtml
+        ".name *" #> field.displayHtml & ".value *" #> field.asHtml
       }
     }
   }
@@ -454,8 +450,8 @@ trait Crudify {
 
   private def hasParamFor(pp: ParsePath, toTest: List[String]): Boolean = {
     pp.wholePath.startsWith(toTest) &&
-    pp.wholePath.length == (toTest.length + 1) &&
-    findForParam(pp.wholePath.last).isDefined
+    pp.wholePath.length ==
+      (toTest.length + 1) && findForParam(pp.wholePath.last).isDefined
   }
 
   /**
@@ -715,16 +711,18 @@ trait Crudify {
     * page are displayed
     */
   protected def doCrudAllRows(list: List[TheCrudType]): (NodeSeq) => NodeSeq = {
-    "^" #> list
-      .take(rowsPerPage)
-      .map { rowItem =>
-        ".row-item" #> doCrudAllRowItem(rowItem) &
-          ".view [href]" #> (s"$viewPathString/${obscurePrimaryKey(rowItem)}") &
-          ".edit [href]" #> (s"$editPathString/${obscurePrimaryKey(rowItem)}") &
-          ".delete [href]" #> (
-            s"$deletePathString/${obscurePrimaryKey(rowItem)}"
-          )
-      }
+    "^" #>
+      list
+        .take(rowsPerPage)
+        .map { rowItem =>
+          ".row-item" #> doCrudAllRowItem(rowItem) &
+            ".view [href]" #>
+            (s"$viewPathString/${obscurePrimaryKey(rowItem)}") &
+            ".edit [href]" #>
+            (s"$editPathString/${obscurePrimaryKey(rowItem)}") &
+            ".delete [href]" #>
+            (s"$deletePathString/${obscurePrimaryKey(rowItem)}")
+        }
   }
 
   /**
@@ -737,13 +735,7 @@ trait Crudify {
     } else {
       "^ <*>" #>
         <a href={
-          listPathString +
-            "?first=" + (
-            0L max (
-              first -
-                rowsPerPage.toLong
-            )
-          )
+          listPathString + "?first=" + (0L max (first - rowsPerPage.toLong))
         }></a>
     }
   }
@@ -759,10 +751,7 @@ trait Crudify {
     } else {
       "^ <*>" #>
         <a href={
-          listPathString + "?first=" + (
-            first +
-              rowsPerPage.toLong
-          )
+          listPathString + "?first=" + (first + rowsPerPage.toLong)
         }></a>
     }
   }
@@ -775,10 +764,8 @@ trait Crudify {
     val first = S.param("first").map(toLong) openOr 0L
     val list = findForList(first, rowsPerPage)
 
-    ".header-item" #> doCrudAllHeaderItems &
-      ".row" #> doCrudAllRows(list) &
-      ".previous" #> crudAllPrev(first) &
-      ".next" #> crudAllNext(first, list)
+    ".header-item" #> doCrudAllHeaderItems & ".row" #> doCrudAllRows(list) &
+      ".previous" #> crudAllPrev(first) & ".next" #> crudAllNext(first, list)
   }
 
   lazy val locSnippets =
@@ -868,8 +855,7 @@ trait Crudify {
             ".name *" #> {
               wrapNameInRequired(field.displayHtml, field.required_?) ++
                 error(field)
-            } &
-              ".form *" #> form
+            } & ".form *" #> form
           node <- bindNode(html)
         } yield node
 
@@ -886,8 +872,7 @@ trait Crudify {
         }
 
       val bind =
-        ".field" #> doFields _ &
-          "type=submit" #> SHtml.onSubmitUnit(doSubmit _)
+        ".field" #> doFields _ & "type=submit" #> SHtml.onSubmitUnit(doSubmit _)
 
       bind(html)
     }

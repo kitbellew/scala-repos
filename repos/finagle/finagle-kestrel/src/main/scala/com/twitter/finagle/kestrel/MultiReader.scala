@@ -594,31 +594,32 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
           logger
             .info(s"Host ${addr} left for reading queue ${config.queueName}")
         }
-        val newHandles = (addrs &~ currentHandles.keySet) map { addr =>
-          val factory = baseClientBuilder.addrs(addr).buildFactory()
+        val newHandles =
+          (addrs &~ currentHandles.keySet) map { addr =>
+            val factory = baseClientBuilder.addrs(addr).buildFactory()
 
-          val client = createClient(factory)
+            val client = createClient(factory)
 
-          val handle =
-            (config.retryBackoffs, config.timer) match {
-              case (Some(backoffs), Some(timer)) =>
-                client.readReliably(config.queueName, timer, backoffs())
-              case _ =>
-                client.readReliably(config.queueName)
+            val handle =
+              (config.retryBackoffs, config.timer) match {
+                case (Some(backoffs), Some(timer)) =>
+                  client.readReliably(config.queueName, timer, backoffs())
+                case _ =>
+                  client.readReliably(config.queueName)
+              }
+
+            handle.error foreach {
+              case NonFatal(cause) =>
+                logger.warning(s"Closing service factory for address: ${addr}")
+                factory.close()
             }
 
-          handle.error foreach {
-            case NonFatal(cause) =>
-              logger.warning(s"Closing service factory for address: ${addr}")
-              factory.close()
+            logger.info(
+              s"Host ${addr} joined for reading ${config.queueName} " +
+                s"(handle = ${_root_.java.lang.System.identityHashCode(handle)}).")
+
+            (addr, handle)
           }
-
-          logger.info(
-            s"Host ${addr} joined for reading ${config.queueName} " +
-              s"(handle = ${_root_.java.lang.System.identityHashCode(handle)}).")
-
-          (addr, handle)
-        }
 
         synchronized {
           currentHandles.retain {

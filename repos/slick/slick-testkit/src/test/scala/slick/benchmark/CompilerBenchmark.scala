@@ -84,7 +84,8 @@ object CompilerBenchmark {
   }
 
   def allQueries =
-    queriesFromNewComposition ++ queriesFromAdancedFusion ++ queriesFromExpansion ++ queriesFromNewFusion
+    queriesFromNewComposition ++ queriesFromAdancedFusion ++
+      queriesFromExpansion ++ queriesFromNewFusion
 
   def queriesFromNewComposition: Vector[Rep[_]] = {
     class SuppliersStd(tag: Tag)
@@ -154,8 +155,8 @@ object CompilerBenchmark {
         c <- coffees.sortBy(c => (c.name, c.price.desc)).take(2)
         s <- suppliers
       } yield ((c.name, (s.city ++ ":")), c, s, c.totalComputed)
-    val q1b_0 =
-      coffees.sortBy(_.price).take(3) join suppliers on (_.supID === _.id)
+    val q1b_0 = coffees.sortBy(_.price).take(3) join suppliers on
+      (_.supID === _.id)
     def q1b =
       for {
         (c, s) <-
@@ -222,9 +223,8 @@ object CompilerBenchmark {
     val q7 =
       for {
         c <-
-          coffees.filter(_.price < 800).map((_, 1)) union coffees
-            .filter(_.price > 950)
-            .map((_, 2))
+          coffees.filter(_.price < 800).map((_, 1)) union
+            coffees.filter(_.price > 950).map((_, 2))
       } yield (c._1.name, c._1.supID, c._2)
     val q71 =
       for {
@@ -234,17 +234,17 @@ object CompilerBenchmark {
     val q8 =
       for {
         (c1, c2) <-
-          coffees.filter(_.price < 900) joinLeft coffees
-            .filter(_.price < 800) on (_.name === _.name)
+          coffees.filter(_.price < 900) joinLeft
+            coffees.filter(_.price < 800) on
+            (_.name === _.name)
       } yield (c1.name, c2.map(_.name))
     val q8b =
       for {
         t <-
-          coffees.sortBy(_.sales).take(1) joinLeft coffees
-            .sortBy(_.sales)
-            .take(2) on (_.name === _.name) joinLeft coffees
-            .sortBy(_.sales)
-            .take(4) on (_._1.supID === _.supID)
+          coffees.sortBy(_.sales).take(1) joinLeft
+            coffees.sortBy(_.sales).take(2) on
+            (_.name === _.name) joinLeft coffees.sortBy(_.sales).take(4) on
+            (_._1.supID === _.supID)
       } yield (t._1, t._2)
 
     Vector(
@@ -370,13 +370,12 @@ object CompilerBenchmark {
     val q8 = as.sortBy(_.id.desc).map(_.a)
     val q9a = as.sortBy(_.b).sortBy(_.a.desc).map(_.id)
     val q9b = as.sortBy(a => (a.a.desc, a.b)).map(_.id)
-    val q10 =
-      (as join as)
-        .map {
-          case (a1, a2) =>
-            a1.id * 3 + a2.id - 3
-        }
-        .sorted
+    val q10 = (as join as)
+      .map {
+        case (a1, a2) =>
+          a1.id * 3 + a2.id - 3
+      }
+      .sorted
     val q11a = q10.take(5)
     val q11b = q10.take(5).take(3)
     val q11c = q10.take(5).take(3).drop(1)
@@ -388,15 +387,13 @@ object CompilerBenchmark {
     val q14 = q13.to[Set]
     val q15 =
       (
-        as.map(a => a.id.?).filter(_ < 2) unionAll as
-          .map(a => a.id.?)
-          .filter(_ > 2)
+        as.map(a => a.id.?).filter(_ < 2) unionAll
+          as.map(a => a.id.?).filter(_ > 2)
       ).map(_.get).to[Set]
     val q16 =
       (
-        as.map(a => a.id.?).filter(_ < 2) unionAll as
-          .map(a => a.id.?)
-          .filter(_ > 2)
+        as.map(a => a.id.?).filter(_ < 2) unionAll
+          as.map(a => a.id.?).filter(_ > 2)
       ).map(_.getOrElse(-1)).to[Set].filter(_ =!= 42)
     val q17 = as
       .sortBy(_.id)

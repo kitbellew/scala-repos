@@ -194,11 +194,12 @@ class Figure(
         plots(i).get
       }
 
-    plot listen new Plot.Listener {
-      def refresh(pl: Plot) {
-        Figure.this.refresh()
+    plot listen
+      new Plot.Listener {
+        def refresh(pl: Plot) {
+          Figure.this.refresh()
+        }
       }
-    }
 
     plot
 

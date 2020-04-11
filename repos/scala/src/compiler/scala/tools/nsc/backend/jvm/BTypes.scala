@@ -233,19 +233,15 @@ abstract class BTypes {
       * anonymous classes whose outerClass is classNode.name.
       */
     def nestedInCurrentClass(innerClassNode: InnerClassNode): Boolean = {
-      (
-        innerClassNode.outerName != null && innerClassNode
-          .outerName == classNode.name
-      ) ||
-      (
-        innerClassNode.outerName == null && {
-          val classNodeForInnerClass =
-            byteCodeRepository
-              .classNode(innerClassNode.name)
-              .get // TODO: don't get here, but set the info to Left at the end
-          classNodeForInnerClass.outerClass == classNode.name
-        }
-      )
+      (innerClassNode.outerName != null &&
+      innerClassNode.outerName == classNode.name) ||
+      (innerClassNode.outerName == null && {
+        val classNodeForInnerClass =
+          byteCodeRepository
+            .classNode(innerClassNode.name)
+            .get // TODO: don't get here, but set the info to Left at the end
+        classNodeForInnerClass.outerClass == classNode.name
+      })
     }
 
     val nestedClasses: List[ClassBType] =
@@ -317,12 +313,13 @@ abstract class BTypes {
 
     def fromClassfileWithoutAttribute = {
       val warning = {
-        val isScala = classNode.attrs != null && classNode
-          .attrs
-          .asScala
-          .exists(a =>
-            a.`type` == BTypes.ScalaAttributeName || a.`type` == BTypes
-              .ScalaSigAttributeName)
+        val isScala = classNode.attrs != null &&
+          classNode
+            .attrs
+            .asScala
+            .exists(a =>
+              a.`type` == BTypes.ScalaAttributeName ||
+                a.`type` == BTypes.ScalaSigAttributeName)
         if (isScala)
           Some(NoInlineInfoAttribute(classNode.name))
         else
@@ -433,11 +430,11 @@ abstract class BTypes {
     final def isBoxed = this.isClass && boxedClasses(this.asClassBType)
 
     final def isIntSizedType =
-      this == BOOL || this == CHAR || this == BYTE ||
-        this == SHORT || this == INT
+      this == BOOL || this == CHAR || this == BYTE || this == SHORT ||
+        this == INT
     final def isIntegralType =
-      this == INT || this == BYTE || this == LONG ||
-        this == CHAR || this == SHORT
+      this == INT || this == BYTE || this == LONG || this == CHAR ||
+        this == SHORT
     final def isRealType = this == FLOAT || this == DOUBLE
     final def isNumericType = isIntegralType || isRealType
     final def isWideType = size == 2
@@ -457,7 +454,8 @@ abstract class BTypes {
 
           this match {
             case ArrayBType(component) =>
-              if (other == ObjectRef || other == jlCloneableRef || other == jiSerializableRef)
+              if (other == ObjectRef || other == jlCloneableRef ||
+                  other == jiSerializableRef)
                 true
               else
                 other match {
@@ -504,7 +502,9 @@ abstract class BTypes {
             case UNIT =>
               other == UNIT
             case BOOL | BYTE | SHORT | CHAR =>
-              this == other || other == INT || other == LONG // TODO Actually, BOOL does NOT conform to LONG. Even with adapt().
+              this == other || other == INT ||
+                other ==
+                LONG // TODO Actually, BOOL does NOT conform to LONG. Even with adapt().
             case _ =>
               assert(
                 isPrimitive && other.isPrimitive,
@@ -1075,9 +1075,8 @@ abstract class BTypes {
 
       assert(
         if (info.get.superClass.isEmpty) {
-          isJLO(this) || (
-            isCompilingPrimitive && ClassBType.hasNoSuper(internalName)
-          )
+          isJLO(this) ||
+          (isCompilingPrimitive && ClassBType.hasNoSuper(internalName))
         } else if (isInterface.get)
           isJLO(info.get.superClass.get)
         else

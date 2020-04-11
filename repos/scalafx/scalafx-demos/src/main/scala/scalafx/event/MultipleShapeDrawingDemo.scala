@@ -104,10 +104,11 @@ object MultipleShapeDrawingDemo extends JFXApp {
     new Pane {
       // For simplicity of the demo, just add all shapes to canvas, single instance of each type.
       // Initially, they have zero area so they will not be visible.
-      children ++= Seq(
-        RectangleInteractor.rectangle,
-        EllipseInteractor.ellipse,
-        LineInteractor.line)
+      children ++=
+        Seq(
+          RectangleInteractor.rectangle,
+          EllipseInteractor.ellipse,
+          LineInteractor.line)
     }
 
   stage = new PrimaryStage {

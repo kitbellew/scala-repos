@@ -26,9 +26,8 @@ object SwaggerCommandSupport {
     mf.erasure
       .getMethods()
       .foldLeft(List.empty[Parameter]) { (lst, fld) =>
-        if (fld.getReturnType().isAssignableFrom(classOf[Field[_]]) && fld
-              .getParameterTypes()
-              .isEmpty) {
+        if (fld.getReturnType().isAssignableFrom(classOf[Field[_]]) &&
+            fld.getParameterTypes().isEmpty) {
           val f = fld.invoke(obj).asInstanceOf[Field[Any]]
           // remove if statement below to include header params in description again
           if (f.valueSource == ValueSource.Header)
@@ -79,11 +78,12 @@ object SwaggerCommandSupport {
       cmd: T,
       fields: List[Parameter]) = {
     val modelFields = fields map { f =>
-      f.name -> ModelProperty(
-        f.`type`,
-        f.position,
-        required = f.required,
-        allowableValues = f.allowableValues)
+      f.name ->
+        ModelProperty(
+          f.`type`,
+          f.position,
+          required = f.required,
+          allowableValues = f.allowableValues)
     }
     Model(
       cmd.commandName,

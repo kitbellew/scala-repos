@@ -5,13 +5,13 @@ import sbt.EvaluateConfigurations
 
 class SplitExpressionsTest extends Specification with SplitExpressionsBehavior {
 
-  "EvaluateConfigurationsOriginal" should oldExpressionsSplitter(
-    EvaluateConfigurationsOriginal.splitExpressions)
+  "EvaluateConfigurationsOriginal" should
+    oldExpressionsSplitter(EvaluateConfigurationsOriginal.splitExpressions)
 
-  "EvaluateConfigurations" should oldExpressionsSplitter(
-    EvaluateConfigurations.splitExpressions)
+  "EvaluateConfigurations" should
+    oldExpressionsSplitter(EvaluateConfigurations.splitExpressions)
 
-  "EvaluateConfigurations" should newExpressionsSplitter(
-    EvaluateConfigurations.splitExpressions)
+  "EvaluateConfigurations" should
+    newExpressionsSplitter(EvaluateConfigurations.splitExpressions)
 
 }

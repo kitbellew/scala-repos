@@ -45,11 +45,10 @@ class MixAndMatchCommand extends ParamsOnlyCommand {
   import org.scalatra.commands.ValueSource._
   val name: Field[String] = asString("name").notBlank
   val age: Field[Int] = "age"
-  val token: Field[String] = (asString("API-TOKEN").notBlank
-    sourcedFrom Header
-    description "The API token for this request"
-    notes "Invalid data kills kittens"
-    allowableValues "123")
+  val token: Field[String] =
+    (asString("API-TOKEN").notBlank sourcedFrom Header description
+      "The API token for this request" notes
+      "Invalid data kills kittens" allowableValues "123")
   val skip: Field[Int] = asInt("skip")
     .sourcedFrom(Query)
     .description("The offset for this collection index")
@@ -181,10 +180,8 @@ class CommandSpec extends Specification {
           }
 
         afterBinding {
-          _fullname = a.validation.toOption.get + " " + lower
-            .validation
-            .toOption
-            .get
+          _fullname = a.validation.toOption.get + " " +
+            lower.validation.toOption.get
         }
       }
 
@@ -196,8 +193,8 @@ class CommandSpec extends Specification {
       form.bindTo(params)
 
       form.fullName must beSome[String]
-      form.fullName.get must_== params("name")
-        .toUpperCase + " " + params("surname").toLowerCase
+      form.fullName.get must_==
+        params("name").toUpperCase + " " + params("surname").toLowerCase
     }
   }
 }

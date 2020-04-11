@@ -26,9 +26,8 @@ class MoveScalaClassesInFileHandler extends MoveAllClassesInFileHandler {
         val classesInFile = file.typeDefinitions.toSet
         ScalaPsiUtil.getBaseCompanionModule(psiClass) match {
           case Some(companion)
-              if !elementsToMove.contains(companion) && classesInFile == Set(
-                psiClass,
-                companion) =>
+              if !elementsToMove.contains(companion) &&
+                classesInFile == Set(psiClass, companion) =>
             allClasses.put(psiClass, true)
           case _ =>
         }

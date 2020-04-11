@@ -738,9 +738,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     var previousCheckpointFile: Option[String] = None
     val shouldCheckpoint: Int => Boolean =
       (iter) =>
-        sc.checkpointDir.isDefined && checkpointInterval != -1 && (
-          iter % checkpointInterval == 0
-        )
+        sc.checkpointDir.isDefined && checkpointInterval != -1 &&
+          (iter % checkpointInterval == 0)
     val deletePreviousCheckpointFile: () => Unit = () =>
       previousCheckpointFile.foreach { file =>
         try {
@@ -1306,9 +1305,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
             i += 1
           }
           logDebug(
-            "Converting to local indices took " + (
-              System.nanoTime() - start
-            ) / 1e9 + " seconds.")
+            "Converting to local indices took " +
+              (System.nanoTime() - start) / 1e9 + " seconds.")
           val dstLocalIndices = dstIds.map(dstIdToLocalIndex.apply)
           (srcBlockId, (dstBlockId, srcIds, dstLocalIndices, ratings))
       }
@@ -1339,8 +1337,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
             while (j < dstPtrs(i + 1)) {
               val dstBlockId = encoder.blockId(dstEncodedIndices(j))
               if (!seen(dstBlockId)) {
-                activeIds(
-                  dstBlockId) += i // add the local index in this out-block
+                activeIds(dstBlockId) +=
+                  i // add the local index in this out-block
                 seen(dstBlockId) = true
               }
               j += 1

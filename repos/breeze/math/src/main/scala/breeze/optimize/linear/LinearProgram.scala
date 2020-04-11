@@ -48,8 +48,8 @@ class LinearProgram {
     override def toString =
       ("maximize    " + objective + {
         if (constraints.nonEmpty) {
-          "\nsubject to  " + constraints
-            .mkString("\n" + " " * "subject to  ".length)
+          "\nsubject to  " +
+            constraints.mkString("\n" + " " * "subject to  ".length)
         } else
           ""
       })

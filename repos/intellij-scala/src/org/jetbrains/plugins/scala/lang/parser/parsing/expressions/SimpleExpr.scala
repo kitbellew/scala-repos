@@ -147,8 +147,8 @@ object SimpleExpr extends ParserNode with ScalaTokenTypes {
               marker.drop()
           }
         case ScalaTokenTypes.tLPARENTHESIS | ScalaTokenTypes.tLBRACE
-            if builder.getTokenType != ScalaTokenTypes.tLPARENTHESIS || !builder
-              .newlineBeforeCurrentToken =>
+            if builder.getTokenType != ScalaTokenTypes.tLPARENTHESIS ||
+              !builder.newlineBeforeCurrentToken =>
           if (state && ArgumentExprs.parse(builder)) {
             val tMarker = marker.precede
             marker.done(ScalaElementTypes.METHOD_CALL)

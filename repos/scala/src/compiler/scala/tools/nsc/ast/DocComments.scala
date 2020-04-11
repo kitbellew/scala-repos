@@ -165,15 +165,15 @@ trait DocComments {
 
   /** The cooked doc comment of an overridden symbol */
   protected def superComment(sym: Symbol): Option[String] =
-    allInheritedOverriddenSymbols(sym)
-      .iterator map (x => cookedDocComment(x)) find (_ != "")
+    allInheritedOverriddenSymbols(sym).iterator map
+      (x => cookedDocComment(x)) find
+      (_ != "")
 
   private def mapFind[A, B](xs: Iterable[A])(f: A => Option[B]): Option[B] =
     xs collectFirst scala.Function.unlift(f)
 
   private def isMovable(str: String, sec: (Int, Int)): Boolean =
-    startsWithTag(str, sec, "@param") ||
-      startsWithTag(str, sec, "@tparam") ||
+    startsWithTag(str, sec, "@param") || startsWithTag(str, sec, "@tparam") ||
       startsWithTag(str, sec, "@return")
 
   /** Merge elements of doccomment `src` into doc comment `dst` for symbol `sym`.
@@ -509,16 +509,17 @@ trait DocComments {
     def defineVariables(sym: Symbol) = {
       val Trim = "(?s)^[\\s&&[^\n\r]]*(.*?)\\s*$".r
 
-      defs(sym) ++= defines.map { str =>
-        {
-          val start = skipWhitespace(str, "@define".length)
-          val (key, value) = str.splitAt(skipVariable(str, start))
-          key.drop(start) -> value
+      defs(sym) ++=
+        defines.map { str =>
+          {
+            val start = skipWhitespace(str, "@define".length)
+            val (key, value) = str.splitAt(skipVariable(str, start))
+            key.drop(start) -> value
+          }
+        } map {
+          case (key, Trim(value)) =>
+            variableName(key) -> value.replaceAll("\\s+\\*+$", "")
         }
-      } map {
-        case (key, Trim(value)) =>
-          variableName(key) -> value.replaceAll("\\s+\\*+$", "")
-      }
     }
   }
 
@@ -572,7 +573,8 @@ trait DocComments {
         if (parts.isEmpty) {
           reporter.error(
             comment.codePos,
-            "Incorrect variable expansion for " + variable + " in use case. Does the " +
+            "Incorrect variable expansion for " + variable +
+              " in use case. Does the " +
               "variable expand to wiki syntax when documenting " + site + "?")
           return ErrorType
         }
@@ -595,7 +597,8 @@ trait DocComments {
         if (result == NoType)
           reporter.warning(
             comment.codePos,
-            "Could not find the type " + variable + " points to while expanding it " +
+            "Could not find the type " + variable +
+              " points to while expanding it " +
               "for the usecase signature of " + sym + " in " + site + "." +
               "In this context, " + variable + " = \"" + str + "\"."
           )
@@ -670,8 +673,8 @@ trait DocComments {
 
       for (defn <- defined)
         yield {
-          defn.cloneSymbol(sym.owner, sym.flags | Flags.SYNTHETIC) modifyInfo (
-            info => substAliases(info).asSeenFrom(site.thisType, sym.owner))
+          defn.cloneSymbol(sym.owner, sym.flags | Flags.SYNTHETIC) modifyInfo
+            (info => substAliases(info).asSeenFrom(site.thisType, sym.owner))
         }
     }
   }

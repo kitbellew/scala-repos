@@ -105,12 +105,13 @@ class HeapBalancer[Req, Rep](
   private[this] val loadGauge =
     statsReceiver.addGauge("load") {
       val loads = synchronized {
-        heap drop (1) map { n =>
-          if (n.load < 0)
-            n.load + Penalty
-          else
-            n.load
-        }
+        heap drop
+          (1) map { n =>
+            if (n.load < 0)
+              n.load + Penalty
+            else
+              n.load
+          }
       }
 
       loads.sum

@@ -155,8 +155,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       val existingFile = new File(testDir, "0")
       Files.write("0\n", existingFile, StandardCharsets.UTF_8)
       assert(
-        existingFile.setLastModified(10000) && existingFile
-          .lastModified === 10000)
+        existingFile.setLastModified(10000) &&
+          existingFile.lastModified === 10000)
 
       // Set up the streaming context and input streams
       withStreamingContext(new StreamingContext(conf, batchDuration)) { ssc =>
@@ -235,10 +235,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       // Let the data from the receiver be received
       val clock = ssc.scheduler.clock.asInstanceOf[ManualClock]
       val startTime = System.currentTimeMillis()
-      while ((
-               !MultiThreadTestReceiver
-                 .haveAllThreadsFinished || output.sum < numTotalRecords
-             ) &&
+      while ((!MultiThreadTestReceiver.haveAllThreadsFinished ||
+             output.sum < numTotalRecords) &&
              System.currentTimeMillis() - startTime < 5000) {
         Thread.sleep(100)
         clock.advance(batchDuration.milliseconds)
@@ -393,8 +391,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         ssc.graph.getInputStreams().length ==
           receiverInputStreams.length + inputStreams.length)
       assert(
-        ssc.graph.getReceiverInputStreams().length == receiverInputStreams
-          .length)
+        ssc.graph.getReceiverInputStreams().length ==
+          receiverInputStreams.length)
       assert(ssc.graph.getReceiverInputStreams() === receiverInputStreams)
       assert(
         ssc.graph.getInputStreams().map(_.id) === Array.tabulate(5)(i => i))
@@ -411,8 +409,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       val existingFile = new File(testDir, "0")
       Files.write("0\n", existingFile, StandardCharsets.UTF_8)
       assert(
-        existingFile.setLastModified(10000) && existingFile
-          .lastModified === 10000)
+        existingFile.setLastModified(10000) &&
+          existingFile.lastModified === 10000)
 
       // Set up the streaming context and input streams
       withStreamingContext(new StreamingContext(conf, batchDuration)) { ssc =>

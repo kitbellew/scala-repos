@@ -47,45 +47,40 @@ final class Preload(
       posts: Fu[List[MiniForumPost]],
       tours: Fu[List[Tournament]],
       simuls: Fu[List[Simul]])(implicit ctx: Context): Fu[Response] =
-    lobbyApi(ctx) zip
-      posts zip
-      tours zip
-      simuls zip
-      tv.getBest zip
-      (ctx.userId ?? timelineEntries) zip
-      leaderboard(true) zip
-      tourneyWinners(10) zip
-      dailyPuzzle() zip
-      streamsOnAir() zip
+    lobbyApi(ctx) zip posts zip tours zip simuls zip tv.getBest zip
+      (ctx.userId ?? timelineEntries) zip leaderboard(true) zip
+      tourneyWinners(10) zip dailyPuzzle() zip streamsOnAir() zip
       (ctx.userId ?? getPlayban) zip
       (ctx.me ?? Preload.currentGame(lightUser)) map {
-      case (
-            (
+        case (
               (
                 (
                   (
-                    ((((((data, posts), tours), simuls), feat), entries), lead),
-                    tWinners),
-                  puzzle),
-                streams),
-              playban),
-            currentGame) =>
-        (
-          data,
-          entries,
-          posts,
-          tours,
-          simuls,
-          feat,
-          lead,
-          tWinners,
-          puzzle,
-          streams,
-          Env.blog.lastPostCache.apply,
-          playban,
-          currentGame,
-          countRounds())
-    }
+                    (
+                      (
+                        (((((data, posts), tours), simuls), feat), entries),
+                        lead),
+                      tWinners),
+                    puzzle),
+                  streams),
+                playban),
+              currentGame) =>
+          (
+            data,
+            entries,
+            posts,
+            tours,
+            simuls,
+            feat,
+            lead,
+            tWinners,
+            puzzle,
+            streams,
+            Env.blog.lastPostCache.apply,
+            playban,
+            currentGame,
+            countRounds())
+      }
 }
 
 object Preload {

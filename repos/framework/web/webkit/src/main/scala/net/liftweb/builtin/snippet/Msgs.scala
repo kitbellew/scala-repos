@@ -101,17 +101,12 @@ object Msgs extends DispatchSnippet {
 
     // Delegate the actual rendering to a shared method so that we don't
     // duplicate code for the AJAX pipeline
-    (
-      <div>{
-        renderNotices()
-      }</div> % ("id" -> LiftRules.noticesContainerId)
-    ) ++
-      noticesFadeOut(NoticeType.Notice) ++
-      noticesFadeOut(NoticeType.Warning) ++
-      noticesFadeOut(NoticeType.Error) ++
-      effects(NoticeType.Notice) ++
-      effects(NoticeType.Warning) ++
-      effects(NoticeType.Error)
+    (<div>{
+      renderNotices()
+    }</div> % ("id" -> LiftRules.noticesContainerId)) ++
+      noticesFadeOut(NoticeType.Notice) ++ noticesFadeOut(NoticeType.Warning) ++
+      noticesFadeOut(NoticeType.Error) ++ effects(NoticeType.Notice) ++
+      effects(NoticeType.Warning) ++ effects(NoticeType.Error)
   }
 
   /**

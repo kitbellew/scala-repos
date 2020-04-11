@@ -273,8 +273,8 @@ trait TestShardService
                         chunkToFutureString
                           .apply(chunk)
                           .map(s =>
-                            CharBuffer.wrap(JString(s).renderCompact) :: StreamT
-                              .empty[Future, CharBuffer])))
+                            CharBuffer.wrap(JString(s).renderCompact) ::
+                              StreamT.empty[Future, CharBuffer])))
                 }
               }
           }
@@ -384,10 +384,11 @@ class ShardServiceSpec extends TestShardService {
 
   "Shard query service" should {
     "handle absolute accessible query from root path" in {
-      query(accessibleAbsoluteQuery).copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(_), _) =>
-          ok
-      }
+      query(accessibleAbsoluteQuery).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(_), _) =>
+            ok
+        }
     }
 
     "create a job when an async query is posted" in {
@@ -399,10 +400,11 @@ class ShardServiceSpec extends TestShardService {
           job <- jobManager.findJob(jobId)
         } yield job
 
-      res.copoint must beLike {
-        case Some(Job(_, _, _, _, _, _)) =>
-          ok
-      }
+      res.copoint must
+        beLike {
+          case Some(Job(_, _, _, _, _, _)) =>
+            ok
+        }
     }
     "results of an async job must eventually be made available" in {
       val res =
@@ -417,37 +419,40 @@ class ShardServiceSpec extends TestShardService {
         } yield result
 
       val expected = JObject(
-        JField("warnings", JArray(Nil)) ::
-          JField("errors", JArray(Nil)) ::
-          JField("data", JArray(JNum(2) :: Nil)) ::
-          Nil)
+        JField("warnings", JArray(Nil)) :: JField("errors", JArray(Nil)) ::
+          JField("data", JArray(JNum(2) :: Nil)) :: Nil)
 
       res.copoint must_== expected
     }
     "handle relative query from accessible non-root path" in {
-      query(relativeQuery, path = "/test").copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(_), _) =>
-          ok
-      }
+      query(relativeQuery, path = "/test").copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(_), _) =>
+            ok
+        }
     }
     "reject query when no API key provided" in {
-      query(simpleQuery, None).copoint must beLike {
-        case HttpResponse(
-              HttpStatus(
-                BadRequest,
-                "An apiKey query parameter is required to access this URL"),
-              _,
-              _,
-              _) =>
-          ok
-      }
+      query(simpleQuery, None).copoint must
+        beLike {
+          case HttpResponse(
+                HttpStatus(
+                  BadRequest,
+                  "An apiKey query parameter is required to access this URL"),
+                _,
+                _,
+                _) =>
+            ok
+        }
     }
     "reject query when API key not found" in {
-      query(simpleQuery, Some("not-gonna-find-it")).copoint must beLike {
-        case HttpResponse(HttpStatus(Forbidden, _), _, Some(content), _) =>
-          content must_== Left(
-            JString("The specified API key does not exist: not-gonna-find-it"))
-      }
+      query(simpleQuery, Some("not-gonna-find-it")).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(Forbidden, _), _, Some(content), _) =>
+            content must_==
+              Left(
+                JString(
+                  "The specified API key does not exist: not-gonna-find-it"))
+        }
     }
     "return 400 and errors if format is 'simple'" in {
       val result =
@@ -456,10 +461,11 @@ class ShardServiceSpec extends TestShardService {
             query("bad query")
         } yield result
 
-      result.copoint must beLike {
-        case JArray(JString("ERROR!") :: Nil) =>
-          ok
-      }
+      result.copoint must
+        beLike {
+          case JArray(JString("ERROR!") :: Nil) =>
+            ok
+        }
     }
     "return warnings/errors if format is 'detailed'" in {
       val result =
@@ -472,10 +478,8 @@ class ShardServiceSpec extends TestShardService {
       val expected = JObject(
         JField("serverErrors", JArray(Nil)) ::
           JField("serverWarnings", JArray(Nil)) ::
-          JField("warnings", JArray(Nil)) ::
-          JField("errors", JArray(Nil)) ::
-          JField("data", JArray(JNum(2) :: Nil)) ::
-          Nil)
+          JField("warnings", JArray(Nil)) :: JField("errors", JArray(Nil)) ::
+          JField("data", JArray(JNum(2) :: Nil)) :: Nil)
 
       result.copoint must_== expected
     }
@@ -536,31 +540,36 @@ class ShardServiceSpec extends TestShardService {
     "handle browse for API key accessible path" in {
       val obj = JObject(
         Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
-      browse().copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) =>
-          ok
-        case HttpResponse(HttpStatus(NotFound, _), _, Some(Left(obj)), _) =>
-          failure("Not found: " + obj.renderCompact)
-      }
+      browse().copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) =>
+            ok
+          case HttpResponse(HttpStatus(NotFound, _), _, Some(Left(obj)), _) =>
+            failure("Not found: " + obj.renderCompact)
+        }
     }
     "reject browse when no API key provided" in {
-      browse(None).copoint must beLike {
-        case HttpResponse(
-              HttpStatus(
-                BadRequest,
-                "An apiKey query parameter is required to access this URL"),
-              _,
-              _,
-              _) =>
-          ok
-      }
+      browse(None).copoint must
+        beLike {
+          case HttpResponse(
+                HttpStatus(
+                  BadRequest,
+                  "An apiKey query parameter is required to access this URL"),
+                _,
+                _,
+                _) =>
+            ok
+        }
     }
     "reject browse when API key not found" in {
-      browse(Some("not-gonna-find-it")).copoint must beLike {
-        case HttpResponse(HttpStatus(Forbidden, _), _, Some(content), _) =>
-          content must_== Left(
-            JString("The specified API key does not exist: not-gonna-find-it"))
-      }
+      browse(Some("not-gonna-find-it")).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(Forbidden, _), _, Some(content), _) =>
+            content must_==
+              Left(
+                JString(
+                  "The specified API key does not exist: not-gonna-find-it"))
+        }
     }
     /* Per John, this is not the desired behavior
     "return error response on browse failure" in {
@@ -575,46 +584,55 @@ class ShardServiceSpec extends TestShardService {
      */
 
     "return empty response on metadata failure" in {
-      meta(path = "/errpath").copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(Left(response)), _) =>
-          response mustEqual JObject("size" -> JNum(0), "children" -> JArray())
-      }
+      meta(path = "/errpath").copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(Left(response)), _) =>
+            response mustEqual
+              JObject("size" -> JNum(0), "children" -> JArray())
+        }
     }
 
     "handle metadata for API key accessible path" in {
       val obj = JObject(
         Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
-      meta().copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) =>
-          ok
-        case HttpResponse(HttpStatus(NotFound, _), _, Some(Left(obj)), _) =>
-          failure("Not found: " + obj.renderCompact)
-      }
+      meta().copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) =>
+            ok
+          case HttpResponse(HttpStatus(NotFound, _), _, Some(Left(obj)), _) =>
+            failure("Not found: " + obj.renderCompact)
+        }
     }
     "reject metadata when no API key provided" in {
-      meta(None).copoint must beLike {
-        case HttpResponse(
-              HttpStatus(
-                BadRequest,
-                "An apiKey query parameter is required to access this URL"),
-              _,
-              _,
-              _) =>
-          ok
-      }
+      meta(None).copoint must
+        beLike {
+          case HttpResponse(
+                HttpStatus(
+                  BadRequest,
+                  "An apiKey query parameter is required to access this URL"),
+                _,
+                _,
+                _) =>
+            ok
+        }
     }
     "reject metadata when API key not found" in {
-      meta(Some("not-gonna-find-it")).copoint must beLike {
-        case HttpResponse(HttpStatus(Forbidden, _), _, Some(content), _) =>
-          content must_== Left(
-            JString("The specified API key does not exist: not-gonna-find-it"))
-      }
+      meta(Some("not-gonna-find-it")).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(Forbidden, _), _, Some(content), _) =>
+            content must_==
+              Left(
+                JString(
+                  "The specified API key does not exist: not-gonna-find-it"))
+        }
     }
     "return empty response on metadata failure" in {
-      meta(path = "/errpath").copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(Left(response)), _) =>
-          response mustEqual JObject("size" -> JNum(0), "children" -> JArray())
-      }
+      meta(path = "/errpath").copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(Left(response)), _) =>
+            response mustEqual
+              JObject("size" -> JNum(0), "children" -> JArray())
+        }
     }
   }
 }

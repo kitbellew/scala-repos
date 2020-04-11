@@ -96,8 +96,8 @@ class OrderingSuite extends SparkFunSuite with ExpressionEvalHelper {
       .add("f1", FloatType, nullable = true)
       .add("f2", ArrayType(BooleanType, containsNull = true), nullable = true)
     val arrayOfStructType = ArrayType(structType)
-    val complexTypes =
-      ArrayType(IntegerType) :: structType :: arrayOfStructType :: Nil
+    val complexTypes = ArrayType(IntegerType) :: structType ::
+      arrayOfStructType :: Nil
     (DataTypeTestUtils.atomicTypes ++ complexTypes ++ Set(NullType)).foreach {
       dataType =>
         test(s"GenerateOrdering with $dataType") {
@@ -124,14 +124,14 @@ class OrderingSuite extends SparkFunSuite with ExpressionEvalHelper {
               assert(rowOrdering.compare(a, a) === 0)
               assert(rowOrdering.compare(b, b) === 0)
               assert(
-                signum(genOrdering.compare(a, b)) === -1 * signum(
-                  genOrdering.compare(b, a)))
+                signum(genOrdering.compare(a, b)) ===
+                  -1 * signum(genOrdering.compare(b, a)))
               assert(
-                signum(rowOrdering.compare(a, b)) === -1 * signum(
-                  rowOrdering.compare(b, a)))
+                signum(rowOrdering.compare(a, b)) ===
+                  -1 * signum(rowOrdering.compare(b, a)))
               assert(
-                signum(rowOrdering.compare(a, b)) === signum(
-                  genOrdering.compare(a, b)),
+                signum(rowOrdering.compare(a, b)) ===
+                  signum(genOrdering.compare(a, b)),
                 "Generated and non-generated orderings should agree")
             }
           }

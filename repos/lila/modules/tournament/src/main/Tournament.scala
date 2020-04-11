@@ -93,12 +93,11 @@ case class Tournament(
     if (minutes < 60)
       s"${minutes}m"
     else
-      s"${minutes / 60}h" + (
-        if (minutes % 60 != 0)
-          s" ${(minutes % 60)}m"
-        else
-          ""
-      )
+      s"${minutes / 60}h" +
+        (if (minutes % 60 != 0)
+           s" ${(minutes % 60)}m"
+         else
+           "")
 
   def berserkable = system.berserkable && clock.chessClock.berserkable
 
@@ -109,8 +108,8 @@ case class Tournament(
 
   def spotlightedNow =
     spotlight.filter { s =>
-      !isFinished && s
-        .homepageHours
+      !isFinished &&
+      s.homepageHours
         .?? { hours =>
           startsAt.minusHours(hours) isBefore DateTime.now
         }

@@ -174,8 +174,8 @@ class HttpConnectHandler(
     } else {
       val cause =
         new Throwable(
-          "unexpected response status received by HttpConnectHandler:"
-            + resp.getStatus)
+          "unexpected response status received by HttpConnectHandler:" +
+            resp.getStatus)
 
       fail(e.getChannel, new ConnectionFailedException(cause, addr))
     }

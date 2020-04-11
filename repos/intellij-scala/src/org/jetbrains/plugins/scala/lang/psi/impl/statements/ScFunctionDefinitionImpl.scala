@@ -63,10 +63,8 @@ class ScFunctionDefinitionImpl protected (
       body match {
         case Some(x)
             if lastParent != null &&
-              (
-                !needCheckProcessingDeclarationsForBody ||
-                  x.startOffsetInParent == lastParent.startOffsetInParent
-              ) =>
+              (!needCheckProcessingDeclarationsForBody ||
+                x.startOffsetInParent == lastParent.startOffsetInParent) =>
           for (p <- parameterIncludingSynthetic) {
             ProgressManager.checkCanceled()
             if (!processor.execute(p, state))

@@ -273,13 +273,14 @@ object AlgorithmConstraintsParser extends RegexParsers {
     }
 
   def expression: Parser[AlgorithmConstraint] =
-    algorithm ~ (keySizeConstraint ?) ^^ {
-      case algorithm ~ Some(constraint) =>
-        AlgorithmConstraint(algorithm, Some(constraint))
+    algorithm ~
+      (keySizeConstraint ?) ^^ {
+        case algorithm ~ Some(constraint) =>
+          AlgorithmConstraint(algorithm, Some(constraint))
 
-      case algorithm ~ None =>
-        AlgorithmConstraint(algorithm, None)
-    }
+        case algorithm ~ None =>
+          AlgorithmConstraint(algorithm, None)
+      }
 
   def keySizeConstraint: Parser[ExpressionSymbol] =
     "keySize" ~> operator ~ decimalInteger ^^ {

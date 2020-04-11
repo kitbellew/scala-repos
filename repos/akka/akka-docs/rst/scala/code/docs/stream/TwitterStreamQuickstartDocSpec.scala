@@ -53,8 +53,7 @@ object TwitterStreamQuickstartDocSpec {
       Tweet(
         Author("drama"),
         System.currentTimeMillis,
-        "we compared #apples to #oranges!") ::
-      Nil)
+        "we compared #apples to #oranges!") :: Nil)
 }
 
 class TwitterStreamQuickstartDocSpec extends AkkaSpec {

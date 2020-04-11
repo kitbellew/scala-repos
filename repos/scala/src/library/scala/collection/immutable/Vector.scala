@@ -142,9 +142,10 @@ final class Vector[+A] private[immutable] (
   @inline
   private[this] def isDefaultCBF[A, B, That](
       bf: CanBuildFrom[Vector[A], B, That]): Boolean =
-    (bf eq IndexedSeq.ReusableCBF) || (
-      bf eq collection.immutable.Seq.ReusableCBF
-    ) || (bf eq collection.Seq.ReusableCBF)
+    (bf eq IndexedSeq.ReusableCBF) || (bf eq collection
+      .immutable
+      .Seq
+      .ReusableCBF) || (bf eq collection.Seq.ReusableCBF)
 
   // SeqLike api
 
@@ -447,7 +448,9 @@ final class Vector[+A] private[immutable] (
         s.display0(lo) = value.asInstanceOf[AnyRef]
         s
       } else {
-        val shift = startIndex & ~((1 << 5 * (depth - 1)) - 1)
+        val shift = startIndex & ~(
+          (1 << 5 * (depth - 1)) - 1
+        )
         val shiftBlocks = startIndex >>> 5 * (depth - 1)
 
         //println("----- appendBack " + value + " at " + endIndex + " reached block end")
@@ -528,7 +531,9 @@ final class Vector[+A] private[immutable] (
   // low-level implementation (needs cleanup, maybe move to util class)
 
   private def shiftTopLevel(oldLeft: Int, newLeft: Int) =
-    (depth - 1) match {
+    (
+      depth - 1
+    ) match {
       case 0 =>
         display0 = copyRange(display0, oldLeft, newLeft)
       case 1 =>
@@ -574,7 +579,9 @@ final class Vector[+A] private[immutable] (
 
   private def preClean(depth: Int) = {
     this.depth = depth
-    (depth - 1) match {
+    (
+      depth - 1
+    ) match {
       case 0 =>
         display1 = null
         display2 = null
@@ -605,29 +612,49 @@ final class Vector[+A] private[immutable] (
       zeroLeft(display0, cutIndex)
     } else if (cutIndex < (1 << 10)) {
       zeroLeft(display0, cutIndex & 0x1f)
-      display1 = copyRight(display1, (cutIndex >>> 5))
+      display1 = copyRight(
+        display1,
+        (
+          cutIndex >>> 5
+        ))
     } else if (cutIndex < (1 << 15)) {
       zeroLeft(display0, cutIndex & 0x1f)
       display1 = copyRight(display1, (cutIndex >>> 5) & 0x1f)
-      display2 = copyRight(display2, (cutIndex >>> 10))
+      display2 = copyRight(
+        display2,
+        (
+          cutIndex >>> 10
+        ))
     } else if (cutIndex < (1 << 20)) {
       zeroLeft(display0, cutIndex & 0x1f)
       display1 = copyRight(display1, (cutIndex >>> 5) & 0x1f)
       display2 = copyRight(display2, (cutIndex >>> 10) & 0x1f)
-      display3 = copyRight(display3, (cutIndex >>> 15))
+      display3 = copyRight(
+        display3,
+        (
+          cutIndex >>> 15
+        ))
     } else if (cutIndex < (1 << 25)) {
       zeroLeft(display0, cutIndex & 0x1f)
       display1 = copyRight(display1, (cutIndex >>> 5) & 0x1f)
       display2 = copyRight(display2, (cutIndex >>> 10) & 0x1f)
       display3 = copyRight(display3, (cutIndex >>> 15) & 0x1f)
-      display4 = copyRight(display4, (cutIndex >>> 20))
+      display4 = copyRight(
+        display4,
+        (
+          cutIndex >>> 20
+        ))
     } else if (cutIndex < (1 << 30)) {
       zeroLeft(display0, cutIndex & 0x1f)
       display1 = copyRight(display1, (cutIndex >>> 5) & 0x1f)
       display2 = copyRight(display2, (cutIndex >>> 10) & 0x1f)
       display3 = copyRight(display3, (cutIndex >>> 15) & 0x1f)
       display4 = copyRight(display4, (cutIndex >>> 20) & 0x1f)
-      display5 = copyRight(display5, (cutIndex >>> 25))
+      display5 = copyRight(
+        display5,
+        (
+          cutIndex >>> 25
+        ))
     } else {
       throw new IllegalArgumentException()
     }
@@ -643,29 +670,49 @@ final class Vector[+A] private[immutable] (
       zeroRight(display0, cutIndex)
     } else if (cutIndex <= (1 << 10)) {
       zeroRight(display0, ((cutIndex - 1) & 0x1f) + 1)
-      display1 = copyLeft(display1, (cutIndex >>> 5))
+      display1 = copyLeft(
+        display1,
+        (
+          cutIndex >>> 5
+        ))
     } else if (cutIndex <= (1 << 15)) {
       zeroRight(display0, ((cutIndex - 1) & 0x1f) + 1)
       display1 = copyLeft(display1, (((cutIndex - 1) >>> 5) & 0x1f) + 1)
-      display2 = copyLeft(display2, (cutIndex >>> 10))
+      display2 = copyLeft(
+        display2,
+        (
+          cutIndex >>> 10
+        ))
     } else if (cutIndex <= (1 << 20)) {
       zeroRight(display0, ((cutIndex - 1) & 0x1f) + 1)
       display1 = copyLeft(display1, (((cutIndex - 1) >>> 5) & 0x1f) + 1)
       display2 = copyLeft(display2, (((cutIndex - 1) >>> 10) & 0x1f) + 1)
-      display3 = copyLeft(display3, (cutIndex >>> 15))
+      display3 = copyLeft(
+        display3,
+        (
+          cutIndex >>> 15
+        ))
     } else if (cutIndex <= (1 << 25)) {
       zeroRight(display0, ((cutIndex - 1) & 0x1f) + 1)
       display1 = copyLeft(display1, (((cutIndex - 1) >>> 5) & 0x1f) + 1)
       display2 = copyLeft(display2, (((cutIndex - 1) >>> 10) & 0x1f) + 1)
       display3 = copyLeft(display3, (((cutIndex - 1) >>> 15) & 0x1f) + 1)
-      display4 = copyLeft(display4, (cutIndex >>> 20))
+      display4 = copyLeft(
+        display4,
+        (
+          cutIndex >>> 20
+        ))
     } else if (cutIndex <= (1 << 30)) {
       zeroRight(display0, ((cutIndex - 1) & 0x1f) + 1)
       display1 = copyLeft(display1, (((cutIndex - 1) >>> 5) & 0x1f) + 1)
       display2 = copyLeft(display2, (((cutIndex - 1) >>> 10) & 0x1f) + 1)
       display3 = copyLeft(display3, (((cutIndex - 1) >>> 15) & 0x1f) + 1)
       display4 = copyLeft(display4, (((cutIndex - 1) >>> 20) & 0x1f) + 1)
-      display5 = copyLeft(display5, (cutIndex >>> 25))
+      display5 = copyLeft(
+        display5,
+        (
+          cutIndex >>> 25
+        ))
     } else {
       throw new IllegalArgumentException()
     }
@@ -692,7 +739,9 @@ final class Vector[+A] private[immutable] (
     val blockIndex = cutIndex & ~31
     val xor = cutIndex ^ (endIndex - 1)
     val d = requiredDepth(xor)
-    val shift = (cutIndex & ~((1 << (5 * d)) - 1))
+    val shift = (cutIndex & ~(
+      (1 << (5 * d)) - 1
+    ))
 
     //println("cut front at " + cutIndex + ".." + endIndex + " (xor: "+xor+" shift: " + shift + " d: " + d +")")
 
@@ -722,7 +771,9 @@ final class Vector[+A] private[immutable] (
     val blockIndex = (cutIndex - 1) & ~31
     val xor = startIndex ^ (cutIndex - 1)
     val d = requiredDepth(xor)
-    val shift = (startIndex & ~((1 << (5 * d)) - 1))
+    val shift = (startIndex & ~(
+      (1 << (5 * d)) - 1
+    ))
 
     /*
     println("cut back at " + startIndex + ".." + cutIndex + " (xor: "+xor+" d: " + d +")")
@@ -854,7 +905,9 @@ private[immutable] trait VectorPointer[T] {
       that: VectorPointer[U],
       depth: Int) = {
     this.depth = depth
-    (depth - 1) match {
+    (
+      depth - 1
+    ) match {
       case -1 =>
       case 0 =>
         display0 = that.display0
@@ -1079,7 +1132,9 @@ private[immutable] trait VectorPointer[T] {
   // ensures structure is clean and at pos index and writable at all levels except 0
 
   private[immutable] final def stabilize(index: Int) =
-    (depth - 1) match {
+    (
+      depth - 1
+    ) match {
       case 5 =>
         display5 = copyOf(display5)
         display4 = copyOf(display4)
@@ -1125,7 +1180,9 @@ private[immutable] trait VectorPointer[T] {
   // requires structure is clean and at pos oldIndex = xor ^ newIndex,
   // ensures structure is dirty and at pos newIndex and writable at level 0
   private[immutable] final def gotoPosWritable0(newIndex: Int, xor: Int): Unit =
-    (depth - 1) match {
+    (
+      depth - 1
+    ) match {
       case 5 =>
         display5 = copyOf(display5)
         display4 = nullSlotAndCopy(display5, (newIndex >> 25) & 31)

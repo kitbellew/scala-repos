@@ -71,8 +71,7 @@ class SetOperationSuite extends PlanTest {
     val unionOptimized = Optimize.execute(unionQuery.analyze)
     val unionCorrectAnswer =
       Union(
-        testRelation.where('a === 1) ::
-          testRelation2.where('d === 1) ::
+        testRelation.where('a === 1) :: testRelation2.where('d === 1) ::
           testRelation3.where('g === 1) :: Nil).analyze
 
     comparePlans(unionOptimized, unionCorrectAnswer)
@@ -83,8 +82,7 @@ class SetOperationSuite extends PlanTest {
     val unionOptimized = Optimize.execute(unionQuery.analyze)
     val unionCorrectAnswer =
       Union(
-        testRelation.select('a) ::
-          testRelation2.select('d) ::
+        testRelation.select('a) :: testRelation2.select('d) ::
           testRelation3.select('g) :: Nil).analyze
     comparePlans(unionOptimized, unionCorrectAnswer)
   }

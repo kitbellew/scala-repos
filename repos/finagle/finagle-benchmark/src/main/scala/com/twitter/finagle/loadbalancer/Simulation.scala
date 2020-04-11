@@ -224,8 +224,8 @@ private[finagle] object Simulation extends com.twitter.app.App {
     val stopWatch = Stopwatch.start()
     val p = new LatencyProfile(stopWatch)
 
-    val coldStart = p.warmup(10.seconds) _ andThen p
-      .slowWithin(19.seconds, 23.seconds, 10)
+    val coldStart = p.warmup(10.seconds) _ andThen
+      p.slowWithin(19.seconds, 23.seconds, 10)
     underlying() += newFactory(nstable() + 1, coldStart(dist))
     underlying() += newFactory(nstable() + 2, p.slowBy(2)(dist))
 

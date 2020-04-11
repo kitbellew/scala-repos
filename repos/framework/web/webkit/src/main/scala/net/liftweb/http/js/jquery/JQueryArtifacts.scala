@@ -36,43 +36,48 @@ trait JQueryArtifacts extends JSArtifacts {
     * Toggles between current JS object and the object denominated by id
     */
   def toggle(id: String) =
-    JqId(id) ~> new JsMember {
-      def toJsCmd = "toggle()"
-    }
+    JqId(id) ~>
+      new JsMember {
+        def toJsCmd = "toggle()"
+      }
 
   /**
     * Hides the element denominated by id
     */
   def hide(id: String) =
-    JqId(id) ~> new JsMember {
-      def toJsCmd = "hide()"
-    }
+    JqId(id) ~>
+      new JsMember {
+        def toJsCmd = "hide()"
+      }
 
   /**
     * Shows the element denominated by this id
     */
   def show(id: String) =
-    JqId(id) ~> new JsMember {
-      def toJsCmd = "show()"
-    }
+    JqId(id) ~>
+      new JsMember {
+        def toJsCmd = "show()"
+      }
 
   /**
     * Shows the element denominated by id and puts the focus on it
     */
   def showAndFocus(id: String) =
-    JqId(id) ~> new JsMember {
-      def toJsCmd =
-        "show().each(function(i) {var t = this; setTimeout(function() { t.focus(); }, 200);})"
-    }
+    JqId(id) ~>
+      new JsMember {
+        def toJsCmd =
+          "show().each(function(i) {var t = this; setTimeout(function() { t.focus(); }, 200);})"
+      }
 
   /**
     * Serializes a form denominated by the id. It returns a query string
     * containing the fields that are to be submitted
     */
   def serialize(id: String) =
-    JqId(id) ~> new JsMember {
-      def toJsCmd = "serialize()"
-    }
+    JqId(id) ~>
+      new JsMember {
+        def toJsCmd = "serialize()"
+      }
 
   /**
     * Replaces the content of the node with the provided id with the markup given by content
@@ -119,16 +124,13 @@ trait JQueryArtifacts extends JSArtifacts {
       info: AjaxInfo,
       server: String,
       path: String => JsExp): String =
-    (
-      ("url : " + path(server).toJsCmd) ::
-        "data : " + info.data.toJsCmd ::
-        ("type : " + info.action.encJs) ::
-        ("dataType : " + info.dataType.encJs) ::
-        "timeout : " + info.timeout ::
-        "cache : " + info.cache :: Nil
-    ) ++
+    (("url : " + path(server).toJsCmd) :: "data : " + info.data.toJsCmd ::
+      ("type : " + info.action.encJs) ::
+      ("dataType : " + info.dataType.encJs) :: "timeout : " + info.timeout ::
+      "cache : " + info.cache :: Nil) ++
       info.successFunc.map("success : " + _).toList ++
-      info.failFunc.map("error : " + _).toList mkString ("{ ", ", ", " }")
+      info.failFunc.map("error : " + _).toList mkString
+      ("{ ", ", ", " }")
 }
 
 case object JQueryArtifacts extends JQueryArtifacts

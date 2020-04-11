@@ -29,9 +29,8 @@ class ReferenceMustBePrefixedInspection
     extends AbstractInspection(id, displayName) {
   def actionFor(holder: ProblemsHolder) = {
     case ref: ScReferenceElement
-        if ref.qualifier.isEmpty && !ref
-          .getParent
-          .isInstanceOf[ScImportSelector] =>
+        if ref.qualifier.isEmpty &&
+          !ref.getParent.isInstanceOf[ScImportSelector] =>
       ref.bind() match {
         case Some(r: ScalaResolveResult) if r.nameShadow.isEmpty =>
           r.getActualElement match {

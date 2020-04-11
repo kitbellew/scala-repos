@@ -116,10 +116,9 @@ class ScaldingLaws extends WordSpec {
       // Now check that the inMemory ==
 
       assert(
-        TestUtil.compareMaps(
-          original,
-          Monoid.plus(initStore, inMemory),
-          testStore) == true)
+        TestUtil
+          .compareMaps(original, Monoid.plus(initStore, inMemory), testStore) ==
+          true)
     }
 
     "match scala single step pruned jobs" in {
@@ -225,10 +224,9 @@ class ScaldingLaws extends WordSpec {
       // Now check that the inMemory ==
 
       assert(
-        TestUtil.compareMaps(
-          original,
-          Monoid.plus(initStore, inMemory),
-          testStore) == true)
+        TestUtil
+          .compareMaps(original, Monoid.plus(initStore, inMemory), testStore) ==
+          true)
     }
 
     "match scala for multiple summer jobs" in {
@@ -401,10 +399,9 @@ class ScaldingLaws extends WordSpec {
       // Now check that the inMemory ==
 
       assert(
-        TestUtil.compareMaps(
-          original,
-          Monoid.plus(initStore, inMemory),
-          testStore) == true)
+        TestUtil
+          .compareMaps(original, Monoid.plus(initStore, inMemory), testStore) ==
+          true)
     }
 
     "match scala for leftJoin  repeated tuple leftJoin jobs" in {
@@ -507,10 +504,9 @@ class ScaldingLaws extends WordSpec {
       // Now check that the inMemory ==
 
       assert(
-        TestUtil.compareMaps(
-          original,
-          Monoid.plus(initStore, inMemory),
-          testStore) == true)
+        TestUtil
+          .compareMaps(original, Monoid.plus(initStore, inMemory), testStore) ==
+          true)
     }
 
     "match scala for leftJoin with store (no dependency between the two) jobs" in {
@@ -607,8 +603,8 @@ class ScaldingLaws extends WordSpec {
       val ws = new LoopState(intr)
       val mode: Mode = TestMode(
         (
-          storeAndService.sourceToBuffer ++ finalStore
-            .sourceToBuffer ++ buffer1 ++ buffer2
+          storeAndService.sourceToBuffer ++ finalStore.sourceToBuffer ++
+            buffer1 ++ buffer2
         ).get(_))
 
       scald.run(ws, mode, summer)
@@ -850,10 +846,9 @@ class ScaldingLaws extends WordSpec {
 
       val sinkOut = testSink.reset
       assert(
-        TestUtil.compareMaps(
-          original,
-          Monoid.plus(initStore, inMemory),
-          testStore) == true)
+        TestUtil
+          .compareMaps(original, Monoid.plus(initStore, inMemory), testStore) ==
+          true)
       val wrongSink = sinkOut
         .map {
           _._2

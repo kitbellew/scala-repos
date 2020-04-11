@@ -22,22 +22,25 @@ object TheseTest extends SpecLite {
     Show[List[A]].contramap(_.toList)
 
   "align unalign" should {
-    "List" ! forAll { (a: List[Int], b: List[Int]) =>
-      unalignList(Align[List].align(a, b)) must_=== ((a, b))
-    }
-    "EphemeralStream" ! forAll {
-      (a: EphemeralStream[Int], b: EphemeralStream[Int]) =>
+    "List" !
+      forAll { (a: List[Int], b: List[Int]) =>
+        unalignList(Align[List].align(a, b)) must_=== ((a, b))
+      }
+    "EphemeralStream" !
+      forAll { (a: EphemeralStream[Int], b: EphemeralStream[Int]) =>
         unalignStream(Align[EphemeralStream].align(a, b)) must_=== ((a, b))
-    }
+      }
   }
 
   "onlyThisOrThat" should {
-    "be invertible" ! forAll { ab: Int \/ String =>
-      ab.toThese.onlyThisOrThat must_=== Some(ab)
-    }
-    "handle both" ! forAll { (a: Int, b: String) =>
-      \&/.Both(a, b).onlyThisOrThat must_=== None
-    }
+    "be invertible" !
+      forAll { ab: Int \/ String =>
+        ab.toThese.onlyThisOrThat must_=== Some(ab)
+      }
+    "handle both" !
+      forAll { (a: Int, b: String) =>
+        \&/.Both(a, b).onlyThisOrThat must_=== None
+      }
   }
 
   object instances {

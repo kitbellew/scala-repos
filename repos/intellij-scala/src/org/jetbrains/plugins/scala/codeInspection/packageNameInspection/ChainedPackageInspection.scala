@@ -37,8 +37,8 @@ class ChainedPackageInspection extends LocalInspectionTool {
 
             basePackages
               .find(basePackage =>
-                firstPackaging.getPackageName != basePackage
-                  && firstPackaging.getPackageName.startsWith(basePackage))
+                firstPackaging.getPackageName != basePackage &&
+                  firstPackaging.getPackageName.startsWith(basePackage))
               .flatMap { basePackage =>
                 firstPackaging
                   .reference

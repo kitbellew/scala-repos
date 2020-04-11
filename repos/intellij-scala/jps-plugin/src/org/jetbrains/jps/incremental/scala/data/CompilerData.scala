@@ -39,11 +39,9 @@ object CompilerData {
             Either.cond(
               absentJars.isEmpty,
               Some(jars),
-              "Scala compiler JARs not found (module '" + chunk
-                .representativeTarget()
-                .getModule
-                .getName + "'): "
-                + absentJars.map(_.getPath).mkString(", ")
+              "Scala compiler JARs not found (module '" +
+                chunk.representativeTarget().getModule.getName + "'): " +
+                absentJars.map(_.getPath).mkString(", ")
             )
         }
       } else {
@@ -71,9 +69,8 @@ object CompilerData {
         val globalSettings = SettingsManager.getGlobalSettings(model.getGlobal)
 
         val jvmSdk =
-          if (globalSettings.isCompileServerEnabled && JavaBuilderUtil
-                .CONSTANT_SEARCH_SERVICE
-                .get(context) != null) {
+          if (globalSettings.isCompileServerEnabled &&
+              JavaBuilderUtil.CONSTANT_SEARCH_SERVICE.get(context) != null) {
             Option(globalSettings.getCompileServerSdk).flatMap { sdkName =>
               val libraries =
                 model
@@ -141,8 +138,8 @@ object CompilerData {
         find(files, "scala-compiler", ".jar") match {
           case Left(error) =>
             Left(
-              error + " in Scala compiler classpath in Scala SDK " + sdk
-                .getName)
+              error + " in Scala compiler classpath in Scala SDK " +
+                sdk.getName)
           case right =>
             right
         }
@@ -162,8 +159,8 @@ object CompilerData {
                   .left
                   .toOption
                   .map(
-                    _ + " in Scala compiler classpath in Scala SDK " + sdk
-                      .getName)
+                    _ + " in Scala compiler classpath in Scala SDK " +
+                      sdk.getName)
               case _ =>
                 None
             }

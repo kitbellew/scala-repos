@@ -19,8 +19,8 @@ abstract class AbstractFilesChooserDescriptor(
     s"Choose either a $languageName SDK directory or $languageName jar files (allowed: binaries, sources, docs)")
 
   override def isFileSelectable(file: VirtualFile) = {
-    super.isFileSelectable(file) && file.isDirectory || file
-      .getExtension == "jar"
+    super.isFileSelectable(file) && file.isDirectory ||
+    file.getExtension == "jar"
   }
 
   override def validateSelectedFiles(virtualFiles: Array[VirtualFile]) = {

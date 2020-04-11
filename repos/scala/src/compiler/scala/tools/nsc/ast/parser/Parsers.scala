@@ -306,7 +306,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
               showSyntaxErrors();
               firstTry
             case patches =>
-              (this withPatches patches).parse()
+              (
+                this withPatches patches
+              ).parse()
           }
       }
   }
@@ -698,7 +700,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       val offset = in.offset
       if (in.token != token) {
         syntaxErrorOrIncomplete(expectedMsg(token), skipIt = false)
-        if ((token == RPAREN || token == RBRACE || token == RBRACKET))
+        if ((
+              token == RPAREN || token == RBRACE || token == RBRACKET
+            ))
           if (in.parenBalance(token) + assumedClosingParens(token) < 0)
             assumedClosingParens(token) += 1
           else
@@ -810,29 +814,25 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
     def isLiteral = isLiteralToken(in.token)
 
     def isSimpleExprIntroToken(token: Token): Boolean =
-      isLiteralToken(token) || (
-        token match {
-          case IDENTIFIER | BACKQUOTED_IDENT | THIS | SUPER | NEW | USCORE |
-              LPAREN | LBRACE | XMLSTART =>
-            true
-          case _ =>
-            false
-        }
-      )
+      isLiteralToken(token) || (token match {
+        case IDENTIFIER | BACKQUOTED_IDENT | THIS | SUPER | NEW | USCORE |
+            LPAREN | LBRACE | XMLSTART =>
+          true
+        case _ =>
+          false
+      })
 
     def isSimpleExprIntro: Boolean = isExprIntroToken(in.token)
 
     def isExprIntroToken(token: Token): Boolean =
-      isLiteralToken(token) || (
-        token match {
-          case IDENTIFIER | BACKQUOTED_IDENT | THIS | SUPER | IF | FOR | NEW |
-              USCORE | TRY | WHILE | DO | RETURN | THROW | LPAREN | LBRACE |
-              XMLSTART =>
-            true
-          case _ =>
-            false
-        }
-      )
+      isLiteralToken(token) || (token match {
+        case IDENTIFIER | BACKQUOTED_IDENT | THIS | SUPER | IF | FOR | NEW |
+            USCORE | TRY | WHILE | DO | RETURN | THROW | LPAREN | LBRACE |
+            XMLSTART =>
+          true
+        case _ =>
+          false
+      })
 
     def isExprIntro: Boolean = isExprIntroToken(in.token)
 
@@ -1642,13 +1642,11 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       if (placeholderParams.nonEmpty && !isWildcard(res)) {
         res = atPos(res.pos)(Function(placeholderParams.reverse, res))
         if (isAny)
-          placeholderParams foreach (
-            _.tpt match {
-              case tpt @ TypeTree() =>
-                tpt setType definitions.AnyTpe
-              case _ => // some ascription
-            }
-          )
+          placeholderParams foreach (_.tpt match {
+            case tpt @ TypeTree() =>
+              tpt setType definitions.AnyTpe
+            case _ => // some ascription
+          })
         placeholderParams = List()
       }
       placeholderParams = placeholderParams ::: savedPlaceholderParams
@@ -1682,23 +1680,21 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
           in.nextToken()
           while (in.token == STRINGPART) {
             partsBuf += literal()
-            exprsBuf += (
-              if (inPattern)
-                dropAnyBraces(pattern())
-              else
-                in.token match {
-                  case IDENTIFIER =>
-                    atPos(in.offset)(Ident(ident()))
-                  //case USCORE   => freshPlaceholder()  // ifonly etapolation
-                  case LBRACE =>
-                    expr() // dropAnyBraces(expr0(Local))
-                  case THIS =>
-                    in.nextToken();
-                    atPos(in.offset)(This(tpnme.EMPTY))
-                  case _ =>
-                    errpolation()
-                }
-            )
+            exprsBuf += (if (inPattern)
+                           dropAnyBraces(pattern())
+                         else
+                           in.token match {
+                             case IDENTIFIER =>
+                               atPos(in.offset)(Ident(ident()))
+                             //case USCORE   => freshPlaceholder()  // ifonly etapolation
+                             case LBRACE =>
+                               expr() // dropAnyBraces(expr0(Local))
+                             case THIS =>
+                               in.nextToken();
+                               atPos(in.offset)(This(tpnme.EMPTY))
+                             case _ =>
+                               errpolation()
+                           })
           }
           if (in.token == STRINGLIT)
             partsBuf += literal()
@@ -1772,7 +1768,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         startInfixType()
 
     def annotTypeRest(t: Tree): Tree =
-      (t /: annotations(skipNewLines = false))(makeAnnotated)
+      (
+        t /: annotations(skipNewLines = false)
+      )(makeAnnotated)
 
     /** {{{
       *  WildcardType ::= `_' TypeBounds
@@ -1991,7 +1989,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
                   syntaxErrorOrIncomplete("`*' expected", skipIt = true)
                 }
               } else if (isAnnotation) {
-                t = (t /: annotations(skipNewLines = false))(makeAnnotated)
+                t =
+                  (
+                    t /: annotations(skipNewLines = false)
+                  )(makeAnnotated)
               } else {
                 t =
                   atPos(t.pos.start, colonPos) {
@@ -2881,9 +2882,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         newLineOptWhenFollowedBy(LPAREN)
       }
       val result = vds.toList
-      if (owner == nme.CONSTRUCTOR && (
-            result.isEmpty || (result.head take 1 exists (_.mods.isImplicit))
-          )) {
+      if (owner == nme.CONSTRUCTOR && (result
+            .isEmpty || (result.head take 1 exists (_.mods.isImplicit)))) {
         in.token match {
           case LBRACKET =>
             syntaxError(
@@ -2964,12 +2964,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             if (owner.isTypeName && !mods.isLocalToThis)
               syntaxError(
                 in.offset,
-                (
-                  if (mods.isMutable)
-                    "`var'"
-                  else
-                    "`val'"
-                ) +
+                (if (mods.isMutable)
+                   "`var'"
+                 else
+                   "`val'") +
                   " parameters may not be call-by-name",
                 skipIt = false)
             else if (implicitmod != 0)
@@ -3545,9 +3543,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         case TRAIT =>
           classDef(
             pos,
-            (mods | Flags.TRAIT | Flags.ABSTRACT) withPosition (
-              Flags.TRAIT, tokenRange(in)
-            ))
+            (mods | Flags.TRAIT | Flags
+              .ABSTRACT) withPosition (Flags.TRAIT, tokenRange(in)))
         case CLASS =>
           classDef(pos, mods)
         case CASECLASS =>
@@ -3600,7 +3597,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
           val contextBoundBuf = new ListBuffer[Tree]
           val tparams = typeParamClauseOpt(name, contextBoundBuf)
           classContextBounds = contextBoundBuf.toList
-          val tstart = (in.offset :: classContextBounds.map(_.pos.start)).min
+          val tstart =
+            (
+              in.offset :: classContextBounds.map(_.pos.start)
+            ).min
           if (!classContextBounds.isEmpty && mods.isTrait) {
             val viewBoundsExist =
               if (settings.future)
@@ -3716,14 +3716,15 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       def readAppliedParent() = {
         val start = in.offset
         val parent = startAnnotType()
-        parents += (
-          in.token match {
-            case LPAREN =>
-              atPos(start)((parent /: multipleArgumentExprs())(Apply.apply))
-            case _ =>
-              parent
-          }
-        )
+        parents += (in.token match {
+          case LPAREN =>
+            atPos(start)(
+              (
+                parent /: multipleArgumentExprs()
+              )(Apply.apply))
+          case _ =>
+            parent
+        })
       }
       readAppliedParent()
       while (in.token == WITH) {
@@ -3955,7 +3956,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
               case _ =>
                 convertToParam(first) match {
                   case tree @ ValDef(_, name, tpt, EmptyTree)
-                      if (name != nme.ERROR) =>
+                      if (
+                        name != nme.ERROR
+                      ) =>
                     self =
                       atPos(tree.pos union tpt.pos) {
                         makeSelfDef(name, tpt)
@@ -4021,12 +4024,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       } else if (!isStatSep) {
         syntaxErrorOrIncomplete(
           "illegal start of declaration" +
-            (
-              if (inFunReturnType)
-                " (possible cause: missing `=' in front of current method body)"
-              else
-                ""
-            ),
+            (if (inFunReturnType)
+               " (possible cause: missing `=' in front of current method body)"
+             else
+               ""),
           skipIt = true)
         Nil
       } else
@@ -4051,7 +4052,11 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       val pos = in.offset
       val mods = (localModifiers() | implicitMod.toLong) withAnnotations annots
       val defs =
-        if (!(mods hasFlag ~(Flags.IMPLICIT | Flags.LAZY)))
+        if (!(
+              mods hasFlag ~(
+                Flags.IMPLICIT | Flags.LAZY
+              )
+            ))
           defOrDcl(pos, mods)
         else
           List(tmplDef(pos, mods))

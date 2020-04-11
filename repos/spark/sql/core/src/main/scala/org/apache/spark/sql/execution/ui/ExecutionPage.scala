@@ -43,9 +43,8 @@ private[sql] class ExecutionPage(parent: SQLTab)
         .map { executionUIData =>
           val currentTime = System.currentTimeMillis()
           val duration =
-            executionUIData
-              .completionTime
-              .getOrElse(currentTime) - executionUIData.submissionTime
+            executionUIData.completionTime.getOrElse(currentTime) -
+              executionUIData.submissionTime
 
           val summary =
             <div>

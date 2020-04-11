@@ -95,8 +95,7 @@ private class BufReaderImpl(underlying: Buf) extends BufReader {
     }
 
     readBytes(2).write(nums, 0)
-    ((nums(0) & 0xff) << 8) |
-      ((nums(1) & 0xff))
+    ((nums(0) & 0xff) << 8) | ((nums(1) & 0xff))
   }
 
   def readIntBE(): Int = {

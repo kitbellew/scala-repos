@@ -166,10 +166,11 @@ object ReplicaVerificationTool extends Logging {
         .groupBy(_.replicaId)
         .map {
           case (brokerId, partitions) =>
-            brokerId -> partitions.map {
-              case partition =>
-                new TopicAndPartition(partition.topic, partition.partitionId)
-            }
+            brokerId ->
+              partitions.map {
+                case partition =>
+                  new TopicAndPartition(partition.topic, partition.partitionId)
+              }
         }
     debug("Topic partitions per broker: " + topicAndPartitionsPerBroker)
     val expectedReplicasPerTopicAndPartition: Map[TopicAndPartition, Int] =
@@ -181,7 +182,8 @@ object ReplicaVerificationTool extends Logging {
             topicAndPartition -> replicaSet.size
         }
     debug(
-      "Expected replicas per topic partition: " + expectedReplicasPerTopicAndPartition)
+      "Expected replicas per topic partition: " +
+        expectedReplicasPerTopicAndPartition)
     val leadersPerBroker: Map[Int, Seq[TopicAndPartition]] =
       filteredTopicMetadata
         .flatMap(topicMetadataResponse =>
@@ -238,8 +240,8 @@ object ReplicaVerificationTool extends Logging {
         })
     fetcherThreads.foreach(_.start())
     println(
-      ReplicaVerificationTool
-        .getCurrentTimeString() + ": verification process is started.")
+      ReplicaVerificationTool.getCurrentTimeString() +
+        ": verification process is started.")
 
   }
 }
@@ -323,9 +325,8 @@ private class ReplicaBuffer(
       val initialOffsetMap: Map[TopicAndPartition, PartitionOffsetRequestInfo] =
         topicAndPartitions
           .map(topicAndPartition =>
-            topicAndPartition -> PartitionOffsetRequestInfo(
-              initialOffsetTime,
-              1))
+            topicAndPartition ->
+              PartitionOffsetRequestInfo(initialOffsetTime, 1))
           .toMap
       val offsetRequest = OffsetRequest(initialOffsetMap)
       val offsetResponse = consumer.getOffsetsBefore(offsetRequest)
@@ -359,19 +360,19 @@ private class ReplicaBuffer(
     for ((topicAndPartition, fetchResponsePerReplica) <- messageSetCache) {
       debug("Verifying " + topicAndPartition)
       assert(
-        fetchResponsePerReplica
-          .size == expectedReplicasPerTopicAndPartition(topicAndPartition),
-        "fetched " + fetchResponsePerReplica
-          .size + " replicas for " + topicAndPartition + ", but expected "
-          + expectedReplicasPerTopicAndPartition(
-            topicAndPartition) + " replicas"
+        fetchResponsePerReplica.size ==
+          expectedReplicasPerTopicAndPartition(topicAndPartition),
+        "fetched " + fetchResponsePerReplica.size + " replicas for " +
+          topicAndPartition + ", but expected " +
+          expectedReplicasPerTopicAndPartition(topicAndPartition) + " replicas"
       )
       val messageIteratorMap = fetchResponsePerReplica.map {
         case (replicaId, fetchResponse) =>
-          replicaId -> fetchResponse
-            .messages
-            .asInstanceOf[ByteBufferMessageSet]
-            .shallowIterator
+          replicaId ->
+            fetchResponse
+              .messages
+              .asInstanceOf[ByteBufferMessageSet]
+              .shallowIterator
       }
       val maxHw = fetchResponsePerReplica.values.map(_.hw).max
 
@@ -385,8 +386,8 @@ private class ReplicaBuffer(
               val messageAndOffset = messageIterator.next()
 
               // only verify up to the high watermark
-              if (messageAndOffset
-                    .offset >= fetchResponsePerReplica.get(replicaId).hw)
+              if (messageAndOffset.offset >=
+                    fetchResponsePerReplica.get(replicaId).hw)
                 isMessageInAllReplicas = false
               else {
                 messageInfoFromFirstReplicaOpt match {
@@ -398,31 +399,29 @@ private class ReplicaBuffer(
                         messageAndOffset.nextOffset,
                         messageAndOffset.message.checksum))
                   case Some(messageInfoFromFirstReplica) =>
-                    if (messageInfoFromFirstReplica.offset != messageAndOffset
-                          .offset) {
+                    if (messageInfoFromFirstReplica.offset !=
+                          messageAndOffset.offset) {
                       println(
-                        ReplicaVerificationTool
-                          .getCurrentTimeString + ": partition " + topicAndPartition
-                          + ": replica " + messageInfoFromFirstReplica
-                          .replicaId + "'s offset "
-                          + messageInfoFromFirstReplica
-                            .offset + " doesn't match replica "
-                          + replicaId + "'s offset " + messageAndOffset.offset)
+                        ReplicaVerificationTool.getCurrentTimeString +
+                          ": partition " + topicAndPartition + ": replica " +
+                          messageInfoFromFirstReplica.replicaId + "'s offset " +
+                          messageInfoFromFirstReplica.offset +
+                          " doesn't match replica " + replicaId + "'s offset " +
+                          messageAndOffset.offset)
                       System.exit(1)
                     }
-                    if (messageInfoFromFirstReplica
-                          .checksum != messageAndOffset.message.checksum)
+                    if (messageInfoFromFirstReplica.checksum !=
+                          messageAndOffset.message.checksum)
                       println(
-                        ReplicaVerificationTool
-                          .getCurrentTimeString + ": partition "
-                          + topicAndPartition + " has unmatched checksum at offset " + messageAndOffset
-                          .offset + "; replica "
-                          + messageInfoFromFirstReplica
-                            .replicaId + "'s checksum " + messageInfoFromFirstReplica
-                          .checksum
-                          + "; replica " + replicaId + "'s checksum " + messageAndOffset
-                          .message
-                          .checksum)
+                        ReplicaVerificationTool.getCurrentTimeString +
+                          ": partition " + topicAndPartition +
+                          " has unmatched checksum at offset " +
+                          messageAndOffset.offset + "; replica " +
+                          messageInfoFromFirstReplica
+                            .replicaId + "'s checksum " +
+                          messageInfoFromFirstReplica.checksum + "; replica " +
+                          replicaId + "'s checksum " +
+                          messageAndOffset.message.checksum)
                 }
               }
             } else
@@ -442,9 +441,9 @@ private class ReplicaBuffer(
           val nextOffset = messageInfoFromFirstReplicaOpt.get.nextOffset
           fetchOffsetMap.put(topicAndPartition, nextOffset)
           debug(
-            expectedReplicasPerTopicAndPartition(
-              topicAndPartition) + " replicas match at offset " +
-              nextOffset + " for " + topicAndPartition)
+            expectedReplicasPerTopicAndPartition(topicAndPartition) +
+              " replicas match at offset " + nextOffset + " for " +
+              topicAndPartition)
         }
       }
       if (maxHw - fetchOffsetMap.get(topicAndPartition) > maxLag) {
@@ -457,11 +456,10 @@ private class ReplicaBuffer(
     val currentTimeMs = SystemTime.milliseconds
     if (currentTimeMs - lastReportTime > reportInterval) {
       println(
-        ReplicaVerificationTool
-          .dateFormat
-          .format(new Date(currentTimeMs)) + ": max lag is "
-          + maxLag + " for partition " + maxLagTopicAndPartition + " at offset " + offsetWithMaxLag
-          + " among " + messageSetCache.size + " partitions")
+        ReplicaVerificationTool.dateFormat.format(new Date(currentTimeMs)) +
+          ": max lag is " + maxLag + " for partition " +
+          maxLagTopicAndPartition + " at offset " + offsetWithMaxLag +
+          " among " + messageSetCache.size + " partitions")
       lastReportTime = currentTimeMs
     }
   }

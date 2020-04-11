@@ -81,23 +81,23 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
     }
 
     "init with empty" in {
-      emptyState.init(Set.empty, Set.empty).activeReceivers should ===(
-        Set.empty)
+      emptyState.init(Set.empty, Set.empty).activeReceivers should
+        ===(Set.empty)
     }
 
     "init with self" in {
-      emptyState.init(Set(aa, bb, cc), Set.empty).activeReceivers should ===(
-        Set(bb, cc))
+      emptyState.init(Set(aa, bb, cc), Set.empty).activeReceivers should
+        ===(Set(bb, cc))
     }
 
     "init without self" in {
-      emptyState.init(Set(bb, cc), Set.empty).activeReceivers should ===(
-        Set(bb, cc))
+      emptyState.init(Set(bb, cc), Set.empty).activeReceivers should
+        ===(Set(bb, cc))
     }
 
     "use added members" in {
-      emptyState.addMember(bb).addMember(cc).activeReceivers should ===(
-        Set(bb, cc))
+      emptyState.addMember(bb).addMember(cc).activeReceivers should
+        ===(Set(bb, cc))
     }
 
     "use added members also when unreachable" in {
@@ -189,10 +189,9 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
 
     "behave correctly for random operations" in {
       val rnd = ThreadLocalRandom.current
-      val nodes =
-        (1 to rnd.nextInt(10, 200))
-          .map(n ⇒ UniqueAddress(Address("akka.tcp", "sys", "n" + n, 2552), n))
-          .toVector
+      val nodes = (1 to rnd.nextInt(10, 200))
+        .map(n ⇒ UniqueAddress(Address("akka.tcp", "sys", "n" + n, 2552), n))
+        .toVector
       def rndNode() = nodes(rnd.nextInt(0, nodes.size))
       val selfUniqueAddress = rndNode()
       var state = emptyState(selfUniqueAddress)
@@ -206,37 +205,33 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
         try {
           operation match {
             case Add ⇒
-              if (node != selfUniqueAddress && !state
-                    .ring
-                    .nodes
-                    .contains(node)) {
+              if (node != selfUniqueAddress &&
+                  !state.ring.nodes.contains(node)) {
                 val oldUnreachable = state.oldReceiversNowUnreachable
                 state = state.addMember(node)
                 // keep unreachable
-                (oldUnreachable diff state.activeReceivers) should ===(
-                  Set.empty)
-                state.failureDetector.isMonitoring(node.address) should ===(
-                  false)
+                (oldUnreachable diff state.activeReceivers) should
+                  ===(Set.empty)
+                state.failureDetector.isMonitoring(node.address) should
+                  ===(false)
                 state.failureDetector.isAvailable(node.address) should ===(true)
               }
 
             case Remove ⇒
-              if (node != selfUniqueAddress && state
-                    .ring
-                    .nodes
-                    .contains(node)) {
+              if (node != selfUniqueAddress &&
+                  state.ring.nodes.contains(node)) {
                 val oldUnreachable = state.oldReceiversNowUnreachable
                 state = state.removeMember(node)
                 // keep unreachable, unless it was the removed
                 if (oldUnreachable(node))
-                  (oldUnreachable diff state.activeReceivers) should ===(
-                    Set(node))
+                  (oldUnreachable diff state.activeReceivers) should
+                    ===(Set(node))
                 else
-                  (oldUnreachable diff state.activeReceivers) should ===(
-                    Set.empty)
+                  (oldUnreachable diff state.activeReceivers) should
+                    ===(Set.empty)
 
-                state.failureDetector.isMonitoring(node.address) should ===(
-                  false)
+                state.failureDetector.isMonitoring(node.address) should
+                  ===(false)
                 state.failureDetector.isAvailable(node.address) should ===(true)
                 state.activeReceivers should not contain (node)
               }
@@ -247,18 +242,16 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
                   .failureDetector
                   .heartbeat(node.address) // make sure the fd is created
                 fd(state, node).markNodeAsUnavailable()
-                state.failureDetector.isMonitoring(node.address) should ===(
-                  true)
-                state.failureDetector.isAvailable(node.address) should ===(
-                  false)
+                state.failureDetector.isMonitoring(node.address) should
+                  ===(true)
+                state.failureDetector.isAvailable(node.address) should
+                  ===(false)
                 state = state.unreachableMember(node)
               }
 
             case HeartbeatRsp ⇒
-              if (node != selfUniqueAddress && state
-                    .ring
-                    .nodes
-                    .contains(node)) {
+              if (node != selfUniqueAddress &&
+                  state.ring.nodes.contains(node)) {
                 val oldUnreachable = state.oldReceiversNowUnreachable
                 val oldReceivers = state.activeReceivers
                 val oldRingReceivers = state.ring.myReceivers
@@ -268,12 +261,12 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
                   state.oldReceiversNowUnreachable should not contain (node)
 
                 if (oldUnreachable(node) && !oldRingReceivers(node))
-                  state.failureDetector.isMonitoring(node.address) should ===(
-                    false)
+                  state.failureDetector.isMonitoring(node.address) should
+                    ===(false)
 
                 if (oldRingReceivers(node))
-                  state.failureDetector.isMonitoring(node.address) should ===(
-                    true)
+                  state.failureDetector.isMonitoring(node.address) should
+                    ===(true)
 
                 state.ring.myReceivers should ===(oldRingReceivers)
                 state.failureDetector.isAvailable(node.address) should ===(true)

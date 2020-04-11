@@ -49,8 +49,8 @@ abstract class Origins {
 
   // Create a stack and whittle it down to the interesting part.
   def readStack(): Array[StackTraceElement] =
-    (Thread.currentThread.getStackTrace dropWhile (x =>
-      !isCutoff(x)) dropWhile isCutoff drop 1)
+    (Thread.currentThread.getStackTrace dropWhile
+      (x => !isCutoff(x)) dropWhile isCutoff drop 1)
 
   def apply[T](body: => T): T = {
     add(newRep(readStack()))
@@ -61,10 +61,11 @@ abstract class Origins {
     println(
       "\n>> Origins tag '%s' logged %s calls from %s distinguished sources.\n"
         .format(tag, total, origins.keys.size))
-    origins.toList sortBy (-_._2) foreach {
-      case (k, v) =>
-        println("%7s %s".format(v, repString(k)))
-    }
+    origins.toList sortBy
+      (-_._2) foreach {
+        case (k, v) =>
+          println("%7s %s".format(v, repString(k)))
+      }
   }
   def purge() = {
     show()
@@ -82,9 +83,8 @@ object Origins {
 
   case class OriginId(className: String, methodName: String) {
     def matches(el: StackTraceElement) =
-      ((methodName == el.getMethodName) && (
-        className startsWith el.getClassName
-      ))
+      ((methodName == el.getMethodName) &&
+        (className startsWith el.getClassName))
   }
 
   def lookup(tag: String, orElse: String => Origins): Origins =
@@ -95,8 +95,8 @@ object Origins {
   }
 
   private def preCutoff(el: StackTraceElement) =
-    ((el.getClassName == thisClass)
-      || (el.getClassName startsWith "java.lang."))
+    ((el.getClassName == thisClass) ||
+      (el.getClassName startsWith "java.lang."))
   private def findCutoff() = {
     val cutoff = (Thread.currentThread.getStackTrace dropWhile preCutoff).head
     OriginId(cutoff.getClassName, cutoff.getMethodName)

@@ -58,9 +58,8 @@ class EnsemblePagination extends EnsembleExample {
           val ipStream = this
             .getClass
             .getResourceAsStream(
-              "/scalafx/ensemble/images/animals-200x200/animal" + (
-                i + 1
-              ) + ".jpg")
+              "/scalafx/ensemble/images/animals-200x200/animal" +
+                (i + 1) + ".jpg")
           new Image(ipStream)
         }
 

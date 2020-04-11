@@ -207,11 +207,10 @@ object Nat {
 
     i.tree match {
       case Literal(Constant(v: Int)) =>
-        val tt =
-          (1 to v).foldLeft[Tree](SingletonTypeTree(_Zero)) {
-            case (z, _) =>
-              AppliedTypeTree(Ident(_Succ), List(z))
-          }
+        val tt = (1 to v).foldLeft[Tree](SingletonTypeTree(_Zero)) {
+          case (z, _) =>
+            AppliedTypeTree(Ident(_Succ), List(z))
+        }
         ctx.Expr(
           Apply(
             TypeApply(Select(Ident(_Nat), TermName("_unsafe")), List(tt)),

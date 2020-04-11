@@ -208,7 +208,7 @@ object Checkpoint {
   private def hasInput(checkpointName: String, filename: String)(implicit
       args: Args,
       mode: Mode): Boolean = {
-    !CheckpointArg(checkpointName, "clobber").isTrue && mode
-      .fileExists(filename)
+    !CheckpointArg(checkpointName, "clobber").isTrue &&
+    mode.fileExists(filename)
   }
 }

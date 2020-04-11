@@ -43,8 +43,8 @@ class ScalaStructureViewModel(
   def isAlwaysLeaf(element: StructureViewTreeElement): Boolean =
     !(
       isAlwaysShowsPlus(element) ||
-        element.isInstanceOf[TestStructureViewElement] || element
-        .isInstanceOf[ScalaValueStructureViewElement]
+        element.isInstanceOf[TestStructureViewElement] ||
+        element.isInstanceOf[ScalaValueStructureViewElement]
     )
 
   def isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean = {
@@ -94,9 +94,7 @@ class ScalaStructureViewModel(
 
       override def getPresentation: ActionPresentation =
         new ActionPresentationData(
-          IdeBundle.message(
-            "action.sort" +
-              ".alphabetically"),
+          IdeBundle.message("action.sort" + ".alphabetically"),
           IdeBundle.message("action.sort.alphabetically"),
           AllIcons.ObjectBrowser.Sorted)
     }

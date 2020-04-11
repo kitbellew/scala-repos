@@ -52,10 +52,11 @@ object Opening extends LilaController {
   def home =
     Open { implicit ctx =>
       if (HTTPRequest isXhr ctx.req)
-        env.selector(ctx.me) zip (env userInfos ctx.me) flatMap {
-          case (opening, infos) =>
-            makeData(opening, infos, true, none, none)
-        }
+        env.selector(ctx.me) zip
+          (env userInfos ctx.me) flatMap {
+            case (opening, infos) =>
+              makeData(opening, infos, true, none, none)
+          }
       else
         env.selector(ctx.me) flatMap { opening =>
           renderShow(opening) map {
@@ -97,19 +98,19 @@ object Opening extends LilaController {
                 case Some(me) =>
                   env.finisher(opening, me, win) flatMap {
                     case (newAttempt, None) =>
-                      UserRepo byId me.id map (_ | me) flatMap { me2 =>
-                        (
-                          env.api.opening find id
-                        ) zip (env userInfos me2.some) flatMap {
-                          case (o2, infos) =>
-                            makeData(
-                              o2 | opening,
-                              infos,
-                              false,
-                              newAttempt.some,
-                              none)
+                      UserRepo byId me.id map
+                        (_ | me) flatMap { me2 =>
+                          (env.api.opening find id) zip
+                            (env userInfos me2.some) flatMap {
+                              case (o2, infos) =>
+                                makeData(
+                                  o2 | opening,
+                                  infos,
+                                  false,
+                                  newAttempt.some,
+                                  none)
+                            }
                         }
-                      }
                     case (oldAttempt, Some(win)) =>
                       env userInfos me.some flatMap { infos =>
                         makeData(

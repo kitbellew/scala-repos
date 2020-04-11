@@ -19,11 +19,11 @@ object Bits {
 
   private[this] val _areTypedArraysSupported = {
     // Here we use `assumingES6` to dce the 4 subsequent tests
-    assumingES6 || js
-      .DynamicImplicits
+    assumingES6 ||
+    js.DynamicImplicits
       .truthValue(
-        global.ArrayBuffer && global.Int32Array &&
-          global.Float32Array && global.Float64Array)
+        global.ArrayBuffer && global.Int32Array && global.Float32Array &&
+          global.Float64Array)
   }
 
   @inline
@@ -169,12 +169,10 @@ object Bits {
     val ebits = 8
     val fbits = 23
     val (s, e, f) = encodeIEEE754(ebits, fbits, value)
-    (
-      if (s)
-        0x80000000
-      else
-        0
-    ) | (e << fbits) | rawToInt(f)
+    (if (s)
+       0x80000000
+     else
+       0) | (e << fbits) | rawToInt(f)
   }
 
   private def longBitsToDoublePolyfill(bits: Long): Double = {
@@ -197,12 +195,10 @@ object Bits {
     val hifbits = fbits - 32
     val (s, e, f) = encodeIEEE754(ebits, fbits, value)
     val hif = rawToInt(f / 0x100000000L.toDouble)
-    val hi = (
-      if (s)
-        0x80000000
-      else
-        0
-    ) | (e << hifbits) | hif
+    val hi = (if (s)
+                0x80000000
+              else
+                0) | (e << hifbits) | hif
     val lo = rawToInt(f)
     (hi.toLong << 32) | (lo.toLong & 0xFFFFFFFFL)
   }

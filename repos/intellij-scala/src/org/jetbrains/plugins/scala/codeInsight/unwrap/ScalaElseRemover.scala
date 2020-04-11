@@ -19,9 +19,8 @@ class ScalaElseRemover extends ScalaElseUnwrapperBase {
       ifStmt: ScIfStmt,
       context: ScalaUnwrapContext) = {
     expr.getParent match {
-      case ifSt @ ScIfStmt(_, Some(`expr`), Some(elseExpr)) childOf (
-            parentIf @ ScIfStmt(_, _, Some(elseIf))
-          ) if ifSt == elseIf =>
+      case ifSt @ ScIfStmt(_, Some(`expr`), Some(elseExpr)) childOf
+          (parentIf @ ScIfStmt(_, _, Some(elseIf))) if ifSt == elseIf =>
         context.setElseBranch(parentIf, elseExpr)
       case _ =>
         context.delete(ifStmt.findFirstChildByType(ScalaTokenTypes.kELSE))

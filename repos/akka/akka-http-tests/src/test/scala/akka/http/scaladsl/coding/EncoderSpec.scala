@@ -24,12 +24,10 @@ class EncoderSpec extends WordSpec with CodecSpecSupport {
     "correctly transform the HttpMessage if messageFilter returns true" in {
       val request = HttpRequest(POST, entity = HttpEntity(smallText))
       val encoded = DummyEncoder.encode(request)
-      encoded
-        .headers shouldEqual List(`Content-Encoding`(DummyEncoder.encoding))
-      encoded
-        .entity
-        .toStrict(1.second)
-        .awaitResult(1.second) shouldEqual HttpEntity(dummyCompress(smallText))
+      encoded.headers shouldEqual
+        List(`Content-Encoding`(DummyEncoder.encoding))
+      encoded.entity.toStrict(1.second).awaitResult(1.second) shouldEqual
+        HttpEntity(dummyCompress(smallText))
     }
   }
 

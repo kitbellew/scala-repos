@@ -17,15 +17,13 @@ object scala extends Command {
   val name = Section(
     "NAME",
     MBold(command) & " " & NDash & " Run code in the " &
-      Link("Scala 2", "http://scala-lang.org/") &
-      " language")
+      Link("Scala 2", "http://scala-lang.org/") & " language")
 
   val synopsis = Section(
     "SYNOPSIS",
     CmdLine(
-      " [ " & Argument("option") & " ]... " &
-        "[ " & Argument("torun") & " " & Argument("argument") &
-        "... ]"))
+      " [ " & Argument("option") & " ]... " & "[ " & Argument("torun") & " " &
+        Argument("argument") & "... ]"))
 
   val parameters = Section(
     "PARAMETERS",
@@ -38,9 +36,8 @@ object scala extends Command {
         CmdOptionBound("howtorun:", Argument("how")),
         "How to execute " & Argument("torun") & ", if it is present. " &
           "Options for " & Argument("how") & " are " & Mono("guess") &
-          " (the default), " & Mono("script") & ", " & Mono(
-          "jar") & ", and " & Mono("object") &
-          "."
+          " (the default), " & Mono("script") & ", " & Mono("jar") & ", and " &
+          Mono("object") & "."
       ),
       Definition(
         CmdOption("i", Argument("file")),
@@ -54,10 +51,9 @@ object scala extends Command {
         "Save this compiled version of scripts in order to speed up " &
           "later executions of the same script.  When running a script, " &
           "save the compiled version in a file with the same name as the " &
-          "script but with an extension of " & Mono(
-          ".jar") & ".  On subsequent " &
-          "runs of the same script, the pre-compiled " & Mono(
-          ".jar") & " file " &
+          "script but with an extension of " & Mono(".jar") &
+          ".  On subsequent " & "runs of the same script, the pre-compiled " &
+          Mono(".jar") & " file " &
           "will be used if it is newer than the script file."
       ),
       Definition(
@@ -110,8 +106,8 @@ object scala extends Command {
     BlockQuote(Mono(Bold("def") & " main(args: Array[String]): Unit")),
     "The method must return a " & Bold("Unit") & " value, and it must " &
       "accept a " & Bold("String") & " array as a parameter.  All arguments " &
-      "specified on the command line will be passed as " &
-      "arguments to the " & Bold("main") & " method.",
+      "specified on the command line will be passed as " & "arguments to the " &
+      Bold("main") & " method.",
     "If a script file is specified to run, then the file is read and all " &
       "Scala statements and declarations in the file are processed in order. " &
       "Any arguments specified will be available via the " & Mono("args") &
@@ -130,9 +126,8 @@ object scala extends Command {
     "If " & Mono("scala") & " is run from an sbaz(1) directory, " &
       "then it will add to its classpath any jars installed in the " &
       "lib directory of the sbaz directory.  Additionally, if no " &
-      "-classpath option is specified, then " & Mono("scala") &
-      " will add " & Quote(".") & ", the current directory, to the " &
-      "end of the classpath."
+      "-classpath option is specified, then " & Mono("scala") & " will add " &
+      Quote(".") & ", the current directory, to the " & "end of the classpath."
   )
 
   val options = Section(
@@ -161,8 +156,8 @@ object scala extends Command {
       Definition(
         MBold("JAVA_HOME"),
         "Specify JDK/JRE home directory. This directory is used to locate " &
-          "the " & MBold("java") & " command unless " & MBold(
-          "JAVACMD") & " variable set."
+          "the " & MBold("java") & " command unless " & MBold("JAVACMD") &
+          " variable set."
       ),
       Definition(
         MBold("JAVA_OPTS"),
@@ -185,8 +180,8 @@ object scala extends Command {
         "Execute a Scala program generated in the current directory",
         CmdLine("hello.HelloWorld")),
       Definition(
-        "Execute a Scala program generated in a user-defined " &
-          "directory " & Bold("classes"),
+        "Execute a Scala program generated in a user-defined " & "directory " &
+          Bold("classes"),
         CmdLine(CmdOption("classpath", "classes") & "hello.HelloWorld")),
       Definition(
         "Execute a Scala program using a user-defined " & MBold("java") & " " &
@@ -196,34 +191,26 @@ object scala extends Command {
       ),
       Definition(
         "Execute a Scala program using JVM options",
-        MBold("env JAVACMD") & Mono("=java ") &
-          MBold("JAVA_OPTS") & Mono("=\"-Dmsg=hello -enableassertions\" ") &
+        MBold("env JAVACMD") & Mono("=java ") & MBold("JAVA_OPTS") &
+          Mono("=\"-Dmsg=hello -enableassertions\" ") &
           CmdLine(CmdOption("classpath", "classes") & "hello.HelloWorld")
       )
     ),
     "Here is a complete Scala script for Unix: ",
     CodeSample(
-      "#!/bin/sh\n" +
-        "exec scala \"$0\" \"$@\"\n" +
-        "!#\n" +
+      "#!/bin/sh\n" + "exec scala \"$0\" \"$@\"\n" + "!#\n" +
         "Console.println(\"Hello, world!\")\n" +
         "args.toList foreach Console.println"),
     "Here is a complete Scala script for MS Windows: ",
     CodeSample(
-      "::#!\n" +
-        "@echo off\n" +
-        "call scala %0 %*\n" +
-        "goto :eof\n" +
-        "::!#\n" +
-        "Console.println(\"Hello, world!\")\n" +
+      "::#!\n" + "@echo off\n" + "call scala %0 %*\n" + "goto :eof\n" +
+        "::!#\n" + "Console.println(\"Hello, world!\")\n" +
         "args.toList foreach Console.println"),
     "If you want to use the compilation cache to speed up multiple executions " +
-      "of the script, then add " & Mono("-savecompiled") & " to the scala " +
-      "command:",
+      "of the script, then add " & Mono("-savecompiled") &
+      " to the scala " + "command:",
     CodeSample(
-      "#!/bin/sh\n" +
-        "exec scala -savecompiled \"$0\" \"$@\"\n" +
-        "!#\n" +
+      "#!/bin/sh\n" + "exec scala -savecompiled \"$0\" \"$@\"\n" + "!#\n" +
         "Console.println(\"Hello, world!\")\n" +
         "args.toList foreach Console.println")
   )

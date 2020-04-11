@@ -143,8 +143,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
                         .setValue("127.0.0.1:8081")))))
         .build
 
-    TextFormat.shortDebugString(discoveryInfo) should equal(
-      TextFormat.shortDebugString(discoveryInfoProto))
+    TextFormat.shortDebugString(discoveryInfo) should
+      equal(TextFormat.shortDebugString(discoveryInfoProto))
     discoveryInfo should equal(discoveryInfoProto)
   }
 
@@ -233,8 +233,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
                         .setValue("127.0.0.1:8081")))))
         .build
 
-    TextFormat.shortDebugString(discoveryInfo) should equal(
-      TextFormat.shortDebugString(discoveryInfoProto))
+    TextFormat.shortDebugString(discoveryInfo) should
+      equal(TextFormat.shortDebugString(discoveryInfoProto))
     discoveryInfo should equal(discoveryInfoProto)
   }
 
@@ -545,8 +545,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
                   .setValue("buzz")
                   .build).asJava))
         .build
-    TextFormat.shortDebugString(networkInfos.head) should equal(
-      TextFormat.shortDebugString(networkInfoProto))
+    TextFormat.shortDebugString(networkInfos.head) should
+      equal(TextFormat.shortDebugString(networkInfoProto))
     networkInfos.head should equal(networkInfoProto)
   }
 
@@ -615,8 +615,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
                   .setValue("buzz")
                   .build).asJava))
         .build
-    TextFormat.shortDebugString(networkInfos.head) should equal(
-      TextFormat.shortDebugString(networkInfoProto))
+    TextFormat.shortDebugString(networkInfos.head) should
+      equal(TextFormat.shortDebugString(networkInfoProto))
     networkInfos.head should equal(networkInfoProto)
 
     taskInfo.hasDiscovery should be(true)
@@ -688,8 +688,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
                   .setValue("buzz")
                   .build).asJava))
         .build
-    TextFormat.shortDebugString(networkInfos.head) should equal(
-      TextFormat.shortDebugString(networkInfoProto))
+    TextFormat.shortDebugString(networkInfos.head) should
+      equal(TextFormat.shortDebugString(networkInfoProto))
     networkInfos.head should equal(networkInfoProto)
 
     taskInfo.hasDiscovery should be(true)
@@ -715,8 +715,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
                 .build)
             .build)
         .build
-    TextFormat.shortDebugString(discoveryInfo) should equal(
-      TextFormat.shortDebugString(discoveryInfoProto))
+    TextFormat.shortDebugString(discoveryInfo) should
+      equal(TextFormat.shortDebugString(discoveryInfoProto))
     discoveryInfo should equal(discoveryInfoProto)
   }
 
@@ -757,7 +757,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(cmd.hasValue)
     assert(cmd.getArgumentsList.asScala.isEmpty)
     assert(
-      cmd.getValue == "chmod ug+rx '/custom/executor' && exec '/custom/executor' foo")
+      cmd.getValue ==
+        "chmod ug+rx '/custom/executor' && exec '/custom/executor' foo")
   }
 
   test("BuildIfMatchesWithArgsAndExecutor") {
@@ -790,7 +791,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
 
     assert(!taskInfo.hasCommand)
     assert(
-      cmd.getValue == "chmod ug+rx '/custom/executor' && exec '/custom/executor' a b c")
+      cmd.getValue ==
+        "chmod ug+rx '/custom/executor' && exec '/custom/executor' a b c")
   }
 
   test("BuildIfMatchesWithRole") {
@@ -1175,15 +1177,16 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       .taskContextEnv(app = app, taskId = Some(Task.Id("taskId")))
 
     assert(
-      env == Map(
-        "MESOS_TASK_ID" -> "taskId",
-        "MARATHON_APP_ID" -> "/app",
-        "MARATHON_APP_VERSION" -> "2015-02-03T12:30:00.000Z",
-        "MARATHON_APP_RESOURCE_CPUS" -> AppDefinition.DefaultCpus.toString,
-        "MARATHON_APP_RESOURCE_MEM" -> AppDefinition.DefaultMem.toString,
-        "MARATHON_APP_RESOURCE_DISK" -> AppDefinition.DefaultDisk.toString,
-        "MARATHON_APP_LABELS" -> ""
-      ))
+      env ==
+        Map(
+          "MESOS_TASK_ID" -> "taskId",
+          "MARATHON_APP_ID" -> "/app",
+          "MARATHON_APP_VERSION" -> "2015-02-03T12:30:00.000Z",
+          "MARATHON_APP_RESOURCE_CPUS" -> AppDefinition.DefaultCpus.toString,
+          "MARATHON_APP_RESOURCE_MEM" -> AppDefinition.DefaultMem.toString,
+          "MARATHON_APP_RESOURCE_DISK" -> AppDefinition.DefaultDisk.toString,
+          "MARATHON_APP_LABELS" -> ""
+        ))
   }
 
   test("TaskContextEnv all fields") {
@@ -1205,18 +1208,19 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     val env = TaskBuilder.taskContextEnv(app = app, Some(Task.Id(taskId)))
 
     assert(
-      env == Map(
-        "MESOS_TASK_ID" -> "taskId",
-        "MARATHON_APP_ID" -> "/app",
-        "MARATHON_APP_VERSION" -> "2015-02-03T12:30:00.000Z",
-        "MARATHON_APP_DOCKER_IMAGE" -> "myregistry/myimage:version",
-        "MARATHON_APP_RESOURCE_CPUS" -> "10.0",
-        "MARATHON_APP_RESOURCE_MEM" -> "256.0",
-        "MARATHON_APP_RESOURCE_DISK" -> "128.0",
-        "MARATHON_APP_LABELS" -> "LABEL1 LABEL2",
-        "MARATHON_APP_LABEL_LABEL1" -> "VALUE1",
-        "MARATHON_APP_LABEL_LABEL2" -> "VALUE2"
-      ))
+      env ==
+        Map(
+          "MESOS_TASK_ID" -> "taskId",
+          "MARATHON_APP_ID" -> "/app",
+          "MARATHON_APP_VERSION" -> "2015-02-03T12:30:00.000Z",
+          "MARATHON_APP_DOCKER_IMAGE" -> "myregistry/myimage:version",
+          "MARATHON_APP_RESOURCE_CPUS" -> "10.0",
+          "MARATHON_APP_RESOURCE_MEM" -> "256.0",
+          "MARATHON_APP_RESOURCE_DISK" -> "128.0",
+          "MARATHON_APP_LABELS" -> "LABEL1 LABEL2",
+          "MARATHON_APP_LABEL_LABEL1" -> "VALUE1",
+          "MARATHON_APP_LABEL_LABEL2" -> "VALUE2"
+        ))
   }
 
   test("TaskContextEnv will provide label env safety") {
@@ -1237,12 +1241,14 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       .filterKeys(_.startsWith("MARATHON_APP_LABEL"))
 
     assert(
-      env == Map(
-        "MARATHON_APP_LABELS" -> "OTHER_LABEL_A LABEL LABEL_WITH_INVALID_CHARS",
-        "MARATHON_APP_LABEL_LABEL" -> "VALUE1",
-        "MARATHON_APP_LABEL_LABEL_WITH_INVALID_CHARS" -> "VALUE2",
-        "MARATHON_APP_LABEL_OTHER_LABEL_A" -> "VALUE3"
-      ))
+      env ==
+        Map(
+          "MARATHON_APP_LABELS" ->
+            "OTHER_LABEL_A LABEL LABEL_WITH_INVALID_CHARS",
+          "MARATHON_APP_LABEL_LABEL" -> "VALUE1",
+          "MARATHON_APP_LABEL_LABEL_WITH_INVALID_CHARS" -> "VALUE2",
+          "MARATHON_APP_LABEL_OTHER_LABEL_A" -> "VALUE3"
+        ))
   }
 
   test("AppContextEnvironment") {
@@ -1621,16 +1627,12 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(envVars.exists(v => v.getName == "PORT_8081" && v.getValue.nonEmpty))
 
     val exposesFirstPort =
-      envVars.find(v => v.getName == "PORT0").get.getValue == envVars
-        .find(v => v.getName == "PORT_8080")
-        .get
-        .getValue
+      envVars.find(v => v.getName == "PORT0").get.getValue ==
+        envVars.find(v => v.getName == "PORT_8080").get.getValue
     assert(exposesFirstPort)
     val exposesSecondPort =
-      envVars.find(v => v.getName == "PORT1").get.getValue == envVars
-        .find(v => v.getName == "PORT_8081")
-        .get
-        .getValue
+      envVars.find(v => v.getName == "PORT1").get.getValue ==
+        envVars.find(v => v.getName == "PORT_8081").get.getValue
     assert(exposesSecondPort)
 
     for (r <- taskInfo.getResourcesList.asScala) {
@@ -1662,8 +1664,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
                 .setNumber(taskPorts(1))
                 .setProtocol("tcp")))
         .build
-    TextFormat.shortDebugString(discoveryInfo) should equal(
-      TextFormat.shortDebugString(discoveryInfoProto))
+    TextFormat.shortDebugString(discoveryInfo) should
+      equal(TextFormat.shortDebugString(discoveryInfoProto))
     discoveryInfo should equal(discoveryInfoProto)
 
     // TODO test for resources etc.

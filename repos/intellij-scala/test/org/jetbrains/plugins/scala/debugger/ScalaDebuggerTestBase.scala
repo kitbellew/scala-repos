@@ -191,9 +191,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
 
   def md5(file: File): Array[Byte] = {
     val md = MessageDigest.getInstance("MD5")
-    val isSource = file.getName.endsWith(".java") || file
-      .getName
-      .endsWith(".scala")
+    val isSource = file.getName.endsWith(".java") ||
+      file.getName.endsWith(".scala")
     if (isSource) {
       val text = scala
         .io
@@ -217,9 +216,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
             if (f.isDirectory)
               computeForDir(f)
             else {
-              result += (
-                testDataBasePath.toURI.relativize(f.toURI).toString -> md5(f)
-              )
+              result +=
+                (testDataBasePath.toURI.relativize(f.toURI).toString -> md5(f))
             }
           }
     }
@@ -265,9 +263,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   private def testDataProjectIsValid(): Boolean = {
-    sameSourceFiles() && loadChecksums() && checksums
-      .keys
-      .forall(checkFile) && getImlFile != null
+    sameSourceFiles() && loadChecksums() && checksums.keys.forall(checkFile) &&
+    getImlFile != null
   }
 
   private def sameSourceFiles(): Boolean = {
@@ -279,7 +276,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
           1
       }
     val existingFilesNumber = numberOfFiles(srcDir)
-    sourceFiles.size == existingFilesNumber && sourceFiles.forall {
+    sourceFiles.size == existingFilesNumber &&
+    sourceFiles.forall {
       case (relPath, text) =>
         fileWithTextExists(new File(srcDir, relPath), text)
     }

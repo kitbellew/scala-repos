@@ -162,9 +162,8 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
 
     def checkAccess(a: MethodNode, expected: Int): Unit = {
       assert(
-        (
-          a.access & (ACC_STATIC | ACC_PUBLIC | ACC_PROTECTED | ACC_PRIVATE)
-        ) == expected,
+        (a.access & (ACC_STATIC | ACC_PUBLIC | ACC_PROTECTED | ACC_PRIVATE)) ==
+          expected,
         s"${a.name}, ${a.access}")
     }
 

@@ -234,7 +234,8 @@ class VersionLog(
           .whenM(
             IO.throwIO(
               new IllegalStateException(
-                "Attempt to set head to nonexistent version %s" format newHead)))
+                "Attempt to set head to nonexistent version %s" format
+                  newHead)))
       }
     } map { _ =>
       PrecogUnit

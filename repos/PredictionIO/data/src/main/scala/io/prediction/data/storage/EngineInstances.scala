@@ -182,6 +182,5 @@ class EngineInstanceSerializer
                 JField("dataSourceParams", JString(i.dataSourceParams)) ::
                 JField("preparatorParams", JString(i.preparatorParams)) ::
                 JField("algorithmsParams", JString(i.algorithmsParams)) ::
-                JField("servingParams", JString(i.servingParams)) ::
-                Nil)
+                JField("servingParams", JString(i.servingParams)) :: Nil)
         }))

@@ -110,9 +110,9 @@ final class MethodCall[T <: AnyRef] private[reflect] (
   def name = method.getName
   def returnsUnit = {
     val rt = method.getReturnType
-    (rt eq classOf[Unit]) || (rt eq classOf[Null]) || (
-      rt eq java.lang.Void.TYPE
-    )
+    (rt eq classOf[Unit]) ||
+    (rt eq classOf[Null]) ||
+    (rt eq java.lang.Void.TYPE)
   }
   def returnsFuture = classOf[Future[_]] isAssignableFrom method.getReturnType
 

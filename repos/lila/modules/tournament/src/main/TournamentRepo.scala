@@ -17,8 +17,8 @@ object TournamentRepo {
   private def selectId(id: String) = BSONDocument("_id" -> id)
 
   private val enterableSelect = BSONDocument(
-    "status" -> BSONDocument(
-      "$in" -> List(Status.Created.id, Status.Started.id)))
+    "status" ->
+      BSONDocument("$in" -> List(Status.Created.id, Status.Started.id)))
 
   private val createdSelect = BSONDocument("status" -> Status.Created.id)
   private val startedSelect = BSONDocument("status" -> Status.Started.id)
@@ -103,8 +103,8 @@ object TournamentRepo {
   def publicStarted: Fu[List[Tournament]] =
     coll
       .find(
-        startedSelect ++ BSONDocument(
-          "private" -> BSONDocument("$exists" -> false)))
+        startedSelect ++
+          BSONDocument("private" -> BSONDocument("$exists" -> false)))
       .sort(BSONDocument("createdAt" -> -1))
       .cursor[Tournament]()
       .collect[List]()
@@ -119,10 +119,12 @@ object TournamentRepo {
   def finishedNotable(limit: Int): Fu[List[Tournament]] =
     coll
       .find(
-        finishedSelect ++ BSONDocument(
-          "$or" -> BSONArray(
-            BSONDocument("nbPlayers" -> BSONDocument("$gte" -> 15)),
-            scheduledSelect)))
+        finishedSelect ++
+          BSONDocument(
+            "$or" ->
+              BSONArray(
+                BSONDocument("nbPlayers" -> BSONDocument("$gte" -> 15)),
+                scheduledSelect)))
       .sort(BSONDocument("startsAt" -> -1))
       .cursor[Tournament]()
       .collect[List](limit)
@@ -173,18 +175,21 @@ object TournamentRepo {
       .map(_.flatMap(_.getAs[String]("featured")))
 
   private def allCreatedSelect(aheadMinutes: Int) =
-    createdSelect ++ BSONDocument(
-      "$or" -> BSONArray(
-        BSONDocument("schedule" -> BSONDocument("$exists" -> false)),
-        BSONDocument(
-          "startsAt" -> BSONDocument(
-            "$lt" -> (DateTime.now plusMinutes aheadMinutes)))))
+    createdSelect ++
+      BSONDocument(
+        "$or" ->
+          BSONArray(
+            BSONDocument("schedule" -> BSONDocument("$exists" -> false)),
+            BSONDocument(
+              "startsAt" ->
+                BSONDocument(
+                  "$lt" -> (DateTime.now plusMinutes aheadMinutes)))))
 
   def publicCreatedSorted(aheadMinutes: Int): Fu[List[Tournament]] =
     coll
       .find(
-        allCreatedSelect(aheadMinutes) ++ BSONDocument(
-          "private" -> BSONDocument("$exists" -> false)))
+        allCreatedSelect(aheadMinutes) ++
+          BSONDocument("private" -> BSONDocument("$exists" -> false)))
       .sort(BSONDocument("startsAt" -> 1))
       .cursor[Tournament]()
       .collect[List]()
@@ -198,32 +203,33 @@ object TournamentRepo {
   private def stillWorthEntering: Fu[List[Tournament]] =
     coll
       .find(
-        startedSelect ++ BSONDocument(
-          "private" -> BSONDocument("$exists" -> false)))
+        startedSelect ++
+          BSONDocument("private" -> BSONDocument("$exists" -> false)))
       .sort(BSONDocument("startsAt" -> 1))
       .toList[Tournament](none) map {
       _.filter(_.isStillWorthEntering)
     }
 
   private def isPromotable(tour: Tournament) =
-    tour.startsAt isBefore DateTime
-      .now
-      .plusMinutes {
-        tour.schedule.map(_.freq) map {
-          case Schedule.Freq.Marathon =>
-            24 * 60
-          case Schedule.Freq.Unique =>
-            24 * 60
-          case Schedule.Freq.Monthly =>
-            6 * 60
-          case Schedule.Freq.Weekly =>
-            3 * 60
-          case Schedule.Freq.Daily =>
-            1 * 60
-          case _ =>
-            30
-        } getOrElse 30
-      }
+    tour.startsAt isBefore
+      DateTime
+        .now
+        .plusMinutes {
+          tour.schedule.map(_.freq) map {
+            case Schedule.Freq.Marathon =>
+              24 * 60
+            case Schedule.Freq.Unique =>
+              24 * 60
+            case Schedule.Freq.Monthly =>
+              6 * 60
+            case Schedule.Freq.Weekly =>
+              3 * 60
+            case Schedule.Freq.Daily =>
+              1 * 60
+            case _ =>
+              30
+          } getOrElse 30
+        }
 
   def promotable: Fu[List[Tournament]] =
     stillWorthEntering zip publicCreatedSorted(24 * 60) map {
@@ -284,19 +290,20 @@ object TournamentRepo {
       since: DateTime): Fu[List[Tournament]] =
     coll
       .find(
-        finishedSelect ++ sinceSelect(since) ++ variantSelect(
-          chess.variant.Standard) ++ BSONDocument(
-          "schedule.freq" -> freq.name,
-          "schedule.speed" -> BSONDocument(
-            "$in" -> Schedule.Speed.mostPopular.map(_.name))))
+        finishedSelect ++ sinceSelect(since) ++
+          variantSelect(chess.variant.Standard) ++
+          BSONDocument(
+            "schedule.freq" -> freq.name,
+            "schedule.speed" ->
+              BSONDocument("$in" -> Schedule.Speed.mostPopular.map(_.name))))
       .sort(BSONDocument("startsAt" -> -1))
       .toList[Tournament](Schedule.Speed.mostPopular.size.some)
 
   def lastFinishedDaily(variant: Variant): Fu[Option[Tournament]] =
     coll
       .find(
-        finishedSelect ++ sinceSelect(
-          DateTime.now minusDays 1) ++ variantSelect(variant) ++
+        finishedSelect ++ sinceSelect(DateTime.now minusDays 1) ++
+          variantSelect(variant) ++
           BSONDocument("schedule.freq" -> Schedule.Freq.Daily.name))
       .sort(BSONDocument("startsAt" -> -1))
       .one[Tournament]
@@ -311,18 +318,22 @@ object TournamentRepo {
   def exists(id: String) = coll.count(BSONDocument("_id" -> id).some) map (0 !=)
 
   def isFinished(id: String): Fu[Boolean] =
-    coll.count(
-      BSONDocument("_id" -> id, "status" -> Status.Finished.id).some) map (0 !=)
+    coll
+      .count(BSONDocument("_id" -> id, "status" -> Status.Finished.id).some) map
+      (0 !=)
 
   def toursToWithdrawWhenEntering(tourId: String): Fu[List[Tournament]] =
     coll
       .find(
-        enterableSelect ++ BSONDocument(
-          "_id" -> BSONDocument("$ne" -> tourId),
-          "schedule.freq" -> BSONDocument(
-            "$nin" -> List(
-              Schedule.Freq.Marathon.name,
-              Schedule.Freq.Unique.name))) ++ nonEmptySelect)
+        enterableSelect ++
+          BSONDocument(
+            "_id" -> BSONDocument("$ne" -> tourId),
+            "schedule.freq" ->
+              BSONDocument(
+                "$nin" ->
+                  List(
+                    Schedule.Freq.Marathon.name,
+                    Schedule.Freq.Unique.name))) ++ nonEmptySelect)
       .cursor[Tournament]()
       .collect[List]()
 }

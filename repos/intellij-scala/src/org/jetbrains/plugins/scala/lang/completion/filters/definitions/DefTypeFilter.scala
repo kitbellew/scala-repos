@@ -36,36 +36,21 @@ class DefTypeFilter extends ElementFilter {
               _: ScBlock | _: ScCaseClause | _: ScTemplateBody |
               _: ScClassParameter | _: ScalaFile
             )
-            if !parent.isInstanceOf[ScalaFile] || parent
-              .asInstanceOf[ScalaFile]
-              .isScriptFile() =>
-          if ((
-                leaf.getPrevSibling == null || leaf
+            if !parent.isInstanceOf[ScalaFile] ||
+              parent.asInstanceOf[ScalaFile].isScriptFile() =>
+          if ((leaf.getPrevSibling == null ||
+              leaf.getPrevSibling.getPrevSibling == null ||
+              leaf.getPrevSibling.getPrevSibling.getNode.getElementType !=
+                ScalaTokenTypes.kDEF) &&
+              (parent.getPrevSibling == null ||
+              parent.getPrevSibling.getPrevSibling == null ||
+              (parent.getPrevSibling.getPrevSibling.getNode.getElementType !=
+                ScalaElementTypes.MATCH_STMT ||
+                !parent
                   .getPrevSibling
-                  .getPrevSibling == null ||
-                leaf
                   .getPrevSibling
-                  .getPrevSibling
-                  .getNode
-                  .getElementType != ScalaTokenTypes.kDEF
-              ) &&
-              (
-                parent.getPrevSibling == null || parent
-                  .getPrevSibling
-                  .getPrevSibling == null ||
-                (
-                  parent
-                    .getPrevSibling
-                    .getPrevSibling
-                    .getNode
-                    .getElementType != ScalaElementTypes.MATCH_STMT ||
-                  !parent
-                    .getPrevSibling
-                    .getPrevSibling
-                    .getLastChild
-                    .isInstanceOf[PsiErrorElement]
-                )
-              ))
+                  .getLastChild
+                  .isInstanceOf[PsiErrorElement])))
             return true
         case _ =>
       }

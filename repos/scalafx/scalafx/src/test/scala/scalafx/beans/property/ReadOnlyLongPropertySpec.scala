@@ -230,20 +230,22 @@ class ReadOnlyLongPropertySpec extends FlatSpec with BeforeAndAfterEach {
     booleanProperty() should be(true)
   }
 
-  it should "support bindable infix greater than or equal to with a property" in {
-    booleanProperty <== readOnlyLongProperty >= longProperty1
-    longProperty1() = 49
-    booleanProperty() should be(true)
-    longProperty1() = 51
-    booleanProperty() should be(false)
-  }
+  it should
+    "support bindable infix greater than or equal to with a property" in {
+      booleanProperty <== readOnlyLongProperty >= longProperty1
+      longProperty1() = 49
+      booleanProperty() should be(true)
+      longProperty1() = 51
+      booleanProperty() should be(false)
+    }
 
-  it should "support bindable infix greater than or equal to with a constant" in {
-    booleanProperty <== readOnlyLongProperty >= 18349
-    booleanProperty() should be(false)
-    booleanProperty <== readOnlyLongProperty >= 13
-    booleanProperty() should be(true)
-  }
+  it should
+    "support bindable infix greater than or equal to with a constant" in {
+      booleanProperty <== readOnlyLongProperty >= 18349
+      booleanProperty() should be(false)
+      booleanProperty <== readOnlyLongProperty >= 13
+      booleanProperty() should be(true)
+    }
 
   it should "support invalidate/change triggers on binding expressions" in {
     var invalidateCount = 0

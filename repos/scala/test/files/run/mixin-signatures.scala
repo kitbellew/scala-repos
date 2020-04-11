@@ -189,14 +189,13 @@ object Test {
 
   def show(clazz: Class[_]) {
     print(clazz + " {")
-    clazz.getMethods.sortBy(x => (x.getName, x.isBridge, x.toString)) filter (
-      _.getName.length == 1
-    ) foreach { m =>
-      print("\n  " + m + flagsString(m))
-      if ("" + m != "" + m.toGenericString) {
-        print("\n    generic: " + m.toGenericString)
+    clazz.getMethods.sortBy(x => (x.getName, x.isBridge, x.toString)) filter
+      (_.getName.length == 1) foreach { m =>
+        print("\n  " + m + flagsString(m))
+        if ("" + m != "" + m.toGenericString) {
+          print("\n    generic: " + m.toGenericString)
+        }
       }
-    }
     println("\n}")
     println("")
   }

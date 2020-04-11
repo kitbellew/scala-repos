@@ -5,8 +5,8 @@ object Test extends CompilerTest {
 
   override lazy val units: List[CompilationUnit] = {
     // We can test this on JDK6.
-    javaCompilationUnits(global)(defaultMethodSource) ++ compilationUnits(
-      global)(scalaExtendsDefault)
+    javaCompilationUnits(global)(defaultMethodSource) ++
+      compilationUnits(global)(scalaExtendsDefault)
   }
 
   private def defaultMethodSource =

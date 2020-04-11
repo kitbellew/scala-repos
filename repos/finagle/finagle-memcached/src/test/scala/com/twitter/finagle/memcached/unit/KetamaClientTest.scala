@@ -82,8 +82,8 @@ class KetamaClientTest extends FunSuite with MockitoSugar {
       val expectedService = ipToService(testcase(3))
       val randomResponse = Number(rng.nextLong)
 
-      when(expectedService.apply(any[Incr])) thenReturn Future
-        .value(randomResponse)
+      when(expectedService.apply(any[Incr])) thenReturn
+        Future.value(randomResponse)
 
       assert(Await.result(mockClient.incr("foo")).get == randomResponse.value)
     }

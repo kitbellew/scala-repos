@@ -57,10 +57,9 @@ private[serverset2] object LocalServerSetService extends App {
   @volatile
   private var nextMemberId = 0
 
-  def createServerSetPaths(num: Int): Seq[String] =
-    (1 to num).map { id =>
-      s"/twitter/service/testset_$id/staging/job"
-    }
+  def createServerSetPaths(num: Int): Seq[String] = (1 to num).map { id =>
+    s"/twitter/service/testset_$id/staging/job"
+  }
 
   def main(): Unit = {
     logger.info(s"Starting zookeeper on localhost:${zkListenPort()}")
@@ -125,11 +124,12 @@ private[serverset2] object LocalServerSetService extends App {
 
   private def addMembers(serversetIndex: Int, toAdd: Int): Unit = {
     (1 to toAdd).foreach { _ =>
-      membersets(serversetIndex) :+= zkClient
-        .create()
-        .creatingParentsIfNeeded()
-        .withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
-        .forPath(serversets(serversetIndex) + "/member_", nextJsonMember())
+      membersets(serversetIndex) :+=
+        zkClient
+          .create()
+          .creatingParentsIfNeeded()
+          .withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
+          .forPath(serversets(serversetIndex) + "/member_", nextJsonMember())
     }
   }
 

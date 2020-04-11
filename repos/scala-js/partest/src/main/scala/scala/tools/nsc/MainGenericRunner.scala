@@ -67,8 +67,9 @@ class MainGenericRunner {
     val logger = new ScalaConsoleLogger(Level.Warn)
     val jsConsole = new ScalaConsoleJSConsole
     val semantics = readSemantics()
-    val ir = (loadIR(command.settings.classpathURLs) :+
-      runnerIR(command.thingToRun, command.arguments))
+    val ir =
+      (loadIR(command.settings.classpathURLs) :+
+        runnerIR(command.thingToRun, command.arguments))
 
     val jsRunner = new MemVirtualJSFile("launcher.js")
       .withContent(s"PartestLauncher().launch();")

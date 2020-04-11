@@ -100,13 +100,14 @@ final class Env(
 
 object Env {
 
-  lazy val current: Env = "fishnet" boot new Env(
-    system = lila.common.PlayApp.system,
-    uciMemo = lila.game.Env.current.uciMemo,
-    hub = lila.hub.Env.current,
-    db = lila.db.Env.current,
-    config = lila.common.PlayApp loadConfig "fishnet",
-    scheduler = lila.common.PlayApp.scheduler,
-    bus = lila.common.PlayApp.system.lilaBus,
-    saveAnalysis = lila.analyse.Env.current.analyser.save _)
+  lazy val current: Env = "fishnet" boot
+    new Env(
+      system = lila.common.PlayApp.system,
+      uciMemo = lila.game.Env.current.uciMemo,
+      hub = lila.hub.Env.current,
+      db = lila.db.Env.current,
+      config = lila.common.PlayApp loadConfig "fishnet",
+      scheduler = lila.common.PlayApp.scheduler,
+      bus = lila.common.PlayApp.system.lilaBus,
+      saveAnalysis = lila.analyse.Env.current.analyser.save _)
 }

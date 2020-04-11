@@ -65,8 +65,8 @@ class LogisticRegressionModel @Since("1.3.0") (
     val weightsSizeWithoutIntercept = (numClasses - 1) * numFeatures
     val weightsSizeWithIntercept = (numClasses - 1) * (numFeatures + 1)
     require(
-      weights.size == weightsSizeWithoutIntercept || weights
-        .size == weightsSizeWithIntercept,
+      weights.size == weightsSizeWithoutIntercept ||
+        weights.size == weightsSizeWithIntercept,
       s"LogisticRegressionModel.load with numClasses = $numClasses and numFeatures = $numFeatures" +
         s" expected weights of length $weightsSizeWithoutIntercept (without intercept)" +
         s" or $weightsSizeWithIntercept (with intercept)," +

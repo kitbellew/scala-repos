@@ -50,8 +50,7 @@ case class ClusterMetricsSettings(config: Config) {
   } requiring (_ > Duration.Zero, "collector.gossip-interval must be > 0")
   val CollectorMovingAverageHalfLife: FiniteDuration = {
     cc.getMillisDuration("collector.moving-average-half-life")
-  } requiring (
-    _ > Duration.Zero, "collector.moving-average-half-life must be > 0"
-  )
+  } requiring
+    (_ > Duration.Zero, "collector.moving-average-half-life must be > 0")
 
 }

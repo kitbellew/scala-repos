@@ -59,9 +59,8 @@ protected[model] trait TemplateComponent {
         userName: Column[String],
         repositoryName: Column[String],
         milestoneId: Column[Int]) =
-      byRepository(userName, repositoryName) && (
-        this.milestoneId === milestoneId
-      )
+      byRepository(userName, repositoryName) &&
+        (this.milestoneId === milestoneId)
   }
 
   trait CommitTemplate extends BasicTemplate {

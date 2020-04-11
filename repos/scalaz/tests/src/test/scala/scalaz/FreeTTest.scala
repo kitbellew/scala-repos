@@ -97,39 +97,40 @@ object FreeTTest extends SpecLite {
 
     "not stack overflow with 50k left-associated binds" in {
       val expected = Applicative[FreeTListOption].point(())
-      val result =
-        (0 until 50000)
-          .foldLeft(Applicative[FreeTListOption].point(()))((fu, i) =>
-            fu.flatMap(u => Applicative[FreeTListOption].point(u)))
+      val result = (0 until 50000)
+        .foldLeft(Applicative[FreeTListOption].point(()))((fu, i) =>
+          fu.flatMap(u => Applicative[FreeTListOption].point(u)))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }
 
     "not stack overflow with bind followed by 50k maps" in {
       val expected = Applicative[FreeTListOption].point(())
-      val result =
-        (0 until 50000).foldLeft(
-          ().point[FreeTListOption].flatMap(u => u.point[FreeTListOption]))(
-          (fu, i) => fu.map(u => u))
+      val result = (0 until 50000).foldLeft(
+        ().point[FreeTListOption].flatMap(u => u.point[FreeTListOption]))(
+        (fu, i) => fu.map(u => u))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }
 
-    "hoist" ! forAll { a: FreeTListOption[Int] =>
-      val b = FreeTListOption(a.f.hoist(NaturalTransformation.refl))
-      Equal[FreeTListOption[Int]].equal(a, b)
-    }
+    "hoist" !
+      forAll { a: FreeTListOption[Int] =>
+        val b = FreeTListOption(a.f.hoist(NaturalTransformation.refl))
+        Equal[FreeTListOption[Int]].equal(a, b)
+      }
 
-    "interpret" ! forAll { a: FreeTListOption[Int] =>
-      val b = FreeTListOption(a.f.interpret(NaturalTransformation.refl))
-      Equal[FreeTListOption[Int]].equal(a, b)
-    }
+    "interpret" !
+      forAll { a: FreeTListOption[Int] =>
+        val b = FreeTListOption(a.f.interpret(NaturalTransformation.refl))
+        Equal[FreeTListOption[Int]].equal(a, b)
+      }
   }
 
-  "isoFree" ! forAll { a: FreeOption[Int] =>
-    val iso = FreeT.isoFree[Option]
-    Equal[FreeOption[Int]].equal(FreeOption(iso.to(iso.from(a.f))), a)
-  }
+  "isoFree" !
+    forAll { a: FreeOption[Int] =>
+      val iso = FreeT.isoFree[Option]
+      Equal[FreeOption[Int]].equal(FreeOption(iso.to(iso.from(a.f))), a)
+    }
 
   private def compilationTest = {
     val a: String \/ Int = \/-(42)

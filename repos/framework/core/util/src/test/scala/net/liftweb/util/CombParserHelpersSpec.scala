@@ -59,10 +59,11 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       import StringWithWhiteGen._
       val whiteSpaceParse =
         (s: String) =>
-          whiteSpace(s) must beLike {
-            case Success(x, y) =>
-              x.toString must_== "()"
-          }
+          whiteSpace(s) must
+            beLike {
+              case Success(x, y) =>
+                x.toString must_== "()"
+            }
       forAll(whiteSpaceParse)
     }
     "provide an acceptCI parser to parse whatever string matching another string ignoring case" in {
@@ -104,17 +105,19 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
 
     "provide a slash parser" in {
       slash("/").get must_== '/'
-      slash("x") must beLike {
-        case Failure(_, _) =>
-          1 must_== 1
-      }
+      slash("x") must
+        beLike {
+          case Failure(_, _) =>
+            1 must_== 1
+        }
     }
     "provide a colon parser" in {
       colon(":").get must_== ':'
-      colon("x") must beLike {
-        case Failure(_, _) =>
-          1 must_== 1
-      }
+      colon("x") must
+        beLike {
+          case Failure(_, _) =>
+            1 must_== 1
+        }
     }
     "provide a EOL parser which parses the any and discards any end of line character" in {
       List("\n", "\r") map { s =>
@@ -149,9 +152,8 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       implicit def pick3Letters = AbcdStringGen.pickN(3, List("a", "b", "c"))
 
       forAll { (s: String) =>
-        (
-          !(new scala.collection.immutable.StringOps(s)).isEmpty
-        ) ==> permuteAllParsers(s)
+        (!(new scala.collection.immutable.StringOps(s)).isEmpty) ==>
+          permuteAllParsers(s)
       }
     }
     "provide a repNN parser succeeding if an input can be parsed n times with a parser" in {
@@ -159,9 +161,8 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       implicit def pick3Letters = AbcdStringGen.pickN(3, List("a", "a", "a"))
 
       forAll { (s: String) =>
-        (
-          !(new scala.collection.immutable.StringOps(s)).isEmpty
-        ) ==> repNNParser(s)
+        (!(new scala.collection.immutable.StringOps(s)).isEmpty) ==>
+          repNNParser(s)
       }
     }
   }

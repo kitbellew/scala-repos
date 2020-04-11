@@ -144,8 +144,8 @@ trait BaseParsers extends RegexParsers {
         Failure("No chars before current char, cannot look behind.", in)
       } else if (!cs.contains(source.charAt(offset - 1))) {
         Failure(
-          "Previous char was '" + source
-            .charAt(offset - 1) + "' expected one of " + cs,
+          "Previous char was '" + source.charAt(offset - 1) +
+            "' expected one of " + cs,
           in)
       } else {
         Success((), in)
@@ -168,8 +168,8 @@ trait BaseParsers extends RegexParsers {
         Success(c, in.rest)
       else
         Failure(
-          verboseString(c) + " not in range " +
-            verboseString(begin) + " - " + verboseString(end),
+          verboseString(c) + " not in range " + verboseString(begin) + " - " +
+            verboseString(end),
           in)
     }
 
@@ -190,8 +190,8 @@ trait BaseParsers extends RegexParsers {
           Success(c, in.rest)
         else
           Failure(
-            verboseString(c) + " not in range " +
-              verboseString(begin) + " - " + verboseString(end),
+            verboseString(c) + " not in range " + verboseString(begin) + " - " +
+              verboseString(end),
             in)
       }
     }
@@ -283,13 +283,14 @@ trait BaseParsers extends RegexParsers {
   ) //'\u10000' -> '\uEFFFF'
 
   val xmlNameCharRanges: SortedMap[Char, Char] =
-    xmlNameStartCharRanges ++ SortedMap(
-      '-' -> '-',
-      '.' -> '.',
-      '0' -> '9',
-      '\u00b7' -> '\u00b7',
-      '\u0300' -> '\u0369',
-      '\u203F' -> '\u2040')
+    xmlNameStartCharRanges ++
+      SortedMap(
+        '-' -> '-',
+        '.' -> '.',
+        '0' -> '9',
+        '\u00b7' -> '\u00b7',
+        '\u0300' -> '\u0369',
+        '\u203F' -> '\u2040')
 
   /**Parser for one char that starts an XML name.
     * According to W3C specs except that range #x10000 to #xEFFFF
@@ -304,26 +305,25 @@ trait BaseParsers extends RegexParsers {
   /** Parses an XML name (tag or attribute name)
     */
   def xmlName: Parser[String] =
-    xmlNameStartChar ~ (xmlNameChar *) ^^ {
-      case c ~ cs =>
-        c + cs.mkString
-    }
+    xmlNameStartChar ~
+      (xmlNameChar *) ^^ {
+        case c ~ cs =>
+          c + cs.mkString
+      }
 
   /** Parses a Simplified xml attribute: everything between quotes ("foo")
     * everything between the quotes is run through the escape handling
     * That way you can omit xml escaping when writing inline XML in markdown.
     */
   def xmlAttrVal: Parser[String] =
-    (
-      '"' ~> ((not('"') ~> aChar) *) <~ '"' ^^ {
+    ('"' ~>
+      ((not('"') ~> aChar) *) <~ '"' ^^ {
         '"' + _.mkString + '"'
-      }
-    ) |
-      (
-        '\'' ~> ((not('\'') ~> aChar) *) <~ '\'' ^^ {
+      }) |
+      ('\'' ~>
+        ((not('\'') ~> aChar) *) <~ '\'' ^^ {
           '\'' + _.mkString + '\''
-        }
-      )
+        })
 
   /** Parses an XML Attribute with simplified value handling like xmlAttrVal.
     */
@@ -336,10 +336,12 @@ trait BaseParsers extends RegexParsers {
   /** Parses an xml start or empty tag, attribute values are escaped.
     */
   def xmlStartOrEmptyTag: Parser[String] =
-    '<' ~> xmlName ~ (xmlAttr *) ~ ows ~ (">" | "/>") ^^ {
-      case name ~ attrs ~ w ~ e =>
-        '<' + name + attrs.mkString + w + e
-    }
+    '<' ~> xmlName ~
+      (xmlAttr *) ~ ows ~
+      (">" | "/>") ^^ {
+        case name ~ attrs ~ w ~ e =>
+          '<' + name + attrs.mkString + w + e
+      }
 
   /** Parses closing xml tags.
     */

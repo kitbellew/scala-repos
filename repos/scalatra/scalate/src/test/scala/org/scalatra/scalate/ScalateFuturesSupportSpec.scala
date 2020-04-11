@@ -280,8 +280,8 @@ class ScalateFuturesSupportSpec extends MutableScalatraSpec {
   // verify that it's looking in the right place.
   def e5 =
     get("/layout-strategy") {
-      body must_== (
-        List(
+      body must_==
+        (List(
           "/WEB-INF/templates/layouts/default.mustache",
           "/WEB-INF/templates/layouts/default.ssp",
           "/WEB-INF/templates/layouts/default.scaml",
@@ -294,8 +294,7 @@ class ScalateFuturesSupportSpec extends MutableScalatraSpec {
           "/WEB-INF/scalate/layouts/default.ssp",
           "/WEB-INF/scalate/layouts/default.scaml",
           "/WEB-INF/scalate/layouts/default.jade"
-        ) mkString ";"
-      )
+        ) mkString ";")
     }
 
   def e6 =

@@ -219,15 +219,14 @@ class GoToImplicitConversionAction
                   res += expr
               }
             case expr: ScExpression
-                if guard || expr
-                  .getImplicitConversions(fromUnder = false)
-                  ._2
-                  .isDefined ||
-                  (
-                    ScUnderScoreSectionUtil.isUnderscoreFunction(expr) &&
-                      expr.getImplicitConversions(fromUnder = true)._2.isDefined
-                  ) || (
-                  expr.getAdditionalExpression.isDefined &&
+                if guard ||
+                  expr.getImplicitConversions(fromUnder = false)._2.isDefined ||
+                  (ScUnderScoreSectionUtil.isUnderscoreFunction(expr) &&
+                    expr
+                      .getImplicitConversions(fromUnder = true)
+                      ._2
+                      .isDefined) ||
+                  (expr.getAdditionalExpression.isDefined &&
                     expr
                       .getAdditionalExpression
                       .get
@@ -237,8 +236,7 @@ class GoToImplicitConversionAction
                         expectedOption = Some(
                           expr.getAdditionalExpression.get._2))
                       ._2
-                      .isDefined
-                ) =>
+                      .isDefined) =>
               res += expr
             case _ =>
           }

@@ -29,8 +29,9 @@ case class ApiIssue(
     if (isPullRequest) {
       Some(
         Map(
-          "url" -> ApiPath(
-            s"/api/v3/repos/${repositoryName.fullName}/pulls/${number}"),
+          "url" ->
+            ApiPath(
+              s"/api/v3/repos/${repositoryName.fullName}/pulls/${number}"),
           "html_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}")
           // "diff_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.diff"),
           // "patch_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.patch")

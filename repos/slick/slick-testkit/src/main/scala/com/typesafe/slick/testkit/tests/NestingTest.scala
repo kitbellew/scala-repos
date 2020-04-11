@@ -62,26 +62,22 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
     val q2a =
       for {
         a ~ b ~ c <-
-          ts.filter(_.a === 1).map(t => t.a ~ t.b ~ 4) unionAll ts
-            .filter(_.a === 2)
-            .map(t => t.a ~ t.b ~ 5)
+          ts.filter(_.a === 1).map(t => t.a ~ t.b ~ 4) unionAll
+            ts.filter(_.a === 2).map(t => t.a ~ t.b ~ 5)
       } yield a ~ b ~ (c * 2)
 
     val q2b =
       for {
         (a, b, c) <-
-          ts.filter(_.a === 1)
-            .map(t => (t.a, t.b, LiteralColumn(4))) unionAll ts
-            .filter(_.a === 2)
-            .map(t => (t.a, t.b, LiteralColumn(5)))
+          ts.filter(_.a === 1).map(t => (t.a, t.b, LiteralColumn(4))) unionAll
+            ts.filter(_.a === 2).map(t => (t.a, t.b, LiteralColumn(5)))
       } yield a ~ b ~ (c * 2)
 
     val q2c =
       for {
         (a, b, c) <-
-          ts.filter(_.a === 1).map(t => (t.a, t.b, 4)) unionAll ts
-            .filter(_.a === 2)
-            .map(t => (t.a, t.b, 5))
+          ts.filter(_.a === 1).map(t => (t.a, t.b, 4)) unionAll
+            ts.filter(_.a === 2).map(t => (t.a, t.b, 5))
       } yield a ~ b ~ (c * 2)
 
     seq(
@@ -156,16 +152,14 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
 
     lazy val t2 = seq(
       mark("q1b", q1b.result).map(
-        _ shouldBe r
-          .map(t => Some(t))
-          .map(_.getOrElse((0, "", None: Option[String])))),
+        _ shouldBe
+          r.map(t => Some(t)).map(_.getOrElse((0, "", None: Option[String])))),
       mark("q2b", q2b.result).map(_ shouldBe r.map(t => Some(t._1)).map(_.get)),
       mark("q3b", q3b.result)
         .map(_ shouldBe r.map(t => t._3).filter(_.isDefined).map(_.get)),
       mark("a4b", q4b.result).map(
-        _ shouldBe r
-          .map(t => Some(t._3))
-          .map(_.getOrElse(None: Option[String])))
+        _ shouldBe
+          r.map(t => Some(t._3)).map(_.getOrElse(None: Option[String])))
     )
 
     // Unpack result types
@@ -226,9 +220,8 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
         .result
         .named("q4d")
         .map(
-          _ shouldBe r
-            .map(t => Some(t._3))
-            .map(_.filter(_.isDefined).map(_.get)))
+          _ shouldBe
+            r.map(t => Some(t._3)).map(_.filter(_.isDefined).map(_.get)))
     )
 
     // Use Option.flatMap
@@ -254,34 +247,32 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
 
     lazy val t5 = seq(
       mark("q1e1", q1e1.result).map(
-        _ shouldBe r
-          .map(t => Some(t))
-          .map { to =>
-            to.flatMap { t =>
-              Some(t._2)
-            }
-          }),
+        _ shouldBe
+          r.map(t => Some(t))
+            .map { to =>
+              to.flatMap { t =>
+                Some(t._2)
+              }
+            }),
       mark("q1e2", q1e2.result).map(
-        _ shouldBe r
-          .map(t => Some(t))
-          .map { to =>
-            to.flatMap { t =>
-              t._3
-            }
-          }),
+        _ shouldBe
+          r.map(t => Some(t))
+            .map { to =>
+              to.flatMap { t =>
+                t._3
+              }
+            }),
       mark("q1e3", q1e3.result).map(
-        _ shouldBe r
-          .map(t => Some(t))
-          .map(to => Some(to))
-          .map(_.flatMap(identity))),
+        _ shouldBe
+          r.map(t => Some(t)).map(to => Some(to)).map(_.flatMap(identity))),
       mark("q2e", q2e.result).map(
-        _ shouldBe r
-          .map(t => Some(t._1))
-          .map { io =>
-            io.flatMap { i =>
-              Some(i)
-            }
-          })
+        _ shouldBe
+          r.map(t => Some(t._1))
+            .map { io =>
+              io.flatMap { i =>
+                Some(i)
+              }
+            })
     )
 
     // Use Option.flatten
@@ -319,57 +310,58 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
         .result
         .named("q1f1")
         .map(
-          _ shouldBe Vector(
-            Some(Some((1, "1", Some(1)))),
-            Some(Some((2, "2", Some(2)))),
-            Some(Some((3, "3", None))))),
+          _ shouldBe
+            Vector(
+              Some(Some((1, "1", Some(1)))),
+              Some(Some((2, "2", Some(2)))),
+              Some(Some((3, "3", None))))),
       q1f2
         .result
         .named("q1f2")
         .map(
-          _ shouldBe r
-            .map(t => Some(t))
-            .map { to =>
-              Some(to).flatten
-            }),
+          _ shouldBe
+            r.map(t => Some(t))
+              .map { to =>
+                Some(to).flatten
+              }),
       q1f3
         .result
         .named("q1f3")
         .map(
-          _ shouldBe r
-            .map(t => Some(t))
-            .map { to =>
-              Some(to)
-            }
-            .map(_.flatten)),
+          _ shouldBe
+            r.map(t => Some(t))
+              .map { to =>
+                Some(to)
+              }
+              .map(_.flatten)),
       q2f1
         .result
         .named("q2f1")
         .map(
-          _ shouldBe r
-            .map(t => Some(t._1))
-            .map { io =>
-              Some(io)
-            }),
+          _ shouldBe
+            r.map(t => Some(t._1))
+              .map { io =>
+                Some(io)
+              }),
       q2f2
         .result
         .named("q2f2")
         .map(
-          _ shouldBe r
-            .map(t => Some(t._1))
-            .map { io =>
-              Some(io).flatten
-            }),
+          _ shouldBe
+            r.map(t => Some(t._1))
+              .map { io =>
+                Some(io).flatten
+              }),
       q2f3
         .result
         .named("q2f3")
         .map(
-          _ shouldBe r
-            .map(t => Some(t._1))
-            .map { io =>
-              Some(io)
-            }
-            .map(_.flatten))
+          _ shouldBe
+            r.map(t => Some(t._1))
+              .map { io =>
+                Some(io)
+              }
+              .map(_.flatten))
     )
 
     setup >> t1 >> t2 >> t3 >> t4 >> t5 >> t6

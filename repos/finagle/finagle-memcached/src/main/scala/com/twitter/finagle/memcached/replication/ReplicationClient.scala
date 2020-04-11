@@ -64,7 +64,8 @@ object ReplicationClient {
     val repStatsReceiver =
       clientBuilder map {
         _.statsReceiver.scope("cache_replication")
-      } getOrElse (NullStatsReceiver)
+      } getOrElse
+        (NullStatsReceiver)
     new BaseReplicationClient(underlyingClients, repStatsReceiver)
   }
 
@@ -119,9 +120,7 @@ class BaseReplicationClient(
         clients: Seq[Client],
         currentRes: GetResult): Future[GetResult] =
       clients match {
-        case _
-            if currentRes.misses.isEmpty &&
-              currentRes.failures.isEmpty =>
+        case _ if currentRes.misses.isEmpty && currentRes.failures.isEmpty =>
           Future.value(currentRes)
         case Seq() =>
           Future.value(currentRes)
@@ -478,7 +477,8 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
           val newCas = uniques map {
             case Buf.Utf8(s) =>
               s
-          } mkString ("|")
+          } mkString
+            ("|")
           val newValue = Value(Buf.Utf8(key), value, Some(Buf.Utf8(newCas)))
           GetsResult(GetResult(hits = Map(key -> newValue)))
         case (key, ConsistentReplication(None)) =>
@@ -489,8 +489,9 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
         case (key, _) =>
           GetsResult(
             GetResult(failures = Map(
-              key -> SimpleReplicationFailure(
-                "One or more underlying replica failed gets"))))
+              key ->
+                SimpleReplicationFailure(
+                  "One or more underlying replica failed gets"))))
       }
       GetResult.merged(getsResultSeq.toSeq)
     }

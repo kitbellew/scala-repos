@@ -74,74 +74,76 @@ abstract class RestartFirstSeedNodeSpec
   }
 
   "Cluster seed nodes" must {
-    "be able to restart first seed node and join other seed nodes" taggedAs LongRunningTest in within(
-      40 seconds) {
-      // seed1System is a separate ActorSystem, to be able to simulate restart
-      // we must transfer its address to seed2 and seed3
-      runOn(seed2, seed3) {
-        system.actorOf(
-          Props(
-            new Actor {
-              def receive = {
-                case a: Address ⇒
-                  seedNode1Address = a
-                  sender() ! "ok"
-              }
-            }).withDeploy(Deploy.local),
-          name = "address-receiver")
-        enterBarrier("seed1-address-receiver-ready")
-      }
-
-      runOn(seed1) {
-        enterBarrier("seed1-address-receiver-ready")
-        seedNode1Address = Cluster(seed1System).selfAddress
-        List(seed2, seed3) foreach { r ⇒
-          system.actorSelection(
-            RootActorPath(r) / "user" / "address-receiver") ! seedNode1Address
-          expectMsg(5 seconds, "ok")
+    "be able to restart first seed node and join other seed nodes" taggedAs
+      LongRunningTest in
+      within(40 seconds) {
+        // seed1System is a separate ActorSystem, to be able to simulate restart
+        // we must transfer its address to seed2 and seed3
+        runOn(seed2, seed3) {
+          system.actorOf(
+            Props(
+              new Actor {
+                def receive = {
+                  case a: Address ⇒
+                    seedNode1Address = a
+                    sender() ! "ok"
+                }
+              }).withDeploy(Deploy.local),
+            name = "address-receiver")
+          enterBarrier("seed1-address-receiver-ready")
         }
-      }
-      enterBarrier("seed1-address-transfered")
 
-      // now we can join seed1System, seed2, seed3 together
-      runOn(seed1) {
-        Cluster(seed1System).joinSeedNodes(seedNodes)
-        awaitAssert(Cluster(seed1System).readView.members.size should ===(3))
-        awaitAssert(
-          Cluster(seed1System).readView.members.map(_.status) should ===(
-            Set(Up)))
-      }
-      runOn(seed2, seed3) {
-        cluster.joinSeedNodes(seedNodes)
-        awaitMembersUp(3)
-      }
-      enterBarrier("started")
-
-      // shutdown seed1System
-      runOn(seed1) {
-        shutdown(seed1System, remainingOrDefault)
-      }
-      enterBarrier("seed1-shutdown")
-
-      // then start restartedSeed1System, which has the same address as seed1System
-      runOn(seed1) {
-        Cluster(restartedSeed1System).joinSeedNodes(seedNodes)
-        within(20.seconds) {
-          awaitAssert(
-            Cluster(restartedSeed1System).readView.members.size should ===(3))
-          awaitAssert(
-            Cluster(restartedSeed1System)
-              .readView
-              .members
-              .map(_.status) should ===(Set(Up)))
+        runOn(seed1) {
+          enterBarrier("seed1-address-receiver-ready")
+          seedNode1Address = Cluster(seed1System).selfAddress
+          List(seed2, seed3) foreach { r ⇒
+            system
+              .actorSelection(RootActorPath(r) / "user" / "address-receiver") !
+              seedNode1Address
+            expectMsg(5 seconds, "ok")
+          }
         }
-      }
-      runOn(seed2, seed3) {
-        awaitMembersUp(3)
-      }
-      enterBarrier("seed1-restarted")
+        enterBarrier("seed1-address-transfered")
 
-    }
+        // now we can join seed1System, seed2, seed3 together
+        runOn(seed1) {
+          Cluster(seed1System).joinSeedNodes(seedNodes)
+          awaitAssert(Cluster(seed1System).readView.members.size should ===(3))
+          awaitAssert(
+            Cluster(seed1System).readView.members.map(_.status) should
+              ===(Set(Up)))
+        }
+        runOn(seed2, seed3) {
+          cluster.joinSeedNodes(seedNodes)
+          awaitMembersUp(3)
+        }
+        enterBarrier("started")
+
+        // shutdown seed1System
+        runOn(seed1) {
+          shutdown(seed1System, remainingOrDefault)
+        }
+        enterBarrier("seed1-shutdown")
+
+        // then start restartedSeed1System, which has the same address as seed1System
+        runOn(seed1) {
+          Cluster(restartedSeed1System).joinSeedNodes(seedNodes)
+          within(20.seconds) {
+            awaitAssert(
+              Cluster(restartedSeed1System).readView.members.size should ===(3))
+            awaitAssert(
+              Cluster(restartedSeed1System)
+                .readView
+                .members
+                .map(_.status) should ===(Set(Up)))
+          }
+        }
+        runOn(seed2, seed3) {
+          awaitMembersUp(3)
+        }
+        enterBarrier("seed1-restarted")
+
+      }
 
   }
 }

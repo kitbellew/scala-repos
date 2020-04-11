@@ -19,8 +19,8 @@ trait CollectionsTestBase {
   class C extends B
 
   class CustomComparable(val v: Int) extends jl.Comparable[CustomComparable] {
-    override def compareTo(o: CustomComparable): Int =
-      (v % 8).compareTo(o.v % 8)
+    override def compareTo(o: CustomComparable): Int = (v % 8)
+      .compareTo(o.v % 8)
 
     override def toString(): String = s"CustomComparable($v)"
   }

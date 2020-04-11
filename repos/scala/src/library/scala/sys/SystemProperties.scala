@@ -42,11 +42,8 @@ class SystemProperties
 
   def names: Iterator[String] =
     wrapAccess(
-      System
-        .getProperties()
-        .stringPropertyNames()
-        .asScala
-        .iterator) getOrElse Iterator.empty
+      System.getProperties().stringPropertyNames().asScala.iterator) getOrElse
+      Iterator.empty
 
   def get(key: String) =
     wrapAccess(Option(System.getProperty(key))) flatMap (x => x)

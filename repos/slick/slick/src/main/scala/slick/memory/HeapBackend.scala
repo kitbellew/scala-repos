@@ -157,9 +157,10 @@ trait HeapBackend extends RelationalBackend with Logging {
       columns.foldLeft(v2) {
         case (z, c) =>
           if (c.isUnique)
-            z andThen createUniquenessVerifier(
-              "<unique column " + c.sym.name + ">",
-              Vector(c.sym))
+            z andThen
+              createUniquenessVerifier(
+                "<unique column " + c.sym.name + ">",
+                Vector(c.sym))
           else
             z
       }
@@ -206,7 +207,8 @@ trait HeapBackend extends RelationalBackend with Logging {
           val e = extract(row)
           if (hash contains e)
             throw new SlickException(
-              "Uniqueness constraint " + name + " violated. Duplicate data: " + e)
+              "Uniqueness constraint " + name + " violated. Duplicate data: " +
+                e)
         }
         def inserted(row: Row) {
           hash += extract(row)

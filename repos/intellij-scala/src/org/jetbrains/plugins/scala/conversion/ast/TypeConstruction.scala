@@ -67,10 +67,13 @@ object TypeConstruction {
       case p @ ScParameterizedType(des, args) =>
         val typeConstruction: IntermediateNode = TypeConstruction(
           des.presentableText)
-        buffer += (
+        buffer +=
           (
-            typeConstruction,
-            ScType.extractClass(p).flatMap(el => Option(el.getQualifiedName))))
+            (
+              typeConstruction,
+              ScType
+                .extractClass(p)
+                .flatMap(el => Option(el.getQualifiedName))))
         val argsOnLevel = args.map(getParts(_, buffer))
         ParametrizedConstruction(typeConstruction, argsOnLevel)
       case JavaArrayType(arg) =>
@@ -78,12 +81,13 @@ object TypeConstruction {
       case otherType =>
         val typeConstruction: IntermediateNode = TypeConstruction(
           otherType.presentableText)
-        buffer += (
+        buffer +=
           (
-            typeConstruction,
-            ScType
-              .extractClass(otherType)
-              .flatMap(el => Option(el.getQualifiedName))))
+            (
+              typeConstruction,
+              ScType
+                .extractClass(otherType)
+                .flatMap(el => Option(el.getQualifiedName))))
         typeConstruction
     }
   }

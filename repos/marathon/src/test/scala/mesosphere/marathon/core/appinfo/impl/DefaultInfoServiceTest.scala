@@ -142,8 +142,8 @@ class DefaultInfoServiceTest
   test("queryForGroupId") {
     Given("a group repo with some apps below the queried group id")
     val f = new Fixture
-    f.groupManager.group(PathId("/nested")) returns Future
-      .successful(someGroupWithNested.group(PathId("/nested")))
+    f.groupManager.group(PathId("/nested")) returns
+      Future.successful(someGroupWithNested.group(PathId("/nested")))
     f.baseData.appInfoFuture(any, any) answers { args =>
       Future.successful(AppInfo(args.head.asInstanceOf[AppDefinition]))
     }
@@ -169,8 +169,8 @@ class DefaultInfoServiceTest
   test("queryForGroupId passes embed infos along") {
     Given("a group repo with some apps below the queried group id")
     val f = new Fixture
-    f.groupManager.group(PathId("/nested")) returns Future
-      .successful(someGroupWithNested.group(PathId("/nested")))
+    f.groupManager.group(PathId("/nested")) returns
+      Future.successful(someGroupWithNested.group(PathId("/nested")))
     f.baseData.appInfoFuture(any, any) answers { args =>
       Future.successful(AppInfo(args.head.asInstanceOf[AppDefinition]))
     }

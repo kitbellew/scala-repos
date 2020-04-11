@@ -207,9 +207,7 @@ class StackClientTest
       .remove(DefaultPool.Role)
 
     val factory = stack.make(
-      Stack.Params.empty +
-        FactoryToService.Enabled(true) +
-
+      Stack.Params.empty + FactoryToService.Enabled(true) +
         // default Dest is /$/fail
         BindingFactory.Dest(Name.Path(Path.read("/$/inet/localhost/0"))))
 
@@ -262,9 +260,7 @@ class StackClientTest
       )
 
     val factory = stack.make(
-      Stack.Params.empty +
-        FactoryToService.Enabled(true) +
-
+      Stack.Params.empty + FactoryToService.Enabled(true) +
         // default Dest is /$/fail
         BindingFactory.Dest(Name.Path(Path.read("/$/inet/localhost/0"))))
 
@@ -468,10 +464,8 @@ class StackClientTest
     val service =
       new FactoryToService(
         stack.make(
-          Stack.Params.empty +
-            FactoryToService.Enabled(true) +
-            param.Stats(sr) +
-            BindingFactory.BaseDtab(() => baseDtab)))
+          Stack.Params.empty + FactoryToService.Enabled(true) +
+            param.Stats(sr) + BindingFactory.BaseDtab(() => baseDtab)))
 
     intercept[ChannelWriteException] {
       Await.result(service(()), 5.seconds)
@@ -595,15 +589,13 @@ class StackClientTest
 
     val sr = new InMemoryStatsReceiver
     val params =
-      Stack.Params.empty +
-        param.Stats(sr) +
+      Stack.Params.empty + param.Stats(sr) +
         DefaultPool.Param(
           low = 0,
           high = 2,
           bufferSize = 0,
           idleTime = Duration.Zero,
-          maxWaiters = 0) +
-        FactoryToService.Enabled(false) +
+          maxWaiters = 0) + FactoryToService.Enabled(false) +
         PendingRequestFilter.Param(Some(2)) +
         BindingFactory.Dest(Name.Path(Path.read("/$/inet/localhost/0")))
 

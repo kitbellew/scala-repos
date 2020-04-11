@@ -120,9 +120,8 @@ sealed abstract class Dequeue[A] {
       case SingletonDequeue(a) =>
         ICons(a, INil())
       case FullDequeue(front, fs, back, bs) =>
-        front.head +: (
-          front.tail ++ (back.tail reverse_::: ICons(back.head, INil()))
-        )
+        front.head +:
+          (front.tail ++ (back.tail reverse_::: ICons(back.head, INil())))
     }
 
   /**
@@ -159,10 +158,7 @@ sealed abstract class Dequeue[A] {
                 f.head,
                 (
                   f.tail ++
-                    (
-                      (b.head +: b.tail) reverse_:::
-                        ICons(of.head, of.tail)
-                    )
+                    ((b.head +: b.tail) reverse_::: ICons(of.head, of.tail))
                 )),
               fs + bs + ofs,
               ob,

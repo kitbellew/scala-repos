@@ -45,12 +45,9 @@ case class Endpoint(
           .Arrays
           .equals(
             this.names.asInstanceOf[Array[Object]],
-            that.names.asInstanceOf[Array[Object]]) &&
-          this.host == that.host &&
-          this.port == that.port &&
-          this.shard == that.shard &&
-          this.status == that.status &&
-          this.memberId == that.memberId
+            that.names.asInstanceOf[Array[Object]]) && this.host == that.host &&
+          this.port == that.port && this.shard == that.shard &&
+          this.status == that.status && this.memberId == that.memberId
       case _ =>
         super.equals(that)
     }

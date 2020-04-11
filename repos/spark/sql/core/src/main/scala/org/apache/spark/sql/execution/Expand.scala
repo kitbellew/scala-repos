@@ -47,8 +47,8 @@ case class Expand(
     with CodegenSupport {
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" ->
+      SQLMetrics.createLongMetric(sparkContext, "number of output rows"))
 
   // The GroupExpressions can output data with arbitrary partitioning, so set it
   // as UNKNOWN partitioning
@@ -195,8 +195,7 @@ case class Expand(
               val ev = BindReferences
                 .bindReference(exprs(col), child.output)
                 .gen(ctx)
-              updateCode +=
-                s"""
+              updateCode += s"""
                |${ev.code}
                |${outputColumns(col).isNull} = ${ev.isNull};
                |${outputColumns(col).value} = ${ev.value};

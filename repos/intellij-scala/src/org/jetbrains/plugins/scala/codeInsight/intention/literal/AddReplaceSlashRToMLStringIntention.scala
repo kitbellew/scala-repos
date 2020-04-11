@@ -20,8 +20,8 @@ class AddReplaceSlashRToMLStringIntention
       editor: Editor,
       element: PsiElement): Boolean = {
     if (element == null || element.getNode == null || element.getText == null ||
-        element.getNode.getElementType != ScalaTokenTypes
-          .tMULTILINE_STRING || !element.getText.contains("\n"))
+        element.getNode.getElementType != ScalaTokenTypes.tMULTILINE_STRING ||
+        !element.getText.contains("\n"))
       return false
 
     val calls = MultilineStringUtil

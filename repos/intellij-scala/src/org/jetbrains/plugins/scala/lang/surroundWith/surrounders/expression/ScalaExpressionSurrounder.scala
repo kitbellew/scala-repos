@@ -37,8 +37,8 @@ abstract class ScalaExpressionSurrounder extends Surrounder {
           true
         else if (e.getNode.getElementType == ScalaTokenTypes.tSEMICOLON)
           true
-        else if (ScalaTokenTypes
-                   .COMMENTS_TOKEN_SET contains e.getNode.getElementType)
+        else if (ScalaTokenTypes.COMMENTS_TOKEN_SET contains
+                   e.getNode.getElementType)
           true
         else
           false

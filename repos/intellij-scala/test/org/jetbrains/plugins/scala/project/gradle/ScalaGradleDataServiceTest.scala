@@ -58,30 +58,34 @@ class ScalaGradleDataServiceTest
 
       scalaLibrary.foreach(libraries += _)
 
-      modules += new javaModule {
-        name := "Module 1"
-        moduleFileDirectoryPath := getProject.getBasePath + "/module1"
-        externalConfigPath := getProject.getBasePath + "/module1"
+      modules +=
+        new javaModule {
+          name := "Module 1"
+          moduleFileDirectoryPath := getProject.getBasePath + "/module1"
+          externalConfigPath := getProject.getBasePath + "/module1"
 
-        scalaLibrary.foreach(libraryDependencies += _)
+          scalaLibrary.foreach(libraryDependencies += _)
 
-        arbitraryNodes += new Node[ScalaModelData] {
-          override protected val data: ScalaModelData =
-            new ScalaModelData(SbtProjectSystem.Id)
-          override protected def key: Key[ScalaModelData] = ScalaModelData.KEY
+          arbitraryNodes +=
+            new Node[ScalaModelData] {
+              override protected val data: ScalaModelData =
+                new ScalaModelData(SbtProjectSystem.Id)
+              override protected def key: Key[ScalaModelData] =
+                ScalaModelData.KEY
 
-          def asSerializableJavaSet[T](scalaSet: Set[T]): util.Set[T] = {
-            val classpath = new util.HashSet[T]()
-            util.Collections.addAll(classpath, scalaSet.toSeq: _*)
-            classpath
-          }
+              def asSerializableJavaSet[T](scalaSet: Set[T]): util.Set[T] = {
+                val classpath = new util.HashSet[T]()
+                util.Collections.addAll(classpath, scalaSet.toSeq: _*)
+                classpath
+              }
 
-          data.setScalaClasspath(asSerializableJavaSet(scalaCompilerClasspath))
-          data.setScalaCompileOptions(
-            compilerOptions.getOrElse(new ScalaCompileOptionsData))
-          data.setTargetCompatibility("1.5")
+              data.setScalaClasspath(
+                asSerializableJavaSet(scalaCompilerClasspath))
+              data.setScalaCompileOptions(
+                compilerOptions.getOrElse(new ScalaCompileOptionsData))
+              data.setTargetCompatibility("1.5")
+            }
         }
-      }
     }.build.toDataNode
 
   def testEmptyScalaCompilerClasspath(): Unit = {
@@ -178,10 +182,8 @@ class ScalaGradleDataServiceTest
       compilerConfiguration.debuggingInfoLevel == DebuggingInfoLevel.Source)
     assert(compilerConfiguration.plugins == Seq("test-plugin.jar"))
     assert(
-      compilerConfiguration.additionalCompilerOptions == Seq(
-        "-encoding",
-        "utf-8",
-        "-target:jvm-1.5"))
+      compilerConfiguration.additionalCompilerOptions ==
+        Seq("-encoding", "utf-8", "-target:jvm-1.5"))
     assert(compilerConfiguration.experimental)
     assert(compilerConfiguration.continuations)
     assert(compilerConfiguration.deprecationWarnings)
@@ -207,11 +209,12 @@ class ScalaGradleDataServiceTest
         ideDirectoryPath := getProject.getBasePath
         linkedProjectPath := getProject.getBasePath
 
-        arbitraryNodes += new Node[ScalaModelData] {
-          override protected val data: ScalaModelData =
-            new ScalaModelData(SbtProjectSystem.Id)
-          override protected def key: Key[ScalaModelData] = ScalaModelData.KEY
-        }
+        arbitraryNodes +=
+          new Node[ScalaModelData] {
+            override protected val data: ScalaModelData =
+              new ScalaModelData(SbtProjectSystem.Id)
+            override protected def key: Key[ScalaModelData] = ScalaModelData.KEY
+          }
       }.build.toDataNode
 
     importProjectData(testProject)

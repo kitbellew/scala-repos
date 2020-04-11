@@ -73,8 +73,8 @@ object Insight extends LilaController {
                   env.api.ask(q, user) map
                     lila.insight.Chart.fromAnswer(Env.user.lightUser) map
                     env.jsonView.chart.apply map {
-                    Ok(_)
-                  }
+                      Ok(_)
+                    }
                 }
           )
       }
@@ -100,5 +100,6 @@ object Insight extends LilaController {
             fuccess(Forbidden(jsonError(s"User $username data is protected"))))
         }
       }
-    } map (_ as JSON)
+    } map
+      (_ as JSON)
 }

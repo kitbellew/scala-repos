@@ -235,9 +235,8 @@ trait StreamTest extends QueryTest with Timeouts {
         .zipWithIndex
         .map {
           case (a, i) =>
-            if ((
-                  pos == i && startedManually
-                ) || (pos == (i + 1) && !startedManually)) {
+            if ((pos == i && startedManually) ||
+                (pos == (i + 1) && !startedManually)) {
               "=> " + a.toString
             } else {
               "   " + a.toString
@@ -307,9 +306,8 @@ trait StreamTest extends QueryTest with Timeouts {
         val base = s"$prefix${e.getMessage}" +
           e.getStackTrace.take(10).mkString(s"\n$prefix", s"\n$prefix\t", "\n")
         if (e.getCause != null) {
-          base + s"\n$prefix\tCaused by: " + exceptionToString(
-            e.getCause,
-            s"$prefix\t")
+          base + s"\n$prefix\tCaused by: " +
+            exceptionToString(e.getCause, s"$prefix\t")
         } else {
           base
         }

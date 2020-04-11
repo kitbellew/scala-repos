@@ -148,12 +148,11 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
           } else {
             // then return to NACK-based again
             writeAll()
-            context become (
-              if (peerClosed)
-                closing
-              else
-                writing
-            )
+            context become
+              (if (peerClosed)
+                 closing
+               else
+                 writing)
           }
         } else if (peerClosed)
           context stop self

@@ -71,7 +71,8 @@ object Test extends ScaladocModelTest {
     def assertRightOrder(template: DocTemplateEntity, diagram: Diagram) =
       for ((node, subclasses) <- diagram.edges)
         assert(
-          subclasses == subclasses.filter(_.isThisNode) :::
+          subclasses ==
+            subclasses.filter(_.isThisNode) :::
             subclasses
               .filter(node => node.isNormalNode || node.isOutsideNode) :::
             subclasses.filter(_.isImplicitNode),

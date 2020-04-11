@@ -134,8 +134,9 @@ object TestLogCleaning {
     val sleepSecs = options.valueOf(sleepSecsOpt).intValue
 
     val testId = new Random().nextInt(Int.MaxValue)
-    val topics =
-      (0 until topicCount).map("log-cleaner-test-" + testId + "-" + _).toArray
+    val topics = (0 until topicCount)
+      .map("log-cleaner-test-" + testId + "-" + _)
+      .toArray
 
     println("Producing %d messages...".format(messages))
     val producedDataFile = produceMessages(
@@ -399,11 +400,10 @@ case class TestRecord(
     this(pieces(0), pieces(1).toInt, pieces(2).toLong, pieces(3) == "d")
   def this(line: String) = this(line.split("\t"))
   override def toString() =
-    topic + "\t" + key + "\t" + value + "\t" + (
-      if (delete)
-        "d"
-      else
-        "u"
-    )
+    topic + "\t" + key + "\t" + value + "\t" +
+      (if (delete)
+         "d"
+       else
+         "u")
   def topicAndKey = topic + key
 }

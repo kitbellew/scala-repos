@@ -39,8 +39,7 @@ object Content {
     @tailrec
     def subparse() {
       var isReturn = false
-      if (!XmlContent.parse(builder) &&
-          !Reference.parse(builder) &&
+      if (!XmlContent.parse(builder) && !Reference.parse(builder) &&
           !ScalaExpr.parse(builder) && !patcher.parse(builder))
         isReturn = true
       builder.getTokenType match {

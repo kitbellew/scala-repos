@@ -30,53 +30,55 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
   private val form = mapping(
     "baseUrl" -> trim(label("Base URL", optional(text()))),
     "information" -> trim(label("Information", optional(text()))),
-    "allowAccountRegistration" -> trim(
-      label("Account registration", boolean())),
+    "allowAccountRegistration" ->
+      trim(label("Account registration", boolean())),
     "allowAnonymousAccess" -> trim(label("Anonymous access", boolean())),
-    "isCreateRepoOptionPublic" -> trim(
-      label("Default option to create a new repository", boolean())),
+    "isCreateRepoOptionPublic" ->
+      trim(label("Default option to create a new repository", boolean())),
     "gravatar" -> trim(label("Gravatar", boolean())),
     "notification" -> trim(label("Notification", boolean())),
-    "activityLogLimit" -> trim(
-      label("Limit of activity logs", optional(number()))),
+    "activityLogLimit" ->
+      trim(label("Limit of activity logs", optional(number()))),
     "ssh" -> trim(label("SSH access", boolean())),
     "sshHost" -> trim(label("SSH host", optional(text()))),
     "sshPort" -> trim(label("SSH port", optional(number()))),
     "useSMTP" -> trim(label("SMTP", boolean())),
-    "smtp" -> optionalIfNotChecked(
-      "useSMTP",
-      mapping(
-        "host" -> trim(label("SMTP Host", text(required))),
-        "port" -> trim(label("SMTP Port", optional(number()))),
-        "user" -> trim(label("SMTP User", optional(text()))),
-        "password" -> trim(label("SMTP Password", optional(text()))),
-        "ssl" -> trim(label("Enable SSL", optional(boolean()))),
-        "fromAddress" -> trim(label("FROM Address", optional(text()))),
-        "fromName" -> trim(label("FROM Name", optional(text())))
-      )(Smtp.apply)
-    ),
+    "smtp" ->
+      optionalIfNotChecked(
+        "useSMTP",
+        mapping(
+          "host" -> trim(label("SMTP Host", text(required))),
+          "port" -> trim(label("SMTP Port", optional(number()))),
+          "user" -> trim(label("SMTP User", optional(text()))),
+          "password" -> trim(label("SMTP Password", optional(text()))),
+          "ssl" -> trim(label("Enable SSL", optional(boolean()))),
+          "fromAddress" -> trim(label("FROM Address", optional(text()))),
+          "fromName" -> trim(label("FROM Name", optional(text())))
+        )(Smtp.apply)
+      ),
     "ldapAuthentication" -> trim(label("LDAP", boolean())),
-    "ldap" -> optionalIfNotChecked(
-      "ldapAuthentication",
-      mapping(
-        "host" -> trim(label("LDAP host", text(required))),
-        "port" -> trim(label("LDAP port", optional(number()))),
-        "bindDN" -> trim(label("Bind DN", optional(text()))),
-        "bindPassword" -> trim(label("Bind Password", optional(text()))),
-        "baseDN" -> trim(label("Base DN", text(required))),
-        "userNameAttribute" -> trim(
-          label("User name attribute", text(required))),
-        "additionalFilterCondition" -> trim(
-          label("Additional filter condition", optional(text()))),
-        "fullNameAttribute" -> trim(
-          label("Full name attribute", optional(text()))),
-        "mailAttribute" -> trim(
-          label("Mail address attribute", optional(text()))),
-        "tls" -> trim(label("Enable TLS", optional(boolean()))),
-        "ssl" -> trim(label("Enable SSL", optional(boolean()))),
-        "keystore" -> trim(label("Keystore", optional(text())))
-      )(Ldap.apply)
-    )
+    "ldap" ->
+      optionalIfNotChecked(
+        "ldapAuthentication",
+        mapping(
+          "host" -> trim(label("LDAP host", text(required))),
+          "port" -> trim(label("LDAP port", optional(number()))),
+          "bindDN" -> trim(label("Bind DN", optional(text()))),
+          "bindPassword" -> trim(label("Bind Password", optional(text()))),
+          "baseDN" -> trim(label("Base DN", text(required))),
+          "userNameAttribute" ->
+            trim(label("User name attribute", text(required))),
+          "additionalFilterCondition" ->
+            trim(label("Additional filter condition", optional(text()))),
+          "fullNameAttribute" ->
+            trim(label("Full name attribute", optional(text()))),
+          "mailAttribute" ->
+            trim(label("Mail address attribute", optional(text()))),
+          "tls" -> trim(label("Enable TLS", optional(boolean()))),
+          "ssl" -> trim(label("Enable SSL", optional(boolean()))),
+          "keystore" -> trim(label("Keystore", optional(text())))
+        )(Ldap.apply)
+      )
   )(SystemSettings.apply).verifying { settings =>
     Vector(
       if (settings.ssh && settings.baseUrl.isEmpty) {
@@ -131,16 +133,18 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
 
   val newUserForm =
     mapping(
-      "userName" -> trim(
-        label(
-          "Username",
-          text(required, maxlength(100), identifier, uniqueUserName))),
+      "userName" ->
+        trim(
+          label(
+            "Username",
+            text(required, maxlength(100), identifier, uniqueUserName))),
       "password" -> trim(label("Password", text(required, maxlength(20)))),
       "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
-      "mailAddress" -> trim(
-        label(
-          "Mail Address",
-          text(required, maxlength(100), uniqueMailAddress()))),
+      "mailAddress" ->
+        trim(
+          label(
+            "Mail Address",
+            text(required, maxlength(100), uniqueMailAddress()))),
       "isAdmin" -> trim(label("User Type", boolean())),
       "url" -> trim(label("URL", optional(text(maxlength(200))))),
       "fileId" -> trim(label("File ID", optional(text())))
@@ -148,28 +152,30 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
 
   val editUserForm =
     mapping(
-      "userName" -> trim(
-        label("Username", text(required, maxlength(100), identifier))),
+      "userName" ->
+        trim(label("Username", text(required, maxlength(100), identifier))),
       "password" -> trim(label("Password", optional(text(maxlength(20))))),
       "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
-      "mailAddress" -> trim(
-        label(
-          "Mail Address",
-          text(required, maxlength(100), uniqueMailAddress("userName")))),
+      "mailAddress" ->
+        trim(
+          label(
+            "Mail Address",
+            text(required, maxlength(100), uniqueMailAddress("userName")))),
       "isAdmin" -> trim(label("User Type", boolean())),
       "url" -> trim(label("URL", optional(text(maxlength(200))))),
       "fileId" -> trim(label("File ID", optional(text()))),
       "clearImage" -> trim(label("Clear image", boolean())),
-      "removed" -> trim(
-        label("Disable", boolean(disableByNotYourself("userName"))))
+      "removed" ->
+        trim(label("Disable", boolean(disableByNotYourself("userName"))))
     )(EditUserForm.apply)
 
   val newGroupForm =
     mapping(
-      "groupName" -> trim(
-        label(
-          "Group name",
-          text(required, maxlength(100), identifier, uniqueUserName))),
+      "groupName" ->
+        trim(
+          label(
+            "Group name",
+            text(required, maxlength(100), identifier, uniqueUserName))),
       "url" -> trim(label("URL", optional(text(maxlength(200))))),
       "fileId" -> trim(label("File ID", optional(text()))),
       "members" -> trim(label("Members", text(required, members)))
@@ -177,8 +183,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
 
   val editGroupForm =
     mapping(
-      "groupName" -> trim(
-        label("Group name", text(required, maxlength(100), identifier))),
+      "groupName" ->
+        trim(label("Group name", text(required, maxlength(100), identifier))),
       "url" -> trim(label("URL", optional(text(maxlength(200))))),
       "fileId" -> trim(label("File ID", optional(text()))),
       "members" -> trim(label("Members", text(required, members))),
@@ -223,8 +229,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
         users
           .collect {
             case account if (account.isGroupAccount) =>
-              account.userName -> getGroupMembers(account.userName)
-                .map(_.userName)
+              account.userName ->
+                getGroupMembers(account.userName).map(_.userName)
           }
           .toMap
 
@@ -407,8 +413,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
         params
           .get(paramName)
           .flatMap { userName =>
-            if (userName == context.loginAccount.get.userName && params
-                  .get("removed") == Some("true"))
+            if (userName == context.loginAccount.get.userName &&
+                params.get("removed") == Some("true"))
               Some("You can't disable your account yourself")
             else
               None

@@ -91,11 +91,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
         // NOTE: This circumvents implicit conversion for the contents on List
         // ids must containInOrder(
         //   td.allCompanies.sortBy(_.name.get).map(_.id))
-        ids.mkString("(", ",", ")") must_== td
-          .allCompanies
-          .sortBy(_.name.get)
-          .map(_.id)
-          .mkString("(", ",", ")")
+        ids.mkString("(", ",", ")") must_==
+          td.allCompanies.sortBy(_.name.get).map(_.id).mkString("(", ",", ")")
       }
     }
 
@@ -103,13 +100,13 @@ class SquerylRecordSpec extends Specification with AroundExample {
       transaction {
         val companiesWithEmployees =
           from(companies, employees)((c, e) =>
-            where(c.id === e.companyId.get)
-              select ((c.id, e.id))).toList
+            where(c.id === e.companyId.get) select ((c.id, e.id))).toList
         companiesWithEmployees must haveSize(td.allEmployees.size)
-        companiesWithEmployees must containAllOf(
-          td.allEmployees map { e =>
-            (e.companyId.get, e.id)
-          })
+        companiesWithEmployees must
+          containAllOf(
+            td.allEmployees map { e =>
+              (e.companyId.get, e.id)
+            })
       }
     }
 
@@ -118,8 +115,7 @@ class SquerylRecordSpec extends Specification with AroundExample {
         S.initIfUninitted(session) {
           val companiesWithEmployees =
             join(companies, employees.leftOuter)((c, e) =>
-              select(c, e)
-                on (c.id === e.map(_.companyId)))
+              select(c, e) on (c.id === e.map(_.companyId)))
 
           companiesWithEmployees must haveSize(4)
           // One company doesn't have an employee, two have
@@ -127,20 +123,19 @@ class SquerylRecordSpec extends Specification with AroundExample {
 
           val companiesAndEmployeesWithSameName =
             join(companies, employees.leftOuter)((c, e) =>
-              groupBy(c.id)
-                compute (countDistinct(e.map(_.id)))
-                on (c.name === e.map(_.name)))
+              groupBy(c.id) compute
+                (countDistinct(e.map(_.id))) on
+                (c.name === e.map(_.name)))
 
           // There are three companies
           companiesAndEmployeesWithSameName must haveSize(3)
           // One company has the same name as an employee, two don't
-          companiesAndEmployeesWithSameName
-            .filter(ce => ce.measures == 0) must haveSize(2)
+          companiesAndEmployeesWithSameName.filter(ce => ce.measures == 0) must
+            haveSize(2)
 
           val employeesWithSameAdminSetting =
             join(employees, employees.leftOuter)((e1, e2) =>
-              select(e1, e2)
-                on (e1.admin === e2.map(_.admin)))
+              select(e1, e2) on (e1.admin === e2.map(_.admin)))
 
           employeesWithSameAdminSetting.foreach { ee =>
             ee._2 must not(beEmpty)
@@ -148,20 +143,18 @@ class SquerylRecordSpec extends Specification with AroundExample {
 
           val companiesWithSameCreationDate =
             join(companies, companies.leftOuter)((c1, c2) =>
-              select(c1, c2)
-                on (c1.created === c2.map(_.created)))
+              select(c1, c2) on (c1.created === c2.map(_.created)))
           companiesWithSameCreationDate must not(beEmpty)
 
           val employeesWithSameDepartmentNumber =
             join(employees, employees.leftOuter)((e1, e2) =>
-              select(e1, e2)
-                on (e1.departmentNumber === e2.map(_.departmentNumber)))
+              select(e1, e2) on
+                (e1.departmentNumber === e2.map(_.departmentNumber)))
           employeesWithSameDepartmentNumber must not(beEmpty)
 
           val employeesWithSameRoles =
             join(employees, employees.leftOuter)((e1, e2) =>
-              select(e1, e2)
-                on (e1.role === e2.map(_.role)))
+              select(e1, e2) on (e1.role === e2.map(_.role)))
           employeesWithSameRoles must not(beEmpty)
         }
       }
@@ -206,9 +199,7 @@ class SquerylRecordSpec extends Specification with AroundExample {
           val loaded = companies.lookup(id).get
           checkCompaniesEqual(company, loaded)
 
-          update(companies)(c =>
-            where(c.id === id)
-              set (c.name := "Name2"))
+          update(companies)(c => where(c.id === id) set (c.name := "Name2"))
           val afterPartialUpdate = companies.lookup(id).get
           afterPartialUpdate.name.get must_== "Name2"
         }
@@ -257,14 +248,12 @@ class SquerylRecordSpec extends Specification with AroundExample {
       transaction {
         val c1 =
           from(companies)(c =>
-            where(c.created <= Calendar.getInstance)
-              select (c))
+            where(c.created <= Calendar.getInstance) select (c))
         c1.size must beGreaterThan(1)
 
         val c2 =
           from(companies)(c =>
-            where(c.created <= Calendar.getInstance.getTime)
-              select (c))
+            where(c.created <= Calendar.getInstance.getTime) select (c))
         c2.size must beGreaterThan(1)
       }
     }
@@ -278,8 +267,9 @@ class SquerylRecordSpec extends Specification with AroundExample {
           from(companies)(c =>
             where(
               c.id in
-                from(companies)(c2 => where(c2.id === td.c1.id) select (c2.id)))
-              select (c.id)).single
+                from(companies)(c2 =>
+                  where(c2.id === td.c1.id) select (c2.id))) select (c.id))
+            .single
         companyId must_== td.c1.id
 
         // It should also be possible to select the ID field directly:
@@ -288,8 +278,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
             where(
               c.idField in
                 from(companies)(c2 =>
-                  where(c2.id === td.c1.id) select (c2.idField)))
-              select (c.idField)).single
+                  where(c2.id === td.c1.id) select (c2.idField))) select
+              (c.idField)).single
         companyIdField.get must_== td.c1.id
 
         // Strings should also be selectable in inner queries
@@ -298,8 +288,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
             where(
               c.name in
                 from(companies)(c2 =>
-                  where(c2.name === td.c1.name) select (c2.name)))
-              select (c.id)).single
+                  where(c2.name === td.c1.name) select (c2.name))) select
+              (c.id)).single
         companyIdByName must_== td.c1.id
 
         // ...And DateTime-Fields:
@@ -308,8 +298,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
             where(
               c.created in
                 from(companies)(c2 =>
-                  where(c2.id === td.c1.id) select (c2.created)))
-              select (c.created)).single
+                  where(c2.id === td.c1.id) select (c2.created))) select
+              (c.created)).single
         companyIdByCreated.get must_== td.c1.created.get
 
         // Decimal Fields:
@@ -318,8 +308,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
             where(
               e.salary in
                 from(employees)(e2 =>
-                  where(e2.id === td.e1.id) select (e2.salary)))
-              select (e.salary)).single
+                  where(e2.id === td.e1.id) select (e2.salary))) select
+              (e.salary)).single
         empSalary.get must_== td.e1.salary.get
 
         // Email fields:
@@ -328,8 +318,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
             where(
               e.email in
                 from(employees)(e2 =>
-                  where(e2.id === td.e1.id) select (e2.email)))
-              select (e.email)).single
+                  where(e2.id === td.e1.id) select (e2.email))) select
+              (e.email)).single
         empSalary.get must_== td.e1.salary.get
 
         // Boolean fields:
@@ -338,8 +328,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
             where(
               e.admin in
                 from(employees)(e2 =>
-                  where(e2.id === td.e2.id) select (e2.admin)))
-              select (e.admin)).single
+                  where(e2.id === td.e2.id) select (e2.admin))) select
+              (e.admin)).single
         empAdmin.get must_== td.e2.admin.get
 
         // Enum fields:
@@ -348,8 +338,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
             where(
               e.role in
                 from(employees)(e2 =>
-                  where(e2.id === td.e2.id) select (e2.role)))
-              select (e.role.get))
+                  where(e2.id === td.e2.id) select (e2.role))) select
+              (e.role.get))
         val empRole = empRoleQuery.single
         empRole must_== td.e2.role.get
       }
@@ -421,10 +411,11 @@ class SquerylRecordSpec extends Specification with AroundExample {
       inTransaction {
         val created =
           from(companies)(c =>
-            where(c.name === "First Company USA")
-              select (&(toChar(c.created, "EEE, d MMM yyyy"))))
-        created.head must_== new SimpleDateFormat("EEE, d MMM yyyy")
-          .format(Calendar.getInstance().getTime())
+            where(c.name === "First Company USA") select
+              (&(toChar(c.created, "EEE, d MMM yyyy"))))
+        created.head must_==
+          new SimpleDateFormat("EEE, d MMM yyyy")
+            .format(Calendar.getInstance().getTime())
       }
     }
 
@@ -435,22 +426,19 @@ class SquerylRecordSpec extends Specification with AroundExample {
       val columnDefinition = new PostgreSqlAdapter()
         .writeColumnDeclaration(fieldMetaData, false, MySchema)
       columnDefinition.endsWith(
-        "numeric(" + Company
-          .employeeSatisfaction
-          .context
-          .getPrecision() + "," + Company
-          .employeeSatisfaction
-          .scale + ")") must_== true
+        "numeric(" + Company.employeeSatisfaction.context.getPrecision() + "," +
+          Company.employeeSatisfaction.scale + ")") must_== true
     }
 
-    "Properly reset the dirty_? flag after loading entities" >> inTransaction {
-      val company =
-        from(companies)(company => select(company)).page(0, 1).single
-      company.allFields map { f =>
-        f.dirty_? must_== false
+    "Properly reset the dirty_? flag after loading entities" >>
+      inTransaction {
+        val company =
+          from(companies)(company => select(company)).page(0, 1).single
+        company.allFields map { f =>
+          f.dirty_? must_== false
+        }
+        success
       }
-      success
-    }
   }
   class ToChar(
       d: DateExpression[Timestamp],

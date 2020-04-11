@@ -18,17 +18,21 @@ object OptionTTest extends SpecLite {
   checkAll(traverse.laws[OptionTList])
   checkAll(monadError.laws[OptionTEither, Int])
 
-  "show" ! forAll { a: OptionTList[Int] =>
-    Show[OptionTList[Int]].show(a) must_=== Show[List[Option[Int]]].show(a.run)
-  }
+  "show" !
+    forAll { a: OptionTList[Int] =>
+      Show[OptionTList[Int]].show(a) must_===
+        Show[List[Option[Int]]].show(a.run)
+    }
 
-  "optionT" ! forAll { ass: List[Option[Int]] =>
-    OptionT.optionT(ass).run == ass
-  }
+  "optionT" !
+    forAll { ass: List[Option[Int]] =>
+      OptionT.optionT(ass).run == ass
+    }
 
-  "listT" ! forAll { a: OptionTList[Int] =>
-    a.toListT.run must_=== a.run.map(_.toList)
-  }
+  "listT" !
+    forAll { a: OptionTList[Int] =>
+      a.toListT.run must_=== a.run.map(_.toList)
+    }
 
   object instances {
     def functor[F[_]: Functor] = Functor[OptionT[F, ?]]

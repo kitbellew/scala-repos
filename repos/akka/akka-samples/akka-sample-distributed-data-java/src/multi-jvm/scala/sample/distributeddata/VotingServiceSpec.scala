@@ -51,56 +51,60 @@ class VotingServiceSpec
 
   "Demo of a replicated voting" must {
 
-    "join cluster" in within(20.seconds) {
-      join(node1, node1)
-      join(node2, node1)
-      join(node3, node1)
+    "join cluster" in
+      within(20.seconds) {
+        join(node1, node1)
+        join(node2, node1)
+        join(node3, node1)
 
-      awaitAssert {
-        DistributedData(system).replicator ! GetReplicaCount
-        expectMsg(ReplicaCount(roles.size))
-      }
-      enterBarrier("after-1")
-    }
-
-    "count votes correctly" in within(15.seconds) {
-      import VotingService._
-      val votingService = system.actorOf(Props[VotingService], "votingService")
-      val N = 1000
-      runOn(node1) {
-        votingService ! VotingService.OPEN
-        for (n ← 1 to N) {
-          votingService ! new Vote("#" + ((n % 20) + 1))
-        }
-      }
-      runOn(node2, node3) {
-        // wait for it to open
-        val p = TestProbe()
         awaitAssert {
-          votingService.tell(VotingService.GET_VOTES, p.ref)
-          p.expectMsgType[Votes](3.seconds).open should be(true)
+          DistributedData(system).replicator ! GetReplicaCount
+          expectMsg(ReplicaCount(roles.size))
         }
-        for (n ← 1 to N) {
-          votingService ! new Vote("#" + ((n % 20) + 1))
-        }
-      }
-      enterBarrier("voting-done")
-      runOn(node3) {
-        votingService ! VotingService.CLOSE
+        enterBarrier("after-1")
       }
 
-      val expected =
-        (1 to 20).map(n ⇒ "#" + n -> BigInteger.valueOf(3L * N / 20)).toMap
-      awaitAssert {
-        votingService ! VotingService.GET_VOTES
-        val votes = expectMsgType[Votes](3.seconds)
-        votes.open should be(false)
-        import scala.collection.JavaConverters._
-        votes.result.asScala.toMap should be(expected)
-      }
+    "count votes correctly" in
+      within(15.seconds) {
+        import VotingService._
+        val votingService = system
+          .actorOf(Props[VotingService], "votingService")
+        val N = 1000
+        runOn(node1) {
+          votingService ! VotingService.OPEN
+          for (n ← 1 to N) {
+            votingService ! new Vote("#" + ((n % 20) + 1))
+          }
+        }
+        runOn(node2, node3) {
+          // wait for it to open
+          val p = TestProbe()
+          awaitAssert {
+            votingService.tell(VotingService.GET_VOTES, p.ref)
+            p.expectMsgType[Votes](3.seconds).open should be(true)
+          }
+          for (n ← 1 to N) {
+            votingService ! new Vote("#" + ((n % 20) + 1))
+          }
+        }
+        enterBarrier("voting-done")
+        runOn(node3) {
+          votingService ! VotingService.CLOSE
+        }
 
-      enterBarrier("after-2")
-    }
+        val expected = (1 to 20)
+          .map(n ⇒ "#" + n -> BigInteger.valueOf(3L * N / 20))
+          .toMap
+        awaitAssert {
+          votingService ! VotingService.GET_VOTES
+          val votes = expectMsgType[Votes](3.seconds)
+          votes.open should be(false)
+          import scala.collection.JavaConverters._
+          votes.result.asScala.toMap should be(expected)
+        }
+
+        enterBarrier("after-2")
+      }
   }
 
 }

@@ -245,10 +245,11 @@ class RewriteJoins extends Phase {
         val allRefs = foundRefs.collect {
           case (p, (_, Some(s))) =>
             (p, s)
-        } ++ newDefs.map {
-          case (p, (_, s)) =>
-            (p, s)
-        }
+        } ++
+          newDefs.map {
+            case (p, (_, s)) =>
+              (p, s)
+          }
         logger.debug(
           "All reference mappings for predicate: " + allRefs.mkString(", "))
         val (sel, tss) =
@@ -258,11 +259,12 @@ class RewriteJoins extends Phase {
             (
               Pure(
                 StructNode(
-                  struct1 ++ ConstArray.from(
-                    newDefs.map {
-                      case (_, (pOnGen, s)) =>
-                        (s, pOnGen)
-                    })),
+                  struct1 ++
+                    ConstArray.from(
+                      newDefs.map {
+                        case (_, (pOnGen, s)) =>
+                          (s, pOnGen)
+                      })),
                 pts),
               tss1 + pts)
         val fs = new AnonSymbol
@@ -271,15 +273,14 @@ class RewriteJoins extends Phase {
             allRefs
               .get(p)
               .map(s =>
-                Select(
-                  Ref(fs) :@ b.nodeType.asCollectionType.elementType,
-                  s) :@ p.nodeType)
+                Select(Ref(fs) :@ b.nodeType.asCollectionType.elementType, s) :@
+                  p.nodeType)
               .getOrElse(p)
         }
         val res = Filter(fs, Bind(b.generator, from1, sel), pred).infer()
         logger.debug(
-          "Hoisted Filter out of Bind (invalidated: " + tss
-            .mkString(", ") + ") in:",
+          "Hoisted Filter out of Bind (invalidated: " + tss.mkString(", ") +
+            ") in:",
           res)
         (res, tss)
       case _ =>
@@ -313,8 +314,8 @@ class RewriteJoins extends Phase {
         (sn, Map.empty)
       else {
         logger.debug(
-          "Pulling refs to [" + illegal
-            .mkString(", ") + "] with OK base " + ok + " out of:",
+          "Pulling refs to [" + illegal.mkString(", ") + "] with OK base " +
+            ok + " out of:",
           sn)
         val requiredOkPaths =
           illegalDefs
@@ -333,18 +334,18 @@ class RewriteJoins extends Phase {
                 (p, s)
             }
             .toMap
-        val createDefs =
-          (requiredOkPaths -- existingOkDefs.keySet)
-            .map(p => (new AnonSymbol, p))
-            .toMap
+        val createDefs = (requiredOkPaths -- existingOkDefs.keySet)
+          .map(p => (new AnonSymbol, p))
+          .toMap
         val sn2 = StructNode(ConstArray.from(legalDefs ++ createDefs))
         logger.debug("Pulled refs out of:", sn2)
         val replacements =
           (
-            existingOkDefs ++ createDefs.map {
-              case (s, n) =>
-                (n, s)
-            }
+            existingOkDefs ++
+              createDefs.map {
+                case (s, n) =>
+                  (n, s)
+              }
           ).toMap
         def rebase(n: Node): Node =
           n.replace(
@@ -458,8 +459,8 @@ class RewriteJoins extends Phase {
             JoinType.Inner,
             on1) =>
         logger.debug(
-          "Trying to rearrange join conditions (alsoPull: " + alsoPull
-            .mkString(", ") + ") in:",
+          "Trying to rearrange join conditions (alsoPull: " +
+            alsoPull.mkString(", ") + ") in:",
           j)
         val pull = alsoPull + s1
         val j2b = rearrangeJoinConditions(j2a, pull)
@@ -470,16 +471,17 @@ class RewriteJoins extends Phase {
         if (on1Down.nonEmpty || on2Up.nonEmpty) {
           val refS2 = Ref(s2) :@ j2b.nodeType.asCollectionType.elementType
           val on1b = and(
-            on1Keep ++ on2Up.map(
-              _.replace(
-                {
-                  case Ref(s) :@ tpe if s == j2b.leftGen =>
-                    Select(refS2, ElementSymbol(1)) :@ tpe
-                  case Ref(s) :@ tpe if s == j2b.rightGen =>
-                    Select(refS2, ElementSymbol(2)) :@ tpe
-                },
-                keepType = true
-              )))
+            on1Keep ++
+              on2Up.map(
+                _.replace(
+                  {
+                    case Ref(s) :@ tpe if s == j2b.leftGen =>
+                      Select(refS2, ElementSymbol(1)) :@ tpe
+                    case Ref(s) :@ tpe if s == j2b.rightGen =>
+                      Select(refS2, ElementSymbol(2)) :@ tpe
+                  },
+                  keepType = true
+                )))
           val on2b = and(
             on1Down.map(
               _.replace(

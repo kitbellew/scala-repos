@@ -188,16 +188,16 @@ object Main extends Main {
       verbose = arguments contains opts.verbose
       printPrivates = arguments contains opts.showPrivateDefs
       // construct a custom class path
-      val cpArg = List(opts.classpath, opts.cp) map arguments
-        .getArgument reduceLeft (_ orElse _)
+      val cpArg = List(opts.classpath, opts.cp) map
+        arguments.getArgument reduceLeft
+        (_ orElse _)
 
       val settings = new Settings()
 
-      arguments getArgument opts.classPathImplType foreach settings
-        .YclasspathImpl
-        .tryToSetFromPropertyValue
-      settings.YdisableFlatCpCaching.value = arguments contains opts
-        .disableFlatClassPathCaching
+      arguments getArgument opts.classPathImplType foreach
+        settings.YclasspathImpl.tryToSetFromPropertyValue
+      settings.YdisableFlatCpCaching.value = arguments contains
+        opts.disableFlatClassPathCaching
       settings.Ylogcp.value = arguments contains opts.logClassPath
 
       val path = createClassPath(cpArg, settings)
@@ -205,8 +205,8 @@ object Main extends Main {
       // print the classpath if output is verbose
       if (verbose)
         Console.println(
-          Console.BOLD + "CLASSPATH" + Console.RESET + " = " + path
-            .asClassPathString)
+          Console.BOLD + "CLASSPATH" + Console.RESET + " = " +
+            path.asClassPathString)
 
       // process all given classes
       arguments.getOthers foreach process(arguments, path)

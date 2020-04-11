@@ -59,10 +59,9 @@ object ScopeSuggester {
       for (elementOwner <- owners) {
         val pparent = PsiTreeUtil
           .getParentOfType(parent, classOf[ScTemplateDefinition])
-        if (pparent != null && (
-              !elementOwner.isAncestorOf(pparent) || !elementOwner
-                .isInstanceOf[ScTemplateDefinition]
-            )) {
+        if (pparent != null &&
+            (!elementOwner.isAncestorOf(pparent) ||
+            !elementOwner.isInstanceOf[ScTemplateDefinition])) {
           result = false
         }
       }
@@ -75,8 +74,8 @@ object ScopeSuggester {
       .isScriptFile()
 
     val owners = ScalaRefactoringUtil
-      .getTypeParameterOwnerList(currentElement) ++ ScalaRefactoringUtil
-      .getTypeAliasOwnersList(currentElement)
+      .getTypeParameterOwnerList(currentElement) ++
+      ScalaRefactoringUtil.getTypeAliasOwnersList(currentElement)
     var parent = getParent(currentElement, isScriptFile)
 
     //forbid to work with no template definition level
@@ -132,13 +131,14 @@ object ScopeSuggester {
         .suggestNamesByType(currentElement.calcType)
         .map(validator.validateName(_, increaseNumber = true))
 
-      result += SimpleScopeItem(
-        name,
-        parent,
-        occurrences,
-        occInCompanionObj,
-        validator,
-        possibleNames.toArray)
+      result +=
+        SimpleScopeItem(
+          name,
+          parent,
+          occurrences,
+          occInCompanionObj,
+          validator,
+          possibleNames.toArray)
       parent = getParent(parent, isScriptFile)
     }
 
@@ -151,16 +151,17 @@ object ScopeSuggester {
         scPackage.fullPackageName,
         currentElement)
       for ((resultPackage, resultDirectory) <- allPackages) {
-        result += PackageScopeItem(
-          resultPackage.getQualifiedName,
-          resultDirectory,
-          needDirectoryCreating = false,
-          Array(
-            NameSuggester
-              .suggestNamesByType(currentElement.calcType)
-              .apply(0)
-              .capitalize)
-        )
+        result +=
+          PackageScopeItem(
+            resultPackage.getQualifiedName,
+            resultDirectory,
+            needDirectoryCreating = false,
+            Array(
+              NameSuggester
+                .suggestNamesByType(currentElement.calcType)
+                .apply(0)
+                .capitalize)
+          )
       }
     }
 
@@ -353,12 +354,13 @@ object ScopeSuggester {
               PsiTreeUtil.findChildOfType(file, classOf[ScTemplateBody])
           }
         if (parent != null) {
-          allValidators += ScalaTypeValidator(
-            conflictsReporter,
-            project,
-            typeElement,
-            parent,
-            occurrences.isEmpty)
+          allValidators +=
+            ScalaTypeValidator(
+              conflictsReporter,
+              project,
+              typeElement,
+              parent,
+              occurrences.isEmpty)
         }
       }
     }
@@ -376,12 +378,13 @@ object ScopeSuggester {
 
         val parent = PsiTreeUtil.findChildOfType(clazz, classOf[ScTemplateBody])
 
-        allValidators += ScalaTypeValidator(
-          conflictsReporter,
-          project,
-          typeElement,
-          parent,
-          occurrences.isEmpty)
+        allValidators +=
+          ScalaTypeValidator(
+            conflictsReporter,
+            project,
+            typeElement,
+            parent,
+            occurrences.isEmpty)
       }
     } else {
       collectedFiles.foreach(handleOneFile)

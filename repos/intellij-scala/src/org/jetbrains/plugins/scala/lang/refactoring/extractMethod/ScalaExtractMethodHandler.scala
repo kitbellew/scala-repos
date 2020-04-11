@@ -166,8 +166,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       return
     }
     val array = elements.toArray
-    if (ApplicationManager.getApplication.isUnitTestMode && siblings
-          .length > 0) {
+    if (ApplicationManager.getApplication.isUnitTestMode &&
+        siblings.length > 0) {
       invokeDialog(
         project,
         editor,
@@ -219,9 +219,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       assert(
         parent.getTextRange != null,
         "TextRange is null: " + parent.getText)
-      stopAtScope == null || stopAtScope
-        .getTextRange
-        .contains(parent.getTextRange)
+      stopAtScope == null ||
+      stopAtScope.getTextRange.contains(parent.getTextRange)
     }
 
     val res = new ArrayBuffer[PsiElement]
@@ -278,8 +277,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
           case td: ScTypeDefinition =>
             td.parent
           case ScalaPsiUtil.inNameContext(varDef: ScVariableDefinition)
-              if ScalaPsiUtil.isLValue(ref) && !elements
-                .exists(_.isAncestorOf(varDef)) =>
+              if ScalaPsiUtil.isLValue(ref) &&
+                !elements.exists(_.isAncestorOf(varDef)) =>
             varDef.parent
           case member: PsiMember =>
             member.containingClass.toOption

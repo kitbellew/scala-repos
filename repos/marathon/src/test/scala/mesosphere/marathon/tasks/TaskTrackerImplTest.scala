@@ -109,23 +109,21 @@ class TaskTrackerImplTest
 
     val testAppTasks = call(taskTracker)
 
-    testAppTasks.allAppIdsWithTasks should be(
-      Set(TEST_APP_NAME / "a", TEST_APP_NAME / "b"))
+    testAppTasks.allAppIdsWithTasks should
+      be(Set(TEST_APP_NAME / "a", TEST_APP_NAME / "b"))
 
-    testAppTasks.appTasksMap(TEST_APP_NAME / "a").appId should equal(
-      TEST_APP_NAME / "a")
-    testAppTasks.appTasksMap(TEST_APP_NAME / "b").appId should equal(
-      TEST_APP_NAME / "b")
-    testAppTasks
-      .appTasksMap(TEST_APP_NAME / "a")
-      .marathonTasks should have size 1
-    testAppTasks
-      .appTasksMap(TEST_APP_NAME / "b")
-      .marathonTasks should have size 2
-    testAppTasks.appTasksMap(TEST_APP_NAME / "a").taskMap.keySet should equal(
-      Set(task1.taskId))
-    testAppTasks.appTasksMap(TEST_APP_NAME / "b").taskMap.keySet should equal(
-      Set(task2.taskId, task3.taskId))
+    testAppTasks.appTasksMap(TEST_APP_NAME / "a").appId should
+      equal(TEST_APP_NAME / "a")
+    testAppTasks.appTasksMap(TEST_APP_NAME / "b").appId should
+      equal(TEST_APP_NAME / "b")
+    testAppTasks.appTasksMap(TEST_APP_NAME / "a").marathonTasks should have size
+      1
+    testAppTasks.appTasksMap(TEST_APP_NAME / "b").marathonTasks should have size
+      2
+    testAppTasks.appTasksMap(TEST_APP_NAME / "a").taskMap.keySet should
+      equal(Set(task1.taskId))
+    testAppTasks.appTasksMap(TEST_APP_NAME / "b").taskMap.keySet should
+      equal(Set(task2.taskId, task3.taskId))
   }
 
   test("GetTasks") {
@@ -306,7 +304,8 @@ class TaskTrackerImplTest
     val res = taskUpdater.statusUpdate(TEST_APP_NAME, runningTaskStatus)
     ScalaFutures.whenReady(res.failed) { e =>
       assert(
-        e.getCause.getMessage == s"${sampleTask.taskId} of app [/foo] does not exist",
+        e.getCause.getMessage ==
+          s"${sampleTask.taskId} of app [/foo] does not exist",
         s"Got message: ${e.getCause.getMessage}")
     }
     shouldNotContainTask(taskTracker.appTasksSync(TEST_APP_NAME), sampleTask)
@@ -577,9 +576,8 @@ class TaskTrackerImplTest
 
   def containsTask(tasks: Iterable[Task], task: Task) =
     tasks.exists(t =>
-      t.taskId == task.taskId
-        && t.agentInfo.host == task.agentInfo.host
-        && t.launched.map(_.networking) == task.launched.map(_.networking))
+      t.taskId == task.taskId && t.agentInfo.host == task.agentInfo.host &&
+        t.launched.map(_.networking) == task.launched.map(_.networking))
   def shouldContainTask(tasks: Iterable[Task], task: Task) =
     assert(containsTask(tasks, task), s"Should contain ${task.taskId}")
   def shouldNotContainTask(tasks: Iterable[Task], task: Task) =

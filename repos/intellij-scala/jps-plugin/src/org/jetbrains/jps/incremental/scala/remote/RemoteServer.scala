@@ -40,8 +40,8 @@ class RemoteServer(val address: InetAddress, val port: Int)
           .localServer
           .compile(sbtData, compilerData, compilationData, client)
       case e: UnknownHostException =>
-        val message = "Unknown IP address of compile server host: " + address
-          .toString
+        val message = "Unknown IP address of compile server host: " +
+          address.toString
         client.error(message)
         client
           .debug(s"$message\n${e.toString}\n${e.getStackTrace.mkString("\n")}")

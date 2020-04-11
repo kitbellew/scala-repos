@@ -118,26 +118,32 @@ case class ProducerRequest(
   }
 
   def sizeInBytes: Int = {
-    2 + /* versionId */
-    4 + /* correlationId */
-    shortStringLength(clientId) + /* client id */
-    2 + /* requiredAcks */
-    4 + /* ackTimeoutMs */
-    4 + /* number of topics */
-    dataGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
-      foldedTopics +
-        shortStringLength(currTopic._1) +
-        4 + /* the number of partitions */ {
-        currTopic
-          ._2
-          .foldLeft(0)((foldedPartitions, currPartition) => {
-            foldedPartitions +
-              4 + /* partition id */
-            4 + /* byte-length of serialized messages */
-            currPartition._2.sizeInBytes
-          })
-      }
-    })
+    2 +
+      /* versionId */
+      4 +
+      /* correlationId */
+      shortStringLength(clientId) +
+      /* client id */
+      2 +
+      /* requiredAcks */
+      4 +
+      /* ackTimeoutMs */
+      4 +
+      /* number of topics */
+      dataGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
+        foldedTopics + shortStringLength(currTopic._1) + 4 +
+          /* the number of partitions */ {
+            currTopic
+              ._2
+              .foldLeft(0)((foldedPartitions, currPartition) => {
+                foldedPartitions + 4 +
+                  /* partition id */
+                  4 +
+                  /* byte-length of serialized messages */
+                  currPartition._2.sizeInBytes
+              })
+          }
+      })
   }
 
   def numPartitions = data.size

@@ -118,9 +118,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         refType: ReferenceType,
         position: SourcePosition): Boolean = {
       try {
-        val generated = generatedClassName != null && refType
-          .name()
-          .contains(generatedClassName)
+        val generated = generatedClassName != null &&
+          refType.name().contains(generatedClassName)
         lazy val sameFile =
           getPsiFileByReferenceType(file.getProject, refType) == file
 
@@ -142,9 +141,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         return Collections.emptyList()
       val nonLambdaParent =
         if (isCompiledWithIndyLambdas(file)) {
-          val nonStrictParents = Iterator(onTheLine.head) ++ onTheLine
-            .head
-            .parentsInFile
+          val nonStrictParents = Iterator(onTheLine.head) ++
+            onTheLine.head.parentsInFile
           nonStrictParents
             .find(p => ScalaEvaluatorBuilderUtil.isGenerateNonAnonfunClass(p))
         } else
@@ -161,10 +159,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
             else
               Nil
           (qName +: delayedBodyName).foreach { name =>
-            exactClasses ++= debugProcess
-              .getVirtualMachineProxy
-              .classesByName(name)
-              .asScala
+            exactClasses ++=
+              debugProcess.getVirtualMachineProxy.classesByName(name).asScala
           }
         case elem =>
           val namePattern = NamePattern.forElement(elem)
@@ -343,8 +339,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         case null =>
           null
         case ws: PsiWhiteSpace
-            if document.getLineNumber(
-              element.getTextRange.getEndOffset) == position.getLine =>
+            if document.getLineNumber(element.getTextRange.getEndOffset) ==
+              position.getLine =>
           val nextElement = file
             .findElementAt(element.getTextRange.getEndOffset)
           nonWhitespaceInner(nextElement, document)
@@ -533,8 +529,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         if (originalQName.endsWith(dollarTestSuffix))
           Some(originalQName)
         else if (originalQName.contains(dollarTestSuffix + "$")) {
-          val index = originalQName.indexOf(dollarTestSuffix) + dollarTestSuffix
-            .length
+          val index = originalQName.indexOf(dollarTestSuffix) +
+            dollarTestSuffix.length
           Some(originalQName.take(index))
         } else
           None
@@ -643,8 +639,9 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     }
 
     def isAppropriateCandidate(elem: PsiElement) = {
-      checkLines(elem, document) && ScalaEvaluatorBuilderUtil
-        .isGenerateClass(elem) && nameMatches(elem, refType)
+      checkLines(elem, document) &&
+      ScalaEvaluatorBuilderUtil.isGenerateClass(elem) &&
+      nameMatches(elem, refType)
     }
 
     def findCandidates(): Seq[PsiElement] = {
@@ -940,10 +937,11 @@ object ScalaPositionManager {
       }
 
       def findParent(element: PsiElement): Option[PsiElement] = {
-        val parentsOnTheLine = element +: element
-          .parentsInFile
-          .takeWhile(e => e.getTextOffset > startLine)
-          .toIndexedSeq
+        val parentsOnTheLine = element +:
+          element
+            .parentsInFile
+            .takeWhile(e => e.getTextOffset > startLine)
+            .toIndexedSeq
         val anon = parentsOnTheLine.collectFirst {
           case e if isLambda(e) =>
             e
@@ -959,12 +957,10 @@ object ScalaPositionManager {
             case _: ScConstructorPattern | _: ScInfixPattern |
                 _: ScBindingPattern =>
               true
-            case callRefId childOf (
-                  (ref: ScReferenceExpression) childOf (_: ScMethodCall)
-                )
-                if ref.nameId == callRefId && ref
-                  .getTextRange
-                  .getStartOffset < startLine =>
+            case callRefId childOf
+                ((ref: ScReferenceExpression) childOf (_: ScMethodCall))
+                if ref.nameId == callRefId &&
+                  ref.getTextRange.getStartOffset < startLine =>
               true
             case _: ScTypeDefinition =>
               true
@@ -984,8 +980,8 @@ object ScalaPositionManager {
   }
 
   def isLambda(element: PsiElement) = {
-    ScalaEvaluatorBuilderUtil
-      .isGenerateAnonfun(element) && !isInsideMacro(element)
+    ScalaEvaluatorBuilderUtil.isGenerateAnonfun(element) &&
+    !isInsideMacro(element)
   }
 
   def lambdasOnLine(file: PsiFile, lineNumber: Int): Seq[PsiElement] = {
@@ -1002,17 +998,16 @@ object ScalaPositionManager {
     refType match {
       case ct: ClassType =>
         val supClass = ct.superclass()
-        supClass != null && supClass
-          .name()
-          .startsWith("scala.runtime.AbstractFunction")
+        supClass != null &&
+        supClass.name().startsWith("scala.runtime.AbstractFunction")
       case _ =>
         false
     }
   }
 
   def isAnonfun(m: Method): Boolean = {
-    isIndyLambda(m) || m.name.startsWith("apply") && isAnonfunType(
-      m.declaringType())
+    isIndyLambda(m) ||
+    m.name.startsWith("apply") && isAnonfunType(m.declaringType())
   }
 
   def indyLambdaMethodsOnLine(
@@ -1047,8 +1042,8 @@ object ScalaPositionManager {
       case null =>
         null
       case elem
-          if ScalaEvaluatorBuilderUtil.isGenerateClass(elem) || isLambda(
-            elem) =>
+          if ScalaEvaluatorBuilderUtil.isGenerateClass(elem) ||
+            isLambda(elem) =>
         elem
       case InsideMacro(macroCall) =>
         macroCall

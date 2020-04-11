@@ -87,8 +87,8 @@ class CoalescedPartitioner(
   override def equals(other: Any): Boolean =
     other match {
       case c: CoalescedPartitioner =>
-        c.parent == parent && Arrays
-          .equals(c.partitionStartIndices, partitionStartIndices)
+        c.parent == parent &&
+          Arrays.equals(c.partitionStartIndices, partitionStartIndices)
       case _ =>
         false
     }

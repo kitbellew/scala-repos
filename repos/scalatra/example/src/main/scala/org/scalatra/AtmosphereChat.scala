@@ -22,10 +22,10 @@ class AtmosphereChat
       title = "Scalatra Atmosphere Chat",
       content = bodyHtml,
       url = url(_, includeServletPath = false),
-      scripts =
-        "/jquery/jquery.atmosphere.js" :: "/jquery/application.js" :: Nil,
-      defaultScripts =
-        "/assets/js/jquery.min.js" :: "/assets/js/bootstrap.min.js" :: Nil
+      scripts = "/jquery/jquery.atmosphere.js" :: "/jquery/application.js" ::
+        Nil,
+      defaultScripts = "/assets/js/jquery.min.js" ::
+        "/assets/js/bootstrap.min.js" :: Nil
     )
   }
 
@@ -36,17 +36,19 @@ class AtmosphereChat
   }
 
   get("/broadcast") {
-    val jv = ("author" -> "System") ~ ("message" -> "big brother speaking") ~ (
-      "time" -> (new Date().getTime.toString)
-    )
+    val jv =
+      ("author" -> "System") ~
+        ("message" -> "big brother speaking") ~
+        ("time" -> (new Date().getTime.toString))
     AtmosphereClient.broadcast(routeBasePath + "/the-chat", jv)
 
   }
 
   get("/broadcast-all") {
-    val jv = ("author" -> "System") ~ ("message" -> "big brother speaking") ~ (
-      "time" -> (new Date().getTime.toString)
-    )
+    val jv =
+      ("author" -> "System") ~
+        ("message" -> "big brother speaking") ~
+        ("time" -> (new Date().getTime.toString))
     AtmosphereClient.broadcastAll(jv)
   }
 
@@ -56,33 +58,33 @@ class AtmosphereChat
         case Connected =>
           println("Client %s is connected" format uuid)
           broadcast(
-            ("author" -> "Someone") ~ (
-              "message" -> "joined the room"
-            ) ~ ("time" -> (new Date().getTime.toString)),
+            ("author" -> "Someone") ~
+              ("message" -> "joined the room") ~
+              ("time" -> (new Date().getTime.toString)),
             Everyone)
 
         case Disconnected(ClientDisconnected, _) =>
           broadcast(
-            ("author" -> "Someone") ~ (
-              "message" -> "has left the room"
-            ) ~ ("time" -> (new Date().getTime.toString)),
+            ("author" -> "Someone") ~
+              ("message" -> "has left the room") ~
+              ("time" -> (new Date().getTime.toString)),
             Everyone)
 
         case Disconnected(ServerDisconnected, _) =>
           println("Server disconnected the client %s" format uuid)
         case _: TextMessage =>
           send(
-            ("author" -> "system") ~ ("message" -> "Only json is allowed") ~ (
-              "time" -> (new Date().getTime.toString)
-            ))
+            ("author" -> "system") ~
+              ("message" -> "Only json is allowed") ~
+              ("time" -> (new Date().getTime.toString)))
 
         case JsonMessage(json) =>
           println(
             "Got message %s from %s".format(
               (json \ "message").extract[String],
               (json \ "author").extract[String]))
-          val msg =
-            json merge (("time" -> (new Date().getTime.toString)): JValue)
+          val msg = json merge
+            (("time" -> (new Date().getTime.toString)): JValue)
           broadcast(msg) // by default a broadcast is to everyone but self
         //          send(msg) // also send to the sender
       }
@@ -97,25 +99,25 @@ class AtmosphereChat
         case Connected =>
           println("Client %s is connected" format uuid)
           broadcast(
-            ("author" -> "Someone") ~ (
-              "message" -> ("joined the room: " + room)
-            ) ~ ("time" -> (new Date().getTime.toString)),
+            ("author" -> "Someone") ~
+              ("message" -> ("joined the room: " + room)) ~
+              ("time" -> (new Date().getTime.toString)),
             Everyone)
 
         case Disconnected(ClientDisconnected, _) =>
           broadcast(
-            ("author" -> "Someone") ~ (
-              "message" -> ("left the room: " + room)
-            ) ~ ("time" -> (new Date().getTime.toString)),
+            ("author" -> "Someone") ~
+              ("message" -> ("left the room: " + room)) ~
+              ("time" -> (new Date().getTime.toString)),
             Everyone)
 
         case Disconnected(ServerDisconnected, _) =>
           println("Server disconnected the client %s" format uuid)
         case _: TextMessage =>
           send(
-            ("author" -> "system") ~ ("message" -> "Only json is allowed") ~ (
-              "time" -> (new Date().getTime.toString)
-            ))
+            ("author" -> "system") ~
+              ("message" -> "Only json is allowed") ~
+              ("time" -> (new Date().getTime.toString)))
 
         case JsonMessage(json) =>
           println(
@@ -123,8 +125,8 @@ class AtmosphereChat
               (json \ "message").extract[String],
               (json \ "author").extract[String],
               room))
-          val msg =
-            json merge (("time" -> (new Date().getTime.toString)): JValue)
+          val msg = json merge
+            (("time" -> (new Date().getTime.toString)): JValue)
           broadcast(msg) // by default a broadcast is to everyone but self
         //          send(msg) // also send to the sender
       }

@@ -22,9 +22,10 @@ class Application @Inject() (openIdClient: OpenIdClient) extends Controller {}
 object ScalaOpenIdSpec extends PlaySpecification {
 
   "Scala OpenId" should {
-    "be injectable" in new WithApplication() {
-      app.injector.instanceOf[Application] must beAnInstanceOf[Application]
-    }
+    "be injectable" in
+      new WithApplication() {
+        app.injector.instanceOf[Application] must beAnInstanceOf[Application]
+      }
   }
 
   def openIdClient: OpenIdClient = null

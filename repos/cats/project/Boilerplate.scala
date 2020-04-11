@@ -46,10 +46,11 @@ object Boilerplate {
   final class TemplateVals(val arity: Int) {
     val synTypes = (0 until arity) map (n => s"A$n")
     val synVals = (0 until arity) map (n => s"a$n")
-    val synTypedVals = (synVals zip synTypes) map {
-      case (v, t) =>
-        v + ":" + t
-    }
+    val synTypedVals =
+      (synVals zip synTypes) map {
+        case (v, t) =>
+          v + ":" + t
+      }
     val `A..N` = synTypes.mkString(", ")
     val `a..n` = synVals.mkString(", ")
     val `_.._` = Seq.fill(arity)("_").mkString(", ")
@@ -84,9 +85,10 @@ object Boilerplate {
       val instances = rawContents flatMap {
         _ filter (_ startsWith "-") map (_.tail)
       }
-      val postBody = rawContents.head dropWhile (_ startsWith "|") dropWhile (
-        _ startsWith "-"
-      ) map (_.tail)
+      val postBody = rawContents.head dropWhile
+        (_ startsWith "|") dropWhile
+        (_ startsWith "-") map
+        (_.tail)
       (headerLines ++ preBody ++ instances ++ postBody) mkString "\n"
     }
   }
@@ -117,10 +119,11 @@ object Boilerplate {
         s"F[$tpe]"
       }
       val tpesString = synTypes mkString ", "
-      val params = (synVals zip tpes) map {
-        case (v, t) =>
-          s"$v:$t"
-      } mkString ", "
+      val params =
+        (synVals zip tpes) map {
+          case (v, t) =>
+            s"$v:$t"
+        } mkString ", "
       val next =
         if (arity + 1 <= maxArity) {
           s"def |@|[Z](z: F[Z]) = new CartesianBuilder${arity + 1}(${`a..n`}, z)"
@@ -191,29 +194,35 @@ object Boilerplate {
       val tpes = synTypes map { tpe =>
         s"F[$tpe]"
       }
-      val fargs = (0 until arity) map {
-        "f" + _
-      }
-      val fparams = (fargs zip tpes) map {
-        case (v, t) =>
-          s"$v:$t"
-      } mkString ", "
+      val fargs =
+        (0 until arity) map {
+          "f" + _
+        }
+      val fparams =
+        (fargs zip tpes) map {
+          case (v, t) =>
+            s"$v:$t"
+        } mkString ", "
 
       val a = arity / 2
       val b = arity - a
 
-      val fArgsA = (0 until a) map {
-        "f" + _
-      } mkString ","
-      val fArgsB = (a until arity) map {
-        "f" + _
-      } mkString ","
-      val argsA = (0 until a) map { n =>
-        "a" + n + ":A" + n
-      } mkString ","
-      val argsB = (a until arity) map { n =>
-        "a" + n + ":A" + n
-      } mkString ","
+      val fArgsA =
+        (0 until a) map {
+          "f" + _
+        } mkString ","
+      val fArgsB =
+        (a until arity) map {
+          "f" + _
+        } mkString ","
+      val argsA =
+        (0 until a) map { n =>
+          "a" + n + ":A" + n
+        } mkString ","
+      val argsB =
+        (a until arity) map { n =>
+          "a" + n + ":A" + n
+        } mkString ","
       def apN(n: Int) =
         if (n == 1) {
           "ap"
@@ -252,23 +261,23 @@ object Boilerplate {
       val tpes = synTypes map { tpe =>
         s"F[$tpe]"
       }
-      val fargs = (0 until arity) map {
-        "f" + _
-      }
-      val fparams = (fargs zip tpes) map {
-        case (v, t) =>
-          s"$v:$t"
-      } mkString ", "
+      val fargs =
+        (0 until arity) map {
+          "f" + _
+        }
+      val fparams =
+        (fargs zip tpes) map {
+          case (v, t) =>
+            s"$v:$t"
+        } mkString ", "
       val fargsS = fargs mkString ", "
 
-      val nestedProducts =
-        (0 until (arity - 2))
-          .foldRight(s"cartesian.product(f${arity - 2}, f${arity - 1})")(
-            (i, acc) => s"cartesian.product(f$i, $acc)")
-      val `nested (a..n)` =
-        (0 until (arity - 2))
-          .foldRight(s"(a${arity - 2}, a${arity - 1})")((i, acc) =>
-            s"(a$i, $acc)")
+      val nestedProducts = (0 until (arity - 2))
+        .foldRight(s"cartesian.product(f${arity - 2}, f${arity - 1})")(
+          (i, acc) => s"cartesian.product(f$i, $acc)")
+      val `nested (a..n)` = (0 until (arity - 2))
+        .foldRight(s"(a${arity - 2}, a${arity - 1})")((i, acc) =>
+          s"(a$i, $acc)")
 
       block"""
          |package cats

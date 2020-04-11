@@ -88,12 +88,11 @@ object Thread {
 
   private[message] lazy val tube = Post.tube |> { implicit pt =>
     JsTube(
-      (
-        __.json update (readDate('createdAt) andThen readDate('updatedAt))
-      ) andThen Json.reads[Thread],
-      Json.writes[Thread] andThen (
-        __.json update (writeDate('createdAt) andThen writeDate('updatedAt))
-      )
+      (__.json update
+        (readDate('createdAt) andThen readDate('updatedAt))) andThen
+        Json.reads[Thread],
+      Json.writes[Thread] andThen
+        (__.json update (writeDate('createdAt) andThen writeDate('updatedAt)))
     )
   }
 }

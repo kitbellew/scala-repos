@@ -91,8 +91,7 @@ class KindProjectorSimplifyTypeProjectionInspection
         case Success(paramType: ScParameterizedType, _) =>
           val typeParam: Seq[ScTypeParam] = alias.typeParameters
           val valid =
-            typeParam.nonEmpty &&
-              typeParam.forall(hasNoBounds) &&
+            typeParam.nonEmpty && typeParam.forall(hasNoBounds) &&
               !typeParam.exists(
                 occursInsideParameterized(
                   _,
@@ -147,14 +146,13 @@ class KindProjectorSimplifyTypeProjectionInspection
                         case Some(refinement) =>
                           refinement.types match {
                             case Seq(alias: ScTypeAliasDefinition)
-                                if alias.nameId.getText == projection
-                                  .nameId
-                                  .getText =>
+                                if alias.nameId.getText ==
+                                  projection.nameId.getText =>
                               val aliasParam = alias.typeParameters
                               projection.parent match {
                                 case Some(p: ScParameterizedTypeElement)
-                                    if p.typeArgList.typeArgs.size == aliasParam
-                                      .size =>
+                                    if p.typeArgList.typeArgs.size ==
+                                      aliasParam.size =>
                                 //should be handled by AppliedTypeLambdaCanBeSimplifiedInspection
                                 case _ if aliasParam.nonEmpty =>
                                   if (alias
@@ -178,9 +176,9 @@ class KindProjectorSimplifyTypeProjectionInspection
                                           builder.append("[")
                                           val parameters = aliasParam.map {
                                             param: ScTypeParam =>
-                                              if (param.isCovariant || param
-                                                    .isContravariant || boundsDefined(
-                                                    param)) {
+                                              if (param.isCovariant ||
+                                                  param.isContravariant ||
+                                                  boundsDefined(param)) {
                                                 s"`${param.getText}`"
                                               } else
                                                 param.getText

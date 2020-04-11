@@ -60,18 +60,19 @@ object Event {
         possibleMoves: Map[Pos, List[Pos]],
         possibleDrops: Option[List[Pos]],
         crazyData: Option[Crazyhouse.Data])(extra: JsObject) = {
-      extra ++ Json.obj(
-        "fen" -> fen,
-        "check" -> check.option(true),
-        "threefold" -> threefold.option(true),
-        "ply" -> state.turns,
-        "status" -> state.status,
-        "winner" -> state.winner,
-        "wDraw" -> state.whiteOffersDraw.option(true),
-        "bDraw" -> state.blackOffersDraw.option(true),
-        "clock" -> clock.map(_.data),
-        "dests" -> PossibleMoves.json(possibleMoves)
-      )
+      extra ++
+        Json.obj(
+          "fen" -> fen,
+          "check" -> check.option(true),
+          "threefold" -> threefold.option(true),
+          "ply" -> state.turns,
+          "status" -> state.status,
+          "winner" -> state.winner,
+          "wDraw" -> state.whiteOffersDraw.option(true),
+          "bDraw" -> state.blackOffersDraw.option(true),
+          "clock" -> clock.map(_.data),
+          "dests" -> PossibleMoves.json(possibleMoves)
+        )
     }.noNull |> withCrazyData(crazyData, possibleDrops)
   }
 

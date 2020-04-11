@@ -507,11 +507,9 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         s"Adding maven transitive dependency ${md.getModuleRevisionId} -> ${dd}")
       // TODO - Unify this borrowed Java code into something a bit friendlier.
       // Now we add the artifact....
-      if ((d.getArtifact.getClassifier != null) || (
-            (
-              d.getArtifact.getExtension != null
-            ) && !("jar" == d.getArtifact.getExtension)
-          )) {
+      if ((d.getArtifact.getClassifier != null) ||
+          ((d.getArtifact.getExtension != null) &&
+          !("jar" == d.getArtifact.getExtension))) {
         val tpe: String =
           if (d.getArtifact.getExtension != null)
             d.getArtifact.getExtension

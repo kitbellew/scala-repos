@@ -61,11 +61,12 @@ class ClusterTest extends FunSuite {
     cluster1.add(1)
     cluster1.add(2)
     assert(
-      changes.toSeq == Seq(
-        Cluster.Add(WrappedInt(1)),
-        Cluster.Add(WrappedInt(2)),
-        Cluster.Add(WrappedInt(1)),
-        Cluster.Add(WrappedInt(2))))
+      changes.toSeq ==
+        Seq(
+          Cluster.Add(WrappedInt(1)),
+          Cluster.Add(WrappedInt(2)),
+          Cluster.Add(WrappedInt(1)),
+          Cluster.Add(WrappedInt(2))))
 
     cluster1.del(1)
     assert(changes.size == 5)

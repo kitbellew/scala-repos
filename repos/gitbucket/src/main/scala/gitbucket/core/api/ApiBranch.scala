@@ -13,7 +13,7 @@ case class ApiBranch(
     extends FieldSerializable {
   def _links =
     Map(
-      "self" -> ApiPath(
-        s"/api/v3/repos/${repositoryName.fullName}/branches/${name}"),
+      "self" ->
+        ApiPath(s"/api/v3/repos/${repositoryName.fullName}/branches/${name}"),
       "html" -> ApiPath(s"/${repositoryName.fullName}/tree/${name}"))
 }

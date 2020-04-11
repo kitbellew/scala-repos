@@ -32,7 +32,8 @@ class ScalaExtractMethodSettings(
     val tp: ArrayBuffer[ScTypeParam] = new ArrayBuffer
     var elem: PsiElement = elements.apply(0)
     val nextRange = nextSibling.getTextRange
-    while (elem != null && !(
+    while (elem != null &&
+           !(
              elem.getTextRange.contains(nextRange) &&
                !elem
                  .getTextRange

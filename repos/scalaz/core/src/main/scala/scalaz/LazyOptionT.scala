@@ -141,10 +141,10 @@ private trait LazyOptionTMonad[F[_]]
       f: => LazyOptionT[F, A => B]): LazyOptionT[F, B] =
     LazyOptionT(
       F.bind(f.run)(
-        _ fold (
-          ff => F.map(fa.run)(_ map ((ff: A => B)(_))),
-          F.point(LazyOption.lazyNone)
-        )))
+        _ fold
+          (
+            ff => F.map(fa.run)(_ map ((ff: A => B)(_))),
+            F.point(LazyOption.lazyNone))))
 
   def point[A](a: => A): LazyOptionT[F, A] =
     LazyOptionT[F, A](F.point(LazyOption.lazySome(a)))

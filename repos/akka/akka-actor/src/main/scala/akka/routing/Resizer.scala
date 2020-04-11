@@ -279,8 +279,8 @@ case class DefaultResizer(
     * @return proposed decrease in capacity (as a negative number)
     */
   def backoff(pressure: Int, capacity: Int): Int =
-    if (backoffThreshold > 0.0 && backoffRate > 0.0 && capacity > 0 && pressure
-          .toDouble / capacity < backoffThreshold)
+    if (backoffThreshold > 0.0 && backoffRate > 0.0 && capacity > 0 &&
+        pressure.toDouble / capacity < backoffThreshold)
       math.floor(-1.0 * backoffRate * capacity).toInt
     else
       0
@@ -321,9 +321,8 @@ private[akka] final class ResizablePoolCell(
 
   override def sendMessage(envelope: Envelope): Unit = {
     if (!routerConfig.isManagementMessage(envelope.message) &&
-        resizer
-          .isTimeForResize(resizeCounter.getAndIncrement()) && resizeInProgress
-          .compareAndSet(false, true)) {
+        resizer.isTimeForResize(resizeCounter.getAndIncrement()) &&
+        resizeInProgress.compareAndSet(false, true)) {
       super.sendMessage(Envelope(ResizablePoolActor.Resize, self, system))
     }
 
@@ -381,8 +380,8 @@ private[akka] class ResizablePoolActor(supervisorStrategy: SupervisorStrategy)
         x
       case _ ⇒
         throw ActorInitializationException(
-          "Resizable router actor can only be used when resizer is defined, not in " + context
-            .getClass)
+          "Resizable router actor can only be used when resizer is defined, not in " +
+            context.getClass)
     }
 
   override def receive =

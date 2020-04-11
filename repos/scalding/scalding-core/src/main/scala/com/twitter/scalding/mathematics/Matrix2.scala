@@ -212,9 +212,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
         case (r, c, x) =>
           (r, r, 1 / scala.math.sqrt(x))
       } // diagonal + inverse
-    MatrixLiteral(
-      result,
-      SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) * matD
+    MatrixLiteral(result, SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) *
+      matD
   }
 
   /**
@@ -239,9 +238,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
         case (r, c, x) =>
           (r, r, 1 / x)
       } // diagonal + inverse
-    MatrixLiteral(
-      result,
-      SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) * matD
+    MatrixLiteral(result, SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) *
+      matD
   }
 
   def getRow(index: R): Matrix2[Unit, C, V] =
@@ -444,8 +442,8 @@ case class Product[R, C, C2, V](
 
   private lazy val optimal: Boolean = expressions.isDefined
 
-  private lazy val isSpecialCase: Boolean = right
-    .isInstanceOf[OneC[_, _]] || left.isInstanceOf[OneR[_, _]]
+  private lazy val isSpecialCase: Boolean = right.isInstanceOf[OneC[_, _]] ||
+    left.isInstanceOf[OneR[_, _]]
 
   private lazy val specialCase: TypedPipe[(R, C2, V)] = {
     val leftMatrix = right.isInstanceOf[OneC[_, _]]
@@ -558,10 +556,8 @@ case class Product[R, C, C2, V](
     left.transpose,
     ring)
   override def negate(implicit g: Group[V]): Product[R, C, C2, V] = {
-    if (left.sizeHint.total.getOrElse(BigInt(0L)) > right
-          .sizeHint
-          .total
-          .getOrElse(BigInt(0L))) {
+    if (left.sizeHint.total.getOrElse(BigInt(0L)) >
+          right.sizeHint.total.getOrElse(BigInt(0L))) {
       Product(left, right.negate, ring, expressions)
     } else {
       Product(left.negate, right, ring, expressions)
@@ -766,10 +762,8 @@ case class HadamardProduct[R, C, V](
       rowOrd)
   override val sizeHint = left.sizeHint #*# right.sizeHint
   override def negate(implicit g: Group[V]): HadamardProduct[R, C, V] =
-    if (left.sizeHint.total.getOrElse(BigInt(0L)) > right
-          .sizeHint
-          .total
-          .getOrElse(BigInt(0L)))
+    if (left.sizeHint.total.getOrElse(BigInt(0L)) >
+          right.sizeHint.total.getOrElse(BigInt(0L)))
       HadamardProduct(left, right.negate, ring)
     else
       HadamardProduct(left.negate, right, ring)
@@ -831,18 +825,14 @@ trait Scalar2[V] extends Serializable {
       mj: MatrixJoiner2): Matrix2[R, C, V] =
     that match {
       case p @ Product(left, right, _, expressions) =>
-        if (left.sizeHint.total.getOrElse(BigInt(0L)) > right
-              .sizeHint
-              .total
-              .getOrElse(BigInt(0L)))
+        if (left.sizeHint.total.getOrElse(BigInt(0L)) >
+              right.sizeHint.total.getOrElse(BigInt(0L)))
           Product(left, (this * right), ring, expressions)(p.joiner)
         else
           Product(this * left, right, ring, expressions)(p.joiner)
       case HadamardProduct(left, right, _) =>
-        if (left.sizeHint.total.getOrElse(BigInt(0L)) > right
-              .sizeHint
-              .total
-              .getOrElse(BigInt(0L)))
+        if (left.sizeHint.total.getOrElse(BigInt(0L)) >
+              right.sizeHint.total.getOrElse(BigInt(0L)))
           HadamardProduct(left, (this * right), ring)
         else
           HadamardProduct(this * left, right, ring)
@@ -943,10 +933,8 @@ object Matrix2 {
         for (k <- i to (j - 1)) {
           // the original did not multiply by (k - i) and (j - k - 1) respectively (this achieves spread out trees)
           val cost =
-            (k - i) * computeCosts(p, i, k) + (j - k - 1) * computeCosts(
-              p,
-              k + 1,
-              j) +
+            (k - i) * computeCosts(p, i, k) +
+              (j - k - 1) * computeCosts(p, k + 1, j) +
               (p(i).sizeHint * (p(k).sizeHint * p(j).sizeHint))
                 .total
                 .getOrElse(BigInt(0L))

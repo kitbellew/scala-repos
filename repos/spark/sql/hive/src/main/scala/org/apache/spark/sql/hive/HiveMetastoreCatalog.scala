@@ -422,9 +422,8 @@ private[hive] class HiveMetastoreCatalog(
           (None, message)
 
         case (Some(serde), relation: HadoopFsRelation)
-            if relation.location.paths.length == 1 && relation
-              .partitionSchema
-              .isEmpty =>
+            if relation.location.paths.length == 1 &&
+              relation.partitionSchema.isEmpty =>
           val hiveTable = newHiveCompatibleMetastoreTable(relation, serde)
           val message =
             s"Persisting data source relation $qualifiedTableName with a single input path " +
@@ -437,20 +436,16 @@ private[hive] class HiveMetastoreCatalog(
           val message =
             s"Persisting partitioned data source relation $qualifiedTableName into " +
               "Hive metastore in Spark SQL specific format, which is NOT compatible with Hive. " +
-              "Input path(s): " + relation
-              .location
-              .paths
-              .mkString("\n", "\n", "")
+              "Input path(s): " +
+              relation.location.paths.mkString("\n", "\n", "")
           (None, message)
 
         case (Some(serde), relation: HadoopFsRelation) =>
           val message =
             s"Persisting data source relation $qualifiedTableName with multiple input paths into " +
               "Hive metastore in Spark SQL specific format, which is NOT compatible with Hive. " +
-              s"Input paths: " + relation
-              .location
-              .paths
-              .mkString("\n", "\n", "")
+              s"Input paths: " +
+              relation.location.paths.mkString("\n", "\n", "")
           (None, message)
 
         case (Some(serde), _) =>
@@ -548,9 +543,10 @@ private[hive] class HiveMetastoreCatalog(
 
     val parquetOptions = Map(
       ParquetRelation.MERGE_SCHEMA -> mergeSchema.toString,
-      ParquetRelation.METASTORE_TABLE_NAME -> TableIdentifier(
-        metastoreRelation.tableName,
-        Some(metastoreRelation.databaseName)).unquotedString
+      ParquetRelation.METASTORE_TABLE_NAME ->
+        TableIdentifier(
+          metastoreRelation.tableName,
+          Some(metastoreRelation.databaseName)).unquotedString
     )
     val tableIdentifier = QualifiedTableName(
       metastoreRelation.databaseName,
@@ -572,18 +568,15 @@ private[hive] class HiveMetastoreCatalog(
           // If we have the same paths, same schema, and same partition spec,
           // we will use the cached Parquet Relation.
           val useCached =
-            parquetRelation
-              .location
-              .paths
-              .map(_.toString)
-              .toSet == pathsInMetastore.toSet &&
+            parquetRelation.location.paths.map(_.toString).toSet ==
+              pathsInMetastore.toSet &&
               logical.schema.sameType(metastoreSchema) &&
-              parquetRelation.partitionSpec == partitionSpecInMetastore
-                .getOrElse {
-                  PartitionSpec(
-                    StructType(Nil),
-                    Array.empty[datasources.PartitionDirectory])
-                }
+              parquetRelation.partitionSpec ==
+              partitionSpecInMetastore.getOrElse {
+                PartitionSpec(
+                  StructType(Nil),
+                  Array.empty[datasources.PartitionDirectory])
+              }
 
           if (useCached) {
             Some(logical)
@@ -871,8 +864,8 @@ private[hive] class HiveMetastoreCatalog(
       val numDynamicPartitions = p.partition.values.count(_.isEmpty)
       val tableOutputDataTypes =
         (
-          table
-            .attributes ++ table.partitionKeys.takeRight(numDynamicPartitions)
+          table.attributes ++
+            table.partitionKeys.takeRight(numDynamicPartitions)
         ).take(child.output.length).map(_.dataType)
 
       if (childOutputDataTypes == tableOutputDataTypes) {
@@ -981,16 +974,17 @@ private[hive] case class InsertIntoHiveTable(
 
   // This is the expected schema of the table prepared to be inserted into,
   // including dynamic partition columns.
-  val tableOutput = table
-    .attributes ++ table.partitionKeys.takeRight(numDynamicPartitions)
+  val tableOutput = table.attributes ++
+    table.partitionKeys.takeRight(numDynamicPartitions)
 
-  override lazy val resolved: Boolean = childrenResolved && child
-    .output
-    .zip(tableOutput)
-    .forall {
-      case (childAttr, tableAttr) =>
-        childAttr.dataType.sameType(tableAttr.dataType)
-    }
+  override lazy val resolved: Boolean = childrenResolved &&
+    child
+      .output
+      .zip(tableOutput)
+      .forall {
+        case (childAttr, tableAttr) =>
+          childAttr.dataType.sameType(tableAttr.dataType)
+      }
 }
 
 private[hive] case class MetastoreRelation(
@@ -1010,8 +1004,7 @@ private[hive] case class MetastoreRelation(
     other match {
       case relation: MetastoreRelation =>
         databaseName == relation.databaseName &&
-          tableName == relation.tableName &&
-          alias == relation.alias &&
+          tableName == relation.tableName && alias == relation.alias &&
           output == relation.output
       case _ =>
         false

@@ -40,9 +40,8 @@ class DocParser(settings: nsc.Settings, reporter: Reporter)
         case x: PackageDef =>
           x.stats flatMap (t => loop(enclosing :+ x, t))
         case x: DocDef =>
-          new Parsed(enclosing, x) :: loop(
-            enclosing :+ x.definition,
-            x.definition)
+          new Parsed(enclosing, x) ::
+            loop(enclosing :+ x.definition, x.definition)
         case x =>
           x.children flatMap (t => loop(enclosing, t))
       }

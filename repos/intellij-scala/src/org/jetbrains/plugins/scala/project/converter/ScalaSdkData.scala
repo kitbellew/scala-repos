@@ -204,8 +204,8 @@ private object ScalaSdkData {
         "Only directory-based IDEA projects are supported"))
 
     val candidates = {
-      val suffixes = Iterator
-        .single("") ++ Iterator.from(2).map("_" + _.toString)
+      val suffixes = Iterator.single("") ++
+        Iterator.from(2).map("_" + _.toString)
       suffixes.map(suffix =>
         new File(new File(base, "libraries"), s"$name$suffix.xml"))
     }

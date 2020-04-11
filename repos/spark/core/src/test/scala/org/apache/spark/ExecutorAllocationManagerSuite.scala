@@ -397,8 +397,8 @@ class ExecutorAllocationManagerSuite
     val manager = sc.executorAllocationManager.get
     manager.setClock(clock)
 
-    executorIds(manager)
-      .asInstanceOf[mutable.Set[String]] ++= List("1", "2", "3")
+    executorIds(manager).asInstanceOf[mutable.Set[String]] ++=
+      List("1", "2", "3")
 
     // Starting remove timer is idempotent for each executor
     assert(removeTimes(manager).isEmpty)
@@ -419,14 +419,14 @@ class ExecutorAllocationManagerSuite
     onExecutorIdle(manager, "2")
     assert(removeTimes(manager)("2") !== firstRemoveTime) // different executor
     assert(
-      removeTimes(manager)("2") === clock
-        .getTimeMillis + executorIdleTimeout * 1000)
+      removeTimes(manager)("2") ===
+        clock.getTimeMillis + executorIdleTimeout * 1000)
     clock.advance(400L)
     onExecutorIdle(manager, "3")
     assert(removeTimes(manager)("3") !== firstRemoveTime)
     assert(
-      removeTimes(manager)("3") === clock
-        .getTimeMillis + executorIdleTimeout * 1000)
+      removeTimes(manager)("3") ===
+        clock.getTimeMillis + executorIdleTimeout * 1000)
     assert(removeTimes(manager).size === 3)
     assert(removeTimes(manager).contains("2"))
     assert(removeTimes(manager).contains("3"))
@@ -977,12 +977,8 @@ class ExecutorAllocationManagerSuite
     onExecutorAdded(manager, "fourth")
     onExecutorAdded(manager, "fifth")
     assert(
-      executorIds(manager) === Set(
-        "first",
-        "second",
-        "third",
-        "fourth",
-        "fifth"))
+      executorIds(manager) ===
+        Set("first", "second", "third", "fourth", "fifth"))
 
     // Cluster manager lost will make all the live executors lost, so here simulate this behavior
     onExecutorRemoved(manager, "first")
@@ -1009,23 +1005,15 @@ class ExecutorAllocationManagerSuite
     onExecutorAdded(manager, "fourth")
     onExecutorAdded(manager, "fifth")
     assert(
-      executorIds(manager) === Set(
-        "first",
-        "second",
-        "third",
-        "fourth",
-        "fifth"))
+      executorIds(manager) ===
+        Set("first", "second", "third", "fourth", "fifth"))
 
     removeExecutor(manager, "first")
     removeExecutor(manager, "second")
     assert(executorsPendingToRemove(manager) === Set("first", "second"))
     assert(
-      executorIds(manager) === Set(
-        "first",
-        "second",
-        "third",
-        "fourth",
-        "fifth"))
+      executorIds(manager) ===
+        Set("first", "second", "third", "fourth", "fifth"))
 
     // Cluster manager lost will make all the live executors lost, so here simulate this behavior
     onExecutorRemoved(manager, "first")

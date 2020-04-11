@@ -187,34 +187,38 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
     r += '('
 
     if (e.isNativeMethod) {
-      r += c(
-        "Native Method",
-        if (highlight)
-          TESTFILE2
-        else
-          null)
-    } else if (e.getFileName == null) {
-      r += c(
-        "Unknown Source",
-        if (highlight)
-          TESTFILE2
-        else
-          null)
-    } else {
-      r += c(
-        e.getFileName,
-        if (highlight)
-          TESTFILE1
-        else
-          null)
-      if (e.getLineNumber >= 0) {
-        r += ':'
-        r += c(
-          String.valueOf(e.getLineNumber),
+      r +=
+        c(
+          "Native Method",
           if (highlight)
             TESTFILE2
           else
             null)
+    } else if (e.getFileName == null) {
+      r +=
+        c(
+          "Unknown Source",
+          if (highlight)
+            TESTFILE2
+          else
+            null)
+    } else {
+      r +=
+        c(
+          e.getFileName,
+          if (highlight)
+            TESTFILE1
+          else
+            null)
+      if (e.getLineNumber >= 0) {
+        r += ':'
+        r +=
+          c(
+            String.valueOf(e.getLineNumber),
+            if (highlight)
+              TESTFILE2
+            else
+              null)
       }
     }
     r += ')'

@@ -136,9 +136,8 @@ abstract class Delambdafy
         exprOwner: Symbol): List[Tree] = {
       // Need to remove from the lambdaClassDefs map: there may be multiple PackageDef for the same
       // package when defining a package object. We only add the lambda class to one. See SI-9097.
-      super.transformStats(stats, exprOwner) ++ lambdaClassDefs
-        .remove(exprOwner)
-        .getOrElse(Nil)
+      super.transformStats(stats, exprOwner) ++
+        lambdaClassDefs.remove(exprOwner).getOrElse(Nil)
     }
 
     private def optionSymbol(sym: Symbol): Option[Symbol] =
@@ -199,9 +198,8 @@ abstract class Delambdafy
                 .newSyntheticValueParam(boxedType(tp), param.name.toTermName))
 
         val bridgeResultType: Type = {
-          if (target
-                .info
-                .resultType == UnitTpe && functionResultType != UnitTpe) {
+          if (target.info.resultType == UnitTpe &&
+              functionResultType != UnitTpe) {
             neededAdaptation = true
             ObjectTpe
           } else
@@ -339,13 +337,13 @@ abstract class Delambdafy
 
         val body =
           Block(
-            List(
-              atPos(newClass.pos)(Apply(gen.mkSuperInitCall, Nil))) ++ assigns,
+            List(atPos(newClass.pos)(Apply(gen.mkSuperInitCall, Nil))) ++
+              assigns,
             Literal(Constant(())): Tree) setPos newClass.pos
 
         (
-          localTyper typed DefDef(constrSym, List(params), body) setPos newClass
-            .pos
+          localTyper typed DefDef(constrSym, List(params), body) setPos
+            newClass.pos
         ).asInstanceOf[DefDef]
       }
 
@@ -363,20 +361,19 @@ abstract class Delambdafy
         //      - make `anonClass.isAnonymousClass` true.
         //      - use `newAnonymousClassSymbol` or push the required variations into a similar factory method
         //      - reinstate the assertion in `Erasure.resolveAnonymousBridgeClash`
-        val suffix = nme.DELAMBDAFY_LAMBDA_CLASS_NAME + "$" + (
-          if (funOwner.isPrimaryConstructor)
-            ""
-          else
-            "$" + funOwner.name + "$"
-        )
+        val suffix = nme.DELAMBDAFY_LAMBDA_CLASS_NAME + "$" +
+          (if (funOwner.isPrimaryConstructor)
+             ""
+           else
+             "$" + funOwner.name + "$")
         val oldClassPart = oldClass.name.decode
         // make sure the class name doesn't contain $anon, otherwise isAnonymousClass/Function may be true
         val name = unit.freshTypeName(
           s"$oldClassPart$suffix".replace("$anon", "$nestedInAnon"))
 
-        val lambdaClass = pkg newClassSymbol (
-          name, originalFunction.pos, FINAL | SYNTHETIC
-        ) addAnnotation SerialVersionUIDAnnotation
+        val lambdaClass = pkg newClassSymbol
+          (name, originalFunction.pos, FINAL | SYNTHETIC) addAnnotation
+          SerialVersionUIDAnnotation
         lambdaClass.associatedFile = unit.source.file
         // make sure currentRun.compiles(lambdaClass) is true (AddInterfaces does the same for trait impl classes)
         currentRun.symSource(lambdaClass) = funOwner.sourceFile
@@ -427,8 +424,8 @@ abstract class Delambdafy
           (optionSymbol(thisProxy).toList ++ (captureProxies2 map (_._2))) map {
             member =>
               lambdaClass.info.decls enter member
-              ValDef(member, gen.mkZero(member.tpe)) setPos decapturedFunction
-                .pos
+              ValDef(member, gen.mkZero(member.tpe)) setPos
+                decapturedFunction.pos
           }
 
         // constructor
@@ -451,12 +448,13 @@ abstract class Delambdafy
           else
             s"$sym: ${sym.tpe} in ${sym.owner}"
 
-        bridgeMethod foreach (bm =>
-          // TODO SI-6260 maybe just create the apply method with the signature (Object => Object) in all cases
-          //      rather than the method+bridge pair.
-          if (bm.symbol.tpe =:= applyMethodDef.symbol.tpe)
-            erasure
-              .resolveAnonymousBridgeClash(applyMethodDef.symbol, bm.symbol))
+        bridgeMethod foreach
+          (bm =>
+            // TODO SI-6260 maybe just create the apply method with the signature (Object => Object) in all cases
+            //      rather than the method+bridge pair.
+            if (bm.symbol.tpe =:= applyMethodDef.symbol.tpe)
+              erasure
+                .resolveAnonymousBridgeClash(applyMethodDef.symbol, bm.symbol))
 
         val body = members ++ List(constr, applyMethodDef) ++ bridgeMethod
 
@@ -660,8 +658,8 @@ abstract class Delambdafy
           declared += tree.symbol
         case Ident(_) =>
           val sym = tree.symbol
-          if ((sym != NoSymbol) && sym.isLocalToBlock && sym.isTerm && !sym
-                .isMethod && !declared.contains(sym))
+          if ((sym != NoSymbol) && sym.isLocalToBlock && sym.isTerm &&
+              !sym.isMethod && !declared.contains(sym))
             freeVars += sym
         case _ =>
       }
@@ -693,9 +691,8 @@ abstract class Delambdafy
         case tree @ This(encl) if tree.symbol == oldClass && thisProxy.exists =>
           gen mkAttributedSelect (gen mkAttributedThis newClass, thisProxy)
         case Ident(name) if (captureProxies contains tree.symbol) =>
-          gen mkAttributedSelect (
-            gen mkAttributedThis newClass, captureProxies(tree.symbol)
-          )
+          gen mkAttributedSelect
+            (gen mkAttributedThis newClass, captureProxies(tree.symbol))
         case _ =>
           super.transform(tree)
       }

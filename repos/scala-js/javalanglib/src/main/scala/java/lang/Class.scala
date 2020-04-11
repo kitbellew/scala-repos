@@ -22,14 +22,12 @@ private trait ScalaJSClassData[A] extends js.Object {
 final class Class[A] private (data: ScalaJSClassData[A]) extends Object {
 
   override def toString(): String = {
-    (
-      if (isInterface())
-        "interface "
-      else if (isPrimitive())
-        ""
-      else
-        "class "
-    ) + getName()
+    (if (isInterface())
+       "interface "
+     else if (isPrimitive())
+       ""
+     else
+       "class ") + getName()
   }
 
   def isInstance(obj: Object): scala.Boolean = data.isInstance(obj)
@@ -45,11 +43,14 @@ final class Class[A] private (data: ScalaJSClassData[A]) extends Object {
         else if (this eq classOf[scala.Int])
           (that eq classOf[scala.Byte]) || (that eq classOf[scala.Short])
         else if (this eq classOf[scala.Float])
-          (that eq classOf[scala.Byte]) || (that eq classOf[scala.Short]) ||
+          (that eq classOf[scala.Byte]) ||
+          (that eq classOf[scala.Short]) ||
           (that eq classOf[scala.Int])
         else if (this eq classOf[scala.Double])
-          (that eq classOf[scala.Byte]) || (that eq classOf[scala.Short]) ||
-          (that eq classOf[scala.Int]) || (that eq classOf[scala.Float])
+          (that eq classOf[scala.Byte]) ||
+          (that eq classOf[scala.Short]) ||
+          (that eq classOf[scala.Int]) ||
+          (that eq classOf[scala.Float])
         else
           false
       }

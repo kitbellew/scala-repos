@@ -70,7 +70,9 @@ class SpillingJob(args: Args) extends Job(args) {
 class SpillingTest extends WordSpec with Matchers {
   import Dsl._
   "A SpillingJob" should {
-    val src = (0 to 9).map(_ -> 1) ++ List(0 -> 4)
+    val src = (
+      0 to 9
+    ).map(_ -> 1) ++ List(0 -> 4)
     val result =
       src
         .groupBy(_._1)
@@ -122,13 +124,15 @@ class GroupRandomlyJobTest extends WordSpec with Matchers {
   import GroupRandomlyJob.NumShards
 
   "A GroupRandomlyJob" should {
-    val input = (0 to 10000)
-      .map {
-        _.toString
-      }
-      .map {
-        Tuple1(_)
-      }
+    val input =
+      (
+        0 to 10000
+      ).map {
+          _.toString
+        }
+        .map {
+          Tuple1(_)
+        }
     JobTest(new GroupRandomlyJob(_))
       .source(Tsv("fakeInput"), input)
       .sink[(Int)](Tsv("fakeOutput")) { outBuf =>
@@ -158,9 +162,12 @@ class ShuffleJobTest extends WordSpec with Matchers {
     10, 5, 9, 12, 0, 1, 4, 8, 11, 6, 2, 3, 7)
 
   "A ShuffleJob" should {
-    val input = (0 to 12).map {
-      Tuple1(_)
-    }
+    val input =
+      (
+        0 to 12
+      ).map {
+        Tuple1(_)
+      }
     JobTest(new ShuffleJob(_))
       .source(Tsv("fakeInput"), input)
       .sink[(List[Int])](Tsv("fakeOutput")) { outBuf =>
@@ -178,7 +185,11 @@ class MapToGroupBySizeSumMaxJob(args: Args) extends Job(args) {
     //1 is the line
     mapTo(1 -> ('kx, 'x)) { line: String =>
       val x = line.toDouble
-      ((x > 0.5), x)
+      (
+        (
+          x > 0.5
+        ),
+        x)
     }
     .groupBy('kx) {
       _.size.sum[Double]('x -> 'sx).max('x)
@@ -190,15 +201,22 @@ class MapToGroupBySizeSumMaxTest extends WordSpec with Matchers {
   "A MapToGroupBySizeSumMaxJob" should {
     val r = new java.util.Random
     //Here is our input data:
-    val input = (0 to 100).map { i: Int =>
-      (i.toString, r.nextDouble.toString)
-    }
+    val input =
+      (
+        0 to 100
+      ).map { i: Int =>
+        (i.toString, r.nextDouble.toString)
+      }
     //Here is our expected output:
     val goldenOutput = input
       .map {
         case (line: String, x: String) =>
           val xv = x.toDouble;
-          ((xv > 0.5), xv)
+          (
+            (
+              xv > 0.5
+            ),
+            xv)
       }
       .groupBy {
         case (kx: Boolean, x: Double) =>
@@ -338,13 +356,11 @@ class MRMTest extends WordSpec with Matchers {
       }
       .sink[Int](Tsv("outputSetTo")) { outBuf =>
         "use flattenTo" in {
-          outBuf.toList.sorted shouldBe (
-            input
-              .map {
-                _._2
-              }
-              .sorted
-            )
+          outBuf.toList.sorted shouldBe (input
+            .map {
+              _._2
+            }
+            .sorted)
         }
       }
       .run
@@ -721,20 +737,26 @@ class MergeTestJob(args: Args) extends Job(args) {
       }
   val big =
     in.filter('x) { (x: Double) =>
-      (x > 0.5)
+      (
+        x > 0.5
+      )
     }
   val small =
     in.filter('x) { (x: Double) =>
-      (x <= 0.5)
+      (
+        x <= 0.5
+      )
     }
-  (big ++ small)
-    .groupBy('x) {
+  (
+    big ++ small
+  ).groupBy('x) {
       _.max('y)
     }
     .write(Tsv(args("out")))
   // Self merge should work
-  (big ++ big)
-    .groupBy('x) {
+  (
+    big ++ big
+  ).groupBy('x) {
       _.max('y)
     }
     .write(Tsv("out2"))
@@ -744,9 +766,12 @@ class MergeTest extends WordSpec with Matchers {
   "A MergeTest" should {
     val r = new java.util.Random
     //Here is our input data:
-    val input = (0 to 100).map { i =>
-      (i.toString, r.nextDouble.toString + " " + r.nextDouble.toString)
-    }
+    val input =
+      (
+        0 to 100
+      ).map { i =>
+        (i.toString, r.nextDouble.toString + " " + r.nextDouble.toString)
+      }
     //Here is our expected output:
     val parsed = input.map {
       case (line: String, x: String) =>
@@ -759,19 +784,21 @@ class MergeTest extends WordSpec with Matchers {
     }
     val big = parsed.filter(_._1 > 0.5)
     val small = parsed.filter(_._1 <= 0.5)
-    val golden = (big ++ small)
-      .groupBy {
-        _._1
-      }
-      .mapValues { itup =>
-        (
-          itup
-            .map {
-              _._2
-            }
-            .max
-          )
-      }
+    val golden =
+      (
+        big ++ small
+      ).groupBy {
+          _._1
+        }
+        .mapValues { itup =>
+          (
+            itup
+              .map {
+                _._2
+              }
+              .max
+            )
+        }
     //Now we have the expected input and output:
     JobTest(new MergeTestJob(_))
       .arg("in", "fakeInput")
@@ -784,13 +811,11 @@ class MergeTest extends WordSpec with Matchers {
       }
       .sink[(Double, Double)](Tsv("out2")) { outBuf =>
         "correctly self merge" in {
-          outBuf.toMap shouldBe (
-            big
-              .groupBy(_._1)
-              .mapValues { iter =>
-                iter.map(_._2).max
-              }
-            )
+          outBuf.toMap shouldBe (big
+            .groupBy(_._1)
+            .mapValues { iter =>
+              iter.map(_._2).max
+            })
         }
       }
       .run
@@ -810,7 +835,9 @@ class SizeAveStdJob(args: Args) extends Job(args) {
       (p(0), p(1))
     }
     .map('x -> 'x) { (x: Double) =>
-      (4 * x).toInt
+      (
+        4 * x
+      ).toInt
     }
     .groupBy('x) {
       _.sizeAveStdev('y -> ('size, 'yave, 'ystdev))
@@ -829,9 +856,12 @@ class SizeAveStdSpec extends WordSpec with Matchers {
       scala.math.pow(1e40, r.nextDouble)
     }
     //Here is our input data:
-    val input = (0 to 10000).map { i =>
-      (i.toString, r.nextDouble.toString + " " + powerLawRand.toString)
-    }
+    val input =
+      (
+        0 to 10000
+      ).map { i =>
+        (i.toString, r.nextDouble.toString + " " + powerLawRand.toString)
+      }
     val output = input
       .map { numline =>
         numline
@@ -842,7 +872,11 @@ class SizeAveStdSpec extends WordSpec with Matchers {
           }
       }
       .map { vec =>
-        ((vec(0) * 4).toInt, vec(1))
+        (
+          (
+            vec(0) * 4
+          ).toInt,
+          vec(1))
       }
       .groupBy { tup =>
         tup._1
@@ -1183,15 +1217,13 @@ class CrossTest extends WordSpec with Matchers {
       .sink[(Int, Int, Int)](Tsv("fakeOut")) { outBuf =>
         (idx + ": must look exactly right") in {
           outBuf should have size 6
-          outBuf.toSet shouldBe (
-            Set(
-              (0, 1, 4),
-              (0, 1, 5),
-              (1, 2, 4),
-              (1, 2, 5),
-              (2, 3, 4),
-              (2, 3, 5))
-          )
+          outBuf.toSet shouldBe (Set(
+            (0, 1, 4),
+            (0, 1, 5),
+            (1, 2, 4),
+            (1, 2, 5),
+            (2, 3, 4),
+            (2, 3, 5)))
         }
         idx += 1
       }
@@ -1468,15 +1500,13 @@ class PivotTest extends WordSpec with Matchers with FieldConversions {
       .sink[(String, String, String)](Tsv("unpivot")) { outBuf =>
         "unpivot columns correctly" in {
           outBuf should have size 6
-          outBuf.toList.sorted shouldBe (
-            List(
-              ("1", "w", "a"),
-              ("1", "y", "b"),
-              ("1", "z", "c"),
-              ("2", "w", "d"),
-              ("2", "y", "e"),
-              ("2", "z", "f")).sorted
-          )
+          outBuf.toList.sorted shouldBe (List(
+            ("1", "w", "a"),
+            ("1", "y", "b"),
+            ("1", "z", "c"),
+            ("2", "w", "d"),
+            ("2", "y", "e"),
+            ("2", "z", "f")).sorted)
         }
       }
       .sink[(String, String, String, String)](Tsv("pivot")) { outBuf =>
@@ -1489,9 +1519,9 @@ class PivotTest extends WordSpec with Matchers with FieldConversions {
         outBuf =>
           "pivot back to the original with the missing column replace by the specified default" in {
             outBuf should have size 2
-            outBuf.toList.sorted shouldBe (
-              List(("1", "a", "b", "c", 2.0), ("2", "d", "e", "f", 2.0)).sorted
-            )
+            outBuf.toList.sorted shouldBe (List(
+              ("1", "a", "b", "c", 2.0),
+              ("2", "d", "e", "f", 2.0)).sorted)
           }
       }
       .run
@@ -1749,8 +1779,9 @@ class ForceToDiskTest extends WordSpec with Matchers {
   "A ForceToDiskJob" should {
     var idx = 0
     val input =
-      (1 to 1000)
-        .flatMap { i =>
+      (
+        1 to 1000
+      ).flatMap { i =>
           List((-1, i), (1, i))
         }
         .toList
@@ -1760,8 +1791,9 @@ class ForceToDiskTest extends WordSpec with Matchers {
         (idx + ": run correctly when combined with joinWithTiny") in {
           outBuf should have size 2000
           val correct =
-            (1 to 1000)
-              .flatMap { y =>
+            (
+              1 to 1000
+            ).flatMap { y =>
                 List((1, 1, y), (-1, 1, y))
               }
               .sorted
@@ -2137,8 +2169,9 @@ class SampleWithReplacementTest extends WordSpec with Matchers {
 
   val p = new Poisson(1.0, 0)
   val simulated =
-    (1 to 100)
-      .map { i =>
+    (
+      1 to 100
+    ).map { i =>
         i -> p.nextInt
       }
       .filterNot(_._2 == 0)
@@ -2146,7 +2179,11 @@ class SampleWithReplacementTest extends WordSpec with Matchers {
 
   "A SampleWithReplacementJob" should {
     JobTest(new SampleWithReplacementJob(_))
-      .source(Tsv("in"), (1 to 100).map(i => i))
+      .source(
+        Tsv("in"),
+        (
+          1 to 100
+        ).map(i => i))
       .sink[Int](Tsv("output")) { outBuf =>
         "sampleWithReplacement must sample items according to a poisson distribution" in {
           outBuf
@@ -2213,13 +2250,15 @@ class SortingJobTest extends WordSpec with Matchers {
     JobTest(new SortingJob(_))
       .source(
         Tsv("in", ('x, 'y, 'z)),
-        (1 to 100).map(i => (i, i * i % 5, i * i * i)))
+        (
+          1 to 100
+        ).map(i => (i, i * i % 5, i * i * i)))
       .sink[(Int, Int, Int)](Tsv("output")) { outBuf =>
         "keep all the columns" in {
-          val correct = (1 to 100)
-            .map(i => (i, i * i % 5, i * i * i))
-            .toList
-            .sortBy(_._2)
+          val correct =
+            (
+              1 to 100
+            ).map(i => (i, i * i % 5, i * i * i)).toList.sortBy(_._2)
           outBuf.toList shouldBe correct
         }
       }

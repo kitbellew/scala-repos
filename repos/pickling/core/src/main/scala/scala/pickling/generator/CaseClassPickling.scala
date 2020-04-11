@@ -56,9 +56,10 @@ class CaseClassPickling(
                     .map { field =>
                       GetField(field.name, field.sym)
                     }
-                    .toSeq ++ standAloneVars.map { field =>
-                    GetField(field.methodName, field)
-                  })))
+                    .toSeq ++
+                    standAloneVars.map { field =>
+                      GetField(field.methodName, field)
+                    })))
             val unpickle = UnpickleBehavior(
               Seq(CallConstructor(fields.map(_.name), c)) ++
                 standAloneVars.map { field =>
@@ -70,9 +71,8 @@ class CaseClassPickling(
                         s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
                   }
                 })
-            if (!allowReflection && (
-                  pickle.requiresReflection || unpickle.requiresReflection
-                )) {
+            if (!allowReflection &&
+                (pickle.requiresReflection || unpickle.requiresReflection)) {
               def reflectionErrorMessage(ast: IrAst): List[String] =
                 ast match {
                   case x: SetField if x.requiresReflection =>
@@ -93,8 +93,9 @@ class CaseClassPickling(
                   case _ =>
                     List()
                 }
-              val errors = (reflectionErrorMessage(
-                pickle) ++ reflectionErrorMessage(unpickle))
+              val errors =
+                (reflectionErrorMessage(pickle) ++
+                  reflectionErrorMessage(unpickle))
               val errorString =
                 if (errors.isEmpty)
                   "   unknown reason"

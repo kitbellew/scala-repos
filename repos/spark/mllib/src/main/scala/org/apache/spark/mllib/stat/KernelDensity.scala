@@ -88,18 +88,19 @@ class KernelDensity extends Serializable {
 
     val n = points.length
     // This gets used in each Gaussian PDF computation, so compute it up front
-    val logStandardDeviationPlusHalfLog2Pi = math.log(bandwidth) + 0.5 * math
-      .log(2 * math.Pi)
+    val logStandardDeviationPlusHalfLog2Pi = math.log(bandwidth) +
+      0.5 * math.log(2 * math.Pi)
     val (densities, count) =
       sample.aggregate((new Array[Double](n), 0L))(
         (x, y) => {
           var i = 0
           while (i < n) {
-            x._1(i) += normPdf(
-              y,
-              bandwidth,
-              logStandardDeviationPlusHalfLog2Pi,
-              points(i))
+            x._1(i) +=
+              normPdf(
+                y,
+                bandwidth,
+                logStandardDeviationPlusHalfLog2Pi,
+                points(i))
             i += 1
           }
           (x._1, x._2 + 1)

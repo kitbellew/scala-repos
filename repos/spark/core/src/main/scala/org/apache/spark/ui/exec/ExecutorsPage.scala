@@ -434,7 +434,8 @@ private[ui] class ExecutorsPage(
     val tableData =
       <td style={
         if (activeTasks > 0) {
-          "background:hsla(240, 100%, 50%, " + activeTasksAlpha + ");color:white"
+          "background:hsla(240, 100%, 50%, " + activeTasksAlpha +
+            ");color:white"
         } else {
           ""
         }
@@ -461,7 +462,8 @@ private[ui] class ExecutorsPage(
       } style={
         // Red if GC time over GCTimePercent of total time
         if (totalGCTime > GCTimePercent * totalDuration) {
-          "background:hsla(0, 100%, 50%, " + totalDurationAlpha + ");color:white"
+          "background:hsla(0, 100%, 50%, " + totalDurationAlpha +
+            ");color:white"
         } else {
           ""
         }

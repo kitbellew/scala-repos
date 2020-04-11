@@ -354,10 +354,11 @@ object Gzip {
           _ <-
             if (header.magic != GzipMagic.asInstanceOf[Short])
               Error(
-                "Not a gzip file, found header" + headerBytes
-                  .take(2)
-                  .map(b => "%02X".format(b))
-                  .mkString("(", ", ", ")"),
+                "Not a gzip file, found header" +
+                  headerBytes
+                    .take(2)
+                    .map(b => "%02X".format(b))
+                    .mkString("(", ", ", ")"),
                 Input.El(headerBytes))
             else
               done()

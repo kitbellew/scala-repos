@@ -47,8 +47,9 @@ object ScalaKeywordLookupItem {
         case THIS | FALSE | TRUE | NULL | SUPER => // do nothing
         case _ =>
           def addSpace(addCompletionChar: Boolean = false) {
-            if (context.getFile.getViewProvider.getFileType != ScalaFileType
-                  .SCALA_FILE_TYPE) { // for play2 - we shouldn't add space in templates (like @if, @while etc)
+            if (context.getFile.getViewProvider.getFileType !=
+                  ScalaFileType
+                    .SCALA_FILE_TYPE) { // for play2 - we shouldn't add space in templates (like @if, @while etc)
               val offset = context.getStartOffset
               val docStart = Math.max(0, context.getStartOffset - 1)
 
@@ -62,9 +63,8 @@ object ScalaKeywordLookupItem {
             }
 
             context.setAddCompletionChar(addCompletionChar)
-            if (document.getTextLength <= offset || document
-                  .getText
-                  .charAt(offset) != ' ')
+            if (document.getTextLength <= offset ||
+                document.getText.charAt(offset) != ' ')
               document.insertString(offset, " ")
             editor.getCaretModel.moveToOffset(offset + 1)
           }

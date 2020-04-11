@@ -95,16 +95,17 @@ trait PullRequestService {
       requestBranch: String,
       commitIdFrom: String,
       commitIdTo: String)(implicit s: Session): Unit =
-    PullRequests insert PullRequest(
-      originUserName,
-      originRepositoryName,
-      issueId,
-      originBranch,
-      requestUserName,
-      requestRepositoryName,
-      requestBranch,
-      commitIdFrom,
-      commitIdTo)
+    PullRequests insert
+      PullRequest(
+        originUserName,
+        originRepositoryName,
+        issueId,
+        originBranch,
+        requestUserName,
+        requestRepositoryName,
+        requestBranch,
+        commitIdFrom,
+        commitIdTo)
 
   def getPullRequestsByRequest(
       userName: String,
@@ -236,23 +237,23 @@ object PullRequestService {
       commitIdTo: String) {
 
     val statuses: List[CommitStatus] =
-      commitStatues ++ (
-        branchProtection.contexts.toSet -- commitStatues.map(_.context).toSet
-      ).map(
-        CommitStatus
-          .pending(branchProtection.owner, branchProtection.repository, _))
-    val hasRequiredStatusProblem = needStatusCheck && branchProtection
-      .contexts
-      .exists(context =>
-        statuses.find(_.context == context).map(_.state) != Some(
-          CommitState.SUCCESS))
-    val hasProblem = hasRequiredStatusProblem || hasConflict || (
-      !statuses.isEmpty && CommitState
-        .combine(statuses.map(_.state).toSet) != CommitState.SUCCESS
-    )
+      commitStatues ++
+        (branchProtection.contexts.toSet -- commitStatues.map(_.context).toSet)
+          .map(
+            CommitStatus
+              .pending(branchProtection.owner, branchProtection.repository, _))
+    val hasRequiredStatusProblem = needStatusCheck &&
+      branchProtection
+        .contexts
+        .exists(context =>
+          statuses.find(_.context == context).map(_.state) !=
+            Some(CommitState.SUCCESS))
+    val hasProblem = hasRequiredStatusProblem || hasConflict ||
+      (!statuses.isEmpty &&
+        CommitState.combine(statuses.map(_.state).toSet) != CommitState.SUCCESS)
     val canUpdate = branchIsOutOfDate && !hasConflict
-    val canMerge =
-      hasMergePermission && !hasConflict && !hasRequiredStatusProblem
+    val canMerge = hasMergePermission && !hasConflict &&
+      !hasRequiredStatusProblem
     lazy val commitStateSummary: (CommitState, String) = {
       val stateMap = statuses.groupBy(_.state)
       val state = CommitState.combine(stateMap.keySet)

@@ -41,10 +41,11 @@ class ReadOnlyIntegerWrapperSpec extends FlatSpec with BeforeAndAfterEach {
     assert(p.isInstanceOf[IntegerProperty])
   }
 
-  it should "have public field `readOnlyProperty` that is an instance of `ReadOnlyIntegerProperty`" in {
-    val p = new ReadOnlyIntegerWrapper()
-    assert(p.readOnlyProperty.isInstanceOf[ReadOnlyIntegerProperty])
-  }
+  it should
+    "have public field `readOnlyProperty` that is an instance of `ReadOnlyIntegerProperty`" in {
+      val p = new ReadOnlyIntegerWrapper()
+      assert(p.readOnlyProperty.isInstanceOf[ReadOnlyIntegerProperty])
+    }
 
   it should "propagate value changes to `readOnlyProperty`" in {
     val p = new ReadOnlyIntegerWrapper()

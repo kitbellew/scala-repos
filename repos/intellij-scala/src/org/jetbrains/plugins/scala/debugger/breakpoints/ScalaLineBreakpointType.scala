@@ -79,8 +79,8 @@ class ScalaLineBreakpointType
             case ws: PsiWhiteSpace =>
               true
             case _
-                if PsiTreeUtil
-                  .getParentOfType(e, classOf[PsiComment]) != null =>
+                if PsiTreeUtil.getParentOfType(e, classOf[PsiComment]) !=
+                  null =>
               true
             case _
                 if PsiTreeUtil.getParentOfType(
@@ -143,10 +143,11 @@ class ScalaLineBreakpointType
 
     var ordinal: Int = 0
     for ((lambda, ord) <- lambdas.zipWithIndex) {
-      res = res :+ new ExactScalaBreakpointVariant(
-        XSourcePositionImpl.createByElement(lambda),
-        lambda,
-        ordinal)
+      res = res :+
+        new ExactScalaBreakpointVariant(
+          XSourcePositionImpl.createByElement(lambda),
+          lambda,
+          ordinal)
       ordinal += 1
     }
 
@@ -164,8 +165,8 @@ class ScalaLineBreakpointType
     if (method == null)
       return false
 
-    if (!breakpoint.isInstanceOf[RunToCursorBreakpoint] && lambdaOrdinal(
-          breakpoint) == null)
+    if (!breakpoint.isInstanceOf[RunToCursorBreakpoint] &&
+        lambdaOrdinal(breakpoint) == null)
       return true
 
     DebuggerUtil.inTheMethod(position, method)

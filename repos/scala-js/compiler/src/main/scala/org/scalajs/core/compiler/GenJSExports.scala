@@ -339,8 +339,8 @@ trait GenJSExports extends SubComponent {
         (
           // We have argc - 1, since a repeated parameter list may also be empty
           // (unlike a normal parameter)
-          varArgMeths.map(_.params.size - 1) ++
-            normalMeths.map(_.params.size)).max
+          varArgMeths.map(_.params.size - 1) ++ normalMeths.map(_.params.size))
+          .max
 
       // Calculates possible arg counts for normal method
       def argCounts(ex: Exported) =
@@ -395,8 +395,7 @@ trait GenJSExports extends SubComponent {
       assert(
         {
           val argcs = caseDefinitions.values.flatten.toList
-          argcs == argcs.distinct &&
-          argcs.forall(_ <= maxArgc)
+          argcs == argcs.distinct && argcs.forall(_ <= maxArgc)
         },
         "every argc should appear only once and be lower than max"
       )
@@ -592,8 +591,8 @@ trait GenJSExports extends SubComponent {
 
         if (!alt.isClassConstructor) {
           // get parameter type while resolving repeated params
-          if (paramsTypesUncurry
-                .size <= paramIndex || isRepeatedUncurry(paramIndex)) {
+          if (paramsTypesUncurry.size <= paramIndex ||
+              isRepeatedUncurry(paramIndex)) {
             assert(isRepeatedUncurry.last)
             repeatedToSingle(paramsTypesUncurry.last)
           } else {
@@ -656,8 +655,7 @@ trait GenJSExports extends SubComponent {
         else
           Nil
 
-      val allArgs =
-        (1 to minArgc).map(genFormalArgRef(_, minArgc)) ++: restArg
+      val allArgs = (1 to minArgc).map(genFormalArgRef(_, minArgc)) ++: restArg
 
       val cls = jstpe.ClassType(encodeClassFullName(currentClassSym))
       val receiver = js.This()(jstpe.AnyType)
@@ -691,12 +689,10 @@ trait GenJSExports extends SubComponent {
         }
 
       val normalArgc = sym.tpe.params.size -
-        (
-          if (repeatedTpe.isDefined)
-            1
-          else
-            0
-        )
+        (if (repeatedTpe.isDefined)
+           1
+         else
+           0)
 
       // optional repeated parameter list
       val jsVarArgPrep = repeatedTpe map { tpe =>

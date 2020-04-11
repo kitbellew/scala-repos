@@ -197,8 +197,8 @@ class EndToEndTest extends FunSuite {
         assert(
           Await.result(recvd ?, 1.second) match {
             case e: ChannelStateEvent =>
-              e.getState == ChannelState
-                .OPEN && (java.lang.Boolean.TRUE equals e.getValue)
+              e.getState == ChannelState.OPEN &&
+                (java.lang.Boolean.TRUE equals e.getValue)
             case _ =>
               false
           })
@@ -270,8 +270,8 @@ class EndToEndTest extends FunSuite {
         assert(
           Await.result(recvd ?, 1.second) match {
             case e: ChannelStateEvent =>
-              e.getState == ChannelState
-                .OPEN && (java.lang.Boolean.FALSE equals e.getValue)
+              e.getState == ChannelState.OPEN &&
+                (java.lang.Boolean.FALSE equals e.getValue)
             case _ =>
               false
           })

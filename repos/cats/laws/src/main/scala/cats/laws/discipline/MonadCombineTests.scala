@@ -31,8 +31,8 @@ trait MonadCombineTests[F[_]]
         Seq(monadFilter[A, B, C], alternative[A, B, C])
       def props: Seq[(String, Prop)] =
         Seq(
-          "monadCombine left distributivity" -> forAll(
-            laws.monadCombineLeftDistributivity[A, B] _))
+          "monadCombine left distributivity" ->
+            forAll(laws.monadCombineLeftDistributivity[A, B] _))
     }
   }
 }

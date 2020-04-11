@@ -46,9 +46,9 @@ class ScenariosTask(settings: Settings)
           _ / account.bareRootPath / "foo")
 
       EventuallyResults.eventually(10, 1.second) {
-        val res = (analytics / "fs" / account.bareRootPath) <<? List(
-          "apiKey" -> account.apiKey,
-          "q" -> "count(//foo)")
+        val res =
+          (analytics / "fs" / account.bareRootPath) <<?
+            List("apiKey" -> account.apiKey, "q" -> "count(//foo)")
         val str = Http(res OK as.String)()
         val json = JParser
           .parseFromString(Http(res OK as.String)())
@@ -70,10 +70,11 @@ class ScenariosTask(settings: Settings)
             JParser.parseFromString(s)
         }
 
-      res must beLike {
-        case Success(jobj) =>
-          ok
-      }
+      res must
+        beLike {
+          case Success(jobj) =>
+            ok
+        }
     }
 
     "support ingesting under own account root with other owner" in {
@@ -92,10 +93,11 @@ class ScenariosTask(settings: Settings)
             JParser.parseFromString(s)
         }
 
-      res must beLike {
-        case Success(jobj) =>
-          ok
-      }
+      res must
+        beLike {
+          case Success(jobj) =>
+            ok
+        }
     }
 
     "support browsing of own data under own account root" in {
@@ -128,10 +130,11 @@ class ScenariosTask(settings: Settings)
             JParser.parseFromString(s)
         }
 
-      res must beLike {
-        case Failure(StatusCode(403)) =>
-          ok
-      }
+      res must
+        beLike {
+          case Failure(StatusCode(403)) =>
+            ok
+        }
     }
 
     "support browsing of own data under other account root" in {
@@ -185,10 +188,8 @@ class ScenariosTask(settings: Settings)
       val account2 = createAccount
 
       val req = (security / "").addQueryParameter("apiKey", account1.apiKey) <<
-        (
-          """{"grants":[{"permissions":[{"accessType":"write", "path":"%s", "ownerAccountIds":["%s"]}]}]}""" format
-            (account1.rootPath + "/foo", account1.accountId)
-        )
+        ("""{"grants":[{"permissions":[{"accessType":"write", "path":"%s", "ownerAccountIds":["%s"]}]}]}""" format
+          (account1.rootPath + "/foo", account1.accountId))
 
       val result = Http(req OK as.String)
       val json = JParser.parseFromString(result()).valueOr(throw _)
@@ -206,10 +207,11 @@ class ScenariosTask(settings: Settings)
             JParser.parseFromString(s)
         }
 
-      res must beLike {
-        case Success(jobj) =>
-          ok
-      }
+      res must
+        beLike {
+          case Success(jobj) =>
+            ok
+        }
 
       EventuallyResults.eventually(10, 1.second) {
         val json =

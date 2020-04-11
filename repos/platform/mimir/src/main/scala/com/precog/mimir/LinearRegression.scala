@@ -143,9 +143,8 @@ trait LinearRegressionLibModule[M[+_]]
                 t1.product
               } else {
                 assert(
-                  t1.product.getColumnDimension == t2
-                    .product
-                    .getColumnDimension &&
+                  t1.product.getColumnDimension ==
+                    t2.product.getColumnDimension &&
                     t1.product.getRowDimension == t2.product.getRowDimension)
 
                 t1.product plus t2.product
@@ -224,9 +223,10 @@ trait LinearRegressionLibModule[M[+_]]
           val bitset = BitSetUtil.create(indices)
           val acc = new Array[Double](length)
 
-          val kept = (0 until values.length) filterNot {
-            bitset(_)
-          }
+          val kept =
+            (0 until values.length) filterNot {
+              bitset(_)
+            }
 
           var i = 0
           while (i < length) {
@@ -502,10 +502,11 @@ trait LinearRegressionLibModule[M[+_]]
         val inverse = errors.product.inverse()
         val varianceCovariance = inverse.times(varianceEst)
 
-        val stdErrors0 = (0 until colDim) map {
-          case i =>
-            math.sqrt(varianceCovariance.get(i, i))
-        }
+        val stdErrors0 =
+          (0 until colDim) map {
+            case i =>
+              math.sqrt(varianceCovariance.get(i, i))
+          }
         val stdErrors = insertZeroAt(stdErrors0.toArray, coeffs.removed.toArray)
 
         assert(weightedBeta.length == stdErrors.length)

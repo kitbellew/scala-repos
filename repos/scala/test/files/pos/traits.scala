@@ -28,8 +28,7 @@ object Test {
       other match {
         case that: BorderedColoredShape =>
           (
-            super.equals(that) &&
-              super[Bordered].equals(that) &&
+            super.equals(that) && super[Bordered].equals(that) &&
               super[Colored].equals(that)
           )
         case _ =>

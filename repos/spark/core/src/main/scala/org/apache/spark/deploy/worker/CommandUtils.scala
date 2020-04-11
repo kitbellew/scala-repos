@@ -88,21 +88,18 @@ private[deploy] object CommandUtils extends Logging {
 
     var newEnvironment =
       if (libraryPathEntries.nonEmpty && libraryPathName.nonEmpty) {
-        val libraryPaths = libraryPathEntries ++ cmdLibraryPath ++ env
-          .get(libraryPathName)
-        command.environment + (
-          (
-            libraryPathName,
-            libraryPaths.mkString(File.pathSeparator)))
+        val libraryPaths = libraryPathEntries ++ cmdLibraryPath ++
+          env.get(libraryPathName)
+        command.environment +
+          ((libraryPathName, libraryPaths.mkString(File.pathSeparator)))
       } else {
         command.environment
       }
 
     // set auth secret to env variable if needed
     if (securityMgr.isAuthenticationEnabled) {
-      newEnvironment += (
-        SecurityManager.ENV_AUTH_SECRET -> securityMgr.getSecretKey
-      )
+      newEnvironment +=
+        (SecurityManager.ENV_AUTH_SECRET -> securityMgr.getSecretKey)
     }
 
     Command(

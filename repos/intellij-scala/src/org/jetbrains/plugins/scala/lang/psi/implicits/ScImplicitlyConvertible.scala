@@ -207,45 +207,49 @@ class ScImplicitlyConvertible(
                       .undefinedSubst(expected, newSubst.subst(retTp))
                     (uSubst + additionalUSubst).getSubstitutor match {
                       case Some(innerSubst) =>
-                        result += ImplicitResolveResult(
-                          innerSubst.subst(retTp),
-                          r.element,
-                          r.importsUsed,
-                          r.substitutor,
-                          implicitDepSusbt,
-                          isFromCompanion,
-                          Seq.empty)
+                        result +=
+                          ImplicitResolveResult(
+                            innerSubst.subst(retTp),
+                            r.element,
+                            r.importsUsed,
+                            r.substitutor,
+                            implicitDepSusbt,
+                            isFromCompanion,
+                            Seq.empty)
                       case None =>
-                        result += ImplicitResolveResult(
-                          substitutor.subst(retTp),
-                          r.element,
-                          r.importsUsed,
-                          r.substitutor,
-                          implicitDepSusbt,
-                          isFromCompanion,
-                          Seq.empty)
+                        result +=
+                          ImplicitResolveResult(
+                            substitutor.subst(retTp),
+                            r.element,
+                            r.importsUsed,
+                            r.substitutor,
+                            implicitDepSusbt,
+                            isFromCompanion,
+                            Seq.empty)
                     }
                   case None =>
-                    result += ImplicitResolveResult(
-                      substitutor.subst(retTp),
-                      r.element,
-                      r.importsUsed,
-                      r.substitutor,
-                      implicitDepSusbt,
-                      isFromCompanion,
-                      Seq.empty)
+                    result +=
+                      ImplicitResolveResult(
+                        substitutor.subst(retTp),
+                        r.element,
+                        r.importsUsed,
+                        r.substitutor,
+                        implicitDepSusbt,
+                        isFromCompanion,
+                        Seq.empty)
                 }
               case _ =>
             }
           case _ =>
-            result += ImplicitResolveResult(
-              retTp,
-              r.element,
-              r.importsUsed,
-              r.substitutor,
-              implicitDepSusbt,
-              isFromCompanion,
-              Seq.empty)
+            result +=
+              ImplicitResolveResult(
+                retTp,
+                r.element,
+                r.importsUsed,
+                r.substitutor,
+                implicitDepSusbt,
+                isFromCompanion,
+                Seq.empty)
         }
     }
 
@@ -437,9 +441,8 @@ class ScImplicitlyConvertible(
                     case tpt: ScTypeParameterType =>
                       f.typeParameters
                         .find(tp =>
-                          (tp.name, ScalaPsiUtil.getPsiElementId(tp)) == (
-                            tpt.name, tpt.getId
-                          )) match {
+                          (tp.name, ScalaPsiUtil.getPsiElementId(tp)) ==
+                            (tpt.name, tpt.getId)) match {
                         case None =>
                           (true, tpt)
                         case _ =>
@@ -499,11 +502,8 @@ class ScImplicitlyConvertible(
                       })
 
                     def probablyHasDepententMethodTypes: Boolean = {
-                      if (f.paramClauses.clauses.length != 2 || !f
-                            .paramClauses
-                            .clauses
-                            .last
-                            .isImplicit)
+                      if (f.paramClauses.clauses.length != 2 ||
+                          !f.paramClauses.clauses.last.isImplicit)
                         return false
                       val implicitClauseParameters =
                         f.paramClauses.clauses.last.parameters
@@ -540,8 +540,8 @@ class ScImplicitlyConvertible(
                                 None,
                                 place,
                                 check = false,
-                                abstractSubstitutor =
-                                  subst followed dependentSubst followed unSubst)
+                                abstractSubstitutor = subst followed
+                                  dependentSubst followed unSubst)
                             inferredParams
                               .zip(expr)
                               .map {
@@ -694,17 +694,15 @@ class ScImplicitlyConvertible(
                 val rt = subst.subst(f.returnType.getOrElse(return true))
                 if (funType == null || !rt.conforms(funType))
                   return true
-              } else if (clauses.head.parameters.length != 1 || clauses
-                           .head
-                           .isImplicit)
+              } else if (clauses.head.parameters.length != 1 ||
+                         clauses.head.isImplicit)
                 return true
               addResult(new ScalaResolveResult(f, subst, getImports(state)))
             case b: ScBindingPattern =>
               ScalaPsiUtil.nameContext(b) match {
                 case d: ScDeclaredElementsHolder
-                    if (
-                      d.isInstanceOf[ScValue] || d.isInstanceOf[ScVariable]
-                    ) &&
+                    if (d.isInstanceOf[ScValue] ||
+                      d.isInstanceOf[ScVariable]) &&
                       d.asInstanceOf[ScModifierListOwner]
                         .hasModifierProperty("implicit") =>
                   if (!ResolveUtils
@@ -771,8 +769,8 @@ object ScImplicitlyConvertible {
 
   val IMPLICIT_REFERENCE_NAME = "implicitReferenceName"
   val IMPLICIT_EXPRESSION_NAME = "implicitExpressionName"
-  val IMPLICIT_CALL_TEXT =
-    IMPLICIT_REFERENCE_NAME + "(" + IMPLICIT_EXPRESSION_NAME + ")"
+  val IMPLICIT_CALL_TEXT = IMPLICIT_REFERENCE_NAME + "(" +
+    IMPLICIT_EXPRESSION_NAME + ")"
 
   val FAKE_RESOLVE_RESULT_KEY: Key[ScalaResolveResult] = Key
     .create("fake.resolve.result.key")

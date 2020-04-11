@@ -44,8 +44,8 @@ case class DottySdkDescriptor(
   def mainDottyJar =
     compilerFiles.find { f =>
       val fileName = f.getName
-      fileName.startsWith("dotty") && !fileName
-        .startsWith(DottyArtifact.Interfaces.prefix)
+      fileName.startsWith("dotty") &&
+      !fileName.startsWith(DottyArtifact.Interfaces.prefix)
     }
 }
 

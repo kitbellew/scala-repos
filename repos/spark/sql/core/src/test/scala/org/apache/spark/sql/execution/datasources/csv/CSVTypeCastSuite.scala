@@ -76,11 +76,11 @@ class CSVTypeCastSuite extends SparkFunSuite {
 
   test("String type should always return the same as the input") {
     assert(
-      CSVTypeCast.castTo("", StringType, nullable = true) == UTF8String
-        .fromString(""))
+      CSVTypeCast.castTo("", StringType, nullable = true) ==
+        UTF8String.fromString(""))
     assert(
-      CSVTypeCast.castTo("", StringType, nullable = false) == UTF8String
-        .fromString(""))
+      CSVTypeCast.castTo("", StringType, nullable = false) ==
+        UTF8String.fromString(""))
   }
 
   test("Throws exception for empty string with non null type") {

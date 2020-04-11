@@ -13,31 +13,35 @@ class StringUtilityTest extends WordSpec with Matchers {
     "be able to split white space" in {
       val text1 = "this is good time"
       val res1 = StringUtility.fastSplit(text1, " ") // split single white space
-      res1 should be {
-        Seq("this", "is", "good", "time")
-      }
+      res1 should
+        be {
+          Seq("this", "is", "good", "time")
+        }
     }
   }
   "be able to split other separators" in {
     val text2 = "a:b:c:d:"
     val res2 = StringUtility.fastSplit(text2, ":")
-    res2 should be {
-      Seq("a", "b", "c", "d", "")
-    }
+    res2 should
+      be {
+        Seq("a", "b", "c", "d", "")
+      }
   }
   "be able to split only one separators" in {
     val text2 = "a@"
     val res2 = StringUtility.fastSplit(text2, "@")
-    res2 should be {
-      Seq("a", "")
-    }
+    res2 should
+      be {
+        Seq("a", "")
+      }
   }
   "be able to split when separator doesn't show up" in {
     val text2 = "a"
     val res2 = StringUtility.fastSplit(text2, "@")
-    res2 should be {
-      Seq("a")
-    }
+    res2 should
+      be {
+        Seq("a")
+      }
   }
 }
 

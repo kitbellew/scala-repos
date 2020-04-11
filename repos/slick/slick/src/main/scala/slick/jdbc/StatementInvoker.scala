@@ -85,10 +85,10 @@ abstract class StatementInvoker[+R] extends Invoker[R] {
             def extractValue(pr: PositionedResult) = {
               if (doLogResult) {
                 if (logBuffer.length < StatementInvoker.maxLogResults)
-                  logBuffer += 1
-                    .to(logHeader(0).length)
-                    .map(idx => rs.getObject(idx): Any)
-                    .to[ArrayBuffer]
+                  logBuffer +=
+                    1.to(logHeader(0).length)
+                      .map(idx => rs.getObject(idx): Any)
+                      .to[ArrayBuffer]
                 rowCount += 1
               }
               self.extractValue(pr)

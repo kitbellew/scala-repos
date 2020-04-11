@@ -33,8 +33,8 @@ package object util {
     if (isModule)
       (name split '$' filterNot (_ == "")).last + "$"
     else if (isAnon)
-      clazz.getSuperclass :: clazz.getInterfaces.toList map (c =>
-        shortClass(c)) mkString " with "
+      clazz.getSuperclass :: clazz.getInterfaces.toList map
+        (c => shortClass(c)) mkString " with "
     else
       shortenName(name)
   }

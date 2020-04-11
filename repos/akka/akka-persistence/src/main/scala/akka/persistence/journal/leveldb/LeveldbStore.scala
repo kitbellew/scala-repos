@@ -270,8 +270,8 @@ private[persistence] trait LeveldbStore
     }
 
   override protected def newPersistenceIdAdded(id: String): Unit = {
-    if (hasAllPersistenceIdsSubscribers && !id
-          .startsWith(tagPersistenceIdPrefix)) {
+    if (hasAllPersistenceIdsSubscribers &&
+        !id.startsWith(tagPersistenceIdPrefix)) {
       val added = LeveldbJournal.PersistenceIdAdded(id)
       allPersistenceIdsSubscribers.foreach(_ ! added)
     }

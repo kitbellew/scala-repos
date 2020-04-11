@@ -660,7 +660,8 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       val l: T = left.raw(i)
       var r: T = l
 
-      while (j < rl && scalar.lt(
+      while (j < rl &&
+             scalar.lt(
                {
                  r = right.raw(j);
                  r

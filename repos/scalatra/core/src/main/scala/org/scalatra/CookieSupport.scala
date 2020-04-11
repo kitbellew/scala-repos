@@ -59,12 +59,11 @@ case class Cookie(name: String, value: String)(implicit
 
     val pth = cookieOptions.path
     if (pth.nonBlank) {
-      sb append "; Path=" append (
-        if (!pth.startsWith("/"))
-          "/" + pth
-        else
-          pth
-      )
+      sb append "; Path=" append
+        (if (!pth.startsWith("/"))
+           "/" + pth
+         else
+           pth)
     }
     if (cookieOptions.comment.nonBlank) {
       sb append ("; Comment=") append cookieOptions.comment
@@ -116,15 +115,14 @@ class SweetCookies(
     private[this] val response: HttpServletResponse)
     extends ServletApiImplicits {
 
-  private[this] lazy val cookies = mutable
-    .HashMap[String, String]() ++ reqCookies
+  private[this] lazy val cookies = mutable.HashMap[String, String]() ++
+    reqCookies
 
   def get(key: String): Option[String] = cookies.get(key)
 
   def apply(key: String): String = {
-    cookies.get(key) getOrElse (
-      throw new Exception("No cookie could be found for the specified key")
-    )
+    cookies.get(key) getOrElse
+      (throw new Exception("No cookie could be found for the specified key"))
   }
 
   def update(name: String, value: String)(implicit

@@ -87,8 +87,9 @@ final class CoproductOps[C <: Coproduct](val c: C)
       partition: Partition[C, U]): Either[partition.Prefix, partition.Suffix] =
     partition(c)
 
-  def partitionC[U](implicit partition: Partition[C, U])
-      : partition.Prefix :+: partition.Suffix :+: CNil = partition.coproduct(c)
+  def partitionC[U](implicit
+      partition: Partition[C, U]): partition.Prefix :+: partition.Suffix :+:
+    CNil = partition.coproduct(c)
 
   /**
     * Returns the first element of type `U` of this `Coproduct` plus the remainder of the `Coproduct`.

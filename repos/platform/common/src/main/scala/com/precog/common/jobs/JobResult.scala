@@ -37,9 +37,8 @@ case class JobResult(mimeTypes: List[MimeType], content: Array[Byte]) {
     that match {
       case JobResult(thoseMimeTypes, thatContent) =>
         val len = content.length
-        (
-          mimeTypes.toSet == thoseMimeTypes.toSet
-        ) && (len == thatContent.length) && {
+        (mimeTypes.toSet == thoseMimeTypes.toSet) &&
+        (len == thatContent.length) && {
           var i = 0
           var result = true
           while (result && i < len) {

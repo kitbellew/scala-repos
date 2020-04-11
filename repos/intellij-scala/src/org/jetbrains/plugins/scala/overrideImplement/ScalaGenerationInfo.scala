@@ -222,12 +222,11 @@ object ScalaGenerationInfo {
           " "
         else
           ""
-      name + (
-        if (param.isVarArgs)
-          whitespace + ": _*"
-        else
-          ""
-      )
+      name +
+        (if (param.isVarArgs)
+           whitespace + ": _*"
+         else
+           "")
     }
     val methodName = ScalaNamesUtil.changeKeyword(method.name)
     val parametersText: String = {
@@ -238,8 +237,8 @@ object ScalaGenerationInfo {
             .map(_.parameters.map(_.name).mkString("(", ", ", ")"))
             .mkString
         case method: PsiMethod =>
-          if (method
-                .isAccessor && method.getParameterList.getParametersCount == 0)
+          if (method.isAccessor &&
+              method.getParameterList.getParametersCount == 0)
             ""
           else
             method

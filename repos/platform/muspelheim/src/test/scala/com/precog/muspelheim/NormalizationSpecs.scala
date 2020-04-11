@@ -26,26 +26,31 @@ trait NormalizationSpecs extends EvalStackSpecs {
   import stack._
 
   def summaryHeight(obj: Map[String, SValue]) = {
-    obj("count") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 993
-    }
-    obj("mean") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 176.4370594159114
-    }
-    obj("min") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 140
-    }
-    obj("max") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 208
-    }
-    obj("stdDev") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 11.56375193112367
-    }
+    obj("count") must
+      beLike {
+        case SDecimal(d) =>
+          d.toDouble mustEqual 993
+      }
+    obj("mean") must
+      beLike {
+        case SDecimal(d) =>
+          d.toDouble mustEqual 176.4370594159114
+      }
+    obj("min") must
+      beLike {
+        case SDecimal(d) =>
+          d.toDouble mustEqual 140
+      }
+    obj("max") must
+      beLike {
+        case SDecimal(d) =>
+          d.toDouble mustEqual 208
+      }
+    obj("stdDev") must
+      beLike {
+        case SDecimal(d) =>
+          d.toDouble mustEqual 11.56375193112367
+      }
   }
 
   "find simple summary" in {
@@ -58,18 +63,19 @@ trait NormalizationSpecs extends EvalStackSpecs {
 
     result must haveSize(1)
 
-    result must haveAllElementsLike {
-      case (ids, SObject(model)) => {
-        ids must haveSize(0)
-        model.keySet mustEqual Set("model1")
+    result must
+      haveAllElementsLike {
+        case (ids, SObject(model)) => {
+          ids must haveSize(0)
+          model.keySet mustEqual Set("model1")
 
-        val SObject(obj) = model("model1")
+          val SObject(obj) = model("model1")
 
-        summaryHeight(obj)
+          summaryHeight(obj)
+        }
+        case _ =>
+          ko
       }
-      case _ =>
-        ko
-    }
   }
 
   "return empty set when summary called on non-numeric data" in {
@@ -93,20 +99,22 @@ trait NormalizationSpecs extends EvalStackSpecs {
 
     result must haveSize(1)
 
-    result must haveAllElementsLike {
-      case (ids, SObject(obj)) => {
-        ids must haveSize(0)
+    result must
+      haveAllElementsLike {
+        case (ids, SObject(obj)) => {
+          ids must haveSize(0)
 
-        summaryHeight(obj)
+          summaryHeight(obj)
 
-        obj("sqVariance") must beLike {
-          case SDecimal(d) =>
-            d.toDouble mustEqual 17881.13433742673
+          obj("sqVariance") must
+            beLike {
+              case SDecimal(d) =>
+                d.toDouble mustEqual 17881.13433742673
+            }
         }
+        case _ =>
+          ko
       }
-      case _ =>
-        ko
-    }
   }
 
   def makeObject(query: String): Map[String, SValue] = {
@@ -152,37 +160,39 @@ trait NormalizationSpecs extends EvalStackSpecs {
 
     result must haveSize(1)
 
-    result must haveAllElementsLike {
-      case (ids, SObject(models)) => {
-        ids must haveSize(0)
-        models.keySet mustEqual Set("model1", "model2", "model3")
+    result must
+      haveAllElementsLike {
+        case (ids, SObject(models)) => {
+          ids must haveSize(0)
+          models.keySet mustEqual Set("model1", "model2", "model3")
 
-        def testModels(sv: SValue) =
-          sv must beLike {
-            case SObject(model) if model.keySet == Set("height") => {
-              val SObject(summary) = model("height")
-              summary mustEqual heightResult
-            }
+          def testModels(sv: SValue) =
+            sv must
+              beLike {
+                case SObject(model) if model.keySet == Set("height") => {
+                  val SObject(summary) = model("height")
+                  summary mustEqual heightResult
+                }
 
-            case SObject(summary) =>
-              summary mustEqual ageResult
+                case SObject(summary) =>
+                  summary mustEqual ageResult
 
-            case SArray(model) => {
-              model must haveSize(1)
-              val SObject(summary) = model(0)
-              summary mustEqual weightResult
-            }
+                case SArray(model) => {
+                  model must haveSize(1)
+                  val SObject(summary) = model(0)
+                  summary mustEqual weightResult
+                }
 
-            case _ =>
-              ko
-          }
+                case _ =>
+                  ko
+              }
 
-        testModels(models("model1"))
-        testModels(models("model2"))
-        testModels(models("model3"))
+          testModels(models("model1"))
+          testModels(models("model2"))
+          testModels(models("model3"))
 
+        }
       }
-    }
   }
 
   "find summary with object" in {
@@ -269,20 +279,21 @@ trait NormalizationSpecs extends EvalStackSpecs {
         ko
     }
 
-    result must haveAllElementsLike {
-      case (ids, SObject(models)) => {
-        ids must haveSize(0)
-        models.keySet mustEqual Set("model1", "model2", "model3", "model4")
+    result must
+      haveAllElementsLike {
+        case (ids, SObject(models)) => {
+          ids must haveSize(0)
+          models.keySet mustEqual Set("model1", "model2", "model3", "model4")
 
-        testModel(models("model1"))
-        testModel(models("model2"))
-        testModel(models("model3"))
-        testModel(models("model4"))
+          testModel(models("model1"))
+          testModel(models("model2"))
+          testModel(models("model3"))
+          testModel(models("model4"))
+        }
+
+        case _ =>
+          ko
       }
-
-      case _ =>
-        ko
-    }
   }
 
   "find summary with object (2)" in {
@@ -567,17 +578,18 @@ trait NormalizationSpecs extends EvalStackSpecs {
 
     val result = evalE(input)
 
-    result must haveAllElementsLike {
-      case (ids, SObject(obj)) => {
-        ids must haveSize(1)
-        obj.keySet mustEqual Set("originalHeight", "HeightIncm")
+    result must
+      haveAllElementsLike {
+        case (ids, SObject(obj)) => {
+          ids must haveSize(1)
+          obj.keySet mustEqual Set("originalHeight", "HeightIncm")
 
-        obj("originalHeight") mustEqual obj("HeightIncm")
+          obj("originalHeight") mustEqual obj("HeightIncm")
+        }
+
+        case _ =>
+          ko
       }
-
-      case _ =>
-        ko
-    }
   }
 
   "denormalize normalized data after clustering" in {
@@ -600,9 +612,10 @@ trait NormalizationSpecs extends EvalStackSpecs {
     val result = evalE(input)
     result must not beEmpty
 
-    val clusterIds = (1 to 10) map {
-      "cluster" + _.toString
-    }
+    val clusterIds =
+      (1 to 10) map {
+        "cluster" + _.toString
+      }
 
     def clusterSchema(
         obj: Map[String, SValue],
@@ -614,28 +627,30 @@ trait NormalizationSpecs extends EvalStackSpecs {
           sys.error("malformed SObject")
       }
 
-    result must haveAllElementsLike {
-      case (ids, SObject(elems)) =>
-        ids must haveSize(0)
-        elems.keySet mustEqual Set("model1")
+    result must
+      haveAllElementsLike {
+        case (ids, SObject(elems)) =>
+          ids must haveSize(0)
+          elems.keySet mustEqual Set("model1")
 
-        elems("model1") must beLike {
-          case SObject(clusters) =>
-            clusters must haveSize(10)
-            clusters.keySet mustEqual clusterIds.toSet
+          elems("model1") must
+            beLike {
+              case SObject(clusters) =>
+                clusters must haveSize(10)
+                clusters.keySet mustEqual clusterIds.toSet
 
-            val checkClusters = clusterIds.forall { clusterId =>
-              clusterSchema(clusters, clusterId) == Set("age", "income")
+                val checkClusters = clusterIds.forall { clusterId =>
+                  clusterSchema(clusters, clusterId) == Set("age", "income")
+                }
+
+                if (checkClusters)
+                  ok
+                else
+                  ko
             }
 
-            if (checkClusters)
-              ok
-            else
-              ko
-        }
-
-      case _ =>
-        ko
-    }
+        case _ =>
+          ko
+      }
   }
 }

@@ -25,8 +25,9 @@ object DisplayAppScalingResults {
         (jsObject \ ScalingTestResultFiles.relativeTimestampMs).as[Long]
       val staged = (jsObject \ "tasksStaged").as[Long]
       val running = (jsObject \ "tasksRunning").as[Long]
-      val newRunningPerSecond =
-        1000.0 * (running - lastRunning) / (relativeTimestamp - lastTimestamp)
+      val newRunningPerSecond = 1000.0 *
+        (running - lastRunning) /
+        (relativeTimestamp - lastTimestamp)
       lastTimestamp = relativeTimestamp
       lastRunning = running
       val instances = (jsObject \ "instances").as[Long]
@@ -90,8 +91,10 @@ object DisplayAppScalingResults {
       meters
         .map {
           case (meter: String, jsObject: JsObject) =>
-            def d(fieldName: String): Any =
-              (jsObject \ fieldName).asOpt[Double].map(_.round).getOrElse("-")
+            def d(fieldName: String): Any = (jsObject \ fieldName)
+              .asOpt[Double]
+              .map(_.round)
+              .getOrElse("-")
 
             val units: String = (jsObject \ "units")
               .asOpt[String]
@@ -133,8 +136,10 @@ object DisplayAppScalingResults {
       histograms
         .map {
           case (histogram: String, jsObject: JsObject) =>
-            def d(fieldName: String): Any =
-              (jsObject \ fieldName).asOpt[Double].map(_.round).getOrElse("-")
+            def d(fieldName: String): Any = (jsObject \ fieldName)
+              .asOpt[Double]
+              .map(_.round)
+              .getOrElse("-")
 
             IndexedSeq[Any](
               shortenName(histogram),
@@ -192,13 +197,14 @@ object DisplayAppScalingResults {
       timers
         .map {
           case (timer: String, jsObject: JsObject) =>
-            def d1000(fieldName: String): Any =
-              (jsObject \ fieldName)
-                .asOpt[Double]
-                .map(seconds => (seconds * 1000).round)
-                .getOrElse("-")
-            def dFull(fieldName: String): Any =
-              (jsObject \ fieldName).asOpt[Double].map(_.round).getOrElse("-")
+            def d1000(fieldName: String): Any = (jsObject \ fieldName)
+              .asOpt[Double]
+              .map(seconds => (seconds * 1000).round)
+              .getOrElse("-")
+            def dFull(fieldName: String): Any = (jsObject \ fieldName)
+              .asOpt[Double]
+              .map(_.round)
+              .getOrElse("-")
 
             val rateUnits: String = (jsObject \ "rate_units")
               .asOpt[String]

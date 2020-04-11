@@ -85,7 +85,8 @@ object Markdown {
       if (enableAnchor) {
         out.append(" class=\"markdown-head\">")
         out.append(
-          "<a class=\"markdown-anchor-link\" href=\"#" + id + "\"><span class=\"octicon octicon-link\"></span></a>")
+          "<a class=\"markdown-anchor-link\" href=\"#" + id +
+            "\"><span class=\"octicon octicon-link\"></span></a>")
         out.append("<a class=\"markdown-anchor\" name=\"" + id + "\"></a>")
       } else {
         out.append(">")
@@ -97,18 +98,15 @@ object Markdown {
     }
 
     override def code(code: String, lang: String, escaped: Boolean): String = {
-      "<pre class=\"prettyprint" + (
-        if (lang != null)
-          s" ${options.getLangPrefix}${lang}"
-        else
-          ""
-      ) + "\">" +
-        (
-          if (escaped)
-            code
-          else
-            escape(code, true)
-        ) + "</pre>"
+      "<pre class=\"prettyprint" +
+        (if (lang != null)
+           s" ${options.getLangPrefix}${lang}"
+         else
+           "") + "\">" +
+        (if (escaped)
+           code
+         else
+           escape(code, true)) + "</pre>"
     }
 
     override def list(body: String, ordered: Boolean): String = {
@@ -119,7 +117,8 @@ object Markdown {
         listType = "ul"
       }
       if (body.contains("""class="task-list-item-checkbox"""")) {
-        "<" + listType + " class=\"task-list\">\n" + body + "</" + listType + ">\n"
+        "<" + listType + " class=\"task-list\">\n" + body + "</" + listType +
+          ">\n"
       } else {
         "<" + listType + ">\n" + body + "</" + listType + ">\n"
       }
@@ -186,19 +185,18 @@ object Markdown {
     }
 
     private def fixUrl(url: String, isImage: Boolean = false): String = {
-      if (url.startsWith("http://") || url.startsWith("https://") || url
-            .startsWith("/")) {
+      if (url.startsWith("http://") || url.startsWith("https://") ||
+          url.startsWith("/")) {
         url
       } else if (url.startsWith("#")) {
         ("#" + generateAnchorName(url.substring(1)))
       } else if (!enableWikiLink) {
         if (context.currentPath.contains("/blob/")) {
-          url + (
-            if (isImage)
-              "?raw=true"
-            else
-              ""
-          )
+          url +
+            (if (isImage)
+               "?raw=true"
+             else
+               "")
         } else if (context.currentPath.contains("/tree/")) {
           val paths = context.currentPath.split("/")
           val branch =
@@ -206,15 +204,12 @@ object Markdown {
               paths.drop(4).mkString("/")
             else
               repository.repository.defaultBranch
-          repository
-            .httpUrl
-            .replaceFirst("/git/", "/")
-            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (
-            if (isImage)
-              "?raw=true"
-            else
-              ""
-          )
+          repository.httpUrl.replaceFirst("/git/", "/").stripSuffix(".git") +
+            "/blob/" + branch + "/" + url +
+            (if (isImage)
+               "?raw=true"
+             else
+               "")
         } else {
           val paths = context.currentPath.split("/")
           val branch =
@@ -222,21 +217,16 @@ object Markdown {
               paths.last
             else
               repository.repository.defaultBranch
-          repository
-            .httpUrl
-            .replaceFirst("/git/", "/")
-            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (
-            if (isImage)
-              "?raw=true"
-            else
-              ""
-          )
+          repository.httpUrl.replaceFirst("/git/", "/").stripSuffix(".git") +
+            "/blob/" + branch + "/" + url +
+            (if (isImage)
+               "?raw=true"
+             else
+               "")
         }
       } else {
-        repository
-          .httpUrl
-          .replaceFirst("/git/", "/")
-          .stripSuffix(".git") + "/wiki/_blob/" + url
+        repository.httpUrl.replaceFirst("/git/", "/").stripSuffix(".git") +
+          "/wiki/_blob/" + url
       }
     }
 
@@ -266,10 +256,12 @@ object Markdown {
     text
       .replaceAll(
         "task:x:",
-        """<input type="checkbox" class="task-list-item-checkbox" checked="checked" """ + disabled + "/>")
+        """<input type="checkbox" class="task-list-item-checkbox" checked="checked" """ +
+          disabled + "/>")
       .replaceAll(
         "task: :",
-        """<input type="checkbox" class="task-list-item-checkbox" """ + disabled + "/>")
+        """<input type="checkbox" class="task-list-item-checkbox" """ +
+          disabled + "/>")
   }
 
 }

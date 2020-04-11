@@ -143,8 +143,9 @@ object ActorModelSpec {
       }
       case Interrupt ⇒ {
         ack();
-        sender() ! Status.Failure(
-          new ActorInterruptedException(new InterruptedException("Ping!")));
+        sender() !
+          Status.Failure(
+            new ActorInterruptedException(new InterruptedException("Ping!")));
         busy.switchOff(());
         throw new InterruptedException("Ping!")
       }
@@ -177,9 +178,9 @@ object ActorModelSpec {
     val msgsProcessed = new AtomicLong(0)
     val restarts = new AtomicLong(0)
     override def toString =
-      "InterceptorStats(susp=" + suspensions +
-        ",res=" + resumes + ",reg=" + registers + ",unreg=" + unregisters +
-        ",recv=" + msgsReceived + ",proc=" + msgsProcessed + ",restart=" + restarts
+      "InterceptorStats(susp=" + suspensions + ",res=" + resumes + ",reg=" +
+        registers + ",unreg=" + unregisters + ",recv=" + msgsReceived +
+        ",proc=" + msgsProcessed + ",restart=" + restarts
   }
 
   trait MessageDispatcherInterceptor extends MessageDispatcher {
@@ -232,8 +233,8 @@ object ActorModelSpec {
 
   def assertDispatcher(dispatcher: MessageDispatcherInterceptor)(
       stops: Long = dispatcher.stops.get())(implicit system: ActorSystem) {
-    val deadline = System
-      .currentTimeMillis + dispatcher.shutdownTimeout.toMillis * 5
+    val deadline = System.currentTimeMillis +
+      dispatcher.shutdownTimeout.toMillis * 5
     try {
       await(deadline)(stops == dispatcher.stops.get)
     } catch {
@@ -245,8 +246,8 @@ object ActorModelSpec {
               e,
               dispatcher.toString,
               dispatcher.getClass,
-              "actual: stops=" + dispatcher.stops.get +
-                " required: stops=" + stops))
+              "actual: stops=" + dispatcher.stops.get + " required: stops=" +
+                stops))
         throw e
     }
   }
@@ -254,8 +255,8 @@ object ActorModelSpec {
   def assertCountDown(latch: CountDownLatch, wait: Long, hint: String) {
     if (!latch.await(wait, TimeUnit.MILLISECONDS))
       fail(
-        "Failed to count down within " + wait + " millis (count at " + latch
-          .getCount + "). " + hint)
+        "Failed to count down within " + wait + " millis (count at " +
+          latch.getCount + "). " + hint)
   }
 
   def assertNoCountDown(latch: CountDownLatch, wait: Long, hint: String) {
@@ -321,9 +322,10 @@ object ActorModelSpec {
               e,
               Option(dispatcher).toString,
               (Option(dispatcher) getOrElse this).getClass,
-              "actual: " + stats + ", required: InterceptorStats(susp=" + suspensions +
-                ",res=" + resumes + ",reg=" + registers + ",unreg=" + unregisters +
-                ",recv=" + msgsReceived + ",proc=" + msgsProcessed + ",restart=" + restarts
+              "actual: " + stats + ", required: InterceptorStats(susp=" +
+                suspensions + ",res=" + resumes + ",reg=" + registers +
+                ",unreg=" + unregisters + ",recv=" + msgsReceived + ",proc=" +
+                msgsProcessed + ",restart=" + restarts
             ))
         throw e
     }
@@ -533,9 +535,8 @@ abstract class ActorModelSpec(config: String)
             new Actor {
               def receive = {
                 case "run" ⇒
-                  for (_ ← 1 to num)(
-                    context.watch(context.actorOf(props))
-                  ) ! cachedMessage
+                  for (_ ← 1 to num)(context.watch(context.actorOf(props))) !
+                    cachedMessage
                 case Terminated(child) ⇒
                   stopLatch.countDown()
               }
@@ -567,37 +568,35 @@ abstract class ActorModelSpec(config: String)
                   System
                     .err
                     .println(
-                      "Teammates left: " + team
-                        .size + " stopLatch: " + stopLatch
-                        .getCount + " inhab:" + dispatcher.inhabitants)
-                  team.toArray sorted new Ordering[AnyRef] {
-                    def compare(l: AnyRef, r: AnyRef) =
-                      (l, r) match {
-                        case (ll: ActorCell, rr: ActorCell) ⇒
-                          ll.self.path compareTo rr.self.path
-                      }
-                  } foreach {
-                    case cell: ActorCell ⇒
-                      System
-                        .err
-                        .println(
-                          " - " + cell.self.path + " " + cell
-                            .isTerminated + " " + cell
-                            .mailbox
-                            .currentStatus + " "
-                            + cell.mailbox.numberOfMessages + " " + cell
-                            .mailbox
-                            .systemDrain(SystemMessageList.LNil)
-                            .size)
-                  }
+                      "Teammates left: " + team.size + " stopLatch: " +
+                        stopLatch.getCount + " inhab:" + dispatcher.inhabitants)
+                  team.toArray sorted
+                    new Ordering[AnyRef] {
+                      def compare(l: AnyRef, r: AnyRef) =
+                        (l, r) match {
+                          case (ll: ActorCell, rr: ActorCell) ⇒
+                            ll.self.path compareTo rr.self.path
+                        }
+                    } foreach {
+                      case cell: ActorCell ⇒
+                        System
+                          .err
+                          .println(
+                            " - " + cell.self.path + " " + cell.isTerminated +
+                              " " + cell.mailbox.currentStatus + " " +
+                              cell.mailbox.numberOfMessages + " " +
+                              cell
+                                .mailbox
+                                .systemDrain(SystemMessageList.LNil)
+                                .size)
+                    }
 
                   System
                     .err
                     .println(
                       "Mailbox: " + mq.numberOfMessages + " " + mq.hasMessages)
-                  Iterator.continually(mq.dequeue) takeWhile (
-                    _ ne null
-                  ) foreach System.err.println
+                  Iterator.continually(mq.dequeue) takeWhile
+                    (_ ne null) foreach System.err.println
                 case _ ⇒
               }
 
@@ -688,8 +687,9 @@ abstract class ActorModelSpec(config: String)
         val a = newTestActor(dispatcher.id)
         val f1 = a ? Reply("foo")
         val f2 = a ? Reply("bar")
-        val f3 = a ? ThrowException(
-          new IndexOutOfBoundsException("IndexOutOfBoundsException"))
+        val f3 = a ?
+          ThrowException(
+            new IndexOutOfBoundsException("IndexOutOfBoundsException"))
         val f4 = a ? Reply("foo2")
         val f5 = a ? ThrowException(new RemoteException("RemoteException"))
         val f6 = a ? Reply("bar2")

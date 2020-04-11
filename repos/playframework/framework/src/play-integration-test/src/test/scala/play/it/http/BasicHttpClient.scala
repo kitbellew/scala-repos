@@ -175,7 +175,8 @@ class BasicHttpClient(port: Int) {
             (v, s.toInt, "")
           case _ =>
             throw new RuntimeException(
-              "Invalid status line for response " + responseDesc + ": " + statusLine)
+              "Invalid status line for response " + responseDesc + ": " +
+                statusLine)
         }
       // Read headers
       def readHeaders: List[(String, String)] = {
@@ -235,7 +236,8 @@ class BasicHttpClient(port: Int) {
           .map { length =>
             readCompletely(length.toInt)
           } getOrElse {
-          if (status != CONTINUE && status != NOT_MODIFIED && status != NO_CONTENT) {
+          if (status != CONTINUE && status != NOT_MODIFIED &&
+              status != NO_CONTENT) {
             consumeRemaining(reader)
           } else {
             ""

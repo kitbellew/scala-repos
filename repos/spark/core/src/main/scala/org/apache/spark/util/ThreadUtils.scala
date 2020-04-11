@@ -179,8 +179,8 @@ private[spark] object ThreadUtils {
             " ",
             "",
             -1)
-        val finalStackTrace =
-          extraStackTrace ++ Seq(placeHolderStackElem) ++ baseStackTrace
+        val finalStackTrace = extraStackTrace ++ Seq(placeHolderStackElem) ++
+          baseStackTrace
 
         // Update the stack trace and rethrow the exception in the caller thread
         realException.setStackTrace(finalStackTrace)

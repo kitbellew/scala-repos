@@ -52,8 +52,8 @@ class MethodImplementationsSearch
         for (implementation <-
                ScalaOverridingMemberSearcher.getOverridingMethods(namedElement)
              //to avoid duplicates with ScalaOverridingMemberSearcher
-             if !namedElement.isInstanceOf[PsiMethod] || !implementation
-               .isInstanceOf[PsiMethod]) {
+             if !namedElement.isInstanceOf[PsiMethod] ||
+               !implementation.isInstanceOf[PsiMethod]) {
           if (!consumer.process(implementation)) {
             return false
           }
@@ -183,9 +183,9 @@ object ScalaOverridingMemberSearcher {
                 t: Signature,
                 node: TypeDefinitionMembers.SignatureNodes.Node) = signsIterator
                 .next()
-              if (PsiTreeUtil.getParentOfType(
-                    t.namedElement,
-                    classOf[PsiClass]) == inheritor) {
+              if (PsiTreeUtil
+                    .getParentOfType(t.namedElement, classOf[PsiClass]) ==
+                    inheritor) {
                 val supersIterator = node.supers.iterator
                 while (supersIterator.hasNext) {
                   val s = supersIterator.next()

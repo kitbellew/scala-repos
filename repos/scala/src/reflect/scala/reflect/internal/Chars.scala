@@ -49,12 +49,10 @@ trait Chars {
   def char2uescape(c: Char): String = {
     @inline
     def hexChar(ch: Int): Char =
-      (
-        if (ch < 10)
-          '0'
-        else
-          'A' - 10
-      ) + ch toChar
+      (if (ch < 10)
+         '0'
+       else
+         'A' - 10) + ch toChar
 
     char2uescapeArray(2) = hexChar((c >> 12))
     char2uescapeArray(3) = hexChar((c >> 8) % 16)

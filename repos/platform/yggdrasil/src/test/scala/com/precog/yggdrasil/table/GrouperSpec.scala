@@ -128,13 +128,14 @@ trait GrouperSpec[M[+_]]
           gs1 <- map(groupId)
           gs1Json <- gs1.toJson
         } yield {
-          key.toJValue must beLike {
-            case jo: JObject =>
-              (jo \ "tic_a") match {
-                case JNum(i) =>
-                  set must contain(i)
-              }
-          }
+          key.toJValue must
+            beLike {
+              case jo: JObject =>
+                (jo \ "tic_a") match {
+                  case JNum(i) =>
+                    set must contain(i)
+                }
+            }
 
           val histoKey = key.toJValue(tic_aj)
           val JNum(histoKey0) = histoKey
@@ -203,13 +204,14 @@ trait GrouperSpec[M[+_]]
           gs1 <- map(groupId)
           gs1Json <- gs1.toJson
         } yield {
-          key.toJValue must beLike {
-            case jo: JObject =>
-              (jo \ "tic_a") match {
-                case JNum(i) =>
-                  set must contain(i)
-              }
-          }
+          key.toJValue must
+            beLike {
+              case jo: JObject =>
+                (jo \ "tic_a") match {
+                  case JNum(i) =>
+                    set must contain(i)
+                }
+            }
 
           val histoKey = key.toJValue(tic_aj)
           val JNum(histoKey0) = histoKey
@@ -271,13 +273,14 @@ trait GrouperSpec[M[+_]]
           gs1 <- map(groupId)
           gs1Json <- gs1.toJson
         } yield {
-          key.toJValue must beLike {
-            case jo: JObject =>
-              (jo \ "tic_a") match {
-                case JNum(i) =>
-                  set.map(_ % 2) must contain(i)
-              }
-          }
+          key.toJValue must
+            beLike {
+              case jo: JObject =>
+                (jo \ "tic_a") match {
+                  case JNum(i) =>
+                    set.map(_ % 2) must contain(i)
+                }
+            }
 
           val histoKey = key.toJValue(tic_aj)
           val JNum(histoKey0) = histoKey
@@ -295,18 +298,17 @@ trait GrouperSpec[M[+_]]
 
     val resultIter = result.flatMap(_.toJson).copoint
 
-    resultIter must haveSize(
-      (
-        set map {
-          _ % 2
-        } distinct
-      ) size)
+    resultIter must
+      haveSize(
+        (
+          set map {
+            _ % 2
+          } distinct
+        ) size)
 
-    val expectedSet = (
-      set.toSeq groupBy {
-        _ % 2
-      } values
-    ) map {
+    val expectedSet = (set.toSeq groupBy {
+      _ % 2
+    } values) map {
       _.length
     } map {
       JNum(_)
@@ -364,28 +366,32 @@ trait GrouperSpec[M[+_]]
           gs1 <- map(groupId)
           gs1Json <- gs1.toJson
         } yield {
-          key.toJValue must beLike {
-            case obj: JObject => {
-              val a = obj(tic_aj)
-              val b = obj(tic_bj)
+          key.toJValue must
+            beLike {
+              case obj: JObject => {
+                val a = obj(tic_aj)
+                val b = obj(tic_bj)
 
-              a must beLike {
-                case JNum(i) if i == 12 => {
-                  b must beLike {
-                    case JNum(i) if i == 7 =>
-                      ok
-                  }
-                }
+                a must
+                  beLike {
+                    case JNum(i) if i == 12 => {
+                      b must
+                        beLike {
+                          case JNum(i) if i == 7 =>
+                            ok
+                        }
+                    }
 
-                case JNum(i) if i == -7 => {
-                  b must beLike {
-                    case JNum(i) if i == 3 =>
-                      ok
+                    case JNum(i) if i == -7 => {
+                      b must
+                        beLike {
+                          case JNum(i) if i == 3 =>
+                            ok
+                        }
+                    }
                   }
-                }
               }
             }
-          }
 
           gs1Json must haveSize(1)
           fromJson(Stream(JNum(gs1Json.size)))
@@ -397,10 +403,11 @@ trait GrouperSpec[M[+_]]
     resultJson must haveSize(2)
 
     forall(resultJson) { v =>
-      v must beLike {
-        case JNum(i) if i == 1 =>
-          ok
-      }
+      v must
+        beLike {
+          case JNum(i) if i == 1 =>
+            ok
+        }
     }
   }
 
@@ -435,54 +442,60 @@ trait GrouperSpec[M[+_]]
           gs1 <- map(groupId)
           gs1Json <- gs1.toJson
         } yield {
-          key.toJValue must beLike {
-            case obj: JObject => {
-              val a = obj(tic_aj)
-              val b = obj(tic_bj)
+          key.toJValue must
+            beLike {
+              case obj: JObject => {
+                val a = obj(tic_aj)
+                val b = obj(tic_bj)
 
-              if (a == JUndefined) {
-                b must beLike {
-                  case JNum(i) if i == 7 =>
-                    gs1Json must haveSize(2)
-                  case JNum(i) if i == 15 =>
-                    gs1Json must haveSize(1)
-                  case JNum(i) if i == -1 =>
-                    gs1Json must haveSize(1)
-                  case JNum(i) if i == 3 =>
-                    gs1Json must haveSize(1)
-                }
-              } else if (b == JUndefined) {
-                a must beLike {
-                  case JNum(i) if i == 12 =>
-                    gs1Json must haveSize(2)
-                  case JNum(i) if i == 42 =>
-                    gs1Json must haveSize(1)
-                  case JNum(i) if i == 11 =>
-                    gs1Json must haveSize(1)
-                  case JNum(i) if i == -7 =>
-                    gs1Json must haveSize(1)
-                }
-              } else {
-                a must beLike {
-                  case JNum(i) if i == 12 => {
-                    b must beLike {
+                if (a == JUndefined) {
+                  b must
+                    beLike {
                       case JNum(i) if i == 7 =>
-                        ok
-                    }
-                  }
-
-                  case JNum(i) if i == -7 => {
-                    b must beLike {
+                        gs1Json must haveSize(2)
+                      case JNum(i) if i == 15 =>
+                        gs1Json must haveSize(1)
+                      case JNum(i) if i == -1 =>
+                        gs1Json must haveSize(1)
                       case JNum(i) if i == 3 =>
-                        ok
+                        gs1Json must haveSize(1)
                     }
-                  }
-                }
+                } else if (b == JUndefined) {
+                  a must
+                    beLike {
+                      case JNum(i) if i == 12 =>
+                        gs1Json must haveSize(2)
+                      case JNum(i) if i == 42 =>
+                        gs1Json must haveSize(1)
+                      case JNum(i) if i == 11 =>
+                        gs1Json must haveSize(1)
+                      case JNum(i) if i == -7 =>
+                        gs1Json must haveSize(1)
+                    }
+                } else {
+                  a must
+                    beLike {
+                      case JNum(i) if i == 12 => {
+                        b must
+                          beLike {
+                            case JNum(i) if i == 7 =>
+                              ok
+                          }
+                      }
 
-                gs1Json must haveSize(1)
+                      case JNum(i) if i == -7 => {
+                        b must
+                          beLike {
+                            case JNum(i) if i == 3 =>
+                              ok
+                          }
+                      }
+                    }
+
+                  gs1Json must haveSize(1)
+                }
               }
             }
-          }
 
           fromJson(Stream(JNum(gs1Json.size)))
         }
@@ -492,10 +505,11 @@ trait GrouperSpec[M[+_]]
     resultJson must haveSize(8)
 
     forall(resultJson) { v =>
-      v must beLike {
-        case JNum(i) if i == 2 || i == 1 =>
-          ok
-      }
+      v must
+        beLike {
+          case JNum(i) if i == 2 || i == 1 =>
+            ok
+        }
     }
   }
 
@@ -536,10 +550,11 @@ trait GrouperSpec[M[+_]]
           gs1 <- map(groupId)
           gs1Json <- gs1.toJson
         } yield {
-          (key.toJValue(tic_bj)) must beLike {
-            case JNum(i) =>
-              i must_== 7
-          }
+          (key.toJValue(tic_bj)) must
+            beLike {
+              case JNum(i) =>
+                i must_== 7
+            }
 
           gs1Json must haveSize(1)
           fromJson(Stream(JNum(gs1Json.size)))
@@ -551,10 +566,11 @@ trait GrouperSpec[M[+_]]
     resultJson must haveSize(1)
 
     forall(resultJson) { v =>
-      v must beLike {
-        case JNum(i) if i == 1 =>
-          ok
-      }
+      v must
+        beLike {
+          case JNum(i) if i == 1 =>
+            ok
+        }
     }
   }
 
@@ -596,22 +612,24 @@ trait GrouperSpec[M[+_]]
           gs1 <- map(groupId)
           gs1Json <- gs1.toJson
         } yield {
-          (key.toJValue(tic_bj)) must beLike {
-            case JUndefined =>
-              (gs1Json.head \ "a") must beLike {
-                case JNum(i) if i == 12 =>
-                  ok
-              }
+          (key.toJValue(tic_bj)) must
+            beLike {
+              case JUndefined =>
+                (gs1Json.head \ "a") must
+                  beLike {
+                    case JNum(i) if i == 12 =>
+                      ok
+                  }
 
-            case JNum(i) if i == 7 =>
-              gs1Json must haveSize(2)
-            case JNum(i) if i == 15 =>
-              gs1Json must haveSize(1)
-            case JNum(i) if i == -1 =>
-              gs1Json must haveSize(1)
-            case JNum(i) if i == 3 =>
-              gs1Json must haveSize(1)
-          }
+              case JNum(i) if i == 7 =>
+                gs1Json must haveSize(2)
+              case JNum(i) if i == 15 =>
+                gs1Json must haveSize(1)
+              case JNum(i) if i == -1 =>
+                gs1Json must haveSize(1)
+              case JNum(i) if i == 3 =>
+                gs1Json must haveSize(1)
+            }
 
           fromJson(Stream(JArray(key.toJValue :: JNum(gs1Json.size) :: Nil)))
         }
@@ -681,10 +699,11 @@ trait GrouperSpec[M[+_]]
           val JNum(keyBigInt) = key.toJValue(tic_aj)
 
           forall(gs1Json) { row =>
-            row must beLike {
-              case JNum(i) =>
-                i mustEqual keyBigInt
-            }
+            row must
+              beLike {
+                case JNum(i) =>
+                  i mustEqual keyBigInt
+              }
           }
 
           gs1Json must haveSize(rawData1.count(_ == keyBigInt.toInt))
@@ -706,11 +725,10 @@ trait GrouperSpec[M[+_]]
       val JNum(k) = record \ "key"
       val JNum(v) = record \ "value"
 
-      v mustEqual (
-        (rawData1 ++ rawData2) filter {
+      v mustEqual
+        ((rawData1 ++ rawData2) filter {
           k == _
-        } length
-      )
+        } length)
     }
   }
 
@@ -780,26 +798,29 @@ trait GrouperSpec[M[+_]]
           gs2Json <- gs2.toJson
         } yield {
           val JNum(keyBigInt) = key.toJValue(tic_aj)
-          key.toJValue(tic_bj) must beLike {
-            case JNum(_) =>
-              ok
-          }
+          key.toJValue(tic_bj) must
+            beLike {
+              case JNum(_) =>
+                ok
+            }
 
           gs1Json must not(beEmpty)
           gs2Json must not(beEmpty)
 
           forall(gs1Json) { row =>
-            (row \ "a") must beLike {
-              case JNum(i) =>
-                i mustEqual keyBigInt
-            }
+            (row \ "a") must
+              beLike {
+                case JNum(i) =>
+                  i mustEqual keyBigInt
+              }
           }
 
           forall(gs2Json) { row =>
-            (row \ "a") must beLike {
-              case JNum(i) =>
-                i mustEqual keyBigInt
-            }
+            (row \ "a") must
+              beLike {
+                case JNum(i) =>
+                  i mustEqual keyBigInt
+              }
           }
 
           fromJson(
@@ -827,27 +848,28 @@ trait GrouperSpec[M[+_]]
 
     // in order to get a binding for both 'a and 'b, values must come from
     // rawData1 and 'a must be in the join keys.
-    resultJson must haveSize(
-      rawData1
-        .filter({
-          case (a, b) =>
-            joinKeys(a)
-        })
-        .distinct
-        .size)
+    resultJson must
+      haveSize(
+        rawData1
+          .filter({
+            case (a, b) =>
+              joinKeys(a)
+          })
+          .distinct
+          .size)
 
     val grouped1ab = grouped1.mapValues(_.groupBy(_._2.get))
     forall(resultJson) { v =>
-      v must beLike {
-        case obj: JObject => {
-          val JArray(JNum(ka) :: JNum(kb) :: Nil) = obj \ "key"
-          val JNum(v) = obj \ "value"
+      v must
+        beLike {
+          case obj: JObject => {
+            val JArray(JNum(ka) :: JNum(kb) :: Nil) = obj \ "key"
+            val JNum(v) = obj \ "value"
 
-          v must_== (
-            grouped1ab(ka.toInt)(kb.toInt).size + grouped2(ka.toInt).size
-          )
+            v must_==
+              (grouped1ab(ka.toInt)(kb.toInt).size + grouped2(ka.toInt).size)
+          }
         }
-      }
     }
   }
 
@@ -935,10 +957,11 @@ trait GrouperSpec[M[+_]]
           }
 
           forall(gs2Json) { row =>
-            (row \ "a") must beLike {
-              case JNum(i) =>
-                i mustEqual kaValue
-            }
+            (row \ "a") must
+              beLike {
+                case JNum(i) =>
+                  i mustEqual kaValue
+              }
           }
 
           val result = fromJson(
@@ -968,13 +991,11 @@ trait GrouperSpec[M[+_]]
         (row1a, Some(row1b)) <- rawData1
         row2 <- rawData2
       } yield {
-        JObject(
-          JField("a", JNum(row2)) ::
-            JField("b", JNum(row1b)) :: Nil)
+        JObject(JField("a", JNum(row2)) :: JField("b", JNum(row1b)) :: Nil)
       }
 
-    resultJson must haveSize(
-      joinRows.map(_._1).distinct.size + crossRows.distinct.size)
+    resultJson must
+      haveSize(joinRows.map(_._1).distinct.size + crossRows.distinct.size)
   }
 
   def testNonTrivial = {
@@ -1115,8 +1136,7 @@ trait GrouperSpec[M[+_]]
 
           val result = Stream(
             JObject(
-              JField("a", a) ::
-                JField("b", b) ::
+              JField("a", a) :: JField("b", b) ::
                 JField("foo", JNum(fooPJson.size)) ::
                 JField("bar", JNum(barPJson.size)) ::
                 JField("baz", JNum(bazPJson.size)) :: Nil))
@@ -1141,38 +1161,40 @@ trait GrouperSpec[M[+_]]
       val JNum(bari) = row \ "bar"
       val JNum(bazi) = row \ "baz"
 
-      (ai.toInt, bi.toInt) must beLike {
-        case (42, 12) =>
-          fooi mustEqual 3
-          bari mustEqual 3
-          bazi mustEqual 2
+      (ai.toInt, bi.toInt) must
+        beLike {
+          case (42, 12) =>
+            fooi mustEqual 3
+            bari mustEqual 3
+            bazi mustEqual 2
 
-        case (7, 42) =>
-          fooi mustEqual 2
-          bari mustEqual 2
-          bazi mustEqual 1
+          case (7, 42) =>
+            fooi mustEqual 2
+            bari mustEqual 2
+            bazi mustEqual 1
 
-        case (17, 6) =>
-          fooi mustEqual 1
-          bari mustEqual 1
-          bazi mustEqual 1
-      }
+          case (17, 6) =>
+            fooi mustEqual 1
+            bari mustEqual 1
+            bazi mustEqual 1
+        }
     }
   }
 
   "simple single-key grouping" should {
     "scalacheck a histogram by value" in check1NoShrink(testHistogramByValue _)
-    "histogram for two of the same value" in testHistogramByValue(
-      Stream(2147483647, 2147483647))
-    "histogram when observing spans of equal values" in testHistogramByValue(
-      Stream(24, -10, 0, -1, -1, 0, 24, 0, 0, 24, -1, 0, 0, 24))
-    "compute a histogram by value (mapping target)" in check(
-      testHistogramByValueMapped _)
-    "compute a histogram by value (mapping target) trivial example" in testHistogramByValueMapped(
-      Stream(0))
+    "histogram for two of the same value" in
+      testHistogramByValue(Stream(2147483647, 2147483647))
+    "histogram when observing spans of equal values" in
+      testHistogramByValue(
+        Stream(24, -10, 0, -1, -1, 0, 24, 0, 0, 24, -1, 0, 0, 24))
+    "compute a histogram by value (mapping target)" in
+      check(testHistogramByValueMapped _)
+    "compute a histogram by value (mapping target) trivial example" in
+      testHistogramByValueMapped(Stream(0))
     "compute a histogram by even/odd" in check(testHistogramEvenOdd _)
-    "compute a histogram by even/odd trivial example" in testHistogramEvenOdd(
-      Stream(0))
+    "compute a histogram by even/odd trivial example" in
+      testHistogramEvenOdd(Stream(0))
   }
 
   "simple multi-key grouping" should {
@@ -1190,76 +1212,79 @@ trait GrouperSpec[M[+_]]
     "compute ctr on value" in propNoShrink(testCtr _)
     "compute ctr with an empty dataset" in testCtr(Stream(), Stream(1))
     "compute ctr with singleton datasets" in testCtr(Stream(1), Stream(1))
-    "compute ctr with simple datasets with repeats" in testCtr(
-      Stream(1, 1, 1),
-      Stream(1))
-    "compute ctr with simple datasets" in testCtr(
-      Stream(-565998477, 1911906594, 1),
-      Stream(1948335811, -528723320, 1))
-    "compute ctr with simple datasets" in testCtr(
-      Stream(1, 2147483647, 2126441435, -1, 0, 0),
-      Stream(
-        2006322377, -2147483648, -1456034303, 2147483647, 0, 2147483647,
-        -1904025337))
+    "compute ctr with simple datasets with repeats" in
+      testCtr(Stream(1, 1, 1), Stream(1))
+    "compute ctr with simple datasets" in
+      testCtr(
+        Stream(-565998477, 1911906594, 1),
+        Stream(1948335811, -528723320, 1))
+    "compute ctr with simple datasets" in
+      testCtr(
+        Stream(1, 2147483647, 2126441435, -1, 0, 0),
+        Stream(
+          2006322377, -2147483648, -1456034303, 2147483647, 0, 2147483647,
+          -1904025337))
 
     "compute ctr on one field of a composite value" >> {
       "and" >> propNoShrink(testCtrPartialJoinAnd _)
-      "and with un-joinable datasets" >> testCtrPartialJoinAnd(
-        Stream((0, Some(1)), (1123021019, Some(-2147483648))),
-        Stream(
-          -1675865668, 889796884, 2147483647, -1099860336, -2147483648,
-          -2147483648, 1, 1496400141))
-      "and with joinable datasets" >> testCtrPartialJoinAnd(
-        Stream(
-          (-1, Some(-1771882715)),
-          (-2091150211, Some(1)),
-          (1, Some(-1161386492)),
-          (0, Some(-1)),
-          (-1, Some(-1)),
-          (-2147483648, Some(-2147483648)),
-          (-1, Some(1)),
-          (0, Some(391541906)),
-          (-2147483648, Some(725820706)),
-          (0, Some(-2147483648)),
-          (1286585203, Some(560695941))
-        ),
-        Stream(
-          0, -297579588, -1, 2147483647, -1, -1536865491, 1049246142,
-          -2147483648, -2147483648, 766980226, -1047565460)
-      )
-      "and with repeated group keys in joinable datasets" >> testCtrPartialJoinAnd(
-        Stream(
-          (1, Some(-421523375)),
-          (1381663801, Some(2145939312)),
-          (975603510, Some(-456843566)),
-          (-260964705, Some(-811947401)),
-          (-1643830562, Some(0)),
-          (382901678, Some(-2147483648)),
-          (-1770905652, Some(-1)),
-          (1172197808, Some(1)),
-          (-206421051, Some(307500840)),
-          (2147483647, Some(-1)),
-          (2147483647, Some(-1)),
-          (-1775980054, Some(2147483647))
-        ),
-        Stream(
-          1, -1, -2005746103, 720318134, 852618110, 1813748094, -1, -1676020815,
-          -627348537, 2147483647, -2147483648)
-      )
+      "and with un-joinable datasets" >>
+        testCtrPartialJoinAnd(
+          Stream((0, Some(1)), (1123021019, Some(-2147483648))),
+          Stream(
+            -1675865668, 889796884, 2147483647, -1099860336, -2147483648,
+            -2147483648, 1, 1496400141))
+      "and with joinable datasets" >>
+        testCtrPartialJoinAnd(
+          Stream(
+            (-1, Some(-1771882715)),
+            (-2091150211, Some(1)),
+            (1, Some(-1161386492)),
+            (0, Some(-1)),
+            (-1, Some(-1)),
+            (-2147483648, Some(-2147483648)),
+            (-1, Some(1)),
+            (0, Some(391541906)),
+            (-2147483648, Some(725820706)),
+            (0, Some(-2147483648)),
+            (1286585203, Some(560695941))
+          ),
+          Stream(
+            0, -297579588, -1, 2147483647, -1, -1536865491, 1049246142,
+            -2147483648, -2147483648, 766980226, -1047565460)
+        )
+      "and with repeated group keys in joinable datasets" >>
+        testCtrPartialJoinAnd(
+          Stream(
+            (1, Some(-421523375)),
+            (1381663801, Some(2145939312)),
+            (975603510, Some(-456843566)),
+            (-260964705, Some(-811947401)),
+            (-1643830562, Some(0)),
+            (382901678, Some(-2147483648)),
+            (-1770905652, Some(-1)),
+            (1172197808, Some(1)),
+            (-206421051, Some(307500840)),
+            (2147483647, Some(-1)),
+            (2147483647, Some(-1)),
+            (-1775980054, Some(2147483647))
+          ),
+          Stream(
+            1, -1, -2005746103, 720318134, 852618110, 1813748094, -1,
+            -1676020815, -627348537, 2147483647, -2147483648)
+        )
 
       // TODO: the performance of the following is too awful to run under scalacheck, even with a minimal
       // number of examples.
       "or" >> propNoShrink(testCtrPartialJoinOr _).set(minTestsOk -> 10)
       "or with empty 1st dataset" >> testCtrPartialJoinOr(Stream(), Stream(1))
-      "or with empty 2nd dataset" >> testCtrPartialJoinOr(
-        Stream((1, Some(2))),
-        Stream())
-      "or with un-joinable datasets" >> testCtrPartialJoinOr(
-        Stream((-2, Some(1))),
-        Stream(-1))
-      "or with a join in datasets" >> testCtrPartialJoinOr(
-        Stream((2, Some(-1)), (1, Some(-1)), (3, Some(4)), (1, Some(-1))),
-        Stream(-2, 1, 1, 5, 0, 6))
+      "or with empty 2nd dataset" >>
+        testCtrPartialJoinOr(Stream((1, Some(2))), Stream())
+      "or with un-joinable datasets" >>
+        testCtrPartialJoinOr(Stream((-2, Some(1))), Stream(-1))
+      "or with a join in datasets" >>
+        testCtrPartialJoinOr(
+          Stream((2, Some(-1)), (1, Some(-1)), (3, Some(4)), (1, Some(-1))),
+          Stream(-2, 1, 1, 5, 0, 6))
 
       // runs a bit long
       "or with a pathological example" >> {
@@ -1361,22 +1386,23 @@ trait GrouperSpec[M[+_]]
         testCtrPartialJoinOr(s1, s2)
       }
 
-      "or with a simple join in datasets" >> testCtrPartialJoinOr(
-        Stream(
-          (436413513, Some(-477784155)),
-          (1693516917, Some(1537597532)),
-          (-33300192, Some(1)),
-          (-1, Some(417911606)),
-          (941828761, Some(-1)),
-          (-116426729, Some(0)),
-          (0, Some(1)),
-          (-1, Some(175860194)),
-          (-2147483648, Some(-2014951990)),
-          (2147483647, Some(293027634)),
-          (-1964286008, Some(132426726))
-        ),
-        Stream(-1)
-      )
+      "or with a simple join in datasets" >>
+        testCtrPartialJoinOr(
+          Stream(
+            (436413513, Some(-477784155)),
+            (1693516917, Some(1537597532)),
+            (-33300192, Some(1)),
+            (-1, Some(417911606)),
+            (941828761, Some(-1)),
+            (-116426729, Some(0)),
+            (0, Some(1)),
+            (-1, Some(175860194)),
+            (-2147483648, Some(-2014951990)),
+            (2147483647, Some(293027634)),
+            (-1964286008, Some(132426726))
+          ),
+          Stream(-1)
+        )
     }
   }
 

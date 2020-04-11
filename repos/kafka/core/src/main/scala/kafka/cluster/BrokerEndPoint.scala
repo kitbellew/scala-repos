@@ -87,7 +87,9 @@ case class BrokerEndPoint(id: Int, host: String, port: Int) {
   }
 
   def sizeInBytes: Int =
-    4 + /* broker Id */
-    4 + /* port */
-    shortStringLength(host)
+    4 +
+      /* broker Id */
+      4 +
+      /* port */
+      shortStringLength(host)
 }

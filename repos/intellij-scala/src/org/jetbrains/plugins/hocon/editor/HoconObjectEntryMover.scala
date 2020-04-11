@@ -52,17 +52,14 @@ class HoconObjectEntryMover extends LineMover {
       file: PsiFile,
       info: MoveInfo,
       down: Boolean): Boolean =
-    super.checkAvailable(editor, file, info, down) && !editor
-      .getSelectionModel
-      .hasSelection &&
-      (
-        file match {
-          case hoconFile: HoconPsiFile =>
-            checkAvailableHocon(editor, hoconFile, info, down)
-          case _ =>
-            false
-        }
-      )
+    super.checkAvailable(editor, file, info, down) &&
+      !editor.getSelectionModel.hasSelection &&
+      (file match {
+        case hoconFile: HoconPsiFile =>
+          checkAvailableHocon(editor, hoconFile, info, down)
+        case _ =>
+          false
+      })
 
   private def checkAvailableHocon(
       editor: Editor,
@@ -167,9 +164,8 @@ class HoconObjectEntryMover extends LineMover {
           .flatMap(_.prefixingField)
           .map(_.enclosingObjectField)
           .filter(of =>
-            field
-              .parent
-              .exists(pp => edgeLine(of) == edgeLine(pp)) && canInsert(of))
+            field.parent.exists(pp => edgeLine(of) == edgeLine(pp)) &&
+              canInsert(of))
           .map(of =>
             (of, of.keyedField.fieldsInPathForward.map(keyString).toList))
       } else
@@ -246,30 +242,31 @@ class HoconObjectEntryMover extends LineMover {
             prefixToAdd.mkString("", ".", "."))
           (sourceRange, targetRange, Some(mod))
 
-      } orElse fieldToDescendInto(objField).map {
-        case (adjacentField, prefixToRemove) =>
-          val targetRange =
-            if (down)
-              new LineRange(
-                sourceRange.endLine,
-                firstNonCommentLine(adjacentField) + 1)
-            else
-              new LineRange(endLine(adjacentField), sourceRange.startLine)
-          val prefixStr = prefixToRemove.mkString("", ".", ".")
-          val needsGuard =
-            document
-              .getCharsSequence
-              .charAt(objField.getTextOffset + prefixStr.length)
-              .isWhitespace
-          val mod = PrefixModification(
-            objField.getTextOffset,
-            prefixStr.length,
-            if (needsGuard)
-              "\"\""
-            else
-              "")
-          (sourceRange, targetRange, Some(mod))
-      }
+      } orElse
+        fieldToDescendInto(objField).map {
+          case (adjacentField, prefixToRemove) =>
+            val targetRange =
+              if (down)
+                new LineRange(
+                  sourceRange.endLine,
+                  firstNonCommentLine(adjacentField) + 1)
+              else
+                new LineRange(endLine(adjacentField), sourceRange.startLine)
+            val prefixStr = prefixToRemove.mkString("", ".", ".")
+            val needsGuard =
+              document
+                .getCharsSequence
+                .charAt(objField.getTextOffset + prefixStr.length)
+                .isWhitespace
+            val mod = PrefixModification(
+              objField.getTextOffset,
+              prefixStr.length,
+              if (needsGuard)
+                "\"\""
+              else
+                "")
+            (sourceRange, targetRange, Some(mod))
+        }
     }
 
     def tryEntryMove(entry: HObjectEntry) = {

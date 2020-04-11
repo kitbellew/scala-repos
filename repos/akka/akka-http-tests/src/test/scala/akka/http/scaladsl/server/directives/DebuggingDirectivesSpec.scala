@@ -36,10 +36,12 @@ class DebuggingDirectivesSpec extends RoutingSpec {
       val route = withLog(log)(logRequest("1")(completeOk))
 
       resetDebugMsg()
-      Get("/hello") ~> route ~> check {
-        response shouldEqual Ok
-        debugMsg shouldEqual "1: HttpRequest(HttpMethod(GET),http://example.com/hello,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1))\n"
-      }
+      Get("/hello") ~> route ~>
+        check {
+          response shouldEqual Ok
+          debugMsg shouldEqual
+            "1: HttpRequest(HttpMethod(GET),http://example.com/hello,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1))\n"
+        }
     }
   }
 
@@ -48,10 +50,12 @@ class DebuggingDirectivesSpec extends RoutingSpec {
       val route = withLog(log)(logResult("2")(completeOk))
 
       resetDebugMsg()
-      Get("/hello") ~> route ~> check {
-        response shouldEqual Ok
-        debugMsg shouldEqual "2: Complete(HttpResponse(200 OK,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1)))\n"
-      }
+      Get("/hello") ~> route ~>
+        check {
+          response shouldEqual Ok
+          debugMsg shouldEqual
+            "2: Complete(HttpResponse(200 OK,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1)))\n"
+        }
     }
   }
 
@@ -60,13 +64,15 @@ class DebuggingDirectivesSpec extends RoutingSpec {
       val route = withLog(log)(logRequestResult("3")(completeOk))
 
       resetDebugMsg()
-      Get("/hello") ~> route ~> check {
-        response shouldEqual Ok
-        debugMsg shouldEqual """|3: Response for
+      Get("/hello") ~> route ~>
+        check {
+          response shouldEqual Ok
+          debugMsg shouldEqual
+            """|3: Response for
                               |  Request : HttpRequest(HttpMethod(GET),http://example.com/hello,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1))
                               |  Response: Complete(HttpResponse(200 OK,List(),HttpEntity.Strict(none/none,ByteString()),HttpProtocol(HTTP/1.1)))
                               |""".stripMarginWithNewline("\n")
-      }
+        }
     }
   }
 

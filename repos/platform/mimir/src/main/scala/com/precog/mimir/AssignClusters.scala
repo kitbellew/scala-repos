@@ -331,8 +331,8 @@ trait AssignClusterModule[M[+_]]
                       }
 
                       assert(colsByPath.length == centerPaths.length)
-                      val zipped: Array[(Column, CPath)] =
-                        colsByPath zip centerPaths
+                      val zipped: Array[(Column, CPath)] = colsByPath zip
+                        centerPaths
 
                       val pref = CPath(TableModule.paths.Value)
 
@@ -355,9 +355,8 @@ trait AssignClusterModule[M[+_]]
                         CPathField(model.name),
                         CPathField("clusterId"))
                       val centerId = Map(
-                        ColumnRef(idPath, CString) -> ArrayStrColumn(
-                          definedModel,
-                          resultArray))
+                        ColumnRef(idPath, CString) ->
+                          ArrayStrColumn(definedModel, resultArray))
 
                       centers ++ centerId
                   }
@@ -385,10 +384,11 @@ trait AssignClusterModule[M[+_]]
             } getOrElse TransSpec1.Id
 
             val forcedTable = table.transform(spec).force
-            val tables0 = (0 until scanners.size) map { i =>
-              forcedTable.map(
-                _.transform(DerefArrayStatic(TransSpec1.Id, CPathIndex(i))))
-            }
+            val tables0 =
+              (0 until scanners.size) map { i =>
+                forcedTable.map(
+                  _.transform(DerefArrayStatic(TransSpec1.Id, CPathIndex(i))))
+              }
             val tables: M[Seq[Table]] = (tables0.toList).sequence
 
             tables.map(

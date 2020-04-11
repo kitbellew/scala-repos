@@ -42,10 +42,10 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       def apply(table: Table, ctx: MorphContext) =
         M point {
-          val derefed = table transform trans
-            .DerefObjectStatic(Leaf(Source), paths.Value)
-          val keys = table transform trans
-            .DerefObjectStatic(Leaf(Source), paths.Key)
+          val derefed = table transform
+            trans.DerefObjectStatic(Leaf(Source), paths.Value)
+          val keys = table transform
+            trans.DerefObjectStatic(Leaf(Source), paths.Key)
 
           val flattenedSlices = table.slices map { slice =>
             val keys = slice.deref(paths.Key)
@@ -74,9 +74,8 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                       // s.t. f(i) = f'(i * max + arrayI)
 
                       val finalRef = ColumnRef(CPath(ptail: _*), tpe)
-                      val colTable = acc get finalRef getOrElse (
-                        new Array[Column](maxLength)
-                      )
+                      val colTable = acc get finalRef getOrElse
+                        (new Array[Column](maxLength))
 
                       colTable(idx) = col
 

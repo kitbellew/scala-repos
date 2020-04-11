@@ -364,10 +364,18 @@ object Defaults extends BuildCommon {
     Seq(
       unmanagedSources := {
         val srcs = unmanagedSources.value
-        val f = (includeFilter in unmanagedSources).value
-        val excl = (excludeFilter in unmanagedSources).value
+        val f =
+          (
+            includeFilter in unmanagedSources
+          ).value
+        val excl =
+          (
+            excludeFilter in unmanagedSources
+          ).value
         if (sourcesInBase.value)
-          (srcs +++ baseDirectory.value * (f -- excl)).get
+          (
+            srcs +++ baseDirectory.value * (f -- excl)
+          ).get
         else
           srcs
       })
@@ -382,12 +390,10 @@ object Defaults extends BuildCommon {
               crossTarget.value / "classes.bak",
               sbt.util.Logger.Null))),
       scalaInstance <<= scalaInstanceTask,
-      crossVersion := (
-        if (crossPaths.value)
-          CrossVersion.binary
-        else
-          CrossVersion.Disabled
-      ),
+      crossVersion := (if (crossPaths.value)
+                         CrossVersion.binary
+                       else
+                         CrossVersion.Disabled),
       crossTarget := makeCrossTarget(
         target.value,
         scalaBinaryVersion.value,
@@ -482,7 +488,9 @@ object Defaults extends BuildCommon {
     inTask(run)(runnerTask :: Nil).head,
     selectMainClass := mainClass
       .value orElse askForMainClass(discoveredMainClasses.value),
-    mainClass in run := (selectMainClass in run).value,
+    mainClass in run := (
+      selectMainClass in run
+    ).value,
     mainClass := pickMainClassOrWarn(
       discoveredMainClasses.value,
       streams.value.log),
@@ -525,7 +533,10 @@ object Defaults extends BuildCommon {
     import ScopeFilter.Make.{inDependencies => inDeps, _}
     val selectDeps = ScopeFilter(
       inAggregates(ThisProject) || inDeps(ThisProject))
-    val allWatched = (watchSources ?? Nil).all(selectDeps)
+    val allWatched =
+      (
+        watchSources ?? Nil
+      ).all(selectDeps)
     Def.task {
       allWatched.value.flatten
     }
@@ -669,9 +680,9 @@ object Defaults extends BuildCommon {
             .toIterable)
         .toMap,
       definedTests <<= detectTests,
-      definedTestNames <<= definedTests map (
-        _.map(_.name).distinct
-      ) storeAs definedTestNames triggeredBy compile,
+      definedTestNames <<= definedTests map (_
+        .map(_.name)
+        .distinct) storeAs definedTestNames triggeredBy compile,
       testFilter in testQuick <<= testQuickFilter,
       executeTests <<= (
         streams in test,
@@ -686,7 +697,10 @@ object Defaults extends BuildCommon {
       testResultLogger in (Test, test) :== TestResultLogger
         .SilentWhenNoTests, // https://github.com/sbt/sbt/issues/1185
       test := {
-        val trl = (testResultLogger in (Test, test)).value
+        val trl =
+          (
+            testResultLogger in (Test, test)
+          ).value
         val taskName = Project.showContextKey(state.value)(resolvedScoped.value)
         trl.run(streams.value.log, executeTests.value, taskName)
       },
@@ -709,8 +723,9 @@ object Defaults extends BuildCommon {
               succeededFile(streams.in(test).value.cacheDirectory)) +:
             testListeners.in(TaskGlobal).value
         },
-        testOptions := Tests
-          .Listeners(testListeners.value) +: (testOptions in TaskGlobal).value,
+        testOptions := Tests.Listeners(testListeners.value) +: (
+          testOptions in TaskGlobal
+        ).value,
         testExecution <<= testExecutionTask(key)
       )) ++ inScope(GlobalScope)(
       Seq(derive(testGrouping <<= singleTestGroupDefault)))
@@ -1003,7 +1018,9 @@ object Defaults extends BuildCommon {
       })
     } else {
       includeFilters.map { f => (s: String) =>
-        (f.accept(s) && !matches(excludeFilters, s))
+        (
+          f.accept(s) && !matches(excludeFilters, s)
+        )
       }
     }
   }
@@ -1071,7 +1088,9 @@ object Defaults extends BuildCommon {
 
   private type Mappings = Initialize[Task[Seq[(File, String)]]]
   def concatMappings(as: Mappings, bs: Mappings) =
-    (as zipWith bs)((a, b) =>
+    (
+      as zipWith bs
+    )((a, b) =>
       (a, b) map {
         case (a, b) =>
           a ++ b
@@ -1081,9 +1100,8 @@ object Defaults extends BuildCommon {
   def sourceMappings =
     (unmanagedSources, unmanagedSourceDirectories, baseDirectory) map {
       (srcs, sdirs, base) =>
-        (srcs --- sdirs --- base) pair (
-          relativeTo(sdirs) | relativeTo(base) | flat
-        )
+        (srcs --- sdirs --- base) pair (relativeTo(sdirs) | relativeTo(
+          base) | flat)
     }
   def resourceMappings =
     relativeMappings(unmanagedResources, unmanagedResourceDirectories)
@@ -1113,7 +1131,9 @@ object Defaults extends BuildCommon {
       t / toString(ScalaVersion(sv, sbv), module, a) asFile
     }
   def artifactSetting =
-    ((artifact, artifactClassifier).identity zipWith configuration.?) {
+    (
+      (artifact, artifactClassifier).identity zipWith configuration.?
+    ) {
       case ((a, classifier), cOpt) =>
         val cPart = cOpt flatMap {
           case Compile =>
@@ -1276,12 +1296,20 @@ object Defaults extends BuildCommon {
         if (options.nonEmpty) {
           val mask = ScopeMask(project = false)
           val showJavaOptions = Scope.displayMasked(
-            (javaOptions in resolvedScope).scopedKey.scope,
-            (javaOptions in resolvedScope).key.label,
+            (
+              javaOptions in resolvedScope
+            ).scopedKey.scope,
+            (
+              javaOptions in resolvedScope
+            ).key.label,
             mask)
           val showFork = Scope.displayMasked(
-            (fork in resolvedScope).scopedKey.scope,
-            (fork in resolvedScope).key.label,
+            (
+              fork in resolvedScope
+            ).scopedKey.scope,
+            (
+              fork in resolvedScope
+            ).key.label,
             mask)
           s.log
             .warn(
@@ -1324,7 +1352,10 @@ object Defaults extends BuildCommon {
           val logger: Logger = s.log
           val maxer = maxErrors.value
           val spms = sourcePositionMappers.value
-          val reporter = (compilerReporter in compile).value
+          val reporter =
+            (
+              compilerReporter in compile
+            ).value
           (hasScala, hasJava) match {
             case (true, _) =>
               val options = sOpts ++ Opts.doc.externalAPI(xapis)
@@ -1397,7 +1428,10 @@ object Defaults extends BuildCommon {
             si,
             s) =>
         val cpFiles = data(cp)
-        val fullcp = (cpFiles ++ si.allJars).distinct
+        val fullcp =
+          (
+            cpFiles ++ si.allJars
+          ).distinct
         val loader = sbt
           .internal
           .inc
@@ -1405,17 +1439,23 @@ object Defaults extends BuildCommon {
           .ClasspathUtilities
           .makeLoader(fullcp, si, IO.createUniqueDirectory(temp))
         val compiler = cs.scalac.onArgs(exported(s, "scala"))
-        (
-          new Console(compiler)
-        )(cpFiles, options, loader, initCommands, cleanup)()(s.log)
-          .foreach(msg => sys.error(msg))
+        (new Console(compiler))(
+          cpFiles,
+          options,
+          loader,
+          initCommands,
+          cleanup)()(s.log).foreach(msg => sys.error(msg))
         println()
     }
 
   private[this] def exported(
       w: PrintWriter,
       command: String): Seq[String] => Unit =
-    args => w.println((command +: args).mkString(" "))
+    args =>
+      w.println(
+        (
+          command +: args
+        ).mkString(" "))
   private[this] def exported(
       s: TaskStreams,
       command: String): Seq[String] => Unit =
@@ -1445,7 +1485,9 @@ object Defaults extends BuildCommon {
       // TODO - Should readAnalysis + saveAnalysis be scoped by the compile task too?
       compileIncrementalTaskImpl(
         streams.value,
-        (compileInputs in compile).value)
+        (
+          compileInputs in compile
+        ).value)
     }
   private[this] def compileIncrementalTaskImpl(
       s: TaskStreams,
@@ -1476,19 +1518,25 @@ object Defaults extends BuildCommon {
       new Setup(
         f1(t => o2m(analysisMap(dependencyClasspath.value)(t))),
         f1(dc),
-        (skip in compile).value,
+        (
+          skip in compile
+        ).value,
         // TODO - this is kind of a bad way to grab the cache directory for streams...
         streams.value.cacheDirectory / compileAnalysisFilename.value,
         compilerCache.value,
         incOptions.value,
-        (compilerReporter in compile).value,
+        (
+          compilerReporter in compile
+        ).value,
         // TODO - task / setting for extra,
         Array.empty)
     }
   def compileInputsSettings: Seq[Setting[_]] = {
     Seq(
       compileOptions := new CompileOptions(
-        (classDirectory.value +: data(dependencyClasspath.value)).toArray,
+        (
+          classDirectory.value +: data(dependencyClasspath.value)
+        ).toArray,
         sources.value.toArray,
         classDirectory.value,
         scalacOptions.value.toArray,
@@ -1676,7 +1724,9 @@ object Defaults extends BuildCommon {
         getDependencies(structure, classpath = false, aggregate = true))
     (classpath, aggregate) match {
       case (true, true) =>
-        (fullCp ++ fullAgg).distinct
+        (
+          fullCp ++ fullAgg
+        ).distinct
       case (true, false) =>
         fullCp
       case _ =>
@@ -1689,18 +1739,14 @@ object Defaults extends BuildCommon {
       aggregate: Boolean = false): ProjectRef => Seq[ProjectRef] =
     ref =>
       Project.getProject(ref, structure).toList flatMap { p =>
-        (
-          if (classpath)
-            p.dependencies.map(_.project)
-          else
-            Nil
-        ) ++
-          (
-            if (aggregate)
-              p.aggregate
-            else
-              Nil
-          )
+        (if (classpath)
+           p.dependencies.map(_.project)
+         else
+           Nil) ++
+          (if (aggregate)
+             p.aggregate
+           else
+             Nil)
       }
 
   val CompletionsID = "completions"
@@ -1759,7 +1805,9 @@ object Classpaths {
       a: ScopedTaskable[Seq[T]],
       b: ScopedTaskable[Seq[T]]): Initialize[Task[Seq[T]]] =
     (a, b) map { (x, y) =>
-      (x ++ y).distinct
+      (
+        x ++ y
+      ).distinct
     }
   def concat[T](
       a: ScopedTaskable[Seq[T]],
@@ -1819,7 +1867,9 @@ object Classpaths {
   lazy val defaultPackages: Seq[TaskKey[File]] =
     for (task <- defaultPackageKeys;
          conf <- Seq(Compile, Test))
-      yield (task in conf)
+      yield (
+        task in conf
+      )
   lazy val defaultArtifactTasks: Seq[TaskKey[File]] = makePom +: defaultPackages
 
   def findClasspathConfig(
@@ -1828,9 +1878,8 @@ object Classpaths {
       delegated: Option[Configuration],
       report: UpdateReport): Configuration = {
     val defined = report.allConfigurations.toSet
-    val search = map(thisConfig) +: (
-      delegated.toList ++ Seq(Compile, Configurations.Default)
-    )
+    val search = map(thisConfig) +: (delegated
+      .toList ++ Seq(Compile, Configurations.Default))
     def notFound =
       sys.error(
         "Configuration to use for managed classpath must be explicitly defined when default configurations are not present.")
@@ -1848,7 +1897,9 @@ object Classpaths {
   def enabledOnly[T](
       key: SettingKey[T],
       pkgTasks: Seq[TaskKey[File]]): Initialize[Seq[T]] =
-    (forallIn(key, pkgTasks) zipWith forallIn(publishArtifact, pkgTasks))(
+    (
+      forallIn(key, pkgTasks) zipWith forallIn(publishArtifact, pkgTasks)
+    )(
       _ zip _ collect {
         case (a, true) =>
           a
@@ -1878,9 +1929,9 @@ object Classpaths {
       IvyActions.makePom(ivyModule.value, config, streams.value.log);
       config.file
     },
-    packagedArtifact in makePom := (
-      (artifact in makePom).value -> makePom.value
-    ),
+    packagedArtifact in makePom := ((
+      artifact in makePom
+    ).value -> makePom.value),
     deliver <<= deliverTask(deliverConfiguration),
     deliverLocal <<= deliverTask(deliverLocalConfiguration),
     publish <<= publishTask(publishConfiguration, deliver),
@@ -2057,7 +2108,9 @@ object Classpaths {
           ivyLoggingLevel.value,
           ArtifactTypeFilter.forbid(specialArtifactTypes))
       },
-      updateOptions := (updateOptions in Global).value,
+      updateOptions := (
+        updateOptions in Global
+      ).value,
       retrieveConfiguration := {
         if (retrieveManaged.value)
           Some(
@@ -2138,12 +2191,10 @@ object Classpaths {
         new is.Module(moduleSettings.value)
       },
       transitiveUpdate <<= transitiveUpdateTask,
-      updateCacheName := "update_cache" + (
-        if (crossPaths.value)
-          s"_${scalaBinaryVersion.value}"
-        else
-          ""
-      ),
+      updateCacheName := "update_cache" + (if (crossPaths.value)
+                                             s"_${scalaBinaryVersion.value}"
+                                           else
+                                             ""),
       evictionWarningOptions in update := EvictionWarningOptions.default,
       dependencyPositions <<= dependencyPositionsTask,
       unresolvedWarningConfiguration in update := UnresolvedWarningConfiguration(
@@ -2158,11 +2209,16 @@ object Classpaths {
       evictionWarningOptions in evicted := EvictionWarningOptions.full,
       evicted := {
         import ShowLines._
-        val report = (updateTask tag (Tags.Update, Tags.Network)).value
+        val report =
+          (
+            updateTask tag (Tags.Update, Tags.Network)
+          ).value
         val log = streams.value.log
         val ew = EvictionWarning(
           ivyModule.value,
-          (evictionWarningOptions in evicted).value,
+          (
+            evictionWarningOptions in evicted
+          ).value,
           report,
           log)
         ew.lines foreach {
@@ -2190,17 +2246,26 @@ object Classpaths {
       updateClassifiers <<= Def.task {
         val s = streams.value
         val is = ivySbt.value
-        val mod = (classifiersModule in updateClassifiers).value
+        val mod =
+          (
+            classifiersModule in updateClassifiers
+          ).value
         val c = updateConfiguration.value
         val app = appConfiguration.value
         val srcTypes = sourceArtifactTypes.value
         val docTypes = docArtifactTypes.value
         val out = is.withIvy(s.log)(_.getSettings.getDefaultIvyUserDir)
-        val uwConfig = (unresolvedWarningConfiguration in update).value
+        val uwConfig =
+          (
+            unresolvedWarningConfiguration in update
+          ).value
         val depDir = dependencyCacheDirectory.value
         withExcludes(out, mod.classifiers, lock(app)) {
           excludes =>
-            val uwConfig = (unresolvedWarningConfiguration in update).value
+            val uwConfig =
+              (
+                unresolvedWarningConfiguration in update
+              ).value
             val logicalClock = LogicalClock(state.value.hashCode)
             val depDir = dependencyCacheDirectory.value
             IvyActions.updateClassifiers(
@@ -2311,9 +2376,8 @@ object Classpaths {
   private[this] def sbtClassifiersGlobalDefaults =
     Defaults.globalDefaults(
       Seq(
-        transitiveClassifiers in updateSbtClassifiers ~= (
-          _.filter(_ != DocClassifier)
-        )))
+        transitiveClassifiers in updateSbtClassifiers ~= (_
+          .filter(_ != DocClassifier))))
   def sbtClassifiersTasks =
     sbtClassifiersGlobalDefaults ++ inTask(updateSbtClassifiers)(
       Seq(
@@ -2367,7 +2431,10 @@ object Classpaths {
           val srcTypes = sourceArtifactTypes.value
           val docTypes = docArtifactTypes.value
           val out = is.withIvy(s.log)(_.getSettings.getDefaultIvyUserDir)
-          val uwConfig = (unresolvedWarningConfiguration in update).value
+          val uwConfig =
+            (
+              unresolvedWarningConfiguration in update
+            ).value
           val depDir = dependencyCacheDirectory.value
           withExcludes(out, mod.classifiers, lock(app)) {
             excludes =>
@@ -2392,7 +2459,9 @@ object Classpaths {
           }
         } tag (Tags.Update, Tags.Network)
       )) ++ Seq(
-      bootIvyConfiguration := (ivyConfiguration in updateSbtClassifiers).value)
+      bootIvyConfiguration := (
+        ivyConfiguration in updateSbtClassifiers
+      ).value)
 
   def deliverTask(
       config: TaskKey[DeliverConfiguration]): Initialize[Task[File]] =
@@ -2485,7 +2554,10 @@ object Classpaths {
         }
       val transform: UpdateReport => UpdateReport =
         r => substituteScalaFiles(scalaOrganization.value, r)(subScalaJars)
-      val uwConfig = (unresolvedWarningConfiguration in update).value
+      val uwConfig =
+        (
+          unresolvedWarningConfiguration in update
+        ).value
       val show = Reference.display(thisProjectRef.value)
       val st = state.value
       val logicalClock = LogicalClock(st.hashCode)
@@ -2498,7 +2570,9 @@ object Classpaths {
       // This code bumps up the sbt.UpdateConfiguration.logging to Full when logLevel is Debug.
       import UpdateLogging.{Full, DownloadOnly, Default}
       val uc =
-        (logLevel in update).?.value orElse st.get(logLevel.key) match {
+        (
+          logLevel in update
+        ).?.value orElse st.get(logLevel.key) match {
           case Some(Level.Debug) if uc0.logging == Default =>
             uc0.copy(logging = Full)
           case Some(x) if uc0.logging == Default =>
@@ -2512,14 +2586,18 @@ object Classpaths {
             })
           EvictionWarningOptions.empty
         else
-          (evictionWarningOptions in update).value
+          (
+            evictionWarningOptions in update
+          ).value
       cachedUpdate(
         s.cacheDirectory / updateCacheName.value,
         show,
         ivyModule.value,
         uc,
         transform,
-        skip = (skip in update).value,
+        skip = (
+          skip in update
+        ).value,
         force = isRoot || forceUpdateByTime,
         depsUpdated = depsUpdated,
         uwConfig = uwConfig,
@@ -2682,7 +2760,10 @@ object Classpaths {
       def modulePositions: Map[ModuleID, SourcePosition] =
         try {
           val extracted = (Project extract st)
-          val sk = (libraryDependencies in (GlobalScope in projRef)).scopedKey
+          val sk =
+            (
+              libraryDependencies in (GlobalScope in projRef)
+            ).scopedKey
           val empty = extracted.structure.data set (sk.scope, sk.key, Nil)
           val settings = extracted.structure.settings filter { s: Setting[_] =>
             (s.key.key == libraryDependencies.key) &&
@@ -2774,7 +2855,9 @@ object Classpaths {
       overwrite)
 
   def deliverPattern(outputPath: File): String =
-    (outputPath / "[artifact]-[revision](-[classifier]).[ext]").absolutePath
+    (
+      outputPath / "[artifact]-[revision](-[classifier]).[ext]"
+    ).absolutePath
 
   def projectDependenciesTask: Initialize[Task[Seq[ModuleID]]] =
     (thisProjectRef, settingsData, buildDependencies) map { (ref, data, deps) =>
@@ -2819,7 +2902,10 @@ object Classpaths {
     }
   def exportProductsTask: Initialize[Task[Classpath]] =
     Def.task {
-      val art = (artifact in packageBin).value
+      val art =
+        (
+          artifact in packageBin
+        ).value
       val module = projectID.value
       val config = configuration.value
       for (f <- productsImplTask.value)
@@ -2943,9 +3029,8 @@ object Classpaths {
     val visited = interSort(projectRef, conf, data, deps)
     val tasks = asScalaSet(new LinkedHashSet[Task[Classpath]])
     for ((dep, c) <- visited)
-      if (includeSelf || (dep != projectRef) || (
-            conf.name != c && self.name != c
-          ))
+      if (includeSelf || (dep != projectRef) || (conf.name != c && self
+            .name != c))
         tasks += f(dep, c, data)
 
     (tasks.toSeq.join).map(_.flatten.distinct)
@@ -3001,12 +3086,16 @@ object Classpaths {
 
   def union[A, B](maps: Seq[A => Seq[B]]): A => Seq[B] =
     a =>
-      (Seq[B]() /: maps) {
+      (
+        Seq[B]() /: maps
+      ) {
         _ ++ _(a)
       } distinct;
 
   def parseList(s: String, allConfs: Seq[String]): Seq[String] =
-    (trim(s split ",") flatMap replaceWildcard(allConfs)).distinct
+    (
+      trim(s split ",") flatMap replaceWildcard(allConfs)
+    ).distinct
   def replaceWildcard(allConfs: Seq[String])(conf: String): Seq[String] =
     if (conf == "")
       Nil
@@ -3127,8 +3216,9 @@ object Classpaths {
       filter: FileFilter,
       excl: FileFilter): Classpath =
     (
-      base * (filter -- excl) +++ (base / config.name)
-        .descendantsExcept(filter, excl)
+      base * (filter -- excl) +++ (
+        base / config.name
+      ).descendantsExcept(filter, excl)
     ).classpath
 
   @deprecated(
@@ -3374,7 +3464,9 @@ trait BuildExtra extends BuildCommon with DefExtra {
   def addSbtPlugin(
       dependency: ModuleID,
       sbtVersion: String): Setting[Seq[ModuleID]] =
-    libraryDependencies <+= (scalaBinaryVersion in update) { scalaV =>
+    libraryDependencies <+= (
+      scalaBinaryVersion in update
+    ) { scalaV =>
       sbtPluginExtra(dependency, sbtVersion, scalaV)
     }
 
@@ -3437,7 +3529,9 @@ trait BuildExtra extends BuildCommon with DefExtra {
     val other =
       (baseDirectory, appConfiguration, projectResolver, updateOptions, streams)
         .identityMap
-    ivyConfiguration <<= (uri zipWith other) {
+    ivyConfiguration <<= (
+      uri zipWith other
+    ) {
       case (u, otherTask) =>
         otherTask map {
           case (base, app, pr, uo, s) =>

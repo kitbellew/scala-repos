@@ -98,8 +98,8 @@ private[memory] trait MemoryManagerSuite
         val numBytesToFree = args(1).asInstanceOf[Long]
         assert(numBytesToFree > 0)
         require(
-          evictBlocksToFreeSpaceCalled
-            .get() === DEFAULT_EVICT_BLOCKS_TO_FREE_SPACE_CALLED,
+          evictBlocksToFreeSpaceCalled.get() ===
+            DEFAULT_EVICT_BLOCKS_TO_FREE_SPACE_CALLED,
           "bad test: evictBlocksToFreeSpace() variable was not reset")
         evictBlocksToFreeSpaceCalled.set(numBytesToFree)
         if (numBytesToFree <= mm.storageMemoryUsed) {
@@ -134,8 +134,8 @@ private[memory] trait MemoryManagerSuite
   protected def assertEvictBlocksToFreeSpaceNotCalled[T](
       ms: MemoryStore): Unit = {
     assert(
-      evictBlocksToFreeSpaceCalled
-        .get() === DEFAULT_EVICT_BLOCKS_TO_FREE_SPACE_CALLED,
+      evictBlocksToFreeSpaceCalled.get() ===
+        DEFAULT_EVICT_BLOCKS_TO_FREE_SPACE_CALLED,
       "evictBlocksToFreeSpace() should not have been called!")
     assert(evictedBlocks.isEmpty)
   }

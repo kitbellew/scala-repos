@@ -126,8 +126,9 @@ abstract class AbstractFetcherManager(
       "Added fetcher for partitions %s".format(
         partitionAndOffsets.map {
           case (topicAndPartition, brokerAndInitialOffset) =>
-            "[" + topicAndPartition + ", initOffset " + brokerAndInitialOffset
-              .initOffset + " to broker " + brokerAndInitialOffset.broker + "] "
+            "[" + topicAndPartition + ", initOffset " +
+              brokerAndInitialOffset.initOffset + " to broker " +
+              brokerAndInitialOffset.broker + "] "
         }))
   }
 

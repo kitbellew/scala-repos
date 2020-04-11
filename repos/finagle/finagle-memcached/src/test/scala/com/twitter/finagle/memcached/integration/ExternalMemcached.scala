@@ -69,9 +69,10 @@ private[memcached] object ExternalMemcached {
     if (address == None)
       sys.error("Couldn't get an address for the external memcached")
 
-    takenPorts += address
-      .getOrElse(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-      .getPort
+    takenPorts +=
+      address
+        .getOrElse(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
+        .getPort
     address
   }
 

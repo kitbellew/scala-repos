@@ -65,8 +65,8 @@ object ApiCommit {
         ._1
         .collect {
           case x
-              if x.changeType != DiffEntry.ChangeType.ADD && x
-                .changeType != DiffEntry.ChangeType.DELETE =>
+              if x.changeType != DiffEntry.ChangeType.ADD &&
+                x.changeType != DiffEntry.ChangeType.DELETE =>
             x.newPath
         },
       author = ApiPersonIdent.author(commit),

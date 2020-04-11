@@ -310,9 +310,9 @@ class InputOutputMetricsSuite
     // p1. Thus the math below for the test.
     assert(cartesianBytes != 0)
     assert(
-      cartesianBytes == firstSize * numPartitions + (
-        cartVector.length * secondSize
-      ))
+      cartesianBytes ==
+        firstSize * numPartitions +
+        (cartVector.length * secondSize))
   }
 
   private def runAndReturnBytesRead(job: => Unit): Long = {
@@ -385,11 +385,8 @@ class InputOutputMetricsSuite
       sc.addSparkListener(
         new SparkListener() {
           override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
-            taskBytesWritten += taskEnd
-              .taskMetrics
-              .outputMetrics
-              .get
-              .bytesWritten
+            taskBytesWritten +=
+              taskEnd.taskMetrics.outputMetrics.get.bytesWritten
           }
         })
 

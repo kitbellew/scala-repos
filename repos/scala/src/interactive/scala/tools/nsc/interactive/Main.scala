@@ -30,12 +30,11 @@ object Main extends nsc.MainClass {
       }
       askShutdown
     }
-    super.processSettingsHook() && (
-      if (this.settings.Yidedebug) {
-        run();
-        false
-      } else
-        true
-    )
+    super.processSettingsHook() &&
+    (if (this.settings.Yidedebug) {
+       run();
+       false
+     } else
+       true)
   }
 }

@@ -71,16 +71,17 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
       def ins1 = as.map(a => (a.s1, a.s2)) returning as.map(_.id)
       def ins2 = as.map(a => (a.s1, a.s2)) returning as.map(a => (a.id, a.s1))
       def ins3 =
-        as.map(a => (a.s1, a.s2)) returning as
-          .map(_.id) into ((v, i) => (i, v._1, v._2))
+        as.map(a => (a.s1, a.s2)) returning as.map(_.id) into
+          ((v, i) => (i, v._1, v._2))
       def ins4 = as.map(a => (a.s1, a.s2)) returning as.map(a => a)
 
       (
         for {
           _ <- as.schema.create
-          _ <- (ins1 += ("a", "b")) map { id1: Int =>
-            id1 shouldBe 1
-          }
+          _ <-
+            (ins1 += ("a", "b")) map { id1: Int =>
+              id1 shouldBe 1
+            }
           _ <-
             ifCap(jcap.returnInsertOther) {
               (ins2 += ("c", "d")) map { id2: (Int, String) =>
@@ -127,9 +128,10 @@ class InsertTest extends AsyncTest[JdbcTestDB] {
     seq(
       (ts.schema ++ src.schema).create,
       ts += (101, "A", 1, false, "S1", "S2", 0),
-      ts.map(_.ins) ++= Seq(
-        (102, "B", 1, false, "S1", "S2", 0),
-        (103, "C", 1, false, "S1", "S2", 0)),
+      ts.map(_.ins) ++=
+        Seq(
+          (102, "B", 1, false, "S1", "S2", 0),
+          (103, "C", 1, false, "S1", "S2", 0)),
       ts.filter(_.id > 100).length.result.map(_ shouldBe 0),
       ifCap(jcap.forceInsert)(
         seq(

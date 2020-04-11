@@ -73,8 +73,7 @@ object Json extends Logging {
                   throw new IllegalArgumentException(
                     "Invalid map element (" + elem + ") in " + obj)
               })
-            .mkString(",") +
-          "}"
+            .mkString(",") + "}"
       case a: Array[_] =>
         encode(a.toSeq)
       case i: Iterable[_] =>

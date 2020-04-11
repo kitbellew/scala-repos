@@ -21,16 +21,17 @@ object CommandLineParser {
       val del = quote.toString
       if (in startsWith del) {
         var escaped = false
-        val (quoted, next) = (in substring 1) span {
-          case `quote` if !escaped =>
-            false
-          case '\\' if !escaped =>
-            escaped = true;
-            true
-          case _ =>
-            escaped = false;
-            true
-        }
+        val (quoted, next) =
+          (in substring 1) span {
+            case `quote` if !escaped =>
+              false
+            case '\\' if !escaped =>
+              escaped = true;
+              true
+            case _ =>
+              escaped = false;
+              true
+          }
         // the only way to get out of the above loop is with an empty next or !escaped
         // require(next.isEmpty || !escaped)
         if (next startsWith del)

@@ -98,8 +98,9 @@ object ClassPathImplComparator {
           cpCreationRepetitions: Int,
           cpLookupRepetitions: Int) = {
 
-        def createClassPaths() =
-          (1 to cpCreationRepetitions).map(_ => classPath).last
+        def createClassPaths() = (1 to cpCreationRepetitions)
+          .map(_ => classPath)
+          .last
         def testClassLookup(cp: ClassFileLookup[AbstractFile]): Boolean =
           (1 to cpCreationRepetitions).foldLeft(true) {
             case (a, _) =>

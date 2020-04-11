@@ -41,26 +41,26 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
     assert(transform(StorageLevel.NONE) === StorageLevel.DISK_ONLY)
     assert(transform(StorageLevel.MEMORY_ONLY) === StorageLevel.MEMORY_AND_DISK)
     assert(
-      transform(StorageLevel.MEMORY_ONLY_SER) === StorageLevel
-        .MEMORY_AND_DISK_SER)
+      transform(StorageLevel.MEMORY_ONLY_SER) ===
+        StorageLevel.MEMORY_AND_DISK_SER)
     assert(
       transform(StorageLevel.MEMORY_ONLY_2) === StorageLevel.MEMORY_AND_DISK_2)
     assert(
-      transform(StorageLevel.MEMORY_ONLY_SER_2) === StorageLevel
-        .MEMORY_AND_DISK_SER_2)
+      transform(StorageLevel.MEMORY_ONLY_SER_2) ===
+        StorageLevel.MEMORY_AND_DISK_SER_2)
     assert(transform(StorageLevel.DISK_ONLY) === StorageLevel.DISK_ONLY)
     assert(transform(StorageLevel.DISK_ONLY_2) === StorageLevel.DISK_ONLY_2)
     assert(
       transform(StorageLevel.MEMORY_AND_DISK) === StorageLevel.MEMORY_AND_DISK)
     assert(
-      transform(StorageLevel.MEMORY_AND_DISK_SER) === StorageLevel
-        .MEMORY_AND_DISK_SER)
+      transform(StorageLevel.MEMORY_AND_DISK_SER) ===
+        StorageLevel.MEMORY_AND_DISK_SER)
     assert(
-      transform(StorageLevel.MEMORY_AND_DISK_2) === StorageLevel
-        .MEMORY_AND_DISK_2)
+      transform(StorageLevel.MEMORY_AND_DISK_2) ===
+        StorageLevel.MEMORY_AND_DISK_2)
     assert(
-      transform(StorageLevel.MEMORY_AND_DISK_SER_2) === StorageLevel
-        .MEMORY_AND_DISK_SER_2)
+      transform(StorageLevel.MEMORY_AND_DISK_SER_2) ===
+        StorageLevel.MEMORY_AND_DISK_SER_2)
   }
 
   test("basic lineage truncation") {
@@ -88,8 +88,8 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
     assert(!filteredRdd.checkpointData.get.isCheckpointed)
     assert(!filteredRdd.checkpointData.get.checkpointRDD.isDefined)
     assert(
-      filteredRdd.getStorageLevel === LocalRDDCheckpointData
-        .DEFAULT_STORAGE_LEVEL)
+      filteredRdd.getStorageLevel ===
+        LocalRDDCheckpointData.DEFAULT_STORAGE_LEVEL)
 
     // After an action, the lineage is truncated
     val result = filteredRdd.collect()

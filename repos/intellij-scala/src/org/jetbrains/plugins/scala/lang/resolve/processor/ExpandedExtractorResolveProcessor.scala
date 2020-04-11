@@ -55,15 +55,15 @@ class ExpandedExtractorResolveProcessor(
                 val subst = getSubst(state)
                 element match {
                   case fun: ScFunction
-                      if fun.name == "unapply" || (
-                        seq && fun.name == "unapplySeq"
-                      ) =>
-                    buffer += new ScalaResolveResult(
-                      fun,
-                      parentSubst.followed(subst),
-                      parentImports,
-                      parentElement = Some(bind),
-                      isAccessible = accessible)
+                      if fun.name == "unapply" ||
+                        (seq && fun.name == "unapplySeq") =>
+                    buffer +=
+                      new ScalaResolveResult(
+                        fun,
+                        parentSubst.followed(subst),
+                        parentImports,
+                        parentElement = Some(bind),
+                        isAccessible = accessible)
                   case _ =>
                 }
                 true

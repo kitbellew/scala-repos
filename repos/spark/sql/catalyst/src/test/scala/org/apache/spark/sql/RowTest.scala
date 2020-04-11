@@ -29,8 +29,7 @@ import org.apache.spark.sql.types._
 class RowTest extends FunSpec with Matchers {
 
   val schema = StructType(
-    StructField("col1", StringType) ::
-      StructField("col2", StringType) ::
+    StructField("col1", StringType) :: StructField("col2", StringType) ::
       StructField("col3", IntegerType) :: Nil)
   val values = Array("value1", "value2", 1)
   val valuesWithoutCol3 = Array[Any](null, "value2", null)
@@ -76,8 +75,8 @@ class RowTest extends FunSpec with Matchers {
 
     it("getValuesMap() retrieves null value on non AnyVal Type") {
       val expected = Map("col1" -> null, "col2" -> "value2")
-      sampleRowWithoutCol3
-        .getValuesMap[String](List("col1", "col2")) shouldBe expected
+      sampleRowWithoutCol3.getValuesMap[String](List("col1", "col2")) shouldBe
+        expected
     }
 
     it(

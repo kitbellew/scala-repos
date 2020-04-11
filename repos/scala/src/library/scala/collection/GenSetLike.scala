@@ -116,14 +116,12 @@ trait GenSetLike[A, +Repr]
       case that: GenSet[_] =>
         (this eq that) ||
           (that canEqual this) &&
-            (this.size == that.size) &&
-            (
-              try this subsetOf that.asInstanceOf[GenSet[A]]
-              catch {
-                case ex: ClassCastException =>
-                  false
-              }
-            )
+          (this.size == that.size) &&
+          (try this subsetOf that.asInstanceOf[GenSet[A]]
+          catch {
+            case ex: ClassCastException =>
+              false
+          })
       case _ =>
         false
     }

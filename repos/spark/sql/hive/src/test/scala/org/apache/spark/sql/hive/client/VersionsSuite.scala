@@ -66,7 +66,8 @@ class VersionsSuite extends SparkFunSuite with Logging {
     lazy val metastorePath = Utils.createTempDir()
     metastorePath.delete()
     Map(
-      "javax.jdo.option.ConnectionURL" -> s"jdbc:derby:;databaseName=$metastorePath;create=true",
+      "javax.jdo.option.ConnectionURL" ->
+        s"jdbc:derby:;databaseName=$metastorePath;create=true",
       "hive.metastore.warehouse.dir" -> warehousePath.toString)
   }
 
@@ -138,8 +139,8 @@ class VersionsSuite extends SparkFunSuite with Logging {
       }
     }
     assert(
-      getNestedMessages(
-        e) contains "Unknown column 'A0.OWNER_NAME' in 'field list'")
+      getNestedMessages(e) contains
+        "Unknown column 'A0.OWNER_NAME' in 'field list'")
   }
 
   private val versions = Seq("12", "13", "14", "1.0.0", "1.1.0", "1.2.0")

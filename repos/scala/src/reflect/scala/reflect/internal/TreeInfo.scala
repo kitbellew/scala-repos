@@ -127,9 +127,8 @@ abstract class TreeInfo {
       case i @ Ident(_) =>
         isStableIdent(i, allowVolatile)
       case Select(qual, _) =>
-        isStableMemberOf(tree.symbol, qual, allowVolatile) && isPath(
-          qual,
-          allowVolatile)
+        isStableMemberOf(tree.symbol, qual, allowVolatile) &&
+          isPath(qual, allowVolatile)
       case Apply(Select(free @ Ident(_), nme.apply), _)
           if free.symbol.name endsWith nme.REIFY_FREE_VALUE_SUFFIX =>
         // see a detailed explanation of this trick in `GenSymbols.reifyFreeTerm`
@@ -151,29 +150,26 @@ abstract class TreeInfo {
       sym: Symbol,
       tree: Tree,
       allowVolatile: Boolean): Boolean =
-    (symOk(sym) && (
-      !sym.isTerm || (sym.isStable && (allowVolatile || !sym.hasVolatileType))
-    ) &&
-      typeOk(tree.tpe) && (
-      allowVolatile || !hasVolatileType(tree)
-    ) && !definitions.isByNameParamType(tree.tpe))
+    (symOk(sym) &&
+      (!sym.isTerm ||
+        (sym.isStable && (allowVolatile || !sym.hasVolatileType))) &&
+      typeOk(tree.tpe) &&
+      (allowVolatile || !hasVolatileType(tree)) &&
+      !definitions.isByNameParamType(tree.tpe))
 
   private def isStableIdent(tree: Ident, allowVolatile: Boolean): Boolean =
-    (symOk(tree.symbol)
-      && tree.symbol.isStable
-      && !definitions.isByNameParamType(tree.tpe)
-      && !definitions.isByName(tree.symbol)
-      && (
-        allowVolatile || !tree.symbol.hasVolatileType
-      ) // TODO SPEC: not required by spec
+    (symOk(tree.symbol) && tree.symbol.isStable &&
+      !definitions.isByNameParamType(tree.tpe) &&
+      !definitions.isByName(tree.symbol) &&
+      (allowVolatile ||
+        !tree.symbol.hasVolatileType) // TODO SPEC: not required by spec
     )
 
   /** Is `tree`'s type volatile? (Ignored if its symbol has the @uncheckedStable annotation.)
     */
   def hasVolatileType(tree: Tree): Boolean =
-    symOk(tree.symbol) && tree.tpe.isVolatile && !tree
-      .symbol
-      .hasAnnotation(uncheckedStableClass)
+    symOk(tree.symbol) && tree.tpe.isVolatile &&
+      !tree.symbol.hasAnnotation(uncheckedStableClass)
 
   /** Is `tree` either a non-volatile type,
     *  or a path that does not include any of:
@@ -229,9 +225,8 @@ abstract class TreeInfo {
         // Apply(function, Nil) trees. To prevent them from being treated as pure,
         // we check that the callee is a method.
         // The callee might also be a Block, which has a null symbol, so we guard against that (SI-7185)
-        fn.symbol != null && fn.symbol.isMethod && !fn
-          .symbol
-          .isLazy && isExprSafeToInline(fn)
+        fn.symbol != null && fn.symbol.isMethod && !fn.symbol.isLazy &&
+          isExprSafeToInline(fn)
       case Typed(expr, _) =>
         isExprSafeToInline(expr)
       case Block(stats, expr) =>
@@ -256,27 +251,28 @@ abstract class TreeInfo {
         def isWarnableRefTree =
           tree match {
             case t: RefTree =>
-              isExprSafeToInline(t.qualifier) && t
-                .symbol != null && t.symbol.isAccessor
+              isExprSafeToInline(t.qualifier) && t.symbol != null &&
+                t.symbol.isAccessor
             case _ =>
               false
           }
         def isWarnableSymbol = {
           val sym = tree.symbol
-          (sym == null) || !(
-            sym.isModule || sym
-              .isLazy || definitions.isByNameParamType(sym.tpe_*)
+          (sym == null) ||
+          !(
+            sym.isModule || sym.isLazy ||
+              definitions.isByNameParamType(sym.tpe_*)
           ) || {
             debuglog(
-              "'Pure' but side-effecting expression in statement position: " + tree)
+              "'Pure' but side-effecting expression in statement position: " +
+                tree)
             false
           }
         }
 
         (
-          !tree.isErrorTyped
-          && (isExprSafeToInline(tree) || isWarnableRefTree)
-          && isWarnableSymbol
+          !tree.isErrorTyped &&
+          (isExprSafeToInline(tree) || isWarnableRefTree) && isWarnableSymbol
         )
     }
 
@@ -500,16 +496,16 @@ abstract class TreeInfo {
 
   /** Does the tree have a structure similar to typechecked trees? */
   private[internal] def detectTypecheckedTree(tree: Tree) =
-    tree.hasExistingSymbol || tree.exists {
-      case dd: DefDef =>
-        dd.mods.hasAccessorFlag || dd
-          .mods
-          .isSynthetic // for untypechecked trees
-      case md: MemberDef =>
-        md.hasExistingSymbol
-      case _ =>
-        false
-    }
+    tree.hasExistingSymbol ||
+      tree.exists {
+        case dd: DefDef =>
+          dd.mods.hasAccessorFlag ||
+            dd.mods.isSynthetic // for untypechecked trees
+        case md: MemberDef =>
+          md.hasExistingSymbol
+        case _ =>
+          false
+      }
 
   /** Recover template body to parsed state */
   private[internal] def untypecheckedTemplBody(templ: Template) =
@@ -527,12 +523,13 @@ abstract class TreeInfo {
           true
         // keep valdef or getter for val/var
         case dd: DefDef if dd.mods.hasAccessorFlag =>
-          !nme.isSetterName(dd.name) && !tbody.exists {
-            case vd: ValDef =>
-              dd.name == vd.name.dropLocal
-            case _ =>
-              false
-          }
+          !nme.isSetterName(dd.name) &&
+            !tbody.exists {
+              case vd: ValDef =>
+                dd.name == vd.name.dropLocal
+              case _ =>
+                false
+            }
         case md: MemberDef =>
           !md.mods.isSynthetic
         case tree =>
@@ -567,16 +564,15 @@ abstract class TreeInfo {
               else
                 vrhs
             copyValDef(vd)(mods = vdMods, name = dname, rhs = vdRhs)
-          } getOrElse (vd)
+          } getOrElse
+            (vd)
         // for abstract and some lazy val/vars
         case dd @ DefDef(mods, name, _, _, tpt, rhs) if mods.hasAccessorFlag =>
           // transform getter mods to field
-          val vdMods = (
-            if (!mods.hasStableFlag)
-              mods | Flags.MUTABLE
-            else
-              mods &~ Flags.STABLE
-          ) &~ Flags.ACCESSOR
+          val vdMods = (if (!mods.hasStableFlag)
+                          mods | Flags.MUTABLE
+                        else
+                          mods &~ Flags.STABLE) &~ Flags.ACCESSOR
           ValDef(vdMods, name, tpt, rhs)
         case tr =>
           tr
@@ -774,16 +770,15 @@ abstract class TreeInfo {
 
   /** Does this CaseDef catch Throwable? */
   def catchesThrowable(cdef: CaseDef) =
-    (cdef.guard.isEmpty && (
-      unbind(cdef.pat) match {
+    (cdef.guard.isEmpty &&
+      (unbind(cdef.pat) match {
         case Ident(nme.WILDCARD) =>
           true
         case i @ Ident(name) =>
           hasNoSymbol(i)
         case _ =>
           false
-      }
-    ))
+      }))
 
   /** Is this CaseDef synthetically generated, e.g. by `MatchTranslation.translateTry`? */
   def isSyntheticCase(cdef: CaseDef) =
@@ -811,7 +806,8 @@ abstract class TreeInfo {
     tp match {
       case TypeRef(pre, sym, args) =>
         (pre == NoPrefix || pre.widen.typeSymbol.isStatic) &&
-          (sym isNonBottomSubClass ThrowableClass) && /* bq */ !sym.isTrait
+          (sym isNonBottomSubClass ThrowableClass) &&
+          /* bq */ !sym.isTrait
       case _ =>
         false
     }
@@ -1048,9 +1044,8 @@ abstract class TreeInfo {
         // SI-7868 Admit Select() to account for numeric widening, e.g. <unapplySelector>.toInt
         case Apply(
               fun,
-              (
-                Ident(nme.SELECTOR_DUMMY) | Select(Ident(nme.SELECTOR_DUMMY), _)
-              ) :: Nil) =>
+              (Ident(nme.SELECTOR_DUMMY) |
+              Select(Ident(nme.SELECTOR_DUMMY), _)) :: Nil) =>
           Some(fun)
         case Apply(fun, _) =>
           unapply(fun)
@@ -1137,9 +1132,10 @@ abstract class TreeInfo {
   }
 
   def isApplyDynamicName(name: Name) =
-    (name == nme.updateDynamic) || (name == nme.selectDynamic) || (
-      name == nme.applyDynamic
-    ) || (name == nme.applyDynamicNamed)
+    (name == nme.updateDynamic) ||
+      (name == nme.selectDynamic) ||
+      (name == nme.applyDynamic) ||
+      (name == nme.applyDynamicNamed)
 
   class DynamicApplicationExtractor(nameTest: Name => Boolean) {
     def unapply(tree: Tree) =
@@ -1219,16 +1215,15 @@ abstract class TreeInfo {
   }
 
   def isNullaryInvocation(tree: Tree): Boolean =
-    tree.symbol != null && tree.symbol.isMethod && (
-      tree match {
+    tree.symbol != null && tree.symbol.isMethod &&
+      (tree match {
         case TypeApply(fun, _) =>
           isNullaryInvocation(fun)
         case tree: RefTree =>
           true
         case _ =>
           false
-      }
-    )
+      })
 
   def isMacroApplication(tree: Tree): Boolean =
     !tree.isDef && {

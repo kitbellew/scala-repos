@@ -253,8 +253,8 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
       _buf,
       TypeTree(),
       New(_scala_xml_NodeBuffer, ListOfNil))
-    val applies = args filterNot isEmptyText map (t =>
-      Apply(Select(Ident(_buf), _plus), List(t)))
+    val applies = args filterNot isEmptyText map
+      (t => Apply(Select(Ident(_buf), _plus), List(t)))
 
     atPos(pos)(Block(buffer :: applies.toList, Ident(_buf)))
   }

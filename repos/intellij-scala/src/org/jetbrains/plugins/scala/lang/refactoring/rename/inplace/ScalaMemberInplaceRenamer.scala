@@ -130,9 +130,8 @@ class ScalaMemberInplaceRenamer(
               val clazz = myElementToRename.getClass
               val element = TargetElementUtil.findTargetElement(
                 myEditor,
-                TargetElementUtil
-                  .REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil
-                  .ELEMENT_NAME_ACCEPTED)
+                TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED |
+                  TargetElementUtil.ELEMENT_NAME_ACCEPTED)
               myElementToRename = element match {
                 case null =>
                   null
@@ -162,8 +161,8 @@ class ScalaMemberInplaceRenamer(
 
   override def getVariable: PsiNamedElement = {
     Option(super.getVariable).getOrElse {
-      if (myElementToRename != null && myElementToRename
-            .isValid && oldName == ScalaNamesUtil.scalaName(myElementToRename))
+      if (myElementToRename != null && myElementToRename.isValid &&
+          oldName == ScalaNamesUtil.scalaName(myElementToRename))
         myElementToRename
       else
         null
@@ -214,8 +213,8 @@ class ScalaMemberInplaceRenamer(
         val subst = getSubstituted
         val offset = editor.getCaretModel.getOffset
         val text = editor.getDocument.getText
-        val aroundCaret = text.substring(offset - 50, offset) + "<caret>" + text
-          .substring(offset, offset + 50)
+        val aroundCaret = text.substring(offset - 50, offset) + "<caret>" +
+          text.substring(offset, offset + 50)
         val message = s"""Could not perform inplace rename:
              |element to rename: $element ${element.getName}
              |substituted: $subst
@@ -246,8 +245,8 @@ class ScalaMemberInplaceRenamer(
       case _: ScalaMemberInplaceRenameHandler =>
         val caretOffset = editor.getCaretModel.getOffset
         myCaretRangeMarker != null && myCaretRangeMarker.isValid &&
-        myCaretRangeMarker.getStartOffset <= caretOffset && myCaretRangeMarker
-          .getEndOffset >= caretOffset
+        myCaretRangeMarker.getStartOffset <= caretOffset &&
+        myCaretRangeMarker.getEndOffset >= caretOffset
       case _ =>
         false
     }

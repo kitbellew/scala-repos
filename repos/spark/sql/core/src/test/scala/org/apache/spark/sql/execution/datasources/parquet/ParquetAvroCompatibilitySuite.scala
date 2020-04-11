@@ -276,9 +276,10 @@ class ParquetAvroCompatibilitySuite
             Seq.tabulate(3)(n => n.toString -> (i + n: Integer)).toMap,
             Seq
               .tabulate(3) { n =>
-                (i + n).toString -> Seq.tabulate(3) { m =>
-                  Row(Seq.tabulate(3)(j => i + j + m), s"val_${i + m}")
-                }
+                (i + n).toString ->
+                  Seq.tabulate(3) { m =>
+                    Row(Seq.tabulate(3)(j => i + j + m), s"val_${i + m}")
+                  }
               }
               .toMap
           )
@@ -291,16 +292,17 @@ class ParquetAvroCompatibilitySuite
     def makeComplexColumn(i: Int): JMap[String, JList[Nested]] = {
       Seq
         .tabulate(3) { n =>
-          (i + n).toString -> Seq
-            .tabulate(3) { m =>
-              Nested
-                .newBuilder()
-                .setNestedIntsColumn(
-                  Seq.tabulate(3)(j => i + j + m: Integer).asJava)
-                .setNestedStringColumn(s"val_${i + m}")
-                .build()
-            }
-            .asJava
+          (i + n).toString ->
+            Seq
+              .tabulate(3) { m =>
+                Nested
+                  .newBuilder()
+                  .setNestedIntsColumn(
+                    Seq.tabulate(3)(j => i + j + m: Integer).asJava)
+                  .setNestedStringColumn(s"val_${i + m}")
+                  .build()
+              }
+              .asJava
         }
         .toMap
         .asJava

@@ -103,8 +103,8 @@ trait Lifting {
           g: JValue => Result[G]): JValue => Result[R] =
         (json: JValue) =>
           (
-            a(json) |@| b(json) |@| c(json) |@| d(json) |@| e(json) |@| f(
-              json) |@| g(json)
+            a(json) |@| b(json) |@| c(json) |@| d(json) |@| e(json) |@|
+              f(json) |@| g(json)
           )(z)
     }
 
@@ -130,8 +130,8 @@ trait Lifting {
           h: JValue => Result[H]): JValue => Result[R] =
         (json: JValue) =>
           (
-            a(json) |@| b(json) |@| c(json) |@| d(json) |@| e(json) |@| f(
-              json) |@| g(json) |@| h(json)
+            a(json) |@| b(json) |@| c(json) |@| d(json) |@| e(json) |@|
+              f(json) |@| g(json) |@| h(json)
           )(z)
     }
 }

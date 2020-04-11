@@ -169,8 +169,8 @@ private[sql] case class InMemoryRelation(
 
             var rowCount = 0
             var totalSize = 0L
-            while (rowIterator.hasNext && rowCount < batchSize
-                   && totalSize < ColumnBuilder.MAX_BATCH_SIZE_IN_BYTE) {
+            while (rowIterator.hasNext && rowCount < batchSize &&
+                   totalSize < ColumnBuilder.MAX_BATCH_SIZE_IN_BYTE) {
               val row = rowIterator.next()
 
               // Added for SPARK-6082. This assertion can be useful for scenarios when something
@@ -180,8 +180,7 @@ private[sql] case class InMemoryRelation(
               assert(
                 row.numFields == columnBuilders.length,
                 s"Row column number mismatch, expected ${output.size} columns, " +
-                  s"but got ${row.numFields}." +
-                  s"\nRow content: $row"
+                  s"but got ${row.numFields}." + s"\nRow content: $row"
               )
 
               var i = 0
@@ -259,8 +258,8 @@ private[sql] case class InMemoryColumnarTableScan(
     extends LeafNode {
 
   private[sql] override lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"))
+    "numOutputRows" ->
+      SQLMetrics.createLongMetric(sparkContext, "number of output rows"))
 
   override def output: Seq[Attribute] = attributes
 

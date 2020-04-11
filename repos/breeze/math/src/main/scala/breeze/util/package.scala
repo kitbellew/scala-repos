@@ -74,10 +74,12 @@ package object util {
           }
 
           val localClassDescriptor = ObjectStreamClass.lookup(localClass)
-          if (localClassDescriptor != null) { // only if class implements serializable
+          if (localClassDescriptor !=
+                null) { // only if class implements serializable
             val localSUID = localClassDescriptor.getSerialVersionUID
             val streamSUID = resultClassDescriptor.getSerialVersionUID
-            if (streamSUID != localSUID) { // check for serialVersionUID mismatch.
+            if (streamSUID !=
+                  localSUID) { // check for serialVersionUID mismatch.
               val s =
                 new StringBuffer(
                   "Overriding serialized class version mismatch: ")

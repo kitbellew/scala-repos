@@ -216,24 +216,18 @@ final class Formatter(private val dest: Appendable)
                 arg match {
                   case formattable: Formattable =>
                     val flags = {
-                      (
-                        if (hasFlag("-"))
-                          FormattableFlags.LEFT_JUSTIFY
-                        else
-                          0
-                      ) |
-                        (
-                          if (hasFlag("#"))
-                            FormattableFlags.ALTERNATE
-                          else
-                            0
-                        ) |
-                        (
-                          if (isConversionUpperCase)
-                            FormattableFlags.UPPERCASE
-                          else
-                            0
-                        )
+                      (if (hasFlag("-"))
+                         FormattableFlags.LEFT_JUSTIFY
+                       else
+                         0) |
+                        (if (hasFlag("#"))
+                           FormattableFlags.ALTERNATE
+                         else
+                           0) |
+                        (if (isConversionUpperCase)
+                           FormattableFlags.UPPERCASE
+                         else
+                           0)
                     }
                     formattable.formatTo(
                       this,

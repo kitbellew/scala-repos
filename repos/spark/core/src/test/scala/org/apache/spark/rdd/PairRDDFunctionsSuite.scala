@@ -281,11 +281,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joined = rdd1.join(rdd2).collect()
     assert(joined.size === 4)
     assert(
-      joined.toSet === Set(
-        (1, (1, 'x')),
-        (1, (2, 'x')),
-        (2, (1, 'y')),
-        (2, (1, 'z'))))
+      joined.toSet ===
+        Set((1, (1, 'x')), (1, (2, 'x')), (2, (1, 'y')), (2, (1, 'z'))))
   }
 
   test("join all-to-all") {
@@ -294,13 +291,14 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joined = rdd1.join(rdd2).collect()
     assert(joined.size === 6)
     assert(
-      joined.toSet === Set(
-        (1, (1, 'x')),
-        (1, (1, 'y')),
-        (1, (2, 'x')),
-        (1, (2, 'y')),
-        (1, (3, 'x')),
-        (1, (3, 'y'))))
+      joined.toSet ===
+        Set(
+          (1, (1, 'x')),
+          (1, (1, 'y')),
+          (1, (2, 'x')),
+          (1, (2, 'y')),
+          (1, (3, 'x')),
+          (1, (3, 'y'))))
   }
 
   test("leftOuterJoin") {
@@ -309,12 +307,13 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joined = rdd1.leftOuterJoin(rdd2).collect()
     assert(joined.size === 5)
     assert(
-      joined.toSet === Set(
-        (1, (1, Some('x'))),
-        (1, (2, Some('x'))),
-        (2, (1, Some('y'))),
-        (2, (1, Some('z'))),
-        (3, (1, None))))
+      joined.toSet ===
+        Set(
+          (1, (1, Some('x'))),
+          (1, (2, Some('x'))),
+          (2, (1, Some('y'))),
+          (2, (1, Some('z'))),
+          (3, (1, None))))
   }
 
   // See SPARK-9326
@@ -346,12 +345,13 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joined = rdd1.rightOuterJoin(rdd2).collect()
     assert(joined.size === 5)
     assert(
-      joined.toSet === Set(
-        (1, (Some(1), 'x')),
-        (1, (Some(2), 'x')),
-        (2, (Some(1), 'y')),
-        (2, (Some(1), 'z')),
-        (4, (None, 'w'))))
+      joined.toSet ===
+        Set(
+          (1, (Some(1), 'x')),
+          (1, (Some(2), 'x')),
+          (2, (Some(1), 'y')),
+          (2, (Some(1), 'z')),
+          (4, (None, 'w'))))
   }
 
   test("fullOuterJoin") {
@@ -360,13 +360,14 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joined = rdd1.fullOuterJoin(rdd2).collect()
     assert(joined.size === 6)
     assert(
-      joined.toSet === Set(
-        (1, (Some(1), Some('x'))),
-        (1, (Some(2), Some('x'))),
-        (2, (Some(1), Some('y'))),
-        (2, (Some(1), Some('z'))),
-        (3, (Some(1), None)),
-        (4, (None, Some('w')))))
+      joined.toSet ===
+        Set(
+          (1, (Some(1), Some('x'))),
+          (1, (Some(2), Some('x'))),
+          (2, (Some(1), Some('y'))),
+          (2, (Some(1), Some('z'))),
+          (3, (Some(1), None)),
+          (4, (None, Some('w')))))
   }
 
   test("join with no matches") {
@@ -382,11 +383,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joined = rdd1.join(rdd2, 10).collect()
     assert(joined.size === 4)
     assert(
-      joined.toSet === Set(
-        (1, (1, 'x')),
-        (1, (2, 'x')),
-        (2, (1, 'y')),
-        (2, (1, 'z'))))
+      joined.toSet ===
+        Set((1, (1, 'x')), (1, (2, 'x')), (2, (1, 'y')), (2, (1, 'z'))))
   }
 
   test("groupWith") {
@@ -397,11 +395,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joinedSet =
       joined.map(x => (x._1, (x._2._1.toList, x._2._2.toList))).toSet
     assert(
-      joinedSet === Set(
-        (1, (List(1, 2), List('x'))),
-        (2, (List(1), List('y', 'z'))),
-        (3, (List(1), List())),
-        (4, (List(), List('w')))))
+      joinedSet ===
+        Set(
+          (1, (List(1, 2), List('x'))),
+          (2, (List(1), List('y', 'z'))),
+          (3, (List(1), List())),
+          (4, (List(), List('w')))))
   }
 
   test("groupWith3") {
@@ -415,11 +414,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         .map(x => (x._1, (x._2._1.toList, x._2._2.toList, x._2._3.toList)))
         .toSet
     assert(
-      joinedSet === Set(
-        (1, (List(1, 2), List('x'), List('a'))),
-        (2, (List(1), List('y', 'z'), List())),
-        (3, (List(1), List(), List('b'))),
-        (4, (List(), List('w'), List('c', 'd')))))
+      joinedSet ===
+        Set(
+          (1, (List(1, 2), List('x'), List('a'))),
+          (2, (List(1), List('y', 'z'), List())),
+          (3, (List(1), List(), List('b'))),
+          (4, (List(), List('w'), List('c', 'd')))))
   }
 
   test("groupWith4") {
@@ -437,12 +437,13 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
             (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList)))
         .toSet
     assert(
-      joinedSet === Set(
-        (1, (List(1, 2), List('x'), List('a'), List())),
-        (2, (List(1), List('y', 'z'), List(), List('@'))),
-        (3, (List(1), List(), List('b'), List())),
-        (4, (List(), List('w'), List('c', 'd'), List()))
-      ))
+      joinedSet ===
+        Set(
+          (1, (List(1, 2), List('x'), List('a'), List())),
+          (2, (List(1), List('y', 'z'), List(), List('@'))),
+          (3, (List(1), List(), List('b'), List())),
+          (4, (List(), List('w'), List('c', 'd'), List()))
+        ))
   }
 
   test("zero-partition RDD") {
@@ -548,12 +549,13 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       sums.toSet === Set((1, ArrayBuffer(1, 2, 3, 1)), (2, ArrayBuffer(1))))
     // Check that the mutable objects in the original RDD were not changed
     assert(
-      bufs.collect().toSet === Set(
-        (1, ArrayBuffer(1)),
-        (1, ArrayBuffer(2)),
-        (1, ArrayBuffer(3)),
-        (1, ArrayBuffer(1)),
-        (2, ArrayBuffer(1))))
+      bufs.collect().toSet ===
+        Set(
+          (1, ArrayBuffer(1)),
+          (1, ArrayBuffer(2)),
+          (1, ArrayBuffer(3)),
+          (1, ArrayBuffer(1)),
+          (2, ArrayBuffer(1))))
   }
 
   test("saveNewAPIHadoopFile should call setConf if format is configurable") {

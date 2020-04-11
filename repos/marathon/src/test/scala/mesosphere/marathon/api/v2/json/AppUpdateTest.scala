@@ -268,8 +268,9 @@ class AppUpdateTest extends MarathonSpec {
     import Formats._
     val result = Json.fromJson[AppUpdate](Json.parse(json))
     assert(
-      result == JsError(
-        ValidationError("You cannot specify both uris and fetch fields")))
+      result ==
+        JsError(
+          ValidationError("You cannot specify both uris and fetch fields")))
   }
 
   test("update may not have both ports and portDefinitions") {
@@ -284,8 +285,10 @@ class AppUpdateTest extends MarathonSpec {
     import Formats._
     val result = Json.fromJson[AppUpdate](Json.parse(json))
     assert(
-      result == JsError(
-        ValidationError("You cannot specify both ports and port definitions")))
+      result ==
+        JsError(
+          ValidationError(
+            "You cannot specify both ports and port definitions")))
   }
 
   test("update may not have duplicated ports") {
@@ -299,8 +302,7 @@ class AppUpdateTest extends MarathonSpec {
     import Formats._
     val result = Json.fromJson[AppUpdate](Json.parse(json))
     assert(
-      result == JsError(
-        JsPath \ "ports",
-        ValidationError("Ports must be unique.")))
+      result ==
+        JsError(JsPath \ "ports", ValidationError("Ports must be unique.")))
   }
 }

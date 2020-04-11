@@ -47,8 +47,8 @@ case class Hook(
   private def compatibilityProperties =
     (variant, clock.limit, clock.increment, mode)
 
-  lazy val realRatingRange: Option[RatingRange] =
-    RatingRange noneIfDefault ratingRange
+  lazy val realRatingRange: Option[RatingRange] = RatingRange noneIfDefault
+    ratingRange
 
   def userId = user map (_.id)
   def isAuth = user.nonEmpty

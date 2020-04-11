@@ -43,17 +43,16 @@ class CreateAggregates extends Phase {
               else {
                 logger.debug("Lifting aggregates into join in:", n)
                 logger.debug("New mapping with temporary refs:", sel2)
-                val sources = (
-                  from1 match {
-                    case Pure(StructNode(ConstArray()), _) =>
-                      Vector.empty[(TermSymbol, Node)]
-                    case _ =>
-                      Vector(s1 -> from1)
+                val sources = (from1 match {
+                  case Pure(StructNode(ConstArray()), _) =>
+                    Vector.empty[(TermSymbol, Node)]
+                  case _ =>
+                    Vector(s1 -> from1)
+                }) ++
+                  temp.map {
+                    case (s, n) =>
+                      (s, Pure(n))
                   }
-                ) ++ temp.map {
-                  case (s, n) =>
-                    (s, Pure(n))
-                }
                 val from2 = sources
                   .init
                   .foldRight(sources.last._2) {
@@ -81,12 +80,11 @@ class CreateAggregates extends Phase {
                           case ((s, _), i) =>
                             val l =
                               List.iterate(s1, i + 1)(_ => ElementSymbol(2))
-                            s -> (
-                              if (i == len - 1)
-                                l
-                              else
-                                l :+ ElementSymbol(1)
-                            )
+                            s ->
+                              (if (i == len - 1)
+                                 l
+                               else
+                                 l :+ ElementSymbol(1))
                         }
                         .toMap
                   }

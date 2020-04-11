@@ -120,14 +120,14 @@ case class Game(
 
   def updatedAtOrCreatedAt = updatedAt | createdAt
 
-  def durationSeconds =
-    (updatedAtOrCreatedAt.getSeconds - createdAt.getSeconds).toInt
+  def durationSeconds = (updatedAtOrCreatedAt.getSeconds - createdAt.getSeconds)
+    .toInt
 
   def lastMoveTimeInSeconds: Option[Int] = lastMoveTime.map(x => (x / 10).toInt)
 
   // in tenths of seconds
-  lazy val moveTimes: Vector[Int] = BinaryFormat
-    .moveTime read binaryMoveTimes take playedTurns
+  lazy val moveTimes: Vector[Int] = BinaryFormat.moveTime read
+    binaryMoveTimes take playedTurns
 
   def moveTimes(color: Color): List[Int] = {
     val pivot =
@@ -197,9 +197,9 @@ case class Game(
     def copyPlayer(player: Player) =
       player.copy(blurs = math.min(
         playerMoves(player.color),
-        player
-          .blurs + (blur && moveOrDrop.fold(_.color, _.color) == player.color)
-          .fold(1, 0)))
+        player.blurs +
+          (blur && moveOrDrop.fold(_.color, _.color) == player.color)
+            .fold(1, 0)))
 
     val updated = copy(
       whitePlayer = copyPlayer(whitePlayer),
@@ -218,11 +218,12 @@ case class Game(
       ),
       binaryMoveTimes = isPgnImport.fold(
         ByteArray.empty,
-        BinaryFormat.moveTime write lastMoveTime.fold(Vector(0)) { lmt =>
-          moveTimes :+ {
-            (nowTenths - lmt - (lag.??(_.toMillis) / 100)).toInt max 0
-          }
-        }),
+        BinaryFormat.moveTime write
+          lastMoveTime.fold(Vector(0)) { lmt =>
+            moveTimes :+ {
+              (nowTenths - lmt - (lag.??(_.toMillis) / 100)).toInt max 0
+            }
+          }),
       status = situation.status | status,
       clock = game.clock
     )
@@ -244,10 +245,11 @@ case class Game(
       Event.Move(_, situation, state, clockEvent, updated.crazyData),
       Event.Drop(_, situation, state, clockEvent, updated.crazyData)) :: {
       // abstraction leak, I know.
-      (updated.variant.threeCheck && situation.check) ?? List(
-        Event.CheckCount(
-          white = updated.checkCount.white,
-          black = updated.checkCount.black))
+      (updated.variant.threeCheck && situation.check) ??
+        List(
+          Event.CheckCount(
+            white = updated.checkCount.white,
+            black = updated.checkCount.black))
     }.toList
 
     Progress(this, updated, events)
@@ -321,26 +323,19 @@ case class Game(
     copy(whitePlayer = f(whitePlayer), blackPlayer = f(blackPlayer))
 
   def playerCanOfferDraw(color: Color) =
-    started && playable &&
-      turns >= 2 &&
-      !player(color).isOfferingDraw &&
-      !(opponent(color).isAi) &&
-      !(playerHasOfferedDraw(color))
+    started && playable && turns >= 2 && !player(color).isOfferingDraw &&
+      !(opponent(color).isAi) && !(playerHasOfferedDraw(color))
 
   def playerHasOfferedDraw(color: Color) =
     player(color).lastDrawOffer ?? (_ >= turns - 1)
 
   def playerCanRematch(color: Color) =
-    !player(color).isOfferingRematch &&
-      finishedOrAborted &&
-      nonMandatory &&
+    !player(color).isOfferingRematch && finishedOrAborted && nonMandatory &&
       !boosted
 
   def playerCanProposeTakeback(color: Color) =
-    started && playable && !isTournament && !isSimul &&
-      bothPlayersHaveMoved &&
-      !player(color).isProposingTakeback &&
-      !opponent(color).isProposingTakeback
+    started && playable && !isTournament && !isSimul && bothPlayersHaveMoved &&
+      !player(color).isProposingTakeback && !opponent(color).isProposingTakeback
 
   def boosted = rated && finished && bothPlayersHaveMoved && playedTurns < 10
 
@@ -358,8 +353,7 @@ case class Game(
       .map { c =>
         val newClock = c berserk color
         withClock(newClock).map(_.withPlayer(color, _.goBerserk)) +
-          Event.Clock(newClock) +
-          Event.Berserk(color)
+          Event.Clock(newClock) + Event.Berserk(color)
       }
 
   def withPlayer(color: Color, f: Player => Player) =
@@ -435,9 +429,10 @@ case class Game(
 
   private def outoftimeClock(playerLag: Color => Int): Boolean =
     clock ?? { c =>
-      started && playable && (bothPlayersHaveMoved || isSimul) && {
-        (!c.isRunning && !c.isInit) || c
-          .outoftimeWithGrace(player.color, playerLag(player.color))
+      started && playable &&
+      (bothPlayersHaveMoved || isSimul) && {
+        (!c.isRunning && !c.isInit) ||
+        c.outoftimeWithGrace(player.color, playerLag(player.color))
       }
     }
 
@@ -489,8 +484,8 @@ case class Game(
 
   def playerHasMoved(color: Color) = playerMoves(color) > 0
 
-  def playerBlurPercent(color: Color): Int =
-    (playedTurns > 5).fold((player(color).blurs * 100) / playerMoves(color), 0)
+  def playerBlurPercent(color: Color): Int = (playedTurns > 5)
+    .fold((player(color).blurs * 100) / playerMoves(color), 0)
 
   def isBeingPlayed = !isPgnImport && !finishedOrAborted
 
@@ -500,10 +495,9 @@ case class Game(
   def unplayed = !bothPlayersHaveMoved && (createdAt isBefore Game.unplayedDate)
 
   def abandoned =
-    (status <= Status.Started) && (
-      (updatedAt | createdAt) isBefore hasAi
-        .fold(Game.aiAbandonedDate, Game.abandonedDate)
-    )
+    (status <= Status.Started) &&
+      ((updatedAt | createdAt) isBefore
+        hasAi.fold(Game.aiAbandonedDate, Game.abandonedDate))
 
   def forecastable = started && playable && isCorrespondence && !hasAi
 
@@ -563,9 +557,8 @@ object Game {
     chess.variant.ThreeCheck,
     chess.variant.FromPosition)
 
-  val unanalysableVariants: Set[Variant] = Variant
-    .all
-    .toSet -- analysableVariants
+  val unanalysableVariants: Set[Variant] = Variant.all.toSet --
+    analysableVariants
 
   val variantsWhereWhiteIsBetter: Set[Variant] = Set(
     chess.variant.ThreeCheck,

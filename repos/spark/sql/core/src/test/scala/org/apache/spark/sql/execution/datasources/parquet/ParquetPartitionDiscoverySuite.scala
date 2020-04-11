@@ -677,8 +677,8 @@ class ParquetPartitionDiscoverySuite
       withTempTable("t") {
         checkAnswer(
           sql("SELECT * FROM t"),
-          (1 to 10).map(i => Row(i, null, 1)) ++ (1 to 10)
-            .map(i => Row(i, i.toString, 2)))
+          (1 to 10).map(i => Row(i, null, 1)) ++
+            (1 to 10).map(i => Row(i, i.toString, 2)))
       }
     }
   }
@@ -857,8 +857,8 @@ class ParquetPartitionDiscoverySuite
       // We have two paths to list files, one at driver side, another one that we use
       // a Spark job. We need to test both ways.
       withSQLConf(
-        SQLConf.PARALLEL_PARTITION_DISCOVERY_THRESHOLD.key -> threshold
-          .toString) {
+        SQLConf.PARALLEL_PARTITION_DISCOVERY_THRESHOLD.key ->
+          threshold.toString) {
         withTempPath { dir =>
           val tablePath = new File(dir, "table")
           val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")

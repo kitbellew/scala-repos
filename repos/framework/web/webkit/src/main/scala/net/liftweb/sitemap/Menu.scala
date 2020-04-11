@@ -530,8 +530,8 @@ object Menu extends MenuSingleton {
     override lazy val rewrite: LocRewrite = Full(
       NamedPF(locPath.toString) {
         case RewriteRequest(ParsePath(ExtractSan(path, param), _, _, _), _, _)
-            if param
-              .isDefined || params.contains(Loc.MatchWithoutCurrentValue) => {
+            if param.isDefined ||
+              params.contains(Loc.MatchWithoutCurrentValue) => {
           RewriteResponse(path, true) -> param
         }
       })
@@ -797,13 +797,10 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
       first(kids)(_.findLoc(req))
 
   def locForGroup(group: String): Seq[Loc[_]] =
-    (
-      if (loc.inGroup_?(group))
-        List[Loc[_]](loc)
-      else
-        Nil
-    ) ++
-      kids.flatMap(_.locForGroup(group))
+    (if (loc.inGroup_?(group))
+       List[Loc[_]](loc)
+     else
+       Nil) ++ kids.flatMap(_.locForGroup(group))
 
   override def buildUpperLines(
       pathAt: HasKids,
@@ -829,8 +826,8 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
 
   def makeMenuItem(path: List[Loc[_]]): Box[MenuItem] =
     loc.buildItem(
-      kids.toList.flatMap(_.makeMenuItem(path)) ::: loc
-        .supplementalKidMenuItems,
+      kids.toList.flatMap(_.makeMenuItem(path)) :::
+        loc.supplementalKidMenuItems,
       _lastInPath(path),
       _inPath(path))
 

@@ -174,8 +174,8 @@ private[niflheim] class NIHDBImpl private[niflheim] (
   def insertVerified(batch: Seq[NIHDB.Batch]): Future[InsertResult] =
     (actor ? Insert(batch, true)).mapTo[InsertResult]
 
-  def getSnapshot(): Future[NIHDBSnapshot] =
-    (actor ? GetSnapshot).mapTo[NIHDBSnapshot]
+  def getSnapshot(): Future[NIHDBSnapshot] = (actor ? GetSnapshot)
+    .mapTo[NIHDBSnapshot]
 
   def getBlockAfter(
       id: Option[Long],
@@ -237,7 +237,8 @@ private[niflheim] object NIHDBActor extends Logging {
           _ <-
             IO {
               logger.info(
-                "No current descriptor found for " + baseDir + "; " + authorities + ", creating fresh descriptor")
+                "No current descriptor found for " + baseDir + "; " +
+                  authorities + ", creating fresh descriptor")
             }
           _ <- ProjectionState.toFile(state, descriptorFile)
         } yield {
@@ -336,9 +337,8 @@ private[niflheim] class NIHDBActor private (
   private[this] var actorState: Option[State] = None
   private def state = {
     import scalaz.syntax.effect.id._
-    actorState getOrElse open
-      .flatMap(_.tap(s => IO(actorState = Some(s))))
-      .unsafePerformIO
+    actorState getOrElse
+      open.flatMap(_.tap(s => IO(actorState = Some(s)))).unsafePerformIO
   }
 
   private def initDirs(f: File) =
@@ -389,7 +389,8 @@ private[niflheim] class NIHDBActor private (
             val (reader, offsets, ok) = RawHandler.load(id, rawFileFor(id))
             if (!ok) {
               logger.warn(
-                "Corruption detected and recovery performed on " + currentRawFile)
+                "Corruption detected and recovery performed on " +
+                  currentRawFile)
             }
             maxOffset = math.max(maxOffset, offsets.max)
             (id, reader)
@@ -475,10 +476,11 @@ private[niflheim] class NIHDBActor private (
       current: Map[Int, Int],
       ids: Seq[Long]): Map[Int, Int] = {
     (
-      current.toSeq ++ ids.map { i =>
-        val EventId(p, s) = EventId.fromLong(i);
-        (p -> s)
-      }
+      current.toSeq ++
+        ids.map { i =>
+          val EventId(p, s) = EventId.fromLong(i);
+          (p -> s)
+        }
     ).groupBy(_._1)
       .map {
         case (p, ids) =>
@@ -498,10 +500,8 @@ private[niflheim] class NIHDBActor private (
       state.blockState = state
         .blockState
         .copy(
-          cooked = CookedReader.load(cookedDir, file) :: state
-            .blockState
-            .cooked
-            .filterNot(_.id == id),
+          cooked = CookedReader.load(cookedDir, file) ::
+            state.blockState.cooked.filterNot(_.id == id),
           pending = state.blockState.pending - id)
 
       state.currentBlocks = computeBlockMap(state.blockState)
@@ -560,11 +560,12 @@ private[niflheim] class NIHDBActor private (
                 pending = state.blockState.pending + (toCook.id -> toCook),
                 rawLog = newRaw)
             state.txLog.startCook(toCook.id)
-            chef ! Prepare(
-              toCook.id,
-              cookSequence.getAndIncrement,
-              cookedDir,
-              toCook)
+            chef !
+              Prepare(
+                toCook.id,
+                cookSequence.getAndIncrement,
+                cookedDir,
+                toCook)
           }
 
           logger.debug(
@@ -576,10 +577,11 @@ private[niflheim] class NIHDBActor private (
       }
 
     case GetStatus =>
-      sender ! Status(
-        state.blockState.cooked.length,
-        state.blockState.pending.size,
-        state.blockState.rawLog.length)
+      sender !
+        Status(
+          state.blockState.cooked.length,
+          state.blockState.pending.size,
+          state.blockState.rawLog.length)
 
     case Quiesce =>
       quiesce.unsafePerformIO

@@ -33,8 +33,8 @@ object SpnegoAuthenticator {
     /** If the header represents a valid spnego negotiation, return it. */
     def unapply(header: String): Option[Token] =
       // must be a valid Negotiate header, and have a token
-      if (header.length <= SchemePrefixLength || !header
-            .startsWith(AuthScheme)) {
+      if (header.length <= SchemePrefixLength ||
+          !header.startsWith(AuthScheme)) {
         None
       } else {
         val tokenStr = header.substring(SchemePrefixLength)

@@ -15,17 +15,18 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
       val a = list.toArray
       val sorted = a.toArray
       java.util.Arrays.sort(sorted)
-      ("Workers: " + workers) |: ("Array: " + a.toList) |: {
-        def result =
-          tryRun(
-            sort(a.toSeq),
-            false,
-            if (workers > 0)
-              workers
-            else
-              1)
-        checkResult(result.toList, sorted.toList)
-      }
+      ("Workers: " + workers) |:
+        ("Array: " + a.toList) |: {
+          def result =
+            tryRun(
+              sort(a.toSeq),
+              false,
+              if (workers > 0)
+                workers
+              else
+                1)
+          checkResult(result.toList, sorted.toList)
+        }
     }
   final def sortDirect(a: Seq[Int]): Seq[Int] = {
     if (a.length < 2)

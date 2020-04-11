@@ -30,8 +30,8 @@ object PlayApp {
       play.api.libs.concurrent.Akka.system
     }
 
-  lazy val langs = loadConfig.getStringList("play.i18n.langs").toList map Lang
-    .apply
+  lazy val langs = loadConfig.getStringList("play.i18n.langs").toList map
+    Lang.apply
 
   protected def loadMessages(file: String): Map[String, String] =
     withApp { app =>

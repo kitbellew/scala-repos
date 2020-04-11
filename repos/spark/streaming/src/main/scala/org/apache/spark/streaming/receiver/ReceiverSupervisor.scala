@@ -153,7 +153,8 @@ private[streaming] abstract class ReceiverSupervisor(
         } else {
           // The driver refused us
           stop(
-            "Registered unsuccessfully because Driver refused to start receiver " + streamId,
+            "Registered unsuccessfully because Driver refused to start receiver " +
+              streamId,
             None)
         }
       } catch {
@@ -167,8 +168,8 @@ private[streaming] abstract class ReceiverSupervisor(
     synchronized {
       try {
         logInfo(
-          "Stopping receiver with message: " + message + ": " + error
-            .getOrElse(""))
+          "Stopping receiver with message: " + message + ": " +
+            error.getOrElse(""))
         receiverState match {
           case Initialized =>
             logWarning("Skip stopping receiver because it has not yet stared")

@@ -174,9 +174,8 @@ class ScModifierListImpl private (
           addBefore(node)
         } else {
           for (child <- getChildren
-               if child.isInstanceOf[ScAccessModifier] && child
-                 .asInstanceOf[ScAccessModifier]
-                 .isPrivate) {
+               if child.isInstanceOf[ScAccessModifier] &&
+                 child.asInstanceOf[ScAccessModifier].isPrivate) {
             getNode.removeChild(child.getNode)
             return
           }
@@ -188,9 +187,8 @@ class ScModifierListImpl private (
           addBefore(node)
         } else {
           for (child <- getChildren
-               if child.isInstanceOf[ScAccessModifier] && child
-                 .asInstanceOf[ScAccessModifier]
-                 .isProtected) {
+               if child.isInstanceOf[ScAccessModifier] &&
+                 child.asInstanceOf[ScAccessModifier].isProtected) {
             getNode.removeChild(child.getNode)
             return
           }

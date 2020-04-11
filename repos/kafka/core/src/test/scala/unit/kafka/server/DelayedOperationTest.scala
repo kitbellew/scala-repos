@@ -108,38 +108,38 @@ class DelayedOperationTest {
     r2.completable = true
     r2.tryComplete()
     assertEquals(
-      "Purgatory should have 2 total delayed operations instead of " + purgatory
-        .delayed(),
+      "Purgatory should have 2 total delayed operations instead of " +
+        purgatory.delayed(),
       2,
       purgatory.delayed())
 
     r3.completable = true
     r3.tryComplete()
     assertEquals(
-      "Purgatory should have 1 total delayed operations instead of " + purgatory
-        .delayed(),
+      "Purgatory should have 1 total delayed operations instead of " +
+        purgatory.delayed(),
       1,
       purgatory.delayed())
 
     // checking a watch should purge the watch list
     purgatory.checkAndComplete("test1")
     assertEquals(
-      "Purgatory should have 4 watched elements instead of " + purgatory
-        .watched(),
+      "Purgatory should have 4 watched elements instead of " +
+        purgatory.watched(),
       4,
       purgatory.watched())
 
     purgatory.checkAndComplete("test2")
     assertEquals(
-      "Purgatory should have 2 watched elements instead of " + purgatory
-        .watched(),
+      "Purgatory should have 2 watched elements instead of " +
+        purgatory.watched(),
       2,
       purgatory.watched())
 
     purgatory.checkAndComplete("test3")
     assertEquals(
-      "Purgatory should have 1 watched elements instead of " + purgatory
-        .watched(),
+      "Purgatory should have 1 watched elements instead of " +
+        purgatory.watched(),
       1,
       purgatory.watched())
   }

@@ -34,7 +34,10 @@ import com.precog.util.IOUtils
 
 case class Precision(p: Double)
 class AlmostEqual(d: Double) {
-  def ~=(d2: Double)(implicit p: Precision) = (d - d2).abs <= p.p
+  def ~=(d2: Double)(implicit p: Precision) =
+    (
+      d - d2
+    ).abs <= p.p
 }
 
 trait StatsLibSpecs[M[+_]]
@@ -689,7 +692,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0.9998746737089123)
+          (
+            d.toDouble ~= 0.9998746737089123
+          )
       }
 
       result2 must contain(true).only
@@ -719,7 +724,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 400.08)
+          (
+            d.toDouble ~= 400.08
+          )
       }
 
       result2 must contain(true).only
@@ -1178,7 +1185,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0.9998746737089123)
+          (
+            d.toDouble ~= 0.9998746737089123
+          )
       }
 
       result2 must contain(true).only
@@ -1208,7 +1217,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 400.08)
+          (
+            d.toDouble ~= 400.08
+          )
       }
 
       result2 must contain(true).only
@@ -1310,7 +1321,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0.9998746737089123)
+          (
+            d.toDouble ~= 0.9998746737089123
+          )
       }
 
       result2 must contain(true).only
@@ -1340,7 +1353,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 400.08)
+          (
+            d.toDouble ~= 400.08
+          )
       }
 
       result2 must contain(true).only
@@ -1442,7 +1457,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 1)
+          (
+            d.toDouble ~= 1
+          )
       }
 
       result2 must contain(true)
@@ -1473,7 +1490,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 582.96)
+          (
+            d.toDouble ~= 582.96
+          )
       }
 
       result2 must contain(true).only
@@ -1611,7 +1630,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0)
+          (
+            d.toDouble ~= 0
+          )
       }
 
       result2 must contain(true)
@@ -2082,7 +2103,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 301.5)
+          (
+            d.toDouble ~= 301.5
+          )
       }
 
       result2 must contain(true).only
@@ -2114,7 +2137,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0.2832061115667535364)
+          (
+            d.toDouble ~= 0.2832061115667535364
+          )
       }
 
       result2 must contain(true).only
@@ -2627,7 +2652,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 874.2741666666666)
+          (
+            d.toDouble ~= 874.2741666666666
+          )
       }
 
       result2 must contain(true).only
@@ -2686,7 +2713,9 @@ trait StatsLibSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SDecimal(d)) if ids.length == 0 =>
-          (d.toDouble ~= 0.7835742008825)
+          (
+            d.toDouble ~= 0.7835742008825
+          )
       }
 
       result2 must contain(true).only

@@ -76,7 +76,8 @@ object RemotingSpec {
     }
   }
 
-  val cfg: Config = ConfigFactory parseString (s"""
+  val cfg: Config = ConfigFactory parseString
+    (s"""
     common-ssl-settings {
       key-store = "${getClass.getClassLoader.getResource("keystore").getPath}"
       trust-store = "${getClass.getClassLoader.getResource("truststore").getPath}"
@@ -267,8 +268,9 @@ class RemotingSpec
       filterEvents(
         EventFilter
           .warning(pattern = "Address is now gated for ", occurrences = 1)) {
-        system.actorFor(
-          "akka.test://nonexistingsystem@localhost:12346/user/echo") ! "ping"
+        system
+          .actorFor("akka.test://nonexistingsystem@localhost:12346/user/echo") !
+          "ping"
       }
     }
 
@@ -284,8 +286,9 @@ class RemotingSpec
       EventFilter
         .warning(pattern = "dead.*buh", occurrences = 1)
         .intercept {
-          system.actorFor(
-            "akka.test://remote-sys@localhost:12346/does/not/exist") ! "buh"
+          system
+            .actorFor("akka.test://remote-sys@localhost:12346/does/not/exist") !
+            "buh"
         }(remoteSystem)
     }
 
@@ -305,9 +308,10 @@ class RemotingSpec
               EventFilter.warning(pattern = "received dead letter.*")))
         sys.actorOf(Props[Echo2], name = "echo")
       }
-      val moreRefs = moreSystems map (sys ⇒
-        system
-          .actorSelection(RootActorPath(addr(sys, "tcp")) / "user" / "echo"))
+      val moreRefs = moreSystems map
+        (sys ⇒
+          system
+            .actorSelection(RootActorPath(addr(sys, "tcp")) / "user" / "echo"))
       val aliveEcho = system.actorSelection(
         RootActorPath(addr(remoteSystem, "tcp")) / "user" / "echo")
       val n = 100
@@ -344,8 +348,9 @@ class RemotingSpec
 
     "create and supervise children on remote node" in {
       val r = system.actorOf(Props[Echo1], "blub")
-      r.path.toString should ===(
-        "akka.test://remote-sys@localhost:12346/remote/akka.test/RemotingSpec@localhost:12345/user/blub")
+      r.path.toString should
+        ===(
+          "akka.test://remote-sys@localhost:12346/remote/akka.test/RemotingSpec@localhost:12345/user/blub")
       r ! 42
       expectMsg(42)
       EventFilter[Exception]("crash", occurrences = 1).intercept {
@@ -493,8 +498,8 @@ class RemotingSpec
       system.actorSelection("/user/looker2/*") ! Identify("idReq3")
       expectMsg(ActorIdentity("idReq3", Some(child)))
 
-      system
-        .actorSelection("/user/looker2/child/grandchild") ! Identify("idReq4")
+      system.actorSelection("/user/looker2/child/grandchild") !
+        Identify("idReq4")
       expectMsg(ActorIdentity("idReq4", Some(grandchild)))
       system.actorSelection(child.path / "grandchild") ! Identify("idReq5")
       expectMsg(ActorIdentity("idReq5", Some(grandchild)))
@@ -505,19 +510,19 @@ class RemotingSpec
       system.actorSelection(child.path / "*") ! Identify("idReq8")
       expectMsg(ActorIdentity("idReq8", Some(grandchild)))
 
-      system.actorSelection(
-        "/user/looker2/child/grandchild/grandgrandchild") ! Identify("idReq9")
+      system.actorSelection("/user/looker2/child/grandchild/grandgrandchild") !
+        Identify("idReq9")
       expectMsg(ActorIdentity("idReq9", Some(grandgrandchild)))
-      system.actorSelection(
-        child.path / "grandchild" / "grandgrandchild") ! Identify("idReq10")
+      system.actorSelection(child.path / "grandchild" / "grandgrandchild") !
+        Identify("idReq10")
       expectMsg(ActorIdentity("idReq10", Some(grandgrandchild)))
-      system.actorSelection("/user/looker2/child/*/grandgrandchild") ! Identify(
-        "idReq11")
+      system.actorSelection("/user/looker2/child/*/grandgrandchild") !
+        Identify("idReq11")
       expectMsg(ActorIdentity("idReq11", Some(grandgrandchild)))
       system.actorSelection("/user/looker2/child/*/*") ! Identify("idReq12")
       expectMsg(ActorIdentity("idReq12", Some(grandgrandchild)))
-      system.actorSelection(child.path / "*" / "grandgrandchild") ! Identify(
-        "idReq13")
+      system.actorSelection(child.path / "*" / "grandgrandchild") !
+        Identify("idReq13")
       expectMsg(ActorIdentity("idReq13", Some(grandgrandchild)))
 
       val sel1 = system
@@ -550,20 +555,22 @@ class RemotingSpec
       expectMsg(57)
     }
 
-    "not fail ask across node boundaries" in within(5.seconds) {
-      import system.dispatcher
-      val f =
-        for (_ ← 1 to 1000)
-          yield here ? "ping" mapTo manifest[(String, ActorRef)]
-      Await
-        .result(Future.sequence(f), timeout.duration)
-        .map(_._1)
-        .toSet should ===(Set("pong"))
-    }
+    "not fail ask across node boundaries" in
+      within(5.seconds) {
+        import system.dispatcher
+        val f =
+          for (_ ← 1 to 1000)
+            yield here ? "ping" mapTo manifest[(String, ActorRef)]
+        Await
+          .result(Future.sequence(f), timeout.duration)
+          .map(_._1)
+          .toSet should ===(Set("pong"))
+      }
 
     "be able to use multiple transports and use the appropriate one (TCP)" in {
       val r = system.actorOf(Props[Echo1], "gonk")
-      r.path.toString should be ===
+      r.path.toString should
+        be ===
         s"akka.tcp://remote-sys@localhost:${port(remoteSystem, "tcp")}/remote/akka.tcp/RemotingSpec@localhost:${port(system, "tcp")}/user/gonk"
       r ! 42
       expectMsg(42)
@@ -579,7 +586,8 @@ class RemotingSpec
 
     "be able to use multiple transports and use the appropriate one (UDP)" in {
       val r = system.actorOf(Props[Echo1], "zagzag")
-      r.path.toString should be ===
+      r.path.toString should
+        be ===
         s"akka.udp://remote-sys@localhost:${port(remoteSystem, "udp")}/remote/akka.udp/RemotingSpec@localhost:${port(system, "udp")}/user/zagzag"
       r ! 42
       expectMsg(10.seconds, 42)
@@ -595,7 +603,8 @@ class RemotingSpec
 
     "be able to use multiple transports and use the appropriate one (SSL)" in {
       val r = system.actorOf(Props[Echo1], "roghtaar")
-      r.path.toString should be ===
+      r.path.toString should
+        be ===
         s"akka.ssl.tcp://remote-sys@localhost:${port(remoteSystem, "ssl.tcp")}/remote/akka.ssl.tcp/RemotingSpec@localhost:${port(system, "ssl.tcp")}/user/roghtaar"
       r ! 42
       expectMsg(10.seconds, 42)
@@ -1010,9 +1019,8 @@ class RemotingSpec
             awaitAssert {
               otherSelection.tell("ping", probeSender)
               assert(
-                probe
-                  .expectMsgType[(String, ActorRef)](500.millis)
-                  ._1 == "pong")
+                probe.expectMsgType[(String, ActorRef)](500.millis)._1 ==
+                  "pong")
             }
           }
         } finally {
@@ -1055,9 +1063,8 @@ class RemotingSpec
             awaitAssert {
               thisSelection.tell("ping", otherSender)
               assert(
-                otherProbe
-                  .expectMsgType[(String, ActorRef)](500.millis)
-                  ._1 == "pong")
+                otherProbe.expectMsgType[(String, ActorRef)](500.millis)._1 ==
+                  "pong")
             }
           }
         } finally {

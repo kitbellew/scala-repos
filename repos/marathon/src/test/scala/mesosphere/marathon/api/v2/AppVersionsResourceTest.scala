@@ -41,8 +41,8 @@ class AppVersionsResourceTest
     auth.authorized = false
     val req = auth.request
 
-    groupManager.app("appId".toRootPath) returns Future
-      .successful(Some(AppDefinition("appId".toRootPath)))
+    groupManager.app("appId".toRootPath) returns
+      Future.successful(Some(AppDefinition("appId".toRootPath)))
     When(s"the index is fetched")
     val index = appsVersionsResource.index("appId", req)
     Then("we receive a not authorized response")
@@ -70,8 +70,8 @@ class AppVersionsResourceTest
     val req = auth.request
 
     val version = Timestamp.now()
-    service.getApp("appId".toRootPath, version) returns Some(
-      AppDefinition("appId".toRootPath))
+    service.getApp("appId".toRootPath, version) returns
+      Some(AppDefinition("appId".toRootPath))
     When(s"one app version is fetched")
     val show = appsVersionsResource.show("appId", version.toString, req)
     Then("we receive a not authorized response")

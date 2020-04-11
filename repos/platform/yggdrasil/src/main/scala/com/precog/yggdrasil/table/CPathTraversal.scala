@@ -123,8 +123,8 @@ sealed trait CPathTraversal {
                 indices: Array[Int]): MaybeOrdering = {
               var i = 0
               var result: MaybeOrdering = NoComp
-              while ((result == Eq || result == NoComp) && i < comparators
-                       .length) {
+              while ((result == Eq || result == NoComp) &&
+                     i < comparators.length) {
                 val iResult = comparators(i).compare(r1, r2, indices)
                 if (iResult != NoComp) {
                   result = iResult
@@ -423,9 +423,8 @@ object CPathTraversal {
         r1: Option[Int],
         l2: Int,
         r2: Option[Int]): Boolean = {
-      (l2 >= l1 && l2 <= r1.getOrElse(l2)) || (
-        l1 >= l2 && l1 <= r2.getOrElse(l1)
-      )
+      (l2 >= l1 && l2 <= r1.getOrElse(l2)) ||
+      (l1 >= l2 && l1 <= r2.getOrElse(l1))
     }
 
     /**
@@ -488,13 +487,11 @@ object CPathTraversal {
               if overlaps(l1, r1, l2, r2) =>
             val rss0 =
               if (l1 < l2) {
-                (
-                  (CPathRange(ns1, l1, Some(l2 - 1)) :: is) reverse_::: ps
-                ) :: rss
+                ((CPathRange(ns1, l1, Some(l2 - 1)) :: is) reverse_::: ps) ::
+                  rss
               } else if (l2 < l1) {
-                (
-                  (CPathRange(ns2, l2, Some(l1 - 1)) :: is) reverse_::: qs
-                ) :: rss
+                ((CPathRange(ns2, l2, Some(l1 - 1)) :: is) reverse_::: qs) ::
+                  rss
               } else {
                 rss
               }

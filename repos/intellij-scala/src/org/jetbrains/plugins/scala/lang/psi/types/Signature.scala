@@ -94,12 +94,9 @@ case class TypeAliasSignature(
   override def equals(other: Any): Boolean =
     other match {
       case that: TypeAliasSignature =>
-        (that canEqual this) &&
-          name == that.name &&
-          typeParams == that.typeParams &&
-          lowerBound == that.lowerBound &&
-          upperBound == that.upperBound &&
-          isDefinition == that.isDefinition
+        (that canEqual this) && name == that.name &&
+          typeParams == that.typeParams && lowerBound == that.lowerBound &&
+          upperBound == that.upperBound && isDefinition == that.isDefinition
       case _ =>
         false
     }
@@ -147,14 +144,11 @@ class Signature(
       !isField(this) ^ isField(other)
     }
 
-    ScalaPsiUtil.convertMemberName(name) == ScalaPsiUtil
-      .convertMemberName(other.name) &&
-    (
-      (
-        typeParams.length == other.typeParams.length && paramTypesEquiv(other)
-      ) ||
-      (paramLength == other.paramLength && javaErasedEquiv(other))
-    ) && fieldCheck(other)
+    ScalaPsiUtil
+      .convertMemberName(name) == ScalaPsiUtil.convertMemberName(other.name) &&
+    ((typeParams.length == other.typeParams.length && paramTypesEquiv(other)) ||
+    (paramLength == other.paramLength && javaErasedEquiv(other))) &&
+    fieldCheck(other)
 
   }
 
@@ -194,8 +188,8 @@ class Signature(
     import org.jetbrains.plugins.scala.lang.psi.types.Signature._
 
     var undefSubst = uSubst
-    if (paramLength != other
-          .paramLength && !(paramLength.sum == 0 && other.paramLength.sum == 0))
+    if (paramLength != other.paramLength &&
+        !(paramLength.sum == 0 && other.paramLength.sum == 0))
       return (false, undefSubst)
     if (hasRepeatedParam != other.hasRepeatedParam)
       return (false, undefSubst)
@@ -295,10 +289,10 @@ object Signature {
     while (iterator1.hasNext && iterator2.hasNext) {
       val (tp1, tp2) = (iterator1.next(), iterator2.next())
 
-      res = res bindT (
-        (tp2.name, ScalaPsiUtil.getPsiElementId(tp2.ptp)), ScTypeParameterType
-          .toTypeParameterType(tp1)
-      )
+      res = res bindT
+        (
+          (tp2.name, ScalaPsiUtil.getPsiElementId(tp2.ptp)),
+          ScTypeParameterType.toTypeParameterType(tp1))
     }
     res
   }

@@ -44,8 +44,8 @@ class MakeTypeMoreSpecificIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    if (element == null || !IntentionAvailabilityChecker
-          .checkIntention(this, element))
+    if (element == null ||
+        !IntentionAvailabilityChecker.checkIntention(this, element))
       false
     else {
       var isAvailable = false

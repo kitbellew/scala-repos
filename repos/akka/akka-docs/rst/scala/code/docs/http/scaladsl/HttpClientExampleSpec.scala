@@ -99,9 +99,8 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
       def receive = {
         case HttpResponse(StatusCodes.OK, headers, entity, _) =>
           log.info(
-            "Got response, body: " + entity
-              .dataBytes
-              .runFold(ByteString(""))(_ ++ _))
+            "Got response, body: " +
+              entity.dataBytes.runFold(ByteString(""))(_ ++ _))
         case HttpResponse(code, _, _, _) =>
           log.info("Request failed, response code: " + code)
       }

@@ -78,6 +78,5 @@ class ModelSerializer
               JField("id", JString(i.id)) ::
                 JField(
                   "models",
-                  JString(BaseEncoding.base64.encode(i.models))) ::
-                Nil)
+                  JString(BaseEncoding.base64.encode(i.models))) :: Nil)
         }))

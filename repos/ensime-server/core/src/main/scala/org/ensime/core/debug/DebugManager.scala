@@ -114,9 +114,8 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
   def vmOptions(): List[String] =
     List(
       "-classpath",
-      config
-        .runtimeClasspath
-        .mkString("\"", File.pathSeparator, "\"")) ++ config.debugVMArgs
+      config.runtimeClasspath.mkString("\"", File.pathSeparator, "\"")) ++
+      config.debugVMArgs
 
   def withVM[T](action: (VM => T)): Option[T] = {
     maybeVM.synchronized {
@@ -203,31 +202,29 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
     case e: VMDisconnectEvent =>
       disconnectDebugVM()
     case e: StepEvent =>
-      (
-        for (pos <- sourceMap.locToPos(e.location()))
-          yield {
-            broadcaster ! DebugStepEvent(
+      (for (pos <- sourceMap.locToPos(e.location()))
+        yield {
+          broadcaster !
+            DebugStepEvent(
               DebugThreadId(e.thread().uniqueID()),
               e.thread().name,
               pos.file,
               pos.line)
-          }
-      ) getOrElse {
+        }) getOrElse {
         val loc = e.location()
         log.warning(
           s"Step position not found: ${loc.sourceName()} : ${loc.lineNumber()}")
       }
     case e: BreakpointEvent =>
-      (
-        for (pos <- sourceMap.locToPos(e.location()))
-          yield {
-            broadcaster ! DebugBreakEvent(
+      (for (pos <- sourceMap.locToPos(e.location()))
+        yield {
+          broadcaster !
+            DebugBreakEvent(
               DebugThreadId(e.thread().uniqueID()),
               e.thread().name,
               pos.file,
               pos.line)
-          }
-      ) getOrElse {
+        }) getOrElse {
         val loc = e.location()
         log.warning(
           s"Break position not found: ${loc.sourceName()} : ${loc.lineNumber()}")
@@ -242,12 +239,13 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
           sourceMap.locToPos(e.catchLocation())
         else
           None
-      broadcaster ! DebugExceptionEvent(
-        e.exception.uniqueID(),
-        DebugThreadId(e.thread().uniqueID()),
-        e.thread().name,
-        pos.map(_.file),
-        pos.map(_.line))
+      broadcaster !
+        DebugExceptionEvent(
+          e.exception.uniqueID(),
+          DebugThreadId(e.thread().uniqueID()),
+          e.thread().name,
+          pos.map(_.file),
+          pos.map(_.line))
     case e: ThreadDeathEvent =>
       broadcaster ! DebugThreadDeathEvent(DebugThreadId(e.thread().uniqueID()))
     case e: ThreadStartEvent =>
@@ -315,27 +313,31 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
     case DebugAttachReq(hostname, port) ⇒
       sender ! handleDebugAttachReq(hostname, port)
     case DebugActiveVmReq =>
-      sender ! handleRPCWithVM() { vm =>
-        TrueResponse
-      }
-    case DebugStopReq =>
-      sender ! handleRPCWithVM() { vm =>
-        if (vm.mode.shouldExit) {
-          vm.exit(0)
+      sender !
+        handleRPCWithVM() { vm =>
+          TrueResponse
         }
-        vm.dispose()
-        TrueResponse
-      }
+    case DebugStopReq =>
+      sender !
+        handleRPCWithVM() { vm =>
+          if (vm.mode.shouldExit) {
+            vm.exit(0)
+          }
+          vm.dispose()
+          TrueResponse
+        }
     case DebugRunReq =>
-      sender ! handleRPCWithVM() { vm =>
-        vm.resume()
-        TrueResponse
-      }
+      sender !
+        handleRPCWithVM() { vm =>
+          vm.resume()
+          TrueResponse
+        }
     case DebugContinueReq(threadId) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.resume()
-        TrueResponse
-      }
+      sender !
+        handleRPCWithVMAndThread(threadId) { (vm, thread) =>
+          vm.resume()
+          TrueResponse
+        }
     case DebugSetBreakReq(file, line: Int) =>
       if (!setBreakpoint(file, line)) {
         bgMessage("Location not loaded. Set pending breakpoint.")
@@ -354,67 +356,81 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
       sender ! breaks
 
     case DebugNextReq(threadId: DebugThreadId) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.newStepRequest(thread, StepRequest.STEP_LINE, StepRequest.STEP_OVER)
-        TrueResponse
-      }
+      sender !
+        handleRPCWithVMAndThread(threadId) { (vm, thread) =>
+          vm.newStepRequest(
+            thread,
+            StepRequest.STEP_LINE,
+            StepRequest.STEP_OVER)
+          TrueResponse
+        }
 
     case DebugStepReq(threadId: DebugThreadId) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.newStepRequest(thread, StepRequest.STEP_LINE, StepRequest.STEP_INTO)
-        TrueResponse
-      }
+      sender !
+        handleRPCWithVMAndThread(threadId) { (vm, thread) =>
+          vm.newStepRequest(
+            thread,
+            StepRequest.STEP_LINE,
+            StepRequest.STEP_INTO)
+          TrueResponse
+        }
 
     case DebugStepOutReq(threadId: DebugThreadId) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.newStepRequest(thread, StepRequest.STEP_LINE, StepRequest.STEP_OUT)
-        TrueResponse
-      }
+      sender !
+        handleRPCWithVMAndThread(threadId) { (vm, thread) =>
+          vm.newStepRequest(thread, StepRequest.STEP_LINE, StepRequest.STEP_OUT)
+          TrueResponse
+        }
 
     case DebugLocateNameReq(threadId: DebugThreadId, name: String) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.locationForName(thread, name).getOrElse(FalseResponse)
-      }
-    case DebugBacktraceReq(threadId: DebugThreadId, index: Int, count: Int) =>
-      sender ! handleRPCWithVMAndThread(threadId) { (vm, thread) =>
-        vm.backtrace(thread, index, count)
-      }
-    case DebugValueReq(location) =>
-      sender ! handleRPCWithVM() { vm =>
-        vm.debugValueAtLocation(location).getOrElse(FalseResponse)
-      }
-    case DebugToStringReq(threadId, location) =>
-      sender ! handleRPCWithVM() { vm =>
-        vm.debugValueAtLocationToString(threadId, location) match {
-          case Some(strValue) =>
-            StringResponse(strValue)
-          case None =>
-            FalseResponse
+      sender !
+        handleRPCWithVMAndThread(threadId) { (vm, thread) =>
+          vm.locationForName(thread, name).getOrElse(FalseResponse)
         }
-      }
+    case DebugBacktraceReq(threadId: DebugThreadId, index: Int, count: Int) =>
+      sender !
+        handleRPCWithVMAndThread(threadId) { (vm, thread) =>
+          vm.backtrace(thread, index, count)
+        }
+    case DebugValueReq(location) =>
+      sender !
+        handleRPCWithVM() { vm =>
+          vm.debugValueAtLocation(location).getOrElse(FalseResponse)
+        }
+    case DebugToStringReq(threadId, location) =>
+      sender !
+        handleRPCWithVM() { vm =>
+          vm.debugValueAtLocationToString(threadId, location) match {
+            case Some(strValue) =>
+              StringResponse(strValue)
+            case None =>
+              FalseResponse
+          }
+        }
 
     case DebugSetValueReq(location, newValue) =>
-      sender ! handleRPCWithVM() { vm =>
-        location match {
-          case DebugStackSlot(threadId, frame, offset) =>
-            vm.threadById(threadId) match {
-              case Some(thread) =>
-                val status = vm.setStackVar(thread, frame, offset, newValue)
-                status match {
-                  case true =>
-                    TrueResponse
-                  case false =>
-                    FalseResponse
-                }
-              case _ =>
-                log.error(s"Unknown thread $threadId for debug-set-value")
-                FalseResponse
-            }
-          case unknown =>
-            log.error(
-              s"Unsupported location type for debug-set-value.: $unknown")
-            FalseResponse
+      sender !
+        handleRPCWithVM() { vm =>
+          location match {
+            case DebugStackSlot(threadId, frame, offset) =>
+              vm.threadById(threadId) match {
+                case Some(thread) =>
+                  val status = vm.setStackVar(thread, frame, offset, newValue)
+                  status match {
+                    case true =>
+                      TrueResponse
+                    case false =>
+                      FalseResponse
+                  }
+                case _ =>
+                  log.error(s"Unknown thread $threadId for debug-set-value")
+                  FalseResponse
+              }
+            case unknown =>
+              log.error(
+                s"Unsupported location type for debug-set-value.: $unknown")
+              FalseResponse
+          }
         }
-      }
   }
 }

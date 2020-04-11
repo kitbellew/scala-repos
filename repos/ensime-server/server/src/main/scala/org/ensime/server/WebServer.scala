@@ -55,44 +55,50 @@ trait WebServer {
           }
         }
       }
-    } ~ path("docs") {
-      complete {
-        <html>
+    } ~
+      path("docs") {
+        complete {
+          <html>
           <head></head>
           <body>
             <h1>ENSIME: Your Project's Documentation</h1>
             <ul>{
-          docJars()
-            .toList
-            .map(_.getName)
-            .sorted
-            .map { f =>
-              <li><a href={
-                s"docs/$f/index.html"
-              }>{
-                f
-              }</a> </li>
-            }
-        }</ul>
+            docJars()
+              .toList
+              .map(_.getName)
+              .sorted
+              .map { f =>
+                <li><a href={
+                  s"docs/$f/index.html"
+                }>{
+                  f
+                }</a> </li>
+              }
+          }</ul>
           </body>
         </html>
-      }
-    } ~ path("docs" / """[^/]+\.jar""".r / Rest) { (filename, entry) =>
-      rejectEmptyResponse {
-        complete {
-          for {
-            media <- MediaTypes.forExtension(Files.getFileExtension(entry))
-            content <- docJarContent(filename, entry)
-          } yield {
-            HttpResponse(entity = HttpEntity(ContentType(media, None), content))
+        }
+      } ~
+      path("docs" / """[^/]+\.jar""".r / Rest) { (filename, entry) =>
+        rejectEmptyResponse {
+          complete {
+            for {
+              media <- MediaTypes.forExtension(Files.getFileExtension(entry))
+              content <- docJarContent(filename, entry)
+            } yield {
+              HttpResponse(entity = HttpEntity(
+                ContentType(media, None),
+                content))
+            }
           }
         }
+      } ~
+      path("jerky") {
+        get {
+          jsonWebsocket[RpcRequestEnvelope, RpcResponseEnvelope](
+            websocketHandler)
+        }
       }
-    } ~ path("jerky") {
-      get {
-        jsonWebsocket[RpcRequestEnvelope, RpcResponseEnvelope](websocketHandler)
-      }
-    }
   }
 
 }

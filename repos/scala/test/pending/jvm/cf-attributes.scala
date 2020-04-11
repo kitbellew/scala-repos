@@ -86,8 +86,8 @@ trait Test1 {
         else
           "class"
       println(
-        "  " + mods + kind + " " + c.getName +
-          " of class " + c.getEnclosingClass.getName)
+        "  " + mods + kind + " " + c.getName + " of class " +
+          c.getEnclosingClass.getName)
     }
   }
   def printClass(cls: Class[_]) {

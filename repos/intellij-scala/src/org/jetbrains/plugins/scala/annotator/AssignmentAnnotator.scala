@@ -35,8 +35,9 @@ trait AssignmentAnnotator {
       case ref: ScReferenceExpression =>
         ref.bind() match {
           case Some(r)
-              if r.isDynamic && r.name == ResolvableReferenceExpression
-                .UPDATE_DYNAMIC => //ignore
+              if r.isDynamic &&
+                r.name ==
+                ResolvableReferenceExpression.UPDATE_DYNAMIC => //ignore
           case Some(r) if !r.isNamedParameter =>
             def checkVariable() {
               left

@@ -56,33 +56,32 @@ object SideEffectsUtil {
         if (hasImplicitConversion(ref))
           false
         else {
-          ref.qualifier.forall(hasNoSideEffects) && (
-            ref.resolve() match {
-              case Both(
-                    b: ScBindingPattern,
-                    ScalaPsiUtil.inNameContext(pd: ScPatternDefinition))
-                  if pd.hasModifierProperty("lazy") =>
-                false
-              case bp: ScBindingPattern =>
-                val tp = bp.getType(TypingContext.empty)
-                !ScFunctionType.isFunctionType(tp.getOrAny)
-              case _: ScObject =>
-                true
-              case p: ScParameter
-                  if !p.isCallByNameParameter &&
-                    !ScFunctionType.isFunctionType(
-                      p.getRealParameterType(TypingContext.empty).getOrAny) =>
-                true
-              case _: ScSyntheticFunction =>
-                true
-              case m: PsiMethod =>
-                methodHasNoSideEffects(
-                  m,
-                  ref.qualifier.flatMap(_.getType().toOption))
-              case _ =>
-                false
-            }
-          )
+          ref.qualifier.forall(hasNoSideEffects) &&
+          (ref.resolve() match {
+            case Both(
+                  b: ScBindingPattern,
+                  ScalaPsiUtil.inNameContext(pd: ScPatternDefinition))
+                if pd.hasModifierProperty("lazy") =>
+              false
+            case bp: ScBindingPattern =>
+              val tp = bp.getType(TypingContext.empty)
+              !ScFunctionType.isFunctionType(tp.getOrAny)
+            case _: ScObject =>
+              true
+            case p: ScParameter
+                if !p.isCallByNameParameter &&
+                  !ScFunctionType.isFunctionType(
+                    p.getRealParameterType(TypingContext.empty).getOrAny) =>
+              true
+            case _: ScSyntheticFunction =>
+              true
+            case m: PsiMethod =>
+              methodHasNoSideEffects(
+                m,
+                ref.qualifier.flatMap(_.getType().toOption))
+            case _ =>
+              false
+          })
         }
       case t: ScTuple =>
         t.exprs.forall(hasNoSideEffects)
@@ -102,8 +101,8 @@ object SideEffectsUtil {
             case _ =>
               false
           }
-        checkOperation && hasNoSideEffects(baseExpr) && args
-          .forall(hasNoSideEffects)
+        checkOperation && hasNoSideEffects(baseExpr) &&
+        args.forall(hasNoSideEffects)
       case ScMethodCall(baseExpr, args) =>
         val (checkQual, typeOfQual) =
           baseExpr match {
@@ -121,9 +120,8 @@ object SideEffectsUtil {
             case ResolvesTo(_: ScSyntheticFunction) =>
               true
             case ResolvesTo(td: ScTypedDefinition) =>
-              val withApplyText = baseExpr.getText + ".apply" + args
-                .map(_.getText)
-                .mkString("(", ", ", ")")
+              val withApplyText = baseExpr.getText + ".apply" +
+                args.map(_.getText).mkString("(", ", ", ")")
               val withApply = ScalaPsiElementFactory
                 .createExpressionWithContextFromText(
                   withApplyText,
@@ -190,7 +188,8 @@ object SideEffectsUtil {
 
     (
       excludeNonString ++: javaWrappers ++: otherJavaClasses ++:
-        scalaValueClasses ++: otherFromScalaPackage ++: fromScalaUtil ++: fromScalaMath ++: immutableCollections
+        scalaValueClasses ++: otherFromScalaPackage ++: fromScalaUtil ++:
+        fromScalaMath ++: immutableCollections
     ).toArray
   }
 
@@ -200,9 +199,8 @@ object SideEffectsUtil {
         ref
           .bind()
           .exists(rr =>
-            rr.implicitConversionClass.isDefined || rr
-              .implicitFunction
-              .isDefined)
+            rr.implicitConversionClass.isDefined ||
+              rr.implicitFunction.isDefined)
       case _ =>
         false
     }

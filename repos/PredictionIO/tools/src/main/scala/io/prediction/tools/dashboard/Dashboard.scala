@@ -44,10 +44,12 @@ object Dashboard extends Logging with SSLConfiguration {
       new scopt.OptionParser[DashboardConfig]("Dashboard") {
         opt[String]("ip") action { (x, c) =>
           c.copy(ip = x)
-        } text ("IP to bind to (default: localhost).")
+        } text
+          ("IP to bind to (default: localhost).")
         opt[Int]("port") action { (x, c) =>
           c.copy(port = x)
-        } text ("Port to bind to (default: 9000).")
+        } text
+          ("Port to bind to (default: 9000).")
       }
 
     parser.parse(args, DashboardConfig()) map { dc =>
@@ -61,11 +63,12 @@ object Dashboard extends Logging with SSLConfiguration {
       .actorOf(Props(classOf[DashboardActor], dc), "dashboard")
     implicit val timeout = Timeout(5.seconds)
     val settings = ServerSettings(system)
-    IO(Http) ? Http.Bind(
-      service,
-      interface = dc.ip,
-      port = dc.port,
-      settings = Some(settings.copy(sslEncryption = true)))
+    IO(Http) ?
+      Http.Bind(
+        service,
+        interface = dc.ip,
+        port = dc.port,
+        settings = Some(settings.copy(sslEncryption = true)))
     system.awaitTermination
   }
 }

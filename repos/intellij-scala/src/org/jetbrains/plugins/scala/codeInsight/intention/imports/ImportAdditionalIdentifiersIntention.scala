@@ -46,10 +46,8 @@ class ImportAdditionalIdentifiersIntention
     element match {
       case ws: PsiWhiteSpace
           if element.getPrevSibling != null &&
-            editor.getCaretModel.getOffset == element
-              .getPrevSibling
-              .getTextRange
-              .getEndOffset =>
+            editor.getCaretModel.getOffset ==
+            element.getPrevSibling.getTextRange.getEndOffset =>
         val prev = element
           .getContainingFile
           .findElementAt(element.getPrevSibling.getTextRange.getEndOffset - 1)

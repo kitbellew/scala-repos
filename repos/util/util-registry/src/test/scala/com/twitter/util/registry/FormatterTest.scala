@@ -20,8 +20,8 @@ class FormatterTest extends FunSuite {
 
   test("add should handle empties") {
     assert(
-      Formatter
-        .add(Map.empty, Seq.empty, "big") == Map(Formatter.Eponymous -> "big"))
+      Formatter.add(Map.empty, Seq.empty, "big") ==
+        Map(Formatter.Eponymous -> "big"))
   }
 
   test(

@@ -52,9 +52,10 @@ class ForceOuterBinds extends Phase {
         u.mapChildren(wrap)
       case f: FilteredQuery =>
         f.mapChildren { ch =>
-          if ((ch eq f.from) && !(
-                ch.isInstanceOf[Join] || ch.isInstanceOf[Distinct] || ch
-                  .isInstanceOf[Pure]
+          if ((ch eq f.from) &&
+              !(
+                ch.isInstanceOf[Join] || ch.isInstanceOf[Distinct] ||
+                  ch.isInstanceOf[Pure]
               ))
             nowrap(ch)
           else

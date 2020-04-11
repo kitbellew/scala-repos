@@ -297,17 +297,15 @@ object CPath {
           else
             parse0(
               tail,
-              (
-                head match {
-                  case "[*]" =>
-                    CPathArray
-                  case IndexPattern(index) =>
-                    CPathIndex(index.toInt)
+              (head match {
+                case "[*]" =>
+                  CPathArray
+                case IndexPattern(index) =>
+                  CPathIndex(index.toInt)
 
-                  case name =>
-                    CPathField(name)
-                }
-              ) :: acc)
+                case name =>
+                  CPathField(name)
+              }) :: acc)
       }
 
     val properPath =

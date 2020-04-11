@@ -826,9 +826,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   test("case sensitivity: registered table") {
     val testData = TestHive
       .sparkContext
-      .parallelize(
-        TestData(1, "str1") ::
-          TestData(2, "str2") :: Nil)
+      .parallelize(TestData(1, "str1") :: TestData(2, "str2") :: Nil)
     testData.toDF().registerTempTable("REGisteredTABle")
 
     assertResult(Array(Row(2, "str2"))) {
@@ -1035,9 +1033,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     // Describe a registered temporary table.
     val testData = TestHive
       .sparkContext
-      .parallelize(
-        TestData(1, "str1") ::
-          TestData(1, "str2") :: Nil)
+      .parallelize(TestData(1, "str1") :: TestData(1, "str2") :: Nil)
     testData.toDF().registerTempTable("test_describe_commands2")
 
     assertResult(Array(Row("a", "int", ""), Row("b", "string", ""))) {
@@ -1348,9 +1344,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     sql(s"SET ${testKey + testKey}=${testVal + testVal}")
     assert(hiveconf.get(testKey + testKey, "") == testVal + testVal)
     assertResult(
-      defaults ++ Set(
-        testKey -> testVal,
-        (testKey + testKey) -> (testVal + testVal))) {
+      defaults ++
+        Set(testKey -> testVal, (testKey + testKey) -> (testVal + testVal))) {
       collectResults(sql("SET"))
     }
 

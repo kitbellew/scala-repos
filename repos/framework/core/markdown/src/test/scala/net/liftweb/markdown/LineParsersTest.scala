@@ -53,16 +53,16 @@ class LineParsersTest extends FlatSpec with ShouldMatchers with LineParsers {
     val p = setextHeader1
     apply(p, "=") should equal(new SetExtHeaderLine("=", 1))
     apply(p, "== ") should equal(new SetExtHeaderLine("== ", 1))
-    apply(p, "========== \t ") should equal(
-      new SetExtHeaderLine("========== \t ", 1))
+    apply(p, "========== \t ") should
+      equal(new SetExtHeaderLine("========== \t ", 1))
   }
 
   it should "parse a setext style level 2 header underline" in {
     val p = setextHeader2
     apply(p, "-") should equal(new SetExtHeaderLine("-", 2))
     apply(p, "-- ") should equal(new SetExtHeaderLine("-- ", 2))
-    apply(p, "---------- \t ") should equal(
-      new SetExtHeaderLine("---------- \t ", 2))
+    apply(p, "---------- \t ") should
+      equal(new SetExtHeaderLine("---------- \t ", 2))
   }
 
   it should "parse an atx header line" in {
@@ -86,10 +86,10 @@ class LineParsersTest extends FlatSpec with ShouldMatchers with LineParsers {
   it should "parse quoted block lines" in {
     val p = blockquoteLine
     apply(p, "> quote") should equal(new BlockQuoteLine("> ", "quote"))
-    apply(p, ">     codequote") should equal(
-      new BlockQuoteLine("> ", "    codequote"))
-    apply(p, "   >     codequote") should equal(
-      new BlockQuoteLine("   > ", "    codequote"))
+    apply(p, ">     codequote") should
+      equal(new BlockQuoteLine("> ", "    codequote"))
+    apply(p, "   >     codequote") should
+      equal(new BlockQuoteLine("   > ", "    codequote"))
     evaluating(apply(p, "not a quote")) should produce[IllegalArgumentException]
   }
 
@@ -100,10 +100,10 @@ class LineParsersTest extends FlatSpec with ShouldMatchers with LineParsers {
     apply(p, "  * foo") should equal(new UItemStartLine("  * ", "foo"))
     apply(p, "   * foo") should equal(new UItemStartLine("   * ", "foo"))
     apply(p, "   *    foo") should equal(new UItemStartLine("   *    ", "foo"))
-    apply(p, "   * \t  foo") should equal(
-      new UItemStartLine("   * \t  ", "foo"))
-    apply(p, "   * \t  foo  ") should equal(
-      new UItemStartLine("   * \t  ", "foo  "))
+    apply(p, "   * \t  foo") should
+      equal(new UItemStartLine("   * \t  ", "foo"))
+    apply(p, "   * \t  foo  ") should
+      equal(new UItemStartLine("   * \t  ", "foo  "))
 
     evaluating(apply(p, "*foo")) should produce[IllegalArgumentException]
     evaluating(apply(p, "    * foo")) should produce[IllegalArgumentException]
@@ -119,14 +119,14 @@ class LineParsersTest extends FlatSpec with ShouldMatchers with LineParsers {
     apply(p, "1. foo") should equal(OItemStartLine("1. ", "foo"))
     apply(p, " 12. foo") should equal(OItemStartLine(" 12. ", "foo"))
     apply(p, "  0. foo") should equal(OItemStartLine("  0. ", "foo"))
-    apply(p, "   44444444. foo") should equal(
-      OItemStartLine("   44444444. ", "foo"))
-    apply(p, "   465789.    foo") should equal(
-      OItemStartLine("   465789.    ", "foo"))
-    apply(p, "   4455. \t  foo") should equal(
-      OItemStartLine("   4455. \t  ", "foo"))
-    apply(p, "   9. \t  foo  ") should equal(
-      OItemStartLine("   9. \t  ", "foo  "))
+    apply(p, "   44444444. foo") should
+      equal(OItemStartLine("   44444444. ", "foo"))
+    apply(p, "   465789.    foo") should
+      equal(OItemStartLine("   465789.    ", "foo"))
+    apply(p, "   4455. \t  foo") should
+      equal(OItemStartLine("   4455. \t  ", "foo"))
+    apply(p, "   9. \t  foo  ") should
+      equal(OItemStartLine("   9. \t  ", "foo  "))
 
     evaluating(apply(p, "1.foo")) should produce[IllegalArgumentException]
     evaluating(apply(p, "    1. foo")) should produce[IllegalArgumentException]
@@ -135,27 +135,24 @@ class LineParsersTest extends FlatSpec with ShouldMatchers with LineParsers {
 
   it should "parse link definitions" in {
     val p = linkDefinitionStart
-    apply(
-      p,
-      "[foo]: http://example.com/  \"Optional Title Here\"") should equal(
-      new LinkDefinitionStart("foo", "http://example.com/"),
-      Some("Optional Title Here"))
-    apply(p, "[foo]: http://example.com/") should equal(
-      new LinkDefinitionStart("foo", "http://example.com/"),
-      None)
-    apply(p, "[Foo]: http://example.com/  'Optional Title Here'") should equal(
-      new LinkDefinitionStart("foo", "http://example.com/"),
-      Some("Optional Title Here"))
-    apply(
-      p,
-      "[Foo]: http://example.com/?bla=<>  (Optional Title Here)") should equal(
-      new LinkDefinitionStart("foo", "http://example.com/?bla=&lt;&gt;"),
-      Some("Optional Title Here"))
-    apply(
-      p,
-      "[Foo]: http://example.com/?bla=<>  (Optional Title Here)") should equal(
-      new LinkDefinitionStart("foo", "http://example.com/?bla=&lt;&gt;"),
-      Some("Optional Title Here"))
+    apply(p, "[foo]: http://example.com/  \"Optional Title Here\"") should
+      equal(
+        new LinkDefinitionStart("foo", "http://example.com/"),
+        Some("Optional Title Here"))
+    apply(p, "[foo]: http://example.com/") should
+      equal(new LinkDefinitionStart("foo", "http://example.com/"), None)
+    apply(p, "[Foo]: http://example.com/  'Optional Title Here'") should
+      equal(
+        new LinkDefinitionStart("foo", "http://example.com/"),
+        Some("Optional Title Here"))
+    apply(p, "[Foo]: http://example.com/?bla=<>  (Optional Title Here)") should
+      equal(
+        new LinkDefinitionStart("foo", "http://example.com/?bla=&lt;&gt;"),
+        Some("Optional Title Here"))
+    apply(p, "[Foo]: http://example.com/?bla=<>  (Optional Title Here)") should
+      equal(
+        new LinkDefinitionStart("foo", "http://example.com/?bla=&lt;&gt;"),
+        Some("Optional Title Here"))
   }
 
   it should "parse link titles" in {
@@ -168,7 +165,7 @@ class LineParsersTest extends FlatSpec with ShouldMatchers with LineParsers {
     apply(p, "```") should equal(new FencedCode("```"))
     apply(p, "   ```\t") should equal(new FencedCode("   ```\t"))
     apply(p, "  ``` \t ") should equal(new FencedCode("  ``` \t "))
-    apply(p, "  ``` \t java  \t ") should equal(
-      new ExtendedFencedCode("  ``` \t ", "java  \t "))
+    apply(p, "  ``` \t java  \t ") should
+      equal(new ExtendedFencedCode("  ``` \t ", "java  \t "))
   }
 }

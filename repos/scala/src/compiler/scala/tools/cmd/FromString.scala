@@ -40,8 +40,8 @@ object FromString {
     }
   def ExistingDirRelativeTo(root: Directory) =
     new FromString[Directory] {
-      private def resolve(s: String) =
-        (toDir(s) toAbsoluteWithRoot root).toDirectory
+      private def resolve(s: String) = (toDir(s) toAbsoluteWithRoot root)
+        .toDirectory
       override def isDefinedAt(s: String) = resolve(s).isDirectory
       def apply(s: String): Directory =
         if (isDefinedAt(s))

@@ -58,13 +58,12 @@ object MediaRange {
       defaultQ: Float = 1.0f): (Map[String, String], Float) =
     params.get("q") match {
       case Some(x) ⇒
-        (params - "q") -> (
-          try x.toFloat
+        (params - "q") ->
+          (try x.toFloat
           catch {
             case _: NumberFormatException ⇒
               1.0f
-          }
-        )
+          })
       case None ⇒
         params -> defaultQ
     }
@@ -127,8 +126,8 @@ object MediaRange {
     override def isText = mediaType.isText
     override def isVideo = mediaType.isVideo
     def matches(mediaType: MediaType) =
-      this.mediaType.mainType == mediaType
-        .mainType && this.mediaType.subType == mediaType.subType
+      this.mediaType.mainType == mediaType.mainType &&
+        this.mediaType.subType == mediaType.subType
     def withParams(params: Map[String, String]) =
       copy(mediaType = mediaType.withParams(params))
     def withQValue(qValue: Float) = copy(qValue = qValue)

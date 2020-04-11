@@ -71,8 +71,8 @@ class OffsetIndexTest extends JUnitSuite {
         idx.lookup(logical))
 
     // for non-present values we should find the offset of the largest value less than or equal to this
-    val valMap = new immutable.TreeMap[Long, (Long, Int)]() ++ vals
-      .map(p => (p._1, p))
+    val valMap = new immutable.TreeMap[Long, (Long, Int)]() ++
+      vals.map(p => (p._1, p))
     val offsets = (idx.baseOffset until vals.last._1.toInt).toArray
     Collections.shuffle(Arrays.asList(offsets))
     for (offset <- offsets.take(30)) {

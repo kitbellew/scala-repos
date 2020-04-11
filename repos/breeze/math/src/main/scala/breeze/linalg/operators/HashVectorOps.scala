@@ -466,25 +466,28 @@ trait HashVectorOps extends HashVector_GenericOps {
           sum
         } else if (n == 2) {
           var sum = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = v.abs.toDouble;
-            sum += nn * nn
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = v.abs.toDouble;
+              sum += nn * nn
+            })
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = v.abs.toDouble;
-            if (nn > max)
-              max = nn
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = v.abs.toDouble;
+              if (nn > max)
+                max = nn
+            })
           max
         } else {
           var sum = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = v.abs.toDouble;
-            sum += math.pow(nn, n)
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = v.abs.toDouble;
+              sum += math.pow(nn, n)
+            })
           math.pow(sum, 1.0 / n)
         }
       }
@@ -504,25 +507,28 @@ trait HashVectorOps extends HashVector_GenericOps {
           sum
         } else if (n == 2) {
           var sum = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = f.sNorm(v);
-            sum += nn * nn
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = f.sNorm(v);
+              sum += nn * nn
+            })
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = f.sNorm(v);
-            if (nn > max)
-              max = nn
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = f.sNorm(v);
+              if (nn > max)
+                max = nn
+            })
           max
         } else {
           var sum = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = f.sNorm(v);
-            sum += math.pow(nn, n)
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = f.sNorm(v);
+              sum += math.pow(nn, n)
+            })
           math.pow(sum, 1.0 / n)
         }
       }
@@ -1126,25 +1132,28 @@ trait HashVector_GenericOps {
           sum
         } else if (n == 2) {
           var sum = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = canNormS(v);
-            sum += nn * nn
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = canNormS(v);
+              sum += nn * nn
+            })
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = canNormS(v);
-            if (nn > max)
-              max = nn
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = canNormS(v);
+              if (nn > max)
+                max = nn
+            })
           max
         } else {
           var sum = 0.0
-          activeValuesIterator foreach (v => {
-            val nn = canNormS(v);
-            sum += math.pow(nn, n)
-          })
+          activeValuesIterator foreach
+            (v => {
+              val nn = canNormS(v);
+              sum += math.pow(nn, n)
+            })
           math.pow(sum, 1.0 / n)
         }
       }

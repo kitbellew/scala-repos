@@ -50,62 +50,67 @@ class ShoppingCartSpec
   }
 
   "Demo of a replicated shopping cart" must {
-    "join cluster" in within(20.seconds) {
-      join(node1, node1)
-      join(node2, node1)
-      join(node3, node1)
+    "join cluster" in
+      within(20.seconds) {
+        join(node1, node1)
+        join(node2, node1)
+        join(node3, node1)
 
-      awaitAssert {
-        DistributedData(system).replicator ! GetReplicaCount
-        expectMsg(ReplicaCount(roles.size))
-      }
-      enterBarrier("after-1")
-    }
-
-    "handle updates directly after start" in within(15.seconds) {
-      runOn(node2) {
-        shoppingCart ! ShoppingCart
-          .AddItem(LineItem("1", "Apples", quantity = 2))
-        shoppingCart ! ShoppingCart
-          .AddItem(LineItem("2", "Oranges", quantity = 3))
-      }
-      enterBarrier("updates-done")
-
-      awaitAssert {
-        shoppingCart ! ShoppingCart.GetCart
-        val cart = expectMsgType[Cart]
-        cart.items should be(
-          Set(
-            LineItem("1", "Apples", quantity = 2),
-            LineItem("2", "Oranges", quantity = 3)))
+        awaitAssert {
+          DistributedData(system).replicator ! GetReplicaCount
+          expectMsg(ReplicaCount(roles.size))
+        }
+        enterBarrier("after-1")
       }
 
-      enterBarrier("after-2")
-    }
+    "handle updates directly after start" in
+      within(15.seconds) {
+        runOn(node2) {
+          shoppingCart !
+            ShoppingCart.AddItem(LineItem("1", "Apples", quantity = 2))
+          shoppingCart !
+            ShoppingCart.AddItem(LineItem("2", "Oranges", quantity = 3))
+        }
+        enterBarrier("updates-done")
 
-    "handle updates from different nodes" in within(5.seconds) {
-      runOn(node2) {
-        shoppingCart ! ShoppingCart
-          .AddItem(LineItem("1", "Apples", quantity = 5))
-        shoppingCart ! ShoppingCart.RemoveItem("2")
-      }
-      runOn(node3) {
-        shoppingCart ! ShoppingCart
-          .AddItem(LineItem("3", "Bananas", quantity = 4))
-      }
-      enterBarrier("updates-done")
+        awaitAssert {
+          shoppingCart ! ShoppingCart.GetCart
+          val cart = expectMsgType[Cart]
+          cart.items should
+            be(
+              Set(
+                LineItem("1", "Apples", quantity = 2),
+                LineItem("2", "Oranges", quantity = 3)))
+        }
 
-      awaitAssert {
-        shoppingCart ! ShoppingCart.GetCart
-        val cart = expectMsgType[Cart]
-        cart.items should be(
-          Set(
-            LineItem("1", "Apples", quantity = 7),
-            LineItem("3", "Bananas", quantity = 4)))
+        enterBarrier("after-2")
       }
 
-      enterBarrier("after-3")
-    }
+    "handle updates from different nodes" in
+      within(5.seconds) {
+        runOn(node2) {
+          shoppingCart !
+            ShoppingCart.AddItem(LineItem("1", "Apples", quantity = 5))
+          shoppingCart ! ShoppingCart.RemoveItem("2")
+        }
+        runOn(node3) {
+          shoppingCart !
+            ShoppingCart.AddItem(LineItem("3", "Bananas", quantity = 4))
+        }
+        enterBarrier("updates-done")
+
+        awaitAssert {
+          shoppingCart ! ShoppingCart.GetCart
+          val cart = expectMsgType[Cart]
+          cart.items should
+            be(
+              Set(
+                LineItem("1", "Apples", quantity = 7),
+                LineItem("3", "Bananas", quantity = 4)))
+        }
+
+        enterBarrier("after-3")
+      }
 
   }
 

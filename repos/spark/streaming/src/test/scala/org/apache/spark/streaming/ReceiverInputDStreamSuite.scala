@@ -101,9 +101,10 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
       assert(rdd.isInstanceOf[BlockRDD[_]])
       val blockRDD = rdd.asInstanceOf[BlockRDD[_]]
       assert(
-        blockRDD.blockIds.toSeq === presentBlockInfos.map {
-          _.blockId
-        })
+        blockRDD.blockIds.toSeq ===
+          presentBlockInfos.map {
+            _.blockId
+          })
   }
 
   testWithWAL(
@@ -127,9 +128,10 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
       val blockRDD = rdd.asInstanceOf[WriteAheadLogBackedBlockRDD[_]]
       assert(blockRDD.blockIds.toSeq === blockIds)
       assert(
-        blockRDD.walRecordHandles.toSeq === blockInfos.map {
-          _.walRecordHandleOption.get
-        })
+        blockRDD.walRecordHandles.toSeq ===
+          blockInfos.map {
+            _.walRecordHandleOption.get
+          })
   }
 
   testWithWAL(

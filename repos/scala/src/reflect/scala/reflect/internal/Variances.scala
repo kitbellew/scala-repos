@@ -39,8 +39,8 @@ trait Variances {
       */
     @tailrec
     final def checkForEscape(sym: Symbol, site: Symbol) {
-      if (site == sym.owner || site == sym.owner.moduleClass || site
-            .hasPackageFlag)
+      if (site == sym.owner || site == sym.owner.moduleClass ||
+          site.hasPackageFlag)
         () // done
       else if (site.isTerm || site.isPrivateLocal)
         checkForEscape(sym, site.owner) // ok - recurse to owner
@@ -57,22 +57,21 @@ trait Variances {
     //  - it's a constructor, or case class factory or extractor
     //  - it's a type parameter of tvar's owner.
     def shouldFlip(sym: Symbol, tvar: Symbol) =
-      (sym.isParameter
-        && !(
-          tvar.isTypeParameterOrSkolem && sym
-            .isTypeParameterOrSkolem && tvar.owner == sym.owner
+      (sym.isParameter &&
+        !(
+          tvar.isTypeParameterOrSkolem && sym.isTypeParameterOrSkolem &&
+            tvar.owner == sym.owner
         ))
     // return Bivariant if `sym` is local to a term
     // or is private[this] or protected[this]
     def isLocalOnly(sym: Symbol) =
-      !sym.owner.isClass || (
-        sym
+      !sym.owner.isClass ||
+        (sym
           .isTerm // ?? shouldn't this be sym.owner.isTerm according to the comments above?
-          && (
-            sym.isLocalToThis || sym.isSuperAccessor
-          ) // super accessors are implicitly local #4345
-          && !escapedLocals(sym)
-      )
+        &&
+          (sym.isLocalToThis ||
+            sym.isSuperAccessor) // super accessors are implicitly local #4345
+          && !escapedLocals(sym))
 
     private object ValidateVarianceMap extends TypeMap(trackVariance = true) {
       private var base: Symbol = _
@@ -129,24 +128,24 @@ trait Variances {
         if (!relative.isBivariant) {
           def sym_s = s"$sym (${sym.variance}${sym.locationString})"
           def base_s =
-            s"$base in ${base.owner}" + (
-              if (base.owner.isClass)
-                ""
-              else
-                " in " + base.owner.enclClass
-            )
+            s"$base in ${base.owner}" +
+              (if (base.owner.isClass)
+                 ""
+               else
+                 " in " + base.owner.enclClass)
           log(s"verifying $sym_s is $required at $base_s")
           if (sym.variance != required)
             issueVarianceError(base, sym, required)
         }
       }
       override def mapOver(decls: Scope): Scope = {
-        decls foreach (sym =>
-          withVariance(
-            if (sym.isAliasType)
-              Invariant
-            else
-              variance)(this(sym.info)))
+        decls foreach
+          (sym =>
+            withVariance(
+              if (sym.isAliasType)
+                Invariant
+              else
+                variance)(this(sym.info)))
         decls
       }
       private def resultTypeOnly(tp: Type) =
@@ -207,10 +206,8 @@ trait Variances {
       // No variance check for object-private/protected methods/values.
       // Or constructors, or case class factory or extractor.
       def skip =
-        (sym == NoSymbol
-          || sym.isLocalToThis
-          || sym.owner.isConstructor
-          || sym.owner.isCaseApplyOrUnapply)
+        (sym == NoSymbol || sym.isLocalToThis || sym.owner.isConstructor ||
+          sym.owner.isCaseApplyOrUnapply)
       tree match {
         case defn: MemberDef if skip =>
           debuglog(s"Skipping variance check of ${sym.defString}")

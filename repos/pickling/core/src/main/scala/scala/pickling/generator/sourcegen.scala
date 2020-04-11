@@ -52,8 +52,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         case x: IrField =>
           // TODO - handle
           val tpe = x.tpe[c.universe.type](c.universe)
-          val staticallyElided = tpe.isEffectivelyFinal || tpe
-            .isEffectivelyPrimitive
+          val staticallyElided = tpe.isEffectivelyFinal ||
+            tpe.isEffectivelyPrimitive
           if (x.isScala || !x.isPublic) {
             // We always have to use reflection for scala fields right now.  Additionally, for Scala fields, we
             // actually have no idea if they exist at runtime, so we allow failure for now, which is EVIL, but we have no alternative.
@@ -348,8 +348,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
       case x: IrField =>
         val tpe = x.tpe[c.universe.type](c.universe)
         val read = readField(s.name, tpe)
-        val staticallyElided = tpe.isEffectivelyFinal || tpe
-          .isEffectivelyPrimitive
+        val staticallyElided = tpe.isEffectivelyFinal ||
+          tpe.isEffectivelyPrimitive
         if (x.isScala || !x.isPublic || x.isFinal) {
           reflectivelySet(newTermName("result"), x, read)
         } else

@@ -267,8 +267,7 @@ class ColumnarBatchSuite extends SparkFunSuite {
           .foreach { v =>
             assert(
               v._1 == column.getLong(v._2),
-              "idx=" + v._2 +
-                " Seed = " + seed + " MemMode=" + memMode)
+              "idx=" + v._2 + " Seed = " + seed + " MemMode=" + memMode)
             if (memMode == MemoryMode.OFF_HEAP) {
               val addr = column.valuesNativeAddress()
               assert(v._1 == Platform.getLong(null, addr + 8 * v._2))
@@ -483,8 +482,7 @@ class ColumnarBatchSuite extends SparkFunSuite {
         assert(
           ColumnVectorUtils
             .toPrimitiveJavaArray(column.getArray(0))
-            .asInstanceOf[Array[Int]]
-            === array)
+            .asInstanceOf[Array[Int]] === array)
       }
     }
   }
@@ -701,9 +699,8 @@ class ColumnarBatchSuite extends SparkFunSuite {
                   "Seed = " + seed)
               case CalendarIntervalType =>
                 assert(
-                  r1.getInterval(v._2) === r2
-                    .get(v._2)
-                    .asInstanceOf[CalendarInterval])
+                  r1.getInterval(v._2) ===
+                    r2.get(v._2).asInstanceOf[CalendarInterval])
               case ArrayType(childType, n) =>
                 val a1 = r1.getArray(v._2).array
                 val a2 = r2.getList(v._2).toArray
@@ -767,12 +764,8 @@ class ColumnarBatchSuite extends SparkFunSuite {
   test("Convert rows") {
     (MemoryMode.ON_HEAP :: MemoryMode.OFF_HEAP :: Nil).foreach { memMode =>
       {
-        val rows = Row(1, 2L, "a", 1.2, 'b'.toByte) :: Row(
-          4,
-          5L,
-          "cd",
-          2.3,
-          'a'.toByte) :: Nil
+        val rows = Row(1, 2L, "a", 1.2, 'b'.toByte) ::
+          Row(4, 5L, "cd", 2.3, 'a'.toByte) :: Nil
         val schema = new StructType()
           .add("i1", IntegerType)
           .add("l2", LongType)

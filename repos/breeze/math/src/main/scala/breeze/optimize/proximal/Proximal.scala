@@ -155,9 +155,10 @@ case class ProximalL1(var lambda: Double = 1.0) extends Proximal {
   }
 
   override def valueAt(x: DenseVector[Double]) = {
-    lambda * x.foldLeft(0.0) { (agg, entry) =>
-      agg + abs(entry)
-    }
+    lambda *
+      x.foldLeft(0.0) { (agg, entry) =>
+        agg + abs(entry)
+      }
   }
 }
 

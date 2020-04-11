@@ -34,15 +34,16 @@ class ResourceMatchTest extends FunSuite with GivenWhenThen with Matchers {
     val resources = resourceMatch.resources
 
     Then("the resources should refer to the reservations")
-    resources should equal(
-      Iterable(
-        MarathonTestHelper.scalarResource(
-          "mem",
-          128,
-          "role1",
-          reservation = Some(memReservation)),
-        MarathonTestHelper
-          .portsResource(80, 80, "role2", reservation = Some(portReservation))
-      ))
+    resources should
+      equal(
+        Iterable(
+          MarathonTestHelper.scalarResource(
+            "mem",
+            128,
+            "role1",
+            reservation = Some(memReservation)),
+          MarathonTestHelper
+            .portsResource(80, 80, "role2", reservation = Some(portReservation))
+        ))
   }
 }

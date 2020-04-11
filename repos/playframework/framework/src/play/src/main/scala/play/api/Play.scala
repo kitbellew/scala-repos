@@ -48,8 +48,8 @@ object Play {
     Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE,
     false)
   xercesSaxParserFactory.setFeature(
-    Constants
-      .SAX_FEATURE_PREFIX + Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE,
+    Constants.SAX_FEATURE_PREFIX +
+      Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE,
     false)
   xercesSaxParserFactory.setFeature(
     Constants.XERCES_FEATURE_PREFIX + Constants.DISALLOW_DOCTYPE_DECL_FEATURE,

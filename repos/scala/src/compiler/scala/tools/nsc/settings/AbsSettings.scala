@@ -51,16 +51,18 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
   def toConciseString = userSetSettings.mkString("(", " ", ")")
 
   def checkDependencies =
-    visibleSettings filterNot (_.isDefault) forall (setting =>
-      setting.dependencies forall {
-        case (dep, value) =>
-          (Option(dep.value) exists (_.toString == value)) || {
-            errorFn(
-              "incomplete option %s (requires %s)"
-                .format(setting.name, dep.name))
-            false
-          }
-      })
+    visibleSettings filterNot
+      (_.isDefault) forall
+      (setting =>
+        setting.dependencies forall {
+          case (dep, value) =>
+            (Option(dep.value) exists (_.toString == value)) || {
+              errorFn(
+                "incomplete option %s (requires %s)"
+                  .format(setting.name, dep.name))
+              false
+            }
+        })
 
   trait AbsSetting extends Ordered[Setting] with AbsSettingValue {
     def name: String
@@ -163,12 +165,11 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
       }
     override def hashCode() = name.hashCode + value.hashCode
     override def toString() =
-      name + " = " + (
-        if (value == "")
-          "\"\""
-        else
-          value
-      )
+      name + " = " +
+        (if (value == "")
+           "\"\""
+         else
+           value)
   }
 
   trait InternalSetting extends AbsSetting {

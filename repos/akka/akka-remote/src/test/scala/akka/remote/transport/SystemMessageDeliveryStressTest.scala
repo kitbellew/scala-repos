@@ -169,64 +169,65 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
   }
 
   "Remoting " + msg must {
-    "guaranteed delivery and message ordering despite packet loss " taggedAs TimingTest in {
-      import systemA.dispatcher
+    "guaranteed delivery and message ordering despite packet loss " taggedAs
+      TimingTest in {
+        import systemA.dispatcher
 
-      val transportA = RARP(systemA).provider.transport
-      val transportB = RARP(systemB).provider.transport
+        val transportA = RARP(systemA).provider.transport
+        val transportB = RARP(systemB).provider.transport
 
-      Await.result(
-        transportA.managementCommand(One(addressB, Drop(0.1, 0.1))),
-        3.seconds.dilated)
-      Await.result(
-        transportB.managementCommand(One(addressA, Drop(0.1, 0.1))),
-        3.seconds.dilated)
+        Await.result(
+          transportA.managementCommand(One(addressB, Drop(0.1, 0.1))),
+          3.seconds.dilated)
+        Await.result(
+          transportB.managementCommand(One(addressA, Drop(0.1, 0.1))),
+          3.seconds.dilated)
 
-      // Schedule peridodic disassociates
-      systemA
-        .scheduler
-        .schedule(3.second, 8.seconds) {
-          transportA.managementCommand(
-            ForceDisassociateExplicitly(
-              addressB,
-              reason = AssociationHandle.Unknown))
+        // Schedule peridodic disassociates
+        systemA
+          .scheduler
+          .schedule(3.second, 8.seconds) {
+            transportA.managementCommand(
+              ForceDisassociateExplicitly(
+                addressB,
+                reason = AssociationHandle.Unknown))
+          }
+
+        systemB
+          .scheduler
+          .schedule(7.seconds, 8.seconds) {
+            transportB.managementCommand(
+              ForceDisassociateExplicitly(
+                addressA,
+                reason = AssociationHandle.Unknown))
+          }
+
+        systemB.actorOf(
+          Props(
+            classOf[SystemMessageSender],
+            msgCount,
+            burstSize,
+            burstDelay,
+            targetForB))
+        systemA.actorOf(
+          Props(
+            classOf[SystemMessageSender],
+            msgCount,
+            burstSize,
+            burstDelay,
+            targetForA))
+
+        val toSend = (0 until msgCount).toList
+        var maxDelay = 0L
+
+        for (m ← 0 until msgCount) {
+          val start = System.currentTimeMillis()
+          probeB.expectMsg(10.minutes, m)
+          probeA.expectMsg(10.minutes, m)
+          maxDelay = math
+            .max(maxDelay, (System.currentTimeMillis() - start) / 1000)
         }
-
-      systemB
-        .scheduler
-        .schedule(7.seconds, 8.seconds) {
-          transportB.managementCommand(
-            ForceDisassociateExplicitly(
-              addressA,
-              reason = AssociationHandle.Unknown))
-        }
-
-      systemB.actorOf(
-        Props(
-          classOf[SystemMessageSender],
-          msgCount,
-          burstSize,
-          burstDelay,
-          targetForB))
-      systemA.actorOf(
-        Props(
-          classOf[SystemMessageSender],
-          msgCount,
-          burstSize,
-          burstDelay,
-          targetForA))
-
-      val toSend = (0 until msgCount).toList
-      var maxDelay = 0L
-
-      for (m ← 0 until msgCount) {
-        val start = System.currentTimeMillis()
-        probeB.expectMsg(10.minutes, m)
-        probeA.expectMsg(10.minutes, m)
-        maxDelay = math
-          .max(maxDelay, (System.currentTimeMillis() - start) / 1000)
       }
-    }
   }
 
   override def beforeTermination() {

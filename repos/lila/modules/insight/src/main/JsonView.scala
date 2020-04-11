@@ -16,41 +16,43 @@ final class JsonView {
       "name" -> D.Opening.name,
       "position" -> D.Opening.position,
       "description" -> D.Opening.description.body,
-      "values" -> Dimension
-        .valuesOf(D.Opening)
-        .filter { o =>
-          ecos contains o.eco
-        }
-        .map(Dimension.valueToJson(D.Opening))
+      "values" ->
+        Dimension
+          .valuesOf(D.Opening)
+          .filter { o =>
+            ecos contains o.eco
+          }
+          .map(Dimension.valueToJson(D.Opening))
     )
 
     Json.obj(
-      "dimensionCategs" -> List(
-        Categ(
-          "Setup",
-          List(
-            Json toJson D.Perf,
-            Json toJson D.Color,
-            Json toJson D.OpponentStrength)),
-        //game
-        Categ(
-          "Game",
-          List(
-            openingJson,
-            Json toJson D.MyCastling,
-            Json toJson D.OpCastling,
-            Json toJson D.QueenTrade)),
-        // move
-        Categ(
-          "Move",
-          List(
-            Json toJson D.PieceRole,
-            Json toJson D.MovetimeRange,
-            Json toJson D.MaterialRange,
-            Json toJson D.Phase)),
-        // result
-        Categ("Result", List(Json toJson D.Termination, Json toJson D.Result))
-      ),
+      "dimensionCategs" ->
+        List(
+          Categ(
+            "Setup",
+            List(
+              Json toJson D.Perf,
+              Json toJson D.Color,
+              Json toJson D.OpponentStrength)),
+          //game
+          Categ(
+            "Game",
+            List(
+              openingJson,
+              Json toJson D.MyCastling,
+              Json toJson D.OpCastling,
+              Json toJson D.QueenTrade)),
+          // move
+          Categ(
+            "Move",
+            List(
+              Json toJson D.PieceRole,
+              Json toJson D.MovetimeRange,
+              Json toJson D.MaterialRange,
+              Json toJson D.Phase)),
+          // result
+          Categ("Result", List(Json toJson D.Termination, Json toJson D.Result))
+        ),
       "metricCategs" -> metricCategs,
       "presets" -> Preset.all
     )
@@ -86,16 +88,18 @@ final class JsonView {
         "name" -> p.name,
         "dimension" -> p.question.dimension.key,
         "metric" -> p.question.metric.key,
-        "filters" -> JsObject(
-          p.question
-            .filters
-            .map {
-              case Filter(dimension, selected) =>
-                dimension.key -> JsArray(
-                  selected
-                    .map(Dimension.valueKey(dimension))
-                    .map(JsString.apply))
-            })
+        "filters" ->
+          JsObject(
+            p.question
+              .filters
+              .map {
+                case Filter(dimension, selected) =>
+                  dimension.key ->
+                    JsArray(
+                      selected
+                        .map(Dimension.valueKey(dimension))
+                        .map(JsString.apply))
+              })
       )
     }
 
@@ -136,15 +140,14 @@ final class JsonView {
     Json.obj(
       "metric" -> metric,
       "dimension" -> dimension,
-      "filters" -> (
-        filters
+      "filters" ->
+        (filters
           .split('/')
           .map(_ split ':')
           .collect {
             case Array(key, values) =>
               key -> JsArray(values.split(',').map(JsString.apply))
           }
-          .toMap: Map[String, JsArray]
-      )
+          .toMap: Map[String, JsArray])
     )
 }

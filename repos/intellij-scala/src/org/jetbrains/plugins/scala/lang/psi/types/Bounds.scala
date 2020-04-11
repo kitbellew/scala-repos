@@ -378,14 +378,13 @@ object Bounds {
                 JavaArrayType(v)
             }
           case (JavaArrayType(arg), ScParameterizedType(des, args))
-              if args.length == 1 && (
-                ScType.extractClass(des) match {
+              if args.length == 1 &&
+                (ScType.extractClass(des) match {
                   case Some(q) =>
                     q.qualifiedName == "scala.Array"
                   case _ =>
                     false
-                }
-              ) =>
+                }) =>
             val (v, ex) = calcForTypeParamWithoutVariance(
               arg,
               args(0),
@@ -398,14 +397,13 @@ object Bounds {
                 ScParameterizedType(des, Seq(v))
             }
           case (ScParameterizedType(des, args), JavaArrayType(arg))
-              if args.length == 1 && (
-                ScType.extractClass(des) match {
+              if args.length == 1 &&
+                (ScType.extractClass(des) match {
                   case Some(q) =>
                     q.qualifiedName == "scala.Array"
                   case _ =>
                     false
-                }
-              ) =>
+                }) =>
             val (v, ex) = calcForTypeParamWithoutVariance(
               arg,
               args(0),
@@ -544,8 +542,8 @@ object Bounds {
               //don't calculate the lub of the types themselves, but of the components of their compound types (if existing)
               // example: the lub of "_ >: Int with Double <: AnyVal" & Long we need here should be AnyVal, not Any
               def getTypesForLubEvaluation(t: ScType) = Seq(t)
-              val typesToCover = getTypesForLubEvaluation(
-                substed1) ++ getTypesForLubEvaluation(substed2)
+              val typesToCover = getTypesForLubEvaluation(substed1) ++
+                getTypesForLubEvaluation(substed2)
               val newLub =
                 Bounds
                   .lub(typesToCover, checkWeak = false)(stopAddingUpperBound =
@@ -602,8 +600,8 @@ object Bounds {
         for (i <- 0 until baseClass.getTypeParameters.length) {
           val substed1 = tp1.typeArgs.apply(i)
           val substed2 = tp2.typeArgs.apply(i)
-          resTypeArgs += (
-            baseClass.getTypeParameters.apply(i) match {
+          resTypeArgs +=
+            (baseClass.getTypeParameters.apply(i) match {
               case scp: ScTypeParam if scp.isCovariant =>
                 if (depth > 0)
                   lub(substed1, substed2, depth - 1, checkWeak)
@@ -620,8 +618,7 @@ object Bounds {
                   count = wildcards.length + 1)
                 wildcards ++= ex
                 v
-            }
-          )
+            })
         }
         if (wildcards.isEmpty)
           ScParameterizedType(baseClassDesignator, resTypeArgs.toSeq)
@@ -642,11 +639,12 @@ object Bounds {
       alias match {
         case aliasDef: ScTypeAliasDefinition
             if s.aliasesMap.get(aliasDef.name) == None =>
-          run = run bindA (
-            aliasDef.name, { () =>
-              aliasDef.aliasedType(TypingContext.empty).getOrAny
-            }
-          )
+          run = run bindA
+            (
+              aliasDef.name,
+              { () =>
+                aliasDef.aliasedType(TypingContext.empty).getOrAny
+              })
         case _ =>
       }
     }

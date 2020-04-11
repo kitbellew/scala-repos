@@ -197,8 +197,8 @@ class StringBuffer(private var content: String)
     else if (index == thisLength)
       append(str)
     else
-      content = content.substring(0, index) + Option(str)
-        .getOrElse("null") + content.substring(index)
+      content = content.substring(0, index) + Option(str).getOrElse("null") +
+        content.substring(index)
     this
   }
 }

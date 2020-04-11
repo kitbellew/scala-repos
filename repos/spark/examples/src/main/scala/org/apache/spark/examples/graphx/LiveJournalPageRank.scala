@@ -33,8 +33,7 @@ object LiveJournalPageRank {
             "        The number of partitions for the graph's edge RDD.\n" +
             "    [--tol=<tolerance>]\n" +
             "        The tolerance allowed at convergence (smaller => more accurate). Default is " +
-            "0.001.\n" +
-            "    [--output=<output_file>]\n" +
+            "0.001.\n" + "    [--output=<output_file>]\n" +
             "        If specified, the file to write the ranks to.\n" +
             "    [--partStrategy=RandomVertexCut | EdgePartition1D | EdgePartition2D | " +
             "CanonicalRandomVertexCut]\n" +

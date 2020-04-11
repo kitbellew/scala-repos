@@ -148,9 +148,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         echo(cmd + ": no such command.  Type :help for help.")
       case xs =>
         echo(
-          cmd + " is ambiguous: did you mean " + xs
-            .map(":" + _.name)
-            .mkString(" or ") + "?")
+          cmd + " is ambiguous: did you mean " +
+            xs.map(":" + _.name).mkString(" or ") + "?")
     }
     Result(keepRunning = true, None)
   }
@@ -314,8 +313,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
     handlers.filterNot(_.importedSymbols.isEmpty).zipWithIndex foreach {
       case (handler, idx) =>
-        val (types, terms) = handler
-          .importedSymbols partition (_.name.isTypeName)
+        val (types, terms) = handler.importedSymbols partition
+          (_.name.isTypeName)
         val imps = handler.implicitSymbols
         val found = tokens filter (handler importsSymbolNamed _)
         val typeMsg =
@@ -338,9 +337,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
             ""
           else
             found.mkString(" // imports: ", ", ", "")
-        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot (
-          _ == ""
-        ) mkString ("(", ", ", ")")
+        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot
+          (_ == "") mkString
+          ("(", ", ", ")")
 
         intp
           .reporter
@@ -473,12 +472,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   /** Available commands */
   def commands: List[LoopCommand] =
-    standardCommands ++ (
-      if (isReplPower)
-        powerCommands
-      else
-        Nil
-    )
+    standardCommands ++
+      (if (isReplPower)
+         powerCommands
+       else
+         Nil)
 
   val replayQuestionMessage =
     """|That entry seems to have slain the compiler.  Shall I replay
@@ -630,9 +628,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       }
       if (intp.namedDefinedTerms.nonEmpty)
         echo(
-          "Forgetting all expression results and named terms: " + intp
-            .namedDefinedTerms
-            .mkString(", "))
+          "Forgetting all expression results and named terms: " +
+            intp.namedDefinedTerms.mkString(", "))
       if (intp.definedTypes.nonEmpty)
         echo("Forgetting defined types: " + intp.definedTypes.mkString(", "))
       if (destructive)
@@ -661,9 +658,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   def editCommand(what: String, editor: Option[String]): Result = {
     def diagnose(code: String) = {
       echo("The edited code is incomplete!\n")
-      val errless = intp compileSources new BatchSourceFile(
-        "<pastie>",
-        s"object pastel {\n$code\n}")
+      val errless = intp compileSources
+        new BatchSourceFile("<pastie>", s"object pastel {\n$code\n}")
       if (errless)
         echo("The compiler reports no errors.")
     }
@@ -1008,16 +1004,18 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           echo(
             s"// Entering paste mode (${eof getOrElse "ctrl-D"} to finish)\n")
           val delimiter = eof orElse replProps.pasteDelimiter.option
-          val input = readWhile(s =>
-            delimiter.isEmpty || delimiter.get != s) mkString "\n"
+          val input =
+            readWhile(s => delimiter.isEmpty || delimiter.get != s) mkString
+              "\n"
           val text =
             (
-              margin filter (_.nonEmpty) map {
-                case "-" =>
-                  input.lines map (_.trim) mkString "\n"
-                case m =>
-                  input stripMargin m.head // ignore excess chars in "<<||"
-              } getOrElse input
+              margin filter
+                (_.nonEmpty) map {
+                  case "-" =>
+                    input.lines map (_.trim) mkString "\n"
+                  case m =>
+                    input stripMargin m.head // ignore excess chars in "<<||"
+                } getOrElse input
             ).trim
           if (text.isEmpty)
             echo("\n// Nothing pasted, nothing gained.\n")
@@ -1031,9 +1029,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       if (res == IR.Incomplete) {
         echo("The pasted code is incomplete!\n")
         // Remembrance of Things Pasted in an object
-        val errless = intp compileSources new BatchSourceFile(
-          "<pastie>",
-          s"object pastel {\n$code\n}")
+        val errless = intp compileSources
+          new BatchSourceFile("<pastie>", s"object pastel {\n$code\n}")
         if (errless)
           echo("...but compilation found no error? Good luck with that.")
       }
@@ -1173,29 +1170,24 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
       def internalClass(kind: String) =
         s"scala.tools.nsc.interpreter.$kind.InteractiveReader"
-      val readerClasses = sys.props.get("scala.repl.reader").toStream ++ Stream(
-        internalClass("jline"),
-        internalClass("jline_embedded"))
-      val readers = readerClasses map (cls =>
-        Try {
-          mkReader(instantiater(cls))
-        })
+      val readerClasses = sys.props.get("scala.repl.reader").toStream ++
+        Stream(internalClass("jline"), internalClass("jline_embedded"))
+      val readers = readerClasses map
+        (cls =>
+          Try {
+            mkReader(instantiater(cls))
+          })
 
-      val reader = (
-        readers collect {
-          case Success(reader) =>
-            reader
-        } headOption
-      ) getOrElse SimpleReader()
+      val reader = (readers collect {
+        case Success(reader) =>
+          reader
+      } headOption) getOrElse SimpleReader()
 
       if (settings.debug) {
         val readerDiags = (readerClasses, readers).zipped map {
           case (cls, Failure(e)) =>
-            s"  - $cls --> \n\t" + scala
-              .tools
-              .nsc
-              .util
-              .stackTraceString(e) + "\n"
+            s"  - $cls --> \n\t" + scala.tools.nsc.util.stackTraceString(e) +
+              "\n"
           case (cls, Success(_)) =>
             s"  - $cls OK"
         }
@@ -1213,9 +1205,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       .quietBind(NamedParam[IMain]("$intp", intp)(tagOfIMain, classTag[IMain]))
     // Auto-run code via some setting.
     (
-      replProps.replAutorunCode.option
-        flatMap (f => io.File(f).safeSlurp())
-        foreach (intp quietRun _)
+      replProps.replAutorunCode.option flatMap
+        (f => io.File(f).safeSlurp()) foreach
+        (intp quietRun _)
     )
     // classloader and power mode setup
     intp.setContextClassLoader()
@@ -1279,9 +1271,8 @@ object ILoop {
             // skip margin prefix for continuation lines, unless preserving session text for test
             // should test for repl.paste.ContinueString or replProps.continueText.contains(ch)
             override def write(str: String) =
-              if (!inSession && (
-                    str forall (ch => ch.isWhitespace || ch == '|')
-                  ))
+              if (!inSession &&
+                  (str forall (ch => ch.isWhitespace || ch == '|')))
                 ()
               else
                 super.write(str)

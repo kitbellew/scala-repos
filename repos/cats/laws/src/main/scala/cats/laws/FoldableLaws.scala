@@ -8,16 +8,16 @@ trait FoldableLaws[F[_]] {
 
   def leftFoldConsistentWithFoldMap[A, B](fa: F[A], f: A => B)(implicit
       M: Monoid[B]): IsEq[B] = {
-    fa.foldMap(f) <-> fa.foldLeft(M.empty) { (b, a) =>
-      b |+| f(a)
-    }
+    fa.foldMap(f) <->
+      fa.foldLeft(M.empty) { (b, a) =>
+        b |+| f(a)
+      }
   }
 
   def rightFoldConsistentWithFoldMap[A, B](fa: F[A], f: A => B)(implicit
       M: Monoid[B]): IsEq[B] = {
-    fa.foldMap(f) <-> fa
-      .foldRight(Later(M.empty))((a, lb) => lb.map(f(a) |+| _))
-      .value
+    fa.foldMap(f) <->
+      fa.foldRight(Later(M.empty))((a, lb) => lb.map(f(a) |+| _)).value
   }
 
   def existsConsistentWithFind[A](fa: F[A], p: A => Boolean): Boolean = {
@@ -30,12 +30,11 @@ trait FoldableLaws[F[_]] {
       i = i + 1
       true
     }
-    i == (
-      if (F.isEmpty(fa))
-        0
-      else
-        1
-    )
+    i ==
+      (if (F.isEmpty(fa))
+         0
+       else
+         1)
   }
 
   def forallLazy[A](fa: F[A]): Boolean = {
@@ -44,12 +43,11 @@ trait FoldableLaws[F[_]] {
       i = i + 1
       false
     }
-    i == (
-      if (F.isEmpty(fa))
-        0
-      else
-        1
-    )
+    i ==
+      (if (F.isEmpty(fa))
+         0
+       else
+         1)
   }
 
   def forallConsistentWithExists[A](fa: F[A], p: A => Boolean): Boolean = {

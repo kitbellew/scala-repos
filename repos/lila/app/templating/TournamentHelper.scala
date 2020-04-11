@@ -52,13 +52,14 @@ trait TournamentHelper {
     private val replacements = List(
       "Lichess " -> "",
       "Marathon" -> icon('\\'),
-      "SuperBlitz" -> icon(lila.rating.PerfType.Blitz.iconChar)) ::: lila
-      .rating
-      .PerfType
-      .leaderboardable
-      .map { pt =>
-        pt.name -> icon(pt.iconChar)
-      }
+      "SuperBlitz" -> icon(lila.rating.PerfType.Blitz.iconChar)) :::
+      lila
+        .rating
+        .PerfType
+        .leaderboardable
+        .map { pt =>
+          pt.name -> icon(pt.iconChar)
+        }
     def apply(name: String) =
       Html {
         replacements.foldLeft(name) {

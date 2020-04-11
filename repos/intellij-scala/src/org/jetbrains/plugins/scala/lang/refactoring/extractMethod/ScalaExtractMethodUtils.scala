@@ -76,8 +76,8 @@ object ScalaExtractMethodUtils {
     val project = settings.elements(0).getProject
     val codeStyleSettings = ScalaCodeStyleSettings.getInstance(project)
     val retType =
-      if (settings.calcReturnTypeIsUnit && !codeStyleSettings
-            .ENFORCE_FUNCTIONAL_SYNTAX_FOR_UNIT)
+      if (settings.calcReturnTypeIsUnit &&
+          !codeStyleSettings.ENFORCE_FUNCTIONAL_SYNTAX_FOR_UNIT)
         ""
       else
         s": ${settings.calcReturnTypeText} ="
@@ -194,9 +194,8 @@ object ScalaExtractMethodUtils {
                   ScalaResolveResult(
                     named: PsiNamedElement,
                     subst: ScSubstitutor)) =>
-              if (named.getContainingFile == method
-                    .getContainingFile && named.getTextOffset < offset &&
-                  !named.name.startsWith("_")) {
+              if (named.getContainingFile == method.getContainingFile &&
+                  named.getTextOffset < offset && !named.name.startsWith("_")) {
                 val oldName = named.name
                 var break = false
                 for (param <- settings.parameters
@@ -305,8 +304,8 @@ object ScalaExtractMethodUtils {
       if (elements.length > 0) {
         val startOffset = elements(0).getTextRange.getStartOffset
         val endOffset = elements(elements.length - 1).getTextRange.getEndOffset
-        definition.getTextOffset >= startOffset && definition
-          .getTextOffset < endOffset
+        definition.getTextOffset >= startOffset &&
+        definition.getTextOffset < endOffset
       } else
         false
     val retType = definition.getType(TypingContext.empty).getOrNothing
@@ -343,8 +342,8 @@ object ScalaExtractMethodUtils {
     if (settings.lastReturn) {
       return prepareResult(returnStmtType.get)
     }
-    if (outputs.length == 0 && returnStmtType.isEmpty && lastExprType
-          .isDefined) {
+    if (outputs.length == 0 && returnStmtType.isEmpty &&
+        lastExprType.isDefined) {
       return prepareResult(lastExprType.get)
     }
     def byOutputsSize[T](ifZero: => T, ifOne: => T, ifMany: => T): T = {
@@ -521,12 +520,11 @@ object ScalaExtractMethodUtils {
       .parameters
       .filter(_.passAsParameter)
       .map(param =>
-        parameterText(param) + (
-          if (param.isFunction)
-            " _"
-          else
-            ""
-        ))
+        parameterText(param) +
+          (if (param.isFunction)
+             " _"
+           else
+             ""))
 
     val paramsText =
       if (params.nonEmpty)

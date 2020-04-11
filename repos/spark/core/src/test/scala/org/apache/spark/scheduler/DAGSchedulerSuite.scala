@@ -79,13 +79,12 @@ class MyRDD(
       context: TaskContext): Iterator[(Int, Int)] =
     throw new RuntimeException("should not be reached")
 
-  override def getPartitions: Array[Partition] =
-    (0 until numPartitions)
-      .map(i =>
-        new Partition {
-          override def index: Int = i
-        })
-      .toArray
+  override def getPartitions: Array[Partition] = (0 until numPartitions)
+    .map(i =>
+      new Partition {
+        override def index: Int = i
+      })
+    .toArray
 
   override def getPreferredLocations(partition: Partition): Seq[String] = {
     if (locations.isDefinedAt(partition.index)) {
@@ -368,8 +367,8 @@ class DAGSchedulerSuite
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
     assert(sparkListener.stageByOrderOfExecution.length === 2)
     assert(
-      sparkListener.stageByOrderOfExecution(0) < sparkListener
-        .stageByOrderOfExecution(1))
+      sparkListener.stageByOrderOfExecution(0) <
+        sparkListener.stageByOrderOfExecution(1))
   }
 
   test("zero split job") {
@@ -463,10 +462,11 @@ class DAGSchedulerSuite
       makeBlockManagerId("hostD"))
     val locs = scheduler.getCacheLocs(rdd).map(_.map(_.host))
     assert(
-      locs === Seq(
-        Seq("hostA", "hostB"),
-        Seq("hostB", "hostC"),
-        Seq("hostC", "hostD")))
+      locs ===
+        Seq(
+          Seq("hostA", "hostB"),
+          Seq("hostB", "hostC"),
+          Seq("hostC", "hostD")))
   }
 
   /**
@@ -660,8 +660,7 @@ class DAGSchedulerSuite
       mapOutputTracker
         .getMapSizesByExecutorId(shuffleId, 0)
         .map(_._1.host)
-        .toSet ===
-        HashSet("hostA", "hostB"))
+        .toSet === HashSet("hostA", "hostB"))
     complete(taskSets(3), Seq((Success, 43)))
     assert(results === Map(0 -> 42, 1 -> 43))
     assertDataStructuresEmpty()
@@ -813,11 +812,12 @@ class DAGSchedulerSuite
     sc.listenerBus.waitUntilEmpty(1000)
     assert(ended === true)
     assert(
-      results === (0 until parts)
-        .map { idx =>
-          idx -> 42
-        }
-        .toMap)
+      results ===
+        (0 until parts)
+          .map { idx =>
+            idx -> 42
+          }
+          .toMap)
     assertDataStructuresEmpty()
   }
 
@@ -1019,8 +1019,7 @@ class DAGSchedulerSuite
       mapOutputTracker
         .getMapSizesByExecutorId(shuffleId, 0)
         .map(_._1.host)
-        .toSet ===
-        HashSet("hostA", "hostB"))
+        .toSet === HashSet("hostA", "hostB"))
 
     // The first result task fails, with a fetch failure for the output from the first mapper.
     runEvent(
@@ -1075,14 +1074,12 @@ class DAGSchedulerSuite
       mapOutputTracker
         .getMapSizesByExecutorId(shuffleId, 0)
         .map(_._1.host)
-        .toSet ===
-        HashSet("hostA", "hostB"))
+        .toSet === HashSet("hostA", "hostB"))
     assert(
       mapOutputTracker
         .getMapSizesByExecutorId(shuffleId, 1)
         .map(_._1.host)
-        .toSet ===
-        HashSet("hostA", "hostB"))
+        .toSet === HashSet("hostA", "hostB"))
 
     // The first result task fails, with a fetch failure for the output from the first mapper.
     runEvent(
@@ -1335,8 +1332,8 @@ class DAGSchedulerSuite
     val stageFailureMessage = "Exception failure in map stage"
     failed(taskSets(0), stageFailureMessage)
     assert(
-      failure
-        .getMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      failure.getMessage ===
+        s"Job aborted due to stage failure: $stageFailureMessage")
 
     // Listener bus should get told about the map stage failing, but not the reduce stage
     // (since the reduce stage hasn't been started yet).
@@ -1615,11 +1612,11 @@ class DAGSchedulerSuite
     assert(sparkListener.failedStages.toSet === Set(0, 2))
 
     assert(
-      listener1
-        .failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      listener1.failureMessage ===
+        s"Job aborted due to stage failure: $stageFailureMessage")
     assert(
-      listener2
-        .failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      listener2.failureMessage ===
+        s"Job aborted due to stage failure: $stageFailureMessage")
     assertDataStructuresEmpty()
   }
 

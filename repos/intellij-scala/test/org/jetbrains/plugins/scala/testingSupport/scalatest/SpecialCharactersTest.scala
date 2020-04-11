@@ -35,8 +35,8 @@ trait SpecialCharactersTest extends ScalaTestTestCase {
   private def addSpecialCharactersTest(testName: String) =
     addFileToProject(
       testName + ".scala",
-      "import org.scalatest._\n\n" +
-        "class " + testName + " extends FlatSpec with GivenWhenThen {" +
+      "import org.scalatest._\n\n" + "class " + testName +
+        " extends FlatSpec with GivenWhenThen {" +
         """
           | "Comma , test" should "contain , comma" in {
           | }

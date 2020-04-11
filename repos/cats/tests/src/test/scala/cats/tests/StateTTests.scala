@@ -35,8 +35,8 @@ class StateTTests extends CatsSuite {
 
   test("Singleton and instance inspect are consistent") {
     forAll { (s: String, i: Int) =>
-      State.inspect[Int, String](_.toString).run(i) should ===(
-        State.pure[Int, Unit](()).inspect(_.toString).run(i))
+      State.inspect[Int, String](_.toString).run(i) should
+        ===(State.pure[Int, Unit](()).inspect(_.toString).run(i))
     }
   }
 

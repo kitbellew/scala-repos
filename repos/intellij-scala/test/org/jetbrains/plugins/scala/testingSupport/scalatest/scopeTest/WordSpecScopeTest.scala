@@ -39,9 +39,8 @@ trait WordSpecScopeTest extends WordSpecGenerator {
       wordSpecFileName,
       checkConfigAndSettings(_, wordSpecClassName, testNames: _*),
       root =>
-        checkResultTreeHasExactNamedPath(
-          root,
-          path1: _*) && checkResultTreeHasExactNamedPath(root, path2: _*) &&
+        checkResultTreeHasExactNamedPath(root, path1: _*) &&
+          checkResultTreeHasExactNamedPath(root, path2: _*) &&
           checkResultTreeDoesNotHaveNodes(root, "outer")
     )
   }

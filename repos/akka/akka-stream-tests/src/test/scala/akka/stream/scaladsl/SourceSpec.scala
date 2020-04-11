@@ -81,8 +81,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
   }
 
   "Maybe Source" must {
-    "complete materialized future with None when stream cancels" in Utils
-      .assertAllStagesStopped {
+    "complete materialized future with None when stream cancels" in
+      Utils.assertAllStagesStopped {
         val neverSource = Source.maybe[Int]
         val pubSink = Sink.asPublisher[Int](false)
 
@@ -99,8 +99,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         Await.result(f.future, 500.millis) shouldEqual None
       }
 
-    "allow external triggering of empty completion" in Utils
-      .assertAllStagesStopped {
+    "allow external triggering of empty completion" in
+      Utils.assertAllStagesStopped {
         val neverSource = Source.maybe[Int].filter(_ ⇒ false)
         val counterSink =
           Sink.fold[Int, Int](0) { (acc, _) ⇒
@@ -117,8 +117,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         Await.result(counterFuture, 500.millis) shouldEqual 0
       }
 
-    "allow external triggering of non-empty completion" in Utils
-      .assertAllStagesStopped {
+    "allow external triggering of non-empty completion" in
+      Utils.assertAllStagesStopped {
         val neverSource = Source.maybe[Int]
         val counterSink = Sink.head[Int]
 
@@ -132,24 +132,25 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         Await.result(counterFuture, 500.millis) shouldEqual 6
       }
 
-    "allow external triggering of onError" in Utils.assertAllStagesStopped {
-      val neverSource = Source.maybe[Int]
-      val counterSink =
-        Sink.fold[Int, Int](0) { (acc, _) ⇒
-          acc + 1
-        }
+    "allow external triggering of onError" in
+      Utils.assertAllStagesStopped {
+        val neverSource = Source.maybe[Int]
+        val counterSink =
+          Sink.fold[Int, Int](0) { (acc, _) ⇒
+            acc + 1
+          }
 
-      val (neverPromise, counterFuture) = neverSource
-        .toMat(counterSink)(Keep.both)
-        .run()
+        val (neverPromise, counterFuture) = neverSource
+          .toMat(counterSink)(Keep.both)
+          .run()
 
-      // external cancellation
-      neverPromise.failure(new Exception("Boom") with NoStackTrace)
+        // external cancellation
+        neverPromise.failure(new Exception("Boom") with NoStackTrace)
 
-      val ready = Await.ready(counterFuture, 500.millis)
-      val Failure(ex) = ready.value.get
-      ex.getMessage should include("Boom")
-    }
+        val ready = Await.ready(counterFuture, 500.millis)
+        val Failure(ex) = ready.value.get
+        ex.getMessage should include("Boom")
+      }
 
   }
 
@@ -220,8 +221,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
 
     "combine from two inputs with simplified API" in {
       val probes = Seq.fill(2)(TestPublisher.manualProbe[Int]())
-      val source = Source.fromPublisher(probes(0)) :: Source
-        .fromPublisher(probes(1)) :: Nil
+      val source = Source.fromPublisher(probes(0)) ::
+        Source.fromPublisher(probes(1)) :: Nil
       val out = TestSubscriber.manualProbe[Int]
 
       Source
@@ -333,8 +334,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         .fromIterator(() ⇒ Iterator.iterate(false)(!_))
         .grouped(10)
         .runWith(Sink.head)
-        .futureValue should ===(
-        Seq(false, true, false, true, false, true, false, true, false, true))
+        .futureValue should
+        ===(
+          Seq(false, true, false, true, false, true, false, true, false, true))
     }
   }
 

@@ -36,8 +36,8 @@ class ServerBuilderTest
     val m = new MockChannel
     when(
       m.codec
-        .prepareConnFactory(
-          any[ServiceFactory[String, String]])) thenReturn preparedFactory
+        .prepareConnFactory(any[ServiceFactory[String, String]])) thenReturn
+      preparedFactory
   }
 
   val svc: Service[String, String] = Service.const(Future.value("hi"))

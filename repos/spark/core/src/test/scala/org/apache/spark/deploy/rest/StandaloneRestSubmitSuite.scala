@@ -377,8 +377,8 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     assert(errorResponse6.highestProtocolVersion === null)
     assert(errorResponse7.highestProtocolVersion === null)
     assert(
-      errorResponse8.highestProtocolVersion === RestSubmissionServer
-        .PROTOCOL_VERSION)
+      errorResponse8.highestProtocolVersion ===
+        RestSubmissionServer.PROTOCOL_VERSION)
   }
 
   test("server returns unknown fields") {
@@ -388,9 +388,10 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     val submitRequestPath = s"$httpUrl/$v/submissions/create"
     val oldJson = constructSubmitRequest(masterUrl).toJson
     val oldFields = parse(oldJson).asInstanceOf[JObject].obj
-    val newFields = oldFields ++ Seq(
-      JField("tomato", JString("not-a-fruit")),
-      JField("potato", JString("not-po-tah-to")))
+    val newFields = oldFields ++
+      Seq(
+        JField("tomato", JString("not-a-fruit")),
+        JField("potato", JString("not-po-tah-to")))
     val newJson = pretty(render(JObject(newFields)))
     // send two requests, one with the unknown fields and the other without
     val (response1, code1) = sendHttpRequestWithResponse(

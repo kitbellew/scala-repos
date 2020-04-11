@@ -42,9 +42,8 @@ trait ScalacPatternExpanders {
       val seq = repeatedToSeq(tpe)
 
       (
-        typeOfMemberNamedHead(seq)
-          orElse typeOfMemberNamedApply(seq)
-          orElse definitions.elementType(ArrayClass, seq)
+        typeOfMemberNamedHead(seq) orElse typeOfMemberNamedApply(seq) orElse
+          definitions.elementType(ArrayClass, seq)
       )
     }
     def newExtractor(
@@ -100,12 +99,11 @@ trait ScalacPatternExpanders {
       else {
         val getResult = typeOfMemberNamedGet(result)
         def noGetError() = {
-          val name = "unapply" + (
-            if (isSeq)
-              "Seq"
-            else
-              ""
-          )
+          val name = "unapply" +
+            (if (isSeq)
+               "Seq"
+             else
+               "")
           context.error(
             context.tree.pos,
             s"The result type of an $name method must contain a member `get` to be used as an extractor pattern, no such member exists in ${result}"
@@ -146,12 +144,10 @@ trait ScalacPatternExpanders {
         else
           s" offering $offering"
       def arityExpected =
-        (
-          if (extractor.hasSeq)
-            "at least "
-          else
-            ""
-        ) + productArity
+        (if (extractor.hasSeq)
+           "at least "
+         else
+           "") + productArity
 
       def err(msg: String) = context.error(tree.pos, msg)
       def warn(msg: String) = context.warning(tree.pos, msg)
@@ -165,8 +161,8 @@ trait ScalacPatternExpanders {
         arityError("not enough")
       else if (elementArity > 0 && !isSeq)
         arityError("too many")
-      else if (settings
-                 .warnStarsAlign && isSeq && productArity > 0 && elementArity > 0)
+      else if (settings.warnStarsAlign && isSeq && productArity > 0 &&
+               elementArity > 0)
         warn {
           if (isStar)
             "Sequence wildcard (_*) does not align with repeated case parameter or extracted sequence; the result may be unexpected."
@@ -216,14 +212,14 @@ trait ScalacPatternExpanders {
           ""
         else
           s" to hold ${extractor.offeringString}"
-      val requiresTupling = isUnapply && patterns
-        .totalArity == 1 && productArity > 1
+      val requiresTupling = isUnapply && patterns.totalArity == 1 &&
+        productArity > 1
 
       val normalizedExtractor =
         if (requiresTupling) {
           val tupled = extractor.asSinglePattern
-          if (effectivePatternArity(args) == 1 && isTupleType(
-                extractor.typeOfSinglePattern)) {
+          if (effectivePatternArity(args) == 1 &&
+              isTupleType(extractor.typeOfSinglePattern)) {
             val sym = sel.symbol.owner
             currentRun
               .reporting

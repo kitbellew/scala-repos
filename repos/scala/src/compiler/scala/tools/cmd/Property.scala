@@ -24,13 +24,13 @@ class PropertyMapper(reference: Reference)
   lazy val RunnerName = programInfo.runner
 
   // e.g. "partest.shootout" -> "--shootout"
-  def propNameToOptionName(key: String): Option[String] =
-    (key split '.').toList match {
-      case List(RunnerName, name) =>
-        Some(name)
-      case _ =>
-        None
-    }
+  def propNameToOptionName(key: String): Option[String] = (key split '.')
+    .toList match {
+    case List(RunnerName, name) =>
+      Some(name)
+    case _ =>
+      None
+  }
 
   def isPassThrough(key: String): Boolean = false // e.g. "partest.options"
   def onError(key: String, value: String): Unit =

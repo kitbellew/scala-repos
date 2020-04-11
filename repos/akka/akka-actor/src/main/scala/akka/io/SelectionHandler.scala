@@ -33,14 +33,12 @@ abstract class SelectionHandlerSettings(config: Config) {
       case "unlimited" ⇒
         -1
       case _ ⇒
-        getInt("max-channels") requiring (
-          _ > 0, "max-channels must be > 0 or 'unlimited'"
-        )
+        getInt("max-channels") requiring
+          (_ > 0, "max-channels must be > 0 or 'unlimited'")
     }
   val SelectorAssociationRetries: Int =
-    getInt("selector-association-retries") requiring (
-      _ >= 0, "selector-association-retries must be >= 0"
-  )
+    getInt("selector-association-retries") requiring
+      (_ >= 0, "selector-association-retries must be >= 0")
 
   val SelectorDispatcher: String = getString("selector-dispatcher")
   val WorkerDispatcher: String = getString("worker-dispatcher")
@@ -155,7 +153,8 @@ private[io] object SelectionHandler {
     private[this] val select =
       new Task {
         def tryRun(): Unit = {
-          if (selector.select() > 0) { // This assumes select return value == selectedKeys.size
+          if (selector.select() >
+                0) { // This assumes select return value == selectedKeys.size
             val keys = selector.selectedKeys
             val iterator = keys.iterator()
             while (iterator.hasNext) {
@@ -213,10 +212,12 @@ private[io] object SelectionHandler {
         new Task {
           def tryRun(): Unit = {
             val key = channel.register(selector, initialOps, channelActor)
-            channelActor ! new ChannelRegistration {
-              def enableInterest(ops: Int): Unit = enableInterestOps(key, ops)
-              def disableInterest(ops: Int): Unit = disableInterestOps(key, ops)
-            }
+            channelActor !
+              new ChannelRegistration {
+                def enableInterest(ops: Int): Unit = enableInterestOps(key, ops)
+                def disableInterest(ops: Int): Unit =
+                  disableInterestOps(key, ops)
+              }
           }
         }
       }

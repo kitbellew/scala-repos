@@ -22,8 +22,8 @@ object FormatterUtil {
               if parent.getLastChild == ifStmt && parent.elseBranch != None =>
             calcIndent(node.getTreeParent)
           case parent =>
-            calcAbsolutePosition(node) - calcAbsolutePosition(
-              parent.getNode) match {
+            calcAbsolutePosition(node) -
+              calcAbsolutePosition(parent.getNode) match {
               case i if i >= 0 =>
                 i + calcIndent(parent.getNode)
               case _ =>

@@ -190,10 +190,11 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
           job <- waitForJobCompletion(jobId)
         } yield job
 
-      result.copoint must beLike {
-        case Job(_, _, _, _, _, Finished(_, _)) =>
-          ok
-      }
+      result.copoint must
+        beLike {
+          case Job(_, _, _, _, _, Finished(_, _)) =>
+            ok
+        }
     }
 
     "not return the results of an aborted job" in {

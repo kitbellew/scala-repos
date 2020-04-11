@@ -181,10 +181,8 @@ private[scalajs] object UseAsMacros {
     private def rawJSMembers(tpe: Type): JSMemberSet = {
 
       def isAPIMember(member: Symbol) = {
-        !JSObjectAncestors(member.owner) &&
-        !member.isConstructor &&
-        member.isMethod &&
-        !member.asTerm.isParamWithDefault
+        !JSObjectAncestors(member.owner) && !member.isConstructor &&
+        member.isMethod && !member.asTerm.isParamWithDefault
       }
 
       val tups =

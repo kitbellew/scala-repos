@@ -290,8 +290,8 @@ private[parquet] class CatalystSchemaConverter(
 
         val keyValueType = field.getType(0).asGroupType()
         CatalystSchemaConverter.checkConversionRequirement(
-          keyValueType
-            .isRepetition(REPEATED) && keyValueType.getFieldCount == 2,
+          keyValueType.isRepetition(REPEATED) &&
+            keyValueType.getFieldCount == 2,
           s"Invalid map type: $field")
 
         val keyType = keyValueType.getType(0)
@@ -479,8 +479,8 @@ private[parquet] class CatalystSchemaConverter(
 
       // Uses INT64 for 1 <= precision <= 18
       case DecimalType.Fixed(precision, scale)
-          if precision <= Decimal
-            .MAX_LONG_DIGITS && !writeLegacyParquetFormat =>
+          if precision <= Decimal.MAX_LONG_DIGITS &&
+            !writeLegacyParquetFormat =>
         Types
           .primitive(INT64, repetition)
           .as(DECIMAL)

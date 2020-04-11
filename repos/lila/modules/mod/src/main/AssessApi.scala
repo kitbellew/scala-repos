@@ -59,29 +59,28 @@ final class AssessApi(
   def getGameResultsById(gameId: String) =
     getResultsByGameIdAndColor(gameId, Color.White) zip
       getResultsByGameIdAndColor(gameId, Color.Black) map { a =>
-      PlayerAssessments(a._1, a._2)
-    }
+        PlayerAssessments(a._1, a._2)
+      }
 
   def getPlayerAggregateAssessment(
       userId: String,
       nb: Int = 100): Fu[Option[PlayerAggregateAssessment]] = {
     val relatedUsers = userIdsSharingIp(userId)
-    UserRepo.byId(userId) zip
-      getPlayerAssessmentsByUserId(userId, nb) zip
+    UserRepo.byId(userId) zip getPlayerAssessmentsByUserId(userId, nb) zip
       relatedUsers zip
       (relatedUsers flatMap UserRepo.filterByEngine) map {
-      case (
-            ((Some(user), assessedGamesHead :: assessedGamesTail), relatedUs),
-            relatedCheaters) =>
-        Some(
-          PlayerAggregateAssessment(
-            user,
-            assessedGamesHead :: assessedGamesTail,
-            relatedUs,
-            relatedCheaters))
-      case _ =>
-        none
-    }
+        case (
+              ((Some(user), assessedGamesHead :: assessedGamesTail), relatedUs),
+              relatedCheaters) =>
+          Some(
+            PlayerAggregateAssessment(
+              user,
+              assessedGamesHead :: assessedGamesTail,
+              relatedUs,
+              relatedCheaters))
+        case _ =>
+          none
+      }
   }
 
   def withGames(
@@ -102,20 +101,18 @@ final class AssessApi(
 
   def refreshAssessByUsername(username: String): Funit =
     withUser(username) { user =>
-      (
-        GameRepo.gamesForAssessment(user.id, 100) flatMap { gs =>
-          (
-            gs map { g =>
-              AnalysisRepo.byId(g.id) flatMap {
-                case Some(a) =>
-                  onAnalysisReady(g, a, false)
-                case _ =>
-                  funit
-              }
+      (GameRepo.gamesForAssessment(user.id, 100) flatMap { gs =>
+        (
+          gs map { g =>
+            AnalysisRepo.byId(g.id) flatMap {
+              case Some(a) =>
+                onAnalysisReady(g, a, false)
+              case _ =>
+                funit
             }
-          ).sequenceFu.void
-        }
-      ) >> assessUser(user.id)
+          }
+        ).sequenceFu.void
+      }) >> assessUser(user.id)
     }
 
   def onAnalysisReady(
@@ -143,14 +140,11 @@ final class AssessApi(
       val assessible = Assessible(Analysed(game, analysis))
       createPlayerAssessment(assessible playerAssessment chess.White) >>
         createPlayerAssessment(assessible playerAssessment chess.Black)
-    } >> (
-      (shouldAssess && thenAssessUser) ?? {
-        game.whitePlayer.userId.??(assessUser) >> game
-          .blackPlayer
-          .userId
-          .??(assessUser)
-      }
-    )
+    } >>
+      ((shouldAssess && thenAssessUser) ?? {
+        game.whitePlayer.userId.??(assessUser) >>
+          game.blackPlayer.userId.??(assessUser)
+      })
   }
 
   def assessUser(userId: String): Funit =
@@ -160,11 +154,12 @@ final class AssessApi(
           case AccountAction.Engine | AccountAction.EngineAndBan =>
             modApi.autoAdjust(userId)
           case AccountAction.Report =>
-            reporter ! lila
-              .hub
-              .actorApi
-              .report
-              .Cheater(userId, playerAggregateAssessment.reportText(3))
+            reporter !
+              lila
+                .hub
+                .actorApi
+                .report
+                .Cheater(userId, playerAggregateAssessment.reportText(3))
             funit
           case AccountAction.Nothing =>
             reporter ! lila.hub.actorApi.report.Clean(userId)
@@ -187,13 +182,14 @@ final class AssessApi(
 
     def winnerGreatProgress(player: Player): Boolean = {
       game.winner ?? (player ==)
-    } && game.perfType ?? { perfType =>
-      player.color.fold(white, black).perfs(perfType).progress >= 140
-    }
+    } &&
+      game.perfType ?? { perfType =>
+        player.color.fold(white, black).perfs(perfType).progress >= 140
+      }
 
     def noFastCoefVariation(player: Player): Option[Double] =
-      Statistics.noFastMoves(Pov(game, player)) ?? Statistics
-        .moveTimeCoefVariation(Pov(game, player))
+      Statistics.noFastMoves(Pov(game, player)) ??
+        Statistics.moveTimeCoefVariation(Pov(game, player))
 
     def winnerUserOption = game.winnerColor.map(_.fold(white, black))
     def winnerNbGames =

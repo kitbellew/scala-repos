@@ -102,10 +102,9 @@ object KMeansExample extends App {
     def randPoint(gen: => Double): V =
       f((1 to d).map(_ => gen)(collection.breakOut))
 
-    val centers: Vector[V] =
-      (1 to k).map({ _ =>
-        randPoint(nextDouble() * 10)
-      })(collection.breakOut)
+    val centers: Vector[V] = (1 to k).map({ _ =>
+      randPoint(nextDouble() * 10)
+    })(collection.breakOut)
 
     val bldr = cbf()
     cfor(0)(_ < n, _ + 1) { _ =>

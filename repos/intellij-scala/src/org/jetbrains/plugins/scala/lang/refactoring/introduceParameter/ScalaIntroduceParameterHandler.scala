@@ -413,8 +413,8 @@ class ScalaIntroduceParameterHandler
     method match {
       case pc: ScPrimaryConstructor =>
         s"${pc.containingClass.name} (primary constructor)"
-      case (f: ScFunctionDefinition) && ContainingClass(
-            c: ScNewTemplateDefinition) =>
+      case (f: ScFunctionDefinition) &&
+          ContainingClass(c: ScNewTemplateDefinition) =>
         s"${f.name} (in anonymous class)"
       case (f: ScFunctionDefinition) && ContainingClass(c) =>
         s"${f.name} (in ${c.name})"
@@ -434,8 +434,8 @@ class ScalaIntroduceParameterHandler
   def afterMethodChoosing(elem: PsiElement, editor: Editor)(
       action: ScMethodLike => Unit): Unit = {
     val validEnclosingMethods: Seq[ScMethodLike] = getEnclosingMethods(elem)
-    if (validEnclosingMethods
-          .size > 1 && !ApplicationManager.getApplication.isUnitTestMode) {
+    if (validEnclosingMethods.size > 1 &&
+        !ApplicationManager.getApplication.isUnitTestMode) {
       ScalaRefactoringUtil.showChooser[ScMethodLike](
         editor,
         validEnclosingMethods.toArray,
@@ -443,9 +443,8 @@ class ScalaIntroduceParameterHandler
         s"Choose function for $REFACTORING_NAME",
         getTextForElement,
         toHighlight)
-    } else if (validEnclosingMethods.size == 1 || ApplicationManager
-                 .getApplication
-                 .isUnitTestMode) {
+    } else if (validEnclosingMethods.size == 1 ||
+               ApplicationManager.getApplication.isUnitTestMode) {
       action(validEnclosingMethods.head)
     } else {
       showErrorHint(
@@ -457,10 +456,8 @@ class ScalaIntroduceParameterHandler
   }
 
   private def isLibraryInterfaceMethod(method: PsiMethod): Boolean = {
-    (
-      method.hasModifierPropertyScala(PsiModifier.ABSTRACT) || method
-        .isInstanceOf[ScFunctionDefinition]
-    ) &&
+    (method.hasModifierPropertyScala(PsiModifier.ABSTRACT) ||
+    method.isInstanceOf[ScFunctionDefinition]) &&
     !method.getManager.isInProject(method)
   }
 
@@ -469,8 +466,8 @@ class ScalaIntroduceParameterHandler
       elem <- elems
       ret @ (r: ScReturnStmt) <- elem.depthFirst
     } {
-      if (ret.returnFunction.isEmpty || !elem
-            .isAncestorOf(ret.returnFunction.get))
+      if (ret.returnFunction.isEmpty ||
+          !elem.isAncestorOf(ret.returnFunction.get))
         return true
     }
     false

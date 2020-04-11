@@ -141,8 +141,8 @@ private[columnar] case object RunLengthEncoding extends CompressionScheme {
         while (from.hasRemaining) {
           columnType.extract(from, value, 0)
 
-          if (value.get(0, columnType.dataType) == currentValue
-                .get(0, columnType.dataType)) {
+          if (value.get(0, columnType.dataType) ==
+                currentValue.get(0, columnType.dataType)) {
             currentRun += 1
           } else {
             // Writes current run
@@ -450,8 +450,8 @@ private[columnar] case object IntDelta extends CompressionScheme {
 
       // If this is the first integer to be compressed, or the delta is out of byte range, then give
       // up compressing this integer.
-      if (_uncompressedSize == 0 || delta <= Byte.MinValue || delta > Byte
-            .MaxValue) {
+      if (_uncompressedSize == 0 || delta <= Byte.MinValue ||
+          delta > Byte.MaxValue) {
         _compressedSize += INT.defaultSize
       }
 
@@ -541,8 +541,8 @@ private[columnar] case object LongDelta extends CompressionScheme {
 
       // If this is the first long integer to be compressed, or the delta is out of byte range, then
       // give up compressing this long integer.
-      if (_uncompressedSize == 0 || delta <= Byte.MinValue || delta > Byte
-            .MaxValue) {
+      if (_uncompressedSize == 0 || delta <= Byte.MinValue ||
+          delta > Byte.MaxValue) {
         _compressedSize += LONG.defaultSize
       }
 

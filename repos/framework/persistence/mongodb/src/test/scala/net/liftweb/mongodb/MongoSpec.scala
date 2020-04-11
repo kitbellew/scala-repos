@@ -51,8 +51,8 @@ class MongoSpec extends Specification {
     // using an undefined identifier throws an exception
     MongoDB.use(DefaultConnectionIdentifier) { db =>
       db.getCollectionNames
-    } must throwA(
-      new MongoException("Mongo not found: ConnectionIdentifier(lift)"))
+    } must
+      throwA(new MongoException("Mongo not found: ConnectionIdentifier(lift)"))
     // remove defined db
     MongoDB.closeAll()
     success

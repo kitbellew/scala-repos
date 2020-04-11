@@ -19,13 +19,14 @@ object SonatypeSupport {
       },
       homepage := Some(url(s"http://github.com/$ghUser/$ghRepo")),
       licenses := Seq(license),
-      publishTo <<= version { v: String =>
-        val nexus = "https://oss.sonatype.org/"
-        if (v.contains("SNAP"))
-          Some("snapshots" at nexus + "content/repositories/snapshots")
-        else
-          Some("releases" at nexus + "service/local/staging/deploy/maven2")
-      },
+      publishTo <<=
+        version { v: String =>
+          val nexus = "https://oss.sonatype.org/"
+          if (v.contains("SNAP"))
+            Some("snapshots" at nexus + "content/repositories/snapshots")
+          else
+            Some("releases" at nexus + "service/local/staging/deploy/maven2")
+        },
       credentials ++= {
         for {
           username <- sys.env.get("SONATYPE_USERNAME")
@@ -36,8 +37,8 @@ object SonatypeSupport {
           username,
           password)
       }.toSeq,
-      pomExtra := (
-        <scm>
+      pomExtra :=
+        (<scm>
         <url>git@github.com:${
           ghUser
         }/${
@@ -53,7 +54,6 @@ object SonatypeSupport {
         <developer>
           <id>$ghUser</id>
         </developer>
-      </developers>
-      )
+      </developers>)
     )
 }

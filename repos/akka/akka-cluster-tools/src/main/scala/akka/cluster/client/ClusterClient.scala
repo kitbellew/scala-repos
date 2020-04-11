@@ -375,8 +375,8 @@ final class ClusterClient(settings: ClusterClientSettings)
 
   def active(receptionist: ActorRef): Actor.Receive = {
     case Send(path, msg, localAffinity) ⇒
-      receptionist forward DistributedPubSubMediator
-        .Send(path, msg, localAffinity)
+      receptionist forward
+        DistributedPubSubMediator.Send(path, msg, localAffinity)
     case SendToAll(path, msg) ⇒
       receptionist forward DistributedPubSubMediator.SendToAll(path, msg)
     case Publish(topic, msg) ⇒
@@ -483,8 +483,8 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     * receptionist.
     */
   def isTerminated: Boolean =
-    Cluster(system).isTerminated || !role
-      .forall(Cluster(system).selfRoles.contains)
+    Cluster(system).isTerminated ||
+      !role.forall(Cluster(system).selfRoles.contains)
 
   /**
     * Register the actors that should be reachable for the clients in this [[DistributedPubSubMediator]].
@@ -504,8 +504,8 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     * but it can also be explicitly unregistered before termination.
     */
   def unregisterService(actor: ActorRef): Unit =
-    pubSubMediator ! DistributedPubSubMediator
-      .Remove(actor.path.toStringWithoutAddress)
+    pubSubMediator !
+      DistributedPubSubMediator.Remove(actor.path.toStringWithoutAddress)
 
   /**
     * Register an actor that should be reachable for the clients to a named topic.
@@ -832,12 +832,13 @@ final class ClusterReceptionist(
       }
 
     case state: CurrentClusterState ⇒
-      nodes = nodes.empty union state
-        .members
-        .collect {
-          case m if m.status != MemberStatus.Joining && matchingRole(m) ⇒
-            m.address
-        }
+      nodes = nodes.empty union
+        state
+          .members
+          .collect {
+            case m if m.status != MemberStatus.Joining && matchingRole(m) ⇒
+              m.address
+          }
       consistentHash = ConsistentHash(nodes, virtualNodesFactor)
 
     case MemberUp(m) ⇒

@@ -87,11 +87,8 @@ class ServiceDiscovererTest
     val vecs = Seq(v1, v2)
 
     assert(
-      ServiceDiscoverer.zipWithWeights(ents, vecs.toSet).toSet == Set(
-        ep(port1) -> 1.1,
-        ep(port2) -> 2.8,
-        ep(3) -> 3.1,
-        ep(4) -> 1.0))
+      ServiceDiscoverer.zipWithWeights(ents, vecs.toSet).toSet ==
+        Set(ep(port1) -> 1.1, ep(port2) -> 2.8, ep(3) -> 3.1, ep(4) -> 1.0))
   }
 
   test("New observation do not cause reads; entries are cached") {

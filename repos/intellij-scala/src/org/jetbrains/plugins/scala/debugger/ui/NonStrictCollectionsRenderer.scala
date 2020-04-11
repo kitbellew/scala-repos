@@ -94,9 +94,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       invokeLengthMethodByName(objectRef, name, 'I', context)
 
     try {
-      if (!ScalaCollectionRenderer
-            .hasDefiniteSize(objectRef, context) || isStreamView(
-            objectRef.referenceType()))
+      if (!ScalaCollectionRenderer.hasDefiniteSize(objectRef, context) ||
+          isStreamView(objectRef.referenceType()))
         return Success[String]("?")
     } catch {
       case e: EvaluateException =>
@@ -251,21 +250,19 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
     descriptor.getValue match {
       case obj: ObjectReference =>
         val tpe = obj.referenceType()
-        val sizeString = " size = " + (
-          tryToGetSize(obj, context) match {
+        val sizeString = " size = " +
+          (tryToGetSize(obj, context) match {
             case Success(value: Int) =>
               value
             case _ =>
               "?"
-          }
-        )
+          })
 
-        stringBuilder append (
-          if (tpe != null)
-            ScalaCollectionRenderer.transformName(tpe.name) + sizeString
-          else
-            "{...}"
-        )
+        stringBuilder append
+          (if (tpe != null)
+             ScalaCollectionRenderer.transformName(tpe.name) + sizeString
+           else
+             "{...}")
       case _ =>
         stringBuilder append "{...}"
     }

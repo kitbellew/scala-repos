@@ -152,10 +152,9 @@ abstract class MailboxSpec
 
         def createProducer(fromNum: Int, toNum: Int): Future[Vector[Envelope]] =
           spawn {
-            val messages = Vector() ++ (
-              for (i ← fromNum to toNum)
-                yield createMessageInvocation(i)
-            )
+            val messages = Vector() ++
+              (for (i ← fromNum to toNum)
+                yield createMessageInvocation(i))
             for (i ← messages)
               q.enqueue(testActor, i)
             messages
@@ -192,12 +191,10 @@ abstract class MailboxSpec
         val ps = producers.map(Await.result(_, remainingOrDefault))
         val cs = consumers.map(Await.result(_, remainingOrDefault))
 
-        ps.map(_.size).sum should ===(
-          enqueueN
-        ) //Must have produced 1000 messages
-        cs.map(_.size).sum should ===(
-          dequeueN
-        ) //Must have consumed all produced messages
+        ps.map(_.size).sum should
+          ===(enqueueN) //Must have produced 1000 messages
+        cs.map(_.size).sum should
+          ===(dequeueN) //Must have consumed all produced messages
         //No message is allowed to be consumed by more than one consumer
         cs.flatten.distinct.size should ===(dequeueN)
         //All consumed messages should have been produced
@@ -364,14 +361,14 @@ class SingleConsumerOnlyMailboxVerificationSpec
   }
 
   "A SingleConsumerOnlyMailbox" should {
-    "support pathological ping-ponging for the unbounded case" in within(
-      30.seconds) {
-      pathologicalPingPong("test-unbounded-dispatcher")
-    }
+    "support pathological ping-ponging for the unbounded case" in
+      within(30.seconds) {
+        pathologicalPingPong("test-unbounded-dispatcher")
+      }
 
-    "support pathological ping-ponging for the bounded case" in within(
-      30.seconds) {
-      pathologicalPingPong("test-bounded-dispatcher")
-    }
+    "support pathological ping-ponging for the bounded case" in
+      within(30.seconds) {
+        pathologicalPingPong("test-bounded-dispatcher")
+      }
   }
 }

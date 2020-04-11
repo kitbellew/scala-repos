@@ -68,9 +68,8 @@ class InterpolatedStringParserTest extends SimpleTestCase {
 
   def testExpressionWithSeparatedFormatter() {
     assertMatches(parse("$foo %d")) {
-      case Injection(ElementText("foo"), None) :: Text(" ") :: Injection(
-            ElementText("\"%\""),
-            None) :: Text("d") :: Nil =>
+      case Injection(ElementText("foo"), None) :: Text(" ") ::
+          Injection(ElementText("\"%\""), None) :: Text("d") :: Nil =>
     }
   }
 
@@ -92,22 +91,17 @@ class InterpolatedStringParserTest extends SimpleTestCase {
 
   def testMixed() {
     assertMatches(parse("foo $exp ${it.name}%2d bar")) {
-      case Text("foo ") ::
-          Injection(ElementText("exp"), None) ::
-          Text(" ") ::
+      case Text("foo ") :: Injection(ElementText("exp"), None) :: Text(" ") ::
           Injection(
             ElementText("it.name"),
-            Some(Specifier(Span(_, 0, 3), "%2d"))) ::
-          Text(" bar") ::
-          Nil =>
+            Some(Specifier(Span(_, 0, 3), "%2d"))) :: Text(" bar") :: Nil =>
     }
   }
 
   def testUnformattedWithSpecifiers() {
     assertMatches(parse("$foo%d", formatted = false)) {
-      case Injection(ElementText("foo"), None) :: Injection(
-            ElementText("\"%\""),
-            None) :: Text("d") :: Nil =>
+      case Injection(ElementText("foo"), None) ::
+          Injection(ElementText("\"%\""), None) :: Text("d") :: Nil =>
     }
   }
 

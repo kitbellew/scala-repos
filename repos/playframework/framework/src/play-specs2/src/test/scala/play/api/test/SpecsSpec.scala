@@ -14,19 +14,22 @@ object SpecsSpec extends Specification {
     app.configuration.getString(key)
 
   "WithApplication context" should {
-    "provide an app" in new WithApplication(
-      _.configure("foo" -> "bar", "ehcacheplugin" -> "disabled")) {
-      app.configuration.getString("foo") must beSome("bar")
-    }
-    "make the app available implicitly" in new WithApplication(
-      _.configure("foo" -> "bar", "ehcacheplugin" -> "disabled")) {
-      getConfig("foo") must beSome("bar")
-    }
-    "start the application" in new WithApplication(
-      _.configure("foo" -> "bar", "ehcacheplugin" -> "disabled")) {
-      //noinspection ScalaDeprecation
-      Play.maybeApplication must beSome(app)
-    }
+    "provide an app" in
+      new WithApplication(
+        _.configure("foo" -> "bar", "ehcacheplugin" -> "disabled")) {
+        app.configuration.getString("foo") must beSome("bar")
+      }
+    "make the app available implicitly" in
+      new WithApplication(
+        _.configure("foo" -> "bar", "ehcacheplugin" -> "disabled")) {
+        getConfig("foo") must beSome("bar")
+      }
+    "start the application" in
+      new WithApplication(
+        _.configure("foo" -> "bar", "ehcacheplugin" -> "disabled")) {
+        //noinspection ScalaDeprecation
+        Play.maybeApplication must beSome(app)
+      }
   }
 
   "WithApplicationLoader" should {
@@ -37,8 +40,9 @@ object SpecsSpec extends Specification {
     val builder = new GuiceApplicationBuilder().bindings(myModule)
     class WithMyApplicationLoader
         extends WithApplicationLoader(new GuiceApplicationLoader(builder))
-    "allow adding modules" in new WithMyApplicationLoader {
-      app.injector.instanceOf(classOf[Int]) must equalTo(42)
-    }
+    "allow adding modules" in
+      new WithMyApplicationLoader {
+        app.injector.instanceOf(classOf[Int]) must equalTo(42)
+      }
   }
 }

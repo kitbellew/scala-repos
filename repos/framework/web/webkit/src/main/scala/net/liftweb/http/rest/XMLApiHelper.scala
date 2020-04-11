@@ -190,7 +190,8 @@ trait XMLApiHelper {
       msg: Box[NodeSeq],
       body: NodeSeq): LiftResponse =
     XmlResponse(
-      createTag(body) % (successAttrName -> success) %
+      createTag(body) %
+        (successAttrName -> success) %
         (new UnprefixedAttribute(operationAttrName, operation, Null)) %
         (new UnprefixedAttribute(msgAttrName, msg, Null)))
 }

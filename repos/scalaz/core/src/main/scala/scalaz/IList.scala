@@ -179,8 +179,8 @@ sealed abstract class IList[A] extends Product with Serializable {
     foldLeft(==>>.empty[K, OneAnd[IList, A]]) { (m, a) =>
       m.alter(
         f(a),
-        _.map(oa => OneAnd(a, oa.head :: oa.tail)) orElse Some(
-          OneAnd(a, empty)))
+        _.map(oa => OneAnd(a, oa.head :: oa.tail)) orElse
+          Some(OneAnd(a, empty)))
     }
 
   def headOption: Option[A] = uncons(None, (h, _) => Some(h))
@@ -819,14 +819,13 @@ sealed abstract class IListInstances extends IListInstance0 {
             case ICons(x, xs) =>
               commaSep(xs, (acc :+ ",") ++ A.show(x))
           }
-        "[" +: (
-          as match {
+        "[" +:
+          (as match {
             case INil() =>
               Cord()
             case ICons(x, xs) =>
               commaSep(xs, A.show(x))
-          }
-        ) :+ "]"
+          }) :+ "]"
       }
     }
 

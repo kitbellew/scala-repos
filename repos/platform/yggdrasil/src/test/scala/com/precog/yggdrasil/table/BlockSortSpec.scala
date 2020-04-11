@@ -100,8 +100,8 @@ trait BlockSortSpec[M[+_]]
         }
         .sortBy { v =>
           JArray(
-            sortKeys.map(_.extract(v \ "value")).toList ::: List(
-              v \ "globalId")).asInstanceOf[JValue]
+            sortKeys.map(_.extract(v \ "value")).toList :::
+              List(v \ "globalId")).asInstanceOf[JValue]
         }(desiredJValueOrder)
         .map(_.delete(globalIdPath).get)
         .toList

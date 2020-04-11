@@ -65,9 +65,8 @@ object BuildCapabilitiesTable extends App {
               c.toString)
     } yield (
       cap,
-      linkBase + cap
-        .toString
-        .replaceFirst(".*\\.", "") + ":slick.basic.Capability")
+      linkBase + cap.toString.replaceFirst(".*\\.", "") +
+        ":slick.basic.Capability")
 
   val out = new FileOutputStream(args(0))
   try {
@@ -78,13 +77,14 @@ object BuildCapabilitiesTable extends App {
     for ((cap, link) <- capabilities) {
       val flags = profiles.map(d => d.capabilities.contains(cap))
       wr.println(
-        s":api:`$cap <$link>`," + flags
-          .map(b =>
-            if (b)
-              "Yes"
-            else
-              "")
-          .mkString(","))
+        s":api:`$cap <$link>`," +
+          flags
+            .map(b =>
+              if (b)
+                "Yes"
+              else
+                "")
+            .mkString(","))
     }
     wr.flush()
   } finally out.close()

@@ -28,7 +28,8 @@ final class Env(system: akka.actor.ActorSystem, config: Config) {
 
 object Env {
 
-  lazy val current: Env = "worldMap" boot new Env(
-    system = lila.common.PlayApp.system,
-    config = lila.common.PlayApp loadConfig "worldMap")
+  lazy val current: Env = "worldMap" boot
+    new Env(
+      system = lila.common.PlayApp.system,
+      config = lila.common.PlayApp loadConfig "worldMap")
 }

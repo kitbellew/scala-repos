@@ -33,8 +33,8 @@ object AgeRange {
         }
       }
       override def unbind(key: String, ageRange: AgeRange): String = {
-        intBinder.unbind("from", ageRange.from) + "&" + intBinder
-          .unbind("to", ageRange.to)
+        intBinder.unbind("from", ageRange.from) + "&" +
+          intBinder.unbind("to", ageRange.to)
       }
     }
   //#bind

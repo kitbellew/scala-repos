@@ -31,9 +31,10 @@ trait TimeLikeSpec[T <: TimeLike[T]]
       Undefined,
       fromNanoseconds(1),
       fromNanoseconds(-1))
-    val vs = easyVs ++ Seq(
-      fromNanoseconds(Long.MaxValue - 1),
-      fromNanoseconds(Long.MinValue + 1))
+    val vs = easyVs ++
+      Seq(
+        fromNanoseconds(Long.MaxValue - 1),
+        fromNanoseconds(Long.MinValue + 1))
 
     "behave like boxed doubles" in {
       assert((Top compare Undefined) < 0)
@@ -588,24 +589,20 @@ class TimeTest extends {
 
     "max" in {
       assert(
-        (10.seconds.afterEpoch max 5.seconds.afterEpoch) == 10
-          .seconds
-          .afterEpoch)
+        (10.seconds.afterEpoch max 5.seconds.afterEpoch) ==
+          10.seconds.afterEpoch)
       assert(
-        (5.seconds.afterEpoch max 10.seconds.afterEpoch) == 10
-          .seconds
-          .afterEpoch)
+        (5.seconds.afterEpoch max 10.seconds.afterEpoch) ==
+          10.seconds.afterEpoch)
     }
 
     "min" in {
       assert(
-        (10.seconds.afterEpoch min 5.seconds.afterEpoch) == 5
-          .seconds
-          .afterEpoch)
+        (10.seconds.afterEpoch min 5.seconds.afterEpoch) ==
+          5.seconds.afterEpoch)
       assert(
-        (5.seconds.afterEpoch min 10.seconds.afterEpoch) == 5
-          .seconds
-          .afterEpoch)
+        (5.seconds.afterEpoch min 10.seconds.afterEpoch) ==
+          5.seconds.afterEpoch)
     }
 
     "moreOrLessEquals" in {
@@ -692,9 +689,8 @@ class TimeTest extends {
 
       val currentTimeMicros = System.currentTimeMillis() * 1000
       assert(
-        Time
-          .fromMicroseconds(currentTimeMicros)
-          .inNanoseconds == currentTimeMicros.microseconds.inNanoseconds)
+        Time.fromMicroseconds(currentTimeMicros).inNanoseconds ==
+          currentTimeMicros.microseconds.inNanoseconds)
     }
 
     "fromMillis" in {
@@ -710,9 +706,8 @@ class TimeTest extends {
 
       val currentTimeMs = System.currentTimeMillis
       assert(
-        Time
-          .fromMilliseconds(currentTimeMs)
-          .inNanoseconds == currentTimeMs * 1000000L)
+        Time.fromMilliseconds(currentTimeMs).inNanoseconds ==
+          currentTimeMs * 1000000L)
     }
 
     "until" in {

@@ -139,9 +139,8 @@ class FunctionAnnotatorTest extends SimpleTestCase {
 
   def testTypeWrongExpressionMultiple() {
     assertMatches(messages("def f: A = { if(1 > 2) new B else new B }")) {
-      case Error("new B", TypeMismatch()) :: Error(
-            "new B",
-            TypeMismatch()) :: Nil =>
+      case Error("new B", TypeMismatch()) :: Error("new B", TypeMismatch()) ::
+          Nil =>
     }
   }
 
@@ -215,17 +214,15 @@ class FunctionAnnotatorTest extends SimpleTestCase {
   def testTypeReturnWrongTypeMultiple() {
     assertMatches(
       messages("def f: A = { if(1 > 2) return new B else return new B }")) {
-      case Error("new B", TypeMismatch()) :: Error(
-            "new B",
-            TypeMismatch()) :: Nil =>
+      case Error("new B", TypeMismatch()) :: Error("new B", TypeMismatch()) ::
+          Nil =>
     }
   }
 
   def testTypeReturnAndExpressionWrongType() {
     assertMatches(messages("def f: A = { if(1 > 2) return new B; new B }")) {
-      case Error("new B", TypeMismatch()) :: Error(
-            "new B",
-            TypeMismatch()) :: Nil =>
+      case Error("new B", TypeMismatch()) :: Error("new B", TypeMismatch()) ::
+          Nil =>
     }
   }
 
@@ -394,9 +391,8 @@ class FunctionAnnotatorTest extends SimpleTestCase {
 
   def testRecursiveAndNeedsResultType() {
     assertMatches(messages("def f = { f; return new A }")) {
-      case Error("f", Recursive()) :: Error(
-            "return",
-            NeedsResultType()) :: Nil =>
+      case Error("f", Recursive()) :: Error("return", NeedsResultType()) ::
+          Nil =>
     }
   }
 

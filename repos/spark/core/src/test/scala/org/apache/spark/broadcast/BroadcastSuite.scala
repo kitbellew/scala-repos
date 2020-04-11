@@ -271,9 +271,8 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
       .parallelize(1 to partitions, partitions)
       .map(x => (x, broadcast.value.sum))
     assert(
-      results.collect().toSet === (1 to partitions)
-        .map(x => (x, list.sum))
-        .toSet)
+      results.collect().toSet ===
+        (1 to partitions).map(x => (x, list.sum)).toSet)
     afterUsingBroadcast(broadcast.id, blockManagerMaster)
 
     // Unpersist broadcast
@@ -303,9 +302,8 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
         .parallelize(1 to partitions, partitions)
         .map(x => (x, broadcast.value.sum))
       assert(
-        results.collect().toSet === (1 to partitions)
-          .map(x => (x, list.sum))
-          .toSet)
+        results.collect().toSet ===
+          (1 to partitions).map(x => (x, list.sum)).toSet)
     }
   }
 }

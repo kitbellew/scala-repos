@@ -43,7 +43,7 @@ class EventSubscribersIntegrationTest
       _.info.exists(_ == "callbackUrl" -> "http://localhost:1337"))
 
     And("the subscriber should not show up in the list of subscribers")
-    marathon.listSubscribers.value.urls shouldNot contain(
-      "http://localhost:1337")
+    marathon.listSubscribers.value.urls shouldNot
+      contain("http://localhost:1337")
   }
 }

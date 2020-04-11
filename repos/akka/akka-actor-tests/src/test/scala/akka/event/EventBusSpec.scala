@@ -85,9 +85,10 @@ abstract class EventBusSpec(
     }
 
     "allow to add multiple subscribers" in {
-      val subscribers = (1 to 10) map { _ ⇒
-        createNewSubscriber()
-      }
+      val subscribers =
+        (1 to 10) map { _ ⇒
+          createNewSubscriber()
+        }
       val events = createEvents(10)
       val classifiers = events map getClassifierFor
       subscribers.zip(classifiers) forall {
@@ -199,8 +200,9 @@ class ActorEventBusSpec(conf: Config)
   def createNewEventBus(): BusType = new MyActorEventBus(system)
 
   // different actor in each event because we want each event to have a different classifier (see EventBusSpec tests)
-  def createEvents(numberOfEvents: Int) =
-    (0 until numberOfEvents).map(Notification(TestProbe().ref, _)).toSeq
+  def createEvents(numberOfEvents: Int) = (0 until numberOfEvents)
+    .map(Notification(TestProbe().ref, _))
+    .toSeq
 
   def createSubscriber(pipeTo: ActorRef) =
     system.actorOf(Props(new TestActorWrapperActor(pipeTo)))

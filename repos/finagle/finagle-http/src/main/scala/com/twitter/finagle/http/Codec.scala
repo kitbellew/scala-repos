@@ -287,10 +287,11 @@ case class Http(
           .andThen(new DtabFilter.Finagle[Request])
           .andThen(new ServerContextFilter[Request, Response])
           .andThenIf(
-            !_streaming -> new PayloadSizeFilter[Request, Response](
-              stats,
-              _.content.length,
-              _.content.length))
+            !_streaming ->
+              new PayloadSizeFilter[Request, Response](
+                stats,
+                _.content.length,
+                _.content.length))
           .andThen(underlying)
       }
 

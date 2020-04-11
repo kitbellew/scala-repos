@@ -7,8 +7,9 @@ trait Cloning {
       def *(a: Foo): Foo = null
     }
 
-  val pool = 4 * fn {
-    case ghostSYMBOL: Int =>
-      ghostSYMBOL * 2
-  }
+  val pool = 4 *
+    fn {
+      case ghostSYMBOL: Int =>
+        ghostSYMBOL * 2
+    }
 }

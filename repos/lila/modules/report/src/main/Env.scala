@@ -47,9 +47,10 @@ final class Env(
 
 object Env {
 
-  lazy val current = "report" boot new Env(
-    config = lila.common.PlayApp loadConfig "report",
-    db = lila.db.Env.current,
-    system = lila.common.PlayApp.system,
-    hub = lila.hub.Env.current)
+  lazy val current = "report" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "report",
+      db = lila.db.Env.current,
+      system = lila.common.PlayApp.system,
+      hub = lila.hub.Env.current)
 }

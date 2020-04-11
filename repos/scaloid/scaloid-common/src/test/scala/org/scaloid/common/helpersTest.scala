@@ -96,9 +96,8 @@ class helpersTest extends JUnitSuite with ShouldMatchers {
       .edit
       .putString("foo", "bar")
       .commit
-    PreferenceHelpers
-      .defaultSharedPreferences
-      .getString("foo", "") shouldBe "bar"
+    PreferenceHelpers.defaultSharedPreferences.getString("foo", "") shouldBe
+      "bar"
   }
 
   @Test

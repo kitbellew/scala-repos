@@ -45,11 +45,8 @@ class ConvertFromInfixExpressionIntention
       return
 
     val start = infixExpr.getTextRange.getStartOffset
-    val diff = editor.getCaretModel.getOffset - infixExpr
-      .operation
-      .nameId
-      .getTextRange
-      .getStartOffset
+    val diff = editor.getCaretModel.getOffset -
+      infixExpr.operation.nameId.getTextRange.getStartOffset
 
     val methodCallExpr = ScalaPsiElementFactory.createEquivMethodCall(infixExpr)
     val referenceExpr =

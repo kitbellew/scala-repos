@@ -135,8 +135,9 @@ class BucketizerSuite
   test(
     "Binary search correctness in contrast with linear search, on random data") {
     val data = Array.fill(100)(Random.nextDouble())
-    val splits: Array[Double] = Double.NegativeInfinity +:
-      Array.fill(10)(Random.nextDouble()).sorted :+ Double.PositiveInfinity
+    val splits: Array[Double] = Double
+      .NegativeInfinity +: Array.fill(10)(Random.nextDouble()).sorted :+
+      Double.PositiveInfinity
     val bsResult = Vectors
       .dense(data.map(x => Bucketizer.binarySearchForBuckets(splits, x)))
     val lsResult = Vectors

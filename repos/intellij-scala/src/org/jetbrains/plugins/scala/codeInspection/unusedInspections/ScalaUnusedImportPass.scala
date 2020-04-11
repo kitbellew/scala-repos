@@ -60,17 +60,17 @@ class ScalaUnusedImportPass(
       progress: ProgressIndicator): Unit = {
     file match {
       case scalaFile: ScalaFile
-          if HighlightingLevelManager
-            .getInstance(file.getProject) shouldInspect file =>
-        val unusedImports: Array[ImportUsed] = ImportTracker getInstance file
-          .getProject getUnusedImport scalaFile
+          if HighlightingLevelManager.getInstance(file.getProject) shouldInspect
+            file =>
+        val unusedImports: Array[ImportUsed] = ImportTracker getInstance
+          file.getProject getUnusedImport scalaFile
         val annotations = collectAnnotations(
           unusedImports,
           new AnnotationHolderImpl(new AnnotationSession(file)))
 
         val list = new util.ArrayList[HighlightInfo](annotations.length)
-        annotations foreach (annotation =>
-          list add (HighlightInfo fromAnnotation annotation))
+        annotations foreach
+          (annotation => list add (HighlightInfo fromAnnotation annotation))
 
         if (ScalaApplicationSettings
               .getInstance()
@@ -95,8 +95,8 @@ class ScalaUnusedImportPass(
     if (editor != null && !myHighlights.isEmpty) {
       if (myOptimizeImportsRunnable != null &&
           ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY &&
-          ScalaUnusedImportPass.timeToOptimizeImports(file) && file
-            .isWritable) {
+          ScalaUnusedImportPass.timeToOptimizeImports(file) &&
+          file.isWritable) {
         ScalaUnusedImportPass
           .invokeOnTheFlyImportOptimizer(myOptimizeImportsRunnable, file)
       }
@@ -155,8 +155,8 @@ object ScalaUnusedImportPass {
         .SERVICE
         .getInstance(file.getProject)
         .getModificationCount
-    lastStamp != null && lastStamp == currentStamp || !ProblemHighlightFilter
-      .shouldHighlightFile(file)
+    lastStamp != null && lastStamp == currentStamp ||
+    !ProblemHighlightFilter.shouldHighlightFile(file)
   }
 
   private def markFileUpToDate(file: PsiFile) {
@@ -173,8 +173,8 @@ object ScalaUnusedImportPass {
       return false
     val codeAnalyzer: DaemonCodeAnalyzerEx = DaemonCodeAnalyzerEx
       .getInstanceEx(file.getProject)
-    if (file == null || !codeAnalyzer.isHighlightingAvailable(file) || !file
-          .isInstanceOf[ScalaFile])
+    if (file == null || !codeAnalyzer.isHighlightingAvailable(file) ||
+        !file.isInstanceOf[ScalaFile])
       return false
     if (!codeAnalyzer.isErrorAnalyzingFinished(file))
       return false

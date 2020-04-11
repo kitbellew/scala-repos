@@ -29,31 +29,32 @@ class TcpSpec
 
   "Outgoing TCP stream" must {
 
-    "work in the happy case" in assertAllStagesStopped {
-      val testData = ByteString(1, 2, 3, 4, 5)
+    "work in the happy case" in
+      assertAllStagesStopped {
+        val testData = ByteString(1, 2, 3, 4, 5)
 
-      val server = new Server()
+        val server = new Server()
 
-      val tcpReadProbe = new TcpReadProbe()
-      val tcpWriteProbe = new TcpWriteProbe()
-      Source
-        .fromPublisher(tcpWriteProbe.publisherProbe)
-        .via(Tcp().outgoingConnection(server.address))
-        .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
-        .run()
-      val serverConnection = server.waitAccept()
+        val tcpReadProbe = new TcpReadProbe()
+        val tcpWriteProbe = new TcpWriteProbe()
+        Source
+          .fromPublisher(tcpWriteProbe.publisherProbe)
+          .via(Tcp().outgoingConnection(server.address))
+          .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
+          .run()
+        val serverConnection = server.waitAccept()
 
-      validateServerClientCommunication(
-        testData,
-        serverConnection,
-        tcpReadProbe,
-        tcpWriteProbe)
+        validateServerClientCommunication(
+          testData,
+          serverConnection,
+          tcpReadProbe,
+          tcpWriteProbe)
 
-      tcpWriteProbe.close()
-      tcpReadProbe.close()
+        tcpWriteProbe.close()
+        tcpReadProbe.close()
 
-      server.close()
-    }
+        server.close()
+      }
 
     "be able to write a sequence of ByteStrings" in {
       val server = new Server()
@@ -92,270 +93,278 @@ class TcpSpec
 
     }
 
-    "work when client closes write, then remote closes write" in assertAllStagesStopped {
-      val testData = ByteString(1, 2, 3, 4, 5)
-      val server = new Server()
+    "work when client closes write, then remote closes write" in
+      assertAllStagesStopped {
+        val testData = ByteString(1, 2, 3, 4, 5)
+        val server = new Server()
 
-      val tcpWriteProbe = new TcpWriteProbe()
-      val tcpReadProbe = new TcpReadProbe()
-      Source
-        .fromPublisher(tcpWriteProbe.publisherProbe)
-        .via(Tcp().outgoingConnection(server.address))
-        .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
-        .run()
-      val serverConnection = server.waitAccept()
+        val tcpWriteProbe = new TcpWriteProbe()
+        val tcpReadProbe = new TcpReadProbe()
+        Source
+          .fromPublisher(tcpWriteProbe.publisherProbe)
+          .via(Tcp().outgoingConnection(server.address))
+          .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
+          .run()
+        val serverConnection = server.waitAccept()
 
-      // Client can still write
-      tcpWriteProbe.write(testData)
-      serverConnection.read(5)
-      serverConnection.waitRead() should be(testData)
+        // Client can still write
+        tcpWriteProbe.write(testData)
+        serverConnection.read(5)
+        serverConnection.waitRead() should be(testData)
 
-      // Close client side write
-      tcpWriteProbe.close()
-      serverConnection.expectClosed(PeerClosed)
+        // Close client side write
+        tcpWriteProbe.close()
+        serverConnection.expectClosed(PeerClosed)
 
-      // Server can still write
-      serverConnection.write(testData)
-      tcpReadProbe.read(5) should be(testData)
+        // Server can still write
+        serverConnection.write(testData)
+        tcpReadProbe.read(5) should be(testData)
 
-      // Close server side write
-      serverConnection.confirmedClose()
-      tcpReadProbe.subscriberProbe.expectComplete()
+        // Close server side write
+        serverConnection.confirmedClose()
+        tcpReadProbe.subscriberProbe.expectComplete()
 
-      serverConnection.expectClosed(ConfirmedClosed)
-      serverConnection.expectTerminated()
-    }
+        serverConnection.expectClosed(ConfirmedClosed)
+        serverConnection.expectTerminated()
+      }
 
-    "work when remote closes write, then client closes write" in assertAllStagesStopped {
-      val testData = ByteString(1, 2, 3, 4, 5)
-      val server = new Server()
+    "work when remote closes write, then client closes write" in
+      assertAllStagesStopped {
+        val testData = ByteString(1, 2, 3, 4, 5)
+        val server = new Server()
 
-      val tcpWriteProbe = new TcpWriteProbe()
-      val tcpReadProbe = new TcpReadProbe()
-      Source
-        .fromPublisher(tcpWriteProbe.publisherProbe)
-        .via(Tcp().outgoingConnection(server.address))
-        .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
-        .run()
-      val serverConnection = server.waitAccept()
+        val tcpWriteProbe = new TcpWriteProbe()
+        val tcpReadProbe = new TcpReadProbe()
+        Source
+          .fromPublisher(tcpWriteProbe.publisherProbe)
+          .via(Tcp().outgoingConnection(server.address))
+          .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
+          .run()
+        val serverConnection = server.waitAccept()
 
-      // Server can still write
-      serverConnection.write(testData)
-      tcpReadProbe.read(5) should be(testData)
+        // Server can still write
+        serverConnection.write(testData)
+        tcpReadProbe.read(5) should be(testData)
 
-      // Close server side write
-      serverConnection.confirmedClose()
-      tcpReadProbe.subscriberProbe.expectComplete()
+        // Close server side write
+        serverConnection.confirmedClose()
+        tcpReadProbe.subscriberProbe.expectComplete()
 
-      // Client can still write
-      tcpWriteProbe.write(testData)
-      serverConnection.read(5)
-      serverConnection.waitRead() should be(testData)
+        // Client can still write
+        tcpWriteProbe.write(testData)
+        serverConnection.read(5)
+        serverConnection.waitRead() should be(testData)
 
-      // Close client side write
-      tcpWriteProbe.close()
-      serverConnection.expectClosed(ConfirmedClosed)
-      serverConnection.expectTerminated()
-    }
+        // Close client side write
+        tcpWriteProbe.close()
+        serverConnection.expectClosed(ConfirmedClosed)
+        serverConnection.expectTerminated()
+      }
 
-    "work when client closes read, then client closes write" in assertAllStagesStopped {
-      val testData = ByteString(1, 2, 3, 4, 5)
-      val server = new Server()
+    "work when client closes read, then client closes write" in
+      assertAllStagesStopped {
+        val testData = ByteString(1, 2, 3, 4, 5)
+        val server = new Server()
 
-      val tcpWriteProbe = new TcpWriteProbe()
-      val tcpReadProbe = new TcpReadProbe()
-      Source
-        .fromPublisher(tcpWriteProbe.publisherProbe)
-        .via(Tcp().outgoingConnection(server.address))
-        .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
-        .run()
-      val serverConnection = server.waitAccept()
+        val tcpWriteProbe = new TcpWriteProbe()
+        val tcpReadProbe = new TcpReadProbe()
+        Source
+          .fromPublisher(tcpWriteProbe.publisherProbe)
+          .via(Tcp().outgoingConnection(server.address))
+          .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
+          .run()
+        val serverConnection = server.waitAccept()
 
-      // Server can still write
-      serverConnection.write(testData)
-      tcpReadProbe.read(5) should be(testData)
+        // Server can still write
+        serverConnection.write(testData)
+        tcpReadProbe.read(5) should be(testData)
 
-      // Close client side read
-      tcpReadProbe.tcpReadSubscription.cancel()
+        // Close client side read
+        tcpReadProbe.tcpReadSubscription.cancel()
 
-      // Client can still write
-      tcpWriteProbe.write(testData)
-      serverConnection.read(5)
-      serverConnection.waitRead() should be(testData)
+        // Client can still write
+        tcpWriteProbe.write(testData)
+        serverConnection.read(5)
+        serverConnection.waitRead() should be(testData)
 
-      // Close client side write
-      tcpWriteProbe.close()
+        // Close client side write
+        tcpWriteProbe.close()
 
-      // Need a write on the server side to detect the close event
-      awaitAssert(
-        {
-          serverConnection.write(testData)
-          serverConnection.expectClosed(_.isErrorClosed, 500.millis)
-        },
-        max = 5.seconds)
-      serverConnection.expectTerminated()
-    }
+        // Need a write on the server side to detect the close event
+        awaitAssert(
+          {
+            serverConnection.write(testData)
+            serverConnection.expectClosed(_.isErrorClosed, 500.millis)
+          },
+          max = 5.seconds)
+        serverConnection.expectTerminated()
+      }
 
-    "work when client closes write, then client closes read" in assertAllStagesStopped {
-      val testData = ByteString(1, 2, 3, 4, 5)
-      val server = new Server()
+    "work when client closes write, then client closes read" in
+      assertAllStagesStopped {
+        val testData = ByteString(1, 2, 3, 4, 5)
+        val server = new Server()
 
-      val tcpWriteProbe = new TcpWriteProbe()
-      val tcpReadProbe = new TcpReadProbe()
-      Source
-        .fromPublisher(tcpWriteProbe.publisherProbe)
-        .via(Tcp().outgoingConnection(server.address))
-        .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
-        .run()
-      val serverConnection = server.waitAccept()
+        val tcpWriteProbe = new TcpWriteProbe()
+        val tcpReadProbe = new TcpReadProbe()
+        Source
+          .fromPublisher(tcpWriteProbe.publisherProbe)
+          .via(Tcp().outgoingConnection(server.address))
+          .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
+          .run()
+        val serverConnection = server.waitAccept()
 
-      // Client can still write
-      tcpWriteProbe.write(testData)
-      serverConnection.read(5)
-      serverConnection.waitRead() should be(testData)
+        // Client can still write
+        tcpWriteProbe.write(testData)
+        serverConnection.read(5)
+        serverConnection.waitRead() should be(testData)
 
-      // Close client side write
-      tcpWriteProbe.close()
-      serverConnection.expectClosed(PeerClosed)
+        // Close client side write
+        tcpWriteProbe.close()
+        serverConnection.expectClosed(PeerClosed)
 
-      // Server can still write
-      serverConnection.write(testData)
-      tcpReadProbe.read(5) should be(testData)
+        // Server can still write
+        serverConnection.write(testData)
+        tcpReadProbe.read(5) should be(testData)
 
-      // Close client side read
-      tcpReadProbe.tcpReadSubscription.cancel()
+        // Close client side read
+        tcpReadProbe.tcpReadSubscription.cancel()
 
-      // Need a write on the server side to detect the close event
-      awaitAssert(
-        {
-          serverConnection.write(testData)
-          serverConnection.expectClosed(_.isErrorClosed, 500.millis)
-        },
-        max = 5.seconds)
-      serverConnection.expectTerminated()
-    }
+        // Need a write on the server side to detect the close event
+        awaitAssert(
+          {
+            serverConnection.write(testData)
+            serverConnection.expectClosed(_.isErrorClosed, 500.millis)
+          },
+          max = 5.seconds)
+        serverConnection.expectTerminated()
+      }
 
-    "work when client closes read, then server closes write, then client closes write" in assertAllStagesStopped {
-      val testData = ByteString(1, 2, 3, 4, 5)
-      val server = new Server()
+    "work when client closes read, then server closes write, then client closes write" in
+      assertAllStagesStopped {
+        val testData = ByteString(1, 2, 3, 4, 5)
+        val server = new Server()
 
-      val tcpWriteProbe = new TcpWriteProbe()
-      val tcpReadProbe = new TcpReadProbe()
-      Source
-        .fromPublisher(tcpWriteProbe.publisherProbe)
-        .via(Tcp().outgoingConnection(server.address))
-        .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
-        .run()
-      val serverConnection = server.waitAccept()
+        val tcpWriteProbe = new TcpWriteProbe()
+        val tcpReadProbe = new TcpReadProbe()
+        Source
+          .fromPublisher(tcpWriteProbe.publisherProbe)
+          .via(Tcp().outgoingConnection(server.address))
+          .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
+          .run()
+        val serverConnection = server.waitAccept()
 
-      // Server can still write
-      serverConnection.write(testData)
-      tcpReadProbe.read(5) should be(testData)
+        // Server can still write
+        serverConnection.write(testData)
+        tcpReadProbe.read(5) should be(testData)
 
-      // Close client side read
-      tcpReadProbe.tcpReadSubscription.cancel()
+        // Close client side read
+        tcpReadProbe.tcpReadSubscription.cancel()
 
-      // Client can still write
-      tcpWriteProbe.write(testData)
-      serverConnection.read(5)
-      serverConnection.waitRead() should be(testData)
+        // Client can still write
+        tcpWriteProbe.write(testData)
+        serverConnection.read(5)
+        serverConnection.waitRead() should be(testData)
 
-      serverConnection.confirmedClose()
+        serverConnection.confirmedClose()
 
-      // Close client side write
-      tcpWriteProbe.close()
-      serverConnection.expectClosed(ConfirmedClosed)
-      serverConnection.expectTerminated()
-    }
+        // Close client side write
+        tcpWriteProbe.close()
+        serverConnection.expectClosed(ConfirmedClosed)
+        serverConnection.expectTerminated()
+      }
 
-    "shut everything down if client signals error" in assertAllStagesStopped {
-      val testData = ByteString(1, 2, 3, 4, 5)
-      val server = new Server()
+    "shut everything down if client signals error" in
+      assertAllStagesStopped {
+        val testData = ByteString(1, 2, 3, 4, 5)
+        val server = new Server()
 
-      val tcpWriteProbe = new TcpWriteProbe()
-      val tcpReadProbe = new TcpReadProbe()
+        val tcpWriteProbe = new TcpWriteProbe()
+        val tcpReadProbe = new TcpReadProbe()
 
-      Source
-        .fromPublisher(tcpWriteProbe.publisherProbe)
-        .via(Tcp().outgoingConnection(server.address))
-        .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
-        .run()
-      val serverConnection = server.waitAccept()
+        Source
+          .fromPublisher(tcpWriteProbe.publisherProbe)
+          .via(Tcp().outgoingConnection(server.address))
+          .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
+          .run()
+        val serverConnection = server.waitAccept()
 
-      // Server can still write
-      serverConnection.write(testData)
-      tcpReadProbe.read(5) should be(testData)
+        // Server can still write
+        serverConnection.write(testData)
+        tcpReadProbe.read(5) should be(testData)
 
-      // Client can still write
-      tcpWriteProbe.write(testData)
-      serverConnection.read(5)
-      serverConnection.waitRead() should be(testData)
+        // Client can still write
+        tcpWriteProbe.write(testData)
+        serverConnection.read(5)
+        serverConnection.waitRead() should be(testData)
 
-      // Cause error
-      tcpWriteProbe
-        .tcpWriteSubscription
-        .sendError(new IllegalStateException("test"))
+        // Cause error
+        tcpWriteProbe
+          .tcpWriteSubscription
+          .sendError(new IllegalStateException("test"))
 
-      tcpReadProbe.subscriberProbe.expectError()
-      serverConnection.expectClosed(_.isErrorClosed)
-      serverConnection.expectTerminated()
-    }
+        tcpReadProbe.subscriberProbe.expectError()
+        serverConnection.expectClosed(_.isErrorClosed)
+        serverConnection.expectTerminated()
+      }
 
-    "shut everything down if client signals error after remote has closed write" in assertAllStagesStopped {
-      val testData = ByteString(1, 2, 3, 4, 5)
-      val server = new Server()
+    "shut everything down if client signals error after remote has closed write" in
+      assertAllStagesStopped {
+        val testData = ByteString(1, 2, 3, 4, 5)
+        val server = new Server()
 
-      val tcpWriteProbe = new TcpWriteProbe()
-      val tcpReadProbe = new TcpReadProbe()
+        val tcpWriteProbe = new TcpWriteProbe()
+        val tcpReadProbe = new TcpReadProbe()
 
-      Source
-        .fromPublisher(tcpWriteProbe.publisherProbe)
-        .via(Tcp().outgoingConnection(server.address))
-        .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
-        .run()
-      val serverConnection = server.waitAccept()
+        Source
+          .fromPublisher(tcpWriteProbe.publisherProbe)
+          .via(Tcp().outgoingConnection(server.address))
+          .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
+          .run()
+        val serverConnection = server.waitAccept()
 
-      // Server can still write
-      serverConnection.write(testData)
-      tcpReadProbe.read(5) should be(testData)
+        // Server can still write
+        serverConnection.write(testData)
+        tcpReadProbe.read(5) should be(testData)
 
-      // Close remote side write
-      serverConnection.confirmedClose()
-      tcpReadProbe.subscriberProbe.expectComplete()
+        // Close remote side write
+        serverConnection.confirmedClose()
+        tcpReadProbe.subscriberProbe.expectComplete()
 
-      // Client can still write
-      tcpWriteProbe.write(testData)
-      serverConnection.read(5)
-      serverConnection.waitRead() should be(testData)
+        // Client can still write
+        tcpWriteProbe.write(testData)
+        serverConnection.read(5)
+        serverConnection.waitRead() should be(testData)
 
-      tcpWriteProbe
-        .tcpWriteSubscription
-        .sendError(new IllegalStateException("test"))
-      serverConnection.expectClosed(_.isErrorClosed)
-      serverConnection.expectTerminated()
-    }
+        tcpWriteProbe
+          .tcpWriteSubscription
+          .sendError(new IllegalStateException("test"))
+        serverConnection.expectClosed(_.isErrorClosed)
+        serverConnection.expectTerminated()
+      }
 
-    "shut down both streams when connection is aborted remotely" in assertAllStagesStopped {
-      // Client gets a PeerClosed event and does not know that the write side is also closed
-      val testData = ByteString(1, 2, 3, 4, 5)
-      val server = new Server()
+    "shut down both streams when connection is aborted remotely" in
+      assertAllStagesStopped {
+        // Client gets a PeerClosed event and does not know that the write side is also closed
+        val testData = ByteString(1, 2, 3, 4, 5)
+        val server = new Server()
 
-      val tcpWriteProbe = new TcpWriteProbe()
-      val tcpReadProbe = new TcpReadProbe()
+        val tcpWriteProbe = new TcpWriteProbe()
+        val tcpReadProbe = new TcpReadProbe()
 
-      Source
-        .fromPublisher(tcpWriteProbe.publisherProbe)
-        .via(Tcp().outgoingConnection(server.address))
-        .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
-        .run()
-      val serverConnection = server.waitAccept()
+        Source
+          .fromPublisher(tcpWriteProbe.publisherProbe)
+          .via(Tcp().outgoingConnection(server.address))
+          .to(Sink.fromSubscriber(tcpReadProbe.subscriberProbe))
+          .run()
+        val serverConnection = server.waitAccept()
 
-      serverConnection.abort()
-      tcpReadProbe.subscriberProbe.expectSubscriptionAndError()
-      tcpWriteProbe.tcpWriteSubscription.expectCancellation()
+        serverConnection.abort()
+        tcpReadProbe.subscriberProbe.expectSubscriptionAndError()
+        tcpWriteProbe.tcpWriteSubscription.expectCancellation()
 
-      serverConnection.expectTerminated()
-    }
+        serverConnection.expectTerminated()
+      }
 
     "materialize correctly when used in multiple flows" in {
       val testData = ByteString(1, 2, 3, 4, 5)
@@ -406,41 +415,42 @@ class TcpSpec
       server.close()
     }
 
-    "properly full-close if requested" in assertAllStagesStopped {
-      val serverAddress = temporaryServerAddress()
-      val writeButIgnoreRead: Flow[ByteString, ByteString, NotUsed] =
-        Flow.fromSinkAndSourceMat(
-          Sink.ignore,
-          Source.single(ByteString("Early response")))(Keep.right)
+    "properly full-close if requested" in
+      assertAllStagesStopped {
+        val serverAddress = temporaryServerAddress()
+        val writeButIgnoreRead: Flow[ByteString, ByteString, NotUsed] =
+          Flow.fromSinkAndSourceMat(
+            Sink.ignore,
+            Source.single(ByteString("Early response")))(Keep.right)
 
-      val binding = Await.result(
-        Tcp()
-          .bind(
-            serverAddress.getHostName,
-            serverAddress.getPort,
-            halfClose = false)
-          .toMat(
-            Sink.foreach { conn ⇒
-              conn.flow.join(writeButIgnoreRead).run()
-            })(Keep.left)
-          .run(),
-        3.seconds
-      )
+        val binding = Await.result(
+          Tcp()
+            .bind(
+              serverAddress.getHostName,
+              serverAddress.getPort,
+              halfClose = false)
+            .toMat(
+              Sink.foreach { conn ⇒
+                conn.flow.join(writeButIgnoreRead).run()
+              })(Keep.left)
+            .run(),
+          3.seconds
+        )
 
-      val (promise, result) = Source
-        .maybe[ByteString]
-        .via(
-          Tcp().outgoingConnection(
-            serverAddress.getHostName,
-            serverAddress.getPort))
-        .toMat(Sink.fold(ByteString.empty)(_ ++ _))(Keep.both)
-        .run()
+        val (promise, result) = Source
+          .maybe[ByteString]
+          .via(
+            Tcp().outgoingConnection(
+              serverAddress.getHostName,
+              serverAddress.getPort))
+          .toMat(Sink.fold(ByteString.empty)(_ ++ _))(Keep.both)
+          .run()
 
-      Await.result(result, 3.seconds) should ===(ByteString("Early response"))
+        Await.result(result, 3.seconds) should ===(ByteString("Early response"))
 
-      promise.success(None) // close client upstream, no more data
-      binding.unbind()
-    }
+        promise.success(None) // close client upstream, no more data
+        binding.unbind()
+      }
 
     "Echo should work even if server is in full close mode" in {
       val serverAddress = temporaryServerAddress()
@@ -489,14 +499,10 @@ class TcpSpec
 
       // Getting rid of existing connection actors by using a blunt instrument
       system2.actorSelection(
-        akka
-          .io
-          .Tcp(system2)
-          .getManager
-          .path / "selectors" / s"$$a" / "*") ! Kill
+        akka.io.Tcp(system2).getManager.path / "selectors" / s"$$a" / "*") !
+        Kill
 
-      a[StreamTcpException] should be thrownBy
-        Await.result(result, 3.seconds)
+      a[StreamTcpException] should be thrownBy Await.result(result, 3.seconds)
 
       binding
         .map(_.unbind())
@@ -569,8 +575,8 @@ class TcpSpec
       Await.result(echoServerFinish, 1.second)
     }
 
-    "bind and unbind correctly" in EventFilter[BindException](occurrences = 2)
-      .intercept {
+    "bind and unbind correctly" in
+      EventFilter[BindException](occurrences = 2).intercept {
         if (Helpers.isWindows) {
           info("On Windows unbinding is not immediate")
           pending
@@ -595,12 +601,14 @@ class TcpSpec
         val binding3F = bind.to(Sink.fromSubscriber(probe3)).run()
         probe3.expectSubscriptionAndError()
 
-        a[BindFailedException] shouldBe thrownBy {
-          Await.result(binding2F, 1.second)
-        }
-        a[BindFailedException] shouldBe thrownBy {
-          Await.result(binding3F, 1.second)
-        }
+        a[BindFailedException] shouldBe
+          thrownBy {
+            Await.result(binding2F, 1.second)
+          }
+        a[BindFailedException] shouldBe
+          thrownBy {
+            Await.result(binding3F, 1.second)
+          }
 
         // Now unbind first
         Await.result(binding1.unbind(), 1.second)
@@ -616,58 +624,60 @@ class TcpSpec
         Await.result(binding4.unbind(), 1.second)
       }
 
-    "not shut down connections after the connection stream cancelled" in assertAllStagesStopped {
-      val address = temporaryServerAddress()
-      Tcp()
-        .bind(address.getHostName, address.getPort)
-        .take(1)
-        .runForeach { tcp ⇒
-          Thread
-            .sleep(1000) // we're testing here to see if it survives such race
-          tcp.flow.join(Flow[ByteString]).run()
-        }
+    "not shut down connections after the connection stream cancelled" in
+      assertAllStagesStopped {
+        val address = temporaryServerAddress()
+        Tcp()
+          .bind(address.getHostName, address.getPort)
+          .take(1)
+          .runForeach { tcp ⇒
+            Thread
+              .sleep(1000) // we're testing here to see if it survives such race
+            tcp.flow.join(Flow[ByteString]).run()
+          }
 
-      val total =
-        Source(immutable.Iterable.fill(1000)(ByteString(0)))
-          .via(Tcp().outgoingConnection(address))
-          .runFold(0)(_ + _.size)
+        val total =
+          Source(immutable.Iterable.fill(1000)(ByteString(0)))
+            .via(Tcp().outgoingConnection(address))
+            .runFold(0)(_ + _.size)
 
-      Await.result(total, 3.seconds) should ===(1000)
-    }
-
-    "shut down properly even if some accepted connection Flows have not been subscribed to" in assertAllStagesStopped {
-      val address = temporaryServerAddress()
-      val firstClientConnected = Promise[Unit]()
-      val takeTwoAndDropSecond = Flow[IncomingConnection]
-        .map(conn ⇒ {
-          firstClientConnected.trySuccess(())
-          conn
-        })
-        .grouped(2)
-        .take(1)
-        .map(_.head)
-      Tcp()
-        .bind(address.getHostName, address.getPort)
-        .via(takeTwoAndDropSecond)
-        .runForeach(_.flow.join(Flow[ByteString]).run())
-
-      val folder =
-        Source(immutable.Iterable.fill(100)(ByteString(0)))
-          .via(Tcp().outgoingConnection(address))
-          .fold(0)(_ + _.size)
-          .toMat(Sink.head)(Keep.right)
-
-      val total = folder.run()
-
-      awaitAssert(firstClientConnected.future, 2.seconds)
-      val rejected = folder.run()
-
-      Await.result(total, 10.seconds) should ===(100)
-
-      a[StreamTcpException] should be thrownBy {
-        Await.result(rejected, 5.seconds) should ===(100)
+        Await.result(total, 3.seconds) should ===(1000)
       }
-    }
+
+    "shut down properly even if some accepted connection Flows have not been subscribed to" in
+      assertAllStagesStopped {
+        val address = temporaryServerAddress()
+        val firstClientConnected = Promise[Unit]()
+        val takeTwoAndDropSecond = Flow[IncomingConnection]
+          .map(conn ⇒ {
+            firstClientConnected.trySuccess(())
+            conn
+          })
+          .grouped(2)
+          .take(1)
+          .map(_.head)
+        Tcp()
+          .bind(address.getHostName, address.getPort)
+          .via(takeTwoAndDropSecond)
+          .runForeach(_.flow.join(Flow[ByteString]).run())
+
+        val folder =
+          Source(immutable.Iterable.fill(100)(ByteString(0)))
+            .via(Tcp().outgoingConnection(address))
+            .fold(0)(_ + _.size)
+            .toMat(Sink.head)(Keep.right)
+
+        val total = folder.run()
+
+        awaitAssert(firstClientConnected.future, 2.seconds)
+        val rejected = folder.run()
+
+        Await.result(total, 10.seconds) should ===(100)
+
+        a[StreamTcpException] should be thrownBy {
+          Await.result(rejected, 5.seconds) should ===(100)
+        }
+      }
   }
 
   def validateServerClientCommunication(

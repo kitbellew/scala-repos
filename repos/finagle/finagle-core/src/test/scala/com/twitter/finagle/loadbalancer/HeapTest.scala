@@ -44,11 +44,12 @@ class HeapTest extends FunSuite {
       fixUp(heap, N + 1 - i)
       val copy = heap.clone()
       val ordered = new Array[Int](N + 1 - i)
-      0 until (N + 1 - i) foreach { j =>
-        ordered(j) = copy(1)
-        copy(1) = copy(N + 1 - i - j)
-        fixDown(copy, 1, N + 1 - i - j)
-      }
+      0 until
+        (N + 1 - i) foreach { j =>
+          ordered(j) = copy(1)
+          copy(1) = copy(N + 1 - i - j)
+          fixDown(copy, 1, N + 1 - i - j)
+        }
 
       assert(ordered.toSeq === input.take(N - i + 1).sorted)
     }

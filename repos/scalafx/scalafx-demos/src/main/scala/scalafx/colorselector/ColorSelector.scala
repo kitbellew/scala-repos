@@ -159,9 +159,8 @@ object ColorSelector extends JFXApp {
         fraction = 0.45
       }
       onMouseClicked = (event: MouseEvent) => {
-        if ((
-              event.getClickCount == 2
-            ) && (event.button == MouseButton.Primary)) {
+        if ((event.getClickCount == 2) &&
+            (event.button == MouseButton.Primary)) {
           randomizeColors()
         }
       }
@@ -169,8 +168,9 @@ object ColorSelector extends JFXApp {
 
   currentColor.onChange(
     rectangleRegion.setStyle(
-      "-fx-background-color: " + RgbFormatter
-        .format(currentColor(), !this.chbDisableAlpha.selected.value)))
+      "-fx-background-color: " +
+        RgbFormatter
+          .format(currentColor(), !this.chbDisableAlpha.selected.value)))
 
   val controlRed =
     new SliderControl("R") {

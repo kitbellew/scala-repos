@@ -336,8 +336,8 @@ abstract class TreeBrowsers {
                 "NoSymbol has no owner")
           if ((t.symbol ne null) && t.symbol.isType) {
             str.append(
-              "\ntermSymbol: " + t.symbol.tpe.termSymbol
-                + "\ntypeSymbol: " + t.symbol.tpe.typeSymbol)
+              "\ntermSymbol: " + t.symbol.tpe.termSymbol + "\ntypeSymbol: " +
+                t.symbol.tpe.typeSymbol)
             if (t.symbol.isTypeSkolem)
               str.append("\nSkolem of: " + t.symbol.deSkolemize)
           }
@@ -574,16 +574,12 @@ abstract class TreeBrowsers {
         if (s.isStaticMember)
           str = str + " isStatic "
         (
-          str + " annotations: " + s.annotations.mkString("", " ", "")
-            + (
-              if (s.isTypeSkolem)
-                "\ndeSkolemized annotations: " + s
-                  .deSkolemize
-                  .annotations
-                  .mkString("", " ", "")
-              else
-                ""
-            )
+          str + " annotations: " + s.annotations.mkString("", " ", "") +
+            (if (s.isTypeSkolem)
+               "\ndeSkolemized annotations: " +
+                 s.deSkolemize.annotations.mkString("", " ", "")
+             else
+               "")
         )
       } else
         ""
@@ -642,8 +638,8 @@ abstract class TreeBrowsers {
           Document.group(
             Document.nest(
               4,
-              "SingleType(" :/:
-                toDocument(pre) :: ", " :/: sym.name.toString :: ")"))
+              "SingleType(" :/: toDocument(pre) :: ", " :/: sym.name.toString ::
+                ")"))
 
         case ConstantType(value) =>
           "ConstantType(" + value + ")"
@@ -652,32 +648,26 @@ abstract class TreeBrowsers {
           Document.group(
             Document.nest(
               4,
-              "TypeRef(" :/:
-                toDocument(pre) :: ", " :/:
-                sym.name.toString + sym.idString :: ", " :/:
-                "[ " :: toDocument(args) :: "]" :: ")"))
+              "TypeRef(" :/: toDocument(pre) :: ", " :/:
+                sym.name.toString + sym.idString :: ", " :/: "[ " ::
+                toDocument(args) :: "]" :: ")"))
 
         case TypeBounds(lo, hi) =>
           Document.group(
             Document.nest(
               4,
-              "TypeBounds(" :/:
-                toDocument(lo) :: ", " :/:
-                toDocument(hi) :: ")"))
+              "TypeBounds(" :/: toDocument(lo) :: ", " :/: toDocument(hi) ::
+                ")"))
 
         case RefinedType(parents, defs) =>
           Document.group(
-            Document.nest(
-              4,
-              "RefinedType(" :/:
-                toDocument(parents) :: ")"))
+            Document.nest(4, "RefinedType(" :/: toDocument(parents) :: ")"))
 
         case ClassInfoType(parents, defs, clazz) =>
           Document.group(
             Document.nest(
               4,
-              "ClassInfoType(" :/:
-                toDocument(parents) :: ", " :/:
+              "ClassInfoType(" :/: toDocument(parents) :: ", " :/:
                 clazz.name.toString + clazz.idString :: ")"))
 
         case MethodType(params, result) =>
@@ -685,37 +675,28 @@ abstract class TreeBrowsers {
             Document.nest(
               4,
               "MethodType(" :/:
-                Document.group(
-                  "(" :/:
-                    symsToDocument(params) :/:
-                    "), ") :/:
+                Document.group("(" :/: symsToDocument(params) :/: "), ") :/:
                 toDocument(result) :: ")"))
 
         case NullaryMethodType(result) =>
           Document.group(
-            Document.nest(
-              4,
-              "NullaryMethodType(" :/:
-                toDocument(result) :: ")"))
+            Document
+              .nest(4, "NullaryMethodType(" :/: toDocument(result) :: ")"))
 
         case PolyType(tparams, result) =>
           Document.group(
             Document.nest(
               4,
               "PolyType(" :/:
-                Document.group(
-                  "(" :/:
-                    symsToDocument(tparams) :/:
-                    "), ") :/:
+                Document.group("(" :/: symsToDocument(tparams) :/: "), ") :/:
                 toDocument(result) :: ")"))
 
         case AnnotatedType(annots, tp) =>
           Document.group(
             Document.nest(
               4,
-              "AnnotatedType(" :/:
-                annots.mkString("[", ",", "]") :/:
-                "," :/: toDocument(tp) :: ")"))
+              "AnnotatedType(" :/: annots.mkString("[", ",", "]") :/: "," :/:
+                toDocument(tp) :: ")"))
 
         case ExistentialType(tparams, result) =>
           Document.group(
@@ -732,8 +713,7 @@ abstract class TreeBrowsers {
           Document.group(
             Document.nest(
               4,
-              "SuperType(" :/:
-                toDocument(thistpe) :/: ", " :/:
+              "SuperType(" :/: toDocument(thistpe) :/: ", " :/:
                 toDocument(supertpe) :: ")"))
         case _ =>
           sys.error("Unknown case: " + t.toString + ", " + t.getClass)

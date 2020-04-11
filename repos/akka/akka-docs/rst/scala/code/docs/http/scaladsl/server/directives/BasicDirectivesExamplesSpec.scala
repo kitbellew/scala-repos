@@ -30,9 +30,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/abcdef") ~> route ~> check {
-      responseAs[String] shouldEqual "The length of the request URI is 25"
-    }
+    Get("/abcdef") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The length of the request URI is 25"
+      }
     //#
   }
   "0extractLog" in {
@@ -43,9 +44,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/abcdef") ~> route ~> check {
-      responseAs[String] shouldEqual "It's amazing!"
-    }
+    Get("/abcdef") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "It's amazing!"
+      }
     //#
   }
   "withMaterializer-0" in {
@@ -70,12 +72,14 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       } ~ sample() // default materializer will be used
 
     // tests:
-    Get("/sample") ~> route ~> check {
-      responseAs[String] shouldEqual s"Materialized by ${materializer.##}!"
-    }
-    Get("/special/sample") ~> route ~> check {
-      responseAs[String] shouldEqual s"Materialized by ${special.##}!"
-    }
+    Get("/sample") ~> route ~>
+      check {
+        responseAs[String] shouldEqual s"Materialized by ${materializer.##}!"
+      }
+    Get("/special/sample") ~> route ~>
+      check {
+        responseAs[String] shouldEqual s"Materialized by ${special.##}!"
+      }
     //#
   }
   "extractMaterializer-0" in {
@@ -93,66 +97,72 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       } // default materializer will be used
 
     // tests:
-    Get("/sample") ~> route ~> check {
-      responseAs[String] shouldEqual s"Materialized by ${materializer.##}!"
-    }
+    Get("/sample") ~> route ~>
+      check {
+        responseAs[String] shouldEqual s"Materialized by ${materializer.##}!"
+      }
     //#
   }
-  "withExecutionContext-0" in compileOnlySpec {
-    //#withExecutionContext-0
-    val special = system.dispatchers.lookup("special")
+  "withExecutionContext-0" in
+    compileOnlySpec {
+      //#withExecutionContext-0
+      val special = system.dispatchers.lookup("special")
 
-    def sample() =
-      path("sample") {
-        extractExecutionContext { implicit executor =>
-          complete {
-            Future(
-              s"Run on ${executor.##}!"
-            ) // uses the `executor` ExecutionContext
+      def sample() =
+        path("sample") {
+          extractExecutionContext { implicit executor =>
+            complete {
+              Future(
+                s"Run on ${executor.##}!"
+              ) // uses the `executor` ExecutionContext
+            }
           }
         }
-      }
 
-    val route =
-      pathPrefix("special") {
-        withExecutionContext(special) {
-          sample() // `special` execution context will be used
+      val route =
+        pathPrefix("special") {
+          withExecutionContext(special) {
+            sample() // `special` execution context will be used
+          }
+        } ~ sample() // default execution context will be used
+
+      // tests:
+      Get("/sample") ~> route ~>
+        check {
+          responseAs[String] shouldEqual s"Run on ${system.dispatcher.##}!"
         }
-      } ~ sample() // default execution context will be used
-
-    // tests:
-    Get("/sample") ~> route ~> check {
-      responseAs[String] shouldEqual s"Run on ${system.dispatcher.##}!"
+      Get("/special/sample") ~> route ~>
+        check {
+          responseAs[String] shouldEqual s"Run on ${special.##}!"
+        }
+      //#
     }
-    Get("/special/sample") ~> route ~> check {
-      responseAs[String] shouldEqual s"Run on ${special.##}!"
-    }
-    //#
-  }
-  "extractExecutionContext-0" in compileOnlySpec {
-    //#extractExecutionContext-0
-    def sample() =
-      path("sample") {
-        extractExecutionContext { implicit executor =>
-          complete {
-            Future(
-              s"Run on ${executor.##}!"
-            ) // uses the `executor` ExecutionContext
+  "extractExecutionContext-0" in
+    compileOnlySpec {
+      //#extractExecutionContext-0
+      def sample() =
+        path("sample") {
+          extractExecutionContext { implicit executor =>
+            complete {
+              Future(
+                s"Run on ${executor.##}!"
+              ) // uses the `executor` ExecutionContext
+            }
           }
         }
-      }
 
-    val route =
-      pathPrefix("special") {
-        sample() // default execution context will be used
-      }
+      val route =
+        pathPrefix("special") {
+          sample() // default execution context will be used
+        }
 
-    // tests:
-    Get("/sample") ~> route ~> check {
-      responseAs[String] shouldEqual s"Run on ${system.dispatcher.##}!"
+      // tests:
+      Get("/sample") ~> route ~>
+        check {
+          responseAs[String] shouldEqual s"Run on ${system.dispatcher.##}!"
+        }
+      //#
     }
-    //#
-  }
   "0withLog" in {
     //#0withLog
     val special = Logging(system, "SpecialRoutes")
@@ -176,47 +186,52 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       } ~ sample() // default logging adapter will be used
 
     // tests:
-    Get("/sample") ~> route ~> check {
-      responseAs[String] shouldEqual s"Logging using ${system.log}!"
-    }
-    Get("/special/sample") ~> route ~> check {
-      responseAs[String] shouldEqual s"Logging using $special!"
-    }
+    Get("/sample") ~> route ~>
+      check {
+        responseAs[String] shouldEqual s"Logging using ${system.log}!"
+      }
+    Get("/special/sample") ~> route ~>
+      check {
+        responseAs[String] shouldEqual s"Logging using $special!"
+      }
     //#
   }
-  "withSettings-0" in compileOnlySpec {
-    //#withSettings-0
-    val special = RoutingSettings(system)
-      .withFileIODispatcher("special-io-dispatcher")
+  "withSettings-0" in
+    compileOnlySpec {
+      //#withSettings-0
+      val special = RoutingSettings(system)
+        .withFileIODispatcher("special-io-dispatcher")
 
-    def sample() =
-      path("sample") {
-        complete {
-          // internally uses the configured fileIODispatcher:
-          val source = FileIO.fromFile(new File("example.json"))
-          HttpResponse(entity = HttpEntity(
-            ContentTypes.`application/json`,
-            source))
+      def sample() =
+        path("sample") {
+          complete {
+            // internally uses the configured fileIODispatcher:
+            val source = FileIO.fromFile(new File("example.json"))
+            HttpResponse(entity = HttpEntity(
+              ContentTypes.`application/json`,
+              source))
+          }
         }
+
+      val route = get {
+        pathPrefix("special") {
+          withSettings(special) {
+            sample() // `special` file-io-dispatcher will be used to read the file
+          }
+        } ~ sample() // default file-io-dispatcher will be used to read the file
       }
 
-    val route = get {
-      pathPrefix("special") {
-        withSettings(special) {
-          sample() // `special` file-io-dispatcher will be used to read the file
+      // tests:
+      Post("/special/sample") ~> route ~>
+        check {
+          responseAs[String] shouldEqual s"{}"
         }
-      } ~ sample() // default file-io-dispatcher will be used to read the file
+      Get("/sample") ~> route ~>
+        check {
+          responseAs[String] shouldEqual "{}"
+        }
+      //#
     }
-
-    // tests:
-    Post("/special/sample") ~> route ~> check {
-      responseAs[String] shouldEqual s"{}"
-    }
-    Get("/sample") ~> route ~> check {
-      responseAs[String] shouldEqual "{}"
-    }
-    //#
-  }
   "textract" in {
     //#textract
     val pathAndQuery = textract { ctx =>
@@ -228,10 +243,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/abcdef?ghi=12") ~> route ~> check {
-      responseAs[
-        String] shouldEqual "The path is /abcdef and the query is ghi=12"
-    }
+    Get("/abcdef?ghi=12") ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "The path is /abcdef and the query is ghi=12"
+      }
     //#
   }
   "tprovide" in {
@@ -243,9 +259,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "Value is test and its length is 4"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "Value is test and its length is 4"
+      }
     //#
   }
   "0mapResponse" in {
@@ -255,9 +272,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     val route = mapResponse(overwriteResultStatus)(complete("abc"))
 
     // tests:
-    Get("/abcdef?ghi=12") ~> route ~> check {
-      status shouldEqual StatusCodes.BadGateway
-    }
+    Get("/abcdef?ghi=12") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.BadGateway
+      }
     //#
   }
   "1mapResponse-advanced-json" in {
@@ -305,9 +323,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "{}"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "{}"
+      }
     //#
   }
   "mapRouteResult" in {
@@ -329,9 +348,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-    }
+    Get("/") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.OK
+      }
     //#
   }
   "mapRouteResultFuture" in {
@@ -353,10 +373,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-      header[Server] shouldEqual Some(Server("MyServer 1.0"))
-    }
+    Get("/") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.OK
+        header[Server] shouldEqual Some(Server("MyServer 1.0"))
+      }
     //#
   }
   "mapResponseEntity" in {
@@ -373,9 +394,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     val route = prefixWithTest(complete("abc"))
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "testabc"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "testabc"
+      }
     //#
   }
   "mapResponseHeaders" in {
@@ -393,12 +415,12 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> RawHeader("id", "12345") ~> RawHeader(
-      "id2",
-      "67890") ~> route ~> check {
-      header("id") shouldEqual None
-      header("id2").get.value shouldEqual "67890"
-    }
+    Get("/") ~> RawHeader("id", "12345") ~> RawHeader("id2", "67890") ~>
+      route ~>
+      check {
+        header("id") shouldEqual None
+        header("id2").get.value shouldEqual "67890"
+      }
     //#
   }
   "mapInnerRoute" in {
@@ -418,9 +440,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "Got IllegalArgumentException 'BLIP! BLOP! Everything broke'"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "Got IllegalArgumentException 'BLIP! BLOP! Everything broke'"
+      }
     //#
   }
   "mapRejections" in {
@@ -433,13 +457,15 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      rejection shouldEqual AuthorizationFailedRejection
-    }
+    Get("/") ~> route ~>
+      check {
+        rejection shouldEqual AuthorizationFailedRejection
+      }
 
-    Get("/abc") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-    }
+    Get("/abc") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.OK
+      }
     //#
   }
   "recoverRejections" in {
@@ -474,18 +500,21 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/auth/never") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-      responseAs[String] shouldEqual "Nothing to see here, move along."
-    }
-    Get("/auth/always") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-      responseAs[String] shouldEqual "Welcome to the secret place!"
-    }
-    Get("/auth/does_not_exist") ~> route ~> check {
-      status shouldEqual StatusCodes.NotFound
-      responseAs[String] shouldEqual "Literally nothing to see here."
-    }
+    Get("/auth/never") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.OK
+        responseAs[String] shouldEqual "Nothing to see here, move along."
+      }
+    Get("/auth/always") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.OK
+        responseAs[String] shouldEqual "Welcome to the secret place!"
+      }
+    Get("/auth/does_not_exist") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.NotFound
+        responseAs[String] shouldEqual "Literally nothing to see here."
+      }
     //#
   }
   "recoverRejectionsWith" in {
@@ -512,10 +541,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/auth/never") ~> route ~> check {
-      status shouldEqual StatusCodes.OK
-      responseAs[String] shouldEqual "Nothing to see here, move along."
-    }
+    Get("/auth/never") ~> route ~>
+      check {
+        status shouldEqual StatusCodes.OK
+        responseAs[String] shouldEqual "Nothing to see here, move along."
+      }
     //#
   }
   "0mapRequest" in {
@@ -529,9 +559,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
         }
       }
 
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "The request method was POST"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "The request method was POST"
+      }
     //#
   }
   "mapRequestContext" in {
@@ -546,9 +577,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/abc/def/ghi") ~> route ~> check {
-      responseAs[String] shouldEqual "POST"
-    }
+    Get("/abc/def/ghi") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "POST"
+      }
     //#
   }
   "0mapRouteResult" in {
@@ -563,9 +595,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      rejections.nonEmpty shouldEqual true
-    }
+    Get("/") ~> route ~>
+      check {
+        rejections.nonEmpty shouldEqual true
+      }
     //#
   }
   "mapRouteResultPF" in {
@@ -581,9 +614,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      rejection shouldEqual AuthorizationFailedRejection
-    }
+    Get("/") ~> route ~>
+      check {
+        rejection shouldEqual AuthorizationFailedRejection
+      }
     //#
   }
   "mapRouteResultWithPF-0" in {
@@ -599,9 +633,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      rejection shouldEqual AuthorizationFailedRejection
-    }
+    Get("/") ~> route ~>
+      check {
+        rejection shouldEqual AuthorizationFailedRejection
+      }
     //#
   }
   "mapRouteResultWith-0" in {
@@ -621,9 +656,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      rejection shouldEqual AuthorizationFailedRejection
-    }
+    Get("/") ~> route ~>
+      check {
+        rejection shouldEqual AuthorizationFailedRejection
+      }
     //#
   }
   "pass" in {
@@ -631,9 +667,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     val route = pass(complete("abc"))
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "abc"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "abc"
+      }
     //#
   }
   "0provide" in {
@@ -646,9 +683,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "prefix:test"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "prefix:test"
+      }
     //#
   }
   "cancelRejections-filter-example" in {
@@ -668,10 +706,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/") ~> route ~> check {
-      rejections shouldEqual Nil
-      handled shouldEqual false
-    }
+    Get("/") ~> route ~>
+      check {
+        rejections shouldEqual Nil
+        handled shouldEqual false
+      }
     //#
   }
   "cancelRejection-example" in {
@@ -684,10 +723,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/") ~> route ~> check {
-      rejections shouldEqual Nil
-      handled shouldEqual false
-    }
+    Get("/") ~> route ~>
+      check {
+        rejections shouldEqual Nil
+        handled shouldEqual false
+      }
     //#
   }
   "extractRequest-example" in {
@@ -698,12 +738,16 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Post("/", "text") ~> route ~> check {
-      responseAs[String] shouldEqual "Request method is POST and content-type is text/plain; charset=UTF-8"
-    }
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "Request method is GET and content-type is none/none"
-    }
+    Post("/", "text") ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "Request method is POST and content-type is text/plain; charset=UTF-8"
+      }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "Request method is GET and content-type is none/none"
+      }
     //#
   }
   "extractSettings-examples" in {
@@ -714,10 +758,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[
-        String] shouldEqual s"RoutingSettings.renderVanityFooter = true"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          s"RoutingSettings.renderVanityFooter = true"
+      }
     //#
   }
   "mapSettings-examples" in {
@@ -734,10 +779,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      responseAs[
-        String] shouldEqual s"RoutingSettings.fileGetConditional = false"
-    }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          s"RoutingSettings.fileGetConditional = false"
+      }
     //#
   }
   "extractRequestContext-example" in {
@@ -753,12 +799,16 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Post("/", "text") ~> route ~> check {
-      responseAs[String] shouldEqual "Request method is POST and content-type is text/plain; charset=UTF-8"
-    }
-    Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual "Request method is GET and content-type is none/none"
-    }
+    Post("/", "text") ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "Request method is POST and content-type is text/plain; charset=UTF-8"
+      }
+    Get("/") ~> route ~>
+      check {
+        responseAs[String] shouldEqual
+          "Request method is GET and content-type is none/none"
+      }
     //#
   }
   "extractUri-example" in {
@@ -768,13 +818,15 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Get("/") ~> route ~> check {
-      // tests are executed with the host assumed to be "example.com"
-      responseAs[String] shouldEqual "Full URI: http://example.com/"
-    }
-    Get("/test") ~> route ~> check {
-      responseAs[String] shouldEqual "Full URI: http://example.com/test"
-    }
+    Get("/") ~> route ~>
+      check {
+        // tests are executed with the host assumed to be "example.com"
+        responseAs[String] shouldEqual "Full URI: http://example.com/"
+      }
+    Get("/test") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "Full URI: http://example.com/test"
+      }
     //#
   }
   "mapUnmatchedPath-example" in {
@@ -802,12 +854,14 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/123/abc") ~> route ~> check {
-      responseAs[String] shouldEqual "Content"
-    }
-    Get("/123456/abc") ~> route ~> check {
-      responseAs[String] shouldEqual "Content"
-    }
+    Get("/123/abc") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "Content"
+      }
+    Get("/123456/abc") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "Content"
+      }
     //#
   }
   "extractUnmatchedPath-example" in {
@@ -820,12 +874,14 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/abc") ~> route ~> check {
-      responseAs[String] shouldEqual "Unmatched: ''"
-    }
-    Get("/abc/456") ~> route ~> check {
-      responseAs[String] shouldEqual "Unmatched: '/456'"
-    }
+    Get("/abc") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "Unmatched: ''"
+      }
+    Get("/abc/456") ~> route ~>
+      check {
+        responseAs[String] shouldEqual "Unmatched: '/456'"
+      }
     //#
   }
 

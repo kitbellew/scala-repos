@@ -340,9 +340,9 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
       nullout(i, i + 1)
     }
     protected def tryMergeWithNext() =
-      if (next != null && (
-            size + next.size
-          ) < (array.length * waterline / waterlineDelim)) {
+      if (next != null &&
+          (size + next.size) <
+            (array.length * waterline / waterlineDelim)) {
         // copy the next array, then discard the next node
         Array.copy(next.array, 0, array, size, next.size)
         size = size + next.size
@@ -413,16 +413,14 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
       array
         .take(size)
         .mkString(
-          "Unrolled@%08x"
-            .format(System.identityHashCode(this)) + "[" + size + "/" + array
-            .length + "](",
+          "Unrolled@%08x".format(System.identityHashCode(this)) + "[" + size +
+            "/" + array.length + "](",
           ", ",
-          ")") + " -> " + (
-        if (next ne null)
-          next.toString
-        else
-          ""
-      )
+          ")") + " -> " +
+        (if (next ne null)
+           next.toString
+         else
+           "")
   }
 
 }

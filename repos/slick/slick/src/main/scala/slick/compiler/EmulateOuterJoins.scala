@@ -175,8 +175,8 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
         {
           case n: TableNode =>
             n.copy(identity = repl(n.identity)
-              .asInstanceOf[TableIdentitySymbol])(n.profileTable) :@ replaceTS(
-              n.nodeType)
+              .asInstanceOf[TableIdentitySymbol])(n.profileTable) :@
+              replaceTS(n.nodeType)
           case n: Pure =>
             n.copy(identity = repl(n.identity))
           case n: GroupBy =>

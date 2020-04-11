@@ -86,9 +86,10 @@ trait NIHDBPlatformSpecs extends ParseEvalStackSpecs[Future] {
   override def map(fs: => Fragments): Fragments =
     step {
       stack.startup()
-    } ^ fs ^ step {
-      stack.shutdown()
-    }
+    } ^ fs ^
+      step {
+        stack.shutdown()
+      }
 }
 
 object NIHDBTestStack extends NIHDBTestStack {

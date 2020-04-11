@@ -127,11 +127,12 @@ class DataServiceHandler[A](
                             content = Some(
                               Left(
                                 JObject(
-                                  "errors" -> JArray(
-                                    userError
-                                      .messages
-                                      .list
-                                      .map(JString(_)): _*))
+                                  "errors" ->
+                                    JArray(
+                                      userError
+                                        .messages
+                                        .list
+                                        .map(JString(_)): _*))
                                   .renderPretty
                                   .getBytes("UTF-8")))
                           )

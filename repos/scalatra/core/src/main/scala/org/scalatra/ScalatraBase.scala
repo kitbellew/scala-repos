@@ -414,11 +414,12 @@ trait ScalatraBase
       .getOrElse(Map.empty)
       .map {
         case (key, values) =>
-          key -> values.map(s =>
-            if (s.nonBlank)
-              UriDecoder.secondStep(s)
-            else
-              s)
+          key ->
+            values.map(s =>
+              if (s.nonBlank)
+                UriDecoder.secondStep(s)
+              else
+                s)
       }
     request(MultiParamsKey) = originalParams ++ routeParams
   }
@@ -769,11 +770,11 @@ trait ScalatraBase
       path match {
         case x
             if x.startsWith("/") && includeContextPath && includeServletPath =>
-          ensureSlash(routeBasePath) + ensureContextPathsStripped(
-            ensureSlash(path))
+          ensureSlash(routeBasePath) +
+            ensureContextPathsStripped(ensureSlash(path))
         case x if x.startsWith("/") && includeContextPath =>
-          ensureSlash(contextPath) + ensureContextPathStripped(
-            ensureSlash(path))
+          ensureSlash(contextPath) +
+            ensureContextPathStripped(ensureSlash(path))
         case x if x.startsWith("/") && includeServletPath =>
           request.getServletPath.blankOption map {
             ensureSlash(_) + ensureServletPathStripped(ensureSlash(path))
@@ -922,13 +923,13 @@ trait ScalatraBase
   }
 
   def serverHost(implicit request: HttpServletRequest): String = {
-    initParameter(HostNameKey).flatMap(_.blankOption) getOrElse request
-      .getServerName
+    initParameter(HostNameKey).flatMap(_.blankOption) getOrElse
+      request.getServerName
   }
 
   def serverPort(implicit request: HttpServletRequest): Int = {
-    initParameter(PortKey).flatMap(_.blankOption).map(_.toInt) getOrElse request
-      .getServerPort
+    initParameter(PortKey).flatMap(_.blankOption).map(_.toInt) getOrElse
+      request.getServerPort
   }
 
   protected def contextPath: String = servletContext.contextPath
@@ -948,8 +949,8 @@ trait ScalatraBase
   }
 
   def environment: String = {
-    sys.props.get(EnvironmentKey) orElse initParameter(
-      EnvironmentKey) getOrElse "DEVELOPMENT"
+    sys.props.get(EnvironmentKey) orElse initParameter(EnvironmentKey) getOrElse
+      "DEVELOPMENT"
   }
 
   /**
@@ -979,14 +980,12 @@ trait ScalatraBase
     */
   def multiParams(implicit request: HttpServletRequest): MultiParams = {
     val read = request.contains("MultiParamsRead")
-    val found = request.get(MultiParamsKey) map (
-      _.asInstanceOf[MultiParams] ++ (
-        if (read)
-          Map.empty
-        else
-          request.multiParameters
-      )
-    )
+    val found = request.get(MultiParamsKey) map
+      (_.asInstanceOf[MultiParams] ++
+        (if (read)
+           Map.empty
+         else
+           request.multiParameters))
     val multi = found getOrElse request.multiParameters
     request("MultiParamsRead") = new {}
     request(MultiParamsKey) = multi

@@ -68,8 +68,8 @@ object ArrayBuilder {
       val elemRuntimeClass =
         if (classOf[Unit] == elementClass)
           classOf[BoxedUnit]
-        else if (classOf[Null] == elementClass || classOf[
-                   Nothing] == elementClass)
+        else if (classOf[Null] == elementClass ||
+                 classOf[Nothing] == elementClass)
           classOf[Object]
         else
           elementClass

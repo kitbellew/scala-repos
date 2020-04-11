@@ -45,11 +45,10 @@ case class Player(
 
   def isUser(u: User) = userId.fold(false)(_ == u.id)
 
-  def userInfos: Option[Player.UserInfo] =
-    (userId |@| rating) {
-      case (id, ra) =>
-        Player.UserInfo(id, ra, provisional)
-    }
+  def userInfos: Option[Player.UserInfo] = (userId |@| rating) {
+    case (id, ra) =>
+      Player.UserInfo(id, ra, provisional)
+  }
 
   def wins = isWinner getOrElse false
 
@@ -187,8 +186,8 @@ object Player {
                   proposeTakebackAt = r intD proposeTakebackAt,
                   userId = userId,
                   rating = r intO rating flatMap ratingRange(userId),
-                  ratingDiff =
-                    r intO ratingDiff flatMap ratingDiffRange(userId),
+                  ratingDiff = r intO ratingDiff flatMap
+                    ratingDiffRange(userId),
                   provisional = r boolD provisional,
                   blurs = r intD blurs,
                   holdAlert = r.getO[HoldAlert](holdAlert),

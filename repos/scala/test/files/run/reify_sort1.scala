@@ -8,8 +8,7 @@ object Test extends App {
         a
       else {
         val pivot = a(a.length / 2)
-        sort(a.filter(_ < pivot)) :::
-          a.filter(_ == pivot) :::
+        sort(a.filter(_ < pivot)) ::: a.filter(_ == pivot) :::
           sort(a.filter(_ > pivot))
       }
     }

@@ -144,9 +144,8 @@ object ScalaRefCountHolder {
       ScalaLanguageDerivative getScalaFileOnDerivative file) getOrElse file
 
     Option(myFile getUserData SCALA_REF_COUNT_HOLDER_IN_FILE_KEY) getOrElse {
-      myFile.asInstanceOf[UserDataHolderEx] putUserDataIfAbsent (
-        SCALA_REF_COUNT_HOLDER_IN_FILE_KEY, new ScalaRefCountHolder
-      )
+      myFile.asInstanceOf[UserDataHolderEx] putUserDataIfAbsent
+        (SCALA_REF_COUNT_HOLDER_IN_FILE_KEY, new ScalaRefCountHolder)
     }
   }
 }

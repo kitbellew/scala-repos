@@ -43,10 +43,11 @@ final class LeaderboardApi(coll: Coll, maxPerPage: Int) {
           aggs
             .flatMap { agg =>
               PerfType.byId get agg._id map {
-                _ -> ChartData.PerfResult(
-                  nb = agg.nb,
-                  points = ChartData.Ints(agg.points),
-                  rank = ChartData.Ints(agg.ratios))
+                _ ->
+                  ChartData.PerfResult(
+                    nb = agg.nb,
+                    points = ChartData.Ints(agg.points),
+                    rank = ChartData.Ints(agg.ratios))
               }
             }
             .sortLike(PerfType.leaderboardable, _._1)

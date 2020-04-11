@@ -177,12 +177,12 @@ class CapConcurrentExecutionsTest
       When("the actor finishes now")
       watch(serialize.serializeExecutionActorRef)
       serialize.close()
-      expectMsgClass(classOf[Terminated])
-        .getActor should equal(serialize.serializeExecutionActorRef)
+      expectMsgClass(classOf[Terminated]).getActor should
+        equal(serialize.serializeExecutionActorRef)
 
       Then("the queued futures is failed immediately")
-      result3.failed.futureValue.getClass should be(
-        classOf[IllegalStateException])
+      result3.failed.futureValue.getClass should
+        be(classOf[IllegalStateException])
 
       And("the executing futures normally terminated")
       result1.isCompleted should be(false)

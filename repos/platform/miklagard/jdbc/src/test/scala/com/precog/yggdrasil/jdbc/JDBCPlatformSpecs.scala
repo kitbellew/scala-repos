@@ -167,12 +167,13 @@ object JDBCPlatformSpecEngine extends Logging {
                 val schema =
                   rows.foldLeft(Set[(String, String)]()) {
                     case (acc, properties) =>
-                      acc ++ (
-                        properties.map {
-                          case (p, (t, _)) =>
-                            (p, t)
-                        }
-                      ).toSet
+                      acc ++
+                        (
+                          properties.map {
+                            case (p, (t, _)) =>
+                              (p, t)
+                          }
+                        ).toSet
                   }
 
                 val ddlCreate = "CREATE TABLE %s (%s);".format(
@@ -301,8 +302,8 @@ trait JDBCPlatformSpecs
           case orig: StrColumn =>
             new StrColumn {
               def apply(row: Int): String = {
-                val newPath =
-                  "/test/" + orig(row).replaceAll("^/|/$", "").replace('/', '_')
+                val newPath = "/test/" +
+                  orig(row).replaceAll("^/|/$", "").replace('/', '_')
                 logger.debug("Fixed %s to %s".format(orig(row), newPath))
                 newPath
               }
@@ -328,9 +329,10 @@ trait JDBCPlatformSpecs
   override def map(fs: => Fragments): Fragments =
     Step {
       startup()
-    } ^ fs ^ Step {
-      shutdown()
-    }
+    } ^ fs ^
+      Step {
+        shutdown()
+      }
 
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =

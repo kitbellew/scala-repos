@@ -18,8 +18,8 @@ abstract class CheckIfParsedSpec(implicit
             .nonEmpty must be_==(nonEmptyStatements).setMessage(s"""$description
                                  |***${shouldContains(nonEmptyStatements)} statements***
                                  |$content """.stripMargin)
-          imports.nonEmpty must be_==(nonEmptyImports)
-            .setMessage(s"""$description
+          imports.nonEmpty must
+            be_==(nonEmptyImports).setMessage(s"""$description
                                |***${shouldContains(nonEmptyImports)} imports***
                                |$content """.stripMargin)
       }

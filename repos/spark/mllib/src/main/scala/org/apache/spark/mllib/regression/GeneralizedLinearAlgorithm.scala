@@ -253,8 +253,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
 
     if (input.getStorageLevel == StorageLevel.NONE) {
       logWarning(
-        "The input data is not directly cached, which may hurt performance if its"
-          + " parent RDDs are also uncached.")
+        "The input data is not directly cached, which may hurt performance if its" +
+          " parent RDDs are also uncached.")
     }
 
     // Check the data properties before running the optimizer
@@ -363,12 +363,13 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
         val weightsArray = weights.toArray
         while (i < numOfLinearPredictor) {
           val start = i * n
-          val end = (i + 1) * n - {
-            if (addIntercept)
-              1
-            else
-              0
-          }
+          val end =
+            (i + 1) * n - {
+              if (addIntercept)
+                1
+              else
+                0
+            }
 
           val partialWeightsArray =
             scaler
@@ -390,8 +391,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
     // Warn at the end of the run as well, for increased visibility.
     if (input.getStorageLevel == StorageLevel.NONE) {
       logWarning(
-        "The input data was not directly cached, which may hurt performance if its"
-          + " parent RDDs are also uncached.")
+        "The input data was not directly cached, which may hurt performance if its" +
+          " parent RDDs are also uncached.")
     }
 
     // Unpersist cached data

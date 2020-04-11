@@ -251,8 +251,8 @@ object Compatibility {
       parameters
         .reverseIterator
         .foreach { param =>
-          if (!param.isRepeated && !param
-                .isDefault && problems.length < count) {
+          if (!param.isRepeated && !param.isDefault &&
+              problems.length < count) {
             problems += new MissedValueParameter(param)
           }
         }
@@ -303,8 +303,9 @@ object Compatibility {
             if (!conforms) {
               List(new TypeMismatch(expr.expr, paramType))
             } else {
-              undefSubst += Conformance
-                .undefinedSubst(paramType, exprType, checkWeak = true)
+              undefSubst +=
+                Conformance
+                  .undefinedSubst(paramType, exprType, checkWeak = true)
               List.empty
             }
           }
@@ -352,8 +353,8 @@ object Compatibility {
                 } else {
                   matched ::= (param, expr)
                   matchedTypes ::= (param, exprType)
-                  undefSubst += Conformance
-                    .undefinedSubst(tp, exprType, checkWeak = true)
+                  undefSubst +=
+                    Conformance.undefinedSubst(tp, exprType, checkWeak = true)
                 }
               }
           } else {
@@ -371,8 +372,8 @@ object Compatibility {
               else
                 assign.getRExpression.getOrElse(assign)
             }
-            problems :::= doNoNamed(Expression(extractExpression(assign)))
-              .reverse
+            problems :::=
+              doNoNamed(Expression(extractExpression(assign))).reverse
           } else {
             if (!checkNames)
               return ConformanceExtResult(
@@ -404,8 +405,9 @@ object Compatibility {
                   } else {
                     matched ::= (param, expr)
                     matchedTypes ::= (param, exprType)
-                    undefSubst += Conformance
-                      .undefinedSubst(paramType, exprType, checkWeak = true)
+                    undefSubst +=
+                      Conformance
+                        .undefinedSubst(paramType, exprType, checkWeak = true)
                   }
                 }
               case _ =>
@@ -479,15 +481,15 @@ object Compatibility {
           } else {
             matched ::= (parameters.last, exprs(k).expr)
             matchedTypes ::= (parameters.last, exprType)
-            undefSubst += Conformance
-              .undefinedSubst(paramType, exprType, checkWeak = true)
+            undefSubst +=
+              Conformance.undefinedSubst(paramType, exprType, checkWeak = true)
           }
         }
         k = k + 1
       }
     } else {
-      if (exprs.length == parameters
-            .length - 1 && !namedMode && parameters.last.isRepeated)
+      if (exprs.length == parameters.length - 1 && !namedMode &&
+          parameters.last.isRepeated)
         return ConformanceExtResult(
           Seq.empty,
           undefSubst,

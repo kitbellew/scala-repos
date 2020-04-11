@@ -272,8 +272,8 @@ class WindowOperationsSuite extends TestSuiteBase {
       windowDuration: Duration = Seconds(2),
       slideDuration: Duration = Seconds(1)) {
     test("window - " + name) {
-      val numBatches = expectedOutput.size * (slideDuration / batchDuration)
-        .toInt
+      val numBatches = expectedOutput.size *
+        (slideDuration / batchDuration).toInt
       val operation =
         (s: DStream[Int]) => s.window(windowDuration, slideDuration)
       testOperation(input, operation, expectedOutput, numBatches, true)
@@ -288,8 +288,8 @@ class WindowOperationsSuite extends TestSuiteBase {
       slideDuration: Duration = Seconds(1)) {
     test("reduceByKeyAndWindow - " + name) {
       logInfo("reduceByKeyAndWindow - " + name)
-      val numBatches = expectedOutput.size * (slideDuration / batchDuration)
-        .toInt
+      val numBatches = expectedOutput.size *
+        (slideDuration / batchDuration).toInt
       val operation =
         (s: DStream[(String, Int)]) => {
           s.reduceByKeyAndWindow(
@@ -309,8 +309,8 @@ class WindowOperationsSuite extends TestSuiteBase {
       slideDuration: Duration = Seconds(1)) {
     test("reduceByKeyAndWindow with inverse function - " + name) {
       logInfo("reduceByKeyAndWindow with inverse function - " + name)
-      val numBatches = expectedOutput.size * (slideDuration / batchDuration)
-        .toInt
+      val numBatches = expectedOutput.size *
+        (slideDuration / batchDuration).toInt
       val operation =
         (s: DStream[(String, Int)]) => {
           s.reduceByKeyAndWindow(_ + _, _ - _, windowDuration, slideDuration)
@@ -331,8 +331,8 @@ class WindowOperationsSuite extends TestSuiteBase {
     test("reduceByKeyAndWindow with inverse and filter functions - " + name) {
       logInfo(
         "reduceByKeyAndWindow with inverse and filter functions - " + name)
-      val numBatches = expectedOutput.size * (slideDuration / batchDuration)
-        .toInt
+      val numBatches = expectedOutput.size *
+        (slideDuration / batchDuration).toInt
       val filterFunc = (p: (String, Int)) => p._2 != 0
       val operation =
         (s: DStream[(String, Int)]) => {

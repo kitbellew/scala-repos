@@ -67,11 +67,12 @@ class TwoPhaseCascadeTest extends WordSpec with Matchers with FieldConversions {
           Tuple1("line4")))
       .sink[String](Tsv("output1")) { ob =>
         "verify output got changed by both flows" in {
-          ob.toList shouldBe List(
-            "job2job1:line1",
-            "job2job1:line2",
-            "job2job1:line3",
-            "job2job1:line4")
+          ob.toList shouldBe
+            List(
+              "job2job1:line1",
+              "job2job1:line2",
+              "job2job1:line3",
+              "job2job1:line4")
         }
       }
       .runHadoop
@@ -108,12 +109,13 @@ class TwoPhaseCascadeTest extends WordSpec with Matchers with FieldConversions {
     val lines = fromFile(output1.getAbsolutePath).getLines.toList
 
     "verify output got changed by both flows" in {
-      lines shouldBe List(
-        "job2job1:a",
-        "job2job1:b",
-        "job2job1:c",
-        "job2job1:d",
-        "job2job1:e")
+      lines shouldBe
+        List(
+          "job2job1:a",
+          "job2job1:b",
+          "job2job1:c",
+          "job2job1:d",
+          "job2job1:e")
     }
 
     input0.delete()

@@ -94,8 +94,8 @@ class RenameScalaVariableProcessor
                     "is"
                   else
                     name.substring(0, 3)
-                val newBeanName = prefix + StringUtil
-                  .capitalize(ScalaNamesUtil.toJavaName(newName))
+                val newBeanName = prefix +
+                  StringUtil.capitalize(ScalaNamesUtil.toJavaName(newName))
                 allRenames.put(wrapper, newBeanName)
               })
             case _ =>

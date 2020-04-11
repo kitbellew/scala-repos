@@ -74,8 +74,8 @@ class MatrixFactorizationModel @Since("0.8.0") (
       s"$name feature dimension does not match the rank $rank.")
     if (features.partitioner.isEmpty) {
       logWarning(
-        s"$name factor does not have a partitioner. "
-          + "Prediction on individual records could be slow.")
+        s"$name factor does not have a partitioner. " +
+          "Prediction on individual records could be slow.")
     }
     if (features.getStorageLevel == StorageLevel.NONE) {
       logWarning(s"$name factor is not cached. Prediction could be slow.")
@@ -406,9 +406,9 @@ object MatrixFactorizationModel extends Loader[MatrixFactorizationModel] {
       import sqlContext.implicits._
       val metadata = compact(
         render(
-          ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~ (
-            "rank" -> model.rank
-          )))
+          ("class" -> thisClassName) ~
+            ("version" -> thisFormatVersion) ~
+            ("rank" -> model.rank)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
       model.userFeatures.toDF("id", "features").write.parquet(userPath(path))
       model

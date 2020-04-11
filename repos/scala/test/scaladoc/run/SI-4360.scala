@@ -40,17 +40,12 @@ object Test extends ScaladocModelTest {
     for ((method, name, refs) <- expected) {
       assert(
         method.valueParams(0)(0).resultType.name == name,
-        method
-          .valueParams(0)(0)
-          .resultType
-          .name + " == " + name + " (in " + method.qualifiedName + ")")
+        method.valueParams(0)(0).resultType.name + " == " + name + " (in " +
+          method.qualifiedName + ")")
       assert(
         method.valueParams(0)(0).resultType.refEntity.size == refs,
-        method
-          .valueParams(0)(0)
-          .resultType
-          .refEntity
-          .size + " == " + refs + " (in " + method.qualifiedName + ")"
+        method.valueParams(0)(0).resultType.refEntity.size + " == " + refs +
+          " (in " + method.qualifiedName + ")"
       )
     }
 

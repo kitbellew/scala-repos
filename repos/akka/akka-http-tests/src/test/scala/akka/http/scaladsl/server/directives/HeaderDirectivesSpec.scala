@@ -18,19 +18,23 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
     }
 
     "extract the respective header value if a matching request header is present" in {
-      Get("/abc") ~> addHeader(Connection("close")) ~> myHeaderValue {
-        echoComplete
-      } ~> check {
-        responseAs[String] shouldEqual "close"
-      }
+      Get("/abc") ~> addHeader(Connection("close")) ~>
+        myHeaderValue {
+          echoComplete
+        } ~>
+        check {
+          responseAs[String] shouldEqual "close"
+        }
     }
 
     "reject with an empty rejection set if no matching request header is present" in {
-      Get("/abc") ~> myHeaderValue {
-        echoComplete
-      } ~> check {
-        rejections shouldEqual Nil
-      }
+      Get("/abc") ~>
+        myHeaderValue {
+          echoComplete
+        } ~>
+        check {
+          rejections shouldEqual Nil
+        }
     }
 
     "reject with a MalformedHeaderRejection if the extract function throws an exception" in {
@@ -43,11 +47,12 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
         ) {
           echoComplete
         }
-      } ~> check {
-        inside(rejection) {
-          case MalformedHeaderRejection("Connection", "Naah!", _) ⇒
+      } ~>
+        check {
+          inside(rejection) {
+            case MalformedHeaderRejection("Connection", "Naah!", _) ⇒
+          }
         }
-      }
     }
   }
 
@@ -58,17 +63,19 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
       }
     "extract a header if the type is matching" in {
       val originHeader = Origin(HttpOrigin("http://localhost:8080"))
-      Get("abc") ~> originHeader ~> route ~> check {
-        responseAs[
-          String] shouldEqual "The first origin was http://localhost:8080"
-      }
+      Get("abc") ~> originHeader ~> route ~>
+        check {
+          responseAs[String] shouldEqual
+            "The first origin was http://localhost:8080"
+        }
     }
     "reject a request if no header of the given type is present" in {
-      Get("abc") ~> route ~> check {
-        inside(rejection) {
-          case MissingHeaderRejection("Origin") ⇒
+      Get("abc") ~> route ~>
+        check {
+          inside(rejection) {
+            case MissingHeaderRejection("Origin") ⇒
+          }
         }
-      }
     }
   }
 
@@ -79,11 +86,10 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
       }
 
     "extract a header if the name is matching" in {
-      Get("abc") ~> RawHeader(
-        "Referer",
-        "http://example.com") ~> route ~> check {
-        responseAs[String] shouldEqual "The referer was http://example.com"
-      }
+      Get("abc") ~> RawHeader("Referer", "http://example.com") ~> route ~>
+        check {
+          responseAs[String] shouldEqual "The referer was http://example.com"
+        }
     }
 
     "extract a header with Symbol name" in {
@@ -92,20 +98,21 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
           complete(s"The symbol referer was $referer")
         }
 
-      Get("abc") ~> RawHeader(
-        "Referer",
-        "http://example.com/symbol") ~> symbolRoute ~> check {
-        responseAs[
-          String] shouldEqual "The symbol referer was http://example.com/symbol"
-      }
+      Get("abc") ~> RawHeader("Referer", "http://example.com/symbol") ~>
+        symbolRoute ~>
+        check {
+          responseAs[String] shouldEqual
+            "The symbol referer was http://example.com/symbol"
+        }
     }
 
     "reject a request if no header of the given type is present" in {
-      Get("abc") ~> route ~> check {
-        inside(rejection) {
-          case MissingHeaderRejection("Referer") ⇒
+      Get("abc") ~> route ~>
+        check {
+          inside(rejection) {
+            case MissingHeaderRejection("Referer") ⇒
+          }
         }
-      }
     }
   }
 
@@ -116,12 +123,11 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
       }
 
     "extract a header if the name is matching" in {
-      Get("abc") ~> RawHeader(
-        "Referer",
-        "http://example.com") ~> route ~> check {
-        responseAs[
-          String] shouldEqual "The referer was Some(http://example.com)"
-      }
+      Get("abc") ~> RawHeader("Referer", "http://example.com") ~> route ~>
+        check {
+          responseAs[String] shouldEqual
+            "The referer was Some(http://example.com)"
+        }
     }
 
     "extract a header with Symbol name" in {
@@ -130,17 +136,19 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
           complete(s"The symbol referer was $referer")
         }
 
-      Get("abc") ~> RawHeader(
-        "Referer",
-        "http://example.com/symbol") ~> symbolRoute ~> check {
-        responseAs[String] shouldEqual "The symbol referer was Some(http://example.com/symbol)"
-      }
+      Get("abc") ~> RawHeader("Referer", "http://example.com/symbol") ~>
+        symbolRoute ~>
+        check {
+          responseAs[String] shouldEqual
+            "The symbol referer was Some(http://example.com/symbol)"
+        }
     }
 
     "extract None if no header of the given name is present" in {
-      Get("abc") ~> route ~> check {
-        responseAs[String] shouldEqual "The referer was None"
-      }
+      Get("abc") ~> route ~>
+        check {
+          responseAs[String] shouldEqual "The referer was None"
+        }
     }
   }
 
@@ -153,19 +161,23 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
     }
 
     "extract the respective header value if a matching request header is present" in {
-      Get("/abc") ~> addHeader(Connection("close")) ~> myHeaderValue {
-        echoComplete
-      } ~> check {
-        responseAs[String] shouldEqual "Some(close)"
-      }
+      Get("/abc") ~> addHeader(Connection("close")) ~>
+        myHeaderValue {
+          echoComplete
+        } ~>
+        check {
+          responseAs[String] shouldEqual "Some(close)"
+        }
     }
 
     "extract None if no matching request header is present" in {
-      Get("/abc") ~> myHeaderValue {
-        echoComplete
-      } ~> check {
-        responseAs[String] shouldEqual "None"
-      }
+      Get("/abc") ~>
+        myHeaderValue {
+          echoComplete
+        } ~>
+        check {
+          responseAs[String] shouldEqual "None"
+        }
     }
 
     "reject with a MalformedHeaderRejection if the extract function throws an exception" in {
@@ -177,11 +189,12 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
         myHeaderValue {
           echoComplete
         }
-      } ~> check {
-        inside(rejection) {
-          case MalformedHeaderRejection("Connection", "Naaah!", _) ⇒
+      } ~>
+        check {
+          inside(rejection) {
+            case MalformedHeaderRejection("Connection", "Naaah!", _) ⇒
+          }
         }
-      }
     }
   }
 
@@ -195,15 +208,17 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
       }
     "extract Some(header) if the type is matching" in {
       val originHeader = Origin(HttpOrigin("http://localhost:8080"))
-      Get("abc") ~> originHeader ~> route ~> check {
-        responseAs[
-          String] shouldEqual "The first origin was http://localhost:8080"
-      }
+      Get("abc") ~> originHeader ~> route ~>
+        check {
+          responseAs[String] shouldEqual
+            "The first origin was http://localhost:8080"
+        }
     }
     "extract None if no header of the given type is present" in {
-      Get("abc") ~> route ~> check {
-        responseAs[String] shouldEqual "No Origin header found."
-      }
+      Get("abc") ~> route ~>
+        check {
+          responseAs[String] shouldEqual "No Origin header found."
+        }
     }
   }
 }

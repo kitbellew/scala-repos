@@ -209,11 +209,15 @@ class LBFGSB(
       c = c + p :* deltaT
 
       val bRowOfW: DenseVector[Double] = W(b, ::).t
-      fDerivative += deltaT * fSecondDerivative + g(b) * g(b) + theta * g(
-        b) * zb - (bRowOfW.t :* g(b)) * (M * c)
-      fSecondDerivative += -1.0 * theta * g(b) * g(b) - 2.0 * (
-        g(b) * (bRowOfW.dot(M * p))
-      ) - g(b) * g(b) * (bRowOfW.t * (M * bRowOfW))
+      fDerivative += deltaT * fSecondDerivative + g(b) * g(b) +
+        theta * g(b) * zb -
+        (bRowOfW.t :* g(b)) *
+        (M * c)
+      fSecondDerivative += -1.0 * theta * g(b) * g(b) -
+        2.0 *
+        (g(b) * (bRowOfW.dot(M * p))) -
+        g(b) * g(b) *
+        (bRowOfW.t * (M * bRowOfW))
       p += (bRowOfW :* g(b));
       d(b) = 0.0
       dtMin = -fDerivative / fSecondDerivative
@@ -230,8 +234,8 @@ class LBFGSB(
     oldT += dtMin
 
     for (sortIdx <- i until n) {
-      xCauchy(sortedIndeces(sortIdx)) =
-        x(sortedIndeces(sortIdx)) + oldT * d(sortedIndeces(sortIdx))
+      xCauchy(sortedIndeces(sortIdx)) = x(sortedIndeces(sortIdx)) +
+        oldT * d(sortedIndeces(sortIdx))
     }
 
     c += p :* dtMin
@@ -381,9 +385,9 @@ object LBFGSB {
       upperBounds: DenseVector[Double],
       tolerance: Double,
       maxIter: Int) = {
-    bfgsbConvergenceTest(lowerBounds, upperBounds) || FirstOrderMinimizer
-      .functionValuesConverged(tolerance) || FirstOrderMinimizer
-      .maxIterationsReached(maxIter)
+    bfgsbConvergenceTest(lowerBounds, upperBounds) ||
+    FirstOrderMinimizer.functionValuesConverged(tolerance) ||
+    FirstOrderMinimizer.maxIterationsReached(maxIter)
   }
 
   protected val PROJ_GRADIENT_EPS = 1e-5

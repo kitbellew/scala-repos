@@ -47,24 +47,20 @@ trait SetupHelper {
         chess.variant.Standard.title.some))
 
   def translatedVariantChoicesWithVariants(implicit ctx: Context) =
-    translatedVariantChoices(ctx) :+
-      variantTuple(chess.variant.Crazyhouse) :+
+    translatedVariantChoices(ctx) :+ variantTuple(chess.variant.Crazyhouse) :+
       variantTuple(chess.variant.Chess960) :+
       variantTuple(chess.variant.KingOfTheHill) :+
       variantTuple(chess.variant.ThreeCheck) :+
       variantTuple(chess.variant.Antichess) :+
-      variantTuple(chess.variant.Atomic) :+
-      variantTuple(chess.variant.Horde) :+
+      variantTuple(chess.variant.Atomic) :+ variantTuple(chess.variant.Horde) :+
       variantTuple(chess.variant.RacingKings)
 
   def translatedVariantChoicesWithFen(implicit ctx: Context) =
-    translatedVariantChoices(ctx) :+
-      variantTuple(chess.variant.Chess960) :+
+    translatedVariantChoices(ctx) :+ variantTuple(chess.variant.Chess960) :+
       variantTuple(chess.variant.FromPosition)
 
   def translatedAiVariantChoices(implicit ctx: Context) =
-    translatedVariantChoices(ctx) :+
-      variantTuple(chess.variant.Chess960) :+
+    translatedVariantChoices(ctx) :+ variantTuple(chess.variant.Chess960) :+
       variantTuple(chess.variant.KingOfTheHill) :+
       variantTuple(chess.variant.ThreeCheck) :+
       variantTuple(chess.variant.FromPosition)

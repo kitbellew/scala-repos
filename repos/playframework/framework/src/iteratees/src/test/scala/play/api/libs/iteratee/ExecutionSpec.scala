@@ -54,8 +54,8 @@ object ExecutionSpec extends Specification {
       }
 
       // Now verify that we don't overflow
-      Try(executeRecursively(trampoline, overflowTimes)) must beSuccessfulTry[
-        Unit]
+      Try(executeRecursively(trampoline, overflowTimes)) must
+        beSuccessfulTry[Unit]
     }
 
     "execute code in the order it was submitted" in {

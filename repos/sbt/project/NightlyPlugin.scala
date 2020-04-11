@@ -13,12 +13,13 @@ object NightlyPlugin extends AutoPlugin {
       "Doesn't declare test dependencies.")
 
     def testDependencies =
-      libraryDependencies <++= includeTestDependencies { incl =>
-        if (incl)
-          Seq(scalaCheck % Test, specs2 % Test, junit % Test)
-        else
-          Seq()
-      }
+      libraryDependencies <++=
+        includeTestDependencies { incl =>
+          if (incl)
+            Seq(scalaCheck % Test, specs2 % Test, junit % Test)
+          else
+            Seq()
+        }
   }
 
   override def buildSettings: Seq[Setting[_]] =

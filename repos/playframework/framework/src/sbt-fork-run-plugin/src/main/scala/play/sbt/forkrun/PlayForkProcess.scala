@@ -139,8 +139,8 @@ object PlayForkProcess {
       mainClass: String,
       arguments: Seq[String]): (Option[String], Seq[String]) = {
     val classpathOption = Path.makeString(classpath)
-    val options =
-      jvmOptions ++ Seq("-classpath", classpathOption, mainClass) ++ arguments
+    val options = jvmOptions ++ Seq("-classpath", classpathOption, mainClass) ++
+      arguments
     // if the options get too long for Windows, put the classpath in an environment variable
     if (optionsTooLong(options)) {
       val otherOptions = jvmOptions ++ Seq(mainClass) ++ arguments

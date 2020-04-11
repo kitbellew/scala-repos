@@ -73,12 +73,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val categoriesMap =
       categories
         .map { category =>
-          category -> data
-            .items
-            .filter(_.categories.contains(category))
-            .map(item => itemStringIntMap(item.id))
-            .collect()
-            .toSet
+          category ->
+            data
+              .items
+              .filter(_.categories.contains(category))
+              .map(item => itemStringIntMap(item.id))
+              .collect()
+              .toSet
         }
         .toMap
 

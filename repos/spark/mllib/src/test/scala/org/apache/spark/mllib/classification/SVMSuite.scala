@@ -53,8 +53,8 @@ object SVMSuite {
       Array.fill[Array[Double]](nPoints)(
         Array.fill[Double](weights.length)(rnd.nextDouble() * 2.0 - 1.0))
     val y = x.map { xi =>
-      val yD = new BDV(xi).dot(weightsMat) + intercept + 0.01 * rnd
-        .nextGaussian()
+      val yD = new BDV(xi).dot(weightsMat) + intercept +
+        0.01 * rnd.nextGaussian()
       if (yD < 0)
         0.0
       else

@@ -16,14 +16,16 @@ object MapKeys extends SimplificationType {
 
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
-      case qual `.map`(`_._1`()) `.toIterator` () if isMap(qual) =>
+      case qual `.map`(`_._1`()) `.toIterator`
+          () if isMap(qual) =>
         val iteratorHint = InspectionBundle.message("replace.with.keysIterator")
         Some(
           replace(expr)
             .withText(invocationText(qual, "keysIterator"))
             .highlightFrom(qual)
             .withHint(iteratorHint))
-      case qual `.map`(`_._1`()) `.toSet` () if isMap(qual) =>
+      case qual `.map`(`_._1`()) `.toSet`
+          () if isMap(qual) =>
         val setHint = InspectionBundle.message("replace.with.keySet")
         Some(
           replace(expr)

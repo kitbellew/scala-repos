@@ -167,10 +167,11 @@ class LineTokenizer() extends Parsers {
   /** Very dumb parser for XML chunks.
     */
   def xmlChunk =
-    xmlChunkStart ~ (notXmlChunkEnd *) ~ xmlChunkEnd ^^ {
-      case s ~ ms ~ e =>
-        new XmlChunk(s + "\n" + ms.mkString("\n") + "\n" + e + "\n")
-    }
+    xmlChunkStart ~
+      (notXmlChunkEnd *) ~ xmlChunkEnd ^^ {
+        case s ~ ms ~ e =>
+          new XmlChunk(s + "\n" + ms.mkString("\n") + "\n" + e + "\n")
+      }
 
   /** Parses Markdown Lines. Always succeeds.
     */
@@ -209,9 +210,10 @@ class LineTokenizer() extends Parsers {
             p(lineParsers.otherLine)(in)
         }
       }
-    } | p(
-      lineParsers.otherLine
-    ) //this makes sure every line is consumed, even if our guess was no good
+    } |
+      p(
+        lineParsers.otherLine
+      ) //this makes sure every line is consumed, even if our guess was no good
 
   /** Parses link definitions and verbatim xml blocks
     */

@@ -183,12 +183,13 @@ class ActorLifeCycleSpec
           }))
       a ! "hello"
       expectMsg(42)
-      a ! Become(ctx ⇒ {
-        case "fail" ⇒
-          throw new RuntimeException("buh")
-        case x ⇒
-          ctx.sender() ! 43
-      })
+      a !
+        Become(ctx ⇒ {
+          case "fail" ⇒
+            throw new RuntimeException("buh")
+          case x ⇒
+            ctx.sender() ! 43
+        })
       expectMsg("ok")
       a ! "hello"
       expectMsg(43)

@@ -30,16 +30,13 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
       place: PsiElement): Boolean = {
     def processElement(e: PsiElement, state: ResolveState): Boolean = {
       def isOkForFakeCompanionModule(t: ScTypeDefinition): Boolean = {
-        (
-          processor match {
-            case b: BaseProcessor =>
-              b.kinds.contains(ResolveTargets.OBJECT) || b
-                .kinds
-                .contains(ResolveTargets.VAL)
-            case _ =>
-              true
-          }
-        ) && t.fakeCompanionModule.isDefined
+        (processor match {
+          case b: BaseProcessor =>
+            b.kinds.contains(ResolveTargets.OBJECT) ||
+              b.kinds.contains(ResolveTargets.VAL)
+          case _ =>
+            true
+        }) && t.fakeCompanionModule.isDefined
       }
 
       e match {
@@ -92,8 +89,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
           case id: ScStableCodeReferenceElement =>
             run match {
               case po: ScObject
-                  if po.isPackageObject && id.qualName == po
-                    .qualifiedName => // do nothing
+                  if po.isPackageObject &&
+                    id.qualName == po.qualifiedName => // do nothing
               case _ =>
                 if (!processElement(run, state))
                   return false

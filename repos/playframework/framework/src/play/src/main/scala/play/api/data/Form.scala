@@ -45,12 +45,12 @@ case class Form[T](
     mapping
       .mappings
       .map { m =>
-        m.key -> m
-          .constraints
-          .collect {
-            case Constraint(Some(name), args) =>
-              name -> args
-          }
+        m.key ->
+          m.constraints
+            .collect {
+              case Constraint(Some(name), args) =>
+                name -> args
+            }
       }
       .filterNot(_._2.isEmpty)
       .toMap
@@ -100,26 +100,23 @@ case class Form[T](
     */
   def bindFromRequest()(implicit request: play.api.mvc.Request[_]): Form[T] = {
     bindFromRequest {
-      (
-        request.body match {
-          case body: play.api.mvc.AnyContent
-              if body.asFormUrlEncoded.isDefined =>
-            body.asFormUrlEncoded.get
-          case body: play.api.mvc.AnyContent
-              if body.asMultipartFormData.isDefined =>
-            body.asMultipartFormData.get.asFormUrlEncoded
-          case body: play.api.mvc.AnyContent if body.asJson.isDefined =>
-            FormUtils.fromJson(js = body.asJson.get).mapValues(Seq(_))
-          case body: Map[_, _] =>
-            body.asInstanceOf[Map[String, Seq[String]]]
-          case body: play.api.mvc.MultipartFormData[_] =>
-            body.asFormUrlEncoded
-          case body: play.api.libs.json.JsValue =>
-            FormUtils.fromJson(js = body).mapValues(Seq(_))
-          case _ =>
-            Map.empty[String, Seq[String]]
-        }
-      ) ++ request.queryString
+      (request.body match {
+        case body: play.api.mvc.AnyContent if body.asFormUrlEncoded.isDefined =>
+          body.asFormUrlEncoded.get
+        case body: play.api.mvc.AnyContent
+            if body.asMultipartFormData.isDefined =>
+          body.asMultipartFormData.get.asFormUrlEncoded
+        case body: play.api.mvc.AnyContent if body.asJson.isDefined =>
+          FormUtils.fromJson(js = body.asJson.get).mapValues(Seq(_))
+        case body: Map[_, _] =>
+          body.asInstanceOf[Map[String, Seq[String]]]
+        case body: play.api.mvc.MultipartFormData[_] =>
+          body.asFormUrlEncoded
+        case body: play.api.libs.json.JsValue =>
+          FormUtils.fromJson(js = body).mapValues(Seq(_))
+        case _ =>
+          Map.empty[String, Seq[String]]
+      }) ++ request.queryString
     }
   }
 
@@ -127,12 +124,13 @@ case class Form[T](
     bind {
       data.foldLeft(Map.empty[String, String]) {
         case (s, (key, values)) if key.endsWith("[]") =>
-          s ++ values
-            .zipWithIndex
-            .map {
-              case (v, i) =>
-                (key.dropRight(2) + "[" + i + "]") -> v
-            }
+          s ++
+            values
+              .zipWithIndex
+              .map {
+                case (v, i) =>
+                  (key.dropRight(2) + "[" + i + "]") -> v
+              }
         case (s, (key, values)) =>
           s + (key -> values.headOption.getOrElse(""))
       }
@@ -380,12 +378,11 @@ case class Field(
       Option(name)
         .filterNot(_.isEmpty)
         .map(
-          _ + (
-            if (key(0) == '[')
-              ""
-            else
-              "."
-          ))
+          _ +
+            (if (key(0) == '[')
+               ""
+             else
+               "."))
         .getOrElse("") + key)
   }
 
@@ -469,10 +466,8 @@ private[data] object FormUtils {
           .map {
             case (key, value) =>
               fromJson(
-                Option(prefix)
-                  .filterNot(_.isEmpty)
-                  .map(_ + ".")
-                  .getOrElse("") + key,
+                Option(prefix).filterNot(_.isEmpty).map(_ + ".").getOrElse("") +
+                  key,
                 value)
           }
           .foldLeft(Map.empty[String, String])(_ ++ _)

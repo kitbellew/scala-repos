@@ -122,16 +122,14 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer {
   def toForm(button: Box[String])(f: MyType => Unit): NodeSeq = {
     meta.toForm(this) ++
       (SHtml.hidden(() => f(this))) ++
-      (
-        (
-          button.map(b =>
-            (
-              <input type="submit" value={
-                b
-              }/>
-            )) openOr scala.xml.Text("")
-        )
-      )
+      ((
+        button.map(b =>
+          (
+            <input type="submit" value={
+              b
+            }/>
+          )) openOr scala.xml.Text("")
+      ))
   }
 
   /**
@@ -170,19 +168,19 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer {
     val fieldList = this
       .fields
       .map(f =>
-        "%s=%s" format (
-          f.name,
-          f.valueBox match {
-            case Full(c: java.util.Calendar) =>
-              c.getTime().toString()
-            case Full(null) =>
-              "null"
-            case Full(v) =>
-              v.toString
-            case x =>
-              x.toString
-          }
-        ))
+        "%s=%s" format
+          (
+            f.name,
+            f.valueBox match {
+              case Full(c: java.util.Calendar) =>
+                c.getTime().toString()
+              case Full(null) =>
+                "null"
+              case Full(v) =>
+                v.toString
+              case x =>
+                x.toString
+            }))
 
     "%s={%s}" format (this.getClass.toString, fieldList.mkString(", "))
   }

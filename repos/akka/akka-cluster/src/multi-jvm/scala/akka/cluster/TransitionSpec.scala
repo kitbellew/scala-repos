@@ -95,10 +95,8 @@ abstract class TransitionSpec
         val oldCount = clusterView.latestStats.gossipStats.receivedGossipCount
         enterBarrier("before-gossip-" + gossipBarrierCounter)
         awaitCond {
-          clusterView
-            .latestStats
-            .gossipStats
-            .receivedGossipCount != oldCount // received gossip
+          clusterView.latestStats.gossipStats.receivedGossipCount !=
+            oldCount // received gossip
         }
         // gossip chat will synchronize the views
         awaitCond((Set(fromRole, toRole) diff seenLatestGossip).isEmpty)
@@ -133,150 +131,153 @@ abstract class TransitionSpec
       enterBarrier("after-1")
     }
 
-    "perform correct transitions when second joining first" taggedAs LongRunningTest in {
+    "perform correct transitions when second joining first" taggedAs
+      LongRunningTest in {
 
-      runOn(second) {
-        cluster.join(first)
-      }
-      runOn(first, second) {
-        // gossip chat from the join will synchronize the views
-        awaitMembers(first, second)
-        awaitMemberStatus(first, Up)
-        awaitMemberStatus(second, Joining)
-        awaitAssert(seenLatestGossip should ===(Set(first, second)))
-      }
-      enterBarrier("convergence-joining-2")
+        runOn(second) {
+          cluster.join(first)
+        }
+        runOn(first, second) {
+          // gossip chat from the join will synchronize the views
+          awaitMembers(first, second)
+          awaitMemberStatus(first, Up)
+          awaitMemberStatus(second, Joining)
+          awaitAssert(seenLatestGossip should ===(Set(first, second)))
+        }
+        enterBarrier("convergence-joining-2")
 
-      runOn(first) {
-        leaderActions()
-        awaitMemberStatus(first, Up)
-        awaitMemberStatus(second, Up)
-      }
-      enterBarrier("leader-actions-2")
+        runOn(first) {
+          leaderActions()
+          awaitMemberStatus(first, Up)
+          awaitMemberStatus(second, Up)
+        }
+        enterBarrier("leader-actions-2")
 
-      first gossipTo second
-      runOn(first, second) {
-        // gossip chat will synchronize the views
-        awaitMemberStatus(second, Up)
-        awaitAssert(seenLatestGossip should ===(Set(first, second)))
-        awaitMemberStatus(first, Up)
-      }
+        first gossipTo second
+        runOn(first, second) {
+          // gossip chat will synchronize the views
+          awaitMemberStatus(second, Up)
+          awaitAssert(seenLatestGossip should ===(Set(first, second)))
+          awaitMemberStatus(first, Up)
+        }
 
-      enterBarrier("after-2")
-    }
-
-    "perform correct transitions when third joins second" taggedAs LongRunningTest in {
-
-      runOn(third) {
-        cluster.join(second)
-      }
-      runOn(second, third) {
-        // gossip chat from the join will synchronize the views
-        awaitAssert(seenLatestGossip should ===(Set(second, third)))
-      }
-      enterBarrier("third-joined-second")
-
-      second gossipTo first
-      runOn(first, second) {
-        // gossip chat will synchronize the views
-        awaitMembers(first, second, third)
-        awaitMemberStatus(third, Joining)
-        awaitMemberStatus(second, Up)
-        awaitAssert(seenLatestGossip should ===(Set(first, second, third)))
+        enterBarrier("after-2")
       }
 
-      first gossipTo third
-      runOn(first, second, third) {
-        awaitMembers(first, second, third)
-        awaitMemberStatus(first, Up)
-        awaitMemberStatus(second, Up)
-        awaitMemberStatus(third, Joining)
-        awaitAssert(seenLatestGossip should ===(Set(first, second, third)))
+    "perform correct transitions when third joins second" taggedAs
+      LongRunningTest in {
+
+        runOn(third) {
+          cluster.join(second)
+        }
+        runOn(second, third) {
+          // gossip chat from the join will synchronize the views
+          awaitAssert(seenLatestGossip should ===(Set(second, third)))
+        }
+        enterBarrier("third-joined-second")
+
+        second gossipTo first
+        runOn(first, second) {
+          // gossip chat will synchronize the views
+          awaitMembers(first, second, third)
+          awaitMemberStatus(third, Joining)
+          awaitMemberStatus(second, Up)
+          awaitAssert(seenLatestGossip should ===(Set(first, second, third)))
+        }
+
+        first gossipTo third
+        runOn(first, second, third) {
+          awaitMembers(first, second, third)
+          awaitMemberStatus(first, Up)
+          awaitMemberStatus(second, Up)
+          awaitMemberStatus(third, Joining)
+          awaitAssert(seenLatestGossip should ===(Set(first, second, third)))
+        }
+
+        enterBarrier("convergence-joining-3")
+
+        val leader12 = leader(first, second)
+        val (other1, other2) = {
+          val tmp = roles.filterNot(_ == leader12);
+          (tmp.head, tmp.tail.head)
+        }
+        runOn(leader12) {
+          leaderActions()
+          awaitMemberStatus(first, Up)
+          awaitMemberStatus(second, Up)
+          awaitMemberStatus(third, Up)
+        }
+        enterBarrier("leader-actions-3")
+
+        // leader gossipTo first non-leader
+        leader12 gossipTo other1
+        runOn(other1) {
+          awaitMemberStatus(third, Up)
+          awaitAssert(seenLatestGossip should ===(Set(leader12, myself)))
+        }
+
+        // first non-leader gossipTo the other non-leader
+        other1 gossipTo other2
+        runOn(other1) {
+          // send gossip
+          cluster.clusterCore ! InternalClusterAction.SendGossipTo(other2)
+        }
+        runOn(other2) {
+          awaitMemberStatus(third, Up)
+          awaitAssert(seenLatestGossip should ===(Set(first, second, third)))
+        }
+
+        // first non-leader gossipTo the leader
+        other1 gossipTo leader12
+        runOn(first, second, third) {
+          awaitMemberStatus(first, Up)
+          awaitMemberStatus(second, Up)
+          awaitMemberStatus(third, Up)
+          awaitAssert(seenLatestGossip should ===(Set(first, second, third)))
+        }
+
+        enterBarrier("after-3")
       }
 
-      enterBarrier("convergence-joining-3")
+    "perform correct transitions when second becomes unavailble" taggedAs
+      LongRunningTest in {
+        runOn(third) {
+          markNodeAsUnavailable(second)
+          reapUnreachable()
+          awaitAssert(
+            clusterView.unreachableMembers.map(_.address) should
+              contain(address(second)))
+          awaitAssert(seenLatestGossip should ===(Set(third)))
+        }
 
-      val leader12 = leader(first, second)
-      val (other1, other2) = {
-        val tmp = roles.filterNot(_ == leader12);
-        (tmp.head, tmp.tail.head)
+        enterBarrier("after-second-unavailble")
+
+        third gossipTo first
+
+        runOn(first, third) {
+          awaitAssert(
+            clusterView.unreachableMembers.map(_.address) should
+              contain(address(second)))
+        }
+
+        runOn(first) {
+          cluster.down(second)
+        }
+
+        enterBarrier("after-second-down")
+
+        first gossipTo third
+
+        runOn(first, third) {
+          awaitAssert(
+            clusterView.unreachableMembers.map(_.address) should
+              contain(address(second)))
+          awaitMemberStatus(second, Down)
+          awaitAssert(seenLatestGossip should ===(Set(first, third)))
+        }
+
+        enterBarrier("after-6")
       }
-      runOn(leader12) {
-        leaderActions()
-        awaitMemberStatus(first, Up)
-        awaitMemberStatus(second, Up)
-        awaitMemberStatus(third, Up)
-      }
-      enterBarrier("leader-actions-3")
-
-      // leader gossipTo first non-leader
-      leader12 gossipTo other1
-      runOn(other1) {
-        awaitMemberStatus(third, Up)
-        awaitAssert(seenLatestGossip should ===(Set(leader12, myself)))
-      }
-
-      // first non-leader gossipTo the other non-leader
-      other1 gossipTo other2
-      runOn(other1) {
-        // send gossip
-        cluster.clusterCore ! InternalClusterAction.SendGossipTo(other2)
-      }
-      runOn(other2) {
-        awaitMemberStatus(third, Up)
-        awaitAssert(seenLatestGossip should ===(Set(first, second, third)))
-      }
-
-      // first non-leader gossipTo the leader
-      other1 gossipTo leader12
-      runOn(first, second, third) {
-        awaitMemberStatus(first, Up)
-        awaitMemberStatus(second, Up)
-        awaitMemberStatus(third, Up)
-        awaitAssert(seenLatestGossip should ===(Set(first, second, third)))
-      }
-
-      enterBarrier("after-3")
-    }
-
-    "perform correct transitions when second becomes unavailble" taggedAs LongRunningTest in {
-      runOn(third) {
-        markNodeAsUnavailable(second)
-        reapUnreachable()
-        awaitAssert(
-          clusterView.unreachableMembers.map(_.address) should contain(
-            address(second)))
-        awaitAssert(seenLatestGossip should ===(Set(third)))
-      }
-
-      enterBarrier("after-second-unavailble")
-
-      third gossipTo first
-
-      runOn(first, third) {
-        awaitAssert(
-          clusterView.unreachableMembers.map(_.address) should contain(
-            address(second)))
-      }
-
-      runOn(first) {
-        cluster.down(second)
-      }
-
-      enterBarrier("after-second-down")
-
-      first gossipTo third
-
-      runOn(first, third) {
-        awaitAssert(
-          clusterView.unreachableMembers.map(_.address) should contain(
-            address(second)))
-        awaitMemberStatus(second, Down)
-        awaitAssert(seenLatestGossip should ===(Set(first, third)))
-      }
-
-      enterBarrier("after-6")
-    }
 
   }
 }

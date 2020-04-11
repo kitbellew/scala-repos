@@ -48,8 +48,7 @@ class DIMSUMModel(
       s"(${similarities.take(2).toList}...)" +
       s" itemStringIntMap: [${itemStringIntMap.size}]" +
       s"(${itemStringIntMap.take(2).toString}...)]" +
-      s" items: [${items.size}]" +
-      s"(${items.take(2).toString}...)]"
+      s" items: [${items.size}]" + s"(${items.take(2).toString}...)]"
   }
 }
 
@@ -103,13 +102,13 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
 
         if (uindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent user ID ${r.user}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent user ID ${r.user}" +
+              " to Int index.")
 
         if (iindex == -1)
           logger.info(
-            s"Couldn't convert nonexistent item ID ${r.item}"
-              + " to Int index.")
+            s"Couldn't convert nonexistent item ID ${r.item}" +
+              " to Int index.")
 
         (uindex, (iindex, 1.0))
       }

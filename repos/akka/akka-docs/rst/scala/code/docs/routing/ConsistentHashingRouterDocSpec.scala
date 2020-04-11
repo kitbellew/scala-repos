@@ -61,12 +61,12 @@ class ConsistentHashingRouterDocSpec extends AkkaSpec with ImplicitSender {
       ConsistentHashingPool(10, hashMapping = hashMapping).props(Props[Cache]),
       name = "cache")
 
-    cache ! ConsistentHashableEnvelope(
-      message = Entry("hello", "HELLO"),
-      hashKey = "hello")
-    cache ! ConsistentHashableEnvelope(
-      message = Entry("hi", "HI"),
-      hashKey = "hi")
+    cache !
+      ConsistentHashableEnvelope(
+        message = Entry("hello", "HELLO"),
+        hashKey = "hello")
+    cache !
+      ConsistentHashableEnvelope(message = Entry("hi", "HI"), hashKey = "hi")
 
     cache ! Get("hello")
     expectMsg(Some("HELLO"))

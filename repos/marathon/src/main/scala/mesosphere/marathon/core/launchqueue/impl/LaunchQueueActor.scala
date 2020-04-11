@@ -96,9 +96,8 @@ private[impl] class LaunchQueueActor(
       launchers.get(appId) match {
         case Some(actorRef) =>
           val deferredMessages: Vector[DeferredMessage] =
-            suspendedLaunchersMessages(actorRef) :+ DeferredMessage(
-              sender(),
-              ConfirmPurge)
+            suspendedLaunchersMessages(actorRef) :+
+              DeferredMessage(sender(), ConfirmPurge)
           suspendedLaunchersMessages += actorRef -> deferredMessages
           suspendedLauncherPathIds += appId
           actorRef ! AppTaskLauncherActor.Stop

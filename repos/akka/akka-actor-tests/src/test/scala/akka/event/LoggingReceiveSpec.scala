@@ -121,10 +121,11 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
                 context.become(r, false)
             }
             def receive =
-              switch orElse LoggingReceive {
-                case x ⇒
-                  sender() ! "x"
-              }
+              switch orElse
+                LoggingReceive {
+                  case x ⇒
+                    sender() ! "x"
+                }
           })
 
         val name = actor.path.toString
@@ -191,7 +192,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
         actor ! PoisonPill
         expectMsgPF() {
           case Logging.Debug(`name`, _, msg: String)
-              if msg startsWith "received AutoReceiveMessage Envelope(PoisonPill" ⇒
+              if msg startsWith
+                "received AutoReceiveMessage Envelope(PoisonPill" ⇒
             true
         }
         awaitCond(actor.isTerminated, 100 millis)

@@ -40,8 +40,7 @@ object StatusPlugin extends AutoPlugin {
       // our release regexes no longer support ivy data format, due to other issues.
       extracted.append(
         (version in ThisBuild ~= stamp) ::
-          (publishStatus in ThisBuild := status) ::
-          Nil,
+          (publishStatus in ThisBuild := status) :: Nil,
         state)
     }
   def stamp(v: String): String = {

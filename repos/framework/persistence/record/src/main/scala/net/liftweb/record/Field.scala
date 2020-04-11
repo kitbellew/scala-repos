@@ -582,12 +582,11 @@ trait KeyField[
 object FieldHelpers {
   def expectedA(what: String, notA: AnyRef): Failure =
     Failure(
-      "Expected a " + what + ", not a " + (
-        if (notA == null)
-          "null"
-        else
-          notA.getClass.getName
-      ))
+      "Expected a " + what + ", not a " +
+        (if (notA == null)
+           "null"
+         else
+           notA.getClass.getName))
 }
 
 trait LifecycleCallbacks {

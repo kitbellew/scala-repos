@@ -29,7 +29,8 @@ class GenericRunnerSettings(error: String => Unit) extends Settings(error) {
   val save =
     BooleanSetting(
       "-save",
-      "save the compiled script (assumes the code is a script)") withAbbreviation "-savecompiled"
+      "save the compiled script (assumes the code is a script)") withAbbreviation
+      "-savecompiled"
 
   val nc = BooleanSetting(
     "-nc",

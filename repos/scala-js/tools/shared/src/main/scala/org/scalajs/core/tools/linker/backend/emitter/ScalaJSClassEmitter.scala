@@ -585,8 +585,8 @@ private[scalajs] final class ScalaJSClassEmitter(
                   js.BinaryOp(JSBinaryOp.!==, obj, js.Null())
 
                 case Definitions.StringClass =>
-                  js.UnaryOp(JSUnaryOp.typeof, obj) === js
-                    .StringLiteral("string")
+                  js.UnaryOp(JSUnaryOp.typeof, obj) ===
+                    js.StringLiteral("string")
 
                 case Definitions.RuntimeNothingClass =>
                   // Even null is not an instance of Nothing
@@ -601,20 +601,17 @@ private[scalajs] final class ScalaJSClassEmitter(
                   }
 
                   if (isAncestorOfString)
-                    test = test || (
-                      js.UnaryOp(JSUnaryOp.typeof, obj) === js
-                        .StringLiteral("string")
-                    )
+                    test = test ||
+                      (js.UnaryOp(JSUnaryOp.typeof, obj) ===
+                        js.StringLiteral("string"))
                   if (isAncestorOfHijackedNumberClass)
-                    test = test || (
-                      js.UnaryOp(JSUnaryOp.typeof, obj) === js
-                        .StringLiteral("number")
-                    )
+                    test = test ||
+                      (js.UnaryOp(JSUnaryOp.typeof, obj) ===
+                        js.StringLiteral("number"))
                   if (isAncestorOfBoxedBooleanClass)
-                    test = test || (
-                      js.UnaryOp(JSUnaryOp.typeof, obj) === js
-                        .StringLiteral("boolean")
-                    )
+                    test = test ||
+                      (js.UnaryOp(JSUnaryOp.typeof, obj) ===
+                        js.StringLiteral("boolean"))
 
                   !(!test)
               })
@@ -711,7 +708,8 @@ private[scalajs] final class ScalaJSClassEmitter(
                       arrayDepthVarDef,
                       js.Return {
                         // Array[A] </: Array[Array[A]]
-                        !js.BinaryOp(JSBinaryOp.<, arrayDepth, depth) && (
+                        !js.BinaryOp(JSBinaryOp.<, arrayDepth, depth) &&
+                        (
                           // Array[Array[A]] <: Array[Object]
                           js.BinaryOp(JSBinaryOp.>, arrayDepth, depth) ||
                           // Array[Int] </: Array[Object]
@@ -897,8 +895,8 @@ private[scalajs] final class ScalaJSClassEmitter(
 
     assert(tree.kind.isClass)
 
-    encodeClassVar(tree.name.name).prototype DOT "$classData" :=
-      envField("d", tree.name.name)
+    encodeClassVar(tree.name.name)
+      .prototype DOT "$classData" := envField("d", tree.name.name)
   }
 
   def genModuleAccessor(tree: LinkedClass): js.Tree = {
@@ -1103,7 +1101,7 @@ private[scalajs] final class ScalaJSClassEmitter(
 
 private object ScalaJSClassEmitter {
   private val ClassesWhoseDataReferToTheirInstanceTests = {
-    Definitions.AncestorsOfHijackedClasses +
-      Definitions.ObjectClass + Definitions.StringClass
+    Definitions.AncestorsOfHijackedClasses + Definitions.ObjectClass +
+      Definitions.StringClass
   }
 }

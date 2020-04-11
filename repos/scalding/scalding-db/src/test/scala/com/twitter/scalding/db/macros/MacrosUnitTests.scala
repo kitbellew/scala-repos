@@ -120,48 +120,48 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
   }
 
   "String field missing annotation" in {
-    a[TestFailedException] should be thrownBy isColumnDefinitionAvailable[
-      BadUser1]
+    a[TestFailedException] should be thrownBy
+      isColumnDefinitionAvailable[BadUser1]
   }
 
   "String field size annotation not in range" in {
-    a[TestFailedException] should be thrownBy isColumnDefinitionAvailable[
-      BadUser2]
+    a[TestFailedException] should be thrownBy
+      isColumnDefinitionAvailable[BadUser2]
   }
 
   "Int field size annotation not in range" in {
-    a[TestFailedException] should be thrownBy isColumnDefinitionAvailable[
-      BadUser3]
+    a[TestFailedException] should be thrownBy
+      isColumnDefinitionAvailable[BadUser3]
   }
 
   "Option field with default" in {
-    a[TestFailedException] should be thrownBy isColumnDefinitionAvailable[
-      BadUser5]
+    a[TestFailedException] should be thrownBy
+      isColumnDefinitionAvailable[BadUser5]
   }
 
   "Unknown field type" in {
-    a[TestFailedException] should be thrownBy isColumnDefinitionAvailable[
-      BadUser6]
+    a[TestFailedException] should be thrownBy
+      isColumnDefinitionAvailable[BadUser6]
   }
 
   "Annotation for size doesn't use a constant" in {
-    a[TestFailedException] should be thrownBy isColumnDefinitionAvailable[
-      BadUser7]
+    a[TestFailedException] should be thrownBy
+      isColumnDefinitionAvailable[BadUser7]
   }
 
   "Nested options should be blocked" in {
-    a[TestFailedException] should be thrownBy isColumnDefinitionAvailable[
-      BadUser8]
+    a[TestFailedException] should be thrownBy
+      isColumnDefinitionAvailable[BadUser8]
   }
 
   "Extra annotation not supported on current field " in {
-    a[TestFailedException] should be thrownBy isColumnDefinitionAvailable[
-      BadUser9]
+    a[TestFailedException] should be thrownBy
+      isColumnDefinitionAvailable[BadUser9]
   }
 
   "Two annotations of the same type " in {
-    a[TestFailedException] should be thrownBy isColumnDefinitionAvailable[
-      BadUser10]
+    a[TestFailedException] should be thrownBy
+      isColumnDefinitionAvailable[BadUser10]
   }
 
   "Produces the ColumnDefinition" should {
@@ -201,9 +201,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rsmd.getColumnTypeName(3)) thenReturn ("INT")
     when(rsmd.isNullable(3)) thenReturn (ResultSetMetaData.columnNullable)
     when(rsmd.getColumnTypeName(4)) thenReturn ("VARCHAR")
-    when(rsmd.isNullable(4)) thenReturn (
-      ResultSetMetaData.columnNullableUnknown
-    )
+    when(rsmd.isNullable(4)) thenReturn
+      (ResultSetMetaData.columnNullableUnknown)
 
     assert(columnDef.resultSetExtractor.validate(rsmd).isSuccess)
 
@@ -214,11 +213,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rs.getString("gender")) thenReturn ("F")
 
     assert(
-      columnDef.resultSetExtractor.toCaseClass(rs, typeDesc.converter) == User(
-        123,
-        "alice",
-        Some(26),
-        "F"))
+      columnDef.resultSetExtractor.toCaseClass(rs, typeDesc.converter) ==
+        User(123, "alice", Some(26), "F"))
   }
 
   "Produces the ColumnDefinition for nested case class " should {
@@ -256,10 +252,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rs.getString("gender")) thenReturn ("F")
 
     assert(
-      columnDef.resultSetExtractor.toCaseClass(rs, typeDesc.converter) == User2(
-        123,
-        "alice",
-        Demographics(Some(26), "F")))
+      columnDef.resultSetExtractor.toCaseClass(rs, typeDesc.converter) ==
+        User2(123, "alice", Demographics(Some(26), "F")))
   }
 
   "Produces the DBTypeDescriptor" should {
@@ -286,11 +280,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     )
 
     assert(
-      DBMacro
-        .toDBTypeDescriptor[User]
-        .columnDefn
-        .columns
-        .toList === expectedColumns)
+      DBMacro.toDBTypeDescriptor[User].columnDefn.columns.toList ===
+        expectedColumns)
 
   }
 
@@ -428,12 +419,10 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rs.getString("largeString")) thenReturn ("large_string")
     when(rs.getString("forceTextString")) thenReturn ("force_text_string")
     when(rs.getString("forcedVarChar")) thenReturn ("forced_var_char")
-    when(rs.getTimestamp("myDateWithTime")) thenReturn (
-      new java.sql.Timestamp(1111L)
-    )
-    when(rs.getTimestamp("myDateWithoutTime")) thenReturn (
-      new java.sql.Timestamp(1112L)
-    )
+    when(rs.getTimestamp("myDateWithTime")) thenReturn
+      (new java.sql.Timestamp(1111L))
+    when(rs.getTimestamp("myDateWithoutTime")) thenReturn
+      (new java.sql.Timestamp(1112L))
     when(rs.getLong("optiLong")) thenReturn (1113L)
 
     assert(
@@ -492,9 +481,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
         CaseClassWithOptions(Some(26), Some("alice"), Some(new Date(1111L))))
 
     reset(rs)
-    when(rs.getInt("id")) thenReturn (
-      0
-    ) // jdbc returns 0 for null numeric values
+    when(rs.getInt("id")) thenReturn
+      (0) // jdbc returns 0 for null numeric values
     when(rs.getString("name")) thenReturn (null)
     when(rs.getString("date_id")) thenReturn (null)
     assert(
@@ -527,15 +515,14 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rsmd.getColumnTypeName(2)) thenReturn ("VARCHAR")
     when(rsmd.isNullable(2)) thenReturn (ResultSetMetaData.columnNullable)
     when(rsmd.getColumnTypeName(3)) thenReturn ("DATETIME")
-    when(rsmd.isNullable(3)) thenReturn (
-      ResultSetMetaData.columnNoNulls
-    ) // mismatch
+    when(rsmd.isNullable(3)) thenReturn
+      (ResultSetMetaData.columnNoNulls) // mismatch
 
     assert(columnDef.resultSetExtractor.validate(rsmd).isFailure)
   }
 
   "Duplicate nested fields should be blocked" in {
-    a[TestFailedException] should be thrownBy isColumnDefinitionAvailable[
-      OuterWithBadNesting]
+    a[TestFailedException] should be thrownBy
+      isColumnDefinitionAvailable[OuterWithBadNesting]
   }
 }

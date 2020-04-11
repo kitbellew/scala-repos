@@ -191,9 +191,8 @@ private[akka] trait SubscriberManagement[T]
       Math
         .min(
           Int.MaxValue,
-          Math.min(
-            maxRequested(subscriptions),
-            buffer.maxAvailable) - pendingFromUpstream)
+          Math.min(maxRequested(subscriptions), buffer.maxAvailable) -
+            pendingFromUpstream)
         .toInt
     if (desired > 0) {
       pendingFromUpstream += desired

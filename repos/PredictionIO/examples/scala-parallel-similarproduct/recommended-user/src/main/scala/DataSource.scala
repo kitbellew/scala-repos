@@ -71,8 +71,7 @@ class DataSource(val dsp: DataSourceParams)
           } catch {
             case e: Exception => {
               logger.error(
-                s"Cannot convert $event to FollowEvent." +
-                  s" Exception: $e.")
+                s"Cannot convert $event to FollowEvent." + s" Exception: $e.")
               throw e
             }
           }

@@ -137,8 +137,8 @@ class ValidationErrorSerializer(
           case ValidationError(message, fieldName, code, args) ⇒
             implicit val fmts = formats
             val jv: JValue = ("message" -> message)
-            val wf: JValue = fieldName map (fn ⇒
-              ("field" -> fn.name): JValue) getOrElse JNothing
+            val wf: JValue = fieldName map
+              (fn ⇒ ("field" -> fn.name): JValue) getOrElse JNothing
             val ec: JValue =
               if (includeCode && code.isDefined)
                 ("code" -> (code map (Extraction.decompose(_)(formats))))

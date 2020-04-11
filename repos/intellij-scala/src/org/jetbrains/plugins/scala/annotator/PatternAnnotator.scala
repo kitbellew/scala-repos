@@ -74,8 +74,8 @@ object PatternAnnotator {
     def exTpMatchesPattp =
       PatternAnnotatorUtil.matchesPattern(exTp, widen(patType))
 
-    val neverMatches = !PatternAnnotatorUtil
-      .matchesPattern(exTp, patType) && isNeverSubType(exTp, patType)
+    val neverMatches = !PatternAnnotatorUtil.matchesPattern(exTp, patType) &&
+      isNeverSubType(exTp, patType)
 
     def isEliminatedByErasure =
       (ScType.extractClass(exprType), ScType.extractClass(patType)) match {
@@ -148,10 +148,9 @@ object PatternAnnotator {
             ""
         val (exprTypeText, patTypeText) = ScTypePresentation
           .different(exprType, patType)
-        val message = ScalaBundle.message(
-          "fruitless.type.test",
-          exprTypeText,
-          patTypeText) + erasureWarn
+        val message = ScalaBundle
+          .message("fruitless.type.test", exprTypeText, patTypeText) +
+          erasureWarn
         holder.createWarningAnnotation(pattern, message)
       case StableIdResolvesToVar() =>
         val message = ScalaBundle
@@ -193,9 +192,10 @@ object PatternAnnotator {
                       rt,
                       pattern,
                       ScPattern.isOneArgCaseClassMethod(fun))
-                    val tupleCrushingIsPresent =
-                      expected > 0 && numPatterns == 1 && !fun.isSynthetic
-                    if (expected != numPatterns && !tupleCrushingIsPresent) { //1 always fits if return type is Option[TupleN]
+                    val tupleCrushingIsPresent = expected > 0 &&
+                      numPatterns == 1 && !fun.isSynthetic
+                    if (expected != numPatterns &&
+                        !tupleCrushingIsPresent) { //1 always fits if return type is Option[TupleN]
                       val message = ScalaBundle.message(
                         "wrong.number.arguments.extractor",
                         numPatterns.toString,
@@ -292,17 +292,16 @@ object PatternAnnotatorUtil {
         }
     }
 
-    matching.weakConforms(matched) || (
-      (matching, matched) match {
-        case (arrayType(arg1), arrayType(arg2)) =>
-          matchesPattern(arg1, arg2)
-        case (_, parameterized: ScParameterizedType) =>
-          val newtp = abstraction(parameterized)
-          !matched.equiv(newtp) && matching.weakConforms(newtp)
-        case _ =>
-          false
-      }
-    )
+    matching.weakConforms(matched) ||
+    ((matching, matched) match {
+      case (arrayType(arg1), arrayType(arg2)) =>
+        matchesPattern(arg1, arg2)
+      case (_, parameterized: ScParameterizedType) =>
+        val newtp = abstraction(parameterized)
+        !matched.equiv(newtp) && matching.weakConforms(newtp)
+      case _ =>
+        false
+    })
   }
 
   def patternType(pattern: ScPattern): Option[ScType] = {

@@ -53,8 +53,8 @@ case class Project(projectList: Seq[NamedExpression], child: LogicalPlan)
         }
         .nonEmpty)
 
-    !expressions
-      .exists(!_.resolved) && childrenResolved && !hasSpecialExpressions
+    !expressions.exists(!_.resolved) && childrenResolved &&
+    !hasSpecialExpressions
   }
 
   override def validConstraints: Set[Expression] =
@@ -89,8 +89,7 @@ case class Generate(
   def generatedSet: AttributeSet = AttributeSet(generatorOutput)
 
   override lazy val resolved: Boolean = {
-    generator.resolved &&
-    childrenResolved &&
+    generator.resolved && childrenResolved &&
     generator.elementTypes.length == generatorOutput.length &&
     generatorOutput.forall(_.resolved)
   }
@@ -166,16 +165,14 @@ case class Intersect(left: LogicalPlan, right: LogicalPlan)
   // Intersect are only resolved if they don't introduce ambiguous expression ids,
   // since the Optimizer will convert Intersect to Join.
   override lazy val resolved: Boolean =
-    childrenResolved &&
-      left.output.length == right.output.length &&
+    childrenResolved && left.output.length == right.output.length &&
       left
         .output
         .zip(right.output)
         .forall {
           case (l, r) =>
             l.dataType == r.dataType
-        } &&
-      duplicateResolved
+        } && duplicateResolved
 
   override def maxRows: Option[Long] = {
     if (children.exists(_.maxRows.isEmpty)) {
@@ -206,8 +203,7 @@ case class Except(left: LogicalPlan, right: LogicalPlan)
   override protected def validConstraints: Set[Expression] = leftConstraints
 
   override lazy val resolved: Boolean =
-    childrenResolved &&
-      left.output.length == right.output.length &&
+    childrenResolved && left.output.length == right.output.length &&
       left
         .output
         .zip(right.output)
@@ -315,9 +311,8 @@ case class Join(
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
       case FullOuter =>
-        left.output.map(_.withNullability(true)) ++ right
-          .output
-          .map(_.withNullability(true))
+        left.output.map(_.withNullability(true)) ++
+          right.output.map(_.withNullability(true))
       case _ =>
         left.output ++ right.output
     }
@@ -351,9 +346,7 @@ case class Join(
   // Joins are only resolved if they don't introduce ambiguous expression ids.
   // NaturalJoin should be ready for resolution only if everything else is resolved here
   lazy val resolvedExceptNatural: Boolean = {
-    childrenResolved &&
-    expressions.forall(_.resolved) &&
-    duplicateResolved &&
+    childrenResolved && expressions.forall(_.resolved) && duplicateResolved &&
     condition.forall(_.dataType == BooleanType)
   }
 
@@ -393,15 +386,16 @@ case class InsertIntoTable(
   override def output: Seq[Attribute] = Seq.empty
 
   assert(overwrite || !ifNotExists)
-  override lazy val resolved: Boolean = childrenResolved && child
-    .output
-    .zip(table.output)
-    .forall {
-      case (childAttr, tableAttr) =>
-        DataType.equalsIgnoreCompatibleNullability(
-          childAttr.dataType,
-          tableAttr.dataType)
-    }
+  override lazy val resolved: Boolean = childrenResolved &&
+    child
+      .output
+      .zip(table.output)
+      .forall {
+        case (childAttr, tableAttr) =>
+          DataType.equalsIgnoreCompatibleNullability(
+            childAttr.dataType,
+            tableAttr.dataType)
+      }
 }
 
 /**
@@ -459,9 +453,9 @@ case class Range(
   val numElements: BigInt = {
     val safeStart = BigInt(start)
     val safeEnd = BigInt(end)
-    if ((safeEnd - safeStart) % step == 0 || (
-          safeEnd > safeStart
-        ) != (step > 0)) {
+    if ((safeEnd - safeStart) % step == 0 ||
+        (safeEnd > safeStart) !=
+          (step > 0)) {
       (safeEnd - safeStart) / step
     } else {
       // the remainder has the same sign with range, could add 1 more
@@ -492,8 +486,8 @@ case class Aggregate(
         }
         .nonEmpty)
 
-    !expressions
-      .exists(!_.resolved) && childrenResolved && !hasWindowExpressions
+    !expressions.exists(!_.resolved) && childrenResolved &&
+    !hasWindowExpressions
   }
 
   override def output: Seq[Attribute] = aggregateExpressions.map(_.toAttribute)
@@ -572,16 +566,17 @@ private[sql] object Expand {
       // get the non selected grouping attributes according to the bit mask
       val nonSelectedGroupAttrSet = buildNonSelectAttrSet(bitmask, groupByAttrs)
 
-      child.output ++ groupByAttrs.map { attr =>
-        if (nonSelectedGroupAttrSet.contains(attr)) {
-          // if the input attribute in the Invalid Grouping Expression set of for this group
-          // replace it with constant null
-          Literal.create(null, attr.dataType)
-        } else {
-          attr
-        }
-      // groupingId is the last output, here we use the bit mask as the concrete value for it.
-      } :+ Literal.create(bitmask, IntegerType)
+      child.output ++
+        groupByAttrs.map { attr =>
+          if (nonSelectedGroupAttrSet.contains(attr)) {
+            // if the input attribute in the Invalid Grouping Expression set of for this group
+            // replace it with constant null
+            Literal.create(null, attr.dataType)
+          } else {
+            attr
+          }
+        // groupingId is the last output, here we use the bit mask as the concrete value for it.
+        } :+ Literal.create(bitmask, IntegerType)
     }
     val output = child.output ++ groupByAttrs :+ gid
     Expand(projections, output, Project(child.output ++ groupByAliases, child))
@@ -687,9 +682,8 @@ case class GlobalLimit(limitExpr: Expression, child: LogicalPlan)
   }
   override lazy val statistics: Statistics = {
     val limit = limitExpr.eval().asInstanceOf[Int]
-    val sizeInBytes = (limit: Long) * output
-      .map(a => a.dataType.defaultSize)
-      .sum
+    val sizeInBytes = (limit: Long) *
+      output.map(a => a.dataType.defaultSize).sum
     Statistics(sizeInBytes = sizeInBytes)
   }
 }
@@ -707,9 +701,8 @@ case class LocalLimit(limitExpr: Expression, child: LogicalPlan)
   }
   override lazy val statistics: Statistics = {
     val limit = limitExpr.eval().asInstanceOf[Int]
-    val sizeInBytes = (limit: Long) * output
-      .map(a => a.dataType.defaultSize)
-      .sum
+    val sizeInBytes = (limit: Long) *
+      output.map(a => a.dataType.defaultSize).sum
     Statistics(sizeInBytes = sizeInBytes)
   }
 }

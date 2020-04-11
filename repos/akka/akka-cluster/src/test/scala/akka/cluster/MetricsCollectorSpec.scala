@@ -39,25 +39,27 @@ class MetricsCollectorSpec
       for (i ← 1 to 20) {
         val sample1 = collector.sample.metrics
         val sample2 = collector.sample.metrics
-        val merged12 = sample2 flatMap (latest ⇒
-          sample1 collect {
-            case peer if latest sameAs peer ⇒
-              val m = peer :+ latest
-              m.value should ===(latest.value)
-              m.isSmooth should ===(peer.isSmooth || latest.isSmooth)
-              m
-          })
+        val merged12 = sample2 flatMap
+          (latest ⇒
+            sample1 collect {
+              case peer if latest sameAs peer ⇒
+                val m = peer :+ latest
+                m.value should ===(latest.value)
+                m.isSmooth should ===(peer.isSmooth || latest.isSmooth)
+                m
+            })
 
         val sample3 = collector.sample.metrics
         val sample4 = collector.sample.metrics
-        val merged34 = sample4 flatMap (latest ⇒
-          sample3 collect {
-            case peer if latest sameAs peer ⇒
-              val m = peer :+ latest
-              m.value should ===(latest.value)
-              m.isSmooth should ===(peer.isSmooth || latest.isSmooth)
-              m
-          })
+        val merged34 = sample4 flatMap
+          (latest ⇒
+            sample3 collect {
+              case peer if latest sameAs peer ⇒
+                val m = peer :+ latest
+                m.value should ===(latest.value)
+                m.isSmooth should ===(peer.isSmooth || latest.isSmooth)
+                m
+            })
       }
     }
   }
@@ -115,14 +117,15 @@ class MetricsCollectorSpec
       c.processors.isDefined should ===(true)
     }
 
-    "collect 50 node metrics samples in an acceptable duration" taggedAs LongRunningTest in within(
-      10 seconds) {
-      (1 to 50) foreach { _ ⇒
-        val sample = collector.sample
-        sample.metrics.size should be >= (3)
-        Thread.sleep(100)
+    "collect 50 node metrics samples in an acceptable duration" taggedAs
+      LongRunningTest in
+      within(10 seconds) {
+        (1 to 50) foreach { _ ⇒
+          val sample = collector.sample
+          sample.metrics.size should be >= (3)
+          Thread.sleep(100)
+        }
       }
-    }
   }
 }
 
@@ -149,7 +152,8 @@ trait MetricsCollectorFactory {
       .recover {
         case e ⇒
           log.debug(
-            "Metrics will be retreived from MBeans, Sigar failed to load. Reason: " + e)
+            "Metrics will be retreived from MBeans, Sigar failed to load. Reason: " +
+              e)
           new JmxMetricsCollector(selfAddress, defaultDecayFactor)
       }
       .get

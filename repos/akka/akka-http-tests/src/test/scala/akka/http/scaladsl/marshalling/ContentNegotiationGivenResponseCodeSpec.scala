@@ -31,19 +31,21 @@ class ContentNegotiationGivenResponseCodeSpec extends RoutingSpec {
       val request = Post("/200-text")
         .addHeader(Accept(MediaRanges.`application/*`))
 
-      request ~> Route.seal(routes) ~> check {
-        status should ===(NotAcceptable)
-        entityAs[String] should include("text/plain")
-      }
+      request ~> Route.seal(routes) ~>
+        check {
+          status should ===(NotAcceptable)
+          entityAs[String] should include("text/plain")
+        }
     }
 
     "201 Created response, when entity not available in Accept-ed MediaRange" in {
       val request = Post("/201-text")
         .addHeader(Accept(MediaRanges.`application/*`))
-      request ~> Route.seal(routes) ~> check {
-        status should ===(NotAcceptable)
-        entityAs[String] should include("text/plain")
-      }
+      request ~> Route.seal(routes) ~>
+        check {
+          status should ===(NotAcceptable)
+          entityAs[String] should include("text/plain")
+        }
     }
   }
 
@@ -51,11 +53,12 @@ class ContentNegotiationGivenResponseCodeSpec extends RoutingSpec {
     "400 BadRequest response, when entity not available in Accept-ed MediaRange" in {
       val request = Post("/400-text")
         .addHeader(Accept(MediaRanges.`application/*`))
-      request ~> Route.seal(routes) ~> check {
-        status should ===(BadRequest)
-        contentType should ===(ContentTypes.`text/plain(UTF-8)`)
-        entityAs[String] should include("bad-request")
-      }
+      request ~> Route.seal(routes) ~>
+        check {
+          status should ===(BadRequest)
+          contentType should ===(ContentTypes.`text/plain(UTF-8)`)
+          entityAs[String] should include("bad-request")
+        }
     }
   }
 

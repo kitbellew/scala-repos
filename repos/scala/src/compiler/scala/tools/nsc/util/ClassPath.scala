@@ -35,8 +35,9 @@ object ClassPath {
 
     /* Get all subdirectories, jars, zips out of a directory. */
     def lsDir(dir: Directory, filt: String => Boolean = _ => true) =
-      dir.list filter (x =>
-        filt(x.name) && (x.isDirectory || isJarOrZip(x))) map (_.path) toList
+      dir.list filter
+        (x => filt(x.name) && (x.isDirectory || isJarOrZip(x))) map
+        (_.path) toList
 
     if (pattern == "*")
       lsDir(Directory("."))
@@ -56,8 +57,8 @@ object ClassPath {
   }
 
   /** Split classpath using platform-dependent path separator */
-  def split(path: String): List[String] =
-    (path split pathSeparator).toList filterNot (_ == "") distinct
+  def split(path: String): List[String] = (path split pathSeparator)
+    .toList filterNot (_ == "") distinct
 
   /** Join classpath using platform-dependent path separator */
   def join(paths: String*): String =
@@ -79,8 +80,9 @@ object ClassPath {
       case null =>
         Nil
       case dir =>
-        dir filter (_.isClassContainer) map (x =>
-          new java.io.File(dir.file, x.name) getPath) toList
+        dir filter
+          (_.isClassContainer) map
+          (x => new java.io.File(dir.file, x.name) getPath) toList
     }
   }
 
@@ -93,8 +95,8 @@ object ClassPath {
       return Nil
 
     val baseDir = file.parent
-    new Jar(file).classPathElements map (elem =>
-      specToURL(elem) getOrElse (baseDir / elem).toURL)
+    new Jar(file).classPathElements map
+      (elem => specToURL(elem) getOrElse (baseDir / elem).toURL)
   }
 
   def specToURL(spec: String): Option[URL] =
@@ -371,14 +373,14 @@ class MergedClassPath[T](
 
   def name = entries.head.name
   def asURLs = (entries flatMap (_.asURLs)).toList
-  lazy val sourcepaths: IndexedSeq[AbstractFile] =
-    entries flatMap (_.sourcepaths)
+  lazy val sourcepaths: IndexedSeq[AbstractFile] = entries flatMap
+    (_.sourcepaths)
 
   override def origin =
     Some(
-      entries map (x => x.origin getOrElse x.name) mkString (
-        "Merged(", ", ", ")"
-      ))
+      entries map
+        (x => x.origin getOrElse x.name) mkString
+        ("Merged(", ", ", ")"))
   override def asClassPathString: String =
     join(entries map (_.asClassPathString): _*)
 

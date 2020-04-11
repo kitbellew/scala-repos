@@ -276,10 +276,11 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
     Await.ready(res, 5.seconds)
 
     assert(
-      1000 == Await
-        .result(store.fetch("foo"), 5.seconds)
-        .map(_.instances)
-        .getOrElse(0),
+      1000 ==
+        Await
+          .result(store.fetch("foo"), 5.seconds)
+          .map(_.instances)
+          .getOrElse(0),
       "Instances of 'foo' should be set to 1000")
   }
 

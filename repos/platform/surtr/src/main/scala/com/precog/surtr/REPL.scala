@@ -179,13 +179,13 @@ trait REPL
 
               for (graph <- eitherGraph.right) {
                 val result = {
-                  consumeEval(graph, dummyEvaluationContext) fold (
-                    error =>
-                      "An error occurred processing your query: " + error
-                        .getMessage,
-                    results =>
-                      JArray(results.toList.map(_._2.toJValue)).renderPretty
-                  )
+                  consumeEval(graph, dummyEvaluationContext) fold
+                    (
+                      error =>
+                        "An error occurred processing your query: " +
+                          error.getMessage,
+                      results =>
+                        JArray(results.toList.map(_._2.toJValue)).renderPretty)
                 }
 
                 out.println()
@@ -243,8 +243,8 @@ trait REPL
           val command =
             if ((successes lengthCompare 1) > 0)
               throw new AssertionError(
-                "Fatal error: ambiguous parse results: " + results
-                  .mkString(", "))
+                "Fatal error: ambiguous parse results: " +
+                  results.mkString(", "))
             else
               successes.head
 
@@ -296,14 +296,13 @@ trait REPL
 
   // %%
 
-  lazy val prompt: Parser[Command] = (expr ^^ { t =>
-    Eval(t)
-  }
-    | ":tree" ~ expr ^^ { (_, t) =>
-      PrintTree(t)
-    }
-    | ":help" ^^^ Help
-    | ":quit" ^^^ Quit)
+  lazy val prompt: Parser[Command] =
+    (expr ^^ { t =>
+      Eval(t)
+    } |
+      ":tree" ~ expr ^^ { (_, t) =>
+        PrintTree(t)
+      } | ":help" ^^^ Help | ":quit" ^^^ Quit)
 
   sealed trait Command
 

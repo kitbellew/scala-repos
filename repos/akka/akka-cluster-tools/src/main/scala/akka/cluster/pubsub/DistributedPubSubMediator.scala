@@ -728,11 +728,11 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
           if (nodes(b.owner)) {
             val myBucket = registry(b.owner)
             if (b.version > myBucket.version) {
-              registry += (
-                b.owner -> myBucket.copy(
-                  version = b.version,
-                  content = myBucket.content ++ b.content)
-              )
+              registry +=
+                (b.owner ->
+                  myBucket.copy(
+                    version = b.version,
+                    content = myBucket.content ++ b.content))
             }
           }
         }
@@ -831,11 +831,11 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def put(key: String, valueOption: Option[ActorRef]): Unit = {
     val bucket = registry(selfAddress)
     val v = nextVersion()
-    registry += (
-      selfAddress -> bucket.copy(
-        version = v,
-        content = bucket.content + (key -> ValueHolder(v, valueOption)))
-    )
+    registry +=
+      (selfAddress ->
+        bucket.copy(
+          version = v,
+          content = bucket.content + (key -> ValueHolder(v, valueOption))))
   }
 
   def getCurrentTopics(): Set[String] = {
@@ -912,8 +912,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     selectRandomNode((nodes - selfAddress).toVector) foreach gossipTo
 
   def gossipTo(address: Address): Unit = {
-    context.actorSelection(self.path.toStringWithAddress(address)) ! Status(
-      versions = myVersions)
+    context.actorSelection(self.path.toStringWithAddress(address)) !
+      Status(versions = myVersions)
   }
 
   def selectRandomNode(
@@ -934,8 +934,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
               key
           }
         if (oldRemoved.nonEmpty)
-          registry += owner -> bucket
-            .copy(content = bucket.content -- oldRemoved)
+          registry += owner ->
+            bucket.copy(content = bucket.content -- oldRemoved)
     }
   }
 
@@ -972,8 +972,8 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
     * mediator.
     */
   def isTerminated: Boolean =
-    Cluster(system)
-      .isTerminated || !settings.role.forall(Cluster(system).selfRoles.contains)
+    Cluster(system).isTerminated ||
+      !settings.role.forall(Cluster(system).selfRoles.contains)
 
   /**
     * The [[DistributedPubSubMediator]]

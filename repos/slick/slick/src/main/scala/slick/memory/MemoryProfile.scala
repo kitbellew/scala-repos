@@ -107,18 +107,17 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
     new QueryInterpreter(db, param) {
       override def run(n: Node) =
         n match {
-          case ResultSetMapping(
-                _,
-                from,
-                CompiledMapping(converter, _)) :@ CollectionType(cons, el) =>
+          case ResultSetMapping(_, from, CompiledMapping(converter, _)) :@
+              CollectionType(cons, el) =>
             val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
             val b = cons
               .createBuilder(el.classTag)
               .asInstanceOf[Builder[Any, Any]]
-            b ++= fromV.map(v =>
-              converter
-                .asInstanceOf[ResultConverter[MemoryResultConverterDomain, _]]
-                .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
+            b ++=
+              fromV.map(v =>
+                converter
+                  .asInstanceOf[ResultConverter[MemoryResultConverterDomain, _]]
+                  .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
             b.result()
           case n =>
             super.run(n)

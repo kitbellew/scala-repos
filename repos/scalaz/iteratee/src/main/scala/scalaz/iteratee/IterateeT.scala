@@ -199,8 +199,9 @@ sealed abstract class IterateeT[E, F[_], A] {
               }
           },
         empty = cont(loop(x, y)),
-        eof = (x &= enumEofT[E, F]) flatMap (a =>
-          (y &= enumEofT[E, F]) map (b => (a, b)))
+        eof =
+          (x &= enumEofT[E, F]) flatMap
+            (a => (y &= enumEofT[E, F]) map (b => (a, b)))
       )
     cont(loop(this, other))
   }
@@ -393,8 +394,8 @@ trait IterateeTFunctions {
       s =>
         s(
           el = e =>
-            IterateeT.IterateeTMonadTrans[E].liftM(f(acc, e)) flatMap (a =>
-              cont(step(a))),
+            IterateeT.IterateeTMonadTrans[E].liftM(f(acc, e)) flatMap
+              (a => cont(step(a))),
           empty = cont(step(acc)),
           eof = done(acc, eofInput[E]))
     cont(step(init))

@@ -266,9 +266,9 @@ private[spark] class Executor(
             if (freedMemory > 0) {
               val errMsg =
                 s"Managed memory leak detected; size = $freedMemory bytes, TID = $taskId"
-              if (conf.getBoolean(
-                    "spark.unsafe.exceptionOnMemoryLeak",
-                    false) && !threwException) {
+              if (conf
+                    .getBoolean("spark.unsafe.exceptionOnMemoryLeak", false) &&
+                  !threwException) {
                 throw new SparkException(errMsg)
               } else {
                 logError(errMsg)
@@ -279,9 +279,8 @@ private[spark] class Executor(
               val errMsg =
                 s"${releasedLocks.size} block locks were not released by TID = $taskId:\n" +
                   releasedLocks.mkString("[", ", ", "]")
-              if (conf.getBoolean(
-                    "spark.storage.exceptionOnPinLeak",
-                    false) && !threwException) {
+              if (conf.getBoolean("spark.storage.exceptionOnPinLeak", false) &&
+                  !threwException) {
                 throw new SparkException(errMsg)
               } else {
                 logError(errMsg)
@@ -429,11 +428,12 @@ private[spark] class Executor(
 
     // For each of the jars in the jarSet, add them to the class loader.
     // We assume each of the files has already been fetched.
-    val urls = userClassPath.toArray ++ currentJars
-      .keySet
-      .map { uri =>
-        new File(uri.split("/").last).toURI.toURL
-      }
+    val urls = userClassPath.toArray ++
+      currentJars
+        .keySet
+        .map { uri =>
+          new File(uri.split("/").last).toURI.toURL
+        }
     if (userClassPathFirst) {
       new ChildFirstURLClassLoader(urls, currentLoader)
     } else {

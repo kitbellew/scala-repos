@@ -46,14 +46,12 @@ private[forum] final class Recent(
     langStr.split(",").toList filter (_.nonEmpty)
 
   private def fetch(key: String): Fu[List[MiniForumPost]] =
-    (
-      key.split(";").toList match {
-        case langs :: "[troll]" :: categs =>
-          PostRepoTroll.recentInCategs(nb)(categs, parseLangs(langs))
-        case langs :: categs =>
-          PostRepo.recentInCategs(nb)(categs, parseLangs(langs))
-        case categs =>
-          PostRepo.recentInCategs(nb)(categs, parseLangs("en"))
-      }
-    ) flatMap postApi.miniPosts
+    (key.split(";").toList match {
+      case langs :: "[troll]" :: categs =>
+        PostRepoTroll.recentInCategs(nb)(categs, parseLangs(langs))
+      case langs :: categs =>
+        PostRepo.recentInCategs(nb)(categs, parseLangs(langs))
+      case categs =>
+        PostRepo.recentInCategs(nb)(categs, parseLangs("en"))
+    }) flatMap postApi.miniPosts
 }

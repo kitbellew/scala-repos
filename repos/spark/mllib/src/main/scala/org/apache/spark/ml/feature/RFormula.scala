@@ -136,9 +136,8 @@ class RFormula(override val uid: String)
           dataset.schema(term) match {
             case column if column.dataType == StringType =>
               val indexCol = tmpColumn("stridx")
-              encoderStages += new StringIndexer()
-                .setInputCol(term)
-                .setOutputCol(indexCol)
+              encoderStages +=
+                new StringIndexer().setInputCol(term).setOutputCol(indexCol)
               (term, indexCol)
             case _ =>
               (term, term)
@@ -152,35 +151,38 @@ class RFormula(override val uid: String)
       .map {
         case Seq(term) if dataset.schema(term).dataType == StringType =>
           val encodedCol = tmpColumn("onehot")
-          encoderStages += new OneHotEncoder()
-            .setInputCol(indexed(term))
-            .setOutputCol(encodedCol)
+          encoderStages +=
+            new OneHotEncoder()
+              .setInputCol(indexed(term))
+              .setOutputCol(encodedCol)
           prefixesToRewrite(encodedCol + "_") = term + "_"
           encodedCol
         case Seq(term) =>
           term
         case terms =>
           val interactionCol = tmpColumn("interaction")
-          encoderStages += new Interaction()
-            .setInputCols(terms.map(indexed).toArray)
-            .setOutputCol(interactionCol)
+          encoderStages +=
+            new Interaction()
+              .setInputCols(terms.map(indexed).toArray)
+              .setOutputCol(interactionCol)
           prefixesToRewrite(interactionCol + "_") = ""
           interactionCol
       }
 
-    encoderStages += new VectorAssembler(uid)
-      .setInputCols(encodedTerms.toArray)
-      .setOutputCol($(featuresCol))
-    encoderStages += new VectorAttributeRewriter(
-      $(featuresCol),
-      prefixesToRewrite.toMap)
+    encoderStages +=
+      new VectorAssembler(uid)
+        .setInputCols(encodedTerms.toArray)
+        .setOutputCol($(featuresCol))
+    encoderStages +=
+      new VectorAttributeRewriter($(featuresCol), prefixesToRewrite.toMap)
     encoderStages += new ColumnPruner(tempColumns.toSet)
 
     if (dataset.schema.fieldNames.contains(resolvedFormula.label) &&
         dataset.schema(resolvedFormula.label).dataType == StringType) {
-      encoderStages += new StringIndexer()
-        .setInputCol(resolvedFormula.label)
-        .setOutputCol($(labelCol))
+      encoderStages +=
+        new StringIndexer()
+          .setInputCol(resolvedFormula.label)
+          .setOutputCol($(labelCol))
     }
 
     val pipelineModel = new Pipeline(uid)
@@ -287,8 +289,8 @@ class RFormulaModel private[feature] (
       !columnNames.contains($(featuresCol)),
       "Features column already exists.")
     require(
-      !columnNames.contains($(labelCol)) || schema($(labelCol))
-        .dataType == DoubleType,
+      !columnNames.contains($(labelCol)) ||
+        schema($(labelCol)).dataType == DoubleType,
       "Label column already exists and is not of type DoubleType.")
   }
 

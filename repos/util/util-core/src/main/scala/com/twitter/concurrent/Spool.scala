@@ -251,20 +251,21 @@ sealed trait Spool[+A] {
     set.synchronized {
       set += fn(head)
     }
-    head *:: tail.flatMap { spool =>
-      spool.filter { item =>
-        val fned = fn(item)
-        set.synchronized {
-          fned match {
-            case alreadySeen if set(alreadySeen) =>
-              false
-            case distinctItem =>
-              set += distinctItem
-              true
+    head *::
+      tail.flatMap { spool =>
+        spool.filter { item =>
+          val fned = fn(item)
+          set.synchronized {
+            fned match {
+              case alreadySeen if set(alreadySeen) =>
+                false
+              case distinctItem =>
+                set += distinctItem
+                true
+            }
           }
         }
       }
-    }
   }
 
   /**

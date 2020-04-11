@@ -337,12 +337,13 @@ trait AbstractScreen extends Factory with Loggable {
           }
         ).headOption
 
-      val newHelp: Box[NodeSeq] = help or (
-        stuff.collect {
-          case Help(ns) =>
-            ns
-        }
-      ).headOption
+      val newHelp: Box[NodeSeq] = help or
+        (
+          stuff.collect {
+            case Help(ns) =>
+              ns
+          }
+        ).headOption
 
       val newTransforms: List[BaseField => NodeSeq => NodeSeq] =
         stuff
@@ -791,8 +792,8 @@ trait AbstractScreen extends Factory with Loggable {
           .set(setFilter.foldLeft(v)((v, f) => f(v)))
 
       override def uniqueFieldId: Box[String] =
-        paramFieldId or underlying.flatMap(_.uniqueFieldId) or super
-          .uniqueFieldId
+        paramFieldId or underlying.flatMap(_.uniqueFieldId) or
+          super.uniqueFieldId
 
       override def binding = newBinding or super.binding
 
@@ -953,8 +954,8 @@ trait AbstractScreen extends Factory with Loggable {
 
   def noticeTypeToAttr(
       screen: AbstractScreen): Box[NoticeType.Value => MetaData] =
-    inject[NoticeType.Value => MetaData] or LiftScreenRules
-      .inject[NoticeType.Value => MetaData]
+    inject[NoticeType.Value => MetaData] or
+      LiftScreenRules.inject[NoticeType.Value => MetaData]
 
   /**
     * Create a field that's added to the Screen
@@ -1450,8 +1451,9 @@ trait ScreenWizardRendered extends Loggable {
       logger.trace(
         "Looking for fields with style %s, includeMissing = %s"
           .format(style, includeMissing),
-        fields filter (field =>
-          field.binding map (_.bindingStyle == style) openOr (includeMissing))
+        fields filter
+          (field =>
+            field.binding map (_.bindingStyle == style) openOr (includeMissing))
       )
 
     def bindingInfoWithFields(style: BindingStyle) =
@@ -1468,9 +1470,8 @@ trait ScreenWizardRendered extends Loggable {
 
     def templateFields: List[CssBindFunc] =
       List(
-        sel(_.fieldContainer, ".%s") #> (
-          fieldsWithStyle(Template, true) map (field => bindField(field))
-        ))
+        sel(_.fieldContainer, ".%s") #>
+          (fieldsWithStyle(Template, true) map (field => bindField(field))))
 
     def selfFields: List[CssBindFunc] =
       for ((bindingInfo, field) <- bindingInfoWithFields(Self))
@@ -1483,8 +1484,8 @@ trait ScreenWizardRendered extends Loggable {
         yield traceInline(
           "Binding default field %s to %s"
             .format(bindingInfo.selector(formName), defaultFieldNodeSeq),
-          bindingInfo
-            .selector(formName) #> bindField(field)(defaultFieldNodeSeq)
+          bindingInfo.selector(formName) #>
+            bindField(field)(defaultFieldNodeSeq)
         )
 
     def customFields: List[CssBindFunc] =
@@ -1550,9 +1551,8 @@ trait ScreenWizardRendered extends Loggable {
       val myNotices = notices.filter(fi => fi._3.isDefined && fi._3 == curId)
 
       def bindLabel(): CssBindFunc = {
-        val basicLabel = sel(_.label, ".%s [for]") #> curId & nsSetChildren(
-          _.label,
-          f.text ++ labelSuffix)
+        val basicLabel = sel(_.label, ".%s [for]") #> curId &
+          nsSetChildren(_.label, f.text ++ labelSuffix)
         myNotices match {
           case Nil =>
             basicLabel
@@ -1588,12 +1588,13 @@ trait ScreenWizardRendered extends Loggable {
           case Nil =>
             remove(_.errors)
           case xs =>
-            replaceChildren(_.errors) #> xs.map {
-              case (noticeType, msg, _) =>
-                val metaData: MetaData = noticeTypeToAttr(theScreen)
-                  .map(_(noticeType)) openOr Null
-                nsSetChildren(_.error, msg) & update(_.error, metaData)
-            }
+            replaceChildren(_.errors) #>
+              xs.map {
+                case (noticeType, msg, _) =>
+                  val metaData: MetaData = noticeTypeToAttr(theScreen)
+                    .map(_(noticeType)) openOr Null
+                  nsSetChildren(_.error, msg) & update(_.error, metaData)
+              }
         }
 
       def bindAll() = bindLabel() & bindForm() & bindHelp() & bindErrors()
@@ -1614,12 +1615,13 @@ trait ScreenWizardRendered extends Loggable {
         case Nil =>
           remove(_.globalErrors)
         case xs =>
-          replaceChildren(_.globalErrors) #> xs.map {
-            case (noticeType, msg, _) =>
-              val metaData: MetaData = noticeTypeToAttr(theScreen)
-                .map(_(noticeType)) openOr Null
-              nsSetChildren(_.error, msg) & update(_.error, metaData)
-          }
+          replaceChildren(_.globalErrors) #>
+            xs.map {
+              case (noticeType, msg, _) =>
+                val metaData: MetaData = noticeTypeToAttr(theScreen)
+                  .map(_(noticeType)) openOr Null
+                nsSetChildren(_.error, msg) & update(_.error, metaData)
+            }
       }
 
     def bindFieldsWithAdditional(xhtml: NodeSeq) =
@@ -1635,35 +1637,32 @@ trait ScreenWizardRendered extends Loggable {
       val snapshot = createSnapshot
 
       val ret =
-        (
-          <form id={
-            nextId._1
-          } action={
-            url
-          }
+        (<form id={
+          nextId._1
+        } action={
+          url
+        }
                method="post">{
-            S.formGroup(-1)(
-              SHtml.hidden(() => snapshot.restore()) % liftScreenAttr(
-                "restoreAction"))
-          }{
-            fields
-          }{
-            S.formGroup(4)(
-              SHtml.hidden(() => {
-                val res = nextId._2();
-                if (!ajax_?) {
-                  val localSnapshot = createSnapshot
-                  S.seeOther(
-                    url,
-                    () => {
-                      localSnapshot.restore
-                    })
-                }
-                res
-              })) % liftScreenAttr("nextAction")
-          }</form> %
-            theScreen.additionalAttributes
-        ) ++
+          S.formGroup(-1)(
+            SHtml.hidden(() => snapshot.restore()) %
+              liftScreenAttr("restoreAction"))
+        }{
+          fields
+        }{
+          S.formGroup(4)(
+            SHtml.hidden(() => {
+              val res = nextId._2();
+              if (!ajax_?) {
+                val localSnapshot = createSnapshot
+                S.seeOther(
+                  url,
+                  () => {
+                    localSnapshot.restore
+                  })
+              }
+              res
+            })) % liftScreenAttr("nextAction")
+        }</form> % theScreen.additionalAttributes) ++
           prevId
             .toList
             .map {
@@ -1710,11 +1709,9 @@ trait ScreenWizardRendered extends Loggable {
     def bindScreenInfo: CssBindFunc =
       (currentScreenNumber, screenCount) match {
         case (Full(num), Full(cnt)) =>
-          replaceChildren(_.screenInfo) #> (
-            nsSetChildren(_.screenNumber, num) & nsSetChildren(
-              _.totalScreens,
-              cnt)
-          )
+          replaceChildren(_.screenInfo) #>
+            (nsSetChildren(_.screenNumber, num) &
+              nsSetChildren(_.totalScreens, cnt))
         case _ =>
           remove(_.screenInfo)
       }
@@ -1722,20 +1719,18 @@ trait ScreenWizardRendered extends Loggable {
     logger.trace("Preparing to bind", fields)
 
     val bindingFunc: CssBindFunc =
-      bindScreenInfo &
-        optSetChildren(_.wizardTop, wizardTop) &
+      bindScreenInfo & optSetChildren(_.wizardTop, wizardTop) &
         optSetChildren(_.screenTop, screenTop) &
         optSetChildren(_.wizardBottom, wizardBottom) &
         optSetChildren(_.screenBottom, screenBottom) &
         nsReplace(_.prev, prev openOr EntityRef("nbsp")) &
         nsReplace(_.next, ((next or finish) openOr EntityRef("nbsp"))) &
-        nsReplace(_.cancel, cancel openOr EntityRef("nbsp")) &
-        bindErrors &
+        nsReplace(_.cancel, cancel openOr EntityRef("nbsp")) & bindErrors &
         funcSetChildren(_.fields, bindForm _)
 
-    val processed = S.session map (
-      _.runTemplate("css-bound-screen", allTemplate)
-    ) openOr (allTemplate)
+    val processed = S.session map
+      (_.runTemplate("css-bound-screen", allTemplate)) openOr
+      (allTemplate)
 
     (savAdditionalFormBindings map (bindingFunc & _) openOr (bindingFunc))(
       processed)
@@ -2035,9 +2030,8 @@ trait LiftScreen
     }
 
     override protected def testWasSet(name: String, bn: String): Boolean = {
-      ScreenVarHandler.get(name).isDefined || (
-        ScreenVarHandler.get(bn) openOr false
-      )
+      ScreenVarHandler.get(name).isDefined ||
+      (ScreenVarHandler.get(bn) openOr false)
     }
 
     /**
@@ -2061,15 +2055,15 @@ trait LiftScreen
 
   protected def bindLocalAction(selector: String, func: () => JsCmd): CssSel = {
     mapLocalAction(func)(name =>
-      selector #> (
-        SHtml
-          .makeAjaxCall(
-            LiftRules.jsArtifacts.serialize(NextId.get) + (
-              "&" + LocalActionRef.get + "=" + name
-            ))
-          .cmd
-        )
-        .toJsCmd)
+      selector #>
+        (
+          SHtml
+            .makeAjaxCall(
+              LiftRules.jsArtifacts.serialize(NextId.get) +
+                ("&" + LocalActionRef.get + "=" + name))
+            .cmd
+          )
+          .toJsCmd)
   }
 
   protected def mapLocalAction[T](func: () => JsCmd)(f: String => T): T = {
@@ -2128,32 +2122,20 @@ trait LiftScreen
     val theScreen = this
 
     val finishButton = theScreen.finishButton %
-      (
-        "onclick" ->
-          (
-            if (ajaxForms_?) {
-              SHtml
-                .makeAjaxCall(LiftRules.jsArtifacts.serialize(finishId))
-                .toJsCmd
-            } else {
-              "document.getElementById(" + finishId.encJs + ").submit()"
-            }
-          )
-      )
+      ("onclick" ->
+        (if (ajaxForms_?) {
+           SHtml.makeAjaxCall(LiftRules.jsArtifacts.serialize(finishId)).toJsCmd
+         } else {
+           "document.getElementById(" + finishId.encJs + ").submit()"
+         }))
 
     val cancelButton: Elem = theScreen.cancelButton %
-      (
-        "onclick" ->
-          (
-            if (ajaxForms_?) {
-              SHtml
-                .makeAjaxCall(LiftRules.jsArtifacts.serialize(cancelId))
-                .toJsCmd
-            } else {
-              "document.getElementById(" + cancelId.encJs + ").submit()"
-            }
-          )
-      )
+      ("onclick" ->
+        (if (ajaxForms_?) {
+           SHtml.makeAjaxCall(LiftRules.jsArtifacts.serialize(cancelId)).toJsCmd
+         } else {
+           "document.getElementById(" + cancelId.encJs + ").submit()"
+         }))
 
     val url = S.uri
 
@@ -2204,9 +2186,10 @@ trait LiftScreen
       Empty, //wizardBottom: Box[Elem],
       finishId -> doFinish _,
       Empty,
-      cancelId -> (() => {
-        redirectBack()
-      }), //cancelId: (String, () => Unit),
+      cancelId ->
+        (() => {
+          redirectBack()
+        }), //cancelId: (String, () => Unit),
       theScreen,
       ajaxForms_?
     )
@@ -2233,10 +2216,10 @@ trait LiftScreen
   protected def doFinish(): JsCmd = {
     val fMap: Map[String, () => JsCmd] = LocalActions.get.get
     if (!LocalAction.get.isEmpty)
-      fMap.get(LocalAction.get) map (_()) getOrElse (
-        throw new IllegalArgumentException(
-          "No local action available with that binding")
-      )
+      fMap.get(LocalAction.get) map
+        (_()) getOrElse
+        (throw new IllegalArgumentException(
+          "No local action available with that binding"))
     else {
       validate match {
         case Nil =>

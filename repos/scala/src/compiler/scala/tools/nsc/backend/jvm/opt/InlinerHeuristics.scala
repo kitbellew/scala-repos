@@ -71,11 +71,9 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
               case Some(Right(req)) =>
                 requests += req
               case Some(Left(w)) =>
-                if ((
-                      calleeAnnotatedInline && bTypes
-                        .compilerSettings
-                        .YoptWarningEmitAtInlineFailed
-                    ) || w.emitWarning(compilerSettings)) {
+                if ((calleeAnnotatedInline &&
+                    bTypes.compilerSettings.YoptWarningEmitAtInlineFailed) ||
+                    w.emitWarning(compilerSettings)) {
                   val annotWarn =
                     if (calleeAnnotatedInline)
                       " is annotated @inline but"
@@ -88,10 +86,9 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
                 }
 
               case None =>
-                if (canInlineFromSource && calleeAnnotatedInline && !callsite
-                      .annotatedNoInline && bTypes
-                      .compilerSettings
-                      .YoptWarningEmitAtInlineFailed) {
+                if (canInlineFromSource && calleeAnnotatedInline &&
+                    !callsite.annotatedNoInline &&
+                    bTypes.compilerSettings.YoptWarningEmitAtInlineFailed) {
                   // if the callsite is annotated @inline, we report an inline warning even if the underlying
                   // reason is, for example, mixed compilation (which has a separate -Yopt-warning flag).
                   def initMsg =
@@ -101,21 +98,22 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
                   if (doRewriteTraitCallsite(callsite))
                     backendReporting.inlinerWarning(
                       pos,
-                      s"$initMsg: the trait method call could not be rewritten to the static implementation method." + warnMsg)
+                      s"$initMsg: the trait method call could not be rewritten to the static implementation method." +
+                        warnMsg)
                   else if (!safeToInline)
                     backendReporting.inlinerWarning(
                       pos,
-                      s"$initMsg: the method is not final and may be overridden." + warnMsg)
+                      s"$initMsg: the method is not final and may be overridden." +
+                        warnMsg)
                   else
                     backendReporting.inlinerWarning(pos, s"$initMsg." + warnMsg)
-                } else if (callsiteWarning.isDefined && callsiteWarning
-                             .get
-                             .emitWarning(compilerSettings)) {
+                } else if (callsiteWarning.isDefined &&
+                           callsiteWarning.get.emitWarning(compilerSettings)) {
                   // when annotatedInline is false, and there is some warning, the callsite metadata is possibly incomplete.
                   backendReporting.inlinerWarning(
                     pos,
-                    s"there was a problem determining if method ${callee.name} can be inlined: \n" + callsiteWarning
-                      .get)
+                    s"there was a problem determining if method ${callee.name} can be inlined: \n" +
+                      callsiteWarning.get)
                 }
             }
 
@@ -171,17 +169,16 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
           None
 
       case "default" =>
-        if (callee.safeToInline && !callee.annotatedNoInline && !callsite
-              .annotatedNoInline) {
+        if (callee.safeToInline && !callee.annotatedNoInline &&
+            !callsite.annotatedNoInline) {
           def shouldInlineHO =
-            callee.samParamTypes.nonEmpty && (
-              callee.samParamTypes exists {
+            callee.samParamTypes.nonEmpty &&
+              (callee.samParamTypes exists {
                 case (index, _) =>
                   callsite.argInfos.contains(index)
-              }
-            )
-          if (callee.annotatedInline || callsite
-                .annotatedInline || shouldInlineHO)
+              })
+          if (callee.annotatedInline || callsite.annotatedInline ||
+              shouldInlineHO)
             Some(requestIfCanInline(callsite))
           else
             None

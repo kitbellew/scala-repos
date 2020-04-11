@@ -159,10 +159,11 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
       """
 
     val readResult = Json.fromJson[DiscoveryInfo](Json.parse(json))
-    readResult should be(
-      JsError(
-        JsPath() \ "ports",
-        "There may be only one port with a particular port number/protocol combination."))
+    readResult should
+      be(
+        JsError(
+          JsPath() \ "ports",
+          "There may be only one port with a particular port number/protocol combination."))
   }
 
   test("Read discovery info with two ports with duplicate name") {
@@ -176,8 +177,8 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
       """
 
     val readResult = Json.fromJson[DiscoveryInfo](Json.parse(json))
-    readResult should be(
-      JsError(JsPath() \ "ports", "Port names are not unique."))
+    readResult should
+      be(JsError(JsPath() \ "ports", "Port names are not unique."))
   }
 
   test("Read discovery info with a port with an invalid protocol") {
@@ -190,9 +191,10 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
       """
 
     val readResult = Json.fromJson[DiscoveryInfo](Json.parse(json))
-    readResult should be(
-      JsError(
-        (JsPath() \ "ports")(0) \ "protocol",
-        "Invalid protocol. Only 'udp' or 'tcp' are allowed."))
+    readResult should
+      be(
+        JsError(
+          (JsPath() \ "ports")(0) \ "protocol",
+          "Invalid protocol. Only 'udp' or 'tcp' are allowed."))
   }
 }

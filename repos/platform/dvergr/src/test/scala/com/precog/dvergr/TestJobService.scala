@@ -98,11 +98,9 @@ class JobServiceSpec extends TestJobService {
   def startJob(ts: Option[DateTime] = None): JValue =
     JObject(
       JField("state", JString("started")) ::
-        (
-          ts map { dt =>
-            JField("timestamp", dt.serialize) :: Nil
-          } getOrElse Nil
-      ))
+        (ts map { dt =>
+          JField("timestamp", dt.serialize) :: Nil
+        } getOrElse Nil))
 
   def postJob(job: JValue, apiKey: String = validAPIKey) =
     jobsClient.query("apiKey", apiKey).post[JValue]("/jobs/")(job)
@@ -158,8 +156,7 @@ class JobServiceSpec extends TestJobService {
     putStatusRaw(jobId, prev)(
       JObject(
         JField("message", JString(message)) ::
-          JField("progress", JNum(progress)) ::
-          JField("unit", JString(unit)) ::
+          JField("progress", JNum(progress)) :: JField("unit", JString(unit)) ::
           (info map (JField("info", _) :: Nil) getOrElse Nil)))
   }
 
@@ -181,32 +178,36 @@ class JobServiceSpec extends TestJobService {
 
   "job service" should {
     "allow job creation" in {
-      postJob(simpleJob, validAPIKey).copoint must beLike {
-        case HttpResponse(HttpStatus(Created, _), _, _, _) =>
-          ok
-      }
+      postJob(simpleJob, validAPIKey).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(Created, _), _, _, _) =>
+            ok
+        }
     }
 
     "return not found for jobs that don't exist" in {
-      getJob("super awesome job").copoint must beLike {
-        case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
-          ok
-      }
+      getJob("super awesome job").copoint must
+        beLike {
+          case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
+            ok
+        }
     }
 
     "forbid job creation if provided an invalid API key" in {
-      postJob(simpleJob, "Completely wrong API key").copoint must beLike {
-        case HttpResponse(HttpStatus(Forbidden, _), _, _, _) =>
-          ok
-      }
+      postJob(simpleJob, "Completely wrong API key").copoint must
+        beLike {
+          case HttpResponse(HttpStatus(Forbidden, _), _, _, _) =>
+            ok
+        }
     }
 
     "start job in unstarted state" in {
-      postJob(simpleJob, validAPIKey).copoint must beLike {
-        case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
-          (obj \ "state")
-            .validated[JobState] must_== Success(JobState.NotStarted)
-      }
+      postJob(simpleJob, validAPIKey).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
+            (obj \ "state").validated[JobState] must_==
+              Success(JobState.NotStarted)
+        }
     }
 
     "fetch created jobs" in {
@@ -221,10 +222,11 @@ class JobServiceSpec extends TestJobService {
 
       val data = JObject(JField("x", JNum(1)) :: Nil)
 
-      (obj \ "name", obj \ "type", obj \ "data") must beLike {
-        case (JString("xyz"), JString("zyx"), `data`) =>
-          ok
-      }
+      (obj \ "name", obj \ "type", obj \ "data") must
+        beLike {
+          case (JString("xyz"), JString("zyx"), `data`) =>
+            ok
+        }
     }
 
     "start job and retrieve state" in {
@@ -240,14 +242,16 @@ class JobServiceSpec extends TestJobService {
         ).copoint
 
       st1.validated[JobState] must_== Success(NotStarted)
-      st2.validated[JobState] must beLike {
-        case Success(Started(_, NotStarted)) =>
-          ok
-      }
-      st3.validated[JobState] must beLike {
-        case Success(Started(_, NotStarted)) =>
-          ok
-      }
+      st2.validated[JobState] must
+        beLike {
+          case Success(Started(_, NotStarted)) =>
+            ok
+        }
+      st3.validated[JobState] must
+        beLike {
+          case Success(Started(_, NotStarted)) =>
+            ok
+        }
     }
 
     "start jobs with explicit date time" in {
@@ -280,21 +284,20 @@ class JobServiceSpec extends TestJobService {
               jobId,
               JObject(JField("state", JString("cancelled")) :: Nil))
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
+            ok
+        }
     }
 
     val cancellation: JValue = JObject(
       JField("state", JString("cancelled")) ::
-        JField("reason", JString("Because I said so.")) ::
-        Nil)
+        JField("reason", JString("Because I said so.")) :: Nil)
 
     val abort: JValue = JObject(
       JField("state", JString("aborted")) ::
-        JField("reason", JString("Yabba dabba doo!")) ::
-        Nil)
+        JField("reason", JString("Yabba dabba doo!")) :: Nil)
 
     "cancel started job with reason" in {
       val st =
@@ -307,11 +310,12 @@ class JobServiceSpec extends TestJobService {
           } yield st
         ).copoint
 
-      st.validated[JobState] must beLike {
-        case Success(
-              Cancelled("Because I said so.", _, Started(_, NotStarted))) =>
-          ok
-      }
+      st.validated[JobState] must
+        beLike {
+          case Success(
+                Cancelled("Because I said so.", _, Started(_, NotStarted))) =>
+            ok
+        }
     }
 
     "not allow jobs to be cancelled twice" in {
@@ -322,10 +326,11 @@ class JobServiceSpec extends TestJobService {
           _ <- putState(jobId, cancellation)
           res <- putState(jobId, cancellation)
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
+            ok
+        }
     }
 
     "not allow jobs in a terminal state to be cancelled" in {
@@ -336,10 +341,11 @@ class JobServiceSpec extends TestJobService {
           _ <- putState(jobId, abort)
           res <- putState(jobId, cancellation)
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
+            ok
+        }
     }
 
     "allow jobs that haven't been started to be aborted" in {
@@ -348,13 +354,15 @@ class JobServiceSpec extends TestJobService {
           jobId <- postJobAndGetId(simpleJob)
           res <- putState(jobId, abort)
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
-          obj.validated[JobState] must beLike {
-            case Success(Aborted("Yabba dabba doo!", _, NotStarted)) =>
-              ok
-          }
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
+            obj.validated[JobState] must
+              beLike {
+                case Success(Aborted("Yabba dabba doo!", _, NotStarted)) =>
+                  ok
+              }
+        }
     }
 
     "allow started jobs to be aborted" in {
@@ -364,14 +372,16 @@ class JobServiceSpec extends TestJobService {
           _ <- putState(jobId, startJob())
           res <- putState(jobId, abort)
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
-          obj.validated[JobState] must beLike {
-            case Success(
-                  Aborted("Yabba dabba doo!", _, Started(_, NotStarted))) =>
-              ok
-          }
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
+            obj.validated[JobState] must
+              beLike {
+                case Success(
+                      Aborted("Yabba dabba doo!", _, Started(_, NotStarted))) =>
+                  ok
+              }
+        }
     }
 
     "allow cancelled jobs to be aborted" in {
@@ -382,17 +392,19 @@ class JobServiceSpec extends TestJobService {
           _ <- putState(jobId, cancellation)
           res <- putState(jobId, abort)
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
-          obj.validated[JobState] must beLike {
-            case Success(
-                  Aborted(
-                    "Yabba dabba doo!",
-                    _,
-                    Cancelled(_, _, Started(_, NotStarted)))) =>
-              ok
-          }
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
+            obj.validated[JobState] must
+              beLike {
+                case Success(
+                      Aborted(
+                        "Yabba dabba doo!",
+                        _,
+                        Cancelled(_, _, Started(_, NotStarted)))) =>
+                  ok
+              }
+        }
     }
 
     "not allow job to be aborted twice" in {
@@ -403,10 +415,11 @@ class JobServiceSpec extends TestJobService {
           _ <- putState(jobId, abort)
           res <- putState(jobId, abort)
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
+            ok
+        }
     }
 
     def say(name: String, msg: String): JValue =
@@ -419,14 +432,15 @@ class JobServiceSpec extends TestJobService {
           jobId <- postJobAndGetId(simpleJob)
           msg <- postMessage(jobId, "abc", say("Tom", "Hello!"))
         } yield (jobId, msg)
-      ).copoint must beLike {
-        case (jobId, HttpResponse(HttpStatus(Created, _), _, Some(msg), _)) =>
-          msg \ "channel" must_== JString("abc")
-          msg \ "value" must_== say("Tom", "Hello!")
-          msg \ "value" \ "name" must_== JString("Tom")
-          msg \ "value" \ "msg" must_== JString("Hello!")
-          msg \ "jobId" must_== JString(jobId)
-      }
+      ).copoint must
+        beLike {
+          case (jobId, HttpResponse(HttpStatus(Created, _), _, Some(msg), _)) =>
+            msg \ "channel" must_== JString("abc")
+            msg \ "value" must_== say("Tom", "Hello!")
+            msg \ "value" \ "name" must_== JString("Tom")
+            msg \ "value" \ "msg" must_== JString("Hello!")
+            msg \ "jobId" must_== JString(jobId)
+        }
     }
 
     "post a series of messages and retrieve them" in {
@@ -451,20 +465,23 @@ class JobServiceSpec extends TestJobService {
           } yield (msgs, msgsAfterM3, msgsAfterM5)
         ).copoint
 
-      msgs must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
-          msgs.map(_ \ "value").toList must_== List(m1, m2, m3, m4, m5)
-      }
+      msgs must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
+            msgs.map(_ \ "value").toList must_== List(m1, m2, m3, m4, m5)
+        }
 
-      msgsAfterM3 must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
-          msgs.map(_ \ "value").toList must_== List(m4, m5)
-      }
+      msgsAfterM3 must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
+            msgs.map(_ \ "value").toList must_== List(m4, m5)
+        }
 
-      msgsAfterM5 must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
-          msgs.toList must_== Nil
-      }
+      msgsAfterM5 must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
+            msgs.toList must_== Nil
+        }
     }
 
     "post messages to different channels" in {
@@ -487,20 +504,23 @@ class JobServiceSpec extends TestJobService {
           } yield (abcMsgs, xyzMsgs, lastAbc)
         ).copoint
 
-      abcMsgs must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
-          msgs.map(_ \ "value").toList must_== List(m1, m2)
-      }
+      abcMsgs must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
+            msgs.map(_ \ "value").toList must_== List(m1, m2)
+        }
 
-      xyzMsgs must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
-          msgs.map(_ \ "value").toList must_== List(m3, m4)
-      }
+      xyzMsgs must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
+            msgs.map(_ \ "value").toList must_== List(m3, m4)
+        }
 
-      lastAbc must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
-          msgs.map(_ \ "value").toList must_== List(m2)
-      }
+      lastAbc must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(JArray(msgs)), _) =>
+            msgs.map(_ \ "value").toList must_== List(m2)
+        }
     }
 
     "put simple status update and get it" in {
@@ -510,17 +530,18 @@ class JobServiceSpec extends TestJobService {
           status1 <- putStatus(jobId, "Nearly there!", 99.999, "%")
           status2 <- getStatus(jobId)
         } yield (jobId, status1, status2)
-      ).copoint must beLike {
-        case (
-              jobId,
-              status1 @ HttpResponse(HttpStatus(OK, _), _, Some(obj), _),
-              status2) =>
-          obj \ "jobId" must_== JString(jobId)
-          obj \ "value" \ "message" must_== JString("Nearly there!")
-          obj \ "value" \ "progress" must_== JNum(99.999)
-          obj \ "value" \ "unit" must_== JString("%")
-          status1 must_== status2
-      }
+      ).copoint must
+        beLike {
+          case (
+                jobId,
+                status1 @ HttpResponse(HttpStatus(OK, _), _, Some(obj), _),
+                status2) =>
+            obj \ "jobId" must_== JString(jobId)
+            obj \ "value" \ "message" must_== JString("Nearly there!")
+            obj \ "value" \ "progress" must_== JNum(99.999)
+            obj \ "value" \ "unit" must_== JString("%")
+            status1 must_== status2
+        }
     }
 
     "return 404 if no status was put" in {
@@ -529,10 +550,11 @@ class JobServiceSpec extends TestJobService {
           jobId <- postJobAndGetId(simpleJob)
           res <- getStatus(jobId)
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
+            ok
+        }
     }
 
     "allow status updates to be conditional" in {
@@ -558,11 +580,12 @@ class JobServiceSpec extends TestJobService {
               None,
               Some(id2))
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
-          obj \ "value" \ "message" must_== JString(
-            "Very nearly, almost there!")
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
+            obj \ "value" \ "message" must_==
+              JString("Very nearly, almost there!")
+        }
     }
 
     "notify of conflicting status updates when conditional" in {
@@ -588,10 +611,11 @@ class JobServiceSpec extends TestJobService {
               None,
               Some(id))
         } yield res
-      ).copoint must beLike {
-        case HttpResponse(HttpStatus(Conflict, _), _, _, _) =>
-          ok
-      }
+      ).copoint must
+        beLike {
+          case HttpResponse(HttpStatus(Conflict, _), _, _, _) =>
+            ok
+        }
     }
 
     "require status updates to contain 'message, 'progress', and 'unit" in {
@@ -603,29 +627,27 @@ class JobServiceSpec extends TestJobService {
             res2 <-
               putStatusRaw(jobId, None)(
                 JObject(
-                  JField("message", JString("a")) :: JField(
-                    "unit",
-                    JString("%")) :: Nil))
+                  JField("message", JString("a")) ::
+                    JField("unit", JString("%")) :: Nil))
             res3 <-
               putStatusRaw(jobId, None)(
                 JObject(
-                  JField("message", JString("a")) :: JField(
-                    "progress",
-                    JNum(99)) :: Nil))
+                  JField("message", JString("a")) ::
+                    JField("progress", JNum(99)) :: Nil))
             res4 <-
               putStatusRaw(jobId, None)(
                 JObject(
-                  JField("progress", JNum(99)) :: JField(
-                    "unit",
-                    JString("%")) :: Nil))
+                  JField("progress", JNum(99)) ::
+                    JField("unit", JString("%")) :: Nil))
           } yield (res1, res2, res3, res4)
         ).copoint
 
       def mustBeBad(res: HttpResponse[JValue]) =
-        res must beLike {
-          case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
-            ok
-        }
+        res must
+          beLike {
+            case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
+              ok
+          }
 
       mustBeBad(res1)
       mustBeBad(res2)

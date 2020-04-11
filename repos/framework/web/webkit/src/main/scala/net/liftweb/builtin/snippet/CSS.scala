@@ -45,20 +45,14 @@ object CSS extends DispatchSnippet {
   def blueprint: NodeSeq = {
     <xml:group>
       <link rel="stylesheet" href={
-      "/" + LiftRules.resourceServerPath +
-        "/blueprint/screen.css"
+      "/" + LiftRules.resourceServerPath + "/blueprint/screen.css"
     } type="text/css"
         media="screen, projection"/>
       <link rel="stylesheet" href={
-      "/" + LiftRules.resourceServerPath +
-        "/blueprint/print.css"
+      "/" + LiftRules.resourceServerPath + "/blueprint/print.css"
     } type="text/css" media="print"/>
-    </xml:group> ++
-      Unparsed(
-        """
-  <!--[if IE]><link rel="stylesheet" href=""" + '"' + S.contextPath + """/""" +
-          LiftRules.resourceServerPath +
-          """/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+    </xml:group> ++ Unparsed("""
+  <!--[if IE]><link rel="stylesheet" href=""" + '"' + S.contextPath + """/""" + LiftRules.resourceServerPath + """/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
     """)
   }
 

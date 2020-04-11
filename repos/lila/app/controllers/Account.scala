@@ -28,8 +28,8 @@ object Account extends LilaController {
       FormFuResult(forms.profile) { err =>
         fuccess(html.account.profile(me, err))
       } { profile =>
-        UserRepo.setProfile(me.id, profile) inject Redirect(
-          routes.User show me.username)
+        UserRepo.setProfile(me.id, profile) inject
+          Redirect(routes.User show me.username)
       }
     }
 
@@ -46,22 +46,24 @@ object Account extends LilaController {
                 relationEnv.api.countFollowing(me.id) zip
                 Env.pref.api.getPref(me) zip
                 lila.game.GameRepo.urgentGames(me) map {
-                case (((nbFollowers, nbFollowing), prefs), povs) =>
-                  Env
-                    .current
-                    .bus
-                    .publish(lila.user.User.Active(me), 'userActive)
-                  Ok {
-                    import play.api.libs.json._
-                    import lila.pref.JsonView._
-                    Env.user.jsonView(me) ++ Json.obj(
-                      "prefs" -> prefs,
-                      "nowPlaying" -> JsArray(
-                        povs take 20 map Env.api.lobbyApi.nowPlaying),
-                      "nbFollowing" -> nbFollowing,
-                      "nbFollowers" -> nbFollowers)
-                  }
-              }
+                  case (((nbFollowers, nbFollowing), prefs), povs) =>
+                    Env
+                      .current
+                      .bus
+                      .publish(lila.user.User.Active(me), 'userActive)
+                    Ok {
+                      import play.api.libs.json._
+                      import lila.pref.JsonView._
+                      Env.user.jsonView(me) ++
+                        Json.obj(
+                          "prefs" -> prefs,
+                          "nowPlaying" ->
+                            JsArray(
+                              povs take 20 map Env.api.lobbyApi.nowPlaying),
+                          "nbFollowing" -> nbFollowing,
+                          "nbFollowers" -> nbFollowers)
+                    }
+                }
           }
       ) map ensureSessionId(ctx.req)
     }
@@ -115,10 +117,8 @@ object Account extends LilaController {
           FormFuResult(Env.security.forms.changeEmail(me)) { err =>
             fuccess(html.account.email(me, err))
           } { data =>
-            val email = Env
-              .security
-              .emailAddress
-              .validate(data.email) err s"Invalid email ${data.email}"
+            val email = Env.security.emailAddress.validate(data.email) err
+              s"Invalid email ${data.email}"
             for {
               ok ← UserRepo.checkPasswordById(me.id, data.passwd)
               _ ← ok ?? UserRepo.email(me.id, email)
@@ -148,18 +148,16 @@ object Account extends LilaController {
               .fuccess
           case true =>
             doClose(me) inject {
-              Redirect(routes.User show me.username) withCookies LilaCookie
-                .newSession
+              Redirect(routes.User show me.username) withCookies
+                LilaCookie.newSession
             }
         }
       }
     }
 
   private[controllers] def doClose(user: UserModel) =
-    (UserRepo disable user) >>-
-      env.onlineUserIdMemo.remove(user.id) >>
-      relationEnv.api.unfollowAll(user.id) >>
-      Env.team.api.quitAll(user.id) >>-
+    (UserRepo disable user) >>- env.onlineUserIdMemo.remove(user.id) >>
+      relationEnv.api.unfollowAll(user.id) >> Env.team.api.quitAll(user.id) >>-
       Env.challenge.api.removeByUserId(user.id) >>-
       Env.tournament.api.withdrawAll(user) >>
       (Env.security disconnect user.id)
@@ -182,8 +180,8 @@ object Account extends LilaController {
     Auth { implicit ctx => me =>
       Env.security.api.dedup(me.id, ctx.req) >>
         Env.security.api.locatedOpenSessions(me.id, 50) map { sessions =>
-        Ok(html.account.security(me, sessions, currentSessionId))
-      }
+          Ok(html.account.security(me, sessions, currentSessionId))
+        }
     }
 
   def signout(sessionId: String) =

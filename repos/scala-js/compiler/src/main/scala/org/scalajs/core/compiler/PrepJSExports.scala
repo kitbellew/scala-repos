@@ -136,30 +136,24 @@ trait PrepJSExports {
       if (!hasLegalExportVisibility(sym)) {
         err(
           "You may only export public and protected " +
-            (
-              if (isMod)
-                "objects"
-              else
-                "classes"
-            ))
+            (if (isMod)
+               "objects"
+             else
+               "classes"))
       } else if (sym.isLocalToBlock) {
         err(
           "You may not export a local " +
-            (
-              if (isMod)
-                "object"
-              else
-                "class"
-            ))
+            (if (isMod)
+               "object"
+             else
+               "class"))
       } else if (!sym.owner.hasPackageFlag) {
         err(
           "You may not export a nested " +
-            (
-              if (isMod)
-                "object"
-              else
-                s"class. $createFactoryInOuterClassHint"
-            ))
+            (if (isMod)
+               "object"
+             else
+               s"class. $createFactoryInOuterClassHint"))
       } else if (sym.isAbstractClass) {
         err("You may not export an abstract class")
       } else if (!isMod && !hasAnyNonPrivateCtor) {
@@ -174,12 +168,10 @@ trait PrepJSExports {
           reporter.error(
             exp.pos,
             "You may not use @JSNamedExport on " +
-              (
-                if (isMod)
-                  "an object"
-                else
-                  "a Scala.js-defined JS class"
-              ))
+              (if (isMod)
+                 "an object"
+               else
+                 "a Scala.js-defined JS class"))
         }
 
         jsInterop.registerForExport(sym, normal)
@@ -290,9 +282,9 @@ trait PrepJSExports {
 
       // Make sure we do not override the default export of toString
       def isIllegalToString = {
-        isMember && !isNamedExport &&
-        name == "toString" && sym.name != nme.toString_ &&
-        sym.tpe.params.isEmpty && !jsInterop.isJSGetter(sym)
+        isMember && !isNamedExport && name == "toString" &&
+        sym.name != nme.toString_ && sym.tpe.params.isEmpty &&
+        !jsInterop.isJSGetter(sym)
       }
 
       if (isIllegalToString) {
@@ -303,13 +295,12 @@ trait PrepJSExports {
       }
 
       def isIllegalApplyExport = {
-        isMember && !hasExplicitName &&
-        sym.name == nme.apply &&
+        isMember && !hasExplicitName && sym.name == nme.apply &&
         !(
-          isExportAll && directAnnots.exists(annot =>
-            annot.symbol == JSExportAnnotation &&
-              annot.args.nonEmpty &&
-              annot.stringArg(0) == Some("apply"))
+          isExportAll &&
+            directAnnots.exists(annot =>
+              annot.symbol == JSExportAnnotation && annot.args.nonEmpty &&
+                annot.stringArg(0) == Some("apply"))
         )
       }
 
@@ -447,9 +438,9 @@ trait PrepJSExports {
     expSym.resetFlag(
       Flags.DEFERRED | // We always have a body
         Flags.ACCESSOR | // We are never a "direct" accessor
-        Flags.CASEACCESSOR | // And a fortiori not a case accessor
-        Flags.LAZY | // We are not a lazy val (even if we export one)
-        Flags.OVERRIDE // Synthetic methods need not bother with this
+          Flags.CASEACCESSOR | // And a fortiori not a case accessor
+            Flags.LAZY | // We are not a lazy val (even if we export one)
+              Flags.OVERRIDE // Synthetic methods need not bother with this
     )
 
     // Remove export annotations

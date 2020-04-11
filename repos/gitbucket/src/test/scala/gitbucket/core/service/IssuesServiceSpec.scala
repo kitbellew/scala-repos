@@ -54,14 +54,16 @@ class IssuesServiceSpec extends FunSuite with ServiceSpecBase {
         now,
         user1)
       assert(
-        getCommitStatues == Map(
-          ("user1", "repo1", 2) -> CommitStatusInfo(
-            1,
-            1,
-            Some("default"),
-            Some(CommitState.SUCCESS),
-            Some("http://exmple.com/ci"),
-            Some("exampleService"))))
+        getCommitStatues ==
+          Map(
+            ("user1", "repo1", 2) ->
+              CommitStatusInfo(
+                1,
+                1,
+                Some("default"),
+                Some(CommitState.SUCCESS),
+                Some("http://exmple.com/ci"),
+                Some("exampleService"))))
 
       // if there are two statuses, state is none
       val cs3 = dummyService.createCommitStatus(
@@ -75,14 +77,10 @@ class IssuesServiceSpec extends FunSuite with ServiceSpecBase {
         now,
         user1)
       assert(
-        getCommitStatues == Map(
-          ("user1", "repo1", 2) -> CommitStatusInfo(
-            2,
-            1,
-            None,
-            None,
-            None,
-            None)))
+        getCommitStatues ==
+          Map(
+            ("user1", "repo1", 2) ->
+              CommitStatusInfo(2, 1, None, None, None, None)))
 
       // get only statuses in query issues
       val (is3, pr3) = generateNewPullRequest(
@@ -99,14 +97,10 @@ class IssuesServiceSpec extends FunSuite with ServiceSpecBase {
         now,
         user1)
       assert(
-        getCommitStatues == Map(
-          ("user1", "repo1", 2) -> CommitStatusInfo(
-            2,
-            1,
-            None,
-            None,
-            None,
-            None)))
+        getCommitStatues ==
+          Map(
+            ("user1", "repo1", 2) ->
+              CommitStatusInfo(2, 1, None, None, None, None)))
     }
   }
 }

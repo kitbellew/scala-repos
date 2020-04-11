@@ -57,8 +57,8 @@ abstract class Erasure
           case TypeRef(pre, sym, args) =>
             if (sym == ArrayClass)
               args foreach traverse
-            else if (sym.isTypeParameterOrSkolem || sym
-                       .isExistentiallyBound || !args.isEmpty)
+            else if (sym.isTypeParameterOrSkolem || sym.isExistentiallyBound ||
+                     !args.isEmpty)
               result = true
             else if (sym.isClass)
               traverse(rebindInnerClass(pre, sym)) // #2585
@@ -82,8 +82,8 @@ abstract class Erasure
   override protected def verifyJavaErasure = settings.Xverify || settings.debug
   def needsJavaSig(tp: Type, throwsArgs: List[Type]) =
     !settings.Ynogenericsig && {
-      NeedsSigCollector.collect(tp) || throwsArgs
-        .exists(NeedsSigCollector.collect)
+      NeedsSigCollector.collect(tp) ||
+      throwsArgs.exists(NeedsSigCollector.collect)
     }
 
   // only refer to type params that will actually make it into the sig, this excludes:
@@ -91,11 +91,9 @@ abstract class Erasure
   // * type parameters appearing in method parameters
   // * type members not visible in an enclosing template
   private def isTypeParameterInSig(sym: Symbol, initialSymbol: Symbol) =
-    (!sym.isHigherOrderTypeParameter &&
-      sym.isTypeParameterOrSkolem && (
-      (initialSymbol.enclClassChain.exists(sym isNestedIn _)) ||
-        (initialSymbol.isMethod && initialSymbol.typeParams.contains(sym))
-    ))
+    (!sym.isHigherOrderTypeParameter && sym.isTypeParameterOrSkolem &&
+      ((initialSymbol.enclClassChain.exists(sym isNestedIn _)) ||
+        (initialSymbol.isMethod && initialSymbol.typeParams.contains(sym))))
 
   // Ensure every '.' in the generated signature immediately follows
   // a close angle bracket '>'.  Any which do not are replaced with '$'.
@@ -174,7 +172,8 @@ abstract class Erasure
                 ObjectTpe
               else
                 mapOver(tp1)
-            else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
+            else if (sym == AnyClass || sym == AnyValClass ||
+                     sym == SingletonClass)
               ObjectTpe
             else if (sym == UnitClass)
               BoxedUnitTpe
@@ -248,9 +247,8 @@ abstract class Erasure
         }
         if (!nonLeaf) {
           leaves = leaves filterNot { t =>
-            isInterfaceOrTrait(t.typeSymbol) && (
-              candidate.typeSymbol isSubClass t.typeSymbol
-            )
+            isInterfaceOrTrait(t.typeSymbol) &&
+            (candidate.typeSymbol isSubClass t.typeSymbol)
           }
           leaves += candidate
         }
@@ -348,21 +346,19 @@ abstract class Erasure
             def classSig = {
               val preRebound = pre.baseType(sym.owner) // #2585
               dotCleanup(
-                (
-                  if (needsJavaSig(preRebound, Nil)) {
-                    val s = jsig(preRebound, existentiallyBound)
-                    if (s.charAt(0) == 'L')
-                      s.substring(0, s.length - 1) + "." + sym.javaSimpleName
-                    else
-                      fullNameInSig(sym)
-                  } else
-                    fullNameInSig(sym)
-                ) + (
-                  if (args.isEmpty)
-                    ""
-                  else
-                    "<" + (args map argSig).mkString + ">"
-                ) + (";"))
+                (if (needsJavaSig(preRebound, Nil)) {
+                   val s = jsig(preRebound, existentiallyBound)
+                   if (s.charAt(0) == 'L')
+                     s.substring(0, s.length - 1) + "." + sym.javaSimpleName
+                   else
+                     fullNameInSig(sym)
+                 } else
+                   fullNameInSig(sym)) +
+                  (if (args.isEmpty)
+                     ""
+                   else
+                     "<" + (args map argSig).mkString + ">") +
+                  (";"))
             }
 
             // If args isEmpty, Array is being used as a type constructor
@@ -374,7 +370,8 @@ abstract class Erasure
             } else if (isTypeParameterInSig(sym, sym0)) {
               assert(!sym.isAliasType, "Unexpected alias type: " + sym)
               "" + TVAR_TAG + sym.name + ";"
-            } else if (sym == AnyClass || sym == AnyValClass || sym == SingletonClass)
+            } else if (sym == AnyClass || sym == AnyValClass ||
+                       sym == SingletonClass)
               jsig(ObjectTpe)
             else if (sym == UnitClass)
               jsig(BoxedUnitTpe)
@@ -391,8 +388,8 @@ abstract class Erasure
                 abbrvTag(sym).toString
             } else if (sym.isDerivedValueClass) {
               val unboxed = sym.derivedValueClassUnbox.tpe_*.finalResultType
-              val unboxedSeen =
-                (tp memberType sym.derivedValueClassUnbox).finalResultType
+              val unboxedSeen = (tp memberType sym.derivedValueClassUnbox)
+                .finalResultType
               def unboxedMsg =
                 if (unboxed == unboxedSeen)
                   ""
@@ -422,12 +419,11 @@ abstract class Erasure
             val buf = new StringBuffer("(")
             params foreach (p => buf append jsig(p.tpe))
             buf append ")"
-            buf append (
-              if (restpe.typeSymbol == UnitClass || sym0.isConstructor)
-                VOID_TAG.toString
-              else
-                jsig(restpe)
-            )
+            buf append
+              (if (restpe.typeSymbol == UnitClass || sym0.isConstructor)
+                 VOID_TAG.toString
+               else
+                 jsig(restpe))
             buf.toString
 
           case RefinedType(parents, decls) =>
@@ -438,8 +434,8 @@ abstract class Erasure
             jsig(atp, existentiallyBound, toplevel, primitiveOK)
           case BoundedWildcardType(bounds) =>
             println(
-              "something's wrong: " + sym0 + ":" + sym0
-                .tpe + " has a bounded wildcard type")
+              "something's wrong: " + sym0 + ":" + sym0.tpe +
+                " has a bounded wildcard type")
             jsig(bounds.hi, existentiallyBound, toplevel, primitiveOK)
           case _ =>
             val etp = erasure(sym0)(tp)
@@ -452,9 +448,8 @@ abstract class Erasure
       val throwsArgs = sym0.annotations flatMap ThrownException.unapply
       if (needsJavaSig(info, throwsArgs)) {
         try Some(
-          jsig(info, toplevel = true) + throwsArgs
-            .map("^" + jsig(_, toplevel = true))
-            .mkString(""))
+          jsig(info, toplevel = true) +
+            throwsArgs.map("^" + jsig(_, toplevel = true)).mkString(""))
         catch {
           case ex: UnknownSig =>
             None
@@ -499,8 +494,8 @@ abstract class Erasure
   private lazy val poundPoundMethods = Set[Symbol](Any_##, Object_##)
   // Methods on Any/Object which we rewrite here while we still know what
   // is a primitive and what arrived boxed.
-  private lazy val interceptedMethods =
-    poundPoundMethods ++ primitiveGetClassMethods
+  private lazy val interceptedMethods = poundPoundMethods ++
+    primitiveGetClassMethods
 
 // -------- erasure on trees ------------------------------------------
 
@@ -578,8 +573,8 @@ abstract class Erasure
                 |${(bridge.matchingSymbol(bc, site))}"""))
 
         def overriddenBy(sym: Symbol) =
-          sym.matchingSymbol(bc, site).alternatives filter (sym =>
-            !sym.isBridge)
+          sym.matchingSymbol(bc, site).alternatives filter
+            (sym => !sym.isBridge)
         for (overBridge <- exitingPostErasure(overriddenBy(bridge))) {
           if (overBridge == member) {
             clashError("the member itself")
@@ -605,22 +600,20 @@ abstract class Erasure
       val otpe = highErased
 
       val bridgeNeeded = exitingErasure(
-        !member.isMacro &&
-          !(other.tpe =:= member.tpe) &&
+        !member.isMacro && !(other.tpe =:= member.tpe) &&
           !(deconstMap(other.tpe) =:= deconstMap(member.tpe)) && {
-          var e = bridgesScope.lookupEntry(member.name)
-          while ((e ne null) && !(
-                   (e.sym.tpe =:= otpe) && (bridgeTarget(e.sym) == member)
-                 ))
-            e = bridgesScope.lookupNextEntry(e)
-          (e eq null)
-        })
+            var e = bridgesScope.lookupEntry(member.name)
+            while ((e ne null) &&
+                   !((e.sym.tpe =:= otpe) && (bridgeTarget(e.sym) == member)))
+              e = bridgesScope.lookupNextEntry(e)
+            (e eq null)
+          })
       if (!bridgeNeeded)
         return
 
-      var newFlags = (member.flags | BRIDGE | ARTIFACT) & ~(
-        ACCESSOR | DEFERRED | LAZY | lateDEFERRED
-      )
+      var newFlags =
+        (member.flags | BRIDGE | ARTIFACT) &
+          ~(ACCESSOR | DEFERRED | LAZY | lateDEFERRED)
       // If `member` is a ModuleSymbol, the bridge should not also be a ModuleSymbol. Otherwise we
       // end up with two module symbols with the same name in the same scope, which is surprising
       // when implementing later phases.
@@ -643,9 +636,9 @@ abstract class Erasure
       def sigContainsValueClass =
         (member.tpe exists (_.typeSymbol.isDerivedValueClass))
 
-      val shouldAdd = (!sigContainsValueClass
-        || (
-          checkBridgeOverrides(member, other, bridge) match {
+      val shouldAdd =
+        (!sigContainsValueClass ||
+          (checkBridgeOverrides(member, other, bridge) match {
             case Nil =>
               true
             case es if member.owner.isAnonymousClass =>
@@ -655,8 +648,7 @@ abstract class Erasure
               for ((pos, msg) <- es)
                 reporter.error(pos, msg);
               false
-          }
-        ))
+          }))
 
       if (shouldAdd) {
         exitingErasure(root.info.decls enter bridge)
@@ -680,11 +672,12 @@ abstract class Erasure
         // TODO: should we do this for user-defined unapplies as well?
         // does the first argument list have exactly one argument -- for user-defined unapplies we can't be sure
         def maybeWrap(bridgingCall: Tree): Tree = {
-          val guardExtractor = ( // can't statically know which member is going to be selected, so don't let this depend on member.isSynthetic
-            (member.name == nme.unapply || member.name == nme.unapplySeq)
-              && !exitingErasure(
-                (member.tpe <:< other.tpe)
-              )) // no static guarantees (TODO: is the subtype test ever true?)
+          val guardExtractor =
+            ( // can't statically know which member is going to be selected, so don't let this depend on member.isSynthetic
+              (member.name == nme.unapply || member.name == nme.unapplySeq) &&
+                !exitingErasure(
+                  (member.tpe <:< other.tpe)
+                )) // no static guarantees (TODO: is the subtype test ever true?)
 
           import CODE._
           val _false = FALSE
@@ -810,31 +803,28 @@ abstract class Erasure
                 Select(qual, getMember(ObjectClass, tree.symbol.name))))
           else {
             var qual1 = typedQualifier(qual)
-            if ((
-                  isPrimitiveValueType(qual1.tpe) && !isPrimitiveValueMember(
-                    tree.symbol)
-                ) ||
+            if ((isPrimitiveValueType(qual1.tpe) &&
+                !isPrimitiveValueMember(tree.symbol)) ||
                 isErasedValueType(qual1.tpe))
               qual1 = box(qual1, "owner " + tree.symbol.owner)
-            else if (!isPrimitiveValueType(qual1.tpe) && isPrimitiveValueMember(
-                       tree.symbol))
+            else if (!isPrimitiveValueType(qual1.tpe) &&
+                     isPrimitiveValueMember(tree.symbol))
               qual1 = unbox(qual1, tree.symbol.owner.tpe)
 
             def selectFrom(qual: Tree) = treeCopy.Select(tree, qual, name)
 
-            if (isPrimitiveValueMember(tree.symbol) && !isPrimitiveValueType(
-                  qual1.tpe)) {
+            if (isPrimitiveValueMember(tree.symbol) &&
+                !isPrimitiveValueType(qual1.tpe)) {
               tree.symbol = NoSymbol
               selectFrom(qual1)
             } else if (isMethodTypeWithEmptyParams(qual1.tpe)) {
               assert(qual1.symbol.isStable, qual1.symbol)
-              val applied = Apply(qual1, List()) setPos qual1
-                .pos setType qual1.tpe.resultType
+              val applied = Apply(qual1, List()) setPos qual1.pos setType
+                qual1.tpe.resultType
               adaptMember(selectFrom(applied))
             } else if (!(
-                         qual1.isInstanceOf[Super] || (
-                           qual1.tpe.typeSymbol isSubClass tree.symbol.owner
-                         )
+                         qual1.isInstanceOf[Super] ||
+                           (qual1.tpe.typeSymbol isSubClass tree.symbol.owner)
                        )) {
               assert(tree.symbol.owner != ArrayClass)
               selectFrom(cast(qual1, tree.symbol.owner.tpe.resultType))
@@ -964,8 +954,8 @@ abstract class Erasure
     }
 
     private def sameTypeAfterErasure(sym1: Symbol, sym2: Symbol) =
-      exitingPostErasure(sym1.info =:= sym2.info) && !sym1.isMacro && !sym2
-        .isMacro
+      exitingPostErasure(sym1.info =:= sym2.info) && !sym1.isMacro &&
+        !sym2.isMacro
 
     /** TODO - adapt SymbolPairs so it can be used here. */
     private def checkNoDeclaredDoubleDefs(base: Symbol) {
@@ -1013,17 +1003,15 @@ abstract class Erasure
       object opc extends Cursor(root) {
         // specialized members have no type history before 'specialize', causing double def errors for curried defs
         override def exclude(sym: Symbol): Boolean =
-          (sym.isType
-            || super.exclude(sym)
-            || !sym.hasTypeAt(currentRun.refchecksPhase.id))
+          (sym.isType || super.exclude(sym) ||
+            !sym.hasTypeAt(currentRun.refchecksPhase.id))
         override def matches(lo: Symbol, high: Symbol) = !high.isPrivate
       }
       def isErasureDoubleDef(pair: SymbolPair) = {
         import pair._
         log(s"Considering for erasure clash:\n$pair")
-        !exitingRefchecks(lowType matches highType) && sameTypeAfterErasure(
-          low,
-          high)
+        !exitingRefchecks(lowType matches highType) &&
+        sameTypeAfterErasure(low, high)
       }
       opc.iterator filter isErasureDoubleDef foreach doubleDefError
     }
@@ -1054,9 +1042,8 @@ abstract class Erasure
         if (bridges.isEmpty)
           stats
         else
-          (
-            stats filterNot (stat => toBeRemoved contains stat.symbol)
-          ) ::: bridges
+          (stats filterNot (stat => toBeRemoved contains stat.symbol)) :::
+            bridges
       }
 
     /**  Transform tree at phase erasure before retyping it.
@@ -1097,9 +1084,8 @@ abstract class Erasure
                   atPos(tree.pos) {
                     Typed(qual, TypeTree(targ.tpe))
                   }
-                else if (isNumericValueClass(
-                           qual.tpe.typeSymbol) && isNumericValueClass(
-                           targ.tpe.typeSymbol))
+                else if (isNumericValueClass(qual.tpe.typeSymbol) &&
+                         isNumericValueClass(targ.tpe.typeSymbol))
                   atPos(tree.pos)(numericConversion(qual, targ.tpe.typeSymbol))
                 else
                   tree
@@ -1110,9 +1096,9 @@ abstract class Erasure
           def preEraseIsInstanceOf = {
             fn match {
               case TypeApply(sel @ Select(qual, name), List(targ)) =>
-                if (qual.tpe != null && isPrimitiveValueClass(
-                      qual.tpe.typeSymbol) && targ.tpe != null && targ
-                      .tpe <:< AnyRefTpe)
+                if (qual.tpe != null &&
+                    isPrimitiveValueClass(qual.tpe.typeSymbol) &&
+                    targ.tpe != null && targ.tpe <:< AnyRefTpe)
                   reporter.error(
                     sel.pos,
                     "isInstanceOf cannot test if value types are references.")
@@ -1149,8 +1135,8 @@ abstract class Erasure
                         Literal(Constant(true))
                       else
                         atPos(tree.pos) {
-                          parentTests map mkIsInstanceOf(q) reduceRight gen
-                            .mkAnd
+                          parentTests map mkIsInstanceOf(q) reduceRight
+                            gen.mkAnd
                         }
                     }
                   case _ =>
@@ -1170,10 +1156,8 @@ abstract class Erasure
             log(
               s"${fn.symbol.fullLocationString} originates in refinement class - call will be implemented via reflection.")
             ApplyDynamic(qualifier, args) setSymbol fn.symbol setPos tree.pos
-          } else if (fn.symbol.isMethodWithExtension && !fn
-                       .symbol
-                       .tpe
-                       .isErroneous) {
+          } else if (fn.symbol.isMethodWithExtension &&
+                     !fn.symbol.tpe.isErroneous) {
             Apply(
               gen.mkAttributedRef(extensionMethods.extensionMethod(fn.symbol)),
               qualifier :: args)
@@ -1186,10 +1170,8 @@ abstract class Erasure
           tree.fun match {
             case TypeApply(fun @ Select(qual, name), args @ List(arg))
                 if (
-                  (
-                    fun.symbol == Any_isInstanceOf || fun
-                      .symbol == Object_isInstanceOf
-                  ) &&
+                  (fun.symbol == Any_isInstanceOf ||
+                    fun.symbol == Object_isInstanceOf) &&
                     unboundedGenericArrayLevel(arg.tpe) > 0
                 ) => // !!! todo: simplify by having GenericArray also extract trees
               val level = unboundedGenericArrayLevel(arg.tpe)
@@ -1218,10 +1200,8 @@ abstract class Erasure
               val args = tree.args
               if (fn.symbol.owner == ArrayClass) {
                 // Have to also catch calls to abstract types which are bounded by Array.
-                if (unboundedGenericArrayLevel(qual.tpe.widen) == 1 || qual
-                      .tpe
-                      .typeSymbol
-                      .isAbstractType) {
+                if (unboundedGenericArrayLevel(qual.tpe.widen) == 1 ||
+                    qual.tpe.typeSymbol.isAbstractType) {
                   // convert calls to apply/update/length on generic arrays to
                   // calls of ScalaRunTime.array_xxx method calls
                   global
@@ -1282,12 +1262,11 @@ abstract class Erasure
                         ScalaRunTimeModule.info.member(nme.hash_).alternatives
                       def alt1 = alts find (_.info.paramTypes.head =:= qual.tpe)
                       def alt2 =
-                        ScalaRunTimeModule.info.member(nme.hash_) suchThat (
-                          _.info.paramTypes.head.typeSymbol == AnyClass
-                        )
-                      val newTree = gen.mkRuntimeCall(
-                        nme.hash_,
-                        qual :: Nil) setSymbol (alt1 getOrElse alt2)
+                        ScalaRunTimeModule.info.member(nme.hash_) suchThat
+                          (_.info.paramTypes.head.typeSymbol == AnyClass)
+                      val newTree = gen
+                        .mkRuntimeCall(nme.hash_, qual :: Nil) setSymbol
+                        (alt1 getOrElse alt2)
 
                       global.typer.typed(newTree)
                   }
@@ -1319,10 +1298,8 @@ abstract class Erasure
               } else
                 qual match {
                   case New(tpt)
-                      if name == nme.CONSTRUCTOR && tpt
-                        .tpe
-                        .typeSymbol
-                        .isDerivedValueClass =>
+                      if name == nme.CONSTRUCTOR &&
+                        tpt.tpe.typeSymbol.isDerivedValueClass =>
                     // println("inject derived: "+arg+" "+tpt.tpe)
                     val List(arg) = args
                     val attachment =
@@ -1355,9 +1332,8 @@ abstract class Erasure
               val sym = tree.symbol
               val owner = sym.owner
               if (owner.isRefinementClass) {
-                sym.allOverriddenSymbols filterNot (
-                  _.owner.isRefinementClass
-                ) match {
+                sym.allOverriddenSymbols filterNot
+                  (_.owner.isRefinementClass) match {
                   case overridden :: _ =>
                     log(
                       s"${sym.fullLocationString} originates in refinement class - replacing with ${overridden.fullLocationString}.")
@@ -1366,7 +1342,8 @@ abstract class Erasure
                     // Ideally this should not be reached or reachable; anything which would
                     // get here should have been caught in the surrounding Apply.
                     devWarning(
-                      s"Failed to rewrite reflective apply - now don't know what to do with " + tree)
+                      s"Failed to rewrite reflective apply - now don't know what to do with " +
+                        tree)
                     return treeCopy.Select(
                       tree,
                       gen.mkAttributedCast(qual, qual.tpe.widen),
@@ -1375,9 +1352,8 @@ abstract class Erasure
               }
 
               def isJvmAccessible(sym: Symbol) =
-                (sym.isClass && !sym.isJavaDefined) || localTyper
-                  .context
-                  .isAccessible(sym, sym.owner.thisType)
+                (sym.isClass && !sym.isJavaDefined) ||
+                  localTyper.context.isAccessible(sym, sym.owner.thisType)
               if (!isJvmAccessible(owner) && qual.tpe != null) {
                 qual match {
                   case Super(_, _) =>
@@ -1390,8 +1366,8 @@ abstract class Erasure
                     // Todo: Figure out how qual.tpe could be null in the check above (it does appear in build where SwingWorker.this
                     // has a null type).
                     val qualSym = qual.tpe.widen.typeSymbol
-                    if (isJvmAccessible(qualSym) && !qualSym
-                          .isPackageClass && !qualSym.isPackageObjectClass) {
+                    if (isJvmAccessible(qualSym) && !qualSym.isPackageClass &&
+                        !qualSym.isPackageObjectClass) {
                       // insert cast to prevent illegal access error (see #4283)
                       // util.trace("insert erasure cast ") (*/
                       treeCopy.Select(
@@ -1417,8 +1393,8 @@ abstract class Erasure
               Match(Typed(selector, TypeTree(selector.tpe)), cases)
 
             case Literal(ct)
-                if ct.tag == ClazzTag
-                  && ct.typeValue.typeSymbol != definitions.UnitClass =>
+                if ct.tag == ClazzTag &&
+                  ct.typeValue.typeSymbol != definitions.UnitClass =>
               val erased =
                 ct.typeValue match {
                   case tr @ TypeRef(_, clazz, _) if clazz.isDerivedValueClass =>
@@ -1459,14 +1435,14 @@ abstract class Erasure
                 treeCopy
                   .ArrayValue(
                     tree1,
-                    elemtpt setType specialScalaErasure
-                      .applyInArray(elemtpt.tpe),
+                    elemtpt setType
+                      specialScalaErasure.applyInArray(elemtpt.tpe),
                     trees map transform)
                   .clearType()
               case DefDef(_, _, _, _, tpt, _) =>
                 try super.transform(tree1).clearType()
-                finally tpt setType specialErasure(tree1.symbol)(
-                  tree1.symbol.tpe).resultType
+                finally tpt setType
+                  specialErasure(tree1.symbol)(tree1.symbol.tpe).resultType
               case ApplyDynamic(
                     qual,
                     Literal(Constant(boostrapMethodRef: Symbol)) :: _) =>

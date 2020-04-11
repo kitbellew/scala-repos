@@ -123,100 +123,104 @@ abstract class ClusterConsistentHashingRouterSpec
       enterBarrier("after-2")
     }
 
-    "deploy routees to new member nodes in the cluster" taggedAs LongRunningTest in {
+    "deploy routees to new member nodes in the cluster" taggedAs
+      LongRunningTest in {
 
-      awaitClusterUp(first, second, third)
+        awaitClusterUp(first, second, third)
 
-      runOn(first) {
-        // it may take some time until router receives cluster member events
-        awaitAssert {
-          currentRoutees(router1).size should ===(6)
-        }
-        val routees = currentRoutees(router1)
-        routees
-          .map {
-            case ActorRefRoutee(ref) ⇒
-              fullAddress(ref)
+        runOn(first) {
+          // it may take some time until router receives cluster member events
+          awaitAssert {
+            currentRoutees(router1).size should ===(6)
           }
-          .toSet should ===(roles.map(address).toSet)
+          val routees = currentRoutees(router1)
+          routees
+            .map {
+              case ActorRefRoutee(ref) ⇒
+                fullAddress(ref)
+            }
+            .toSet should ===(roles.map(address).toSet)
+        }
+
+        enterBarrier("after-3")
       }
 
-      enterBarrier("after-3")
-    }
-
-    "deploy programatically defined routees to the member nodes in the cluster" taggedAs LongRunningTest in {
-      runOn(first) {
-        val router2 = system.actorOf(
-          ClusterRouterPool(
-            local = ConsistentHashingPool(nrOfInstances = 0),
-            settings = ClusterRouterPoolSettings(
-              totalInstances = 10,
-              maxInstancesPerNode = 2,
-              allowLocalRoutees = true,
-              useRole = None)
-          ).props(Props[Echo]),
-          "router2"
-        )
-        // it may take some time until router receives cluster member events
-        awaitAssert {
-          currentRoutees(router2).size should ===(6)
-        }
-        val routees = currentRoutees(router2)
-        routees
-          .map {
-            case ActorRefRoutee(ref) ⇒
-              fullAddress(ref)
+    "deploy programatically defined routees to the member nodes in the cluster" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          val router2 = system.actorOf(
+            ClusterRouterPool(
+              local = ConsistentHashingPool(nrOfInstances = 0),
+              settings = ClusterRouterPoolSettings(
+                totalInstances = 10,
+                maxInstancesPerNode = 2,
+                allowLocalRoutees = true,
+                useRole = None)
+            ).props(Props[Echo]),
+            "router2"
+          )
+          // it may take some time until router receives cluster member events
+          awaitAssert {
+            currentRoutees(router2).size should ===(6)
           }
-          .toSet should ===(roles.map(address).toSet)
-      }
-
-      enterBarrier("after-4")
-    }
-
-    "handle combination of configured router and programatically defined hashMapping" taggedAs LongRunningTest in {
-      runOn(first) {
-        def hashMapping: ConsistentHashMapping = {
-          case s: String ⇒
-            s
+          val routees = currentRoutees(router2)
+          routees
+            .map {
+              case ActorRefRoutee(ref) ⇒
+                fullAddress(ref)
+            }
+            .toSet should ===(roles.map(address).toSet)
         }
 
-        val router3 = system.actorOf(
-          ConsistentHashingPool(nrOfInstances = 0, hashMapping = hashMapping)
-            .props(Props[Echo]),
-          "router3")
-
-        assertHashMapping(router3)
+        enterBarrier("after-4")
       }
 
-      enterBarrier("after-5")
-    }
+    "handle combination of configured router and programatically defined hashMapping" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          def hashMapping: ConsistentHashMapping = {
+            case s: String ⇒
+              s
+          }
 
-    "handle combination of configured router and programatically defined hashMapping and ClusterRouterConfig" taggedAs LongRunningTest in {
-      runOn(first) {
-        def hashMapping: ConsistentHashMapping = {
-          case s: String ⇒
-            s
+          val router3 = system.actorOf(
+            ConsistentHashingPool(nrOfInstances = 0, hashMapping = hashMapping)
+              .props(Props[Echo]),
+            "router3")
+
+          assertHashMapping(router3)
         }
 
-        val router4 = system.actorOf(
-          ClusterRouterPool(
-            local = ConsistentHashingPool(
-              nrOfInstances = 0,
-              hashMapping = hashMapping),
-            settings = ClusterRouterPoolSettings(
-              totalInstances = 10,
-              maxInstancesPerNode = 1,
-              allowLocalRoutees = true,
-              useRole = None)
-          ).props(Props[Echo]),
-          "router4"
-        )
-
-        assertHashMapping(router4)
+        enterBarrier("after-5")
       }
 
-      enterBarrier("after-6")
-    }
+    "handle combination of configured router and programatically defined hashMapping and ClusterRouterConfig" taggedAs
+      LongRunningTest in {
+        runOn(first) {
+          def hashMapping: ConsistentHashMapping = {
+            case s: String ⇒
+              s
+          }
+
+          val router4 = system.actorOf(
+            ClusterRouterPool(
+              local = ConsistentHashingPool(
+                nrOfInstances = 0,
+                hashMapping = hashMapping),
+              settings = ClusterRouterPoolSettings(
+                totalInstances = 10,
+                maxInstancesPerNode = 1,
+                allowLocalRoutees = true,
+                useRole = None)
+            ).props(Props[Echo]),
+            "router4"
+          )
+
+          assertHashMapping(router4)
+        }
+
+        enterBarrier("after-6")
+      }
 
     def assertHashMapping(router: ActorRef): Unit = {
       // it may take some time until router receives cluster member events

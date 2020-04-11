@@ -29,8 +29,7 @@ private[kafka] abstract class GenericResponseAndHeader(
   }
 
   def sizeInBytes(): Int = {
-    4 /* correlation id */ +
-      body.sizeOf()
+    4 /* correlation id */ + body.sizeOf()
   }
 
   override def toString(): String = {

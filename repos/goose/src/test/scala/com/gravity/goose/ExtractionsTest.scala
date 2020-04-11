@@ -158,24 +158,13 @@ class ExtractionsTest {
       expectedStart = content,
       expectedDescription = description)
 
-    val expectedTags = "Federal Open Market Committee" ::
-      "Federal Reserve" ::
-      "Federal Reserve Bank Of Kansas City" ::
-      "Financial Crisis" ::
-      "Financial Reform" ::
-      "Financial Regulation" ::
-      "Financial Regulatory Reform" ::
-      "Fomc" ::
-      "Great Recession" ::
-      "Interest Rates" ::
-      "Kansas City Fed" ::
-      "Monetary Policy" ::
-      "The Financial Fix" ::
-      "Thomas Hoenig" ::
-      "Too Big To Fail" ::
-      "Wall Street Reform" ::
-      "Business News" ::
-      Nil
+    val expectedTags = "Federal Open Market Committee" :: "Federal Reserve" ::
+      "Federal Reserve Bank Of Kansas City" :: "Financial Crisis" ::
+      "Financial Reform" :: "Financial Regulation" ::
+      "Financial Regulatory Reform" :: "Fomc" :: "Great Recession" ::
+      "Interest Rates" :: "Kansas City Fed" :: "Monetary Policy" ::
+      "The Financial Fix" :: "Thomas Hoenig" :: "Too Big To Fail" ::
+      "Wall Street Reform" :: "Business News" :: Nil
     assertNotNull("Tags should not be NULL!", article.tags)
     assertTrue("Tags should not be empty!", article.tags.size > 0)
 

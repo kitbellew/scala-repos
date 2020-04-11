@@ -242,8 +242,8 @@ object DataType {
             .zip(rightFields)
             .forall {
               case (l, r) =>
-                l.name == r
-                  .name && equalsIgnoreNullability(l.dataType, r.dataType)
+                l.name == r.name &&
+                  equalsIgnoreNullability(l.dataType, r.dataType)
             }
       case (l, r) =>
         l == r
@@ -272,8 +272,7 @@ object DataType {
         (tn || !fn) && equalsIgnoreCompatibleNullability(fromElement, toElement)
 
       case (MapType(fromKey, fromValue, fn), MapType(toKey, toValue, tn)) =>
-        (tn || !fn) &&
-          equalsIgnoreCompatibleNullability(fromKey, toKey) &&
+        (tn || !fn) && equalsIgnoreCompatibleNullability(fromKey, toKey) &&
           equalsIgnoreCompatibleNullability(fromValue, toValue)
 
       case (StructType(fromFields), StructType(toFields)) =>

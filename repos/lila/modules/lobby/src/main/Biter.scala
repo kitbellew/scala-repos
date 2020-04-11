@@ -55,10 +55,8 @@ private[lobby] object Biter {
       color: Color): Fu[chess.Color] =
     color match {
       case Color.Random =>
-        UserRepo
-          .firstGetsWhite(creatorUser.map(_.id), joinerUser.map(_.id)) map chess
-          .Color
-          .apply
+        UserRepo.firstGetsWhite(creatorUser.map(_.id), joinerUser.map(_.id)) map
+          chess.Color.apply
       case Color.White =>
         fuccess(chess.White)
       case Color.Black =>
@@ -105,15 +103,14 @@ private[lobby] object Biter {
         user.isDefined || hook.allowAnon,
         user ?? {
           _.lame == hook.lame
-        }) &&
-      !(hook.userId ?? (user ?? (_.blocking)).contains) &&
+        }) && !(hook.userId ?? (user ?? (_.blocking)).contains) &&
       !((user map (_.id)) ?? (hook.user ?? (_.blocking)).contains) &&
       hook
         .realRatingRange
         .fold(true) { range =>
           user ?? { u =>
-            (hook.perfType map (_.key) flatMap u.ratingMap.get) ?? range
-              .contains
+            (hook.perfType map (_.key) flatMap u.ratingMap.get) ??
+              range.contains
           }
         }
 
@@ -124,7 +121,7 @@ private[lobby] object Biter {
       seek
         .realRatingRange
         .fold(true) { range =>
-          (seek.perfType map (_.key) flatMap user.ratingMap.get) ?? range
-            .contains
+          (seek.perfType map (_.key) flatMap user.ratingMap.get) ??
+            range.contains
         }
 }

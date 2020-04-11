@@ -99,15 +99,13 @@ trait ItemsList[T <: Mapper[T]] {
               case (aval: String, bval: String) =>
                 aval.toLowerCase < bval.toLowerCase
               case (aval: Ordered[_], bval: Ordered[_]) =>
-                aval.asInstanceOf[Ordered[Any]] < bval
-                  .asInstanceOf[Ordered[Any]]
+                aval.asInstanceOf[Ordered[Any]] <
+                  bval.asInstanceOf[Ordered[Any]]
               case (
                     aval: java.lang.Comparable[_],
                     bval: java.lang.Comparable[_]) =>
-                (
-                  aval.asInstanceOf[java.lang.Comparable[Any]] compareTo bval
-                    .asInstanceOf[java.lang.Comparable[Any]]
-                ) < 0
+                (aval.asInstanceOf[java.lang.Comparable[Any]] compareTo
+                  bval.asInstanceOf[java.lang.Comparable[Any]]) < 0
               case (null, _) =>
                 sortNullFirst
               case (_, null) =>
@@ -315,47 +313,50 @@ trait ItemsListEditor[T <: Mapper[T]] {
       .removed
       .map { item =>
         "^" #> customBind(item) andThen
-          ".fields" #> eachField(
+          ".fields" #>
+          eachField(
             item,
             { f: MappedField[_, T] =>
-              ".form" #> <strike>{
-                f.asHtml
-              }</strike>
+              ".form" #>
+                <strike>{
+                  f.asHtml
+                }</strike>
             }) &
-            ".removeBtn" #> SHtml
-              .submit(?("Remove"), () => onRemove(item), noPrompt) &
-            ".msg" #> Text(?("Deleted"))
+          ".removeBtn" #>
+          SHtml.submit(?("Remove"), () => onRemove(item), noPrompt) &
+          ".msg" #> Text(?("Deleted"))
       }
 
     val bindRegularItems = items
       .items
       .map { item =>
         "^" #> customBind(item) andThen
-          ".fields" #> eachField(
+          ".fields" #>
+          eachField(
             item,
             { f: MappedField[_, T] =>
               ".form" #> f.toForm
             }) &
-            ".removeBtn" #> SHtml
-              .submit(?("Remove"), () => onRemove(item), noPrompt) &
-            ".msg" #> {
-              item.validate match {
-                case Nil =>
-                  if (!item.saved_?)
-                    Text(?("New"))
-                  else if (item.dirty_?)
-                    Text(?("Unsaved"))
-                  else
-                    NodeSeq.Empty
-                case errors =>
-                  <ul>{
-                    errors.flatMap(e =>
-                      <li>{
-                        e.msg
-                      }</li>)
-                  }</ul>
-              }
+          ".removeBtn" #>
+          SHtml.submit(?("Remove"), () => onRemove(item), noPrompt) &
+          ".msg" #> {
+            item.validate match {
+              case Nil =>
+                if (!item.saved_?)
+                  Text(?("New"))
+                else if (item.dirty_?)
+                  Text(?("Unsaved"))
+                else
+                  NodeSeq.Empty
+              case errors =>
+                <ul>{
+                  errors.flatMap(e =>
+                    <li>{
+                      e.msg
+                    }</li>)
+                }</ul>
             }
+          }
       }
 
     "^ >*" #> optScript andThen
@@ -367,11 +368,12 @@ trait ItemsListEditor[T <: Mapper[T]] {
           },
           fieldFilter)
       } &
-        ".table" #> {
-          ".title *" #> title &
-            ".insertBtn" #> SHtml.submit(?("Insert"), onInsert _, noPrompt) &
-            ".item" #> (bindRegularItems ++ bindRemovedItems) &
-            ".saveBtn" #> SHtml.submit(?("Save"), onSubmit _, noPrompt)
-        }
+      ".table" #> {
+        ".title *" #> title &
+          ".insertBtn" #> SHtml.submit(?("Insert"), onInsert _, noPrompt) &
+          ".item" #>
+          (bindRegularItems ++ bindRemovedItems) &
+          ".saveBtn" #> SHtml.submit(?("Save"), onSubmit _, noPrompt)
+      }
   }
 }

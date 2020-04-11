@@ -278,8 +278,7 @@ class LoggerSpec extends WordSpec with Matchers {
         ref ! "Current Message in MDC"
         probe.expectMsgPF(max = 3.seconds) {
           case w @ Warning(_, _, "Current Message in MDC")
-              if w.mdc.size == 3 &&
-                w.mdc("requestId") == 3 &&
+              if w.mdc.size == 3 && w.mdc("requestId") == 3 &&
                 w.mdc("currentMsg") == "Current Message in MDC" &&
                 w.mdc("currentMsgLength") == 22 ⇒
         }
@@ -306,8 +305,8 @@ class LoggerSpec extends WordSpec with Matchers {
       val minutes = c.get(Calendar.MINUTE)
       val seconds = c.get(Calendar.SECOND)
       val ms = c.get(Calendar.MILLISECOND)
-      Helpers.currentTimeMillisToUTCString(timestamp) should ===(
-        f"$hours%02d:$minutes%02d:$seconds%02d.$ms%03dUTC")
+      Helpers.currentTimeMillisToUTCString(timestamp) should
+        ===(f"$hours%02d:$minutes%02d:$seconds%02d.$ms%03dUTC")
     }
   }
 

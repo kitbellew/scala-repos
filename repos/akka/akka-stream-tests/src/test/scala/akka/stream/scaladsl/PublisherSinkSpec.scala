@@ -17,13 +17,14 @@ class PublisherSinkSpec extends AkkaSpec {
 
   "A PublisherSink" must {
 
-    "be unique when created twice" in assertAllStagesStopped {
+    "be unique when created twice" in
+      assertAllStagesStopped {
 
-      val (pub1, pub2) = RunnableGraph
-        .fromGraph(
-          GraphDSL
-            .create(Sink.asPublisher[Int](false), Sink.asPublisher[Int](false))(
-              Keep.both) { implicit b ⇒ (p1, p2) ⇒
+        val (pub1, pub2) = RunnableGraph
+          .fromGraph(
+            GraphDSL.create(
+              Sink.asPublisher[Int](false),
+              Sink.asPublisher[Int](false))(Keep.both) { implicit b ⇒ (p1, p2) ⇒
               import GraphDSL.Implicits._
 
               val bcast = b.add(Broadcast[Int](2))
@@ -33,15 +34,15 @@ class PublisherSinkSpec extends AkkaSpec {
               bcast.out(1) ~> p2.in
               ClosedShape
             })
-        .run()
+          .run()
 
-      val f1 = Source.fromPublisher(pub1).map(identity).runFold(0)(_ + _)
-      val f2 = Source.fromPublisher(pub2).map(identity).runFold(0)(_ + _)
+        val f1 = Source.fromPublisher(pub1).map(identity).runFold(0)(_ + _)
+        val f2 = Source.fromPublisher(pub2).map(identity).runFold(0)(_ + _)
 
-      Await.result(f1, 3.seconds) should be(30)
-      Await.result(f2, 3.seconds) should be(15)
+        Await.result(f1, 3.seconds) should be(30)
+        Await.result(f2, 3.seconds) should be(15)
 
-    }
+      }
 
     "work with SubscriberSource" in {
       val (sub, pub) = Source

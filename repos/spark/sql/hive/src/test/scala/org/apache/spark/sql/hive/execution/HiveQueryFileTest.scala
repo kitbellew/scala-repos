@@ -43,8 +43,7 @@ abstract class HiveQueryFileTest extends HiveComparisonTest {
 
   val runAll =
     !(System.getProperty("spark.hive.alltests") == null) ||
-      runOnlyDirectories.nonEmpty ||
-      skipDirectories.nonEmpty
+      runOnlyDirectories.nonEmpty || skipDirectories.nonEmpty
 
   val whiteListProperty = "spark.hive.whitelist"
   // Allow the whiteList to be overridden by a system property
@@ -63,8 +62,7 @@ abstract class HiveQueryFileTest extends HiveComparisonTest {
           logDebug(s"Blacklisted test skipped $testCaseName")
         } else if (realWhiteList
                      .map(_.r.pattern.matcher(testCaseName).matches())
-                     .reduceLeft(_ || _) ||
-                   runAll) {
+                     .reduceLeft(_ || _) || runAll) {
           // Build a test case and submit it to scala test framework...
           val queriesString = fileToString(testCaseFile)
           createQueryTest(

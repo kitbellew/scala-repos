@@ -51,25 +51,27 @@ trait PipeToSupport {
       implicit executionContext: ExecutionContext) {
     def pipeTo(recipient: ActorRef)(implicit
         sender: ActorRef = Actor.noSender): CompletionStage[T] = {
-      future whenComplete new BiConsumer[T, Throwable] {
-        override def accept(t: T, ex: Throwable) {
-          if (t != null)
-            recipient ! t
-          if (ex != null)
-            recipient ! Status.Failure(ex)
+      future whenComplete
+        new BiConsumer[T, Throwable] {
+          override def accept(t: T, ex: Throwable) {
+            if (t != null)
+              recipient ! t
+            if (ex != null)
+              recipient ! Status.Failure(ex)
+          }
         }
-      }
     }
     def pipeToSelection(recipient: ActorSelection)(implicit
         sender: ActorRef = Actor.noSender): CompletionStage[T] = {
-      future whenComplete new BiConsumer[T, Throwable] {
-        override def accept(t: T, ex: Throwable) {
-          if (t != null)
-            recipient ! t
-          if (ex != null)
-            recipient ! Status.Failure(ex)
+      future whenComplete
+        new BiConsumer[T, Throwable] {
+          override def accept(t: T, ex: Throwable) {
+            if (t != null)
+              recipient ! t
+            if (ex != null)
+              recipient ! Status.Failure(ex)
+          }
         }
-      }
     }
     def to(recipient: ActorRef): PipeableCompletionStage[T] =
       to(recipient, Actor.noSender)

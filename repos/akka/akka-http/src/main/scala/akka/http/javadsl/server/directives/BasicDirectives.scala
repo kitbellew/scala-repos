@@ -189,8 +189,8 @@ abstract class BasicDirectives extends BasicDirectivesBase {
         res
       }
       def returnTypeMatches(method: Method): Boolean =
-        method.getReturnType == classOf[RouteResult] || returnsFuture(
-          method) || returnsCompletionStage(method)
+        method.getReturnType == classOf[RouteResult] || returnsFuture(method) ||
+          returnsCompletionStage(method)
 
       def returnsFuture(method: Method): Boolean =
         method.getReturnType == classOf[Future[_]] &&

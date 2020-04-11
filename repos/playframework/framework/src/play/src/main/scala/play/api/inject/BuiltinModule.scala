@@ -64,12 +64,13 @@ class BuiltinModule extends Module {
       bind[AESCrypter].toProvider[AESCrypterProvider],
       bind[play.api.libs.Crypto].toSelf,
       bind[TemporaryFileCreator].to[DefaultTemporaryFileCreator]
-    ) ++ dynamicBindings(
-      HttpErrorHandler.bindingsFromConfiguration,
-      HttpFilters.bindingsFromConfiguration,
-      HttpRequestHandler.bindingsFromConfiguration,
-      ActionCreator.bindingsFromConfiguration
-    )
+    ) ++
+      dynamicBindings(
+        HttpErrorHandler.bindingsFromConfiguration,
+        HttpFilters.bindingsFromConfiguration,
+        HttpRequestHandler.bindingsFromConfiguration,
+        ActionCreator.bindingsFromConfiguration
+      )
   }
 }
 

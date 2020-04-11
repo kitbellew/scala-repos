@@ -209,8 +209,6 @@ object Test extends App {
         4
     }
   def test12 =
-    test12_impl(1) +
-      test12_impl(throw new E1) +
-      test12_impl(throw new E2) +
+    test12_impl(1) + test12_impl(throw new E1) + test12_impl(throw new E2) +
       test12_impl(throw new E3)
 }

@@ -29,8 +29,8 @@ object MapUtilsSpecs extends Specification with ScalaCheck with MapUtils {
   import Prop._
 
   "cogroup" should {
-    "produce left, right and middle cases" in check {
-      (left: Map[Int, List[Int]], right: Map[Int, List[Int]]) =>
+    "produce left, right and middle cases" in
+      check { (left: Map[Int, List[Int]], right: Map[Int, List[Int]]) =>
         val result = left cogroup right
 
         val leftKeys = left.keySet -- right.keySet
@@ -50,15 +50,17 @@ object MapUtilsSpecs extends Specification with ScalaCheck with MapUtils {
         }
 
         val middleContrib = middleKeys.toSeq map { key =>
-          key -> Either3
-            .middle3[Int, (List[Int], List[Int]), Int]((left(key), right(key)))
+          key ->
+            Either3.middle3[Int, (List[Int], List[Int]), Int](
+              (left(key), right(key)))
         }
 
         result must containAllOf(leftContrib)
         result must containAllOf(rightContrib)
         result must containAllOf(middleContrib)
-        result must haveSize(
-          leftContrib.length + rightContrib.length + middleContrib.length)
-    }
+        result must
+          haveSize(
+            leftContrib.length + rightContrib.length + middleContrib.length)
+      }
   }
 }

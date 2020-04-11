@@ -102,16 +102,18 @@ private object RenderSupport {
         ctx: Context[ByteString]): SyncDirective = {
       sent += elem.length
       if (sent > length)
-        ctx fail InvalidContentLengthException(
-          s"HTTP message had declared Content-Length $length but entity data stream amounts to more bytes")
+        ctx fail
+          InvalidContentLengthException(
+            s"HTTP message had declared Content-Length $length but entity data stream amounts to more bytes")
       ctx.push(elem)
     }
 
     override def onUpstreamFinish(
         ctx: Context[ByteString]): TerminationDirective = {
       if (sent < length)
-        ctx fail InvalidContentLengthException(
-          s"HTTP message had declared Content-Length $length but entity data stream amounts to ${length - sent} bytes less")
+        ctx fail
+          InvalidContentLengthException(
+            s"HTTP message had declared Content-Length $length but entity data stream amounts to ${length - sent} bytes less")
       ctx.finish()
     }
 
@@ -121,14 +123,10 @@ private object RenderSupport {
     import chunk._
     val renderedSize = // buffer space required for rendering (without trailer)
       CharUtils.numberOfHexDigits(data.length) +
-        (
-          if (extension.isEmpty)
-            0
-          else
-            extension.length + 1
-        ) +
-        data.length +
-        2 + 2
+        (if (extension.isEmpty)
+           0
+         else
+           extension.length + 1) + data.length + 2 + 2
     val r = new ByteStringRendering(renderedSize)
     r ~~% data.length
     if (extension.nonEmpty)

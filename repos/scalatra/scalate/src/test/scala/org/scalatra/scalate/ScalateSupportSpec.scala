@@ -6,9 +6,8 @@ import org.scalatra.test.specs2.ScalatraSpec
 
 class ScalateSupportSpec extends ScalatraSpec {
   def is =
-    "ScalateSupport should" ^
-      "render uncaught errors with 500.scaml" ! e1 ^ br ^
-      "not throw a NullPointerException for trivial requests" ! e2 ^ br ^
+    "ScalateSupport should" ^ "render uncaught errors with 500.scaml" ! e1 ^
+      br ^ "not throw a NullPointerException for trivial requests" ! e2 ^ br ^
       "render a simple template" ! e3 ^ br ^
       "render a simple template with params" ! e4 ^ br ^
       "looks for layouts in /WEB-INF/layouts" ! e5 ^ br ^
@@ -24,14 +23,12 @@ class ScalateSupportSpec extends ScalatraSpec {
       "render a simple template with params via mustache method" ! e15 ^ br ^
       "looks for templates in legacy /WEB-INF/scalate/templates" ! e16 ^ br ^
       "looks for index page if no template found" ! e17 ^ br ^
-      "implicitly bind flash" ! e18 ^ br ^
-      "implicitly bind session" ! e19 ^ br ^
-      "implicitly bind params" ! e20 ^ br ^
+      "implicitly bind flash" ! e18 ^ br ^ "implicitly bind session" ! e19 ^
+      br ^ "implicitly bind params" ! e20 ^ br ^
       "implicitly bind multiParams" ! e21 ^ br ^
       "set templateAttributes when creating a render context" ! e22 ^ br ^
       "render to a string instead of response" ! e23 ^ br ^
-      "set status to 500 when rendering 500.scaml" ! e24 ^ br ^
-      end
+      "set status to 500 when rendering 500.scaml" ! e24 ^ br ^ end
 
   addServlet(
     new ScalatraServlet
@@ -165,8 +162,8 @@ class ScalateSupportSpec extends ScalatraSpec {
   // verify that it's looking in the right place.
   def e5 =
     get("/layout-strategy") {
-      body must_== (
-        List(
+      body must_==
+        (List(
           "/WEB-INF/templates/layouts/default.mustache",
           "/WEB-INF/templates/layouts/default.ssp",
           "/WEB-INF/templates/layouts/default.scaml",
@@ -179,8 +176,7 @@ class ScalateSupportSpec extends ScalatraSpec {
           "/WEB-INF/scalate/layouts/default.ssp",
           "/WEB-INF/scalate/layouts/default.scaml",
           "/WEB-INF/scalate/layouts/default.jade"
-        ) mkString ";"
-      )
+        ) mkString ";")
     }
 
   def e6 =

@@ -97,12 +97,13 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
 
   /** Sets up the system initially or after a RESET command */
   protected override def configure(): Map[String, String] = {
-    super.configure() ++ temporaryConfig ++ Map(
-      ConfVars.METASTOREWAREHOUSE.varname -> warehousePath.toURI.toString,
-      ConfVars.METASTORE_INTEGER_JDO_PUSHDOWN.varname -> "true",
-      ConfVars.SCRATCHDIR.varname -> scratchDirPath.toURI.toString,
-      ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY.varname -> "1"
-    )
+    super.configure() ++ temporaryConfig ++
+      Map(
+        ConfVars.METASTOREWAREHOUSE.varname -> warehousePath.toURI.toString,
+        ConfVars.METASTORE_INTEGER_JDO_PUSHDOWN.varname -> "true",
+        ConfVars.SCRATCHDIR.varname -> scratchDirPath.toURI.toString,
+        ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY.varname -> "1"
+      )
   }
 
   val testTempDir = Utils.createTempDir()
@@ -190,13 +191,12 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
           .getProperty("user.dir")
           .endsWith("sql" + File.separator + "hive")) {
       new File(
-        "src" + File.separator + "test" + File.separator + "resources" + File
-          .separator)
+        "src" + File.separator + "test" + File.separator + "resources" +
+          File.separator)
     } else {
       new File(
-        "sql" + File.separator + "hive" + File.separator + "src" + File
-          .separator + "test" +
-          File.separator + "resources")
+        "sql" + File.separator + "hive" + File.separator + "src" +
+          File.separator + "test" + File.separator + "resources")
     }
 
   def getHiveFile(path: String): File = {

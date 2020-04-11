@@ -134,16 +134,17 @@ object RunWorksheetAction {
             editor,
             file,
             (className: String, addToCp: String) => {
-              ApplicationManager.getApplication invokeLater new Runnable {
-                override def run() {
-                  executeWorksheet(
-                    file.getName,
-                    project,
-                    file.getContainingFile,
-                    className,
-                    addToCp)
+              ApplicationManager.getApplication invokeLater
+                new Runnable {
+                  override def run() {
+                    executeWorksheet(
+                      file.getName,
+                      project,
+                      file.getContainingFile,
+                      className,
+                      addToCp)
+                  }
                 }
-              }
             },
             Option(editor),
             auto
@@ -233,8 +234,8 @@ object RunWorksheetAction {
     params.getProgramParametersList addParametersString worksheetField
     if (!consoleArgs.isEmpty)
       params.getProgramParametersList addParametersString consoleArgs
-    params
-      .getProgramParametersList prepend mainClassName //IMPORTANT! this must be first program argument
+    params.getProgramParametersList prepend
+      mainClassName //IMPORTANT! this must be first program argument
 
     params
   }
@@ -251,8 +252,8 @@ object RunWorksheetAction {
       new ProcessAdapter {
         override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
           val text = event.getText
-          if (ConsoleViewContentType.NORMAL_OUTPUT == ConsoleViewContentType
-                .getConsoleViewType(outputType)) {
+          if (ConsoleViewContentType.NORMAL_OUTPUT ==
+                ConsoleViewContentType.getConsoleViewType(outputType)) {
             worksheetPrinter processLine text
           }
         }

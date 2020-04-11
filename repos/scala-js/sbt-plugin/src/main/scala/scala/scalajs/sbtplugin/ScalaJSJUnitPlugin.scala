@@ -23,11 +23,13 @@ object ScalaJSJUnitPlugin extends AutoPlugin {
        * it to both `compile` and `test`.
        */
       ivyConfigurations += config("scala-js-test-plugin").hide,
-      libraryDependencies ++= Seq(
-        "org.scala-js" % "scalajs-junit-test-plugin" % scalaJSVersion %
-          "scala-js-test-plugin" cross CrossVersion.full,
-        "org.scala-js" %% "scalajs-junit-test-runtime" % scalaJSVersion % "test"
-      ),
+      libraryDependencies ++=
+        Seq(
+          "org.scala-js" % "scalajs-junit-test-plugin" %
+            scalaJSVersion % "scala-js-test-plugin" cross CrossVersion.full,
+          "org.scala-js" %% "scalajs-junit-test-runtime" % scalaJSVersion %
+            "test"
+        ),
       scalacOptions in Test ++= {
         val report = update.value
         val jars = report.select(configurationFilter("scala-js-test-plugin"))

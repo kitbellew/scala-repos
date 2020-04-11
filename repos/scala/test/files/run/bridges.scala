@@ -17078,12 +17078,11 @@ object Test {
     if (errors > 0) {
       Console.println;
       Console.println(
-        errors + " error" + (
-          if (errors > 1)
-            "s"
-          else
-            ""
-        ));
+        errors + " error" +
+          (if (errors > 1)
+             "s"
+           else
+             ""));
     }
   }
 }

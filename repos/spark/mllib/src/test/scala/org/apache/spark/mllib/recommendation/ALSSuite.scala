@@ -83,12 +83,10 @@ object ALSSuite {
             users,
             products,
             Array.fill(users * products)(
-              (
-                if (negativeWeights)
-                  -2
-                else
-                  0
-              ) + rand.nextInt(10).toDouble))
+              (if (negativeWeights)
+                 -2
+               else
+                 0) + rand.nextInt(10).toDouble))
         val prefs =
           new BDM(
             users,

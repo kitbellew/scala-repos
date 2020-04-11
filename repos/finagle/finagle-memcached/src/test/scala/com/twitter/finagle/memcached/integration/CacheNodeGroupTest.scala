@@ -263,13 +263,14 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
     shardIds.foreach { shardId =>
       TestMemcachedServer.start() match {
         case Some(server) =>
-          testServers :+= (
+          testServers :+=
             (
-              server,
-              serverSet.join(
-                server.address,
-                Map[String, InetSocketAddress](),
-                shardId)))
+              (
+                server,
+                serverSet.join(
+                  server.address,
+                  Map[String, InetSocketAddress](),
+                  shardId)))
         case None =>
           fail("Cannot start memcached. Skipping...")
       }

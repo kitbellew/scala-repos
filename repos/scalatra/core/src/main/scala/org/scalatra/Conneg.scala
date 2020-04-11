@@ -37,9 +37,10 @@ object Conneg {
     def content: Parser[String] = quotedString | token
     def content(value: String): String =
       if (value.exists(mustEscape))
-        "\"%s\"" format value
-          .replaceAllLiterally("\\", "\\\\")
-          .replaceAllLiterally("\"", "\\\"")
+        "\"%s\"" format
+          value
+            .replaceAllLiterally("\\", "\\\\")
+            .replaceAllLiterally("\"", "\\\"")
       else
         value
 
@@ -85,8 +86,9 @@ object Conneg {
     /** Parser for the content-negotiation `q` parameter. */
     def qValue: Parser[Float] = {
       opt(
-        paramSep ~> ("q" ~ valueSep) ~> """[0-1](\.[0-9]{1,3})?"""
-          .r ^^ (_.toFloat)) ^^ {
+        paramSep ~>
+          ("q" ~ valueSep) ~> """[0-1](\.[0-9]{1,3})?""".r ^^
+          (_.toFloat)) ^^ {
         case Some(q) =>
           q
         case _ =>

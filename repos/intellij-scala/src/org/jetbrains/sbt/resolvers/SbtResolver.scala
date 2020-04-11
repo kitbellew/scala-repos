@@ -25,8 +25,8 @@ object SbtResolver {
   }
 
   def localCacheResolver(localCachePath: Option[String]) = {
-    val defaultPath = System.getProperty("user.home") + "/.ivy2/cache"
-      .replace('/', File.separatorChar)
+    val defaultPath = System.getProperty("user.home") +
+      "/.ivy2/cache".replace('/', File.separatorChar)
     SbtResolver(Kind.Ivy, "Local cache", localCachePath getOrElse defaultPath)
   }
 

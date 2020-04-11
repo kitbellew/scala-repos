@@ -19,8 +19,9 @@ trait CartesianTests[F[_]] extends Laws {
     new DefaultRuleSet(
       name = "cartesian",
       parent = None,
-      "cartesian associativity" -> forAll((fa: F[A], fb: F[B], fc: F[C]) =>
-        iso.associativity(laws.cartesianAssociativity(fa, fb, fc))))
+      "cartesian associativity" ->
+        forAll((fa: F[A], fb: F[B], fc: F[C]) =>
+          iso.associativity(laws.cartesianAssociativity(fa, fb, fc))))
   }
 }
 

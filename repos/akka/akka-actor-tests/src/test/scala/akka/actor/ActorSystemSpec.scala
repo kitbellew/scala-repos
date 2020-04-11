@@ -59,14 +59,13 @@ object ActorSystemSpec {
     def receive = {
       case n: Int ⇒
         master = sender()
-        terminaters = Set() ++ (
-          for (i ← 1 to n)
+        terminaters = Set() ++
+          (for (i ← 1 to n)
             yield {
               val man = context.watch(context.system.actorOf(Props[Terminater]))
               man ! "run"
               man
-            }
-        )
+            })
       case Terminated(child) if terminaters contains child ⇒
         terminaters -= child
         if (terminaters.isEmpty) {
@@ -321,9 +320,8 @@ class ActorSystemSpec
       val waves =
         for (i ← 1 to 3)
           yield system.actorOf(Props[ActorSystemSpec.Waves]) ? 50000
-      Await.result(
-        Future.sequence(waves),
-        timeout.duration + 5.seconds) should ===(Vector("done", "done", "done"))
+      Await.result(Future.sequence(waves), timeout.duration + 5.seconds) should
+        ===(Vector("done", "done", "done"))
     }
 
     "find actors that just have been created" in {
@@ -345,7 +343,8 @@ class ActorSystemSpec
       while (!system.whenTerminated.isCompleted) {
         try {
           val t = system.actorOf(Props[ActorSystemSpec.Terminater])
-          failing should not be true // because once failing => always failing (it’s due to shutdown)
+          failing should not be
+            true // because once failing => always failing (it’s due to shutdown)
           created :+= t
           if (created.size % 1000 == 0)
             Thread.sleep(50) // in case of unfair thread scheduling
@@ -361,11 +360,13 @@ class ActorSystemSpec
         }
       }
 
-      created filter (ref ⇒
-        !ref.isTerminated && !ref
-          .asInstanceOf[ActorRefWithCell]
-          .underlying
-          .isInstanceOf[UnstartedCell]) should ===(Seq.empty[ActorRef])
+      created filter
+        (ref ⇒
+          !ref.isTerminated &&
+            !ref
+              .asInstanceOf[ActorRefWithCell]
+              .underlying
+              .isInstanceOf[UnstartedCell]) should ===(Seq.empty[ActorRef])
     }
 
     "shut down when /user fails" in {

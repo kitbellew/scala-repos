@@ -89,9 +89,8 @@ class ExpandTables extends Phase {
               case t: TableExpansion =>
                 val ts = t.table.asInstanceOf[TableNode].identity
                 tables += ((ts, (t.generator, t.columns)))
-                t.table :@ CollectionType(
-                  t.nodeType.asCollectionType.cons,
-                  structs(ts))
+                t.table :@
+                  CollectionType(t.nodeType.asCollectionType.cons, structs(ts))
               case r: Ref =>
                 r.untyped
               case d: Distinct =>
@@ -150,12 +149,12 @@ class ExpandTables extends Phase {
       }
       .withWellTyped(true)
     if (createdOption)
-      s2 + (
-        Phase.assignUniqueSymbols -> state
-          .get(Phase.assignUniqueSymbols)
-          .get
-          .copy(nonPrimitiveOption = true)
-      )
+      s2 +
+        (Phase.assignUniqueSymbols ->
+          state
+            .get(Phase.assignUniqueSymbols)
+            .get
+            .copy(nonPrimitiveOption = true))
     else
       s2
   }

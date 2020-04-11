@@ -114,8 +114,8 @@ class ScalaLookupItem(
       return false
     o match {
       case s: ScalaLookupItem =>
-        if (isNamedParameter != s.isNamedParameter || containingClass != s
-              .containingClass)
+        if (isNamedParameter != s.isNamedParameter ||
+            containingClass != s.containingClass)
           return false
       case _ =>
     }
@@ -161,21 +161,18 @@ class ScalaLookupItem(
           if (isAssignment) {
             " = " + presentationString(fun.paramClauses, substitutor)
           } else {
-            tailText + (
-              if (!isOverloadedForClassName)
-                presentationString(fun.paramClauses, substitutor)
-              else
-                "(...)"
-            ) + (
-              if (shouldImport && isClassName && containingClass != null)
-                " " + containingClass.getPresentation.getLocationString
-              else if (isClassName && containingClass != null)
-                " in " + containingClass.name + " " + containingClass
-                  .getPresentation
-                  .getLocationString
-              else
-                ""
-            )
+            tailText +
+              (if (!isOverloadedForClassName)
+                 presentationString(fun.paramClauses, substitutor)
+               else
+                 "(...)") +
+              (if (shouldImport && isClassName && containingClass != null)
+                 " " + containingClass.getPresentation.getLocationString
+               else if (isClassName && containingClass != null)
+                 " in " + containingClass.name + " " +
+                   containingClass.getPresentation.getLocationString
+               else
+                 "")
           }
         if (!etaExpanded)
           presentation.setTailText(tailText1)
@@ -240,15 +237,14 @@ class ScalaLookupItem(
               presentationString(method.getParameterList, substitutor)
             else
               "(...)"
-          val tailText1 = tailText + params + (
-            if (shouldImport && isClassName && containingClass != null)
-              " " + containingClass.getPresentation.getLocationString
-            else if (isClassName && containingClass != null)
-              " in " + containingClass
-                .name + " " + containingClass.getPresentation.getLocationString
-            else
-              ""
-          )
+          val tailText1 = tailText + params +
+            (if (shouldImport && isClassName && containingClass != null)
+               " " + containingClass.getPresentation.getLocationString
+             else if (isClassName && containingClass != null)
+               " in " + containingClass.name + " " +
+                 containingClass.getPresentation.getLocationString
+             else
+               "")
           presentation.setTailText(tailText1)
         }
       case f: PsiField =>
@@ -346,25 +342,21 @@ class ScalaLookupItem(
             false)
           val useFullyQualifiedName = PsiTreeUtil
             .getParentOfType(ref, classOf[ScImportStmt]) != null &&
-            PsiTreeUtil.getParentOfType(
-              ref,
-              classOf[ScImportSelectors]) == null //do not complete in sel
+            PsiTreeUtil.getParentOfType(ref, classOf[ScImportSelectors]) ==
+            null //do not complete in sel
           if (ref == null)
             return
-          while (ref.getParent != null && ref
+          while (ref.getParent != null &&
+                 ref.getParent.isInstanceOf[ScReferenceElement] &&
+                 (ref
                    .getParent
-                   .isInstanceOf[ScReferenceElement] &&
-                 (
-                   ref
-                     .getParent
-                     .asInstanceOf[ScReferenceElement]
-                     .qualifier match {
-                     case Some(r) =>
-                       r != ref
-                     case _ =>
-                       true
-                   }
-                 ))
+                   .asInstanceOf[ScReferenceElement]
+                   .qualifier match {
+                   case Some(r) =>
+                     r != ref
+                   case _ =>
+                     true
+                 }))
             ref = ref.getParent.asInstanceOf[ScReferenceElement]
           val newRef =
             ref match {
@@ -468,8 +460,8 @@ class ScalaLookupItem(
                         ScalaPsiUtil.nameContext(elementToImport) match {
                           case member: PsiMember =>
                             val containingClass = member.containingClass
-                            if (containingClass != null && containingClass
-                                  .qualifiedName != null) {
+                            if (containingClass != null &&
+                                containingClass.qualifiedName != null) {
                               ScalaImportTypeFix
                                 .getImportHolder(ref, ref.getProject)
                                 .addImportForPsiNamedElement(

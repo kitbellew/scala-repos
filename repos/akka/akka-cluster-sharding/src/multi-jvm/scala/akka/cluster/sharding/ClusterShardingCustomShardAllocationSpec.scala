@@ -215,73 +215,76 @@ abstract class ClusterShardingCustomShardAllocationSpec(
       enterBarrier("after-1")
     }
 
-    "use specified region" in within(10.seconds) {
-      join(first, first)
+    "use specified region" in
+      within(10.seconds) {
+        join(first, first)
 
-      runOn(first) {
-        allocator ! UseRegion(region)
-        expectMsg(UseRegionAck)
-        region ! 1
-        expectMsg(1)
-        lastSender.path should be(region.path / "1" / "1")
-      }
-      enterBarrier("first-started")
+        runOn(first) {
+          allocator ! UseRegion(region)
+          expectMsg(UseRegionAck)
+          region ! 1
+          expectMsg(1)
+          lastSender.path should be(region.path / "1" / "1")
+        }
+        enterBarrier("first-started")
 
-      join(second, first)
+        join(second, first)
 
-      region ! 2
-      expectMsg(2)
-      runOn(first) {
-        lastSender.path should be(region.path / "2" / "2")
-      }
-      runOn(second) {
-        lastSender.path should be(
-          node(first) / "system" / "sharding" / "Entity" / "2" / "2")
-      }
-      enterBarrier("second-started")
+        region ! 2
+        expectMsg(2)
+        runOn(first) {
+          lastSender.path should be(region.path / "2" / "2")
+        }
+        runOn(second) {
+          lastSender.path should
+            be(node(first) / "system" / "sharding" / "Entity" / "2" / "2")
+        }
+        enterBarrier("second-started")
 
-      runOn(first) {
-        system.actorSelection(
-          node(second) / "system" / "sharding" / "Entity") ! Identify(None)
-        val secondRegion = expectMsgType[ActorIdentity].ref.get
-        allocator ! UseRegion(secondRegion)
-        expectMsg(UseRegionAck)
-      }
-      enterBarrier("second-active")
+        runOn(first) {
+          system
+            .actorSelection(node(second) / "system" / "sharding" / "Entity") !
+            Identify(None)
+          val secondRegion = expectMsgType[ActorIdentity].ref.get
+          allocator ! UseRegion(secondRegion)
+          expectMsg(UseRegionAck)
+        }
+        enterBarrier("second-active")
 
-      region ! 3
-      expectMsg(3)
-      runOn(second) {
-        lastSender.path should be(region.path / "3" / "3")
-      }
-      runOn(first) {
-        lastSender.path should be(
-          node(second) / "system" / "sharding" / "Entity" / "3" / "3")
-      }
-
-      enterBarrier("after-2")
-    }
-
-    "rebalance specified shards" in within(15.seconds) {
-      runOn(first) {
-        allocator ! RebalanceShards(Set("2"))
-        expectMsg(RebalanceShardsAck)
-
-        awaitAssert {
-          val p = TestProbe()
-          region.tell(2, p.ref)
-          p.expectMsg(2.second, 2)
-          p.lastSender.path should be(
-            node(second) / "system" / "sharding" / "Entity" / "2" / "2")
+        region ! 3
+        expectMsg(3)
+        runOn(second) {
+          lastSender.path should be(region.path / "3" / "3")
+        }
+        runOn(first) {
+          lastSender.path should
+            be(node(second) / "system" / "sharding" / "Entity" / "3" / "3")
         }
 
-        region ! 1
-        expectMsg(1)
-        lastSender.path should be(region.path / "1" / "1")
+        enterBarrier("after-2")
       }
 
-      enterBarrier("after-2")
-    }
+    "rebalance specified shards" in
+      within(15.seconds) {
+        runOn(first) {
+          allocator ! RebalanceShards(Set("2"))
+          expectMsg(RebalanceShardsAck)
+
+          awaitAssert {
+            val p = TestProbe()
+            region.tell(2, p.ref)
+            p.expectMsg(2.second, 2)
+            p.lastSender.path should
+              be(node(second) / "system" / "sharding" / "Entity" / "2" / "2")
+          }
+
+          region ! 1
+          expectMsg(1)
+          lastSender.path should be(region.path / "1" / "1")
+        }
+
+        enterBarrier("after-2")
+      }
 
   }
 }

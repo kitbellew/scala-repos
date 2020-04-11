@@ -85,10 +85,8 @@ class StorageLevel private (
   override def equals(other: Any): Boolean =
     other match {
       case s: StorageLevel =>
-        s.useDisk == useDisk &&
-          s.useMemory == useMemory &&
-          s.useOffHeap == useOffHeap &&
-          s.deserialized == deserialized &&
+        s.useDisk == useDisk && s.useMemory == useMemory &&
+          s.useOffHeap == useOffHeap && s.deserialized == deserialized &&
           s.replication == replication
       case _ =>
         false
@@ -141,30 +139,26 @@ class StorageLevel private (
 
   def description: String = {
     var result = ""
-    result += (
-      if (useDisk)
-        "Disk "
-      else
-        ""
-    )
-    result += (
-      if (useMemory)
-        "Memory "
-      else
-        ""
-    )
-    result += (
-      if (useOffHeap)
-        "ExternalBlockStore "
-      else
-        ""
-    )
-    result += (
-      if (deserialized)
-        "Deserialized "
-      else
-        "Serialized "
-    )
+    result +=
+      (if (useDisk)
+         "Disk "
+       else
+         "")
+    result +=
+      (if (useMemory)
+         "Memory "
+       else
+         "")
+    result +=
+      (if (useOffHeap)
+         "ExternalBlockStore "
+       else
+         "")
+    result +=
+      (if (deserialized)
+         "Deserialized "
+       else
+         "Serialized ")
     result += s"${replication}x Replicated"
     result
   }

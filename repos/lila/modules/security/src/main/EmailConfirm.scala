@@ -44,8 +44,8 @@ final class EmailConfirmMailGun(
           Map(
             "from" -> Seq(sender),
             "to" -> Seq(email),
-            "subject" -> Seq(
-              s"Confirm your lichess.org account, ${user.username}"),
+            "subject" ->
+              Seq(s"Confirm your lichess.org account, ${user.username}"),
             "text" -> Seq(s"""
 Final step!
 

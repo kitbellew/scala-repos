@@ -78,10 +78,9 @@ class ShoppingCart(userId: String) extends Actor {
   def updateCart(data: LWWMap[LineItem], item: LineItem): LWWMap[LineItem] =
     data.get(item.productId) match {
       case Some(LineItem(_, _, existingQuantity)) ⇒
-        data + (
-          item.productId -> item
-            .copy(quantity = existingQuantity + item.quantity)
-        )
+        data +
+          (item.productId ->
+            item.copy(quantity = existingQuantity + item.quantity))
       case None ⇒
         data + (item.productId -> item)
     }
@@ -94,15 +93,17 @@ class ShoppingCart(userId: String) extends Actor {
       replicator ! Get(DataKey, readMajority, Some(cmd))
 
     case GetSuccess(DataKey, Some(RemoveItem(productId))) ⇒
-      replicator ! Update(DataKey, LWWMap(), writeMajority, None) {
-        _ - productId
-      }
+      replicator !
+        Update(DataKey, LWWMap(), writeMajority, None) {
+          _ - productId
+        }
 
     case GetFailure(DataKey, Some(RemoveItem(productId))) ⇒
       // ReadMajority failed, fall back to best effort local value
-      replicator ! Update(DataKey, LWWMap(), writeMajority, None) {
-        _ - productId
-      }
+      replicator !
+        Update(DataKey, LWWMap(), writeMajority, None) {
+          _ - productId
+        }
 
     case NotFound(DataKey, Some(RemoveItem(productId))) ⇒
     // nothing to remove

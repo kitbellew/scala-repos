@@ -308,8 +308,8 @@ object GradientBoostedTrees extends Logging {
           loss)
         validatePredErrorCheckpointer.update(validatePredError)
         val currentValidateError = validatePredError.values.mean()
-        if (bestValidateError - currentValidateError < validationTol * Math
-              .max(currentValidateError, 0.01)) {
+        if (bestValidateError - currentValidateError <
+              validationTol * Math.max(currentValidateError, 0.01)) {
           doneLearning = true
         } else if (currentValidateError < bestValidateError) {
           bestValidateError = currentValidateError

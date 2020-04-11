@@ -447,8 +447,8 @@ private[sql] class DynamicPartitionWriterContainer(
     executorSideSetup(taskContext)
 
     // We should first sort by partition columns, then bucket id, and finally sorting columns.
-    val sortingExpressions: Seq[Expression] =
-      partitionColumns ++ bucketIdExpression ++ sortColumns
+    val sortingExpressions: Seq[Expression] = partitionColumns ++
+      bucketIdExpression ++ sortColumns
     val getSortingKey = UnsafeProjection.create(sortingExpressions, inputSchema)
 
     val sortingKeySchema = StructType(

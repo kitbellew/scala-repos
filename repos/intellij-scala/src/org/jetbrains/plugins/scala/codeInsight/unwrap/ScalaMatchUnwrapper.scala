@@ -40,9 +40,9 @@ class ScalaMatchUnwrapper extends ScalaUnwrapper {
   private def forCaseClauseInMatch[T](e: PsiElement)(
       ifInClause: (ScCaseClause, ScMatchStmt) => T)(ifNot: => T): T = {
     e match {
-      case (cl: ScCaseClause) childOf (
-            (_: ScCaseClauses) childOf (matchStmt: ScMatchStmt)
-          ) if cl.expr.nonEmpty =>
+      case (cl: ScCaseClause) childOf
+          ((_: ScCaseClauses) childOf (matchStmt: ScMatchStmt))
+          if cl.expr.nonEmpty =>
         ifInClause(cl, matchStmt)
       case _ =>
         ifNot

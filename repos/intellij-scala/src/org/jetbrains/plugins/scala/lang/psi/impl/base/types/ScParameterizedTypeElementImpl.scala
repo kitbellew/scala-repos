@@ -196,8 +196,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
     def isKindProjectorInlineSyntax(element: PsiElement): Boolean = {
       element match {
         case simple: ScSimpleTypeElement
-            if kindProjectorEnabled && inlineSyntaxIds
-              .contains(simple.getText) =>
+            if kindProjectorEnabled &&
+              inlineSyntaxIds.contains(simple.getText) =>
           true
         case parametrized: ScParameterizedTypeElement if kindProjectorEnabled =>
           isKindProjectorInlineSyntax(parametrized.typeElement)

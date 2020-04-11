@@ -103,8 +103,8 @@ class Analyzer(
 
     scalaCompiler = makeScalaCompiler()
 
-    broadcaster ! SendBackgroundMessageEvent(
-      "Initializing Analyzer. Please wait...")
+    broadcaster !
+      SendBackgroundMessageEvent("Initializing Analyzer. Please wait...")
 
     scalaCompiler.askNotifyWhenReady()
     if (config.sourceMode)
@@ -209,42 +209,47 @@ class Analyzer(
     case req: RefactorReq =>
       sender ! handleRefactorRequest(req)
     case CompletionsReq(fileInfo, point, maxResults, caseSens, _reload) =>
-      sender ! withExisting(fileInfo) {
-        reporter.disable()
-        scalaCompiler
-          .askCompletionsAt(pos(fileInfo, point), maxResults, caseSens)
-      }
+      sender !
+        withExisting(fileInfo) {
+          reporter.disable()
+          scalaCompiler
+            .askCompletionsAt(pos(fileInfo, point), maxResults, caseSens)
+        }
     case UsesOfSymbolAtPointReq(file, point) =>
-      sender ! withExisting(file) {
-        val p = pos(file, point)
-        scalaCompiler.askLoadedTyped(p.source)
-        val uses = scalaCompiler.askUsesOfSymAtPoint(p)
-        ERangePositions(uses.map(ERangePositionHelper.fromRangePosition))
-      }
+      sender !
+        withExisting(file) {
+          val p = pos(file, point)
+          scalaCompiler.askLoadedTyped(p.source)
+          val uses = scalaCompiler.askUsesOfSymAtPoint(p)
+          ERangePositions(uses.map(ERangePositionHelper.fromRangePosition))
+        }
     case PackageMemberCompletionReq(path: String, prefix: String) =>
       val members = scalaCompiler.askCompletePackageMember(path, prefix)
       sender ! members
     case InspectTypeAtPointReq(file, range: OffsetRange) =>
-      sender ! withExisting(file) {
-        val p = pos(file, range)
-        scalaCompiler.askLoadedTyped(p.source)
-        scalaCompiler.askInspectTypeAt(p).getOrElse(FalseResponse)
-      }
+      sender !
+        withExisting(file) {
+          val p = pos(file, range)
+          scalaCompiler.askLoadedTyped(p.source)
+          scalaCompiler.askInspectTypeAt(p).getOrElse(FalseResponse)
+        }
     case InspectTypeByNameReq(name: String) =>
       sender ! scalaCompiler.askInspectTypeByName(name).getOrElse(FalseResponse)
     case SymbolAtPointReq(file, point: Int) =>
-      sender ! withExisting(file) {
-        val p = pos(file, point)
-        scalaCompiler.askLoadedTyped(p.source)
-        scalaCompiler.askSymbolInfoAt(p).getOrElse(FalseResponse)
-      }
+      sender !
+        withExisting(file) {
+          val p = pos(file, point)
+          scalaCompiler.askLoadedTyped(p.source)
+          scalaCompiler.askSymbolInfoAt(p).getOrElse(FalseResponse)
+        }
     case SymbolByNameReq(
           typeFullName: String,
           memberName: Option[String],
           signatureString: Option[String]) =>
-      sender ! scalaCompiler
-        .askSymbolByName(typeFullName, memberName, signatureString)
-        .getOrElse(FalseResponse)
+      sender !
+        scalaCompiler
+          .askSymbolByName(typeFullName, memberName, signatureString)
+          .getOrElse(FalseResponse)
     case DocUriAtPointReq(file, range: OffsetRange) =>
       val p = pos(file, range)
       scalaCompiler.askLoadedTyped(p.source)
@@ -253,40 +258,45 @@ class Analyzer(
           typeFullName: String,
           memberName: Option[String],
           signatureString: Option[String]) =>
-      sender() ! scalaCompiler
-        .askDocSignatureForSymbol(typeFullName, memberName, signatureString)
+      sender() !
+        scalaCompiler
+          .askDocSignatureForSymbol(typeFullName, memberName, signatureString)
     case InspectPackageByPathReq(path: String) =>
       sender ! scalaCompiler.askPackageByPath(path).getOrElse(FalseResponse)
     case TypeAtPointReq(file, range: OffsetRange) =>
-      sender ! withExisting(file) {
-        val p = pos(file, range)
-        scalaCompiler.askLoadedTyped(p.source)
-        scalaCompiler.askTypeInfoAt(p).getOrElse(FalseResponse)
-      }
+      sender !
+        withExisting(file) {
+          val p = pos(file, range)
+          scalaCompiler.askLoadedTyped(p.source)
+          scalaCompiler.askTypeInfoAt(p).getOrElse(FalseResponse)
+        }
     case TypeByNameReq(name: String) =>
       sender ! scalaCompiler.askTypeInfoByName(name).getOrElse(FalseResponse)
     case TypeByNameAtPointReq(name: String, file, range: OffsetRange) =>
-      sender ! withExisting(file) {
-        val p = pos(file, range)
-        scalaCompiler.askLoadedTyped(p.source)
-        scalaCompiler.askTypeInfoByNameAt(name, p).getOrElse(FalseResponse)
-      }
+      sender !
+        withExisting(file) {
+          val p = pos(file, range)
+          scalaCompiler.askLoadedTyped(p.source)
+          scalaCompiler.askTypeInfoByNameAt(name, p).getOrElse(FalseResponse)
+        }
     case SymbolDesignationsReq(f, start, end, Nil) =>
       sender ! SymbolDesignations(f.file, List.empty)
     case SymbolDesignationsReq(f, start, end, tpes) =>
-      sender ! withExisting(f) {
-        val sf = createSourceFile(f)
-        val clampedEnd = math.max(end, start)
-        val pos = new RangePosition(sf, start, start, clampedEnd)
-        scalaCompiler.askLoadedTyped(pos.source)
-        scalaCompiler.askSymbolDesignationsInRegion(pos, tpes)
-      }
+      sender !
+        withExisting(f) {
+          val sf = createSourceFile(f)
+          val clampedEnd = math.max(end, start)
+          val pos = new RangePosition(sf, start, start, clampedEnd)
+          scalaCompiler.askLoadedTyped(pos.source)
+          scalaCompiler.askSymbolDesignationsInRegion(pos, tpes)
+        }
     case ImplicitInfoReq(file, range: OffsetRange) =>
-      sender ! withExisting(file) {
-        val p = pos(file, range)
-        scalaCompiler.askLoadedTyped(p.source)
-        scalaCompiler.askImplicitInfoInRegion(p)
-      }
+      sender !
+        withExisting(file) {
+          val p = pos(file, range)
+          scalaCompiler.askLoadedTyped(p.source)
+          scalaCompiler.askImplicitInfoInRegion(p)
+        }
     case ExpandSelectionReq(file, start: Int, stop: Int) =>
       sender ! handleExpandselection(file, start, stop)
     case FormatSourceReq(files: List[File]) =>
@@ -295,10 +305,11 @@ class Analyzer(
     case FormatOneSourceReq(fileInfo: SourceFileInfo) =>
       sender ! StringResponse(handleFormatFile(fileInfo))
     case StructureViewReq(fileInfo: SourceFileInfo) =>
-      sender ! withExisting(fileInfo) {
-        val sourceFile = createSourceFile(fileInfo)
-        StructureView(scalaCompiler.askStructure(sourceFile))
-      }
+      sender !
+        withExisting(fileInfo) {
+          val sourceFile = createSourceFile(fileInfo)
+          StructureView(scalaCompiler.askStructure(sourceFile))
+        }
   }
 
   def handleReloadFiles(files: List[SourceFileInfo]): RpcResponse = {

@@ -104,9 +104,9 @@ object LiftToLastOption extends SimplificationType {
 
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
-      case (coll `.lift` ()) `.apply` (
-            coll2 `.sizeOrLength` () `-` literal("1")
-          ) if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
+      case (coll `.lift` ()) `.apply`
+          (coll2 `.sizeOrLength` () `-` literal("1"))
+          if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
         Some(
           replace(expr)
             .withText(invocationText(coll, "lastOption"))

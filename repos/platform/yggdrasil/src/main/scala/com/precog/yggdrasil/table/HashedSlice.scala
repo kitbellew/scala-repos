@@ -124,12 +124,12 @@ private final case class BoolColumnHasher(
     extends ColumnHasher {
   private val pathHash = columnRef.selector.hashCode
   protected final def hashImpl(row: Int): Int =
-    5 * pathHash + 457 * (
-      if (column(row))
-        42
-      else
-        21
-    )
+    5 * pathHash +
+      457 *
+      (if (column(row))
+         42
+       else
+         21)
 }
 
 private final case class DateColumnHasher(

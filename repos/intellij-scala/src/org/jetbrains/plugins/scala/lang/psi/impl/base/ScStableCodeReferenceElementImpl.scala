@@ -175,8 +175,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
           stableQualRef
       }
     if (completion)
-      result + ResolveTargets.PACKAGE + ResolveTargets.OBJECT + ResolveTargets
-        .VAL
+      result + ResolveTargets.PACKAGE + ResolveTargets.OBJECT +
+        ResolveTargets.VAL
     else
       result
   }
@@ -246,8 +246,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
             } else
               getParent match {
                 case importExpr: ScImportExpr
-                    if !importExpr
-                      .singleWildcard && !importExpr.selectorSet.isDefined =>
+                    if !importExpr.singleWildcard &&
+                      !importExpr.selectorSet.isDefined =>
                   val holder = PsiTreeUtil
                     .getParentOfType(this, classOf[ScImportsHolder])
                   importExpr.deleteExpr()
@@ -315,8 +315,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
                 this.replace(refToMember).asInstanceOf[ScReferenceElement]
             }
           case fun: ScFunction
-              if Seq("unapply", "unapplySeq").contains(fun.name) && ScalaPsiUtil
-                .hasStablePath(fun) =>
+              if Seq("unapply", "unapplySeq").contains(fun.name) &&
+                ScalaPsiUtil.hasStablePath(fun) =>
             bindToElement(fun.containingClass)
           case fun: ScFunction if fun.isConstructor =>
             bindToElement(fun.containingClass)

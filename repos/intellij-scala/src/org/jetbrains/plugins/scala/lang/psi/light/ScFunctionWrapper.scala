@@ -126,8 +126,8 @@ class ScFunctionWrapper(
       }
       assert(
         res != null,
-        "Method: " + function
-          .getText + "\nhas null containing class. isStatic: " + isStatic +
+        "Method: " + function.getText +
+          "\nhas null containing class. isStatic: " + isStatic +
           "\nContaining file text: " + function.getContainingFile.getText
       )
       res
@@ -210,15 +210,17 @@ with LightScalaMethod {
       forDefault match {
         case Some(i) =>
           val param = function.parameters(i - 1)
-          val scalaType = generifySubst subst ScFunctionWrapper
-            .getSubstitutor(cClass, function)
-            .subst(param.getType(TypingContext.empty).getOrAny)
+          val scalaType = generifySubst subst
+            ScFunctionWrapper
+              .getSubstitutor(cClass, function)
+              .subst(param.getType(TypingContext.empty).getOrAny)
           returnType = ScType
             .toPsi(scalaType, function.getProject, function.getResolveScope)
         case None =>
-          val scalaType = generifySubst subst ScFunctionWrapper
-            .getSubstitutor(cClass, function)
-            .subst(function.returnType.getOrAny)
+          val scalaType = generifySubst subst
+            ScFunctionWrapper
+              .getSubstitutor(cClass, function)
+              .subst(function.returnType.getOrAny)
           returnType = ScType
             .toPsi(scalaType, function.getProject, function.getResolveScope)
       }

@@ -61,9 +61,8 @@ class SbtRunnerTest extends UsefulTestCase {
   }
 
   private def getSbtLaunchJarForVersion(sbtVersion: String): File =
-    new File(
-      TestUtils
-        .getIvyCachePath) / "org.scala-sbt" / "sbt-launch" / "jars" / s"sbt-launch-$sbtVersion.jar"
+    new File(TestUtils.getIvyCachePath) / "org.scala-sbt" / "sbt-launch" /
+      "jars" / s"sbt-launch-$sbtVersion.jar"
 
   private def generateMockLauncher(implementationVersion: String): File = {
     val manifestContents = s"""|Manifest-Version: 1.0

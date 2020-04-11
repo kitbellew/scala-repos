@@ -65,9 +65,10 @@ object JsonView {
         "id" -> l.user.id,
         "username" -> l.user.name,
         "title" -> l.user.title,
-        "perfs" -> Json.obj(
-          l.perfKey -> Json
-            .obj("rating" -> l.rating, "progress" -> l.progress)))
+        "perfs" ->
+          Json.obj(
+            l.perfKey ->
+              Json.obj("rating" -> l.rating, "progress" -> l.progress)))
       .noNull
   }
 }

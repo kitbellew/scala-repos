@@ -24,8 +24,8 @@ object DebugBuilderSpec extends Specification {
       val builder = new JavaSecurityDebugBuilder(config)
       val actual = builder.build()
 
-      actual.trim.split("\\s+").toSeq must containTheSameElementsAs(
-        Seq("certpath"))
+      actual.trim.split("\\s+").toSeq must
+        containTheSameElementsAs(Seq("certpath"))
     }
 
     "match certpath + ocsp" in {
@@ -33,8 +33,8 @@ object DebugBuilderSpec extends Specification {
       val builder = new JavaSecurityDebugBuilder(config)
       val actual = builder.build()
 
-      actual.trim.split("\\s+").toSeq must containTheSameElementsAs(
-        Seq("certpath", "ocsp"))
+      actual.trim.split("\\s+").toSeq must
+        containTheSameElementsAs(Seq("certpath", "ocsp"))
     }
   }
 
@@ -63,8 +63,8 @@ object DebugBuilderSpec extends Specification {
       val builder = new JavaxNetDebugBuilder(config)
       val actual: String = builder.build()
 
-      actual.trim.split("\\s+").toSeq must containTheSameElementsAs(
-        Seq("ssl", "defaultctx", "handshake", "data"))
+      actual.trim.split("\\s+").toSeq must
+        containTheSameElementsAs(Seq("ssl", "defaultctx", "handshake", "data"))
     }
 
   }

@@ -150,8 +150,8 @@ object RejectionHandler {
         complete((
           MethodNotAllowed,
           List(Allow(methods)),
-          "HTTP method not allowed, supported methods: " + names
-            .mkString(", ")))
+          "HTTP method not allowed, supported methods: " +
+            names.mkString(", ")))
       }
       .handle {
         case AuthorizationFailedRejection ⇒
@@ -267,15 +267,19 @@ object RejectionHandler {
       }
       .handleAll[UnsupportedRequestContentTypeRejection] { rejections ⇒
         val supported = rejections.flatMap(_.supported).mkString(" or ")
-        complete((
-          UnsupportedMediaType,
-          "The request's Content-Type is not supported. Expected:\n" + supported))
+        complete(
+          (
+            UnsupportedMediaType,
+            "The request's Content-Type is not supported. Expected:\n" +
+              supported))
       }
       .handleAll[UnsupportedRequestEncodingRejection] { rejections ⇒
         val supported = rejections.map(_.supported.value).mkString(" or ")
-        complete((
-          BadRequest,
-          "The request's Content-Encoding is not supported. Expected:\n" + supported))
+        complete(
+          (
+            BadRequest,
+            "The request's Content-Encoding is not supported. Expected:\n" +
+              supported))
       }
       .handle {
         case ExpectedWebSocketRequestRejection ⇒
@@ -315,8 +319,8 @@ object RejectionHandler {
     val (transformations, rest) = rejections
       .partition(_.isInstanceOf[TransformationRejection])
     (
-      rest.distinct /: transformations
-        .asInstanceOf[Seq[TransformationRejection]]
+      rest.distinct /:
+        transformations.asInstanceOf[Seq[TransformationRejection]]
     ) {
       case (remaining, transformation) ⇒
         transformation.transform(remaining)

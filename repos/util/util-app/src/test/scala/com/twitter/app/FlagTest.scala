@@ -45,7 +45,8 @@ class FlagTest extends FunSuite {
 
     assert(Flaggable.ofInetSocketAddress.show(local) == s":$port")
     assert(
-      Flaggable.ofInetSocketAddress.show(remote) == s"${remote.getHostName}:$port")
+      Flaggable.ofInetSocketAddress.show(remote) ==
+        s"${remote.getHostName}:$port")
   }
 
   test("Flaggable: parse seqs") {
@@ -94,8 +95,8 @@ class FlagTest extends FunSuite {
     val ctx = new Ctx
     import ctx._
     assert(
-      flag.parseArgs(Array("-foo", "973", "-bar", "hello there")) == Flags
-        .Ok(Nil))
+      flag.parseArgs(Array("-foo", "973", "-bar", "hello there")) ==
+        Flags.Ok(Nil))
     flag.finishParsing()
     assert(fooFlag() == 973)
     assert(barFlag() == "hello there")
@@ -107,16 +108,17 @@ class FlagTest extends FunSuite {
     val naive = new SimpleRegistry()
     GlobalRegistry.withRegistry(naive) {
       assert(
-        flag.parseArgs(Array("-foo", "973", "-bar", "hello there")) == Flags
-          .Ok(Nil))
+        flag.parseArgs(Array("-foo", "973", "-bar", "hello there")) ==
+          Flags.Ok(Nil))
       flag.finishParsing()
       assert(fooFlag() == 973)
       assert(barFlag() == "hello there")
       assert(
-        naive.toSet == Set(
-          Entry(Seq("flags", "foo"), "973"),
-          Entry(Seq("flags", "bar"), "hello there"),
-          Entry(Seq("flags", "help"), "false")))
+        naive.toSet ==
+          Set(
+            Entry(Seq("flags", "foo"), "973"),
+            Entry(Seq("flags", "bar"), "hello there"),
+            Entry(Seq("flags", "help"), "false")))
     }
   }
 
@@ -133,9 +135,10 @@ class FlagTest extends FunSuite {
         bazFlag()
       }
       assert(
-        naive.toSet == Set(
-          Entry(Seq("flags", "baz"), Flag.EmptyRequired),
-          Entry(Seq("flags", "help"), "false")))
+        naive.toSet ==
+          Set(
+            Entry(Seq("flags", "baz"), Flag.EmptyRequired),
+            Entry(Seq("flags", "help"), "false")))
     }
   }
 
@@ -148,9 +151,10 @@ class FlagTest extends FunSuite {
       flag.finishParsing()
       assert(fooFlag() == 123)
       assert(
-        naive.toSet == Set(
-          Entry(Seq("flags", "foo"), "123"),
-          Entry(Seq("flags", "help"), "false")))
+        naive.toSet ==
+          Set(
+            Entry(Seq("flags", "foo"), "123"),
+            Entry(Seq("flags", "help"), "false")))
     }
   }
 
@@ -235,24 +239,24 @@ class FlagTest extends FunSuite {
     val ctx = new Ctx
     import ctx._
     assert(
-      flag.parseArgs(Array("-foo", "333", "arg0", "arg1")) == Flags
-        .Ok(Seq("arg0", "arg1")))
+      flag.parseArgs(Array("-foo", "333", "arg0", "arg1")) ==
+        Flags.Ok(Seq("arg0", "arg1")))
   }
 
   test("Flag: handle remainders (interpspersed)") {
     val ctx = new Ctx
     import ctx._
     assert(
-      flag.parseArgs(Array("arg0", "-foo", "333", "arg1")) == Flags
-        .Ok(Seq("arg0", "arg1")))
+      flag.parseArgs(Array("arg0", "-foo", "333", "arg1")) ==
+        Flags.Ok(Seq("arg0", "arg1")))
   }
 
   test("Flag: stop parsing at '--'") {
     val ctx = new Ctx
     import ctx._
     assert(
-      flag.parseArgs(Array("arg0", "--", "-foo", "333")) == Flags
-        .Ok(Seq("arg0", "-foo", "333")))
+      flag.parseArgs(Array("arg0", "--", "-foo", "333")) ==
+        Flags.Ok(Seq("arg0", "-foo", "333")))
   }
 
   test("Flag: give nice parse errors") {

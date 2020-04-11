@@ -107,16 +107,14 @@ object Test extends Properties("TreeMap") {
 
   property("take") = forAll { (subject: TreeMap[Int, String]) =>
     val n = choose(0, subject.size).sample.get
-    n == subject.take(n).size && subject
-      .take(n)
-      .forall(elt => subject.get(elt._1) == Some(elt._2))
+    n == subject.take(n).size &&
+    subject.take(n).forall(elt => subject.get(elt._1) == Some(elt._2))
   }
 
   property("drop") = forAll { (subject: TreeMap[Int, String]) =>
     val n = choose(0, subject.size).sample.get
-    (subject.size - n) == subject.drop(n).size && subject
-      .drop(n)
-      .forall(elt => subject.get(elt._1) == Some(elt._2))
+    (subject.size - n) == subject.drop(n).size &&
+    subject.drop(n).forall(elt => subject.get(elt._1) == Some(elt._2))
   }
 
   property("take/drop identity") = forAll { (subject: TreeMap[Int, String]) =>
@@ -141,7 +139,8 @@ object Test extends Properties("TreeMap") {
     forAll(genSliceParms) {
       case (subject, from, until) =>
         val slice = subject.slice(from, until)
-        slice.size == until - from && subject
+        slice.size == until - from &&
+        subject
           .toSeq == subject.take(from).toSeq ++ slice ++ subject.drop(until)
     }
 
@@ -157,17 +156,16 @@ object Test extends Properties("TreeMap") {
 
   property("span identity") = forAll { (subject: TreeMap[Int, String]) =>
     val (prefix, suffix) = subject.span(_._1 < 0)
-    prefix.forall(_._1 < 0) && suffix
-      .forall(_._1 >= 0) && subject == prefix ++ suffix
+    prefix.forall(_._1 < 0) && suffix.forall(_._1 >= 0) &&
+    subject == prefix ++ suffix
   }
 
   property("from is inclusive") = forAll { (subject: TreeMap[Int, String]) =>
     subject.nonEmpty ==> {
       val n = choose(0, subject.size - 1).sample.get
       val from = subject.drop(n).firstKey
-      subject.from(from).firstKey == from && subject
-        .from(from)
-        .forall(_._1 >= from)
+      subject.from(from).firstKey == from &&
+      subject.from(from).forall(_._1 >= from)
     }
   }
 
@@ -183,9 +181,8 @@ object Test extends Properties("TreeMap") {
     subject.size > 1 ==> {
       val n = choose(1, subject.size - 1).sample.get
       val until = subject.drop(n).firstKey
-      subject.until(until).lastKey == subject.take(n).lastKey && subject
-        .until(until)
-        .forall(_._1 <= until)
+      subject.until(until).lastKey == subject.take(n).lastKey &&
+      subject.until(until).forall(_._1 <= until)
     }
   }
 
@@ -193,8 +190,8 @@ object Test extends Properties("TreeMap") {
     subject.nonEmpty ==> {
       val key = oneOf(subject.keys.toSeq).sample.get
       val removed = subject - key
-      subject.contains(key) && !removed.contains(key) && subject
-        .size - 1 == removed.size
+      subject.contains(key) && !removed.contains(key) &&
+      subject.size - 1 == removed.size
     }
   }
 

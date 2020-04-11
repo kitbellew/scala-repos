@@ -356,12 +356,13 @@ class Matrix2Test extends WordSpec with Matchers {
           List((1, 3, 3.0), (2, 1, 8.0), (1, 2, 4.0)))
         .typedSink(TypedText.tsv[(Int, Int, Double)]("sum")) { ob =>
           "correctly compute sums" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 1.0,
-              (1, 2) -> 8.0,
-              (1, 3) -> 3.0,
-              (2, 1) -> 8.0,
-              (2, 2) -> 3.0)
+            toSparseMat(ob) shouldBe
+              Map(
+                (1, 1) -> 1.0,
+                (1, 2) -> 8.0,
+                (1, 3) -> 3.0,
+                (2, 1) -> 8.0,
+                (2, 2) -> 3.0)
           }
         }
         .runHadoop
@@ -380,12 +381,13 @@ class Matrix2Test extends WordSpec with Matchers {
           List((1, 3, 3.0), (2, 1, 8.0), (1, 2, 4.0)))
         .typedSink(TypedText.tsv[(Int, Int, Double)]("sum")) { ob =>
           "correctly compute sums" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 1.0,
-              (1, 2) -> 8.0,
-              (1, 3) -> 3.0,
-              (2, 1) -> 8.0,
-              (2, 2) -> 3.0)
+            toSparseMat(ob) shouldBe
+              Map(
+                (1, 1) -> 1.0,
+                (1, 2) -> 8.0,
+                (1, 3) -> 3.0,
+                (2, 1) -> 8.0,
+                (2, 2) -> 3.0)
           }
         }
         .runHadoop
@@ -435,12 +437,13 @@ class Matrix2Test extends WordSpec with Matchers {
           List((1, 3, 4.0), (2, 1, 1.0), (1, 2, 4.0)))
         .typedSink(TypedText.tsv[(Int, Int, Double)]("sum")) { ob =>
           "correctly compute sums" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 1.0,
-              (1, 2) -> 12.0,
-              (1, 3) -> 7.0,
-              (2, 1) -> 9.0,
-              (2, 2) -> 3.0)
+            toSparseMat(ob) shouldBe
+              Map(
+                (1, 1) -> 1.0,
+                (1, 2) -> 12.0,
+                (1, 3) -> 7.0,
+                (2, 1) -> 9.0,
+                (2, 2) -> 3.0)
           }
         }
         .runHadoop
@@ -509,11 +512,8 @@ class Matrix2Test extends WordSpec with Matchers {
           List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .typedSink(TypedText.tsv[(Int, Int, Double)]("product")) { ob =>
           "correctly compute products" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 17.0,
-              (1, 2) -> 12.0,
-              (2, 1) -> 12.0,
-              (2, 2) -> 9.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 17.0, (1, 2) -> 12.0, (2, 1) -> 12.0, (2, 2) -> 9.0)
           }
         }
         .runHadoop
@@ -529,11 +529,8 @@ class Matrix2Test extends WordSpec with Matchers {
           List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .typedSink(TypedText.tsv[(Int, Int, Double)]("product")) { ob =>
           "correctly compute products with infinite matrices" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 5.0,
-              (1, 2) -> 35.0,
-              (2, 1) -> 3.0,
-              (2, 2) -> 21.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 5.0, (1, 2) -> 35.0, (2, 1) -> 3.0, (2, 2) -> 21.0)
           }
         }
         .runHadoop
@@ -552,11 +549,12 @@ class Matrix2Test extends WordSpec with Matchers {
           List((1, 1, 1.0), (1, 2, 1.0), (2, 1, 1.0), (2, 2, 1.0)))
         .typedSink(TypedText.tsv[(Int, Int, Double)]("product-sum")) { ob =>
           "correctly compute products" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 18.0,
-              (1, 2) -> 13.0,
-              (2, 1) -> 13.0,
-              (2, 2) -> 10.0)
+            toSparseMat(ob) shouldBe
+              Map(
+                (1, 1) -> 18.0,
+                (1, 2) -> 13.0,
+                (2, 1) -> 13.0,
+                (2, 2) -> 10.0)
           }
         }
         .runHadoop
@@ -607,11 +605,12 @@ class Matrix2Test extends WordSpec with Matchers {
           List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .typedSink(TypedText.tsv[(Int, Int, Double)]("cosine")) { ob =>
           "correctly compute cosine similarity" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 1.0,
-              (1, 2) -> 0.9701425001453319,
-              (2, 1) -> 0.9701425001453319,
-              (2, 2) -> 1.0)
+            toSparseMat(ob) shouldBe
+              Map(
+                (1, 1) -> 1.0,
+                (1, 2) -> 0.9701425001453319,
+                (2, 1) -> 0.9701425001453319,
+                (2, 2) -> 1.0)
           }
         }
         .runHadoop
@@ -642,24 +641,26 @@ class Matrix2Test extends WordSpec with Matchers {
             (3, 3, 4L)))
         .typedSink(TypedText.tsv[(Int, Int, Double)]("normalized")) { ob =>
           "correctly compute l1 normalization for matrix with double values" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 0.8,
-              (1, 2) -> 0.2,
-              (2, 2) -> 1.0,
-              (3, 1) -> 0.125,
-              (3, 2) -> 0.375,
-              (3, 3) -> 0.5)
+            toSparseMat(ob) shouldBe
+              Map(
+                (1, 1) -> 0.8,
+                (1, 2) -> 0.2,
+                (2, 2) -> 1.0,
+                (3, 1) -> 0.125,
+                (3, 2) -> 0.375,
+                (3, 3) -> 0.5)
           }
         }
         .typedSink(TypedText.tsv[(Int, Int, Double)]("long_normalized")) { ob =>
           "correctly compute l1 normalization for matrix with long values" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 0.8,
-              (1, 2) -> 0.2,
-              (2, 2) -> 1.0,
-              (3, 1) -> 0.125,
-              (3, 2) -> 0.375,
-              (3, 3) -> 0.5)
+            toSparseMat(ob) shouldBe
+              Map(
+                (1, 1) -> 0.8,
+                (1, 2) -> 0.2,
+                (2, 2) -> 1.0,
+                (3, 1) -> 0.125,
+                (3, 2) -> 0.375,
+                (3, 3) -> 0.5)
           }
 
         }
@@ -676,50 +677,44 @@ class Matrix2Test extends WordSpec with Matchers {
           List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .typedSink(TypedText.tsv[(Int, Int, Double)]("times3")) { ob =>
           "correctly compute M * 3" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 3.0,
-              (2, 2) -> 9.0,
-              (1, 2) -> 12.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 3.0, (2, 2) -> 9.0, (1, 2) -> 12.0)
           }
         }
         .typedSink(TypedText.tsv[(Int, Int, Double)]("div3")) { ob =>
           "correctly compute M / 3" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> (1.0 / 3.0),
-              (2, 2) -> (3.0 / 3.0),
-              (1, 2) -> (4.0 / 3.0))
+            toSparseMat(ob) shouldBe
+              Map(
+                (1, 1) -> (1.0 / 3.0),
+                (2, 2) -> (3.0 / 3.0),
+                (1, 2) -> (4.0 / 3.0))
           }
         }
         .typedSink(TypedText.tsv[(Int, Int, Double)]("3times")) { ob =>
           "correctly compute 3 * M" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 3.0,
-              (2, 2) -> 9.0,
-              (1, 2) -> 12.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 3.0, (2, 2) -> 9.0, (1, 2) -> 12.0)
           }
         }
         .typedSink(TypedText.tsv[(Int, Int, Double)]("timestrace")) { ob =>
           "correctly compute M * Tr(M)" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 4.0,
-              (2, 2) -> 12.0,
-              (1, 2) -> 16.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 4.0, (2, 2) -> 12.0, (1, 2) -> 16.0)
           }
         }
         .typedSink(TypedText.tsv[(Int, Int, Double)]("tracetimes")) { ob =>
           "correctly compute Tr(M) * M" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> 4.0,
-              (2, 2) -> 12.0,
-              (1, 2) -> 16.0)
+            toSparseMat(ob) shouldBe
+              Map((1, 1) -> 4.0, (2, 2) -> 12.0, (1, 2) -> 16.0)
           }
         }
         .typedSink(TypedText.tsv[(Int, Int, Double)]("divtrace")) { ob =>
           "correctly compute M / Tr(M)" in {
-            toSparseMat(ob) shouldBe Map(
-              (1, 1) -> (1.0 / 4.0),
-              (2, 2) -> (3.0 / 4.0),
-              (1, 2) -> (4.0 / 4.0))
+            toSparseMat(ob) shouldBe
+              Map(
+                (1, 1) -> (1.0 / 4.0),
+                (2, 2) -> (3.0 / 4.0),
+                (1, 2) -> (4.0 / 4.0))
           }
         }
         .runHadoop

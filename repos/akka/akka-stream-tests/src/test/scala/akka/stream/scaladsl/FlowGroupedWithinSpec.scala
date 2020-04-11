@@ -20,44 +20,45 @@ class FlowGroupedWithinSpec extends AkkaSpec with ScriptedTest {
 
   "A GroupedWithin" must {
 
-    "group elements within the duration" in assertAllStagesStopped {
-      val input = Iterator.from(1)
-      val p = TestPublisher.manualProbe[Int]()
-      val c = TestSubscriber.manualProbe[immutable.Seq[Int]]()
-      Source
-        .fromPublisher(p)
-        .groupedWithin(1000, 1.second)
-        .to(Sink.fromSubscriber(c))
-        .run()
-      val pSub = p.expectSubscription
-      val cSub = c.expectSubscription
-      cSub.request(100)
-      val demand1 = pSub.expectRequest.toInt
-      (1 to demand1) foreach { _ ⇒
-        pSub.sendNext(input.next())
+    "group elements within the duration" in
+      assertAllStagesStopped {
+        val input = Iterator.from(1)
+        val p = TestPublisher.manualProbe[Int]()
+        val c = TestSubscriber.manualProbe[immutable.Seq[Int]]()
+        Source
+          .fromPublisher(p)
+          .groupedWithin(1000, 1.second)
+          .to(Sink.fromSubscriber(c))
+          .run()
+        val pSub = p.expectSubscription
+        val cSub = c.expectSubscription
+        cSub.request(100)
+        val demand1 = pSub.expectRequest.toInt
+        (1 to demand1) foreach { _ ⇒
+          pSub.sendNext(input.next())
+        }
+        val demand2 = pSub.expectRequest.toInt
+        (1 to demand2) foreach { _ ⇒
+          pSub.sendNext(input.next())
+        }
+        val demand3 = pSub.expectRequest.toInt
+        c.expectNext((1 to (demand1 + demand2).toInt).toVector)
+        (1 to demand3) foreach { _ ⇒
+          pSub.sendNext(input.next())
+        }
+        c.expectNoMsg(300.millis)
+        c.expectNext(
+          ((demand1 + demand2 + 1).toInt to (demand1 + demand2 + demand3).toInt)
+            .toVector)
+        c.expectNoMsg(300.millis)
+        pSub.expectRequest
+        val last = input.next()
+        pSub.sendNext(last)
+        pSub.sendComplete()
+        c.expectNext(List(last))
+        c.expectComplete
+        c.expectNoMsg(200.millis)
       }
-      val demand2 = pSub.expectRequest.toInt
-      (1 to demand2) foreach { _ ⇒
-        pSub.sendNext(input.next())
-      }
-      val demand3 = pSub.expectRequest.toInt
-      c.expectNext((1 to (demand1 + demand2).toInt).toVector)
-      (1 to demand3) foreach { _ ⇒
-        pSub.sendNext(input.next())
-      }
-      c.expectNoMsg(300.millis)
-      c.expectNext(
-        ((demand1 + demand2 + 1).toInt to (demand1 + demand2 + demand3).toInt)
-          .toVector)
-      c.expectNoMsg(300.millis)
-      pSub.expectRequest
-      val last = input.next()
-      pSub.sendNext(last)
-      pSub.sendComplete()
-      c.expectNext(List(last))
-      c.expectComplete
-      c.expectNoMsg(200.millis)
-    }
 
     "deliver bufferd elements onComplete before the timeout" in {
       val c = TestSubscriber.manualProbe[immutable.Seq[Int]]()
@@ -164,8 +165,8 @@ class FlowGroupedWithinSpec extends AkkaSpec with ScriptedTest {
             val x, y, z = random.nextInt();
             Seq(x, y, z) -> Seq(immutable.Seq(x, y, z))
           }: _*)
-      TestConfig.RandomTestRange foreach (_ ⇒
-        runScript(script, settings)(_.groupedWithin(3, 10.minutes)))
+      TestConfig.RandomTestRange foreach
+        (_ ⇒ runScript(script, settings)(_.groupedWithin(3, 10.minutes)))
     }
 
     "group with rest" in {
@@ -177,14 +178,13 @@ class FlowGroupedWithinSpec extends AkkaSpec with ScriptedTest {
               .map { _ ⇒
                 val x, y, z = random.nextInt();
                 Seq(x, y, z) -> Seq(immutable.Seq(x, y, z))
-              }
-              :+ {
-                val x = random.nextInt();
-                Seq(x) -> Seq(immutable.Seq(x))
-              }
+              } :+ {
+              val x = random.nextInt();
+              Seq(x) -> Seq(immutable.Seq(x))
+            }
           ): _*)
-      TestConfig.RandomTestRange foreach (_ ⇒
-        runScript(script, settings)(_.groupedWithin(3, 10.minutes)))
+      TestConfig.RandomTestRange foreach
+        (_ ⇒ runScript(script, settings)(_.groupedWithin(3, 10.minutes)))
     }
 
   }

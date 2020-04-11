@@ -102,8 +102,7 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
 
   def isValClass[T](clazz: Class[T]) =
     (classOf[jl.Number] isAssignableFrom clazz) ||
-      clazz == classOf[jl.Boolean] ||
-      clazz == classOf[jl.Character] ||
+      clazz == classOf[jl.Boolean] || clazz == classOf[jl.Character] ||
       clazz == classOf[runtime.BoxedUnit]
 
   /** Typeable instance for `Any`. */
@@ -309,8 +308,8 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
       fields: Array[Typeable[_]]): Typeable[T] =
     new Typeable[T] {
       def cast(t: Any): Option[T] =
-        if (classOf[Product].isAssignableFrom(erased) && erased
-              .isAssignableFrom(t.getClass)) {
+        if (classOf[Product].isAssignableFrom(erased) &&
+            erased.isAssignableFrom(t.getClass)) {
           val c = t.asInstanceOf[Product with T]
           val f = c.productIterator.toList
           if ((f zip fields).forall {

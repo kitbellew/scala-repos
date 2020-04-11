@@ -66,9 +66,9 @@ class IterateeSubscriberSpec extends Specification {
       val iter = Iteratee.getChunks[Int]
       val subr = new IterateeSubscriber(iter)
       pubr.subscribe(subr)
-      Await.result(
-        subr.result.unflatten,
-        ScalaFiniteDuration(2, SECONDS)) must_== Done(List(1, 2, 3), Input.EOF)
+      Await
+        .result(subr.result.unflatten, ScalaFiniteDuration(2, SECONDS)) must_==
+        Done(List(1, 2, 3), Input.EOF)
     }
 
     "consume one element (on-subscribe/cont-step/on-next/cont-step/on-complete/done-step)" in {
@@ -135,10 +135,11 @@ class IterateeSubscriberSpec extends Specification {
       testEnv.isEmptyAfterDelay() must beTrue
 
       testEnv.contStep()
-      testEnv.next must beLike {
-        case Result(Success(Step.Cont(_))) =>
-          ok
-      }
+      testEnv.next must
+        beLike {
+          case Result(Success(Step.Cont(_))) =>
+            ok
+        }
       testEnv.isEmptyAfterDelay() must beTrue
     }
 
@@ -228,8 +229,8 @@ class IterateeSubscriberSpec extends Specification {
       val testEnv = new TestEnv[Int]
 
       testEnv.errorStep("iteratee error", Input.El(99))
-      testEnv
-        .next must_== Result(Success(Error("iteratee error", Input.El(99))))
+      testEnv.next must_==
+        Result(Success(Error("iteratee error", Input.El(99))))
       testEnv.isEmptyAfterDelay() must beTrue
 
       testEnv.onSubscribe()
@@ -245,8 +246,8 @@ class IterateeSubscriberSpec extends Specification {
 
       testEnv.errorStep("iteratee error", Input.El(99))
       testEnv.next must_== Cancel
-      testEnv
-        .next must_== Result(Success(Error("iteratee error", Input.El(99))))
+      testEnv.next must_==
+        Result(Success(Error("iteratee error", Input.El(99))))
       testEnv.isEmptyAfterDelay() must beTrue
     }
 

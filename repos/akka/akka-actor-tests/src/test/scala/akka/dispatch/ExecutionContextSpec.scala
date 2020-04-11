@@ -226,9 +226,10 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         SerializedSuspendableExecutionContext(1)(ExecutionContext.global)
       val counter = new AtomicInteger(0)
       def perform(f: Int ⇒ Int) =
-        sec execute new Runnable {
-          def run = counter.set(f(counter.get))
-        }
+        sec execute
+          new Runnable {
+            def run = counter.set(f(counter.get))
+          }
       perform(_ + 1)
       perform(x ⇒ {
         sec.suspend();
@@ -265,9 +266,10 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       val sec = SerializedSuspendableExecutionContext(throughput)(underlying)
       sec.suspend()
       def perform(f: Int ⇒ Int) =
-        sec execute new Runnable {
-          def run = counter.set(f(counter.get))
-        }
+        sec execute
+          new Runnable {
+            def run = counter.set(f(counter.get))
+          }
 
       val total = 1000
       1 to total foreach { _ ⇒
@@ -286,9 +288,10 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       val total = 10000
       val counter = new AtomicInteger(0)
       def perform(f: Int ⇒ Int) =
-        sec execute new Runnable {
-          def run = counter.set(f(counter.get))
-        }
+        sec execute
+          new Runnable {
+            def run = counter.set(f(counter.get))
+          }
 
       1 to total foreach { i ⇒
         perform(c ⇒
@@ -318,9 +321,10 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       val sec = SerializedSuspendableExecutionContext(throughput)(underlying)
       sec.suspend()
       def perform(f: Int ⇒ Int) =
-        sec execute new Runnable {
-          def run = counter.set(f(counter.get))
-        }
+        sec execute
+          new Runnable {
+            def run = counter.set(f(counter.get))
+          }
       perform(_ + 1)
       1 to 10 foreach { _ ⇒
         perform(identity)

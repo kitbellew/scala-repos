@@ -500,14 +500,11 @@ class SetMapConsistencyTest {
   // Actual tests
   val smallKeys = Array(0, 1, 42, 9127)
   val intKeys = smallKeys ++ Array(-1, Int.MaxValue, Int.MinValue, -129385)
-  val longKeys = intKeys.map(_.toLong) ++ Array(
-    Long.MaxValue,
-    Long.MinValue,
-    1397198789151L,
-    -41402148014L)
+  val longKeys = intKeys.map(_.toLong) ++
+    Array(Long.MaxValue, Long.MinValue, 1397198789151L, -41402148014L)
   val stringKeys = intKeys.map(_.toString) ++ Array("", null)
-  val anyKeys = stringKeys
-    .filter(_ != null) ++ Array(0L) ++ Array(true) ++ Array(math.Pi)
+  val anyKeys = stringKeys.filter(_ != null) ++ Array(0L) ++ Array(true) ++
+    Array(math.Pi)
 
   @Test
   def churnIntMaps() {
@@ -665,7 +662,8 @@ class SetMapConsistencyTest {
     assert {
       val m2 = lm.mapValuesNow(_ + 2)
       lm.transformValues(_ + 2)
-      m2 == lm && !(m2 eq lm) && (
+      m2 == lm && !(m2 eq lm) &&
+      (
         for ((_, v) <- lm)
           yield v
       ).sum == 33L
@@ -698,12 +696,10 @@ class SetMapConsistencyTest {
       arm
         .map {
           case (k, v) =>
-            (
-              if (k == null)
-                ""
-              else
-                k + k
-            ) -> v.toString
+            (if (k == null)
+               ""
+             else
+               k + k) -> v.toString
         }
         .getClass == arm.getClass
     }
@@ -723,10 +719,8 @@ class SetMapConsistencyTest {
     assert {
       var s = ""
       arm.foreachKey(s += _)
-      s.length == "herondovebudgie".length &&
-      s.contains("heron") &&
-      s.contains("dove") &&
-      s.contains("budgie")
+      s.length == "herondovebudgie".length && s.contains("heron") &&
+      s.contains("dove") && s.contains("budgie")
     }
 
     assert {
@@ -738,7 +732,8 @@ class SetMapConsistencyTest {
     assert {
       val m2 = arm.mapValuesNow(_ + 2)
       arm.transformValues(_ + 2)
-      m2 == arm && !(m2 eq arm) && (
+      m2 == arm && !(m2 eq arm) &&
+      (
         for ((_, v) <- arm)
           yield v
       ).sum == 33L
@@ -756,14 +751,14 @@ class SetMapConsistencyTest {
       List(null, "cod", "sparrow", "Rarity").forall(i =>
         arm2.get(i) == hm2.get(i) &&
           arm2.getOrElse(i, "") == hm2.getOrElse(i, "") &&
-          arm2(i) == hm2
+          arm2(i) ==
+          hm2
             .get(i)
             .getOrElse(
               if (i == null)
                 "null"
               else
-                i.toString) &&
-          arm2.getOrNull(i) == hm2.get(i).orNull)
+                i.toString) && arm2.getOrNull(i) == hm2.get(i).orNull)
     }
   }
 

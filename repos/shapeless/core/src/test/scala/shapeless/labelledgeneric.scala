@@ -64,20 +64,17 @@ object LabelledGenericTestsAux {
     ('author ->> "Benjamin Pierce") ::
       ('title ->> "Types and Programming Languages") ::
       ('id ->> 262162091) ::
-      ('price ->> 44.11) ::
-      HNil
+      ('price ->> 44.11) :: HNil
 
   val dpRecord =
     ('title ->> "Design Patterns") ::
       ('id ->> 201633612) ::
-      (
-        'authors ->> Seq(
+      ('authors ->>
+        Seq(
           "Erich Gamma",
           "Richard Helm",
           "Ralph Johnson",
-          "John Vlissides")
-      ) ::
-      HNil
+          "John Vlissides")) :: HNil
 
   type BookRec =
     Record.`'author -> String, 'title -> String, 'id -> Int, 'price -> Double`.T
@@ -194,7 +191,8 @@ class LabelledGenericTests {
 
     val values = b0.values
     assertEquals(
-      "Benjamin Pierce" :: "Types and Programming Languages" :: 262162091 :: 44.11 :: HNil,
+      "Benjamin Pierce" :: "Types and Programming Languages" :: 262162091 ::
+        44.11 :: HNil,
       values)
   }
 
@@ -211,11 +209,9 @@ class LabelledGenericTests {
 
     val values = b0.values
     assertEquals(
-      "Design Patterns" :: 201633612 :: Seq(
-        "Erich Gamma",
-        "Richard Helm",
-        "Ralph Johnson",
-        "John Vlissides") :: HNil,
+      "Design Patterns" :: 201633612 ::
+        Seq("Erich Gamma", "Richard Helm", "Ralph Johnson", "John Vlissides") ::
+        HNil,
       values)
   }
 

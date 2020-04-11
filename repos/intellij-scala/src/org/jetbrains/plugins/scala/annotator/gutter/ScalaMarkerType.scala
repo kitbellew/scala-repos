@@ -92,8 +92,8 @@ object ScalaMarkerType {
                   return null
               }
             for (z <- bindings)
-              signatures ++= ScalaPsiUtil
-                .superValsSignatures(z, withSelfType = true)
+              signatures ++=
+                ScalaPsiUtil.superValsSignatures(z, withSelfType = true)
             assert(signatures.nonEmpty)
             val optionClazz =
               ScalaPsiUtil.nameContext(signatures(0).namedElement) match {
@@ -160,8 +160,8 @@ object ScalaMarkerType {
                   return
               }
             for (z <- bindings)
-              signatures ++= ScalaPsiUtil
-                .superValsSignatures(z, withSelfType = true)
+              signatures ++=
+                ScalaPsiUtil.superValsSignatures(z, withSelfType = true)
             val elems = new mutable.HashSet[NavigatablePsiElement]
             signatures.foreach {
               case sig =>
@@ -248,8 +248,8 @@ object ScalaMarkerType {
           }
         val overrides = new ArrayBuffer[PsiNamedElement]
         for (member <- members)
-          overrides ++= ScalaOverridingMemberSearcher
-            .search(member, withSelfType = true)
+          overrides ++=
+            ScalaOverridingMemberSearcher.search(member, withSelfType = true)
         if (overrides.isEmpty)
           return
         val title =
@@ -351,8 +351,8 @@ object ScalaMarkerType {
         case method: PsiMethod if method.containingClass != null =>
           val presentation = method.containingClass.getPresentation
           if (presentation != null)
-            presentation.getPresentableText + " " + presentation
-              .getLocationString
+            presentation.getPresentableText + " " +
+              presentation.getLocationString
           else {
             ClassPresentationUtil.getNameForClass(method.containingClass, false)
           }
@@ -367,8 +367,8 @@ object ScalaMarkerType {
             defaultPresentation
           else {
             val presentation = containing.getPresentation
-            presentation.getPresentableText + " " + presentation
-              .getLocationString
+            presentation.getPresentableText + " " +
+              presentation.getLocationString
           }
         case x: ScClassParameter =>
           val presentation = x.getPresentation

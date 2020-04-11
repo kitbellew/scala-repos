@@ -86,15 +86,16 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
         .deployer
         .lookup(service.split("/").drop(1))
 
-      deployment should ===(
-        Some(
-          Deploy(
-            service,
-            deployment.get.config,
-            NoRouter,
-            NoScopeGiven,
-            Deploy.NoDispatcherGiven,
-            Deploy.NoMailboxGiven)))
+      deployment should
+        ===(
+          Some(
+            Deploy(
+              service,
+              deployment.get.config,
+              NoRouter,
+              NoScopeGiven,
+              Deploy.NoDispatcherGiven,
+              Deploy.NoMailboxGiven)))
     }
 
     "use None deployment for undefined service" in {
@@ -115,15 +116,16 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
         .deployer
         .lookup(service.split("/").drop(1))
 
-      deployment should ===(
-        Some(
-          Deploy(
-            service,
-            deployment.get.config,
-            NoRouter,
-            NoScopeGiven,
-            dispatcher = "my-dispatcher",
-            Deploy.NoMailboxGiven)))
+      deployment should
+        ===(
+          Some(
+            Deploy(
+              service,
+              deployment.get.config,
+              NoRouter,
+              NoScopeGiven,
+              dispatcher = "my-dispatcher",
+              Deploy.NoMailboxGiven)))
     }
 
     "be able to parse 'akka.actor.deployment._' with mailbox config" in {
@@ -134,15 +136,16 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
         .deployer
         .lookup(service.split("/").drop(1))
 
-      deployment should ===(
-        Some(
-          Deploy(
-            service,
-            deployment.get.config,
-            NoRouter,
-            NoScopeGiven,
-            Deploy.NoDispatcherGiven,
-            mailbox = "my-mailbox")))
+      deployment should
+        ===(
+          Some(
+            Deploy(
+              service,
+              deployment.get.config,
+              NoRouter,
+              NoScopeGiven,
+              Deploy.NoDispatcherGiven,
+              mailbox = "my-mailbox")))
     }
 
     "detect invalid number-of-instances" in {
@@ -241,30 +244,30 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
       val mapping =
         system.asInstanceOf[ActorSystemImpl].provider.deployer.routerTypeMapping
       mapping("from-code") should ===(classOf[akka.routing.NoRouter].getName)
-      mapping("round-robin-pool") should ===(
-        classOf[akka.routing.RoundRobinPool].getName)
-      mapping("round-robin-group") should ===(
-        classOf[akka.routing.RoundRobinGroup].getName)
-      mapping("random-pool") should ===(
-        classOf[akka.routing.RandomPool].getName)
-      mapping("random-group") should ===(
-        classOf[akka.routing.RandomGroup].getName)
-      mapping("balancing-pool") should ===(
-        classOf[akka.routing.BalancingPool].getName)
-      mapping("smallest-mailbox-pool") should ===(
-        classOf[akka.routing.SmallestMailboxPool].getName)
-      mapping("broadcast-pool") should ===(
-        classOf[akka.routing.BroadcastPool].getName)
-      mapping("broadcast-group") should ===(
-        classOf[akka.routing.BroadcastGroup].getName)
-      mapping("scatter-gather-pool") should ===(
-        classOf[akka.routing.ScatterGatherFirstCompletedPool].getName)
-      mapping("scatter-gather-group") should ===(
-        classOf[akka.routing.ScatterGatherFirstCompletedGroup].getName)
-      mapping("consistent-hashing-pool") should ===(
-        classOf[akka.routing.ConsistentHashingPool].getName)
-      mapping("consistent-hashing-group") should ===(
-        classOf[akka.routing.ConsistentHashingGroup].getName)
+      mapping("round-robin-pool") should
+        ===(classOf[akka.routing.RoundRobinPool].getName)
+      mapping("round-robin-group") should
+        ===(classOf[akka.routing.RoundRobinGroup].getName)
+      mapping("random-pool") should
+        ===(classOf[akka.routing.RandomPool].getName)
+      mapping("random-group") should
+        ===(classOf[akka.routing.RandomGroup].getName)
+      mapping("balancing-pool") should
+        ===(classOf[akka.routing.BalancingPool].getName)
+      mapping("smallest-mailbox-pool") should
+        ===(classOf[akka.routing.SmallestMailboxPool].getName)
+      mapping("broadcast-pool") should
+        ===(classOf[akka.routing.BroadcastPool].getName)
+      mapping("broadcast-group") should
+        ===(classOf[akka.routing.BroadcastGroup].getName)
+      mapping("scatter-gather-pool") should
+        ===(classOf[akka.routing.ScatterGatherFirstCompletedPool].getName)
+      mapping("scatter-gather-group") should
+        ===(classOf[akka.routing.ScatterGatherFirstCompletedGroup].getName)
+      mapping("consistent-hashing-pool") should
+        ===(classOf[akka.routing.ConsistentHashingPool].getName)
+      mapping("consistent-hashing-group") should
+        ===(classOf[akka.routing.ConsistentHashingGroup].getName)
     }
 
     def assertRouting(
@@ -281,8 +284,8 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
       deployment.get.scope should ===(NoScopeGiven)
       expected match {
         case pool: Pool ⇒
-          deployment.get.routerConfig.asInstanceOf[Pool].resizer should ===(
-            pool.resizer)
+          deployment.get.routerConfig.asInstanceOf[Pool].resizer should
+            ===(pool.resizer)
         case _ ⇒
       }
     }

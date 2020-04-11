@@ -72,32 +72,34 @@ class MainTest extends AsyncTest[JdbcTestDB] {
       (7, "Snowball", None)
     )
 
-    val p1 = db.stream(
-      (
+    val p1 = db
+      .stream(
         (
-          for {
-            _ <- ddl.create
-            ins1 <-
-              users.map(u => (u.first, u.last)) += ("Homer", Some("Simpson"))
-            ins2 <-
-              users.map(u => (u.first, u.last)) ++= Seq(
-                ("Marge", Some("Simpson")),
-                ("Apu", Some("Nahasapeemapetilon")),
-                ("Carl", Some("Carlson")),
-                ("Lenny", Some("Leonard")))
-            ins3 <-
-              users.map(_.first) ++= Seq("Santa's Little Helper", "Snowball")
-            total =
-              for (i2 <- ins2;
-                   i3 <- ins3)
-                yield ins1 + i2 + i3
-            /* All test DBs seem to report the actual number of rows. None would also be acceptable: */
-            _ = total.map(_ shouldBe 7)
-            r1 <- q1.result
-            _ = r1 shouldBe expectedUserTuples
-          } yield ()
-        ) andThen q1.result
-      ).withPinnedSession)
+          (
+            for {
+              _ <- ddl.create
+              ins1 <-
+                users.map(u => (u.first, u.last)) += ("Homer", Some("Simpson"))
+              ins2 <-
+                users.map(u => (u.first, u.last)) ++=
+                  Seq(
+                    ("Marge", Some("Simpson")),
+                    ("Apu", Some("Nahasapeemapetilon")),
+                    ("Carl", Some("Carlson")),
+                    ("Lenny", Some("Leonard")))
+              ins3 <-
+                users.map(_.first) ++= Seq("Santa's Little Helper", "Snowball")
+              total =
+                for (i2 <- ins2;
+                     i3 <- ins3)
+                  yield ins1 + i2 + i3
+              /* All test DBs seem to report the actual number of rows. None would also be acceptable: */
+              _ = total.map(_ shouldBe 7)
+              r1 <- q1.result
+              _ = r1 shouldBe expectedUserTuples
+            } yield ()
+          ) andThen q1.result
+        ).withPinnedSession)
 
     materialize(
       p1.mapResult {
@@ -105,27 +107,29 @@ class MainTest extends AsyncTest[JdbcTestDB] {
           User(id, f, l.orNull)
       })
       .flatMap { allUsers =>
-        allUsers shouldBe expectedUserTuples.map {
-          case (id, f, l) =>
-            User(id, f, l.orNull)
-        }
+        allUsers shouldBe
+          expectedUserTuples.map {
+            case (id, f, l) =>
+              User(id, f, l.orNull)
+          }
         db.run(
           for {
             r1b <- q1b.result
             _ =
-              r1b shouldBe expectedUserTuples.map {
-                case (id, f, l) =>
-                  (
-                    id,
-                    Some(f),
-                    l,
-                    if (id < 3)
-                      "low"
-                    else if (id < 6)
-                      "medium"
-                    else
-                      "high")
-              }
+              r1b shouldBe
+                expectedUserTuples.map {
+                  case (id, f, l) =>
+                    (
+                      id,
+                      Some(f),
+                      l,
+                      if (id < 3)
+                        "low"
+                      else if (id < 6)
+                        "medium"
+                      else
+                        "high")
+                }
             _ <- q2.result.head.map(_ shouldBe (Some("Nahasapeemapetilon"), 3))
           } yield allUsers)
       }
@@ -135,11 +139,12 @@ class MainTest extends AsyncTest[JdbcTestDB] {
           for (u <- allUsers
                if u.first != "Apu" && u.first != "Snowball";
                i <- 1 to 2)
-            yield orders
-              .map(o => (o.userID, o.product, o.shipped, o.rebate)) += (
-              u.id, "Gizmo " + ((scala.math.random * 10) + 1)
-                .toInt, i == 2, Some(u.first == "Marge")
-            )
+            yield orders.map(o => (o.userID, o.product, o.shipped, o.rebate)) +=
+              (
+                u.id,
+                "Gizmo " + ((scala.math.random * 10) + 1).toInt,
+                i == 2,
+                Some(u.first == "Marge"))
         db.run(seq(ordersInserts: _*))
       }
       .flatMap { _ =>
@@ -158,11 +163,12 @@ class MainTest extends AsyncTest[JdbcTestDB] {
             u <- users
             o <- u.orders
             if (
-              o.orderID === (
-                for {
-                  o2 <- orders filter (o.userID === _.userID)
-                } yield o2.orderID
-              ).max
+              o.orderID ===
+                (
+                  for {
+                    o2 <- orders filter (o.userID === _.userID)
+                  } yield o2.orderID
+                ).max
             )
           } yield (u.first, o.orderID)
         q4.result.statements.toSeq.length.should(_ >= 1)
@@ -170,12 +176,13 @@ class MainTest extends AsyncTest[JdbcTestDB] {
         def maxOfPer[T <: Table[_], C[_]](
             c: Query[T, _, C])(m: (T => Rep[Int]), p: (T => Rep[Int])) =
           c filter { o =>
-            m(o) === (
-              for {
-                o2 <- c
-                if p(o) === p(o2)
-              } yield m(o2)
-            ).max
+            m(o) ===
+              (
+                for {
+                  o2 <- c
+                  if p(o) === p(o2)
+                } yield m(o2)
+              ).max
           }
 
         val q4b =
@@ -197,21 +204,23 @@ class MainTest extends AsyncTest[JdbcTestDB] {
           for {
             r4 <- q4.to[Set].result.named("Latest Order per User")
             _ =
-              r4 shouldBe Set(
-                ("Homer", 2),
-                ("Marge", 4),
-                ("Carl", 6),
-                ("Lenny", 8),
-                ("Santa's Little Helper", 10))
+              r4 shouldBe
+                Set(
+                  ("Homer", 2),
+                  ("Marge", 4),
+                  ("Carl", 6),
+                  ("Lenny", 8),
+                  ("Santa's Little Helper", 10))
             r4b <-
               q4b.to[Set].result.named("Latest Order per User, using maxOfPer")
             _ =
-              r4b shouldBe Set(
-                ("Homer", 2),
-                ("Marge", 4),
-                ("Carl", 6),
-                ("Lenny", 8),
-                ("Santa's Little Helper", 10))
+              r4b shouldBe
+                Set(
+                  ("Homer", 2),
+                  ("Marge", 4),
+                  ("Carl", 6),
+                  ("Lenny", 8),
+                  ("Santa's Little Helper", 10))
             _ <- q4d.result.map(r => r.length shouldBe 4)
           } yield ())
       }
@@ -257,9 +266,10 @@ class MainTest extends AsyncTest[JdbcTestDB] {
           for {
             r5 <- q5.to[Set].result.named("Users without Orders")
             _ =
-              r5 shouldBe Set(
-                (3, "Apu", Some("Nahasapeemapetilon")),
-                (7, "Snowball", None))
+              r5 shouldBe
+                Set(
+                  (3, "Apu", Some("Nahasapeemapetilon")),
+                  (7, "Snowball", None))
             deleted <- q5.delete
             _ = deleted shouldBe 2
             _ <- q6.result.head.map(_ shouldBe 0)

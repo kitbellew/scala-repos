@@ -138,10 +138,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       } must beEmpty
     }
     "define a 'filterMsg' method, returning a Failure if the filter predicate is not satisfied" in {
-      Full(1).filterMsg("not equal to 0")(_ == 0) must_== Failure(
-        "not equal to 0",
-        Empty,
-        Empty)
+      Full(1).filterMsg("not equal to 0")(_ == 0) must_==
+        Failure("not equal to 0", Empty, Empty)
     }
     "define a 'foreach' method using its value (to display it for instance)" in {
       var total = 0
@@ -299,10 +297,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       } must beEmpty
     }
     "define a 'filterMsg' method, returning a Failure" in {
-      Empty.filterMsg("not equal to 0")(_ == 0) must_== Failure(
-        "not equal to 0",
-        Empty,
-        Empty)
+      Empty.filterMsg("not equal to 0")(_ == 0) must_==
+        Failure("not equal to 0", Empty, Empty)
     }
     "define a 'foreach' doing nothing" in {
       var total = 0
@@ -355,8 +351,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       Failure(
         "error",
         Full(new Exception("broken")),
-        Full(Failure("nested cause", Empty, Empty)))
-        .chain must_== Full(Failure("nested cause", Empty, Empty))
+        Full(Failure("nested cause", Empty, Empty))).chain must_==
+        Full(Failure("nested cause", Empty, Empty))
     }
     "be converted to a ParamFailure" in {
       Failure("hi mom") ~> 404 must_== ParamFailure("hi mom", Empty, Empty, 404)
@@ -373,16 +369,12 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       } must_== Failure("error", Empty, Empty)
     }
     "return a itself when asked for its status with the operator ?~" in {
-      Failure("error", Empty, Empty) ?~ "nothing" must_== Failure(
-        "error",
-        Empty,
-        Empty)
+      Failure("error", Empty, Empty) ?~ "nothing" must_==
+        Failure("error", Empty, Empty)
     }
     "create a new failure with a chained message if asked for its status with the operator ?~!" in {
-      Failure("error", Empty, Empty) ?~! "error2" must_== Failure(
-        "error2",
-        Empty,
-        Full(Failure("error", Empty, Empty)))
+      Failure("error", Empty, Empty) ?~! "error2" must_==
+        Failure("error2", Empty, Full(Failure("error", Empty, Empty)))
     }
     "return false for exist method" in {
       Failure("error", Empty, Empty) exists { _ =>
@@ -409,8 +401,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
 
   "A Box equals method" should {
 
-    "return true with comparing two identical Box messages" in prop {
-      (c1: Box[Int], c2: Box[Int]) =>
+    "return true with comparing two identical Box messages" in
+      prop { (c1: Box[Int], c2: Box[Int]) =>
         (c1, c2) match {
           case (Empty, Empty) =>
             c1 must_== c2
@@ -421,7 +413,7 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
           case _ =>
             c1 must be_!=(c2)
         }
-    }
+      }
 
     "return false with comparing one Full and another object" in {
       Full(1) must be_!=("hello")
@@ -462,10 +454,11 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       val singleBox = someBoxes
         .toSingleBox("This should be in the param failure.")
 
-      singleBox must beLike {
-        case ParamFailure(message, _, _, _) =>
-          message must_== "This should be in the param failure."
-      }
+      singleBox must
+        beLike {
+          case ParamFailure(message, _, _, _) =>
+            message must_== "This should be in the param failure."
+        }
     }
 
     "chain the ParamFailure to the failures in the list when any are Failure" in {
@@ -487,10 +480,11 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
             Empty,
             Full(Failure("BACON WHY U BACON")))))
 
-      singleBox must beLike {
-        case ParamFailure(_, _, chain, _) =>
-          chain must_== Full(expectedChain)
-      }
+      singleBox must
+        beLike {
+          case ParamFailure(_, _, chain, _) =>
+            chain must_== Full(expectedChain)
+        }
     }
   }
 

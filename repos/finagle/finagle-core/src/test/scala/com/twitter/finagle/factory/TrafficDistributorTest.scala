@@ -227,12 +227,11 @@ class TrafficDistributorTest extends FunSuite {
 
   test("partition endpoints into weight classes")(
     new Ctx {
-      val init: Set[Address] =
-        (1 to 5)
-          .map { i =>
-            WeightedAddress(Address(i), i)
-          }
-          .toSet
+      val init: Set[Address] = (1 to 5)
+        .map { i =>
+          WeightedAddress(Address(i), i)
+        }
+        .toSet
       val dest = Var(Activity.Ok(init))
 
       newDist(dest)
@@ -271,10 +270,11 @@ class TrafficDistributorTest extends FunSuite {
       assert(newEndpointCalls == 0)
       assert(
         balancers.count {
-          _.endpoints.sample() == updated.map {
-            case WeightedAddress(addr, _) =>
-              AddressFactory(addr)
-          }
+          _.endpoints.sample() ==
+            updated.map {
+              case WeightedAddress(addr, _) =>
+                AddressFactory(addr)
+            }
         } == 1)
     })
 
@@ -424,9 +424,10 @@ class TrafficDistributorTest extends FunSuite {
 
       assert(balancers.head.endpoints.sample().size == 16)
       assert(
-        balancers.head.endpoints.sample() == update
-          .flatMap(ConcurrentLoadBalancerFactory.replicate(4))
-          .map(AddressFactory))
+        balancers.head.endpoints.sample() ==
+          update
+            .flatMap(ConcurrentLoadBalancerFactory.replicate(4))
+            .map(AddressFactory))
     })
 
   // todo: move this to util-stats?

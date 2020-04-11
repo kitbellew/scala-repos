@@ -228,13 +228,14 @@ private final class Analyzer(
 
       val parents = data.superClass ++: data.interfaces
 
-      ancestors = this +: parents
-        .flatMap { parent =>
-          val cls = lookupClass(parent)
-          cls.linkClasses()
-          cls.ancestors
-        }
-        .distinct
+      ancestors = this +:
+        parents
+          .flatMap { parent =>
+            val cls = lookupClass(parent)
+            cls.linkClasses()
+            cls.ancestors
+          }
+          .distinct
 
       for (ancestor <- ancestors)
         ancestor.descendants += this
@@ -259,11 +260,8 @@ private final class Analyzer(
     val delayedCalls = mutable.Map.empty[String, From]
 
     def isNeededAtAll =
-      areInstanceTestsUsed ||
-        isDataAccessed ||
-        isAnySubclassInstantiated ||
-        isAnyStaticMethodReachable ||
-        isAnyDefaultMethodReachable
+      areInstanceTestsUsed || isDataAccessed || isAnySubclassInstantiated ||
+        isAnyStaticMethodReachable || isAnyDefaultMethodReachable
 
     def isAnyStaticMethodReachable =
       staticMethodInfos.values.exists(_.isReachable)

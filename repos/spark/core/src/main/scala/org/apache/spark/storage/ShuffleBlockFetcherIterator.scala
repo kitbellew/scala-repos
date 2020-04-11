@@ -209,8 +209,8 @@ private[spark] final class ShuffleBlockFetcherIterator(
             }
           }
           logTrace(
-            "Got remote block " + blockId + " after " + Utils
-              .getUsedTimeMs(startTime))
+            "Got remote block " + blockId + " after " +
+              Utils.getUsedTimeMs(startTime))
         }
 
         override def onBlockFetchFailure(
@@ -231,7 +231,8 @@ private[spark] final class ShuffleBlockFetcherIterator(
     // nodes, rather than blocking on reading output from one node.
     val targetRequestSize = math.max(maxBytesInFlight / 5, 1L)
     logDebug(
-      "maxBytesInFlight: " + maxBytesInFlight + ", targetRequestSize: " + targetRequestSize)
+      "maxBytesInFlight: " + maxBytesInFlight + ", targetRequestSize: " +
+        targetRequestSize)
 
     // Split local and remote blocks. Remote blocks are further split into FetchRequests of size
     // at most maxBytesInFlight in order to limit the amount of data in flight.
@@ -322,7 +323,8 @@ private[spark] final class ShuffleBlockFetcherIterator(
     assert(
       (0 == reqsInFlight) == (0 == bytesInFlight),
       "expected reqsInFlight = 0 but found reqsInFlight = " + reqsInFlight +
-        ", expected bytesInFlight = 0 but found bytesInFlight = " + bytesInFlight
+        ", expected bytesInFlight = 0 but found bytesInFlight = " +
+        bytesInFlight
     )
 
     // Send out initial requests for blocks, up to our maxBytesInFlight
@@ -330,8 +332,8 @@ private[spark] final class ShuffleBlockFetcherIterator(
 
     val numFetches = remoteRequests.size - fetchRequests.size
     logInfo(
-      "Started " + numFetches + " remote fetches in" + Utils
-        .getUsedTimeMs(startTime))
+      "Started " + numFetches + " remote fetches in" +
+        Utils.getUsedTimeMs(startTime))
 
     // Get Local Blocks
     fetchLocalBlocks()
@@ -392,13 +394,9 @@ private[spark] final class ShuffleBlockFetcherIterator(
   private def fetchUpToMaxBytes(): Unit = {
     // Send fetch requests up to maxBytesInFlight
     while (fetchRequests.nonEmpty &&
-           (
-             bytesInFlight == 0 ||
-             (
-               reqsInFlight + 1 <= maxReqsInFlight &&
-               bytesInFlight + fetchRequests.front.size <= maxBytesInFlight
-             )
-           )) {
+           (bytesInFlight == 0 ||
+           (reqsInFlight + 1 <= maxReqsInFlight &&
+           bytesInFlight + fetchRequests.front.size <= maxBytesInFlight))) {
       sendRequest(fetchRequests.dequeue())
     }
   }

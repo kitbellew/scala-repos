@@ -208,10 +208,10 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
           while (j < order.length - 1) {
             leftRegion += dependent(order(j))
             rightRegion -= dependent(order(j))
-            val error = (
-              leftRegion.error * (j + 1) +
-                rightRegion.error * (order.length - j - 1)
-            ) / order.length
+            val error =
+              (leftRegion
+                .error * (j + 1) + rightRegion.error * (order.length - j - 1)) /
+                order.length
             if (error < minError) {
               minError = error
               minVar = axis
@@ -249,23 +249,21 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
           // We split the region directly between the left's furthest right point
           // and the right's furthest left point.
 
-          val boundary = (
-            independent(featureOrder(minIdx))(minVar) +
-              independent(featureOrder(minIdx + 1))(minVar)
-          ) / 2
+          val boundary =
+            (independent(featureOrder(minIdx))(minVar) +
+              independent(featureOrder(minIdx + 1))(minVar)) / 2
           Split(minVar, boundary, growTree(leftOrders), growTree(rightOrders))
         }
       }
     }
 
-    val orders =
-      (0 until opts.features)
-        .map { i =>
-          val order = (0 until dependent.length).toArray
-          order.qsortBy(independent(_)(i))
-          order
-        }
-        .toArray
+    val orders = (0 until opts.features)
+      .map { i =>
+        val order = (0 until dependent.length).toArray
+        order.qsortBy(independent(_)(i))
+        order
+      }
+      .toArray
     growTree(orders)
   }
 }
@@ -470,9 +468,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   trait RandomForestLib extends ColumnarTableLib {
 
     override def _libMorphism2 =
-      super._libMorphism2 ++ Set(
-        RandomForestClassification,
-        RandomForestRegression)
+      super._libMorphism2 ++
+        Set(RandomForestClassification, RandomForestRegression)
 
     object RandomForestClassification
         extends RandomForest[RValue, ClassificationForest[RValue]](
@@ -528,12 +525,11 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         var correct = 0d
         var i = 0
         while (i < actual.length) {
-          correct += (
-            if (actual(i) == predicted(i))
-              1d
-            else
-              0d
-          )
+          correct +=
+            (if (actual(i) == predicted(i))
+               1d
+             else
+               0d)
           i += 1
         }
         correct / actual.length
@@ -648,11 +644,10 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             _.toList
           }
 
-        schemas flatMap (
-          _ traverse { tpe =>
+        schemas flatMap
+          (_ traverse { tpe =>
             makeForest(table, tpe) map (tpe -> _)
-          }
-        )
+          })
       }
 
       def makeForest(
@@ -667,71 +662,75 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
           val jtype = JObjectFixedT(
             Map(independent -> tpe, dependent -> JType.JUniverseT))
-          val specs = (0 until numOfSamples) map { _ =>
-            trans.Typed(TransSpec1.Id, jtype)
-          }
-
-          table.sample(sampleSize, specs) map (_.toList) flatMap { samples =>
-            val trainingSamples: List[Table] =
-              (samples take numTrainingSamples).toList
-            val validationSamples: List[Table] =
-              (samples drop numTrainingSamples).toList
-
-            def withData[B](table: Table)(
-                f: (Array[A], Array[Array[Double]]) => B): M[B] = {
-              val indepTable = table.transform(independentSpec).toArray[Double]
-              val depTable = table.transform(dependentSpec)
-
-              for {
-                features <- makeArrays(indepTable)
-                prediction <- extractDependent(depTable)
-              } yield f(prediction, features)
+          val specs =
+            (0 until numOfSamples) map { _ =>
+              trans.Typed(TransSpec1.Id, jtype)
             }
 
-            val treesM: M[List[DecisionTree[A]]] = trainingSamples traverse {
-              table =>
-                withData(table)(makeTree)
-            }
+          table.sample(sampleSize, specs) map
+            (_.toList) flatMap { samples =>
+              val trainingSamples: List[Table] =
+                (samples take numTrainingSamples).toList
+              val validationSamples: List[Table] =
+                (samples drop numTrainingSamples).toList
 
-            def variance(values: List[Double]): Double = {
-              val mean = meanSeq(values)
-              val sumSq =
-                values.foldLeft(0d) { (acc, x) =>
-                  val dx = x - mean
-                  acc + dx * dx
-                }
-              sumSq / (values.length - 1)
-            }
+              def withData[B](table: Table)(
+                  f: (Array[A], Array[Array[Double]]) => B): M[B] = {
+                val indepTable = table
+                  .transform(independentSpec)
+                  .toArray[Double]
+                val depTable = table.transform(dependentSpec)
 
-            treesM flatMap { trees =>
-              val forests: List[F] =
-                (1 to numChunks)
+                for {
+                  features <- makeArrays(indepTable)
+                  prediction <- extractDependent(depTable)
+                } yield f(prediction, features)
+              }
+
+              val treesM: M[List[DecisionTree[A]]] = trainingSamples traverse {
+                table =>
+                  withData(table)(makeTree)
+              }
+
+              def variance(values: List[Double]): Double = {
+                val mean = meanSeq(values)
+                val sumSq =
+                  values.foldLeft(0d) { (acc, x) =>
+                    val dx = x - mean
+                    acc + dx * dx
+                  }
+                sumSq / (values.length - 1)
+              }
+
+              treesM flatMap { trees =>
+                val forests: List[F] = (1 to numChunks)
                   .foldLeft(Nil: List[F]) { (acc, i) =>
                     (forest(trees take (i * chunkSize)) |+| prev) :: acc
                   }
                   .reverse
 
-              val errors: M[List[Double]] =
-                (forests zip validationSamples) traverse {
-                  case (forest, table) =>
-                    withData(table) { (actual, features) =>
-                      val predicted =
-                        features map (forest.predict) // TODO: Unbox me!
-                      val error = findError(actual, predicted)
-                      error
-                    }
-                }
+                val errors: M[List[Double]] =
+                  (forests zip validationSamples) traverse {
+                    case (forest, table) =>
+                      withData(table) { (actual, features) =>
+                        val predicted = features map
+                          (forest.predict) // TODO: Unbox me!
+                        val error = findError(actual, predicted)
+                        error
+                      }
+                  }
 
-              errors map (variance) flatMap { s2 =>
-                val forest = forests.last
-                if (s2 < varianceThreshold) {
-                  M.point(forest)
-                } else {
-                  makeForest(table, tpe, forest)
-                }
+                errors map
+                  (variance) flatMap { s2 =>
+                    val forest = forests.last
+                    if (s2 < varianceThreshold) {
+                      M.point(forest)
+                    } else {
+                      makeForest(table, tpe, forest)
+                    }
+                  }
               }
             }
-          }
         }
       }
 

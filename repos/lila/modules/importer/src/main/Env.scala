@@ -18,8 +18,9 @@ final class Env(
 
 object Env {
 
-  lazy val current = "importer" boot new Env(
-    config = lila.common.PlayApp loadConfig "importer",
-    scheduler = lila.common.PlayApp.system.scheduler,
-    roundMap = lila.round.Env.current.roundMap)
+  lazy val current = "importer" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "importer",
+      scheduler = lila.common.PlayApp.system.scheduler,
+      roundMap = lila.round.Env.current.roundMap)
 }

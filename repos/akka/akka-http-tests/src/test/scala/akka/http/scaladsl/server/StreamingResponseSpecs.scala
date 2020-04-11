@@ -25,10 +25,11 @@ class StreamingResponseSpecs extends RoutingSpec {
       val response = HttpResponse(status = StatusCodes.OK, entity = entity)
       val route = complete(response)
 
-      Get() ~> route ~> check {
-        status should ===(StatusCodes.OK)
-        responseAs[String] should ===("")
-      }
+      Get() ~> route ~>
+        check {
+          status should ===(StatusCodes.OK)
+          responseAs[String] should ===("")
+        }
     }
 
   }

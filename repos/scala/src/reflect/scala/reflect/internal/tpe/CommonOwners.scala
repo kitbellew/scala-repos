@@ -42,9 +42,8 @@ private[internal] trait CommonOwners {
       if ((result eq null) || (sym eq NoSymbol))
         result = sym
       else
-        while ((result ne NoSymbol) && (result ne sym) && !(
-                 sym isNestedIn result
-               ))
+        while ((result ne NoSymbol) &&
+               (result ne sym) && !(sym isNestedIn result))
           result = result.owner
     }
     def traverse(tp: Type) =

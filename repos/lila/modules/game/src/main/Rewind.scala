@@ -41,8 +41,8 @@ object Rewind {
             else
               None
         ),
-        binaryMoveTimes = BinaryFormat
-          .moveTime write (game.moveTimes take rewindedGame.turns),
+        binaryMoveTimes = BinaryFormat.moveTime write
+          (game.moveTimes take rewindedGame.turns),
         crazyData = rewindedSituation.board.crazyData,
         status = game.status,
         clock = game.clock map (_.takeback)

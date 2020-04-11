@@ -107,12 +107,13 @@ case class Streak(v: Int, from: Option[RatingAt], to: Option[RatingAt]) {
   private def inc(pov: Pov, by: Int) =
     copy(
       v = v + by,
-      from = from orElse pov
-        .player
-        .rating
-        .map {
-          RatingAt(_, pov.game.createdAt, pov.gameId)
-        },
+      from = from orElse
+        pov
+          .player
+          .rating
+          .map {
+            RatingAt(_, pov.game.createdAt, pov.gameId)
+          },
       to = pov
         .player
         .ratingAfter
@@ -148,14 +149,13 @@ case class Count(
       tour = tour + pov.game.isTournament.fold(1, 0),
       berserk = berserk + pov.player.berserk.fold(1, 0),
       opAvg = pov.opponent.stableRating.fold(opAvg)(opAvg.agg),
-      seconds = seconds + (
-        pov.game.durationSeconds match {
+      seconds = seconds +
+        (pov.game.durationSeconds match {
           case s if s > 3 * 60 * 60 =>
             0
           case s =>
             s
-        }
-      ),
+        }),
       disconnects = disconnects + {
         ~pov.loss && pov.game.status == chess.Status.Timeout
       }.fold(1, 0)
@@ -204,13 +204,14 @@ case class Results(results: List[Result]) {
       .rating
       .ifTrue(pov.game.rated)
       .fold(this) { opInt =>
-        copy(results = (
-          Result(
-            opInt,
-            UserId(~pov.opponent.userId),
-            pov.game.updatedAtOrCreatedAt,
-            pov.game.id) :: results
-        ).sortBy(_.opInt * comp) take Results.nb)
+        copy(results =
+          (
+            Result(
+              opInt,
+              UserId(~pov.opponent.userId),
+              pov.game.updatedAtOrCreatedAt,
+              pov.game.id) :: results
+          ).sortBy(_.opInt * comp) take Results.nb)
       }
 }
 object Results {

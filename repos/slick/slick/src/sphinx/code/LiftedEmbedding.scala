@@ -140,11 +140,13 @@ object LiftedEmbedding extends App {
   def usersForInsert =
     users.map(u =>
       (u.first, u.last).shaped <>
-        ({ t =>
-          User(None, t._1, t._2)
-        }, { (u: User) =>
-          Some((u.first, u.last))
-        }))
+        (
+          { t =>
+            User(None, t._1, t._2)
+          },
+          { (u: User) =>
+            Some((u.first, u.last))
+          }))
 //#insert2
 
 //#index
@@ -301,13 +303,12 @@ object LiftedEmbedding extends App {
         //
         val q = coffees filter { coffee =>
           // You can do any subquery here - this example uses the foreign key relation in coffees.
-          coffee.supID in (
-            coffee.supplier filter {
+          coffee.supID in
+            (coffee.supplier filter {
               _.name === "Delete Me"
             } map {
               _.id
-            }
-          )
+            })
         }
         val action = q.delete
         val affectedRowsCount: Future[Int] = db.run(action)
@@ -342,13 +343,11 @@ object LiftedEmbedding extends App {
       //#insert1
       val insertActions = DBIO.seq(
         coffees += ("Colombian", 101, 7.99, 0, 0),
-        coffees ++= Seq(
-          ("French_Roast", 49, 8.99, 0, 0),
-          ("Espresso", 150, 9.99, 0, 0)),
+        coffees ++=
+          Seq(("French_Roast", 49, 8.99, 0, 0), ("Espresso", 150, 9.99, 0, 0)),
         // "sales" and "total" will use the default value 0:
-        coffees.map(c => (c.name, c.supID, c.price)) += (
-          "Colombian_Decaf", 101, 8.99
-        )
+        coffees.map(c => (c.name, c.supID, c.price)) +=
+          ("Colombian_Decaf", 101, 8.99)
       )
 
       // Get the statement without having to specify a value to insert:
@@ -363,10 +362,11 @@ object LiftedEmbedding extends App {
         db.run(
           DBIO.seq(
             (
-              suppliers ++= Seq(
-                (101, "", "", "", "", ""),
-                (49, "", "", "", "", ""),
-                (150, "", "", "", "", ""))
+              suppliers ++=
+                Seq(
+                  (101, "", "", "", "", ""),
+                  (49, "", "", "", "", ""),
+                  (150, "", "", "", "", ""))
             ),
             insertActions)),
         Duration.Inf)
@@ -379,10 +379,9 @@ object LiftedEmbedding extends App {
 
       //#insert3b
       val userWithId =
-        (
-          users returning users.map(_.id)
-            into ((user, id) => user.copy(id = Some(id)))
-        ) += User(None, "Stefan", "Zeiger")
+        (users returning users.map(_.id) into
+          ((user, id) => user.copy(id = Some(id)))) +=
+          User(None, "Stefan", "Zeiger")
       //#insert3b
       val userWithIdRes = Await
         .result(db.run(users.schema.create >> userWithId), Duration.Inf)
@@ -398,11 +397,10 @@ object LiftedEmbedding extends App {
 
       val actions = DBIO.seq(
         users2.schema.create,
-        users2 forceInsertQuery (
-          users.map { u =>
+        users2 forceInsertQuery
+          (users.map { u =>
             (u.id, u.first ++ " " ++ u.last)
-          }
-        ),
+          }),
         users2 forceInsertExpr (users.length + 1, "admin"))
       //#insert4
       Await.result(db.run(actions), Duration.Inf)
@@ -520,11 +518,12 @@ object LiftedEmbedding extends App {
             db.run(
               salesPerDay.schema.create >>
                 (salesPerDay += ((new Date(999999999), 999))) >> {
-                //#simpleliteral
-                val current_date = SimpleLiteral[java.sql.Date]("CURRENT_DATE")
-                salesPerDay.map(_ => current_date)
-                //#simpleliteral
-              }.result.head),
+                  //#simpleliteral
+                  val current_date = SimpleLiteral[java.sql.Date](
+                    "CURRENT_DATE")
+                  salesPerDay.map(_ => current_date)
+                  //#simpleliteral
+                }.result.head),
             Duration.Inf
           )
           .isInstanceOf[java.sql.Date]
@@ -631,8 +630,8 @@ object LiftedEmbedding extends App {
       assert(
         Await.result(
           db.run(as.schema.create >> insertAction >> q2.result),
-          Duration
-            .Inf) == Vector(Pair(3, Pair(42, "bb")), Pair(2, Pair(42, "cc"))))
+          Duration.Inf) ==
+          Vector(Pair(3, Pair(42, "bb")), Pair(2, Pair(42, "cc"))))
 
       //#case-class-shape
       // two custom case class variants
@@ -720,9 +719,8 @@ object LiftedEmbedding extends App {
       assert(
         Await.result(
           db.run(cs.schema.create >> insertActions2 >> q4.result),
-          Duration.Inf) == Vector(
-          C(Pair(9, "z"), B(3, "bb")),
-          C(Pair(8, "y"), B(2, "cc"))))
+          Duration.Inf) ==
+          Vector(C(Pair(9, "z"), B(3, "bb")), C(Pair(8, "y"), B(2, "cc"))))
 
       ()
     }

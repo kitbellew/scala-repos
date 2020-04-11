@@ -43,9 +43,8 @@ object scalap extends Command {
       "Scala compiler, and displays object and class definitions.",
     "By default, " & MBold(command) & " looks for the given class file " &
       "in the current directory. You can specify a separate classpath with " &
-      CmdOption("classpath") & "(see " & Link(
-      Bold("OPTIONS"),
-      "#options") & ", below)."
+      CmdOption("classpath") & "(see " & Link(Bold("OPTIONS"), "#options") &
+      ", below)."
   )
 
   val options = Section(

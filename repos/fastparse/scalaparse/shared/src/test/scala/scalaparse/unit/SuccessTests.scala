@@ -46,8 +46,9 @@ object SuccessTests extends TestSuite {
         |}
         |
       """.stripMargin)
-      * - check(
-        """class ScProjectionType (val x: Boolean /* todo*/)""".stripMargin)
+      * -
+        check(
+          """class ScProjectionType (val x: Boolean /* todo*/)""".stripMargin)
       * - check("""
         |class Baz {
         |    ba /*caret*/r
@@ -268,8 +269,9 @@ object SuccessTests extends TestSuite {
         |}
       """.stripMargin)
 
-      * - check(
-        """/*                     __                                               *\
+      * -
+        check(
+          """/*                     __                                               *\
         |**     ________ ___   / /  ___      __ ____  Scala.js CLI               **
         |**    / __/ __// _ | / /  / _ | __ / // __/  (c) 2013-2014, LAMP/EPFL   **
         |**  __\ \/ /__/ __ |/ /__/ __ |/_// /_\ \    http://scala-js.org/       **
@@ -625,8 +627,9 @@ object SuccessTests extends TestSuite {
         |  s"${info.resourceName}"
         |}
       """.stripMargin)
-      * - check(
-        """object CyclicDependencyException {
+      * -
+        check(
+          """object CyclicDependencyException {
         |    def str(info: ResolutionInfo) =
         |      s"${info.resourceName} from: ${info.origins.mkString(", ")}"
         |}
@@ -656,8 +659,9 @@ object SuccessTests extends TestSuite {
         |  type T = ClassPath[AbstractFile]#ClassRep
         |}
       """.stripMargin)
-      * - check(
-        """trait ContextErrors {
+      * -
+        check(
+          """trait ContextErrors {
         |    def isUnaffiliatedExpr = expanded.isInstanceOf[scala.reflect.api.Exprs#Expr[_]]
         |}
       """.stripMargin)
@@ -675,8 +679,9 @@ object SuccessTests extends TestSuite {
         |  type T
         |}
       """.stripMargin)
-      * - check(
-        """
+      * -
+        check(
+          """
         object StringContext {
 
           s"${
@@ -708,8 +713,9 @@ object SuccessTests extends TestSuite {
         |  new ({val x = 1})
         |}
       """.stripMargin)
-      * - check(
-        """import java.util.concurrent.TimeUnit.{ NANOSECONDS => NANOS, MILLISECONDS ⇒ MILLIS }
+      * -
+        check(
+          """import java.util.concurrent.TimeUnit.{ NANOSECONDS => NANOS, MILLISECONDS ⇒ MILLIS }
       """.stripMargin)
       * - check("""class FunFinder{
         |  val targetName = s"$name${ if (isModule) "$" else "" }"
@@ -768,8 +774,9 @@ object SuccessTests extends TestSuite {
 //            |}
 //          """.stripMargin
 //        )
-      * - check(
-        """abstract class Mix___eFoo___wBar_I_ extends Foo___ with Bar_I_    { ; ; f; }
+      * -
+        check(
+          """abstract class Mix___eFoo___wBar_I_ extends Foo___ with Bar_I_    { ; ; f; }
       """.stripMargin)
       * - check("""package test2 {
         |object N1M0;
@@ -844,8 +851,9 @@ object SuccessTests extends TestSuite {
         |    } yield ver
         |}
       """.stripMargin)
-      * - check(
-        """class FunctionalBuilder{
+      * -
+        check(
+          """class FunctionalBuilder{
           |  a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a1, a2), a3), a4), a5), a6), a7), a8), a9), a10), a11), a12), a13), a14), a15), a16), a17), a18), a19), a20), a21), a22)
           |}
         """.stripMargin)
@@ -862,8 +870,9 @@ object SuccessTests extends TestSuite {
         |}
         |
       """.stripMargin)
-      * - check(
-        """object Publish {
+      * -
+        check(
+          """object Publish {
         |  val x =
         |    <inceptionYear>2009</inceptionYear>
         |
@@ -879,8 +888,9 @@ object SuccessTests extends TestSuite {
         |    <foo baz="&amp;dog"/>
         |}
       """.stripMargin)
-      * - check(
-        """object X{
+      * -
+        check(
+          """object X{
         |   pomExtra :=
         |      <url>https://github.com/lihaoyi/scalatags</url>
         |        <licenses>
@@ -925,8 +935,9 @@ object SuccessTests extends TestSuite {
         |  {x: Int => 1}
         |}
       """.stripMargin)
-      * - check( // This should parse as a postfix call
-        """object Foo{
+      * -
+        check( // This should parse as a postfix call
+          """object Foo{
         |  x_!toString
         |}
       """.stripMargin)

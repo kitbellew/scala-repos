@@ -122,8 +122,8 @@ case class SegmentsWrapper(
   private def buildMap(segments: Seq[Segment]): Map[ColumnRef, Column] =
     segments.map(seg => (buildColumnRef(seg), buildColumn(seg))).toMap
 
-  private val cols: Map[ColumnRef, Column] = buildMap(
-    segments) + buildKeyColumn(segments.headOption map (_.length) getOrElse 0)
+  private val cols: Map[ColumnRef, Column] = buildMap(segments) +
+    buildKeyColumn(segments.headOption map (_.length) getOrElse 0)
 
   val size: Int = {
     val sz = segments.foldLeft(0)(_ max _.length)

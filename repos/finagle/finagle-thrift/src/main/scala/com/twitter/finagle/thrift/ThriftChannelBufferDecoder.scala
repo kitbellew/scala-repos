@@ -12,9 +12,9 @@ private[thrift] class ThriftChannelBufferDecoder extends OneToOneDecoder {
   def decode(ctx: ChannelHandlerContext, ch: Channel, message: Object) = {
     message match {
       case buffer: ChannelBuffer
-          if buffer.hasArray
-            && buffer.arrayOffset == 0 && buffer.readerIndex == 0
-            && buffer.readableBytes == buffer.array().length =>
+          if buffer.hasArray && buffer.arrayOffset == 0 &&
+            buffer.readerIndex == 0 &&
+            buffer.readableBytes == buffer.array().length =>
         buffer.array()
       case buffer: ChannelBuffer =>
         val arr = new Array[Byte](buffer.readableBytes)

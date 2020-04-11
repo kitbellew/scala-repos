@@ -31,15 +31,14 @@ object Test extends App {
 
   def testAllReachable() {
     val i = util.Random.nextInt
-    val y =
-      (i % 2) match {
-        case 0 =>
-          "good"
-        case 1 =>
-          "good"
-        case _ =>
-          "good"
-      }
+    val y = (i % 2) match {
+      case 0 =>
+        "good"
+      case 1 =>
+        "good"
+      case _ =>
+        "good"
+    }
     println(s"testAllReachable: $y")
   }
 

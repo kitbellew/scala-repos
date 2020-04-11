@@ -37,12 +37,9 @@ object ContentP {
     @tailrec
     def subparse() {
       var isReturn = false
-      if (!CDSect.parse(builder) &&
-          !Comment.parse(builder) &&
-          !PI.parse(builder) &&
-          !Reference.parse(builder) &&
-          !ScalaPatterns.parse(builder) &&
-          !XmlPattern.parse(builder))
+      if (!CDSect.parse(builder) && !Comment.parse(builder) &&
+          !PI.parse(builder) && !Reference.parse(builder) &&
+          !ScalaPatterns.parse(builder) && !XmlPattern.parse(builder))
         isReturn = true
       builder.getTokenType match {
         case ScalaXmlTokenTypes.XML_DATA_CHARACTERS =>

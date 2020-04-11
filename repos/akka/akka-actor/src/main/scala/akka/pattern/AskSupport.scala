@@ -818,12 +818,13 @@ private[akka] object PromiseActorRef {
     implicit val ec = a.internalCallingThreadExecutionContext
     val f =
       scheduler.scheduleOnce(timeout.duration) {
-        result tryComplete Failure(
-          new AskTimeoutException(
-            s"""Ask timed out on [$targetName] after [${timeout
-              .duration
-              .toMillis} ms]. Sender[$sender] sent message of type "${a
-              .messageClassName}"."""))
+        result tryComplete
+          Failure(
+            new AskTimeoutException(
+              s"""Ask timed out on [$targetName] after [${timeout
+                .duration
+                .toMillis} ms]. Sender[$sender] sent message of type "${a
+                .messageClassName}"."""))
       }
     result.future onComplete { _ ⇒
       try a.stop()

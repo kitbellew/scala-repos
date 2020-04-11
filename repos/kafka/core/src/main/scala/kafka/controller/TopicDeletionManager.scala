@@ -79,14 +79,13 @@ class TopicDeletionManager(
     initialTopicsToBeDeleted: Set[String] = Set.empty,
     initialTopicsIneligibleForDeletion: Set[String] = Set.empty)
     extends Logging {
-  this
-    .logIdent = "[Topic Deletion Manager " + controller.config.brokerId + "], "
+  this.logIdent = "[Topic Deletion Manager " + controller.config.brokerId +
+    "], "
   val controllerContext = controller.controllerContext
   val partitionStateMachine = controller.partitionStateMachine
   val replicaStateMachine = controller.replicaStateMachine
-  val topicsToBeDeleted: mutable.Set[String] = mutable
-    .Set
-    .empty[String] ++ initialTopicsToBeDeleted
+  val topicsToBeDeleted: mutable.Set[String] = mutable.Set.empty[String] ++
+    initialTopicsToBeDeleted
   val partitionsToBeDeleted: mutable.Set[TopicAndPartition] = topicsToBeDeleted
     .flatMap(controllerContext.partitionsForTopic)
   val deleteLock = new ReentrantLock()
@@ -136,8 +135,8 @@ class TopicDeletionManager(
   def enqueueTopicsForDeletion(topics: Set[String]) {
     if (isDeleteTopicEnabled) {
       topicsToBeDeleted ++= topics
-      partitionsToBeDeleted ++= topics
-        .flatMap(controllerContext.partitionsForTopic)
+      partitionsToBeDeleted ++=
+        topics.flatMap(controllerContext.partitionsForTopic)
       resumeTopicDeletionThread()
     }
   }
@@ -242,8 +241,8 @@ class TopicDeletionManager(
     */
   private def awaitTopicDeletionNotification() {
     inLock(deleteLock) {
-      while (deleteTopicsThread.isRunning.get() && !deleteTopicStateChanged
-               .compareAndSet(true, false)) {
+      while (deleteTopicsThread.isRunning.get() &&
+             !deleteTopicStateChanged.compareAndSet(true, false)) {
         debug("Waiting for signal to start or continue topic deletion")
         deleteTopicsCond.await()
       }
@@ -289,9 +288,8 @@ class TopicDeletionManager(
     * @return Whether or not deletion can be retried for the topic
     */
   private def isTopicEligibleForDeletion(topic: String): Boolean = {
-    topicsToBeDeleted.contains(topic) && (
-      !isTopicDeletionInProgress(topic) && !isTopicIneligibleForDeletion(topic)
-    )
+    topicsToBeDeleted.contains(topic) &&
+    (!isTopicDeletionInProgress(topic) && !isTopicIneligibleForDeletion(topic))
   }
 
   /**
@@ -387,13 +385,13 @@ class TopicDeletionManager(
           var aliveReplicasForTopic = controllerContext
             .allLiveReplicas()
             .filter(p => p.topic.equals(topic))
-          val deadReplicasForTopic =
-            replicasForTopicsToBeDeleted -- aliveReplicasForTopic
+          val deadReplicasForTopic = replicasForTopicsToBeDeleted --
+            aliveReplicasForTopic
           val successfullyDeletedReplicas = controller
             .replicaStateMachine
             .replicasInState(topic, ReplicaDeletionSuccessful)
-          val replicasForDeletionRetry =
-            aliveReplicasForTopic -- successfullyDeletedReplicas
+          val replicasForDeletionRetry = aliveReplicasForTopic --
+            successfullyDeletedReplicas
           // move dead replicas directly to failed state
           replicaStateMachine
             .handleStateChanges(deadReplicasForTopic, ReplicaDeletionIneligible)
@@ -490,8 +488,8 @@ class TopicDeletionManager(
 
         if (!topicsQueuedForDeletion.isEmpty)
           info(
-            "Handling deletion for topics " + topicsQueuedForDeletion
-              .mkString(","))
+            "Handling deletion for topics " +
+              topicsQueuedForDeletion.mkString(","))
 
         topicsQueuedForDeletion.foreach { topic =>
           // if all replicas are marked as deleted successfully, then topic deletion is done

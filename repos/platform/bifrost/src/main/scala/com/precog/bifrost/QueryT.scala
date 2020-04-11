@@ -156,9 +156,10 @@ trait QueryTHoist[Q[+_]]
     new (
       ({
         type λ[α] = QueryT[Q, M, α]
-      })#λ ~> ({
-        type λ[α] = QueryT[Q, N, α]
-      })#λ
+      })#λ ~>
+        ({
+          type λ[α] = QueryT[Q, N, α]
+        })#λ
     ) {
       def apply[A](ma: QueryT[Q, M, A]): QueryT[Q, N, A] = QueryT(f(ma.run))
     }

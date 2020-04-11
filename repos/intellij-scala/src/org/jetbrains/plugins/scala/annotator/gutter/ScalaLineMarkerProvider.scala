@@ -162,8 +162,8 @@ class ScalaLineMarkerProvider(
                 return null
             }
           for (z <- bindings)
-            signatures ++= ScalaPsiUtil
-              .superValsSignatures(z, withSelfType = true)
+            signatures ++=
+              ScalaPsiUtil.superValsSignatures(z, withSelfType = true)
           val icon =
             if (GutterUtil.isOverrides(x, signatures))
               OVERRIDING_METHOD_ICON
@@ -308,9 +308,8 @@ private object GutterUtil {
       members: ArrayBuffer[PsiElement],
       result: util.Collection[LineMarkerInfo[_ <: PsiElement]]) {
     for (member <- members
-         if !member.isInstanceOf[PsiMethod] || !member
-           .asInstanceOf[PsiMethod]
-           .isConstructor) {
+         if !member.isInstanceOf[PsiMethod] ||
+           !member.asInstanceOf[PsiMethod].isConstructor) {
       ProgressManager.checkCanceled()
       val offset = member.getTextOffset
       val members =
@@ -326,8 +325,9 @@ private object GutterUtil {
         }
       val overrides = new ArrayBuffer[PsiNamedElement]
       for (member <- members)
-        overrides ++= ScalaOverridingMemberSearcher
-          .search(member, deep = false, withSelfType = true)
+        overrides ++=
+          ScalaOverridingMemberSearcher
+            .search(member, deep = false, withSelfType = true)
       if (overrides.nonEmpty) {
         val icon =
           if (!GutterUtil.isAbstract(member))

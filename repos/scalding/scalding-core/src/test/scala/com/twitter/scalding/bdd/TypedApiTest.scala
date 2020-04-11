@@ -30,8 +30,8 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
           }
         }
       } Then { buffer: mutable.Buffer[(String, Double)] =>
-        buffer
-          .toList shouldBe List(("Joe", 1000.0 / 32), ("Sarah", 1000.0 / 58))
+        buffer.toList shouldBe
+          List(("Joe", 1000.0 / 32), ("Sarah", 1000.0 / 58))
       }
     }
 
@@ -48,9 +48,10 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
           }
         }
       } Then { buffer: mutable.Buffer[EstimatedContribution] =>
-        buffer.toList shouldBe List(
-          EstimatedContribution("Joe", 1000.0 / 32),
-          EstimatedContribution("Sarah", 1000.0 / 58))
+        buffer.toList shouldBe
+          List(
+            EstimatedContribution("Joe", 1000.0 / 32),
+            EstimatedContribution("Sarah", 1000.0 / 58))
       }
     }
   }
@@ -93,9 +94,8 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
             }
             .values
       } Then { buffer: mutable.Buffer[UserInfo] =>
-        buffer.toList shouldBe List(
-          UserInfo("Joe", "M", 40),
-          UserInfo("Sarah", "F", 22))
+        buffer.toList shouldBe
+          List(UserInfo("Joe", "M", 40), UserInfo("Sarah", "F", 22))
       }
     }
   }
@@ -119,9 +119,8 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
           }
           .values
       } Then { buffer: mutable.Buffer[UserInfo] =>
-        buffer.toList shouldBe List(
-          UserInfo("Joe", "M", 40),
-          UserInfo("Sarah", "F", 22))
+        buffer.toList shouldBe
+          List(UserInfo("Joe", "M", 40), UserInfo("Sarah", "F", 22))
       }
     }
 
@@ -144,9 +143,8 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
             }
             .values
         } Then { buffer: mutable.Buffer[UserInfo] =>
-          buffer.toList shouldBe List(
-            UserInfo("Joe", "M", 40),
-            UserInfo("Sarah", "F", 22))
+          buffer.toList shouldBe
+            List(UserInfo("Joe", "M", 40), UserInfo("Sarah", "F", 22))
         }
       }
     }
@@ -201,9 +199,10 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
           }
           .values
       } Then { buffer: mutable.Buffer[EstimatedContribution] =>
-        buffer.toList shouldBe List(
-          EstimatedContribution("Joe", 35.0),
-          EstimatedContribution("Sarah", 13.0))
+        buffer.toList shouldBe
+          List(
+            EstimatedContribution("Joe", 35.0),
+            EstimatedContribution("Sarah", 13.0))
       }
     }
   }

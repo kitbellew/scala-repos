@@ -28,14 +28,15 @@ final class DataForm(
       metadata: TransMetadata,
       data: Map[String, String],
       user: String): Funit = {
-    val messages = (
-      data mapValues { msg =>
-        msg.some map sanitize filter (_.nonEmpty)
+    val messages =
+      (
+        data mapValues { msg =>
+          msg.some map sanitize filter (_.nonEmpty)
+        }
+      ).toList collect {
+        case (key, Some(value)) =>
+          key -> value
       }
-    ).toList collect {
-      case (key, Some(value)) =>
-        key -> value
-    }
     messages.nonEmpty ?? TranslationRepo.nextId flatMap { id =>
       val sorted =
         (

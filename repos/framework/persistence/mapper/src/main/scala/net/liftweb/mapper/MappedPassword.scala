@@ -124,8 +124,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         invalidPw = false;
         val bcrypted = BCrypt.hashpw(
           value,
-          MappedPassword.bcryptStrength.map(BCrypt.gensalt(_)) openOr BCrypt
-            .gensalt())
+          MappedPassword.bcryptStrength.map(BCrypt.gensalt(_)) openOr
+            BCrypt.gensalt())
         password.set("b;" + bcrypted.substring(0, 44))
         salt_i.set(bcrypted.substring(44))
       case _ =>
@@ -189,8 +189,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
   def real_convertToJDBCFriendly(value: String): Object =
     BCrypt.hashpw(
       value,
-      MappedPassword.bcryptStrength.map(BCrypt.gensalt(_)) openOr BCrypt
-        .gensalt())
+      MappedPassword.bcryptStrength.map(BCrypt.gensalt(_)) openOr
+        BCrypt.gensalt())
 
   /**
     * Get the JDBC SQL Type for this field
@@ -371,10 +371,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
     * Given the driver type, return the string required to create the column in the database
     */
   def fieldCreatorString(dbType: DriverType, colName: String): String =
-    (
-      if (colName.endsWith("_pw"))
-        colName + " VARCHAR(48)"
-      else
-        colName + " VARCHAR(20)"
-    ) + notNullAppender()
+    (if (colName.endsWith("_pw"))
+       colName + " VARCHAR(48)"
+     else
+       colName + " VARCHAR(20)") + notNullAppender()
 }

@@ -36,9 +36,8 @@ object ScroogeOrderedBuf {
 
     val pf: PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
       case tpe
-          if tpe <:< typeOf[ThriftStruct] && !(
-            tpe =:= typeOf[ThriftStruct]
-          ) && !(tpe <:< typeOf[ThriftUnion]) =>
+          if tpe <:< typeOf[ThriftStruct] && !(tpe =:= typeOf[ThriftStruct]) &&
+            !(tpe <:< typeOf[ThriftUnion]) =>
         ScroogeOrderedBuf(c)(buildDispatcher, tpe)
     }
     pf

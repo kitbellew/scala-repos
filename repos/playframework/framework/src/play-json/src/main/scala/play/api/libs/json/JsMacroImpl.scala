@@ -62,18 +62,14 @@ object JsMacroImpl {
     // Helper function to create parameter lists for function invocations based on whether this is a reads,
     // writes or both.
     def conditionalList[T](ifReads: T, ifWrites: T): List[T] =
-      (
-        if (reads)
-          List(ifReads)
-        else
-          Nil
-      ) :::
-        (
-          if (writes)
-            List(ifWrites)
-          else
-            Nil
-        )
+      (if (reads)
+         List(ifReads)
+       else
+         Nil) :::
+        (if (writes)
+           List(ifWrites)
+         else
+           Nil)
 
     import c.universe._
 
@@ -177,10 +173,8 @@ object JsMacroImpl {
           } =>
         apply
       case (apply: MethodSymbol)
-          if apply
-            .paramLists
-            .headOption
-            .map(_.map(_.asTerm.typeSignature)) == unapplyReturnTypes =>
+          if apply.paramLists.headOption.map(_.map(_.asTerm.typeSignature)) ==
+            unapplyReturnTypes =>
         apply
     }
 
@@ -209,8 +203,8 @@ object JsMacroImpl {
             val isRec = args.exists(_.typeSymbol == companioned)
             // Option[_] needs special treatment because we need to use XXXOpt
             val tp =
-              if (implType.typeConstructor <:< typeOf[Option[_]]
-                    .typeConstructor)
+              if (implType.typeConstructor <:<
+                    typeOf[Option[_]].typeConstructor)
                 args.head
               else
                 implType
@@ -285,8 +279,8 @@ object JsMacroImpl {
                   readsWritesHelper("set")
                 else if (tpe.typeConstructor <:< typeOf[Seq[_]].typeConstructor)
                   readsWritesHelper("seq")
-                else if (tpe.typeConstructor <:< typeOf[Map[_, _]]
-                           .typeConstructor)
+                else if (tpe.typeConstructor <:<
+                           typeOf[Map[_, _]].typeConstructor)
                   readsWritesHelper("map")
                 else
                   List(q"this.lazyStuff")

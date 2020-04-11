@@ -25,8 +25,8 @@ class ScalaExpressionTypeMacro extends Macro {
   override def getName: String = MacroUtil.scalaIdPrefix + "expressionType"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
-      .message("macro.expression.type")
+    MacroUtil.scalaPresentablePrefix +
+      CodeInsightBundle.message("macro.expression.type")
 
   override def isAcceptableInContext(context: TemplateContextType): Boolean =
     context.isInstanceOf[ScalaCodeContextType]

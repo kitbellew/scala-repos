@@ -151,27 +151,22 @@ trait IndicesSpec[M[+_]]
       TableIndex.createFromTable(table, keySpecs, valSpec).copoint
 
     "determine unique groupkey values" in {
-      index.getUniqueKeys(0) must_== Set(
-        CLong(1),
-        CLong(2),
-        CLong(3),
-        CString("foo"))
-      index.getUniqueKeys(1) must_== Set(
-        CLong(2),
-        CLong(999),
-        CString("bar"),
-        CString(""))
+      index.getUniqueKeys(0) must_==
+        Set(CLong(1), CLong(2), CLong(3), CString("foo"))
+      index.getUniqueKeys(1) must_==
+        Set(CLong(2), CLong(999), CString("bar"), CString(""))
     }
 
     "determine unique groupkey sets" in {
-      index.getUniqueKeys() must_== Set[Seq[RValue]](
-        Array(CLong(1), CLong(2)),
-        Array(CLong(2), CLong(2)),
-        Array(CString("foo"), CString("bar")),
-        Array(CLong(3), CString("")),
-        Array(CLong(3), CLong(2)),
-        Array(CString("foo"), CLong(999))
-      )
+      index.getUniqueKeys() must_==
+        Set[Seq[RValue]](
+          Array(CLong(1), CLong(2)),
+          Array(CLong(2), CLong(2)),
+          Array(CString("foo"), CString("bar")),
+          Array(CLong(3), CString("")),
+          Array(CLong(3), CLong(2)),
+          Array(CString("foo"), CLong(999))
+        )
     }
 
     def subtableSet(

@@ -253,13 +253,11 @@ class ErrorFormatter(
     traces
       .map(formatTrace(_, position.index))
       .mkString(
-        traces.size + " rule" + (
-          if (traces.size != 1)
-            "s"
-          else
-            ""
-        ) +
-          " mismatched at error location:\n  ",
+        traces.size + " rule" +
+          (if (traces.size != 1)
+             "s"
+           else
+             "") + " mismatched at error location:\n  ",
         "\n  ",
         "\n")
   }

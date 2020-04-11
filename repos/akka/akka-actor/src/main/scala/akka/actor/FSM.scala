@@ -450,12 +450,11 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
 
   final class TransformHelper(func: StateFunction) {
     def using(andThen: PartialFunction[State, State]): StateFunction =
-      func andThen (
-        andThen orElse {
+      func andThen
+        (andThen orElse {
           case x ⇒
             x
-        }
-      )
+        })
   }
 
   final def transform(func: StateFunction): TransformHelper =
@@ -477,12 +476,11 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       repeat: Boolean = false): Unit = {
     if (debugEvent)
       log.debug(
-        "setting " + (
-          if (repeat)
-            "repeating "
-          else
-            ""
-        ) + "timer '" + name + "'/" + timeout + ": " + msg)
+        "setting " +
+          (if (repeat)
+             "repeating "
+           else
+             "") + "timer '" + name + "'/" + timeout + ": " + msg)
     if (timers contains name) {
       timers(name).cancel
     }
@@ -761,8 +759,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private[akka] def makeTransition(nextState: State): Unit = {
     if (!stateFunctions.contains(nextState.stateName)) {
       terminate(
-        stay withStopReason Failure(
-          "Next state %s does not exist".format(nextState.stateName)))
+        stay withStopReason
+          Failure("Next state %s does not exist".format(nextState.stateName)))
     } else {
       nextState.replies.reverse foreach { r ⇒
         sender() ! r
@@ -916,8 +914,9 @@ trait LoggingFSM[S, D] extends FSM[S, D] {
     * The log entries are lost when this actor is restarted.
     */
   protected def getLog: IndexedSeq[LogEntry[S, D]] = {
-    val log = events zip states filter (_._1 ne null) map (x ⇒
-      LogEntry(x._2.asInstanceOf[S], x._1.stateData, x._1.event))
+    val log = events zip states filter
+      (_._1 ne null) map
+      (x ⇒ LogEntry(x._2.asInstanceOf[S], x._1.stateData, x._1.event))
     if (full) {
       IndexedSeq() ++ log.drop(pos) ++ log.take(pos)
     } else {

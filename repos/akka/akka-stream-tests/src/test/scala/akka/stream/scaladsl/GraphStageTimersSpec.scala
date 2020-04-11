@@ -205,59 +205,62 @@ class GraphStageTimersSpec extends AkkaSpec {
         }
     }
 
-    "produce scheduled ticks as expected" in assertAllStagesStopped {
-      val upstream = TestPublisher.probe[Int]()
-      val downstream = TestSubscriber.probe[Int]()
+    "produce scheduled ticks as expected" in
+      assertAllStagesStopped {
+        val upstream = TestPublisher.probe[Int]()
+        val downstream = TestSubscriber.probe[Int]()
 
-      Source
-        .fromPublisher(upstream)
-        .via(new TestStage2)
-        .runWith(Sink.fromSubscriber(downstream))
+        Source
+          .fromPublisher(upstream)
+          .via(new TestStage2)
+          .runWith(Sink.fromSubscriber(downstream))
 
-      downstream.request(5)
-      downstream.expectNext(1)
-      downstream.expectNext(2)
-      downstream.expectNext(3)
+        downstream.request(5)
+        downstream.expectNext(1)
+        downstream.expectNext(2)
+        downstream.expectNext(3)
 
-      downstream.expectNoMsg(1.second)
+        downstream.expectNoMsg(1.second)
 
-      upstream.sendComplete()
-      downstream.expectComplete()
-    }
+        upstream.sendComplete()
+        downstream.expectComplete()
+      }
 
-    "propagate error if onTimer throws an exception" in assertAllStagesStopped {
-      val exception = TE("Expected exception to the rule")
-      val upstream = TestPublisher.probe[Int]()
-      val downstream = TestSubscriber.probe[Int]()
+    "propagate error if onTimer throws an exception" in
+      assertAllStagesStopped {
+        val exception = TE("Expected exception to the rule")
+        val upstream = TestPublisher.probe[Int]()
+        val downstream = TestSubscriber.probe[Int]()
 
-      Source
-        .fromPublisher(upstream)
-        .via(
-          new SimpleLinearGraphStage[Int] {
-            override def createLogic(inheritedAttributes: Attributes) =
-              new TimerGraphStageLogic(shape) {
-                override def preStart(): Unit = scheduleOnce("tick", 100.millis)
+        Source
+          .fromPublisher(upstream)
+          .via(
+            new SimpleLinearGraphStage[Int] {
+              override def createLogic(inheritedAttributes: Attributes) =
+                new TimerGraphStageLogic(shape) {
+                  override def preStart(): Unit =
+                    scheduleOnce("tick", 100.millis)
 
-                setHandler(
-                  in,
-                  new InHandler {
-                    override def onPush() = () // Ingore
-                  })
+                  setHandler(
+                    in,
+                    new InHandler {
+                      override def onPush() = () // Ingore
+                    })
 
-                setHandler(
-                  out,
-                  new OutHandler {
-                    override def onPull(): Unit = pull(in)
-                  })
+                  setHandler(
+                    out,
+                    new OutHandler {
+                      override def onPull(): Unit = pull(in)
+                    })
 
-                override def onTimer(timerKey: Any) = throw exception
-              }
-          })
-        .runWith(Sink.fromSubscriber(downstream))
+                  override def onTimer(timerKey: Any) = throw exception
+                }
+            })
+          .runWith(Sink.fromSubscriber(downstream))
 
-      downstream.request(1)
-      downstream.expectError(exception)
-    }
+        downstream.request(1)
+        downstream.expectError(exception)
+      }
 
   }
 

@@ -56,8 +56,8 @@ trait FileStorageSpec[M[+_]] extends Specification {
   }
 
   lazy val data2: FileData[M] = {
-    val strings = "Goodbye" :: "," :: " " :: "cruel world." :: StreamT
-      .empty[M, String]
+    val strings = "Goodbye" :: "," :: " " :: "cruel world." ::
+      StreamT.empty[M, String]
     val data = strings map { s =>
       s.getBytes("UTF-8")
     }
@@ -72,10 +72,11 @@ trait FileStorageSpec[M[+_]] extends Specification {
   "File storage" should {
     "save (and load) arbitrary file" in {
       fs.save("f1", data1).copoint must not(throwA[Exception])
-      fs.load("f1").copoint must beLike {
-        case Some(FileData(Some(TEXT), data)) =>
-          encode(data).copoint must_== "Hello, world!"
-      }
+      fs.load("f1").copoint must
+        beLike {
+          case Some(FileData(Some(TEXT), data)) =>
+            encode(data).copoint must_== "Hello, world!"
+        }
     }
 
     "allow files to be overwritten" in {
@@ -86,10 +87,11 @@ trait FileStorageSpec[M[+_]] extends Specification {
           file <- fs.load("f2")
         } yield file
 
-      file.copoint must beLike {
-        case Some(FileData(Some(HTML), data)) =>
-          encode(data).copoint must_== "Goodbye, cruel world."
-      }
+      file.copoint must
+        beLike {
+          case Some(FileData(Some(HTML), data)) =>
+            encode(data).copoint must_== "Goodbye, cruel world."
+        }
     }
 
     "return None when loading a non-existent file" in {
@@ -120,10 +122,11 @@ trait FileStorageSpec[M[+_]] extends Specification {
           e1 -> e2
         }
 
-      result.copoint must beLike {
-        case (true, false) =>
-          ok
-      }
+      result.copoint must
+        beLike {
+          case (true, false) =>
+            ok
+        }
     }
   }
 }

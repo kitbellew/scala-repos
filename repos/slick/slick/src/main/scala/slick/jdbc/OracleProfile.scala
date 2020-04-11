@@ -64,12 +64,9 @@ import slick.util.MacroSupport.macroSupportInterpolation
 trait OracleProfile extends JdbcProfile {
 
   override protected def computeCapabilities: Set[Capability] =
-    (super.computeCapabilities
-      - RelationalCapabilities.foreignKeyActions
-      - JdbcCapabilities.insertOrUpdate
-      - JdbcCapabilities.booleanMetaData
-      - JdbcCapabilities.distinguishesIntTypes
-      - JdbcCapabilities.supportsByte)
+    (super.computeCapabilities - RelationalCapabilities.foreignKeyActions -
+      JdbcCapabilities.insertOrUpdate - JdbcCapabilities.booleanMetaData -
+      JdbcCapabilities.distinguishesIntTypes - JdbcCapabilities.supportsByte)
 
   override protected lazy val useServerSideUpsert = true
   override protected lazy val useServerSideUpsertReturning = false
@@ -137,9 +134,8 @@ trait OracleProfile extends JdbcProfile {
     (super
       .computeQueryCompiler
       .addAfter(Phase.removeTakeDrop, Phase.expandSums)
-      .replace(Phase.resolveZipJoinsRownumStyle)
-      - Phase.fixRowNumberOrdering
-      + Phase.rewriteBooleans + new RemoveSubqueryOrdering)
+      .replace(Phase.resolveZipJoinsRownumStyle) - Phase.fixRowNumberOrdering +
+      Phase.rewriteBooleans + new RemoveSubqueryOrdering)
 
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
@@ -215,8 +211,8 @@ trait OracleProfile extends JdbcProfile {
           }
           b"\)"
         case Library.==(l, r)
-            if (l.nodeType != UnassignedType) && jdbcTypeFor(l.nodeType)
-              .sqlType == Types.BLOB =>
+            if (l.nodeType != UnassignedType) &&
+              jdbcTypeFor(l.nodeType).sqlType == Types.BLOB =>
           b"\(dbms_lob.compare($l, $r) = 0\)"
         case _ =>
           super.expr(c, skipParens)
@@ -240,11 +236,11 @@ trait OracleProfile extends JdbcProfile {
       }
 
     override protected def addForeignKey(fk: ForeignKey, sb: StringBuilder) {
-      sb append "constraint " append quoteIdentifier(
-        fk.name) append " foreign key("
+      sb append "constraint " append quoteIdentifier(fk.name) append
+        " foreign key("
       addForeignKeyColumnList(fk.linearizedSourceColumns, sb, table.tableName)
-      sb append ") references " append quoteIdentifier(
-        fk.targetTable.tableName) append "("
+      sb append ") references " append
+        quoteIdentifier(fk.targetTable.tableName) append "("
       addForeignKeyColumnList(
         fk.linearizedTargetColumnsForOriginalTargetTable,
         sb,
@@ -267,10 +263,10 @@ trait OracleProfile extends JdbcProfile {
          * index) because Oracle does not allow a FOREIGN KEY CONSTRAINT to
          * reference columns which have a UNIQUE INDEX but not a nominal UNIQUE
          * CONSTRAINT. */
-        val sb = new StringBuilder append "ALTER TABLE " append quoteIdentifier(
-          table.tableName) append " ADD "
-        sb append "CONSTRAINT " append quoteIdentifier(
-          idx.name) append " UNIQUE("
+        val sb = new StringBuilder append "ALTER TABLE " append
+          quoteIdentifier(table.tableName) append " ADD "
+        sb append "CONSTRAINT " append quoteIdentifier(idx.name) append
+          " UNIQUE("
         addIndexColumnList(idx.on, sb, idx.table.tableName)
         sb append ")"
         sb.toString
@@ -357,9 +353,8 @@ trait OracleProfile extends JdbcProfile {
   class SequenceDDLBuilder[T](seq: Sequence[T])
       extends super.SequenceDDLBuilder(seq) {
     override def buildDDL: DDL = {
-      val b =
-        new StringBuilder append "create sequence " append quoteIdentifier(
-          seq.name)
+      val b = new StringBuilder append "create sequence " append
+        quoteIdentifier(seq.name)
       seq
         ._increment
         .foreach {

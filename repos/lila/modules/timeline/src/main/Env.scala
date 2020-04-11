@@ -56,13 +56,14 @@ final class Env(
 
 object Env {
 
-  lazy val current = "timeline" boot new Env(
-    config = lila.common.PlayApp loadConfig "timeline",
-    db = lila.db.Env.current,
-    hub = lila.hub.Env.current,
-    getFriendIds = lila.relation.Env.current.api.fetchFriends,
-    getFollowerIds = lila.relation.Env.current.api.fetchFollowers,
-    lobbySocket = lila.hub.Env.current.socket.lobby,
-    renderer = lila.hub.Env.current.actor.renderer,
-    system = lila.common.PlayApp.system)
+  lazy val current = "timeline" boot
+    new Env(
+      config = lila.common.PlayApp loadConfig "timeline",
+      db = lila.db.Env.current,
+      hub = lila.hub.Env.current,
+      getFriendIds = lila.relation.Env.current.api.fetchFriends,
+      getFollowerIds = lila.relation.Env.current.api.fetchFollowers,
+      lobbySocket = lila.hub.Env.current.socket.lobby,
+      renderer = lila.hub.Env.current.actor.renderer,
+      system = lila.common.PlayApp.system)
 }

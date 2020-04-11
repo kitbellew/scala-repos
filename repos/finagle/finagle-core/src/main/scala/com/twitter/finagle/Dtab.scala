@@ -161,8 +161,7 @@ object Dentry {
   implicit val equiv: Equiv[Dentry] =
     new Equiv[Dentry] {
       def equiv(d1: Dentry, d2: Dentry): Boolean =
-        (d1.prefix == d2.prefix &&
-          d1.dst.simplified == d2.dst.simplified)
+        (d1.prefix == d2.prefix && d1.dst.simplified == d2.dst.simplified)
     }
 }
 

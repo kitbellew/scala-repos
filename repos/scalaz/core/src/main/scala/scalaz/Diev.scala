@@ -233,9 +233,8 @@ trait DievImplementation {
             if (startPosition == endPosition)
               subtractInterval(intervals(startPosition), interval)
             else
-              subtractInterval(
-                intervals(startPosition),
-                interval) ++ subtractInterval(intervals(endPosition), interval)
+              subtractInterval(intervals(startPosition), interval) ++
+                subtractInterval(intervals(endPosition), interval)
           construct(startPosition, middle, endPosition + 1)
         }
         case (Coincidence(startPosition), Between(_, endAfter)) => {

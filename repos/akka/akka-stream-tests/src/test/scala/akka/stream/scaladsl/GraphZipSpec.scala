@@ -26,36 +26,37 @@ class GraphZipSpec extends TwoStreamsSetup {
 
   "Zip" must {
 
-    "work in the happy case" in assertAllStagesStopped {
-      val probe = TestSubscriber.manualProbe[(Int, String)]()
+    "work in the happy case" in
+      assertAllStagesStopped {
+        val probe = TestSubscriber.manualProbe[(Int, String)]()
 
-      RunnableGraph
-        .fromGraph(
-          GraphDSL.create() { implicit b ⇒
-            val zip = b.add(Zip[Int, String]())
+        RunnableGraph
+          .fromGraph(
+            GraphDSL.create() { implicit b ⇒
+              val zip = b.add(Zip[Int, String]())
 
-            Source(1 to 4) ~> zip.in0
-            Source(List("A", "B", "C", "D", "E", "F")) ~> zip.in1
+              Source(1 to 4) ~> zip.in0
+              Source(List("A", "B", "C", "D", "E", "F")) ~> zip.in1
 
-            zip.out ~> Sink.fromSubscriber(probe)
+              zip.out ~> Sink.fromSubscriber(probe)
 
-            ClosedShape
-          })
-        .run()
+              ClosedShape
+            })
+          .run()
 
-      val subscription = probe.expectSubscription()
+        val subscription = probe.expectSubscription()
 
-      subscription.request(2)
-      probe.expectNext((1, "A"))
-      probe.expectNext((2, "B"))
+        subscription.request(2)
+        probe.expectNext((1, "A"))
+        probe.expectNext((2, "B"))
 
-      subscription.request(1)
-      probe.expectNext((3, "C"))
-      subscription.request(1)
-      probe.expectNext((4, "D"))
+        subscription.request(1)
+        probe.expectNext((3, "C"))
+        subscription.request(1)
+        probe.expectNext((4, "D"))
 
-      probe.expectComplete()
-    }
+        probe.expectComplete()
+      }
 
     "complete if one side is available but other already completed" in {
       val upstream1 = TestPublisher.probe[Int]()
@@ -202,41 +203,46 @@ class GraphZipSpec extends TwoStreamsSetup {
 
     commonTests()
 
-    "work with one immediately completed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(completedPublisher, nonemptyPublisher(1 to 4))
-      subscriber1.expectSubscriptionAndComplete()
+    "work with one immediately completed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(completedPublisher, nonemptyPublisher(1 to 4))
+        subscriber1.expectSubscriptionAndComplete()
 
-      val subscriber2 = setup(nonemptyPublisher(1 to 4), completedPublisher)
-      subscriber2.expectSubscriptionAndComplete()
-    }
+        val subscriber2 = setup(nonemptyPublisher(1 to 4), completedPublisher)
+        subscriber2.expectSubscriptionAndComplete()
+      }
 
-    "work with one delayed completed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(
-        soonToCompletePublisher,
-        nonemptyPublisher(1 to 4))
-      subscriber1.expectSubscriptionAndComplete()
+    "work with one delayed completed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(
+          soonToCompletePublisher,
+          nonemptyPublisher(1 to 4))
+        subscriber1.expectSubscriptionAndComplete()
 
-      val subscriber2 = setup(
-        nonemptyPublisher(1 to 4),
-        soonToCompletePublisher)
-      subscriber2.expectSubscriptionAndComplete()
-    }
+        val subscriber2 = setup(
+          nonemptyPublisher(1 to 4),
+          soonToCompletePublisher)
+        subscriber2.expectSubscriptionAndComplete()
+      }
 
-    "work with one immediately failed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(failedPublisher, nonemptyPublisher(1 to 4))
-      subscriber1.expectSubscriptionAndError(TestException)
+    "work with one immediately failed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(failedPublisher, nonemptyPublisher(1 to 4))
+        subscriber1.expectSubscriptionAndError(TestException)
 
-      val subscriber2 = setup(nonemptyPublisher(1 to 4), failedPublisher)
-      subscriber2.expectSubscriptionAndError(TestException)
-    }
+        val subscriber2 = setup(nonemptyPublisher(1 to 4), failedPublisher)
+        subscriber2.expectSubscriptionAndError(TestException)
+      }
 
-    "work with one delayed failed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 = setup(soonToFailPublisher, nonemptyPublisher(1 to 4))
-      subscriber1.expectSubscriptionAndError(TestException)
+    "work with one delayed failed and one nonempty publisher" in
+      assertAllStagesStopped {
+        val subscriber1 = setup(soonToFailPublisher, nonemptyPublisher(1 to 4))
+        subscriber1.expectSubscriptionAndError(TestException)
 
-      val subscriber2 = setup(nonemptyPublisher(1 to 4), soonToFailPublisher)
-      val subscription2 = subscriber2.expectSubscriptionAndError(TestException)
-    }
+        val subscriber2 = setup(nonemptyPublisher(1 to 4), soonToFailPublisher)
+        val subscription2 = subscriber2
+          .expectSubscriptionAndError(TestException)
+      }
 
   }
 
