@@ -252,9 +252,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
       null
     }
   }
-  def buildSetStringValue(
-      accessor: Method,
-      columnName: String): (T, String) => Unit = {
+  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
+    Unit = {
     if (columnName.endsWith("_slt")) {
       { (inst: T, v: String) =>
         {

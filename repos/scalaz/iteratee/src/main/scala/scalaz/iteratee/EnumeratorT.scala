@@ -264,8 +264,8 @@ trait EnumeratorTFunctions {
         type IterateeM = IterateeT[E, F, A]
 
         def checkCont1(
-            z: (E => (StepM => IterateeM)) => E => (
-                Input[E] => IterateeM) => IterateeM,
+            z: (E => (StepM => IterateeM)) =>
+              E => (Input[E] => IterateeM) => IterateeM,
             lastState: E): (StepM => IterateeM) = {
           def step: E => (StepM => IterateeM) = { state =>
             _.mapCont(k => z(step)(state)(k))

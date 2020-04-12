@@ -449,9 +449,8 @@ class SbtProjectResolver
 
   private def validRootPathsIn(
       project: sbtStructure.ProjectData,
-      scope: String)(
-      selector: sbtStructure.ConfigurationData => Seq[
-        sbtStructure.DirectoryData]): Seq[String] = {
+      scope: String)(selector: sbtStructure.ConfigurationData =>
+    Seq[sbtStructure.DirectoryData]): Seq[String] = {
     project.configurations
       .find(_.id == scope)
       .map(selector)

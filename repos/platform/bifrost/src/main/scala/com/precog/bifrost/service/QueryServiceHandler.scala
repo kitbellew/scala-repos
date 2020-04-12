@@ -71,12 +71,8 @@ import scalaz.syntax.std.option._
 abstract class QueryServiceHandler[A](implicit M: Monad[Future])
     extends CustomHttpService[
       ByteChunk,
-      (
-          APIKey,
-          AccountDetails,
-          Path,
-          String,
-          QueryOptions) => Future[HttpResponse[QueryResult]]]
+      (APIKey, AccountDetails, Path, String, QueryOptions) =>
+        Future[HttpResponse[QueryResult]]]
     with Logging {
 
   def execution: Execution[Future, A]

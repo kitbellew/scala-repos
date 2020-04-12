@@ -61,9 +61,8 @@ object CheckBoxTreeCell {
     if (cell != null) cell.delegate else null
 
   private[cell] implicit def selectedTreeItemPropertyToGetSelectedProperty[T](
-      selectedProperty: TreeItem[T] => ObservableValue[
-        Boolean,
-        java.lang.Boolean])
+      selectedProperty: TreeItem[T] =>
+        ObservableValue[Boolean, java.lang.Boolean])
       : jfxu.Callback[jfxsc.TreeItem[T], jfxbv.ObservableValue[JBoolean]] =
     new jfxu.Callback[jfxsc.TreeItem[T], jfxbv.ObservableValue[JBoolean]] {
       def call(x: jfxsc.TreeItem[T]) = selectedProperty(x)
@@ -95,9 +94,8 @@ object CheckBoxTreeCell {
     * @param selectedProperty $SP
     * @return $FTVRET
     */
-  def forTreeView[T](
-      selectedProperty: TreeItem[T] => ObservableValue[Boolean, JBoolean])
-      : (TreeView[T]) => (TreeCell[T]) =
+  def forTreeView[T](selectedProperty: TreeItem[T] =>
+    ObservableValue[Boolean, JBoolean]): (TreeView[T]) => (TreeCell[T]) =
     (view: TreeView[T]) =>
       jfxscc.CheckBoxTreeCell.forTreeView[T](selectedProperty).call(view)
 

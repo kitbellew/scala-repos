@@ -133,8 +133,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
 
     def collectRanges(
         namesAtRangeStart: ScImportStmt => Set[String],
-        createInfo: ScImportStmt => Seq[ImportInfo])
-        : Seq[(TextRange, RangeInfo)] = {
+        createInfo: ScImportStmt =>
+          Seq[ImportInfo]): Seq[(TextRange, RangeInfo)] = {
       val importsInfo = ContainerUtil.newConcurrentMap[TextRange, RangeInfo]()
       processAllElementsConcurrentlyUnderProgress {
         case holder: ScImportsHolder =>
@@ -263,8 +263,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
   def collectImportRanges(
       holder: ScImportsHolder,
       namesAtRangeStart: ScImportStmt => Set[String],
-      createInfo: ScImportStmt => Seq[ImportInfo])
-      : Map[TextRange, RangeInfo] = {
+      createInfo: ScImportStmt =>
+        Seq[ImportInfo]): Map[TextRange, RangeInfo] = {
     val result = mutable.Map[TextRange, RangeInfo]()
     var rangeStart = -1
     var rangeEnd = -1

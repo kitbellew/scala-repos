@@ -151,15 +151,15 @@ sealed abstract class IterateeT[E, F[_], A] {
     new EnumerateeT[E, A, F] {
       def apply[B] = {
         def loop = doneOr(checkEof)
-        def checkEof: (
-            Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
+        def checkEof: (Input[A] => IterateeT[A, F, B]) =>
+          IterateeT[E, F, StepT[A, F, B]] =
           k =>
             isEof[E, F] flatMap { eof =>
               if (eof) done(scont(k), eofInput)
               else step(k)
             }
-        def step: (
-            Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
+        def step: (Input[A] => IterateeT[A, F, B]) =>
+          IterateeT[E, F, StepT[A, F, B]] =
           k => flatMap(a => k(elInput(a)) >>== loop)
         loop
       }

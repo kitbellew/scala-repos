@@ -215,9 +215,8 @@ abstract class MappedDecimal[T <: Mapper[T]](
               if (v == null) defaultValue else coerce(BigDecimal(v.getTime)))
         })
 
-  def buildSetStringValue(
-      accessor: Method,
-      columnName: String): (T, String) => Unit =
+  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
+    Unit =
     (inst, v) =>
       doField(
         inst,

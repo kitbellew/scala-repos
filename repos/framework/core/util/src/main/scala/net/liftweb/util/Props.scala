@@ -168,9 +168,8 @@ private[util] trait Props extends Logger {
     * @param updater Function that gets the current `InterpolationValues`s and returns
     *                the new ones to use.
     */
-  def updateInterpolationValues(
-      updater: (List[InterpolationValues]) => List[InterpolationValues])
-      : List[InterpolationValues] = {
+  def updateInterpolationValues(updater: (List[InterpolationValues]) =>
+    List[InterpolationValues]): List[InterpolationValues] = {
     interpolationValues = updater(interpolationValues)
     interpolationValues
   }

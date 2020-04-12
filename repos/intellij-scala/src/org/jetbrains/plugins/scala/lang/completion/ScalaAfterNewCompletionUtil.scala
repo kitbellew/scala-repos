@@ -177,10 +177,8 @@ object ScalaAfterNewCompletionUtil {
       tp: ScType,
       psiClass: PsiClass,
       subst: ScSubstitutor,
-      renderer: (
-          ScType,
-          PsiClass,
-          ScSubstitutor) => LookupElementRenderer[LookupElement],
+      renderer: (ScType, PsiClass, ScSubstitutor) =>
+        LookupElementRenderer[LookupElement],
       insertHandler: InsertHandler[LookupElement],
       renamesMap: mutable.HashMap[String, (String, PsiNamedElement)])
       : ScalaLookupItem = {
@@ -228,10 +226,8 @@ object ScalaAfterNewCompletionUtil {
       tp: ScType,
       place: PsiElement,
       addedClasses: mutable.HashSet[String],
-      renderer: (
-          ScType,
-          PsiClass,
-          ScSubstitutor) => LookupElementRenderer[LookupElement],
+      renderer: (ScType, PsiClass, ScSubstitutor) =>
+        LookupElementRenderer[LookupElement],
       insertHandler: InsertHandler[LookupElement],
       renamesMap: mutable.HashMap[String, (String, PsiNamedElement)])
       : ScalaLookupItem = {
@@ -269,10 +265,8 @@ object ScalaAfterNewCompletionUtil {
       place: PsiElement,
       addedClasses: mutable.HashSet[String],
       result: CompletionResultSet,
-      renderer: (
-          ScType,
-          PsiClass,
-          ScSubstitutor) => LookupElementRenderer[LookupElement],
+      renderer: (ScType, PsiClass, ScSubstitutor) =>
+        LookupElementRenderer[LookupElement],
       insertHandler: InsertHandler[LookupElement],
       renamesMap: mutable.HashMap[String, (String, PsiNamedElement)]) {
     ScType.extractClassType(typez, Some(place.getProject)) match {

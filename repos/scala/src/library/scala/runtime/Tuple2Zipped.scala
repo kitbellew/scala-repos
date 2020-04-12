@@ -143,7 +143,8 @@ object Tuple2Zipped {
 
     def zipped[El1, Repr1, El2, Repr2](implicit
         w1: T1 => TraversableLike[El1, Repr1],
-        w2: T2 => IterableLike[El2, Repr2])
-        : Tuple2Zipped[El1, Repr1, El2, Repr2] = new Tuple2Zipped((x._1, x._2))
+        w2: T2 =>
+          IterableLike[El2, Repr2]): Tuple2Zipped[El1, Repr1, El2, Repr2] =
+      new Tuple2Zipped((x._1, x._2))
   }
 }

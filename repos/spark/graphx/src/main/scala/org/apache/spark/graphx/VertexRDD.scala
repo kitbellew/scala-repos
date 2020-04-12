@@ -85,8 +85,8 @@ abstract class VertexRDD[VD](sc: SparkContext, deps: Seq[Dependency[_]])
     * Applies a function to each `VertexPartition` of this RDD and returns a new VertexRDD.
     */
   private[graphx] def mapVertexPartitions[VD2: ClassTag](
-      f: ShippableVertexPartition[VD] => ShippableVertexPartition[VD2])
-      : VertexRDD[VD2]
+      f: ShippableVertexPartition[VD] =>
+        ShippableVertexPartition[VD2]): VertexRDD[VD2]
 
   /**
     * Restricts the vertex set to the set of vertices satisfying the given predicate. This operation

@@ -125,9 +125,8 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
   def this(config: WSClientConfig) =
     this(AhcWSClientConfig(wsClientConfig = config))
 
-  protected val addCustomSettings
-      : DefaultAsyncHttpClientConfig.Builder => DefaultAsyncHttpClientConfig.Builder =
-    identity
+  protected val addCustomSettings: DefaultAsyncHttpClientConfig.Builder =>
+    DefaultAsyncHttpClientConfig.Builder = identity
 
   /**
     * The underlying `DefaultAsyncHttpClientConfig.Builder` used by this instance.
@@ -167,9 +166,8 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
     * @param modify function with custom settings to apply to this builder before the client is built
     * @return the new builder
     */
-  def modifyUnderlying(
-      modify: DefaultAsyncHttpClientConfig.Builder => DefaultAsyncHttpClientConfig.Builder)
-      : AhcConfigBuilder = {
+  def modifyUnderlying(modify: DefaultAsyncHttpClientConfig.Builder =>
+    DefaultAsyncHttpClientConfig.Builder): AhcConfigBuilder = {
     new AhcConfigBuilder(ahcConfig) {
       override val addCustomSettings =
         modify compose AhcConfigBuilder.this.addCustomSettings

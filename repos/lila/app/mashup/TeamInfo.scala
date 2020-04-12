@@ -47,9 +47,8 @@ object TeamInfo {
   def apply(
       api: TeamApi,
       getForumNbPosts: String => Fu[Int],
-      getForumPosts: String => Fu[List[MiniForumPost]])(
-      team: Team,
-      me: Option[User]): Fu[TeamInfo] =
+      getForumPosts: String =>
+        Fu[List[MiniForumPost]])(team: Team, me: Option[User]): Fu[TeamInfo] =
     for {
       requests ←
         (team.enabled && me.??(m => team.isCreator(m.id))) ?? api

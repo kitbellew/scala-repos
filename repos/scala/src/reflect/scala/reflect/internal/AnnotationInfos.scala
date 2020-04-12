@@ -29,8 +29,8 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     def withAnnotations(
         annots: List[AnnotationInfo]): Self // Add annotations to this type.
     def filterAnnotations(
-        p: AnnotationInfo => Boolean)
-        : Self // Retain only annotations meeting the condition.
+        p: AnnotationInfo =>
+          Boolean): Self // Retain only annotations meeting the condition.
     def withoutAnnotations: Self // Remove all annotations from this type.
 
     def staticAnnotations = annotations filter (_.isStatic)

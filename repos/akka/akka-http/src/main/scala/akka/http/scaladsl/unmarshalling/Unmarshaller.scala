@@ -18,8 +18,8 @@ trait Unmarshaller[-A, B] {
       ec: ExecutionContext,
       materializer: Materializer): Future[B]
 
-  def transform[C](f: ExecutionContext ⇒ Materializer ⇒ Future[B] ⇒ Future[C])
-      : Unmarshaller[A, C] =
+  def transform[C](f: ExecutionContext ⇒
+    Materializer ⇒ Future[B] ⇒ Future[C]): Unmarshaller[A, C] =
     Unmarshaller.withMaterializer { implicit ec ⇒ implicit mat ⇒ a ⇒
       f(ec)(mat)(this(a))
     }
@@ -31,9 +31,8 @@ trait Unmarshaller[-A, B] {
       f: ExecutionContext ⇒ Materializer ⇒ B ⇒ Future[C]): Unmarshaller[A, C] =
     transform(implicit ec ⇒ mat ⇒ _.fast flatMap f(ec)(mat))
 
-  def recover[C >: B](
-      pf: ExecutionContext ⇒ Materializer ⇒ PartialFunction[Throwable, C])
-      : Unmarshaller[A, C] =
+  def recover[C >: B](pf: ExecutionContext ⇒
+    Materializer ⇒ PartialFunction[Throwable, C]): Unmarshaller[A, C] =
     transform(implicit ec ⇒ mat ⇒ _.fast recover pf(ec)(mat))
 
   def withDefaultValue[BB >: B](defaultValue: BB): Unmarshaller[A, BB] =

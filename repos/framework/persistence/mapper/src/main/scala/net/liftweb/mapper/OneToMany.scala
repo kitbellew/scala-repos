@@ -116,11 +116,8 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
     */
   class MappedOneToManyBase[O <: Mapper[_]](
       val reloadFunc: () => Seq[O],
-      val foreign: O => MappedForeignKey[
-        K,
-        _,
-        T
-      ] /*forSome { type X <: Mapper[X] }*/ )
+      val foreign: O =>
+        MappedForeignKey[K, _, T] /*forSome { type X <: Mapper[X] }*/ )
       extends scala.collection.mutable.Buffer[O] {
     private var inited = false
     private var _delegate: List[O] = _

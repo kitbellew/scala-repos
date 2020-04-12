@@ -731,10 +731,9 @@ class DistributedLDAModel private[clustering] (
     val W = vocabSize
     val alpha = docConcentration(0)
     val N_k = globalTopicTotals
-    val sendMsg: EdgeContext[
-      TopicCounts,
-      TokenCount,
-      (Array[Int], Array[Int])] => Unit =
+    val sendMsg
+        : EdgeContext[TopicCounts, TokenCount, (Array[Int], Array[Int])] =>
+          Unit =
       (edgeContext) => {
         // E-STEP: Compute gamma_{wjk} (smoothed topic distributions).
         val scaledTopicDistribution: TopicCounts =
@@ -750,9 +749,8 @@ class DistributedLDAModel private[clustering] (
         val term: Int = index2term(edgeContext.dstId)
         edgeContext.sendToSrc((Array(term), Array(topTopic)))
       }
-    val mergeMsg: ((Array[Int], Array[Int]), (Array[Int], Array[Int])) => (
-        Array[Int],
-        Array[Int]) =
+    val mergeMsg: ((Array[Int], Array[Int]), (Array[Int], Array[Int])) =>
+      (Array[Int], Array[Int]) =
       (terms_topics0, terms_topics1) => {
         (
           terms_topics0._1 ++ terms_topics1._1,

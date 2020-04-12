@@ -186,18 +186,16 @@ trait Mapper[A <: Mapper[A]]
     * flat map the fields titles and forms to generate a list
     * @param func called with displayHtml, fieldId, form
     */
-  def flatMapFieldTitleForm[T](
-      func: (NodeSeq, Box[NodeSeq], NodeSeq) => scala.collection.Seq[T])
-      : List[T] =
+  def flatMapFieldTitleForm[T](func: (NodeSeq, Box[NodeSeq], NodeSeq) =>
+    scala.collection.Seq[T]): List[T] =
     getSingleton.flatMapFieldTitleForm(this, func)
 
   /**
     * flat map the fields titles and forms to generate a list
     * @param func called with displayHtml, fieldId, form
     */
-  def flatMapFieldTitleForm2[T](
-      func: (NodeSeq, MappedField[_, A], NodeSeq) => scala.collection.Seq[T])
-      : List[T] =
+  def flatMapFieldTitleForm2[T](func: (NodeSeq, MappedField[_, A], NodeSeq) =>
+    scala.collection.Seq[T]): List[T] =
     getSingleton.flatMapFieldTitleForm2(this, func)
 
   /**

@@ -16,7 +16,8 @@ object Test {
     implicit def SuccZipWith[S, R](implicit zWith: ZipWith[R]) =
       new ZipWith[S => R] {
         type T =
-          Stream[S] => zWith.T // dependent types replace the associated types functionality
+          Stream[S] =>
+            zWith.T // dependent types replace the associated types functionality
       }
   }
 

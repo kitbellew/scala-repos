@@ -94,9 +94,8 @@ object ImplicitCollector {
       isImplicitConversion: Boolean,
       isExtensionConversion: Boolean,
       searchImplicitsRecursively: Int,
-      predicate: Option[(
-          ScalaResolveResult,
-          ScSubstitutor) => Option[(ScalaResolveResult, ScSubstitutor)]],
+      predicate: Option[(ScalaResolveResult, ScSubstitutor) =>
+        Option[(ScalaResolveResult, ScSubstitutor)]],
       previousRecursionState: Option[RecursionMap])
 }
 
@@ -115,9 +114,8 @@ class ImplicitCollector(
     isImplicitConversion: Boolean,
     isExtensionConversion: Boolean,
     searchImplicitsRecursively: Int = 0,
-    predicate: Option[(
-        ScalaResolveResult,
-        ScSubstitutor) => Option[(ScalaResolveResult, ScSubstitutor)]] = None,
+    predicate: Option[(ScalaResolveResult, ScSubstitutor) =>
+      Option[(ScalaResolveResult, ScSubstitutor)]] = None,
     previousRecursionState: Option[RecursionMap] = None) {
   def this(state: ImplicitState) {
     this(

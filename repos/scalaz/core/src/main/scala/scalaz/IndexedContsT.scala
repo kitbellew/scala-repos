@@ -102,9 +102,8 @@ trait IndexedContsTFunctions {
         IndexedContsT { k => fa.run(f(k)) }
     }
 
-  def shift[W[_], M[_], I, R, J, O, A](
-      f: (A => IndexedContsT[W, M, I, I, O]) => IndexedContsT[W, M, R, J, J])(
-      implicit
+  def shift[W[_], M[_], I, R, J, O, A](f: (A => IndexedContsT[W, M, I, I, O]) =>
+    IndexedContsT[W, M, R, J, J])(implicit
       W: Comonad[W],
       WA: Applicative[W],
       M: Monad[M]): IndexedContsT[W, M, R, O, A] =

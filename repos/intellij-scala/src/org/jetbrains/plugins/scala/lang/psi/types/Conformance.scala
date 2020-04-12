@@ -1757,8 +1757,8 @@ object Conformance {
               undefinedSubst = t._2
             }
             if (result == null) {
-              val filterFunction
-                  : (((String, PsiElement), HashSet[ScType])) => Boolean = {
+              val filterFunction: (((String, PsiElement), HashSet[ScType])) =>
+                Boolean = {
                 case (id: (String, PsiElement), types: HashSet[ScType]) =>
                   !tptsMap.values.exists {
                     case tpt: ScTypeParameterType =>

@@ -737,8 +737,8 @@ private[kafka] class KafkaUtilsPythonHelper {
       kafkaParams: JMap[String, String],
       offsetRanges: JList[OffsetRange],
       leaders: JMap[TopicAndPartition, Broker],
-      messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] => V)
-      : RDD[V] = {
+      messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] =>
+        V): RDD[V] = {
     KafkaUtils
       .createRDD[Array[Byte], Array[Byte], DefaultDecoder, DefaultDecoder, V](
         jsc.sc,
@@ -790,8 +790,8 @@ private[kafka] class KafkaUtilsPythonHelper {
       kafkaParams: JMap[String, String],
       topics: JSet[String],
       fromOffsets: JMap[TopicAndPartition, JLong],
-      messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] => V)
-      : DStream[V] = {
+      messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] =>
+        V): DStream[V] = {
 
     val currentFromOffsets = if (!fromOffsets.isEmpty) {
       val topicsFromOffsets = fromOffsets.keySet().asScala.map(_.topic)

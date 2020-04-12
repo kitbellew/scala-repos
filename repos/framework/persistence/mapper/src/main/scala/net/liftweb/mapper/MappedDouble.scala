@@ -170,9 +170,8 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
             f.st(if (v == null) defaultValue else v.getTime)
         })
 
-  def buildSetStringValue(
-      accessor: Method,
-      columnName: String): (T, String) => Unit =
+  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
+    Unit =
     (inst, v) =>
       doField(inst, accessor, { case f: MappedDouble[T] => f.st(toDouble(v)) })
 

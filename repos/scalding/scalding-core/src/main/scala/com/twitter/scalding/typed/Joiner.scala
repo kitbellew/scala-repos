@@ -18,9 +18,8 @@ package com.twitter.scalding.typed
 import com.twitter.scalding._
 
 object Joiner extends java.io.Serializable {
-  def toCogroupJoiner2[K, V, U, R](
-      hashJoiner: (K, V, Iterable[U]) => Iterator[R])
-      : (K, Iterator[V], Iterable[U]) => Iterator[R] = {
+  def toCogroupJoiner2[K, V, U, R](hashJoiner: (K, V, Iterable[U]) =>
+    Iterator[R]): (K, Iterator[V], Iterable[U]) => Iterator[R] = {
     (k: K, itv: Iterator[V], itu: Iterable[U]) =>
       itv.flatMap { hashJoiner(k, _, itu) }
   }

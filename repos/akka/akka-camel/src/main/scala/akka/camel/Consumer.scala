@@ -119,8 +119,8 @@ private[camel] object ConsumerConfig {
       activationTimeout: FiniteDuration,
       replyTimeout: FiniteDuration,
       autoAck: Boolean,
-      onRouteDefinition: RouteDefinition ⇒ ProcessorDefinition[_])
-      : ConsumerConfig =
+      onRouteDefinition: RouteDefinition ⇒
+        ProcessorDefinition[_]): ConsumerConfig =
     new ConsumerConfig(
       activationTimeout,
       replyTimeout,

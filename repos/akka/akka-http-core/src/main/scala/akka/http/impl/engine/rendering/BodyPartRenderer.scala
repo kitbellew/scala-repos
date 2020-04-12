@@ -126,9 +126,8 @@ private[http] object BodyPartRenderer {
     r ~~ CrLf
   }
 
-  private def renderHeader(
-      r: Rendering,
-      log: LoggingAdapter): HttpHeader ⇒ Unit = {
+  private def renderHeader(r: Rendering, log: LoggingAdapter): HttpHeader ⇒
+    Unit = {
     case x: `Content-Length` ⇒
       suppressionWarning(
         log,

@@ -136,8 +136,8 @@ class TungstenAggregationIterator(
   }
 
   // Creates a function used to generate output rows.
-  override protected def generateResultProjection()
-      : (UnsafeRow, MutableRow) => UnsafeRow = {
+  override protected def generateResultProjection(): (UnsafeRow, MutableRow) =>
+    UnsafeRow = {
     val modes = aggregateExpressions.map(_.mode).distinct
     if (modes.nonEmpty && !modes.contains(Final) && !modes.contains(Complete)) {
       // Fast path for partial aggregation, UnsafeRowJoiner is usually faster than projection

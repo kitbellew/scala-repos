@@ -406,9 +406,8 @@ private[hive] trait HiveInspectors {
     * Wraps with Hive types based on object inspector.
     * TODO: Consolidate all hive OI/data interface code.
     */
-  protected def wrapperFor(
-      oi: ObjectInspector,
-      dataType: DataType): Any => Any =
+  protected def wrapperFor(oi: ObjectInspector, dataType: DataType): Any =>
+    Any =
     oi match {
       case _: JavaHiveVarcharObjectInspector =>
         (o: Any) =>

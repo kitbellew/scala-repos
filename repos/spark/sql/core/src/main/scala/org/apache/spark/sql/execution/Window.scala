@@ -615,9 +615,8 @@ private[execution] final class OffsetWindowFunctionFrame(
     ordinal: Int,
     expressions: Array[Expression],
     inputSchema: Seq[Attribute],
-    newMutableProjection: (
-        Seq[Expression],
-        Seq[Attribute]) => () => MutableProjection,
+    newMutableProjection: (Seq[Expression], Seq[Attribute]) =>
+      () => MutableProjection,
     offset: Int)
     extends WindowFunctionFrame {
 
@@ -955,9 +954,8 @@ private[execution] object AggregateProcessor {
       functions: Array[Expression],
       ordinal: Int,
       inputAttributes: Seq[Attribute],
-      newMutableProjection: (
-          Seq[Expression],
-          Seq[Attribute]) => () => MutableProjection): AggregateProcessor = {
+      newMutableProjection: (Seq[Expression], Seq[Attribute]) =>
+        () => MutableProjection): AggregateProcessor = {
     val aggBufferAttributes = mutable.Buffer.empty[AttributeReference]
     val initialValues = mutable.Buffer.empty[Expression]
     val updateExpressions = mutable.Buffer.empty[Expression]

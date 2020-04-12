@@ -113,9 +113,8 @@ class FileStoreHandler(
     }
   }
 
-  val service: HttpRequest[ByteChunk] => Validation[
-    NotServed,
-    (APIKey, Path) => Future[HttpResponse[JValue]]] =
+  val service: HttpRequest[ByteChunk] =>
+    Validation[NotServed, (APIKey, Path) => Future[HttpResponse[JValue]]] =
     (request: HttpRequest[ByteChunk]) => {
       val contentType0 = request.headers
         .header[`Content-Type`]

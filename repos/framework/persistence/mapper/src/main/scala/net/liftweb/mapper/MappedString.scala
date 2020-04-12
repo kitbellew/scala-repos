@@ -235,9 +235,8 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
             f.wholeSet(if (isNull) null else v.toString)
         })
 
-  def buildSetStringValue(
-      accessor: Method,
-      columnName: String): (T, String) => Unit =
+  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
+    Unit =
     (inst, v) =>
       doField(
         inst,

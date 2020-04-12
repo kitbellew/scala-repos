@@ -128,7 +128,8 @@ object Test {
       nested: List[
         Contexts.Value
       ], // the path from the innermost to the outermost context
-      p: List[Contexts.Value] => Boolean, // a predicate for filtering problematic cases
+      p: List[Contexts.Value] =>
+        Boolean, // a predicate for filtering problematic cases
       privateObj: Boolean = false) { // are we using a private object?
 
     def shouldBeTopLevel =

@@ -43,8 +43,8 @@ object ResultSetInvoker {
 
 object ResultSetAction {
   def apply[R](f: JdbcBackend#Session => ResultSet)(implicit
-      conv: PositionedResult => R)
-      : BasicStreamingAction[Vector[R], R, Effect.Read] =
+      conv: PositionedResult =>
+        R): BasicStreamingAction[Vector[R], R, Effect.Read] =
     new StreamingInvokerAction[Vector[R], R, Effect.Read] {
       protected[this] def createInvoker(sql: Iterable[String]) =
         ResultSetInvoker(f)(conv)

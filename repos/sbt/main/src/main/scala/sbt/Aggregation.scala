@@ -182,9 +182,8 @@ final object Aggregation {
       keys: Seq[KeyValue[_]])(implicit
       display: Show[ScopedKey[_]]): Parser[() => State] = {
     // to make the call sites clearer
-    def separate[L](in: Seq[KeyValue[_]])(
-        f: KeyValue[_] => Either[KeyValue[L], KeyValue[_]])
-        : (Seq[KeyValue[L]], Seq[KeyValue[_]]) =
+    def separate[L](in: Seq[KeyValue[_]])(f: KeyValue[_] =>
+      Either[KeyValue[L], KeyValue[_]]): (Seq[KeyValue[L]], Seq[KeyValue[_]]) =
       Util.separate(in)(f)
 
     val kvs = keys.toList

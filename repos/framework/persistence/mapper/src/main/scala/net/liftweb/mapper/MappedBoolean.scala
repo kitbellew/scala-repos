@@ -172,9 +172,8 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
             tv.allSet(if (isNull) Empty else Full(v != 0L))
         })
 
-  def buildSetStringValue(
-      accessor: Method,
-      columnName: String): (T, String) => Unit =
+  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
+    Unit =
     (inst, v) =>
       doField(
         inst,

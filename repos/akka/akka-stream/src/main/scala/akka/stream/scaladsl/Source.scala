@@ -174,9 +174,8 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
   def combine[T, U](
       first: Source[T, _],
       second: Source[T, _],
-      rest: Source[T, _]*)(
-      strategy: Int ⇒ Graph[UniformFanInShape[T, U], NotUsed])
-      : Source[U, NotUsed] =
+      rest: Source[T, _]*)(strategy: Int ⇒
+    Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b ⇒
       import GraphDSL.Implicits._
       val c = b.add(strategy(rest.size + 2))
@@ -450,9 +449,8 @@ object Source {
   def combine[T, U](
       first: Source[T, _],
       second: Source[T, _],
-      rest: Source[T, _]*)(
-      strategy: Int ⇒ Graph[UniformFanInShape[T, U], NotUsed])
-      : Source[U, NotUsed] =
+      rest: Source[T, _]*)(strategy: Int ⇒
+    Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b ⇒
       import GraphDSL.Implicits._
       val c = b.add(strategy(rest.size + 2))

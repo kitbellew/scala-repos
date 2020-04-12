@@ -66,9 +66,9 @@ object TimePathedSource extends java.io.Serializable {
 
   def minify(
       expander: DateRange => DateRange,
-      vertractor: DateRange => Option[DateRange])
-      : (DateRange => Option[DateRange]) = { (init: DateRange) =>
-    minifyRec(init, expander, vertractor)
+      vertractor: DateRange =>
+        Option[DateRange]): (DateRange => Option[DateRange]) = {
+    (init: DateRange) => minifyRec(init, expander, vertractor)
   }
 
   def satisfiableHdfs(

@@ -1299,13 +1299,10 @@ object Defaults extends BuildCommon {
         println()
     }
 
-  private[this] def exported(
-      w: PrintWriter,
-      command: String): Seq[String] => Unit =
-    args => w.println((command +: args).mkString(" "))
-  private[this] def exported(
-      s: TaskStreams,
-      command: String): Seq[String] => Unit =
+  private[this] def exported(w: PrintWriter, command: String): Seq[String] =>
+    Unit = args => w.println((command +: args).mkString(" "))
+  private[this] def exported(s: TaskStreams, command: String): Seq[String] =>
+    Unit =
     args => {
       val w = s.text(ExportStream)
       try exported(w, command)
@@ -3214,8 +3211,8 @@ trait BuildCommon {
   @deprecated(
     "Use Def.inputTask with the `Def.spaceDelimited()` parser.",
     "0.13.0")
-  def inputTask[T](f: TaskKey[Seq[String]] => Initialize[Task[T]])
-      : Initialize[InputTask[T]] =
+  def inputTask[T](f: TaskKey[Seq[String]] =>
+    Initialize[Task[T]]): Initialize[InputTask[T]] =
     InputTask.apply(Def.value((s: State) => Def.spaceDelimited()))(f)
 
   /**

@@ -130,8 +130,8 @@ trait BasicBackend { self =>
     /** Create a Reactive Streams `Publisher` using the given context factory. */
     protected[this] def createPublisher[T](
         a: DBIOAction[_, Streaming[T], Nothing],
-        createCtx: Subscriber[_ >: T] => StreamingContext)
-        : DatabasePublisher[T] =
+        createCtx: Subscriber[_ >: T] =>
+          StreamingContext): DatabasePublisher[T] =
       new DatabasePublisher[T] {
         def subscribe(s: Subscriber[_ >: T]) = {
           if (s eq null) throw new NullPointerException("Subscriber is null")

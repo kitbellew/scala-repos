@@ -492,9 +492,8 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
 
   protected[kestrel] def copy(config: MultiReaderConfig[Req, Rep]): Builder
 
-  protected[kestrel] def withConfig(
-      f: MultiReaderConfig[Req, Rep] => MultiReaderConfig[Req, Rep])
-      : Builder = {
+  protected[kestrel] def withConfig(f: MultiReaderConfig[Req, Rep] =>
+    MultiReaderConfig[Req, Rep]): Builder = {
     copy(f(config))
   }
 
@@ -658,9 +657,8 @@ class ClusterMultiReaderBuilder private[kestrel] (
       config: ClusterMultiReaderConfig): ClusterMultiReaderBuilder =
     new ClusterMultiReaderBuilder(config)
 
-  protected[kestrel] def withConfig(
-      f: ClusterMultiReaderConfig => ClusterMultiReaderConfig)
-      : ClusterMultiReaderBuilder = {
+  protected[kestrel] def withConfig(f: ClusterMultiReaderConfig =>
+    ClusterMultiReaderConfig): ClusterMultiReaderBuilder = {
     copy(f(config))
   }
 }

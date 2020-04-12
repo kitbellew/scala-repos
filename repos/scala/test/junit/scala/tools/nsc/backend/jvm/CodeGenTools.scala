@@ -120,8 +120,8 @@ object CodeGenTools {
   def compile(compiler: Global)(
       scalaCode: String,
       javaCode: List[(String, String)] = Nil,
-      allowMessage: StoreReporter#Info => Boolean = _ => false)
-      : List[(String, Array[Byte])] = {
+      allowMessage: StoreReporter#Info =>
+        Boolean = _ => false): List[(String, Array[Byte])] = {
     val run = newRun(compiler)
     run.compileSources(
       makeSourceFile(scalaCode, "unitTestSource.scala") :: javaCode.map(p =>
@@ -133,8 +133,8 @@ object CodeGenTools {
   def compileTransformed(compiler: Global)(
       scalaCode: String,
       javaCode: List[(String, String)] = Nil,
-      beforeBackend: compiler.Tree => compiler.Tree)
-      : List[(String, Array[Byte])] = {
+      beforeBackend: compiler.Tree =>
+        compiler.Tree): List[(String, Array[Byte])] = {
     compiler.settings.stopBefore.value = "jvm" :: Nil
     val run = newRun(compiler)
     import compiler._
@@ -164,8 +164,8 @@ object CodeGenTools {
       codes: List[String],
       extraArgs: String = "",
       allowMessage: StoreReporter#Info => Boolean = _ => false,
-      afterEach: AbstractFile => Unit = _ => ())
-      : List[(String, Array[Byte])] = {
+      afterEach: AbstractFile =>
+        Unit = _ => ()): List[(String, Array[Byte])] = {
     val outDir = AbstractFile.getDirectory(TempDir.createTempDir())
     val outDirPath = outDir.canonicalPath
     val argsWithOutDir = extraArgs + s" -d $outDirPath -cp $outDirPath"
@@ -198,15 +198,15 @@ object CodeGenTools {
   def compileClasses(compiler: Global)(
       code: String,
       javaCode: List[(String, String)] = Nil,
-      allowMessage: StoreReporter#Info => Boolean = _ => false)
-      : List[ClassNode] = {
+      allowMessage: StoreReporter#Info =>
+        Boolean = _ => false): List[ClassNode] = {
     readAsmClasses(compile(compiler)(code, javaCode, allowMessage))
   }
 
   def compileMethods(compiler: Global)(
       code: String,
-      allowMessage: StoreReporter#Info => Boolean = _ => false)
-      : List[MethodNode] = {
+      allowMessage: StoreReporter#Info =>
+        Boolean = _ => false): List[MethodNode] = {
     compileClasses(compiler)(
       s"class C { $code }",
       allowMessage = allowMessage).head.methods.asScala.toList
@@ -215,8 +215,8 @@ object CodeGenTools {
 
   def singleMethodInstructions(compiler: Global)(
       code: String,
-      allowMessage: StoreReporter#Info => Boolean = _ => false)
-      : List[Instruction] = {
+      allowMessage: StoreReporter#Info =>
+        Boolean = _ => false): List[Instruction] = {
     val List(m) = compileMethods(compiler)(code, allowMessage = allowMessage)
     instructionsFromMethod(m)
   }

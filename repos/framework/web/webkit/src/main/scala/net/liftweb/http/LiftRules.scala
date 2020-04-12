@@ -301,8 +301,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Holds user functions that are executed before sending the response to client. The functions'
     * result will be ignored.
     */
-  val beforeSend = RulesSeq[
-    (BasicResponse, HTTPResponse, List[(String, String)], Box[Req]) => Any]
+  val beforeSend =
+    RulesSeq[(BasicResponse, HTTPResponse, List[(String, String)], Box[Req]) =>
+      Any]
 
   private[this] lazy val defaultSecurityRules = SecurityRules()
 
@@ -496,8 +497,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Holds user functions that are executed after the response is sent to client. The functions' result
     * will be ignored.
     */
-  val afterSend = RulesSeq[
-    (BasicResponse, HTTPResponse, List[(String, String)], Box[Req]) => Any]
+  val afterSend =
+    RulesSeq[(BasicResponse, HTTPResponse, List[(String, String)], Box[Req]) =>
+      Any]
 
   /**
     * Calculate the Comet Server (by default, the server that
@@ -1114,8 +1116,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * if the function is not defined for the locale/path pair, the normal templating system will
     * be used.  Also, keep in mind how FactoryMaker can be used... it can be global, per request, etc.
     */
-  val externalTemplateResolver: FactoryMaker[
-    () => PartialFunction[(Locale, List[String]), Box[NodeSeq]]] =
+  val externalTemplateResolver: FactoryMaker[() =>
+    PartialFunction[(Locale, List[String]), Box[NodeSeq]]] =
     new FactoryMaker(() =>
       (
           () =>
@@ -1132,8 +1134,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * in Scala a Map is PartialFunction and you can create Maps that have a default value using the withDefaultValue
     * method.
     */
-  val snippetWhiteList: FactoryMaker[
-    () => PartialFunction[(String, String), Box[NodeSeq => NodeSeq]]] =
+  val snippetWhiteList: FactoryMaker[() =>
+    PartialFunction[(String, String), Box[NodeSeq => NodeSeq]]] =
     new FactoryMaker(() =>
       (
           () =>
@@ -2041,8 +2043,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * a FileParamHolder.  By default, create an in-memory instance.  Use OnDiskFileParamHolder
     * to create an on-disk version
     */
-  @volatile var handleMimeFile
-      : (String, String, String, InputStream) => FileParamHolder =
+  @volatile var handleMimeFile: (String, String, String, InputStream) =>
+    FileParamHolder =
     (fieldName, contentType, fileName, inputStream) =>
       new InMemFileParamHolder(
         fieldName,

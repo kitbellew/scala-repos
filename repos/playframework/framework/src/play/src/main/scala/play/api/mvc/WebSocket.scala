@@ -39,9 +39,8 @@ trait WebSocket extends Handler {
   */
 object WebSocket {
 
-  def apply(
-      f: RequestHeader => Future[Either[Result, Flow[Message, Message, _]]])
-      : WebSocket = {
+  def apply(f: RequestHeader =>
+    Future[Either[Result, Flow[Message, Message, _]]]): WebSocket = {
     new WebSocket {
       def apply(request: RequestHeader) = f(request)
     }
@@ -257,9 +256,8 @@ object WebSocket {
     * inbound and outbound channels, asynchronously
     */
   @deprecated("Use acceptOrResult with an Akka streams flow instead", "2.5.0")
-  def tryAccept[A](
-      f: RequestHeader => Future[
-        Either[Result, (Iteratee[A, _], Enumerator[A])]])(implicit
+  def tryAccept[A](f: RequestHeader =>
+    Future[Either[Result, (Iteratee[A, _], Enumerator[A])]])(implicit
       transformer: MessageFlowTransformer[A, A]): WebSocket = {
     acceptOrResult[A, A](f.andThen(_.map(_.right.map {
       case (iteratee, enumerator) =>

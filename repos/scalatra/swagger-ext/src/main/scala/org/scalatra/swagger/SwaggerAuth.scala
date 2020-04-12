@@ -406,8 +406,9 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
       val produces = route.metadata
         .get(Symbols.Produces) map (_.asInstanceOf[List[String]]) getOrElse Nil
       val allows =
-        route.metadata.get(Symbols.Allows) map (_.asInstanceOf[Option[
-          TypeForUser] => Boolean]) getOrElse allowAll
+        route.metadata
+          .get(Symbols.Allows) map (_.asInstanceOf[Option[TypeForUser] =>
+          Boolean]) getOrElse allowAll
       val consumes = route.metadata
         .get(Symbols.Consumes) map (_.asInstanceOf[List[String]]) getOrElse Nil
       AuthOperation[TypeForUser](

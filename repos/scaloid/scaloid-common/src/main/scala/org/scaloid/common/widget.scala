@@ -1294,8 +1294,8 @@ object SMultiAutoCompleteTextView
   def apply[LP <: ViewGroupLayoutParams[_, SMultiAutoCompleteTextView]]()(
       implicit
       context: android.content.Context,
-      defaultLayoutParam: SMultiAutoCompleteTextView => LP)
-      : SMultiAutoCompleteTextView = {
+      defaultLayoutParam: SMultiAutoCompleteTextView =>
+        LP): SMultiAutoCompleteTextView = {
     val v = new SMultiAutoCompleteTextView
     v.<<.parent.+=(v)
     v
@@ -3980,11 +3980,8 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
   }
 
   @inline def onGroupClick(
-      f: (
-          android.widget.ExpandableListView,
-          android.view.View,
-          Int,
-          Long) => Boolean): This = {
+      f: (android.widget.ExpandableListView, android.view.View, Int, Long) =>
+        Boolean): This = {
     basis.setOnGroupClickListener(
       new android.widget.ExpandableListView.OnGroupClickListener {
         def onGroupClick(
@@ -8156,11 +8153,8 @@ trait TraitAdapterView[This <: android.widget.AdapterView[_]]
   }
 
   @inline def onItemLongClick(
-      f: (
-          android.widget.AdapterView[_],
-          android.view.View,
-          Int,
-          Long) => Boolean): This = {
+      f: (android.widget.AdapterView[_], android.view.View, Int, Long) =>
+        Boolean): This = {
     basis.setOnItemLongClickListener(
       new android.widget.AdapterView.OnItemLongClickListener {
         def onItemLongClick(
@@ -8347,8 +8341,8 @@ class SHorizontalScrollView()(implicit
 object SHorizontalScrollView {
   def apply[LP <: ViewGroupLayoutParams[_, SHorizontalScrollView]]()(implicit
       context: android.content.Context,
-      defaultLayoutParam: SHorizontalScrollView => LP)
-      : SHorizontalScrollView = {
+      defaultLayoutParam: SHorizontalScrollView =>
+        LP): SHorizontalScrollView = {
     val v = new SHorizontalScrollView
     v.<<.parent.+=(v)
     v
@@ -11560,8 +11554,8 @@ class SAutoCompleteTextView()(implicit
 object SAutoCompleteTextView extends TextViewCompanion[SAutoCompleteTextView] {
   def apply[LP <: ViewGroupLayoutParams[_, SAutoCompleteTextView]]()(implicit
       context: android.content.Context,
-      defaultLayoutParam: SAutoCompleteTextView => LP)
-      : SAutoCompleteTextView = {
+      defaultLayoutParam: SAutoCompleteTextView =>
+        LP): SAutoCompleteTextView = {
     val v = new SAutoCompleteTextView
     v.<<.parent.+=(v)
     v
