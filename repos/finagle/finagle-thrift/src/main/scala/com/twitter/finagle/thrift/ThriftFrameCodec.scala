@@ -18,7 +18,7 @@ import org.jboss.netty.handler.codec.frame.{
   */
 private class ThriftFrameCodec extends SimpleChannelHandler {
   private[this] val decoder =
-    new LengthFieldBasedFrameDecoder(0x7FFFFFFF, 0, 4, 0, 4)
+    new LengthFieldBasedFrameDecoder(0x7fffffff, 0, 4, 0, 4)
   private[this] val encoder = new LengthFieldPrepender(4)
 
   override def handleUpstream(ctx: ChannelHandlerContext, e: ChannelEvent) =

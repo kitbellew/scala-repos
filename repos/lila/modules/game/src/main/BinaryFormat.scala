@@ -220,7 +220,7 @@ object BinaryFormat {
     def read(ba: ByteArray, variant: Variant): PieceMap = {
       def splitInts(b: Byte) = {
         val int = b.toInt
-        Array(int >> 4, int & 0x0F)
+        Array(int >> 4, int & 0x0f)
       }
       def intPiece(int: Int): Option[Piece] =
         intToRole(int & 7, variant) map { role =>

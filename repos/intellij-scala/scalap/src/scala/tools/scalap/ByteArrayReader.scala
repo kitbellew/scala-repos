@@ -90,7 +90,7 @@ class ByteArrayReader(content: Array[Byte]) {
   /** extract a long integer at position bp from buf
     */
   def getLong(bp: Int): Long =
-    (getInt(bp).toLong << 32) + (getInt(bp + 4).toLong & 0xFFFFFFFFL)
+    (getInt(bp).toLong << 32) + (getInt(bp + 4).toLong & 0xffffffffL)
 
   /** extract a float at position bp from buf
     */

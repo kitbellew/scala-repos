@@ -12,12 +12,13 @@ import scalaz.syntax.validation._
 
 trait CommandExecutors {
 
-  implicit def syncExecutor[T <: Command, S](handler: T =>
-    ModelValidation[S]): CommandExecutor[T, ModelValidation[S]] =
+  implicit def syncExecutor[T <: Command, S](handler: T => ModelValidation[S])
+      : CommandExecutor[T, ModelValidation[S]] =
     new BlockingCommandExecutor(handler)
 
-  implicit def syncModelExecutor[T <: Command <% S, S](handler: S =>
-    ModelValidation[S]): CommandExecutor[T, ModelValidation[S]] =
+  implicit def syncModelExecutor[T <: Command <% S, S](
+      handler: S => ModelValidation[S])
+      : CommandExecutor[T, ModelValidation[S]] =
     new BlockingModelExecutor[T, S](handler)
 
   implicit def asyncExecutor[T <: Command, S](

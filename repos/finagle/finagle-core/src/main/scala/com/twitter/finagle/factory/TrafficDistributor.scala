@@ -135,8 +135,9 @@ private[finagle] object TrafficDistributor {
 private[finagle] class TrafficDistributor[Req, Rep](
     dest: Activity[Set[Address]],
     newEndpoint: Address => ServiceFactory[Req, Rep],
-    newBalancer: Activity[Set[ServiceFactory[Req, Rep]]] =>
-      ServiceFactory[Req, Rep],
+    newBalancer: Activity[Set[ServiceFactory[Req, Rep]]] => ServiceFactory[
+      Req,
+      Rep],
     eagerEviction: Boolean,
     rng: Rng = Rng.threadLocal,
     statsReceiver: StatsReceiver = NullStatsReceiver)

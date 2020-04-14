@@ -495,7 +495,7 @@ object Uri {
     def apply(byte1: Byte, byte2: Byte, byte3: Byte, byte4: Byte): IPv4Host =
       apply(Array(byte1, byte2, byte3, byte4))
     def apply(bytes: Array[Byte]): IPv4Host =
-      apply(bytes, bytes.map(_ & 0xFF).mkString("."))
+      apply(bytes, bytes.map(_ & 0xff).mkString("."))
 
     private[http] def apply(bytes: Array[Byte], address: String): IPv4Host =
       IPv4Host(immutable.Seq(bytes: _*), address)

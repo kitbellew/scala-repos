@@ -132,8 +132,8 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
       headers: Map[String, String] = Map.empty)(implicit
       r: S => ValueReader[S, I],
       mi: Manifest[I],
-      multiParams: MultiParams =>
-        ValueReader[MultiParams, Seq[String]]): this.type = {
+      multiParams: MultiParams => ValueReader[MultiParams, Seq[String]])
+      : this.type = {
     doBeforeBindingActions()
 
     bindings = bindings map {

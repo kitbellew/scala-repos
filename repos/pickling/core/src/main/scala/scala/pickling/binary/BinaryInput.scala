@@ -90,9 +90,9 @@ abstract class BinaryInput {
     lookahead match {
       case Some(b) =>
         var i = b << 24
-        i |= (getByte.toInt << 16) & 0xFF0000
-        i |= (getByte.toInt << 8) & 0xFF00
-        i |= (getByte.toInt) & 0xFF
+        i |= (getByte.toInt << 16) & 0xff0000
+        i |= (getByte.toInt << 8) & 0xff00
+        i |= (getByte.toInt) & 0xff
         lookahead = None
         i
       case None =>
@@ -148,7 +148,7 @@ class ByteArrayInput(data: Array[Byte]) extends BinaryInput {
   def getChar() = {
     var res = 0
     res |= data(idx) << 8
-    res |= data(idx + 1).toInt & 0xFF
+    res |= data(idx + 1).toInt & 0xff
     idx += 2
     res.asInstanceOf[Char]
   }
@@ -156,7 +156,7 @@ class ByteArrayInput(data: Array[Byte]) extends BinaryInput {
   def getShort() = {
     var res = 0
     res |= data(idx) << 8
-    res |= data(idx + 1).toInt & 0xFF
+    res |= data(idx + 1).toInt & 0xff
     idx += 2
     res.asInstanceOf[Short]
   }
@@ -164,23 +164,23 @@ class ByteArrayInput(data: Array[Byte]) extends BinaryInput {
   def getInt() = {
     var res = (0: Int)
     res |= (data(idx) << 24)
-    res |= (data(idx + 1) << 16) & 0xFF0000
-    res |= (data(idx + 2) << 8) & 0xFF00
-    res |= (data(idx + 3)) & 0xFF
+    res |= (data(idx + 1) << 16) & 0xff0000
+    res |= (data(idx + 2) << 8) & 0xff00
+    res |= (data(idx + 3)) & 0xff
     idx += 4
     res
   }
 
   def getLong() = {
     var res = (0: Long)
-    res |= (data(idx).toLong << 56) & 0xFFFFFFFFFFFFFFFFL
-    res |= (data(idx + 1).toLong << 48) & 0x00FFFFFFFFFFFFFFL
-    res |= (data(idx + 2).toLong << 40) & 0x0000FFFFFFFFFFFFL
-    res |= (data(idx + 3).toLong << 32) & 0x000000FFFFFFFFFFL
-    res |= (data(idx + 4).toLong << 24) & 0x00000000FFFFFFFFL
-    res |= (data(idx + 5).toLong << 16) & 0x0000000000FFFFFFL
-    res |= (data(idx + 6).toLong << 8) & 0x000000000000FFFFL
-    res |= (data(idx + 7).toLong) & 0x00000000000000FFL
+    res |= (data(idx).toLong << 56) & 0xffffffffffffffffL
+    res |= (data(idx + 1).toLong << 48) & 0x00ffffffffffffffL
+    res |= (data(idx + 2).toLong << 40) & 0x0000ffffffffffffL
+    res |= (data(idx + 3).toLong << 32) & 0x000000ffffffffffL
+    res |= (data(idx + 4).toLong << 24) & 0x00000000ffffffffL
+    res |= (data(idx + 5).toLong << 16) & 0x0000000000ffffffL
+    res |= (data(idx + 6).toLong << 8) & 0x000000000000ffffL
+    res |= (data(idx + 7).toLong) & 0x00000000000000ffL
     idx += 8
     res
   }

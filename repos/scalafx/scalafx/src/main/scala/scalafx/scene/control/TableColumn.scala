@@ -262,8 +262,8 @@ class TableColumn[S, T](
     * }
     * }}}
     */
-  def cellValueFactory: ObjectProperty[TableColumn.CellDataFeatures[S, T] =>
-    ObservableValue[T, T]] =
+  def cellValueFactory: ObjectProperty[
+    TableColumn.CellDataFeatures[S, T] => ObservableValue[T, T]] =
     ObjectProperty((features: TableColumn.CellDataFeatures[S, T]) =>
       delegate.cellValueFactoryProperty.getValue.call(features))
   def cellValueFactory_=(

@@ -163,10 +163,10 @@ object LFib4 {
 
     () => {
       c += 1
-      c &= 0xFF
+      c &= 0xff
       state(c) =
-        state(c) + state((c + 58) & 0xFF) + state((c + 119) & 0xFF) + state(
-          (c + 178) & 0xFF)
+        state(c) + state((c + 58) & 0xff) + state((c + 119) & 0xff) + state(
+          (c + 178) & 0xff)
       state(c)
     }
   }
@@ -222,6 +222,6 @@ case class RandomStream(rng: () => Long) extends InputStream {
       case 7 => r >>> 48
       case 8 => c = 0; val tmp = (r >>> 56); r = rng(); tmp
     }
-    (byte & 0xFF).asInstanceOf[Int]
+    (byte & 0xff).asInstanceOf[Int]
   }
 }

@@ -92,7 +92,7 @@ class GzipDecompressor(maxBytesPerChunk: Int = Decoder.MaxBytesPerChunkDefault)
         override def parse(
             reader: ByteStringParser.ByteReader): ParseResult[ByteString] = {
           import reader._
-          if (readByte() != 0x1F || readByte() != 0x8B)
+          if (readByte() != 0x1f || readByte() != 0x8b)
             fail("Not in GZIP format") // check magic header
           if (readByte() != 8)
             fail(
@@ -132,7 +132,7 @@ class GzipDecompressor(maxBytesPerChunk: Int = Decoder.MaxBytesPerChunkDefault)
   private def crc16(data: ByteString) = {
     val crc = new CRC32
     crc.update(data.toArray)
-    crc.getValue.toInt & 0xFFFF
+    crc.getValue.toInt & 0xffff
   }
 }
 
@@ -140,8 +140,8 @@ class GzipDecompressor(maxBytesPerChunk: Int = Decoder.MaxBytesPerChunkDefault)
 private[http] object GzipDecompressor {
   // RFC 1952: http://tools.ietf.org/html/rfc1952 section 2.2
   val Header = ByteString(
-    0x1F, // ID1
-    0x8B, // ID2
+    0x1f, // ID1
+    0x8b, // ID2
     8, // CM = Deflate
     0, // FLG
     0, // MTIME 1

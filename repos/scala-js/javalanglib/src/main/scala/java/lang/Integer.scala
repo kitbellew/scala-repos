@@ -97,7 +97,7 @@ object Integer {
 
         @inline def isOutOfBounds: scala.Boolean = {
           if (signed) res > MAX_VALUE || res < MIN_VALUE
-          else res > 0xFFFFFFFFL || res < 0
+          else res > 0xffffffffL || res < 0
         }
 
         if (res.isNaN || isOutOfBounds) {
@@ -127,7 +127,7 @@ object Integer {
   }
 
   @inline def toUnsignedLong(x: Int): scala.Long =
-    x.toLong & 0xFFFFFFFFL
+    x.toLong & 0xffffffffL
 
   def bitCount(i: scala.Int): scala.Int = {
     /* See http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
@@ -147,7 +147,7 @@ object Integer {
      */
     val t1 = i - ((i >> 1) & 0x55555555)
     val t2 = (t1 & 0x33333333) + ((t1 >> 2) & 0x33333333)
-    (((t2 + (t2 >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24
+    (((t2 + (t2 >> 4)) & 0xf0f0f0f) * 0x1010101) >> 24
   }
 
   @inline def divideUnsigned(dividend: Int, divisor: Int): Int = {
@@ -169,8 +169,8 @@ object Integer {
 
   def reverseBytes(i: scala.Int): scala.Int = {
     val byte3 = i >>> 24
-    val byte2 = (i >>> 8) & 0xFF00
-    val byte1 = (i << 8) & 0xFF0000
+    val byte2 = (i >>> 8) & 0xff00
+    val byte1 = (i << 8) & 0xff0000
     val byte0 = i << 24
     byte0 | byte1 | byte2 | byte3
   }

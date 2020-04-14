@@ -29,7 +29,7 @@ object RawBitSet {
   final def get(bits: Array[Int], i: Int): Boolean = {
     val pos = i >>> 5
     if (pos < bits.length) {
-      (bits(pos) & (1 << (i & 0x1F))) != 0
+      (bits(pos) & (1 << (i & 0x1f))) != 0
     } else {
       false
     }
@@ -38,7 +38,7 @@ object RawBitSet {
   final def set(bits: Array[Int], i: Int) {
     val pos = i >>> 5
     if (pos < bits.length) {
-      bits(pos) |= (1 << (i & 0x1F))
+      bits(pos) |= (1 << (i & 0x1f))
     } else {
       throw new IndexOutOfBoundsException("Bit %d is out of range." format i)
     }
@@ -47,7 +47,7 @@ object RawBitSet {
   final def clear(bits: Array[Int], i: Int) {
     val pos = i >>> 5
     if (pos < bits.length) {
-      bits(pos) &= ~(1 << (i & 0x1F))
+      bits(pos) &= ~(1 << (i & 0x1f))
     }
   }
 

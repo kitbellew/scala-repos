@@ -204,9 +204,9 @@ class Flags extends ModifierFlags {
   // they could be used as normal flags.
 
   final val InitialFlags =
-    0x0007FFFFFFFFFFFFL // normal flags, enabled from the first phase: 1L to (1L << 50)
+    0x0007ffffffffffffL // normal flags, enabled from the first phase: 1L to (1L << 50)
   final val LateFlags =
-    0x00F8000000000000L // flags that override flags in (1L << 4) to (1L << 8): DEFERRED, FINAL, INTERFACE, METHOD, MODULE
+    0x00f8000000000000L // flags that override flags in (1L << 4) to (1L << 8): DEFERRED, FINAL, INTERFACE, METHOD, MODULE
   final val AntiFlags =
     0x0700000000000000L // flags that cancel flags in 1L to (1L << 2): PROTECTED, OVERRIDE, PRIVATE
   final val LateShift = 47
@@ -380,7 +380,7 @@ class Flags extends ModifierFlags {
   private final val MODULE_PKL = (1 << 10)
   private final val INTERFACE_PKL = (1 << 11)
 
-  private final val PKL_MASK = 0x00000FFF
+  private final val PKL_MASK = 0x00000fff
 
   /** Pickler correspondence, ordered roughly by frequency of occurrence */
   private def rawPickledCorrespondence =

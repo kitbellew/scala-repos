@@ -33,8 +33,9 @@ trait ScLiteral
   def setTypeWithoutImplicits(tp: Option[ScType])
   def isString: Boolean
   def isMultiLineString: Boolean
-  def getAnnotationOwner(annotationOwnerLookUp: ScLiteral =>
-    Option[PsiAnnotationOwner with PsiElement]): Option[PsiAnnotationOwner]
+  def getAnnotationOwner(
+      annotationOwnerLookUp: ScLiteral => Option[
+        PsiAnnotationOwner with PsiElement]): Option[PsiAnnotationOwner]
   def isSymbol: Boolean
   def isChar: Boolean
   def contentRange: TextRange

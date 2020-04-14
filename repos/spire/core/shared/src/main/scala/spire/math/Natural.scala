@@ -531,7 +531,7 @@ sealed abstract class Natural
           Natural((d.toLong >> m) | carry)
         case Digit(d, tail) =>
           val t = (d.toLong | carry) << (32 - m)
-          Digit(UInt(t >> 32), recur(tail, t & 0xFFFFFFFFL))
+          Digit(UInt(t >> 32), recur(tail, t & 0xffffffffL))
       }
     recur(chop(n / 32).reversed, 0L).reversed
   }
@@ -613,7 +613,7 @@ object Natural extends NaturalInstances {
   }
 
   def apply(n: Long): Natural =
-    if ((n & 0xFFFFFFFFL) == n)
+    if ((n & 0xffffffffL) == n)
       End(UInt(n.toInt))
     else
       Digit(UInt(n.toInt), End(UInt((n >> 32).toInt)))
@@ -622,10 +622,10 @@ object Natural extends NaturalInstances {
     if (n < 0)
       throw new IllegalArgumentException(
         "negative numbers not allowed: %s" format n)
-    else if (n < 0xFFFFFFFFL)
+    else if (n < 0xffffffffL)
       End(UInt(n.toLong))
     else
-      Digit(UInt((n & 0xFFFFFFFFL).toLong), apply(n >> 32))
+      Digit(UInt((n & 0xffffffffL).toLong), apply(n >> 32))
 
   private val ten18 = Natural(1000000000000000000L)
   def apply(s: String): Natural = {
@@ -720,7 +720,7 @@ object Natural extends NaturalInstances {
         this
       } else {
         val t = d.toLong + n.toLong
-        if (t <= 0xFFFFFFFFL)
+        if (t <= 0xffffffffL)
           End(UInt(t))
         else
           Digit(UInt(t), End(UInt(1)))

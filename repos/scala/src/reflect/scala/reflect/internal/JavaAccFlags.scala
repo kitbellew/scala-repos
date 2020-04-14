@@ -27,7 +27,7 @@ import ClassfileConstants._
 final class JavaAccFlags private (val coded: Int) extends AnyVal {
   private def has(mask: Int) = (flags & mask) != 0
   private def flagCarrierId = coded >>> 16
-  private def flags = coded & 0xFFFF
+  private def flags = coded & 0xffff
 
   def isAbstract = has(JAVA_ACC_ABSTRACT)
   def isAnnotation = has(JAVA_ACC_ANNOTATION)
@@ -76,7 +76,7 @@ object JavaAccFlags {
   private val Constructor = 4
 
   private def create(flagCarrier: Int, access_flags: Int): JavaAccFlags =
-    new JavaAccFlags((flagCarrier << 16) | (access_flags & 0xFFFF))
+    new JavaAccFlags((flagCarrier << 16) | (access_flags & 0xffff))
 
   def classFlags(flags: Int): JavaAccFlags = create(Class, flags)
   def methodFlags(flags: Int): JavaAccFlags = create(Method, flags)

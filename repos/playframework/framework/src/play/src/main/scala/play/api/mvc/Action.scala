@@ -267,13 +267,14 @@ trait BodyParser[+A]
   */
 object BodyParser {
 
-  def apply[T](f: RequestHeader =>
-    Accumulator[ByteString, Either[Result, T]]): BodyParser[T] = {
+  def apply[T](f: RequestHeader => Accumulator[ByteString, Either[Result, T]])
+      : BodyParser[T] = {
     apply("(no name)")(f)
   }
 
-  def apply[T](debugName: String)(f: RequestHeader =>
-    Accumulator[ByteString, Either[Result, T]]): BodyParser[T] =
+  def apply[T](debugName: String)(
+      f: RequestHeader => Accumulator[ByteString, Either[Result, T]])
+      : BodyParser[T] =
     new BodyParser[T] {
       def apply(rh: RequestHeader) = f(rh)
       override def toString = "BodyParser(" + debugName + ")"
@@ -290,8 +291,8 @@ object BodyParser {
     * }}}
     */
   @deprecated("Use apply instead", "2.5.0")
-  def iteratee[T](f: RequestHeader =>
-    Iteratee[ByteString, Either[Result, T]]): BodyParser[T] = {
+  def iteratee[T](f: RequestHeader => Iteratee[ByteString, Either[Result, T]])
+      : BodyParser[T] = {
     iteratee("(no name)")(f)
   }
 
@@ -306,8 +307,9 @@ object BodyParser {
     * }}}
     */
   @deprecated("Use apply instead", "2.5.0")
-  def iteratee[T](debugName: String)(f: RequestHeader =>
-    Iteratee[ByteString, Either[Result, T]]): BodyParser[T] =
+  def iteratee[T](debugName: String)(
+      f: RequestHeader => Iteratee[ByteString, Either[Result, T]])
+      : BodyParser[T] =
     new BodyParser[T] {
       def apply(rh: RequestHeader) = Streams.iterateeToAccumulator(f(rh))
       override def toString = "BodyParser(" + debugName + ")"

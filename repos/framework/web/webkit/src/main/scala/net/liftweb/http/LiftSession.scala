@@ -1318,8 +1318,9 @@ class LiftSession(
     }
   }
 
-  def buildXformer(xformRule: String, field: List[String]): NodeSeq =>
-    NodeSeq = {
+  def buildXformer(
+      xformRule: String,
+      field: List[String]): NodeSeq => NodeSeq = {
     def retFunc(ns: NodeSeq): NodeSeq = {
       val cur = currentSourceContext.get
       val value = field match {

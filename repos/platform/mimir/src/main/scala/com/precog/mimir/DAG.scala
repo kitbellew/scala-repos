@@ -64,8 +64,10 @@ trait DAG extends Instructions {
         splits: List[OpenSplit],
         stream: Vector[Instruction])
         : Trampoline[Either[StackError, DepGraph]] = {
-      @inline def continue(f: List[Either[BucketSpec, DepGraph]] =>
-        Either[StackError, List[Either[BucketSpec, DepGraph]]])
+      @inline def continue(
+          f: List[Either[BucketSpec, DepGraph]] => Either[
+            StackError,
+            List[Either[BucketSpec, DepGraph]]])
           : Trampoline[Either[StackError, DepGraph]] = {
         Free.suspend(
           M.sequence(f(roots).right map { roots2 =>
@@ -539,8 +541,9 @@ trait DAG extends Instructions {
 
     def containsSplitArg: Boolean
 
-    def mapDown(body: (DepGraph => DepGraph) =>
-      PartialFunction[DepGraph, DepGraph]): DepGraph = {
+    def mapDown(
+        body: (DepGraph => DepGraph) => PartialFunction[DepGraph, DepGraph])
+        : DepGraph = {
       val memotable = mutable.Map[DepGraphWrapper, DepGraph]()
 
       def memoized(node: DepGraph): DepGraph = {

@@ -361,7 +361,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
       val thisLen = numberLength
       val divisorLen = divisor.numberLength
       if (thisLen + divisorLen == 2) {
-        var bi = (digits(0) & 0xFFFFFFFFL) / (divisor.digits(0) & 0xFFFFFFFFL)
+        var bi = (digits(0) & 0xffffffffL) / (divisor.digits(0) & 0xffffffffL)
         if (thisSign != divisorSign)
           bi = -bi
         valueOf(bi)
@@ -526,8 +526,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
 
   override def longValue(): Long = {
     val value =
-      if (numberLength > 1) (digits(1).toLong << 32) | (digits(0) & 0xFFFFFFFFL)
-      else digits(0) & 0xFFFFFFFFL
+      if (numberLength > 1) (digits(1).toLong << 32) | (digits(0) & 0xffffffffL)
+      else digits(0) & 0xffffffffL
     sign * value
   }
 
@@ -857,10 +857,10 @@ class BigInteger extends Number with Comparable[BigInteger] {
     def loop(): Unit =
       if (bytesLen > highBytes) {
         digits(i) =
-          (byteValues(bytesLen - 1) & 0xFF) |
-            (byteValues(bytesLen - 2) & 0xFF) << 8 |
-            (byteValues(bytesLen - 3) & 0xFF) << 16 |
-            (byteValues(bytesLen - 4) & 0xFF) << 24
+          (byteValues(bytesLen - 1) & 0xff) |
+            (byteValues(bytesLen - 2) & 0xff) << 8 |
+            (byteValues(bytesLen - 3) & 0xff) << 16 |
+            (byteValues(bytesLen - 4) & 0xff) << 24
         bytesLen -= 4
         if (digits(i) != 0) {
           digits(i) = -digits(i)
@@ -868,10 +868,10 @@ class BigInteger extends Number with Comparable[BigInteger] {
           i += 1
           while (bytesLen > highBytes) {
             digits(i) =
-              (byteValues(bytesLen - 1) & 0xFF) |
-                (byteValues(bytesLen - 2) & 0xFF) << 8 |
-                (byteValues(bytesLen - 3) & 0xFF) << 16 |
-                (byteValues(bytesLen - 4) & 0xFF) << 24
+              (byteValues(bytesLen - 1) & 0xff) |
+                (byteValues(bytesLen - 2) & 0xff) << 8 |
+                (byteValues(bytesLen - 3) & 0xff) << 16 |
+                (byteValues(bytesLen - 4) & 0xff) << 24
             bytesLen -= 4
             digits(i) = ~digits(i)
             i += 1
@@ -887,12 +887,12 @@ class BigInteger extends Number with Comparable[BigInteger] {
       // Put the first bytes in the highest element of the int array
       if (firstNonzeroDigit != firstNonzeroDigitNotSet) {
         for (j <- 0 until bytesLen) {
-          digits(i) = (digits(i) << 8) | (byteValues(j) & 0xFF)
+          digits(i) = (digits(i) << 8) | (byteValues(j) & 0xff)
         }
         digits(i) = ~digits(i)
       } else {
         for (j <- 0 until bytesLen) {
-          digits(i) = (digits(i) << 8) | (byteValues(j) & 0xFF)
+          digits(i) = (digits(i) << 8) | (byteValues(j) & 0xff)
         }
         digits(i) = -digits(i)
       }
@@ -910,16 +910,16 @@ class BigInteger extends Number with Comparable[BigInteger] {
     var i = 0
     while (bytesLen > highBytes) {
       digits(i) =
-        (byteValues(bytesLen - 1) & 0xFF) |
-          (byteValues(bytesLen - 2) & 0xFF) << 8 |
-          (byteValues(bytesLen - 3) & 0xFF) << 16 |
-          (byteValues(bytesLen - 4) & 0xFF) << 24
+        (byteValues(bytesLen - 1) & 0xff) |
+          (byteValues(bytesLen - 2) & 0xff) << 8 |
+          (byteValues(bytesLen - 3) & 0xff) << 16 |
+          (byteValues(bytesLen - 4) & 0xff) << 24
       bytesLen = bytesLen - 4
       i += 1
     }
     // Put the first bytes in the highest element of the int array
     for (j <- 0 until bytesLen) {
-      digits(i) = (digits(i) << 8) | (byteValues(j) & 0xFF)
+      digits(i) = (digits(i) << 8) | (byteValues(j) & 0xff)
     }
   }
 

@@ -74,7 +74,7 @@ object Lexer {
   val EOF = new Token("<end of input>")
 
   private def toUDigit(ch: Int): Char = {
-    val d = ch & 0xF
+    val d = ch & 0xf
     (if (d < 10) d + '0' else d - 10 + 'A').toChar
   }
 

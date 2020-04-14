@@ -22,7 +22,7 @@ import com.twitter.scalding._
 private[typed] object LongIntPacker {
   def lr(l: Int, r: Int): Long = (l.toLong << 32) | r
   def l(rowCol: Long) = (rowCol >>> 32).toInt
-  def r(rowCol: Long) = (rowCol & 0xFFFFFFFF).toInt
+  def r(rowCol: Long) = (rowCol & 0xffffffff).toInt
 }
 
 class MutatedSourceJob(args: Args) extends Job(args) {

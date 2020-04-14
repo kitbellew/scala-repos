@@ -70,9 +70,9 @@ trait Styles {
 
   def gray = btn(LTGRAY)
 
-  def blue = btn(0xff68B8FC)
+  def blue = btn(0xff68b8fc)
 
-  def green = btn(0xff65CA60)
+  def green = btn(0xff65ca60)
 
   def yellow = btn(0xfff3d05d)
 }

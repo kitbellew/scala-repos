@@ -246,8 +246,9 @@ private[http] object Handshake {
           }
       }
 
-      def check[T](value: HttpResponse ⇒
-        T)(condition: T ⇒ Boolean, msg: T ⇒ String): Expectation =
+      def check[T](value: HttpResponse ⇒ T)(
+          condition: T ⇒ Boolean,
+          msg: T ⇒ String): Expectation =
         new Expectation {
           def apply(resp: HttpResponse): Option[String] = {
             val v = value(resp)

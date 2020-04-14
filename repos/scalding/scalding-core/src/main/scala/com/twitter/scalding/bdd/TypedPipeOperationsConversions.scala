@@ -39,8 +39,10 @@ trait TypedPipeOperationsConversions {
   }
 
   class ThreeTypedPipesOperation[TypeIn1, TypeIn2, TypeIn3, TypeOut](
-      op: (TypedPipe[TypeIn1], TypedPipe[TypeIn2], TypedPipe[TypeIn3]) =>
-        TypedPipe[TypeOut])
+      op: (
+          TypedPipe[TypeIn1],
+          TypedPipe[TypeIn2],
+          TypedPipe[TypeIn3]) => TypedPipe[TypeOut])
       extends TypedPipeOperation[TypeOut] {
     override def apply(pipes: List[TypedPipe[_]]): TypedPipe[TypeOut] = {
       assertPipeSize(pipes, 3)
@@ -71,8 +73,10 @@ trait TypedPipeOperationsConversions {
       TypeIn2,
       TypeIn3,
       TypeOut](
-      op: (TypedPipe[TypeIn1], TypedPipe[TypeIn2], TypedPipe[TypeIn3]) =>
-        TypedPipe[TypeOut]) =
+      op: (
+          TypedPipe[TypeIn1],
+          TypedPipe[TypeIn2],
+          TypedPipe[TypeIn3]) => TypedPipe[TypeOut]) =
     new ThreeTypedPipesOperation[TypeIn1, TypeIn2, TypeIn3, TypeOut](op)
 
   implicit def fromListOfTypedPipesFunctionToOperation[TypeOut](

@@ -25,13 +25,13 @@ trait Field[@sp(Byte, Short, Int, Long, Float, Double) A]
         "Double must be representable as a fraction.")
 
       val bits = doubleToLongBits(a)
-      val m = bits & 0x000FFFFFFFFFFFFFL | 0x0010000000000000L
+      val m = bits & 0x000fffffffffffffL | 0x0010000000000000L
       val zeros = numberOfTrailingZeros(m)
       val value = m >>> zeros
-      val exp = ((bits >> 52) & 0x7FF).toInt - 1075 + zeros // 1023 + 52
+      val exp = ((bits >> 52) & 0x7ff).toInt - 1075 + zeros // 1023 + 52
 
       val high = times(fromInt((value >>> 30).toInt), fromInt(1 << 30))
-      val low = fromInt((value & 0x3FFFFFFF).toInt)
+      val low = fromInt((value & 0x3fffffff).toInt)
       val num = plus(high, low)
       val unsigned = if (exp > 0) {
         times(num, pow(fromInt(2), exp))

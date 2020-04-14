@@ -200,7 +200,7 @@ class FileAndResourceDirectivesSpec
           .awaitResult(1.second)
           .data
           .asByteBuffer
-          .getInt shouldEqual 0xCAFEBABE
+          .getInt shouldEqual 0xcafebabe
       }
     }
     "return the file content with MediaType 'application/octet-stream' on unknown file extensions" in {
@@ -245,7 +245,7 @@ class FileAndResourceDirectivesSpec
           .awaitResult(1.second)
           .data
           .asByteBuffer
-          .getInt shouldEqual 0xCAFEBABE
+          .getInt shouldEqual 0xcafebabe
       }
     }
     "reject requests to directory resources" in {

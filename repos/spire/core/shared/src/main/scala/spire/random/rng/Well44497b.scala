@@ -102,7 +102,7 @@ final class Well44497b protected[random] (state: Array[Int], i0: Int)
 
 object Well44497b extends GeneratorCompanion[Well44497b, (Array[Int], Int)] {
 
-  @inline private val UpperMask = 0xFFFFFFFF >>> 17
+  @inline private val UpperMask = 0xffffffff >>> 17
   @inline private val LowerMask = ~UpperMask
 
   @inline private val TemperB = 0x93dd1400

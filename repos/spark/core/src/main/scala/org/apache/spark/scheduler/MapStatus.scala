@@ -76,7 +76,7 @@ private[spark] object MapStatus {
     if (compressedSize == 0) {
       0
     } else {
-      math.pow(LOG_BASE, compressedSize & 0xFF).toLong
+      math.pow(LOG_BASE, compressedSize & 0xff).toLong
     }
   }
 }

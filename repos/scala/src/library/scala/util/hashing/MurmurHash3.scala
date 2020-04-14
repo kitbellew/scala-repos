@@ -136,10 +136,10 @@ private[hashing] class MurmurHash3 {
     // Body
     var i = 0
     while (len >= 4) {
-      var k = data(i + 0) & 0xFF
-      k |= (data(i + 1) & 0xFF) << 8
-      k |= (data(i + 2) & 0xFF) << 16
-      k |= (data(i + 3) & 0xFF) << 24
+      var k = data(i + 0) & 0xff
+      k |= (data(i + 1) & 0xff) << 8
+      k |= (data(i + 2) & 0xff) << 16
+      k |= (data(i + 3) & 0xff) << 24
 
       h = mix(h, k)
 
@@ -149,10 +149,10 @@ private[hashing] class MurmurHash3 {
 
     // Tail
     var k = 0
-    if (len == 3) k ^= (data(i + 2) & 0xFF) << 16
-    if (len >= 2) k ^= (data(i + 1) & 0xFF) << 8
+    if (len == 3) k ^= (data(i + 2) & 0xff) << 16
+    if (len >= 2) k ^= (data(i + 1) & 0xff) << 8
     if (len >= 1) {
-      k ^= (data(i + 0) & 0xFF)
+      k ^= (data(i + 0) & 0xff)
       h = mixLast(h, k)
     }
 

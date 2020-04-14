@@ -440,8 +440,8 @@ object Hex {
     val value = new Array[Byte](length * 2)
     var i = 0
     while (i < length) {
-      value(i * 2) = Hex.hexDigits((bytes(i) & 0xF0) >> 4)
-      value(i * 2 + 1) = Hex.hexDigits(bytes(i) & 0x0F)
+      value(i * 2) = Hex.hexDigits((bytes(i) & 0xf0) >> 4)
+      value(i * 2 + 1) = Hex.hexDigits(bytes(i) & 0x0f)
       i += 1
     }
     UTF8String.fromBytes(value)
@@ -454,7 +454,7 @@ object Hex {
     var len = 0
     do {
       len += 1
-      value(value.length - len) = Hex.hexDigits((numBuf & 0xF).toInt)
+      value(value.length - len) = Hex.hexDigits((numBuf & 0xf).toInt)
       numBuf >>>= 4
     } while (numBuf != 0)
     UTF8String.fromBytes(
@@ -486,7 +486,7 @@ object Hex {
       if (first == -1 || second == -1) {
         return null
       }
-      out(i / 2) = (((first << 4) | second) & 0xFF).toByte
+      out(i / 2) = (((first << 4) | second) & 0xff).toByte
       i += 2
     }
     out

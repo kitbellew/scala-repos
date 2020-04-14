@@ -518,7 +518,7 @@ abstract class Pickler extends SubComponent {
       def writeModifiers(mods: Modifiers) {
         val pflags = rawToPickledFlags(mods.flags)
         writeNat((pflags >> 32).toInt)
-        writeNat((pflags & 0xFFFFFFFF).toInt)
+        writeNat((pflags & 0xffffffff).toInt)
         writeRef(mods.privateWithin)
       }
 

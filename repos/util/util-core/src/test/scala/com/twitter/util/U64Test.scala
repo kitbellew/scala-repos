@@ -22,9 +22,9 @@ class U64Test extends WordSpec {
     }
 
     {
-      val a = 0xFFFFFFFFFFFFFFFFL
+      val a = 0xffffffffffffffffL
       assert(a == -1)
-      val b = 0xFFFFFFFFFFFFFFFEL
+      val b = 0xfffffffffffffffeL
       assert(b == -2)
 
       assert(a.u64_<(b) == false)
@@ -32,7 +32,7 @@ class U64Test extends WordSpec {
     }
 
     {
-      val a = 0xFFFFFFFFFFFFFFFFL
+      val a = 0xffffffffffffffffL
       assert(a == -1)
       val b = 0x0000000000000001L
       assert(b == 1)
@@ -52,79 +52,79 @@ class U64Test extends WordSpec {
     assert(2L.u64_within(-1, 1) == false)
 
     assert(
-      0xFFFFFFFFFFFFFFFEL
-        .u64_within(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
+      0xfffffffffffffffeL
+        .u64_within(0xfffffffffffffffdL, 0xffffffffffffffffL) == true)
     assert(
-      0xFFFFFFFFFFFFFFFDL
-        .u64_within(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == false)
+      0xfffffffffffffffdL
+        .u64_within(0xfffffffffffffffdL, 0xffffffffffffffffL) == false)
     assert(
-      0xFFFFFFFFFFFFFFFFL
-        .u64_within(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == false)
+      0xffffffffffffffffL
+        .u64_within(0xfffffffffffffffdL, 0xffffffffffffffffL) == false)
 
     assert(
-      0xFFFFFFFFFFFFFFFEL
-        .u64_contained(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
+      0xfffffffffffffffeL
+        .u64_contained(0xfffffffffffffffdL, 0xffffffffffffffffL) == true)
     assert(
-      0xFFFFFFFFFFFFFFFDL
-        .u64_contained(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
+      0xfffffffffffffffdL
+        .u64_contained(0xfffffffffffffffdL, 0xffffffffffffffffL) == true)
     assert(
-      0xFFFFFFFFFFFFFFFFL
-        .u64_contained(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
+      0xffffffffffffffffL
+        .u64_contained(0xfffffffffffffffdL, 0xffffffffffffffffL) == true)
 
     // Bit flip area!
     assert(
-      0x7FFFFFFFFFFFFFFFL
-        .u64_within(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == false)
+      0x7fffffffffffffffL
+        .u64_within(0x7fffffffffffffffL, 0x8000000000000000L) == false)
     assert(
       0x8000000000000000L
-        .u64_within(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == false)
+        .u64_within(0x7fffffffffffffffL, 0x8000000000000000L) == false)
 
     assert(
-      0x7FFFFFFFFFFFFFFFL
-        .u64_contained(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == true)
+      0x7fffffffffffffffL
+        .u64_contained(0x7fffffffffffffffL, 0x8000000000000000L) == true)
     assert(
       0x8000000000000000L
-        .u64_contained(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == true)
+        .u64_contained(0x7fffffffffffffffL, 0x8000000000000000L) == true)
 
     assert(
-      0x7FFFFFFFFFFFFFFAL
-        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == false)
+      0x7ffffffffffffffaL
+        .u64_within(0x7ffffffffffffffaL, 0x800000000000000aL) == false)
     assert(
-      0x7FFFFFFFFFFFFFFBL
-        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
+      0x7ffffffffffffffbL
+        .u64_within(0x7ffffffffffffffaL, 0x800000000000000aL) == true)
     assert(
-      0x7FFFFFFFFFFFFFFFL
-        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
+      0x7fffffffffffffffL
+        .u64_within(0x7ffffffffffffffaL, 0x800000000000000aL) == true)
     assert(
       0x8000000000000000L
-        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
+        .u64_within(0x7ffffffffffffffaL, 0x800000000000000aL) == true)
     assert(
       0x8000000000000001L
-        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
+        .u64_within(0x7ffffffffffffffaL, 0x800000000000000aL) == true)
     assert(
       0x8000000000000009L
-        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
+        .u64_within(0x7ffffffffffffffaL, 0x800000000000000aL) == true)
     assert(
-      0x800000000000000AL
-        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == false)
+      0x800000000000000aL
+        .u64_within(0x7ffffffffffffffaL, 0x800000000000000aL) == false)
   }
 
   "divisible" in {
     assert(10L.u64_/(5L) == 2L)
-    assert(0xFFFFFFFFFFFFFFFFL / 0x0FFFFFFFFFFFFFFFL == 0L)
-    assert(0xFFFFFFFFFFFFFFFFL.u64_/(0x0FFFFFFFFFFFFFFFL) == 16L)
+    assert(0xffffffffffffffffL / 0x0fffffffffffffffL == 0L)
+    assert(0xffffffffffffffffL.u64_/(0x0fffffffffffffffL) == 16L)
 
-    assert(0x7FFFFFFFFFFFFFFFL.u64_/(2) == 0x3FFFFFFFFFFFFFFFL)
+    assert(0x7fffffffffffffffL.u64_/(2) == 0x3fffffffffffffffL)
 
-    assert(0x8000000000000000L / 2 == 0xC000000000000000L)
+    assert(0x8000000000000000L / 2 == 0xc000000000000000L)
     assert(0x8000000000000000L.u64_/(2) == 0x4000000000000000L)
 
     assert(0x8000000000000000L.u64_/(0x8000000000000000L) == 1)
     assert(0x8000000000000000L.u64_/(0x8000000000000001L) == 0)
 
-    assert(0xFF00000000000000L.u64_/(0x0F00000000000000L) == 0x11L)
-    assert(0x8F00000000000000L.u64_/(0x100) == 0x008F000000000000L)
-    assert(0x8000000000000000L.u64_/(3) == 0x2AAAAAAAAAAAAAAAL)
+    assert(0xff00000000000000L.u64_/(0x0f00000000000000L) == 0x11L)
+    assert(0x8f00000000000000L.u64_/(0x100) == 0x008f000000000000L)
+    assert(0x8000000000000000L.u64_/(3) == 0x2aaaaaaaaaaaaaaaL)
   }
 
   "ids" should {
@@ -142,7 +142,7 @@ class U64Test extends WordSpec {
     "be serializable" in {
       assert(0L.toU64HexString == "0000000000000000")
       assert(0x0102030405060700L.toU64HexString == "0102030405060700")
-      assert(0xFFF1F2F3F4F5F6F7L.toU64HexString == "fff1f2f3f4f5f6f7")
+      assert(0xfff1f2f3f4f5f6f7L.toU64HexString == "fff1f2f3f4f5f6f7")
     }
 
     "convert from short hex string" in {

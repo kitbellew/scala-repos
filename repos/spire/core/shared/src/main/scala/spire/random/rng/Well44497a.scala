@@ -95,7 +95,7 @@ final class Well44497a protected[random] (state: Array[Int], i0: Int)
 
 object Well44497a extends GeneratorCompanion[Well44497a, (Array[Int], Int)] {
 
-  @inline private val UpperMask = 0xFFFFFFFF >>> 17
+  @inline private val UpperMask = 0xffffffff >>> 17
   @inline private val LowerMask = ~UpperMask
 
   // Number of bits in the pool.

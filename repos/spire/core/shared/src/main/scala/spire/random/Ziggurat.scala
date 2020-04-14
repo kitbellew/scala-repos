@@ -51,7 +51,7 @@ object Ziggurat {
 
   def rexp(g: Generator): Double = {
 
-    val jz = g.nextInt() & 0xFFFFFFFFL
+    val jz = g.nextInt() & 0xffffffffL
     val iz = (jz & 255).toInt
 
     if (jz < ke(iz)) jz * we(iz) else efix(g, jz, iz)
@@ -100,7 +100,7 @@ object Ziggurat {
 
       if (fe(iz) + g.nextDouble() * (fe(iz - 1) - fe(iz)) < exp(-x)) return x
 
-      jz = g.nextInt() & 0xFFFFFFFFL
+      jz = g.nextInt() & 0xffffffffL
       iz = (jz & 255).toInt
       if (jz < ke(iz)) return jz * we(iz)
 

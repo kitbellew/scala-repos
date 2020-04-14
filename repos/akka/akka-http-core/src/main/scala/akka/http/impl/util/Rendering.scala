@@ -177,7 +177,7 @@ private[http] trait Rendering {
         this ~~ CharUtils.lowerHexDigit(lng >>> shift)
         if (shift > 0) putChar(shift - 4) else this
       }
-      putChar((63 - java.lang.Long.numberOfLeadingZeros(lng)) & 0xFC)
+      putChar((63 - java.lang.Long.numberOfLeadingZeros(lng)) & 0xfc)
     } else this ~~ '0'
 
   def ~~(string: String): this.type = {

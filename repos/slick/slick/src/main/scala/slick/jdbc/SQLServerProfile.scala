@@ -324,9 +324,9 @@ trait SQLServerProfile extends JdbcProfile {
         val a = new Array[Char](bytes.length * 2)
         var j = 0
         while (j < bytes.length) {
-          val v = bytes(j) & 0xFF
+          val v = bytes(j) & 0xff
           a(j * 2) = hexChars(v >>> 4)
-          a(j * 2 + 1) = hexChars(v & 0x0F)
+          a(j * 2 + 1) = hexChars(v & 0x0f)
           j += 1
         }
         new String(a)

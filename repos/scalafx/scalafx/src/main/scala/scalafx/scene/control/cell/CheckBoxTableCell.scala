@@ -59,10 +59,10 @@ object CheckBoxTableCell {
     if (cell != null) cell.delegate else null
 
   private[cell] implicit def selectedIntPropertyToGetSelectedProperty(
-      selectedProperty: Int =>
-        ObservableValue[Boolean, java.lang.Boolean]): jfxu.Callback[
-    java.lang.Integer,
-    jfxbv.ObservableValue[java.lang.Boolean]] =
+      selectedProperty: Int => ObservableValue[Boolean, java.lang.Boolean])
+      : jfxu.Callback[
+        java.lang.Integer,
+        jfxbv.ObservableValue[java.lang.Boolean]] =
     new jfxu.Callback[
       java.lang.Integer,
       jfxbv.ObservableValue[java.lang.Boolean]] {

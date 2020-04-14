@@ -32,10 +32,10 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     when(channel.getCloseFuture) thenReturn closeFuture
     val port = 80 // never bound
     val portByte1 = (port >> 8).toByte
-    val portByte2 = (port & 0xFF).toByte
+    val portByte2 = (port & 0xff).toByte
 
     val remoteAddress = new InetSocketAddress(
-      InetAddress.getByAddress(null, Array[Byte](0x7F, 0x0, 0x0, 0x1)),
+      InetAddress.getByAddress(null, Array[Byte](0x7f, 0x0, 0x0, 0x1)),
       port)
     when(channel.getRemoteAddress) thenReturn remoteAddress
     val proxyAddress = mock[SocketAddress]
@@ -197,7 +197,7 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
         0x01,
         0x00,
         0x01,
-        0x7F,
+        0x7f,
         0x00,
         0x00,
         0x01,
@@ -214,7 +214,7 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
           0x00,
           0x00,
           0x01,
-          0x7F,
+          0x7f,
           0x00,
           0x00,
           0x01,
@@ -287,7 +287,7 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
         0x01,
         0x00,
         0x01,
-        0x7F,
+        0x7f,
         0x00,
         0x00,
         0x01,
@@ -304,7 +304,7 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
           0x00,
           0x00,
           0x01,
-          0x7F,
+          0x7f,
           0x00,
           0x00,
           0x01,

@@ -39,8 +39,8 @@ trait Packet {
 object Packet {
   val HeaderSize = 0x04
   val OkByte = 0x00.toByte
-  val ErrorByte = 0xFF.toByte
-  val EofByte = 0xFE.toByte
+  val ErrorByte = 0xff.toByte
+  val EofByte = 0xfe.toByte
 
   def apply(s: Short, b: Buffer): Packet =
     new Packet {

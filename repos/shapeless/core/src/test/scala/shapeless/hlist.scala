@@ -1818,9 +1818,9 @@ class HListTests {
       1 :: "true" :: "foo" :: 2.0 :: HNil,
       r14)
 
-    val r15 = sl.updateWith((_: String) => 0xF00)
+    val r15 = sl.updateWith((_: String) => 0xf00)
     assertTypedEquals[Int :: Boolean :: Int :: Double :: HNil](
-      1 :: true :: 0xF00 :: 2.0 :: HNil,
+      1 :: true :: 0xf00 :: 2.0 :: HNil,
       r15)
 
     val r16 = sl.updateWith((d: Double) => d.toString)

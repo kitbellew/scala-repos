@@ -30,8 +30,8 @@ object Helpers {
      * sequence which cyclically is monotone without end.
      */
     val diff =
-      ((System.identityHashCode(a) & 0xFFFFFFFFL) - (System.identityHashCode(
-        b) & 0xFFFFFFFFL))
+      ((System.identityHashCode(a) & 0xffffffffL) - (System.identityHashCode(
+        b) & 0xffffffffL))
     if (diff > 0) 1 else if (diff < 0) -1 else 0
   }
 

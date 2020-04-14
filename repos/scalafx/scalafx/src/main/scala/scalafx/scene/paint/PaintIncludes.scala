@@ -89,7 +89,7 @@ trait PaintIncludes {
     * @return $SFX $RETHEX
     */
   implicit def hex2sfxColor(h: Int): Color =
-    Color.rgb(h >>> 16 & 0xFF, h >>> 8 & 0xFF, h & 0xFF)
+    Color.rgb(h >>> 16 & 0xff, h >>> 8 & 0xff, h & 0xff)
 
   /**
     * $BEGINHEX $JFX $CLR. $ENDHEX
@@ -98,7 +98,7 @@ trait PaintIncludes {
     * @return $JFX $RETHEX
     */
   implicit def hex2jfxColor(h: Int): jfxsp.Color =
-    jfxsp.Color.rgb(h >>> 16 & 0xFF, h >>> 8 & 0xFF, h & 0xFF)
+    jfxsp.Color.rgb(h >>> 16 & 0xff, h >>> 8 & 0xff, h & 0xff)
 
   /**
     * $BEGINTUPLE3 $SFX $CLR.

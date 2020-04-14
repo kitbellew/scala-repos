@@ -879,16 +879,14 @@ object hlist {
         implicit
         tts: Aux[H2 :: T, M, LT, N0],
         u: Lub[H1, LT, L],
-        tvs2: M[LT] =>
-          GenTraversableLike[LT, M[
-            LT
-          ]], // tvs2, tev, and tcbf are required for the call to map below
+        tvs2: M[LT] => GenTraversableLike[LT, M[
+          LT
+        ]], // tvs2, tev, and tcbf are required for the call to map below
         tev: AdditiveCollection[M[LT]],
         tcbf: CanBuildFrom[M[LT], L, M[L]],
-        tvs: M[L] =>
-          GenTraversableLike[L, M[
-            L
-          ]], // tvs, cbf, and ev are required for the call to +: below
+        tvs: M[L] => GenTraversableLike[L, M[
+          L
+        ]], // tvs, cbf, and ev are required for the call to +: below
         cbf: CanBuildFrom[M[L], L, M[L]],
         ev: AdditiveCollection[M[L]]): Aux[H1 :: H2 :: T, M, L, Succ[N0]] =
       new ToSized[H1 :: H2 :: T, M] {

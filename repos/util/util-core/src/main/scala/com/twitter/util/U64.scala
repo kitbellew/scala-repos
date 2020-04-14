@@ -97,14 +97,14 @@ class RichU64String(string: String) {
 }
 
 object U64 {
-  private val bigInt0x8000000000000000L = (0x7FFFFFFFFFFFFFFFL: BigInt) + 1
+  private val bigInt0x8000000000000000L = (0x7fffffffffffffffL: BigInt) + 1
 
-  val U64MAX = 0xFFFFFFFFFFFFFFFFL
+  val U64MAX = 0xffffffffffffffffL
   val U64MIN = 0L
 
   def u64ToBigint(x: Long): BigInt =
     if ((x & 0x8000000000000000L) != 0L)
-      ((x & 0x7FFFFFFFFFFFFFFFL): BigInt) + bigInt0x8000000000000000L
+      ((x & 0x7fffffffffffffffL): BigInt) + bigInt0x8000000000000000L
     else
       x: BigInt
 

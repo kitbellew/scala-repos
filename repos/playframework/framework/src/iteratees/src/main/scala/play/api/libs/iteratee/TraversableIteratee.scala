@@ -23,9 +23,8 @@ object Traversable {
 
   def head[E] =
     new Head[E] {
-      def apply[A](implicit
-          p: E =>
-            scala.collection.TraversableLike[A, E]): Iteratee[E, Option[A]] = {
+      def apply[A](implicit p: E => scala.collection.TraversableLike[A, E])
+          : Iteratee[E, Option[A]] = {
 
         def step: K[E, Option[A]] = {
           case Input.Empty => Cont(step)

@@ -367,8 +367,9 @@ trait Config extends Serializable {
       .map(flowStepListenerSerializer.invert(_))
       .toList
 
-  def addFlowStepStrategy(flowStrategyProvider: (Mode, Config) =>
-    FlowStepStrategy[JobConf]): Config = {
+  def addFlowStepStrategy(
+      flowStrategyProvider: (Mode, Config) => FlowStepStrategy[JobConf])
+      : Config = {
     val serializedListener = flowStepStrategiesSerializer(flowStrategyProvider)
     update(Config.FlowStepStrategies) {
       case None      => (Some(serializedListener), ())

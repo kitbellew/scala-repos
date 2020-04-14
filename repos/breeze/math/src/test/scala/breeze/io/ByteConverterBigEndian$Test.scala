@@ -17,7 +17,7 @@ class ByteConverterBigEndian$Test extends FunSuite {
 
     valueS = 127
     ba = uInt8ToByte(valueS)
-    assert(ba == 0x7F)
+    assert(ba == 0x7f)
     assert(valueS == byteToUInt8(ba))
 
     valueS = 128
@@ -250,7 +250,7 @@ class ByteConverterBigEndian$Test extends FunSuite {
         ba(6),
         ba(7)))
 
-    valueL = 0xFFFFFFFFFFFFFFFFL
+    valueL = 0xffffffffffffffffL
     ba = uInt64ShiftedToBytes(valueL)
     assert(
       valueL == bytesToUInt64Shifted(

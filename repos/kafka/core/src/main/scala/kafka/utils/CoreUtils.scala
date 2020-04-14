@@ -247,10 +247,10 @@ object CoreUtils extends Logging {
     * Read a big-endian integer from a byte array
     */
   def readInt(bytes: Array[Byte], offset: Int): Int = {
-    ((bytes(offset) & 0xFF) << 24) |
-      ((bytes(offset + 1) & 0xFF) << 16) |
-      ((bytes(offset + 2) & 0xFF) << 8) |
-      (bytes(offset + 3) & 0xFF)
+    ((bytes(offset) & 0xff) << 24) |
+      ((bytes(offset + 1) & 0xff) << 16) |
+      ((bytes(offset + 2) & 0xff) << 8) |
+      (bytes(offset + 3) & 0xff)
   }
 
   /**

@@ -361,7 +361,7 @@ private[math] final case class SafeLongLong(x: Long) extends SafeLong {
     if (n < 0) return this >> -n
     if (n < 64) {
       if (x >= 0) {
-        if (x <= (0x7FFFFFFFFFFFFFFFL >> n)) return SafeLongLong(x << n)
+        if (x <= (0x7fffffffffffffffL >> n)) return SafeLongLong(x << n)
       } else {
         if (x >= (0x8000000000000000L >> n)) return SafeLongLong(x << n)
       }

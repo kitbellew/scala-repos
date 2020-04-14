@@ -50,7 +50,7 @@ package java.math
   */
 private[math] object Elementary {
 
-  private final val UINT_MAX = 0xFFFFFFFFL
+  private final val UINT_MAX = 0xffffffffL
 
   /** Adds two {@link BigInteger}.
     *

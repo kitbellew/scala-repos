@@ -133,8 +133,8 @@ object BytecodeUtils {
 
   @tailrec def nextExecutableInstruction(
       insn: AbstractInsnNode,
-      alsoKeep: AbstractInsnNode =>
-        Boolean = Set()): Option[AbstractInsnNode] = {
+      alsoKeep: AbstractInsnNode => Boolean = Set())
+      : Option[AbstractInsnNode] = {
     val next = insn.getNext
     if (next == null || isExecutable(next) || alsoKeep(next)) Option(next)
     else nextExecutableInstruction(next, alsoKeep)

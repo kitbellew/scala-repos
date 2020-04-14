@@ -332,8 +332,8 @@ object PaintScale {
 
   /** Produces a gradient using the University of Minnesota's school colors, from maroon (low) to gold (high) */
   lazy val MaroonToGold = createGradient(
-    new Color(0xA0, 0x00, 0x00),
-    new Color(0xFF, 0xFF, 0x00),
+    new Color(0xa0, 0x00, 0x00),
+    new Color(0xff, 0xff, 0x00),
     256)
 
   /** Produces a gradient from blue (low) to red (high) */

@@ -122,10 +122,10 @@ object Framing {
               s"Maximum allowed message size is $maximumMessageLength but tried to send $msgSize bytes"))
           else {
             val header = ByteString(
-              (msgSize >> 24) & 0xFF,
-              (msgSize >> 16) & 0xFF,
-              (msgSize >> 8) & 0xFF,
-              msgSize & 0xFF)
+              (msgSize >> 24) & 0xff,
+              (msgSize >> 16) & 0xff,
+              (msgSize >> 8) & 0xff,
+              msgSize & 0xff)
             ctx.push(header ++ message)
           }
         }
@@ -139,7 +139,7 @@ object Framing {
       var decoded = 0
       while (count > 0) {
         decoded <<= 8
-        decoded |= bs.next().toInt & 0xFF
+        decoded |= bs.next().toInt & 0xff
         count -= 1
       }
       decoded
@@ -153,7 +153,7 @@ object Framing {
       var decoded = 0
       while (count > 0) {
         decoded >>>= 8
-        decoded += (bs.next().toInt & 0xFF) << highestOctet
+        decoded += (bs.next().toInt & 0xff) << highestOctet
         count -= 1
       }
       decoded & Mask

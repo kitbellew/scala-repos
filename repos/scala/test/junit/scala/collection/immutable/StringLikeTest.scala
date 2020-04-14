@@ -31,8 +31,8 @@ class StringLikeTest {
 
   @Test
   def testSplitEdgeCases: Unit = {
-    val high = 0xD852.toChar
-    val low = 0xDF62.toChar
+    val high = 0xd852.toChar
+    val low = 0xdf62.toChar
     val surrogatepair = List(high, low).mkString
     val twopairs = surrogatepair + "_" + surrogatepair
 

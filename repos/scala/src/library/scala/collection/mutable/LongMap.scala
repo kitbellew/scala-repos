@@ -67,7 +67,7 @@ final class LongMap[V] private[collection] (
       if (n < 0) 0x7
       else
         (((1 << (32 - java.lang.Integer
-          .numberOfLeadingZeros(n - 1))) - 1) & 0x3FFFFFFF) | 0x7
+          .numberOfLeadingZeros(n - 1))) - 1) & 0x3fffffff) | 0x7
     _keys = new Array[Long](mask + 1)
     _values = new Array[AnyRef](mask + 1)
   }
@@ -94,8 +94,8 @@ final class LongMap[V] private[collection] (
 
   private def toIndex(k: Long): Int = {
     // Part of the MurmurHash3 32 bit finalizer
-    val h = ((k ^ (k >>> 32)) & 0xFFFFFFFFL).toInt
-    val x = (h ^ (h >>> 16)) * 0x85EBCA6B
+    val h = ((k ^ (k >>> 32)) & 0xffffffffL).toInt
+    val x = (h ^ (h >>> 16)) * 0x85ebca6b
     (x ^ (x >>> 13)) & mask
   }
 
@@ -527,10 +527,10 @@ final class LongMap[V] private[collection] (
 }
 
 object LongMap {
-  private final val IndexMask = 0x3FFFFFFF
+  private final val IndexMask = 0x3fffffff
   private final val MissingBit = 0x80000000
   private final val VacantBit = 0x40000000
-  private final val MissVacant = 0xC0000000
+  private final val MissVacant = 0xc0000000
 
   private val exceptionDefault: Long => Nothing = (k: Long) =>
     throw new NoSuchElementException(k.toString)

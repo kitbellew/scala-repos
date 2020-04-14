@@ -55,8 +55,8 @@ class ByteCode(val bytes: Array[Byte], val pos: Int, val length: Int) {
 
   override def toString = length + " bytes"
 
-  def toInt = fold(0) { (x, b) => (x << 8) + (b & 0xFF) }
-  def toLong = fold(0L) { (x, b) => (x << 8) + (b & 0xFF) }
+  def toInt = fold(0) { (x, b) => (x << 8) + (b & 0xff) }
+  def toLong = fold(0L) { (x, b) => (x << 8) + (b & 0xff) }
 
   /**
     * Transforms array subsequence of the current buffer into the UTF8 String and
@@ -70,7 +70,7 @@ class ByteCode(val bytes: Array[Byte], val pos: Int, val length: Int) {
     StringBytesPair(str, chunk)
   }
 
-  def byte(i: Int) = bytes(pos) & 0xFF
+  def byte(i: Int) = bytes(pos) & 0xff
 }
 
 /**
@@ -86,7 +86,7 @@ trait ByteCodeReader extends RulesWithState {
 
   val byte = apply(_ nextByte)
 
-  val u1 = byte ^^ (_ & 0xFF)
+  val u1 = byte ^^ (_ & 0xff)
   val u2 = bytes(2) ^^ (_ toInt)
   val u4 = bytes(4) ^^ (_ toInt) // should map to Long??
 
@@ -98,7 +98,7 @@ object ClassFileParser extends ByteCodeReader {
   def parseAnnotations(byteCode: ByteCode) = expect(annotations)(byteCode)
 
   val magicNumber =
-    (u4 filter (_ == 0xCAFEBABE)) | error("Not a valid class file")
+    (u4 filter (_ == 0xcafebabe)) | error("Not a valid class file")
   val version = u2 ~ u2 ^^ { case minor ~ major => (major, minor) }
   val constantPool =
     (u2 ^^ ConstantPool) >> repeatUntil(constantPoolEntry)(_ isFull)

@@ -68,7 +68,7 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
       if (n < 0) 0x7
       else
         (((1 << (32 - java.lang.Integer
-          .numberOfLeadingZeros(n - 1))) - 1) & 0x3FFFFFFF) | 0x7
+          .numberOfLeadingZeros(n - 1))) - 1) & 0x3fffffff) | 0x7
     _hashes = new Array[Int](mask + 1)
     _keys = new Array[AnyRef](mask + 1)
     _values = new Array[AnyRef](mask + 1)
@@ -96,9 +96,9 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     else {
       val h = key.hashCode
       // Part of the MurmurHash3 32 bit finalizer
-      val i = (h ^ (h >>> 16)) * 0x85EBCA6B
+      val i = (h ^ (h >>> 16)) * 0x85ebca6b
       val j = (i ^ (i >>> 13))
-      if (j == 0) 0x41081989 else j & 0x7FFFFFFF
+      if (j == 0) 0x41081989 else j & 0x7fffffff
     }
   }
 
@@ -430,10 +430,10 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
 }
 
 object AnyRefMap {
-  private final val IndexMask = 0x3FFFFFFF
+  private final val IndexMask = 0x3fffffff
   private final val MissingBit = 0x80000000
   private final val VacantBit = 0x40000000
-  private final val MissVacant = 0xC0000000
+  private final val MissVacant = 0xc0000000
 
   private val exceptionDefault = (k: Any) =>
     throw new NoSuchElementException(if (k == null) "(null)" else k.toString)

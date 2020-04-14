@@ -143,9 +143,10 @@ class AccountServiceHandlers(
 
   object SearchAccountsHandler
       extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Future[HttpResponse[JValue]]] =
-      (request: HttpRequest[Future[JValue]]) => {
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) =>
+      {
         Success {
           request.parameters.get('email) match {
             case Some(email) =>
@@ -183,8 +184,9 @@ class AccountServiceHandlers(
       extends CustomHttpService[
         Future[JValue],
         Account => Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Account => Future[HttpResponse[JValue]]] =
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Account => Future[HttpResponse[JValue]]] =
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           val keyToFind = if (auth.accountId == rootAccountId) {
@@ -270,9 +272,10 @@ class AccountServiceHandlers(
   //because we also need auth at this stage.. auth will give us the root key for permmissions
   object PostAccountHandler
       extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Future[HttpResponse[JValue]]] =
-      (request: HttpRequest[Future[JValue]]) => {
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) =>
+      {
         logger.trace("Got request in PostAccountHandler: " + request)
         request.content map { futureContent =>
           Success(
@@ -345,60 +348,56 @@ class AccountServiceHandlers(
 
   object CreateAccountGrantHandler
       extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Future[HttpResponse[JValue]]] =
-      (request: HttpRequest[Future[JValue]]) =>
-        Success {
-          // cannot use withAccountAdmin here because of the ability to add grants to others' accounts.
-          request.parameters.get('accountId) map { accountId =>
-            accountManager.findAccountById(accountId) flatMap {
-              case Some(account) =>
-                request.content map { futureContent =>
-                  futureContent flatMap { jvalue =>
-                    jvalue.validated[GrantId]("grantId") match {
-                      case Success(grantId) =>
-                        apiKeyFinder.addGrant(account.apiKey, grantId) map {
-                          case true =>
-                            logger.info(
-                              "Grant added to %s (from %s): %s".format(
-                                accountId,
-                                remoteIpFrom(request),
-                                grantId))
-                            HttpResponse(Created)
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) =>
+      Success {
+        // cannot use withAccountAdmin here because of the ability to add grants to others' accounts.
+        request.parameters.get('accountId) map { accountId =>
+          accountManager.findAccountById(accountId) flatMap {
+            case Some(account) =>
+              request.content map { futureContent =>
+                futureContent flatMap { jvalue =>
+                  jvalue.validated[GrantId]("grantId") match {
+                    case Success(grantId) =>
+                      apiKeyFinder.addGrant(account.apiKey, grantId) map {
+                        case true =>
+                          logger.info("Grant added to %s (from %s): %s"
+                            .format(accountId, remoteIpFrom(request), grantId))
+                          HttpResponse(Created)
 
-                          case false =>
-                            logger.error(
-                              "Grant added to %s (from %s) failed for %s"
-                                .format(
-                                  accountId,
-                                  remoteIpFrom(request),
-                                  grantId))
-                            HttpResponse(
-                              InternalServerError,
-                              content = Some(JString(
-                                "Grant creation failed; please contact support.")))
-                        }
+                        case false =>
+                          logger.error(
+                            "Grant added to %s (from %s) failed for %s".format(
+                              accountId,
+                              remoteIpFrom(request),
+                              grantId))
+                          HttpResponse(
+                            InternalServerError,
+                            content = Some(JString(
+                              "Grant creation failed; please contact support.")))
+                      }
 
-                      case Failure(error) =>
-                        Promise successful badRequest(
-                          "Could not determine a valid grant ID from request body.")
-                    }
+                    case Failure(error) =>
+                      Promise successful badRequest(
+                        "Could not determine a valid grant ID from request body.")
                   }
-                } getOrElse {
-                  Promise successful badRequest("Missing request body.")
                 }
+              } getOrElse {
+                Promise successful badRequest("Missing request body.")
+              }
 
-              case _ =>
-                Promise.successful(
-                  HttpResponse[JValue](
-                    HttpStatus(NotFound),
-                    content =
-                      Some(JString("Unable to find account " + accountId))))
-            }
-          } getOrElse {
-            Future(badRequest("Missing account Id"))
+            case _ =>
+              Promise.successful(
+                HttpResponse[JValue](
+                  HttpStatus(NotFound),
+                  content =
+                    Some(JString("Unable to find account " + accountId))))
           }
+        } getOrElse {
+          Future(badRequest("Missing account Id"))
         }
+      }
 
     val metadata = DescriptionMetadata(
       "Adds the grant specified by the grantId property of the request body to the account resource specified in the URL path. The account requesting this change (as determined by HTTP Basic authentication) will be recorded.")
@@ -409,8 +408,9 @@ class AccountServiceHandlers(
       extends CustomHttpService[
         Future[JValue],
         Account => Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Account => Future[HttpResponse[JValue]]] =
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Account => Future[HttpResponse[JValue]]] =
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           withAccountAdmin(request, auth) { account =>
@@ -428,9 +428,10 @@ class AccountServiceHandlers(
 
   object GenerateResetTokenHandler
       extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Future[HttpResponse[JValue]]] =
-      (request: HttpRequest[Future[JValue]]) => {
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) =>
+      {
         Success {
           request.parameters
             .get('accountId)
@@ -522,9 +523,10 @@ class AccountServiceHandlers(
 
   object PasswordResetHandler
       extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Future[HttpResponse[JValue]]] =
-      (request: HttpRequest[Future[JValue]]) => {
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) =>
+      {
         Success {
           (request.parameters
             .get('accountId)
@@ -598,8 +600,9 @@ class AccountServiceHandlers(
       extends CustomHttpService[
         Future[JValue],
         Account => Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Account => Future[HttpResponse[JValue]]] =
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Account => Future[HttpResponse[JValue]]] =
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           withAccountAdmin(request, auth) { account =>
@@ -661,8 +664,9 @@ class AccountServiceHandlers(
       extends CustomHttpService[
         Future[JValue],
         Account => Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Account => Future[HttpResponse[JValue]]] =
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Account => Future[HttpResponse[JValue]]] =
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           withAccountAdmin(request, auth) { account =>
@@ -718,8 +722,9 @@ class AccountServiceHandlers(
       extends CustomHttpService[
         Future[JValue],
         Account => Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Account => Future[HttpResponse[JValue]]] =
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Account => Future[HttpResponse[JValue]]] =
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           withAccountAdmin(request, auth) { account =>
@@ -753,8 +758,9 @@ class AccountServiceHandlers(
       extends CustomHttpService[
         Future[JValue],
         Account => Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Account => Future[HttpResponse[JValue]]] =
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Account => Future[HttpResponse[JValue]]] =
       (request: HttpRequest[Future[JValue]]) => {
         logger.debug("Got account details request " + request)
         Success { (auth: Account) =>
@@ -775,8 +781,9 @@ class AccountServiceHandlers(
       extends CustomHttpService[
         Future[JValue],
         Account => Future[HttpResponse[JValue]]] {
-    val service: HttpRequest[Future[JValue]] =>
-      Validation[NotServed, Account => Future[HttpResponse[JValue]]] =
+    val service: HttpRequest[Future[JValue]] => Validation[
+      NotServed,
+      Account => Future[HttpResponse[JValue]]] =
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           withAccountAdmin(request, auth) { account =>

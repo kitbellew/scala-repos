@@ -232,7 +232,7 @@ class BlobTypeTest extends FunSuite with IntegrationClient {
     test("extract %s from %s".format("varbinary", rowType)) {
       row("varbinary") match {
         case Some(RawValue(_, _, _, bytes)) =>
-          assert(bytes.toList == List(0x6A))
+          assert(bytes.toList == List(0x6a))
         case a => fail("Expected RawValue but got %s".format(a))
       }
     }

@@ -15,11 +15,11 @@ private[http] object Protocol {
   val RSV2_MASK = 0x20
   val RSV3_MASK = 0x10
 
-  val FLAGS_MASK = 0xF0
-  val OP_MASK = 0x0F
+  val FLAGS_MASK = 0xf0
+  val OP_MASK = 0x0f
 
   val MASK_MASK = 0x80
-  val LENGTH_MASK = 0x7F
+  val LENGTH_MASK = 0x7f
 
   sealed trait Opcode {
     def code: Byte
@@ -34,7 +34,7 @@ private[http] object Protocol {
 
         case 0x8 ⇒ Close
         case 0x9 ⇒ Ping
-        case 0xA ⇒ Pong
+        case 0xa ⇒ Pong
 
         case b if (b & 0xf0) == 0 ⇒ Other(code)
         case _ ⇒
@@ -53,7 +53,7 @@ private[http] object Protocol {
 
     case object Close extends AbstractOpcode(0x8)
     case object Ping extends AbstractOpcode(0x9)
-    case object Pong extends AbstractOpcode(0xA)
+    case object Pong extends AbstractOpcode(0xa)
 
     case class Other(override val code: Byte) extends AbstractOpcode(code)
   }

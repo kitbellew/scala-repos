@@ -64,8 +64,9 @@ class DelayedFetch(
     delayMs: Long,
     fetchMetadata: FetchMetadata,
     replicaManager: ReplicaManager,
-    responseCallback: Map[TopicAndPartition, FetchResponsePartitionData] =>
-      Unit)
+    responseCallback: Map[
+      TopicAndPartition,
+      FetchResponsePartitionData] => Unit)
     extends DelayedOperation(delayMs) {
 
   /**

@@ -198,8 +198,8 @@ object ConjunctionMagnet {
         StandardRoute(underlying.tapply(_ ⇒ route))
     }
 
-  implicit def fromRouteGenerator[T, R <: Route](generator: T ⇒
-    R): ConjunctionMagnet[Unit] { type Out = RouteGenerator[T] } =
+  implicit def fromRouteGenerator[T, R <: Route](generator: T ⇒ R)
+      : ConjunctionMagnet[Unit] { type Out = RouteGenerator[T] } =
     new ConjunctionMagnet[Unit] {
       type Out = RouteGenerator[T]
       def apply(underlying: Directive0) =

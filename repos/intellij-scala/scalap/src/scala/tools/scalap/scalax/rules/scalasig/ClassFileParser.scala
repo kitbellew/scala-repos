@@ -115,7 +115,7 @@ object ClassFileParser extends ByteCodeReader {
   def parseAnnotations(byteCode: ByteCode) = expect(annotations)(byteCode)
 
   val magicNumber =
-    (u4 filter (_ == 0xCAFEBABE)) | error("Not a valid class file")
+    (u4 filter (_ == 0xcafebabe)) | error("Not a valid class file")
   val version = u2 ~ u2 ^^ { case minor ~ major => (major, minor) }
 
   // NOTE currently most constants just evaluate to a string description

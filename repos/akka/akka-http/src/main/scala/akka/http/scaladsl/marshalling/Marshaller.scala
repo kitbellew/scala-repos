@@ -104,8 +104,8 @@ object Marshaller
   /**
     * Creates a [[Marshaller]] from the given function.
     */
-  def apply[A, B](f: ExecutionContext ⇒
-    A ⇒ Future[List[Marshalling[B]]]): Marshaller[A, B] =
+  def apply[A, B](f: ExecutionContext ⇒ A ⇒ Future[List[Marshalling[B]]])
+      : Marshaller[A, B] =
     new Marshaller[A, B] {
       def apply(value: A)(implicit ec: ExecutionContext) =
         try f(ec)(value)

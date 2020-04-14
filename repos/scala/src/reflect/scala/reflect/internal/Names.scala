@@ -13,7 +13,7 @@ import scala.io.Codec
 
 trait Names extends api.Names {
   private final val HASH_SIZE = 0x8000
-  private final val HASH_MASK = 0x7FFF
+  private final val HASH_MASK = 0x7fff
   private final val NAME_SIZE = 0x20000
 
   final val nameDebug = false

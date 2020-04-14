@@ -15,8 +15,8 @@ object Test extends App {
 
     object ByteFunc extends Func[Byte] {
       override val zero: Byte = 0
-      override def inc(t: Byte) = ((t + 1) & 0xFF).toByte
-      override def dec(t: Byte) = ((t - 1) & 0xFF).toByte
+      override def inc(t: Byte) = ((t + 1) & 0xff).toByte
+      override def dec(t: Byte) = ((t - 1) & 0xff).toByte
       override def in: Byte = readByte
       override def out(t: Byte) { print(t.toChar) }
     }

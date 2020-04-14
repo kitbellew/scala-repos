@@ -60,7 +60,7 @@ import BigInteger.QuotAndRem
   */
 private[math] object Division {
 
-  private final val UINT_MAX = 0xFFFFFFFFL
+  private final val UINT_MAX = 0xffffffffL
 
   /** Divides an array by another array.
     *

@@ -42,7 +42,7 @@ class Compiler(classpath: Array[URL], val settings: Settings) {
       val result =
         foreignInvoke("compile", Array(classOf[Array[File]]), Array(files))
           .asInstanceOf[Int]
-      (result >> 16, result & 0x00FF)
+      (result >> 16, result & 0x00ff)
     } catch {
       case ex: Exception => throw CompilationFailure(ex.getMessage, ex)
     }

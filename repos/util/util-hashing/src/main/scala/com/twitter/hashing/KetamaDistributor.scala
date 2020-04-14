@@ -52,7 +52,7 @@ class KetamaDistributor[A](
   private def mapEntryForHash(hash: Long) = {
     // hashes are 32-bit because they are 32-bit on the libmemcached and
     // we need to maintain compatibility with libmemcached
-    val truncatedHash = hash & 0xFFFFFFFFL
+    val truncatedHash = hash & 0xffffffffL
 
     val entry = continuum.ceilingEntry(truncatedHash)
     if (entry == null)
@@ -76,6 +76,6 @@ class KetamaDistributor[A](
     val buffer = ByteBuffer.wrap(hasher.digest)
     buffer.order(ByteOrder.LITTLE_ENDIAN)
     buffer.position(alignment << 2)
-    buffer.getInt.toLong & 0xFFFFFFFFL
+    buffer.getInt.toLong & 0xffffffffL
   }
 }

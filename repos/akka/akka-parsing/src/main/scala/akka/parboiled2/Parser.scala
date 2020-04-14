@@ -297,8 +297,8 @@ abstract class Parser(
     */
   def __restoreState(mark: Mark): Unit = {
     _cursor = (mark.value >>> 32).toInt
-    _cursorChar = ((mark.value >>> 16) & 0x000000000000FFFF).toChar
-    valueStack.size = (mark.value & 0x000000000000FFFF).toInt
+    _cursorChar = ((mark.value >>> 16) & 0x000000000000ffff).toChar
+    valueStack.size = (mark.value & 0x000000000000ffff).toInt
   }
 
   /**

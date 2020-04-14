@@ -268,8 +268,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
             def completionProcessor(
                 ref: ScReferenceElement,
                 collectImplicit: Boolean = false,
-                postProcess: ScalaResolveResult =>
-                  Unit = postProcessMethod): CompletionProcessor =
+                postProcess: ScalaResolveResult => Unit = postProcessMethod)
+                : CompletionProcessor =
               new CompletionProcessor(
                 ref.getKinds(incomplete = false, completion = true),
                 ref,

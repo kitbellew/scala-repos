@@ -555,7 +555,7 @@ object FastComplex {
 
   // encode two floats representing a complex number
   @inline final def encode(real: Float, imag: Float): Long =
-    (bits(real) & 0xFFFFFFFFL) | ((bits(imag) & 0xFFFFFFFFL) << 32)
+    (bits(real) & 0xffffffffL) | ((bits(imag) & 0xffffffffL) << 32)
 
   // encode two floats representing a complex number in polar form
   @inline final def polar(magnitude: Float, angle: Float): Long =

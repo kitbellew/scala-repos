@@ -211,13 +211,13 @@ object DecompilerUtil {
     val lstore_2 = 0x41.toByte
     val lstore_3 = 0x42.toByte
 
-    val invokeStatic = 0xB8.toByte
+    val invokeStatic = 0xb8.toByte
 
-    val areturn = 0xB0.toByte
-    val dreturn = 0xAF.toByte
-    val freturn = 0xAE.toByte
-    val ireturn = 0xAC.toByte
-    val lreturn = 0xAD.toByte
-    val voidReturn = 0xB1.toByte
+    val areturn = 0xb0.toByte
+    val dreturn = 0xaf.toByte
+    val freturn = 0xae.toByte
+    val ireturn = 0xac.toByte
+    val lreturn = 0xad.toByte
+    val voidReturn = 0xb1.toByte
   }
 }

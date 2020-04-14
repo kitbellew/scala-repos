@@ -8,7 +8,7 @@
 package scala.tools.scalap
 
 object Classfiles {
-  final val JAVA_MAGIC = 0xCAFEBABE
+  final val JAVA_MAGIC = 0xcafebabe
   final val JAVA_MAJOR_VERSION = 45
   final val JAVA_MINOR_VERSION = 3
 

@@ -35,13 +35,13 @@ private[graphx] object RoutingTablePartition {
       pid: PartitionID,
       position: Byte): RoutingTableMessage = {
     val positionUpper2 = position << 30
-    val pidLower30 = pid & 0x3FFFFFFF
+    val pidLower30 = pid & 0x3fffffff
     (vid, positionUpper2 | pidLower30)
   }
 
   private def vidFromMessage(msg: RoutingTableMessage): VertexId = msg._1
   private def pidFromMessage(msg: RoutingTableMessage): PartitionID =
-    msg._2 & 0x3FFFFFFF
+    msg._2 & 0x3fffffff
   private def positionFromMessage(msg: RoutingTableMessage): Byte =
     (msg._2 >> 30).toByte
 

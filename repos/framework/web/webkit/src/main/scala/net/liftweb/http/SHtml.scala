@@ -373,8 +373,8 @@ trait SHtml extends Loggable {
     * applyAgain() in an Ajax call and you don't have to
     * explicitly capture the template
     */
-  def idMemoize(f: IdMemoizeTransform =>
-    NodeSeqFuncOrSeqNodeSeqFunc): IdMemoizeTransform = {
+  def idMemoize(f: IdMemoizeTransform => NodeSeqFuncOrSeqNodeSeqFunc)
+      : IdMemoizeTransform = {
     new IdMemoizeTransform {
       var latestElem: Elem = <span/>
 
@@ -2114,8 +2114,8 @@ trait SHtml extends Loggable {
   private def secureOptions[T](
       options: Seq[SelectableOption[T]],
       default: Box[T],
-      onSubmit: T =>
-        Any): (Seq[SelectableOption[String]], Box[String], AFuncHolder) = {
+      onSubmit: T => Any)
+      : (Seq[SelectableOption[String]], Box[String], AFuncHolder) = {
     val secure = options.map { selectableOption =>
       SelectableOptionWithNonce(
         selectableOption.value,
@@ -2497,8 +2497,8 @@ trait SHtml extends Loggable {
   private[http] def secureMultiOptions[T](
       options: Seq[SelectableOption[T]],
       default: Seq[T],
-      onSubmit: List[T] =>
-        Any): (Seq[SelectableOption[String]], Seq[String], AFuncHolder) = {
+      onSubmit: List[T] => Any)
+      : (Seq[SelectableOption[String]], Seq[String], AFuncHolder) = {
     val o2 = options.toList
 
     val secure: List[SelectableOptionWithNonce[T]] = o2.map {

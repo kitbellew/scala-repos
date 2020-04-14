@@ -1986,8 +1986,22 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def and[A16](m3: M[A16]) = this.~(m3)
 
     def apply[B](
-        f: (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15) =>
-          B)(implicit fu: Functor[M]): M[B] =
+        f: (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15) => B)(implicit fu: Functor[M]): M[B] =
       fu.fmap[
         A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13 ~ A14 ~ A15,
         B](
@@ -1997,9 +2011,23 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
             f(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15)
         })
 
-    def apply[B](f: B =>
-      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15))(
-        implicit fu: ContravariantFunctor[M]): M[B] =
+    def apply[B](
+        f: B => (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15))(implicit fu: ContravariantFunctor[M]): M[B] =
       fu.contramap(
         canBuild(m1, m2),
         (b: B) => {
@@ -2060,9 +2088,22 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
             A13,
             A14,
             A15) => B,
-        f2: B =>
-          (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15))(
-        implicit fu: InvariantFunctor[M]): M[B] =
+        f2: B => (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15))(implicit fu: InvariantFunctor[M]): M[B] =
       fu.inmap[
         A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13 ~ A14 ~ A15,
         B](
@@ -2453,9 +2494,24 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
               a16)
         })
 
-    def apply[B](f: B =>
-      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16))(
-        implicit fu: ContravariantFunctor[M]): M[B] =
+    def apply[B](
+        f: B => (
+            A1,
+            A2,
+            A3,
+            A4,
+            A5,
+            A6,
+            A7,
+            A8,
+            A9,
+            A10,
+            A11,
+            A12,
+            A13,
+            A14,
+            A15,
+            A16))(implicit fu: ContravariantFunctor[M]): M[B] =
       fu.contramap(
         canBuild(m1, m2),
         (b: B) => {

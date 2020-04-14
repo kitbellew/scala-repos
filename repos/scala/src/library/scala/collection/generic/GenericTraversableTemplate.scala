@@ -211,8 +211,8 @@ trait GenericTraversableTemplate[+A, +CC[X] <: GenTraversable[X]]
     "`transpose` throws an `IllegalArgumentException` if collections are not uniformly sized.",
     "2.9.0")
   def transpose[B](implicit
-      asTraversable: A =>
-        /*<:<!!!*/ GenTraversableOnce[B]): CC[CC[B] @uncheckedVariance] = {
+      asTraversable: A => /*<:<!!!*/ GenTraversableOnce[B])
+      : CC[CC[B] @uncheckedVariance] = {
     if (isEmpty)
       return genericBuilder[CC[B]].result()
 

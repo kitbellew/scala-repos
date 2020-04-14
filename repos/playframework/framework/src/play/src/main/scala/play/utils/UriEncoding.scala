@@ -47,13 +47,13 @@ object UriEncoding {
     val in = s.getBytes(inputCharset)
     val out = new ByteArrayOutputStream()
     for (b <- in) {
-      val allowed = segmentChars.get(b & 0xFF)
+      val allowed = segmentChars.get(b & 0xff)
       if (allowed) {
         out.write(b)
       } else {
         out.write('%')
-        out.write(upperHex((b >> 4) & 0xF))
-        out.write(upperHex(b & 0xF))
+        out.write(upperHex((b >> 4) & 0xf))
+        out.write(upperHex(b & 0xf))
       }
     }
     out.toString("US-ASCII")
@@ -92,7 +92,7 @@ object UriEncoding {
     val out = new ByteArrayOutputStream()
     var inPos = 0
     def next(): Int = {
-      val b = in(inPos) & 0xFF
+      val b = in(inPos) & 0xff
       inPos += 1
       b
     }

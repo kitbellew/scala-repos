@@ -47,9 +47,6 @@ object Test {
   def map[A, B](f: A => B) = zWith(Succ(Zero()), f)
 
   def zipWith3[A, B, C, D](
-      f: A =>
-        B =>
-          C =>
-        D) = //: Stream[A] => Stream[B] => Stream[C] => Stream[D] = // BUG why do we need a return type?
+      f: A => B => C => D) = //: Stream[A] => Stream[B] => Stream[C] => Stream[D] = // BUG why do we need a return type?
     zWith(Succ(Succ(Succ(Zero()))), f)
 }

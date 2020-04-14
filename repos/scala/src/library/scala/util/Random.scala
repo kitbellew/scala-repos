@@ -82,7 +82,7 @@ class Random(val self: java.util.Random) extends AnyRef with Serializable {
     */
   def nextString(length: Int) = {
     def safeChar() = {
-      val surrogateStart: Int = 0xD800
+      val surrogateStart: Int = 0xd800
       val res = nextInt(surrogateStart - 1) + 1
       res.toChar
     }

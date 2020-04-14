@@ -89,9 +89,9 @@ class StringTest {
 
   @Test def indexOf_int(): Unit = {
     assertEquals(0, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0x61))
-    assertEquals(3, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0x1D306))
-    assertEquals(3, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0xD834))
-    assertEquals(4, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0xDF06))
+    assertEquals(3, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0x1d306))
+    assertEquals(3, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0xd834))
+    assertEquals(4, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0xdf06))
     assertEquals(5, "abc\uD834\uDF06def\uD834\uDF06def".indexOf(0x64))
   }
 
@@ -104,9 +104,9 @@ class StringTest {
 
   @Test def lastIndexOf_int(): Unit = {
     assertEquals(0, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0x61))
-    assertEquals(8, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0x1D306))
-    assertEquals(8, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0xD834))
-    assertEquals(9, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0xDF06))
+    assertEquals(8, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0x1d306))
+    assertEquals(8, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0xd834))
+    assertEquals(9, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0xdf06))
     assertEquals(10, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0x64))
     assertEquals(-1, "abc\uD834\uDF06def\uD834\uDF06def".lastIndexOf(0x64, -1))
   }
@@ -127,19 +127,19 @@ class StringTest {
   @Test def codePointAt(): Unit = {
     // String that starts with a BMP symbol
     assertEquals(0x61, "abc\uD834\uDF06def".codePointAt(0))
-    assertEquals(0x1D306, "abc\uD834\uDF06def".codePointAt(3))
-    assertEquals(0xDF06, "abc\uD834\uDF06def".codePointAt(4))
+    assertEquals(0x1d306, "abc\uD834\uDF06def".codePointAt(3))
+    assertEquals(0xdf06, "abc\uD834\uDF06def".codePointAt(4))
     assertEquals(0x64, "abc\uD834\uDF06def".codePointAt(5))
 
     // String that starts with an astral symbol
-    assertEquals(0x1D306, "\uD834\uDF06def".codePointAt(0))
-    assertEquals(0xDF06, "\uD834\uDF06def".codePointAt(1))
+    assertEquals(0x1d306, "\uD834\uDF06def".codePointAt(0))
+    assertEquals(0xdf06, "\uD834\uDF06def".codePointAt(1))
 
     // Lone high surrogates
-    assertEquals(0xD834, "\uD834abc".codePointAt(0))
+    assertEquals(0xd834, "\uD834abc".codePointAt(0))
 
     // Lone low surrogates
-    assertEquals(0xDF06, "\uDF06abc".codePointAt(0))
+    assertEquals(0xdf06, "\uDF06abc".codePointAt(0))
   }
 
   @Test def codePointCount(): Unit = {
@@ -252,7 +252,7 @@ class StringTest {
     val charArray =
       Array('a', 'b', 'c', 'd', '\uD834', '\uDF06', 'e', 'f', 'g', 'h', 'i')
     val codePointArray =
-      Array(65, 0x1D306, 67, 68, 0xD834, 69, 72, 0xDF06)
+      Array(65, 0x1d306, 67, 68, 0xd834, 69, 72, 0xdf06)
 
     assertEquals("", new String())
     assertEquals("abcd\uD834\uDF06efghi", new String(charArray))

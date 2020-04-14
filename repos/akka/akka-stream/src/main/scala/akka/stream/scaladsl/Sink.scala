@@ -237,8 +237,8 @@ object Sink {
     * Combine several sinks with fun-out strategy like `Broadcast` or `Balance` and returns `Sink`.
     */
   def combine[T, U](first: Sink[U, _], second: Sink[U, _], rest: Sink[U, _]*)(
-      strategy: Int ⇒
-        Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
+      strategy: Int ⇒ Graph[UniformFanOutShape[T, U], NotUsed])
+      : Sink[T, NotUsed] =
     Sink.fromGraph(GraphDSL.create() { implicit b ⇒
       import GraphDSL.Implicits._
       val d = b.add(strategy(rest.size + 2))

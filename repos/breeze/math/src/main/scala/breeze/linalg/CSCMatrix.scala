@@ -543,7 +543,7 @@ object CSCMatrix
       if (v != 0) {
         numAdded += 1
         vs += v
-        indices += (c.toLong << 32) | (r & 0xFFFFFFFFL)
+        indices += (c.toLong << 32) | (r & 0xffffffffL)
       }
     }
 
@@ -574,7 +574,7 @@ object CSCMatrix
 
       val _rows =
         if (rows >= 0) rows
-        else indices.map(i => (i & 0xFFFFFFFFL).toInt).foldLeft(0)(_ max _) + 1
+        else indices.map(i => (i & 0xffffffffL).toInt).foldLeft(0)(_ max _) + 1
       val _cols =
         if (cols >= 0) cols
         else indices.map(i => (i >> 32).toInt).foldLeft(0)(_ max _) + 1

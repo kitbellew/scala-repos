@@ -135,7 +135,7 @@ sealed trait RandomAccessFileTest extends FunSuite {
     assert(result2(2) === 32767)
     assert(stream2.readUInt16 === 65535)
     assert(stream2.readUInt16 === 65535)
-    assert(stream2.readUInt8(2).forall(_ == 0xFF))
+    assert(stream2.readUInt8(2).forall(_ == 0xff))
     stream2.close
   }
 
@@ -161,11 +161,11 @@ sealed trait RandomAccessFileTest extends FunSuite {
 
     //Tests for maximum and minimum value byte codes
     val tempMaxRead = stream2.readUInt8(4)
-    assert(tempMaxRead.drop(1).dropRight(1).forall(_ == 0xFF))
+    assert(tempMaxRead.drop(1).dropRight(1).forall(_ == 0xff))
     //Allows same test to be used for BigEndian or LittleEndian
     assert(
-      (tempMaxRead(0) == 0x7F && tempMaxRead(3) == 0xFF) || (tempMaxRead(
-        0) == 0xFF && tempMaxRead(3) == 0x7F))
+      (tempMaxRead(0) == 0x7f && tempMaxRead(3) == 0xff) || (tempMaxRead(
+        0) == 0xff && tempMaxRead(3) == 0x7f))
     val tempMinRead = stream2.readUInt8(4)
     assert(tempMinRead.drop(1).dropRight(1).forall(_ == 0x00))
     //Allows same test to be used for BigEndian or LittleEndian
@@ -192,7 +192,7 @@ sealed trait RandomAccessFileTest extends FunSuite {
     assert(result2(2) === 32767L)
     assert(stream2.readUInt32 === 4294967295L)
     assert(stream2.readUInt32 === 4294967295L)
-    assert(stream2.readUInt8(4).forall(_ == 0xFF))
+    assert(stream2.readUInt8(4).forall(_ == 0xff))
     stream2.close
   }
 
@@ -219,11 +219,11 @@ sealed trait RandomAccessFileTest extends FunSuite {
 
     //Tests for maximum and minimum value byte codes
     val tempMaxRead = stream2.readUInt8(8)
-    assert(tempMaxRead.drop(1).dropRight(1).forall(_ == 0xFF))
+    assert(tempMaxRead.drop(1).dropRight(1).forall(_ == 0xff))
     //Allows same test to be used for BigEndian or LittleEndian
     assert(
-      (tempMaxRead(0) == 0x7F && tempMaxRead(7) == 0xFF) || (tempMaxRead(
-        0) == 0xFF && tempMaxRead(7) == 0x7F))
+      (tempMaxRead(0) == 0x7f && tempMaxRead(7) == 0xff) || (tempMaxRead(
+        0) == 0xff && tempMaxRead(7) == 0x7f))
     val tempMinRead = stream2.readUInt8(8)
     assert(tempMinRead.drop(1).dropRight(1).forall(_ == 0x00))
     //Allows same test to be used for BigEndian or LittleEndian
@@ -257,7 +257,7 @@ sealed trait RandomAccessFileTest extends FunSuite {
     assert(stream2.readUInt64.toLong === 9223372036854775807L)
     assert(stream2.readUInt64.toLong === 9223372036854775807L)
     //println( stream2.readUInt8(8).toList )
-    assert(stream2.readUInt8(8).forall(_ == 0xFF))
+    assert(stream2.readUInt8(8).forall(_ == 0xff))
     assert(stream2.readUInt64 == UInt64Max)
     stream2.close
   }

@@ -59,7 +59,7 @@ object Hashers {
 
     def append(hash: Array[Byte]): Unit = {
       for (b <- hash)
-        builder.append(hexDigit(b >> 4)).append(hexDigit(b & 0xF))
+        builder.append(hexDigit(b >> 4)).append(hexDigit(b & 0xf))
     }
     append(hash.treeHash)
 

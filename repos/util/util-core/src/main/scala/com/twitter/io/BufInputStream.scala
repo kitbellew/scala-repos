@@ -37,7 +37,7 @@ class BufInputStream(val buf: Buf) extends InputStream {
       val b = new Array[Byte](1)
       rest.slice(0, 1).write(b, 0)
       rest = rest.slice(1, rest.length)
-      b(0) & 0xFF
+      b(0) & 0xff
     }
 
   /**

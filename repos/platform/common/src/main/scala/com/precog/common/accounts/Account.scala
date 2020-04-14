@@ -88,7 +88,7 @@ object Account {
   def randomSalt() = {
     val saltBytes = new Array[Byte](256)
     randomSource.nextBytes(saltBytes)
-    saltBytes.flatMap(byte => Integer.toHexString(0xFF & byte))(
+    saltBytes.flatMap(byte => Integer.toHexString(0xff & byte))(
       collection.breakOut): String
   }
 
@@ -108,7 +108,7 @@ object Account {
     md.update(dataBytes, 0, dataBytes.length)
     val hashBytes = md.digest()
 
-    hashBytes.flatMap(byte => Integer.toHexString(0xFF & byte))(
+    hashBytes.flatMap(byte => Integer.toHexString(0xff & byte))(
       collection.breakOut): String
   }
 

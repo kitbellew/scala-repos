@@ -878,8 +878,8 @@ object Arrays {
   @inline
   private def hashCodeImpl[T](
       a: Array[T],
-      elementHashCode: T =>
-        Int = (x: T) => x.asInstanceOf[AnyRef].hashCode): Int = {
+      elementHashCode: T => Int = (x: T) => x.asInstanceOf[AnyRef].hashCode)
+      : Int = {
     if (a == null) 0
     else
       a.foldLeft(1)((acc, x) =>

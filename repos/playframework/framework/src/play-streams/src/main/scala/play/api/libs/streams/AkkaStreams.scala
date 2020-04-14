@@ -21,8 +21,8 @@ object AkkaStreams {
     * If the splitter function returns Left, they will go through the flow.  If it returns Right, they will bypass the
     * flow.
     */
-  def bypassWith[In, FlowIn, Out](splitter: In =>
-    Either[FlowIn, Out]): Flow[FlowIn, Out, _] => Flow[In, Out, _] = {
+  def bypassWith[In, FlowIn, Out](splitter: In => Either[FlowIn, Out])
+      : Flow[FlowIn, Out, _] => Flow[In, Out, _] = {
     bypassWith(Flow[In].map(splitter))
   }
 

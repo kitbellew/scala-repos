@@ -47,7 +47,7 @@ object CharEncodingSpec extends Specification {
         Array[Byte](0xf0.toByte),
         Array[Byte](0x9f.toByte),
         Array[Byte](0x82.toByte),
-        Array[Byte](0xA5.toByte)
+        Array[Byte](0xa5.toByte)
       )
       val result = Enumerator(input: _*) &> CharEncoding.decode(
         "UTF-8") |>>> Iteratee.consume[String]()

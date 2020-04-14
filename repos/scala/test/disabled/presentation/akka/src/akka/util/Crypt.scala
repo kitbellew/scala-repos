@@ -42,8 +42,8 @@ object Crypt {
     val builder = new StringBuilder
     bytes.foreach { byte =>
       builder
-        .append(hex.charAt((byte & 0xF) >> 4))
-        .append(hex.charAt(byte & 0xF))
+        .append(hex.charAt((byte & 0xf) >> 4))
+        .append(hex.charAt(byte & 0xf))
     }
     builder.toString
   }

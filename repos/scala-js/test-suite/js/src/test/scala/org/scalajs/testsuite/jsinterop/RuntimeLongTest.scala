@@ -382,7 +382,7 @@ class RuntimeLongTest {
   @Test def toLong(): Unit = {
     assertEquals(0L, lg(0).toLong)
     assertEquals(-1L, lg(-1).toLong)
-    assertEquals(0x76543210FEDCBA98L, lg(0xfedcba98, 0x76543210).toLong)
+    assertEquals(0x76543210fedcba98L, lg(0xfedcba98, 0x76543210).toLong)
 
     assertEquals(6907420169189163269L, lg(-85753595, 1608259083).toLong)
     assertEquals(-6558938415102325809L, lg(539593679, -1527121853).toLong)

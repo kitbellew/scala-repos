@@ -228,8 +228,9 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
             f.st(if (isNull) defaultValue else fromLong(v))
         })
 
-  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
-    Unit =
+  def buildSetStringValue(
+      accessor: Method,
+      columnName: String): (T, String) => Unit =
     (inst, v) =>
       doField(
         inst,
@@ -429,8 +430,9 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
           case f: MappedNullableLong[T] => f.st(if (isNull) Empty else Full(v))
         })
 
-  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
-    Unit =
+  def buildSetStringValue(
+      accessor: Method,
+      columnName: String): (T, String) => Unit =
     (inst, v) =>
       doField(
         inst,
@@ -596,8 +598,9 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         { case f: MappedLong[T] => f.st(if (isNull) defaultValue else v) })
 
-  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
-    Unit =
+  def buildSetStringValue(
+      accessor: Method,
+      columnName: String): (T, String) => Unit =
     (inst, v) =>
       doField(inst, accessor, { case f: MappedLong[T] => f.st(toLong(v)) })
 

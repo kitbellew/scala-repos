@@ -195,8 +195,9 @@ class IngestServiceHandler(
       content = Some(JString("Internal error from job service: " + message)))
   }
 
-  val service: HttpRequest[ByteChunk] =>
-    Validation[NotServed, (APIKey, Path) => Future[HttpResponse[JValue]]] =
+  val service: HttpRequest[ByteChunk] => Validation[
+    NotServed,
+    (APIKey, Path) => Future[HttpResponse[JValue]]] =
     (request: HttpRequest[ByteChunk]) => {
       logger.debug("Got request in ingest handler: " + request)
       Success { (apiKey: APIKey, path: Path) =>

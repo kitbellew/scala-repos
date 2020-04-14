@@ -23,9 +23,9 @@ trait FloatIsField extends Field[Float] {
   def mod(a: Float, b: Float): Float = a % b
 
   final def gcd(a: Float, b: Float): Float = {
-    def value(bits: Int): Int = bits & 0x007FFFFF | 0x00800000
+    def value(bits: Int): Int = bits & 0x007fffff | 0x00800000
 
-    def exp(bits: Int): Int = ((bits >> 23) & 0xFF).toInt
+    def exp(bits: Int): Int = ((bits >> 23) & 0xff).toInt
 
     // Computes the GCD of 2 fp values. Here, we are guaranteed that exp0 < exp1.
     def gcd0(val0: Int, exp0: Int, val1: Int, exp1: Int): Float = {
@@ -40,7 +40,7 @@ trait FloatIsField extends Field[Float] {
       // If exp is 0, then the value is actually just the mantissa * 2^−126,
       // so we need to adjust the *shift* accordingly.
       val shift0 = if (exp == 0) shift - 1 else shift
-      val mantissa = (n << shift0) & 0x007FFFFF
+      val mantissa = (n << shift0) & 0x007fffff
       // If exp < 0, then we have underflowed; not much we can do but return 0.
       if (exp < 0) 0f
       else intBitsToFloat((exp << 23) | mantissa)

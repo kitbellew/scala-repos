@@ -83,8 +83,8 @@ class BufferTest extends FunSuite {
   test("write Short") {
     val ctx = writerCtx()
     import ctx._
-    bw.writeShort(0xFE.toShort)
-    assert(0xFE == br.readShort())
+    bw.writeShort(0xfe.toShort)
+    assert(0xfe == br.readShort())
   }
 
   test("write Int24") {

@@ -148,8 +148,8 @@ abstract class ServiceFactory[-Req, +Rep]
     * stead. This is useful for implementing common factory wrappers that
     * only need to modify or operate on the underlying service.
     */
-  def flatMap[Req1, Rep1](f: Service[Req, Rep] =>
-    Future[Service[Req1, Rep1]]): ServiceFactory[Req1, Rep1] =
+  def flatMap[Req1, Rep1](f: Service[Req, Rep] => Future[Service[Req1, Rep1]])
+      : ServiceFactory[Req1, Rep1] =
     new ServiceFactory[Req1, Rep1] {
       def apply(conn: ClientConnection): Future[Service[Req1, Rep1]] =
         self(conn) flatMap { service =>

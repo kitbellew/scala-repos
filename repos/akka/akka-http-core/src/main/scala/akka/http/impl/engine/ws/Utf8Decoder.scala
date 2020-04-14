@@ -90,8 +90,8 @@ private[http] object Utf8Decoder extends StreamingCharsetDecoder {
                   result.append(currentCodePoint.toChar)
                 else {
                   // create surrogate pair
-                  result.append((0xD7C0 + (currentCodePoint >> 10)).toChar)
-                  result.append((0xDC00 + (currentCodePoint & 0x3FF)).toChar)
+                  result.append((0xd7c0 + (currentCodePoint >> 10)).toChar)
+                  result.append((0xdc00 + (currentCodePoint & 0x3ff)).toChar)
                 }
               case Utf8Reject ⇒ fail("Invalid UTF-8 input")
               case _ ⇒ // valid intermediate state, need more input

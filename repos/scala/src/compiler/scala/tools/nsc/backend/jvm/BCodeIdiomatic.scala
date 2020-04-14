@@ -32,7 +32,7 @@ abstract class BCodeIdiomatic extends SubComponent {
     case "jvm-1.8" => asm.Opcodes.V1_8
   }
 
-  val majorVersion: Int = (classfileVersion & 0xFF)
+  val majorVersion: Int = (classfileVersion & 0xff)
   val emitStackMapFrame = (majorVersion >= 50)
 
   val extraProc: Int = GenBCode.mkFlags(
@@ -332,7 +332,7 @@ abstract class BCodeIdiomatic extends SubComponent {
     // can-multi-thread
     final def dconst(cst: Double) {
       val bits: Long = java.lang.Double.doubleToLongBits(cst)
-      if (bits == 0L || bits == 0x3FF0000000000000L) { // +0.0d and 1.0d
+      if (bits == 0L || bits == 0x3ff0000000000000L) { // +0.0d and 1.0d
         emit(Opcodes.DCONST_0 + cst.asInstanceOf[Int])
       } else {
         jmethod.visitLdcInsn(new java.lang.Double(cst))

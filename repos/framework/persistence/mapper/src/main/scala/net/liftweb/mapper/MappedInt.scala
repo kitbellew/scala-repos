@@ -180,8 +180,9 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
             f.st(if (isNull) defaultValue else fromInt(v.toInt))
         })
 
-  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
-    Unit =
+  def buildSetStringValue(
+      accessor: Method,
+      columnName: String): (T, String) => Unit =
     (inst, v) =>
       doField(
         inst,
@@ -434,8 +435,9 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         { case f: MappedInt[T] => f.st(if (isNull) 0 else v.toInt) })
 
-  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
-    Unit =
+  def buildSetStringValue(
+      accessor: Method,
+      columnName: String): (T, String) => Unit =
     (inst, v) =>
       doField(inst, accessor, { case f: MappedInt[T] => f.st(toInt(v)) })
 

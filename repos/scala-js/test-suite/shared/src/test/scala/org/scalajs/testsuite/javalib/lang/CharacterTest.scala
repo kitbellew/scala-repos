@@ -56,7 +56,7 @@ class CharacterTest {
     assertTrue(
       Character.toChars(0x10401) sameElements Array('\uD801', '\uDC01'))
     assertTrue(
-      Character.toChars(0x10FFFF) sameElements Array('\uDBFF', '\uDFFF'))
+      Character.toChars(0x10ffff) sameElements Array('\uDBFF', '\uDFFF'))
 
     expectThrows(
       classOf[IllegalArgumentException],

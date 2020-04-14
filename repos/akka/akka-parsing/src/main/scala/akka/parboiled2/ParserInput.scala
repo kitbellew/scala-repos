@@ -99,7 +99,7 @@ object ParserInput {
       extends DefaultParserInput {
     val length =
       if (endIndex <= 0 || endIndex > bytes.length) bytes.length else endIndex
-    def charAt(ix: Int) = (bytes(ix) & 0xFF).toChar
+    def charAt(ix: Int) = (bytes(ix) & 0xff).toChar
     def sliceString(start: Int, end: Int) =
       new String(bytes, start, end - start, `ISO-8859-1`)
     def sliceCharArray(start: Int, end: Int) =

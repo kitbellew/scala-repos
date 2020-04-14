@@ -135,8 +135,9 @@ trait EvaluatorModule[M[+_]]
       if (optimize) funcs.reverse.map(Endo[DepGraph]).suml.run else identity
 
     // Have to be idempotent on subgraphs
-    def stagedRewriteDAG(optimize: Boolean, ctx: EvaluationContext): DepGraph =>
-      DepGraph = {
+    def stagedRewriteDAG(
+        optimize: Boolean,
+        ctx: EvaluationContext): DepGraph => DepGraph = {
       // rewrites are written in `andThen` order
       // we reverse above because our semigroup uses `compose`
       composeOptimizations(
@@ -148,8 +149,9 @@ trait EvaluatorModule[M[+_]]
         ))
     }
 
-    def fullRewriteDAG(optimize: Boolean, ctx: EvaluationContext): DepGraph =>
-      DepGraph = {
+    def fullRewriteDAG(
+        optimize: Boolean,
+        ctx: EvaluationContext): DepGraph => DepGraph = {
       stagedRewriteDAG(optimize, ctx) andThen
         (orderCrosses _) andThen
         composeOptimizations(
@@ -374,8 +376,9 @@ trait EvaluatorModule[M[+_]]
             graph: DepGraph,
             left: DepGraph,
             right: DepGraph,
-            hint: Option[CrossOrder])(spec: (TransSpec2, TransSpec2) =>
-          TransSpec2): StateT[N, EvaluatorState, PendingTable] = {
+            hint: Option[CrossOrder])(
+            spec: (TransSpec2, TransSpec2) => TransSpec2)
+            : StateT[N, EvaluatorState, PendingTable] = {
           import CrossOrder._
           def valueSpec = DerefObjectStatic(Leaf(Source), paths.Value)
           (prepareEval(left, splits) |@| prepareEval(

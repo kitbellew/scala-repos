@@ -195,8 +195,8 @@ object IterateesSpec
           Done(3, Input.El(List(1, 2)))
             .flatMapTraversable(_ =>
               Done[List[Int], Int](4, Input.El(List(3, 4))))(
-              implicitly[List[Int] =>
-                scala.collection.TraversableLike[Int, List[Int]]],
+              implicitly[
+                List[Int] => scala.collection.TraversableLike[Int, List[Int]]],
               implicitly[scala.collection.generic.CanBuildFrom[
                 List[Int],
                 Int,

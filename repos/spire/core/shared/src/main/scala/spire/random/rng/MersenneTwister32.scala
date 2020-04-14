@@ -104,8 +104,8 @@ final class MersenneTwister32 protected[random] (
 
     // Tempering
     y ^= (y >>> 11)
-    y ^= (y << 7) & 0x9D2C5680
-    y ^= (y << 15) & 0xEFC60000
+    y ^= (y << 7) & 0x9d2c5680
+    y ^= (y << 15) & 0xefc60000
     y ^= (y >>> 18)
 
     y
@@ -118,7 +118,7 @@ object MersenneTwister32
   @inline private val UpperMask =
     0x80000000 // = Int.MinValue = 0xFFFFFFFF ^ Int.MaxValue
   @inline private val LowerMask =
-    0x7FFFFFFF // = Int.MaxValue = 0xFFFFFFFF ^ Int.MinValue
+    0x7fffffff // = Int.MaxValue = 0xFFFFFFFF ^ Int.MinValue
 
   @inline private val N = 624
   @inline private val M = 397
@@ -131,7 +131,7 @@ object MersenneTwister32
 
   @inline private val BYTES = N * 4 + 4
 
-  @inline private def mag01(x: Int) = if ((x & 1) == 0) 0 else 0x9908B0DF
+  @inline private def mag01(x: Int) = if ((x & 1) == 0) 0 else 0x9908b0df
 
   def randomSeed(): (Array[Int], Int) =
     (Utils.seedFromInt(N, Utils.intFromTime()), N + 1)

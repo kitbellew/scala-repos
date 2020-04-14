@@ -76,7 +76,7 @@ trait StdNames {
       val cs = s.toArray
       val bytes = Codec toUTF8 cs
       md5 update bytes
-      val md5chars = (md5.digest() map (b => (b & 0xFF).toHexString)).mkString
+      val md5chars = (md5.digest() map (b => (b & 0xff).toHexString)).mkString
 
       prefix + marker + md5chars + marker + suffix
     }

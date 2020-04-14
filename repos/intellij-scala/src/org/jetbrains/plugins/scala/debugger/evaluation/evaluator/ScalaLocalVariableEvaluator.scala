@@ -64,8 +64,9 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
     val lastIndex = threadProxy.frameCount() - 1
     val upperBound = Math.min(lastIndex, startIndex + depthOfSearch)
 
-    def evaluateWithFrames(evaluationStrategy: StackFrameProxyImpl =>
-      Option[AnyRef]): Option[AnyRef] = {
+    def evaluateWithFrames(
+        evaluationStrategy: StackFrameProxyImpl => Option[AnyRef])
+        : Option[AnyRef] = {
       for (frameIndex <- startIndex to upperBound) {
         val frameProxy = threadProxy.frame(frameIndex)
         if (sourceName(frameProxy) == mySourceName) {

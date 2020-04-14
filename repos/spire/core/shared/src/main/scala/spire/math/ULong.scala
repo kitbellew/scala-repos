@@ -8,7 +8,7 @@ object ULong extends ULongInstances {
 
   final def apply(s: String): ULong = fromBigInt(BigInt(s))
 
-  final def fromInt(n: Int): ULong = new ULong(n & 0xFFFFFFFFL)
+  final def fromInt(n: Int): ULong = new ULong(n & 0xffffffffL)
   final def fromLong(n: Long): ULong = new ULong(n)
 
   final def fromBigInt(n: BigInt): ULong =

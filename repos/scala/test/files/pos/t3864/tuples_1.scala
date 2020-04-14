@@ -291,8 +291,9 @@ trait Tuples {
   trait Tuple18W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
       extends EnrichedType[
         Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]] {
-    def fold[Z](f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) =>
-      Z): Z = {
+    def fold[Z](
+        f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) => Z)
+        : Z = {
       import value._;
       f(
         _1,
@@ -819,8 +820,28 @@ trait Tuples {
         T,
         U]] {
     def fold[Z](
-        f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) =>
-          Z): Z = {
+        f: => (
+            A,
+            B,
+            C,
+            D,
+            E,
+            F,
+            G,
+            H,
+            I,
+            J,
+            K,
+            L,
+            M,
+            N,
+            O,
+            P,
+            Q,
+            R,
+            S,
+            T,
+            U) => Z): Z = {
       import value._;
       f(
         _1,

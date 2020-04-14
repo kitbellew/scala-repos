@@ -754,8 +754,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       val aType = abuf.get()
       val bType = bbuf.get()
 
-      if ((aType & 0xF0) == (bType & 0xF0)) {
-        ((aType & 0xF0).toByte) match {
+      if ((aType & 0xf0) == (bType & 0xf0)) {
+        ((aType & 0xf0).toByte) match {
           case FUndefined => 0
           case FBoolean =>
             abuf.get() - bbuf.get()
@@ -842,7 +842,7 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
           case x => sys.error("Match error for: " + x)
         }
       } else {
-        (aType.toInt & 0xFF) - (bType.toInt & 0xFF)
+        (aType.toInt & 0xff) - (bType.toInt & 0xff)
       }
     }
 
@@ -938,7 +938,7 @@ trait IdentitiesRowFormat extends RowFormat {
     @tailrec @inline
     def loop(i: Int, n: Long): Int = {
       val m = n >>> 7
-      val b = n & 0x7FL
+      val b = n & 0x7fL
       if (m != 0) {
         bytes(i) = (b | 0x80L).toByte
         loop(i + 1, m)
@@ -952,7 +952,7 @@ trait IdentitiesRowFormat extends RowFormat {
   }
 
   @inline private final def shiftIn(b: Byte, shift: Int, n: Long): Long =
-    n | ((b.toLong & 0x7FL) << shift)
+    n | ((b.toLong & 0x7fL) << shift)
 
   @inline private final def more(b: Byte): Boolean = (b & 0x80) != 0
 

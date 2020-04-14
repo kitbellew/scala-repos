@@ -607,8 +607,9 @@ class ReplicaManager(
       replicaId: Int,
       fetchMinBytes: Int,
       fetchInfo: immutable.Map[TopicAndPartition, PartitionFetchInfo],
-      responseCallback: Map[TopicAndPartition, FetchResponsePartitionData] =>
-        Unit) {
+      responseCallback: Map[
+        TopicAndPartition,
+        FetchResponsePartitionData] => Unit) {
     val isFromFollower = replicaId >= 0
     val fetchOnlyFromLeader: Boolean = replicaId != Request.DebuggingConsumerId
     val fetchOnlyCommitted: Boolean = !Request.isValidBrokerId(replicaId)

@@ -289,9 +289,18 @@ trait Apply[F[_]] extends Functor[F] { self =>
       : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H], F[I], F[J]) => F[R] =
     apply10(_, _, _, _, _, _, _, _, _, _)(f)
   def lift11[A, B, C, D, E, FF, G, H, I, J, K, R](
-      f: (A, B, C, D, E, FF, G, H, I, J, K) => R)
-      : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H], F[I], F[J], F[K]) =>
-        F[R] =
+      f: (A, B, C, D, E, FF, G, H, I, J, K) => R): (
+      F[A],
+      F[B],
+      F[C],
+      F[D],
+      F[E],
+      F[FF],
+      F[G],
+      F[H],
+      F[I],
+      F[J],
+      F[K]) => F[R] =
     apply11(_, _, _, _, _, _, _, _, _, _, _)(f)
   def lift12[A, B, C, D, E, FF, G, H, I, J, K, L, R](
       f: (A, B, C, D, E, FF, G, H, I, J, K, L) => R): (

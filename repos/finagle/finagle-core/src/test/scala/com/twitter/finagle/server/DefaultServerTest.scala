@@ -27,9 +27,9 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
       val listener = new FakeListener[Try[Int]](qIn, qOut)
       val clientTransport = new QueueTransport(qOut, qIn)
 
-      val serviceTransport
-          : (Transport[Try[Int], Try[Int]], Service[Try[Int], Try[Int]]) =>
-            Closable = {
+      val serviceTransport: (
+          Transport[Try[Int], Try[Int]],
+          Service[Try[Int], Try[Int]]) => Closable = {
         case (transport, service) =>
           val f = transport.read() flatMap { num =>
             service(num)
@@ -68,9 +68,9 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
       val mockConnHandle = mock[Closable]
       when(mockConnHandle.close(any[Time])) thenReturn Future.Done
 
-      val serviceTransport
-          : (Transport[Try[Int], Try[Int]], Service[Try[Int], Try[Int]]) =>
-            Closable =
+      val serviceTransport: (
+          Transport[Try[Int], Try[Int]],
+          Service[Try[Int], Try[Int]]) => Closable =
         (_, _) => mockConnHandle
 
       val server: Server[Try[Int], Try[Int]] =
@@ -103,9 +103,9 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
       val mockConnHandle = mock[Closable]
       when(mockConnHandle.close(any[Time])) thenReturn Future.Done
 
-      val serviceTransport
-          : (Transport[Try[Int], Try[Int]], Service[Try[Int], Try[Int]]) =>
-            Closable =
+      val serviceTransport: (
+          Transport[Try[Int], Try[Int]],
+          Service[Try[Int], Try[Int]]) => Closable =
         new SerialServerDispatcher(_, _)
 
       val server: Server[Try[Int], Try[Int]] =
@@ -120,8 +120,9 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
       val factory = ServiceFactory.const(svc)
       val listeningServer: ListeningServer = server.serve(socket, factory)
 
-      val transporter: (SocketAddress, StatsReceiver) =>
-        Future[Transport[Try[Int], Try[Int]]] =
+      val transporter: (
+          SocketAddress,
+          StatsReceiver) => Future[Transport[Try[Int], Try[Int]]] =
         (_, _) => Future.value(clientTransport)
 
       val endpointer

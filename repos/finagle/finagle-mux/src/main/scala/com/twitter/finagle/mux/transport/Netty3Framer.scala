@@ -8,7 +8,7 @@ import org.jboss.netty.handler.codec.frame
   */
 private[finagle] object Netty3Framer extends ChannelPipelineFactory {
 
-  private val maxFrameLength = 0x7FFFFFFF
+  private val maxFrameLength = 0x7fffffff
   private val lengthFieldOffset = 0
   private val lengthFieldLength = 4
   private val lengthAdjustment = 0

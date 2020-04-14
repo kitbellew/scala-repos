@@ -32,10 +32,10 @@ class MapStatusSuite extends SparkFunSuite {
     assert(MapStatus.compressSize(1L) === 1)
     assert(MapStatus.compressSize(2L) === 8)
     assert(MapStatus.compressSize(10L) === 25)
-    assert((MapStatus.compressSize(1000000L) & 0xFF) === 145)
-    assert((MapStatus.compressSize(1000000000L) & 0xFF) === 218)
+    assert((MapStatus.compressSize(1000000L) & 0xff) === 145)
+    assert((MapStatus.compressSize(1000000000L) & 0xff) === 218)
     // This last size is bigger than we can encode in a byte, so check that we just return 255
-    assert((MapStatus.compressSize(1000000000000000000L) & 0xFF) === 255)
+    assert((MapStatus.compressSize(1000000000000000000L) & 0xff) === 255)
   }
 
   test("decompressSize") {

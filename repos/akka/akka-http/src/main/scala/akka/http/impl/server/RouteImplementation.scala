@@ -258,8 +258,9 @@ private[http] object RouteImplementation
   }
   def pathMatcherDirective[T](
       matchers: immutable.Seq[PathMatcher[_]],
-      directive: PathMatcher1[T] ⇒
-        Directive1[T] // this type is too specific and only a placeholder for a proper polymorphic function
+      directive: PathMatcher1[T] ⇒ Directive1[
+        T
+      ] // this type is too specific and only a placeholder for a proper polymorphic function
   ): Directive0 = {
     // Concatenating PathMatchers is a bit complicated as we don't want to build up a tuple
     // but something which we can later split all the separate values and add them to the

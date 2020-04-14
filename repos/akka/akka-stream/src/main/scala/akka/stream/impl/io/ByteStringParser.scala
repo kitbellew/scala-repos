@@ -140,17 +140,17 @@ private[akka] object ByteStringParser {
       if (off < input.length) {
         val x = input(off)
         off += 1
-        x & 0xFF
+        x & 0xff
       } else throw NeedMoreData
     def readShortLE(): Int = readByte() | (readByte() << 8)
     def readIntLE(): Int = readShortLE() | (readShortLE() << 16)
     def readLongLE(): Long =
-      (readIntLE() & 0xFFFFFFFFL) | ((readIntLE() & 0xFFFFFFFFL) << 32)
+      (readIntLE() & 0xffffffffL) | ((readIntLE() & 0xffffffffL) << 32)
 
     def readShortBE(): Int = (readByte() << 8) | readByte()
     def readIntBE(): Int = (readShortBE() << 16) | readShortBE()
     def readLongBE(): Long =
-      ((readIntBE() & 0xFFFFFFFFL) << 32) | (readIntBE() & 0xFFFFFFFFL)
+      ((readIntBE() & 0xffffffffL) << 32) | (readIntBE() & 0xffffffffL)
 
     def skip(numBytes: Int): Unit =
       if (off + numBytes <= input.length) off += numBytes

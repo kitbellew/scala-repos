@@ -20,10 +20,10 @@ import scala.reflect.ClassTag
   */
 object StringLike {
   // just statics for companion class.
-  private final val LF = 0x0A
-  private final val FF = 0x0C
-  private final val CR = 0x0D
-  private final val SU = 0x1A
+  private final val LF = 0x0a
+  private final val FF = 0x0c
+  private final val CR = 0x0d
+  private final val SU = 0x1a
 }
 
 import StringLike._

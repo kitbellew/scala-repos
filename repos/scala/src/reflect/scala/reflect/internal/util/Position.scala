@@ -215,7 +215,7 @@ private[util] trait InternalPositionImpl {
   def showError(msg: String): String = {
     def escaped(s: String) = {
       def u(c: Int) = f"\\u$c%04x"
-      def uable(c: Int) = (c < 0x20 && c != '\t') || c == 0x7F
+      def uable(c: Int) = (c < 0x20 && c != '\t') || c == 0x7f
       if (s exists (c => uable(c))) {
         val sb = new StringBuilder
         s foreach (c => sb append (if (uable(c)) u(c) else c))

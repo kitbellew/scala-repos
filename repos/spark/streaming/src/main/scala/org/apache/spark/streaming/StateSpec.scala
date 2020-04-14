@@ -155,8 +155,11 @@ object StateSpec {
     * @tparam MappedType   Class of the mapped data
     */
   def function[KeyType, ValueType, StateType, MappedType](
-      mappingFunction: (Time, KeyType, Option[ValueType], State[StateType]) =>
-        Option[MappedType]
+      mappingFunction: (
+          Time,
+          KeyType,
+          Option[ValueType],
+          State[StateType]) => Option[MappedType]
   ): StateSpec[KeyType, ValueType, StateType, MappedType] = {
     ClosureCleaner.clean(mappingFunction, checkSerializable = true)
     new StateSpecImpl(mappingFunction)
@@ -174,8 +177,10 @@ object StateSpec {
     * @tparam MappedType   Class of the mapped data
     */
   def function[KeyType, ValueType, StateType, MappedType](
-      mappingFunction: (KeyType, Option[ValueType], State[StateType]) =>
-        MappedType
+      mappingFunction: (
+          KeyType,
+          Option[ValueType],
+          State[StateType]) => MappedType
   ): StateSpec[KeyType, ValueType, StateType, MappedType] = {
     ClosureCleaner.clean(mappingFunction, checkSerializable = true)
     val wrappedFunction =

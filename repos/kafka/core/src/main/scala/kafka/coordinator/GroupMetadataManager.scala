@@ -291,8 +291,8 @@ class GroupMetadataManager(
       consumerId: String,
       generationId: Int,
       offsetMetadata: immutable.Map[TopicPartition, OffsetAndMetadata],
-      responseCallback: immutable.Map[TopicPartition, Short] =>
-        Unit): DelayedStore = {
+      responseCallback: immutable.Map[TopicPartition, Short] => Unit)
+      : DelayedStore = {
     // first filter out partitions with offset metadata size exceeding limit
     val filteredOffsetMetadata = offsetMetadata.filter {
       case (topicPartition, offsetAndMetadata) =>

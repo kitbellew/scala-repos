@@ -492,8 +492,7 @@ package com.twitter.scalding {
       bf: => C, // begin function returns a context
       @transient fn: (
           C,
-          S) =>
-        T, // function that takes a context and a tuple and generate a new tuple
+          S) => T, // function that takes a context and a tuple and generate a new tuple
       ef: C => Unit, // end function to clean up context object
       fields: Fields,
       conv: TupleConverter[S],
@@ -517,10 +516,9 @@ package com.twitter.scalding {
    */
   class SideEffectFlatMapFunction[S, C, T](
       bf: => C, // begin function returns a context
-      @transient fn: (
-          C,
-          S) =>
-        TraversableOnce[T], // function that takes a context and a tuple, returns TraversableOnce of T
+      @transient fn: (C, S) => TraversableOnce[
+        T
+      ], // function that takes a context and a tuple, returns TraversableOnce of T
       ef: C => Unit, // end function to clean up context object
       fields: Fields,
       conv: TupleConverter[S],

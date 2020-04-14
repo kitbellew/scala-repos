@@ -361,8 +361,9 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
     else null
   }
 
-  private[this] def castToDecimal(from: DataType, target: DecimalType): Any =>
-    Any =
+  private[this] def castToDecimal(
+      from: DataType,
+      target: DecimalType): Any => Any =
     from match {
       case StringType =>
         buildCast[UTF8String](
@@ -444,8 +445,9 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         b => x.numeric.asInstanceOf[Numeric[Any]].toFloat(b)
     }
 
-  private[this] def castArray(fromType: DataType, toType: DataType): Any =>
-    Any = {
+  private[this] def castArray(
+      fromType: DataType,
+      toType: DataType): Any => Any = {
     val elementCast = cast(fromType, toType)
     // TODO: Could be faster?
     buildCast[ArrayData](

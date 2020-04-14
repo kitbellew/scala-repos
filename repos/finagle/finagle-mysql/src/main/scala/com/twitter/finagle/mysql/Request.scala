@@ -16,12 +16,12 @@ object Command {
   val COM_REFRESH = 0x07.toByte // mysql_refresh
   val COM_SHUTDOWN = 0x08.toByte // mysql_shutdown
   val COM_STATISTICS = 0x09.toByte // mysql_stat
-  val COM_PROCESS_INFO = 0x0A.toByte // mysql_list_processes
-  val COM_CONNECT = 0x0B.toByte // internal thread state
-  val COM_PROCESS_KILL = 0x0C.toByte // mysql_kill
-  val COM_DEBUG = 0x0D.toByte // mysql_dump_debug_info
-  val COM_PING = 0x0E.toByte // mysql_ping
-  val COM_TIME = 0x0F.toByte // internal thread state
+  val COM_PROCESS_INFO = 0x0a.toByte // mysql_list_processes
+  val COM_CONNECT = 0x0b.toByte // internal thread state
+  val COM_PROCESS_KILL = 0x0c.toByte // mysql_kill
+  val COM_DEBUG = 0x0d.toByte // mysql_dump_debug_info
+  val COM_PING = 0x0e.toByte // mysql_ping
+  val COM_TIME = 0x0f.toByte // internal thread state
   val COM_DELAYED_INSERT = 0x10.toByte // internal thread state
   val COM_CHANGE_USER = 0x11.toByte // mysql_change_user
   val COM_BINLOG_DUMP = 0x12.toByte // sent by slave IO thread to req a binlog
@@ -33,9 +33,9 @@ object Command {
   val COM_STMT_EXECUTE = 0x17.toByte // mysql_stmt_execute
   val COM_STMT_SEND_LONG_DATA = 0x18.toByte // mysql_stmt_send_long_data
   val COM_STMT_CLOSE = 0x19.toByte // mysql_stmt_close
-  val COM_STMT_RESET = 0x1A.toByte // mysql_stmt_reset
-  val COM_SET_OPTION = 0x1B.toByte // mysql_set_server_option
-  val COM_STMT_FETCH = 0x1C.toByte // mysql_stmt_fetch
+  val COM_STMT_RESET = 0x1a.toByte // mysql_stmt_reset
+  val COM_SET_OPTION = 0x1b.toByte // mysql_set_server_option
+  val COM_STMT_FETCH = 0x1c.toByte // mysql_stmt_fetch
 }
 
 sealed trait Request {

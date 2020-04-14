@@ -114,14 +114,14 @@ private[spark] object Utils extends Logging {
   /** Deserialize a Long value (used for [[org.apache.spark.api.python.PythonPartitioner]]) */
   def deserializeLongValue(bytes: Array[Byte]): Long = {
     // Note: we assume that we are given a Long value encoded in network (big-endian) byte order
-    var result = bytes(7) & 0xFFL
-    result = result + ((bytes(6) & 0xFFL) << 8)
-    result = result + ((bytes(5) & 0xFFL) << 16)
-    result = result + ((bytes(4) & 0xFFL) << 24)
-    result = result + ((bytes(3) & 0xFFL) << 32)
-    result = result + ((bytes(2) & 0xFFL) << 40)
-    result = result + ((bytes(1) & 0xFFL) << 48)
-    result + ((bytes(0) & 0xFFL) << 56)
+    var result = bytes(7) & 0xffL
+    result = result + ((bytes(6) & 0xffL) << 8)
+    result = result + ((bytes(5) & 0xffL) << 16)
+    result = result + ((bytes(4) & 0xffL) << 24)
+    result = result + ((bytes(3) & 0xffL) << 32)
+    result = result + ((bytes(2) & 0xffL) << 40)
+    result = result + ((bytes(1) & 0xffL) << 48)
+    result + ((bytes(0) & 0xffL) << 56)
   }
 
   /** Serialize via nested stream using specific serializer */
@@ -1412,8 +1412,8 @@ private[spark] object Utils extends Logging {
     *
     * @param skipClass Function that is used to exclude non-user-code classes.
     */
-  def getCallSite(skipClass: String =>
-    Boolean = sparkInternalExclusionFunction): CallSite = {
+  def getCallSite(skipClass: String => Boolean = sparkInternalExclusionFunction)
+      : CallSite = {
     // Keep crawling up the stack trace until we find the first function not inside of the spark
     // package. We track the last (shallowest) contiguous Spark method. This might be an RDD
     // transformation, a SparkContext function (such as parallelize), or anything else that leads

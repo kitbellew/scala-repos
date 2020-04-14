@@ -71,7 +71,7 @@ private[http] class FrameEventRenderer
     val length = header.length
     val (lengthBits, extraLengthBytes) = length match {
       case x if x < 126 ⇒ (x.toInt, 0)
-      case x if x <= 0xFFFF ⇒ (126, 2)
+      case x if x <= 0xffff ⇒ (126, 2)
       case _ ⇒ (127, 8)
     }
 
@@ -93,8 +93,8 @@ private[http] class FrameEventRenderer
     extraLengthBytes match {
       case 0 ⇒
       case 2 ⇒
-        data(2) = ((length & 0xFF00) >> 8).toByte
-        data(3) = ((length & 0x00FF) >> 0).toByte
+        data(2) = ((length & 0xff00) >> 8).toByte
+        data(3) = ((length & 0x00ff) >> 0).toByte
       case 8 ⇒
         @tailrec def addLongBytes(l: Long, writtenBytes: Int): Unit =
           if (writtenBytes < 8) {
@@ -107,10 +107,10 @@ private[http] class FrameEventRenderer
 
     val maskOffset = 2 + extraLengthBytes
     header.mask.foreach { mask ⇒
-      data(maskOffset + 0) = ((mask & 0xFF000000) >> 24).toByte
-      data(maskOffset + 1) = ((mask & 0x00FF0000) >> 16).toByte
-      data(maskOffset + 2) = ((mask & 0x0000FF00) >> 8).toByte
-      data(maskOffset + 3) = ((mask & 0x000000FF) >> 0).toByte
+      data(maskOffset + 0) = ((mask & 0xff000000) >> 24).toByte
+      data(maskOffset + 1) = ((mask & 0x00ff0000) >> 16).toByte
+      data(maskOffset + 2) = ((mask & 0x0000ff00) >> 8).toByte
+      data(maskOffset + 3) = ((mask & 0x000000ff) >> 0).toByte
     }
 
     ByteString(data)

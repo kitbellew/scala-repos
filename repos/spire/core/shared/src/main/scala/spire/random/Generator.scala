@@ -442,7 +442,7 @@ abstract class Generator {
 
 abstract class IntBasedGenerator extends Generator { self =>
   def nextLong(): Long =
-    ((nextInt() & 0xFFFFFFFFL) << 32) | (nextInt() & 0xFFFFFFFFL)
+    ((nextInt() & 0xffffffffL) << 32) | (nextInt() & 0xffffffffL)
 }
 
 abstract class LongBasedGenerator extends Generator { self =>

@@ -4,10 +4,10 @@ import scala.tools.reflect.Eval
 object Test extends App {
   reify {
     val colors = Map(
-      "red" -> 0xFF0000,
-      "turquoise" -> 0x00FFFF,
+      "red" -> 0xff0000,
+      "turquoise" -> 0x00ffff,
       "black" -> 0x000000,
-      "orange" -> 0xFF8040,
+      "orange" -> 0xff8040,
       "brown" -> 0x804000)
     for (name <- List("red", "green", "blue", "turquoise"))
       println(

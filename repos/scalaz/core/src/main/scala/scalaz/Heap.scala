@@ -322,8 +322,8 @@ object Heap extends HeapInstances {
       case (path, x #:: xs) => (x #:: path, xs)
     }
 
-    def adjustZ[A](f: Tree[Ranked[A]] =>
-      Tree[Ranked[A]]): ForestZipper[A] => ForestZipper[A] = {
+    def adjustZ[A](f: Tree[Ranked[A]] => Tree[Ranked[A]])
+        : ForestZipper[A] => ForestZipper[A] = {
       case (path, x #:: xs) => (path, f(x) #:: xs)
       case z                => z
     }
@@ -425,8 +425,10 @@ object Heap extends HeapInstances {
         }
       }
 
-    def splitForest[A]: (Int, Forest[A], Forest[A], Forest[A]) =>
-      (Forest[A], Forest[A], Forest[A]) = {
+    def splitForest[A]: (Int, Forest[A], Forest[A], Forest[A]) => (
+        Forest[A],
+        Forest[A],
+        Forest[A]) = {
       case (0, zs, ts, f)         => (zs, ts, f)
       case (1, zs, ts, Stream(t)) => (zs, t #:: ts, Stream())
       case (1, zs, ts, t1 #:: t2 #:: f) =>

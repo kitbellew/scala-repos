@@ -20,7 +20,7 @@ object InfoSerializers {
     *    4A 53 : "JS" in ASCII
     *
     */
-  final val IRMagicNumber = 0xCAFE4A53
+  final val IRMagicNumber = 0xcafe4a53
 
   def serialize(stream: OutputStream, classInfo: ClassInfo): Unit = {
     new Serializer().serialize(stream, classInfo)

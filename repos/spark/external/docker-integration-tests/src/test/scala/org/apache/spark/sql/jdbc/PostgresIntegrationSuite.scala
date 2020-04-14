@@ -91,7 +91,7 @@ class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
     assert(
       java.util.Arrays.equals(
         rows(0).getAs[Array[Byte]](6),
-        Array[Byte](0xDE.toByte, 0xAD.toByte, 0xBE.toByte, 0xEF.toByte)))
+        Array[Byte](0xde.toByte, 0xad.toByte, 0xbe.toByte, 0xef.toByte)))
     assert(rows(0).getBoolean(7))
     assert(rows(0).getString(8) == "172.16.0.42")
     assert(rows(0).getString(9) == "192.168.0.0/16")

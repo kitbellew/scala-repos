@@ -251,7 +251,7 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
 
       Seq(header, data) should parseMultipleTo(
         FrameStart(
-          FrameHeader(Opcode.Continuation, None, 0xFFFFFFFFL, fin = false),
+          FrameHeader(Opcode.Continuation, None, 0xffffffffL, fin = false),
           ByteString.empty),
         FrameData(data, lastPart = false))
     }

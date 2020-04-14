@@ -464,8 +464,9 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
     *
     * For expert users only.
     */
-  def transformed(f: Stack[ServiceFactory[Req, Rep]] =>
-    Stack[ServiceFactory[Req, Rep]]): This =
+  def transformed(
+      f: Stack[ServiceFactory[Req, Rep]] => Stack[ServiceFactory[Req, Rep]])
+      : This =
     copy1(stack = f(stack))
 
   /**

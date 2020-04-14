@@ -155,8 +155,9 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
   def buildSetLongValue(
       accessor: Method,
       columnName: String): (T, Long, Boolean) => Unit = null
-  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
-    Unit = null
+  def buildSetStringValue(
+      accessor: Method,
+      columnName: String): (T, String) => Unit = null
   def buildSetDateValue(
       accessor: Method,
       columnName: String): (T, Date) => Unit = null
@@ -308,8 +309,9 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
   def buildSetLongValue(
       accessor: Method,
       columnName: String): (T, Long, Boolean) => Unit = null
-  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
-    Unit =
+  def buildSetStringValue(
+      accessor: Method,
+      columnName: String): (T, String) => Unit =
     (inst, v) =>
       doField(
         inst,
@@ -473,8 +475,9 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
   def buildSetLongValue(
       accessor: Method,
       columnName: String): (T, Long, Boolean) => Unit = null
-  def buildSetStringValue(accessor: Method, columnName: String): (T, String) =>
-    Unit =
+  def buildSetStringValue(
+      accessor: Method,
+      columnName: String): (T, String) => Unit =
     (inst, v) =>
       doField(
         inst,

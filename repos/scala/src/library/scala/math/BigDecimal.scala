@@ -24,7 +24,7 @@ object BigDecimal {
   private final val maximumHashScale =
     4934 // Quit maintaining hash identity with BigInt beyond this scale
   private final val hashCodeNotComputed =
-    0x5D50690F // Magic value (happens to be "BigDecimal" old MurmurHash3 value)
+    0x5d50690f // Magic value (happens to be "BigDecimal" old MurmurHash3 value)
   private final val deci2binary =
     3.3219280948873626 // Ratio of log(10) to log(2)
   private val minCached = -512

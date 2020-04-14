@@ -268,7 +268,7 @@ object Character {
   def isISOControl(c: scala.Char): scala.Boolean = isISOControl(c.toInt)
 
   def isISOControl(codePoint: Int): scala.Boolean = {
-    (0x00 <= codePoint && codePoint <= 0x1F) || (0x7F <= codePoint && codePoint <= 0x9F)
+    (0x00 <= codePoint && codePoint <= 0x1f) || (0x7f <= codePoint && codePoint <= 0x9f)
   }
 
   @deprecated("Replaced by isWhitespace(char)", "")
@@ -533,8 +533,8 @@ object Character {
 
     if (isSupplementaryCodePoint(codePoint)) {
       val cpPrime = codePoint - 0x10000
-      val high = 0xD800 | ((cpPrime >> 10) & 0x3FF)
-      val low = 0xDC00 | (cpPrime & 0x3FF)
+      val high = 0xd800 | ((cpPrime >> 10) & 0x3ff)
+      val low = 0xdc00 | (cpPrime & 0x3ff)
       Array(high.toChar, low.toChar)
     } else {
       Array(codePoint.toChar)

@@ -303,8 +303,8 @@ class TreeTableColumn[S, T](
     *
     * firstNameCol.cellValueFactory = new TreeItemPropertyValueFactory[Person,String]("firstName"))
     */
-  def cellValueFactory: ObjectProperty[TreeTableColumn.CellDataFeatures[S, T] =>
-    ObservableValue[T, T]] =
+  def cellValueFactory: ObjectProperty[
+    TreeTableColumn.CellDataFeatures[S, T] => ObservableValue[T, T]] =
     ObjectProperty((features: TreeTableColumn.CellDataFeatures[S, T]) =>
       jfxObservableValue2sfx[T](
         delegate.cellValueFactoryProperty.getValue.call(features)))

@@ -650,8 +650,10 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       relation: LogicalRelation,
       projects: Seq[NamedExpression],
       filterPredicates: Seq[Expression],
-      scanBuilder: (Seq[Attribute], Seq[Expression], Seq[Filter]) =>
-        RDD[InternalRow]) = {
+      scanBuilder: (
+          Seq[Attribute],
+          Seq[Expression],
+          Seq[Filter]) => RDD[InternalRow]) = {
 
     val projectSet = AttributeSet(projects.flatMap(_.references))
     val filterSet = AttributeSet(filterPredicates.flatMap(_.references))

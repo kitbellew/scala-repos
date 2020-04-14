@@ -229,7 +229,7 @@ abstract class SymbolTable
   final def runId(period: Period): RunId = period >> 8
 
   /** The phase identifier of the given period. */
-  final def phaseId(period: Period): Phase#Id = period & 0xFF
+  final def phaseId(period: Period): Phase#Id = period & 0xff
 
   /** The current period. */
   final def currentPeriod: Period = {
@@ -438,8 +438,9 @@ abstract class SymbolTable
   /**
     * Adds the `sm` String interpolator to a [[scala.StringContext]].
     */
-  implicit val StringContextStripMarginOps: StringContext =>
-    StringContextStripMarginOps = util.StringContextStripMarginOps
+  implicit val StringContextStripMarginOps
+      : StringContext => StringContextStripMarginOps =
+    util.StringContextStripMarginOps
 }
 
 object SymbolTableStats {

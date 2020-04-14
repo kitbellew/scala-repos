@@ -276,8 +276,9 @@ class ScLiteralImpl(node: ASTNode)
   private val expTimeLengthGenerator: Random = new Random(
     System.currentTimeMillis())
 
-  def getAnnotationOwner(annotationOwnerLookUp: ScLiteral =>
-    Option[PsiAnnotationOwner with PsiElement]): Option[PsiAnnotationOwner] = {
+  def getAnnotationOwner(
+      annotationOwnerLookUp: ScLiteral => Option[
+        PsiAnnotationOwner with PsiElement]): Option[PsiAnnotationOwner] = {
     if (!isString) return None
 
     if (System.currentTimeMillis() > expirationTime || myAnnotationOwner.exists(

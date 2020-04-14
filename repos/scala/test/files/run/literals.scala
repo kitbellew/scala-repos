@@ -43,7 +43,7 @@ object Test {
     check_success("(65 : Byte) == 'A'", (65: Byte) == 'A', true) // contrib #176
 
     // int
-    check_success("0X01 == 1", 0X01, 1)
+    check_success("0X01 == 1", 0x01, 1)
     check_success("0x01 == 1", 0x01, 1)
     check_success("0x10 == 16", 0x10, 16)
     check_success("0xa == 10", 0xa, 10)
@@ -70,13 +70,13 @@ object Test {
 
     check_success(
       "0x7fffffffffffffffL == 9223372036854775807L",
-      0x7FFFFFFFFFFFFFFFL,
+      0x7fffffffffffffffL,
       9223372036854775807L)
     check_success(
       "0x8000000000000000L == -9223372036854775808L",
       0x8000000000000000L,
       -9223372036854775808L)
-    check_success("0xffffffffffffffffL == -1L", 0xFFFFFFFFFFFFFFFFL, -1L)
+    check_success("0xffffffffffffffffL == -1L", 0xffffffffffffffffL, -1L)
 
     // see JLS at address:
     // http://java.sun.com/docs/books/jls/second_edition/html/lexical.doc.html#230798

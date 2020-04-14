@@ -36,7 +36,7 @@ private[spark] class ByteBufferInputStream(
       cleanUp()
       -1
     } else {
-      buffer.get() & 0xFF
+      buffer.get() & 0xff
     }
   }
 

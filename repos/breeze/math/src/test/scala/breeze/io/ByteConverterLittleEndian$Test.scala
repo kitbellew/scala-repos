@@ -227,7 +227,7 @@ class ByteConverterLittleEndian$Test extends FunSuite {
         ba(6),
         ba(7)))
 
-    valueL = 0xFFFFFFFFFFFFFFFFL
+    valueL = 0xffffffffffffffffL
     ba = uInt64ShiftedToBytes(valueL)
     assert(
       valueL == bytesToUInt64Shifted(

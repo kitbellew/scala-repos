@@ -32,8 +32,8 @@ class IntegerTestOnJDK8 {
     test("+42", 42)
     test("+0", 0)
     test("FF", 255, 16)
-    test("4000000000", 0xEE6B2800)
-    test("4294967295", 0xFFFFFFFF)
+    test("4000000000", 0xee6b2800)
+    test("4294967295", 0xffffffff)
   }
 
   @Test def should_reject_invalid_uInt_strings_when_parsing(): Unit = {
@@ -64,8 +64,8 @@ class IntegerTestOnJDK8 {
     test("24", 0x24)
     test("30000", 0x30000)
     test("90000", 0x90000)
-    test("EE6B2800", 0xEE6B2800)
-    test("FFFFFFFF", 0xFFFFFFFF)
+    test("EE6B2800", 0xee6b2800)
+    test("FFFFFFFF", 0xffffffff)
   }
 
   @Test def should_provide_compareUnsigned(): Unit = {
@@ -75,11 +75,11 @@ class IntegerTestOnJDK8 {
     assertTrue(compare(0, 5) < 0)
     assertTrue(compare(10, 9) > 0)
     assertEquals(0, compare(3, 3))
-    assertEquals(0, compare(0xFFFFFFFF, 0xFFFFFFFF))
-    assertTrue(compare(0xEE6B2800, 0xFFFFFFFF) < 0)
-    assertTrue(compare(0xFFFFFFFF, 0xEE6B2800) > 0)
-    assertTrue(compare(0xEE6B2800, 3) > 0)
-    assertTrue(compare(3, 0xEE6B2800) < 0)
+    assertEquals(0, compare(0xffffffff, 0xffffffff))
+    assertTrue(compare(0xee6b2800, 0xffffffff) < 0)
+    assertTrue(compare(0xffffffff, 0xee6b2800) > 0)
+    assertTrue(compare(0xee6b2800, 3) > 0)
+    assertTrue(compare(3, 0xee6b2800) < 0)
   }
 
   @Test def should_provide_toUnsignedLong(): Unit = {
@@ -89,8 +89,8 @@ class IntegerTestOnJDK8 {
     test(0, 0L)
     test(5, 5L)
     test(43345, 43345L)
-    test(0xEE6B2800, 0xEE6B2800L)
-    test(0xFFFFFFFF, 0xFFFFFFFFL)
+    test(0xee6b2800, 0xee6b2800L)
+    test(0xffffffff, 0xffffffffL)
   }
 
   @Test def should_provide_divideUnsigned(): Unit = {
@@ -100,9 +100,9 @@ class IntegerTestOnJDK8 {
     test(1, 1, 1)
     test(4, 2, 2)
     test(3, 2, 1)
-    test(0xFFFFFFFF, 7, 613566756)
-    test(0xFFFFFFFF, 0xEE6B2800, 1)
-    test(0xEE6B2800, 2, 2000000000)
+    test(0xffffffff, 7, 613566756)
+    test(0xffffffff, 0xee6b2800, 1)
+    test(0xee6b2800, 2, 2000000000)
   }
 
   @Test def should_provide_remainderUnsigned(): Unit = {
@@ -112,9 +112,9 @@ class IntegerTestOnJDK8 {
     test(1, 1, 0)
     test(4, 2, 0)
     test(3, 2, 1)
-    test(0xFFFFFFFF, 7, 3)
-    test(0xFFFFFFFF, 0xEE6B2800, 294967295)
-    test(0xEE6B2800, 2, 0)
+    test(0xffffffff, 7, 3)
+    test(0xffffffff, 0xee6b2800, 294967295)
+    test(0xee6b2800, 2, 0)
   }
 
   @Test def should_provide_toUnsignedString_without_radix(): Unit = {
@@ -122,8 +122,8 @@ class IntegerTestOnJDK8 {
     assertEquals("12345", Integer.toUnsignedString(12345))
     assertEquals("242134", Integer.toUnsignedString(242134))
     assertEquals("2147483647", Integer.toUnsignedString(Integer.MAX_VALUE))
-    assertEquals("4294967295", Integer.toUnsignedString(0xFFFFFFFF))
-    assertEquals("4000000000", Integer.toUnsignedString(0xEE6B2800))
+    assertEquals("4294967295", Integer.toUnsignedString(0xffffffff))
+    assertEquals("4000000000", Integer.toUnsignedString(0xee6b2800))
   }
 
   @Test def should_provide_toUnsignedString_with_radix(): Unit = {
@@ -133,10 +133,10 @@ class IntegerTestOnJDK8 {
       "1111111111111111111111111111111",
       Integer.toUnsignedString(2147483647, 2))
     assertEquals("2147483647", Integer.toUnsignedString(2147483647, 10))
-    assertEquals("ffffffff", Integer.toUnsignedString(0xFFFFFFFF, 16))
-    assertEquals("4294967295", Integer.toUnsignedString(0xFFFFFFFF, 10))
-    assertEquals("ee6b2800", Integer.toUnsignedString(0xEE6B2800, 16))
-    assertEquals("4000000000", Integer.toUnsignedString(0xEE6B2800, 10))
+    assertEquals("ffffffff", Integer.toUnsignedString(0xffffffff, 16))
+    assertEquals("4294967295", Integer.toUnsignedString(0xffffffff, 10))
+    assertEquals("ee6b2800", Integer.toUnsignedString(0xee6b2800, 16))
+    assertEquals("4000000000", Integer.toUnsignedString(0xee6b2800, 10))
   }
 
   @Test def should_provide_hashCode_as_a_static_function(): Unit = {

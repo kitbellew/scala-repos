@@ -136,7 +136,7 @@ private[engine] final class HttpHeaderParser private (
       endIx
     }
     val node = nodes(nodeIx)
-    node & 0xFF match {
+    node & 0xff match {
       case 0 ⇒ // leaf node (or intermediate ValueBranch pointer)
         val valueIx = (node >>> 8) - 1
         values(valueIx) match {
@@ -225,7 +225,7 @@ private[engine] final class HttpHeaderParser private (
       node >>> 8 match {
         case 0 ⇒ parseAndInsertHeader()
         case msb ⇒
-          node & 0xFF match {
+          node & 0xff match {
             case 0 ⇒ // leaf node
               resultHeader = values(msb - 1).asInstanceOf[HttpHeader]
               cursor
@@ -268,7 +268,7 @@ private[engine] final class HttpHeaderParser private (
         colonIx
       ) // fast match, descend into only subnode
     else {
-      val nodeChar = node & 0xFF
+      val nodeChar = node & 0xff
       val signum = math.signum(char - nodeChar)
       node >>> 8 match {
         case 0 ⇒ // input doesn't exist yet in the trie, insert
@@ -403,11 +403,11 @@ private[engine] final class HttpHeaderParser private (
           case subNodeIx ⇒ recurseAndPrefixLines(subNodeIx, p1, p2, p3)._1
         }
       val node = nodes(nodeIx)
-      val char = escape((node & 0xFF).toChar)
+      val char = escape((node & 0xff).toChar)
       node >>> 8 match {
         case 0 ⇒ recurseAndPrefixLines(nodeIx + 1, "  ", char + "-", "  ")
         case msb ⇒
-          node & 0xFF match {
+          node & 0xff match {
             case 0 ⇒
               values(msb - 1) match {
                 case ValueBranch(_, valueParser, branchRootNodeIx, _) ⇒
@@ -453,7 +453,7 @@ private[engine] final class HttpHeaderParser private (
       val node = nodes(nodeIx)
       node >>> 8 match {
         case 0 ⇒ build(nodeIx + 1)
-        case msb if (node & 0xFF) == 0 ⇒
+        case msb if (node & 0xff) == 0 ⇒
           values(msb - 1) match {
             case ValueBranch(_, parser, _, count) ⇒
               Map(parser.headerName -> count)
@@ -475,7 +475,7 @@ private[engine] final class HttpHeaderParser private (
     */
   def formatRawTrie: String = {
     def char(c: Char) =
-      (c >> 8).toString + (if ((c & 0xFF) > 0) "/" + (c & 0xFF).toChar
+      (c >> 8).toString + (if ((c & 0xff) > 0) "/" + (c & 0xff).toChar
                            else "/Ω")
     s"nodes: ${nodes take nodeCount map char mkString ", "}\n" +
       s"branchData: ${branchData take branchDataCount grouped 3 map {
@@ -696,7 +696,7 @@ private[http] object HttpHeaderParser {
           val nsb =
             if (' ' <= c && c <= '\u007F')
               if (sb != null) sb.append(c) else null // legal 7-Bit ASCII
-            else if ((c & 0xE0) == 0xC0) { // 2-byte UTF-8 sequence?
+            else if ((c & 0xe0) == 0xc0) { // 2-byte UTF-8 sequence?
               hhp.byteBuffer.put(c.toByte)
               hhp.byteBuffer.put(byteAt(input, ix + 1))
               nix = ix + 2
@@ -706,7 +706,7 @@ private[http] object HttpHeaderParser {
                   else null
                 case cc ⇒ appended2(cc)
               }
-            } else if ((c & 0xF0) == 0xE0) { // 3-byte UTF-8 sequence?
+            } else if ((c & 0xf0) == 0xe0) { // 3-byte UTF-8 sequence?
               hhp.byteBuffer.put(c.toByte)
               hhp.byteBuffer.put(byteAt(input, ix + 1))
               hhp.byteBuffer.put(byteAt(input, ix + 2))
@@ -720,7 +720,7 @@ private[http] object HttpHeaderParser {
                   else null
                 case cc ⇒ appended2(cc)
               }
-            } else if ((c & 0xF8) == 0xF0) { // 4-byte UTF-8 sequence?
+            } else if ((c & 0xf8) == 0xf0) { // 4-byte UTF-8 sequence?
               hhp.byteBuffer.put(c.toByte)
               hhp.byteBuffer.put(byteAt(input, ix + 1))
               hhp.byteBuffer.put(byteAt(input, ix + 2))

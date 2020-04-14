@@ -484,8 +484,8 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
     _scale = 1075 - ((bits >> 52) & 2047).toInt
     // Extracting the 52 bits of the mantissa.
     val mantissa =
-      if (_scale == 1075) (bits & 0xFFFFFFFFFFFFFL) << 1
-      else (bits & 0xFFFFFFFFFFFFFL) | 0x10000000000000L
+      if (_scale == 1075) (bits & 0xfffffffffffffL) << 1
+      else (bits & 0xfffffffffffffL) | 0x10000000000000L
 
     if (mantissa == 0) {
       _scale = 0
@@ -1626,7 +1626,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
         val resultBits =
           (sign & 0x8000000000000000L) |
             (exponent.toLong << 52) |
-            (bits & 0xFFFFFFFFFFFFFL)
+            (bits & 0xfffffffffffffL)
         java.lang.Double.longBitsToDouble(resultBits)
       }
     }
